@@ -10,6 +10,8 @@ jobs:
   owasp-scan:
     name: OWASP ZAP Scan
     runs-on: ubuntu-latest
+    permissions:
+      issues: write
     services:
       postgres:
         image: postgres
