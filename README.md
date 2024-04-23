@@ -46,6 +46,8 @@ If you wish to override a config globally for the `test` Rails environment you c
 However, any config that should be set on other machines should either go into `.env` or be explicitly set as part
 of the test.
 
+To run locally, use `bin/dev`
+
 ## Security
 
 ### Authentication
