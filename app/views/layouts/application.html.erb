@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="<%= I18n.locale %>">
+  <head>
+    <title>IvCbvPayroll</title>
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <%= csrf_meta_tags %>
+    <%= csp_meta_tag %>
+
+    <%= stylesheet_link_tag "application", "data-turbo-track": "reload" %>
+    <%= javascript_include_tag "application", "data-turbo-track": "reload", type: "module" %>
+
+    <% if Rails.env.production? %>
+      <!-- We participate in the US government's analytics program. See the data at analytics.usa.gov. -->
+      <%= javascript_include_tag "https://dap.digitalgov.gov/Universal-Federated-Analytics-Min.js?agency=GSA", async: true, id:"_fed_an_ua_tag" %>
+    <% end %>
+  </head>
+
+  <body>
+    <%= render "application/usa_banner" %>
+    <%= render "application/header" %>
+    <main id="main-content">
+      <div class="grid-container usa-section">
+        <%= yield %>
+      </div>
+    </main>
+
+  </body>
+</html>

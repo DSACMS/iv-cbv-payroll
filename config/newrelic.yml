@@ -1,0 +1,65 @@
+#
+# This file configures the New Relic Agent.  New Relic monitors Ruby, Java,
+# .NET, PHP, Python, Node, and Go applications with deep visibility and low
+# overhead.  For more information, visit www.newrelic.com.
+#
+# Generated January 12, 2022
+#
+# This configuration file is custom generated for NewRelic Administration
+#
+
+common: &default_settings
+  # Required license key associated with your New Relic account.
+  license_key: <%= Rails.application.credentials.new_relic_key %>
+  # FEDRAMP-specific New Relic host
+  # https://docs.newrelic.com/docs/security/security-privacy/compliance/fedramp-compliant-endpoints/
+  host: 'gov-collector.newrelic.com'
+
+  # Your application name. Renaming here affects where data displays in New
+  # Relic.  For more details, see https://docs.newrelic.com/docs/apm/new-relic-apm/maintenance/renaming-applications
+  app_name: Iv Cbv Payroll
+
+  monitor_mode: true
+
+  distributed_tracing:
+    enabled: true
+
+  browser_monitoring:
+    # include js code via partial to comply with CSP settings
+    auto_instrument: false
+
+  # This line disables agent regardless of other settings.
+  # To enable the New Relic agent:
+  # 1) add the New Relic license keys to the appropriate encrypted credentials file(s)
+  # 2) Optionally, update app_name entries in this file with the application name you want to show in New Relic
+  # 3) Comment out the line below
+  agent_enabled: false
+
+  # Logging level for log/newrelic_agent.log
+  log_level: info
+
+
+# Environment-specific settings are in this section.
+# RAILS_ENV or RACK_ENV (as appropriate) is used to determine the environment.
+# If your application has other named environments, configure them here.
+development:
+  <<: *default_settings
+  app_name: Iv Cbv Payroll (Development)
+
+test:
+  <<: *default_settings
+  # It doesn't make sense to report to New Relic from automated test runs.
+  monitor_mode: false
+
+ci:
+  <<: *default_settings
+  # It doesn't make sense to report to New Relic from automated test runs.
+  monitor_mode: false
+
+staging:
+  <<: *default_settings
+  app_name: Iv Cbv Payroll (Staging)
+
+production:
+  <<: *default_settings
+  app_name: Iv Cbv Payroll (Production)

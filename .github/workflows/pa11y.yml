@@ -1,0 +1,65 @@
+name: pa11y tests
+
+on: [pull_request]
+
+jobs:
+  pa11y_scan:
+    name: Pa11y Scan
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+        ports: ["5432:5432"]
+        env:
+          POSTGRES_DB: iv_cbv_payroll_test
+          POSTGRES_USER: cidbuser
+          POSTGRES_PASSWORD: postgres
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - id: setup
+        uses: ./.github/actions/setup-project
+
+      - uses: ./.github/actions/run-server
+        with:
+          database_url: ${{ steps.setup.outputs.database_url }}
+
+      - name: Run pa11y-ci
+        shell: bash
+        run: |
+          set -o pipefail
+          yarn run pa11y-ci 2>&1 | tee pa11y_output.txt
+
+      - name: Read pa11y_output file.
+        if: failure()
+        id: pa11y_output
+        uses: juliangruber/read-file-action@v1
+        with:
+          path: ./pa11y_output.txt
+
+      - name: Comment on pull request
+        if: failure()
+        uses: actions/github-script@v4
+        with:
+          script: |
+            const output = `Pa11y Failures detected
+
+            <details><summary>Show failure message</summary>
+
+            \`\`\`\n
+            ${{ steps.pa11y_output.outputs.content }}
+            \`\`\`
+            </details>`;
+
+            github.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: output
+            });

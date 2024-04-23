@@ -1,0 +1,49 @@
+#!/usr/bin/env bash
+
+usage="
+$0: Run OWASP Zap scan against local server
+
+Usage:
+  $0 -h
+  $0 [-f] [-s]
+
+Options:
+-h: show help and exit
+-f: run full scan
+-s: run with zap2docker-stable docker image
+
+Notes:
+* defaults to running a baseline scan in zap2docker-weekly
+* prerequisites:
+  * db must be running
+  * docker must be running
+  * nothing listening on port 3000
+* script currently only works on macOS
+"
+
+set -e
+
+scan="zap-baseline.py"
+docker_name="owasp/zap2docker-weekly"
+
+while getopts "hfs" opt; do
+  case "$opt" in
+    f)
+      scan="zap-full-scan.py"
+      ;;
+    s)
+      docker_name="owasp/zap2docker-stable"
+      ;;
+    *)
+      echo "$usage"
+      exit 1
+      ;;
+  esac
+done
+
+
+hostname="http://host.docker.internal:3000"
+args="-c zap.conf -I -r zap_report.html"
+cmd="docker run --rm --user root -v $(pwd):/zap/wrk/:rw -t $docker_name $scan -t $hostname $args"
+
+`dirname "$0"`/with-server "$cmd"

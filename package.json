@@ -1,0 +1,28 @@
+{
+  "name": "app",
+  "private": true,
+  "dependencies": {
+    "@csstools/postcss-sass": "^5.1.1",
+    "@hotwired/stimulus": "^3.2.2",
+    "@hotwired/turbo-rails": "^8.0.4",
+    "@uswds/uswds": "^3.8.0",
+    "autoprefixer": "^10.4.19",
+    "postcss": "^8.4.38",
+    "postcss-cli": "^11.0.0",
+    "postcss-import": "^16.1.0",
+    "postcss-minify": "^1.1.0",
+    "postcss-scss": "^4.0.9",
+    "webpack": "^5.91.0",
+    "webpack-cli": "^5.1.4"
+  },
+  "scripts": {
+    "build": "esbuild app/javascript/*.* --bundle --sourcemap --outdir=app/assets/builds --public-path=assets",
+    "build:css": "postcss ./app/assets/stylesheets/application.postcss.css -o ./app/assets/builds/application.css"
+  },
+  "devDependencies": {
+    "pa11y-ci": "^3.1.0"
+  },
+  "resolutions": {
+    "@csstools/postcss-sass/@csstools/sass-import-resolve": "https://github.com/rahearn/sass-import-resolve"
+  }
+}

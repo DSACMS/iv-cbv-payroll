@@ -1,0 +1,79 @@
+name: Run Terraform plan in production
+
+on:
+  pull_request:
+    branches: [ production ]
+    paths: [ 'terraform/**' ]
+
+defaults:
+  run:
+    working-directory: terraform/production
+
+jobs:
+  terraform:
+    name: Terraform plan
+    runs-on: ubuntu-latest
+    environment: production
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Terraform format
+        id: format
+        run: terraform fmt -check
+
+      - name: Terraform init
+        id: init
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.TERRAFORM_STATE_ACCESS_KEY }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.TERRAFORM_STATE_SECRET_ACCESS_KEY }}
+        run: terraform init
+
+      - name: Terraform validate
+        id: validation
+        run: terraform validate -no-color
+
+      - name: Terraform plan
+        id: plan
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.TERRAFORM_STATE_ACCESS_KEY }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.TERRAFORM_STATE_SECRET_ACCESS_KEY }}
+          TF_VAR_cf_user: ${{ secrets.CF_USERNAME }}
+          TF_VAR_cf_password: ${{ secrets.CF_PASSWORD }}
+        run: terraform plan -no-color -input=false 2>&1 | tee plan_output.txt
+
+      - name: Read Terraform plan output file
+        id: terraform_output
+        uses: juliangruber/read-file-action@v1
+        if: ${{ always() }}
+        with:
+          path: ./terraform/production/plan_output.txt
+
+      # inspiration: https://learn.hashicorp.com/tutorials/terraform/github-actions#review-actions-workflow
+      - name: Update PR
+        uses: actions/github-script@v4
+        # we would like to update the PR even when a prior step failed
+        if: ${{ always() }}
+        with:
+          script: |
+            const output = `Terraform Format and Style: ${{ steps.format.outcome }}
+            Terraform Initialization: ${{ steps.init.outcome }}
+            Terraform Validation: ${{ steps.validation.outcome }}
+            Terraform Plan: ${{ steps.plan.outcome }}
+
+            <details><summary>Show Plan</summary>
+
+            \`\`\`\n
+            ${{ steps.terraform_output.outputs.content }}
+            \`\`\`
+
+            </details>
+
+            *Pusher: @${{ github.actor }}, Action: \`${{ github.event_name }}\`*`;
+
+            github.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: output
+            })

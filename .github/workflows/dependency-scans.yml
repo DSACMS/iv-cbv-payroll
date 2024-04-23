@@ -1,0 +1,56 @@
+name: Ruby and Javascript dependency scans
+
+on:
+  push:
+    branches: [ main ]
+    paths-ignore:
+      - 'doc/**'
+      - 'README.md'
+  pull_request:
+    branches: [ main ]
+  schedule:
+    # cron format: 'minute hour dayofmonth month dayofweek'
+    # this will run at noon UTC every day (7am EST / 8am EDT)
+    - cron: '0 12 * * *'
+
+jobs:
+  bundle-audit:
+    name: Bundle audit
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - uses: ./.github/actions/setup-languages
+
+      - name: Update advisory database and run checks
+        run: bundle exec rake bundler:audit
+
+  yarn-audit:
+    name: Yarn audit
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - uses: ./.github/actions/setup-languages
+
+      - name: Run yarn audit
+        run: bundle exec rake yarn:audit
+
+  ruby-bom:
+    name: Ruby SBOM Generation
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+      - uses: ./.github/actions/setup-languages
+      - name: Install cyclonedx
+        run: gem install cyclonedx-ruby
+      - name: Generate BOM
+        run: cyclonedx-ruby -p . -o ruby_bom.xml
+      - name: Save BOM
+        uses: actions/upload-artifact@v3
+        with:
+          name: ruby-bom
+          path: ./ruby_bom.xml

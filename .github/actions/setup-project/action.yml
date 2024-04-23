@@ -1,0 +1,33 @@
+name: Set up project with database
+description: Setup Ruby, Javascript, and load the database schema into a running postgres db
+inputs:
+  rails_env:
+    description: RAILS_ENV to set. Defaults to ci
+    required: false
+    default: ci
+  database_url:
+    description: DATABASE_URL to set
+    required: false
+    default: postgres://cidbuser:postgres@localhost:5432/iv_cbv_payroll_test
+outputs:
+  database_url:
+    value: ${{ inputs.database_url }}
+runs:
+  using: composite
+  steps:
+    - name: Set up Ruby & Javascript
+      uses: ./.github/actions/setup-languages
+
+    - name: Precompile assets
+      env:
+        RAILS_ENV: ${{ inputs.rails_env }}
+        SECRET_KEY_BASE: not-actually-secret
+      shell: bash
+      run: bundle exec rake assets:precompile
+
+    - name: Set up database
+      env:
+        RAILS_ENV: ${{ inputs.rails_env }}
+        DATABASE_URL: ${{ inputs.database_url }}
+      shell: bash
+      run: bundle exec rake db:schema:load

@@ -1,0 +1,10 @@
+@use "uswds-core" with (
+  // Point the asset pipline to the correct locations
+  $theme-font-path: "@uswds/uswds/dist/fonts",
+  $theme-image-path: "@uswds/uswds/dist/img",
+
+  $theme-show-notifications: false,
+
+  // Put your USWDS Theme settings here
+
+);

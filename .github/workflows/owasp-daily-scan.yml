@@ -1,0 +1,44 @@
+name: OWASP ZAP daily scan
+
+on:
+  schedule:
+    # cron format: 'minute hour dayofmonth month dayofweek'
+    # this will run at noon UTC every day (7am EST / 8am EDT)
+    - cron: '0 12 * * *'
+
+jobs:
+  owasp-scan:
+    name: OWASP ZAP Scan
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+        ports: ["5432:5432"]
+        env:
+          POSTGRES_DB: iv_cbv_payroll_test
+          POSTGRES_USER: cidbuser
+          POSTGRES_PASSWORD: postgres
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - id: setup
+        uses: ./.github/actions/setup-project
+
+      - uses: ./.github/actions/run-server
+        with:
+          database_url: ${{ steps.setup.outputs.database_url }}
+
+      - name: Run OWASP Full Scan
+        uses: zaproxy/action-full-scan@v0.3.0
+        with:
+          docker_name: 'owasp/zap2docker-weekly'
+          target: 'http://localhost:3000/'
+          fail_action: true
+          rules_file_name: 'zap.conf'
+          cmd_options: '-I'

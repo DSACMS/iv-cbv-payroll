@@ -1,0 +1,28 @@
+name: "Run rails server"
+description: "Run rails server in the background for scans to access"
+inputs:
+  rails_env:
+    description: RAILS_ENV to set. Defaults to ci
+    required: false
+    default: ci
+  database_url:
+    description: DATABASE_URL to set
+    required: true
+runs:
+  using: "composite"
+  steps:
+    - name: "Start server in background"
+      shell: bash
+      env:
+        RAILS_ENV: ${{ inputs.rails_env }}
+        DATABASE_URL: ${{ inputs.database_url }}
+        SECRET_KEY_BASE: not-actually-secret
+      run: bundle exec rails server &
+
+    - name: "Wait for startup"
+      shell: bash
+      run: sleep 5
+
+    - name: "Verify response working"
+      shell: bash
+      run: curl http://localhost:3000 -I

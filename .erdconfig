@@ -1,0 +1,9 @@
+attributes:
+  - content
+  - timestamps
+filename: "doc/compliance/rendered/apps/data.logical"
+filetype: pdf
+inheritance: false
+orientation: horizontal
+polymorphism: false
+exclude: "ActiveRecord::InternalMetadata,ActiveRecord::SchemaMigration"

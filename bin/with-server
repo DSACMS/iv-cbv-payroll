@@ -1,0 +1,36 @@
+#!/usr/bin/env bash
+#
+# Run the passed arguments in a near-production configuration
+#
+# prerequisits:
+#  * db is running
+#  * no other server is listening on port 3000
+
+if [[ $# -eq 0 ]]; then
+  echo "You must pass the test to run against the CI environment server"
+  exit 1
+fi
+
+export RAILS_ENV=ci
+
+# ensure assets are properly compiled for CI environment
+bundle exec rake assets:clobber
+bundle exec rake assets:precompile
+
+# run the server
+bundle exec rails server &
+server_pid=$!
+
+dockerize -wait http://localhost:3000 -timeout 1m
+exit_status=$?
+
+if [[ $exit_status -eq 0 ]]; then
+  $@
+  exit_status=$?
+fi
+
+# shut down the server and cleanup after ourselves
+kill $server_pid
+bundle exec rake assets:clobber
+
+exit $exit_status

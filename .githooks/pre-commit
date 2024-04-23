@@ -1,0 +1,31 @@
+#! /usr/bin/env bash
+#
+# This hook runs on `git commit` and will prevent you from committing without
+# approval from the linter and tests.
+#
+# To run, this file must be symlinked to:
+# .git/hooks/pre-commit
+#
+# To bypass this hook, run:
+# $ git commit --no-verify
+# $ git commit -n
+
+echo "Running linter..."
+bundle exec rake standard
+linter_status=$?
+
+if [ $linter_status -ne 0 ]; then
+    echo "Fix above before committing. Run 'git commit -n' to bypass linter."
+    exit 1
+fi
+
+echo "Running Terraform formatter"
+files=$(git diff --cached --name-only terraform)
+for f in $files
+do
+  # Format any *.tf files that were cached/staged
+  if [ -e "$f" ] && [[ $f == *.tf ]]; then
+    terraform fmt "$f"
+    git add "$f"
+  fi
+done
