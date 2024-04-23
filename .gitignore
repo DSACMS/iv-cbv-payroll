@@ -23,6 +23,7 @@
 
 # Ignore master key for decrypting credentials and more.
 /config/master.key
+/config/credentials/*.key
 
 # Ignore Brewfile debug info
 Brewfile.lock.json
@@ -36,8 +37,6 @@ Brewfile.lock.json
 
 # Ignore rspec examples status file
 spec/examples.txt
-
-/config/credentials/production.key
 
 /app/assets/builds/*
 !/app/assets/builds/.keep
