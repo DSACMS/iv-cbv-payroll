@@ -10,10 +10,10 @@ guide for an introduction to the framework.
 
 ### Local Setup
 
-* Install Ruby ruby-3.1.0
-* Install NodeJS 18.19.0
 * Install Xcode Command Line Tools
 * Install homebrew dependencies: `brew bundle`
+  * rbenv
+  * nodenv
   * [redis]()
   * [jq](https://stedolan.github.io/jq/)
   * [PostgreSQL](https://www.postgresql.org/)
@@ -24,11 +24,23 @@ guide for an introduction to the framework.
     * Chromedriver must be allowed to run. You can either do that by:
       * The command line: `xattr -d com.apple.quarantine $(which chromedriver)` (this is the only option if you are on Big Sur)
       * Manually: clicking "allow" when you run the integration tests for the first time and a dialogue opens up
+* Set up rbenv and nodenv:
+  * `echo 'if which nodenv >/dev/null 2>/dev/null; then eval "$(nodenv init -)"; fi' >> ~/.zshrc`
+  * `echo 'if which rbenv >/dev/null 2>/dev/null; then eval "$(rbenv init -)"; fi' >> ~/.zshrc`
+  * Close & re-open your terminal
+* Install Ruby: `rbenv install`
+* Install NodeJS `nodenv install`
 * Install Ruby dependencies: `bundle install`
-* Install JS dependencies: `yarn install`
-* Create database: `bundle exec rake db:create`
-* Run migrations: `bundle exec rake db:migrate`
-* Run the server: `bundle exec rails s`
+* Install JS dependencies
+  * `npm install -g yarn`
+  * `nodenv rehash`
+  * `yarn install`
+* Start postgres & redis:
+  * `brew services start postgresql@12`
+  * `brew services start redis`
+* Create database: `bin/rails db:create`
+* Run migrations: `bin/rails db:migrate`
+* Run the development server: `bin/dev`
 * Visit the site: http://localhost:3000
 
 ### Local Configuration
@@ -39,8 +51,7 @@ Consistent but sensitive credentials should be added to `config/credentials.yml.
 
 Production credentials should be added to `config/credentials/production.yml.enc` by using `$ rails credentials:edit --environment production`
 
-Any changes to variables in `.env` that should not be checked into git should be set
-in `.env.local`.
+Any changes to variables in `.env` that should not be checked into git should be set in `.env.local`.
 
 If you wish to override a config globally for the `test` Rails environment you can set it in `.env.test.local`.
 However, any config that should be set on other machines should either go into `.env` or be explicitly set as part
