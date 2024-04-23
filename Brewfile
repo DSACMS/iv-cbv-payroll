@@ -1,6 +1,12 @@
 # Brewfile
 # add any dependencies that must be installed from homebrew here
 
+# Ruby version manager
+brew "rbenv"
+
+# NodeJS version manager
+brew "nodenv"
+
 # cloud.gov RDS is on postgres 12
 brew "postgresql@12", link: true
 
