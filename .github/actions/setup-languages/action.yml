@@ -11,10 +11,11 @@ runs:
         cache-version: 1
 
     - name: Set up node
-      uses: actions/setup-node@v2
+      uses: actions/setup-node@v4
       with:
-        node-version: '18.19.0'
+        node-version-file: '.node-version'
         cache: 'yarn'
+
     - name: Install yarn dependencies
       shell: bash
       run: yarn install --frozen-lockfile
