@@ -6,10 +6,15 @@ Rails.application.routes.draw do
   end
   scope "(:locale)", locale: /#{I18n.available_locales.join("|")}/ do
     # Your application routes go here
-    root "pages#home"
-    # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
+    root "pages#welcome"
 
+    # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
+    get "providers/search" => "providers#search"
+    get "providers/confirm" => "providers#confirm"
+    resources :providers
     # Defines the root path route ("/")
     # root "articles#index"
+
+
   end
 end

@@ -1,0 +1,11 @@
+<h2>Get payment info from your employer.</h2>
+
+<form data-controller="providers" action="/providers/confirm" method="get">
+  <label class="usa-label" for="employer">Search for an employer</label>
+  <div class="usa-combo-box margin-bottom-3" data-action="input->providers#search">
+    <select class="usa-select" name="employer" id="employer" data-providers-target="options" data-action="change->providers#select">
+      <option value>Select an employer</option>
+    </select>
+  </div>
+  <button class="usa-button usa-button--outline" disabled="disabled" type="submit" data-providers-target="continue">Continue</button>
+</form>

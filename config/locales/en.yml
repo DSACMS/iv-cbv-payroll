@@ -16,10 +16,12 @@ en:
       demo_banner: TEST SITE - Do not use real personal information (demo purposes only) - TEST SITE
       menu: Menu
       primary: Primary navigation
-      title: Iv Cbv Payroll
+      title: Verify.gov
     languages:
       en: English
       es: Español
       fr: Français
       zh: 中文
     skip_link: Skip to main content
+  welcome:
+    
