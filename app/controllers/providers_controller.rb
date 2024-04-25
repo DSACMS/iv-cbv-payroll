@@ -1,13 +1,13 @@
 class ProvidersController < ApplicationController
-  ENDPOINT = 'https://sampleapps.argyle.com/employer-search/api/search?q=';
+  USER_TOKEN_ENDPOINT = 'https://api-sandbox.argyle.com/v2/users';
 
   def index
+    res = Net::HTTP.post(URI.parse(USER_TOKEN_ENDPOINT), "", {"Authorization" => "Basic #{ENV['ARGYLE_API_TOKEN']}"})
+
+    @userToken = JSON.parse(res.body)["user_token"]
   end
 
   def search
-    # sample endpoint — let's replace with a real sandbox
-    # https://sampleapps.argyle.com/employer-search/api/search?q=nava
-    # results = Net::HTTP.get(URI.parse("#{ENDPOINT}#{params.q}"))
   end
 
   def confirm
