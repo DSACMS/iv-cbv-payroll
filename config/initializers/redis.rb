@@ -8,7 +8,7 @@ Rails.application.config.to_prepare do
     end
 
     Sidekiq.configure_client do |config|
-      config.redis = {url: redis_url, ssl: true}
+      config.redis = {url: redis_url, ssl: false}
     end
   end
 end
