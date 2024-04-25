@@ -7,6 +7,4 @@ if [ -f /rails/tmp/pids/server.pid ]; then
 fi
 
 /rails/bin/rails db:migrate
-
-bundle exec rails s -b 0.0.0.0
-
+/rails/bin/dev

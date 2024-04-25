@@ -18,6 +18,7 @@ services:
   # Rails app
   # Configured for "development" RAILS_ENV
   app_rails:
+    tty: true
     build:
       context: .
       target: dev
@@ -33,6 +34,8 @@ services:
       - REDIS_URL=redis://redis:6379/1
       - RAILS_BINDING=0.0.0.0
       - RAILS_ENV=development
+      - PUPPETEER_SKIP_CHROMIUM_DOWNLOAD=true
+
     ports:
       - 3000:3000
     volumes:

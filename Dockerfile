@@ -1,37 +1,19 @@
 # syntax = docker/dockerfile:1
 
 # Make sure RUBY_VERSION matches the Ruby version in .ruby-version and Gemfile
-ARG RUBY_VERSION=3.1.0
+ARG RUBY_VERSION=3.1.4
 
 FROM node:20.12.0-bullseye-slim AS node-stage
 
 WORKDIR /rails
 
-COPY package.json ./
-COPY package-lock.json ./
-COPY ./app ./
-# Install packages needed to build gems
-RUN apt-get update -qq && \
-    apt-get install --no-install-recommends -y chromium
-
-ENV PUPPETEER_SKIP_CHROMIUM_DOWNLOAD=true
 # print the node version
 RUN node --version
-
-RUN npm install
-# RUN npm run build
-# RUN npm run build:css
 
 ##########################################################################################
 # BASE: Shared base docker image
 ##########################################################################################
 FROM registry.docker.com/library/ruby:$RUBY_VERSION-slim as base
-
-#copy the node 20 binaries from the node-stage to the base image
-COPY --from=node-stage /usr/local/bin/node /usr/local/bin/node
-
-#copy the npm binaries from the node-stage to the base image
-COPY --from=node-stage /usr/local/bin/npm /usr/local/bin/npm
 
 # Set production environment
 ENV RAILS_ENV="production" \
@@ -46,6 +28,8 @@ EXPOSE 3000
 ##########################################################################################
 FROM base as build
 ARG DOCKERIZE_VERSION=v0.7.0
+#copy the node binary from the node-stage to the base image
+COPY --from=node-stage /usr/local/bin/node /usr/local/bin/node
 
 # Install dockerize
 RUN apt-get update \
@@ -55,7 +39,8 @@ RUN apt-get update \
 
 # Install packages needed to build gems
 RUN apt-get update -qq && \
-    apt-get install --no-install-recommends -y build-essential git libpq-dev libvips pkg-config redis jq rbenv cu
+    apt-get install --no-install-recommends -y build-essential git libpq-dev libvips pkg-config redis jq rbenv cu npm
+
 
 # Clean up
 RUN apt-get clean && rm -rf /var/lib/apt/lists/*
@@ -64,6 +49,8 @@ RUN apt-get clean && rm -rf /var/lib/apt/lists/*
 # DEV: Used for development and test
 ##########################################################################################
 FROM build as dev
+
+WORKDIR /rails
 
 ENV RAILS_ENV="development"
 
@@ -85,6 +72,17 @@ RUN bundle config set --local without production && \
     bundle install && \
     rm -rf ~/.bundle/ "${BUNDLE_PATH}"/ruby/*/cache "${BUNDLE_PATH}"/ruby/*/bundler/gems/*/.git
 
+# copy node from node-stage to dev
+COPY --from=node-stage /usr/local/bin/node /usr/local/bin/node
+
+# Install yarn
+RUN npm install -g yarn
+COPY package.json ./
+
+# Install node_modules
+ENV PUPPETEER_SKIP_CHROMIUM_DOWNLOAD=true
+RUN yarn install
+
 # Copy application code
 COPY . .
 
@@ -97,6 +95,7 @@ FROM build as release-build
 
 # Install application gems for production
 COPY Gemfile Gemfile.lock ./
+
 RUN bundle config set --local without development test && \
     bundle install && \
     rm -rf ~/.bundle/ "${BUNDLE_PATH}"/ruby/*/cache "${BUNDLE_PATH}"/ruby/*/bundler/gems/*/.git
