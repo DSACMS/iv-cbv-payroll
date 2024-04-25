@@ -27,18 +27,11 @@ jobs:
     name: Brakeman Scan
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v4
 
     - uses: ./.github/actions/setup-languages
 
-    # Execute Brakeman CLI and generate a SARIF output with the security issues identified during the analysis
+    # Execute Brakeman CLI.
     - name: Scan
-      continue-on-error: true
       run: |
-        bundle exec brakeman -f sarif -o output.sarif.json .
-
-    # Upload the SARIF file generated in the previous step
-    - name: Upload SARIF
-      uses: github/codeql-action/upload-sarif@v1
-      with:
-        sarif_file: output.sarif.json
+        bundle exec brakeman .

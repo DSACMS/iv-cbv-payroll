@@ -10,6 +10,8 @@ jobs:
   owasp-scan:
     name: OWASP ZAP Scan
     runs-on: ubuntu-latest
+    permissions:
+      issues: write
     services:
       postgres:
         image: postgres
@@ -25,7 +27,7 @@ jobs:
           POSTGRES_PASSWORD: postgres
 
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v4
 
       - id: setup
         uses: ./.github/actions/setup-project
@@ -35,9 +37,8 @@ jobs:
           database_url: ${{ steps.setup.outputs.database_url }}
 
       - name: Run OWASP Full Scan
-        uses: zaproxy/action-full-scan@v0.3.0
+        uses: zaproxy/action-full-scan@v0.10.0
         with:
-          docker_name: 'owasp/zap2docker-weekly'
           target: 'http://localhost:3000/'
           fail_action: true
           rules_file_name: 'zap.conf'
