@@ -61,6 +61,9 @@ group :development, :test do
   gem "dotenv-rails", "~> 2.7"
   gem "i18n-tasks", "~> 1.0"
   gem "rspec-rails", "~> 5.1"
+  gem "rubocop"
+  gem "rubocop-rspec"
+  gem "rubocop-rails-omakase"
   gem "standard", "~> 1.7"
 end
 
