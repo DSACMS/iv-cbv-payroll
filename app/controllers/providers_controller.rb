@@ -4,7 +4,7 @@ class ProvidersController < ApplicationController
   def index
     res = Net::HTTP.post(URI.parse(USER_TOKEN_ENDPOINT), "", {"Authorization" => "Basic #{ENV['ARGYLE_API_TOKEN']}"})
 
-    @userToken = JSON.parse(res.body)["user_token"]
+    @user_token = JSON.parse(res.body)["user_token"]
   end
 
   def search
