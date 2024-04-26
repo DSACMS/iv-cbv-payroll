@@ -1,11 +1,11 @@
 <% content_for :head do %>
-  <%= tag :meta, name: :argyle_user_token, content: @user_token %>
+  <%= tag :meta, name: :argyle_user_token, content: @argyle_user_token %>
   <%= tag :meta, name: :argyle_sandbox, content: ENV['ARGYLE_SANDBOX'] %>
 <% end %>
 
 <h2>Get payment info from your employer.</h2>
 
-<form data-controller="providers" action="/providers/confirm" method="get">
+<form data-controller="providers" action="<%= next_path %>" method="get">
   <label class="usa-label" for="employer">Search for an employer</label>
   <div class="usa-combo-box margin-bottom-3" data-action="input->providers#search">
     <select class="usa-select" name="employer" id="employer" data-providers-target="options" data-action="change->providers#select">
