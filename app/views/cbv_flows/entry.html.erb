@@ -1,7 +1,9 @@
-<h1>Hello, Matt</h1>
+<h1>Hello</h1>
 <h2>Let's verify your payment information.</h2>
 
 <p>We'll connect to your payment records to get proof of payments to your caseworker and get benfits faster.</p>
+
+<p>Case Number: <strong><%= @cbv_flow.case_number %></strong></p>
 
 <div class="usa-alert usa-alert--info margin-bottom-3">
   <div class="usa-alert__body">
@@ -11,6 +13,6 @@
   </div>
 </div>
 
-<%= link_to '/providers' do %>
+<%= link_to next_path do %>
   <button class="usa-button usa-button--outline" type="button">Get Started</button>
 <% end %>
