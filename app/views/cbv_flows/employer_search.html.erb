@@ -10,7 +10,11 @@
   <div class="usa-combo-box margin-bottom-3" data-action="input->cbv-flows#search">
     <select class="usa-select" name="employer" id="employer" data-cbv-flows-target="options" data-action="change->cbv-flows#select">
       <option value>Select an employer</option>
+      <% @companies.each do |company| %>
+        <option value='<%= company['id'] %>'><%= company['name'] %></option>
+      <% end %>
     </select>
+    <input type="hidden" name="user[account_id]" data-cbv-flows-target="userAccountId" />
   </div>
   <button data-action="click->cbv-flows#submit" class="usa-button usa-button--outline" disabled="disabled" type="submit" data-cbv-flows-target="continue">Continue</button>
 </form>
