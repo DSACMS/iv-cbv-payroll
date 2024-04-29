@@ -1,8 +1,8 @@
 require "rails_helper"
 
-RSpec.describe "pages/welcome.html.erb", type: :view do
+RSpec.describe "pages/home.html.erb", type: :view do
   it "displays the gov banner" do
-    render template: "pages/welcome", layout: "layouts/application"
+    render template: "pages/home", layout: "layouts/application"
     expect(rendered).to match "An official website of the United States government"
   end
 end

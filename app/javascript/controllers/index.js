@@ -4,6 +4,5 @@
 
 import { application } from "./application"
 
-import ProvidersController from "./providers_controller"
-application.register("providers", ProvidersController)
-
+import CbvFlowsController from "./cbv_flows_controller"
+application.register("cbv-flows", CbvFlowsController)
