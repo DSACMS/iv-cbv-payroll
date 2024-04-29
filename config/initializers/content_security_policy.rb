@@ -7,13 +7,14 @@
 Rails.application.configure do
   config.content_security_policy do |policy|
     policy.default_src :self
-    policy.font_src :self
+    policy.font_src :self, "https://*.cloudinary.com"
     policy.form_action :self
     policy.frame_ancestors :none
-    policy.img_src :self, :data, "https://www.google-analytics.com"
+    policy.img_src :self, :data, "https://*.cloudinary.com", "http://*.cloudinary.com", "https://www.google-analytics.com"
     policy.object_src :none
-    policy.script_src :self, "https://js-agent.newrelic.com", "https://*.nr-data.net", "https://dap.digitalgov.gov", "https://www.google-analytics.com"
-    policy.connect_src :self, "https://*.nr-data.net", "https://dap.digitalgov.gov", "https://www.google-analytics.com"
+    policy.script_src :self, "https://*.argyle.com", "https://js-agent.newrelic.com", "https://*.nr-data.net", "https://dap.digitalgov.gov", "https://www.google-analytics.com"
+    policy.connect_src :self, "https://*.argyle.com", "https://get.geojs.io", "https://*.nr-data.net", "https://dap.digitalgov.gov", "https://www.google-analytics.com"
+    policy.worker_src :self, "blob:"
     # 'unsafe-inline' is needed because Turbo uses inline CSS for at least the progress bar
     policy.style_src :self, "'unsafe-inline'"
   end

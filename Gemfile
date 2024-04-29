@@ -48,6 +48,12 @@ gem "bootsnap", require: false
 # Use Sass to process CSS
 # gem "sassc-rails"
 
+gem "secure_headers", "~> 6.3"
+
+gem "newrelic_rpm", "~> 8.4"
+
+gem "sidekiq", "~> 6.4"
+
 group :development, :test do
   # See https://guides.rubyonrails.org/debugging_rails_applications.html#debugging-with-the-debug-gem
   gem "debug"
@@ -56,6 +62,16 @@ group :development, :test do
   # gem 'debase-ruby_core_source'
   # gem 'debase', '0.2.5.beta2'
   # gem 'ruby-debug-ide'
+  gem "brakeman", "~> 5.2"
+  gem "bundler-audit", "~> 0.9"
+  gem "debug", platforms: %i[mri mingw x64_mingw]
+  gem "dotenv-rails", "~> 2.7"
+  gem "i18n-tasks", "~> 1.0"
+  gem "rspec-rails", "~> 5.1"
+  gem "rubocop"
+  gem "rubocop-rspec"
+  gem "rubocop-rails-omakase"
+  gem "standard", "~> 1.7"
 end
 
 group :development do
@@ -67,25 +83,8 @@ group :development do
 
   # Speed up commands on slow machines / big apps [https://github.com/rails/spring]
   # gem "spring"
+  gem "rails-erd", "~> 1.7"
 end
-
-gem "secure_headers", "~> 6.3"
-
-group :development, :test do
-  gem "rspec-rails", "~> 5.1"
-  gem "dotenv-rails", "~> 2.7"
-  gem "brakeman", "~> 5.2"
-  gem "bundler-audit", "~> 0.9"
-  gem "standard", "~> 1.7"
-end
-gem "rails_template_18f", group: :development
-gem "rails-erd", "~> 1.7", group: :development
-
-group :development, :test do
-  gem "i18n-tasks", "~> 1.0"
-end
-gem "newrelic_rpm", "~> 8.4"
-gem "sidekiq", "~> 6.4"
 
 group :test do
   gem "climate_control", "~> 1.0"

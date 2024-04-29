@@ -1,3 +1,8 @@
+<% content_for :head do %>
+  <%= tag :meta, name: :argyle_user_token, content: @user_token %>
+  <%= tag :meta, name: :argyle_sandbox, content: ENV['ARGYLE_SANDBOX'] %>
+<% end %>
+
 <h2>Get payment info from your employer.</h2>
 
 <form data-controller="providers" action="/providers/confirm" method="get">
@@ -7,5 +12,5 @@
       <option value>Select an employer</option>
     </select>
   </div>
-  <button class="usa-button usa-button--outline" disabled="disabled" type="submit" data-providers-target="continue">Continue</button>
+  <button data-action="click->providers#submit" class="usa-button usa-button--outline" disabled="disabled" type="submit" data-providers-target="continue">Continue</button>
 </form>
