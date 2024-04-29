@@ -1,14 +1,22 @@
 # syntax = docker/dockerfile:1
 
 # Make sure RUBY_VERSION matches the Ruby version in .ruby-version and Gemfile
-ARG RUBY_VERSION=3.1.4
+ARG RUBY_VERSION=3.1.0
 
 FROM node:20.12.0-bullseye-slim AS node-stage
-
 WORKDIR /rails
+ENV PUPPETEER_SKIP_CHROMIUM_DOWNLOAD=true
+
+RUN apt-get update -qq && \
+    apt-get install --no-install-recommends -y build-essential git
+
+RUN apt-get install --reinstall ca-certificates -y && \
+    update-ca-certificates
 
 # print the node version
 RUN node --version
+COPY package.json ./
+RUN yarn install
 
 ##########################################################################################
 # BASE: Shared base docker image
@@ -67,25 +75,17 @@ COPY Gemfile Gemfile.lock ./
 RUN gem update --system
 RUN bundle lock --add-platform ruby && \
     bundle lock --add-platform x86_64-linux
-    
+
 RUN bundle config set --local without production && \
     bundle install && \
     rm -rf ~/.bundle/ "${BUNDLE_PATH}"/ruby/*/cache "${BUNDLE_PATH}"/ruby/*/bundler/gems/*/.git
 
 # copy node from node-stage to dev
 COPY --from=node-stage /usr/local/bin/node /usr/local/bin/node
-
-# Install yarn
-RUN npm install -g yarn
-COPY package.json ./
-
-# Install node_modules
-ENV PUPPETEER_SKIP_CHROMIUM_DOWNLOAD=true
-RUN yarn install
-
 # Copy application code
 COPY . .
-
+# Copy node_modules from node-stage
+COPY --from=node-stage /rails/node_modules ./
 ENTRYPOINT [".docker/.entrypoints/docker-rails.sh"]
 
 ##########################################################################################

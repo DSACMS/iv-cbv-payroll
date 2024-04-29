@@ -34,10 +34,9 @@ services:
       - REDIS_URL=redis://redis:6379/1
       - RAILS_BINDING=0.0.0.0
       - RAILS_ENV=development
-      - PUPPETEER_SKIP_CHROMIUM_DOWNLOAD=true
-
     ports:
       - 3000:3000
+      - 1234:1234
     volumes:
       - ./:/rails
       # Use named volumes for directories that the container should use the guest
