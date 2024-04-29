@@ -58,7 +58,7 @@ RSpec.describe CbvFlowsController do
 
       allow(Net::HTTP).to receive(:get)
         .with(URI(CbvFlowsController::ITEMS_ENDPOINT), anything)
-        .and_return(instance_double(Net::HTTPOK, code: "200", body: JSON.generate(argyle_mock_items_response)))
+        .and_return(JSON.generate(argyle_mock_items_response))
     end
 
     context "when rendering views" do
