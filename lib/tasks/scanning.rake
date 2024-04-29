@@ -13,7 +13,7 @@ namespace :bundler do
   desc "Updates the ruby-advisory-db and runs audit"
   task :audit do
     %w[update check].each do |command|
-      Bundler::Audit::CLI.start [command]
+      Bundler::Audit::CLI.start [ command ]
     end
   end
 rescue LoadError
@@ -60,4 +60,4 @@ def all_issues_ignored?(issues)
   present_advisories_with_frequencies == ignored_advisories_with_frequencies
 end
 
-task default: ["standard", "brakeman", "bundler:audit", "yarn:audit"]
+task default: [ "standard", "brakeman", "bundler:audit", "yarn:audit" ]
