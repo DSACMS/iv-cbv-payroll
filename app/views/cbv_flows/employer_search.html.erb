@@ -11,7 +11,9 @@
     <select class="usa-select" name="employer" id="employer" data-cbv-flows-target="options" data-action="change->cbv-flows#select">
       <option value>Select an employer</option>
       <% @companies.each do |company| %>
-        <option value='<%= company['id'] %>'><%= company['name'] %></option>
+        <option value='<%= company['id'] %>'>
+          <%= company['name'] %>
+        </option>
       <% end %>
     </select>
     <input type="hidden" name="user[account_id]" data-cbv-flows-target="userAccountId" />

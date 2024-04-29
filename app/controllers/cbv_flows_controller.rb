@@ -67,8 +67,8 @@ class CbvFlowsController < ApplicationController
   end
 
   def fetch_employers
-    res2 = Net::HTTP.get(URI.parse(ITEMS_ENDPOINT), {"Authorization" => "Basic #{ENV['ARGYLE_API_TOKEN']}"})
-    parsed = JSON.parse(res2)
+    res = Net::HTTP.get(URI.parse(ITEMS_ENDPOINT), {"Authorization" => "Basic #{ENV['ARGYLE_API_TOKEN']}"})
+    parsed = JSON.parse(res)
 
     parsed['results']
   end
