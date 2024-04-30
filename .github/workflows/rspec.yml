@@ -22,18 +22,18 @@ jobs:
 
     steps:
       - uses: actions/checkout@v4
-      - name: Set RAILS_MASTER_KEY from file
-        id: set-rails-master-key
-        run: echo "RAILS_MASTER_KEY=$(cat ./.config/credentials/test.key)" >> $GITHUB_ENV
 
       - id: setup
         uses: ./.github/actions/setup-project
         with:
           rails_env: test
 
+      - name: Set RAILS_MASTER_KEY from file
+        id: set-rails-master-key
+        run: echo "RAILS_MASTER_KEY=$(cat ./.config/credentials/test.key)" >> $GITHUB_ENV
+
       - name: Run rspec
-        with:
-          rails_env: test
         env:
+          RAILS_ENV: test
           DATABASE_URL: ${{ steps.setup.outputs.database_url }}
         run: bundle exec rspec
