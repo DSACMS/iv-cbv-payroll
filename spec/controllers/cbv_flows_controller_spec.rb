@@ -38,12 +38,27 @@ RSpec.describe CbvFlowsController do
       }
     end
 
+    let(:argyle_mock_items_response) do
+      {
+        results: [
+          {
+            id: 'item_000002102',
+            name: 'ACME',
+          },
+        ]
+      }
+    end
+
     before do
       session[:cbv_flow_id] = cbv_flow.id
 
       allow(Net::HTTP).to receive(:post)
         .with(URI(CbvFlowsController::USER_TOKEN_ENDPOINT), anything, anything)
         .and_return(instance_double(Net::HTTPOK, code: "200", body: JSON.generate(argyle_mock_response)))
+
+      allow(Net::HTTP).to receive(:get)
+        .with(URI(CbvFlowsController::ITEMS_ENDPOINT), anything)
+        .and_return(JSON.generate(argyle_mock_items_response))
     end
 
     context "when rendering views" do

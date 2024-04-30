@@ -9,9 +9,6 @@ Rails.application.routes.draw do
     root "pages#home"
 
     # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
-    get "providers/search" => "providers#search"
-
-    resources :providers
 
     scope '/cbv', as: :cbv_flow do
       get '/entry' => 'cbv_flows#entry'

@@ -1,6 +1,8 @@
 class CbvFlowsController < ApplicationController
   USER_TOKEN_ENDPOINT = 'https://api-sandbox.argyle.com/v2/users';
-
+  ITEMS_ENDPOINT = 'https://api-sandbox.argyle.com/v2/items';
+  PAYSTUBS_ENDPOINT = 'https://api-sandbox.argyle.com/v2/paystubs?limit=2&account='
+  
   before_action :set_cbv_flow
 
   def entry
@@ -8,6 +10,7 @@ class CbvFlowsController < ApplicationController
 
   def employer_search
     @argyle_user_token = fetch_and_store_argyle_token
+    @companies = fetch_employers
   end
 
   def summary
@@ -61,6 +64,13 @@ class CbvFlowsController < ApplicationController
     session[:argyle_user_token] = parsed['user_token']
 
     parsed['user_token']
+  end
+
+  def fetch_employers
+    res = Net::HTTP.get(URI.parse(ITEMS_ENDPOINT), {"Authorization" => "Basic #{ENV['ARGYLE_API_TOKEN']}"})
+    parsed = JSON.parse(res)
+
+    parsed['results']
   end
 
   def summary_employer_params
