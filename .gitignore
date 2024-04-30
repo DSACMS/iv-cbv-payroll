@@ -49,9 +49,10 @@ spec/examples.txt
 secrets.auto.tfvars
 terraform.tfstate
 terraform.tfstate.backup
-
+master.key
 #IDE Specific (RubyMine)
 .idea
 
 #IDE Specific (VS Code)
 .vscode
+/config/credentials/development.key

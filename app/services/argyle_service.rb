@@ -2,8 +2,8 @@
 require "faraday"
 
 class ArgyleService
-  def initialize(api_key)
-    @api_key = api_key
+  def initialize
+    @api_key = Rails.application.credentials.argyle[:api_key]
     base_url = ENV["ARGYLE_API_URL"] || "https://api-sandbox.argyle.com/v2"
     client_options = {
       request: {
