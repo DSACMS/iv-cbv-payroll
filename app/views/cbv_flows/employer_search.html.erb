@@ -5,7 +5,7 @@
 
 <h2>Get payment info from your employer.</h2>
 
-<form data-controller="cbv-flows" action="<%= next_path %>" method="get">
+<%= form_with url: next_path, method: :post, data: { controller: "cbv-flows" } do |f| %>
   <label class="usa-label" for="employer">Search for an employer</label>
   <div class="usa-combo-box margin-bottom-3" data-action="input->cbv-flows#search">
     <select class="usa-select" name="employer" id="employer" data-cbv-flows-target="options" data-action="change->cbv-flows#select">
@@ -18,5 +18,10 @@
     </select>
     <input type="hidden" name="user[account_id]" data-cbv-flows-target="userAccountId" />
   </div>
-  <button data-action="click->cbv-flows#submit" class="usa-button usa-button--outline" disabled="disabled" type="submit" data-cbv-flows-target="continue">Continue</button>
-</form>
+  <%= f.submit "Continue",
+    class: "usa-button usa-button--outline",
+    disabled: "disabled",
+    type: "submit",
+    data: { action: "click->cbv-flows#submit", 'cbv-flows-target': "continue" }
+  %>
+<% end %>

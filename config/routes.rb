@@ -14,6 +14,7 @@ Rails.application.routes.draw do
       get '/entry' => 'cbv_flows#entry'
       get '/employer_search' => 'cbv_flows#employer_search'
       get '/argyle_link' => 'cbv_flows#argyle_link'
+      post '/summary' => 'cbv_flows#summary'
       get '/summary' => 'cbv_flows#summary'
 
       # Utility route to clear your session; useful during development
