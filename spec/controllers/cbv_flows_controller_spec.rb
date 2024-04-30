@@ -100,8 +100,41 @@ RSpec.describe CbvFlowsController do
     render_views
 
     let(:cbv_flow) { CbvFlow.create(case_number: "ABC1234", argyle_user_id: "abc-def-ghi") }
+    let(:argyle_mock_paystubs_response) do
+      {
+        results: [
+          {
+            id: '018f1bc6-fa6e-a553-85ba-35fd755caf3b',
+            name: 'ACME',
+            net_pay: "1000",
+            hours: "40",
+            rate: "25",
+            paystub_period: {
+              start_date: "2021-01-01",
+              end_date: "2021-01-15"
+            },
+          },
+          {
+            id: '018f1bc6-fa6e-a553-85ba-35fd755c1234',
+            name: 'ACME',
+            net_pay: "1000",
+            hours: "40",
+            rate: "25",
+            paystub_period: {
+              start_date: "2021-01-01",
+              end_date: "2021-01-15"
+            },
+          },
+        ]
+      }
+    end
+
     before do
       session[:cbv_flow_id] = cbv_flow.id
+
+      allow(Net::HTTP).to receive(:get)
+        .with(URI("#{CbvFlowsController::PAYSTUBS_ENDPOINT}#{cbv_flow.argyle_user_id}"), anything)
+        .and_return(JSON.generate(argyle_mock_paystubs_response))
     end
 
     it "renders properly" do
