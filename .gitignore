@@ -56,3 +56,5 @@ master.key
 #IDE Specific (VS Code)
 .vscode
 /config/credentials/development.key
+
+/config/credentials/test.key
