@@ -31,5 +31,6 @@ jobs:
 
       - name: Run rspec
         env:
+          RAILS_ENV: test
           DATABASE_URL: ${{ steps.setup.outputs.database_url }}
         run: bundle exec rspec
