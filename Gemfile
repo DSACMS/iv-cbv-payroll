@@ -55,16 +55,9 @@ gem "newrelic_rpm", "~> 8.4"
 
 gem "sidekiq", "~> 6.4"
 
-gem 'faraday','~> 2.9.0'
+gem "faraday", "~> 2.9.0"
 
 group :development, :test do
-  # See https://guides.rubyonrails.org/debugging_rails_applications.html#debugging-with-the-debug-gem
-  gem "debug"
-  # There's some research around running debase within a container with varying architecture
-  # from the hosts. Especially with M1 > macs. See https://docs.docker.com/build/building/multi-platform/
-  # gem 'debase-ruby_core_source'
-  # gem 'debase', '0.2.5.beta2'
-  # gem 'ruby-debug-ide'
   gem "brakeman", "~> 5.2"
   gem "bundler-audit", "~> 0.9"
   gem "debug", platforms: %i[mri mingw x64_mingw]
