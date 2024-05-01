@@ -1,19 +1,12 @@
-name: Cleanup Gemfile and remove and debug gems
-
-on:
-  push: # Trigger on push to any branch
-  pull_request: # Trigger on pull requests to any branch
-
-jobs:
-  clean_gemfile:
-    runs-on: ubuntu-latest
-
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v2
-
-      - name: Remove Debug Gems from Gemfile
-        run: |
-          sed -i '/debase-ruby_core_source/d' ./Gemfile
-          sed -i '/debase/d' ./Gemfile
-          sed -i '/ruby-debug-ide/d' ./Gemfile
+# action.yml file for a custom composite action
+name: 'Remove Debug Gems'
+description: 'Removes debug-related gems from the Gemfile'
+runs:
+  using: 'composite'
+  steps:
+    - name: Remove Debug Gems
+      shell: bash
+      run: |
+        sed -i '/debase-ruby_core_source/d' ./Gemfile
+        sed -i '/debase/d' ./Gemfile
+        sed -i '/ruby-debug-ide/d' ./Gemfile
