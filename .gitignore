@@ -21,6 +21,10 @@
 
 /public/assets
 
+# Ignore master key for decrypting credentials and more.
+/config/master.key
+/config/credentials/*.key
+
 # Ignore Brewfile debug info
 Brewfile.lock.json
 
@@ -45,9 +49,6 @@ spec/examples.txt
 secrets.auto.tfvars
 terraform.tfstate
 terraform.tfstate.backup
-# Ignore master key for decrypting credentials and more.
-master.key
-/config/credentials/development.key
 
 #IDE Specific (RubyMine)
 .idea

@@ -7,54 +7,33 @@ function toOptionHTML({ value }) {
   return `<option value='${value}'>${value}</option>`;
 }
 
-const DEFAULT_OPTIONS = [
-  {
-    value: 'Uber'
-  },
-  {
-    value: 'Instacart'
-  },
-  {
-    value: 'Walmart'
-  },
-  {
-    value: 'Lyft'
-  }
-].map(toOptionHTML);
-
 export default class extends Controller {
-  static targets = ["options", "continue"];
+  static targets = ["options", "continue", "userAccountId"];
 
   selection = null;
 
   argyle = null;
 
+  argyleUserToken = null;
+
   connect() {
-    const argyleUserToken = metaContent('argyle_user_token');
-
-    loadArgyle()
-      .then(Argyle => initializeArgyle(Argyle, argyleUserToken, {
-        onAccountConnected: this.onArgyleEvent.bind(this),
-        onAccountError: this.onArgyleEvent.bind(this),
-        onDDSSuccess: this.onArgyleEvent.bind(this),
-        onDDSError: this.onArgyleEvent.bind(this),
-        onTokenExpired: updateToken => { console.log('onTokenExpired') }
-      }))
-      .then(argyle => this.argyle = argyle);
-
-    if (this.hasOptionsTarget) {
-      this.optionsTarget.innerHTML = DEFAULT_OPTIONS;
-    }
+    // check for this value when connected
+    this.argyleUserToken = metaContent('argyle_user_token');
   }
 
-  // general event for when anything happens in the flow
-  onArgyleEvent() {
+  onSignInSuccess(event) {
+    this.userAccountIdTarget.value = event.accountId;
+
     this.element.submit();
+  }
+
+  onAccountError(event) {
+    console.log(event);
   }
 
   search(event) {
     const input = event.target.value;
-    this.optionsTarget.innerHTML = [...DEFAULT_OPTIONS, toOptionHTML({ value: input })].join('');
+    this.optionsTarget.innerHTML = [this.optionsTarget.innerHTML, toOptionHTML({ value: input })].join('');
   }
 
   select(event) {
@@ -66,6 +45,17 @@ export default class extends Controller {
   submit(event) {
     event.preventDefault();
 
-    this.argyle.open();
+    loadArgyle()
+      .then(Argyle => initializeArgyle(Argyle, this.argyleUserToken, {
+        items: [this.selection.value],
+        onAccountConnected: this.onSignInSuccess.bind(this),
+        onAccountError: this.onAccountError.bind(this),
+        // Unsure what these are for!
+        onDDSSuccess: () => { console.log('onDDSSuccess') },
+        onDDSError: () => { console.log('onDDSSuccess') },
+        onTokenExpired: updateToken => { console.log('onTokenExpired') }
+      }))
+      .then(argyle => this.argyle = argyle)
+      .then(() => this.argyle.open());
   }
 }
