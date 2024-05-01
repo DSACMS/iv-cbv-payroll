@@ -21,4 +21,10 @@ Rails.application.routes.draw do
       get '/reset' => 'cbv_flows#reset'
     end
   end
+
+  namespace :webhooks do
+    namespace :argyle do
+      resources :events, only: :create
+    end
+  end
 end
