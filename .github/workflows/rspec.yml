@@ -22,6 +22,7 @@ jobs:
 
     steps:
       - uses: actions/checkout@v4
+      - uses: ./.github/actions/cleanup-gemfile
 
       - id: setup
         uses: ./.github/actions/setup-project
