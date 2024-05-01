@@ -8,10 +8,14 @@ runs:
 
     - name: Set up Ruby
       uses: ruby/setup-ruby@v1
-      with:
-        # bundler-cache automatically installs gems
-        bundler-cache: true
-        cache-version: 1
+#      with:
+#        # bundler-cache automatically installs gems
+#        bundler-cache: false
+#        # cache-version: 1
+
+    - name: Install Dependencies
+      shell: bash
+      run: bundle install
 
     - name: Set up node
       uses: actions/setup-node@v4
