@@ -59,9 +59,8 @@ group :development, :test do
   gem "debug"
   # There's some research around running debase within a container with varying architecture
   # from the hosts. Especially with M1 > macs. See https://docs.docker.com/build/building/multi-platform/
-  # gem 'debase-ruby_core_source'
-  # gem 'debase', '0.2.5.beta2'
-  # gem 'ruby-debug-ide'
+  gem "debase"
+  gem "ruby-debug-ide"
   gem "brakeman", "~> 5.2"
   gem "bundler-audit", "~> 0.9"
   gem "debug", platforms: %i[mri mingw x64_mingw]

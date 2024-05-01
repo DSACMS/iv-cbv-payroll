@@ -25,7 +25,7 @@ development:
   <<: *default
   adapter: postgresql
   encoding: unicode
-  database: <%= ENV.fetch("DB_USERNAME") { "iv_cbv_payroll_development" } %>
+  database: <%= ENV.fetch("DB_NAME") { "iv_cbv_payroll_development" } %>
   pool: <%= ENV.fetch("RAILS_MAX_THREADS") { 5 } %>
 
   # The specified database role being used to connect to postgres.
