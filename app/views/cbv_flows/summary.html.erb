@@ -3,27 +3,28 @@
 <% if @payments.any? %>
   <p>Below is payment information from your employer for the past 90 days.</p>
   <h3 class="site-preview-heading">Total Payments: $<%= @payments.reduce(0) { |sum, payment| sum + payment[:amount] } %></h3>
+
+  <div class="usa-accordion margin-bottom-4">
+    <% @payments.each_with_index do |payment, index| %>
+      <div class="usa-accordion__heading">
+        <button
+          type="button"
+          class="usa-accordion__button"
+          aria-expanded="false"
+          aria-controls="<%= index %>"
+        >
+          Payment of $<%= payment[:amount] %>, <%= payment[:start] %> to <%= payment[:end] %>
+        </button>
+      </div>
+      <div id="<%= index %>" class="usa-accordion__content usa-prose">
+        <p>
+          <%= payment[:hours] %> hours at $<%= payment[:rate] %> per hour.
+        </p>
+      </div>
+    <% end %>
+  </div>
+<% else %>
+  <h3 class="site-preview-heading">No payments found. Please refresh the page after a few minutes.</h3>
 <% end %>
-<div class="usa-accordion margin-bottom-4">
-  <% if @payments.each_with_index do |payment, index| %>
-    <div class="usa-accordion__heading">
-      <button
-        type="button"
-        class="usa-accordion__button"
-        aria-expanded="false"
-        aria-controls="<%= index %>"
-      >
-        Payment of $<%= payment[:amount] %>, <%= payment[:start] %> to <%= payment[:end] %>
-      </button>
-    </div>
-    <div id="<%= index %>" class="usa-accordion__content usa-prose">
-      <p>
-        <%= payment[:hours] %> hours at $<%= payment[:rate] %> per hour.
-      </p>
-    </div>
-  <% end.empty? %>
-    <h3 class="site-preview-heading">No payments found. Please refresh the page after a few minutes.</h3>
-  <% end %>
-</div>
 
 <button class="usa-button margin-top-3 usa-button--outline" type="button">Share payment information</button>
