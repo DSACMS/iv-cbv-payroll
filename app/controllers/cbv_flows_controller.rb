@@ -58,7 +58,7 @@ class CbvFlowsController < ApplicationController
   def fetch_and_store_argyle_token
     return session[:argyle_user_token] if session[:argyle_user_token].present?
 
-    raise "ARGYLE_API_TOKEN environment variable is blank. Make sure you have the .env.local from 1Password." if ENV['ARGYLE_API_TOKEN'].blank?
+    raise "ARGYLE_API_TOKEN environment variable is blank. Make sure you have the .env.local.local from 1Password." if ENV['ARGYLE_API_TOKEN'].blank?
 
     res = Net::HTTP.post(URI.parse(USER_TOKEN_ENDPOINT), "", {"Authorization" => "Basic #{ENV['ARGYLE_API_TOKEN']}"})
     parsed = JSON.parse(res.body)

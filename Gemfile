@@ -1,6 +1,7 @@
 source "https://rubygems.org"
 git_source(:github) { |repo| "https://github.com/#{repo}.git" }
 
+
 ruby "3.1.0"
 
 # Bundle edge Rails instead: gem "rails", github: "rails/rails", branch: "main"
@@ -53,6 +54,8 @@ gem "secure_headers", "~> 6.3"
 gem "newrelic_rpm", "~> 8.4"
 
 gem "sidekiq", "~> 6.4"
+
+gem "faraday", "~> 2.9.0"
 
 group :development, :test do
   gem "brakeman", "~> 5.2"
