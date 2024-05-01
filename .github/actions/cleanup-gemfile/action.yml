@@ -10,3 +10,5 @@ runs:
         sed -i '/debase-ruby_core_source/d' ./Gemfile
         sed -i '/debase/d' ./Gemfile
         sed -i '/ruby-debug-ide/d' ./Gemfile
+        bundle install
+        bundle lock --add-platform x86_64-linux
