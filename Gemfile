@@ -56,7 +56,6 @@ gem "sidekiq", "~> 6.4"
 
 group :development, :test do
   # See https://guides.rubyonrails.org/debugging_rails_applications.html#debugging-with-the-debug-gem
-  gem "debug"
   gem "brakeman", "~> 5.2"
   gem "bundler-audit", "~> 0.9"
   gem "debug", platforms: %i[mri mingw x64_mingw]
@@ -70,10 +69,12 @@ group :development, :test do
 end
 
 group :development do
+  gem "debase-ruby_core_source"
+  gem "debase", "0.2.5.beta2"
+  gem "ruby-debug-ide"
   # Use console on exceptions pages [https://github.com/rails/web-console]
   gem "web-console"
-  gem "debase"
-  gem "ruby-debug-ide"
+
   # Add speed badges [https://github.com/MiniProfiler/rack-mini-profiler]
   # gem "rack-mini-profiler"
 
