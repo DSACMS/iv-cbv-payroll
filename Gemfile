@@ -57,8 +57,6 @@ gem "sidekiq", "~> 6.4"
 group :development, :test do
   # See https://guides.rubyonrails.org/debugging_rails_applications.html#debugging-with-the-debug-gem
   gem "debug"
-  # There's some research around running debase within a container with varying architecture
-  # from the hosts. Especially with M1 > macs. See https://docs.docker.com/build/building/multi-platform/
   gem "debase"
   gem "ruby-debug-ide"
   gem "brakeman", "~> 5.2"
