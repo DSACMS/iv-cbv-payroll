@@ -1,27 +1,30 @@
 <% content_for :head do %>
   <%= tag :meta, name: :argyle_user_token, content: @argyle_user_token %>
   <%= tag :meta, name: :argyle_sandbox, content: ENV['ARGYLE_SANDBOX'] %>
+  <%= tag :meta, name: :cbv_flow_id, content: @cbv_flow.id %>
 <% end %>
 
 <h2>Get payment info from your employer.</h2>
 
-<%= form_with url: next_path, method: :post, data: { controller: "cbv-flows" } do |f| %>
-  <label class="usa-label" for="employer">Search for an employer</label>
-  <div class="usa-combo-box margin-bottom-3" data-action="input->cbv-flows#search">
-    <select class="usa-select" name="employer" id="employer" data-cbv-flows-target="options" data-action="change->cbv-flows#select">
-      <option value>Select an employer</option>
-      <% @companies.each do |company| %>
-        <option value='<%= company['id'] %>'>
-          <%= company['name'] %>
-        </option>
-      <% end %>
-    </select>
-    <input type="hidden" name="user[account_id]" data-cbv-flows-target="userAccountId" />
-  </div>
-  <%= f.submit "Continue",
-    class: "usa-button usa-button--outline",
-    disabled: "disabled",
-    type: "submit",
-    data: { action: "click->cbv-flows#submit", 'cbv-flows-target': "continue" }
-  %>
-<% end %>
+<div data-controller="cbv-flows" data-cbv-flows-loading-class="argyle-loading loader">
+  <%= form_with url: next_path, method: :post, data: { 'cbv-flows-target': "form" } do |f| %>
+    <label class="usa-label" for="employer">Search for an employer</label>
+    <div class="usa-combo-box margin-bottom-3" data-action="input->cbv-flows#search">
+      <select class="usa-select" name="employer" id="employer" data-cbv-flows-target="options" data-action="change->cbv-flows#select">
+        <option value>Select an employer</option>
+        <% @companies.each do |company| %>
+          <option value='<%= company['id'] %>'>
+            <%= company['name'] %>
+          </option>
+        <% end %>
+      </select>
+      <input type="hidden" name="user[account_id]" data-cbv-flows-target="userAccountId" />
+    </div>
+    <%= f.submit "Continue",
+      class: "usa-button usa-button--outline",
+      disabled: "disabled",
+      type: "submit",
+      data: { action: "click->cbv-flows#submit", 'cbv-flows-target': "continue" }
+    %>
+  <% end %>
+</div>

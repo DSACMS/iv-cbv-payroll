@@ -7,7 +7,7 @@ class Webhooks::Argyle::EventsController < ApplicationController
 
       if @cbv_flow
         @cbv_flow.update(payroll_data_available_from: params['data']['available_from'])
-        ArgylePaystubsChannel.broadcast_to(@cbv_flow, params['data']['available_from'])
+        ArgylePaystubsChannel.broadcast_to(@cbv_flow, params)
       end
     end
   end
