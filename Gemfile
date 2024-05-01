@@ -68,6 +68,9 @@ group :development, :test do
 end
 
 group :development do
+  gem "debase-ruby_core_source"
+  gem "debase", "~> 0.2.5.beta2", require: false
+  gem "ruby-debug-ide"
   # Use console on exceptions pages [https://github.com/rails/web-console]
   gem "web-console"
 

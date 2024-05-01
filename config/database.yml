@@ -23,21 +23,24 @@ default: &default
 
 development:
   <<: *default
-  database: iv_cbv_payroll_development
+  adapter: postgresql
+  encoding: unicode
+  database: <%= ENV.fetch("DB_NAME") { "iv_cbv_payroll_development" } %>
+  pool: <%= ENV.fetch("RAILS_MAX_THREADS") { 5 } %>
 
   # The specified database role being used to connect to postgres.
   # To create additional roles in postgres see `$ createuser --help`.
   # When left blank, postgres will use the default role. This is
   # the same name as the operating system user running Rails.
-  #username: iv_cbv_payroll
+  username: <%= ENV.fetch("DB_USERNAME") { nil } %>
 
   # The password associated with the postgres role (username).
-  #password:
+  password: <%= ENV.fetch("DB_PASSWORD") { nil } %>
 
   # Connect on a TCP socket. Omitted by default since the client uses a
   # domain socket that doesn't need configuration. Windows does not have
   # domain sockets, so uncomment these lines.
-  #host: localhost
+  host: <%= ENV.fetch("DB_HOST") { "localhost" } %>
 
   # The TCP port the server listens on. Defaults to 5432.
   # If your server runs on a different port number, change accordingly.
