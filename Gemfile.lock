@@ -337,7 +337,7 @@ DEPENDENCIES
   bundler-audit (~> 0.9)
   climate_control (~> 1.0)
   cssbundling-rails
-  debase (= 0.2.5.beta2)
+  debase (~> 0.2.5.beta2)
   debase-ruby_core_source
   debug
   dotenv-rails (~> 2.7)
