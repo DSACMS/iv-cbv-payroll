@@ -26,8 +26,7 @@ export default class extends Controller {
   connect() {
     // check for this value when connected
     this.argyleUserToken = metaContent('argyle_user_token');
-    const cbvFlowId = metaContent('cbv_flow_id');
-    this.cable.subscriptions.create({ channel: 'ArgylePaystubsChannel', id: cbvFlowId }, {
+    this.cable.subscriptions.create({ channel: 'ArgylePaystubsChannel' }, {
       connected: () => {
         console.log("Connected to the channel:", this);
       },
