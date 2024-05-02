@@ -2,7 +2,6 @@ class Webhooks::Argyle::EventsController < ApplicationController
   skip_before_action :verify_authenticity_token
 
   def create
-    digest = OpenSSL::Digest.new('sha512')
     signature = OpenSSL::HMAC.hexdigest('SHA512', ENV['ARGYLE_WEBHOOK_SECRET'], request.raw_post)
 
     if request.headers["X-Argyle-Signature"] == signature
