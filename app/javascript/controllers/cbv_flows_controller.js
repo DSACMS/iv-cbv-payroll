@@ -38,7 +38,7 @@ export default class extends Controller {
       },
       received: (data) => {
         console.log("Received some data:", data);
-        if (data.event === 'paystubs.fully_synced') {
+        if (data.event === 'paystubs.fully_synced' || data.event === 'paystubs.partially_synced') {
           this.fullySynced = true;
 
           this.formTarget.submit();

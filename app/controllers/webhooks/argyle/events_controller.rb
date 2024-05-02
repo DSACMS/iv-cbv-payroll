@@ -6,7 +6,7 @@ class Webhooks::Argyle::EventsController < ApplicationController
     signature = OpenSSL::HMAC.hexdigest('SHA512', ENV['ARGYLE_WEBHOOK_SECRET'], request.raw_post)
 
     if request.headers["X-Argyle-Signature"] == signature
-      if params['event'] == 'paystubs.fully_synced'
+      if params['event'] == 'paystubs.fully_synced' || params['event'] == 'paystubs.partially_synced'
         @cbv_flow = CbvFlow.find_by_argyle_user_id(params['data']['user'])
 
         if @cbv_flow
