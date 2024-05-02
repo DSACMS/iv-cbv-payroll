@@ -9,8 +9,7 @@ function toOptionHTML({ value }) {
 }
 
 export default class extends Controller {
-  static targets = ["options", "continue", "userAccountId", "fullySynced", "form"];
-  static classes = ["loading"]
+  static targets = ["options", "continue", "userAccountId", "fullySynced", "form", "modal"];
 
   selection = null;
 
@@ -27,7 +26,6 @@ export default class extends Controller {
   connect() {
     // check for this value when connected
     this.argyleUserToken = metaContent('argyle_user_token');
-
     const cbvFlowId = metaContent('cbv_flow_id');
     this.cable.subscriptions.create({ channel: 'ArgylePaystubsChannel', id: cbvFlowId }, {
       connected: () => {
@@ -49,7 +47,8 @@ export default class extends Controller {
 
   onSignInSuccess(event) {
     this.userAccountIdTarget.value = event.accountId;
-    this.element.classList.add(this.loadingClass);
+    this.argyle.close();
+    this.modalTarget.click();
   }
 
   onAccountError(event) {

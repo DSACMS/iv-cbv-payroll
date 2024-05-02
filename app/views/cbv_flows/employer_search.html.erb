@@ -6,7 +6,7 @@
 
 <h2>Get payment info from your employer.</h2>
 
-<div data-controller="cbv-flows" data-cbv-flows-loading-class="argyle-loading loader">
+<div data-controller="cbv-flows">
   <%= form_with url: next_path, method: :post, data: { 'cbv-flows-target': "form" } do |f| %>
     <label class="usa-label" for="employer">Search for an employer</label>
     <div class="usa-combo-box margin-bottom-3" data-action="input->cbv-flows#search">
@@ -20,6 +20,13 @@
       </select>
       <input type="hidden" name="user[account_id]" data-cbv-flows-target="userAccountId" />
     </div>
+    <a
+      href="#example-modal-3"
+      class="display-none"
+      aria-controls="example-modal-3"
+      data-open-modal
+      data-cbv-flows-target="modal"
+    ></a>
     <%= f.submit "Continue",
       class: "usa-button usa-button--outline",
       disabled: "disabled",
@@ -27,4 +34,28 @@
       data: { action: "click->cbv-flows#submit", 'cbv-flows-target': "continue" }
     %>
   <% end %>
+
+  <div class="margin-y-3">
+    <div
+      class="usa-modal"
+      id="example-modal-3"
+      aria-labelledby="modal-3-heading"
+      aria-describedby="modal-3-description"
+      data-force-action
+    >
+      <div class="usa-modal__content">
+        <div class="usa-modal__main">
+          <h2 class="usa-modal__heading" id="modal-3-heading">
+            We are fetching your employer's payment information.
+          </h2>
+          <div class="usa-prose">
+            <p id="modal-3-description">
+              This may take a few minutes. Please do not close this window.
+            </p>
+          </div>
+          <div class="lds-ripple" style="left: 30%;"><div></div><div></div></div>
+        </div>
+      </div>
+    </div>
+  </div>
 </div>
