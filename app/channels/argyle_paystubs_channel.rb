@@ -1,6 +1,6 @@
 class ArgylePaystubsChannel < ApplicationCable::Channel
   def subscribed
-    cbv_flow = CbvFlow.find(params[:id])
+    cbv_flow = CbvFlow.find(connection.session[:cbv_flow_id])
     stream_for cbv_flow
   end
 
