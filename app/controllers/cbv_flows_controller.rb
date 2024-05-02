@@ -1,7 +1,7 @@
 class CbvFlowsController < ApplicationController
   USER_TOKEN_ENDPOINT = 'https://api-sandbox.argyle.com/v2/users';
   ITEMS_ENDPOINT = 'https://api-sandbox.argyle.com/v2/items';
-  PAYSTUBS_ENDPOINT = 'https://api-sandbox.argyle.com/v2/paystubs?limit=2&user='
+  PAYSTUBS_ENDPOINT = 'https://api-sandbox.argyle.com/v2/paystubs?user='
   
   before_action :set_cbv_flow
 
@@ -58,9 +58,9 @@ class CbvFlowsController < ApplicationController
   def fetch_and_store_argyle_token
     return session[:argyle_user_token] if session[:argyle_user_token].present?
 
-    raise "ARGYLE_API_TOKEN environment variable is blank. Make sure you have the .env.local.local from 1Password." if ENV['ARGYLE_API_TOKEN'].blank?
+    raise "ARGYLE_API_TOKEN environment variable is blank. Make sure you have the .env.local.local from 1Password." if Rails.application.credentials.argyle[:api_key].blank?
 
-    res = Net::HTTP.post(URI.parse(USER_TOKEN_ENDPOINT), "", {"Authorization" => "Basic #{ENV['ARGYLE_API_TOKEN']}"})
+    res = Net::HTTP.post(URI.parse(USER_TOKEN_ENDPOINT), "", {"Authorization" => "Basic #{Rails.application.credentials.argyle[:api_key]}"})
     parsed = JSON.parse(res.body)
     raise "Argyle API error: #{parsed['detail']}" if res.code.to_i >= 400
 
@@ -71,14 +71,14 @@ class CbvFlowsController < ApplicationController
   end
 
   def fetch_employers
-    res = Net::HTTP.get(URI.parse(ITEMS_ENDPOINT), {"Authorization" => "Basic #{ENV['ARGYLE_API_TOKEN']}"})
+    res = Net::HTTP.get(URI.parse(ITEMS_ENDPOINT), {"Authorization" => "Basic #{Rails.application.credentials.argyle[:api_key]}"})
     parsed = JSON.parse(res)
 
     parsed['results']
   end
 
   def fetch_payroll
-    res = Net::HTTP.get(URI.parse("#{PAYSTUBS_ENDPOINT}#{@cbv_flow.argyle_user_id}"), {"Authorization" => "Basic #{ENV['ARGYLE_API_TOKEN']}"})
+    res = Net::HTTP.get(URI.parse("#{PAYSTUBS_ENDPOINT}#{@cbv_flow.argyle_user_id}"), {"Authorization" => "Basic #{Rails.application.credentials.argyle[:api_key]}"})
     parsed = JSON.parse(res)
 
     parsed['results']

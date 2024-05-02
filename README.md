@@ -24,6 +24,9 @@ guide for an introduction to the framework.
     * Chromedriver must be allowed to run. You can either do that by:
       * The command line: `xattr -d com.apple.quarantine $(which chromedriver)` (this is the only option if you are on Big Sur)
       * Manually: clicking "allow" when you run the integration tests for the first time and a dialogue opens up
+  * [Ngrok](https://ngrok.com/download): brew install ngrok/ngrok/ngrok
+    * Sign up for an account: https://dashboard.ngrok.com/signup
+    * run `ngrok config add-authtoken {token goes here}`
 * Set up rbenv and nodenv:
   * `echo 'if which nodenv >/dev/null 2>/dev/null; then eval "$(nodenv init -)"; fi' >> ~/.zshrc`
   * `echo 'if which rbenv >/dev/null 2>/dev/null; then eval "$(rbenv init -)"; fi' >> ~/.zshrc`
@@ -58,6 +61,8 @@ However, any config that should be set on other machines should either go into `
 of the test.
 
 To run locally, use `bin/dev`
+
+Separately, run `ngrok 3000`. Copy the Forwarding URL into your .env.local value for `NGROK_URL`.
 
 ## Security
 
