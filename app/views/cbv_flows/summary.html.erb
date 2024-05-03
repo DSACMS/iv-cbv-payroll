@@ -13,12 +13,12 @@
           aria-expanded="false"
           aria-controls="<%= index %>"
         >
-          <%= payment[:employer] %>: Payment of <%= number_to_currency(payment[:amount]) %>, <%= format_date(payment[:start]) %> to <%= format_date(payment[:end]) %>
+          <%= payment[:employer] %>: Payment of <%= number_to_currency(payment[:amount]) %>
         </button>
       </div>
       <div id="<%= index %>" class="usa-accordion__content usa-prose">
         <p>
-          <%= payment[:hours] %> hours
+          <%= payment[:hours] %> hours from <%= format_date(payment[:start]) %> to <%= format_date(payment[:end]) %>
         </p>
       </div>
     <% end %>
