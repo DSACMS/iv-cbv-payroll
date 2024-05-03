@@ -16,6 +16,7 @@ class CbvFlowsController < ApplicationController
   def summary
     @payments = fetch_payroll.map do |payment|
       {
+        employer: payment['employer'],
         amount: payment['net_pay'].to_i,
         start: payment['paystub_period']['start_date'],
         end: payment['paystub_period']['end_date'],
