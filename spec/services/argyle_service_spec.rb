@@ -33,16 +33,19 @@ RSpec.describe ArgyleService, type: :service do
   describe '#payroll_documents' do
     context 'when ConnectedArgyleAccount exists' do
       before do
-        # simulate that we have a ConnectedArgyleAccount record
-        allow(ConnectedArgyleAccount).to receive(:exists?).with(user_id: user_id, account_id: account_id).and_return(true)
         # simulate that fetching the payroll documents returns a non-empty JSON response resembling payroll data
         allow_any_instance_of(Faraday::Connection).to receive(:get).with("payroll-documents", { account: account_id, user: user_id }).and_return(fake_response)
       end
 
-      it 'returns payroll documents' do
+      it 'invokes the ArguleApiService and returns payroll documents' do
+        # simulate that we have a ConnectedArgyleAccount record
+        allow(ConnectedArgyleAccount).to receive(:exists?).with(user_id: user_id, account_id: account_id).and_return(true)
         response = service.payroll_documents(account_id, user_id)
+
+        # expect that user_id, account_id stored in the ConnectedArgyleAccount record match the id and acount in the response
         expect(response).not_to be_empty
         expect(response['data'][0]['id']).to eq(JSON.parse(fake_response.body)['data'][0]['id'])
+        expect(response['data'][0]['account']).to eq(JSON.parse(fake_response.body)['data'][0]['account'])
       end
     end
 
