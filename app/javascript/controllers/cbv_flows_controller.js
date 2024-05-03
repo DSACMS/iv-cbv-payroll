@@ -1,4 +1,5 @@
 import { Controller } from "@hotwired/stimulus"
+import * as ActionCable from '@rails/actioncable'
 
 import metaContent from "../utilities/meta";
 import { loadArgyle, initializeArgyle } from "../utilities/argyle"
@@ -8,7 +9,8 @@ function toOptionHTML({ value }) {
 }
 
 export default class extends Controller {
-  static targets = ["options", "continue", "userAccountId"];
+  static targets = ["options", "continue", "userAccountId", "fullySynced", "form"];
+  static classes = ["loading"]
 
   selection = null;
 
@@ -16,15 +18,36 @@ export default class extends Controller {
 
   argyleUserToken = null;
 
+  cable = ActionCable.createConsumer();
+
+  // TODO: information stored on the CbvFlow model can infer whether the paystubs are sync'd
+  // by checking the value of payroll_data_available_from. We should make that the initial value.
+  fullySynced = false;
+
   connect() {
     // check for this value when connected
     this.argyleUserToken = metaContent('argyle_user_token');
+    this.cable.subscriptions.create({ channel: 'ArgylePaystubsChannel' }, {
+      connected: () => {
+        console.log("Connected to the channel:", this);
+      },
+      disconnected: () => {
+        console.log("Disconnected");
+      },
+      received: (data) => {
+        console.log("Received some data:", data);
+        if (data.event === 'paystubs.fully_synced' || data.event === 'paystubs.partially_synced') {
+          this.fullySynced = true;
+
+          this.formTarget.submit();
+        }
+      }
+    });
   }
 
   onSignInSuccess(event) {
     this.userAccountIdTarget.value = event.accountId;
-
-    this.element.submit();
+    this.element.classList.add(this.loadingClass);
   }
 
   onAccountError(event) {
