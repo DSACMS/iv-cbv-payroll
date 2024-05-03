@@ -2,7 +2,7 @@ import { Controller } from "@hotwired/stimulus"
 import * as ActionCable from '@rails/actioncable'
 
 import metaContent from "../utilities/meta";
-import { loadArgyle, initializeArgyle } from "../utilities/argyle"
+import { loadArgyle, initializeArgyle, updateToken } from "../utilities/argyle"
 
 function toOptionHTML({ value }) {
   return `<option value='${value}'>${value}</option>`;
@@ -76,7 +76,7 @@ export default class extends Controller {
         // Unsure what these are for!
         onDDSSuccess: () => { console.log('onDDSSuccess') },
         onDDSError: () => { console.log('onDDSSuccess') },
-        onTokenExpired: updateToken => { console.log('onTokenExpired') }
+        onTokenExpired: updateToken,
       }))
       .then(argyle => this.argyle = argyle)
       .then(() => this.argyle.open());

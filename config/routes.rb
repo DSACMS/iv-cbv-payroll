@@ -27,4 +27,10 @@ Rails.application.routes.draw do
       resources :events, only: :create
     end
   end
+
+  namespace :api do
+    namespace :argyle do
+      resources :tokens, only: :create
+    end
+  end
 end
