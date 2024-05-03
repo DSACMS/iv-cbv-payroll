@@ -29,8 +29,8 @@ Rails.application.routes.draw do
   end
 
   namespace :api do
-    namespace :argyle do
-      resources :tokens, only: :create
+    scope :argyle do
+      post '/tokens' => 'argyle#update_token'
     end
   end
 end
