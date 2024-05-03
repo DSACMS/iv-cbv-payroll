@@ -2,9 +2,9 @@
 
 <% if @payments.any? %>
   <p>Below is payment information from your employer for the past 90 days.</p>
-  <h3 class="site-preview-heading">Total Payments: $<%= @payments.reduce(0) { |sum, payment| sum + payment[:amount] } %></h3>
+  <h3 class="site-preview-heading">Total Payments: <%= number_to_currency(@payments.reduce(0) { |sum, payment| sum + payment[:amount] }) %></h3>
 
-  <div class="usa-accordion margin-bottom-4">
+  <div class="usa-accordion usa-accordion--multiselectable margin-bottom-4" data-allow-multiple>
     <% @payments.each_with_index do |payment, index| %>
       <div class="usa-accordion__heading">
         <button
@@ -13,12 +13,12 @@
           aria-expanded="false"
           aria-controls="<%= index %>"
         >
-          Payment of $<%= payment[:amount] %>, <%= payment[:start] %> to <%= payment[:end] %>
+          <%= payment[:employer] %>: Payment of <%= number_to_currency(payment[:amount]) %>
         </button>
       </div>
       <div id="<%= index %>" class="usa-accordion__content usa-prose">
         <p>
-          <%= payment[:hours] %> hours at $<%= payment[:rate] %> per hour.
+          <%= payment[:hours] %> hours from <%= format_date(payment[:start]) %> to <%= format_date(payment[:end]) %>
         </p>
       </div>
     <% end %>

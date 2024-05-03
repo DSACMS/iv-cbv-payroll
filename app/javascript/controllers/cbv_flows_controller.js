@@ -9,8 +9,7 @@ function toOptionHTML({ value }) {
 }
 
 export default class extends Controller {
-  static targets = ["options", "continue", "userAccountId", "fullySynced", "form"];
-  static classes = ["loading"]
+  static targets = ["options", "continue", "userAccountId", "fullySynced", "form", "modal"];
 
   selection = null;
 
@@ -47,7 +46,8 @@ export default class extends Controller {
 
   onSignInSuccess(event) {
     this.userAccountIdTarget.value = event.accountId;
-    this.element.classList.add(this.loadingClass);
+    this.argyle.close();
+    this.modalTarget.click();
   }
 
   onAccountError(event) {

@@ -55,3 +55,4 @@ terraform.tfstate.backup
 
 #IDE Specific (VS Code)
 .vscode
+/config/credentials/development.key
