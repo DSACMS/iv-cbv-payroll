@@ -18,12 +18,14 @@
   </head>
 
   <body>
-    <%= render "application/usa_banner" %>
-    <%= render "application/header" %>
-    <main id="main-content">
-      <div class="grid-container usa-section margin-2">
-        <%= yield %>
-      </div>
-    </main>
+    <div id="root">
+      <%= render "application/usa_banner" %>
+      <%= render "application/header" %>
+      <main id="main-content">
+        <section class="grid-container usa-section">
+          <%= yield %>
+        </section>
+      </main>
+    </div>
   </body>
 </html>
