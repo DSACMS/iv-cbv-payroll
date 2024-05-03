@@ -1,4 +1,4 @@
-def account_connected_stub
+def account_connected_webhook_stub
   '{
     "event": "accounts.connected",
     "name": "Account Connected",
