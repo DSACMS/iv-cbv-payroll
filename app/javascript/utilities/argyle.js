@@ -24,7 +24,7 @@ export function initializeArgyle(Argyle, userToken, callbacks) {
 }
 
 export const updateToken = async updateToken => {
-  const response = await fetch(ARGYLE_TOKENS_REFRESH).then(response => response.json());
+  const response = await fetch(ARGYLE_TOKENS_REFRESH, { method: 'post' }).then(response => response.json());
 
   updateToken(response.token);
 }
