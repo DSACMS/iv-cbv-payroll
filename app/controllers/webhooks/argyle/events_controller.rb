@@ -22,7 +22,7 @@ class Webhooks::Argyle::EventsController < ApplicationController
         user_id: params["data"]["user"],
         account_id: params["data"]["account"]
       )
-      puts "ConnectedArgyleAccount created: #{rep}"
+      Rails.logger.info "ConnectedArgyleAccount created: #{rep}"
       render json: { message: "ConnectedArgyleAccount created", data: rep }, status: :created
     end
 
