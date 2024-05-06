@@ -27,4 +27,10 @@ Rails.application.routes.draw do
       resources :events, only: :create
     end
   end
+
+  namespace :api do
+    scope :argyle do
+      post '/tokens' => 'argyle#update_token'
+    end
+  end
 end
