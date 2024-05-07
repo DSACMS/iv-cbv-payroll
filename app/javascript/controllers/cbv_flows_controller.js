@@ -4,24 +4,19 @@ import * as ActionCable from '@rails/actioncable'
 import metaContent from "../utilities/meta";
 import { loadArgyle, initializeArgyle, updateToken } from "../utilities/argyle"
 
-function toOptionHTML({ value }) {
-  return `<option value='${value}'>${value}</option>`;
-}
-
 export default class extends Controller {
-  static targets = ["options", "continue", "userAccountId", "fullySynced", "form", "modal"];
-
-  selection = null;
+  static targets = [
+    "form",
+    "searchTerms",
+    "userAccountId",
+    "modal"
+  ];
 
   argyle = null;
 
   argyleUserToken = null;
 
   cable = ActionCable.createConsumer();
-
-  // TODO: information stored on the CbvFlow model can infer whether the paystubs are sync'd
-  // by checking the value of payroll_data_available_from. We should make that the initial value.
-  fullySynced = false;
 
   connect() {
     // check for this value when connected
@@ -34,10 +29,7 @@ export default class extends Controller {
         console.log("Disconnected");
       },
       received: (data) => {
-        console.log("Received some data:", data);
         if (data.event === 'paystubs.fully_synced' || data.event === 'paystubs.partially_synced') {
-          this.fullySynced = true;
-
           this.formTarget.submit();
         }
       }
@@ -54,23 +46,14 @@ export default class extends Controller {
     console.log(event);
   }
 
-  search(event) {
-    const input = event.target.value;
-    this.optionsTarget.innerHTML = [this.optionsTarget.innerHTML, toOptionHTML({ value: input })].join('');
-  }
-
   select(event) {
-    this.selection = event.detail;
-
-    this.continueTarget.disabled = false;
+    this.submit(event.target.dataset.itemId);
   }
 
-  submit(event) {
-    event.preventDefault();
-
+  submit(itemId) {
     loadArgyle()
       .then(Argyle => initializeArgyle(Argyle, this.argyleUserToken, {
-        items: [this.selection.value],
+        items: [itemId],
         onAccountConnected: this.onSignInSuccess.bind(this),
         onAccountError: this.onAccountError.bind(this),
         // Unsure what these are for!
