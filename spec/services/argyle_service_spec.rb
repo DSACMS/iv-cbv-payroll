@@ -18,12 +18,13 @@ RSpec.describe ArgyleService, type: :service do
   end
 
   describe '#items' do
-    it 'returns a non-empty response' do
-      service = ArgyleService.new
+    before do
       # Stub the HTTP call to return a non-empty JSON response
       fake_response = instance_double(Faraday::Response, body: '[{"id": "12345"}]')
       allow_any_instance_of(Faraday::Connection).to receive(:get).with("items", { q: nil }).and_return(fake_response)
-
+    end
+    it 'returns a non-empty response' do
+      service = ArgyleService.new
       response = service.items
       expect(response).not_to be_empty
       expect(response.first['id']).to eq("12345")
@@ -54,9 +55,8 @@ RSpec.describe ArgyleService, type: :service do
         allow(ConnectedArgyleAccount).to receive(:exists?).with(user_id: user_id, account_id: account_id).and_return(false)
       end
 
-      it 'returns an error message' do
-        response = service.payroll_documents(account_id, user_id)
-        expect(response).to eq({ error: "No matching account found for the provided user_id and account_id." })
+      it 'raises an error' do
+        expect { service.payroll_documents(account_id, user_id) }.to raise_error("Argyle error: Account not connected")
       end
     end
   end
