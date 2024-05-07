@@ -1,5 +1,6 @@
 import loadScript from 'load-script';
 import metaContent from "./meta";
+import CSRF from './csrf';
 
 const ARGYLE_TOKENS_REFRESH = '/api/argyle/tokens';
 
@@ -24,7 +25,12 @@ export function initializeArgyle(Argyle, userToken, callbacks) {
 }
 
 export const updateToken = async updateToken => {
-  const response = await fetch(ARGYLE_TOKENS_REFRESH, { method: 'post' }).then(response => response.json());
+  const response = await fetch(ARGYLE_TOKENS_REFRESH, {
+    method: 'post',
+    headers: {
+      'X-CSRF-Token': CSRF.token,
+    },
+  }).then(response => response.json());
 
   updateToken(response.token);
 }
