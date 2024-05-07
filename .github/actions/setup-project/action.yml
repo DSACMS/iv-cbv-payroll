@@ -11,6 +11,7 @@ inputs:
     default: postgres://cidbuser:postgres@localhost:5432/iv_cbv_payroll_test
 outputs:
   database_url:
+    description: The database URL that was set
     value: ${{ inputs.database_url }}
 runs:
   using: composite

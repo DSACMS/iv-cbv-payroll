@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2024_05_01_192504) do
+ActiveRecord::Schema[7.0].define(version: 2024_05_02_195250) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -25,6 +25,13 @@ ActiveRecord::Schema[7.0].define(version: 2024_05_01_192504) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.date "payroll_data_available_from"
+  end
+
+  create_table "connected_argyle_accounts", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.uuid "user_id", null: false
+    t.uuid "account_id", null: false
+    t.datetime "created_at", default: -> { "CURRENT_TIMESTAMP" }, null: false
+    t.index ["user_id", "account_id"], name: "index_connected_argyle_accounts_on_user_id_and_account_id", unique: true
   end
 
 end

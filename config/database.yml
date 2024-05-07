@@ -61,6 +61,10 @@ development:
 test:
   <<: *default
   database: iv_cbv_payroll_test
+  host: <%= ENV.fetch("DB_HOST") { "localhost" } %>
+  username: <%= ENV.fetch("DB_USERNAME") { nil } %>
+  # The password associated with the postgres role (username).
+  password: <%= ENV.fetch("DB_PASSWORD") { nil } %>
 
 # As with config/credentials.yml, you never want to store sensitive information,
 # like your database password, in your source code. If your source code is

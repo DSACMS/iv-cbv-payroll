@@ -5,6 +5,7 @@ class ArgyleService
   def initialize
     @api_key = Rails.application.credentials.argyle[:api_key]
     base_url = ENV["ARGYLE_API_URL"] || "https://api-sandbox.argyle.com/v2"
+
     client_options = {
       request: {
         open_timeout: 5,
@@ -21,8 +22,15 @@ class ArgyleService
 
   # Fetch all Argyle items
   def items(query = nil)
-    # get "items" and pass the query as the q parameter for the Faraday instance
     response = @http.get("items", { q: query })
     JSON.parse(response.body)
   end
+
+  def payroll_documents(account_id, user_id)
+    account_exists = ConnectedArgyleAccount.exists?(user_id: user_id, account_id: account_id)
+    raise "Argyle error: Account not connected" unless account_exists
+    response = @http.get("payroll-documents", { account: account_id, user: user_id })
+    JSON.parse(response.body)
+  end
+
 end

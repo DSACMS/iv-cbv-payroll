@@ -1,6 +1,13 @@
 require 'rails_helper'
+require 'support/account_connected_webhook_stub'
+require 'support/payroll_documents_response_stub'
 
 RSpec.describe ArgyleService, type: :service do
+  let(:service) { ArgyleService.new }
+  let(:account_id) { 'account_id' }
+  let(:user_id) { 'user_id' }
+  let(:fake_response) { instance_double(Faraday::Response, body: payroll_documents_response_stub) }
+
   describe 'Initialization' do
     it 'has a default API endpoint pointing to the sandbox' do
       service = ArgyleService.new
@@ -11,15 +18,46 @@ RSpec.describe ArgyleService, type: :service do
   end
 
   describe '#items' do
-    it 'returns a non-empty response' do
-      service = ArgyleService.new
+    before do
       # Stub the HTTP call to return a non-empty JSON response
       fake_response = instance_double(Faraday::Response, body: '[{"id": "12345"}]')
       allow_any_instance_of(Faraday::Connection).to receive(:get).with("items", { q: nil }).and_return(fake_response)
-
+    end
+    it 'returns a non-empty response' do
+      service = ArgyleService.new
       response = service.items
       expect(response).not_to be_empty
       expect(response.first['id']).to eq("12345")
+    end
+  end
+
+  describe '#payroll_documents' do
+    context 'when ConnectedArgyleAccount exists' do
+      before do
+        # simulate that fetching the payroll documents returns a non-empty JSON response resembling payroll data
+        allow_any_instance_of(Faraday::Connection).to receive(:get).with("payroll-documents", { account: account_id, user: user_id }).and_return(fake_response)
+      end
+
+      it 'invokes the ArguleApiService and returns payroll documents' do
+        # simulate that we have a ConnectedArgyleAccount record
+        allow(ConnectedArgyleAccount).to receive(:exists?).with(user_id: user_id, account_id: account_id).and_return(true)
+        response = service.payroll_documents(account_id, user_id)
+
+        # expect that user_id, account_id stored in the ConnectedArgyleAccount record match the id and acount in the response
+        expect(response).not_to be_empty
+        expect(response['data'][0]['id']).to eq(JSON.parse(fake_response.body)['data'][0]['id'])
+        expect(response['data'][0]['account']).to eq(JSON.parse(fake_response.body)['data'][0]['account'])
+      end
+    end
+
+    context 'when ConnectedArgyleAccount does not exist' do
+      before do
+        allow(ConnectedArgyleAccount).to receive(:exists?).with(user_id: user_id, account_id: account_id).and_return(false)
+      end
+
+      it 'raises an error' do
+        expect { service.payroll_documents(account_id, user_id) }.to raise_error("Argyle error: Account not connected")
+      end
     end
   end
 end
