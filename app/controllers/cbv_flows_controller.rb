@@ -73,7 +73,11 @@ class CbvFlowsController < ApplicationController
   end
 
   def fetch_employers(query = '')
-    res = Net::HTTP.get(URI.parse("#{ITEMS_ENDPOINT}?mapping_status=verified,mapped&q=#{query}"), {"Authorization" => "Basic #{Rails.application.credentials.argyle[:api_key]}"})
+    request_params = URI.encode_www_form(
+      mapping_status: 'verified,mapped',
+      q: query
+    )
+    res = Net::HTTP.get(URI(ITEMS_ENDPOINT).tap { |u| u.query = request_params }, {"Authorization" => "Basic #{Rails.application.credentials.argyle[:api_key]}"})
     parsed = JSON.parse(res)
 
     parsed['results']
