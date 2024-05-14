@@ -27,7 +27,7 @@ en:
       welcome: Welcome to Verify.gov
       description: This website can help you get approved for your benefits.
       subheader: Get started here by requesting a link from your caseworker.
-  cbv:
+  cbv_flows:
     hello: Hello
     manual_flow_start: Start Flow Manually
     entry:

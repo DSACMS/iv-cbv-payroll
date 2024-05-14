@@ -4,12 +4,12 @@
 <% end %>
 
 <h2>
-  <%= t('cbv.employer_search.header') %>
+  <%= t('cbv_flows.employer_search.header') %>
 </h2>
 
 <div data-controller="cbv-flows">
   <h3 class="site-preview-heading">
-    <%= t('cbv.employer_search.subheader') %>
+    <%= t('cbv_flows.employer_search.subheader') %>
   </h3>
   <%= form_with url: cbv_flow_employer_search_path, method: :get, class: 'usa-search usa-search--big', html: { role: 'search' }, data: { turbo_frame: 'employers', turbo_action: 'advance' } do |f| %>
     <%= f.label :query, "Search for your employer", class: "usa-sr-only" %>
@@ -19,7 +19,7 @@
       type="submit"
     >
       <span class="usa-search__submit-text">
-        <%= t('cbv.employer_search.search') %>
+        <%= t('cbv_flows.employer_search.search') %>
       </span>
       <%= image_tag "@uswds/uswds/dist/img/usa-icons-bg/search--white.svg", class: "usa-search__submit-icon", alt: "Search" %>
     </button>
@@ -49,11 +49,11 @@
       <div class="usa-modal__content">
         <div class="usa-modal__main">
           <h2 class="usa-modal__heading" id="modal-3-heading">
-            <%= t('cbv.employer_search.fetching_payroll') %>
+            <%= t('cbv_flows.employer_search.fetching_payroll') %>
           </h2>
           <div class="usa-prose">
             <p id="modal-3-description">
-              <%= t('cbv.employer_search.fetching_payroll_description') %>
+              <%= t('cbv_flows.employer_search.fetching_payroll_description') %>
             </p>
           </div>
           <div class="lds-ripple" style="left: 30%;"><div></div><div></div></div>

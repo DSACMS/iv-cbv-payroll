@@ -1,12 +1,12 @@
 <h2>
-  <%= t('cbv.summary.header') %>
+  <%= t('cbv_flows.summary.header') %>
 </h2>
 
 <% if @payments.any? %>
   <p>
-    <%= t('cbv.summary.description') %>
+    <%= t('cbv_flows.summary.description') %>
   </p>
-  <h3 class="site-preview-heading"><%= t('cbv.summary.total_payments') %> <%= number_to_currency(@payments.reduce(0) { |sum, payment| sum + payment[:amount] }) %></h3>
+  <h3 class="site-preview-heading"><%= t('cbv_flows.summary.total_payments') %> <%= number_to_currency(@payments.reduce(0) { |sum, payment| sum + payment[:amount] }) %></h3>
 
   <div class="usa-accordion usa-accordion--multiselectable margin-bottom-4" data-allow-multiple>
     <% @payments.each_with_index do |payment, index| %>
@@ -17,29 +17,29 @@
           aria-expanded="false"
           aria-controls="<%= index %>"
         >
-          <%= payment[:employer] %>: <%= t('cbv.summary.payment_of', amount: number_to_currency(payment[:amount])) %>
+          <%= payment[:employer] %>: <%= t('cbv_flows.summary.payment_of', amount: number_to_currency(payment[:amount])) %>
         </button>
       </div>
       <div id="<%= index %>" class="usa-accordion__content usa-prose">
         <p>
-          <%= t('cbv.summary.time_range', hours: payment[:hours], start: format_date(payment[:start]), end: format_date(payment[:end])) %>
+          <%= t('cbv_flows.summary.time_range', hours: payment[:hours], start: format_date(payment[:start]), end: format_date(payment[:end])) %>
         </p>
       </div>
     <% end %>
   </div>
 <% else %>
   <h3 class="site-preview-heading">
-    <%= t('cbv.summary.none_found') %>
+    <%= t('cbv_flows.summary.none_found') %>
   </h3>
 <% end %>
 
 <h2>
-  <%= t('cbv.summary.subheader') %>
+  <%= t('cbv_flows.summary.subheader') %>
 </h2>
 
 <button class="usa-button" type="button">
-  <%= t('cbv.summary.share_with_caseworker') %>
+  <%= t('cbv_flows.summary.share_with_caseworker') %>
 </button>
 <button class="usa-button margin-top-3 usa-button--outline" type="button">
-  <%= t('cbv.summary.download_pdf') %>
+  <%= t('cbv_flows.summary.download_pdf') %>
 </button>
