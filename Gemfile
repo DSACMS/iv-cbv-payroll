@@ -57,6 +57,9 @@ gem "sidekiq", "~> 6.4"
 
 gem "faraday", "~> 2.9.0"
 
+gem "wicked_pdf"
+gem "wkhtmltopdf-binary"
+
 group :development, :test do
   gem "brakeman", "~> 5.2"
   gem "bundler-audit", "~> 0.9"

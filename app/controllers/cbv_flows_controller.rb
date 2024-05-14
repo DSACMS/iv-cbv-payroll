@@ -25,6 +25,13 @@ class CbvFlowsController < ApplicationController
         rate: payment['rate']
       }
     end
+
+    respond_to do |format|
+      format.html
+      format.pdf do
+        render pdf: "#{@cbv_flow.id}", template: 'cbv_flows/summary'
+      end
+    end
   end
 
   def reset
