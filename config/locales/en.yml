@@ -1,5 +1,32 @@
 ---
 en:
+  cbv_flows:
+    employer_search:
+      fetching_payroll: We are fetching your employer's payment information.
+      fetching_payroll_description: This may take a few minutes. Please do not close this window.
+      header: Get payment info from your employer.
+      results: Results
+      search: Search
+      select: Select
+      subheader: Search for an employer
+    entry:
+      case_number: Case Number
+      get_started: Get Started
+      header: Let's verify your payment information
+      security_message: Your information is secure. We will not share or keep your log in information. You will be able to preview and approve everything that is shared with your caseworker.
+      subheader: We'll connect to your payment records to get proof of payments to your caseworker and get benefits faster.
+    hello: Hello
+    manual_flow_start: Start Flow Manually
+    summary:
+      description: Below is payment information from your employer for the past 90 days.
+      download_pdf: Download PDF
+      header: Review payment information from your employer
+      none_found: No payments found. Please refresh the page after a few minutes.
+      payment_of: Payment of %{amount}
+      share_with_caseworker: Share with Case Worker
+      subheader: How would you like to share this information?
+      time_range: "%{hours} hours from %{start} to %{end}"
+      total_payments: Total Payments
   shared:
     banner:
       gov_description_html: A <strong>.gov</strong> website belongs to an official government organization in the United States.
@@ -24,33 +51,6 @@ en:
       zh: 中文
     skip_link: Skip to main content
     verify:
-      welcome: Welcome to Verify.gov
       description: This website can help you get approved for your benefits.
       subheader: Get started here by requesting a link from your caseworker.
-  cbv_flows:
-    hello: Hello
-    manual_flow_start: Start Flow Manually
-    entry:
-      header: Let's verify your payment information
-      subheader: We'll connect to your payment records to get proof of payments to your caseworker and get benefits faster.
-      case_number: Case Number
-      security_message: Your information is secure. We will not share or keep your log in information. You will be able to preview and approve everything that is shared with your caseworker.
-      get_started: Get Started
-    employer_search:
-      header: Get payment info from your employer.
-      subheader: Search for an employer
-      search: Search
-      results: Results
-      select: Select
-      fetching_payroll: We are fetching your employer's payment information.
-      fetching_payroll_description: This may take a few minutes. Please do not close this window.
-    summary:
-      header: Review payment information from your employer
-      description: Below is payment information from your employer for the past 90 days.
-      total_payments: Total Payments
-      payment_of: "Payment of %{amount}"
-      time_range: "%{hours} hours from %{start} to %{end}"
-      none_found: No payments found. Please refresh the page after a few minutes.
-      subheader: How would you like to share this information?
-      share_with_caseworker: Share with Case Worker
-      download_pdf: Download PDF
+      welcome: Welcome to Verify.gov
