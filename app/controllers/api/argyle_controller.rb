@@ -1,11 +1,11 @@
 class Api::ArgyleController < ApplicationController
-  USER_TOKEN_ENDPOINT = 'https://api-sandbox.argyle.com/v2/user-tokens';
+  USER_TOKEN_ENDPOINT = "https://api-sandbox.argyle.com/v2/user-tokens"
 
   def update_token
     cbv_flow = CbvFlow.find(session[:cbv_flow_id])
     new_token = refresh_token(cbv_flow.argyle_user_id)
 
-    render json: { status: :ok, token: new_token['user_token'] }
+    render json: { status: :ok, token: new_token["user_token"] }
   end
 
   private
