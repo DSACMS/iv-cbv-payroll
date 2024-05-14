@@ -24,7 +24,7 @@
   <h3 class="site-preview-heading margin-bottom-2">Results</h3>
   <%= render partial: 'employer', locals: { employer: @employers } %>
 
-  <%= form_with url: cbv_flow_summary_path, method: :post, class: 'display-none', data: { 'cbv-flows-target': "form" } do |f| %>
+  <%= form_with url: next_path, method: :post, class: 'display-none', data: { 'cbv-flows-target': "form" } do |f| %>
     <input type="hidden" name="user[account_id]" data-cbv-flows-target="userAccountId" />
   <% end %>
 
