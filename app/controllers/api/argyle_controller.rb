@@ -1,6 +1,4 @@
 class Api::ArgyleController < ApplicationController
-  skip_before_action :verify_authenticity_token
-
   USER_TOKEN_ENDPOINT = 'https://api-sandbox.argyle.com/v2/user-tokens';
 
   def update_token

@@ -1,0 +1,31 @@
+<%= turbo_frame_tag 'employers' do %>
+  <div class="usa-card-group">
+    <% @employers.each do |employer| %>
+      <div class="usa-card usa-card--flag usa-card--media-right flex-1">
+        <div class="usa-card__container">
+          <div class="usa-card__header">
+            <h2 class="usa-card__heading"><%= employer['name'] %></h2>
+          </div>
+          <div class="display-none usa-card__media usa-card__media--inset">
+            <div class="usa-card__img">
+              <img
+                src="<%= employer['logo_url'] %>"
+                alt="A placeholder image"
+              />
+            </div>
+          </div>
+          <div class="usa-card__footer">
+            <button
+              data-action="click->cbv-flows#select"
+              data-item-id="<%= employer['id'] %>"
+              class="usa-button usa-button--outline"
+              type="button"
+            >
+              Select
+            </button>
+          </div>
+        </div>
+      </div>
+    <% end %>
+  </div>
+<% end %>
