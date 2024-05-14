@@ -1,4 +1,9 @@
 <%= turbo_frame_tag 'employers' do %>
+  <% if @employers.present? %>
+    <h3 class="site-preview-heading margin-bottom-2">
+      <%= t('cbv_flows.employer_search.results') %>
+    </h3>
+  <% end %>
   <div class="usa-card-group">
     <% @employers.each do |employer| %>
       <div class="usa-card usa-card--flag usa-card--media-right flex-1">
@@ -21,7 +26,7 @@
               class="usa-button usa-button--outline"
               type="button"
             >
-              Select
+              <%= t('cbv_flows.employer_search.select') %>
             </button>
           </div>
         </div>
