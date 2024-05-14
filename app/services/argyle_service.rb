@@ -8,8 +8,10 @@ class ArgyleService
   PAYSTUBS_ENDPOINT = 'https://api-sandbox.argyle.com/v2/paystubs?user='
 
   def initialize
-    @api_key = Rails.application.credentials.argyle[:api_key]
+    api_key = Rails.application.credentials.argyle[:api_key]
     base_url = ENV["ARGYLE_API_URL"] || "https://api-sandbox.argyle.com/v2"
+
+    raise "ARGYLE_API_TOKEN environment variable is blank. Make sure you have the .env.local.local from 1Password." if api_key.blank?
 
     client_options = {
       request: {
@@ -19,7 +21,7 @@ class ArgyleService
       url: base_url,
       headers: {
         "Content-Type" => "application/json",
-        "Authorization" => "Basic #{@api_key}"
+        "Authorization" => "Basic #{api_key}"
       }
     }
     @http = Faraday.new(client_options)
@@ -35,7 +37,7 @@ class ArgyleService
     JSON.parse(response.body)
   end
 
-  def create_user_token
+  def create_user
     response = @http.post(USERS_ENDPOINT)
     JSON.parse(response.body)
   end

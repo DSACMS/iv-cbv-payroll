@@ -35,14 +35,14 @@ RSpec.describe ArgyleService, type: :service do
     end
   end
 
-  describe '#create_user_token' do
+  describe '#create_user' do
     before do
       stub_request(:post, ArgyleService::USERS_ENDPOINT)
         .to_return(status: 200, body: '{"user_token": "abc123"}')
     end
 
     it 'returns a user token' do
-      response = service.create_user_token
+      response = service.create_user
       expect(response['user_token']).to eq("abc123")
     end
   end
@@ -57,6 +57,14 @@ RSpec.describe ArgyleService, type: :service do
       service = ArgyleService.new
       response = service.refresh_user_token(user_id)
       expect(response['user_token']).to eq("abc123")
+    end
+  end
+
+  describe 'Error handling' do
+    skip 'raises an error when the API key is blank' do
+    end
+
+    skip 'raises an error when receiving a 400' do
     end
   end
 end

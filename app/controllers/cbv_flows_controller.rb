@@ -67,34 +67,29 @@ class CbvFlowsController < ApplicationController
   def fetch_and_store_argyle_token
     return session[:argyle_user_token] if session[:argyle_user_token].present?
 
-    raise "ARGYLE_API_TOKEN environment variable is blank. Make sure you have the .env.local.local from 1Password." if Rails.application.credentials.argyle[:api_key].blank?
+    user_token = provider.create_user
 
-    res = Net::HTTP.post(URI.parse(USER_TOKEN_ENDPOINT), "", {"Authorization" => "Basic #{Rails.application.credentials.argyle[:api_key]}"})
-    parsed = JSON.parse(res.body)
-    raise "Argyle API error: #{parsed['detail']}" if res.code.to_i >= 400
+    @cbv_flow.update(argyle_user_id: user_token['id'])
+    session[:argyle_user_token] = user_token['user_token']
 
-    @cbv_flow.update(argyle_user_id: parsed['id'])
-    session[:argyle_user_token] = parsed['user_token']
-
-    parsed['user_token']
+    user_token['user_token']
   end
 
   def fetch_employers(query = '')
-    request_params = URI.encode_www_form(
+    request_params = {
       mapping_status: 'verified,mapped',
       q: query
-    )
-    res = Net::HTTP.get(URI(ITEMS_ENDPOINT).tap { |u| u.query = request_params }, {"Authorization" => "Basic #{Rails.application.credentials.argyle[:api_key]}"})
-    parsed = JSON.parse(res)
+    }
 
-    parsed['results']
+    provider.fetch_items(request_params)['results']
   end
 
   def fetch_payroll
-    res = Net::HTTP.get(URI.parse("#{PAYSTUBS_ENDPOINT}#{@cbv_flow.argyle_user_id}"), {"Authorization" => "Basic #{Rails.application.credentials.argyle[:api_key]}"})
-    parsed = JSON.parse(res)
+    provider.fetch_paystubs(user: @cbv_flow.argyle_user_id)['results']
+  end
 
-    parsed['results']
+  def provider
+    ArgyleService.new
   end
 
   def search_params
