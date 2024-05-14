@@ -8,7 +8,7 @@ RSpec.describe ArgyleService, type: :service do
 
   describe '#fetch_items' do
     before do
-      stub_request(:get, ArgyleService::ITEMS_ENDPOINT)
+      stub_request(:get, service.build_url(ArgyleService::ITEMS_ENDPOINT))
         .with(query: { q: 'test' })
         .to_return(status: 200, body: '{ "results": [{ "id": "12345" }] }')
     end
@@ -22,7 +22,7 @@ RSpec.describe ArgyleService, type: :service do
 
   describe '#fetch_paystubs' do
     before do
-      stub_request(:get, ArgyleService::PAYSTUBS_ENDPOINT)
+      stub_request(:get, service.build_url(ArgyleService::PAYSTUBS_ENDPOINT))
         .with(query: { user: user_id })
         .to_return(status: 200, body: '{ "results": [{ "id": "12345" }] }')
     end
@@ -37,7 +37,7 @@ RSpec.describe ArgyleService, type: :service do
 
   describe '#create_user' do
     before do
-      stub_request(:post, ArgyleService::USERS_ENDPOINT)
+      stub_request(:post, service.build_url(ArgyleService::USERS_ENDPOINT))
         .to_return(status: 200, body: '{"user_token": "abc123"}')
     end
 
@@ -49,7 +49,7 @@ RSpec.describe ArgyleService, type: :service do
 
   describe '#refresh_user_token' do
     before do
-      stub_request(:post, ArgyleService::USER_TOKENS_ENDPOINT)
+      stub_request(:post, service.build_url(ArgyleService::USER_TOKENS_ENDPOINT))
         .to_return(status: 200, body: '{"user_token": "abc123"}')
     end
 
