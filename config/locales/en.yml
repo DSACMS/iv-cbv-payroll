@@ -15,7 +15,6 @@ en:
       header: Let's verify your payment information
       security_message: Your information is secure. We will not share or keep your log in information. You will be able to preview and approve everything that is shared with your caseworker.
       subheader: We'll connect to your payment records to get proof of payments to your caseworker and get benefits faster.
-    hello: Hello
     manual_flow_start: Start Flow Manually
     summary:
       description: Below is payment information from your employer for the past 90 days.
