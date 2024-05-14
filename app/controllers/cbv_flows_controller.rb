@@ -1,8 +1,8 @@
 class CbvFlowsController < ApplicationController
-  USER_TOKEN_ENDPOINT = 'https://api-sandbox.argyle.com/v2/users';
-  ITEMS_ENDPOINT = 'https://api-sandbox.argyle.com/v2/items';
-  PAYSTUBS_ENDPOINT = 'https://api-sandbox.argyle.com/v2/paystubs?user='
-  
+  USER_TOKEN_ENDPOINT = "https://api-sandbox.argyle.com/v2/users"
+  ITEMS_ENDPOINT = "https://api-sandbox.argyle.com/v2/items"
+  PAYSTUBS_ENDPOINT = "https://api-sandbox.argyle.com/v2/paystubs?user="
+
   before_action :set_cbv_flow
 
   def entry
@@ -17,12 +17,12 @@ class CbvFlowsController < ApplicationController
   def summary
     @payments = fetch_payroll.map do |payment|
       {
-        employer: payment['employer'],
-        amount: payment['net_pay'].to_i,
-        start: payment['paystub_period']['start_date'],
-        end: payment['paystub_period']['end_date'],
-        hours: payment['hours'],
-        rate: payment['rate']
+        employer: payment["employer"],
+        amount: payment["net_pay"].to_i,
+        start: payment["paystub_period"]["start_date"],
+        end: payment["paystub_period"]["end_date"],
+        hours: payment["hours"],
+        rate: payment["rate"]
       }
     end
 
@@ -47,18 +47,18 @@ class CbvFlowsController < ApplicationController
       @cbv_flow = CbvFlow.find(session[:cbv_flow_id])
     else
       # TODO: This case_number would be provided by the case worker when they send the initial invite
-      @cbv_flow = CbvFlow.create(case_number: 'ABC1234')
+      @cbv_flow = CbvFlow.create(case_number: "ABC1234")
       session[:cbv_flow_id] = @cbv_flow.id
     end
   end
 
   def next_path
     case params[:action]
-    when 'entry'
+    when "entry"
       cbv_flow_employer_search_path
-    when 'employer_search'
+    when "employer_search"
       cbv_flow_summary_path
-    when 'summary'
+    when "summary"
       root_url
     end
   end

@@ -43,8 +43,8 @@ RSpec.describe CbvFlowsController do
         results: [
           {
             id: 'item_000002102',
-            name: 'ACME',
-          },
+            name: 'ACME'
+          }
         ]
       }
     end
@@ -112,7 +112,7 @@ RSpec.describe CbvFlowsController do
             paystub_period: {
               start_date: "2021-01-01",
               end_date: "2021-01-15"
-            },
+            }
           },
           {
             id: '018f1bc6-fa6e-a553-85ba-35fd755c1234',
@@ -123,8 +123,8 @@ RSpec.describe CbvFlowsController do
             paystub_period: {
               start_date: "2021-01-01",
               end_date: "2021-01-15"
-            },
-          },
+            }
+          }
         ]
       }
     end

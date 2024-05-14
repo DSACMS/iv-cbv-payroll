@@ -2,9 +2,9 @@ require "active_support/core_ext/integer/time"
 
 Rails.application.configure do
   # Check if we use Docker to allow docker ip through web-console
-  
+
   # if the env var DOCKERIZED is set to true then we allow the web console to be accessed from the docker network
-  config.web_console.allowed_ips = '192.168.65.1' if ENV["DOCKERIZED"] == "true"
+  config.web_console.allowed_ips = "192.168.65.1" if ENV["DOCKERIZED"] == "true"
   # Settings specified here will take precedence over those in config/application.rb.
 
   # In the development environment your application's code is reloaded any time
@@ -21,7 +21,7 @@ Rails.application.configure do
   # Enable server timing
   config.server_timing = true
 
-  config.hosts << ENV['NGROK_URL'] if ENV['NGROK_URL'].present?
+  config.hosts << ENV["NGROK_URL"] if ENV["NGROK_URL"].present?
 
   # Enable/disable caching. By default caching is disabled.
   # Run rails dev:cache to toggle caching.

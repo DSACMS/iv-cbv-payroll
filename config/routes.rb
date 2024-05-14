@@ -10,15 +10,15 @@ Rails.application.routes.draw do
 
     # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
 
-    scope '/cbv', as: :cbv_flow do
-      get '/entry' => 'cbv_flows#entry'
-      get '/employer_search' => 'cbv_flows#employer_search'
-      get '/argyle_link' => 'cbv_flows#argyle_link'
-      post '/summary' => 'cbv_flows#summary'
-      get '/summary' => 'cbv_flows#summary'
+    scope "/cbv", as: :cbv_flow do
+      get "/entry" => "cbv_flows#entry"
+      get "/employer_search" => "cbv_flows#employer_search"
+      get "/argyle_link" => "cbv_flows#argyle_link"
+      post "/summary" => "cbv_flows#summary"
+      get "/summary" => "cbv_flows#summary"
 
       # Utility route to clear your session; useful during development
-      get '/reset' => 'cbv_flows#reset'
+      get "/reset" => "cbv_flows#reset"
     end
   end
 
@@ -30,7 +30,7 @@ Rails.application.routes.draw do
 
   namespace :api do
     scope :argyle do
-      post '/tokens' => 'argyle#update_token'
+      post "/tokens" => "argyle#update_token"
     end
   end
 end
