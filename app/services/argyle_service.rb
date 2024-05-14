@@ -2,6 +2,11 @@
 require "faraday"
 
 class ArgyleService
+  USERS_ENDPOINT = 'https://api-sandbox.argyle.com/v2/users';
+  USER_TOKENS_ENDPOINT = 'https://api-sandbox.argyle.com/v2/user-tokens';
+  ITEMS_ENDPOINT = 'https://api-sandbox.argyle.com/v2/items';
+  PAYSTUBS_ENDPOINT = 'https://api-sandbox.argyle.com/v2/paystubs?user='
+
   def initialize
     @api_key = Rails.application.credentials.argyle[:api_key]
     base_url = ENV["ARGYLE_API_URL"] || "https://api-sandbox.argyle.com/v2"
@@ -20,17 +25,23 @@ class ArgyleService
     @http = Faraday.new(client_options)
   end
 
-  # Fetch all Argyle items
-  def items(query = nil)
-    response = @http.get("items", { q: query })
+  def fetch_paystubs(options)
+    response = @http.get("paystubs", options)
     JSON.parse(response.body)
   end
 
-  def payroll_documents(account_id, user_id)
-    account_exists = ConnectedArgyleAccount.exists?(user_id: user_id, account_id: account_id)
-    raise "Argyle error: Account not connected" unless account_exists
-    response = @http.get("payroll-documents", { account: account_id, user: user_id })
+  def fetch_items(options)
+    response = @http.get("items", options)
     JSON.parse(response.body)
   end
 
+  def create_user_token
+    response = @http.post(USERS_ENDPOINT)
+    JSON.parse(response.body)
+  end
+
+  def refresh_user_token(user_id)
+    response = @http.post(USER_TOKENS_ENDPOINT, { user: user_id }.to_json)
+    JSON.parse(response.body)
+  end
 end

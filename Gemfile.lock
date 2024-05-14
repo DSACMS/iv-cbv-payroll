@@ -66,6 +66,8 @@ GEM
       i18n (>= 1.6, < 2)
       minitest (>= 5.1)
       tzinfo (~> 2.0)
+    addressable (2.8.6)
+      public_suffix (>= 2.0.2, < 6.0)
     ast (2.4.2)
     better_html (2.1.1)
       actionview (>= 6.0)
@@ -74,6 +76,7 @@ GEM
       erubi (~> 1.4)
       parser (>= 2.4)
       smart_properties
+    bigdecimal (3.1.8)
     bindex (0.8.1)
     bootsnap (1.18.3)
       msgpack (~> 1.2)
@@ -86,6 +89,9 @@ GEM
     climate_control (1.2.0)
     concurrent-ruby (1.2.3)
     connection_pool (2.4.1)
+    crack (1.0.0)
+      bigdecimal
+      rexml
     crass (1.0.6)
     cssbundling-rails (1.4.0)
       railties (>= 6.0.0)
@@ -108,6 +114,7 @@ GEM
       net-http
     globalid (1.2.1)
       activesupport (>= 6.1)
+    hashdiff (1.1.0)
     highline (3.0.1)
     i18n (1.14.4)
       concurrent-ruby (~> 1.0)
@@ -175,6 +182,7 @@ GEM
     pg (1.5.6)
     psych (5.1.2)
       stringio
+    public_suffix (5.0.5)
     puma (5.6.8)
       nio4r (~> 2.0)
     racc (1.7.3)
@@ -333,6 +341,10 @@ GEM
       activemodel (>= 6.0.0)
       bindex (>= 0.4.0)
       railties (>= 6.0.0)
+    webmock (3.23.0)
+      addressable (>= 2.8.0)
+      crack (>= 0.3.2)
+      hashdiff (>= 0.4.0, < 2.0.0)
     websocket-driver (0.7.6)
       websocket-extensions (>= 0.1.0)
     websocket-extensions (0.1.5)
@@ -380,6 +392,7 @@ DEPENDENCIES
   turbo-rails
   tzinfo-data
   web-console
+  webmock
   wicked_pdf
   wkhtmltopdf-binary
 
