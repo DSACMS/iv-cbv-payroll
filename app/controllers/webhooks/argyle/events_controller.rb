@@ -25,6 +25,5 @@ class Webhooks::Argyle::EventsController < ApplicationController
       Rails.logger.info "ConnectedArgyleAccount created: #{rep}"
       render json: { message: "ConnectedArgyleAccount created", data: rep }, status: :created
     end
-
   end
 end

@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 require "faraday"
 
 class ArgyleService
@@ -32,5 +33,4 @@ class ArgyleService
     response = @http.get("payroll-documents", { account: account_id, user: user_id })
     JSON.parse(response.body)
   end
-
 end
