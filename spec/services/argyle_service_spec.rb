@@ -5,7 +5,7 @@ require 'support/payroll_documents_response_stub'
 RSpec.describe ArgyleService, type: :service do
   include ArgyleApiHelper
   let(:service) { ArgyleService.new }
-  let(:user_id) { 'user_id' }
+  let(:user_id) { 'abc123' }
 
   describe '#fetch_items' do
     before do
@@ -32,12 +32,12 @@ RSpec.describe ArgyleService, type: :service do
 
   describe '#create_user' do
     before do
-      stub_create_user_response
+      stub_create_user_response(user_id: user_id)
     end
 
     it 'returns a user token' do
       response = service.create_user
-      expect(response['user_token']).to eq("abc123")
+      expect(response['user_token']).to eq(user_id)
     end
   end
 

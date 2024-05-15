@@ -23,9 +23,12 @@ class ArgyleService
       headers: {
         "Content-Type" => "application/json",
         "Authorization" => "Basic #{api_key}"
-      }
+      },
     }
-    @http = Faraday.new(client_options)
+    @http = Faraday.new(client_options) do |conn|
+      # Parse JSON responses
+      conn.response :json
+    end
   end
 
   def build_url(endpoint)
@@ -33,22 +36,18 @@ class ArgyleService
   end
 
   def fetch_paystubs(options)
-    response = @http.get(build_url(PAYSTUBS_ENDPOINT), options)
-    JSON.parse(response.body)
+    @http.get(build_url(PAYSTUBS_ENDPOINT), options).body
   end
 
   def fetch_items(options)
-    response = @http.get(build_url(ITEMS_ENDPOINT), options)
-    JSON.parse(response.body)
+    @http.get(build_url(ITEMS_ENDPOINT), options).body
   end
 
   def create_user
-    response = @http.post(build_url(USERS_ENDPOINT))
-    JSON.parse(response.body)
+    @http.post(build_url(USERS_ENDPOINT)).body
   end
 
   def refresh_user_token(user_id)
-    response = @http.post(build_url(USER_TOKENS_ENDPOINT), { user: user_id }.to_json)
-    JSON.parse(response.body)
+    @http.post(build_url(USER_TOKENS_ENDPOINT), { user: user_id }.to_json).body
   end
 end
