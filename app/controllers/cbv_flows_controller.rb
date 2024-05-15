@@ -45,19 +45,17 @@ class CbvFlowsController < ApplicationController
   def set_cbv_flow
     if session[:cbv_flow_id]
       @cbv_flow = CbvFlow.find(session[:cbv_flow_id])
+    elsif params[:token].present?
+      invitation = CbvFlowInvitation.find_by(auth_token: params[:token])
+      return redirect_to root_url if invitation.blank?
+
+      @cbv_flow = CbvFlow.create_from_invitation(invitation)
     else
-      @cbv_flow = CbvFlow.transaction do
-        flow = CbvFlowInvitation.find_by(auth_token: params[:token])
-        if flow.blank? then
-          redirect_to root_url
-          return
-        end
-
-        CbvFlow.create(cbv_flow_invitation: flow)
-      end
-
-      session[:cbv_flow_id] = @cbv_flow.id
+      # TODO: Restrict ability to enter the flow without a valid token
+      @cbv_flow = CbvFlow.create
     end
+
+    session[:cbv_flow_id] = @cbv_flow.id
   end
 
   def next_path
