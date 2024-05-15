@@ -22,6 +22,32 @@ RSpec.describe CbvFlowsController do
         .from(nil)
         .to(be_an(Integer))
     end
+
+    context "when following a link from a flow invitation" do
+      let(:invitation) { CbvFlowInvitation.create(case_number: "ABC1234") }
+
+      it "sets a CbvFlow object based on the invitation" do
+        expect { get :entry, params: { token: invitation.auth_token } }
+          .to change { session[:cbv_flow_id] }
+          .from(nil)
+          .to(be_an(Integer))
+
+        cbv_flow = CbvFlow.find(session[:cbv_flow_id])
+        expect(cbv_flow).to have_attributes(
+          case_number: "ABC1234",
+          cbv_flow_invitation: invitation
+        )
+      end
+
+      context "when the token is invalid" do
+        it "redirects to the homepage" do
+          expect { get :entry, params: { token: "some-invalid-token" } }
+            .not_to change { session[:cbv_flow_id] }
+
+          expect(response).to redirect_to(root_url)
+        end
+      end
+    end
   end
 
   describe "#employer_search" do

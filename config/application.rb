@@ -34,6 +34,10 @@ module IvCbvPayroll
     # config.time_zone = "Central Time (US & Canada)"
     # config.eager_load_paths << Rails.root.join("extras")
 
+    # Set the hostname used for generating links in places outside the request/response cycle.
+    default_host = "localhost:#{ENV.fetch("PORT", 3000)}"
+    Rails.application.default_url_options = { host: ENV["NGROK_URL"].presence || default_host }
+
     # Don't generate system test files.
     config.generators.system_tests = nil
   end
