@@ -46,8 +46,16 @@ class CbvFlowsController < ApplicationController
     if session[:cbv_flow_id]
       @cbv_flow = CbvFlow.find(session[:cbv_flow_id])
     else
-      # TODO: This case_number would be provided by the case worker when they send the initial invite
-      @cbv_flow = CbvFlow.create(case_number: "ABC1234")
+      @cbv_flow = CbvFlow.transaction do
+        flow = CbvFlowInvitation.find_by(auth_token: params[:token])
+        if flow.blank? then
+          redirect_to root_url
+          return
+        end
+
+        CbvFlow.create(cbv_flow_invitation: flow)
+      end
+
       session[:cbv_flow_id] = @cbv_flow.id
     end
   end
