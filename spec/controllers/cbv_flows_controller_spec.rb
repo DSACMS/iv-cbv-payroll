@@ -2,12 +2,6 @@ require "rails_helper"
 
 RSpec.describe CbvFlowsController do
   include ArgyleApiHelper
-  def stub_environment_variable(variable, value, &block)
-    previous_value = ENV[variable]
-    ENV[variable] = value
-    block.call
-    ENV[variable] = previous_value
-  end
 
   around do |ex|
     stub_environment_variable("ARGYLE_API_TOKEN", "foobar", &ex)
