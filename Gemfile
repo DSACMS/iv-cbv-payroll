@@ -90,4 +90,5 @@ end
 
 group :test do
   gem "climate_control", "~> 1.0"
+  gem "webmock"
 end
