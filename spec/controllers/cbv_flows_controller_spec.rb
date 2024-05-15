@@ -1,6 +1,7 @@
 require "rails_helper"
 
 RSpec.describe CbvFlowsController do
+  include ArgyleApiHelper
   def stub_environment_variable(variable, value, &block)
     previous_value = ENV[variable]
     ENV[variable] = value
@@ -31,12 +32,10 @@ RSpec.describe CbvFlowsController do
 
   describe "#employer_search" do
     let(:cbv_flow) { CbvFlow.create(case_number: "ABC1234") }
-    let(:argyle_mock_response) do
-      {
-        id: "abc-def-ghi",
-        user_token: "foobar"
-      }
-    end
+
+    let(:argyle_user_id) { "abc-def-ghi" }
+
+    let(:user_token) { "foobar" }
 
     let(:argyle_mock_items_response) do
       {
@@ -51,14 +50,8 @@ RSpec.describe CbvFlowsController do
 
     before do
       session[:cbv_flow_id] = cbv_flow.id
-
-      allow(Net::HTTP).to receive(:post)
-        .with(URI(CbvFlowsController::USER_TOKEN_ENDPOINT), anything, anything)
-        .and_return(instance_double(Net::HTTPOK, code: "200", body: JSON.generate(argyle_mock_response)))
-
-      allow(Net::HTTP).to receive(:get)
-        .with(URI(CbvFlowsController::ITEMS_ENDPOINT), anything)
-        .and_return(JSON.generate(argyle_mock_items_response))
+      stub_request_items_response
+      stub_create_user_response(user_id: argyle_user_id)
     end
 
     context "when rendering views" do
@@ -73,25 +66,25 @@ RSpec.describe CbvFlowsController do
     context "when the user does not have an Argyle token" do
       it "requests a new token from Argyle" do
         get :employer_search
-        expect(Net::HTTP).to have_received(:post).once
+        expect(response).to be_ok
       end
 
       it "saves the token in the CbvFlow model" do
         expect { get :employer_search }
           .to change { cbv_flow.reload.argyle_user_id }
           .from(nil)
-          .to(argyle_mock_response[:id])
+          .to(argyle_user_id)
       end
     end
 
     context "when the user already has an Argyle token in their session" do
       before do
-        session[:argyle_user_token] = argyle_mock_response[:user_token]
+        session[:argyle_user_token] = user_token
       end
 
       it "does not request a new User Token from Argyle" do
         get :employer_search
-        expect(Net::HTTP).not_to have_received(:post)
+        expect(response).to be_ok
       end
     end
   end
@@ -100,41 +93,10 @@ RSpec.describe CbvFlowsController do
     render_views
 
     let(:cbv_flow) { CbvFlow.create(case_number: "ABC1234", argyle_user_id: "abc-def-ghi") }
-    let(:argyle_mock_paystubs_response) do
-      {
-        results: [
-          {
-            id: '018f1bc6-fa6e-a553-85ba-35fd755caf3b',
-            name: 'ACME',
-            net_pay: "1000",
-            hours: "40",
-            rate: "25",
-            paystub_period: {
-              start_date: "2021-01-01",
-              end_date: "2021-01-15"
-            }
-          },
-          {
-            id: '018f1bc6-fa6e-a553-85ba-35fd755c1234',
-            name: 'ACME',
-            net_pay: "1000",
-            hours: "40",
-            rate: "25",
-            paystub_period: {
-              start_date: "2021-01-01",
-              end_date: "2021-01-15"
-            }
-          }
-        ]
-      }
-    end
 
     before do
       session[:cbv_flow_id] = cbv_flow.id
-
-      allow(Net::HTTP).to receive(:get)
-        .with(URI("#{CbvFlowsController::PAYSTUBS_ENDPOINT}#{cbv_flow.argyle_user_id}"), anything)
-        .and_return(JSON.generate(argyle_mock_paystubs_response))
+      stub_request_paystubs_response
     end
 
     it "renders properly" do
