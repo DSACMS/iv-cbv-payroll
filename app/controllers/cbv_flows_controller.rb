@@ -29,7 +29,7 @@ class CbvFlowsController < ApplicationController
     respond_to do |format|
       format.html
       format.pdf do
-        render pdf: "#{@cbv_flow.id}", template: 'cbv_flows/summary'
+        render pdf: "#{@cbv_flow.id}", template: "cbv_flows/summary"
       end
     end
   end
@@ -75,23 +75,23 @@ class CbvFlowsController < ApplicationController
 
     user_token = provider.create_user
 
-    @cbv_flow.update(argyle_user_id: user_token['id'])
-    session[:argyle_user_token] = user_token['user_token']
+    @cbv_flow.update(argyle_user_id: user_token["id"])
+    session[:argyle_user_token] = user_token["user_token"]
 
-    user_token['user_token']
+    user_token["user_token"]
   end
 
-  def fetch_employers(query = '')
+  def fetch_employers(query = "")
     request_params = {
-      mapping_status: 'verified,mapped',
+      mapping_status: "verified,mapped",
       q: query
     }
 
-    provider.fetch_items(request_params)['results']
+    provider.fetch_items(request_params)["results"]
   end
 
   def fetch_payroll
-    provider.fetch_paystubs(user: @cbv_flow.argyle_user_id)['results']
+    provider.fetch_paystubs(user: @cbv_flow.argyle_user_id)["results"]
   end
 
   def provider
