@@ -49,7 +49,7 @@ class CbvFlowsController < ApplicationController
       invitation = CbvFlowInvitation.find_by(auth_token: params[:token])
       return redirect_to root_url if invitation.blank?
 
-      @cbv_flow = CbvFlow.create_from_invitation(invitation)
+      @cbv_flow = invitation.cbv_flow || CbvFlow.create_from_invitation(invitation)
     else
       # TODO: Restrict ability to enter the flow without a valid token
       @cbv_flow = CbvFlow.create
