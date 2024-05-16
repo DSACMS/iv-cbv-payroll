@@ -42,7 +42,42 @@ class CbvFlowsController < ApplicationController
 
   private
 
-  def set_cbv_flow
+def find_cbv_flow_by_id(cbv_flow_id)
+  CbvFlow.find(cbv_flow_id)
+rescue ActiveRecord::RecordNotFound
+  nil
+end
+
+def find_invitation_by_token(token)
+  CbvFlowInvitation.find_by(auth_token: token)
+end
+
+def handle_cbv_flow(session, params)
+  if session[:cbv_flow_id]
+    cbv_flow = find_cbv_flow_by_id(session[:cbv_flow_id])
+    return { redirect: true, url: root_url } if cbv_flow.nil?
+  elsif params[:token].present?
+    invitation = find_invitation_by_token(params[:token])
+    return { redirect: true, url: root_url } if invitation.blank?
+
+    cbv_flow = invitation.cbv_flow || CbvFlow.create_from_invitation(invitation)
+  else
+    cbv_flow = CbvFlow.create
+  end
+
+  { redirect: false, cbv_flow: cbv_flow, cbv_flow_id: cbv_flow.id }
+end
+
+def set_cbv_flow
+  result = handle_cbv_flow(session, params)
+
+  if result[:redirect]
+    redirect_to result[:url]
+  else
+    @cbv_flow = result[:cbv_flow]
+    session[:cbv_flow_id] = result[:cbv_flow_id]
+  end
+end
     if session[:cbv_flow_id]
       begin
         @cbv_flow = CbvFlow.find(session[:cbv_flow_id])
