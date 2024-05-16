@@ -4,10 +4,10 @@ require "faraday"
 
 class ArgyleService
   BASE_URL = "https://api-sandbox.argyle.com/v2"
-  USERS_ENDPOINT = 'users';
-  USER_TOKENS_ENDPOINT = 'user-tokens';
-  ITEMS_ENDPOINT = 'items';
-  PAYSTUBS_ENDPOINT = 'paystubs'
+  USERS_ENDPOINT = "users"
+  USER_TOKENS_ENDPOINT = "user-tokens"
+  ITEMS_ENDPOINT = "items"
+  PAYSTUBS_ENDPOINT = "paystubs"
 
   def initialize
     api_key = Rails.application.credentials.argyle[:api_key]
@@ -23,7 +23,7 @@ class ArgyleService
       headers: {
         "Content-Type" => "application/json",
         "Authorization" => "Basic #{api_key}"
-      },
+      }
     }
     @http = Faraday.new(client_options) do |conn|
       # Parse JSON responses
