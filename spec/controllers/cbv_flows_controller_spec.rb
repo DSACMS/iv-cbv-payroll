@@ -39,6 +39,17 @@ RSpec.describe CbvFlowsController do
         )
       end
 
+      context "when returning to an already-visited flow invitation" do
+        let(:existing_cbv_flow) { CbvFlow.create(case_number: "ABC1234", cbv_flow_invitation: invitation) }
+
+        it "uses the existing CbvFlow object" do
+          expect { get :entry, params: { token: invitation.auth_token } }
+            .to change { session[:cbv_flow_id] }
+            .from(nil)
+            .to(existing_cbv_flow.id)
+        end
+      end
+
       context "when the token is invalid" do
         it "redirects to the homepage" do
           expect { get :entry, params: { token: "some-invalid-token" } }
@@ -46,6 +57,18 @@ RSpec.describe CbvFlowsController do
 
           expect(response).to redirect_to(root_url)
         end
+      end
+    end
+
+    context "when the session points to a deleted cbv flow" do
+      before do
+        session[:cbv_flow_id] = -1
+      end
+
+      it "uses the existing CbvFlow object" do
+        get :entry
+
+        expect(response).to redirect_to(root_url)
       end
     end
   end
