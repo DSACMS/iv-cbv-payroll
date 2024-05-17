@@ -1,0 +1,14 @@
+<h2>
+  <%= t('.header') %>
+</h2>
+
+<p>
+  <%= t('.body') %>
+</p>
+
+<button class="usa-button" type="button">
+  <%= t('.share_with_caseworker') %>
+</button>
+<%= link_to cbv_flow_summary_path(format: 'pdf'), target: '_blank', class: 'usa-button margin-top-3 usa-button--outline' do %>
+  <%= t('.download_pdf') %>
+<% end %>

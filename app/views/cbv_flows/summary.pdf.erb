@@ -25,3 +25,9 @@
     <%= t('cbv_flows.summary.none_found') %>
   </h3>
 <% end %>
+
+<% if @cbv_flow.additional_information.present? %>
+  <h2><%= t('.additional_information_title') %></h2>
+
+  <p><%= @cbv_flow.additional_information %></p>
+<% end %>
