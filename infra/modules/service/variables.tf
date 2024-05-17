@@ -64,6 +64,11 @@ variable "vpc_id" {
   description = "Uniquely identifies the VPC."
 }
 
+variable "vpc_cidr" {
+  type        = string
+  description = "CIDR block for the VPC"
+}
+
 variable "public_subnet_ids" {
   type        = list(any)
   description = "Public subnet ids in VPC"
