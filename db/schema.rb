@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2024_05_15_174048) do
+ActiveRecord::Schema[7.0].define(version: 2024_05_17_211007) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -34,6 +34,7 @@ ActiveRecord::Schema[7.0].define(version: 2024_05_15_174048) do
     t.datetime "updated_at", null: false
     t.date "payroll_data_available_from"
     t.bigint "cbv_flow_invitation_id"
+    t.text "additional_information"
     t.index ["cbv_flow_invitation_id"], name: "index_cbv_flows_on_cbv_flow_invitation_id"
   end
 

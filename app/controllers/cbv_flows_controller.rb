@@ -11,6 +11,11 @@ class CbvFlowsController < ApplicationController
   end
 
   def summary
+    if request.patch?
+      @cbv_flow.update(summary_update_params)
+      return redirect_to next_path
+    end
+
     @payments = fetch_payroll.map do |payment|
       {
         employer: payment["employer"],
@@ -28,6 +33,9 @@ class CbvFlowsController < ApplicationController
         render pdf: "#{@cbv_flow.id}", template: "cbv_flows/summary"
       end
     end
+  end
+
+  def share
   end
 
   def reset
@@ -65,6 +73,8 @@ class CbvFlowsController < ApplicationController
     when "employer_search"
       cbv_flow_summary_path
     when "summary"
+      cbv_flow_share_path
+    when "share"
       root_url
     end
   end
@@ -100,5 +110,9 @@ class CbvFlowsController < ApplicationController
 
   def search_params
     params.permit(:query)
+  end
+
+  def summary_update_params
+    params.fetch(:cbv_flow, {}).permit(:additional_information)
   end
 end
