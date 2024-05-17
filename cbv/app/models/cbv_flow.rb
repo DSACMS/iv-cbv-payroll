@@ -1,0 +1,2 @@
+class CbvFlow < ApplicationRecord
+end

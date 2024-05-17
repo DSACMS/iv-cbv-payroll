@@ -1,0 +1,6 @@
+#!/bin/bash
+set -e
+
+echo "Running database migrations..."
+bundle exec rails db:migrate
+echo "Database migrations completed."

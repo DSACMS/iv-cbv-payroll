@@ -1,0 +1,5 @@
+env: staging
+web_instances: 1
+web_memory: 256M
+worker_instances: 1
+worker_memory: 256M

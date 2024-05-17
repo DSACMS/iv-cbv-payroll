@@ -1,0 +1,24 @@
+---
+applications:
+- name: iv_cbv_payroll-((env))
+  buildpacks:
+    - nodejs_buildpack
+    - ruby_buildpack
+  env:
+    RAILS_MASTER_KEY: ((rails_master_key))
+    RAILS_ENV: ((env))
+    RAILS_LOG_TO_STDOUT: true
+    RAILS_SERVE_STATIC_FILES: true
+    NEW_RELIC_LOG: stdout
+  processes:
+  - type: worker
+    instances: ((worker_instances))
+    memory: ((worker_memory))
+    command: bundle exec sidekiq
+  - type: web
+    instances: ((web_instances))
+    memory: ((web_memory))
+    command: bundle exec rake cf:on_first_instance db:migrate && bundle exec rails s -b 0.0.0.0 -p $PORT -e $RAILS_ENV
+  services:
+  - iv_cbv_payroll-redis-((env))
+  - iv_cbv_payroll-rds-((env))
