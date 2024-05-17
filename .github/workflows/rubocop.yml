@@ -6,7 +6,6 @@ jobs:
   rspec:
     name: Rubocop
     runs-on: ubuntu-latest
-    services:
     steps:
       - uses: actions/checkout@v4
       - name: Run Rubocop
