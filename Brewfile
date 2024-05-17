@@ -27,3 +27,6 @@ brew "jq"
 
 # queue for sidekiq jobs
 brew "redis"
+
+# ngrok local tunnel to receive argyle webhooks
+brew "ngrok"
