@@ -63,6 +63,7 @@ gem "wkhtmltopdf-binary"
 group :development, :test do
   gem "brakeman", "~> 5.2"
   gem "bundler-audit", "~> 0.9"
+  gem "capybara"
   gem "debug", platforms: %i[mri mingw x64_mingw]
   gem "dotenv-rails", "~> 2.7"
   gem "i18n-tasks", "~> 1.0"
