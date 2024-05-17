@@ -8,5 +8,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+      - name: Set up Ruby & Javascript
+        uses: ./.github/actions/setup-languages
       - name: Run Rubocop
         run: bundle exec rubocop
