@@ -23,7 +23,7 @@ check_defined = \
 __check_defined = \
 	$(if $(value $1),, \
 		$(error Undefined $1$(if $2, ($2))$(if $(value @), \
-			required by target `$@')))
+			required by target '$@')))
 
 
 .PHONY : \
@@ -118,15 +118,10 @@ infra-update-app-service: ## Create or update $APP_NAME's web service module
 	terraform -chdir="infra/$(APP_NAME)/service" init -input=false -reconfigure -backend-config="$(ENVIRONMENT).s3.tfbackend"
 	terraform -chdir="infra/$(APP_NAME)/service" apply -var="environment_name=$(ENVIRONMENT)"
 
-infra-diagram-app-service: ## Create or update $APP_NAME's web service module
-	@:$(call check_defined, APP_NAME, the name of subdirectory of /infra that holds the application's infrastructure code)
-	@:$(call check_defined, ENVIRONMENT, the name of the application environment e.g. "prod" or "staging")
-	terraform -chdir="infra/$(APP_NAME)/service" init -input=false -reconfigure -backend-config="$(ENVIRONMENT).s3.tfbackend"
-	terraform -chdir="infra/$(APP_NAME)/service" plan --out "tfplan" -var="environment_name=$(ENVIRONMENT)"
-	terraform show -json "tfplan" | jq > tfplan.json
 # The prerequisite for this rule is obtained by
 # prefixing each module with the string "infra-validate-module-"
-infra-validate-modules: $(patsubst %, infra-validate-module-%, $(MODULES)) ## Run terraform validate on reusable child modules
+infra-validate-modules: ## Run terraform validate on reusable child modules
+infra-validate-modules: $(patsubst %, infra-validate-module-%, $(MODULES))
 
 infra-validate-module-%:
 	@echo "Validate library module: $*"
@@ -138,7 +133,8 @@ infra-check-app-database-roles: ## Check that app database roles have been confi
 	@:$(call check_defined, ENVIRONMENT, the name of the application environment e.g. "prod" or "staging")
 	./bin/check-database-roles.sh $(APP_NAME) $(ENVIRONMENT)
 
-infra-check-compliance: infra-check-compliance-checkov infra-check-compliance-tfsec ## Run compliance checks
+infra-check-compliance: ## Run compliance checks
+infra-check-compliance: infra-check-compliance-checkov infra-check-compliance-tfsec
 
 infra-check-compliance-checkov: ## Run checkov compliance checks
 	checkov --directory infra
@@ -146,7 +142,8 @@ infra-check-compliance-checkov: ## Run checkov compliance checks
 infra-check-compliance-tfsec: ## Run tfsec compliance checks
 	tfsec infra
 
-infra-lint: lint-markdown infra-lint-scripts infra-lint-terraform infra-lint-workflows ## Lint infra code
+infra-lint: ## Lint infra code
+infra-lint: lint-markdown infra-lint-scripts infra-lint-terraform infra-lint-workflows
 
 infra-lint-scripts: ## Lint shell scripts
 	shellcheck bin/**
@@ -172,7 +169,7 @@ lint-markdown: ## Lint Markdown docs for broken links
 
 # Include project name in image name so that image name
 # does not conflict with other images during local development
-IMAGE_NAME := $(PROJECT_ROOT)-$(APP_NAME)
+IMAGE_NAME := $(PROJECT_ROOT)-"cbv"
 
 GIT_REPO_AVAILABLE := $(shell git rev-parse --is-inside-work-tree 2>/dev/null)
 
@@ -219,6 +216,17 @@ release-image-tag: ## Prints the image tag of the release image
 ########################
 
 help: ## Prints the help documentation and info about each command
-	@grep -E '^[/a-zA-Z0-9_-]+:.*?## .*$$' $(MAKEFILE_LIST) | sort | awk 'BEGIN {FS = ":.*?## "}; {printf "\033[36m%-30s\033[0m %s\n", $$1, $$2}'
-diagram:
-	terravision draw --source $(pwd)/infra
+	@grep -Eh '^[[:print:]]+:.*?##' $(MAKEFILE_LIST) | \
+	sort -d | \
+	awk -F':.*?## ' '{printf "\033[36m%s\033[0m\t%s\n", $$1, $$2}' | \
+	column -t -s "$$(printf '\t')"
+	@echo ""
+	@echo "APP_NAME=$(APP_NAME)"
+	@echo "ENVIRONMENT=$(ENVIRONMENT)"
+	@echo "IMAGE_NAME=$(IMAGE_NAME)"
+	@echo "IMAGE_TAG=$(IMAGE_TAG)"
+	@echo "INFO_TAG=$(INFO_TAG)"
+	@echo "GIT_REPO_AVAILABLE=$(GIT_REPO_AVAILABLE)"
+	@echo "SHELL=$(SHELL)"
+	@echo "MAKE_VERSION=$(MAKE_VERSION)"
+	@echo "MODULES=$(MODULES)"

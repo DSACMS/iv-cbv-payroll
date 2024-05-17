@@ -13,21 +13,22 @@ services:
       - "5432:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
-      - .docker/db/init-postgres.sql:/docker-entrypoint-initdb.d/init-postgres.sql
+      - ./cbv/.docker/db/init-postgres.sql:/docker-entrypoint-initdb.d/init-postgres.sql
 
   # Rails app
   # Configured for "development" RAILS_ENV
   app_rails:
     tty: true
     build:
-      context: .
+      context: ./cbv
+      dockerfile: Dockerfile
       target: dev
     depends_on:
       postgres:
         condition: service_healthy
       redis:
         condition: service_healthy
-    env_file: .env
+    env_file: ./cbv/.env
     environment:
       - DOCKERIZED=true
       - DB_HOST=postgres
@@ -36,10 +37,10 @@ services:
       - RAILS_BINDING=0.0.0.0
       - RAILS_ENV=development
     ports:
-      - 3000:3000
+      - ${PORT:-3000}:3000
       - 1234:1234
     volumes:
-      - ./:/rails
+      - ./cbv:/rails
       # Use named volumes for directories that the container should use the guest
       # machine's dir instead of the host machine's dir, which may be divergent.
       # This is especially true for any dependency or temp directories.
