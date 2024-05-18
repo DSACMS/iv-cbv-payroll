@@ -23,16 +23,28 @@ export RUN_USER
 export RUN_UID
 
 ##################################################
-# Release
+# Dev release
 ##################################################
 release-build:
 	docker buildx build \
-	  --target release \
+	  --target dev \
 		--platform=linux/amd64 \
 		--build-arg RUN_USER=$(RUN_USER) \
 		--build-arg RUN_UID=$(RUN_UID) \
 		$(OPTS) \
 		.
+
+##################################################
+# Release
+##################################################
+#release-build:
+#	docker buildx build \
+#	  --target release \
+#		--platform=linux/amd64 \
+#		--build-arg RUN_USER=$(RUN_USER) \
+#		--build-arg RUN_UID=$(RUN_UID) \
+#		$(OPTS) \
+#		.
 
 ##################################################
 # Local development
