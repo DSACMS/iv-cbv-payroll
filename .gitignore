@@ -19,6 +19,9 @@
 !/tmp/pids/.keep
 
 cbv/public/assets
+cbv/tmp/*
+cbv/tmp/cache/*
+*.cache
 
 # Ignore master key for decrypting credentials and more.
 cbv/config/master.key

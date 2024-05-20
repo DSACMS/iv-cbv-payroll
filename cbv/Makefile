@@ -26,7 +26,7 @@ export RUN_UID
 # Release
 ##################################################
 release-build:
-	docker buildx build \
+	docker buildx build --progress=plain  \
 	  --target release \
 		--platform=linux/amd64 \
 		--build-arg RUN_USER=$(RUN_USER) \
