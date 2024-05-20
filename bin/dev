@@ -5,6 +5,18 @@ if gem list --no-installed --exact --silent foreman; then
   gem install foreman
 fi
 
+if ! which ngrok >/dev/null; then
+  echo "Install ngrok to continue!"
+  echo "  brew install ngrok"
+  exit 1
+
+  if ! ngrok config check; then
+    echo "Set up ngrok to continue!"
+    echo "  https://dashboard.ngrok.com/get-started/setup/macos"
+    exit 1
+  fi
+fi
+
 # Default to port 3000 if not specified
 export PORT="${PORT:-3000}"
 

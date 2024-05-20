@@ -1,0 +1,13 @@
+name: Rubocop style checks
+
+on: [pull_request]
+
+jobs:
+  rspec:
+    name: Rubocop
+    runs-on: ubuntu-latest
+    services:
+    steps:
+      - uses: actions/checkout@v4
+      - name: Run Rubocop
+        run: bundle exec rubocop
