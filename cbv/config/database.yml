@@ -88,10 +88,12 @@ test:
 #
 production:
   <<: *default
-  database: iv_cbv_payroll_production
-  username: iv_cbv_payroll
-  password: <%= ENV["IV_CBV_PAYROLL_DATABASE_PASSWORD"] %>
-
+  database: <%= ENV.fetch("DB_NAME") { nil } %>
+  pool: <%= ENV.fetch("RAILS_MAX_THREADS") { 5 } %>
+  username: <%= ENV.fetch("DB_USER") { nil } %>
+  password: <%= ENV.fetch("DB_PASS") { nil } %>
+  port: <%= ENV.fetch("DB_PORT") { 5432 } %>
+  host: <%= ENV.fetch("DB_HOST") { "localhost" } %>
 ci:
   <<: *default
   # db will be configured by DATABASE_URL in CI. Use dev db here for ease of local use
