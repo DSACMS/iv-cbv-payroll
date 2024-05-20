@@ -121,12 +121,6 @@ FROM base as release
 
 WORKDIR /rails
 ENV RAILS_ENV="production"
-# handle app logging
-RUN touch log/production.log
-RUN chmod 0664 log/production.log
-
-RUN rm -f log/development.log
-RUN rm -f log/test.log
 
 # Install packages needed for deployment
 RUN apt-get update -qq && \
