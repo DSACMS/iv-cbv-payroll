@@ -62,8 +62,6 @@ of the test.
 
 To run locally, use `bin/dev`
 
-Separately, run `ngrok 3000`. Copy the Forwarding URL into your .env.local value for `NGROK_URL`.
-
 ## Security
 
 ### Authentication

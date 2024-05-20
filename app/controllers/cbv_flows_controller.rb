@@ -1,8 +1,4 @@
 class CbvFlowsController < ApplicationController
-  USER_TOKEN_ENDPOINT = "https://api-sandbox.argyle.com/v2/users"
-  ITEMS_ENDPOINT = "https://api-sandbox.argyle.com/v2/items"
-  PAYSTUBS_ENDPOINT = "https://api-sandbox.argyle.com/v2/paystubs?user="
-
   before_action :set_cbv_flow
 
   def entry

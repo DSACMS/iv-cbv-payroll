@@ -3,11 +3,12 @@
 require "faraday"
 
 class ArgyleService
-  BASE_URL = "https://api-sandbox.argyle.com/v2"
-  USERS_ENDPOINT = "users"
-  USER_TOKENS_ENDPOINT = "user-tokens"
-  ITEMS_ENDPOINT = "items"
-  PAYSTUBS_ENDPOINT = "paystubs"
+  BASE_URL = "https://api-sandbox.argyle.com"
+  USERS_ENDPOINT = "/v2/users"
+  USER_TOKENS_ENDPOINT = "/v2/user-tokens"
+  ITEMS_ENDPOINT = "/v2/items"
+  PAYSTUBS_ENDPOINT = "/v2/paystubs"
+  WEBHOOKS_ENDPOINT = "/v2/webhooks"
 
   def initialize
     api_key = Rails.application.credentials.argyle[:api_key]
@@ -49,5 +50,23 @@ class ArgyleService
 
   def refresh_user_token(user_id)
     @http.post(build_url(USER_TOKENS_ENDPOINT), { user: user_id }.to_json).body
+  end
+
+  def fetch_webhook_subscriptions
+    @http.get(build_url(WEBHOOKS_ENDPOINT)).body
+  end
+
+  def delete_webhook_subscription(id)
+    webhook_url = URI.join(build_url(WEBHOOKS_ENDPOINT) + "/", id)
+    @http.delete(webhook_url).body
+  end
+
+  def create_webhook_subscription(events, name, url, secret)
+    @http.post(build_url(WEBHOOKS_ENDPOINT), {
+      name: name,
+      events: events,
+      url: url,
+      secret: secret,
+    }.to_json).body
   end
 end
