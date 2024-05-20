@@ -10,6 +10,7 @@ guide for an introduction to the framework.
 
 ### Local Setup
 
+* All of these steps need to be run within the `cbv` directory
 * Install Xcode Command Line Tools
 * Install homebrew dependencies: `brew bundle`
   * rbenv
@@ -63,6 +64,20 @@ of the test.
 To run locally, use `bin/dev`
 
 Separately, run `ngrok 3000`. Copy the Forwarding URL into your .env.local value for `NGROK_URL`.
+
+
+### Deploy / Infrastructure Configuration
+1. Get an AWS account and configure your IAM credentials via `aws configure`
+2. `make infra-set-up-account ACCOUNT_NAME="nava-cbv-dev"`
+
+After making changes to cbv code, build a new Docker image via (in `cbv` directory):
+`docker build --platform linux/amd64 --tag iv-cbv-payroll-cbv:latest`
+`make release-publish APP_NAME=app IMAGE_TAG=latest`
+`make release-deploy APP_NAME=app ENVIRONMENT_NAME=dev IMAGE_TAG=latest`
+
+After making changes to infrastructure, deploy them via:
+`make infra-update-app-service APP_NAME=app ENVIRONMENT=dev`
+
 
 ## Security
 
@@ -132,25 +147,11 @@ Security scans are also run on a scheduled basis. Weekly for static code scans, 
 
 ### Deployment
 
-Each environment has dependencies on a PostgreSQL RDS instance managed by cloud.gov.
-See [cloud.gov docs](https://cloud.gov/docs/services/relational-database/) for information on RDS.
+TK
 
 #### Staging
 
-Deploys to staging, including applying changes in terraform, happen
-on every push to the `main` branch in GitHub.
-
-The following secrets must be set within the `staging` [environment secrets](https://docs.github.com/en/actions/reference/encrypted-secrets#creating-encrypted-secrets-for-an-environment)
-to enable a deploy to work:
-
-| Secret Name | Description |
-| ----------- | ----------- |
-| `CF_USERNAME` | cloud.gov SpaceDeployer username |
-| `CF_PASSWORD` | cloud.gov SpaceDeployer password |
-| `RAILS_MASTER_KEY` | `config/master.key` |
-| `TERRAFORM_STATE_ACCESS_KEY` | Access key for terraform state bucket |
-| `TERRAFORM_STATE_SECRET_ACCESS_KEY` | Secret key for terraform state bucket |
-
+TK
 
 
 #### Production
@@ -168,23 +169,6 @@ to enable a deploy to work:
 | `RAILS_MASTER_KEY` | `config/credentials/production.key` |
 | `TERRAFORM_STATE_ACCESS_KEY` | Access key for terraform state bucket |
 | `TERRAFORM_STATE_SECRET_ACCESS_KEY` | Secret key for terraform state bucket |
-
-
-
-### Configuring ENV variables in cloud.gov
-
-All configuration that needs to be added to the deployed application's ENV should be added to
-the `env:` block in `manifest.yml`
-
-Items that are both **public** and **consistent** across staging and production can be set directly there.
-
-Otherwise, they are set as a `((variable))` within `manifest.yml` and the variable is defined depending on sensitivity:
-
-#### Credentials and other Secrets
-
-1. Store variables that must be secret using [GitHub Environment Secrets](https://docs.github.com/en/actions/reference/encrypted-secrets#creating-encrypted-secrets-for-an-environment)
-1. Add the secret to the `env:` block of the deploy action [as in this example](https://github.com/OHS-Hosting-Infrastructure/complaint-tracker/blob/a9e8d22aae2023a0afb631a6182251c04f597f7e/.github/workflows/deploy-stage.yml#L20)
-1. Add the appropriate `--var` addition to the `push_arguments` line on the deploy action [as in this example](https://github.com/OHS-Hosting-Infrastructure/complaint-tracker/blob/a9e8d22aae2023a0afb631a6182251c04f597f7e/.github/workflows/deploy-stage.yml#L27)
 
 #### Non-secrets
 
