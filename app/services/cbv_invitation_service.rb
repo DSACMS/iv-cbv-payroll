@@ -1,9 +1,6 @@
 class CbvInvitationService
   def invite(email_address, case_number)
-    invitation = CbvFlowInvitation.create({
-      email_address: email_address,
-      case_number: case_number,
-    })
+    invitation = CbvFlowInvitation.create(email_address: email_address, case_number: case_number)
 
     send_invitation_email(email_address, invitation.to_url)
   end
