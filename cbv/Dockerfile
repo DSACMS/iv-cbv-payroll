@@ -113,7 +113,7 @@ RUN bundle config set --local without development test && \
 RUN bundle exec bootsnap precompile --gemfile app/ lib/
 
 # Precompiling assets for production without requiring secret RAILS_MASTER_KEY
-# RUN SECRET_KEY_BASE=1 bin/rails assets:precompile --trace
+RUN bin/rails assets:precompile --trace
 ##########################################################################################
 # RELEASE: Used for production
 ##########################################################################################
@@ -121,7 +121,6 @@ FROM base as release
 
 WORKDIR /rails
 ENV RAILS_ENV="production"
-
 # handle app logging
 RUN touch log/production.log
 RUN chmod 0664 log/production.log
