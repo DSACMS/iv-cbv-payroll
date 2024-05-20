@@ -61,3 +61,4 @@ cbv/config/credentials/development.key
 
 # Host machine specific
 .DS_Store
+/cbv/tmp/
