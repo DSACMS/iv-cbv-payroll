@@ -13,4 +13,5 @@ jobs:
       - name: Set up Ruby & Javascript
         uses: ./.github/actions/setup-languages
       - name: Run Rubocop
+        working-directory: cbv
         run: bundle exec rubocop
