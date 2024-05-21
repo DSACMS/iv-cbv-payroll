@@ -11,6 +11,9 @@ on:
         description: "the name of the application environment (e.g. dev, staging, prod)"
         required: true
         type: string
+defaults:
+  run:
+    working-directory: ./app
 
 concurrency: cd-${{inputs.app_name}}-${{ inputs.environment }}
 
@@ -19,7 +22,7 @@ jobs:
   # workflow already calls it
   database-migrations:
     name: Database migrations
-    uses: ./.github/workflows/database-migrations.yml
+    uses: ./../.github/workflows/database-migrations.yml
     with:
       app_name: ${{ inputs.app_name }}
       environment: ${{ inputs.environment }}
@@ -34,7 +37,7 @@ jobs:
       - uses: actions/checkout@v3
 
       - name: Configure AWS credentials
-        uses: ./.github/actions/configure-aws-credentials
+        uses: ./../.github/actions/configure-aws-credentials
         with:
           app_name: ${{ inputs.app_name }}
           environment: ${{ inputs.environment }}

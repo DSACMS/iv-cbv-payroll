@@ -66,7 +66,7 @@ class ArgyleService
       name: name,
       events: events,
       url: url,
-      secret: secret,
+      secret: secret
     }.to_json).body
   end
 end
