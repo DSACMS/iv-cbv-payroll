@@ -86,7 +86,7 @@ TBD
 The system's Content-Security-Policy header prevents `<script>` and `<style>` tags from working without further
 configuration. Use `<%= javascript_tag nonce: true %>` for inline javascript.
 
-See the [CSP compliant script tag helpers](./doc/adr/0004-rails-csp-compliant-script-tag-helpers.md) ADR for
+See the [CSP compliant script tag helpers](./cbv/doc/adr/0004-rails-csp-compliant-script-tag-helpers.md) ADR for
 more information on setting these up successfully.
 
 ## Internationalization

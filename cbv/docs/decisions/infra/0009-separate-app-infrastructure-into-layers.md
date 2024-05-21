@@ -37,4 +37,4 @@ Based on the factors in the section below, the infrastructure has been grouped i
 ## Links
 
 * Based on [ADR-0005](./0005-separate-database-infrastructure-into-separate-layer.md)
-* [Module architecture](/docs/infra/module-architecture.md)
+* [Module architecture](/cbv/docs/infra/module-architecture.md)
