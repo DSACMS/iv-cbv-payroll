@@ -11,16 +11,18 @@ name: Brakeman Scan
 on:
   push:
     branches: [ main ]
-    paths-ignore:
-      - 'doc/**'
-      - 'README.md'
+    paths: ['app/**']
   pull_request:
     # The branches below must be a subset of the branches above
     branches: [ main ]
+    paths: ['app/**']
   schedule:
     # cron format: 'minute hour dayofmonth month dayofweek'
     # this will run at noon UTC each Monday (7am EST / 8am EDT)
     - cron: '0 12 * * 1'
+defaults:
+  run:
+    working-directory: ./app
 
 jobs:
   brakeman-scan:
@@ -33,5 +35,6 @@ jobs:
 
     # Execute Brakeman CLI.
     - name: Scan
+      working-directory: app
       run: |
         bundle exec brakeman .
