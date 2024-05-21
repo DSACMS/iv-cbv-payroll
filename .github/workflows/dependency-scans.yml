@@ -13,9 +13,6 @@ on:
     # cron format: 'minute hour dayofmonth month dayofweek'
     # this will run at noon UTC every day (7am EST / 8am EDT)
     - cron: '0 12 * * *'
-defaults:
-  run:
-    working-directory: ./cbv
 
 jobs:
   bundle-audit:
@@ -25,10 +22,11 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - uses: ./../.github/actions/setup-languages
+      - uses: ./.github/actions/setup-languages
 
       - name: Update advisory database and run checks
         run: bundle exec rake bundler:audit
+        working-directory: cbv
 
   yarn-audit:
     name: Yarn audit
@@ -37,9 +35,10 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - uses: ./../.github/actions/setup-languages
+      - uses: ./.github/actions/setup-languages
 
       - name: Run yarn audit
+        working-directory: cbv
         run: bundle exec rake yarn:audit
 
   ruby-bom:
@@ -48,12 +47,14 @@ jobs:
 
     steps:
       - uses: actions/checkout@v4
-      - uses: ./../.github/actions/setup-languages
+      - uses: ./.github/actions/setup-languages
       - name: Install cyclonedx
         run: gem install cyclonedx-ruby
       - name: Generate BOM
+        working-directory: cbv
         run: cyclonedx-ruby -p . -o ruby_bom.xml
       - name: Save BOM
+        working-directory: cbv
         uses: actions/upload-artifact@v3
         with:
           name: ruby-bom

@@ -3,9 +3,6 @@ name: Rubocop style checks
 on:
   pull_request:
     paths: ['cbv/**']
-defaults:
-  run:
-    working-directory: ./cbv
 
 jobs:
   rspec:
@@ -14,6 +11,6 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - name: Set up Ruby & Javascript
-        uses: ../.github/actions/setup-languages
+        uses: ./.github/actions/setup-languages
       - name: Run Rubocop
         run: bundle exec rubocop

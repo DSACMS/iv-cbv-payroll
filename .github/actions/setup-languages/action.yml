@@ -4,21 +4,25 @@ runs:
   using: composite
   steps:
     - name: Cleanup gemfile
-      uses: ./../.github/actions/cleanup-gemfile
+      uses: ./.github/actions/cleanup-gemfile
 
     - name: Set up Ruby
       uses: ruby/setup-ruby@v1
+      working-directory: cbv
 
     - name: Install Dependencies
       shell: bash
+      working-directory: cbv
       run: bundle install
 
     - name: Set up node
       uses: actions/setup-node@v4
+      working-directory: cbv
       with:
-        node-version-file: '.node-version'
+        node-version-file: 'cbv/.node-version'
         cache: 'yarn'
 
     - name: Install yarn dependencies
       shell: bash
+      working-directory: cbv
       run: yarn install --frozen-lockfile

@@ -17,12 +17,13 @@ runs:
   using: composite
   steps:
     - name: Set up Ruby & Javascript
-      uses: ./../.github/actions/setup-languages
+      uses: ./.github/actions/setup-languages
 
     - name: Precompile assets
       env:
         RAILS_ENV: ${{ inputs.rails_env }}
       shell: bash
+      working-directory: cbv
       run: bundle exec rake assets:precompile
 
     - name: Set up database
@@ -30,4 +31,5 @@ runs:
         RAILS_ENV: ${{ inputs.rails_env }}
         DATABASE_URL: ${{ inputs.database_url }}
       shell: bash
+      working-directory: cbv
       run: bundle exec rake db:schema:load

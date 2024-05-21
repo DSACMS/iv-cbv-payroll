@@ -3,9 +3,6 @@ name: rspec tests
 on:
   pull_request:
     paths: ['cbv/**']
-defaults:
-  run:
-    working-directory: ./cbv
 
 jobs:
   rspec:

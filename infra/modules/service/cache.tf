@@ -3,8 +3,8 @@
 #---------------
 
 # Create a Redis cluster
-# checkov:skip=CKV_AWS_134:The cache does not need backup as it is ephemeral data only
 resource "aws_elasticache_cluster" "redis_cluster" {
+  # checkov:skip=CKV_AWS_134:The cache does not need backup as it is ephemeral data only
   cluster_id           = "cbv-payroll-redis-cluster"
   engine               = "redis"
   node_type            = "cache.t2.micro"
