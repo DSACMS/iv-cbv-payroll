@@ -1,12 +1,7 @@
 require "rails_helper"
 
 RSpec.describe CbvFlowsController do
-  def stub_environment_variable(variable, value, &block)
-    previous_value = ENV[variable]
-    ENV[variable] = value
-    block.call
-    ENV[variable] = previous_value
-  end
+  include ArgyleApiHelper
 
   around do |ex|
     stub_environment_variable("ARGYLE_API_TOKEN", "foobar", &ex)
@@ -27,16 +22,63 @@ RSpec.describe CbvFlowsController do
         .from(nil)
         .to(be_an(Integer))
     end
+
+    context "when following a link from a flow invitation" do
+      let(:invitation) { CbvFlowInvitation.create(case_number: "ABC1234") }
+
+      it "sets a CbvFlow object based on the invitation" do
+        expect { get :entry, params: { token: invitation.auth_token } }
+          .to change { session[:cbv_flow_id] }
+          .from(nil)
+          .to(be_an(Integer))
+
+        cbv_flow = CbvFlow.find(session[:cbv_flow_id])
+        expect(cbv_flow).to have_attributes(
+          case_number: "ABC1234",
+          cbv_flow_invitation: invitation
+        )
+      end
+
+      context "when returning to an already-visited flow invitation" do
+        let(:existing_cbv_flow) { CbvFlow.create(case_number: "ABC1234", cbv_flow_invitation: invitation) }
+
+        it "uses the existing CbvFlow object" do
+          expect { get :entry, params: { token: invitation.auth_token } }
+            .to change { session[:cbv_flow_id] }
+            .from(nil)
+            .to(existing_cbv_flow.id)
+        end
+      end
+
+      context "when the token is invalid" do
+        it "redirects to the homepage" do
+          expect { get :entry, params: { token: "some-invalid-token" } }
+            .not_to change { session[:cbv_flow_id] }
+
+          expect(response).to redirect_to(root_url)
+        end
+      end
+    end
+
+    context "when the session points to a deleted cbv flow" do
+      before do
+        session[:cbv_flow_id] = -1
+      end
+
+      it "uses the existing CbvFlow object" do
+        get :entry
+
+        expect(response).to redirect_to(root_url)
+      end
+    end
   end
 
   describe "#employer_search" do
     let(:cbv_flow) { CbvFlow.create(case_number: "ABC1234") }
-    let(:argyle_mock_response) do
-      {
-        id: "abc-def-ghi",
-        user_token: "foobar"
-      }
-    end
+
+    let(:argyle_user_id) { "abc-def-ghi" }
+
+    let(:user_token) { "foobar" }
 
     let(:argyle_mock_items_response) do
       {
@@ -51,14 +93,8 @@ RSpec.describe CbvFlowsController do
 
     before do
       session[:cbv_flow_id] = cbv_flow.id
-
-      allow(Net::HTTP).to receive(:post)
-        .with(URI(CbvFlowsController::USER_TOKEN_ENDPOINT), anything, anything)
-        .and_return(instance_double(Net::HTTPOK, code: "200", body: JSON.generate(argyle_mock_response)))
-
-      allow(Net::HTTP).to receive(:get)
-        .with(URI(CbvFlowsController::ITEMS_ENDPOINT), anything)
-        .and_return(JSON.generate(argyle_mock_items_response))
+      stub_request_items_response
+      stub_create_user_response(user_id: argyle_user_id)
     end
 
     context "when rendering views" do
@@ -73,25 +109,25 @@ RSpec.describe CbvFlowsController do
     context "when the user does not have an Argyle token" do
       it "requests a new token from Argyle" do
         get :employer_search
-        expect(Net::HTTP).to have_received(:post).once
+        expect(response).to be_ok
       end
 
       it "saves the token in the CbvFlow model" do
         expect { get :employer_search }
           .to change { cbv_flow.reload.argyle_user_id }
           .from(nil)
-          .to(argyle_mock_response[:id])
+          .to(argyle_user_id)
       end
     end
 
     context "when the user already has an Argyle token in their session" do
       before do
-        session[:argyle_user_token] = argyle_mock_response[:user_token]
+        session[:argyle_user_token] = user_token
       end
 
       it "does not request a new User Token from Argyle" do
         get :employer_search
-        expect(Net::HTTP).not_to have_received(:post)
+        expect(response).to be_ok
       end
     end
   end
@@ -100,45 +136,43 @@ RSpec.describe CbvFlowsController do
     render_views
 
     let(:cbv_flow) { CbvFlow.create(case_number: "ABC1234", argyle_user_id: "abc-def-ghi") }
-    let(:argyle_mock_paystubs_response) do
-      {
-        results: [
-          {
-            id: '018f1bc6-fa6e-a553-85ba-35fd755caf3b',
-            name: 'ACME',
-            net_pay: "1000",
-            hours: "40",
-            rate: "25",
-            paystub_period: {
-              start_date: "2021-01-01",
-              end_date: "2021-01-15"
-            }
-          },
-          {
-            id: '018f1bc6-fa6e-a553-85ba-35fd755c1234',
-            name: 'ACME',
-            net_pay: "1000",
-            hours: "40",
-            rate: "25",
-            paystub_period: {
-              start_date: "2021-01-01",
-              end_date: "2021-01-15"
-            }
-          }
-        ]
-      }
-    end
 
     before do
       session[:cbv_flow_id] = cbv_flow.id
-
-      allow(Net::HTTP).to receive(:get)
-        .with(URI("#{CbvFlowsController::PAYSTUBS_ENDPOINT}#{cbv_flow.argyle_user_id}"), anything)
-        .and_return(JSON.generate(argyle_mock_paystubs_response))
+      stub_request_paystubs_response
     end
 
     it "renders properly" do
       get :summary
+      expect(response).to be_successful
+    end
+
+    context "when saving additional information for the caseworker" do
+      let(:additional_information) { "This is some additional information for the caseworker" }
+
+      it "saves and redirects to the next page" do
+        expect do
+          patch :summary, params: { cbv_flow: { additional_information: additional_information } }
+        end.to change { cbv_flow.reload.additional_information }
+          .from(nil)
+          .to(additional_information)
+
+        expect(response).to redirect_to(cbv_flow_share_path)
+      end
+    end
+  end
+
+  describe "#share" do
+    render_views
+
+    let(:cbv_flow) { CbvFlow.create(case_number: "ABC1234", argyle_user_id: "abc-def-ghi") }
+
+    before do
+      session[:cbv_flow_id] = cbv_flow.id
+    end
+
+    it "renders" do
+      get :share
       expect(response).to be_successful
     end
   end

@@ -63,9 +63,6 @@ of the test.
 
 To run locally, use `bin/dev`
 
-Separately, run `ngrok 3000`. Copy the Forwarding URL into your .env.local value for `NGROK_URL`.
-
-
 ### Deploy / Infrastructure Configuration
 1. Get an AWS account and configure your IAM credentials via `aws configure`
 2. `make infra-set-up-account ACCOUNT_NAME="nava-cbv-dev"`
@@ -77,7 +74,6 @@ After making changes to cbv code, build a new Docker image via (in `cbv` directo
 
 After making changes to infrastructure, deploy them via:
 `make infra-update-app-service APP_NAME=app ENVIRONMENT=dev`
-
 
 ## Security
 

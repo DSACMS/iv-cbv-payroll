@@ -16,14 +16,22 @@ en:
       security_message: Your information is secure. We will not share or keep your log in information. You will be able to preview and approve everything that is shared with your caseworker.
       subheader: We'll connect to your payment records to get proof of payments to your caseworker and get benefits faster.
     manual_flow_start: Start Flow Manually
-    summary:
-      description: Below is payment information from your employer for the past 90 days.
+    share:
+      body: Thank you for completing income verification. Click the button below to preview your results and share it with your caseworker.
       download_pdf: Download PDF
+      header: Share your income with your caseworker
+      share_with_caseworker: Share with Case Worker
+    summary:
+      additional_information_title: Is there anything else you'd like your caseworker to know about your income?
+      description: Below is payment information from your employer for the past 90 days.
+      form:
+        additional_info:
+          label: Is there anything else you'd like your caseworker to know about your income?
+        subheader: Confirm your income amount
+        submit: Continue
       header: Review payment information from your employer
       none_found: No payments found. Please refresh the page after a few minutes.
       payment_of: Payment of %{amount}
-      share_with_caseworker: Share with Case Worker
-      subheader: How would you like to share this information?
       time_range: "%{hours} hours from %{start} to %{end}"
       total_payments: Total Payments
   shared:
@@ -53,3 +61,8 @@ en:
       description: This website can help you get approved for your benefits.
       subheader: Get started here by requesting a link from your caseworker.
       welcome: Welcome to Verify.gov
+  us_form_with:
+    boolean_false: 'No'
+    boolean_true: 'Yes'
+    date_picker_format: 'Format: mm/dd/yyyy'
+    optional: Optional

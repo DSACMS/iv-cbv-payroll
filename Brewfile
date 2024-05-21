@@ -31,3 +31,6 @@ brew "redis"
 
 # Terraform version manager for infrastructure
 brew "tfenv"
+
+# ngrok local tunnel to receive argyle webhooks
+brew "ngrok"

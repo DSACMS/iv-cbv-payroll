@@ -3,61 +3,61 @@ require 'support/account_connected_webhook_stub'
 require 'support/payroll_documents_response_stub'
 
 RSpec.describe ArgyleService, type: :service do
+  include ArgyleApiHelper
   let(:service) { ArgyleService.new }
-  let(:account_id) { 'account_id' }
-  let(:user_id) { 'user_id' }
-  let(:fake_response) { instance_double(Faraday::Response, body: payroll_documents_response_stub) }
+  let(:user_id) { 'abc123' }
 
-  describe 'Initialization' do
-    it 'has a default API endpoint pointing to the sandbox' do
-      service = ArgyleService.new
-      expected_url = "https://api-sandbox.argyle.com/v2"
-      puts expected_url
-      expect(service.instance_variable_get(:@http).url_prefix.to_s).to include(expected_url)
+  describe '#fetch_items' do
+    before do
+      stub_request_items_response
+    end
+
+    it 'returns a non-empty response' do
+      response = service.fetch_items({ q: 'test' })
+      expect(response).not_to be_empty
     end
   end
 
-  describe '#items' do
+  describe '#fetch_paystubs' do
     before do
-      # Stub the HTTP call to return a non-empty JSON response
-      fake_response = instance_double(Faraday::Response, body: '[{"id": "12345"}]')
-      allow_any_instance_of(Faraday::Connection).to receive(:get).with("items", { q: nil }).and_return(fake_response)
+      stub_request_paystubs_response
     end
+
     it 'returns a non-empty response' do
       service = ArgyleService.new
-      response = service.items
+      response = service.fetch_paystubs({ user: user_id })
       expect(response).not_to be_empty
-      expect(response.first['id']).to eq("12345")
     end
   end
 
-  describe '#payroll_documents' do
-    context 'when ConnectedArgyleAccount exists' do
-      before do
-        # simulate that fetching the payroll documents returns a non-empty JSON response resembling payroll data
-        allow_any_instance_of(Faraday::Connection).to receive(:get).with("payroll-documents", { account: account_id, user: user_id }).and_return(fake_response)
-      end
-
-      it 'invokes the ArguleApiService and returns payroll documents' do
-        # simulate that we have a ConnectedArgyleAccount record
-        allow(ConnectedArgyleAccount).to receive(:exists?).with(user_id: user_id, account_id: account_id).and_return(true)
-        response = service.payroll_documents(account_id, user_id)
-
-        # expect that user_id, account_id stored in the ConnectedArgyleAccount record match the id and acount in the response
-        expect(response).not_to be_empty
-        expect(response['data'][0]['id']).to eq(JSON.parse(fake_response.body)['data'][0]['id'])
-        expect(response['data'][0]['account']).to eq(JSON.parse(fake_response.body)['data'][0]['account'])
-      end
+  describe '#create_user' do
+    before do
+      stub_create_user_response(user_id: user_id)
     end
 
-    context 'when ConnectedArgyleAccount does not exist' do
-      before do
-        allow(ConnectedArgyleAccount).to receive(:exists?).with(user_id: user_id, account_id: account_id).and_return(false)
-      end
+    it 'returns a user token' do
+      response = service.create_user
+      expect(response['user_token']).to eq(user_id)
+    end
+  end
 
-      it 'raises an error' do
-        expect { service.payroll_documents(account_id, user_id) }.to raise_error("Argyle error: Account not connected")
-      end
+  describe '#refresh_user_token' do
+    before do
+      stub_refresh_user_token_response
+    end
+
+    it 'returns a refreshed user token' do
+      service = ArgyleService.new
+      response = service.refresh_user_token(user_id)
+      expect(response['user_token']).to eq("abc123")
+    end
+  end
+
+  describe 'Error handling' do
+    skip 'raises an error when the API key is blank' do
+    end
+
+    skip 'raises an error when receiving a 400' do
     end
   end
 end

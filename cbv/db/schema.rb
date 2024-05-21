@@ -10,11 +10,19 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2024_05_02_195250) do
+ActiveRecord::Schema[7.0].define(version: 2024_05_17_211007) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
   create_table "applicants", force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "cbv_flow_invitations", force: :cascade do |t|
+    t.string "email_address"
+    t.string "case_number"
+    t.string "auth_token"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end
@@ -25,6 +33,9 @@ ActiveRecord::Schema[7.0].define(version: 2024_05_02_195250) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.date "payroll_data_available_from"
+    t.bigint "cbv_flow_invitation_id"
+    t.text "additional_information"
+    t.index ["cbv_flow_invitation_id"], name: "index_cbv_flows_on_cbv_flow_invitation_id"
   end
 
   create_table "connected_argyle_accounts", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
@@ -34,4 +45,5 @@ ActiveRecord::Schema[7.0].define(version: 2024_05_02_195250) do
     t.index ["user_id", "account_id"], name: "index_connected_argyle_accounts_on_user_id_and_account_id", unique: true
   end
 
+  add_foreign_key "cbv_flows", "cbv_flow_invitations"
 end
