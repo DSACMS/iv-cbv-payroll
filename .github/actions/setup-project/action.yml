@@ -17,7 +17,7 @@ runs:
   using: composite
   steps:
     - name: Set up Ruby & Javascript
-      uses: ../.github/actions/setup-languages
+      uses: ./../.github/actions/setup-languages
 
     - name: Precompile assets
       env:

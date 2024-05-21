@@ -31,7 +31,7 @@ jobs:
     steps:
     - uses: actions/checkout@v4
 
-    - uses: ../.github/actions/setup-languages
+    - uses: ./../.github/actions/setup-languages
 
     # Execute Brakeman CLI.
     - name: Scan
