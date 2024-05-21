@@ -8,7 +8,8 @@ runs:
 
     - name: Set up Ruby
       uses: ruby/setup-ruby@v1
-      working-directory: cbv
+      with:
+        working-directory: cbv
 
     - name: Install Dependencies
       shell: bash
@@ -17,7 +18,6 @@ runs:
 
     - name: Set up node
       uses: actions/setup-node@v4
-      working-directory: cbv
       with:
         node-version-file: 'cbv/.node-version'
         cache: 'yarn'
