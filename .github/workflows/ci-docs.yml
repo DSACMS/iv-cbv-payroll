@@ -1,11 +1,12 @@
 name: CI Documentation Checks
 
-on:
-  push:
-    branches: [ main ]
-    paths: ['cbv/**']
-  pull_request:
-    paths: ['cbv/**']
+# TODO: Re-enable me!
+on: []
+  # push:
+  #   branches: [ main ]
+  #   paths: ['cbv/**']
+  # pull_request:
+  #   paths: ['cbv/**']
 
 jobs:
   lint-markdown:

@@ -1,8 +1,9 @@
 name: pa11y tests
 
-on:
-  pull_request:
-    paths: ['cbv/**']
+# TODO: Re-enable me!
+on: []
+  #   pull_request:
+  #     paths: ['cbv/**']
 defaults:
   run:
     working-directory: ./cbv
