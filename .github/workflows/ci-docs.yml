@@ -2,10 +2,10 @@ name: CI Documentation Checks
 
 on:
   push:
-    branches:
-      - main
+    branches: [ main ]
+    paths: ['cbv/**']
   pull_request:
-
+    paths: ['cbv/**']
 
 jobs:
   lint-markdown:

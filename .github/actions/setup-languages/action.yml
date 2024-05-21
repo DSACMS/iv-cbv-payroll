@@ -4,7 +4,7 @@ runs:
   using: composite
   steps:
     - name: Cleanup gemfile
-      uses: ./.github/actions/cleanup-gemfile
+      uses: ../.github/actions/cleanup-gemfile
 
     - name: Set up Ruby
       uses: ruby/setup-ruby@v1

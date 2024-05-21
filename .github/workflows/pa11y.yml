@@ -1,6 +1,11 @@
 name: pa11y tests
 
-on: [pull_request]
+on:
+  pull_request:
+    paths: ['cbv/**']
+defaults:
+  run:
+    working-directory: ./cbv
 
 jobs:
   pa11y_scan:

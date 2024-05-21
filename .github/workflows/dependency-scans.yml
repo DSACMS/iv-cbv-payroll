@@ -4,14 +4,18 @@ on:
   push:
     branches: [ main ]
     paths-ignore:
-      - 'doc/**'
-      - 'README.md'
+      - 'cbv/doc/**'
+      - 'cbv/README.md'
   pull_request:
     branches: [ main ]
+    paths: ['cbv/**']
   schedule:
     # cron format: 'minute hour dayofmonth month dayofweek'
     # this will run at noon UTC every day (7am EST / 8am EDT)
     - cron: '0 12 * * *'
+defaults:
+  run:
+    working-directory: ./cbv
 
 jobs:
   bundle-audit:
@@ -21,7 +25,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - uses: ./.github/actions/setup-languages
+      - uses: ../.github/actions/setup-languages
 
       - name: Update advisory database and run checks
         run: bundle exec rake bundler:audit
@@ -33,7 +37,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - uses: ./.github/actions/setup-languages
+      - uses: ../.github/actions/setup-languages
 
       - name: Run yarn audit
         run: bundle exec rake yarn:audit
@@ -44,7 +48,7 @@ jobs:
 
     steps:
       - uses: actions/checkout@v4
-      - uses: ./.github/actions/setup-languages
+      - uses: ../.github/actions/setup-languages
       - name: Install cyclonedx
         run: gem install cyclonedx-ruby
       - name: Generate BOM
