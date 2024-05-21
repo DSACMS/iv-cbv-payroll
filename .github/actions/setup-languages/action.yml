@@ -20,6 +20,7 @@ runs:
       uses: actions/setup-node@v4
       with:
         node-version-file: 'cbv/.node-version'
+        cache-dependency-path: 'cbv/yarn.lock'
         cache: 'yarn'
 
     - name: Install yarn dependencies

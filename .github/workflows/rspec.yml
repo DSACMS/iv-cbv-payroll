@@ -24,14 +24,15 @@ jobs:
 
     steps:
       - uses: actions/checkout@v4
-      - uses: ./../.github/actions/cleanup-gemfile
+      - uses: ./.github/actions/cleanup-gemfile
 
       - id: setup
-        uses: ./../.github/actions/setup-project
+        uses: ./.github/actions/setup-project
         with:
           rails_env: test
 
       - name: Run rspec
+        working-directory: cbv
         env:
           RAILS_ENV: test
           DATABASE_URL: ${{ steps.setup.outputs.database_url }}
