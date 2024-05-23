@@ -14,13 +14,13 @@ locals {
   # 2. Each environment's config will have a database_config property that is used to
   #    pass db_vars into the infra/modules/service module, which provides the necessary
   #    configuration for the service to access the database
-  has_database = false
+  has_database = true
 
   # Whether or not the application depends on external non-AWS services.
   # If enabled, the networks associated with this application's environments
   # will have NAT gateways, which allows the service in the private subnet to
   # make calls to the internet.
-  has_external_non_aws_service = false
+  has_external_non_aws_service = true
 
   has_incident_management_service = false
 
@@ -64,10 +64,10 @@ locals {
   #     prod    = "prod"
   #   }
   account_names_by_environment = {
-    shared  = "dev"
-    dev     = "dev"
-    staging = "dev"
-    prod    = "prod"
+    shared  = "nava-ffs"
+    dev     = "nava-ffs"
+    staging = "nava-ffs"
+    prod    = "nava-ffs"
   }
 }
 
