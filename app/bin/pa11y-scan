@@ -7,4 +7,4 @@
 #  * no other server is listening on port 3000
 
 
-`dirname "$0"`/with-server "yarn run pa11y-ci"
+`dirname "$0"`/with-server "npm run pa11y-ci"

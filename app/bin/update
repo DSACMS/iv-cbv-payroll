@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-yarn install
+npm install
 bundle install
 
 bin/rails db:migrate

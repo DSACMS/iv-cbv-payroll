@@ -35,9 +35,7 @@ guide for an introduction to the framework.
 * Install NodeJS `nodenv install`
 * Install Ruby dependencies: `bundle install`
 * Install JS dependencies
-  * `npm install -g yarn`
   * `nodenv rehash`
-  * `yarn install`
 * Start postgres & redis:
   * `brew services start postgresql@12`
   * `brew services start redis`
@@ -111,7 +109,7 @@ For more information on usage and helpful rake tasks to manage locale files, see
 * Dynamic security scan: `./bin/owasp-scan`
 * Ruby static security scan: `bundle exec rake brakeman`
 * Ruby dependency checks: `bundle exec rake bundler:audit`
-* JS dependency checks: `bundle exec rake yarn:audit`
+* JS dependency checks: `bundle exec rake npm:audit`
 
 Run everything: `bundle exec rake`
 

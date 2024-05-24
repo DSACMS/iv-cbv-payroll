@@ -20,11 +20,11 @@ rescue LoadError
   # no-op, probably in a production environment
 end
 
-namespace :yarn do
-  desc "Run yarn audit"
+namespace :npm do
+  desc "Run npm audit"
   task :audit do
     require "open3"
-    stdout, stderr, status = Open3.capture3("yarn audit --json")
+    stdout, stderr, status = Open3.capture3("npm audit --json")
     unless status.success?
       puts stderr
       parsed = JSON.parse("[#{stdout.lines.join(",")}]")
@@ -32,7 +32,7 @@ namespace :yarn do
       if /503 Service Unavailable/.match?(stderr)
         puts "Ignoring unavailable server"
       elsif all_issues_ignored?(parsed)
-        puts "Ignoring known and accepted yarn audit results"
+        puts "Ignoring known and accepted npm audit results"
       else
         puts "Failed with exit code #{status.exitstatus}"
         exit status.exitstatus
@@ -60,4 +60,4 @@ def all_issues_ignored?(issues)
   present_advisories_with_frequencies == ignored_advisories_with_frequencies
 end
 
-task default: [ "standard", "brakeman", "bundler:audit", "yarn:audit" ]
+task default: [ "standard", "brakeman", "bundler:audit", "npm:audit" ]

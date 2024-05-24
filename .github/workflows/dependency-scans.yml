@@ -26,8 +26,8 @@ jobs:
       - name: Update advisory database and run checks
         run: bundle exec rake bundler:audit
 
-  yarn-audit:
-    name: Yarn audit
+  npm-audit:
+    name: npm audit
     runs-on: ubuntu-latest
 
     steps:
@@ -35,8 +35,8 @@ jobs:
 
       - uses: ./.github/actions/setup-languages
 
-      - name: Run yarn audit
-        run: bundle exec rake yarn:audit
+      - name: Run npm audit
+        run: bundle exec rake npm:audit
 
   ruby-bom:
     name: Ruby SBOM Generation

@@ -24,9 +24,9 @@ potential SQL injection, Command Injection, open redirects, and other common vul
 
 bundle-audit checks our Ruby dependencies against a database of known CVE numbers.
 
-### Yarn Audit
+### Npm Audit
 
-yarn audit checks our Javascript dependencies against a database of known CVE numbers.
+npm audit checks our Javascript dependencies against a database of known CVE numbers.
 
 ### OWASP ZAP
 
