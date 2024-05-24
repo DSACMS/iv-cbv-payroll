@@ -8,7 +8,7 @@
   </p>
   <h3 class="site-preview-heading"><%= t('.total_payments') %> <%= number_to_currency(@payments.reduce(0) { |sum, payment| sum + payment[:amount] }) %></h3>
 
-  <div class="usa-accordion usa-accordion--multiselectable margin-bottom-4" data-allow-multiple>
+  <div class="usa-accordion usa-accordion--bordered usa-accordion--multiselectable margin-bottom-4" data-allow-multiple>
     <% @payments.each_with_index do |payment, index| %>
       <div class="usa-accordion__heading">
         <button
