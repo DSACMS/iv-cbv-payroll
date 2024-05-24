@@ -4,7 +4,8 @@ locals {
   # overridden per environment using terraform's `merge` function
   default_extra_environment_variables = {
     # Example environment variables
-    # WORKER_THREADS_COUNT    = 4
+    RAILS_LOG_TO_STDOUT = "true"
+    RAILS_SERVE_STATIC_FILES = "true"
     # LOG_LEVEL               = "info"
     # DB_CONNECTION_POOL_SIZE = 5
   }
@@ -14,10 +15,13 @@ locals {
   # store. Configurations are of the format
   # { name = "ENV_VAR_NAME", ssm_param_name = "/ssm/param/name" }
   secrets = [
-    # Example secret
-    # {
-    #   name           = "SECRET_SAUCE"
-    #   ssm_param_name = "/${var.app_name}-${var.environment}/secret-sauce"
-    # }
+    {
+      name           = "SECRET_KEY_BASE"
+      ssm_param_name = "/service/${var.app_name}-${var.environment}/rails-secret-key-base"
+    },
+    {
+      name           = "RAILS_MASTER_KEY"
+      ssm_param_name = "/service/${var.app_name}-${var.environment}/rails-master-key"
+    }
   ]
 }
