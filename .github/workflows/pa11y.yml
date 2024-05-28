@@ -1,7 +1,6 @@
 name: pa11y tests
 
 on: [pull_request]
-on: []
 defaults:
   run:
     working-directory: ./app
@@ -49,7 +48,7 @@ jobs:
 
       - name: Comment on pull request
         if: failure()
-        uses: actions/github-script@v4
+        uses: actions/github-script@v7
         with:
           script: |
             const output = `Pa11y Failures detected
