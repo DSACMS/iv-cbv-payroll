@@ -66,12 +66,12 @@ Separately, run `ngrok 3000`. Copy the Forwarding URL into your .env.local value
 
 ### Deploy / Infrastructure Configuration
 1. Get an AWS account and configure your IAM credentials via `aws configure`
-2. `make infra-set-up-account ACCOUNT_NAME="nava-cbv-dev"`
+2. `make infra-set-up-account ACCOUNT_NAME="nava-ffs"`
 
-After making changes to cbv code, build a new Docker image via (in `cbv` directory):
-`docker build --platform linux/amd64 --tag iv-cbv-payroll-cbv:latest`
-`make release-publish APP_NAME=app IMAGE_TAG=latest`
-`make release-deploy APP_NAME=app ENVIRONMENT_NAME=dev IMAGE_TAG=latest`
+After making changes to cbv code, build a new Docker image via (in `app` directory):
+`make release-build APP_NAME=app`
+`make release-publish APP_NAME=app IMAGE_TAG={commit:sha}`
+`make release-deploy APP_NAME=app ENVIRONMENT_NAME=dev IMAGE_TAG={commit:sha}`
 
 After making changes to infrastructure, deploy them via:
 `make infra-update-app-service APP_NAME=app ENVIRONMENT=dev`
