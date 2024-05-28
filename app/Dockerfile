@@ -101,5 +101,6 @@ COPY --from=release-build /rails /rails
 RUN useradd rails --create-home --shell /bin/bash && \
     chown -R rails:rails db log tmp
 USER rails:rails
+VOLUME /rails/tmp
 
 CMD bundle exec puma --pidfile /rails/tmp/puma-server.pid
