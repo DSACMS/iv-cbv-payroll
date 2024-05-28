@@ -11,14 +11,17 @@ runs:
 
     - name: Set up Ruby
       uses: ruby/setup-ruby@v1
+      with:
+        working-directory: app
     - name: Install Dependencies
       shell: bash
       run: bundle install
     - name: Set up node
       uses: actions/setup-node@v4
       with:
-        node-version-file: '.node-version'
+        node-version-file: 'app/.node-version'
         cache: 'npm'
     - name: Install npm dependencies
       shell: bash
+      working-directory: app
       run: npm install --frozen-lockfile

@@ -1,6 +1,9 @@
 # action.yml file for a custom composite action
 name: 'Remove Debug Gems'
 description: 'Removes debug-related gems from the Gemfile'
+defaults:
+  run:
+    working-directory: ./app
 runs:
   using: 'composite'
   steps:

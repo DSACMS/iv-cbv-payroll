@@ -1,5 +1,8 @@
 name: Set up project with database
 description: Setup Ruby, Javascript, and load the database schema into a running postgres db
+defaults:
+  run:
+    working-directory: ./app
 inputs:
   rails_env:
     description: RAILS_ENV to set. Defaults to ci
@@ -8,7 +11,7 @@ inputs:
   database_url:
     description: DATABASE_URL to set
     required: false
-    default: postgres://cidbuser:postgres@localhost:5432/iv_cbv_payroll_test
+    default: postgres://cidbuser:postgres@localhost:5432/iv_app_payroll_test
 outputs:
   database_url:
     description: The database URL that was set

@@ -1,9 +1,10 @@
 name: pa11y tests
 
+# TODO enable
 on: [pull_request]
-defaults:
-  run:
-    working-directory: ./app
+# defaults:
+#   run:
+#     working-directory: ./app
 
 jobs:
   pa11y_scan:
