@@ -15,6 +15,7 @@ runs:
         working-directory: app
     - name: Install Dependencies
       shell: bash
+      working-directory: app
       run: bundle install
     - name: Set up node
       uses: actions/setup-node@v4
