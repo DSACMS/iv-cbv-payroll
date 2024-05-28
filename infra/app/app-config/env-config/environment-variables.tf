@@ -4,7 +4,7 @@ locals {
   # overridden per environment using terraform's `merge` function
   default_extra_environment_variables = {
     # Example environment variables
-    RAILS_LOG_TO_STDOUT = "true"
+    RAILS_LOG_TO_STDOUT      = "true"
     RAILS_SERVE_STATIC_FILES = "true"
     # LOG_LEVEL               = "info"
     # DB_CONNECTION_POOL_SIZE = 5
