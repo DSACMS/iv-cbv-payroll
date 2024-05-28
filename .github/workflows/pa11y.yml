@@ -1,6 +1,10 @@
 name: pa11y tests
 
 on: [pull_request]
+on: []
+defaults:
+  run:
+    working-directory: ./app
 
 jobs:
   pa11y_scan:

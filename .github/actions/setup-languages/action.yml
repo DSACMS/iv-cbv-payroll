@@ -8,9 +8,12 @@ runs:
 
     - name: Set up Ruby
       uses: ruby/setup-ruby@v1
+      with:
+        working-directory: app
 
     - name: Install Dependencies
       shell: bash
+      working-directory: app
       run: bundle install
 
     - name: Set up node
@@ -22,3 +25,4 @@ runs:
     - name: Install npm dependencies
       shell: bash
       run: npm install --frozen-lockfile
+      working-directory: app
