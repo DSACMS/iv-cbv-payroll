@@ -103,4 +103,8 @@ RUN useradd rails --create-home --shell /bin/bash && \
 USER rails:rails
 VOLUME /rails/tmp
 
-CMD bundle exec puma --pidfile /rails/tmp/puma-server.pid
+# Run migrations
+RUN /usr/bin/db-migrate
+
+# Start the server
+CMD ["./bin/rails", "server"]
