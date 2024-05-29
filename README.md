@@ -1,7 +1,8 @@
 Income Verification: Consent-Based Verification (Payroll)
 ========================
 
-<<TKTK: quick summary of project>>
+## About the Project
+Consent-Based Verification (CBV) is an approach to allow benefit applicants to opt to verify their income via products that pull directly from payroll providers. This repository implements a product to demonstrate this technology for testing and validation purposes.
 
 ## Development
 
@@ -128,63 +129,23 @@ Security scans are also run on a scheduled basis. Weekly for static code scans, 
 
 ### Deployment
 
-Each environment has dependencies on a PostgreSQL RDS instance managed by cloud.gov.
-See [cloud.gov docs](https://cloud.gov/docs/services/relational-database/) for information on RDS.
+TK
 
-#### Staging
+#### Demo
 
-Deploys to staging, including applying changes in terraform, happen
-on every push to the `main` branch in GitHub.
-
-The following secrets must be set within the `staging` [environment secrets](https://docs.github.com/en/actions/reference/encrypted-secrets#creating-encrypted-secrets-for-an-environment)
-to enable a deploy to work:
-
-| Secret Name | Description |
-| ----------- | ----------- |
-| `CF_USERNAME` | cloud.gov SpaceDeployer username |
-| `CF_PASSWORD` | cloud.gov SpaceDeployer password |
-| `RAILS_MASTER_KEY` | `config/master.key` |
-| `TERRAFORM_STATE_ACCESS_KEY` | Access key for terraform state bucket |
-| `TERRAFORM_STATE_SECRET_ACCESS_KEY` | Secret key for terraform state bucket |
-
-
+TK
 
 #### Production
 
-Deploys to production, including applying changes in terraform, happen
-on every push to the `production` branch in GitHub.
-
-The following secrets must be set within the `production` [environment secrets](https://docs.github.com/en/actions/reference/encrypted-secrets#creating-encrypted-secrets-for-an-environment)
-to enable a deploy to work:
-
-| Secret Name | Description |
-| ----------- | ----------- |
-| `CF_USERNAME` | cloud.gov SpaceDeployer username |
-| `CF_PASSWORD` | cloud.gov SpaceDeployer password |
-| `RAILS_MASTER_KEY` | `config/credentials/production.key` |
-| `TERRAFORM_STATE_ACCESS_KEY` | Access key for terraform state bucket |
-| `TERRAFORM_STATE_SECRET_ACCESS_KEY` | Secret key for terraform state bucket |
-
-
-
-### Configuring ENV variables in cloud.gov
-
-All configuration that needs to be added to the deployed application's ENV should be added to
-the `env:` block in `manifest.yml`
-
-Items that are both **public** and **consistent** across staging and production can be set directly there.
-
-Otherwise, they are set as a `((variable))` within `manifest.yml` and the variable is defined depending on sensitivity:
+TK
 
 #### Credentials and other Secrets
 
-1. Store variables that must be secret using [GitHub Environment Secrets](https://docs.github.com/en/actions/reference/encrypted-secrets#creating-encrypted-secrets-for-an-environment)
-1. Add the secret to the `env:` block of the deploy action [as in this example](https://github.com/OHS-Hosting-Infrastructure/complaint-tracker/blob/a9e8d22aae2023a0afb631a6182251c04f597f7e/.github/workflows/deploy-stage.yml#L20)
-1. Add the appropriate `--var` addition to the `push_arguments` line on the deploy action [as in this example](https://github.com/OHS-Hosting-Infrastructure/complaint-tracker/blob/a9e8d22aae2023a0afb631a6182251c04f597f7e/.github/workflows/deploy-stage.yml#L27)
+TK
 
 #### Non-secrets
 
-Configuration that changes from staging to production, but is public, should be added to `config/deployment/staging.yml` and `config/deployment/production.yml`
+TK
 
 ## Monitoring with New Relic
 
@@ -199,6 +160,7 @@ To get started sending metrics via New Relic APM:
 1. Optionally, update `app_name` entries in `config/newrelic.yml` with what is registered for your application in New Relic
 1. Comment out the `agent_enabled: false` line in `config/newrelic.yml`
 1. Add the [Javascript snippet provided by New Relic](https://docs.newrelic.com/docs/browser/browser-monitoring/installation/install-browser-monitoring-agent) into `application.html.erb`. It is recommended to vary this based on environment (i.e. include one snippet for staging and another for production).
+
 ## Analytics
 
 Digital Analytics Program (DAP) code has been included for the Production environment, associated with GSA.
@@ -209,18 +171,7 @@ If Iv Cbv Payroll is for another agency, update the agency line in `app/views/la
 
 ### Architectural Decision Records
 
-Architectural Decision Records (ADR) are stored in `doc/adr`
-To create a new ADR, first install [ADR-tools](https://github.com/npryce/adr-tools) if you don't
-already have it installed.
-* `brew bundle` or `brew install adr-tools`
-
-Then create the ADR:
-*  `adr new Title Of Architectural Decision`
-
-This will create a new, numbered ADR in the `doc/adr` directory.
-
-Compliance diagrams are stored in `doc/compliance`. See the README there for more information on
-generating diagram updates.
+Our ADRs are stored in CMS Confluence: https://confluenceent.cms.gov/pages/viewpage.action?pageId=693666588
 
 ## Contributing
 
