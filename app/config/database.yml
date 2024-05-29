@@ -94,6 +94,7 @@ production:
   password: <%= ENV.fetch("DB_PASS") { nil } %>
   port: <%= ENV.fetch("DB_PORT") { 5432 } %>
   host: <%= ENV.fetch("DB_HOST") { "localhost" } %>
+  aws_rds_iam_auth_token_generator: default
 ci:
   <<: *default
   # db will be configured by DATABASE_URL in CI. Use dev db here for ease of local use
