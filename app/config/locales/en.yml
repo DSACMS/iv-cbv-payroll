@@ -34,6 +34,12 @@ en:
       payment_of: Payment of %{amount}
       time_range: "%{hours} hours from %{start} to %{end}"
       total_payments: Total Payments
+  applicant_mailer:
+    invitation_email:
+      greeting: Hello,
+      subject: Invitation to apply
+      body: A government agency has requested that you verify your income in connection with your application for benefits. Please click this link to begin the process.
+      thank_you: Thank you!
   shared:
     banner:
       gov_description_html: A <strong>.gov</strong> website belongs to an official government organization in the United States.

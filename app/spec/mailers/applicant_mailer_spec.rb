@@ -6,7 +6,7 @@ RSpec.describe ApplicantMailer, type: :mailer do
   let(:mail) { ApplicantMailer.with(email_address: email, link: link).invitation_email }
 
   it "renders the subject" do
-    expect(mail.subject).to eq("Invitation to apply")
+    expect(mail.subject).to eq(I18n.t('applicant_mailer.invitation_email.subject'))
   end
 
   it "renders the receiver email" do
@@ -18,6 +18,6 @@ RSpec.describe ApplicantMailer, type: :mailer do
   end
 
   it "renders the body" do
-    expect(mail.body.encoded).to match("Thank you for applying")
+    expect(mail.body.encoded).to match(I18n.t('applicant_mailer.invitation_email.body'))
   end
 end
