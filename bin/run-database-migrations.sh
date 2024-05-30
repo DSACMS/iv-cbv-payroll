@@ -18,6 +18,7 @@ set -euo pipefail
 APP_NAME="$1"
 IMAGE_TAG="$2"
 ENVIRONMENT="$3"
+RESET=${4:-false}
 
 echo "=================="
 echo "Running migrations"
@@ -26,6 +27,7 @@ echo "Input parameters"
 echo "  APP_NAME=$APP_NAME"
 echo "  IMAGE_TAG=$IMAGE_TAG"
 echo "  ENVIRONMENT=$ENVIRONMENT"
+echo "  RESET=$RESET"
 echo
 echo "Step 0. Check if app has a database"
 
@@ -51,7 +53,12 @@ echo "::endgroup::"
 echo
 echo 'Step 2. Run "db-migrate" command'
 
-COMMAND='["db-migrate"]'
+if[ "$RESET" = "true" ]; then
+  COMMAND='["db-migrate-reset"]'
+else
+  COMMAND='["db-migrate"]'
+fi
+
 
 # Indent the later lines more to make the output of run-command prettier
 ENVIRONMENT_VARIABLES=$(cat << EOF

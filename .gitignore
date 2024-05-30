@@ -6,7 +6,7 @@
 
 # Ignore bundler config.
 /.bundle
-
+.run/
 # Ignore all logfiles and tempfiles.
 /log/*
 /tmp/*

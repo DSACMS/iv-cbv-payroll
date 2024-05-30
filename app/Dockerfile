@@ -92,6 +92,7 @@ RUN apt-get update -qq && \
 
 # Install custom db migrate script
 COPY bin/db-migrate /usr/bin/
+COPY bin/db-migrate-reset /usr/bin/
 
 # Copy built artifacts: gems, application
 COPY --from=release-build /usr/local/bundle /usr/local/bundle
@@ -102,9 +103,6 @@ RUN useradd rails --create-home --shell /bin/bash && \
     chown -R rails:rails db log tmp
 USER rails:rails
 VOLUME /rails/tmp
-
-# Run migrations
-RUN /usr/bin/db-migrate
 
 # Start the server
 CMD ["./bin/rails", "server"]
