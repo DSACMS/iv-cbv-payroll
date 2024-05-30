@@ -1,10 +1,12 @@
-import boto3
 import itertools
-from operator import itemgetter
-import os
 import json
 import logging
-from pg8000.native import Connection, identifier
+import os
+from operator import itemgetter
+from typing import Optional
+
+import boto3
+from pg8000.native import Connection, identifier, literal
 
 logger = logging.getLogger()
 logger.setLevel(logging.INFO)
@@ -12,6 +14,8 @@ logger.setLevel(logging.INFO)
 def lambda_handler(event, context):
     if event == "check":
         return check()
+    elif event == "drop":
+        return drop()
     else:
         return manage()
 
@@ -28,7 +32,6 @@ def manage():
     prev_schema_privileges = get_schema_privileges(conn)
     print_schema_privileges(prev_schema_privileges)
 
-    logger.info("Configuring database")
     configure_database(conn)
 
     logger.info("New database configuration")
@@ -67,6 +70,15 @@ def check():
 
     return {"success": True}
 
+def drop():
+    """Drop schema"""
+    logger.info("Running command 'drop_schema' to reset the schema")
+    migrator_username = os.environ.get("MIGRATOR_USER")
+    migrator_conn = connect_using_iam(migrator_username)
+    schema_name = os.environ.get("DB_SCHEMA")
+    drop_schema(migrator_conn, schema_name)
+
+    return {"success": True}
 
 def check_search_path(migrator_conn: Connection, schema_name: str):
     logger.info("Checking that search path is %s", schema_name)
@@ -89,13 +101,17 @@ def cleanup_migrator_drop_table(migrator_conn: Connection):
     logger.info("Cleaning up the table that migrator created")
     migrator_conn.run("DROP TABLE IF EXISTS temporary")
 
+def drop_schema(migrator_conn: Connection, schema_name: str):
+    logger.info(f"Dropping schema: {schema_name}")
+    migrator_conn.run(f"DROP SCHEMA IF EXISTS {identifier(schema_name)} CASCADE")
 
 def connect_as_master_user() -> Connection:
     user = os.environ["DB_USER"]
     host = os.environ["DB_HOST"]
     port = os.environ["DB_PORT"]
     database = os.environ["DB_NAME"]
-    password = get_password()
+    param_name = os.environ["DB_PASSWORD_PARAM_NAME"]
+    password = get_password(param_name)
 
     logger.info("Connecting to database: user=%s host=%s port=%s database=%s", user, host, port, database)
     return Connection(user=user, host=host, port=port, database=database, password=password, ssl_context=True)
@@ -112,15 +128,30 @@ def connect_using_iam(user: str) -> Connection:
     logger.info("Connecting to database: user=%s host=%s port=%s database=%s", user, host, port, database)
     return Connection(user=user, host=host, port=port, database=database, password=token, ssl_context=True)
 
-def get_password() -> str:
-    ssm = boto3.client("ssm",region_name=os.environ["AWS_REGION"])
-    param_name = os.environ["DB_PASSWORD_PARAM_NAME"]
-    logger.info("Fetching password from parameter store:\n%s"%param_name)
-    result = json.loads(ssm.get_parameter(
+def get_password(param_name: str) -> str:
+    raw_result = get_ssm_param(param_name)
+
+    # RDS managed secrets via secrets manager will be a JSON payload with
+    # "username" and "password" keys, so if can parse as JSON, we'll try to
+    # extract just the password, otherwise return the param value as-is
+    try:
+        parsed_result = json.loads(raw_result)
+    except json.JSONDecodeError:
+        return raw_result
+
+    if not isinstance(parsed_result, dict):
+        return raw_result
+
+    return parsed_result.get("password")
+
+def get_ssm_param(param_name: str) -> str:
+    ssm = boto3.client("ssm", region_name=os.environ["AWS_REGION"])
+    logger.info(f"Fetching from parameter store: {param_name}")
+    result = ssm.get_parameter(
         Name=param_name,
         WithDecryption=True,
-    )["Parameter"]["Value"])
-    return result["password"]
+    )
+    return result["Parameter"]["Value"]
 
 
 def get_roles(conn: Connection) -> list[str]:
@@ -159,6 +190,13 @@ def configure_database(conn: Connection) -> None:
     migrator_username = os.environ.get("MIGRATOR_USER")
     schema_name = os.environ.get("DB_SCHEMA")
     database_name = os.environ.get("DB_NAME")
+    grant_app_user_iam = os.environ.get("GRANT_APP_USER_IAM") == "true"
+    allow_app_manage_schema = os.environ.get("ALLOW_APP_MANAGE_SCHEMA") == "true"
+
+    # If an app user password is defined, retrieve it
+    app_user_password = None
+    if app_user_password_param_name := os.environ.get("APP_PASSWORD_PARAM_NAME"):
+        app_user_password = get_password(app_user_password_param_name)
 
     logger.info("Revoking default access on public schema")
     conn.run("REVOKE CREATE ON SCHEMA public FROM PUBLIC")
@@ -167,42 +205,87 @@ def configure_database(conn: Connection) -> None:
     logger.info("Setting default search path to schema=%s", schema_name)
     conn.run(f"ALTER DATABASE {identifier(database_name)} SET search_path TO {identifier(schema_name)}")
 
-    configure_roles(conn, [migrator_username, app_username], database_name)
-    configure_schema(conn, schema_name, migrator_username, app_username)
-
-
-def configure_roles(conn: Connection, roles: list[str], database_name: str) -> None:
     logger.info("Configuring roles")
-    for role in roles:
-        configure_role(conn, role, database_name)
+    configure_role(conn, migrator_username, database_name)
+    configure_role(conn, app_username, database_name, app_user_password, grant_app_user_iam)
+    configure_schema(conn, schema_name, migrator_username, app_username, allow_app_manage_schema)
 
 
-def configure_role(conn: Connection, username: str, database_name: str) -> None:
-    logger.info("Configuring role: username=%s", username)
+def configure_role(conn: Connection, username: str, database_name: str, password: Optional[str] = None, grant_iam_role: bool = True) -> None:
+    logger.info(f"Configuring role: username={username}")
+
+    if not password:
+        logger.info(f"Create role without password: {username=}")
+        conn.run(
+            f"""
+            DO $$
+            BEGIN
+                CREATE USER {identifier(username)};
+                EXCEPTION WHEN DUPLICATE_OBJECT THEN
+                RAISE NOTICE 'user already exists';
+            END
+            $$;
+            """
+        )
+    else:
+        logger.info("Create role with password: username=%s", username)
+        conn.run(
+            f"""
+            DO $$
+            BEGIN
+                CREATE USER {identifier(username)} WITH PASSWORD {literal(password)};
+                EXCEPTION WHEN DUPLICATE_OBJECT THEN
+                RAISE NOTICE 'user already exists';
+                ALTER ROLE {identifier(username)} WITH PASSWORD {literal(password)};
+            END
+            $$;
+            """
+        )
+
     role = "rds_iam"
-    conn.run(
-        f"""
-        DO $$
-        BEGIN
-            CREATE USER {identifier(username)};
-            EXCEPTION WHEN DUPLICATE_OBJECT THEN
-            RAISE NOTICE 'user already exists';
-        END
-        $$;
-        """
-    )
-    conn.run(f"GRANT {identifier(role)} TO {identifier(username)}")
+    if grant_iam_role:
+        logger.info(f"Grant role: {role=}, {username=}")
+        conn.run(f"GRANT {identifier(role)} TO {identifier(username)}")
+    else:
+        logger.info(f"Revoke role: {role=}, {username=}")
+        conn.run(f"REVOKE {identifier(role)} FROM {identifier(username)}")
+
+    logger.info(f"Grant connect: {database_name=}, {username=}")
     conn.run(f"GRANT CONNECT ON DATABASE {identifier(database_name)} TO {identifier(username)}")
 
-
-def configure_schema(conn: Connection, schema_name: str, migrator_username: str, app_username: str) -> None:
+def configure_schema(conn: Connection, schema_name: str, migrator_username: str, app_username: str, allow_app_manage_schema: bool = False) -> None:
     logger.info("Configuring schema")
+
     logger.info("Creating schema: schema_name=%s", schema_name)
     conn.run(f"CREATE SCHEMA IF NOT EXISTS {identifier(schema_name)}")
+
     logger.info("Changing schema owner: schema_name=%s owner=%s", schema_name, migrator_username)
     conn.run(f"ALTER SCHEMA {identifier(schema_name)} OWNER TO {identifier(migrator_username)}")
-    logger.info("Granting schema usage privileges: schema_name=%s role=%s", schema_name, app_username)
-    conn.run(f"GRANT USAGE ON SCHEMA {identifier(schema_name)} TO {identifier(app_username)}")
+
+    # Need pgcrypto for uuid generation in Rails
+    logger.info("Creating pgcrypto extension")
+    conn.run("CREATE EXTENSION IF NOT EXISTS pgcrypto")
+
+    # In most cases, the `app` role only needs USAGE access. This is the default.
+    # In some cases, it needs to manage the schema, so we optionally grant ALL access.
+    schema_privileges = "USAGE"
+    if allow_app_manage_schema:
+        schema_privileges = "ALL"
+        # Grant the `app` role any default privileges for future database objects.
+        logger.info(f"Granting schema privileges for future objects: {schema_name=} role={app_username} {schema_privileges=}")
+        conn.run(
+            f"ALTER DEFAULT PRIVILEGES IN SCHEMA {identifier(schema_name)} GRANT {identifier(schema_privileges)} ON TABLES TO {identifier(app_username)}"
+        )
+        conn.run(
+            f"ALTER DEFAULT PRIVILEGES IN SCHEMA {identifier(schema_name)} GRANT {identifier(schema_privileges)} ON SEQUENCES TO {identifier(app_username)}"
+        )
+        conn.run(
+            f"ALTER DEFAULT PRIVILEGES IN SCHEMA {identifier(schema_name)} GRANT {identifier(schema_privileges)} ON ROUTINES TO {identifier(app_username)}"
+        )
+
+    # Grant the `app` role privileges.
+    logger.info(f"Granting schema privileges: {schema_name=} role={app_username} {schema_privileges=}")
+    conn.run(f"GRANT {schema_privileges} ON SCHEMA {identifier(schema_name)} TO {identifier(app_username)}")
 
 
 def print_roles(roles: list[str]) -> None:
