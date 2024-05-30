@@ -4,5 +4,13 @@ class SetDbTablePermissions < ActiveRecord::Migration[7.0]
     execute <<-SQL
       ALTER DEFAULT PRIVILEGES GRANT ALL ON TABLES TO app
     SQL
+
+    execute <<-SQL
+      ALTER DEFAULT PRIVILEGES GRANT ALL ON SEQUENCES TO app
+    SQL
+
+    execute <<-SQL
+      ALTER DEFAULT PRIVILEGES GRANT ALL ON ROUTINES TO app
+    SQL
   end
 end

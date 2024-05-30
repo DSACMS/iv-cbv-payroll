@@ -92,7 +92,6 @@ RUN apt-get update -qq && \
 
 # Install custom db migrate script
 COPY bin/db-migrate /usr/bin/
-COPY bin/db-migrate-reset /usr/bin/
 
 # Copy built artifacts: gems, application
 COPY --from=release-build /usr/local/bundle /usr/local/bundle
