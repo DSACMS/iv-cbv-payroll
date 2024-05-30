@@ -1,9 +1,0 @@
-#!/usr/bin/env bash
-set -euo pipefail
-
-yarn install
-bundle install
-
-bin/rails db:migrate
-
-echo "Done. Run bin/dev to run the local development server."

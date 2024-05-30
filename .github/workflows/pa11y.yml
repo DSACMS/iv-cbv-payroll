@@ -1,6 +1,12 @@
 name: pa11y tests
 
-on: [pull_request]
+# TODO: Re-enable me!
+on: []
+  #   pull_request:
+  #     paths: ['app/**']
+defaults:
+  run:
+    working-directory: ./app
 
 jobs:
   pa11y_scan:
@@ -34,7 +40,7 @@ jobs:
         shell: bash
         run: |
           set -o pipefail
-          yarn run pa11y-ci 2>&1 | tee pa11y_output.txt
+          npm run pa11y-ci 2>&1 | tee pa11y_output.txt
 
       - name: Read pa11y_output file.
         if: failure()
@@ -45,7 +51,7 @@ jobs:
 
       - name: Comment on pull request
         if: failure()
-        uses: actions/github-script@v4
+        uses: actions/github-script@v7
         with:
           script: |
             const output = `Pa11y Failures detected

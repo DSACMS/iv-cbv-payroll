@@ -1,7 +1,5 @@
 # Application boundary view
 
-![application boundary view](../rendered/apps/application.boundary.svg)
-
 ```plantuml
 @startuml
 !include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Container.puml

@@ -1,5 +1,0 @@
-web: env RUBY_DEBUG_PORT=1234 RUBY_DEBUG_STOP_AT_LOAD=true RUBY_DEBUG_OPEN=true RUBY_DEBUG_HOST=0.0.0.0 bin/rails server -p 3000 -b 0.0.0.0
-js: yarn build --watch
-css: yarn build:css --watch
-worker: RUBY_DEBUG_OPEN=true bundle exec sidekiq
-ngrok: ngrok http 3000 --log stdout

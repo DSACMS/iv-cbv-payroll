@@ -1,13 +1,17 @@
 name: Rubocop style checks
 
-on: [pull_request]
+on:
+  pull_request:
+    paths: ['app/**']
 
 jobs:
   rspec:
     name: Rubocop
     runs-on: ubuntu-latest
-    services:
     steps:
       - uses: actions/checkout@v4
+      - name: Set up Ruby & Javascript
+        uses: ./.github/actions/setup-languages
       - name: Run Rubocop
+        working-directory: app
         run: bundle exec rubocop

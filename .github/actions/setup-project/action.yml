@@ -23,6 +23,7 @@ runs:
       env:
         RAILS_ENV: ${{ inputs.rails_env }}
       shell: bash
+      working-directory: app
       run: bundle exec rake assets:precompile
 
     - name: Set up database
@@ -30,4 +31,5 @@ runs:
         RAILS_ENV: ${{ inputs.rails_env }}
         DATABASE_URL: ${{ inputs.database_url }}
       shell: bash
+      working-directory: app
       run: bundle exec rake db:schema:load

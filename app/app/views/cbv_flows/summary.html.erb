@@ -1,0 +1,42 @@
+<h2>
+  <%= t('.header') %>
+</h2>
+
+<% if @payments.any? %>
+  <p>
+    <%= t('.description') %>
+  </p>
+  <h3 class="site-preview-heading"><%= t('.total_payments') %> <%= number_to_currency(@payments.reduce(0) { |sum, payment| sum + payment[:amount] }) %></h3>
+
+  <div class="usa-accordion usa-accordion--bordered usa-accordion--multiselectable margin-bottom-4" data-allow-multiple>
+    <% @payments.each_with_index do |payment, index| %>
+      <div class="usa-accordion__heading">
+        <button
+          type="button"
+          class="usa-accordion__button"
+          aria-expanded="false"
+          aria-controls="<%= index %>"
+        >
+          <%= payment[:employer] %>: <%= t('.payment_of', amount: number_to_currency(payment[:amount])) %>
+        </button>
+      </div>
+      <div id="<%= index %>" class="usa-accordion__content usa-prose">
+        <p>
+          <%= t('.time_range', hours: payment[:hours], start: format_date(payment[:start]), end: format_date(payment[:end])) %>
+        </p>
+      </div>
+    <% end %>
+  </div>
+<% else %>
+  <h3 class="site-preview-heading">
+    <%= t('.none_found') %>
+  </h3>
+<% end %>
+
+<h2>
+  <%= t('.form.subheader') %>
+</h2>
+<%= form_for(@cbv_flow, url: cbv_flow_summary_path, builder: UswdsFormBuilder) do |f| %>
+  <%= f.text_area :additional_information, label: t('.form.additional_info.label') %>
+  <%= f.submit t('.form.submit') %>
+<% end %>
