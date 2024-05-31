@@ -26,7 +26,6 @@ echo "Input parameters"
 echo "  APP_NAME=$APP_NAME"
 echo "  IMAGE_TAG=$IMAGE_TAG"
 echo "  ENVIRONMENT=$ENVIRONMENT"
-echo "  RESET=$RESET"
 echo
 echo "Step 0. Check if app has a database"
 

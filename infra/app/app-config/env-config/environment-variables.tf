@@ -22,6 +22,10 @@ locals {
     {
       name           = "RAILS_MASTER_KEY"
       ssm_param_name = "/service/${var.app_name}-${var.environment}/rails-master-key"
+    },
+    {
+      name           = "ARGYLE_SANDBOX"
+      ssm_param_name = "/service/${var.app_name}-${var.environment}/argyle-sandbox"
     }
   ]
 }
