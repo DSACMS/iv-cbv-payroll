@@ -1,6 +1,8 @@
 name: rspec tests
 
-on: [pull_request]
+on:
+  pull_request:
+    paths: ['app/**']
 
 jobs:
   rspec:
@@ -30,7 +32,9 @@ jobs:
           rails_env: test
 
       - name: Run rspec
+        working-directory: app
         env:
           RAILS_ENV: test
           DATABASE_URL: ${{ steps.setup.outputs.database_url }}
+          RAILS_MASTER_KEY: 0f5db7adba61669d4cc45dfa6b2464d7
         run: bundle exec rspec

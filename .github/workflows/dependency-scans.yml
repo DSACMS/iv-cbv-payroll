@@ -4,10 +4,11 @@ on:
   push:
     branches: [ main ]
     paths-ignore:
-      - 'doc/**'
-      - 'README.md'
+      - 'app/doc/**'
+      - 'app/README.md'
   pull_request:
     branches: [ main ]
+    paths: ['app/**']
   schedule:
     # cron format: 'minute hour dayofmonth month dayofweek'
     # this will run at noon UTC every day (7am EST / 8am EDT)
@@ -25,6 +26,7 @@ jobs:
 
       - name: Update advisory database and run checks
         run: bundle exec rake bundler:audit
+        working-directory: app
 
   npm-audit:
     name: npm audit
@@ -36,6 +38,7 @@ jobs:
       - uses: ./.github/actions/setup-languages
 
       - name: Run npm audit
+        working-directory: app
         run: bundle exec rake npm:audit
 
   ruby-bom:
@@ -48,8 +51,10 @@ jobs:
       - name: Install cyclonedx
         run: gem install cyclonedx-ruby
       - name: Generate BOM
+        working-directory: app
         run: cyclonedx-ruby -p . -o ruby_bom.xml
       - name: Save BOM
+        working-directory: app
         uses: actions/upload-artifact@v3
         with:
           name: ruby-bom
