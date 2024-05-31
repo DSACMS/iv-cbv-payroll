@@ -6,6 +6,7 @@ locals {
     # Example environment variables
     RAILS_LOG_TO_STDOUT      = "true"
     RAILS_SERVE_STATIC_FILES = "true"
+    ARGYLE_SANDBOX           = "true"
     # LOG_LEVEL               = "info"
     # DB_CONNECTION_POOL_SIZE = 5
   }
@@ -22,6 +23,14 @@ locals {
     {
       name           = "RAILS_MASTER_KEY"
       ssm_param_name = "/service/${var.app_name}-${var.environment}/rails-master-key"
+    },
+    {
+      name           = "ARGYLE_WEBHOOK_SECRET"
+      ssm_param_name = "/service/${var.app_name}-${var.environment}/argyle-webhook-secret"
+    },
+    {
+      name           = "ARGYLE_API_TOKEN"
+      ssm_param_name = "/service/${var.app_name}-${var.environment}/argyle-api-token"
     }
   ]
 }

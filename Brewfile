@@ -10,7 +10,8 @@ brew "nodenv"
 # cloud.gov RDS is on postgres 12
 brew "postgresql@12", link: true
 
-# used in bin/with-server script
+# docker is used for building images for deployment, and in the bin/with-server script
+cask "docker"
 brew "dockerize"
 
 # helper scripts for creating new ADRs
@@ -30,3 +31,6 @@ brew "redis"
 
 # ngrok local tunnel to receive argyle webhooks
 brew "ngrok"
+
+# Terraform version manager for infrastructure
+brew "tfenv"

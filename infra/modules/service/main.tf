@@ -80,7 +80,7 @@ resource "aws_ecs_task_definition" "app" {
       cpu                    = var.cpu,
       networkMode            = "awsvpc",
       essential              = true,
-      readonlyRootFilesystem = false,
+      readonlyRootFilesystem = true,
 
       # Need to define all parameters in the healthCheck block even if we want
       # to use AWS's defaults, otherwise the terraform plan will show a diff
@@ -116,15 +116,22 @@ resource "aws_ecs_task_definition" "app" {
           "awslogs-region"        = data.aws_region.current.name,
           "awslogs-stream-prefix" = local.log_stream_prefix
         }
-      }
-      mountPoints    = []
-      systemControls = []
-      volumesFrom    = []
+      },
+      mountPoints = [
+        {
+          containerPath = "/rails/tmp",
+          sourceVolume = "${var.service_name}-tmp"
+        }
+      ]
     }
   ])
 
   cpu    = var.cpu
   memory = var.memory
+
+  volume {
+    name = "${var.service_name}-tmp"
+  }
 
   requires_compatibilities = ["FARGATE"]
 

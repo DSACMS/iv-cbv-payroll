@@ -53,6 +53,8 @@ echo 'Step 2. Run "db-migrate" command'
 
 COMMAND='["db-migrate"]'
 
+
+
 # Indent the later lines more to make the output of run-command prettier
 ENVIRONMENT_VARIABLES=$(cat << EOF
 [{ "name" : "DB_USER", "value" : "$DB_MIGRATOR_USER" }]

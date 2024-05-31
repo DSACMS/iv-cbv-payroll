@@ -37,6 +37,9 @@ resource "aws_lambda_function" "role_manager" {
       DB_PASSWORD_SECRET_ARN = aws_rds_cluster.db.master_user_secret[0].secret_arn
       DB_SCHEMA              = var.schema_name
       APP_USER               = var.app_username
+      APP_PASSWORD_PARAM_NAME = var.create_app_password ? module.app_user_password[0].ssm_name : null
+      GRANT_APP_USER_IAM      = var.grant_app_user_iam ? "true" : "false"
+      ALLOW_APP_MANAGE_SCHEMA = var.allow_app_manage_schema
       MIGRATOR_USER          = var.migrator_username
       PYTHONPATH             = "vendor"
     }
@@ -127,9 +130,10 @@ resource "aws_iam_role_policy" "role_manager_access_to_db_password" {
       {
         Effect = "Allow"
         Action = ["ssm:GetParameter"]
-        Resource = [
-          "arn:aws:ssm:${data.aws_region.current.name}:${data.aws_caller_identity.current.id}:parameter${local.db_password_param_name}"
-        ]
+        Resource = concat(
+          ["arn:aws:ssm:${data.aws_region.current.name}:${data.aws_caller_identity.current.id}:parameter${local.db_password_param_name}"],
+            var.create_app_password ? [module.app_user_password[0].ssm_arn] : [],
+        )
       }
     ]
   })
@@ -152,4 +156,12 @@ data "aws_iam_policy_document" "role_manager_assume_role" {
 # see https://docs.aws.amazon.com/lambda/latest/dg/configuration-vpc.html
 data "aws_iam_policy" "lambda_vpc_access" {
   name = "AWSLambdaVPCAccessExecutionRole"
+}
+
+# Create a password for the application user if required
+module "app_user_password" {
+  count = var.create_app_password ? 1 : 0
+
+  source         = "../random-password"
+  ssm_param_name = "/db/${var.name}/app-password"
 }

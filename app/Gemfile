@@ -93,3 +93,8 @@ group :test do
   gem "climate_control", "~> 1.0"
   gem "webmock"
 end
+
+group :production do
+  # Add plugin for pg gem to support AWS RDS IAM
+  gem "pg-aws_rds_iam", "~> 0.5.0"
+end

@@ -22,6 +22,24 @@ variable "app_username" {
   type        = string
 }
 
+variable "create_app_password" {
+  description = "generate a password for the application user."
+  type        = bool
+  default     = false
+}
+
+variable "grant_app_user_iam" {
+  description = "grant application user the rds_iam role. used when authenticating via IAM in an application."
+  type        = bool
+  default     = true
+}
+
+variable "allow_app_manage_schema" {
+  description = "whether to grant the application user greater permissions to manage the DB schema."
+  type        = bool
+  default     = false
+}
+
 variable "migrator_username" {
   description = "name of the database user to create that will be for the role that will run database migrations."
   type        = string
