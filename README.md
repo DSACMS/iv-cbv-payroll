@@ -10,7 +10,7 @@ guide for an introduction to the framework.
 
 ### Local Setup
 
-* All of these steps need to be run within the `cbv` directory
+* All of these steps need to be run within the `app` directory
 * Install Xcode Command Line Tools
 * Install homebrew dependencies: `brew bundle`
   * rbenv
