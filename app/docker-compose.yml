@@ -4,9 +4,9 @@ services:
     command: postgres -c "log_lock_waits=on" -N 1000 -c "fsync=off"
     environment:
       POSTGRES_PASSWORD: secret123
-      POSTGRES_USER: app_rails
+      POSTGRES_USER: app
     healthcheck:
-      test: "pg_isready --username=app_rails"
+      test: "pg_isready --username=app"
       timeout: 10s
       retries: 20
     ports:
@@ -31,7 +31,9 @@ services:
     environment:
       - DOCKERIZED=true
       - DB_HOST=postgres
-      - DB_NAME=app_rails
+      - DB_NAME=app
+      - DB_PASSWORD=secret123
+      - DB_USERNAME=app
       - REDIS_URL=redis://redis:6379/1
       - RAILS_BINDING=0.0.0.0
       - RAILS_ENV=development
@@ -58,6 +60,13 @@ services:
       interval: 10s
       timeout: 5s
       retries: 5
+  ngrok:
+    image: ngrok/ngrok:latest
+    ports:
+      - "4040:4040"
+    network_mode: "host"
+    command: http 3000
+    env_file: .env.local
 
 volumes:
   postgres_data:
