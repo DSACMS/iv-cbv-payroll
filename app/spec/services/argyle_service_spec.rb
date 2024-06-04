@@ -4,7 +4,7 @@ require 'support/payroll_documents_response_stub'
 
 RSpec.describe ArgyleService, type: :service do
   include ArgyleApiHelper
-  let(:service) { ArgyleService.new }
+  let(:service) { ArgyleService.new("FAKE_API_KEY") }
   let(:user_id) { 'abc123' }
 
   describe '#fetch_items' do
@@ -24,7 +24,6 @@ RSpec.describe ArgyleService, type: :service do
     end
 
     it 'returns a non-empty response' do
-      service = ArgyleService.new
       response = service.fetch_paystubs({ user: user_id })
       expect(response).not_to be_empty
     end
@@ -47,7 +46,6 @@ RSpec.describe ArgyleService, type: :service do
     end
 
     it 'returns a refreshed user token' do
-      service = ArgyleService.new
       response = service.refresh_user_token(user_id)
       expect(response['user_token']).to eq("abc123")
     end

@@ -42,6 +42,7 @@ guide for an introduction to the framework.
 * Start postgres & redis:
   * `brew services start postgresql@12`
   * `brew services start redis`
+* Get development credentials from 1Password, search for "CBV Rails Secrets" and copy its ".env.development.local" section into a file called that in the "app" directory.
 * Create database: `bin/rails db:create`
 * Run migrations: `bin/rails db:migrate`
 * Run the development server: `bin/dev`
@@ -50,10 +51,6 @@ guide for an introduction to the framework.
 ## Local Development
 
 Environment variables can be set in development using the [dotenv](https://github.com/bkeepers/dotenv) gem.
-
-Consistent but sensitive credentials should be added to `config/credentials.yml.enc` by using `$ rails credentials:edit`
-
-Production credentials should be added to `config/credentials/production.yml.enc` by using `$ rails credentials:edit --environment production`
 
 Any changes to variables in `.env` that should not be checked into git should be set in `.env.local`.
 
