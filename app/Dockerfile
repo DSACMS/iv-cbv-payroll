@@ -33,6 +33,20 @@ RUN apt-get update -qq && \
 # Copy application code
 COPY . .
 
+# chromium is not available for arm64, this could be problematic when developing locally on an arm64 machine
+# and running tests that require puppeteer.
+
+# Set default value for PUPPETEER_SKIP_CHROMIUM_DOWNLOAD
+ENV PUPPETEER_SKIP_CHROMIUM_DOWNLOAD=true
+
+# Detect architecture and skip the installation of chromium if the architecture is arm64
+# see https://github.com/puppeteer/puppeteer/issues/7740#issuecomment-1016083451
+RUN if [ "$(uname -m)" = "arm64" ]; then \
+      export PUPPETEER_SKIP_CHROMIUM_DOWNLOAD=false; \
+    fi
+
+RUN PUPPETEER_SKIP_CHROMIUM_DOWNLOAD=$PUPPETEER_SKIP_CHROMIUM_DOWNLOAD npm install
+
 # Install npm packages
 RUN npm install
 
