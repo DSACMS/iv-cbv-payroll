@@ -10,7 +10,7 @@
 
 common: &default_settings
   # Required license key associated with your New Relic account.
-  license_key: <%= Rails.application.credentials.new_relic_key %>
+  license_key: <%= ENV["NEWRELIC_KEY"] %>
   # FEDRAMP-specific New Relic host
   # https://docs.newrelic.com/docs/security/security-privacy/compliance/fedramp-compliant-endpoints/
   host: 'gov-collector.newrelic.com'

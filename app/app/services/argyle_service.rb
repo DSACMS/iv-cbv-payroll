@@ -10,10 +10,8 @@ class ArgyleService
   PAYSTUBS_ENDPOINT = "/v2/paystubs"
   WEBHOOKS_ENDPOINT = "/v2/webhooks"
 
-  def initialize
-    api_key = Rails.application.credentials.argyle[:api_key]
-
-    raise "ARGYLE_API_TOKEN environment variable is blank. Make sure you have the .env.local.local from 1Password." if api_key.blank?
+  def initialize(api_key = ENV["ARGYLE_API_TOKEN"])
+    raise "ARGYLE_API_TOKEN environment variable is blank. Make sure you have the .env.development.local from 1Password." if api_key.blank?
 
     client_options = {
       request: {
