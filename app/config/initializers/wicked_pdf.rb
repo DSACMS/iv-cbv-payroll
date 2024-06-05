@@ -8,11 +8,12 @@
 #
 # https://github.com/mileszs/wicked_pdf/blob/master/README.md
 
-# create the tmp directory
-Rails.application.config.wicked_pdf_tempfile_dir = "#{Rails.root}/tmp/wicked_pdf"
-Dir.mkdir(Rails.application.config.wicked_pdf_tempfile_dir) unless Dir.exist?(Rails.application.config.wicked_pdf_tempfile_dir)
-
 WickedPdf.configure do |config|
+
+  # create the tmp directory
+  Rails.application.config.wicked_pdf_tempfile_dir = "#{Rails.root}/tmp/wicked_pdf"
+  Dir.mkdir(Rails.application.config.wicked_pdf_tempfile_dir) unless Dir.exist?(Rails.application.config.wicked_pdf_tempfile_dir)
+
   config[:temp_path] = Rails.root.join("tmp", "wicked_pdf")
 
   # Path to the wkhtmltopdf executable: This usually isn't needed if using
