@@ -5,7 +5,6 @@ class CbvFlowsController < ApplicationController
   end
 
   def employer_search
-    @pinwheel_user_token = fetch_and_store_pinwheel_token
     @query = search_params[:query]
     @employers = @query.blank? ? [] : fetch_employers(@query)
   end
@@ -88,7 +87,7 @@ class CbvFlowsController < ApplicationController
     begin
       user_token = provider.create_link_token(@cbv_flow.id).body["data"]
     rescue => e
-      puts e
+      puts 'error...', e.body
     end
 
     @cbv_flow.update(pinwheel_token_id: user_token["id"])
@@ -99,7 +98,8 @@ class CbvFlowsController < ApplicationController
 
   def fetch_employers(query = "")
     request_params = {
-      q: query
+      q: query,
+      supported_jobs: ["paystubs"]
     }
 
     provider.fetch_items(request_params)["data"]

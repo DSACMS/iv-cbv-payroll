@@ -1,9 +1,8 @@
 import { Controller } from "@hotwired/stimulus"
 import * as ActionCable from '@rails/actioncable'
-
 import metaContent from "../utilities/meta";
+import { loadPinwheel, initializePinwheel, fetchToken } from "../utilities/pinwheel"
 
-import { loadPinwheel, initializePinwheel } from "../utilities/pinwheel"
 export default class extends Controller {
   static targets = [
     "form",
@@ -46,23 +45,17 @@ export default class extends Controller {
     console.log(event);
   }
 
-  select(event) {
-    console.log(event.target.dataset);
-    this.submit(event.target.dataset.itemId);
+  async select(event) {
+    const { responseType, id } = event.target.dataset;
+    const { token } = await fetchToken(responseType, id);
+
+    this.submit(token);
   }
 
-  submit(itemId) {
-    console.log(itemId);
+  submit(token) {
     loadPinwheel()
-      .then(Pinwheel => initializePinwheel(Pinwheel, this.pinwheelUserToken, {
+      .then(Pinwheel => initializePinwheel(Pinwheel, token, {
         onEvent: console.log,
-        // items: [itemId],
-        // onAccountConnected: this.onSignInSuccess.bind(this),
-        // onAccountError: this.onAccountError.bind(this),
-        // // Unsure what these are for!
-        // onDDSSuccess: () => { console.log('onDDSSuccess') },
-        // onDDSError: () => { console.log('onDDSSuccess') },
-        // onTokenExpired: updateToken,
       }))
       .then(pinwheel => this.pinwheel = pinwheel);
   }
