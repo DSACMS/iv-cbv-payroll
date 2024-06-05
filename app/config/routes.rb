@@ -22,6 +22,8 @@ Rails.application.routes.draw do
 
       # Utility route to clear your session; useful during development
       get "/reset" => "cbv_flows#reset"
+
+      resources :cbv_flow_invitations, as: :invitations, path: :invitations, only: %i[new create]
     end
   end
 

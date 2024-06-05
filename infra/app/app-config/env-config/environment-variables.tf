@@ -31,6 +31,10 @@ locals {
     {
       name           = "ARGYLE_API_TOKEN"
       ssm_param_name = "/service/${var.app_name}-${var.environment}/argyle-api-token"
-    }
+    },
+    {
+      name           = "CBV_INVITE_SECRET"
+      ssm_param_name = "/service/${var.app_name}-${var.environment}/cbv-invite-secret"
+    },
   ]
 }
