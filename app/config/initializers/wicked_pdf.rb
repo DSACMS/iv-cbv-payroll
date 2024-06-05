@@ -9,6 +9,8 @@
 # https://github.com/mileszs/wicked_pdf/blob/master/README.md
 
 WickedPdf.configure do |config|
+  config[:temp_path] = Rails.root.join("tmp", "wicked_pdf_temp")
+
   # Path to the wkhtmltopdf executable: This usually isn't needed if using
   # one of the wkhtmltopdf-binary family of gems.
   # config.exe_path = '/usr/local/bin/wkhtmltopdf',

@@ -65,6 +65,7 @@ RUN apt-get update -qq && \
 
 # Install application gems for development
 COPY Gemfile Gemfile.lock ./
+
 RUN bundle config set --local without production && \
     bundle install && \
     rm -rf ~/.bundle/ "${BUNDLE_PATH}"/ruby/*/cache "${BUNDLE_PATH}"/ruby/*/bundler/gems/*/.git

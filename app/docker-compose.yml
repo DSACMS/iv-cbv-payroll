@@ -13,7 +13,6 @@ services:
       - "5432:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
-      - .docker/db/init-postgres.sql:/docker-entrypoint-initdb.d/init.sql
 
   # Rails app
   # Configured for "development" RAILS_ENV
