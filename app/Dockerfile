@@ -28,24 +28,10 @@ FROM base as build
 
 # Install packages needed to build gems
 RUN apt-get update -qq && \
-    apt-get install --no-install-recommends -y build-essential git libpq-dev libvips pkg-config npm unzip curl
+    apt-get install --no-install-recommends -y build-essential git libpq-dev libvips pkg-config npm
 
 # Copy application code
 COPY . .
-
-
-# chromium is not available for arm64, this could be problematic when developing locally on an arm64 machine
-# and running tests that require puppeteer.
-
-# Set default value for PUPPETEER_SKIP_CHROMIUM_DOWNLOAD
-ENV PUPPETEER_SKIP_CHROMIUM_DOWNLOAD=true
-
-# Detect architecture and update environment variable accordingly, then install npm packages
-RUN if [ "$(uname -m)" = "arm64" ]; then \
-      export PUPPETEER_SKIP_CHROMIUM_DOWNLOAD=false; \
-    fi
-
-RUN PUPPETEER_SKIP_CHROMIUM_DOWNLOAD=$PUPPETEER_SKIP_CHROMIUM_DOWNLOAD npm install
 
 # Install npm packages
 RUN npm install
@@ -65,21 +51,6 @@ RUN apt-get update -qq && \
 
 # Install application gems for development
 COPY Gemfile Gemfile.lock ./
-
-# Copy the Procfile for container development. Does not include debugging gems
-#COPY .docker/rails/Procfile.dev ./
-
-# Remove specific debug gems from Gemfile when building container for local development since they are not
-# compatible with ARM64 architecture. You can run the application directly on your host machine to debug instead
-#RUN sed -i '/debase-ruby_core_source/d' ./Gemfile && \
-#    sed -i '/debase/d' ./Gemfile && \
-#    sed -i '/ruby-debug-ide/d' ./Gemfile
-#
-## Remove specific debug gems from Gemfile.lock
-#RUN sed -i '/debase-ruby_core_source/d' Gemfile.lock && \
-#    sed -i '/debase/d' Gemfile.lock && \
-#    sed -i '/ruby-debug-ide/d' Gemfile.lock
-
 RUN bundle config set --local without production && \
     bundle install && \
     rm -rf ~/.bundle/ "${BUNDLE_PATH}"/ruby/*/cache "${BUNDLE_PATH}"/ruby/*/bundler/gems/*/.git
