@@ -11,10 +11,10 @@
 WickedPdf.configure do |config|
 
   # create the tmp directory
-  Rails.application.config.wicked_pdf_tempfile_dir = "#{Rails.root}/tmp/wicked_pdf"
+  Rails.application.config.wicked_pdf_tempfile_dir = "#{Rails.root}/tmp/wicked_pdf_temp"
   Dir.mkdir(Rails.application.config.wicked_pdf_tempfile_dir) unless Dir.exist?(Rails.application.config.wicked_pdf_tempfile_dir)
 
-  config[:temp_path] = Rails.root.join("tmp", "wicked_pdf")
+  config[:temp_path] = Rails.root.join("tmp", "wicked_pdf_temp")
 
   # Path to the wkhtmltopdf executable: This usually isn't needed if using
   # one of the wkhtmltopdf-binary family of gems.
@@ -22,7 +22,7 @@ WickedPdf.configure do |config|
   #   or
   # config.exe_path = Gem.bin_path('wkhtmltopdf-binary', 'wkhtmltopdf')
 
-  # Needed for wkhtmltopdf 0.12.6+ to use many wicked_pdf asset helpers
+  # Needed for wkhtmltopdf 0.12.6+ to use many wicked_pdf_temp asset helpers
   # config.enable_local_file_access = true,
 
   # Layout file to be used for all PDFs

@@ -8,9 +8,19 @@
 /.bundle
 .run/
 # Ignore all logfiles and tempfiles.
-/log/*
-/tmp/*
-*/tmp/**
+app/log/*
+# Ignore all files and directories within app/tmp
+/app/tmp/*
+
+# Do not ignore the wicked_pdf_temp directory itself
+!/app/tmp/wicked_pdf_temp/
+
+# Ignore all files within the wicked_pdf_temp directory
+/app/tmp/wicked_pdf_temp/*
+
+# Do not ignore directories within wicked_pdf_temp (if any)
+!/app/tmp/wicked_pdf_temp/**/
+
 !/log/.keep
 !/tmp/.keep
 
@@ -23,7 +33,7 @@
 /public/assets
 
 # Ignore master key for decrypting credentials and more.
-/config/master.key
+app/config/master.key
 /config/credentials/*.key
 
 # Ignore Brewfile debug info
@@ -39,7 +49,7 @@ Brewfile.lock.json
 # Ignore rspec examples status file
 spec/examples.txt
 
-/app/assets/builds/*
+app/app/assets/builds/*
 !/app/assets/builds/.keep
 
 */node_modules/**
