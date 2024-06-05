@@ -6,6 +6,17 @@ en:
       greeting: Hello,
       subject: Invitation to apply
       thank_you: Thank you!
+  cbv_flow_invitations:
+    create:
+      invite_success: Successfully delivered invitation to %{email_address}.
+    incorrect_invite_secret: Unable to send invitation due to missing invitation secret parameter.
+    new:
+      description: Complete this form to email a personalized link to begin the CBV flow.
+      form:
+        case_number: Case Number
+        email_address: Email Address
+        submit: Send Invitation
+      header: Invite someone to complete the CBV flow
   cbv_flows:
     employer_search:
       fetching_payroll: We are fetching your employer's payment information.
