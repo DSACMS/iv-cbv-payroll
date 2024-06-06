@@ -94,7 +94,7 @@ class CbvFlowsController < ApplicationController
   def fetch_employers(query = "")
     request_params = {
       q: query,
-      supported_jobs: ["paystubs"]
+      supported_jobs: [ "paystubs" ]
     }
 
     provider.fetch_items(request_params)["data"]
