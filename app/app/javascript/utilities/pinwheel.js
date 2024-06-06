@@ -17,11 +17,13 @@ export function loadPinwheel() {
 }
 
 export function initializePinwheel(Pinwheel, linkToken, callbacks) {
-  return Pinwheel.open({
+  Pinwheel.open({
     linkToken,
     sandbox: metaContent('pinwheel_sandbox'), // Set to false for production environment.
     ...callbacks
   });
+
+  return Pinwheel;
 }
 
 export const fetchToken = (response_type, id) => {
