@@ -19,7 +19,6 @@ export function loadPinwheel() {
 export function initializePinwheel(Pinwheel, linkToken, callbacks) {
   Pinwheel.open({
     linkToken,
-    sandbox: metaContent('pinwheel_sandbox'), // Set to false for production environment.
     ...callbacks
   });
 

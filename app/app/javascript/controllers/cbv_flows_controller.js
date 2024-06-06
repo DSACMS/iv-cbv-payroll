@@ -11,7 +11,7 @@ export default class extends Controller {
     "modal"
   ];
 
-  pinwheel = null;
+  pinwheel = loadPinwheel();
 
   cable = ActionCable.createConsumer();
 
@@ -33,7 +33,7 @@ export default class extends Controller {
   }
 
   onSignInSuccess() {
-    this.pinwheel.close();
+    this.pinwheel.then(pinwheel => pinwheel.close());
     this.modalTarget.click();
   }
 
@@ -49,11 +49,9 @@ export default class extends Controller {
   }
 
   submit(token) {
-    loadPinwheel()
-      .then(Pinwheel => initializePinwheel(Pinwheel, token, {
-        onEvent: console.log,
-        onSuccess: this.onSignInSuccess.bind(this),
-      }))
-      .then(pinwheel => this.pinwheel = pinwheel);
+    this.pinwheel.then(Pinwheel => initializePinwheel(Pinwheel, token, {
+      onEvent: console.log,
+      onSuccess: this.onSignInSuccess.bind(this),
+    }));
   }
 }
