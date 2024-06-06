@@ -51,7 +51,7 @@ export default class extends Controller {
   submit(token) {
     loadPinwheel()
       .then(Pinwheel => initializePinwheel(Pinwheel, token, {
-        // onEvent: console.log,
+        onEvent: console.log,
         onSuccess: this.onSignInSuccess.bind(this),
       }))
       .then(pinwheel => this.pinwheel = pinwheel);
