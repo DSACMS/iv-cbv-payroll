@@ -1,3 +1,6 @@
+data "aws_caller_identity" "current" {}
+data "aws_region" "current" {}
+
 data "aws_vpc" "network" {
   tags = {
     project      = module.project_config.project_name
@@ -84,6 +87,19 @@ data "aws_iam_policy" "migrator_db_access_policy" {
   name  = local.database_config.migrator_access_policy_name
 }
 
+resource "aws_iam_policy" "email_access_policy" {
+  name        = "${local.service_config.service_name}-email-access"
+  description = "Allows the app service to send emails with AWS SES"
+  policy      = data.aws_iam_policy_document.email_access_policy.json
+}
+
+data "aws_iam_policy_document" "email_access_policy" {
+  statement {
+    actions   = ["ses:SendRawEmail", "ses:SendEmail"]
+    resources = ["arn:aws:ses:${data.aws_region.current.name}:${data.aws_caller_identity.current.id}:identity/*"]
+  }
+}
+
 # Retrieve url for external incident management tool (e.g. Pagerduty, Splunk-On-Call)
 
 data "aws_ssm_parameter" "incident_management_service_integration_url" {
@@ -159,7 +175,8 @@ module "service" {
 
   extra_policies = {
     feature_flags_access = module.feature_flags.access_policy_arn,
-    storage_access       = module.storage.access_policy_arn
+    storage_access       = module.storage.access_policy_arn,
+    email_access         = aws_iam_policy.email_access_policy.arn
   }
 
   is_temporary = local.is_temporary
@@ -185,4 +202,10 @@ module "feature_flags" {
 module "storage" {
   source = "../../modules/storage"
   name   = local.storage_config.bucket_name
+}
+
+module "email" {
+  source = "../../modules/email"
+  hosted_zone_domain = local.network_config.domain_config.hosted_zone
+  domain             = local.service_config.domain_name
 }
