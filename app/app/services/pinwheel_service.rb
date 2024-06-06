@@ -28,9 +28,6 @@ class PinwheelService
       }
     }
     @http = Faraday.new(client_options) do |conn|
-      # conn.request  :json
-
-      # Parse JSON responses
       conn.response :raise_error
       conn.response :json, content_type: 'application/json'
     end
@@ -38,10 +35,6 @@ class PinwheelService
 
   def build_url(endpoint)
     @http.build_url(endpoint).to_s
-  end
-
-  def fetch_paystubs(options)
-    @http.get(build_url(PAYSTUBS_ENDPOINT), options).body
   end
 
   def fetch_items(options)
@@ -55,28 +48,6 @@ class PinwheelService
       end_user_id: end_user_id,
       skip_intro_screen: true,
       "#{response_type}_id": id,
-    }.to_json).body
-  end
-
-  def refresh_user_token(user_id)
-    @http.post(build_url(USER_TOKENS_ENDPOINT), { user: user_id }.to_json).body
-  end
-
-  def fetch_webhook_subscriptions
-    @http.get(build_url(WEBHOOKS_ENDPOINT)).body
-  end
-
-  def delete_webhook_subscription(id)
-    webhook_url = URI.join(build_url(WEBHOOKS_ENDPOINT) + "/", id)
-    @http.delete(webhook_url).body
-  end
-
-  def create_webhook_subscription(events, name, url, secret)
-    @http.post(build_url(WEBHOOKS_ENDPOINT), {
-      name: name,
-      events: events,
-      url: url,
-      secret: secret
     }.to_json).body
   end
 end

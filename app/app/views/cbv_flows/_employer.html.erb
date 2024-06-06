@@ -12,12 +12,14 @@
             <h2 class="usa-card__heading"><%= employer['name'] %></h2>
           </div>
           <div class="display-none usa-card__media usa-card__media--inset">
-            <div class="usa-card__img">
-              <img
-                src="<%= employer['logo_url'] %>"
-                alt="A placeholder image"
-              />
-            </div>
+            <% if employer['logo_url'] %>
+              <div class="usa-card__img">
+                <img
+                  src="<%= employer['logo_url'] %>"
+                  alt="A placeholder image"
+                />
+              </div>
+            <% end %>
           </div>
           <div class="usa-card__footer">
             <button

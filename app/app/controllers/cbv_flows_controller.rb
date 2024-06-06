@@ -84,12 +84,7 @@ class CbvFlowsController < ApplicationController
   def fetch_and_store_pinwheel_token
     return session[:pinwheel_user_token] if session[:pinwheel_user_token].present?
 
-    begin
-      user_token = provider.create_link_token(@cbv_flow.id).body["data"]
-    rescue => e
-      puts 'error...', e.body
-    end
-
+    user_token = provider.create_link_token(@cbv_flow.id).body["data"]
     @cbv_flow.update(pinwheel_token_id: user_token["id"])
     session[:pinwheel_user_token] = user_token["user_token"]
 
