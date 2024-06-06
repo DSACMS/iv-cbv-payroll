@@ -7,7 +7,7 @@ locals {
     RAILS_LOG_TO_STDOUT      = "true"
     RAILS_SERVE_STATIC_FILES = "true"
     ARGYLE_SANDBOX           = "true"
-    # LOG_LEVEL               = "info"
+    LOG_LEVEL               = "debug"
     # DB_CONNECTION_POOL_SIZE = 5
   }
 
