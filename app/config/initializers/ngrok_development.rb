@@ -8,11 +8,12 @@ Rails.application.config.to_prepare do
       puts "Found ngrok tunnel at #{tunnel_url}!"
 
       subscription_name = "dev - #{ENV["USER"]}"
-      argyle_webhooks = ArgyleWebhookManager.new
-      argyle_webhooks.remove_subscriptions_by_name(subscription_name)
-      argyle_webhooks.create_subscription(subscription_name, tunnel_url)
+      pinwheel_webhooks = PinwheelWebhookManager.new
+      # pinwheel_webhooks.remove_subscriptions_by_name(subscription_name)
+      pinwheel_webhooks.create_subscription(tunnel_url)
     rescue => ex
       puts "Unable to configure Ngrok for development: #{ex}"
+      puts ex.inspect
     end
   end
 end
