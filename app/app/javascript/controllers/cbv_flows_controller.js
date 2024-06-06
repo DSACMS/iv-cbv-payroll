@@ -13,13 +13,10 @@ export default class extends Controller {
 
   pinwheel = null;
 
-  pinwheelUserToken = null;
-
   cable = ActionCable.createConsumer();
 
   connect() {
-    // check for this value when connected
-    this.pinwheelUserToken = metaContent('pinwheel_user_token');
+    // TODO: Set up ActionCable to listen for paystub sync events
     // this.cable.subscriptions.create({ channel: 'ArgylePaystubsChannel' }, {
     //   connected: () => {
     //     console.log("Connected to the channel:", this);
@@ -35,8 +32,7 @@ export default class extends Controller {
     // });
   }
 
-  onSignInSuccess(event) {
-    this.userAccountIdTarget.value = event.accountId;
+  onSignInSuccess() {
     this.pinwheel.close();
     this.modalTarget.click();
   }
@@ -55,7 +51,8 @@ export default class extends Controller {
   submit(token) {
     loadPinwheel()
       .then(Pinwheel => initializePinwheel(Pinwheel, token, {
-        onEvent: console.log,
+        // onEvent: console.log,
+        onSuccess: this.onSignInSuccess.bind(this),
       }))
       .then(pinwheel => this.pinwheel = pinwheel);
   }
