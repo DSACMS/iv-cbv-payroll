@@ -3,43 +3,11 @@
 # Make sure RUBY_VERSION matches the Ruby version in .ruby-version and Gemfile
 ARG RUBY_VERSION=3.3.0
 
-FROM surnet/alpine-wkhtmltopdf:3.19.0-0.12.6-full as wkhtmltopdf
-FROM mcr.microsoft.com/dotnet/aspnet:7.0.17-alpine3.19
-
-# Install dependencies for wkhtmltopdf
-RUN apk add --no-cache \
-    libstdc++ \
-    libx11 \
-    libxrender \
-    libxext \
-    libssl3 \
-    ca-certificates \
-    fontconfig \
-    freetype \
-    ttf-dejavu \
-    ttf-droid \
-    ttf-freefont \
-    ttf-liberation \
-    # more fonts
-  && apk add --no-cache --virtual .build-deps \
-    msttcorefonts-installer \
-  # Install microsoft fonts
-  && update-ms-fonts \
-  && fc-cache -f \
-  # Clean up when done
-  && rm -rf /tmp/* \
-  && apk del .build-deps
 
 ##########################################################################################
 # BASE: Shared base docker image
 ##########################################################################################
-
 FROM registry.docker.com/library/ruby:$RUBY_VERSION-slim as base
-
-# Copy wkhtmltopdf files from docker-wkhtmltopdf image
-COPY --from=wkhtmltopdf /bin/wkhtmltopdf /bin/wkhtmltopdf
-COPY --from=wkhtmltopdf /bin/wkhtmltoimage /bin/wkhtmltoimage
-COPY --from=wkhtmltopdf /bin/libwkhtmltox* /bin/
 
 # Rails app lives here
 WORKDIR /rails
@@ -60,7 +28,7 @@ FROM base as build
 
 # Install packages needed to build gems
 RUN apt-get update -qq && \
-    apt-get install --no-install-recommends -y build-essential git libpq-dev libvips pkg-config npm
+    apt-get install --no-install-recommends -y build-essential git libpq-dev libjpeg-dev libvips pkg-config npm
 
 # Copy application code
 COPY . .
