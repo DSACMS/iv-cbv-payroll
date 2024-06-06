@@ -5,12 +5,12 @@ locals {
 
       domain_config = {
         manage_dns = true
-        # Placeholder value for the hosted zone
-        # A hosted zone represents a domain and all of its subdomains. For example, a
-        # hosted zone of foo.domain.com includes foo.domain.com, bar.foo.domain.com, etc.
-        hosted_zone = "hosted.zone.for.dev.network.com"
+        hosted_zone = "navapbc.cloud"
 
         certificate_configs = {
+          "verify-demo.navapbc.cloud" = {
+            source = "issued"
+          }
           # Example certificate configuration for a certificate that is managed by the project
           # "sub.domain.com" = {
           #   source = "issued"

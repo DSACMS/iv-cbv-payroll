@@ -15,6 +15,9 @@ locals {
   # List of configurations for defining environment variables that pull from SSM parameter
   # store. Configurations are of the format
   # { name = "ENV_VAR_NAME", ssm_param_name = "/ssm/param/name" }
+  #
+  # Manage the secret values of them using AWS Systems Manager:
+  # https://us-east-1.console.aws.amazon.com/systems-manager/parameters/
   secrets = [
     {
       name           = "SECRET_KEY_BASE"
