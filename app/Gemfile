@@ -59,7 +59,7 @@ gem "faraday", "~> 2.9.0"
 
 gem "wicked_pdf"
 gem "actioncable-enhanced-postgresql-adapter"
-gem "aws-sdk-sesv2"
+gem "aws-sdk-rails"
 
 group :development, :test do
   gem "brakeman", "~> 5.2"
