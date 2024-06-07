@@ -68,9 +68,6 @@ RUN apt-get update -qq && \
 # Install application gems for development
 COPY Gemfile Gemfile.lock ./
 
-# Copy wkhtmltopdf binary to /rails/bin, keeping all executables in a common directory
-RUN cp /usr/bin/wkhtmltopdf /rails/bin/wkhtmltopdf
-
 RUN bundle config set --local without production && \
     bundle install && \
     rm -rf ~/.bundle/ "${BUNDLE_PATH}"/ruby/*/cache "${BUNDLE_PATH}"/ruby/*/bundler/gems/*/.git
@@ -119,7 +116,6 @@ COPY bin/db-migrate /usr/bin/
 # Copy built artifacts: gems, application, binary dependencies
 COPY --from=release-build /usr/local/bundle /usr/local/bundle
 COPY --from=release-build /rails /rails
-RUN cp /usr/bin/wkhtmltopdf /rails/bin/wkhtmltopdf
 
 # Run and own only the runtime files as a non-root user for security
 RUN useradd rails --create-home --shell /bin/bash && \
