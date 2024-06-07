@@ -1,6 +1,11 @@
 #!/usr/bin/env sh
 
-rm /rails/tmp/pids/server.pid
+# Clean up an old pidfile if our docker container exited suddenly
+PIDFILE_PATH=$(cd $(dirname $0)/../tmp/pids; pwd)/server.pid
+if [ -f $PIDFILE_PATH ] && ! ps -p "$(cat $PIDFILE_PATH)" >/dev/null; then
+  echo "Found old pidfile at $PIDFILE_PATH... removing"
+  rm $PIDFILE_PATH
+fi
 
 if gem list --no-installed --exact --silent foreman; then
   echo "Installing foreman..."
