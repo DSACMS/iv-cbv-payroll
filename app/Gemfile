@@ -58,7 +58,7 @@ gem "sidekiq", "~> 6.4"
 gem "faraday", "~> 2.9.0"
 
 gem "wicked_pdf"
-gem "wkhtmltopdf"
+gem "wkhtmltopdf-binary"
 gem "actioncable-enhanced-postgresql-adapter"
 group :development, :test do
   gem "brakeman", "~> 5.2"
