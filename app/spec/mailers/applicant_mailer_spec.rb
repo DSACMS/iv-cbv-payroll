@@ -14,7 +14,7 @@ RSpec.describe ApplicantMailer, type: :mailer do
   end
 
   it "renders the sender email" do
-    expect(mail.from).to eq([ "from@example.com" ])
+    expect(mail.from).to eq([ "noreply@mail.localhost" ])
   end
 
   it "renders the body" do

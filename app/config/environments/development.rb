@@ -23,7 +23,8 @@ Rails.application.configure do
 
   config.hosts << ".ngrok-free.app"
 
-  routes.default_url_options[:host] = "localhost:3000"
+  routes.default_url_options[:host] = ENV.fetch("DOMAIN_NAME", "localhost")
+  routes.default_url_options[:port] = ENV.fetch("PORT", 3000)
 
   # Enable/disable caching. By default caching is disabled.
   # Run rails dev:cache to toggle caching.
