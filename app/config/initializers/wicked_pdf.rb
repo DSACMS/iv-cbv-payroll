@@ -13,8 +13,8 @@ WickedPdf.configure do |config|
   # one of the wkhtmltopdf-binary family of gems.
 
   # set the wkhtmltopdf path for docker
-  if ENV['DOCKERIZED'] == 'true'
-    config.exe_path = '/rails/bin/wkhtmltopdf'
+  if ENV["DOCKERIZED"] == "true"
+    config.exe_path = "/rails/bin/wkhtmltopdf"
   end
 
   # config.exe_path = '/usr/local/bin/wkhtmltopdf',
