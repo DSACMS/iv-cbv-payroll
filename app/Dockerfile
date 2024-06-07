@@ -110,6 +110,7 @@ COPY bin/db-migrate /usr/bin/
 # Copy built artifacts: gems, application
 COPY --from=release-build /usr/local/bundle /usr/local/bundle
 COPY --from=release-build /rails /rails
+COPY --from=build /usr/bin/wkhtmltopdf /rails/bin/wkhtmltopdf
 
 # Run and own only the runtime files as a non-root user for security
 RUN useradd rails --create-home --shell /bin/bash && \
