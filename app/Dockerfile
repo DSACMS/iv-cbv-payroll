@@ -28,7 +28,7 @@ FROM base as build
 
 # Install packages needed to build gems
 RUN apt-get update -qq && \
-    apt-get install --no-install-recommends -y build-essential git libpq-dev libjpeg-dev libvips pkg-config npm wkhtmltopdf
+    apt-get install --no-install-recommends -y build-essential git libpq-dev libvips pkg-config npm
 
 # Copy application code
 COPY . .
@@ -97,7 +97,7 @@ FROM base as release
 
 # Install packages needed for deployment
 RUN apt-get update -qq && \
-    apt-get install -y --no-install-recommends unzip python3-venv python-is-python3 curl libvips postgresql-client && \
+    apt-get install -y --no-install-recommends unzip python3-venv python-is-python3 curl libvips postgresql-client libjpeg-dev wkhtmltopdf && \
     rm -rf /var/lib/apt/lists /var/cache/apt/archives && \
     curl "https://s3.amazonaws.com/aws-cli/awscli-bundle.zip" -o "awscli-bundle.zip" && \
     unzip awscli-bundle.zip && \
@@ -110,7 +110,7 @@ COPY bin/db-migrate /usr/bin/
 # Copy built artifacts: gems, application
 COPY --from=release-build /usr/local/bundle /usr/local/bundle
 COPY --from=release-build /rails /rails
-COPY --from=build /usr/bin/wkhtmltopdf /rails/bin/wkhtmltopdf
+COPY /usr/bin/wkhtmltopdf /rails/bin/wkhtmltopdf
 
 # Run and own only the runtime files as a non-root user for security
 RUN useradd rails --create-home --shell /bin/bash && \
