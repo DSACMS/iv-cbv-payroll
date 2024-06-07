@@ -58,9 +58,9 @@ RUN apt-get update -qq && \
 COPY . .
 
 # Copy wkhtmltopdf files from docker-wkhtmltopdf image
-COPY --from=wkhtmltopdf /bin/wkhtmltopdf /bin/wkhtmltopdf
-COPY --from=wkhtmltopdf /bin/wkhtmltoimage /bin/wkhtmltoimage
-COPY --from=wkhtmltopdf /bin/libwkhtmltox* /bin/
+COPY --from=wkhtmltopdf /bin/wkhtmltopdf /usr/local/bin/wkhtmltopdf
+COPY --from=wkhtmltopdf /bin/wkhtmltoimage /usr/local/bin/wkhtmltoimage
+COPY --from=wkhtmltopdf /bin/libwkhtmltox* /usr/local/bin/
 
 # chromium is not available for arm64, this could be problematic when developing locally on an arm64 machine
 # and running tests that require puppeteer.
