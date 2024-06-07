@@ -8,30 +8,6 @@ ARG RUBY_VERSION=3.3.0
 # BASE: Shared base docker image
 ##########################################################################################
 FROM registry.docker.com/library/ruby:$RUBY_VERSION-slim as base
-FROM surnet/alpine-wkhtmltopdf:3.20.0-0.12.6-full as wkhtmltopdf
-# Install dependencies for wkhtmltopdf
-RUN apk add --no-cache \
-    libstdc++ \
-    libx11 \
-    libxrender \
-    libxext \
-    libssl3 \
-    ca-certificates \
-    fontconfig \
-    freetype \
-    ttf-dejavu \
-    ttf-droid \
-    ttf-freefont \
-    ttf-liberation \
-    # more fonts
-  && apk add --no-cache --virtual .build-deps \
-    msttcorefonts-installer \
-  # Install microsoft fonts
-  && update-ms-fonts \
-  && fc-cache -f \
-  # Clean up when done
-  && rm -rf /tmp/* \
-  && apk del .build-deps
 
 # Rails app lives here
 WORKDIR /rails
@@ -57,11 +33,6 @@ RUN apt-get update -qq && \
 # Copy application code
 COPY . .
 
-# Copy wkhtmltopdf files from docker-wkhtmltopdf image
-COPY --from=wkhtmltopdf /bin/wkhtmltopdf /usr/local/bin/wkhtmltopdf
-COPY --from=wkhtmltopdf /bin/wkhtmltoimage /usr/local/bin/wkhtmltoimage
-COPY --from=wkhtmltopdf /bin/libwkhtmltox* /usr/local/bin/
-
 # chromium is not available for arm64, this could be problematic when developing locally on an arm64 machine
 # and running tests that require puppeteer.
 # Set default value for PUPPETEER_SKIP_CHROMIUM_DOWNLOAD
@@ -85,6 +56,7 @@ RUN npm install
 FROM build as dev
 
 ENV RAILS_ENV="development"
+ENV TMPDIR=/tmp
 
 # Install packages needed for development
 RUN apt-get update -qq && \
