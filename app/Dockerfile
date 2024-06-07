@@ -33,6 +33,19 @@ RUN apt-get update -qq && \
 # Copy application code
 COPY . .
 
+# chromium is not available for arm64, this could be problematic when developing locally on an arm64 machine
+# and running tests that require puppeteer.
+# Set default value for PUPPETEER_SKIP_CHROMIUM_DOWNLOAD
+ENV PUPPETEER_SKIP_CHROMIUM_DOWNLOAD=true
+
+# Detect architecture and skip the installation of chromium if the architecture is arm64
+# see https://github.com/puppeteer/puppeteer/issues/7740#issuecomment-1016083451
+RUN if [ "$(uname -m)" = "arm64" ]; then \
+      export PUPPETEER_SKIP_CHROMIUM_DOWNLOAD=false; \
+    fi
+
+RUN PUPPETEER_SKIP_CHROMIUM_DOWNLOAD=$PUPPETEER_SKIP_CHROMIUM_DOWNLOAD npm install
+
 # Install npm packages
 RUN npm install
 
@@ -51,6 +64,7 @@ RUN apt-get update -qq && \
 
 # Install application gems for development
 COPY Gemfile Gemfile.lock ./
+
 RUN bundle config set --local without production && \
     bundle install && \
     rm -rf ~/.bundle/ "${BUNDLE_PATH}"/ruby/*/cache "${BUNDLE_PATH}"/ruby/*/bundler/gems/*/.git
@@ -83,7 +97,7 @@ FROM base as release
 
 # Install packages needed for deployment
 RUN apt-get update -qq && \
-    apt-get install -y --no-install-recommends unzip python3-venv python-is-python3  curl libvips postgresql-client && \
+    apt-get install -y --no-install-recommends unzip python3-venv python-is-python3 curl libvips postgresql-client libjpeg-dev wkhtmltopdf && \
     rm -rf /var/lib/apt/lists /var/cache/apt/archives && \
     curl "https://s3.amazonaws.com/aws-cli/awscli-bundle.zip" -o "awscli-bundle.zip" && \
     unzip awscli-bundle.zip && \
@@ -96,6 +110,7 @@ COPY bin/db-migrate /usr/bin/
 # Copy built artifacts: gems, application
 COPY --from=release-build /usr/local/bundle /usr/local/bundle
 COPY --from=release-build /rails /rails
+COPY /usr/bin/wkhtmltopdf /rails/bin/wkhtmltopdf
 
 # Run and own only the runtime files as a non-root user for security
 RUN useradd rails --create-home --shell /bin/bash && \
