@@ -52,3 +52,11 @@ resource "aws_route53_record" "mx_domain_record" {
   ttl     = "300"
   records = ["10 feedback-smtp.${data.aws_region.current.name}.amazonses.com"]
 }
+
+resource "aws_route53_record" "dmarc_record" {
+  zone_id = data.aws_route53_zone.domain.zone_id
+  name    = "_dmarc.${var.domain}"
+  type    = "TXT"
+  ttl     = "300"
+  records = ["v=DMARC1; p=none;"]
+}
