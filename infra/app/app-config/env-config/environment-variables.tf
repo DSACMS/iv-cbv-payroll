@@ -7,6 +7,9 @@ locals {
     RAILS_LOG_TO_STDOUT      = "true"
     RAILS_SERVE_STATIC_FILES = "true"
     ARGYLE_SANDBOX           = "true"
+
+    # Set to true to inform the app that it is running in a container
+    DOCKERIZED               = "true"
     # LOG_LEVEL               = "info"
     # DB_CONNECTION_POOL_SIZE = 5
   }
