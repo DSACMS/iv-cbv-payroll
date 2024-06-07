@@ -9,6 +9,7 @@ Rails.application.routes.draw do
     root "pages#home"
 
     get "/health", to: "health_check#ok"
+    get "/health/test_rendering", to: "health_check#test_rendering"
     # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
 
     scope "/cbv", as: :cbv_flow do
