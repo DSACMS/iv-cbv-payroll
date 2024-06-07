@@ -92,6 +92,9 @@ GEM
     aws-sdk-rds (1.232.0)
       aws-sdk-core (~> 3, >= 3.193.0)
       aws-sigv4 (~> 1.1)
+    aws-sdk-sesv2 (1.49.0)
+      aws-sdk-core (~> 3, >= 3.193.0)
+      aws-sigv4 (~> 1.1)
     aws-sigv4 (1.8.0)
       aws-eventstream (~> 1, >= 1.0.2)
     base64 (0.2.0)
@@ -402,6 +405,7 @@ PLATFORMS
 
 DEPENDENCIES
   actioncable-enhanced-postgresql-adapter
+  aws-sdk-sesv2
   bootsnap
   brakeman (~> 5.2)
   bundler-audit (~> 0.9)
