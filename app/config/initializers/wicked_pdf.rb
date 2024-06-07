@@ -19,9 +19,9 @@ WickedPdf.configure do |config|
 
   # Path to the wkhtmltopdf executable: This usually isn't needed if using
   # one of the wkhtmltopdf-binary family of gems.
-  # config.exe_path = '/bin/wkhtmltopdf'
+  config.exe_path = '/usr/bin/wkhtmltopdf'
   #   or
-  config.exe_path = Gem.bin_path('wkhtmltopdf-binary', 'wkhtmltopdf')
+  # config.exe_path = Gem.bin_path('wkhtmltopdf-binary', 'wkhtmltopdf')
 
   # Needed for wkhtmltopdf 0.12.6+ to use many wicked_pdf_temp asset helpers
   config.enable_local_file_access = true

@@ -28,7 +28,7 @@ FROM base as build
 
 # Install packages needed to build gems
 RUN apt-get update -qq && \
-    apt-get install --no-install-recommends -y build-essential git libpq-dev libjpeg-dev libvips pkg-config npm
+    apt-get install --no-install-recommends -y build-essential git libpq-dev libjpeg-dev libvips pkg-config npm wkhtmltopdf
 
 # Copy application code
 COPY . .
@@ -97,7 +97,7 @@ FROM base as release
 
 # Install packages needed for deployment
 RUN apt-get update -qq && \
-    apt-get install -y --no-install-recommends unzip python3-venv python-is-python3 curl libvips postgresql-client wkhtmltopdf && \
+    apt-get install -y --no-install-recommends unzip python3-venv python-is-python3 curl libvips postgresql-client && \
     rm -rf /var/lib/apt/lists /var/cache/apt/archives && \
     curl "https://s3.amazonaws.com/aws-cli/awscli-bundle.zip" -o "awscli-bundle.zip" && \
     unzip awscli-bundle.zip && \
