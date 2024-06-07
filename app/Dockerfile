@@ -56,7 +56,7 @@ RUN npm install
 FROM build as dev
 
 ENV RAILS_ENV="development"
-ENV TMPDIR=/tmp
+ENV TMPDIR=/rails/tmp
 
 # Install packages needed for development
 RUN apt-get update -qq && \
