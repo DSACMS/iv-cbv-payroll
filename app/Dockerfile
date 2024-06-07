@@ -28,10 +28,13 @@ FROM base as build
 
 # Install packages needed to build gems
 RUN apt-get update -qq && \
-    apt-get install --no-install-recommends -y build-essential git libpq-dev libvips pkg-config npm
+    apt-get install --no-install-recommends -y build-essential git libpq-dev libvips pkg-config npm libjpeg-dev wkhtmltopdf
 
 # Copy application code
 COPY . .
+
+# Copy wkhtmltopdf binary to /rails/bin, keeping all executables in a common directory
+RUN cp /usr/bin/wkhtmltopdf /rails/bin/wkhtmltopdf
 
 # chromium is not available for arm64, this could be problematic when developing locally on an arm64 machine
 # and running tests that require puppeteer.
@@ -97,7 +100,7 @@ FROM base as release
 
 # Install packages needed for deployment
 RUN apt-get update -qq && \
-    apt-get install -y --no-install-recommends unzip python3-venv python-is-python3 curl libvips postgresql-client libjpeg-dev wkhtmltopdf && \
+    apt-get install -y --no-install-recommends unzip python3-venv python-is-python3 curl libvips postgresql-client && \
     rm -rf /var/lib/apt/lists /var/cache/apt/archives && \
     curl "https://s3.amazonaws.com/aws-cli/awscli-bundle.zip" -o "awscli-bundle.zip" && \
     unzip awscli-bundle.zip && \
@@ -110,7 +113,6 @@ COPY bin/db-migrate /usr/bin/
 # Copy built artifacts: gems, application
 COPY --from=release-build /usr/local/bundle /usr/local/bundle
 COPY --from=release-build /rails /rails
-RUN cp /usr/bin/wkhtmltopdf /rails/bin/wkhtmltopdf
 
 # Run and own only the runtime files as a non-root user for security
 RUN useradd rails --create-home --shell /bin/bash && \
