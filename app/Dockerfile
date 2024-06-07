@@ -33,6 +33,19 @@ RUN apt-get update -qq && \
 # Copy application code
 COPY . .
 
+# chromium is not available for arm64, this could be problematic when developing locally on an arm64 machine
+# and running tests that require puppeteer.
+# Set default value for PUPPETEER_SKIP_CHROMIUM_DOWNLOAD
+ENV PUPPETEER_SKIP_CHROMIUM_DOWNLOAD=true
+
+# Detect architecture and skip the installation of chromium if the architecture is arm64
+# see https://github.com/puppeteer/puppeteer/issues/7740#issuecomment-1016083451
+RUN if [ "$(uname -m)" = "arm64" ]; then \
+      export PUPPETEER_SKIP_CHROMIUM_DOWNLOAD=false; \
+    fi
+
+RUN PUPPETEER_SKIP_CHROMIUM_DOWNLOAD=$PUPPETEER_SKIP_CHROMIUM_DOWNLOAD npm install
+
 # Install npm packages
 RUN npm install
 
@@ -44,13 +57,20 @@ FROM build as dev
 
 ENV RAILS_ENV="development"
 
+# Set the tmp dir to the writeable tmp volume
+ENV TMPDIR="/rails/tmp"
+
 # Install packages needed for development
 RUN apt-get update -qq && \
-    apt-get install --no-install-recommends -y postgresql-client graphviz && \
+    apt-get install --no-install-recommends -y postgresql-client graphviz wkhtmltopdf && \
     rm -rf /var/lib/apt/lists /var/cache/apt/archives
 
 # Install application gems for development
 COPY Gemfile Gemfile.lock ./
+
+# Copy wkhtmltopdf binary to /rails/bin, keeping all executables in a common directory
+RUN cp /usr/bin/wkhtmltopdf /rails/bin/wkhtmltopdf
+
 RUN bundle config set --local without production && \
     bundle install && \
     rm -rf ~/.bundle/ "${BUNDLE_PATH}"/ruby/*/cache "${BUNDLE_PATH}"/ruby/*/bundler/gems/*/.git
@@ -81,9 +101,12 @@ RUN SECRET_KEY_BASE_DUMMY=1 ./bin/rails assets:precompile
 ##########################################################################################
 FROM base as release
 
+# Set the tmp dir to the writeable tmp volume
+ENV TMPDIR="/rails/tmp"
+
 # Install packages needed for deployment
 RUN apt-get update -qq && \
-    apt-get install -y --no-install-recommends unzip python3-venv python-is-python3  curl libvips postgresql-client && \
+    apt-get install -y --no-install-recommends unzip python3-venv python-is-python3 curl libvips postgresql-client wkhtmltopdf && \
     rm -rf /var/lib/apt/lists /var/cache/apt/archives && \
     curl "https://s3.amazonaws.com/aws-cli/awscli-bundle.zip" -o "awscli-bundle.zip" && \
     unzip awscli-bundle.zip && \
@@ -93,9 +116,10 @@ RUN apt-get update -qq && \
 # Install custom db migrate script
 COPY bin/db-migrate /usr/bin/
 
-# Copy built artifacts: gems, application
+# Copy built artifacts: gems, application, binary dependencies
 COPY --from=release-build /usr/local/bundle /usr/local/bundle
 COPY --from=release-build /rails /rails
+RUN cp /usr/bin/wkhtmltopdf /rails/bin/wkhtmltopdf
 
 # Run and own only the runtime files as a non-root user for security
 RUN useradd rails --create-home --shell /bin/bash && \
