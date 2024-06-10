@@ -27,7 +27,7 @@ on:
 jobs:
   deploy:
     name: Deploy
-    uses: ./.github/workflows/deploy.yml@main
+    uses: ./.github/workflows/deploy.yml
     with:
       app_name: "app"
       environment: ${{ inputs.environment || 'dev' }}
