@@ -5,15 +5,15 @@ class PinwheelWebhookManager
   end
 
   ## may need to track the id
-  # def remove_subscriptions_by_name(name)
-  #   subscriptions = @pinwheel.fetch_webhook_subscriptions["results"]
-  #   existing_webhook_subscriptions = subscriptions.find_all { |subscription| subscription["name"] == name }
+  def remove_ngrok_subscriptions!
+    subscriptions = @pinwheel.fetch_webhook_subscriptions["data"]
+    ngrok_subscriptions = subscriptions.find_all { |subscription| subscription["url"].match('ngrok-free') }
 
-  #   existing_webhook_subscriptions.each do |existing_webhook_subscription|
-  #     puts "  Removing existing Argyle webhook subscription (url = #{existing_webhook_subscription["url"]})"
-  #     @pinwheel.delete_webhook_subscription(existing_webhook_subscription["id"])
-  #   end
-  # end
+    ngrok_subscriptions.each do |subscription|
+      puts "  Removing existing Argyle webhook subscription (url = #{subscription["url"]})"
+      @pinwheel.delete_webhook_subscription(subscription["id"])
+    end
+  end
 
   def create_subscription(tunnel_url)
     puts "  Registering Argyle webhooks for Ngrok tunnel..."
