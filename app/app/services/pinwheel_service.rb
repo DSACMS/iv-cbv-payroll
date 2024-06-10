@@ -10,9 +10,7 @@ class PinwheelService
   PAYSTUBS_ENDPOINT = "/paystubs"
   WEBHOOKS_ENDPOINT = "/v1/webhooks"
 
-  def initialize
-    api_key = ENV["PINWHEEL_API_TOKEN"]
-
+  def initialize(api_key = ENV["ARGYLE_API_TOKEN"])
     raise "PINWHEEL_API_TOKEN environment variable is blank. Make sure you have the .env.local.local from 1Password." if api_key.blank?
 
     client_options = {
