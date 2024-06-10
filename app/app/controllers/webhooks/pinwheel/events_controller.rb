@@ -11,19 +11,19 @@ class Webhooks::Pinwheel::EventsController < ApplicationController
       return render json: { error: "Invalid signature" }, status: :unauthorized
     end
 
-    if params["event"] == "paystubs.fully_synced" || params["event"] == "paystubs.partially_synced"
-      @cbv_flow = CbvFlow.find_by_argyle_user_id(params["data"]["user"])
+    if params["event"] == "paystubs.added"
+      @cbv_flow = CbvFlow.find_by_pinwheel_token_id(params["payload"]["link_token_id"])
 
       if @cbv_flow
-        @cbv_flow.update(payroll_data_available_from: params["data"]["available_from"])
+        @cbv_flow.update(payroll_data_available_from: params["payload"]["params"]["from_pay_date"])
         PinwheelPaystubsChannel.broadcast_to(@cbv_flow, params)
       end
     end
 
-    if params["event"] == "accounts.connected"
+    if params["event"] == "accounts.added"
       rep = ConnectedArgyleAccount.create!(
-        user_id: params["data"]["user"],
-        account_id: params["data"]["account"]
+        user_id: params["payload"]["end_user_id"],
+        account_id: params["payload"]["link_token_id"]
       )
       Rails.logger.info "ConnectedArgyleAccount created: #{rep}"
       render json: { message: "ConnectedArgyleAccount created", data: rep }, status: :created
