@@ -2,9 +2,6 @@ name: Build and publish
 run-name: Build and publish ${{ inputs.app_name }}:${{ inputs.ref }}
 
 on:
-  push:
-    branches:
-      - main
   workflow_call:
     inputs:
       app_name:
@@ -37,7 +34,7 @@ jobs:
       id-token: write
 
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v3
         with:
           ref: ${{ inputs.ref }}
 
