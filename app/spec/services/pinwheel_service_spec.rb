@@ -33,15 +33,20 @@ RSpec.describe PinwheelService, type: :service do
     }
 
     let(:timestamp) {
-      860860860
+      '860860860'
     }
 
     let(:signature_digest) {
-      '42fb9eba200e821d4de63667f5a30f7e1b83609b135e148e26ce01eef2aa6ba8'
+      'v2=42fb9eba200e821d4de63667f5a30f7e1b83609b135e148e26ce01eef2aa6ba8'
     }
 
-    it 'verifies' do
-      expect(service.verify_signature(signature_digest, timestamp, raw_request_body, 'TEST_KEY')).to be true
+    let(:key) {
+      'TEST_KEY'.encode('utf-8')
+    }
+
+    it 'generates the correct signature' do
+      puts key
+      expect(service.generate_signature_digest(timestamp, raw_request_body, key)).to eq(signature_digest)
     end
   end
 
