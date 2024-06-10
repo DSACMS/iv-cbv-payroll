@@ -35,5 +35,8 @@ Rails.application.routes.draw do
     scope :argyle do
       post "/tokens" => "argyle#update_token"
     end
+    scope :pinwheel do
+      post "/tokens" => "pinwheel#fetch_token"
+    end
   end
 end
