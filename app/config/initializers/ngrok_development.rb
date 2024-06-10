@@ -9,7 +9,7 @@ Rails.application.config.to_prepare do
 
       subscription_name = "dev - #{ENV["USER"]}"
       pinwheel_webhooks = PinwheelWebhookManager.new
-      # pinwheel_webhooks.remove_subscriptions_by_name(subscription_name)
+      pinwheel_webhooks.remove_ngrok_subscriptions!
       pinwheel_webhooks.create_subscription(tunnel_url)
     rescue => ex
       puts "Unable to configure Ngrok for development: #{ex}"

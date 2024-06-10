@@ -1,4 +1,4 @@
-class ArgylePaystubsChannel < ApplicationCable::Channel
+class PinwheelPaystubsChannel < ApplicationCable::Channel
   def subscribed
     cbv_flow = CbvFlow.find(connection.session[:cbv_flow_id])
     stream_for cbv_flow
