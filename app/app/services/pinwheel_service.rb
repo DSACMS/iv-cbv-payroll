@@ -68,19 +68,18 @@ class PinwheelService
     }.to_json).body
   end
 
-  def secure_compare(a, b)
-    puts a, b
-    ActiveSupport::SecurityUtils.secure_compare(a, b)
-  end
-
-  def verify_signature(signature, timestamp, raw_body, api_key = ENV["PINWHEEL_API_TOKEN"])
+  def generate_signature_digest(timestamp, raw_body, api_key = ENV["PINWHEEL_API_TOKEN"])
     msg = "v2:#{timestamp}:#{raw_body}"
     digest = OpenSSL::HMAC.hexdigest(
       OpenSSL::Digest.new('sha256'),
       api_key,
       msg
     )
-    generated_signature = "v2=#{digest}"
-    secure_compare(signature, generated_signature)
+    "v2=#{digest}"
+  end
+
+  def verify_signature(signature, generated_signature)
+    puts signature, generated_signature
+    ActiveSupport::SecurityUtils.secure_compare(signature, generated_signature)
   end
 end
