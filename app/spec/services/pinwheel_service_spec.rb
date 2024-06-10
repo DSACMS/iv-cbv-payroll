@@ -41,12 +41,16 @@ RSpec.describe PinwheelService, type: :service do
     }
 
     let(:key) {
-      'TEST_KEY'.encode('utf-8')
+      'TEST_KEY'
     }
 
     it 'generates the correct signature' do
-      puts key
       expect(service.generate_signature_digest(timestamp, raw_request_body, key)).to eq(signature_digest)
+    end
+
+    it 'compares a valid signature' do
+      digest = service.generate_signature_digest(timestamp, raw_request_body, key)
+      expect(service.verify_signature(signature_digest, digest)).to eq(true)
     end
   end
 

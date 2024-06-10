@@ -72,7 +72,7 @@ class PinwheelService
     msg = "v2:#{timestamp}:#{raw_body}"
     digest = OpenSSL::HMAC.hexdigest(
       OpenSSL::Digest.new('sha256'),
-      api_key,
+      api_key.encode('utf-8'),
       msg
     )
     "v2=#{digest}"

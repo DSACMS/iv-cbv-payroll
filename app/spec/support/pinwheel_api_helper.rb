@@ -52,10 +52,10 @@ module PinwheelApiHelper
   end
 
   def load_relative_file(filename)
-    File.join(
+    File.read(File.join(
       File.dirname(__FILE__),
       "fixtures/pinwheel/#{filename}"
-    )
+    ))
   end
 
   def load_relative_json_file(filename)

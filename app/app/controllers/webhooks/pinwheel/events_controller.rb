@@ -1,26 +1,13 @@
 class Webhooks::Pinwheel::EventsController < ApplicationController
   skip_before_action :verify_authenticity_token
 
-  def secure_compare(a, b)
-    ActiveSupport::SecurityUtils.secure_compare(a, b)
-  end
-
-  def verify_signature(signature, timestamp, raw_body)
-    msg = "v2:#{timestamp}:#{raw_body}"
-    digest = OpenSSL::HMAC.hexdigest(
-      OpenSSL::Digest.new('sha256'),
-      'YOUR_API_SECRET',
-      msg
-    )
-    generated_signature = "v2=#{digest}"
-    secure_compare(signature, generated_signature)
-  end
-
   def create
     signature = request.headers['X-Pinwheel-Signature']
     timestamp = request.headers['X-Timestamp']
+    
+    digest = provider.generate_signature_digest(timestamp, request.raw_post)
 
-    unless verify_signature(signature, timestamp, request.body.read.bytes)
+    unless provider.verify_signature(signature, digest)
       return render json: { error: "Invalid signature" }, status: :unauthorized
     end
 
@@ -41,6 +28,10 @@ class Webhooks::Pinwheel::EventsController < ApplicationController
       Rails.logger.info "ConnectedArgyleAccount created: #{rep}"
       render json: { message: "ConnectedArgyleAccount created", data: rep }, status: :created
     end
+  end
+
+  def provider
+    PinwheelService.new
   end
 end
 
