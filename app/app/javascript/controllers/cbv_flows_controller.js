@@ -17,19 +17,19 @@ export default class extends Controller {
 
   connect() {
     // TODO: Set up ActionCable to listen for paystub sync events
-    // this.cable.subscriptions.create({ channel: 'PinwheelPaystubsChannel' }, {
-    //   connected: () => {
-    //     console.log("Connected to the channel:", this);
-    //   },
-    //   disconnected: () => {
-    //     console.log("Disconnected");
-    //   },
-    //   received: (data) => {
-    //     if (data.event === 'paystubs.fully_synced' || data.event === 'paystubs.partially_synced') {
-    //       this.formTarget.submit();
-    //     }
-    //   }
-    // });
+    this.cable.subscriptions.create({ channel: 'PinwheelPaystubsChannel' }, {
+      connected: () => {
+        console.log("Connected to the channel:", this);
+      },
+      disconnected: () => {
+        console.log("Disconnected");
+      },
+      received: (data) => {
+        if (data.event === 'paystubs.added') {
+          this.formTarget.submit();
+        }
+      }
+    });
   }
 
   onSignInSuccess() {
