@@ -1,10 +1,26 @@
-class Webhooks::Argyle::EventsController < ApplicationController
+class Webhooks::Pinwheel::EventsController < ApplicationController
   skip_before_action :verify_authenticity_token
 
-  def create
-    signature = OpenSSL::HMAC.hexdigest("SHA512", ENV["ARGYLE_WEBHOOK_SECRET"], request.raw_post)
+  def secure_compare(a, b)
+    ActiveSupport::SecurityUtils.secure_compare(a, b)
+  end
 
-    unless request.headers["X-Argyle-Signature"] == signature
+  def verify_signature(signature, timestamp, raw_body)
+    msg = IO:Buffer.from"v2:#{timestamp}:#{raw_body}"
+    digest = OpenSSL::HMAC.hexdigest(
+      OpenSSL::Digest.new('sha256'),
+      'YOUR_API_SECRET',
+      msg
+    )
+    generated_signature = "v2=#{digest}"
+    secure_compare(signature, generated_signature)
+  end
+
+  def create
+    signature = request.headers['X-Pinwheel-Signature']
+    timestamp = request.headers['X-Timestamp']
+
+    unless verify_signature(signature, timestamp, request.body.read.bytes)
       return render json: { error: "Invalid signature" }, status: :unauthorized
     end
 
@@ -27,3 +43,29 @@ class Webhooks::Argyle::EventsController < ApplicationController
     end
   end
 end
+
+# # Technology Stack: Node.js, Express.js
+
+# require 'openssl'
+# require 'digest'
+
+# def verify_signature(signature, timestamp, raw_body)
+#   prefix = Buffer.from("v2:#{timestamp}:", 'utf8')
+#   message = Buffer.concat([prefix, raw_body])
+#   digest = OpenSSL::HMAC.hexdigest('sha256', ENV['YOUR_PINWHEEL_API_SECRET'].encode('utf-8'), message)
+#   generated_signature = "v2=#{digest}"
+
+#   buf_sig = Buffer.from(signature)
+#   buf_gen = Buffer.from(generated_signature)
+
+#   return buf_sig.length == buf_gen.length && OpenSSL::TimingSafeEqual.timingSafeEqual(buf_sig, buf_gen)
+# end
+
+# auth_middleware = Express.json(verify: ->(request, response, buffer) {
+#   signature = request.headers['x-pinwheel-signature']
+#   timestamp = request.headers['x-timestamp']
+
+#   unless verify_signature(signature, timestamp, buffer)
+#     raise 'Invalid webhook request signature'
+#   end
+# })
