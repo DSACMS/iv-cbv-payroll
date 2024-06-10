@@ -11,7 +11,7 @@ class PinwheelService
   PAYSTUBS_ENDPOINT = "/paystubs"
   WEBHOOKS_ENDPOINT = "/v1/webhooks"
 
-  def initialize(api_key = ENV["ARGYLE_API_TOKEN"])
+  def initialize(api_key = ENV["PINWHEEL_API_TOKEN"])
     raise "PINWHEEL_API_TOKEN environment variable is blank. Make sure you have the .env.local.local from 1Password." if api_key.blank?
 
     client_options = {
@@ -66,5 +66,20 @@ class PinwheelService
       status: 'active',
       version: PINWHEEL_VERSION,
     }.to_json).body
+  end
+
+  def secure_compare(a, b)
+    ActiveSupport::SecurityUtils.secure_compare(a, b)
+  end
+
+  def verify_signature(signature, timestamp, raw_body)
+    msg = "v2:#{timestamp}:#{raw_body}"
+    digest = OpenSSL::HMAC.hexdigest(
+      OpenSSL::Digest.new('sha256'),
+      'YOUR_API_SECRET',
+      msg
+    )
+    generated_signature = "v2=#{digest}"
+    secure_compare(signature, generated_signature)
   end
 end

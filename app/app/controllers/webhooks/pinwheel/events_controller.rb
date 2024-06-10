@@ -6,7 +6,7 @@ class Webhooks::Pinwheel::EventsController < ApplicationController
   end
 
   def verify_signature(signature, timestamp, raw_body)
-    msg = IO:Buffer.from"v2:#{timestamp}:#{raw_body}"
+    msg = "v2:#{timestamp}:#{raw_body}"
     digest = OpenSSL::HMAC.hexdigest(
       OpenSSL::Digest.new('sha256'),
       'YOUR_API_SECRET',
