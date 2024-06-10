@@ -41,7 +41,7 @@ RSpec.describe PinwheelService, type: :service do
     }
 
     it 'verifies' do
-      expect(service.verify_signature(signature_digest, timestamp, raw_request_body)).to be true
+      expect(service.verify_signature(signature_digest, timestamp, raw_request_body, 'TEST_KEY')).to be true
     end
   end
 
