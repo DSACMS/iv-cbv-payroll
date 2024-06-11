@@ -2,9 +2,9 @@ class Webhooks::Pinwheel::EventsController < ApplicationController
   skip_before_action :verify_authenticity_token
 
   def create
-    signature = request.headers['X-Pinwheel-Signature']
-    timestamp = request.headers['X-Timestamp']
-    
+    signature = request.headers["X-Pinwheel-Signature"]
+    timestamp = request.headers["X-Timestamp"]
+
     digest = provider.generate_signature_digest(timestamp, request.raw_post)
 
     unless provider.verify_signature(signature, digest)
