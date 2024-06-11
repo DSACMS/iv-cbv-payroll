@@ -7,7 +7,6 @@ class PinwheelWebhookManager
   ## may need to track the id
   def remove_ngrok_subscriptions_by_subscription_name(name)
     subscriptions = @pinwheel.fetch_webhook_subscriptions["data"]
-    puts subscriptions
     ngrok_subscriptions = subscriptions.find_all { |subscription| subscription["url"].match(format_identifier_hash(name)) }
 
     ngrok_subscriptions.each do |subscription|

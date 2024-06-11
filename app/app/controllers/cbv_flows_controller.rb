@@ -81,16 +81,6 @@ class CbvFlowsController < ApplicationController
   end
   helper_method :next_path
 
-  def fetch_and_store_pinwheel_token
-    return session[:pinwheel_user_token] if session[:pinwheel_user_token].present?
-
-    user_token = provider.create_link_token(@cbv_flow.id).body["data"]
-    @cbv_flow.update(pinwheel_token_id: user_token["id"])
-    session[:pinwheel_user_token] = user_token["user_token"]
-
-    user_token["token"]
-  end
-
   def fetch_employers(query = "")
     request_params = {
       q: query,
