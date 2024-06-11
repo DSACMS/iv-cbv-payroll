@@ -34,29 +34,3 @@ class Webhooks::Pinwheel::EventsController < ApplicationController
     PinwheelService.new
   end
 end
-
-# # Technology Stack: Node.js, Express.js
-
-# require 'openssl'
-# require 'digest'
-
-# def verify_signature(signature, timestamp, raw_body)
-#   prefix = Buffer.from("v2:#{timestamp}:", 'utf8')
-#   message = Buffer.concat([prefix, raw_body])
-#   digest = OpenSSL::HMAC.hexdigest('sha256', ENV['YOUR_PINWHEEL_API_SECRET'].encode('utf-8'), message)
-#   generated_signature = "v2=#{digest}"
-
-#   buf_sig = Buffer.from(signature)
-#   buf_gen = Buffer.from(generated_signature)
-
-#   return buf_sig.length == buf_gen.length && OpenSSL::TimingSafeEqual.timingSafeEqual(buf_sig, buf_gen)
-# end
-
-# auth_middleware = Express.json(verify: ->(request, response, buffer) {
-#   signature = request.headers['x-pinwheel-signature']
-#   timestamp = request.headers['x-timestamp']
-
-#   unless verify_signature(signature, timestamp, buffer)
-#     raise 'Invalid webhook request signature'
-#   end
-# })
