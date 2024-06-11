@@ -7,10 +7,10 @@ Rails.application.config.to_prepare do
       tunnel_url = tunnels.first["public_url"]
       puts "Found ngrok tunnel at #{tunnel_url}!"
 
-      subscription_name = "dev - #{ENV["USER"]}"
+      subscription_name = ENV["USER"]
       pinwheel_webhooks = PinwheelWebhookManager.new
-      pinwheel_webhooks.remove_ngrok_subscriptions!
-      pinwheel_webhooks.create_subscription(tunnel_url)
+      pinwheel_webhooks.remove_ngrok_subscriptions_by_subscription_name(subscription_name)
+      pinwheel_webhooks.create_subscription(tunnel_url, subscription_name)
     rescue => ex
       puts "Unable to configure Ngrok for development: #{ex}"
       puts ex.inspect
