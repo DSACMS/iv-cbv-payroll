@@ -79,7 +79,6 @@ class PinwheelService
   end
 
   def verify_signature(signature, generated_signature)
-    puts signature, generated_signature
     ActiveSupport::SecurityUtils.secure_compare(signature, generated_signature)
   end
 end
