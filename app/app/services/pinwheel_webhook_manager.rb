@@ -19,7 +19,7 @@ class PinwheelWebhookManager
     puts "  Registering Argyle webhooks for Ngrok tunnel..."
     response = @pinwheel.create_webhook_subscription([
       "account.added",
-      "paystubs.added",
+      "paystubs.added"
     ], URI.join(tunnel_url, "/webhooks/pinwheel/events", format_identifier_hash(name)))
     new_webhook_subscription_id = response["data"]["id"]
     puts "  ✅ Set up Argyle webhooks (https://console.argyle.com/webhooks/#{new_webhook_subscription_id})"

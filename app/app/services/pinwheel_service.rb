@@ -63,16 +63,16 @@ class PinwheelService
     @http.post(build_url(WEBHOOKS_ENDPOINT), {
       enabled_events: events,
       url: url,
-      status: 'active',
-      version: PINWHEEL_VERSION,
+      status: "active",
+      version: PINWHEEL_VERSION
     }.to_json).body
   end
 
   def generate_signature_digest(timestamp, raw_body, api_key = ENV["PINWHEEL_API_TOKEN"])
     msg = "v2:#{timestamp}:#{raw_body}"
     digest = OpenSSL::HMAC.hexdigest(
-      OpenSSL::Digest.new('sha256'),
-      api_key.encode('utf-8'),
+      OpenSSL::Digest.new("sha256"),
+      api_key.encode("utf-8"),
       msg
     )
     "v2=#{digest}"
