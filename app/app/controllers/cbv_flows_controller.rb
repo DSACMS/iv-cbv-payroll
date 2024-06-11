@@ -35,8 +35,14 @@ class CbvFlowsController < ApplicationController
     end
   end
 
-  def share
+def share
+  if params[:commit] == I18n.t('cbv_flows.share.share_with_caseworker')
+    # replace with actual caseworker_email e.g. to_email = params[:cbv_flow][:caseworker_email]
+    to_email = "georgebyers@navapbc.com"
+    pdf_path = "#{Rails.root}/tmp/#{params[:id]}.pdf"
+    ApplicantMailer.send_pdf_to_applicant(to_email, pdf_path).deliver_now
   end
+end
 
   def reset
     session[:cbv_flow_id] = nil

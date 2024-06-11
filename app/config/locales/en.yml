@@ -6,6 +6,9 @@ en:
       greeting: Hello,
       subject: Invitation to apply
       thank_you: Thank you!
+    send_pdf_to_applicant:
+      subject: "Applicant Income Verification: %{case_number}"
+      body: "Applicant has submitted their income verification. Please find the attached PDF." 
   cbv_flow_invitations:
     create:
       invite_success: Successfully delivered invitation to %{email_address}.
