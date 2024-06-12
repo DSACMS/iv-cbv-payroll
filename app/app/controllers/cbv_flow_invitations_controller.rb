@@ -6,10 +6,19 @@ class CbvFlowInvitationsController < ApplicationController
   end
 
   def create
-    CbvInvitationService.new.invite(
-      cbv_flow_invitation_params[:email_address],
-      cbv_flow_invitation_params[:case_number]
-    )
+    begin
+      CbvInvitationService.new.invite(
+        cbv_flow_invitation_params[:email_address],
+        cbv_flow_invitation_params[:case_number]
+      )
+    rescue => ex
+      flash[:alert] = t(".invite_failed",
+                        email_address: cbv_flow_invitation_params[:email_address],
+                        error_message: ex.message
+                       )
+      Rails.logger.error("Error sending CBV invitation: #{ex.class} - #{ex.message}")
+      return redirect_to new_cbv_flow_invitation_path(secret: params[:secret])
+    end
 
     flash[:notice] = t(".invite_success", email_address: cbv_flow_invitation_params[:email_address])
     redirect_to root_url
