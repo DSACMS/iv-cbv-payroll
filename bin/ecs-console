@@ -1,0 +1,22 @@
+#!/bin/bash
+# Usage: bin/ecs-console app dev
+set -euo pipefail
+
+bold() {
+  text=$1
+  echo "$(tput bold)${text}$(tput sgr0)"
+}
+
+APP_NAME=${1:-"app"}
+ENVIRONMENT=${2:-"dev"}
+
+cluster="${APP_NAME}-${ENVIRONMENT}"
+task_arn=$(aws ecs list-tasks --cluster "$cluster" --query 'taskArns[0]' --output text)
+
+echo "Opening Rails console in task $(bold "$task_arn")..."
+exec aws ecs execute-command \
+    --cluster "$cluster" \
+    --task "$task_arn" \
+    --container "${APP_NAME}-${ENVIRONMENT}" \
+    --interactive \
+    --command "bin/rails console"
