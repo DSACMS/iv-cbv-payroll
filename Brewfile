@@ -30,7 +30,11 @@ brew "jq"
 brew "redis"
 
 # ngrok local tunnel to receive argyle webhooks
-brew "ngrok"
+cask "ngrok"
 
 # Terraform version manager for infrastructure
 brew "tfenv"
+
+# AWS command-line utilities necessary for deploying and operations
+brew "awscli"
+cask "session-manager-plugin"
