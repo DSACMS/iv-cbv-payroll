@@ -50,6 +50,21 @@ RSpec.describe CbvFlowsController do
         end
       end
 
+      context "when there is already a CbvFlow in the session" do
+        let(:other_cbv_flow) { CbvFlow.create(case_number: "ZZZ0000", argyle_user_id: "abc-def-ghi") }
+
+        before do
+          session[:cbv_flow_id] = other_cbv_flow.id
+        end
+
+        it "replaces the session's CbvFlow id with the one from the link token" do
+          expect { get :entry, params: { token: invitation.auth_token } }
+            .to change { session[:cbv_flow_id] }
+            .from(other_cbv_flow.id)
+            .to(be_an(Integer))
+        end
+      end
+
       context "when the token is invalid" do
         it "redirects to the homepage" do
           expect { get :entry, params: { token: "some-invalid-token" } }
