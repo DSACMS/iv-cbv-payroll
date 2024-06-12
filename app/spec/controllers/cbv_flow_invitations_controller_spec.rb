@@ -71,6 +71,32 @@ RSpec.describe CbvFlowInvitationsController do
 
         expect(response).to redirect_to(root_url)
       end
+
+      context "when the CbvInvitationService has an error" do
+        let(:broken_params) do
+          valid_params.tap do |params|
+            params[:cbv_flow_invitation][:email_address] = "bad-email@"
+          end
+        end
+
+        before do
+          allow_any_instance_of(CbvInvitationService)
+            .to receive(:invite)
+            .with("bad-email@", "ABC1234")
+            .and_raise(StandardError.new("Some random error, like a bad email address or something."))
+        end
+
+        it "redirects back to the invitation form with the error" do
+          expect_any_instance_of(CbvInvitationService)
+            .to receive(:invite)
+            .with("bad-email@", "ABC1234")
+
+          post :create, params: broken_params
+
+          expect(response).to redirect_to(new_cbv_flow_invitation_path(secret: broken_params[:secret]))
+          expect(controller.flash.alert).to include("Some random error")
+        end
+      end
     end
   end
 end
