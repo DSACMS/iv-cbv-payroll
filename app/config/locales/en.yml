@@ -31,6 +31,7 @@ en:
       subheader: Search for an employer
     entry:
       case_number: Case Number
+      error_invalid_token: The invitation link used is not valid. Double check the link and try again. If you continue experiencing issues, contact your caseworker.
       get_started: Get Started
       header: Let's verify your payment information
       security_message: Your information is secure. We will not share or keep your log in information. You will be able to preview and approve everything that is shared with your caseworker.
