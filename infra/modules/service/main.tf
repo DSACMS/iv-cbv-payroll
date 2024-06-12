@@ -91,7 +91,7 @@ resource "aws_ecs_task_definition" "app" {
         retries  = 3,
         timeout  = 5,
         command = ["CMD-SHELL",
-          "wget --no-verbose --tries=1 --spider http://localhost:${var.container_port}/health || exit 1"
+          "curl --fail http://localhost:${var.container_port}/health"
         ]
       },
       environment = local.environment_variables,
