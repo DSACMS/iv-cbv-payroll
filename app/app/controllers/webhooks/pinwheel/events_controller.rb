@@ -12,7 +12,7 @@ class Webhooks::Pinwheel::EventsController < ApplicationController
     end
 
     if params["event"] == "paystubs.added"
-      @cbv_flow = CbvFlow.find_by_pinwheel_token_id(params["payload"]["link_token_id"])
+      @cbv_flow = CbvFlow.find(params["payload"]["end_user_id"])
 
       if @cbv_flow
         @cbv_flow.update(payroll_data_available_from: params["payload"]["params"]["from_pay_date"])
