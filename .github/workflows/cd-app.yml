@@ -23,6 +23,8 @@ on:
           - dev
           - staging
           - prod
+permissions:
+    id-token: write
 
 jobs:
   deploy:
