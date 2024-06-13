@@ -43,7 +43,7 @@ locals {
       ssm_param_name = "/service/${var.app_name}-${var.environment}/cbv-invite-secret"
     },
     {
-      name = "SLACK_TEST_EMAIL"
+      name           = "SLACK_TEST_EMAIL"
       ssm_param_name = "/service/${var.app_name}-${var.environment}/slack-test-email"
     }
   ]
