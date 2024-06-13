@@ -27,6 +27,31 @@ RSpec.describe PinwheelService, type: :service do
     end
   end
 
+  describe "#verify_webhook_signature" do
+    # https://docs.pinwheelapi.com/public/docs/webhook-signature-verification
+    let(:service) { PinwheelService.new("TEST_KEY") }
+    let(:raw_request_body) {
+      load_relative_file('test_data_1_base.json')
+    }
+
+    let(:timestamp) {
+      '860860860'
+    }
+
+    let(:signature_digest) {
+      'v2=42fb9eba200e821d4de63667f5a30f7e1b83609b135e148e26ce01eef2aa6ba8'
+    }
+
+    it 'generates the correct signature' do
+      expect(service.generate_signature_digest(timestamp, raw_request_body)).to eq(signature_digest)
+    end
+
+    it 'compares a valid signature' do
+      digest = service.generate_signature_digest(timestamp, raw_request_body)
+      expect(service.verify_signature(signature_digest, digest)).to eq(true)
+    end
+  end
+
   describe 'Error handling' do
     skip 'raises an error when the API key is blank' do
     end

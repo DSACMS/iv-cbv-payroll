@@ -51,11 +51,14 @@ module PinwheelApiHelper
       )
   end
 
-  def load_relative_json_file(filename)
-    path = File.join(
+  def load_relative_file(filename)
+    File.read(File.join(
       File.dirname(__FILE__),
-      "fixtures/argyle/#{filename}"
-    )
-    JSON.parse(File.read(path))
+      "fixtures/pinwheel/#{filename}"
+    ))
+  end
+
+  def load_relative_json_file(filename)
+    JSON.parse(load_relative_file(filename))
   end
 end

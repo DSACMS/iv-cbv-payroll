@@ -1,16 +1,19 @@
 class Api::PinwheelController < ApplicationController
   # run the token here with the included employer/payroll provider id
-  def fetch_token
+  def create_token
     cbv_flow = CbvFlow.find(session[:cbv_flow_id])
-    token = refresh_token(token_params[:response_type], token_params[:id], cbv_flow.id)
-    render json: { status: :ok, token: token["data"]["token"] }
+    token_response = provider.create_link_token(
+      response_type: token_params[:response_type],
+      id: token_params[:id],
+      end_user_id: cbv_flow.id
+    )
+    token = token_response["data"]["token"]
+
+    cbv_flow.update(pinwheel_token_id: token_response["data"]["id"])
+    render json: { status: :ok, token: token }
   end
 
   private
-
-  def refresh_token(provider_response_type, provider_id, cbv_user_id)
-    provider.create_link_token(response_type: provider_response_type, id: provider_id, end_user_id: cbv_user_id)
-  end
 
   def provider
     PinwheelService.new

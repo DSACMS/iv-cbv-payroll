@@ -3,6 +3,7 @@
 require "faraday"
 
 class PinwheelService
+  PINWHEEL_VERSION = "2023-11-22"
   BASE_URL = "https://sandbox.getpinwheel.com"
   USERS_ENDPOINT = "/v1/accounts"
   USER_TOKENS_ENDPOINT = "/v1/link_tokens"
@@ -10,8 +11,10 @@ class PinwheelService
   PAYSTUBS_ENDPOINT = "/paystubs"
   WEBHOOKS_ENDPOINT = "/v1/webhooks"
 
-  def initialize(api_key = ENV["ARGYLE_API_TOKEN"])
+  def initialize(api_key = ENV["PINWHEEL_API_TOKEN"])
     raise "PINWHEEL_API_TOKEN environment variable is blank. Make sure you have the .env.local.local from 1Password." if api_key.blank?
+
+    @api_key = api_key
 
     client_options = {
       request: {
@@ -21,8 +24,8 @@ class PinwheelService
       url: BASE_URL,
       headers: {
         "Content-Type" => "application/json",
-        "Pinwheel-Version" => "2023-11-22",
-        "X-API-SECRET" => "#{api_key}"
+        "Pinwheel-Version" => PINWHEEL_VERSION,
+        "X-API-SECRET" => "#{@api_key}"
       }
     }
     @http = Faraday.new(client_options) do |conn|
@@ -47,5 +50,37 @@ class PinwheelService
       skip_intro_screen: true,
       "#{response_type}_id": id
     }.to_json).body
+  end
+
+  def fetch_webhook_subscriptions
+    @http.get(build_url(WEBHOOKS_ENDPOINT)).body
+  end
+
+  def delete_webhook_subscription(id)
+    webhook_url = URI.join(build_url(WEBHOOKS_ENDPOINT) + "/", id)
+    @http.delete(webhook_url).body
+  end
+
+  def create_webhook_subscription(events, url)
+    @http.post(build_url(WEBHOOKS_ENDPOINT), {
+      enabled_events: events,
+      url: url,
+      status: "active",
+      version: PINWHEEL_VERSION
+    }.to_json).body
+  end
+
+  def generate_signature_digest(timestamp, raw_body)
+    msg = "v2:#{timestamp}:#{raw_body}"
+    digest = OpenSSL::HMAC.hexdigest(
+      OpenSSL::Digest.new("sha256"),
+      @api_key.encode("utf-8"),
+      msg
+    )
+    "v2=#{digest}"
+  end
+
+  def verify_signature(signature, generated_signature)
+    ActiveSupport::SecurityUtils.secure_compare(signature, generated_signature)
   end
 end

@@ -29,6 +29,9 @@ Rails.application.routes.draw do
     namespace :argyle do
       resources :events, only: :create
     end
+    namespace :pinwheel do
+      resources :events, only: :create
+    end
   end
 
   namespace :api do
@@ -36,7 +39,7 @@ Rails.application.routes.draw do
       post "/tokens" => "argyle#update_token"
     end
     scope :pinwheel do
-      post "/tokens" => "pinwheel#fetch_token"
+      post "/tokens" => "pinwheel#create_token"
     end
   end
 end
