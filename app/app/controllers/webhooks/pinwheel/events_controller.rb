@@ -16,7 +16,7 @@ class Webhooks::Pinwheel::EventsController < ApplicationController
 
       if @cbv_flow
         @cbv_flow.update(payroll_data_available_from: params["payload"]["params"]["from_pay_date"])
-        PinwheelPaystubsChannel.broadcast_to(@cbv_flow, params)
+        PaystubsChannel.broadcast_to(@cbv_flow, params)
       end
     end
   end
