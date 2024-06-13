@@ -32,7 +32,7 @@ module "aws_vpc" {
 
   # If application needs external services, then create one NAT gateway per availability zone
   enable_nat_gateway     = var.has_external_non_aws_service
-  single_nat_gateway     = false
+  single_nat_gateway     = var.single_nat_gateway
   one_nat_gateway_per_az = var.has_external_non_aws_service
 
   enable_dns_hostnames = true
