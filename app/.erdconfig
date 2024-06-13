@@ -1,7 +1,7 @@
 attributes:
   - content
   - timestamps
-filename: "doc/compliance/rendered/apps/data.logical"
+filename: "../docs/app/rendered/database-schema"
 filetype: pdf
 inheritance: false
 orientation: horizontal
