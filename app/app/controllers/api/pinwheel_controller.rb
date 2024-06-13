@@ -9,7 +9,6 @@ class Api::PinwheelController < ApplicationController
     )
     token = token_response["data"]["token"]
 
-    cbv_flow.update(pinwheel_token_id: token_response["data"]["id"])
     render json: { status: :ok, token: token }
   end
 
