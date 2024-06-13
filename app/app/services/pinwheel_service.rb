@@ -14,6 +14,8 @@ class PinwheelService
   def initialize(api_key = ENV["PINWHEEL_API_TOKEN"])
     raise "PINWHEEL_API_TOKEN environment variable is blank. Make sure you have the .env.local.local from 1Password." if api_key.blank?
 
+    @api_key = api_key
+
     client_options = {
       request: {
         open_timeout: 5,
@@ -23,7 +25,7 @@ class PinwheelService
       headers: {
         "Content-Type" => "application/json",
         "Pinwheel-Version" => PINWHEEL_VERSION,
-        "X-API-SECRET" => "#{api_key}"
+        "X-API-SECRET" => "#{@api_key}"
       }
     }
     @http = Faraday.new(client_options) do |conn|
@@ -68,11 +70,11 @@ class PinwheelService
     }.to_json).body
   end
 
-  def generate_signature_digest(timestamp, raw_body, api_key = ENV["PINWHEEL_API_TOKEN"])
+  def generate_signature_digest(timestamp, raw_body)
     msg = "v2:#{timestamp}:#{raw_body}"
     digest = OpenSSL::HMAC.hexdigest(
       OpenSSL::Digest.new("sha256"),
-      api_key.encode("utf-8"),
+      @api_key.encode("utf-8"),
       msg
     )
     "v2=#{digest}"
