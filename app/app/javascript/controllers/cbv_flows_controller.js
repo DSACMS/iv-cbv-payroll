@@ -16,7 +16,6 @@ export default class extends Controller {
   cable = ActionCable.createConsumer();
 
   connect() {
-    // TODO: Set up ActionCable to listen for paystub sync events
     this.cable.subscriptions.create({ channel: 'PaystubsChannel' }, {
       connected: () => {
         console.log("Connected to the channel:", this);
