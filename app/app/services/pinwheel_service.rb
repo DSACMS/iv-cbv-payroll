@@ -58,10 +58,10 @@ class PinwheelService
   def create_link_token(end_user_id:, response_type:, id:)
     @http.post(build_url(USER_TOKENS_ENDPOINT), {
       org_name: "Verify.gov",
-      required_jobs: ["paystubs"],
+      required_jobs: [ "paystubs" ],
       end_user_id: end_user_id,
       skip_intro_screen: true,
-      "#{response_type}_id": id,
+      "#{response_type}_id": id
     }.to_json).body
   end
 
@@ -78,8 +78,8 @@ class PinwheelService
     @http.post(build_url(WEBHOOKS_ENDPOINT), {
       enabled_events: events,
       url: url,
-      status: 'active',
-      version: PINWHEEL_VERSION,
+      status: "active",
+      version: PINWHEEL_VERSION
     }.to_json).body
   end
 
