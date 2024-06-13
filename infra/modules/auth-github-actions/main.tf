@@ -29,6 +29,17 @@ data "aws_iam_policy_document" "github_actions" {
     actions   = var.allowed_actions
     resources = ["*"]
   }
+   statement {
+    sid       = "SESPermissions"
+    effect    = "Allow"
+    actions   = [
+      "ses:GetIdentityVerificationAttributes",
+      "ses:VerifyDomainIdentity",
+      "ses:GetIdentityMailFromDomainAttributes",
+      "ses:GetIdentityDkimAttributes"  
+    ]
+    resources = ["*"]
+  }
 }
 
 # Set up assume role policy for GitHub Actions to allow GitHub actions
