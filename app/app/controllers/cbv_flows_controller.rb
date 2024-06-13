@@ -35,8 +35,14 @@ class CbvFlowsController < ApplicationController
     end
   end
 
-  def share
+def share
+  if params[:commit] == I18n.t('cbv_flows.share.share_with_caseworker')
+    # replace with actual caseworker_email e.g. to_email = params[:cbv_flow][:caseworker_email]
+    to_email = ENV['SLACK_TEST_EMAIL']
+    pdf_path = "#{Rails.root}/tmp/#{params[:id]}.pdf"
+    ApplicantMailer.send_pdf_to_applicant(to_email, pdf_path).deliver_now
   end
+end
 
   def reset
     session[:cbv_flow_id] = nil
@@ -47,17 +53,19 @@ class CbvFlowsController < ApplicationController
   private
 
   def set_cbv_flow
-    if session[:cbv_flow_id]
+    if params[:token].present?
+      invitation = CbvFlowInvitation.find_by(auth_token: params[:token])
+      if invitation.blank?
+        return redirect_to(root_url, flash: { alert: t("cbv_flows.entry.error_invalid_token") })
+      end
+
+      @cbv_flow = invitation.cbv_flow || CbvFlow.create_from_invitation(invitation)
+    elsif session[:cbv_flow_id]
       begin
         @cbv_flow = CbvFlow.find(session[:cbv_flow_id])
       rescue ActiveRecord::RecordNotFound
         return redirect_to root_url
       end
-    elsif params[:token].present?
-      invitation = CbvFlowInvitation.find_by(auth_token: params[:token])
-      return redirect_to root_url if invitation.blank?
-
-      @cbv_flow = invitation.cbv_flow || CbvFlow.create_from_invitation(invitation)
     else
       # TODO: Restrict ability to enter the flow without a valid token
       @cbv_flow = CbvFlow.create
