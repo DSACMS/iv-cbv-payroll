@@ -25,6 +25,12 @@ variable "has_external_non_aws_service" {
   default     = false
 }
 
+variable "single_nat_gateway" {
+  type        = bool
+  description = "Whether to provision only a single NAT gateway, rather than one per AZ. Good for saving costs in non-production environments."
+  default     = false
+}
+
 variable "enable_command_execution" {
   type        = bool
   description = "Whether the application(s) in this network need ECS Exec access. Determines whether to create VPC endpoints needed by ECS Exec."
