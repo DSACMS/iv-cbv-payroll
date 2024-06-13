@@ -28,6 +28,8 @@ permissions:
 
 jobs:
   deploy:
+    permissions:
+      contents: read
     name: Deploy
     uses: ./.github/workflows/deploy.yml
     with:
