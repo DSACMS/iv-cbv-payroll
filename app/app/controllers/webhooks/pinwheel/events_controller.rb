@@ -19,15 +19,6 @@ class Webhooks::Pinwheel::EventsController < ApplicationController
         PinwheelPaystubsChannel.broadcast_to(@cbv_flow, params)
       end
     end
-
-    if params["event"] == "accounts.added"
-      rep = ConnectedArgyleAccount.create!(
-        user_id: params["payload"]["end_user_id"],
-        account_id: params["payload"]["link_token_id"]
-      )
-      Rails.logger.info "ConnectedArgyleAccount created: #{rep}"
-      render json: { message: "ConnectedArgyleAccount created", data: rep }, status: :created
-    end
   end
 
   def provider
