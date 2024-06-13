@@ -91,7 +91,7 @@ class CbvFlowsController < ApplicationController
   end
 
   def fetch_payroll
-    account_ids = provider.fetch_accounts(end_user_id: @cbv_flow.id)["data"].map { |account| account["id"]}
+    account_ids = provider.fetch_accounts(end_user_id: @cbv_flow.id)["data"].map { |account| account["id"] }
 
     account_ids.map do |account_id|
       provider.fetch_paystubs(account_id: account_id)["data"]
