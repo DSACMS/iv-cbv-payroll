@@ -28,6 +28,7 @@ locals {
     "secretsmanager",
     "servicediscovery",
     "sns",
+    "ses",
     "ssm",
     "waf-regional",
     "wafv2",
