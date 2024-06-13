@@ -40,9 +40,9 @@ RSpec.describe PinwheelService, type: :service do
       'v2=42fb9eba200e821d4de63667f5a30f7e1b83609b135e148e26ce01eef2aa6ba8'
     }
 
-    let(:key) {
+    let(:key) do
       'TEST_KEY'
-    }
+    end
 
     it 'generates the correct signature' do
       expect(service.generate_signature_digest(timestamp, raw_request_body, key)).to eq(signature_digest)
