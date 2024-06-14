@@ -22,8 +22,6 @@ Rails.application.routes.draw do
       # share
       get "/share" => "cbv_flows#share"
       post "/share" => "cbv_flows#share"
-      patch "/share" => "cbv_flows#share"
-
       # Utility route to clear your session; useful during development
       get "/reset" => "cbv_flows#reset"
 
