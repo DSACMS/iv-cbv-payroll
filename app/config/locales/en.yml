@@ -11,6 +11,7 @@ en:
       body: Applicant has submitted their income verification. Please find the attached PDF.
   cbv_flow_invitations:
     create:
+      invite_failed: 'Error sending invitation to %{email_address}: %{error_message}.'
       invite_success: Successfully delivered invitation to %{email_address}.
     incorrect_invite_secret: Unable to send invitation due to missing invitation secret parameter.
     new:

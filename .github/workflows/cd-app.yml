@@ -23,9 +23,14 @@ on:
           - dev
           - staging
           - prod
+permissions:
+    id-token: write
 
 jobs:
   deploy:
+    permissions:
+      contents: read
+      id-token: write
     name: Deploy
     uses: ./.github/workflows/deploy.yml
     with:
