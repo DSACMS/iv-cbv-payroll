@@ -1,8 +1,6 @@
 require "rails_helper"
 
 RSpec.describe CbvFlowsController do
-  include ArgyleApiHelper
-
   around do |ex|
     stub_environment_variable("PINWHEEL_API_TOKEN", "foobar", &ex)
   end
@@ -51,7 +49,7 @@ RSpec.describe CbvFlowsController do
       end
 
       context "when there is already a CbvFlow in the session" do
-        let(:other_cbv_flow) { CbvFlow.create(case_number: "ZZZ0000", argyle_user_id: "abc-def-ghi") }
+        let(:other_cbv_flow) { CbvFlow.create(case_number: "ZZZ0000") }
 
         before do
           session[:cbv_flow_id] = other_cbv_flow.id
@@ -95,21 +93,8 @@ RSpec.describe CbvFlowsController do
 
     let(:user_token) { "foobar" }
 
-    let(:argyle_mock_items_response) do
-      {
-        results: [
-          {
-            id: 'item_000002102',
-            name: 'ACME'
-          }
-        ]
-      }
-    end
-
     before do
       session[:cbv_flow_id] = cbv_flow.id
-      stub_request_items_response
-      stub_create_user_response(user_id: pinwheel_token_id)
     end
 
     context "when rendering views" do
@@ -134,17 +119,6 @@ RSpec.describe CbvFlowsController do
           .to(pinwheel_token_id)
       end
     end
-
-    context "when the user already has a Pinwheel token in their session" do
-      before do
-        session[:argyle_user_token] = user_token
-      end
-
-      skip "does not request a new User Token from Pinwheel" do
-        get :employer_search
-        expect(response).to be_ok
-      end
-    end
   end
 
   describe "#summary" do
@@ -154,7 +128,6 @@ RSpec.describe CbvFlowsController do
 
     before do
       session[:cbv_flow_id] = cbv_flow.id
-      stub_request_paystubs_response
     end
 
     skip "renders properly" do
