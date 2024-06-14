@@ -1,3 +1,0 @@
-def webhook_x_argyle_signature
-  'X-Argyle-Signature: cbc0045ca9ba037086d7396966516349bc7a0c9f48b0eaf1e2d0a5002d77dc7202b48e88bfb0ad3a8973e56998a6ad519f98801cee9527be4297f53223d3f8bf'
-end

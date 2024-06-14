@@ -39,7 +39,6 @@ class CbvFlowsController < ApplicationController
 
   def reset
     session[:cbv_flow_id] = nil
-    session[:argyle_user_token] = nil
     redirect_to root_url
   end
 
