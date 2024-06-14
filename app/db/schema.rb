@@ -16,7 +16,6 @@ ActiveRecord::Schema[7.1].define(version: 2024_05_17_211007) do
 ActiveRecord::Schema[7.1].define(version: 2024_06_13_154226) do
 >>>>>>> fea3657c (Use a UUID for the Pinwheel end_user_id)
   # These are extensions that must be enabled in order to support this database
-  enable_extension "pgcrypto"
   enable_extension "plpgsql"
 
   create_table "applicants", force: :cascade do |t|
