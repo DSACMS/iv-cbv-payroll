@@ -6,7 +6,6 @@ locals {
     # Example environment variables
     RAILS_LOG_TO_STDOUT      = "true"
     RAILS_SERVE_STATIC_FILES = "true"
-    ARGYLE_SANDBOX           = "true"
 
     # Set to true to inform the app that it is running in a container
     DOCKERIZED               = "true"
@@ -31,12 +30,8 @@ locals {
       ssm_param_name = "/service/${var.app_name}-${var.environment}/rails-master-key"
     },
     {
-      name           = "ARGYLE_WEBHOOK_SECRET"
-      ssm_param_name = "/service/${var.app_name}-${var.environment}/argyle-webhook-secret"
-    },
-    {
-      name           = "ARGYLE_API_TOKEN"
-      ssm_param_name = "/service/${var.app_name}-${var.environment}/argyle-api-token"
+      name           = "PINWHEEL_API_TOKEN"
+      ssm_param_name = "/service/${var.app_name}-${var.environment}/pinwheel-api-token"
     },
     {
       name           = "CBV_INVITE_SECRET"
