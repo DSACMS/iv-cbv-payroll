@@ -52,6 +52,10 @@ RSpec.describe ApplicantMailer, type: :mailer do
       expect(mail.to).to eq([ email_address ])
     end
 
+    it 'renders the body' do
+      expect(mail.body.encoded).to match(I18n.t('applicant_mailer.caseworker_summary_email.body'))
+    end
+
     it 'attaches a PDF' do
       expect(mail.attachments['income_verification.pdf']).to be_present
       expect(mail.attachments['income_verification.pdf'].content_type).to start_with('application/pdf')

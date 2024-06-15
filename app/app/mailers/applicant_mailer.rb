@@ -12,11 +12,12 @@ class ApplicantMailer < ApplicationMailer
     @payments = params[:payments]
     @cbv_flow = params[:cbv_flow]
     attachments["income_verification.pdf"] = WickedPdf.new.pdf_from_string(
-      render_to_string(template: "cbv_flows/summary", formats: [:pdf])
+      render_to_string(template: "cbv_flows/summary", formats: [ :pdf ])
     )
     mail(
       to: params[:email_address],
-      subject: I18n.t("applicant_mailer.caseworker_summary_email.subject", case_number: @cbv_flow.case_number)
+      subject: I18n.t("applicant_mailer.caseworker_summary_email.subject", case_number: @cbv_flow.case_number),
+      body: I18n.t("applicant_mailer.caseworker_summary_email.body")
     )
   end
 end
