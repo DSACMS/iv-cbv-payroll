@@ -6,7 +6,7 @@ en:
       greeting: Hello,
       subject: Invitation to apply
       thank_you: Thank you!
-    send_pdf_to_caseworker:
+    caseworker_summary_email:
       subject: "Applicant Income Verification: %{case_number}"
       body: Applicant has submitted their income verification. Please find the attached PDF.
   cbv_flow_invitations:

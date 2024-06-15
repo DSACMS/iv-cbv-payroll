@@ -36,11 +36,9 @@ class CbvFlowsController < ApplicationController
   end
 
   def share
-    if params[:commit] == I18n.t("cbv_flows.share.share_with_caseworker")
-      # replace with actual caseworker_email e.g. to_email = params[:cbv_flow][:caseworker_email]
-      to_email = ENV["SLACK_TEST_EMAIL"]
-      ApplicantMailer.send_pdf_to_caseworker(to_email, @cbv_flow.case_number).deliver_now
-    end
+    # replace with actual caseworker_email
+    email_address = ENV["SLACK_TEST_EMAIL"]
+    ApplicantMailer.with(email_address: email_address, cbv_flow: @cbv_flow, payments: @payments).caseworker_summary_email.deliver_now
   end
 
   def reset
@@ -85,6 +83,7 @@ class CbvFlowsController < ApplicationController
       root_url
     end
   end
+
   helper_method :next_path
 
   def fetch_and_store_argyle_token
