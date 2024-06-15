@@ -15,6 +15,8 @@ class ApplicantMailerPreview < ActionMailer::Preview
         rate: (10 + i)
       }
     end
-    ApplicantMailer.with(email_address: "test@example.com").caseworker_summary_email("123ABC", payments)
+
+    cbv_flow = CbvFlow.create(case_number: "ABC1234", argyle_user_id: "abc-def-ghi")
+    ApplicantMailer.with(cbv_flow: cbv_flow, email_address: "test@example.com", case_number: "12345", payments: payments).caseworker_summary_email
   end
 end
