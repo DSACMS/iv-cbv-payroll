@@ -29,7 +29,7 @@ brew "jq"
 # queue for sidekiq jobs
 brew "redis"
 
-# ngrok local tunnel to receive argyle webhooks
+# ngrok local tunnel to receive webhooks
 cask "ngrok"
 
 # Terraform version manager for infrastructure

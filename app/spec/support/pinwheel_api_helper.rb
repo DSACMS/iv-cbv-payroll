@@ -1,13 +1,64 @@
 module PinwheelApiHelper
-  stub_request(:get, /#{PinwheelService::PAYSTUBS_ENDPOINT}/).
+  def stub_environment_variable(variable, value, &block)
+    previous_value = ENV[variable]
+    ENV[variable] = value
+    block.call
+    ENV[variable] = previous_value
   end
-  with(
-    headers: {
-      'Accept'=>'*/*',
-      'Accept-Encoding'=>'gzip;q=1.0,deflate;q=0.6,identity;q=0.3',
-      'Authorization'=>'Basic foobar',
-      'Content-Type'=>'application/json',
-      'User-Agent'=>'Faraday v2.9.0'
-    }).
-  to_return(status: 200, body: "", headers: {})
+
+  def stub_request_items_response
+    stub_request(:get, /#{PinwheelService::ITEMS_ENDPOINT}/)
+      .to_return(
+        status: 200,
+        body: {
+          results: [ {
+            id: "12345"
+          } ]
+        }.to_json,
+        headers: { content_type: 'application/json;charset=UTF-8' }
+      )
+  end
+
+  def stub_request_paystubs_response
+    stub_request(:get, /#{PinwheelService::PAYSTUBS_ENDPOINT}/)
+      .to_return(
+        status: 200,
+        body: load_relative_json_file('request_paystubs_response.json').to_json,
+        headers: { content_type: 'application/json;charset=UTF-8' }
+      )
+  end
+
+  def stub_create_token_response(end_user_id: 'user_id')
+    stub_request(:post, /#{PinwheelService::USER_TOKENS_ENDPOINT}/)
+      .to_return(
+        status: 200,
+        body: {
+          data: {
+            token: 'abc123',
+            id: end_user_id
+          }
+        }.to_json,
+        headers: { content_type: 'application/json;charset=UTF-8' }
+      )
+  end
+
+  def stub_refresh_user_token_response
+    stub_request(:post, /#{PinwheelService::USER_TOKENS_ENDPOINT}/)
+      .to_return(
+        status: 200,
+        body: { "user_token": "abc123" }.to_json,
+        headers: { content_type: 'application/json;charset=UTF-8' }
+      )
+  end
+
+  def load_relative_file(filename)
+    File.read(File.join(
+      File.dirname(__FILE__),
+      "fixtures/pinwheel/#{filename}"
+    ))
+  end
+
+  def load_relative_json_file(filename)
+    JSON.parse(load_relative_file(filename))
+  end
 end

@@ -6,7 +6,6 @@ class CbvFlowsController < ApplicationController
   end
 
   def employer_search
-    @argyle_user_token = fetch_and_store_argyle_token
     @query = search_params[:query]
     @employers = @query.blank? ? [] : fetch_employers(@query)
   end
@@ -33,7 +32,6 @@ class CbvFlowsController < ApplicationController
 
   def reset
     session[:cbv_flow_id] = nil
-    session[:argyle_user_token] = nil
     redirect_to root_url
   end
 
@@ -89,32 +87,25 @@ class CbvFlowsController < ApplicationController
 
   helper_method :next_path
 
-  def fetch_and_store_argyle_token
-    return session[:argyle_user_token] if session[:argyle_user_token].present?
-
-    user_token = provider.create_user
-
-    @cbv_flow.update(argyle_user_id: user_token["id"])
-    session[:argyle_user_token] = user_token["user_token"]
-
-    user_token["user_token"]
-  end
-
   def fetch_employers(query = "")
     request_params = {
-      mapping_status: "verified,mapped",
-      q: query
+      q: query,
+      supported_jobs: [ "paystubs" ]
     }
 
-    provider.fetch_items(request_params)["results"]
+    provider.fetch_items(request_params)["data"]
   end
 
   def fetch_payroll
-    provider.fetch_paystubs(user: @cbv_flow.argyle_user_id)["results"]
+    account_ids = provider.fetch_accounts(end_user_id: @cbv_flow.pinwheel_end_user_id)["data"].map { |account| account["id"] }
+
+    account_ids.map do |account_id|
+      provider.fetch_paystubs(account_id: account_id)["data"]
+    end.flatten
   end
 
   def provider
-    ArgyleService.new
+    PinwheelService.new
   end
 
   def search_params
