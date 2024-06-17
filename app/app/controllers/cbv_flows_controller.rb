@@ -5,7 +5,7 @@ class CbvFlowsController < ApplicationController
   end
 
   def employer_search
-    @argyle_user_token = fetch_and_store_argyle_token
+    @pinwheel_user_token = fetch_and_store_pinwheel_token
     @query = search_params[:query]
     @employers = @query.blank? ? [] : fetch_employers(@query)
   end
@@ -82,24 +82,27 @@ class CbvFlowsController < ApplicationController
   end
   helper_method :next_path
 
-  def fetch_and_store_argyle_token
-    return session[:argyle_user_token] if session[:argyle_user_token].present?
+  def fetch_and_store_pinwheel_token
+    return session[:pinwheel_user_token] if session[:pinwheel_user_token].present?
 
-    user_token = provider.create_user
+    begin
+      user_token = provider.create_link_token(@cbv_flow.id).body["data"]
+    rescue => e
+      puts e
+    end
 
-    @cbv_flow.update(argyle_user_id: user_token["id"])
-    session[:argyle_user_token] = user_token["user_token"]
+    @cbv_flow.update(pinwheel_token_id: user_token["id"])
+    session[:pinwheel_user_token] = user_token["user_token"]
 
-    user_token["user_token"]
+    user_token["token"]
   end
 
   def fetch_employers(query = "")
     request_params = {
-      mapping_status: "verified,mapped",
       q: query
     }
 
-    provider.fetch_items(request_params)["results"]
+    provider.fetch_items(request_params)["data"]
   end
 
   def fetch_payroll
@@ -107,7 +110,7 @@ class CbvFlowsController < ApplicationController
   end
 
   def provider
-    ArgyleService.new
+    PinwheelService.new
   end
 
   def search_params
