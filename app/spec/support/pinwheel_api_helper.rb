@@ -11,19 +11,10 @@ module PinwheelApiHelper
       .to_return(
         status: 200,
         body: {
-          results: [ {
-            id: "12345"
-          } ]
+          results: [{
+                      id: "12345"
+                    }]
         }.to_json,
-        headers: { content_type: 'application/json;charset=UTF-8' }
-      )
-  end
-
-  def stub_request_paystubs_response
-    stub_request(:get, /#{PinwheelService::PAYSTUBS_ENDPOINT}/)
-      .to_return(
-        status: 200,
-        body: load_relative_json_file('request_paystubs_response.json').to_json,
         headers: { content_type: 'application/json;charset=UTF-8' }
       )
   end
@@ -48,6 +39,24 @@ module PinwheelApiHelper
         status: 200,
         body: { "user_token": "abc123" }.to_json,
         headers: { content_type: 'application/json;charset=UTF-8' }
+      )
+  end
+
+  def stub_request_end_user_paystubs_response
+    stub_request(:get, %r{#{PinwheelService::ACCOUNTS_ENDPOINT}/[0-9a-fA-F\-]{36}/paystubs})
+      .to_return(
+        status: 200,
+        body: load_relative_json_file('request_end_user_paystubs_response.json').to_json,
+        headers: { 'Content-Type': 'application/json;charset=UTF-8' }
+      )
+  end
+
+  def stub_request_end_user_accounts_response
+    stub_request(:get, %r{#{PinwheelService::END_USERS}/[0-9a-fA-F\-]{36}/accounts})
+      .to_return(
+        status: 200,
+        body: load_relative_json_file('request_end_user_accounts_response.json').to_json,
+        headers: { 'Content-Type': 'application/json;charset=UTF-8' }
       )
   end
 

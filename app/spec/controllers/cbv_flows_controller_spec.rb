@@ -1,6 +1,8 @@
 require "rails_helper"
 
 RSpec.describe CbvFlowsController do
+  include PinwheelApiHelper
+
   around do |ex|
     stub_environment_variable("PINWHEEL_API_TOKEN", "foobar", &ex)
   end
@@ -128,6 +130,8 @@ RSpec.describe CbvFlowsController do
 
     before do
       session[:cbv_flow_id] = cbv_flow.id
+      stub_request_end_user_accounts_response
+      stub_request_end_user_paystubs_response
     end
 
     skip "renders properly" do
@@ -157,6 +161,8 @@ RSpec.describe CbvFlowsController do
 
     before do
       session[:cbv_flow_id] = cbv_flow.id
+      stub_request_end_user_paystubs_response
+      stub_request_end_user_accounts_response
     end
 
     it "renders" do

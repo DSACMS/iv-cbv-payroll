@@ -1,0 +1,23 @@
+{
+  "data": [
+    {
+      "connected": true,
+      "created_at": "2021-01-06T15:59:13.530178+00:00",
+      "data_refreshed_at": {
+        "direct_deposit_allocations": "2021-01-09T00:00:00.000000+00:00"
+      },
+      "data_updated_at": {
+        "direct_deposit_allocations": "2021-01-08T00:00:00.000000+00:00"
+      },
+      "end_user_id": "my_user_12345",
+      "id": "eb240ec6-a227-47ca-b7c7-fbbdfe7170a0",
+      "link_token_id": "bd2c09e7-1303-46d5-87c0-0ffa572d7ae4",
+      "monitoring_status": "active",
+      "platform_id": "fce3eee0-285b-496f-9b36-30e976194736"
+    }
+  ],
+  "meta": {
+    "count": 1,
+    "next_cursor": "eyJuYW1lIjogImFtYXpvbiJ9"
+  }
+}
