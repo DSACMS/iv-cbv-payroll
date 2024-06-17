@@ -1,8 +1,7 @@
 import { Controller } from "@hotwired/stimulus"
 import * as ActionCable from '@rails/actioncable'
-
 import metaContent from "../utilities/meta";
-import { loadArgyle, initializeArgyle, updateToken } from "../utilities/argyle"
+import { loadPinwheel, initializePinwheel, fetchToken } from "../utilities/pinwheel"
 
 export default class extends Controller {
   static targets = [
@@ -12,16 +11,12 @@ export default class extends Controller {
     "modal"
   ];
 
-  argyle = null;
-
-  argyleUserToken = null;
+  pinwheel = loadPinwheel();
 
   cable = ActionCable.createConsumer();
 
   connect() {
-    // check for this value when connected
-    this.argyleUserToken = metaContent('argyle_user_token');
-    this.cable.subscriptions.create({ channel: 'ArgylePaystubsChannel' }, {
+    this.cable.subscriptions.create({ channel: 'PaystubsChannel' }, {
       connected: () => {
         console.log("Connected to the channel:", this);
       },
@@ -29,16 +24,15 @@ export default class extends Controller {
         console.log("Disconnected");
       },
       received: (data) => {
-        if (data.event === 'paystubs.fully_synced' || data.event === 'paystubs.partially_synced') {
+        if (data.event === 'paystubs.added') {
           this.formTarget.submit();
         }
       }
     });
   }
 
-  onSignInSuccess(event) {
-    this.userAccountIdTarget.value = event.accountId;
-    this.argyle.close();
+  onSignInSuccess() {
+    this.pinwheel.then(pinwheel => pinwheel.close());
     this.modalTarget.click();
   }
 
@@ -46,22 +40,17 @@ export default class extends Controller {
     console.log(event);
   }
 
-  select(event) {
-    this.submit(event.target.dataset.itemId);
+  async select(event) {
+    const { responseType, id } = event.target.dataset;
+    const { token } = await fetchToken(responseType, id);
+
+    this.submit(token);
   }
 
-  submit(itemId) {
-    loadArgyle()
-      .then(Argyle => initializeArgyle(Argyle, this.argyleUserToken, {
-        items: [itemId],
-        onAccountConnected: this.onSignInSuccess.bind(this),
-        onAccountError: this.onAccountError.bind(this),
-        // Unsure what these are for!
-        onDDSSuccess: () => { console.log('onDDSSuccess') },
-        onDDSError: () => { console.log('onDDSSuccess') },
-        onTokenExpired: updateToken,
-      }))
-      .then(argyle => this.argyle = argyle)
-      .then(() => this.argyle.open());
+  submit(token) {
+    this.pinwheel.then(Pinwheel => initializePinwheel(Pinwheel, token, {
+      onEvent: console.log,
+      onSuccess: this.onSignInSuccess.bind(this),
+    }));
   }
 }

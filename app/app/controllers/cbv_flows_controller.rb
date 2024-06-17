@@ -5,7 +5,6 @@ class CbvFlowsController < ApplicationController
   end
 
   def employer_search
-    @argyle_user_token = fetch_and_store_argyle_token
     @query = search_params[:query]
     @employers = @query.blank? ? [] : fetch_employers(@query)
   end
@@ -18,12 +17,12 @@ class CbvFlowsController < ApplicationController
 
     @payments = fetch_payroll.map do |payment|
       {
-        employer: payment["employer"],
-        amount: payment["net_pay"].to_i,
-        start: payment["paystub_period"]["start_date"],
-        end: payment["paystub_period"]["end_date"],
-        hours: payment["hours"],
-        rate: payment["rate"]
+        employer: payment["employer_name"],
+        amount: payment["net_pay_amount"].to_i,
+        start: payment["pay_period_start"],
+        end: payment["pay_period_end"],
+        hours: payment["earnings"][0]["hours"],
+        rate: payment["earnings"][0]["rate"]
       }
     end
 
@@ -40,7 +39,6 @@ class CbvFlowsController < ApplicationController
 
   def reset
     session[:cbv_flow_id] = nil
-    session[:argyle_user_token] = nil
     redirect_to root_url
   end
 
@@ -82,32 +80,25 @@ class CbvFlowsController < ApplicationController
   end
   helper_method :next_path
 
-  def fetch_and_store_argyle_token
-    return session[:argyle_user_token] if session[:argyle_user_token].present?
-
-    user_token = provider.create_user
-
-    @cbv_flow.update(argyle_user_id: user_token["id"])
-    session[:argyle_user_token] = user_token["user_token"]
-
-    user_token["user_token"]
-  end
-
   def fetch_employers(query = "")
     request_params = {
-      mapping_status: "verified,mapped",
-      q: query
+      q: query,
+      supported_jobs: [ "paystubs" ]
     }
 
-    provider.fetch_items(request_params)["results"]
+    provider.fetch_items(request_params)["data"]
   end
 
   def fetch_payroll
-    provider.fetch_paystubs(user: @cbv_flow.argyle_user_id)["results"]
+    account_ids = provider.fetch_accounts(end_user_id: @cbv_flow.pinwheel_end_user_id)["data"].map { |account| account["id"] }
+
+    account_ids.map do |account_id|
+      provider.fetch_paystubs(account_id: account_id)["data"]
+    end.flatten
   end
 
   def provider
-    ArgyleService.new
+    PinwheelService.new
   end
 
   def search_params
