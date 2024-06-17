@@ -1,5 +1,6 @@
 class CbvFlowsController < ApplicationController
   before_action :set_cbv_flow
+  before_action :set_payments, only: [:summary, :share]
 
   def entry
   end
@@ -14,17 +15,6 @@ class CbvFlowsController < ApplicationController
     if request.patch?
       @cbv_flow.update(summary_update_params)
       return redirect_to next_path
-    end
-
-    @payments = fetch_payroll.map do |payment|
-      {
-        employer: payment["employer"],
-        amount: payment["net_pay"].to_i,
-        start: payment["paystub_period"]["start_date"],
-        end: payment["paystub_period"]["end_date"],
-        hours: payment["hours"],
-        rate: payment["rate"]
-      }
     end
 
     respond_to do |format|
@@ -69,6 +59,19 @@ class CbvFlowsController < ApplicationController
     end
 
     session[:cbv_flow_id] = @cbv_flow.id
+  end
+
+  def set_payments
+    @payments = fetch_payroll.map do |payment|
+      {
+        employer: payment["employer"],
+        amount: payment["net_pay"].to_i,
+        start: payment["paystub_period"]["start_date"],
+        end: payment["paystub_period"]["end_date"],
+        hours: payment["hours"],
+        rate: payment["rate"]
+      }
+    end
   end
 
   def next_path
