@@ -10,8 +10,13 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
+<<<<<<< HEAD
 ActiveRecord::Schema[7.1].define(version: 2024_05_17_211007) do
+=======
+ActiveRecord::Schema[7.1].define(version: 2024_06_13_154226) do
+>>>>>>> fea3657c (Use a UUID for the Pinwheel end_user_id)
   # These are extensions that must be enabled in order to support this database
+  enable_extension "pgcrypto"
   enable_extension "plpgsql"
 
   create_table "applicants", force: :cascade do |t|
@@ -35,6 +40,11 @@ ActiveRecord::Schema[7.1].define(version: 2024_05_17_211007) do
     t.date "payroll_data_available_from"
     t.bigint "cbv_flow_invitation_id"
     t.text "additional_information"
+<<<<<<< HEAD
+=======
+    t.string "pinwheel_token_id"
+    t.uuid "pinwheel_end_user_id", default: -> { "gen_random_uuid()" }, null: false
+>>>>>>> fea3657c (Use a UUID for the Pinwheel end_user_id)
     t.index ["cbv_flow_invitation_id"], name: "index_cbv_flows_on_cbv_flow_invitation_id"
   end
 
