@@ -11,9 +11,9 @@ module PinwheelApiHelper
       .to_return(
         status: 200,
         body: {
-          results: [{
+          results: [ {
                       id: "12345"
-                    }]
+                    } ]
         }.to_json,
         headers: { content_type: 'application/json;charset=UTF-8' }
       )

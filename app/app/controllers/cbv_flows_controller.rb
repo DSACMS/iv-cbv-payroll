@@ -1,6 +1,6 @@
 class CbvFlowsController < ApplicationController
   before_action :set_cbv_flow
-  before_action :set_payments, only: [:summary, :share]
+  before_action :set_payments, only: [ :summary, :share ]
 
   def entry
   end
@@ -96,7 +96,7 @@ class CbvFlowsController < ApplicationController
   def fetch_employers(query = "")
     request_params = {
       q: query,
-      supported_jobs: ["paystubs"]
+      supported_jobs: [ "paystubs" ]
     }
 
     provider.fetch_items(request_params)["data"]
