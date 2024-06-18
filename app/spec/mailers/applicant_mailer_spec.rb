@@ -24,7 +24,7 @@ RSpec.describe ApplicantMailer, type: :mailer do
 
   describe 'caseworker_summary_email' do
     let(:cbv_flow) { CbvFlow.create(case_number: "ABC1234", argyle_user_id: "abc-def-ghi") }
-    let(:email_address) { ENV["SLACK_TEST_EMAIL"] }
+    let(:email_address) { "test@example.com" }
     let(:mail) {
       ApplicantMailer.with(
         email_address: email_address,
