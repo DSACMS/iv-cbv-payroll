@@ -4,7 +4,7 @@ RSpec.describe CbvFlowsController do
   include PinwheelApiHelper
 
   around do |ex|
-    stub_environment_variable("PINWHEEL_API_TOKEN", "foobar", &ex)
+    stub_environment_variable("SLACK_TEST_EMAIL", "test@example.com", &ex)
   end
 
   describe "#entry" do
