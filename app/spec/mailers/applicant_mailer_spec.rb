@@ -1,19 +1,7 @@
 require "rails_helper"
 
 RSpec.describe ApplicantMailer, type: :mailer do
-  let(:payments) do
-    5.times.map do |i|
-      {
-        employer: "Employer #{i + 1}",
-        amount: (100 * (i + 1)),
-        start: Date.today.beginning_of_month + i.months,
-        end: Date.today.end_of_month + i.months,
-        hours: (40 * (i + 1)),
-        rate: (10 + i)
-      }
-    end
-  end
-
+  let(:payments) { stub_payments }
   let(:email) { 'me@email.com' }
   let(:link) { 'www.google.com' }
   let(:mail) { ApplicantMailer.with(email_address: email, link: link).invitation_email }
