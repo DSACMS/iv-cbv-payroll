@@ -7,7 +7,7 @@ en:
     invitation_email:
       body: A government agency has requested that you verify your income in connection with your application for benefits. Please click this link to begin the process.
       greeting: Hello,
-      subject: Invitation to apply
+      subject: Verify your income for your benefit application
       thank_you: Thank you!
   cbv_flow_invitations:
     create:
