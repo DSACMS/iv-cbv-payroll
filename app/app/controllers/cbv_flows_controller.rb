@@ -1,6 +1,6 @@
 class CbvFlowsController < ApplicationController
   before_action :set_cbv_flow
-  before_action :set_payments, only: [ :summary, :share ]
+  before_action :set_payments, only: [:summary, :share]
 
   def entry
   end
@@ -25,8 +25,14 @@ class CbvFlowsController < ApplicationController
   end
 
   def share
-    # replace with actual caseworker_email
-    email_address = ENV["SLACK_TEST_EMAIL"]
+    if Rails.env.development?
+      email_address = ENV["SLACK_TEST_EMAIL"]
+    elsif Rails.env.test?
+      email_address = "test@example.com"
+    else
+      email_address = @cbv_flow.email
+    end
+
     ApplicantMailer.with(email_address: email_address, cbv_flow: @cbv_flow, payments: @payments).caseworker_summary_email.deliver_now
   end
 
@@ -90,7 +96,7 @@ class CbvFlowsController < ApplicationController
   def fetch_employers(query = "")
     request_params = {
       q: query,
-      supported_jobs: [ "paystubs" ]
+      supported_jobs: ["paystubs"]
     }
 
     provider.fetch_items(request_params)["data"]
