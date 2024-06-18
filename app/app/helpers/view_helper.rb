@@ -15,4 +15,14 @@ module ViewHelper
       timestamp_string
     end
   end
+
+  def format_view_datetime(timestamp_string)
+    begin
+      formatted_time = Time.parse(timestamp_string).strftime("%B %d, %Y")
+      raw_timestamp = Time.parse(timestamp_string).strftime("%I:%M %p %Z")
+      "#{formatted_time} - #{raw_timestamp}"
+    rescue => e
+      "Invalid timestamp"
+    end
+  end
 end

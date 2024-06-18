@@ -49,9 +49,9 @@ RSpec.describe ApplicantMailer, type: :mailer do
       expect(mail.body.encoded).to match(I18n.t('applicant_mailer.caseworker_summary_email.body'))
     end
 
-    it 'attaches a PDF' do
-      expect(mail.attachments['income_verification.pdf']).to be_present
-      expect(mail.attachments['income_verification.pdf'].content_type).to start_with('application/pdf')
+    it 'attaches a PDF which has a file name prefix of {case_number}_timestamp_' do
+      expect(mail.attachments.any? { |attachment| attachment.filename =~ /\A#{cbv_flow.case_number}_\d{14}_income_verification\.pdf\z/ }).to be true
+      expect(mail.attachments.first.content_type).to start_with('application/pdf')
     end
   end
 end

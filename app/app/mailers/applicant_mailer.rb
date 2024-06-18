@@ -1,6 +1,6 @@
 class ApplicantMailer < ApplicationMailer
-  before_action :set_params
   helper :view
+  before_action :set_params
 
   def invitation_email
     mail(
@@ -10,7 +10,9 @@ class ApplicantMailer < ApplicationMailer
   end
 
   def caseworker_summary_email
-    attachments["income_verification.pdf"] = generate_pdf
+    timestamp = Time.now.strftime("%Y%m%d%H%M%S")
+    filename = "#{@cbv_flow.case_number}_#{timestamp}_income_verification.pdf"
+    attachments[filename] = generate_pdf
     mail(
       to: @email_address,
       subject: I18n.t("applicant_mailer.caseworker_summary_email.subject", case_number: @cbv_flow.case_number),

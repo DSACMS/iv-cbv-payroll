@@ -1,3 +1,8 @@
+<p>
+  <%= t('cbv_flows.summary.case_number', case_number: @cbv_flow.case_number) %>
+</p>
+<p>
+  <%= t('cbv_flows.summary.document_timestamp', timestamp: format_view_datetime(Time.now.to_s)) %></p>
 <h2>
   <%= t('cbv_flows.summary.header') %>
 </h2>

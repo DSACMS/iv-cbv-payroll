@@ -45,7 +45,9 @@ en:
       share_with_caseworker: Share with Case Worker
     summary:
       additional_information_title: Is there anything else you'd like your caseworker to know about your income?
+      case_number: 'Case number: %{case_number}'
       description: Below is payment information from your employer for the past 90 days.
+      document_timestamp: 'Document origination: %{timestamp}'
       form:
         additional_info:
           label: Is there anything else you'd like your caseworker to know about your income?
