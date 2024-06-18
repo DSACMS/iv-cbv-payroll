@@ -17,9 +17,9 @@ Rails.application.routes.draw do
       get "/employer_search" => "cbv_flows#employer_search"
       patch "/summary" => "cbv_flows#summary"
       get "/summary" => "cbv_flows#summary"
-      patch "/share" => "cbv_flows#share"
+      # share
       get "/share" => "cbv_flows#share"
-
+      post "/share" => "cbv_flows#share"
       # Utility route to clear your session; useful during development
       get "/reset" => "cbv_flows#reset"
 

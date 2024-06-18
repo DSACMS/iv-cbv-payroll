@@ -1,5 +1,6 @@
 class CbvFlowsController < ApplicationController
   before_action :set_cbv_flow
+  before_action :set_payments, only: [:summary, :share]
 
   def entry
   end
@@ -15,17 +16,6 @@ class CbvFlowsController < ApplicationController
       return redirect_to next_path
     end
 
-    @payments = fetch_payroll.map do |payment|
-      {
-        employer: payment["employer_name"],
-        amount: payment["net_pay_amount"].to_i,
-        start: payment["pay_period_start"],
-        end: payment["pay_period_end"],
-        hours: payment["earnings"][0]["hours"],
-        rate: payment["earnings"][0]["rate"]
-      }
-    end
-
     respond_to do |format|
       format.html
       format.pdf do
@@ -35,6 +25,8 @@ class CbvFlowsController < ApplicationController
   end
 
   def share
+    email_address = ENV["SLACK_TEST_EMAIL"]
+    ApplicantMailer.with(email_address: email_address, cbv_flow: @cbv_flow, payments: @payments).caseworker_summary_email.deliver_now
   end
 
   def reset
@@ -66,6 +58,19 @@ class CbvFlowsController < ApplicationController
     session[:cbv_flow_id] = @cbv_flow.id
   end
 
+  def set_payments
+    @payments = fetch_payroll.map do |payment|
+      {
+        employer: payment["employer_name"],
+        amount: payment["net_pay_amount"].to_i,
+        start: payment["pay_period_start"],
+        end: payment["pay_period_end"],
+        hours: payment["earnings"][0]["hours"],
+        rate: payment["earnings"][0]["rate"]
+      }
+    end
+  end
+
   def next_path
     case params[:action]
     when "entry"
@@ -78,21 +83,22 @@ class CbvFlowsController < ApplicationController
       root_url
     end
   end
+
   helper_method :next_path
 
   def fetch_employers(query = "")
     request_params = {
       q: query,
-      supported_jobs: [ "paystubs" ]
+      supported_jobs: ["paystubs"]
     }
 
     provider.fetch_items(request_params)["data"]
   end
 
   def fetch_payroll
-    account_ids = provider.fetch_accounts(end_user_id: @cbv_flow.pinwheel_end_user_id)["data"].map { |account| account["id"] }
+    end_user_account_ids = provider.fetch_accounts(end_user_id: @cbv_flow.pinwheel_end_user_id)["data"].map { |account| account["id"] }
 
-    account_ids.map do |account_id|
+    end_user_account_ids.map do |account_id|
       provider.fetch_paystubs(account_id: account_id)["data"]
     end.flatten
   end
