@@ -25,6 +25,13 @@ RSpec.describe PinwheelService, type: :service do
       response = service.create_link_token(end_user_id: end_user_id, response_type: 'employer', id: 'fake_id')
       expect(response['data']['id']).to eq(end_user_id)
     end
+
+    context "with an empty response_type and id" do
+      it 'returns a user token' do
+        response = service.create_link_token(end_user_id: end_user_id, response_type: '', id: '')
+        expect(response['data']['id']).to eq(end_user_id)
+      end
+    end
   end
 
   describe "#verify_webhook_signature" do
