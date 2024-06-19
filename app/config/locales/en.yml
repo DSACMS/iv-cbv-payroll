@@ -28,6 +28,7 @@ en:
       header: Get payment info from your employer.
       results: Results
       search: Search
+      search_by_payroll_provider: Search for payroll provider
       select: Select
       subheader: Search for an employer
     entry:

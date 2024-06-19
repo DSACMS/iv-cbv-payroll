@@ -56,13 +56,25 @@ class PinwheelService
   end
 
   def create_link_token(end_user_id:, response_type:, id:)
-    @http.post(build_url(USER_TOKENS_ENDPOINT), {
+    params = {
       org_name: "Verify.gov",
       required_jobs: [ "paystubs" ],
       end_user_id: end_user_id,
-      skip_intro_screen: true,
-      "#{response_type}_id": id
-    }.to_json).body
+      skip_intro_screen: true
+    }
+
+    case response_type.presence
+    when "employer"
+      params["employer_id"] = id
+    when "platform"
+      params["platform_id"] = id
+    when nil
+      # do nothing
+    else
+      raise "Invalid `response_type`: #{response_type}"
+    end
+
+    @http.post(build_url(USER_TOKENS_ENDPOINT), params.to_json).body
   end
 
   def fetch_webhook_subscriptions
