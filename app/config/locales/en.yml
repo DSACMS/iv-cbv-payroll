@@ -23,6 +23,7 @@ en:
       header: Invite someone to complete the CBV flow
   cbv_flows:
     employer_search:
+      employer_not_listed: Employer not listed?
       fetching_payroll: We are fetching your employer's payment information.
       fetching_payroll_description: This may take a few minutes. Please do not close this window.
       header: Get payment info from your employer.
