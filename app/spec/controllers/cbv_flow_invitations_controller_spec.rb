@@ -93,7 +93,7 @@ RSpec.describe CbvFlowInvitationsController do
 
           post :create, params: broken_params
 
-          expect(response).to redirect_to(new_cbv_flow_invitation_path(secret: broken_params[:secret]))
+          expect(response).to redirect_to(new_invitation_path(secret: broken_params[:secret]))
           expect(controller.flash.alert).to include("Some random error")
         end
       end

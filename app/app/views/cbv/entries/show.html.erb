@@ -1,0 +1,19 @@
+<h1><%= t('.header') %></h1>
+
+<p><%= t('.subheader') %></p>
+
+<p><%= t('.case_number') %>: <strong><%= @cbv_flow.case_number %></strong></p>
+
+<div class="usa-alert usa-alert--info margin-bottom-3">
+  <div class="usa-alert__body">
+    <p class="usa-alert__text">
+      <%= t('.security_message') %>
+    </p>
+  </div>
+</div>
+
+<%= link_to next_path do %>
+  <button class="usa-button usa-button--outline" type="button">
+    <%= t('.get_started') %>
+  </button>
+<% end %>

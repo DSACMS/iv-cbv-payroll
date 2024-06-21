@@ -12,19 +12,21 @@ Rails.application.routes.draw do
     get "/health/test_rendering", to: "health_check#test_rendering"
     # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
 
-    scope "/cbv", as: :cbv_flow do
-      get "/entry" => "cbv_flows#entry"
-      get "/employer_search" => "cbv_flows#employer_search"
-      patch "/summary" => "cbv_flows#summary"
-      get "/summary" => "cbv_flows#summary"
-      # share
-      get "/share" => "cbv_flows#share"
-      post "/share" => "cbv_flows#share"
-      # Utility route to clear your session; useful during development
-      get "/reset" => "cbv_flows#reset"
+    scope "/cbv", as: :cbv_flow, module: :cbv do
+      resource :entry, only: %i[show]
+      resource :employer_search, only: %i[show]
+      resource :summary, only: %i[show update]
+      resource :share, only: %i[show update]
 
-      resources :cbv_flow_invitations, as: :invitations, path: :invitations, only: %i[new create]
+      # Utility route to clear your session; useful during development
+      resource :reset, only: %i[show]
+
+      # Temporarily redirect /cbv/invivations/new -> /invitations/new
+      # (remove this once people know about the new invitation URL)
+      get "/invitations/new", to: redirect { |_, req| "/invitations/new?secret=#{req.params[:secret]}" }
     end
+
+    resources :cbv_flow_invitations, as: :invitations, path: :invitations, only: %i[new create]
   end
 
   namespace :webhooks do

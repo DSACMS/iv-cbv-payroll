@@ -17,7 +17,7 @@ class CbvFlowInvitationsController < ApplicationController
                         error_message: ex.message
                        )
       Rails.logger.error("Error sending CBV invitation: #{ex.class} - #{ex.message}")
-      return redirect_to new_cbv_flow_invitation_path(secret: params[:secret])
+      return redirect_to new_invitation_path(secret: params[:secret])
     end
 
     flash[:notice] = t(".invite_success", email_address: cbv_flow_invitation_params[:email_address])
