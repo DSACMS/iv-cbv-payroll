@@ -1,7 +1,7 @@
 <h2><%= t('.header') %></h2>
 <p><%= t('.description') %></p>
 
-<%= form_with(model: @cbv_flow_invitation, builder: UswdsFormBuilder) do |f| %>
+<%= form_with(model: @cbv_flow_invitation, url: invitations_path, builder: UswdsFormBuilder) do |f| %>
   <%= hidden_field_tag :secret, params[:secret] %>
 
   <%= f.email_field :email_address, label: t('.form.email_address') %>

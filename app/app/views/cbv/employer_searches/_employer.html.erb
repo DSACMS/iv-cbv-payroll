@@ -1,7 +1,7 @@
 <%= turbo_frame_tag 'employers' do %>
   <% if @employers.present? %>
     <h3 class="site-preview-heading margin-bottom-2">
-      <%= t('cbv_flows.employer_search.results') %>
+      <%= t('cbv.employer_searches.show.results') %>
     </h3>
   <% end %>
   <div class="usa-card-group">
@@ -23,13 +23,13 @@
           </div>
           <div class="usa-card__footer">
             <button
-              data-action="click->cbv-flows#select"
+              data-action="click->cbv-employer-search#select"
               data-id="<%= employer['id'] %>"
               data-response-type="<%= employer['response_type'] %>"
               class="usa-button usa-button--outline"
               type="button"
             >
-              <%= t('cbv_flows.employer_search.select') %>
+              <%= t('cbv.employer_searches.show.select') %>
             </button>
           </div>
         </div>
@@ -38,15 +38,15 @@
   </div>
 
   <% if @query.present? %>
-    <h3><%= t('cbv_flows.employer_search.employer_not_listed') %></h3>
+    <h3><%= t('cbv.employer_searches.show.employer_not_listed') %></h3>
     <button
-      data-action="click->cbv-flows#select"
+      data-action="click->cbv-employer-search#select"
       data-id=""
       data-response-type=""
       class="usa-button usa-button--outline"
       type="button"
       >
-        <%= t('cbv_flows.employer_search.search_by_payroll_provider') %>
+        <%= t('cbv.employer_searches.show.search_by_payroll_provider') %>
     </button>
   <% end %>
 <% end %>

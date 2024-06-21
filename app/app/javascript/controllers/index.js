@@ -4,5 +4,5 @@
 
 import { application } from "./application"
 
-import CbvFlowsController from "./cbv_flows_controller"
-application.register("cbv-flows", CbvFlowsController)
+import CbvEmployerSearch from "./cbv/employer_search"
+application.register("cbv-employer-search", CbvEmployerSearch)

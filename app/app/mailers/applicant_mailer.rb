@@ -31,7 +31,7 @@ class ApplicantMailer < ApplicationMailer
 
   def generate_pdf
     WickedPdf.new.pdf_from_string(
-      render_to_string(template: "cbv_flows/summary", formats: [ :pdf ])
+      render_to_string(template: "cbv/summaries/show", formats: [ :pdf ])
     )
   end
 end
