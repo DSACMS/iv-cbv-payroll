@@ -60,7 +60,7 @@ class Cbv::BaseController < ApplicationController
     end_user_account_ids = pinwheel.fetch_accounts(end_user_id: @cbv_flow.pinwheel_end_user_id)["data"].map { |account| account["id"] }
 
     end_user_account_ids.map do |account_id|
-      pinwheel.fetch_paystubs(account_id: account_id)["data"]
+      pinwheel.fetch_paystubs(account_id: account_id, from_pay_date: 90.days.ago.strftime("%Y-%m-%d"))["data"]
     end.flatten
   end
 end

@@ -51,8 +51,8 @@ class PinwheelService
     @http.get(build_url("#{END_USERS}/#{end_user_id}/accounts")).body
   end
 
-  def fetch_paystubs(account_id:)
-    @http.get(build_url("#{ACCOUNTS_ENDPOINT}/#{account_id}/paystubs")).body
+  def fetch_paystubs(account_id:, **params)
+    @http.get(build_url("#{ACCOUNTS_ENDPOINT}/#{account_id}/paystubs"), params).body
   end
 
   def create_link_token(end_user_id:, response_type:, id:)
