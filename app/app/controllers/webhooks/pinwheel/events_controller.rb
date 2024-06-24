@@ -11,7 +11,7 @@ class Webhooks::Pinwheel::EventsController < ApplicationController
       return render json: { error: "Invalid signature" }, status: :unauthorized
     end
 
-    if params["event"] == "paystubs.added"
+    if params["event"] == "paystubs.ninety_days_synced"
       @cbv_flow = CbvFlow.find_by_pinwheel_end_user_id(params["payload"]["end_user_id"])
 
       if @cbv_flow

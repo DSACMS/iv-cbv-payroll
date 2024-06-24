@@ -18,7 +18,8 @@ class PinwheelWebhookManager
     puts "  Registering Pinwheel webhooks for Ngrok tunnel..."
     response = @pinwheel.create_webhook_subscription([
       "account.added",
-      "paystubs.added"
+      "paystubs.added",
+      "paystubs.ninety_days_synced"
     ], URI.join(tunnel_url, "/webhooks/pinwheel/events", format_identifier_hash(name)))
     new_webhook_subscription_id = response["data"]["id"]
     puts "  ✅ Set up Pinwheel webhook: #{new_webhook_subscription_id}"

@@ -23,7 +23,7 @@ export default class extends Controller {
         console.log("Disconnected");
       },
       received: (data) => {
-        if (data.event === 'paystubs.added') {
+        if (data.event === 'paystubs.ninety_days_synced') {
           this.formTarget.submit();
         }
       }
