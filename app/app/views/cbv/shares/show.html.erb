@@ -6,7 +6,7 @@
   <%= t('.body') %>
 </p>
 
-<%= form_with url: cbv_flow_share_path(@cbv_flow), method: :post, local: true do |form| %>
+<%= form_with url: cbv_flow_share_path, method: :patch do |form| %>
   <%= form.button t('.share_with_caseworker'), type: 'submit', class: 'usa-button' %>
 <% end %>
 

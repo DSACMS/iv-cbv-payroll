@@ -36,6 +36,8 @@ en:
         download_pdf: Download PDF
         header: Share your income with your caseworker
         share_with_caseworker: Share with Case Worker
+      update:
+        successfully_shared_to_caseworker: We successfully emailed your income to your caseworker!
     summaries:
       show:
         additional_information_title: Is there anything else you'd like your caseworker to know about your income?
