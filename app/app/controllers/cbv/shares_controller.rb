@@ -11,5 +11,7 @@ class Cbv::SharesController < Cbv::BaseController
       cbv_flow: @cbv_flow,
       payments: @payments
     ).caseworker_summary_email.deliver_now
+
+    redirect_to({ action: :show }, flash: { notice: t(".successfully_shared_to_caseworker") })
   end
 end
