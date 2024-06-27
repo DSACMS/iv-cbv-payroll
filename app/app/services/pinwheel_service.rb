@@ -19,7 +19,10 @@ class PinwheelService
     client_options = {
       request: {
         open_timeout: 5,
-        timeout: 5
+        timeout: 5,
+        # Pinwheel requires repeated params (i.e. `{ foo: [1, 2, 3] }`) to
+        # be serialized as `?foo=1&foo=2&foo=3`:
+        params_encoder: Faraday::FlatParamsEncoder
       },
       url: BASE_URL,
       headers: {
