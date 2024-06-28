@@ -12,6 +12,7 @@ en:
   cbv:
     employer_searches:
       show:
+        can_not_find_employer: I can’t find my company or payroll provider
         directed_to_login_portal: You’ll be directed to their login portal, where you can enter your sign-in information to view your payment history.
         employer_not_listed: Employer not listed?
         fetching_payroll: We are fetching your employer's payment information.
@@ -35,6 +36,10 @@ en:
         subheader: We’ll help you connect payment records from your employer to your caseworker so you can prove your income and receive benefits faster.
     error_invalid_token: The invitation link used is not valid. Double check the link and try again. If you continue experiencing issues, contact your caseworker.
     manual_flow_start: Start Flow Manually
+    missing_results:
+      show:
+        button: Go to agency website
+        header: If you can’t find your employer or payroll provider, you’ll need to provide income information separately.
     shares:
       show:
         body: Thank you for completing income verification. Click the button below to preview your results and share it with your caseworker.
