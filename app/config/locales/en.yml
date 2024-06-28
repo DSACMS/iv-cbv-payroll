@@ -12,15 +12,17 @@ en:
   cbv:
     employer_searches:
       show:
+        directed_to_login_portal: You’ll be directed to their login portal, where you can enter your sign-in information to view your payment history.
         employer_not_listed: Employer not listed?
         fetching_payroll: We are fetching your employer's payment information.
         fetching_payroll_description: This may take a few minutes. Please do not close this window.
-        header: Get payment info from your employer.
+        header: Find your employer or payroll provider
         results: Results
         search: Search
         search_by_payroll_provider: Search for payroll provider
+        search_for_employer: Please search for your employer or their payroll provider to access the payments you have received during this period.
         select: Select
-        subheader: Search for an employer
+        subheader: Your caseworker needs your payment information from the last 30 days.
     entries:
       show:
         case_number: Case Number
