@@ -12,7 +12,7 @@ class PinwheelWebhookManager
 
   def existing_subscriptions(name)
     subscriptions = @pinwheel.fetch_webhook_subscriptions["data"]
-    subscriptions.find_all { |subscription| subscription["url"].match(format_identifier_hash(name)) }
+    subscriptions.find_all { |subscription| subscription["url"].end_with?(format_identifier_hash(name)) }
   end
 
   def remove_subscriptions(subscriptions)
