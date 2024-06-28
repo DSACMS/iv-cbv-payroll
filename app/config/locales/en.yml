@@ -20,7 +20,6 @@ en:
         header: Find your employer or payroll provider
         results: Results
         search: Search
-        search_by_payroll_provider: Search for payroll provider
         search_for_employer: Please search for your employer or their payroll provider to access the payments you have received during this period.
         select: Select
         subheader: Your caseworker needs your payment information from the last 30 days.
