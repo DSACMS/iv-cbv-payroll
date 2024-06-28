@@ -40,6 +40,10 @@ locals {
     {
       name           = "SLACK_TEST_EMAIL"
       ssm_param_name = "/service/${var.app_name}-${var.environment}/slack-test-email"
+    },
+    {
+      name           = "NEWRELIC_KEY"
+      ssm_param_name = "/service/${var.app_name}-${var.environment}/newrelic-key"
     }
   ]
 }
