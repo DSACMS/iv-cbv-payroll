@@ -2,9 +2,17 @@
 
 <p><%= t('.subheader') %></p>
 
-<p><%= t('.case_number') %>: <strong><%= @cbv_flow.case_number %></strong></p>
+<p><%= t('.list_header') %></p>
+<ul>
+  <li><%= t('.employer_name') %></li>
+  <li><%= t('.credentials') %></li>
+</ul>
 
-<div class="usa-alert usa-alert--info margin-bottom-3">
+<% if @cbv_flow.case_number %>
+<p><%= t('.case_number') %>: <strong><%= @cbv_flow.case_number %></strong></p>
+<% end %>
+
+<div class="usa-alert usa-alert--info margin-bottom-3 margin-top-3">
   <div class="usa-alert__body">
     <p class="usa-alert__text">
       <%= t('.security_message') %>

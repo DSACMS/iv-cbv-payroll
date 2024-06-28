@@ -8,11 +8,12 @@ Rails.application.config.to_prepare do
       puts "Found ngrok tunnel at #{tunnel_url}!"
 
       subscription_name = ENV["USER"]
+      raise "USER environment variable not specified" unless subscription_name.present?
+
       pinwheel_webhooks = PinwheelWebhookManager.new
-      pinwheel_webhooks.remove_ngrok_subscriptions_by_subscription_name(subscription_name)
-      pinwheel_webhooks.create_subscription(tunnel_url, subscription_name)
+      pinwheel_webhooks.create_subscription_if_necessary(tunnel_url, subscription_name)
     rescue => ex
-      puts "Unable to configure Ngrok for development: #{ex}"
+      puts "🟥 Unable to configure Ngrok for development: #{ex}"
       puts ex.inspect
     end
   end
