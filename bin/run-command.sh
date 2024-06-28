@@ -103,6 +103,7 @@ TASK_START_TIME_MILLIS=$((TASK_START_TIME * 1000))
 
 AWS_ARGS=(
   ecs run-task
+  --debug
   --region="$CURRENT_REGION"
   --cluster="$CLUSTER_NAME"
   --task-definition="$TASK_DEFINITION_FAMILY"
@@ -140,12 +141,13 @@ echo "  LOG_STREAM=$LOG_STREAM"
 NUM_RETRIES_WAITIN_FOR_LOGS=0
 while true; do
   NUM_RETRIES_WAITIN_FOR_LOGS=$((NUM_RETRIES_WAITIN_FOR_LOGS+1))
-  if [ $NUM_RETRIES_WAITIN_FOR_LOGS -eq 20 ]; then
+  if [ $NUM_RETRIES_WAITIN_FOR_LOGS -eq 120 ]; then
     echo "Timing out task $ECS_TASK_ID waiting for logs"
     exit 1
   fi
   IS_LOG_STREAM_CREATED=$(aws logs describe-log-streams --no-cli-pager --log-group-name "$LOG_GROUP" --query "length(logStreams[?logStreamName==\`$LOG_STREAM\`])")
   if [ "$IS_LOG_STREAM_CREATED" == "1" ]; then
+    echo "Found log stream after $((NUM_RETRIES_WAITIN_FOR_LOGS * 5)) seconds"
     break
   fi
   sleep 5
