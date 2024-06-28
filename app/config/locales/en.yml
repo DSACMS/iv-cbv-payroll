@@ -41,6 +41,14 @@ en:
         share_with_caseworker: Share with Case Worker
       update:
         successfully_shared_to_caseworker: We successfully emailed your income to your caseworker!
+    successes:
+      show:
+        back_to_agency: Back to agency website
+        caseworker_received: A caseworker has received your payment information and will review it. They will contact you if any additional information is needed.
+        check_status: To check the status of your SNAP application/recertifaction ....
+        confirmation_number: 'Confirmation number: %{confirmation_number}'
+        download: Download a copy of the report
+        header: Your income report has been successfully shared with a caseworker
     summaries:
       show:
         additional_information_title: Is there anything else you'd like your caseworker to know about your income?

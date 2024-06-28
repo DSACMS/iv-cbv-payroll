@@ -40,6 +40,16 @@ RSpec.describe Cbv::SharesController do
         expect(email.to).to eq([ email_address ])
         expect(email.subject).to eq("Applicant Income Verification: ABC1234")
       end
+
+      it "redirects to success screen" do
+        post :update
+        expect(response).to redirect_to({ controller: :successes, action: :show })
+      end
+
+      it "displays a notice" do
+        post :update
+        expect(flash[:notice]).to be_present
+      end
     end
   end
 end
