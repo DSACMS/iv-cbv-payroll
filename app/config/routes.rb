@@ -18,6 +18,7 @@ Rails.application.routes.draw do
       resource :summary, only: %i[show update]
       resource :share, only: %i[show update]
       resource :success, only: %i[show]
+      resource :agreement, only: %i[show]
 
       # Utility route to clear your session; useful during development
       resource :reset, only: %i[show]
