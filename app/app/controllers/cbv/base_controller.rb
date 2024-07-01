@@ -1,3 +1,5 @@
+require Rails.root.join('lib', 'new_relic_event_tracker.rb')
+
 class Cbv::BaseController < ApplicationController
   before_action :set_cbv_flow
 
@@ -11,6 +13,7 @@ class Cbv::BaseController < ApplicationController
       end
 
       @cbv_flow = invitation.cbv_flow || CbvFlow.create_from_invitation(invitation)
+      NewRelicEventTracker.track('ClickedCBVInvitationLink', { timestamp: Time.now.to_i })
     elsif session[:cbv_flow_id]
       begin
         @cbv_flow = CbvFlow.find(session[:cbv_flow_id])
