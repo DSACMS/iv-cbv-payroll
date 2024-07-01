@@ -22,5 +22,5 @@ Did you (or someone else) add an environment variable lately? You may need to ru
 If you're not sure what version of code is currently deployed, follow these steps to understand the state of the last deploy:
 
 1. Check the latest Github commit and whether it was successfully deployed
-2. Check the healthcheck endpoint: https://verify-demo.navapbc.cloud/health
+2. Check the healthcheck endpoint: https://{host}/health
 3. Check the AWS ECS task definition to see what version of the container image is supposed to be used.
