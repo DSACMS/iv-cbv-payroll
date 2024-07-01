@@ -1,4 +1,4 @@
 class Cbv::AgreementsController < Cbv::BaseController
-    def show
-    end
+  def show
+  end
 end

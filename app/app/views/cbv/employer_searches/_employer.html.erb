@@ -1,7 +1,7 @@
-<%= turbo_frame_tag 'employers' do %>
+<%= turbo_frame_tag "employers" do %>
   <% if @employers.present? %>
     <h3 class="site-preview-heading margin-bottom-2">
-      <%= t('cbv.employer_searches.show.results') %>
+      <%= t("cbv.employer_searches.show.results") %>
     </h3>
   <% end %>
   <div class="usa-card-group">
@@ -9,27 +9,27 @@
       <div class="usa-card usa-card--flag usa-card--media-right flex-1">
         <div class="usa-card__container">
           <div class="usa-card__header">
-            <h2 class="usa-card__heading"><%= employer['name'] %></h2>
+            <h2 class="usa-card__heading"><%= employer["name"] %></h2>
           </div>
           <div class="display-none usa-card__media usa-card__media--inset">
             <% if employer['logo_url'] %>
               <div class="usa-card__img">
                 <img
-                  src="<%= employer['logo_url'] %>"
+                  src="<%= employer["logo_url"] %>"
                   alt="A placeholder image"
-                />
+                >
               </div>
             <% end %>
           </div>
           <div class="usa-card__footer">
             <button
               data-action="click->cbv-employer-search#select"
-              data-id="<%= employer['id'] %>"
-              data-response-type="<%= employer['response_type'] %>"
+              data-id="<%= employer["id"] %>"
+              data-response-type="<%= employer["response_type"] %>"
               class="usa-button usa-button--outline"
               type="button"
             >
-              <%= t('cbv.employer_searches.show.select') %>
+              <%= t("cbv.employer_searches.show.select") %>
             </button>
           </div>
         </div>
@@ -38,7 +38,7 @@
   </div>
 
   <% if @query.present? %>
-    <h3><%= t('cbv.employer_searches.show.employer_not_listed') %></h3>
+    <h3><%= t("cbv.employer_searches.show.employer_not_listed") %></h3>
     <button
       data-action="click->cbv-employer-search#select"
       data-id=""
@@ -46,7 +46,7 @@
       class="usa-button usa-button--outline"
       type="button"
       >
-        <%= t('cbv.employer_searches.show.search_by_payroll_provider') %>
+        <%= t("cbv.employer_searches.show.search_by_payroll_provider") %>
     </button>
   <% end %>
 <% end %>
