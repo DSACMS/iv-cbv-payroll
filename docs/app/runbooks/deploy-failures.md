@@ -24,3 +24,13 @@ If you're not sure what version of code is currently deployed, follow these step
 1. Check the latest Github commit and whether it was successfully deployed
 2. Check the healthcheck endpoint: https://{host}/health
 3. Check the AWS ECS task definition to see what version of the container image is supposed to be used.
+
+## Failed "Build release" step
+
+This action sometimes fails when the Docker rate limit has been reached:
+
+> ERROR: failed to solve: registry.docker.com/library/ruby:3.3.0-slim: failed to copy: httpReadSeeker: failed open: unexpected status code https://registry.docker.com/v2/library/ruby/manifests/sha256:{commit sha}: 429 Too Many Requests - Server message: toomanyrequests: You have reached your pull rate limit. You may increase the limit by authenticating and upgrading: https://www.docker.com/increase-rate-limit
+
+Docker is likely rate limiting pulling of the Ruby image. This limit resets every 6 hours. Still, Github uses multiple IPs to make egress calls. **Simply redeploying the workflow usually works.** [Further discussion](https://nava.slack.com/archives/C06FC5TPAR3/p1719865408255839?thread_ts=1719862944.272089&cid=C06FC5TPAR3).
+
+
