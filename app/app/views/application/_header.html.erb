@@ -4,14 +4,14 @@
     <div class="usa-navbar">
       <div class="usa-logo">
         <em class="usa-logo__text">
-          <%= link_to t('shared.header.title'), root_path %>
+          <%= link_to t("shared.header.title"), root_path %>
         </em>
       </div>
-      <button class="usa-menu-btn"><%= t('shared.header.menu') %></button>
+      <button class="usa-menu-btn"><%= t("shared.header.menu") %></button>
     </div>
-    <nav aria-label="<%= t('shared.header.primary') %>" class="usa-nav">
+    <nav aria-label="<%= t("shared.header.primary") %>" class="usa-nav">
       <button class="usa-nav__close">
-        <%= image_tag "@uswds/uswds/dist/img/usa-icons/close.svg", role: "img", alt: t('shared.header.close') %>
+        <%= image_tag "@uswds/uswds/dist/img/usa-icons/close.svg", role: "img", alt: t("shared.header.close") %>
       </button>
       <ul class="usa-nav__primary usa-accordion">
         <% I18n.available_locales.each do |l| %>
