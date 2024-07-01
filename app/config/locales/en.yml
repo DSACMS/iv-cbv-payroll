@@ -10,6 +10,18 @@ en:
       subject: Verify your income for your benefit application
       thank_you: Thank you!
   cbv:
+    agreements:
+      show:
+        by_continuing: By continuing, you are letting Verify.gov access your payment information.
+        continue: Continue
+        header: How verifying your income works
+        information_is_secure: Your information is secure. We will not share or keep your log in information. You will be able to preview and approve everything that is shared with your caseworker.
+        step1: Find your employer or payroll provider
+        step2: Sign into your employer's account
+        step3: Review your payment records
+        step4: Add other employers to your records if you have them
+        step5: Share your payment information with your caseworker
+        subheader: 'All you have to do is complete five easy steps:'
     employer_searches:
       show:
         can_not_find_employer: I can’t find my company or payroll provider
@@ -47,6 +59,14 @@ en:
         share_with_caseworker: Share with Case Worker
       update:
         successfully_shared_to_caseworker: We successfully emailed your income to your caseworker!
+    successes:
+      show:
+        back_to_agency: Back to agency website
+        caseworker_received: A caseworker has received your payment information and will review it. They will contact you if any additional information is needed.
+        check_status: To check the status of your SNAP application/recertifaction ....
+        confirmation_number: 'Confirmation number: %{confirmation_number}'
+        download: Download a copy of the report
+        header: Your income report has been successfully shared with a caseworker
     summaries:
       show:
         additional_information_title: Is there anything else you'd like your caseworker to know about your income?
