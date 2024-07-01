@@ -1,0 +1,23 @@
+<h1><%= t('.header') %></h1>
+<p><%= t('.subheader') %></p>
+<ul>
+    <li><%= t('.step1') %></li>
+    <li><%= t('.step2') %></li>
+    <li><%= t('.step3') %></li>
+    <li><%= t('.step4') %></li>
+    <li><%= t('.step5') %></li>
+</ul>
+
+<div class="usa-alert usa-alert--info margin-bottom-3 margin-top-3">
+  <div class="usa-alert__body">
+    <p class="usa-alert__text">
+      <%= t('.information_is_secure') %>
+    </p>
+  </div>
+</div><p class="text-bold"><%= t('.by_continuing') %></p>
+
+<%= link_to next_path do %>
+    <button class="usa-button usa-button--outline" type="button">
+      <%= t('.continue') %>
+    </button>
+  <% end %>
