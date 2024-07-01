@@ -10,6 +10,18 @@ en:
       subject: Verify your income for your benefit application
       thank_you: Thank you!
   cbv:
+    agreements:
+      show:
+        by_continuing: By continuing, you are letting Verify.gov access your payment information.
+        continue: Continue
+        header: How verifying your income works
+        information_is_secure: Your information is secure. We will not share or keep your log in information. You will be able to preview and approve everything that is shared with your caseworker.
+        step1: Find your employer or payroll provider
+        step2: Sign into your employer's account
+        step3: Review your payment records
+        step4: Add other employers to your records if you have them
+        step5: Share your payment information with your caseworker
+        subheader: 'All you have to do is complete five easy steps:'
     employer_searches:
       show:
         employer_not_listed: Employer not listed?
