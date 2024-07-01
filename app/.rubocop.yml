@@ -14,3 +14,10 @@ inherit_gem:
   rubocop-rails-omakase: rubocop.yml
 AllCops:
   NewCops: enable
+
+# Overrides
+Layout/IndentationWidth:
+  Enabled: true
+Layout/IndentationConsistency:
+  Enabled: true
+  EnforcedStyle: normal
