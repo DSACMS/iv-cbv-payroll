@@ -49,7 +49,7 @@ class Cbv::BaseController < ApplicationController
     when "cbv/summaries"
       cbv_flow_share_path
     when "cbv/shares"
-      root_url
+      cbv_flow_success_path
     end
   end
   helper_method :next_path
