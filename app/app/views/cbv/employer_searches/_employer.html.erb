@@ -39,15 +39,8 @@
 
   <% if @query.present? %>
     <h3><%= t('cbv.employer_searches.show.employer_not_listed') %></h3>
-    <%= link_to 'missing_results', data: { turbo_frame: "_top" } do %>
-      <button
-        data-id=""
-        data-response-type=""
-        class="usa-button usa-button--outline"
-        type="button"
-        >
-          <%= t('cbv.employer_searches.show.can_not_find_employer') %>
-      </button>
+    <%= link_to cbv_flow_missing_results_path, class: "usa-button usa-button--outline", data: { turbo_frame: "_top" } do %>
+        <%= t('cbv.employer_searches.show.can_not_find_employer') %>
     <% end %>
   <% end %>
 <% end %>
