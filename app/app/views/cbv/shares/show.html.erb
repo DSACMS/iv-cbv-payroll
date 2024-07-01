@@ -1,15 +1,15 @@
 <h2>
-  <%= t('.header') %>
+  <%= t(".header") %>
 </h2>
 
 <p>
-  <%= t('.body') %>
+  <%= t(".body") %>
 </p>
 
 <%= form_with url: cbv_flow_share_path, method: :patch do |form| %>
-  <%= form.button t('.share_with_caseworker'), type: 'submit', class: 'usa-button' %>
+  <%= form.button t(".share_with_caseworker"), type: "submit", class: "usa-button" %>
 <% end %>
 
-<%= link_to cbv_flow_summary_path(format: 'pdf'), target: '_blank', class: 'usa-button margin-top-3 usa-button--outline' do %>
-  <%= t('.download_pdf') %>
+<%= link_to cbv_flow_summary_path(format: "pdf"), target: "_blank", class: "usa-button margin-top-3 usa-button--outline" do %>
+  <%= t(".download_pdf") %>
 <% end %>
