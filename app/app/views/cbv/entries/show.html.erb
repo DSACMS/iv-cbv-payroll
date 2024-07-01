@@ -1,27 +1,27 @@
-<h1><%= t('.header') %></h1>
+<h1><%= t(".header") %></h1>
 
-<p><%= t('.subheader') %></p>
+<p><%= t(".subheader") %></p>
 
-<p><%= t('.list_header') %></p>
+<p><%= t(".list_header") %></p>
 <ul>
-  <li><%= t('.employer_name') %></li>
-  <li><%= t('.credentials') %></li>
+  <li><%= t(".employer_name") %></li>
+  <li><%= t(".credentials") %></li>
 </ul>
 
 <% if @cbv_flow.case_number %>
-<p><%= t('.case_number') %>: <strong><%= @cbv_flow.case_number %></strong></p>
+<p><%= t(".case_number") %>: <strong><%= @cbv_flow.case_number %></strong></p>
 <% end %>
 
 <div class="usa-alert usa-alert--info margin-bottom-3 margin-top-3">
   <div class="usa-alert__body">
     <p class="usa-alert__text">
-      <%= t('.security_message') %>
+      <%= t(".security_message") %>
     </p>
   </div>
 </div>
 
 <%= link_to next_path do %>
   <button class="usa-button usa-button--outline" type="button">
-    <%= t('.get_started') %>
+    <%= t(".get_started") %>
   </button>
 <% end %>

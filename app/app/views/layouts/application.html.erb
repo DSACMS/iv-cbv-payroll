@@ -13,7 +13,7 @@
 
     <% if Rails.env.production? %>
       <!-- We participate in the US government's analytics program. See the data at analytics.usa.gov. -->
-      <%= javascript_include_tag "https://dap.digitalgov.gov/Universal-Federated-Analytics-Min.js?agency=GSA", async: true, id:"_fed_an_ua_tag" %>
+      <%= javascript_include_tag "https://dap.digitalgov.gov/Universal-Federated-Analytics-Min.js?agency=GSA", async: true, id: "_fed_an_ua_tag" %>
     <% end %>
   </head>
 

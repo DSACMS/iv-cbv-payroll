@@ -1,0 +1,17 @@
+name: Erblint style checks
+
+on:
+  pull_request:
+    paths: ['app/**/*.erb']
+
+jobs:
+  erblint:
+    name: Erblint
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set up Ruby & Javascript
+        uses: ./.github/actions/setup-languages
+      - name: Run Erblint
+        working-directory: app
+        run: bundle exec erblint --lint-all

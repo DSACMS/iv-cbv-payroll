@@ -1,0 +1,17 @@
+---
+EnableDefaultLinters: true
+linters:
+  # ErbSafety:
+  #   enabled: true
+  #   better_html_config: .better-html.yml
+  SpaceInHtmlTag:
+    # Allow for closing tags to be on the following line
+    enabled: false
+  Rubocop:
+    enabled: true
+    rubocop_config:
+      inherit_from:
+        - .rubocop.yml
+      Layout/TrailingEmptyLines:
+        # Prevent Rubocop from adding newlines at the end of <% %> blocks
+        Enabled: false
