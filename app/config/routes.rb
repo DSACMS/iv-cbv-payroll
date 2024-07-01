@@ -17,6 +17,7 @@ Rails.application.routes.draw do
       resource :employer_search, only: %i[show]
       resource :summary, only: %i[show update]
       resource :share, only: %i[show update]
+      resource :missing_results, only: %i[show]
       resource :success, only: %i[show]
       resource :agreement, only: %i[show]
 
