@@ -10,7 +10,7 @@ class Cbv::PaymentDetailsController < Cbv::BaseController
 
   def employer_name
     if @payments.any?
-        @payments.first[:employer_name]
+      @payments.first[:employer_name]
     end
   end
 

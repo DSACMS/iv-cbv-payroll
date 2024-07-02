@@ -17,8 +17,8 @@ RSpec.describe Cbv::AddJobsController do
     end
 
     it 'redirects when false radio button is selected' do
-        post :create, params: { 'additional_jobs': 'false' }
-        expect(response).to redirect_to(cbv_flow_summary_path)
+      post :create, params: { 'additional_jobs': 'false' }
+      expect(response).to redirect_to(cbv_flow_summary_path)
     end
 
     it 'redirects with notice when no radio button has been selected' do
