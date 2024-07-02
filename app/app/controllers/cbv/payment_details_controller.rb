@@ -2,7 +2,8 @@ class Cbv::PaymentDetailsController < Cbv::BaseController
   helper_method :employer_name, :day_count, :start_date, :end_date
 
   def show
-    @payments = set_payments params[:id]
+    account_id = params[:user][:account_id]
+    @payments = set_payments account_id
   end
 
   private

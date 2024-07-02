@@ -48,6 +48,8 @@ class Cbv::BaseController < ApplicationController
       cbv_flow_agreement_path
     when "cbv/agreements"
       cbv_flow_employer_search_path
+    when "cbv/employer_searches"
+      cbv_flow_payment_details_path
     when "cbv/payment_details"
       cbv_flow_add_job_path
     when "cbv/summaries"

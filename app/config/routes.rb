@@ -20,7 +20,7 @@ Rails.application.routes.draw do
       resource :success, only: %i[show]
       resource :agreement, only: %i[show]
       resource :add_job, only: %i[show create]
-      get "payment_details/:id", to: "payment_details#show"
+      resource :payment_details, only: %i[show]
 
       # Utility route to clear your session; useful during development
       resource :reset, only: %i[show]

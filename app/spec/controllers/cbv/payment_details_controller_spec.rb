@@ -15,7 +15,7 @@ RSpec.describe Cbv::PaymentDetailsController do
     end
 
     it "renders properly" do
-      get :show, params: { id: '123456789012345678901234567890123456' }
+      get :show, params: { user: { account_id: '123456789012345678901234567890123456' } }
       expect(response).to be_successful
     end
   end
