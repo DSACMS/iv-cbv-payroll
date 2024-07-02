@@ -10,6 +10,15 @@ en:
       subject: Verify your income for your benefit application
       thank_you: Thank you!
   cbv:
+    add_jobs:
+      create:
+        notice: Please select one of the options below
+      show:
+        continue: Continue
+        header: Have you earned income from another job in the last %{day_count} days?
+        no_radio: No, I haven’t earned income from another job
+        subheader: This includes income you were paid for services or goods as a freelancer, independent contractor, gig worker who sets your own schedule, or other kinds of self-employment.
+        yes_radio: Yes, I have earned income from another job
     agreements:
       show:
         by_continuing: By continuing, you are letting Verify.gov access your payment information.
@@ -47,6 +56,14 @@ en:
         subheader: We’ll help you connect payment records from your employer to your caseworker so you can prove your income and receive benefits faster.
     error_invalid_token: The invitation link used is not valid. Double check the link and try again. If you continue experiencing issues, contact your caseworker.
     manual_flow_start: Start Flow Manually
+    payment_details:
+      show:
+        continue: Continue
+        header: Your payment information from %{employer_name}
+        header_no_employer_name: Your payment information from your employer
+        none_found: No payments found. Please refresh the page after a few minutes.
+        payment_of: Payment of %{amount}
+        subheader: Below is the payment information from your employer from the last %{day_count} days, from %{start_date} to %{end_date}
     shares:
       show:
         body: Thank you for completing income verification. Click the button below to preview your results and share it with your caseworker.
