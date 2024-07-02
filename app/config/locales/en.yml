@@ -56,6 +56,10 @@ en:
         subheader: We’ll help you connect payment records from your employer to your caseworker so you can prove your income and receive benefits faster.
     error_invalid_token: The invitation link used is not valid. Double check the link and try again. If you continue experiencing issues, contact your caseworker.
     manual_flow_start: Start Flow Manually
+    missing_results:
+      show:
+        button: Go to agency website
+        header: If you can’t find your employer or payroll provider, you’ll need to provide income information separately.
     payment_details:
       show:
         continue: Continue
@@ -64,10 +68,6 @@ en:
         none_found: No payments found. Please refresh the page after a few minutes.
         payment_of: Payment of %{amount}
         subheader: Below is the payment information from your employer from the last %{day_count} days, from %{start_date} to %{end_date}
-    missing_results:
-      show:
-        button: Go to agency website
-        header: If you can’t find your employer or payroll provider, you’ll need to provide income information separately.
     shares:
       show:
         body: Thank you for completing income verification. Click the button below to preview your results and share it with your caseworker.
