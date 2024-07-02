@@ -45,7 +45,10 @@ MIGRATOR_ROLE_ARN=$(terraform -chdir="infra/$APP_NAME/service" output -raw migra
 echo
 echo "::group::Step 1. Update task definition without updating service"
 
-TF_CLI_ARGS_apply="-input=false -auto-approve -target=module.service.aws_ecs_task_definition.app -var=image_tag=$IMAGE_TAG" make infra-update-app-service APP_NAME="$APP_NAME" ENVIRONMENT="$ENVIRONMENT"
+TF_CLI_ARGS_apply="-input=false -auto-approve -var=image_tag=$IMAGE_TAG " \
+  "-target=module.service.aws_ecs_task_definition.app " \
+  "-target=module.service.aws_iam_role_policy.task_executor" \
+  make infra-update-app-service APP_NAME="$APP_NAME" ENVIRONMENT="$ENVIRONMENT"
 
 echo "::endgroup::"
 echo

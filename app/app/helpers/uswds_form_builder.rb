@@ -195,80 +195,80 @@ class UswdsFormBuilder < ActionView::Helpers::FormBuilder
   end
 
   private
-    def append_to_option(options, key, value)
-      current_value = options[key] || ""
+  def append_to_option(options, key, value)
+    current_value = options[key] || ""
 
-      if current_value.is_a?(Proc)
-        options[key] = -> { current_value.call + value }
+    if current_value.is_a?(Proc)
+      options[key] = -> { current_value.call + value }
+    else
+      options[key] = current_value + value
+    end
+  end
+
+  def us_class_for_field_type(field_type, width = nil)
+    case field_type
+    when :check_box
+      "usa-checkbox__input usa-checkbox__input--tile"
+    when :file_field
+      "usa-file-input"
+    when :radio_button
+      "usa-radio__input usa-radio__input--tile"
+    when :text_area
+      "usa-textarea"
+    else
+      classes = "usa-input"
+      classes += " usa-input--#{width}" if width
+      classes
+    end
+  end
+
+
+  # Render the label, hint text, and error message for a form field
+  def us_text_field_label(attribute, text = nil, options = {})
+    hint_option = options.delete(:hint)
+    classes = "usa-label"
+    for_attr = options[:for] || field_id(attribute)
+
+    if options[:class]
+      classes += " #{options[:class]}"
+    end
+
+    unless text
+      text = human_name(attribute)
+    end
+
+    if options[:optional]
+      text += @template.content_tag(:span, " (#{I18n.t('us_form_with.optional').downcase})", class: "usa-hint")
+    end
+
+    if hint_option
+      if hint_option.is_a?(Proc)
+        hint_content = @template.capture(&hint_option)
       else
-        options[key] = current_value + value
+        hint_content = @template.raw(hint_option)
       end
+
+      hint = @template.content_tag(:div, hint_content, id: hint_id(attribute), class: "usa-hint")
     end
 
-    def us_class_for_field_type(field_type, width = nil)
-      case field_type
-      when :check_box
-        "usa-checkbox__input usa-checkbox__input--tile"
-      when :file_field
-        "usa-file-input"
-      when :radio_button
-        "usa-radio__input usa-radio__input--tile"
-      when :text_area
-        "usa-textarea"
-      else
-        classes = "usa-input"
-        classes += " usa-input--#{width}" if width
-        classes
-      end
+    label(attribute, @template.raw(text), { class: classes, for: for_attr }) + field_error(attribute) + hint
+  end
+
+  # Label for a checkbox or radio
+  def us_toggle_label(type, attribute, text = nil, options = {})
+    hint_text = options.delete(:hint)
+    label_text = text || object.class.human_attribute_name(attribute)
+    options = options.merge({ class: "usa-#{type}__label" })
+
+    if hint_text
+      hint = @template.content_tag(:span, hint_text, class: "usa-#{type}__label-description")
+      label_text = "#{label_text} #{hint}".html_safe
     end
 
+    label(attribute, label_text, options)
+  end
 
-    # Render the label, hint text, and error message for a form field
-    def us_text_field_label(attribute, text = nil, options = {})
-      hint_option = options.delete(:hint)
-      classes = "usa-label"
-      for_attr = options[:for] || field_id(attribute)
-
-      if options[:class]
-        classes += " #{options[:class]}"
-      end
-
-      unless text
-        text = human_name(attribute)
-      end
-
-      if options[:optional]
-        text += @template.content_tag(:span, " (#{I18n.t('us_form_with.optional').downcase})", class: "usa-hint")
-      end
-
-      if hint_option
-        if hint_option.is_a?(Proc)
-          hint_content = @template.capture(&hint_option)
-        else
-          hint_content = @template.raw(hint_option)
-        end
-
-        hint = @template.content_tag(:div, hint_content, id: hint_id(attribute), class: "usa-hint")
-      end
-
-      label(attribute, @template.raw(text), { class: classes, for: for_attr }) + field_error(attribute) + hint
-    end
-
-    # Label for a checkbox or radio
-    def us_toggle_label(type, attribute, text = nil, options = {})
-      hint_text = options.delete(:hint)
-      label_text = text || object.class.human_attribute_name(attribute)
-      options = options.merge({ class: "usa-#{type}__label" })
-
-      if hint_text
-        hint = @template.content_tag(:span, hint_text, class: "usa-#{type}__label-description")
-        label_text = "#{label_text} #{hint}".html_safe
-      end
-
-      label(attribute, label_text, options)
-    end
-
-    def hint_id(attribute)
-      "#{attribute}_hint"
-    end
+  def hint_id(attribute)
+    "#{attribute}_hint"
+  end
 end
