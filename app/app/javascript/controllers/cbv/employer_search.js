@@ -9,7 +9,7 @@ export default class extends Controller {
     "userAccountId",
     "modal"
   ];
-  
+
   pinwheel = loadPinwheel();
 
   cable = ActionCable.createConsumer();
