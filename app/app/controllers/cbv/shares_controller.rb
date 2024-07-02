@@ -11,8 +11,11 @@ class Cbv::SharesController < Cbv::BaseController
       cbv_flow: @cbv_flow,
       payments: @payments
     ).caseworker_summary_email.deliver_now
-    
-    NewRelicEventTracker.track('IncomeSummarySharedWithCaseworker', { timestamp: Time.now.to_i })
+  
+    NewRelicEventTracker.track('IncomeSummarySharedWithCaseworker', {
+      timestamp: Time.now.to_i,
+      cbv_flow_id: @cbv_flow.id,
+    })
     redirect_to({ action: :show }, flash: { notice: t(".successfully_shared_to_caseworker") })
   end
 end
