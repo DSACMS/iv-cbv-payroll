@@ -46,13 +46,15 @@ class Cbv::BaseController < ApplicationController
   def next_path
     case params[:controller]
     when "cbv/entries"
+      cbv_flow_agreement_path
+    when "cbv/agreements"
       cbv_flow_employer_search_path
     when "cbv/employer_searches"
       cbv_flow_summary_path
     when "cbv/summaries"
       cbv_flow_share_path
     when "cbv/shares"
-      root_url
+      cbv_flow_success_path
     end
   end
   helper_method :next_path
