@@ -67,6 +67,7 @@ group :development, :test do
   gem "capybara"
   gem "debug", platforms: %i[mri mingw x64_mingw]
   gem "dotenv-rails", "~> 2.7"
+  gem "erb_lint", require: false
   gem "i18n-tasks", "~> 1.0"
   gem "rspec-rails", "~> 6.1"
   gem "rubocop"

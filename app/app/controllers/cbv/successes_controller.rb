@@ -1,4 +1,4 @@
 class Cbv::SuccessesController < Cbv::BaseController
-    def show
-    end
+  def show
+  end
 end

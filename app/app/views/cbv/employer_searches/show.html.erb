@@ -1,30 +1,30 @@
 <h2>
-  <%= t('.header') %>
+  <%= t(".header") %>
 </h2>
 
 <div data-controller="cbv-employer-search">
-  <p><%= t('.subheader') %></p>
-  <p><%= t('.search_for_employer') %></p>
-  <p><%= t('.directed_to_login_portal') %></p>
+  <p><%= t(".subheader") %></p>
+  <p><%= t(".search_for_employer") %></p>
+  <p><%= t(".directed_to_login_portal") %></p>
 
-  <%= form_with url: cbv_flow_employer_search_path, method: :get, class: 'usa-search usa-search--big margin-top-4', html: { role: 'search' }, data: { turbo_frame: 'employers', turbo_action: 'advance' } do |f| %>
+  <%= form_with url: cbv_flow_employer_search_path, method: :get, class: "usa-search usa-search--big margin-top-4", html: { role: "search" }, data: { turbo_frame: "employers", turbo_action: "advance" } do |f| %>
     <%= f.label :query, "Search for your employer", class: "usa-sr-only" %>
-    <%= f.text_field :query, value: @query, class: "usa-input", type: 'search', data: { "cbv-employer-search-target": "searchTerms" } %>
+    <%= f.text_field :query, value: @query, class: "usa-input", type: "search", data: { "cbv-employer-search-target": "searchTerms" } %>
     <button
       class="usa-button"
       type="submit"
     >
       <span class="usa-search__submit-text">
-        <%= t('.search') %>
+        <%= t(".search") %>
       </span>
       <%= image_tag "@uswds/uswds/dist/img/usa-icons-bg/search--white.svg", class: "usa-search__submit-icon", alt: "Search" %>
     </button>
   <% end %>
 
-  <%= render partial: 'employer', locals: { employer: @employers } %>
+  <%= render partial: "employer", locals: { employer: @employers } %>
 
-  <%= form_with url: next_path, method: :get, class: 'display-none', data: { 'cbv-employer-search-target': "form" } do |f| %>
-    <input type="hidden" name="user[account_id]" data-cbv-employer-search-target="userAccountId" />
+  <%= form_with url: next_path, method: :get, class: "display-none", data: { 'cbv-employer-search-target': "form" } do |f| %>
+    <input type="hidden" name="user[account_id]" data-cbv-employer-search-target="userAccountId" >
   <% end %>
 
   <a
@@ -45,11 +45,11 @@
       <div class="usa-modal__content">
         <div class="usa-modal__main">
           <h2 class="usa-modal__heading" id="modal-3-heading">
-            <%= t('.fetching_payroll') %>
+            <%= t(".fetching_payroll") %>
           </h2>
           <div class="usa-prose">
             <p id="modal-3-description">
-              <%= t('.fetching_payroll_description') %>
+              <%= t(".fetching_payroll_description") %>
             </p>
           </div>
           <div class="lds-ripple" style="left: 30%;"><div></div><div></div></div>

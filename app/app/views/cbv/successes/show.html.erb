@@ -1,18 +1,18 @@
-<h1><%= t('.header') %></h1>
+<h1><%= t(".header") %></h1>
 
 <ul>
-    <li><%= t('.caseworker_received') %></li>
-    <li><%= t('.check_status') %></li>
+    <li><%= t(".caseworker_received") %></li>
+    <li><%= t(".check_status") %></li>
 </ul>
 
 <p>
-    <%= t('.confirmation_number', confirmation_number: 'XXXXXXX') %>
+    <%= t(".confirmation_number", confirmation_number: "XXXXXXX") %>
 </p>
 
-<%= link_to cbv_flow_summary_path(format: 'pdf'), target: '_blank', class: 'usa-button margin-top-3 usa-button--outline' do %>
-    <%= t('.download') %>
+<%= link_to cbv_flow_summary_path(format: "pdf"), target: "_blank", class: "usa-button margin-top-3 usa-button--outline" do %>
+    <%= t(".download") %>
 <% end %>
 
-<%= link_to agency_url, target: '_blank', class: 'usa-button margin-top-3 usa-button' do %>
-    <%= t('.back_to_agency') %>
+<%= link_to agency_url, target: "_blank", class: "usa-button margin-top-3 usa-button" do %>
+    <%= t(".back_to_agency") %>
 <% end %>

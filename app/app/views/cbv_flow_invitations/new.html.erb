@@ -1,11 +1,11 @@
-<h2><%= t('.header') %></h2>
-<p><%= t('.description') %></p>
+<h2><%= t(".header") %></h2>
+<p><%= t(".description") %></p>
 
 <%= form_with(model: @cbv_flow_invitation, url: invitations_path, builder: UswdsFormBuilder) do |f| %>
   <%= hidden_field_tag :secret, params[:secret] %>
 
-  <%= f.email_field :email_address, label: t('.form.email_address') %>
-  <%= f.text_field :case_number, label: t('.form.case_number') %>
+  <%= f.email_field :email_address, label: t(".form.email_address") %>
+  <%= f.text_field :case_number, label: t(".form.case_number") %>
 
-  <%= f.submit t('.form.submit') %>
+  <%= f.submit t(".form.submit") %>
 <% end %>
