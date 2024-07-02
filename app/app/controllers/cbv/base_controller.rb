@@ -11,7 +11,7 @@ class Cbv::BaseController < ApplicationController
       end
 
       @cbv_flow = invitation.cbv_flow || CbvFlow.create_from_invitation(invitation)
-      NewRelicEventTracker.track('ClickedCBVInvitationLink', {
+      NewRelicEventTracker.track("ClickedCBVInvitationLink", {
         timestamp: Time.now.to_i,
         invitation_id: invitation.id,
         cbv_flow_id: @cbv_flow.id
