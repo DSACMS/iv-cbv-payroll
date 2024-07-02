@@ -1,5 +1,6 @@
 class Cbv::BaseController < ApplicationController
   before_action :set_cbv_flow
+  helper_method :agency_url, :next_path
 
   private
 
@@ -63,7 +64,6 @@ class Cbv::BaseController < ApplicationController
       cbv_flow_success_path
     end
   end
-  helper_method :next_path
 
   def pinwheel
     PinwheelService.new
@@ -79,5 +79,9 @@ class Cbv::BaseController < ApplicationController
 
   def fetch_payroll_for_account_id(account_id)
     pinwheel.fetch_paystubs(account_id: account_id, from_pay_date: 90.days.ago.strftime("%Y-%m-%d"))["data"]
+  end
+
+  def agency_url
+    "https://www.nyc.gov/site/hra/help/snap-application-frequently-asked-questions.page"
   end
 end

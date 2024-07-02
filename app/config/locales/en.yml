@@ -33,6 +33,7 @@ en:
         subheader: 'All you have to do is complete five easy steps:'
     employer_searches:
       show:
+        can_not_find_employer: I can’t find my company or payroll provider
         directed_to_login_portal: You’ll be directed to their login portal, where you can enter your sign-in information to view your payment history.
         employer_not_listed: Employer not listed?
         fetching_payroll: We are fetching your employer's payment information.
@@ -40,7 +41,6 @@ en:
         header: Find your employer or payroll provider
         results: Results
         search: Search
-        search_by_payroll_provider: Search for payroll provider
         search_for_employer: Please search for your employer or their payroll provider to access the payments you have received during this period.
         select: Select
         subheader: Your caseworker needs your payment information from the last 30 days.
@@ -64,6 +64,10 @@ en:
         none_found: No payments found. Please refresh the page after a few minutes.
         payment_of: Payment of %{amount}
         subheader: Below is the payment information from your employer from the last %{day_count} days, from %{start_date} to %{end_date}
+    missing_results:
+      show:
+        button: Go to agency website
+        header: If you can’t find your employer or payroll provider, you’ll need to provide income information separately.
     shares:
       show:
         body: Thank you for completing income verification. Click the button below to preview your results and share it with your caseworker.
