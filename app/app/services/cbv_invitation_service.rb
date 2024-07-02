@@ -3,6 +3,7 @@ class CbvInvitationService
     invitation = CbvFlowInvitation.create(email_address: email_address, case_number: case_number)
 
     send_invitation_email(email_address, invitation.to_url)
+    NewRelicEventTracker.track('ApplicantInvitedToFlow', { timestamp: Time.now.to_i })
   end
 
   private
