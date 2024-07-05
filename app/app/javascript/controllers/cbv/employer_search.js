@@ -24,6 +24,8 @@ export default class extends Controller {
       },
       received: (data) => {
         if (data.event === 'paystubs.ninety_days_synced') {
+          const accountId = data.payload.account_id
+          this.userAccountIdTarget.value = accountId
           this.formTarget.submit();
         }
       }

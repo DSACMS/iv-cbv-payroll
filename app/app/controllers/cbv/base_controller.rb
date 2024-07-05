@@ -31,16 +31,20 @@ class Cbv::BaseController < ApplicationController
     session[:cbv_flow_id] = @cbv_flow.id
   end
 
-  def set_payments
-    @payments = fetch_payroll.map do |payment|
-      {
-        employer: payment["employer_name"],
-        amount: payment["net_pay_amount"].to_i,
-        start: payment["pay_period_start"],
-        end: payment["pay_period_end"],
-        hours: payment["earnings"][0]["hours"],
-        rate: payment["earnings"][0]["rate"]
-      }
+  def parse_payment(payment)
+    {
+      employer: payment["employer_name"],
+      amount: payment["net_pay_amount"].to_i,
+      start: payment["pay_period_start"],
+      end: payment["pay_period_end"],
+      hours: payment["earnings"][0]["hours"],
+      rate: payment["earnings"][0]["rate"]
+    }
+  end
+
+  def set_payments(account_id = nil)
+    @payments = (account_id.nil? ? fetch_payroll : fetch_payroll_for_account_id(account_id)).map do |payment|
+      parse_payment payment
     end
   end
 
@@ -51,7 +55,9 @@ class Cbv::BaseController < ApplicationController
     when "cbv/agreements"
       cbv_flow_employer_search_path
     when "cbv/employer_searches"
-      cbv_flow_summary_path
+      cbv_flow_payment_details_path
+    when "cbv/payment_details"
+      cbv_flow_add_job_path
     when "cbv/summaries"
       cbv_flow_share_path
     when "cbv/shares"
@@ -67,8 +73,12 @@ class Cbv::BaseController < ApplicationController
     end_user_account_ids = pinwheel.fetch_accounts(end_user_id: @cbv_flow.pinwheel_end_user_id)["data"].map { |account| account["id"] }
 
     end_user_account_ids.map do |account_id|
-      pinwheel.fetch_paystubs(account_id: account_id, from_pay_date: 90.days.ago.strftime("%Y-%m-%d"))["data"]
+      fetch_payroll_for_account_id account_id
     end.flatten
+  end
+
+  def fetch_payroll_for_account_id(account_id)
+    pinwheel.fetch_paystubs(account_id: account_id, from_pay_date: 90.days.ago.strftime("%Y-%m-%d"))["data"]
   end
 
   def agency_url
