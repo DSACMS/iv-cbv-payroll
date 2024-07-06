@@ -1,7 +1,12 @@
 {
   "defaults": {
     "standard": "WCAG2AA",
-    "runners": ["htmlcs"]
+    "runners": ["htmlcs"],
+    "chromeLaunchConfig": {
+      "ignoreHTTPSErrors": true,
+      "headless": true,
+      "executablePath": "/usr/bin/google-chrome"
+    }
   },
   "urls": [
     "http://localhost:3000",
