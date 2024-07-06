@@ -30,6 +30,8 @@ jobs:
 
       - id: setup
         uses: ./.github/actions/setup-project
+        with:
+          rails_env: test
 
       - uses: ./.github/actions/run-server
         with:
