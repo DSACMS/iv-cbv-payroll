@@ -34,6 +34,7 @@ jobs:
           rails_env: test
 
       - uses: ./.github/actions/run-server
+        working-directory: app
         with:
           database_url: ${{ steps.setup.outputs.database_url }}
 
