@@ -1,9 +1,8 @@
 name: pa11y tests
 
-# TODO: Re-enable me!
-on: []
-  #   pull_request:
-  #     paths: ['app/**']
+on:
+    pull_request:
+      paths: ['app/**']
 defaults:
   run:
     working-directory: ./app
