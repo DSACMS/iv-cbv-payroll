@@ -18,6 +18,7 @@ runs:
         DATABASE_URL: ${{ inputs.database_url }}
         SECRET_KEY_BASE: not-actually-secret
       run: bundle exec rails server &
+      working-directory: app
 
     - name: "Wait for startup"
       shell: bash
