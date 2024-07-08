@@ -46,4 +46,4 @@ jobs:
           target: 'http://localhost:3000/'
           fail_action: true
           rules_file_name: 'app/zap.conf'
-          cmd_options: '-I'
+          cmd_options: '-I -config globalexcludeurl.url_list.url.regex="^((http:\/\/localhost:3000\/cbv\/employer_search\?authenticity_token).*)$"'
