@@ -1,9 +1,8 @@
 name: pa11y tests
 
-# TODO: Re-enable me!
-on: []
-  #   pull_request:
-  #     paths: ['app/**']
+on:
+    pull_request:
+      paths: ['app/**']
 defaults:
   run:
     working-directory: ./app
@@ -31,6 +30,8 @@ jobs:
 
       - id: setup
         uses: ./.github/actions/setup-project
+        with:
+          rails_env: test
 
       - uses: ./.github/actions/run-server
         with:

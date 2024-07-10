@@ -1,9 +1,22 @@
 {
   "defaults": {
     "standard": "WCAG2AA",
-    "runners": ["axe"]
+    "runners": ["htmlcs"],
+    "hideElements": ".display-none",
+    "chromeLaunchConfig": {
+      "ignoreHTTPSErrors": true,
+      "headless": true,
+      "executablePath": "/usr/bin/google-chrome"
+    }
   },
   "urls": [
-    "http://localhost:3000"
+    "http://localhost:3000",
+    "http://localhost:3000/cbv/entry",
+    "http://localhost:3000/cbv/agreement",
+    "http://localhost:3000/cbv/employer_search",
+    "http://localhost:3000/cbv/missing_results",
+    "http://localhost:3000/cbv/add_job",
+    "http://localhost:3000/cbv/success",
+    "http://localhost:3000/cbv/share"
   ]
 }
