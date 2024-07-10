@@ -5,6 +5,11 @@ class Cbv::SummariesController < Cbv::BaseController
     respond_to do |format|
       format.html
       format.pdf do
+        NewRelicEventTracker.track("ApplicantDownloadedIncomePDF", {
+          timestamp: Time.now.to_i,
+          cbv_flow_id: @cbv_flow.id
+        })
+
         render pdf: "#{@cbv_flow.id}"
       end
     end
