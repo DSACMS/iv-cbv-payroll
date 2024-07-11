@@ -7,19 +7,11 @@
           <%= link_to t("shared.header.title"), root_path %>
         </em>
       </div>
-      <button class="usa-menu-btn"><%= t("shared.header.menu") %></button>
     </div>
     <nav aria-label="<%= t("shared.header.primary") %>" class="usa-nav">
       <button class="usa-nav__close">
         <%= image_tag "@uswds/uswds/dist/img/usa-icons/close.svg", role: "img", alt: t("shared.header.close") %>
       </button>
-      <ul class="usa-nav__primary usa-accordion">
-        <% I18n.available_locales.each do |l| %>
-          <li class="usa-nav__primary-item">
-            <%= format_active_locale(l) %>
-          </li>
-        <% end %>
-      </ul>
     </nav>
   </div>
 </header>
