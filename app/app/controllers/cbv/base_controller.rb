@@ -38,7 +38,8 @@ class Cbv::BaseController < ApplicationController
       start: payment["pay_period_start"],
       end: payment["pay_period_end"],
       hours: payment["earnings"][0]["hours"],
-      rate: payment["earnings"][0]["rate"]
+      rate: payment["earnings"][0]["rate"],
+      gross_pay_amount: payment["gross_pay_amount"].to_i
     }
   end
 
