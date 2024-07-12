@@ -8,7 +8,7 @@ class Cbv::AgreementsController < Cbv::BaseController
         timestamp: Time.now.to_i,
         cbv_flow_id: @cbv_flow.id
       })
-      redirect_to cbv_flow_employer_search_path
+      redirect_to next_path
     else
       redirect_to(cbv_flow_agreement_path, flash: { alert: t(".error") })
     end
