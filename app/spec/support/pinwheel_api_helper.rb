@@ -51,6 +51,24 @@ module PinwheelApiHelper
       )
   end
 
+  def stub_request_employment_info_response
+    stub_request(:get, %r{#{PinwheelService::ACCOUNTS_ENDPOINT}/[0-9a-fA-F\-]{36}/employment})
+      .to_return(
+        status: 200,
+        body: load_relative_json_file('request_employment_info_response.json').to_json,
+        headers: { 'Content-Type': 'application/json;charset=UTF-8' }
+      )
+  end
+
+  def stub_request_income_metadata_response
+    stub_request(:get, %r{#{PinwheelService::ACCOUNTS_ENDPOINT}/[0-9a-fA-F\-]{36}/income})
+      .to_return(
+        status: 200,
+        body: load_relative_json_file('request_income_metadata_response.json').to_json,
+        headers: { 'Content-Type': 'application/json;charset=UTF-8' }
+      )
+  end
+
   def stub_request_end_user_accounts_response
     stub_request(:get, %r{#{PinwheelService::END_USERS}/[0-9a-fA-F\-]{36}/accounts})
       .to_return(
