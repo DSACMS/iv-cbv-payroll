@@ -63,19 +63,18 @@ en:
     payment_details:
       show:
         continue: Continue
+        deductions: 'Deduction: %{category}'
         header: Your payment information from %{employer_name}
         header_no_employer_name: Your payment information from your employer
         none_found: No payments found. Please refresh the page after a few minutes.
+        number_of_hours_worked: Number of hours worked
+        pay_period: Pay period
+        payment_hours: "%{amount} hours"
         payment_of: Payment of %{amount}
+        payments_and_deductions: Payments and deductions
         subheader: We have gathered your payment records from the past 90 days, from %{start_date} to %{end_date}. Review them and add any comments for your caseworker in the additional comments section. This will be included in your income report.
         total_gross_description: This is the total income from your job before taxes, benefits and deductions were taken out of your paycheck.
         total_gross_income: 'Total income before taxes: %{amount}'
-        payments_and_deductions: "Payments and deductions"
-        pay_period: Pay period
-        number_of_hours_worked: Number of hours worked
-        payment_hours: "%{amount} hours"
-        deductions: "Deduction: %{category}"
-
     shares:
       show:
         body: Thank you for completing income verification. Click the button below to preview your results and share it with your caseworker.
@@ -151,4 +150,3 @@ en:
     boolean_true: 'Yes'
     date_picker_format: 'Format: mm/dd/yyyy'
     optional: Optional
-
