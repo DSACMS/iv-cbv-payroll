@@ -7,7 +7,7 @@
 </h1>
 
 <% if @payments.any? %>
-    <p><%= t(".subheader", start_date: format_date(start_date), end_date: format_date(end_date)) %></p>
+  <p><%= t(".subheader", start_date: format_date(start_date), end_date: format_date(end_date)) %></p>
     <h2><%= t(".total_gross_income", amount: number_to_currency(gross_pay)) %></h2>
     <p><%= t(".total_gross_description") %></p>
 
@@ -43,11 +43,38 @@
       </tbody>
     </table>
 
-    <ul>
-    <% @payments.each do |payment| %>
-        <li><%= t(".payment_of", amount: number_to_currency(payment[:amount])) %></li>
-    <% end %>
-    </ul>
+    <table class="usa-table usa-table--borderless width-full">
+      <thead class="border-top-05">
+      <tr>
+        <th class="padding-3" style="background-color: #d9e8f6;" colspan="2">
+          <h3 class="margin-0"><%= t(".payments_and_deductions") %></h3>
+        </th>
+      </tr>
+      </thead>
+      <tbody>
+        <% @payments.each do |payment| %>
+          <tr>
+            <td colspan="2">
+              <h4 class="margin-0"><%= t(".payment_of", amount: number_to_currency(payment[:amount])) %> on <%= format_date(payment[:pay_date]) %></h4>
+            </td>
+          </tr>
+          <tr>
+            <td><%= t(".pay_period") %></td>
+            <td><%= format_date(payment[:start]) %> to <%= format_date(payment[:end]) %></td>
+          </tr>
+          <tr>
+            <td><%= t(".number_of_hours_worked") %></td>
+            <td><%= t(".payment_hours", amount: payment[:hours]) %></td>
+          </tr>
+          <% payment[:deductions].each do |deduction| %>
+            <tr>
+              <td><%= t(".deductions", category: deduction[:category]) %></td>
+              <td><%= number_to_currency(deduction[:amount]) %></td>
+            </tr>
+          <% end %>
+        <% end %>
+      </tbody>
+    </table>
 
   <%= link_to next_path do %>
     <button class="usa-button usa-button--outline" type="button">
@@ -55,7 +82,7 @@
     </button>
   <% end %>
 <% else %>
-    <h3 class="site-preview-heading">
+  <h3 class="site-preview-heading">
     <%= t(".none_found") %>
-    </h3>
+  </h3>
 <% end %>

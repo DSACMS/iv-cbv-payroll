@@ -63,6 +63,7 @@ en:
     payment_details:
       show:
         continue: Continue
+        deductions: 'Deduction: %{category}'
         employment_end_date: Employment end date
         employment_start_date: Employment start date
         employment_status: Employment status
@@ -70,8 +71,12 @@ en:
         header_no_employer_name: Your payment information from your employer
         hourly_rate: Hourly wage
         none_found: No payments found. Please refresh the page after a few minutes.
+        number_of_hours_worked: Number of hours worked
+        pay_period: Pay period
         pay_period_frequency: Pay period frequency
+        payment_hours: "%{amount} hours"
         payment_of: Payment of %{amount}
+        payments_and_deductions: Payments and deductions
         subheader: We have gathered your payment records from the past 90 days, from %{start_date} to %{end_date}. Review them and add any comments for your caseworker in the additional comments section. This will be included in your income report.
         total_gross_description: This is the total income from your job before taxes, benefits and deductions were taken out of your paycheck.
         total_gross_income: 'Total income before taxes: %{amount}'
