@@ -5,13 +5,42 @@
   <%= t(".header_no_employer_name") %>
 <% end %>
 </h2>
+
 <% if @payments.any? %>
-    <p><%= t(".subheader", day_count: day_count, start_date: start_date, end_date: end_date) %></p>
-    <ul>
-    <% @payments.each do |payment| %>
-        <li><%= t(".payment_of", amount: number_to_currency(payment[:amount])) %></li>
-    <% end %>
-    </ul>
+  <p><%= t(".subheader", day_count: day_count, start_date: start_date, end_date: end_date) %></p>
+
+  <h3>Payments and deductions</h3>
+  <table class="usa-table usa-table--borderless">
+    <thead style="background-color: #e1f3ff;">
+      <tr>
+        <th scope="col">Field</th>
+        <th scope="col">Value</th>
+      </tr>
+    </thead>
+    <tbody>
+      <% @payments.each do |payment| %>
+        <tr>
+          <td colspan="2">
+            <h4>Payment of <%= number_to_currency(payment[:amount]) %> on <%= format_date(payment[:pay_date]) %></h4>
+          </td>
+        </tr>
+        <tr>
+          <td>Pay period</td>
+          <td><%= format_date(payment[:start]) %> to <%= format_date(payment[:end]) %></td>
+        </tr>
+        <tr>
+          <td>Number of hours worked</td>
+          <td><%= payment[:hours] %> hours</td>
+        </tr>
+        <% payment[:deductions].each do |deduction| %>
+          <tr>
+            <td>Deduction: <%= deduction[:category] %></td>
+            <td><%= number_to_currency(deduction[:amount]) %></td>
+          </tr>
+        <% end %>
+      <% end %>
+    </tbody>
+  </table>
 
   <%= link_to next_path do %>
     <button class="usa-button usa-button--outline" type="button">
@@ -19,7 +48,7 @@
     </button>
   <% end %>
 <% else %>
-    <h3 class="site-preview-heading">
+  <h3 class="site-preview-heading">
     <%= t(".none_found") %>
-    </h3>
+  </h3>
 <% end %>
