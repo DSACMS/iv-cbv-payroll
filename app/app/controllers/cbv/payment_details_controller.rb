@@ -1,5 +1,5 @@
 class Cbv::PaymentDetailsController < Cbv::BaseController
-  helper_method :employer_name, :day_count, :start_date, :end_date
+  helper_method :employer_name, :start_date, :end_date, :gross_pay
 
   def show
     account_id = params[:user][:account_id]
@@ -14,10 +14,6 @@ class Cbv::PaymentDetailsController < Cbv::BaseController
     end
   end
 
-  def day_count
-    (Date.parse(end_date) - Date.parse(start_date)).to_i
-  end
-
   def start_date
     @payments
         .sort_by { |payment| payment[:start] }
@@ -28,5 +24,11 @@ class Cbv::PaymentDetailsController < Cbv::BaseController
     @payments
         .sort_by { |payment| payment[:end] }
         .last[:end]
+  end
+
+  def gross_pay
+    @payments
+      .map { |payment| payment[:gross_pay_amount] }
+      .reduce(:+)
   end
 end

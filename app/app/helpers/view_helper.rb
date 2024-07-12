@@ -1,4 +1,6 @@
 module ViewHelper
+  DATE_FORMAT = "%B %d, %Y"
+
   def format_active_locale(locale_string)
     link_classes = "usa-nav__link"
     if locale_string.to_sym == I18n.locale
@@ -9,7 +11,7 @@ module ViewHelper
 
   def format_date(timestamp_string)
     begin
-      Time.parse(timestamp_string).strftime("%B %d, %Y")
+      Time.parse(timestamp_string).strftime(DATE_FORMAT)
     rescue => e
       "Invalid timestamp"
       timestamp_string
@@ -18,7 +20,7 @@ module ViewHelper
 
   def format_view_datetime(timestamp_string)
     begin
-      formatted_time = Time.parse(timestamp_string).strftime("%B %d, %Y")
+      formatted_time = Time.parse(timestamp_string).strftime(DATE_FORMAT)
       raw_timestamp = Time.parse(timestamp_string).strftime("%I:%M %p %Z")
       "#{formatted_time} - #{raw_timestamp}"
     rescue => e
