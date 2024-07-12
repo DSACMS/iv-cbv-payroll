@@ -12,6 +12,8 @@ RSpec.describe Cbv::PaymentDetailsController do
       session[:cbv_flow_id] = cbv_flow.id
       stub_request_end_user_accounts_response
       stub_request_end_user_paystubs_response
+      stub_request_employment_info_response
+      stub_request_income_metadata_response
     end
 
     it "renders properly" do

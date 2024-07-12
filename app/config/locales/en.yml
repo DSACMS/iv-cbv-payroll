@@ -64,11 +64,16 @@ en:
       show:
         continue: Continue
         deductions: 'Deduction: %{category}'
+        employment_end_date: Employment end date
+        employment_start_date: Employment start date
+        employment_status: Employment status
         header: Your payment information from %{employer_name}
         header_no_employer_name: Your payment information from your employer
+        hourly_rate: Hourly wage
         none_found: No payments found. Please refresh the page after a few minutes.
         number_of_hours_worked: Number of hours worked
         pay_period: Pay period
+        pay_period_frequency: Pay period frequency
         payment_hours: "%{amount} hours"
         payment_of: Payment of %{amount}
         payments_and_deductions: Payments and deductions

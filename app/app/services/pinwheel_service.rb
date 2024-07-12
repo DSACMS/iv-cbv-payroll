@@ -58,6 +58,14 @@ class PinwheelService
     @http.get(build_url("#{ACCOUNTS_ENDPOINT}/#{account_id}/paystubs"), params).body
   end
 
+  def fetch_employment(account_id:)
+    @http.get(build_url("#{ACCOUNTS_ENDPOINT}/#{account_id}/employment")).body
+  end
+
+  def fetch_income_metadata(account_id:)
+    @http.get(build_url("#{ACCOUNTS_ENDPOINT}/#{account_id}/income")).body
+  end
+
   def create_link_token(end_user_id:, response_type:, id:)
     params = {
       org_name: "Verify.gov",
