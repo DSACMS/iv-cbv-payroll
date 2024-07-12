@@ -1,13 +1,15 @@
-<h2>
-  <% if employer_name %>
-    <%= t(".header", employer_name: employer_name) %>
-  <% else %>
-    <%= t(".header_no_employer_name") %>
-  <% end %>
-</h2>
+<h1>
+<% if employer_name %>
+  <%= t(".header", employer_name: employer_name) %>
+<% else %>
+  <%= t(".header_no_employer_name") %>
+<% end %>
+</h1>
 
 <% if @payments.any? %>
-  <p><%= t(".subheader", day_count: day_count, start_date: start_date, end_date: end_date) %></p>
+  <p><%= t(".subheader", start_date: format_date(start_date), end_date: format_date(end_date)) %></p>
+    <h2><%= t(".total_gross_income", amount: number_to_currency(gross_pay)) %></h2>
+    <p><%= t(".total_gross_description") %></p>
 
     <table class="usa-table usa-table--borderless">
       <thead class="border-top-05">

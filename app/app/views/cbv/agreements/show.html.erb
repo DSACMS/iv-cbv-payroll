@@ -1,23 +1,13 @@
 <h1><%= t(".header") %></h1>
 <p><%= t(".subheader") %></p>
-<ul>
-    <li><%= t(".step1") %></li>
-    <li><%= t(".step2") %></li>
-    <li><%= t(".step3") %></li>
-    <li><%= t(".step4") %></li>
-    <li><%= t(".step5") %></li>
+<ol class="usa-process-list">
+    <li class="usa-process-list__item"><%= t(".step1") %></li>
+    <li class="usa-process-list__item"><%= t(".step2") %></li>
+    <li class="usa-process-list__item"><%= t(".step3") %></li>
+    <li class="usa-process-list__item"><%= t(".step4") %></li>
 </ul>
 
-<div class="usa-alert usa-alert--info margin-bottom-3 margin-top-3">
-  <div class="usa-alert__body">
-    <p class="usa-alert__text">
-      <%= t(".information_is_secure") %>
-    </p>
-  </div>
-</div><p class="text-bold"><%= t(".by_continuing") %></p>
-
-<%= link_to next_path do %>
-    <button class="usa-button usa-button--outline" type="button">
-      <%= t(".continue") %>
-    </button>
-  <% end %>
+<%= form_with(url: cbv_flow_agreement_path, builder: UswdsFormBuilder) do |f| %>
+    <%= f.check_box(:agreement, { 'label': t(".checkbox") }) %>
+    <%= f.submit t(".get_started") %>
+<% end %>

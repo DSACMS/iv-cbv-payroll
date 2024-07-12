@@ -20,17 +20,17 @@ en:
         subheader: This includes income you were paid for services or goods as a freelancer, independent contractor, gig worker who sets your own schedule, or other kinds of self-employment.
         yes_radio: Yes, I have earned income from another job
     agreements:
+      create:
+        error: You must check the agreement checkbox to proceed.
       show:
-        by_continuing: By continuing, you are letting Verify.gov access your payment information.
-        continue: Continue
+        checkbox: Check this box to agree to let Verify.gov access your payment information and share it with [HRA/DTA].
+        get_started: Get started
         header: How verifying your income works
-        information_is_secure: Your information is secure. We will not share or keep your log in information. You will be able to preview and approve everything that is shared with your caseworker.
-        step1: Find your employer or payroll provider
-        step2: Sign into your employer's account
-        step3: Review your payment records
-        step4: Add other employers to your records if you have them
-        step5: Share your payment information with your caseworker
-        subheader: 'All you have to do is complete five easy steps:'
+        step1: Find your employer or online payroll provider. A payroll provider is the company where you check your paystubs online
+        step2: Sign into your employer or payroll provider account. We will not share or keep your login information.
+        step3: Review your payment records. (Repeat steps 2 and 3 if you have other employers to add).
+        step4: Submit your payment information. We'll automatically send it to your caseworker.
+        subheader: 'All you have to do is complete four easy steps:'
     employer_searches:
       show:
         can_not_find_employer: I can’t find my company or payroll provider
@@ -67,7 +67,9 @@ en:
         header_no_employer_name: Your payment information from your employer
         none_found: No payments found. Please refresh the page after a few minutes.
         payment_of: Payment of %{amount}
-        subheader: Below is the payment information from your employer from the last %{day_count} days, from %{start_date} to %{end_date}
+        subheader: We have gathered your payment records from the past 90 days, from %{start_date} to %{end_date}. Review them and add any comments for your caseworker in the additional comments section. This will be included in your income report.
+        total_gross_description: This is the total income from your job before taxes, benefits and deductions were taken out of your paycheck.
+        total_gross_income: 'Total income before taxes: %{amount}'
         payments_and_deductions: "Payments and deductions"
         pay_period: Pay period
         number_of_hours_worked: Number of hours worked
