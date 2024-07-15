@@ -1,4 +1,5 @@
 class Cbv::SummariesController < Cbv::BaseController
+  helper_method :group_payments_by_employer
   before_action :set_payments, only: %i[show]
 
   def show
@@ -22,6 +23,10 @@ class Cbv::SummariesController < Cbv::BaseController
   end
 
   private
+
+  def group_payments_by_employer
+    @payments.group_by { |payment| payment[:account_id] }
+  end
 
   def summary_update_params
     params.fetch(:cbv_flow, {}).permit(:additional_information)

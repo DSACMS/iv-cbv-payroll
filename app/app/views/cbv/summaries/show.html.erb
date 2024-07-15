@@ -2,6 +2,11 @@
   <%= t(".header") %>
 </h2>
 
+<% group_payments_by_employer.each_with_index do |(account_id, payments), index| %>
+  <%= account_id %>
+<% end %>
+
+
 <% if @payments.any? %>
   <p>
     <%= t(".description") %>

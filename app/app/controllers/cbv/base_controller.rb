@@ -41,7 +41,8 @@ class Cbv::BaseController < ApplicationController
       rate: payment["earnings"][0]["rate"],
       gross_pay_amount: payment["gross_pay_amount"].to_i,
       pay_date: payment["pay_date"],
-      deductions: payment["deductions"].map { |deduction| { category: deduction["category"], amount: deduction["amount"] } }
+      deductions: payment["deductions"].map { |deduction| { category: deduction["category"], amount: deduction["amount"] } },
+      account_id: payment["account_id"]
     }
   end
 
