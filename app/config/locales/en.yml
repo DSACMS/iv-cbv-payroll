@@ -107,11 +107,17 @@ en:
             label: Is there anything else you'd like your caseworker to know about your income?
           subheader: Confirm your income amount
           submit: Continue
-        header: Review payment information from your employer
+        header: Review payment information from your employers
         none_found: No payments found. Please refresh the page after a few minutes.
         payment_of: Payment of %{amount}
         time_range: "%{hours} hours from %{start} to %{end}"
-        total_payments: Total Payments
+        total_payments: "Total income before taxes: %{amount}"
+        total_income_from: "Total income from %{employer_name}: %{amount}"
+        total_income_from_no_employer_name: "Total income: %{amount}"
+        employer_summary_table_header: "Employer %{number}: %{employer_name}"
+        payment: Payment of %{amount} on %{date}
+        table_caption: "Employer %{number}: %{employer_name}"
+        table_caption_no_name: Employer %{number}
   cbv_flow_invitations:
     create:
       invite_failed: 'Error sending invitation to %{email_address}: %{error_message}.'
