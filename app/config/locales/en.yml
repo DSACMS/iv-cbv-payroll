@@ -46,14 +46,18 @@ en:
         subheader: Your caseworker needs your payment information from the last 30 days.
     entries:
       show:
-        case_number: Case Number
-        credentials: Your log in credentials to your employer’s payroll provider account
-        employer_name: Your employer name or the name of your employer’s payroll provider
+        case_number: "We’ll be verifying income related to this ID number: %{case_number}"
         get_started: Get Started
         header: Let's verify your income through your payment information
-        list_header: 'Before you begin, make sure you have this information:'
         security_message: Your information is secure. We will not share or keep your log in information. You will be able to preview and approve everything that is shared with your caseworker.
         subheader: We’ll help you connect payment records from your employer to your caseworker so you can prove your income and receive benefits faster.
+        subheader_1: Who can use this tool
+        subheader_2: What you need
+        has_online_payroll_provider: People with an employer who has an online payroll provider. Most people who receive pay stubs or W-2 tax forms have an online payroll provider. If you’re unsure, ask your employer.
+        do_app_based_work: People who do app-based gig work (like Uber, Lyft, DoorDash)
+        you_can_get_started: You can get started right away with this information
+        your_employers_name: Your employer’s name or the name of their payroll provider
+        your_login_credentials: Your login credentials for the payroll provider account
     error_invalid_token: The invitation link used is not valid. Double check the link and try again. If you continue experiencing issues, contact your caseworker.
     manual_flow_start: Start Flow Manually
     missing_results:
