@@ -27,7 +27,7 @@ class Cbv::SummariesController < Cbv::BaseController
   def payments_grouped_by_employer
     @payments
       .group_by { |payment| payment[:account_id] }
-      .reduce({}) do |acc, (account_id, payments)| 
+      .reduce({}) do |acc, (account_id, payments)|
         acc[{
           account_id: account_id,
           employer_name: payments.first[:employer],
