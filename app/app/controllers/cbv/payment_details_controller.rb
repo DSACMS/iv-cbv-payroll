@@ -7,13 +7,32 @@ class Cbv::PaymentDetailsController < Cbv::BaseController
     :employment_end_date,
     :employment_status,
     :pay_period_frequency,
-    :compensation_amount
+    :compensation_amount,
+    :account_comment
 
   def show
     account_id = params[:user][:account_id]
     @employment = pinwheel.fetch_employment(account_id: account_id)["data"]
     @income_metadata = pinwheel.fetch_income_metadata(account_id: account_id)["data"]
     @payments = set_payments account_id
+    @account_comment = account_comment
+  end
+
+  def update
+    account_id = params[:user][:account_id]
+    comment = params[:cbv_flow][:additional_information]
+    additional_information = @cbv_flow.additional_information
+    additional_information[account_id] = {
+      comment: sanitize_comment(comment),
+      updated_at: Time.current
+    }
+    @cbv_flow.update(additional_information: additional_information.to_json)
+    redirect_to next_path
+  end
+
+  def account_comment
+    account_id = params[:user][:account_id]
+    get_comment_by_account_id(account_id)["comment"]
   end
 
   private
@@ -58,5 +77,13 @@ class Cbv::PaymentDetailsController < Cbv::BaseController
     @payments
       .map { |payment| payment[:gross_pay_amount] }
       .reduce(:+)
+  end
+
+  def sanitize_comment(comment)
+    ActionController::Base.helpers.sanitize(comment)
+  end
+
+  def get_comment_by_account_id(account_id)
+    @cbv_flow.additional_information[account_id] || { comment: nil, updated_at: nil }
   end
 end
