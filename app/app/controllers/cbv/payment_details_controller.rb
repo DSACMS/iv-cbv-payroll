@@ -22,7 +22,7 @@ class Cbv::PaymentDetailsController < Cbv::BaseController
   def update
     account_id = params[:user][:account_id]
     comment = params[:cbv_flow][:additional_information]
-    additional_information = parse_additional_information(@cbv_flow.additional_information)
+    additional_information = @cbv_flow.additional_information
     additional_information[account_id] = {
       comment: sanitize_comment(comment),
       updated_at: Time.current
@@ -91,12 +91,7 @@ class Cbv::PaymentDetailsController < Cbv::BaseController
     ActionController::Base.helpers.sanitize(comment)
   end
 
-  def get_additional_information
-    parse_additional_information(@cbv_flow.additional_information)
-  end
-
   def get_comment_by_account_id(account_id)
-    additional_information = get_additional_information
-    additional_information.fetch(account_id, { comment: nil, updated_at: nil })
+    @cbv_flow.additional_information[account_id] || { comment: nil, updated_at: nil }
   end
 end
