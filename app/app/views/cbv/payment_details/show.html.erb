@@ -17,8 +17,7 @@
   <h2><%= t(".total_gross_income", amount: number_to_currency(gross_pay)) %></h2>
   <p><%= t(".total_gross_description") %></p>
 
-  <%= form_with(model: @cbv_flow, url: cbv_flow_payment_details_path, method: :patch) do |form| %>
-    <%= hidden_field_tag "user[account_id]", params[:user][:account_id] %>
+  
     <table class="usa-table usa-table--borderless width-full">
       <thead class="border-top-05">
       <tr>
@@ -87,6 +86,8 @@
     </table>
 
     <div class="usa-form-group">
+      <%= form_with(model: @cbv_flow, url: cbv_flow_payment_details_path, method: :patch) do |form| %>
+      <%= hidden_field_tag "user[account_id]", params[:user][:account_id] %>
       <%= form.label :additional_information, t(".additional_information_label"), class: "usa-label" %>
       <%= form.text_area :additional_information, class: "usa-textarea", rows: 5, value: @account_comment %>
       <%= form.submit t(".continue"), class: "usa-button usa-button--outline margin-top-3" %>
