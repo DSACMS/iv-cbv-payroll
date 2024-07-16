@@ -29,18 +29,48 @@ RSpec.describe Cbv::PaymentDetailsController do
 
       before do
         additional_information = { account_id => { comment: comment, updated_at: updated_at } }
-        cbv_flow.update!(additional_information: additional_information.to_json)
+        cbv_flow.update!(additional_information: additional_information)
 
         # Verify that the comment was saved
-        loaded_info = JSON.parse(cbv_flow.reload.additional_information)
+        loaded_info = cbv_flow.reload.additional_information
         expect(loaded_info[account_id]["comment"]).to eq(comment)
-
         expect(loaded_info[account_id]["updated_at"]).to eq(updated_at)
       end
 
       it "includes the account comment in the response" do
         get :show, params: { user: { account_id: account_id } }
         expect(response.body).to include(comment)
+      end
+    end
+
+    context "when multiple comments exist for different accounts" do
+      let(:account_id_2) { SecureRandom.uuid }
+      let(:comment_2) { "This is another test comment" }
+      let(:updated_at) { Time.current.iso8601 }
+
+      before do
+        additional_information = {
+          account_id => { comment: comment, updated_at: updated_at },
+          account_id_2 => { comment: comment_2, updated_at: updated_at }
+        }
+
+        cbv_flow.update!(additional_information: additional_information)
+
+        # Verify that the comments were saved
+        loaded_info = cbv_flow.reload.additional_information
+        expect(loaded_info[account_id]["comment"]).to eq(comment)
+        expect(loaded_info[account_id]["updated_at"]).to eq(updated_at)
+        expect(loaded_info[account_id_2]["comment"]).to eq(comment_2)
+        expect(loaded_info[account_id_2]["updated_at"]).to eq(updated_at)
+
+        # Verify that there are two comments
+        expect(loaded_info.keys).to contain_exactly(account_id, account_id_2)
+      end
+
+      it "includes the account comments in the response" do
+        get :show, params: { user: { account_id: account_id } }
+        expect(response.body).to include(comment)
+        expect(response.body).not_to include(comment_2)
       end
     end
 
