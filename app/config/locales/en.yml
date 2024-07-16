@@ -49,7 +49,7 @@ en:
         case_number: 'We’ll be verifying income related to this ID number: %{case_number}'
         do_app_based_work: People who do app-based gig work (like Uber, Lyft, DoorDash)
         get_started: Get Started
-        has_online_payroll_provider: People with an employer who has an online payroll provider. Most people who receive pay stubs or W-2 tax forms have an online payroll provider. If you’re unsure, ask your employer.
+        has_online_payroll_provider: People with an employer who have an online payroll provider. Most people who receive pay stubs or W-2 tax forms have an online payroll provider. If you’re unsure, ask your employer.
         header: Let's verify your income through your payment information
         security_message: Your information is secure. We will not share or keep your log in information. You will be able to preview and approve everything that is shared with your caseworker.
         subheader: We’ll help you connect payment records from your employer to your caseworker so you can prove your income and receive benefits faster.
