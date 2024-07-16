@@ -34,7 +34,7 @@ RSpec.describe Cbv::PaymentDetailsController do
         # Verify that the comment was saved
         loaded_info = JSON.parse(cbv_flow.reload.additional_information)
         expect(loaded_info[account_id]["comment"]).to eq(comment)
-        
+
         expect(loaded_info[account_id]["updated_at"]).to eq(updated_at)
       end
 

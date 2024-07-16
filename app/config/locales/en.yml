@@ -62,6 +62,7 @@ en:
         header: If you can’t find your employer or payroll provider, you’ll need to provide income information separately.
     payment_details:
       show:
+        additional_information_label: Is there anything else you'd like your caseworker to know about your income?
         continue: Continue
         deductions: 'Deduction: %{category}'
         employment_end_date: Employment end date
@@ -80,8 +81,6 @@ en:
         subheader: We have gathered your payment records from the past 90 days, from %{start_date} to %{end_date}. Review them and add any comments for your caseworker in the additional comments section. This will be included in your income report.
         total_gross_description: This is the total income from your job before taxes, benefits and deductions were taken out of your paycheck.
         total_gross_income: 'Total income before taxes: %{amount}'
-        additional_information_label: Is there anything else you'd like your caseworker to know about your income?
-        save_additional_information: Save additional information
     shares:
       show:
         body: Thank you for completing income verification. Click the button below to preview your results and share it with your caseworker.

@@ -18,7 +18,7 @@
   <p><%= t(".total_gross_description") %></p>
 
   <%= form_with(model: @cbv_flow, url: cbv_flow_payment_details_path, method: :patch) do |form| %>
-    <%= hidden_field_tag 'user[account_id]', params[:user][:account_id] %>
+    <%= hidden_field_tag "user[account_id]", params[:user][:account_id] %>
     <table class="usa-table usa-table--borderless width-full">
       <thead class="border-top-05">
       <tr>
