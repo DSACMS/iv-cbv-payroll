@@ -1,4 +1,3 @@
-# spec/controllers/cbv/payment_details_controller_spec.rb
 require "rails_helper"
 
 RSpec.describe Cbv::PaymentDetailsController do
@@ -89,10 +88,18 @@ RSpec.describe Cbv::PaymentDetailsController do
 
     before do
       session[:cbv_flow_id] = cbv_flow.id
+      # update the cbv_flow to have an account comment
+      additional_information = { account_id => { comment: "Old comment", updated_at: Time.current.iso8601 } }
+      cbv_flow.update!(additional_information: additional_information)
     end
 
-    it "updates the account comment" do
+    it "updates the account comment through invoking the controller" do
+      additional_information = cbv_flow.additional_information
+      # a bit redundant, but prior to invoking the controller action- the comment should be different
+      expect(additional_information[account_id]["comment"]).not_to eq(comment)
+      # invoke the controller action
       patch :update, params: { user: { account_id: account_id }, cbv_flow: { additional_information: comment } }
+      # verify that the comment was updated. the reload method does not deserialize the JSON field
       additional_information = JSON.parse(cbv_flow.reload.additional_information)
       expect(additional_information[account_id]["comment"]).to eq(comment)
     end

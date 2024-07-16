@@ -1,5 +1,4 @@
 class Cbv::PaymentDetailsController < Cbv::BaseController
-  before_action :set_cbv_flow
   helper_method :employer_name,
     :start_date,
     :end_date,
@@ -28,7 +27,7 @@ class Cbv::PaymentDetailsController < Cbv::BaseController
       updated_at: Time.current
     }
     @cbv_flow.update(additional_information: additional_information.to_json)
-    redirect_to cbv_flow_add_job_path
+    redirect_to next_path
   end
 
   def account_comment
@@ -78,13 +77,6 @@ class Cbv::PaymentDetailsController < Cbv::BaseController
     @payments
       .map { |payment| payment[:gross_pay_amount] }
       .reduce(:+)
-  end
-
-  def parse_additional_information(json_string)
-    return {} if json_string.nil?
-    JSON.parse(json_string)
-  rescue JSON::ParserError
-    {}
   end
 
   def sanitize_comment(comment)

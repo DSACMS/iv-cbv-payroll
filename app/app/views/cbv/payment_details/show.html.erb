@@ -5,12 +5,6 @@
     <%= t(".header_no_employer_name") %>
   <% end %>
 </h1>
-<svg class="usa-icon" aria-hidden="true" focusable="false" role="img">
-  <use xlink:href="/assets/img/sprite.svg#account_circle"></use>
-</svg>
-<svg class="usa-icon" aria-hidden="true" focusable="false" role="img">
-  <use xlink:href="/assets/img/sprite.svg#accessible_forward"></use>
-</svg>
 
 <% if @payments.any? %>
   <p><%= t(".subheader", start_date: format_date(start_date), end_date: format_date(end_date)) %></p>
