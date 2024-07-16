@@ -56,7 +56,7 @@ en:
         subheader_1: Who can use this tool
         subheader_2: What you need
         you_can_get_started: You can get started right away with this information
-        your_employers_name: Your employer’s name or the name of their payroll provider
+        your_employers_name: Your employer's name or the name of their payroll provider
         your_login_credentials: Your login credentials for the payroll provider account
     error_invalid_token: The invitation link used is not valid. Double check the link and try again. If you continue experiencing issues, contact your caseworker.
     manual_flow_start: Start Flow Manually
