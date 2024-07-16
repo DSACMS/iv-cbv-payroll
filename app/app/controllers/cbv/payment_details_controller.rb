@@ -1,4 +1,5 @@
 class Cbv::PaymentDetailsController < Cbv::BaseController
+  before_action :set_cbv_flow
   helper_method :employer_name,
     :start_date,
     :end_date,
@@ -20,14 +21,13 @@ class Cbv::PaymentDetailsController < Cbv::BaseController
 
   def update
     account_id = params[:user][:account_id]
-    cbv_flow = CbvFlow.find(session[:cbv_flow_id])
     comment = params[:cbv_flow][:additional_information]
-    additional_information = parse_additional_information(cbv_flow.additional_information)
+    additional_information = parse_additional_information(@cbv_flow.additional_information)
     additional_information[account_id] = {
       comment: sanitize_comment(comment),
       updated_at: Time.current
     }
-    cbv_flow.update(additional_information: additional_information.to_json)
+    @cbv_flow.update(additional_information: additional_information.to_json)
     redirect_to cbv_flow_add_job_path
   end
 
@@ -92,8 +92,7 @@ class Cbv::PaymentDetailsController < Cbv::BaseController
   end
 
   def get_additional_information
-    cbv_flow = CbvFlow.find(session[:cbv_flow_id])
-    parse_additional_information(cbv_flow.additional_information)
+    parse_additional_information(@cbv_flow.additional_information)
   end
 
   def get_comment_by_account_id(account_id)
