@@ -1,4 +1,5 @@
 class Cbv::SummariesController < Cbv::BaseController
+  include Cbv::PaymentsHelper
   helper_method :payments_grouped_by_employer, :total_gross_income
   before_action :set_payments, only: %i[show]
 
@@ -25,16 +26,7 @@ class Cbv::SummariesController < Cbv::BaseController
   private
 
   def payments_grouped_by_employer
-    @payments.each_with_object({}) do |payment, hash|
-      account_id = payment[:account_id]
-      hash[account_id] ||= {
-        employer_name: payment[:employer],
-        total: 0,
-        payments: [],
-      }
-      hash[account_id][:total] += payment[:amount]
-      hash[account_id][:payments] << payment
-    end
+    summarize_by_employer(@payments)
   end
 
   def total_gross_income
