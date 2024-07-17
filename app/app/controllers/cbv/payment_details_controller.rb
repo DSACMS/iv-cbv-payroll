@@ -83,7 +83,8 @@ class Cbv::PaymentDetailsController < Cbv::BaseController
     ActionController::Base.helpers.sanitize(comment)
   end
 
-  def get_comment_by_account_id(account_id)
-    @cbv_flow.additional_information[account_id] || { comment: nil, updated_at: nil }
+  def account_comment
+    account_id = params[:user][:account_id]
+    get_comment_by_account_id(account_id)["comment"]
   end
 end
