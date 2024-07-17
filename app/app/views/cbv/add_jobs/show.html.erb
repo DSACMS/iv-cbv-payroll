@@ -1,5 +1,5 @@
-<h2><%= t(".header", day_count: "90") %></h2>
-<p><%= t(".subheader") %></p>
+<h1><%= t(".header", day_count: "90") %></h1>
+<h2><%= t(".subheader") %></h2>
 
 <%= form_with(url: cbv_flow_add_job_path, builder: UswdsFormBuilder) do |f| %>
   <%= f.radio_button(:additional_jobs, "true", { 'label': t(".yes_radio") }) %>
