@@ -103,20 +103,22 @@ en:
         header: Your income report has been successfully shared with a caseworker
     summaries:
       show:
+        additional_comments: Additional comments
         additional_information_title: Is there anything else you'd like your caseworker to know about your income?
         case_number: 'Case number: %{case_number}'
         description: Below is payment information from your employer for the past 90 days.
         document_timestamp: 'Document origination: %{timestamp}'
-        form:
-          additional_info:
-            label: Is there anything else you'd like your caseworker to know about your income?
-          subheader: Confirm your income amount
-          submit: Continue
-        header: Review payment information from your employer
+        header: Review payment information from your employers
         none_found: No payments found. Please refresh the page after a few minutes.
+        payment: Payment of %{amount} on %{date}
         payment_of: Payment of %{amount}
+        send_to_caseworker: Send to caseworker
+        table_caption: 'Employer %{number}: %{employer_name}'
+        table_caption_no_name: Employer %{number}
         time_range: "%{hours} hours from %{start} to %{end}"
-        total_payments: Total Payments
+        total_income_from: 'Total income from %{employer_name}: %{amount}'
+        total_income_from_no_employer_name: 'Total income: %{amount}'
+        total_payments: 'Total income before taxes: %{amount}'
   cbv_flow_invitations:
     create:
       invite_failed: 'Error sending invitation to %{email_address}: %{error_message}.'
@@ -150,6 +152,7 @@ en:
       es: Español
       fr: Français
       zh: 中文
+    not_applicable: N/A
     skip_link: Skip to main content
     verify:
       description: This website can help you get approved for your benefits.

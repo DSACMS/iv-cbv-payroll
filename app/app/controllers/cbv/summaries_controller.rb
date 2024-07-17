@@ -1,4 +1,6 @@
 class Cbv::SummariesController < Cbv::BaseController
+  include Cbv::PaymentsHelper
+  helper_method :payments_grouped_by_employer, :total_gross_income
   before_action :set_payments, only: %i[show]
 
   def show
@@ -22,6 +24,14 @@ class Cbv::SummariesController < Cbv::BaseController
   end
 
   private
+
+  def payments_grouped_by_employer
+    summarize_by_employer(@payments)
+  end
+
+  def total_gross_income
+    @payments.reduce(0) { |sum, payment| sum + payment[:gross_pay_amount] }
+  end
 
   def summary_update_params
     params.fetch(:cbv_flow, {}).permit(:additional_information)
