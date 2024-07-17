@@ -2,23 +2,37 @@
 
 <p><%= t(".subheader") %></p>
 
-<p><%= t(".list_header") %></p>
+<h2><%= t(".subheader_1") %></h2>
 <ul>
-  <li><%= t(".employer_name") %></li>
-  <li><%= t(".credentials") %></li>
+  <li><%= t(".has_online_payroll_provider") %></li>
+  <li><%= t(".do_app_based_work") %></li>
 </ul>
 
-<% if @cbv_flow.case_number %>
-<p><%= t(".case_number") %>: <strong><%= @cbv_flow.case_number %></strong></p>
-<% end %>
+<h2><%= t(".subheader_2") %></h2>
+<p><%= t(".you_can_get_started") %></p>
+<ul>
+  <li><%= t(".your_employers_name") %></li>
+  <li><%= t(".your_login_credentials") %></li>
+</ul>
 
-<div class="usa-alert usa-alert--info margin-bottom-3 margin-top-3">
+<div class="usa-alert usa-alert--no-icon bg-accent-cool-lighter margin-bottom-3 margin-top-3">
   <div class="usa-alert__body">
-    <p class="usa-alert__text">
-      <%= t(".security_message") %>
-    </p>
+    <div class="grid-row grid-gap-lg">
+      <div class="grid-col-auto">
+        <%= image_tag "@uswds/uswds/dist/img/usa-icons/lock.svg", role: "img", alt: t("shared.header.close") %>
+      </div>
+      <div class="grid-col">
+        <p class="usa-alert__text">
+          <%= t(".security_message") %>
+        </p>
+      </div>
+    </div>
   </div>
 </div>
+
+<% if @cbv_flow.case_number %>
+  <p><%= t(".case_number", case_number: @cbv_flow.case_number) %></p>
+<% end %>
 
 <%= link_to next_path do %>
   <button class="usa-button usa-button--outline" type="button">
