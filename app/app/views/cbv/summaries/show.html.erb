@@ -8,11 +8,11 @@
   </p>
   <h3 class="site-preview-heading"><%= t(".total_payments", amount: number_to_currency(total_gross_income)) %></h3>
 
-  <% payments_grouped_by_employer.each_with_index do |(account, payments), index| %>
+  <% payments_grouped_by_employer.each_with_index do |(account_id, summary), index| %>
     <table class="usa-table usa-table--borderless width-full">
       <caption>
-        <% if account[:employer_name] %>
-          <%= t(".table_caption", number: index, employer_name: account[:employer_name]) %>
+        <% if summary[:employer_name] %>
+          <%= t(".table_caption", number: index, employer_name: summary[:employer_name]) %>
         <% else %>
           <%= t(".table_caption_no_name", number: index + 1) %>
         <% end %>
@@ -21,17 +21,17 @@
         <tr>
           <th class="padding-3" style="background-color: #d9e8f6;" colspan="2">
             <h3 class="margin-0">
-              <% if account[:employer_name] %>
-                <%= t(".total_income_from", employer_name: account[:employer_name], amount: account[:total]) %>
+              <% if summary[:employer_name] %>
+                <%= t(".total_income_from", employer_name: summary[:employer_name], amount: summary[:total]) %>
               <% else %>
-                <%= t(".total_income_from_no_employer_name", amount: number_to_currency(account[:total])) %>
+                <%= t(".total_income_from_no_employer_name", amount: number_to_currency(summary[:total])) %>
               <% end %>
             </h3>
           </th>
         </tr>
       </thead>
       <tbody>
-        <% payments.each do |payment| %>
+        <% summary[:payments].each do |payment| %>
           <tr>
             <td><%= t(".payment", amount: number_to_currency(payment[:amount]), date: format_date(payment[:pay_date])) %></td>
           </tr>

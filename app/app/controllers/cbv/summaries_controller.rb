@@ -25,17 +25,16 @@ class Cbv::SummariesController < Cbv::BaseController
   private
 
   def payments_grouped_by_employer
-    @payments
-      .group_by { |payment| payment[:account_id] }
-      .reduce({}) do |acc, (account_id, payments)|
-        acc[{
-          account_id: account_id,
-          employer_name: payments.first[:employer],
-          total: payments.sum { |payment| payment[:amount] }
-        }] = payments
-
-        acc
-      end
+    @payments.each_with_object({}) do |payment, hash|
+      account_id = payment[:account_id]
+      hash[account_id] ||= {
+        employer_name: payment[:employer],
+        total: 0,
+        payments: [],
+      }
+      hash[account_id][:total] += payment[:amount]
+      hash[account_id][:payments] << payment
+    end
   end
 
   def total_gross_income
