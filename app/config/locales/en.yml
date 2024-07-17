@@ -43,8 +43,8 @@ en:
         search: Search
         search_for_employer: Please search for your employer or their payroll provider to access the payments you have received during this period.
         select: Select
-        subheader: Your caseworker needs your payment information from the last 30 days.
         select_button_aria_label: Open an authentication modal for the employer or payroll provider to import your payment history.
+        subheader: Your caseworker needs your payment information from the last 30 days.
     entries:
       show:
         case_number: 'We’ll be verifying income related to this ID number: %{case_number}'
@@ -142,11 +142,11 @@ en:
       secure_heading: Secure .gov websites use HTTPS
       us_flag: U.S. Flag
     header:
+      aria_label: Main navigation
       close: Close
       demo_banner: TEST SITE - Do not use real personal information (demo purposes only) - TEST SITE
       primary: Primary navigation
       title: Verify.gov
-      aria_label: Main navigation
     languages:
       en: English
       es: Español
