@@ -20,17 +20,17 @@ en:
         subheader: This includes income you were paid for services or goods as a freelancer, independent contractor, gig worker who sets your own schedule, or other kinds of self-employment.
         yes_radio: Yes, I have earned income from another job
     agreements:
+      create:
+        error: You must check the agreement checkbox to proceed.
       show:
-        by_continuing: By continuing, you are letting Verify.gov access your payment information.
-        continue: Continue
+        checkbox: Check this box to agree to let Verify.gov access your payment information and share it with [HRA/DTA].
+        get_started: Get started
         header: How verifying your income works
-        information_is_secure: Your information is secure. We will not share or keep your log in information. You will be able to preview and approve everything that is shared with your caseworker.
-        step1: Find your employer or payroll provider
-        step2: Sign into your employer's account
-        step3: Review your payment records
-        step4: Add other employers to your records if you have them
-        step5: Share your payment information with your caseworker
-        subheader: 'All you have to do is complete five easy steps:'
+        step1: Find your employer or online payroll provider. A payroll provider is the company where you check your paystubs online
+        step2: Sign into your employer or payroll provider account. We will not share or keep your login information.
+        step3: Review your payment records. (Repeat steps 2 and 3 if you have other employers to add).
+        step4: Submit your payment information. We'll automatically send it to your caseworker.
+        subheader: 'All you have to do is complete four easy steps:'
     employer_searches:
       show:
         can_not_find_employer: I can’t find my company or payroll provider
@@ -46,14 +46,18 @@ en:
         subheader: Your caseworker needs your payment information from the last 30 days.
     entries:
       show:
-        case_number: Case Number
-        credentials: Your log in credentials to your employer’s payroll provider account
-        employer_name: Your employer name or the name of your employer’s payroll provider
+        case_number: 'We’ll be verifying income related to this ID number: %{case_number}'
+        do_app_based_work: People who do app-based gig work (like Uber, Lyft, DoorDash)
         get_started: Get Started
+        has_online_payroll_provider: People with an employer who have an online payroll provider. Most people who receive pay stubs or W-2 tax forms have an online payroll provider. If you’re unsure, ask your employer.
         header: Let's verify your income through your payment information
-        list_header: 'Before you begin, make sure you have this information:'
         security_message: Your information is secure. We will not share or keep your log in information. You will be able to preview and approve everything that is shared with your caseworker.
         subheader: We’ll help you connect payment records from your employer to your caseworker so you can prove your income and receive benefits faster.
+        subheader_1: Who can use this tool
+        subheader_2: What you need
+        you_can_get_started: You can get started right away with this information
+        your_employers_name: Your employer's name or the name of their payroll provider
+        your_login_credentials: Your login credentials for the payroll provider account
     error_invalid_token: The invitation link used is not valid. Double check the link and try again. If you continue experiencing issues, contact your caseworker.
     manual_flow_start: Start Flow Manually
     missing_results:
@@ -62,12 +66,25 @@ en:
         header: If you can’t find your employer or payroll provider, you’ll need to provide income information separately.
     payment_details:
       show:
+        additional_information_label: Share any comments or additional information about the payment details above that you’d like your caseworker to know.
         continue: Continue
+        deductions: 'Deduction: %{category}'
+        employment_end_date: Employment end date
+        employment_start_date: Employment start date
+        employment_status: Employment status
         header: Your payment information from %{employer_name}
         header_no_employer_name: Your payment information from your employer
+        hourly_rate: Hourly wage
         none_found: No payments found. Please refresh the page after a few minutes.
+        number_of_hours_worked: Number of hours worked
+        pay_period: Pay period
+        pay_period_frequency: Pay period frequency
+        payment_hours: "%{amount} hours"
         payment_of: Payment of %{amount}
-        subheader: Below is the payment information from your employer from the last %{day_count} days, from %{start_date} to %{end_date}
+        payments_and_deductions: Payments and deductions
+        subheader: We have gathered your payment records from the past 90 days, from %{start_date} to %{end_date}. Review them and add any comments for your caseworker in the additional comments section. This will be included in your income report.
+        total_gross_description: This is the total income from your job before taxes, benefits and deductions were taken out of your paycheck.
+        total_gross_income: 'Total income before taxes: %{amount}'
     shares:
       show:
         body: Thank you for completing income verification. Click the button below to preview your results and share it with your caseworker.
@@ -86,20 +103,22 @@ en:
         header: Your income report has been successfully shared with a caseworker
     summaries:
       show:
+        additional_comments: Additional comments
         additional_information_title: Is there anything else you'd like your caseworker to know about your income?
         case_number: 'Case number: %{case_number}'
         description: Below is payment information from your employer for the past 90 days.
         document_timestamp: 'Document origination: %{timestamp}'
-        form:
-          additional_info:
-            label: Is there anything else you'd like your caseworker to know about your income?
-          subheader: Confirm your income amount
-          submit: Continue
-        header: Review payment information from your employer
+        header: Review payment information from your employers
         none_found: No payments found. Please refresh the page after a few minutes.
+        payment: Payment of %{amount} on %{date}
         payment_of: Payment of %{amount}
+        send_to_caseworker: Send to caseworker
+        table_caption: 'Employer %{number}: %{employer_name}'
+        table_caption_no_name: Employer %{number}
         time_range: "%{hours} hours from %{start} to %{end}"
-        total_payments: Total Payments
+        total_income_from: 'Total income from %{employer_name}: %{amount}'
+        total_income_from_no_employer_name: 'Total income: %{amount}'
+        total_payments: 'Total income before taxes: %{amount}'
   cbv_flow_invitations:
     create:
       invite_failed: 'Error sending invitation to %{email_address}: %{error_message}.'
@@ -133,6 +152,7 @@ en:
       es: Español
       fr: Français
       zh: 中文
+    not_applicable: N/A
     skip_link: Skip to main content
     verify:
       description: This website can help you get approved for your benefits.

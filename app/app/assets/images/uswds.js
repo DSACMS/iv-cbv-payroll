@@ -5,3 +5,4 @@
 //= link @uswds/uswds/dist/img/icon-https.svg
 //= link @uswds/uswds/dist/img/usa-icons/close.svg
 //= link @uswds/uswds/dist/img/usa-icons-bg/search--white.svg
+//= link @uswds/uswds/dist/img/usa-icons/lock.svg

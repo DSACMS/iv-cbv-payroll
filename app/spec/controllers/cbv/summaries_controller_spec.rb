@@ -18,19 +18,5 @@ RSpec.describe Cbv::SummariesController do
       get :show
       expect(response).to be_successful
     end
-
-    context "when saving additional information for the caseworker" do
-      let(:additional_information) { "This is some additional information for the caseworker" }
-
-      it "saves and redirects to the next page" do
-        expect do
-          patch :update, params: { cbv_flow: { additional_information: additional_information } }
-        end.to change { cbv_flow.reload.additional_information }
-                 .from(nil)
-                 .to(additional_information)
-
-        expect(response).to redirect_to(cbv_flow_share_path)
-      end
-    end
   end
 end

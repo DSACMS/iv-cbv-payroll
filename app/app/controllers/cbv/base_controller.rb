@@ -1,6 +1,7 @@
 class Cbv::BaseController < ApplicationController
+  include Cbv::PaymentsHelper
   before_action :set_cbv_flow
-  helper_method :agency_url, :next_path
+  helper_method :agency_url, :next_path, :get_comment_by_account_id
 
   private
 
@@ -31,21 +32,10 @@ class Cbv::BaseController < ApplicationController
     session[:cbv_flow_id] = @cbv_flow.id
   end
 
-  def parse_payment(payment)
-    {
-      employer: payment["employer_name"],
-      amount: payment["net_pay_amount"].to_i,
-      start: payment["pay_period_start"],
-      end: payment["pay_period_end"],
-      hours: payment["earnings"][0]["hours"],
-      rate: payment["earnings"][0]["rate"]
-    }
-  end
-
   def set_payments(account_id = nil)
-    @payments = (account_id.nil? ? fetch_payroll : fetch_payroll_for_account_id(account_id)).map do |payment|
-      parse_payment payment
-    end
+    payments = account_id.nil? ? fetch_payroll : fetch_payroll_for_account_id(account_id)
+
+    @payments = parse_payments(payments)
   end
 
   def next_path
@@ -83,5 +73,9 @@ class Cbv::BaseController < ApplicationController
 
   def agency_url
     "https://www.nyc.gov/site/hra/help/snap-application-frequently-asked-questions.page"
+  end
+
+  def get_comment_by_account_id(account_id)
+    @cbv_flow.additional_information[account_id] || { comment: nil, updated_at: nil }
   end
 end
