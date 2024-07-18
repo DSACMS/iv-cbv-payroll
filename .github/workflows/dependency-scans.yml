@@ -8,7 +8,7 @@ on:
       - 'app/README.md'
   pull_request:
     branches: [ main ]
-    # paths: ['app/**']
+    paths: ['app/**']
   schedule:
     # cron format: 'minute hour dayofmonth month dayofweek'
     # this will run at noon UTC every day (7am EST / 8am EDT)
