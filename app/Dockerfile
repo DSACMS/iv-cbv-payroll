@@ -14,7 +14,7 @@ WORKDIR /rails
 
 # Set production environment
 ENV RAILS_ENV="production" \
-    BUNDLE_DEPLOYMENT="1" \
+    #3BUNDLE_DEPLOYMENT="1" \
     BUNDLE_PATH="/usr/local/bundle"
 
 # Start the server by default, this can be overwritten at runtime
@@ -28,7 +28,12 @@ FROM base as build
 
 # Install packages needed to build gems
 RUN apt-get update -qq && \
-    apt-get install --no-install-recommends -y build-essential git libpq-dev libvips pkg-config npm
+    apt-get install --no-install-recommends -y build-essentia=12.9 \
+        git=1:2.39.2-1.1 \
+        libpq-dev=15.7-0+deb12u1 \
+        libvips=8.14.1-3+deb12u1 \
+        pkg-config=1.8.1-1 \
+        npm=9.2.0~ds1-1
 
 # Copy application code
 COPY . .
@@ -62,7 +67,9 @@ ENV TMPDIR="/rails/tmp"
 
 # Install packages needed for development
 RUN apt-get update -qq && \
-    apt-get install --no-install-recommends -y postgresql-client graphviz wkhtmltopdf && \
+    apt-get install --no-install-recommends -y postgresql-client=15+248 \
+        graphviz=2.42.2-7+b3 \
+        wkhtmltopdf=0.12.6-2 && \
     rm -rf /var/lib/apt/lists /var/cache/apt/archives
 
 # Install application gems for development
@@ -103,7 +110,13 @@ ENV TMPDIR="/rails/tmp"
 
 # Install packages needed for deployment
 RUN apt-get update -qq && \
-    apt-get install -y --no-install-recommends unzip python3-venv python-is-python3 curl libvips postgresql-client wkhtmltopdf && \
+    apt-get install -y --no-install-recommends unzip=6.0-28 \
+        python3-venv=3.11.2-1 \
+        python-is-python3=3.11.2-1+deb12u1 \
+        curl=7.88.1-10+deb12u6 \
+        libvips=8.14.1-3+deb12u1 \
+        postgresql-client=15+248 \
+        wkhtmltopdf=0.12.6-2 && \
     rm -rf /var/lib/apt/lists /var/cache/apt/archives && \
     curl "https://s3.amazonaws.com/aws-cli/awscli-bundle.zip" -o "awscli-bundle.zip" && \
     unzip awscli-bundle.zip && \
