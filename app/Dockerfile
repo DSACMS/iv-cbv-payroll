@@ -35,10 +35,10 @@ RUN apt-get update -qq && \
         pkg-config=1.8.1-1 \
         npm=9.2.0~ds1-1 \
         libc-bin=2.36-9+deb12u7 \
-        libc-dev-bin=2.36-9+deb2u7 \
+        libc-dev-bin=2.36-9+deb12u7 \
         libc6=2.36-9+deb12u7 \
         libc6-dev=2.36-9+deb12u7 \
-        libsystemd0=252.23-1~deb12u1
+        libsystemd0=252.26-1~deb12u2
 
 # Copy application code
 COPY . .
