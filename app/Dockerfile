@@ -33,7 +33,12 @@ RUN apt-get update -qq && \
         libpq-dev=15.7-0+deb12u1 \
         libvips42=8.14.1-3+deb12u1 \
         pkg-config=1.8.1-1 \
-        npm=9.2.0~ds1-1
+        npm=9.2.0~ds1-1 \
+        libc-bin=2.36-9+deb12u7 \
+        libc-dev-bin=2.36-9+deb2u7 \
+        libc6=2.36-9+deb12u7 \
+        libc6-dev=2.36-9+deb12u7 \
+        libsystemd0=252.23-1~deb12u1
 
 # Copy application code
 COPY . .
