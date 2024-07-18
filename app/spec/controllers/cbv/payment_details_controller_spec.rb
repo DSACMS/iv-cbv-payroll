@@ -100,7 +100,7 @@ RSpec.describe Cbv::PaymentDetailsController do
       # invoke the controller action
       patch :update, params: { user: { account_id: account_id }, cbv_flow: { additional_information: comment } }
       # verify that the comment was updated. the reload method does not deserialize the JSON field
-      additional_information = JSON.parse(cbv_flow.reload.additional_information)
+      additional_information = cbv_flow.reload.additional_information
       expect(additional_information[account_id]["comment"]).to eq(comment)
     end
   end

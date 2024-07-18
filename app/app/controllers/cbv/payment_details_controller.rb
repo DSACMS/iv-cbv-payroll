@@ -26,7 +26,7 @@ class Cbv::PaymentDetailsController < Cbv::BaseController
       comment: sanitize_comment(comment),
       updated_at: Time.current
     }
-    @cbv_flow.update(additional_information: additional_information.to_json)
+    @cbv_flow.update(additional_information: additional_information)
     redirect_to next_path
   end
 
@@ -83,8 +83,4 @@ class Cbv::PaymentDetailsController < Cbv::BaseController
     ActionController::Base.helpers.sanitize(comment)
   end
 
-  def account_comment
-    account_id = params[:user][:account_id]
-    get_comment_by_account_id(account_id)["comment"]
-  end
 end
