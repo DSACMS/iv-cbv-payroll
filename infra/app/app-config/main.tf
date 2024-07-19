@@ -67,7 +67,7 @@ locals {
     shared  = "nava-ffs"
     dev     = "nava-ffs"
     staging = "nava-ffs"
-    prod    = "nava-ffs"
+    prod    = "nava-ffs-prod"
   }
 }
 
