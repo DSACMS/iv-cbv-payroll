@@ -28,7 +28,7 @@ FROM base as build
 
 # Install packages needed to build gems
 RUN apt-get update -qq && \
-    apt-get install --no-install-recommends -y --only-upgrade build-essential=12.9 \
+    apt-get install --no-install-recommends -y build-essential=12.9 \
         git=1:2.39.2-1.1 \
         libpq-dev=15.7-0+deb12u1 \
         libvips42=8.14.1-3+deb12u1 \
