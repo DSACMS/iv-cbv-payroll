@@ -6,3 +6,6 @@ import { application } from "./application"
 
 import CbvEmployerSearch from "./cbv/employer_search"
 application.register("cbv-employer-search", CbvEmployerSearch)
+
+import CbvAddJob from "./cbv/add_job"
+application.register("cbv-add-job", CbvAddJob)

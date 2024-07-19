@@ -1,8 +1,17 @@
 <h1><%= t(".header", day_count: "90") %></h1>
-<h2><%= t(".subheader") %></h2>
+<p><%= t(".subheader") %></p>
 
-<%= form_with(url: cbv_flow_add_job_path, builder: UswdsFormBuilder) do |f| %>
-  <%= f.radio_button(:additional_jobs, "true", { 'label': t(".yes_radio") }) %>
-  <%= f.radio_button(:additional_jobs, "false", { 'label': t(".no_radio") }) %>
-  <%= f.submit t(".continue") %>
-<% end %>
+<div data-controller="cbv-add-job">
+  <%= form_with(url: cbv_flow_add_job_path, builder: UswdsFormBuilder, data: {
+    "cbv-add-job-target": "form",
+  }, id: "form") do |f| %>
+    <%= f.radio_button(:additional_jobs, true, { label: t(".yes_radio") }) %>
+    <%= f.radio_button(:additional_jobs, false, { label: t(".no_radio") }) %>
+
+    <div id="additional-job-details" data-cbv-add-job-target="additionalJobDetails" style="display: none;">
+      <%= render partial: "additional_job_details", locals: { f: f } %>
+    </div>
+
+    <%= f.submit "Continue" %>
+  <% end %>
+</div>
