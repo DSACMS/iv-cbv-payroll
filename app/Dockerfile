@@ -28,7 +28,7 @@ FROM base as build
 
 # Install packages needed to build gems
 RUN apt-get update -qq && \
-    apt-get install --no-install-recommends -y build-essential=12.9 \
+    apt-get install --no-install-recommends -y --upgrade-only build-essential=12.9 \
         git=1:2.39.2-1.1 \
         libpq-dev=15.7-0+deb12u1 \
         libvips42=8.14.1-3+deb12u1 \
@@ -38,7 +38,8 @@ RUN apt-get update -qq && \
         libc-dev-bin=2.36-9+deb12u7 \
         libc6=2.36-9+deb12u7 \
         libc6-dev=2.36-9+deb12u7 \
-        libsystemd0=252.26-1~deb12u2
+        libsystemd0=252.26-1~deb12u2 \
+        linux-libc-dev=6.1.99-1
 
 # Copy application code
 COPY . .
