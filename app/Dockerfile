@@ -14,7 +14,7 @@ WORKDIR /rails
 
 # Set production environment
 ENV RAILS_ENV="production" \
-    #3BUNDLE_DEPLOYMENT="1" \
+    BUNDLE_DEPLOYMENT="1" \
     BUNDLE_PATH="/usr/local/bundle"
 
 # Start the server by default, this can be overwritten at runtime
