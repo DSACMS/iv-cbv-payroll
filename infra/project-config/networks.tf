@@ -45,10 +45,16 @@ locals {
 
       domain_config = {
         manage_dns  = true
-        hosted_zone = "hosted.zone.for.prod.network.com"
+        hosted_zone = "verify-prod.navapbc.cloud" # TODO: Replace this with our production product name
 
-        certificate_configs = {}
+        certificate_configs = {
+          "verify-prod.navapbc.cloud" = {
+            source = "issued"
+          }
+        }
       }
+
+      single_nat_gateway = true
     }
   }
 }
