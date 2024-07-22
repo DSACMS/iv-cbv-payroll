@@ -3,7 +3,8 @@ class Cbv::SuccessesController < Cbv::BaseController
 
   def show
     if @cbv_flow.confirmation_number.blank?
-      confirmation_number = generate_confirmation_number
+      prefix = session[:state]
+      confirmation_number = generate_confirmation_number(prefix)
       @cbv_flow.update(confirmation_number: confirmation_number)
     end
     render :show
