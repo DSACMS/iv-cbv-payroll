@@ -19,5 +19,4 @@ class Cbv::SuccessesController < Cbv::BaseController
     confirmation_number = "#{@cbv_flow.id}-#{Time.now.to_i.to_s(36)}"
     prefix.present? ? "#{prefix}-#{confirmation_number}" : confirmation_number
   end
-
 end
