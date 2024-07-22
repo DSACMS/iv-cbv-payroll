@@ -43,7 +43,7 @@ RSpec.describe Cbv::SharesController do
 
       it "redirects to success screen" do
         post :update
-        expect(response).to redirect_to({ controller: :successes, action: :show })
+        expect(response).to redirect_to({ controller: :success, action: :show })
       end
 
       it "displays a notice" do

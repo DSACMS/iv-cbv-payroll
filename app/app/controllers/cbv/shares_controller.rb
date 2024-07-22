@@ -16,6 +16,6 @@ class Cbv::SharesController < Cbv::BaseController
       timestamp: Time.now.to_i,
       cbv_flow_id: @cbv_flow.id
     })
-    redirect_to({ controller: :successes, action: :show }, flash: { notice: t(".successfully_shared_to_caseworker") })
+    redirect_to({ controller: :success, action: :show }, flash: { notice: t(".successfully_shared_to_caseworker") })
   end
 end
