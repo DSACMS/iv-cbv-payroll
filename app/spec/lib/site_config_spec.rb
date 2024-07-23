@@ -4,7 +4,9 @@ RSpec.describe SiteConfig do
   let(:sample_config_path) { "/fake/path.yml" }
   let(:sample_config) { <<~YAML }
     - id: foo
+      agency_name: Foo Agency Name
     - id: bar
+      agency_name: Bar Agency Name
   YAML
 
   before do
@@ -24,7 +26,14 @@ RSpec.describe SiteConfig do
   describe "#site_ids" do
     it "returns the IDs" do
       config = SiteConfig.new(sample_config_path)
-      expect(config.site_ids).to match_array(["foo", "bar"])
+      expect(config.site_ids).to match_array([ "foo", "bar" ])
+    end
+  end
+
+  describe "for a particular site" do
+    it "returns a key for that agency" do
+      config = SiteConfig.new(sample_config_path)
+      expect(config["foo"].agency_name).to eq("Foo Agency Name")
     end
   end
 end

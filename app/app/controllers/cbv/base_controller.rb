@@ -26,7 +26,7 @@ class Cbv::BaseController < ApplicationController
       end
     else
       # TODO: Restrict ability to enter the flow without a valid token
-      @cbv_flow = CbvFlow.create
+      @cbv_flow = CbvFlow.create(site_id: "nyc")
     end
 
     session[:cbv_flow_id] = @cbv_flow.id

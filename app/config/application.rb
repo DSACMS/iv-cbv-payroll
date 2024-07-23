@@ -13,6 +13,7 @@ require "action_mailer/railtie"
 require "action_view/railtie"
 require "action_cable/engine"
 # require "rails/test_unit/railtie"
+require_relative "../lib/site_config.rb"
 
 # Require the gems listed in Gemfile, including any gems
 # you've limited to :test, :development, or :production.
@@ -37,5 +38,7 @@ module IvCbvPayroll
     # Don't generate system test files.
     config.generators.system_tests = nil
     config.autoload_paths += %W[#{config.root}/lib]
+
+    config.sites = SiteConfig.new(Rails.root.join("config", "site-config.yml"))
   end
 end
