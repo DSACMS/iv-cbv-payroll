@@ -25,13 +25,15 @@ Rails.application.routes.draw do
 
       # Utility route to clear your session; useful during development
       resource :reset, only: %i[show]
-
-      # Temporarily redirect /cbv/invivations/new -> /invitations/new
-      # (remove this once people know about the new invitation URL)
-      get "/invitations/new", to: redirect { |_, req| "/invitations/new?secret=#{req.params[:secret]}" }
     end
 
-    resources :cbv_flow_invitations, as: :invitations, path: :invitations, only: %i[new create]
+    # Temporarily redirect /invivations/new -> /nyc/invitations/new
+    # (remove this once people know about the new invitation URL)
+    get "/invitations/new", to: redirect { |_, req| "/nyc/invitations/new?secret=#{req.params[:secret]}" }
+
+    scope "/:site_id" do
+      resources :cbv_flow_invitations, as: :invitations, path: :invitations, only: %i[new create]
+    end
   end
 
   namespace :webhooks do

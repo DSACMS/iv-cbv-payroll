@@ -3,7 +3,7 @@ require "rails_helper"
 RSpec.describe Cbv::SharesController do
   include PinwheelApiHelper
 
-  let(:cbv_flow) { CbvFlow.create(case_number: "ABC1234", pinwheel_token_id: "abc-def-ghi") }
+  let(:cbv_flow) { CbvFlow.create(case_number: "ABC1234", pinwheel_token_id: "abc-def-ghi", site_id: "nyc") }
 
   before do
     session[:cbv_flow_id] = cbv_flow.id

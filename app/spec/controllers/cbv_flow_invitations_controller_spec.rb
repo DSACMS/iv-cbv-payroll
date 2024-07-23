@@ -2,15 +2,26 @@ require "rails_helper"
 
 RSpec.describe CbvFlowInvitationsController do
   let(:invite_secret) { "FAKE_INVITE_SECRET" }
+  let(:site_id) { "nyc" }
 
   around do |ex|
     stub_environment_variable("CBV_INVITE_SECRET", invite_secret, &ex)
   end
 
   describe "#new" do
+    let(:valid_params) { { site_id: "nyc", secret: invite_secret } }
+
     context "without the invite secret" do
       it "redirects to the homepage" do
-        get :new
+        get :new, params: valid_params.except(:secret)
+
+        expect(response).to redirect_to(root_url)
+      end
+    end
+
+    context "with an invalid site id" do
+      it "redirects to the homepage" do
+        get :new, params: valid_params.tap { |p| p[:site_id] = "this-is-not-a-site-id" }
 
         expect(response).to redirect_to(root_url)
       end
@@ -20,7 +31,7 @@ RSpec.describe CbvFlowInvitationsController do
       render_views
 
       it "renders properly" do
-        get :new, params: { secret: invite_secret }
+        get :new, params: valid_params
 
         expect(response).to be_successful
       end
@@ -37,6 +48,7 @@ RSpec.describe CbvFlowInvitationsController do
     let(:valid_params) do
       {
         secret: invite_secret,
+        site_id: site_id,
         cbv_flow_invitation: cbv_flow_invitation_params
       }
     end
@@ -44,7 +56,7 @@ RSpec.describe CbvFlowInvitationsController do
     before do
       allow_any_instance_of(CbvInvitationService)
         .to receive(:invite)
-        .with("test@example.com", "ABC1234")
+        .with("test@example.com", "ABC1234", site_id)
     end
 
     context "without the invite secret" do
@@ -65,7 +77,7 @@ RSpec.describe CbvFlowInvitationsController do
       it "sends an invitation" do
         expect_any_instance_of(CbvInvitationService)
           .to receive(:invite)
-          .with("test@example.com", "ABC1234")
+          .with("test@example.com", "ABC1234", site_id)
 
         post :create, params: valid_params
 
@@ -82,14 +94,14 @@ RSpec.describe CbvFlowInvitationsController do
         before do
           allow_any_instance_of(CbvInvitationService)
             .to receive(:invite)
-            .with("bad-email@", "ABC1234")
+            .with("bad-email@", "ABC1234", site_id)
             .and_raise(StandardError.new("Some random error, like a bad email address or something."))
         end
 
         it "redirects back to the invitation form with the error" do
           expect_any_instance_of(CbvInvitationService)
             .to receive(:invite)
-            .with("bad-email@", "ABC1234")
+            .with("bad-email@", "ABC1234", site_id)
 
           post :create, params: broken_params
 

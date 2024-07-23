@@ -82,5 +82,4 @@ class Cbv::PaymentDetailsController < Cbv::BaseController
   def sanitize_comment(comment)
     ActionController::Base.helpers.sanitize(comment)
   end
-
 end

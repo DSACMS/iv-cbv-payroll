@@ -23,7 +23,7 @@ en:
       create:
         error: You must check the agreement checkbox to proceed.
       show:
-        checkbox: Check this box to agree to let Verify.gov access your payment information and share it with [HRA/DTA].
+        checkbox: Check this box to agree to let Verify.gov access your payment information and share it with the %{agency_name}.
         get_started: Get started
         header: How verifying your income works
         step1: Find your employer or online payroll provider. A payroll provider is the company where you check your paystubs online
@@ -125,6 +125,7 @@ en:
       invite_failed: 'Error sending invitation to %{email_address}: %{error_message}.'
       invite_success: Successfully delivered invitation to %{email_address}.
     incorrect_invite_secret: Unable to send invitation due to missing invitation secret parameter.
+    incorrect_site_id: Unable to send invitation due to missing site configuration.
     new:
       description: Complete this form to email a personalized link to begin the CBV flow.
       form:
