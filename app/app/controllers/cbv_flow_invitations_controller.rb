@@ -1,5 +1,5 @@
 class CbvFlowInvitationsController < ApplicationController
-  before_action :ensure_password!
+  before_action :ensure_valid_params!
 
   def new
     @cbv_flow_invitation = CbvFlowInvitation.new
@@ -26,11 +26,14 @@ class CbvFlowInvitationsController < ApplicationController
 
   private
 
-  def ensure_password!
-    return if params[:secret] == ENV["CBV_INVITE_SECRET"]
-
-    flash[:alert] = t("cbv_flow_invitations.incorrect_invite_secret")
-    redirect_to root_url
+  def ensure_valid_params!
+    if params[:secret] != ENV["CBV_INVITE_SECRET"]
+      flash[:alert] = t("cbv_flow_invitations.incorrect_invite_secret")
+      redirect_to root_url
+    elsif site_config.site_ids.exclude?(params[:site_id])
+      flash[:alert] = t("cbv_flow_invitations.incorrect_site_id")
+      redirect_to root_url
+    end
   end
 
   def cbv_flow_invitation_params
