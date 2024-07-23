@@ -56,7 +56,7 @@ RSpec.describe CbvFlowInvitationsController do
     before do
       allow_any_instance_of(CbvInvitationService)
         .to receive(:invite)
-        .with("test@example.com", "ABC1234")
+        .with("test@example.com", "ABC1234", site_id)
     end
 
     context "without the invite secret" do
@@ -94,14 +94,14 @@ RSpec.describe CbvFlowInvitationsController do
         before do
           allow_any_instance_of(CbvInvitationService)
             .to receive(:invite)
-            .with("bad-email@", "ABC1234")
+            .with("bad-email@", "ABC1234", site_id)
             .and_raise(StandardError.new("Some random error, like a bad email address or something."))
         end
 
         it "redirects back to the invitation form with the error" do
           expect_any_instance_of(CbvInvitationService)
             .to receive(:invite)
-            .with("bad-email@", "ABC1234")
+            .with("bad-email@", "ABC1234", site_id)
 
           post :create, params: broken_params
 

@@ -8,6 +8,6 @@ class ApplicationController < ActionController::Base
   end
 
   def site_config
-    @site_config ||= Rails.application.config.sites
+    Rails.application.config.sites
   end
 end

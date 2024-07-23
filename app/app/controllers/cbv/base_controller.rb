@@ -1,7 +1,7 @@
 class Cbv::BaseController < ApplicationController
   include Cbv::PaymentsHelper
   before_action :set_cbv_flow
-  helper_method :agency_url, :next_path, :get_comment_by_account_id
+  helper_method :agency_url, :next_path, :get_comment_by_account_id, :current_site
 
   private
 
@@ -30,6 +30,12 @@ class Cbv::BaseController < ApplicationController
     end
 
     session[:cbv_flow_id] = @cbv_flow.id
+  end
+
+  def current_site
+    return unless @cbv_flow.present? && @cbv_flow.site_id.present?
+
+    site_config[@cbv_flow.site_id]
   end
 
   def set_payments(account_id = nil)

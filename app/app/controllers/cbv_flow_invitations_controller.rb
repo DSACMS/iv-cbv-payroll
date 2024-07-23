@@ -9,7 +9,8 @@ class CbvFlowInvitationsController < ApplicationController
     begin
       CbvInvitationService.new.invite(
         cbv_flow_invitation_params[:email_address],
-        cbv_flow_invitation_params[:case_number]
+        cbv_flow_invitation_params[:case_number],
+        params[:site_id]
       )
     rescue => ex
       flash[:alert] = t(".invite_failed",
