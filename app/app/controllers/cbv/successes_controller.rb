@@ -3,8 +3,7 @@ class Cbv::SuccessesController < Cbv::BaseController
 
   def show
     if @cbv_flow.confirmation_number.blank?
-      prefix = session[:state]
-      confirmation_number = generate_confirmation_number(prefix)
+      confirmation_number = generate_confirmation_number(@cbv_flow.site_id)
       @cbv_flow.update(confirmation_number: confirmation_number)
     end
     render :show
@@ -17,7 +16,10 @@ class Cbv::SuccessesController < Cbv::BaseController
   end
 
   def generate_confirmation_number(prefix = nil)
-    confirmation_number = "#{@cbv_flow.id}-#{Time.now.to_i.to_s(36)}"
-    prefix.present? ? "#{prefix}-#{confirmation_number}" : confirmation_number
+    [
+      prefix,
+      (Time.now.to_i % 36 ** 3).to_s(36).upcase.tr("OISB", "0158").rjust(3, "0"),
+      @cbv_flow.id.to_s.rjust(4, "0")
+    ].compact.join
   end
 end
