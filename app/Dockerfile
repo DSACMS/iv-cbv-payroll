@@ -1,7 +1,7 @@
 # syntax = docker/dockerfile:1
 
 # Make sure RUBY_VERSION matches the Ruby version in .ruby-version and Gemfile
-ARG RUBY_VERSION=3.3.0
+ARG RUBY_VERSION=3.3.4
 
 
 ##########################################################################################
@@ -28,18 +28,7 @@ FROM base as build
 
 # Install packages needed to build gems
 RUN apt-get update -qq && \
-    apt-get install -y build-essential=12.9 \
-        git=1:2.39.2-1.1 \
-        libpq-dev=15.7-0+deb12u1 \
-        libvips42=8.14.1-3+deb12u1 \
-        pkg-config=1.8.1-1 \
-        npm=9.2.0~ds1-1 \
-        libc-bin=2.36-9+deb12u7 \
-        libc-dev-bin=2.36-9+deb12u7 \
-        libc6=2.36-9+deb12u7 \
-        libc6-dev=2.36-9+deb12u7 \
-        libsystemd0=252.26-1~deb12u2 \
-        linux-libc-dev=6.1.99-1
+    apt-get install --no-install-recommends -y build-essential git libpq-dev libvips pkg-config npm
 
 # Copy application code
 COPY . .
@@ -122,6 +111,7 @@ RUN apt-get update -qq && \
         curl=7.88.1-10+deb12u6 \
         libvips42=8.14.1-3+deb12u1 \
         postgresql-client=15+248 \
+        linux-libc-dev \
         wkhtmltopdf=0.12.6-2+b1 && \
     rm -rf /var/lib/apt/lists /var/cache/apt/archives && \
     curl "https://s3.amazonaws.com/aws-cli/awscli-bundle.zip" -o "awscli-bundle.zip" && \
