@@ -53,9 +53,7 @@ jobs:
       - name: Generate BOM
         working-directory: app
         run: cyclonedx-ruby -p . -o ruby_bom.xml
-      - name: Save BOM
-        working-directory: app
-        uses: actions/upload-artifact@v3
+      - uses: actions/upload-artifact@v4
         with:
           name: ruby-bom
-          path: ./ruby_bom.xml
+          path: ./app/ruby_bom.xml
