@@ -30,11 +30,6 @@ RSpec.describe Cbv::SharesController do
         expect(cbv_flow.confirmation_code).to be_blank
         put :update
         expect(cbv_flow.reload.confirmation_code).not_to be_blank
-      end
-
-      it "generates a new confirmation code with a prefix" do
-        expect(cbv_flow.confirmation_code).to be_blank
-        put :update
         expect(cbv_flow.reload.confirmation_code).to start_with("NYC")
       end
     end
