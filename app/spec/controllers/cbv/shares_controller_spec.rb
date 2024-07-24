@@ -63,7 +63,7 @@ RSpec.describe Cbv::SharesController do
         end.to change { ActionMailer::Base.deliveries.count }.by(1)
 
         email = ActionMailer::Base.deliveries.last
-        expect(email.to).to eq([email_address])
+        expect(email.to).to eq([ email_address ])
         expect(email.subject).to eq("Applicant Income Verification: ABC1234")
       end
 
