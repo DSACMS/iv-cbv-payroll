@@ -142,11 +142,11 @@ TK
 
 ## Demo
 
-TK
+This repo's `main` branch automatically deploys to our demo environment via [a GitHub action](/.github/workflows/cd-app.yml).
 
 ## Production
 
-TK
+To deploy to production, go to the repo's "Actions" tab on Github, [click "Deploy App"](https://github.com/DSACMS/iv-cbv-payroll/actions/workflows/cd-app.yml), and "Run Workflow".
 
 # Credentials and other Secrets
 

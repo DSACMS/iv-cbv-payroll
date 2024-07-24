@@ -8,6 +8,6 @@
 </ul>
 
 <%= form_with(url: cbv_flow_agreement_path, builder: UswdsFormBuilder) do |f| %>
-    <%= f.check_box(:agreement, { 'label': t(".checkbox") }) %>
+    <%= f.check_box(:agreement, { 'label': t(".checkbox", agency_name: current_site.agency_name) }) %>
     <%= f.submit t(".get_started") %>
 <% end %>

@@ -4,7 +4,6 @@ name: Deploy App
 run-name: Deploy ${{ github.ref_name }} to App ${{ inputs.environment || 'dev' }}
 
 on:
-  # !! Uncomment the following lines once you've set up the dev environment and ready to turn on continuous deployment
   push:
     branches:
       - "main"
@@ -21,7 +20,6 @@ on:
         type: choice
         options:
           - dev
-          - staging
           - prod
 permissions:
     id-token: write

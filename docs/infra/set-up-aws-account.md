@@ -21,6 +21,18 @@ The account set up sets up whatever account you're authenticated into. To see wh
 aws sts get-caller-identity
 ```
 
+If you are in the wrong account, add the right account to your `~/.aws/credentials` under a different block, for example:
+```ini
+[default]
+# ...
+
+[other_account]
+aws_access_key_id = "<SOME STRING>"
+aws_secret_access_key = "<SOME STRING>"
+```
+
+Then, run future commands prefixed with `AWS_PROFILE=other_account` to use those credentials.
+
 To see a more human readable account alias instead of the account, run
 
 ```bash
