@@ -38,7 +38,7 @@ ActiveRecord::Schema[7.1].define(version: 2024_07_22_232537) do
     t.string "pinwheel_token_id"
     t.uuid "pinwheel_end_user_id", default: -> { "gen_random_uuid()" }, null: false
     t.jsonb "additional_information", default: {}
-    t.string "confirmation_number"
+    t.string "confirmation_code"
     t.string "site_id"
     t.index ["cbv_flow_invitation_id"], name: "index_cbv_flows_on_cbv_flow_invitation_id"
   end
