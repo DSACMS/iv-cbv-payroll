@@ -96,7 +96,10 @@ resource "aws_iam_policy" "email_access_policy" {
 data "aws_iam_policy_document" "email_access_policy" {
   statement {
     actions   = ["ses:SendRawEmail", "ses:SendEmail"]
-    resources = ["arn:aws:ses:${data.aws_region.current.name}:${data.aws_caller_identity.current.id}:identity/*"]
+    resources = [
+      "arn:aws:ses:${data.aws_region.current.name}:${data.aws_caller_identity.current.id}:identity/*",
+      "arn:aws:ses:${data.aws_region.current.name}:${data.aws_caller_identity.current.id}:configuration-set/*"
+    ]
   }
 }
 
