@@ -43,8 +43,8 @@ RSpec.describe Cbv::SharesController do
 
       it "does not override the existing confirmation code" do
         expect(cbv_flow.reload.confirmation_code).to eq(existing_confirmation_code)
-        put :update
-      end.not_to change { cbv_flow.reload.confirmation_code }
+        expect { put :update }.not_to change { cbv_flow.reload.confirmation_code }
+      end
     end
 
     context "when sending an email to the caseworker" do
