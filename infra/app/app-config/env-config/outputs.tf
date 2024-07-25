@@ -42,8 +42,8 @@ output "service_config" {
 
 output "storage_config" {
   value = {
-    # Include project name in bucket name since buckets need to be globally unique across AWS
     bucket_name = local.bucket_name
+    massachusetts_moveit_bucket_name = local.massachusetts_moveit_bucket_name
   }
 }
 
