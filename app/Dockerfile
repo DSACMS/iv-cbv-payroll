@@ -7,7 +7,7 @@ ARG RUBY_VERSION=3.3.4
 ##########################################################################################
 # BASE: Shared base docker image
 ##########################################################################################
-FROM registry.docker.com/library/ruby:$RUBY_VERSION-slim as base
+FROM registry.docker.com/library/ruby:$RUBY_VERSION-slim AS base
 
 # Rails app lives here
 WORKDIR /rails
@@ -24,7 +24,7 @@ EXPOSE 3000
 ##########################################################################################
 # BUILD: Throw-away build stage
 ##########################################################################################
-FROM base as build
+FROM base AS build
 
 # Install packages needed to build gems
 RUN apt-get update -qq && \
@@ -53,7 +53,7 @@ RUN npm install
 ##########################################################################################
 # DEV: Used for development and test
 ##########################################################################################
-FROM build as dev
+FROM build AS dev
 
 ENV RAILS_ENV="development"
 
@@ -80,7 +80,7 @@ CMD ["./bin/dev"]
 ##########################################################################################
 # RELEASE-BUILD: Throw-away build stage for RELEASE
 ##########################################################################################
-FROM build as release-build
+FROM build AS release-build
 
 # Install application gems for production
 COPY Gemfile Gemfile.lock ./
@@ -98,7 +98,7 @@ RUN SECRET_KEY_BASE_DUMMY=1 ./bin/rails assets:precompile
 ##########################################################################################
 # RELEASE: Used for production
 ##########################################################################################
-FROM base as release
+FROM base AS release
 
 # Set the tmp dir to the writeable tmp volume
 ENV TMPDIR="/rails/tmp"
