@@ -6,7 +6,7 @@
 </ul>
 
 <p>
-    <%= t(".confirmation_number", confirmation_number: "XXXXXXX") %>
+    <%= t(".confirmation_code", confirmation_code: @cbv_flow.confirmation_code) %>
 </p>
 
 <%= link_to cbv_flow_summary_path(format: "pdf"), target: "_blank", class: "usa-button margin-top-3 usa-button--outline" do %>
