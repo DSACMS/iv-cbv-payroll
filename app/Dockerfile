@@ -1,13 +1,13 @@
 # syntax = docker/dockerfile:1
 
 # Make sure RUBY_VERSION matches the Ruby version in .ruby-version and Gemfile
-ARG RUBY_VERSION=3.3.0
+ARG RUBY_VERSION=3.3.4
 
 
 ##########################################################################################
 # BASE: Shared base docker image
 ##########################################################################################
-FROM registry.docker.com/library/ruby:$RUBY_VERSION-slim as base
+FROM registry.docker.com/library/ruby:$RUBY_VERSION-slim AS base
 
 # Rails app lives here
 WORKDIR /rails
@@ -15,7 +15,8 @@ WORKDIR /rails
 # Set production environment
 ENV RAILS_ENV="production" \
     BUNDLE_DEPLOYMENT="1" \
-    BUNDLE_PATH="/usr/local/bundle"
+    BUNDLE_PATH="/usr/local/bundle" \
+    BUNDLER_VERSION='2.4'
 
 # Start the server by default, this can be overwritten at runtime
 EXPOSE 3000
@@ -24,11 +25,13 @@ EXPOSE 3000
 ##########################################################################################
 # BUILD: Throw-away build stage
 ##########################################################################################
-FROM base as build
+FROM base AS build
 
 # Install packages needed to build gems
 RUN apt-get update -qq && \
-    apt-get install --no-install-recommends -y build-essential git libpq-dev libvips pkg-config npm
+    apt-get install --no-install-recommends -y build-essential=12.9 \
+    git=1:2.39.2-1.1 libpq-dev=15.7-0+deb12u1 pkg-config=1.8.1-1 \
+    npm=9.2.0~ds1-1
 
 # Copy application code
 COPY . .
@@ -46,14 +49,10 @@ RUN if [ "$(uname -m)" = "arm64" ]; then \
 
 RUN PUPPETEER_SKIP_CHROMIUM_DOWNLOAD=$PUPPETEER_SKIP_CHROMIUM_DOWNLOAD npm install
 
-# Install npm packages
-RUN npm install
-
-
 ##########################################################################################
 # DEV: Used for development and test
 ##########################################################################################
-FROM build as dev
+FROM build AS dev
 
 ENV RAILS_ENV="development"
 
@@ -62,13 +61,16 @@ ENV TMPDIR="/rails/tmp"
 
 # Install packages needed for development
 RUN apt-get update -qq && \
-    apt-get install --no-install-recommends -y postgresql-client graphviz wkhtmltopdf && \
+    apt-get install --no-install-recommends -y postgresql-client=15+248 \
+        graphviz=2.42.2-7+b3 \
+        wkhtmltopdf=0.12.6-2+b1 && \
     rm -rf /var/lib/apt/lists /var/cache/apt/archives
 
 # Install application gems for development
 COPY Gemfile Gemfile.lock ./
 
-RUN bundle config set --local without production && \
+RUN gem install bundler --no-document -v ${BUNDLER_VERSION} && \
+    bundle config set --local without production && \
     bundle install && \
     rm -rf ~/.bundle/ "${BUNDLE_PATH}"/ruby/*/cache "${BUNDLE_PATH}"/ruby/*/bundler/gems/*/.git
 
@@ -78,7 +80,7 @@ CMD ["./bin/dev"]
 ##########################################################################################
 # RELEASE-BUILD: Throw-away build stage for RELEASE
 ##########################################################################################
-FROM build as release-build
+FROM build AS release-build
 
 # Install application gems for production
 COPY Gemfile Gemfile.lock ./
@@ -96,19 +98,31 @@ RUN SECRET_KEY_BASE_DUMMY=1 ./bin/rails assets:precompile
 ##########################################################################################
 # RELEASE: Used for production
 ##########################################################################################
-FROM base as release
+FROM base AS release
 
 # Set the tmp dir to the writeable tmp volume
 ENV TMPDIR="/rails/tmp"
 
 # Install packages needed for deployment
 RUN apt-get update -qq && \
-    apt-get install -y --no-install-recommends unzip python3-venv python-is-python3 curl libvips postgresql-client wkhtmltopdf && \
+    apt-get install -y --no-install-recommends unzip=6.0-28 \
+        python3-venv=3.11.2-1+b1 \
+        python-is-python3=3.11.2-1+deb12u1 \
+        curl=7.88.1-10+deb12u6 \
+        libvips42=8.14.1-3+deb12u1 \
+        postgresql-client=15+248 \
+        linux-libc-dev=6.1.99-1 \
+        wkhtmltopdf=0.12.6-2+b1 && \
     rm -rf /var/lib/apt/lists /var/cache/apt/archives && \
     curl "https://s3.amazonaws.com/aws-cli/awscli-bundle.zip" -o "awscli-bundle.zip" && \
     unzip awscli-bundle.zip && \
     ./awscli-bundle/install -i /usr/local/aws -b /usr/local/bin/aws && \
     rm -rf ./awscli-bundle awscli-bundle.zip
+
+# Remove base rexml for GHSA-4xqq-m2hx-25v8
+RUN gem uninstall -i /usr/local/lib/ruby/gems/3.3.0 debug && \
+    gem uninstall -i /usr/local/lib/ruby/gems/3.3.0 rss && \
+    gem uninstall -i /usr/local/lib/ruby/gems/3.3.0 rexml 
 
 # Install custom db migrate script
 COPY bin/db-migrate /usr/bin/
