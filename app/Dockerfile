@@ -49,10 +49,6 @@ RUN if [ "$(uname -m)" = "arm64" ]; then \
 
 RUN PUPPETEER_SKIP_CHROMIUM_DOWNLOAD=$PUPPETEER_SKIP_CHROMIUM_DOWNLOAD npm install
 
-# Install npm packages
-RUN npm install
-
-
 ##########################################################################################
 # DEV: Used for development and test
 ##########################################################################################
@@ -122,6 +118,11 @@ RUN apt-get update -qq && \
     unzip awscli-bundle.zip && \
     ./awscli-bundle/install -i /usr/local/aws -b /usr/local/bin/aws && \
     rm -rf ./awscli-bundle awscli-bundle.zip
+
+# Remove base rexml for GHSA-4xqq-m2hx-25v8
+RUN gem uninstall -i /usr/local/lib/ruby/gems/3.3.0 debug && \
+    gem uninstall -i /usr/local/lib/ruby/gems/3.3.0 rss && \
+    gem uninstall -i /usr/local/lib/ruby/gems/3.3.0 rexml 
 
 # Install custom db migrate script
 COPY bin/db-migrate /usr/bin/
