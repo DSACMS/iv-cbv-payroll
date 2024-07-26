@@ -15,7 +15,8 @@ WORKDIR /rails
 # Set production environment
 ENV RAILS_ENV="production" \
     BUNDLE_DEPLOYMENT="1" \
-    BUNDLE_PATH="/usr/local/bundle"
+    BUNDLE_PATH="/usr/local/bundle" \
+    BUNDLER_VERSION='2.4'
 
 # Start the server by default, this can be overwritten at runtime
 EXPOSE 3000
@@ -28,7 +29,9 @@ FROM base AS build
 
 # Install packages needed to build gems
 RUN apt-get update -qq && \
-    apt-get install --no-install-recommends -y build-essential git libpq-dev libvips pkg-config npm
+    apt-get install --no-install-recommends -y build-essential=12.9 \
+    git=1:2.39.2-1.1 libpq-dev=15.7-0+deb12u1 pkg-config=1.8.1-1 \
+    npm=9.2.0~ds1-1
 
 # Copy application code
 COPY . .
@@ -70,7 +73,8 @@ RUN apt-get update -qq && \
 # Install application gems for development
 COPY Gemfile Gemfile.lock ./
 
-RUN bundle config set --local without production && \
+RUN gem install bundler --no-document -v ${BUNDLER_VERSION} && \
+    bundle config set --local without production && \
     bundle install && \
     rm -rf ~/.bundle/ "${BUNDLE_PATH}"/ruby/*/cache "${BUNDLE_PATH}"/ruby/*/bundler/gems/*/.git
 
@@ -111,7 +115,7 @@ RUN apt-get update -qq && \
         curl=7.88.1-10+deb12u6 \
         libvips42=8.14.1-3+deb12u1 \
         postgresql-client=15+248 \
-        linux-libc-dev \
+        linux-libc-dev=6.1.99-1 \
         wkhtmltopdf=0.12.6-2+b1 && \
     rm -rf /var/lib/apt/lists /var/cache/apt/archives && \
     curl "https://s3.amazonaws.com/aws-cli/awscli-bundle.zip" -o "awscli-bundle.zip" && \
