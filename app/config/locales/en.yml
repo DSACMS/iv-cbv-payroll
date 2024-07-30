@@ -67,8 +67,8 @@ en:
         header: If you can’t find your employer or payroll provider, you’ll need to provide income information separately.
     payment_details:
       show:
-        additional_information_label: Share any comments or additional information about the payment details above that you’d like your caseworker to know.
-        continue: Continue
+        additional_information_label: Share any comments or additional information about the payment details above that you’d like your benefits agency to know.
+        continue: Add info to report
         deductions: 'Deduction: %{category}'
         employment_end_date: Employment end date
         employment_start_date: Employment start date

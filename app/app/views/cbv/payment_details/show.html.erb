@@ -42,7 +42,7 @@
       </tbody>
     </table>
 
-    <table class="usa-table usa-table--borderless width-full">
+    <table class="usa-table usa-table--borderless usa-table--stacked width-full">
       <thead class="border-top-05">
       <tr>
         <th class="padding-3" style="background-color: #d9e8f6;" colspan="2">
@@ -97,7 +97,7 @@
       <%= hidden_field_tag "user[account_id]", params[:user][:account_id] %>
       <%= form.label :additional_information, t(".additional_information_label"), class: "usa-label" %>
       <%= form.text_area :additional_information, class: "usa-textarea", rows: 5, value: @account_comment %>
-      <%= form.submit t(".continue"), class: "usa-button usa-button--outline margin-top-3" %>
+      <%= form.submit t(".continue"), class: "usa-button usa-button--primary margin-top-3" %>
     </div>
   <% end %>
 <% else %>
