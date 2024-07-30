@@ -2,8 +2,9 @@ require "yaml"
 
 class SiteConfig
   def initialize(config_path)
+    template = ERB.new File.read(config_path)
     @sites = YAML
-      .safe_load(File.read(config_path))
+      .safe_load(template.result(binding))
       .map { |s| [ s["id"], Site.new(s) ] }
       .to_h
   end
