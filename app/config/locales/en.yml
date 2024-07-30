@@ -78,13 +78,13 @@ en:
         hourly_rate: Hourly wage
         none_found: No payments found. Please refresh the page after a few minutes.
         number_of_hours_worked: Number of hours worked
-        pay_period: Pay period
-        pay_period_frequency: Pay period frequency
-        payment_hours: "%{amount} hours"
-        pay_date: "Pay Date: %{pay_date}"
+        pay_date: 'Pay Date: %{pay_date}'
         pay_gross: Payment before taxes (gross)
         pay_gross_ytd: Gross pay YTD
         pay_net: Payment after taxes and deductions (net)
+        pay_period: Pay period
+        pay_period_frequency: Pay period frequency
+        payment_hours: "%{amount} hours"
         payments_and_deductions: Employment information
         subheader: We have gathered your payment records from the past 90 days, from %{start_date} to %{end_date}. Review them and add any comments for your benefits agency in the additional comments section. This will be included in your income report.
         total_gross_description: This is the total income from your job before taxes, benefits and deductions were taken out of your paycheck.
