@@ -1,4 +1,9 @@
 - id: nyc
   agency_name: NYC Human Resources Administration
+  transmission_method: shared_email
+  transmission_method_configuration:
+    email: <%= ENV['NYC_HRA_EMAIL'] %>
 - id: ma
   agency_name: Massachusetts Department of Transitional Assistance
+  transmission_method: null
+  transmission_method_configuration: {}
