@@ -17,7 +17,6 @@ RSpec.describe Cbv::PaymentsHelper, type: :helper do
         [
           {
             account_id: "5c1952df-3a84-4f28-8318-58291452061f",
-            amount: 321609,
             deductions: [
               { amount: 7012, category: "retirement" },
               { amount: 57692, category: "commuter" }
@@ -42,7 +41,6 @@ RSpec.describe Cbv::PaymentsHelper, type: :helper do
           payments: [
             {
               account_id: "5c1952df-3a84-4f28-8318-58291452061f",
-              amount: 321609,
               deductions: [
                 { amount: 7012, category: "retirement" },
                 { amount: 57692, category: "commuter" }
