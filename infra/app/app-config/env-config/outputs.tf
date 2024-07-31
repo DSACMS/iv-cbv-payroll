@@ -42,7 +42,7 @@ output "service_config" {
 
 output "storage_config" {
   value = {
-    bucket_name = local.bucket_name
+    bucket_name                      = local.bucket_name
     massachusetts_moveit_bucket_name = local.massachusetts_moveit_bucket_name
   }
 }
