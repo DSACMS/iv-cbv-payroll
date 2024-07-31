@@ -35,7 +35,9 @@
           <% if flash[:alert] %>
             <div class="usa-alert usa-alert--error">
               <div class="usa-alert__body">
-                <div class="usa-alert__heading">Error</div>
+                <% if flash[:alert_options][:show_header] %>
+                  <div class="usa-alert__heading"><%= flash[:alert_options][:header] || 'Error' %></div>
+                <% end %>
                 <p class="usa-alert__text"><%= flash[:alert] %></p>
               </div>
             </div>
