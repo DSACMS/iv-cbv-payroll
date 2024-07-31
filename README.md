@@ -202,7 +202,7 @@ We know that we can learn from a wide variety of communities, including those wh
 We also recognize capacity building as a key part of involving a diverse open source community. We are doing our best to use accessible language, provide technical and process documents, and offer support to community members with a wide variety of backgrounds and skillsets. 
 
 ## Community Guidelines
-See [COMMUNITY_GUIDELINES.md](./docs/COMMUNITY_GUIDELINES.md).
+See [COMMUNITY_GUIDELINES.md](./COMMUNITY_GUIDELINES.md).
 
 ## Governance
 
@@ -224,7 +224,7 @@ questions, just [shoot us an email](mailto:opensource@cms.hhs.gov).
 
 *Submit a vulnerability:* Unfortunately, we cannot accept secure submissions via
 email or via GitHub Issues. Please use our website to submit vulnerabilities at
-[https://hhs.responsibledisclosure.com](https://hhs.responsibledisclosure.com).
+[https://hhs.responsibledisclosure.com](https://hhs.responsibledisclosure.com/hc/).
 HHS maintains an acknowledgements page to recognize your efforts on behalf of
 the American public, but you are also welcome to submit anonymously.
 
