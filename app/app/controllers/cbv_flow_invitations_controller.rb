@@ -1,5 +1,6 @@
 class CbvFlowInvitationsController < ApplicationController
   before_action :ensure_valid_params!
+  before_action :authenticate_user!
 
   def new
     @cbv_flow_invitation = CbvFlowInvitation.new

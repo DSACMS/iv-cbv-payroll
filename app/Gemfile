@@ -103,3 +103,7 @@ group :production do
   # Add plugin for pg gem to support AWS RDS IAM
   gem "pg-aws_rds_iam", "~> 0.5.0"
 end
+
+gem "devise", "~> 4.9"
+gem "omniauth-rails_csrf_protection", "~> 1.0"
+gem 'omniauth-azure-activedirectory-v2'
