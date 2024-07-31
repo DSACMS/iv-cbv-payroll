@@ -10,17 +10,19 @@ class Cbv::SharesController < Cbv::BaseController
       @cbv_flow.update(confirmation_code: confirmation_code)
     end
 
-    email_address = ENV["SLACK_TEST_EMAIL"]
-    ApplicantMailer.with(
-      email_address: email_address,
-      cbv_flow: @cbv_flow,
-      payments: @payments
-    ).caseworker_summary_email.deliver_now
+    if current_site.transmission_method.present? && current_site.transmission_method == "shared_email"
+      ApplicantMailer.with(
+        email_address: current_site.transmission_method_configuration.dig("email"),
+        cbv_flow: @cbv_flow,
+        payments: @payments
+      ).caseworker_summary_email.deliver_now
+    end
 
     NewRelicEventTracker.track("IncomeSummarySharedWithCaseworker", {
       timestamp: Time.now.to_i,
       cbv_flow_id: @cbv_flow.id
     })
+
     redirect_to({ controller: :successes, action: :show }, flash: { notice: t(".successfully_shared_to_caseworker") })
   end
 

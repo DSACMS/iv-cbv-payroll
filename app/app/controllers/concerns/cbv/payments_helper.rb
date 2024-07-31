@@ -22,6 +22,8 @@ module Cbv::PaymentsHelper
         hours: payment["earnings"][0]["hours"],
         rate: payment["earnings"][0]["rate"],
         gross_pay_amount: payment["gross_pay_amount"].to_i,
+        net_pay_amount: payment["net_pay_amount"].to_i,
+        gross_pay_ytd: payment["gross_pay_ytd"].to_i,
         pay_date: payment["pay_date"],
         deductions: payment["deductions"].map { |deduction| { category: deduction["category"], amount: deduction["amount"] } },
         account_id: payment["account_id"]
