@@ -45,4 +45,4 @@ jobs:
         with:
           target: 'http://localhost:3000/'
           fail_action: true
-          cmd_options: -c app/zap.conf -I -z "-configfile /zap/wrk/zap/zap_options.conf"
+          cmd_options: -c app/zap.conf -I -z "-configfile /zap/wrk/zap_options.conf"
