@@ -3,7 +3,6 @@
 <p><%= t(".subheader") %></p>
 
 <div data-controller="cbv-add-job">
-  <%= raw t(".criteria_disclaimer", text: site_config.learn_more_link_text, url: site_config.learn_more_link_url) %>
 
   <h2><%= t(".answer_yes_header") %></h2>
   <ul>
@@ -20,6 +19,8 @@
     <li><%= t(".answer_no_bullet_4") %></li>
     <li><%= t(".answer_no_bullet_5") %></li>
   </ul>
+
+  <%= raw t(".criteria_disclaimer", text: site_config.learn_more_link_text, url: site_config.learn_more_link_url) %>
 
   <%= form_with(url: cbv_flow_add_job_path, builder: UswdsFormBuilder, data: {
     "cbv-add-job-target": "form",
