@@ -14,6 +14,7 @@ class UswdsFormBuilder < ActionView::Helpers::FormBuilder
     self.options[:html][:class] ||= "usa-form usa-form--large"
   end
 
+  
   ########################################
   # Override standard helpers
   ########################################
