@@ -23,6 +23,7 @@ RSpec.describe Cbv::SharesController do
 
     around do |ex|
       stub_environment_variable("SLACK_TEST_EMAIL", "test@example.com", &ex)
+      stub_environment_variable("NYC_HRA_EMAIL", "test@example.com", &ex)
     end
 
     context "when confirmation_code is blank" do
