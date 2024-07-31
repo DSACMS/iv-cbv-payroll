@@ -80,9 +80,6 @@ TBD
 The system's Content-Security-Policy header prevents `<script>` and `<style>` tags from working without further
 configuration. Use `<%= javascript_tag nonce: true %>` for inline javascript.
 
-See the [CSP compliant script tag helpers](./app/doc/adr/0004-rails-csp-compliant-script-tag-helpers.md) ADR for
-more information on setting these up successfully.
-
 # Internationalization
 
 ## Managing locale files
@@ -224,7 +221,7 @@ questions, just [shoot us an email](mailto:opensource@cms.hhs.gov).
 
 *Submit a vulnerability:* Unfortunately, we cannot accept secure submissions via
 email or via GitHub Issues. Please use our website to submit vulnerabilities at
-[https://hhs.responsibledisclosure.com](https://hhs.responsibledisclosure.com/hc/).
+[https://hhs.responsibledisclosure.com](https://hhs.responsibledisclosure.com/hc/en-us).
 HHS maintains an acknowledgements page to recognize your efforts on behalf of
 the American public, but you are also welcome to submit anonymously.
 

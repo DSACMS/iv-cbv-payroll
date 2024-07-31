@@ -4,7 +4,7 @@ The Centers for Medicare & Medicaid Services is committed to ensuring the securi
 
 *Submit a vulnerability:* Unfortunately, we cannot accept secure submissions via
 email or via GitHub Issues. Please use our website to submit vulnerabilities at
-[https://hhs.responsibledisclosure.com](https://hhs.responsibledisclosure.com/hc/).
+[https://hhs.responsibledisclosure.com](https://hhs.responsibledisclosure.com/hc/en-us).
 HHS maintains an acknowledgements page to recognize your efforts on behalf of
 the American public, but you are also welcome to submit anonymously.
 
