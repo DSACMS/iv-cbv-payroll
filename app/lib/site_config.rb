@@ -18,11 +18,18 @@ class SiteConfig
   end
 
   class Site
-    attr_reader :id, :agency_name, :transmission_method, :transmission_method_configuration
+    attr_reader :id,
+      :agency_name,
+      :learn_more_link_text,
+      :learn_more_link_url,
+      :transmission_method,
+      :transmission_method_configuration
 
     def initialize(yaml)
       @id = yaml["id"]
       @agency_name = yaml["agency_name"]
+      @learn_more_link_text = yaml["learn_more_link_text"]
+      @learn_more_link_url = yaml["learn_more_link_url"]
       @transmission_method = yaml["transmission_method"]
       @transmission_method_configuration = yaml["transmission_method_configuration"]
 

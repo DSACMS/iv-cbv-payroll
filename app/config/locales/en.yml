@@ -14,7 +14,18 @@ en:
       create:
         notice: Please select one of the options below
       show:
+        answer_no_bullet_1: You don't have another job
+        answer_no_bullet_2: You have a job that pays you via PayPal, Venmo, Cash App, etc
+        answer_no_bullet_3: You have a job that pays you in cash
+        answer_no_bullet_4: You have a job that pays you with paper paychecks
+        answer_no_bullet_5: You have a job that issues a 1099
+        answer_no_header: Answer NO if
+        answer_yes_bullet_1: Has an online payroll provider
+        answer_yes_bullet_2: Lets you view paychecks online
+        answer_yes_bullet_3: Is app-based (Uber, DoorDash, Lyft, Instacart, etc.)
+        answer_yes_header: Answer YES if your job
         continue: Continue
+        criteria_disclaimer: "Note: If you've had other jobs in the past 90 days that don't meet these criteria, you may neec to submit that income information separately. Contact your agency for assistance. <a href='%{url}'>%{text}</a>"
         header: Have you earned income from another job in the last %{day_count} days?
         no_radio: No, I haven’t earned income from another job
         subheader: This includes income you were paid for services or goods as a freelancer, independent contractor, gig worker who sets your own schedule, or other kinds of self-employment.

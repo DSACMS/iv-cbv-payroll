@@ -3,7 +3,11 @@
   transmission_method: shared_email
   transmission_method_configuration:
     email: <%= ENV['NYC_HRA_EMAIL'] %>
+  learn_more_link_text: Learn more on nyc.gov
+  learn_more_link_url: https://www.nyc.gov/site/hra/help/snap-application-frequently-asked-questions.page
 - id: ma
   agency_name: Massachusetts Department of Transitional Assistance
   transmission_method: null
   transmission_method_configuration: {}
+  learn_more_link_text: Learn more at Mass.gov
+  learn_more_link_url: https://www.mass.gov/guides/how-to-contact-dta
