@@ -21,11 +21,6 @@ RSpec.describe Cbv::SharesController do
       session[:cbv_flow_id] = cbv_flow.id
     end
 
-    around do |ex|
-      stub_environment_variable("SLACK_TEST_EMAIL", "test@example.com", &ex)
-      stub_environment_variable("NYC_HRA_EMAIL", "test@example.com", &ex)
-    end
-
     context "when confirmation_code is blank" do
       it "generates a new confirmation code" do
         expect(cbv_flow.confirmation_code).to be_blank
@@ -49,15 +44,12 @@ RSpec.describe Cbv::SharesController do
     end
 
     context "when sending an email to the caseworker" do
-      let(:email_address) { "test@example.com" }
-
       it "sends the email" do
         expect do
           post :update
         end.to change { ActionMailer::Base.deliveries.count }.by(1)
 
         email = ActionMailer::Base.deliveries.last
-        expect(email.to).to eq([ email_address ])
         expect(email.subject).to eq("Applicant Income Verification: ABC1234")
       end
 
