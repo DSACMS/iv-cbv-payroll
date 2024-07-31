@@ -80,9 +80,6 @@ TBD
 The system's Content-Security-Policy header prevents `<script>` and `<style>` tags from working without further
 configuration. Use `<%= javascript_tag nonce: true %>` for inline javascript.
 
-See the [CSP compliant script tag helpers](./app/doc/adr/0004-rails-csp-compliant-script-tag-helpers.md) ADR for
-more information on setting these up successfully.
-
 # Internationalization
 
 ## Managing locale files
@@ -202,7 +199,7 @@ We know that we can learn from a wide variety of communities, including those wh
 We also recognize capacity building as a key part of involving a diverse open source community. We are doing our best to use accessible language, provide technical and process documents, and offer support to community members with a wide variety of backgrounds and skillsets. 
 
 ## Community Guidelines
-See [COMMUNITY_GUIDELINES.md](./docs/COMMUNITY_GUIDELINES.md).
+See [COMMUNITY_GUIDELINES.md](./COMMUNITY_GUIDELINES.md).
 
 ## Governance
 
@@ -222,11 +219,13 @@ questions, just [shoot us an email](mailto:opensource@cms.hhs.gov).
 
 ### Security and Responsible Disclosure Policy
 
+<!-- markdown-link-check-disable -->
 *Submit a vulnerability:* Unfortunately, we cannot accept secure submissions via
 email or via GitHub Issues. Please use our website to submit vulnerabilities at
-[https://hhs.responsibledisclosure.com](https://hhs.responsibledisclosure.com).
+[https://hhs.responsibledisclosure.com](https://hhs.responsibledisclosure.com/).
 HHS maintains an acknowledgements page to recognize your efforts on behalf of
 the American public, but you are also welcome to submit anonymously.
+<!-- markdown-link-check-enable -->
 
 For more information about our Security, Vulnerability, and Responsible Disclosure Policies, see [SECURITY.md](SECURITY.md).
 
