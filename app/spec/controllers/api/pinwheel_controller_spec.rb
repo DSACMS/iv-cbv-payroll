@@ -4,7 +4,7 @@ RSpec.describe Api::PinwheelController do
   include PinwheelApiHelper
 
   context "#create_token" do
-    let(:cbv_flow) { CbvFlow.create(case_number: "TEST123") }
+    let(:cbv_flow) { CbvFlow.create(case_number: "TEST123", site_id: "nyc") }
     let(:valid_params) do
       {
         pinwheel: { response_type: "employer", id: "123" }

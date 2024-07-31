@@ -10,8 +10,9 @@ data "aws_route53_zone" "domain" {
   private_zone = false
 }
 
-resource "aws_ses_domain_identity" "verified_domain" {
-  domain = var.domain
+resource "aws_sesv2_email_identity" "verified_domain" {
+  email_identity = var.domain
+  configuration_set_name = aws_ses_configuration_set.require_tls.name
 }
 
 resource "aws_ses_email_identity" "verified_emails" {
@@ -20,12 +21,12 @@ resource "aws_ses_email_identity" "verified_emails" {
 }
 
 resource "aws_ses_domain_mail_from" "mail_from" {
-  domain           = aws_ses_domain_identity.verified_domain.domain
+  domain           = aws_sesv2_email_identity.verified_domain.email_identity
   mail_from_domain = "mail.${var.domain}"
 }
 
 resource "aws_ses_domain_dkim" "ses_domain_dkim" {
-  domain = join("", aws_ses_domain_identity.verified_domain.*.domain)
+  domain = join("", aws_sesv2_email_identity.verified_domain.*.email_identity)
 }
 
 resource "aws_route53_record" "amazonses_dkim_record" {
@@ -59,4 +60,12 @@ resource "aws_route53_record" "dmarc_record" {
   type    = "TXT"
   ttl     = "300"
   records = ["v=DMARC1; p=none;"]
+}
+
+resource "aws_ses_configuration_set" "require_tls" {
+  name = "require-tls"
+
+  delivery_options {
+    tls_policy = "Require"
+  }
 }

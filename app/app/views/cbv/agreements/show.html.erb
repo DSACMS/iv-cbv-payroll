@@ -5,9 +5,9 @@
     <li class="usa-process-list__item"><%= t(".step2") %></li>
     <li class="usa-process-list__item"><%= t(".step3") %></li>
     <li class="usa-process-list__item"><%= t(".step4") %></li>
-</ul>
+</ol>
 
 <%= form_with(url: cbv_flow_agreement_path, builder: UswdsFormBuilder) do |f| %>
-    <%= f.check_box(:agreement, { 'label': t(".checkbox") }) %>
+    <%= f.check_box(:agreement, { 'label': t(".checkbox", agency_name: current_site.agency_name) }) %>
     <%= f.submit t(".get_started") %>
 <% end %>

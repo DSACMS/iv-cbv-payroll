@@ -27,7 +27,7 @@ namespace :npm do
     stdout, stderr, status = Open3.capture3("npm audit --json")
     unless status.success?
       puts stderr
-      parsed = JSON.parse("[#{stdout.lines.join(",")}]")
+      parsed = JSON.parse("[#{stdout}]")
       puts JSON.pretty_generate(parsed)
       if /503 Service Unavailable/.match?(stderr)
         puts "Ignoring unavailable server"

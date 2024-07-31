@@ -1,10 +1,6 @@
 require "rails_helper"
 
 RSpec.describe ApplicantMailer, type: :mailer do
-  around do |ex|
-    stub_environment_variable("SLACK_TEST_EMAIL", "test@example.com", &ex)
-  end
-
   let(:payments) { stub_payments }
   let(:email) { 'me@email.com' }
   let(:link) { 'www.google.com' }

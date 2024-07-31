@@ -54,14 +54,24 @@
       <% @payments.each do |payment| %>
         <tr>
           <td colspan="2">
-            <h4 class="margin-0"><%= t(".payment_of", amount: number_to_currency(payment[:amount])) %>
-              on <%= format_date(payment[:pay_date]) %></h4>
+            <h4 class="margin-0"><%= t(".pay_date", pay_date: format_date(payment[:pay_date])) %></h4>
           </td>
         </tr>
         <tr>
           <td><%= t(".pay_period") %></td>
           <td><%= format_date(payment[:start]) %> to <%= format_date(payment[:end]) %></td>
         </tr>
+
+        <tr>
+          <td><%= t(".pay_gross") %></td>
+          <td><%= number_to_currency(gross_pay) %></td>
+        </tr>
+
+        <tr>
+          <td><%= t(".pay_net") %></td>
+          <td><%= number_to_currency(payment[:net_pay_amount]) %></td>
+        </tr>
+
         <tr>
           <td><%= t(".number_of_hours_worked") %></td>
           <td><%= t(".payment_hours", amount: payment[:hours]) %></td>
@@ -72,6 +82,11 @@
             <td><%= number_to_currency(deduction[:amount]) %></td>
           </tr>
         <% end %>
+
+        <tr>
+          <td><%= t(".pay_gross_ytd") %></td>
+          <td><%= number_to_currency(payment[:gross_pay_ytd]) %></td>
+        </tr>
       <% end %>
 
       </tbody>
@@ -82,7 +97,7 @@
       <%= hidden_field_tag "user[account_id]", params[:user][:account_id] %>
       <%= form.label :additional_information, t(".additional_information_label"), class: "usa-label" %>
       <%= form.text_area :additional_information, class: "usa-textarea", rows: 5, value: @account_comment %>
-      <%= form.submit t(".continue"), class: "usa-button usa-button--outline margin-top-3" %>
+      <%= form.submit t(".continue"), class: "usa-button usa-button--primary margin-top-3" %>
     </div>
   <% end %>
 <% else %>

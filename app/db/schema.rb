@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2024_07_15_203948) do
+ActiveRecord::Schema[7.1].define(version: 2024_07_24_205434) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -25,6 +25,7 @@ ActiveRecord::Schema[7.1].define(version: 2024_07_15_203948) do
     t.string "auth_token"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.string "site_id"
   end
 
   create_table "cbv_flows", force: :cascade do |t|
@@ -37,6 +38,8 @@ ActiveRecord::Schema[7.1].define(version: 2024_07_15_203948) do
     t.string "pinwheel_token_id"
     t.uuid "pinwheel_end_user_id", default: -> { "gen_random_uuid()" }, null: false
     t.jsonb "additional_information", default: {}
+    t.string "site_id"
+    t.string "confirmation_code"
     t.index ["cbv_flow_invitation_id"], name: "index_cbv_flows_on_cbv_flow_invitation_id"
   end
 
