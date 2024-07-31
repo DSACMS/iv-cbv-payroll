@@ -3,7 +3,7 @@ locals {
   # the folder under /infra that corresponds to the application
   app_name = regex("/infra/([^/]+)/app-config$", abspath(path.module))[0]
 
-  environments          = ["dev", "staging", "prod"]
+  environments          = ["dev", "prod"]
   project_name          = module.project_config.project_name
   image_repository_name = "${local.project_name}-${local.app_name}"
 
@@ -26,7 +26,7 @@ locals {
 
   environment_configs = {
     dev     = module.dev_config
-    staging = module.staging_config
+    # staging = module.staging_config
     prod    = module.prod_config
   }
 
@@ -64,9 +64,9 @@ locals {
   #     prod    = "prod"
   #   }
   account_names_by_environment = {
-    shared  = "nava-ffs"
     dev     = "nava-ffs"
-    staging = "nava-ffs"
+    # staging = "nava-ffs"
+    shared  = "nava-ffs-prod"   # ECS Container Registry lives here
     prod    = "nava-ffs-prod"
   }
 }
