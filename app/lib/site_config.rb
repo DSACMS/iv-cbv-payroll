@@ -28,7 +28,7 @@ class SiteConfig
 
       raise ArgumentError.new("Site missing id") if @id.blank?
       raise ArgumentError.new("Site #{@id} missing required attribute `agency_name`") if @agency_name.blank?
-      raise ArgumentError.new("Site #{@id} missing required dependent attribute `transmission_method_configuration.email`") if @transmission_method.present? && @transmission_method_configuration.dig("email").blank?
+      # TODO: Add a validation for the dependent attribute, transmission_method_configuration.email, if transmission_method is present
     end
   end
 end
