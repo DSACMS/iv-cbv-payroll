@@ -12,8 +12,10 @@ en:
   cbv:
     add_jobs:
       create:
-        notice: Please select one of the options below
+        notice: You must select an answer to continue.
       show:
+        header: Do you have another job to report?
+        subheader: Please add other jobs you’ve had in the past 90 days, even if you're no longer at that job.
         answer_no_bullet_1: You don't have another job
         answer_no_bullet_2: You have a job that pays you via PayPal, Venmo, Cash App, etc
         answer_no_bullet_3: You have a job that pays you in cash
@@ -26,9 +28,7 @@ en:
         answer_yes_header: Answer YES if your job
         continue: Continue
         criteria_disclaimer: "Note: If you've had other jobs in the past 90 days that don't meet these criteria, you may neec to submit that income information separately. Contact your agency for assistance. <a href='%{url}'>%{text}</a>"
-        header: Have you earned income from another job in the last %{day_count} days?
         no_radio: No, I haven’t earned income from another job
-        subheader: This includes income you were paid for services or goods as a freelancer, independent contractor, gig worker who sets your own schedule, or other kinds of self-employment.
         yes_radio: Yes, I have earned income from another job
     agreements:
       create:
