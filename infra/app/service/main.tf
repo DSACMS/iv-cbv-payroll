@@ -1,6 +1,5 @@
 data "aws_caller_identity" "current" {}
 data "aws_region" "current" {}
-
 data "aws_vpc" "network" {
   tags = {
     project      = module.project_config.project_name
@@ -136,8 +135,9 @@ module "service" {
   source       = "../../modules/service"
   service_name = local.service_config.service_name
 
-  image_repository_name = module.app_config.image_repository_name
-  image_tag             = local.image_tag
+  image_repository_name       = module.app_config.build_repository_config.name
+  image_repository_account_id = module.app_config.build_repository_config.account_id
+  image_tag                   = local.image_tag
 
   vpc_id             = data.aws_vpc.network.id
   public_subnet_ids  = data.aws_subnets.public.ids
