@@ -8,7 +8,7 @@ locals {
     RAILS_SERVE_STATIC_FILES = "true"
 
     # Set to true to inform the app that it is running in a container
-    DOCKERIZED               = "true"
+    DOCKERIZED = "true"
     # LOG_LEVEL               = "info"
     # DB_CONNECTION_POOL_SIZE = 5
   }

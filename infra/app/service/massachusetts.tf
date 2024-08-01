@@ -7,6 +7,7 @@ module "storage_ma_moveit" {
 
 # IAM user shared with MA DTA for purposes of pulling files
 resource "aws_iam_user" "ma_moveit" {
+  #checkov:skip=CKV_AWS_273:https://github.com/DSACMS/iv-cbv-payroll/pull/121#issuecomment-2261568434
   name = "ma-moveit-${var.environment_name}"
 }
 

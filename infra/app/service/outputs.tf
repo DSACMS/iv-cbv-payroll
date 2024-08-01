@@ -28,6 +28,6 @@ output "ma_moveit_access_key_id" {
 }
 
 output "ma_moveit_secret_access_key" {
-  value = aws_iam_access_key.ma_moveit.secret
+  value     = aws_iam_access_key.ma_moveit.secret
   sensitive = true
 }
