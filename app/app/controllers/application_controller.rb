@@ -14,4 +14,14 @@ class ApplicationController < ActionController::Base
   def site_config
     Rails.application.config.sites
   end
+
+  protected
+
+  def authenticate_user!
+    if user_signed_in?
+      super
+    else
+      redirect_to sso_path, notice: "Please sign in"
+    end
+  end
 end
