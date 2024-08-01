@@ -1,9 +1,6 @@
 class CbvFlowInvitationsController < ApplicationController
   before_action :authenticate_user!
 
-  def index
-  end
-
   def new
     @cbv_flow_invitation = CbvFlowInvitation.new
   end
