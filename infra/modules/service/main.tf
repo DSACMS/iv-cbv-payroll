@@ -121,7 +121,7 @@ resource "aws_ecs_task_definition" "app" {
       mountPoints = [
         {
           containerPath = "/rails/tmp",
-          sourceVolume = "${var.service_name}-tmp"
+          sourceVolume  = "${var.service_name}-tmp"
         }
       ]
     }

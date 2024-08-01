@@ -11,7 +11,7 @@ data "aws_route53_zone" "domain" {
 }
 
 resource "aws_sesv2_email_identity" "verified_domain" {
-  email_identity = var.domain
+  email_identity         = var.domain
   configuration_set_name = aws_ses_configuration_set.require_tls.name
 }
 
@@ -44,7 +44,7 @@ resource "aws_route53_record" "spf_mail_from" {
   type    = "TXT"
   ttl     = "300"
   records = ["v=spf1 include:amazonses.com ~all"]
-} 
+}
 
 resource "aws_route53_record" "mx_domain_record" {
   zone_id = data.aws_route53_zone.domain.zone_id

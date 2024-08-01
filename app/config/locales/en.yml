@@ -71,6 +71,7 @@ en:
         continue: Add info to report
         deductions: 'Deduction: %{category}'
         employment_end_date: Employment end date
+        employment_information_table_header: Employment information
         employment_start_date: Employment start date
         employment_status: Employment status
         header: Your payment information from %{employer_name}
@@ -85,7 +86,7 @@ en:
         pay_period: Pay period
         pay_period_frequency: Pay period frequency
         payment_hours: "%{amount} hours"
-        payments_and_deductions: Employment information
+        payments_and_deductions_table_header: Payments and deductions
         subheader: We have gathered your payment records from the past 90 days, from %{start_date} to %{end_date}. Review them and add any comments for your benefits agency in the additional comments section. This will be included in your income report.
         total_gross_description: This is the total income from your job before taxes, benefits and deductions were taken out of your paycheck.
         total_gross_income: 'Total income before taxes: %{amount}'

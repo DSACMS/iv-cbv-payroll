@@ -1,19 +1,18 @@
 name: CI Infra Checks
 
-# TODO: Re-enable this later
-on: []
-  #   push:
-  #     branches:
-  #       - main
-  #     paths:
-  #       - bin/**
-  #       - infra/**
-  #       - .github/workflows/**
-  #   pull_request:
-  #     paths:
-  #       - bin/**
-  #       - infra/**
-  #       - .github/workflows/**
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - bin/**
+      - infra/**
+      - .github/workflows/**
+  pull_request:
+    paths:
+      - bin/**
+      - infra/**
+      - .github/workflows/**
 
 jobs:
   lint-github-actions:

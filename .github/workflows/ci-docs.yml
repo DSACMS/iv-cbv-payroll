@@ -1,12 +1,11 @@
 name: CI Documentation Checks
 
-# TODO: Re-enable me!
-on: []
-  # push:
-  #   branches: [ main ]
-  #   paths: ['app/**']
-  # pull_request:
-  #   paths: ['app/**']
+on:
+  push:
+    branches: [ main ]
+    paths: ['app/**']
+  pull_request:
+    paths: ['app/**']
 
 jobs:
   lint-markdown:
