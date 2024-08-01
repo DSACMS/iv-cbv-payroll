@@ -2,8 +2,8 @@ class ApplicationController < ActionController::Base
   helper :view
   around_action :switch_locale
 
-  def new_session_path
-    new_user_session_path
+  def after_sign_in_path_for(resource)
+    invitations_url(site_id: resource.site_id)
   end
 
   def switch_locale(&action)
