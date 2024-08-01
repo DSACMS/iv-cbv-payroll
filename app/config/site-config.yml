@@ -19,10 +19,10 @@
   transmission_method: null
   transmission_method_configuration: {}
   sso:
-    client_id:     <%= ENV["AZURE_NYC_DSS_CLIENT_ID"] %>
-    client_secret: <%= ENV["AZURE_NYC_DSS_CLIENT_SECRET"] %>
-    tenant_id:     <%= ENV["AZURE_NYC_DSS_TENANT_ID"] %>
-    redirect_uri:  <%= ENV["AZURE_NYC_DSS_REDIRECT_URI"] %>
+    client_id:     <%= ENV["AZURE_MA_DTA_CLIENT_ID"] %>
+    client_secret: <%= ENV["AZURE_MA_DTA_CLIENT_SECRET"] %>
+    tenant_id:     <%= ENV["AZURE_MA_DTA_TENANT_ID"] %>
+    redirect_uri:  <%= ENV["AZURE_MA_DTA_REDIRECT_URI"] %>
     response_type: "id_token"
     response_mode: "form_post"
     scope: "openid"

@@ -8,8 +8,7 @@ class Users::OmniauthCallbacksController < Devise::OmniauthCallbacksController
       flash[:notice] = "Signed in!"
       sign_in_and_redirect @user, event: :authentication
     else
-      flash[:alert] = "You have not yet an account!"
-      redirect_back(fallback_location: root_path)
+      flash[:alert] = "Something went wrong."
     end
   end
 end

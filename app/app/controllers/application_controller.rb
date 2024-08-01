@@ -3,7 +3,7 @@ class ApplicationController < ActionController::Base
   around_action :switch_locale
 
   def after_sign_in_path_for(user)
-    invitations_new_url(site_id: user.site_id)
+    invitations_new_url(user.site_id)
   end
 
   def switch_locale(&action)
