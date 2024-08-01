@@ -4,10 +4,28 @@
   transmission_method_configuration:
     email: <%= ENV['NYC_HRA_EMAIL'] %>
   sso:
-    provider: nyc
+    client_id:     <%= ENV["AZURE_NYC_DSS_CLIENT_ID"] %>
+    client_secret: <%= ENV["AZURE_NYC_DSS_CLIENT_SECRET"] %>
+    tenant_id:     <%= ENV["AZURE_NYC_DSS_TENANT_ID"] %>
+    redirect_uri:  <%= ENV["AZURE_NYC_DSS_REDIRECT_URI"] %>
+    response_type: "id_token"
+    response_mode: "form_post"
+    scope: "openid"
+    state: "12345"
+    nonce: "678910"
+    name: "nyc_dss"
 - id: ma
   agency_name: Massachusetts Department of Transitional Assistance
   transmission_method: null
   transmission_method_configuration: {}
   sso:
-    provider: ma_dta
+    client_id:     <%= ENV["AZURE_NYC_DSS_CLIENT_ID"] %>
+    client_secret: <%= ENV["AZURE_NYC_DSS_CLIENT_SECRET"] %>
+    tenant_id:     <%= ENV["AZURE_NYC_DSS_TENANT_ID"] %>
+    redirect_uri:  <%= ENV["AZURE_NYC_DSS_REDIRECT_URI"] %>
+    response_type: "id_token"
+    response_mode: "form_post"
+    scope: "openid"
+    state: "12345"
+    nonce: "678910"
+    name: "ma_dta"

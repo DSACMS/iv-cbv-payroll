@@ -274,16 +274,7 @@ Devise.setup do |config|
   config.omniauth(
     :ma_dta,
     {
-      client_id:     ENV["AZURE_MA_DTA_CLIENT_ID"],
-      client_secret: ENV["AZURE_MA_DTA_CLIENT_SECRET"],
-      tenant_id:     ENV["AZURE_MA_DTA_TENANT_ID"],
-      redirect_uri:  ENV["AZURE_MA_DTA_REDIRECT_URI"],
-      response_type: "id_token",
-      response_mode: "form_post",
-      scope: "openid",
-      state: "12345",
-      nonce: "678910",
-      name: "ma_dta",
+      **Rails.application.config.sites['ma'].sso,
       strategy_class: OmniAuth::Strategies::AzureActivedirectoryV2
     }
   )
@@ -291,16 +282,7 @@ Devise.setup do |config|
   config.omniauth(
     :nyc_dss,
     {
-      client_id:     ENV["AZURE_NYC_DSS_CLIENT_ID"],
-      client_secret: ENV["AZURE_NYC_DSS_CLIENT_SECRET"],
-      tenant_id:     ENV["AZURE_NYC_DSS_TENANT_ID"],
-      redirect_uri:  ENV["AZURE_NYC_DSS_REDIRECT_URI"],
-      response_type: "id_token",
-      response_mode: "form_post",
-      scope: "openid",
-      state: "12345",
-      nonce: "678910",
-      name: "nyc_dss",
+      **Rails.application.config.sites['nyc'].sso,
       strategy_class: OmniAuth::Strategies::AzureActivedirectoryV2
     }
   )
