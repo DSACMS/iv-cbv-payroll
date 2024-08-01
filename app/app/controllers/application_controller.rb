@@ -2,7 +2,7 @@ class ApplicationController < ActionController::Base
   helper :view
   around_action :switch_locale
 
-  def new_session_path(scope)
+  def new_session_path
     new_user_session_path
   end
 

@@ -10,6 +10,7 @@ Rails.application.routes.draw do
   if Rails.env.development?
     mount Sidekiq::Web => "/sidekiq"
   end
+
   scope "(:locale)", locale: /#{I18n.available_locales.join("|")}/ do
     # Your application routes go here
     root "pages#home"
@@ -38,7 +39,8 @@ Rails.application.routes.draw do
     get "/invitations/new", to: redirect { |_, req| "/nyc/invitations/new?secret=#{req.params[:secret]}" }
 
     scope "/:site_id" do
-      resources :cbv_flow_invitations, as: :invitations, path: :invitations, only: %i[index new create]
+      get "/", to: "sso#index", as: :sso
+      resources :cbv_flow_invitations, as: :invitations, path: :invitations
     end
   end
 

@@ -18,13 +18,14 @@ class SiteConfig
   end
 
   class Site
-    attr_reader :id, :agency_name, :transmission_method, :transmission_method_configuration
+    attr_reader :id, :agency_name, :transmission_method, :transmission_method_configuration, :sso
 
     def initialize(yaml)
       @id = yaml["id"]
       @agency_name = yaml["agency_name"]
       @transmission_method = yaml["transmission_method"]
       @transmission_method_configuration = yaml["transmission_method_configuration"]
+      @sso = yaml["sso"]
 
       raise ArgumentError.new("Site missing id") if @id.blank?
       raise ArgumentError.new("Site #{@id} missing required attribute `agency_name`") if @agency_name.blank?
