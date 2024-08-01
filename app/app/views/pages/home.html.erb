@@ -7,4 +7,6 @@
   <button class="usa-button usa-button--outline" type="button"><%= t("cbv.manual_flow_start") %></button>
 <% end %>
 
-<%= button_to "Sign in SSO", user_azure_activedirectory_v2_omniauth_authorize_path, data: { turbo: false, turbolinks: false, 'turbo-method' => :post } %>
+<%= button_to "Sign in MA DTA", user_ma_dta_omniauth_authorize_path, data: { turbo: false }, class: "usa-button" %>
+
+<%= button_to "Sign in NYC DSS", user_nyc_dss_omniauth_authorize_path, data: { turbo: false }, class: "usa-button" %>
