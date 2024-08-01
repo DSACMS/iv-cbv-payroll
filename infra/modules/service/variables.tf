@@ -29,6 +29,11 @@ variable "image_tag" {
   description = "The tag of the image to deploy"
 }
 
+variable "image_repository_account_id" {
+  type        = string
+  description = "The account ID that contains the container image repository"
+}
+
 variable "image_repository_name" {
   type        = string
   description = "The name of the container image repository"
