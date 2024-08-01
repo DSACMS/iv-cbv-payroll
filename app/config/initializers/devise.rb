@@ -274,7 +274,7 @@ Devise.setup do |config|
   config.omniauth(
     :ma_dta,
     {
-      **Rails.application.config.sites['ma'].sso,
+      **Rails.application.config.sites["ma"].sso,
       strategy_class: OmniAuth::Strategies::AzureActivedirectoryV2
     }
   )
@@ -282,7 +282,7 @@ Devise.setup do |config|
   config.omniauth(
     :nyc_dss,
     {
-      **Rails.application.config.sites['nyc'].sso,
+      **Rails.application.config.sites["nyc"].sso,
       strategy_class: OmniAuth::Strategies::AzureActivedirectoryV2
     }
   )

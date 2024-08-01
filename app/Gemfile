@@ -62,7 +62,7 @@ gem "actioncable-enhanced-postgresql-adapter"
 gem "aws-sdk-rails"
 
 # https://www.ruby-lang.org/en/news/2024/05/16/dos-rexml-cve-2024-35176/
-gem "rexml", "~> 3.3.2"
+gem "rexml", "~> 3.3.3"
 
 group :development, :test do
   gem "brakeman", "~> 5.2"
