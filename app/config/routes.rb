@@ -38,7 +38,7 @@ Rails.application.routes.draw do
     get "/invitations/new", to: redirect { |_, req| "/nyc/invitations/new?secret=#{req.params[:secret]}" }
 
     scope "/:site_id" do
-      resources :cbv_flow_invitations, as: :invitations, path: :invitations, only: %i[new create]
+      resources :cbv_flow_invitations, as: :invitations, path: :invitations, only: %i[index new create]
     end
   end
 

@@ -1,6 +1,9 @@
 class CbvFlowInvitationsController < ApplicationController
   before_action :ensure_valid_params!
-  before_action :authenticate_user!
+  # before_action :authenticate_user!
+
+  def index
+  end
 
   def new
     @cbv_flow_invitation = CbvFlowInvitation.new
@@ -43,5 +46,9 @@ class CbvFlowInvitationsController < ApplicationController
       :email_address,
       :case_number
     )
+  end
+
+  def current_site
+    site_config[params[:site_id]]
   end
 end

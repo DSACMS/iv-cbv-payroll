@@ -275,10 +275,10 @@ Devise.setup do |config|
     :ma_dta,
     {
       client_id:     ENV["AZURE_MA_DTA_CLIENT_ID"],
-      client_secret: "secret",
-      tenant_id:     "7a01aa3a-20e1-4ad6-aed3-8eb2f4d7d87e",
+      client_secret: ENV["AZURE_MA_DTA_CLIENT_SECRET"],
+      tenant_id:     ENV["AZURE_MA_DTA_TENANT_ID"],
+      redirect_uri:  ENV["AZURE_MA_DTA_REDIRECT_URI"],
       response_type: "id_token",
-      redirect_uri: "http://localhost:3000/auth/ma_dta/callback",
       response_mode: "form_post",
       scope: "openid",
       state: "12345",
@@ -292,10 +292,10 @@ Devise.setup do |config|
     :nyc_dss,
     {
       client_id:     ENV["AZURE_NYC_DSS_CLIENT_ID"],
-      client_secret: "secret",
-      tenant_id:     "NYCNYCNY-NYCN-YCNY-NYCN-YCNYCNYCNYCN", # TODO: Obviously, fill this in with whatever it should be.
+      client_secret: ENV["AZURE_NYC_DSS_CLIENT_SECRET"],
+      tenant_id:     ENV["AZURE_NYC_DSS_TENANT_ID"],
+      redirect_uri:  ENV["AZURE_NYC_DSS_REDIRECT_URI"],
       response_type: "id_token",
-      redirect_uri: "http://localhost:3000/auth/nyc_dss/callback",
       response_mode: "form_post",
       scope: "openid",
       state: "12345",

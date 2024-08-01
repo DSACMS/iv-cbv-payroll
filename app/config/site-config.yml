@@ -3,7 +3,11 @@
   transmission_method: shared_email
   transmission_method_configuration:
     email: <%= ENV['NYC_HRA_EMAIL'] %>
+  sso:
+    provider: nyc
 - id: ma
   agency_name: Massachusetts Department of Transitional Assistance
   transmission_method: null
   transmission_method_configuration: {}
+  sso:
+    provider: ma_dta
