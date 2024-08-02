@@ -3,18 +3,30 @@
 require "faraday"
 
 class PinwheelService
+  ENVIRONMENTS = {
+    sandbox: {
+      base_url: "https://sandbox.getpinwheel.com"
+    },
+    development: {
+      base_url: "https://development.getpinwheel.com"
+    },
+    production: {
+      base_url: "https://api.getpinwheel.com"
+    }
+  }
+
   PINWHEEL_VERSION = "2023-11-22"
-  BASE_URL = "https://sandbox.getpinwheel.com"
   ACCOUNTS_ENDPOINT = "/v1/accounts"
   USER_TOKENS_ENDPOINT = "/v1/link_tokens"
   ITEMS_ENDPOINT = "/v1/search"
   WEBHOOKS_ENDPOINT = "/v1/webhooks"
   END_USERS = "/v1/end_users"
 
-  def initialize(api_key)
+  def initialize(api_key, environment)
     raise "PinwheelService api_key is blank" if api_key.blank?
 
     @api_key = api_key
+    @environment = ENVIRONMENTS.fetch(environment.to_sym) { |env| raise KeyError.new("PinwheelService unknown environment: #{env}") }
 
     client_options = {
       request: {
@@ -24,7 +36,7 @@ class PinwheelService
         # be serialized as `?foo=1&foo=2&foo=3`:
         params_encoder: Faraday::FlatParamsEncoder
       },
-      url: BASE_URL,
+      url: @environment[:base_url],
       headers: {
         "Content-Type" => "application/json",
         "Pinwheel-Version" => PINWHEEL_VERSION,

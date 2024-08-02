@@ -15,7 +15,7 @@ class PinwheelWebhookManager
 
   def initialize
     @sandbox_config = Rails.application.config.sites["sandbox"]
-    @pinwheel = PinwheelService.new(@sandbox_config.pinwheel_api_token)
+    @pinwheel = PinwheelService.new(@sandbox_config.pinwheel_api_token, @sandbox_config.pinwheel_environment)
   end
 
   def existing_subscriptions(name)
@@ -38,12 +38,12 @@ class PinwheelWebhookManager
     end
 
     if existing_subscription
-      puts "  Existing Pinwheel webhook subscription found: #{existing_subscription["url"]}"
+      puts "  Existing Pinwheel webhook subscription found in Pinwheel #{@sandbox_config.pinwheel_environment}: #{existing_subscription["url"]}"
       remove_subscriptions(subscriptions.excluding(existing_subscription))
     else
       remove_subscriptions(subscriptions)
 
-      puts "  Registering Pinwheel webhooks for Ngrok tunnel..."
+      puts "  Registering Pinwheel webhooks for Ngrok tunnel in Pinwheel #{@sandbox_config.pinwheel_environment}..."
       response = @pinwheel.create_webhook_subscription(WEBHOOK_EVENTS, receiver_url)
       new_webhook_subscription_id = response["data"]["id"]
       puts "  ✅ Set up Pinwheel webhook: #{new_webhook_subscription_id}"
