@@ -6,7 +6,7 @@ RSpec.describe Cbv::PaymentDetailsController do
   describe "#show" do
     render_views
 
-    let!(:cbv_flow) { CbvFlow.create!(case_number: "ABC1234", pinwheel_token_id: "abc-def-ghi", site_id: "nyc") }
+    let!(:cbv_flow) { CbvFlow.create!(case_number: "ABC1234", pinwheel_token_id: "abc-def-ghi", site_id: "sandbox") }
     let(:account_id) { SecureRandom.uuid }
     let(:comment) { "This is a test comment" }
 
@@ -82,7 +82,7 @@ RSpec.describe Cbv::PaymentDetailsController do
   end
 
   describe "#update" do
-    let!(:cbv_flow) { CbvFlow.create!(case_number: "ABC1234", pinwheel_token_id: "abc-def-ghi", site_id: "nyc") }
+    let!(:cbv_flow) { CbvFlow.create!(case_number: "ABC1234", pinwheel_token_id: "abc-def-ghi", site_id: "sandbox") }
     let(:account_id) { SecureRandom.uuid }
     let(:comment) { "This is a test comment" }
 

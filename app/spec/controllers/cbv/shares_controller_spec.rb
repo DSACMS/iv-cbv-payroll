@@ -3,7 +3,7 @@ require "rails_helper"
 RSpec.describe Cbv::SharesController do
   include PinwheelApiHelper
 
-  let(:cbv_flow) { CbvFlow.create(case_number: "ABC1234", pinwheel_token_id: "abc-def-ghi", site_id: "nyc") }
+  let(:cbv_flow) { CbvFlow.create(case_number: "ABC1234", pinwheel_token_id: "abc-def-ghi", site_id: "sandbox") }
 
   describe "#show" do
     render_views
@@ -26,12 +26,12 @@ RSpec.describe Cbv::SharesController do
         expect(cbv_flow.confirmation_code).to be_blank
         put :update
         expect(cbv_flow.reload.confirmation_code).not_to be_blank
-        expect(cbv_flow.reload.confirmation_code).to start_with("NYC")
+        expect(cbv_flow.reload.confirmation_code).to start_with("SANDBOX")
       end
     end
 
     context "when confirmation_code already exists" do
-      let(:existing_confirmation_code) { "NYC0000" }
+      let(:existing_confirmation_code) { "SANDBOX000" }
 
       before do
         cbv_flow.update(confirmation_code: existing_confirmation_code)

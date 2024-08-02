@@ -2,7 +2,7 @@ require "rails_helper"
 
 RSpec.describe Cbv::SuccessesController do
   describe "#show" do
-    let(:cbv_flow) { CbvFlow.create(case_number: "ABC1234", site_id: "nyc", confirmation_code: "NYC12345") }
+    let(:cbv_flow) { CbvFlow.create(case_number: "ABC1234", site_id: "sandbox", confirmation_code: "NYC12345") }
 
     before do
       session[:cbv_flow_id] = cbv_flow.id

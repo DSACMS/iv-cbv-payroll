@@ -18,7 +18,7 @@ RSpec.describe Cbv::EntriesController do
     end
 
     context "when following a link from a flow invitation" do
-      let(:invitation) { CbvFlowInvitation.create(case_number: "ABC1234", site_id: "nyc") }
+      let(:invitation) { CbvFlowInvitation.create(case_number: "ABC1234", site_id: "sandbox") }
 
       it "sets a CbvFlow object based on the invitation" do
         expect { get :show, params: { token: invitation.auth_token } }
@@ -34,7 +34,7 @@ RSpec.describe Cbv::EntriesController do
       end
 
       context "when returning to an already-visited flow invitation" do
-        let(:existing_cbv_flow) { CbvFlow.create(case_number: "ABC1234", cbv_flow_invitation: invitation, site_id: "nyc") }
+        let(:existing_cbv_flow) { CbvFlow.create(case_number: "ABC1234", cbv_flow_invitation: invitation, site_id: "sandbox") }
 
         it "uses the existing CbvFlow object" do
           expect { get :show, params: { token: invitation.auth_token } }
@@ -45,7 +45,7 @@ RSpec.describe Cbv::EntriesController do
       end
 
       context "when there is already a CbvFlow in the session" do
-        let(:other_cbv_flow) { CbvFlow.create(case_number: "ZZZ0000", site_id: "nyc") }
+        let(:other_cbv_flow) { CbvFlow.create(case_number: "ZZZ0000", site_id: "sandbox") }
 
         before do
           session[:cbv_flow_id] = other_cbv_flow.id
