@@ -1,11 +1,14 @@
+data "external" "account_ids_by_name" {
+  program = ["../../../bin/account-ids-by-name.sh"]
+}
+
 locals {
   # app_name is the name of the application, which by convention should match the name of
   # the folder under /infra that corresponds to the application
   app_name = regex("/infra/([^/]+)/app-config$", abspath(path.module))[0]
 
-  environments          = ["dev", "prod"]
-  project_name          = module.project_config.project_name
-  image_repository_name = "${local.project_name}-${local.app_name}"
+  environments = ["dev", "prod"]
+  project_name = module.project_config.project_name
 
   # Whether or not the application has a database
   # If enabled:
@@ -31,7 +34,9 @@ locals {
   }
 
   build_repository_config = {
-    region = module.project_config.default_region
+    name       = "${local.project_name}-${local.app_name}"
+    region     = module.project_config.default_region
+    account_id = data.external.account_ids_by_name.result[local.account_names_by_environment["shared"]]
   }
 
   # Map from environment name to the account name for the AWS account that
@@ -66,7 +71,7 @@ locals {
   account_names_by_environment = {
     dev = "nava-ffs"
     # staging = "nava-ffs"
-    shared = "nava-ffs-prod" # ECS Container Registry lives here
+    shared = "nava-ffs-prod"
     prod   = "nava-ffs-prod"
   }
 }

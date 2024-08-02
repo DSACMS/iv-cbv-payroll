@@ -17,21 +17,20 @@ echo "  IMAGE_TAG=$IMAGE_TAG"
 # Need to init module when running in CD since GitHub actions does a fresh checkout of repo
 terraform -chdir="infra/$APP_NAME/app-config" init > /dev/null
 terraform -chdir="infra/$APP_NAME/app-config" apply -auto-approve > /dev/null
-IMAGE_REPOSITORY_NAME=$(terraform -chdir="infra/$APP_NAME/app-config" output -raw image_repository_name)
+IMAGE_REPOSITORY_NAME=$(terraform -chdir="infra/$APP_NAME/app-config" output -json build_repository_config | jq -r .name)
+IMAGE_REPOSITORY_ACCOUNT_ID=$(terraform -chdir="infra/$APP_NAME/app-config" output -json build_repository_config | jq -r .account_id)
+REGION=$(terraform -chdir="infra/$APP_NAME/app-config" output -json build_repository_config | jq -r .region)
 
-REGION=$(./bin/current-region.sh)
-read -r IMAGE_REGISTRY_ID IMAGE_REPOSITORY_URL <<< "$(aws ecr describe-repositories --repository-names "$IMAGE_REPOSITORY_NAME" --query "repositories[0].[registryId,repositoryUri]" --output text)"
-IMAGE_REGISTRY="$IMAGE_REGISTRY_ID.dkr.ecr.$REGION.amazonaws.com"
+IMAGE_REPOSITORY_URL="$IMAGE_REPOSITORY_ACCOUNT_ID.dkr.ecr.$REGION.amazonaws.com/$IMAGE_REPOSITORY_NAME"
 
 echo "Build repository info:"
 echo "  REGION=$REGION"
-echo "  IMAGE_REGISTRY=$IMAGE_REGISTRY"
 echo "  IMAGE_REPOSITORY_NAME=$IMAGE_REPOSITORY_NAME"
 echo "  IMAGE_REPOSITORY_URL=$IMAGE_REPOSITORY_URL"
 echo
 echo "Authenticating Docker with ECR"
 aws ecr get-login-password --region "$REGION" \
-  | docker login --username AWS --password-stdin "$IMAGE_REGISTRY"
+  | docker login --username AWS --password-stdin "$IMAGE_REPOSITORY_URL"
 echo
 echo "Check if tag has already been published..."
 RESULT=""
