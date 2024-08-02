@@ -4,8 +4,24 @@
 
 <div data-controller="cbv-employer-search">
   <p><%= t(".search_for_employer") %></p>
-  <p><%= t(".directed_to_login_portal") %></p>
-
+  <p><%= t(".to_access") %></p>
+  <ul>
+    <li><%= t(".to_access_li_1_html") %></li>
+    <li><%= t(".to_access_li_2_html") %></li>
+    <li><%= t(".to_access_li_3_html") %></li>
+  </ul>
+ 
+  <p><%= t(".you_ll_go") %></p>
+  <div class="grid-row grid-gap-md">
+      <div class="grid-col-auto">
+        <svg class="usa-icon text-primary" aria-hidden="true" focusable="false" role="img">
+          <use xlink:href="<%= asset_path('@uswds/uswds/dist/img/sprite.svg#help') %>"</use>
+        </svg>
+      </div>
+      <div class="grid-col">
+        <%= t(".what_is_html") %>
+      </div>
+    </div>
   <%= form_with url: cbv_flow_employer_search_path, method: :get, class: "usa-search usa-search--big margin-top-4", html: { role: "search" }, data: { turbo_frame: "employers", turbo_action: "advance" } do |f| %>
     <%= hidden_field_tag :authenticity_token, form_authenticity_token -%>
     <%= f.label :query, "Search for your employer", class: "usa-sr-only" %>

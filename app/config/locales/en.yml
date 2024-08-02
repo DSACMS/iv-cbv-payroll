@@ -34,7 +34,6 @@ en:
     employer_searches:
       show:
         can_not_find_employer: I can’t find my company or payroll provider
-        directed_to_login_portal: You’ll be directed to their login portal, where you can enter your sign-in information to view your payment history.
         employer_not_listed: Employer not listed?
         fetching_payroll: We are fetching your employer's payment information.
         fetching_payroll_description: This may take a few minutes. Please do not close this window.
@@ -44,6 +43,13 @@ en:
         search_for_employer: Search for your employer or payroll provider to share your income information with your benefits agency. This can be a former employer or a current employer. We'll retrieve the last 90 days of pay information from when you applied.
         select: Select
         select_button_aria_label: Open an authentication modal for the employer or payroll provider to import your payment history.
+        to_access: 'To access your payment information from this period, search for:'
+        to_access_li_1_html: <strong>Your employer</strong> name
+        to_access_li_2_html: The <strong>payroll provider</strong> you get paid from
+        to_access_li_3_html: The <strong>App</strong> you work for, like Uber, DoorDash, etc 
+        you_ll_go: You’ll go to their login portal and sign-in to see your payment history.
+        what_is_html: <strong>What is a payroll provider?</strong> A payroll provider is a system that some employers or companies use to handle payroll, pay processing, and distribute pay checks and direct deposit. Examples of popular payroll providers are ADP, Paychex, Gusto, etc.
+        help: Help
     entries:
       show:
         case_number: 'We’ll be verifying income related to this ID number: %{case_number}'
