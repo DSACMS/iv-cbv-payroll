@@ -7,3 +7,8 @@
   agency_name: Massachusetts Department of Transitional Assistance
   transmission_method: null
   transmission_method_configuration: {}
+- id: sandbox
+  agency_name: CBV Test Agency
+  transmission_method: shared_email
+  transmission_method_configuration:
+    email: <%= ENV['SLACK_TEST_EMAIL'] %>
