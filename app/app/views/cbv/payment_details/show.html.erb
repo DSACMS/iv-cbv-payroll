@@ -78,7 +78,7 @@
         </tr>
         <% payment[:deductions].each do |deduction| %>
           <tr>
-            <td><%= t(".deductions", category: deduction[:category]) %></td>
+            <td><%= t(".deductions", category: deduction[:category]&.humanize) %></td>
             <td><%= format_money(deduction[:amount]) %></td>
           </tr>
         <% end %>
