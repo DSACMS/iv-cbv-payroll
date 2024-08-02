@@ -8,7 +8,7 @@
 
 <% if @payments.any? %>
   <p><%= t(".subheader", start_date: format_date(start_date), end_date: format_date(end_date)) %></p>
-  <h2><%= t(".total_gross_income", amount: number_to_currency(gross_pay)) %></h2>
+  <h2><%= t(".total_gross_income", amount: format_money(gross_pay)) %></h2>
   <p><%= t(".total_gross_description") %></p>
     <table class="usa-table usa-table--borderless width-full">
       <thead class="border-top-05">
@@ -37,7 +37,7 @@
       </tr>
       <tr>
         <td><%= t(".hourly_rate") %></td>
-        <td><%= number_to_currency(compensation_amount) %></td>
+        <td><%= format_money(compensation_amount) %></td>
       </tr>
       </tbody>
     </table>
@@ -64,12 +64,12 @@
 
         <tr>
           <td><%= t(".pay_gross") %></td>
-          <td><%= number_to_currency(gross_pay) %></td>
+          <td><%= format_money(payment[:gross_pay_amount]) %></td>
         </tr>
 
         <tr>
           <td><%= t(".pay_net") %></td>
-          <td><%= number_to_currency(payment[:net_pay_amount]) %></td>
+          <td><%= format_money(payment[:net_pay_amount]) %></td>
         </tr>
 
         <tr>
@@ -79,13 +79,13 @@
         <% payment[:deductions].each do |deduction| %>
           <tr>
             <td><%= t(".deductions", category: deduction[:category]) %></td>
-            <td><%= number_to_currency(deduction[:amount]) %></td>
+            <td><%= format_money(deduction[:amount]) %></td>
           </tr>
         <% end %>
 
         <tr>
           <td><%= t(".pay_gross_ytd") %></td>
-          <td><%= number_to_currency(payment[:gross_pay_ytd]) %></td>
+          <td><%= format_money(payment[:gross_pay_ytd]) %></td>
         </tr>
       <% end %>
 

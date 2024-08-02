@@ -27,4 +27,8 @@ module ViewHelper
       "Invalid timestamp"
     end
   end
+
+  def format_money(dollars_in_cents)
+    number_to_currency(dollars_in_cents.to_f / 100)
+  end
 end

@@ -7,7 +7,7 @@
     <p>
       <%= t(".description") %>
     </p>
-    <h3 class="site-preview-heading"><%= t(".total_payments", amount: number_to_currency(total_gross_income)) %></h3>
+    <h3 class="site-preview-heading"><%= t(".total_payments", amount: format_money(total_gross_income)) %></h3>
 
     <% payments_grouped_by_employer.each_with_index do |(account_id, summary), index| %>
       <table class="usa-table usa-table--borderless width-full">
@@ -25,7 +25,7 @@
                 <% if summary[:employer_name] %>
                   <%= t(".total_income_from", employer_name: summary[:employer_name], amount: summary[:total]) %>
                 <% else %>
-                  <%= t(".total_income_from_no_employer_name", amount: number_to_currency(summary[:total])) %>
+                  <%= t(".total_income_from_no_employer_name", amount: format_money(summary[:total])) %>
                 <% end %>
               </h3>
             </th>
@@ -34,7 +34,7 @@
         <tbody>
           <% summary[:payments].each do |payment| %>
             <tr>
-              <td><%= t(".payment", amount: number_to_currency(payment[:net_pay_amount]), date: format_date(payment[:pay_date])) %></td>
+              <td><%= t(".payment", amount: format_money(payment[:net_pay_amount]), date: format_date(payment[:pay_date])) %></td>
             </tr>
           <% end %>
         </tbody>
