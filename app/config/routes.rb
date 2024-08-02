@@ -4,7 +4,7 @@ Rails.application.routes.draw do
   if Rails.env.development?
     mount Sidekiq::Web => "/sidekiq"
   end
-  scope "(:locale)", locale: /#{I18n.available_locales.join("|")}/ do
+  scope "(:locale)", locale: /#{I18n.available_locales.join("|")}/, format: "html"  do
     # Your application routes go here
     root "pages#home"
 
