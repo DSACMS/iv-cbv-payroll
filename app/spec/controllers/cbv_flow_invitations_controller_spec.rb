@@ -4,6 +4,8 @@ RSpec.describe CbvFlowInvitationsController do
   let(:invite_secret) { "FAKE_INVITE_SECRET" }
   let(:site_id) { "nyc" }
 
+  let(:user) { User.create(email: "test@test.com", site_id: 'ma') }
+
   around do |ex|
     stub_environment_variable("CBV_INVITE_SECRET", invite_secret, &ex)
   end
@@ -74,6 +76,10 @@ RSpec.describe CbvFlowInvitationsController do
     end
 
     context "with the invite secret" do
+      before do
+        sign_in user
+      end
+
       it "sends an invitation" do
         expect_any_instance_of(CbvInvitationService)
           .to receive(:invite)
