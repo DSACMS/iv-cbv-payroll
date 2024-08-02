@@ -11,7 +11,7 @@ class Webhooks::Pinwheel::EventsController < ApplicationController
     # using a same-length DUMMY_API_KEY even if the `end_user_id` does not
     # match a valid `cbv_flow`.
     cbv_flow = CbvFlow.find_by_pinwheel_end_user_id(params["payload"]["end_user_id"])
-    pinwheel = cbv_flow.present? ? pinwheel_for(cbv_flow) : PinwheelService.new(DUMMY_API_KEY)
+    pinwheel = cbv_flow.present? ? pinwheel_for(cbv_flow) : PinwheelService.new(DUMMY_API_KEY, "sandbox")
     digest = pinwheel.generate_signature_digest(timestamp, request.raw_post)
     unless pinwheel.verify_signature(signature, digest)
       return render json: { error: "Invalid signature" }, status: :unauthorized
