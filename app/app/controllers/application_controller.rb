@@ -10,4 +10,10 @@ class ApplicationController < ActionController::Base
   def site_config
     Rails.application.config.sites
   end
+
+  def pinwheel_for(cbv_flow)
+    api_key = site_config[cbv_flow.site_id].pinwheel_api_token
+
+    PinwheelService.new(api_key)
+  end
 end

@@ -11,8 +11,8 @@ class PinwheelService
   WEBHOOKS_ENDPOINT = "/v1/webhooks"
   END_USERS = "/v1/end_users"
 
-  def initialize(api_key = ENV["PINWHEEL_API_TOKEN"])
-    raise "PINWHEEL_API_TOKEN environment variable is blank. Make sure you have the .env.local.local from 1Password." if api_key.blank?
+  def initialize(api_key)
+    raise "PinwheelService api_key is blank" if api_key.blank?
 
     @api_key = api_key
 

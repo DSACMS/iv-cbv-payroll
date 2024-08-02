@@ -1,4 +1,11 @@
-# This class manages pinwheel webhook subscriptions, and is intended for development environment setup only
+# This class manages pinwheel webhook subscriptions, and is intended for
+# development environment setup only
+#
+# The webhooks will be registered in the Pinwheel environment listed under the
+# "sandbox" site in site-config.yml. Any sites in diffeent environments will
+# not work. (i.e. if the sandbox site is set to Pinwheel environment "sandbox",
+# then any sites with Pinwheel environment "development" will not have their
+# webhooks configured.)
 class PinwheelWebhookManager
   WEBHOOK_EVENTS = %w[
     account.added
@@ -7,7 +14,8 @@ class PinwheelWebhookManager
   ]
 
   def initialize
-    @pinwheel = PinwheelService.new
+    @sandbox_config = Rails.application.config.sites["sandbox"]
+    @pinwheel = PinwheelService.new(@sandbox_config.pinwheel_api_token)
   end
 
   def existing_subscriptions(name)

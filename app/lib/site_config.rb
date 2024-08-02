@@ -18,11 +18,12 @@ class SiteConfig
   end
 
   class Site
-    attr_reader :id, :agency_name, :transmission_method, :transmission_method_configuration
+    attr_reader :id, :agency_name, :pinwheel_api_token, :transmission_method, :transmission_method_configuration
 
     def initialize(yaml)
       @id = yaml["id"]
       @agency_name = yaml["agency_name"]
+      @pinwheel_api_token = yaml["pinwheel"]["api_token"]
       @transmission_method = yaml["transmission_method"]
       @transmission_method_configuration = yaml["transmission_method_configuration"]
 
