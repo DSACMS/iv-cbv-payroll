@@ -5,8 +5,14 @@ RSpec.describe SiteConfig do
   let(:sample_config) { <<~YAML }
     - id: foo
       agency_name: Foo Agency Name
+      pinwheel:
+        api_token: foo
+        environment: foo
     - id: bar
       agency_name: Bar Agency Name
+      pinwheel:
+        api_token: bar
+        environment: bar
   YAML
 
   before do
