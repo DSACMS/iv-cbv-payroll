@@ -24,4 +24,11 @@ class ApplicationController < ActionController::Base
       redirect_to sso_path, notice: "Please sign in"
     end
   end
+
+  def pinwheel_for(cbv_flow)
+    api_key = site_config[cbv_flow.site_id].pinwheel_api_token
+    environment = site_config[cbv_flow.site_id].pinwheel_environment
+
+    PinwheelService.new(api_key, environment)
+  end
 end

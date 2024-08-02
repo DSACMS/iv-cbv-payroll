@@ -1,4 +1,11 @@
-# This class manages pinwheel webhook subscriptions, and is intended for development environment setup only
+# This class manages pinwheel webhook subscriptions, and is intended for
+# development environment setup only
+#
+# The webhooks will be registered in the Pinwheel environment listed under the
+# "sandbox" site in site-config.yml. Any sites in diffeent environments will
+# not work. (i.e. if the sandbox site is set to Pinwheel environment "sandbox",
+# then any sites with Pinwheel environment "development" will not have their
+# webhooks configured.)
 class PinwheelWebhookManager
   WEBHOOK_EVENTS = %w[
     account.added
@@ -7,7 +14,8 @@ class PinwheelWebhookManager
   ]
 
   def initialize
-    @pinwheel = PinwheelService.new
+    @sandbox_config = Rails.application.config.sites["sandbox"]
+    @pinwheel = PinwheelService.new(@sandbox_config.pinwheel_api_token, @sandbox_config.pinwheel_environment)
   end
 
   def existing_subscriptions(name)
@@ -30,12 +38,12 @@ class PinwheelWebhookManager
     end
 
     if existing_subscription
-      puts "  Existing Pinwheel webhook subscription found: #{existing_subscription["url"]}"
+      puts "  Existing Pinwheel webhook subscription found in Pinwheel #{@sandbox_config.pinwheel_environment}: #{existing_subscription["url"]}"
       remove_subscriptions(subscriptions.excluding(existing_subscription))
     else
       remove_subscriptions(subscriptions)
 
-      puts "  Registering Pinwheel webhooks for Ngrok tunnel..."
+      puts "  Registering Pinwheel webhooks for Ngrok tunnel in Pinwheel #{@sandbox_config.pinwheel_environment}..."
       response = @pinwheel.create_webhook_subscription(WEBHOOK_EVENTS, receiver_url)
       new_webhook_subscription_id = response["data"]["id"]
       puts "  ✅ Set up Pinwheel webhook: #{new_webhook_subscription_id}"

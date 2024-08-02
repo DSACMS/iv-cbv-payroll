@@ -26,7 +26,7 @@ class Cbv::BaseController < ApplicationController
       end
     else
       # TODO: Restrict ability to enter the flow without a valid token
-      @cbv_flow = CbvFlow.create(site_id: "nyc")
+      @cbv_flow = CbvFlow.create(site_id: "sandbox")
     end
 
     session[:cbv_flow_id] = @cbv_flow.id
@@ -62,7 +62,7 @@ class Cbv::BaseController < ApplicationController
   end
 
   def pinwheel
-    PinwheelService.new
+    pinwheel_for(@cbv_flow)
   end
 
   def fetch_payroll
