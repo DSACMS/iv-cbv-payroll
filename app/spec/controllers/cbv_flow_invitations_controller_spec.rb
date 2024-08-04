@@ -17,7 +17,7 @@ RSpec.describe CbvFlowInvitationsController do
       it "redirects to the sso login page" do
         get :new, params: valid_params.except(:secret)
 
-        expect(response).to redirect_to(sso_url)
+        expect(response).to redirect_to(new_user_session_url)
       end
     end
 
@@ -75,7 +75,7 @@ RSpec.describe CbvFlowInvitationsController do
 
         post :create, params: valid_params
 
-        expect(response).to redirect_to(sso_url)
+        expect(response).to redirect_to(new_user_session_url)
       end
     end
 

@@ -17,14 +17,6 @@ class ApplicationController < ActionController::Base
 
   protected
 
-  def authenticate_user!
-    if user_signed_in?
-      super
-    else
-      redirect_to sso_path, notice: "Please sign in"
-    end
-  end
-
   def pinwheel_for(cbv_flow)
     api_key = site_config[cbv_flow.site_id].pinwheel_api_token
     environment = site_config[cbv_flow.site_id].pinwheel_environment
