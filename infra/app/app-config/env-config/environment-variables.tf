@@ -30,6 +30,20 @@ locals {
       ssm_param_name = "/service/${var.app_name}-${var.environment}/rails-master-key"
     },
     {
+      name           = "CBV_INVITE_SECRET"
+      ssm_param_name = "/service/${var.app_name}-${var.environment}/cbv-invite-secret"
+    },
+    {
+      name           = "SLACK_TEST_EMAIL"
+      ssm_param_name = "/service/${var.app_name}-${var.environment}/slack-test-email"
+    },
+    {
+      name           = "NEWRELIC_KEY"
+      ssm_param_name = "/service/${var.app_name}-${var.environment}/newrelic-key"
+    },
+
+    # Pinwheel Configuration:
+    {
       name           = "PINWHEEL_API_TOKEN_PRODUCTION"
       ssm_param_name = "/service/${var.app_name}-${var.environment}/pinwheel-api-token-production"
     },
@@ -41,17 +55,43 @@ locals {
       name           = "PINWHEEL_API_TOKEN_SANDBOX"
       ssm_param_name = "/service/${var.app_name}-${var.environment}/pinwheel-api-token-sandbox"
     },
+
+    # SSO Configuration:
     {
-      name           = "CBV_INVITE_SECRET"
-      ssm_param_name = "/service/${var.app_name}-${var.environment}/cbv-invite-secret"
+      name           = "AZURE_NYC_DSS_CLIENT_ID"
+      ssm_param_name = "/service/${var.app_name}-${var.environment}/azure-nyc-dss-client-id"
     },
     {
-      name           = "SLACK_TEST_EMAIL"
-      ssm_param_name = "/service/${var.app_name}-${var.environment}/slack-test-email"
+      name           = "AZURE_NYC_DSS_CLIENT_SECRET"
+      ssm_param_name = "/service/${var.app_name}-${var.environment}/azure-nyc-dss-client-secret"
     },
     {
-      name           = "NEWRELIC_KEY"
-      ssm_param_name = "/service/${var.app_name}-${var.environment}/newrelic-key"
-    }
+      name           = "AZURE_NYC_DSS_TENANT_ID"
+      ssm_param_name = "/service/${var.app_name}-${var.environment}/azure-nyc-dss-tenant-id"
+    },
+    {
+      name           = "AZURE_MA_DTA_CLIENT_ID"
+      ssm_param_name = "/service/${var.app_name}-${var.environment}/azure-ma-dta-client-id"
+    },
+    {
+      name           = "AZURE_MA_DTA_CLIENT_SECRET"
+      ssm_param_name = "/service/${var.app_name}-${var.environment}/azure-ma-dta-client-secret"
+    },
+    {
+      name           = "AZURE_MA_DTA_TENANT_ID"
+      ssm_param_name = "/service/${var.app_name}-${var.environment}/azure-ma-dta-tenant-id"
+    },
+    {
+      name           = "AZURE_SANDBOX_CLIENT_ID"
+      ssm_param_name = "/service/${var.app_name}-${var.environment}/azure-sandbox-client-id"
+    },
+    {
+      name           = "AZURE_SANDBOX_CLIENT_SECRET"
+      ssm_param_name = "/service/${var.app_name}-${var.environment}/azure-sandbox-client-secret"
+    },
+    {
+      name           = "AZURE_SANDBOX_TENANT_ID"
+      ssm_param_name = "/service/${var.app_name}-${var.environment}/azure-sandbox-tenant-id"
+    },
   ]
 }
