@@ -17,6 +17,12 @@
           "category": "commuter",
           "name": "MTA",
           "type": "post_tax"
+        },
+        {
+          "amount": 0,
+          "category": null,
+          "name": null,
+          "type": null
         }
       ],
       "document": {
