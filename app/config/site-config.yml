@@ -6,6 +6,12 @@
   transmission_method: shared_email
   transmission_method_configuration:
     email: <%= ENV['NYC_HRA_EMAIL'] %>
+  sso:
+    client_id:     <%= ENV["AZURE_NYC_DSS_CLIENT_ID"] %>
+    client_secret: <%= ENV["AZURE_NYC_DSS_CLIENT_SECRET"] %>
+    tenant_id:     <%= ENV["AZURE_NYC_DSS_TENANT_ID"] %>
+    scope: "openid"
+    name: "nyc_dss"
 - id: ma
   agency_name: Massachusetts Department of Transitional Assistance
   pinwheel:
@@ -13,6 +19,12 @@
     environment: development
   transmission_method: null
   transmission_method_configuration: {}
+  sso:
+    client_id:     <%= ENV["AZURE_MA_DTA_CLIENT_ID"] %>
+    client_secret: <%= ENV["AZURE_MA_DTA_CLIENT_SECRET"] %>
+    tenant_id:     <%= ENV["AZURE_MA_DTA_TENANT_ID"] %>
+    scope: "openid"
+    name: "ma_dta"
 - id: sandbox
   agency_name: CBV Test Agency
   pinwheel:
@@ -21,3 +33,9 @@
   transmission_method: shared_email
   transmission_method_configuration:
     email: <%= ENV['SLACK_TEST_EMAIL'] %>
+  sso:
+    client_id:     <%= ENV["AZURE_SANDBOX_CLIENT_ID"] %>
+    client_secret: <%= ENV["AZURE_SANDBOX_CLIENT_SECRET"] %>
+    tenant_id:     <%= ENV["AZURE_SANDBOX_TENANT_ID"] %>
+    scope: "openid"
+    name: "sandbox"

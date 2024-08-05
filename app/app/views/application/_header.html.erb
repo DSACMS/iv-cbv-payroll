@@ -7,11 +7,21 @@
           <%= link_to t("shared.header.title"), root_path %>
         </em>
       </div>
+      <% if user_signed_in? %>
+        <button class="usa-menu-btn"><%= t("shared.header.menu") %></button>
+      <% end %>
     </div>
     <nav aria-label="<%= t("shared.header.primary") %>" class="usa-nav">
       <button class="usa-nav__close">
         <%= image_tag "@uswds/uswds/dist/img/usa-icons/close.svg", role: "img", alt: t("shared.header.close") %>
       </button>
+      <% if user_signed_in? %>
+        <ul class="usa-nav__primary usa-accordion">
+          <li class="usa-nav__primary-item">
+            <%= button_to t("shared.header.log_out"), destroy_user_session_url, method: :delete, class: "usa-nav__link" %>
+          </li>
+        </ul>
+      <% end %>
     </nav>
   </div>
 </header>
