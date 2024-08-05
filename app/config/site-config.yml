@@ -1,8 +1,8 @@
 - id: nyc
   agency_name: NYC Human Resources Administration
   pinwheel:
-    api_token: <%= ENV['PINWHEEL_API_TOKEN'] %>
-    environment: sandbox
+    api_token: <%= ENV['PINWHEEL_API_TOKEN_DEVELOPMENT'] %>
+    environment: development
   transmission_method: shared_email
   transmission_method_configuration:
     email: <%= ENV['NYC_HRA_EMAIL'] %>
@@ -20,8 +20,8 @@
 - id: ma
   agency_name: Massachusetts Department of Transitional Assistance
   pinwheel:
-    api_token: <%= ENV['PINWHEEL_API_TOKEN'] %>
-    environment: sandbox
+    api_token: <%= ENV['PINWHEEL_API_TOKEN_DEVELOPMENT'] %>
+    environment: development
   transmission_method: null
   transmission_method_configuration: {}
   sso:
@@ -38,7 +38,7 @@
 - id: sandbox
   agency_name: CBV Test Agency
   pinwheel:
-    api_token: <%= ENV['PINWHEEL_API_TOKEN'] %>
+    api_token: <%= ENV['PINWHEEL_API_TOKEN_SANDBOX'] %>
     environment: sandbox
   transmission_method: shared_email
   transmission_method_configuration:

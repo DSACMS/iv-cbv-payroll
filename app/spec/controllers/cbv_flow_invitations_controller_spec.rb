@@ -11,7 +11,7 @@ RSpec.describe CbvFlowInvitationsController do
   end
 
   describe "#new" do
-    let(:valid_params) { { site_id: "nyc", secret: invite_secret } }
+    let(:valid_params) { { site_id: "sandbox", secret: invite_secret } }
 
     context "without authentication" do
       it "redirects to the sso login page" do

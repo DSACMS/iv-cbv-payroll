@@ -30,8 +30,16 @@ locals {
       ssm_param_name = "/service/${var.app_name}-${var.environment}/rails-master-key"
     },
     {
-      name           = "PINWHEEL_API_TOKEN"
-      ssm_param_name = "/service/${var.app_name}-${var.environment}/pinwheel-api-token"
+      name           = "PINWHEEL_API_TOKEN_PRODUCTION"
+      ssm_param_name = "/service/${var.app_name}-${var.environment}/pinwheel-api-token-production"
+    },
+    {
+      name           = "PINWHEEL_API_TOKEN_DEVELOPMENT"
+      ssm_param_name = "/service/${var.app_name}-${var.environment}/pinwheel-api-token-development"
+    },
+    {
+      name           = "PINWHEEL_API_TOKEN_SANDBOX"
+      ssm_param_name = "/service/${var.app_name}-${var.environment}/pinwheel-api-token-sandbox"
     },
     {
       name           = "CBV_INVITE_SECRET"
