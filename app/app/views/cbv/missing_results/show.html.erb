@@ -1,7 +1,16 @@
 <h1><%= t(".header") %></h1>
-
+<p><%= t(".not_listed_p1") %></p>
+<p><%= t(".not_listed_p2") %></p>
+<%= link_to agency_url, target: :_blank do %>
+    <button class="usa-button" type="button">
+      <%= t(".exit_button") %>
+    </button>
+<% end %>
+<hr class="margin-top-5 margin-bottom-5 border-base-light border-top-0">
+<h2><%= t(".more_jobs") %></h2>
+<p><%= t(".you_can_search") %></p>
 <%= link_to agency_url, target: :_blank do %>
     <button class="usa-button usa-button--outline" type="button">
-      <%= t(".button") %>
+      <%= t(".back_button") %>
     </button>
 <% end %>
