@@ -37,10 +37,5 @@
     client_id:     <%= ENV["AZURE_SANDBOX_CLIENT_ID"] %>
     client_secret: <%= ENV["AZURE_SANDBOX_CLIENT_SECRET"] %>
     tenant_id:     <%= ENV["AZURE_SANDBOX_TENANT_ID"] %>
-    redirect_uri:  <%= ENV["AZURE_SANDBOX_REDIRECT_URI"] %>
-    response_type: "id_token"
-    response_mode: "form_post"
     scope: "openid"
-    state: "12345"
-    nonce: "678910"
     name: "sandbox"
