@@ -7,7 +7,7 @@ module Cbv::PaymentsHelper
         total: 0,
         payments: []
       }
-      hash[account_id][:total] += payment[:amount]
+      hash[account_id][:total] += payment[:net_pay_amount]
       hash[account_id][:payments] << payment
     end
   end
@@ -16,7 +16,6 @@ module Cbv::PaymentsHelper
     payments.map do |payment|
       {
         employer: payment["employer_name"],
-        amount: payment["net_pay_amount"].to_i,
         start: payment["pay_period_start"],
         end: payment["pay_period_end"],
         hours: payment["earnings"][0]["hours"],

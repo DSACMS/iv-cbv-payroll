@@ -8,7 +8,6 @@ on:
         description: "name of application folder under infra directory"
         required: true
         type: string
-        default: "app"
       ref:
         description: The branch, tag or SHA to checkout. When checking out the repository that triggered a workflow, this defaults to the reference or SHA for that event. Otherwise, use branch or tag that triggered the workflow run.
         required: true

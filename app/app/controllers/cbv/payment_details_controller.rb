@@ -50,11 +50,11 @@ class Cbv::PaymentDetailsController < Cbv::BaseController
   end
 
   def employment_status
-    @employment["status"].humanize
+    @employment["status"]&.humanize
   end
 
   def pay_period_frequency
-    @income_metadata["compensation_unit"].humanize
+    @income_metadata["compensation_unit"]&.humanize
   end
 
   def compensation_amount

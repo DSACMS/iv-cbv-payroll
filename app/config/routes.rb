@@ -1,10 +1,20 @@
 require "sidekiq/web"
 
 Rails.application.routes.draw do
+  devise_for :users,
+    controllers: {
+      sessions:           "users/sessions",
+      omniauth_callbacks: "users/omniauth_callbacks"
+    }
+
+  devise_scope :user do
+    delete "sign_out", to: "devise/sessions#destroy", as: :destroy_user_session
+  end
+
   if Rails.env.development?
     mount Sidekiq::Web => "/sidekiq"
   end
-  scope "(:locale)", locale: /#{I18n.available_locales.join("|")}/ do
+  scope "(:locale)", locale: /#{I18n.available_locales.join("|")}/, format: "html"  do
     # Your application routes go here
     root "pages#home"
 
@@ -15,7 +25,7 @@ Rails.application.routes.draw do
     scope "/cbv", as: :cbv_flow, module: :cbv do
       resource :entry, only: %i[show]
       resource :employer_search, only: %i[show]
-      resource :summary, only: %i[show update]
+      resource :summary, only: %i[show update], format: %i[html pdf]
       resource :share, only: %i[show update]
       resource :missing_results, only: %i[show]
       resource :success, only: %i[show]
@@ -32,7 +42,8 @@ Rails.application.routes.draw do
     get "/invitations/new", to: redirect { |_, req| "/nyc/invitations/new?secret=#{req.params[:secret]}" }
 
     scope "/:site_id" do
-      resources :cbv_flow_invitations, as: :invitations, path: :invitations, only: %i[new create]
+      get "/sso/", to: "sso#index", as: :new_user_session
+      resources :cbv_flow_invitations, as: :invitations, path: :invitations
     end
   end
 

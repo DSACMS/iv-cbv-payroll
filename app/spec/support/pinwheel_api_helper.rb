@@ -78,6 +78,15 @@ module PinwheelApiHelper
       )
   end
 
+  def request_employment_info_response_null_employment_status_bug
+    stub_request(:get, %r{#{PinwheelService::ACCOUNTS_ENDPOINT}/[0-9a-fA-F\-]{36}/employment})
+      .to_return(
+        status: 200,
+        body: load_relative_json_file('request_employment_info_response_null_employment_status_bug.json').to_json,
+        headers: { 'Content-Type': 'application/json;charset=UTF-8' }
+      )
+  end
+
   def load_relative_file(filename)
     File.read(File.join(
       File.dirname(__FILE__),

@@ -4,7 +4,7 @@ locals {
       database_subnet_group_name = "dev"
 
       domain_config = {
-        manage_dns = true
+        manage_dns  = true
         hosted_zone = "navapbc.cloud"
 
         certificate_configs = {

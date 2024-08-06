@@ -82,6 +82,7 @@ en:
         continue: Add info to report
         deductions: 'Deduction: %{category}'
         employment_end_date: Employment end date
+        employment_information_table_header: Employment information
         employment_start_date: Employment start date
         employment_status: Employment status
         header: Your payment information from %{employer_name}
@@ -96,7 +97,7 @@ en:
         pay_period: Pay period
         pay_period_frequency: Pay period frequency
         payment_hours: "%{amount} hours"
-        payments_and_deductions: Employment information
+        payments_and_deductions_table_header: Payments and deductions
         subheader: We have gathered your payment records from the past 90 days, from %{start_date} to %{end_date}. Review them and add any comments for your benefits agency in the additional comments section. This will be included in your income report.
         total_gross_description: This is the total income from your job before taxes, benefits and deductions were taken out of your paycheck.
         total_gross_income: 'Total income before taxes: %{amount}'
@@ -138,7 +139,6 @@ en:
     create:
       invite_failed: 'Error sending invitation to %{email_address}: %{error_message}.'
       invite_success: Successfully delivered invitation to %{email_address}.
-    incorrect_invite_secret: Unable to send invitation due to missing invitation secret parameter.
     incorrect_site_id: Unable to send invitation due to missing site configuration.
     new:
       description: Complete this form to email a personalized link to begin the CBV flow.
@@ -162,6 +162,7 @@ en:
       aria_label: Main navigation
       close: Close
       demo_banner: TEST SITE - Do not use real personal information (demo purposes only) - TEST SITE
+      log_out: Log out
       primary: Primary navigation
       title: Verify.gov
     languages:

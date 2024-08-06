@@ -6,7 +6,7 @@ RSpec.describe Cbv::SummariesController do
   describe "#show" do
     render_views
 
-    let(:cbv_flow) { CbvFlow.create(case_number: "ABC1234", pinwheel_token_id: "abc-def-ghi", site_id: "nyc") }
+    let(:cbv_flow) { CbvFlow.create(case_number: "ABC1234", pinwheel_token_id: "abc-def-ghi", site_id: "sandbox") }
 
     before do
       session[:cbv_flow_id] = cbv_flow.id
@@ -17,6 +17,12 @@ RSpec.describe Cbv::SummariesController do
     it "renders properly" do
       get :show
       expect(response).to be_successful
+    end
+
+    it "renders pdf properly" do
+      get :show, format: :pdf
+      expect(response).to be_successful
+      expect(response.header['Content-Type']).to include 'pdf'
     end
   end
 end

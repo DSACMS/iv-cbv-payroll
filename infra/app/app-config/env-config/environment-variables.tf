@@ -8,7 +8,7 @@ locals {
     RAILS_SERVE_STATIC_FILES = "true"
 
     # Set to true to inform the app that it is running in a container
-    DOCKERIZED               = "true"
+    DOCKERIZED = "true"
     # LOG_LEVEL               = "info"
     # DB_CONNECTION_POOL_SIZE = 5
   }
@@ -30,10 +30,6 @@ locals {
       ssm_param_name = "/service/${var.app_name}-${var.environment}/rails-master-key"
     },
     {
-      name           = "PINWHEEL_API_TOKEN"
-      ssm_param_name = "/service/${var.app_name}-${var.environment}/pinwheel-api-token"
-    },
-    {
       name           = "CBV_INVITE_SECRET"
       ssm_param_name = "/service/${var.app_name}-${var.environment}/cbv-invite-secret"
     },
@@ -44,6 +40,58 @@ locals {
     {
       name           = "NEWRELIC_KEY"
       ssm_param_name = "/service/${var.app_name}-${var.environment}/newrelic-key"
-    }
+    },
+
+    # Pinwheel Configuration:
+    {
+      name           = "PINWHEEL_API_TOKEN_PRODUCTION"
+      ssm_param_name = "/service/${var.app_name}-${var.environment}/pinwheel-api-token-production"
+    },
+    {
+      name           = "PINWHEEL_API_TOKEN_DEVELOPMENT"
+      ssm_param_name = "/service/${var.app_name}-${var.environment}/pinwheel-api-token-development"
+    },
+    {
+      name           = "PINWHEEL_API_TOKEN_SANDBOX"
+      ssm_param_name = "/service/${var.app_name}-${var.environment}/pinwheel-api-token-sandbox"
+    },
+
+    # SSO Configuration:
+    {
+      name           = "AZURE_NYC_DSS_CLIENT_ID"
+      ssm_param_name = "/service/${var.app_name}-${var.environment}/azure-nyc-dss-client-id"
+    },
+    {
+      name           = "AZURE_NYC_DSS_CLIENT_SECRET"
+      ssm_param_name = "/service/${var.app_name}-${var.environment}/azure-nyc-dss-client-secret"
+    },
+    {
+      name           = "AZURE_NYC_DSS_TENANT_ID"
+      ssm_param_name = "/service/${var.app_name}-${var.environment}/azure-nyc-dss-tenant-id"
+    },
+    {
+      name           = "AZURE_MA_DTA_CLIENT_ID"
+      ssm_param_name = "/service/${var.app_name}-${var.environment}/azure-ma-dta-client-id"
+    },
+    {
+      name           = "AZURE_MA_DTA_CLIENT_SECRET"
+      ssm_param_name = "/service/${var.app_name}-${var.environment}/azure-ma-dta-client-secret"
+    },
+    {
+      name           = "AZURE_MA_DTA_TENANT_ID"
+      ssm_param_name = "/service/${var.app_name}-${var.environment}/azure-ma-dta-tenant-id"
+    },
+    {
+      name           = "AZURE_SANDBOX_CLIENT_ID"
+      ssm_param_name = "/service/${var.app_name}-${var.environment}/azure-sandbox-client-id"
+    },
+    {
+      name           = "AZURE_SANDBOX_CLIENT_SECRET"
+      ssm_param_name = "/service/${var.app_name}-${var.environment}/azure-sandbox-client-secret"
+    },
+    {
+      name           = "AZURE_SANDBOX_TENANT_ID"
+      ssm_param_name = "/service/${var.app_name}-${var.environment}/azure-sandbox-tenant-id"
+    },
   ]
 }

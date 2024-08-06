@@ -4,18 +4,20 @@ RSpec.describe CbvFlowInvitationsController do
   let(:invite_secret) { "FAKE_INVITE_SECRET" }
   let(:site_id) { "nyc" }
 
+  let(:user) { User.create(email: "test@test.com", site_id: 'ma') }
+
   around do |ex|
     stub_environment_variable("CBV_INVITE_SECRET", invite_secret, &ex)
   end
 
   describe "#new" do
-    let(:valid_params) { { site_id: "nyc", secret: invite_secret } }
+    let(:valid_params) { { site_id: "sandbox", secret: invite_secret } }
 
-    context "without the invite secret" do
-      it "redirects to the homepage" do
+    context "without authentication" do
+      it "redirects to the sso login page" do
         get :new, params: valid_params.except(:secret)
 
-        expect(response).to redirect_to(root_url)
+        expect(response).to redirect_to(new_user_session_url)
       end
     end
 
@@ -27,7 +29,11 @@ RSpec.describe CbvFlowInvitationsController do
       end
     end
 
-    context "with the invite secret" do
+    context "with authentication" do
+      before do
+        sign_in user
+      end
+
       render_views
 
       it "renders properly" do
@@ -59,7 +65,7 @@ RSpec.describe CbvFlowInvitationsController do
         .with("test@example.com", "ABC1234", site_id)
     end
 
-    context "without the invite secret" do
+    context "without authentication" do
       before do
         valid_params[:secret] = nil
       end
@@ -69,11 +75,15 @@ RSpec.describe CbvFlowInvitationsController do
 
         post :create, params: valid_params
 
-        expect(response).to redirect_to(root_url)
+        expect(response).to redirect_to(new_user_session_url)
       end
     end
 
-    context "with the invite secret" do
+    context "with authentication" do
+      before do
+        sign_in user
+      end
+
       it "sends an invitation" do
         expect_any_instance_of(CbvInvitationService)
           .to receive(:invite)
