@@ -1,5 +1,10 @@
 class Webhooks::Pinwheel::EventsController < ApplicationController
   DUMMY_API_KEY = "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+  EVENTS = %w[
+    employment.added
+    income.added
+    paystubs.fully_synced
+  ]
 
   skip_before_action :verify_authenticity_token
 
@@ -17,10 +22,16 @@ class Webhooks::Pinwheel::EventsController < ApplicationController
       return render json: { error: "Invalid signature" }, status: :unauthorized
     end
 
-    if params["event"] == "paystubs.ninety_days_synced"
-      if cbv_flow
-        cbv_flow.update(payroll_data_available_from: params["payload"]["params"]["from_pay_date"])
-        PaystubsChannel.broadcast_to(cbv_flow, params)
+    if EVENTS.include?(params["event"]) && cbv_flow
+      cbv_flow.events << params["event"] && cbv_flow.save
+
+      if EVENTS.all? { |event| cbv_flow.events.include?(event) }
+        # reset events for future payroll accounts
+        cbv_flow.update(events: [])
+        PaystubsChannel.broadcast_to(cbv_flow, {
+          event: "cbv.payroll_data_available",
+          account_id: params["payload"]["account_id"]
+        })
       end
     end
   end
