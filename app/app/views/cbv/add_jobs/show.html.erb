@@ -19,15 +19,13 @@
     <li><%= t(".answer_no_bullet_4") %></li>
     <li><%= t(".answer_no_bullet_5") %></li>
   </ul>
-  
+
   <div class="margin-bottom-2">
-    <%= raw t(".criteria_disclaimer", text: site_config.learn_more_link_text, url: site_config.learn_more_link_url) %>
+    <%= t(".criteria_disclaimer") %>
+    <%= link_to(current_site.learn_more_link_text, current_site.learn_more_link_url) %>
   </div>
 
-  <%= form_with(url: cbv_flow_add_job_path, builder: UswdsFormBuilder, data: {
-    "cbv-add-job-target": "form",
-  }, id: "form") do |f| %>
-
+  <%= form_with(url: cbv_flow_add_job_path, builder: UswdsFormBuilder, data: { "cbv-add-job-target": "form" }, id: "form") do |f| %>
     <%= f.radio_button(:additional_jobs, true, { label: t(".yes_radio") }) %>
     <%= f.radio_button(:additional_jobs, false, { label: t(".no_radio") }) %>
 
