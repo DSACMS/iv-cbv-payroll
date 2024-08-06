@@ -18,5 +18,11 @@ RSpec.describe Cbv::SummariesController do
       get :show
       expect(response).to be_successful
     end
+
+    it "renders pdf properly" do
+      get :show, format: :pdf
+      expect(response).to be_successful
+      expect(response.header['Content-Type']).to include 'pdf'
+    end
   end
 end
