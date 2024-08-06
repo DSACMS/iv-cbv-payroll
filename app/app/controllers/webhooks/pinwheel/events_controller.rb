@@ -9,21 +9,6 @@ class Webhooks::Pinwheel::EventsController < ApplicationController
     "paystubs.fully_synced" => "paystubs_synced_at"
   }
 
-  def authorize_webhook
-    # To prevent timing attacks, we attempt to verify the webhook signature
-    # using a same-length DUMMY_API_KEY even if the `end_user_id` does not
-    # match a valid `cbv_flow`.
-    cbv_flow = CbvFlow.find_by_pinwheel_end_user_id(params["payload"]["end_user_id"])
-    signature = request.headers["X-Pinwheel-Signature"]
-    timestamp = request.headers["X-Timestamp"]
-
-    pinwheel = cbv_flow.present? ? pinwheel_for(cbv_flow) : PinwheelService.new(DUMMY_API_KEY, "sandbox")
-    digest = pinwheel.generate_signature_digest(timestamp, request.raw_post)
-    unless pinwheel.verify_signature(signature, digest)
-      render json: { error: "Invalid signature" }, status: :unauthorized
-    end
-  end
-
   def create
     cbv_flow = CbvFlow.find_by_pinwheel_end_user_id(params["payload"]["end_user_id"])
 
@@ -42,6 +27,23 @@ class Webhooks::Pinwheel::EventsController < ApplicationController
           account_id: params["payload"]["account_id"]
         })
       end
+    end
+  end
+
+  private
+
+  def authorize_webhook
+    # To prevent timing attacks, we attempt to verify the webhook signature
+    # using a same-length DUMMY_API_KEY even if the `end_user_id` does not
+    # match a valid `cbv_flow`.
+    cbv_flow = CbvFlow.find_by_pinwheel_end_user_id(params["payload"]["end_user_id"])
+    signature = request.headers["X-Pinwheel-Signature"]
+    timestamp = request.headers["X-Timestamp"]
+
+    pinwheel = cbv_flow.present? ? pinwheel_for(cbv_flow) : PinwheelService.new(DUMMY_API_KEY, "sandbox")
+    digest = pinwheel.generate_signature_digest(timestamp, request.raw_post)
+    unless pinwheel.verify_signature(signature, digest)
+      render json: { error: "Invalid signature" }, status: :unauthorized
     end
   end
 end
