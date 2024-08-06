@@ -9,8 +9,7 @@ class Cbv::AddJobsController < Cbv::BaseController
     elsif additional_jobs == "false"
       redirect_to cbv_flow_summary_path
     else
-      flash[:alert] = t(".notice")
-      flash[:alert_options] = { show_header: false}
+      flash[:alert] = t(".no_answer")
       redirect_to cbv_flow_add_job_path
     end
   end
