@@ -6,6 +6,8 @@
   transmission_method: shared_email
   transmission_method_configuration:
     email: <%= ENV['NYC_HRA_EMAIL'] %>
+  agency_short_name: HRA
+  agency_help_link: https://www.nyc.gov/site/hra/help/snap-application-frequently-asked-questions.page
 - id: ma
   agency_name: Massachusetts Department of Transitional Assistance
   pinwheel:
@@ -13,6 +15,8 @@
     environment: development
   transmission_method: null
   transmission_method_configuration: {}
+  agency_short_name: DTA
+  agency_help_link: https://www.mass.gov/guides/how-to-contact-dta
 - id: sandbox
   agency_name: CBV Test Agency
   pinwheel:
@@ -21,3 +25,5 @@
   transmission_method: shared_email
   transmission_method_configuration:
     email: <%= ENV['SLACK_TEST_EMAIL'] %>
+  agency_short_name: CBV Agency Dept of Helping
+  agency_help_link: https://example.com/dept-of-helping

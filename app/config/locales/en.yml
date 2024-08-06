@@ -70,10 +70,10 @@ en:
       show:
         back_button: Go back to employer search
         header: How to report income if your employer or payroll provider isn’t listed
-        exit_button: Exit and go to DTA/ HRA
+        exit_button: Exit and go to %{agency_short_name}
         more_jobs: If you have more jobs to report
         not_listed_p1: If your employer or payroll provider isn’t listed on this site, you’ll need to share your income information for this job directly with your benefits agency. 
-        not_listed_p2: Visit DTA/HRA for more information on how to submit documents.
+        not_listed_p2: Visit %{agency_short_name} for more information on how to submit documents.
         you_can_search: You can search for another employer or payroll provider. This site supports employers with online payroll providers or app-based services. Examples include Amazon, Walmart, McDonald’s, Uber, DoorDash, Lyft, and Instacart.
     payment_details:
       show:

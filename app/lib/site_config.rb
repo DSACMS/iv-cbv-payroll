@@ -21,6 +21,8 @@ class SiteConfig
     attr_reader(*%i[
       id
       agency_name
+      agency_short_name
+      agency_help_link
       pinwheel_api_token
       pinwheel_environment
       transmission_method
@@ -30,6 +32,8 @@ class SiteConfig
     def initialize(yaml)
       @id = yaml["id"]
       @agency_name = yaml["agency_name"]
+      @agency_short_name = yaml["agency_short_name"]
+      @agency_help_link = yaml["agency_help_link"]
       @pinwheel_api_token = yaml["pinwheel"]["api_token"]
       @pinwheel_environment = yaml["pinwheel"]["environment"]
       @transmission_method = yaml["transmission_method"]
