@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2024_08_05_234606) do
+ActiveRecord::Schema[7.1].define(version: 2024_08_06_161414) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -40,7 +40,6 @@ ActiveRecord::Schema[7.1].define(version: 2024_08_05_234606) do
     t.jsonb "additional_information", default: {}
     t.string "site_id"
     t.string "confirmation_code"
-    t.string "events", default: [], array: true
     t.index ["cbv_flow_invitation_id"], name: "index_cbv_flows_on_cbv_flow_invitation_id"
   end
 
@@ -50,6 +49,17 @@ ActiveRecord::Schema[7.1].define(version: 2024_08_05_234606) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["user_id", "account_id"], name: "index_connected_argyle_accounts_on_user_id_and_account_id", unique: true
+  end
+
+  create_table "pinwheel_accounts", force: :cascade do |t|
+    t.bigint "cbv_flow_id", null: false
+    t.string "pinwheel_account_id"
+    t.datetime "paystubs_synced_at", precision: nil
+    t.datetime "employment_synced_at", precision: nil
+    t.datetime "income_synced_at", precision: nil
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["cbv_flow_id"], name: "index_pinwheel_accounts_on_cbv_flow_id"
   end
 
   create_table "users", force: :cascade do |t|
@@ -71,4 +81,5 @@ ActiveRecord::Schema[7.1].define(version: 2024_08_05_234606) do
   end
 
   add_foreign_key "cbv_flows", "cbv_flow_invitations"
+  add_foreign_key "pinwheel_accounts", "cbv_flows"
 end
