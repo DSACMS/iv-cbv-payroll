@@ -25,7 +25,7 @@ class Webhooks::Pinwheel::EventsController < ApplicationController
       pinwheel_account = PinwheelAccount.find_by_pinwheel_account_id(params["payload"]["account_id"])
       pinwheel_account.update!(EVENTS_MAP[params["event"]] => Time.now) if pinwheel_account.present?
 
-      if pinwheel_account.has_full_synced?
+      if pinwheel_account.has_fully_synced?
         PaystubsChannel.broadcast_to(cbv_flow, {
           event: "cbv.payroll_data_available",
           account_id: params["payload"]["account_id"]
