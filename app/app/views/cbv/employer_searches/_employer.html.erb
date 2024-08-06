@@ -1,15 +1,15 @@
 <%= turbo_frame_tag "employers" do %>
   <% if @employers.present? %>
-    <h3 class="site-preview-heading margin-bottom-2">
-      <%= t("cbv.employer_searches.show.results") %>
-    </h3>
+    <h2 class="site-preview-heading margin-bottom-2">
+      <%= t("cbv.employer_searches.show.results") %> (<%= @employers.to_a.count %>)
+    </h2>
   <% end %>
   <div class="usa-card-group">
     <% @employers.each do |employer| %>
       <div class="usa-card usa-card--flag usa-card--media-right flex-1">
         <div class="usa-card__container">
           <div class="usa-card__header">
-            <h2 class="usa-card__heading"><%= employer["name"] %></h2>
+            <h3 class="usa-card__heading"><%= employer["name"] %></h3>
           </div>
           <div class="display-none usa-card__media usa-card__media--inset">
             <% if employer['logo_url'] %>
@@ -40,7 +40,7 @@
   </div>
 
   <% if @query.present? %>
-    <h3><%= t("cbv.employer_searches.show.employer_not_listed") %></h3>
+    <h2><%= t("cbv.employer_searches.show.employer_not_listed") %></h2>
     <%= link_to cbv_flow_missing_results_path, class: "usa-button usa-button--outline", data: { turbo_frame: "_top" } do %>
         <%= t("cbv.employer_searches.show.can_not_find_employer") %>
     <% end %>
