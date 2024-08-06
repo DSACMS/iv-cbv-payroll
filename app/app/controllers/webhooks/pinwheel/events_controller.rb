@@ -12,12 +12,17 @@ class Webhooks::Pinwheel::EventsController < ApplicationController
   def create
     cbv_flow = CbvFlow.find_by_pinwheel_end_user_id(params["payload"]["end_user_id"])
 
-    if cbv_flow && params["event"] == "account.added"
+    unless cbv_flow
+      Rails.logger.info "Unable to find CbvFlow for end_user_id: #{params["payload"]["end_user_id"]}"
+      return render json: { status: "ok" }
+    end
+
+    if params["event"] == "account.added"
       pinwheel_account = PinwheelAccount.find_or_create_by(pinwheel_account_id: params["payload"]["account_id"])
       pinwheel_account.update!(cbv_flow: cbv_flow)
     end
 
-    if cbv_flow && EVENTS_MAP.keys.include?(params["event"])
+    if EVENTS_MAP.keys.include?(params["event"])
       pinwheel_account = PinwheelAccount.find_by_pinwheel_account_id(params["payload"]["account_id"])
       pinwheel_account.update!(EVENTS_MAP[params["event"]] => Time.now) if pinwheel_account.present?
 
