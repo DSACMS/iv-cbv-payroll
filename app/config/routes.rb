@@ -1,6 +1,16 @@
 require "sidekiq/web"
 
 Rails.application.routes.draw do
+  devise_for :users,
+    controllers: {
+      sessions:           "users/sessions",
+      omniauth_callbacks: "users/omniauth_callbacks"
+    }
+
+  devise_scope :user do
+    delete "sign_out", to: "devise/sessions#destroy", as: :destroy_user_session
+  end
+
   if Rails.env.development?
     mount Sidekiq::Web => "/sidekiq"
   end
@@ -32,7 +42,8 @@ Rails.application.routes.draw do
     get "/invitations/new", to: redirect { |_, req| "/nyc/invitations/new?secret=#{req.params[:secret]}" }
 
     scope "/:site_id" do
-      resources :cbv_flow_invitations, as: :invitations, path: :invitations, only: %i[new create]
+      get "/sso/", to: "sso#index", as: :new_user_session
+      resources :cbv_flow_invitations, as: :invitations, path: :invitations
     end
   end
 

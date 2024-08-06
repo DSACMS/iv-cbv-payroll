@@ -27,6 +27,7 @@ class SiteConfig
       pinwheel_environment
       transmission_method
       transmission_method_configuration
+      sso
     ])
 
     def initialize(yaml)
@@ -38,6 +39,7 @@ class SiteConfig
       @pinwheel_environment = yaml["pinwheel"]["environment"]
       @transmission_method = yaml["transmission_method"]
       @transmission_method_configuration = yaml["transmission_method_configuration"]
+      @sso = yaml["sso"]
 
       raise ArgumentError.new("Site missing id") if @id.blank?
       raise ArgumentError.new("Site #{@id} missing required attribute `agency_name`") if @agency_name.blank?
