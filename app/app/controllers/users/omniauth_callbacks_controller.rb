@@ -1,4 +1,11 @@
 class Users::OmniauthCallbacksController < Devise::OmniauthCallbacksController
+  def nyc_dss
+    response_params = request.env["omniauth.auth"]["info"]
+    email = response_params["email"]
+
+    login_with_oauth(email, "nyc")
+  end
+
   def ma_dta
     response_params = request.env["omniauth.auth"]["info"]
     email = response_params["email"]
