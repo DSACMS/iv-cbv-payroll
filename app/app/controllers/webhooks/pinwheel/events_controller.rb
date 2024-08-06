@@ -18,8 +18,7 @@ class Webhooks::Pinwheel::EventsController < ApplicationController
     end
 
     if params["event"] == "account.added"
-      pinwheel_account = PinwheelAccount.find_or_create_by(pinwheel_account_id: params["payload"]["account_id"])
-      pinwheel_account.update!(cbv_flow: cbv_flow)
+      PinwheelAccount.create_with(cbv_flow: cbv_flow).find_or_create_by(pinwheel_account_id: params["payload"]["account_id"])
     end
 
     if EVENTS_MAP.keys.include?(params["event"])
