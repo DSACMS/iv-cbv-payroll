@@ -27,6 +27,7 @@ class Cbv::PaymentDetailsController < Cbv::BaseController
       updated_at: Time.current
     }
     @cbv_flow.update(additional_information: additional_information)
+
     redirect_to next_path
   end
 

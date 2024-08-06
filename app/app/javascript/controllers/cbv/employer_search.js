@@ -23,8 +23,8 @@ export default class extends Controller {
         console.log("Disconnected");
       },
       received: (data) => {
-        if (data.event === 'paystubs.ninety_days_synced') {
-          const accountId = data.payload.account_id
+        if (data.event === 'cbv.payroll_data_available') {
+          const accountId = data.account_id
           this.userAccountIdTarget.value = accountId
           this.formTarget.submit();
         }

@@ -51,6 +51,17 @@ ActiveRecord::Schema[7.1].define(version: 2024_08_06_195533) do
     t.index ["user_id", "account_id"], name: "index_connected_argyle_accounts_on_user_id_and_account_id", unique: true
   end
 
+  create_table "pinwheel_accounts", force: :cascade do |t|
+    t.bigint "cbv_flow_id", null: false
+    t.string "pinwheel_account_id"
+    t.datetime "paystubs_synced_at", precision: nil
+    t.datetime "employment_synced_at", precision: nil
+    t.datetime "income_synced_at", precision: nil
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["cbv_flow_id"], name: "index_pinwheel_accounts_on_cbv_flow_id"
+  end
+
   create_table "users", force: :cascade do |t|
     t.string "site_id", null: false
     t.string "email", default: "", null: false
@@ -70,4 +81,5 @@ ActiveRecord::Schema[7.1].define(version: 2024_08_06_195533) do
   end
 
   add_foreign_key "cbv_flows", "cbv_flow_invitations"
+  add_foreign_key "pinwheel_accounts", "cbv_flows"
 end
