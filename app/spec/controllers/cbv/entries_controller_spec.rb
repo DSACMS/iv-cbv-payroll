@@ -67,6 +67,19 @@ RSpec.describe Cbv::EntriesController do
           expect(response).to redirect_to(root_url)
         end
       end
+
+      context "when the invitation is expired" do
+        before do
+          invitation.update(created_at: CbvFlowInvitation::VALID_FOR.ago - 1.minute)
+        end
+
+        it "redirects to the expired invitations page" do
+          expect { get :show, params: { token: invitation.auth_token } }
+            .not_to change { session[:cbv_flow_id] }
+
+          expect(response).to redirect_to(cbv_flow_expired_invitation_path)
+        end
+      end
     end
 
     context "when the session points to a deleted cbv flow" do
