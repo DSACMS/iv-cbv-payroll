@@ -25,10 +25,10 @@ en:
         answer_yes_bullet_3: Is app-based (Uber, DoorDash, Lyft, Instacart, etc.)
         answer_yes_header: 'Answer YES if your job:'
         continue: Continue
-        criteria_disclaimer: 'Note: If you''ve had other jobs in the past %{day_count} days that don''t meet these criteria, you may need to submit that income information separately. Contact your agency for assistance.'
+        criteria_disclaimer: 'Note: If you''ve had other jobs in the past %{pay_income_days} days that don''t meet these criteria, you may need to submit that income information separately. Contact your agency for assistance.'
         header: Do you have another job to report?
         no_radio: No, I haven’t earned income from another job
-        subheader: Please add other jobs you’ve had in the past %{day_count} days, even if you're no longer at that job.
+        subheader: Please add other jobs you’ve had in the past %{pay_income_days} days, even if you're no longer at that job.
         yes_radio: Yes, I have earned income from another job
     agreements:
       create:
