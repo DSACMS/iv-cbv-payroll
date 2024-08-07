@@ -84,7 +84,7 @@ en:
         pay_gross_ytd: Gross pay YTD
         pay_net: Payment after taxes and deductions (net)
         pay_period: Pay period
-        pay_period_frequency: Pay period frequency
+        pay_frequency: Pay period frequency
         payment_hours: "%{amount} hours"
         payments_and_deductions_table_header: Payments and deductions
         subheader: We have gathered your payment records from the past 90 days, from %{start_date} to %{end_date}. Review them and add any comments for your benefits agency in the additional comments section. This will be included in your income report.
