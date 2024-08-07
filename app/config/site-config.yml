@@ -12,6 +12,9 @@
     tenant_id:     <%= ENV["AZURE_NYC_DSS_TENANT_ID"] %>
     scope: "openid"
     name: "nyc_dss"
+  pay_income_days: 90
+  learn_more_link_text: Learn more on nyc.gov
+  learn_more_link_url: https://www.nyc.gov/site/hra/help/snap-application-frequently-asked-questions.page
 - id: ma
   agency_name: Massachusetts Department of Transitional Assistance
   pinwheel:
@@ -25,6 +28,9 @@
     tenant_id:     <%= ENV["AZURE_MA_DTA_TENANT_ID"] %>
     scope: "openid"
     name: "ma_dta"
+  pay_income_days: 90
+  learn_more_link_text: Learn more at Mass.gov
+  learn_more_link_url: https://www.mass.gov/guides/how-to-contact-dta
 - id: sandbox
   agency_name: CBV Test Agency
   pinwheel:
@@ -39,3 +45,6 @@
     tenant_id:     <%= ENV["AZURE_SANDBOX_TENANT_ID"] %>
     scope: "openid"
     name: "sandbox"
+  pay_income_days: 90
+  learn_more_link_text: Learn more at CBV Test Agency
+  learn_more_link_url: https://www.mass.gov/guides/how-to-contact-dta
