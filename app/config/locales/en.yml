@@ -21,13 +21,13 @@ en:
         answer_no_bullet_3: You have a job that pays you in cash
         answer_no_bullet_4: You have a job that pays you with paper paychecks
         answer_no_bullet_5: You have a job that issues a 1099
-        answer_no_header: Answer NO if
+        answer_no_header: "Answer NO if:"
         answer_yes_bullet_1: Has an online payroll provider
         answer_yes_bullet_2: Lets you view paychecks online
         answer_yes_bullet_3: Is app-based (Uber, DoorDash, Lyft, Instacart, etc.)
-        answer_yes_header: Answer YES if your job
+        answer_yes_header: "Answer YES if your job:"
         continue: Continue
-        criteria_disclaimer: "Note: If you've had other jobs in the past 90 days that don't meet these criteria, you may neec to submit that income information separately. Contact your agency for assistance."
+        criteria_disclaimer: "Note: If you've had other jobs in the past 90 days that don't meet these criteria, you may need to submit that income information separately. Contact your agency for assistance."
         no_radio: No, I haven’t earned income from another job
         yes_radio: Yes, I have earned income from another job
     agreements:
