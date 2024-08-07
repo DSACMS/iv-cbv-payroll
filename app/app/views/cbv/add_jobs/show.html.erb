@@ -1,6 +1,8 @@
 <% site_config = Rails.application.config.sites[@cbv_flow.site_id] %>
-<h1><%= t(".header", day_count: "90") %></h1>
-<p><%= t(".subheader") %></p>
+<% day_count = "90" %>
+
+<h1><%= t(".header") %></h1>
+<p><%= t(".subheader", day_count: day_count) %></p>
 
 <div data-controller="cbv-add-job">
 
@@ -21,7 +23,7 @@
   </ul>
 
   <div class="margin-bottom-2">
-    <%= t(".criteria_disclaimer") %>
+    <%= t(".criteria_disclaimer", day_count: day_count) %>
     <%= link_to(current_site.learn_more_link_text, current_site.learn_more_link_url) %>
   </div>
 
