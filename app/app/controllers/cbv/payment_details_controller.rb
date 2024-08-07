@@ -13,8 +13,12 @@ class Cbv::PaymentDetailsController < Cbv::BaseController
 
   def show
     account_id = params[:user][:account_id]
+    pinwheel_account = PinwheelAccount.find_by_pinwheel_account_id(account_id)
+
     @employment = pinwheel.fetch_employment(account_id: account_id)["data"]
-    @income_metadata = pinwheel.fetch_income_metadata(account_id: account_id)["data"]
+    @income_metadata = if pinwheel_account.supported_jobs.include?("income")
+      pinwheel.fetch_income_metadata(account_id: account_id)["data"]
+    end
     @payments = set_payments account_id
     @account_comment = account_comment
   end
@@ -56,15 +60,15 @@ class Cbv::PaymentDetailsController < Cbv::BaseController
   end
 
   def pay_frequency
-    @income_metadata["pay_frequency"]&.humanize
+    @income_metadata&.dig("pay_frequency")&.humanize
   end
 
   def compensation_unit
-    @income_metadata["compensation_unit"]
+    @income_metadata&.dig("compensation_unit")
   end
 
   def compensation_amount
-    @income_metadata["compensation_amount"]
+    @income_metadata&.dig("compensation_amount")
   end
 
   def start_date
