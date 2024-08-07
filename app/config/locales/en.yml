@@ -34,10 +34,15 @@ en:
     employer_searches:
       show:
         can_not_find_employer: I can’t find my company or payroll provider
-        employer_not_listed: Employer not listed?
+        exit_button_text: Exit income verification.
         fetching_payroll: We are fetching your employer's payment information.
         fetching_payroll_description: This may take a few minutes. Please do not close this window.
         header: Find your employer or payroll provider
+        no_results_title: We werenʼt able to find your employer or payroll provider.
+        no_results_desc1: Check if your employer uses another business name or a payroll provider.
+        no_results_desc2: Make sure you have spelled names correctly, then search again.
+        no_results_desc3: If you still donʼt see your employer or payroll provider listed, you will need to submit that income information separately.
+        no_results_link: Learn more on %{agency_short_name}.
         results: Results
         search: Search
         search_for_employer: Search for your employer or payroll provider to share your income information with your benefits agency. This can be a former employer or a current employer. We'll retrieve the last 90 days of pay information from when you applied.
