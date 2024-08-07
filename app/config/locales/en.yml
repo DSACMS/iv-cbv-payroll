@@ -76,15 +76,15 @@ en:
         employment_status: Employment status
         header: Your payment information from %{employer_name}
         header_no_employer_name: Your payment information from your employer
-        hourly_rate: Hourly wage
+        hourly_rate: Compensation amount
         none_found: No payments found. Please refresh the page after a few minutes.
         number_of_hours_worked: Number of hours worked
         pay_date: 'Pay Date: %{pay_date}'
+        pay_frequency: Pay period frequency
         pay_gross: Payment before taxes (gross)
         pay_gross_ytd: Gross pay YTD
         pay_net: Payment after taxes and deductions (net)
         pay_period: Pay period
-        pay_frequency: Pay period frequency
         payment_hours: "%{amount} hours"
         payments_and_deductions_table_header: Payments and deductions
         subheader: We have gathered your payment records from the past 90 days, from %{start_date} to %{end_date}. Review them and add any comments for your benefits agency in the additional comments section. This will be included in your income report.
