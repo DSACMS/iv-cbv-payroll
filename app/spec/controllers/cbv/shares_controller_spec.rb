@@ -8,6 +8,10 @@ RSpec.describe Cbv::SharesController do
   describe "#show" do
     render_views
 
+    before do
+      session[:cbv_flow_id] = cbv_flow.id
+    end
+
     it "renders" do
       get :show
       expect(response).to be_successful
