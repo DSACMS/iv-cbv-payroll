@@ -21,6 +21,9 @@ class SiteConfig
     attr_reader(*%i[
       id
       agency_name
+      learn_more_link_text
+      learn_more_link_url
+      pay_income_days
       pinwheel_api_token
       pinwheel_environment
       transmission_method
@@ -33,6 +36,9 @@ class SiteConfig
       @agency_name = yaml["agency_name"]
       @pinwheel_api_token = yaml["pinwheel"]["api_token"]
       @pinwheel_environment = yaml["pinwheel"]["environment"]
+      @pay_income_days = yaml["pay_income_days"]
+      @learn_more_link_text = yaml["learn_more_link_text"]
+      @learn_more_link_url = yaml["learn_more_link_url"]
       @transmission_method = yaml["transmission_method"]
       @transmission_method_configuration = yaml["transmission_method_configuration"]
       @sso = yaml["sso"]

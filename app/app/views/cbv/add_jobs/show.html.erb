@@ -1,8 +1,34 @@
-<h1><%= t(".header", day_count: "90") %></h1>
-<h2><%= t(".subheader") %></h2>
+<h1><%= t(".header") %></h1>
+<p><%= t(".subheader", pay_income_days: current_site.pay_income_days) %></p>
 
-<%= form_with(url: cbv_flow_add_job_path, builder: UswdsFormBuilder) do |f| %>
-  <%= f.radio_button(:additional_jobs, "true", { 'label': t(".yes_radio") }) %>
-  <%= f.radio_button(:additional_jobs, "false", { 'label': t(".no_radio") }) %>
-  <%= f.submit t(".continue") %>
-<% end %>
+<div data-controller="cbv-add-job">
+
+  <h2><%= t(".answer_yes_header") %></h2>
+  <ul>
+    <li><%= t(".answer_yes_bullet_1") %></li>
+    <li><%= t(".answer_yes_bullet_2") %></li>
+    <li><%= t(".answer_yes_bullet_3") %></li>
+  </ul>
+
+  <h2><%= t(".answer_no_header") %></h2>
+  <ul>
+    <li><%= t(".answer_no_bullet_1") %></li>
+    <li><%= t(".answer_no_bullet_2") %></li>
+    <li><%= t(".answer_no_bullet_3") %></li>
+    <li><%= t(".answer_no_bullet_4") %></li>
+    <li><%= t(".answer_no_bullet_5") %></li>
+  </ul>
+
+  <div class="margin-bottom-2">
+    <%= t(".criteria_disclaimer", pay_income_days: current_site.pay_income_days) %>
+    <%= link_to(current_site.learn_more_link_text, current_site.learn_more_link_url) %>
+  </div>
+
+  <%= form_with(url: cbv_flow_add_job_path, builder: UswdsFormBuilder, data: { "add-job-target": "addJobForm" }, id: "add_job_form") do |f| %>
+    <%= f.radio_button(:additional_jobs, true, { label: t(".yes_radio") }) %>
+    <%= f.radio_button(:additional_jobs, false, { label: t(".no_radio") }) %>
+    <div class="margin-top-5">
+      <%= f.submit t(".continue") %>
+    </div>
+  <% end %>
+</div>
