@@ -32,12 +32,12 @@
         <td><%= employment_status %></td>
       </tr>
       <tr>
-        <td><%= t(".pay_period_frequency") %></td>
-        <td><%= pay_period_frequency %></td>
+        <td><%= t(".pay_frequency") %></td>
+        <td><%= pay_frequency %></td>
       </tr>
       <tr>
         <td><%= t(".hourly_rate") %></td>
-        <td><%= format_money(compensation_amount) %></td>
+        <td><%= format_money(compensation_amount) %> <%= compensation_unit %></td>
       </tr>
       </tbody>
     </table>

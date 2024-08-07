@@ -6,7 +6,8 @@ class Cbv::PaymentDetailsController < Cbv::BaseController
     :employment_start_date,
     :employment_end_date,
     :employment_status,
-    :pay_period_frequency,
+    :pay_frequency,
+    :compensation_unit,
     :compensation_amount,
     :account_comment
 
@@ -54,8 +55,12 @@ class Cbv::PaymentDetailsController < Cbv::BaseController
     @employment["status"]&.humanize
   end
 
-  def pay_period_frequency
-    @income_metadata["compensation_unit"]&.humanize
+  def pay_frequency
+    @income_metadata["pay_frequency"]&.humanize
+  end
+
+  def compensation_unit
+    @income_metadata["compensation_unit"]
   end
 
   def compensation_amount
