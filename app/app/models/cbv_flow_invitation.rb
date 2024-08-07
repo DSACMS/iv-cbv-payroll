@@ -4,6 +4,12 @@ class CbvFlowInvitation < ApplicationRecord
 
   has_one :cbv_flow
 
+  VALID_FOR = 14.days
+
+  def expired?
+    created_at < VALID_FOR.ago
+  end
+
   def to_url
     Rails.application.routes.url_helpers.cbv_flow_entry_url(token: auth_token)
   end

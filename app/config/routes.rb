@@ -32,6 +32,7 @@ Rails.application.routes.draw do
       resource :agreement, only: %i[show create]
       resource :add_job, only: %i[show create]
       resource :payment_details, only: %i[show update]
+      resource :expired_invitation, only: %i[show]
 
       # Utility route to clear your session; useful during development
       resource :reset, only: %i[show]
