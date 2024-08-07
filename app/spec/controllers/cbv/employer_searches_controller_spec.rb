@@ -2,7 +2,7 @@ require "rails_helper"
 
 RSpec.describe Cbv::EmployerSearchesController do
   describe "#show" do
-    let(:cbv_flow) { CbvFlow.create(case_number: "ABC1234") }
+    let(:cbv_flow) { CbvFlow.create!(case_number: "ABC1234", site_id: "sandbox") }
 
     let(:pinwheel_token_id) { "abc-def-ghi" }
 

@@ -42,6 +42,19 @@ RSpec.describe Cbv::EntriesController do
                   .from(nil)
                   .to(existing_cbv_flow.id)
         end
+
+        context "when the CbvFlow was already completed" do
+          before do
+            existing_cbv_flow.update(confirmation_code: "FOOBAR")
+          end
+
+          it "redirects to the expired invitation URL" do
+            expect { get :show, params: { token: invitation.auth_token } }
+              .not_to change { session[:cbv_flow_id] }
+
+            expect(response).to redirect_to(cbv_flow_expired_invitation_path)
+          end
+        end
       end
 
       context "when there is already a CbvFlow in the session" do

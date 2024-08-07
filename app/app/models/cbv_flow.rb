@@ -3,6 +3,10 @@ class CbvFlow < ApplicationRecord
   belongs_to :cbv_flow_invitation, optional: true
   validates :site_id, inclusion: Rails.application.config.sites.site_ids
 
+  def complete?
+    confirmation_code.present?
+  end
+
   def self.create_from_invitation(cbv_flow_invitation)
     create(
       cbv_flow_invitation: cbv_flow_invitation,
