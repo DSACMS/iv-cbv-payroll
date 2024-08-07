@@ -28,6 +28,6 @@
     <%= form_with(url: cbv_flow_add_job_path, builder: UswdsFormBuilder, data: { "add-job-target": "addJobForm" }, id: "add_job_form") do |f| %>
       <%= f.radio_button(:additional_jobs, true, { label: t(".yes_radio") }) %>
       <%= f.radio_button(:additional_jobs, false, { label: t(".no_radio") }) %>
-      <%= f.submit "Continue" %>
+      <%= f.submit t(".continue") %>
     <% end %>
 </div>
