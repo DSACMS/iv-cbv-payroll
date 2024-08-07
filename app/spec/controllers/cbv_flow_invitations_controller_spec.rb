@@ -36,10 +36,36 @@ RSpec.describe CbvFlowInvitationsController do
 
       render_views
 
-      it "renders properly" do
-        get :new, params: valid_params
+      context "when site_id is nyc" do
+        let(:site_id) { "nyc" }
 
-        expect(response).to be_successful
+        it "renders the nyc fields" do
+          get :new, params: valid_params
+
+          expect(response.body).to include("first_name")
+          expect(response.body).to include("middle_name")
+          expect(response.body).to include("last_name")
+          expect(response.body).to include("client_id_number")
+          expect(response.body).to include("case_number")
+          expect(response.body).to include("email_address")
+          expect(response.body).to include("snap_application_date")
+        end
+      end
+
+      context "when site_id is ma" do
+        let(:site_id) { "ma" }
+
+        it "renders the ma fields" do
+          get :new, params: valid_params
+
+          expect(response.body).to include("first_name")
+          expect(response.body).to include("middle_name")
+          expect(response.body).to include("last_name")
+          expect(response.body).to include("agency_id_number")
+          expect(response.body).to include("email_address")
+          expect(response.body).to include("snap_application_date")
+          expect(response.body).to include("beacon_id")
+        end
       end
     end
   end

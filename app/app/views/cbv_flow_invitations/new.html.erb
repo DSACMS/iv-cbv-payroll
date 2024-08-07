@@ -3,6 +3,6 @@
 
 <%= form_with(model: @cbv_flow_invitation, url: invitations_path, builder: UswdsFormBuilder) do |f| %>
   <%= hidden_field_tag :secret, params[:secret] %>
-  <%= render partial: {current_site.id}, locals: { f: f } %>
+  <%= render partial: "#{@site_id}", locals: { f: f } %>
   <%= f.submit t(".form.submit") %>
 <% end %>

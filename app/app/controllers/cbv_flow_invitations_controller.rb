@@ -4,6 +4,7 @@ class CbvFlowInvitationsController < ApplicationController
   before_action :authenticate_user!
 
   def new
+    @site_id = params[:site_id]
     @cbv_flow_invitation = CbvFlowInvitation.new
   end
 
