@@ -9,19 +9,18 @@ RSpec.describe Cbv::PaymentDetailsController do
     let!(:cbv_flow) { CbvFlow.create!(case_number: "ABC1234", pinwheel_token_id: "abc-def-ghi", site_id: "sandbox") }
     let(:account_id) { SecureRandom.uuid }
     let(:comment) { "This is a test comment" }
+    let(:supported_jobs) { %w[income paystubs employment] }
+    let!(:pinwheel_account) { PinwheelAccount.create!(cbv_flow: cbv_flow, pinwheel_account_id: account_id, supported_jobs: supported_jobs) }
 
     before do
       session[:cbv_flow_id] = cbv_flow.id
       stub_request_end_user_accounts_response
       stub_request_end_user_paystubs_response
-      stub_request_income_metadata_response
+      stub_request_income_metadata_response if supported_jobs.include?("income")
+      stub_request_employment_info_response
     end
 
     context "when pinwheel values are present" do
-      before do
-        stub_request_employment_info_response
-      end
-
       it "renders properly" do
         get :show, params: { user: { account_id: account_id } }
         expect(response).to be_successful
@@ -82,6 +81,16 @@ RSpec.describe Cbv::PaymentDetailsController do
           get :show, params: { user: { account_id: account_id } }
           expect(response.body).not_to include(comment)
         end
+      end
+    end
+
+    context "for an account that doesn't support income data" do
+      let(:supported_jobs) { %w[paystubs employment] }
+
+      it "renders properly without the income data" do
+        get :show, params: { user: { account_id: account_id } }
+        expect(response).to be_successful
+        expect(response.body).not_to include("Pay period frequency")
       end
     end
 

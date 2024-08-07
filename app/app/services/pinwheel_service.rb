@@ -17,6 +17,7 @@ class PinwheelService
 
   PINWHEEL_VERSION = "2023-11-22"
   ACCOUNTS_ENDPOINT = "/v1/accounts"
+  PLATFORMS_ENDPOINT = "/v1/platforms"
   USER_TOKENS_ENDPOINT = "/v1/link_tokens"
   ITEMS_ENDPOINT = "/v1/search"
   WEBHOOKS_ENDPOINT = "/v1/webhooks"
@@ -76,6 +77,10 @@ class PinwheelService
 
   def fetch_income_metadata(account_id:)
     @http.get(build_url("#{ACCOUNTS_ENDPOINT}/#{account_id}/income")).body
+  end
+
+  def fetch_platform(platform_id:)
+    @http.get(build_url("#{PLATFORMS_ENDPOINT}/#{platform_id}")).body
   end
 
   def create_link_token(end_user_id:, response_type:, id:)
