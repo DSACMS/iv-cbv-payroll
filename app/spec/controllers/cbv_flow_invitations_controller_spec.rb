@@ -10,9 +10,11 @@ RSpec.describe CbvFlowInvitationsController do
     stub_environment_variable("CBV_INVITE_SECRET", invite_secret, &ex)
   end
 
-  describe "#new" do
-    let(:valid_params) { { site_id: "sandbox", secret: invite_secret } }
+  let(:sandbox_params) { { site_id: "sandbox", secret: invite_secret } }
+  let(:nyc_params) { { site_id: "nyc", secret: invite_secret } }
+  let(:ma_params) { { site_id: "ma", secret: invite_secret } }
 
+  describe "#new" do
     context "without authentication" do
       it "redirects to the sso login page" do
         get :new, params: valid_params.except(:secret)
@@ -40,7 +42,7 @@ RSpec.describe CbvFlowInvitationsController do
         let(:site_id) { "nyc" }
 
         it "renders the nyc fields" do
-          get :new, params: valid_params
+          get :new, params: nyc_params
 
           expect(response.body).to include("first_name")
           expect(response.body).to include("middle_name")
@@ -56,7 +58,7 @@ RSpec.describe CbvFlowInvitationsController do
         let(:site_id) { "ma" }
 
         it "renders the ma fields" do
-          get :new, params: valid_params
+          get :new, params: ma_params
 
           expect(response.body).to include("first_name")
           expect(response.body).to include("middle_name")
