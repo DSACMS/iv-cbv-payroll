@@ -16,13 +16,15 @@ Rails.application.configure do
     policy.connect_src :self, "https://*.nr-data.net"
     policy.worker_src :self, "blob:"
     policy.frame_src :self, "https://cdn.getpinwheel.com"
-    policy.style_src :self
+    policy.style_src_elem :self
+    # Allow inline styles as we have some on the payment_details page:
+    policy.style_src_attr "'unsafe-inline'"
   end
 
   #
   #   # Generate session nonces for permitted importmap and inline scripts
   config.content_security_policy_nonce_generator = ->(request) { request.session.id.to_s }
-  config.content_security_policy_nonce_directives = %w[script-src style-src]
+  config.content_security_policy_nonce_directives = %w[script-src style-src-elem]
   #
   #   # Report violations without enforcing the policy.
   #   # config.content_security_policy_report_only = true
