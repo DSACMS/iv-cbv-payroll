@@ -3,9 +3,6 @@
 
 <%= form_with(model: @cbv_flow_invitation, url: invitations_path, builder: UswdsFormBuilder) do |f| %>
   <%= hidden_field_tag :secret, params[:secret] %>
-
-  <%= f.email_field :email_address, label: t(".form.email_address") %>
-  <%= f.text_field :case_number, label: t(".form.case_number") %>
-
+  <%= render partial: {current_site.id}, locals: { f: f } %>
   <%= f.submit t(".form.submit") %>
 <% end %>
