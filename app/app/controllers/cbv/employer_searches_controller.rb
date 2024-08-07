@@ -1,4 +1,7 @@
 class Cbv::EmployerSearchesController < Cbv::BaseController
+  # Disable CSP since Pinwheel relies on inline styles
+  content_security_policy false, only: :show
+
   def show
     @query = search_params[:query]
     @employers = @query.blank? ? [] : fetch_employers(@query)

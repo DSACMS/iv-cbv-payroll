@@ -8,7 +8,6 @@
   <p><%= t(".directed_to_login_portal") %></p>
 
   <%= form_with url: cbv_flow_employer_search_path, method: :get, class: "usa-search usa-search--big margin-top-4", html: { role: "search" }, data: { turbo_frame: "employers", turbo_action: "advance" } do |f| %>
-    <%= hidden_field_tag :authenticity_token, form_authenticity_token -%>
     <%= f.label :query, "Search for your employer", class: "usa-sr-only" %>
     <%= f.text_field :query, value: @query, class: "usa-input", type: "search", data: { "cbv-employer-search-target": "searchTerms" } %>
     <button
@@ -25,7 +24,6 @@
   <%= render partial: "employer", locals: { employer: @employers } %>
 
   <%= form_with url: next_path, method: :get, class: "display-none", data: { 'cbv-employer-search-target': "form" } do |f| %>
-    <%= hidden_field_tag :authenticity_token, form_authenticity_token -%>
     <input type="hidden" name="user[account_id]" data-cbv-employer-search-target="userAccountId" >
   <% end %>
 

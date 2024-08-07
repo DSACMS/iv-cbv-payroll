@@ -1,21 +1,21 @@
 require "rails_helper"
 
 RSpec.describe Users::OmniauthCallbacksController do
-  describe "#ma_dta" do
-    let(:test_email) { "test@example.com" }
-    let(:valid_auth_info) do
-      {
-        "info" => {
-          "email" => test_email
-        }
+  let(:test_email) { "test@example.com" }
+  let(:valid_auth_info) do
+    {
+      "info" => {
+        "email" => test_email
       }
-    end
+    }
+  end
 
-    before do
-      request.env["devise.mapping"] = Devise.mappings[:user]
-      request.env["omniauth.auth"] = valid_auth_info
-    end
+  before do
+    request.env["devise.mapping"] = Devise.mappings[:user]
+    request.env["omniauth.auth"] = valid_auth_info
+  end
 
+  describe "#ma_dta" do
     it "creates a User object and logs in as them" do
       expect { post :ma_dta }
         .to change(User, :count)
@@ -56,6 +56,30 @@ RSpec.describe Users::OmniauthCallbacksController do
         )
         expect(controller.current_user).to eq(new_user)
       end
+    end
+  end
+
+  describe "#nyc_dss" do
+    let(:test_email) { "test@example.com" }
+    let(:valid_auth_info) do
+      {
+        "info" => {
+          "email" => test_email
+        }
+      }
+    end
+
+    it "creates a User in the correct site and logs them in" do
+      expect { post :nyc_dss }
+        .to change(User, :count)
+        .by(1)
+
+      new_user = User.last
+      expect(new_user).to have_attributes(
+        email: test_email,
+        site_id: "nyc"
+      )
+      expect(controller.current_user).to eq(new_user)
     end
   end
 end
