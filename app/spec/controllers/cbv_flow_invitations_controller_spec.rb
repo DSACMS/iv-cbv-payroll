@@ -2,6 +2,8 @@ require "rails_helper"
 
 RSpec.describe CbvFlowInvitationsController do
   let(:invite_secret) { "FAKE_INVITE_SECRET" }
+
+  # hoisted here so that it's accessible to the test suite hooks .e.g. "before"
   let(:site_id) { "nyc" }
 
   let(:user) { User.create(email: "test@test.com", site_id: 'ma') }
@@ -15,6 +17,8 @@ RSpec.describe CbvFlowInvitationsController do
   let(:ma_params) { { site_id: "ma", secret: invite_secret } }
 
   describe "#new" do
+    let(:valid_params) { nyc_params }
+
     context "without authentication" do
       it "redirects to the sso login page" do
         get :new, params: valid_params.except(:secret)
