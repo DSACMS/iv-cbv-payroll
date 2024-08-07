@@ -23,7 +23,7 @@ RSpec.describe Cbv::AddJobsController do
 
     it 'redirects with notice when no radio button has been selected' do
       post :create
-      expect(flash[:alert]).to be_present
+      expect(flash[:slim_alert]).to be_present
       expect(response).to redirect_to(cbv_flow_add_job_path)
     end
   end
