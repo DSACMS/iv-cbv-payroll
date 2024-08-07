@@ -1,5 +1,5 @@
 data "external" "account_ids_by_name" {
-  program = ["../../../bin/account-ids-by-name.sh"]
+  program = ["${path.module}/../../../bin/account-ids-by-name.sh"]
 }
 
 locals {
