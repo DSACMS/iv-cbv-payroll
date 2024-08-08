@@ -39,5 +39,5 @@ Docker is likely rate limiting pulling of the Ruby image. This limit resets ever
 ## How to change environment variables
 
 1. make sure you are logged into the correct AWS account (look at the account ID in the top right: demo starts with "9", production starts with "7")
-2. change the env var value in Systems Manager > Parameter Store
+2. change the env var value in [Systems Manager > Parameter Store](https://us-east-1.console.aws.amazon.com/systems-manager/parameters/?region=us-east-1&tab=Table)
 3. Go to the Elastic Container Service service ([demo](https://us-east-1.console.aws.amazon.com/ecs/v2/clusters/app-dev/services/app-dev/health?region=us-east-1)) > Update Service > check the "Force new deployment" box and keep everything else set the way it is
