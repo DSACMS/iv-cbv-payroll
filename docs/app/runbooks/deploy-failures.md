@@ -36,7 +36,7 @@ This action sometimes fails when the Docker rate limit has been reached:
 Docker is likely rate limiting pulling of the Ruby image. This limit resets every 6 hours. Still, Github uses multiple IPs to make egress calls. **Simply redeploying the workflow usually works.** [Further discussion](https://nava.slack.com/archives/C06FC5TPAR3/p1719865408255839?thread_ts=1719862944.272089&cid=C06FC5TPAR3).
 
 
-## How to force a redeploy
+## How to change environment variables
 
 1. make sure you are logged into the correct AWS account (look at the account ID in the top right: demo starts with "9", production starts with "7")
 2. change the env var value in Systems Manager > Parameter Store
