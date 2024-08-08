@@ -1,7 +1,21 @@
-<%= f.text_field :first_name, label: t(".form.first_name") %>
-<%= f.text_field :middle_name, label: t(".form.middle_name") %>
-<%= f.text_field :last_name, label: t(".form.last_name") %>
-<%= f.text_field :agency_id_number, label: t(".form.agency_id_number") %>
-<%= f.email_field :email_address, label: t(".form.email_address") %>
-<%= f.date_field :snap_application_date, label: t(".form.snap_application_date") %>
-<%= f.text_field :beacon_id, label: t(".form.beacon_id") %>
+<%= f.text_field :first_name, label: t(".invite.first_name") %>
+<%= f.text_field :middle_name, label: t(".invite.middle_name") %>
+<%= f.text_field :last_name, label: t(".invite.last_name") %>
+<%= f.text_field :agency_id_number, label: t(".invite.agency_id_number") %>
+
+<div class="usa-form-group">
+  <label class="usa-label" id="cbv_flow_invitation_snap_application_date-label" for="cbv_flow_invitation_snap_application_date"
+  ><%= t(".invite.snap_application_date") %></label
+  >
+  <div class="usa-date-picker">
+    <input
+      class="usa-input"
+      id="cbv_flow_invitation_snap_application_date"
+      name="cbv_flow_invitation[snap_application_date]"
+      aria-labelledby="cbv_flow_invitation_snap_application_date-label"
+      />
+  </div>
+</div>
+
+<%= f.email_field :email_address, label: t(".invite.email_address") %>
+<%= f.text_field :beacon_id, label: t(".invite.beacon_id") %>

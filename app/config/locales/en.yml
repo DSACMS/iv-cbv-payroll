@@ -143,10 +143,26 @@ en:
     new:
       description: Complete this form to email a personalized link to begin the CBV flow.
       form:
-        case_number: Case Number
-        email_address: Email Address
         submit: Send Invitation
       header: Invite someone to complete the CBV flow
+    ma:
+      invite:
+        first_name: "First name"
+        middle_name: "Middle name"
+        last_name: "Last name"
+        agency_id_number: "Client's agency ID number"
+        email_address: "Email address"
+        snap_application_date: "SNAP application date"
+        beacon_id: "Your BEACON ID"
+    nyc:
+      invite:
+        first_name: "Client's first name"
+        middle_name: "Client's middle name"
+        last_name: "Client's last name"
+        client_id_number: "CIN"
+        case_number: "Case number"
+        email_address: "Client's email address"
+        snap_application_date: "SNAP application date"
   shared:
     banner:
       gov_description_html: A <strong>.gov</strong> website belongs to an official government organization in the United States.
