@@ -45,10 +45,10 @@ locals {
 
       domain_config = {
         manage_dns  = true
-        hosted_zone = "verify-prod.navapbc.cloud" # TODO: Replace this with our production product name
+        hosted_zone = "snap-income-pilot.com"
 
         certificate_configs = {
-          "verify-prod.navapbc.cloud" = {
+          "snap-income-pilot.com" = {
             source = "issued"
           }
         }

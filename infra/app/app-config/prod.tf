@@ -5,7 +5,7 @@ module "prod_config" {
   default_region                  = module.project_config.default_region
   environment                     = "prod"
   network_name                    = "prod"
-  domain_name                     = "verify-prod.navapbc.cloud"
+  domain_name                     = "snap-income-pilot.com"
   enable_https                    = true
   has_database                    = local.has_database
   has_incident_management_service = local.has_incident_management_service
