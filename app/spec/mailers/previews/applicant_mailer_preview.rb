@@ -2,9 +2,14 @@
 require Rails.root.join('spec/support/test_helpers')
 class ApplicantMailerPreview < ActionMailer::Preview
   include ViewHelper
-  include TestHelpers # in order to use stub_payments
+  include TestHelpers
 
   def invitation_email
-    ApplicantMailer.with(email_address: "test@example.com", link: "http://example.com").invitation_email
+    ApplicantMailer.with(
+      cbv_flow_invitation: CbvFlowInvitation.create(
+        email_address: "test@example.com",
+        site_id: "nyc",
+      )
+    ).invitation_email
   end
 end

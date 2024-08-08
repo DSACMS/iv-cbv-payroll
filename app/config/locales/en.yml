@@ -2,7 +2,9 @@
 en:
   applicant_mailer:
     invitation_email:
-      body: A government agency has requested that you verify your income in connection with your application for benefits. Please click this link to begin the process.
+      agency_acronym:
+        nyc: HRA
+      body_html: We need to verify your income as part of your benefits application, as requested by %{agency_acronym}. This process is unique to you, so please do not share this invitation with anyone else. <strong>You have until %{deadline}, to complete your verification.</strong> Otherwise, you'll need to request a new invitation.
       greeting: Hello,
       subject: Verify your income for your benefit application
       thank_you: Thank you!
