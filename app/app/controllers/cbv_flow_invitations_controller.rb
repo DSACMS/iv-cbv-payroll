@@ -4,7 +4,7 @@ class CbvFlowInvitationsController < ApplicationController
   before_action :authenticate_user!
 
   def new
-    @site_id = sanitized_site_id
+    @site_id = site_id
     @cbv_flow_invitation = CbvFlowInvitation.new
   end
 
@@ -13,7 +13,8 @@ class CbvFlowInvitationsController < ApplicationController
       CbvInvitationService.new.invite(
         cbv_flow_invitation_params[:email_address],
         cbv_flow_invitation_params[:case_number],
-        sanitized_site_id
+        
+        site_id
       )
     rescue => ex
       flash[:alert] = t(".invite_failed",
@@ -31,7 +32,7 @@ class CbvFlowInvitationsController < ApplicationController
   private
 
   def ensure_valid_params!
-    if site_config.site_ids.exclude?(sanitized_site_id)
+    if site_config.site_ids.exclude?(site_id)
       flash[:alert] = t("cbv_flow_invitations.incorrect_site_id")
       redirect_to root_url
     end
@@ -44,12 +45,7 @@ class CbvFlowInvitationsController < ApplicationController
     )
   end
 
-  def sanitized_site_id
-    sanitize_site_id(params[:site_id])
-  end
-
-  def sanitize_site_id(site_id)
-    # Sanitize the site_id to prevent directory traversal attacks
-    site_id.to_s.gsub(/\A\//, '').gsub(/\A\.\.\//, '').gsub(/\/\.\.\//, '/')
+  def site_id
+    params[:site_id]
   end
 end

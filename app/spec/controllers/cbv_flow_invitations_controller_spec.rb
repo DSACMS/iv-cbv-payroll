@@ -8,10 +8,6 @@ RSpec.describe CbvFlowInvitationsController do
 
   let(:user) { User.create(email: "test@test.com", site_id: 'ma') }
 
-  around do |ex|
-    stub_environment_variable("CBV_INVITE_SECRET", invite_secret, &ex)
-  end
-
   let(:sandbox_params) { { site_id: "sandbox", secret: invite_secret } }
   let(:nyc_params) { { site_id: "nyc", secret: invite_secret } }
   let(:ma_params) { { site_id: "ma", secret: invite_secret } }
