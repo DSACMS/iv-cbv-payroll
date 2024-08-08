@@ -23,26 +23,28 @@ class SiteConfig
       agency_name
       agency_short_name
       agency_help_link
+      invitation_valid_days
       learn_more_link_text
       learn_more_link_url
       pay_income_days
       pinwheel_api_token
       pinwheel_environment
+      sso
       transmission_method
       transmission_method_configuration
-      sso
     ])
 
     def initialize(yaml)
       @id = yaml["id"]
+      @agency_help_link = yaml["agency_help_link"]
       @agency_name = yaml["agency_name"]
       @agency_short_name = yaml["agency_short_name"]
-      @agency_help_link = yaml["agency_help_link"]
-      @pinwheel_api_token = yaml["pinwheel"]["api_token"]
-      @pinwheel_environment = yaml["pinwheel"]["environment"]
-      @pay_income_days = yaml["pay_income_days"]
+      @invitation_valid_days = yaml["invitation_valid_days"]
       @learn_more_link_text = yaml["learn_more_link_text"]
       @learn_more_link_url = yaml["learn_more_link_url"]
+      @pay_income_days = yaml["pay_income_days"]
+      @pinwheel_api_token = yaml["pinwheel"]["api_token"]
+      @pinwheel_environment = yaml["pinwheel"]["environment"]
       @transmission_method = yaml["transmission_method"]
       @transmission_method_configuration = yaml["transmission_method_configuration"]
       @sso = yaml["sso"]
