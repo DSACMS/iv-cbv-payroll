@@ -6,6 +6,8 @@
   transmission_method: shared_email
   transmission_method_configuration:
     email: <%= ENV['NYC_HRA_EMAIL'] %>
+  agency_short_name: HRA
+  agency_help_link: https://www.nyc.gov/site/hra/help/snap-application-frequently-asked-questions.page
   sso:
     client_id:     <%= ENV["AZURE_NYC_DSS_CLIENT_ID"] %>
     client_secret: <%= ENV["AZURE_NYC_DSS_CLIENT_SECRET"] %>
@@ -22,6 +24,8 @@
     environment: development
   transmission_method: null
   transmission_method_configuration: {}
+  agency_short_name: DTA
+  agency_help_link: https://www.mass.gov/guides/how-to-contact-dta
   sso:
     client_id:     <%= ENV["AZURE_MA_DTA_CLIENT_ID"] %>
     client_secret: <%= ENV["AZURE_MA_DTA_CLIENT_SECRET"] %>
@@ -39,6 +43,8 @@
   transmission_method: shared_email
   transmission_method_configuration:
     email: <%= ENV['SLACK_TEST_EMAIL'] %>
+  agency_short_name: CBV Agency Dept of Helping
+  agency_help_link: https://example.com/dept-of-helping
   sso:
     client_id:     <%= ENV["AZURE_SANDBOX_CLIENT_ID"] %>
     client_secret: <%= ENV["AZURE_SANDBOX_CLIENT_SECRET"] %>

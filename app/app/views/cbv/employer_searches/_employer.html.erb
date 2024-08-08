@@ -1,15 +1,15 @@
 <%= turbo_frame_tag "employers" do %>
-  <% if @employers.present? %>
-    <h3 class="site-preview-heading margin-bottom-2">
-      <%= t("cbv.employer_searches.show.results") %>
-    </h3>
+  <% if @query.present? %>
+    <h2 class="site-preview-heading margin-bottom-2">
+      <%= t("cbv.employer_searches.show.results") %> (<%= @employers.count %>)
+    </h2>
   <% end %>
   <div class="usa-card-group">
     <% @employers.each do |employer| %>
       <div class="usa-card usa-card--flag usa-card--media-right flex-1">
         <div class="usa-card__container">
           <div class="usa-card__header">
-            <h2 class="usa-card__heading"><%= employer["name"] %></h2>
+            <h3 class="usa-card__heading"><%= employer["name"] %></h3>
           </div>
           <div class="display-none usa-card__media usa-card__media--inset">
             <% if employer['logo_url'] %>
@@ -38,8 +38,17 @@
       </div>
     <% end %>
   </div>
-
-  <% if @query.present? %>
+  <% if @employers.to_a.count == 0 %>
+    <h3><%= t("cbv.employer_searches.show.no_results_title") %></h3>
+    <ol>
+      <li><%= t("cbv.employer_searches.show.no_results_desc1") %></li>
+      <li><%= t("cbv.employer_searches.show.no_results_desc2") %></li>
+    </ol>
+    <p><%= t("cbv.employer_searches.show.no_results_desc3") %> <%= link_to t("cbv.employer_searches.show.no_results_link", agency_short_name: current_site.agency_short_name), current_site.agency_help_link %></p>
+    <%= link_to cbv_flow_missing_results_path, class: "usa-button margin-top-5", data: { turbo_frame: "_top" } do %>
+      <%= t("cbv.employer_searches.show.exit_button_text") %>
+    <% end %>
+  <% elsif @employers.to_a.count > 1 %>
     <h3><%= t("cbv.employer_searches.show.employer_not_listed") %></h3>
     <%= link_to cbv_flow_missing_results_path, class: "usa-button usa-button--outline", data: { turbo_frame: "_top" } do %>
         <%= t("cbv.employer_searches.show.can_not_find_employer") %>
