@@ -2,10 +2,6 @@ require "rails_helper"
 
 RSpec.describe CbvFlowInvitationsController do
   let(:invite_secret) { "FAKE_INVITE_SECRET" }
-
-  # hoisted here so that it's accessible to the test suite hooks .e.g. "before"
-  let(:site_id) { "nyc" }
-
   let(:user) { User.create(email: "test@test.com", site_id: 'ma') }
 
   let(:sandbox_params) { { site_id: "sandbox", secret: invite_secret } }
@@ -73,6 +69,7 @@ RSpec.describe CbvFlowInvitationsController do
   end
 
   describe "#create" do
+    let(:site_id) { "nyc" }
     let(:cbv_flow_invitation_params) do
       {
         email_address: "test@example.com",
