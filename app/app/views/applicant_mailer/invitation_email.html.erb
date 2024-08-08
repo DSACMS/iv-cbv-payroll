@@ -3,11 +3,13 @@
 </p>
 
 <p>
-  <%= t(".body") %>
+  <%= t(".body_html",
+    agency_acronym: t(".agency_acronym.#{@cbv_flow_invitation.site_id}"),
+    deadline: format_date(@cbv_flow_invitation.expires_on.to_s)) %>
 </p>
 
 <p>
-  <strong><%= @link %></strong>
+  <strong><%= @cbv_flow_invitation.to_url %></strong>
 </p>
 
 <p>

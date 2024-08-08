@@ -4,7 +4,7 @@ class ApplicantMailer < ApplicationMailer
 
   def invitation_email
     mail(
-      to: @email_address,
+      to: @cbv_flow_invitation.email_address,
       subject: I18n.t("applicant_mailer.invitation_email.subject")
     )
   end
@@ -12,7 +12,6 @@ class ApplicantMailer < ApplicationMailer
   private
 
   def set_params
-    @email_address = params[:email_address]
-    @link = params[:link] if params[:link]
+    @cbv_flow_invitation = params[:cbv_flow_invitation]
   end
 end
