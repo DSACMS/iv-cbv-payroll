@@ -1,7 +1,7 @@
 <%= turbo_frame_tag "employers" do %>
   <% if @query.present? %>
     <h2 class="site-preview-heading margin-bottom-2">
-      <%= t("cbv.employer_searches.show.results") %> (<%= @employers.to_a.count %>)
+      <%= t("cbv.employer_searches.show.results") %> (<%= @employers.count %>)
     </h2>
   <% end %>
   <div class="usa-card-group">
