@@ -83,7 +83,9 @@ RSpec.describe Cbv::EntriesController do
 
       context "when the invitation is expired" do
         before do
-          invitation.update(created_at: CbvFlowInvitation::VALID_FOR.ago - 1.minute)
+          allow_any_instance_of(CbvFlowInvitation)
+            .to receive(:expired?)
+            .and_return(true)
         end
 
         it "redirects to the expired invitations page" do
