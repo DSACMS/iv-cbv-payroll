@@ -1,17 +1,38 @@
-<p>
-  <%= t(".greeting") %>
-</p>
+<section class="grid-container usa-section">
+  <div class="grid-row flex-justify-center">
+    <div class="bg-white padding-y-7 padding-x-7 border border-base-lighter">
+      <h1>
+        <%= t(".agency_acronym.nyc") %> has sent you an invitation to verify your income
+      </h1>
+      <p>
+        <%= t(".greeting") %>
+      </p>
 
-<p>
-  <%= t(".body_html",
-    agency_acronym: t(".agency_acronym.#{@cbv_flow_invitation.site_id}"),
-    deadline: format_date(@cbv_flow_invitation.expires_on.to_s)) %>
-</p>
+      <p>
+        <%= t(".body_html",
+          agency_acronym: t(".agency_acronym.#{@cbv_flow_invitation.site_id}"),
+          deadline: format_date(@cbv_flow_invitation.expires_on.to_s)) %>
+      </p>
 
-<p>
-  <strong><%= @cbv_flow_invitation.to_url %></strong>
-</p>
+      <p>
+        To verify your income, click the button below:
+      </p>
 
-<p>
-  <%= t(".thank_you") %>
-</p>
+      <p>
+        <a href=<%= @cbv_flow_invitation.to_url %> class="usa-button width-auto" type="button">
+          Verify your income
+        </a>
+      </p>
+
+      <p>
+        <%= t(".thank_you") %>
+      </p>
+
+      <hr />
+
+      <p>
+        This is an automatically generated message from your benefits agency. Please don’t reply to this email.
+      </p>
+    </div>
+  </div>
+</section>
