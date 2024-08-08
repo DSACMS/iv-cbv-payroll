@@ -10,11 +10,6 @@
 
     <%= stylesheet_link_tag "application", "data-turbo-track": "reload" %>
     <%= javascript_include_tag "application", "data-turbo-track": "reload", type: "module" %>
-
-    <% if Rails.env.production? %>
-      <!-- We participate in the US government's analytics program. See the data at analytics.usa.gov. -->
-      <%= javascript_include_tag "https://dap.digitalgov.gov/Universal-Federated-Analytics-Min.js?agency=GSA", async: true, id: "_fed_an_ua_tag" %>
-    <% end %>
   </head>
 
   <body>
@@ -39,6 +34,16 @@
                 <p class="usa-alert__text"><%= flash[:alert] %></p>
               </div>
             </div>
+          <% end %>
+
+          <% if flash[:slim_alert] %>
+            <div class="usa-alert usa-alert--<%= flash[:slim_alert]["type"] %> usa-alert--slim">
+              <div class="usa-alert__body">
+                <p class="usa-alert__text">
+                  <%= flash[:slim_alert]["message"] %>
+                </p>
+              </div>
+          </div>
           <% end %>
           <%= yield %>
         </section>

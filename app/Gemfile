@@ -51,7 +51,7 @@ gem "bootsnap", require: false
 
 gem "secure_headers", "~> 6.3"
 
-gem "newrelic_rpm", "~> 8.4"
+gem "newrelic_rpm"
 
 gem "sidekiq", "~> 6.4"
 

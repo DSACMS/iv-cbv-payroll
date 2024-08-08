@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2024_07_31_184221) do
+ActiveRecord::Schema[7.1].define(version: 2024_08_07_185354) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -51,6 +51,18 @@ ActiveRecord::Schema[7.1].define(version: 2024_07_31_184221) do
     t.index ["user_id", "account_id"], name: "index_connected_argyle_accounts_on_user_id_and_account_id", unique: true
   end
 
+  create_table "pinwheel_accounts", force: :cascade do |t|
+    t.bigint "cbv_flow_id", null: false
+    t.string "pinwheel_account_id"
+    t.datetime "paystubs_synced_at", precision: nil
+    t.datetime "employment_synced_at", precision: nil
+    t.datetime "income_synced_at", precision: nil
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.string "supported_jobs", default: [], array: true
+    t.index ["cbv_flow_id"], name: "index_pinwheel_accounts_on_cbv_flow_id"
+  end
+
   create_table "users", force: :cascade do |t|
     t.string "site_id", null: false
     t.string "email", default: "", null: false
@@ -65,9 +77,10 @@ ActiveRecord::Schema[7.1].define(version: 2024_07_31_184221) do
     t.string "last_sign_in_ip"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index ["email"], name: "index_users_on_email", unique: true
+    t.index ["email", "site_id"], name: "index_users_on_email_and_site_id", unique: true
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
   end
 
   add_foreign_key "cbv_flows", "cbv_flow_invitations"
+  add_foreign_key "pinwheel_accounts", "cbv_flows"
 end

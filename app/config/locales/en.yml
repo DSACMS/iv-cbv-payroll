@@ -12,13 +12,24 @@ en:
   cbv:
     add_jobs:
       create:
-        notice: Please select one of the options below
+        notice_no_answer: You must select an answer to continue.
       show:
+        answer_no_bullet_1: You don't have another job
+        answer_no_bullet_2: You have a job that pays you via PayPal, Venmo, Cash App, etc
+        answer_no_bullet_3: You have a job that pays you in cash
+        answer_no_bullet_4: You have a job that pays you with paper paychecks
+        answer_no_bullet_5: You have a job that issues a 1099
+        answer_no_header: 'Answer NO if:'
+        answer_yes_bullet_1: Has an online payroll provider
+        answer_yes_bullet_2: Lets you view paychecks online
+        answer_yes_bullet_3: Is app-based (Uber, DoorDash, Lyft, Instacart, etc.)
+        answer_yes_header: 'Answer YES if your job:'
         continue: Continue
-        header: Have you earned income from another job in the last %{day_count} days?
-        no_radio: No, I haven’t earned income from another job
-        subheader: This includes income you were paid for services or goods as a freelancer, independent contractor, gig worker who sets your own schedule, or other kinds of self-employment.
-        yes_radio: Yes, I have earned income from another job
+        criteria_disclaimer: 'Note: If you''ve had other jobs in the past %{pay_income_days} days that don''t meet these criteria, you may need to submit that income information separately. Contact your agency for assistance.'
+        header: Do you have another job to report?
+        no_radio: No, I don’t have another job that meets the criteria
+        subheader: Please add other jobs you’ve had in the past %{pay_income_days} days, even if you're no longer at that job.
+        yes_radio: Yes, I have another job that meets the criteria
     agreements:
       create:
         error: You must check the agreement checkbox to proceed.
@@ -90,15 +101,15 @@ en:
         employment_status: Employment status
         header: Your payment information from %{employer_name}
         header_no_employer_name: Your payment information from your employer
-        hourly_rate: Hourly wage
+        hourly_rate: Compensation amount
         none_found: No payments found. Please refresh the page after a few minutes.
         number_of_hours_worked: Number of hours worked
         pay_date: 'Pay Date: %{pay_date}'
+        pay_frequency: Pay period frequency
         pay_gross: Payment before taxes (gross)
         pay_gross_ytd: Gross pay YTD
         pay_net: Payment after taxes and deductions (net)
         pay_period: Pay period
-        pay_period_frequency: Pay period frequency
         payment_hours: "%{amount} hours"
         payments_and_deductions_table_header: Payments and deductions
         subheader: We have gathered your payment records from the past 90 days, from %{start_date} to %{end_date}. Review them and add any comments for your benefits agency in the additional comments section. This will be included in your income report.

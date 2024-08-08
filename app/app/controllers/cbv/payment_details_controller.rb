@@ -6,14 +6,18 @@ class Cbv::PaymentDetailsController < Cbv::BaseController
     :employment_start_date,
     :employment_end_date,
     :employment_status,
-    :pay_period_frequency,
+    :pay_frequency,
+    :compensation_unit,
     :compensation_amount,
     :account_comment
 
   def show
     account_id = params[:user][:account_id]
+    pinwheel_account = PinwheelAccount.find_by_pinwheel_account_id(account_id)
+
     @employment = pinwheel.fetch_employment(account_id: account_id)["data"]
-    @income_metadata = pinwheel.fetch_income_metadata(account_id: account_id)["data"]
+    @has_income_data = pinwheel_account.supported_jobs.include?("income")
+    @income_metadata = @has_income_data && pinwheel.fetch_income_metadata(account_id: account_id)["data"]
     @payments = set_payments account_id
     @account_comment = account_comment
   end
@@ -27,6 +31,7 @@ class Cbv::PaymentDetailsController < Cbv::BaseController
       updated_at: Time.current
     }
     @cbv_flow.update(additional_information: additional_information)
+
     redirect_to next_path
   end
 
@@ -53,8 +58,12 @@ class Cbv::PaymentDetailsController < Cbv::BaseController
     @employment["status"]&.humanize
   end
 
-  def pay_period_frequency
-    @income_metadata["compensation_unit"]&.humanize
+  def pay_frequency
+    @income_metadata["pay_frequency"]&.humanize
+  end
+
+  def compensation_unit
+    @income_metadata["compensation_unit"]
   end
 
   def compensation_amount

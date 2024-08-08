@@ -83,7 +83,7 @@ GEM
       public_suffix (>= 2.0.2, < 7.0)
     ast (2.4.2)
     aws-eventstream (1.3.0)
-    aws-partitions (1.958.0)
+    aws-partitions (1.962.0)
     aws-record (2.13.1)
       aws-sdk-dynamodb (~> 1, >= 1.85.0)
     aws-sdk-core (3.201.3)
@@ -97,7 +97,7 @@ GEM
     aws-sdk-kms (1.88.0)
       aws-sdk-core (~> 3, >= 3.201.0)
       aws-sigv4 (~> 1.5)
-    aws-sdk-rails (4.0.2)
+    aws-sdk-rails (4.0.3)
       actionmailbox (>= 7.0.0)
       aws-record (~> 2)
       aws-sdk-s3 (~> 1, >= 1.123.0)
@@ -106,12 +106,12 @@ GEM
       aws-sdk-sns (~> 1, >= 1.61.0)
       aws-sdk-sqs (~> 1, >= 1.56.0)
       aws-sessionstore-dynamodb (~> 2)
-      concurrent-ruby (>= 1.3.1)
+      concurrent-ruby (~> 1.3, >= 1.3.1)
       railties (>= 7.0.0)
-    aws-sdk-rds (1.240.0)
+    aws-sdk-rds (1.241.0)
       aws-sdk-core (~> 3, >= 3.201.0)
       aws-sigv4 (~> 1.5)
-    aws-sdk-s3 (1.156.0)
+    aws-sdk-s3 (1.157.0)
       aws-sdk-core (~> 3, >= 3.201.0)
       aws-sdk-kms (~> 1)
       aws-sigv4 (~> 1.5)
@@ -131,7 +131,7 @@ GEM
       aws-sdk-dynamodb (~> 1, >= 1.85.0)
       rack (>= 2, < 4)
       rack-session (>= 1, < 3)
-    aws-sigv4 (1.9.0)
+    aws-sigv4 (1.9.1)
       aws-eventstream (~> 1, >= 1.0.2)
     base64 (0.2.0)
     bcrypt (3.1.20)
@@ -144,7 +144,7 @@ GEM
       smart_properties
     bigdecimal (3.1.8)
     bindex (0.8.1)
-    bootsnap (1.18.3)
+    bootsnap (1.18.4)
       msgpack (~> 1.2)
     brakeman (5.4.1)
     builder (3.3.0)
@@ -168,7 +168,7 @@ GEM
       bigdecimal
       rexml
     crass (1.0.6)
-    cssbundling-rails (1.4.0)
+    cssbundling-rails (1.4.1)
       railties (>= 6.0.0)
     date (3.3.4)
     debase (0.2.5.beta2)
@@ -189,12 +189,12 @@ GEM
       dotenv (= 2.8.1)
       railties (>= 3.2)
     drb (2.2.1)
-    erb_lint (0.5.0)
+    erb_lint (0.6.0)
       activesupport
       better_html (>= 2.0.1)
       parser (>= 2.7.1.4)
       rainbow
-      rubocop
+      rubocop (>= 1)
       smart_properties
     erubi (1.13.0)
     faraday (2.9.2)
@@ -203,7 +203,7 @@ GEM
       net-http
     globalid (1.2.1)
       activesupport (>= 6.1)
-    hashdiff (1.1.0)
+    hashdiff (1.1.1)
     hashie (5.0.0)
     highline (3.1.0)
       reline
@@ -227,7 +227,7 @@ GEM
       actionview (>= 5.0.0)
       activesupport (>= 5.0.0)
     jmespath (1.6.2)
-    jsbundling-rails (1.3.0)
+    jsbundling-rails (1.3.1)
       railties (>= 6.0.0)
     json (2.7.2)
     jwt (2.8.2)
@@ -261,15 +261,15 @@ GEM
       timeout
     net-smtp (0.5.0)
       net-protocol
-    newrelic_rpm (8.16.0)
+    newrelic_rpm (9.12.0)
     nio4r (2.7.3)
-    nokogiri (1.16.6-aarch64-linux)
+    nokogiri (1.16.7-aarch64-linux)
       racc (~> 1.4)
-    nokogiri (1.16.6-arm64-darwin)
+    nokogiri (1.16.7-arm64-darwin)
       racc (~> 1.4)
-    nokogiri (1.16.6-x86_64-darwin)
+    nokogiri (1.16.7-x86_64-darwin)
       racc (~> 1.4)
-    nokogiri (1.16.6-x86_64-linux)
+    nokogiri (1.16.7-x86_64-linux)
       racc (~> 1.4)
     oauth2 (2.0.9)
       faraday (>= 0.17.3, < 3.0)
@@ -295,7 +295,7 @@ GEM
     parser (3.3.4.0)
       ast (~> 2.4.1)
       racc
-    pg (1.5.6)
+    pg (1.5.7)
     pg-aws_rds_iam (0.5.0)
       aws-sdk-rds (~> 1.0)
       pg (~> 1.1)
@@ -304,7 +304,7 @@ GEM
     public_suffix (6.0.1)
     puma (5.6.8)
       nio4r (~> 2.0)
-    racc (1.8.0)
+    racc (1.8.1)
     rack (2.2.9)
     rack-protection (3.2.0)
       base64 (>= 0.1.0)
@@ -394,7 +394,7 @@ GEM
       rubocop-ast (>= 1.31.1, < 2.0)
       ruby-progressbar (~> 1.7)
       unicode-display_width (>= 2.4.0, < 3.0)
-    rubocop-ast (1.31.3)
+    rubocop-ast (1.32.0)
       parser (>= 3.3.1.0)
     rubocop-minitest (0.35.1)
       rubocop (>= 1.61, < 2.0)
@@ -412,7 +412,7 @@ GEM
       rubocop-minitest
       rubocop-performance
       rubocop-rails
-    rubocop-rspec (3.0.3)
+    rubocop-rspec (3.0.4)
       rubocop (~> 1.61)
     ruby-graphviz (1.2.5)
       rexml
@@ -429,7 +429,7 @@ GEM
     sprockets (4.2.1)
       concurrent-ruby (~> 1.0)
       rack (>= 2.2.4, < 4)
-    sprockets-rails (3.5.1)
+    sprockets-rails (3.5.2)
       actionpack (>= 6.1)
       activesupport (>= 6.1)
       sprockets (>= 3.0.0)
@@ -482,7 +482,7 @@ GEM
     wkhtmltopdf-binary (0.12.6.7)
     xpath (3.2.0)
       nokogiri (~> 1.8)
-    zeitwerk (2.6.16)
+    zeitwerk (2.6.17)
 
 PLATFORMS
   aarch64-linux
@@ -511,7 +511,7 @@ DEPENDENCIES
   i18n-tasks (~> 1.0)
   jbuilder
   jsbundling-rails
-  newrelic_rpm (~> 8.4)
+  newrelic_rpm
   omniauth-azure-activedirectory-v2
   omniauth-rails_csrf_protection (~> 1.0)
   pg (~> 1.1)

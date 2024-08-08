@@ -10,7 +10,9 @@ class PinwheelWebhookManager
   WEBHOOK_EVENTS = %w[
     account.added
     paystubs.added
-    paystubs.ninety_days_synced
+    paystubs.fully_synced
+    employment.added
+    income.added
   ]
 
   def initialize

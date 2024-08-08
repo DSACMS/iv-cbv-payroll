@@ -1,4 +1,5 @@
 class CbvFlow < ApplicationRecord
+  has_many :pinwheel_accounts, dependent: :destroy
   belongs_to :cbv_flow_invitation, optional: true
   validates :site_id, inclusion: Rails.application.config.sites.site_ids
 
