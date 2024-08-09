@@ -8,6 +8,10 @@ RSpec.describe Cbv::SharesController do
   describe "#show" do
     render_views
 
+    before do
+      session[:cbv_flow_id] = cbv_flow.id
+    end
+
     it "renders" do
       get :show
       expect(response).to be_successful
@@ -51,6 +55,13 @@ RSpec.describe Cbv::SharesController do
 
         email = ActionMailer::Base.deliveries.last
         expect(email.subject).to eq("Applicant Income Verification: ABC1234")
+      end
+
+      it "stores the current time as transmitted_at" do
+        expect { post :update }
+          .to change { cbv_flow.reload.transmitted_at }
+          .from(nil)
+          .to(within(5.second).of(Time.now))
       end
 
       it "redirects to success screen" do

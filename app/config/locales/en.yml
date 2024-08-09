@@ -45,17 +45,26 @@ en:
     employer_searches:
       show:
         can_not_find_employer: I can’t find my company or payroll provider
-        directed_to_login_portal: You’ll be directed to their login portal, where you can enter your sign-in information to view your payment history.
-        employer_not_listed: Employer not listed?
+        exit_button_text: Exit income verification
         fetching_payroll: We are fetching your employer's payment information.
         fetching_payroll_description: This may take a few minutes. Please do not close this window.
         header: Find your employer or payroll provider
+        no_results_desc1: Check if your employer uses another business name or a payroll provider.
+        no_results_desc2: Make sure you have spelled names correctly, then search again.
+        no_results_desc3: If you still donʼt see your employer or payroll provider listed, you will need to submit that income information separately.
+        no_results_link: Learn more on %{agency_short_name}.
+        no_results_title: We werenʼt able to find your employer or payroll provider.
         results: Results
         search: Search
-        search_for_employer: Please search for your employer or their payroll provider to access the payments you have received during this period.
+        search_for_employer: Search for your employer or payroll provider to share your income information with your benefits agency. This can be a former employer or a current employer. We'll retrieve the last 90 days of pay information from when you applied.
         select: Select
         select_button_aria_label: Open an authentication modal for the employer or payroll provider to import your payment history.
-        subheader: Your caseworker needs your payment information from the last 30 days.
+        to_access: 'To access your payment information from this period, search for:'
+        to_access_li_1_html: "<strong>Your employer</strong> name"
+        to_access_li_2_html: The <strong>payroll provider</strong> you get paid from
+        to_access_li_3_html: The <strong>App</strong> you work for, like Uber, DoorDash, etc
+        what_is_html: "<strong>What is a payroll provider?</strong> A payroll provider is a system that some employers or companies use to handle payroll, pay processing, and distribute pay checks and direct deposit. Examples of popular payroll providers are ADP, Paychex, Gusto, etc."
+        you_ll_go: You’ll go to their login portal and sign-in to see your payment history.
     entries:
       show:
         case_number: 'We’ll be verifying income related to this ID number: %{case_number}'
@@ -71,11 +80,17 @@ en:
         your_employers_name: Your employer's name or the name of their payroll provider
         your_login_credentials: Your login credentials for the payroll provider account
     error_invalid_token: The invitation link used is not valid. Double check the link and try again. If you continue experiencing issues, contact your caseworker.
+    error_missing_token: This page must be accessed by using an invitation link. Make sure you are clicking through the link you received in your email. If you continue experiencing issues, contact your caseworker.
     manual_flow_start: Start Flow Manually
     missing_results:
       show:
-        button: Go to agency website
-        header: If you can’t find your employer or payroll provider, you’ll need to provide income information separately.
+        back_button: Go back to employer search
+        exit_button: Exit and go to %{agency_short_name}
+        header: How to report income if your employer or payroll provider isn’t listed
+        more_jobs: If you have more jobs to report
+        not_listed_p1: If your employer or payroll provider isn’t listed on this site, you’ll need to share your income information for this job directly with your benefits agency.
+        not_listed_p2: Visit %{agency_short_name} for more information on how to submit documents.
+        you_can_search: You can search for another employer or payroll provider. This site supports employers with online payroll providers or app-based services. Examples include Amazon, Walmart, McDonald’s, Uber, DoorDash, Lyft, and Instacart.
     payment_details:
       show:
         additional_information_label: Share any comments or additional information about the payment details above that you’d like your benefits agency to know.
