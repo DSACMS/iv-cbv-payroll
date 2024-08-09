@@ -7,6 +7,12 @@ class DataRetentionService
   # Redact transmitted CbvFlows 7 days after they are sent to caseworker
   REDACT_TRANSMITTED_CBV_FLOWS_AFTER = 7.days
 
+  def redact_all!
+    redact_invitations
+    redact_incomplete_cbv_flows
+    redact_complete_cbv_flows
+  end
+
   def redact_invitations
     CbvFlowInvitation
       .unstarted
