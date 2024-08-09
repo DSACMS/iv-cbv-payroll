@@ -2,6 +2,13 @@
 @forward "uswds-settings.scss";
 @forward "uswds-components.scss";
 
+.usa-date-picker__calendar {
+  top: 48px!important;
+  max-width: none;
+}
+.usa-hint p {
+  margin: 3px 0;
+}
 .lds-ripple,
 .lds-ripple div {
   box-sizing: border-box;
