@@ -40,7 +40,7 @@
   </div>
   <% if @query.present? && @employers.count == 0 %>
     <h3><%= t("cbv.employer_searches.show.no_results_title") %></h3>
-    <ol>
+    <ol class="line-height-sans-5">
       <li><%= t("cbv.employer_searches.show.no_results_desc1") %></li>
       <li><%= t("cbv.employer_searches.show.no_results_desc2") %></li>
     </ol>
