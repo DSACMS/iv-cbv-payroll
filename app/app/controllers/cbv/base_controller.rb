@@ -1,6 +1,6 @@
 class Cbv::BaseController < ApplicationController
   include Cbv::PaymentsHelper
-  before_action :set_cbv_flow
+  before_action :set_cbv_flow, :ensure_cbv_flow_not_yet_complete
   helper_method :agency_url, :next_path, :get_comment_by_account_id, :current_site
 
   private
@@ -10,6 +10,9 @@ class Cbv::BaseController < ApplicationController
       invitation = CbvFlowInvitation.find_by(auth_token: params[:token])
       if invitation.blank?
         return redirect_to(root_url, flash: { alert: t("cbv.error_invalid_token") })
+      end
+      if invitation.expired?
+        return redirect_to(cbv_flow_expired_invitation_path)
       end
 
       @cbv_flow = invitation.cbv_flow || CbvFlow.create_from_invitation(invitation)
@@ -24,12 +27,21 @@ class Cbv::BaseController < ApplicationController
       rescue ActiveRecord::RecordNotFound
         return redirect_to root_url
       end
-    else
+    elsif params[:controller] == "cbv/entries"
       # TODO: Restrict ability to enter the flow without a valid token
       @cbv_flow = CbvFlow.create(site_id: "sandbox")
+    else
+      return redirect_to root_url, notice: t("cbv.error_missing_token")
     end
 
     session[:cbv_flow_id] = @cbv_flow.id
+  end
+
+  def ensure_cbv_flow_not_yet_complete
+    return unless @cbv_flow && @cbv_flow.complete?
+
+    session[:cbv_flow_id] = nil
+    redirect_to(cbv_flow_expired_invitation_path)
   end
 
   def current_site
