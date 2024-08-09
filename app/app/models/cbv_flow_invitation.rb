@@ -2,9 +2,17 @@ class CbvFlowInvitation < ApplicationRecord
   has_secure_token :auth_token, length: 36
   validates :site_id, inclusion: Rails.application.config.sites.site_ids
 
+  include Redactable
+  has_redactable_fields(
+    case_number: :string,
+    email_address: :email,
+    auth_token: :string
+  )
+
   INVITATION_VALIDITY_TIME_ZONE = "America/New_York"
 
   has_one :cbv_flow
+  scope :unstarted, -> { left_outer_joins(:cbv_flow).where(cbv_flows: { id: nil }) }
 
   # Invitations are valid until 11:59pm Eastern Time on the (e.g.) 14th day
   # after sending the invitation.
