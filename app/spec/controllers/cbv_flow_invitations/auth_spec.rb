@@ -1,17 +1,13 @@
 require "rails_helper"
 
 RSpec.describe CbvFlowInvitationsController do
-  let(:invite_secret) { "FAKE_INVITE_SECRET" }
-  let(:site_id) { "nyc" }
-
   let(:user) { User.create(email: "test@test.com", site_id: 'ma') }
-
-  around do |ex|
-    stub_environment_variable("CBV_INVITE_SECRET", invite_secret, &ex)
-  end
+  let(:invite_secret) { "FAKE_INVITE_SECRET" }
+  let(:ma_params) { { site_id: "ma", secret: invite_secret } }
+  let(:nyc_params) { { site_id: "nyc", secret: invite_secret } }
 
   describe "#new" do
-    let(:valid_params) { { site_id: "sandbox", secret: invite_secret } }
+    let(:valid_params) { nyc_params }
 
     context "without authentication" do
       it "redirects to the sso login page" do
@@ -24,7 +20,6 @@ RSpec.describe CbvFlowInvitationsController do
     context "with an invalid site id" do
       it "redirects to the homepage" do
         get :new, params: valid_params.tap { |p| p[:site_id] = "this-is-not-a-site-id" }
-
         expect(response).to redirect_to(root_url)
       end
     end
@@ -36,15 +31,28 @@ RSpec.describe CbvFlowInvitationsController do
 
       render_views
 
-      it "renders properly" do
-        get :new, params: valid_params
+      context "when site_id is nyc" do
+        let(:site_id) { "nyc" }
 
-        expect(response).to be_successful
+        it "renders the nyc fields" do
+          get :new, params: nyc_params
+          expect(response).to be_successful
+        end
+      end
+
+      context "when site_id is ma" do
+        let(:site_id) { "ma" }
+
+        it "renders the ma fields" do
+          get :new, params: ma_params
+          expect(response).to be_successful
+        end
       end
     end
   end
 
   describe "#create" do
+    let(:site_id) { "nyc" }
     let(:cbv_flow_invitation_params) do
       {
         email_address: "test@example.com",
@@ -62,7 +70,7 @@ RSpec.describe CbvFlowInvitationsController do
     before do
       allow_any_instance_of(CbvInvitationService)
         .to receive(:invite)
-        .with("test@example.com", "ABC1234", site_id)
+        .with(ActionController::Parameters.new(email_address: "test@example.com", case_number: "ABC1234", site_id: site_id).permit!)
     end
 
     context "without authentication" do
@@ -87,7 +95,7 @@ RSpec.describe CbvFlowInvitationsController do
       it "sends an invitation" do
         expect_any_instance_of(CbvInvitationService)
           .to receive(:invite)
-          .with("test@example.com", "ABC1234", site_id)
+          .with(ActionController::Parameters.new(email_address: "test@example.com", case_number: "ABC1234", site_id: site_id).permit!)
 
         post :create, params: valid_params
 
@@ -104,14 +112,14 @@ RSpec.describe CbvFlowInvitationsController do
         before do
           allow_any_instance_of(CbvInvitationService)
             .to receive(:invite)
-            .with("bad-email@", "ABC1234", site_id)
+            .with(ActionController::Parameters.new(email_address: "bad-email@", case_number: "ABC1234", site_id: site_id).permit!)
             .and_raise(StandardError.new("Some random error, like a bad email address or something."))
         end
 
         it "redirects back to the invitation form with the error" do
           expect_any_instance_of(CbvInvitationService)
             .to receive(:invite)
-            .with("bad-email@", "ABC1234", site_id)
+            .with(ActionController::Parameters.new(email_address: "bad-email@", case_number: "ABC1234", site_id: site_id).permit!)
 
           post :create, params: broken_params
 
