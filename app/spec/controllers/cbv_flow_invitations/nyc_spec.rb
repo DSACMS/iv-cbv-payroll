@@ -10,23 +10,23 @@ RSpec.describe CbvFlowInvitationsController, type: :controller do
   end
 
   describe "#new" do
-      let(:valid_params) { nyc_params }
+    let(:valid_params) { nyc_params }
 
-      context "loads the nyc fields" do
-          render_views
+    context "loads the nyc fields" do
+      render_views
 
-          it "renders the nyc fields" do
-              get :new, params: nyc_params
-              expect(response.body).to include("first_name")
-              expect(response.body).to include("middle_name")
-              expect(response.body).to include("last_name")
-              expect(response.body).to include("client_id_number")
-              expect(response.body).to include("case_number")
-              expect(response.body).to include("email_address")
-              expect(response.body).to include("snap_application_date")
-            end
-        end
+      it "renders the nyc fields" do
+        get :new, params: nyc_params
+        expect(response.body).to include("first_name")
+        expect(response.body).to include("middle_name")
+        expect(response.body).to include("last_name")
+        expect(response.body).to include("client_id_number")
+        expect(response.body).to include("case_number")
+        expect(response.body).to include("email_address")
+        expect(response.body).to include("snap_application_date")
+      end
     end
+  end
 
   describe "#create" do
     let(:cbv_flow_invitation_params) do
