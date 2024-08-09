@@ -5,7 +5,7 @@ RSpec.describe ApplicantMailer, type: :mailer do
   include ActiveSupport::Testing::TimeHelpers
 
   before do
-    travel_to Time.new(2024, 7, 7)
+    travel_to Time.new(2024, 7, 7, 12, 0, 0, "-04:00")
   end
 
   after do
