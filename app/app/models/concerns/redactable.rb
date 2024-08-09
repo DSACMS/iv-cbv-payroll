@@ -16,7 +16,9 @@ module Redactable
   REDACTION_REPLACEMENTS = {
     string: "REDACTED",
     date: Date.new(1990, 1, 1),
-    email: "REDACTED@example.com"
+    email: "REDACTED@example.com",
+    object: {},
+    uuid: "00000000-0000-0000-0000-000000000000"
   }
 
   class_methods do
