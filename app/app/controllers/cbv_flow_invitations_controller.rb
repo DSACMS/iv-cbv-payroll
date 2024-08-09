@@ -13,8 +13,14 @@ class CbvFlowInvitationsController < ApplicationController
       CbvInvitationService.new.invite(
         cbv_flow_invitation_params[:email_address],
         cbv_flow_invitation_params[:case_number],
-        
-        site_id
+        site_id,
+        cbv_flow_invitation_params[:first_name],
+        cbv_flow_invitation_params[:middle_name],
+        cbv_flow_invitation_params[:last_name],
+        cbv_flow_invitation_params[:agency_id_number],
+        cbv_flow_invitation_params[:client_id_number],
+        cbv_flow_invitation_params[:snap_application_date],
+        cbv_flow_invitation_params[:beacon_id]
       )
     rescue => ex
       flash[:alert] = t(".invite_failed",
@@ -40,8 +46,15 @@ class CbvFlowInvitationsController < ApplicationController
 
   def cbv_flow_invitation_params
     params.fetch(:cbv_flow_invitation, {}).permit(
+      :first_name,
+      :middle_name,
+      :last_name,
+      :client_id_number,
+      :case_number,
       :email_address,
-      :case_number
+      :snap_application_date,
+      :agency_id_number,
+      :beacon_id
     )
   end
 
