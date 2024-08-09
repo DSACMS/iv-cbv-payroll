@@ -29,7 +29,6 @@ RSpec.describe CbvFlowInvitationsController, type: :controller do
   end
 
   describe "#create" do
-    let(:site_id) { "ma" }
     let(:cbv_flow_invitation_params) do
       {
         first_name: "Jane",
@@ -45,7 +44,7 @@ RSpec.describe CbvFlowInvitationsController, type: :controller do
     it "creates a CbvFlowInvitation record with the ma fields" do
       post :create, params: {
         secret: invite_secret,
-        site_id: site_id,
+        site_id: ma_params[:site_id],
         cbv_flow_invitation: cbv_flow_invitation_params
       }
 
