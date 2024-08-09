@@ -19,12 +19,14 @@ module Cbv::PaymentsHelper
 
   def parse_payments(payments)
     payments.map do |payment|
+      earnings_with_hours = payment["earnings"].max_by { |e| e["hours"] || 0.0 }
+
       {
         employer: payment["employer_name"],
         start: payment["pay_period_start"],
         end: payment["pay_period_end"],
-        hours: payment["earnings"][0]["hours"],
-        rate: payment["earnings"][0]["rate"],
+        hours: earnings_with_hours["hours"],
+        rate: earnings_with_hours["rate"],
         gross_pay_amount: payment["gross_pay_amount"].to_i,
         net_pay_amount: payment["net_pay_amount"].to_i,
         gross_pay_ytd: payment["gross_pay_ytd"].to_i,
