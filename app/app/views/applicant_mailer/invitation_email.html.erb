@@ -2,7 +2,7 @@
   <div class="grid-row flex-justify-center">
     <div class="bg-white padding-y-7 padding-x-7 border border-base-lighter">
       <h1>
-        <%= t(".agency_acronym.nyc") %> has sent you an invitation to verify your income
+        <%= t(".agency_acronym.#{@cbv_flow_invitation.site_id}") %> has sent you an invitation to verify your income
       </h1>
       <p>
         <%= t(".greeting") %>
@@ -11,7 +11,7 @@
       <p>
         <%= t(".body_html",
           agency_acronym: t(".agency_acronym.#{@cbv_flow_invitation.site_id}"),
-          deadline: format_date(@cbv_flow_invitation.expires_on.to_s)) %>
+          deadline: format_date(@cbv_flow_invitation.expires_at.to_s)) %>
       </p>
 
       <p>
