@@ -13,5 +13,6 @@ class ApplicantMailer < ApplicationMailer
 
   def set_params
     @cbv_flow_invitation = params[:cbv_flow_invitation]
+    @site_config = site_config[@cbv_flow_invitation.site_id]
   end
 end
