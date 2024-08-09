@@ -49,7 +49,7 @@ RSpec.describe CbvFlowInvitationsController, type: :controller do
       }
 
       invitation = CbvFlowInvitation.all.last
-      # expect(invitation.first_name).to eq("Jane")
+      expect(invitation.first_name).to eq("Jane")
       expect(invitation.middle_name).to eq("Doe")
       expect(invitation.last_name).to eq("Doe")
       expect(invitation.agency_id_number).to eq("789012")
