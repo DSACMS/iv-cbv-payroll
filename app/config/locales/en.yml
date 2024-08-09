@@ -144,10 +144,10 @@ en:
       invite:
         agency_id_number: Client's agency ID number
         beacon_id: Your BEACON ID
-        email_address: Email address
-        first_name: First name
-        last_name: Last name
-        middle_name: Middle name
+        email_address: Client's email address
+        first_name: Client's first name
+        last_name: Client's last name
+        middle_name: Client's middle name
         snap_application_date: SNAP application date
     new:
       description: Complete this form to email a personalized link to begin the CBV flow.
