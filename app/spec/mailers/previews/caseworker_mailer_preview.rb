@@ -5,7 +5,7 @@ class CaseworkerMailerPreview < ActionMailer::Preview
 
   def summary_email
     payments =  stub_payments
-    cbv_flow = CbvFlow.create(case_number: "ABC1234", argyle_user_id: "abc-def-ghi")
+    cbv_flow = CbvFlow.create(case_number: "ABC1234", pinwheel_token_id: "abc-def-ghi")
     CaseworkerMailer.with(cbv_flow: cbv_flow, case_number: "12345", payments: payments).summary_email
   end
 end
