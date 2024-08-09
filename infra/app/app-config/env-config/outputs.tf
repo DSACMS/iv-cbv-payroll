@@ -37,6 +37,7 @@ output "service_config" {
       # For job configs that don't define a source_bucket, add the source_bucket config property
       job_name => merge({ source_bucket = local.bucket_name }, job_config)
     }
+    cron_jobs = local.cron_jobs
   }
 }
 

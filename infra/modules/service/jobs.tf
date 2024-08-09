@@ -104,3 +104,44 @@ resource "aws_cloudwatch_event_target" "document_upload_jobs" {
     }), "\\u003c", "<"), "\\u003e", ">")
   }
 }
+
+#-----------------
+# Cron Jobs
+#-----------------
+# These tasks run regularly according to a schedule. See infra/modules/service/variables.tf for more
+# documentation.
+resource "aws_scheduler_schedule" "cron_jobs" {
+  # checkov:skip=CKV_AWS_297:Use AWS auto key management encryption since we will not need the flexibility of a customer key.
+  for_each = var.cron_jobs
+  name     = each.key
+
+  schedule_expression          = each.value.schedule_expression
+  schedule_expression_timezone = "America/New_York"
+
+  flexible_time_window {
+    mode = "OFF"
+  }
+
+  target {
+    arn      = aws_ecs_cluster.cluster.arn
+    role_arn = aws_iam_role.cron.arn
+
+    ecs_parameters {
+      task_definition_arn = aws_ecs_task_definition.app.arn
+      launch_type         = "FARGATE"
+
+      # Configuring Network Configuration is required when the task definition uses the awsvpc network mode.
+      network_configuration {
+        subnets         = var.private_subnet_ids
+        security_groups = [aws_security_group.app.id]
+      }
+    }
+
+    input = jsonencode({
+      containerOverrides = [{
+        name    = local.container_name,
+        command = each.value.task_command
+      }]
+    })
+  }
+}
