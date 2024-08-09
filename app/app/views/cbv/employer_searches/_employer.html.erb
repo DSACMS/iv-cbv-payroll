@@ -38,7 +38,7 @@
       </div>
     <% end %>
   </div>
-  <% if @employers.to_a.count == 0 %>
+  <% if @query.present? && @employers.count == 0 %>
     <h3><%= t("cbv.employer_searches.show.no_results_title") %></h3>
     <ol>
       <li><%= t("cbv.employer_searches.show.no_results_desc1") %></li>
@@ -48,7 +48,7 @@
     <%= link_to cbv_flow_missing_results_path, class: "usa-button margin-top-5", data: { turbo_frame: "_top" } do %>
       <%= t("cbv.employer_searches.show.exit_button_text") %>
     <% end %>
-  <% elsif @employers.to_a.count > 1 %>
+  <% elsif @employers.count > 1 %>
     <h3><%= t("cbv.employer_searches.show.employer_not_listed") %></h3>
     <%= link_to cbv_flow_missing_results_path, class: "usa-button usa-button--outline", data: { turbo_frame: "_top" } do %>
         <%= t("cbv.employer_searches.show.can_not_find_employer") %>
