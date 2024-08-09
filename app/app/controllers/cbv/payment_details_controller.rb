@@ -1,4 +1,6 @@
 class Cbv::PaymentDetailsController < Cbv::BaseController
+  include Cbv::PaymentsHelper
+
   helper_method :employer_name,
     :start_date,
     :end_date,
@@ -18,7 +20,7 @@ class Cbv::PaymentDetailsController < Cbv::BaseController
     @employment = pinwheel.fetch_employment(account_id: account_id)["data"]
     @has_income_data = pinwheel_account.supported_jobs.include?("income")
     @income_metadata = @has_income_data && pinwheel.fetch_income_metadata(account_id: account_id)["data"]
-    @payments = set_payments account_id
+    @payments = set_payments(account_id)
     @account_comment = account_comment
   end
 

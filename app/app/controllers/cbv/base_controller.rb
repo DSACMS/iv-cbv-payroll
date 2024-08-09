@@ -1,5 +1,4 @@
 class Cbv::BaseController < ApplicationController
-  include Cbv::PaymentsHelper
   before_action :set_cbv_flow, :ensure_cbv_flow_not_yet_complete
   helper_method :agency_url, :next_path, :get_comment_by_account_id, :current_site
 
@@ -50,12 +49,6 @@ class Cbv::BaseController < ApplicationController
     site_config[@cbv_flow.site_id]
   end
 
-  def set_payments(account_id = nil)
-    payments = account_id.nil? ? fetch_payroll : fetch_payroll_for_account_id(account_id)
-
-    @payments = parse_payments(payments)
-  end
-
   def next_path
     case params[:controller]
     when "cbv/entries"
@@ -75,18 +68,6 @@ class Cbv::BaseController < ApplicationController
 
   def pinwheel
     pinwheel_for(@cbv_flow)
-  end
-
-  def fetch_payroll
-    end_user_account_ids = pinwheel.fetch_accounts(end_user_id: @cbv_flow.pinwheel_end_user_id)["data"].map { |account| account["id"] }
-
-    end_user_account_ids.map do |account_id|
-      fetch_payroll_for_account_id account_id
-    end.flatten
-  end
-
-  def fetch_payroll_for_account_id(account_id)
-    pinwheel.fetch_paystubs(account_id: account_id, from_pay_date: 90.days.ago.strftime("%Y-%m-%d"))["data"]
   end
 
   def agency_url

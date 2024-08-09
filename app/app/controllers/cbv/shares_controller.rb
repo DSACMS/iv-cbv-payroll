@@ -1,4 +1,6 @@
 class Cbv::SharesController < Cbv::BaseController
+  include Cbv::PaymentsHelper
+
   before_action :set_payments, only: %i[update]
 
   def show
