@@ -6,7 +6,7 @@ class CbvFlow < ApplicationRecord
   scope :incomplete, -> { where(confirmation_code: nil) }
 
   include Redactable
-  redact_fields(
+  has_redactable_fields(
     case_number: :string,
     pinwheel_end_user_id: :uuid,
     additional_information: :object

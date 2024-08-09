@@ -3,7 +3,7 @@ class CbvFlowInvitation < ApplicationRecord
   validates :site_id, inclusion: Rails.application.config.sites.site_ids
 
   include Redactable
-  redact_fields(
+  has_redactable_fields(
     case_number: :string,
     email_address: :email,
     auth_token: :string
