@@ -2,7 +2,8 @@ Rails.application.config.to_prepare do
   # Only run this when running the Rails server in development
   if Rails.env.development? && defined?(::Rails::Server)
     begin
-      tunnels_json = Net::HTTP.get(URI("http://127.0.0.1:4040/api/tunnels"))
+      ngrok_url = ENV["DOCKERIZED"] ? "ngrok" : "127.0.0.1"
+       tunnels_json = Net::HTTP.get(URI("http://#{ngrok_url}:4040/api/tunnels"))
       tunnels = JSON.parse(tunnels_json)["tunnels"]
       tunnel_url = tunnels.first["public_url"]
       puts "Found ngrok tunnel at #{tunnel_url}!"

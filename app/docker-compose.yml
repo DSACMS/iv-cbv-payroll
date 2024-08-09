@@ -28,8 +28,6 @@ services:
       redis:
         condition: service_healthy
     env_file: .env.local
-    links:
-      - ngrok
     environment:
       - DOCKERIZED=true
       - DB_HOST=postgres
@@ -39,6 +37,7 @@ services:
       - REDIS_URL=redis://redis:6379/1
       - RAILS_BINDING=0.0.0.0
       - RAILS_ENV=development
+      - USER=cbv-dev
     ports:
       - 3000:3000
       - 1234:1234
@@ -68,9 +67,11 @@ services:
       restart: unless-stopped
       environment:
         - NGROK_AUTH_TOKEN=${NGROK_AUTH_TOKEN}
-      entrypoint: /bin/sh -c
+      entrypoint: /bin/sh -c 
       command:
-        - "ngrok http 3000 --log=stdout --authtoken=$$NGROK_AUTH_TOKEN --host-header=0.0.0.0:4040"
+       - ngrok start --all --config=/etc/ngrok.yml --authtoken=$$NGROK_AUTH_TOKEN
+      volumes:
+        - ${PWD}/.ngrok.yml:/etc/ngrok.yml
       ports:
         - 4040:4040
 

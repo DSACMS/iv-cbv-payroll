@@ -1,6 +1,6 @@
 version: 2
 log: stdout
-#authtoken: ${NGROK_AUTH_TOKEN}
+web_addr: 0.0.0.0:4040
 
 tunnels:
   test:
