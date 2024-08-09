@@ -28,6 +28,8 @@ services:
       redis:
         condition: service_healthy
     env_file: .env.local
+    links:
+      - ngrok
     environment:
       - DOCKERIZED=true
       - DB_HOST=postgres
@@ -60,6 +62,17 @@ services:
       interval: 10s
       timeout: 5s
       retries: 5
+
+  ngrok:
+      image: ngrok/ngrok:latest
+      restart: unless-stopped
+      environment:
+        - NGROK_AUTH_TOKEN=${NGROK_AUTH_TOKEN}
+      entrypoint: /bin/sh -c
+      command:
+        - "ngrok http 3000 --log=stdout --authtoken=$$NGROK_AUTH_TOKEN --host-header=0.0.0.0:4040"
+      ports:
+        - 4040:4040
 
 volumes:
   postgres_data:

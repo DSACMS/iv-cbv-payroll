@@ -1,0 +1,8 @@
+version: 2
+log: stdout
+#authtoken: ${NGROK_AUTH_TOKEN}
+
+tunnels:
+  test:
+    proto: http
+    addr: http://host.docker.internal:3000
