@@ -70,7 +70,7 @@ RSpec.describe CbvFlowInvitationsController do
     before do
       allow_any_instance_of(CbvInvitationService)
         .to receive(:invite)
-        .with("test@example.com", "ABC1234", site_id)
+        .with(ActionController::Parameters.new(email_address: "test@example.com", case_number: "ABC1234", site_id: site_id).permit!)
     end
 
     context "without authentication" do
@@ -95,7 +95,7 @@ RSpec.describe CbvFlowInvitationsController do
       it "sends an invitation" do
         expect_any_instance_of(CbvInvitationService)
           .to receive(:invite)
-          .with("test@example.com", "ABC1234", site_id)
+          .with(ActionController::Parameters.new(email_address: "test@example.com", case_number: "ABC1234", site_id: site_id).permit!)
 
         post :create, params: valid_params
 
@@ -112,14 +112,14 @@ RSpec.describe CbvFlowInvitationsController do
         before do
           allow_any_instance_of(CbvInvitationService)
             .to receive(:invite)
-            .with("bad-email@", "ABC1234", site_id)
+            .with(ActionController::Parameters.new(email_address: "bad-email@", case_number: "ABC1234", site_id: site_id).permit!)
             .and_raise(StandardError.new("Some random error, like a bad email address or something."))
         end
 
         it "redirects back to the invitation form with the error" do
           expect_any_instance_of(CbvInvitationService)
             .to receive(:invite)
-            .with("bad-email@", "ABC1234", site_id)
+            .with(ActionController::Parameters.new(email_address: "bad-email@", case_number: "ABC1234", site_id: site_id).permit!)
 
           post :create, params: broken_params
 

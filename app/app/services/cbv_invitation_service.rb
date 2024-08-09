@@ -1,19 +1,9 @@
 class CbvInvitationService
-  def invite(email_address, case_number, site_id, first_name, middle_name, last_name, agency_id_number, client_id_number, snap_application_date, beacon_id)
-    invitation = CbvFlowInvitation.create(
-      email_address: email_address,
-      case_number: case_number,
-      site_id: site_id,
-      first_name: first_name,
-      middle_name: middle_name,
-      last_name: last_name,
-      agency_id_number: agency_id_number,
-      client_id_number: client_id_number,
-      snap_application_date: snap_application_date,
-      beacon_id: beacon_id
-    )
+  def invite(invitation_params)
+    invitation_params = invitation_params.to_h # Convert to a regular hash
+    invitation = CbvFlowInvitation.create(invitation_params)
 
-    send_invitation_email(email_address, invitation.to_url)
+    send_invitation_email(invitation_params[:email_address], invitation.to_url)
     NewRelicEventTracker.track("ApplicantInvitedToFlow", {
       timestamp: Time.now.to_i,
       invitation_id: invitation.id

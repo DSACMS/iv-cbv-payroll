@@ -10,18 +10,8 @@ class CbvFlowInvitationsController < ApplicationController
 
   def create
     begin
-      CbvInvitationService.new.invite(
-        cbv_flow_invitation_params[:email_address],
-        cbv_flow_invitation_params[:case_number],
-        site_id,
-        cbv_flow_invitation_params[:first_name],
-        cbv_flow_invitation_params[:middle_name],
-        cbv_flow_invitation_params[:last_name],
-        cbv_flow_invitation_params[:agency_id_number],
-        cbv_flow_invitation_params[:client_id_number],
-        cbv_flow_invitation_params[:snap_application_date],
-        cbv_flow_invitation_params[:beacon_id]
-      )
+      invitation_params = base_params.merge(site_specific_params)
+      CbvInvitationService.new.invite(invitation_params)
     rescue => ex
       flash[:alert] = t(".invite_failed",
                         email_address: cbv_flow_invitation_params[:email_address],
@@ -41,6 +31,27 @@ class CbvFlowInvitationsController < ApplicationController
     if site_config.site_ids.exclude?(site_id)
       flash[:alert] = t("cbv_flow_invitations.incorrect_site_id")
       redirect_to root_url
+    end
+  end
+
+  def base_params
+    cbv_flow_invitation_params.slice(
+      :first_name,
+      :middle_name,
+      :last_name,
+      :email_address,
+      :snap_application_date
+    ).merge(site_id: site_id)
+  end
+
+  def site_specific_params
+    case site_id
+    when "ma"
+      cbv_flow_invitation_params.slice(:agency_id_number, :beacon_id)
+    when "nyc"
+      cbv_flow_invitation_params.slice(:client_id_number, :case_number)
+    else
+      {}
     end
   end
 
