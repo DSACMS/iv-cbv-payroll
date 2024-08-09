@@ -35,6 +35,31 @@ RSpec.describe Cbv::PaymentsHelper, type: :helper do
       )
     end
 
+    context "when there are some 'earnings' entries with fewer hours worked" do
+      before do
+        payments[0]["earnings"].prepend(
+          "amount" => 100,
+          "category" => "other",
+          "name" => "One Hour of Paid Fun",
+          "rate" => 10,
+          "hours" => 1
+        )
+        payments[0]["earnings"].prepend(
+          "amount" => 100,
+          "category" => "other",
+          "name" => "Cell Phone",
+          "rate" => 0,
+          "hours" => 0
+        )
+      end
+
+      it "returns the 'hours' and 'rate' from the one with the most hours" do
+        expect(parsed_payments).to include(
+          hash_including(hours: 80, rate: 4759)
+        )
+      end
+    end
+
     it "groups by employer" do
       expect(helper.summarize_by_employer(parsed_payments)).to eq({
         "5c1952df-3a84-4f28-8318-58291452061f" => {
