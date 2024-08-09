@@ -154,13 +154,14 @@ en:
         none_found: No payments found. Please refresh the page after a few minutes.
         payment: Payment of %{amount} on %{date}
         payment_of: Payment of %{amount}
-        send_to_caseworker: Send to caseworker
+        send_report: Share my report with benefits agency
         table_caption: 'Employer %{number}: %{employer_name}'
         table_caption_no_name: Employer %{number}
         time_range: "%{hours} hours from %{start} to %{end}"
         total_income_from: 'Total income from %{employer_name}: %{amount}'
         total_income_from_no_employer_name: 'Total income: %{amount}'
         total_payments: 'Total income before taxes: %{amount}'
+        total_payments_desc: This is the total income from your job(s) before taxes, benefits and deductions were taken out of your paycheck.
   cbv_flow_invitations:
     create:
       invite_failed: 'Error sending invitation to %{email_address}: %{error_message}.'

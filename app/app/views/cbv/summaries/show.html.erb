@@ -7,27 +7,28 @@
     <p>
       <%= t(".description") %>
     </p>
-    <h3 class="site-preview-heading"><%= t(".total_payments", amount: format_money(total_gross_income)) %></h3>
+    <h2 class="site-preview-heading"><%= t(".total_payments", amount: format_money(total_gross_income)) %></h2>
+    <p><%= t(".total_payments_desc")%></p>
 
     <% payments_grouped_by_employer.each_with_index do |(account_id, summary), index| %>
       <table class="usa-table usa-table--borderless width-full">
-        <caption>
+        <h3>
           <% if summary[:employer_name] %>
             <%= t(".table_caption", number: index, employer_name: summary[:employer_name]) %>
           <% else %>
             <%= t(".table_caption_no_name", number: index + 1) %>
           <% end %>
-        </caption>
+        </h3>
         <thead class="border-top-05">
           <tr>
             <th class="padding-3" style="background-color: #d9e8f6;" colspan="2">
-              <h3 class="margin-0">
+              <h4 class="margin-0">
                 <% if summary[:employer_name] %>
                   <%= t(".total_income_from", employer_name: summary[:employer_name], amount: summary[:total]) %>
                 <% else %>
                   <%= t(".total_income_from_no_employer_name", amount: format_money(summary[:total])) %>
                 <% end %>
-              </h3>
+              </h4>
             </th>
           </tr>
         </thead>
@@ -51,5 +52,5 @@
 <% end %>
 
 <%= form_for(@cbv_flow, url: cbv_flow_summary_path, builder: UswdsFormBuilder) do |f| %>
-  <%= f.submit t(".send_to_caseworker") %>
+  <%= f.submit t(".send_report") %>
 <% end %>
