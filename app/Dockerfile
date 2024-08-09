@@ -30,7 +30,7 @@ FROM base AS build
 # Install packages needed to build gems
 RUN apt-get update -qq && \
     apt-get install --no-install-recommends -y build-essential=12.9 \
-    git=1:2.39.2-1.1 libpq-dev=15.7-0+deb12u1 pkg-config=1.8.1-1 \
+    git=1:2.39.2-1.1 libpq-dev=15.8-0+deb12u1 pkg-config=1.8.1-1 \
     npm=9.2.0~ds1-1
 
 # Copy application code
