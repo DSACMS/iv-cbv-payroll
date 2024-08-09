@@ -16,6 +16,7 @@ class Cbv::SharesController < Cbv::BaseController
         cbv_flow: @cbv_flow,
         payments: @payments
       ).summary_email.deliver_now
+      @cbv_flow.touch(:transmitted_at)
     end
 
     NewRelicEventTracker.track("IncomeSummarySharedWithCaseworker", {

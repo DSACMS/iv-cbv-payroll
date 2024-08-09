@@ -57,6 +57,13 @@ RSpec.describe Cbv::SharesController do
         expect(email.subject).to eq("Applicant Income Verification: ABC1234")
       end
 
+      it "stores the current time as transmitted_at" do
+        expect { post :update }
+          .to change { cbv_flow.reload.transmitted_at }
+          .from(nil)
+          .to(within(5.second).of(Time.now))
+      end
+
       it "redirects to success screen" do
         post :update
         expect(response).to redirect_to({ controller: :successes, action: :show })
