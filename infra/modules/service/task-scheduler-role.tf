@@ -12,6 +12,13 @@ resource "aws_iam_role" "events" {
   assume_role_policy  = data.aws_iam_policy_document.events_assume_role.json
 }
 
+# The role allows EventBridge Scheduler to run tasks on the ECS cluster
+resource "aws_iam_role" "cron" {
+  name                = "${local.cluster_name}-cron"
+  managed_policy_arns = [aws_iam_policy.run_task.arn]
+  assume_role_policy  = data.aws_iam_policy_document.cron_assume_role.json
+}
+
 data "aws_iam_policy_document" "events_assume_role" {
   statement {
     effect  = "Allow"
@@ -19,6 +26,17 @@ data "aws_iam_policy_document" "events_assume_role" {
     principals {
       type        = "Service"
       identifiers = ["events.amazonaws.com"]
+    }
+  }
+}
+
+data "aws_iam_policy_document" "cron_assume_role" {
+  statement {
+    effect  = "Allow"
+    actions = ["sts:AssumeRole"]
+    principals {
+      type        = "Service"
+      identifiers = ["scheduler.amazonaws.com"]
     }
   }
 }

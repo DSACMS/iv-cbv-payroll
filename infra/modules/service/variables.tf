@@ -156,6 +156,30 @@ variable "file_upload_jobs" {
   default     = {}
 }
 
+variable "cron_jobs" {
+  type = map(object({
+    schedule_expression = string
+    task_command        = list(string)
+  }))
+  description = <<EOT
+    Configurations for jobs that trigger on recurring interval (cron-like).
+
+    Each configuration is a map from the job name to an object defining the
+    event's schedule and command.
+
+    For schedule_expression documentation, see:
+      https://docs.aws.amazon.com/scheduler/latest/UserGuide/schedule-types.html#cron-based
+    Some examples are:
+      cron(0 * * * ? *)              # Run every hour on the hour (the 0th minute)
+      cron(*/15 9-17 * * ? *)        # Run every 15 minutes between 9 a.m. and 5 p.m. (Eastern Time)
+
+    The task command is a string-array of command-line arguments, for example:
+
+      ["bin/calculate-widgets", "--target", "widget-factory"]
+  EOT
+  default     = {}
+}
+
 variable "is_temporary" {
   description = "Whether the service is meant to be spun up temporarily (e.g. for automated infra tests). This is used to disable deletion protection for the load balancer."
   type        = bool
