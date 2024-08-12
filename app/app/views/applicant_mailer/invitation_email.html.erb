@@ -1,6 +1,6 @@
 <section class="grid-container usa-section">
   <div class="grid-row flex-justify-center">
-    <div class="bg-white padding-y-7 padding-x-7 border border-base-lighter">
+    <div class="bg-white padding-y-7 padding-x-7 border border-base-lighter measure-5">
       <h2>
         <span class="text-primary"><%= t("shared.pilot_name") %> | </span>
         <%= @site_config.agency_name %>
@@ -22,7 +22,7 @@
         To verify your income, click the button below:
       </p>
 
-      <p>
+      <p class="margin-y-5">
         <a href="<%= @cbv_flow_invitation.to_url %>" class="usa-button width-auto" type="button">
           Verify your income
         </a>
@@ -30,7 +30,7 @@
 
       <hr >
 
-      <p>
+      <p class="font-body-2xs">
         This is an automatically generated message from your benefits agency. Please don’t reply to this email.
       </p>
     </div>
