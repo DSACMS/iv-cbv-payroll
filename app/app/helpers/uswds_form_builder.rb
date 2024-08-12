@@ -110,7 +110,9 @@ class UswdsFormBuilder < ActionView::Helpers::FormBuilder
   def date_picker(attribute, options = {})
     raw_value = object.send(attribute) if object
 
-    append_to_option(options, :hint, @template.content_tag(:p, I18n.t("us_form_with.date_picker_format")))
+    # Custom hint text
+    hint_text = options.delete(:hint) || I18n.t("us_form_with.date_picker_format")
+    append_to_option(options, :hint, @template.content_tag(:p, hint_text))
 
     group_options = options[:group_options] || {}
     append_to_option(group_options, :class, " usa-date-picker")

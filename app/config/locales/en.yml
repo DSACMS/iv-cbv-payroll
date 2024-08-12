@@ -156,13 +156,29 @@ en:
       invite_failed: 'Error sending invitation to %{email_address}: %{error_message}.'
       invite_success: Successfully delivered invitation to %{email_address}.
     incorrect_site_id: Unable to send invitation due to missing site configuration.
+    ma:
+      invite:
+        agency_id_number: Client's agency ID number
+        beacon_id: Your BEACON ID
+        email_address: Client's email address
+        first_name: Client's first name
+        last_name: Client's last name
+        middle_name: Client's middle name
+        snap_application_date: SNAP application date
     new:
-      description: Complete this form to email a personalized link to begin the CBV flow.
+      description: "<p>Provide some details about the client so we can send them a link to verify their pay information. We'll request the past %{pay_income_days} days of income, based on the client's application date.</p><p>If multiple members of the household earn income, send an invite link to each household member.</p>"
       form:
-        case_number: Case Number
-        email_address: Email Address
         submit: Send Invitation
-      header: Invite someone to complete the CBV flow
+      header: Send an invite link
+    nyc:
+      invite:
+        case_number: Case number
+        client_id_number: CIN
+        email_address: Client's email address
+        first_name: Client's first name
+        last_name: Client's last name
+        middle_name: Client's middle name
+        snap_application_date: SNAP application date
   shared:
     banner:
       gov_description_html: A <strong>.gov</strong> website belongs to an official government organization in the United States.

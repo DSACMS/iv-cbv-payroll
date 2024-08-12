@@ -1,5 +1,6 @@
 class ApplicationController < ActionController::Base
   helper :view
+  helper_method :current_site
   around_action :switch_locale
 
   def after_sign_in_path_for(user)
@@ -13,6 +14,12 @@ class ApplicationController < ActionController::Base
 
   def site_config
     Rails.application.config.sites
+  end
+
+  private
+
+  def current_site
+    site_config[params[:site_id]]
   end
 
   protected

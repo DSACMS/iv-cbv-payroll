@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2024_08_09_004703) do
+ActiveRecord::Schema[7.1].define(version: 2024_08_09_205627) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -26,6 +26,13 @@ ActiveRecord::Schema[7.1].define(version: 2024_08_09_004703) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.string "site_id"
+    t.string "first_name"
+    t.string "middle_name"
+    t.string "last_name"
+    t.string "agency_id_number"
+    t.string "client_id_number"
+    t.date "snap_application_date"
+    t.string "beacon_id"
   end
 
   create_table "cbv_flows", force: :cascade do |t|
