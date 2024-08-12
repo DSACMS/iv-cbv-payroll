@@ -1,4 +1,3 @@
-require "pdf_service"
 class ApplicantMailer < ApplicationMailer
   helper :view
   before_action :set_params
