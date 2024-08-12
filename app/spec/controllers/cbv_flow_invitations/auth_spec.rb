@@ -1,7 +1,8 @@
 require "rails_helper"
 
 RSpec.describe CbvFlowInvitationsController do
-  let(:user) { User.create(email: "test@test.com", site_id: 'ma') }
+  let(:nyc_user) { User.create(email: "test@test.com", site_id: 'nyc') }
+  let(:ma_user) { User.create(email: "test@test.com", site_id: 'ma') }
   let(:invite_secret) { "FAKE_INVITE_SECRET" }
   let(:ma_params) { { site_id: "ma", secret: invite_secret } }
   let(:nyc_params) { { site_id: "nyc", secret: invite_secret } }
@@ -25,14 +26,14 @@ RSpec.describe CbvFlowInvitationsController do
     end
 
     context "with authentication" do
-      before do
-        sign_in user
-      end
-
-      render_views
-
       context "when site_id is nyc" do
         let(:site_id) { "nyc" }
+
+        before do
+          sign_in nyc_user
+        end
+
+        render_views
 
         it "renders the nyc fields" do
           get :new, params: nyc_params
@@ -42,6 +43,12 @@ RSpec.describe CbvFlowInvitationsController do
 
       context "when site_id is ma" do
         let(:site_id) { "ma" }
+
+        before do
+          sign_in ma_user
+        end
+
+        render_views
 
         it "renders the ma fields" do
           get :new, params: ma_params
@@ -89,7 +96,7 @@ RSpec.describe CbvFlowInvitationsController do
 
     context "with authentication" do
       before do
-        sign_in user
+        sign_in nyc_user
       end
 
       it "sends an invitation" do

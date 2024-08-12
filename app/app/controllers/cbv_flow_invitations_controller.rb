@@ -1,4 +1,4 @@
-class CbvFlowInvitationsController < Cbv::BaseController
+class CbvFlowInvitationsController < ApplicationController
   protect_from_forgery prepend: true
   before_action :ensure_valid_params!
   before_action :authenticate_user!
