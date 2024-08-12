@@ -1,5 +1,5 @@
 <h1><%= t(".header") %></h1>
-<%= raw t(".description", pay_income_days: current_site.pay_income_days) %>
+<%= t(".description_html", pay_income_days: current_site.pay_income_days) %>
 
 <%= form_with(model: @cbv_flow_invitation, url: invitations_path, builder: UswdsFormBuilder) do |f| %>
   <%= hidden_field_tag :secret, params[:secret] %>
