@@ -1,15 +1,11 @@
 class CbvInvitationService
-  def invite(email_address, case_number, site_id)
-    cbv_flow_invitation = CbvFlowInvitation.create(
-      email_address: email_address,
-      case_number: case_number,
-      site_id: site_id
-    )
-
+  def invite(cbv_flow_invitation_params)
+    cbv_flow_invitation = CbvFlowInvitation.create(cbv_flow_invitation_params)
     send_invitation_email(cbv_flow_invitation)
+
     NewRelicEventTracker.track("ApplicantInvitedToFlow", {
       timestamp: Time.now.to_i,
-      invitation_id: invitation.id
+      invitation_id: cbv_flow_invitation.id
     })
   end
 

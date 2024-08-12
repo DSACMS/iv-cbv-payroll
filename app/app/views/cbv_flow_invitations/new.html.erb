@@ -1,11 +1,8 @@
 <h1><%= t(".header") %></h1>
-<p><%= t(".description") %></p>
+<%= raw t(".description", pay_income_days: current_site.pay_income_days) %>
 
 <%= form_with(model: @cbv_flow_invitation, url: invitations_path, builder: UswdsFormBuilder) do |f| %>
   <%= hidden_field_tag :secret, params[:secret] %>
-
-  <%= f.email_field :email_address, label: t(".form.email_address") %>
-  <%= f.text_field :case_number, label: t(".form.case_number") %>
-
+  <%= render partial: "#{@site_id}", locals: { f: f } %>
   <%= f.submit t(".form.submit") %>
 <% end %>
