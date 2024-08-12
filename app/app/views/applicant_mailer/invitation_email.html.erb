@@ -1,6 +1,6 @@
 <section class="grid-container usa-section">
   <div class="grid-row flex-justify-center">
-    <div class="bg-white padding-y-7 padding-x-7 border border-base-lighter measure-5 line-height-sans-5">
+    <div class="bg-white padding-y-7 padding-x-7 border border-base-lighter measure-5">
       <h3>
         <span class="text-primary"><%= t("shared.pilot_name") %> | </span>
         <%= @site_config.agency_name %>
@@ -8,19 +8,21 @@
       <h1>
         <%= @site_config.agency_short_name %> has sent you an invitation to verify your income
       </h1>
-      <p>
-        <%= t(".greeting") %>
-      </p>
+      <div class="line-height-sans-5">
+        <p>
+          <%= t(".greeting") %>
+        </p>
 
-      <p>
-        <%= t(".body_html",
-          agency_acronym: @site_config.agency_short_name,
-          deadline: format_date(@cbv_flow_invitation.expires_at.to_s)) %>
-      </p>
+        <p>
+          <%= t(".body_html",
+            agency_acronym: @site_config.agency_short_name,
+            deadline: format_date(@cbv_flow_invitation.expires_at.to_s)) %>
+        </p>
 
-      <p>
-        To verify your income, click the button below:
-      </p>
+        <p>
+          To verify your income, click the button below:
+        </p>
+      </div>
 
       <p class="margin-y-5">
         <a href="<%= @cbv_flow_invitation.to_url %>" class="usa-button width-auto" type="button">
