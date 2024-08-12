@@ -13,11 +13,11 @@ class Cbv::SharesController < Cbv::BaseController
     end
 
     if current_site.transmission_method.present? && current_site.transmission_method == "shared_email"
-      ApplicantMailer.with(
+      CaseworkerMailer.with(
         email_address: current_site.transmission_method_configuration.dig("email"),
         cbv_flow: @cbv_flow,
         payments: @payments
-      ).caseworker_summary_email.deliver_now
+      ).summary_email.deliver_now
       @cbv_flow.touch(:transmitted_at)
     end
 
