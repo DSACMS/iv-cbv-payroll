@@ -1,5 +1,3 @@
-require "fileutils"
-
 class PdfService
   def initialize(case_id)
     @case_id = case_id

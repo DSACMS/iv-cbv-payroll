@@ -1,6 +1,3 @@
-require "aws-sdk-rails"
-require "gpgme"
-
 class S3Service
   def initialize(config)
     @bucket_name = config["bucket_name"]
