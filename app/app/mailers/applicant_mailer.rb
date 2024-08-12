@@ -1,3 +1,4 @@
+require "pdf_service"
 class ApplicantMailer < ApplicationMailer
   helper :view
   before_action :set_params
@@ -10,6 +11,8 @@ class ApplicantMailer < ApplicationMailer
   end
 
   def caseworker_summary_email
+    pdf_service = PdfService.new(@cbv_flow.id)
+    generate_pdf = pdf_service.generate_pdf("cbv/summaries/show", { cbv_flow: @cbv_flow, payments: @payments })
     timestamp = Time.now.strftime("%Y%m%d%H%M%S")
     filename = "#{@cbv_flow.case_number}_#{timestamp}_income_verification.pdf"
     attachments[filename] = generate_pdf
@@ -27,11 +30,5 @@ class ApplicantMailer < ApplicationMailer
     @email_address = params[:email_address]
     @link = params[:link] if params[:link]
     @payments = params[:payments] if params[:payments]
-  end
-
-  def generate_pdf
-    WickedPdf.new.pdf_from_string(
-      render_to_string(template: "cbv/summaries/show", formats: [ :pdf ])
-    )
   end
 end

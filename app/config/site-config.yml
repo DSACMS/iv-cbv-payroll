@@ -9,9 +9,9 @@
   agency_short_name: HRA
   agency_help_link: https://www.nyc.gov/site/hra/help/snap-application-frequently-asked-questions.page
   sso:
-    client_id:     <%= ENV["AZURE_NYC_DSS_CLIENT_ID"] %>
+    client_id: <%= ENV["AZURE_NYC_DSS_CLIENT_ID"] %>
     client_secret: <%= ENV["AZURE_NYC_DSS_CLIENT_SECRET"] %>
-    tenant_id:     <%= ENV["AZURE_NYC_DSS_TENANT_ID"] %>
+    tenant_id: <%= ENV["AZURE_NYC_DSS_TENANT_ID"] %>
     scope: "openid"
     name: "nyc_dss"
   pay_income_days: 90
@@ -23,14 +23,19 @@
   pinwheel:
     api_token: <%= ENV['PINWHEEL_API_TOKEN_DEVELOPMENT'] %>
     environment: development
-  transmission_method: null
-  transmission_method_configuration: {}
+  transmission_method: s3
+  transmission_method_configuration:
+    bucket_name: <%= ENV['MA_DTA_S3_BUCKET_NAME'] %>
+    access_key_id: <%= ENV['MA_DTA_S3_ACCESS_KEY_ID'] %>
+    secret_access_key: <%= ENV['MA_DTA_S3_SECRET_ACCESS_KEY'] %>
+    region: <%= ENV['MA_DTA_S3_REGION'] %>
+    public_key: <%= ENV['MA_DTA_PUBLIC_KEY'] %>
   agency_short_name: DTA
   agency_help_link: https://www.mass.gov/guides/how-to-contact-dta
   sso:
-    client_id:     <%= ENV["AZURE_MA_DTA_CLIENT_ID"] %>
+    client_id: <%= ENV["AZURE_MA_DTA_CLIENT_ID"] %>
     client_secret: <%= ENV["AZURE_MA_DTA_CLIENT_SECRET"] %>
-    tenant_id:     <%= ENV["AZURE_MA_DTA_TENANT_ID"] %>
+    tenant_id: <%= ENV["AZURE_MA_DTA_TENANT_ID"] %>
     scope: "openid"
     name: "ma_dta"
   pay_income_days: 90
@@ -48,9 +53,9 @@
   agency_short_name: CBV
   agency_help_link: https://example.com/dept-of-helping
   sso:
-    client_id:     <%= ENV["AZURE_SANDBOX_CLIENT_ID"] %>
+    client_id: <%= ENV["AZURE_SANDBOX_CLIENT_ID"] %>
     client_secret: <%= ENV["AZURE_SANDBOX_CLIENT_SECRET"] %>
-    tenant_id:     <%= ENV["AZURE_SANDBOX_TENANT_ID"] %>
+    tenant_id: <%= ENV["AZURE_SANDBOX_TENANT_ID"] %>
     scope: "openid"
     name: "sandbox"
   pay_income_days: 90
