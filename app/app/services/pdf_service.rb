@@ -1,14 +1,10 @@
 class PdfService
-  def initialize(case_id)
-    @case_id = case_id
-  end
-
   def generate_pdf(template, variables)
     pdf_content = WickedPdf.new.pdf_from_string(
-      render_to_string(template: template, formats: [ :pdf ], variables: variables)
+      render_to_string(template: template, variables: variables)
     )
 
-    file_name = "#{@case_id}_#{Date.today.strftime('%Y%m%d')}.pdf"
+    file_name = "#{SecureRandom.uuid}.pdf"
     file_path = Rails.root.join("tmp", file_name)
 
     FileUtils.mkdir_p(File.dirname(file_path))
@@ -19,10 +15,10 @@ class PdfService
 
   private
 
-  def render_to_string(template:, formats:, variables:)
+  def render_to_string(template:, variables:)
     ApplicationController.renderer.render(
       template: template,
-      formats: formats,
+      formats: [ :pdf ],
       layout: false,
       assigns: variables
     )

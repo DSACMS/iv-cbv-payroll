@@ -45,8 +45,8 @@ class Cbv::SharesController < Cbv::BaseController
   end
 
   def process_s3_transmission
-    pdf_service = PdfService.new(@cbv_flow.id)
-    pdf_path = pdf_service.generate_pdf(@cbv_flow, @payments)
+    pdf_service = PdfService.new
+    pdf_path = pdf_service.generate_pdf("cbv/summaries/show", @payments)
     s3_service = S3Service.new(current_site.s3)
     s3_service.encrypt_and_upload(pdf_path, "#{@cbv_flow.id}_summary.pdf.gpg")
     File.delete(pdf_path)

@@ -10,11 +10,10 @@ class ApplicantMailer < ApplicationMailer
   end
 
   def caseworker_summary_email
-    pdf_service = PdfService.new(@cbv_flow.id)
-    generate_pdf = pdf_service.generate_pdf("cbv/summaries/show", { cbv_flow: @cbv_flow, payments: @payments })
+    pdf_path = PdfService.new.generate_pdf("cbv/summaries/show", { cbv_flow: @cbv_flow, payments: @payments })
     timestamp = Time.now.strftime("%Y%m%d%H%M%S")
     filename = "#{@cbv_flow.case_number}_#{timestamp}_income_verification.pdf"
-    attachments[filename] = generate_pdf
+    attachments[filename] = pdf_path
     mail(
       to: @email_address,
       subject: I18n.t("applicant_mailer.caseworker_summary_email.subject", case_number: @cbv_flow.case_number),
