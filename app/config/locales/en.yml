@@ -45,6 +45,7 @@ en:
     employer_searches:
       show:
         can_not_find_employer: I can’t find my company or payroll provider
+        employer_not_listed: Employer Not Listed?
         exit_button_text: Exit income verification
         fetching_payroll: We are fetching your employer's payment information.
         fetching_payroll_description: This may take a few minutes. Please do not close this window.
@@ -52,8 +53,8 @@ en:
         no_results_desc1: Check if your employer uses another business name or a payroll provider.
         no_results_desc2: Make sure you have spelled names correctly, then search again.
         no_results_desc3: If you still donʼt see your employer or payroll provider listed, you will need to submit that income information separately.
-        no_results_link: Learn more on %{agency_short_name}.
-        no_results_title: We werenʼt able to find your employer or payroll provider.
+        no_results_link: Learn more on %{agency_short_name}'s website.
+        no_results_title: We couldn’t find your employer or payroll provider.
         results: Results
         search: Search
         search_for_employer: Search for your employer or payroll provider to share your income information with your benefits agency. This can be a former employer or a current employer. We'll retrieve the last 90 days of pay information from when you applied.
@@ -63,7 +64,7 @@ en:
         to_access_li_1_html: "<strong>Your employer</strong> name"
         to_access_li_2_html: The <strong>payroll provider</strong> you get paid from
         to_access_li_3_html: The <strong>App</strong> you work for, like Uber, DoorDash, etc
-        what_is_html: "<strong>What is a payroll provider?</strong> A payroll provider is a system that some employers or companies use to handle payroll, pay processing, and distribute pay checks and direct deposit. Examples of popular payroll providers are ADP, Paychex, Gusto, etc."
+        what_is_html: "<strong>What is a payroll provider?</strong> A payroll provider is a system that some employers or companies use to handle payroll, pay processing, and distribute paychecks and direct deposit. Examples of popular payroll providers are ADP, Paychex, Gusto, etc."
         you_ll_go: You’ll go to their login portal and sign-in to see your payment history.
     entries:
       show:
