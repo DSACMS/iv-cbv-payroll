@@ -152,8 +152,8 @@ en:
         document_timestamp: 'Document origination: %{timestamp}'
         header: Review payment information from your employers
         none_found: No payments found. Please refresh the page after a few minutes.
-        payment: Payment of %{amount} on %{date}
-        payment_of: Payment of %{amount}
+        payment: Payment of %{amount} before taxes on %{date}
+        payment_of: Payment of %{amount} before taxes
         send_report: Share my report with benefits agency
         table_caption: 'Employer %{number}: %{employer_name}'
         table_caption_no_name: Employer %{number}

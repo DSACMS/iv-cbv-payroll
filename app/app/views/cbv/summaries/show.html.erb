@@ -35,14 +35,13 @@
         <tbody>
           <% summary[:payments].each do |payment| %>
             <tr>
-              <td><%= t(".payment", amount: format_money(payment[:net_pay_amount]), date: format_date(payment[:pay_date])) %></td>
+              <td><%= t(".payment", amount: format_money(payment[:gross_pay_amount]), date: format_date(payment[:pay_date])) %></td>
             </tr>
           <% end %>
         </tbody>
       </table>
-
       <h4><%= t(".additional_comments") %></h4>
-      <%= get_comment_by_account_id(account_id).dig("comment") ? get_comment_by_account_id(account_id).dig("comment") : t("shared.not_applicable") %>
+      <%= get_comment_by_account_id(account_id).dig("comment") != "" ? get_comment_by_account_id(account_id).dig("comment") : t("shared.not_applicable") %>
     <% end %>
   </div>
 <% else %>
