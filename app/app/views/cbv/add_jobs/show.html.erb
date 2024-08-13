@@ -21,7 +21,7 @@
 
   <div class="margin-bottom-2">
     <%= t(".criteria_disclaimer", pay_income_days: current_site.pay_income_days) %>
-    <%= link_to(current_site.learn_more_link_text, current_site.learn_more_link_url) %>
+    <%= site_translation(".learn_more_link_html") %>
   </div>
 
   <%= form_with(url: cbv_flow_add_job_path, builder: UswdsFormBuilder, data: { "add-job-target": "addJobForm", turbo: "false" }, id: "add_job_form") do |f| %>

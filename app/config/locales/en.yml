@@ -27,6 +27,10 @@ en:
         continue: Continue
         criteria_disclaimer: 'Note: If you''ve had other jobs in the past %{pay_income_days} days that don''t meet these criteria, you may need to submit that income information separately. Contact your agency for assistance.'
         header: Do you have another job to report?
+        learn_more_link_html:
+          ma: <a href="https://www.mass.gov/guides/how-to-contact-dta">Learn more at Mass.gov</a>
+          nyc: <a href="https://www.nyc.gov/site/hra/help/snap-application-frequently-asked-questions.page">Learn more on nyc.gov</a>
+          sandbox: <a href="https://www.mass.gov/guides/how-to-contact-dta">Learn more at CBV Test Agency</a>
         no_radio: No, I don’t have another job that meets the criteria
         subheader: Please add other jobs you’ve had in the past %{pay_income_days} days, even if you're no longer at that job.
         yes_radio: Yes, I have another job that meets the criteria
@@ -53,7 +57,10 @@ en:
         no_results_desc1: Check if your employer uses another business name or a payroll provider.
         no_results_desc2: Make sure you have spelled names correctly, then search again.
         no_results_desc3: If you still donʼt see your employer or payroll provider listed, you will need to submit that income information separately.
-        no_results_link: Learn more on %{agency_short_name}'s website.
+        no_results_link_html:
+          ma: <a href="https://www.mass.gov/guides/how-to-contact-dta">Learn more on DTA's website.</a>
+          nyc: <a href="https://www.nyc.gov/site/hra/help/snap-application-frequently-asked-questions.page">Learn more on HRA's website.</a>
+          sandbox: <a href="https://example.com">Learn more on CBV Test Agency's website.</a>
         no_results_title: We couldn’t find your employer or payroll provider.
         results: Results
         search: Search
@@ -86,7 +93,10 @@ en:
     missing_results:
       show:
         back_button: Go back to employer search
-        exit_button: Exit and go to %{agency_short_name}
+        exit_button_html:
+          ma: <a href="https://www.mass.gov/guides/how-to-contact-dta" class="usa-button">Exit and go to DTA</a>
+          nyc: <a href="https://www.nyc.gov/site/hra/help/snap-application-frequently-asked-questions.page" class="usa-button">Exit and go to HRA</a>
+          sandbox: <a href="https://www.mass.gov/guides/how-to-contact-dta" class="usa-button">Exit and go to CBV Test Agency</a>
         header: How to report income if your employer or payroll provider isn’t listed
         more_jobs: If you have more jobs to report
         not_listed_p1: If your employer or payroll provider isn’t listed on this site, you’ll need to share your income information for this job directly with your benefits agency.

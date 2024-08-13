@@ -22,10 +22,7 @@ class SiteConfig
       id
       agency_name
       agency_short_name
-      agency_help_link
       invitation_valid_days
-      learn_more_link_text
-      learn_more_link_url
       pay_income_days
       pinwheel_api_token
       pinwheel_environment
@@ -36,12 +33,9 @@ class SiteConfig
 
     def initialize(yaml)
       @id = yaml["id"]
-      @agency_help_link = yaml["agency_help_link"]
       @agency_name = yaml["agency_name"]
       @agency_short_name = yaml["agency_short_name"]
       @invitation_valid_days = yaml["invitation_valid_days"]
-      @learn_more_link_text = yaml["learn_more_link_text"]
-      @learn_more_link_url = yaml["learn_more_link_url"]
       @pay_income_days = yaml["pay_income_days"]
       @pinwheel_api_token = yaml["pinwheel"]["api_token"]
       @pinwheel_environment = yaml["pinwheel"]["environment"]
