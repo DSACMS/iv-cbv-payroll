@@ -56,49 +56,49 @@ class Cbv::PaymentDetailsController < Cbv::BaseController
   end
 
   def employer_name
-    @employment ? @employment["employer_name"] : "Unknown"
+    @employment ? @employment["employer_name"] : I18n.t("cbv.payment_details.show.unknown")
   end
 
   def employment_start_date
-    @employment ? @employment["start_date"] : "Unknown"
+    @employment ? @employment["start_date"] : I18n.t("cbv.payment_details.show.unknown")
   end
 
   def employment_end_date
-    @employment ? @employment["termination_date"] : "Unknown"
+    @employment ? @employment["termination_date"] : I18n.t("cbv.payment_details.show.unknown")
   end
 
   def employment_status
-    @employment ? @employment["status"]&.humanize : "Unknown"
+    @employment ? @employment["status"]&.humanize : I18n.t("cbv.payment_details.show.unknown")
   end
 
   def pay_frequency
-    @income_metadata ? @income_metadata["pay_frequency"]&.humanize : "Unknown"
+    @income_metadata ? @income_metadata["pay_frequency"]&.humanize : I18n.t("cbv.payment_details.show.unknown")
   end
 
   def compensation_unit
-    @income_metadata ? @income_metadata["compensation_unit"] : "Unknown"
+    @income_metadata ? @income_metadata["compensation_unit"] : I18n.t("cbv.payment_details.show.unknown")
   end
 
   def compensation_amount
-    @income_metadata ? @income_metadata["compensation_amount"] : "Unknown"
+    @income_metadata ? @income_metadata["compensation_amount"] : I18n.t("cbv.payment_details.show.unknown")
   end
 
   def start_date
     @payments.present? ? @payments
         .sort_by { |payment| payment[:start] }
-        .first[:start] : "Unknown"
+        .first[:start] : I18n.t("cbv.payment_details.show.unknown")
   end
 
   def end_date
     @payments.present? ? @payments
         .sort_by { |payment| payment[:end] }
-        .last[:end] : "Unknown"
+        .last[:end] : I18n.t("cbv.payment_details.show.unknown")
   end
 
   def gross_pay
     @payments.present? ? @payments
       .map { |payment| payment[:gross_pay_amount] }
-      .reduce(:+) : "Unknown"
+      .reduce(:+) : I18n.t("cbv.payment_details.show.unknown")
   end
 
   def sanitize_comment(comment)
