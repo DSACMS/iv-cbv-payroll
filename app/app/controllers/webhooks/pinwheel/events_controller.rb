@@ -9,6 +9,16 @@ class Webhooks::Pinwheel::EventsController < ApplicationController
     "paystubs.fully_synced" => "paystubs_synced_at"
   }
 
+  EVENTS_ERRORS_MAP = {
+    "employment.added" => "employment_errored_at",
+    "income.added" => "income_errored_at",
+    "paystubs.fully_synced" => "paystubs_errored_at"
+  }
+
+  ERROR_MESSAGES = [
+    "dataNotAvailable"
+  ]
+
   def create
     unless @cbv_flow
       Rails.logger.info "Unable to find CbvFlow for end_user_id: #{params["payload"]["end_user_id"]}"
@@ -25,6 +35,10 @@ class Webhooks::Pinwheel::EventsController < ApplicationController
     if EVENTS_MAP.keys.include?(params["event"])
       pinwheel_account = PinwheelAccount.find_by_pinwheel_account_id(params["payload"]["account_id"])
       pinwheel_account.update!(EVENTS_MAP[params["event"]] => Time.now) if pinwheel_account.present?
+
+      if params.dig("payload", "error_code").present? && ERROR_MESSAGES.include?(params.dig("payload", "error_code"))
+        pinwheel_account.update!(EVENTS_ERRORS_MAP[params["event"]] => Time.now) if pinwheel_account.present?
+      end
 
       if pinwheel_account.has_fully_synced?
         PaystubsChannel.broadcast_to(@cbv_flow, {
