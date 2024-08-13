@@ -44,7 +44,7 @@
       <li><%= t("cbv.employer_searches.show.no_results_desc1") %></li>
       <li><%= t("cbv.employer_searches.show.no_results_desc2") %></li>
     </ol>
-    <p><%= t("cbv.employer_searches.show.no_results_desc3") %> <%= link_to t("cbv.employer_searches.show.no_results_link", agency_short_name: current_site.agency_short_name), current_site.agency_help_link %></p>
+    <p><%= t("cbv.employer_searches.show.no_results_desc3") %> <%= site_translation("cbv.employer_searches.show.no_results_link_html") %></p>
     <%= link_to cbv_flow_missing_results_path, class: "usa-button margin-top-5", data: { turbo_frame: "_top" } do %>
       <%= t("cbv.employer_searches.show.exit_button_text") %>
     <% end %>
