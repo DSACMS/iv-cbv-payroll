@@ -11,16 +11,15 @@ class Cbv::PaymentDetailsController < Cbv::BaseController
     :pay_frequency,
     :compensation_unit,
     :compensation_amount,
-    :account_comment
+    :account_comment,
+    :has_income_data?
 
   def show
     account_id = params[:user][:account_id]
-    pinwheel_account = PinwheelAccount.find_by_pinwheel_account_id(account_id)
-
-    @employment = pinwheel.fetch_employment(account_id: account_id)["data"]
-    @has_income_data = pinwheel_account.supported_jobs.include?("income")
-    @income_metadata = @has_income_data && pinwheel.fetch_income_metadata(account_id: account_id)["data"]
-    @payments = set_payments(account_id)
+    @pinwheel_account = PinwheelAccount.find_by_pinwheel_account_id(account_id)
+    @employment = has_employment_data? && pinwheel.fetch_employment(account_id: account_id)["data"]
+    @income_metadata = has_income_data? && pinwheel.fetch_income_metadata(account_id: account_id)["data"]
+    @payments = has_paystubs_data? ? set_payments(account_id) : []
     @account_comment = account_comment
   end
 
@@ -44,50 +43,62 @@ class Cbv::PaymentDetailsController < Cbv::BaseController
 
   private
 
+  def has_income_data?
+    @pinwheel_account.supported_jobs.include?("income") && @pinwheel_account.income_errored_at.blank?
+  end
+
+  def has_employment_data?
+    @pinwheel_account.supported_jobs.include?("employment") && @pinwheel_account.employment_errored_at.blank?
+  end
+
+  def has_paystubs_data?
+    @pinwheel_account.supported_jobs.include?("paystubs") && @pinwheel_account.paystubs_errored_at.blank?
+  end
+
   def employer_name
-    @employment["employer_name"]
+    @employment ? @employment["employer_name"] : "Unknown"
   end
 
   def employment_start_date
-    @employment["start_date"]
+    @employment ? @employment["start_date"] : "Unknown"
   end
 
   def employment_end_date
-    @employment["termination_date"]
+    @employment ? @employment["termination_date"] : "Unknown"
   end
 
   def employment_status
-    @employment["status"]&.humanize
+    @employment ? @employment["status"]&.humanize : "Unknown"
   end
 
   def pay_frequency
-    @income_metadata["pay_frequency"]&.humanize
+    @income_metadata ? @income_metadata["pay_frequency"]&.humanize : "Unknown"
   end
 
   def compensation_unit
-    @income_metadata["compensation_unit"]
+    @income_metadata ? @income_metadata["compensation_unit"] : "Unknown"
   end
 
   def compensation_amount
-    @income_metadata["compensation_amount"]
+    @income_metadata ? @income_metadata["compensation_amount"] : "Unknown"
   end
 
   def start_date
-    @payments
+    @payments.present? ? @payments
         .sort_by { |payment| payment[:start] }
-        .first[:start]
+        .first[:start] : "Unknown"
   end
 
   def end_date
-    @payments
+    @payments.present? ? @payments
         .sort_by { |payment| payment[:end] }
-        .last[:end]
+        .last[:end] : "Unknown"
   end
 
   def gross_pay
-    @payments
+    @payments.present? ? @payments
       .map { |payment| payment[:gross_pay_amount] }
-      .reduce(:+)
+      .reduce(:+) : "Unknown"
   end
 
   def sanitize_comment(comment)
