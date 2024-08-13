@@ -1,14 +1,14 @@
 ---
 en:
   applicant_mailer:
-    caseworker_summary_email:
-      body: Applicant has submitted their income verification. Please find the attached PDF.
-      subject: 'Applicant Income Verification: %{case_number}'
     invitation_email:
-      body: A government agency has requested that you verify your income in connection with your application for benefits. Please click this link to begin the process.
+      body_html: We need to verify your income as part of your benefits application, as requested by %{agency_acronym}. This process is unique to you, so please do not share this invitation with anyone else. <strong>You have until %{deadline}, to complete your verification.</strong> Otherwise, you'll need to request a new invitation.
       greeting: Hello,
       subject: Verify your income for your benefit application
-      thank_you: Thank you!
+  caseworker_mailer:
+    summary_email:
+      body: Applicant has submitted their income verification. Please find the attached PDF.
+      subject: 'Applicant Income Verification: %{case_number}'
   cbv:
     add_jobs:
       create:
@@ -166,7 +166,7 @@ en:
         middle_name: Client's middle name
         snap_application_date: SNAP application date
     new:
-      description: "<p>Provide some details about the client so we can send them a link to verify their pay information. We'll request the past %{pay_income_days} days of income, based on the client's application date.</p><p>If multiple members of the household earn income, send an invite link to each household member.</p>"
+      description_html: "<p>Provide some details about the client so we can send them a link to verify their pay information. We'll request the past %{pay_income_days} days of income, based on the client's application date.</p><p>If multiple members of the household earn income, send an invite link to each household member.</p>"
       form:
         submit: Send Invitation
       header: Send an invite link
@@ -203,6 +203,7 @@ en:
       fr: Français
       zh: 中文
     not_applicable: N/A
+    pilot_name: SNAP Income Pilot
     skip_link: Skip to main content
     verify:
       description: This website can help you get approved for your benefits.

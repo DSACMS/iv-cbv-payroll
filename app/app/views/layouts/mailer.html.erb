@@ -1,13 +1,13 @@
 <!DOCTYPE html>
-<html>
+<html class="bg-primary-lighter">
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" >
-    <style>
-      /* Email styles need to be inline */
-    </style>
+    <%= stylesheet_link_tag "application" %>
   </head>
 
   <body>
-    <%= yield %>
+    <div class="bg-primary-lighter">
+      <%= yield %>
+    </div>
   </body>
 </html>

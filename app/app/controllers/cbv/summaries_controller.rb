@@ -1,5 +1,6 @@
 class Cbv::SummariesController < Cbv::BaseController
   include Cbv::PaymentsHelper
+
   helper_method :payments_grouped_by_employer, :total_gross_income
   before_action :set_payments, only: %i[show]
 
