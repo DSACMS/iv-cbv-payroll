@@ -14,7 +14,7 @@
 
   <body>
     <div id="root">
-      <%= render "application/usa_banner" %>
+      <a class="usa-skipnav" href="#main-content"><%= t("shared.skip_link") %></a>
       <%= render "application/header" %>
       <main id="main-content">
         <section class="grid-container usa-section">
@@ -48,6 +48,7 @@
           <%= yield %>
         </section>
       </main>
+      <%= render "application/footer" %>
     </div>
   </body>
 </html>

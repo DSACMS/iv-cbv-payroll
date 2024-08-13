@@ -191,22 +191,23 @@ en:
         snap_application_date: SNAP application date
   shared:
     banner:
-      gov_description_html: A <strong>.gov</strong> website belongs to an official government organization in the United States.
-      gov_heading: Official websites use .gov
-      how: Here’s how you know
       lock: Lock
       locked_padlock: A locked padlock
-      official_site: An official website of the United States government
-      secure_description_html: A <strong>lock</strong> (%{lock_icon}) or <strong>https://</strong> means you’ve safely connected to the .gov website. Share sensitive information only on official, secure websites.
-      secure_heading: Secure .gov websites use HTTPS
-      us_flag: U.S. Flag
+    footer:
+      feedback: Report feedback or bugs
     header:
       aria_label: Main navigation
+      cbv_flow_title:
+        ma: Department of Transitional Assistance
+        nyc: NYC Human Resources Administration
+        sandbox: CBV Test Agency
       close: Close
-      demo_banner: TEST SITE - Do not use real personal information (demo purposes only) - TEST SITE
       log_out: Log out
+      preheader:
+        default: A website in partnership with CBV Test Agency.
+        ma: A website in partnership with the Commonwealth of Massachusetts.
+        nyc: A website in partnership with the City of New York.
       primary: Primary navigation
-      title: Verify.gov
     languages:
       en: English
       es: Español
