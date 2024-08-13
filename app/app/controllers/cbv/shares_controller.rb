@@ -1,4 +1,6 @@
 class Cbv::SharesController < Cbv::BaseController
+  include Cbv::PaymentsHelper
+
   before_action :set_payments, only: %i[update]
 
   def show
@@ -36,11 +38,11 @@ class Cbv::SharesController < Cbv::BaseController
   end
 
   def process_shared_email
-    ApplicantMailer.with(
+    CaseworkerMailer.with(
       email_address: current_site.transmission_method_configuration.dig("email"),
       cbv_flow: @cbv_flow,
       payments: @payments
-    ).caseworker_summary_email.deliver_now
+    ).summary_email.deliver_now
     @cbv_flow.touch(:transmitted_at)
   end
 
