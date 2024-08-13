@@ -1,79 +1,125 @@
 require 'rails_helper'
 
 RSpec.describe CbvFlowInvitation, type: :model do
-  describe "#expired?" do
-    let(:site_id) { "sandbox" }
-    let(:invitation_valid_days) { 14 }
-    let(:invitation) do
-      CbvFlowInvitation.create!(
-        email_address: "foo@example.com",
-        site_id: site_id,
-        created_at: invitation_sent_at
-      )
-    end
-    let(:now) { Time.now }
+  let(:valid_attributes) do
+    {
+      email_address: "foo@example.com",
+      site_id: "sandbox",
+      first_name: "John",
+      middle_name: "Doe",
+      last_name: "Smith",
+      snap_application_date: Date.today
+    }
+  end
 
-    before do
-      allow(Rails.application.config.sites[site_id])
-        .to receive(:invitation_valid_days)
-        .and_return(invitation_valid_days)
-    end
+  describe "validations" do
+    context "when site_id is 'nyc'" do
+      it "requires client_id_number" do
+        invitation = CbvFlowInvitation.new(valid_attributes.merge(site_id: 'nyc'))
+        invitation.valid?
+        expect(invitation.errors[:client_id_number]).to include("can't be blank")
+      end
 
-    around do |ex|
-      Timecop.freeze(now, &ex)
-    end
-
-    subject { invitation.expired? }
-
-    context "within the validity window" do
-      let(:invitation_sent_at) { Time.new(2024, 8,  1, 12, 0, 0, "-04:00") }
-      let(:now)                { Time.new(2024, 8, 14, 12, 0, 0, "-04:00") }
-
-      it { is_expected.to eq(false) }
+      it "requires case_number" do
+        invitation = CbvFlowInvitation.new(valid_attributes.merge(site_id: 'nyc'))
+        invitation.valid?
+        expect(invitation.errors[:case_number]).to include("can't be blank")
+      end
     end
 
-    context "before 11:59pm ET on the 14th day after the invitation was sent" do
-      let(:invitation_sent_at) { Time.new(2024, 8,  1, 12, 0, 0, "-04:00") }
-      let(:now)                { Time.new(2024, 8, 15, 23, 0, 0, "-04:00") }
-
-      it { is_expected.to eq(false) }
+    context "when site_id is ma" do
+    it "requires agency_id_number" do
+      invitation = CbvFlowInvitation.new(valid_attributes.merge(site_id: 'ma'))
+      invitation.valid?
+      expect(invitation.errors[:agency_id_number]).to include("can't be blank")
     end
 
-    context "after 11:59pm ET on the day of the validity window" do
-      let(:invitation_sent_at) { Time.new(2024, 8,  1, 12, 0, 0, "-04:00") }
-      let(:now)                { Time.new(2024, 8, 16,  0, 1, 0, "-04:00") }
+    it "requires beacon_id" do
+    invitation = CbvFlowInvitation.new(valid_attributes.merge(site_id: 'ma'))
+    invitation.valid?
+    expect(invitation.errors[:beacon_id]).to include("can't be blank")
+  end
 
-      it { is_expected.to eq(true) }
+    context "when site_id is not 'nyc'" do
+      it "does not require client_id_number" do
+        invitation = CbvFlowInvitation.new(valid_attributes.merge(client_id_number: nil))
+        invitation.valid?
+        expect(invitation.errors[:client_id_number]).to be_empty
+      end
     end
   end
 
-  describe "#expires_at" do
-    let(:site_id) { "sandbox" }
-    let(:invitation_valid_days) { 14 }
-    let(:invitation) do
-      CbvFlowInvitation.create!(
-        email_address: "foo@example.com",
-        site_id: site_id,
-        created_at: invitation_sent_at
-      )
-    end
-    let(:invitation_sent_at) { Time.new(2024, 8,  1, 12, 0, 0, "-04:00") }
+    describe "#expired?" do
+      let(:site_id) { "sandbox" }
+      let(:invitation_valid_days) { 14 }
+      let(:invitation) do
+        CbvFlowInvitation.create!(valid_attributes.merge(
+          site_id: site_id,
+          created_at: invitation_sent_at
+        ))
+      end
+      let(:now) { Time.now }
 
-    before do
-      allow(Rails.application.config.sites[site_id])
-        .to receive(:invitation_valid_days)
-        .and_return(invitation_valid_days)
+      before do
+        allow(Rails.application.config.sites[site_id])
+          .to receive(:invitation_valid_days)
+                .and_return(invitation_valid_days)
+      end
+
+      around do |ex|
+        Timecop.freeze(now, &ex)
+      end
+
+      subject { invitation.expired? }
+
+      context "within the validity window" do
+        let(:invitation_sent_at) { Time.new(2024, 8,  1, 12, 0, 0, "-04:00") }
+        let(:now)                { Time.new(2024, 8, 14, 12, 0, 0, "-04:00") }
+
+        it { is_expected.to eq(false) }
+      end
+
+      context "before 11:59pm ET on the 14th day after the invitation was sent" do
+        let(:invitation_sent_at) { Time.new(2024, 8,  1, 12, 0, 0, "-04:00") }
+        let(:now)                { Time.new(2024, 8, 15, 23, 0, 0, "-04:00") }
+
+        it { is_expected.to eq(false) }
+      end
+
+      context "after 11:59pm ET on the day of the validity window" do
+        let(:invitation_sent_at) { Time.new(2024, 8,  1, 12, 0, 0, "-04:00") }
+        let(:now)                { Time.new(2024, 8, 16,  0, 1, 0, "-04:00") }
+
+        it { is_expected.to eq(true) }
+      end
     end
 
-    it "returns the end of the day the 14th day after the invitation was sent" do
-      expect(invitation.expires_at).to have_attributes(
-        hour: 23,
-        min: 59,
-        sec: 59,
-        month: 8,
-        day: 15,
-        utc_offset: -14400
-      )
+    describe "#expires_at" do
+      let(:site_id) { "sandbox" }
+      let(:invitation_valid_days) { 14 }
+      let(:invitation) do
+        CbvFlowInvitation.create!(valid_attributes.merge(
+          site_id: site_id,
+          created_at: invitation_sent_at
+        ))
+      end
+      let(:invitation_sent_at) { Time.new(2024, 8,  1, 12, 0, 0, "-04:00") }
+
+      before do
+        allow(Rails.application.config.sites[site_id])
+          .to receive(:invitation_valid_days).and_return(invitation_valid_days)
+      end
+
+      it "returns the end of the day the 14th day after the invitation was sent" do
+        expect(invitation.expires_at).to have_attributes(
+          hour: 23,
+          min: 59,
+          sec: 59,
+          month: 8,
+          day: 15,
+          utc_offset: -14400
+        )
+      end
     end
   end
 end

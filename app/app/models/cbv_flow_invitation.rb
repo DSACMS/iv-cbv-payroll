@@ -1,6 +1,11 @@
 class CbvFlowInvitation < ApplicationRecord
   has_secure_token :auth_token, length: 36
   validates :site_id, inclusion: Rails.application.config.sites.site_ids
+  validates :client_id_number, presence: true, if: :nyc_site?
+  validates :case_number, presence: true, if: :nyc_site?
+  validates :agency_id_number, presence: true, if: :ma_site?
+  validates :beacon_id, presence: true, if: :ma_site?
+  validates :email_address, presence: true
 
   include Redactable
   has_redactable_fields(
@@ -29,5 +34,15 @@ class CbvFlowInvitation < ApplicationRecord
 
   def to_url
     Rails.application.routes.url_helpers.cbv_flow_entry_url(token: auth_token)
+  end
+
+  private
+
+  def nyc_site?
+    site_id == "nyc"
+  end
+
+  def ma_site?
+    site_id == "ma"
   end
 end

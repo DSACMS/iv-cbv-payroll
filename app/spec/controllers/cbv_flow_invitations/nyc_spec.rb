@@ -36,7 +36,8 @@ RSpec.describe CbvFlowInvitationsController, type: :controller do
         last_name: "Smith",
         client_id_number: "123456",
         case_number: "ABC1234",
-        email_address: "test@example.com"
+        email_address: "test@example.com",
+        snap_application_date: Date.today
       }
     end
 
