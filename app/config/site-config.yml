@@ -16,7 +16,7 @@
   pay_income_days: 90
   invitation_valid_days: 14
 - id: ma
-  agency_name: Massachusetts Department of Transitional Assistance
+  agency_name: Department of Transitional Assistance
   pinwheel:
     api_token: <%= ENV['PINWHEEL_API_TOKEN_DEVELOPMENT'] %>
     environment: development
@@ -31,6 +31,8 @@
     name: "ma_dta"
   pay_income_days: 90
   invitation_valid_days: 14
+  logo_path: dta_logo.png
+  logo_square_path: dta_logo_square.avif
 - id: sandbox
   agency_name: CBV Test Agency
   pinwheel:

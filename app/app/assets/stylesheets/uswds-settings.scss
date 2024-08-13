@@ -3,8 +3,13 @@
   $theme-font-path: "@uswds/uswds/dist/fonts",
   $theme-image-path: "@uswds/uswds/dist/img",
 
+  /*
+   * Custom USWDS Theme Settings.
+   *
+   * See: https://github.com/uswds/uswds/blob/v3.8.0/packages/uswds-core/src/styles/settings/_settings-components.scss
+   */
   $theme-show-notifications: false,
-
-  // Put your USWDS Theme settings here
-
+  $theme-header-logo-text-width: 100%,
+  $theme-header-min-width: "tablet",
+  $theme-site-margins-breakpoint: "tablet",
 );

@@ -23,6 +23,8 @@ class SiteConfig
       agency_name
       agency_short_name
       invitation_valid_days
+      logo_path
+      logo_square_path
       pay_income_days
       pinwheel_api_token
       pinwheel_environment
@@ -36,6 +38,8 @@ class SiteConfig
       @agency_name = yaml["agency_name"]
       @agency_short_name = yaml["agency_short_name"]
       @invitation_valid_days = yaml["invitation_valid_days"]
+      @logo_path = yaml["logo_path"]
+      @logo_square_path = yaml["logo_square_path"]
       @pay_income_days = yaml["pay_income_days"]
       @pinwheel_api_token = yaml["pinwheel"]["api_token"]
       @pinwheel_environment = yaml["pinwheel"]["environment"]

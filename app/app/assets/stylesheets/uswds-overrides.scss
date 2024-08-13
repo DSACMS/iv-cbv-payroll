@@ -1,0 +1,28 @@
+@forward "uswds";
+@use "uswds" as *;
+
+.usa-date-picker__calendar {
+  top: 48px !important;
+  max-width: none;
+}
+
+.usa-hint p {
+  margin: 3px 0;
+}
+
+// Make the navbar a bit taller on mobile, and increase the size of the "Menu"
+// button to compensate.
+$mobile-navbar-height: 4rem;
+@include at-media-max($theme-header-min-width) {
+  .usa-navbar {
+    height: $mobile-navbar-height;
+  }
+  .usa-menu-btn {
+    @include u-padding-x(2);
+    height: $mobile-navbar-height;
+  }
+}
+.usa-nav__primary {
+  flex-shrink: 0;
+}
+
