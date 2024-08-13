@@ -54,8 +54,4 @@ class Cbv::SharesController < Cbv::BaseController
 
     @cbv_flow.touch(:transmitted_at)
   end
-
-  def set_payments
-    @payments = @payments
-  end
 end
