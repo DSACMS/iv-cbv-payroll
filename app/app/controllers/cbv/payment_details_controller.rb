@@ -44,61 +44,81 @@ class Cbv::PaymentDetailsController < Cbv::BaseController
   private
 
   def has_income_data?
-    @pinwheel_account.supported_jobs.include?("income") && @pinwheel_account.income_errored_at.blank?
+    @pinwheel_account.job_succeeded?("income")
   end
 
   def has_employment_data?
-    @pinwheel_account.supported_jobs.include?("employment") && @pinwheel_account.employment_errored_at.blank?
+    @pinwheel_account.job_succeeded?("employment")
   end
 
   def has_paystubs_data?
-    @pinwheel_account.supported_jobs.include?("paystubs") && @pinwheel_account.paystubs_errored_at.blank?
+    @pinwheel_account.job_succeeded?("paystubs")
   end
 
   def employer_name
-    @employment ? @employment["employer_name"] : I18n.t("cbv.payment_details.show.unknown")
+    return I18n.t("cbv.payment_details.show.unknown") unless has_employment_data?
+
+    @employment["employer_name"]
   end
 
   def employment_start_date
-    @employment ? @employment["start_date"] : I18n.t("cbv.payment_details.show.unknown")
+    return I18n.t("cbv.payment_details.show.unknown") unless has_employment_data?
+
+    @employment["start_date"]
   end
 
   def employment_end_date
-    @employment ? @employment["termination_date"] : I18n.t("cbv.payment_details.show.unknown")
+    return I18n.t("cbv.payment_details.show.unknown") unless has_employment_data?
+
+    @employment["termination_date"]
   end
 
   def employment_status
-    @employment ? @employment["status"]&.humanize : I18n.t("cbv.payment_details.show.unknown")
+    return I18n.t("cbv.payment_details.show.unknown") unless has_employment_data?
+
+    @employment["status"]&.humanize
   end
 
   def pay_frequency
-    @income_metadata ? @income_metadata["pay_frequency"]&.humanize : I18n.t("cbv.payment_details.show.unknown")
+    return I18n.t("cbv.payment_details.show.unknown") unless has_income_data?
+
+    @income_metadata["pay_frequency"]&.humanize
   end
 
   def compensation_unit
-    @income_metadata ? @income_metadata["compensation_unit"] : I18n.t("cbv.payment_details.show.unknown")
+    return I18n.t("cbv.payment_details.show.unknown") unless has_income_data?
+
+    @income_metadata["compensation_unit"]
   end
 
   def compensation_amount
-    @income_metadata ? @income_metadata["compensation_amount"] : I18n.t("cbv.payment_details.show.unknown")
+    return I18n.t("cbv.payment_details.show.unknown") unless has_income_data?
+
+    @income_metadata["compensation_amount"]
   end
 
   def start_date
-    @payments.present? ? @payments
+    return I18n.t("cbv.payment_details.show.unknown") unless has_paystubs_data?
+
+    @payments
         .sort_by { |payment| payment[:start] }
-        .first[:start] : I18n.t("cbv.payment_details.show.unknown")
+        .first[:start]
   end
 
   def end_date
-    @payments.present? ? @payments
+    return I18n.t("cbv.payment_details.show.unknown") unless has_paystubs_data?
+
+    @payments
         .sort_by { |payment| payment[:end] }
-        .last[:end] : I18n.t("cbv.payment_details.show.unknown")
+        .last[:end]
   end
 
   def gross_pay
-    @payments.present? ? @payments
+    return I18n.t("cbv.payment_details.show.unknown") unless has_paystubs_data?
+
+    @payments
       .map { |payment| payment[:gross_pay_amount] }
-      .reduce(:+) : I18n.t("cbv.payment_details.show.unknown")
+      .reduce(:+)
   end
 
   def sanitize_comment(comment)
