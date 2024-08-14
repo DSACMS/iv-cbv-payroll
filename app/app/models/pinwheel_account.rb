@@ -23,6 +23,6 @@ class PinwheelAccount < ApplicationRecord
     error_column = EVENTS_ERRORS_MAP.select { |key| key.start_with? job }&.values.last
     return nil unless error_column.present?
 
-    supported_jobs.include?("income") && send(error_column).blank?
+    supported_jobs.include?(job) && send(error_column).blank?
   end
 end
