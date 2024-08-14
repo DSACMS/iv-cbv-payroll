@@ -8,7 +8,7 @@
       <%= t(".description") %>
     </p>
     <h2 class="site-preview-heading"><%= t(".total_payments", amount: format_money(total_gross_income)) %></h2>
-    <p><%= t(".total_payments_desc")%></p>
+    <p><%= t(".total_payments_desc") %></p>
 
     <% payments_grouped_by_employer.each_with_index do |(account_id, summary), index| %>
       <table class="usa-table usa-table--borderless width-full">
