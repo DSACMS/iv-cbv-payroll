@@ -95,6 +95,17 @@ RSpec.describe CbvFlowInvitation, type: :model do
         let(:now)                { Time.new(2024, 8, 14, 12, 0, 0, "-04:00") }
 
         it { is_expected.to eq(false) }
+
+        context "when the invitation was redacted" do
+          # This should only happen when redaction is triggered manually, since
+          # the automatic redaction should wait until the invitation has
+          # already expired.
+          before do
+            invitation.redact!
+          end
+
+          it { is_expected.to eq(true) }
+        end
       end
 
       context "before 11:59pm ET on the 14th day after the invitation was sent" do
