@@ -50,7 +50,8 @@
   </h3>
 <% end %>
 
-<%= form_with(model: @cbv_flow, url: cbv_flow_summary_path, builder: UswdsFormBuilder) do |f| %>
-  <%= f.check_box(:consented_to_authorized_use, { 'label': 'legal agree'}) %>
+<%= form_with(model: @cbv_flow, url: cbv_flow_summary_path, builder: UswdsFormBuilder, method: "patch") do |f| %>
+  <h2><%= t(".consent_to_authorize_title") %></h2>
+  <%= f.check_box(:consent_to_authorized_use, { 'label': t(".consent_to_authorized_use_html", agency_name: current_site.agency_name, agency_short_name: current_site.agency_short_name) }) %>
   <%= f.submit t(".send_report") %>
 <% end %>

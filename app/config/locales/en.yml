@@ -148,6 +148,8 @@ en:
         additional_comments: Additional comments
         additional_information_title: Is there anything else you'd like your caseworker to know about your income?
         case_number: 'Case number: %{case_number}'
+        consent_to_authorize_title: Legal Agreement
+        consent_to_authorized_use_html: Check this box to confirm that the information provided by you is true and complete to the best of your knowledge. You agree to inform %{agency_name} of any income not reflected in this report or any discrepancies found in the information gathered with this tool. You understand that providing accurate and complete information is your responsibility, and any false or omitted information may have legal consequences.</p><p>By sending this report, you authorize its use for income verification by authorized %{agency_short_name} personnel.</p>
         description: Below is payment information from your employer for the past 90 days.
         document_timestamp: 'Document origination: %{timestamp}'
         header: Review payment information from your employers
@@ -162,6 +164,8 @@ en:
         total_income_from_no_employer_name: 'Total income: %{amount}'
         total_payments: 'Total income before taxes: %{amount}'
         total_payments_desc: This is the total income from your job(s) before taxes, benefits and deductions were taken out of your paycheck.
+      update:
+        consent_to_authorize_warning: You must check the legal consent agreement checkbox to proceed.
   cbv_flow_invitations:
     create:
       invite_failed: 'Error sending invitation to %{email_address}: %{error_message}.'

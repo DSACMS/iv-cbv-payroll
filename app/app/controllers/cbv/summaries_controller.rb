@@ -19,20 +19,15 @@ class Cbv::SummariesController < Cbv::BaseController
     end
   end
 
-  def create
-    # if consented_to_authorized_use
-    # update cbv_flow.update({consented_to_authorized_use_at: timestamp})
-    # redirect_to next_path
-    # else
-    # show error
-    # redirect_to(cbv_flow_agreement_path, flash: { alert: t(".error") })
-
-  end
-
   def update
-    @cbv_flow.update(summary_update_params)
 
-    redirect_to next_path
+    if params[:cbv_flow][:consent_to_authorized_use].eql?("1")
+      timestamp = Time.now.to_datetime
+      @cbv_flow.update(consented_to_authorized_use_at: timestamp)
+      redirect_to next_path
+    else
+      redirect_to(cbv_flow_summary_path, flash: { alert: t(".consent_to_authorize_warning") })
+    end
   end
 
   private
@@ -43,9 +38,5 @@ class Cbv::SummariesController < Cbv::BaseController
 
   def total_gross_income
     @payments.reduce(0) { |sum, payment| sum + payment[:gross_pay_amount] }
-  end
-
-  def summary_update_params
-    params.fetch(:cbv_flow, {}).permit(:additional_information)
   end
 end
