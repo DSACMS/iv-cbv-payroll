@@ -29,16 +29,15 @@ RSpec.describe CbvFlowInvitationsController, type: :controller do
   end
 
   describe "#create" do
+    let(:custom_params) { {
+      site_id: "ma",
+      snap_application_date: Date.today.strftime("%m/%d/%Y"),
+      beacon_id: "ABC123",
+      agency_id_number: "789012"
+    } }
+
     let(:cbv_flow_invitation_params) do
-      {
-        first_name: "Jane",
-        middle_name: "Doe",
-        last_name: "Doe",
-        agency_id_number: "789012",
-        email_address: "test@example.com",
-        snap_application_date: Date.today,
-        beacon_id: "ABC123"
-      }
+      attributes_for(:cbv_flow_invitation, custom_params)
     end
 
     it "creates a CbvFlowInvitation record with the ma fields" do
@@ -50,7 +49,7 @@ RSpec.describe CbvFlowInvitationsController, type: :controller do
 
       invitation = CbvFlowInvitation.all.last
       expect(invitation.first_name).to eq("Jane")
-      expect(invitation.middle_name).to eq("Doe")
+      expect(invitation.middle_name).to eq("Sue")
       expect(invitation.last_name).to eq("Doe")
       expect(invitation.agency_id_number).to eq("789012")
       expect(invitation.email_address).to eq("test@example.com")

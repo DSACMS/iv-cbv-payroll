@@ -7,7 +7,6 @@
   transmission_method_configuration:
     email: <%= ENV['NYC_HRA_EMAIL'] %>
   agency_short_name: HRA
-  agency_help_link: https://www.nyc.gov/site/hra/help/snap-application-frequently-asked-questions.page
   sso:
     client_id:     <%= ENV["AZURE_NYC_DSS_CLIENT_ID"] %>
     client_secret: <%= ENV["AZURE_NYC_DSS_CLIENT_SECRET"] %>
@@ -16,17 +15,14 @@
     name: "nyc_dss"
   pay_income_days: 90
   invitation_valid_days: 14
-  learn_more_link_text: Learn more on nyc.gov
-  learn_more_link_url: https://www.nyc.gov/site/hra/help/snap-application-frequently-asked-questions.page
 - id: ma
-  agency_name: Massachusetts Department of Transitional Assistance
+  agency_name: Department of Transitional Assistance
   pinwheel:
     api_token: <%= ENV['PINWHEEL_API_TOKEN_DEVELOPMENT'] %>
     environment: development
   transmission_method: null
   transmission_method_configuration: {}
   agency_short_name: DTA
-  agency_help_link: https://www.mass.gov/guides/how-to-contact-dta
   sso:
     client_id:     <%= ENV["AZURE_MA_DTA_CLIENT_ID"] %>
     client_secret: <%= ENV["AZURE_MA_DTA_CLIENT_SECRET"] %>
@@ -34,9 +30,9 @@
     scope: "openid"
     name: "ma_dta"
   pay_income_days: 90
-  invitation_valid_days: 21
-  learn_more_link_text: Learn more at Mass.gov
-  learn_more_link_url: https://www.mass.gov/guides/how-to-contact-dta
+  invitation_valid_days: 14
+  logo_path: dta_logo.png
+  logo_square_path: dta_logo_square.avif
 - id: sandbox
   agency_name: CBV Test Agency
   pinwheel:
@@ -46,7 +42,6 @@
   transmission_method_configuration:
     email: <%= ENV['SLACK_TEST_EMAIL'] %>
   agency_short_name: CBV
-  agency_help_link: https://example.com/dept-of-helping
   sso:
     client_id:     <%= ENV["AZURE_SANDBOX_CLIENT_ID"] %>
     client_secret: <%= ENV["AZURE_SANDBOX_CLIENT_SECRET"] %>
@@ -55,5 +50,3 @@
     name: "sandbox"
   pay_income_days: 90
   invitation_valid_days: 14
-  learn_more_link_text: Learn more at CBV Test Agency
-  learn_more_link_url: https://www.mass.gov/guides/how-to-contact-dta

@@ -15,6 +15,9 @@ class Cbv::BaseController < ApplicationController
       end
 
       @cbv_flow = invitation.cbv_flow || CbvFlow.create_from_invitation(invitation)
+      if @cbv_flow.complete?
+        return redirect_to(cbv_flow_expired_invitation_path)
+      end
       NewRelicEventTracker.track("ClickedCBVInvitationLink", {
         timestamp: Time.now.to_i,
         invitation_id: invitation.id,
@@ -39,8 +42,7 @@ class Cbv::BaseController < ApplicationController
   def ensure_cbv_flow_not_yet_complete
     return unless @cbv_flow && @cbv_flow.complete?
 
-    session[:cbv_flow_id] = nil
-    redirect_to(cbv_flow_expired_invitation_path)
+    redirect_to(cbv_flow_success_path)
   end
 
   def current_site

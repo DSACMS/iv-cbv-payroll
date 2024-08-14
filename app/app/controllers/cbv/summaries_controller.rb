@@ -3,6 +3,7 @@ class Cbv::SummariesController < Cbv::BaseController
 
   helper_method :payments_grouped_by_employer, :total_gross_income
   before_action :set_payments, only: %i[show]
+  skip_before_action :ensure_cbv_flow_not_yet_complete, if: -> { params[:format] == "pdf" }
 
   def show
     respond_to do |format|
