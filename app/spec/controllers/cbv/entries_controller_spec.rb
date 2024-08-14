@@ -102,7 +102,7 @@ RSpec.describe Cbv::EntriesController do
         session[:cbv_flow_id] = -1
       end
 
-      it "uses the existing CbvFlow object" do
+      it "redirects to the homepage" do
         get :show
 
         expect(response).to redirect_to(root_url)
