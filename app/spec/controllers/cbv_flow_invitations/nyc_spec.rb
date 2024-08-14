@@ -49,6 +49,16 @@ RSpec.describe CbvFlowInvitationsController, type: :controller do
           expect(invitation.case_number).to eq("ABC1234")
           expect(invitation.email_address).to eq("test@example.com")
         end
+
+        it "creates a CbvFlowInvitation record without optional fields" do
+          post :create, params: {
+            secret: invite_secret,
+            site_id: nyc_params[:site_id],
+            cbv_flow_invitation: cbv_flow_invitation_params.except(:middle_name, :client_id_number)
+          }
+          invitation = CbvFlowInvitation.last
+          expect(invitation.middle_name).to be_nil
+        end
       end
     end
 end
