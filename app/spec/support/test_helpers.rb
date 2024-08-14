@@ -11,6 +11,7 @@ module TestHelpers
       {
         employer: "Employer #{i + 1}",
         net_pay_amount: (100 * (i + 1)),
+        gross_pay_amount: (120 * (i + 1)),
         start: Date.today.beginning_of_month + i.months,
         end: Date.today.end_of_month + i.months,
         hours: (40 * (i + 1)),
