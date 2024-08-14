@@ -1,14 +1,22 @@
 require "rails_helper"
 
 RSpec.describe DataRetentionService do
+  let(:cbv_flow_props) do
+    {
+      first_name: "John",
+      middle_name: "Doe",
+      last_name: "Smith",
+      case_number: "ABC1234",
+      email_address: "tom@example.com",
+      agency_id_number: "A12345",
+      site_id: "sandbox",
+      snap_application_date: Date.today,
+      created_at: Time.new(2024, 8, 1, 12, 0, 0, "-04:00")
+    }
+  end
   describe "#redact_invitations" do
     let!(:cbv_flow_invitation) do
-      CbvFlowInvitation.create!(
-        case_number: "ABC1234",
-        email_address: "tom@example.com",
-        site_id: "sandbox",
-        created_at: Time.new(2024, 8, 1, 12, 0, 0, "-04:00")
-      )
+      CbvFlowInvitation.create!(cbv_flow_props)
     end
     let(:service) { DataRetentionService.new }
     let(:now) { Time.now }
@@ -44,12 +52,7 @@ RSpec.describe DataRetentionService do
 
   describe "#redact_incomplete_cbv_flows" do
     let!(:cbv_flow_invitation) do
-      CbvFlowInvitation.create!(
-        case_number: "ABC1234",
-        email_address: "tom@example.com",
-        site_id: "sandbox",
-        created_at: Time.new(2024, 8, 1, 12, 0, 0, "-04:00")
-      )
+      CbvFlowInvitation.create!(cbv_flow_props)
     end
     let!(:cbv_flow) { CbvFlow.create_from_invitation(cbv_flow_invitation) }
     let(:service) { DataRetentionService.new }
@@ -110,11 +113,7 @@ RSpec.describe DataRetentionService do
 
   describe "#redact_complete_cbv_flows" do
     let!(:cbv_flow_invitation) do
-      CbvFlowInvitation.create!(
-        case_number: "ABC1234",
-        email_address: "tom@example.com",
-        site_id: "sandbox",
-      )
+      CbvFlowInvitation.create!(cbv_flow_props)
     end
     let!(:cbv_flow) do
       CbvFlow

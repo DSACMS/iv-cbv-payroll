@@ -199,6 +199,8 @@ GEM
       rubocop (>= 1)
       smart_properties
     erubi (1.13.0)
+    factory_bot (6.4.6)
+      activesupport (>= 5.0.0)
     faraday (2.9.2)
       faraday-net_http (>= 2.0, < 3.2)
     faraday-net_http (3.1.1)
@@ -519,6 +521,7 @@ DEPENDENCIES
   devise (~> 4.9)
   dotenv-rails (~> 2.7)
   erb_lint
+  factory_bot (~> 6.4)
   faraday (~> 2.9.0)
   i18n-tasks (~> 1.0)
   jbuilder

@@ -6,10 +6,7 @@ class ApplicantMailerPreview < ActionMailer::Preview
 
   def invitation_email
     ApplicantMailer.with(
-      cbv_flow_invitation: CbvFlowInvitation.create(
-        email_address: "test@example.com",
-        site_id: "nyc",
-      )
+      cbv_flow_invitation: create(:cbv_flow_invitation)
     ).invitation_email
   end
 end
