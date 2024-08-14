@@ -10,7 +10,8 @@ RSpec.describe Cbv::PaymentDetailsController do
     let(:account_id) { SecureRandom.uuid }
     let(:comment) { "This is a test comment" }
     let(:supported_jobs) { %w[income paystubs employment] }
-    let!(:pinwheel_account) { PinwheelAccount.create!(cbv_flow: cbv_flow, pinwheel_account_id: account_id, supported_jobs: supported_jobs) }
+    let(:income_errored_at) { nil }
+    let!(:pinwheel_account) { PinwheelAccount.create!(cbv_flow: cbv_flow, pinwheel_account_id: account_id, supported_jobs: supported_jobs, income_errored_at: income_errored_at) }
 
     before do
       session[:cbv_flow_id] = cbv_flow.id
@@ -86,6 +87,17 @@ RSpec.describe Cbv::PaymentDetailsController do
 
     context "for an account that doesn't support income data" do
       let(:supported_jobs) { %w[paystubs employment] }
+
+      it "renders properly without the income data" do
+        get :show, params: { user: { account_id: account_id } }
+        expect(response).to be_successful
+        expect(response.body).not_to include("Pay period frequency")
+      end
+    end
+
+    context "for an account that supports income data but Pinwheel was unable to retrieve" do
+      let(:supported_jobs) { %w[paystubs employment income] }
+      let(:income_errored_at) { Time.current.iso8601 }
 
       it "renders properly without the income data" do
         get :show, params: { user: { account_id: account_id } }
