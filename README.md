@@ -105,6 +105,37 @@ $ i18n-tasks remove-unused # removes unused keys across locale files
 
 For more information on usage and helpful rake tasks to manage locale files, see [the documentation](https://github.com/glebm/i18n-tasks#usage).
 
+## "Site-specific" translations
+
+The CBV pilot project is architected to be multi-tenant across jurisdictions we
+are actively piloting with. Each jurisdiction's agency is configured as a
+"site" in app/config/site-config.yml and has a short "id", e.g. "nyc", "ma",
+and "sandbox".
+
+We often need to adjust copy specific to each site. The preferred way to do it
+is by using the `site_translation` helper, which wraps Rails's `t` view helper
+and looks for the current site's "id" as a sub-key of the given prefix.
+
+Usage:
+
+```erb
+<%= site_translation(".learn_more_html") %>
+```
+
+And the corresponding locale file:
+
+
+```yaml
+learn_more_html:
+  nyc: Learn more about <strong>NYC Human Resources Administration</strong>
+  ma: Learn more about <strong>Massachusetts Department of Transitional Assistance</strong>
+  sandbox: Learn more about <strong>CBV Test Agency</strong>
+  default: Learn more about <strong>Default Agency</strong>
+```
+
+Similar to Rails's `t` helper, the string will be marked HTML-safe if its key
+prefix ends with `_html`.
+
 # Testing
 
 ## Running tests
