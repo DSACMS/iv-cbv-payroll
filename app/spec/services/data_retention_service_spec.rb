@@ -43,7 +43,8 @@ RSpec.describe DataRetentionService do
           expect(cbv_flow_invitation.reload).to have_attributes(
             email_address: "REDACTED@example.com",
             case_number: "REDACTED",
-            auth_token: "REDACTED"
+            auth_token: "REDACTED",
+            redacted_at: within(1.second).of(Time.now)
           )
         end
       end
