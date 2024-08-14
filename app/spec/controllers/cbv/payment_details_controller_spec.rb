@@ -11,7 +11,18 @@ RSpec.describe Cbv::PaymentDetailsController do
     let(:comment) { "This is a test comment" }
     let(:supported_jobs) { %w[income paystubs employment] }
     let(:income_errored_at) { nil }
-    let!(:pinwheel_account) { PinwheelAccount.create!(cbv_flow: cbv_flow, pinwheel_account_id: account_id, supported_jobs: supported_jobs, income_errored_at: income_errored_at) }
+    let(:paystubs_errored_at) { nil }
+    let(:employment_errored_at) { nil }
+    let!(:pinwheel_account) do
+      PinwheelAccount.create!(
+        cbv_flow: cbv_flow,
+        pinwheel_account_id: account_id,
+        supported_jobs: supported_jobs,
+        income_errored_at: income_errored_at,
+        paystubs_errored_at: paystubs_errored_at,
+        employment_errored_at: employment_errored_at
+      )
+    end
 
     before do
       session[:cbv_flow_id] = cbv_flow.id
@@ -95,7 +106,7 @@ RSpec.describe Cbv::PaymentDetailsController do
       end
     end
 
-    context "for an account that supports income data but Pinwheel was unable to retrieve" do
+    context "for an account that supports income data but Pinwheel was unable to retrieve it" do
       let(:supported_jobs) { %w[paystubs employment income] }
       let(:income_errored_at) { Time.current.iso8601 }
 
@@ -103,6 +114,29 @@ RSpec.describe Cbv::PaymentDetailsController do
         get :show, params: { user: { account_id: account_id } }
         expect(response).to be_successful
         expect(response.body).not_to include("Pay period frequency")
+      end
+    end
+
+
+    context "for an account that supports employment data but Pinwheel was unable to retrieve" do
+      let(:supported_jobs) { %w[paystubs employment income] }
+      let(:employment_errored_at) { Time.current.iso8601 }
+
+      it "renders properly without the employment data" do
+        get :show, params: { user: { account_id: account_id } }
+        expect(response).to be_successful
+        expect(response.body).to include("Unknown")
+      end
+    end
+
+    context "for an account that supports paystubs data but Pinwheel was unable to retrieve" do
+      let(:supported_jobs) { %w[paystubs employment income] }
+      let(:paystubs_errored_at) { Time.current.iso8601 }
+
+      it "renders properly without the paystubs data" do
+        get :show, params: { user: { account_id: account_id } }
+        expect(response).to be_successful
+        expect(response.body).to include(I18n.t("cbv.payment_details.show.none_found"))
       end
     end
 
