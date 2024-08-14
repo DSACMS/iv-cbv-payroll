@@ -17,13 +17,19 @@ class Cbv::SummariesController < Cbv::BaseController
         render pdf: "#{@cbv_flow.id}"
       end
     end
+    @already_consented = @cbv_flow.consented_to_authorized_use_at ? true : false
   end
 
   def update
-    if params[:cbv_flow][:consent_to_authorized_use].eql?("1")
+    # User has already consented, so checkbox is not in the form
+    if @cbv_flow.consented_to_authorized_use_at
+      redirect_to next_path
+    # User has previously consented, but checked
+    elsif params[:cbv_flow][:consent_to_authorized_use].eql?("1")
       timestamp = Time.now.to_datetime
       @cbv_flow.update(consented_to_authorized_use_at: timestamp)
       redirect_to next_path
+    # User has previously consented or checked
     else
       redirect_to(cbv_flow_summary_path, flash: { alert: t(".consent_to_authorize_warning") })
     end
