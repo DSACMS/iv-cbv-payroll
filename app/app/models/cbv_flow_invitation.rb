@@ -13,8 +13,15 @@ class CbvFlowInvitation < ApplicationRecord
 
   include Redactable
   has_redactable_fields(
+    first_name: :string,
+    middle_name: :string,
+    last_name: :string,
+    client_id_number: :string,
     case_number: :string,
+    agency_id_number: :string,
+    beacon_id: :string,
     email_address: :email,
+    snap_application_date: :date,
     auth_token: :string
   )
 
