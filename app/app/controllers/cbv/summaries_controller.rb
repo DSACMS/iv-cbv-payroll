@@ -19,6 +19,16 @@ class Cbv::SummariesController < Cbv::BaseController
     end
   end
 
+  def create
+    # if consented_to_authorized_use
+    # update cbv_flow.update({consented_to_authorized_use_at: timestamp})
+    # redirect_to next_path
+    # else
+    # show error
+    # redirect_to(cbv_flow_agreement_path, flash: { alert: t(".error") })
+
+  end
+
   def update
     @cbv_flow.update(summary_update_params)
 

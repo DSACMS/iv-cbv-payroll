@@ -50,6 +50,7 @@
   </h3>
 <% end %>
 
-<%= form_for(@cbv_flow, url: cbv_flow_summary_path, builder: UswdsFormBuilder) do |f| %>
+<%= form_with(model: @cbv_flow, url: cbv_flow_summary_path, builder: UswdsFormBuilder) do |f| %>
+  <%= f.check_box(:consented_to_authorized_use, { 'label': 'legal agree'}) %>
   <%= f.submit t(".send_report") %>
 <% end %>
