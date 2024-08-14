@@ -1,4 +1,8 @@
 class CbvFlowInvitation < ApplicationRecord
+  # The incoming snap_application_date is a string in the format "MM/DD/YYYY".
+  # We need to convert it to a Date object before we can use it.
+  before_validation :parse_snap_application_date
+
   has_secure_token :auth_token, length: 36
   validates :site_id, inclusion: Rails.application.config.sites.site_ids
   validates :client_id_number, presence: true, if: :nyc_site?
@@ -44,5 +48,17 @@ class CbvFlowInvitation < ApplicationRecord
 
   def ma_site?
     site_id == "ma"
+  end
+
+  def parse_snap_application_date
+    raw_snap_application_date = @attributes["snap_application_date"]&.value_before_type_cast
+    return if raw_snap_application_date.blank? || raw_snap_application_date.is_a?(Date)
+
+    begin
+      new_date_format = Date.strptime(raw_snap_application_date.to_s, "%m/%d/%Y")
+      self.snap_application_date = new_date_format
+    rescue Date::Error => e
+      errors.add(:snap_application_date, "is not a valid date")
+    end
   end
 end

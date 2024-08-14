@@ -31,7 +31,7 @@ ActiveRecord::Schema[7.1].define(version: 2024_08_13_181942) do
     t.string "last_name", null: false
     t.string "agency_id_number"
     t.string "client_id_number"
-    t.date "snap_application_date", null: false
+    t.date "snap_application_date"
     t.string "beacon_id"
   end
 

@@ -18,14 +18,7 @@ RSpec.describe Cbv::EntriesController do
     end
 
     context "when following a link from a flow invitation" do
-      let(:invitation) { CbvFlowInvitation.create(
-        first_name: "John",
-        middle_name: "Doe",
-        last_name: "Smith",
-        case_number: "ABC1234",
-        site_id: "sandbox",
-        email_address: "test@test.com",
-        snap_application_date: Date.today) }
+      let(:invitation) { create(:cbv_flow_invitation) }
 
       it "sets a CbvFlow object based on the invitation" do
         expect { get :show, params: { token: invitation.auth_token } }
