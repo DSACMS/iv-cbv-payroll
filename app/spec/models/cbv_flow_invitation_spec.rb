@@ -1,53 +1,62 @@
 require 'rails_helper'
 
 RSpec.describe CbvFlowInvitation, type: :model do
-  let(:valid_attributes) do
-    {
-      email_address: "foo@example.com",
-      site_id: "sandbox",
-      first_name: "John",
-      middle_name: "Doe",
-      last_name: "Smith",
-      snap_application_date: Date.today
-    }
-  end
-
-  describe "validations" do
-    context "when site_id is 'nyc'" do
-      it "requires client_id_number" do
-        invitation = CbvFlowInvitation.new(valid_attributes.merge(site_id: 'nyc'))
-        invitation.valid?
-        expect(invitation.errors[:client_id_number]).to include("can't be blank")
-      end
-
-      it "requires case_number" do
-        invitation = CbvFlowInvitation.new(valid_attributes.merge(site_id: 'nyc'))
-        invitation.valid?
-        expect(invitation.errors[:case_number]).to include("can't be blank")
-      end
+    let(:valid_attributes) do
+      {
+        email_address: "foo@example.com",
+        site_id: "sandbox",
+        first_name: "John",
+        middle_name: "Doe",
+        last_name: "Smith",
+        snap_application_date: Date.today
+      }
     end
 
-    context "when site_id is ma" do
-    it "requires agency_id_number" do
-      invitation = CbvFlowInvitation.new(valid_attributes.merge(site_id: 'ma'))
-      invitation.valid?
-      expect(invitation.errors[:agency_id_number]).to include("can't be blank")
-    end
+    describe "validations" do
+      context "when site_id is 'nyc'" do
+        it "requires client_id_number" do
+          invitation = CbvFlowInvitation.new(valid_attributes.merge(site_id: 'nyc'))
+          invitation.valid?
+          expect(invitation.errors[:client_id_number]).to include("can't be blank")
+        end
 
-    it "requires beacon_id" do
-    invitation = CbvFlowInvitation.new(valid_attributes.merge(site_id: 'ma'))
-    invitation.valid?
-    expect(invitation.errors[:beacon_id]).to include("can't be blank")
-  end
+        it "requires case_number" do
+          invitation = CbvFlowInvitation.new(valid_attributes.merge(site_id: 'nyc'))
+          invitation.valid?
+          expect(invitation.errors[:case_number]).to include("can't be blank")
+        end
+      end
 
-    context "when site_id is not 'nyc'" do
-      it "does not require client_id_number" do
-        invitation = CbvFlowInvitation.new(valid_attributes.merge(client_id_number: nil))
-        invitation.valid?
-        expect(invitation.errors[:client_id_number]).to be_empty
+      context "when site_id is ma" do
+        it "requires agency_id_number" do
+          invitation = CbvFlowInvitation.new(valid_attributes.merge(site_id: 'ma'))
+          invitation.valid?
+          expect(invitation.errors[:agency_id_number]).to include("can't be blank")
+        end
+
+        it "requires beacon_id" do
+          invitation = CbvFlowInvitation.new(valid_attributes.merge(site_id: 'ma'))
+          invitation.valid?
+          expect(invitation.errors[:beacon_id]).to include("can't be blank")
+        end
+      end
+
+      context "when site_id is not 'nyc'" do
+        it "does not require client_id_number" do
+          invitation = CbvFlowInvitation.new(valid_attributes.merge(client_id_number: nil))
+          invitation.valid?
+          expect(invitation.errors[:client_id_number]).to be_empty
+        end
+      end
+
+      context "when snap_application_date is not a valid date" do
+        it "adds an error" do
+          invitation = CbvFlowInvitation.new(valid_attributes.merge(snap_application_date: "invalid"))
+          invitation.valid?
+          expect(invitation.errors[:snap_application_date]).to include("is not a valid date")
+        end
       end
     end
-  end
 
     describe "#expired?" do
       let(:site_id) { "sandbox" }
@@ -63,7 +72,7 @@ RSpec.describe CbvFlowInvitation, type: :model do
       before do
         allow(Rails.application.config.sites[site_id])
           .to receive(:invitation_valid_days)
-                .and_return(invitation_valid_days)
+          .and_return(invitation_valid_days)
       end
 
       around do |ex|
@@ -122,4 +131,3 @@ RSpec.describe CbvFlowInvitation, type: :model do
       end
     end
   end
-end

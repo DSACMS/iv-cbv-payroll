@@ -57,8 +57,8 @@ class CbvFlowInvitation < ApplicationRecord
     begin
       new_date_format = Date.strptime(raw_snap_application_date.to_s, "%m/%d/%Y")
       self.snap_application_date = new_date_format
-    rescue Date::Error => errors
-      errors.add(:snap_application_date, "is not a valid date")
+    rescue Date::Error
+      self.errors.add(:snap_application_date, "is not a valid date")
     end
   end
 end
