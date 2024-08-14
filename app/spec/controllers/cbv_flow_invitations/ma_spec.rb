@@ -29,15 +29,13 @@ RSpec.describe CbvFlowInvitationsController, type: :controller do
   end
 
   describe "#create" do
-    let(:custom_params) { {
-      site_id: "ma",
-      snap_application_date: Date.today.strftime("%m/%d/%Y"),
-      beacon_id: "ABC123",
-      agency_id_number: "789012"
-    } }
+    let(:error_message) do
+      "Error sending invitation to test@example.com: " \
+        "Validation failed: Agency id number can't be blank, Beacon can't be blank."
+    end
 
     let(:cbv_flow_invitation_params) do
-      attributes_for(:cbv_flow_invitation, custom_params)
+      attributes_for(:cbv_flow_invitation, site_id: "ma", beacon_id: "ABC123", agency_id_number: "789012")
     end
 
     it "creates a CbvFlowInvitation record with the ma fields" do
@@ -55,6 +53,15 @@ RSpec.describe CbvFlowInvitationsController, type: :controller do
       expect(invitation.email_address).to eq("test@example.com")
       expect(invitation.snap_application_date).to eq(Date.today)
       expect(invitation.beacon_id).to eq("ABC123")
+    end
+
+    it "requires the ma fields" do
+      post :create, params: {
+        secret: invite_secret,
+        site_id: "ma",
+        cbv_flow_invitation: cbv_flow_invitation_params.except(:beacon_id, :agency_id_number)
+      }
+      expect(flash[:alert]).to eq(error_message)
     end
   end
 end

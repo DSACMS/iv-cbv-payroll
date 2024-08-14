@@ -14,12 +14,6 @@ RSpec.describe CbvFlowInvitation, type: :model do
 
     describe "validations" do
       context "when site_id is 'nyc'" do
-        it "requires client_id_number" do
-          invitation = CbvFlowInvitation.new(valid_attributes.merge(site_id: 'nyc'))
-          invitation.valid?
-          expect(invitation.errors[:client_id_number]).to include("can't be blank")
-        end
-
         it "requires case_number" do
           invitation = CbvFlowInvitation.new(valid_attributes.merge(site_id: 'nyc'))
           invitation.valid?
@@ -54,6 +48,21 @@ RSpec.describe CbvFlowInvitation, type: :model do
           invitation = CbvFlowInvitation.new(valid_attributes.merge(snap_application_date: "invalid"))
           invitation.valid?
           expect(invitation.errors[:snap_application_date]).to include("is not a valid date")
+        end
+      end
+
+      context "requires snap_application_date" do
+        it "adds an error" do
+          invitation = CbvFlowInvitation.new(valid_attributes.merge(snap_application_date: nil))
+          invitation.valid?
+          expect(invitation.errors[:snap_application_date]).to include("can't be blank")
+        end
+      end
+
+      context "middle_name is optional" do
+        it "is valid" do
+          invitation = CbvFlowInvitation.new(valid_attributes.merge(middle_name: nil))
+          expect(invitation).to be_valid
         end
       end
     end
