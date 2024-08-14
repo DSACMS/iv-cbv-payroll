@@ -20,7 +20,6 @@ class Cbv::SummariesController < Cbv::BaseController
   end
 
   def update
-
     if params[:cbv_flow][:consent_to_authorized_use].eql?("1")
       timestamp = Time.now.to_datetime
       @cbv_flow.update(consented_to_authorized_use_at: timestamp)
