@@ -5,11 +5,11 @@ class CbvFlowInvitation < ApplicationRecord
 
   has_secure_token :auth_token, length: 36
   validates :site_id, inclusion: Rails.application.config.sites.site_ids
-  validates :client_id_number, presence: true, if: :nyc_site?
   validates :case_number, presence: true, if: :nyc_site?
   validates :agency_id_number, presence: true, if: :ma_site?
   validates :beacon_id, presence: true, if: :ma_site?
   validates :email_address, presence: true
+  validates :snap_application_date, presence: true
 
   include Redactable
   has_redactable_fields(
@@ -52,7 +52,7 @@ class CbvFlowInvitation < ApplicationRecord
 
   def parse_snap_application_date
     raw_snap_application_date = @attributes["snap_application_date"]&.value_before_type_cast
-    return if raw_snap_application_date.blank? || raw_snap_application_date.is_a?(Date)
+    return if raw_snap_application_date.is_a?(Date)
 
     begin
       new_date_format = Date.strptime(raw_snap_application_date.to_s, "%m/%d/%Y")
