@@ -150,6 +150,14 @@ RSpec.describe Cbv::PaymentDetailsController do
         expect(response).to be_successful
       end
     end
+
+    context "when deductions include a zero dollar amount" do
+      it "does not show that deduction" do
+        get :show, params: { user: { account_id: account_id } }
+        expect(response.body).to include("Commuter")
+        expect(response.body).not_to include("Empty deduction")
+      end
+    end
   end
 
   describe "#update" do

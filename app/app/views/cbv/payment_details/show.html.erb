@@ -79,7 +79,7 @@
           <td><%= t(".number_of_hours_worked") %></td>
           <td><%= t(".payment_hours", amount: payment[:hours]) %></td>
         </tr>
-        <% payment[:deductions].each do |deduction| %>
+        <% payment[:deductions].filter { |deduction| deduction[:amount] > 0 }.each do |deduction| %>
           <tr>
             <td><%= t(".deductions", category: deduction[:category]&.humanize) %></td>
             <td><%= format_money(deduction[:amount]) %></td>
