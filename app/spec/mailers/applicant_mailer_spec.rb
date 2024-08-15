@@ -13,7 +13,7 @@ RSpec.describe ApplicantMailer, type: :mailer do
   end
 
   let(:email) { 'me@email.com' }
-  let(:cbv_flow_invitation) { create(:cbv_flow_invitation, email_address: email, site_id: "nyc", client_id_number: "ABC123") }
+  let(:cbv_flow_invitation) { create(:cbv_flow_invitation, :nyc, email_address: email) }
   let(:mail) { ApplicantMailer.with(cbv_flow_invitation: cbv_flow_invitation).invitation_email }
 
   it "renders the subject" do
