@@ -18,7 +18,7 @@ RSpec.describe Cbv::EntriesController do
     end
 
     context "when following a link from a flow invitation" do
-      let(:invitation) { create(:cbv_flow_invitation) }
+      let(:invitation) { create(:cbv_flow_invitation, case_number: "ABC1234") }
 
       it "sets a CbvFlow object based on the invitation" do
         expect { get :show, params: { token: invitation.auth_token } }
@@ -28,9 +28,9 @@ RSpec.describe Cbv::EntriesController do
 
         cbv_flow = CbvFlow.find(session[:cbv_flow_id])
         expect(cbv_flow).to have_attributes(
-                              case_number: "ABC1234",
-                              cbv_flow_invitation: invitation
-                            )
+          case_number: "ABC1234",
+          cbv_flow_invitation: invitation
+        )
       end
 
       context "when returning to an already-visited flow invitation" do
