@@ -4,6 +4,10 @@ en:
     invitation_email:
       body_html: We need to verify your income as part of your benefits application, as requested by %{agency_acronym}. This process is unique to you, so please do not share this invitation with anyone else. <strong>You have until %{deadline}, to complete your verification.</strong> Otherwise, you'll need to request a new invitation.
       greeting: Hello,
+      header:
+        ma: DTA has sent you an invitation to verify your income
+        nyc: HRA has sent you an invitation to verify your income
+        sandbox: CBV Test Agency has sent you an invitation to verify your income
       subject: Verify your income for your benefit application
   caseworker:
     cbv_flow_invitations:
