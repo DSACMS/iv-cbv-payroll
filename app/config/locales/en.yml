@@ -125,7 +125,7 @@ en:
         your_employers_name: Your employer's name or the name of their payroll provider
         your_login_credentials: Your login credentials for the payroll provider account
     error_invalid_token: The invitation link used is not valid. Double check the link and try again. If you continue experiencing issues, contact your caseworker.
-    error_missing_token: This page must be accessed by using an invitation link. Make sure you are clicking through the link you received in your email. If you continue experiencing issues, contact your caseworker.
+    error_missing_token: Your session has timed out due to inactivity. Click the link you received from your benefits agency to start from where you left off, or contact your benefits agency if you are having trouble.
     manual_flow_start: Start Flow Manually
     missing_results:
       show:
