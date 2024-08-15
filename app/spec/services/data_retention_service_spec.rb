@@ -14,6 +14,7 @@ RSpec.describe DataRetentionService do
       created_at: Time.new(2024, 8, 1, 12, 0, 0, "-04:00")
     }
   end
+
   describe "#redact_invitations" do
     let!(:cbv_flow_invitation) do
       CbvFlowInvitation.create!(cbv_flow_props)
@@ -43,7 +44,8 @@ RSpec.describe DataRetentionService do
           expect(cbv_flow_invitation.reload).to have_attributes(
             email_address: "REDACTED@example.com",
             case_number: "REDACTED",
-            auth_token: "REDACTED"
+            auth_token: "REDACTED",
+            redacted_at: within(1.second).of(Time.now)
           )
         end
       end
@@ -162,6 +164,24 @@ RSpec.describe DataRetentionService do
           case_number: "REDACTED"
         )
       end
+    end
+  end
+
+  describe ".manually_redact_by_case_number!" do
+    let(:cbv_flow_invitation) { create(:cbv_flow_invitation, case_number: "DELETEME001") }
+    let!(:cbv_flow) { create(:cbv_flow, cbv_flow_invitation: cbv_flow_invitation) }
+
+    it "redacts the invitation and the flow object" do
+      DataRetentionService.manually_redact_by_case_number!("DELETEME001")
+
+      expect(cbv_flow.reload).to have_attributes(
+        case_number: "REDACTED",
+        redacted_at: within(1.second).of(Time.now)
+      )
+      expect(cbv_flow_invitation.reload).to have_attributes(
+        case_number: "REDACTED",
+        redacted_at: within(1.second).of(Time.now)
+      )
     end
   end
 end

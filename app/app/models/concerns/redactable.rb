@@ -1,7 +1,8 @@
 # Include this concern in models that should be redacted according to
 # a data deletion policy.
 #
-# To configure redaction, include this module and call the class method
+# To configure redaction, ensure your model has a `redacted_at` datetime
+# column. Then, include this module and call the class method
 # `has_redactable_fields` with the fields you would like to redact, like so:
 #
 #   class Foo
@@ -14,6 +15,7 @@
 module Redactable
   extend ActiveSupport::Concern
 
+  REDACTED_TIMESTAMP_COLUMN = :redacted_at
   REDACTION_REPLACEMENTS = {
     string: "REDACTED",
     date: Date.new(1990, 1, 1),
@@ -38,6 +40,7 @@ module Redactable
     self.class.fields_to_redact.each do |field, type|
       self[field] = REDACTION_REPLACEMENTS[type]
     end
+    self[REDACTED_TIMESTAMP_COLUMN] = Time.now
 
     save(validate: false)
   end
