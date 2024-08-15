@@ -45,8 +45,15 @@
       <li><%= t("cbv.employer_searches.show.no_results_desc2") %></li>
     </ol>
     <p><%= t("cbv.employer_searches.show.no_results_desc3") %> <%= site_translation("cbv.employer_searches.show.no_results_link_html") %></p>
-    <%= link_to cbv_flow_missing_results_path, class: "usa-button margin-top-5", data: { turbo_frame: "_top" } do %>
-      <%= t("cbv.employer_searches.show.exit_button_text") %>
+    <% if @pinwheel_accounts_count > 0 %>
+      <h3><%= t("cbv.employer_searches.show.to_continue") %></h3>
+      <ul>
+        <li><%= t("cbv.employer_searches.show.to_continue_li_1") %></li>
+        <li><%= t("cbv.employer_searches.show.to_continue_li_2") %></li>
+      </ul>
+    <% end %>
+    <%= link_to (@pinwheel_accounts_count > 0 ? cbv_flow_summary_path : cbv_flow_missing_results_path), class: "usa-button margin-top-5", data: { turbo_frame: "_top" } do %>
+      <%= t(@pinwheel_accounts_count > 0 ? "cbv.employer_searches.show.review_button_text" : "cbv.employer_searches.show.exit_button_text") %>
     <% end %>
   <% elsif @employers.count > 1 %>
     <h3><%= t("cbv.employer_searches.show.employer_not_listed") %></h3>

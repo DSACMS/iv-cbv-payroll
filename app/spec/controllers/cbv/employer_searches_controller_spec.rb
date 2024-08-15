@@ -1,11 +1,12 @@
 require "rails_helper"
 
 RSpec.describe Cbv::EmployerSearchesController do
+  include PinwheelApiHelper
+
   describe "#show" do
     let(:cbv_flow) { CbvFlow.create!(case_number: "ABC1234", site_id: "sandbox") }
-
+    let(:nyc_user) { User.create(email: "test@test.com", site_id: 'nyc') }
     let(:pinwheel_token_id) { "abc-def-ghi" }
-
     let(:user_token) { "foobar" }
 
     before do
@@ -18,6 +19,37 @@ RSpec.describe Cbv::EmployerSearchesController do
       it "renders properly" do
         get :show
         expect(response).to be_successful
+      end
+    end
+
+    context "when the user at least one pinwheel_account associated with their cbv_flow" do
+      before do
+        sign_in nyc_user
+        stub_request_items_no_items_response
+      end
+
+      render_views
+
+      it "renders the view with a link to the summary page" do
+        create(:pinwheel_account, cbv_flow_id: cbv_flow.id)
+        get :show, params: { query: "no_results" }
+        expect(response).to be_successful
+        expect(response.body).to include("Review my income report")
+      end
+    end
+
+    context "when the user has does not have a pinwheel_account associated with their cbv_flow" do
+      before do
+        sign_in nyc_user
+        stub_request_items_no_items_response
+      end
+
+      render_views
+
+      it "renders the view with a link to exit income verification" do
+        get :show, params: { query: "no_results" }
+        expect(response).to be_successful
+        expect(response.body).to include("Exit income verification")
       end
     end
 
