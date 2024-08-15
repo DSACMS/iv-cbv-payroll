@@ -3,11 +3,6 @@ class Webhooks::Pinwheel::EventsController < ApplicationController
   skip_before_action :verify_authenticity_token
 
   DUMMY_API_KEY = "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-  EVENTS_MAP = {
-    "employment.added" => "employment_synced_at",
-    "income.added" => "income_synced_at",
-    "paystubs.fully_synced" => "paystubs_synced_at"
-  }
 
   def create
     unless @cbv_flow
@@ -22,9 +17,13 @@ class Webhooks::Pinwheel::EventsController < ApplicationController
         .find_or_create_by(pinwheel_account_id: params["payload"]["account_id"])
     end
 
-    if EVENTS_MAP.keys.include?(params["event"])
+    if PinwheelAccount::EVENTS_MAP.keys.include?(params["event"])
       pinwheel_account = PinwheelAccount.find_by_pinwheel_account_id(params["payload"]["account_id"])
-      pinwheel_account.update!(EVENTS_MAP[params["event"]] => Time.now) if pinwheel_account.present?
+      pinwheel_account.update!(PinwheelAccount::EVENTS_MAP[params["event"]] => Time.now) if pinwheel_account.present?
+
+      if params.dig("payload", "outcome") == "error"
+        pinwheel_account.update!(PinwheelAccount::EVENTS_ERRORS_MAP[params["event"]] => Time.now) if pinwheel_account.present?
+      end
 
       if pinwheel_account.has_fully_synced?
         PaystubsChannel.broadcast_to(@cbv_flow, {
