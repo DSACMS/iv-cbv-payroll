@@ -53,7 +53,7 @@
       </ul>
     <% end %>
     <%= link_to (@pinwheel_accounts_count > 0 ? cbv_flow_summary_path : cbv_flow_missing_results_path), class: "usa-button margin-top-5", data: { turbo_frame: "_top" } do %>
-      <%= t(@pinwheel_accounts_count > 0 ? "cbv.employer_searches.show.review_button_text" : "cbv.employer_searches.show.exit_button_text") %>
+      <%= @pinwheel_accounts_count > 0 ? t("cbv.employer_searches.show.review_button_text") : t("cbv.employer_searches.show.exit_button_text") %>
     <% end %>
   <% elsif @employers.count > 1 %>
     <h3><%= t("cbv.employer_searches.show.employer_not_listed") %></h3>
