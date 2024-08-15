@@ -34,7 +34,7 @@ RSpec.describe Cbv::EntriesController do
       end
 
       context "when returning to an already-visited flow invitation" do
-        let(:existing_cbv_flow) { CbvFlow.create(case_number: "ABC1234", cbv_flow_invitation: invitation, site_id: "sandbox") }
+        let(:existing_cbv_flow) { create(:cbv_flow, cbv_flow_invitation: invitation) }
 
         it "uses the existing CbvFlow object" do
           expect { get :show, params: { token: invitation.auth_token } }
@@ -43,9 +43,44 @@ RSpec.describe Cbv::EntriesController do
                   .to(existing_cbv_flow.id)
         end
 
+        context "when the CbvFlow has already linked a employer/employers" do
+          let!(:older_connected_account) do
+            PinwheelAccount.create!(
+              cbv_flow: existing_cbv_flow,
+              pinwheel_account_id: SecureRandom.uuid,
+              created_at: 15.minutes.ago
+            )
+          end
+          let!(:connected_account) do
+            PinwheelAccount.create!(
+              cbv_flow: existing_cbv_flow,
+              pinwheel_account_id: SecureRandom.uuid,
+              created_at: 4.minutes.ago
+            )
+          end
+
+          it "redirects to the payment details page for the more recently linked employer" do
+            expect { get :show, params: { token: invitation.auth_token } }
+              .to change { session[:cbv_flow_id] }
+              .from(nil)
+              .to(existing_cbv_flow.id)
+
+            expect(response).to redirect_to(
+              cbv_flow_payment_details_path(user: { account_id: connected_account.pinwheel_account_id })
+            )
+          end
+        end
+
         context "when the CbvFlow was already completed" do
           before do
             existing_cbv_flow.update(confirmation_code: "FOOBAR")
+          end
+          let!(:connected_account) do
+            PinwheelAccount.create!(
+              cbv_flow: existing_cbv_flow,
+              pinwheel_account_id: SecureRandom.uuid,
+              created_at: 4.minutes.ago
+            )
           end
 
           it "redirects to the expired invitation URL" do
