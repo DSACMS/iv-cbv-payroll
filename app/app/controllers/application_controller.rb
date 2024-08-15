@@ -19,7 +19,7 @@ class ApplicationController < ActionController::Base
   private
 
   def current_site
-    site_config[params[:site_id]]
+    @current_site ||= site_config[params[:site_id]]
   end
 
   protected

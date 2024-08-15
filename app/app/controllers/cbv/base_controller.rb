@@ -48,7 +48,7 @@ class Cbv::BaseController < ApplicationController
   def current_site
     return unless @cbv_flow.present? && @cbv_flow.site_id.present?
 
-    site_config[@cbv_flow.site_id]
+    @current_site ||= site_config[@cbv_flow.site_id]
   end
 
   def next_path
