@@ -1,39 +1,51 @@
-<p>
-  <%= t('.case_number', case_number: @cbv_flow.case_number) %>
-</p>
-<p>
-  <%= t('.document_timestamp', timestamp: format_view_datetime(Time.now.to_s)) %></p>
-<h2>
-  <%= t('.header') %>
-</h2>
+<h1>
+  <%= t(".header") %>
+</h1>
 
 <% if @payments.any? %>
-  <p>
-    <%= t('.description') %>
-  </p>
-  <h3 class="site-preview-heading">
-  <%= t('.total_payments', amount: format_money(@payments.reduce(0) { |sum, payment| sum + payment[:gross_pay_amount] })) %></h3>
+  <div class="width-full margin-bottom-6">
+    <p>
+      <%= t(".description") %>
+    </p>
+    <h2 class="site-preview-heading"><%= t(".total_payments", amount: format_money(total_gross_income)) %></h2>
+    <p><%= t(".total_payments_desc") %></p>
 
-  <div class="usa-accordion usa-accordion--multiselectable margin-bottom-4" data-allow-multiple>
-    <% @payments.each_with_index do |payment, index| %>
-      <div class="usa-accordion__heading">
-        <%= payment[:employer] %>: <%= t('.payment_of', amount: format_money(payment[:gross_pay_amount])) %>
-      </div>
-      <div id="<%= index %>" class="usa-accordion__content usa-prose">
-        <p>
-          <%= t('.time_range', hours: payment[:hours], start: format_date(payment[:start]), end: format_date(payment[:end])) %>
-        </p>
-      </div>
+    <% payments_grouped_by_employer.each_with_index do |(account_id, summary), index| %>
+      <table class="usa-table usa-table--borderless width-full">
+        <h3>
+          <% if summary[:employer_name] %>
+            <%= t(".table_caption", number: index, employer_name: summary[:employer_name]) %>
+          <% else %>
+            <%= t(".table_caption_no_name", number: index + 1) %>
+          <% end %>
+        </h3>
+        <thead class="border-top-05">
+          <tr>
+            <th class="padding-3" style="background-color: #d9e8f6;" colspan="2">
+              <h4 class="margin-0">
+                <% if summary[:employer_name] %>
+                  <%= t(".total_income_from", employer_name: summary[:employer_name], amount: summary[:total]) %>
+                <% else %>
+                  <%= t(".total_income_from_no_employer_name", amount: format_money(summary[:total])) %>
+                <% end %>
+              </h4>
+            </th>
+          </tr>
+        </thead>
+        <tbody>
+          <% summary[:payments].each do |payment| %>
+            <tr>
+              <td><%= t(".payment", amount: format_money(payment[:gross_pay_amount]), date: format_date(payment[:pay_date])) %></td>
+            </tr>
+          <% end %>
+        </tbody>
+      </table>
+      <h4><%= t(".additional_comments") %></h4>
+      <%= get_comment_by_account_id(account_id).dig("comment") != "" ? get_comment_by_account_id(account_id).dig("comment") : t("shared.not_applicable") %>
     <% end %>
   </div>
 <% else %>
   <h3 class="site-preview-heading">
-    <%= t('.none_found') %>
+    <%= t(".none_found") %>
   </h3>
-<% end %>
-
-<% if @cbv_flow.additional_information.present? %>
-  <h2><%= t('.additional_information_title') %></h2>
-
-  <p><%= @cbv_flow.additional_information %></p>
 <% end %>

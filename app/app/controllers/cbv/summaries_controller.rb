@@ -14,7 +14,7 @@ class Cbv::SummariesController < Cbv::BaseController
           cbv_flow_id: @cbv_flow.id
         })
 
-        render pdf: "#{@cbv_flow.id}"
+        render pdf: "#{@cbv_flow.id}", layout: "pdf"
       end
     end
     @already_consented = @cbv_flow.consented_to_authorized_use_at ? true : false
