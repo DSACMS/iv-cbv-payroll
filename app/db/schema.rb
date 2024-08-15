@@ -10,6 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
+ActiveRecord::Schema[7.1].define(version: 2024_08_14_203311) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -48,8 +49,8 @@
     t.string "site_id"
     t.string "confirmation_code"
     t.datetime "transmitted_at"
-    t.datetime "redacted_at"
     t.datetime "consented_to_authorized_use_at"
+    t.datetime "redacted_at"
     t.index ["cbv_flow_invitation_id"], name: "index_cbv_flows_on_cbv_flow_invitation_id"
   end
 
