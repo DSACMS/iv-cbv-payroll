@@ -9,7 +9,7 @@
 
 <% if @payments.any? %>
   <p>
-    <%= t('.description') %>
+    <%= t(".description", summary_start_date: @summary_start_date, summary_end_date: @summary_end_date) %>
   </p>
   <h3 class="site-preview-heading">
   <%= t('.total_payments', amount: format_money(@payments.reduce(0) { |sum, payment| sum + payment[:gross_pay_amount] })) %></h3>

@@ -6,6 +6,12 @@ class Cbv::SummariesController < Cbv::BaseController
   skip_before_action :ensure_cbv_flow_not_yet_complete, if: -> { params[:format] == "pdf" }
 
   def show
+    @already_consented = @cbv_flow.consented_to_authorized_use_at ? true : false
+    invitation = CbvFlowInvitation.find_by!(id: @cbv_flow.cbv_flow_invitation_id)
+    @summary_end_date=invitation.snap_application_date.strftime("%B %d, %Y")
+    ninety_days_ago = invitation.snap_application_date - 90.days
+    @summary_start_date=ninety_days_ago.strftime("%B %d, %Y")
+    @additional_comment = additional_comments
     respond_to do |format|
       format.html
       format.pdf do
@@ -17,11 +23,6 @@ class Cbv::SummariesController < Cbv::BaseController
         render pdf: "#{@cbv_flow.id}"
       end
     end
-    @already_consented = @cbv_flow.consented_to_authorized_use_at ? true : false
-    invitation = CbvFlowInvitation.find_by!(id: @cbv_flow.cbv_flow_invitation_id)
-    @summary_end_date=invitation.snap_application_date.strftime("%B %d, %Y")
-    ninety_days_ago = invitation.snap_application_date - 90.days
-    @summary_start_date=ninety_days_ago.strftime("%B %d, %Y")
   end
 
   def update
@@ -49,4 +50,5 @@ class Cbv::SummariesController < Cbv::BaseController
   def total_gross_income
     @payments.reduce(0) { |sum, payment| sum + payment[:gross_pay_amount] }
   end
+
 end
