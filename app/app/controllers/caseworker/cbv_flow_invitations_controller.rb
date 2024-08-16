@@ -1,4 +1,4 @@
-class CbvFlowInvitationsController < ApplicationController
+class Caseworker::CbvFlowInvitationsController < ApplicationController
   protect_from_forgery prepend: true
   before_action :ensure_valid_params!
   before_action :authenticate_user!
@@ -29,7 +29,7 @@ class CbvFlowInvitationsController < ApplicationController
 
   def ensure_valid_params!
     if site_config.site_ids.exclude?(site_id)
-      flash[:alert] = t("cbv_flow_invitations.incorrect_site_id")
+      flash[:alert] = t("caseworker.cbv_flow_invitations.incorrect_site_id")
       redirect_to root_url
     end
   end

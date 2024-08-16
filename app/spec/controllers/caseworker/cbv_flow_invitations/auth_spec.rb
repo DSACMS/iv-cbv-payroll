@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe CbvFlowInvitationsController do
+RSpec.describe Caseworker::CbvFlowInvitationsController do
   let(:nyc_user) { User.create(email: "test@test.com", site_id: 'nyc') }
   let(:ma_user) { User.create(email: "test@test.com", site_id: 'ma') }
   let(:invite_secret) { "FAKE_INVITE_SECRET" }
