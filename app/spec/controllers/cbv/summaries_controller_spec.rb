@@ -2,9 +2,7 @@ require "rails_helper"
 
 RSpec.describe Cbv::SummariesController do
   include PinwheelApiHelper
-  app_date = Date.parse('2024-06-18')
-  cbv_flow_props =
-  {
+  let(:cbv_flow_props) do  {
     first_name: "John",
     middle_name: "Doe",
     last_name: "Smith",
@@ -12,10 +10,11 @@ RSpec.describe Cbv::SummariesController do
     email_address: "tom@example.com",
     agency_id_number: "A12345",
     site_id: "sandbox",
-    snap_application_date: app_date,
+    snap_application_date: Date.parse('2024-06-18'),
     created_at: Time.new(2024, 8, 1, 12, 0, 0, "-04:00"),
     id: 1
   }
+  end
   let(:cbv_flow_invitation) { CbvFlowInvitation.create(cbv_flow_props) }
   let(:cbv_flow) { CbvFlow.create(case_number: "ABC1234", pinwheel_token_id: "abc-def-ghi", site_id: "sandbox", cbv_flow_invitation_id: 1) }
 
