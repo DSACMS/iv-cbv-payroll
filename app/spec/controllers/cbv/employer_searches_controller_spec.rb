@@ -23,14 +23,14 @@ RSpec.describe Cbv::EmployerSearchesController do
     end
 
     context "when there are no employer search results" do
+      before do
+        sign_in nyc_user
+        stub_request_items_no_items_response
+      end
+
+      render_views
+
       context "when the user at least one pinwheel_account associated with their cbv_flow" do
-        before do
-          sign_in nyc_user
-          stub_request_items_no_items_response
-        end
-
-        render_views
-
         it "renders the view with a link to the summary page" do
           create(:pinwheel_account, cbv_flow_id: cbv_flow.id)
           get :show, params: { query: "no_results" }
@@ -40,13 +40,6 @@ RSpec.describe Cbv::EmployerSearchesController do
       end
 
       context "when the user has does not have a pinwheel_account associated with their cbv_flow" do
-        before do
-          sign_in nyc_user
-          stub_request_items_no_items_response
-        end
-
-        render_views
-
         it "renders the view with a link to exit income verification" do
           get :show, params: { query: "no_results" }
           expect(response).to be_successful

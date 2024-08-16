@@ -5,7 +5,7 @@ class Cbv::EmployerSearchesController < Cbv::BaseController
   def show
     @query = search_params[:query]
     @employers = @query.blank? ? [] : fetch_employers(@query)
-    @pinwheel_accounts_count = PinwheelAccount.where(cbv_flow_id: @cbv_flow[:id]).count
+    @has_pinwheel_account = @cbv_flow.pinwheel_accounts.any?
   end
 
   private
