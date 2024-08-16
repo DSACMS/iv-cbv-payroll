@@ -55,5 +55,5 @@
     <h2><%= t(".consent_to_authorize_use_title") %></h2>
     <%= f.check_box(:consent_to_authorized_use, { 'label': site_translation(".consent_to_authorize_use_html") }) %>
   <% end %>
-  <%= f.submit t(".send_report") %>
+  <%= f.submit t(".send_report"), class: "margin-top-5" %>
 <% end %>

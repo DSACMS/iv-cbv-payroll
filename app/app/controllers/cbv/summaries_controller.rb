@@ -49,5 +49,4 @@ class Cbv::SummariesController < Cbv::BaseController
   def total_gross_income
     @payments.reduce(0) { |sum, payment| sum + payment[:gross_pay_amount] }
   end
-
 end
