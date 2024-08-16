@@ -1,47 +1,47 @@
-<h2>
+<h1>
   <%= t(".header") %>
-</h2>
+</h1>
 
 <% if @payments.any? %>
   <div class="width-full margin-bottom-6">
     <p>
-      <%= t(".description") %>
+      <%= t(".description", summary_start_date: @summary_start_date, summary_end_date: @summary_end_date) %>
     </p>
-    <h3 class="site-preview-heading"><%= t(".total_payments", amount: format_money(total_gross_income)) %></h3>
+    <h2 class="site-preview-heading"><%= t(".total_payments", amount: format_money(total_gross_income)) %></h2>
+    <p><%= t(".total_payments_desc") %></p>
 
     <% payments_grouped_by_employer.each_with_index do |(account_id, summary), index| %>
       <table class="usa-table usa-table--borderless width-full">
-        <caption>
+        <h3>
           <% if summary[:employer_name] %>
             <%= t(".table_caption", number: index, employer_name: summary[:employer_name]) %>
           <% else %>
             <%= t(".table_caption_no_name", number: index + 1) %>
           <% end %>
-        </caption>
+        </h3>
         <thead class="border-top-05">
           <tr>
             <th class="padding-3" style="background-color: #d9e8f6;" colspan="2">
-              <h3 class="margin-0">
+              <h4 class="margin-0">
                 <% if summary[:employer_name] %>
                   <%= t(".total_income_from", employer_name: summary[:employer_name], amount: summary[:total]) %>
                 <% else %>
                   <%= t(".total_income_from_no_employer_name", amount: format_money(summary[:total])) %>
                 <% end %>
-              </h3>
+              </h4>
             </th>
           </tr>
         </thead>
         <tbody>
           <% summary[:payments].each do |payment| %>
             <tr>
-              <td><%= t(".payment", amount: format_money(payment[:net_pay_amount]), date: format_date(payment[:pay_date])) %></td>
+              <td><%= t(".payment", amount: format_money(payment[:gross_pay_amount]), date: format_date(payment[:pay_date])) %></td>
             </tr>
           <% end %>
         </tbody>
       </table>
-
       <h4><%= t(".additional_comments") %></h4>
-      <%= get_comment_by_account_id(account_id).dig("comment") ? get_comment_by_account_id(account_id).dig("comment") : t("shared.not_applicable") %>
+      <%= get_comment_by_account_id(account_id).dig("comment") != "" ? get_comment_by_account_id(account_id).dig("comment") : t("shared.not_applicable") %>
     <% end %>
   </div>
 <% else %>
@@ -50,6 +50,10 @@
   </h3>
 <% end %>
 
-<%= form_for(@cbv_flow, url: cbv_flow_summary_path, builder: UswdsFormBuilder) do |f| %>
-  <%= f.submit t(".send_to_caseworker") %>
+<%= form_with model: @cbv_flow, url: cbv_flow_summary_path, html: { class: "usa-form maxw-full" }, builder: UswdsFormBuilder, method: "patch" do |f| %>
+  <% if !@already_consented %>
+    <h2><%= t(".consent_to_authorize_use_title") %></h2>
+    <%= f.check_box(:consent_to_authorized_use, { 'label': site_translation(".consent_to_authorize_use_html") }) %>
+  <% end %>
+  <%= f.submit t(".send_report"), class: "margin-top-5" %>
 <% end %>

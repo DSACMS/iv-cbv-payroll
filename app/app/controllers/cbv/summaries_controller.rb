@@ -6,6 +6,11 @@ class Cbv::SummariesController < Cbv::BaseController
   skip_before_action :ensure_cbv_flow_not_yet_complete, if: -> { params[:format] == "pdf" }
 
   def show
+    @already_consented = @cbv_flow.consented_to_authorized_use_at ? true : false
+    invitation = @cbv_flow.cbv_flow_invitation
+    @summary_end_date= invitation ? invitation.snap_application_date.strftime("%B %d, %Y") : ""
+    ninety_days_ago = invitation ? invitation.snap_application_date - 90.days : ""
+    @summary_start_date= invitation ? ninety_days_ago.strftime("%B %d, %Y") : ""
     respond_to do |format|
       format.html
       format.pdf do
@@ -20,9 +25,19 @@ class Cbv::SummariesController < Cbv::BaseController
   end
 
   def update
-    @cbv_flow.update(summary_update_params)
-
-    redirect_to next_path
+    # User has previously consented, so checkbox field is not in the form
+    if @cbv_flow.consented_to_authorized_use_at
+      redirect_to next_path
+    # User has NOT previously consented, but checked the box
+    elsif params[:cbv_flow][:consent_to_authorized_use].eql?("1")
+      timestamp = Time.now.to_datetime
+      @cbv_flow.update(consented_to_authorized_use_at: timestamp)
+      redirect_to next_path
+    # User has NOT previously consented or checked the box
+    else
+      flash[:slim_alert] = { message: t(".consent_to_authorize_warning"), type: "error" }
+      redirect_to cbv_flow_summary_path
+    end
   end
 
   private
@@ -33,9 +48,5 @@ class Cbv::SummariesController < Cbv::BaseController
 
   def total_gross_income
     @payments.reduce(0) { |sum, payment| sum + payment[:gross_pay_amount] }
-  end
-
-  def summary_update_params
-    params.fetch(:cbv_flow, {}).permit(:additional_information)
   end
 end

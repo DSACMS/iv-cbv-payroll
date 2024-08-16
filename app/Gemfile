@@ -100,6 +100,7 @@ group :test do
   gem "climate_control", "~> 1.0"
   gem "webmock"
   gem "factory_bot", "~> 6.4"
+  gem "rails-controller-testing"
 end
 
 group :production do
