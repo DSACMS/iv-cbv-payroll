@@ -19,6 +19,15 @@ module ApplicationHelper
       else
         default_key
       end
+    is_html_key = /(?:_|\b)html\z/.match?(i18n_base_key)
+    if is_html_key
+      options.each do |name, value|
+        next if name == :count && value.is_a?(Numeric)
+
+        # Sanitize values being interpolated into this string.
+        options[name] = ERB::Util.html_escape(value.to_s)
+      end
+    end
 
     translated =
       if I18n.exists?(scope_key_by_partial(i18n_key))
@@ -32,7 +41,7 @@ module ApplicationHelper
     # We have to replicate the logic from ActiveSupport::HtmlSafeTranslation
     # because the base key is the one that ends with "_html", not the one we
     # ultimately pass into the translation library.
-    if /(?:_|\b)html\z/.match?(i18n_base_key) && translated.present?
+    if is_html_key && translated.present?
       translated.html_safe
     else
       translated
