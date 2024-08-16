@@ -14,8 +14,8 @@ module ApplicationHelper
   def site_translation(i18n_base_key, **options)
     default_key = "#{i18n_base_key}.default"
     i18n_key =
-      if current_site
-        "#{i18n_base_key}.#{current_site.id}"
+      if @current_site
+        "#{i18n_base_key}.#{@current_site.id}"
       else
         default_key
       end

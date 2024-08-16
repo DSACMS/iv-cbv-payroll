@@ -4,7 +4,40 @@ en:
     invitation_email:
       body_html: We need to verify your income as part of your benefits application, as requested by %{agency_acronym}. This process is unique to you, so please do not share this invitation with anyone else. <strong>You have until %{deadline}, to complete your verification.</strong> Otherwise, you'll need to request a new invitation.
       greeting: Hello,
+      header:
+        ma: DTA has sent you an invitation to verify your income
+        nyc: HRA has sent you an invitation to verify your income
+        sandbox: CBV Test Agency has sent you an invitation to verify your income
       subject: Verify your income for your benefit application
+  caseworker:
+    cbv_flow_invitations:
+      create:
+        invite_failed: 'Error sending invitation to %{email_address}: %{error_message}.'
+        invite_success: Successfully delivered invitation to %{email_address}.
+      incorrect_site_id: Unable to send invitation due to missing site configuration.
+      ma:
+        invite:
+          agency_id_number: Client's agency ID number
+          beacon_id: Your BEACON ID
+          email_address: Client's email address
+          first_name: Client's first name
+          last_name: Client's last name
+          middle_name: Client's middle name
+          snap_application_date: SNAP application date
+      new:
+        description_html: "<p>Provide some details about the client so we can send them a link to verify their pay information. We'll request the past %{pay_income_days} days of income, based on the client's application date.</p><p>If multiple members of the household earn income, send an invite link to each household member.</p>"
+        form:
+          submit: Send Invitation
+        header: Send an invite link
+      nyc:
+        invite:
+          case_number: Case number
+          client_id_number: CIN
+          email_address: Client's email address
+          first_name: Client's first name
+          last_name: Client's last name
+          middle_name: Client's middle name
+          snap_application_date: SNAP application date
   caseworker_mailer:
     summary_email:
       body: Applicant has submitted their income verification. Please find the attached PDF.
@@ -92,7 +125,7 @@ en:
         your_employers_name: Your employer's name or the name of their payroll provider
         your_login_credentials: Your login credentials for the payroll provider account
     error_invalid_token: The invitation link used is not valid. Double check the link and try again. If you continue experiencing issues, contact your caseworker.
-    error_missing_token: This page must be accessed by using an invitation link. Make sure you are clicking through the link you received in your email. If you continue experiencing issues, contact your caseworker.
+    error_missing_token: Your session has timed out due to inactivity. Click the link you received from your benefits agency to start from where you left off, or contact your benefits agency if you are having trouble.
     manual_flow_start: Start Flow Manually
     missing_results:
       show:
@@ -153,47 +186,27 @@ en:
         additional_comments: Additional comments
         additional_information_title: Is there anything else you'd like your caseworker to know about your income?
         case_number: 'Case number: %{case_number}'
-        description: Below is payment information from your employer for the past 90 days.
+        consent_to_authorize_use_html:
+          ma: Check this box to confirm that the information provided by you is true and complete to the best of your knowledge. You agree to inform DTA of any income not reflected in this report or any discrepancies found in the information gathered with this tool. You understand that providing accurate and complete information is your responsibility, and any false or omitted information may have legal consequences. For more information on your rights and responsibilities regarding private information you share with DTA please refer to the Rights and Responsibilities you signed at application, found on <a href="https://www.mass.gov/lists/department-of-transitional-assistance-rights-responsibilities-and-penalties">Mass.gov</a>.<p>By sending this report, you authorize its use for income verification by DTA and authorized personnel.</p>
+          nyc: Check this box to confirm that the information provided by you is true and complete to the best of your knowledge. You agree to inform NYC Human Resources Administration (HRA) of any income not reflected in this report or any discrepancies found in the information gathered with this tool. You understand that providing accurate and complete information is your responsibility, and any false or omitted information may have legal consequences.<p>By sending this report, you authorize its use for income verification by authorized HRA personnel.</p>
+          sandbox: Check this box to confirm that the information provided by you is true and complete to the best of your knowledge. You agree to inform CBV Test Agency of any income not reflected in this report or any discrepancies found in the information gathered with this tool. You understand that providing accurate and complete information is your responsibility, and any false or omitted information may have legal consequences.<p>By sending this report, you authorize its use for income verification by authorized CBV personnel.</p>
+        consent_to_authorize_use_title: Legal Agreement
+        description: Below is payment information from your employer for the past 90 days, from %{summary_start_date} to %{summary_end_date}. %{summary_end_date}.
         document_timestamp: 'Document origination: %{timestamp}'
         header: Review payment information from your employers
-        none_found: No payments found.
-        payment: Payment of %{amount} on %{date}
-        payment_of: Payment of %{amount}
-        send_to_caseworker: Send to caseworker
+        none_found: No payments found. Please refresh the page after a few minutes.
+        payment: Payment of %{amount} before taxes on %{date}
+        payment_of: Payment of %{amount} before taxes
+        send_report: Share my report with benefits agency
         table_caption: 'Employer %{number}: %{employer_name}'
         table_caption_no_name: Employer %{number}
         time_range: "%{hours} hours from %{start} to %{end}"
-        total_income_from: 'Total income from %{employer_name}: %{amount}'
-        total_income_from_no_employer_name: 'Total income: %{amount}'
+        total_income_from: 'Total income from %{employer_name} before taxes: %{amount}'
+        total_income_from_no_employer_name: 'Total income before taxes: %{amount}'
         total_payments: 'Total income before taxes: %{amount}'
-  cbv_flow_invitations:
-    create:
-      invite_failed: 'Error sending invitation to %{email_address}: %{error_message}.'
-      invite_success: Successfully delivered invitation to %{email_address}.
-    incorrect_site_id: Unable to send invitation due to missing site configuration.
-    ma:
-      invite:
-        agency_id_number: Client's agency ID number
-        beacon_id: Your BEACON ID
-        email_address: Client's email address
-        first_name: Client's first name
-        last_name: Client's last name
-        middle_name: Client's middle name
-        snap_application_date: SNAP application date
-    new:
-      description_html: "<p>Provide some details about the client so we can send them a link to verify their pay information. We'll request the past %{pay_income_days} days of income, based on the client's application date.</p><p>If multiple members of the household earn income, send an invite link to each household member.</p>"
-      form:
-        submit: Send Invitation
-      header: Send an invite link
-    nyc:
-      invite:
-        case_number: Case number
-        client_id_number: CIN
-        email_address: Client's email address
-        first_name: Client's first name
-        last_name: Client's last name
-        middle_name: Client's middle name
-        snap_application_date: SNAP application date
+        total_payments_desc: This is the total income from your job(s) before taxes, benefits and deductions were taken out of your paycheck.
+      update:
+        consent_to_authorize_warning: You must check the legal agreement checkbox to proceed.
   shared:
     banner:
       lock: Lock

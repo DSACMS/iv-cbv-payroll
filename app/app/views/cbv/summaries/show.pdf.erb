@@ -9,14 +9,15 @@
 
 <% if @payments.any? %>
   <p>
-    <%= t('.description') %>
+    <%= t(".description", summary_start_date: @summary_start_date, summary_end_date: @summary_end_date) %>
   </p>
-  <h3 class="site-preview-heading"><%= t('.total_payments') %> <%= format_money(@payments.reduce(0) { |sum, payment| sum + payment[:net_pay_amount] }) %></h3>
+  <h3 class="site-preview-heading">
+  <%= t('.total_payments', amount: format_money(@payments.reduce(0) { |sum, payment| sum + payment[:gross_pay_amount] })) %></h3>
 
   <div class="usa-accordion usa-accordion--multiselectable margin-bottom-4" data-allow-multiple>
     <% @payments.each_with_index do |payment, index| %>
       <div class="usa-accordion__heading">
-        <%= payment[:employer] %>: <%= t('.payment_of', amount: format_money(payment[:net_pay_amount])) %>
+        <%= payment[:employer] %>: <%= t('.payment_of', amount: format_money(payment[:gross_pay_amount])) %>
       </div>
       <div id="<%= index %>" class="usa-accordion__content usa-prose">
         <p>

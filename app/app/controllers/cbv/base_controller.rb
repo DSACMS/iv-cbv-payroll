@@ -18,25 +18,33 @@ class Cbv::BaseController < ApplicationController
       if @cbv_flow.complete?
         return redirect_to(cbv_flow_expired_invitation_path)
       end
+
+      session[:cbv_flow_id] = @cbv_flow.id
       NewRelicEventTracker.track("ClickedCBVInvitationLink", {
         timestamp: Time.now.to_i,
         invitation_id: invitation.id,
         cbv_flow_id: @cbv_flow.id
       })
+
+      if @cbv_flow.pinwheel_accounts.any?
+        latest_connected_account = @cbv_flow.pinwheel_accounts.order(created_at: :desc).first
+        redirect_to cbv_flow_payment_details_path(
+          user: { account_id: latest_connected_account.pinwheel_account_id }
+        )
+      end
     elsif session[:cbv_flow_id]
       begin
         @cbv_flow = CbvFlow.find(session[:cbv_flow_id])
       rescue ActiveRecord::RecordNotFound
-        return redirect_to root_url
+        redirect_to root_url
       end
     elsif params[:controller] == "cbv/entries"
       # TODO: Restrict ability to enter the flow without a valid token
       @cbv_flow = CbvFlow.create(site_id: "sandbox")
+      session[:cbv_flow_id] = @cbv_flow.id
     else
-      return redirect_to root_url, notice: t("cbv.error_missing_token")
+      redirect_to root_url, notice: t("cbv.error_missing_token")
     end
-
-    session[:cbv_flow_id] = @cbv_flow.id
   end
 
   def ensure_cbv_flow_not_yet_complete
@@ -48,7 +56,7 @@ class Cbv::BaseController < ApplicationController
   def current_site
     return unless @cbv_flow.present? && @cbv_flow.site_id.present?
 
-    site_config[@cbv_flow.site_id]
+    @current_site ||= site_config[@cbv_flow.site_id]
   end
 
   def next_path

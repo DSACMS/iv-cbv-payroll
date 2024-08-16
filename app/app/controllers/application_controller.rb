@@ -3,6 +3,10 @@ class ApplicationController < ActionController::Base
   helper_method :current_site
   around_action :switch_locale
 
+  rescue_from ActionController::InvalidAuthenticityToken do
+    redirect_to root_url, notice: t("cbv.error_missing_token")
+  end
+
   def after_sign_in_path_for(user)
     invitations_new_url(user.site_id)
   end
@@ -19,7 +23,7 @@ class ApplicationController < ActionController::Base
   private
 
   def current_site
-    site_config[params[:site_id]]
+    @current_site ||= site_config[params[:site_id]]
   end
 
   protected

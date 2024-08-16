@@ -30,6 +30,11 @@ export default class extends Controller {
         }
       }
     });
+    this.errorHandler = document.addEventListener("turbo:frame-missing", this.onTurboError)
+  }
+
+  disconnect() {
+    document.removeEventListener("turbo:frame-missing", this.errorHandler)
   }
 
   onSignInSuccess() {
@@ -37,8 +42,12 @@ export default class extends Controller {
     this.modalTarget.click();
   }
 
-  onAccountError(event) {
-    console.log(event);
+  onTurboError(event) {
+    console.warn("Got turbo error, redirecting:", event)
+
+    const location = event.detail.response.url
+    event.detail.visit(location)
+    event.preventDefault()
   }
 
   async select(event) {
