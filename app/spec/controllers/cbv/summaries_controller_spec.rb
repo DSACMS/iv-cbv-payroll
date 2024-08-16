@@ -2,6 +2,7 @@ require "rails_helper"
 
 RSpec.describe Cbv::SummariesController do
   include PinwheelApiHelper
+  app_date = Date.parse('2024-06-18')
   cbv_flow_props =
   {
     first_name: "John",
@@ -11,7 +12,7 @@ RSpec.describe Cbv::SummariesController do
     email_address: "tom@example.com",
     agency_id_number: "A12345",
     site_id: "sandbox",
-    snap_application_date: Date.today,
+    snap_application_date: app_date,
     created_at: Time.new(2024, 8, 1, 12, 0, 0, "-04:00"),
     id: 1
   }
@@ -35,6 +36,14 @@ RSpec.describe Cbv::SummariesController do
 
       it "renders properly" do
         get :show
+        expect(assigns[:already_consented]).to eq(false)
+        # 90 days before snap_application_date
+        start_date = "March 20, 2024"
+        # Should be the formatted version of snap_application_date
+        end_date = "June 18, 2024"
+        expect(assigns[:summary_end_date]).to eq(end_date)
+        expect(assigns[:summary_start_date]).to eq(start_date)
+        
         expect(response).to be_successful
       end
 
