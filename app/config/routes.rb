@@ -42,7 +42,7 @@ Rails.application.routes.draw do
     # (remove this once people know about the new invitation URL)
     get "/invitations/new", to: redirect { |_, req| "/nyc/invitations/new?secret=#{req.params[:secret]}" }
 
-    scope "/:site_id" do
+    scope "/:site_id", module: :caseworker do
       get "/sso/", to: "sso#index", as: :new_user_session
       resources :cbv_flow_invitations, as: :invitations, path: :invitations
     end
