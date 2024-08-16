@@ -26,6 +26,9 @@ Rails.application.configure do
   routes.default_url_options[:host] = ENV.fetch("DOMAIN_NAME", "localhost")
   routes.default_url_options[:port] = ENV.fetch("PORT", 3000)
 
+  # Don't send cookies on requests to other origins
+  config.action_dispatch.cookies_same_site_protection = :strict
+
   # Enable/disable caching. By default caching is disabled.
   # Run rails dev:cache to toggle caching.
   if Rails.root.join("tmp/caching-dev.txt").exist?
