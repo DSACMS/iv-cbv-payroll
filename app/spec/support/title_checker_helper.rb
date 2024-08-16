@@ -36,25 +36,16 @@ end
 RSpec.configure do |config|
   config.include AutoTitleTestHelper, type: :controller
 
-  config.before(:suite) do
-    config.instance_variable_set(:@checked_routes, Set.new)
-  end
-
   config.after(:each, type: :controller) do
     if should_check_title?(request, response)
-      route_key = "#{request.method}:#{request.path}"
-      checked_routes = config.instance_variable_get(:@checked_routes)
-
-      unless checked_routes.include?(route_key)
-        assert_title_contains_h1(response.body)
-        checked_routes.add(route_key)
-      end
+      assert_title_contains_h1(response.body)
     end
   end
 
   def should_check_title?(request, response)
     (request.get? || request.params[:action] == 'show') &&
       !%w[new create].include?(request.params[:action]) &&
+      response.body.present? &&
       response.status == 200 &&
       response.content_type =~ /html/
   end
