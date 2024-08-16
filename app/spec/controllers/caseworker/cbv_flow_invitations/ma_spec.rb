@@ -68,5 +68,15 @@ RSpec.describe Caseworker::CbvFlowInvitationsController, type: :controller do
       }
       expect(flash[:alert]).to eq(error_message)
     end
+
+    it "redirects back to the caseworker dashboard" do
+      post :create, params: {
+        secret: invite_secret,
+        site_id: ma_params[:site_id],
+        cbv_flow_invitation: cbv_flow_invitation_params
+      }
+
+      expect(response).to redirect_to(caseworker_dashboard_path(site_id: ma_params[:site_id]))
+    end
   end
 end
