@@ -20,7 +20,7 @@ RSpec.describe Cbv::PaymentsHelper, type: :helper do
             deductions: [
               { amount: 7012, category: "retirement" },
               { amount: 57692, category: "commuter" },
-              { amount: 0, category: nil }
+              { amount: 0, category: "empty_deduction" }
             ],
             employer: "Acme Corp",
             end: "2020-12-24",
@@ -70,7 +70,7 @@ RSpec.describe Cbv::PaymentsHelper, type: :helper do
               deductions: [
                 { amount: 7012, category: "retirement" },
                 { amount: 57692, category: "commuter" },
-                { amount: 0, category: nil }
+                { amount: 0, category: "empty_deduction" }
               ],
               employer: "Acme Corp",
               end: "2020-12-24",
