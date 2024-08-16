@@ -63,7 +63,6 @@ RSpec.describe Cbv::SummariesController do
 
       it "redirects the user to the success page if the user goes back to the page" do
         get :show
-        puts response
         expect(response).to redirect_to(cbv_flow_success_path)
       end
     end
