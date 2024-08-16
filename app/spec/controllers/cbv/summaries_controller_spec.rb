@@ -46,6 +46,15 @@ RSpec.describe Cbv::SummariesController do
     end
 
     context "for a completed CbvFlow" do
+      let(:cbv_flow) do
+        CbvFlow.create(
+          case_number: "ABC1234",
+          pinwheel_token_id: "abc-def-ghi",
+          site_id: "sandbox",
+          confirmation_code: "ABC1234",
+          cbv_flow_invitation_id: 1
+        )
+      end
       it "allows the user to download the PDF summary" do
         get :show, format: :pdf
         expect(response).to be_successful
@@ -55,7 +64,6 @@ RSpec.describe Cbv::SummariesController do
       it "redirects the user to the success page if the user goes back to the page" do
         get :show
         puts response
-        # put :update, params: {'cbv_flow': { 'consented_to_authorized_use_at': '1' }}
         expect(response).to redirect_to(cbv_flow_success_path)
       end
     end
