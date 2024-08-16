@@ -11,7 +11,6 @@ class Cbv::SummariesController < Cbv::BaseController
     @summary_end_date=invitation.snap_application_date.strftime("%B %d, %Y")
     ninety_days_ago = invitation.snap_application_date - 90.days
     @summary_start_date=ninety_days_ago.strftime("%B %d, %Y")
-    @additional_comment = additional_comments
     respond_to do |format|
       format.html
       format.pdf do
