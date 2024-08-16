@@ -20,9 +20,9 @@
         },
         {
           "amount": 0,
-          "category": null,
-          "name": null,
-          "type": null
+          "category": "empty_deduction",
+          "name": "empty_deduction",
+          "type": "empty_deduction"
         }
       ],
       "document": {

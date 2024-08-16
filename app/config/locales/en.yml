@@ -114,7 +114,7 @@ en:
         header: Your payment information from %{employer_name}
         header_no_employer_name: Your payment information from your employer
         hourly_rate: Compensation amount
-        none_found: No payments found. Please refresh the page after a few minutes.
+        none_found: No payments found.
         number_of_hours_worked: Number of hours worked
         pay_date: 'Pay Date: %{pay_date}'
         pay_frequency: Pay period frequency
@@ -127,6 +127,7 @@ en:
         subheader: We have gathered your payment records from the past 90 days, from %{start_date} to %{end_date}. Review them and add any comments for your benefits agency in the additional comments section. This will be included in your income report.
         total_gross_description: This is the total income from your job before taxes, benefits and deductions were taken out of your paycheck.
         total_gross_income: 'Total income before taxes: %{amount}'
+        unknown: Unknown
     shares:
       show:
         body: Thank you for completing income verification. Click the button below to preview your results and share it with your caseworker.

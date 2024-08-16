@@ -71,6 +71,9 @@ ActiveRecord::Schema[7.1].define(version: 2024_08_14_203311) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.string "supported_jobs", default: [], array: true
+    t.datetime "employment_errored_at", precision: nil
+    t.datetime "income_errored_at", precision: nil
+    t.datetime "paystubs_errored_at", precision: nil
     t.index ["cbv_flow_id"], name: "index_pinwheel_accounts_on_cbv_flow_id"
   end
 
