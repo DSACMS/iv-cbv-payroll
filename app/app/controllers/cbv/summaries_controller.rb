@@ -21,19 +21,19 @@ class Cbv::SummariesController < Cbv::BaseController
     invitation = CbvFlowInvitation.find_by!(id: @cbv_flow.cbv_flow_invitation_id)
     @summary_end_date=invitation.snap_application_date.strftime("%B %d, %Y")
     ninety_days_ago = invitation.snap_application_date - 90.days
-    @summary_start_date=ninety_days_ago.strftime("%B %d, %Y")    
+    @summary_start_date=ninety_days_ago.strftime("%B %d, %Y")
   end
 
   def update
-    # User has already consented, so checkbox is not in the form
+    # User has previously consented, so checkbox field is not in the form
     if @cbv_flow.consented_to_authorized_use_at
       redirect_to next_path
-    # User has previously consented, but checked
+    # User has NOT previously consented, but checked the box
     elsif params[:cbv_flow][:consent_to_authorized_use].eql?("1")
       timestamp = Time.now.to_datetime
       @cbv_flow.update(consented_to_authorized_use_at: timestamp)
       redirect_to next_path
-    # User has previously consented or checked
+    # User has NOT previously consented or checked the box
     else
       flash[:slim_alert] = { message: t(".consent_to_authorize_warning"), type: "error" }
       redirect_to cbv_flow_summary_path
