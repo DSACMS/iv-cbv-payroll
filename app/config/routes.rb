@@ -46,6 +46,8 @@ Rails.application.routes.draw do
     scope "/:site_id", module: :caseworker, constraints: { site_id: Regexp.union(Rails.application.config.sites.site_ids) } do
       root to: "entries#index", as: :caseworker_entry
       get "/sso", to: "sso#index", as: :new_user_session
+
+      resource :dashboard, only: %i[show], as: :caseworker_dashboard
       resources :cbv_flow_invitations, as: :invitations, path: :invitations
     end
   end

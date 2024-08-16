@@ -21,8 +21,11 @@ class Caseworker::CbvFlowInvitationsController < ApplicationController
       return redirect_to new_invitation_path(secret: params[:secret])
     end
 
-    flash[:notice] = t(".invite_success", email_address: cbv_flow_invitation_params[:email_address])
-    redirect_to root_url
+    flash[:slim_alert] = {
+      message: t(".invite_success", email_address: cbv_flow_invitation_params[:email_address]),
+      type: "success"
+    }
+    redirect_to caseworker_dashboard_path(site_id: params[:site_id])
   end
 
   private

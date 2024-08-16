@@ -107,7 +107,7 @@ RSpec.describe Caseworker::CbvFlowInvitationsController do
 
         post :create, params: valid_params
 
-        expect(response).to redirect_to(root_url)
+        expect(response).to redirect_to(caseworker_dashboard_url(site_id: valid_params[:site_id]))
       end
 
       context "when the CbvInvitationService has an error" do
