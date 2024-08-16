@@ -14,7 +14,7 @@ class Cbv::SummariesController < Cbv::BaseController
           cbv_flow_id: @cbv_flow.id
         })
 
-        render pdf: "#{@cbv_flow.id}"
+        render pdf: "#{@cbv_flow.id}", layout: "pdf"
       end
     end
   end
