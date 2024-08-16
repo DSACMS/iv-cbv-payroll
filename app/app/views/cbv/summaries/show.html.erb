@@ -1,13 +1,15 @@
-<h2>
+<% content_for :title, t(".header") %>
+
+<h1>
   <%= t(".header") %>
-</h2>
+</h1>
 
 <% if @payments.any? %>
   <div class="width-full margin-bottom-6">
     <p>
       <%= t(".description") %>
     </p>
-    <h3 class="site-preview-heading"><%= t(".total_payments", amount: format_money(total_gross_income)) %></h3>
+    <h2 class="site-preview-heading"><%= t(".total_payments", amount: format_money(total_gross_income)) %></h2>
 
     <% payments_grouped_by_employer.each_with_index do |(account_id, summary), index| %>
       <table class="usa-table usa-table--borderless width-full">
@@ -45,9 +47,9 @@
     <% end %>
   </div>
 <% else %>
-  <h3 class="site-preview-heading">
+  <h2 class="site-preview-heading">
     <%= t(".none_found") %>
-  </h3>
+  </h2>
 <% end %>
 
 <%= form_for(@cbv_flow, url: cbv_flow_summary_path, builder: UswdsFormBuilder) do |f| %>

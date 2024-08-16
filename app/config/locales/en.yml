@@ -221,6 +221,8 @@ en:
     not_applicable: N/A
     pilot_name: SNAP Income Pilot
     skip_link: Skip to main content
+    sso:
+      sign_in: Sign in
     verify:
       description: This website can help you get approved for your benefits.
       subheader: Get started here by requesting a link from your caseworker.
