@@ -40,7 +40,7 @@ RSpec.configure do |config|
     config.instance_variable_set(:@checked_routes, Set.new)
   end
 
-  config.after(:each, type: :controller) do |example|
+  config.after(:each, type: :controller) do
     if should_check_title?(request, response)
       route_key = "#{request.method}:#{request.path}"
       checked_routes = config.instance_variable_get(:@checked_routes)
