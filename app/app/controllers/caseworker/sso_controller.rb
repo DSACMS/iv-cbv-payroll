@@ -1,4 +1,4 @@
-class SsoController < ApplicationController
+class Caseworker::SsoController < ApplicationController
   def index
     @current_site = current_site
   end

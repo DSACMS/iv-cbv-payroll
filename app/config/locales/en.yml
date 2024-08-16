@@ -5,6 +5,35 @@ en:
       body_html: We need to verify your income as part of your benefits application, as requested by %{agency_acronym}. This process is unique to you, so please do not share this invitation with anyone else. <strong>You have until %{deadline}, to complete your verification.</strong> Otherwise, you'll need to request a new invitation.
       greeting: Hello,
       subject: Verify your income for your benefit application
+  caseworker:
+    cbv_flow_invitations:
+      create:
+        invite_failed: 'Error sending invitation to %{email_address}: %{error_message}.'
+        invite_success: Successfully delivered invitation to %{email_address}.
+      incorrect_site_id: Unable to send invitation due to missing site configuration.
+      ma:
+        invite:
+          agency_id_number: Client's agency ID number
+          beacon_id: Your BEACON ID
+          email_address: Client's email address
+          first_name: Client's first name
+          last_name: Client's last name
+          middle_name: Client's middle name
+          snap_application_date: SNAP application date
+      new:
+        description_html: "<p>Provide some details about the client so we can send them a link to verify their pay information. We'll request the past %{pay_income_days} days of income, based on the client's application date.</p><p>If multiple members of the household earn income, send an invite link to each household member.</p>"
+        form:
+          submit: Send Invitation
+        header: Send an invite link
+      nyc:
+        invite:
+          case_number: Case number
+          client_id_number: CIN
+          email_address: Client's email address
+          first_name: Client's first name
+          last_name: Client's last name
+          middle_name: Client's middle name
+          snap_application_date: SNAP application date
   caseworker_mailer:
     summary_email:
       body: Applicant has submitted their income verification. Please find the attached PDF.
@@ -63,6 +92,7 @@ en:
           sandbox: <a href="https://example.com">Learn more on CBV Test Agency's website.</a>
         no_results_title: We couldn’t find your employer or payroll provider.
         results: Results
+        review_button_text: Review my income report
         search: Search
         search_for_employer: Search for your employer or payroll provider to share your income information with your benefits agency. This can be a former employer or a current employer. We'll retrieve the last 90 days of pay information from when you applied.
         select: Select
@@ -71,6 +101,9 @@ en:
         to_access_li_1_html: "<strong>Your employer</strong> name"
         to_access_li_2_html: The <strong>payroll provider</strong> you get paid from
         to_access_li_3_html: The <strong>App</strong> you work for, like Uber, DoorDash, etc
+        to_continue: 'To continue:'
+        to_continue_li_1: If you have other jobs to add, search for them.
+        to_continue_li_2: If you have no other jobs to add, continue to review your income report.
         what_is_html: "<strong>What is a payroll provider?</strong> A payroll provider is a system that some employers or companies use to handle payroll, pay processing, and distribute paychecks and direct deposit. Examples of popular payroll providers are ADP, Paychex, Gusto, etc."
         you_ll_go: You’ll go to their login portal and sign-in to see your payment history.
     entries:

@@ -19,6 +19,17 @@ module PinwheelApiHelper
       )
   end
 
+  def stub_request_items_no_items_response
+    stub_request(:get, /#{PinwheelService::ITEMS_ENDPOINT}/)
+      .to_return(
+        status: 200,
+        body: {
+          data: []
+        }.to_json,
+        headers: { content_type: 'application/json;charset=UTF-8' }
+      )
+  end
+
   def stub_create_token_response(end_user_id: 'user_id')
     stub_request(:post, /#{PinwheelService::USER_TOKENS_ENDPOINT}/)
       .to_return(
