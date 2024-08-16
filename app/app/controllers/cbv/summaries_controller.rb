@@ -7,10 +7,10 @@ class Cbv::SummariesController < Cbv::BaseController
 
   def show
     @already_consented = @cbv_flow.consented_to_authorized_use_at ? true : false
-    invitation = CbvFlowInvitation.find_by!(id: @cbv_flow.cbv_flow_invitation_id)
-    @summary_end_date=invitation.snap_application_date.strftime("%B %d, %Y")
-    ninety_days_ago = invitation.snap_application_date - 90.days
-    @summary_start_date=ninety_days_ago.strftime("%B %d, %Y")
+    invitation = @cbv_flow.cbv_flow_invitation
+    @summary_end_date= invitation ? invitation.snap_application_date.strftime("%B %d, %Y") : ""
+    ninety_days_ago = invitation ? invitation.snap_application_date - 90.days : ""
+    @summary_start_date= invitation ? ninety_days_ago.strftime("%B %d, %Y") : ""
     respond_to do |format|
       format.html
       format.pdf do

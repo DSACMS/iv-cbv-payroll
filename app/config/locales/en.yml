@@ -169,7 +169,7 @@ en:
         total_payments: 'Total income before taxes: %{amount}'
         total_payments_desc: This is the total income from your job(s) before taxes, benefits and deductions were taken out of your paycheck.
       update:
-        consent_to_authorize_warning: You must check the legal consent agreement checkbox to proceed.
+        consent_to_authorize_warning: You must check the legal agreement checkbox to proceed.
   cbv_flow_invitations:
     create:
       invite_failed: 'Error sending invitation to %{email_address}: %{error_message}.'
