@@ -63,6 +63,7 @@ en:
           sandbox: <a href="https://example.com">Learn more on CBV Test Agency's website.</a>
         no_results_title: We couldn’t find your employer or payroll provider.
         results: Results
+        review_button_text: Review my income report
         search: Search
         search_for_employer: Search for your employer or payroll provider to share your income information with your benefits agency. This can be a former employer or a current employer. We'll retrieve the last 90 days of pay information from when you applied.
         select: Select
@@ -71,6 +72,9 @@ en:
         to_access_li_1_html: "<strong>Your employer</strong> name"
         to_access_li_2_html: The <strong>payroll provider</strong> you get paid from
         to_access_li_3_html: The <strong>App</strong> you work for, like Uber, DoorDash, etc
+        to_continue: 'To continue:'
+        to_continue_li_1: If you have other jobs to add, search for them.
+        to_continue_li_2: If you have no other jobs to add, continue to review your income report.
         what_is_html: "<strong>What is a payroll provider?</strong> A payroll provider is a system that some employers or companies use to handle payroll, pay processing, and distribute paychecks and direct deposit. Examples of popular payroll providers are ADP, Paychex, Gusto, etc."
         you_ll_go: You’ll go to their login portal and sign-in to see your payment history.
     entries:
