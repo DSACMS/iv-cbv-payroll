@@ -203,34 +203,6 @@ en:
         total_payments_desc: This is the total income from your job(s) before taxes, benefits and deductions were taken out of your paycheck.
       update:
         consent_to_authorize_warning: You must check the legal agreement checkbox to proceed.
-  cbv_flow_invitations:
-    create:
-      invite_failed: 'Error sending invitation to %{email_address}: %{error_message}.'
-      invite_success: Successfully delivered invitation to %{email_address}.
-    incorrect_site_id: Unable to send invitation due to missing site configuration.
-    ma:
-      invite:
-        agency_id_number: Client's agency ID number
-        beacon_id: Your BEACON ID
-        email_address: Client's email address
-        first_name: Client's first name
-        last_name: Client's last name
-        middle_name: Client's middle name
-        snap_application_date: SNAP application date
-    new:
-      description_html: "<p>Provide some details about the client so we can send them a link to verify their pay information. We'll request the past %{pay_income_days} days of income, based on the client's application date.</p><p>If multiple members of the household earn income, send an invite link to each household member.</p>"
-      form:
-        submit: Send Invitation
-      header: Send an invite link
-    nyc:
-      invite:
-        case_number: Case number
-        client_id_number: CIN
-        email_address: Client's email address
-        first_name: Client's first name
-        last_name: Client's last name
-        middle_name: Client's middle name
-        snap_application_date: SNAP application date
   shared:
     banner:
       lock: Lock
