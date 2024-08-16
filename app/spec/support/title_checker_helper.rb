@@ -28,6 +28,7 @@ module AutoTitleTestHelper
   end
 
   def decode_html_entities(text)
+    return unless text
     CGI.unescapeHTML(text)
   end
 end
