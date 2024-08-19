@@ -10,7 +10,9 @@ RSpec.describe ApplicationHelper do
     YAML
 
     before do
-      helper.instance_variable_set(:@current_site, current_site)
+      without_partial_double_verification do
+        allow(helper).to receive(:current_site).and_return(current_site)
+      end
     end
 
     around do |example|
@@ -23,7 +25,7 @@ RSpec.describe ApplicationHelper do
       I18n.backend = previous_backend
     end
 
-    context "when the @current_site is specified" do
+    context "when the current_site is specified" do
       it "uses the translation for the proper key" do
         expect(helper.site_translation("some_prefix")).to eq("some string")
       end
@@ -37,7 +39,7 @@ RSpec.describe ApplicationHelper do
       end
     end
 
-    context "when the @current_site is nil" do
+    context "when the current_site is nil" do
       let(:current_site) { nil }
 
       it "uses the translation for the default key" do
