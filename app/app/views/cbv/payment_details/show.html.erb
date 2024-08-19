@@ -6,7 +6,7 @@
   <% end %>
 </h1>
 
-<p><%= t(".subheader", start_date: format_date(start_date), end_date: format_date(end_date)) %></p>
+<p><%= t(".subheader", start_date: format_date_string(start_date), end_date: format_date_string(end_date)) %></p>
 <h2><%= t(".total_gross_income", amount: format_money(gross_pay)) %></h2>
 <p><%= t(".total_gross_description") %></p>
 
@@ -21,7 +21,7 @@
   <tbody>
     <tr>
       <td><%= t(".employment_start_date") %></td>
-      <td><%= format_date(employment_start_date) %></td>
+      <td><%= format_date_string(employment_start_date) %></td>
     </tr>
     <tr>
       <td><%= t(".employment_end_date") %></td>
@@ -57,12 +57,12 @@
       <% @payments.each do |payment| %>
         <tr>
           <td colspan="2">
-            <h4 class="margin-0"><%= t(".pay_date", pay_date: format_date(payment[:pay_date])) %></h4>
+            <h4 class="margin-0"><%= t(".pay_date", pay_date: format_date_string(payment[:pay_date])) %></h4>
           </td>
         </tr>
         <tr>
           <td><%= t(".pay_period") %></td>
-          <td><%= format_date(payment[:start]) %> to <%= format_date(payment[:end]) %></td>
+          <td><%= format_date_string(payment[:start]) %> to <%= format_date_string(payment[:end]) %></td>
         </tr>
 
         <tr>

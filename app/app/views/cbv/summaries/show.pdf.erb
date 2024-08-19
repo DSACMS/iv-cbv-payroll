@@ -2,7 +2,7 @@
   <%= t('.case_number', case_number: @cbv_flow.case_number) %>
 </p>
 <p>
-  <%= t('.document_timestamp', timestamp: format_view_datetime(Time.now.to_s)) %></p>
+  <%= t('.document_timestamp', timestamp: format_date_string(Time.now.to_s)) %></p>
 <h2>
   <%= t('.header') %>
 </h2>
@@ -21,7 +21,7 @@
       </div>
       <div id="<%= index %>" class="usa-accordion__content usa-prose">
         <p>
-          <%= t('.time_range', hours: payment[:hours], start: format_date(payment[:start]), end: format_date(payment[:end])) %>
+          <%= t('.time_range', hours: payment[:hours], start: format_date_string(payment[:start]), end: format_date_string(payment[:end])) %>
         </p>
       </div>
     <% end %>

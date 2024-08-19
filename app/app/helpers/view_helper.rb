@@ -9,22 +9,16 @@ module ViewHelper
     link_to t("shared.languages.#{locale_string}"), root_path(locale: locale_string), class: link_classes
   end
 
-  def format_date(timestamp_string)
+  def format_date(date)
+    date.strftime(DATE_FORMAT)
+  end
+
+  def format_date_string(timestamp_string)
     begin
       Time.parse(timestamp_string).strftime(DATE_FORMAT)
     rescue => e
-      "Invalid timestamp"
+      puts "Invalid timestamp"
       timestamp_string
-    end
-  end
-
-  def format_view_datetime(timestamp_string)
-    begin
-      formatted_time = Time.parse(timestamp_string).strftime(DATE_FORMAT)
-      raw_timestamp = Time.parse(timestamp_string).strftime("%I:%M %p %Z")
-      "#{formatted_time} - #{raw_timestamp}"
-    rescue => e
-      "Invalid timestamp"
     end
   end
 
