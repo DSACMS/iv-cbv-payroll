@@ -1,6 +1,6 @@
-<% content_for :title, t(".header") %>
-
-<h1><%= t("shared.verify.welcome") %></h1>
+<% welcome = t("shared.verify.welcome") %>
+<% content_for :title, welcome %>
+<h1><%= welcome %></h1>
 <h2><%= t("shared.verify.description") %></h2>
 
 <p><%= t("shared.verify.subheader") %></p>

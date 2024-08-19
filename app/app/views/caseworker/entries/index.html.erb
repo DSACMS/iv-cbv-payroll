@@ -1,0 +1,31 @@
+<% header_text = site_translation(".header") %>
+<% content_for :title, header_text %>
+
+<h1><%= header_text %></h1>
+
+<p><%= site_translation(".description") %></p>
+
+<h2><%= t(".how_it_works") %></h2>
+
+<ol class="usa-process-list">
+  <li class="usa-process-list__item">
+    <h3 class="usa-process-list__heading"><%= t(".step_1_title") %></h3>
+    <p><%= t(".step_1_description") %></p>
+  </li>
+  <li class="usa-process-list__item">
+    <h3 class="usa-process-list__heading"><%= t(".step_2_title") %></h3>
+    <p><%= t(".step_2_description") %></p>
+  </li>
+  <li class="usa-process-list__item">
+    <h3 class="usa-process-list__heading"><%= t(".step_3_title") %></h3>
+    <p><%= t(".step_3_description") %></p>
+  </li>
+  <li class="usa-process-list__item">
+    <h3 class="usa-process-list__heading"><%= t(".step_4_title") %></h3>
+    <p><%= t(".step_4_description") %></p>
+</li>
+</ol>
+
+<%= link_to new_user_session_path, class: "usa-button" do %>
+    <%= site_translation(".continue_to_login") %>
+<% end %>

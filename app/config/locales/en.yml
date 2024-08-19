@@ -38,6 +38,29 @@ en:
           last_name: Client's last name
           middle_name: Client's middle name
           snap_application_date: SNAP application date
+    entries:
+      index:
+        continue_to_login:
+          ma: Continue to DTA log in page
+          nyc: Continue to HRA log in page
+          sandbox: Continue to CBV Test Agency log in page
+        description:
+          ma: This site allows staff at participating agencies to send clients a link to verify their income, so they can easily send pay information to the agency.
+          nyc: This site allows staff at participating agencies to send clients a link to verify their income, so they can easily send pay information to the agency.
+          sandbox: This site allows staff at participating agencies to send clients a link to verify their income, so they can easily send pay information to the agency.
+        header:
+          ma: DTA is piloting a new way to quickly verify clients' income
+          nyc: HRA is piloting a new way to quickly verify clients' income
+          sandbox: CBV Test Agency is piloting a new way to quickly verify clients' income
+        how_it_works: How it works
+        step_1_description: For security, you will be automatically logged out after 30 minutes of inactivity.
+        step_1_title: Log in using your existing agency account.
+        step_2_description: Invitations are for individual clients. If you need to verify income for multiple people in a household, you will need to create a new invitation for each person.
+        step_2_title: Click the "Create a new invitation" button.
+        step_3_description: When you submit their name, ID number, email address, and application date, we'll email them an invitation link to verify their income.
+        step_3_title: Provide information about the client. We'll send them an invitation.
+        step_4_description: The information will be uploaded as a PDF to the case.
+        step_4_title: Once the client verifies their income, you'll receive their income information.
   caseworker_mailer:
     summary_email:
       body: Applicant has submitted their income verification. Please find the attached PDF.
