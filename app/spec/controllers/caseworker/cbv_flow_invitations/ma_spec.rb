@@ -25,6 +25,11 @@ RSpec.describe Caseworker::CbvFlowInvitationsController, type: :controller do
         expect(response.body).to include("snap_application_date")
         expect(response.body).to include("beacon_id")
       end
+
+      it "renders the header for MA" do
+        get :new, params: ma_params
+        expect(response.body).to include(I18n.t("shared.header.cbv_flow_title.ma"))
+      end
     end
   end
 
