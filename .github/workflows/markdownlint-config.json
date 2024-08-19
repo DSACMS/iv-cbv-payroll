@@ -7,6 +7,9 @@
             "pattern": "localhost"
         },
         {
+            "pattern": "confluenceent.cms.gov"
+        },
+        {
             "pattern": "127.0.0.1"
         }
     ],
