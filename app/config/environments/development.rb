@@ -5,6 +5,10 @@ Rails.application.configure do
 
   # if the env var DOCKERIZED is set to true then we allow the web console to be accessed from the docker network
   config.web_console.allowed_ips = "192.168.65.1" if ENV["DOCKERIZED"] == "true"
+
+  # Don't update inaccessable schema docs if running migration in a container
+  config.active_record.dump_schema_after_migration = false if ENV["DOCKERIZED"] == "true"
+
   # Settings specified here will take precedence over those in config/application.rb.
 
   # In the development environment your application's code is reloaded any time
@@ -26,6 +30,9 @@ Rails.application.configure do
   routes.default_url_options[:host] = ENV.fetch("DOMAIN_NAME", "localhost")
   routes.default_url_options[:port] = ENV.fetch("PORT", 3000)
 
+  # Don't send cookies on requests to other origins
+  config.action_dispatch.cookies_same_site_protection = :strict
+
   # Enable/disable caching. By default caching is disabled.
   # Run rails dev:cache to toggle caching.
   if Rails.root.join("tmp/caching-dev.txt").exist?
@@ -34,7 +41,8 @@ Rails.application.configure do
 
     config.cache_store = :memory_store
     config.public_file_server.headers = {
-      "Cache-Control" => "public, max-age=#{2.days.to_i}"
+      "Cache-Control" => "public, max-age=#{2.days.to_i}",
+      "X-Content-Type-Options" => "nosniff"
     }
   else
     config.action_controller.perform_caching = false

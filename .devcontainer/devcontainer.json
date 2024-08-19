@@ -1,0 +1,16 @@
+{
+	"name": "CBV Container",
+	"dockerComposeFile": "../app/docker-compose.yml",
+	"service": "app_rails",
+	"workspaceFolder": "/rails",
+	"postCreateCommand": "bin/db-migrate",
+	"secrets": {
+		"NGROK_AUTH_TOKEN": {
+			"description": "Provide ngrok auth token (ngrok sign-up needed).",
+			"documentationUrl": "https://dashboard.ngrok.com/get-started/your-authtoken"
+		},
+		"PINWHEEL_API_TOKEN_SANDBOX": {
+			"description": "Pinwheel sandbox token"
+		}
+	}
+}
