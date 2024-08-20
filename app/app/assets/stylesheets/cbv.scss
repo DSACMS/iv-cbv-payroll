@@ -8,7 +8,11 @@ html {
   min-width: 360px;
 }
 #main-content {
-  min-height: 70vh; // Push the footer down lower if the page is short
+  // These are rough approximations just to roughly get the footer to show up
+  // at the bottom of the screen by default.
+  $header-height: 4.5rem;
+  $footer-height: 5rem;
+  min-height: calc(100vh - $header-height - $footer-height);
 }
 
 /*
