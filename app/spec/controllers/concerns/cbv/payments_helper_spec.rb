@@ -80,10 +80,11 @@ RSpec.describe Cbv::PaymentsHelper, type: :helper do
               rate: 4759,
               start: "2020-12-10",
               gross_pay_ytd: 6971151,
+              gross_pay_amount: 480720,
               net_pay_amount: 321609
             }
           ],
-          total: 321609
+          total: 480720
         }
       })
     end
