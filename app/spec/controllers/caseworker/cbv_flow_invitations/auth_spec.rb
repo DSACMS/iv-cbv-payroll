@@ -13,15 +13,16 @@ RSpec.describe Caseworker::CbvFlowInvitationsController do
     context "without authentication" do
       it "redirects to the sso login page" do
         get :new, params: valid_params.except(:secret)
-
         expect(response).to redirect_to(new_user_session_url)
       end
     end
 
     context "with an invalid site id" do
-      it "redirects to the homepage" do
-        get :new, params: valid_params.tap { |p| p[:site_id] = "this-is-not-a-site-id" }
-        expect(response).to redirect_to(root_url)
+      it "raises a routing error" do
+        expect {
+          get :new, params: valid_params.tap { |p| p[:site_id] = "this-is-not-a-site-id" }
+        }.to raise_error(ActionController::UrlGenerationError)
+        expect response.status == 404
       end
     end
 
