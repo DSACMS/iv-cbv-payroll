@@ -27,6 +27,7 @@ Rails.application.routes.draw do
       resource :entry, only: %i[show]
       resource :employer_search, only: %i[show]
       resource :summary, only: %i[show update], format: %i[html pdf]
+      resource :share, only: %i[show update]
       resource :missing_results, only: %i[show]
       resource :success, only: %i[show]
       resource :agreement, only: %i[show create]
@@ -38,16 +39,14 @@ Rails.application.routes.draw do
       resource :reset, only: %i[show]
     end
 
-    # Temporarily redirect /invivations/new -> /nyc/invitations/new
+    # Temporarily redirect /invitations/new -> /nyc/invitations/new
     # (remove this once people know about the new invitation URL)
     get "/invitations/new", to: redirect { |_, req| "/nyc/invitations/new?secret=#{req.params[:secret]}" }
 
-    constraints(site_id: Regexp.union(Rails.application.config.sites.site_ids)) do
-      scope "/:site_id", module: :caseworker do
-        root to: "entries#index", as: :caseworker_entry
-        get "/sso", to: "sso#index", as: :new_user_session
-        resources :cbv_flow_invitations, as: :invitations, path: :invitations
-      end
+    scope "/:site_id", module: :caseworker, constraints: { site_id: Regexp.union(Rails.application.config.sites.site_ids) } do
+      root to: "entries#index", as: :caseworker_entry
+      get "/sso", to: "sso#index", as: :new_user_session
+      resources :cbv_flow_invitations, as: :invitations, path: :invitations
     end
   end
 
