@@ -68,5 +68,23 @@ RSpec.describe Caseworker::CbvFlowInvitationsController, type: :controller do
 
       expect(response).to redirect_to(caseworker_dashboard_path(site_id: nyc_params[:site_id]))
     end
+
+    it "sends an event to NewRelic" do
+      allow(NewRelicEventTracker).to receive(:track)
+
+      post :create, params: {
+        secret: invite_secret,
+        site_id: nyc_params[:site_id],
+        cbv_flow_invitation: cbv_flow_invitation_params
+      }
+
+      invitation = CbvFlowInvitation.last
+      expect(NewRelicEventTracker).to have_received(:track).with("ApplicantInvitedToFlow", {
+        timestamp: be_a(Integer),
+        user_id: user.id,
+        site_id: "nyc",
+        invitation_id: invitation.id
+      })
+    end
   end
 end
