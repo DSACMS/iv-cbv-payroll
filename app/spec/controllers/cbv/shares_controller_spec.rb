@@ -1,29 +1,15 @@
 require "rails_helper"
 
-RSpec.describe Cbv::SuccessesController do
+RSpec.describe Cbv::SharesController do
   include PinwheelApiHelper
 
-  describe "#show" do
-    let(:cbv_flow) { CbvFlow.create(case_number: "ABC1234", site_id: "sandbox", confirmation_code: "NYC12345") }
+  let(:cbv_flow) { CbvFlow.create(case_number: "ABC1234", pinwheel_token_id: "abc-def-ghi", site_id: "sandbox") }
 
+  describe "#update" do
     before do
       stub_request_end_user_paystubs_response
       stub_request_end_user_accounts_response
       session[:cbv_flow_id] = cbv_flow.id
-    end
-
-    context "when rendering views" do
-      render_views
-
-      it "renders properly" do
-        get :show
-        expect(response).to be_successful
-      end
-
-      it "shows confirmation code in view" do
-        get :show
-        expect(response.body).to include(cbv_flow.confirmation_code)
-      end
     end
 
     context "when confirmation_code is blank" do
@@ -61,8 +47,8 @@ RSpec.describe Cbv::SuccessesController do
       it "stores the current time as transmitted_at" do
         expect { post :update }
           .to change { cbv_flow.reload.transmitted_at }
-                .from(nil)
-                .to(within(5.second).of(Time.now))
+          .from(nil)
+          .to(within(5.second).of(Time.now))
       end
 
       it "redirects to success screen" do
