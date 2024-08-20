@@ -11,7 +11,7 @@ class Caseworker::CbvFlowInvitationsController < ApplicationController
   def create
     begin
       invitation_params = base_params.merge(site_specific_params)
-      CbvInvitationService.new.invite(invitation_params)
+      CbvInvitationService.new.invite(invitation_params, current_user)
     rescue => ex
       flash[:alert] = t(".invite_failed",
                         email_address: cbv_flow_invitation_params[:email_address],
