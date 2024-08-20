@@ -3,11 +3,18 @@ require "rails_helper"
 RSpec.describe Cbv::SummariesController do
   include PinwheelApiHelper
 
-  let(:cbv_flow) { create(:cbv_flow, case_number: "ABC1234", pinwheel_token_id: "abc-def-ghi") }
+  let(:flow_started_seconds_ago) { 300 }
+  let(:cbv_flow) do
+    create(:cbv_flow, case_number: "ABC1234", pinwheel_token_id: "abc-def-ghi", created_at: flow_started_seconds_ago.seconds.ago)
+  end
   let(:cbv_flow_invitation) { cbv_flow.cbv_flow_invitation }
 
   before do
     session[:cbv_flow_invitation] = cbv_flow_invitation
+  end
+
+  around do |ex|
+    Timecop.freeze(&ex)
   end
 
   describe "#show" do
@@ -150,7 +157,8 @@ RSpec.describe Cbv::SummariesController do
           cbv_flow_id: cbv_flow.id,
           account_count: 1,
           paystub_count: 1,
-          account_count_with_additional_information: 0
+          account_count_with_additional_information: 0,
+          flow_started_seconds_ago: flow_started_seconds_ago
         })
       end
     end

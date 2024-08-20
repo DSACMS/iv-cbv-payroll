@@ -85,7 +85,8 @@ class Cbv::SummariesController < Cbv::BaseController
       account_count: payments.map { |p| p[:account_id] }.uniq.count,
       paystub_count: payments.count,
       account_count_with_additional_information:
-        cbv_flow.additional_information.values.count { |info| info["comment"].present? }
+        cbv_flow.additional_information.values.count { |info| info["comment"].present? },
+      flow_started_seconds_ago: (Time.now - cbv_flow.created_at).to_i
     })
   rescue => ex
     Rails.logger.error "Failed to track NewRelic event: #{ex.message}"
