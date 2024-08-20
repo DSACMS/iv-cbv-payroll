@@ -15,6 +15,7 @@ class Cbv::SummariesController < Cbv::BaseController
       format.pdf do
         NewRelicEventTracker.track("ApplicantDownloadedIncomePDF", {
           timestamp: Time.now.to_i,
+          site_id: @cbv_flow.site_id,
           cbv_flow_id: @cbv_flow.id
         })
 
@@ -75,6 +76,7 @@ class Cbv::SummariesController < Cbv::BaseController
 
     NewRelicEventTracker.track("IncomeSummarySharedWithCaseworker", {
       timestamp: Time.now.to_i,
+      site_id: @cbv_flow.site_id,
       cbv_flow_id: @cbv_flow.id
     })
   end

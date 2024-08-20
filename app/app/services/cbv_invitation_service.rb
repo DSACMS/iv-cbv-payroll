@@ -5,6 +5,7 @@ class CbvInvitationService
       send_invitation_email(cbv_flow_invitation)
       NewRelicEventTracker.track("ApplicantInvitedToFlow", {
         timestamp: Time.now.to_i,
+        site_id: cbv_flow_invitation.site_id,
         invitation_id: cbv_flow_invitation.id
       })
     rescue => e
