@@ -20,9 +20,7 @@ class ApplicationController < ActionController::Base
     Rails.application.config.sites
   end
 
-
   private
-
 
   def current_site
     @current_site ||= site_config[params[:site_id]]
