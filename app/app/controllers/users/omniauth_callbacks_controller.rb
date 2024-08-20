@@ -1,6 +1,7 @@
 class Users::OmniauthCallbacksController < Devise::OmniauthCallbacksController
   def nyc_dss
     response_params = request.env["omniauth.auth"]["info"]
+    Rails.logger.info "Login successful from #{response_params["email"]} (name: #{response_params["name"]}, nickname: #{response_params["nickname"]})"
     email = response_params["email"]
 
     login_with_oauth(email, "nyc")
@@ -8,6 +9,7 @@ class Users::OmniauthCallbacksController < Devise::OmniauthCallbacksController
 
   def ma_dta
     response_params = request.env["omniauth.auth"]["info"]
+    Rails.logger.info "Login successful from #{response_params["email"]} (name: #{response_params["name"]}, nickname: #{response_params["nickname"]})"
     email = response_params["email"]
 
     login_with_oauth(email, "ma")
@@ -15,6 +17,7 @@ class Users::OmniauthCallbacksController < Devise::OmniauthCallbacksController
 
   def sandbox
     response_params = request.env["omniauth.auth"]["info"]
+    Rails.logger.info "Login successful from #{response_params["email"]} (name: #{response_params["name"]}, nickname: #{response_params["nickname"]})"
     email = response_params["email"]
 
     login_with_oauth(email, "sandbox")
