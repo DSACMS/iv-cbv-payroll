@@ -4,21 +4,20 @@ RSpec.describe Cbv::EntriesController do
   describe "#show" do
     render_views
 
-    it "renders properly" do
-      get :show
-
-      expect(response).to be_successful
-    end
-
-    it "sets a CbvFlow object in the session" do
+    it "redirects the user back to the homepage" do
       expect { get :show }
-        .to change { session[:cbv_flow_id] }
-              .from(nil)
-              .to(be_an(Integer))
+        .not_to change { session[:cbv_flow_id] }
+      expect(response).to redirect_to(root_url)
     end
 
     context "when following a link from a flow invitation" do
       let(:invitation) { create(:cbv_flow_invitation, case_number: "ABC1234") }
+
+      it "renders properly" do
+        get :show, params: { token: invitation.auth_token }
+
+        expect(response).to be_successful
+      end
 
       it "sets a CbvFlow object based on the invitation" do
         expect { get :show, params: { token: invitation.auth_token } }
