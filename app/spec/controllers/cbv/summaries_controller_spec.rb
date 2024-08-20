@@ -140,6 +140,19 @@ RSpec.describe Cbv::SummariesController do
         patch :update
         expect(response).to redirect_to({ controller: :successes, action: :show })
       end
+
+      it "sends a NewRelic event" do
+        allow(NewRelicEventTracker).to receive(:track)
+        patch :update
+        expect(NewRelicEventTracker).to have_received(:track).with("IncomeSummarySharedWithCaseworker", {
+          timestamp: be_a(Integer),
+          site_id: cbv_flow.site_id,
+          cbv_flow_id: cbv_flow.id,
+          account_count: 1,
+          paystub_count: 1,
+          account_count_with_additional_information: 0
+        })
+      end
     end
   end
 end
