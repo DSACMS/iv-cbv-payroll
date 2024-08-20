@@ -1,4 +1,6 @@
 class Users::OmniauthCallbacksController < Devise::OmniauthCallbacksController
+  after_action :track_event
+
   def nyc_dss
     response_params = request.env["omniauth.auth"]["info"]
     Rails.logger.info "Login successful from #{response_params["email"]} (name: #{response_params["name"]}, nickname: #{response_params["nickname"]})"
@@ -36,5 +38,14 @@ class Users::OmniauthCallbacksController < Devise::OmniauthCallbacksController
     else
       flash[:alert] = "Something went wrong."
     end
+  end
+
+  def track_event
+    return unless @user&.persisted?
+
+    NewRelicEventTracker.track("CaseworkerLogin", {
+      site_id: @user.site_id,
+      user_id: @user.id
+    })
   end
 end
