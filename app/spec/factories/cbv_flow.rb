@@ -4,5 +4,9 @@ FactoryBot.define do
     site_id { "sandbox" }
 
     cbv_flow_invitation
+
+    trait :with_pinwheel_account do
+      pinwheel_accounts { [ create(:pinwheel_account) ] }
+    end
   end
 end

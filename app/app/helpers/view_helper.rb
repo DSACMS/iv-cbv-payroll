@@ -13,7 +13,7 @@ module ViewHelper
     begin
       date.strftime(DATE_FORMAT)
     rescue => e
-      timestamp_string
+      date
     end
   end
 

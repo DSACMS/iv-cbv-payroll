@@ -1,4 +1,6 @@
 class CaseworkerMailer < ApplicationMailer
+  include Cbv::ReportsHelper
+  helper "cbv/reports"
   helper :view
   before_action :set_params
 
@@ -20,11 +22,13 @@ class CaseworkerMailer < ApplicationMailer
     @email_address = params[:email_address]
     # used in PDF generation
     @payments = params[:payments] if params[:payments]
+    @employments = params[:employments]
+    @incomes = params[:incomes]
   end
 
   def generate_pdf
     WickedPdf.new.pdf_from_string(
-      render_to_string(template: "cbv/summaries/show", formats: [ :pdf ])
+      render_to_string(template: "cbv/summaries/show", layout: "pdf", formats: [ :pdf ])
     )
   end
 end

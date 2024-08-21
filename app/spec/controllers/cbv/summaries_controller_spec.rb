@@ -3,11 +3,12 @@ require "rails_helper"
 RSpec.describe Cbv::SummariesController do
   include PinwheelApiHelper
 
-  let(:cbv_flow) { create(:cbv_flow, case_number: "ABC1234", pinwheel_token_id: "abc-def-ghi") }
+  let(:cbv_flow) { create(:cbv_flow, :with_pinwheel_account, case_number: "ABC1234") }
   let(:cbv_flow_invitation) { cbv_flow.cbv_flow_invitation }
 
   before do
     session[:cbv_flow_invitation] = cbv_flow_invitation
+    cbv_flow.pinwheel_accounts.first.update(pinwheel_account_id: "03e29160-f7e7-4a28-b2d8-813640e030d3")
   end
 
   describe "#show" do
@@ -17,6 +18,8 @@ RSpec.describe Cbv::SummariesController do
       session[:cbv_flow_id] = cbv_flow.id
       stub_request_end_user_accounts_response
       stub_request_end_user_paystubs_response
+      stub_request_employment_info_response
+      stub_request_income_metadata_response
     end
 
     context "when rendering views" do
@@ -80,6 +83,8 @@ RSpec.describe Cbv::SummariesController do
       sign_in nyc_user
       stub_request_end_user_accounts_response
       stub_request_end_user_paystubs_response
+      stub_request_employment_info_response
+      stub_request_income_metadata_response
     end
 
     context "without consent" do
@@ -94,7 +99,7 @@ RSpec.describe Cbv::SummariesController do
     context "with consent" do
       it "generates a new confirmation code" do
         expect(cbv_flow.confirmation_code).to be_nil
-        patch :update, params: { cbv_flow: { consent_to_authorized_use: "1" }, token: cbv_flow_invitation.auth_token }
+        patch :update, params: { cbv_flow: { consent_to_authorized_use: "1" } }
         cbv_flow.reload
         expect(cbv_flow.confirmation_code).to start_with("SANDBOX")
       end

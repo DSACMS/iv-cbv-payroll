@@ -3,12 +3,20 @@
 module Cbv::ReportsHelper
   include Cbv::PaymentsHelper
 
+  def payments_grouped_by_employer
+    summarize_by_employer(@payments, @employments, @incomes)
+  end
+
   def set_employments(account_id = nil)
     @employments = account_id.nil? ? fetch_employments : fetch_employments_for_account_id(account_id)
   end
 
   def set_incomes(account_id = nil)
     @incomes = account_id.nil? ? fetch_incomes : fetch_incomes_for_account_id(account_id)
+  end
+
+  def total_gross_income
+    @payments.reduce(0) { |sum, payment| sum + payment[:gross_pay_amount] }
   end
 
   def summarize_by_employer(payments, employments, incomes)
