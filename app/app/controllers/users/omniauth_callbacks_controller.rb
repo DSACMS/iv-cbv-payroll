@@ -27,7 +27,8 @@ class Users::OmniauthCallbacksController < Devise::OmniauthCallbacksController
 
   def login_with_oauth(email, site_id)
     # TODO: Check that the email is permissible according to its domain
-    @user = User.find_or_create_by(email: email, site_id: site_id)
+    @user = User.find_for_authentication(email: email, site_id: site_id)
+    @user ||= User.create(email: email, site_id: site_id)
 
     if @user&.persisted?
       flash[:notice] = "Signed in!"
