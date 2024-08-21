@@ -1,6 +1,7 @@
 - id: nyc
   agency_name: NYC Human Resources Administration
   agency_short_name: HRA
+  caseworker_feedback_form: https://forms.office.com/r/B66WeqsBFE
   pinwheel:
     api_token: <%= ENV['PINWHEEL_API_TOKEN_DEVELOPMENT'] %>
     environment: development
@@ -18,6 +19,7 @@
 - id: ma
   agency_name: Department of Transitional Assistance
   agency_short_name: DTA
+  caseworker_feedback_form: https://forms.office.com/r/rfV04qjG9A
   pinwheel:
     api_token: <%= ENV['PINWHEEL_API_TOKEN_DEVELOPMENT'] %>
     environment: development
@@ -36,6 +38,7 @@
 - id: sandbox
   agency_name: CBV Test Agency
   agency_short_name: CBV
+  caseworker_feedback_form: https://docs.google.com/forms/d/e/1FAIpQLSfrUiz0oWE5jbXjPfl-idQQGPgxKplqFtcKq08UOhTaEa2k6A/viewform
   pinwheel:
     api_token: <%= ENV['PINWHEEL_API_TOKEN_SANDBOX'] %>
     environment: sandbox
