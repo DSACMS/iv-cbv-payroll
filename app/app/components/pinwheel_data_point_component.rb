@@ -10,7 +10,7 @@ class PinwheelDataPointComponent < ViewComponent::Base
   def pay_period(start_date, end_date)
     {
       label: I18n.t("cbv.payment_details.show.pay_period"),
-      value: "#{format_date_string(start_date)} to #{format_date_string(end_date)}"
+      value: "#{format_date(start_date)} to #{format_date(end_date)}"
     }
   end
 
@@ -52,7 +52,7 @@ class PinwheelDataPointComponent < ViewComponent::Base
   def employment_start_date(start_date)
     {
       label: I18n.t("cbv.payment_details.show.employment_start_date"),
-      value: format_date_string(start_date)
+      value: format_view_datetime(start_date)
     }
   end
 

@@ -10,15 +10,15 @@
   <% end %>
   <%= table.with_row(
     label: t(".application_or_recertification_date"),
-    value: format_date(@cbv_flow.cbv_flow_invitation.snap_application_date))
+    value: format_parsed_date(@cbv_flow.cbv_flow_invitation.snap_application_date))
   %>
   <%= table.with_row(
     label: t(".date_created"),
-    value: format_date(@cbv_flow.consented_to_authorized_use_at))
+    value: format_parsed_date(@cbv_flow.consented_to_authorized_use_at))
   %>
   <%= table.with_row(
     label: t(".date_range"),
-    value: "#{format_date(@cbv_flow.cbv_flow_invitation.paystubs_query_begins_at)} to #{format_date(@cbv_flow.cbv_flow_invitation.snap_application_date)}")
+    value: "#{format_parsed_date(@cbv_flow.cbv_flow_invitation.paystubs_query_begins_at)} to #{format_parsed_date(@cbv_flow.cbv_flow_invitation.snap_application_date)}")
   %>
 <% end %>
 
@@ -28,7 +28,7 @@
     <% summary[:payments].each do |payment| %>
       <%= render(TableComponent.new) do |table| %>
         <%= table.with_header do %>
-          <h3 class="margin-0"><%= payment[:employer] %>: <%= format_date_string(payment[:pay_date]) %></h3>
+          <h3 class="margin-0"><%= payment[:employer] %>: <%= format_date(payment[:pay_date]) %></h3>
         <% end %>
         <%= table.with_data_point(:pay_period, payment[:start], payment[:end]) %>
         <%= table.with_data_point(:pay_gross, payment[:gross_pay_amount]) %>
