@@ -1,10 +1,7 @@
-<% content_for :title, t(".header") %>
+<% header = employer_name ? t(".header", employer_name: employer_name) : t(".header_no_employer_name") %>
+<% content_for :title, header %>
 <h1>
-  <% if employer_name %>
-    <%= t(".header", employer_name: employer_name) %>
-  <% else %>
-    <%= t(".header_no_employer_name") %>
-  <% end %>
+  <%= header %>
 </h1>
 
 <p><%= t(".subheader", start_date: format_date(start_date), end_date: format_date(end_date)) %></p>
