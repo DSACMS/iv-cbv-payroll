@@ -38,12 +38,8 @@ class Cbv::BaseController < ApplicationController
       rescue ActiveRecord::RecordNotFound
         redirect_to root_url
       end
-    elsif params[:controller] == "cbv/entries"
-      # TODO: Restrict ability to enter the flow without a valid token
-      @cbv_flow = CbvFlow.create(site_id: "sandbox")
-      session[:cbv_flow_id] = @cbv_flow.id
     else
-      redirect_to root_url, notice: t("cbv.error_missing_token")
+      redirect_to root_url, flash: { slim_alert: { type: "info", message_html: t("cbv.error_missing_token_html") } }
     end
   end
 

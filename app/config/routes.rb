@@ -14,6 +14,7 @@ Rails.application.routes.draw do
   if Rails.env.development?
     mount Sidekiq::Web => "/sidekiq"
   end
+
   scope "(:locale)", locale: /#{I18n.available_locales.join("|")}/, format: "html"  do
     # Your application routes go here
     root "pages#home"
@@ -38,12 +39,13 @@ Rails.application.routes.draw do
       resource :reset, only: %i[show]
     end
 
-    # Temporarily redirect /invivations/new -> /nyc/invitations/new
+    # Temporarily redirect /invitations/new -> /nyc/invitations/new
     # (remove this once people know about the new invitation URL)
     get "/invitations/new", to: redirect { |_, req| "/nyc/invitations/new?secret=#{req.params[:secret]}" }
 
-    scope "/:site_id", module: :caseworker do
-      get "/sso/", to: "sso#index", as: :new_user_session
+    scope "/:site_id", module: :caseworker, constraints: { site_id: Regexp.union(Rails.application.config.sites.site_ids) } do
+      root to: "entries#index", as: :caseworker_entry
+      get "/sso", to: "sso#index", as: :new_user_session
       resources :cbv_flow_invitations, as: :invitations, path: :invitations
     end
   end

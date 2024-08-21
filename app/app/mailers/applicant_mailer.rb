@@ -1,5 +1,6 @@
 class ApplicantMailer < ApplicationMailer
   helper :view, :application
+  helper_method :current_site
   before_action :set_params
 
   def invitation_email
@@ -13,6 +14,9 @@ class ApplicantMailer < ApplicationMailer
 
   def set_params
     @cbv_flow_invitation = params[:cbv_flow_invitation]
-    @current_site = site_config[@cbv_flow_invitation.site_id]
+  end
+
+  def current_site
+    site_config[@cbv_flow_invitation.site_id]
   end
 end

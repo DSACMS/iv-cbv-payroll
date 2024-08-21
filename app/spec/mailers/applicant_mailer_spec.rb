@@ -39,6 +39,7 @@ RSpec.describe ApplicantMailer, type: :mailer do
     let(:cbv_flow_invitation) { create(:cbv_flow_invitation, :nyc, email_address: email) }
 
     it "renders the body" do
+      expect(mail.body.encoded).to match(I18n.t('applicant_mailer.invitation_email.header.nyc'))
       expect(mail.body.encoded).to match(I18n.t('applicant_mailer.invitation_email.body_html',
         agency_acronym: 'HRA',
         deadline: "July 21, 2024")
@@ -50,6 +51,7 @@ RSpec.describe ApplicantMailer, type: :mailer do
     let(:cbv_flow_invitation) { create(:cbv_flow_invitation, :ma, email_address: email) }
 
     it "renders the body" do
+      expect(mail.body.encoded).to match(I18n.t('applicant_mailer.invitation_email.header.ma'))
       expect(mail.body.encoded).to match(I18n.t('applicant_mailer.invitation_email.body_html',
         agency_acronym: 'DTA',
         deadline: "July 21, 2024")
