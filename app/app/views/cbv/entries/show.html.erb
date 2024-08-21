@@ -1,20 +1,26 @@
 <% content_for :title, t(".header") %>
 <h1><%= t(".header") %></h1>
 
-<p><%= t(".subheader") %></p>
+<div class="usa-prose">
+  <p><%= t(".subheader") %></p>
+</div>
 
 <h2><%= t(".subheader_1") %></h2>
-<ul>
-  <li><%= t(".has_online_payroll_provider") %></li>
-  <li><%= t(".do_app_based_work") %></li>
-</ul>
+<div class="usa-prose">
+  <ul>
+    <li><%= t(".has_online_payroll_provider") %></li>
+    <li><%= t(".do_app_based_work") %></li>
+  </ul>
+</div>
 
 <h2><%= t(".subheader_2") %></h2>
-<p><%= t(".you_can_get_started") %></p>
-<ul>
-  <li><%= t(".your_employers_name") %></li>
-  <li><%= t(".your_login_credentials") %></li>
-</ul>
+<div class="usa-prose">
+  <p><%= t(".you_can_get_started") %></p>
+  <ul>
+    <li><%= t(".your_employers_name") %></li>
+    <li><%= t(".your_login_credentials") %></li>
+  </ul>
+</div>
 
 <div class="usa-alert usa-alert--no-icon bg-accent-cool-lighter margin-bottom-3 margin-top-3">
   <div class="usa-alert__body">

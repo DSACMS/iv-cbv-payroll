@@ -1,7 +1,9 @@
 <% content_for :title, t(".header") %>
 
 <h1><%= t(".header") %></h1>
-<%= t(".description_html", pay_income_days: current_site.pay_income_days) %>
+<div class="usa-prose">
+  <%= t(".description_html", pay_income_days: current_site.pay_income_days) %>
+</div>
 
 <%= form_with(model: @cbv_flow_invitation, url: invitations_path, builder: UswdsFormBuilder) do |f| %>
   <%= hidden_field_tag :secret, params[:secret] %>
