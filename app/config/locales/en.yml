@@ -38,6 +38,19 @@ en:
           last_name: Client's last name
           middle_name: Client's middle name
           snap_application_date: SNAP application date
+    dashboards:
+      show:
+        create_invitation: Create a new invitation
+        expires_within:
+          one: "%{count} day"
+          other: "%{count} days"
+        header: Invite clients to the SNAP Income Pilot
+        helpful_reminders: Helpful reminders
+        invite_clients: You can invite clients to use this income verification tool by clicking the "Create a new invitation" button below.
+        reminder_1: If multiple household members earn income, send an invite link to each member individually.
+        reminder_2: If an invitation link has expired, you can generate a new one on this page. Links expire if not accessed within %{expires_days} or if they have already been used to share the PDF report.
+        reminder_3: For security reasons, you'll be logged out after 30 minutes of inactivity.
+        reminder_4: If you encounter any issues with the tool, please use the Report feedback or bugs link.
     entries:
       index:
         continue_to_login:
@@ -187,14 +200,6 @@ en:
         total_gross_description: This is the total income from your job before taxes, benefits and deductions were taken out of your paycheck.
         total_gross_income: 'Total income before taxes: %{amount}'
         unknown: Unknown
-    shares:
-      show:
-        body: Thank you for completing income verification. Click the button below to preview your results and share it with your caseworker.
-        download_pdf: Download PDF
-        header: Share your income with your caseworker
-        share_with_caseworker: Share with Case Worker
-      update:
-        successfully_shared_to_caseworker: We successfully emailed your income to your caseworker!
     successes:
       show:
         back_to_agency: Back to agency website
@@ -269,3 +274,6 @@ en:
     boolean_true: 'Yes'
     date_picker_format: 'Format: mm/dd/yyyy'
     optional: Optional
+  users:
+    omniauth_callbacks:
+      authentication_successful: You are signed in.

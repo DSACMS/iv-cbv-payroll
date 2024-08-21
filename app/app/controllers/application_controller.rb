@@ -8,7 +8,7 @@ class ApplicationController < ActionController::Base
   end
 
   def after_sign_in_path_for(user)
-    invitations_new_url(user.site_id)
+    caseworker_dashboard_path(site_id: user.site_id)
   end
 
   def switch_locale(&action)

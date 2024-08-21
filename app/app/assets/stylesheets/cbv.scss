@@ -83,6 +83,11 @@ html {
   @include u-padding-y(2);
 
   color: color("white");
+
+  a,
+  a:visited {
+    color: color("white");
+  }
 }
 .cbv-footer__item {
   @include u-margin-y(2);
