@@ -3,20 +3,20 @@
     <h3 class="margin-0">Report details</h3>
   <% end %>
   <% if @cbv_flow.confirmation_code.present? %>
-    <%= table.with_row_content(
+    <%= table.with_row(
       label: t(".confirmation_code"),
       value: cbv_flow.confirmation_code)
     %>
   <% end %>
-  <%= table.with_row_content(
+  <%= table.with_row(
     label: t(".application_or_recertification_date"),
     value: format_date(@cbv_flow.cbv_flow_invitation.snap_application_date))
   %>
-  <%= table.with_row_content(
+  <%= table.with_row(
     label: t(".date_created"),
     value: format_date(@cbv_flow.consented_to_authorized_use_at))
   %>
-  <%= table.with_row_content(
+  <%= table.with_row(
     label: t(".date_range"),
     value: "#{format_date(@cbv_flow.cbv_flow_invitation.paystubs_query_begins_at)} to #{format_date(@cbv_flow.cbv_flow_invitation.snap_application_date)}")
   %>
@@ -30,16 +30,16 @@
         <%= table.with_header do %>
           <h3 class="margin-0"><%= payment[:employer] %>: <%= format_date_string(payment[:pay_date]) %></h3>
         <% end %>
-        <%= table.with_row_data_point(:pay_period, payment[:start], payment[:end]) %>
-        <%= table.with_row_data_point(:pay_gross, payment[:gross_pay_amount]) %>
-        <%= table.with_row_data_point(:net_pay_amount, payment[:net_pay_amount]) %>
-        <%= table.with_row_data_point(:number_of_hours_worked, payment[:hours]) %>
+        <%= table.with_data_point(:pay_period, payment[:start], payment[:end]) %>
+        <%= table.with_data_point(:pay_gross, payment[:gross_pay_amount]) %>
+        <%= table.with_data_point(:net_pay_amount, payment[:net_pay_amount]) %>
+        <%= table.with_data_point(:number_of_hours_worked, payment[:hours]) %>
 
         <% payment[:deductions].filter { |deduction| deduction[:amount] > 0 }.each do |deduction| %>
-          <%= table.with_row_data_point(:deduction, deduction[:category], deduction[:amount]) %>
+          <%= table.with_data_point(:deduction, deduction[:category], deduction[:amount]) %>
         <% end %>
 
-        <%= table.with_row_data_point(:pay_gross_ytd, payment[:gross_pay_ytd]) %>
+        <%= table.with_data_point(:pay_gross_ytd, payment[:gross_pay_ytd]) %>
       <% end %>
     <% end %>
 

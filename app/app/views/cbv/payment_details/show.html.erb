@@ -11,16 +11,16 @@
 <h2><%= t(".total_gross_income", amount: format_money(gross_pay)) %></h2>
 <p><%= t(".total_gross_description") %></p>
 
-<%= render(TableComponent.new) do |component| %>
-  <%= component.with_header do %>
+<%= render(TableComponent.new) do |table| %>
+  <%= table.with_header do %>
     <h3 class="margin-0"><%= t("cbv.payment_details.show.employment_information_table_header") %></h3>
   <% end %>
-  <%= component.with_row_data_point(:employment_start_date, employment_start_date) %>
-  <%= component.with_row_data_point(:employment_end_date, employment_end_date) %>
-  <%= component.with_row_data_point(:employment_status, employment_status) %>
+  <%= table.with_data_point(:employment_start_date, employment_start_date) %>
+  <%= table.with_data_point(:employment_end_date, employment_end_date) %>
+  <%= table.with_data_point(:employment_status, employment_status) %>
   <% if has_income_data? %>
-    <%= component.with_row_data_point(:pay_frequency, pay_frequency) %>
-    <%= component.with_row_data_point(:hourly_rate, compensation_amount, compensation_unit) %>
+    <%= table.with_data_point(:pay_frequency, pay_frequency) %>
+    <%= table.with_data_point(:hourly_rate, compensation_amount, compensation_unit) %>
   <% end %>
 <% end %>
 
@@ -35,16 +35,16 @@
         <h4 class="margin-0"><%= t("cbv.payment_details.show.pay_date", pay_date: format_date_string(payment[:pay_date])) %></h4>
       <% end %>
 
-      <%= table.with_row_data_point(:pay_period, payment[:start], payment[:end]) %>
-      <%= table.with_row_data_point(:pay_gross, payment[:gross_pay_amount]) %>
-      <%= table.with_row_data_point(:net_pay_amount, payment[:net_pay_amount]) %>
-      <%= table.with_row_data_point(:number_of_hours_worked, payment[:hours]) %>
+      <%= table.with_data_point(:pay_period, payment[:start], payment[:end]) %>
+      <%= table.with_data_point(:pay_gross, payment[:gross_pay_amount]) %>
+      <%= table.with_data_point(:net_pay_amount, payment[:net_pay_amount]) %>
+      <%= table.with_data_point(:number_of_hours_worked, payment[:hours]) %>
 
       <% payment[:deductions].filter { |deduction| deduction[:amount] > 0 }.each do |deduction| %>
-        <%= table.with_row_data_point(:deduction, deduction[:category], deduction[:amount]) %>
+        <%= table.with_data_point(:deduction, deduction[:category], deduction[:amount]) %>
       <% end %>
 
-      <%= table.with_row_data_point(:pay_gross_ytd, payment[:gross_pay_ytd]) %>
+      <%= table.with_data_point(:pay_gross_ytd, payment[:gross_pay_ytd]) %>
     <% end %>
   <% end %>
 <% else %>
