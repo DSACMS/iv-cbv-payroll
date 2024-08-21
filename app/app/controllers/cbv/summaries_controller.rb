@@ -50,7 +50,8 @@ class Cbv::SummariesController < Cbv::BaseController
   private
 
   def has_consent
-    params[:cbv_flow] && params[:cbv_flow][:consent_to_authorized_use] == "1" || @cbv_flow.consented_to_authorized_use_at.present?
+    return true if @cbv_flow.consented_to_authorized_use_at.present?
+    params[:cbv_flow] && params[:cbv_flow][:consent_to_authorized_use] == "1"
   end
 
   def payments_grouped_by_employer
