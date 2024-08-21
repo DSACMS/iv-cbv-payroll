@@ -96,7 +96,7 @@ class PinwheelDataPointComponent < ViewComponent::Base
 
   def employer_address(address)
     {
-      label: I18n.t("cbv.summaries.show.address"),
+      label: I18n.t("cbv.summaries.show.pdf.client.address"),
       value: number_to_phone(address)
     }
   end
