@@ -158,6 +158,15 @@ RSpec.describe Cbv::PaymentDetailsController do
         expect(response.body).not_to include("Empty deduction")
       end
     end
+
+    context "when a user attempts to access pinwheel account information not in the current session" do
+      it "redirects to the entry page" do
+        get :show, params: { user: { account_id: "1234" } }
+        expect(response).to redirect_to(cbv_flow_entry_url)
+        expect(flash[:slim_alert]).to be_present
+        expect(flash[:slim_alert][:message]).to eq(I18n.t("cbv.error_no_access"))
+      end
+    end
   end
 
   describe "#update" do

@@ -162,6 +162,7 @@ en:
         your_login_credentials: Your login credentials for the payroll provider account
     error_invalid_token: The invitation link used is not valid. Double check the link and try again. If you continue experiencing issues, contact your caseworker.
     error_missing_token_html: "<strong>Your session has timed out due to inactivity.</strong> To continue where you left off, please click the link you received from your benefits agency in your email. If you encounter any issues, contact your benefits agency for assistance."
+    error_no_access: You do not have access to this resource. You have been redirected to the entry page.
     missing_results:
       show:
         back_button: Go back to employer search
