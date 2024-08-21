@@ -48,4 +48,18 @@ module ApplicationHelper
       translated
     end
   end
+
+  APPLICANT_FEEDBACK_FORM = "https://docs.google.com/forms/d/e/1FAIpQLSfrUiz0oWE5jbXjPfl-idQQGPgxKplqFtcKq08UOhTaEa2k6A/viewform"
+  def feedback_form_url
+    case params[:controller]
+    when %r{^caseworker/}
+      if current_site && current_site.caseworker_feedback_form
+        current_site.caseworker_feedback_form
+      else
+        APPLICANT_FEEDBACK_FORM
+      end
+    else
+      APPLICANT_FEEDBACK_FORM
+    end
+  end
 end

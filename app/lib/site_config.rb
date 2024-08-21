@@ -22,6 +22,7 @@ class SiteConfig
       id
       agency_name
       agency_short_name
+      caseworker_feedback_form
       invitation_valid_days
       logo_path
       logo_square_path
@@ -37,6 +38,7 @@ class SiteConfig
       @id = yaml["id"]
       @agency_name = yaml["agency_name"]
       @agency_short_name = yaml["agency_short_name"]
+      @caseworker_feedback_form = yaml["caseworker_feedback_form"]
       @invitation_valid_days = yaml["invitation_valid_days"]
       @logo_path = yaml["logo_path"]
       @logo_square_path = yaml["logo_square_path"]

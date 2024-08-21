@@ -37,6 +37,16 @@ RSpec.describe Users::OmniauthCallbacksController do
           .not_to change(User, :count)
         expect(controller.current_user).to eq(existing_user)
       end
+
+      context "when the email address has a capital letter in it" do
+        let(:test_email) { "FOO@example.com" }
+
+        it "logs the user into the existing User" do
+          expect { post :ma_dta }
+            .not_to change(User, :count)
+          expect(controller.current_user).to eq(existing_user)
+        end
+      end
     end
 
     # Re-using the same email across multiple sites should be only

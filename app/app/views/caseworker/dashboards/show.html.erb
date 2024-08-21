@@ -1,0 +1,15 @@
+<% content_for :title, t(".header") %>
+
+<h1><%= t(".header") %></h1>
+
+<p><%= t(".invite_clients") %></p>
+
+<h2><%= t(".helpful_reminders") %></h2>
+<ul>
+  <li><%= t(".reminder_1") %></li>
+  <li><%= t(".reminder_2", expires_days: t(".expires_within", count: current_site.invitation_valid_days)) %></li>
+  <li><%= t(".reminder_3") %></li>
+  <li><%= t(".reminder_4") %></li>
+</ul>
+
+<%= link_to t(".create_invitation"), new_invitation_path(site_id: params[:site_id]), class: "usa-button usa-button--primary" %>

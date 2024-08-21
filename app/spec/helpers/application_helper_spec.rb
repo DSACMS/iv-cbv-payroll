@@ -89,4 +89,34 @@ RSpec.describe ApplicationHelper do
       end
     end
   end
+
+  describe "#feedback_form_url" do
+    let(:current_site) { nil }
+    let(:params) { {} }
+
+    before do
+      allow(helper).to receive(:params).and_return(params)
+      without_partial_double_verification do
+        allow(helper).to receive(:current_site).and_return(current_site)
+      end
+    end
+
+    context "on a CBV flow application page" do
+      let(:params) { { controller: "cbv/summaries" } }
+      let(:current_site) { Rails.application.config.sites["nyc"] }
+
+      it "shows the applicant-facing Google Form" do
+        expect(helper.feedback_form_url).to eq(ApplicationHelper::APPLICANT_FEEDBACK_FORM)
+      end
+    end
+
+    context "on a NYC caseworker-facing page" do
+      let(:params) { { controller: "caseworker/cbv_flow_invitations" } }
+      let(:current_site) { Rails.application.config.sites["nyc"] }
+
+      it "shows the NYC feedback form" do
+        expect(helper.feedback_form_url).to eq(current_site.caseworker_feedback_form)
+      end
+    end
+  end
 end
