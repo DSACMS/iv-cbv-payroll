@@ -1,14 +1,13 @@
 class Cbv::SummariesController < Cbv::BaseController
   include Cbv::ReportsHelper
 
-  helper_method :payments_grouped_by_employer, :total_gross_income
-  before_action :set_payments, only: %i[show]
+  helper_method :payments_grouped_by_employer, :total_gross_income, :has_consent
   before_action :set_employments, only: %i[show]
   before_action :set_incomes, only: %i[show]
+  before_action :set_payments, only: %i[show update]
   skip_before_action :ensure_cbv_flow_not_yet_complete, if: -> { params[:format] == "pdf" }
 
   def show
-    @already_consented = @cbv_flow.consented_to_authorized_use_at ? true : false
     invitation = @cbv_flow.cbv_flow_invitation
     @summary_end_date= invitation ? invitation.snap_application_date.strftime("%B %d, %Y") : ""
     ninety_days_ago = invitation ? invitation.snap_application_date - 90.days : ""
@@ -27,22 +26,35 @@ class Cbv::SummariesController < Cbv::BaseController
   end
 
   def update
-    # User has previously consented, so checkbox field is not in the form
-    if @cbv_flow.consented_to_authorized_use_at
-      redirect_to next_path
-    # User has NOT previously consented, but checked the box
-    elsif params[:cbv_flow][:consent_to_authorized_use].eql?("1")
+    unless has_consent
+      return redirect_to(cbv_flow_summary_path, flash: { alert: t(".consent_to_authorize_warning") })
+    end
+
+    if params[:cbv_flow] && params[:cbv_flow][:consent_to_authorized_use] == "1"
       timestamp = Time.now.to_datetime
       @cbv_flow.update(consented_to_authorized_use_at: timestamp)
-      redirect_to next_path
-    # User has NOT previously consented or checked the box
-    else
-      flash[:slim_alert] = { message: t(".consent_to_authorize_warning"), type: "error" }
-      redirect_to cbv_flow_summary_path
     end
+
+    if @cbv_flow.confirmation_code.blank?
+      confirmation_code = generate_confirmation_code(@cbv_flow.site_id)
+      @cbv_flow.update(confirmation_code: confirmation_code)
+    end
+
+    if !current_site.transmission_method.present?
+      Rails.logger.info("No transmission method found for site #{current_site.id}")
+    else
+      transmit_to_caseworker
+    end
+
+    redirect_to next_path
   end
 
   private
+
+  def has_consent
+    return true if @cbv_flow.consented_to_authorized_use_at.present?
+    params[:cbv_flow] && params[:cbv_flow][:consent_to_authorized_use] == "1"
+  end
 
   def payments_grouped_by_employer
     summarize_by_employer(@payments, @employments, @incomes)
@@ -50,5 +62,30 @@ class Cbv::SummariesController < Cbv::BaseController
 
   def total_gross_income
     @payments.reduce(0) { |sum, payment| sum + payment[:gross_pay_amount] }
+  end
+
+  def transmit_to_caseworker
+    case current_site.transmission_method
+    when "shared_email"
+      CaseworkerMailer.with(
+        email_address: current_site.transmission_method_configuration.dig("email"),
+        cbv_flow: @cbv_flow,
+        payments: @payments
+      ).summary_email.deliver_now
+      @cbv_flow.touch(:transmitted_at)
+    end
+
+    NewRelicEventTracker.track("IncomeSummarySharedWithCaseworker", {
+      timestamp: Time.now.to_i,
+      cbv_flow_id: @cbv_flow.id
+    })
+  end
+
+  def generate_confirmation_code(prefix = nil)
+    [
+      prefix,
+      (Time.now.to_i % 36 ** 3).to_s(36).tr("OISB", "0158").rjust(3, "0"),
+      @cbv_flow.id.to_s.rjust(4, "0")
+    ].compact.join.upcase
   end
 end
