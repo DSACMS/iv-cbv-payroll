@@ -38,29 +38,6 @@ en:
           last_name: Client's last name
           middle_name: Client's middle name
           snap_application_date: SNAP application date
-    entries:
-      index:
-        continue_to_login:
-          ma: Continue to DTA log in page
-          nyc: Continue to HRA log in page
-          sandbox: Continue to CBV Test Agency log in page
-        description:
-          ma: This site allows staff at participating agencies to send clients a link to verify their income, so they can easily send pay information to the agency.
-          nyc: This site allows staff at participating agencies to send clients a link to verify their income, so they can easily send pay information to the agency.
-          sandbox: This site allows staff at participating agencies to send clients a link to verify their income, so they can easily send pay information to the agency.
-        header:
-          ma: DTA is piloting a new way to quickly verify clients' income
-          nyc: HRA is piloting a new way to quickly verify clients' income
-          sandbox: CBV Test Agency is piloting a new way to quickly verify clients' income
-        how_it_works: How it works
-        step_1_description: For security, you will be automatically logged out after 30 minutes of inactivity.
-        step_1_title: Log in using your existing agency account.
-        step_2_description: Invitations are for individual clients. If you need to verify income for multiple people in a household, you will need to create a new invitation for each person.
-        step_2_title: Click the "Create a new invitation" button.
-        step_3_description: When you submit their name, ID number, email address, and application date, we'll email them an invitation link to verify their income.
-        step_3_title: Provide information about the client. We'll send them an invitation.
-        step_4_description: The information will be uploaded as a PDF to the case.
-        step_4_title: Once the client verifies their income, you'll receive their income information.
   caseworker_mailer:
     summary_email:
       body: Applicant has submitted their income verification. Please find the attached PDF.
@@ -148,7 +125,8 @@ en:
         your_employers_name: Your employer's name or the name of their payroll provider
         your_login_credentials: Your login credentials for the payroll provider account
     error_invalid_token: The invitation link used is not valid. Double check the link and try again. If you continue experiencing issues, contact your caseworker.
-    error_missing_token_html: "<strong>Your session has timed out due to inactivity.</strong> To continue where you left off, please click the link you received from your benefits agency in your email. If you encounter any issues, contact your benefits agency for assistance."
+    error_missing_token: Your session has timed out due to inactivity. Click the link you received from your benefits agency to start from where you left off, or contact your benefits agency if you are having trouble.
+    manual_flow_start: Start Flow Manually
     missing_results:
       show:
         back_button: Go back to employer search
@@ -213,7 +191,7 @@ en:
           nyc: Check this box to confirm that the information provided by you is true and complete to the best of your knowledge. You agree to inform NYC Human Resources Administration (HRA) of any income not reflected in this report or any discrepancies found in the information gathered with this tool. You understand that providing accurate and complete information is your responsibility, and any false or omitted information may have legal consequences.<p>By sending this report, you authorize its use for income verification by authorized HRA personnel.</p>
           sandbox: Check this box to confirm that the information provided by you is true and complete to the best of your knowledge. You agree to inform CBV Test Agency of any income not reflected in this report or any discrepancies found in the information gathered with this tool. You understand that providing accurate and complete information is your responsibility, and any false or omitted information may have legal consequences.<p>By sending this report, you authorize its use for income verification by authorized CBV personnel.</p>
         consent_to_authorize_use_title: Legal Agreement
-        description: The report below has your income from the past 90 days from, from %{summary_start_date} to %{summary_end_date}. %{summary_end_date}. Please review it before you send it to your benefits agency.
+        description: Below is payment information from your employer for the past 90 days, from %{summary_start_date} to %{summary_end_date}. %{summary_end_date}.
         document_timestamp: 'Document origination: %{timestamp}'
         header: Review payment information from your employers
         none_found: No payments found. Please refresh the page after a few minutes.
@@ -229,12 +207,6 @@ en:
         total_payments_desc: This is the total income from your job(s) before taxes, benefits and deductions were taken out of your paycheck.
       update:
         consent_to_authorize_warning: You must check the legal agreement checkbox to proceed.
-  pages:
-    home:
-      description_1: The SNAP Income Pilot is a new tool designed to help you connect your income details from your employer or payroll provider directly to your benefits agency. We're currently testing this tool to ensure it works effectively.
-      description_2: Please note this pilot is currently available only to SNAP participants in New York City and Massachusetts.
-      description_3_html: '<p>To participate, you can request an invitation from your benefits agency:</p><ul><li>Massachusetts applicants: Contact the <a href="https://www.mass.gov/guides/how-to-contact-dta" target="_blank">Department of Transitional Assistance (DTA)</a></li><li>New York City applicants: Contact the <a href="https://www.nyc.gov/site/hra/help/snap-application-frequently-asked-questions.page">Human Resources Administration (HRA)</a></li></ul>'
-      header: Welcome to the SNAP Income Pilot
   shared:
     banner:
       lock: Lock
@@ -264,6 +236,10 @@ en:
     skip_link: Skip to main content
     sso:
       sign_in: Sign in
+    verify:
+      description: This website can help you get approved for your benefits.
+      subheader: Get started here by requesting a link from your caseworker.
+      welcome: Welcome to Verify.gov
   us_form_with:
     boolean_false: 'No'
     boolean_true: 'Yes'

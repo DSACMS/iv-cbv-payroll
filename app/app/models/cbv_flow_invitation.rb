@@ -26,6 +26,7 @@ class CbvFlowInvitation < ApplicationRecord
   )
 
   INVITATION_VALIDITY_TIME_ZONE = "America/New_York"
+  PAYSTUB_REPORT_RANGE = 90.days
 
   has_one :cbv_flow
   scope :unstarted, -> { left_outer_joins(:cbv_flow).where(cbv_flows: { id: nil }) }
@@ -45,6 +46,10 @@ class CbvFlowInvitation < ApplicationRecord
 
   def to_url
     Rails.application.routes.url_helpers.cbv_flow_entry_url(token: auth_token)
+  end
+
+  def paystubs_query_begins_at
+    PAYSTUB_REPORT_RANGE.before(snap_application_date)
   end
 
   private
