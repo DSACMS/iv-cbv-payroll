@@ -6,9 +6,7 @@ module Cbv::PaymentsHelper
   end
 
   def fetch_payroll
-    end_user_account_ids = pinwheel.fetch_accounts(end_user_id: @cbv_flow.pinwheel_end_user_id)["data"].map { |account| account["id"] }
-
-    end_user_account_ids.map do |account_id|
+    fetch_end_user_account_ids.map do |account_id|
       fetch_payroll_for_account_id account_id
     end.flatten
   end
@@ -37,16 +35,7 @@ module Cbv::PaymentsHelper
     end
   end
 
-  def summarize_by_employer(payments)
-    payments.each_with_object({}) do |payment, hash|
-      account_id = payment[:account_id]
-      hash[account_id] ||= {
-        employer_name: payment[:employer],
-        total: 0,
-        payments: []
-      }
-      hash[account_id][:total] += payment[:gross_pay_amount]
-      hash[account_id][:payments] << payment
-    end
+  def fetch_end_user_account_ids
+    pinwheel.fetch_accounts(end_user_id: @cbv_flow.pinwheel_end_user_id)["data"].map { |account| account["id"] }
   end
 end

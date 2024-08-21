@@ -66,7 +66,7 @@ class PinwheelDataPointComponent < ViewComponent::Base
   def employment_status(status)
     {
       label: I18n.t("cbv.payment_details.show.employment_status"),
-      value: status
+      value: status&.humanize
     }
   end
 
@@ -81,6 +81,23 @@ class PinwheelDataPointComponent < ViewComponent::Base
     {
       label: I18n.t("cbv.payment_details.show.hourly_rate"),
       value: "#{format_money(amount)} #{unit}"
+    }
+  end
+
+  def employer_id_number
+  end
+
+  def employer_phone(phone_number)
+    {
+      label: I18n.t("cbv.summaries.show.phone_number"),
+      value: number_to_phone(phone_number)
+    }
+  end
+
+  def employer_address(address)
+    {
+      label: I18n.t("cbv.summaries.show.address"),
+      value: number_to_phone(address)
     }
   end
 end
