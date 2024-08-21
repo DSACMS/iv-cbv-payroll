@@ -45,7 +45,7 @@ module Cbv::PaymentsHelper
         total: 0,
         payments: []
       }
-      hash[account_id][:total] += payment[:net_pay_amount]
+      hash[account_id][:total] += payment[:gross_pay_amount]
       hash[account_id][:payments] << payment
     end
   end
