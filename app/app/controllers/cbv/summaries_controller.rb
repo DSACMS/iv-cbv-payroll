@@ -38,11 +38,12 @@ class Cbv::SummariesController < Cbv::BaseController
       @cbv_flow.update(confirmation_code: confirmation_code)
     end
 
-    unless current_site.transmission_method.present?
+    if !current_site.transmission_method.present?
       Rails.logger.info("No transmission method found for site #{current_site.id}")
+    else
+      transmit_to_caseworker
     end
 
-    transmit_to_caseworker
     redirect_to next_path
   end
 
