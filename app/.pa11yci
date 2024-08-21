@@ -17,6 +17,5 @@
     "http://localhost:3000/cbv/missing_results",
     "http://localhost:3000/cbv/add_job",
     "http://localhost:3000/cbv/success",
-    "http://localhost:3000/cbv/share"
   ]
 }
