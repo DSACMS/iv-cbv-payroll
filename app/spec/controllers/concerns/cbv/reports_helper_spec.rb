@@ -21,7 +21,7 @@ RSpec.describe Cbv::ReportsHelper, type: :helper do
     helper.parse_payments(payments)
   end
 
-  let!(:cbv_flow) { create(:cbv_flow, :with_pinwheel_account) } 
+  let!(:cbv_flow) { create(:cbv_flow, :with_pinwheel_account) }
 
   before do
     cbv_flow.pinwheel_accounts.first.update(pinwheel_account_id: account_id)
@@ -29,7 +29,7 @@ RSpec.describe Cbv::ReportsHelper, type: :helper do
 
   describe "aggregate payments" do
     it "groups by employer" do
-      expect(helper.summarize_by_employer(parsed_payments, [employments], [incomes])).to eq({
+      expect(helper.summarize_by_employer(parsed_payments, [ employments ], [ incomes ])).to eq({
         account_id => {
           employer_name: "Acme Corp",
           payments: [

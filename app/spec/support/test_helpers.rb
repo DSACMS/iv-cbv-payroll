@@ -43,7 +43,7 @@ module TestHelpers
 
   def stub_incomes(account_id = SecureRandom.uuid)
     5.times.map do |i|
-      { 
+      {
         "account_id" => account_id,
         "id" => "c70bde4d-e1c2-427a-adc1-c17f61eff210",
         "created_at" => "2024-08-19T19:27:03.220201+00:00",
