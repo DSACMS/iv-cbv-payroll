@@ -52,9 +52,9 @@
 <% end %>
 
 <%= form_with model: @cbv_flow, url: cbv_flow_summary_path, html: { class: "usa-form maxw-full" }, builder: UswdsFormBuilder, method: "patch" do |f| %>
-  <% if !@already_consented %>
-    <h2><%= t(".consent_to_authorize_use_title") %></h2>
-    <%= f.check_box(:consent_to_authorized_use, { 'label': site_translation(".consent_to_authorize_use_html") }) %>
-  <% end %>
+  <% unless has_consent %>
+<h2><%= t(".consent_to_authorize_use_title") %></h2>
+<%= f.check_box(:consent_to_authorized_use, { 'label': site_translation(".consent_to_authorize_use_html") }) %>
+<% end %>
   <%= f.submit t(".send_report"), class: "margin-top-5" %>
 <% end %>
