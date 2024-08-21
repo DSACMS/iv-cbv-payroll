@@ -141,9 +141,14 @@ en:
         to_access_li_1_html: "<strong>Your employer</strong> name"
         to_access_li_2_html: The <strong>payroll provider</strong> you get paid from
         to_access_li_3_html: The <strong>App</strong> you work for, like Uber, DoorDash, etc
-        to_continue: 'To continue:'
-        to_continue_li_1: If you have other jobs to add, search for them.
-        to_continue_li_2: If you have no other jobs to add, continue to review your income report.
+        to_continue: 'If you still don’t see your employer or payroll provider listed:'
+        to_continue_li_1: You’ll need to submit that income information separately.
+        to_continue_li_1_html: 
+          ma: Go to <a href="https://www.mass.gov/guides/how-to-contact-dta">DTA's website</a> to learn about other ways to report your income.
+          nyc: Go to <a href="https://www.nyc.gov/site/hra/help/snap-application-frequently-asked-questions.page">HRA's website</a> to learn about other ways to report your income.
+          sandbox: Go to <a href="https://example.com/contact">CBV's website</a> to learn about other ways to report your income.
+        to_continue_li_2: If you have other jobs to add, search for them.
+        to_continue_li_3: If you have no other jobs to add, you can exit this site.
         what_is_html: "<strong>What is a payroll provider?</strong> A payroll provider is a system that some employers or companies use to handle payroll, pay processing, and distribute paychecks and direct deposit. Examples of popular payroll providers are ADP, Paychex, Gusto, etc."
         you_ll_go: You’ll go to their login portal and sign-in to see your payment history.
     entries:

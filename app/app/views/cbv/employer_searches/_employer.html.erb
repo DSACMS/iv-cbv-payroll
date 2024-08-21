@@ -48,8 +48,9 @@
     <% if @has_pinwheel_account %>
       <h3><%= t("cbv.employer_searches.show.to_continue") %></h3>
       <ul>
-        <li><%= t("cbv.employer_searches.show.to_continue_li_1") %></li>
+        <li><%= t("cbv.employer_searches.show.to_continue_li_1") %> <%= site_translation("cbv.employer_searches.show.to_continue_li_1_html") %></li>
         <li><%= t("cbv.employer_searches.show.to_continue_li_2") %></li>
+        <li><%= t("cbv.employer_searches.show.to_continue_li_3") %></li>
       </ul>
     <% end %>
     <%= link_to (@has_pinwheel_account ? cbv_flow_summary_path : cbv_flow_missing_results_path), class: "usa-button margin-top-5", data: { turbo_frame: "_top" } do %>
