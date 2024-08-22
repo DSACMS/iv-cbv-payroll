@@ -5,7 +5,8 @@ RSpec.describe Cbv::SummariesController do
 
   let(:supported_jobs) { %w[income paystubs employment] }
   let(:flow_started_seconds_ago) { 300 }
-  let(:cbv_flow) { create(:cbv_flow, :with_pinwheel_account, created_at: flow_started_seconds_ago.seconds.ago, case_number: "ABC1234", supported_jobs: supported_jobs) }
+  let(:employment_errored_at) { nil }
+  let(:cbv_flow) { create(:cbv_flow, :with_pinwheel_account, created_at: flow_started_seconds_ago.seconds.ago, case_number: "ABC1234", supported_jobs: supported_jobs, employment_errored_at: employment_errored_at) }
   let(:cbv_flow_invitation) { cbv_flow.cbv_flow_invitation }
 
   before do
@@ -24,7 +25,7 @@ RSpec.describe Cbv::SummariesController do
       session[:cbv_flow_id] = cbv_flow.id
       stub_request_end_user_accounts_response
       stub_request_end_user_paystubs_response
-      stub_request_employment_info_response
+      stub_request_employment_info_response unless employment_errored_at
       stub_request_income_metadata_response if supported_jobs.include?("income")
     end
 
@@ -52,6 +53,17 @@ RSpec.describe Cbv::SummariesController do
 
       context "when only paystubs are supported" do
         let(:supported_jobs) { %w[paystubs] }
+
+        it "renders pdf properly" do
+          get :show, format: :pdf
+          expect(response).to be_successful
+          expect(response.header['Content-Type']).to include 'pdf'
+        end
+      end
+
+      context "when a supported job errors" do
+        let(:supported_jobs) { %w[income paystubs employment] }
+        let(:employment_errored_at) { Time.current.iso8601 }
 
         it "renders pdf properly" do
           get :show, format: :pdf

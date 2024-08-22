@@ -68,6 +68,6 @@ module Cbv::ReportsHelper
     pinwheel_account = PinwheelAccount.find_by_pinwheel_account_id(account_id)
     return false unless pinwheel_account
 
-    pinwheel_account.supported_jobs.include?(job)
+    pinwheel_account.job_succeeded?(job)
   end
 end
