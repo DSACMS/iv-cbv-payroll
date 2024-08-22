@@ -6,7 +6,7 @@ module TestHelpers
     ENV[variable] = previous_value
   end
 
-  def stub_payments(account_id = SecureRandom.uuid)
+  def stub_post_processed_payments(account_id = SecureRandom.uuid)
     5.times.map do |i|
       {
         account_id: account_id,
