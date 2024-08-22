@@ -6,15 +6,15 @@ class Cbv::BaseController < ApplicationController
 
   def set_cbv_flow
     if params[:token].present?
-      @invitation = CbvFlowInvitation.find_by(auth_token: params[:token])
-      if @invitation.blank?
+      invitation = CbvFlowInvitation.find_by(auth_token: params[:token])
+      if invitation.blank?
         return redirect_to(root_url, flash: { alert: t("cbv.error_invalid_token") })
       end
-      if @invitation.expired?
+      if invitation.expired?
         return redirect_to(cbv_flow_expired_invitation_path)
       end
 
-      @cbv_flow = @invitation.cbv_flow || CbvFlow.create_from_invitation(@invitation)
+      @cbv_flow = invitation.cbv_flow || CbvFlow.create_from_invitation(invitation)
       if @cbv_flow.complete?
         return redirect_to(cbv_flow_expired_invitation_path)
       end
@@ -22,7 +22,7 @@ class Cbv::BaseController < ApplicationController
       session[:cbv_flow_id] = @cbv_flow.id
       NewRelicEventTracker.track("ClickedCBVInvitationLink", {
         timestamp: Time.now.to_i,
-        invitation_id: @invitation.id,
+        invitation_id: invitation.id,
         cbv_flow_id: @cbv_flow.id
       })
 
@@ -35,7 +35,6 @@ class Cbv::BaseController < ApplicationController
     elsif session[:cbv_flow_id]
       begin
         @cbv_flow = CbvFlow.find(session[:cbv_flow_id])
-        @invitation = @cbv_flow.cbv_flow_invitation
       rescue ActiveRecord::RecordNotFound
         redirect_to root_url
       end
