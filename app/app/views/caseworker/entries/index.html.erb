@@ -26,6 +26,4 @@
   </li>
 </ol>
 
-<%= link_to new_user_session_path, class: "usa-button" do %>
-    <%= site_translation(".continue_to_login") %>
-<% end %>
+<%= render partial: "#{current_site.sso['name']}_signin_button" %>
