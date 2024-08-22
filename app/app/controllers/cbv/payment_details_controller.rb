@@ -16,10 +16,10 @@ class Cbv::PaymentDetailsController < Cbv::BaseController
 
   def show
     account_id = params[:user][:account_id]
-    @pinwheel_account = PinwheelAccount.find_by_pinwheel_account_id(account_id)
+    @pinwheel_account = @cbv_flow.pinwheel_accounts.find_by(pinwheel_account_id: account_id)
 
     # security check - make sure the account_id is associated with the current cbv_flow_id
-    if @pinwheel_account.nil? || @pinwheel_account["cbv_flow_id"] != session[:cbv_flow_id]
+    if @pinwheel_account.nil?
       return redirect_to(cbv_flow_entry_url, flash: { slim_alert: { message: t("cbv.error_no_access"), type: "error" } })
     end
 
