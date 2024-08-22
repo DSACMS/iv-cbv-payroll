@@ -52,6 +52,15 @@ export default class extends Controller {
     event.preventDefault()
   }
 
+  onPinwheelError(event) {
+    const { type, code } = event;
+    console.error("Got Pinwheel Error:", type, event)
+
+    if (window.NREUM) {
+      window.NREUM.addPageAction("PinwheelError", { type, code })
+    }
+  }
+
   async select(event) {
     const { responseType, id } = event.target.dataset;
     this.disableButtons()
@@ -63,6 +72,7 @@ export default class extends Controller {
   submit(token) {
     this.pinwheel.then(Pinwheel => initializePinwheel(Pinwheel, token, {
       onEvent: console.log,
+      onError: this.onPinwheelError.bind(this),
       onExit: this.reenableButtons.bind(this),
       onSuccess: this.onSignInSuccess.bind(this),
     }));
