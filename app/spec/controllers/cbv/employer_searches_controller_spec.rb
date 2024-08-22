@@ -43,7 +43,7 @@ RSpec.describe Cbv::EmployerSearchesController do
         it "renders the view with a link to exit income verification" do
           get :show, params: { query: "no_results" }
           expect(response).to be_successful
-          expect(response.body).to include("Exit income verification")
+          expect(response.body).to include("Exit and go to CBV")
         end
       end
     end
