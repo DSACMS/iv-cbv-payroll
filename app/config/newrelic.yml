@@ -56,9 +56,9 @@ ci:
   # It doesn't make sense to report to New Relic from automated test runs.
   monitor_mode: false
 
-staging:
+demo:
   <<: *default_settings
-  app_name: Iv Cbv Payroll (Staging)
+  app_name: Iv Cbv Payroll (Demo)
 
 production:
   <<: *default_settings
