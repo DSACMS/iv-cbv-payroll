@@ -3,13 +3,15 @@
 
 <h1><%= header_text %></h1>
 
-<p><%= site_translation(".description") %></p>
+<div class="usa-prose">
+  <p><%= site_translation(".description") %></p>
+</div>
 
 <h2><%= t(".how_it_works") %></h2>
 
 <ol class="usa-process-list">
   <li class="usa-process-list__item">
-    <p class="text-bold margin-0"><%= t(".step_1_title") %></p>
+    <p class="text-bold margin-0"><%= site_translation(".step_1_title") %></p>
     <p class="margin-0"><%= t(".step_1_description") %></p>
   </li>
   <li class="usa-process-list__item">
