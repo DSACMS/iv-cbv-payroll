@@ -3,7 +3,8 @@ require "rails_helper"
 RSpec.describe Cbv::SummariesController do
   include PinwheelApiHelper
 
-  let(:cbv_flow) { create(:cbv_flow, :with_pinwheel_account, case_number: "ABC1234") }
+  let(:supported_jobs) { %w[income paystubs employment] }
+  let(:cbv_flow) { create(:cbv_flow, :with_pinwheel_account, case_number: "ABC1234", supported_jobs: supported_jobs) }
   let(:cbv_flow_invitation) { cbv_flow.cbv_flow_invitation }
 
   before do
@@ -19,7 +20,7 @@ RSpec.describe Cbv::SummariesController do
       stub_request_end_user_accounts_response
       stub_request_end_user_paystubs_response
       stub_request_employment_info_response
-      stub_request_income_metadata_response
+      stub_request_income_metadata_response if supported_jobs.include?("income")
     end
 
     context "when rendering views" do
@@ -42,6 +43,16 @@ RSpec.describe Cbv::SummariesController do
         get :show, format: :pdf
         expect(response).to be_successful
         expect(response.header['Content-Type']).to include 'pdf'
+      end
+
+      context "when only paystubs are supported" do
+        let(:supported_jobs) { %w[paystubs] }
+
+        it "renders pdf properly" do
+          get :show, format: :pdf
+          expect(response).to be_successful
+          expect(response.header['Content-Type']).to include 'pdf'
+        end
       end
     end
 

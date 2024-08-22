@@ -52,8 +52,8 @@ RSpec.describe Cbv::ReportsHelper, type: :helper do
               net_pay_amount: 321609
             }
           ],
-          has_income_data: false,
-          has_employment_data: false,
+          has_income_data: true,
+          has_employment_data: true,
           employment: employments,
           income: incomes,
           total: 480720

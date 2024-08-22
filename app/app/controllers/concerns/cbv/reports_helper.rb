@@ -32,8 +32,8 @@ module Cbv::ReportsHelper
           payments: [],
           has_income_data: has_income_data,
           has_employment_data: has_employment_data,
-          employment: employments.find { |employment| employment["account_id"] == account_id },
-          income: incomes.find { |income| income["account_id"] == account_id }
+          income: has_income_data && incomes.find { |income| income["account_id"] == account_id },
+          employment: has_employment_data && employments.find { |employment| employment["account_id"] == account_id }
         }
         hash[account_id][:total] += payment[:gross_pay_amount]
         hash[account_id][:payments] << payment
@@ -44,6 +44,7 @@ module Cbv::ReportsHelper
 
   def fetch_employments
     fetch_end_user_account_ids.map do |account_id|
+      return [] unless does_pinwheel_account_support_job?(account_id, "employment")
       fetch_employments_for_account_id account_id
     end.flatten
   end
@@ -54,11 +55,19 @@ module Cbv::ReportsHelper
 
   def fetch_incomes
     fetch_end_user_account_ids.map do |account_id|
+      return [] unless does_pinwheel_account_support_job?(account_id, "income")
       fetch_incomes_for_account_id account_id
     end.flatten
   end
 
   def fetch_incomes_for_account_id(account_id)
     pinwheel.fetch_income_metadata(account_id: account_id)["data"]
+  end
+
+  def does_pinwheel_account_support_job?(account_id, job)
+    pinwheel_account = PinwheelAccount.find_by_pinwheel_account_id(account_id)
+    return false unless pinwheel_account
+
+    pinwheel_account.supported_jobs.include?(job)
   end
 end
