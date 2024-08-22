@@ -199,8 +199,8 @@ en:
         payment_hours: "%{amount} hours"
         payments_and_deductions_table_header: Payments and deductions
         subheader: We have gathered your payment records from the past 90 days, from %{start_date} to %{end_date}. Review them and add any comments for your benefits agency in the additional comments section. This will be included in your income report.
-        total_gross_description: This is the total income from your job before taxes, benefits and deductions were taken out of your paycheck.
-        total_gross_income: 'Total income before taxes: %{amount}'
+        total_gross_description: This is the total gross income from your job before taxes, benefits and deductions were taken out of your paycheck.
+        total_gross_income: 'Total income from the past 90 days before taxes: %{amount}'
         unknown: Unknown
     successes:
       show:
@@ -220,7 +220,7 @@ en:
           nyc: Check this box to confirm that the information provided by you is true and complete to the best of your knowledge. You agree to inform NYC Human Resources Administration (HRA) of any income not reflected in this report or any discrepancies found in the information gathered with this tool. You understand that providing accurate and complete information is your responsibility, and any false or omitted information may have legal consequences.<br/><br/>By sending this report, you authorize its use for income verification by authorized HRA personnel.
           sandbox: Check this box to confirm that the information provided by you is true and complete to the best of your knowledge. You agree to inform CBV Test Agency of any income not reflected in this report or any discrepancies found in the information gathered with this tool. You understand that providing accurate and complete information is your responsibility, and any false or omitted information may have legal consequences.<br/><br/>By sending this report, you authorize its use for income verification by authorized CBV personnel.
         consent_to_authorize_use_title: Legal Agreement
-        description: The report below has your income from the past 90 days from, from %{summary_start_date} to %{summary_end_date}. %{summary_end_date}. Please review it before you send it to your benefits agency.
+        description: The report below has your income from the past 90 days from, from %{summary_start_date} to %{summary_end_date}. Please review it before you send it to your benefits agency.
         header: Review payment information from your employers
         none_found: No payments found. Please refresh the page after a few minutes.
         payment: Payment of %{amount} before taxes on %{date}
@@ -239,8 +239,8 @@ en:
         table_caption_no_name: Employer %{number}
         total_income_from: 'Total income from %{employer_name} before taxes: %{amount}'
         total_income_from_no_employer_name: 'Total income before taxes: %{amount}'
-        total_payments: 'Total income before taxes: %{amount}'
-        total_payments_desc: This is the total income from your job(s) before taxes, benefits and deductions were taken out of your paycheck.
+        total_payments: 'Total income from the past 90 days before taxes: %{amount}'
+        total_payments_desc: This is the total gross income from your job(s) before taxes, benefits and deductions were taken out of your paycheck.
       update:
         consent_to_authorize_warning: You must check the legal agreement checkbox to proceed.
   pages:
