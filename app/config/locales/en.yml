@@ -279,8 +279,6 @@ en:
     not_applicable: N/A
     pilot_name: SNAP Income Pilot
     skip_link: Skip to main content
-    sso:
-      sign_in: Sign in
   us_form_with:
     boolean_false: 'No'
     boolean_true: 'Yes'
