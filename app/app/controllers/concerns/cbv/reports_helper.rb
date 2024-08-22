@@ -44,7 +44,7 @@ module Cbv::ReportsHelper
 
   def fetch_employments
     fetch_end_user_account_ids.map do |account_id|
-      return [] unless does_pinwheel_account_support_job?(account_id, "employment")
+      next [] unless does_pinwheel_account_support_job?(account_id, "employment")
       fetch_employments_for_account_id account_id
     end.flatten
   end
@@ -55,7 +55,7 @@ module Cbv::ReportsHelper
 
   def fetch_incomes
     fetch_end_user_account_ids.map do |account_id|
-      return [] unless does_pinwheel_account_support_job?(account_id, "income")
+      next [] unless does_pinwheel_account_support_job?(account_id, "income")
       fetch_incomes_for_account_id account_id
     end.flatten
   end
