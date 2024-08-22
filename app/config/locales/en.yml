@@ -119,17 +119,13 @@ en:
       show:
         can_not_find_employer: I can’t find my company or payroll provider
         employer_not_listed: Employer Not Listed?
-        exit_button_text: Exit income verification
+        exit_button_text: Exit and go to %{agency_short_name}
         fetching_payroll: We are fetching your employer's payment information.
         fetching_payroll_description: This may take a few minutes. Please do not close this window.
         header: Find your employer or payroll provider
-        no_results_desc1: Check if your employer uses another business name or a payroll provider.
-        no_results_desc2: Make sure you have spelled names correctly, then search again.
-        no_results_desc3: If you still donʼt see your employer or payroll provider listed, you will need to submit that income information separately.
-        no_results_link_html:
-          ma: <a href="https://www.mass.gov/guides/how-to-contact-dta">Learn more on DTA's website.</a>
-          nyc: <a href="https://www.nyc.gov/site/hra/help/snap-application-frequently-asked-questions.page">Learn more on HRA's website.</a>
-          sandbox: <a href="https://example.com">Learn more on CBV Test Agency's website.</a>
+        no_results_steps1: Check if your employer uses another business name or a payroll provider.
+        no_results_steps2: Make sure you have spelled names correctly, then search again.
+        no_results_steps_title: 'Try these steps first:'
         no_results_title: We couldn’t find your employer or payroll provider.
         results: Results
         review_button_text: Review my income report
@@ -143,7 +139,7 @@ en:
         to_access_li_3_html: The <strong>App</strong> you work for, like Uber, DoorDash, etc
         to_continue: 'If you still don’t see your employer or payroll provider listed:'
         to_continue_li_1: You’ll need to submit that income information separately.
-        to_continue_li_1_html: 
+        to_continue_li_1_html:
           ma: Go to <a href="https://www.mass.gov/guides/how-to-contact-dta">DTA's website</a> to learn about other ways to report your income.
           nyc: Go to <a href="https://www.nyc.gov/site/hra/help/snap-application-frequently-asked-questions.page">HRA's website</a> to learn about other ways to report your income.
           sandbox: Go to <a href="https://example.com/contact">CBV's website</a> to learn about other ways to report your income.
