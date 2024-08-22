@@ -6,7 +6,10 @@ RSpec.describe Cbv::PaymentDetailsController do
   describe "#show" do
     render_views
 
-    let!(:cbv_flow) { CbvFlow.create!(case_number: "ABC1234", pinwheel_token_id: "abc-def-ghi", site_id: "sandbox") }
+
+    let!(:cbv_flow_invitation) { CbvFlowInvitation.create!(first_name: "A", last_name: "B", case_number: "ABC1234", email_address: "a@b.com", snap_application_date: Date.today, site_id: "sandbox") }
+    let!(:cbv_flow_id) { CbvFlowInvitation.last.id }
+    let!(:cbv_flow) { CbvFlow.create!(case_number: "ABC1234", cbv_flow_invitation_id: cbv_flow_id, pinwheel_token_id: "abc-def-ghi", site_id: "sandbox") }
     let(:account_id) { SecureRandom.uuid }
     let(:comment) { "This is a test comment" }
     let(:supported_jobs) { %w[income paystubs employment] }

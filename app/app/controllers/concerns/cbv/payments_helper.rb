@@ -1,18 +1,21 @@
 module Cbv::PaymentsHelper
   def set_payments(account_id = nil)
-    payments = account_id.nil? ? fetch_payroll : fetch_payroll_for_account_id(account_id)
-
+    to_date = @invitation.snap_application_date
+    from_date = @invitation.paystubs_query_begins_at
+    payments = account_id.nil? ? fetch_payroll(from_date.strftime("%Y-%m-%d"), to_date.strftime("%Y-%m-%d")) : fetch_payroll_for_account_id(account_id, from_date.strftime("%Y-%m-%d"), to_date.strftime("%Y-%m-%d"))
+    @payments_query_to_date= to_date.strftime("%B %d, %Y")
+    @payments_query_from_date= from_date.strftime("%B %d, %Y")
     @payments = parse_payments(payments)
   end
 
-  def fetch_payroll
+  def fetch_payroll(from_date, to_date)
     fetch_end_user_account_ids.map do |account_id|
-      fetch_payroll_for_account_id account_id
+      fetch_payroll_for_account_id(account_id, from_date, to_date)
     end.flatten
   end
 
-  def fetch_payroll_for_account_id(account_id)
-    pinwheel.fetch_paystubs(account_id: account_id, from_pay_date: 90.days.ago.strftime("%Y-%m-%d"))["data"]
+  def fetch_payroll_for_account_id(account_id, from_date, to_date)
+    pinwheel.fetch_paystubs(account_id: account_id, from_pay_date: from_date, to_pay_date: to_date)["data"]
   end
 
   def parse_payments(payments)
