@@ -4,8 +4,8 @@ RSpec.describe Cbv::EmployerSearchesController do
   include PinwheelApiHelper
 
   describe "#show" do
-    let(:cbv_flow) { CbvFlow.create!(case_number: "ABC1234", site_id: "sandbox") }
-    let(:nyc_user) { User.create(email: "test@test.com", site_id: 'nyc') }
+    let(:cbv_flow) { create(:cbv_flow, case_number: "ABC1234", site_id: "sandbox") }
+    let(:nyc_user) { create(:user, email: "test@test.com", site_id: 'nyc') }
     let(:pinwheel_token_id) { "abc-def-ghi" }
     let(:user_token) { "foobar" }
 
