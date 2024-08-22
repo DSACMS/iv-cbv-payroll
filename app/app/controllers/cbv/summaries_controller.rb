@@ -1,7 +1,10 @@
 class Cbv::SummariesController < Cbv::BaseController
-  include Cbv::PaymentsHelper
+  include Cbv::ReportsHelper
+  helper "cbv/reports"
 
-  helper_method :payments_grouped_by_employer, :total_gross_income, :has_consent
+  helper_method :has_consent
+  before_action :set_employments, only: %i[show update]
+  before_action :set_incomes, only: %i[show update]
   before_action :set_payments, only: %i[show update]
   skip_before_action :ensure_cbv_flow_not_yet_complete, if: -> { params[:format] == "pdf" }
 
@@ -55,10 +58,6 @@ class Cbv::SummariesController < Cbv::BaseController
     params[:cbv_flow] && params[:cbv_flow][:consent_to_authorized_use] == "1"
   end
 
-  def payments_grouped_by_employer
-    summarize_by_employer(@payments)
-  end
-
   def total_gross_income
     @payments.reduce(0) { |sum, payment| sum + payment[:gross_pay_amount] }
   end
@@ -69,7 +68,9 @@ class Cbv::SummariesController < Cbv::BaseController
       CaseworkerMailer.with(
         email_address: current_site.transmission_method_configuration.dig("email"),
         cbv_flow: @cbv_flow,
-        payments: @payments
+        payments: @payments,
+        employments: @employments,
+        incomes: @incomes
       ).summary_email.deliver_now
       @cbv_flow.touch(:transmitted_at)
     end
