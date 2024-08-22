@@ -118,7 +118,7 @@ RSpec.describe Cbv::EntriesController do
       end
 
       context "when there is already a CbvFlow in the session" do
-        let(:other_cbv_flow) { CbvFlow.create(case_number: "ZZZ0000", site_id: "sandbox") }
+        let(:other_cbv_flow) { create(:cbv_flow, case_number: "ZZZ0000", site_id: "sandbox") }
 
         before do
           session[:cbv_flow_id] = other_cbv_flow.id

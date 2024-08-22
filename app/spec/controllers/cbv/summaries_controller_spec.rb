@@ -92,7 +92,7 @@ RSpec.describe Cbv::SummariesController do
   end
 
   describe "#update" do
-    let(:nyc_user) { User.create(email: "test@test.com", site_id: 'nyc') }
+    let(:nyc_user) { create(:user, email: "test@test.com", site_id: 'nyc') }
 
     before do
       session[:cbv_flow_id] = cbv_flow.id
