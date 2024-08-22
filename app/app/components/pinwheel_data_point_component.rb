@@ -52,7 +52,7 @@ class PinwheelDataPointComponent < ViewComponent::Base
   def employment_start_date(start_date)
     {
       label: I18n.t("cbv.payment_details.show.employment_start_date"),
-      value: format_view_datetime(start_date)
+      value: format_date(start_date)
     }
   end
 
