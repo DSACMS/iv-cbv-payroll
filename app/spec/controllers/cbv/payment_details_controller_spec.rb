@@ -160,8 +160,16 @@ RSpec.describe Cbv::PaymentDetailsController do
     end
 
     context "when a user attempts to access pinwheel account information not in the current session" do
-      it "redirects to the entry page" do
+      it "redirects to the entry page when the resolved pinwheel_account is nil" do
         get :show, params: { user: { account_id: "1234" } }
+        expect(response).to redirect_to(cbv_flow_entry_url)
+        expect(flash[:slim_alert]).to be_present
+        expect(flash[:slim_alert][:message]).to eq(I18n.t("cbv.error_no_access"))
+      end
+
+      it "redirects to the entry page when the resolved pinwheel_account is present, but does not match the current session" do
+        existing_pinwheel_account = create(:pinwheel_account)
+        get :show, params: { user: { account_id: existing_pinwheel_account.pinwheel_account_id } }
         expect(response).to redirect_to(cbv_flow_entry_url)
         expect(flash[:slim_alert]).to be_present
         expect(flash[:slim_alert][:message]).to eq(I18n.t("cbv.error_no_access"))
