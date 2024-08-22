@@ -4,7 +4,7 @@ class ApplicationController < ActionController::Base
   around_action :switch_locale
 
   rescue_from ActionController::InvalidAuthenticityToken do
-    redirect_to root_url, notice: t("cbv.error_missing_token")
+    redirect_to root_url, notice: t("cbv.error_missing_token_html")
   end
 
   def after_sign_in_path_for(user)
