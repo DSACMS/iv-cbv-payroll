@@ -1,7 +1,7 @@
 require "rails_helper"
 
 RSpec.describe Cbv::AddJobsController do
-  let(:cbv_flow) { CbvFlow.create!(case_number: "ABC1234", site_id: "sandbox") }
+  let(:cbv_flow) { create(:cbv_flow, case_number: "ABC1234", site_id: "sandbox") }
 
   before do
     session[:cbv_flow_id] = cbv_flow.id
