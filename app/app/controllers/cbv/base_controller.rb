@@ -23,7 +23,9 @@ class Cbv::BaseController < ApplicationController
       NewRelicEventTracker.track("ClickedCBVInvitationLink", {
         timestamp: Time.now.to_i,
         invitation_id: invitation.id,
-        cbv_flow_id: @cbv_flow.id
+        cbv_flow_id: @cbv_flow.id,
+        site_id: @cbv_flow.site_id,
+        seconds_since_invitation: (Time.now - invitation.created_at).to_i
       })
 
       if @cbv_flow.pinwheel_accounts.any?

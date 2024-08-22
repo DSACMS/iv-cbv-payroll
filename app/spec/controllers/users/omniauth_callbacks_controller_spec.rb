@@ -29,6 +29,15 @@ RSpec.describe Users::OmniauthCallbacksController do
       expect(controller.current_user).to eq(new_user)
     end
 
+    it "tracks a NewRelic event" do
+      expect(NewRelicEventTracker).to receive(:track).with("CaseworkerLogin", {
+        site_id: "ma",
+        user_id: be_a(Integer)
+      })
+
+      post :ma_dta
+    end
+
     context "when the user already has authenticated before" do
       let!(:existing_user) { User.create(email: test_email, site_id: "ma") }
 

@@ -11,7 +11,18 @@ RSpec.describe Cbv::EntriesController do
     end
 
     context "when following a link from a flow invitation" do
-      let(:invitation) { create(:cbv_flow_invitation, case_number: "ABC1234") }
+      let(:seconds_since_invitation) { 300 }
+      let(:invitation) do
+        create(
+          :cbv_flow_invitation,
+          case_number: "ABC1234",
+          created_at: seconds_since_invitation.seconds.ago
+        )
+      end
+
+      around do |ex|
+        Timecop.freeze(&ex)
+      end
 
       it "renders properly" do
         get :show, params: { token: invitation.auth_token }
@@ -30,6 +41,21 @@ RSpec.describe Cbv::EntriesController do
           case_number: "ABC1234",
           cbv_flow_invitation: invitation
         )
+      end
+
+      it "sends a NewRelic event with metadata" do
+        allow(NewRelicEventTracker).to receive(:track)
+
+        get :show, params: { token: invitation.auth_token }
+        cbv_flow = CbvFlow.find(session[:cbv_flow_id])
+
+        expect(NewRelicEventTracker).to have_received(:track).with("ClickedCBVInvitationLink", {
+          timestamp: be_a(Integer),
+          invitation_id: invitation.id,
+          cbv_flow_id: cbv_flow.id,
+          site_id: invitation.site_id,
+          seconds_since_invitation: seconds_since_invitation
+        })
       end
 
       context "when returning to an already-visited flow invitation" do

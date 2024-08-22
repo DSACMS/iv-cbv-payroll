@@ -4,12 +4,17 @@ RSpec.describe Cbv::SummariesController do
   include PinwheelApiHelper
 
   let(:supported_jobs) { %w[income paystubs employment] }
-  let(:cbv_flow) { create(:cbv_flow, :with_pinwheel_account, case_number: "ABC1234", supported_jobs: supported_jobs) }
+  let(:flow_started_seconds_ago) { 300 }
+  let(:cbv_flow) { create(:cbv_flow, :with_pinwheel_account, created_at: flow_started_seconds_ago.seconds.ago, case_number: "ABC1234", supported_jobs: supported_jobs) }
   let(:cbv_flow_invitation) { cbv_flow.cbv_flow_invitation }
 
   before do
     session[:cbv_flow_invitation] = cbv_flow_invitation
     cbv_flow.pinwheel_accounts.first.update(pinwheel_account_id: "03e29160-f7e7-4a28-b2d8-813640e030d3")
+  end
+
+  around do |ex|
+    Timecop.freeze(&ex)
   end
 
   describe "#show" do
@@ -155,6 +160,20 @@ RSpec.describe Cbv::SummariesController do
       it "redirects to success screen" do
         patch :update
         expect(response).to redirect_to({ controller: :successes, action: :show })
+      end
+
+      it "sends a NewRelic event" do
+        allow(NewRelicEventTracker).to receive(:track)
+        patch :update
+        expect(NewRelicEventTracker).to have_received(:track).with("IncomeSummarySharedWithCaseworker", {
+          timestamp: be_a(Integer),
+          site_id: cbv_flow.site_id,
+          cbv_flow_id: cbv_flow.id,
+          account_count: 1,
+          paystub_count: 1,
+          account_count_with_additional_information: 0,
+          flow_started_seconds_ago: flow_started_seconds_ago
+        })
       end
     end
   end
