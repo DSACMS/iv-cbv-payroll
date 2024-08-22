@@ -7,7 +7,8 @@ export default class extends Controller {
     "form",
     "searchTerms",
     "userAccountId",
-    "modal"
+    "modal",
+    "employerButton"
   ];
 
   pinwheel = loadPinwheel();
@@ -40,6 +41,7 @@ export default class extends Controller {
   onSignInSuccess() {
     this.pinwheel.then(pinwheel => pinwheel.close());
     this.modalTarget.click();
+    this.reenableButtons()
   }
 
   onTurboError(event) {
@@ -52,15 +54,27 @@ export default class extends Controller {
 
   async select(event) {
     const { responseType, id } = event.target.dataset;
-    const { token } = await fetchToken(responseType, id);
+    this.disableButtons()
 
+    const { token } = await fetchToken(responseType, id);
     this.submit(token);
   }
 
   submit(token) {
     this.pinwheel.then(Pinwheel => initializePinwheel(Pinwheel, token, {
       onEvent: console.log,
+      onExit: this.reenableButtons.bind(this),
       onSuccess: this.onSignInSuccess.bind(this),
     }));
+  }
+
+  disableButtons() {
+    this.employerButtonTargets
+      .forEach(el => el.setAttribute("disabled", "disabled"))
+  }
+
+  reenableButtons() {
+    this.employerButtonTargets
+      .forEach(el => el.removeAttribute("disabled"))
   }
 }
