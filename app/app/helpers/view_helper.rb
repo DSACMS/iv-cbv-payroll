@@ -21,7 +21,6 @@ module ViewHelper
     begin
       Time.parse(timestamp_string).strftime(DATE_FORMAT)
     rescue => e
-      puts "Invalid timestamp"
       timestamp_string
     end
   end
