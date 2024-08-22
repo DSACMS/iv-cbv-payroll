@@ -40,12 +40,12 @@
   </div>
   <% if @query.present? && @employers.count == 0 %>
     <h3 class="margin-bottom-5"><%= t("cbv.employer_searches.show.no_results_title") %></h3>
-    <h3><%= t("cbv.employer_searches.show.no_results_steps_title") %></h3>
+    <h4><%= t("cbv.employer_searches.show.no_results_steps_title") %></h4>
     <ol class="line-height-sans-5">
       <li><%= t("cbv.employer_searches.show.no_results_steps1") %></li>
       <li><%= t("cbv.employer_searches.show.no_results_steps2") %></li>
     </ol>
-    <h3><%= t("cbv.employer_searches.show.to_continue") %></h3>
+    <h4><%= t("cbv.employer_searches.show.to_continue") %></h4>
     <ul class="line-height-sans-5">
       <li><%= t("cbv.employer_searches.show.to_continue_li_1") %> <%= site_translation("cbv.employer_searches.show.to_continue_li_1_html") %></li>
       <li><%= t("cbv.employer_searches.show.to_continue_li_2") %></li>
