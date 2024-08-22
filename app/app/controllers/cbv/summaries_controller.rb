@@ -14,6 +14,7 @@ class Cbv::SummariesController < Cbv::BaseController
       format.pdf do
         NewRelicEventTracker.track("ApplicantDownloadedIncomePDF", {
           timestamp: Time.now.to_i,
+          site_id: @cbv_flow.site_id,
           cbv_flow_id: @cbv_flow.id
         })
 
@@ -70,10 +71,22 @@ class Cbv::SummariesController < Cbv::BaseController
       @cbv_flow.touch(:transmitted_at)
     end
 
+    track_transmitted_event(@cbv_flow, @payments)
+  end
+
+  def track_transmitted_event(cbv_flow, payments)
     NewRelicEventTracker.track("IncomeSummarySharedWithCaseworker", {
       timestamp: Time.now.to_i,
-      cbv_flow_id: @cbv_flow.id
+      site_id: cbv_flow.site_id,
+      cbv_flow_id: cbv_flow.id,
+      account_count: payments.map { |p| p[:account_id] }.uniq.count,
+      paystub_count: payments.count,
+      account_count_with_additional_information:
+        cbv_flow.additional_information.values.count { |info| info["comment"].present? },
+      flow_started_seconds_ago: (Time.now - cbv_flow.created_at).to_i
     })
+  rescue => ex
+    Rails.logger.error "Failed to track NewRelic event: #{ex.message}"
   end
 
   def generate_confirmation_code(prefix = nil)

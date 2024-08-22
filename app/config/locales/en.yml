@@ -119,17 +119,13 @@ en:
       show:
         can_not_find_employer: I can’t find my company or payroll provider
         employer_not_listed: Employer Not Listed?
-        exit_button_text: Exit income verification
+        exit_button_text: Exit and go to %{agency_short_name}
         fetching_payroll: We are fetching your employer's payment information.
         fetching_payroll_description: This may take a few minutes. Please do not close this window.
         header: Find your employer or payroll provider
-        no_results_desc1: Check if your employer uses another business name or a payroll provider.
-        no_results_desc2: Make sure you have spelled names correctly, then search again.
-        no_results_desc3: If you still donʼt see your employer or payroll provider listed, you will need to submit that income information separately.
-        no_results_link_html:
-          ma: <a href="https://www.mass.gov/guides/how-to-contact-dta">Learn more on DTA's website.</a>
-          nyc: <a href="https://www.nyc.gov/site/hra/help/snap-application-frequently-asked-questions.page">Learn more on HRA's website.</a>
-          sandbox: <a href="https://example.com">Learn more on CBV Test Agency's website.</a>
+        no_results_steps1: Check if your employer uses another business name or a payroll provider.
+        no_results_steps2: Make sure you have spelled names correctly, then search again.
+        no_results_steps_title: 'Try these steps first:'
         no_results_title: We couldn’t find your employer or payroll provider.
         results: Results
         review_button_text: Review my income report
@@ -141,9 +137,14 @@ en:
         to_access_li_1_html: "<strong>Your employer</strong> name"
         to_access_li_2_html: The <strong>payroll provider</strong> you get paid from
         to_access_li_3_html: The <strong>App</strong> you work for, like Uber, DoorDash, etc
-        to_continue: 'To continue:'
-        to_continue_li_1: If you have other jobs to add, search for them.
-        to_continue_li_2: If you have no other jobs to add, continue to review your income report.
+        to_continue: 'If you still don’t see your employer or payroll provider listed:'
+        to_continue_li_1: You’ll need to submit that income information separately.
+        to_continue_li_1_html:
+          ma: Go to <a href="https://www.mass.gov/guides/how-to-contact-dta">DTA's website</a> to learn about other ways to report your income.
+          nyc: Go to <a href="https://www.nyc.gov/site/hra/help/snap-application-frequently-asked-questions.page">HRA's website</a> to learn about other ways to report your income.
+          sandbox: Go to <a href="https://example.com/contact">CBV's website</a> to learn about other ways to report your income.
+        to_continue_li_2: If you have other jobs to add, search for them.
+        to_continue_li_3: If you have no other jobs to add, you can exit this site.
         what_is_html: "<strong>What is a payroll provider?</strong> A payroll provider is a system that some employers or companies use to handle payroll, pay processing, and distribute paychecks and direct deposit. Examples of popular payroll providers are ADP, Paychex, Gusto, etc."
         you_ll_go: You’ll go to their login portal and sign-in to see your payment history.
     entries:
@@ -162,6 +163,7 @@ en:
         your_login_credentials: Your login credentials for the payroll provider account
     error_invalid_token: The invitation link used is not valid. Double check the link and try again. If you continue experiencing issues, contact your caseworker.
     error_missing_token_html: "<strong>Your session has timed out due to inactivity.</strong> To continue where you left off, please click the link you received from your benefits agency in your email. If you encounter any issues, contact your benefits agency for assistance."
+    error_no_access: We weren't able to load payroll data for this account. Please click the link you received from your benefits agency to try again.
     missing_results:
       show:
         back_button: Go back to employer search
@@ -213,9 +215,9 @@ en:
         additional_comments: Additional comments
         additional_information_title: Is there anything else you'd like your caseworker to know about your income?
         consent_to_authorize_use_html:
-          ma: Check this box to confirm that the information provided by you is true and complete to the best of your knowledge. You agree to inform DTA of any income not reflected in this report or any discrepancies found in the information gathered with this tool. You understand that providing accurate and complete information is your responsibility, and any false or omitted information may have legal consequences. For more information on your rights and responsibilities regarding private information you share with DTA please refer to the Rights and Responsibilities you signed at application, found on <a href="https://www.mass.gov/lists/department-of-transitional-assistance-rights-responsibilities-and-penalties">Mass.gov</a>.<p>By sending this report, you authorize its use for income verification by DTA and authorized personnel.</p>
-          nyc: Check this box to confirm that the information provided by you is true and complete to the best of your knowledge. You agree to inform NYC Human Resources Administration (HRA) of any income not reflected in this report or any discrepancies found in the information gathered with this tool. You understand that providing accurate and complete information is your responsibility, and any false or omitted information may have legal consequences.<p>By sending this report, you authorize its use for income verification by authorized HRA personnel.</p>
-          sandbox: Check this box to confirm that the information provided by you is true and complete to the best of your knowledge. You agree to inform CBV Test Agency of any income not reflected in this report or any discrepancies found in the information gathered with this tool. You understand that providing accurate and complete information is your responsibility, and any false or omitted information may have legal consequences.<p>By sending this report, you authorize its use for income verification by authorized CBV personnel.</p>
+          ma: Check this box to confirm that the information provided by you is true and complete to the best of your knowledge. You agree to inform DTA of any income not reflected in this report or any discrepancies found in the information gathered with this tool. You understand that providing accurate and complete information is your responsibility, and any false or omitted information may have legal consequences. For more information on your rights and responsibilities regarding private information you share with DTA please refer to the Rights and Responsibilities you signed at application, found on <a href="https://www.mass.gov/lists/department-of-transitional-assistance-rights-responsibilities-and-penalties">Mass.gov</a>.<br/><br/>By sending this report, you authorize its use for income verification by DTA and authorized personnel.
+          nyc: Check this box to confirm that the information provided by you is true and complete to the best of your knowledge. You agree to inform NYC Human Resources Administration (HRA) of any income not reflected in this report or any discrepancies found in the information gathered with this tool. You understand that providing accurate and complete information is your responsibility, and any false or omitted information may have legal consequences.<br/><br/>By sending this report, you authorize its use for income verification by authorized HRA personnel.
+          sandbox: Check this box to confirm that the information provided by you is true and complete to the best of your knowledge. You agree to inform CBV Test Agency of any income not reflected in this report or any discrepancies found in the information gathered with this tool. You understand that providing accurate and complete information is your responsibility, and any false or omitted information may have legal consequences.<br/><br/>By sending this report, you authorize its use for income verification by authorized CBV personnel.
         consent_to_authorize_use_title: Legal Agreement
         description: Below is payment information from your employer for the past 90 days, from %{start_date} to %{end_date}.
         header: Review payment information from your employers

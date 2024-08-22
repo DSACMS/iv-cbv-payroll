@@ -6,7 +6,14 @@ FactoryBot.define do
     cbv_flow_invitation
 
     trait :with_pinwheel_account do
-      pinwheel_accounts { [ create(:pinwheel_account) ] }
+      transient do
+        supported_jobs { %w[income paystubs employment] }
+        employment_errored_at { nil }
+      end
+
+      after(:build) do |cbv_flow, evaluator|
+        cbv_flow.pinwheel_accounts = [ create(:pinwheel_account, supported_jobs: evaluator.supported_jobs, employment_errored_at: evaluator.employment_errored_at) ]
+      end
     end
   end
 end

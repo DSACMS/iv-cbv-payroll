@@ -52,14 +52,14 @@ class PinwheelDataPointComponent < ViewComponent::Base
   def employment_start_date(start_date)
     {
       label: I18n.t("cbv.payment_details.show.employment_start_date"),
-      value: format_view_datetime(start_date)
+      value: format_date(start_date)
     }
   end
 
   def employment_end_date(end_date)
     {
       label: I18n.t("cbv.payment_details.show.employment_end_date"),
-      value: end_date ? end_date : I18n.t("shared.not_applicable")
+      value: end_date ? format_date(end_date) : I18n.t("shared.not_applicable")
     }
   end
 
@@ -84,9 +84,6 @@ class PinwheelDataPointComponent < ViewComponent::Base
     }
   end
 
-  def employer_id_number
-  end
-
   def employer_phone(phone_number)
     {
       label: I18n.t("cbv.summaries.show.phone_number"),
@@ -97,7 +94,7 @@ class PinwheelDataPointComponent < ViewComponent::Base
   def employer_address(address)
     {
       label: I18n.t("cbv.summaries.show.pdf.client.address"),
-      value: number_to_phone(address)
+      value: address
     }
   end
 end

@@ -4,8 +4,8 @@ RSpec.describe Cbv::EmployerSearchesController do
   include PinwheelApiHelper
 
   describe "#show" do
-    let(:cbv_flow) { CbvFlow.create!(case_number: "ABC1234", site_id: "sandbox") }
-    let(:nyc_user) { User.create(email: "test@test.com", site_id: 'nyc') }
+    let(:cbv_flow) { create(:cbv_flow, case_number: "ABC1234", site_id: "sandbox") }
+    let(:nyc_user) { create(:user, email: "test@test.com", site_id: 'nyc') }
     let(:pinwheel_token_id) { "abc-def-ghi" }
     let(:user_token) { "foobar" }
 
@@ -43,7 +43,7 @@ RSpec.describe Cbv::EmployerSearchesController do
         it "renders the view with a link to exit income verification" do
           get :show, params: { query: "no_results" }
           expect(response).to be_successful
-          expect(response.body).to include("Exit income verification")
+          expect(response.body).to include("Exit and go to CBV")
         end
       end
     end
