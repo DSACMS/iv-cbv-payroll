@@ -1,5 +1,4 @@
 class CaseworkerMailer < ApplicationMailer
-  include Cbv::ReportsHelper
   helper "cbv/reports"
   helper :view
   before_action :set_params
