@@ -16,7 +16,7 @@ module Cbv::ReportsHelper
   end
 
   def set_identity
-    @identity = @cbv_flow.pinwheel_accounts.first.fetch_identity
+    @identity = fetch_identity_for_account_id(@cbv_flow.pinwheel_accounts.first.pinwheel_account_id)
   end
 
   def total_gross_income
@@ -63,6 +63,10 @@ module Cbv::ReportsHelper
       next [] unless does_pinwheel_account_support_job?(account_id, "income")
       fetch_incomes_for_account_id account_id
     end.flatten
+  end
+
+  def fetch_identity_for_account_id(account_id)
+    pinwheel.fetch_identity(account_id: account_id)["data"]
   end
 
   def fetch_incomes_for_account_id(account_id)
