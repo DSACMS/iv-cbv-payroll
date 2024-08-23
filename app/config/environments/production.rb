@@ -39,6 +39,9 @@ Rails.application.configure do
 
   routes.default_url_options[:host] = ENV["DOMAIN_NAME"]
   config.hosts << ENV["DOMAIN_NAME"]
+  config.host_authorization = {
+    exclude: ->(request) { %r{^/health}.match?(request.path) }
+  }
 
   # Specifies the header that your server uses for sending files.
   # config.action_dispatch.x_sendfile_header = "X-Sendfile" # for Apache
