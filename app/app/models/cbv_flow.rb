@@ -23,4 +23,7 @@ class CbvFlow < ApplicationRecord
       site_id: cbv_flow_invitation.site_id
     )
   end
+
+  def payroll_provider
+  end
 end

@@ -84,6 +84,9 @@
       <%= table.with_header do %>
         <h3 class="margin-0"><%= summary[:employer_name] %> Employment Information</h3>
       <% end %>
+      <% if @is_caseworker %>
+        <%= table.with_data_point(:client_full_name, summary[:identity]["full_name"]) %>
+      <% end %>
       <% if summary[:has_employment_data] %>
         <%= table.with_data_point(:employer_phone, summary[:employment]["employer_phone_number"]["value"]) %>
         <%= table.with_data_point(:employer_address, summary[:employment]["employer_address"]["raw"]) %>
@@ -101,9 +104,6 @@
       <%= render(TableComponent.new) do |table| %>
         <%= table.with_header do %>
           <h3 class="margin-0"><%= summary[:employer_name] %> Pay Date: <%= format_date(payment[:pay_date]) %></h3>
-        <% end %>
-        <% if @is_caseworker %>
-          <%= table.with_data_point(:client_full_name, summary[:identity]["full_name"]) %>
         <% end %>
         <%= table.with_data_point(:pay_period, payment[:start], payment[:end]) %>
         <%= table.with_data_point(:pay_gross, payment[:gross_pay_amount]) %>

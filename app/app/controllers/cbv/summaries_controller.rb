@@ -6,7 +6,7 @@ class Cbv::SummariesController < Cbv::BaseController
   before_action :set_employments, only: %i[show update]
   before_action :set_incomes, only: %i[show update]
   before_action :set_payments, only: %i[show update]
-  before_action :set_identity, only: %i[show update]
+  before_action :set_identities, only: %i[show update]
   skip_before_action :ensure_cbv_flow_not_yet_complete, if: -> { params[:format] == "pdf" }
 
   def show
@@ -72,7 +72,7 @@ class Cbv::SummariesController < Cbv::BaseController
         payments: @payments,
         employments: @employments,
         incomes: @incomes,
-        identity: @identity
+        identities: @identities
       ).summary_email.deliver_now
       @cbv_flow.touch(:transmitted_at)
     end

@@ -6,7 +6,7 @@ RSpec.describe CaseworkerMailer, type: :mailer do
   let(:payments) { stub_post_processed_payments(account_id) }
   let(:employments) { stub_employments(account_id) }
   let(:incomes) { stub_incomes(account_id) }
-  let(:identity) { stub_identity }
+  let(:identities) { stub_identities(account_id) }
   let(:email_address) { "test@example.com" }
   let(:mail) {
     CaseworkerMailer.with(
@@ -15,7 +15,7 @@ RSpec.describe CaseworkerMailer, type: :mailer do
       payments: payments,
       employments: employments,
       incomes: incomes,
-      identity: identity
+      identities: identities
     ).summary_email.deliver_now
   }
 
