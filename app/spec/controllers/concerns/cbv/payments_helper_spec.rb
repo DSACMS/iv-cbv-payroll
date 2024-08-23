@@ -22,7 +22,6 @@ RSpec.describe Cbv::PaymentsHelper, type: :helper do
               { amount: 57692, category: "commuter" },
               { amount: 0, category: "empty_deduction" }
             ],
-            employer: "Acme Corp",
             end: "2020-12-24",
             gross_pay_amount: 480720,
             gross_pay_ytd: 6971151,

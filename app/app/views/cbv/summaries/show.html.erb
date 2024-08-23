@@ -18,8 +18,9 @@
   <% payments_grouped_by_employer.each_with_index do |(account_id, summary), index| %>
     <table class="usa-table usa-table--borderless width-full">
       <h3>
-        <% if summary[:employer_name] %>
-          <%= t(".table_caption", number: index, employer_name: summary[:employer_name]) %>
+        <% employer_name = summary[:has_employment_data] ? summary.dig(:employment, "employer_name") : nil %>
+        <% if employer_name %>
+          <%= t(".table_caption", number: index + 1, employer_name: employer_name) %>
         <% else %>
           <%= t(".table_caption_no_name", number: index + 1) %>
         <% end %>
@@ -28,8 +29,8 @@
         <tr>
           <th class="padding-3" style="background-color: #d9e8f6;" colspan="2">
             <h4 class="margin-0">
-              <% if summary[:employer_name] %>
-                <%= t(".total_income_from", employer_name: summary[:employer_name], amount: summary[:total]) %>
+              <% if employer_name %>
+                <%= t(".total_income_from", employer_name: employer_name, amount: format_money(summary[:total])) %>
               <% else %>
                 <%= t(".total_income_from_no_employer_name", amount: format_money(summary[:total])) %>
               <% end %>

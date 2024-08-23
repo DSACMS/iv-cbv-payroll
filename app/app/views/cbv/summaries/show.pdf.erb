@@ -32,15 +32,21 @@
 
 <% if @payments.any? %>
   <% payments_grouped_by_employer.each_with_index do |(account_id, summary), index| %>
-    <h3><%= t(".table_caption_no_name", number: index + 1) %>: <%= summary[:employer_name] %></h3>
+    <% employer_name = summary[:has_employment_data] ? summary.dig(:employment, "employer_name") : nil %>
+    <h3><%= t(".table_caption_no_name", number: index + 1) %>: <%= employer_name %></h3>
 
     <%= render(TableComponent.new) do |table| %>
       <%= table.with_header do %>
-        <h3 class="margin-0"><%= summary[:employer_name] %> Employment Information</h3>
+        <h3 class="margin-0">
+          <% if employer_name %>
+            <%= employer_name %> &mdash;
+          <% end %>
+          Employment Information
+        </h3>
       <% end %>
       <% if summary[:has_employment_data] %>
-        <%= table.with_data_point(:employer_phone, summary[:employment]["employer_phone_number"]["value"]) %>
-        <%= table.with_data_point(:employer_address, summary[:employment]["employer_address"]["raw"]) %>
+        <%= table.with_data_point(:employer_phone, summary.dig(:employment, "employer_phone_number", "value")) %>
+        <%= table.with_data_point(:employer_address, summary.dig(:employment, "employer_address", "raw")) %>
         <%= table.with_data_point(:employment_status, summary[:employment]["status"]) %>
         <%= table.with_data_point(:employment_start_date, summary[:employment]["start_date"]) %>
         <%= table.with_data_point(:employment_end_date, summary[:employment]["termination_date"]) %>
@@ -54,7 +60,11 @@
     <% summary[:payments].each do |payment| %>
       <%= render(TableComponent.new) do |table| %>
         <%= table.with_header do %>
-          <h3 class="margin-0"><%= summary[:employer_name] %> Pay Date: <%= format_date(payment[:pay_date]) %></h3>
+          <h3 class="margin-0">
+            <% if employer_name %>
+              <%= employer_name %> &mdash;
+            <% end %>
+            Pay Date: <%= format_date(payment[:pay_date]) %></h3>
         <% end %>
         <%= table.with_data_point(:pay_period, payment[:start], payment[:end]) %>
         <%= table.with_data_point(:pay_gross, payment[:gross_pay_amount]) %>
