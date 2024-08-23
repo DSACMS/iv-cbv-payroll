@@ -13,12 +13,12 @@
   <p><%= t(".check_status") %></p>
 </div>
 
-<%= link_to cbv_flow_summary_path(format: "pdf"), target: "_blank", class: "usa-button margin-top-3 usa-button--primary" do %>
+<%= link_to cbv_flow_summary_path(format: "pdf"), target: "_blank", rel: "noopener noreferrer", class: "usa-button margin-top-3 usa-button--primary" do %>
   <%= t(".download") %>
 <% end %>
 
 <div>
-  <%= link_to agency_url, target: "_blank", class: "usa-button margin-top-3 usa-button usa-button--outline" do %>
+  <%= link_to agency_url, target: "_blank", rel: "noopener noreferrer", class: "usa-button margin-top-3 usa-button usa-button--outline" do %>
     <%= t(".back_to_agency", agency_short_name: current_site.agency_short_name) %>
   <% end %>
 </div>
