@@ -1,39 +1,82 @@
-<p>
-  <%= t('.case_number', case_number: @cbv_flow.case_number) %>
-</p>
-<p>
-  <%= t('.document_timestamp', timestamp: format_view_datetime(Time.now.to_s)) %></p>
-<h2>
-  <%= t('.header') %>
-</h2>
+<h1><%= t(".pdf.client.header") %></h1>
+
+<p><%= t(".pdf.client.description") %></p>
+
+<h2><%= t(".pdf.client.client_report_information") %></h2>
+
+<%= render(TableComponent.new) do |table| %>
+  <%= table.with_header do %>
+    <h3 class="margin-0">Report details</h3>
+  <% end %>
+  <% if @cbv_flow.confirmation_code.present? %>
+    <%= table.with_row(
+      label: t(".confirmation_code"),
+      value: @cbv_flow.confirmation_code)
+    %>
+  <% end %>
+  <%= table.with_row(
+    label: t(".application_or_recertification_date"),
+    value: format_parsed_date(@cbv_flow.cbv_flow_invitation.snap_application_date))
+  %>
+  <%= table.with_row(
+    label: t(".pdf.client.date_created"),
+    value: format_parsed_date(@cbv_flow.consented_to_authorized_use_at))
+  %>
+  <%= table.with_row(
+    label: t(".pdf.client.date_range"),
+    value: "#{format_parsed_date(@cbv_flow.cbv_flow_invitation.paystubs_query_begins_at)} to #{format_parsed_date(@cbv_flow.cbv_flow_invitation.snap_application_date)}")
+  %>
+<% end %>
+
+<h2><%= t(".pdf.client.employment_payment_details") %></h2>
 
 <% if @payments.any? %>
-  <p>
-    <%= t(".description", summary_start_date: @summary_start_date, summary_end_date: @summary_end_date) %>
-  </p>
-  <h3 class="site-preview-heading">
-  <%= t('.total_payments', amount: format_money(@payments.reduce(0) { |sum, payment| sum + payment[:gross_pay_amount] })) %></h3>
+  <% payments_grouped_by_employer.each_with_index do |(account_id, summary), index| %>
+    <h3><%= t(".table_caption_no_name", number: index + 1) %>: <%= summary[:employer_name] %></h3>
 
-  <div class="usa-accordion usa-accordion--multiselectable margin-bottom-4" data-allow-multiple>
-    <% @payments.each_with_index do |payment, index| %>
-      <div class="usa-accordion__heading">
-        <%= payment[:employer] %>: <%= t('.payment_of', amount: format_money(payment[:gross_pay_amount])) %>
-      </div>
-      <div id="<%= index %>" class="usa-accordion__content usa-prose">
-        <p>
-          <%= t('.time_range', hours: payment[:hours], start: format_date(payment[:start]), end: format_date(payment[:end])) %>
-        </p>
-      </div>
+    <%= render(TableComponent.new) do |table| %>
+      <%= table.with_header do %>
+        <h3 class="margin-0"><%= summary[:employer_name] %> Employment Information</h3>
+      <% end %>
+      <% if summary[:has_employment_data] %>
+        <%= table.with_data_point(:employer_phone, summary[:employment]["employer_phone_number"]["value"]) %>
+        <%= table.with_data_point(:employer_address, summary[:employment]["employer_address"]["raw"]) %>
+        <%= table.with_data_point(:employment_status, summary[:employment]["status"]) %>
+        <%= table.with_data_point(:employment_start_date, summary[:employment]["start_date"]) %>
+        <%= table.with_data_point(:employment_end_date, summary[:employment]["termination_date"]) %>
+      <% end %>
+      <% if summary[:has_income_data] %>
+        <%= table.with_data_point(:pay_frequency, summary[:income]["pay_frequency"]&.humanize) %>
+        <%= table.with_data_point(:hourly_rate, summary[:income]["compensation_amount"], summary[:income]["compensation_unit"]) %>
+      <% end %>
     <% end %>
-  </div>
+
+    <% summary[:payments].each do |payment| %>
+      <%= render(TableComponent.new) do |table| %>
+        <%= table.with_header do %>
+          <h3 class="margin-0"><%= summary[:employer_name] %> Pay Date: <%= format_date(payment[:pay_date]) %></h3>
+        <% end %>
+        <%= table.with_data_point(:pay_period, payment[:start], payment[:end]) %>
+        <%= table.with_data_point(:pay_gross, payment[:gross_pay_amount]) %>
+        <%= table.with_data_point(:net_pay_amount, payment[:net_pay_amount]) %>
+        <%= table.with_data_point(:number_of_hours_worked, payment[:hours]) %>
+
+        <% payment[:deductions].filter { |deduction| deduction[:amount] > 0 }.each do |deduction| %>
+          <%= table.with_data_point(:deduction, deduction[:category], deduction[:amount]) %>
+        <% end %>
+
+        <%= table.with_data_point(:pay_gross_ytd, payment[:gross_pay_ytd]) %>
+      <% end %>
+    <% end %>
+
+    <% if @cbv_flow.additional_information.dig(account_id, "comment").present? %>
+      <h2><%= t('.additional_information_title') %></h2>
+
+      <p><%= @cbv_flow.additional_information.dig(account_id, "comment") %></p>
+    <% end %>
+  <% end %>
 <% else %>
   <h3 class="site-preview-heading">
     <%= t('.none_found') %>
   </h3>
-<% end %>
-
-<% if @cbv_flow.additional_information.present? %>
-  <h2><%= t('.additional_information_title') %></h2>
-
-  <p><%= @cbv_flow.additional_information %></p>
 <% end %>

@@ -1,8 +1,8 @@
 require "rails_helper"
 
 RSpec.describe Caseworker::CbvFlowInvitationsController do
-  let(:nyc_user) { User.create(email: "test@test.com", site_id: 'nyc') }
-  let(:ma_user) { User.create(email: "test@test.com", site_id: 'ma') }
+  let(:nyc_user) { create(:user, email: "test@test.com", site_id: 'nyc') }
+  let(:ma_user) { create(:user, email: "test@test.com", site_id: 'ma') }
   let(:invite_secret) { "FAKE_INVITE_SECRET" }
   let(:ma_params) { { site_id: "ma", secret: invite_secret } }
   let(:nyc_params) { { site_id: "nyc", secret: invite_secret } }
@@ -78,7 +78,6 @@ RSpec.describe Caseworker::CbvFlowInvitationsController do
     before do
       allow_any_instance_of(CbvInvitationService)
         .to receive(:invite)
-        .with(ActionController::Parameters.new(email_address: "test@example.com", case_number: "ABC1234", site_id: site_id).permit!)
     end
 
     context "without authentication" do
@@ -103,7 +102,7 @@ RSpec.describe Caseworker::CbvFlowInvitationsController do
       it "sends an invitation" do
         expect_any_instance_of(CbvInvitationService)
           .to receive(:invite)
-          .with(ActionController::Parameters.new(email_address: "test@example.com", case_number: "ABC1234", site_id: site_id).permit!)
+          .with(hash_including(email_address: "test@example.com", case_number: "ABC1234", site_id: site_id), nyc_user)
 
         post :create, params: valid_params
 
@@ -120,14 +119,14 @@ RSpec.describe Caseworker::CbvFlowInvitationsController do
         before do
           allow_any_instance_of(CbvInvitationService)
             .to receive(:invite)
-            .with(ActionController::Parameters.new(email_address: "bad-email@", case_number: "ABC1234", site_id: site_id).permit!)
+            .with(hash_including(email_address: "bad-email@", case_number: "ABC1234", site_id: site_id), nyc_user)
             .and_raise(StandardError.new("Some random error, like a bad email address or something."))
         end
 
         it "redirects back to the invitation form with the error" do
           expect_any_instance_of(CbvInvitationService)
             .to receive(:invite)
-            .with(ActionController::Parameters.new(email_address: "bad-email@", case_number: "ABC1234", site_id: site_id).permit!)
+            .with(hash_including(email_address: "bad-email@", case_number: "ABC1234", site_id: site_id), nyc_user)
 
           post :create, params: broken_params
 

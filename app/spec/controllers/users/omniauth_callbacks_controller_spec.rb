@@ -29,8 +29,17 @@ RSpec.describe Users::OmniauthCallbacksController do
       expect(controller.current_user).to eq(new_user)
     end
 
+    it "tracks a NewRelic event" do
+      expect(NewRelicEventTracker).to receive(:track).with("CaseworkerLogin", {
+        site_id: "ma",
+        user_id: be_a(Integer)
+      })
+
+      post :ma_dta
+    end
+
     context "when the user already has authenticated before" do
-      let!(:existing_user) { User.create(email: test_email, site_id: "ma") }
+      let!(:existing_user) { create(:user, email: test_email, site_id: "ma") }
 
       it "logs the user into the existing User" do
         expect { post :ma_dta }
@@ -52,7 +61,7 @@ RSpec.describe Users::OmniauthCallbacksController do
     # Re-using the same email across multiple sites should be only
     # useful to us in development/demo.
     context "when the user already has a sandbox account" do
-      let!(:existing_user) { User.create(email: test_email, site_id: "sandbox") }
+      let!(:existing_user) { create(:user, email: test_email, site_id: "sandbox") }
 
       it "creates a new User for the ma_dta site" do
         expect { post :ma_dta }

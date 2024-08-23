@@ -4,25 +4,28 @@
 </h1>
 
 <div data-controller="cbv-employer-search">
-  <p class="line-height-sans-5"><%= t(".search_for_employer") %></p>
-  <p class="line-height-sans-5"><%= t(".to_access") %></p>
-  <ul class="line-height-sans-5">
-    <li><%= t(".to_access_li_1_html") %></li>
-    <li><%= t(".to_access_li_2_html") %></li>
-    <li><%= t(".to_access_li_3_html") %></li>
-  </ul>
+  <div class="usa-prose">
+    <p class="line-height-sans-5"><%= t(".search_for_employer") %></p>
+    <p class="line-height-sans-5"><%= t(".to_access") %></p>
+    <ul class="line-height-sans-5">
+      <li><%= t(".to_access_li_1_html") %></li>
+      <li><%= t(".to_access_li_2_html") %></li>
+      <li><%= t(".to_access_li_3_html") %></li>
+    </ul>
 
-  <p><%= t(".you_ll_go") %></p>
-  <div class="grid-row grid-gap-md">
+    <p><%= t(".you_ll_go") %></p>
+    <div class="grid-row grid-gap-md">
       <div class="grid-col-auto">
-        <svg class="usa-icon text-primary" aria-hidden="true" focusable="false" role="img">
-         <use xlink:href="<%= asset_path("@uswds/uswds/dist/img/sprite.svg#help") %>"></use>
+        <svg class="usa-icon usa-icon--size-3 text-primary text-bottom" aria-hidden="true" focusable="false" role="img">
+          <use xlink:href="<%= asset_path("@uswds/uswds/dist/img/sprite.svg#help") %>"></use>
         </svg>
       </div>
-      <div class="grid-col line-height-sans-5">
+      <div class="grid-col tablet:grid-col-8 line-height-sans-5">
         <%= t(".what_is_html") %>
       </div>
     </div>
+  </div>
+
   <%= form_with url: cbv_flow_employer_search_path, method: :get, class: "usa-search usa-search--big margin-y-4", html: { role: "search" }, data: { turbo_frame: "employers", turbo_action: "advance" } do |f| %>
     <%= f.label :query, "Search for your employer", class: "usa-sr-only" %>
     <%= f.text_field :query, value: @query, class: "usa-input", type: "search", data: { "cbv-employer-search-target": "searchTerms" } %>
