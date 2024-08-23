@@ -83,7 +83,7 @@ RSpec.describe Cbv::EntriesController do
             expect { get :show, params: { token: invitation.auth_token } }
               .not_to change { session[:cbv_flow_id] }
 
-            expect(response).to redirect_to(cbv_flow_expired_invitation_path)
+            expect(response).to redirect_to(cbv_flow_expired_invitation_path(site_id: invitation.site_id))
           end
         end
       end
@@ -124,7 +124,7 @@ RSpec.describe Cbv::EntriesController do
           expect { get :show, params: { token: invitation.auth_token } }
             .not_to change { session[:cbv_flow_id] }
 
-          expect(response).to redirect_to(cbv_flow_expired_invitation_path)
+          expect(response).to redirect_to(cbv_flow_expired_invitation_path(site_id: invitation.site_id))
         end
       end
     end
