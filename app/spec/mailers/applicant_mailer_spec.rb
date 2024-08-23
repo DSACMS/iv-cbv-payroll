@@ -29,7 +29,7 @@ RSpec.describe ApplicantMailer, type: :mailer do
   end
 
   it "renders the body" do
-    expect(mail.body.encoded).to match(I18n.t('applicant_mailer.invitation_email.body_html',
+    expect(mail.body.encoded).to match(I18n.t('applicant_mailer.invitation_email.body_html.default',
       agency_acronym: 'CBV',
       deadline: "July 21, 2024")
     )
@@ -40,7 +40,7 @@ RSpec.describe ApplicantMailer, type: :mailer do
 
     it "renders the body" do
       expect(mail.body.encoded).to match(I18n.t('applicant_mailer.invitation_email.header.nyc'))
-      expect(mail.body.encoded).to match(I18n.t('applicant_mailer.invitation_email.body_html',
+      expect(mail.body.encoded).to match(I18n.t('applicant_mailer.invitation_email.body_html.nyc',
         agency_acronym: 'HRA',
         deadline: "July 21, 2024")
       )
@@ -52,7 +52,7 @@ RSpec.describe ApplicantMailer, type: :mailer do
 
     it "renders the body" do
       expect(mail.body.encoded).to match(I18n.t('applicant_mailer.invitation_email.header.ma'))
-      expect(mail.body.encoded).to match(I18n.t('applicant_mailer.invitation_email.body_html',
+      expect(mail.body.encoded).to match(I18n.t('applicant_mailer.invitation_email.body_html.default',
         agency_acronym: 'DTA',
         deadline: "July 21, 2024")
       )
