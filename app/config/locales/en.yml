@@ -83,8 +83,14 @@ en:
         step_4_title: Once the client verifies their income, you'll receive their income information.
   caseworker_mailer:
     summary_email:
-      body: Applicant has submitted their income verification. Please find the attached PDF.
-      subject: 'Applicant Income Verification: %{case_number}'
+      body:
+        sandbox: "Hello,<br/><br/>Attached is an Income Verification Report PDF with confirmation number %{confirmation_code}. This confirmation number has been shared with the client and is used to confirm that their information has been submitted to Test Agency.<br/><br/>This report is associated with the case number %{case_number} and CIN %{client_id_number} It was requested by %{caseworker_email} on %{cbv_flow_invitation_created_at}, and submitted by the client on ${cbv_flow_transmitted_at}.<br/><br/>Test Agency document indexers please follow these steps:<br/><ul><li>Upload the attached PDF to the relevant case in the case management system.</li><li>Notify the requesting Test Agency staff member once the PDF has been linked to the case.</li></ul><br/><br/>This document is for Test Agency staff only and should not be shared outside the agency.<br/><br/>Thank you."
+        ma_html: "Hello,<br/><br/>Attached is an Income Verification Report PDF with confirmation number %{confirmation_code}. This confirmation number has been shared with the client and is used to confirm that their information has been submitted to HRA.<br/><br/>This report is associated with the case number %{case_number} and CIN %{client_id_number} It was requested by %{caseworker_email} on %{cbv_flow_invitation_created_at}, and submitted by the client on ${cbv_flow_transmitted_at}.<br/><br/>NYC document indexers please follow these steps:<br/><ul><li>Upload the attached PDF to the relevant case in the case management system.</li><li>Notify the requesting HRA staff member once the PDF has been linked to the case.</li></ul><br/><br/>This document is for NYC HRA staff only and should not be shared outside the agency.<br/><br/>Thank you."
+        nyc_html: Applicant has submitted their income verification. Please find the attached PDF.
+      subject:
+        sandbox: 'Income Verification Report for case number %{case_number}'
+        ma: 'Applicant Income Verification: %{case_number}'
+        nyc: 'Income Verification Report %{case_number} has been received'
   cbv:
     add_jobs:
       create:

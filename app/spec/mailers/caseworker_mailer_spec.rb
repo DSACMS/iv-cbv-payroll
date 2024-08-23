@@ -18,6 +18,7 @@ RSpec.describe CaseworkerMailer, type: :mailer do
   }
 
   it 'renders the subject with case number' do
+    puts mail.to_hash
     expect(mail.subject).to eq(I18n.t('caseworker_mailer.summary_email.subject', case_number: cbv_flow.case_number))
   end
 

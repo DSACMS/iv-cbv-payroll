@@ -1,6 +1,7 @@
 class CaseworkerMailer < ApplicationMailer
   helper "cbv/reports"
   helper :view
+
   before_action :set_params
 
   def summary_email
@@ -9,8 +10,8 @@ class CaseworkerMailer < ApplicationMailer
     attachments[filename] = generate_pdf
     mail(
       to: @email_address,
-      subject: I18n.t("caseworker_mailer.summary_email.subject", case_number: @cbv_flow.case_number),
-      body: I18n.t("caseworker_mailer.summary_email.body")
+      subject: site_translation("caseworker_mailer.summary_email.subject"),
+      body: generate_body
     )
   end
 
@@ -29,5 +30,15 @@ class CaseworkerMailer < ApplicationMailer
     WickedPdf.new.pdf_from_string(
       render_to_string(template: "cbv/summaries/show", layout: "pdf", formats: [ :pdf ])
     )
+  end
+
+  def generate_body
+    site_translation("caseworker_mailer.summary_email.body_html",
+       case_number: @cbv_flow.case_number,
+       cbv_flow_transmitted_at: @cbv_flow.transmitted_at.strftime("%m/%d/%Y"),
+       cbv_flow_invitation_created_at: @cbv_flow.cbv_flow_invitation.created_at.strftime("%m/%d/%Y"),
+       confirmation_code: @cbv_flow.confirmation_code,
+       client_id_number: @cbv_flow.client_id_number,
+       caseworker_email: @cbv_flow.user.email)
   end
 end
