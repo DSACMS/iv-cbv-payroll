@@ -38,6 +38,7 @@ Rails.application.configure do
   # config.asset_host = "http://assets.example.com"
 
   routes.default_url_options[:host] = ENV["DOMAIN_NAME"]
+  config.hosts << ENV["DOMAIN_NAME"]
 
   # Specifies the header that your server uses for sending files.
   # config.action_dispatch.x_sendfile_header = "X-Sendfile" # for Apache
