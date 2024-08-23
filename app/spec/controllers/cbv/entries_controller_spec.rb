@@ -36,7 +36,7 @@ RSpec.describe Cbv::EntriesController do
                 .from(nil)
                 .to(be_an(Integer))
 
-        cbv_flow = invitation.cbv_flow
+        cbv_flow = invitation.cbv_flows.first
         expect(cbv_flow).to have_attributes(
           case_number: "ABC1234",
           cbv_flow_invitation: invitation
@@ -47,7 +47,7 @@ RSpec.describe Cbv::EntriesController do
         allow(NewRelicEventTracker).to receive(:track)
 
         get :show, params: { token: invitation.auth_token }
-        cbv_flow = invitation.cbv_flow
+        cbv_flow = invitation.cbv_flows.first
 
         expect(NewRelicEventTracker).to have_received(:track).with("ClickedCBVInvitationLink", {
           timestamp: be_a(Integer),
@@ -59,41 +59,12 @@ RSpec.describe Cbv::EntriesController do
       end
 
       context "when returning to an already-visited flow invitation" do
-        let(:existing_cbv_flow) { create(:cbv_flow, cbv_flow_invitation: invitation) }
+        let!(:existing_cbv_flow) { create(:cbv_flow, cbv_flow_invitation: invitation) }
 
-        it "uses the existing CbvFlow object" do
-          expect { get :show, params: { token: invitation.auth_token } }
-            .to change { session[:cbv_flow_id] }
-                  .from(nil)
-                  .to(existing_cbv_flow.id)
-        end
+        it "creates a new CbvFlow object" do
+          get :show, params: { token: invitation.auth_token }
 
-        context "when the CbvFlow has already linked a employer/employers" do
-          let!(:older_connected_account) do
-            create(:pinwheel_account,
-              cbv_flow: existing_cbv_flow,
-              pinwheel_account_id: SecureRandom.uuid,
-              created_at: 15.minutes.ago
-            )
-          end
-          let!(:connected_account) do
-            create(:pinwheel_account,
-              cbv_flow: existing_cbv_flow,
-              pinwheel_account_id: SecureRandom.uuid,
-              created_at: 4.minutes.ago
-            )
-          end
-
-          it "redirects to the payment details page for the more recently linked employer" do
-            expect { get :show, params: { token: invitation.auth_token } }
-              .to change { session[:cbv_flow_id] }
-              .from(nil)
-              .to(existing_cbv_flow.id)
-
-            expect(response).to redirect_to(
-              cbv_flow_payment_details_path(user: { account_id: connected_account.pinwheel_account_id })
-            )
-          end
+          expect(session[:cbv_flow_id]).not_to eq(existing_cbv_flow.id)
         end
 
         context "when the CbvFlow was already completed" do
@@ -117,8 +88,9 @@ RSpec.describe Cbv::EntriesController do
         end
       end
 
-      context "when there is already a CbvFlow in the session" do
-        let(:other_cbv_flow) { create(:cbv_flow, case_number: "ZZZ0000", site_id: "sandbox") }
+      context "when there is a CbvFlow from a different invitation in the session" do
+        let(:other_invitation) { create(:cbv_flow_invitation) }
+        let(:other_cbv_flow) { create(:cbv_flow, cbv_flow_invitation: other_invitation) }
 
         before do
           session[:cbv_flow_id] = other_cbv_flow.id

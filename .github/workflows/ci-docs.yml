@@ -3,9 +3,11 @@ name: CI Documentation Checks
 on:
   push:
     branches: [ main ]
-    paths: ['app/**']
+    paths:
+      - '**/*.md'
   pull_request:
-    paths: ['app/**']
+    paths:
+      - '**/*.md'
 
 jobs:
   lint-markdown:

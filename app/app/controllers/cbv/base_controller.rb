@@ -13,12 +13,11 @@ class Cbv::BaseController < ApplicationController
       if invitation.expired?
         return redirect_to(cbv_flow_expired_invitation_path)
       end
-
-      @cbv_flow = invitation.cbv_flow || CbvFlow.create_from_invitation(invitation)
-      if @cbv_flow.complete?
+      if invitation.complete?
         return redirect_to(cbv_flow_expired_invitation_path)
       end
 
+      @cbv_flow = CbvFlow.create_from_invitation(invitation)
       session[:cbv_flow_id] = @cbv_flow.id
       NewRelicEventTracker.track("ClickedCBVInvitationLink", {
         timestamp: Time.now.to_i,
@@ -27,13 +26,6 @@ class Cbv::BaseController < ApplicationController
         site_id: @cbv_flow.site_id,
         seconds_since_invitation: (Time.now - invitation.created_at).to_i
       })
-
-      if @cbv_flow.pinwheel_accounts.any?
-        latest_connected_account = @cbv_flow.pinwheel_accounts.order(created_at: :desc).first
-        redirect_to cbv_flow_payment_details_path(
-          user: { account_id: latest_connected_account.pinwheel_account_id }
-        )
-      end
     elsif session[:cbv_flow_id]
       begin
         @cbv_flow = CbvFlow.find(session[:cbv_flow_id])
