@@ -249,6 +249,7 @@ GEM
       net-smtp
     marcel (1.0.4)
     matrix (0.4.2)
+    method_source (1.1.0)
     mini_mime (1.1.5)
     minitest (5.24.1)
     msgpack (1.7.2)
@@ -381,7 +382,7 @@ GEM
     responders (3.1.1)
       actionpack (>= 5.2)
       railties (>= 5.2)
-    rexml (3.3.4)
+    rexml (3.3.6)
       strscan
     rspec-core (3.13.0)
       rspec-support (~> 3.13.0)
@@ -479,6 +480,10 @@ GEM
     unicode-display_width (2.5.0)
     uri (0.13.0)
     version_gem (1.1.4)
+    view_component (3.13.0)
+      activesupport (>= 5.2.0, < 8.0)
+      concurrent-ruby (~> 1.0)
+      method_source (~> 1.0)
     warden (1.2.9)
       rack (>= 2.0.9)
     web-console (4.2.1)
@@ -540,7 +545,7 @@ DEPENDENCIES
   rails-controller-testing
   rails-erd (~> 1.7)
   redis (~> 4.0)
-  rexml (~> 3.3.3)
+  rexml (~> 3.3.6)
   rspec-rails (~> 6.1)
   rubocop
   rubocop-rails-omakase
@@ -552,6 +557,7 @@ DEPENDENCIES
   timecop
   turbo-rails
   tzinfo-data
+  view_component
   web-console
   webmock
   wicked_pdf

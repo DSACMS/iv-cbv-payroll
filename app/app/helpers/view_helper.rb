@@ -9,11 +9,18 @@ module ViewHelper
     link_to t("shared.languages.#{locale_string}"), root_path(locale: locale_string), class: link_classes
   end
 
+  def format_parsed_date(date)
+    begin
+      date.strftime(DATE_FORMAT)
+    rescue => e
+      date
+    end
+  end
+
   def format_date(timestamp_string)
     begin
       Time.parse(timestamp_string).strftime(DATE_FORMAT)
     rescue => e
-      "Invalid timestamp"
       timestamp_string
     end
   end

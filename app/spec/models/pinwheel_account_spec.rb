@@ -3,9 +3,9 @@ require 'rails_helper'
 RSpec.describe PinwheelAccount, type: :model do
   let(:account_id) { SecureRandom.uuid }
   let(:supported_jobs) { %w[income paystubs employment] }
-  let!(:cbv_flow) { CbvFlow.create!(case_number: "ABC1234", pinwheel_token_id: "abc-def-ghi", site_id: "sandbox") }
+  let!(:cbv_flow) { create(:cbv_flow, case_number: "ABC1234", pinwheel_token_id: "abc-def-ghi", site_id: "sandbox") }
   let!(:pinwheel_account) do
-    PinwheelAccount.create!(
+    create(:pinwheel_account,
       cbv_flow: cbv_flow,
       pinwheel_account_id: account_id,
       supported_jobs: supported_jobs,

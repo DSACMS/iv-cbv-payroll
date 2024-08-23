@@ -17,7 +17,7 @@ RSpec.describe DataRetentionService do
 
   describe "#redact_invitations" do
     let!(:cbv_flow_invitation) do
-      CbvFlowInvitation.create!(cbv_flow_props)
+      create(:cbv_flow_invitation, cbv_flow_props)
     end
     let(:service) { DataRetentionService.new }
     let(:now) { Time.now }
@@ -54,7 +54,7 @@ RSpec.describe DataRetentionService do
 
   describe "#redact_incomplete_cbv_flows" do
     let!(:cbv_flow_invitation) do
-      CbvFlowInvitation.create!(cbv_flow_props)
+      create(:cbv_flow_invitation, cbv_flow_props)
     end
     let!(:cbv_flow) { CbvFlow.create_from_invitation(cbv_flow_invitation) }
     let(:service) { DataRetentionService.new }
@@ -170,11 +170,16 @@ RSpec.describe DataRetentionService do
   describe ".manually_redact_by_case_number!" do
     let(:cbv_flow_invitation) { create(:cbv_flow_invitation, case_number: "DELETEME001") }
     let!(:cbv_flow) { create(:cbv_flow, cbv_flow_invitation: cbv_flow_invitation) }
+    let!(:second_cbv_flow) { create(:cbv_flow, cbv_flow_invitation: cbv_flow_invitation) }
 
-    it "redacts the invitation and the flow object" do
+    it "redacts the invitation and all flow objects" do
       DataRetentionService.manually_redact_by_case_number!("DELETEME001")
 
       expect(cbv_flow.reload).to have_attributes(
+        case_number: "REDACTED",
+        redacted_at: within(1.second).of(Time.now)
+      )
+      expect(second_cbv_flow.reload).to have_attributes(
         case_number: "REDACTED",
         redacted_at: within(1.second).of(Time.now)
       )

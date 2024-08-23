@@ -3,11 +3,19 @@ require "rails_helper"
 RSpec.describe Cbv::SummariesController do
   include PinwheelApiHelper
 
-  let(:cbv_flow) { create(:cbv_flow, case_number: "ABC1234", pinwheel_token_id: "abc-def-ghi") }
+  let(:supported_jobs) { %w[income paystubs employment] }
+  let(:flow_started_seconds_ago) { 300 }
+  let(:employment_errored_at) { nil }
+  let(:cbv_flow) { create(:cbv_flow, :with_pinwheel_account, created_at: flow_started_seconds_ago.seconds.ago, case_number: "ABC1234", supported_jobs: supported_jobs, employment_errored_at: employment_errored_at) }
   let(:cbv_flow_invitation) { cbv_flow.cbv_flow_invitation }
 
   before do
     session[:cbv_flow_invitation] = cbv_flow_invitation
+    cbv_flow.pinwheel_accounts.first.update(pinwheel_account_id: "03e29160-f7e7-4a28-b2d8-813640e030d3")
+  end
+
+  around do |ex|
+    Timecop.freeze(&ex)
   end
 
   describe "#show" do
@@ -17,6 +25,8 @@ RSpec.describe Cbv::SummariesController do
       session[:cbv_flow_id] = cbv_flow.id
       stub_request_end_user_accounts_response
       stub_request_end_user_paystubs_response
+      stub_request_employment_info_response unless employment_errored_at
+      stub_request_income_metadata_response if supported_jobs.include?("income")
     end
 
     context "when rendering views" do
@@ -39,6 +49,27 @@ RSpec.describe Cbv::SummariesController do
         get :show, format: :pdf
         expect(response).to be_successful
         expect(response.header['Content-Type']).to include 'pdf'
+      end
+
+      context "when only paystubs are supported" do
+        let(:supported_jobs) { %w[paystubs] }
+
+        it "renders pdf properly" do
+          get :show, format: :pdf
+          expect(response).to be_successful
+          expect(response.header['Content-Type']).to include 'pdf'
+        end
+      end
+
+      context "when a supported job errors" do
+        let(:supported_jobs) { %w[income paystubs employment] }
+        let(:employment_errored_at) { Time.current.iso8601 }
+
+        it "renders pdf properly" do
+          get :show, format: :pdf
+          expect(response).to be_successful
+          expect(response.header['Content-Type']).to include 'pdf'
+        end
       end
     end
 
@@ -73,13 +104,15 @@ RSpec.describe Cbv::SummariesController do
   end
 
   describe "#update" do
-    let(:nyc_user) { User.create(email: "test@test.com", site_id: 'nyc') }
+    let(:nyc_user) { create(:user, email: "test@test.com", site_id: 'nyc') }
 
     before do
       session[:cbv_flow_id] = cbv_flow.id
       sign_in nyc_user
       stub_request_end_user_accounts_response
       stub_request_end_user_paystubs_response
+      stub_request_employment_info_response
+      stub_request_income_metadata_response
     end
 
     context "without consent" do
@@ -94,7 +127,7 @@ RSpec.describe Cbv::SummariesController do
     context "with consent" do
       it "generates a new confirmation code" do
         expect(cbv_flow.confirmation_code).to be_nil
-        patch :update, params: { cbv_flow: { consent_to_authorized_use: "1" }, token: cbv_flow_invitation.auth_token }
+        patch :update, params: { cbv_flow: { consent_to_authorized_use: "1" } }
         cbv_flow.reload
         expect(cbv_flow.confirmation_code).to start_with("SANDBOX")
       end
@@ -139,6 +172,20 @@ RSpec.describe Cbv::SummariesController do
       it "redirects to success screen" do
         patch :update
         expect(response).to redirect_to({ controller: :successes, action: :show })
+      end
+
+      it "sends a NewRelic event" do
+        allow(NewRelicEventTracker).to receive(:track)
+        patch :update
+        expect(NewRelicEventTracker).to have_received(:track).with("IncomeSummarySharedWithCaseworker", {
+          timestamp: be_a(Integer),
+          site_id: cbv_flow.site_id,
+          cbv_flow_id: cbv_flow.id,
+          account_count: 1,
+          paystub_count: 1,
+          account_count_with_additional_information: 0,
+          flow_started_seconds_ago: flow_started_seconds_ago
+        })
       end
     end
   end

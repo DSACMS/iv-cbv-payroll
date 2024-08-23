@@ -26,9 +26,10 @@ class CbvFlowInvitation < ApplicationRecord
   )
 
   INVITATION_VALIDITY_TIME_ZONE = "America/New_York"
+  PAYSTUB_REPORT_RANGE = 90.days
 
-  has_one :cbv_flow
-  scope :unstarted, -> { left_outer_joins(:cbv_flow).where(cbv_flows: { id: nil }) }
+  has_many :cbv_flows
+  scope :unstarted, -> { left_outer_joins(:cbv_flows).where(cbv_flows: { id: nil }) }
 
   # Invitations are valid until 11:59pm Eastern Time on the (e.g.) 14th day
   # after sending the invitation.
@@ -43,8 +44,16 @@ class CbvFlowInvitation < ApplicationRecord
     Time.now.after?(expires_at) || redacted_at?
   end
 
+  def complete?
+    cbv_flows.any?(&:complete?)
+  end
+
   def to_url
     Rails.application.routes.url_helpers.cbv_flow_entry_url(token: auth_token)
+  end
+
+  def paystubs_query_begins_at
+    PAYSTUB_REPORT_RANGE.before(snap_application_date)
   end
 
   private
