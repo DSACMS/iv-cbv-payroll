@@ -6,6 +6,7 @@ FactoryBot.define do
     site_id { "sandbox" }
     email_address { "test@example.com" }
     snap_application_date { Date.today.strftime("%m/%d/%Y") }
+    user
 
     trait :nyc do
       site_id { "nyc" }

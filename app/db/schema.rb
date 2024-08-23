@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2024_08_14_203311) do
+ActiveRecord::Schema[7.1].define(version: 2024_08_23_182735) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -34,6 +34,8 @@ ActiveRecord::Schema[7.1].define(version: 2024_08_14_203311) do
     t.date "snap_application_date", null: false
     t.string "beacon_id"
     t.datetime "redacted_at"
+    t.bigint "user_id"
+    t.index ["user_id"], name: "index_cbv_flow_invitations_on_user_id"
   end
 
   create_table "cbv_flows", force: :cascade do |t|
@@ -95,6 +97,7 @@ ActiveRecord::Schema[7.1].define(version: 2024_08_14_203311) do
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
   end
 
+  add_foreign_key "cbv_flow_invitations", "users"
   add_foreign_key "cbv_flows", "cbv_flow_invitations"
   add_foreign_key "pinwheel_accounts", "cbv_flows"
 end
