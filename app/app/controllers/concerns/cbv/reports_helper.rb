@@ -4,7 +4,7 @@ module Cbv::ReportsHelper
   include Cbv::PaymentsHelper
 
   def payments_grouped_by_employer
-    summarize_by_employer(@payments, @employments, @incomes)
+    summarize_by_employer(@payments, @employments, @incomes, @identity)
   end
 
   def set_employments(account_id = nil)
@@ -15,11 +15,15 @@ module Cbv::ReportsHelper
     @incomes = account_id.nil? ? fetch_incomes : fetch_incomes_for_account_id(account_id)
   end
 
+  def set_identity
+    @identity = @cbv_flow.pinwheel_accounts.first.fetch_identity
+  end
+
   def total_gross_income
     @payments.reduce(0) { |sum, payment| sum + payment[:gross_pay_amount] }
   end
 
-  def summarize_by_employer(payments, employments, incomes)
+  def summarize_by_employer(payments, employments, incomes, identity)
     payments
       .each_with_object({}) do |payment, hash|
         account_id = payment[:account_id]
@@ -34,7 +38,7 @@ module Cbv::ReportsHelper
           has_employment_data: has_employment_data,
           income: has_income_data && incomes.find { |income| income["account_id"] == account_id },
           employment: has_employment_data && employments.find { |employment| employment["account_id"] == account_id },
-          identity: pinwheel_account.fetch_identity
+          identity: identity
         }
         hash[account_id][:total] += payment[:gross_pay_amount]
         hash[account_id][:payments] << payment

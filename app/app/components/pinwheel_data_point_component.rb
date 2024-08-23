@@ -101,7 +101,7 @@ class PinwheelDataPointComponent < ViewComponent::Base
   def client_full_name(full_name)
     {
       label: I18n.t("cbv.summaries.show.pdf.caseworker.client_full_name"),
-      value: address
+      value: full_name
     }
   end
 end

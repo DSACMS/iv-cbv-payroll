@@ -23,6 +23,9 @@ class CaseworkerMailer < ApplicationMailer
     @payments = params[:payments] if params[:payments]
     @employments = params[:employments]
     @incomes = params[:incomes]
+    @identity = params[:identity]
+    # shows caseworker-specific data
+    @is_caseworker = true
   end
 
   def generate_pdf

@@ -27,6 +27,7 @@ RSpec.describe Cbv::SummariesController do
       stub_request_end_user_paystubs_response
       stub_request_employment_info_response unless employment_errored_at
       stub_request_income_metadata_response if supported_jobs.include?("income")
+      stub_request_identity_response
     end
 
     context "when rendering views" do
@@ -113,6 +114,7 @@ RSpec.describe Cbv::SummariesController do
       stub_request_end_user_paystubs_response
       stub_request_employment_info_response
       stub_request_income_metadata_response
+      stub_request_identity_response
     end
 
     context "without consent" do

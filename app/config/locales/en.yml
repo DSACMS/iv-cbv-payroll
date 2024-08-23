@@ -235,6 +235,17 @@ en:
         none_found: No payments found. Please refresh the page after a few minutes.
         payment: Payment of %{amount} before taxes on %{date}
         pdf:
+          caseworker:
+            agreement_consent_timestamp: Agreement Consent Timestamp
+            case_number: Case number
+            client_full_name: Client full name (linked to payroll account)
+            client_id_number: CIN
+            description: The following income information was retrieved with the client's consent and has been submitted by them to their benefits agency. The client is also able to download a client-facing copy of this report.
+            first_name: Client's first name
+            how_to: This report includes payment information from the past 90 days. In most cases, you only need to review income from the last 30 days for eligibility purposes. Use data beyond the 30-day period only if necessary. Key fields for income verification are highlighted in yellow.
+            how_to_header: 'How to use this report:'
+            last_name: Client's last name
+            middle_name: Client's middle name
           client:
             address: Employer address
             client_report_information: Client and Report Information
@@ -243,14 +254,6 @@ en:
             description: We have collected your income information with your consent and sent it to your benefits agency. Any additional income that you weren't able to add to this report should be shared separately with your benefits agency.
             employment_payment_details: Employment and payment details
             header: Income Verification Report
-          caseworker:
-            case_number: Case number
-            client_id_number: CIN
-            full_name: Client's full name
-            first_name: Client's first name
-            last_name: Client's last name
-            client_full_name: Client full name (linked to payroll account)
-            middle_name: Client's middle name
           shared:
             confirmation_code: Confirmation code
         phone_number: Employer phone

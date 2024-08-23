@@ -55,4 +55,34 @@ module TestHelpers
       }
     end
   end
+
+  def stub_identity(account_id = SecureRandom.uuid)
+    {
+      "id" => "9583558c-f54c-455d-9519-554416106a0a",
+      "created_at" => "2024-08-23T19:26:34.541298+00:00",
+      "updated_at" => "2024-08-23T19:26:34.541298+00:00",
+      "account_id" => "5eea137d-064f-4e0a-85a5-187a812b298b",
+      "full_name" => "Ash Userton",
+      "emails" => [
+        "user_good@example.com"
+      ],
+      "date_of_birth" => "1993-08-28",
+      "last_four_ssn" => "1234",
+      "address" => {
+        "raw" => "20429 Pinwheel Drive, New York City, NY 99999",
+        "line1" => "20429 Pinwheel Drive",
+        "line2" => nil,
+        "city" => "New York City",
+        "state" => "NY",
+        "postal_code" => "99999",
+        "country" => "US"
+      },
+      "phone_numbers" => [
+        {
+          "value" => "+12345556789",
+          "type" => nil
+        }
+      ]
+    }
+  end
 end

@@ -27,7 +27,7 @@ class PinwheelAccount < ApplicationRecord
   end
 
   def fetch_identity
-    pinwheel_for(cbv_flow).fetch_identity(account_id: pinwheel_account_id)
+    pinwheel_for(cbv_flow).fetch_identity(account_id: pinwheel_account_id)["data"]
   end
 
   def site_config
