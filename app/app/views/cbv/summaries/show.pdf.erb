@@ -1,7 +1,7 @@
 <h1><%= t(".pdf.client.header") %></h1>
 
-<% if @is_caseworker %>
-  <p><%= @is_caseworker ? t(".pdf.caseworker.description") : t(".pdf.client.description") %></p>
+<% if is_caseworker %>
+  <p><%= is_caseworker ? t(".pdf.caseworker.description") : t(".pdf.client.description") %></p>
   <div class="usa-alert usa-alert--info">
     <div class="usa-alert__body">
       <p class="usa-alert__text">
@@ -16,7 +16,7 @@
 
 <h2><%= t(".pdf.client.client_report_information") %></h2>
 
-<% if @is_caseworker %>
+<% if is_caseworker %>
   <%= render(TableComponent.new) do |table| %>
     <%= table.with_header do %>
       <h3 class="margin-0">Client Information</h3>
@@ -66,7 +66,7 @@
     label: t(".pdf.client.date_range"),
     value: "#{format_parsed_date(@cbv_flow.cbv_flow_invitation.paystubs_query_begins_at)} to #{format_parsed_date(@cbv_flow.cbv_flow_invitation.snap_application_date)}")
   %>
-  <% if @is_caseworker %>
+  <% if is_caseworker %>
     <%= table.with_row(
       label: t(".pdf.caseworker.agreement_consent_timestamp"),
       value: @cbv_flow.consented_to_authorized_use_at)
@@ -84,7 +84,7 @@
       <%= table.with_header do %>
         <h3 class="margin-0"><%= summary[:employer_name] %> Employment Information</h3>
       <% end %>
-      <% if @is_caseworker %>
+      <% if is_caseworker %>
         <%= table.with_data_point(:client_full_name, summary[:identity]["full_name"]) %>
       <% end %>
       <% if summary[:has_employment_data] %>

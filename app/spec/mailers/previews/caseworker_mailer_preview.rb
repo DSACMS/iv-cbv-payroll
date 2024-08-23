@@ -9,7 +9,7 @@ class CaseworkerMailerPreview < BaseMailerPreview
     payments = stub_post_processed_payments(cbv_flow.pinwheel_accounts.first.pinwheel_account_id)
     employments = stub_employments(cbv_flow.pinwheel_accounts.first.pinwheel_account_id)
     incomes = stub_incomes(cbv_flow.pinwheel_accounts.first.pinwheel_account_id)
-    identity = stub_identities(cbv_flow.pinwheel_accounts.first.pinwheel_account_id)
-    CaseworkerMailer.with(cbv_flow: cbv_flow, case_number: "12345", payments: payments, employments: employments, incomes: incomes, identity: identity).summary_email
+    identities = stub_identities(cbv_flow.pinwheel_accounts.first.pinwheel_account_id)
+    CaseworkerMailer.with(cbv_flow: cbv_flow, case_number: "12345", payments: payments, employments: employments, incomes: incomes, identities: identities).summary_email
   end
 end
