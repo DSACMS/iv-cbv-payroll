@@ -17,7 +17,7 @@ RSpec.describe DataRetentionService do
 
   describe "#redact_invitations" do
     let!(:cbv_flow_invitation) do
-      CbvFlowInvitation.create!(cbv_flow_props)
+      create(:cbv_flow_invitation, cbv_flow_props)
     end
     let(:service) { DataRetentionService.new }
     let(:now) { Time.now }
@@ -54,7 +54,7 @@ RSpec.describe DataRetentionService do
 
   describe "#redact_incomplete_cbv_flows" do
     let!(:cbv_flow_invitation) do
-      CbvFlowInvitation.create!(cbv_flow_props)
+      create(:cbv_flow_invitation, cbv_flow_props)
     end
     let!(:cbv_flow) { CbvFlow.create_from_invitation(cbv_flow_invitation) }
     let(:service) { DataRetentionService.new }
