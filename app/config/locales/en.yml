@@ -276,6 +276,7 @@ en:
     banner:
       lock: Lock
       locked_padlock: A locked padlock
+    error_unauthorized: The URL you're accessing is forbidden for the current user. Please verify you are logged in as the correct user and try accessing the URL again.
     footer:
       feedback: Report feedback or bugs
     header:
