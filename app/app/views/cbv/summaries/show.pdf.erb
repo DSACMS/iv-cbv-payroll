@@ -6,11 +6,37 @@
 
 <%= render(TableComponent.new) do |table| %>
   <%= table.with_header do %>
+    <h3 class="margin-0">Client Information</h3>
+  <% end %>
+  <%= table.with_row(
+    label: t(".pdf.caseworker.first_name"),
+    value: @cbv_flow.cbv_flow_invitation.first_name
+  ) %>
+  <%= table.with_row(
+    label: t(".pdf.caseworker.middle_name"),
+    value: @cbv_flow.cbv_flow_invitation.middle_name
+  ) %>
+  <%= table.with_row(
+    label: t(".pdf.caseworker.last_name"),
+    value: @cbv_flow.cbv_flow_invitation.last_name
+  ) %>
+  <%= table.with_row(
+    label: t(".pdf.caseworker.client_id_number"),
+    value: @cbv_flow.cbv_flow_invitation.client_id_number
+  ) %>
+  <%= table.with_row(
+    label: t(".pdf.caseworker.case_number"),
+    value: @cbv_flow.cbv_flow_invitation.case_number
+  ) %>
+<% end %>
+
+<%= render(TableComponent.new) do |table| %>
+  <%= table.with_header do %>
     <h3 class="margin-0">Report details</h3>
   <% end %>
   <% if @cbv_flow.confirmation_code.present? %>
     <%= table.with_row(
-      label: t(".confirmation_code"),
+      label: t(".pdf.shared.confirmation_code"),
       value: @cbv_flow.confirmation_code)
     %>
   <% end %>

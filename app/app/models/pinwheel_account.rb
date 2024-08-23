@@ -25,4 +25,19 @@ class PinwheelAccount < ApplicationRecord
 
     supported_jobs.include?(job) && send(error_column).blank?
   end
+
+  def fetch_identity
+    pinwheel_for(cbv_flow).fetch_identity(account_id: pinwheel_account_id)
+  end
+
+  def site_config
+    Rails.application.config.sites
+  end
+
+  def pinwheel_for(cbv_flow)
+    api_key = site_config[cbv_flow.site_id].pinwheel_api_token
+    environment = site_config[cbv_flow.site_id].pinwheel_environment
+
+    PinwheelService.new(api_key, environment)
+  end
 end

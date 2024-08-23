@@ -243,6 +243,16 @@ en:
             description: We have collected your income information with your consent and sent it to your benefits agency. Any additional income that you weren't able to add to this report should be shared separately with your benefits agency.
             employment_payment_details: Employment and payment details
             header: Income Verification Report
+          caseworker:
+            case_number: Case number
+            client_id_number: CIN
+            full_name: Client's full name
+            first_name: Client's first name
+            last_name: Client's last name
+            client_full_name: Client full name (linked to payroll account)
+            middle_name: Client's middle name
+          shared:
+            confirmation_code: Confirmation code
         phone_number: Employer phone
         send_report: Share my report with benefits agency
         table_caption: 'Employer %{number}: %{employer_name}'

@@ -33,7 +33,8 @@ module Cbv::ReportsHelper
           has_income_data: has_income_data,
           has_employment_data: has_employment_data,
           income: has_income_data && incomes.find { |income| income["account_id"] == account_id },
-          employment: has_employment_data && employments.find { |employment| employment["account_id"] == account_id }
+          employment: has_employment_data && employments.find { |employment| employment["account_id"] == account_id },
+          identity: pinwheel_account.fetch_identity
         }
         hash[account_id][:total] += payment[:gross_pay_amount]
         hash[account_id][:payments] << payment
