@@ -1,4 +1,4 @@
-class Caseworker::CbvFlowInvitationsController < ApplicationController
+class Caseworker::CbvFlowInvitationsController < Caseworker::BaseController
   protect_from_forgery prepend: true
   before_action :ensure_valid_params!
   before_action :authenticate_user!
