@@ -107,7 +107,10 @@ en:
       create:
         error: You must check the agreement checkbox to proceed.
       show:
-        checkbox: Check this box to agree to let Verify.gov access your payment information and share it with the %{agency_name}.
+        checkbox:
+          ma: Check this box to agree to let us access your payment information and share it with the Massachusetts Department of Transitional Assistance.
+          nyc: Check this box to agree to let Nava access your payment information and share it with New York City Human Resources Administration. We will not use the information for any other purpose nor redisclose it to any other party.
+          sandbox: Check this box to agree to let Verify.gov access your payment information and share it with the Sandbox Example Agency.
         get_started: Get started
         header: How verifying your income works
         step1: Find your employer or online payroll provider. A payroll provider is the company where you check your paystubs online
