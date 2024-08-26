@@ -10,10 +10,6 @@ class Cbv::SummariesController < Cbv::BaseController
   skip_before_action :ensure_cbv_flow_not_yet_complete, if: -> { params[:format] == "pdf" }
 
   def show
-    invitation = @cbv_flow.cbv_flow_invitation
-    @summary_end_date= invitation ? invitation.snap_application_date.strftime("%B %d, %Y") : ""
-    ninety_days_ago = invitation ? invitation.snap_application_date - 90.days : ""
-    @summary_start_date= invitation ? ninety_days_ago.strftime("%B %d, %Y") : ""
     respond_to do |format|
       format.html
       format.pdf do

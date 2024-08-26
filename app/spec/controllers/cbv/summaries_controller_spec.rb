@@ -40,8 +40,8 @@ RSpec.describe Cbv::SummariesController do
         start_date = "March 20, 2024"
         # Should be the formatted version of snap_application_date
         end_date = "June 18, 2024"
-        expect(assigns[:summary_end_date]).to eq(end_date)
-        expect(assigns[:summary_start_date]).to eq(start_date)
+        expect(assigns[:payments_ending_at]).to eq(end_date)
+        expect(assigns[:payments_beginning_at]).to eq(start_date)
         expect(response.body).to include("Legal Agreement")
         expect(response).to be_successful
       end
