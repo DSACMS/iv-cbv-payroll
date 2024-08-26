@@ -3,7 +3,7 @@ require "rails_helper"
 RSpec.describe Cbv::SummariesController do
   include PinwheelApiHelper
 
-  let(:supported_jobs) { %w[income paystubs employment] }
+  let(:supported_jobs) { %w[income paystubs employment identity] }
   let(:flow_started_seconds_ago) { 300 }
   let(:employment_errored_at) { nil }
   let(:cbv_flow) { create(:cbv_flow, :with_pinwheel_account, created_at: flow_started_seconds_ago.seconds.ago, case_number: "ABC1234", supported_jobs: supported_jobs, employment_errored_at: employment_errored_at) }

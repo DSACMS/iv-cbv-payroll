@@ -4,19 +4,22 @@ class PinwheelAccount < ApplicationRecord
   EVENTS_MAP = {
     "employment.added" => :employment_synced_at,
     "income.added" => :income_synced_at,
+    "identity.added" => :identity_synced_at,
     "paystubs.fully_synced" => :paystubs_synced_at
   }
 
   EVENTS_ERRORS_MAP = {
     "employment.added" => :employment_errored_at,
     "income.added" => :income_errored_at,
+    "identity.added" => :identity_errored_at,
     "paystubs.fully_synced" => :paystubs_errored_at
   }
 
   def has_fully_synced?
     (supported_jobs.exclude?("paystubs") || paystubs_synced_at.present?) &&
     (supported_jobs.exclude?("employment") || employment_synced_at.present?) &&
-    (supported_jobs.exclude?("income") || income_synced_at.present?)
+    (supported_jobs.exclude?("income") || income_synced_at.present?) &&
+    (supported_jobs.exclude?("identity") || income_synced_at.present?)
   end
 
   def job_succeeded?(job)
