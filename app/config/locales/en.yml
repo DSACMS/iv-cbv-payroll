@@ -260,7 +260,7 @@ en:
             date_created: Date the income report was created
             date_range: Date range for the income report
             description: We have collected your income information with your consent and sent it to your benefits agency. Any additional income that you weren't able to add to this report should be shared separately with your benefits agency.
-            employment_payment_details: Employment and payment details
+            employment_payment_details: Employment and Payment details
             header: Income Verification Report
           shared:
             confirmation_code: Confirmation code
