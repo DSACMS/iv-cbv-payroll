@@ -28,6 +28,7 @@ class CbvFlowInvitation < ApplicationRecord
   INVITATION_VALIDITY_TIME_ZONE = "America/New_York"
   PAYSTUB_REPORT_RANGE = 90.days
 
+  belongs_to :user
   has_many :cbv_flows
   scope :unstarted, -> { left_outer_joins(:cbv_flows).where(cbv_flows: { id: nil }) }
 

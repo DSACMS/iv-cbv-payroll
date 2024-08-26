@@ -161,7 +161,7 @@ RSpec.describe Cbv::SummariesController do
         end.to change { ActionMailer::Base.deliveries.count }.by(1)
 
         email = ActionMailer::Base.deliveries.last
-        expect(email.subject).to eq("Applicant Income Verification: ABC1234")
+        expect(email.subject).to eq("Income Verification Report ABC1234 has been received")
       end
 
       it "stores the current time as transmitted_at" do

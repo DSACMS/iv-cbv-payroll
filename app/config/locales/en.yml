@@ -83,8 +83,8 @@ en:
         step_4_title: Once the client verifies their income, you'll receive their income information.
   caseworker_mailer:
     summary_email:
-      body: Applicant has submitted their income verification. Please find the attached PDF.
-      subject: 'Applicant Income Verification: %{case_number}'
+      greeting: Hello,
+      subject: Income Verification Report %{case_number} has been received
   cbv:
     add_jobs:
       create:
