@@ -4,8 +4,8 @@ module Cbv::PaymentsHelper
     to_pay_date = invitation.snap_application_date
     from_pay_date = invitation.paystubs_query_begins_at
     payments = account_id.nil? ? fetch_payroll(from_pay_date.strftime("%Y-%m-%d"), to_pay_date.strftime("%Y-%m-%d")) : fetch_payroll_for_account_id(account_id, from_pay_date.strftime("%Y-%m-%d"), to_pay_date.strftime("%Y-%m-%d"))
-    @payments_query_to_date = to_pay_date.strftime("%B %d, %Y")
-    @payments_query_from_date = from_pay_date.strftime("%B %d, %Y")
+    @payments_ending_at = to_pay_date.strftime("%B %d, %Y")
+    @payments_beginning_at = from_pay_date.strftime("%B %d, %Y")
     @payments = parse_payments(payments)
   end
 
