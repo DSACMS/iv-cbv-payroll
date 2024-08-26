@@ -75,6 +75,10 @@ class PinwheelService
     @http.get(build_url("#{ACCOUNTS_ENDPOINT}/#{account_id}/employment")).body
   end
 
+  def fetch_identity(account_id:)
+    @http.get(build_url("#{ACCOUNTS_ENDPOINT}/#{account_id}/identity")).body
+  end
+
   def fetch_income_metadata(account_id:)
     @http.get(build_url("#{ACCOUNTS_ENDPOINT}/#{account_id}/income")).body
   end

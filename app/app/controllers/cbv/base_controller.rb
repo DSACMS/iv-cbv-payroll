@@ -11,10 +11,10 @@ class Cbv::BaseController < ApplicationController
         return redirect_to(root_url, flash: { alert: t("cbv.error_invalid_token") })
       end
       if invitation.expired?
-        return redirect_to(cbv_flow_expired_invitation_path)
+        return redirect_to(cbv_flow_expired_invitation_path(site_id: invitation.site_id))
       end
       if invitation.complete?
-        return redirect_to(cbv_flow_expired_invitation_path)
+        return redirect_to(cbv_flow_expired_invitation_path(site_id: invitation.site_id))
       end
 
       @cbv_flow = CbvFlow.create_from_invitation(invitation)

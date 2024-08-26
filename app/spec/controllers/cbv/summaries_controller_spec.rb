@@ -3,7 +3,7 @@ require "rails_helper"
 RSpec.describe Cbv::SummariesController do
   include PinwheelApiHelper
 
-  let(:supported_jobs) { %w[income paystubs employment] }
+  let(:supported_jobs) { %w[income paystubs employment identity] }
   let(:flow_started_seconds_ago) { 300 }
   let(:employment_errored_at) { nil }
   let(:cbv_flow) { create(:cbv_flow, :with_pinwheel_account, created_at: flow_started_seconds_ago.seconds.ago, case_number: "ABC1234", supported_jobs: supported_jobs, employment_errored_at: employment_errored_at) }
@@ -27,6 +27,7 @@ RSpec.describe Cbv::SummariesController do
       stub_request_end_user_paystubs_response
       stub_request_employment_info_response unless employment_errored_at
       stub_request_income_metadata_response if supported_jobs.include?("income")
+      stub_request_identity_response
     end
 
     context "when rendering views" do
@@ -39,8 +40,8 @@ RSpec.describe Cbv::SummariesController do
         start_date = "March 20, 2024"
         # Should be the formatted version of snap_application_date
         end_date = "June 18, 2024"
-        expect(assigns[:summary_end_date]).to eq(end_date)
-        expect(assigns[:summary_start_date]).to eq(start_date)
+        expect(assigns[:payments_ending_at]).to eq(end_date)
+        expect(assigns[:payments_beginning_at]).to eq(start_date)
         expect(response.body).to include("Legal Agreement")
         expect(response).to be_successful
       end
@@ -113,6 +114,7 @@ RSpec.describe Cbv::SummariesController do
       stub_request_end_user_paystubs_response
       stub_request_employment_info_response
       stub_request_income_metadata_response
+      stub_request_identity_response
     end
 
     context "without consent" do

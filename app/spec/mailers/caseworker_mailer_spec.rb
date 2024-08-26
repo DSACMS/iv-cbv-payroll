@@ -12,6 +12,7 @@ RSpec.describe CaseworkerMailer, type: :mailer do
   let(:payments) { stub_post_processed_payments(account_id) }
   let(:employments) { stub_employments(account_id) }
   let(:incomes) { stub_incomes(account_id) }
+  let(:identities) { stub_identities(account_id) }
   let(:email_address) { "test@example.com" }
   let(:current_site) { SiteConfig.new(File.join(Rails.root, 'config', 'site-config.yml'))['sandbox'] }
 
@@ -21,7 +22,8 @@ RSpec.describe CaseworkerMailer, type: :mailer do
       cbv_flow: cbv_flow,
       payments: payments,
       employments: employments,
-      incomes: incomes
+      incomes: incomes,
+      identities: identities
     ).summary_email
   }
 

@@ -10,7 +10,7 @@ class CaseworkerMailer < ApplicationMailer
     attachments[filename] = generate_pdf
     mail(
       to: @email_address,
-      subject: I18n.t("caseworker_mailer.summary_email.subject", case_number: @cbv_flow.case_number)
+      subject: I18n.t("caseworker_mailer.summary_email.subject", case_number: @cbv_flow.case_number),
     )
   end
 
@@ -24,12 +24,15 @@ class CaseworkerMailer < ApplicationMailer
     @payments = params[:payments] if params[:payments]
     @employments = params[:employments]
     @incomes = params[:incomes]
+    @identities = params[:identities]
+    # shows caseworker-specific data
+    @is_caseworker = true
     @current_site = current_site
   end
 
   def generate_pdf
     WickedPdf.new.pdf_from_string(
-      render_to_string(template: "cbv/summaries/show", layout: "pdf", formats: [ :pdf ])
+      render_to_string(template: "cbv/summaries/show", layout: "pdf", formats: [ :pdf ], locals: { is_caseworker: true })
     )
   end
 

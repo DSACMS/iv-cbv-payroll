@@ -40,6 +40,12 @@ RSpec.describe Caseworker::CbvFlowInvitationsController do
           get :new, params: nyc_params
           expect(response).to be_successful
         end
+
+        it "does not permit access to the ma page" do
+          get :new, params: ma_params
+
+          expect(response).to redirect_to(root_url)
+        end
       end
 
       context "when site_id is ma" do
@@ -54,6 +60,12 @@ RSpec.describe Caseworker::CbvFlowInvitationsController do
         it "renders the ma fields" do
           get :new, params: ma_params
           expect(response).to be_successful
+        end
+
+        it "does not permit access to the nyc page" do
+          get :new, params: nyc_params
+
+          expect(response).to redirect_to(root_url)
         end
       end
     end
