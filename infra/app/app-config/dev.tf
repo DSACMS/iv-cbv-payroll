@@ -10,6 +10,13 @@ module "dev_config" {
   has_database                    = local.has_database
   has_incident_management_service = local.has_incident_management_service
 
+  # These numbers are a starting point based on this article
+  # Update the desired instance size and counts based on the project's specific needs
+  # https://conchchow.medium.com/aws-ecs-fargate-compute-capacity-planning-a5025cb40bd0
+  service_cpu                    = 1024
+  service_memory                 = 4096
+  service_desired_instance_count = 3
+
   # Enables ECS Exec access for debugging or jump access.
   # See https://docs.aws.amazon.com/AmazonECS/latest/developerguide/ecs-exec.html
   # Defaults to `false`. Uncomment the next line to enable.

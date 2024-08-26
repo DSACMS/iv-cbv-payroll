@@ -159,12 +159,11 @@ en:
         you_ll_go: You’ll go to their login portal and sign-in to see your payment history.
     entries:
       show:
-        case_number: 'We’ll be verifying income related to this ID number: %{case_number}'
         do_app_based_work: People who do app-based gig work (like Uber, Lyft, DoorDash)
         get_started: Get Started
         has_online_payroll_provider: People with an employer who have an online payroll provider. Most people who receive pay stubs or W-2 tax forms have an online payroll provider. If you’re unsure, ask your employer.
         header: Let's verify your income through your payment information
-        security_message: Your information is secure. We will not share or keep your log in information. You will be able to preview and approve everything that is shared with your caseworker.
+        security_message_html: "<strong>Your information is secure.</strong> We will not share or keep your log in information. You will be able to preview and approve everything that is shared with your caseworker."
         subheader: We’ll help you connect payment records from your employer to your caseworker so you can prove your income and receive benefits faster.
         subheader_1: Who can use this tool
         subheader_2: What you need
@@ -174,6 +173,15 @@ en:
     error_invalid_token: The invitation link used is not valid. Double check the link and try again. If you continue experiencing issues, contact your caseworker.
     error_missing_token_html: "<strong>Your session has timed out due to inactivity.</strong> To continue where you left off, please click the link you received from your benefits agency in your email. If you encounter any issues, contact your benefits agency for assistance."
     error_no_access: We weren't able to load payroll data for this account. Please click the link you received from your benefits agency to try again.
+    expired_invitations:
+      show:
+        body_1: You've either successfully completed your verification process, or are trying to access this invitation after it has expired.
+        body_2: If you still need to verify your income, please reach out to your agency to get a new invitation.
+        cta_button_html:
+          ma: <a href="https://www.mass.gov/guides/how-to-contact-dta" class="usa-button">Visit DTA website</a>
+          nyc: <a href="https://www.nyc.gov/site/hra/help/snap-application-frequently-asked-questions.page" class="usa-button">Visit HRA website</a>
+          sandbox: <a href="https://www.mass.gov/guides/how-to-contact-dta" class="usa-button">Learn more at CBV Test Agency</a>
+        title: Your invitation to verify income has expired
     missing_results:
       show:
         back_button: Go back to employer search
@@ -230,11 +238,22 @@ en:
           nyc: Check this box to confirm that the information provided by you is true and complete to the best of your knowledge. You agree to inform NYC Human Resources Administration (HRA) of any income not reflected in this report or any discrepancies found in the information gathered with this tool. You understand that providing accurate and complete information is your responsibility, and any false or omitted information may have legal consequences.<br/><br/>By sending this report, you authorize its use for income verification by authorized HRA personnel.
           sandbox: Check this box to confirm that the information provided by you is true and complete to the best of your knowledge. You agree to inform CBV Test Agency of any income not reflected in this report or any discrepancies found in the information gathered with this tool. You understand that providing accurate and complete information is your responsibility, and any false or omitted information may have legal consequences.<br/><br/>By sending this report, you authorize its use for income verification by authorized CBV personnel.
         consent_to_authorize_use_title: Legal Agreement
-        description: The report below has your income from the past 90 days from, from %{summary_start_date} to %{summary_end_date}. Please review it before you send it to your benefits agency.
+        description: The report below has your income from the past 90 days from, from %{start_date} to %{end_date}. Please review it before you send it to your benefits agency.
         header: Review payment information from your employers
         none_found: No payments found. Please refresh the page after a few minutes.
         payment: Payment of %{amount} before taxes on %{date}
         pdf:
+          caseworker:
+            agreement_consent_timestamp: Agreement Consent Timestamp
+            case_number: Case number
+            client_full_name: Client full name (linked to payroll account)
+            client_id_number: CIN
+            description: The following income information was retrieved with the client's consent and has been submitted by them to their benefits agency. The client is also able to download a client-facing copy of this report.
+            first_name: Client's first name
+            how_to: This report includes payment information from the past 90 days. In most cases, you only need to review income from the last 30 days for eligibility purposes. Use data beyond the 30-day period only if necessary. Key fields for income verification are highlighted in yellow.
+            how_to_header: 'How to use this report:'
+            last_name: Client's last name
+            middle_name: Client's middle name
           client:
             address: Employer address
             client_report_information: Client and Report Information
@@ -243,6 +262,8 @@ en:
             description: We have collected your income information with your consent and sent it to your benefits agency. Any additional income that you weren't able to add to this report should be shared separately with your benefits agency.
             employment_payment_details: Employment and Payment details
             header: Income Verification Report
+          shared:
+            confirmation_code: Confirmation code
         phone_number: Employer phone
         send_report: Share my report with benefits agency
         table_caption: 'Employer %{number}: %{employer_name}'
@@ -263,6 +284,7 @@ en:
     banner:
       lock: Lock
       locked_padlock: A locked padlock
+    error_unauthorized: The URL you're accessing is forbidden for the current user. Please verify you are logged in as the correct user and try accessing the URL again.
     footer:
       feedback: Report feedback or bugs
     header:

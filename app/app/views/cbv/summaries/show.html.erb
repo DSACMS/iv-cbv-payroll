@@ -6,7 +6,7 @@
 <% if @payments.any? %>
   <div class="margin-bottom-6 usa-prose">
     <p>
-      <%= t(".description", summary_start_date: @summary_start_date, summary_end_date: @summary_end_date) %>
+      <%= t(".description", start_date: @payments_beginning_at, end_date: @payments_ending_at) %>
     </p>
   </div>
 
