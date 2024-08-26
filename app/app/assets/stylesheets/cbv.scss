@@ -92,3 +92,7 @@ html {
 .cbv-footer__item {
   @include u-margin-y(2);
 }
+
+.cbv-row-highlight td {
+  @include u-bg('yellow-5v');
+}

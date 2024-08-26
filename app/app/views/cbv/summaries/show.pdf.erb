@@ -115,10 +115,14 @@
             <% end %>
             Pay Date: <%= format_date(payment[:pay_date]) %></h4>
         <% end %>
-        <%= table.with_data_point(:pay_period, payment[:start], payment[:end]) %>
-        <%= table.with_data_point(:pay_gross, payment[:gross_pay_amount]) %>
-        <%= table.with_data_point(:net_pay_amount, payment[:net_pay_amount]) %>
+        <% if summary[:has_income_data] %>
+          <%= table.with_data_point(:pay_period_with_frequency, payment[:start], payment[:end], summary[:income]["pay_frequency"]&.humanize, highlight: is_caseworker) %>
+        <% else %>
+          <%= table.with_data_point(:pay_period_with_frequency, payment[:start], payment[:end], t("cbv.payment_details.show.frequency_unknown"), highlight: is_caseworker) %>
+        <% end %>
+        <%= table.with_data_point(:pay_gross, payment[:gross_pay_amount], highlight: is_caseworker) %>
         <%= table.with_data_point(:number_of_hours_worked, payment[:hours]) %>
+        <%= table.with_data_point(:net_pay_amount, payment[:net_pay_amount], highlight: is_caseworker) %>
 
         <% payment[:deductions].filter { |deduction| deduction[:amount] > 0 }.each do |deduction| %>
           <%= table.with_data_point(:deduction, deduction[:category], deduction[:amount]) %>

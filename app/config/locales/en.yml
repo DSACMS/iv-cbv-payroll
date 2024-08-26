@@ -203,6 +203,7 @@ en:
         employment_information_table_header: Employment information
         employment_start_date: Employment start date
         employment_status: Employment status
+        frequency_unknown: Frequency Unknown
         header: Your payment information from %{employer_name}
         header_no_employer_name: Your payment information from your employer
         hourly_rate: Compensation amount
@@ -254,6 +255,7 @@ en:
             how_to_header: 'How to use this report:'
             last_name: Client's last name
             middle_name: Client's middle name
+            pay_period: Pay period (%{pay_frequency})
           client:
             address: Employer address
             client_report_information: Client and Report Information
