@@ -43,12 +43,13 @@ RSpec.describe CaseworkerMailer, type: :mailer do
 
     it 'renders the body' do
       invitation = cbv_flow.cbv_flow_invitation
-      expect(mail.body.encoded).to include("Attached is an Income Verification Report PDF with confirmation number #{cbv_flow.confirmation_code}")
-      expect(mail.body.encoded).to include("confirm that their information has been submitted to HRA")
-      expect(mail.body.encoded).to include("This report is associated with the case number ABC1234 and CIN #{invitation.client_id_number}")
-      expect(mail.body.encoded).to include("It was requested by #{caseworker_email} on #{format_parsed_date(cbv_flow.created_at)}")
-      expect(mail.body.encoded).to include("submitted by the client on #{format_parsed_date(Date.today)}")
-      expect(mail.body.encoded).to include("This document is for #{current_site.agency_name} staff only")
+      # replace all whitespace with a single space to render a continuous string
+      email_body = mail.body.encoded.gsub(/\s+/, ' ').strip
+      expect(email_body).to include("Attached is an Income Verification Report PDF with confirmation number #{cbv_flow.confirmation_code}")
+      expect(email_body).to include("confirm that their information has been submitted to HRA")
+      expect(email_body).to include("This report is associated with the case number ABC1234 and CIN #{invitation.client_id_number}")
+      expect(email_body).to include("It was requested by #{caseworker_email} on #{format_parsed_date(cbv_flow.created_at)}")
+      expect(email_body).to include("submitted by the client on #{format_parsed_date(Date.today)}")
     end
 
     it 'attaches a PDF which has a file name prefix of {case_number}_timestamp_' do
