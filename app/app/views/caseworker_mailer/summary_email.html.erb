@@ -8,22 +8,18 @@
         <%= site_translation("shared.header.cbv_flow_title") %>
       <% end %>
     </h3>
-    <h1>
-      <%= site_translation(".header") %>
-    </h1>
+
     <div class="line-height-sans-5">
       <p>
         <%= t(".greeting") %>
       </p>
       <p>
         Attached is an Income Verification Report PDF with confirmation number <%= @cbv_flow.confirmation_code %>.
-        This confirmation number has been shared with the client and is used to confirm
-        that their information has been submitted to <%= t(".greeting") %>.
+        This confirmation number has been shared with the client and is used to confirm that their information has been submitted to <%= @current_site.agency_short_name %>.
         </p>
         <p>
           This report is associated with the case number <%= @cbv_flow.case_number %> and CIN <%= @cbv_flow_invitation.client_id_number %>.
-          It was requested by <%= @cbv_flow_invitation.user.email %> on <%= @cbv_flow_invitation.created_at %>,
-          and submitted by the client on <%= @cbv_flow.transmitted_at %>.
+          It was requested by <%= @cbv_flow_invitation.user.email %> on <%= format_parsed_date(@cbv_flow_invitation.created_at) %>, and submitted by the client on <%= format_parsed_date(@cbv_flow.transmitted_at) %>.
         </p>
       <% if current_site.id == "nyc" %>
         <p>

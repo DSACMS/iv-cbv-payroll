@@ -10,7 +10,7 @@ class CaseworkerMailer < ApplicationMailer
     attachments[filename] = generate_pdf
     mail(
       to: @email_address,
-      subject: I18n.t("caseworker_mailer.summary_email.subject.#{@cbv_flow.site_id}")
+      subject: I18n.t("caseworker_mailer.summary_email.subject", case_number: @cbv_flow.case_number)
     )
   end
 

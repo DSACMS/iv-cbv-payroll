@@ -84,10 +84,7 @@ en:
   caseworker_mailer:
     summary_email:
       greeting: Hello,
-      subject:
-        sandbox: 'Income Verification Report for case number %{case_number}'
-        ma: 'Applicant Income Verification: %{case_number}'
-        nyc: 'Income Verification Report %{case_number} has been received'
+      subject: Income Verification Report %{case_number} has been received
   cbv:
     add_jobs:
       create:
