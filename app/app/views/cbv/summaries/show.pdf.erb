@@ -1,3 +1,13 @@
+<div>
+  <span class="cbv-header__pilot-name">
+    <%= t("shared.pilot_name") %>
+  </span>
+  <% if current_site %>
+    <span class="cbv-header__separator">|</span>
+  <% end %>
+  <%= site_translation("shared.header.cbv_flow_title") %>
+</div>
+
 <h1><%= t(".pdf.client.header") %></h1>
 
 <% if is_caseworker %>

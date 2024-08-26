@@ -11,16 +11,6 @@
 
   <body>
     <div id="root">
-      <div>
-        <span class="cbv-header__pilot-name">
-          <%= t("shared.pilot_name") %>
-        </span>
-        <% if current_site %>
-          <span class="cbv-header__separator">|</span>
-        <% end %>
-        <%= site_translation("shared.header.cbv_flow_title") %>
-      </div>
-
       <main id="main-content">
         <section class="grid-container usa-section">
           <%= yield %>
