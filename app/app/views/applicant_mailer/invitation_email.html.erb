@@ -17,26 +17,26 @@
       </p>
 
       <p>
-        <%= t(".body_html",
+        <%= site_translation(".body_html",
           agency_acronym: current_site.agency_short_name,
           deadline: format_date(@cbv_flow_invitation.expires_at.to_s)) %>
       </p>
 
       <p>
-        To verify your income, click the button below:
+        <%= t(".button_caption") %>
       </p>
     </div>
 
     <p class="margin-y-5">
       <a href="<%= @cbv_flow_invitation.to_url %>" class="usa-button width-auto" type="button">
-        Verify your income
+        <%= t(".button") %>
       </a>
     </p>
 
     <hr >
 
     <p class="font-body-3xs">
-      This is an automatically generated message from your benefits agency. Please don’t reply to this email.
+      <%= t(".footer") %>
     </p>
   </div>
 </section>

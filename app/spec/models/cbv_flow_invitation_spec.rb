@@ -71,7 +71,7 @@ RSpec.describe CbvFlowInvitation, type: :model do
       let(:site_id) { "sandbox" }
       let(:invitation_valid_days) { 14 }
       let(:invitation) do
-        CbvFlowInvitation.create!(valid_attributes.merge(
+        create(:cbv_flow_invitation, valid_attributes.merge(
           site_id: site_id,
           created_at: invitation_sent_at
         ))
@@ -127,7 +127,7 @@ RSpec.describe CbvFlowInvitation, type: :model do
       let(:site_id) { "sandbox" }
       let(:invitation_valid_days) { 14 }
       let(:invitation) do
-        CbvFlowInvitation.create!(valid_attributes.merge(
+        create(:cbv_flow_invitation, valid_attributes.merge(
           site_id: site_id,
           created_at: invitation_sent_at
         ))

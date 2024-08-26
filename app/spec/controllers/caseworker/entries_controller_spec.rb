@@ -24,7 +24,7 @@ RSpec.describe Caseworker::EntriesController do
         expect(response).to be_successful
         unescaped_body = CGI.unescapeHTML(response.body)
         expect(unescaped_body).to include(I18n.t("caseworker.entries.index.header.nyc", agency_short_name: agency_short_name))
-        expect(unescaped_body).to include("Continue to #{agency_short_name} log in page")
+        expect(unescaped_body).to include("Log in with your LAN ID")
       end
     end
   end

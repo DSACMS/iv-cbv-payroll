@@ -48,6 +48,6 @@ class DataRetentionService
   def self.manually_redact_by_case_number!(case_number)
     invitation = CbvFlowInvitation.find_by!(case_number: case_number)
     invitation.redact!
-    invitation.cbv_flow.redact! if invitation.cbv_flow
+    invitation.cbv_flows.map(&:redact!)
   end
 end

@@ -1,21 +1,24 @@
 <% content_for :title, t(".header") %>
-<h1><%= t(".header") %></h1>
-
-<div class="usa-prose">
-  <ul>
-    <li><%= t(".caseworker_received") %></li>
-    <li><%= t(".check_status") %></li>
-  </ul>
-
-  <p>
-    <%= t(".confirmation_code", confirmation_code: @cbv_flow.confirmation_code) %>
-  </p>
+<div class="grid-col tablet:grid-col-10">
+  <h1><%= t(".header") %></h1>
 </div>
 
-  <%= link_to cbv_flow_summary_path(format: "pdf"), target: "_blank", class: "usa-button margin-top-3 usa-button--outline" do %>
-    <%= t(".download") %>
-  <% end %>
+<div class="usa-prose">
+  <p>
+    <%= t(".confirmation_code_html", confirmation_code: @cbv_flow.confirmation_code) %>
+  </p>
 
-  <%= link_to agency_url, target: "_blank", class: "usa-button margin-top-3 usa-button" do %>
-    <%= t(".back_to_agency") %>
+  <p><%= t(".caseworker_received") %></p>
+  <p><%= t(".if_it_didnt_work") %></p>
+  <p><%= t(".check_status") %></p>
+</div>
+
+<%= link_to cbv_flow_summary_path(format: "pdf"), target: "_blank", rel: "noopener noreferrer", class: "usa-button margin-top-3 usa-button--primary" do %>
+  <%= t(".download") %>
+<% end %>
+
+<div>
+  <%= link_to agency_url, target: "_blank", rel: "noopener noreferrer", class: "usa-button margin-top-3 usa-button usa-button--outline" do %>
+    <%= t(".back_to_agency", agency_short_name: current_site.agency_short_name) %>
   <% end %>
+</div>

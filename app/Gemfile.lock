@@ -382,7 +382,7 @@ GEM
     responders (3.1.1)
       actionpack (>= 5.2)
       railties (>= 5.2)
-    rexml (3.3.4)
+    rexml (3.3.6)
       strscan
     rspec-core (3.13.0)
       rspec-support (~> 3.13.0)
@@ -545,7 +545,7 @@ DEPENDENCIES
   rails-controller-testing
   rails-erd (~> 1.7)
   redis (~> 4.0)
-  rexml (~> 3.3.3)
+  rexml (~> 3.3.6)
   rspec-rails (~> 6.1)
   rubocop
   rubocop-rails-omakase

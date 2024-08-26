@@ -38,13 +38,9 @@ Rails.application.routes.draw do
       resource :reset, only: %i[show]
     end
 
-    # Temporarily redirect /invitations/new -> /nyc/invitations/new
-    # (remove this once people know about the new invitation URL)
-    get "/invitations/new", to: redirect { |_, req| "/nyc/invitations/new?secret=#{req.params[:secret]}" }
-
     scope "/:site_id", module: :caseworker, constraints: { site_id: Regexp.union(Rails.application.config.sites.site_ids) } do
-      root to: "entries#index", as: :caseworker_entry
-      get "/sso", to: "sso#index", as: :new_user_session
+      get "/sso", to: redirect("/%{site_id}") # Temporary: Remove once people get used to going to /:site_id as the login destination.
+      root to: "entries#index", as: :new_user_session
 
       resource :dashboard, only: %i[show], as: :caseworker_dashboard
       resources :cbv_flow_invitations, as: :invitations, path: :invitations

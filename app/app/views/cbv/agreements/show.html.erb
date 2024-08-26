@@ -9,6 +9,6 @@
 </ol>
 
 <%= form_with(url: cbv_flow_agreement_path, builder: UswdsFormBuilder, data: { turbo: "false" }) do |f| %>
-    <%= f.check_box(:agreement, { 'label': t(".checkbox", agency_name: current_site.agency_name) }) %>
+    <%= f.check_box(:agreement, { 'label': site_translation(".checkbox") }) %>
     <%= f.submit t(".get_started") %>
 <% end %>

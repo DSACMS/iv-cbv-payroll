@@ -4,9 +4,13 @@
   <%= header %>
 </h1>
 
-<p><%= t(".subheader", start_date: @payments_beginning_at, end_date: @payments_ending_at) %></p>
+<div class="usa-prose">
+  <p><%= t(".subheader", start_date: @payments_beginning_at, end_date: @payments_ending_at) %></p>
+</div>
 <h2><%= t(".total_gross_income", amount: format_money(gross_pay)) %></h2>
-<p><%= t(".total_gross_description") %></p>
+<div class="usa-prose">
+  <p><%= t(".total_gross_description") %></p>
+</div>
 
 <%= render(TableComponent.new) do |component| %>
   <%= component.with_header do %>
