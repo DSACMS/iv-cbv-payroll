@@ -37,12 +37,12 @@
 
     <%= render(TableComponent.new) do |table| %>
       <%= table.with_header do %>
-        <h3 class="margin-0">
+        <h4 class="margin-0">
           <% if employer_name %>
             <%= employer_name %> &mdash;
           <% end %>
           Employment Information
-        </h3>
+        </h4>
       <% end %>
       <% if summary[:has_employment_data] %>
         <%= table.with_data_point(:employer_phone, summary.dig(:employment, "employer_phone_number", "value")) %>
@@ -60,11 +60,11 @@
     <% summary[:payments].each do |payment| %>
       <%= render(TableComponent.new) do |table| %>
         <%= table.with_header do %>
-          <h3 class="margin-0">
+          <h4 class="margin-0">
             <% if employer_name %>
               <%= employer_name %> &mdash;
             <% end %>
-            Pay Date: <%= format_date(payment[:pay_date]) %></h3>
+            Pay Date: <%= format_date(payment[:pay_date]) %></h4>
         <% end %>
         <%= table.with_data_point(:pay_period, payment[:start], payment[:end]) %>
         <%= table.with_data_point(:pay_gross, payment[:gross_pay_amount]) %>
