@@ -1,7 +1,7 @@
 class CaseworkerMailer < ApplicationMailer
   helper "cbv/reports"
-  helper :view
-
+  helper :view, :application
+  helper_method :current_site
   before_action :set_params
 
   def summary_email
@@ -10,8 +10,7 @@ class CaseworkerMailer < ApplicationMailer
     attachments[filename] = generate_pdf
     mail(
       to: @email_address,
-      subject: site_translation("caseworker_mailer.summary_email.subject"),
-      body: generate_body
+      subject: I18n.t("caseworker_mailer.summary_email.subject.#{@cbv_flow.site_id}")
     )
   end
 
@@ -20,10 +19,12 @@ class CaseworkerMailer < ApplicationMailer
   def set_params
     @cbv_flow = params[:cbv_flow]
     @email_address = params[:email_address]
+    @cbv_flow_invitation = @cbv_flow.cbv_flow_invitation
     # used in PDF generation
     @payments = params[:payments] if params[:payments]
     @employments = params[:employments]
     @incomes = params[:incomes]
+    @current_site = current_site
   end
 
   def generate_pdf
@@ -32,13 +33,7 @@ class CaseworkerMailer < ApplicationMailer
     )
   end
 
-  def generate_body
-    site_translation("caseworker_mailer.summary_email.body_html",
-       case_number: @cbv_flow.case_number,
-       cbv_flow_transmitted_at: @cbv_flow.transmitted_at.strftime("%m/%d/%Y"),
-       cbv_flow_invitation_created_at: @cbv_flow.cbv_flow_invitation.created_at.strftime("%m/%d/%Y"),
-       confirmation_code: @cbv_flow.confirmation_code,
-       client_id_number: @cbv_flow.client_id_number,
-       caseworker_email: @cbv_flow.user.email)
+  def current_site
+    site_config[@cbv_flow.site_id]
   end
 end

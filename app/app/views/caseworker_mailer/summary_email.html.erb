@@ -1,0 +1,50 @@
+<section class="usa-section">
+  <div class="bg-white padding-y-7 padding-x-7 border border-base-lighter measure-5 line-height-sans-4 margin-x-auto font-body-xs">
+    <h3>
+      <span class="text-primary"><%= t("shared.pilot_name") %> | </span>
+      <% if @current_site.id == "ma" %>
+        <%= image_tag "dta_logo.png", class: "text-middle", style: "width: 140px" %>
+      <% else %>
+        <%= site_translation("shared.header.cbv_flow_title") %>
+      <% end %>
+    </h3>
+    <h1>
+      <%= site_translation(".header") %>
+    </h1>
+    <div class="line-height-sans-5">
+      <p>
+        <%= t(".greeting") %>
+      </p>
+      <p>
+        Attached is an Income Verification Report PDF with confirmation number <%= @cbv_flow.confirmation_code %>.
+        This confirmation number has been shared with the client and is used to confirm
+        that their information has been submitted to <%= t(".greeting") %>.
+        </p>
+        <p>
+          This report is associated with the case number <%= @cbv_flow.case_number %> and CIN <%= @cbv_flow_invitation.client_id_number %>.
+          It was requested by <%= @cbv_flow_invitation.user.email %> on <%= @cbv_flow_invitation.created_at %>,
+          and submitted by the client on <%= @cbv_flow.transmitted_at %>.
+        </p>
+      <% if current_site.id == "nyc" %>
+        <p>
+          Test Agency document indexers please follow these steps
+        </p>
+        <ul>
+          <li>Upload the attached PDF to the relevant case in the case management system.</li>
+          <li>Notify the requesting Test Agency staff member once the PDF has been linked to the case.</li>
+        </ul>
+      <% end %>
+
+        <p>
+          This document is for <%= @current_site.agency_name %> staff only and should not be shared outside the agency.
+        </p>
+        <p>
+          Thank you.
+      </p>
+    </div>
+    <hr>
+    <p class="font-body-3xs">
+      <%= t(".footer") %>
+    </p>
+  </div>
+</section>
