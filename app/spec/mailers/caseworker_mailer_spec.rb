@@ -5,6 +5,7 @@ RSpec.describe CaseworkerMailer, type: :mailer do
   let(:cbv_flow) { create(:cbv_flow, :with_pinwheel_account,
     case_number: "ABC1234",
     confirmation_code: "00001",
+    site_id: "nyc",
     transmitted_at:  Date.today
   )}
   let(:caseworker_email) { cbv_flow.cbv_flow_invitation.user.email }
@@ -14,7 +15,7 @@ RSpec.describe CaseworkerMailer, type: :mailer do
   let(:incomes) { stub_incomes(account_id) }
   let(:identities) { stub_identities(account_id) }
   let(:email_address) { "test@example.com" }
-  let(:current_site) { SiteConfig.new(File.join(Rails.root, 'config', 'site-config.yml'))['sandbox'] }
+  let(:current_site) { SiteConfig.new(File.join(Rails.root, 'config', 'site-config.yml'))[cbv_flow.site_id] }
 
   let(:mail) {
     CaseworkerMailer.with(
@@ -43,7 +44,7 @@ RSpec.describe CaseworkerMailer, type: :mailer do
     it 'renders the body' do
       invitation = cbv_flow.cbv_flow_invitation
       expect(mail.body.encoded).to include("Attached is an Income Verification Report PDF with confirmation number #{cbv_flow.confirmation_code}")
-      expect(mail.body.encoded).to include("confirm that their information has been submitted to CBV")
+      expect(mail.body.encoded).to include("confirm that their information has been submitted to HRA")
       expect(mail.body.encoded).to include("This report is associated with the case number ABC1234 and CIN #{invitation.client_id_number}")
       expect(mail.body.encoded).to include("It was requested by #{caseworker_email} on #{format_parsed_date(cbv_flow.created_at)}")
       expect(mail.body.encoded).to include("submitted by the client on #{format_parsed_date(Date.today)}")
