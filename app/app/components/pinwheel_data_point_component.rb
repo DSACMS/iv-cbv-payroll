@@ -8,9 +8,9 @@ class PinwheelDataPointComponent < ViewComponent::Base
     @highlight = highlight
   end
 
-  def pay_period(start_date, end_date)
+  def pay_period(start_date, end_date, pay_frequency)
     {
-      label: I18n.t("cbv.payment_details.show.pay_period"),
+      label: I18n.t("cbv.summaries.show.pdf.caseworker.pay_period", pay_frequency: pay_frequency),
       value: "#{format_date(start_date)} to #{format_date(end_date)}"
     }
   end

@@ -112,7 +112,11 @@
         <%= table.with_header do %>
           <h3 class="margin-0"><%= summary[:employer_name] %> Pay Date: <%= format_date(payment[:pay_date]) %></h3>
         <% end %>
-        <%= table.with_data_point(:pay_period, payment[:start], payment[:end], highlight: is_caseworker) %>
+        <% if summary[:has_income_data] %>
+          <%= table.with_data_point(:pay_period, payment[:start], payment[:end], summary[:income]["pay_frequency"]&.humanize, highlight: is_caseworker) %>
+        <% else %>
+          <%= table.with_data_point(:pay_period, payment[:start], payment[:end], t("cbv.payment_details.show.frequency_unknown"), highlight: is_caseworker) %>
+        <% end %>
         <%= table.with_data_point(:pay_gross, payment[:gross_pay_amount], highlight: is_caseworker) %>
         <%= table.with_data_point(:net_pay_amount, payment[:net_pay_amount], highlight: is_caseworker) %>
         <%= table.with_data_point(:number_of_hours_worked, payment[:hours]) %>
