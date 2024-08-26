@@ -43,7 +43,7 @@
       <% if user_signed_in? %>
         <ul class="usa-nav__primary usa-accordion">
           <li class="usa-nav__primary-item">
-            <%= button_to t("shared.header.log_out"), destroy_user_session_url, method: :delete, class: "usa-nav__link" %>
+            <%= button_to t("shared.header.log_out"), destroy_user_session_url(site_id: current_user.site_id), method: :delete, class: "usa-nav__link" %>
           </li>
         </ul>
       <% end %>

@@ -11,6 +11,10 @@ class ApplicationController < ActionController::Base
     caseworker_dashboard_path(site_id: user.site_id)
   end
 
+  def after_sign_out_path_for(resource_or_scope)
+    new_user_session_path(site_id: params[:site_id])
+  end
+
   def switch_locale(&action)
     locale = params[:locale] || I18n.default_locale
     I18n.with_locale(locale, &action)

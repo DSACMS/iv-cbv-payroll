@@ -48,4 +48,15 @@ class Users::OmniauthCallbacksController < Devise::OmniauthCallbacksController
       user_id: @user.id
     })
   end
+
+  def after_omniauth_failure_path_for(scope)
+    case failed_strategy.name
+    when "sandbox"
+      new_user_session_path(site_id: "sandbox")
+    when "nyc_dss"
+      new_user_session_path(site_id: "nyc")
+    when "ma_dta"
+      new_user_session_path(site_id: "ma")
+    end
+  end
 end

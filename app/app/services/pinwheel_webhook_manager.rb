@@ -13,6 +13,7 @@ class PinwheelWebhookManager
     paystubs.fully_synced
     employment.added
     income.added
+    identity.added
   ]
 
   def initialize

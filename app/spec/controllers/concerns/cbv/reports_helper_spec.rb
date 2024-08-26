@@ -17,6 +17,10 @@ RSpec.describe Cbv::ReportsHelper, type: :helper do
     load_relative_json_file('request_income_metadata_response.json')['data']
   end
 
+  let(:identities) do
+    load_relative_json_file('request_identity_response.json')['data']
+  end
+
   let(:parsed_payments) do
     helper.parse_payments(payments)
   end
@@ -29,7 +33,7 @@ RSpec.describe Cbv::ReportsHelper, type: :helper do
 
   describe "aggregate payments" do
     it "groups by employer" do
-      expect(helper.summarize_by_employer(parsed_payments, [ employments ], [ incomes ])).to eq({
+      expect(helper.summarize_by_employer(parsed_payments, [ employments ], [ incomes ], [ identities ])).to eq({
         account_id => {
           employer_name: "Acme Corp",
           payments: [
@@ -56,6 +60,7 @@ RSpec.describe Cbv::ReportsHelper, type: :helper do
           has_employment_data: true,
           employment: employments,
           income: incomes,
+          identity: identities,
           total: 480720
         }
       })

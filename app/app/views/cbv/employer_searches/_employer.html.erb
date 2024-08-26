@@ -26,6 +26,7 @@
               data-action="click->cbv-employer-search#select"
               data-id="<%= employer["id"] %>"
               data-response-type="<%= employer["response_type"] %>"
+              data-cbv-employer-search-target="employerButton"
               class="usa-button usa-button--outline"
               type="button"
               tabindex="0"
@@ -54,8 +55,8 @@
     <%= link_to (@has_pinwheel_account ? cbv_flow_summary_path : current_site.agency_contact_website), class: "usa-button margin-top-5", data: { turbo_frame: "_top" } do %>
       <%= @has_pinwheel_account ? t("cbv.employer_searches.show.review_button_text") : t("cbv.employer_searches.show.exit_button_text", agency_short_name: current_site.agency_short_name) %>
     <% end %>
-  <% elsif @employers.count > 1 %>
-    <h3><%= t("cbv.employer_searches.show.employer_not_listed") %></h3>
+  <% elsif @employers.count > 0 %>
+    <h2><%= t("cbv.employer_searches.show.employer_not_listed") %></h2>
     <%= link_to cbv_flow_missing_results_path, class: "usa-button usa-button--outline", data: { turbo_frame: "_top" } do %>
         <%= t("cbv.employer_searches.show.can_not_find_employer") %>
     <% end %>
