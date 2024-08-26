@@ -179,7 +179,7 @@ RSpec.describe Cbv::PaymentDetailsController do
   end
 
   describe "#update" do
-    let!(:cbv_flow) { create(:cbv_flow, case_number: "ABC1234", pinwheel_token_id: "abc-def-ghi", site_id: "sandbox") }
+    let!(:cbv_flow) { create(:cbv_flow) }
     let(:account_id) { SecureRandom.uuid }
     let(:comment) { "This is a test comment" }
 

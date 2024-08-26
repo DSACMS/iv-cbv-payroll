@@ -1,7 +1,7 @@
 require "rails_helper"
 
 RSpec.describe CaseworkerMailer, type: :mailer do
-  let(:cbv_flow) { create(:cbv_flow, :with_pinwheel_account, case_number: "ABC1234") }
+  let(:cbv_flow) { create(:cbv_flow, :with_pinwheel_account) }
   let(:account_id) { cbv_flow.pinwheel_accounts.first.pinwheel_account_id }
   let(:payments) { stub_post_processed_payments(account_id) }
   let(:employments) { stub_employments(account_id) }
