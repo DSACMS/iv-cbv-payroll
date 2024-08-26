@@ -1,10 +1,3 @@
-<h3>
-  <% if current_site %>
-    <%= t("shared.pilot_name") %>
-    <span class="cbv-header__separator">|</span>
-    <%= site_translation("shared.header.cbv_flow_title") %>
-  <% end %>
-
 <h1><%= t(".pdf.client.header") %></h1>
 
 <% if is_caseworker %>
@@ -113,9 +106,9 @@
           <h3 class="margin-0"><%= summary[:employer_name] %> Pay Date: <%= format_date(payment[:pay_date]) %></h3>
         <% end %>
         <% if summary[:has_income_data] %>
-          <%= table.with_data_point(:pay_period, payment[:start], payment[:end], summary[:income]["pay_frequency"]&.humanize, highlight: is_caseworker) %>
+          <%= table.with_data_point(:pay_period_with_frequency, payment[:start], payment[:end], summary[:income]["pay_frequency"]&.humanize, highlight: is_caseworker) %>
         <% else %>
-          <%= table.with_data_point(:pay_period, payment[:start], payment[:end], t("cbv.payment_details.show.frequency_unknown"), highlight: is_caseworker) %>
+          <%= table.with_data_point(:pay_period_with_frequency, payment[:start], payment[:end], t("cbv.payment_details.show.frequency_unknown"), highlight: is_caseworker) %>
         <% end %>
         <%= table.with_data_point(:pay_gross, payment[:gross_pay_amount], highlight: is_caseworker) %>
         <%= table.with_data_point(:number_of_hours_worked, payment[:hours]) %>
