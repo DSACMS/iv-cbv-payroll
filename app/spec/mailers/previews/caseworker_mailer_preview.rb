@@ -19,6 +19,7 @@ class CaseworkerMailerPreview < BaseMailerPreview
     identities = stub_identities(cbv_flow.pinwheel_accounts.first.pinwheel_account_id)
 
     CaseworkerMailer.with(
+      email_address: invitation.email_address,
       cbv_flow: cbv_flow,
       case_number: "12345",
       payments: payments,
