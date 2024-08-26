@@ -71,7 +71,7 @@ module Cbv::ReportsHelper
 
   def fetch_identities
     fetch_end_user_account_ids.map do |account_id|
-      next [] unless does_pinwheel_account_support_job?(account_id, "income")
+      next [] unless does_pinwheel_account_support_job?(account_id, "identity")
       fetch_identity_for_account_id account_id
     end.flatten
   end
