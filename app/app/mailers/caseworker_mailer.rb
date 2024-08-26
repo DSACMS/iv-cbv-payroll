@@ -23,11 +23,14 @@ class CaseworkerMailer < ApplicationMailer
     @payments = params[:payments] if params[:payments]
     @employments = params[:employments]
     @incomes = params[:incomes]
+    @identities = params[:identities]
+    # shows caseworker-specific data
+    @is_caseworker = true
   end
 
   def generate_pdf
     WickedPdf.new.pdf_from_string(
-      render_to_string(template: "cbv/summaries/show", layout: "pdf", formats: [ :pdf ])
+      render_to_string(template: "cbv/summaries/show", layout: "pdf", formats: [ :pdf ], locals: { is_caseworker: true })
     )
   end
 end

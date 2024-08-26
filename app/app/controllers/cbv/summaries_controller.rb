@@ -6,6 +6,7 @@ class Cbv::SummariesController < Cbv::BaseController
   before_action :set_employments, only: %i[show update]
   before_action :set_incomes, only: %i[show update]
   before_action :set_payments, only: %i[show update]
+  before_action :set_identities, only: %i[show update]
   skip_before_action :ensure_cbv_flow_not_yet_complete, if: -> { params[:format] == "pdf" }
 
   def show
@@ -22,7 +23,7 @@ class Cbv::SummariesController < Cbv::BaseController
           cbv_flow_id: @cbv_flow.id
         })
 
-        render pdf: "#{@cbv_flow.id}", layout: "pdf"
+        render pdf: "#{@cbv_flow.id}", layout: "pdf", locals: { is_caseworker: false }
       end
     end
   end
@@ -70,7 +71,8 @@ class Cbv::SummariesController < Cbv::BaseController
         cbv_flow: @cbv_flow,
         payments: @payments,
         employments: @employments,
-        incomes: @incomes
+        incomes: @incomes,
+        identities: @identities
       ).summary_email.deliver_now
       @cbv_flow.touch(:transmitted_at)
     end
