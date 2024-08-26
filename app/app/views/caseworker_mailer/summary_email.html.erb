@@ -2,7 +2,7 @@
   <div class="bg-white padding-y-7 padding-x-7 border border-base-lighter measure-5 line-height-sans-4 margin-x-auto font-body-xs">
     <h3>
       <span class="text-primary"><%= t("shared.pilot_name") %> | </span>
-      <% if @current_site.id == "ma" %>
+      <% if current_site.id == "ma" %>
         <%= image_tag "dta_logo.png", class: "text-middle", style: "width: 140px" %>
       <% else %>
         <%= site_translation("shared.header.cbv_flow_title") %>
@@ -15,7 +15,7 @@
       </p>
       <p>
         Attached is an Income Verification Report PDF with confirmation number <%= @cbv_flow.confirmation_code %>.
-        This confirmation number has been shared with the client and is used to confirm that their information has been submitted to <%= @current_site.agency_short_name %>.
+        This confirmation number has been shared with the client and is used to confirm that their information has been submitted to <%= current_site.agency_short_name %>.
       </p>
 
       <% if current_site.id == "nyc" %>
@@ -33,7 +33,7 @@
       <% end %>
 
         <p>
-          This document is for <%= @current_site.agency_name %> staff only and should not be shared outside the agency.
+          This document is for <%= current_site.agency_name %> staff only and should not be shared outside the agency.
         </p>
         <p>
           Thank you.

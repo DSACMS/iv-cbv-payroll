@@ -20,14 +20,11 @@ class CaseworkerMailer < ApplicationMailer
     @cbv_flow = params[:cbv_flow]
     @email_address = params[:email_address]
     @cbv_flow_invitation = @cbv_flow.cbv_flow_invitation
-    @current_site = current_site
     # used in PDF generation
     @payments = params[:payments] if params[:payments]
     @employments = params[:employments]
     @incomes = params[:incomes]
     @identities = params[:identities]
-    # shows caseworker-specific data
-    @is_caseworker = true
   end
 
   def generate_pdf
