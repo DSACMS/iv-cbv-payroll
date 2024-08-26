@@ -105,9 +105,9 @@
         <%= table.with_header do %>
           <h3 class="margin-0"><%= summary[:employer_name] %> Pay Date: <%= format_date(payment[:pay_date]) %></h3>
         <% end %>
-        <%= table.with_data_point(:pay_period, payment[:start], payment[:end]) %>
-        <%= table.with_data_point(:pay_gross, payment[:gross_pay_amount]) %>
-        <%= table.with_data_point(:net_pay_amount, payment[:net_pay_amount]) %>
+        <%= table.with_data_point(:pay_period, payment[:start], payment[:end], highlight: is_caseworker) %>
+        <%= table.with_data_point(:pay_gross, payment[:gross_pay_amount], highlight: is_caseworker) %>
+        <%= table.with_data_point(:net_pay_amount, payment[:net_pay_amount], highlight: is_caseworker) %>
         <%= table.with_data_point(:number_of_hours_worked, payment[:hours]) %>
 
         <% payment[:deductions].filter { |deduction| deduction[:amount] > 0 }.each do |deduction| %>

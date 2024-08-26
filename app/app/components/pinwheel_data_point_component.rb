@@ -3,8 +3,9 @@
 class PinwheelDataPointComponent < ViewComponent::Base
   include ViewHelper
 
-  def initialize(field, *values)
+  def initialize(field, *values, highlight: false)
     @field = send(field, *values)
+    @highlight = highlight
   end
 
   def pay_period(start_date, end_date)
