@@ -5,8 +5,8 @@ FactoryBot.define do
 
     cbv_flow_invitation
 
-    trait :transmitted do
-      transmitted_at { 10.minutes.ago }
+    trait :completed do
+      consented_to_authorized_use_at { 10.minutes.ago }
       confirmation_code { "SANDBOX0010002" }
     end
 
