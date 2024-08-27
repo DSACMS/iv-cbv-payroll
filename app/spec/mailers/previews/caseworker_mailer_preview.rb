@@ -1,11 +1,31 @@
+
 # Preview all emails at http://localhost:3000/rails/mailers/caseworker_mailer
-class CaseworkerMailerPreview < ActionMailer::Preview
+class CaseworkerMailerPreview < BaseMailerPreview
   include ViewHelper
   include TestHelpers
 
   def summary_email
-    payments =  stub_payments
-    cbv_flow = CbvFlow.create(case_number: "ABC1234", pinwheel_token_id: "abc-def-ghi")
-    CaseworkerMailer.with(cbv_flow: cbv_flow, case_number: "12345", payments: payments).summary_email
+    caseworker_user = FactoryBot.create(:user, email: "#{SecureRandom.uuid}@example.com")
+    invitation = FactoryBot.create(:cbv_flow_invitation, :nyc, user: caseworker_user)
+    cbv_flow = FactoryBot.create(
+      :cbv_flow,
+      :with_pinwheel_account,
+      :transmitted,
+      cbv_flow_invitation: invitation
+    )
+    payments = stub_post_processed_payments(cbv_flow.pinwheel_accounts.first.pinwheel_account_id)
+    employments = stub_employments(cbv_flow.pinwheel_accounts.first.pinwheel_account_id)
+    incomes = stub_incomes(cbv_flow.pinwheel_accounts.first.pinwheel_account_id)
+    identities = stub_identities(cbv_flow.pinwheel_accounts.first.pinwheel_account_id)
+
+    CaseworkerMailer.with(
+      email_address: invitation.email_address,
+      cbv_flow: cbv_flow,
+      case_number: "12345",
+      payments: payments,
+      employments: employments,
+      incomes: incomes,
+      identities: identities
+    ).summary_email
   end
 end

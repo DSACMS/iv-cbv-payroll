@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2024_08_09_205627) do
+ActiveRecord::Schema[7.1].define(version: 2024_08_26_161050) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -26,13 +26,16 @@ ActiveRecord::Schema[7.1].define(version: 2024_08_09_205627) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.string "site_id"
-    t.string "first_name"
+    t.string "first_name", null: false
     t.string "middle_name"
-    t.string "last_name"
+    t.string "last_name", null: false
     t.string "agency_id_number"
     t.string "client_id_number"
-    t.date "snap_application_date"
+    t.date "snap_application_date", null: false
     t.string "beacon_id"
+    t.datetime "redacted_at"
+    t.bigint "user_id"
+    t.index ["user_id"], name: "index_cbv_flow_invitations_on_user_id"
   end
 
   create_table "cbv_flows", force: :cascade do |t|
@@ -48,6 +51,8 @@ ActiveRecord::Schema[7.1].define(version: 2024_08_09_205627) do
     t.string "site_id"
     t.string "confirmation_code"
     t.datetime "transmitted_at"
+    t.datetime "redacted_at"
+    t.datetime "consented_to_authorized_use_at"
     t.index ["cbv_flow_invitation_id"], name: "index_cbv_flows_on_cbv_flow_invitation_id"
   end
 
@@ -56,7 +61,7 @@ ActiveRecord::Schema[7.1].define(version: 2024_08_09_205627) do
     t.uuid "account_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index ["user_id", "account_id"], name: "index_connected_argyle_accounts_on_user_id_and_account_id", unique: true
+    t.index %w[user_id account_id], name: "index_connected_argyle_accounts_on_user_id_and_account_id", unique: true
   end
 
   create_table "pinwheel_accounts", force: :cascade do |t|
@@ -68,6 +73,11 @@ ActiveRecord::Schema[7.1].define(version: 2024_08_09_205627) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.string "supported_jobs", default: [], array: true
+    t.datetime "employment_errored_at", precision: nil
+    t.datetime "income_errored_at", precision: nil
+    t.datetime "paystubs_errored_at", precision: nil
+    t.datetime "identity_errored_at", precision: nil
+    t.datetime "identity_synced_at", precision: nil
     t.index ["cbv_flow_id"], name: "index_pinwheel_accounts_on_cbv_flow_id"
   end
 
@@ -85,10 +95,11 @@ ActiveRecord::Schema[7.1].define(version: 2024_08_09_205627) do
     t.string "last_sign_in_ip"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index ["email", "site_id"], name: "index_users_on_email_and_site_id", unique: true
+    t.index %w[email site_id], name: "index_users_on_email_and_site_id", unique: true
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
   end
 
+  add_foreign_key "cbv_flow_invitations", "users"
   add_foreign_key "cbv_flows", "cbv_flow_invitations"
   add_foreign_key "pinwheel_accounts", "cbv_flows"
 end

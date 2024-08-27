@@ -11,16 +11,21 @@ class Cbv::PaymentDetailsController < Cbv::BaseController
     :pay_frequency,
     :compensation_unit,
     :compensation_amount,
-    :account_comment
+    :account_comment,
+    :has_income_data?
 
   def show
     account_id = params[:user][:account_id]
-    pinwheel_account = PinwheelAccount.find_by_pinwheel_account_id(account_id)
+    @pinwheel_account = @cbv_flow.pinwheel_accounts.find_by(pinwheel_account_id: account_id)
 
-    @employment = pinwheel.fetch_employment(account_id: account_id)["data"]
-    @has_income_data = pinwheel_account.supported_jobs.include?("income")
-    @income_metadata = @has_income_data && pinwheel.fetch_income_metadata(account_id: account_id)["data"]
-    @payments = set_payments(account_id)
+    # security check - make sure the account_id is associated with the current cbv_flow_id
+    if @pinwheel_account.nil?
+      return redirect_to(cbv_flow_entry_url, flash: { slim_alert: { message: t("cbv.error_no_access"), type: "error" } })
+    end
+
+    @employment = has_employment_data? && pinwheel.fetch_employment(account_id: account_id)["data"]
+    @income_metadata = has_income_data? && pinwheel.fetch_income_metadata(account_id: account_id)["data"]
+    @payments = has_paystubs_data? ? set_payments(account_id) : []
     @account_comment = account_comment
   end
 
@@ -44,47 +49,79 @@ class Cbv::PaymentDetailsController < Cbv::BaseController
 
   private
 
+  def has_income_data?
+    @pinwheel_account.job_succeeded?("income")
+  end
+
+  def has_employment_data?
+    @pinwheel_account.job_succeeded?("employment")
+  end
+
+  def has_paystubs_data?
+    @pinwheel_account.job_succeeded?("paystubs")
+  end
+
   def employer_name
+    return I18n.t("cbv.payment_details.show.unknown") unless has_employment_data?
+
     @employment["employer_name"]
   end
 
   def employment_start_date
+    return I18n.t("cbv.payment_details.show.unknown") unless has_employment_data?
+
     @employment["start_date"]
   end
 
   def employment_end_date
+    return I18n.t("cbv.payment_details.show.unknown") unless has_employment_data?
+
     @employment["termination_date"]
   end
 
   def employment_status
+    return I18n.t("cbv.payment_details.show.unknown") unless has_employment_data?
+
     @employment["status"]&.humanize
   end
 
   def pay_frequency
+    return I18n.t("cbv.payment_details.show.unknown") unless has_income_data?
+
     @income_metadata["pay_frequency"]&.humanize
   end
 
   def compensation_unit
+    return I18n.t("cbv.payment_details.show.unknown") unless has_income_data?
+
     @income_metadata["compensation_unit"]
   end
 
   def compensation_amount
+    return I18n.t("cbv.payment_details.show.unknown") unless has_income_data?
+
     @income_metadata["compensation_amount"]
   end
 
   def start_date
+    return I18n.t("cbv.payment_details.show.unknown") unless has_paystubs_data?
+
     @payments
         .sort_by { |payment| payment[:start] }
         .first[:start]
   end
 
   def end_date
+    return I18n.t("cbv.payment_details.show.unknown") unless has_paystubs_data?
+
     @payments
         .sort_by { |payment| payment[:end] }
         .last[:end]
   end
 
   def gross_pay
+    return I18n.t("cbv.payment_details.show.unknown") unless has_paystubs_data?
+
     @payments
       .map { |payment| payment[:gross_pay_amount] }
       .reduce(:+)

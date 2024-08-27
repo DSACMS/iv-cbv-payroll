@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="<%= I18n.locale %>">
   <head>
-    <title>Verify.gov</title>
+    <title><%= content_for?(:title) ? yield(:title) : "" %> | SNAP Income Pilot</title>
     <meta name="viewport" content="width=device-width,initial-scale=1">
     <%= csrf_meta_tags %>
     <%= csp_meta_tag %>
@@ -14,7 +14,7 @@
 
   <body>
     <div id="root">
-      <%= render "application/usa_banner" %>
+      <a class="usa-skipnav" href="#main-content"><%= t("shared.skip_link") %></a>
       <%= render "application/header" %>
       <main id="main-content">
         <section class="grid-container usa-section">
@@ -40,14 +40,19 @@
             <div class="usa-alert usa-alert--<%= flash[:slim_alert]["type"] %> usa-alert--slim">
               <div class="usa-alert__body">
                 <p class="usa-alert__text">
-                  <%= flash[:slim_alert]["message"] %>
+                  <% if flash[:slim_alert]["message_html"] %>
+                    <%= flash[:slim_alert]["message_html"].html_safe %>
+                  <% elsif flash[:slim_alert]["message"] %>
+                    <%= flash[:slim_alert]["message"] %>
+                  <% end %>
                 </p>
               </div>
-          </div>
+            </div>
           <% end %>
           <%= yield %>
         </section>
       </main>
+      <%= render "application/footer" %>
     </div>
   </body>
 </html>

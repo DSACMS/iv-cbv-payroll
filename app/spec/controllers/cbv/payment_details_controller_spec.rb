@@ -6,11 +6,24 @@ RSpec.describe Cbv::PaymentDetailsController do
   describe "#show" do
     render_views
 
-    let!(:cbv_flow) { CbvFlow.create!(case_number: "ABC1234", pinwheel_token_id: "abc-def-ghi", site_id: "sandbox") }
+    let!(:cbv_flow) { create(:cbv_flow) }
     let(:account_id) { SecureRandom.uuid }
     let(:comment) { "This is a test comment" }
     let(:supported_jobs) { %w[income paystubs employment] }
-    let!(:pinwheel_account) { PinwheelAccount.create!(cbv_flow: cbv_flow, pinwheel_account_id: account_id, supported_jobs: supported_jobs) }
+    let(:income_errored_at) { nil }
+    let(:paystubs_errored_at) { nil }
+    let(:employment_errored_at) { nil }
+    let!(:pinwheel_account) do
+      create(
+        :pinwheel_account,
+        cbv_flow: cbv_flow,
+        pinwheel_account_id: account_id,
+        supported_jobs: supported_jobs,
+        income_errored_at: income_errored_at,
+        paystubs_errored_at: paystubs_errored_at,
+        employment_errored_at: employment_errored_at
+      )
+    end
 
     before do
       session[:cbv_flow_id] = cbv_flow.id
@@ -94,6 +107,40 @@ RSpec.describe Cbv::PaymentDetailsController do
       end
     end
 
+    context "for an account that supports income data but Pinwheel was unable to retrieve it" do
+      let(:supported_jobs) { %w[paystubs employment income] }
+      let(:income_errored_at) { Time.current.iso8601 }
+
+      it "renders properly without the income data" do
+        get :show, params: { user: { account_id: account_id } }
+        expect(response).to be_successful
+        expect(response.body).not_to include("Pay period frequency")
+      end
+    end
+
+
+    context "for an account that supports employment data but Pinwheel was unable to retrieve" do
+      let(:supported_jobs) { %w[paystubs employment income] }
+      let(:employment_errored_at) { Time.current.iso8601 }
+
+      it "renders properly without the employment data" do
+        get :show, params: { user: { account_id: account_id } }
+        expect(response).to be_successful
+        expect(response.body).to include("Unknown")
+      end
+    end
+
+    context "for an account that supports paystubs data but Pinwheel was unable to retrieve" do
+      let(:supported_jobs) { %w[paystubs employment income] }
+      let(:paystubs_errored_at) { Time.current.iso8601 }
+
+      it "renders properly without the paystubs data" do
+        get :show, params: { user: { account_id: account_id } }
+        expect(response).to be_successful
+        expect(response.body).to include(I18n.t("cbv.payment_details.show.none_found"))
+      end
+    end
+
     context "when employment status is blank" do
       before do
         request_employment_info_response_null_employment_status_bug
@@ -104,10 +151,35 @@ RSpec.describe Cbv::PaymentDetailsController do
         expect(response).to be_successful
       end
     end
+
+    context "when deductions include a zero dollar amount" do
+      it "does not show that deduction" do
+        get :show, params: { user: { account_id: account_id } }
+        expect(response.body).to include("Commuter")
+        expect(response.body).not_to include("Empty deduction")
+      end
+    end
+
+    context "when a user attempts to access pinwheel account information not in the current session" do
+      it "redirects to the entry page when the resolved pinwheel_account is nil" do
+        get :show, params: { user: { account_id: "1234" } }
+        expect(response).to redirect_to(cbv_flow_entry_url)
+        expect(flash[:slim_alert]).to be_present
+        expect(flash[:slim_alert][:message]).to eq(I18n.t("cbv.error_no_access"))
+      end
+
+      it "redirects to the entry page when the resolved pinwheel_account is present, but does not match the current session" do
+        existing_pinwheel_account = create(:pinwheel_account)
+        get :show, params: { user: { account_id: existing_pinwheel_account.pinwheel_account_id } }
+        expect(response).to redirect_to(cbv_flow_entry_url)
+        expect(flash[:slim_alert]).to be_present
+        expect(flash[:slim_alert][:message]).to eq(I18n.t("cbv.error_no_access"))
+      end
+    end
   end
 
   describe "#update" do
-    let!(:cbv_flow) { CbvFlow.create!(case_number: "ABC1234", pinwheel_token_id: "abc-def-ghi", site_id: "sandbox") }
+    let!(:cbv_flow) { create(:cbv_flow) }
     let(:account_id) { SecureRandom.uuid }
     let(:comment) { "This is a test comment" }
 

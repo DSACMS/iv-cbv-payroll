@@ -41,6 +41,16 @@ locals {
       name           = "NEWRELIC_KEY"
       ssm_param_name = "/service/${var.app_name}-${var.environment}/newrelic-key"
     },
+    {
+      name           = "NEW_RELIC_ENV"
+      ssm_param_name = "/service/${var.app_name}-${var.environment}/new-relic-env"
+    },
+
+    # Transmission Configuration:
+    {
+      name           = "NYC_HRA_EMAIL"
+      ssm_param_name = "/service/${var.app_name}-${var.environment}/nyc-hra-email"
+    },
 
     # Pinwheel Configuration:
     {

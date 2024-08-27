@@ -1,0 +1,28 @@
+<p>
+  <%= t(".greeting") %>
+</p>
+<p>
+  Attached is an Income Verification Report PDF with confirmation number <%= @cbv_flow.confirmation_code %>.
+  This confirmation number has been shared with the client and is used to confirm that their information has been
+  submitted to <%= current_site.agency_short_name %>.
+</p>
+
+<p>
+  This report is associated with the case number <%= @cbv_flow.case_number %> and
+  CIN <%= @cbv_flow_invitation.client_id_number %>.
+  It was requested by <%= @cbv_flow_invitation.user.email %>
+  on <%= format_parsed_date(@cbv_flow_invitation.created_at) %>, and submitted by the client
+  on <%= format_parsed_date(@cbv_flow.transmitted_at) %>.
+</p>
+
+  NYC document indexers please follow these steps:
+<ol class="margin-top-1">
+  <li>Upload the attached PDF to the relevant case in the case management system.</li>
+  <li>Notify the requesting Test Agency staff member once the PDF has been linked to the case.</li>
+</ol>
+<p>
+  This document is for NYC HRA staff only and should not be shared outside the agency.
+</p>
+<p>
+  Thank you.
+</p>

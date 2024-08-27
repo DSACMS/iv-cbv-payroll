@@ -4,21 +4,31 @@ RSpec.describe Cbv::EntriesController do
   describe "#show" do
     render_views
 
-    it "renders properly" do
-      get :show
-
-      expect(response).to be_successful
-    end
-
-    it "sets a CbvFlow object in the session" do
+    it "redirects the user back to the homepage" do
       expect { get :show }
-        .to change { session[:cbv_flow_id] }
-              .from(nil)
-              .to(be_an(Integer))
+        .not_to change { session[:cbv_flow_id] }
+      expect(response).to redirect_to(root_url)
     end
 
     context "when following a link from a flow invitation" do
-      let(:invitation) { CbvFlowInvitation.create(case_number: "ABC1234", site_id: "sandbox") }
+      let(:seconds_since_invitation) { 300 }
+      let(:invitation) do
+        create(
+          :cbv_flow_invitation,
+          case_number: "ABC1234",
+          created_at: seconds_since_invitation.seconds.ago
+        )
+      end
+
+      around do |ex|
+        Timecop.freeze(&ex)
+      end
+
+      it "renders properly" do
+        get :show, params: { token: invitation.auth_token }
+
+        expect(response).to be_successful
+      end
 
       it "sets a CbvFlow object based on the invitation" do
         expect { get :show, params: { token: invitation.auth_token } }
@@ -26,39 +36,61 @@ RSpec.describe Cbv::EntriesController do
                 .from(nil)
                 .to(be_an(Integer))
 
-        cbv_flow = CbvFlow.find(session[:cbv_flow_id])
+        cbv_flow = invitation.cbv_flows.first
         expect(cbv_flow).to have_attributes(
-                              case_number: "ABC1234",
-                              cbv_flow_invitation: invitation
-                            )
+          case_number: "ABC1234",
+          cbv_flow_invitation: invitation
+        )
+      end
+
+      it "sends a NewRelic event with metadata" do
+        allow(NewRelicEventTracker).to receive(:track)
+
+        get :show, params: { token: invitation.auth_token }
+        cbv_flow = invitation.cbv_flows.first
+
+        expect(NewRelicEventTracker).to have_received(:track).with("ClickedCBVInvitationLink", {
+          timestamp: be_a(Integer),
+          invitation_id: invitation.id,
+          cbv_flow_id: cbv_flow.id,
+          site_id: invitation.site_id,
+          seconds_since_invitation: seconds_since_invitation
+        })
       end
 
       context "when returning to an already-visited flow invitation" do
-        let(:existing_cbv_flow) { CbvFlow.create(case_number: "ABC1234", cbv_flow_invitation: invitation, site_id: "sandbox") }
+        let!(:existing_cbv_flow) { create(:cbv_flow, cbv_flow_invitation: invitation) }
 
-        it "uses the existing CbvFlow object" do
-          expect { get :show, params: { token: invitation.auth_token } }
-            .to change { session[:cbv_flow_id] }
-                  .from(nil)
-                  .to(existing_cbv_flow.id)
+        it "creates a new CbvFlow object" do
+          get :show, params: { token: invitation.auth_token }
+
+          expect(session[:cbv_flow_id]).not_to eq(existing_cbv_flow.id)
         end
 
         context "when the CbvFlow was already completed" do
           before do
             existing_cbv_flow.update(confirmation_code: "FOOBAR")
           end
+          let!(:connected_account) do
+            create(:pinwheel_account,
+              cbv_flow: existing_cbv_flow,
+              pinwheel_account_id: SecureRandom.uuid,
+              created_at: 4.minutes.ago
+            )
+          end
 
           it "redirects to the expired invitation URL" do
             expect { get :show, params: { token: invitation.auth_token } }
               .not_to change { session[:cbv_flow_id] }
 
-            expect(response).to redirect_to(cbv_flow_expired_invitation_path)
+            expect(response).to redirect_to(cbv_flow_expired_invitation_path(site_id: invitation.site_id))
           end
         end
       end
 
-      context "when there is already a CbvFlow in the session" do
-        let(:other_cbv_flow) { CbvFlow.create(case_number: "ZZZ0000", site_id: "sandbox") }
+      context "when there is a CbvFlow from a different invitation in the session" do
+        let(:other_invitation) { create(:cbv_flow_invitation) }
+        let(:other_cbv_flow) { create(:cbv_flow, cbv_flow_invitation: other_invitation) }
 
         before do
           session[:cbv_flow_id] = other_cbv_flow.id
@@ -92,7 +124,7 @@ RSpec.describe Cbv::EntriesController do
           expect { get :show, params: { token: invitation.auth_token } }
             .not_to change { session[:cbv_flow_id] }
 
-          expect(response).to redirect_to(cbv_flow_expired_invitation_path)
+          expect(response).to redirect_to(cbv_flow_expired_invitation_path(site_id: invitation.site_id))
         end
       end
     end
@@ -102,7 +134,7 @@ RSpec.describe Cbv::EntriesController do
         session[:cbv_flow_id] = -1
       end
 
-      it "uses the existing CbvFlow object" do
+      it "redirects to the homepage" do
         get :show
 
         expect(response).to redirect_to(root_url)

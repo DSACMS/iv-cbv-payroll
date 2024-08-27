@@ -1,40 +1,45 @@
-<section class="grid-container usa-section">
-  <div class="grid-row flex-justify-center">
-    <div class="bg-white padding-y-7 padding-x-7 border border-base-lighter measure-5 line-height-sans-4">
-      <h3>
-        <span class="text-primary"><%= t("shared.pilot_name") %> | </span>
-        <%= @site_config.agency_name %>
-      </h3>
-      <h1>
-        <%= @site_config.agency_short_name %> has sent you an invitation to verify your income
-      </h1>
-      <div class="line-height-sans-5">
-        <p>
-          <%= t(".greeting") %>
-        </p>
+<% content_for :html_class, "bg-primary-lighter" %>
+<% content_for :body_div_class, "bg-primary-lighter" %>
 
-        <p>
-          <%= t(".body_html",
-            agency_acronym: @site_config.agency_short_name,
-            deadline: format_date(@cbv_flow_invitation.expires_at.to_s)) %>
-        </p>
-
-        <p>
-          To verify your income, click the button below:
-        </p>
-      </div>
-
-      <p class="margin-y-5">
-        <a href="<%= @cbv_flow_invitation.to_url %>" class="usa-button width-auto" type="button">
-          Verify your income
-        </a>
+<section class="usa-section">
+  <div class="bg-white padding-y-7 padding-x-7 border border-base-lighter measure-5 line-height-sans-4 margin-x-auto font-body-xs">
+    <h3>
+      <span class="text-primary"><%= t("shared.pilot_name") %> | </span>
+      <% if current_site.id == "ma" %>
+        <%= image_tag "dta_logo.png", class: "text-middle", style: "width: 140px" %>
+      <% else %>
+        <%= site_translation("shared.header.cbv_flow_title") %>
+      <% end %>
+    </h3>
+    <h1>
+      <%= site_translation(".header") %>
+    </h1>
+    <div class="line-height-sans-5">
+      <p>
+        <%= t(".greeting") %>
       </p>
 
-      <hr >
+      <p>
+        <%= site_translation(".body_html",
+          agency_acronym: current_site.agency_short_name,
+          deadline: format_date(@cbv_flow_invitation.expires_at.to_s)) %>
+      </p>
 
-      <p class="font-body-2xs">
-        This is an automatically generated message from your benefits agency. Please don’t reply to this email.
+      <p>
+        <%= t(".button_caption") %>
       </p>
     </div>
+
+    <p class="margin-y-5">
+      <a href="<%= @cbv_flow_invitation.to_url %>" class="usa-button width-auto" type="button">
+        <%= t(".button") %>
+      </a>
+    </p>
+
+    <hr >
+
+    <p class="font-body-3xs">
+      <%= t(".footer") %>
+    </p>
   </div>
 </section>

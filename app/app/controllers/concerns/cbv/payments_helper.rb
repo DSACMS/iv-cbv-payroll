@@ -1,20 +1,22 @@
 module Cbv::PaymentsHelper
   def set_payments(account_id = nil)
-    payments = account_id.nil? ? fetch_payroll : fetch_payroll_for_account_id(account_id)
-
+    invitation = @cbv_flow.cbv_flow_invitation
+    to_pay_date = invitation.snap_application_date
+    from_pay_date = invitation.paystubs_query_begins_at
+    payments = account_id.nil? ? fetch_payroll(from_pay_date.strftime("%Y-%m-%d"), to_pay_date.strftime("%Y-%m-%d")) : fetch_payroll_for_account_id(account_id, from_pay_date.strftime("%Y-%m-%d"), to_pay_date.strftime("%Y-%m-%d"))
+    @payments_ending_at = to_pay_date.strftime("%B %d, %Y")
+    @payments_beginning_at = from_pay_date.strftime("%B %d, %Y")
     @payments = parse_payments(payments)
   end
 
-  def fetch_payroll
-    end_user_account_ids = pinwheel.fetch_accounts(end_user_id: @cbv_flow.pinwheel_end_user_id)["data"].map { |account| account["id"] }
-
-    end_user_account_ids.map do |account_id|
-      fetch_payroll_for_account_id account_id
+  def fetch_payroll(from_pay_date, to_pay_date)
+    fetch_end_user_account_ids.map do |account_id|
+      fetch_payroll_for_account_id(account_id, from_pay_date, to_pay_date)
     end.flatten
   end
 
-  def fetch_payroll_for_account_id(account_id)
-    pinwheel.fetch_paystubs(account_id: account_id, from_pay_date: 90.days.ago.strftime("%Y-%m-%d"))["data"]
+  def fetch_payroll_for_account_id(account_id, from_pay_date, to_pay_date)
+    pinwheel.fetch_paystubs(account_id: account_id, from_pay_date: from_pay_date, to_pay_date: to_pay_date)["data"]
   end
 
   def parse_payments(payments)
@@ -22,7 +24,6 @@ module Cbv::PaymentsHelper
       earnings_with_hours = payment["earnings"].max_by { |e| e["hours"] || 0.0 }
 
       {
-        employer: payment["employer_name"],
         start: payment["pay_period_start"],
         end: payment["pay_period_end"],
         hours: earnings_with_hours["hours"],
@@ -37,16 +38,7 @@ module Cbv::PaymentsHelper
     end
   end
 
-  def summarize_by_employer(payments)
-    payments.each_with_object({}) do |payment, hash|
-      account_id = payment[:account_id]
-      hash[account_id] ||= {
-        employer_name: payment[:employer],
-        total: 0,
-        payments: []
-      }
-      hash[account_id][:total] += payment[:net_pay_amount]
-      hash[account_id][:payments] << payment
-    end
+  def fetch_end_user_account_ids
+    pinwheel.fetch_accounts(end_user_id: @cbv_flow.pinwheel_end_user_id)["data"].map { |account| account["id"] }
   end
 end

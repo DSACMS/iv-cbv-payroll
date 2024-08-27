@@ -19,6 +19,17 @@ module PinwheelApiHelper
       )
   end
 
+  def stub_request_items_no_items_response
+    stub_request(:get, /#{PinwheelService::ITEMS_ENDPOINT}/)
+      .to_return(
+        status: 200,
+        body: {
+          data: []
+        }.to_json,
+        headers: { content_type: 'application/json;charset=UTF-8' }
+      )
+  end
+
   def stub_create_token_response(end_user_id: 'user_id')
     stub_request(:post, /#{PinwheelService::USER_TOKENS_ENDPOINT}/)
       .to_return(
@@ -83,6 +94,15 @@ module PinwheelApiHelper
       .to_return(
         status: 200,
         body: load_relative_json_file('request_employment_info_response_null_employment_status_bug.json').to_json,
+        headers: { 'Content-Type': 'application/json;charset=UTF-8' }
+      )
+  end
+
+  def stub_request_identity_response
+    stub_request(:get, %r{#{PinwheelService::ACCOUNTS_ENDPOINT}/[0-9a-fA-F\-]{36}/identity})
+      .to_return(
+        status: 200,
+        body: load_relative_json_file('request_identity_response.json').to_json,
         headers: { 'Content-Type': 'application/json;charset=UTF-8' }
       )
   end

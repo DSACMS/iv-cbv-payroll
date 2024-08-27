@@ -1,109 +1,64 @@
+<% header = employer_name ? t(".header", employer_name: employer_name) : t(".header_no_employer_name") %>
+<% content_for :title, header %>
 <h1>
-  <% if employer_name %>
-    <%= t(".header", employer_name: employer_name) %>
-  <% else %>
-    <%= t(".header_no_employer_name") %>
-  <% end %>
+  <%= header %>
 </h1>
 
-<% if @payments.any? %>
-  <p><%= t(".subheader", start_date: format_date(start_date), end_date: format_date(end_date)) %></p>
-  <h2><%= t(".total_gross_income", amount: format_money(gross_pay)) %></h2>
+<div class="usa-prose">
+  <p><%= t(".subheader", start_date: @payments_beginning_at, end_date: @payments_ending_at) %></p>
+</div>
+<h2><%= t(".total_gross_income", amount: format_money(gross_pay)) %></h2>
+<div class="usa-prose">
   <p><%= t(".total_gross_description") %></p>
-    <table class="usa-table usa-table--borderless width-full">
-      <thead class="border-top-05">
-      <tr>
-        <th class="padding-3" style="background-color: #d9e8f6;" colspan="2">
-          <h3 class="margin-0"><%= t(".employment_information_table_header") %></h3>
-        </th>
-      </tr>
-      </thead>
-      <tbody>
-      <tr>
-        <td><%= t(".employment_start_date") %></td>
-        <td><%= format_date(employment_start_date) %></td>
-      </tr>
-      <tr>
-        <td><%= t(".employment_end_date") %></td>
-        <td><%= employment_end_date ? employment_end_date : t("shared.not_applicable") %></td>
-      </tr>
-      <tr>
-        <td><%= t(".employment_status") %></td>
-        <td><%= employment_status %></td>
-      </tr>
-      <% if @has_income_data %>
-        <tr>
-          <td><%= t(".pay_frequency") %></td>
-          <td><%= pay_frequency %></td>
-        </tr>
-        <tr>
-          <td><%= t(".hourly_rate") %></td>
-          <td><%= format_money(compensation_amount) %> <%= compensation_unit %></td>
-        </tr>
-      <% end %>
-      </tbody>
-    </table>
+</div>
 
-    <table class="usa-table usa-table--borderless width-full">
-      <thead class="border-top-05">
-      <tr>
-        <th class="padding-3" style="background-color: #d9e8f6;" colspan="2">
-          <h3 class="margin-0"><%= t(".payments_and_deductions_table_header") %></h3>
-        </th>
-      </tr>
-      </thead>
-      <tbody>
-      <% @payments.each do |payment| %>
-        <tr>
-          <td colspan="2">
-            <h4 class="margin-0"><%= t(".pay_date", pay_date: format_date(payment[:pay_date])) %></h4>
-          </td>
-        </tr>
-        <tr>
-          <td><%= t(".pay_period") %></td>
-          <td><%= format_date(payment[:start]) %> to <%= format_date(payment[:end]) %></td>
-        </tr>
+<%= render(TableComponent.new) do |component| %>
+  <%= component.with_header do %>
+    <h3 class="margin-0"><%= t("cbv.payment_details.show.employment_information_table_header") %></h3>
+  <% end %>
+  <%= component.with_data_point(:employment_start_date, employment_start_date) %>
+  <%= component.with_data_point(:employment_end_date, employment_end_date) %>
+  <%= component.with_data_point(:employment_status, employment_status) %>
+  <% if has_income_data? %>
+    <%= component.with_data_point(:pay_frequency, pay_frequency) %>
+    <%= component.with_data_point(:hourly_rate, compensation_amount, compensation_unit) %>
+  <% end %>
+<% end %>
 
-        <tr>
-          <td><%= t(".pay_gross") %></td>
-          <td><%= format_money(payment[:gross_pay_amount]) %></td>
-        </tr>
+<% if @payments.any? %>
+  <%= render(TableComponent.new) do |table| %>
+    <%= table.with_header do %>
+      <h3 class="margin-0"><%= t("cbv.payment_details.show.payments_and_deductions_table_header") %></h3>
+    <% end %>
 
-        <tr>
-          <td><%= t(".pay_net") %></td>
-          <td><%= format_money(payment[:net_pay_amount]) %></td>
-        </tr>
-
-        <tr>
-          <td><%= t(".number_of_hours_worked") %></td>
-          <td><%= t(".payment_hours", amount: payment[:hours]) %></td>
-        </tr>
-        <% payment[:deductions].each do |deduction| %>
-          <tr>
-            <td><%= t(".deductions", category: deduction[:category]&.humanize) %></td>
-            <td><%= format_money(deduction[:amount]) %></td>
-          </tr>
-        <% end %>
-
-        <tr>
-          <td><%= t(".pay_gross_ytd") %></td>
-          <td><%= format_money(payment[:gross_pay_ytd]) %></td>
-        </tr>
+    <% @payments.each do |payment| %>
+      <%= table.with_row_section do |row| %>
+        <h4 class="margin-0"><%= t("cbv.payment_details.show.pay_date", pay_date: format_date(payment[:pay_date])) %></h4>
       <% end %>
 
-      </tbody>
-    </table>
+      <%= table.with_data_point(:pay_period, payment[:start], payment[:end]) %>
+      <%= table.with_data_point(:pay_gross, payment[:gross_pay_amount]) %>
+      <%= table.with_data_point(:net_pay_amount, payment[:net_pay_amount]) %>
+      <%= table.with_data_point(:number_of_hours_worked, payment[:hours]) %>
 
-    <div class="usa-form-group">
-      <%= form_with(model: @cbv_flow, url: cbv_flow_payment_details_path, method: :patch) do |form| %>
-      <%= hidden_field_tag "user[account_id]", params[:user][:account_id] %>
-      <%= form.label :additional_information, t(".additional_information_label"), class: "usa-label" %>
-      <%= form.text_area :additional_information, class: "usa-textarea", rows: 5, value: @account_comment %>
-      <%= form.submit t(".continue"), class: "usa-button usa-button--primary margin-top-3" %>
-    </div>
+      <% payment[:deductions].filter { |deduction| deduction[:amount] > 0 }.each do |deduction| %>
+        <%= table.with_data_point(:deduction, deduction[:category], deduction[:amount]) %>
+      <% end %>
+
+      <%= table.with_data_point(:pay_gross_ytd, payment[:gross_pay_ytd]) %>
+    <% end %>
   <% end %>
 <% else %>
   <h3 class="site-preview-heading">
     <%= t(".none_found") %>
   </h3>
 <% end %>
+
+<div class="usa-form-group">
+  <%= form_with(model: @cbv_flow, url: cbv_flow_payment_details_path, method: :patch) do |form| %>
+    <%= hidden_field_tag "user[account_id]", params[:user][:account_id] %>
+    <%= form.label :additional_information, t(".additional_information_label"), class: "usa-label" %>
+    <%= form.text_area :additional_information, class: "usa-textarea", rows: 5, value: @account_comment %>
+    <%= form.submit t(".continue"), class: "usa-button usa-button--primary margin-top-3" %>
+  <% end %>
+</div>

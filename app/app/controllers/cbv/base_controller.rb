@@ -11,42 +11,42 @@ class Cbv::BaseController < ApplicationController
         return redirect_to(root_url, flash: { alert: t("cbv.error_invalid_token") })
       end
       if invitation.expired?
-        return redirect_to(cbv_flow_expired_invitation_path)
+        return redirect_to(cbv_flow_expired_invitation_path(site_id: invitation.site_id))
+      end
+      if invitation.complete?
+        return redirect_to(cbv_flow_expired_invitation_path(site_id: invitation.site_id))
       end
 
-      @cbv_flow = invitation.cbv_flow || CbvFlow.create_from_invitation(invitation)
+      @cbv_flow = CbvFlow.create_from_invitation(invitation)
+      session[:cbv_flow_id] = @cbv_flow.id
       NewRelicEventTracker.track("ClickedCBVInvitationLink", {
         timestamp: Time.now.to_i,
         invitation_id: invitation.id,
-        cbv_flow_id: @cbv_flow.id
+        cbv_flow_id: @cbv_flow.id,
+        site_id: @cbv_flow.site_id,
+        seconds_since_invitation: (Time.now - invitation.created_at).to_i
       })
     elsif session[:cbv_flow_id]
       begin
         @cbv_flow = CbvFlow.find(session[:cbv_flow_id])
       rescue ActiveRecord::RecordNotFound
-        return redirect_to root_url
+        redirect_to root_url
       end
-    elsif params[:controller] == "cbv/entries"
-      # TODO: Restrict ability to enter the flow without a valid token
-      @cbv_flow = CbvFlow.create(site_id: "sandbox")
     else
-      return redirect_to root_url, notice: t("cbv.error_missing_token")
+      redirect_to root_url, flash: { slim_alert: { type: "info", message_html: t("cbv.error_missing_token_html") } }
     end
-
-    session[:cbv_flow_id] = @cbv_flow.id
   end
 
   def ensure_cbv_flow_not_yet_complete
     return unless @cbv_flow && @cbv_flow.complete?
 
-    session[:cbv_flow_id] = nil
-    redirect_to(cbv_flow_expired_invitation_path)
+    redirect_to(cbv_flow_success_path)
   end
 
   def current_site
     return unless @cbv_flow.present? && @cbv_flow.site_id.present?
 
-    site_config[@cbv_flow.site_id]
+    @current_site ||= site_config[@cbv_flow.site_id]
   end
 
   def next_path
@@ -60,8 +60,6 @@ class Cbv::BaseController < ApplicationController
     when "cbv/payment_details"
       cbv_flow_add_job_path
     when "cbv/summaries"
-      cbv_flow_share_path
-    when "cbv/shares"
       cbv_flow_success_path
     end
   end

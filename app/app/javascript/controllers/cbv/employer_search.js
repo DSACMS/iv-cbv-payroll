@@ -7,7 +7,8 @@ export default class extends Controller {
     "form",
     "searchTerms",
     "userAccountId",
-    "modal"
+    "modal",
+    "employerButton"
   ];
 
   pinwheel = loadPinwheel();
@@ -30,28 +31,60 @@ export default class extends Controller {
         }
       }
     });
+    this.errorHandler = document.addEventListener("turbo:frame-missing", this.onTurboError)
+  }
+
+  disconnect() {
+    document.removeEventListener("turbo:frame-missing", this.errorHandler)
   }
 
   onSignInSuccess() {
     this.pinwheel.then(pinwheel => pinwheel.close());
     this.modalTarget.click();
+    this.reenableButtons()
   }
 
-  onAccountError(event) {
-    console.log(event);
+  onTurboError(event) {
+    console.warn("Got turbo error, redirecting:", event)
+
+    const location = event.detail.response.url
+    event.detail.visit(location)
+    event.preventDefault()
+  }
+
+  onPinwheelError(event) {
+    const { type, code } = event;
+    console.error("Got Pinwheel Error:", type, event)
+
+    if (window.NREUM) {
+      window.NREUM.addPageAction("PinwheelError", { type, code })
+    }
   }
 
   async select(event) {
     const { responseType, id } = event.target.dataset;
-    const { token } = await fetchToken(responseType, id);
+    this.disableButtons()
 
+    const { token } = await fetchToken(responseType, id);
     this.submit(token);
   }
 
   submit(token) {
     this.pinwheel.then(Pinwheel => initializePinwheel(Pinwheel, token, {
       onEvent: console.log,
+      onError: this.onPinwheelError.bind(this),
+      onExit: this.reenableButtons.bind(this),
       onSuccess: this.onSignInSuccess.bind(this),
     }));
+  }
+
+  disableButtons() {
+    this.employerButtonTargets
+      .forEach(el => el.setAttribute("disabled", "disabled"))
+  }
+
+  reenableButtons() {
+    this.employerButtonTargets
+      .forEach(el => el.removeAttribute("disabled"))
   }
 }

@@ -1,5 +1,11 @@
-<h2>Your invitation to verify income has expired</h2>
+<% content_for :title, t(".title") %>
+<h1><%= t(".title") %></h1>
 
-<p>You have either completed your verification process or accessed this invitation after too long.</p>
+<div class="usa-prose">
+  <p><%= t(".body_1") %></p>
+  <p><%= t(".body_2") %></p>
+</div>
 
-<p>Please contact your caseworker for further instructions.</p>
+<div class="margin-top-3">
+  <%= site_translation(".cta_button_html") %>
+</div>

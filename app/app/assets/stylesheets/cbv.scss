@@ -1,0 +1,98 @@
+@forward "uswds";
+@use "uswds" as *;
+/*
+ * Layout / body styles
+ */
+html {
+  background-color: color("primary-darker");
+  min-width: 360px;
+}
+#main-content {
+  // These are rough approximations just to roughly get the footer to show up
+  // at the bottom of the screen by default.
+  $header-height: 4.5rem;
+  $footer-height: 5rem;
+  min-height: calc(100vh - $header-height - $footer-height);
+}
+
+/*
+ * Preheader component
+ */
+.cbv-header__preheader {
+  background-color: color("primary-darker");
+  @include u-padding-y(0.5);
+}
+.cbv-header__preheader__text {
+  @include u-padding-y(0);
+  color: color("white");
+  font-size: font-size($theme-banner-font-family, 1);
+  line-height: line-height($theme-banner-font-family, 2);
+
+  @include at-media-max($theme-header-min-width) {
+    margin-left: units($theme-site-margins-mobile-width);
+  }
+  @include at-media($theme-header-min-width) {
+    @include clearfix;
+    @include grid-container($theme-header-max-width);
+  }
+}
+
+/*
+ * Header / Navbar Component
+ */
+.cbv-header {
+  align-items: center;
+  color: color("primary-darker");
+  display: flex;
+}
+.cbv-header__pilot-name {
+  color: color("primary");
+  flex-shrink: 0;
+
+  @include at-media-max($theme-header-min-width) {
+    @include u-margin-y(0.5);
+  }
+}
+.cbv-header__nav {
+  flex-basis: content;
+}
+.cbv-header__separator {
+  @include u-padding-x(1);
+}
+.cbv-header__agency-logo {
+  @include u-margin-right(1);
+  height: 45px;
+}
+
+/*
+ * Footer
+ */
+.cbv-footer {
+  background-color: color("primary-darker");
+}
+.cbv-footer__content {
+  @include at-media-max($theme-header-min-width) {
+    margin-left: units($theme-site-margins-mobile-width);
+  }
+
+  @include at-media($theme-header-min-width) {
+    @include clearfix;
+    @include grid-container($theme-header-max-width);
+  }
+  @include u-font("sans", 4);
+  @include u-padding-y(2);
+
+  color: color("white");
+
+  a,
+  a:visited {
+    color: color("white");
+  }
+}
+.cbv-footer__item {
+  @include u-margin-y(2);
+}
+
+.cbv-row-highlight td {
+  @include u-bg('yellow-5v');
+}

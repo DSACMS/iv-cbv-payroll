@@ -42,4 +42,12 @@ class DataRetentionService
         cbv_flow.cbv_flow_invitation.redact! if cbv_flow.cbv_flow_invitation.present?
       end
   end
+
+  # Use after conducting a user test or other time we want to manually redact a
+  # specific person's data in the system.
+  def self.manually_redact_by_case_number!(case_number)
+    invitation = CbvFlowInvitation.find_by!(case_number: case_number)
+    invitation.redact!
+    invitation.cbv_flows.map(&:redact!)
+  end
 end
