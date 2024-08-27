@@ -30,14 +30,16 @@ module Cbv::ReportsHelper
         pinwheel_account = PinwheelAccount.find_by_pinwheel_account_id(account_id)
         has_income_data = pinwheel_account.job_succeeded?("income")
         has_employment_data = pinwheel_account.job_succeeded?("employment")
+        has_identity_data = pinwheel_account.job_succeeded?("identity")
         hash[account_id] ||= {
           total: 0,
           payments: [],
           has_income_data: has_income_data,
           has_employment_data: has_employment_data,
+          has_identity_data: has_identity_data,
           income: has_income_data && incomes.find { |income| income["account_id"] == account_id },
           employment: has_employment_data && employments.find { |employment| employment["account_id"] == account_id },
-          identity: identities.find { |identity| identity["account_id"] == account_id }
+          identity: has_identity_data && identities.find { |identity| identity["account_id"] == account_id }
         }
         hash[account_id][:total] += payment[:gross_pay_amount]
         hash[account_id][:payments] << payment
@@ -47,7 +49,7 @@ module Cbv::ReportsHelper
   private
 
   def fetch_employments
-    fetch_end_user_account_ids.map do |account_id|
+    fetch_known_end_user_account_ids.map do |account_id|
       next [] unless does_pinwheel_account_support_job?(account_id, "employment")
       fetch_employments_for_account_id account_id
     end.flatten
@@ -58,7 +60,7 @@ module Cbv::ReportsHelper
   end
 
   def fetch_incomes
-    fetch_end_user_account_ids.map do |account_id|
+    fetch_known_end_user_account_ids.map do |account_id|
       next [] unless does_pinwheel_account_support_job?(account_id, "income")
       fetch_incomes_for_account_id account_id
     end.flatten
@@ -69,7 +71,7 @@ module Cbv::ReportsHelper
   end
 
   def fetch_identities
-    fetch_end_user_account_ids.map do |account_id|
+    fetch_known_end_user_account_ids.map do |account_id|
       next [] unless does_pinwheel_account_support_job?(account_id, "identity")
       fetch_identity_for_account_id account_id
     end.flatten
