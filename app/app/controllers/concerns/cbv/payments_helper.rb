@@ -39,8 +39,8 @@ module Cbv::PaymentsHelper
   end
 
   def fetch_known_end_user_account_ids
-    pinwheel_account_ids = pinwheel.fetch_accounts(end_user_id: @cbv_flow.pinwheel_end_user_id)["data"].map { |account| account["id"] }
+    pinwheel_account_ids = pinwheel.fetch_accounts(end_user_id: @cbv_flow.pinwheel_end_user_id)["data"].pluck("id")
 
-    PinwheelAccount.where(pinwheel_account_id: pinwheel_account_ids).map(&:pinwheel_account_id)
+    PinwheelAccount.where(pinwheel_account_id: pinwheel_account_ids).pluck(:pinwheel_account_id)
   end
 end
