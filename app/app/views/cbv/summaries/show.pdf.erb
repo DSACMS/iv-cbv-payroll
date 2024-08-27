@@ -100,7 +100,7 @@
           Employment Information
         </h4>
       <% end %>
-      <% if is_caseworker %>
+      <% if is_caseworker && summary[:has_identity_data] %>
         <%= table.with_data_point(:client_full_name, summary[:identity]["full_name"]) %>
       <% end %>
       <% if summary[:has_employment_data] %>

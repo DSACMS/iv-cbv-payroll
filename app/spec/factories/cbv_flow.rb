@@ -12,7 +12,7 @@ FactoryBot.define do
 
     trait :with_pinwheel_account do
       transient do
-        supported_jobs { %w[income paystubs employment] }
+        supported_jobs { %w[income paystubs employment identity] }
         employment_errored_at { nil }
       end
 
