@@ -35,7 +35,6 @@ RSpec.describe Cbv::ReportsHelper, type: :helper do
     it "groups by employer" do
       expect(helper.summarize_by_employer(parsed_payments, [ employments ], [ incomes ], [ identities ])).to eq({
         account_id => {
-          employer_name: "Acme Corp",
           payments: [
             {
               account_id: account_id,
@@ -44,7 +43,6 @@ RSpec.describe Cbv::ReportsHelper, type: :helper do
                 { amount: 57692, category: "commuter" },
                 { amount: 0, category: "empty_deduction" }
               ],
-              employer: "Acme Corp",
               end: "2020-12-24",
               gross_pay_amount: 480720,
               hours: 80,

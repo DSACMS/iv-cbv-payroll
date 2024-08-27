@@ -1,12 +1,12 @@
 <!DOCTYPE html>
-<html class="bg-primary-lighter">
+<html class="<%= content_for?(:html_class) ? yield(:html_class) : "bg-white padding-2" %>">
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" >
     <%= stylesheet_link_tag "application" %>
   </head>
 
   <body>
-    <div class="bg-primary-lighter">
+    <div class="<%= content_for?(:body_div_class) ? yield(:body_div_class) : "bg-white" %>">
       <%= yield %>
     </div>
   </body>

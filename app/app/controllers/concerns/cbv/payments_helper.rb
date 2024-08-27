@@ -24,7 +24,6 @@ module Cbv::PaymentsHelper
       earnings_with_hours = payment["earnings"].max_by { |e| e["hours"] || 0.0 }
 
       {
-        employer: payment["employer_name"],
         start: payment["pay_period_start"],
         end: payment["pay_period_end"],
         hours: earnings_with_hours["hours"],

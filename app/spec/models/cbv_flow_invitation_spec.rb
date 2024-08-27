@@ -61,7 +61,7 @@ RSpec.describe CbvFlowInvitation, type: :model do
 
       context "middle_name is optional" do
         it "is valid" do
-          invitation = CbvFlowInvitation.new(valid_attributes.merge(middle_name: nil))
+          invitation = create(:cbv_flow_invitation, middle_name: nil)
           expect(invitation).to be_valid
         end
       end
@@ -148,6 +148,15 @@ RSpec.describe CbvFlowInvitation, type: :model do
           day: 15,
           utc_offset: -14400
         )
+      end
+    end
+
+    describe "foreign key constraints" do
+      context "has an associated user" do
+        it "has an associated user email" do
+          invitation = create(:cbv_flow_invitation)
+          expect(invitation.user.email).to be_a(String)
+        end
       end
     end
   end

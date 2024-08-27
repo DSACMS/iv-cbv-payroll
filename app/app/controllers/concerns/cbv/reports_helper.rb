@@ -31,7 +31,6 @@ module Cbv::ReportsHelper
         has_income_data = pinwheel_account.job_succeeded?("income")
         has_employment_data = pinwheel_account.job_succeeded?("employment")
         hash[account_id] ||= {
-          employer_name: payment[:employer],
           total: 0,
           payments: [],
           has_income_data: has_income_data,
