@@ -1,0 +1,17 @@
+<% content_for :title, t(".header") %>
+<div data-controller="cbv-synchronizations" class="usa-modal__content">
+  <div class="usa-modal__main">
+    <h2 class="usa-modal__heading" id="modal-3-heading">
+      <%= t(".fetching_payroll") %>
+    </h2>
+    <div class="usa-prose">
+      <p id="modal-3-description">
+        <%= t(".fetching_payroll_description") %>
+      </p>
+    </div>
+    <div class="lds-ripple" style="left: 30%;"><div></div><div></div></div>
+  </div>
+  <%= form_with url: next_path, method: :get, class: "display-none", data: { 'cbv-synchronizations-target': "form" } do |f| %>
+    <input type="hidden" name="user[account_id]" value="<%= @pinwheel_account && @pinwheel_account.pinwheel_account_id %>" data-cbv-synchronizations-target="userAccountId">
+  <% end %>
+</div>
