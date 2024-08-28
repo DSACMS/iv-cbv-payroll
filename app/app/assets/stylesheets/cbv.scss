@@ -5,7 +5,7 @@
  */
 html {
   background-color: color("primary-darker");
-  min-width: 360px;
+  min-width: 400px;
 }
 #main-content {
   // These are rough approximations just to roughly get the footer to show up
@@ -62,6 +62,16 @@ html {
 .cbv-header__agency-logo {
   @include u-margin-right(1);
   height: 45px;
+}
+.cbv-header__agency-logo--ma {
+  height: 45px;
+}
+.cbv-header__agency-logo--nyc {
+  height: 30px;
+
+  @include at-media($theme-header-min-width) {
+    height: 25px;
+  }
 }
 
 /*
