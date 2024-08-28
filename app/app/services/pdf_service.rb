@@ -1,14 +1,12 @@
 class PdfService
   def self.generate(template:, variables: {})
-    @html_content = ApplicationController.renderer.render(
+    @html_content = ApplicationController.renderer.render_to_string(
       template: template,
       formats: [ :pdf ],
       layout: "layouts/pdf",
       locals: variables,
       assigns: variables
     )
-
-    Rails.logger.debug "HTML content generated: #{@html_content.truncate(100)}"
 
     begin
       @pdf_content = WickedPdf.new.pdf_from_string(@html_content)
