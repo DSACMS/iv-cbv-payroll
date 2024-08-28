@@ -1,66 +1,65 @@
 require 'rails_helper'
 
 RSpec.describe PdfService, type: :service do
-
   describe '#generate_pdf' do
     include PinwheelApiHelper
+    include Cbv::ReportsHelper
 
-    let(:payments) do
-      load_relative_json_file('request_end_user_paystubs_response.json')['data']
+    let(:caseworker_user) { create(:user, email: "#{SecureRandom.uuid}@example.com") }
+    let(:invitation) { create(:cbv_flow_invitation, :nyc, user: caseworker_user) }
+    let(:cbv_flow) do
+      create(
+        :cbv_flow,
+        :with_pinwheel_account,
+        :transmitted,
+        consented_to_authorized_use_at: Time.now,
+        cbv_flow_invitation: invitation
+      )
     end
-
-    # let(:parsed_payments) do
-    #   helper.parse_payments(payments)
-    # end
-
-    let(:template) { 'cbv/summaries/show' }
-    let(:cbv_flow) { create(:cbv_flow) }
-    let(:employments) { [{ employer_name: "ACME Corp" }] }
-    let(:incomes) { [{ pay_frequency: "bi-weekly" }] }
-    let(:identities) { [{ full_name: "John Doe" }] }
+    let(:account_id) { cbv_flow.pinwheel_accounts.first.pinwheel_account_id }
+    let(:payments) { stub_post_processed_payments(account_id) }
+    let(:employments) { stub_employments(account_id) }
+    let(:incomes) { stub_incomes(account_id) }
+    let(:identities) { stub_identities(account_id) }
+    let(:payments_grouped_by_employer) { summarize_by_employer(payments, employments, incomes, identities) }
     let(:variables) do
       {
-        locals: {
-          is_caseworker: false,
-          cbv_flow: cbv_flow,
-          payments: payments,
-          employments: employments,
-          incomes: incomes,
-          identities: identities
-        }
+        is_caseworker: true,
+        cbv_flow: cbv_flow,
+        payments: payments,
+        employments: employments,
+        incomes: incomes,
+        identities: identities,
+        payments_grouped_by_employer: payments_grouped_by_employer,
+        has_consent: false,
       }
     end
-    let(:pdf_service) { PdfService.new }
-    let(:file_path) { pdf_service.generate_pdf(template, variables) }
 
     before do
-      allow(ApplicationController).to receive(:render).and_return("<html><body>Test PDF Content</body></html>")
-      allow(WickedPdf).to receive_message_chain(:new, :pdf_from_string).and_return("PDF content")
-    end
-
-    it 'generates a PDF file' do
-      expect(File).to exist(file_path)
-    end
-
-    it 'creates a file with .pdf extension' do
-      expect(File.extname(file_path)).to eq('.pdf')
-    end
-
-    it 'creates a non-empty PDF file' do
-      expect(File.size(file_path)).to be > 0
-    end
-
-    it 'renders the template with correct variables' do
-      pdf_service.generate_pdf(template, variables)
-      expect(ApplicationController).to have_received(:render).with(
-        template: template,
-        layout: "pdf",
-        locals: variables[:locals]
+      @file_path = PdfService.generate(
+        template: 'cbv/summaries/show',
+        variables: variables
       )
     end
 
+    context "#generate" do
+      it 'generates a PDF file' do
+        expect(@file_path).not_to be_nil, "PDF generation failed"
+
+        if @file_path != nil
+          expect(PdfService.get_pdf).to include('%PDF-1.4')
+          html = PdfService.get_html
+          expect(html).to include('Gross pay YTD')
+          expect(html).to include('Agreement Consent Timestamp')
+          expect(File.exist?(@file_path)).to be_truthy
+          expect(File.size(@file_path)).to be > 0
+          expect(File.extname(@file_path)).to eq('.pdf')
+        end
+      end
+    end
+
     after do
-      File.delete(file_path) if File.exist?(file_path)
+      @file_path&.tap { |path| File.delete(path) if File.exist?(path) }
     end
   end
 end

@@ -71,6 +71,33 @@ class Cbv::SummariesController < Cbv::BaseController
         identities: @identities
       ).summary_email.deliver_now
       @cbv_flow.touch(:transmitted_at)
+    when "s3"
+      config = current_site.transmission_method_configuration
+      s3_service = S3Service.new(config)
+      pdf_path = PdfService.generate(
+        template: "cbv/summaries/show",
+        variables: {
+          is_caseworker: true,
+          cbv_flow: @cbv_flow,
+          payments: @payments,
+          employments: @employments,
+          incomes: @incomes,
+          identities: @identities,
+          payments_grouped_by_employer: summarize_by_employer(@payments, @employments, @incomes, @identities),
+          has_consent: has_consent
+        }
+      )
+      # generate a csv file without using libraries
+      csv_path = "#{Rails.root}/tmp/cbv_flow_#{current_site.id}_#{Time.now.to_i}.csv"
+      File.open(csv_path, "w") do |file|
+        file.write("Employer,Pay Date,Gross Pay,Net Pay\n")
+        @payments.each do |payment|
+          file.write("#{payment[:employer_name]},#{payment[:pay_date]},#{payment[:gross_pay_amount]},#{payment[:net_pay_amount]}\n")
+        end
+      end
+      s3_service.encrypt_and_upload(pdf_path, "cbv_flow_#{current_site.id}_#{Time.now.to_i}.pdf")
+    else
+      raise "Unsupported transmission method: #{current_site.transmission_method}"
     end
 
     track_transmitted_event(@cbv_flow, @payments)
