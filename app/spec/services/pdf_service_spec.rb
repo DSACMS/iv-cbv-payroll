@@ -35,7 +35,7 @@ RSpec.describe PdfService, type: :service do
     end
 
     before do
-      @file_path = PdfService.generate(
+      @pdf_results = PdfService.generate(
         template: 'cbv/summaries/show',
         variables: variables
       )
@@ -43,22 +43,17 @@ RSpec.describe PdfService, type: :service do
 
     context "#generate" do
       it 'generates a PDF file' do
-        expect(@file_path).not_to be_nil, "PDF generation failed"
-
-        if @file_path != nil
-          expect(PdfService.get_pdf).to include('%PDF-1.4')
-          html = PdfService.get_html
-          expect(html).to include('Gross pay YTD')
-          expect(html).to include('Agreement Consent Timestamp')
-          expect(File.exist?(@file_path)).to be_truthy
-          expect(File.size(@file_path)).to be > 0
-          expect(File.extname(@file_path)).to eq('.pdf')
-        end
+        expect(@pdf_results['content']).to include('%PDF-1.4')
+        expect(@pdf_results['html']).to include('Gross pay YTD')
+        expect(@pdf_results['html']).to include('Agreement Consent Timestamp')
+        expect(File.exist?(@pdf_results['path'])).to be_truthy
+        expect(File.size(@pdf_results['path'])).to be > 0
+        expect(File.extname(@pdf_results['path'])).to eq('.pdf')
       end
     end
 
     after do
-      @file_path&.tap { |path| File.delete(path) if File.exist?(path) }
+      @pdf_results['path']&.tap { |path| File.delete(path) if File.exist?(path) }
     end
   end
 end
