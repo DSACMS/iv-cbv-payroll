@@ -3,6 +3,8 @@
   agency_short_name: HRA
   agency_contact_website: https://www.nyc.gov/site/hra/help/snap-application-frequently-asked-questions.page
   caseworker_feedback_form: https://forms.office.com/r/B66WeqsBFE
+  logo_path: hra_logo.png
+  logo_square_path: hra_logo_square.png
   pinwheel:
     api_token: <%= ENV['PINWHEEL_API_TOKEN_PRODUCTION'] %>
     environment: production
