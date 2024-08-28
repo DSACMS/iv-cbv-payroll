@@ -11,7 +11,6 @@ RSpec.describe PdfService, type: :service do
       create(
         :cbv_flow,
         :with_pinwheel_account,
-        :transmitted,
         consented_to_authorized_use_at: Time.now,
         cbv_flow_invitation: invitation
       )
