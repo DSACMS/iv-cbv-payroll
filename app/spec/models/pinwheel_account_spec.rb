@@ -46,6 +46,11 @@ RSpec.describe PinwheelAccount, type: :model do
 
   describe "#job_succeeded?" do
     context "when job is supported" do
+      it "returns false when income is supported but not yet synced" do
+        pinwheel_account.update!(income_synced_at: nil)
+        expect(pinwheel_account.job_succeeded?('income')).to be_falsey
+      end
+
       it "returns true when income is supported and it succeeded" do
         pinwheel_account.update!(income_synced_at: Time.current)
         expect(pinwheel_account.job_succeeded?('income')).to be_truthy
