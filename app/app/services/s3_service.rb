@@ -3,10 +3,9 @@ require "gpgme"
 require "aws-sdk-s3"
 
 class S3Service
-  include GpgEncryptable
 
   def initialize(config)
-    @bucket_name = config["bucket_name"]
+    @bucket_name = config["bucket"]
     @access_key_id = config["access_key_id"]
     @secret_access_key = config["secret_access_key"]
     @region = config["region"]
