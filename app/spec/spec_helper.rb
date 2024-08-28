@@ -101,8 +101,7 @@ RSpec.configure do |config|
   Kernel.srand config.seed
 
   # Mock the pinwheel method if it's not available in the test environment
-  config.before(:each, type: [:controller, :request, :service]) do
-
+  config.before(:each, type: [ :controller, :request, :service ]) do
     def pinwheel
       @pinwheel ||= double('pinwheel')
     end

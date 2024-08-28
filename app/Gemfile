@@ -62,6 +62,7 @@ gem "aws-sdk-rails"
 
 # https://www.ruby-lang.org/en/news/2024/08/01/dos-rexml-cve-2024-41123/
 gem "rexml", "~> 3.3.6"
+gem "gpgme", "~> 2.0", ">= 2.0.12"
 
 group :development, :test do
   gem "brakeman", "~> 5.2"

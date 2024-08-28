@@ -31,7 +31,7 @@ RSpec.describe PdfService, type: :service do
         incomes: incomes,
         identities: identities,
         payments_grouped_by_employer: payments_grouped_by_employer,
-        has_consent: false,
+        has_consent: false
       }
     end
 
