@@ -130,8 +130,6 @@ en:
         can_not_find_employer: I can’t find my company or payroll provider
         employer_not_listed: Employer Not Listed?
         exit_button_text: Exit and go to %{agency_short_name}
-        fetching_payroll: We are fetching your employer's payment information.
-        fetching_payroll_description: This may take a few minutes. Please do not close this window.
         header: Find your employer or payroll provider
         no_results_steps1: Check if your employer uses another business name or a payroll provider.
         no_results_steps2: Make sure you have spelled names correctly, then search again.

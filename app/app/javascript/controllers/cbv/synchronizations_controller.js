@@ -7,7 +7,7 @@ export default class extends Controller {
   cable = ActionCable.createConsumer();
 
   connect() {
-    this.cable.subscriptions.create({ channel: 'PaystubsChannel' }, {
+    this.cable.subscriptions.create({ channel: 'PaystubsChannel', account_id: this.userAccountIdTarget.value }, {
       connected: () => {
         console.log("Connected to the channel:", this);
       },

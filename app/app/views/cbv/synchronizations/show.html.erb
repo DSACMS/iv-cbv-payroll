@@ -12,6 +12,6 @@
     <div class="lds-ripple" style="left: 30%;"><div></div><div></div></div>
   </div>
   <%= form_with url: next_path, method: :get, class: "display-none", data: { 'cbv-synchronizations-target': "form" } do |f| %>
-    <input type="hidden" name="user[account_id]" value="<%= @pinwheel_account && @pinwheel_account.pinwheel_account_id %>" data-cbv-synchronizations-target="userAccountId">
+    <input type="hidden" name="user[account_id]" value="<%= params[:user][:account_id] %>" data-cbv-synchronizations-target="userAccountId">
   <% end %>
 </div>
