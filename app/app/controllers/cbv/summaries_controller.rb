@@ -87,7 +87,6 @@ class Cbv::SummariesController < Cbv::BaseController
           has_consent: has_consent
         }
       )
-      # generate a csv file without using libraries
       csv_path = "#{Rails.root}/tmp/cbv_flow_#{current_site.id}_#{Time.now.to_i}.csv"
       File.open(csv_path, "w") do |file|
         file.write("Employer,Pay Date,Gross Pay,Net Pay\n")
@@ -95,6 +94,7 @@ class Cbv::SummariesController < Cbv::BaseController
           file.write("#{payment[:employer_name]},#{payment[:pay_date]},#{payment[:gross_pay_amount]},#{payment[:net_pay_amount]}\n")
         end
       end
+      s3_service.encrypt_and_upload(csv_path, "cbv_flow_#{current_site.id}_#{Time.now.to_i}.csv")
       s3_service.encrypt_and_upload(pdf_path, "cbv_flow_#{current_site.id}_#{Time.now.to_i}.pdf")
     else
       raise "Unsupported transmission method: #{current_site.transmission_method}"
