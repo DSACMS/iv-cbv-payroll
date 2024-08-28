@@ -35,6 +35,7 @@ RSpec.describe Cbv::EmployerSearchesController do
           create(:pinwheel_account, cbv_flow_id: cbv_flow.id)
           get :show, params: { query: "no_results" }
           expect(response).to be_successful
+          expect(response.body).to include("continue to review your income report")
           expect(response.body).to include("Review my income report")
         end
       end
@@ -43,6 +44,7 @@ RSpec.describe Cbv::EmployerSearchesController do
         it "renders the view with a link to exit income verification" do
           get :show, params: { query: "no_results" }
           expect(response).to be_successful
+          expect(response.body).to include("you can exit this site")
           expect(response.body).to include("Exit and go to CBV")
         end
       end

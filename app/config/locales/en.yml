@@ -155,6 +155,7 @@ en:
           sandbox: Go to <a href="https://example.com/contact">CBV's website</a> to learn about other ways to report your income.
         to_continue_li_2: If you have other jobs to add, search for them.
         to_continue_li_3: If you have no other jobs to add, you can exit this site.
+        to_continue_li_3_continue: If you have no other jobs to add, continue to review your income report.
         what_is_html: "<strong>What is a payroll provider?</strong> A payroll provider is a system that some employers or companies use to handle payroll, pay processing, and distribute paychecks and direct deposit. Examples of popular payroll providers are ADP, Paychex, Gusto, etc."
         you_ll_go: You’ll go to their login portal and sign-in to see your payment history.
     entries:
