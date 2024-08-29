@@ -293,6 +293,7 @@ RSpec.describe Cbv::SummariesController do
         it "generates and uploads PDF and CSV files to S3" do
           allow(NewRelicEventTracker).to receive(:track)
           expect(s3_service_double).to receive(:upload_file).once
+          cbv_flow_invitation.update(client_id_number: "1234")
           patch :update
           expect(NewRelicEventTracker).to have_received(:track).with("IncomeSummarySharedWithCaseworker", hash_including(
             timestamp:                                 be_a(Integer),

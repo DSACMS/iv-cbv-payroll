@@ -1,5 +1,5 @@
 class PdfService
-  PDFOutput = Struct.new(:path, :html, :content)
+  PDFOutput = Struct.new(:path, :html, :content, :page_count)
 
   def self.generate(template:, variables: {})
     html_content = ApplicationController.renderer.render_to_string(
@@ -22,7 +22,10 @@ class PdfService
       file_path = "#{Rails.root}/tmp/#{SecureRandom.uuid}.pdf"
       File.binwrite(file_path, pdf_content)
 
-      PDFOutput.new(file_path, html_content, pdf_content)
+      reader = PDF::Reader.new(file_path)
+      page_count = reader.page_count
+
+      PDFOutput.new(file_path, html_content, pdf_content, page_count)
     rescue => e
       Rails.logger.error "Error generating PDF: #{e.message}"
       nil

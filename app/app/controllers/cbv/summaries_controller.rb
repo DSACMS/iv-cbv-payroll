@@ -1,3 +1,4 @@
+require "csv"
 class Cbv::SummariesController < Cbv::BaseController
   include Cbv::ReportsHelper
   include GpgEncryptable
@@ -83,10 +84,6 @@ class Cbv::SummariesController < Cbv::BaseController
       end
 
       time_now = Time.now.to_i
-      # Generate CSV
-      csv_file_name = "cbv_flow_#{current_site.id}_#{time_now}.csv"
-      csv_path = File.join(Rails.root, "tmp", csv_file_name)
-      generate_csv(csv_path, @payments)
 
       # Generate PDF
       pdf_output = PdfService.generate(
@@ -102,6 +99,11 @@ class Cbv::SummariesController < Cbv::BaseController
           has_consent: has_consent
         }
       )
+
+      # Generate CSV
+      csv_file_name = "cbv_flow_#{current_site.id}_#{time_now}.csv"
+      csv_path = File.join(Rails.root, "tmp", csv_file_name)
+      generate_csv(csv_path, pdf_output)
 
       tar_file_name = "cbv_flow_#{current_site.id}_#{time_now}.tar"
       tar_file_path = File.join(Rails.root, "tmp", tar_file_name)
@@ -123,7 +125,7 @@ class Cbv::SummariesController < Cbv::BaseController
 
       # Clean up temporary files
       begin
-        #        File.delete(pdf_output["path"], csv_path, tar_file_path, encrypted_tar_file_path)
+        File.delete(pdf_output["path"], csv_path, tar_file_path, encrypted_tar_file_path)
       rescue StandardError => e
         Rails.logger.error("Error deleting temporary files: #{e.message}")
       end
@@ -137,12 +139,26 @@ class Cbv::SummariesController < Cbv::BaseController
 
   private
 
-  def generate_csv(path, payments)
-    File.open(path, "w") do |file|
-      file.write("Employer,Pay Date,Gross Pay,Net Pay\n")
-      payments.each do |payment|
-        file.write("#{payment[:employer_name]},#{payment[:pay_date]},#{payment[:gross_pay_amount]},#{payment[:net_pay_amount]}\n")
-      end
+  def generate_csv(path, pdf_output)
+    pinwheel_account = PinwheelAccount.find_by(cbv_flow_id: @cbv_flow.id)
+
+    CSV.open(path, "w", headers: %w[client_id first_name last_name middle_name app_date beacon_id report_date_created report_date_started report_date_end confirmation_code pdf_filename pdf_filetype pdf_filesize pdf_number_of_pages], write_headers: true) do |csv|
+      csv << [
+        @cbv_flow.cbv_flow_invitation.client_id_number,
+        @cbv_flow.cbv_flow_invitation.first_name,
+        @cbv_flow.cbv_flow_invitation.last_name,
+        @cbv_flow.cbv_flow_invitation.middle_name,
+        @cbv_flow.cbv_flow_invitation.snap_application_date,
+        @cbv_flow.cbv_flow_invitation.beacon_id,
+        pinwheel_account.created_at,
+        @cbv_flow.created_at,
+        @cbv_flow.updated_at,
+        @cbv_flow.confirmation_code,
+        @cbv_flow.consented_to_authorized_use_at,
+        "application/pdf",
+        File.size(pdf_output["path"]),
+        pdf_output["page_count"]
+      ]
     end
   end
 
