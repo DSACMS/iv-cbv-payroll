@@ -1,6 +1,26 @@
 require "rails_helper"
+require 'gpgme'
+require 'fileutils'
 
-RSpec.describe Cbv::SummariesController do
+RSpec.describe Cbv::SummariesController, type: :controller do
+  before(:all) do
+    @original_gpg_home = ENV['GNUPGHOME']
+    @temp_gpg_home = File.join(Dir.tmpdir, 'gpghome')
+    FileUtils.mkdir_p(@temp_gpg_home)
+    ENV['GNUPGHOME'] = @temp_gpg_home
+  end
+
+  after(:all) do
+    ENV['GNUPGHOME'] = @original_gpg_home
+    FileUtils.remove_entry @temp_gpg_home if File.directory?(@temp_gpg_home)
+  end
+
+  let(:public_key) { File.read(Rails.root.join('spec', 'support', 'fixtures', 'gpg', 'test_public_key.asc')) }
+  
+  before do
+    GPGME::Key.import(public_key)
+  end
+
   include PinwheelApiHelper
 
   let(:supported_jobs) { %w[income paystubs employment identity] }
@@ -24,7 +44,7 @@ RSpec.describe Cbv::SummariesController do
       "region" => "us-west-2",
       "access_key_id" => "SOME_ACCESS_KEY",
       "secret_access_key" => "SOME_SECRET_ACCESS_KEY",
-      "public_key" => "-----BEGIN PGP PUBLIC KEY BLOCK-----\nVersion: GnuPG v2\n\nmQENBGNKyGABCADjeNJM7Aq61Qhu\n-----END PGP PUBLIC KEY BLOCK-----"
+      "public_key" => public_key
     })
   end
 
@@ -246,7 +266,6 @@ RSpec.describe Cbv::SummariesController do
         sign_in user
         allow(S3Service).to receive(:new).and_return(s3_service_double)
         allow(s3_service_double).to receive(:upload_file)
-        # allow(PdfService).to receive(:generate).and_return({ "path" => "path/to/pdf" })
         allow(mock_site).to receive(:id).and_return('ma')
 
         # Stub pinwheel_for method to return our double
@@ -260,12 +279,12 @@ RSpec.describe Cbv::SummariesController do
         allow(pinwheel_service_double).to receive(:fetch_income_metadata).and_return({ "data" => {} })
 
         # Stub gpg_encrypt_file method
-        allow_any_instance_of(Cbv::SummariesController).to receive(:gpg_encrypt_file).and_return("path/to/encrypted_file")
+        # allow_any_instance_of(Cbv::SummariesController).to receive(:gpg_encrypt_file).and_return("path/to/encrypted_file")
       end
 
       it "generates and uploads PDF and CSV files to S3" do
         allow(NewRelicEventTracker).to receive(:track)
-        expect(s3_service_double).to receive(:upload_file).twice  # Once for PDF, once for CSV
+        expect(s3_service_double).to receive(:upload_file).once
         patch :update
         expect(NewRelicEventTracker).to have_received(:track).with("IncomeSummarySharedWithCaseworker", hash_including(
           timestamp: be_a(Integer),

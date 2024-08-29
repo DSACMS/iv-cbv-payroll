@@ -1,3 +1,5 @@
+require "zip"
+
 class Cbv::SummariesController < Cbv::BaseController
   include Cbv::ReportsHelper
   include GpgEncryptable
@@ -97,35 +99,38 @@ class Cbv::SummariesController < Cbv::BaseController
 
       time_now = Time.now.to_i
       csv_file_name = "cbv_flow_#{current_site.id}_#{time_now}.csv"
-      csv_path = File.join(Rails.root, 'tmp', csv_file_name)
+      csv_path = File.join(Rails.root, "tmp", csv_file_name)
       generate_csv(csv_path, @payments)
 
-      # Create the tar file
-      tar_file_name = "cbv_flow_#{current_site.id}_#{time_now}.tar"
-      tar_file_path = File.join(Rails.root, 'tmp', tar_file_name)
+      # Create a zip file instead of a tar
+      zip_file_name = "cbv_flow_#{current_site.id}_#{time_now}.zip"
+      zip_file_path = File.join(Rails.root, "tmp", zip_file_name)
 
-      # Use relative paths and check if files exist before adding to tar
-      Dir.chdir(Rails.root) do
-        files_to_tar = [ pdf_output["path"], csv_path ].select { |f| File.exist?(f) }
-        system("tar", "-cvf", tar_file_path, *files_to_tar.map { |f| Pathname.new(f).relative_path_from(Rails.root).to_s })
+      Zip::File.open(zip_file_path, Zip::File::CREATE) do |zipfile|
+        [pdf_output["path"], csv_path].each do |file_path|
+          if File.exist?(file_path)
+            filename = File.basename(file_path)
+            zipfile.add(filename, file_path)
+          end
+        end
       end
 
-      # Check if tar creation was successful
-      unless File.exist?(tar_file_path) && !File.zero?(tar_file_path)
-        Rails.logger.error("Failed to create tar file or tar file is empty")
-        raise "Tar file creation failed"
+      # Check if zip creation was successful
+      unless File.exist?(zip_file_path) && !File.zero?(zip_file_path)
+        Rails.logger.error("Failed to create zip file or zip file is empty")
+        raise "Zip file creation failed"
       end
 
-      # Encrypt the tar file
-      encrypted_tar_file_path = gpg_encrypt_file(tar_file_path, public_key)
+      # Encrypt the zip file
+      encrypted_zip_file_path = gpg_encrypt_file(zip_file_path, public_key)
 
-      # Upload the encrypted tar file to S3
+      # Upload the encrypted zip file to S3
       s3_service = S3Service.new(config.except("public_key"))
-      s3_service.upload_file(encrypted_tar_file_path, "cbv_flow_#{current_site.id}_#{time_now}.tar.gpg")
+      s3_service.upload_file(encrypted_zip_file_path, "cbv_flow_#{current_site.id}_#{time_now}.zip.gpg")
 
       # Clean up temporary files
       begin
-        File.delete(pdf_output["path"], csv_path, tar_file_path, encrypted_tar_file_path)
+        File.delete(pdf_output["path"], csv_path, zip_file_path, encrypted_zip_file_path)
       rescue StandardError => e
         Rails.logger.error("Error deleting temporary files: #{e.message}")
       end

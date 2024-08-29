@@ -8,45 +8,11 @@ RSpec.describe GpgEncryptable do
   let(:test_file_content) { "This is a test file content" }
   let(:test_file_path) { tmp_directory.join('test_file.txt').to_s }
   let(:encrypted_file_path) { "#{test_file_path}.gpg" }
-
-  before(:all) do
-    @original_gpg_home = ENV['GNUPGHOME']
-    ENV['GNUPGHOME'] = Rails.root.join('tmp', 'gpghome').to_s
-    FileUtils.mkdir_p(ENV['GNUPGHOME'])
-
-    key_script = <<-SCRIPT
-      %echo Generating a basic OpenPGP key
-      Key-Type: RSA
-      Key-Length: 2048
-      Subkey-Type: RSA
-      Subkey-Length: 2048
-      Name-Real: Test User
-      Name-Email: test@example.com
-      Expire-Date: 0
-      %no-protection
-      %commit
-      %echo done
-    SCRIPT
-
-    IO.popen('gpg --batch --generate-key', 'r+') do |io|
-      io.write(key_script)
-      io.close_write
-      io.read
-    end
-  end
-
-  after(:all) do
-    FileUtils.remove_entry ENV['GNUPGHOME']
-    ENV['GNUPGHOME'] = @original_gpg_home
-  end
+  let(:public_key) { File.read(Rails.root.join('app', 'spec', 'support', 'fixtures', 'gpg', 'test_public_key.asc')) }
 
   after(:each) do
     File.delete(test_file_path) if File.exist?(test_file_path)
     File.delete(encrypted_file_path) if File.exist?(encrypted_file_path)
-  end
-
-  let(:public_key) do
-    GPGME::Key.find(:public, 'test@example.com').first.export(armor: true)
   end
 
   describe '#gpg_encrypt_file' do
