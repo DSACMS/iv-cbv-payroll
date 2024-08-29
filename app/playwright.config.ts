@@ -6,7 +6,7 @@ const protocal = process.env.DOMAIN_NAME === 'localhost' ? 'http' : 'https';
  * See https://playwright.dev/docs/test-configuration.
  */
 export default defineConfig({
-  testDir: './e2e',
+  testDir: './spec/playwright',
   /* Run tests in files in parallel */
   fullyParallel: true,
   /* Fail the build on CI if you accidentally left test.only in the source code. */

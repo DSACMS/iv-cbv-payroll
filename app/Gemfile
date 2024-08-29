@@ -94,6 +94,10 @@ group :development do
   gem "rails-erd", "~> 1.7"
 end
 
+group :test, :development do
+  gem 'cypress-on-rails', '~> 1.0'
+end
+
 group :test do
   gem "climate_control", "~> 1.0"
   gem "webmock"
