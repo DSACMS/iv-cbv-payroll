@@ -6,7 +6,7 @@ class ApplicantMailer < ApplicationMailer
   def invitation_email
     mail(
       to: @cbv_flow_invitation.email_address,
-      subject: I18n.t("applicant_mailer.invitation_email.subject")
+      subject: view_context.site_translation("applicant_mailer.invitation_email.subject")
     )
   end
 

@@ -2,18 +2,26 @@
 en:
   applicant_mailer:
     invitation_email:
-      body_html:
-        default: "<p>%{agency_acronym} wants you to verify your income as part of your benefits application. The SNAP Income Pilot is a new tool designed to help you share your income data directly with your benefits agency by logging into your payroll provider.</p><p>This process is unique to you, so please don't share this invitation with anyone else. <strong>You have until %{deadline}, to complete your verification.</strong> Otherwise, you'll need to request a new invitation.</p>"
-        nyc: "<p>%{agency_acronym} wants you to verify your income as part of your benefits application. The SNAP Income Pilot is a new tool designed to help you share your income data directly with your benefits agency by logging into your payroll provider.</p><p>This process is unique to you, so please don't share this invitation with anyone else. <strong>You have until %{deadline}, to complete your verification.</strong> Otherwise, you'll need to request a new invitation.</p><p>This is an optional tool. If you decide that you don't want to use it, you can provide income documents via the ACCESS HRA app, fax, mail, or in-person.</p>"
+      body_1:
+        default: "%{agency_acronym} wants you to verify your income as part of your SNAP application or recertification. The SNAP Income Pilot is a new tool designed to help you share your income data directly with %{agency_acronym} by logging into your payroll provider."
+        ma: "%{agency_acronym} wants you to verify your income as part of your SNAP recertification. The SNAP Income Pilot is a new tool designed to help you share your income data directly with %{agency_acronym} by logging into your payroll provider."
+      body_2_html:
+        default: This process is unique to you. Please don't share this invitation with anyone else. <strong>You have until %{deadline}, to complete your verification.</strong> Otherwise, you can request a new invitation.
+        ma: This process is unique to you. Please don't share this invitation with anyone else. <strong>You have until %{deadline}, to complete your verification.</strong>
+      body_3:
+        default: This is an optional tool. If you decide that you don't want to use it, you can provide income documents via the %{app_name} app, fax, mail, or in-person.
+        ma: This is an optional tool. If you decide that you don't want to use it, you can provide proof of your gross income and hours using %{app_name}, by fax, by mail, or in-person.
       button: Verify your income
       button_caption: 'To verify your income with the SNAP Income Pilot, click the button below:'
-      footer: This is an automatically generated message from your benefits agency. Please don’t reply to this email.
+      footer: This is an automatically generated message from your SNAP agency. Please don’t reply to this email.
       greeting: Hello,
       header:
         ma: DTA has sent you an invitation to verify your income
         nyc: HRA has sent you an invitation to verify your income
         sandbox: CBV Test Agency has sent you an invitation to verify your income
-      subject: Verify your income for your benefit application
+      subject:
+        default: Verify your income for your SNAP application or renewal
+        ma: Verify your income to renew your SNAP benefits
   caseworker:
     cbv_flow_invitations:
       create:
@@ -292,6 +300,10 @@ en:
       description_3_html: '<p>To participate, you can request an invitation from your benefits agency:</p><ul><li>Massachusetts applicants: Contact the <a href="https://www.mass.gov/guides/how-to-contact-dta" target="_blank" rel="noopener noreferrer">Department of Transitional Assistance (DTA)</a></li><li>New York City applicants: Contact the <a href="https://www.nyc.gov/site/hra/help/snap-application-frequently-asked-questions.page">Human Resources Administration (HRA)</a></li></ul>'
       header: Welcome to the SNAP Income Pilot
   shared:
+    app_name:
+      ma: DTA Connect
+      nyc: ACCESS HRA
+      sandbox: CBVApp
     banner:
       lock: Lock
       locked_padlock: A locked padlock
