@@ -18,7 +18,16 @@ RSpec.describe Cbv::SummariesController, type: :controller do
   let(:public_key) { File.read(Rails.root.join('spec', 'support', 'fixtures', 'gpg', 'test_public_key.asc')) }
   
   before do
-    GPGME::Key.import(public_key)
+    # Import the key
+    result = GPGME::Key.import(public_key)
+    puts "Key import result: #{result.inspect}"
+
+    # Find the imported key
+    @key = GPGME::Key.find(:public, 'test@example.com').first
+    raise "Key not found" unless @key
+
+    # Print key details
+    puts "Key details: #{@key.inspect}"
   end
 
   include PinwheelApiHelper
