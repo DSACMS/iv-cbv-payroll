@@ -7,6 +7,8 @@
       <span class="text-primary"><%= t("shared.pilot_name") %> | </span>
       <% if current_site.id == "ma" %>
         <%= image_tag "dta_logo.png", class: "text-middle", style: "width: 140px" %>
+      <% elsif current_site.id == "nyc" %>
+        <%= image_tag "hra_logo.png", class: "text-middle", style: "width: 140px" %>
       <% else %>
         <%= site_translation("shared.header.cbv_flow_title") %>
       <% end %>
