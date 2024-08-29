@@ -34,4 +34,31 @@ module TarFileCreatable
     end
     tar_file_path
   end
+
+  def untar_file(tar_content, destination)
+    io = StringIO.new(tar_content)
+
+    while (header = io.read(512))
+      break if header.strip.empty?  # End of archive
+
+      filename = header[0...100].strip
+      mode = header[100...108].strip.to_i(8)
+      size = header[124...136].strip.to_i(8)
+
+      file_path = File.join(destination, filename)
+
+      if filename.end_with?("/")
+        FileUtils.mkdir_p(file_path)
+      else
+        FileUtils.mkdir_p(File.dirname(file_path))
+        File.open(file_path, "wb") do |file|
+          file.write(io.read(size))
+        end
+        File.chmod(mode, file_path)
+      end
+
+      # Move to the next 512-byte boundary
+      io.pos += (512 - (size % 512)) % 512
+    end
+  end
 end

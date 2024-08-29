@@ -438,7 +438,6 @@ GEM
     ruby-graphviz (1.2.5)
       rexml
     ruby-progressbar (1.13.0)
-    rubyzip (2.3.2)
     sidekiq (6.5.12)
       connection_pool (>= 2.2.5, < 3)
       rack (~> 2.0)
@@ -555,7 +554,6 @@ DEPENDENCIES
   rubocop
   rubocop-rails-omakase
   rubocop-rspec
-  rubyzip
   sidekiq (~> 6.4)
   sprockets-rails
   standard (~> 1.7)

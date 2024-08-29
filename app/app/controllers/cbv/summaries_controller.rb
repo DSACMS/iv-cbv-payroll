@@ -1,5 +1,3 @@
-require "zip"
-
 class Cbv::SummariesController < Cbv::BaseController
   include Cbv::ReportsHelper
   include GpgEncryptable
@@ -75,7 +73,6 @@ class Cbv::SummariesController < Cbv::BaseController
         incomes: @incomes,
         identities: @identities
       ).summary_email.deliver_now
-      @cbv_flow.touch(:transmitted_at)
     when "s3"
       config = current_site.transmission_method_configuration
       public_key = config["public_key"]
@@ -126,7 +123,7 @@ class Cbv::SummariesController < Cbv::BaseController
 
       # Clean up temporary files
       begin
-        File.delete(pdf_output["path"], csv_path, tar_file_path, encrypted_tar_file_path)
+        #        File.delete(pdf_output["path"], csv_path, tar_file_path, encrypted_tar_file_path)
       rescue StandardError => e
         Rails.logger.error("Error deleting temporary files: #{e.message}")
       end
