@@ -3,6 +3,8 @@ require "zip"
 class Cbv::SummariesController < Cbv::BaseController
   include Cbv::ReportsHelper
   include GpgEncryptable
+  include TarFileCreatable
+
   helper "cbv/reports"
 
   helper_method :has_consent
@@ -83,6 +85,13 @@ class Cbv::SummariesController < Cbv::BaseController
         raise "Public key is required for S3 transmission"
       end
 
+      time_now = Time.now.to_i
+      # Generate CSV
+      csv_file_name = "cbv_flow_#{current_site.id}_#{time_now}.csv"
+      csv_path = File.join(Rails.root, "tmp", csv_file_name)
+      generate_csv(csv_path, @payments)
+
+      # Generate PDF
       pdf_output = PdfService.generate(
         template: "cbv/summaries/show",
         variables: {
@@ -97,23 +106,10 @@ class Cbv::SummariesController < Cbv::BaseController
         }
       )
 
-      time_now = Time.now.to_i
-      csv_file_name = "cbv_flow_#{current_site.id}_#{time_now}.csv"
-      csv_path = File.join(Rails.root, "tmp", csv_file_name)
-      generate_csv(csv_path, @payments)
-
       tar_file_name = "cbv_flow_#{current_site.id}_#{time_now}.tar"
       tar_file_path = File.join(Rails.root, "tmp", tar_file_name)
 
-      File.open(tar_file_path, "wb") do |tar|
-        [pdf_output["path"], csv_path].each do |path|
-          if File.exist?(path)
-            add_file_to_tar(tar, path)
-          end
-        end
-        # Add two 512-byte null blocks to mark the end of the archive
-        tar.write("\0" * 1024)
-      end
+      create_tar_file(tar_file_path, [ pdf_output["path"], csv_path ])
 
       # Check if tar creation was successful
       unless File.exist?(tar_file_path) && !File.zero?(tar_file_path)
@@ -143,28 +139,6 @@ class Cbv::SummariesController < Cbv::BaseController
   end
 
   private
-
-  def add_file_to_tar(tar, file_path)
-    filename = File.basename(file_path)
-    content = File.binread(file_path)
-    header = StringIO.new
-    header.write(filename.ljust(100, "\0"))  # Filename (100 bytes)
-    header.write(sprintf("%07o\0", File.stat(file_path).mode))  # File mode (8 bytes)
-    header.write(sprintf("%07o\0", Process.uid))  # Owner's numeric user ID (8 bytes)
-    header.write(sprintf("%07o\0", Process.gid))  # Group's numeric user ID (8 bytes)
-    header.write(sprintf("%011o\0", content.size))  # File size in bytes (12 bytes)
-    header.write(sprintf("%011o\0", File.stat(file_path).mtime.to_i))  # Last modification time (12 bytes)
-    header.write("        ")  # Checksum (8 bytes)
-    header.write("0")  # Type flag (1 byte)
-    header.write("\0" * 355)  # Padding
-
-    checksum = header.string.bytes.sum
-    header.string[148, 8] = sprintf("%06o\0 ", checksum)
-
-    tar.write(header.string)
-    tar.write(content)
-    tar.write("\0" * (512 - (content.size % 512))) if content.size % 512 != 0
-  end
 
   def generate_csv(path, payments)
     File.open(path, "w") do |file|
