@@ -102,35 +102,35 @@ class Cbv::SummariesController < Cbv::BaseController
       csv_path = File.join(Rails.root, "tmp", csv_file_name)
       generate_csv(csv_path, @payments)
 
-      # Create a zip file instead of a tar
-      zip_file_name = "cbv_flow_#{current_site.id}_#{time_now}.zip"
-      zip_file_path = File.join(Rails.root, "tmp", zip_file_name)
+      tar_file_name = "cbv_flow_#{current_site.id}_#{time_now}.tar"
+      tar_file_path = File.join(Rails.root, "tmp", tar_file_name)
 
-      Zip::File.open(zip_file_path, Zip::File::CREATE) do |zipfile|
-        [pdf_output["path"], csv_path].each do |file_path|
-          if File.exist?(file_path)
-            filename = File.basename(file_path)
-            zipfile.add(filename, file_path)
+      File.open(tar_file_path, "wb") do |tar|
+        [pdf_output["path"], csv_path].each do |path|
+          if File.exist?(path)
+            add_file_to_tar(tar, path)
           end
         end
+        # Add two 512-byte null blocks to mark the end of the archive
+        tar.write("\0" * 1024)
       end
 
-      # Check if zip creation was successful
-      unless File.exist?(zip_file_path) && !File.zero?(zip_file_path)
-        Rails.logger.error("Failed to create zip file or zip file is empty")
-        raise "Zip file creation failed"
+      # Check if tar creation was successful
+      unless File.exist?(tar_file_path) && !File.zero?(tar_file_path)
+        Rails.logger.error("Failed to create tar file or tar file is empty")
+        raise "Tar file creation failed"
       end
 
-      # Encrypt the zip file
-      encrypted_zip_file_path = gpg_encrypt_file(zip_file_path, public_key)
+      # Encrypt the tar file
+      encrypted_tar_file_path = gpg_encrypt_file(tar_file_path, public_key)
 
-      # Upload the encrypted zip file to S3
+      # Upload the encrypted tar file to S3
       s3_service = S3Service.new(config.except("public_key"))
-      s3_service.upload_file(encrypted_zip_file_path, "cbv_flow_#{current_site.id}_#{time_now}.zip.gpg")
+      s3_service.upload_file(encrypted_tar_file_path, "cbv_flow_#{current_site.id}_#{time_now}.tar.gpg")
 
       # Clean up temporary files
       begin
-        File.delete(pdf_output["path"], csv_path, zip_file_path, encrypted_zip_file_path)
+        File.delete(pdf_output["path"], csv_path, tar_file_path, encrypted_tar_file_path)
       rescue StandardError => e
         Rails.logger.error("Error deleting temporary files: #{e.message}")
       end
@@ -142,6 +142,30 @@ class Cbv::SummariesController < Cbv::BaseController
     track_transmitted_event(@cbv_flow, @payments)
   end
 
+  private
+
+  def add_file_to_tar(tar, file_path)
+    filename = File.basename(file_path)
+    content = File.binread(file_path)
+    header = StringIO.new
+    header.write(filename.ljust(100, "\0"))  # Filename (100 bytes)
+    header.write(sprintf("%07o\0", File.stat(file_path).mode))  # File mode (8 bytes)
+    header.write(sprintf("%07o\0", Process.uid))  # Owner's numeric user ID (8 bytes)
+    header.write(sprintf("%07o\0", Process.gid))  # Group's numeric user ID (8 bytes)
+    header.write(sprintf("%011o\0", content.size))  # File size in bytes (12 bytes)
+    header.write(sprintf("%011o\0", File.stat(file_path).mtime.to_i))  # Last modification time (12 bytes)
+    header.write("        ")  # Checksum (8 bytes)
+    header.write("0")  # Type flag (1 byte)
+    header.write("\0" * 355)  # Padding
+
+    checksum = header.string.bytes.sum
+    header.string[148, 8] = sprintf("%06o\0 ", checksum)
+
+    tar.write(header.string)
+    tar.write(content)
+    tar.write("\0" * (512 - (content.size % 512))) if content.size % 512 != 0
+  end
+
   def generate_csv(path, payments)
     File.open(path, "w") do |file|
       file.write("Employer,Pay Date,Gross Pay,Net Pay\n")
@@ -150,7 +174,6 @@ class Cbv::SummariesController < Cbv::BaseController
       end
     end
   end
-
 
   def track_transmitted_event(cbv_flow, payments)
     NewRelicEventTracker.track("IncomeSummarySharedWithCaseworker", {

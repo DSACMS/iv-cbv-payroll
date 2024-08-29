@@ -1,35 +1,6 @@
 require "rails_helper"
-require 'gpgme'
-require 'fileutils'
 
-RSpec.describe Cbv::SummariesController, type: :controller do
-  before(:all) do
-    @original_gpg_home = ENV['GNUPGHOME']
-    @temp_gpg_home = File.join(Dir.tmpdir, 'gpghome')
-    FileUtils.mkdir_p(@temp_gpg_home)
-    ENV['GNUPGHOME'] = @temp_gpg_home
-  end
-
-  after(:all) do
-    ENV['GNUPGHOME'] = @original_gpg_home
-    FileUtils.remove_entry @temp_gpg_home if File.directory?(@temp_gpg_home)
-  end
-
-  let(:public_key) { File.read(Rails.root.join('spec', 'support', 'fixtures', 'gpg', 'test_public_key.asc')) }
-  
-  before do
-    # Import the key
-    result = GPGME::Key.import(public_key)
-    puts "Key import result: #{result.inspect}"
-
-    # Find the imported key
-    @key = GPGME::Key.find(:public, 'test@example.com').first
-    raise "Key not found" unless @key
-
-    # Print key details
-    puts "Key details: #{@key.inspect}"
-  end
-
+RSpec.describe Cbv::SummariesController do
   include PinwheelApiHelper
 
   let(:supported_jobs) { %w[income paystubs employment identity] }
@@ -38,6 +9,14 @@ RSpec.describe Cbv::SummariesController, type: :controller do
   let(:cbv_flow) { create(:cbv_flow, :with_pinwheel_account, created_at: flow_started_seconds_ago.seconds.ago, case_number: "ABC1234", supported_jobs: supported_jobs, employment_errored_at: employment_errored_at) }
   let(:cbv_flow_invitation) { cbv_flow.cbv_flow_invitation }
   let(:mock_site) { instance_double(SiteConfig::Site) }
+  let(:nyc_user) { create(:user, email: "test@test.com", site_id: 'nyc') }
+  let(:ma_user) { create(:user, email: "test@example.com", site_id: 'ma') }
+  existing_keys = GPGME::Key.find(:public, 'test@example.com')
+
+  if existing_keys.any?
+    puts "GPG key for test@example.com already exists. Skipping key generation."
+    let(:public_key) { existing_keys.first.export(armor: true) }
+  end
 
   before do
     session[:cbv_flow_invitation] = cbv_flow_invitation
@@ -47,13 +26,12 @@ RSpec.describe Cbv::SummariesController, type: :controller do
     allow_any_instance_of(Cbv::BaseController).to receive(:current_site).and_return(mock_site)
 
     # Set up the mock_site behavior
-    allow(mock_site).to receive(:transmission_method).and_return('s3')
     allow(mock_site).to receive(:transmission_method_configuration).and_return({
       "bucket" => "test-bucket",
       "region" => "us-west-2",
       "access_key_id" => "SOME_ACCESS_KEY",
       "secret_access_key" => "SOME_SECRET_ACCESS_KEY",
-      "public_key" => public_key
+      "public_key" => public_key.to_s
     })
   end
 
@@ -148,7 +126,6 @@ RSpec.describe Cbv::SummariesController, type: :controller do
   end
 
   describe "#update" do
-    let(:nyc_user) { create(:user, email: "test@test.com", site_id: 'nyc') }
 
     before do
       session[:cbv_flow_id] = cbv_flow.id
@@ -192,8 +169,23 @@ RSpec.describe Cbv::SummariesController, type: :controller do
     end
 
     context "when sending an email to the caseworker" do
+
+      before(:all) do
+        @original_gpg_home = ENV['GNUPGHOME']
+        ENV['GNUPGHOME'] = Rails.root.join('tmp', 'gpghome').to_s
+        FileUtils.mkdir_p(ENV['GNUPGHOME'])
+      end
+
+      after(:all) do
+        FileUtils.remove_entry ENV['GNUPGHOME']
+        ENV['GNUPGHOME'] = @original_gpg_home
+      end
+
       before do
         cbv_flow.update(consented_to_authorized_use_at: Time.now)
+        sign_in ma_user
+        allow(mock_site).to receive(:transmission_method).and_return('s3')
+        allow(mock_site).to receive(:id).and_return('ma')
         stub_request_end_user_accounts_response
         stub_request_end_user_paystubs_response
       end
@@ -276,6 +268,7 @@ RSpec.describe Cbv::SummariesController, type: :controller do
         allow(S3Service).to receive(:new).and_return(s3_service_double)
         allow(s3_service_double).to receive(:upload_file)
         allow(mock_site).to receive(:id).and_return('ma')
+        allow(mock_site).to receive(:transmission_method).and_return('s3')
 
         # Stub pinwheel_for method to return our double
         allow_any_instance_of(ApplicationController).to receive(:pinwheel_for).and_return(pinwheel_service_double)

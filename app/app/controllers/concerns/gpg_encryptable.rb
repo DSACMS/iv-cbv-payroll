@@ -8,7 +8,7 @@ module GpgEncryptable
   end
 
   def gpg_encrypt_file(file_path, public_key)
-    import_key(public_key)
+    # import_key(public_key)
     crypto = GPGME::Crypto.new
     recipient = GPGME::Key.find(:public, public_key).first
     encrypted_file_path = "#{file_path}.gpg"
