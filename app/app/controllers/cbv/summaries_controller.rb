@@ -1,5 +1,6 @@
 class Cbv::SummariesController < Cbv::BaseController
   include Cbv::ReportsHelper
+  include GpgEncryptable
   helper "cbv/reports"
 
   helper_method :has_consent
@@ -73,8 +74,14 @@ class Cbv::SummariesController < Cbv::BaseController
       @cbv_flow.touch(:transmitted_at)
     when "s3"
       config = current_site.transmission_method_configuration
-      s3_service = S3Service.new(config)
-      pdf_path = PdfService.generate(
+      public_key = config["public_key"]
+
+      if public_key.blank?
+        Rails.logger.error("Public key is missing from transmission_method_configuration")
+        raise "Public key is required for S3 transmission"
+      end
+
+      pdf_output = PdfService.generate(
         template: "cbv/summaries/show",
         variables: {
           is_caseworker: true,
@@ -87,21 +94,58 @@ class Cbv::SummariesController < Cbv::BaseController
           has_consent: has_consent
         }
       )
-      csv_path = "#{Rails.root}/tmp/cbv_flow_#{current_site.id}_#{Time.now.to_i}.csv"
-      File.open(csv_path, "w") do |file|
-        file.write("Employer,Pay Date,Gross Pay,Net Pay\n")
-        @payments.each do |payment|
-          file.write("#{payment[:employer_name]},#{payment[:pay_date]},#{payment[:gross_pay_amount]},#{payment[:net_pay_amount]}\n")
-        end
+
+      time_now = Time.now.to_i
+      csv_file_name = "cbv_flow_#{current_site.id}_#{time_now}.csv"
+      csv_path = File.join(Rails.root, 'tmp', csv_file_name)
+      generate_csv(csv_path, @payments)
+
+      # Create the tar file
+      tar_file_name = "cbv_flow_#{current_site.id}_#{time_now}.tar"
+      tar_file_path = File.join(Rails.root, 'tmp', tar_file_name)
+
+      # Use relative paths and check if files exist before adding to tar
+      Dir.chdir(Rails.root) do
+        files_to_tar = [ pdf_output["path"], csv_path ].select { |f| File.exist?(f) }
+        system("tar", "-cvf", tar_file_path, *files_to_tar.map { |f| Pathname.new(f).relative_path_from(Rails.root).to_s })
       end
-      s3_service.encrypt_and_upload(csv_path, "cbv_flow_#{current_site.id}_#{Time.now.to_i}.csv")
-      s3_service.encrypt_and_upload(pdf_path, "cbv_flow_#{current_site.id}_#{Time.now.to_i}.pdf")
+
+      # Check if tar creation was successful
+      unless File.exist?(tar_file_path) && !File.zero?(tar_file_path)
+        Rails.logger.error("Failed to create tar file or tar file is empty")
+        raise "Tar file creation failed"
+      end
+
+      # Encrypt the tar file
+      encrypted_tar_file_path = gpg_encrypt_file(tar_file_path, public_key)
+
+      # Upload the encrypted tar file to S3
+      s3_service = S3Service.new(config.except("public_key"))
+      s3_service.upload_file(encrypted_tar_file_path, "cbv_flow_#{current_site.id}_#{time_now}.tar.gpg")
+
+      # Clean up temporary files
+      begin
+        File.delete(pdf_output["path"], csv_path, tar_file_path, encrypted_tar_file_path)
+      rescue StandardError => e
+        Rails.logger.error("Error deleting temporary files: #{e.message}")
+      end
     else
       raise "Unsupported transmission method: #{current_site.transmission_method}"
     end
 
+    @cbv_flow.touch(:transmitted_at)
     track_transmitted_event(@cbv_flow, @payments)
   end
+
+  def generate_csv(path, payments)
+    File.open(path, "w") do |file|
+      file.write("Employer,Pay Date,Gross Pay,Net Pay\n")
+      payments.each do |payment|
+        file.write("#{payment[:employer_name]},#{payment[:pay_date]},#{payment[:gross_pay_amount]},#{payment[:net_pay_amount]}\n")
+      end
+    end
+  end
+
 
   def track_transmitted_event(cbv_flow, payments)
     NewRelicEventTracker.track("IncomeSummarySharedWithCaseworker", {

@@ -82,4 +82,3 @@ RSpec.describe GpgEncryptable do
     end
   end
 end
-

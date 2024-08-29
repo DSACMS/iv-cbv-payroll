@@ -7,7 +7,7 @@ module GpgEncryptable
     attr_accessor :public_key
   end
 
-  def gpg_encrypt_file(file_path)
+  def gpg_encrypt_file(file_path, public_key)
     import_key(public_key)
     crypto = GPGME::Crypto.new
     recipient = GPGME::Key.find(:public, public_key).first

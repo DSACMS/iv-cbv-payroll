@@ -3,7 +3,6 @@ require "gpgme"
 require "aws-sdk-s3"
 
 class S3Service
-
   def initialize(config)
     @bucket_name = config["bucket"]
     @access_key_id = config["access_key_id"]
