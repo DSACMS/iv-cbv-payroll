@@ -2,8 +2,7 @@ require "rails_helper"
 
 RSpec.describe Caseworker::CbvFlowInvitationsController, type: :controller do
   let(:user) { create(:user, email: "test@test.com", site_id: 'nyc') }
-  let(:invite_secret) { "FAKE_INVITE_SECRET" }
-  let(:nyc_params) { { site_id: "nyc", secret: invite_secret } }
+  let(:nyc_params) { { site_id: "nyc" } }
 
   before do
     sign_in user
@@ -35,7 +34,6 @@ RSpec.describe Caseworker::CbvFlowInvitationsController, type: :controller do
 
     it "creates a CbvFlowInvitation record with the nyc fields" do
       post :create, params: {
-        secret: invite_secret,
         site_id: nyc_params[:site_id],
         cbv_flow_invitation: cbv_flow_invitation_params
       }
@@ -51,7 +49,6 @@ RSpec.describe Caseworker::CbvFlowInvitationsController, type: :controller do
 
     it "creates a CbvFlowInvitation record without optional fields" do
       post :create, params: {
-        secret: invite_secret,
         site_id: nyc_params[:site_id],
         cbv_flow_invitation: cbv_flow_invitation_params.except(:middle_name, :client_id_number)
       }
@@ -61,7 +58,6 @@ RSpec.describe Caseworker::CbvFlowInvitationsController, type: :controller do
 
     it "redirects back to the caseworker dashboard" do
       post :create, params: {
-        secret: invite_secret,
         site_id: nyc_params[:site_id],
         cbv_flow_invitation: cbv_flow_invitation_params
       }
@@ -73,7 +69,6 @@ RSpec.describe Caseworker::CbvFlowInvitationsController, type: :controller do
       allow(NewRelicEventTracker).to receive(:track)
 
       post :create, params: {
-        secret: invite_secret,
         site_id: nyc_params[:site_id],
         cbv_flow_invitation: cbv_flow_invitation_params
       }

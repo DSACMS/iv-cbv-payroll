@@ -18,7 +18,7 @@ class Caseworker::CbvFlowInvitationsController < Caseworker::BaseController
                         error_message: ex.message
                        )
       Rails.logger.error("Error sending CBV invitation: #{ex.class} - #{ex.message}")
-      return redirect_to new_invitation_path(secret: params[:secret])
+      return redirect_to new_invitation_path(site_id: params[:site_id])
     end
 
     flash[:slim_alert] = {
