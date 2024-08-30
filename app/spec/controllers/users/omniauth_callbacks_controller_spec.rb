@@ -17,8 +17,9 @@ RSpec.describe Users::OmniauthCallbacksController do
 
   describe "#ma_dta" do
     context "when the user is authorized" do
-      around do |ex|
-        stub_environment_variable("MA_DTA_ALLOWED_CASEWORKER_EMAILS", test_email, &ex)
+      before do
+        allow(Rails.application.config.sites["ma"])
+          .to receive(:authorized_emails).and_return(test_email)
       end
 
       it "creates a User object and logs in as them" do

@@ -46,7 +46,7 @@ class Users::OmniauthCallbacksController < Devise::OmniauthCallbacksController
   end
 
   def authorized?(email, site)
-    sites[site].authorized_emails.include?(email)
+    Rails.application.config.sites["ma"].authorized_emails.include?(email)
   end
 
   def track_event
@@ -67,9 +67,5 @@ class Users::OmniauthCallbacksController < Devise::OmniauthCallbacksController
     when "ma_dta"
       new_user_session_path(site_id: "ma")
     end
-  end
-
-  def sites
-    SiteConfig.new(Rails.root.join("config", "site-config.yml"))
   end
 end
