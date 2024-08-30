@@ -14,7 +14,12 @@ class Users::OmniauthCallbacksController < Devise::OmniauthCallbacksController
     Rails.logger.info "Login successful from #{response_params["email"]} (name: #{response_params["name"]}, nickname: #{response_params["nickname"]})"
     email = response_params["email"]
 
-    login_with_oauth(email, "ma")
+    if authorized?(email, "ma")
+      login_with_oauth(email, "ma")
+    else
+      flash[:alert] = "You are not authorized to access this site. Please contact your administrator."
+      redirect_to root_path
+    end
   end
 
   def sandbox
@@ -40,6 +45,10 @@ class Users::OmniauthCallbacksController < Devise::OmniauthCallbacksController
     end
   end
 
+  def authorized?(email, site)
+    sites[site].authorized_emails.include?(email)
+  end
+
   def track_event
     return unless @user&.persisted?
 
@@ -58,5 +67,9 @@ class Users::OmniauthCallbacksController < Devise::OmniauthCallbacksController
     when "ma_dta"
       new_user_session_path(site_id: "ma")
     end
+  end
+
+  def sites
+    SiteConfig.new(Rails.root.join("config", "site-config.yml"))
   end
 end
