@@ -109,7 +109,7 @@ class Cbv::SummariesController < Cbv::BaseController
       )
 
       # Generate CSV
-      csv_path = File.join(Rails.root, "tmp", file_name + ".csv")
+      csv_path = File.join(Rails.root, "tmp", "#{file_name}.csv")
       generate_csv(csv_path, pdf_output)
 
       tar_file_name = "cbv_flow_#{current_site.id}_#{time_now}.tar"
