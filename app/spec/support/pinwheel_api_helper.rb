@@ -11,9 +11,14 @@ module PinwheelApiHelper
       .to_return(
         status: 200,
         body: {
-          results: [ {
-                      id: "12345"
-                    } ]
+          data: [
+            {
+              id: "12345",
+              name: "Some Employer Name",
+              logo_url: "https://example.com/logo.jpg",
+              response_type: "employer"
+            }
+          ]
         }.to_json,
         headers: { content_type: 'application/json;charset=UTF-8' }
       )
