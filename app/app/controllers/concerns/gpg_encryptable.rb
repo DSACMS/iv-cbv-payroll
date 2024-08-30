@@ -9,7 +9,9 @@ module GpgEncryptable
     encrypted_file_path = "#{file_path}.gpg"
 
     File.open(encrypted_file_path, "wb") do |output|
-      crypto.encrypt File.open(file_path, "rb"), recipients: recipient, output: output
+      File.open(file_path, "rb") do |input|
+        crypto.encrypt input, recipients: recipient, output: output
+      end
     end
 
     encrypted_file_path

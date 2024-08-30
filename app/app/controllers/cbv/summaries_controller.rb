@@ -3,6 +3,7 @@ class Cbv::SummariesController < Cbv::BaseController
   include Cbv::ReportsHelper
   include GpgEncryptable
   include TarFileCreatable
+  include CsvHelper
 
   helper "cbv/reports"
 
@@ -83,7 +84,13 @@ class Cbv::SummariesController < Cbv::BaseController
         raise "Public key is required for S3 transmission"
       end
 
-      time_now = Time.now.to_i
+      time_now = Time.now
+      beginning_date = (Date.parse(@payments_beginning_at).strftime("%b") rescue @payments_beginning_at)
+      ending_date = (Date.parse(@payments_ending_at).strftime("%b%Y") rescue @payments_ending_at)
+      file_name = "IncomeReport_#{@cbv_flow.cbv_flow_invitation.client_id_number}_" \
+                  "#{beginning_date}-#{ending_date}_" \
+                  "Conf#{@cbv_flow.confirmation_code}_" \
+                  "#{time_now.strftime('%Y%m%d%H%M%S')}"
 
       # Generate PDF
       pdf_output = PdfService.generate(
@@ -97,12 +104,12 @@ class Cbv::SummariesController < Cbv::BaseController
           identities: @identities,
           payments_grouped_by_employer: summarize_by_employer(@payments, @employments, @incomes, @identities),
           has_consent: has_consent
-        }
+        },
+        file_name: file_name
       )
 
       # Generate CSV
-      csv_file_name = "cbv_flow_#{current_site.id}_#{time_now}.csv"
-      csv_path = File.join(Rails.root, "tmp", csv_file_name)
+      csv_path = File.join(Rails.root, "tmp", file_name + ".csv")
       generate_csv(csv_path, pdf_output)
 
       tar_file_name = "cbv_flow_#{current_site.id}_#{time_now}.tar"
@@ -142,24 +149,25 @@ class Cbv::SummariesController < Cbv::BaseController
   def generate_csv(path, pdf_output)
     pinwheel_account = PinwheelAccount.find_by(cbv_flow_id: @cbv_flow.id)
 
-    CSV.open(path, "w", headers: %w[client_id first_name last_name middle_name app_date beacon_id report_date_created report_date_started report_date_end confirmation_code pdf_filename pdf_filetype pdf_filesize pdf_number_of_pages], write_headers: true) do |csv|
-      csv << [
-        @cbv_flow.cbv_flow_invitation.client_id_number,
-        @cbv_flow.cbv_flow_invitation.first_name,
-        @cbv_flow.cbv_flow_invitation.last_name,
-        @cbv_flow.cbv_flow_invitation.middle_name,
-        @cbv_flow.cbv_flow_invitation.snap_application_date,
-        @cbv_flow.cbv_flow_invitation.beacon_id,
-        pinwheel_account.created_at,
-        @cbv_flow.created_at,
-        @cbv_flow.updated_at,
-        @cbv_flow.confirmation_code,
-        @cbv_flow.consented_to_authorized_use_at,
-        "application/pdf",
-        File.size(pdf_output["path"]),
-        pdf_output["page_count"]
-      ]
-    end
+    data = {
+      client_id: @cbv_flow.cbv_flow_invitation.client_id_number,
+      first_name: @cbv_flow.cbv_flow_invitation.first_name,
+      last_name: @cbv_flow.cbv_flow_invitation.last_name,
+      middle_name: @cbv_flow.cbv_flow_invitation.middle_name,
+      email_address: @cbv_flow.cbv_flow_invitation.email_address,
+      app_date: @cbv_flow.cbv_flow_invitation.snap_application_date,
+      report_date_created: pinwheel_account.created_at.strftime("%B %d, %Y"),
+      report_date_started: @payments_beginning_at,
+      report_date_end: @payments_ending_at,
+      confirmation_code: @cbv_flow.confirmation_code,
+      consent_timestamp: @cbv_flow.consented_to_authorized_use_at,
+      pdf_filename: pdf_output["file_name"],
+      pdf_filetype: "application/pdf",
+      pdf_filesize: pdf_output["file_size"],
+      pdf_number_of_pages: pdf_output["page_count"]
+    }
+
+    create_csv(path, data)
   end
 
   def track_transmitted_event(cbv_flow, payments)

@@ -1,7 +1,7 @@
 class PdfService
-  PDFOutput = Struct.new(:path, :html, :content, :page_count)
+  PDFOutput = Struct.new(:path, :html, :content, :file_name, :file_size, :page_count)
 
-  def self.generate(template:, variables: {})
+  def self.generate(template:, variables: {}, file_name: nil)
     html_content = ApplicationController.renderer.render_to_string(
       template: template,
       formats: [ :pdf ],
@@ -19,13 +19,18 @@ class PdfService
         raise StandardError, "Failed to generate PDF: Content is empty or nil"
       end
 
-      file_path = "#{Rails.root}/tmp/#{SecureRandom.uuid}.pdf"
+      if file_name.nil?
+        file_name = "#{template.parameterize}-#{SecureRandom.uuid}"
+      end
+      file_name = "#{file_name.sub(".pdf", "")}" # remove the .pdf extension if passed
+      file_path = "#{Rails.root}/tmp/#{file_name}.pdf"
+
       File.binwrite(file_path, pdf_content)
 
       reader = PDF::Reader.new(file_path)
       page_count = reader.page_count
-
-      PDFOutput.new(file_path, html_content, pdf_content, page_count)
+      file_size = File.size(file_path)
+      PDFOutput.new(file_path, html_content, pdf_content, file_name, file_size, page_count)
     rescue => e
       Rails.logger.error "Error generating PDF: #{e.message}"
       nil
