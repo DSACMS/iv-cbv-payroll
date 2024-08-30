@@ -41,7 +41,7 @@ class SiteConfig
       @agency_name = yaml["agency_name"]
       @agency_short_name = yaml["agency_short_name"]
       @agency_contact_website = yaml["agency_contact_website"]
-      @authorized_emails = yaml["authorized_emails"]
+      @authorized_emails = yaml["authorized_emails"] || ""
       @caseworker_feedback_form = yaml["caseworker_feedback_form"]
       @invitation_valid_days = yaml["invitation_valid_days"]
       @logo_path = yaml["logo_path"]

@@ -82,6 +82,14 @@ RSpec.describe Users::OmniauthCallbacksController do
         end
       end
     end
+
+    context "when the user is not authorized" do
+      it "redirects to root url with an alert" do
+        post :ma_dta
+        expect(response).to redirect_to(root_url)
+        expect(flash[:alert]).to be_present
+      end
+    end
   end
 
   describe "#nyc_dss" do
