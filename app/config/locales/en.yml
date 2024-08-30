@@ -123,16 +123,19 @@ en:
         error: You must check the agreement checkbox to proceed.
       show:
         checkbox:
-          ma: Check this box to agree to let us access your payment information and share it with the Massachusetts Department of Transitional Assistance.
-          nyc: Check this box to agree to let Nava access your payment information and share it with New York City Human Resources Administration. We will not use the information for any other purpose nor redisclose it to any other party.
-          sandbox: Check this box to agree to let Verify.gov access your payment information and share it with the Sandbox Example Agency.
-        get_started: Get started
-        header: How verifying your income works
-        step1: Find your employer or online payroll provider. A payroll provider is the company where you check your paystubs online
-        step2: Sign into your employer or payroll provider account. We will not share or keep your login information.
-        step3: Review your payment records. (Repeat steps 2 and 3 if you have other employers to add).
-        step4: Submit your payment information. We'll automatically send it to your caseworker.
-        subheader: 'All you have to do is complete four easy steps:'
+          default: Check this box to agree to let us access your payment information and share it with the %{agency_full_name}.
+          nyc: Check this box to agree to let Nava access your payment information and share it with the %{agency_full_name}. We will not use the information for any other purpose nor redisclose it to any other party.
+        continue: Continue
+        header: Let's verify your income
+        step1: Find your most recent employer or online payroll provider.
+        step1_description: A payroll provider is a system that some employers or companies use to handle payroll, pay processing, and distribute paychecks and direct deposit. Examples of popular payroll providers are ADP, Paychex, Gusto, etc.
+        step2: Sign into your employer or payroll provider account.
+        step2_description: Use the login credentials you have for viewing your online pay stub. If you work for an app, like Uber, this would be the same login when you sign into the Uber app. We will not share or keep your login information.
+        step3: Review your payment information.
+        step3_description: Payment information includes pay date, pay amount, and hours worked. Repeat steps 1 to 3 if you have other employers to add.
+        step4: Submit your payment information.
+        step4_description: We’ll automatically send it to %{agency_acronym}.
+        steps_intro: 'To verify your income, you''ll need to complete these four simple steps:'
     employer_searches:
       show:
         can_not_find_employer: I can’t find my company or payroll provider
@@ -311,6 +314,10 @@ en:
       description_3_html: '<p>To participate, you can request an invitation from your benefits agency:</p><ul><li>Massachusetts applicants: Contact the <a href="https://www.mass.gov/guides/how-to-contact-dta" target="_blank" rel="noopener noreferrer">Department of Transitional Assistance (DTA)</a></li><li>New York City applicants: Contact the <a href="https://www.nyc.gov/site/hra/help/snap-application-frequently-asked-questions.page">Human Resources Administration (HRA)</a></li></ul>'
       header: Welcome to the SNAP Income Pilot
   shared:
+    agency_full_name:
+      ma: Massachusetts Department of Transitional Assistance
+      nyc: New York City Human Resources Administration
+      sandbox: CBV Test Agency
     app_name:
       ma: DTA Connect
       nyc: ACCESS HRA
