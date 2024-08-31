@@ -46,9 +46,7 @@ RSpec.describe Cbv::SummariesController do
   end
 
   after(:all) do
-    if File.exist?(ENV['GNUPGHOME'])
-      FileUtils.remove_entry ENV['GNUPGHOME']
-    end
+    FileUtils.remove_entry ENV['GNUPGHOME'] if File.exist?(ENV['GNUPGHOME'])
     ENV['GNUPGHOME'] = @original_gpg_home
   end
 
@@ -292,9 +290,15 @@ RSpec.describe Cbv::SummariesController do
 
         it "generates and uploads PDF and CSV files to S3" do
           allow(NewRelicEventTracker).to receive(:track)
-          expect(s3_service_double).to receive(:upload_file).once
+          expect(s3_service_double).to receive(:upload_file).once do |file_path, file_name|
+            expect(file_path).to end_with('.gpg')
+            expect(file_name).to start_with("IncomeReport_#{cbv_flow_invitation.client_id_number}_")
+            expect(File.exist?(file_path)).to be true
+          end
+
           cbv_flow_invitation.update(client_id_number: "1234")
           patch :update
+
           expect(NewRelicEventTracker).to have_received(:track).with("IncomeSummarySharedWithCaseworker", hash_including(
             timestamp:                                 be_a(Integer),
             site_id:                                   cbv_flow.site_id,

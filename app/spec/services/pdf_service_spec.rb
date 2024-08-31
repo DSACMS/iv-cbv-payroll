@@ -43,17 +43,11 @@ RSpec.describe PdfService, type: :service do
 
     context "#generate" do
       it 'generates a PDF file' do
-        expect(@pdf_results['content']).to include('%PDF-1.4')
-        expect(@pdf_results['html']).to include('Gross pay YTD')
-        expect(@pdf_results['html']).to include('Agreement Consent Timestamp')
-        expect(File.exist?(@pdf_results['path'])).to be_truthy
-        expect(File.size(@pdf_results['path'])).to be > 0
-        expect(File.extname(@pdf_results['path'])).to eq('.pdf')
+        expect(@pdf_results&.content).to include('%PDF-1.4')
+        expect(@pdf_results&.html).to include('Gross pay YTD')
+        expect(@pdf_results&.html).to include('Agreement Consent Timestamp')
+        expect(@pdf_results&.file_size).to be > 0
       end
-    end
-
-    after do
-      @pdf_results['path']&.tap { |path| File.delete(path) if File.exist?(path) }
     end
   end
 end

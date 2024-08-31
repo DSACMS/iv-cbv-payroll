@@ -1,4 +1,6 @@
 require "csv"
+require "tempfile"
+
 class Cbv::SummariesController < Cbv::BaseController
   include Cbv::ReportsHelper
   include GpgEncryptable
@@ -75,6 +77,8 @@ class Cbv::SummariesController < Cbv::BaseController
         incomes: @incomes,
         identities: @identities
       ).summary_email.deliver_now
+      @cbv_flow.touch(:transmitted_at)
+      track_transmitted_event(@cbv_flow, @payments)
     when "s3"
       config = current_site.transmission_method_configuration
       public_key = config["public_key"]
@@ -87,13 +91,13 @@ class Cbv::SummariesController < Cbv::BaseController
       time_now = Time.now
       beginning_date = (Date.parse(@payments_beginning_at).strftime("%b") rescue @payments_beginning_at)
       ending_date = (Date.parse(@payments_ending_at).strftime("%b%Y") rescue @payments_ending_at)
-      file_name = "IncomeReport_#{@cbv_flow.cbv_flow_invitation.client_id_number}_" \
-                  "#{beginning_date}-#{ending_date}_" \
-                  "Conf#{@cbv_flow.confirmation_code}_" \
-                  "#{time_now.strftime('%Y%m%d%H%M%S')}"
+      @file_name = "IncomeReport_#{@cbv_flow.cbv_flow_invitation.client_id_number}_" \
+        "#{beginning_date}-#{ending_date}_" \
+        "Conf#{@cbv_flow.confirmation_code}_" \
+        "#{time_now.strftime('%Y%m%d%H%M%S')}"
 
       # Generate PDF
-      pdf_output = PdfService.generate(
+      @pdf_output = PdfService.generate(
         template: "cbv/summaries/show",
         variables: {
           is_caseworker: true,
@@ -104,49 +108,51 @@ class Cbv::SummariesController < Cbv::BaseController
           identities: @identities,
           payments_grouped_by_employer: summarize_by_employer(@payments, @employments, @incomes, @identities),
           has_consent: has_consent
-        },
-        file_name: file_name
+        }
       )
 
-      # Generate CSV
-      csv_path = File.join(Rails.root, "tmp", "#{file_name}.csv")
-      generate_csv(csv_path, pdf_output)
+      # Generate CSV in-memory
+      csv_content = generate_csv
 
-      tar_file_name = "cbv_flow_#{current_site.id}_#{time_now}.tar"
-      tar_file_path = File.join(Rails.root, "tmp", tar_file_name)
+      # Create tar file
+      file_data = [
+        { name: "#{@file_name}.pdf", content: @pdf_output&.content },
+        { name: "#{@file_name}.csv", content: csv_content.string }
+      ]
+      tar_tempfile = create_tar_file(file_data)
 
-      create_tar_file(tar_file_path, [ pdf_output["path"], csv_path ])
-
-      # Check if tar creation was successful
-      unless File.exist?(tar_file_path) && !File.zero?(tar_file_path)
-        Rails.logger.error("Failed to create tar file or tar file is empty")
-        raise "Tar file creation failed"
-      end
-
-      # Encrypt the tar file
-      encrypted_tar_file_path = gpg_encrypt_file(tar_file_path, public_key)
-
-      # Upload the encrypted tar file to S3
-      s3_service = S3Service.new(config.except("public_key"))
-      s3_service.upload_file(encrypted_tar_file_path, "cbv_flow_#{current_site.id}_#{time_now}.tar.gpg")
-
-      # Clean up temporary files
       begin
-        File.delete(pdf_output["path"], csv_path, tar_file_path, encrypted_tar_file_path)
-      rescue StandardError => e
-        Rails.logger.error("Error deleting temporary files: #{e.message}")
+        # Encrypt the tar file
+        encrypted_tempfile = gpg_encrypt_file(tar_tempfile.path, public_key)
+
+        if encrypted_tempfile.nil?
+          Rails.logger.error "Failed to encrypt file: encrypted_tempfile is nil"
+          raise "Encryption failed"
+        end
+
+        # Upload the encrypted tar file to S3
+        s3_service = S3Service.new(config.except("public_key"))
+        s3_service.upload_file(encrypted_tempfile.path, "#{@file_name}.gpg")
+
+        @cbv_flow.touch(:transmitted_at)
+        track_transmitted_event(@cbv_flow, @payments)
+      rescue => ex
+        Rails.logger.error "Failed to transmit to caseworker: #{ex.message}"
+        raise
+      ensure
+        # Clean up temporary files
+        tar_tempfile.close! if tar_tempfile
+        if encrypted_tempfile
+          encrypted_tempfile.close!
+          encrypted_tempfile.unlink
+        end
       end
     else
       raise "Unsupported transmission method: #{current_site.transmission_method}"
     end
-
-    @cbv_flow.touch(:transmitted_at)
-    track_transmitted_event(@cbv_flow, @payments)
   end
 
-  private
-
-  def generate_csv(path, pdf_output)
+  def generate_csv
     pinwheel_account = PinwheelAccount.find_by(cbv_flow_id: @cbv_flow.id)
 
     data = {
@@ -161,13 +167,13 @@ class Cbv::SummariesController < Cbv::BaseController
       report_date_end: @payments_ending_at,
       confirmation_code: @cbv_flow.confirmation_code,
       consent_timestamp: @cbv_flow.consented_to_authorized_use_at,
-      pdf_filename: pdf_output["file_name"],
+      pdf_filename: "#{@file_name}.pdf",
       pdf_filetype: "application/pdf",
-      pdf_filesize: pdf_output["file_size"],
-      pdf_number_of_pages: pdf_output["page_count"]
+      pdf_filesize: @pdf_output.file_size,
+      pdf_number_of_pages: @pdf_output.page_count
     }
 
-    create_csv(path, data)
+    create_csv(data)
   end
 
   def track_transmitted_event(cbv_flow, payments)

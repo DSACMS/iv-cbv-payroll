@@ -1,4 +1,5 @@
 require "gpgme"
+require "tempfile"
 
 module GpgEncryptable
   extend ActiveSupport::Concern
@@ -6,14 +7,17 @@ module GpgEncryptable
   def gpg_encrypt_file(file_path, public_key)
     crypto = GPGME::Crypto.new
     recipient = GPGME::Key.find(:public, public_key).first
-    encrypted_file_path = "#{file_path}.gpg"
 
-    File.open(encrypted_file_path, "wb") do |output|
-      File.open(file_path, "rb") do |input|
+    encrypted_tempfile = Tempfile.new(%w[encrypted .gpg])
+    encrypted_tempfile.binmode
+
+    File.open(file_path, "rb") do |input|
+      File.open(encrypted_tempfile.path, "wb") do |output|
         crypto.encrypt input, recipients: recipient, output: output
       end
     end
 
-    encrypted_file_path
+    encrypted_tempfile.rewind
+    encrypted_tempfile
   end
 end

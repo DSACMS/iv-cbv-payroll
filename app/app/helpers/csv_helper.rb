@@ -1,10 +1,9 @@
-
 module CsvHelper
-  def create_csv(path, data = {})
-    CSV.open(path, "w") do |csv|
+  def create_csv(data)
+    csv_string = CSV.generate do |csv|
       csv << data.keys
       csv << data.values
     end
-    path
+    StringIO.new(csv_string)
   end
 end
