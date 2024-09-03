@@ -43,8 +43,9 @@ common: &default_settings
     # triggered by automated scanners)
     ignore_classes:
       - "ActionController::BadRequest"
-      - "ActionDispatch::Http::MimeNegotiation::InvalidType"
+      - "ActionController::RoutingError"
       - "ActionController::UnknownHttpMethod"
+      - "ActionDispatch::Http::MimeNegotiation::InvalidType"
 
 
 # Environment-specific settings are in this section.
