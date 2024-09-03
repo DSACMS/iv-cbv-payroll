@@ -22,13 +22,13 @@
           <div class="<%= has_square_logo ?
             "display-none tablet:display-flex" : "display-flex" %> flex-align-center">
             <% if current_site && current_site.logo_square_path %>
-              <%= image_tag current_site.logo_square_path, class: "cbv-header__agency-logo" %>
+              <%= image_tag current_site.logo_square_path, class: "cbv-header__agency-logo cbv-header__agency-logo--#{current_site.id}" %>
             <% end %>
             <%= site_translation("shared.header.cbv_flow_title") %>
           </div>
 
           <% if current_site && current_site.logo_path %>
-            <%= image_tag current_site.logo_path, class: "cbv-header__agency-logo tablet:display-none" %>
+            <%= image_tag current_site.logo_path, class: "cbv-header__agency-logo cbv-header__agency-logo--#{current_site.id} tablet:display-none" %>
           <% end %>
         </em>
       </div>
