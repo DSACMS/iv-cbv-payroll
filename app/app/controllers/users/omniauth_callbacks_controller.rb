@@ -46,7 +46,11 @@ class Users::OmniauthCallbacksController < Devise::OmniauthCallbacksController
   end
 
   def authorized?(email, site)
-    Rails.application.config.sites["ma"].authorized_emails.include?(email)
+    authorized_emails = Rails.application.config.sites["ma"].authorized_emails&.split(",").map(&:downcase)
+
+    unless authorized_emails.blank?
+      authorized_emails.include?(email.downcase)
+    end
   end
 
   def track_event
