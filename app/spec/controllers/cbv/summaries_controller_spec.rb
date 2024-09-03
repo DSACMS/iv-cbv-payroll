@@ -252,6 +252,7 @@ RSpec.describe Cbv::SummariesController do
           allow(s3_service_double).to receive(:upload_file)
           allow(mock_site).to receive(:id).and_return('ma')
           allow(mock_site).to receive(:transmission_method).and_return('s3')
+          allow(NewRelicEventTracker).to receive(:track)
 
           # Stub pinwheel_for method to return our double
           allow_any_instance_of(ApplicationController).to receive(:pinwheel_for).and_return(pinwheel_service_double)
@@ -265,7 +266,6 @@ RSpec.describe Cbv::SummariesController do
         end
 
         it "generates and uploads PDF and CSV files to S3" do
-          allow(NewRelicEventTracker).to receive(:track)
           expect(s3_service_double).to receive(:upload_file).once do |file_path, file_name|
             expect(file_path).to end_with('.gpg')
             expect(file_name).to start_with("IncomeReport_#{cbv_flow_invitation.client_id_number}_")

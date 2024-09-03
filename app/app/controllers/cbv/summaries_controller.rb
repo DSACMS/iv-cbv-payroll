@@ -119,20 +119,20 @@ class Cbv::SummariesController < Cbv::BaseController
         { name: "#{@file_name}.pdf", content: @pdf_output&.content },
         { name: "#{@file_name}.csv", content: csv_content.string }
       ]
-      tar_tempfile = create_tar_file(file_data)
+      tmp_unencrypted_tar = create_tar_file(file_data)
 
       begin
         # Encrypt the tar file
-        encrypted_tempfile = gpg_encrypt_file(tar_tempfile.path, public_key)
+        tmp_encrypted_tar = gpg_encrypt_file(tmp_unencrypted_tar.path, public_key)
 
-        if encrypted_tempfile.nil?
+        if tmp_encrypted_tar.nil?
           Rails.logger.error "Failed to encrypt file: encrypted_tempfile is nil"
           raise "Encryption failed"
         end
 
         # Upload the encrypted tar file to S3
         s3_service = S3Service.new(config.except("public_key"))
-        s3_service.upload_file(encrypted_tempfile.path, "#{@file_name}.gpg")
+        s3_service.upload_file(tmp_encrypted_tar.path, "#{@file_name}.gpg")
 
         @cbv_flow.touch(:transmitted_at)
         track_transmitted_event(@cbv_flow, @payments)
@@ -141,11 +141,8 @@ class Cbv::SummariesController < Cbv::BaseController
         raise
       ensure
         # Clean up temporary files
-        tar_tempfile.close! if tar_tempfile
-        if encrypted_tempfile
-          encrypted_tempfile.close!
-          encrypted_tempfile.unlink
-        end
+        tmp_unencrypted_tar.close! if tmp_unencrypted_tar
+        tmp_encrypted_tar.close! if tmp_encrypted_tar
       end
     else
       raise "Unsupported transmission method: #{current_site.transmission_method}"
