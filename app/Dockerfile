@@ -111,7 +111,7 @@ RUN apt-get update -qq && \
         curl=7.88.1-10+deb12u7 \
         libvips42=8.14.1-3+deb12u1 \
         postgresql-client=15+248 \
-        linux-libc-dev=6.1.99-1 \
+        linux-libc-dev=6.1.106-3 \
         wkhtmltopdf=0.12.6-2+b1 && \
     rm -rf /var/lib/apt/lists /var/cache/apt/archives && \
     curl "https://s3.amazonaws.com/aws-cli/awscli-bundle.zip" -o "awscli-bundle.zip" && \
