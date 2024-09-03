@@ -1,9 +1,8 @@
 require "rails_helper"
 
 RSpec.describe Caseworker::CbvFlowInvitationsController, type: :controller do
-  let(:invite_secret) { "FAKE_INVITE_SECRET" }
   let(:user) { create(:user, email: "test@test.com", site_id: 'ma') }
-  let(:ma_params) { { site_id: "ma", secret: invite_secret } }
+  let(:ma_params) { { site_id: "ma" } }
 
   before do
     sign_in user
@@ -45,7 +44,6 @@ RSpec.describe Caseworker::CbvFlowInvitationsController, type: :controller do
 
     it "creates a CbvFlowInvitation record with the ma fields" do
       post :create, params: {
-        secret: invite_secret,
         site_id: ma_params[:site_id],
         cbv_flow_invitation: cbv_flow_invitation_params
       }
@@ -62,7 +60,6 @@ RSpec.describe Caseworker::CbvFlowInvitationsController, type: :controller do
 
     it "requires the ma fields" do
       post :create, params: {
-        secret: invite_secret,
         site_id: "ma",
         cbv_flow_invitation: cbv_flow_invitation_params.except(:beacon_id, :agency_id_number)
       }
@@ -71,7 +68,6 @@ RSpec.describe Caseworker::CbvFlowInvitationsController, type: :controller do
 
     it "redirects back to the caseworker dashboard" do
       post :create, params: {
-        secret: invite_secret,
         site_id: ma_params[:site_id],
         cbv_flow_invitation: cbv_flow_invitation_params
       }

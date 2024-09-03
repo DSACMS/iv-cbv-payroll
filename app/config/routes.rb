@@ -44,7 +44,7 @@ Rails.application.routes.draw do
       root to: "entries#index", as: :new_user_session
 
       resource :dashboard, only: %i[show], as: :caseworker_dashboard
-      resources :cbv_flow_invitations, as: :invitations, path: :invitations
+      resources :cbv_flow_invitations, only: %i[new create], as: :invitations, path: :invitations
     end
   end
 

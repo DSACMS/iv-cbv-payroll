@@ -3,16 +3,15 @@ require "rails_helper"
 RSpec.describe Caseworker::CbvFlowInvitationsController do
   let(:nyc_user) { create(:user, email: "test@test.com", site_id: 'nyc') }
   let(:ma_user) { create(:user, email: "test@test.com", site_id: 'ma') }
-  let(:invite_secret) { "FAKE_INVITE_SECRET" }
-  let(:ma_params) { { site_id: "ma", secret: invite_secret } }
-  let(:nyc_params) { { site_id: "nyc", secret: invite_secret } }
+  let(:ma_params) { { site_id: "ma" } }
+  let(:nyc_params) { { site_id: "nyc" } }
 
   describe "#new" do
     let(:valid_params) { nyc_params }
 
     context "without authentication" do
       it "redirects to the sso login page" do
-        get :new, params: valid_params.except(:secret)
+        get :new, params: valid_params
         expect(response).to redirect_to(new_user_session_url)
       end
     end
@@ -81,7 +80,6 @@ RSpec.describe Caseworker::CbvFlowInvitationsController do
     end
     let(:valid_params) do
       {
-        secret: invite_secret,
         site_id: site_id,
         cbv_flow_invitation: cbv_flow_invitation_params
       }
@@ -93,10 +91,6 @@ RSpec.describe Caseworker::CbvFlowInvitationsController do
     end
 
     context "without authentication" do
-      before do
-        valid_params[:secret] = nil
-      end
-
       it "redirects to the homepage without creating any invitation" do
         expect_any_instance_of(CbvInvitationService).not_to receive(:invite)
 
@@ -142,7 +136,7 @@ RSpec.describe Caseworker::CbvFlowInvitationsController do
 
           post :create, params: broken_params
 
-          expect(response).to redirect_to(new_invitation_path(secret: broken_params[:secret]))
+          expect(response).to redirect_to(new_invitation_path(site_id: broken_params[:site_id]))
           expect(controller.flash.alert).to include("Some random error")
         end
       end
