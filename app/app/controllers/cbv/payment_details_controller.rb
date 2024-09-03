@@ -2,8 +2,6 @@ class Cbv::PaymentDetailsController < Cbv::BaseController
   include Cbv::PaymentsHelper
 
   helper_method :employer_name,
-    :start_date,
-    :end_date,
     :gross_pay,
     :employment_start_date,
     :employment_end_date,
@@ -101,22 +99,6 @@ class Cbv::PaymentDetailsController < Cbv::BaseController
     return I18n.t("cbv.payment_details.show.unknown") unless has_income_data?
 
     @income_metadata["compensation_amount"]
-  end
-
-  def start_date
-    return I18n.t("cbv.payment_details.show.unknown") unless has_paystubs_data?
-
-    @payments
-        .sort_by { |payment| payment[:start] }
-        .first[:start]
-  end
-
-  def end_date
-    return I18n.t("cbv.payment_details.show.unknown") unless has_paystubs_data?
-
-    @payments
-        .sort_by { |payment| payment[:end] }
-        .last[:end]
   end
 
   def gross_pay
