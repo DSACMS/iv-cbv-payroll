@@ -159,17 +159,6 @@ RSpec.describe Cbv::SummariesController do
     end
 
     context "when sending an email to the caseworker" do
-      before(:all) do
-        @original_gpg_home = ENV['GNUPGHOME']
-        ENV['GNUPGHOME']   = Rails.root.join('tmp', 'gpghome').to_s
-        FileUtils.mkdir_p(ENV['GNUPGHOME'])
-      end
-
-      after(:all) do
-        FileUtils.remove_entry ENV['GNUPGHOME']
-        ENV['GNUPGHOME'] = @original_gpg_home
-      end
-
       before do
         cbv_flow.update(consented_to_authorized_use_at: Time.now)
         sign_in ma_user

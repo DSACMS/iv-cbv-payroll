@@ -24,7 +24,6 @@ RSpec.shared_context "gpg_setup" do
       io.read
     end
 
-    sleep(2)
 
     @public_key = GPGME::Key.find(:public, 'test@example.com').first.export(armor: true)
     # Verify that the key was imported successfully
