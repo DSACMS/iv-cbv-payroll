@@ -28,9 +28,7 @@
   transmission_method: s3
   transmission_method_configuration:
     bucket: <%= ENV['MA_DTA_S3_BUCKET'] %>
-    region: <%= ENV['MA_DTA_S3_REGION'] %>
-    access_key_id: <%= ENV['MA_DTA_S3_ACCESS_KEY_ID'] %>
-    secret_access_key: <%= ENV['MA_DTA_S3_SECRET_ACCESS_KEY'] %>
+    public_key: <%= ENV['MA_DTA_S3_PUBLIC_KEY'] %>
   sso:
     client_id:     <%= ENV["AZURE_MA_DTA_CLIENT_ID"] %>
     client_secret: <%= ENV["AZURE_MA_DTA_CLIENT_SECRET"] %>
