@@ -6,18 +6,24 @@ module GpgEncryptable
 
   def gpg_encrypt_file(file_path, public_key)
     crypto = GPGME::Crypto.new
-    recipient = GPGME::Key.find(:public, public_key).first
+    begin
+      recipient = GPGME::Key.find(:public, public_key)
+      raise "Recipient key not found" if recipient.nil?
 
-    encrypted_tempfile = Tempfile.new(%w[encrypted .gpg])
-    encrypted_tempfile.binmode
+      encrypted_tempfile = Tempfile.new(%w[encrypted .gpg])
+      encrypted_tempfile.binmode
 
-    File.open(file_path, "rb") do |input|
-      File.open(encrypted_tempfile.path, "wb") do |output|
-        crypto.encrypt input, recipients: recipient, output: output
+      File.open(file_path, "rb") do |input|
+        File.open(encrypted_tempfile.path, "wb") do |output|
+          crypto.encrypt input, recipients: recipient, output: output
+        end
       end
-    end
 
-    encrypted_tempfile.rewind
-    encrypted_tempfile
+      encrypted_tempfile.rewind
+      encrypted_tempfile
+    rescue GPGME::Error => e
+      Rails.logger.error "GPG encryption failed: #{e.message}"
+      raise
+    end
   end
 end

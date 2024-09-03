@@ -3,6 +3,8 @@ require 'tempfile'
 require 'zlib'
 
 RSpec.describe GpgEncryptable do
+  include_context "gpg_setup"
+
   let(:gpg_encryptable_test_class) { Class.new { include GpgEncryptable; include TarFileCreatable } }
   let(:class_instance) { gpg_encryptable_test_class.new }
   let(:tmp_directory) { Rails.root.join('tmp') }
@@ -11,41 +13,7 @@ RSpec.describe GpgEncryptable do
   let(:tar_file_path) { tmp_directory.join('test_file.tar').to_s }
   let(:encrypted_tar_file_path) { "#{tar_file_path}.gpg" }
   let(:untar_file_path) { File.join(tmp_directory, "#{SecureRandom.uuid}-untarred") }
-
   let(:encrypted_file_path) { "#{test_file_path}.gpg" }
-
-  before(:all) do
-    @original_gpg_home = ENV['GNUPGHOME']
-    ENV['GNUPGHOME'] = Rails.root.join('tmp', 'gpghome').to_s
-    FileUtils.mkdir_p(ENV['GNUPGHOME'])
-
-    key_script = <<-SCRIPT
-      %echo Generating a basic OpenPGP key
-      Key-Type: RSA
-      Key-Length: 2048
-      Subkey-Type: RSA
-      Subkey-Length: 2048
-      Name-Real: Test User
-      Name-Email: test@example.com
-      Expire-Date: 0
-      %no-protection
-      %commit
-      %echo done
-    SCRIPT
-
-    IO.popen('gpg --batch --generate-key', 'r+') do |io|
-      io.write(key_script)
-      io.close_write
-      io.read
-    end
-
-    @public_key = GPGME::Key.find(:public, 'test@example.com').first.export(armor: true)
-  end
-
-  after(:all) do
-    FileUtils.remove_entry ENV['GNUPGHOME']
-    ENV['GNUPGHOME'] = @original_gpg_home
-  end
 
   after(:each) do
     File.delete(test_file_path) if File.exist?(test_file_path)

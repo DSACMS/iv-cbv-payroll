@@ -2,6 +2,7 @@ require "rails_helper"
 
 RSpec.describe Cbv::SummariesController do
   include PinwheelApiHelper
+  include_context "gpg_setup"
 
   let(:supported_jobs) { %w[income paystubs employment identity] }
   let(:flow_started_seconds_ago) { 300 }
@@ -13,41 +14,16 @@ RSpec.describe Cbv::SummariesController do
   let(:ma_user) { create(:user, email: "test@example.com", site_id: 'ma') }
 
   before do
+    allow(mock_site).to receive(:transmission_method_configuration).and_return({
+      "bucket"            => "test-bucket",
+      "region"            => "us-west-2",
+      "access_key_id"     => "SOME_ACCESS_KEY",
+      "secret_access_key" => "SOME_SECRET_ACCESS_KEY",
+      "public_key"        => @public_key
+    })
+
     session[:cbv_flow_invitation] = cbv_flow_invitation
     cbv_flow.pinwheel_accounts.first.update(pinwheel_account_id: "03e29160-f7e7-4a28-b2d8-813640e030d3")
-  end
-
-  before(:all) do
-    @original_gpg_home = ENV['GNUPGHOME']
-    ENV['GNUPGHOME'] = Rails.root.join('tmp', 'gpghome').to_s
-    FileUtils.mkdir_p(ENV['GNUPGHOME'])
-
-    key_script = <<-SCRIPT
-      %echo Generating a basic OpenPGP key
-      Key-Type: RSA
-      Key-Length: 2048
-      Subkey-Type: RSA
-      Subkey-Length: 2048
-      Name-Real: Test User
-      Name-Email: test@example.com
-      Expire-Date: 0
-      %no-protection
-      %commit
-      %echo done
-    SCRIPT
-
-    IO.popen('gpg --batch --generate-key', 'r+') do |io|
-      io.write(key_script)
-      io.close_write
-      io.read
-    end
-
-    @public_key = GPGME::Key.find(:public, 'test@example.com').first.export(armor: true)
-  end
-
-  after(:all) do
-    FileUtils.remove_entry ENV['GNUPGHOME'] if File.exist?(ENV['GNUPGHOME'])
-    ENV['GNUPGHOME'] = @original_gpg_home
   end
 
   around do |ex|
