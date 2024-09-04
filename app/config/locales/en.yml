@@ -139,36 +139,36 @@ en:
     employer_searches:
       show:
         can_not_find_employer: I can’t find my company or payroll provider
-        employer_not_listed: Employer Not Listed?
+        employer_not_listed: Employer not listed?
         exit_button_text: Exit and go to %{agency_short_name}
         fetching_payroll: We are fetching your employer's payment information.
         fetching_payroll_description: This may take a few minutes. Please do not close this window.
-        header: Find your employer or payroll provider
-        no_results_steps1: Check if your employer uses another business name or a payroll provider.
+        header: Find your current or most recent employer or payroll provider
+        no_results_steps1: Check if your employer uses another business name or search for their payroll provider.
         no_results_steps2: Make sure you have spelled names correctly, then search again.
         no_results_steps_title: 'Try these steps first:'
         no_results_title: We couldn’t find your employer or payroll provider.
         results: Results
         review_button_text: Review my income report
         search: Search
-        search_for_employer: Search for your employer or payroll provider to share your income information with your benefits agency. This can be a former employer or a current employer. We'll retrieve the last 90 days of pay information from when you applied.
+        search_for_employer: Search for your employer or payroll provider. This can be a former employer or a current employer. We will share your income information with %{agency_acronym}.
         select: Select
         select_button_aria_label: Open an authentication modal for the employer or payroll provider to import your payment history.
-        to_access: 'To access your payment information from this period, search for:'
-        to_access_li_1_html: "<strong>Your employer</strong> name"
+        to_access: 'To access your payment information, search for any of the following:'
+        to_access_li_1_html: Your <strong>employer name</strong>
         to_access_li_2_html: The <strong>payroll provider</strong> you get paid from
-        to_access_li_3_html: The <strong>App</strong> you work for, like Uber, DoorDash, etc
+        to_access_li_3_html: The <strong>app</strong> you work for, like Uber, DoorDash, etc
         to_continue: 'If you still don’t see your employer or payroll provider listed:'
         to_continue_li_1: You’ll need to submit that income information separately.
         to_continue_li_1_html:
-          ma: Go to <a href="https://www.mass.gov/guides/how-to-contact-dta">DTA's website</a> to learn about other ways to report your income.
-          nyc: Go to <a href="https://www.nyc.gov/site/hra/help/snap-application-frequently-asked-questions.page">HRA's website</a> to learn about other ways to report your income.
-          sandbox: Go to <a href="https://example.com/contact">CBV's website</a> to learn about other ways to report your income.
+          ma: <a href="https://www.mass.gov/guides/how-to-contact-dta">Go to DTA's website</a> to learn about other ways to report your income.
+          nyc: <a href="https://www.nyc.gov/site/hra/help/snap-application-frequently-asked-questions.page">Go to HRA's website</a> to learn about other ways to report your income.
+          sandbox: <a href="https://example.com/contact">Go to CBV's website</a> to learn about other ways to report your income.
         to_continue_li_2: If you have other jobs to add, search for them.
-        to_continue_li_3: If you have no other jobs to add, you can exit this site.
-        to_continue_li_3_continue: If you have no other jobs to add, continue to review your income report.
+        to_continue_li_3: If you have no other jobs to add here, you can exit this site.
+        to_continue_li_3_continue: If you have no other jobs to add here, continue to review your income report.
         what_is_html: "<strong>What is a payroll provider?</strong> A payroll provider is a system that some employers or companies use to handle payroll, pay processing, and distribute paychecks and direct deposit. Examples of popular payroll providers are ADP, Paychex, Gusto, etc."
-        you_ll_go: You’ll go to their login portal and sign-in to see your payment history.
+        you_ll_go: You’ll go to their login portal and sign in to see your payment history.
     entries:
       show:
         cant_use_1: You haven’t earned income from a job in the past 90 days
