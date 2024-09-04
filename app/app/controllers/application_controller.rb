@@ -2,6 +2,7 @@ class ApplicationController < ActionController::Base
   helper :view
   helper_method :current_site
   around_action :switch_locale
+  before_action :add_newrelic_metadata
 
   rescue_from ActionController::InvalidAuthenticityToken do
     redirect_to root_url, notice: t("cbv.error_missing_token_html")
@@ -37,5 +38,19 @@ class ApplicationController < ActionController::Base
     environment = site_config[cbv_flow.site_id].pinwheel_environment
 
     PinwheelService.new(api_key, environment)
+  end
+
+  def add_newrelic_metadata
+    newrelic_params = params.slice(:site_id, :locale).permit
+
+    attributes = {
+      cbv_flow_id: session[:cbv_flow_id],
+      session_id: session.id.to_s,
+      site_id: newrelic_params[:site_id],
+      locale: newrelic_params[:locale],
+      user_id: current_user.try(:id)
+    }
+
+    NewRelic::Agent.add_custom_attributes(attributes)
   end
 end

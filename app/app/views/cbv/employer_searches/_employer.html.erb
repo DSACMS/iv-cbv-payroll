@@ -42,18 +42,29 @@
   <% if @query.present? && @employers.count == 0 %>
     <h3 class="margin-bottom-5"><%= t("cbv.employer_searches.show.no_results_title") %></h3>
     <h4><%= t("cbv.employer_searches.show.no_results_steps_title") %></h4>
-    <ol class="line-height-sans-5">
-      <li><%= t("cbv.employer_searches.show.no_results_steps1") %></li>
-      <li><%= t("cbv.employer_searches.show.no_results_steps2") %></li>
-    </ol>
+    <div class="usa-prose">
+      <ol class="line-height-sans-5">
+        <li><%= t("cbv.employer_searches.show.no_results_steps1") %></li>
+        <li><%= t("cbv.employer_searches.show.no_results_steps2") %></li>
+      </ol>
+    </div>
     <h4><%= t("cbv.employer_searches.show.to_continue") %></h4>
-    <ul class="line-height-sans-5">
-      <li><%= t("cbv.employer_searches.show.to_continue_li_1") %> <%= site_translation("cbv.employer_searches.show.to_continue_li_1_html") %></li>
-      <li><%= t("cbv.employer_searches.show.to_continue_li_2") %></li>
-      <li><%= t("cbv.employer_searches.show.to_continue_li_3") %></li>
-    </ul>
-    <%= link_to (@has_pinwheel_account ? cbv_flow_summary_path : current_site.agency_contact_website), class: "usa-button margin-top-5", data: { turbo_frame: "_top" } do %>
-      <%= @has_pinwheel_account ? t("cbv.employer_searches.show.review_button_text") : t("cbv.employer_searches.show.exit_button_text", agency_short_name: current_site.agency_short_name) %>
+    <div class="usa-prose">
+      <ul class="line-height-sans-5">
+        <li><%= t("cbv.employer_searches.show.to_continue_li_1") %> <%= site_translation("cbv.employer_searches.show.to_continue_li_1_html") %></li>
+        <li><%= t("cbv.employer_searches.show.to_continue_li_2") %></li>
+        <% if @has_pinwheel_account %>
+          <li><%= t("cbv.employer_searches.show.to_continue_li_3_continue") %></li>
+        <% else %>
+          <li><%= t("cbv.employer_searches.show.to_continue_li_3") %></li>
+        <% end %>
+      </ul>
+    </div>
+
+    <% if @has_pinwheel_account %>
+      <%= link_to t("cbv.employer_searches.show.review_button_text"), cbv_flow_summary_path, class: "usa-button margin-top-5", data: { turbo_frame: "_top" } %>
+    <% else %>
+      <%= link_to t("cbv.employer_searches.show.exit_button_text", agency_short_name: current_site.agency_short_name), current_site.agency_contact_website, class: "usa-button margin-top-5", data: { turbo_frame: "_top" } %>
     <% end %>
   <% elsif @employers.count > 0 %>
     <h2><%= t("cbv.employer_searches.show.employer_not_listed") %></h2>

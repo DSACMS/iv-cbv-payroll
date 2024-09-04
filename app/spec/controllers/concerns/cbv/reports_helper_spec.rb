@@ -56,6 +56,7 @@ RSpec.describe Cbv::ReportsHelper, type: :helper do
           ],
           has_income_data: true,
           has_employment_data: true,
+          has_identity_data: true,
           employment: employments,
           income: incomes,
           identity: identities,

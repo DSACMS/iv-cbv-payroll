@@ -19,13 +19,14 @@ class PinwheelAccount < ApplicationRecord
     (supported_jobs.exclude?("paystubs") || paystubs_synced_at.present?) &&
     (supported_jobs.exclude?("employment") || employment_synced_at.present?) &&
     (supported_jobs.exclude?("income") || income_synced_at.present?) &&
-    (supported_jobs.exclude?("identity") || income_synced_at.present?)
+    (supported_jobs.exclude?("identity") || identity_synced_at.present?)
   end
 
   def job_succeeded?(job)
     error_column = EVENTS_ERRORS_MAP.select { |key| key.start_with? job }&.values.last
+    sync_column = EVENTS_MAP.select { |key| key.start_with? job }&.values.last
     return nil unless error_column.present?
 
-    supported_jobs.include?(job) && send(error_column).blank?
+    supported_jobs.include?(job) && send(sync_column).present? && send(error_column).blank?
   end
 end

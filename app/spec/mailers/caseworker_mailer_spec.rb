@@ -6,7 +6,7 @@ RSpec.describe CaseworkerMailer, type: :mailer do
     case_number: "ABC1234",
     confirmation_code: "00001",
     site_id: "nyc",
-    transmitted_at:  Date.today
+    consented_to_authorized_use_at: Time.now
   )}
   let(:caseworker_email) { cbv_flow.cbv_flow_invitation.user.email }
   let(:account_id) { cbv_flow.pinwheel_accounts.first.pinwheel_account_id }

@@ -10,7 +10,7 @@ module Cbv::PaymentsHelper
   end
 
   def fetch_payroll(from_pay_date, to_pay_date)
-    fetch_end_user_account_ids.map do |account_id|
+    fetch_known_end_user_account_ids.map do |account_id|
       fetch_payroll_for_account_id(account_id, from_pay_date, to_pay_date)
     end.flatten
   end
@@ -38,7 +38,9 @@ module Cbv::PaymentsHelper
     end
   end
 
-  def fetch_end_user_account_ids
-    pinwheel.fetch_accounts(end_user_id: @cbv_flow.pinwheel_end_user_id)["data"].map { |account| account["id"] }
+  def fetch_known_end_user_account_ids
+    pinwheel_account_ids = pinwheel.fetch_accounts(end_user_id: @cbv_flow.pinwheel_end_user_id)["data"].pluck("id")
+
+    PinwheelAccount.where(pinwheel_account_id: pinwheel_account_ids).pluck(:pinwheel_account_id)
   end
 end

@@ -10,7 +10,7 @@ class CaseworkerMailerPreview < BaseMailerPreview
     cbv_flow = FactoryBot.create(
       :cbv_flow,
       :with_pinwheel_account,
-      :transmitted,
+      :completed,
       cbv_flow_invitation: invitation
     )
     payments = stub_post_processed_payments(cbv_flow.pinwheel_accounts.first.pinwheel_account_id)
