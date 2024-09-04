@@ -42,7 +42,6 @@ module TarFileCreatable
       end
     end
 
-    temp_file.close
     temp_file
   end
 

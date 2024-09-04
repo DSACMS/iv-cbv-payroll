@@ -1,5 +1,6 @@
 require "csv"
 require "tempfile"
+require "zlib"
 
 class Cbv::SummariesController < Cbv::BaseController
   include Cbv::ReportsHelper
@@ -119,20 +120,23 @@ class Cbv::SummariesController < Cbv::BaseController
         { name: "#{@file_name}.pdf", content: @pdf_output&.content },
         { name: "#{@file_name}.csv", content: csv_content.string }
       ]
-      tmp_unencrypted_tar = create_tar_file(file_data)
+      tar_tempfile = create_tar_file(file_data)
 
       begin
-        # Encrypt the tar file
-        tmp_encrypted_tar = gpg_encrypt_file(tmp_unencrypted_tar.path, public_key)
+        # Gzip the tar file
+        gzipped_tempfile = gzip_file(tar_tempfile)
+
+        # Encrypt the gzipped tar file
+        tmp_encrypted_tar = gpg_encrypt_file(gzipped_tempfile.path, public_key)
 
         if tmp_encrypted_tar.nil?
           Rails.logger.error "Failed to encrypt file: encrypted_tempfile is nil"
           raise "Encryption failed"
         end
 
-        # Upload the encrypted tar file to S3
+        # Upload the encrypted gzipped tar file to S3
         s3_service = S3Service.new(config.except("public_key"))
-        s3_service.upload_file(tmp_encrypted_tar.path, "outfiles/#{@file_name}.tar.gpg")
+        s3_service.upload_file(tmp_encrypted_tar.path, "outfiles/#{@file_name}.tar.gz.gpg")
 
         @cbv_flow.touch(:transmitted_at)
         track_transmitted_event(@cbv_flow, @payments)
@@ -140,8 +144,6 @@ class Cbv::SummariesController < Cbv::BaseController
         Rails.logger.error "Failed to transmit to caseworker: #{ex.message}"
         raise
       ensure
-        # Clean up temporary files
-        tmp_unencrypted_tar.close! if tmp_unencrypted_tar
         tmp_encrypted_tar.close! if tmp_encrypted_tar
       end
     else
@@ -194,5 +196,23 @@ class Cbv::SummariesController < Cbv::BaseController
       (Time.now.to_i % 36 ** 3).to_s(36).tr("OISB", "0158").rjust(3, "0"),
       @cbv_flow.id.to_s.rjust(4, "0")
     ].compact.join.upcase
+  end
+
+  def gzip_file(input_tempfile)
+    gzipped_tempfile = Tempfile.new(%w[gzipped .gz])
+    gzipped_tempfile.binmode
+    gzipped_path = gzipped_tempfile.path
+    raise "Failed to gzip file" if gzipped_path.nil?
+
+    Zlib::GzipWriter.open(gzipped_path) do |gz|
+      input_tempfile.binmode
+      input_tempfile.rewind
+      gz.write(input_tempfile.read)
+    end
+
+    gzipped_tempfile.rewind
+    gzipped_tempfile
+  ensure
+    input_tempfile.close unless input_tempfile.closed?
   end
 end

@@ -254,11 +254,11 @@ RSpec.describe Cbv::SummariesController do
           allow(pinwheel_service_double).to receive(:fetch_income_metadata).and_return({ "data" => {} })
         end
 
-        it "generates and uploads PDF and CSV files to S3" do
+        it "generates, gzips, encrypts, and uploads PDF and CSV files to S3" do
           expect(s3_service_double).to receive(:upload_file).once do |file_path, file_name|
             expect(file_path).to end_with('.gpg')
             expect(file_name).to start_with("outfiles/IncomeReport_#{cbv_flow_invitation.agency_id_number}_")
-            expect(file_name).to end_with('.tar.gpg')
+            expect(file_name).to end_with('.tar.gz.gpg')
             expect(File.exist?(file_path)).to be true
           end
 
@@ -274,6 +274,17 @@ RSpec.describe Cbv::SummariesController do
             account_count_with_additional_information: be_a(Integer),
             flow_started_seconds_ago:                  be_a(Integer)
           ))
+        end
+
+        it "handles errors during file processing and upload" do
+          allow(controller).to receive(:gpg_encrypt_file).and_raise(StandardError, "Encryption failed")
+
+          expect {
+            patch :update
+          }.to raise_error(StandardError, "Encryption failed")
+
+          expect(s3_service_double).not_to have_received(:upload_file)
+          expect(cbv_flow.reload.transmitted_at).to be_nil
         end
       end
     end
