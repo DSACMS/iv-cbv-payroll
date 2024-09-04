@@ -43,7 +43,7 @@ class Cbv::SummariesController < Cbv::BaseController
 
     if @cbv_flow.confirmation_code.blank?
       confirmation_code = generate_confirmation_code(@cbv_flow.site_id)
-      # @cbv_flow.update(confirmation_code: confirmation_code)
+      @cbv_flow.update(confirmation_code: confirmation_code)
     end
 
     if !current_site.transmission_method.present?
