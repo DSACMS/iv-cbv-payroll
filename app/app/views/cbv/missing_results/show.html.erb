@@ -1,11 +1,29 @@
 <% content_for :title, t(".header") %>
+
 <h1><%= t(".header") %></h1>
-<p class="line-height-sans-5"><%= t(".not_listed_p1") %></p>
-<p class="line-height-sans-5"><%= t(".not_listed_p2", agency_short_name: current_site.agency_short_name) %></p>
-<%= site_translation(".exit_button_html") %>
+<div class="usa-prose">
+  <p class="line-height-sans-5"><%= t(".not_listed_p1", agency_acronym: current_site.agency_short_name) %></p>
+
+  <% if current_site.id == "ma" %>
+    <p><%= t(".dta_options_header") %></p>
+    <ul>
+      <li><%= t(".dta_options_1_html") %></li>
+      <li><%= t(".dta_options_2_html") %></li>
+      <li><%= t(".dta_options_3_html") %></li>
+      <li><%= t(".dta_options_4_html") %></li>
+      <li><%= t(".dta_options_5_html") %></li>
+    </ul>
+  <% else %>
+    <p class="line-height-sans-5"><%= t(".not_listed_p2", agency_short_name: current_site.agency_short_name) %></p>
+  <% end %>
+  <%= site_translation(".exit_button_html") %>
+</div>
+
 <hr class="margin-top-5 margin-bottom-5 border-base-light border-top-0">
 <h2><%= t(".more_jobs") %></h2>
-<p class="line-height-sans-5"><%= t(".you_can_search") %></p>
-<%= link_to cbv_flow_employer_search_path, class: "usa-button usa-button--outline", data: { turbo: "false" } do %>
-  <%= t(".back_button") %>
-<% end %>
+<div class="usa-prose">
+  <p class="line-height-sans-5"><%= t(".you_can_search") %></p>
+  <%= link_to cbv_flow_employer_search_path, class: "usa-button usa-button--outline", data: { turbo: "false" } do %>
+    <%= t(".back_button") %>
+  <% end %>
+</div>

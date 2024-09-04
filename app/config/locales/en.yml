@@ -208,13 +208,19 @@ en:
     missing_results:
       show:
         back_button: Go back to employer search
+        dta_options_1_html: Use <a href="https://www.mass.gov/info-details/help-using-dta-connect" target="_blank" rel="noopener noreferer">DTA Connect</a> to upload and submit your income documents.
+        dta_options_2_html: <a href="https://www.mass.gov/guides/how-to-contact-dta#-mail-or-fax-" target="_blank" rel="noopener noreferer">Fax</a> your documents to DTA along with a cover sheet.
+        dta_options_3_html: <a href="https://www.mass.gov/guides/how-to-contact-dta#-mail-or-fax-" target="_blank" rel="noopener noreferer">Mail</a> your documents to DTA along with a cover sheet.
+        dta_options_4_html: Drop your documents off at a <a href="https://www.mass.gov/guides/how-to-contact-dta#-mail-or-fax-" target="_blank" rel="noopener noreferer">local DTA office</a>.
+        dta_options_5_html: Work with a <a href="https://www.mass.gov/info-details/snap-outreach-partners#snap-outreach-partners-" target="_blank" rel="noopener noreferer">SNAP Outreach Partner</a> to submit your documents.
+        dta_options_header: 'You can submit your income information using one of the following methods:'
         exit_button_html:
           ma: <a href="https://www.mass.gov/guides/how-to-contact-dta" class="usa-button">Exit and go to DTA</a>
           nyc: <a href="https://www.nyc.gov/site/hra/help/snap-application-frequently-asked-questions.page" class="usa-button">Exit and go to HRA</a>
           sandbox: <a href="https://www.mass.gov/guides/how-to-contact-dta" class="usa-button">Exit and go to CBV Test Agency</a>
         header: How to report income if your employer or payroll provider isn’t listed
         more_jobs: If you have more jobs to report
-        not_listed_p1: If your employer or payroll provider isn’t listed on this site, you’ll need to share your income information for this job directly with your benefits agency.
+        not_listed_p1: If your employer or payroll provider isn’t listed on this site, you’ll need to share your income information for this job directly with %{agency_acronym}.
         not_listed_p2: Visit %{agency_short_name} for more information on how to submit documents.
         you_can_search: You can search for another employer or payroll provider. This site supports employers with online payroll providers or app-based services. Examples include Amazon, Walmart, McDonald’s, Uber, DoorDash, Lyft, and Instacart.
     payment_details:
