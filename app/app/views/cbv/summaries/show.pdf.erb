@@ -43,14 +43,17 @@
       label: t(".pdf.caseworker.last_name"),
       value: @cbv_flow.cbv_flow_invitation.last_name
     ) %>
-    <%= table.with_row(
-      label: t(".pdf.caseworker.client_id_number"),
-      value: @cbv_flow.cbv_flow_invitation.client_id_number
-    ) %>
-    <%= table.with_row(
-      label: t(".pdf.caseworker.case_number"),
-      value: @cbv_flow.cbv_flow_invitation.case_number
-    ) %>
+
+    <% current_site?(:nyc) do %>
+      <%= table.with_row(
+        label: t(".pdf.caseworker.client_id_number"),
+        value: @cbv_flow.cbv_flow_invitation.client_id_number
+      ) %>
+      <%= table.with_row(
+        label: t(".pdf.caseworker.case_number"),
+        value: @cbv_flow.cbv_flow_invitation.case_number
+      ) %>
+    <% end %>
   <% end %>
 <% end %>
 
