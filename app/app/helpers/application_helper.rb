@@ -1,5 +1,5 @@
 module ApplicationHelper
-  def current_site?(site_id, &block)
+  def current_site?(site_id)
     current_site.id.to_sym == site_id.to_sym
   end
 
