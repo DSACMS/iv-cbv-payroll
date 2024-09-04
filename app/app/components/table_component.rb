@@ -13,4 +13,12 @@ class TableComponent < ViewComponent::Base
       as: :data_point
     }
   }
+
+  def before_render
+    @row_count = rows.count
+  end
+
+  def render?
+    @row_count > 0
+  end
 end
