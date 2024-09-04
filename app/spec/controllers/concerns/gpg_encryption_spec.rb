@@ -53,6 +53,7 @@ RSpec.describe GpgEncryptable do
 
       # Decrypt the file and verify its contents
       crypto = GPGME::Crypto.new
+      decrypted_content = crypto.decrypt(encrypted_content).to_s
 
       # Write the decrypted tar file to the tmp directory
       FileUtils.mkdir_p(untar_file_path)

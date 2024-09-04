@@ -91,7 +91,7 @@ class Cbv::SummariesController < Cbv::BaseController
       time_now = Time.now
       beginning_date = (Date.parse(@payments_beginning_at).strftime("%b") rescue @payments_beginning_at)
       ending_date = (Date.parse(@payments_ending_at).strftime("%b%Y") rescue @payments_ending_at)
-      @file_name = "IncomeReport_#{@cbv_flow.cbv_flow_invitation.client_id_number}_" \
+      @file_name = "IncomeReport_#{@cbv_flow.cbv_flow_invitation.agency_id_number}_" \
         "#{beginning_date}-#{ending_date}_" \
         "Conf#{@cbv_flow.confirmation_code}_" \
         "#{time_now.strftime('%Y%m%d%H%M%S')}"
@@ -132,7 +132,7 @@ class Cbv::SummariesController < Cbv::BaseController
 
         # Upload the encrypted tar file to S3
         s3_service = S3Service.new(config.except("public_key"))
-        s3_service.upload_file(tmp_encrypted_tar.path, "#{@file_name}.gpg")
+        s3_service.upload_file(tmp_encrypted_tar.path, "outfiles/#{@file_name}.tar.gpg")
 
         @cbv_flow.touch(:transmitted_at)
         track_transmitted_event(@cbv_flow, @payments)
@@ -159,11 +159,11 @@ class Cbv::SummariesController < Cbv::BaseController
       middle_name: @cbv_flow.cbv_flow_invitation.middle_name,
       email_address: @cbv_flow.cbv_flow_invitation.email_address,
       app_date: @cbv_flow.cbv_flow_invitation.snap_application_date,
-      report_date_created: pinwheel_account.created_at.strftime("%B %d, %Y"),
-      report_date_started: @payments_beginning_at,
-      report_date_end: @payments_ending_at,
+      report_date_created: pinwheel_account.created_at.strftime("%m/%d/%Y"),
+      report_date_started: @cbv_flow.cbv_flow_invitation.paystubs_query_begins_at.strftime("%m/%d/%Y"),
+      report_date_end: @cbv_flow.cbv_flow_invitation.snap_application_date.strftime("%m/%d/%Y"),
       confirmation_code: @cbv_flow.confirmation_code,
-      consent_timestamp: @cbv_flow.consented_to_authorized_use_at,
+      consent_timestamp: @cbv_flow.consented_to_authorized_use_at.strftime("%m/%d/%Y"),
       pdf_filename: "#{@file_name}.pdf",
       pdf_filetype: "application/pdf",
       pdf_filesize: @pdf_output.file_size,

@@ -257,11 +257,12 @@ RSpec.describe Cbv::SummariesController do
         it "generates and uploads PDF and CSV files to S3" do
           expect(s3_service_double).to receive(:upload_file).once do |file_path, file_name|
             expect(file_path).to end_with('.gpg')
-            expect(file_name).to start_with("IncomeReport_#{cbv_flow_invitation.client_id_number}_")
+            expect(file_name).to start_with("outfiles/IncomeReport_#{cbv_flow_invitation.agency_id_number}_")
+            expect(file_name).to end_with('.tar.gpg')
             expect(File.exist?(file_path)).to be true
           end
 
-          cbv_flow_invitation.update(client_id_number: "1234")
+          cbv_flow_invitation.update(agency_id_number: "1234")
           patch :update
 
           expect(NewRelicEventTracker).to have_received(:track).with("IncomeSummarySharedWithCaseworker", hash_including(
