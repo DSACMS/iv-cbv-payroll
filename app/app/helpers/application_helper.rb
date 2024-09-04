@@ -1,7 +1,7 @@
 module ApplicationHelper
   def current_site?(site_id, &block)
     if current_site.id.to_sym == site_id.to_sym
-      yield(block)
+      yield(block) if block_given?
     end
   end
 

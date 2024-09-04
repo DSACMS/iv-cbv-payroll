@@ -54,6 +54,17 @@
         value: @cbv_flow.cbv_flow_invitation.case_number
       ) %>
     <% end %>
+
+    <% current_site?(:ma) do %>
+      <%= table.with_row(
+        label: t(".pdf.caseworker.client_email_address"),
+        value: @cbv_flow.cbv_flow_invitation.email_address
+      ) %>
+      <%= table.with_row(
+        label: t(".pdf.caseworker.snap_agency_id"),
+        value: @cbv_flow.cbv_flow_invitation.agency_id_number
+      ) %>
+    <% end %>
   <% end %>
 <% end %>
 
@@ -68,7 +79,7 @@
     %>
   <% end %>
   <%= table.with_row(
-    label: t(".application_or_recertification_date"),
+    label: site_translation(".application_or_recertification_date"),
     value: format_parsed_date(@cbv_flow.cbv_flow_invitation.snap_application_date))
   %>
   <%= table.with_row(
