@@ -16,7 +16,7 @@ module GpgEncryptable
 
       File.open(file_path, "rb") do |input|
         Rails.logger.info "Encrypting file: #{file_path}"
-        crypto.encrypt(input, recipients: recipients, output: encrypted_tempfile)
+        crypto.encrypt(input, recipients: recipients, output: encrypted_tempfile, always_trust: true)
         if encrypted_tempfile.path != nil
           Rails.logger.info "Encrypted file: #{encrypted_tempfile.path}"
         else
