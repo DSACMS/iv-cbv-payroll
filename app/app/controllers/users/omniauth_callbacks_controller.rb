@@ -14,7 +14,12 @@ class Users::OmniauthCallbacksController < Devise::OmniauthCallbacksController
     Rails.logger.info "Login successful from #{response_params["email"]} (name: #{response_params["name"]}, nickname: #{response_params["nickname"]})"
     email = response_params["email"]
 
-    login_with_oauth(email, "ma")
+    if authorized?(email, "ma")
+      login_with_oauth(email, "ma")
+    else
+      flash[:alert] = "You are not authorized to access this site. Please contact your administrator."
+      redirect_to root_path
+    end
   end
 
   def sandbox
@@ -37,6 +42,14 @@ class Users::OmniauthCallbacksController < Devise::OmniauthCallbacksController
       sign_in_and_redirect @user, event: :authentication
     else
       flash[:alert] = "Something went wrong."
+    end
+  end
+
+  def authorized?(email, site)
+    authorized_emails = Rails.application.config.sites["ma"].authorized_emails&.split(",").map(&:downcase)
+
+    unless authorized_emails.blank?
+      authorized_emails.include?(email.downcase)
     end
   end
 

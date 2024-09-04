@@ -5,7 +5,6 @@ RSpec.describe Cbv::EmployerSearchesController do
 
   describe "#show" do
     let(:cbv_flow) { create(:cbv_flow) }
-    let(:nyc_user) { create(:user, email: "test@test.com", site_id: 'nyc') }
     let(:pinwheel_token_id) { "abc-def-ghi" }
     let(:user_token) { "foobar" }
 
@@ -24,7 +23,6 @@ RSpec.describe Cbv::EmployerSearchesController do
 
     context "when there are no employer search results" do
       before do
-        sign_in nyc_user
         stub_request_items_no_items_response
       end
 
@@ -35,6 +33,7 @@ RSpec.describe Cbv::EmployerSearchesController do
           create(:pinwheel_account, cbv_flow_id: cbv_flow.id)
           get :show, params: { query: "no_results" }
           expect(response).to be_successful
+          expect(response.body).to include("continue to review your income report")
           expect(response.body).to include("Review my income report")
         end
       end
@@ -43,22 +42,34 @@ RSpec.describe Cbv::EmployerSearchesController do
         it "renders the view with a link to exit income verification" do
           get :show, params: { query: "no_results" }
           expect(response).to be_successful
+          expect(response.body).to include("you can exit this site")
           expect(response.body).to include("Exit and go to CBV")
         end
       end
     end
 
-    context "when the user does not have a Pinwheel token" do
-      skip "requests a new token from Pinwheel" do
-        get :show
-        expect(response).to be_ok
+    context "when there are search results" do
+      before do
+        stub_request_items_response
       end
 
-      skip "saves the token in the CbvFlow model" do
-        expect { get :show }
-          .to change { cbv_flow.reload.pinwheel_token_id }
-                .from(nil)
-                .to(pinwheel_token_id)
+      render_views
+
+      it "renders successfully" do
+        get :show, params: { query: "results" }
+        expect(response).to be_successful
+      end
+
+      it "tracks a NewRelic event" do
+        expect(NewRelicEventTracker)
+          .to receive(:track)
+          .with("ApplicantSearchedForEmployer", hash_including(
+            cbv_flow_id: cbv_flow.id,
+            num_results: 1,
+            has_pinwheel_account: false
+          ))
+
+        get :show, params: { query: "results" }
       end
     end
   end

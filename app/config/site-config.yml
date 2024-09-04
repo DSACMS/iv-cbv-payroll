@@ -3,6 +3,8 @@
   agency_short_name: HRA
   agency_contact_website: https://www.nyc.gov/site/hra/help/snap-application-frequently-asked-questions.page
   caseworker_feedback_form: https://forms.office.com/r/B66WeqsBFE
+  logo_path: hra_logo.png
+  logo_square_path: hra_logo_square.png
   pinwheel:
     api_token: <%= ENV['PINWHEEL_API_TOKEN_PRODUCTION'] %>
     environment: production
@@ -33,6 +35,7 @@
     tenant_id:     <%= ENV["AZURE_MA_DTA_TENANT_ID"] %>
     scope: "openid"
     name: "ma_dta"
+  authorized_emails: <%= ENV["MA_DTA_ALLOWED_CASEWORKER_EMAILS"] %>
   pay_income_days: 90
   invitation_valid_days: 14
   logo_path: dta_logo.png

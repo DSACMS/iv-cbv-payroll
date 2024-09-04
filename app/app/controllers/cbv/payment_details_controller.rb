@@ -2,8 +2,6 @@ class Cbv::PaymentDetailsController < Cbv::BaseController
   include Cbv::PaymentsHelper
 
   helper_method :employer_name,
-    :start_date,
-    :end_date,
     :gross_pay,
     :employment_start_date,
     :employment_end_date,
@@ -13,6 +11,9 @@ class Cbv::PaymentDetailsController < Cbv::BaseController
     :compensation_amount,
     :account_comment,
     :has_income_data?
+
+  after_action :track_viewed_event, only: :show
+  after_action :track_saved_event, only: :update
 
   def show
     account_id = params[:user][:account_id]
@@ -103,22 +104,6 @@ class Cbv::PaymentDetailsController < Cbv::BaseController
     @income_metadata["compensation_amount"]
   end
 
-  def start_date
-    return I18n.t("cbv.payment_details.show.unknown") unless has_paystubs_data?
-
-    @payments
-        .sort_by { |payment| payment[:start] }
-        .first[:start]
-  end
-
-  def end_date
-    return I18n.t("cbv.payment_details.show.unknown") unless has_paystubs_data?
-
-    @payments
-        .sort_by { |payment| payment[:end] }
-        .last[:end]
-  end
-
   def gross_pay
     return I18n.t("cbv.payment_details.show.unknown") unless has_paystubs_data?
 
@@ -129,5 +114,31 @@ class Cbv::PaymentDetailsController < Cbv::BaseController
 
   def sanitize_comment(comment)
     ActionController::Base.helpers.sanitize(comment)
+  end
+
+  def track_viewed_event
+    return if @pinwheel_account.nil?
+
+    NewRelicEventTracker.track("ApplicantViewedPaymentDetails", {
+      cbv_flow_id: @cbv_flow.id,
+      pinwheel_account_id: @pinwheel_account.id,
+      payments_length: @payments.length,
+      has_employment_data: has_employment_data?,
+      has_paystubs_data: has_paystubs_data?,
+      has_income_data: has_income_data?
+    })
+  rescue => ex
+    Rails.logger.error "Unable to track NewRelic event (ApplicantViewedPaymentDetails): #{ex}"
+  end
+
+  def track_saved_event
+    comment_data = @cbv_flow.additional_information[params[:user][:account_id]]
+
+    NewRelicEventTracker.track("ApplicantSavedPaymentDetails", {
+      cbv_flow_id: @cbv_flow.id,
+      additional_information_length: comment_data ? comment_data["comment"].length : 0
+    })
+  rescue => ex
+    Rails.logger.error "Unable to track NewRelic event (ApplicantSavedPaymentDetails): #{ex}"
   end
 end

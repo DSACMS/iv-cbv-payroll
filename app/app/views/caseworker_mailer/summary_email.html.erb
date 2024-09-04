@@ -12,7 +12,7 @@
   CIN <%= @cbv_flow_invitation.client_id_number %>.
   It was requested by <%= @cbv_flow_invitation.user.email %>
   on <%= format_parsed_date(@cbv_flow_invitation.created_at) %>, and submitted by the client
-  on <%= format_parsed_date(@cbv_flow.transmitted_at) %>.
+  on <%= format_parsed_date(@cbv_flow.consented_to_authorized_use_at) %>.
 </p>
 
   NYC document indexers please follow these steps:
