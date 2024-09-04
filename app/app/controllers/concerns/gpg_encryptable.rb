@@ -7,7 +7,7 @@ module GpgEncryptable
   def gpg_encrypt_file(file_path, public_key)
     crypto = GPGME::Crypto.new
     begin
-      key_fingerprint = import_key_if_not_exists(public_key)
+      key_fingerprint = imported_key_fingerprint(public_key)
       recipients = GPGME::Key.find(:public, key_fingerprint)
       raise "Recipient key not found" if recipients.empty?
 
@@ -34,22 +34,9 @@ module GpgEncryptable
   end
 
   private
-  def import_key_if_not_exists(public_key)
-    # Extract the fingerprint from the public key
-    imported_keys = GPGME::Key.find(public_key, "MA MOVEit")
-    raise "Failed to import public key" if imported_keys.empty?
 
-    fingerprint = imported_keys.first.fingerprint
-
-    # Check if the key already exists
-    existing_keys = GPGME::Key.find(:public, fingerprint)
-    if existing_keys.empty?
-      # Import the key if it does not exist
-      GPGME::Key.import(public_key)
-    else
-      Rails.logger.info "Key with fingerprint #{fingerprint} already exists"
-    end
-
-    fingerprint
+  def imported_key_fingerprint(public_key)
+    import_result = GPGME::Key.import(public_key)
+    import_result.imports.first.fingerprint
   end
 end
