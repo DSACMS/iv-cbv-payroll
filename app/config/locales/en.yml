@@ -263,8 +263,10 @@ en:
             middle_name: Client's middle name
             pay_period: Pay period (%{pay_frequency})
             snap_agency_id: SNAP Agency ID
+            staff_beacon_id_wel_id: Staff BEACON ID (WelID)
           client:
             address: Employer address
+            agency_id_number: Client's Agency ID
             client_report_information: Client and Report Information
             date_created: Date the income report was created
             date_range: Date range for the income report

@@ -26,44 +26,52 @@
 
 <h2><%= t(".pdf.client.client_report_information") %></h2>
 
-<% if is_caseworker %>
+<% if is_caseworker or current_site?(:ma) %>
   <%= render(TableComponent.new) do |table| %>
     <%= table.with_header do %>
       <h3 class="margin-0">Client Information</h3>
     <% end %>
-    <%= table.with_row(
-      label: t(".pdf.caseworker.first_name"),
-      value: @cbv_flow.cbv_flow_invitation.first_name
-    ) %>
-    <%= table.with_row(
-      label: t(".pdf.caseworker.middle_name"),
-      value: @cbv_flow.cbv_flow_invitation.middle_name
-    ) %>
-    <%= table.with_row(
-      label: t(".pdf.caseworker.last_name"),
-      value: @cbv_flow.cbv_flow_invitation.last_name
-    ) %>
-
-    <% current_site?(:nyc) do %>
+    <% if current_site?(:ma) %>
       <%= table.with_row(
-        label: t(".pdf.caseworker.client_id_number"),
-        value: @cbv_flow.cbv_flow_invitation.client_id_number
-      ) %>
-      <%= table.with_row(
-        label: t(".pdf.caseworker.case_number"),
-        value: @cbv_flow.cbv_flow_invitation.case_number
-      ) %>
-    <% end %>
-
-    <% current_site?(:ma) do %>
-      <%= table.with_row(
-        label: t(".pdf.caseworker.client_email_address"),
-        value: @cbv_flow.cbv_flow_invitation.email_address
-      ) %>
-      <%= table.with_row(
-        label: t(".pdf.caseworker.snap_agency_id"),
+        label: t(".pdf.client.agency_id_number"),
         value: @cbv_flow.cbv_flow_invitation.agency_id_number
       ) %>
+    <% end %>
+    <% if is_caseworker %>
+      <%= table.with_row(
+        label: t(".pdf.caseworker.first_name"),
+        value: @cbv_flow.cbv_flow_invitation.first_name
+      ) %>
+      <%= table.with_row(
+        label: t(".pdf.caseworker.middle_name"),
+        value: @cbv_flow.cbv_flow_invitation.middle_name
+      ) %>
+      <%= table.with_row(
+        label: t(".pdf.caseworker.last_name"),
+        value: @cbv_flow.cbv_flow_invitation.last_name
+      ) %>
+
+      <% if current_site?(:nyc) %>
+        <%= table.with_row(
+          label: t(".pdf.caseworker.client_id_number"),
+          value: @cbv_flow.cbv_flow_invitation.client_id_number
+        ) %>
+        <%= table.with_row(
+          label: t(".pdf.caseworker.case_number"),
+          value: @cbv_flow.cbv_flow_invitation.case_number
+        ) %>
+      <% end %>
+
+      <% if current_site?(:ma) %>
+        <%= table.with_row(
+          label: t(".pdf.caseworker.client_email_address"),
+          value: @cbv_flow.cbv_flow_invitation.email_address
+        ) %>
+        <%= table.with_row(
+          label: t(".pdf.caseworker.snap_agency_id"),
+          value: @cbv_flow.cbv_flow_invitation.agency_id_number
+        ) %>
+      <% end %>
     <% end %>
   <% end %>
 <% end %>
@@ -95,6 +103,12 @@
       label: t(".pdf.caseworker.agreement_consent_timestamp"),
       value: @cbv_flow.consented_to_authorized_use_at)
     %>
+    <% if current_site?(:ma) %>
+      <%= table.with_row(
+        label: t(".pdf.caseworker.staff_beacon_id_wel_id"),
+        value: @cbv_flow.cbv_flow_invitation.beacon_id
+      ) %>
+    <% end %>
   <% end %>
 <% end %>
 
