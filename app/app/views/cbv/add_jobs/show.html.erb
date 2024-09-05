@@ -3,7 +3,7 @@
 <p><%= t(".subheader", pay_income_days: current_site.pay_income_days) %></p>
 
 <div data-controller="cbv-add-job">
-  <h2><%= t(".answer_yes_header") %></h2>
+  <h2><%= t(".answer_yes_header_html") %></h2>
 
   <div class="usa-prose">
     <ul>
@@ -23,10 +23,10 @@
       <li><%= t(".answer_no_bullet_5") %></li>
     </ul>
 
-    <div class="margin-bottom-2">
+    <p class="margin-bottom-2">
       <%= t(".criteria_disclaimer", pay_income_days: current_site.pay_income_days) %>
       <%= site_translation(".learn_more_link_html") %>
-    </div>
+    </p>
   </div>
 
   <%= form_with(url: cbv_flow_add_job_path, builder: UswdsFormBuilder, data: { "add-job-target": "addJobForm", turbo: "false" }, id: "add_job_form") do |f| %>
