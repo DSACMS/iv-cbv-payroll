@@ -30,7 +30,7 @@
   <%= table.with_header do %>
     <h3 class="margin-0">Client Information</h3>
   <% end %>
-  <% if current_site?(:ma) %>
+  <% if (current_site?(:ma) and not is_caseworker) %>
     <%= table.with_row(
       label: t(".pdf.client.agency_id_number"),
       value: @cbv_flow.cbv_flow_invitation.agency_id_number
