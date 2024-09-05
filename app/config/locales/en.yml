@@ -254,12 +254,14 @@ en:
     successes:
       show:
         back_to_agency: Go to %{agency_short_name} website
-        caseworker_received: Your benefits agency has received your payment information and will review it. They will contact you if any additional information is needed.
-        check_status: To check the status of your SNAP application or recertification you can visit your agency’s website.
+        caseworker_received: We have delivered your payment information to %{agency_acronym}. They will contact you if any additional information is needed.
+        check_status:
+          default: To check the status of your SNAP application or recertification you can visit DTA's website.
+          ma: To check the status of your SNAP recertification you can visit DTA's website.
         confirmation_code_html: "<strong>Confirmation code</strong>: %{confirmation_code}"
         download: Download a copy of the report
-        header: Your income report has been successfully shared with your benefits agency
-        if_it_didnt_work: If you weren't able to find an employer, or one of your employers doesn't have an online payroll provider, please provide this information directly to your benefits agency.
+        header: Your income report has been successfully shared with %{agency_acronym}
+        if_it_didnt_work: If you weren't able to find an employer, or one of your employers doesn't have an online payroll provider, please provide your payment information directly to %{agency_acronym}.
     summaries:
       show:
         additional_comments: Additional comments
