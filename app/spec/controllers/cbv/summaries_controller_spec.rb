@@ -262,6 +262,7 @@ RSpec.describe Cbv::SummariesController do
             expect(File.exist?(file_path)).to be true
           end
 
+          cbv_flow.update(site_id: 'ma')
           cbv_flow_invitation.update(agency_id_number: "1234")
           patch :update
 

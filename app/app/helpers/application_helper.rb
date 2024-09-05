@@ -1,6 +1,6 @@
 module ApplicationHelper
   def current_site?(site_id)
-    current_site.id.to_sym == site_id.to_sym
+    current_site&.id&.to_sym == site_id.to_sym
   end
 
   # Render a translation that is specific to the current site. Define
