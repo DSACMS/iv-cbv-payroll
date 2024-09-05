@@ -194,8 +194,8 @@ en:
         your_employers_name: Your employer's name or the name of their payroll provider
         your_login_credentials: Your login information for viewing your paystubs online
     error_invalid_token: The invitation link used is not valid. Double check the link and try again. If you continue experiencing issues, contact your caseworker.
-    error_missing_token_html: "<strong>Your session has timed out due to inactivity.</strong> To continue where you left off, please click the link you received from your benefits agency in your email. If you encounter any issues, contact your benefits agency for assistance."
-    error_no_access: We weren't able to load payroll data for this account. Please click the link you received from your benefits agency to try again.
+    error_missing_token_html: "<strong>Your session has timed out due to inactivity.</strong> To continue where you left off, please click the link you received from your SNAP agency in your email. If you encounter any issues, contact your SNAP agency for assistance."
+    error_no_access: We weren't able to load payroll data for this account. Please click the link you received from your SNAP agency to try again.
     expired_invitations:
       show:
         body_1: You've either successfully completed your verification process, or are trying to access this invitation after it has expired.
@@ -318,9 +318,9 @@ en:
         consent_to_authorize_warning: You must check the legal agreement checkbox to proceed.
   pages:
     home:
-      description_1: The SNAP Income Pilot is a new tool designed to help you connect your income details from your employer or payroll provider directly to your benefits agency. We're currently testing this tool to ensure it works effectively.
+      description_1: The SNAP Income Pilot is a new tool designed to help you connect your income details from your employer or payroll provider directly to your SNAP agency. We're currently testing this tool to ensure it works effectively.
       description_2: Please note this pilot is currently available only to SNAP participants in New York City and Massachusetts.
-      description_3_html: '<p>To participate, you can request an invitation from your benefits agency:</p><ul><li>Massachusetts applicants: Contact the <a href="https://www.mass.gov/guides/how-to-contact-dta" target="_blank" rel="noopener noreferrer">Department of Transitional Assistance (DTA)</a></li><li>New York City applicants: Contact the <a href="https://www.nyc.gov/site/hra/help/snap-application-frequently-asked-questions.page">Human Resources Administration (HRA)</a></li></ul>'
+      description_3_html: '<p>To participate, you can request an invitation from your SNAP agency:</p><ul><li>Massachusetts applicants: Contact the <a href="https://www.mass.gov/guides/how-to-contact-dta" target="_blank" rel="noopener noreferrer">Department of Transitional Assistance (DTA)</a></li><li>New York City applicants: Contact the <a href="https://www.nyc.gov/site/hra/help/snap-application-frequently-asked-questions.page">Human Resources Administration (HRA)</a></li></ul>'
       header: Welcome to the SNAP Income Pilot
   shared:
     agency_full_name:
