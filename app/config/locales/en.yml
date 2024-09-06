@@ -2,18 +2,26 @@
 en:
   applicant_mailer:
     invitation_email:
-      body_html:
-        default: "<p>%{agency_acronym} wants you to verify your income as part of your benefits application. The SNAP Income Pilot is a new tool designed to help you share your income data directly with your benefits agency by logging into your payroll provider.</p><p>This process is unique to you, so please don't share this invitation with anyone else. <strong>You have until %{deadline}, to complete your verification.</strong> Otherwise, you'll need to request a new invitation.</p>"
-        nyc: "<p>%{agency_acronym} wants you to verify your income as part of your benefits application. The SNAP Income Pilot is a new tool designed to help you share your income data directly with your benefits agency by logging into your payroll provider.</p><p>This process is unique to you, so please don't share this invitation with anyone else. <strong>You have until %{deadline}, to complete your verification.</strong> Otherwise, you'll need to request a new invitation.</p><p>This is an optional tool. If you decide that you don't want to use it, you can provide income documents via the ACCESS HRA app, fax, mail, or in-person.</p>"
+      body_1:
+        default: "%{agency_acronym} wants you to verify your income as part of your SNAP application or recertification. The SNAP Income Pilot is a new tool designed to help you share your income data directly with %{agency_acronym} by logging into your payroll provider."
+        ma: "%{agency_acronym} wants you to verify your income as part of your SNAP recertification. The SNAP Income Pilot is a new tool designed to help you share your income data directly with %{agency_acronym} by logging into your payroll provider."
+      body_2_html:
+        default: This process is unique to you. Please don't share this invitation with anyone else. <strong>You have until %{deadline}, to complete your verification.</strong> Otherwise, you can request a new invitation.
+        ma: This process is unique to you. Please don't share this invitation with anyone else. <strong>You have until %{deadline}, to complete your verification.</strong>
+      body_3:
+        default: This is an optional tool. If you decide that you don't want to use it, you can provide income documents via the %{app_name} app, fax, mail, or in-person.
+        ma: This is an optional tool. If you decide that you don't want to use it, you can provide proof of your gross income and hours using %{app_name}, by fax, by mail, or in-person.
       button: Verify your income
       button_caption: 'To verify your income with the SNAP Income Pilot, click the button below:'
-      footer: This is an automatically generated message from your benefits agency. Please don’t reply to this email.
+      footer: This is an automatically generated message from your SNAP agency. Please don’t reply to this email.
       greeting: Hello,
       header:
         ma: DTA has sent you an invitation to verify your income
         nyc: HRA has sent you an invitation to verify your income
         sandbox: CBV Test Agency has sent you an invitation to verify your income
-      subject: Verify your income for your benefit application
+      subject:
+        default: Verify your income for your SNAP application or renewal
+        ma: Verify your income to renew your SNAP benefits
   caseworker:
     cbv_flow_invitations:
       create:
@@ -93,20 +101,20 @@ en:
         answer_no_bullet_1: You don't have another job
         answer_no_bullet_2: You have a job that pays you via PayPal, Venmo, Cash App, etc
         answer_no_bullet_3: You have a job that pays you in cash
-        answer_no_bullet_4: You have a job that pays you with paper paychecks
+        answer_no_bullet_4: You have a job that pays you with a paper check and you cannot view your paycheck online
         answer_no_bullet_5: You have a job that issues a 1099
         answer_no_header: 'Answer NO if:'
-        answer_yes_bullet_1: Has an online payroll provider
-        answer_yes_bullet_2: Lets you view paychecks online
-        answer_yes_bullet_3: Is app-based (Uber, DoorDash, Lyft, Instacart, etc.)
-        answer_yes_header: 'Answer YES if your job:'
+        answer_yes_bullet_1: You have a job that has an online payroll provider
+        answer_yes_bullet_2: You have a job that lets you view paystubs online
+        answer_yes_bullet_3: Your job is app-based (Uber, DoorDash, Lyft, Instacart, etc.)
+        answer_yes_header_html: 'Answer YES if <em>any</em> of these are true about your current or recent job:'
         continue: Continue
-        criteria_disclaimer: 'Note: If you''ve had other jobs in the past %{pay_income_days} days that don''t meet these criteria, you may need to submit that income information separately. Contact your agency for assistance.'
+        criteria_disclaimer: 'Note: If you''ve had other jobs in the past %{pay_income_days} days that don''t meet these criteria, you may need to submit that income information separately.'
         header: Do you have another job to report?
         learn_more_link_html:
-          ma: <a href="https://www.mass.gov/guides/how-to-contact-dta">Learn more at Mass.gov</a>
-          nyc: <a href="https://www.nyc.gov/site/hra/help/snap-application-frequently-asked-questions.page">Learn more on nyc.gov</a>
-          sandbox: <a href="https://www.mass.gov/guides/how-to-contact-dta">Learn more at CBV Test Agency</a>
+          ma: Learn more on <a href="https://www.mass.gov/guides/how-to-contact-dta" target="_blank" rel="noopener noreferer">DTA's website</a>.
+          nyc: Learn more on <a href="https://www.nyc.gov/site/hra/help/snap-application-frequently-asked-questions.page" target="_blank" rel="noopener noreferer">HRA's website</a>.
+          sandbox: Learn more on <a href="https://www.mass.gov/guides/how-to-contact-dta" target="_blank" rel="noopener noreferrer">CBV Test Agency's website</a>.
         no_radio: No, I don’t have another job that meets the criteria
         subheader: Please add other jobs you’ve had in the past %{pay_income_days} days, even if you're no longer at that job.
         yes_radio: Yes, I have another job that meets the criteria
@@ -115,65 +123,79 @@ en:
         error: You must check the agreement checkbox to proceed.
       show:
         checkbox:
-          ma: Check this box to agree to let us access your payment information and share it with the Massachusetts Department of Transitional Assistance.
-          nyc: Check this box to agree to let Nava access your payment information and share it with New York City Human Resources Administration. We will not use the information for any other purpose nor redisclose it to any other party.
-          sandbox: Check this box to agree to let Verify.gov access your payment information and share it with the Sandbox Example Agency.
-        get_started: Get started
-        header: How verifying your income works
-        step1: Find your employer or online payroll provider. A payroll provider is the company where you check your paystubs online
-        step2: Sign into your employer or payroll provider account. We will not share or keep your login information.
-        step3: Review your payment records. (Repeat steps 2 and 3 if you have other employers to add).
-        step4: Submit your payment information. We'll automatically send it to your caseworker.
-        subheader: 'All you have to do is complete four easy steps:'
+          default: Check this box to agree to let us access your payment information and share it with the %{agency_full_name}.
+          nyc: Check this box to agree to let Nava access your payment information and share it with the %{agency_full_name}. We will not use the information for any other purpose nor redisclose it to any other party.
+        continue: Continue
+        header: Let's verify your income
+        step1: Find your most recent employer or online payroll provider.
+        step1_description: A payroll provider is a system that some employers or companies use to handle payroll, pay processing, and distribute paychecks and direct deposit. Examples of popular payroll providers are ADP, Paychex, Gusto, etc.
+        step2: Sign into your employer or payroll provider account.
+        step2_description: Use the login credentials you have for viewing your online pay stub. If you work for an app, like Uber, this would be the same login when you sign into the Uber app. We will not share or keep your login information.
+        step3: Review your payment information.
+        step3_description: Payment information includes pay date, pay amount, and hours worked. Repeat steps 1 to 3 if you have other employers to add.
+        step4: Submit your payment information.
+        step4_description: We’ll automatically send it to %{agency_acronym}.
+        steps_intro: 'To verify your income, you''ll need to complete these four simple steps:'
     employer_searches:
       show:
         can_not_find_employer: I can’t find my company or payroll provider
-        employer_not_listed: Employer Not Listed?
+        employer_not_listed: Employer not listed?
         exit_button_text: Exit and go to %{agency_short_name}
         fetching_payroll: We are fetching your employer's payment information.
         fetching_payroll_description: This may take a few minutes. Please do not close this window.
-        header: Find your employer or payroll provider
-        no_results_steps1: Check if your employer uses another business name or a payroll provider.
+        header: Find your current or most recent employer or payroll provider
+        no_results_steps1: Check if your employer uses another business name or search for their payroll provider.
         no_results_steps2: Make sure you have spelled names correctly, then search again.
         no_results_steps_title: 'Try these steps first:'
         no_results_title: We couldn’t find your employer or payroll provider.
         results: Results
         review_button_text: Review my income report
         search: Search
-        search_for_employer: Search for your employer or payroll provider to share your income information with your benefits agency. This can be a former employer or a current employer. We'll retrieve the last 90 days of pay information from when you applied.
+        search_for_employer: Search for your employer or payroll provider. This can be a former employer or a current employer. We will share your income information with %{agency_acronym}.
         select: Select
         select_button_aria_label: Open an authentication modal for the employer or payroll provider to import your payment history.
-        to_access: 'To access your payment information from this period, search for:'
-        to_access_li_1_html: "<strong>Your employer</strong> name"
+        to_access: 'To access your payment information, search for any of the following:'
+        to_access_li_1_html: Your <strong>employer name</strong>
         to_access_li_2_html: The <strong>payroll provider</strong> you get paid from
-        to_access_li_3_html: The <strong>App</strong> you work for, like Uber, DoorDash, etc
+        to_access_li_3_html: The <strong>app</strong> you work for, like Uber, DoorDash, etc
         to_continue: 'If you still don’t see your employer or payroll provider listed:'
         to_continue_li_1: You’ll need to submit that income information separately.
         to_continue_li_1_html:
-          ma: Go to <a href="https://www.mass.gov/guides/how-to-contact-dta">DTA's website</a> to learn about other ways to report your income.
-          nyc: Go to <a href="https://www.nyc.gov/site/hra/help/snap-application-frequently-asked-questions.page">HRA's website</a> to learn about other ways to report your income.
-          sandbox: Go to <a href="https://example.com/contact">CBV's website</a> to learn about other ways to report your income.
+          ma: <a href="https://www.mass.gov/guides/how-to-contact-dta">Go to DTA's website</a> to learn about other ways to report your income.
+          nyc: <a href="https://www.nyc.gov/site/hra/help/snap-application-frequently-asked-questions.page">Go to HRA's website</a> to learn about other ways to report your income.
+          sandbox: <a href="https://example.com/contact">Go to CBV's website</a> to learn about other ways to report your income.
         to_continue_li_2: If you have other jobs to add, search for them.
-        to_continue_li_3: If you have no other jobs to add, you can exit this site.
-        to_continue_li_3_continue: If you have no other jobs to add, continue to review your income report.
+        to_continue_li_3: If you have no other jobs to add here, you can exit this site.
+        to_continue_li_3_continue: If you have no other jobs to add here, continue to review your income report.
         what_is_html: "<strong>What is a payroll provider?</strong> A payroll provider is a system that some employers or companies use to handle payroll, pay processing, and distribute paychecks and direct deposit. Examples of popular payroll providers are ADP, Paychex, Gusto, etc."
-        you_ll_go: You’ll go to their login portal and sign-in to see your payment history.
+        you_ll_go: You’ll go to their login portal and sign in to see your payment history.
     entries:
       show:
-        do_app_based_work: People who do app-based gig work (like Uber, Lyft, DoorDash)
+        cant_use_1: You haven’t earned income from a job in the past 90 days
+        cant_use_2: You have a job that pays via PayPal, Venmo, Cash App, etc.
+        cant_use_3: You have a job that pays in cash
+        cant_use_4: You have a job that pays you with a paper check and you cannot view your paycheck online
+        cant_use_5: You have a job that issues a 1099
+        cant_use_if: 'You won''t be able to verify your income with this tool if:'
+        do_app_based_work: Do app-based gig work (like Uber, Lyft, DoorDash)
         get_started: Get Started
-        has_online_payroll_provider: People with an employer who have an online payroll provider. Most people who receive pay stubs or W-2 tax forms have an online payroll provider. If you’re unsure, ask your employer.
-        header: Let's verify your income through your payment information
-        security_message_html: "<strong>Your information is secure.</strong> We will not share or keep your log in information. You will be able to preview and approve everything that is shared with your caseworker."
-        subheader: We’ll help you connect payment records from your employer to your caseworker so you can prove your income and receive benefits faster.
+        has_income_90_days: 'You can use this tool if you have earned income in the last 90 days and:'
+        has_online_payroll_provider: Can view your paychecks through your company or company's online payroll provider. Most people who receive pay stubs or W-2 tax forms have an online payroll provider. If you’re unsure, ask your employer.
+        header:
+          default: "%{agency_acronym} is piloting a new way to quickly verify your income"
+          ma: Get %{agency_acronym} your income right away
+        security_message_html: "<strong>Your information is secure.</strong> We won't share or keep your log in information. You will be able to preview and approve everything that is shared with %{agency_acronym}."
+        stopped_working: Have stopped working or lost a job (but earned income in the past 90 days).
+        subheader: We’ll send the payment records from your employer(s) to %{agency_acronym}. This will help you prove your income and can help %{agency_acronym} get to a decision faster.
         subheader_1: Who can use this tool
-        subheader_2: What you need
-        you_can_get_started: You can get started right away with this information
+        subheader_2: Who can't use this tool
+        subheader_3: What you need
+        you_can_get_started: 'You can get started right away with this information:'
         your_employers_name: Your employer's name or the name of their payroll provider
-        your_login_credentials: Your login credentials for the payroll provider account
+        your_login_credentials: Your login information for viewing your paystubs online
     error_invalid_token: The invitation link used is not valid. Double check the link and try again. If you continue experiencing issues, contact your caseworker.
-    error_missing_token_html: "<strong>Your session has timed out due to inactivity.</strong> To continue where you left off, please click the link you received from your benefits agency in your email. If you encounter any issues, contact your benefits agency for assistance."
-    error_no_access: We weren't able to load payroll data for this account. Please click the link you received from your benefits agency to try again.
+    error_missing_token_html: "<strong>Your session has timed out due to inactivity.</strong> To continue where you left off, please click the link you received from your SNAP agency in your email. If you encounter any issues, contact your SNAP agency for assistance."
+    error_no_access: We weren't able to load payroll data for this account. Please click the link you received from your SNAP agency to try again.
     expired_invitations:
       show:
         body_1: You've either successfully completed your verification process, or are trying to access this invitation after it has expired.
@@ -186,19 +208,29 @@ en:
     missing_results:
       show:
         back_button: Go back to employer search
+        continue_button: Continue to review my report
+        continue_to_review: Continue to review the income information you were able to find before you submit it to %{agency_acronym}.
+        dta_options_1_html: Use <a href="https://www.mass.gov/info-details/help-using-dta-connect" target="_blank" rel="noopener noreferer">DTA Connect</a> to upload and submit your income documents.
+        dta_options_2_html: <a href="https://www.mass.gov/guides/how-to-contact-dta#-mail-or-fax-" target="_blank" rel="noopener noreferer">Fax</a> your documents to DTA along with a cover sheet.
+        dta_options_3_html: <a href="https://www.mass.gov/guides/how-to-contact-dta#-mail-or-fax-" target="_blank" rel="noopener noreferer">Mail</a> your documents to DTA along with a cover sheet.
+        dta_options_4_html: Drop your documents off at a <a href="https://www.mass.gov/guides/how-to-contact-dta#-mail-or-fax-" target="_blank" rel="noopener noreferer">local DTA office</a>.
+        dta_options_5_html: Work with a <a href="https://www.mass.gov/info-details/snap-outreach-partners#snap-outreach-partners-" target="_blank" rel="noopener noreferer">SNAP Outreach Partner</a> to submit your documents.
+        dta_options_header: 'You can submit your income information using one of the following methods:'
         exit_button_html:
           ma: <a href="https://www.mass.gov/guides/how-to-contact-dta" class="usa-button">Exit and go to DTA</a>
           nyc: <a href="https://www.nyc.gov/site/hra/help/snap-application-frequently-asked-questions.page" class="usa-button">Exit and go to HRA</a>
           sandbox: <a href="https://www.mass.gov/guides/how-to-contact-dta" class="usa-button">Exit and go to CBV Test Agency</a>
         header: How to report income if your employer or payroll provider isn’t listed
         more_jobs: If you have more jobs to report
-        not_listed_p1: If your employer or payroll provider isn’t listed on this site, you’ll need to share your income information for this job directly with your benefits agency.
+        no_more_jobs: If you don't have more jobs to report
+        not_listed_p1: If your employer or payroll provider isn’t listed on this site, you’ll need to share your income information for this job directly with %{agency_acronym}.
         not_listed_p2: Visit %{agency_short_name} for more information on how to submit documents.
         you_can_search: You can search for another employer or payroll provider. This site supports employers with online payroll providers or app-based services. Examples include Amazon, Walmart, McDonald’s, Uber, DoorDash, Lyft, and Instacart.
     payment_details:
       show:
-        additional_information_label: Share any comments or additional information about the payment details above that you’d like your benefits agency to know.
-        continue: Add info to report
+        additional_information_header: Additional comments (optional)
+        additional_information_label: Share any comments or additional information about the payment details above that you’d like %{agency_acronym} to know. For example, you can share if the information is inaccurate or if you’re no longer working at that job.
+        continue: Continue
         deductions: 'Deduction: %{category}'
         employment_end_date: Employment end date
         employment_information_table_header: Employment information
@@ -218,19 +250,21 @@ en:
         pay_period: Pay period
         payment_hours: "%{amount} hours"
         payments_and_deductions_table_header: Payments and deductions
-        subheader: We have gathered your payment records from the past 90 days, from %{start_date} to %{end_date}. Review them and add any comments for your benefits agency in the additional comments section. This will be included in your income report.
+        subheader: We have gathered your payment records from the past 90 days, from %{start_date} to %{end_date}. If the information is missing or inaccurate, add a comment for %{agency_acronym}. This information will be included in your income report.
         total_gross_description: This is the total gross income from your job before taxes, benefits and deductions were taken out of your paycheck.
-        total_gross_income: 'Total income from the past 90 days before taxes: %{amount}'
+        total_gross_income: 'Total income from the past 90 days, before taxes: %{amount}'
         unknown: Unknown
     successes:
       show:
         back_to_agency: Go to %{agency_short_name} website
-        caseworker_received: Your benefits agency has received your payment information and will review it. They will contact you if any additional information is needed.
-        check_status: To check the status of your SNAP application or recertification you can visit your agency’s website.
+        caseworker_received: We have delivered your payment information to %{agency_acronym}. They will contact you if any additional information is needed.
+        check_status:
+          default: To check the status of your SNAP application or recertification you can visit DTA's website.
+          ma: To check the status of your SNAP recertification you can visit DTA's website.
         confirmation_code_html: "<strong>Confirmation code</strong>: %{confirmation_code}"
         download: Download a copy of the report
-        header: Your income report has been successfully shared with your benefits agency
-        if_it_didnt_work: If you weren't able to find an employer, or one of your employers doesn't have an online payroll provider, please provide this information directly to your benefits agency.
+        header: Your income report has been successfully shared with %{agency_acronym}
+        if_it_didnt_work: If you weren't able to find an employer, or one of your employers doesn't have an online payroll provider, please provide your payment information directly to %{agency_acronym}.
     summaries:
       show:
         additional_comments: Additional comments
@@ -240,12 +274,12 @@ en:
           nyc: Application or recertification date
           sandbox: Application or recertification date
         consent_to_authorize_use_html:
-          ma: Check this box to confirm that the information provided by you is true and complete to the best of your knowledge. You agree to inform DTA of any income not reflected in this report or any discrepancies found in the information gathered with this tool. You understand that providing accurate and complete information is your responsibility, and any false or omitted information may have legal consequences. For more information on your rights and responsibilities regarding private information you share with DTA please refer to the Rights and Responsibilities you signed at application, found on <a href="https://www.mass.gov/lists/department-of-transitional-assistance-rights-responsibilities-and-penalties">Mass.gov</a>.<br/><br/>By sending this report, you authorize its use for income verification by DTA and authorized personnel.
+          ma: Check this box to confirm that the information provided by you is true and complete to the best of your knowledge. You agree to inform DTA of any income not reflected in this report or any discrepancies found in the information gathered with this tool. You understand that providing accurate and complete information is your responsibility, and any false or omitted information may have legal consequences. For more information on your rights and responsibilities regarding private information you share with DTA, please refer to the Rights and Responsibilities you signed at application, found on <a href="https://www.mass.gov/lists/department-of-transitional-assistance-rights-responsibilities-and-penalties">Mass.gov</a>.<br/><br/>By sending this report, you authorize its use for income verification by authorized DTA personnel.
           nyc: Check this box to confirm that the information provided by you is true and complete to the best of your knowledge. You agree to inform NYC Human Resources Administration (HRA) of any income not reflected in this report or any discrepancies found in the information gathered with this tool. You understand that providing accurate and complete information is your responsibility, and any false or omitted information may have legal consequences.<br/><br/>By sending this report, you authorize its use for income verification by authorized HRA personnel.
           sandbox: Check this box to confirm that the information provided by you is true and complete to the best of your knowledge. You agree to inform CBV Test Agency of any income not reflected in this report or any discrepancies found in the information gathered with this tool. You understand that providing accurate and complete information is your responsibility, and any false or omitted information may have legal consequences.<br/><br/>By sending this report, you authorize its use for income verification by authorized CBV personnel.
         consent_to_authorize_use_title: Legal Agreement
-        description: The report below has your income from the past 90 days from, from %{start_date} to %{end_date}. Please review it before you send it to your benefits agency.
-        header: Review payment information from your employers
+        description: The report below has your income from the past 90 days from, from %{start_date} to %{end_date}. Please review it before you send it to %{agency_acronym}.
+        header: Review and submit your income report
         none_found: No payments found. Please refresh the page after a few minutes.
         payment: Payment of %{amount} before taxes on %{date}
         pdf:
@@ -274,28 +308,36 @@ en:
             client_report_information: Client and Report Information
             date_created: Date the income report was created
             date_range: Date range for the income report
-            description: We have collected your income information with your consent and sent it to your benefits agency. Any additional income that you weren't able to add to this report should be shared separately with your benefits agency.
+            description: We have collected your income information with your consent and sent it to your SNAP agency. Any additional income that you weren't able to add to this report should be shared separately with your SNAP agency.
             employment_payment_details: Employment and Payment details
             header: Income Verification Report
           shared:
             confirmation_code: Confirmation code
         phone_number: Employer phone
-        send_report: Share my report with benefits agency
+        send_report: Share my report with %{agency_acronym}
         table_caption: 'Employer %{number}: %{employer_name}'
         table_caption_no_name: Employer %{number}
         total_income_from: 'Total income from %{employer_name} before taxes: %{amount}'
         total_income_from_no_employer_name: 'Total income before taxes: %{amount}'
-        total_payments: 'Total income from the past 90 days before taxes: %{amount}'
+        total_payments: 'Total income from the past 90 days, before taxes: %{amount}'
         total_payments_desc: This is the total gross income from your job(s) before taxes, benefits and deductions were taken out of your paycheck.
       update:
         consent_to_authorize_warning: You must check the legal agreement checkbox to proceed.
   pages:
     home:
-      description_1: The SNAP Income Pilot is a new tool designed to help you connect your income details from your employer or payroll provider directly to your benefits agency. We're currently testing this tool to ensure it works effectively.
+      description_1: The SNAP Income Pilot is a new tool designed to help you connect your income details from your employer or payroll provider directly to your SNAP agency. We're currently testing this tool to ensure it works effectively.
       description_2: Please note this pilot is currently available only to SNAP participants in New York City and Massachusetts.
-      description_3_html: '<p>To participate, you can request an invitation from your benefits agency:</p><ul><li>Massachusetts applicants: Contact the <a href="https://www.mass.gov/guides/how-to-contact-dta" target="_blank" rel="noopener noreferrer">Department of Transitional Assistance (DTA)</a></li><li>New York City applicants: Contact the <a href="https://www.nyc.gov/site/hra/help/snap-application-frequently-asked-questions.page">Human Resources Administration (HRA)</a></li></ul>'
+      description_3_html: '<p>To participate, you can request an invitation from your SNAP agency:</p><ul><li>Massachusetts applicants: Contact the <a href="https://www.mass.gov/guides/how-to-contact-dta" target="_blank" rel="noopener noreferrer">Department of Transitional Assistance (DTA)</a></li><li>New York City applicants: Contact the <a href="https://www.nyc.gov/site/hra/help/snap-application-frequently-asked-questions.page">Human Resources Administration (HRA)</a></li></ul>'
       header: Welcome to the SNAP Income Pilot
   shared:
+    agency_full_name:
+      ma: Massachusetts Department of Transitional Assistance
+      nyc: New York City Human Resources Administration
+      sandbox: CBV Test Agency
+    app_name:
+      ma: DTA Connect
+      nyc: ACCESS HRA
+      sandbox: CBVApp
     banner:
       lock: Lock
       locked_padlock: A locked padlock

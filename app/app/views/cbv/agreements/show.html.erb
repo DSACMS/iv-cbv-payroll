@@ -1,14 +1,28 @@
-<% content_for :title, t(".header") %>
-<h1><%= t(".header") %></h1>
-<h2><%= t(".subheader") %></h2>
+<% title = t(".header") %>
+<% content_for :title, title %>
+
+<h1><%= title %></h1>
+<p><%= t(".steps_intro") %></p>
 <ol class="usa-process-list">
-    <li class="usa-process-list__item"><%= t(".step1") %></li>
-    <li class="usa-process-list__item"><%= t(".step2") %></li>
-    <li class="usa-process-list__item"><%= t(".step3") %></li>
-    <li class="usa-process-list__item"><%= t(".step4") %></li>
+  <li class="usa-process-list__item">
+    <strong><%= t(".step1") %></strong>
+    <p><%= t(".step1_description") %></p>
+  </li>
+  <li class="usa-process-list__item">
+    <strong><%= t(".step2") %></strong>
+    <p><%= t(".step2_description") %></p>
+  </li>
+  <li class="usa-process-list__item">
+    <strong><%= t(".step3") %></strong>
+    <p><%= t(".step3_description") %></p>
+  </li>
+  <li class="usa-process-list__item">
+    <strong><%= t(".step4") %></strong>
+    <p><%= t(".step4_description", agency_acronym: current_site.agency_short_name) %></p>
+  </li>
 </ol>
 
 <%= form_with(url: cbv_flow_agreement_path, builder: UswdsFormBuilder, data: { turbo: "false" }) do |f| %>
-    <%= f.check_box(:agreement, { 'label': site_translation(".checkbox") }) %>
-    <%= f.submit t(".get_started") %>
+    <%= f.check_box(:agreement, label: site_translation(".checkbox", agency_full_name: site_translation("shared.agency_full_name"))) %>
+    <%= f.submit t(".continue") %>
 <% end %>
