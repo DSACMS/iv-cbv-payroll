@@ -1,4 +1,5 @@
 class ApplicationController < ActionController::Base
+  include ApplicationHelper
   helper :view
   helper_method :current_site
   around_action :switch_locale
@@ -27,8 +28,15 @@ class ApplicationController < ActionController::Base
 
   private
 
-  def current_site
-    @current_site ||= site_config[params[:site_id]]
+  def current_site(site = nil)
+    if site.nil?
+      @current_site ||= site_config[params[:site_id]]
+      puts "current_site: #{@current_site}"
+      ApplicationHelper.current_site = @current_site
+    else
+      ApplicationHelper.current_site = site
+    end
+    ApplicationHelper.current_site
   end
 
   protected

@@ -1,6 +1,7 @@
 require "pdf-reader"
 
 class PdfService
+  include ApplicationHelper
   # Represents the result of PDF generation
   class PdfGenerationResult
     attr_reader :content, :html, :page_count, :file_size
@@ -13,13 +14,25 @@ class PdfService
     end
   end
 
-  def self.generate(template:, variables: {})
+  def self.generate(current_site = nil, template:, variables: {})
+    resolved_site = current_site || ApplicationHelper.current_site
+    new(resolved_site).generate(template: template, variables: variables)
+  end
+
+  def initialize(site)
+    @site = site
+  end
+
+  def generate(template:, variables: {})
     html_content = ApplicationController.renderer.render_to_string(
       template: template,
       formats: [ :pdf ],
       layout: "layouts/pdf",
-      locals: variables,
-      assigns: variables
+      # There's some dependency injection going on here. passing in
+      # the higher order method `current_site` of the ApplicationHelper
+      # so that it's available in the views.
+      locals: variables.merge(current_site: current_site),
+      assigns: variables.merge(current_site: current_site)
     )
 
     begin
@@ -39,5 +52,11 @@ class PdfService
       Rails.logger.error "Error generating PDF: #{e.message}"
       nil
     end
+  end
+
+  private
+
+  def current_site
+    @site
   end
 end

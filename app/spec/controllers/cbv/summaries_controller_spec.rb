@@ -193,8 +193,6 @@ RSpec.describe Cbv::SummariesController do
     context "#transmit_to_caseworker" do
       before do
         cbv_flow.update(consented_to_authorized_use_at: Time.now)
-        # Mock the current_site method
-        allow_any_instance_of(Cbv::BaseController).to receive(:current_site).and_return(mock_site)
 
         # Set up the mock_site behavior
         allow(mock_site).to receive(:transmission_method_configuration).and_return({
@@ -234,7 +232,6 @@ RSpec.describe Cbv::SummariesController do
         let(:user) { create(:user, email: "test@test.com") }
         let(:s3_service_double) { instance_double(S3Service) }
         let(:pinwheel_service_double) { instance_double(PinwheelService) }
-
         before do
           sign_in user
           allow(S3Service).to receive(:new).and_return(s3_service_double)

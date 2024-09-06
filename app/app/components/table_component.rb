@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 class TableComponent < ViewComponent::Base
+  include ApplicationHelper
+
   renders_one :header
   renders_many :rows, types: {
     content: {

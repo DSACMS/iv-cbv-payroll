@@ -25,6 +25,7 @@ class CaseworkerMailer < ApplicationMailer
     @employments = params[:employments]
     @incomes = params[:incomes]
     @identities = params[:identities]
+    @current_site = current_site
   end
 
   def generate_pdf

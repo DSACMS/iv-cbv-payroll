@@ -87,4 +87,8 @@ module TestHelpers
       }
     end
   end
+
+  def get_current_site(site_acronym)
+    Rails.application.config.sites[site_acronym]
+  end
 end

@@ -50,6 +50,7 @@ class Cbv::SummariesController < Cbv::BaseController
     if !current_site.transmission_method.present?
       Rails.logger.info("No transmission method found for site #{current_site.id}")
     else
+      ApplicationHelper.current_site = current_site
       transmit_to_caseworker
     end
 
