@@ -71,7 +71,7 @@ class Cbv::BaseController < ApplicationController
   end
 
   def agency_url
-    site_config[@cbv_flow.site_id].agency_contact_website
+    current_site&.agency_contact_website
   end
 
   def get_comment_by_account_id(account_id)
