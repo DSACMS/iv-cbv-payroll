@@ -71,7 +71,7 @@ class Cbv::BaseController < ApplicationController
   end
 
   def agency_url
-    "https://www.nyc.gov/site/hra/help/snap-application-frequently-asked-questions.page"
+    current_site&.agency_contact_website
   end
 
   def get_comment_by_account_id(account_id)
