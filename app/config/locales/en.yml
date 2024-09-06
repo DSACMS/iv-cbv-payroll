@@ -249,6 +249,10 @@ en:
         none_found: No payments found. Please refresh the page after a few minutes.
         payment: Payment of %{amount} before taxes on %{date}
         pdf:
+          agency_header_name:
+            ma: Massachusetts Department of Transitional Assistance
+            nyc: NYC Human Resources Administration
+            sandbox: CBV Test Agency
           caseworker:
             agreement_consent_timestamp: Agreement Consent Timestamp
             case_number: Case number
@@ -301,7 +305,7 @@ en:
     header:
       aria_label: Main navigation
       cbv_flow_title:
-        ma: Massachusetts Department of Transitional Assistance
+        ma: Department of Transitional Assistance
         nyc: Human Resources Administration
         sandbox: CBV Test Agency
       close: Close
