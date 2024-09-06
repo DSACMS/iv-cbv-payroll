@@ -24,33 +24,17 @@
   agency_short_name: DTA
   agency_contact_website: https://www.mass.gov/guides/how-to-contact-dta
   caseworker_feedback_form: https://forms.office.com/r/rfV04qjG9A
-  # TODO: Uncomment this (and delete the duplicated sandbox configuration
-  # below) after the bug bash on 9/6.
-  #
-  # pinwheel:
-  #   api_token: <%= ENV['PINWHEEL_API_TOKEN_DEVELOPMENT'] %>
-  #   environment: development
-  # transmission_method: null
-  # transmission_method_configuration: {}
-  # sso:
-  #   client_id:     <%= ENV["AZURE_MA_DTA_CLIENT_ID"] %>
-  #   client_secret: <%= ENV["AZURE_MA_DTA_CLIENT_SECRET"] %>
-  #   tenant_id:     <%= ENV["AZURE_MA_DTA_TENANT_ID"] %>
-  #   scope: "openid"
-  #   name: "ma_dta"
   pinwheel:
-    api_token: <%= ENV['PINWHEEL_API_TOKEN_SANDBOX'] %>
-    environment: sandbox
-  transmission_method: shared_email
-  transmission_method_configuration:
-    email: <%= ENV['SLACK_TEST_EMAIL'] %>
+    api_token: <%= ENV['PINWHEEL_API_TOKEN_DEVELOPMENT'] %>
+    environment: development
+  transmission_method: null
+  transmission_method_configuration: {}
   sso:
-    client_id:     <%= ENV["AZURE_SANDBOX_CLIENT_ID"] %>
-    client_secret: <%= ENV["AZURE_SANDBOX_CLIENT_SECRET"] %>
-    tenant_id:     <%= ENV["AZURE_SANDBOX_TENANT_ID"] %>
+    client_id:     <%= ENV["AZURE_MA_DTA_CLIENT_ID"] %>
+    client_secret: <%= ENV["AZURE_MA_DTA_CLIENT_SECRET"] %>
+    tenant_id:     <%= ENV["AZURE_MA_DTA_TENANT_ID"] %>
     scope: "openid"
     name: "ma_dta"
-  # --------------------------------------------------------------------
   authorized_emails: <%= ENV["MA_DTA_ALLOWED_CASEWORKER_EMAILS"] %>
   pay_income_days: 90
   invitation_valid_days: 14
