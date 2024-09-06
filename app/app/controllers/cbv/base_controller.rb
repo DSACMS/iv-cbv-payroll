@@ -71,7 +71,7 @@ class Cbv::BaseController < ApplicationController
   end
 
   def agency_url
-    "https://www.nyc.gov/site/hra/help/snap-application-frequently-asked-questions.page"
+    site_config[@cbv_flow.site_id].agency_contact_website
   end
 
   def get_comment_by_account_id(account_id)
