@@ -1,5 +1,5 @@
 class Cbv::BaseController < ApplicationController
-  before_action :set_cbv_flow, :ensure_cbv_flow_not_yet_complete
+  before_action :set_cbv_flow, :ensure_cbv_flow_not_yet_complete, :current_site
   helper_method :agency_url, :next_path, :get_comment_by_account_id, :current_site
 
   private
@@ -47,6 +47,10 @@ class Cbv::BaseController < ApplicationController
     return unless @cbv_flow.present? && @cbv_flow.site_id.present?
 
     @current_site ||= site_config[@cbv_flow.site_id]
+    # Set the @current_site instance in the app helper so that it
+    # can be accessed outside the context of the
+    # controller.
+    ApplicationHelper.current_site = @current_site
   end
 
   def next_path
