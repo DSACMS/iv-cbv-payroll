@@ -14,20 +14,13 @@ class PdfService
     end
   end
 
-  def initialize(site)
-    @site = site
-  end
-
   def generate(template:, variables: {})
     html_content = ApplicationController.renderer.render_to_string(
       template: template,
       formats: [ :pdf ],
       layout: "layouts/pdf",
-      # There's some dependency injection going on here. passing in
-      # the higher order method `current_site` of the ApplicationHelper
-      # so that it's available in the views.
-      locals: variables.merge(current_site: @site),
-      assigns: variables.merge(current_site: @site)
+      locals: variables,
+      assigns: variables
     )
 
     begin
