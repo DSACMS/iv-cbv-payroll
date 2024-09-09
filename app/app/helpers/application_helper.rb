@@ -1,6 +1,6 @@
 module ApplicationHelper
-  def current_site?(site)
-    @current_site.id.to_sym == site.to_sym
+  def current_site?(site_id)
+    @current_site.id.to_sym == site_id.to_sym
   end
 
   # Thread safe getter for the
