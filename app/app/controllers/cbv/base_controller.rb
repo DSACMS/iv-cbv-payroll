@@ -47,10 +47,6 @@ class Cbv::BaseController < ApplicationController
     return unless @cbv_flow.present? && @cbv_flow.site_id.present?
 
     @current_site ||= site_config[@cbv_flow.site_id]
-    # Set the @current_site instance in the app helper so that it
-    # can be accessed outside the context of the
-    # controller.
-    ApplicationHelper.current_site = @current_site
   end
 
   def next_path

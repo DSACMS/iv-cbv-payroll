@@ -30,8 +30,6 @@ class ApplicationController < ActionController::Base
 
   def current_site
     @current_site ||= site_config[params[:site_id]]
-    ApplicationHelper.current_site = @current_site
-    @current_site
   end
 
   protected

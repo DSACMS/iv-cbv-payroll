@@ -14,11 +14,6 @@ class PdfService
     end
   end
 
-  def self.generate(current_site = nil, template:, variables: {})
-    resolved_site = current_site || ApplicationHelper.current_site
-    new(resolved_site).generate(template: template, variables: variables)
-  end
-
   def initialize(site)
     @site = site
   end
@@ -31,8 +26,8 @@ class PdfService
       # There's some dependency injection going on here. passing in
       # the higher order method `current_site` of the ApplicationHelper
       # so that it's available in the views.
-      locals: variables.merge(current_site: current_site),
-      assigns: variables.merge(current_site: current_site)
+      locals: variables.merge(current_site: @site),
+      assigns: variables.merge(current_site: @site)
     )
 
     begin
@@ -52,11 +47,5 @@ class PdfService
       Rails.logger.error "Error generating PDF: #{e.message}"
       nil
     end
-  end
-
-  private
-
-  def current_site
-    @site
   end
 end

@@ -3,16 +3,6 @@ module ApplicationHelper
     @current_site.id.to_sym == site_id.to_sym
   end
 
-  # Thread safe getter for the
-  def self.current_site
-    Thread.current[:current_site]
-  end
-
-  def self.current_site=(site)
-    Thread.current[:current_site] = site
-    site
-  end
-
   # Render a translation that is specific to the current site. Define
   # site-specific translations as:
   #

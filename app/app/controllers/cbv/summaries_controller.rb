@@ -98,7 +98,8 @@ class Cbv::SummariesController < Cbv::BaseController
         "#{time_now.strftime('%Y%m%d%H%M%S')}"
 
       # Generate PDF
-      @pdf_output = PdfService.generate(
+      pdf_service = PdfService.new(current_site)
+      @pdf_output = pdf_service.generate(
         template: "cbv/summaries/show",
         variables: {
           is_caseworker: true,

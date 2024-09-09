@@ -220,6 +220,8 @@ RSpec.describe Cbv::SummariesController do
           }.to change { ActionMailer::Base.deliveries.count }.by(1)
             .and change { cbv_flow.reload.transmitted_at }.from(nil)
 
+          # expect(controller).to have_received(:current_site)
+
           email = ActionMailer::Base.deliveries.last
           expect(email.to).to include('test@example.com')
           expect(email.subject).to include("Income Verification Report")
@@ -235,8 +237,16 @@ RSpec.describe Cbv::SummariesController do
           sign_in user
           allow(S3Service).to receive(:new).and_return(s3_service_double)
           allow(s3_service_double).to receive(:upload_file)
-          allow(mock_site).to receive(:id).and_return('ma')
-          allow(mock_site).to receive(:transmission_method).and_return('s3')
+          allow(mock_site).to receive_messages(
+            id: 'ma',
+            transmission_method: 's3',
+            transmission_method_configuration: {
+              "bucket"     => "test-bucket",
+              "public_key" => @public_key
+            }
+          )
+
+          allow(controller).to receive(:current_site).and_return(mock_site)
           allow(NewRelicEventTracker).to receive(:track)
 
           # Stub pinwheel_for method to return our double

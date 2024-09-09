@@ -41,32 +41,16 @@ RSpec.describe PdfService, type: :service do
   end
 
   describe "#generate" do
-    context "when passed a current_site in the initializer" do
-      it 'generates a PDF file' do
-        pdf_service = PdfService.new(current_site)
-        @pdf_results = pdf_service.generate(
-          template: 'cbv/summaries/show',
-          variables: variables
-        )
-        expect(@pdf_results&.content).to include('%PDF-1.4')
-        expect(@pdf_results&.html).to include('Gross pay YTD')
-        expect(@pdf_results&.html).to include('Agreement Consent Timestamp')
-        expect(@pdf_results&.file_size).to be > 0
-      end
-    end
-
-    context "when not passed a current_site, the current_site is derived from the ApplicationHelper" do
-      it 'generates a PDF file' do
-        ApplicationHelper.current_site = current_site
-        @pdf_results = PdfService.generate(
-          template: 'cbv/summaries/show',
-          variables: variables
-        )
-        expect(@pdf_results&.content).to include('%PDF-1.4')
-        expect(@pdf_results&.html).to include('Gross pay YTD')
-        expect(@pdf_results&.html).to include('Agreement Consent Timestamp')
-        expect(@pdf_results&.file_size).to be > 0
-      end
+    it 'generates a PDF file' do
+      pdf_service = PdfService.new(current_site)
+      @pdf_results = pdf_service.generate(
+        template: 'cbv/summaries/show',
+        variables: variables
+      )
+      expect(@pdf_results&.content).to include('%PDF-1.4')
+      expect(@pdf_results&.html).to include('Gross pay YTD')
+      expect(@pdf_results&.html).to include('Agreement Consent Timestamp')
+      expect(@pdf_results&.file_size).to be > 0
     end
   end
 end
