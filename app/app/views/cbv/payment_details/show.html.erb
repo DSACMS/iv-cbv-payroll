@@ -5,7 +5,7 @@
 </h1>
 
 <div class="usa-prose">
-  <p><%= t(".subheader", start_date: @payments_beginning_at, end_date: @payments_ending_at) %></p>
+  <p><%= t(".subheader", start_date: @payments_beginning_at, end_date: @payments_ending_at, agency_acronym: current_site.agency_short_name) %></p>
 </div>
 <h2><%= t(".total_gross_income", amount: format_money(gross_pay)) %></h2>
 <div class="usa-prose">
@@ -55,9 +55,10 @@
 <% end %>
 
 <div class="usa-form-group">
+  <h2><%= t(".additional_information_header") %></h2>
   <%= form_with(model: @cbv_flow, url: cbv_flow_payment_details_path, method: :patch) do |form| %>
     <%= hidden_field_tag "user[account_id]", params[:user][:account_id] %>
-    <%= form.label :additional_information, t(".additional_information_label"), class: "usa-label" %>
+    <%= form.label :additional_information, t(".additional_information_label", agency_acronym: current_site.agency_short_name), class: "usa-label" %>
     <%= form.text_area :additional_information, class: "usa-textarea", rows: 5, value: @account_comment %>
     <%= form.submit t(".continue"), class: "usa-button usa-button--primary margin-top-3" %>
   <% end %>

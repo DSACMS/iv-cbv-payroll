@@ -19,19 +19,19 @@ RSpec.describe Cbv::AgreementsController do
       it "when site is nyc" do
         cbv_flow.update(site_id: "nyc")
         get :show
-        expect(response.body).to include I18n.t("cbv.agreements.show.checkbox.nyc")
+        expect(response.body).to include I18n.t("cbv.agreements.show.checkbox.nyc", agency_full_name: "New York City Human Resources Administration")
       end
 
       it "when site is ma" do
         cbv_flow.update(site_id: "ma")
         get :show
-        expect(response.body).to include I18n.t("cbv.agreements.show.checkbox.ma")
+        expect(response.body).to include I18n.t("cbv.agreements.show.checkbox.default", agency_full_name: "Massachusetts Department of Transitional Assistance")
       end
 
       it "when site is sandbox" do
         cbv_flow.update(site_id: "sandbox")
         get :show
-        expect(response.body).to include I18n.t("cbv.agreements.show.checkbox.sandbox")
+        expect(response.body).to include I18n.t("cbv.agreements.show.checkbox.default", agency_full_name: "CBV Test Agency")
       end
     end
 

@@ -5,7 +5,7 @@
   <% if current_site %>
     <span class="cbv-header__separator">|</span>
   <% end %>
-  <%= site_translation("shared.header.cbv_flow_title") %>
+  <%= site_translation(".pdf.agency_header_name") %>
 </div>
 
 <h1><%= t(".pdf.client.header") %></h1>
@@ -30,7 +30,7 @@
   <%= table.with_header do %>
     <h3 class="margin-0">Client Information</h3>
   <% end %>
-  <% if current_site?(:ma) %>
+  <% if current_site?(:ma) && !is_caseworker %>
     <%= table.with_row(
       label: t(".pdf.client.agency_id_number"),
       value: @cbv_flow.cbv_flow_invitation.agency_id_number

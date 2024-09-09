@@ -103,5 +103,11 @@ locals {
       name           = "AZURE_SANDBOX_TENANT_ID"
       ssm_param_name = "/service/${var.app_name}-${var.environment}/azure-sandbox-tenant-id"
     },
+
+    # Other site-specific Configuration:
+    {
+      name           = "MA_DTA_ALLOWED_CASEWORKER_EMAILS"
+      ssm_param_name = "/service/${var.app_name}-${var.environment}/ma-dta-allowed-caseworker-emails"
+    },
   ]
 }

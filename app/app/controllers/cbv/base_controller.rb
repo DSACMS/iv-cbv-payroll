@@ -61,6 +61,8 @@ class Cbv::BaseController < ApplicationController
       cbv_flow_employer_search_path
     when "cbv/employer_searches"
       cbv_flow_payment_details_path
+    when "cbv/missing_results"
+      cbv_flow_summary_path
     when "cbv/payment_details"
       cbv_flow_add_job_path
     when "cbv/summaries"
@@ -73,7 +75,7 @@ class Cbv::BaseController < ApplicationController
   end
 
   def agency_url
-    "https://www.nyc.gov/site/hra/help/snap-application-frequently-asked-questions.page"
+    current_site&.agency_contact_website
   end
 
   def get_comment_by_account_id(account_id)
