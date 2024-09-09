@@ -270,6 +270,8 @@ RSpec.describe Cbv::SummariesController do
 
           cbv_flow.update(site_id: 'ma')
           cbv_flow_invitation.update(agency_id_number: "1234")
+          cbv_flow_invitation.update(beacon_id: "BEA5678")
+          cbv_flow_invitation.update(client_id_number: "CLI9012")
           patch :update
 
           expect(NewRelicEventTracker).to have_received(:track).with("IncomeSummarySharedWithCaseworker", hash_including(
