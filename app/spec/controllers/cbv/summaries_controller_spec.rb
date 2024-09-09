@@ -205,14 +205,13 @@ RSpec.describe Cbv::SummariesController do
       end
 
       context "when transmission method is shared_email" do
-        let(:nyc_user) { create(:user, email: "test@test.com", site_id: 'nyc') }
-
         before do
           sign_in nyc_user
           allow(mock_site).to receive(:transmission_method).and_return('shared_email')
           allow(mock_site).to receive(:transmission_method_configuration).and_return({
              "email" => 'test@example.com'
           })
+          allow(controller).to receive(:current_site).and_return(mock_site)
         end
 
         it "sends an email to the caseworker and updates transmitted_at" do
@@ -275,7 +274,8 @@ RSpec.describe Cbv::SummariesController do
         end
 
         it "handles errors during file processing and upload" do
-          allow(controller).to receive(:gpg_encrypt_file).and_raise(StandardError, "Encryption failed")
+          cbv_flow.update(site_id: 'ma')
+          allow_any_instance_of(GpgEncryptable).to receive(:gpg_encrypt_file).and_raise(StandardError, "Encryption failed")
 
           expect {
             patch :update

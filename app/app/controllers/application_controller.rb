@@ -31,7 +31,6 @@ class ApplicationController < ActionController::Base
   def current_site(site = nil)
     if site.nil?
       @current_site ||= site_config[params[:site_id]]
-      puts "current_site: #{@current_site}"
       ApplicationHelper.current_site = @current_site
     else
       ApplicationHelper.current_site = site
