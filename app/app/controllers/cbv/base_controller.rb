@@ -1,5 +1,5 @@
 class Cbv::BaseController < ApplicationController
-  before_action :set_cbv_flow, :ensure_cbv_flow_not_yet_complete, :current_site
+  before_action :set_cbv_flow, :ensure_cbv_flow_not_yet_complete
   helper_method :agency_url, :next_path, :get_comment_by_account_id, :current_site
 
   private
