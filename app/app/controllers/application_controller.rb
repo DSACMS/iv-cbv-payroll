@@ -28,14 +28,10 @@ class ApplicationController < ActionController::Base
 
   private
 
-  def current_site(site = nil)
-    if site.nil?
-      @current_site ||= site_config[params[:site_id]]
-      ApplicationHelper.current_site = @current_site
-    else
-      ApplicationHelper.current_site = site
-    end
-    ApplicationHelper.current_site
+  def current_site
+    @current_site ||= site_config[params[:site_id]]
+    ApplicationHelper.current_site = @current_site
+    @current_site
   end
 
   protected
