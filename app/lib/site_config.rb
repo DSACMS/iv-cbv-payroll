@@ -47,8 +47,7 @@ class SiteConfig
       @logo_path = yaml["logo_path"]
       @logo_square_path = yaml["logo_square_path"]
       @pay_income_days = yaml["pay_income_days"]
-      @pinwheel_api_token = yaml["pinwheel"]["api_token"]
-      @pinwheel_environment = yaml["pinwheel"]["environment"]
+      @pinwheel_environment = yaml["pinwheel"]["environment"] || "sandbox"
       @transmission_method = yaml["transmission_method"]
       @transmission_method_configuration = yaml["transmission_method_configuration"]
       @sso = yaml["sso"]

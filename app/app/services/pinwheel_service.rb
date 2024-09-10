@@ -5,13 +5,16 @@ require "faraday"
 class PinwheelService
   ENVIRONMENTS = {
     sandbox: {
-      base_url: "https://sandbox.getpinwheel.com"
+      base_url: "https://sandbox.getpinwheel.com",
+      api_key: ENV["PINWHEEL_API_TOKEN_SANDBOX"]
     },
     development: {
-      base_url: "https://development.getpinwheel.com"
+      base_url: "https://development.getpinwheel.com",
+      api_key: ENV["PINWHEEL_API_TOKEN_DEVELOPMENT"]
     },
     production: {
-      base_url: "https://api.getpinwheel.com"
+      base_url: "https://api.getpinwheel.com",
+      api_key: ENV["PINWHEEL_API_TOKEN_PRODUCTION"]
     }
   }
 
@@ -23,10 +26,8 @@ class PinwheelService
   WEBHOOKS_ENDPOINT = "/v1/webhooks"
   END_USERS = "/v1/end_users"
 
-  def initialize(api_key, environment)
-    raise "PinwheelService api_key is blank" if api_key.blank?
-
-    @api_key = api_key
+  def initialize(environment, api_key = nil)
+    @api_key = api_key || ENVIRONMENTS.fetch(environment.to_sym)[:api_key]
     @environment = ENVIRONMENTS.fetch(environment.to_sym) { |env| raise KeyError.new("PinwheelService unknown environment: #{env}") }
 
     client_options = {

@@ -6,8 +6,7 @@
   logo_path: hra_logo.png
   logo_square_path: hra_logo_square.png
   pinwheel:
-    api_token: <%= ENV['PINWHEEL_API_TOKEN_PRODUCTION'] %>
-    environment: production
+    environment: <%= ENV["NYC_PINWHEEL_ENVIRONMENT"] %>
   transmission_method: shared_email
   transmission_method_configuration:
     email: <%= ENV['NYC_HRA_EMAIL'] %>
@@ -25,8 +24,7 @@
   agency_contact_website: https://www.mass.gov/guides/how-to-contact-dta
   caseworker_feedback_form: https://forms.office.com/r/rfV04qjG9A
   pinwheel:
-    api_token: <%= ENV['PINWHEEL_API_TOKEN_DEVELOPMENT'] %>
-    environment: development
+    environment: <%= ENV["MA_PINWHEEL_ENVIRONMENT"] %>
   transmission_method: null
   transmission_method_configuration: {}
   sso:
@@ -46,8 +44,7 @@
   agency_contact_website: https://www.exampl.com/contact
   caseworker_feedback_form: https://docs.google.com/forms/d/e/1FAIpQLSfrUiz0oWE5jbXjPfl-idQQGPgxKplqFtcKq08UOhTaEa2k6A/viewform
   pinwheel:
-    api_token: <%= ENV['PINWHEEL_API_TOKEN_SANDBOX'] %>
-    environment: sandbox
+    environment: <%= ENV["SANDBOX_PINWHEEL_ENVIRONMENT"] %>
   transmission_method: shared_email
   transmission_method_configuration:
     email: <%= ENV['SLACK_TEST_EMAIL'] %>

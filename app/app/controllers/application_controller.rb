@@ -34,10 +34,9 @@ class ApplicationController < ActionController::Base
   protected
 
   def pinwheel_for(cbv_flow)
-    api_key = site_config[cbv_flow.site_id].pinwheel_api_token
     environment = site_config[cbv_flow.site_id].pinwheel_environment
 
-    PinwheelService.new(api_key, environment)
+    PinwheelService.new(environment)
   end
 
   def add_newrelic_metadata
