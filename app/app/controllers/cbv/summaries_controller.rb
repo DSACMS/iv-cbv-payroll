@@ -162,7 +162,7 @@ class Cbv::SummariesController < Cbv::BaseController
       middle_name: @cbv_flow.cbv_flow_invitation.middle_name,
       client_email_address: @cbv_flow.cbv_flow_invitation.email_address,
       beacon_userid: @cbv_flow.cbv_flow_invitation.beacon_id,
-      app_date: @cbv_flow.cbv_flow_invitation.snap_application_date.strftime("%Y-%m-%d"),
+      app_date: @cbv_flow.cbv_flow_invitation.snap_application_date.strftime("%m/%d/%Y"),
       report_date_created: pinwheel_account.created_at.strftime("%m/%d/%Y"),
       report_date_start: @cbv_flow.cbv_flow_invitation.paystubs_query_begins_at.strftime("%m/%d/%Y"),
       report_date_end: @cbv_flow.cbv_flow_invitation.snap_application_date.strftime("%m/%d/%Y"),

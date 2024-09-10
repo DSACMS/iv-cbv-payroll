@@ -268,12 +268,15 @@ RSpec.describe Cbv::SummariesController do
             expect(File.exist?(file_path)).to be true
           end
 
-          cbv_flow.update(site_id: 'ma')
-          cbv_flow_invitation.update(agency_id_number: "1234")
+          cbv_flow.update(site_id: "ma")
+          cbv_flow_invitation.update(site_id: "ma")
           cbv_flow_invitation.update(beacon_id: "BEA5678")
-          cbv_flow_invitation.update(client_id_number: "CLI9012")
+          cbv_flow_invitation.update(agency_id_number: "AGY1234")
+          cbv_flow_invitation.reload
+
           patch :update
 
+          expect(cbv_flow_invitation.reload.client_id_number).to eq(cbv_flow_invitation.agency_id_number)
           expect(NewRelicEventTracker).to have_received(:track).with("IncomeSummarySharedWithCaseworker", hash_including(
             timestamp:                                 be_a(Integer),
             site_id:                                   cbv_flow.site_id,
