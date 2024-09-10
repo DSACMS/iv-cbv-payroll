@@ -182,6 +182,7 @@ class Cbv::SummariesController < Cbv::BaseController
       timestamp: Time.now.to_i,
       site_id: cbv_flow.site_id,
       cbv_flow_id: cbv_flow.id,
+      invitation_id: cbv_flow.cbv_flow_invitation_id,
       account_count: payments.map { |p| p[:account_id] }.uniq.count,
       paystub_count: payments.count,
       account_count_with_additional_information:

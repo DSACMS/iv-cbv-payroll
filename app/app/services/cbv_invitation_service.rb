@@ -19,6 +19,7 @@ class CbvInvitationService
     NewRelicEventTracker.track("ApplicantInvitedToFlow", {
       timestamp: Time.now.to_i,
       user_id: current_user.id,
+      caseworker_email_address: current_user.email,
       site_id: cbv_flow_invitation.site_id,
       invitation_id: cbv_flow_invitation.id
     })

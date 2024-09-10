@@ -77,6 +77,7 @@ RSpec.describe Caseworker::CbvFlowInvitationsController, type: :controller do
       expect(NewRelicEventTracker).to have_received(:track).with("ApplicantInvitedToFlow", {
         timestamp: be_a(Integer),
         user_id: user.id,
+        caseworker_email_address: user.email,
         site_id: "nyc",
         invitation_id: invitation.id
       })

@@ -202,6 +202,7 @@ RSpec.describe Cbv::SummariesController do
          "secret_access_key" => "SOME_SECRET_ACCESS_KEY",
          "public_key"        => @public_key
          })
+        allow(NewRelicEventTracker).to receive(:track)
       end
 
       context "when transmission method is shared_email" do
@@ -227,6 +228,20 @@ RSpec.describe Cbv::SummariesController do
           expect(email.subject).to include("Income Verification Report")
           expect(email.body.encoded).to include(cbv_flow.case_number)
         end
+
+        it "sends a NewRelic event" do
+          patch :update
+          expect(NewRelicEventTracker).to have_received(:track).with("IncomeSummarySharedWithCaseworker", {
+            timestamp: be_a(Integer),
+            site_id: cbv_flow.site_id,
+            cbv_flow_id: cbv_flow.id,
+            invitation_id: cbv_flow_invitation.id,
+            account_count: 1,
+            paystub_count: 1,
+            account_count_with_additional_information: 0,
+            flow_started_seconds_ago: flow_started_seconds_ago
+          })
+        end
       end
 
       context "when transmission method is s3" do
@@ -247,7 +262,6 @@ RSpec.describe Cbv::SummariesController do
           )
 
           allow(controller).to receive(:current_site).and_return(mock_site)
-          allow(NewRelicEventTracker).to receive(:track)
 
           # Stub pinwheel_for method to return our double
           allow_any_instance_of(ApplicationController).to receive(:pinwheel_for).and_return(pinwheel_service_double)
@@ -283,16 +297,6 @@ RSpec.describe Cbv::SummariesController do
           cbv_flow_invitation.update(agency_id_number: agency_id_number)
 
           patch :update
-
-          expect(NewRelicEventTracker).to have_received(:track).with("IncomeSummarySharedWithCaseworker", hash_including(
-            timestamp:                                 be_a(Integer),
-            site_id:                                   cbv_flow.site_id,
-            cbv_flow_id:                               cbv_flow.id,
-            account_count:                             be_a(Integer),
-            paystub_count:                             be_a(Integer),
-            account_count_with_additional_information: be_a(Integer),
-            flow_started_seconds_ago:                  be_a(Integer)
-          ))
         end
 
         it "handles errors during file processing and upload" do
@@ -305,6 +309,20 @@ RSpec.describe Cbv::SummariesController do
 
           expect(s3_service_double).not_to have_received(:upload_file)
           expect(cbv_flow.reload.transmitted_at).to be_nil
+        end
+
+        it "sends a NewRelic event" do
+          patch :update
+          expect(NewRelicEventTracker).to have_received(:track).with("IncomeSummarySharedWithCaseworker", {
+            timestamp: be_a(Integer),
+            site_id: cbv_flow.site_id,
+            cbv_flow_id: cbv_flow.id,
+            invitation_id: cbv_flow_invitation.id,
+            account_count: 0,
+            paystub_count: 0,
+            account_count_with_additional_information: 0,
+            flow_started_seconds_ago: flow_started_seconds_ago
+          })
         end
       end
     end
