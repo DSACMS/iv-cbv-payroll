@@ -4,7 +4,6 @@ class CbvFlow < ApplicationRecord
   validates :site_id, inclusion: Rails.application.config.sites.site_ids
 
   scope :incomplete, -> { where(confirmation_code: nil) }
-  scope :complete, -> { where.not(confirmation_code: nil) }
 
   include Redactable
   has_redactable_fields(

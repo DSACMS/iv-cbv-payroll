@@ -1,61 +1,61 @@
 require "csv"
 class WeeklyReportMailer < ApplicationMailer
-  helper_method :week_start_date_formatted, :prev_week_start_date_formatted
+  helper :view
 
   # Send email with a CSV file that reports on completed flows in past week
   def report_email
-    email_address = site_config["nyc"].transmission_method_configuration["email"]
-    site_id = "nyc"
-    now = Time.now
-    previous_week_start_date = now.beginning_of_week.prev_week
-    week_start_date = now.beginning_of_week
-    filename = "weekly_report_#{previous_week_start_date.beginning_of_week.strftime("%Y%m%d")}-#{week_start_date.strftime("%Y%m%d")}.csv"
-    # Get flows from start of previous week to today
-    csv_rows = weekly_report_data(site_id, previous_week_start_date, week_start_date)
-    # The column "consented_to_authorized_use_at" should be reported as "completed_at"
-    attachments[filename] = generate_csv(csv_rows)
+    current_site = site_config[params[:site_id]]
+    raise "Invalid `site_id` parameter given: #{params[:site_id].inspect}" unless current_site.present?
+
+    raise "Missing `report_date` param" unless params[:report_date].present?
+    now = params[:report_date]
+
+    raise "Missing `weekly_report.recipient` configuration for site: #{params[:site_id]}" unless current_site.weekly_report["recipient"]
+    @recipient = current_site.weekly_report["recipient"]
+
+    @report_range = now.prev_week.all_week
+    csv_rows = weekly_report_data(current_site, @report_range)
+    attachments[report_filename(@report_range)] = generate_csv(csv_rows)
+
     mail(
-      to: email_address,
-      subject: "Weekly report email",
+      to: @recipient,
+      subject: "CBV Pilot - Weekly Report Email",
     )
   end
 
   private
 
-  def weekly_report_data(site_id, previous_week_start_date, week_start_date)
+  def report_filename(report_range)
+    "weekly_report_#{report_range.begin.strftime("%Y%m%d")}-#{report_range.end.strftime("%Y%m%d")}.csv"
+  end
+
+  def weekly_report_data(current_site, report_range)
     CbvFlowInvitation
-      .where(site_id: site_id)
-      .where(created_at: previous_week_start_date..week_start_date)
+      .where(site_id: current_site.id)
+      .where(created_at: report_range)
+      .includes(:cbv_flows)
       .map do |invitation|
-        cbv_flow = invitation.cbv_flows.complete.first
+        cbv_flow = invitation.cbv_flows.find(&:complete?)
+
         {
-          "client_id_number" => invitation.client_id_number,
-          "transmitted_at" => cbv_flow&.transmitted_at,
-          "case_number" => invitation.case_number,
-          "created_at" => invitation.created_at,
-          "snap_application_date" => invitation.snap_application_date,
-          "completed_at" => cbv_flow&.consented_to_authorized_use_at,
-          "site_id" => invitation.site_id
+          client_id_number: invitation.client_id_number,
+          transmitted_at: cbv_flow&.transmitted_at,
+          case_number: invitation.case_number,
+          invited_at: invitation.created_at,
+          snap_application_date: invitation.snap_application_date,
+          completed_at: cbv_flow&.consented_to_authorized_use_at
         }
       end
   end
 
   def generate_csv(rows)
-    rows.count > 0 &&
+    return unless rows.any?
+
     CSV.generate(headers: rows.first.keys) do |csv|
       csv << rows.first.keys
       rows.each do |row|
         csv << row
       end
     end
-  end
-
-  def week_start_date_formatted
-    Time.now.beginning_of_week.strftime("%A, %B %d, %Y")
-  end
-
-  def prev_week_start_date_formatted
-    previous_week_start = Time.now.beginning_of_week - 7.days
-    previous_week_start.strftime("%A, %B %d, %Y")
   end
 end

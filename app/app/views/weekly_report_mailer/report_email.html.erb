@@ -1,3 +1,5 @@
 <p>
-Attached is a report from <strong><%= prev_week_start_date_formatted %></strong> to <strong><%= week_start_date_formatted %></strong>.
+  Attached is a report from
+  <strong><%= format_date(@report_range.begin) %></strong> to
+  <strong><%= format_date(@report_range.end) %></strong>.
 </p>
