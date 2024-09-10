@@ -5,6 +5,11 @@
   <% if current_site %>
     <span class="cbv-header__separator">|</span>
   <% end %>
+  <% if current_site?(:ma) %>
+    <%= image_tag wicked_pdf_asset_base64("dta_logo.png"), class: "text-middle", style: "width: 140px;" %>
+  <% elsif current_site?(:nyc) %>
+    <%= image_tag wicked_pdf_asset_base64("hra_logo.png"), class: "text-middle", style: "width: 170px;" %>
+  <% end %>
   <%= site_translation(".pdf.agency_header_name") %>
 </div>
 
