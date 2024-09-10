@@ -261,6 +261,8 @@ RSpec.describe Cbv::SummariesController do
         end
 
         it "generates, gzips, encrypts, and uploads PDF and CSV files to S3" do
+          agency_id_number = "AGY1234"
+
           expect(s3_service_double).to receive(:upload_file).once do |file_path, file_name|
             expect(file_path).to end_with('.gpg')
             expect(file_name).to start_with("outfiles/IncomeReport_#{cbv_flow_invitation.agency_id_number}_")
@@ -268,15 +270,20 @@ RSpec.describe Cbv::SummariesController do
             expect(File.exist?(file_path)).to be true
           end
 
+          expect(CSV).to receive(:generate).and_wrap_original do |original_method, *args, &block|
+            csv_content = original_method.call(*args, &block)
+            csv_rows = CSV.parse(csv_content, headers: true)
+            expect(csv_rows[0]["client_id"]).to eq(agency_id_number)
+            csv_content
+          end
+
           cbv_flow.update(site_id: "ma")
           cbv_flow_invitation.update(site_id: "ma")
           cbv_flow_invitation.update(beacon_id: "BEA5678")
-          cbv_flow_invitation.update(agency_id_number: "AGY1234")
-          cbv_flow_invitation.reload
+          cbv_flow_invitation.update(agency_id_number: agency_id_number)
 
           patch :update
 
-          expect(cbv_flow_invitation.reload.client_id_number).to eq(cbv_flow_invitation.agency_id_number)
           expect(NewRelicEventTracker).to have_received(:track).with("IncomeSummarySharedWithCaseworker", hash_including(
             timestamp:                                 be_a(Integer),
             site_id:                                   cbv_flow.site_id,

@@ -156,7 +156,7 @@ class Cbv::SummariesController < Cbv::BaseController
     pinwheel_account = PinwheelAccount.find_by(cbv_flow_id: @cbv_flow.id)
 
     data = {
-      client_id: @cbv_flow.cbv_flow_invitation.client_id_number,
+      client_id: @cbv_flow.cbv_flow_invitation.agency_id_number,
       first_name: @cbv_flow.cbv_flow_invitation.first_name,
       last_name: @cbv_flow.cbv_flow_invitation.last_name,
       middle_name: @cbv_flow.cbv_flow_invitation.middle_name,
