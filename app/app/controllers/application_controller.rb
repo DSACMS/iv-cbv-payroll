@@ -1,5 +1,4 @@
 class ApplicationController < ActionController::Base
-  include ApplicationHelper
   helper :view
   helper_method :current_site
   around_action :switch_locale
