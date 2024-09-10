@@ -34,6 +34,7 @@ class SiteConfig
       sso
       transmission_method
       transmission_method_configuration
+      weekly_report
     ])
 
     def initialize(yaml)
@@ -51,6 +52,7 @@ class SiteConfig
       @transmission_method = yaml["transmission_method"]
       @transmission_method_configuration = yaml["transmission_method_configuration"]
       @sso = yaml["sso"]
+      @weekly_report = yaml["weekly_report"]
 
       raise ArgumentError.new("Site missing id") if @id.blank?
       raise ArgumentError.new("Site #{@id} missing required attribute `agency_name`") if @agency_name.blank?
