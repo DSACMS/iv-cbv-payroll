@@ -5,7 +5,7 @@ class ApplicationController < ActionController::Base
   before_action :add_newrelic_metadata
 
   rescue_from ActionController::InvalidAuthenticityToken do
-    redirect_to root_url, notice: t("cbv.error_missing_token_html")
+    redirect_to root_url, flash: { slim_alert: { type: "info", message_html:  t("cbv.error_missing_token_html") } }
   end
 
   def after_sign_in_path_for(user)
