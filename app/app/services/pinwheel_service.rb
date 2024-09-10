@@ -89,7 +89,7 @@ class PinwheelService
 
   def create_link_token(end_user_id:, response_type:, id:)
     params = {
-      org_name: "Verify.gov",
+      org_name: "search",
       required_jobs: [ "paystubs" ],
       end_user_id: end_user_id,
       skip_intro_screen: true
