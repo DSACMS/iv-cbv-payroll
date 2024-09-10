@@ -55,7 +55,7 @@ class Webhooks::Pinwheel::EventsController < ApplicationController
   end
 
   def set_pinwheel
-    @pinwheel = @cbv_flow.present? ? pinwheel_for(@cbv_flow) : PinwheelService.new(DUMMY_API_KEY, "sandbox")
+    @pinwheel = @cbv_flow.present? ? pinwheel_for(@cbv_flow) : PinwheelService.new("sandbox", DUMMY_API_KEY)
   end
 
   def get_supported_jobs(platform_id)

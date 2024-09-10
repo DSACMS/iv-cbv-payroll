@@ -65,6 +65,18 @@ locals {
       name           = "PINWHEEL_API_TOKEN_SANDBOX"
       ssm_param_name = "/service/${var.app_name}-${var.environment}/pinwheel-api-token-sandbox"
     },
+    {
+      name           = "NYC_PINWHEEL_ENVIRONMENT"
+      ssm_param_name = "/service/${var.app_name}-${var.environment}/nyc-pinwheel-environment"
+    },
+    {
+      name           = "MA_PINWHEEL_ENVIRONMENT"
+      ssm_param_name = "/service/${var.app_name}-${var.environment}/ma-pinwheel-environment"
+    },
+    {
+      name           = "SANDBOX_PINWHEEL_ENVIRONMENT"
+      ssm_param_name = "/service/${var.app_name}-${var.environment}/sandbox-pinwheel-environment"
+    },
 
     # SSO Configuration:
     {
