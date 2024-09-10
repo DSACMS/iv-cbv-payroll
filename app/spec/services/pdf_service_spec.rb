@@ -42,7 +42,7 @@ RSpec.describe PdfService, type: :service do
 
   describe "#generate" do
     it 'generates a PDF file' do
-      pdf_service = PdfService.new(current_site)
+      pdf_service = PdfService.new
       @pdf_results = pdf_service.generate(
         template: 'cbv/summaries/show',
         variables: variables
