@@ -1,4 +1,4 @@
-<div>
+<strong>
   <span class="cbv-header__pilot-name">
     <%= t("shared.pilot_name") %>
   </span>
@@ -6,12 +6,12 @@
     <span class="cbv-header__separator">|</span>
   <% end %>
   <% if current_site?(:ma) %>
-    <%= image_tag wicked_pdf_asset_base64(current_site.logo_square_path), class: "text-middle", style: "width: 140px;" %>
+    <%= image_tag wicked_pdf_asset_base64(current_site.logo_square_path), class: "text-middle cbv-header__agency-logo cbv-header__agency-logo--#{current_site.id}" %>
   <% elsif current_site?(:nyc) %>
-    <%= image_tag wicked_pdf_asset_base64(current_site.logo_square_path), class: "text-middle", style: "width: 170px;" %>
+    <%= image_tag wicked_pdf_asset_base64(current_site.logo_square_path), class: "text-middle cbv-header__agency-logo cbv-header__agency-logo--#{current_site.id}" %>
   <% end %>
   <%= site_translation(".pdf.agency_header_name") %>
-</div>
+</strong>
 
 <h1><%= t(".pdf.client.header") %></h1>
 

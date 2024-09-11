@@ -37,7 +37,7 @@
   pay_income_days: 90
   invitation_valid_days: 14
   logo_path: dta_logo.png
-  logo_square_path: dta_logo_square.avif
+  logo_square_path: dta_logo_square.png
 - id: sandbox
   agency_name: CBV Test Agency
   agency_short_name: CBV
