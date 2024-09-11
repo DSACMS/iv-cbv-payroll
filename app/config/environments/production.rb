@@ -35,7 +35,9 @@ Rails.application.configure do
   config.assets.compile = false
 
   # Enable serving of images, stylesheets, and JavaScripts from an asset server.
-  config.asset_host = "https://#{ENV["DOMAIN_NAME"]}"
+  if ENV["DOMAIN_NAME"]
+    config.asset_host = "https://#{ENV["DOMAIN_NAME"]}"
+  end
 
   routes.default_url_options[:host] = ENV["DOMAIN_NAME"]
   config.hosts << ENV["DOMAIN_NAME"]
