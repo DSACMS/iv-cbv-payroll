@@ -22,6 +22,7 @@ Rails.application.configure do
   config.server_timing = true
 
   config.hosts << ".ngrok-free.app"
+  config.hosts << ".ngrok.app"
 
   routes.default_url_options[:host] = ENV.fetch("DOMAIN_NAME", "localhost")
   routes.default_url_options[:port] = ENV.fetch("PORT", 3000)
