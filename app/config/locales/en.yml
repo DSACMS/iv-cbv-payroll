@@ -37,6 +37,9 @@ en:
           last_name: Client's last name
           middle_name: Client's middle name
           snap_application_date: SNAP application date
+          agency_id_number_hint: "Must be 7 digits"
+          beacon_id_hint: "Must be 6 alphanumeric characters"
+          snap_application_date_hint: "Cannot be in the future"
       new:
         description_html: "<p>Provide some details about the client so we can send them a link to verify their pay information. We'll request the past %{pay_income_days} days of income, based on the client's application date.</p><p>If multiple members of the household earn income, send an invite link to each household member.</p>"
         form:
@@ -51,6 +54,9 @@ en:
           last_name: Client's last name
           middle_name: Client's middle name
           snap_application_date: SNAP application date
+          client_id_number_hint: "Format: AA12345A"
+          case_number_hint: "11 digits followed by 1 letter"
+          snap_application_date_hint: "Must be within the last 30 days"
     dashboards:
       show:
         create_invitation: Create a new invitation
@@ -373,3 +379,23 @@ en:
   users:
     omniauth_callbacks:
       authentication_successful: You are signed in.
+  activerecord:
+      errors:
+        models:
+          cbv_flow_invitation:
+            attributes:
+              email_address:
+                is_required: "can't be blank"
+                invalid_format: "is not a valid email address"
+              snap_application_date:
+                future_date: "can't be in the future"
+                invalid_date: "is not a valid date"
+                too_old: "must be within the last 30 days"
+              case_number:
+                invalid_format: "must be 11 digits followed by a letter"
+              client_id_number:
+                invalid_format: "must be 2 letters, followed by 5 digits, followed by a letter"
+              agency_id_number:
+                invalid_format: "must be 7 digits"
+              welid:
+                invalid_format: "must be 6 alphanumeric characters"
