@@ -6,7 +6,6 @@ class CbvFlowInvitation < ApplicationRecord
 
   before_validation :parse_snap_application_date
   before_validation :format_case_number, if: :nyc_site?
-  before_validation :set_welid, if: :ma_site?
 
   validates :site_id, inclusion: Rails.application.config.sites.site_ids
   validates :email_address, presence: true, format: { with: URI::MailTo::EMAIL_REGEXP, message: :invalid_format }
@@ -15,8 +14,7 @@ class CbvFlowInvitation < ApplicationRecord
 
   # MA specific validations
   validates :agency_id_number, presence: true, format: { with: /\A\d{7}\z/, message: :invalid_format }, if: :ma_site?
-  validates :beacon_id, presence: true, if: :ma_site?
-  validates :welid, presence: true, length: { is: 6 }, format: { with: /\A[a-zA-Z0-9]{6}\z/, message: :invalid_format }, if: :ma_site?
+  validates :beacon_id, presence: true, length: { is: 6 }, format: { with: /\A[a-zA-Z0-9]{6}\z/, message: :invalid_format }, if: :ma_site?
 
   # NYC specific validations
   validates :case_number, presence: true, format: { with: /\A\d{11}[A-Z]\z/, message: :invalid_format }, if: :nyc_site?
@@ -105,11 +103,7 @@ class CbvFlowInvitation < ApplicationRecord
 
   def format_case_number
     if case_number.present? && case_number.length == 12
-      self.case_number = case_number.rjust(12, '0')
+      self.case_number = case_number.rjust(12, "0")
     end
-  end
-
-  def set_welid
-    self.welid = beacon_id if beacon_id.present?
   end
 end

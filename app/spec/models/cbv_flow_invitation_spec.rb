@@ -1,7 +1,7 @@
 require 'rails_helper'
 
 RSpec.describe CbvFlowInvitation, type: :model do
-  let(:valid_attributes) { 
+  let(:valid_attributes) {
     {
       site_id: 'nyc',
       email_address: 'test@example.com',
@@ -124,11 +124,11 @@ RSpec.describe CbvFlowInvitation, type: :model do
         )
       end
 
-      it "requires welid" do
-        invitation = CbvFlowInvitation.new(ma_attributes)
+      it "requires beacon_id to have 6 alphanumeric characters" do
+        invitation = CbvFlowInvitation.new(ma_attributes.merge(beacon_id: '12345'))
         invitation.valid?
-        expect(invitation.errors[:welid]).to include(
-          I18n.t('activerecord.errors.models.cbv_flow_invitation.attributes.welid.is_required')
+        expect(invitation.errors[:beacon_id]).to include(
+          I18n.t('activerecord.errors.models.cbv_flow_invitation.attributes.beacon_id.invalid_format')
         )
       end
 
@@ -139,19 +139,11 @@ RSpec.describe CbvFlowInvitation, type: :model do
           I18n.t('activerecord.errors.models.cbv_flow_invitation.attributes.agency_id_number.invalid_format')
         )
       end
-
-      it "validates welid format and length" do
-        invitation = CbvFlowInvitation.new(ma_attributes.merge(welid: 'invalid'))
-        invitation.valid?
-          expect(invitation.errors[:welid]).to include(
-          I18n.t('activerecord.errors.models.cbv_flow_invitation.attributes.welid.invalid_format')
-        )
-      end
     end
 
     context "when site_id is not 'nyc'" do
       it "does not require client_id_number" do
-        invitation = CbvFlowInvitation.new(valid_attributes.merge(client_id_number: nil))
+        invitation = CbvFlowInvitation.new(valid_attributes.merge(client_id_number: nil, site_id: "ma"))
         invitation.valid?
         expect(invitation.errors[:client_id_number]).to be_empty
       end
