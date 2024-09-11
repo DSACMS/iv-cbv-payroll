@@ -6,6 +6,10 @@ class Caseworker::CbvFlowInvitationsController < Caseworker::BaseController
   def new
     @site_id = site_id
     @cbv_flow_invitation = CbvFlowInvitation.new
+
+    if @site_id == "ma"
+      @cbv_flow_invitation.snap_application_date ||= Date.today
+    end
   end
 
   def create
