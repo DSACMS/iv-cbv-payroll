@@ -55,15 +55,12 @@ en:
       ma:
         invite:
           agency_id_number: Client's agency ID number
-          agency_id_number_hint: Must be 7 digits
           beacon_id: Your BEACON ID
-          beacon_id_hint: Must be 6 alphanumeric characters
           email_address: Client's email address
           first_name: Client's first name
           last_name: Client's last name
           middle_name: Client's middle name
           snap_application_date: SNAP application date
-          snap_application_date_hint: Cannot be in the future
       new:
         description_html: "<p>Provide some details about the client so we can send them a link to verify their pay information. We'll request the past %{pay_income_days} days of income, based on the client's application date.</p><p>If multiple members of the household earn income, send an invite link to each household member.</p>"
         form:
@@ -72,15 +69,12 @@ en:
       nyc:
         invite:
           case_number: Case number
-          case_number_hint: 11 digits followed by 1 letter
           client_id_number: CIN
-          client_id_number_hint: 'Format: AA12345A'
           email_address: Client's email address
           first_name: Client's first name
           last_name: Client's last name
           middle_name: Client's middle name
           snap_application_date: SNAP application date
-          snap_application_date_hint: Must be within the last 30 days
     dashboards:
       show:
         create_invitation: Create a new invitation
