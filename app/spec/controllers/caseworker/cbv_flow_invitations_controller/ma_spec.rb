@@ -39,7 +39,7 @@ RSpec.describe Caseworker::CbvFlowInvitationsController, type: :controller do
     end
 
     let(:cbv_flow_invitation_params) do
-      attributes_for(:cbv_flow_invitation, site_id: "ma", beacon_id: "ABC123", agency_id_number: "789012")
+      attributes_for(:cbv_flow_invitation, site_id: "ma", beacon_id: "ABC123", agency_id_number: "7890120")
     end
 
     it "creates a CbvFlowInvitation record with the ma fields" do
@@ -52,7 +52,7 @@ RSpec.describe Caseworker::CbvFlowInvitationsController, type: :controller do
       expect(invitation.first_name).to eq("Jane")
       expect(invitation.middle_name).to eq("Sue")
       expect(invitation.last_name).to eq("Doe")
-      expect(invitation.agency_id_number).to eq("789012")
+      expect(invitation.agency_id_number).to eq("7890120")
       expect(invitation.email_address).to eq("test@example.com")
       expect(invitation.snap_application_date).to eq(Date.today)
       expect(invitation.beacon_id).to eq("ABC123")

@@ -1,4 +1,18 @@
 class CbvFlowInvitation < ApplicationRecord
+  EMAIL_REGEX = URI::MailTo::EMAIL_REGEXP
+
+  # Massachusetts: 7 digits
+  MA_AGENCY_ID_REGEX = /\A\d{7}\z/
+
+  # Massachusetts: 6 alphanumeric characters
+  MA_BEACON_ID_REGEX = /\A[a-zA-Z0-9]{6}\z/
+
+  # New York City: 11 digits followed by 1 uppercase letter
+  NYC_CASE_NUMBER_REGEX = /\A\d{11}[A-Z]\z/
+
+  # New York City: 2 uppercase letters, followed by 5 digits, followed by 1 uppercase letter
+  NYC_CLIENT_ID_REGEX = /\A[A-Z]{2}\d{5}[A-Z]\z/
+
   belongs_to :user
   has_many :cbv_flows
 
@@ -8,17 +22,17 @@ class CbvFlowInvitation < ApplicationRecord
   before_validation :format_case_number, if: :nyc_site?
 
   validates :site_id, inclusion: Rails.application.config.sites.site_ids
-  validates :email_address, presence: true, format: { with: URI::MailTo::EMAIL_REGEXP, message: :invalid_format }
+  validates :email_address, presence: true, format: { with: EMAIL_REGEX, message: :invalid_format }
   validates :snap_application_date, presence: true
   validate :snap_application_date_not_in_future
 
   # MA specific validations
-  validates :agency_id_number, presence: true, format: { with: /\A\d{7}\z/, message: :invalid_format }, if: :ma_site?
-  validates :beacon_id, presence: true, length: { is: 6 }, format: { with: /\A[a-zA-Z0-9]{6}\z/, message: :invalid_format }, if: :ma_site?
+  validates :agency_id_number, presence: true, format: { with: MA_AGENCY_ID_REGEX, message: :invalid_format }, if: :ma_site?
+  validates :beacon_id, presence: true, length: { is: 6 }, format: { with: MA_BEACON_ID_REGEX, message: :invalid_format }, if: :ma_site?
 
   # NYC specific validations
-  validates :case_number, presence: true, format: { with: /\A\d{11}[A-Z]\z/, message: :invalid_format }, if: :nyc_site?
-  validates :client_id_number, format: { with: /\A[A-Z]{2}\d{5}[A-Z]\z/, message: :invalid_format }, if: :nyc_site?
+  validates :case_number, presence: true, format: { with: NYC_CASE_NUMBER_REGEX, message: :invalid_format }, if: :nyc_site?
+  validates :client_id_number, format: { with: NYC_CLIENT_ID_REGEX, message: :invalid_format }, if: :nyc_site?
   validate :nyc_snap_application_date_range, if: :nyc_site?
 
   include Redactable
