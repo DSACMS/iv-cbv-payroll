@@ -15,7 +15,7 @@ RSpec.describe ApplicantMailer, type: :mailer do
   let(:email) { 'me@email.com' }
   let(:cbv_flow_invitation) { create(:cbv_flow_invitation, email_address: email) }
   let(:mail) { ApplicantMailer.with(cbv_flow_invitation: cbv_flow_invitation).invitation_email }
-
+  let(:valid_agency_id_number) { "1234567" }
   it "renders the subject" do
     expect(mail.subject).to eq(I18n.t('applicant_mailer.invitation_email.subject.default'))
   end
@@ -46,7 +46,15 @@ RSpec.describe ApplicantMailer, type: :mailer do
   end
 
   context "for a MA CbvFlowInvitation" do
-    let(:cbv_flow_invitation) { create(:cbv_flow_invitation, :ma, email_address: email) }
+    let(:cbv_flow_invitation) do
+      begin
+        create(:cbv_flow_invitation, :ma, email_address: email)
+      rescue => e
+        puts "Exception caught in cbv_flow_invitation creation: #{e.class} - #{e.message}"
+        puts e.backtrace.join("\n")
+        raise e
+      end
+    end
 
     it "renders the subject" do
       expect(mail.subject).to eq(I18n.t('applicant_mailer.invitation_email.subject.ma'))
