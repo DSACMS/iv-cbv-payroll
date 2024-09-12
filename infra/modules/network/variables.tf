@@ -32,12 +32,6 @@ variable "single_nat_gateway" {
   default     = false
 }
 
-variable "enable_command_execution" {
-  type        = bool
-  description = "Whether the application(s) in this network need ECS Exec access. Determines whether to create VPC endpoints needed by ECS Exec."
-  default     = false
-}
-
 variable "name" {
   type        = string
   description = "Name to give the VPC. Will be added to the VPC under the 'network_name' tag."
