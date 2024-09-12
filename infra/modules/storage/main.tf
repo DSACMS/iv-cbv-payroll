@@ -1,6 +1,8 @@
 resource "aws_s3_bucket" "storage" {
-  bucket        = var.name
-  force_destroy = false
+  bucket = var.name
+
+  # Use a separate line to support automated terraform destroy commands
+  force_destroy = var.is_temporary
 
   # checkov:skip=CKV_AWS_18:TODO(https://github.com/navapbc/template-infra/issues/507) Implement access logging
 
