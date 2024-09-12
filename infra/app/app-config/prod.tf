@@ -4,6 +4,7 @@ module "prod_config" {
   app_name                        = local.app_name
   default_region                  = module.project_config.default_region
   environment                     = "prod"
+  account_name                    = "prod"
   network_name                    = "prod"
   domain_name                     = "snap-income-pilot.com"
   enable_https                    = true
