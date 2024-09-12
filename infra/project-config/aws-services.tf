@@ -31,6 +31,7 @@ locals {
     "sns",
     "ses",
     "ssm",
+    "states",
     "waf-regional",
     "wafv2",
   ]
