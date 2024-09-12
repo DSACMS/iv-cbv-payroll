@@ -39,8 +39,6 @@ resource "aws_lambda_function" "role_manager" {
       DB_SCHEMA               = var.schema_name
       APP_USER                = var.app_username
       APP_PASSWORD_PARAM_NAME = var.create_app_password ? module.app_user_password[0].ssm_name : null
-      GRANT_APP_USER_IAM      = var.grant_app_user_iam ? "true" : "false"
-      ALLOW_APP_MANAGE_SCHEMA = var.allow_app_manage_schema
       MIGRATOR_USER           = var.migrator_username
       PYTHONPATH              = "vendor"
     }
