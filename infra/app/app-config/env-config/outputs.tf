@@ -2,6 +2,12 @@ output "database_config" {
   value = local.database_config
 }
 
+output "incident_management_service_integration" {
+  value = var.has_incident_management_service ? {
+    integration_url_param_name = "/monitoring/${var.app_name}/${var.environment}/incident-management-integration-url"
+  } : null
+}
+
 output "network_name" {
   value = var.network_name
 }
@@ -37,10 +43,4 @@ output "storage_config" {
     bucket_name                      = local.bucket_name
     massachusetts_moveit_bucket_name = local.massachusetts_moveit_bucket_name
   }
-}
-
-output "incident_management_service_integration" {
-  value = var.has_incident_management_service ? {
-    integration_url_param_name = "/monitoring/${var.app_name}/${var.environment}/incident-management-integration-url"
-  } : null
 }
