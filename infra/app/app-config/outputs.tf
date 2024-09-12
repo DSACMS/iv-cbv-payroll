@@ -30,6 +30,10 @@ output "has_incident_management_service" {
   value = local.has_incident_management_service
 }
 
+output "enable_identity_provider" {
+  value = local.enable_identity_provider
+}
+
 output "shared_network_name" {
   value = local.shared_network_name
 }

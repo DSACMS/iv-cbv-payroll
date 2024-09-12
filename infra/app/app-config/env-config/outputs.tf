@@ -38,6 +38,14 @@ output "service_config" {
   }
 }
 
+output "identity_provider_config" {
+  value = local.identity_provider_config
+}
+
+output "notifications_config" {
+  value = local.notifications_config
+}
+
 output "storage_config" {
   value = {
     bucket_name                      = local.bucket_name
