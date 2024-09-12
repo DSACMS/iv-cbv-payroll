@@ -1,7 +1,3 @@
-data "external" "account_ids_by_name" {
-  program = ["${path.module}/../../../bin/account-ids-by-name"]
-}
-
 locals {
   # app_name is the name of the application, which by convention should match the name of
   # the folder under /infra that corresponds to the application
@@ -43,12 +39,6 @@ locals {
     dev = module.dev_config
     # staging = module.staging_config
     prod = module.prod_config
-  }
-
-  build_repository_config = {
-    name       = "${local.project_name}-${local.app_name}"
-    region     = module.project_config.default_region
-    account_id = data.external.account_ids_by_name.result["nava-ffs-prod"]
   }
 
   # The name of the network that contains the resources shared across all
