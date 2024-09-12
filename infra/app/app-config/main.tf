@@ -39,12 +39,12 @@ locals {
     account_id = data.external.account_ids_by_name.result["nava-ffs-prod"]
   }
 
-  # The name of the AWS account that contains the resources shared across all
+  # The name of the network that contains the resources shared across all
   # application environments, such as the build repository.
-  # The list of configured AWS accounts can be found in /infra/account
+  # The list of networks can be found in /infra/networks
   # by looking for the backend config files of the form:
-  #   <ACCOUNT_NAME>.<ACCOUNT_ID>.s3.tfbackend
-  shared_account_name = "nava-ffs-prod"
+  #   <NETWORK_NAME>.s3.tfbackend
+  shared_network_name = "prod"
 }
 
 module "project_config" {

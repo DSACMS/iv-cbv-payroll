@@ -4,7 +4,6 @@ module "dev_config" {
   app_name                        = local.app_name
   default_region                  = module.project_config.default_region
   environment                     = "dev"
-  account_name                    = "dev"
   network_name                    = "dev"
   domain_name                     = "verify-demo.navapbc.cloud"
   enable_https                    = true
