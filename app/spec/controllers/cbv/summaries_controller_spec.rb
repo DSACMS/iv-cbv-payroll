@@ -275,7 +275,8 @@ RSpec.describe Cbv::SummariesController do
         end
 
         it "generates, gzips, encrypts, and uploads PDF and CSV files to S3" do
-          agency_id_number = CbvFlowInvitation.generate_ma_agency_id
+          agency_id_number = cbv_flow_invitation.provider.generate_ma_agency_id
+          beacon_id = cbv_flow_invitation.provider.generate_ma_beacon_id
 
           expect(s3_service_double).to receive(:upload_file).once do |file_path, file_name|
             expect(file_path).to end_with('.gpg')
@@ -293,7 +294,7 @@ RSpec.describe Cbv::SummariesController do
 
           cbv_flow.update(site_id: "ma")
           cbv_flow_invitation.update(site_id: "ma")
-          cbv_flow_invitation.update(beacon_id: "BEA5678")
+          cbv_flow_invitation.update(beacon_id: beacon_id)
           cbv_flow_invitation.update(agency_id_number: agency_id_number)
 
           patch :update

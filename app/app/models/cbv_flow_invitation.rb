@@ -28,11 +28,11 @@ class CbvFlowInvitation < ApplicationRecord
 
   # MA specific validations
   validates :agency_id_number, presence: true, format: { with: MA_AGENCY_ID_REGEX, message: :invalid_format }, if: :ma_site?
-  validates :beacon_id, presence: true, length: { is: 6 }, format: { with: MA_BEACON_ID_REGEX, message: :invalid_format }, if: :ma_site?
+  validates :beacon_id, presence: true, format: { with: MA_BEACON_ID_REGEX, message: :invalid_format }, if: :ma_site?
 
   # NYC specific validations
   validates :case_number, presence: true, format: { with: NYC_CASE_NUMBER_REGEX, message: :invalid_format }, if: :nyc_site?
-  validates :client_id_number, format: { with: NYC_CLIENT_ID_REGEX, message: :invalid_format }, if: :nyc_site?
+  validates :client_id_number, format: { with: NYC_CLIENT_ID_REGEX, message: :invalid_format }, if: -> { nyc_site? && client_id_number.present? }
   validate :nyc_snap_application_date_range, if: :nyc_site?
 
   include Redactable

@@ -10,6 +10,14 @@ FactoryBot.define do
     snap_application_date { Date.today.strftime("%m/%d/%Y") }
     user
 
+    trait :with_provider do
+      after(:build) do |invitation|
+        invitation.define_singleton_method(:provider) do
+          CbvFlowInvitationProvider
+        end
+      end
+    end
+
     trait :nyc do
       site_id { "nyc" }
       case_number { CbvFlowInvitationProvider.generate_nyc_case_number }

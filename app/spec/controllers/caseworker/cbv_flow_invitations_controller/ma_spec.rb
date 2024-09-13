@@ -33,11 +33,6 @@ RSpec.describe Caseworker::CbvFlowInvitationsController, type: :controller do
   end
 
   describe "#create" do
-    let(:error_message) do
-      "Error sending invitation to test@example.com: " \
-        "Validation failed: Agency id number can't be blank, Beacon can't be blank."
-    end
-
     let(:cbv_flow_invitation_params) do
       attributes_for(:cbv_flow_invitation, site_id: "ma", beacon_id: "ABC123", agency_id_number: "7890120")
     end
@@ -63,6 +58,19 @@ RSpec.describe Caseworker::CbvFlowInvitationsController, type: :controller do
         site_id: "ma",
         cbv_flow_invitation: cbv_flow_invitation_params.except(:beacon_id, :agency_id_number)
       }
+      expected_errors = {
+        "Agency id number" => [
+          I18n.t('activerecord.errors.models.cbv_flow_invitation.attributes.agency_id_number.is_required'),
+          I18n.t('activerecord.errors.models.cbv_flow_invitation.attributes.agency_id_number.invalid_format')
+        ],
+        "Beacon" => [
+          I18n.t('activerecord.errors.models.cbv_flow_invitation.attributes.beacon_id.is_required'),
+          I18n.t('activerecord.errors.models.cbv_flow_invitation.attributes.beacon_id.invalid_format')
+        ]
+      }
+
+      error_message = "Error sending invitation to test@example.com: Validation failed: " \
+        "#{expected_errors.map { |key, messages| messages.map { |msg| "#{key} #{msg}" }.join(', ') }.join(', ')}."
       expect(flash[:alert]).to eq(error_message)
     end
 
