@@ -60,7 +60,7 @@ en:
           first_name: Client's first name
           last_name: Client's last name
           middle_name: Client's middle name
-          snap_application_date: SNAP application date
+          todays_date: Today's date
       new:
         description_html: "<p>Provide some details about the client so we can send them a link to verify their pay information. We'll request the past %{pay_income_days} days of income, based on the client's application date.</p><p>If multiple members of the household earn income, send an invite link to each household member.</p>"
         form:
@@ -294,7 +294,7 @@ en:
         additional_comments: Additional comments
         additional_information_title: Is there anything else you'd like your caseworker to know about your income?
         application_or_recertification_date:
-          ma: Recertification interview date
+          ma: Date client was contacted
           nyc: Application or recertification date
           sandbox: Application or recertification date
         consent_to_authorize_use_html:

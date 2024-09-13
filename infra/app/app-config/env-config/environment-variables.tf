@@ -121,5 +121,13 @@ locals {
       name           = "MA_DTA_ALLOWED_CASEWORKER_EMAILS"
       ssm_param_name = "/service/${var.app_name}-${var.environment}/ma-dta-allowed-caseworker-emails"
     },
+    {
+      name           = "MA_DTA_S3_BUCKET"
+      ssm_param_name = "/service/${var.app_name}-${var.environment}/ma-dta-s3-bucket"
+    },
+    {
+      name           = "MA_DTA_S3_PUBLIC_KEY"
+      ssm_param_name = "/service/${var.app_name}-${var.environment}/ma-dta-s3-public-key"
+    }
   ]
 }

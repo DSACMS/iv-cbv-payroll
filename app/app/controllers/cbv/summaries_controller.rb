@@ -1,5 +1,13 @@
+require "csv"
+require "tempfile"
+require "zlib"
+
 class Cbv::SummariesController < Cbv::BaseController
   include Cbv::ReportsHelper
+  include GpgEncryptable
+  include TarFileCreatable
+  include CsvHelper
+
   helper "cbv/reports"
 
   helper_method :has_consent
@@ -71,9 +79,102 @@ class Cbv::SummariesController < Cbv::BaseController
         identities: @identities
       ).summary_email.deliver_now
       @cbv_flow.touch(:transmitted_at)
-    end
+      track_transmitted_event(@cbv_flow, @payments)
+    when "s3"
+      config = current_site.transmission_method_configuration
+      public_key = config["public_key"]
 
-    track_transmitted_event(@cbv_flow, @payments)
+      if public_key.blank?
+        Rails.logger.error("Public key is missing from transmission_method_configuration")
+        raise "Public key is required for S3 transmission"
+      end
+
+      time_now = Time.now
+      beginning_date = (Date.parse(@payments_beginning_at).strftime("%b") rescue @payments_beginning_at)
+      ending_date = (Date.parse(@payments_ending_at).strftime("%b%Y") rescue @payments_ending_at)
+      @file_name = "IncomeReport_#{@cbv_flow.cbv_flow_invitation.agency_id_number}_" \
+        "#{beginning_date}-#{ending_date}_" \
+        "Conf#{@cbv_flow.confirmation_code}_" \
+        "#{time_now.strftime('%Y%m%d%H%M%S')}"
+
+      # Generate PDF
+      pdf_service = PdfService.new
+      @pdf_output = pdf_service.generate(
+        template: "cbv/summaries/show",
+        variables: {
+          is_caseworker: true,
+          cbv_flow: @cbv_flow,
+          payments: @payments,
+          employments: @employments,
+          incomes: @incomes,
+          identities: @identities,
+          payments_grouped_by_employer: summarize_by_employer(@payments, @employments, @incomes, @identities),
+          has_consent: has_consent
+        }
+      )
+
+      # Generate CSV in-memory
+      csv_content = generate_csv
+
+      # Create tar file
+      file_data = [
+        { name: "#{@file_name}.pdf", content: @pdf_output&.content },
+        { name: "#{@file_name}.csv", content: csv_content.string }
+      ]
+      tar_tempfile = create_tar_file(file_data)
+
+      begin
+        # Gzip the tar file
+        gzipped_tempfile = gzip_file(tar_tempfile)
+
+        # Encrypt the gzipped tar file
+        tmp_encrypted_tar = gpg_encrypt_file(gzipped_tempfile.path, public_key)
+
+        if tmp_encrypted_tar.nil?
+          Rails.logger.error "Failed to encrypt file: encrypted_tempfile is nil"
+          raise "Encryption failed"
+        end
+
+        # Upload the encrypted gzipped tar file to S3
+        s3_service = S3Service.new(config.except("public_key"))
+        s3_service.upload_file(tmp_encrypted_tar.path, "outfiles/#{@file_name}.tar.gz.gpg")
+
+        @cbv_flow.touch(:transmitted_at)
+        track_transmitted_event(@cbv_flow, @payments)
+      rescue => ex
+        Rails.logger.error "Failed to transmit to caseworker: #{ex.message}"
+        raise
+      ensure
+        tmp_encrypted_tar.close! if tmp_encrypted_tar
+      end
+    else
+      raise "Unsupported transmission method: #{current_site.transmission_method}"
+    end
+  end
+
+  def generate_csv
+    pinwheel_account = PinwheelAccount.find_by(cbv_flow_id: @cbv_flow.id)
+
+    data = {
+      client_id: @cbv_flow.cbv_flow_invitation.agency_id_number,
+      first_name: @cbv_flow.cbv_flow_invitation.first_name,
+      last_name: @cbv_flow.cbv_flow_invitation.last_name,
+      middle_name: @cbv_flow.cbv_flow_invitation.middle_name,
+      client_email_address: @cbv_flow.cbv_flow_invitation.email_address,
+      beacon_userid: @cbv_flow.cbv_flow_invitation.beacon_id,
+      app_date: @cbv_flow.cbv_flow_invitation.snap_application_date.strftime("%m/%d/%Y"),
+      report_date_created: pinwheel_account.created_at.strftime("%m/%d/%Y"),
+      report_date_start: @cbv_flow.cbv_flow_invitation.paystubs_query_begins_at.strftime("%m/%d/%Y"),
+      report_date_end: @cbv_flow.cbv_flow_invitation.snap_application_date.strftime("%m/%d/%Y"),
+      confirmation_code: @cbv_flow.confirmation_code,
+      consent_timestamp: @cbv_flow.consented_to_authorized_use_at.strftime("%m/%d/%Y %H:%M:%S"),
+      pdf_filename: "#{@file_name}.pdf",
+      pdf_filetype: "application/pdf",
+      pdf_filesize: @pdf_output.file_size,
+      pdf_number_of_pages: @pdf_output.page_count
+    }
+
+    create_csv(data)
   end
 
   def track_transmitted_event(cbv_flow, payments)
@@ -81,6 +182,7 @@ class Cbv::SummariesController < Cbv::BaseController
       timestamp: Time.now.to_i,
       site_id: cbv_flow.site_id,
       cbv_flow_id: cbv_flow.id,
+      invitation_id: cbv_flow.cbv_flow_invitation_id,
       account_count: payments.map { |p| p[:account_id] }.uniq.count,
       paystub_count: payments.count,
       account_count_with_additional_information:
@@ -97,5 +199,23 @@ class Cbv::SummariesController < Cbv::BaseController
       (Time.now.to_i % 36 ** 3).to_s(36).tr("OISB", "0158").rjust(3, "0"),
       @cbv_flow.id.to_s.rjust(4, "0")
     ].compact.join.upcase
+  end
+
+  def gzip_file(input_tempfile)
+    gzipped_tempfile = Tempfile.new(%w[gzipped .gz])
+    gzipped_tempfile.binmode
+    gzipped_path = gzipped_tempfile.path
+    raise "Failed to gzip file" if gzipped_path.nil?
+
+    Zlib::GzipWriter.open(gzipped_path) do |gz|
+      input_tempfile.binmode
+      input_tempfile.rewind
+      gz.write(input_tempfile.read)
+    end
+
+    gzipped_tempfile.rewind
+    gzipped_tempfile
+  ensure
+    input_tempfile.close unless input_tempfile.closed?
   end
 end
