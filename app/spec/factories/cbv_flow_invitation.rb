@@ -1,3 +1,5 @@
+require_relative 'cbv_flow_invitation_provider'
+
 FactoryBot.define do
   factory :cbv_flow_invitation, class: "CbvFlowInvitation" do
     first_name { "Jane" }
@@ -10,14 +12,14 @@ FactoryBot.define do
 
     trait :nyc do
       site_id { "nyc" }
-      case_number { "ABC1234" }
-      client_id_number { "001111111" }
+      case_number { CbvFlowInvitationProvider.generate_nyc_case_number }
+      client_id_number { CbvFlowInvitationProvider.generate_nyc_client_id }
     end
 
     trait :ma do
       site_id { "ma" }
-      agency_id_number { "0001112222" }
-      beacon_id { "123456" }
+      agency_id_number { CbvFlowInvitationProvider.generate_ma_agency_id }
+      beacon_id { CbvFlowInvitationProvider.generate_ma_beacon_id }
     end
   end
 end

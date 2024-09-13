@@ -275,7 +275,7 @@ RSpec.describe Cbv::SummariesController do
         end
 
         it "generates, gzips, encrypts, and uploads PDF and CSV files to S3" do
-          agency_id_number = "AGY1234"
+          agency_id_number = CbvFlowInvitation.generate_ma_agency_id
 
           expect(s3_service_double).to receive(:upload_file).once do |file_path, file_name|
             expect(file_path).to end_with('.gpg')
