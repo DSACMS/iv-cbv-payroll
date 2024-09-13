@@ -1,4 +1,7 @@
 <div class="field_with_errors">
+  <% if @cbv_flow_invitation.errors[:first_name].any? %>
+    <div class="error"><%= @cbv_flow_invitation.errors[:first_name].join(", ") %></div>
+  <% end %>
   <%= f.text_field :first_name, label: t(".invite.first_name") %>
 </div>
 

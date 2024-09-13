@@ -6,6 +6,6 @@
 </div>
 
 <%= form_with(model: @cbv_flow_invitation, url: invitations_path, builder: UswdsFormBuilder) do |f| %>
-  <%= render partial: "#{@site_id}", locals: { f: f } %>
+  <%= render partial: "caseworker/cbv_flow_invitations/#{@cbv_flow_invitation.site_id}", locals: { f: f } %>
   <%= f.submit t(".form.submit") %>
 <% end %>

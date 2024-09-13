@@ -13,16 +13,10 @@ class Caseworker::CbvFlowInvitationsController < Caseworker::BaseController
   end
 
   def create
-    begin
-      invitation_params = base_params.merge(site_specific_params)
-      CbvInvitationService.new.invite(invitation_params, current_user)
-    rescue => ex
-      flash[:alert] = t(".invite_failed",
-                        email_address: cbv_flow_invitation_params[:email_address],
-                        error_message: ex.message
-                       )
-      Rails.logger.error("Error sending CBV invitation: #{ex.class} - #{ex.message}")
-      return redirect_to new_invitation_path(secret: params[:secret])
+    invitation_params = base_params.merge(site_specific_params)
+    @cbv_flow_invitation = CbvInvitationService.new.invite(invitation_params, current_user)
+    if @cbv_flow_invitation.errors.any?
+      return  render :new
     end
 
     flash[:slim_alert] = {
