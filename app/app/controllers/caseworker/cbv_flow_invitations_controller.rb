@@ -15,8 +15,18 @@ class Caseworker::CbvFlowInvitationsController < Caseworker::BaseController
   def create
     invitation_params = base_params.merge(site_specific_params)
     @cbv_flow_invitation = CbvInvitationService.new.invite(invitation_params, current_user)
+
     if @cbv_flow_invitation.errors.any?
-      return  render :new
+      error_count = @cbv_flow_invitation.errors.size
+      error_header = "#{error_count} error#{'s' if error_count > 1} occurred"
+      flash[:alert_heading] = error_header
+
+      # Generate a bullet list of error messages without field names prefixed
+      error_messages = @cbv_flow_invitation.errors.messages.values.flatten.map { |msg| "• #{msg}" }.join("<br>")
+
+      flash[:alert] = error_messages.html_safe
+
+      return render :new
     end
 
     flash[:slim_alert] = {

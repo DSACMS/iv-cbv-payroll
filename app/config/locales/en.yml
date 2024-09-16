@@ -5,6 +5,12 @@ en:
       models:
         cbv_flow_invitation:
           attributes:
+            first_name:
+              is_required: can't be blank
+            last_name:
+              is_required: can't be blank
+            middle_name:
+              invalid_format: must be letters only
             agency_id_number:
               invalid_format: must be 7 digits
               is_required: can't be blank
