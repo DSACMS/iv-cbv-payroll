@@ -5,31 +5,29 @@ en:
       models:
         cbv_flow_invitation:
           attributes:
-            first_name:
-              is_required: can't be blank
-            last_name:
-              is_required: can't be blank
-            middle_name:
-              invalid_format: must be letters only
             agency_id_number:
+              blank: can't be blank
               invalid_format: must be 7 digits
-              is_required: can't be blank
             beacon_id:
-              invalid_format: must be 6 alphanumeric characters
-              is_required: can't be blank
+              blank: can't be blank
+              invalid_format: must be 6 characters. It can only include letters and numbers.
             case_number:
               invalid_format: must be 11 digits followed by a letter
             client_id_number:
               invalid_format: must be 2 letters, followed by 5 digits, followed by a letter
             email_address:
+              blank: can't be blank
               invalid_format: is not a valid email address
-              is_required: can't be blank
+            first_name:
+              blank: can't be blank
+            last_name:
+              blank: can't be blank
+            middle_name:
+              invalid_format: must be letters only
             snap_application_date:
               future_date: can't be in the future
               invalid_date: is not a valid date
               too_old: must be within the last 30 days
-            welid:
-              invalid_format: must be 6 alphanumeric characters
   applicant_mailer:
     invitation_email:
       body_1:
@@ -55,7 +53,6 @@ en:
   caseworker:
     cbv_flow_invitations:
       create:
-        invite_failed: 'Error sending invitation to %{email_address}: %{error_message}.'
         invite_success: Successfully delivered invitation to %{email_address}.
       incorrect_site_id: Unable to send invitation due to missing site configuration.
       ma:

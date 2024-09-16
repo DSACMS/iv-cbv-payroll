@@ -9,8 +9,13 @@ class CbvInvitationService
       return cbv_flow_invitation
     end
 
-    send_invitation_email(cbv_flow_invitation)
-    track_event(cbv_flow_invitation, current_user)
+    begin
+      send_invitation_email(cbv_flow_invitation)
+      track_event(cbv_flow_invitation, current_user)
+    rescue e
+      Rails.logger.error("Error inviting applicant: #{e.message}")
+      raise e
+    end
 
     cbv_flow_invitation
   end

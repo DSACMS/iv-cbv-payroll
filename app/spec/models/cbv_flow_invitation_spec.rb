@@ -17,7 +17,7 @@ RSpec.describe CbvFlowInvitation, type: :model do
         invitation = CbvFlowInvitation.new(valid_attributes.merge(email_address: nil))
         invitation.valid?
         expect(invitation.errors[:email_address]).to include(
-          I18n.t('activerecord.errors.models.cbv_flow_invitation.attributes.email_address.is_required'),
+          I18n.t('activerecord.errors.models.cbv_flow_invitation.attributes.email_address.blank'),
           I18n.t('activerecord.errors.models.cbv_flow_invitation.attributes.email_address.invalid_format')
         )
       end
@@ -112,7 +112,7 @@ RSpec.describe CbvFlowInvitation, type: :model do
         invitation = CbvFlowInvitation.new(ma_attributes)
         invitation.valid?
         expect(invitation.errors[:agency_id_number]).to include(
-          I18n.t('activerecord.errors.models.cbv_flow_invitation.attributes.agency_id_number.is_required')
+          I18n.t('activerecord.errors.models.cbv_flow_invitation.attributes.agency_id_number.blank')
         )
       end
 
@@ -120,7 +120,7 @@ RSpec.describe CbvFlowInvitation, type: :model do
         invitation = CbvFlowInvitation.new(ma_attributes)
         invitation.valid?
         expect(invitation.errors[:beacon_id]).to include(
-          I18n.t('activerecord.errors.models.cbv_flow_invitation.attributes.beacon_id.is_required')
+          I18n.t('activerecord.errors.models.cbv_flow_invitation.attributes.beacon_id.blank')
         )
       end
 

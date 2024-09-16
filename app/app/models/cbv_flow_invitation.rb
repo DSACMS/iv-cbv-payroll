@@ -22,10 +22,10 @@ class CbvFlowInvitation < ApplicationRecord
   before_validation :format_case_number, if: :nyc_site?
 
   validates :site_id, inclusion: Rails.application.config.sites.site_ids
-  validates :first_name, presence: true, format: { with: /\A[a-zA-Z]+\z/ }
-  validates :last_name, presence: true, format: { with: /\A[a-zA-Z]+\z/ }
-  validates :middle_name, format: { with: /\A[a-zA-Z]+\z/, allow_blank: true, message: :invalid_format }
-  validates :email_address, presence: true, format: { with: EMAIL_REGEX, message: :invalid_format }
+  validates :first_name, presence: true
+  validates :last_name, presence: true
+  validates :middle_name, presence: false
+  validates :email_address, format: { with: EMAIL_REGEX, message: :invalid_format }
   validates :snap_application_date, presence: true
   validate :snap_application_date_not_in_future
 

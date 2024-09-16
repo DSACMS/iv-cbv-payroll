@@ -19,11 +19,12 @@ class Caseworker::CbvFlowInvitationsController < Caseworker::BaseController
     if @cbv_flow_invitation.errors.any?
       error_count = @cbv_flow_invitation.errors.size
       error_header = "#{error_count} error#{'s' if error_count > 1} occurred"
+
+      # Wrap error messages in an unordered list
+      error_messages = @cbv_flow_invitation.errors.full_messages.map { |msg| "<li>#{msg}</li>" }.join
+      error_messages = "<ul>#{error_messages}</ul>"
+
       flash[:alert_heading] = error_header
-
-      # Generate a bullet list of error messages without field names prefixed
-      error_messages = @cbv_flow_invitation.errors.messages.values.flatten.map { |msg| "• #{msg}" }.join("<br>")
-
       flash[:alert] = error_messages.html_safe
 
       return render :new

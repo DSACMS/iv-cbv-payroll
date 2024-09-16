@@ -60,18 +60,16 @@ RSpec.describe Caseworker::CbvFlowInvitationsController, type: :controller do
       }
       expected_errors = {
         "Agency id number" => [
-          I18n.t('activerecord.errors.models.cbv_flow_invitation.attributes.agency_id_number.is_required'),
+          I18n.t('activerecord.errors.models.cbv_flow_invitation.attributes.agency_id_number.blank'),
           I18n.t('activerecord.errors.models.cbv_flow_invitation.attributes.agency_id_number.invalid_format')
         ],
         "Beacon" => [
-          I18n.t('activerecord.errors.models.cbv_flow_invitation.attributes.beacon_id.is_required'),
+          I18n.t('activerecord.errors.models.cbv_flow_invitation.attributes.beacon_id.blank'),
           I18n.t('activerecord.errors.models.cbv_flow_invitation.attributes.beacon_id.invalid_format')
         ]
       }
-
-      error_message = "Error sending invitation to test@example.com: Validation failed: " \
-        "#{expected_errors.map { |key, messages| messages.map { |msg| "#{key} #{msg}" }.join(', ') }.join(', ')}."
-      expect(flash[:alert]).to eq(error_message)
+      error_message =  "• #{expected_errors.map { |key, messages| messages.map { |msg| "#{key} #{msg}" }.join('<br>• ') }.join('<br>• ')}"
+      expect(flash[:alert]).to eq(error_message.gsub("Beacon", "Your WELID"))
     end
 
     it "redirects back to the caseworker dashboard" do
