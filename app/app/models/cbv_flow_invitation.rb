@@ -22,6 +22,8 @@ class CbvFlowInvitation < ApplicationRecord
   before_validation :format_case_number, if: :nyc_site?
 
   validates :site_id, inclusion: Rails.application.config.sites.site_ids
+  validates :first_name, presence: true
+  validates :last_name, presence: true
   validates :email_address, presence: true, format: { with: EMAIL_REGEX, message: :invalid_format }
   validates :snap_application_date, presence: true
   validate :snap_application_date_not_in_future

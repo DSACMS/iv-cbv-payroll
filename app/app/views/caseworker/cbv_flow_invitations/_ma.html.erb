@@ -1,30 +1,13 @@
-<div class="field_with_errors">
-  <% if @cbv_flow_invitation.errors[:first_name].any? %>
-    <div class="error"><%= @cbv_flow_invitation.errors[:first_name].join(", ") %></div>
-  <% end %>
-  <%= f.text_field :first_name, label: t(".invite.first_name") %>
-</div>
+<%= f.text_field :first_name, label: t(".invite.first_name") %>
 
-<div class="field_with_errors">
-  <%= f.text_field :middle_name, label: t(".invite.middle_name") %>
-</div>
+<%= f.text_field :middle_name, label: t(".invite.middle_name") %>
 
-<div class="field_with_errors">
-  <%= f.text_field :last_name, label: t(".invite.last_name") %>
-</div>
+<%= f.text_field :last_name, label: t(".invite.last_name") %>
 
-<div class="field_with_errors">
-  <%= f.text_field :agency_id_number, label: t(".invite.agency_id_number"), hint: t(".invite.agency_id_number_hint") %>
-</div>
+<%= f.text_field :agency_id_number, label: t(".invite.agency_id_number") %>
 
-<div class="field_with_errors">
-  <%= f.date_picker :snap_application_date, label: t(".invite.todays_date"), hint: t(".invite.snap_application_date_hint") %>
-</div>
+<%= f.date_picker :snap_application_date, label: t(".invite.todays_date") %>
 
-<div class="field_with_errors">
-  <%= f.email_field :email_address, label: t(".invite.email_address") %>
-</div>
+<%= f.email_field :email_address, label: t(".invite.email_address") %>
 
-<div class="field_with_errors">
-  <%= f.text_field :beacon_id, label: t(".invite.beacon_id"), hint: t(".invite.beacon_id_hint") %>
-</div>
+<%= f.text_field :beacon_id, label: t(".invite.beacon_id") %>
