@@ -30,7 +30,7 @@ FROM base AS build
 # Install packages needed to build gems
 RUN apt-get update -qq && \
     apt-get install --no-install-recommends -y build-essential=12.9 \
-    git=1:2.39.2-1.1 libpq-dev=15.8-0+deb12u1 pkg-config=1.8.1-1 \
+    git=1:2.39.5-0+deb12u1 libpq-dev=15.8-0+deb12u1 pkg-config=1.8.1-1 \
     npm=9.2.0~ds1-1
 
 # Copy application code
@@ -105,14 +105,17 @@ ENV TMPDIR="/rails/tmp"
 
 # Install packages needed for deployment
 RUN apt-get update -qq && \
-    apt-get install -y --no-install-recommends unzip=6.0-28 \
-        python3-venv=3.11.2-1+b1 \
-        python-is-python3=3.11.2-1+deb12u1 \
+    apt-get install -y --no-install-recommends \
         curl=7.88.1-10+deb12u7 \
+        libgpgme11=1.18.0-3+b1 \
         libvips42=8.14.1-3+deb12u1 \
-        postgresql-client=15+248 \
         linux-libc-dev=6.1.106-3 \
-        wkhtmltopdf=0.12.6-2+b1 && \
+        postgresql-client=15+248 \
+        python-is-python3=3.11.2-1+deb12u1 \
+        python3-venv=3.11.2-1+b1 \
+        unzip=6.0-28 \
+        wkhtmltopdf=0.12.6-2+b1 \
+      && \
     rm -rf /var/lib/apt/lists /var/cache/apt/archives && \
     curl "https://s3.amazonaws.com/aws-cli/awscli-bundle.zip" -o "awscli-bundle.zip" && \
     unzip awscli-bundle.zip && \
