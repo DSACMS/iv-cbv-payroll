@@ -18,6 +18,8 @@
     name: "nyc_dss"
   pay_income_days: 90
   invitation_valid_days: 14
+  weekly_report:
+    recipient: <%= ENV['NYC_HRA_EMAIL'] %>
 - id: ma
   agency_name: Department of Transitional Assistance
   agency_short_name: DTA
@@ -40,6 +42,7 @@
   invitation_valid_days: 14
   logo_path: dta_logo.png
   logo_square_path: dta_logo_square.png
+  weekly_report: {}
 - id: sandbox
   agency_name: CBV Test Agency
   agency_short_name: CBV
@@ -58,3 +61,5 @@
     name: "sandbox"
   pay_income_days: 90
   invitation_valid_days: 14
+  weekly_report:
+    recipient: ffs-eng@navapbc.com
