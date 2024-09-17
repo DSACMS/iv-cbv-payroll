@@ -14,14 +14,23 @@ class Caseworker::CbvFlowInvitationsController < Caseworker::BaseController
 
   def create
     invitation_params = base_params.merge(site_specific_params)
-    @cbv_flow_invitation = CbvInvitationService.new.invite(invitation_params, current_user)
+
+    # handle errors from the mail service
+    begin
+      @cbv_flow_invitation = CbvInvitationService.new.invite(invitation_params, current_user)
+    rescue => e
+      flash[:alert] = t(".invite_error",
+                        email_address: cbv_flow_invitation_params[:email_address],
+                        error_message: e.message)
+      redirect_to caseworker_dashboard_path(site_id: params[:site_id])
+    end
 
     if @cbv_flow_invitation.errors.any?
       error_count = @cbv_flow_invitation.errors.size
       error_header = "#{error_count} error#{'s' if error_count > 1} occurred"
 
-      # Wrap error messages in an unordered list
-      error_messages = @cbv_flow_invitation.errors.full_messages.map { |msg| "<li>#{msg}</li>" }.join
+      # Collect error messages without attribute names
+      error_messages = @cbv_flow_invitation.errors.messages.values.flatten.map { |msg| "<li>#{msg}</li>" }.join
       error_messages = "<ul>#{error_messages}</ul>"
 
       flash[:alert_heading] = error_header

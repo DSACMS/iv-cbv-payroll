@@ -27,16 +27,19 @@ class CbvFlowInvitation < ApplicationRecord
   validates :middle_name, presence: false
   validates :email_address, format: { with: EMAIL_REGEX, message: :invalid_format }
   validates :snap_application_date, presence: true
-  validate :snap_application_date_not_in_future
 
   # MA specific validations
-  validates :agency_id_number, presence: true, format: { with: MA_AGENCY_ID_REGEX, message: :invalid_format }, if: :ma_site?
-  validates :beacon_id, presence: true, format: { with: MA_BEACON_ID_REGEX, message: :invalid_format }, if: :ma_site?
+  validates :agency_id_number, format: { with: MA_AGENCY_ID_REGEX, message: :invalid_format }, if: :ma_site?
+  validates :beacon_id, format: { with: MA_BEACON_ID_REGEX, message: :invalid_format }, if: :ma_site?
+  validate :ma_snap_application_date_not_more_than_1_year_ago, if: :ma_site?
+  validate :ma_snap_application_date_not_in_future
+
 
   # NYC specific validations
   validates :case_number, presence: true, format: { with: NYC_CASE_NUMBER_REGEX, message: :invalid_format }, if: :nyc_site?
   validates :client_id_number, format: { with: NYC_CLIENT_ID_REGEX, message: :invalid_format }, if: -> { nyc_site? && client_id_number.present? }
-  validate :nyc_snap_application_date_range, if: :nyc_site?
+  validate :nyc_snap_application_date_not_more_than_30_days_ago, if: :nyc_site?
+  validate :nyc_snap_application_date_not_in_future, if: :nyc_site?
 
   include Redactable
   has_redactable_fields(
@@ -96,25 +99,39 @@ class CbvFlowInvitation < ApplicationRecord
     raw_snap_application_date = @attributes["snap_application_date"]&.value_before_type_cast
     return if raw_snap_application_date.is_a?(Date)
 
-    begin
-      new_date_format = Date.strptime(raw_snap_application_date.to_s, "%m/%d/%Y")
-      self.snap_application_date = new_date_format
-    rescue Date::Error
-      errors.add(:snap_application_date, :invalid_date)
+    if raw_snap_application_date.is_a?(ActiveSupport::TimeWithZone) || raw_snap_application_date.is_a?(Time)
+      self.snap_application_date = raw_snap_application_date.to_date
+    else
+      begin
+        new_date_format = Date.strptime(raw_snap_application_date.to_s, "%m/%d/%Y")
+        self.snap_application_date = new_date_format
+      rescue Date::Error => e
+        errors.add(:snap_application_date, :invalid_date)
+      end
     end
   end
 
-  def snap_application_date_not_in_future
+  def ma_snap_application_date_not_in_future
     if snap_application_date.present? && snap_application_date > Date.current
-      errors.add(:snap_application_date, :future_date)
+      errors.add(:snap_application_date, :ma_future_date)
     end
   end
 
-  def nyc_snap_application_date_range
-    return if snap_application_date.blank?
+  def ma_snap_application_date_not_more_than_1_year_ago
+    if snap_application_date.present? && snap_application_date < 1.year.ago.to_date
+      errors.add(:snap_application_date, :ma_too_old)
+    end
+  end
 
-    if snap_application_date < 30.days.ago.to_date
-      errors.add(:snap_application_date, :too_old)
+  def nyc_snap_application_date_not_in_future
+    if snap_application_date.present? && snap_application_date > Date.current
+      errors.add(:snap_application_date, :nyc_future_date)
+    end
+  end
+
+  def nyc_snap_application_date_not_more_than_30_days_ago
+    if snap_application_date.present? && snap_application_date < 30.day.ago.to_date
+      errors.add(:snap_application_date, :nyc_too_old)
     end
   end
 

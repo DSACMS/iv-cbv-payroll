@@ -49,7 +49,7 @@ RSpec.describe Caseworker::CbvFlowInvitationsController, type: :controller do
       expect(invitation.last_name).to eq("Doe")
       expect(invitation.agency_id_number).to eq("7890120")
       expect(invitation.email_address).to eq("test@example.com")
-      expect(invitation.snap_application_date).to eq(Date.today)
+      expect(invitation.snap_application_date).to eq(Time.zone.today)
       expect(invitation.beacon_id).to eq("ABC123")
     end
 
@@ -58,18 +58,12 @@ RSpec.describe Caseworker::CbvFlowInvitationsController, type: :controller do
         site_id: "ma",
         cbv_flow_invitation: cbv_flow_invitation_params.except(:beacon_id, :agency_id_number)
       }
-      expected_errors = {
-        "Agency id number" => [
-          I18n.t('activerecord.errors.models.cbv_flow_invitation.attributes.agency_id_number.blank'),
-          I18n.t('activerecord.errors.models.cbv_flow_invitation.attributes.agency_id_number.invalid_format')
-        ],
-        "Beacon" => [
-          I18n.t('activerecord.errors.models.cbv_flow_invitation.attributes.beacon_id.blank'),
-          I18n.t('activerecord.errors.models.cbv_flow_invitation.attributes.beacon_id.invalid_format')
-        ]
-      }
-      error_message =  "• #{expected_errors.map { |key, messages| messages.map { |msg| "#{key} #{msg}" }.join('<br>• ') }.join('<br>• ')}"
-      expect(flash[:alert]).to eq(error_message.gsub("Beacon", "Your WELID"))
+      expected_errors = [
+        I18n.t('activerecord.errors.models.cbv_flow_invitation.attributes.agency_id_number.invalid_format'),
+        I18n.t('activerecord.errors.models.cbv_flow_invitation.attributes.beacon_id.invalid_format')
+      ]
+      expected_error_message = "<ul><li>#{expected_errors.join('</li><li>')}</li></ul>"
+      expect(flash[:alert]).to eq(expected_error_message)
     end
 
     it "redirects back to the caseworker dashboard" do

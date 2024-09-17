@@ -7,7 +7,7 @@ FactoryBot.define do
     last_name { "Doe" }
     site_id { "sandbox" }
     email_address { "test@example.com" }
-    snap_application_date { Date.today.strftime("%m/%d/%Y") }
+    snap_application_date { Time.zone.today.strftime("%m/%d/%Y") }
     user
 
     trait :with_provider do
