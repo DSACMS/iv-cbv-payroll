@@ -3,6 +3,7 @@ class ApplicationController < ActionController::Base
   helper_method :current_site
   around_action :switch_locale
   before_action :add_newrelic_metadata
+  before_action :redirect_if_maintenance_mode
 
   rescue_from ActionController::InvalidAuthenticityToken do
     redirect_to root_url, flash: { slim_alert: { type: "info", message_html:  t("cbv.error_missing_token_html") } }
@@ -51,5 +52,11 @@ class ApplicationController < ActionController::Base
     }
 
     NewRelic::Agent.add_custom_attributes(attributes)
+  end
+
+  def redirect_if_maintenance_mode
+    if ENV["MAINTENANCE_MODE"] == "true"
+      redirect_to maintenance_path
+    end
   end
 end
