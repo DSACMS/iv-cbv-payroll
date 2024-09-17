@@ -128,6 +128,12 @@ locals {
     {
       name           = "MA_DTA_S3_PUBLIC_KEY"
       ssm_param_name = "/service/${var.app_name}-${var.environment}/ma-dta-s3-public-key"
-    }
+    },
+
+    # MAINTENANCE MODE
+    {
+      name           = "MAINTENANCE_MODE"
+      ssm_param_name = "/service/${var.app_name}-${var.environment}/maintenance-mode"
+    },
   ]
 }
