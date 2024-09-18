@@ -152,7 +152,7 @@ RSpec.describe Cbv::PaymentDetailsController do
       it "renders properly without the paystubs data" do
         get :show, params: { user: { account_id: account_id } }
         expect(response).to be_successful
-        expect(response.body).to include(I18n.t("cbv.payment_details.show.none_found"))
+        expect(response.body).to include("find any payments from this employer in the past 90 days.")
       end
     end
 

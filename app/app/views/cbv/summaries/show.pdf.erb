@@ -36,45 +36,21 @@
     <h3 class="margin-0">Client Information</h3>
   <% end %>
   <% if current_site?(:ma) && !is_caseworker %>
-    <%= table.with_row(
-      label: t(".pdf.client.agency_id_number"),
-      value: @cbv_flow.cbv_flow_invitation.agency_id_number
-    ) %>
+    <%= table.with_row(t(".pdf.client.agency_id_number"), @cbv_flow.cbv_flow_invitation.agency_id_number) %>
   <% end %>
   <% if is_caseworker %>
-    <%= table.with_row(
-      label: t(".pdf.caseworker.first_name"),
-      value: @cbv_flow.cbv_flow_invitation.first_name
-    ) %>
-    <%= table.with_row(
-      label: t(".pdf.caseworker.middle_name"),
-      value: @cbv_flow.cbv_flow_invitation.middle_name
-    ) %>
-    <%= table.with_row(
-      label: t(".pdf.caseworker.last_name"),
-      value: @cbv_flow.cbv_flow_invitation.last_name
-    ) %>
+    <%= table.with_row(t(".pdf.caseworker.first_name"), @cbv_flow.cbv_flow_invitation.first_name) %>
+    <%= table.with_row(t(".pdf.caseworker.middle_name"), @cbv_flow.cbv_flow_invitation.middle_name) %>
+    <%= table.with_row(t(".pdf.caseworker.last_name"), @cbv_flow.cbv_flow_invitation.last_name) %>
 
     <% if current_site?(:nyc) %>
-      <%= table.with_row(
-        label: t(".pdf.caseworker.client_id_number"),
-        value: @cbv_flow.cbv_flow_invitation.client_id_number
-      ) %>
-      <%= table.with_row(
-        label: t(".pdf.caseworker.case_number"),
-        value: @cbv_flow.cbv_flow_invitation.case_number
-      ) %>
+      <%= table.with_row(t(".pdf.caseworker.client_id_number"), @cbv_flow.cbv_flow_invitation.client_id_number) %>
+      <%= table.with_row(t(".pdf.caseworker.case_number"), @cbv_flow.cbv_flow_invitation.case_number) %>
     <% end %>
 
     <% if current_site?(:ma) %>
-      <%= table.with_row(
-        label: t(".pdf.caseworker.client_email_address"),
-        value: @cbv_flow.cbv_flow_invitation.email_address
-      ) %>
-      <%= table.with_row(
-        label: t(".pdf.caseworker.snap_agency_id"),
-        value: @cbv_flow.cbv_flow_invitation.agency_id_number
-      ) %>
+      <%= table.with_row(t(".pdf.caseworker.client_email_address"), @cbv_flow.cbv_flow_invitation.email_address) %>
+      <%= table.with_row(t(".pdf.caseworker.snap_agency_id"), @cbv_flow.cbv_flow_invitation.agency_id_number) %>
     <% end %>
   <% end %>
 <% end %>
@@ -84,33 +60,15 @@
     <h3 class="margin-0">Report details</h3>
   <% end %>
   <% if @cbv_flow.confirmation_code.present? %>
-    <%= table.with_row(
-      label: t(".pdf.shared.confirmation_code"),
-      value: @cbv_flow.confirmation_code)
-    %>
+    <%= table.with_row(t(".pdf.shared.confirmation_code"), @cbv_flow.confirmation_code) %>
   <% end %>
-  <%= table.with_row(
-    label: site_translation(".application_or_recertification_date"),
-    value: format_parsed_date(@cbv_flow.cbv_flow_invitation.snap_application_date))
-  %>
-  <%= table.with_row(
-    label: t(".pdf.client.date_created"),
-    value: format_parsed_date(@cbv_flow.consented_to_authorized_use_at))
-  %>
-  <%= table.with_row(
-    label: t(".pdf.client.date_range"),
-    value: "#{format_parsed_date(@cbv_flow.cbv_flow_invitation.paystubs_query_begins_at)} to #{format_parsed_date(@cbv_flow.cbv_flow_invitation.snap_application_date)}")
-  %>
+  <%= table.with_row(site_translation(".application_or_recertification_date"), format_parsed_date(@cbv_flow.cbv_flow_invitation.snap_application_date)) %>
+  <%= table.with_row(t(".pdf.client.date_created"), format_parsed_date(@cbv_flow.consented_to_authorized_use_at)) %>
+  <%= table.with_row(t(".pdf.client.date_range"), "#{format_parsed_date(@cbv_flow.cbv_flow_invitation.paystubs_query_begins_at)} to #{format_parsed_date(@cbv_flow.cbv_flow_invitation.snap_application_date)}") %>
   <% if is_caseworker %>
-    <%= table.with_row(
-      label: t(".pdf.caseworker.agreement_consent_timestamp"),
-      value: @cbv_flow.consented_to_authorized_use_at)
-    %>
+    <%= table.with_row(t(".pdf.caseworker.agreement_consent_timestamp"), @cbv_flow.consented_to_authorized_use_at) %>
     <% if current_site?(:ma) %>
-      <%= table.with_row(
-        label: t(".pdf.caseworker.staff_beacon_id_wel_id"),
-        value: @cbv_flow.cbv_flow_invitation.beacon_id
-      ) %>
+      <%= table.with_row(t(".pdf.caseworker.staff_beacon_id_wel_id"), @cbv_flow.cbv_flow_invitation.beacon_id) %>
     <% end %>
   <% end %>
 <% end %>

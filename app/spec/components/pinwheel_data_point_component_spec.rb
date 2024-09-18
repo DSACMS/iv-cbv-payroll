@@ -39,7 +39,7 @@ RSpec.describe PinwheelDataPointComponent, type: :component do
     expect(
       render_inline(described_class.new(:deduction, "health_insurance", 10000))
     ).to have_text(
-      "Health insurance\n  $100.00\n\n\n"
+      "Health insurance\n    $100.00\n\n\n"
     )
   end
 
