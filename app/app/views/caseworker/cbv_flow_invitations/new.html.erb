@@ -4,8 +4,7 @@
 <div class="usa-prose">
   <%= t(".description_html", pay_income_days: current_site.pay_income_days) %>
 </div>
-<% site_id = @cbv_flow_invitation.site_id || @site_id %>
 <%= form_with(model: @cbv_flow_invitation, data: { turbo: false }, url: invitations_path, builder: UswdsFormBuilder) do |f| %>
-  <%= render partial: "caseworker/cbv_flow_invitations/#{site_id}", locals: { f: f } %>
+  <%= render partial: "caseworker/cbv_flow_invitations/#{@cbv_flow_invitation.site_id}", locals: { f: f } %>
   <%= f.submit t(".form.submit") %>
 <% end %>
