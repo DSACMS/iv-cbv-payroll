@@ -33,13 +33,8 @@ RSpec.describe Caseworker::CbvFlowInvitationsController, type: :controller do
   end
 
   describe "#create" do
-    let(:error_message) do
-      "Error sending invitation to test@example.com: " \
-        "Validation failed: Agency id number can't be blank, Beacon can't be blank."
-    end
-
     let(:cbv_flow_invitation_params) do
-      attributes_for(:cbv_flow_invitation, site_id: "ma", beacon_id: "ABC123", agency_id_number: "789012")
+      attributes_for(:cbv_flow_invitation, site_id: "ma", beacon_id: "ABC123", agency_id_number: "7890120")
     end
 
     it "creates a CbvFlowInvitation record with the ma fields" do
@@ -52,9 +47,9 @@ RSpec.describe Caseworker::CbvFlowInvitationsController, type: :controller do
       expect(invitation.first_name).to eq("Jane")
       expect(invitation.middle_name).to eq("Sue")
       expect(invitation.last_name).to eq("Doe")
-      expect(invitation.agency_id_number).to eq("789012")
+      expect(invitation.agency_id_number).to eq("7890120")
       expect(invitation.email_address).to eq("test@example.com")
-      expect(invitation.snap_application_date).to eq(Date.today)
+      expect(invitation.snap_application_date).to eq(Time.zone.today)
       expect(invitation.beacon_id).to eq("ABC123")
     end
 
@@ -63,7 +58,12 @@ RSpec.describe Caseworker::CbvFlowInvitationsController, type: :controller do
         site_id: "ma",
         cbv_flow_invitation: cbv_flow_invitation_params.except(:beacon_id, :agency_id_number)
       }
-      expect(flash[:alert]).to eq(error_message)
+      expected_errors = [
+        I18n.t('activerecord.errors.models.cbv_flow_invitation.attributes.agency_id_number.invalid_format'),
+        I18n.t('activerecord.errors.models.cbv_flow_invitation.attributes.beacon_id.invalid_format')
+      ]
+      expected_error_message = "<ul><li>#{expected_errors.join('</li><li>')}</li></ul>"
+      expect(flash[:alert]).to eq(expected_error_message)
     end
 
     it "redirects back to the caseworker dashboard" do

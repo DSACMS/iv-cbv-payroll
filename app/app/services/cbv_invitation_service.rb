@@ -1,16 +1,23 @@
 class CbvInvitationService
   def invite(cbv_flow_invitation_params, current_user)
+    cbv_flow_invitation_params[:user] = current_user
+    cbv_flow_invitation = CbvFlowInvitation.create(cbv_flow_invitation_params)
+
+    if cbv_flow_invitation.errors.any?
+      e = cbv_flow_invitation.errors.full_messages.join(", ")
+      Rails.logger.warn("Error inviting applicant: #{e}")
+      return cbv_flow_invitation
+    end
+
     begin
-      cbv_flow_invitation_params[:user] = current_user
-      cbv_flow_invitation = CbvFlowInvitation.create!(cbv_flow_invitation_params)
       send_invitation_email(cbv_flow_invitation)
       track_event(cbv_flow_invitation, current_user)
-
-      cbv_flow_invitation
     rescue => e
       Rails.logger.error("Error inviting applicant: #{e.message}")
       raise e
     end
+
+    cbv_flow_invitation
   end
 
   private
