@@ -1,5 +1,12 @@
 # frozen_string_literal: true
 
+Rails.application.config.after_initialize do
+  # We have special logic for invalidating sessions:
+  #
+  # This class is not auto-reloaded in development.
+  SessionInvalidationService.register_hooks!
+end
+
 # Assuming you have not yet modified this file, each configuration option below
 # is set to its default value. Note that some are commented out while others
 # are not: uncommented lines are intended to protect your configuration from
@@ -188,7 +195,7 @@ Devise.setup do |config|
   # ==> Configuration for :timeoutable
   # The time you want to timeout the user session without activity. After this
   # time the user will be asked for credentials again. Default is 30 minutes.
-  # config.timeout_in = 30.minutes
+  config.timeout_in = 30.minutes
 
   # ==> Configuration for :lockable
   # Defines which strategy will be used to lock an account.

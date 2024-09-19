@@ -1,0 +1,126 @@
+#!/bin/bash
+# This script will guide you through updating the infra template. It replaces
+# the official `update-template` script since we have made so many
+# customizations to the infra code.
+#
+# To run this, make sure:
+# 1. You have a `template-infra` repository as a sibling directory to this
+#    repository's directory
+# 2. That the `template-infra` repo is up-to-date.
+#
+set -euo pipefail
+update_files=(
+  .github bin docs infra e2e Makefile .dockleconfig .gitignore .grype.yml
+  .hadolint.yaml .trivyignore .terraform-version
+)
+exclusions=(
+  --exclude=".github/workflows/template-only-*"
+  --exclude="docs/decisions/*"
+)
+
+red() {
+  printf '\033[0;31m%s\033[0m' "$1"
+}
+green() {
+  printf '\033[0;32m%s\033[0m' "$1"
+}
+check_config() {
+  if ! git config --list | grep -q rerere.enabled=true; then
+    echo "It looks like $(red "you don't have git reuse-recorded-resolution ('rerere') enabled")."
+    echo
+    echo "Enabling this will make your life substantially easier because any"
+    echo "merge conflicts you resolve will be reused if you need to start from the"
+    echo "beginning again."
+    echo 
+    echo "We highly recommend adding to your ~/.gitconfig:"
+    echo
+    echo "  [rerere]"
+    echo "  enabled = true"
+    echo
+    echo "Hit ENTER to continue."
+    read -r
+  fi
+}
+create_upgrade_version_list() {
+  local current_sha=$1
+  local template_directory=$2
+  local tmpdir=$3
+
+  pushd "$template_directory" >/dev/null
+  current_sha_date=$(git show "$current_sha" --no-patch --pretty=format:%as)
+  current_sha_version=$(git describe "$current_sha" --tags --abbrev=0)
+  git tag --contains "${current_sha}" | grep -v "$current_sha_version" | sort --version-sort >"$tmpdir/versions"
+  target_version=$(tail -n1 "$tmpdir/versions")
+  target_version_date=$(git show "$target_version" --no-patch --pretty=format:%as)
+
+  echo "Will update infra template from $(red "${current_sha:0:7}") ($current_sha_date - $current_sha_version) to $(green "${target_version}") ($target_version_date)"
+  echo "This script will upgrade one release at a time:"
+  cat "$tmpdir/versions"
+  echo
+  echo "Hit ENTER to confirm."
+  read -r
+  popd >/dev/null
+}
+upgrade_version() {
+  local current_version=$1
+  local target_version=$2
+  local template_directory=$3
+  local tmpdir=$4
+  
+  echo "Upgrading from $(red "$current_version") to $(green "$target_version"):"
+  echo "  View release notes on Github for $target_version:"
+  echo "  https://github.com/navapbc/template-infra/releases/tag/$target_version"
+  echo
+
+  # #######################################################################
+  # Generate the patch that represents the upgrade diff
+  #
+  # Approach is modeled after:
+  # https://github.com/navapbc/template-infra/blob/main/template-only-bin/update-template
+  # #######################################################################
+  pushd "$template_directory" >/dev/null
+  git format-patch --binary -o "$tmpdir" "${current_version}..${target_version}" \
+    -- "${update_files[@]}" >"$tmpdir/todo"
+  popd >/dev/null
+
+  num_patches=$(wc -l "$tmpdir/todo" | awk '{print $1}')
+  echo "Created $(green "$num_patches patches") to apply the commits in the upgrade."
+  echo "If any patches fail to apply, you will have to resolve the errors manually in"
+  echo "a new terminal and continue the process with 'git am --continue'"
+  echo
+  echo "Hit ENTER to begin applying the patches in sequence."
+  read -r
+
+  # Apply patch
+  git am --3way --whitespace=fix "${exclusions[@]}" "${tmpdir}"/*.patch || true
+  while [ -d .git/rebase-apply ]; do
+    echo
+    echo
+    echo "$(red "Error:") It looks like 'git am' hit some merge issues."
+    echo "In a new terminal, resolve all merge confilicts and continue with"
+    echo "  git am --continue"
+    echo
+    echo "Once you have completed the process, come back here and $(green "hit ENTER to continue")"
+    read -r
+  done
+
+  echo "$(green "Okay, great!") Make sure to run any migration steps."
+  git rev-parse "$target_version" > .template-version
+  git commit -m "Upgrade template-infra $current_version -> $target_version" -- .template-version
+  rm -rf "$tmpdir"/*.patch
+}
+
+check_config
+
+tmpdir=$(mktemp -d)
+trap 'rm -rf $tmpdir' EXIT
+template_directory=$(cd ../template-infra; pwd)
+current_sha=$(cat .template-version)
+# This may be blank if we don't start on a SHA for a released version
+current_version="$(git tag --points-at "${current_sha}")" 
+
+create_upgrade_version_list "$current_sha" "$template_directory" "$tmpdir"
+while read -r -u 10 target_version; do
+  upgrade_version "${current_version:-$current_sha}" "$target_version" "$template_directory" "$tmpdir"
+  current_version="$target_version"
+done 10< "$tmpdir"/versions
