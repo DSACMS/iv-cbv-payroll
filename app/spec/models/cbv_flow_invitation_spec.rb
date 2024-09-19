@@ -1,15 +1,9 @@
 require 'rails_helper'
 
 RSpec.describe CbvFlowInvitation, type: :model do
-  let(:valid_attributes) {
-    {
-      site_id: 'nyc',
-      email_address: 'test@example.com',
-      snap_application_date: Date.current,
-      case_number: '12345678901A',
-      client_id_number: 'AB12345C'
-    }
-  }
+  let(:valid_attributes) do
+    attributes_for(:cbv_flow_invitation, :nyc)
+  end
 
   describe "validations" do
     context "for all invitations" do
@@ -67,23 +61,40 @@ RSpec.describe CbvFlowInvitation, type: :model do
     end
 
     context "when site_id is 'nyc'" do
-      let(:nyc_attributes) { valid_attributes.merge(site_id: 'nyc') }
+      let(:nyc_attributes) { valid_attributes.merge(site_id: 'nyc', user: create(:user, site_id: "nyc")) }
 
       it "requires case_number" do
         invitation = CbvFlowInvitation.new(nyc_attributes.merge(case_number: nil))
         expect(invitation).not_to be_valid
         expect(invitation.errors[:case_number]).to include(
           I18n.t('activerecord.errors.models.cbv_flow_invitation.attributes.case_number.invalid_format'),
-          "can't be blank"
         )
       end
 
-      it "validates case_number format" do
+      it "validates invalid case_number format" do
         invitation = CbvFlowInvitation.new(nyc_attributes.merge(case_number: 'invalid'))
         expect(invitation).not_to be_valid
         expect(invitation.errors[:case_number]).to include(
           I18n.t('activerecord.errors.models.cbv_flow_invitation.attributes.case_number.invalid_format')
         )
+      end
+
+      it "formats a 9-character case number with leading zeros" do
+        invitation = CbvFlowInvitation.new(nyc_attributes.merge(case_number: '12345678A'))
+        expect(invitation).to be_valid
+        expect(invitation.case_number).to eq('00012345678A')
+      end
+
+      it "validates an invalid 11 char string" do
+        invitation = CbvFlowInvitation.new(nyc_attributes.merge(case_number: '1234567890A'))
+        expect(invitation).not_to be_valid
+        expect(invitation.case_number).to eq('1234567890A')
+      end
+
+      it "converts case number to uppercase" do
+        invitation = CbvFlowInvitation.new(nyc_attributes.merge(case_number: '12345678a'))
+        expect(invitation).to be_valid
+        expect(invitation.case_number).to eq('00012345678A')
       end
 
       it "validates client_id_number format when present" do

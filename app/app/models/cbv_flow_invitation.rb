@@ -136,8 +136,10 @@ class CbvFlowInvitation < ApplicationRecord
   end
 
   def format_case_number
-    if case_number.present? && case_number.length == 12
-      self.case_number = case_number.rjust(12, "0")
+    return if case_number.blank?
+    case_number.upcase!
+    if case_number.length == 9
+      self.case_number = "000#{case_number}"
     end
   end
 end
