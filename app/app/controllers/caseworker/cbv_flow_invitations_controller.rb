@@ -27,7 +27,7 @@ class Caseworker::CbvFlowInvitationsController < Caseworker::BaseController
 
     if @cbv_flow_invitation.errors.any?
       error_count = @cbv_flow_invitation.errors.size
-      error_header = "#{error_count} error#{'s' if error_count > 1} occurred"
+      error_header = "#{"error".pluralize(error_count)} occurred"
 
       # Collect error messages without attribute names
       error_messages = @cbv_flow_invitation.errors.messages.values.flatten.map { |msg| "<li>#{msg}</li>" }.join

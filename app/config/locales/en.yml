@@ -10,7 +10,7 @@ en:
               invalid_format: Agency ID number must be 7 digits.
             beacon_id:
               blank: can't be blank
-              invalid_format: Your WELID must be 6 characters. It can only include letters and numbers.
+              invalid_format: Your WelID must be 6 characters. It can only include letters and numbers.
             case_number:
               invalid_format: Client's case number must be 12 digits. Enter the case number in the ANGIE/sPOS format, i.e. 00012345678A.
             client_id_number:
@@ -56,7 +56,7 @@ en:
       ma:
         invite:
           agency_id_number: Client's agency ID number
-          beacon_id: Your WELID
+          beacon_id: Your WelID
           email_address: Client's email address
           first_name: Client's first name
           last_name: Client's last name

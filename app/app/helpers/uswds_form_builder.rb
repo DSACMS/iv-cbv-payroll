@@ -128,11 +128,7 @@ class UswdsFormBuilder < ActionView::Helpers::FormBuilder
   def field_error(attribute)
     return unless has_error?(attribute)
     error_messages = object.errors.messages_for(attribute)
-    # Replace "Beacon" with "Your WELID" in error messages
-    error_messages = error_messages.map { |msg| msg.gsub("Beacon", "Your WELID") }
-
     error_sentence = error_messages.join("<br>").html_safe
-
     @template.content_tag(:span, error_sentence, class: "usa-error-message")
   end
 
