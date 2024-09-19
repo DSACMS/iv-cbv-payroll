@@ -30,6 +30,7 @@ do
   fi
 done
 
+echo "Running ticket number formatter"
 # File containing the commit message
 COMMIT_MSG_FILE=$1
 
