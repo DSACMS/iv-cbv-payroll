@@ -3,18 +3,18 @@
   <%= t(".header") %>
 </h1>
 
+<div class="margin-bottom-6 usa-prose">
+  <p>
+    <%= t(".description", start_date: @payments_beginning_at, end_date: @payments_ending_at, agency_acronym: current_site.agency_short_name) %>
+  </p>
+</div>
+
+<h2 class="site-preview-heading"><%= t(".total_payments", amount: format_money(total_gross_income)) %></h2>
+<div class="usa-prose">
+  <p><%= t(".total_payments_desc") %></p>
+</div>
+
 <% if @payments.any? %>
-  <div class="margin-bottom-6 usa-prose">
-    <p>
-      <%= t(".description", start_date: @payments_beginning_at, end_date: @payments_ending_at, agency_acronym: current_site.agency_short_name) %>
-    </p>
-  </div>
-
-  <h2 class="site-preview-heading"><%= t(".total_payments", amount: format_money(total_gross_income)) %></h2>
-  <div class="usa-prose">
-    <p><%= t(".total_payments_desc") %></p>
-  </div>
-
   <% payments_grouped_by_employer.each_with_index do |(account_id, summary), index| %>
     <table class="usa-table usa-table--borderless width-full">
       <h3>
@@ -49,10 +49,6 @@
     <h4><%= t(".additional_comments") %></h4>
     <%= get_comment_by_account_id(account_id).dig("comment") != "" ? get_comment_by_account_id(account_id).dig("comment") : t("shared.not_applicable") %>
   <% end %>
-<% else %>
-  <h3 class="site-preview-heading">
-    <%= t(".none_found") %>
-  </h3>
 <% end %>
 
 <%= form_with model: @cbv_flow, url: cbv_flow_summary_path, html: { class: "usa-form maxw-full" }, builder: UswdsFormBuilder, method: "patch" do |f| %>
