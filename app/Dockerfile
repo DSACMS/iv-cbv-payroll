@@ -102,6 +102,7 @@ FROM base AS release
 
 # Set the tmp dir to the writeable tmp volume
 ENV TMPDIR="/rails/tmp"
+ENV GNUPGHOME="/rails/tmp"
 
 # Install packages needed for deployment
 RUN apt-get update -qq && \
