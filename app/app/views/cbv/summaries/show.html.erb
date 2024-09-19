@@ -28,7 +28,7 @@
       <tr>
         <th class="padding-3" style="background-color: #d9e8f6;" colspan="2">
           <h4 class="margin-0">
-            <% if total_gross_income > 0 %>
+            <% if summary[:total] > 0 %>
               <% if employer_name %>
                 <%= t(".total_income_from", employer_name: employer_name, amount: format_money(summary[:total])) %>
               <% else %>
