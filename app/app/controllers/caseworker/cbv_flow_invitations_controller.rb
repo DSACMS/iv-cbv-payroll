@@ -22,7 +22,7 @@ class Caseworker::CbvFlowInvitationsController < Caseworker::BaseController
       flash[:alert] = t(".invite_failed",
                         email_address: cbv_flow_invitation_params[:email_address],
                         error_message: e.message)
-      redirect_to caseworker_dashboard_path(site_id: params[:site_id])
+      return redirect_to caseworker_dashboard_path(site_id: params[:site_id])
     end
 
     if @cbv_flow_invitation.errors.any?
@@ -87,7 +87,6 @@ class Caseworker::CbvFlowInvitationsController < Caseworker::BaseController
       :snap_application_date,
       :agency_id_number,
       :beacon_id,
-      :welid
     )
   end
 

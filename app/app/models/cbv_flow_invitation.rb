@@ -24,7 +24,6 @@ class CbvFlowInvitation < ApplicationRecord
   validates :site_id, inclusion: Rails.application.config.sites.site_ids
   validates :first_name, presence: true
   validates :last_name, presence: true
-  validates :middle_name, presence: false
   validates :email_address, format: { with: EMAIL_REGEX, message: :invalid_format }
   validates :snap_application_date, presence: true
 
