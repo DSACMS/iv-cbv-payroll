@@ -75,70 +75,80 @@
 
 <h2><%= t(".pdf.client.employment_payment_details") %></h2>
 
-<% if @payments.any? %>
-  <% payments_grouped_by_employer.each_with_index do |(account_id, summary), index| %>
-    <% employer_name = summary[:has_employment_data] ? summary.dig(:employment, "employer_name") : nil %>
-    <h3><%= t(".table_caption_no_name", number: index + 1) %>: <%= employer_name %></h3>
+<% payments_grouped_by_employer.each_with_index do |(account_id, summary), index| %>
+  <% employer_name = summary[:has_employment_data] ? summary.dig(:employment, "employer_name") : nil %>
+  <h3><%= t(".table_caption_no_name", number: index + 1) %>: <%= employer_name %></h3>
 
+  <%= render(TableComponent.new) do |table| %>
+    <%= table.with_header do %>
+      <h4 class="margin-0">
+        <% if employer_name %>
+          <%= employer_name %> &mdash;
+        <% end %>
+        Employment Information
+      </h4>
+    <% end %>
+    <% if is_caseworker && summary[:has_identity_data] %>
+      <%= table.with_data_point(:client_full_name, summary[:identity]["full_name"]) %>
+    <% end %>
+    <% if summary[:has_employment_data] %>
+      <%= table.with_data_point(:employer_phone, summary.dig(:employment, "employer_phone_number", "value")) %>
+      <%= table.with_data_point(:employer_address, summary.dig(:employment, "employer_address", "raw")) %>
+      <%= table.with_data_point(:employment_status, summary[:employment]["status"]) %>
+      <%= table.with_data_point(:employment_start_date, summary[:employment]["start_date"]) %>
+      <%= table.with_data_point(:employment_end_date, summary[:employment]["termination_date"]) %>
+    <% end %>
+    <% if summary[:has_income_data] %>
+      <%= table.with_data_point(:pay_frequency, summary[:income]["pay_frequency"]&.humanize) %>
+      <%= table.with_data_point(:hourly_rate, summary[:income]["compensation_amount"], summary[:income]["compensation_unit"]) %>
+    <% end %>
+  <% end %>
+
+  <% summary[:payments].each do |payment| %>
     <%= render(TableComponent.new) do |table| %>
       <%= table.with_header do %>
         <h4 class="margin-0">
           <% if employer_name %>
             <%= employer_name %> &mdash;
           <% end %>
-          Employment Information
-        </h4>
-      <% end %>
-      <% if is_caseworker && summary[:has_identity_data] %>
-        <%= table.with_data_point(:client_full_name, summary[:identity]["full_name"]) %>
-      <% end %>
-      <% if summary[:has_employment_data] %>
-        <%= table.with_data_point(:employer_phone, summary.dig(:employment, "employer_phone_number", "value")) %>
-        <%= table.with_data_point(:employer_address, summary.dig(:employment, "employer_address", "raw")) %>
-        <%= table.with_data_point(:employment_status, summary[:employment]["status"]) %>
-        <%= table.with_data_point(:employment_start_date, summary[:employment]["start_date"]) %>
-        <%= table.with_data_point(:employment_end_date, summary[:employment]["termination_date"]) %>
+          Pay Date: <%= format_date(payment[:pay_date]) %></h4>
       <% end %>
       <% if summary[:has_income_data] %>
-        <%= table.with_data_point(:pay_frequency, summary[:income]["pay_frequency"]&.humanize) %>
-        <%= table.with_data_point(:hourly_rate, summary[:income]["compensation_amount"], summary[:income]["compensation_unit"]) %>
+        <%= table.with_data_point(:pay_period_with_frequency, payment[:start], payment[:end], summary[:income]["pay_frequency"]&.humanize, highlight: is_caseworker) %>
+      <% else %>
+        <%= table.with_data_point(:pay_period_with_frequency, payment[:start], payment[:end], t("cbv.payment_details.show.frequency_unknown"), highlight: is_caseworker) %>
       <% end %>
-    <% end %>
+      <%= table.with_data_point(:pay_gross, payment[:gross_pay_amount], highlight: is_caseworker) %>
+      <%= table.with_data_point(:number_of_hours_worked, payment[:hours], highlight: is_caseworker) %>
+      <%= table.with_data_point(:net_pay_amount, payment[:net_pay_amount]) %>
 
-    <% summary[:payments].each do |payment| %>
-      <%= render(TableComponent.new) do |table| %>
-        <%= table.with_header do %>
-          <h4 class="margin-0">
-            <% if employer_name %>
-              <%= employer_name %> &mdash;
-            <% end %>
-            Pay Date: <%= format_date(payment[:pay_date]) %></h4>
-        <% end %>
-        <% if summary[:has_income_data] %>
-          <%= table.with_data_point(:pay_period_with_frequency, payment[:start], payment[:end], summary[:income]["pay_frequency"]&.humanize, highlight: is_caseworker) %>
-        <% else %>
-          <%= table.with_data_point(:pay_period_with_frequency, payment[:start], payment[:end], t("cbv.payment_details.show.frequency_unknown"), highlight: is_caseworker) %>
-        <% end %>
-        <%= table.with_data_point(:pay_gross, payment[:gross_pay_amount], highlight: is_caseworker) %>
-        <%= table.with_data_point(:number_of_hours_worked, payment[:hours], highlight: is_caseworker) %>
-        <%= table.with_data_point(:net_pay_amount, payment[:net_pay_amount]) %>
-
-        <% payment[:deductions].filter { |deduction| deduction[:amount] > 0 }.each do |deduction| %>
-          <%= table.with_data_point(:deduction, deduction[:category], deduction[:amount]) %>
-        <% end %>
-
-        <%= table.with_data_point(:pay_gross_ytd, payment[:gross_pay_ytd]) %>
+      <% payment[:deductions].filter { |deduction| deduction[:amount] > 0 }.each do |deduction| %>
+        <%= table.with_data_point(:deduction, deduction[:category], deduction[:amount]) %>
       <% end %>
-    <% end %>
 
-    <% if @cbv_flow.additional_information.dig(account_id, "comment").present? %>
-      <h2><%= t('.additional_information_title') %></h2>
-
-      <p><%= @cbv_flow.additional_information.dig(account_id, "comment") %></p>
+      <%= table.with_data_point(:pay_gross_ytd, payment[:gross_pay_ytd]) %>
     <% end %>
   <% end %>
-<% else %>
-  <h3 class="site-preview-heading">
-    <%= t('.none_found') %>
-  </h3>
+  <% if summary[:payments].empty? %>
+    <%= render(TableComponent.new) do |table| %>
+      <%= table.with_header do %>
+        <h4 class="margin-0">
+          <% if employer_name %>
+            <%= employer_name %> &mdash;
+          <% end %>
+          <%= t(".none_found") %>
+        </h4>
+      <% end %>
+      <%= table.with_row(t(".none_found_confirmed")) %>
+    <% end %>
+  <% end %>
+
+  <% if @cbv_flow.additional_information.dig(account_id, "comment").present? %>
+    <h2><%= t('.additional_information_title') %></h2>
+
+    <p><%= @cbv_flow.additional_information.dig(account_id, "comment") %></p>
+  <% end %>
 <% end %>
+
+
+

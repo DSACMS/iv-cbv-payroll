@@ -30,9 +30,10 @@ module Cbv::ReportsHelper
         has_income_data = pinwheel_account.job_succeeded?("income")
         has_employment_data = pinwheel_account.job_succeeded?("employment")
         has_identity_data = pinwheel_account.job_succeeded?("identity")
+        account_payments = payments.filter { |payment| payment[:account_id] == account_id }
         hash[account_id] ||= {
-          total: payments.filter { |payment| payment[:account_id] == account_id }.sum { |payment| payment[:gross_pay_amount] },
-          payments: payments.filter { |payment| payment[:account_id] == account_id },
+          total: account_payments.sum { |payment| payment[:gross_pay_amount] },
+          payments: account_payments,
           has_income_data: has_income_data,
           has_employment_data: has_employment_data,
           has_identity_data: has_identity_data,

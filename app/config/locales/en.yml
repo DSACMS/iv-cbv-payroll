@@ -282,6 +282,7 @@ en:
         description: The report below has your income from the past 90 days from, from %{start_date} to %{end_date}. Please review it before you send it to %{agency_acronym}.
         header: Review and submit your income report
         none_found: We didn't find any payments from this employer in the past 90 days.
+        none_found_confirmed: We've confirmed that there are no payments from this employer in the past 90 days. This happens when the client hasn't received income from this job during that time.
         payment: Payment of %{amount} before taxes on %{date}
         pdf:
           agency_header_name:
