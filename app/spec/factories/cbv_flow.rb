@@ -1,6 +1,6 @@
 FactoryBot.define do
   factory :cbv_flow do
-    association :cbv_flow_invitation, factory: [ :cbv_flow_invitation, :with_provider ]
+    association :cbv_flow_invitation, factory: [ :cbv_flow_invitation ]
 
     case_number { "ABC1234" }
     site_id { "sandbox" }

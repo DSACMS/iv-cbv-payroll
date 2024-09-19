@@ -1,5 +1,3 @@
-require_relative 'cbv_flow_invitation_provider'
-
 FactoryBot.define do
   factory :cbv_flow_invitation, class: "CbvFlowInvitation" do
     first_name { "Jane" }
@@ -10,24 +8,33 @@ FactoryBot.define do
     snap_application_date { Time.zone.today.strftime("%m/%d/%Y") }
     user
 
-    trait :with_provider do
-      after(:build) do |invitation|
-        invitation.define_singleton_method(:provider) do
-          CbvFlowInvitationProvider
-        end
-      end
-    end
-
     trait :nyc do
       site_id { "nyc" }
-      case_number { CbvFlowInvitationProvider.generate_nyc_case_number }
-      client_id_number { CbvFlowInvitationProvider.generate_nyc_client_id }
+
+      case_number do
+        number = 11.times.map { rand(10) }.join
+        letter = ('A'..'Z').to_a.sample
+        "#{number}#{letter}"
+      end
+
+      client_id_number do
+        letters = 2.times.map { ('A'..'Z').to_a.sample }.join
+        numbers = 5.times.map { rand(10) }.join
+        last_letter = ('A'..'Z').to_a.sample
+        "#{letters}#{numbers}#{last_letter}"
+      end
     end
 
     trait :ma do
       site_id { "ma" }
-      agency_id_number { CbvFlowInvitationProvider.generate_ma_agency_id }
-      beacon_id { CbvFlowInvitationProvider.generate_ma_beacon_id }
+
+      agency_id_number do
+        7.times.map { rand(10) }.join
+      end
+
+      beacon_id do
+        6.times.map { ('A'..'Z').to_a.sample }.join
+      end
     end
   end
 end
