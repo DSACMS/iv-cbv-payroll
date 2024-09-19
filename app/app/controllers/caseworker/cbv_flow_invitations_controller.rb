@@ -19,7 +19,7 @@ class Caseworker::CbvFlowInvitationsController < Caseworker::BaseController
     begin
       @cbv_flow_invitation = CbvInvitationService.new.invite(invitation_params, current_user)
     rescue => e
-      flash[:alert] = t(".invite_error",
+      flash[:alert] = t(".invite_failed",
                         email_address: cbv_flow_invitation_params[:email_address],
                         error_message: e.message)
       redirect_to caseworker_dashboard_path(site_id: params[:site_id])

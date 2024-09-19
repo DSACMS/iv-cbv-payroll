@@ -51,6 +51,7 @@ en:
   caseworker:
     cbv_flow_invitations:
       create:
+        invite_failed: 'Error sending invitation to %{email_address}: %{error_message}.'
         invite_success: Successfully delivered invitation to %{email_address}.
       incorrect_site_id: Unable to send invitation due to missing site configuration.
       ma:
