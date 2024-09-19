@@ -8,17 +8,16 @@ RSpec.describe WeeklyReportMailer, type: :mailer do
   let(:snap_app_date) { now.strftime("%Y-%m-%d") }
   let(:cbv_flow_invitation) do
     create(:cbv_flow_invitation,
+           :nyc,
            created_at: invitation_sent_at,
-           client_id_number: "001111111",
            snap_application_date: invitation_sent_at - 1.day,
-           case_number: "00001",
            site_id: site_id
           )
   end
   let(:cbv_flow) do
     create(
       :cbv_flow, :with_pinwheel_account,
-      case_number: "ABC1234",
+      case_number: cbv_flow_invitation.case_number,
       confirmation_code: "00001",
       created_at: invitation_sent_at + 15.minutes,
       site_id: site_id,
@@ -51,9 +50,9 @@ RSpec.describe WeeklyReportMailer, type: :mailer do
     expect(mail.attachments.first.content_type).to start_with('text/csv')
 
     expect(parsed_csv[0]).to match(
-      "client_id_number" => "001111111",
+      "client_id_number" => cbv_flow_invitation.client_id_number,
       "transmitted_at" => "2024-09-04 13:30:00 UTC",
-      "case_number" => "00001",
+      "case_number" => cbv_flow.case_number,
       "invited_at" => "2024-09-04 13:00:00 UTC",
       "snap_application_date" => "2024-09-03",
       "completed_at" => "2024-09-04 13:30:00 UTC",
@@ -77,7 +76,6 @@ RSpec.describe WeeklyReportMailer, type: :mailer do
       create(:cbv_flow_invitation,
              :nyc,
              created_at: invitation_sent_at,
-             client_id_number: "002222222",
             )
     end
     let!(:incomplete_flow) do
@@ -91,9 +89,9 @@ RSpec.describe WeeklyReportMailer, type: :mailer do
     it "includes them in the CSV data" do
       expect(parsed_csv.length).to eq(2)
       expect(parsed_csv).to include(hash_including(
-        "client_id_number" => "002222222",
+        "client_id_number" => incomplete_invitation.client_id_number,
         "transmitted_at" => nil,
-        "case_number" => "ABC1234",
+        "case_number" => incomplete_invitation.case_number,
         "invited_at" => "2024-09-04 13:00:00 UTC",
         "snap_application_date" => match(/\d\d\d\d-\d\d-\d\d/),
         "completed_at" => nil,
