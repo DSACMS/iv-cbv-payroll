@@ -85,6 +85,14 @@ RSpec.describe CbvFlowInvitation, type: :model do
         expect(invitation.case_number).to eq('00012345678A')
       end
 
+      it "checks that a shorter case number is invalid" do
+        invitation = CbvFlowInvitation.new(nyc_attributes.merge(case_number: '123A'))
+        expect(invitation).not_to be_valid
+        expect(invitation.errors[:case_number]).to include(
+          I18n.t('activerecord.errors.models.cbv_flow_invitation.attributes.case_number.invalid_format')
+        )
+      end
+
       it "validates an invalid 11 char string" do
         invitation = CbvFlowInvitation.new(nyc_attributes.merge(case_number: '1234567890A'))
         expect(invitation).not_to be_valid
