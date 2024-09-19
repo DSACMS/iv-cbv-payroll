@@ -5,14 +5,14 @@ class CbvInvitationService
 
     if cbv_flow_invitation.errors.any?
       e = cbv_flow_invitation.errors.full_messages.join(", ")
-      Rails.logger.error("Error inviting applicant: #{e}")
+      Rails.logger.warn("Error inviting applicant: #{e}")
       return cbv_flow_invitation
     end
 
     begin
       send_invitation_email(cbv_flow_invitation)
       track_event(cbv_flow_invitation, current_user)
-    rescue e
+    rescue => e
       Rails.logger.error("Error inviting applicant: #{e.message}")
       raise e
     end

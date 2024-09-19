@@ -1,23 +1,11 @@
-<div class="field_with_errors">
-  <%= f.text_field :first_name %>
-</div>
+<%= f.text_field :first_name, label: t(".invite.first_name") %>
 
-<div class="field_with_errors">
-  <%= f.text_field :middle_name %>
-</div>
+<%= f.text_field :middle_name, label: t(".invite.middle_name") %>
 
-<div class="field_with_errors">
-  <%= f.text_field :last_name %>
-</div>
+<%= f.text_field :last_name, label: t(".invite.last_name") %>
 
-<div class="field_with_errors">
-  <%= f.text_field :case_number %>
-</div>
+<%= f.text_field :case_number, label: t(".invite.case_number") %>
 
-<div class="field_with_errors">
-  <%= f.date_picker :snap_application_date, label: t(".invite.snap_application_date"), hint: "mm/dd/yyyy" %>
-</div>
+<%= f.date_picker :snap_application_date, label: t(".invite.todays_date") %>
 
-<div class="field_with_errors">
-  <%= f.text_field :email_address %>
-</div>
+<%= f.email_field :email_address, label: t(".invite.email_address") %>

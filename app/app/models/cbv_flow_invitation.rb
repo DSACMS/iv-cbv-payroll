@@ -113,25 +113,25 @@ class CbvFlowInvitation < ApplicationRecord
 
   def ma_snap_application_date_not_in_future
     if snap_application_date.present? && snap_application_date > Date.current
-      errors.add(:snap_application_date, :ma_future_date)
+      errors.add(:snap_application_date, :ma_invalid_date)
     end
   end
 
   def ma_snap_application_date_not_more_than_1_year_ago
     if snap_application_date.present? && snap_application_date < 1.year.ago.to_date
-      errors.add(:snap_application_date, :ma_too_old)
+      errors.add(:snap_application_date, :ma_invalid_date)
     end
   end
 
   def nyc_snap_application_date_not_in_future
     if snap_application_date.present? && snap_application_date > Date.current
-      errors.add(:snap_application_date, :nyc_future_date)
+      errors.add(:snap_application_date, :nyc_invalid_date)
     end
   end
 
   def nyc_snap_application_date_not_more_than_30_days_ago
     if snap_application_date.present? && snap_application_date < 30.day.ago.to_date
-      errors.add(:snap_application_date, :nyc_too_old)
+      errors.add(:snap_application_date, :nyc_invalid_date)
     end
   end
 
