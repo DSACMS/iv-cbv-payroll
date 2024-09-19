@@ -63,106 +63,110 @@ RSpec.describe CbvFlowInvitation, type: :model do
     context "when site_id is 'nyc'" do
       let(:nyc_attributes) { valid_attributes.merge(site_id: 'nyc', user: create(:user, site_id: "nyc")) }
 
-      it "requires case_number" do
-        invitation = CbvFlowInvitation.new(nyc_attributes.merge(case_number: nil))
-        expect(invitation).not_to be_valid
-        expect(invitation.errors[:case_number]).to include(
-          I18n.t('activerecord.errors.models.cbv_flow_invitation.attributes.case_number.invalid_format'),
-        )
+      context "user input is valid" do
+        it "formats a 9-character case number with leading zeros" do
+          invitation = CbvFlowInvitation.new(nyc_attributes.merge(case_number: '12345678A'))
+          expect(invitation).to be_valid
+          expect(invitation.case_number).to eq('00012345678A')
+        end
+
+        it "converts case number to uppercase" do
+          invitation = CbvFlowInvitation.new(nyc_attributes.merge(case_number: '12345678a'))
+          expect(invitation).to be_valid
+          expect(invitation.case_number).to eq('00012345678A')
+        end
+
+        it "validates snap_application_date is not older than 30 days" do
+          invitation = CbvFlowInvitation.new(nyc_attributes.merge(snap_application_date: 31.days.ago))
+          expect(invitation).not_to be_valid
+          expect(invitation.errors[:snap_application_date]).to include(
+            I18n.t('activerecord.errors.models.cbv_flow_invitation.attributes.snap_application_date.nyc_invalid_date')
+          )
+        end
       end
 
-      it "validates invalid case_number format" do
-        invitation = CbvFlowInvitation.new(nyc_attributes.merge(case_number: 'invalid'))
-        expect(invitation).not_to be_valid
-        expect(invitation.errors[:case_number]).to include(
-          I18n.t('activerecord.errors.models.cbv_flow_invitation.attributes.case_number.invalid_format')
-        )
-      end
+      context "user input is invalid" do
+        it "requires case_number" do
+          invitation = CbvFlowInvitation.new(nyc_attributes.merge(case_number: nil))
+          expect(invitation).not_to be_valid
+          expect(invitation.errors[:case_number]).to include(
+            I18n.t('activerecord.errors.models.cbv_flow_invitation.attributes.case_number.invalid_format'),
+          )
+        end
 
-      it "formats a 9-character case number with leading zeros" do
-        invitation = CbvFlowInvitation.new(nyc_attributes.merge(case_number: '12345678A'))
-        expect(invitation).to be_valid
-        expect(invitation.case_number).to eq('00012345678A')
-      end
+        it "validates invalid case_number format" do
+          invitation = CbvFlowInvitation.new(nyc_attributes.merge(case_number: 'invalid'))
+          expect(invitation).not_to be_valid
+          expect(invitation.errors[:case_number]).to include(
+            I18n.t('activerecord.errors.models.cbv_flow_invitation.attributes.case_number.invalid_format')
+          )
+        end
 
-      it "checks that a shorter case number is invalid" do
-        invitation = CbvFlowInvitation.new(nyc_attributes.merge(case_number: '123A'))
-        expect(invitation).not_to be_valid
-        expect(invitation.errors[:case_number]).to include(
-          I18n.t('activerecord.errors.models.cbv_flow_invitation.attributes.case_number.invalid_format')
-        )
-      end
+        it "checks that a shorter case number is invalid" do
+          invitation = CbvFlowInvitation.new(nyc_attributes.merge(case_number: '123A'))
+          expect(invitation).not_to be_valid
+          expect(invitation.errors[:case_number]).to include(
+            I18n.t('activerecord.errors.models.cbv_flow_invitation.attributes.case_number.invalid_format')
+          )
+        end
 
-      it "validates an invalid 11 char string" do
-        invitation = CbvFlowInvitation.new(nyc_attributes.merge(case_number: '1234567890A'))
-        expect(invitation).not_to be_valid
-        expect(invitation.case_number).to eq('1234567890A')
-      end
+        it "validates an invalid 11 char string" do
+          invitation = CbvFlowInvitation.new(nyc_attributes.merge(case_number: '1234567890A'))
+          expect(invitation).not_to be_valid
+          expect(invitation.case_number).to eq('1234567890A')
+        end
 
-      it "converts case number to uppercase" do
-        invitation = CbvFlowInvitation.new(nyc_attributes.merge(case_number: '12345678a'))
-        expect(invitation).to be_valid
-        expect(invitation.case_number).to eq('00012345678A')
-      end
-
-      it "validates client_id_number format when present" do
-        invitation = CbvFlowInvitation.new(nyc_attributes.merge(client_id_number: 'invalid'))
-        expect(invitation).not_to be_valid
-        expect(invitation.errors[:client_id_number]).to include(
-          I18n.t('activerecord.errors.models.cbv_flow_invitation.attributes.client_id_number.invalid_format')
-        )
-      end
-
-      it "validates snap_application_date is not older than 30 days" do
-        invitation = CbvFlowInvitation.new(nyc_attributes.merge(snap_application_date: 31.days.ago))
-        expect(invitation).not_to be_valid
-        expect(invitation.errors[:snap_application_date]).to include(
-          I18n.t('activerecord.errors.models.cbv_flow_invitation.attributes.snap_application_date.nyc_invalid_date')
-        )
+        it "validates client_id_number format when present" do
+          invitation = CbvFlowInvitation.new(nyc_attributes.merge(client_id_number: 'invalid'))
+          expect(invitation).not_to be_valid
+          expect(invitation.errors[:client_id_number]).to include(
+            I18n.t('activerecord.errors.models.cbv_flow_invitation.attributes.client_id_number.invalid_format')
+          )
+        end
       end
     end
 
     context "when site_id is 'ma'" do
       let(:ma_attributes) { valid_attributes.merge(site_id: 'ma') }
 
-      it "requires agency_id_number" do
-        invitation = CbvFlowInvitation.new(ma_attributes)
-        expect(invitation).not_to be_valid
-        expect(invitation.errors[:agency_id_number]).to include(
-          I18n.t('activerecord.errors.models.cbv_flow_invitation.attributes.agency_id_number.invalid_format'),
-        )
-      end
+      context "user input is invalid" do
+        it "requires agency_id_number" do
+          invitation = CbvFlowInvitation.new(ma_attributes)
+          expect(invitation).not_to be_valid
+          expect(invitation.errors[:agency_id_number]).to include(
+            I18n.t('activerecord.errors.models.cbv_flow_invitation.attributes.agency_id_number.invalid_format'),
+          )
+        end
 
-      it "requires beacon_id" do
-        invitation = CbvFlowInvitation.new(ma_attributes)
-        expect(invitation).not_to be_valid
-        expect(invitation.errors[:beacon_id]).to include(
-          I18n.t('activerecord.errors.models.cbv_flow_invitation.attributes.beacon_id.invalid_format')
-        )
-      end
+        it "requires beacon_id" do
+          invitation = CbvFlowInvitation.new(ma_attributes)
+          expect(invitation).not_to be_valid
+          expect(invitation.errors[:beacon_id]).to include(
+            I18n.t('activerecord.errors.models.cbv_flow_invitation.attributes.beacon_id.invalid_format')
+          )
+        end
 
-      it "requires beacon_id to have 6 alphanumeric characters" do
-        invitation = CbvFlowInvitation.new(ma_attributes.merge(beacon_id: '12345'))
-        expect(invitation).not_to be_valid
-        expect(invitation.errors[:beacon_id]).to include(
-          I18n.t('activerecord.errors.models.cbv_flow_invitation.attributes.beacon_id.invalid_format')
-        )
-      end
+        it "requires beacon_id to have 6 alphanumeric characters" do
+          invitation = CbvFlowInvitation.new(ma_attributes.merge(beacon_id: '12345'))
+          expect(invitation).not_to be_valid
+          expect(invitation.errors[:beacon_id]).to include(
+            I18n.t('activerecord.errors.models.cbv_flow_invitation.attributes.beacon_id.invalid_format')
+          )
+        end
 
-      it "validates agency_id_number format" do
-        invitation = CbvFlowInvitation.new(ma_attributes.merge(agency_id_number: 'invalid'))
-        expect(invitation).not_to be_valid
-        expect(invitation.errors[:agency_id_number]).to include(
-          I18n.t('activerecord.errors.models.cbv_flow_invitation.attributes.agency_id_number.invalid_format')
-        )
-      end
-    end
+        it "validates agency_id_number format" do
+          invitation = CbvFlowInvitation.new(ma_attributes.merge(agency_id_number: 'invalid'))
+          expect(invitation).not_to be_valid
+          expect(invitation.errors[:agency_id_number]).to include(
+            I18n.t('activerecord.errors.models.cbv_flow_invitation.attributes.agency_id_number.invalid_format')
+          )
+        end
 
-    context "when site_id is not 'nyc'" do
-      it "does not require client_id_number" do
-        invitation = CbvFlowInvitation.new(valid_attributes.merge(client_id_number: nil, site_id: "ma"))
-        expect(invitation).not_to be_valid
-        expect(invitation.errors[:client_id_number]).to be_empty
+        it "does not require client_id_number" do
+          invitation = CbvFlowInvitation.new(valid_attributes.merge(client_id_number: nil, site_id: "ma"))
+          expect(invitation).not_to be_valid
+          expect(invitation.errors[:client_id_number]).to be_empty
+        end
       end
     end
   end
