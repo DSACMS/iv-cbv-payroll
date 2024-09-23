@@ -18,7 +18,7 @@ class CbvFlowInvitation < ApplicationRecord
 
   has_secure_token :auth_token, length: 36
 
-  before_validation :parse_snap_application_date, if: -> { !:snap_application_date.empty? }
+  before_validation :parse_snap_application_date
   before_validation :format_case_number, if: :nyc_site?
 
   validates :site_id, inclusion: Rails.application.config.sites.site_ids
@@ -30,7 +30,7 @@ class CbvFlowInvitation < ApplicationRecord
   validates :agency_id_number, format: { with: MA_AGENCY_ID_REGEX, message: :invalid_format }, if: :ma_site?
   validates :beacon_id, format: { with: MA_BEACON_ID_REGEX, message: :invalid_format }, if: :ma_site?
   validate :ma_snap_application_date_not_more_than_1_year_ago, if: :ma_site?
-  validate :ma_snap_application_date_not_in_future
+  validate :ma_snap_application_date_not_in_future, if: :ma_site?
 
 
   # NYC specific validations

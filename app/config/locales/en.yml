@@ -55,7 +55,7 @@ en:
       ma:
         invite:
           agency_id_number: Client's agency ID number
-          beacon_id: Your WelID
+          beacon_id: Your WELID
           email_address: Client's email address
           first_name: Client's first name
           last_name: Client's last name
@@ -325,7 +325,7 @@ en:
             middle_name: Client's middle name
             pay_period: Pay period (%{pay_frequency})
             snap_agency_id: SNAP Agency ID
-            staff_beacon_id_wel_id: Staff BEACON ID (WelID)
+            staff_beacon_id_wel_id: Staff BEACON ID (WELID)
           client:
             address: Employer address
             agency_id_number: Client's Agency ID
