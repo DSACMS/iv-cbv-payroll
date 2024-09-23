@@ -74,7 +74,7 @@ en:
           first_name: Client's first name
           last_name: Client's last name
           middle_name: Client's middle name
-          snap_application_date: SNAP application date or recertification date
+          snap_application_date: SNAP application or recertification date
     dashboards:
       show:
         create_invitation: Create a new invitation
