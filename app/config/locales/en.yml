@@ -11,7 +11,7 @@ en:
             beacon_id:
               invalid_format: Your WELID must be 6 characters. It can only include letters and numbers.
             case_number:
-              invalid_format: Client's case number must be 12 digits. Enter the case number in the ANGIE/sPOS format, i.e. 00012345678A.
+              invalid_format: Enter the case number in the ANGIE/sPOS format, i.e. 00012345678A.
             client_id_number:
               invalid_format: Enter the client's CIN in the correct format, XX00000X.
             email_address:
@@ -74,7 +74,7 @@ en:
           first_name: Client's first name
           last_name: Client's last name
           middle_name: Client's middle name
-          snap_application_date: SNAP application date or recertification date
+          snap_application_date: SNAP application or recertification date
     dashboards:
       show:
         create_invitation: Create a new invitation
