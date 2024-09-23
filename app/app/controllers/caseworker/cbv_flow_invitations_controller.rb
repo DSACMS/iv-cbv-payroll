@@ -1,4 +1,5 @@
 class Caseworker::CbvFlowInvitationsController < Caseworker::BaseController
+  include ActionView::Helpers::TextHelper
   protect_from_forgery prepend: true
   before_action :ensure_valid_params!
   before_action :authenticate_user!
@@ -27,7 +28,7 @@ class Caseworker::CbvFlowInvitationsController < Caseworker::BaseController
 
     if @cbv_flow_invitation.errors.any?
       error_count = @cbv_flow_invitation.errors.size
-      error_header = "#{"error".pluralize(error_count)} occurred"
+      error_header = "#{pluralize(error_count, 'error')} occurred"
 
       # Collect error messages without attribute names
       error_messages = @cbv_flow_invitation.errors.messages.values.flatten.map { |msg| "<li>#{msg}</li>" }.join
