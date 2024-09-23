@@ -35,7 +35,7 @@ RSpec.describe CbvFlowInvitation, type: :model do
         invitation = CbvFlowInvitation.new(valid_attributes.merge(snap_application_date: Date.tomorrow))
         expect(invitation).not_to be_valid
         expect(invitation.errors[:snap_application_date]).to include(
-          I18n.t('activerecord.errors.models.cbv_flow_invitation.attributes.snap_application_date.ma_invalid_date')
+          I18n.t('activerecord.errors.models.cbv_flow_invitation.attributes.snap_application_date.nyc_invalid_date')
         )
       end
 
