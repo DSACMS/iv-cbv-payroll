@@ -27,8 +27,7 @@ RSpec.describe CbvFlowInvitation, type: :model do
         invitation = CbvFlowInvitation.new(valid_attributes.merge(snap_application_date: nil))
         expect(invitation).not_to be_valid
         expect(invitation.errors[:snap_application_date]).to include(
-          I18n.t('activerecord.errors.models.cbv_flow_invitation.attributes.snap_application_date.invalid_date'),
-          "can't be blank"
+          I18n.t('activerecord.errors.models.cbv_flow_invitation.attributes.snap_application_date.nyc_invalid_date'),
         )
       end
 
@@ -50,7 +49,7 @@ RSpec.describe CbvFlowInvitation, type: :model do
         invitation = CbvFlowInvitation.new(valid_attributes.merge(snap_application_date: "invalid"))
         expect(invitation).not_to be_valid
         expect(invitation.errors[:snap_application_date]).to include(
-          I18n.t('activerecord.errors.models.cbv_flow_invitation.attributes.snap_application_date.invalid_date')
+          I18n.t('activerecord.errors.models.cbv_flow_invitation.attributes.snap_application_date.nyc_invalid_date')
         )
       end
 
@@ -118,6 +117,22 @@ RSpec.describe CbvFlowInvitation, type: :model do
 
         it "validates client_id_number format when present" do
           invitation = CbvFlowInvitation.new(nyc_attributes.merge(client_id_number: 'invalid'))
+          expect(invitation).not_to be_valid
+          expect(invitation.errors[:client_id_number]).to include(
+            I18n.t('activerecord.errors.models.cbv_flow_invitation.attributes.client_id_number.invalid_format')
+          )
+        end
+
+        it "requires valid snap_application_date" do
+          invitation = CbvFlowInvitation.new(nyc_attributes.merge(snap_application_date: "invalid"))
+          expect(invitation).not_to be_valid
+          expect(invitation.errors[:snap_application_date]).to include(
+            I18n.t('activerecord.errors.models.cbv_flow_invitation.attributes.snap_application_date.nyc_invalid_date')
+          )
+        end
+
+        it "requires client_id_number" do
+          invitation = CbvFlowInvitation.new(nyc_attributes.merge(client_id_number: nil))
           expect(invitation).not_to be_valid
           expect(invitation.errors[:client_id_number]).to include(
             I18n.t('activerecord.errors.models.cbv_flow_invitation.attributes.client_id_number.invalid_format')

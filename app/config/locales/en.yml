@@ -9,8 +9,7 @@ en:
               blank: Enter a valid agency ID number.
               invalid_format: Agency ID number must be 7 digits.
             beacon_id:
-              blank: can't be blank
-              invalid_format: Your WelID must be 6 characters. It can only include letters and numbers.
+              invalid_format: Your WELID must be 6 characters. It can only include letters and numbers.
             case_number:
               invalid_format: Client's case number must be 12 digits. Enter the case number in the ANGIE/sPOS format, i.e. 00012345678A.
             client_id_number:
@@ -23,7 +22,6 @@ en:
             last_name:
               blank: Enter the client's last name.
             snap_application_date:
-              invalid_date: is not a valid date
               ma_invalid_date: Enter today's date or the date you contacted the client. This date must be today or in the past year.
               nyc_invalid_date: SNAP application/recertification date must be today or in the past 30 days.
   applicant_mailer:

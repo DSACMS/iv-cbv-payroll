@@ -18,14 +18,13 @@ class CbvFlowInvitation < ApplicationRecord
 
   has_secure_token :auth_token, length: 36
 
-  before_validation :parse_snap_application_date
+  before_validation :parse_snap_application_date, if: -> { !:snap_application_date.empty? }
   before_validation :format_case_number, if: :nyc_site?
 
   validates :site_id, inclusion: Rails.application.config.sites.site_ids
   validates :first_name, presence: true
   validates :last_name, presence: true
   validates :email_address, format: { with: EMAIL_REGEX, message: :invalid_format }
-  validates :snap_application_date, presence: true
 
   # MA specific validations
   validates :agency_id_number, format: { with: MA_AGENCY_ID_REGEX, message: :invalid_format }, if: :ma_site?
@@ -35,8 +34,8 @@ class CbvFlowInvitation < ApplicationRecord
 
 
   # NYC specific validations
-  validates :case_number, presence: true, format: { with: NYC_CASE_NUMBER_REGEX, message: :invalid_format }, if: :nyc_site?
-  validates :client_id_number, format: { with: NYC_CLIENT_ID_REGEX, message: :invalid_format }, if: -> { nyc_site? && client_id_number.present? }
+  validates :case_number, format: { with: NYC_CASE_NUMBER_REGEX, message: :invalid_format }, if: :nyc_site?
+  validates :client_id_number, format: { with: NYC_CLIENT_ID_REGEX, message: :invalid_format }, if: :nyc_site?
   validate :nyc_snap_application_date_not_more_than_30_days_ago, if: :nyc_site?
   validate :nyc_snap_application_date_not_in_future, if: :nyc_site?
 
@@ -105,7 +104,15 @@ class CbvFlowInvitation < ApplicationRecord
         new_date_format = Date.strptime(raw_snap_application_date.to_s, "%m/%d/%Y")
         self.snap_application_date = new_date_format
       rescue Date::Error => e
-        errors.add(:snap_application_date, :invalid_date)
+        case site_id
+        when "ma"
+          error = :ma_invalid_date
+        when "nyc"
+          error = :nyc_invalid_date
+        else
+          error = :invalid_date
+        end
+        errors.add(:snap_application_date, error)
       end
     end
   end
