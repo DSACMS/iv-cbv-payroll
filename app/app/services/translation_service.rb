@@ -7,18 +7,14 @@ class TranslationService
 
     # Set default options
     target_locale = options.fetch(:target_locale, "es")
-    skip_row_conditions = options.fetch(:skip_row_conditions, [
-      self.skip_no_translation
-    ])
-
-    row_modifiers = options.fetch(:row_modifiers, [])
+    middleware = options.fetch(:middleware, [])
     translations = { target_locale => {} }
     row_count = 0
     valid_translation_count = 0
     empty_row_count = 0
     skipped_rows = []
 
-    puts "Attempting to read CSV file: #{csv_path}"
+    Rails.logger.info "Attempting to read CSV file: #{csv_path}"
     csv_lines = File.readlines(csv_path)
 
     # Remove the first line if it contains the file label
@@ -35,45 +31,35 @@ class TranslationService
 
       row_count += 1
 
-      # Apply row modifiers
-      row_modifiers.each do |modifier|
-        row = modifier.call(row)
-      end
+      # Apply middleware
+      next if middleware.any? { |fn| (row = fn.call(row)) == false }
 
-      # Check skip conditions
-      if skip_row_conditions.any? { |condition| condition.call(row) }
-        skipped_rows << row
-        next
-      end
+      translation_key = row[:translation_key].to_s.strip
+      translation_value = (row[target_locale.to_sym] || row[:spanish]).to_s.strip
 
-      translation_key = row[:translation_key]
-      translation_value = row[target_locale.to_sym] || row[:spanish]  # Default to :spanish if specific locale column not found
-
-      if translation_key.nil? || translation_value.nil? || translation_key.to_s.strip.empty? || translation_value.to_s.strip.empty?
+      if translation_key.empty? || translation_value.empty?
         empty_row_count += 1
         next
       end
 
       # Remove 'en.' prefix if present
-      if translation_key.start_with?("en.")
-        translation_key = translation_key[3..-1]  # Remove the 'en.' prefix
-      end
+      translation_key = translation_key.delete_prefix("en.")
 
-      puts "Row #{row_count}: Key: '#{translation_key}', Translation: '#{translation_value}'"
+      Rails.logger.info "Row #{row_count}: Key: '#{translation_key}', Translation: '#{translation_value}'"
       set_nested_hash_value(translations[target_locale], translation_key.split("."), translation_value)
       valid_translation_count += 1
     end
 
-    puts "Total rows processed: #{row_count}"
-    puts "Valid translations found: #{valid_translation_count}"
-    puts "Empty rows skipped: #{empty_row_count}"
-    puts "Rows skipped by conditions: #{skipped_rows.count}"
+    Rails.logger.info "Total rows processed: #{row_count}"
+    Rails.logger.info "Valid translations found: #{valid_translation_count}"
+    Rails.logger.info "Empty rows skipped: #{empty_row_count}"
+    Rails.logger.info "Rows skipped by conditions: #{skipped_rows.count}"
 
     File.open(output_yaml_path, "w") do |file|
       file.write(translations.to_yaml(line_width: -1))  # Preserve line breaks in YAML
     end
 
-    puts "#{target_locale} translations have been generated and saved to #{output_yaml_path}"
+    Rails.logger.info "#{target_locale} translations have been generated and saved to #{output_yaml_path}"
     translations
   end
 

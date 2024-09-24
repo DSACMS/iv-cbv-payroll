@@ -10,22 +10,22 @@ RSpec.describe TranslationService do
   end
 
   describe '.generate' do
-    let(:skip_condition) do
-      lambda do |row|
-        row[:added_to_confluence]&.strip == 'No need for translation'
-      end
-    end
-
     context 'with Spanish translations' do
       it 'generates a YAML file with Spanish translations and skips rows based on condition' do
+        processor = lambda do |row|
+          if row[:added_to_confluence]&.strip == 'No need for translation' ||
+             row[:spanish].to_s.strip.empty?
+            false
+          else
+            row
+          end
+        end
+
         result = TranslationService.generate(
           csv_path.to_s,
           output_path.to_s,
           target_locale: 'es',
-          skip_row_conditions: [
-            TranslationService.skip_no_translation,
-            skip_condition
-          ]
+          middleware: [ processor ]
         )
 
         expect(File.exist?(output_path)).to be true
@@ -43,9 +43,8 @@ RSpec.describe TranslationService do
       end
     end
 
-    it 'applies row modifiers before processing' do
-      # Modifier to trim whitespace from translation values
-      row_modifier = lambda do |row|
+    it 'applies processors to modify rows' do
+      processor = lambda do |row|
         row[:spanish] = row[:spanish]&.strip
         row
       end
@@ -54,11 +53,7 @@ RSpec.describe TranslationService do
         csv_path.to_s,
         output_path.to_s,
         target_locale: 'es',
-        skip_row_conditions: [
-          TranslationService.skip_no_translation,
-          skip_condition
-        ],
-        row_modifiers: [ row_modifier ]
+        middleware: [ processor ]
       )
       expect(result['es']).not_to be_empty
     end
