@@ -5,19 +5,36 @@ FactoryBot.define do
     last_name { "Doe" }
     site_id { "sandbox" }
     email_address { "test@example.com" }
-    snap_application_date { Date.today.strftime("%m/%d/%Y") }
+    snap_application_date { Time.zone.today.strftime("%m/%d/%Y") }
     user
 
     trait :nyc do
       site_id { "nyc" }
-      case_number { "ABC1234" }
-      client_id_number { "001111111" }
+
+      case_number do
+        number = 11.times.map { rand(10) }.join
+        letter = ('A'..'Z').to_a.sample
+        "#{number}#{letter}"
+      end
+
+      client_id_number do
+        letters = 2.times.map { ('A'..'Z').to_a.sample }.join
+        numbers = 5.times.map { rand(10) }.join
+        last_letter = ('A'..'Z').to_a.sample
+        "#{letters}#{numbers}#{last_letter}"
+      end
     end
 
     trait :ma do
       site_id { "ma" }
-      agency_id_number { "0001112222" }
-      beacon_id { "123456" }
+
+      agency_id_number do
+        7.times.map { rand(10) }.join
+      end
+
+      beacon_id do
+        6.times.map { ('A'..'Z').to_a.sample }.join
+      end
     end
   end
 end

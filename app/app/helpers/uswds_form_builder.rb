@@ -127,8 +127,9 @@ class UswdsFormBuilder < ActionView::Helpers::FormBuilder
 
   def field_error(attribute)
     return unless has_error?(attribute)
-
-    @template.content_tag(:span, object.errors[attribute].to_sentence, class: "usa-error-message")
+    error_messages = object.errors.messages_for(attribute)
+    error_sentence = error_messages.join("<br>").html_safe
+    @template.content_tag(:span, error_sentence, class: "usa-error-message")
   end
 
   def fieldset(legend, options = {}, &block)
@@ -182,17 +183,17 @@ class UswdsFormBuilder < ActionView::Helpers::FormBuilder
     @template.capture do
       # Hidden field included for same reason as radio button collections (https://api.rubyonrails.org/classes/ActionView/Helpers/FormOptionsHelper.html#method-i-collection_radio_buttons)
       hidden_field(attribute, value: "") +
-      fieldset(options[:legend] || human_name(attribute), { attribute: attribute }) do
-        buttons =
-          radio_button(attribute, true, yes_options) +
-          radio_button(attribute, false, no_options)
+        fieldset(options[:legend] || human_name(attribute), { attribute: attribute }) do
+          buttons =
+            radio_button(attribute, true, yes_options) +
+              radio_button(attribute, false, no_options)
 
-        if has_error?(attribute)
-          field_error(attribute) + buttons
-        else
-          buttons
+          if has_error?(attribute)
+            field_error(attribute) + buttons
+          else
+            buttons
+          end
         end
-      end
     end
   end
 

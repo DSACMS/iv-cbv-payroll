@@ -29,7 +29,7 @@ RSpec.describe Caseworker::CbvFlowInvitationsController, type: :controller do
 
   describe "#create" do
     let(:cbv_flow_invitation_params) do
-      attributes_for(:cbv_flow_invitation, site_id: "nyc", client_id_number: "123456", case_number: "ABC1234")
+      attributes_for(:cbv_flow_invitation, :nyc)
     end
 
     it "creates a CbvFlowInvitation record with the nyc fields" do
@@ -42,16 +42,17 @@ RSpec.describe Caseworker::CbvFlowInvitationsController, type: :controller do
       expect(invitation.first_name).to eq("Jane")
       expect(invitation.middle_name).to eq("Sue")
       expect(invitation.last_name).to eq("Doe")
-      expect(invitation.client_id_number).to eq("123456")
-      expect(invitation.case_number).to eq("ABC1234")
+      expect(invitation.client_id_number).to eq(cbv_flow_invitation_params[:client_id_number])
+      expect(invitation.case_number).to eq(cbv_flow_invitation_params[:case_number])
       expect(invitation.email_address).to eq("test@example.com")
     end
 
     it "creates a CbvFlowInvitation record without optional fields" do
       post :create, params: {
         site_id: nyc_params[:site_id],
-        cbv_flow_invitation: cbv_flow_invitation_params.except(:middle_name, :client_id_number)
+        cbv_flow_invitation: cbv_flow_invitation_params.except(:middle_name)
       }
+      puts response.inspect
       invitation = CbvFlowInvitation.last
       expect(invitation.middle_name).to be_nil
     end
