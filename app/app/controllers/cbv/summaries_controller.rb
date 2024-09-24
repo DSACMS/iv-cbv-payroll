@@ -27,7 +27,10 @@ class Cbv::SummariesController < Cbv::BaseController
           cbv_flow_id: @cbv_flow.id
         })
 
-        render pdf: "#{@cbv_flow.id}", layout: "pdf", locals: { is_caseworker: false }, footer: { right: "Income Verification Report | Page [page] of [topage]", font_size: 10 }
+        render pdf: "#{@cbv_flow.id}",
+          layout: "pdf",
+          locals: { is_caseworker: Rails.env.development? && params[:is_caseworker] },
+          footer: { right: "Income Verification Report | Page [page] of [topage]", font_size: 10 }
       end
     end
   end
@@ -108,7 +111,7 @@ class Cbv::SummariesController < Cbv::BaseController
           employments: @employments,
           incomes: @incomes,
           identities: @identities,
-          payments_grouped_by_employer: summarize_by_employer(@payments, @employments, @incomes, @identities),
+          payments_grouped_by_employer: summarize_by_employer(@payments, @employments, @incomes, @identities, @cbv_flow.pinwheel_accounts),
           has_consent: has_consent
         }
       )

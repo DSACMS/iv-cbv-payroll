@@ -1,4 +1,5 @@
 <tr class="<%= @highlight && "cbv-row-highlight" %>">
-  <td><%= @label %></td>
-  <td><%= @value %></td>
+  <% @cells.each do |cell| %>
+    <td><%= cell %></td>
+  <% end %>
 </tr>

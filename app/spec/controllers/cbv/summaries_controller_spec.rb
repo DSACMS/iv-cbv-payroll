@@ -247,7 +247,7 @@ RSpec.describe Cbv::SummariesController do
       context "when transmission method is s3" do
         let(:user) { create(:user, email: "test@test.com") }
         let(:s3_service_double) { instance_double(S3Service) }
-        let(:pinwheel_service_double) { instance_double(PinwheelService) }
+        # let(:pinwheel_service_double) { instance_double(PinwheelService) }
         before do
           sign_in user
           allow(S3Service).to receive(:new).and_return(s3_service_double)
@@ -264,14 +264,11 @@ RSpec.describe Cbv::SummariesController do
           allow(controller).to receive(:current_site).and_return(mock_site)
 
           # Stub pinwheel_for method to return our double
-          allow_any_instance_of(ApplicationController).to receive(:pinwheel_for).and_return(pinwheel_service_double)
-
-          # Stub all relevant PinwheelService methods
-          allow(pinwheel_service_double).to receive(:fetch_accounts).and_return({ "data" => [ { "id" => "sample_account_id" } ] })
-          allow(pinwheel_service_double).to receive(:fetch_paystubs).and_return({ "data" => [] })
-          allow(pinwheel_service_double).to receive(:fetch_employment).and_return({ "data" => {} })
-          allow(pinwheel_service_double).to receive(:fetch_identity).and_return({ "data" => {} })
-          allow(pinwheel_service_double).to receive(:fetch_income_metadata).and_return({ "data" => {} })
+          stub_request_end_user_accounts_response
+          stub_request_end_user_paystubs_response
+          stub_request_employment_info_response
+          stub_request_income_metadata_response
+          stub_request_identity_response
         end
 
         it "generates, gzips, encrypts, and uploads PDF and CSV files to S3" do
@@ -319,8 +316,8 @@ RSpec.describe Cbv::SummariesController do
             site_id: cbv_flow.site_id,
             cbv_flow_id: cbv_flow.id,
             invitation_id: cbv_flow_invitation.id,
-            account_count: 0,
-            paystub_count: 0,
+            account_count: 1,
+            paystub_count: 1,
             account_count_with_additional_information: 0,
             flow_started_seconds_ago: flow_started_seconds_ago
           })
