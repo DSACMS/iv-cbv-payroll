@@ -35,7 +35,6 @@ es:
           first_name: Nombre del cliente
           last_name: Apellido del cliente
           middle_name: Segundo nombre del cliente
-          snap_application_date: Fecha de solicitud de SNAP
       new:
         description_html: "<p>Provea algunos datos sobre el cliente para que podamos enviarle un enlace para verificar su información de pago. Solicitaremos los últimos %{pay_income_days} días de ingresos, en base a la fecha de solicitud del cliente.</p><p>Si varios miembros de la familia reciben ingresos, envíe un enlace de invitación a cada miembro de la familia.</p>"
         form:

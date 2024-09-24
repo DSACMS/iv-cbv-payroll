@@ -31,18 +31,15 @@ RSpec.describe TranslationService do
         expect(File.exist?(output_path)).to be true
         yaml_content = YAML.load_file(output_path)
         expect(yaml_content).to have_key('es')
-        expect(yaml_content).not_to have_key('en')  # Ensure 'en' namespace is not present
+        expect(yaml_content).not_to have_key('en')
         expect(yaml_content['es']).not_to be_empty
-        expect(yaml_content['es']).keys.to include('applicant_mailer')
-        expect(yaml_content['es']).keys.to include('caseworker')
-        expect(yaml_content['es']).keys.to include('cbv')
-        expect(yaml_content['es']).keys.to include('pages')
-        expect(yaml_content['es']).keys.to include('shared')
-        expect(yaml_content['es']).keys.to include('us_form_with')
-        expect(yaml_content['es']).keys.to include('users')
-
-        # todo - more specific assertions such as comparing csv input to yml output
-
+        expect(yaml_content['es'].keys).to include('applicant_mailer')
+        expect(yaml_content['es'].keys).to include('caseworker')
+        expect(yaml_content['es'].keys).to include('cbv')
+        expect(yaml_content['es'].keys).to include('pages')
+        expect(yaml_content['es'].keys).to include('shared')
+        expect(yaml_content['es'].keys).to include('us_form_with')
+        expect(yaml_content['es'].keys).to include('users')
       end
     end
 
