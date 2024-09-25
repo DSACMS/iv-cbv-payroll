@@ -1,5 +1,14 @@
 class CbvFlowInvitation < ApplicationRecord
+
+  # We're opting not to use URI::MailTo::EMAIL_REGEXP
+  # https://html.spec.whatwg.org/multipage/input.html#valid-e-mail-address
+  #
+  # EXCERPT: This requirement is a willful violation of RFC 5322, which defines a syntax for email addresses
+  # that is simultaneously too strict (before the "@" character), too vague (after the "@" character),
+  # and too lax (allowing comments, whitespace characters, and quoted strings in manners unfamiliar to most users)
+  # to be of practical use here.
   EMAIL_REGEX = /\A([\w+\-].?)+@[a-z\d\-]+(\.[a-z]+)*\.[a-z]+\z/i
+
   # Massachusetts: 7 digits
   MA_AGENCY_ID_REGEX = /\A\d{7}\z/
 

@@ -18,17 +18,6 @@ RSpec.describe CbvFlowInvitation, type: :model do
               expect(invitation).to be_valid
             end
           end
-
-          # This test is to provide evidence that URI::MailTo::EMAIL_REGEXP is NOT what we want to use
-          # https://html.spec.whatwg.org/multipage/input.html#valid-e-mail-address
-          #
-          # EXCERPT: This requirement is a willful violation of RFC 5322, which defines a syntax for email addresses
-          # that is simultaneously too strict (before the "@" character), too vague (after the "@" character),
-          # and too lax (allowing comments, whitespace characters, and quoted strings in manners unfamiliar to most users)
-          # to be of practical use here.
-          it "URI::MailTo::EMAIL_REGEXP considers an email without a TLD to be valid" do
-            expect(invalid_email_no_tld).to match(URI::MailTo::EMAIL_REGEXP)
-          end
         end
 
         context "when email address is invalid" do
