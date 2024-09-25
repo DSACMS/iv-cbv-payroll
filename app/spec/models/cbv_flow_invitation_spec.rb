@@ -34,7 +34,7 @@ RSpec.describe CbvFlowInvitation, type: :model do
         context "when email address is invalid" do
           invalid_email_addresses = %w[johndoe@gmail johndoe@gmail..com johndoe@gmail.com..com johndoe@gmail\ .\ com]
           invalid_email_addresses.each do |email|
-            it "validates #{email} format" do
+            it "determines #{email} is invalid" do
               invitation = CbvFlowInvitation.new(valid_attributes.merge(email_address: email))
               expect(invitation).not_to be_valid
               expect(invitation.errors[:email_address]).to include(
