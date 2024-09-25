@@ -2,11 +2,46 @@ require 'rails_helper'
 
 RSpec.describe CbvFlowInvitation, type: :model do
   let(:valid_attributes) do
-    attributes_for(:cbv_flow_invitation, :nyc)
+    attributes_for(:cbv_flow_invitation, :nyc).merge(user: create(:user, site_id: "nyc"))
   end
+  let(:invalid_email_no_tld) { "johndoe@gmail" }
+  let(:valid_email) { "johndoe@gmail.com" }
 
   describe "validations" do
     context "for all invitations" do
+      context "validates email addresses" do
+        context "when email address is valid" do
+          it "is valid" do
+            invitation = CbvFlowInvitation.new(valid_attributes.merge(email_address: valid_email))
+            expect(invitation).to be_valid
+          end
+
+          # This test is to provide evidence that URI::MailTo::EMAIL_REGEXP is NOT what we want to use
+          # https://html.spec.whatwg.org/multipage/input.html#valid-e-mail-address
+          #
+          # EXCERPT: This requirement is a willful violation of RFC 5322, which defines a syntax for email addresses
+          # that is simultaneously too strict (before the "@" character), too vague (after the "@" character),
+          # and too lax (allowing comments, whitespace characters, and quoted strings in manners unfamiliar to most users)
+          # to be of practical use here.
+          it "URI::MailTo::EMAIL_REGEXP considers an email without a TLD to be valid" do
+            expect(invalid_email_no_tld).to match(URI::MailTo::EMAIL_REGEXP)
+          end
+        end
+
+        context "when email address is invalid" do
+          invalid_email_addresses = %w[johndoe@gmail johndoe@gmail..com johndoe@gmail.com..com]
+          invalid_email_addresses.each do |email|
+            it "validates #{email} format" do
+              invitation = CbvFlowInvitation.new(valid_attributes.merge(email_address: email))
+              expect(invitation).not_to be_valid
+              expect(invitation.errors[:email_address]).to include(
+                I18n.t('activerecord.errors.models.cbv_flow_invitation.attributes.email_address.invalid_format')
+              )
+            end
+          end
+        end
+      end
+
       it "requires email_address" do
         invitation = CbvFlowInvitation.new(valid_attributes.merge(email_address: nil))
         expect(invitation).not_to be_valid

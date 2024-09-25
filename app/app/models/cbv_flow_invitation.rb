@@ -1,6 +1,5 @@
 class CbvFlowInvitation < ApplicationRecord
-  EMAIL_REGEX = URI::MailTo::EMAIL_REGEXP
-
+  EMAIL_REGEX = /\A([\w+\-].?)+@[a-z\d\-]+(\.[a-z]+)*\.[a-z]+\z/i
   # Massachusetts: 7 digits
   MA_AGENCY_ID_REGEX = /\A\d{7}\z/
 
@@ -12,6 +11,12 @@ class CbvFlowInvitation < ApplicationRecord
 
   # New York City: 2 uppercase letters, followed by 5 digits, followed by 1 uppercase letter
   NYC_CLIENT_ID_REGEX = /\A[A-Z]{2}\d{5}[A-Z]\z/
+
+  # Invitation validity time zone
+  INVITATION_VALIDITY_TIME_ZONE = "America/New_York"
+
+  # Paystub report range
+  PAYSTUB_REPORT_RANGE = 90.days
 
   belongs_to :user
   has_many :cbv_flows
@@ -52,9 +57,6 @@ class CbvFlowInvitation < ApplicationRecord
     snap_application_date: :date,
     auth_token: :string
   )
-
-  INVITATION_VALIDITY_TIME_ZONE = "America/New_York"
-  PAYSTUB_REPORT_RANGE = 90.days
 
   scope :unstarted, -> { left_outer_joins(:cbv_flows).where(cbv_flows: { id: nil }) }
 
