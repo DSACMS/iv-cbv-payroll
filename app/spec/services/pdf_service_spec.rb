@@ -21,7 +21,7 @@ RSpec.describe PdfService, type: :service do
   let(:employments) { stub_employments(account_id) }
   let(:incomes) { stub_incomes(account_id) }
   let(:identities) { stub_identities(account_id) }
-  let(:payments_grouped_by_employer) { summarize_by_employer(payments, employments, incomes, identities) }
+  let(:payments_grouped_by_employer) { summarize_by_employer(payments, employments, incomes, identities, cbv_flow.pinwheel_accounts) }
   let(:variables) do
     {
       is_caseworker: true,
