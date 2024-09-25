@@ -8,7 +8,7 @@ es:
         default: Este proceso es solo para usted. Por favor, no comparta esta invitación con nadie más. <strong>Tiene hasta el %{deadline}, para realizar su verificación.</strong> De lo contrario, puede solicitar una nueva invitación.
         ma: Este proceso es solo para usted. Por favor, no comparta esta invitación con nadie más. <strong>Tiene hasta el %{deadline}, para realizar su verificación.</strong>
       body_3:
-        default: "Esta es una herramienta opcional. Si decide que no desea usarla, puede proveer los documentos de sus ingresos a través de la aplicación %{app_name}, fax, correo postal o en persona.\t"
+        default: Esta es una herramienta opcional. Si decide que no desea usarla, puede proveer los documentos de sus ingresos a través de la aplicación %{app_name}, fax, correo postal o en persona.
         ma: Esta es una herramienta opcional. Si decide no usarla, puede proveer el comprobante de sus ingresos brutos y horas usando %{app_name}, por fax, por correo postal o en persona.
       button: Verifique sus ingresos
       button_caption: 'Para verificar sus ingresos con el SNAP Income Pilot, haga clic en el siguiente botón:'
@@ -27,70 +27,6 @@ es:
         invite_failed: 'Error al enviar la invitació a %{email_address}: %{error_message}'
         invite_success: La invitación ha sido enviada con éxito a %{email_address}.
       incorrect_site_id: No se ha podido enviar la invitación porque falta la configuración del sitio.
-      ma:
-        invite:
-          agency_id_number: Número de identificación de la agencia del cliente
-          beacon_id: Su WELID
-          email_address: Dirección de correo electrónico del cliente
-          first_name: Nombre del cliente
-          last_name: Apellido del cliente
-          middle_name: Segundo nombre del cliente
-      new:
-        description_html: "<p>Provea algunos datos sobre el cliente para que podamos enviarle un enlace para verificar su información de pago. Solicitaremos los últimos %{pay_income_days} días de ingresos, en base a la fecha de solicitud del cliente.</p><p>Si varios miembros de la familia reciben ingresos, envíe un enlace de invitación a cada miembro de la familia.</p>"
-        form:
-          submit: Envíe una invitación
-        header: Envíe un enlace de invitación
-      nyc:
-        invite:
-          case_number: Número de caso
-          client_id_number: CIN
-          email_address: Dirección de correo electrónico del cliente
-          first_name: Nombre del cliente
-          last_name: Apellido del cliente
-          middle_name: Segundo nombre del cliente
-          snap_application_date: Fecha de solicitud del SNAP
-    dashboards:
-      show:
-        create_invitation: Cree una nueva invitación
-        expires_within:
-          one: "%{count} día"
-          other: "%{count} días"
-        header: Invite a clientes al SNAP Income Pilot
-        helpful_reminders: Recordatorios útiles
-        invite_clients: Puede invitar a los clientes a usar esta herramienta de verificación haciendo clic en el botón «Create a new invitation» (Crear una nueva invitación) a continuación.
-        reminder_1: Si varios miembros de la familia reciben ingresos, envíe un enlace de invitación a cada miembro individualmente.
-        reminder_2: Si un enlace de invitación ha expirado, puede generar uno nuevo en esta página. Los enlaces caducan si no se accede a ellos en un plazo de  %{expires_days} o si ya han sido usados para compartir el informe PDF.
-        reminder_3: Por motivos de seguridad, se cerrará la sesión después de 30 minutos de inactividad.
-        reminder_4: Si tiene algún problema con la herramienta, use el enlace de Reporte comentarios o errores.
-    entries:
-      index:
-        continue_to_login:
-          ma: Continúe a la página de inicio de sesión del DTA
-          nyc: Inicie sesión con su identificación de la red de área local (LAN ID, por sus siglas en inglés)
-          sandbox: Avance a la página de inicio de sesión de la Agencia de pruebas CBV
-        description:
-          ma: Este sitio le permite al personal de las agencias participantes enviar un enlace a los clientes para verificar sus ingresos, para que puedan enviar información de pago a la agencia fácilmente.
-          nyc: Este sitio le permite al personal de las agencias participantes enviar un enlace a los clientes para verificar sus ingresos, para que puedan enviar información de pago a la agencia fácilmente.
-          sandbox: Este sitio le permite al personal de las agencias participantes enviar un enlace a los clientes para verificar sus ingresos, para que puedan enviar información de pago a la agencia fácilmente.
-        header:
-          ma: El DTA está lanzando una nueva forma de verificar rápidamente los ingresos de sus clientes
-          nyc: La Administración de Recursos Humanos (HRA, por sus siglas en inglés) está lanzazndo una nueva forma de verificar rápidamente los ingresos de sus clientes
-          sandbox: La Agencia de pruebas CBV está lanzando una nueva forma de verificar rápidamente los ingresos de los clientes
-        how_it_works: Cómo funciona
-        step_1_description: Por seguridad, se cerrará la sesión después de 30 minutos de inactividad.
-        step_1_title:
-          default: Inicie sesión usando su cuenta existente de la agencia.
-          nyc: Inicie sesión usando su cuenta existente de la agencia (LAN ID).
-        step_2_description: Las invitaciones son para clientes individuales. Si necesita verificar los ingresos de varios miembros en una familia, tendrá que crear una invitación nueva para cada persona.
-        step_2_title: Haga clic en el botón «Create a new invitation» (Cree una nueva invitación).
-        step_3_description: Cuando usted envíe el nombre, número de identificación, dirección de correo electrónico y fecha de solicitud (del cliente), enviaremos al cliente un enlace de invitación para que verifique sus ingresos.
-        step_3_title: Suministre información del cliente. Le enviaremos una invitación.
-        step_4_description: La información se cargará al caso como un PDF.
-        step_4_title: Una vez que el cliente verifique sus ingresos, usted recibirá esa información de ingresos.
-  caseworker_mailer:
-    summary_email:
-      greeting: "¡Hola!"
-      subject: Se ha recibido el Informe %{case_number} de verificación de ingresos
   cbv:
     add_jobs:
       create:
@@ -282,23 +218,9 @@ es:
         payment: Pago de %{amount} antes de pago impuestos en %{date}
         pdf:
           caseworker:
-            agreement_consent_timestamp: Marca de tiempo del acuerdo de consentimiento
-            case_number: Número de caso
-            client_email_address: Dirección de correo electrónico del cliente
-            client_full_name: Nombre completo del cliente (vinculado a la cuenta de nómina)
-            client_id_number: CIN
-            description: La siguiente información de ingresos fue obtenida con el consentimiento del cliente y ha sido presentada por este a su agencia de beneficios. El cliente también puede descargar una versión de este informe.
-            first_name: Nombre del cliente
-            how_to: Este informe incluye información de pago de los últimos 90 días. En la mayoría de los casos, solo hay que revisar los ingresos de los últimos 30 días con fines de (determinación de) la elegibilidad. Use los datos posteriores al período de 30 días solo si es necesario. Los campos clave para la verificación de los ingresos aparecen resaltados en amarillo.
-            how_to_header: 'Cómo usar este informe:'
-            last_name: Apellido del cliente
-            middle_name: Segundo nombre del cliente
             pay_period: Período de pago (%{pay_frequency})
-            snap_agency_id: Identificación de la agencia de SNAP
-            staff_beacon_id_wel_id: Staff BEACON ID (WELID)
           client:
             address: Dirección del empleador
-            agency_id_number: Identificación de la agencia del cliente
             client_report_information: Información sobre el cliente y el informe
             date_created: Fecha en que se creó el informe de ingresos
             date_range: Intervalo de fechas para el informe de ingresos
