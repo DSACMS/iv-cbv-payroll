@@ -87,6 +87,31 @@ RSpec.describe Webhooks::Pinwheel::EventsController do
           .from(nil)
           .to(within(1.second).of(Time.now))
       end
+
+      it "sends a NewRelic event when fully synced" do
+        pinwheel_account.update(
+          created_at: 5.minutes.ago,
+          employment_synced_at: Time.now,
+          income_synced_at: Time.now,
+          identity_synced_at: Time.now,
+          identity_errored_at: Time.now
+        )
+        expect(NewRelicEventTracker).to receive(:track)
+          .with("PinwheelAccountSyncFinished", {
+            cbv_flow_id: cbv_flow.id,
+            identity_success: false,
+            identity_supported: true,
+            income_success: true,
+            income_supported: true,
+            employment_success: true,
+            employment_supported: true,
+            paystubs_success: true,
+            paystubs_supported: true,
+            sync_duration_seconds: within(1.second).of(5.minutes)
+          })
+
+        post :create, params: valid_params
+      end
     end
   end
 end
