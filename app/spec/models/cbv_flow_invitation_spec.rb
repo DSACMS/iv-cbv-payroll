@@ -11,9 +11,12 @@ RSpec.describe CbvFlowInvitation, type: :model do
     context "for all invitations" do
       context "validates email addresses" do
         context "when email address is valid" do
-          it "is valid" do
-            invitation = CbvFlowInvitation.new(valid_attributes.merge(email_address: valid_email))
-            expect(invitation).to be_valid
+          valid_email_addresses = %w[johndoe@gmail.com johndoe@example.com.au]
+          valid_email_addresses.each do |email|
+            it "#{email} is valid" do
+              invitation = CbvFlowInvitation.new(valid_attributes.merge(email_address: email))
+              expect(invitation).to be_valid
+            end
           end
 
           # This test is to provide evidence that URI::MailTo::EMAIL_REGEXP is NOT what we want to use
@@ -29,7 +32,7 @@ RSpec.describe CbvFlowInvitation, type: :model do
         end
 
         context "when email address is invalid" do
-          invalid_email_addresses = %w[johndoe@gmail johndoe@gmail..com johndoe@gmail.com..com]
+          invalid_email_addresses = %w[johndoe@gmail johndoe@gmail..com johndoe@gmail.com..com johndoe@gmail\ .\ com]
           invalid_email_addresses.each do |email|
             it "validates #{email} format" do
               invitation = CbvFlowInvitation.new(valid_attributes.merge(email_address: email))
