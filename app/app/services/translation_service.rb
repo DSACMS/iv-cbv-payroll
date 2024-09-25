@@ -2,17 +2,21 @@ require "csv"
 require "yaml"
 
 class TranslationService
-  def self.generate(csv_filename, output_yaml_path, options = {})
+  attr_reader :rows, :empty_row_count, :skipped_rows
+
+  def initialize
+    @rows = []
+    @empty_row_count = 0
+    @skipped_rows = []
+  end
+
+  def generate(csv_filename, output_yaml_path, options = {})
     csv_path = Rails.root.join(csv_filename)
 
     # Set default options
     target_locale = options.fetch(:target_locale, "es")
-    middleware = options.fetch(:middleware, [])
+    middleware = [ method(:skip_no_translation) ]
     translations = { target_locale => {} }
-    row_count = 0
-    valid_translation_count = 0
-    empty_row_count = 0
-    skipped_rows = []
 
     Rails.logger.info "Attempting to read CSV file: #{csv_path}"
     csv_lines = File.readlines(csv_path)
@@ -29,31 +33,36 @@ class TranslationService
       # Skip the first row as it's a document header
       next if index == 0
 
-      row_count += 1
-
       # Apply middleware
-      next if middleware.any? { |fn| (row = fn.call(row)) == false }
+      middleware.each do |proc|
+        result = proc.call(row)
+        if result == false
+          @skipped_rows << index
+          break
+        end
+      end
+
+      next if @skipped_rows.include?(index)
 
       translation_key = row[:translation_key].to_s.strip
       translation_value = (row[target_locale.to_sym] || row[:spanish]).to_s.strip
 
       if translation_key.empty? || translation_value.empty?
-        empty_row_count += 1
+        @empty_row_count += 1
         next
       end
 
       # Remove 'en.' prefix if present
       translation_key = translation_key.delete_prefix("en.")
 
-      Rails.logger.info "Row #{row_count}: Key: '#{translation_key}', Translation: '#{translation_value}'"
+      Rails.logger.info "Row #{index}: Key: '#{translation_key}', Translation: '#{translation_value}'"
       set_nested_hash_value(translations[target_locale], translation_key.split("."), translation_value)
-      valid_translation_count += 1
     end
 
-    Rails.logger.info "Total rows processed: #{row_count}"
-    Rails.logger.info "Valid translations found: #{valid_translation_count}"
-    Rails.logger.info "Empty rows skipped: #{empty_row_count}"
-    Rails.logger.info "Rows skipped by conditions: #{skipped_rows.count}"
+    Rails.logger.info "Total rows processed: #{csv_lines.count}"
+    Rails.logger.info "Valid translations found: #{@rows.count}"
+    Rails.logger.info "Empty rows skipped: #{@empty_row_count}"
+    puts "Rows skipped by conditions: #{@skipped_rows.count}"
 
     File.open(output_yaml_path, "w") do |file|
       file.write(translations.to_yaml(line_width: -1))  # Preserve line breaks in YAML
@@ -63,15 +72,13 @@ class TranslationService
     translations
   end
 
-  def self.skip_no_translation
-    lambda do |row|
-      row[:added_to_confluence]&.strip == "No need for translation"
-    end
+  def skip_no_translation(row)
+    row[:added_to_confluence]&.strip == "No need for translation"
   end
 
   private
 
-  def self.set_nested_hash_value(hash, keys, value)
+  def set_nested_hash_value(hash, keys, value)
     key = keys.shift
     if keys.empty?
       hash[key] = value
