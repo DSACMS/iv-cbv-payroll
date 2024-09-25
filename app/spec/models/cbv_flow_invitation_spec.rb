@@ -11,7 +11,7 @@ RSpec.describe CbvFlowInvitation, type: :model do
     context "for all invitations" do
       context "validates email addresses" do
         context "when email address is valid" do
-          valid_email_addresses = %w[johndoe@gmail.com johndoe@example.com.au]
+          valid_email_addresses = %w[johndoe@gmail.com johndoe@example.com.au johndoe@example.com,johndoe@example.com.au]
           valid_email_addresses.each do |email|
             it "#{email} is valid" do
               invitation = CbvFlowInvitation.new(valid_attributes.merge(email_address: email))
