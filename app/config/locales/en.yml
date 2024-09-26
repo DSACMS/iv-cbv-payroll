@@ -122,7 +122,7 @@ en:
       create:
         notice_no_answer: You must select an answer to continue.
       show:
-        answer_no_bullet_1: You don't have another job
+        answer_no_bullet_1: You don't have another job (current or recent)
         answer_no_bullet_2: You have a job that pays you via PayPal, Venmo, Cash App, etc
         answer_no_bullet_3: You have a job that pays you in cash
         answer_no_bullet_4: You have a job that pays you with a paper check and you cannot view your paycheck online

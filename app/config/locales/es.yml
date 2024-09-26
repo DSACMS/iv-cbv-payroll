@@ -32,7 +32,7 @@ es:
       create:
         notice_no_answer: Debe seleccionar una respuesta para continuar.
       show:
-        answer_no_bullet_1: Usted no tiene otro trabajo <em>actual o reciente </em>
+        answer_no_bullet_1: Usted no tiene otro trabajo (actual o reciente)
         answer_no_bullet_2: Usted tiene un trabajo que le paga por PayPal, Venmo, Cash App, etc.
         answer_no_bullet_3: Usted tiene un trabajo que le paga en efectivo
         answer_no_bullet_4: Usted tiene un trabajo que le paga con un cheque impreso y no puede ver su cheque de pago en línea
