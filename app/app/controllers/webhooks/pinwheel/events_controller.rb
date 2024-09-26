@@ -26,6 +26,8 @@ class Webhooks::Pinwheel::EventsController < ApplicationController
       end
 
       if pinwheel_account.has_fully_synced?
+        track_event(@cbv_flow, pinwheel_account)
+
         PaystubsChannel.broadcast_to(@cbv_flow, {
           event: "cbv.payroll_data_available",
           account_id: params["payload"]["account_id"]
@@ -48,6 +50,23 @@ class Webhooks::Pinwheel::EventsController < ApplicationController
     unless @pinwheel.verify_signature(signature, digest)
       render json: { error: "Invalid signature" }, status: :unauthorized
     end
+  end
+
+  def track_event(cbv_flow, pinwheel_account)
+    NewRelicEventTracker.track("PinwheelAccountSyncFinished", {
+      cbv_flow_id: cbv_flow.id,
+      identity_success: pinwheel_account.job_succeeded?("identity"),
+      identity_supported: pinwheel_account.supported_jobs.include?("identity"),
+      income_success: pinwheel_account.job_succeeded?("income"),
+      income_supported: pinwheel_account.supported_jobs.include?("income"),
+      paystubs_success: pinwheel_account.job_succeeded?("paystubs"),
+      paystubs_supported: pinwheel_account.supported_jobs.include?("paystubs"),
+      employment_success: pinwheel_account.job_succeeded?("employment"),
+      employment_supported: pinwheel_account.supported_jobs.include?("employment"),
+      sync_duration_seconds: Time.now - pinwheel_account.created_at
+    })
+  rescue => ex
+    Rails.logger.error "Unable to track NewRelic event (PinwheelAccountSyncFinished): #{ex}"
   end
 
   def set_cbv_flow
