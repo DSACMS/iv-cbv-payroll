@@ -112,6 +112,15 @@ module PinwheelApiHelper
       )
   end
 
+  def stub_request_platform_response
+    stub_request(:get, %r{#{PinwheelService::PLATFORMS_ENDPOINT}/[0-9a-fA-F\-]{36}})
+      .to_return(
+        status: 200,
+        body: load_relative_json_file('request_platform_response.json').to_json,
+        headers: { 'Content-Type': 'application/json;charset=UTF-8' }
+      )
+  end
+
   def load_relative_file(filename)
     File.read(File.join(
       File.dirname(__FILE__),

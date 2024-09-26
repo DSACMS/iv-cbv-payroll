@@ -1,6 +1,8 @@
 require "rails_helper"
 
 RSpec.describe Webhooks::Pinwheel::EventsController do
+  include PinwheelApiHelper
+
   let(:valid_params) do
     {
       "event" => event_name,
@@ -27,16 +29,14 @@ RSpec.describe Webhooks::Pinwheel::EventsController do
     let(:supported_jobs) { [ "paystubs", "identity", "income", "employment" ] }
 
     before do
-      allow_any_instance_of(PinwheelService).to receive(:fetch_platform)
-        .with(platform_id: "fake-platform-id")
-        .and_return("data" => { "supported_jobs" => supported_jobs })
+      stub_request_platform_response
     end
 
     context "for an 'account.added' event" do
       let(:event_name) { "account.added" }
       let(:payload) do
         {
-          "platform_id" => "fake-platform-id",
+          "platform_id" => "00000000-0000-0000-0000-000000011111",
           "end_user_id" => cbv_flow.pinwheel_end_user_id,
           "account_id" => account_id
         }
@@ -50,7 +50,7 @@ RSpec.describe Webhooks::Pinwheel::EventsController do
         pinwheel_account = PinwheelAccount.last
         expect(pinwheel_account).to have_attributes(
           cbv_flow_id: cbv_flow.id,
-          supported_jobs: supported_jobs,
+          supported_jobs: include(*supported_jobs),
           pinwheel_account_id: account_id
         )
       end
