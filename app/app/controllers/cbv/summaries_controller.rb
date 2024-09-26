@@ -103,6 +103,7 @@ class Cbv::SummariesController < Cbv::BaseController
       # Generate PDF
       pdf_service = PdfService.new
       @pdf_output = pdf_service.generate(
+        renderer: self,
         template: "cbv/summaries/show",
         variables: {
           is_caseworker: true,
@@ -112,8 +113,7 @@ class Cbv::SummariesController < Cbv::BaseController
           incomes: @incomes,
           identities: @identities,
           payments_grouped_by_employer: summarize_by_employer(@payments, @employments, @incomes, @identities, @cbv_flow.pinwheel_accounts),
-          has_consent: has_consent,
-          current_site: current_site
+          has_consent: has_consent
         }
       )
 

@@ -44,6 +44,7 @@ RSpec.describe PdfService, type: :service do
     it 'generates a PDF file' do
       pdf_service = PdfService.new
       @pdf_results = pdf_service.generate(
+        renderer: ApplicationController.renderer,
         template: 'cbv/summaries/show',
         variables: variables
       )
