@@ -112,7 +112,8 @@ class Cbv::SummariesController < Cbv::BaseController
           incomes: @incomes,
           identities: @identities,
           payments_grouped_by_employer: summarize_by_employer(@payments, @employments, @incomes, @identities, @cbv_flow.pinwheel_accounts),
-          has_consent: has_consent
+          has_consent: has_consent,
+          current_site: current_site
         }
       )
 
