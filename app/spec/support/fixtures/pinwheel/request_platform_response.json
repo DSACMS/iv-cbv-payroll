@@ -1,0 +1,26 @@
+{
+  "data": {
+    "id": "00000000-0000-0000-0000-000000011111",
+    "name": "Testing Payroll Provider Inc.",
+    "type": "payroll",
+    "fractional_amount_supported": false,
+    "min_amount": null,
+    "max_amount": null,
+    "last_updated": "2023-05-05T15:18:39.312868+00:00",
+    "logo_url": null,
+    "percentage_supported": false,
+    "min_percentage": 1,
+    "max_percentage": 99,
+    "supported_jobs": [
+      "direct_deposit_allocations",
+      "income",
+      "identity",
+      "employment",
+      "tax_forms",
+      "direct_deposit_switch",
+      "paystubs",
+      "shifts"
+    ],
+    "amount_supported": true
+  }
+}
