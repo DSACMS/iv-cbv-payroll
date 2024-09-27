@@ -5,6 +5,8 @@ en:
       models:
         cbv_flow_invitation:
           attributes:
+            language:
+              invalid_format: Language must be either English (en) or Spanish (es).
             agency_id_number:
               blank: Enter a valid agency ID number.
               invalid_format: Agency ID number must be 7 digits.

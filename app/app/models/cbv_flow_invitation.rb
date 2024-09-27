@@ -26,6 +26,9 @@ class CbvFlowInvitation < ApplicationRecord
   # Paystub report range
   PAYSTUB_REPORT_RANGE = 90.days
 
+  VALID_LANGUAGES = Rails.application.config.i18n.available_locales.map(&:to_s).freeze
+  puts "VALID_LANGUAGES: #{VALID_LANGUAGES}"
+
   belongs_to :user
   has_many :cbv_flows
 
@@ -33,11 +36,17 @@ class CbvFlowInvitation < ApplicationRecord
 
   before_validation :parse_snap_application_date
   before_validation :format_case_number, if: :nyc_site?
+  before_validation :normalize_language
 
   validates :site_id, inclusion: Rails.application.config.sites.site_ids
   validates :first_name, presence: true
   validates :last_name, presence: true
   validates :email_address, format: { with: EMAIL_REGEX, message: :invalid_format }
+  validates :language, inclusion: {
+    in: VALID_LANGUAGES,
+    message: :invalid_format,
+    case_sensitive: false
+  }
 
   # MA specific validations
   validates :agency_id_number, format: { with: MA_AGENCY_ID_REGEX, message: :invalid_format }, if: :ma_site?
@@ -158,4 +167,9 @@ class CbvFlowInvitation < ApplicationRecord
       self.case_number = "000#{case_number}"
     end
   end
+
+  def normalize_language
+    self.language = language.to_s.downcase if language.present?
+  end
+
 end

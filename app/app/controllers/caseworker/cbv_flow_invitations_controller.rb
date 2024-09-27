@@ -59,9 +59,10 @@ class Caseworker::CbvFlowInvitationsController < Caseworker::BaseController
     cbv_flow_invitation_params.slice(
       :first_name,
       :middle_name,
+      :language,
       :last_name,
       :email_address,
-      :snap_application_date
+      :snap_application_date,
     ).merge(site_id: site_id)
   end
 
@@ -80,6 +81,7 @@ class Caseworker::CbvFlowInvitationsController < Caseworker::BaseController
     params.fetch(:cbv_flow_invitation, {}).permit(
       :first_name,
       :middle_name,
+      :language,
       :last_name,
       :client_id_number,
       :case_number,

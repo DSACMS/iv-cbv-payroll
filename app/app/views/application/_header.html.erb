@@ -32,6 +32,21 @@
           <% end %>
         </em>
       </div>
+      
+      <nav class="usa-language">
+        <button type="button" class="usa-language__link">
+          <%= I18n.locale.to_s.upcase %>
+        </button>
+        <ul class="usa-language__submenu">
+          <% I18n.available_locales.each do |locale| %>
+            <% next if locale == I18n.locale %>
+            <li class="usa-language__submenu-item">
+              <%= link_to locale.to_s.upcase, url_for(locale: locale) %>
+            </li>
+          <% end %>
+        </ul>
+      </nav>
+
       <% if user_signed_in? %>
         <button class="usa-menu-btn"><%= t("shared.header.menu") %></button>
       <% end %>
