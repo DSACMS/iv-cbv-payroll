@@ -23,10 +23,29 @@ class PinwheelAccount < ApplicationRecord
   end
 
   def job_succeeded?(job)
-    error_column = EVENTS_ERRORS_MAP.select { |key| key.start_with? job }&.values.last
-    sync_column = EVENTS_MAP.select { |key| key.start_with? job }&.values.last
+    error_column, sync_column = event_columns_for(job)
     return nil unless error_column.present?
 
     supported_jobs.include?(job) && send(sync_column).present? && send(error_column).blank?
+  end
+
+  def job_completed?(job)
+    error_column, sync_column = event_columns_for(job)
+    return nil unless error_column.present?
+
+    supported_jobs.include?(job) && (send(sync_column).present? || send(error_column).present?)
+  end
+
+  def relevant_cbv_jobs
+    supported_jobs.filter { |job| EVENTS_MAP.keys.any? { |key| key.start_with? job } }
+  end
+
+  private
+
+  def event_columns_for(job)
+    error_column = EVENTS_ERRORS_MAP.select { |key| key.start_with? job }&.values.last
+    sync_column = EVENTS_MAP.select { |key| key.start_with? job }&.values.last
+
+    [ error_column, sync_column ]
   end
 end

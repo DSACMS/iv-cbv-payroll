@@ -14,4 +14,18 @@
   <%= form_with url: next_path, method: :get, class: "display-none", data: { 'cbv-synchronizations-target': "form" } do |f| %>
     <input type="hidden" name="user[account_id]" value="<%= params[:user][:account_id] %>" data-cbv-synchronizations-target="userAccountId">
   <% end %>
+  <div>
+    <span data-cbv-synchronizations-target="employmentJob">
+      <%= @pinwheel_account.present? && @pinwheel_account.job_completed?("employment") %>
+    </span>
+    <span data-cbv-synchronizations-target="identityJob">
+      <%= @pinwheel_account.present? && @pinwheel_account.job_completed?("identity") %>
+    </span>
+    <span data-cbv-synchronizations-target="paystubsJob">
+      <%= @pinwheel_account.present? && @pinwheel_account.job_completed?("paystubs") %>
+    </span>
+    <span data-cbv-synchronizations-target="incomeJob">
+      <%= @pinwheel_account.present? && @pinwheel_account.job_completed?("income") %>
+    </span>
+  </div>
 </div>

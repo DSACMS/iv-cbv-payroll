@@ -2,7 +2,7 @@ import { Controller } from "@hotwired/stimulus"
 import * as ActionCable from '@rails/actioncable'
 
 export default class extends Controller {
-  static targets = ["form", "userAccountId"];
+  static targets = ["form", "userAccountId", "employmentJob", "identityJob", "paystubsJob", "incomeJob"];
 
   cable = ActionCable.createConsumer();
 
@@ -15,10 +15,17 @@ export default class extends Controller {
         console.log("Disconnected");
       },
       received: (data) => {
-        if (data.event === 'cbv.payroll_data_available') {
-          const accountId = data.account_id;
-          this.userAccountIdTarget.value = accountId;
-          this.formTarget.submit();
+        if (data.event === 'cbv.status_update') {
+          if (data.has_fully_synced) {
+            const accountId = data.account_id;
+            this.userAccountIdTarget.value = accountId;
+            this.formTarget.submit();
+          }
+
+          this.employmentJobTarget.textContent = data.employment;
+          this.identityJobTarget.textContent = data.identity;
+          this.paystubsJobTarget.textContent = data.paystubs;
+          this.incomeJobTarget.textContent = data.income;
         }
       }
     });
