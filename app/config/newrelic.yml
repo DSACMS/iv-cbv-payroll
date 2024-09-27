@@ -19,6 +19,13 @@ common: &default_settings
   # Relic.  For more details, see https://docs.newrelic.com/docs/apm/new-relic-apm/maintenance/renaming-applications
   app_name: Iv Cbv Payroll
 
+  # Forward these custom attributes to NewRelic for better filtering of transactions/events.
+  attributes:
+    include:
+      - cbv_flow_id
+      - user_id
+      - session_id
+
   monitor_mode: true
 
   distributed_tracing:
@@ -43,8 +50,9 @@ common: &default_settings
     # triggered by automated scanners)
     ignore_classes:
       - "ActionController::BadRequest"
-      - "ActionDispatch::Http::MimeNegotiation::InvalidType"
+      - "ActionController::RoutingError"
       - "ActionController::UnknownHttpMethod"
+      - "ActionDispatch::Http::MimeNegotiation::InvalidType"
 
 
 # Environment-specific settings are in this section.

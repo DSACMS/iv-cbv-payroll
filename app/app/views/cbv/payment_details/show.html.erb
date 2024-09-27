@@ -5,32 +5,44 @@
 </h1>
 
 <div class="usa-prose">
-  <p><%= t(".subheader", start_date: @payments_beginning_at, end_date: @payments_ending_at) %></p>
-</div>
-<h2><%= t(".total_gross_income", amount: format_money(gross_pay)) %></h2>
-<div class="usa-prose">
-  <p><%= t(".total_gross_description") %></p>
+  <p><%= t(".subheader", start_date: @payments_beginning_at, end_date: @payments_ending_at, agency_acronym: current_site.agency_short_name) %></p>
 </div>
 
-<%= render(TableComponent.new) do |component| %>
-  <%= component.with_header do %>
+<% if @payments.any? %>
+  <h2><%= t(".total_gross_income", amount: format_money(gross_pay)) %></h2>
+  <div class="usa-prose">
+    <p><%= t(".total_gross_description") %></p>
+  </div>
+<% else %>
+  <h2 class="site-preview-heading">
+    <%= t(".none_found") %>
+  </h2>
+  <div class="usa-prose">
+    <p>
+      <%= t(".none_found_description") %>
+    </p>
+  </div>
+<% end %>
+
+<%= render(TableComponent.new) do |table| %>
+  <%= table.with_header do %>
     <h3 class="margin-0"><%= t("cbv.payment_details.show.employment_information_table_header") %></h3>
   <% end %>
-  <%= component.with_data_point(:employment_start_date, employment_start_date) %>
-  <%= component.with_data_point(:employment_end_date, employment_end_date) %>
-  <%= component.with_data_point(:employment_status, employment_status) %>
+  <%= table.with_data_point(:employment_start_date, employment_start_date) %>
+  <%= table.with_data_point(:employment_end_date, employment_end_date) %>
+  <%= table.with_data_point(:employment_status, employment_status) %>
   <% if has_income_data? %>
-    <%= component.with_data_point(:pay_frequency, pay_frequency) %>
-    <%= component.with_data_point(:hourly_rate, compensation_amount, compensation_unit) %>
+    <%= table.with_data_point(:pay_frequency, pay_frequency) %>
+    <%= table.with_data_point(:hourly_rate, compensation_amount, compensation_unit) %>
   <% end %>
 <% end %>
 
-<% if @payments.any? %>
-  <%= render(TableComponent.new) do |table| %>
-    <%= table.with_header do %>
-      <h3 class="margin-0"><%= t("cbv.payment_details.show.payments_and_deductions_table_header") %></h3>
-    <% end %>
+<%= render(TableComponent.new) do |table| %>
+  <%= table.with_header do %>
+    <h3 class="margin-0"><%= t("cbv.payment_details.show.payments_and_deductions_table_header") %></h3>
+  <% end %>
 
+  <% if @payments.any? %>
     <% @payments.each do |payment| %>
       <%= table.with_row_section do |row| %>
         <h4 class="margin-0"><%= t("cbv.payment_details.show.pay_date", pay_date: format_date(payment[:pay_date])) %></h4>
@@ -47,17 +59,16 @@
 
       <%= table.with_data_point(:pay_gross_ytd, payment[:gross_pay_ytd]) %>
     <% end %>
+  <% else %>
+    <%= table.with_row(t(".none_found")) %>
   <% end %>
-<% else %>
-  <h3 class="site-preview-heading">
-    <%= t(".none_found") %>
-  </h3>
 <% end %>
 
-<div class="usa-form-group">
+<div class="usa-form-group margin-top-5">
+  <h2><%= t(".additional_information_header") %></h2>
   <%= form_with(model: @cbv_flow, url: cbv_flow_payment_details_path, method: :patch) do |form| %>
     <%= hidden_field_tag "user[account_id]", params[:user][:account_id] %>
-    <%= form.label :additional_information, t(".additional_information_label"), class: "usa-label" %>
+    <%= form.label :additional_information, t(".additional_information_label", agency_acronym: current_site.agency_short_name), class: "usa-label" %>
     <%= form.text_area :additional_information, class: "usa-textarea", rows: 5, value: @account_comment %>
     <%= form.submit t(".continue"), class: "usa-button usa-button--primary margin-top-3" %>
   <% end %>

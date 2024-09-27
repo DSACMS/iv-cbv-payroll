@@ -39,6 +39,21 @@ RSpec.describe Cbv::PaymentDetailsController do
         expect(response).to be_successful
       end
 
+      it "tracks a NewRelic event" do
+        expect(NewRelicEventTracker)
+          .to receive(:track)
+          .with("ApplicantViewedPaymentDetails", hash_including(
+            cbv_flow_id: cbv_flow.id,
+            pinwheel_account_id: pinwheel_account.id,
+            payments_length: 1,
+            has_employment_data: true,
+            has_paystubs_data: true,
+            has_income_data: true
+          ))
+
+        get :show, params: { user: { account_id: account_id } }
+      end
+
       context "when account comment exists" do
         let(:updated_at) { Time.current.iso8601 }
 
@@ -137,7 +152,7 @@ RSpec.describe Cbv::PaymentDetailsController do
       it "renders properly without the paystubs data" do
         get :show, params: { user: { account_id: account_id } }
         expect(response).to be_successful
-        expect(response.body).to include(I18n.t("cbv.payment_details.show.none_found"))
+        expect(response.body).to include("find any payments from this employer in the past 90 days.")
       end
     end
 
@@ -199,6 +214,17 @@ RSpec.describe Cbv::PaymentDetailsController do
       # verify that the comment was updated. the reload method does not deserialize the JSON field
       additional_information = cbv_flow.reload.additional_information
       expect(additional_information[account_id]["comment"]).to eq(comment)
+    end
+
+    it "tracks a NewRelic event" do
+      expect(NewRelicEventTracker)
+        .to receive(:track)
+        .with("ApplicantSavedPaymentDetails", hash_including(
+          cbv_flow_id: cbv_flow.id,
+          additional_information_length: comment.length
+        ))
+
+      patch :update, params: { user: { account_id: account_id }, cbv_flow: { additional_information: comment } }
     end
   end
 end

@@ -23,6 +23,16 @@ RSpec.describe Api::PinwheelController do
         .to include("token" => be_a(String))
     end
 
+    it "tracks a NewRelic event" do
+      expect(NewRelicEventTracker)
+        .to receive(:track)
+        .with("ApplicantBeganLinkingEmployer", hash_including(
+          cbv_flow_id: cbv_flow.id,
+          response_type: "employer",
+        ))
+      post :create_token, params: valid_params
+    end
+
     describe "when the button is pressed without an employer or ID" do
       let(:valid_params) do
         {

@@ -2,6 +2,13 @@
 set -euo pipefail
 
 npm install
+rbenv install --skip-existing || (
+  echo "Failed to install ruby version. Updating ruby-build and retrying..."
+  sleep 1
+  brew update
+  HOMEBREW_NO_INSTALLED_DEPENDENTS_CHECK=1 brew upgrade ruby-build
+  rbenv install --skip-existing
+)
 bundle install
 
 bin/rails db:migrate

@@ -65,6 +65,18 @@ locals {
       name           = "PINWHEEL_API_TOKEN_SANDBOX"
       ssm_param_name = "/service/${var.app_name}-${var.environment}/pinwheel-api-token-sandbox"
     },
+    {
+      name           = "NYC_PINWHEEL_ENVIRONMENT"
+      ssm_param_name = "/service/${var.app_name}-${var.environment}/nyc-pinwheel-environment"
+    },
+    {
+      name           = "MA_PINWHEEL_ENVIRONMENT"
+      ssm_param_name = "/service/${var.app_name}-${var.environment}/ma-pinwheel-environment"
+    },
+    {
+      name           = "SANDBOX_PINWHEEL_ENVIRONMENT"
+      ssm_param_name = "/service/${var.app_name}-${var.environment}/sandbox-pinwheel-environment"
+    },
 
     # SSO Configuration:
     {
@@ -102,6 +114,26 @@ locals {
     {
       name           = "AZURE_SANDBOX_TENANT_ID"
       ssm_param_name = "/service/${var.app_name}-${var.environment}/azure-sandbox-tenant-id"
+    },
+
+    # Other site-specific Configuration:
+    {
+      name           = "MA_DTA_ALLOWED_CASEWORKER_EMAILS"
+      ssm_param_name = "/service/${var.app_name}-${var.environment}/ma-dta-allowed-caseworker-emails"
+    },
+    {
+      name           = "MA_DTA_S3_BUCKET"
+      ssm_param_name = "/service/${var.app_name}-${var.environment}/ma-dta-s3-bucket"
+    },
+    {
+      name           = "MA_DTA_S3_PUBLIC_KEY"
+      ssm_param_name = "/service/${var.app_name}-${var.environment}/ma-dta-s3-public-key"
+    },
+
+    # MAINTENANCE MODE
+    {
+      name           = "MAINTENANCE_MODE"
+      ssm_param_name = "/service/${var.app_name}-${var.environment}/maintenance-mode"
     },
   ]
 }

@@ -23,6 +23,7 @@ class SiteConfig
       agency_name
       agency_short_name
       agency_contact_website
+      authorized_emails
       caseworker_feedback_form
       invitation_valid_days
       logo_path
@@ -33,6 +34,7 @@ class SiteConfig
       sso
       transmission_method
       transmission_method_configuration
+      weekly_report
     ])
 
     def initialize(yaml)
@@ -40,16 +42,17 @@ class SiteConfig
       @agency_name = yaml["agency_name"]
       @agency_short_name = yaml["agency_short_name"]
       @agency_contact_website = yaml["agency_contact_website"]
+      @authorized_emails = yaml["authorized_emails"] || ""
       @caseworker_feedback_form = yaml["caseworker_feedback_form"]
       @invitation_valid_days = yaml["invitation_valid_days"]
       @logo_path = yaml["logo_path"]
       @logo_square_path = yaml["logo_square_path"]
       @pay_income_days = yaml["pay_income_days"]
-      @pinwheel_api_token = yaml["pinwheel"]["api_token"]
-      @pinwheel_environment = yaml["pinwheel"]["environment"]
+      @pinwheel_environment = yaml["pinwheel"]["environment"] || "sandbox"
       @transmission_method = yaml["transmission_method"]
       @transmission_method_configuration = yaml["transmission_method_configuration"]
       @sso = yaml["sso"]
+      @weekly_report = yaml["weekly_report"]
 
       raise ArgumentError.new("Site missing id") if @id.blank?
       raise ArgumentError.new("Site #{@id} missing required attribute `agency_name`") if @agency_name.blank?

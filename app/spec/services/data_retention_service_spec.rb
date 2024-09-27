@@ -58,6 +58,11 @@ RSpec.describe DataRetentionService do
         expect { service.redact_incomplete_cbv_flows }
           .not_to change { cbv_flow.reload.attributes }
       end
+
+      it "does not redact the CbvFlowInvitation" do
+        expect { service.redact_incomplete_cbv_flows }
+          .not_to change { cbv_flow_invitation.reload.attributes }
+      end
     end
 
     context "after the deletion threshold" do
@@ -89,6 +94,11 @@ RSpec.describe DataRetentionService do
       context "for a complete CbvFlow" do
         before do
           cbv_flow.update(confirmation_code: "SANDBOX001")
+        end
+
+        it "does not redact the CbvFlow" do
+          expect { service.redact_invitations }
+            .not_to change { cbv_flow.reload.attributes }
         end
 
         it "does not redact the invitation" do
@@ -129,6 +139,11 @@ RSpec.describe DataRetentionService do
       it "does not redact the CbvFlow" do
         expect { service.redact_complete_cbv_flows }
           .not_to change { cbv_flow.reload.attributes }
+      end
+
+      it "does not redact the CbvFlowInvitation" do
+        expect { service.redact_complete_cbv_flows }
+          .not_to change { cbv_flow_invitation.reload.attributes }
       end
     end
 

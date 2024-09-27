@@ -6,8 +6,7 @@
   logo_path: hra_logo.png
   logo_square_path: hra_logo_square.png
   pinwheel:
-    api_token: <%= ENV['PINWHEEL_API_TOKEN_PRODUCTION'] %>
-    environment: production
+    environment: <%= ENV["NYC_PINWHEEL_ENVIRONMENT"] %>
   transmission_method: shared_email
   transmission_method_configuration:
     email: <%= ENV['NYC_HRA_EMAIL'] %>
@@ -19,34 +18,38 @@
     name: "nyc_dss"
   pay_income_days: 90
   invitation_valid_days: 14
+  weekly_report:
+    recipient: <%= ENV['NYC_HRA_EMAIL'] %>
 - id: ma
   agency_name: Department of Transitional Assistance
   agency_short_name: DTA
   agency_contact_website: https://www.mass.gov/guides/how-to-contact-dta
   caseworker_feedback_form: https://forms.office.com/r/rfV04qjG9A
   pinwheel:
-    api_token: <%= ENV['PINWHEEL_API_TOKEN_DEVELOPMENT'] %>
-    environment: development
-  transmission_method: null
-  transmission_method_configuration: {}
+    environment: <%= ENV["MA_PINWHEEL_ENVIRONMENT"] %>
+  transmission_method: s3
+  transmission_method_configuration:
+    bucket: <%= ENV['MA_DTA_S3_BUCKET'] %>
+    public_key: <%= ENV['MA_DTA_S3_PUBLIC_KEY'].inspect %>
   sso:
     client_id:     <%= ENV["AZURE_MA_DTA_CLIENT_ID"] %>
     client_secret: <%= ENV["AZURE_MA_DTA_CLIENT_SECRET"] %>
     tenant_id:     <%= ENV["AZURE_MA_DTA_TENANT_ID"] %>
     scope: "openid"
     name: "ma_dta"
+  authorized_emails: <%= ENV["MA_DTA_ALLOWED_CASEWORKER_EMAILS"] %>
   pay_income_days: 90
   invitation_valid_days: 14
   logo_path: dta_logo.png
-  logo_square_path: dta_logo_square.avif
+  logo_square_path: dta_logo_square.png
+  weekly_report: {}
 - id: sandbox
   agency_name: CBV Test Agency
   agency_short_name: CBV
   agency_contact_website: https://www.exampl.com/contact
   caseworker_feedback_form: https://docs.google.com/forms/d/e/1FAIpQLSfrUiz0oWE5jbXjPfl-idQQGPgxKplqFtcKq08UOhTaEa2k6A/viewform
   pinwheel:
-    api_token: <%= ENV['PINWHEEL_API_TOKEN_SANDBOX'] %>
-    environment: sandbox
+    environment: <%= ENV["SANDBOX_PINWHEEL_ENVIRONMENT"] %>
   transmission_method: shared_email
   transmission_method_configuration:
     email: <%= ENV['SLACK_TEST_EMAIL'] %>
@@ -58,3 +61,5 @@
     name: "sandbox"
   pay_income_days: 90
   invitation_valid_days: 14
+  weekly_report:
+    recipient: ffs-eng@navapbc.com

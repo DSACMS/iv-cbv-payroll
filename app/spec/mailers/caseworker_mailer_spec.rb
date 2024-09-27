@@ -1,7 +1,10 @@
 require "rails_helper"
+require 'action_view' # Include this to use the `strip_tags` helper
 
 RSpec.describe CaseworkerMailer, type: :mailer do
   include ViewHelper
+  include ActionView::Helpers::SanitizeHelper # Include the sanitize helper
+
   let(:cbv_flow) { create(:cbv_flow, :with_pinwheel_account,
     case_number: "ABC1234",
     confirmation_code: "00001",
@@ -43,13 +46,17 @@ RSpec.describe CaseworkerMailer, type: :mailer do
 
     it 'renders the body' do
       invitation = cbv_flow.cbv_flow_invitation
-      # replace all whitespace with a single space to render a continuous string
-      email_body = mail.body.encoded.gsub(/\s+/, ' ').strip
+
+      # Access the HTML part of the email and strip HTML tags
+      email_html = mail.html_part.body.decoded
+      email_body = strip_tags(email_html).gsub(/\s+/, ' ').strip
+      expected_date = format_parsed_date(Time.zone.today)
+      request_date = format_parsed_date(cbv_flow.created_at)
       expect(email_body).to include("Attached is an Income Verification Report PDF with confirmation number #{cbv_flow.confirmation_code}")
       expect(email_body).to include("confirm that their information has been submitted to HRA")
       expect(email_body).to include("This report is associated with the case number ABC1234 and CIN #{invitation.client_id_number}")
-      expect(email_body).to include("It was requested by #{caseworker_email} on #{format_parsed_date(cbv_flow.created_at)}")
-      expect(email_body).to include("submitted by the client on #{format_parsed_date(Date.today)}")
+      expect(email_body).to include("It was requested by #{caseworker_email} on #{request_date}")
+      expect(email_body).to include("submitted by the client on #{expected_date}")
     end
 
     it 'attaches a PDF which has a file name prefix of {case_number}_timestamp_' do

@@ -11,9 +11,14 @@ module PinwheelApiHelper
       .to_return(
         status: 200,
         body: {
-          results: [ {
-                      id: "12345"
-                    } ]
+          data: [
+            {
+              id: "12345",
+              name: "Some Employer Name",
+              logo_url: "https://example.com/logo.jpg",
+              response_type: "employer"
+            }
+          ]
         }.to_json,
         headers: { content_type: 'application/json;charset=UTF-8' }
       )
@@ -103,6 +108,15 @@ module PinwheelApiHelper
       .to_return(
         status: 200,
         body: load_relative_json_file('request_identity_response.json').to_json,
+        headers: { 'Content-Type': 'application/json;charset=UTF-8' }
+      )
+  end
+
+  def stub_request_platform_response
+    stub_request(:get, %r{#{PinwheelService::PLATFORMS_ENDPOINT}/[0-9a-fA-F\-]{36}})
+      .to_return(
+        status: 200,
+        body: load_relative_json_file('request_platform_response.json').to_json,
         headers: { 'Content-Type': 'application/json;charset=UTF-8' }
       )
   end

@@ -5,20 +5,38 @@ class Caseworker::CbvFlowInvitationsController < Caseworker::BaseController
 
   def new
     @site_id = site_id
-    @cbv_flow_invitation = CbvFlowInvitation.new
+    @cbv_flow_invitation = CbvFlowInvitation.new(site_id: site_id)
+
+    if @site_id == "ma"
+      @cbv_flow_invitation.snap_application_date ||= Date.today
+    end
   end
 
   def create
+    invitation_params = base_params.merge(site_specific_params)
+
+    # handle errors from the mail service
     begin
-      invitation_params = base_params.merge(site_specific_params)
-      CbvInvitationService.new.invite(invitation_params, current_user)
-    rescue => ex
+      @cbv_flow_invitation = CbvInvitationService.new.invite(invitation_params, current_user)
+    rescue => e
       flash[:alert] = t(".invite_failed",
                         email_address: cbv_flow_invitation_params[:email_address],
-                        error_message: ex.message
-                       )
-      Rails.logger.error("Error sending CBV invitation: #{ex.class} - #{ex.message}")
-      return redirect_to new_invitation_path(site_id: params[:site_id])
+                        error_message: e.message)
+      return redirect_to caseworker_dashboard_path(site_id: params[:site_id])
+    end
+
+    if @cbv_flow_invitation.errors.any?
+      error_count = @cbv_flow_invitation.errors.size
+      error_header = "#{helpers.pluralize(error_count, 'error')} occurred"
+
+      # Collect error messages without attribute names
+      error_messages = @cbv_flow_invitation.errors.messages.values.flatten.map { |msg| "<li>#{msg}</li>" }.join
+      error_messages = "<ul>#{error_messages}</ul>"
+
+      flash[:alert_heading] = error_header
+      flash[:alert] = error_messages.html_safe
+
+      return render :new
     end
 
     flash[:slim_alert] = {
@@ -68,7 +86,7 @@ class Caseworker::CbvFlowInvitationsController < Caseworker::BaseController
       :email_address,
       :snap_application_date,
       :agency_id_number,
-      :beacon_id
+      :beacon_id,
     )
   end
 

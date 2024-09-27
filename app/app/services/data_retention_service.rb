@@ -27,8 +27,9 @@ class DataRetentionService
       .includes(:cbv_flow_invitation)
       .find_each do |cbv_flow|
         invitation_redact_at = cbv_flow.cbv_flow_invitation.expires_at + REDACT_UNUSED_INVITATIONS_AFTER
+        next unless Time.now.after?(invitation_redact_at)
 
-        cbv_flow.redact! if Time.now.after?(invitation_redact_at)
+        cbv_flow.redact!
         cbv_flow.cbv_flow_invitation.redact! if cbv_flow.cbv_flow_invitation.present?
       end
   end

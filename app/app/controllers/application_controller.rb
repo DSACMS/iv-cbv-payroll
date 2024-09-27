@@ -2,9 +2,11 @@ class ApplicationController < ActionController::Base
   helper :view
   helper_method :current_site
   around_action :switch_locale
+  before_action :add_newrelic_metadata
+  before_action :redirect_if_maintenance_mode
 
   rescue_from ActionController::InvalidAuthenticityToken do
-    redirect_to root_url, notice: t("cbv.error_missing_token_html")
+    redirect_to root_url, flash: { slim_alert: { type: "info", message_html:  t("cbv.error_missing_token_html") } }
   end
 
   def after_sign_in_path_for(user)
@@ -33,9 +35,28 @@ class ApplicationController < ActionController::Base
   protected
 
   def pinwheel_for(cbv_flow)
-    api_key = site_config[cbv_flow.site_id].pinwheel_api_token
     environment = site_config[cbv_flow.site_id].pinwheel_environment
 
-    PinwheelService.new(api_key, environment)
+    PinwheelService.new(environment)
+  end
+
+  def add_newrelic_metadata
+    newrelic_params = params.slice(:site_id, :locale).permit
+
+    attributes = {
+      cbv_flow_id: session[:cbv_flow_id],
+      session_id: session.id.to_s,
+      site_id: newrelic_params[:site_id],
+      locale: newrelic_params[:locale],
+      user_id: current_user.try(:id)
+    }
+
+    NewRelic::Agent.add_custom_attributes(attributes)
+  end
+
+  def redirect_if_maintenance_mode
+    if ENV["MAINTENANCE_MODE"] == "true"
+      redirect_to maintenance_path
+    end
   end
 end

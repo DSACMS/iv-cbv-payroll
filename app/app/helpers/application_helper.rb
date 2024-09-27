@@ -1,4 +1,10 @@
 module ApplicationHelper
+  def current_site?(site_id)
+    return false if current_site.nil?
+
+    current_site.id.to_sym == site_id.to_sym
+  end
+
   # Render a translation that is specific to the current site. Define
   # site-specific translations as:
   #

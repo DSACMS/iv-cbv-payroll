@@ -30,7 +30,7 @@
           <% if flash[:alert] %>
             <div class="usa-alert usa-alert--error">
               <div class="usa-alert__body">
-                <div class="usa-alert__heading">Error</div>
+                <div class="usa-alert__heading"><%= flash[:alert_heading] || "Error" %></div>
                 <p class="usa-alert__text"><%= flash[:alert] %></p>
               </div>
             </div>

@@ -1,7 +1,11 @@
 <%= f.text_field :first_name, label: t(".invite.first_name") %>
+
 <%= f.text_field :middle_name, label: t(".invite.middle_name") %>
+
 <%= f.text_field :last_name, label: t(".invite.last_name") %>
-<%= f.text_field :client_id_number, label: t(".invite.client_id_number") %>
+
 <%= f.text_field :case_number, label: t(".invite.case_number") %>
-<%= f.date_picker :snap_application_date, label: t(".invite.snap_application_date"), hint: "mm/dd/yyyy" %>
+
+<%= f.date_picker :snap_application_date, label: t(".invite.todays_date") %>
+
 <%= f.email_field :email_address, label: t(".invite.email_address") %>

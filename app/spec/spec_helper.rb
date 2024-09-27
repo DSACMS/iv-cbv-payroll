@@ -93,4 +93,11 @@ RSpec.configure do |config|
   # test failures related to randomization by passing the same `--seed` value
   # as the one that triggered the failure.
   Kernel.srand config.seed
+
+  # Mock the pinwheel method if it's not available in the test environment
+  config.before(:each, type: [ :controller, :request, :service ]) do
+    def pinwheel
+      @pinwheel ||= double('pinwheel')
+    end
+  end
 end

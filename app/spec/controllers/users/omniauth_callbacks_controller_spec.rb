@@ -16,54 +16,13 @@ RSpec.describe Users::OmniauthCallbacksController do
   end
 
   describe "#ma_dta" do
-    it "creates a User object and logs in as them" do
-      expect { post :ma_dta }
-        .to change(User, :count)
-        .by(1)
-
-      new_user = User.last
-      expect(new_user).to have_attributes(
-        email: test_email,
-        site_id: "ma"
-      )
-      expect(controller.current_user).to eq(new_user)
-    end
-
-    it "tracks a NewRelic event" do
-      expect(NewRelicEventTracker).to receive(:track).with("CaseworkerLogin", {
-        site_id: "ma",
-        user_id: be_a(Integer)
-      })
-
-      post :ma_dta
-    end
-
-    context "when the user already has authenticated before" do
-      let!(:existing_user) { create(:user, email: test_email, site_id: "ma") }
-
-      it "logs the user into the existing User" do
-        expect { post :ma_dta }
-          .not_to change(User, :count)
-        expect(controller.current_user).to eq(existing_user)
+    context "when the user is authorized" do
+      before do
+        allow(Rails.application.config.sites["ma"])
+          .to receive(:authorized_emails).and_return(test_email)
       end
 
-      context "when the email address has a capital letter in it" do
-        let(:test_email) { "FOO@example.com" }
-
-        it "logs the user into the existing User" do
-          expect { post :ma_dta }
-            .not_to change(User, :count)
-          expect(controller.current_user).to eq(existing_user)
-        end
-      end
-    end
-
-    # Re-using the same email across multiple sites should be only
-    # useful to us in development/demo.
-    context "when the user already has a sandbox account" do
-      let!(:existing_user) { create(:user, email: test_email, site_id: "sandbox") }
-
-      it "creates a new User for the ma_dta site" do
+      it "creates a User object and logs in as them" do
         expect { post :ma_dta }
           .to change(User, :count)
           .by(1)
@@ -74,6 +33,62 @@ RSpec.describe Users::OmniauthCallbacksController do
           site_id: "ma"
         )
         expect(controller.current_user).to eq(new_user)
+      end
+
+      it "tracks a NewRelic event" do
+        expect(NewRelicEventTracker).to receive(:track).with("CaseworkerLogin", {
+          site_id: "ma",
+          user_id: be_a(Integer)
+        })
+
+        post :ma_dta
+      end
+
+      context "when the user already has authenticated before" do
+        let!(:existing_user) { create(:user, email: test_email, site_id: "ma") }
+
+        it "logs the user into the existing User" do
+          expect { post :ma_dta }
+            .not_to change(User, :count)
+          expect(controller.current_user).to eq(existing_user)
+        end
+
+        context "when the email address has a capital letter in it" do
+          let(:test_email) { "FOO@example.com" }
+
+          it "logs the user into the existing User" do
+            expect { post :ma_dta }
+              .not_to change(User, :count)
+            expect(controller.current_user).to eq(existing_user)
+          end
+        end
+      end
+
+      # Re-using the same email across multiple sites should be only
+      # useful to us in development/demo.
+      context "when the user already has a sandbox account" do
+        let!(:existing_user) { create(:user, email: test_email, site_id: "sandbox") }
+
+        it "creates a new User for the ma_dta site" do
+          expect { post :ma_dta }
+            .to change(User, :count)
+            .by(1)
+
+          new_user = User.last
+          expect(new_user).to have_attributes(
+            email: test_email,
+            site_id: "ma"
+          )
+          expect(controller.current_user).to eq(new_user)
+        end
+      end
+    end
+
+    context "when the user is not authorized" do
+      it "redirects to root url with an alert" do
+        post :ma_dta
+        expect(response).to redirect_to(root_url)
+        expect(flash[:alert]).to be_present
       end
     end
   end
