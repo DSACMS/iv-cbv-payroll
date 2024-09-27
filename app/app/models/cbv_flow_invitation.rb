@@ -7,7 +7,7 @@ class CbvFlowInvitation < ApplicationRecord
   # that is simultaneously too strict (before the "@" character), too vague (after the "@" character),
   # and too lax (allowing comments, whitespace characters, and quoted strings in manners unfamiliar to most users)
   # to be of practical use here.
-  EMAIL_REGEX = /\A([\w+\-].?)+@[a-z\d\-]+(\.[a-z]+)*\.[a-z]+\z/i
+  EMAIL_REGEX = /\A([\w+\-].?)+@[a-z\d\-]+(\.[a-z\d\-]+)*\.[a-z\d\-]+\z/i
 
   # Massachusetts: 7 digits
   MA_AGENCY_ID_REGEX = /\A\d{7}\z/
