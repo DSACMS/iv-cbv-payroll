@@ -2,11 +2,38 @@ require 'rails_helper'
 
 RSpec.describe CbvFlowInvitation, type: :model do
   let(:valid_attributes) do
-    attributes_for(:cbv_flow_invitation, :nyc)
+    attributes_for(:cbv_flow_invitation, :nyc).merge(user: create(:user, site_id: "nyc"))
   end
+  let(:invalid_email_no_tld) { "johndoe@gmail" }
+  let(:valid_email) { "johndoe@gmail.com" }
 
   describe "validations" do
     context "for all invitations" do
+      context "validates email addresses" do
+        context "when email address is valid" do
+          valid_email_addresses = %w[johndoe@gmail.com johndoe@example.com.au johndoe@example.com,johndoe@example.com.au]
+          valid_email_addresses.each do |email|
+            it "#{email} is valid" do
+              invitation = CbvFlowInvitation.new(valid_attributes.merge(email_address: email))
+              expect(invitation).to be_valid
+            end
+          end
+        end
+
+        context "when email address is invalid" do
+          invalid_email_addresses = %w[johndoe@gmail johndoe@gmail..com johndoe@gmail.com..com johndoe@gmail\ .\ com]
+          invalid_email_addresses.each do |email|
+            it "determines #{email} is invalid" do
+              invitation = CbvFlowInvitation.new(valid_attributes.merge(email_address: email))
+              expect(invitation).not_to be_valid
+              expect(invitation.errors[:email_address]).to include(
+                I18n.t('activerecord.errors.models.cbv_flow_invitation.attributes.email_address.invalid_format')
+              )
+            end
+          end
+        end
+      end
+
       it "requires email_address" do
         invitation = CbvFlowInvitation.new(valid_attributes.merge(email_address: nil))
         expect(invitation).not_to be_valid
