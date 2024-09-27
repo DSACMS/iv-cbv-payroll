@@ -1,5 +1,4 @@
 class CbvFlowInvitation < ApplicationRecord
-
   # We're opting not to use URI::MailTo::EMAIL_REGEXP
   # https://html.spec.whatwg.org/multipage/input.html#valid-e-mail-address
   #
