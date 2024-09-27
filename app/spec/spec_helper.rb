@@ -57,6 +57,11 @@ RSpec.configure do |config|
   # metadata: `fit`, `fdescribe` and `fcontext`, respectively.
   config.filter_run_when_matching :focus
 
+  # Don't run E2E tests with JS for now
+  if ENV["RUN_E2E_TESTS"].nil?
+    config.filter_run_excluding js: true
+  end
+
   # Allows RSpec to persist some state between runs in order to support
   # the `--only-failures` and `--next-failure` CLI options. We recommend
   # you configure your source control system to ignore this file.

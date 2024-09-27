@@ -8,7 +8,10 @@ require "rspec/rails"
 require "view_component/test_helpers"
 require "support/context/gpg_setup"
 require "view_component/system_test_helpers"
+
 require "capybara/rspec"
+Capybara.default_driver = Capybara.javascript_driver
+
 # Add additional requires below this line. Rails is not loaded until this point!
 
 # Requires supporting ruby files with custom matchers and macros, etc, in
