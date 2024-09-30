@@ -3,7 +3,7 @@ Income Verification: Consent-Based Verification (Payroll)
 
 # About the Project
 
-Consent-Based Verification (CBV) is an approach to allow benefit applicants to opt to verify their income via products that pull directly from payroll providers. This repository implements a product to demonstrate this technology for testing and validation purposes.
+Consent-Based Verification (CBV) is a prototype that allows benefit applicants to verify their income directly using payroll providers. It is currently being piloted for testing and validation purposes.
 
 # Development and Software Delivery Lifecycle
 
@@ -12,41 +12,45 @@ guide for an introduction to the framework.
 
 ## Setup
 
-* All of these steps need to be run within the `app` directory
-* Install Xcode Command Line Tools
-* Install homebrew dependencies: `brew bundle`
-  * rbenv
-  * nodenv
-  * [redis]()
-  * [jq](https://stedolan.github.io/jq/)
-  * [PostgreSQL](https://www.postgresql.org/)
-  * [Dockerize](https://github.com/jwilder/dockerize)
-  * [ADR Tools](https://github.com/npryce/adr-tools)
-  * [Graphviz](https://voormedia.github.io/rails-erd/install.html): brew install graphviz
-  * [Chromedriver](https://sites.google.com/chromium.org/driver/)
-    * Chromedriver must be allowed to run. You can either do that by:
-      * The command line: `xattr -d com.apple.quarantine $(which chromedriver)` (this is the only option if you are on Big Sur)
-      * Manually: clicking "allow" when you run the integration tests for the first time and a dialogue opens up
-  * [Ngrok](https://ngrok.com/download): brew install ngrok/ngrok/ngrok
-    * Sign up for an account: https://dashboard.ngrok.com/signup
-    * run `ngrok config add-authtoken {token goes here}`
-* Set up rbenv and nodenv:
-  * `echo 'if which nodenv >/dev/null 2>/dev/null; then eval "$(nodenv init -)"; fi' >> ~/.zshrc`
-  * `echo 'if which rbenv >/dev/null 2>/dev/null; then eval "$(rbenv init -)"; fi' >> ~/.zshrc`
-  * Close & re-open your terminal
-* Install Ruby: `rbenv install`
-* Install NodeJS `nodenv install`
-* Install Ruby dependencies: `bundle install`
-* Install JS dependencies
-  * `nodenv rehash`
-* Start postgres & redis:
-  * `brew services start postgresql@12`
-  * `brew services start redis`
-* Get development credentials from 1Password, search for "CBV Rails Secrets" and copy its ".env.development.local" section into a file called that in the "app" directory.
-* Create database: `bin/rails db:create`
-* Run migrations: `bin/rails db:migrate`
-* Run the development server: `bin/dev`
-* Visit the site: http://localhost:3000
+1. Install Xcode Command Line Tools: ```xcode-select --install```
+1. Install homebrew dependencies: `brew bundle`
+   * rbenv
+   * nodenv
+   * [redis]()
+   * [jq](https://stedolan.github.io/jq/)
+   * [PostgreSQL](https://www.postgresql.org/)
+   * [Dockerize](https://github.com/jwilder/dockerize)
+   * [ADR Tools](https://github.com/npryce/adr-tools)
+   * [Graphviz](https://voormedia.github.io/rails-erd/install.html): brew install graphviz
+   * [Chromedriver](https://sites.google.com/chromium.org/driver/)
+     * Chromedriver must be allowed to run. You can either do that by:
+       * The command line: `xattr -d com.apple.quarantine $(which chromedriver)` (this is the only option if you are on Big Sur)
+       * Manually: clicking "allow" when you run the integration tests for the first time and a dialogue opens up
+   * [Ngrok](https://ngrok.com/download): brew install ngrok/ngrok/ngrok
+     * Sign up for an account: https://dashboard.ngrok.com/signup
+     * run `ngrok config add-authtoken {token goes here}`
+1. Set up rbenv and nodenv:
+   * `echo 'if which nodenv >/dev/null 2>/dev/null; then eval "$(nodenv init -)"; fi' >> ~/.zshrc`
+   * `echo 'if which rbenv >/dev/null 2>/dev/null; then eval "$(rbenv init -)"; fi' >> ~/.zshrc`
+   * Close & re-open your terminal
+
+**The following commands must be run in the app directory**
+1. Install Ruby: `rbenv install`
+1. Install NodeJS `nodenv install`
+1. Install Ruby dependencies: `bundle install`
+   * If you get an error from debase, run this command: ```gem install debase -v0.2.5.beta2 -- --with-cflags="-Wno-incompatible-function-pointer-types"```
+   * Also we should probably fix this (TODO)
+1. Install JS dependencies
+   * `nodenv rehash`
+1. Start postgres & redis:
+   * `brew services start postgresql@12`
+   * `brew services start redis`
+1. Get development credentials from 1Password: search for "CBV Rails Secrets" and copy its ".env.development.local" section into a file called that in the app directory.
+1. Run `npm install`
+1. Create database: `bin/rails db:create`
+1. Run migrations: `bin/rails db:migrate`
+1. Run the development server: `bin/dev`
+1. Visit the site: http://localhost:3000
 
 ## Local Development
 
@@ -227,7 +231,7 @@ The CBV team is taking a community-first and open source approach to the product
 
 We know that we can learn from a wide variety of communities, including those who will use or will be impacted by the tool, who are experts in technology, or who have experience with similar technologies deployed in other spaces. We are dedicated to creating forums for continuous conversation and feedback to help shape the design and development of the tool.
 
-We also recognize capacity building as a key part of involving a diverse open source community. We are doing our best to use accessible language, provide technical and process documents, and offer support to community members with a wide variety of backgrounds and skillsets. 
+We also recognize capacity building as a key part of involving a diverse open source community. We are doing our best to use accessible language, provide technical and process documents, and offer support to community members with a wide variety of backgrounds and skillsets.
 
 ## Community Guidelines
 See [COMMUNITY_GUIDELINES.md](./COMMUNITY_GUIDELINES.md).
