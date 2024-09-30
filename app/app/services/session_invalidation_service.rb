@@ -33,6 +33,8 @@ class SessionInvalidationService
   end
 
   def valid?
+    return false unless @user.present?
+
     (@user.invalidated_session_ids || {}).exclude?(@session_id)
   end
 

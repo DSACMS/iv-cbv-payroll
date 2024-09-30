@@ -50,7 +50,7 @@ RSpec.describe Caseworker::CbvFlowInvitationsController, type: :controller do
     it "creates a CbvFlowInvitation record without optional fields" do
       post :create, params: {
         site_id: nyc_params[:site_id],
-        cbv_flow_invitation: cbv_flow_invitation_params.except(:middle_name, :client_id_number)
+        cbv_flow_invitation: cbv_flow_invitation_params.except(:middle_name)
       }
       puts response.inspect
       invitation = CbvFlowInvitation.last

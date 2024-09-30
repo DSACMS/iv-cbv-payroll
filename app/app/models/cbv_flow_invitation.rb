@@ -1,5 +1,12 @@
 class CbvFlowInvitation < ApplicationRecord
-  EMAIL_REGEX = URI::MailTo::EMAIL_REGEXP
+  # We're opting not to use URI::MailTo::EMAIL_REGEXP
+  # https://html.spec.whatwg.org/multipage/input.html#valid-e-mail-address
+  #
+  # EXCERPT: This requirement is a willful violation of RFC 5322, which defines a syntax for email addresses
+  # that is simultaneously too strict (before the "@" character), too vague (after the "@" character),
+  # and too lax (allowing comments, whitespace characters, and quoted strings in manners unfamiliar to most users)
+  # to be of practical use here.
+  EMAIL_REGEX = /\A([\w+\-].?)+@[a-z\d\-]+(\.[a-z\d\-]+)*\.[a-z\d\-]+\z/i
 
   # Massachusetts: 7 digits
   MA_AGENCY_ID_REGEX = /\A\d{7}\z/
@@ -13,6 +20,12 @@ class CbvFlowInvitation < ApplicationRecord
   # New York City: 2 uppercase letters, followed by 5 digits, followed by 1 uppercase letter
   NYC_CLIENT_ID_REGEX = /\A[A-Z]{2}\d{5}[A-Z]\z/
 
+  # Invitation validity time zone
+  INVITATION_VALIDITY_TIME_ZONE = "America/New_York"
+
+  # Paystub report range
+  PAYSTUB_REPORT_RANGE = 90.days
+
   belongs_to :user
   has_many :cbv_flows
 
@@ -25,18 +38,17 @@ class CbvFlowInvitation < ApplicationRecord
   validates :first_name, presence: true
   validates :last_name, presence: true
   validates :email_address, format: { with: EMAIL_REGEX, message: :invalid_format }
-  validates :snap_application_date, presence: true
 
   # MA specific validations
   validates :agency_id_number, format: { with: MA_AGENCY_ID_REGEX, message: :invalid_format }, if: :ma_site?
   validates :beacon_id, format: { with: MA_BEACON_ID_REGEX, message: :invalid_format }, if: :ma_site?
   validate :ma_snap_application_date_not_more_than_1_year_ago, if: :ma_site?
-  validate :ma_snap_application_date_not_in_future
+  validate :ma_snap_application_date_not_in_future, if: :ma_site?
 
 
   # NYC specific validations
-  validates :case_number, presence: true, format: { with: NYC_CASE_NUMBER_REGEX, message: :invalid_format }, if: :nyc_site?
-  validates :client_id_number, format: { with: NYC_CLIENT_ID_REGEX, message: :invalid_format }, if: -> { nyc_site? && client_id_number.present? }
+  validates :case_number, format: { with: NYC_CASE_NUMBER_REGEX, message: :invalid_format }, if: :nyc_site?
+  validates :client_id_number, format: { with: NYC_CLIENT_ID_REGEX, message: :invalid_format }, if: :nyc_site?
   validate :nyc_snap_application_date_not_more_than_30_days_ago, if: :nyc_site?
   validate :nyc_snap_application_date_not_in_future, if: :nyc_site?
 
@@ -53,9 +65,6 @@ class CbvFlowInvitation < ApplicationRecord
     snap_application_date: :date,
     auth_token: :string
   )
-
-  INVITATION_VALIDITY_TIME_ZONE = "America/New_York"
-  PAYSTUB_REPORT_RANGE = 90.days
 
   scope :unstarted, -> { left_outer_joins(:cbv_flows).where(cbv_flows: { id: nil }) }
 
@@ -105,7 +114,15 @@ class CbvFlowInvitation < ApplicationRecord
         new_date_format = Date.strptime(raw_snap_application_date.to_s, "%m/%d/%Y")
         self.snap_application_date = new_date_format
       rescue Date::Error => e
-        errors.add(:snap_application_date, :invalid_date)
+        case site_id
+        when "ma"
+          error = :ma_invalid_date
+        when "nyc"
+          error = :nyc_invalid_date
+        else
+          error = :invalid_date
+        end
+        errors.add(:snap_application_date, error)
       end
     end
   end

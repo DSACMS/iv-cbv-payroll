@@ -38,3 +38,6 @@ brew "tfenv"
 # AWS command-line utilities necessary for deploying and operations
 brew "awscli"
 cask "session-manager-plugin"
+
+# necessary for file encryption
+brew "gpg"

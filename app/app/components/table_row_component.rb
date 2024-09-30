@@ -1,9 +1,8 @@
 # frozen_string_literal: true
 
 class TableRowComponent < ViewComponent::Base
-  def initialize(label:, value:, highlight: false)
-    @label = label
-    @value = value
+  def initialize(*cells, highlight: false)
+    @cells = cells
     @highlight = highlight
   end
 end

@@ -12,6 +12,14 @@ RSpec.describe SessionInvalidationService do
       end
     end
 
+    context "for a nil User (if they try to log out twice)" do
+      let(:user) { nil }
+
+      it "is false" do
+        expect(service.valid?).to eq(false)
+      end
+    end
+
     context "for a User with invalidated sessions" do
       let(:user) { create(:user, invalidated_session_ids: invalidated_session_ids) }
       let(:invalidated_session_ids) { { "BBBBB" => Time.now } }
@@ -63,6 +71,14 @@ RSpec.describe SessionInvalidationService do
           service.invalidate!
           expect(user.invalidated_session_ids).not_to include("BBBBB")
         end
+      end
+    end
+
+    context "when the user has already logged out" do
+      let(:user) { nil }
+
+      it "does nothing" do
+        expect { service.invalidate! }.not_to raise_error
       end
     end
   end

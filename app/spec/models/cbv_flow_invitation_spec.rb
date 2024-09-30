@@ -2,11 +2,38 @@ require 'rails_helper'
 
 RSpec.describe CbvFlowInvitation, type: :model do
   let(:valid_attributes) do
-    attributes_for(:cbv_flow_invitation, :nyc)
+    attributes_for(:cbv_flow_invitation, :nyc).merge(user: create(:user, site_id: "nyc"))
   end
+  let(:invalid_email_no_tld) { "johndoe@gmail" }
+  let(:valid_email) { "johndoe@gmail.com" }
 
   describe "validations" do
     context "for all invitations" do
+      context "validates email addresses" do
+        context "when email address is valid" do
+          valid_email_addresses = %w[johndoe@gmail.com johndoe@example.com.au johndoe@example.com,johndoe@example.com.au]
+          valid_email_addresses.each do |email|
+            it "#{email} is valid" do
+              invitation = CbvFlowInvitation.new(valid_attributes.merge(email_address: email))
+              expect(invitation).to be_valid
+            end
+          end
+        end
+
+        context "when email address is invalid" do
+          invalid_email_addresses = %w[johndoe@gmail johndoe@gmail..com johndoe@gmail.com..com johndoe@gmail\ .\ com]
+          invalid_email_addresses.each do |email|
+            it "determines #{email} is invalid" do
+              invitation = CbvFlowInvitation.new(valid_attributes.merge(email_address: email))
+              expect(invitation).not_to be_valid
+              expect(invitation.errors[:email_address]).to include(
+                I18n.t('activerecord.errors.models.cbv_flow_invitation.attributes.email_address.invalid_format')
+              )
+            end
+          end
+        end
+      end
+
       it "requires email_address" do
         invitation = CbvFlowInvitation.new(valid_attributes.merge(email_address: nil))
         expect(invitation).not_to be_valid
@@ -27,8 +54,7 @@ RSpec.describe CbvFlowInvitation, type: :model do
         invitation = CbvFlowInvitation.new(valid_attributes.merge(snap_application_date: nil))
         expect(invitation).not_to be_valid
         expect(invitation.errors[:snap_application_date]).to include(
-          I18n.t('activerecord.errors.models.cbv_flow_invitation.attributes.snap_application_date.invalid_date'),
-          "can't be blank"
+          I18n.t('activerecord.errors.models.cbv_flow_invitation.attributes.snap_application_date.nyc_invalid_date'),
         )
       end
 
@@ -36,7 +62,7 @@ RSpec.describe CbvFlowInvitation, type: :model do
         invitation = CbvFlowInvitation.new(valid_attributes.merge(snap_application_date: Date.tomorrow))
         expect(invitation).not_to be_valid
         expect(invitation.errors[:snap_application_date]).to include(
-          I18n.t('activerecord.errors.models.cbv_flow_invitation.attributes.snap_application_date.ma_invalid_date')
+          I18n.t('activerecord.errors.models.cbv_flow_invitation.attributes.snap_application_date.nyc_invalid_date')
         )
       end
 
@@ -50,7 +76,7 @@ RSpec.describe CbvFlowInvitation, type: :model do
         invitation = CbvFlowInvitation.new(valid_attributes.merge(snap_application_date: "invalid"))
         expect(invitation).not_to be_valid
         expect(invitation.errors[:snap_application_date]).to include(
-          I18n.t('activerecord.errors.models.cbv_flow_invitation.attributes.snap_application_date.invalid_date')
+          I18n.t('activerecord.errors.models.cbv_flow_invitation.attributes.snap_application_date.nyc_invalid_date')
         )
       end
 
@@ -118,6 +144,22 @@ RSpec.describe CbvFlowInvitation, type: :model do
 
         it "validates client_id_number format when present" do
           invitation = CbvFlowInvitation.new(nyc_attributes.merge(client_id_number: 'invalid'))
+          expect(invitation).not_to be_valid
+          expect(invitation.errors[:client_id_number]).to include(
+            I18n.t('activerecord.errors.models.cbv_flow_invitation.attributes.client_id_number.invalid_format')
+          )
+        end
+
+        it "requires valid snap_application_date" do
+          invitation = CbvFlowInvitation.new(nyc_attributes.merge(snap_application_date: "invalid"))
+          expect(invitation).not_to be_valid
+          expect(invitation.errors[:snap_application_date]).to include(
+            I18n.t('activerecord.errors.models.cbv_flow_invitation.attributes.snap_application_date.nyc_invalid_date')
+          )
+        end
+
+        it "requires client_id_number" do
+          invitation = CbvFlowInvitation.new(nyc_attributes.merge(client_id_number: nil))
           expect(invitation).not_to be_valid
           expect(invitation.errors[:client_id_number]).to include(
             I18n.t('activerecord.errors.models.cbv_flow_invitation.attributes.client_id_number.invalid_format')

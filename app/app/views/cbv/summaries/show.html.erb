@@ -3,56 +3,54 @@
   <%= t(".header") %>
 </h1>
 
-<% if @payments.any? %>
-  <div class="margin-bottom-6 usa-prose">
-    <p>
-      <%= t(".description", start_date: @payments_beginning_at, end_date: @payments_ending_at, agency_acronym: current_site.agency_short_name) %>
-    </p>
-  </div>
+<div class="margin-bottom-6 usa-prose">
+  <p>
+    <%= t(".description", start_date: @payments_beginning_at, end_date: @payments_ending_at, agency_acronym: current_site.agency_short_name) %>
+  </p>
+</div>
 
-  <h2 class="site-preview-heading"><%= t(".total_payments", amount: format_money(total_gross_income)) %></h2>
-  <div class="usa-prose">
-    <p><%= t(".total_payments_desc") %></p>
-  </div>
+<h2 class="site-preview-heading"><%= t(".total_payments", amount: format_money(total_gross_income)) %></h2>
+<div class="usa-prose">
+  <p><%= t(".total_payments_desc") %></p>
+</div>
 
-  <% payments_grouped_by_employer.each_with_index do |(account_id, summary), index| %>
-    <table class="usa-table usa-table--borderless width-full">
-      <h3>
-        <% employer_name = summary[:has_employment_data] ? summary.dig(:employment, "employer_name") : nil %>
-        <% if employer_name %>
-          <%= t(".table_caption", number: index + 1, employer_name: employer_name) %>
-        <% else %>
-          <%= t(".table_caption_no_name", number: index + 1) %>
-        <% end %>
-      </h3>
-      <thead class="border-top-05">
-        <tr>
-          <th class="padding-3" style="background-color: #d9e8f6;" colspan="2">
-            <h4 class="margin-0">
+<% payments_grouped_by_employer.each_with_index do |(account_id, summary), index| %>
+  <table class="usa-table usa-table--borderless width-full">
+    <h3>
+      <% employer_name = summary[:has_employment_data] ? summary.dig(:employment, "employer_name") : nil %>
+      <% if employer_name %>
+        <%= t(".table_caption", number: index + 1, employer_name: employer_name) %>
+      <% else %>
+        <%= t(".table_caption_no_name", number: index + 1) %>
+      <% end %>
+    </h3>
+    <thead class="border-top-05">
+      <tr>
+        <th class="padding-3" style="background-color: #d9e8f6;" colspan="2">
+          <h4 class="margin-0">
+            <% if summary[:total] > 0 %>
               <% if employer_name %>
                 <%= t(".total_income_from", employer_name: employer_name, amount: format_money(summary[:total])) %>
               <% else %>
                 <%= t(".total_income_from_no_employer_name", amount: format_money(summary[:total])) %>
               <% end %>
-            </h4>
-          </th>
+            <% else %>
+              <%= t(".none_found") %>
+            <% end %>
+          </h4>
+        </th>
+      </tr>
+    </thead>
+    <tbody>
+      <% summary[:payments].each do |payment| %>
+        <tr>
+          <td><%= t(".payment", amount: format_money(payment[:gross_pay_amount]), date: format_date(payment[:pay_date])) %></td>
         </tr>
-      </thead>
-      <tbody>
-        <% summary[:payments].each do |payment| %>
-          <tr>
-            <td><%= t(".payment", amount: format_money(payment[:gross_pay_amount]), date: format_date(payment[:pay_date])) %></td>
-          </tr>
-        <% end %>
-      </tbody>
-    </table>
-    <h4><%= t(".additional_comments") %></h4>
-    <%= get_comment_by_account_id(account_id).dig("comment") != "" ? get_comment_by_account_id(account_id).dig("comment") : t("shared.not_applicable") %>
-  <% end %>
-<% else %>
-  <h3 class="site-preview-heading">
-    <%= t(".none_found") %>
-  </h3>
+      <% end %>
+    </tbody>
+  </table>
+  <h4><%= t(".additional_comments") %></h4>
+  <%= get_comment_by_account_id(account_id).dig("comment") != "" ? get_comment_by_account_id(account_id).dig("comment") : t("shared.not_applicable") %>
 <% end %>
 
 <%= form_with model: @cbv_flow, url: cbv_flow_summary_path, html: { class: "usa-form maxw-full" }, builder: UswdsFormBuilder, method: "patch" do |f| %>

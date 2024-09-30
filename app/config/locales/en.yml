@@ -9,10 +9,9 @@ en:
               blank: Enter a valid agency ID number.
               invalid_format: Agency ID number must be 7 digits.
             beacon_id:
-              blank: can't be blank
-              invalid_format: Your WelID must be 6 characters. It can only include letters and numbers.
+              invalid_format: Your WELID must be 6 characters. It can only include letters and numbers.
             case_number:
-              invalid_format: Client's case number must be 12 digits. Enter the case number in the ANGIE/sPOS format, i.e. 00012345678A.
+              invalid_format: Enter the case number in the ANGIE/sPOS format, i.e. 00012345678A.
             client_id_number:
               invalid_format: Enter the client's CIN in the correct format, XX00000X.
             email_address:
@@ -23,7 +22,6 @@ en:
             last_name:
               blank: Enter the client's last name.
             snap_application_date:
-              invalid_date: is not a valid date
               ma_invalid_date: Enter today's date or the date you contacted the client. This date must be today or in the past year.
               nyc_invalid_date: SNAP application/recertification date must be today or in the past 30 days.
   applicant_mailer:
@@ -57,7 +55,7 @@ en:
       ma:
         invite:
           agency_id_number: Client's agency ID number
-          beacon_id: Your WelID
+          beacon_id: Your WELID
           email_address: Client's email address
           first_name: Client's first name
           last_name: Client's last name
@@ -76,7 +74,7 @@ en:
           first_name: Client's first name
           last_name: Client's last name
           middle_name: Client's middle name
-          snap_application_date: SNAP application date
+          snap_application_date: SNAP application or recertification date
     dashboards:
       show:
         create_invitation: Create a new invitation
@@ -124,7 +122,7 @@ en:
       create:
         notice_no_answer: You must select an answer to continue.
       show:
-        answer_no_bullet_1: You don't have another job
+        answer_no_bullet_1: You don't have another job (current or recent)
         answer_no_bullet_2: You have a job that pays you via PayPal, Venmo, Cash App, etc
         answer_no_bullet_3: You have a job that pays you in cash
         answer_no_bullet_4: You have a job that pays you with a paper check and you cannot view your paycheck online
@@ -266,7 +264,8 @@ en:
         header: Your payment information from %{employer_name}
         header_no_employer_name: Your payment information from your employer
         hourly_rate: Compensation amount
-        none_found: No payments found.
+        none_found: We didn't find any payments from this employer in the past 90 days.
+        none_found_description: This typically happens when you haven't received income from this job in the past 90 days. If you believe this is an error, please add a comment in the additional comments box. Otherwise, continue to the next page.
         number_of_hours_worked: Number of hours worked
         pay_date: 'Pay Date: %{pay_date}'
         pay_frequency: Pay period frequency
@@ -306,7 +305,8 @@ en:
         consent_to_authorize_use_title: Legal Agreement
         description: The report below has your income from the past 90 days from, from %{start_date} to %{end_date}. Please review it before you send it to %{agency_acronym}.
         header: Review and submit your income report
-        none_found: No payments found. Please refresh the page after a few minutes.
+        none_found: We didn't find any payments from this employer in the past 90 days.
+        none_found_confirmed: We've confirmed that there are no payments from this employer in the past 90 days. This happens when the client hasn't received income from this job during that time.
         payment: Payment of %{amount} before taxes on %{date}
         pdf:
           agency_header_name:
@@ -327,7 +327,7 @@ en:
             middle_name: Client's middle name
             pay_period: Pay period (%{pay_frequency})
             snap_agency_id: SNAP Agency ID
-            staff_beacon_id_wel_id: Staff BEACON ID (WelID)
+            staff_beacon_id_wel_id: Staff BEACON ID (WELID)
           client:
             address: Employer address
             agency_id_number: Client's Agency ID

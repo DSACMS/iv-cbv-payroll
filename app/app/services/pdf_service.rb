@@ -1,7 +1,6 @@
 require "pdf-reader"
 
 class PdfService
-  include ApplicationHelper
   # Represents the result of PDF generation
   class PdfGenerationResult
     attr_reader :content, :html, :page_count, :file_size
@@ -14,8 +13,8 @@ class PdfService
     end
   end
 
-  def generate(template:, variables: {})
-    html_content = ApplicationController.renderer.render_to_string(
+  def generate(renderer:, template:, variables: {})
+    html_content = renderer.render_to_string(
       template: template,
       formats: [ :pdf ],
       layout: "layouts/pdf",
