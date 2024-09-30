@@ -36,10 +36,6 @@ class PinwheelAccount < ApplicationRecord
     supported_jobs.include?(job) && (send(sync_column).present? || send(error_column).present?)
   end
 
-  def relevant_cbv_jobs
-    supported_jobs.filter { |job| EVENTS_MAP.keys.any? { |key| key.start_with? job } }
-  end
-
   private
 
   def event_columns_for(job)
