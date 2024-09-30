@@ -19,29 +19,29 @@
         class="grid-col-fill"
         data-cbv-synchronizations-target="employmentJob"
       >
-        <%= render partial: "cbv/synchronizations/indicator", locals: { in_progress: job_completed?("employment") } %>
-        <%= t(".jobs.employment") %>
+        <%= render partial: "cbv/synchronizations/indicator", locals: { completed: job_completed?("employment") } %>
+        <p><%= t(".jobs.employment") %></p>
       </div>
       <div
         class="grid-col-fill"
         data-cbv-synchronizations-target="identityJob"
       >
-        <%= render partial: "cbv/synchronizations/indicator", locals: { in_progress: job_completed?("identity") } %>
-        <%= t(".jobs.identity") %>
+        <%= render partial: "cbv/synchronizations/indicator", locals: { completed: job_completed?("identity") } %>
+        <p><%= t(".jobs.identity") %></p>
       </div>
       <div
         class="grid-col-fill"
         data-cbv-synchronizations-target="paystubsJob"
       >
-        <%= render partial: "cbv/synchronizations/indicator", locals: { in_progress: job_completed?("paystubs") } %>
-        <%= t(".jobs.paystubs") %>
+        <%= render partial: "cbv/synchronizations/indicator", locals: { completed: job_completed?("paystubs") } %>
+        <p><%= t(".jobs.paystubs") %></p>
       </div>
       <div
         class="grid-col-fill"
         data-cbv-synchronizations-target="incomeJob"
       >
-        <%= render partial: "cbv/synchronizations/indicator", locals: { in_progress: job_completed?("income") } %>
-        <%= t(".jobs.income") %>
+        <%= render partial: "cbv/synchronizations/indicator", locals: { completed: job_completed?("income") } %>
+        <p><%= t(".jobs.income") %></p>
       </div>
     </div>
   </div>
