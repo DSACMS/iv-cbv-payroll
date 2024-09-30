@@ -1,31 +1,49 @@
 <% content_for :title, t(".header") %>
-<div data-controller="cbv-synchronizations" class="usa-modal__content">
-  <div class="usa-modal__main">
-    <h2 class="usa-modal__heading" id="modal-3-heading">
-      <%= t(".fetching_payroll") %>
-    </h2>
-    <div class="usa-prose">
-      <p id="modal-3-description">
-        <%= t(".fetching_payroll_description") %>
-      </p>
-    </div>
-    <div class="lds-ripple" style="left: 30%;"><div></div><div></div></div>
+<div data-controller="cbv-synchronizations">
+  <h1>
+    <%= t(".header") %>
+  </h1>
+  <div class="usa-prose">
+    <p>
+      <%= t(".fetching_payroll_description") %>
+    </p>
   </div>
   <%= form_with url: next_path, method: :get, class: "display-none", data: { 'cbv-synchronizations-target': "form" } do |f| %>
     <input type="hidden" name="user[account_id]" value="<%= params[:user][:account_id] %>" data-cbv-synchronizations-target="userAccountId">
   <% end %>
-  <div>
-    <span data-cbv-synchronizations-target="employmentJob">
-      <%= @pinwheel_account.present? && @pinwheel_account.job_completed?("employment") %>
-    </span>
-    <span data-cbv-synchronizations-target="identityJob">
-      <%= @pinwheel_account.present? && @pinwheel_account.job_completed?("identity") %>
-    </span>
-    <span data-cbv-synchronizations-target="paystubsJob">
-      <%= @pinwheel_account.present? && @pinwheel_account.job_completed?("paystubs") %>
-    </span>
-    <span data-cbv-synchronizations-target="incomeJob">
-      <%= @pinwheel_account.present? && @pinwheel_account.job_completed?("income") %>
-    </span>
+  <div
+    class="usa-step-indicator usa-step-indicator--centered"
+    aria-label="progress"
+  >
+    <ol class="usa-step-indicator__segments">
+      <li
+        class="usa-step-indicator__segment usa-step-indicator__segment--complete"
+        data-cbv-synchronizations-target="employmentJob"
+      >
+        <%= render partial: "cbv/synchronizations/indicator", locals: { in_progress: job_completed?("employment") } %>
+        <%= t(".jobs.employment") %>
+      </li>
+      <li
+        class="usa-step-indicator__segment usa-step-indicator__segment--complete"
+        data-cbv-synchronizations-target="identityJob"
+      >
+        <%= render partial: "cbv/synchronizations/indicator", locals: { in_progress: job_completed?("identity") } %>
+        <%= t(".jobs.identity") %>
+      </li>
+      <li
+        class="usa-step-indicator__segment usa-step-indicator__segment--current"
+        data-cbv-synchronizations-target="paystubsJob"
+      >
+        <%= render partial: "cbv/synchronizations/indicator", locals: { in_progress: job_completed?("paystubs") } %>
+        <%= t(".jobs.paystubs") %>
+      </li>
+      <li
+        class="usa-step-indicator__segment"
+        data-cbv-synchronizations-target="incomeJob"
+      >
+        <%= render partial: "cbv/synchronizations/indicator", locals: { in_progress: job_completed?("income") } %>
+        <%= t(".jobs.income") %>
+      </li>
+    </ol>
   </div>
 </div>

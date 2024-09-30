@@ -1,0 +1,10 @@
+<svg class="usa-icon" aria-hidden="true" focusable="false" role="img">
+  <use
+    class="in-progress <%= in_progress ? "display-none" : "" %>"
+    xlink:href="<%= asset_path("@uswds/uswds/dist/img/sprite.svg#loop") %>"
+  ></use>
+  <use
+    class="completed <%= !in_progress ? "display-none" : "" %>"
+    xlink:href="<%= asset_path("@uswds/uswds/dist/img/sprite.svg#check") %>"
+  ></use>
+</svg>

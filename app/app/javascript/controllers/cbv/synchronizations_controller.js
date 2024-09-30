@@ -6,6 +6,16 @@ export default class extends Controller {
 
   cable = ActionCable.createConsumer();
 
+  updateIndicatorStatus(element, completed) {
+    if (completed) {
+      element.querySelector('.completed').classList.remove('display-none');
+      element.querySelector('.in-progress').classList.add('display-none');
+    } else {
+      element.querySelector('.completed').classList.add('display-none');
+      element.querySelector('.in-progress').classList.remove('display-none');
+    }
+  }
+
   connect() {
     this.cable.subscriptions.create({ channel: 'PaystubsChannel', account_id: this.userAccountIdTarget.value }, {
       connected: () => {
@@ -22,10 +32,10 @@ export default class extends Controller {
             this.formTarget.submit();
           }
 
-          this.employmentJobTarget.textContent = data.employment;
-          this.identityJobTarget.textContent = data.identity;
-          this.paystubsJobTarget.textContent = data.paystubs;
-          this.incomeJobTarget.textContent = data.income;
+          this.updateIndicatorStatus(this.employmentJobTarget, data.employment);
+          this.updateIndicatorStatus(this.identityJobTarget, data.identity);
+          this.updateIndicatorStatus(this.paystubsJobTarget, data.paystubs);
+          this.updateIndicatorStatus(this.incomeJobTarget, data.income);
         }
       }
     });
