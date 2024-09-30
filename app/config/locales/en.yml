@@ -349,7 +349,7 @@ en:
         consent_to_authorize_warning: You must check the legal agreement checkbox to proceed.
     synchronizations:
       show:
-        fetching_payroll_description:	This may take a few minutes. Please keep this window open while we work on this.
+        fetching_payroll_description: This may take a few minutes. Please keep this window open while we work on this.
         header: We’re gathering your payment details from your employer
         jobs:
           employment: Employment

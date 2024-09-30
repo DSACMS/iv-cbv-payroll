@@ -12,38 +12,37 @@
     <input type="hidden" name="user[account_id]" value="<%= params[:user][:account_id] %>" data-cbv-synchronizations-target="userAccountId">
   <% end %>
   <div
-    class="usa-step-indicator usa-step-indicator--centered"
-    aria-label="progress"
+    class="grid-container"
   >
-    <ol class="usa-step-indicator__segments">
-      <li
-        class="usa-step-indicator__segment usa-step-indicator__segment--complete"
+    <div class="grid-row">
+      <div
+        class="grid-col-fill"
         data-cbv-synchronizations-target="employmentJob"
       >
         <%= render partial: "cbv/synchronizations/indicator", locals: { in_progress: job_completed?("employment") } %>
         <%= t(".jobs.employment") %>
-      </li>
-      <li
-        class="usa-step-indicator__segment usa-step-indicator__segment--complete"
+      </div>
+      <div
+        class="grid-col-fill"
         data-cbv-synchronizations-target="identityJob"
       >
         <%= render partial: "cbv/synchronizations/indicator", locals: { in_progress: job_completed?("identity") } %>
         <%= t(".jobs.identity") %>
-      </li>
-      <li
-        class="usa-step-indicator__segment usa-step-indicator__segment--current"
+      </div>
+      <div
+        class="grid-col-fill"
         data-cbv-synchronizations-target="paystubsJob"
       >
         <%= render partial: "cbv/synchronizations/indicator", locals: { in_progress: job_completed?("paystubs") } %>
         <%= t(".jobs.paystubs") %>
-      </li>
-      <li
-        class="usa-step-indicator__segment"
+      </div>
+      <div
+        class="grid-col-fill"
         data-cbv-synchronizations-target="incomeJob"
       >
         <%= render partial: "cbv/synchronizations/indicator", locals: { in_progress: job_completed?("income") } %>
         <%= t(".jobs.income") %>
-      </li>
-    </ol>
+      </div>
+    </div>
   </div>
 </div>
