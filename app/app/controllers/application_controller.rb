@@ -33,7 +33,6 @@ class ApplicationController < ActionController::Base
     locale_sources = [
       params[:locale],
       request.path.split("/")[1],
-      URI(request.env["HTTP_REFERER"]).path.split("/")[1],
       request.env["HTTP_ACCEPT_LANGUAGE"]&.scan(/^[a-z]{2}/)&.first,
       I18n.default_locale
     ]

@@ -5,8 +5,6 @@ en:
       models:
         cbv_flow_invitation:
           attributes:
-            language:
-              invalid_format: Language must be either English (en) or Spanish (es).
             agency_id_number:
               blank: Enter a valid agency ID number.
               invalid_format: Agency ID number must be 7 digits.
@@ -21,6 +19,8 @@ en:
               invalid_format: Enter an email address in the correct format, like name@example.com
             first_name:
               blank: Enter the client's first name.
+            language:
+              invalid_format: Language must be either English (en) or Spanish (es).
             last_name:
               blank: Enter the client's last name.
             snap_application_date:

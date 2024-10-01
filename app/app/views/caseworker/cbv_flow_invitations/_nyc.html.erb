@@ -8,7 +8,7 @@
 
 <%= f.text_field :case_number, label: t(".invite.case_number") %>
 
-<%= f.select :language, options_for_select(CbvFlowInvitation::VALID_LANGUAGES.map { |lang| [lang.to_s.upcase, lang] }), { label: t(".invite.language") } %>
+<%= f.select :language, options_for_select(CbvFlowInvitation::VALID_LANGUAGES.map { |lang| [ lang.to_s.upcase, lang ] }), { label: t(".invite.language") } %>
 
 <%= f.date_picker :snap_application_date, label: t(".invite.snap_application_date") %>
 
