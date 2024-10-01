@@ -1,5 +1,5 @@
 class Cbv::BaseController < ApplicationController
-  before_action :set_cbv_flow, :ensure_cbv_flow_not_yet_complete
+  before_action :set_cbv_flow, :ensure_cbv_flow_not_yet_complete, :set_locale
   helper_method :agency_url, :next_path, :get_comment_by_account_id, :current_site
 
   private
@@ -76,5 +76,23 @@ class Cbv::BaseController < ApplicationController
 
   def get_comment_by_account_id(account_id)
     @cbv_flow.additional_information[account_id] || { comment: nil, updated_at: nil }
+  end
+
+  def set_locale
+    invitation_locale = @cbv_flow.cbv_flow_invitation.language
+
+    if params[:locale].present?
+      # User has selected a locale, update session and use it
+      session[:user_locale] = params[:locale]
+    elsif session[:user_locale].blank?
+      session[:user_locale] = invitation_locale
+    end
+
+    I18n.locale = session[:user_locale]
+
+    # Redirect only if the current URL doesn't match the selected locale
+    unless request.path.start_with?("/#{I18n.locale}")
+      redirect_to url_for(locale: I18n.locale, params: request.query_parameters)
+    end
   end
 end
