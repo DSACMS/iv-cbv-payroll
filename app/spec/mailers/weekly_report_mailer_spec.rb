@@ -2,10 +2,9 @@ require "rails_helper"
 require 'csv'
 
 RSpec.describe WeeklyReportMailer, type: :mailer do
-  let(:now) { DateTime.new(2024, 9, 9, 9, 0, 0, "-04:00") }
+  let(:now) { Time.new(2024, 9, 9, 9, 0, 0, "-04:00") }
   let(:site_id) { "nyc" }
   let(:invitation_sent_at) { now - 5.days }
-  let(:snap_app_date) { now.strftime("%Y-%m-%d") }
   let(:cbv_flow_invitation) do
     create(:cbv_flow_invitation,
            :nyc,
@@ -61,7 +60,7 @@ RSpec.describe WeeklyReportMailer, type: :mailer do
   end
 
   context "when the invitation was sent before the week of the report" do
-    let(:invitation_sent_at) { now.prev_week.beginning_of_week - 1.minute }
+    let(:invitation_sent_at) { Time.now.prev_week.beginning_of_week - 1.minute }
 
     it "excludes the record from the CSV" do
       expect(parsed_csv.length).to eq(0)

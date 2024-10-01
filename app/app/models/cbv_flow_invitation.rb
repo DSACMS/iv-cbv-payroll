@@ -170,5 +170,4 @@ class CbvFlowInvitation < ApplicationRecord
   def normalize_language
     self.language = language.to_s.downcase if language.present?
   end
-
 end
