@@ -75,8 +75,6 @@ es:
         can_not_find_employer: No logro encontrar mi empresa ni mi proveedor de nómina
         employer_not_listed: "¿Su empleador no está en la lista?"
         exit_button_text: Salga y vaya a %{agency_short_name}
-        fetching_payroll: Estamos buscando la información de pago de su empleador.
-        fetching_payroll_description: Esto puede tomar algunos minutos. Por favor, no cierre esta ventana.
         header: Busque su más reciente empleador o proveedor de nómina
         no_results_steps1: Verifique si su empleador usa otro nombre empresarial o busque a su proveedor de nómina.
         no_results_steps2: Asegúrese de haber escrito correctamente los nombres, y busque de nuevo.
@@ -239,6 +237,15 @@ es:
         total_payments_desc: Este es el ingreso bruto total de su(s) trabajo(s) antes de que se le descuenten impuestos, beneficios y otras deducciones de su cheque.
       update:
         consent_to_authorize_warning: Debe marcar la casilla de acuerdo legal para proceder.
+    synchronizations:
+      show:
+        fetching_payroll_description: Esto puede tardar unos minutos. Mantenga esta ventana abierta mientras trabajamos en esto.
+        header: Estamos recopilando los datos de pago de su empleador
+        jobs:
+          employment: Empleo
+          identity: Datos personales
+          income: Ingresos
+          paystubs: Recibos de pago
   pages:
     home:
       description_1: El SNAP Income Pilot es una nueva herramienta diseñada para ayudarle a conectar los detalles de sus ingresos de su empleador o proveedor de nómina directamente con su agencia de SNAP. Actualmente estamos probando esta herramienta para asegurarnos de que funcione de manera eficaz.
