@@ -2,6 +2,8 @@ require "rails_helper"
 require 'csv'
 
 RSpec.describe WeeklyReportMailer, type: :mailer do
+  include ActiveSupport::Testing::TimeHelpers
+
   let(:now) { DateTime.new(2024, 9, 9, 9, 0, 0, "-04:00") }
   let(:site_id) { "nyc" }
   let(:invitation_sent_at) { now - 5.days }
@@ -35,6 +37,10 @@ RSpec.describe WeeklyReportMailer, type: :mailer do
   let(:week_start_date) { now.beginning_of_week }
   let(:parsed_csv) do
     CSV.parse(mail.attachments.first.body.encoded, headers: :first_row).map(&:to_h)
+  end
+
+  before do
+    travel_to(now)
   end
 
   it "renders the subject" do
