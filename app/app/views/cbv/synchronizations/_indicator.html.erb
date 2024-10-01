@@ -1,0 +1,11 @@
+<svg class="in-progress <%= completed ? "display-none" : "" %> usa-icon border-05 rotate border-base-light radius-pill padding-1 usa-icon--size-5" aria-hidden="true" focusable="false" role="img">
+  <use
+    xlink:href="<%= asset_path("@uswds/uswds/dist/img/sprite.svg#autorenew") %>"
+  ></use>
+</svg>
+
+<svg class="completed <%= !completed ? "display-none" : "" %> usa-icon border-05 bg-primary text-white border-primary radius-pill padding-1 usa-icon--size-5" aria-hidden="true" focusable="false" role="img">
+  <use
+    xlink:href="<%= asset_path("@uswds/uswds/dist/img/sprite.svg#check") %>"
+  ></use>
+</svg>

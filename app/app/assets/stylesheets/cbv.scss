@@ -107,3 +107,12 @@ html {
 .cbv-row-highlight td {
   @include u-bg('yellow-5v');
 }
+
+.rotate {
+  animation: 1s linear infinite rotate-con;
+}
+
+@keyframes rotate-con {
+  from {transform: rotate(0deg);}
+  to {transform: rotate(360deg);}
+}

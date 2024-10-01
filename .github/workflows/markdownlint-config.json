@@ -11,6 +11,9 @@
         },
         {
           "pattern": "^https://confluenceent.cms.gov"
+        },
+        {
+          "pattern": "^https://www.hhs.gov"
         }
     ],
     "replacementPatterns": [
