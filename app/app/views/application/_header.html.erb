@@ -32,20 +32,6 @@
           <% end %>
         </em>
       </div>
-      
-      <nav class="usa-language">
-        <button type="button" class="usa-language__link">
-          <%= I18n.locale.to_s.upcase %>
-        </button>
-        <ul class="usa-language__submenu">
-          <% I18n.available_locales.each do |locale| %>
-            <% next if locale == I18n.locale %>
-            <li class="usa-language__submenu-item">
-              <%= link_to locale.to_s.upcase, url_for(locale: locale) %>
-            </li>
-          <% end %>
-        </ul>
-      </nav>
 
       <% if user_signed_in? %>
         <button class="usa-menu-btn"><%= t("shared.header.menu") %></button>
@@ -55,13 +41,19 @@
       <button class="usa-nav__close">
         <%= image_tag "@uswds/uswds/dist/img/usa-icons/close.svg", role: "img", alt: t("shared.header.close") %>
       </button>
-      <% if user_signed_in? %>
         <ul class="usa-nav__primary usa-accordion">
-          <li class="usa-nav__primary-item">
-            <%= button_to t("shared.header.log_out"), destroy_user_session_url(site_id: current_user.site_id), method: :delete, class: "usa-nav__link" %>
-          </li>
+          <% if user_signed_in? %>
+            <li class="usa-nav__primary-item">
+              <%= button_to t("shared.header.log_out"), destroy_user_session_url(site_id: current_user.site_id), method: :delete, class: "usa-nav__link" %>
+            </li>
+          <% end %>
+          <% I18n.available_locales.each do |locale| %>
+            <% next if locale == I18n.locale %>
+            <li class="usa-nav__primary-item">
+              <%= format_active_locale(locale) %>
+            </li>
+          <% end %>
         </ul>
-      <% end %>
     </nav>
   </div>
 </header>

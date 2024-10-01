@@ -61,11 +61,15 @@ export default class extends Controller {
     }
   }
 
+  getDocumentLocale() {
+    return document.documentElement.lang
+  }
+
   async select(event) {
     const { responseType, id } = event.target.dataset;
     this.disableButtons()
-
-    const { token } = await fetchToken(responseType, id);
+    const locale = this.getDocumentLocale();
+    const { token } = await fetchToken(responseType, id, locale);
     this.submit(token);
   }
 

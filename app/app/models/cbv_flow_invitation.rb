@@ -27,7 +27,6 @@ class CbvFlowInvitation < ApplicationRecord
   PAYSTUB_REPORT_RANGE = 90.days
 
   VALID_LANGUAGES = Rails.application.config.i18n.available_locales.map(&:to_s).freeze
-  puts "VALID_LANGUAGES: #{VALID_LANGUAGES}"
 
   belongs_to :user
   has_many :cbv_flows

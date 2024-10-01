@@ -18,8 +18,9 @@ class ApplicationController < ActionController::Base
   end
 
   def switch_locale(&action)
-    locale = params[:locale] || I18n.default_locale
+    locale = get_locale(request)
     I18n.with_locale(locale, &action)
+    session[:locale] = locale
   end
 
   def site_config
@@ -27,6 +28,18 @@ class ApplicationController < ActionController::Base
   end
 
   private
+
+  def get_locale(request)
+    locale_sources = [
+      params[:locale],
+      request.path.split("/")[1],
+      URI(request.env["HTTP_REFERER"]).path.split("/")[1],
+      request.env["HTTP_ACCEPT_LANGUAGE"]&.scan(/^[a-z]{2}/)&.first,
+      I18n.default_locale
+    ]
+
+    locale_sources.compact.find { |locale| I18n.available_locales.map(&:to_s).include?(locale) }
+  end
 
   def current_site
     @current_site ||= site_config[params[:site_id]]

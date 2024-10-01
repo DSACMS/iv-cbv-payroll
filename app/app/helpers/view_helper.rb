@@ -6,7 +6,7 @@ module ViewHelper
     if locale_string.to_sym == I18n.locale
       link_classes = "#{link_classes} usa-current"
     end
-    link_to t("shared.languages.#{locale_string}"), root_path(locale: locale_string), class: link_classes
+    link_to t("shared.languages.#{locale_string}"), url_for(locale: locale_string), class: link_classes
   end
 
   def format_parsed_date(date)

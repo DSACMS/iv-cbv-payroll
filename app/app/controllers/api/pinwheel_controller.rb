@@ -8,7 +8,8 @@ class Api::PinwheelController < ApplicationController
     token_response = pinwheel.create_link_token(
       response_type: token_params[:response_type],
       id: token_params[:id],
-      end_user_id: @cbv_flow.pinwheel_end_user_id
+      end_user_id: @cbv_flow.pinwheel_end_user_id,
+      language: session[:locale]
     )
     token = token_response["data"]["token"]
 
