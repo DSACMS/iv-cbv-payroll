@@ -8,6 +8,7 @@ The structure for the infrastructure code looks like this:
 
 ```text
 infra/                  Infrastructure code
+  project-config/       Project-level configuration for account-level resources and resource tags
   accounts/             [Root module] IaC and IAM resources
   [app_name]/           Application directory: infrastructure for the main application
   modules/              Reusable child modules
@@ -27,9 +28,18 @@ Details about terraform root modules and child modules are documented in [module
 
 ## 🏗️ Project architecture
 
+### ⚙️ Configuration
+
+The infrastructure derives all of its configuration from static configuration modules:
+
+- Project config
+- App config (per application)
+
+The configuration modules contain only statically known information and do not have any side effects such as creating infrastructure resources. As such, they are used as both (a) root modules by shell scripts and CI/CD workflows and (b) child modules called by root modules across the infrastructure layers. See [infrastructure configuration](/docs/infra/infrastructure-configuration.md) for more info.
+
 ### 🧅 Infrastructure layers
 
-The infrastructure template is designed to operate on different layers:
+The infrastructure is designed to operate on different layers:
 
 - Account layer
 - Network layer
@@ -45,7 +55,7 @@ This project has the following AWS environments:
 - `staging`
 - `prod`
 
-The environments share the same root modules but will have different configurations. Backend configuration is saved as [`.tfbackend`](https://developer.hashicorp.com/terraform/language/settings/backends/configuration#file) files. Most `.tfbackend` files are named after the environment. For example, the `[app_name]/service` infrastructure resources for the `dev` environment are configured via `dev.s3.tfbackend`. Resources for a module that are shared across environments, such as the build-repository, use `shared.s3.tfbackend`. Resources that are shared across the entire account (e.g. /infra/accounts) use `<account name>.<account id>.s3.tfbackend`.
+The environments share the same root modules but will have different configurations. Backend configuration is saved as [`.tfbackend`](https://developer.hashicorp.com/terraform/language/backend#partial-configuration) files. Most `.tfbackend` files are named after the environment. For example, the `[app_name]/service` infrastructure resources for the `dev` environment are configured via `dev.s3.tfbackend`. Resources for a module that are shared across environments, such as the build-repository, use `shared.s3.tfbackend`. Resources that are shared across the entire account (e.g. /infra/accounts) use `<account name>.<account id>.s3.tfbackend`.
 
 ### 🔀 Project workflow
 
@@ -56,8 +66,6 @@ Generally, you should use the Make targets or the underlying bin scripts, but yo
 ## 💻 Development
 
 ### 1️⃣ First time initialization
-
-
 
 To set up this project for the first time (i.e., it has never been deployed to the target AWS account):
 
@@ -79,7 +87,8 @@ To get set up as a new developer on a project that has already been deployed to 
 
 1. [Set up infrastructure developer tools](/docs/infra/set-up-infrastructure-tools.md)
 2. [Review how to make changes to infrastructure](/docs/infra/making-infra-changes.md)
-3. (Optional) Set up a [terraform workspace](/docs/infra/intro-to-terraform-workspaces.md)
+3. [Review how to develop and test infrastructure changes](/docs/infra/develop-and-test-infrastructure-in-isolation-using-workspaces.md)
+4. [Review the infrastructure style guide](/docs/infra/style-guide.md)
 
 ## 📇 Additional reading
 

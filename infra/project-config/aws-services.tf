@@ -4,6 +4,7 @@ locals {
     "apigateway",
     "application-autoscaling",
     "autoscaling",
+    "backup",
     "cloudwatch",
     "cognito-idp",
     "dynamodb",
@@ -30,6 +31,7 @@ locals {
     "sns",
     "ses",
     "ssm",
+    "states",
     "waf-regional",
     "wafv2",
   ]

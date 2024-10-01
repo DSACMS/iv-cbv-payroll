@@ -6,14 +6,15 @@
 # as well as viewing existing roles
 
 locals {
-  db_password_param_name = "/aws/reference/secretsmanager/${data.aws_secretsmanager_secret.db_password.name}"
+  db_password_param_name    = "/aws/reference/secretsmanager/${data.aws_secretsmanager_secret.db_password.name}"
+  role_manager_archive_path = "${path.module}/role_manager.zip"
 }
 
 resource "aws_lambda_function" "role_manager" {
   function_name = local.role_manager_name
 
-  filename         = local.role_manager_package
-  source_code_hash = data.archive_file.role_manager.output_base64sha256
+  filename         = local.role_manager_archive_path
+  source_code_hash = filebase64sha256(local.role_manager_archive_path)
   runtime          = "python3.9"
   handler          = "role_manager.lambda_handler"
   role             = aws_iam_role.role_manager.arn
@@ -38,8 +39,6 @@ resource "aws_lambda_function" "role_manager" {
       DB_SCHEMA               = var.schema_name
       APP_USER                = var.app_username
       APP_PASSWORD_PARAM_NAME = var.create_app_password ? module.app_user_password[0].ssm_name : null
-      GRANT_APP_USER_IAM      = var.grant_app_user_iam ? "true" : "false"
-      ALLOW_APP_MANAGE_SCHEMA = var.allow_app_manage_schema
       MIGRATOR_USER           = var.migrator_username
       PYTHONPATH              = "vendor"
     }
@@ -54,27 +53,6 @@ resource "aws_lambda_function" "role_manager" {
   # checkov:skip=CKV_AWS_272:TODO(https://github.com/navapbc/template-infra/issues/283)
 
   # checkov:skip=CKV_AWS_116:Dead letter queue (DLQ) configuration is only relevant for asynchronous invocations
-}
-
-# Installs python packages needed by the role manager lambda function before
-# creating the zip archive. 
-# Runs pip install on every apply so that the role manager archive file that
-# is generated locally is guaranteed to have the required dependencies even
-# when terraform is run by a developer that did not originally create the
-# environment.
-# Timestamp is used to always trigger replacement.
-resource "terraform_data" "role_manager_python_vendor_packages" {
-  triggers_replace = timestamp()
-  provisioner "local-exec" {
-    command = "pip3 install -r ${path.module}/role_manager/requirements.txt -t ${path.module}/role_manager/vendor --upgrade"
-  }
-}
-
-data "archive_file" "role_manager" {
-  type        = "zip"
-  source_dir  = "${path.module}/role_manager"
-  output_path = local.role_manager_package
-  depends_on  = [terraform_data.role_manager_python_vendor_packages]
 }
 
 data "aws_kms_key" "default_ssm_key" {

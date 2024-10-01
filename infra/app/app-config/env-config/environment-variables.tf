@@ -14,126 +14,138 @@ locals {
   }
 
   # Configuration for secrets
-  # List of configurations for defining environment variables that pull from SSM parameter
+  # Map of configurations for defining environment variables that pull from SSM parameter
   # store. Configurations are of the format
-  # { name = "ENV_VAR_NAME", ssm_param_name = "/ssm/param/name" }
+  #
+  # {
+  #   ENV_VAR_NAME = {
+  #     manage_method     = "generated" # or "manual" for a secret that was created and stored in SSM manually
+  #     secret_store_name = "/ssm/param/name"
+  #   }
+  # }
   #
   # Manage the secret values of them using AWS Systems Manager:
   # https://us-east-1.console.aws.amazon.com/systems-manager/parameters/
-  secrets = [
-    {
-      name           = "SECRET_KEY_BASE"
-      ssm_param_name = "/service/${var.app_name}-${var.environment}/rails-secret-key-base"
+  secrets = {
+    SECRET_KEY_BASE = {
+      manage_method     = "manual"
+      secret_store_name = "/service/${var.app_name}-${var.environment}/rails-secret-key-base"
     },
-    {
-      name           = "RAILS_MASTER_KEY"
-      ssm_param_name = "/service/${var.app_name}-${var.environment}/rails-master-key"
+    RAILS_MASTER_KEY = {
+      manage_method     = "manual"
+      secret_store_name = "/service/${var.app_name}-${var.environment}/rails-master-key"
     },
-    {
-      name           = "CBV_INVITE_SECRET"
-      ssm_param_name = "/service/${var.app_name}-${var.environment}/cbv-invite-secret"
+    CBV_INVITE_SECRET = {
+      manage_method     = "manual"
+      secret_store_name = "/service/${var.app_name}-${var.environment}/cbv-invite-secret"
     },
-    {
-      name           = "SLACK_TEST_EMAIL"
-      ssm_param_name = "/service/${var.app_name}-${var.environment}/slack-test-email"
+    SLACK_TEST_EMAIL = {
+      manage_method     = "manual"
+      secret_store_name = "/service/${var.app_name}-${var.environment}/slack-test-email"
     },
-    {
-      name           = "NEWRELIC_KEY"
-      ssm_param_name = "/service/${var.app_name}-${var.environment}/newrelic-key"
+    NEWRELIC_KEY = {
+      manage_method     = "manual"
+      secret_store_name = "/service/${var.app_name}-${var.environment}/newrelic-key"
     },
-    {
-      name           = "NEW_RELIC_ENV"
-      ssm_param_name = "/service/${var.app_name}-${var.environment}/new-relic-env"
+    NEW_RELIC_ENV = {
+      manage_method     = "manual"
+      secret_store_name = "/service/${var.app_name}-${var.environment}/new-relic-env"
+    },
+    MAINTENANCE_MODE = {
+      manage_method     = "manual"
+      secret_store_name = "/service/${var.app_name}-${var.environment}/maintenance-mode"
     },
 
     # Transmission Configuration:
-    {
-      name           = "NYC_HRA_EMAIL"
-      ssm_param_name = "/service/${var.app_name}-${var.environment}/nyc-hra-email"
+    NYC_HRA_EMAIL = {
+      manage_method     = "manual"
+      secret_store_name = "/service/${var.app_name}-${var.environment}/nyc-hra-email"
     },
+    MA_DTA_S3_BUCKET = {
+      manage_method     = "manual"
+      secret_store_name = "/service/${var.app_name}-${var.environment}/ma-dta-s3-bucket"
+    },
+    MA_DTA_S3_PUBLIC_KEY = {
+      manage_method     = "manual"
+      secret_store_name = "/service/${var.app_name}-${var.environment}/ma-dta-s3-public-key"
+    }
 
     # Pinwheel Configuration:
-    {
-      name           = "PINWHEEL_API_TOKEN_PRODUCTION"
-      ssm_param_name = "/service/${var.app_name}-${var.environment}/pinwheel-api-token-production"
+    PINWHEEL_API_TOKEN_PRODUCTION = {
+      manage_method     = "manual"
+      secret_store_name = "/service/${var.app_name}-${var.environment}/pinwheel-api-token-production"
     },
-    {
-      name           = "PINWHEEL_API_TOKEN_DEVELOPMENT"
-      ssm_param_name = "/service/${var.app_name}-${var.environment}/pinwheel-api-token-development"
+    PINWHEEL_API_TOKEN_DEVELOPMENT = {
+      manage_method     = "manual"
+      secret_store_name = "/service/${var.app_name}-${var.environment}/pinwheel-api-token-development"
     },
-    {
-      name           = "PINWHEEL_API_TOKEN_SANDBOX"
-      ssm_param_name = "/service/${var.app_name}-${var.environment}/pinwheel-api-token-sandbox"
+    PINWHEEL_API_TOKEN_SANDBOX = {
+      manage_method     = "manual"
+      secret_store_name = "/service/${var.app_name}-${var.environment}/pinwheel-api-token-sandbox"
     },
-    {
-      name           = "NYC_PINWHEEL_ENVIRONMENT"
-      ssm_param_name = "/service/${var.app_name}-${var.environment}/nyc-pinwheel-environment"
+    NYC_PINWHEEL_ENVIRONMENT = {
+      manage_method     = "manual"
+      secret_store_name = "/service/${var.app_name}-${var.environment}/nyc-pinwheel-environment"
     },
-    {
-      name           = "MA_PINWHEEL_ENVIRONMENT"
-      ssm_param_name = "/service/${var.app_name}-${var.environment}/ma-pinwheel-environment"
+    MA_PINWHEEL_ENVIRONMENT = {
+      manage_method     = "manual"
+      secret_store_name = "/service/${var.app_name}-${var.environment}/ma-pinwheel-environment"
     },
-    {
-      name           = "SANDBOX_PINWHEEL_ENVIRONMENT"
-      ssm_param_name = "/service/${var.app_name}-${var.environment}/sandbox-pinwheel-environment"
+    SANDBOX_PINWHEEL_ENVIRONMENT = {
+      manage_method     = "manual"
+      secret_store_name = "/service/${var.app_name}-${var.environment}/sandbox-pinwheel-environment"
     },
 
     # SSO Configuration:
-    {
-      name           = "AZURE_NYC_DSS_CLIENT_ID"
-      ssm_param_name = "/service/${var.app_name}-${var.environment}/azure-nyc-dss-client-id"
+    AZURE_NYC_DSS_CLIENT_ID = {
+      manage_method     = "manual"
+      secret_store_name = "/service/${var.app_name}-${var.environment}/azure-nyc-dss-client-id"
     },
-    {
-      name           = "AZURE_NYC_DSS_CLIENT_SECRET"
-      ssm_param_name = "/service/${var.app_name}-${var.environment}/azure-nyc-dss-client-secret"
+    AZURE_NYC_DSS_CLIENT_SECRET = {
+      manage_method     = "manual"
+      secret_store_name = "/service/${var.app_name}-${var.environment}/azure-nyc-dss-client-secret"
     },
-    {
-      name           = "AZURE_NYC_DSS_TENANT_ID"
-      ssm_param_name = "/service/${var.app_name}-${var.environment}/azure-nyc-dss-tenant-id"
+    AZURE_NYC_DSS_TENANT_ID = {
+      manage_method     = "manual"
+      secret_store_name = "/service/${var.app_name}-${var.environment}/azure-nyc-dss-tenant-id"
     },
-    {
-      name           = "AZURE_MA_DTA_CLIENT_ID"
-      ssm_param_name = "/service/${var.app_name}-${var.environment}/azure-ma-dta-client-id"
+    AZURE_MA_DTA_CLIENT_ID = {
+      manage_method     = "manual"
+      secret_store_name = "/service/${var.app_name}-${var.environment}/azure-ma-dta-client-id"
     },
-    {
-      name           = "AZURE_MA_DTA_CLIENT_SECRET"
-      ssm_param_name = "/service/${var.app_name}-${var.environment}/azure-ma-dta-client-secret"
+    AZURE_MA_DTA_CLIENT_SECRET = {
+      manage_method     = "manual"
+      secret_store_name = "/service/${var.app_name}-${var.environment}/azure-ma-dta-client-secret"
     },
-    {
-      name           = "AZURE_MA_DTA_TENANT_ID"
-      ssm_param_name = "/service/${var.app_name}-${var.environment}/azure-ma-dta-tenant-id"
+    AZURE_MA_DTA_TENANT_ID = {
+      manage_method     = "manual"
+      secret_store_name = "/service/${var.app_name}-${var.environment}/azure-ma-dta-tenant-id"
     },
-    {
-      name           = "AZURE_SANDBOX_CLIENT_ID"
-      ssm_param_name = "/service/${var.app_name}-${var.environment}/azure-sandbox-client-id"
+    AZURE_SANDBOX_CLIENT_ID = {
+      manage_method     = "manual"
+      secret_store_name = "/service/${var.app_name}-${var.environment}/azure-sandbox-client-id"
     },
-    {
-      name           = "AZURE_SANDBOX_CLIENT_SECRET"
-      ssm_param_name = "/service/${var.app_name}-${var.environment}/azure-sandbox-client-secret"
+    AZURE_SANDBOX_CLIENT_SECRET = {
+      manage_method     = "manual"
+      secret_store_name = "/service/${var.app_name}-${var.environment}/azure-sandbox-client-secret"
     },
-    {
-      name           = "AZURE_SANDBOX_TENANT_ID"
-      ssm_param_name = "/service/${var.app_name}-${var.environment}/azure-sandbox-tenant-id"
+    AZURE_SANDBOX_TENANT_ID = {
+      manage_method     = "manual"
+      secret_store_name = "/service/${var.app_name}-${var.environment}/azure-sandbox-tenant-id"
     },
 
     # Other site-specific Configuration:
-    {
-      name           = "MA_DTA_ALLOWED_CASEWORKER_EMAILS"
-      ssm_param_name = "/service/${var.app_name}-${var.environment}/ma-dta-allowed-caseworker-emails"
+    MA_DTA_ALLOWED_CASEWORKER_EMAILS = {
+      manage_method     = "manual"
+      secret_store_name = "/service/${var.app_name}-${var.environment}/ma-dta-allowed-caseworker-emails"
     },
-    {
-      name           = "MA_DTA_S3_BUCKET"
-      ssm_param_name = "/service/${var.app_name}-${var.environment}/ma-dta-s3-bucket"
+    MA_DTA_S3_BUCKET = {
+      manage_method     = "manual"
+      secret_store_name = "/service/${var.app_name}-${var.environment}/ma-dta-s3-bucket"
     },
-    {
-      name           = "MA_DTA_S3_PUBLIC_KEY"
-      ssm_param_name = "/service/${var.app_name}-${var.environment}/ma-dta-s3-public-key"
+    MA_DTA_S3_PUBLIC_KEY = {
+      manage_method     = "manual"
+      secret_store_name = "/service/${var.app_name}-${var.environment}/ma-dta-s3-public-key"
     },
-
-    # MAINTENANCE MODE
-    {
-      name           = "MAINTENANCE_MODE"
-      ssm_param_name = "/service/${var.app_name}-${var.environment}/maintenance-mode"
-    },
-  ]
+  }
 }
