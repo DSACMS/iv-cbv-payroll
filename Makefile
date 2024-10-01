@@ -1,10 +1,10 @@
 PROJECT_ROOT ?= $(notdir $(PWD))
 
-# Use `=` instead of `:=` so that we only execute `./bin/current-account-alias.sh` when needed
+# Use `=` instead of `:=` so that we only execute `./bin/current-account-alias` when needed
 # See https://www.gnu.org/software/make/manual/html_node/Flavors.html#Flavors
-CURRENT_ACCOUNT_ALIAS = `./bin/current-account-alias.sh`
+CURRENT_ACCOUNT_ALIAS = `./bin/current-account-alias`
 
-CURRENT_ACCOUNT_ID = $(./bin/current-account-id.sh)
+CURRENT_ACCOUNT_ID = $(./bin/current-account-id)
 
 # Get the list of reusable terraform modules by getting out all the modules
 # in infra/modules and then stripping out the "infra/modules/" prefix
@@ -32,6 +32,7 @@ __check_defined = \
 	infra-check-compliance-checkov \
 	infra-check-compliance-tfsec \
 	infra-check-compliance \
+	infra-check-github-actions-auth \
 	infra-configure-app-build-repository \
 	infra-configure-app-database \
 	infra-configure-app-service \
@@ -42,6 +43,7 @@ __check_defined = \
 	infra-lint-scripts \
 	infra-lint-terraform \
 	infra-lint-workflows \
+	infra-module-database-role-manager \
 	infra-set-up-account \
 	infra-test-service \
 	infra-update-app-build-repository \
@@ -57,40 +59,40 @@ __check_defined = \
 	release-image-name \
 	release-image-tag \
 	release-publish \
-	release-run-database-migrations
-
-
+	release-run-database-migrations \
+	e2e-setup \
+	e2e-test
 
 infra-set-up-account: ## Configure and create resources for current AWS profile and save tfbackend file to infra/accounts/$ACCOUNT_NAME.ACCOUNT_ID.s3.tfbackend
 	@:$(call check_defined, ACCOUNT_NAME, human readable name for account e.g. "prod" or the AWS account alias)
-	./bin/set-up-current-account.sh $(ACCOUNT_NAME)
+	./bin/set-up-current-account $(ACCOUNT_NAME)
 
 infra-configure-network: ## Configure network $NETWORK_NAME
 	@:$(call check_defined, NETWORK_NAME, the name of the network in /infra/networks)
-	./bin/create-tfbackend.sh infra/networks $(NETWORK_NAME)
+	./bin/create-tfbackend infra/networks $(NETWORK_NAME)
 
 infra-configure-app-build-repository: ## Configure infra/$APP_NAME/build-repository tfbackend and tfvars files
 	@:$(call check_defined, APP_NAME, the name of subdirectory of /infra that holds the application's infrastructure code)
-	./bin/create-tfbackend.sh "infra/$(APP_NAME)/build-repository" shared
+	./bin/create-tfbackend "infra/$(APP_NAME)/build-repository" shared
 
 infra-configure-app-database: ## Configure infra/$APP_NAME/database module's tfbackend and tfvars files for $ENVIRONMENT
 	@:$(call check_defined, APP_NAME, the name of subdirectory of /infra that holds the application's infrastructure code)
 	@:$(call check_defined, ENVIRONMENT, the name of the application environment e.g. "prod" or "staging")
-	./bin/create-tfbackend.sh "infra/$(APP_NAME)/database" "$(ENVIRONMENT)"
+	./bin/create-tfbackend "infra/$(APP_NAME)/database" "$(ENVIRONMENT)"
 
 infra-configure-monitoring-secrets: ## Set $APP_NAME's incident management service integration URL for $ENVIRONMENT
 	@:$(call check_defined, APP_NAME, the name of subdirectory of /infra that holds the application's infrastructure code)
 	@:$(call check_defined, ENVIRONMENT, the name of the application environment e.g. "prod" or "staging")
 	@:$(call check_defined, URL, incident management service (PagerDuty or VictorOps) integration URL)
-	./bin/configure-monitoring-secret.sh $(APP_NAME) $(ENVIRONMENT) $(URL)
+	./bin/configure-monitoring-secret $(APP_NAME) $(ENVIRONMENT) $(URL)
 
 infra-configure-app-service: ## Configure infra/$APP_NAME/service module's tfbackend and tfvars files for $ENVIRONMENT
 	@:$(call check_defined, APP_NAME, the name of subdirectory of /infra that holds the application's infrastructure code)
 	@:$(call check_defined, ENVIRONMENT, the name of the application environment e.g. "prod" or "staging")
-	./bin/create-tfbackend.sh "infra/$(APP_NAME)/service" "$(ENVIRONMENT)"
+	./bin/create-tfbackend "infra/$(APP_NAME)/service" "$(ENVIRONMENT)"
 
 infra-update-current-account: ## Update infra resources for current AWS profile
-	./bin/terraform-init-and-apply.sh infra/accounts `./bin/current-account-config-name.sh`
+	./bin/terraform-init-and-apply infra/accounts `./bin/current-account-config-name`
 
 infra-update-network: ## Update network
 	@:$(call check_defined, NETWORK_NAME, the name of the network in /infra/networks)
@@ -99,7 +101,7 @@ infra-update-network: ## Update network
 
 infra-update-app-build-repository: ## Create or update $APP_NAME's build repository
 	@:$(call check_defined, APP_NAME, the name of subdirectory of /infra that holds the application's infrastructure code)
-	./bin/terraform-init-and-apply.sh infra/$(APP_NAME)/build-repository shared
+	./bin/terraform-init-and-apply infra/$(APP_NAME)/build-repository shared
 
 infra-update-app-database: ## Create or update $APP_NAME's database module for $ENVIRONMENT
 	@:$(call check_defined, APP_NAME, the name of subdirectory of /infra that holds the application's infrastructure code)
@@ -107,10 +109,14 @@ infra-update-app-database: ## Create or update $APP_NAME's database module for $
 	terraform -chdir="infra/$(APP_NAME)/database" init -input=false -reconfigure -backend-config="$(ENVIRONMENT).s3.tfbackend"
 	terraform -chdir="infra/$(APP_NAME)/database" apply -var="environment_name=$(ENVIRONMENT)"
 
+infra-module-database-role-manager-archive: ## Build/rebuild role manager code package for Lambda deploys
+	pip3 install -r infra/modules/database/role_manager/requirements.txt -t infra/modules/database/role_manager/vendor --upgrade
+	zip -r infra/modules/database/role_manager.zip infra/modules/database/role_manager
+
 infra-update-app-database-roles: ## Create or update database roles and schemas for $APP_NAME's database in $ENVIRONMENT
 	@:$(call check_defined, APP_NAME, the name of subdirectory of /infra that holds the application's infrastructure code)
 	@:$(call check_defined, ENVIRONMENT, the name of the application environment e.g. "prod" or "staging")
-	./bin/create-or-update-database-roles.sh $(APP_NAME) $(ENVIRONMENT)
+	./bin/create-or-update-database-roles $(APP_NAME) $(ENVIRONMENT)
 
 infra-update-app-service: ## Create or update $APP_NAME's web service module
 	@:$(call check_defined, APP_NAME, the name of subdirectory of /infra that holds the application's infrastructure code)
@@ -131,10 +137,15 @@ infra-validate-module-%:
 infra-check-app-database-roles: ## Check that app database roles have been configured properly
 	@:$(call check_defined, APP_NAME, the name of subdirectory of /infra that holds the application's infrastructure code)
 	@:$(call check_defined, ENVIRONMENT, the name of the application environment e.g. "prod" or "staging")
-	./bin/check-database-roles.sh $(APP_NAME) $(ENVIRONMENT)
+	./bin/check-database-roles $(APP_NAME) $(ENVIRONMENT)
 
 infra-check-compliance: ## Run compliance checks
 infra-check-compliance: infra-check-compliance-checkov infra-check-compliance-tfsec
+
+infra-check-github-actions-auth: ## Check that GitHub actions can authenticate to the AWS account
+	@:$(call check_defined, ACCOUNT_NAME, the name of account in infra/accounts)
+	./bin/check-github-actions-auth $(ACCOUNT_NAME)
+
 
 infra-check-compliance-checkov: ## Run checkov compliance checks
 	checkov --directory infra
@@ -161,7 +172,7 @@ infra-test-service: ## Run service layer infra test suite
 	cd infra/test && go test -run TestService -v -timeout 30m
 
 lint-markdown: ## Lint Markdown docs for broken links
-	./bin/lint-markdown.sh
+	./bin/lint-markdown
 
 ########################
 ## Release Management ##
@@ -192,17 +203,17 @@ release-build: ## Build release for $APP_NAME and tag it with current git hash
 
 release-publish: ## Publish release to $APP_NAME's build repository
 	@:$(call check_defined, APP_NAME, the name of subdirectory of /infra that holds the application's infrastructure code)
-	./bin/publish-release.sh $(APP_NAME) $(IMAGE_NAME) $(IMAGE_TAG)
+	./bin/publish-release $(APP_NAME) $(IMAGE_NAME) $(IMAGE_TAG)
 
 release-run-database-migrations: ## Run $APP_NAME's database migrations in $ENVIRONMENT
 	@:$(call check_defined, APP_NAME, the name of subdirectory of /infra that holds the application's infrastructure code)
 	@:$(call check_defined, ENVIRONMENT, the name of the application environment e.g. "prod" or "dev")
-	./bin/run-database-migrations.sh $(APP_NAME) $(IMAGE_TAG) $(ENVIRONMENT)
+	./bin/run-database-migrations $(APP_NAME) $(IMAGE_TAG) $(ENVIRONMENT)
 
 release-deploy: ## Deploy release to $APP_NAME's web service in $ENVIRONMENT
 	@:$(call check_defined, APP_NAME, the name of subdirectory of /infra that holds the application's infrastructure code)
 	@:$(call check_defined, ENVIRONMENT, the name of the application environment e.g. "prod" or "dev")
-	./bin/deploy-release.sh $(APP_NAME) $(IMAGE_TAG) $(ENVIRONMENT)
+	./bin/deploy-release $(APP_NAME) $(IMAGE_TAG) $(ENVIRONMENT)
 
 release-image-name: ## Prints the image name of the release image
 	@:$(call check_defined, APP_NAME, the name of subdirectory of /infra that holds the application's infrastructure code)
@@ -210,6 +221,28 @@ release-image-name: ## Prints the image name of the release image
 
 release-image-tag: ## Prints the image tag of the release image
 	@echo $(IMAGE_TAG)
+
+##############################
+## End-to-end (E2E) Testing ##
+##############################
+
+e2e-setup: ## Setup end-to-end tests
+	@cd e2e && npm install
+	@cd e2e && npx playwright install --with-deps
+
+e2e-setup-ci: ## Install system dependencies, Node dependencies, and Playwright browsers
+	sudo apt-get update
+	sudo apt-get install -y libwoff1 libopus0 libvpx7 libevent-2.1-7 libopus0 libgstreamer1.0-0 \
+	libgstreamer-plugins-base1.0-0 libgstreamer-plugins-good1.0-0 libharfbuzz-icu0 libhyphen0 \
+	libenchant-2-2 libflite1 libgles2 libx264-dev
+	cd e2e && npm ci
+	cd e2e && npx playwright install --with-deps
+
+
+e2e-test: ## Run end-to-end tests
+	@:$(call check_defined, APP_NAME, You must pass in a specific APP_NAME)
+	@:$(call check_defined, BASE_URL, You must pass in a BASE_URL)
+	@cd e2e/$(APP_NAME) && APP_NAME=$(APP_NAME) BASE_URL=$(BASE_URL) npx playwright test $(E2E_ARGS)
 
 ########################
 ## Scripts and Helper ##

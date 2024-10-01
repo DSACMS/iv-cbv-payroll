@@ -15,6 +15,7 @@ class Webhooks::Pinwheel::EventsController < ApplicationController
       PinwheelAccount
         .create_with(cbv_flow: @cbv_flow, supported_jobs: supported_jobs)
         .find_or_create_by(pinwheel_account_id: params["payload"]["account_id"])
+      track_account_created_event(@cbv_flow, params["payload"]["platform_name"])
     end
 
     if PinwheelAccount::EVENTS_MAP.keys.include?(params["event"])
@@ -26,7 +27,7 @@ class Webhooks::Pinwheel::EventsController < ApplicationController
       end
 
       if pinwheel_account.has_fully_synced?
-        track_event(@cbv_flow, pinwheel_account)
+        track_account_synced_event(@cbv_flow, pinwheel_account)
 
         PaystubsChannel.broadcast_to(@cbv_flow, {
           event: "cbv.payroll_data_available",
@@ -52,7 +53,7 @@ class Webhooks::Pinwheel::EventsController < ApplicationController
     end
   end
 
-  def track_event(cbv_flow, pinwheel_account)
+  def track_account_synced_event(cbv_flow, pinwheel_account)
     NewRelicEventTracker.track("PinwheelAccountSyncFinished", {
       cbv_flow_id: cbv_flow.id,
       identity_success: pinwheel_account.job_succeeded?("identity"),
@@ -67,6 +68,13 @@ class Webhooks::Pinwheel::EventsController < ApplicationController
     })
   rescue => ex
     Rails.logger.error "Unable to track NewRelic event (PinwheelAccountSyncFinished): #{ex}"
+  end
+
+  def track_account_created_event(cbv_flow, platform_name)
+    NewRelicEventTracker.track("PinwheelAccountCreated", {
+      cbv_flow_id: cbv_flow.id,
+      platform_name: platform_name
+    })
   end
 
   def set_cbv_flow

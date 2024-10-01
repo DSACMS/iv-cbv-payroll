@@ -2,7 +2,7 @@
 
 The AWS account setup process will:
 
-1. Create the [Terraform backend](https://www.terraform.io/language/settings/backends/configuration) resources needed to store Terraform's infrastructure state files. The project uses an [S3 backend](https://www.terraform.io/language/settings/backends/s3).
+1. Create the [Terraform backend](https://developer.hashicorp.com/terraform/language/backend) resources needed to store Terraform's infrastructure state files. The project uses an [S3 backend](https://www.terraform.io/language/settings/backends/s3).
 2. Create the [OpenID connect provider in AWS](https://docs.aws.amazon.com/IAM/latest/UserGuide/id_roles_providers_create_oidc.html) to allow GitHub Actions to access AWS account resources.
 3. Create the IAM role and policy that GitHub Actions will use to manage infrastructure resources.
 
@@ -49,9 +49,13 @@ make infra-set-up-account ACCOUNT_NAME=<ACCOUNT_NAME>
 
 This command will create the S3 tfstate bucket and the GitHub OIDC provider. It will also create a `[account name].[account id].s3.tfbackend` file in the `infra/accounts` directory.
 
-### 3. Update the account names map in app-config
+### 3. Check that GitHub actions can authenticate into the AWS account
 
-In [app-config/main.tf](/infra/app/app-config/main.tf), update the `account_names_by_environment` config to reflect the account name you chose.
+This step requires [GitHub CLI](https://cli.github.com/) to be installed and [configured to authenticate with your GitHub account](https://cli.github.com/manual/). If you don't have it, you can install on Mac via `brew install gh`
+
+```bash
+make infra-check-github-actions-auth ACCOUNT_NAME=<ACCOUNT_NAME>
+```
 
 ## Making changes to the account
 

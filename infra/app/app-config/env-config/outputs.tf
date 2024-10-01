@@ -1,12 +1,14 @@
 output "database_config" {
-  value = var.has_database ? {
-    region                      = var.default_region
-    cluster_name                = "${var.app_name}-${var.environment}"
-    app_username                = "app"
-    migrator_username           = "migrator"
-    schema_name                 = var.app_name
-    app_access_policy_name      = "${var.app_name}-${var.environment}-app-access"
-    migrator_access_policy_name = "${var.app_name}-${var.environment}-migrator-access"
+  value = local.database_config
+}
+
+output "scheduled_jobs" {
+  value = local.scheduled_jobs
+}
+
+output "incident_management_service_integration" {
+  value = var.has_incident_management_service ? {
+    integration_url_param_name = "/monitoring/${var.app_name}/${var.environment}/incident-management-integration-url"
   } : null
 }
 
@@ -30,7 +32,7 @@ output "service_config" {
       var.service_override_extra_environment_variables
     )
 
-    secrets = toset(local.secrets)
+    secrets = local.secrets
 
     file_upload_jobs = {
       for job_name, job_config in local.file_upload_jobs :
@@ -40,15 +42,17 @@ output "service_config" {
   }
 }
 
+output "identity_provider_config" {
+  value = local.identity_provider_config
+}
+
+output "notifications_config" {
+  value = local.notifications_config
+}
+
 output "storage_config" {
   value = {
     bucket_name                      = local.bucket_name
     massachusetts_moveit_bucket_name = local.massachusetts_moveit_bucket_name
   }
-}
-
-output "incident_management_service_integration" {
-  value = var.has_incident_management_service ? {
-    integration_url_param_name = "/monitoring/${var.app_name}/${var.environment}/incident-management-integration-url"
-  } : null
 }

@@ -38,11 +38,18 @@ RSpec.describe Webhooks::Pinwheel::EventsController do
         {
           "platform_id" => "00000000-0000-0000-0000-000000011111",
           "end_user_id" => cbv_flow.pinwheel_end_user_id,
-          "account_id" => account_id
+          "account_id" => account_id,
+          "platform_name" => "acme"
         }
       end
 
       it "creates a PinwheelAccount object" do
+        expect(NewRelicEventTracker).to receive(:track)
+          .with("PinwheelAccountCreated", {
+            cbv_flow_id: cbv_flow.id,
+            platform_name: "acme"
+          })
+
         expect do
           post :create, params: valid_params
         end.to change(PinwheelAccount, :count).by(1)
