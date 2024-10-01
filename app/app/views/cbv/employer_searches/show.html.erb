@@ -28,7 +28,7 @@
 
   <%= form_with url: cbv_flow_employer_search_path, method: :get, class: "usa-search usa-search--big margin-y-4", html: { role: "search" }, data: { turbo_frame: "employers", turbo_action: "advance" } do |f| %>
     <%= f.label :query, "Search for your employer", class: "usa-sr-only" %>
-    <%= f.text_field :query, value: @query, class: "usa-input", type: "search", data: { "cbv-employer-search-target": "searchTerms" } %>
+    <%= f.text_field :query, value: @query, class: "usa-input", type: "search" %>
     <button
       class="usa-button"
       type="submit"
@@ -45,35 +45,4 @@
   <%= form_with url: next_path, method: :get, class: "display-none", data: { 'cbv-employer-search-target': "form" } do |f| %>
     <input type="hidden" name="user[account_id]" data-cbv-employer-search-target="userAccountId" >
   <% end %>
-
-  <a
-    href="#data-fetching-modal"
-    class="display-none"
-    aria-controls="data-fetching-modal"
-    data-open-modal
-    data-cbv-employer-search-target="modal"
-  ></a>
-  <div class="margin-y-3">
-    <div
-      class="usa-modal"
-      id="data-fetching-modal"
-      aria-labelledby="modal-3-heading"
-      aria-describedby="modal-3-description"
-      data-force-action
-    >
-      <div class="usa-modal__content">
-        <div class="usa-modal__main">
-          <h2 class="usa-modal__heading" id="modal-3-heading">
-            <%= t(".fetching_payroll") %>
-          </h2>
-          <div class="usa-prose">
-            <p id="modal-3-description">
-              <%= t(".fetching_payroll_description") %>
-            </p>
-          </div>
-          <div class="lds-ripple" style="left: 30%;"><div></div><div></div></div>
-        </div>
-      </div>
-    </div>
-  </div>
 </div>

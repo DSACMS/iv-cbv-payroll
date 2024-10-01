@@ -56,6 +56,8 @@ class Cbv::BaseController < ApplicationController
     when "cbv/agreements"
       cbv_flow_employer_search_path
     when "cbv/employer_searches"
+      cbv_flow_synchronizations_path
+    when "cbv/synchronizations"
       cbv_flow_payment_details_path
     when "cbv/missing_results"
       cbv_flow_summary_path

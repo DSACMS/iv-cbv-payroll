@@ -180,8 +180,6 @@ en:
         can_not_find_employer: I can’t find my company or payroll provider
         employer_not_listed: Employer not listed?
         exit_button_text: Exit and go to %{agency_short_name}
-        fetching_payroll: We are fetching your employer's payment information.
-        fetching_payroll_description: This may take a few minutes. Please do not close this window.
         header: Find your current or most recent employer or payroll provider
         no_results_steps1: Check if your employer uses another business name or search for their payroll provider.
         no_results_steps2: Make sure you have spelled names correctly, then search again.
@@ -364,6 +362,15 @@ en:
         total_payments_desc: This is the total gross income from your job(s) before taxes, benefits and deductions were taken out of your paycheck.
       update:
         consent_to_authorize_warning: You must check the legal agreement checkbox to proceed.
+    synchronizations:
+      show:
+        fetching_payroll_description: This may take a few minutes. Please keep this window open while we work on this.
+        header: We’re gathering your payment details from your employer
+        jobs:
+          employment: Employment
+          identity: Personal details
+          income: Income
+          paystubs: Paystubs
   pages:
     home:
       description_1: The SNAP Income Pilot is a new tool designed to help you connect your income details from your employer or payroll provider directly to your SNAP agency. We're currently testing this tool to ensure it works effectively.

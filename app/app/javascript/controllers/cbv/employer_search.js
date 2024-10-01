@@ -1,47 +1,21 @@
 import { Controller } from "@hotwired/stimulus"
-import * as ActionCable from '@rails/actioncable'
 import { loadPinwheel, initializePinwheel, fetchToken } from "../../utilities/pinwheel"
 
 export default class extends Controller {
   static targets = [
     "form",
-    "searchTerms",
     "userAccountId",
-    "modal",
     "employerButton"
   ];
 
   pinwheel = loadPinwheel();
 
-  cable = ActionCable.createConsumer();
-
   connect() {
-    this.cable.subscriptions.create({ channel: 'PaystubsChannel' }, {
-      connected: () => {
-        console.log("Connected to the channel:", this);
-      },
-      disconnected: () => {
-        console.log("Disconnected");
-      },
-      received: (data) => {
-        if (data.event === 'cbv.payroll_data_available') {
-          const accountId = data.account_id
-          this.userAccountIdTarget.value = accountId
-          this.formTarget.submit();
-        }
-      }
-    });
     this.errorHandler = document.addEventListener("turbo:frame-missing", this.onTurboError)
   }
 
   disconnect() {
     document.removeEventListener("turbo:frame-missing", this.errorHandler)
-  }
-
-  onSignInSuccess() {
-    this.pinwheel.then(pinwheel => pinwheel.close());
-    this.modalTarget.click();
-    this.reenableButtons()
   }
 
   onTurboError(event) {
@@ -61,6 +35,14 @@ export default class extends Controller {
     }
   }
 
+  onPinwheelEvent(eventName, eventPayload) {
+    if (eventName === 'success') {
+      const { accountId } = eventPayload;
+      this.userAccountIdTarget.value = accountId
+      this.formTarget.submit();
+    }
+  }
+
   getDocumentLocale() {
     return document.documentElement.lang
   }
@@ -75,10 +57,9 @@ export default class extends Controller {
 
   submit(token) {
     this.pinwheel.then(Pinwheel => initializePinwheel(Pinwheel, token, {
-      onEvent: console.log,
+      onEvent: this.onPinwheelEvent.bind(this),
       onError: this.onPinwheelError.bind(this),
       onExit: this.reenableButtons.bind(this),
-      onSuccess: this.onSignInSuccess.bind(this),
     }));
   }
 
