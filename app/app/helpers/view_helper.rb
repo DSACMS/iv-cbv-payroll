@@ -2,11 +2,11 @@ module ViewHelper
   DATE_FORMAT = "%B %d, %Y"
 
   def format_active_locale(locale_string)
-    link_classes = "usa-nav__link"
-    if locale_string.to_sym == I18n.locale
-      link_classes = "#{link_classes} usa-current"
-    end
-    link_to t("shared.languages.#{locale_string}"), url_for(locale: locale_string), class: link_classes
+    # using request.fullpath to include query parameters so that
+    # switching languages doesn't lose the query parameters
+    current_path = request.fullpath.sub(/\A\/#{I18n.locale}/, "")
+    new_path = "/#{locale_string}#{current_path}"
+    link_to t("shared.languages.#{locale_string}"), new_path, class: "usa-nav__link"
   end
 
   def format_parsed_date(date)
