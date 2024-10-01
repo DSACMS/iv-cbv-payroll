@@ -2,7 +2,7 @@ FactoryBot.define do
   factory :cbv_flow_invitation, class: "CbvFlowInvitation" do
     first_name { "Jane" }
     middle_name { "Sue" }
-    language { "en".to_sym }
+    language { :en }
     last_name { "Doe" }
     site_id { "sandbox" }
     email_address { "test@example.com" }

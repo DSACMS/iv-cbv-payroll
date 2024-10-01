@@ -92,6 +92,10 @@ class Cbv::BaseController < ApplicationController
 
     I18n.locale = session[:user_locale]
 
+    # Don't redirect if the user has selected the default locale, "en"
+    # Adding /en/ to the URL is unnecessary and will break many tests
+    return unless I18n.locale != I18n.default_locale
+
     # Redirect only if the current URL doesn't match the selected locale
     unless request.path.start_with?("/#{I18n.locale}")
       redirect_to url_for(locale: I18n.locale, params: request.query_parameters)
