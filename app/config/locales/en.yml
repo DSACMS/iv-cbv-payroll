@@ -60,6 +60,7 @@ en:
           beacon_id: Your WELID
           email_address: Client's email address
           first_name: Client's first name
+          language_label: In what language should we send the invitation?
           last_name: Client's last name
           middle_name: Client's middle name
           todays_date: Today's date
@@ -74,6 +75,18 @@ en:
           client_id_number: CIN
           email_address: Client's email address
           first_name: Client's first name
+          language_label: In what language should we send the invitation?
+          last_name: Client's last name
+          middle_name: Client's middle name
+          snap_application_date: SNAP application or recertification date
+      sandbox:
+        invite:
+          agency_id_number: Client's agency ID number
+          beacon_id: Your WELID
+          client_id_number: CIN
+          email_address: Client's email address
+          first_name: Client's first name
+          language_label: In what language should we send the invitation?
           last_name: Client's last name
           middle_name: Client's middle name
           snap_application_date: SNAP application or recertification date

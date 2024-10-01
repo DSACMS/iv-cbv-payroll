@@ -6,8 +6,21 @@
 
 <%= f.text_field :case_number, label: t(".invite.case_number") %>
 
-<%= f.select :language, options_for_select(CbvFlowInvitation::VALID_LANGUAGES.map { |lang| [ lang.to_s.upcase, lang ] }), { label: t(".invite.language") } %>
+<%= f.text_field :beacon_id, label: t(".invite.beacon_id") %>
 
-<%= f.date_picker :snap_application_date, label: t(".invite.todays_date") %>
+<%= f.text_field :agency_id_number, label: t(".invite.agency_id_number") %>
+
+<%= f.text_field :client_id_number, label: t(".invite.client_id_number") %>
+
+<%= f.date_picker :snap_application_date, label: t(".invite.snap_application_date") %>
 
 <%= f.email_field :email_address, label: t(".invite.email_address") %>
+
+<div class="padding-top-5">
+  <%= f.label :language, t(".invite.language_label") %>
+  <% language_options.each do |value, label| %>
+    <div>
+      <%= f.radio_button :language, value, label: label %>
+    </div>
+  <% end %>
+</div>

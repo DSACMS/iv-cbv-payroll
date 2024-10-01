@@ -6,10 +6,30 @@
 
 <%= f.text_field :agency_id_number, label: t(".invite.agency_id_number") %>
 
-<%= f.select :language, options_for_select(CbvFlowInvitation::VALID_LANGUAGES.map { |lang| [ lang.to_s.upcase, lang ] }), { label: t(".invite.language") } %>
-
 <%= f.date_picker :snap_application_date, label: t(".invite.todays_date") %>
 
 <%= f.email_field :email_address, label: t(".invite.email_address") %>
 
 <%= f.text_field :beacon_id, label: t(".invite.beacon_id") %>
+
+<div class="usa-form-group <%= "usa-form-group--error" if f.field_error(:language).present? %>">
+  <legend class="usa-legend"><%= t(".invite.language_label") %></legend>
+  <%= f.field_error :language %>
+  <div class="usa-radio-group">
+    <% language_options.each_with_index do |(value, label), index| %>
+      <div class="usa-radio usa-radio--tile">
+        <input
+          class="usa-radio__input usa-radio__input--tile"
+          id="language-<%= value %>-<%= index %>"
+          type="radio"
+          name="<%= f.object_name %>[language]"
+          value="<%= value %>"
+          <%= 'checked="checked"' if f.object.language == value %>
+        >
+        <label class="usa-radio__label" for="language-<%= value %>-<%= index %>">
+          <%= label %>
+        </label>
+      </div>
+    <% end %>
+  </div>
+</div>

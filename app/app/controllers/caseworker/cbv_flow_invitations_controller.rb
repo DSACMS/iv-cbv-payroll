@@ -14,7 +14,6 @@ class Caseworker::CbvFlowInvitationsController < Caseworker::BaseController
 
   def create
     invitation_params = base_params.merge(site_specific_params)
-
     # handle errors from the mail service
     begin
       @cbv_flow_invitation = CbvInvitationService.new.invite(invitation_params, current_user)
