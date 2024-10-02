@@ -1,11 +1,9 @@
 module ViewHelper
   DATE_FORMAT = "%B %d, %Y"
 
-  def format_active_locale(locale)
-    # using request.fullpath to include query parameters so that
-    # switching languages doesn't lose the query parameters
-    current_path = request.fullpath.sub(/\A\/#{I18n.locale}/, "")
-    path = locale == I18n.default_locale ? current_path : "/#{locale}#{current_path}"
+  def switch_locale_link(locale)
+    new_locale = locale == I18n.default_locale ? nil : locale
+    path = url_for(request.params.merge(locale: new_locale))
     link_to t("shared.languages.#{locale}"), path, class: "usa-nav__link", data: { "turbo-prefetch": false }
   end
 

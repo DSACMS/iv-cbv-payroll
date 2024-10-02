@@ -2,6 +2,7 @@ class Caseworker::CbvFlowInvitationsController < Caseworker::BaseController
   protect_from_forgery prepend: true
   before_action :ensure_valid_params!
   before_action :authenticate_user!
+  helper_method :language_options
 
   def new
     @site_id = site_id
@@ -46,6 +47,12 @@ class Caseworker::CbvFlowInvitationsController < Caseworker::BaseController
   end
 
   private
+
+  def language_options
+    CbvFlowInvitation::VALID_LOCALES.each_with_object({}) do |lang, options|
+      options[lang] = I18n.t(".shared.languages.#{lang}", default: lang.to_s.titleize)
+    end
+  end
 
   def ensure_valid_params!
     if site_config.site_ids.exclude?(site_id)

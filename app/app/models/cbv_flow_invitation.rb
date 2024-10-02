@@ -26,7 +26,7 @@ class CbvFlowInvitation < ApplicationRecord
   # Paystub report range
   PAYSTUB_REPORT_RANGE = 90.days
 
-  VALID_LANGUAGES = Rails.application.config.i18n.available_locales.map(&:to_s).freeze
+  VALID_LOCALES = Rails.application.config.i18n.available_locales.map(&:to_s).freeze
 
   belongs_to :user
   has_many :cbv_flows
@@ -42,7 +42,7 @@ class CbvFlowInvitation < ApplicationRecord
   validates :last_name, presence: true
   validates :email_address, format: { with: EMAIL_REGEX, message: :invalid_format }
   validates :language, inclusion: {
-    in: VALID_LANGUAGES,
+    in: VALID_LOCALES,
     message: :invalid_format,
     case_sensitive: false
   }
@@ -94,7 +94,7 @@ class CbvFlowInvitation < ApplicationRecord
   end
 
   def to_url
-    Rails.application.routes.url_helpers.cbv_flow_entry_url(token: auth_token)
+    Rails.application.routes.url_helpers.cbv_flow_entry_url(token: auth_token, locale: language)
   end
 
   def paystubs_query_begins_at
