@@ -295,3 +295,14 @@ es:
   users:
     omniauth_callbacks:
       authentication_successful: Ha iniciado sesión.
+  date:
+    formats:
+      default: "%d/%m/%Y"
+      long: "%-d de %B de %Y"
+    month_names: [~, Enero, Febrero, Marzo, Abril, Mayo, Junio, Julio, Agosto, Septiembre, Octubre, Noviembre, Diciembre]
+    abbr_month_names: [~, Ene, Feb, Mar, Abr, May, Jun, Jul, Ago, Sep, Oct, Nov, Dic]
+    day_names: [Domingo, Lunes, Martes, Miércoles, Jueves, Viernes, Sábado]
+    abbr_day_names: [Dom, Lun, Mar, Mié, Jue, Vie, Sáb]
+  time:
+    formats:
+      time: "%H:%M %Z"

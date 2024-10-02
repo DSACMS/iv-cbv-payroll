@@ -9,7 +9,7 @@ module ViewHelper
 
   def format_parsed_date(date)
     begin
-      date.strftime(DATE_FORMAT)
+      I18n.l(date, format: :default, locale: I18n.locale)
     rescue => e
       date
     end
@@ -17,7 +17,8 @@ module ViewHelper
 
   def format_date(timestamp_string)
     begin
-      Time.parse(timestamp_string).strftime(DATE_FORMAT)
+      parsed_time = Time.parse(timestamp_string)
+      I18n.l(parsed_time.to_date, format: :long, locale: I18n.locale)
     rescue => e
       timestamp_string
     end
@@ -25,15 +26,16 @@ module ViewHelper
 
   def format_view_datetime(timestamp_string)
     begin
-      formatted_time = Time.parse(timestamp_string).strftime(DATE_FORMAT)
-      raw_timestamp = Time.parse(timestamp_string).strftime("%I:%M %p %Z")
-      "#{formatted_time} - #{raw_timestamp}"
-    rescue => e
-      "Invalid timestamp"
+      parsed_time = Time.parse(timestamp_string)
+      formatted_date = I18n.l(parsed_time.to_date, format: :long, locale: I18n.locale)
+      formatted_time = I18n.l(parsed_time, format: :time, locale: I18n.locale)
+      "#{formatted_date} - #{formatted_time}"
     end
+  rescue => e
+    "Invalid timestamp"
   end
 
   def format_money(dollars_in_cents)
-    number_to_currency(dollars_in_cents.to_f / 100)
+    number_to_currency(dollars_in_cents.to_f / 100, locale: I18n.locale)
   end
 end
