@@ -28,6 +28,7 @@ class CaseworkerMailer < ApplicationMailer
   end
 
   def generate_pdf
+    # caseworkers should receive the report in English
     I18n.locale = "en"
     WickedPdf.new.pdf_from_string(
       render_to_string(template: "cbv/summaries/show", layout: "pdf", formats: [ :pdf ], locals: { is_caseworker: true }),
