@@ -1,6 +1,10 @@
 class PinwheelAccount < ApplicationRecord
   belongs_to :cbv_flow
 
+  after_update_commit {
+    broadcast_replace target: self, partial: "cbv/synchronizations/indicators", locals: { pinwheel_account: self }
+  }
+
   EVENTS_MAP = {
     "employment.added" => :employment_synced_at,
     "income.added" => :income_synced_at,
@@ -29,11 +33,13 @@ class PinwheelAccount < ApplicationRecord
     supported_jobs.include?(job) && send(sync_column).present? && send(error_column).blank?
   end
 
-  def job_completed?(job)
+  def synchronization_status(job)
     error_column, sync_column = event_columns_for(job)
     return nil unless error_column.present?
 
-    supported_jobs.include?(job) && (send(sync_column).present? || send(error_column).present?)
+    return :succeeded if job_succeeded?(job)
+    return :in_progress if supported_jobs.include?(job) && (send(sync_column).blank? && send(error_column).blank?)
+    :failed if supported_jobs.include?(job) && (send(sync_column).blank? && send(error_column).present?)
   end
 
   private

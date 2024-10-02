@@ -348,14 +348,14 @@ en:
       update:
         consent_to_authorize_warning: You must check the legal agreement checkbox to proceed.
     synchronizations:
+      indicators:
+        employment: Employment
+        identity: Personal details
+        income: Income
+        paystubs: Paystubs
       show:
         fetching_payroll_description: This may take a few minutes. Please keep this window open while we work on this.
         header: We’re gathering your payment details from your employer
-        jobs:
-          employment: Employment
-          identity: Personal details
-          income: Income
-          paystubs: Paystubs
   pages:
     home:
       description_1: The SNAP Income Pilot is a new tool designed to help you connect your income details from your employer or payroll provider directly to your SNAP agency. We're currently testing this tool to ensure it works effectively.
