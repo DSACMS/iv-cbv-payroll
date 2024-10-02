@@ -8,7 +8,7 @@ locals {
   log_group_name          = "service/${var.service_name}"
   log_stream_prefix       = var.service_name
   task_executor_role_name = "${var.service_name}-task-executor"
-  image_url               = "${var.image_repository_account_id}.dkr.ecr.${data.aws_region.current.name}.amazonaws.com/${var.image_repository_name}:${var.image_tag}"
+  image_url               = "${var.image_repository_url}:${var.image_tag}"
 
   base_environment_variables = [
     { name : "DOMAIN_NAME", value : tostring(var.domain_name) },
@@ -92,7 +92,7 @@ resource "aws_ecs_task_definition" "app" {
         ]
       },
       environment = local.environment_variables,
-      secrets     = local.secrets,
+      secrets     = var.secrets,
       portMappings = [
         {
           containerPort = var.container_port,
