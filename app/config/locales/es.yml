@@ -309,3 +309,14 @@ es:
     formats:
       time: "%H:%M %Z"
       long: "%-d de %B de %Y"
+  payment_frequencies:
+    annually: "anual"
+    bi_weekly: "cada dos semanas"
+    daily: "diario"
+    hourly: "por hora"
+    monthly: "mensual"
+    per_mile: "por milla"
+    semi_monthly: "dos veces al mes"
+    semi_weekly: "cada dos semanas"
+    variable: "variable"
+    weekly: "semanal"
