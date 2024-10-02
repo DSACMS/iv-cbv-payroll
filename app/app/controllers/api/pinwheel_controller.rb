@@ -5,7 +5,6 @@ class Api::PinwheelController < ApplicationController
   def create_token
     @cbv_flow = CbvFlow.find(session[:cbv_flow_id])
     pinwheel = pinwheel_for(@cbv_flow)
-    puts "the params are #{token_params}"
     token_response = pinwheel.create_link_token(
       response_type: token_params[:response_type],
       id: token_params[:id],
