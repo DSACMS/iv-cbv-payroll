@@ -180,6 +180,7 @@ es:
         pay_gross_ytd: Remuneración bruta desde el inicio del año a la fecha (YTD, por sus siglas en inglés)
         pay_net: Pago después de impuestos y deducciones (neto)
         pay_period: Período de pago
+        pay_period_value: '%{start_date} al %{end_date}'
         payment_hours: "%{amount} horas"
         payments_and_deductions_table_header: Pagos y deducciones
         subheader: Hemos recopilado sus registros de pago de los últimos 90 días, del %{start_date} al %{end_date}. Si falta información o esta es inexacta, añada un comentario para %{agency_acronym}. Esta información se incluirá en su informe de ingresos.
@@ -306,3 +307,4 @@ es:
   time:
     formats:
       time: "%H:%M %Z"
+      long: "%-d de %B de %Y"

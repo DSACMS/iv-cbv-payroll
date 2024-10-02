@@ -286,6 +286,7 @@ en:
         pay_gross_ytd: Gross pay YTD
         pay_net: Payment after taxes and deductions (net)
         pay_period: Pay period
+        pay_period_value: '%{start_date} to %{end_date}'
         payment_hours: "%{amount} hours"
         payments_and_deductions_table_header: Payments and deductions
         subheader: We have gathered your payment records from the past 90 days, from %{start_date} to %{end_date}. If the information is missing or inaccurate, add a comment for %{agency_acronym}. This information will be included in your income report.

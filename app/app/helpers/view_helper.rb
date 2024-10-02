@@ -7,18 +7,18 @@ module ViewHelper
     link_to t("shared.languages.#{locale}"), path, class: "usa-nav__link", data: { "turbo-prefetch": false }
   end
 
-  def format_parsed_date(date)
+  def format_parsed_date(date, format = :default)
     begin
-      I18n.l(date, format: :default, locale: I18n.locale)
+      I18n.l(date, format: format, locale: I18n.locale)
     rescue => e
       date
     end
   end
 
-  def format_date(timestamp_string)
+  def format_date(timestamp_string, format = :long)
     begin
-      parsed_time = Time.parse(timestamp_string)
-      I18n.l(parsed_time.to_date, format: :long, locale: I18n.locale)
+      parsed_time = timestamp_string.is_a?(String) ? Time.parse(timestamp_string) : timestamp_string
+      I18n.l(parsed_time.to_date, format: format, locale: I18n.locale)
     rescue => e
       timestamp_string
     end
