@@ -22,13 +22,13 @@ RSpec.describe PinwheelService, type: :service do
     end
 
     it 'returns a user token' do
-      response = service.create_link_token(end_user_id: end_user_id, response_type: 'employer', id: 'fake_id')
+      response = service.create_link_token(end_user_id: end_user_id, response_type: 'employer', id: 'fake_id', language: 'en')
       expect(response['data']['id']).to eq(end_user_id)
     end
 
     context "with an empty response_type and id" do
       it 'returns a user token' do
-        response = service.create_link_token(end_user_id: end_user_id, response_type: '', id: '')
+        response = service.create_link_token(end_user_id: end_user_id, response_type: '', id: '', language: 'en')
         expect(response['data']['id']).to eq(end_user_id)
       end
     end

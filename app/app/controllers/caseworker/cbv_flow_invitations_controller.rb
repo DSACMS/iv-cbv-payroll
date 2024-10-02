@@ -2,6 +2,7 @@ class Caseworker::CbvFlowInvitationsController < Caseworker::BaseController
   protect_from_forgery prepend: true
   before_action :ensure_valid_params!
   before_action :authenticate_user!
+  helper_method :language_options
 
   def new
     @site_id = site_id
@@ -14,7 +15,6 @@ class Caseworker::CbvFlowInvitationsController < Caseworker::BaseController
 
   def create
     invitation_params = base_params.merge(site_specific_params)
-
     # handle errors from the mail service
     begin
       @cbv_flow_invitation = CbvInvitationService.new.invite(invitation_params, current_user)
@@ -48,6 +48,12 @@ class Caseworker::CbvFlowInvitationsController < Caseworker::BaseController
 
   private
 
+  def language_options
+    CbvFlowInvitation::VALID_LOCALES.each_with_object({}) do |lang, options|
+      options[lang] = I18n.t(".shared.languages.#{lang}", default: lang.to_s.titleize)
+    end
+  end
+
   def ensure_valid_params!
     if site_config.site_ids.exclude?(site_id)
       flash[:alert] = t("caseworker.cbv_flow_invitations.incorrect_site_id")
@@ -59,9 +65,10 @@ class Caseworker::CbvFlowInvitationsController < Caseworker::BaseController
     cbv_flow_invitation_params.slice(
       :first_name,
       :middle_name,
+      :language,
       :last_name,
       :email_address,
-      :snap_application_date
+      :snap_application_date,
     ).merge(site_id: site_id)
   end
 
@@ -80,6 +87,7 @@ class Caseworker::CbvFlowInvitationsController < Caseworker::BaseController
     params.fetch(:cbv_flow_invitation, {}).permit(
       :first_name,
       :middle_name,
+      :language,
       :last_name,
       :client_id_number,
       :case_number,

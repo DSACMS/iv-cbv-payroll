@@ -1,6 +1,6 @@
 class ApplicationController < ActionController::Base
   helper :view
-  helper_method :current_site
+  helper_method :current_site, :show_translate_button?
   around_action :switch_locale
   before_action :add_newrelic_metadata
   before_action :redirect_if_maintenance_mode
@@ -27,6 +27,9 @@ class ApplicationController < ActionController::Base
   end
 
   private
+  def show_translate_button?
+    false
+  end
 
   def current_site
     @current_site ||= site_config[params[:site_id]]

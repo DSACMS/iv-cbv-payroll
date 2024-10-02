@@ -88,12 +88,13 @@ class PinwheelService
     @http.get(build_url("#{PLATFORMS_ENDPOINT}/#{platform_id}")).body
   end
 
-  def create_link_token(end_user_id:, response_type:, id:)
+  def create_link_token(end_user_id:, response_type:, id:, language:)
     params = {
       org_name: I18n.t("shared.pilot_name"),
       required_jobs: [ "paystubs" ],
       end_user_id: end_user_id,
-      skip_intro_screen: true
+      skip_intro_screen: true,
+      language: language
     }
 
     case response_type.presence

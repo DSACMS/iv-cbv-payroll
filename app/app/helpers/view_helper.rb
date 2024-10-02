@@ -1,12 +1,10 @@
 module ViewHelper
   DATE_FORMAT = "%B %d, %Y"
 
-  def format_active_locale(locale_string)
-    link_classes = "usa-nav__link"
-    if locale_string.to_sym == I18n.locale
-      link_classes = "#{link_classes} usa-current"
-    end
-    link_to t("shared.languages.#{locale_string}"), root_path(locale: locale_string), class: link_classes
+  def switch_locale_link(locale)
+    new_locale = locale == I18n.default_locale ? nil : locale
+    path = url_for(request.params.merge(locale: new_locale))
+    link_to t("shared.languages.#{locale}"), path, class: "usa-nav__link", data: { "turbo-prefetch": false }
   end
 
   def format_parsed_date(date)

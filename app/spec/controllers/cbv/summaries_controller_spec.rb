@@ -239,7 +239,8 @@ RSpec.describe Cbv::SummariesController do
             account_count: 1,
             paystub_count: 1,
             account_count_with_additional_information: 0,
-            flow_started_seconds_ago: flow_started_seconds_ago
+            flow_started_seconds_ago: flow_started_seconds_ago,
+            language: "en".to_sym
           })
         end
       end
@@ -319,7 +320,8 @@ RSpec.describe Cbv::SummariesController do
             account_count: 1,
             paystub_count: 1,
             account_count_with_additional_information: 0,
-            flow_started_seconds_ago: flow_started_seconds_ago
+            flow_started_seconds_ago: flow_started_seconds_ago,
+            language: "en".to_sym
           })
         end
       end

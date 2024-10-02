@@ -144,11 +144,8 @@
   <% end %>
 
   <% if @cbv_flow.additional_information.dig(account_id, "comment").present? %>
-    <h2><%= t('.additional_information_title') %></h2>
+    <h2><%= t(".additional_information_title") %></h2>
 
     <p><%= @cbv_flow.additional_information.dig(account_id, "comment") %></p>
   <% end %>
 <% end %>
-
-
-

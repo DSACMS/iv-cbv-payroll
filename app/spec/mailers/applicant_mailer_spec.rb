@@ -33,6 +33,14 @@ RSpec.describe ApplicantMailer, type: :mailer do
     expect(mail.body.encoded).to match(I18n.t("applicant_mailer.invitation_email.body_2_html.default", deadline: "July 21, 2024"))
   end
 
+  context "when locale is es" do
+    let(:cbv_flow_invitation) { create(:cbv_flow_invitation, language: :es) }
+    it "renders the subject and body in Spanish" do
+      expect(mail.subject).to eq(I18n.t('applicant_mailer.invitation_email.subject.default', locale: :es))
+      expect(mail.body.encoded).to match(I18n.t("applicant_mailer.invitation_email.body_1.default", locale: :es, agency_acronym: "CBV"))
+    end
+  end
+
   context "for a NYC CbvFlowInvitation" do
     let(:cbv_flow_invitation) { create(:cbv_flow_invitation, :nyc, email_address: email) }
 
