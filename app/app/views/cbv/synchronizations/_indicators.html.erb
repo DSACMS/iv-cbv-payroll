@@ -1,29 +1,21 @@
 <div class="grid-row" id="<%= dom_id pinwheel_account %>">
   <div
     class="tablet:grid-col-2 grid-col-fill"
-    id="<%= dom_id pinwheel_account %>_income"
-    data-cbv-synchronizations-target="incomeJob"
   >
     <%= render partial: "cbv/synchronizations/indicator", locals: { label: t(".income"), status: pinwheel_account.synchronization_status("income") } %>
   </div>
   <div
     class="tablet:grid-col-2 grid-col-fill"
-    id="<%= dom_id pinwheel_account %>_employment"
-    data-cbv-synchronizations-target="employmentJob"
   >
     <%= render partial: "cbv/synchronizations/indicator", locals: { label: t(".employment"), status: pinwheel_account.synchronization_status("employment") } %>
   </div>
   <div
     class="tablet:grid-col-2 grid-col-fill"
-    id="<%= dom_id pinwheel_account %>_paystubs"
-    data-cbv-synchronizations-target="paystubsJob"
   >
     <%= render partial: "cbv/synchronizations/indicator", locals: { label: t(".paystubs"), status: pinwheel_account.synchronization_status("paystubs") } %>
   </div>
   <div
     class="tablet:grid-col-2 grid-col-fill"
-    id="<%= dom_id pinwheel_account %>_identity"
-    data-cbv-synchronizations-target="identityJob"
   >
     <%= render partial: "cbv/synchronizations/indicator", locals: { label: t(".identity"), status: pinwheel_account.synchronization_status("identity") } %>
   </div>

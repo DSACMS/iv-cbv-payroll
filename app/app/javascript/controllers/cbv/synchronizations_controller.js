@@ -2,7 +2,7 @@ import { Controller } from "@hotwired/stimulus"
 import * as ActionCable from '@rails/actioncable'
 
 export default class extends Controller {
-  static targets = ["form", "userAccountId", "employmentJob", "identityJob", "paystubsJob", "incomeJob"];
+  static targets = ["form", "userAccountId"];
 
   cable = ActionCable.createConsumer();
 
