@@ -32,6 +32,7 @@
           <% end %>
         </em>
       </div>
+
       <% if user_signed_in? %>
         <button class="usa-menu-btn"><%= t("shared.header.menu") %></button>
       <% end %>
@@ -40,13 +41,22 @@
       <button class="usa-nav__close">
         <%= image_tag "@uswds/uswds/dist/img/usa-icons/close.svg", role: "img", alt: t("shared.header.close") %>
       </button>
-      <% if user_signed_in? %>
-        <ul class="usa-nav__primary usa-accordion">
-          <li class="usa-nav__primary-item">
-            <%= button_to t("shared.header.log_out"), destroy_user_session_url(site_id: current_user.site_id), method: :delete, class: "usa-nav__link" %>
-          </li>
+      <ul class="usa-nav__primary usa-accordion">
+          <% if user_signed_in? %>
+            <li class="usa-nav__primary-item">
+              <%= button_to t("shared.header.log_out"), destroy_user_session_url(site_id: current_user.site_id), method: :delete, class: "usa-nav__link" %>
+            </li>
+          <% end %>
+
+          <% if show_translate_button? %>
+            <% I18n.available_locales.each do |locale| %>
+              <% next if locale == I18n.locale %>
+              <li class="usa-nav__primary-item">
+                <%= switch_locale_link(locale) %>
+              </li>
+            <% end %>
+          <% end %>
         </ul>
-      <% end %>
     </nav>
   </div>
 </header>
