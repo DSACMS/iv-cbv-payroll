@@ -81,24 +81,15 @@ class Cbv::BaseController < ApplicationController
   end
 
   def set_locale
-    invitation_locale = @cbv_flow.cbv_flow_invitation.language
+    if params[:controller] == "cbv/entries"
+      invitation_locale = @cbv_flow&.cbv_flow_invitation&.language&.to_sym
 
-    if params[:locale].present?
-      # User has selected a locale, update session and use it
-      session[:user_locale] = params[:locale]
-    elsif session[:user_locale].blank?
-      session[:user_locale] = invitation_locale
-    end
+      return if params[:locale] == invitation_locale
 
-    I18n.locale = session[:user_locale]
-
-    # Don't redirect if the user has selected the default locale, "en"
-    # Adding /en/ to the URL is unnecessary and will break many tests
-    return unless I18n.locale != I18n.default_locale
-
-    # Redirect only if the current URL doesn't match the selected locale
-    unless request.path.start_with?("/#{I18n.locale}")
-      redirect_to url_for(locale: I18n.locale, params: request.query_parameters)
+      unless request.referer.present?
+        I18n.locale = invitation_locale
+        redirect_to url_for(locale: invitation_locale, params: request.query_parameters)
+      end
     end
   end
 end
