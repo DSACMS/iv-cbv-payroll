@@ -71,4 +71,27 @@ RSpec.describe PinwheelAccount, type: :model do
       end
     end
   end
+
+  describe "#synchronization_status" do
+    context "when status is succeeded" do
+      it "returns succeeded" do
+        pinwheel_account.update!(income_synced_at: Time.current)
+        expect(pinwheel_account.synchronization_status('income')).to eq(:succeeded)
+      end
+    end
+
+    context "when status is failed" do
+      it "returns failed" do
+        pinwheel_account.update!(income_synced_at: nil, income_errored_at: Time.current)
+        expect(pinwheel_account.synchronization_status('income')).to eq(:failed)
+      end
+    end
+
+    context "when status is in_progress" do
+      it "returns in_progress" do
+        pinwheel_account.update!(income_synced_at: nil, income_errored_at: nil)
+        expect(pinwheel_account.synchronization_status('income')).to eq(:in_progress)
+      end
+    end
+  end
 end
