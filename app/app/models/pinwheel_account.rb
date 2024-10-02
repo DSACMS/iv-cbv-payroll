@@ -33,13 +33,14 @@ class PinwheelAccount < ApplicationRecord
     supported_jobs.include?(job) && send(sync_column).present? && send(error_column).blank?
   end
 
-  def synchronization_status(job)
+  def synchronization_status?(job)
     error_column, sync_column = event_columns_for(job)
     return nil unless error_column.present?
 
+    return :unsupported unless supported_jobs.include?(job)
     return :succeeded if job_succeeded?(job)
     return :in_progress if supported_jobs.include?(job) && (send(sync_column).blank? && send(error_column).blank?)
-    :failed if supported_jobs.include?(job) && (send(sync_column).blank? && send(error_column).present?)
+    :failed if supported_jobs.include?(job) && (send(error_column).present?)
   end
 
   private
