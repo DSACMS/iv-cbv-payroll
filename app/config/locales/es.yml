@@ -3,6 +3,7 @@ es:
   applicant_mailer:
     invitation_email:
       body_1:
+        default: "%{agency_acronym} quiere que usted verifique sus ingresos como parte de su solicitud o recertificación del Programa de Asistencia Nutricional Suplementaria (SNAP, por sus siglas en inglés). El SNAP Income Pilot (Piloto de ingresos) es una nueva herramienta diseñada para ayudarle a compartir información de sus ingresos directamente con %{agency_acronym} iniciando sesión en su proveedor de nóminas."
         ma: "%{agency_acronym} quiere que usted verifique sus ingresos como parte de su solicitud o recertificación del Programa de Asistencia Nutricional Suplementaria (SNAP, por sus siglas en inglés). El SNAP Income Pilot (Piloto de ingresos) es una nueva herramienta diseñada para ayudarle a compartir información de sus ingresos directamente con %{agency_acronym} iniciando sesión en su proveedor de nóminas."
       body_2_html:
         default: Este proceso es solo para usted. Por favor, no comparta esta invitación con nadie más. <strong>Tiene hasta el %{deadline}, para realizar su verificación.</strong> De lo contrario, puede solicitar una nueva invitación.
