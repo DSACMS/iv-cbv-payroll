@@ -28,10 +28,13 @@ class CaseworkerMailer < ApplicationMailer
   end
 
   def generate_pdf
-    WickedPdf.new.pdf_from_string(
-      render_to_string(template: "cbv/summaries/show", layout: "pdf", formats: [ :pdf ], locals: { is_caseworker: true }),
-      footer: { right: "Income Verification Report | Page [page] of [topage]", font_size: 10 }
-    )
+    I18n.with_locale(:en) do
+      # caseworkers should receive the report in English
+      WickedPdf.new.pdf_from_string(
+        render_to_string(template: "cbv/summaries/show", layout: "pdf", formats: [ :pdf ], locals: { is_caseworker: true }),
+        footer: { right: "Income Verification Report | Page [page] of [topage]", font_size: 10 }
+      )
+    end
   end
 
   def current_site
