@@ -286,7 +286,7 @@ en:
         pay_gross_ytd: Gross pay YTD
         pay_net: Payment after taxes and deductions (net)
         pay_period: Pay period
-        pay_period_value: '%{start_date} to %{end_date}'
+        pay_period_value: "%{start_date} to %{end_date}"
         payment_hours: "%{amount} hours"
         payments_and_deductions_table_header: Payments and deductions
         subheader: We have gathered your payment records from the past 90 days, from %{start_date} to %{end_date}. If the information is missing or inaccurate, add a comment for %{agency_acronym}. This information will be included in your income report.
@@ -372,6 +372,9 @@ en:
           identity: Personal details
           income: Income
           paystubs: Paystubs
+  date:
+    formats:
+      default: "%Y-%m-%d"
   pages:
     home:
       description_1: The SNAP Income Pilot is a new tool designed to help you connect your income details from your employer or payroll provider directly to your SNAP agency. We're currently testing this tool to ensure it works effectively.
@@ -414,6 +417,9 @@ en:
     not_applicable: N/A
     pilot_name: SNAP Income Pilot
     skip_link: Skip to main content
+  time:
+    formats:
+      default: "%Y-%m-%d"
   us_form_with:
     boolean_false: 'No'
     boolean_true: 'Yes'
