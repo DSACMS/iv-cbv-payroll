@@ -3,6 +3,7 @@ es:
   applicant_mailer:
     invitation_email:
       body_1:
+        default: "%{agency_acronym} quiere que usted verifique sus ingresos como parte de su solicitud o recertificación del Programa de Asistencia Nutricional Suplementaria (SNAP, por sus siglas en inglés). El SNAP Income Pilot (Piloto de ingresos) es una nueva herramienta diseñada para ayudarle a compartir información de sus ingresos directamente con %{agency_acronym} iniciando sesión en su proveedor de nóminas."
         ma: "%{agency_acronym} quiere que usted verifique sus ingresos como parte de su solicitud o recertificación del Programa de Asistencia Nutricional Suplementaria (SNAP, por sus siglas en inglés). El SNAP Income Pilot (Piloto de ingresos) es una nueva herramienta diseñada para ayudarle a compartir información de sus ingresos directamente con %{agency_acronym} iniciando sesión en su proveedor de nóminas."
       body_2_html:
         default: Este proceso es solo para usted. Por favor, no comparta esta invitación con nadie más. <strong>Tiene hasta el %{deadline}, para realizar su verificación.</strong> De lo contrario, puede solicitar una nueva invitación.
@@ -180,6 +181,7 @@ es:
         pay_gross_ytd: Remuneración bruta desde el inicio del año a la fecha (YTD, por sus siglas en inglés)
         pay_net: Pago después de impuestos y deducciones (neto)
         pay_period: Período de pago
+        pay_period_value: "%{start_date} al %{end_date}"
         payment_hours: "%{amount} horas"
         payments_and_deductions_table_header: Pagos y deducciones
         subheader: Hemos recopilado sus registros de pago de los últimos 90 días, del %{start_date} al %{end_date}. Si falta información o esta es inexacta, añada un comentario para %{agency_acronym}. Esta información se incluirá en su informe de ingresos.
@@ -246,12 +248,69 @@ es:
           identity: Datos personales
           income: Ingresos
           paystubs: Recibos de pago
+  date:
+    abbr_day_names:
+    - Dom
+    - Lun
+    - Mar
+    - Mié
+    - Jue
+    - Vie
+    - Sáb
+    abbr_month_names:
+    - Ene
+    - Feb
+    - Mar
+    - Abr
+    - May
+    - Jun
+    - Jul
+    - Ago
+    - Sep
+    - Oct
+    - Nov
+    - Dic
+    day_names:
+    - Domingo
+    - Lunes
+    - Martes
+    - Miércoles
+    - Jueves
+    - Viernes
+    - Sábado
+    formats:
+      default: "%d/%m/%Y"
+      long: "%-d de %B de %Y"
+    month_names:
+    - Enero
+    - Febrero
+    - Marzo
+    - Abril
+    - Mayo
+    - Junio
+    - Julio
+    - Agosto
+    - Septiembre
+    - Octubre
+    - Noviembre
+    - Diciembre
   pages:
     home:
       description_1: El SNAP Income Pilot es una nueva herramienta diseñada para ayudarle a conectar los detalles de sus ingresos de su empleador o proveedor de nómina directamente con su agencia de SNAP. Actualmente estamos probando esta herramienta para asegurarnos de que funcione de manera eficaz.
       description_2: Tenga en cuenta que este piloto está disponible actualmente solo para los participantes de SNAP en la ciudad de Nueva York y Massachusetts.
       description_3_html: '<p>Para participar, puede solicitar una invitación a su agencia del SNAP:</p><ul><li>Solicitantes de Massachusetts: Contactar al  <a href="https://www.mass.gov/guides/how-to-contact-dta" target="_blank" rel="noopener noreferrer">Departamento de Asistencia Transitoria (DTA)</a></li><li>Solicitantes de la Ciudad de Nueva York: Contactar a la <a href="https://www.nyc.gov/site/hra/help/snap-application-frequently-asked-questions.page">Administración de Recursos Humanos (HRA)</a></li></ul>'
       header: Bienvenido al SNAP Income Pilot
+  payment_frequencies:
+    annually: anual
+    bi_weekly: cada dos semanas
+    daily: diario
+    hourly: por hora
+    monthly: mensual
+    per_mile: por milla
+    semi_monthly: dos veces al mes
+    semi_weekly: cada dos semanas
+    variable: variable
+    weekly: semanal
   shared:
     agency_full_name:
       ma: Departamento de Asistencia Transitoria de Massachusetts
@@ -287,6 +346,10 @@ es:
     not_applicable: N/C
     pilot_name: SNAP Income Pilot
     skip_link: Saltar al contenido principal
+  time:
+    formats:
+      long: "%-d de %B de %Y"
+      time: "%H:%M %Z"
   us_form_with:
     boolean_false: 'No'
     boolean_true: Sí

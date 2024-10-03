@@ -11,14 +11,14 @@ class PinwheelDataPointComponent < ViewComponent::Base
   def pay_period(start_date, end_date)
     {
       label: I18n.t("cbv.payment_details.show.pay_period"),
-      value: "#{format_date(start_date)} to #{format_date(end_date)}"
+      value: I18n.t("cbv.payment_details.show.pay_period_value", start_date: format_date(start_date), end_date: format_date(end_date))
     }
   end
 
   def pay_period_with_frequency(start_date, end_date, pay_frequency)
     {
       label: I18n.t("cbv.summaries.show.pdf.caseworker.pay_period", pay_frequency: pay_frequency),
-      value: "#{format_date(start_date)} to #{format_date(end_date)}"
+      value: I18n.t("cbv.payment_details.show.pay_period_value", start_date: format_date(start_date), end_date: format_date(end_date))
     }
   end
 
