@@ -240,14 +240,14 @@ es:
       update:
         consent_to_authorize_warning: Debe marcar la casilla de acuerdo legal para proceder.
     synchronizations:
+      indicators:
+        employment: Empleo
+        identity: Datos personales
+        income: Ingresos
+        paystubs: Recibos de pago
       show:
         fetching_payroll_description: Esto puede tardar unos minutos. Mantenga esta ventana abierta mientras trabajamos en esto.
         header: Estamos recopilando los datos de pago de su empleador
-        jobs:
-          employment: Empleo
-          identity: Datos personales
-          income: Ingresos
-          paystubs: Recibos de pago
   date:
     abbr_day_names:
     - Dom

@@ -30,8 +30,9 @@ class Webhooks::Pinwheel::EventsController < ApplicationController
         track_account_synced_event(@cbv_flow, pinwheel_account)
 
         PaystubsChannel.broadcast_to(@cbv_flow, {
-          event: "cbv.payroll_data_available",
-          account_id: params["payload"]["account_id"]
+          event: "cbv.status_update",
+          account_id: params["payload"]["account_id"],
+          has_fully_synced: true
         })
       end
     end
