@@ -1,6 +1,7 @@
 require "active_support/core_ext/integer/time"
 
 Rails.application.configure do
+  config.turbo.localized_broadcasts = true
   # Check if we use Docker to allow docker ip through web-console
 
   # if the env var DOCKERIZED is set to true then we allow the web console to be accessed from the docker network
