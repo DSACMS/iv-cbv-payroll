@@ -2,7 +2,9 @@ class PinwheelAccount < ApplicationRecord
   belongs_to :cbv_flow
 
   after_update_commit {
-    broadcast_replace target: self, partial: "cbv/synchronizations/indicators", locals: { pinwheel_account: self }
+    I18n.with_locale(cbv_flow.cbv_flow_invitation.language) do
+      broadcast_replace target: self, partial: "cbv/synchronizations/indicators", locals: { pinwheel_account: self }
+    end
   }
 
   EVENTS_MAP = {
