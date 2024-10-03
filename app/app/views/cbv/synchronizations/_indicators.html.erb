@@ -2,21 +2,21 @@
   <div
     class="tablet:grid-col-2 grid-col-fill"
   >
-    <%= render partial: "cbv/synchronizations/indicator", locals: { label: t(".income"), status: coalesce_to_completed(pinwheel_account.synchronization_status?("income")) } %>
+    <%= render partial: "cbv/synchronizations/indicator", locals: { label: t(".income"), status: coalesce_to_completed(pinwheel_account.synchronization_status("income")) } %>
   </div>
   <div
     class="tablet:grid-col-2 grid-col-fill"
   >
-    <%= render partial: "cbv/synchronizations/indicator", locals: { label: t(".employment"), status: coalesce_to_completed(pinwheel_account.synchronization_status?("employment")) } %>
+    <%= render partial: "cbv/synchronizations/indicator", locals: { label: t(".employment"), status: coalesce_to_completed(pinwheel_account.synchronization_status("employment")) } %>
   </div>
   <div
     class="tablet:grid-col-2 grid-col-fill"
   >
-    <%= render partial: "cbv/synchronizations/indicator", locals: { label: t(".paystubs"), status: pinwheel_account.synchronization_status?("paystubs") } %>
+    <%= render partial: "cbv/synchronizations/indicator", locals: { label: t(".paystubs"), status: pinwheel_account.synchronization_status("paystubs") } %>
   </div>
   <div
     class="tablet:grid-col-2 grid-col-fill"
   >
-    <%= render partial: "cbv/synchronizations/indicator", locals: { label: t(".identity"), status: coalesce_to_completed(pinwheel_account.synchronization_status?("identity")) } %>
+    <%= render partial: "cbv/synchronizations/indicator", locals: { label: t(".identity"), status: coalesce_to_completed(pinwheel_account.synchronization_status("identity")) } %>
   </div>
 </div>

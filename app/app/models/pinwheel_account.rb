@@ -33,7 +33,7 @@ class PinwheelAccount < ApplicationRecord
     supported_jobs.include?(job) && send(sync_column).present? && send(error_column).blank?
   end
 
-  def synchronization_status?(job)
+  def synchronization_status(job)
     error_column, sync_column = event_columns_for(job)
     return nil unless error_column.present?
 

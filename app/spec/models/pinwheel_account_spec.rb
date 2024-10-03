@@ -72,32 +72,32 @@ RSpec.describe PinwheelAccount, type: :model do
     end
   end
 
-  describe "#synchronization_status?" do
+  describe "#synchronization_status" do
     context "when status is succeeded" do
       it "returns succeeded" do
         pinwheel_account.update!(income_synced_at: Time.current)
-        expect(pinwheel_account.synchronization_status?('income')).to eq(:succeeded)
+        expect(pinwheel_account.synchronization_status('income')).to eq(:succeeded)
       end
     end
 
     context "when status is failed" do
       it "returns failed" do
         pinwheel_account.update!(income_synced_at: Time.current, income_errored_at: Time.current)
-        expect(pinwheel_account.synchronization_status?('income')).to eq(:failed)
+        expect(pinwheel_account.synchronization_status('income')).to eq(:failed)
       end
     end
 
     context "when status is in_progress" do
       it "returns in_progress" do
         pinwheel_account.update!(income_synced_at: nil, income_errored_at: nil)
-        expect(pinwheel_account.synchronization_status?('income')).to eq(:in_progress)
+        expect(pinwheel_account.synchronization_status('income')).to eq(:in_progress)
       end
     end
 
     context "when status is unsupported" do
       it "returns unsupported" do
         pinwheel_account.update!(supported_jobs: supported_jobs.reject { |job| job == 'income' })
-        expect(pinwheel_account.synchronization_status?('income')).to eq(:unsupported)
+        expect(pinwheel_account.synchronization_status('income')).to eq(:unsupported)
       end
     end
   end
