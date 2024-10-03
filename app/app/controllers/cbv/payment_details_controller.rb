@@ -134,7 +134,12 @@ class Cbv::PaymentDetailsController < Cbv::BaseController
 
     yaml_key = frequency_map[key] || frequency
 
-    I18n.t("payment_frequencies.#{yaml_key}", locale: :es, default: frequency)
+    if I18n.exists?("payment_frequencies.#{key}")
+      I18n.t("payment_frequencies.#{yaml_key}")
+    else
+      Rails.logger.warn "Unknown pay_frequency from Pinwheel: #{frequency}"
+      I18n.t("cbv.payment_details.show.unknown")
+    end
   end
 
   def sanitize_comment(comment)
