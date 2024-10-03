@@ -1,6 +1,6 @@
 module Cbv::PaymentsHelper
   include ViewHelper
-  
+
   def set_payments(account_id = nil)
     invitation = @cbv_flow.cbv_flow_invitation
     to_pay_date = invitation.snap_application_date
