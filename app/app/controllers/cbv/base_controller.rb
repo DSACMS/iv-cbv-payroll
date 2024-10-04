@@ -1,5 +1,5 @@
 class Cbv::BaseController < ApplicationController
-  before_action :set_cbv_flow, :ensure_cbv_flow_not_yet_complete
+  before_action :set_cbv_flow, :ensure_cbv_flow_not_yet_complete, :prevent_back
   helper_method :agency_url, :next_path, :get_comment_by_account_id, :current_site
 
   private
@@ -82,5 +82,11 @@ class Cbv::BaseController < ApplicationController
 
   def get_comment_by_account_id(account_id)
     @cbv_flow.additional_information[account_id] || { comment: nil, updated_at: nil }
+  end
+
+  def prevent_back
+    response.headers["Cache-Control"] = "no-cache, no-store, max-age=0, must-revalidate"
+    response.headers["Pragma"] = "no-cache"
+    response.headers["Expires"] = "#{1.year.ago}"
   end
 end
