@@ -25,7 +25,7 @@ en:
               blank: Enter the client's last name.
             snap_application_date:
               ma_invalid_date: Enter today's date or the date you contacted the client. This date must be today or in the past year.
-              nyc_invalid_date: SNAP application/recertification date must be today or in the past 30 days.
+              nyc_invalid_date: SNAP interview date must be today or in the past 30 days.
   applicant_mailer:
     invitation_email:
       body_1:
@@ -78,7 +78,7 @@ en:
           language_label: In what language should we send the invitation?
           last_name: Client's last name
           middle_name: Client's middle name
-          snap_application_date: SNAP application or recertification date
+          snap_application_date: SNAP application or recertification interview date
       sandbox:
         invite:
           agency_id_number: Client's agency ID number
@@ -89,7 +89,7 @@ en:
           language_label: In what language should we send the invitation?
           last_name: Client's last name
           middle_name: Client's middle name
-          snap_application_date: SNAP application or recertification date
+          snap_application_date: SNAP application or recertification interview date
     dashboards:
       show:
         create_invitation: Create a new invitation
