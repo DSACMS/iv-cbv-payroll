@@ -25,7 +25,7 @@ en:
               blank: Enter the client's last name.
             snap_application_date:
               ma_invalid_date: Enter today's date or the date you contacted the client. This date must be today or in the past year.
-              nyc_invalid_date: SNAP application/recertification date must be today or in the past 30 days.
+              nyc_invalid_date: SNAP interview date must be today or in the past 30 days.
   applicant_mailer:
     invitation_email:
       body_1:
@@ -78,7 +78,7 @@ en:
           language_label: In what language should we send the invitation?
           last_name: Client's last name
           middle_name: Client's middle name
-          snap_application_date: SNAP application or recertification date
+          snap_application_date: SNAP application or recertification interview date
       sandbox:
         invite:
           agency_id_number: Client's agency ID number
@@ -89,7 +89,7 @@ en:
           language_label: In what language should we send the invitation?
           last_name: Client's last name
           middle_name: Client's middle name
-          snap_application_date: SNAP application or recertification date
+          snap_application_date: SNAP application or recertification interview date
     dashboards:
       show:
         create_invitation: Create a new invitation
@@ -310,8 +310,8 @@ en:
         additional_information_title: Is there anything else you'd like your caseworker to know about your income?
         application_or_recertification_date:
           ma: Date client was contacted
-          nyc: Application or recertification date
-          sandbox: Application or recertification date
+          nyc: SNAP application or recertification interview date
+          sandbox: SNAP application or recertification interview date
         consent_to_authorize_use_html:
           ma: Check this box to confirm that the information provided by you is true and complete to the best of your knowledge. You agree to inform DTA of any income not reflected in this report or any discrepancies found in the information gathered with this tool. You understand that providing accurate and complete information is your responsibility, and any false or omitted information may have legal consequences. For more information on your rights and responsibilities regarding private information you share with DTA, please refer to the Rights and Responsibilities you signed at application, found on <a href="https://www.mass.gov/lists/department-of-transitional-assistance-rights-responsibilities-and-penalties">Mass.gov</a>.<br/><br/>By sending this report, you authorize its use for income verification by authorized DTA personnel.
           nyc: Check this box to confirm that the information provided by you is true and complete to the best of your knowledge. You agree to inform NYC Human Resources Administration (HRA) of any income not reflected in this report or any discrepancies found in the information gathered with this tool. You understand that providing accurate and complete information is your responsibility, and any false or omitted information may have legal consequences.<br/><br/>By sending this report, you authorize its use for income verification by authorized HRA personnel.
