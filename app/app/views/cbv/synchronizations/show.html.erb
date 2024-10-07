@@ -12,35 +12,9 @@
   <div
     class="grid-container"
   >
-    <div class="grid-row">
-      <div
-        class="tablet:grid-col-2 grid-col-fill"
-        data-cbv-synchronizations-target="incomeJob"
-      >
-        <%= render partial: "cbv/synchronizations/indicator", locals: { completed: job_completed?("income") } %>
-        <h4 class="margin-top-2px"><%= t(".jobs.income") %></h4>
-      </div>
-      <div
-        class="tablet:grid-col-2 grid-col-fill"
-        data-cbv-synchronizations-target="employmentJob"
-      >
-        <%= render partial: "cbv/synchronizations/indicator", locals: { completed: job_completed?("employment") } %>
-        <h4 class="margin-top-2px"><%= t(".jobs.employment") %></h4>
-      </div>
-      <div
-        class="tablet:grid-col-2 grid-col-fill"
-        data-cbv-synchronizations-target="paystubsJob"
-      >
-        <%= render partial: "cbv/synchronizations/indicator", locals: { completed: job_completed?("paystubs") } %>
-        <h4 class="margin-top-2px"><%= t(".jobs.paystubs") %></h4>
-      </div>
-      <div
-        class="tablet:grid-col-2 grid-col-fill"
-        data-cbv-synchronizations-target="identityJob"
-      >
-        <%= render partial: "cbv/synchronizations/indicator", locals: { completed: job_completed?("identity") } %>
-        <h4 class="margin-top-2px"><%= t(".jobs.identity") %></h4>
-      </div>
-    </div>
+    <%= turbo_stream_from(@pinwheel_account) %>
+    <% if @pinwheel_account.present? %>
+      <%= render partial: "cbv/synchronizations/indicators", locals: { pinwheel_account: @pinwheel_account } %>
+    <% end %>
   </div>
 </div>

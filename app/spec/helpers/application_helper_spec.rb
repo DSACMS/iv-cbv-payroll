@@ -119,4 +119,14 @@ RSpec.describe ApplicationHelper do
       end
     end
   end
+
+  describe "#coalesce_to_completed" do
+    it "returns succeeded when the status is failed" do
+      expect(helper.coalesce_to_completed(:failed)).to eq(:completed)
+    end
+
+    it "returns in progress when the status is in progress" do
+      expect(helper.coalesce_to_completed(:in_progress)).to eq(:in_progress)
+    end
+  end
 end

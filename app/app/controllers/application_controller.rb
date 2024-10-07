@@ -1,6 +1,6 @@
 class ApplicationController < ActionController::Base
   helper :view
-  helper_method :current_site, :show_translate_button?
+  helper_method :current_site, :show_translate_button?, :show_menu?
   around_action :switch_locale
   before_action :add_newrelic_metadata
   before_action :redirect_if_maintenance_mode
@@ -29,6 +29,16 @@ class ApplicationController < ActionController::Base
   private
   def show_translate_button?
     false
+  end
+
+  def show_menu?
+    # show the menu if we're in the cbv flow
+    return true if controller_path.start_with?("cbv/")
+    user_signed_in? && !home_page?
+  end
+
+  def home_page?
+    request.path == root_path
   end
 
   def current_site

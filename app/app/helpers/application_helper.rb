@@ -68,4 +68,9 @@ module ApplicationHelper
       APPLICANT_FEEDBACK_FORM
     end
   end
+
+  # some job statuses we consider completed even if they failed
+  def coalesce_to_completed(status)
+    [ :unsupported, :failed ].include?(status) ? :completed : status
+  end
 end

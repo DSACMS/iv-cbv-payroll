@@ -7,17 +7,18 @@ module ViewHelper
     link_to t("shared.languages.#{locale}"), path, class: "usa-nav__link", data: { "turbo-prefetch": false }
   end
 
-  def format_parsed_date(date)
+  def format_parsed_date(date, format = :default)
     begin
-      date.strftime(DATE_FORMAT)
+      I18n.l(date, format: format)
     rescue => e
       date
     end
   end
 
-  def format_date(timestamp_string)
+  def format_date(timestamp_string, format = :long)
     begin
-      Time.parse(timestamp_string).strftime(DATE_FORMAT)
+      parsed_time = timestamp_string.is_a?(String) ? Time.parse(timestamp_string) : timestamp_string
+      I18n.l(parsed_time.to_date, format: format)
     rescue => e
       timestamp_string
     end
@@ -25,12 +26,13 @@ module ViewHelper
 
   def format_view_datetime(timestamp_string)
     begin
-      formatted_time = Time.parse(timestamp_string).strftime(DATE_FORMAT)
-      raw_timestamp = Time.parse(timestamp_string).strftime("%I:%M %p %Z")
-      "#{formatted_time} - #{raw_timestamp}"
-    rescue => e
-      "Invalid timestamp"
+      parsed_time = Time.parse(timestamp_string)
+      formatted_date = I18n.l(parsed_time.to_date, format: :long)
+      formatted_time = I18n.l(parsed_time, format: :time)
+      "#{formatted_date} - #{formatted_time}"
     end
+  rescue => e
+    "Invalid timestamp"
   end
 
   def format_money(dollars_in_cents)
