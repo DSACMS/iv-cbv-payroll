@@ -110,7 +110,7 @@ RUN apt-get update -qq && \
         curl=7.88.1-10+deb12u7 \
         libgpgme11=1.18.0-3+b1 \
         libvips42=8.14.1-3+deb12u1 \
-        linux-libc-dev=6.1.106-3 \
+        linux-libc-dev=6.1.112-1 \
         postgresql-client=15+248 \
         python-is-python3=3.11.2-1+deb12u1 \
         python3-venv=3.11.2-1+b1 \
