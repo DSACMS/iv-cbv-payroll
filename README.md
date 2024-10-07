@@ -46,7 +46,7 @@ guide for an introduction to the framework.
 1. Start postgres & redis:
    * `brew services start postgresql@12`
    * `brew services start redis`
-1. Get development credentials from 1Password: search for "CBV Rails Secrets" and copy its ".env.development.local" section into a file called that in the app directory.
+1. Get development credentials from 1Password: search for "CBV .env.local secrets" and copy its ".env.local" section into a file called that in the app directory.
 1. Create database: `bin/rails db:create`
 1. Run migrations: `bin/rails db:migrate`
 1. Run the development server: `bin/dev`
