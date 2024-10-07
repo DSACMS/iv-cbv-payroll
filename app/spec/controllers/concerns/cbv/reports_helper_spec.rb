@@ -47,7 +47,6 @@ RSpec.describe Cbv::ReportsHelper, type: :helper do
               gross_pay_amount: 480720,
               hours: 80,
               pay_date: "2020-12-31",
-              rate: 4759,
               start: "2020-12-10",
               gross_pay_ytd: 6971151,
               gross_pay_amount: 480720,
