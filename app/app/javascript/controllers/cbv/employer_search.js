@@ -8,6 +8,10 @@ export default class extends Controller {
     "employerButton"
   ];
 
+  static values = {
+    cbvFlowId: Number
+  }
+
   pinwheel = loadPinwheel();
 
   connect() {
@@ -28,10 +32,10 @@ export default class extends Controller {
 
   onPinwheelError(event) {
     const { type, code } = event;
-    console.error("Got Pinwheel Error:", type, event)
+    console.error("Got Pinwheel Error:", type, event);
 
     if (window.NREUM) {
-      window.NREUM.addPageAction("PinwheelError", { type, code })
+      window.NREUM.addPageAction("PinwheelError", { type, code, cbvFlowId: this.cbvFlowIdValue })
     }
   }
 
