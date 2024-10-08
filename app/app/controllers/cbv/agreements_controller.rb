@@ -3,7 +3,8 @@ class Cbv::AgreementsController < Cbv::BaseController
     NewRelicEventTracker.track("ApplicantViewedAgreement", {
       timestamp: Time.now.to_i,
       site_id: @cbv_flow.site_id,
-      cbv_flow_id: @cbv_flow.id
+      cbv_flow_id: @cbv_flow.id,
+      invitation_id: @cbv_flow.cbv_flow_invitation_id
     })
   end
 
@@ -12,7 +13,8 @@ class Cbv::AgreementsController < Cbv::BaseController
       NewRelicEventTracker.track("ApplicantAgreed", {
         timestamp: Time.now.to_i,
         site_id: @cbv_flow.site_id,
-        cbv_flow_id: @cbv_flow.id
+        cbv_flow_id: @cbv_flow.id,
+        invitation_id: @cbv_flow.cbv_flow_invitation_id
       })
       redirect_to next_path
     else

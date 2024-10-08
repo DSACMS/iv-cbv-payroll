@@ -65,6 +65,7 @@ RSpec.describe Cbv::EmployerSearchesController do
           .to receive(:track)
           .with("ApplicantSearchedForEmployer", hash_including(
             cbv_flow_id: cbv_flow.id,
+            invitation_id: cbv_flow.cbv_flow_invitation_id,
             num_results: 1,
             has_pinwheel_account: false
           ))

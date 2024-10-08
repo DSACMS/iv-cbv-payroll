@@ -24,7 +24,8 @@ class Cbv::SummariesController < Cbv::BaseController
         NewRelicEventTracker.track("ApplicantDownloadedIncomePDF", {
           timestamp: Time.now.to_i,
           site_id: @cbv_flow.site_id,
-          cbv_flow_id: @cbv_flow.id
+          cbv_flow_id: @cbv_flow.id,
+          invitation_id: @cbv_flow.cbv_flow_invitation_id
         })
 
         render pdf: "#{@cbv_flow.id}",
