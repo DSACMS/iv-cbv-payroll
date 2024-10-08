@@ -16,6 +16,7 @@ class DataRetentionService
   def redact_invitations
     CbvFlowInvitation
       .unstarted
+      .unredacted
       .find_each do |cbv_flow_invitation|
         cbv_flow_invitation.redact! if Time.now.after?(cbv_flow_invitation.expires_at + REDACT_UNUSED_INVITATIONS_AFTER)
       end
@@ -24,6 +25,7 @@ class DataRetentionService
   def redact_incomplete_cbv_flows
     CbvFlow
       .incomplete
+      .unredacted
       .includes(:cbv_flow_invitation)
       .find_each do |cbv_flow|
         invitation_redact_at = cbv_flow.cbv_flow_invitation.expires_at + REDACT_UNUSED_INVITATIONS_AFTER
@@ -36,6 +38,7 @@ class DataRetentionService
 
   def redact_complete_cbv_flows
     CbvFlow
+      .unredacted
       .where("transmitted_at < ?", REDACT_TRANSMITTED_CBV_FLOWS_AFTER.ago)
       .includes(:cbv_flow_invitation)
       .find_each do |cbv_flow|
