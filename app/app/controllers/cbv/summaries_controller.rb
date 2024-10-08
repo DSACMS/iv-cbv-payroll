@@ -31,7 +31,13 @@ class Cbv::SummariesController < Cbv::BaseController
         render pdf: "#{@cbv_flow.id}",
           layout: "pdf",
           locals: { is_caseworker: Rails.env.development? && params[:is_caseworker] },
-          footer: { right: "Income Verification Report | Page [page] of [topage]", font_size: 10 }
+          footer: { right: "Income Verification Report | Page [page] of [topage]", font_size: 10 },
+          margin:  {
+            top:               12,
+            bottom:            12,
+            left:              12,
+            right:             12
+          }
       end
     end
   end
