@@ -151,6 +151,7 @@ class Cbv::PaymentDetailsController < Cbv::BaseController
 
     NewRelicEventTracker.track("ApplicantViewedPaymentDetails", {
       cbv_flow_id: @cbv_flow.id,
+      invitation_id: @cbv_flow.cbv_flow_invitation_id,
       pinwheel_account_id: @pinwheel_account.id,
       payments_length: @payments.length,
       has_employment_data: has_employment_data?,
@@ -166,6 +167,7 @@ class Cbv::PaymentDetailsController < Cbv::BaseController
 
     NewRelicEventTracker.track("ApplicantSavedPaymentDetails", {
       cbv_flow_id: @cbv_flow.id,
+      invitation_id: @cbv_flow.cbv_flow_invitation_id,
       additional_information_length: comment_data ? comment_data["comment"].length : 0
     })
   rescue => ex

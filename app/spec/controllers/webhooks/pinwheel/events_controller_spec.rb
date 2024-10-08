@@ -47,6 +47,7 @@ RSpec.describe Webhooks::Pinwheel::EventsController do
         expect(NewRelicEventTracker).to receive(:track)
           .with("PinwheelAccountCreated", {
             cbv_flow_id: cbv_flow.id,
+            invitation_id: cbv_flow.cbv_flow_invitation_id,
             platform_name: "acme"
           })
 
@@ -106,6 +107,7 @@ RSpec.describe Webhooks::Pinwheel::EventsController do
         expect(NewRelicEventTracker).to receive(:track)
           .with("PinwheelAccountSyncFinished", {
             cbv_flow_id: cbv_flow.id,
+            invitation_id: cbv_flow.cbv_flow_invitation_id,
             identity_success: false,
             identity_supported: true,
             income_success: true,

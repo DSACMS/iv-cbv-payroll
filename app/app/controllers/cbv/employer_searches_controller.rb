@@ -29,6 +29,7 @@ class Cbv::EmployerSearchesController < Cbv::BaseController
 
     NewRelicEventTracker.track("ApplicantSearchedForEmployer", {
       cbv_flow_id: @cbv_flow.id,
+      invitation_id: @cbv_flow.cbv_flow_invitation_id,
       num_results: @employers.length,
       has_pinwheel_account: @has_pinwheel_account
     })

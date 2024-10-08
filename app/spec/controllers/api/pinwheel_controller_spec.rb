@@ -28,6 +28,7 @@ RSpec.describe Api::PinwheelController do
         .to receive(:track)
         .with("ApplicantBeganLinkingEmployer", hash_including(
           cbv_flow_id: cbv_flow.id,
+          invitation_id: cbv_flow.cbv_flow_invitation_id,
           response_type: "employer",
         ))
       post :create_token, params: valid_params

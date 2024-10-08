@@ -44,6 +44,7 @@ RSpec.describe Cbv::PaymentDetailsController do
           .to receive(:track)
           .with("ApplicantViewedPaymentDetails", hash_including(
             cbv_flow_id: cbv_flow.id,
+            invitation_id: cbv_flow.cbv_flow_invitation_id,
             pinwheel_account_id: pinwheel_account.id,
             payments_length: 1,
             has_employment_data: true,
@@ -221,6 +222,7 @@ RSpec.describe Cbv::PaymentDetailsController do
         .to receive(:track)
         .with("ApplicantSavedPaymentDetails", hash_including(
           cbv_flow_id: cbv_flow.id,
+          invitation_id: cbv_flow.cbv_flow_invitation_id,
           additional_information_length: comment.length
         ))
 

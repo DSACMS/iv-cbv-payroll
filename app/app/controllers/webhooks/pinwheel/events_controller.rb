@@ -57,6 +57,7 @@ class Webhooks::Pinwheel::EventsController < ApplicationController
   def track_account_synced_event(cbv_flow, pinwheel_account)
     NewRelicEventTracker.track("PinwheelAccountSyncFinished", {
       cbv_flow_id: cbv_flow.id,
+      invitation_id: cbv_flow.cbv_flow_invitation_id,
       identity_success: pinwheel_account.job_succeeded?("identity"),
       identity_supported: pinwheel_account.supported_jobs.include?("identity"),
       income_success: pinwheel_account.job_succeeded?("income"),
@@ -74,6 +75,7 @@ class Webhooks::Pinwheel::EventsController < ApplicationController
   def track_account_created_event(cbv_flow, platform_name)
     NewRelicEventTracker.track("PinwheelAccountCreated", {
       cbv_flow_id: cbv_flow.id,
+      invitation_id: cbv_flow.cbv_flow_invitation_id,
       platform_name: platform_name
     })
   end
