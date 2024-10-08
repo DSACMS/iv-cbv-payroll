@@ -3,7 +3,7 @@
   <%= t(".header") %>
 </h1>
 
-<div data-controller="cbv-employer-search">
+<div data-controller="cbv-employer-search" data-cbv-employer-search-cbv-flow-id-value="<%= @cbv_flow.id %>">
   <div class="usa-prose">
     <p class="line-height-sans-5"><%= t(".search_for_employer", agency_acronym: current_site.agency_short_name) %></p>
     <p class="line-height-sans-5"><%= t(".to_access") %></p>
