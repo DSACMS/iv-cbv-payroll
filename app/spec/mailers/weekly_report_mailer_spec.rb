@@ -51,6 +51,17 @@ RSpec.describe WeeklyReportMailer, type: :mailer do
     expect(mail.body.encoded).to include("Attached is a report from")
   end
 
+  it "tracks newrelic" do
+    expect(NewRelicEventTracker).to receive(:track)
+      .with("EmailSent", hash_including(
+        mailer: "WeeklyReportMailer",
+        action: "report_email",
+        message_id: be_a(String)
+      ))
+
+    mail.deliver_now
+  end
+
   it "renders the csv data from the week before the report_date" do
     expect(mail.attachments.first.filename).to eq("weekly_report_20240902-20240908.csv")
     expect(mail.attachments.first.content_type).to start_with('text/csv')
