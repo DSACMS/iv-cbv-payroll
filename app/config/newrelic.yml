@@ -45,6 +45,10 @@ common: &default_settings
   # Logging level for log/newrelic_agent.log
   log_level: info
 
+  # Instrument CBV custom rake tasks:
+  rake:
+    tasks: ["data_deletion:.+", "weekly_reports:.+"]
+
   error_collector:
     # Ignore errors that aren't likely related to user-facing issues (e.g.
     # triggered by automated scanners)
