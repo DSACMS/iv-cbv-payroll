@@ -24,6 +24,11 @@ module Redactable
     uuid: "00000000-0000-0000-0000-000000000000"
   }
 
+  included do
+    scope :redacted, -> { where.not(REDACTED_TIMESTAMP_COLUMN => nil) }
+    scope :unredacted, -> { where(REDACTED_TIMESTAMP_COLUMN => nil) }
+  end
+
   class_methods do
     attr_accessor :fields_to_redact
 

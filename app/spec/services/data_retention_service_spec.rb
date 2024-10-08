@@ -34,6 +34,14 @@ RSpec.describe DataRetentionService do
             redacted_at: within(1.second).of(Time.now)
           )
         end
+
+        it "skips the invitation if it has already been redacted" do
+          cbv_flow_invitation.redact!
+
+          expect_any_instance_of(CbvFlowInvitation)
+            .not_to receive(:redact!)
+          service.redact_invitations
+        end
       end
     end
   end
@@ -89,6 +97,13 @@ RSpec.describe DataRetentionService do
         expect(cbv_flow_invitation.reload).to have_attributes(
           case_number: "REDACTED"
         )
+      end
+
+      it "skips redacting already-redacted CbvFlows" do
+        service.redact_incomplete_cbv_flows
+
+        expect_any_instance_of(CbvFlow).not_to receive(:redact!)
+        service.redact_incomplete_cbv_flows
       end
 
       context "for a complete CbvFlow" do
@@ -164,6 +179,13 @@ RSpec.describe DataRetentionService do
         expect(cbv_flow_invitation.reload).to have_attributes(
           case_number: "REDACTED"
         )
+      end
+
+      it "skips redacting already-redacted CbvFlows" do
+        service.redact_complete_cbv_flows
+
+        expect_any_instance_of(CbvFlow).not_to receive(:redact!)
+        service.redact_complete_cbv_flows
       end
     end
   end
