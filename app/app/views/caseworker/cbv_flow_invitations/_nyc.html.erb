@@ -4,9 +4,9 @@
 
 <%= f.text_field :last_name, label: t(".invite.last_name") %>
 
-<%= f.text_field :client_id_number, label: t(".invite.client_id_number") %>
+<%= f.text_field :client_id_number, label: t(".invite.client_id_number"), hint: "Format: XX00000X" %>
 
-<%= f.text_field :case_number, label: t(".invite.case_number") %>
+<%= f.text_field :case_number, label: t(".invite.case_number"), hint: "Format: 00012345678A" %>
 
 <%= f.date_picker :snap_application_date, label: t(".invite.snap_application_date") %>
 
