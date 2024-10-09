@@ -61,7 +61,6 @@ RSpec.describe "e2e CBV flow test", type: :feature, js: true do
       # Pinwheel modal
       pinwheel_modal = page.find("iframe.pinwheel-modal-show")
       page.within_frame(pinwheel_modal) do
-        debugger
         if I18n.locale == :en
           fill_in "Username", with: "user_good", wait: 10
           fill_in "Workday Password", with: "pass_good"
