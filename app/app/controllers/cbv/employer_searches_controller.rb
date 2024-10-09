@@ -12,7 +12,7 @@ class Cbv::EmployerSearchesController < Cbv::BaseController
   private
 
   def search_params
-    params.permit(:query)
+    params.permit(:query, :format)
   end
 
   def fetch_employers(query = "")
