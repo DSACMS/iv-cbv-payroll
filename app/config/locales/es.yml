@@ -193,8 +193,8 @@ es:
         back_to_agency: Vaya al sitio web de %{agency_short_name}
         caseworker_received: Hemos enviado su información de pago a %{agency_acronym}. Ellos lo contactarán si se necesita alguna información adicional.
         check_status:
-          nyc: Para comprobar el estado de su solicitud o recertificación de SNAP puede visitar el sitio web del HRA.
           ma: Para comprobar el estado de su recertificación de SNAP puede visitar el sitio web del DTA.
+          nyc: Para comprobar el estado de su solicitud o recertificación de SNAP puede visitar el sitio web del HRA.
         confirmation_code_html: "<strong>Código de confirmación </strong>: %{confirmation_code}"
         download: Descargue una copia del informe
         header: Su informe de ingresos ha sido compartido de forma exitosa con %{agency_acronym}

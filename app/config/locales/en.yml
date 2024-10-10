@@ -298,8 +298,8 @@ en:
         back_to_agency: Go to %{agency_short_name} website
         caseworker_received: We have delivered your payment information to %{agency_acronym}. They will contact you if any additional information is needed.
         check_status:
-          nyc: To check the status of your SNAP application or recertification you can visit HRA's website.
           ma: To check the status of your SNAP recertification you can visit DTA's website.
+          nyc: To check the status of your SNAP application or recertification you can visit HRA's website.
         confirmation_code_html: "<strong>Confirmation code</strong>: %{confirmation_code}"
         download: Download a copy of the report
         header: Your income report has been successfully shared with %{agency_acronym}
