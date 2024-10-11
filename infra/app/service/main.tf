@@ -258,6 +258,8 @@ module "email" {
   source             = "../../modules/email"
   hosted_zone_domain = local.network_config.domain_config.hosted_zone
   domain             = local.service_config.domain_name
+  newrelic_account_id = "4619676"
+  newrelic_api_key_param_name = "/service/${local.service_config.service_name}/newrelic-key"
 }
 
 # If the app has `enable_identity_provider` set to true AND this is not a temporary
