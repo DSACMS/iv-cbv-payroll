@@ -43,6 +43,8 @@ class PinwheelWebhookManager
     if existing_subscription
       puts "  Existing Pinwheel webhook subscription found in Pinwheel #{@sandbox_config.pinwheel_environment}: #{existing_subscription["url"]}"
       remove_subscriptions(subscriptions.excluding(existing_subscription))
+
+      existing_subscription["id"]
     else
       remove_subscriptions(subscriptions)
 
@@ -50,6 +52,8 @@ class PinwheelWebhookManager
       response = @pinwheel.create_webhook_subscription(WEBHOOK_EVENTS, receiver_url)
       new_webhook_subscription_id = response["data"]["id"]
       puts "  ✅ Set up Pinwheel webhook: #{new_webhook_subscription_id}"
+
+      new_webhook_subscription_id
     end
   end
 

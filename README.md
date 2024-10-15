@@ -142,9 +142,10 @@ prefix ends with `_html`.
 
 # Testing
 
-## Running tests
+## Running tests (in the `app` subdirectory)
 
-* Tests: `bundle exec rake spec`
+* Tests: `bundle exec rspec`
+* E2E tests: `RUN_E2E_TESTS=1 bundle exec rspec spec/e2e/`
 * Ruby linter: `bundle exec rake standard`
 * Accessibility scan: `./bin/pa11y-scan`
 * Dynamic security scan: `./bin/owasp-scan`
