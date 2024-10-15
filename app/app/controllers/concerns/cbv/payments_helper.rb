@@ -23,13 +23,10 @@ module Cbv::PaymentsHelper
 
   def parse_payments(payments)
     payments.map do |payment|
-      earnings_with_hours = payment["earnings"].max_by { |e| e["hours"] || 0.0 }
-
       {
         start: payment["pay_period_start"],
         end: payment["pay_period_end"],
-        hours: earnings_with_hours["hours"],
-        rate: earnings_with_hours["rate"],
+        hours: total_hours_from_earnings(payment["earnings"]),
         gross_pay_amount: payment["gross_pay_amount"].to_i,
         net_pay_amount: payment["net_pay_amount"].to_i,
         gross_pay_ytd: payment["gross_pay_ytd"].to_i,
@@ -44,5 +41,25 @@ module Cbv::PaymentsHelper
     pinwheel_account_ids = pinwheel.fetch_accounts(end_user_id: @cbv_flow.pinwheel_end_user_id)["data"].pluck("id")
 
     PinwheelAccount.where(pinwheel_account_id: pinwheel_account_ids).pluck(:pinwheel_account_id)
+  end
+
+  def total_hours_from_earnings(earnings)
+    base_hours = earnings
+      .filter { |e| e["category"] != "overtime" }
+      .map { |e| e["hours"] }
+      .compact
+      .max
+    return unless base_hours
+
+    # Add overtime hours to the base hours, because they tend to be additional
+    # work beyond the other entries. (As opposed to category="premium", which
+    # often duplicates other earnings' hours.)
+    #
+    # See FFS-1773.
+    overtime_hours = earnings
+      .filter { |e| e["category"] == "overtime" }
+      .sum { |e| e["hours"] || 0.0 }
+
+    base_hours + overtime_hours
   end
 end

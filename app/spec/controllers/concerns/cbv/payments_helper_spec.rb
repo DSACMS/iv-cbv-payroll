@@ -3,7 +3,7 @@ require 'rails_helper'
 RSpec.describe Cbv::PaymentsHelper, type: :helper do
   include PinwheelApiHelper
 
-  describe "aggregate payments" do
+  describe "#parse_payments" do
     let(:payments) do
       load_relative_json_file('request_end_user_paystubs_response.json')['data']
     end
@@ -28,7 +28,6 @@ RSpec.describe Cbv::PaymentsHelper, type: :helper do
             net_pay_amount: 321609,
             hours: 80,
             pay_date: "2020-12-31",
-            rate: 4759,
             start: "2020-12-10" }
         ]
       )
@@ -52,10 +51,61 @@ RSpec.describe Cbv::PaymentsHelper, type: :helper do
         )
       end
 
-      it "returns the 'hours' and 'rate' from the one with the most hours" do
+      it "returns the 'hours' from the one with the most hours" do
         expect(parsed_payments).to include(
-          hash_including(hours: 80, rate: 4759)
+          hash_including(hours: 80)
         )
+      end
+    end
+
+    context "when there are 'earnings' with category='overtime'" do
+      let(:payments) do
+        load_relative_json_file('request_end_user_paystubs_with_overtime_response.json')['data']
+      end
+
+      it "adds in overtime into the base hours" do
+        # 18.0 = 13 hours (category="hourly") + 5 hours (category="overtime")
+        expect(parsed_payments).to include(hash_including(hours: 18.0))
+      end
+    end
+
+    context "when no 'earnings' have hours worked" do
+      let(:payments) do
+        load_relative_json_file('request_end_user_paystubs_with_no_hours_response.json')['data']
+      end
+
+      it "returns a 'nil' value for hours" do
+        expect(parsed_payments).to include(hash_including(hours: nil))
+      end
+    end
+
+    context "when there are 'earnings' with category='sick'" do
+      let(:payments) do
+        load_relative_json_file('request_end_user_paystubs_with_sick_time_response.json')['data']
+      end
+
+      it "ignores the sick time entries" do
+        expect(parsed_payments).to include(hash_including(hours: 4.0))
+      end
+    end
+
+    context "when there are 'earnings' with category='other'" do
+      let(:payments) do
+        load_relative_json_file('request_end_user_paystubs_with_start_bonus_response.json')['data']
+      end
+
+      it "ignores the entries for those bonuses" do
+        expect(parsed_payments).to include(hash_including(hours: 10.0))
+      end
+    end
+
+    context "when there are 'earnings' with category='premium'" do
+      let(:payments) do
+        load_relative_json_file('request_end_user_paystubs_with_multiple_hourly_rates_response.json')['data']
+      end
+
+      it "ignores the entries for those bonuses" do
+        expect(parsed_payments).to include(hash_including(hours: 3.5))
       end
     end
   end
