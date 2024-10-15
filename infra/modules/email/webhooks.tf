@@ -53,7 +53,7 @@ resource "aws_sesv2_configuration_set_event_destination" "email_notifications" {
 ## (note: EventBridge was formerly known as "CloudWatch Events")
 ############################################################################################
 resource "aws_cloudwatch_event_rule" "ses_events" {
-  name = "ForwardSESEventsToNewRelic"
+  name        = "ForwardSESEventsToNewRelic"
   description = "Forward AWS SES events to NewRelic custom event (AWSSESEvent)"
 
   event_pattern = jsonencode({
@@ -62,7 +62,7 @@ resource "aws_cloudwatch_event_rule" "ses_events" {
 }
 
 resource "aws_iam_role" "ses_events_to_newrelic" {
-  name = "SESEventsToNewRelic"
+  name               = "SESEventsToNewRelic"
   assume_role_policy = <<EOF
     {
       "Version": "2012-10-17",
@@ -98,13 +98,13 @@ resource "aws_iam_role_policy" "ses_events_to_newrelic" {
 
 
 resource "aws_cloudwatch_event_target" "ses_events" {
-  arn = aws_cloudwatch_event_api_destination.newrelic.arn
-  rule = aws_cloudwatch_event_rule.ses_events.name
+  arn      = aws_cloudwatch_event_api_destination.newrelic.arn
+  rule     = aws_cloudwatch_event_rule.ses_events.name
   role_arn = aws_iam_role.ses_events_to_newrelic.arn
 
   input_transformer {
     input_paths = {
-      event = "$.detail.eventType",
+      event     = "$.detail.eventType",
       messageId = "$.detail.mail.messageId"
     }
 
@@ -119,20 +119,20 @@ resource "aws_cloudwatch_event_target" "ses_events" {
 }
 
 resource "aws_cloudwatch_event_api_destination" "newrelic" {
-  name = "NewRelic"
-  description = "Send SES events to NewRelic"
+  name                = "NewRelic"
+  description         = "Send SES events to NewRelic"
   invocation_endpoint = "https://insights-collector.newrelic.com/v1/accounts/${var.newrelic_account_id}/events"
-  http_method = "POST"
-  connection_arn = aws_cloudwatch_event_connection.newrelic.arn
+  http_method         = "POST"
+  connection_arn      = aws_cloudwatch_event_connection.newrelic.arn
 }
 
 resource "aws_cloudwatch_event_connection" "newrelic" {
-  name = "NewRelic"
+  name               = "NewRelic"
   authorization_type = "API_KEY"
 
   auth_parameters {
     api_key {
-      key = "Api-Key"
+      key   = "Api-Key"
       value = data.aws_ssm_parameter.newrelic_api_key.value
     }
   }

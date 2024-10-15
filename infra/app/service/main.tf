@@ -255,10 +255,10 @@ module "storage" {
 }
 
 module "email" {
-  source             = "../../modules/email"
-  hosted_zone_domain = local.network_config.domain_config.hosted_zone
-  domain             = local.service_config.domain_name
-  newrelic_account_id = "4619676"
+  source                      = "../../modules/email"
+  hosted_zone_domain          = local.network_config.domain_config.hosted_zone
+  domain                      = local.service_config.domain_name
+  newrelic_account_id         = "4619676"
   newrelic_api_key_param_name = "/service/${local.service_config.service_name}/newrelic-key"
 }
 
