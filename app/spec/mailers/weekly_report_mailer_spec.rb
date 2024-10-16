@@ -10,10 +10,9 @@ RSpec.describe WeeklyReportMailer, type: :mailer do
   let(:snap_app_date) { now.strftime("%Y-%m-%d") }
   let(:cbv_flow_invitation) do
     create(:cbv_flow_invitation,
-           :nyc,
+           site_id.to_sym,
            created_at: invitation_sent_at,
            snap_application_date: invitation_sent_at - 1.day,
-           site_id: site_id
           )
   end
   let(:cbv_flow) do
@@ -113,6 +112,25 @@ RSpec.describe WeeklyReportMailer, type: :mailer do
         "snap_application_date" => match(/\d\d\d\d-\d\d-\d\d/),
         "completed_at" => nil,
       ))
+    end
+  end
+
+  context "for the MA site" do
+    let(:site_id) { "ma" }
+
+    it "renders the CSV data with MA-specific columns" do
+      expect(mail.attachments.first.filename).to eq("weekly_report_20240902-20240908.csv")
+      expect(mail.attachments.first.content_type).to start_with('text/csv')
+
+      expect(parsed_csv[0]).to match(
+        "beacon_id" => cbv_flow_invitation.beacon_id,
+        "transmitted_at" => "2024-09-04 13:30:00 UTC",
+        "agency_id_number" => cbv_flow_invitation.agency_id_number,
+        "invited_at" => "2024-09-04 13:00:00 UTC",
+        "snap_application_date" => "2024-09-03",
+        "completed_at" => "2024-09-04 13:30:00 UTC",
+      )
+      expect(parsed_csv.length).to eq(1)
     end
   end
 end
