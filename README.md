@@ -179,14 +179,18 @@ To enable automatic ruby linting and terraform formatting on every `git commit` 
 
 ## CI/CD
 
-GitHub actions are used to run all tests and scans as part of pull requests.
+GitHub Actions are used to run all tests and scans as part of pull requests.
 
-Security scans are also run on a scheduled basis. Weekly for static code scans, and daily for dependency scans.
+## Vulnerability Scanning
+
+We also run vulnerability scanners on every pull request. See [Vulnerability Management](/docs/infra/vulnerability-management.md) documentation for more details.
+
+## Running a production image locally
+
+To debug locally an image built for deployment, see [the Running Built Images Locally runbook](/docs/app/runbooks/running-built-images-locally.md).
 
 
 # Deployment
-
-TK
 
 ## Demo
 
