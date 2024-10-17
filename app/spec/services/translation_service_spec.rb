@@ -1,0 +1,143 @@
+require 'rails_helper'
+require 'yaml'
+
+RSpec.describe TranslationService do
+  let(:tmp_dir) { Rails.root.join('tmp', 'spec') }
+  let(:csv_path) { tmp_dir.join('translations.csv') }
+  let(:output_path) { tmp_dir.join('test_translations.yml') }
+  let(:metadata_dir) { tmp_dir.join('locale_imports') }
+  let(:existing_translations_path) { tmp_dir.join('en.yml') }
+  let(:current_locale_translations_path) { tmp_dir.join('es.yml') }
+
+  before do
+    setup_test_environment
+    mock_translation_service_methods
+  end
+
+  after do
+    FileUtils.rm_rf(tmp_dir)
+  end
+
+  describe '#generate' do
+    context 'with default options' do
+      let(:service) { TranslationService.new }
+
+      it 'generates a YAML file with Spanish translations' do
+        result = service.generate(csv_path.to_s, output_path.to_s)
+
+        expect(File.exist?(output_path)).to be true
+        yaml_content = YAML.load_file(output_path)
+
+        expect(yaml_content).to eq(result)
+        expect(yaml_content).to have_key('es')
+        expect(yaml_content['es']['test']['key1']).to eq('Hola')
+        expect(yaml_content['es']['test']['key2']).to eq('Old Mundo') # Not overwritten
+        expect(yaml_content['es']['test']).not_to have_key('key3')
+        expect(yaml_content['es']['test']).not_to have_key('key4')
+      end
+
+      it 'generates a metadata file' do
+        service.generate(csv_path.to_s, output_path.to_s)
+
+        metadata_files = Dir.glob(File.join(metadata_dir, 'es_import_*.txt'))
+        expect(metadata_files.size).to eq(1)
+
+        metadata_content = File.read(metadata_files.first)
+        expect(metadata_content).to include('Successfully Imported: 1')
+        expect(metadata_content).to include('Empty Rows: 1')
+        expect(metadata_content).to include('Skipped Rows: 1')
+        expect(metadata_content).to include('Collisions: 1')
+        expect(metadata_content).to include('Failed Imports: 0')
+        expect(metadata_content).to include('Total Entries: 4')
+      end
+    end
+
+    context 'with overwrite option' do
+      let(:service) { TranslationService.new('es', true) }
+
+      it 'overwrites existing translations' do
+        result = service.generate(csv_path.to_s, output_path.to_s)
+
+        yaml_content = YAML.load_file(output_path)
+        expect(yaml_content['es']['test']['key2']).to eq('Mundo') # Overwritten
+      end
+    end
+  end
+
+  describe 'logging' do
+    let(:service) { TranslationService.new }
+
+    it 'logs the process' do
+      expect(Rails.logger).to receive(:info).with(/Attempting to read CSV file:/)
+      expect(Rails.logger).to receive(:info).with(/Import Date:/)
+      expect(Rails.logger).to receive(:info).with(/Overwrite Mode: false/)
+      expect(Rails.logger).to receive(:info).with(/Total Entries: 4/)
+      expect(Rails.logger).to receive(:info).with(/Successfully Imported: 1/)
+      expect(Rails.logger).to receive(:info).with(/Empty Rows: 1/)
+      expect(Rails.logger).to receive(:info).with(/Skipped Rows: 1/)
+      expect(Rails.logger).to receive(:info).with(/Failed Imports: 0/)
+      expect(Rails.logger).to receive(:info).with(/Collisions: 1/)
+      expect(Rails.logger).to receive(:warn).with(/Collision detected for key 'test.key2'. Keeping existing translation./)
+      expect(Rails.logger).to receive(:info).with(/es translations have been generated and saved to/)
+      expect(Rails.logger).to receive(:info).with(/Metadata file generated:/)
+
+      service.generate(csv_path.to_s, output_path.to_s)
+    end
+  end
+
+  private
+
+  def setup_test_environment
+    FileUtils.mkdir_p(tmp_dir)
+    FileUtils.mkdir_p(metadata_dir)
+
+    create_mock_csv_file
+    create_mock_existing_translations
+    create_mock_current_locale_translations
+
+    allow(Rails).to receive(:root).and_return(Pathname.new(tmp_dir))
+  end
+
+  def mock_translation_service_methods
+    allow_any_instance_of(TranslationService).to receive(:load_existing_translations).and_return(
+      YAML.load_file(existing_translations_path)
+    )
+    allow_any_instance_of(TranslationService).to receive(:load_current_locale_translations).and_return(
+      YAML.load_file(current_locale_translations_path)
+    )
+  end
+
+  def create_mock_csv_file
+    CSV.open(csv_path, 'w') do |csv|
+      csv << ['key', 'en', 'es', 'added_to_confluence']
+      csv << ['en.test.key1', 'Hello', 'Hola', '']
+      csv << ['en.test.key2', 'World', 'Mundo', '']
+      csv << ['en.test.key3', 'Skip', '', '']
+      csv << ['', '', '', ''] # Empty row
+    end
+  end
+
+  def create_mock_existing_translations
+    File.write(existing_translations_path, {
+      'en' => {
+        'test' => {
+          'key1' => 'Hello',
+          'key2' => 'World',
+          'key3' => 'Skip',
+          'key4' => 'No Translation'
+        }
+      }
+    }.to_yaml)
+  end
+
+  def create_mock_current_locale_translations
+    File.write(current_locale_translations_path, {
+      'es' => {
+        'test' => {
+          'key1' => 'Hola',
+          'key2' => 'Old Mundo'
+        }
+      }
+    }.to_yaml)
+  end
+end
