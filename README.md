@@ -140,6 +140,53 @@ learn_more_html:
 Similar to Rails's `t` helper, the string will be marked HTML-safe if its key
 prefix ends with `_html`.
 
+## Importing Translations
+
+We have a custom rake task and translation service for importing translations from CSV files to YAML format. This allows for easy management and updating of locale files.
+
+The service handles nested keys and maintains the hierarchical structure of the YAML file by merging the new locale entries with the existing ones.
+
+
+### How the Translation Service Works
+
+1. The service reads the specified CSV file from the `tmp` directory.
+2. It processes each row, skipping empty rows or those marked as not needing translation.
+3. For each valid row, it checks if the English key exists in the current `en.yml` file.
+4. If the key exists, it adds the translation to the target locale's YAML structure.
+5. It logs various statistics and information about the import process.
+6. Finally, it writes the updated translations to the appropriate locale YAML file (e.g., `es.yml` for Spanish) and generates a metadata file with import details.
+
+This translation import system allows for efficient management of translations across multiple locales.
+
+### How to Import New Locales
+> ℹ️ **Note:**
+> Ensure your CSV file contains at least two columns:
+> - A 'key' column with the translation keys
+> - A column for the target locale, matching the file's prefix (e.g., 'es' for Spanish)
+> - Other columns in the CSV will be ignored by the import script
+
+**1.** Place your CSV file in the `tmp` directory of your Rails application.
+**2.** Name your CSV file using the following convention: `<locale>_import[_<timestamp>].csv` (e.g., `es_import.csv` or `es_import_20230515120000.csv` for Spanish).
+   > The timestamp in the filename is optional. If multiple files exist for a locale, the script will use the file with the latest timestamp.
+
+**3.** Run the rake task with the desired locale code:
+
+   ```
+   rake translations:import[<locale>]
+   ```
+
+   For example, to import Spanish translations:
+
+   ```
+   rake translations:import[es]
+   ```
+
+   or to import with **overwrite mode**:
+
+   ```
+   rake translations:import[es,true]
+   ```
+
 # Testing
 
 ## Running tests (in the `app` subdirectory)
@@ -293,3 +340,9 @@ All contributions to this project will be released under the CC0 dedication. By 
 # Core Team
 
 See [CODEOWNERS.md](./CODEOWNERS.md)
+
+
+
+
+
+
