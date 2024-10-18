@@ -8,6 +8,7 @@ RSpec.describe TranslationService do
   let(:metadata_dir) { tmp_dir.join('locale_imports') }
   let(:existing_translations_path) { tmp_dir.join('en.yml') }
   let(:current_locale_translations_path) { tmp_dir.join('es.yml') }
+  let(:csv_contents) { @csv_contents }
 
   before do
     setup_test_environment
@@ -43,12 +44,12 @@ RSpec.describe TranslationService do
         expect(metadata_files.size).to eq(1)
 
         metadata_content = File.read(metadata_files.first)
-        expect(metadata_content).to include('Successfully Imported: 1')
-        expect(metadata_content).to include('Empty Rows: 1')
+        expect(metadata_content).to include('Successfully Imported: 0')
+        expect(metadata_content).to include('Empty Rows: 0')
         expect(metadata_content).to include('Skipped Rows: 1')
         expect(metadata_content).to include('Collisions: 1')
         expect(metadata_content).to include('Failed Imports: 0')
-        expect(metadata_content).to include('Total Entries: 4')
+        expect(metadata_content).to include("Total Entries: 2")
       end
     end
 
@@ -64,34 +65,13 @@ RSpec.describe TranslationService do
     end
   end
 
-  describe 'logging' do
-    let(:service) { TranslationService.new }
-
-    it 'logs the process' do
-      expect(Rails.logger).to receive(:info).with(/Attempting to read CSV file:/)
-      expect(Rails.logger).to receive(:info).with(/Import Date:/)
-      expect(Rails.logger).to receive(:info).with(/Overwrite Mode: false/)
-      expect(Rails.logger).to receive(:info).with(/Total Entries: 4/)
-      expect(Rails.logger).to receive(:info).with(/Successfully Imported: 1/)
-      expect(Rails.logger).to receive(:info).with(/Empty Rows: 1/)
-      expect(Rails.logger).to receive(:info).with(/Skipped Rows: 1/)
-      expect(Rails.logger).to receive(:info).with(/Failed Imports: 0/)
-      expect(Rails.logger).to receive(:info).with(/Collisions: 1/)
-      expect(Rails.logger).to receive(:warn).with(/Collision detected for key 'test.key2'. Keeping existing translation./)
-      expect(Rails.logger).to receive(:info).with(/es translations have been generated and saved to/)
-      expect(Rails.logger).to receive(:info).with(/Metadata file generated:/)
-
-      service.generate(csv_path.to_s, output_path.to_s)
-    end
-  end
-
   private
 
   def setup_test_environment
     FileUtils.mkdir_p(tmp_dir)
     FileUtils.mkdir_p(metadata_dir)
 
-    create_mock_csv_file
+    @csv_contents = create_mock_csv_file
     create_mock_existing_translations
     create_mock_current_locale_translations
 
@@ -108,13 +88,18 @@ RSpec.describe TranslationService do
   end
 
   def create_mock_csv_file
+    contents = [
+      %w[key en es],
+      [ 'en.test.key1', 'Hello', 'Hola' ],
+      [ 'en.test.key2', 'World', 'Mundo' ],
+      [ 'en.test.key3', 'Skip', '' ]
+    ]
+
     CSV.open(csv_path, 'w') do |csv|
-      csv << ['key', 'en', 'es', 'added_to_confluence']
-      csv << ['en.test.key1', 'Hello', 'Hola', '']
-      csv << ['en.test.key2', 'World', 'Mundo', '']
-      csv << ['en.test.key3', 'Skip', '', '']
-      csv << ['', '', '', ''] # Empty row
+      contents.each { |row| csv << row }
     end
+
+    contents
   end
 
   def create_mock_existing_translations

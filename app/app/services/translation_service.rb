@@ -59,7 +59,7 @@ class TranslationService
     end
 
     lookup_key = translation_key.sub(/^en\./, "")
-    
+
     unless @existing_translations["en"].dig(*lookup_key.split("."))
       @results[:failed_imports] << { key: translation_key, reason: "English key does not exist" }
       Rails.logger.warn "Warning: English key '#{translation_key}' does not exist in the current en.yml file"
@@ -95,12 +95,12 @@ class TranslationService
 
   def log_results
     total = @results.values.sum { |v| v.is_a?(Array) ? v.count : v }
-    puts "Total rows processed: #{total}"
-    puts "Valid translations found: #{@results[:successful_imports]}"
-    puts "Empty rows skipped: #{@results[:empty_row_count]}"
-    puts "Rows skipped by conditions: #{@results[:skipped_rows].count}"
-    puts "Failed imports: #{@results[:failed_imports].count}"
-    puts "Collisions detected: #{@results[:collisions].count}"
+    Rails.logger.info "Total rows processed: #{total}"
+    Rails.logger.info "Valid translations found: #{@results[:successful_imports]}"
+    Rails.logger.info "Empty rows skipped: #{@results[:empty_row_count]}"
+    Rails.logger.info "Rows skipped by conditions: #{@results[:skipped_rows].count}"
+    Rails.logger.info "Failed imports: #{@results[:failed_imports].count}"
+    Rails.logger.info "Collisions detected: #{@results[:collisions].count}"
   end
 
   def set_nested_hash_value(hash, keys, value)
