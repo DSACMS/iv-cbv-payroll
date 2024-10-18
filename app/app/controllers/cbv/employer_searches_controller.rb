@@ -1,7 +1,8 @@
 class Cbv::EmployerSearchesController < Cbv::BaseController
   # Disable CSP since Pinwheel relies on inline styles
   content_security_policy false, only: :show
-  after_action :track_event, only: :show
+  before_action :track_accessed_search_event, only: :show
+  after_action :track_applicant_searched_event, only: :show
 
   def show
     @query = search_params[:query]
@@ -24,7 +25,17 @@ class Cbv::EmployerSearchesController < Cbv::BaseController
     pinwheel.fetch_items(request_params)["data"]
   end
 
-  def track_event
+  def track_accessed_search_event
+    NewRelicEventTracker.track("ApplicantAccessedSearchPage", {
+      cbv_flow_id: @cbv_flow.id,
+      invitation_id: @cbv_flow.cbv_flow_invitation_id,
+      has_pinwheel_account: @has_pinwheel_account
+    })
+  rescue => ex
+    Rails.logger.error "Unable to track NewRelic event (ApplicantAccessedSearchPage): #{ex}"
+  end
+
+  def track_applicant_searched_event
     return if @query.blank?
 
     NewRelicEventTracker.track("ApplicantSearchedForEmployer", {
