@@ -27,7 +27,7 @@ permissions:
 jobs:
   deploy:
     permissions:
-      contents: read
+      contents: write
       id-token: write
     name: Deploy
     uses: ./.github/workflows/deploy.yml

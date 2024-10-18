@@ -37,14 +37,25 @@ class WeeklyReportMailer < ApplicationMailer
       .map do |invitation|
         cbv_flow = invitation.cbv_flows.find(&:complete?)
 
-        {
-          client_id_number: invitation.client_id_number,
-          transmitted_at: cbv_flow&.transmitted_at,
-          case_number: invitation.case_number,
+        base_fields = {
           invited_at: invitation.created_at,
-          snap_application_date: invitation.snap_application_date,
-          completed_at: cbv_flow&.consented_to_authorized_use_at
+          transmitted_at: cbv_flow&.transmitted_at,
+          completed_at: cbv_flow&.consented_to_authorized_use_at,
+          snap_application_date: invitation.snap_application_date
         }
+
+        case current_site.id
+        when "nyc"
+          base_fields.merge(
+            client_id_number: invitation.client_id_number,
+            case_number: invitation.case_number,
+          )
+        when "ma"
+          base_fields.merge(
+            agency_id_number: invitation.agency_id_number,
+            beacon_id: invitation.beacon_id
+          )
+        end
       end
   end
 

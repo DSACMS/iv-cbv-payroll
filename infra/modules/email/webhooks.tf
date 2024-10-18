@@ -1,89 +1,38 @@
+############################################################################################
+## EMAIL EVENTS
+##
+## This file contains the resources necssary to send webhooks back to the
+## application for delivery events. The architecture is:
+##
+##      [AWS SES]   -->  [AWS EventBridge]  --> [NewRelic]
+##        * DELIVER        * default Bus          * AWSSESEvent (custom event)
+##        * OPEN           * Rule
+##        * CLICK          * Connection
+##        * ...
+##
+##
+############################################################################################
 data "aws_caller_identity" "current" {}
+data "aws_cloudwatch_event_bus" "default" {
+  name = "default"
+}
+data "aws_ssm_parameter" "newrelic_api_key" {
+  name = var.newrelic_api_key_param_name
+}
+
 
 ############################################################################################
-## Create SNS topic to receive delivery success & failure events
+## SES Configuration
 ############################################################################################
-resource "aws_sns_topic" "email_notifications" {
-  name              = "email-notifications"
-  kms_master_key_id = aws_kms_key.email_notifications_encryption.id
-}
-
-data "aws_iam_policy_document" "email_notifications" {
-  # See: https://docs.aws.amazon.com/ses/latest/dg/configure-sns-notifications.html
-  statement {
-    principals {
-      type        = "Service"
-      identifiers = ["ses.amazonaws.com"]
-    }
-
-    actions = [
-      "SNS:Publish",
-    ]
-
-    resources = [
-      aws_sns_topic.email_notifications.arn
-    ]
-
-    effect = "Allow"
-
-    condition {
-      test     = "ArnEquals"
-      variable = "AWS:SourceArn"
-
-      values = [
-        aws_ses_configuration_set.require_tls.arn
-      ]
-    }
-  }
-}
-
-resource "aws_sns_topic_policy" "email_notifications" {
-  arn    = aws_sns_topic.email_notifications.arn
-  policy = data.aws_iam_policy_document.email_notifications.json
-}
-
-data "aws_iam_policy_document" "email_notifications_encryption" {
-  # Default key policy allowing maintenance of the key:
-  # checkov:skip=CKV_AWS_111:These don't need constraints because of the account principal
-  # checkov:skip=CKV_AWS_109:These don't need constraints because of the account principal
-  statement {
-    principals {
-      type        = "AWS"
-      identifiers = [data.aws_caller_identity.current.account_id]
-    }
-    actions   = ["kms:*"]
-    resources = ["*"]
-  }
-
-  # Allow access by SES:
-  statement {
-    principals {
-      type        = "Service"
-      identifiers = ["ses.amazonaws.com"]
-    }
-    actions = [
-      "kms:GenerateDataKey",
-      "kms:Decrypt",
-    ]
-    resources = ["*"]
-    effect    = "Allow"
-  }
-}
-
-resource "aws_kms_key" "email_notifications_encryption" {
-  description         = "Encryption for Email Delivery Events"
-  policy              = data.aws_iam_policy_document.email_notifications_encryption.json
-  enable_key_rotation = true
-}
-
 resource "aws_sesv2_configuration_set_event_destination" "email_notifications" {
   configuration_set_name = aws_ses_configuration_set.require_tls.name
-  event_destination_name = "sns-email-notifications"
-
-  depends_on = [aws_sns_topic_policy.email_notifications, aws_kms_key.email_notifications_encryption]
+  event_destination_name = "eventbridge-email-events"
 
   event_destination {
     matching_event_types = [
+      "OPEN",
+      "CLICK",
+      "SEND",
       "BOUNCE",
       "COMPLAINT",
       "DELIVERY",
@@ -92,9 +41,99 @@ resource "aws_sesv2_configuration_set_event_destination" "email_notifications" {
     ]
     enabled = true
 
-    sns_destination {
-      topic_arn = aws_sns_topic.email_notifications.arn
+    event_bridge_destination {
+      event_bus_arn = data.aws_cloudwatch_event_bus.default.arn
     }
   }
 }
 
+############################################################################################
+## EventBridge Configuration
+##
+## (note: EventBridge was formerly known as "CloudWatch Events")
+############################################################################################
+resource "aws_cloudwatch_event_rule" "ses_events" {
+  name        = "ForwardSESEventsToNewRelic"
+  description = "Forward AWS SES events to NewRelic custom event (AWSSESEvent)"
+
+  event_pattern = jsonencode({
+    source = ["aws.ses"]
+  })
+}
+
+resource "aws_iam_role" "ses_events_to_newrelic" {
+  name               = "SESEventsToNewRelic"
+  assume_role_policy = <<EOF
+    {
+      "Version": "2012-10-17",
+      "Statement": [{
+        "Effect": "Allow",
+        "Principal": {
+          "Service": "events.amazonaws.com"
+        },
+        "Action": "sts:AssumeRole"
+      }]
+    }
+  EOF
+}
+resource "aws_iam_role_policy" "ses_events_to_newrelic" {
+  name = "SESEventsToNewRelic"
+  role = aws_iam_role.ses_events_to_newrelic.id
+
+  policy = <<EOF
+    {
+      "Version": "2012-10-17",
+      "Statement": [{
+        "Effect": "Allow",
+        "Action": [
+          "events:InvokeApiDestination"
+        ],
+        "Resource": [
+          "${aws_cloudwatch_event_api_destination.newrelic.arn}"
+        ]
+      }]
+    }
+  EOF
+}
+
+
+resource "aws_cloudwatch_event_target" "ses_events" {
+  arn      = aws_cloudwatch_event_api_destination.newrelic.arn
+  rule     = aws_cloudwatch_event_rule.ses_events.name
+  role_arn = aws_iam_role.ses_events_to_newrelic.arn
+
+  input_transformer {
+    input_paths = {
+      event     = "$.detail.eventType",
+      messageId = "$.detail.mail.messageId"
+    }
+
+    input_template = <<EOF
+      {
+        "eventType": "AWSSESEvent",
+        "eventName": "<event>",
+        "messageId": "<messageId>"
+      }
+    EOF
+  }
+}
+
+resource "aws_cloudwatch_event_api_destination" "newrelic" {
+  name                = "NewRelic"
+  description         = "Send SES events to NewRelic"
+  invocation_endpoint = "https://insights-collector.newrelic.com/v1/accounts/${var.newrelic_account_id}/events"
+  http_method         = "POST"
+  connection_arn      = aws_cloudwatch_event_connection.newrelic.arn
+}
+
+resource "aws_cloudwatch_event_connection" "newrelic" {
+  name               = "NewRelic"
+  authorization_type = "API_KEY"
+
+  auth_parameters {
+    api_key {
+      key   = "Api-Key"
+      value = data.aws_ssm_parameter.newrelic_api_key.value
+    }
+  }
+}

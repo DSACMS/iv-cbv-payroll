@@ -33,10 +33,10 @@ class Cbv::SummariesController < Cbv::BaseController
           locals: { is_caseworker: Rails.env.development? && params[:is_caseworker] },
           footer: { right: "Income Verification Report | Page [page] of [topage]", font_size: 10 },
           margin:  {
-            top:               12,
-            bottom:            12,
-            left:              12,
-            right:             12
+            top:               10,
+            bottom:            10,
+            left:              10,
+            right:             10
           }
       end
     end

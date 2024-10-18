@@ -147,5 +147,9 @@ locals {
       manage_method     = "manual"
       secret_store_name = "/service/${var.app_name}-${var.environment}/ma-dta-s3-public-key"
     },
+    MA_WEEKLY_REPORT_RECIPIENTS = {
+      manage_method     = "manual"
+      secret_store_name = "/service/${var.app_name}-${var.environment}/ma-weekly-report-recipients"
+    },
   }
 }

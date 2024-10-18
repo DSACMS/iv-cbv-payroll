@@ -42,7 +42,8 @@
   invitation_valid_days: 14
   logo_path: dta_logo.png
   logo_square_path: dta_logo_square.png
-  weekly_report: {}
+  weekly_report:
+    recipient: <%= ENV['MA_WEEKLY_REPORT_RECIPIENTS'] %>
 - id: sandbox
   agency_name: CBV Test Agency
   agency_short_name: CBV
