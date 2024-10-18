@@ -1,0 +1,6 @@
+---
+es:
+  api_responses:
+    pinwheel:
+      - Hello: Hola
+      - World: Mundo
