@@ -58,7 +58,7 @@ jobs:
           # on every commit.
           if [ "${{ inputs.environment }}" != "dev" ]; then
             export TZ="America/New_York"
-            TAG_NAME="deploy/${{ inputs.environment }}/$(date +'%Y-%m-%d-%H:%M:%S')"
+            TAG_NAME="deploy/${{ inputs.environment }}/$(date +'%Y-%m-%d-%H-%M-%S')"
             git config --local user.name "github-actions"
             git config --local user.email "github-actions@github.com"
             git tag "$TAG_NAME"
