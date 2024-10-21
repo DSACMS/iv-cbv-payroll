@@ -352,7 +352,10 @@ en:
             employment_payment_details: Employment and Payment details
             header: Income Verification Report
           shared:
+            client_information: Client Information
             confirmation_code: Confirmation code
+            employment_information: Employment information
+            report_details: Report Details
         phone_number: Employer phone
         send_report: Share my report with %{agency_acronym}
         table_caption: 'Employer %{number}: %{employer_name}'

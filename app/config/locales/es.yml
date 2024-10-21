@@ -228,11 +228,14 @@ es:
             employment_payment_details: Datos de empleo y pago
             header: Informe de verificación de ingresos
           shared:
+            client_information: Información del cliente
             confirmation_code: Código de confirmación
+            employment_information: Información del empleo
+            report_details: Detalles del reporte
         phone_number: Teléfono del empleador
         send_report: Comparta mi informe con %{agency_acronym}
         table_caption: 'Empleador %{number}: %{employer_name}'
-        table_caption_no_name: 'Empleador %{number}:'
+        table_caption_no_name: Empleador %{number}
         total_income_from: 'Ingresos totales provenientes de %{employer_name}, antes del pago de impuestos: %{amount}'
         total_income_from_no_employer_name: 'Ingresos totales antes del pago de impuestos: %{amount}'
         total_payments: 'Ingresos totales de los últimos 90 días, antes del pago de impuestos: %{amount}'
@@ -339,7 +342,7 @@ es:
         nyc: Un sitio web en colaboración con la Ciudad de Nueva York.
       primary: Menú principal
     languages:
-      en: Inglés
+      en: English
       es: Español
       fr: Francés
       zh: Chino
