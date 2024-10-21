@@ -5,7 +5,7 @@ class Cbv::SuccessesController < Cbv::BaseController
   def show
   end
 
-  def track_accessed_success_event()
+  def track_accessed_success_event
     NewRelicEventTracker.track("ApplicantAccessedSuccessPage", {
       timestamp: Time.now.to_i,
       cbv_flow_id: @cbv_flow.id,
@@ -15,5 +15,4 @@ class Cbv::SuccessesController < Cbv::BaseController
   rescue => ex
     Rails.logger.error "Failed to track NewRelic event: #{ex.message}"
   end
-
 end

@@ -63,7 +63,7 @@ RSpec.describe Cbv::EmployerSearchesController do
       it "tracks a NewRelic event" do
         expect(NewRelicEventTracker)
           .to receive(:track)
-          .with("ApplicantSearchedForEmployer", hash_including(
+          .with("ApplicantAccessedSearchPage", hash_including(
             cbv_flow_id: cbv_flow.id,
             invitation_id: cbv_flow.cbv_flow_invitation_id,
             num_results: 1,

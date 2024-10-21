@@ -209,7 +209,7 @@ class Cbv::SummariesController < Cbv::BaseController
   end
 
   def track_accessed_income_summary_event(cbv_flow, payments)
-    NewRelicEventTracker.track("IncomeSummaryAccessed", {
+    NewRelicEventTracker.track("ApplicantAccessedIncomeSummary", {
       timestamp: Time.now.to_i,
       site_id: cbv_flow.site_id,
       cbv_flow_id: cbv_flow.id,
@@ -222,7 +222,7 @@ class Cbv::SummariesController < Cbv::BaseController
       language: I18n.locale
     })
   rescue => ex
-    Rails.logger.error "Unable to track NewRelic event (IncomeSummaryAccessed): #{ex}"
+    Rails.logger.error "Unable to track NewRelic event (ApplicantAccessedIncomeSummary): #{ex}"
   end
 
   def generate_confirmation_code(prefix = nil)

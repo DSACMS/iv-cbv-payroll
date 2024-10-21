@@ -1,4 +1,5 @@
 class Cbv::ExpiredInvitationsController < Cbv::BaseController
+  before_action :track_expired_event, only: :show
   skip_before_action :set_cbv_flow, :ensure_cbv_flow_not_yet_complete
   helper_method :current_site
 
@@ -15,10 +16,7 @@ class Cbv::ExpiredInvitationsController < Cbv::BaseController
 
   def track_expired_event
     NewRelicEventTracker.track("ApplicantLinkExpired", {
-      timestamp: Time.now.to_i,
-      cbv_flow_id: @cbv_flow.id,
-      invitation_id: @cbv_flow.cbv_flow_invitation_id,
-      has_pinwheel_account: @has_pinwheel_account
+      timestamp: Time.now.to_i
     })
   rescue => ex
     Rails.logger.error "Unable to track NewRelic event (ApplicantLinkExpired): #{ex}"

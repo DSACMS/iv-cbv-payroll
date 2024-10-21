@@ -91,12 +91,9 @@ class Cbv::BaseController < ApplicationController
     response.headers["Expires"] = "#{1.year.ago}"
   end
 
-  def track_timeout_event
+  def track_timeout_event()
     NewRelicEventTracker.track("ApplicantTimedOut", {
-      timestamp: Time.now.to_i,
-      cbv_flow_id: @cbv_flow.id,
-      invitation_id: @cbv_flow.cbv_flow_invitation_id,
-      has_pinwheel_account: @has_pinwheel_account
+      timestamp: Time.now.to_i
     })
   rescue => ex
     Rails.logger.error "Unable to track NewRelic event (ApplicantTimedOut): #{ex}"
