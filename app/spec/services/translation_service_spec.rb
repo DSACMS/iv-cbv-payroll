@@ -95,10 +95,10 @@ RSpec.describe TranslationService do
   def create_mock_csv_file
     contents = [
       %w[key en es],
-      %w[en.test.key1 Hello Hola],
-      %w[en.test.key2 World Mundo],
-      %w[en.test.key3 Skip],
-      %w[en.test.key5 Old Value Valor Antiguo]
+      [ 'en.test.key1', 'Hello', 'Hola' ],
+      [ 'en.test.key2', 'World', 'Mundo'  ],
+      [ 'en.test.key3', 'Skip', '' ],
+      [ 'en.test.key5', 'Old Value', 'Valor Antiguo' ]
     ]
 
     CSV.open(csv_path, 'w') do |csv|
