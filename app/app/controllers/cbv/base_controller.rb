@@ -37,6 +37,7 @@ class Cbv::BaseController < ApplicationController
         redirect_to root_url
       end
     else
+      track_timeout_event()
       redirect_to root_url, flash: { slim_alert: { type: "info", message_html: t("cbv.error_missing_token_html") } }
     end
   end
@@ -88,5 +89,16 @@ class Cbv::BaseController < ApplicationController
     response.headers["Cache-Control"] = "no-cache, no-store, max-age=0, must-revalidate"
     response.headers["Pragma"] = "no-cache"
     response.headers["Expires"] = "#{1.year.ago}"
+  end
+
+  def track_timeout_event
+    NewRelicEventTracker.track("ApplicantTimedOut", {
+      timestamp: Time.now.to_i,
+      cbv_flow_id: @cbv_flow.id,
+      invitation_id: @cbv_flow.cbv_flow_invitation_id,
+      has_pinwheel_account: @has_pinwheel_account
+    })
+  rescue => ex
+    Rails.logger.error "Unable to track NewRelic event (ApplicantTimedOut): #{ex}"
   end
 end
