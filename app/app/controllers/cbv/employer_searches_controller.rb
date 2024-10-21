@@ -27,6 +27,7 @@ class Cbv::EmployerSearchesController < Cbv::BaseController
 
   def track_accessed_search_event
     NewRelicEventTracker.track("ApplicantAccessedSearchPage", {
+      timestamp: Time.now.to_i,
       cbv_flow_id: @cbv_flow.id,
       invitation_id: @cbv_flow.cbv_flow_invitation_id,
       has_pinwheel_account: @has_pinwheel_account
@@ -39,10 +40,12 @@ class Cbv::EmployerSearchesController < Cbv::BaseController
     return if @query.blank?
 
     NewRelicEventTracker.track("ApplicantSearchedForEmployer", {
+      timestamp: Time.now.to_i,
       cbv_flow_id: @cbv_flow.id,
       invitation_id: @cbv_flow.cbv_flow_invitation_id,
       num_results: @employers.length,
-      has_pinwheel_account: @has_pinwheel_account
+      has_pinwheel_account: @has_pinwheel_account,
+      query: search_params[:query]
     })
   rescue => ex
     Rails.logger.error "Unable to track NewRelic event (ApplicantSearchedForEmployer): #{ex}"
