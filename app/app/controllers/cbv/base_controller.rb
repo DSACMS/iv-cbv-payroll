@@ -37,7 +37,7 @@ class Cbv::BaseController < ApplicationController
         redirect_to root_url
       end
     else
-      track_timeout_event()
+      track_timeout_event
       redirect_to root_url, flash: { slim_alert: { type: "info", message_html: t("cbv.error_missing_token_html") } }
     end
   end
