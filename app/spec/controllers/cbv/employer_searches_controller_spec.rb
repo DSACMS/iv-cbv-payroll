@@ -64,6 +64,7 @@ RSpec.describe Cbv::EmployerSearchesController do
         expect(NewRelicEventTracker)
           .to receive(:track)
           .with("ApplicantAccessedSearchPage", hash_including(
+            timestamp: be_a(Integer),
             cbv_flow_id: cbv_flow.id,
             invitation_id: cbv_flow.cbv_flow_invitation_id,
             num_results: 1,
