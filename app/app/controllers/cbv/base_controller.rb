@@ -91,7 +91,7 @@ class Cbv::BaseController < ApplicationController
     response.headers["Expires"] = "#{1.year.ago}"
   end
 
-  def track_timeout_event()
+  def track_timeout_event
     NewRelicEventTracker.track("ApplicantTimedOut", {
       timestamp: Time.now.to_i
     })
