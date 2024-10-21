@@ -48,8 +48,8 @@ es:
         header: "¿Tiene otro trabajo que declarar?"
         learn_more_link_html:
           ma: Obtenga más información en <a href="https://www.mass.gov/guides/how-to-contact-dta" target="_blank" rel="noopener noreferer">el sitio web de DTA</a>.
-          nyc: Obtenga más información en  <a href="https://www.nyc.gov/site/hra/help/snap-application-frequently-asked-questions.page" target="_blank" rel="noopener noreferer">el sitio web de HRA</a>.
-          sandbox: Obtenga más información en  <a href="https://www.mass.gov/guides/how-to-contact-dta" target="_blank" rel="noopener noreferrer">el sitio web de CBV Test Agency</a>.
+          nyc: Obtenga más información en <a href="https://www.nyc.gov/site/hra/help/snap-application-frequently-asked-questions.page" target="_blank" rel="noopener noreferer">el sitio web de HRA</a>.
+          sandbox: Obtenga más información en <a href="https://www.mass.gov/guides/how-to-contact-dta" target="_blank" rel="noopener noreferrer">el sitio web de CBV Test Agency</a>.
         no_radio: No, no tengo otro trabajo que cumpla con los criterios
         subheader: Por favor añada los otros trabajos que haya tenido en los últimos %{pay_income_days} días, incluso si ya no está en ese trabajo.
         yes_radio: Sí, tengo otro trabajo que cumpla con los criterios
@@ -117,7 +117,7 @@ es:
         header:
           default: "%{agency_acronym} está lanzando una nueva forma de verificar rápidamente sus ingresos"
           ma: Proporcione al %{agency_acronym} sus ingresos de inmediato
-        security_message_html: "<strong>Su información está segura.</strong>  No compartiremos ni almacenaremos su información de acceso. Podrá revisar y aprobar todo lo que se comparta con %{agency_acronym}."
+        security_message_html: "<strong>Su información está segura.</strong> No compartiremos ni almacenaremos su información de acceso. Podrá revisar y aprobar todo lo que se comparta con %{agency_acronym}."
         stopped_working: Dejó de trabajar o perdió un trabajo (pero generó ingresos en los últimos 90 días).
         subheader: Enviaremos los registros de pago de su(s) empleador(es) a %{agency_acronym}. Esto le ayudará a demostrar sus ingresos y puede ayudar a %{agency_acronym} a tomar una decisión con mayor rapidez.
         subheader_1: Quién puede usar esta herramienta
@@ -164,9 +164,9 @@ es:
         additional_information_header: Comentarios adicionales (opcional)
         additional_information_label: Comparta cualquier comentario o información adicional sobre los detalles de pago anteriores que desea que %{agency_acronym} conozca. Por ejemplo, puede compartir si la información es inexacta o si ya no trabaja en ese empleo.
         continue: Continuar
-        deductions: 'Deducción:  %{category}'
+        deductions: 'Deducción: %{category}'
         employment_end_date: Fecha de finalización del empleo
-        employment_information_table_header: Información del empleo
+        employment_information_table_header: Información sobre el empleo
         employment_start_date: Fecha de inicio del empleo
         employment_status: Estatus del empleo
         frequency_unknown: Frecuencia desconocida
@@ -174,6 +174,7 @@ es:
         header_no_employer_name: Su información de pago por parte de su empleador
         hourly_rate: Monto de compensación
         none_found: No se encontraron pagos.
+        none_found_description: Esto usualmente ocurre cuando usted no ha recibido ingresos por este trabajo en los últimos 90 días. Si cree que esto es un error, agregue un comentario en la casilla de comentarios adicionales. De lo contrario, continúe en la página siguiente.
         number_of_hours_worked: Número de horas trabajadas
         pay_date: 'Fecha de pago: %{pay_date}'
         pay_frequency: Frecuencia del período de pago
@@ -214,18 +215,20 @@ es:
         consent_to_authorize_use_title: Acuerdo legal
         description: El siguiente informe contiene sus ingresos de los últimos 90 días, del %{start_date} al %{end_date}. Revíselo antes de enviarlo a %{agency_acronym}.
         header: Revise y presente su informe de ingresos
-        none_found: No se encontraron pagos. Actualice la página después de unos minutos.
+        none_found: No encontramos ningún pago de este empleador en los últimos 90 días.
+        none_found_confirmed: Hemos confirmado que no hay ningún pago de este empleador en los últimos 90 días. Esto sucede cuando el cliente no ha recibido ingresos por este trabajo durante ese tiempo.
         payment: Pago de %{amount} antes de pago impuestos en %{date}
         pdf:
           caseworker:
             pay_period: Período de pago (%{pay_frequency})
           client:
             address: Dirección del empleador
+            agency_id_number: ID de la agencia del cliente
             client_report_information: Información sobre el cliente y el informe
             date_created: Fecha en que se creó el informe de ingresos
-            date_range: Intervalo de fechas para el informe de ingresos
-            description: Hemos recopilado su información de ingresos con su consentimiento y la hemos enviado a su agencia de SNAP. Cualquier ingreso adicional que no haya logrado agregar a este informe debe compartirlo por separado con su agencia de SNAP.
-            employment_payment_details: Datos de empleo y pago
+            date_range: Rango de fechas para el informe de ingresos
+            description: Hemos recopilado información de sus ingresos con su consentimiento y la hemos enviado a su agencia de SNAP. Cualquier ingreso adicional que no pudo añadir a este informe debe compartirse por separado con su agencia de SNAP.
+            employment_payment_details: Detalles de empleo y pago
             header: Informe de verificación de ingresos
           shared:
             confirmation_code: Código de confirmación
@@ -242,12 +245,12 @@ es:
     synchronizations:
       indicators:
         employment: Empleo
-        identity: Datos personales
+        identity: Detalles personales
         income: Ingresos
-        paystubs: Recibos de pago
+        paystubs: Talones de pago
       show:
-        fetching_payroll_description: Esto puede tardar unos minutos. Mantenga esta ventana abierta mientras trabajamos en esto.
-        header: Estamos recopilando los datos de pago de su empleador
+        fetching_payroll_description: Esto puede tardar algunos minutos. Mantenga abierta esta ventana mientras trabajamos en esto.
+        header: Estamos recopilando los detalles de pago de su empleador.
   date:
     abbr_day_names:
     - Dom
@@ -298,7 +301,7 @@ es:
     home:
       description_1: El SNAP Income Pilot es una nueva herramienta diseñada para ayudarle a conectar los detalles de sus ingresos de su empleador o proveedor de nómina directamente con su agencia de SNAP. Actualmente estamos probando esta herramienta para asegurarnos de que funcione de manera eficaz.
       description_2: Tenga en cuenta que este piloto está disponible actualmente solo para los participantes de SNAP en la ciudad de Nueva York y Massachusetts.
-      description_3_html: '<p>Para participar, puede solicitar una invitación a su agencia del SNAP:</p><ul><li>Solicitantes de Massachusetts: Contactar al  <a href="https://www.mass.gov/guides/how-to-contact-dta" target="_blank" rel="noopener noreferrer">Departamento de Asistencia Transitoria (DTA)</a></li><li>Solicitantes de la Ciudad de Nueva York: Contactar a la <a href="https://www.nyc.gov/site/hra/help/snap-application-frequently-asked-questions.page">Administración de Recursos Humanos (HRA)</a></li></ul>'
+      description_3_html: '<p>Para participar, puede solicitar una invitación a su agencia del SNAP:</p><ul><li>Solicitantes de Massachusetts: Contactar al <a href="https://www.mass.gov/guides/how-to-contact-dta" target="_blank" rel="noopener noreferrer">Departamento de Asistencia Transitoria (DTA)</a></li><li>Solicitantes de la Ciudad de Nueva York: Contactar a la <a href="https://www.nyc.gov/site/hra/help/snap-application-frequently-asked-questions.page">Administración de Recursos Humanos (HRA)</a></li></ul>'
       header: Bienvenido al SNAP Income Pilot
   payment_frequencies:
     annually: anual
