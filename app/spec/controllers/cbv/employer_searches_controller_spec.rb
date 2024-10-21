@@ -30,7 +30,6 @@ RSpec.describe Cbv::EmployerSearchesController do
           ))
         get :show
       end
-
     end
 
     context "when there are no employer search results" do
