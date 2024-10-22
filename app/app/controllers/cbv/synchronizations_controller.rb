@@ -8,4 +8,10 @@ class Cbv::SynchronizationsController < Cbv::BaseController
       redirect_to cbv_flow_payment_details_path(user: { account_id: @pinwheel_account.pinwheel_account_id })
     end
   end
+
+  def update
+    account_id = params[:user][:account_id]
+
+    redirect_to cbv_flow_payment_details_path(user: { account_id: account_id })
+  end
 end
