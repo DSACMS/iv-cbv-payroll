@@ -27,12 +27,13 @@ module Cbv::PaymentsHelper
         start: payment["pay_period_start"],
         end: payment["pay_period_end"],
         hours: total_hours_from_earnings(payment["earnings"]),
+        hours_by_earning_category: hours_by_earning_category(payment["earnings"]),
         gross_pay_amount: payment["gross_pay_amount"].to_i,
         net_pay_amount: payment["net_pay_amount"].to_i,
         gross_pay_ytd: payment["gross_pay_ytd"].to_i,
         pay_date: payment["pay_date"],
         deductions: payment["deductions"].map { |deduction| { category: deduction["category"], amount: deduction["amount"] } },
-        account_id: payment["account_id"]
+        account_id: payment["account_id"],
       }
     end
   end
@@ -61,5 +62,12 @@ module Cbv::PaymentsHelper
       .sum { |e| e["hours"] || 0.0 }
 
     base_hours + overtime_hours
+  end
+
+  def hours_by_earning_category(earnings)
+    earnings
+      .filter { |e| e["hours"].present? && e["hours"] > 0 }
+      .group_by { |e| e["category"] }
+      .transform_values { |earnings| earnings.sum { |e| e["hours"] } }
   end
 end

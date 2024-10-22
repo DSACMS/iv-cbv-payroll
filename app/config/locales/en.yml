@@ -266,6 +266,36 @@ en:
         header: Your payment information from %{employer_name}
         header_no_employer_name: Your payment information from your employer
         hourly_rate: Compensation amount
+        hours_category:
+          bereavement: Bereavement
+          bonus: Bonus
+          commission: Commission
+          disability: Disability
+          double_overtime: Double Overtime
+          employer_contribution: Employer Contribution
+          fare: Fare
+          holiday: Holiday
+          hourly: Hourly Wage
+          life_insurance: Life Insurance
+          meal_comp: Meal Comp
+          medical: Medical
+          other: Other Pay
+          overtime: Overtime
+          parental: Parental
+          premium: Premium
+          pto: Paid Time Off
+          retirement: Retirement
+          retro_pay: Retroactive Pay
+          salary: Salary
+          shift_differential: Shift Differential
+          sick: Sick Time
+          stock: Stock
+          tips: Tips
+          unpaid: Unpaid
+          vacation: Vacation
+        hours:
+          one: "%{description} - %{count} hour"
+          other: "%{description} - %{count} hours"
         none_found: We didn't find any payments from this employer in the past 90 days.
         none_found_description: This typically happens when you haven't received income from this job in the past 90 days. If you believe this is an error, please add a comment in the additional comments box. Otherwise, continue to the next page.
         number_of_hours_worked: Number of hours worked
