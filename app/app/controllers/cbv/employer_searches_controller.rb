@@ -1,7 +1,7 @@
 class Cbv::EmployerSearchesController < Cbv::BaseController
   # Disable CSP since Pinwheel relies on inline styles
   content_security_policy false, only: :show
-  before_action :track_accessed_search_event, only: :show
+  after_action :track_accessed_search_event, only: :show
   after_action :track_applicant_searched_event, only: :show
 
   def show
@@ -26,6 +26,8 @@ class Cbv::EmployerSearchesController < Cbv::BaseController
   end
 
   def track_accessed_search_event
+    return if @query.present?
+
     NewRelicEventTracker.track("ApplicantAccessedSearchPage", {
       timestamp: Time.now.to_i,
       cbv_flow_id: @cbv_flow.id,
