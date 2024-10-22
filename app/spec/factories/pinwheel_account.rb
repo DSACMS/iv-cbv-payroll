@@ -6,5 +6,6 @@ FactoryBot.define do
     employment_synced_at { DateTime.now }
     income_synced_at { DateTime.now }
     identity_synced_at { DateTime.now }
+    supported_jobs { %w[income paystubs employment identity] }
   end
 end

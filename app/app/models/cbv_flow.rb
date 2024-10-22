@@ -23,4 +23,8 @@ class CbvFlow < ApplicationRecord
       site_id: cbv_flow_invitation.site_id
     )
   end
+
+  def has_successful_job?
+    pinwheel_accounts.any?(&:has_required_data?)
+  end
 end
