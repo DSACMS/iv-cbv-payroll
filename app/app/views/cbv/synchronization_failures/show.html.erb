@@ -1,32 +1,26 @@
-<h1>We couldn't access your employer information</h1>
+<h1><%= t(".title") %></h1>
 
 <div class="usa-prose">
   <p>
-    We were unable to connect to your employer's system due to an error. To continue, you can:
+    <%= t(".description") %>
   </p>
 
   <ol>
-    <li>Go back to employer search to retry adding this employer.</li>
-    <li>Go back to employer search to add another job.</li>
-    <li>Submit your income information for this employer by visiting DTA's website.</li>
+    <li><%= t(".option_1") %></li>
+    <li><%= t(".option_2") %></li>
+    <li><%= t(".option_3") %></li>
   <ol>
 </div>
 
 <ul class="usa-button-group margin-top-5">
   <li class="usa-button-group__item">
-    <a class="usa-button usa-button--outline">
-      Back to employer search
-    </a>
+    <%= link_to t(".back_to_search"), cbv_flow_employer_search_path, class: "usa-button usa-button--outline", data: { turbo: "false" } %>
   </li>
   <li class="usa-button-group__item">
     <% if @cbv_flow.has_valid_account? %>
-      <a class="usa-button">
-        Continue to Report
-      </a>
+      <%= link_to t(".continue_to_report"), cbv_flow_summary_path, class: "usa-button" %>
     <% else %>
-      <a class="usa-button">
-        Visit DTA website
-      </a>
+      <%= site_translation("cbv.expired_invitations.show.cta_button_html") %>
     <% end %>
   </li>
 </ul>

@@ -242,6 +242,15 @@ es:
         total_payments_desc: Este es el ingreso bruto total de su(s) trabajo(s) antes de que se le descuenten impuestos, beneficios y otras deducciones de su cheque.
       update:
         consent_to_authorize_warning: Debe marcar la casilla de acuerdo legal para proceder.
+    synchronization_failures:
+      show:
+        back_to_search: TODO
+        continue_to_report: TODO
+        description: TODO
+        option_1: TODO
+        option_2: TODO
+        option_3: TODO
+        title: TODO
     synchronizations:
       indicators:
         employment: Empleo

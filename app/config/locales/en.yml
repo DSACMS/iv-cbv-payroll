@@ -363,6 +363,15 @@ en:
         total_payments_desc: This is the total gross income from your job(s) before taxes, benefits and deductions were taken out of your paycheck.
       update:
         consent_to_authorize_warning: You must check the legal agreement checkbox to proceed.
+    synchronization_failures:
+      show:
+        back_to_search: Back to employer search
+        continue_to_report: Continue to Report
+        description: 'We were unable to connect to your employer''s system due to an error. To continue, you can:'
+        option_1: Go back to employer search to retry adding this employer.
+        option_2: Go back to employer search to add another job.
+        option_3: Submit your income information for this employer by visiting DTA's website.
+        title: We couldn't access your employer information
     synchronizations:
       indicators:
         employment: Employment
