@@ -6,5 +6,10 @@ FactoryBot.define do
     employment_synced_at { DateTime.now }
     income_synced_at { DateTime.now }
     identity_synced_at { DateTime.now }
+    supported_jobs { %w[income paystubs employment identity] }
+
+    trait :with_paystubs_errored do
+      paystubs_errored_at { DateTime.now }
+    end
   end
 end
