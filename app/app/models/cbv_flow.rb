@@ -24,7 +24,7 @@ class CbvFlow < ApplicationRecord
     )
   end
 
-  def has_valid_account?
+  def has_account_with_required_data?
     pinwheel_accounts.any?(&:has_required_data?)
   end
 end
