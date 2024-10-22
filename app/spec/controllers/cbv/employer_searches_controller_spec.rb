@@ -19,6 +19,17 @@ RSpec.describe Cbv::EmployerSearchesController do
         get :show
         expect(response).to be_successful
       end
+
+      it "tracks a NewRelic event" do
+        expect(NewRelicEventTracker)
+          .to receive(:track)
+          .with("ApplicantAccessedSearchPage", hash_including(
+            timestamp: be_a(Integer),
+            cbv_flow_id: cbv_flow.id,
+            invitation_id: cbv_flow.cbv_flow_invitation_id
+          ))
+        get :show
+      end
     end
 
     context "when there are no employer search results" do
@@ -68,8 +79,7 @@ RSpec.describe Cbv::EmployerSearchesController do
             invitation_id: cbv_flow.cbv_flow_invitation_id,
             num_results: 1,
             has_pinwheel_account: false
-          ))
-
+            ))
         get :show, params: { query: "results" }
       end
     end
