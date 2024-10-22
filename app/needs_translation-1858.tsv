@@ -1,0 +1,11 @@
+es.cbv.entries.show.header	Let's verify your income
+es.cbv.entries.show.subheader_html	We’ll send your payment records from your employer(s) to DTA to verify your income. <strong>Most people complete this process in under 5 minutes.</strong> Just follow these steps:
+es.cbv.entries.show.step1	Search and sign into your employer or online payroll provider.
+es.cbv.entries.show.step1_description	Use the login credentials you have for viewing your online pay stub. We won’t share or keep your login information. If you work for an app, like Uber, this would be the same login when you sign into the Uber app.
+es.cbv.entries.show.step2	Review your payment information.
+es.cbv.entries.show.step2_description	You will be able to preview and approve everything that is shared with DTA.
+es.cbv.entries.show.step3	Submit your payment information.
+es.cbv.entries.show.step3_description	We’ll automatically send it to DTA. This will help you prove your income and can help DTA get to a decision faster.
+es.cbv.entries.show.continue	Get started
+es.cbv.entries.show.checkbox.default	Check this box to agree to let us access your payment information and share it with the %{agency_full_name}.
+es.cbv.entries.show.checkbox.nyc	Check this box to agree to let Nava access your payment information and share it with the %{agency_full_name}. We will not use the information for any other purpose nor redisclose it to any other party.

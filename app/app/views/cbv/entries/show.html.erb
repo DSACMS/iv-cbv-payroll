@@ -1,59 +1,27 @@
-<% title = site_translation(".header", agency_acronym: current_site.agency_short_name) %>
+<% title = t(".header") %>
 <% content_for :title, title %>
 <h1><%= title %></h1>
 
 <div class="usa-prose">
-  <p><%= t(".subheader", agency_acronym: current_site.agency_short_name) %></p>
+  <p><%= t(".subheader_html") %></p>
 </div>
 
-<h2><%= t(".subheader_1") %></h2>
-<p><%= t(".has_income_90_days") %></p>
-<div class="usa-prose">
-  <ul>
-    <li><%= t(".has_online_payroll_provider") %></li>
-    <li><%= t(".do_app_based_work") %></li>
-    <li><%= t(".stopped_working") %></li>
-  </ul>
-</div>
+<ol class="usa-process-list">
+  <li class="usa-process-list__item">
+    <h2 class="margin-bottom-1"><%= t(".step1") %></h2>
+    <p class="margin-top-0"><%= t(".step1_description") %></p>
+  </li>
+  <li class="usa-process-list__item">
+    <h2 class="margin-bottom-1"><%= t(".step2") %></h2>
+    <p class="margin-top-0"><%= t(".step2_description") %></p>
+  </li>
+  <li class="usa-process-list__item">
+    <h2 class="margin-bottom-1"><%= t(".step3") %></h2>
+    <p class="margin-top-0"><%= t(".step3_description") %></p>
+  </li>
+</ol>
 
-<h2><%= t(".subheader_2") %></h2>
-<div class="usa-prose">
-  <p><%= t(".cant_use_if") %></p>
-  <ul>
-    <li><%= t(".cant_use_1") %></li>
-    <li><%= t(".cant_use_2") %></li>
-    <li><%= t(".cant_use_3") %></li>
-    <li><%= t(".cant_use_4") %></li>
-    <li><%= t(".cant_use_5") %></li>
-  </ul>
-</div>
-
-<h2><%= t(".subheader_3") %></h2>
-<div class="usa-prose">
-  <p><%= t(".you_can_get_started") %></p>
-  <ul>
-    <li><%= t(".your_employers_name") %></li>
-    <li><%= t(".your_login_credentials") %></li>
-  </ul>
-</div>
-
-<div class="usa-alert usa-alert--info usa-alert--no-icon margin-bottom-3 margin-top-3">
-  <div class="usa-alert__body">
-    <div class="grid-row grid-gap-lg">
-      <div class="grid-col-auto">
-        <%= image_tag "@uswds/uswds/dist/img/usa-icons/lock.svg", role: "img", alt: t("shared.header.close") %>
-      </div>
-      <div class="grid-col">
-        <p class="usa-alert__text">
-          <%= t(".security_message_html", agency_acronym: current_site.agency_short_name) %>
-        </p>
-      </div>
-    </div>
-  </div>
-</div>
-
-<%= link_to next_path do %>
-  <button class="usa-button" type="button">
-    <%= t(".get_started") %>
-  </button>
+<%= form_with(url: cbv_flow_entry_path, builder: UswdsFormBuilder, data: { turbo: "false" }) do |f| %>
+  <%= f.check_box(:agreement, label: site_translation(".checkbox", agency_full_name: site_translation("shared.agency_full_name"))) %>
+  <%= f.submit t(".continue") %>
 <% end %>
