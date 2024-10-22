@@ -33,7 +33,7 @@
 
 <%= render(TableComponent.new) do |table| %>
   <%= table.with_header do %>
-    <h3 class="margin-0">Client Information</h3>
+    <h3 class="margin-0"><%= t(".pdf.shared.client_information") %></h3>
   <% end %>
   <% if current_site?(:ma) && !is_caseworker %>
     <%= table.with_row(t(".pdf.client.agency_id_number"), @cbv_flow.cbv_flow_invitation.agency_id_number) %>
@@ -57,7 +57,7 @@
 
 <%= render(TableComponent.new) do |table| %>
   <%= table.with_header do %>
-    <h3 class="margin-0">Report details</h3>
+    <h3 class="margin-0"><%= t(".pdf.shared.report_details") %></h3>
   <% end %>
   <% if @cbv_flow.confirmation_code.present? %>
     <%= table.with_row(t(".pdf.shared.confirmation_code"), @cbv_flow.confirmation_code) %>
@@ -85,7 +85,7 @@
         <% if employer_name %>
           <%= employer_name %> &mdash;
         <% end %>
-        Employment Information
+        <%= t(".pdf.shared.employment_information") %>
       </h4>
     <% end %>
     <% if is_caseworker && summary[:has_identity_data] %>
