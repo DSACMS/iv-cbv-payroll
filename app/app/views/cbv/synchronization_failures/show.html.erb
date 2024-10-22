@@ -1,10 +1,32 @@
-Failure
+<h1>We couldn't access your employer information</h1>
 
-Continue to employer search
+<div class="usa-prose">
+  <p>
+    We were unable to connect to your employer's system due to an error. To continue, you can:
+  </p>
 
-<% if @cbv_flow.has_valid_account? %>
-  Continue to Report
-<% else %>
-  Visit DTA website
-<% end %>
+  <ol>
+    <li>Go back to employer search to retry adding this employer.</li>
+    <li>Go back to employer search to add another job.</li>
+    <li>Submit your income information for this employer by visiting DTA's website.</li>
+  <ol>
+</div>
 
+<ul class="usa-button-group margin-top-5">
+  <li class="usa-button-group__item">
+    <a class="usa-button usa-button--outline">
+      Back to employer search
+    </a>
+  </li>
+  <li class="usa-button-group__item">
+    <% if @cbv_flow.has_valid_account? %>
+      <a class="usa-button">
+        Continue to Report
+      </a>
+    <% else %>
+      <a class="usa-button">
+        Visit DTA website
+      </a>
+    <% end %>
+  </li>
+</ul>
