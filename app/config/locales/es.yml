@@ -217,6 +217,10 @@ es:
         none_found: No se encontraron pagos. Actualice la página después de unos minutos.
         payment: Pago de %{amount} antes de pago impuestos en %{date}
         pdf:
+          agency_header_name:
+            ma: Massachusetts Department of Transitional Assistance
+            nyc: NYC Human Resources Administration
+            sandbox: CBV Test Agency
           caseworker:
             pay_period: Período de pago (%{pay_frequency})
           client:
@@ -314,6 +318,7 @@ es:
   shared:
     agency_full_name:
       ma: Departamento de Asistencia Transitoria de Massachusetts
+      nyc: New York City Human Resources Administration
       sandbox: Agencia de pruebas CBV
     app_name:
       ma: DTA Connect
@@ -355,6 +360,7 @@ es:
     boolean_true: Sí
     date_picker_format: 'Formato: mm/dd/aaaa'
     optional: Opcional
+    tax_id_format: 'Formato: 123456789'
   users:
     omniauth_callbacks:
       authentication_successful: Ha iniciado sesión.
