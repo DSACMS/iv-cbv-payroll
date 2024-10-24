@@ -202,7 +202,7 @@ en:
         step2: Review your payment information.
         step2_description: You will be able to preview and approve everything that is shared with DTA.
         step3: Submit your payment information.
-        step3_description: We’ll automatically send it to DTA. This will help you prove your income and can help DTA get to a decision faster.
+        step3_description: We’ll automatically send it to %{agency_acronym}. This will help you prove your income and can help %{agency_acronym} get to a decision faster.
         subheader_html: 'We’ll send your payment records from your employer(s) to DTA to verify your income. <strong>Most people complete this process in under 5 minutes.</strong> Just follow these steps:'
     error_invalid_token: The invitation link used is not valid. Double check the link and try again. If you continue experiencing issues, contact your caseworker.
     error_missing_token_html: "<strong>Your session has timed out due to inactivity.</strong> To continue where you left off, please click the link you received from your SNAP agency in your email. If you encounter any issues, contact your SNAP agency for assistance."
