@@ -43,13 +43,9 @@ RSpec.describe "e2e CBV flow test", type: :feature, js: true do
     it "completes the flow" do
       # /cbv/entry
       visit URI(cbv_flow_invitation.to_url).request_uri
-      verify_page(page, title: I18n.t("cbv.entries.show.header.default", agency_acronym: "CBV"))
-      click_button I18n.t("cbv.entries.show.get_started")
-
-      # /cbv/agreement
-      verify_page(page, title: I18n.t("cbv.agreements.show.header"))
-      find("label", text: I18n.t("cbv.agreements.show.checkbox.default", agency_full_name: I18n.t("shared.agency_full_name.sandbox"))).click
-      click_button I18n.t("cbv.agreements.show.continue")
+      verify_page(page, title: I18n.t("cbv.entries.show.header"))
+      find("label", text: I18n.t("cbv.entries.show.checkbox.default", agency_full_name: I18n.t("shared.agency_full_name.sandbox"))).click
+      click_button I18n.t("cbv.entries.show.continue")
 
       # /cbv/employer_search
       verify_page(page, title: I18n.t("cbv.employer_searches.show.header"))
