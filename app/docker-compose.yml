@@ -21,22 +21,28 @@ services:
     tty: true
     build:
       context: .
-      target: dev
+      target: release
     depends_on:
       postgres:
         condition: service_healthy
       redis:
         condition: service_healthy
-    env_file: .env.local.bak
+    env_file: .env.development.local
     environment:
+      - RAILS_MASTER_KEY=d2c80bf25bbf905cee94193b29ada6ac
+      - RAILS_LOG_TO_STDOUT=true
       - DOCKERIZED=true
       - DB_HOST=postgres
       - DB_NAME=app
       - DB_USERNAME=app
+      - DB_USER=app
       - DB_PASSWORD=secret123
+      - DB_PASS=secret123
       - REDIS_URL=redis://redis:6379/1
       - RAILS_BINDING=0.0.0.0
-      - RAILS_ENV=development
+      - RAILS_ENV=production
+      - DOMAIN_NAME=localhost
+      - AWS_REGION=us-east-1
     ports:
       - 3000:3000
       - 1234:1234
@@ -47,8 +53,7 @@ services:
       # This is especially true for any dependency or temp directories.
       - app_rails_nodemodules:/rails/node_modules
       - app_rails_tmp:/rails/tmp
-      - app_rails_storage:/rails/storage
-
+      - app_rails_storage:/rails/storage   
   redis:
     image: redis:alpine
     ports:

@@ -100,9 +100,16 @@ RUN SECRET_KEY_BASE_DUMMY=1 ./bin/rails assets:precompile
 ##########################################################################################
 FROM base AS release
 
+WORKDIR /rails
+
+# Copy the entrypoint script
+COPY .docker/entrypoints/rails.sh /usr/bin/
+RUN chmod +x /usr/bin/rails.sh
+
 # Set the tmp dir to the writeable tmp volume
 ENV TMPDIR="/rails/tmp"
 ENV GNUPGHOME="/rails/tmp"
+ENV PIDFILE="/rails/tmp/pids/server.pid"
 
 # Install packages needed for deployment
 RUN apt-get update -qq && \
@@ -135,11 +142,32 @@ COPY bin/db-migrate /usr/bin/
 COPY --from=release-build /usr/local/bundle /usr/local/bundle
 COPY --from=release-build /rails /rails
 
-# Run and own only the runtime files as a non-root user for security
-RUN useradd rails --create-home --shell /bin/bash && \
-    chown -R rails:rails db log tmp
-USER rails:rails
+# Ensure all necessary directories exist, set permissions, and ownership
+RUN mkdir -p /rails/tmp /rails/tmp/pids /rails/log /rails/db
+
+# Create volume before changing user since docker runs as root by default.
+# Otherwise the /rails/tmp directory will not be writable by user "rails".
 VOLUME /rails/tmp
 
-# Start the server
-CMD ["./bin/rails", "server"]
+# Run and own only the runtime files as a non-root user for security
+RUN useradd rails --create-home --shell /bin/bash --home /rails
+
+# Set permissions and ownership for the runtime files
+RUN chmod -R 777 /rails/tmp /rails/log /rails/db && \
+    chown -R rails:rails /rails/tmp /rails/log /rails/db
+
+# if ENV DOCKERIZED is true
+RUN curl -fsSL https://deb.nodesource.com/setup_20.x | bash - \
+    && apt-get update \
+    && apt-get install -y nodejs \
+    && npm install -g yarn
+
+# Clean up
+RUN apt-get clean && rm -rf /var/lib/apt/lists/*
+
+# Switch to non-root user
+USER rails:rails
+
+# Invoke the entrypoint script, passing it the rails server command
+ENTRYPOINT ["rails.sh"]
+CMD ["bin/rails", "server", "--pid=/rails/tmp/pids/server.pid", "-b", "0.0.0.0"]
