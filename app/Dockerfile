@@ -156,6 +156,9 @@ RUN useradd rails --create-home --shell /bin/bash --home /rails
 RUN chmod -R 777 /rails/tmp /rails/log /rails/db && \
     chown -R rails:rails /rails/tmp /rails/log /rails/db
 
+# handle wkhtmltopdf_binary permissions
+RUN chown -R rails:rails /usr/local/bundle/ruby/3.3.0/gems/wkhtmltopdf-binary-0.12.6.7/bin
+
 # if ENV DOCKERIZED is true
 RUN curl -fsSL https://deb.nodesource.com/setup_20.x | bash - \
     && apt-get update \

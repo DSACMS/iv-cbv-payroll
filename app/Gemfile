@@ -80,7 +80,6 @@ group :development, :test do
   gem "selenium-webdriver"
   gem "standard", "~> 1.7"
   gem "timecop"
-  gem "wkhtmltopdf-binary"
 end
 
 group :development do
@@ -116,3 +115,4 @@ gem "view_component"
 # moving outside of test/dev to preview mailer in production.
 # might need to modify this during the biuld process.
 gem "factory_bot", "~> 6.4"
+gem "wkhtmltopdf-binary"
