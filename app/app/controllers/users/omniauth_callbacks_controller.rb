@@ -1,12 +1,12 @@
 class Users::OmniauthCallbacksController < Devise::OmniauthCallbacksController
-  before_action :configure_aws_region
+  # before_action :configure_aws_region
   after_action :track_event
 
 
-  def configure_aws_region
-    Aws.config.update(region: ENV.fetch('AWS_REGION', 'us-east-1')) unless Aws.config[:region]
-    Aws.config.update(credentials: Aws::Credentials.new(ENV.fetch('AWS_ACCESS_KEY_ID', ''), ENV.fetch('AWS_SECRET_ACCESS_KEY', '')))
-  end
+  # def configure_aws_region
+  #   Aws.config.update(region: ENV.fetch('AWS_REGION', 'us-east-1')) unless Aws.config[:region]
+  #   Aws.config.update(credentials: Aws::Credentials.new(ENV.fetch('AWS_ACCESS_KEY_ID', ''), ENV.fetch('AWS_SECRET_ACCESS_KEY', '')))
+  # end
 
   def nyc_dss
     response_params = request.env["omniauth.auth"]["info"]
@@ -20,7 +20,6 @@ class Users::OmniauthCallbacksController < Devise::OmniauthCallbacksController
     response_params = request.env["omniauth.auth"]["info"]
     Rails.logger.info "Login successful from #{response_params["email"]} (name: #{response_params["name"]}, nickname: #{response_params["nickname"]})"
     email = response_params["email"]
-    Rails.logger.info "Authorized? #{authorized?(email, "ma")}"
 
     if authorized?(email, "ma")
       login_with_oauth(email, "ma")
@@ -41,23 +40,15 @@ class Users::OmniauthCallbacksController < Devise::OmniauthCallbacksController
   private
 
   def login_with_oauth(email, site_id)
-    begin
-      Rails.logger.debug "Database config: #{ActiveRecord::Base.connection_db_config}"
-      @user = User.find_for_authentication(email: email, site_id: site_id)
-      @user ||= User.create(email: email, site_id: site_id)
-      Rails.logger.debug "User: #{@user}"
-      if @user&.persisted?
-        flash[:slim_alert] = { message: t("users.omniauth_callbacks.authentication_successful"), type: "info" }
-        sign_in_and_redirect @user, event: :authentication
-      else
-        Rails.logger.error "Failed to persist user: #{@user&.errors&.full_messages}"
-        flash[:alert] = "Authentication failed. Please try again or contact support."
-        redirect_to new_user_session_path(site_id: site_id)
-      end
-    rescue => e
-      Rails.logger.error "OAuth authentication error: #{e.class} - #{e.message}"
-      flash[:alert] = "An unexpected error occurred during authentication. Please try again."
-      redirect_to new_user_session_path(site_id: site_id)
+   # TODO: Check that the email is permissible according to its domain
+   @user = User.find_for_authentication(email: email, site_id: site_id)
+   @user ||= User.create(email: email, site_id: site_id)
+
+   if @user&.persisted?
+     flash[:slim_alert] = { message: t("users.omniauth_callbacks.authentication_successful"), type: "info" }
+     sign_in_and_redirect @user, event: :authentication
+   else
+     flash[:alert] = "Something went wrong."
     end
   end
 

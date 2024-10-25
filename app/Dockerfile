@@ -62,8 +62,7 @@ ENV TMPDIR="/rails/tmp"
 # Install packages needed for development
 RUN apt-get update -qq && \
     apt-get install --no-install-recommends -y postgresql-client=15+248 \
-        graphviz=2.42.2-7+b3 \
-        wkhtmltopdf=0.12.6-2+b1 && \
+        graphviz=2.42.2-7+b3 && \
     rm -rf /var/lib/apt/lists /var/cache/apt/archives
 
 # Install application gems for development
@@ -84,6 +83,15 @@ FROM build AS release-build
 
 # Install application gems for production
 COPY Gemfile Gemfile.lock ./
+
+# Override the Gemfile for PRODUCTION_LOCAL builds
+RUN if [ "$PRODUCTION_LOCAL" = "true" ]; then \
+      echo "Using Gemfile.release for PRODUCTION_LOCAL build" && \
+      mv /rails/.docker/rails/Gemfile.release Gemfile; \
+    else \
+      echo "Using standard Gemfile"; \
+    fi
+
 RUN bundle config set --local without development test && \
     bundle install && \
     rm -rf ~/.bundle/ "${BUNDLE_PATH}"/ruby/*/cache "${BUNDLE_PATH}"/ruby/*/bundler/gems/*/.git
@@ -100,9 +108,11 @@ RUN SECRET_KEY_BASE_DUMMY=1 ./bin/rails assets:precompile
 ##########################################################################################
 FROM base AS release
 
+# Set the working directory so when we attach a shell we're in the project's root directory
 WORKDIR /rails
 
 # Copy the entrypoint script
+# See - https://www.docker.com/blog/docker-best-practices-choosing-between-run-cmd-and-entrypoint/
 COPY .docker/entrypoints/rails.sh /usr/bin/
 RUN chmod +x /usr/bin/rails.sh
 
@@ -121,9 +131,7 @@ RUN apt-get update -qq && \
         postgresql-client=15+248 \
         python-is-python3=3.11.2-1+deb12u1 \
         python3-venv=3.11.2-1+b1 \
-        unzip=6.0-28 \
-        wkhtmltopdf=0.12.6-2+b1 \
-      && \
+        unzip=6.0-28 && \
     rm -rf /var/lib/apt/lists /var/cache/apt/archives && \
     curl "https://s3.amazonaws.com/aws-cli/awscli-bundle.zip" -o "awscli-bundle.zip" && \
     unzip awscli-bundle.zip && \
@@ -142,28 +150,34 @@ COPY bin/db-migrate /usr/bin/
 COPY --from=release-build /usr/local/bundle /usr/local/bundle
 COPY --from=release-build /rails /rails
 
-# Ensure all necessary directories exist, set permissions, and ownership
-RUN mkdir -p /rails/tmp /rails/tmp/pids /rails/log /rails/db
+# Ensure all necessary directories exist
+RUN mkdir -p /rails/tmp/pids /rails/log /rails/db
 
-# Create volume before changing user since docker runs as root by default.
-# Otherwise the /rails/tmp directory will not be writable by user "rails".
+# Create volume for /rails/tmp
 VOLUME /rails/tmp
 
 # Run and own only the runtime files as a non-root user for security
 RUN useradd rails --create-home --shell /bin/bash --home /rails
 
 # Set permissions and ownership for the runtime files
-RUN chmod -R 777 /rails/tmp /rails/log /rails/db && \
-    chown -R rails:rails /rails/tmp /rails/log /rails/db
+RUN chown -R rails:rails /rails/tmp /rails/log /rails/db
+
+# Add /rails/bin to the PATH
+ENV PATH="/rails/bin:${PATH}"
 
 # handle wkhtmltopdf_binary permissions
-RUN chown -R rails:rails /usr/local/bundle/ruby/3.3.0/gems/wkhtmltopdf-binary-0.12.6.7/bin
+# RUN chown -R rails:rails /usr/local/bundle/ruby/3.3.0/gems/wkhtmltopdf-binary-0.12.6.7/bin
 
-# if ENV DOCKERIZED is true
-RUN curl -fsSL https://deb.nodesource.com/setup_20.x | bash - \
-    && apt-get update \
-    && apt-get install -y nodejs \
-    && npm install -g yarn
+# Check if PRODUCTION_LOCAL is set to true
+RUN if [ "$PRODUCTION_LOCAL" = "true" ]; then \
+      echo "PRODUCTION_LOCAL is true, installing Node.js and Yarn..." && \
+      curl -fsSL https://deb.nodesource.com/setup_20.x | bash - && \
+      apt-get update && \
+      apt-get install -y nodejs && \
+      npm install -g yarn; \
+    else \
+      echo "PRODUCTION_LOCAL is not true, skipping Node.js and Yarn installation."; \
+    fi
 
 # Clean up
 RUN apt-get clean && rm -rf /var/lib/apt/lists/*
@@ -173,4 +187,4 @@ USER rails:rails
 
 # Invoke the entrypoint script, passing it the rails server command
 ENTRYPOINT ["rails.sh"]
-CMD ["bin/rails", "server", "--pid=/rails/tmp/pids/server.pid", "-b", "0.0.0.0"]
+CMD ["bin/rails", "server", "-b", "0.0.0.0"]

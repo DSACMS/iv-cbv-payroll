@@ -1,0 +1,13 @@
+default: &default
+  adapter: postgresql
+  encoding: unicode
+  pool: <%= ENV.fetch("RAILS_MAX_THREADS") { 5 } %>
+production:
+  <<: *default
+  database: <%= ENV.fetch("DB_NAME") { nil } %>
+  pool: <%= ENV.fetch("RAILS_MAX_THREADS") { 5 } %>
+  username: <%= ENV.fetch("DB_USERNAME") { nil } %>
+  password: <%= ENV.fetch("DB_PASSWORD") { nil } %>
+  port: <%= ENV.fetch("DB_PORT") { 5432 } %>
+  host: <%= ENV.fetch("DB_HOST") { "postgres-db" } %>
+  # aws_rds_iam_auth_token_generator: default

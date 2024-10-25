@@ -1,6 +1,7 @@
 services:
   postgres:
     image: postgres:14-alpine
+    hostname: postgres-db
     command: postgres -c "log_lock_waits=on" -N 1000 -c "fsync=off"
     environment:
       POSTGRES_PASSWORD: secret123
@@ -32,12 +33,11 @@ services:
       - RAILS_MASTER_KEY=d2c80bf25bbf905cee94193b29ada6ac
       - RAILS_LOG_TO_STDOUT=true
       - DOCKERIZED=true
+      - PRODUCTION_LOCAL=true
       - DB_HOST=postgres
-      - DB_NAME=app
       - DB_USERNAME=app
-      - DB_USER=app
       - DB_PASSWORD=secret123
-      - DB_PASS=secret123
+      - DB_NAME=app
       - REDIS_URL=redis://redis:6379/1
       - RAILS_BINDING=0.0.0.0
       - RAILS_ENV=production

@@ -1,6 +1,10 @@
 require "active_support/core_ext/integer/time"
 
 Rails.application.configure do
+  # allow action mailer previews in production
+  config.action_mailer.show_previews = true
+  config.action_mailer.preview_path ||= defined?(Rails.root) ? "#{Rails.root}/spec/mailers/previews" : nil
+  
   # Settings specified here will take precedence over those in config/application.rb.
 
   # Code is not reloaded between requests.
@@ -32,10 +36,11 @@ Rails.application.configure do
   # config.assets.css_compressor = :sass
 
   # Do not fallback to assets pipeline if a precompiled asset is missed.
-  config.assets.compile = false
+  config.assets.compile = true
 
   # Configure mailers to pull assets from the deployed environment by default.
-  config.action_mailer.asset_host = "https://#{ENV["DOMAIN_NAME"]}"
+  # We're using "http" here for runnin production locally.
+  config.action_mailer.asset_host = "http://#{ENV["DOMAIN_NAME"]}"
 
   routes.default_url_options[:host] = ENV["DOMAIN_NAME"]
   config.hosts << ENV["DOMAIN_NAME"]
@@ -53,7 +58,8 @@ Rails.application.configure do
   # config.action_cable.allowed_request_origins = [ "http://example.com", /http:\/\/example.*/ ]
 
   # Force all access to the app over SSL, use Strict-Transport-Security, and use secure cookies.
-  config.force_ssl = true
+  # We're using "http" here for running production locally.
+  config.force_ssl = false
   config.ssl_options = {
     redirect: {
       exclude: ->(request) { %r{^/health}.match?(request.path) }
@@ -62,7 +68,7 @@ Rails.application.configure do
 
   # Include generic and useful information about system operation, but avoid logging too much
   # information to avoid inadvertent exposure of personally identifiable information (PII).
-  config.log_level = :info
+  config.log_level = :debug
 
   # Prepend all log lines with the following tags.
   config.log_tags = [ :request_id ]
