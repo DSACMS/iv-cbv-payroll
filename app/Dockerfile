@@ -146,13 +146,6 @@ RUN useradd rails --create-home --shell /bin/bash --home /rails
 # Set permissions and ownership for the runtime files
 RUN chown -R rails:rails /rails/tmp /rails/log /rails/db /usr/local/bundle
 
-# Add /rails/bin to the PATH
-ENV PATH="/rails/bin:${PATH}"
-
-
-# Clean up
-RUN apt-get clean && rm -rf /var/lib/apt/lists/*
-
 # Switch to non-root user
 USER rails:rails
 
