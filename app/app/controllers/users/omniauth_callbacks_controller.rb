@@ -1,12 +1,5 @@
 class Users::OmniauthCallbacksController < Devise::OmniauthCallbacksController
-  # before_action :configure_aws_region
   after_action :track_event
-
-
-  # def configure_aws_region
-  #   Aws.config.update(region: ENV.fetch('AWS_REGION', 'us-east-1')) unless Aws.config[:region]
-  #   Aws.config.update(credentials: Aws::Credentials.new(ENV.fetch('AWS_ACCESS_KEY_ID', ''), ENV.fetch('AWS_SECRET_ACCESS_KEY', '')))
-  # end
 
   def nyc_dss
     response_params = request.env["omniauth.auth"]["info"]
@@ -40,15 +33,15 @@ class Users::OmniauthCallbacksController < Devise::OmniauthCallbacksController
   private
 
   def login_with_oauth(email, site_id)
-   # TODO: Check that the email is permissible according to its domain
-   @user = User.find_for_authentication(email: email, site_id: site_id)
-   @user ||= User.create(email: email, site_id: site_id)
+    # TODO: Check that the email is permissible according to its domain
+    @user = User.find_for_authentication(email: email, site_id: site_id)
+    @user ||= User.create(email: email, site_id: site_id)
 
-   if @user&.persisted?
-     flash[:slim_alert] = { message: t("users.omniauth_callbacks.authentication_successful"), type: "info" }
-     sign_in_and_redirect @user, event: :authentication
-   else
-     flash[:alert] = "Something went wrong."
+    if @user&.persisted?
+      flash[:slim_alert] = { message: t("users.omniauth_callbacks.authentication_successful"), type: "info" }
+      sign_in_and_redirect @user, event: :authentication
+    else
+      flash[:alert] = "Something went wrong."
     end
   end
 

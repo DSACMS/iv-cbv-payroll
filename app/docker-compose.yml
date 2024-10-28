@@ -32,7 +32,6 @@ services:
         condition: service_healthy
     env_file: .env.development.local
     environment:
-      - RAILS_MASTER_KEY=d2c80bf25bbf905cee94193b29ada6ac
       - RAILS_LOG_TO_STDOUT=true
       - DOCKERIZED=true
       - DB_HOST=postgres-db
