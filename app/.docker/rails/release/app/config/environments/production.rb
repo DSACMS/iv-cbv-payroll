@@ -62,7 +62,7 @@ Rails.application.configure do
   config.force_ssl = false
   config.ssl_options = {
     redirect: {
-      exclude: ->(request) { %r{^/health}.match?(request.path) }
+      exclude: ->(request) { %r{^/health|^/rails/mailers}.match?(request.path) }
     }
   }
 

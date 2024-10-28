@@ -21,7 +21,6 @@ ENV RAILS_ENV="production" \
 # Start the server by default, this can be overwritten at runtime
 EXPOSE 3000
 
-
 ##########################################################################################
 # BUILD: Throw-away build stage
 ##########################################################################################
@@ -50,33 +49,16 @@ RUN if [ "$(uname -m)" = "arm64" ]; then \
 RUN PUPPETEER_SKIP_CHROMIUM_DOWNLOAD=$PUPPETEER_SKIP_CHROMIUM_DOWNLOAD npm install
 
 ##########################################################################################
-# DEV: Used for development and test
-##########################################################################################
-FROM build AS dev
-
-ENV RAILS_ENV="development"
-
-# Set the tmp dir to the writeable tmp volume
-ENV TMPDIR="/rails/tmp"
-
-# Install packages needed for development
-RUN apt-get update -qq && \
-    apt-get install --no-install-recommends -y postgresql-client=15+248 \
-        graphviz=2.42.2-7+b3 && \
-    rm -rf /var/lib/apt/lists /var/cache/apt/archives
-
-RUN gem install bundler --no-document -v ${BUNDLER_VERSION} && \
-    bundle config set --local without production && \
-    bundle install && \
-    rm -rf ~/.bundle/ "${BUNDLE_PATH}"/ruby/*/cache "${BUNDLE_PATH}"/ruby/*/bundler/gems/*/.git
-
-CMD ["./bin/dev"]
-
-##########################################################################################
 # RELEASE-BUILD: Throw-away build stage for RELEASE
 ##########################################################################################
 FROM build AS release-build
 
+WORKDIR /rails
+
+# Override the Gemfile and configuration files needed for production to run locally
+COPY .docker/rails/release/* /rails
+
+# Install rails gems
 RUN bundle config set --local without development test && \
     bundle install && \
     rm -rf ~/.bundle/ "${BUNDLE_PATH}"/ruby/*/cache "${BUNDLE_PATH}"/ruby/*/bundler/gems/*/.git
@@ -86,6 +68,7 @@ RUN bundle exec bootsnap precompile --gemfile app/ lib/
 
 # Precompiling assets for production without requiring secret RAILS_MASTER_KEY
 RUN SECRET_KEY_BASE_DUMMY=1 ./bin/rails assets:precompile
+
 
 ##########################################################################################
 # RELEASE: Used for production
@@ -148,7 +131,6 @@ RUN chown -R rails:rails /rails/tmp /rails/log /rails/db /usr/local/bundle
 
 # Add /rails/bin to the PATH
 ENV PATH="/rails/bin:${PATH}"
-
 
 # Clean up
 RUN apt-get clean && rm -rf /var/lib/apt/lists/*
