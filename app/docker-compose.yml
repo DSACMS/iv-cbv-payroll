@@ -17,7 +17,7 @@ services:
       - .docker/db/init-postgres.sql:/docker-entrypoint-initdb.d/init-postgres.sql
 
   # Rails app
-  # Configured for "production" RAILS_ENV
+  # Configured for "development" RAILS_ENV
   app_rails:
     tty: true
     build:
@@ -47,6 +47,10 @@ services:
       - 3000:3000
       - 1234:1234
     volumes:
+      - ./public:/rails/public
+      # Use named volumes for directories that the container should use the guest
+      # machine's dir instead of the host machine's dir, which may be divergent.
+      # This is especially true for any dependency or temp directories.
       - app_rails_nodemodules:/rails/node_modules
       - app_rails_tmp:/rails/tmp
       - app_rails_storage:/rails/storage   
