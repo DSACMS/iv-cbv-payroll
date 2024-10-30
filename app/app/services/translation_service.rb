@@ -28,7 +28,6 @@ class TranslationService
 
     log_results
     write_yaml(translations, output_yaml_path)
-    generate_metadata_file
 
     Rails.logger.info "#{@locale} translations have been generated and saved to #{output_yaml_path}"
     translations
@@ -37,9 +36,7 @@ class TranslationService
   private
 
   def process_csv(csv_content, translations)
-    CSV.parse(csv_content, headers: true, header_converters: :symbol).each_with_index do |row, index|
-      next if index.zero?
-
+    CSV.parse(csv_content, headers: true, header_converters: :symbol).each do |row|
       if skip_row?(row)
         @results[:skipped_rows] << row
         next
@@ -88,7 +85,6 @@ class TranslationService
   def skip_row?(row)
     return true if row[:key].to_s.strip.empty?
     return true if row[:es].to_s.strip.empty?
-    return true if row[:added_to_confluence]&.strip == "No need for translation"
 
     false
   end
@@ -96,11 +92,26 @@ class TranslationService
   def log_results
     total = @results.values.sum { |v| v.is_a?(Array) ? v.count : v }
     Rails.logger.info "Total rows processed: #{total}"
-    Rails.logger.info "Valid translations found: #{@results[:successful_imports]}"
+    Rails.logger.info "Successfully Imported: #{@results[:successful_imports]}"
     Rails.logger.info "Empty rows skipped: #{@results[:empty_row_count]}"
     Rails.logger.info "Rows skipped by conditions: #{@results[:skipped_rows].count}"
     Rails.logger.info "Failed imports: #{@results[:failed_imports].count}"
     Rails.logger.info "Collisions detected: #{@results[:collisions].count}"
+
+    if @results[:failed_imports].any?
+      Rails.logger.info "\nFailed Imports Details:"
+      @results[:failed_imports].each do |failed|
+        Rails.logger.info "  - Key: #{failed[:key]}, Reason: #{failed[:reason]}"
+      end
+    end
+
+    if @results[:collisions].any?
+      Rails.logger.info "\nCollisions Details:"
+      collision_messages = @results[:collisions].map do |collision|
+        "Key: #{collision[:key]}, Old Value: #{collision[:old_value]}, New Value: #{collision[:new_value]}"
+      end
+      Rails.logger.info collision_messages.join("\n")
+    end
   end
 
   def set_nested_hash_value(hash, keys, value)
@@ -133,37 +144,5 @@ class TranslationService
   def load_current_locale_translations
     file_path = Rails.root.join("config", "locales", "#{@locale}.yml")
     File.exist?(file_path) ? YAML.load_file(file_path) : { @locale => {} }
-  end
-
-  def generate_metadata_file
-    timestamp = Time.now.strftime("%Y%m%d%H%M%S")
-    metadata_dir = Rails.root.join("locale_imports")
-    FileUtils.mkdir_p(metadata_dir)
-    metadata_file = metadata_dir.join("#{@locale}_import_#{timestamp}.txt")
-
-    File.open(metadata_file, "w") do |file|
-      file.puts "Import Date: #{Time.now}"
-      file.puts "Overwrite Mode: #{@overwrite}"
-      file.puts "Total Entries: #{@results.values.sum { |v| v.is_a?(Array) ? v.count : v }}"
-      file.puts "Successfully Imported: #{@results[:successful_imports]}"
-      file.puts "Empty Rows: #{@results[:empty_row_count]}"
-      file.puts "Skipped Rows: #{@results[:skipped_rows].count}"
-      file.puts "Failed Imports: #{@results[:failed_imports].count}"
-      file.puts "Collisions: #{@results[:collisions].count}"
-      file.puts "\nFailed Imports Details:"
-      @results[:failed_imports].each do |failed|
-        file.puts "  - Key: #{failed[:key]}, Reason: #{failed[:reason]}"
-      end
-      file.puts "\nCollisions Details:"
-      @results[:collisions].each do |collision|
-        file.puts "  - Key: #{collision[:key]}"
-        file.puts "    Old Value: #{collision[:old_value]}"
-        file.puts "    New Value: #{collision[:new_value]}"
-      end
-    end
-
-    Rails.logger.info "Metadata file generated: #{metadata_file}"
-    file_contents = File.read(metadata_file)
-    Rails.logger.info file_contents
   end
 end

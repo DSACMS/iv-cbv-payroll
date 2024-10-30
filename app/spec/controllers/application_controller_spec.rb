@@ -1,15 +1,9 @@
 require 'rails_helper'
 
-class DummyController < ApplicationController
-  def test_action
-    switch_locale do
-      render plain: I18n.locale.to_s
-    end
-  end
-end
-
 RSpec.describe ApplicationController, type: :controller do
-  controller(DummyController) do
+  controller do
+    skip_around_action :switch_locale
+
     def test_action
       switch_locale do
         render plain: I18n.locale.to_s
@@ -21,7 +15,7 @@ RSpec.describe ApplicationController, type: :controller do
     before do
       I18n.default_locale = :en
       routes.draw do
-        get 'test_action', to: 'dummy#test_action'
+        get 'test_action', to: 'anonymous#test_action'
       end
     end
 

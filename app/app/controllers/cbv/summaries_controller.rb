@@ -25,7 +25,8 @@ class Cbv::SummariesController < Cbv::BaseController
           timestamp: Time.now.to_i,
           site_id: @cbv_flow.site_id,
           cbv_flow_id: @cbv_flow.id,
-          invitation_id: @cbv_flow.cbv_flow_invitation_id
+          invitation_id: @cbv_flow.cbv_flow_invitation_id,
+          locale: I18n.locale
         })
 
         render pdf: "#{@cbv_flow.id}",
@@ -40,6 +41,8 @@ class Cbv::SummariesController < Cbv::BaseController
           }
       end
     end
+
+    track_accessed_income_summary_event(@cbv_flow, @payments)
   end
 
   def update
@@ -203,6 +206,23 @@ class Cbv::SummariesController < Cbv::BaseController
     })
   rescue => ex
     Rails.logger.error "Failed to track NewRelic event: #{ex.message}"
+  end
+
+  def track_accessed_income_summary_event(cbv_flow, payments)
+    NewRelicEventTracker.track("ApplicantAccessedIncomeSummary", {
+      timestamp: Time.now.to_i,
+      site_id: cbv_flow.site_id,
+      cbv_flow_id: cbv_flow.id,
+      invitation_id: cbv_flow.cbv_flow_invitation_id,
+      account_count: payments.map { |p| p[:account_id] }.uniq.count,
+      paystub_count: payments.count,
+      account_count_with_additional_information:
+        cbv_flow.additional_information.values.count { |info| info["comment"].present? },
+      flow_started_seconds_ago: (Time.now - cbv_flow.created_at).to_i,
+      language: I18n.locale
+    })
+  rescue => ex
+    Rails.logger.error "Unable to track NewRelic event (ApplicantAccessedIncomeSummary): #{ex}"
   end
 
   def generate_confirmation_code(prefix = nil)

@@ -5,14 +5,18 @@ RSpec.describe TranslationService do
   let(:tmp_dir) { Rails.root.join('tmp', 'spec') }
   let(:csv_path) { tmp_dir.join('translations.csv') }
   let(:output_path) { tmp_dir.join('test_translations.yml') }
-  let(:metadata_dir) { tmp_dir.join('locale_imports') }
   let(:existing_translations_path) { tmp_dir.join('en.yml') }
   let(:current_locale_translations_path) { tmp_dir.join('es.yml') }
   let(:csv_contents) { @csv_contents }
+  let(:logger_double) { instance_spy('Logger') }
+  let(:log_messages) { [] }
 
   before do
     setup_test_environment
     mock_translation_service_methods
+    allow(Rails).to receive(:logger).and_return(logger_double)
+    allow(logger_double).to receive(:info) { |message| log_messages << message }
+    allow(logger_double).to receive(:warn) { |message| log_messages << message }
   end
 
   after do
@@ -23,8 +27,9 @@ RSpec.describe TranslationService do
     context 'with default options' do
       let(:service) { TranslationService.new }
 
-      it 'generates a YAML file with Spanish translations' do
+      it 'generates a YAML file with Spanish translations and logs combined collision details' do
         result = service.generate(csv_path.to_s, output_path.to_s)
+        log_messages.each { |msg| puts msg }
 
         expect(File.exist?(output_path)).to be true
         yaml_content = YAML.load_file(output_path)
@@ -35,32 +40,33 @@ RSpec.describe TranslationService do
         expect(yaml_content['es']['test']['key2']).to eq('Old Mundo') # Not overwritten
         expect(yaml_content['es']['test']).not_to have_key('key3')
         expect(yaml_content['es']['test']).not_to have_key('key4')
-      end
 
-      it 'generates a metadata file' do
-        service.generate(csv_path.to_s, output_path.to_s)
-
-        metadata_files = Dir.glob(File.join(metadata_dir, 'es_import_*.txt'))
-        expect(metadata_files.size).to eq(1)
-
-        metadata_content = File.read(metadata_files.first)
-        expect(metadata_content).to include('Successfully Imported: 0')
-        expect(metadata_content).to include('Empty Rows: 0')
-        expect(metadata_content).to include('Skipped Rows: 1')
-        expect(metadata_content).to include('Collisions: 1')
-        expect(metadata_content).to include('Failed Imports: 0')
-        expect(metadata_content).to include("Total Entries: 2")
+        # Verify logging
+        expect(logger_double).to have_received(:info).with(/Attempting to read CSV file:/)
+        expect(logger_double).to have_received(:info).with(/Processing: Key:/).at_least(:once)
+        expect(logger_double).to have_received(:info).with(/Total rows processed:/)
+        expect(logger_double).to have_received(:info).with(/Successfully Imported:/)
+        expect(logger_double).to have_received(:info).with(/Empty rows skipped:/)
+        expect(logger_double).to have_received(:info).with(/Rows skipped by conditions:/)
+        expect(logger_double).to have_received(:info).with(/Failed imports:/)
+        expect(logger_double).to have_received(:info).with(/Collisions detected:/)
+        expect(logger_double).to have_received(:info).with(/\nCollisions Details:/)
+        expect(logger_double).to have_received(:info).with(/Key: .*?, Old Value: .*?, New Value: .*?/).at_least(:once)
+        expect(logger_double).to have_received(:info).with(/es translations have been generated and saved to/)
       end
     end
 
     context 'with overwrite option' do
       let(:service) { TranslationService.new('es', true) }
 
-      it 'overwrites existing translations' do
-        result = service.generate(csv_path.to_s, output_path.to_s)
+      it 'overwrites existing translations and logs the overwrite' do
+        service.generate(csv_path.to_s, output_path.to_s)
 
         yaml_content = YAML.load_file(output_path)
         expect(yaml_content['es']['test']['key2']).to eq('Mundo') # Overwritten
+
+        expect(logger_double).to have_received(:warn).with(/Overwriting existing translation for key/)
+        expect(logger_double).not_to have_received(:warn).with(/Collision detected for key/)
       end
     end
   end
@@ -69,7 +75,6 @@ RSpec.describe TranslationService do
 
   def setup_test_environment
     FileUtils.mkdir_p(tmp_dir)
-    FileUtils.mkdir_p(metadata_dir)
 
     @csv_contents = create_mock_csv_file
     create_mock_existing_translations
@@ -91,8 +96,9 @@ RSpec.describe TranslationService do
     contents = [
       %w[key en es],
       [ 'en.test.key1', 'Hello', 'Hola' ],
-      [ 'en.test.key2', 'World', 'Mundo' ],
-      [ 'en.test.key3', 'Skip', '' ]
+      [ 'en.test.key2', 'World', 'Mundo'  ],
+      [ 'en.test.key3', 'Skip', '' ],
+      [ 'en.test.key5', 'Old Value', 'Valor Antiguo' ]
     ]
 
     CSV.open(csv_path, 'w') do |csv|
@@ -109,7 +115,8 @@ RSpec.describe TranslationService do
           'key1' => 'Hello',
           'key2' => 'World',
           'key3' => 'Skip',
-          'key4' => 'No Translation'
+          'key4' => 'No Translation',
+          'key5' => 'Old Value'
         }
       }
     }.to_yaml)
@@ -120,7 +127,8 @@ RSpec.describe TranslationService do
       'es' => {
         'test' => {
           'key1' => 'Hola',
-          'key2' => 'Old Mundo'
+          'key2' => 'Old Mundo',
+          'key5' => 'Valor Antiguo'
         }
       }
     }.to_yaml)

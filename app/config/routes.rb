@@ -27,7 +27,7 @@ Rails.application.routes.draw do
     scope "/cbv", as: :cbv_flow, module: :cbv do
       resource :entry, only: %i[show]
       resource :employer_search, only: %i[show]
-      resource :synchronizations, only: %i[show]
+      resource :synchronizations, only: %i[show update]
       resource :summary, only: %i[show update], format: %i[html pdf]
       resource :missing_results, only: %i[show]
       resource :success, only: %i[show]
