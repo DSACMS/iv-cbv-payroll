@@ -88,8 +88,8 @@ class Cbv::PaymentDetailsController < Cbv::BaseController
 
   def pay_frequency
     return I18n.t("cbv.payment_details.show.unknown") unless has_income_data?
-    frequency = @income_metadata["pay_frequency"]
-    translate_payment_frequency(frequency)&.humanize
+
+    @income_metadata["pay_frequency"]
   end
 
   def compensation_unit
@@ -110,36 +110,6 @@ class Cbv::PaymentDetailsController < Cbv::BaseController
     @payments
       .map { |payment| payment[:gross_pay_amount] }
       .reduce(:+)
-  end
-
-  def translate_payment_frequency(frequency)
-    # if the key isn't in spanish, just return the original value
-    return frequency unless I18n.locale == :es
-
-    # Normalize the key
-    key = frequency.to_s.downcase.gsub(/[-\s]/, "")
-
-    frequency_map = {
-      "annually" => :annually,
-      "biweekly" => :bi_weekly,
-      "daily" => :daily,
-      "hourly" => :hourly,
-      "monthly" => :monthly,
-      "permile" => :per_mile,
-      "semimonthly" => :semi_monthly,
-      "semiweekly" => :semi_weekly,
-      "variable" => :variable,
-      "weekly" => :weekly
-    }
-
-    yaml_key = frequency_map[key] || frequency
-
-    if I18n.exists?("payment_frequencies.#{key}")
-      I18n.t("payment_frequencies.#{yaml_key}")
-    else
-      Rails.logger.warn "Unknown pay_frequency from Pinwheel: #{frequency}"
-      I18n.t("cbv.payment_details.show.unknown")
-    end
   end
 
   def sanitize_comment(comment)
