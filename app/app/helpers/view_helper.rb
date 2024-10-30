@@ -16,23 +16,17 @@ module ViewHelper
     begin
       parsed_time = timestamp_string.is_a?(String) ? Time.parse(timestamp_string) : timestamp_string
       I18n.l(parsed_time.to_date, format: format)
-    rescue => e
+    rescue
       timestamp_string
     end
   end
 
-  # def format_date(timestamp_string, format = :long)
-  #   return unless timestamp_string
-  #   parsed_time = timestamp_string.is_a?(String) ? Time.parse(timestamp_string) : timestamp_string
-  #   I18n.l(parsed_time.to_date, format: format)
-  # end
-
   def format_date_range(start_date, end_date)
     return unless start_date && end_date
-    
+
     start_formatted = format_date(start_date, :long)
     end_formatted = format_date(end_date, :long)
-    
+
     if I18n.locale == :es
       "#{start_formatted} al #{end_formatted}"
     else
