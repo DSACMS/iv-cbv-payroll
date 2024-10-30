@@ -5,9 +5,9 @@ RSpec.describe ApiResponseLocalizer do
     I18n.backend.store_translations(:es, {
       api_responses: {
         test_service: {
-          'Hello' => 'Hola',
-          'World' => 'Mundo',
-          'Test'  => 'Prueba'
+          'hello' => 'Hola',
+          'world' => 'Mundo',
+          'test'  => 'Prueba'
         }
       }
     })
@@ -38,6 +38,7 @@ RSpec.describe ApiResponseLocalizer do
 
   context 'when locale is Spanish' do
     before { I18n.locale = :es }
+    after { I18n.locale = I18n.default_locale }
 
     it 'localizes the response' do
       response = service.some_method
@@ -50,6 +51,7 @@ RSpec.describe ApiResponseLocalizer do
 
   context 'when locale is English' do
     before { I18n.locale = :en }
+    after { I18n.locale = I18n.default_locale }
 
     it 'returns the original response' do
       response = service.some_method

@@ -224,15 +224,15 @@ es:
           client:
             address: Dirección del empleador
             agency_id_number: ID de la agencia del cliente
-            client_information_header: Información del cliente
+            client_information: Información del cliente
             client_report_information: Información sobre el cliente y el informe
-            report_details: Detalles del informe
             date_created: Fecha en que se creó el informe de ingresos
             date_range: Rango de fechas para el informe de ingresos
             description: Hemos recopilado información de sus ingresos con su consentimiento y la hemos enviado a su agencia de SNAP. Cualquier ingreso adicional que no pudo añadir a este informe debe compartirse por separado con su agencia de SNAP.
-            employment_payment_details: Detalles de empleo y pago
             employment_information: Información sobre el empleo
+            employment_payment_details: Detalles de empleo y pago
             header: Informe de verificación de ingresos
+            report_details: Detalles del informe
           shared:
             confirmation_code: Código de confirmación
         phone_number: Teléfono del empleador

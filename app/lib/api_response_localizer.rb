@@ -30,7 +30,7 @@ module ApiResponseLocalizer
       response.map { |item| localize_response(item) }
     when String
       # Convert string to snake_case and downcase
-      lookup_key = response.downcase.gsub('-', '_')
+      lookup_key = response.downcase.gsub("-", "_")
       I18n.t(lookup_key, scope: i18n_scope, default: response)
     else
       response
