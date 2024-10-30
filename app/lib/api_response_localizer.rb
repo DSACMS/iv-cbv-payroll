@@ -11,7 +11,8 @@ module ApiResponseLocalizer
         # Define the new method with localization
         define_method(method_name) do |*args, **kwargs|
           response = send("original_#{method_name}", *args, **kwargs)
-          localize_response(response)
+          localized_response = localize_response(response)
+          localized_response
         end
       end
     end
@@ -28,7 +29,8 @@ module ApiResponseLocalizer
     when Array
       response.map { |item| localize_response(item) }
     when String
-      I18n.t(response, scope: i18n_scope, default: response)
+      # Downcase the string before looking up translation
+      I18n.t(response.downcase, scope: i18n_scope, default: response)
     else
       response
     end
@@ -36,6 +38,6 @@ module ApiResponseLocalizer
 
   # set the I18n scope based on the class name
   def i18n_scope
-    "api_responses.#{self.class.name.underscore}"
+    "api_responses.#{self.class.name.underscore.remove('_service')}"
   end
 end

@@ -2,5 +2,5 @@
 es:
   api_responses:
     pinwheel:
-      - Hello: Hola
-      - World: Mundo
+      employed: empleado
+      hourly: por hora

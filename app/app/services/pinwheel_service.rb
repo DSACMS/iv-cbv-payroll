@@ -28,8 +28,6 @@ class PinwheelService
   WEBHOOKS_ENDPOINT = "/v1/webhooks"
   END_USERS = "/v1/end_users"
 
-
-
   def initialize(environment, api_key = nil)
     @api_key = api_key || ENVIRONMENTS.fetch(environment.to_sym)[:api_key]
     @environment = ENVIRONMENTS.fetch(environment.to_sym) { |env| raise KeyError.new("PinwheelService unknown environment: #{env}") }
