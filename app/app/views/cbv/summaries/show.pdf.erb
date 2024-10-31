@@ -64,7 +64,7 @@
   <% end %>
   <%= table.with_row(site_translation(".application_or_recertification_date"), format_date(@cbv_flow.cbv_flow_invitation.snap_application_date)) %>
   <%= table.with_row(t(".pdf.client.date_created"), format_date(@cbv_flow.consented_to_authorized_use_at)) %>
-  <%= table.with_row(t(".pdf.client.date_range"), format_date_range(@cbv_flow.cbv_flow_invitation.paystubs_query_begins_at, @cbv_flow.cbv_flow_invitation.snap_application_date)) %>
+  <%= table.with_row(t(".pdf.client.date_range"), t("shared.date_range", start_date: @cbv_flow.cbv_flow_invitation.paystubs_query_begins_at, end_date: @cbv_flow.cbv_flow_invitation.snap_application_date)) %>
   <% if is_caseworker %>
     <%= table.with_row(t(".pdf.caseworker.agreement_consent_timestamp"), @cbv_flow.consented_to_authorized_use_at) %>
     <% if current_site?(:ma) %>

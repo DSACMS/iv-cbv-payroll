@@ -317,6 +317,7 @@ es:
     banner:
       lock: Candado
       locked_padlock: Un candado cerrado
+    date_range: "%{start_date} al %{end_date}"
     error_unauthorized: La URL a la que estás accediendo está prohibida para el usuario actual. Verifique que está conectado como el usuario correcto e intente acceder de nuevo a la URL.
     footer:
       feedback: Notifique comentarios o errores

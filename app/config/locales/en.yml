@@ -345,12 +345,15 @@ en:
           client:
             address: Employer address
             agency_id_number: Client's Agency ID
+            client_information: Client Information
             client_report_information: Client and Report Information
             date_created: Date the income report was created
             date_range: Date range for the income report
             description: We have collected your income information with your consent and sent it to your SNAP agency. Any additional income that you weren't able to add to this report should be shared separately with your SNAP agency.
+            employment_information: Employment Information
             employment_payment_details: Employment and Payment details
             header: Income Verification Report
+            report_details: Report Details
           shared:
             confirmation_code: Confirmation code
         phone_number: Employer phone
@@ -393,6 +396,7 @@ en:
     banner:
       lock: Lock
       locked_padlock: A locked padlock
+    date_range: "%{start_date} to %{end_date}"
     error_unauthorized: The URL you're accessing is forbidden for the current user. Please verify you are logged in as the correct user and try accessing the URL again.
     footer:
       feedback: Report feedback or bugs

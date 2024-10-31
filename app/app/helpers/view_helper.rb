@@ -21,19 +21,6 @@ module ViewHelper
     end
   end
 
-  def format_date_range(start_date, end_date)
-    return unless start_date && end_date
-
-    start_formatted = format_date(start_date, :long)
-    end_formatted = format_date(end_date, :long)
-
-    if I18n.locale == :es
-      "#{start_formatted} al #{end_formatted}"
-    else
-      "#{start_formatted} to #{end_formatted}"
-    end
-  end
-
   def format_view_datetime(timestamp_string)
     begin
       parsed_time = Time.parse(timestamp_string)
