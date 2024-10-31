@@ -46,13 +46,13 @@
     <input type="hidden" name="user[account_id]" data-cbv-employer-search-target="userAccountId" >
   <% end %>
 
-  <h2>Or choose from popular payroll providers or apps</h2>
+  <h2><%= t(".popular_providers") %></h2>
   <%= turbo_frame_tag "popular" do %>
     <div class="grid-row maxw-mobile-lg margin-left-0 padding-left-0 margin-top-4">
-      <%= link_to "Payroll providers", cbv_flow_employer_search_path(type: :payroll),
+      <%= link_to t(".payroll_providers"), cbv_flow_employer_search_path(type: :payroll),
         class: "grid-col usa-button margin-0 radius-right-0 #{@type != 'payroll' && 'usa-button--outline'}",
         data: { turbo_frame: "popular", turbo_action: "advance" } %>
-      <%= link_to "App-based employers", cbv_flow_employer_search_path(type: :employer),
+      <%= link_to t(".app_based_providers"), cbv_flow_employer_search_path(type: :employer),
         class: "grid-col usa-button margin-0 radius-left-0 #{@type != 'employer' && 'usa-button--outline'}",
         data: { turbo_frame: "popular", turbo_action: "advance" } %>
     </div>
@@ -65,9 +65,10 @@
             data-id="<%= provider[:id] %>"
             data-response-type="<%= provider[:response_type] %>"
             data-cbv-employer-search-target="employerButton"
+            type="button"
             class="width-full usa-button usa-button--outline box-shadow-gray"
           >
-            <figure class="margin-0">
+            <figure class="margin-0 pointer-events-none">
               <img
                 class="usa-icon--size-7 radius-pill width-6 height-6"
                 src="<%= provider[:logo_url] %>"

@@ -177,6 +177,7 @@ en:
         steps_intro: 'To verify your income, you''ll need to complete these four simple steps:'
     employer_searches:
       show:
+        app_based_providers: App-based employers
         can_not_find_employer: I can’t find my company or payroll provider
         employer_not_listed: Employer not listed?
         exit_button_text: Exit and go to %{agency_short_name}
@@ -185,6 +186,8 @@ en:
         no_results_steps2: Make sure you have spelled names correctly, then search again.
         no_results_steps_title: 'Try these steps first:'
         no_results_title: We couldn’t find your employer or payroll provider.
+        payroll_providers: Payroll providers
+        popular_providers: Or choose from popular payroll providers or apps
         results: Results
         review_button_text: Review my income report
         search: Search
