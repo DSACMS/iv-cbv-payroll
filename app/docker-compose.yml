@@ -1,7 +1,6 @@
 services:
   postgres:
     image: postgres:14-alpine
-    hostname: postgres-db
     command: postgres -c "log_lock_waits=on" -N 1000 -c "fsync=off"
     environment:
       POSTGRES_PASSWORD: secret123
@@ -22,38 +21,34 @@ services:
     tty: true
     build:
       context: .
-      dockerfile: .docker/rails/release/Dockerfile
-      target: release
-      no_cache: true
+      target: dev
     depends_on:
       postgres:
         condition: service_healthy
       redis:
         condition: service_healthy
-    env_file: .env.development.local
+    env_file: .env.local.bak
     environment:
-      - RAILS_LOG_TO_STDOUT=true
       - DOCKERIZED=true
-      - DB_HOST=postgres-db
+      - DB_HOST=postgres
+      - DB_NAME=app
       - DB_USERNAME=app
       - DB_PASSWORD=secret123
-      - DB_NAME=app
       - REDIS_URL=redis://redis:6379/1
       - RAILS_BINDING=0.0.0.0
-      - RAILS_ENV=production
-      - DOMAIN_NAME=localhost
-      - AWS_REGION=us-east-1
+      - RAILS_ENV=development
     ports:
       - 3000:3000
       - 1234:1234
     volumes:
-      - ./public:/rails/public
+      - ./:/rails
       # Use named volumes for directories that the container should use the guest
       # machine's dir instead of the host machine's dir, which may be divergent.
       # This is especially true for any dependency or temp directories.
       - app_rails_nodemodules:/rails/node_modules
       - app_rails_tmp:/rails/tmp
-      - app_rails_storage:/rails/storage   
+      - app_rails_storage:/rails/storage
+
   redis:
     image: redis:alpine
     ports:
