@@ -48,7 +48,7 @@
 
   <h2>Or choose from popular payroll providers or apps</h2>
   <%= turbo_frame_tag "popular" do %>
-    <div class="grid-container maxw-mobile-lg margin-left-0 padding-left-0">
+    <div class="grid-container maxw-mobile-lg margin-left-0 padding-left-0 margin-top-4">
       <div class="grid-row">
         <%= link_to "Payroll providers", cbv_flow_employer_search_path(type: :payroll),
           class: "grid-col usa-button margin-0 radius-right-0 #{@type != 'payroll' && 'usa-button--outline'}",
@@ -59,10 +59,16 @@
       </div>
     </div>
 
-    <div class="grid-container margin-left-0 padding-left-0">
+    <div class="grid-container margin-top-4 margin-left-0 padding-left-0">
       <div class="grid-row">
         <% (@type == "payroll" ? PinwheelService::TOP_PROVIDERS : PinwheelService::TOP_EMPLOYERS).each do |provider| %>
-          <button class="grid-col-2 usa-button usa-button--outline box-shadow-gray">
+          <button
+            data-action="click->cbv-employer-search#select"
+            data-id="<%= provider[:id] %>"
+            data-response-type="<%= provider[:response_type] %>"
+            data-cbv-employer-search-target="employerButton"
+            class="grid-col-2 usa-button usa-button--outline box-shadow-gray"
+          >
             <img
               class="usa-icon--size-7 radius-pill"
               src="<%= provider[:logo_url] %>"
