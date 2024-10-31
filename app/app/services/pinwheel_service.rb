@@ -28,13 +28,13 @@ class PinwheelService
 
   TOP_PROVIDERS = [
     {
-      id: "5becff90-1e35-450a-8995-13ac411e749b", 
+      id: "5becff90-1e35-450a-8995-13ac411e749b",
       name: "ADP",
       platform_type: "payroll",
       logo_url: "https://cdn.getpinwheel.com/assets/platforms/logos/search/adpPortal.svg"
     },
     {
-      id: "5965580e-380f-4b86-8a8a-7278c77f73cb", 
+      id: "5965580e-380f-4b86-8a8a-7278c77f73cb",
       name: "Workday",
       platform_type: "payroll",
       logo_url: "https://cdn.getpinwheel.com/assets/platforms/logos/search/cfmpw.png"
@@ -42,13 +42,13 @@ class PinwheelService
   ]
   TOP_EMPLOYERS = [
     {
-      id: "d66e65b2-536d-4b2d-b73c-f6addd66c0f4", 
+      id: "d66e65b2-536d-4b2d-b73c-f6addd66c0f4",
       name: "Amazon",
       platform_type: "employer",
       logo_url: "https://cdn.getpinwheel.com/assets/employers/logos/Amazon.svg"
     },
     {
-      id: "737d833a-1b68-44f7-92ae-3808374cb459", 
+      id: "737d833a-1b68-44f7-92ae-3808374cb459",
       name: "DoorDash",
       platform_type: "employer",
       logo_url: "https://cdn.getpinwheel.com/assets/employers/logos/DoorDash%20%28Dasher%29.svg"
