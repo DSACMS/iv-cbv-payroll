@@ -80,7 +80,6 @@ group :development, :test do
   gem "selenium-webdriver"
   gem "standard", "~> 1.7"
   gem "timecop"
-  gem "wkhtmltopdf-binary"
 end
 
 group :development do
@@ -113,3 +112,4 @@ gem "devise", "~> 4.9"
 gem "omniauth-rails_csrf_protection", "~> 1.0"
 gem "omniauth-azure-activedirectory-v2"
 gem "view_component"
+gem "wkhtmltopdf-binary"
