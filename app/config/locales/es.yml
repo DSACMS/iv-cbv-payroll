@@ -96,10 +96,10 @@ es:
         step1: Busque e inicie sesión en su empleador o proveedor de nómina en línea.
         step1_description: Use las credenciales de inicio de sesión que tiene para ver su recibo de pago en línea. No compartiremos ni guardamos su información de inicio de sesión. Si trabaja para una aplicación, como Uber, este sería el mismo inicio de sesión cuando inicie sesión en la aplicación Uber.
         step2: Revise su información de pago.
-        step2_description: Podrá hacer una vista previa y aprobar todo lo que se comparta con DTA.
+        step2_description: Podrá hacer una vista previa y aprobar todo lo que se comparta con %{agency_acronym}.
         step3: Envíe su información de pago.
-        step3_description: La enviaremos automáticamente a DTA. Esto lo ayudará a demostrar y comprobar sus ingresos y puede ayudar a DTA a tomar una decisión más rápida.
-        subheader_html: 'Enviaremos sus registros de pago de su(s) empleador(es) a DTA para verificar sus ingresos. <strong>La mayoría de las personas completan este proceso en menos de 5 minutos.</strong> Solo siga estos pasos:'
+        step3_description: La enviaremos automáticamente a %{agency_acronym}. Esto lo ayudará a demostrar y comprobar sus ingresos y puede ayudar a %{agency_acronym} a tomar una decisión más rápida.
+        subheader_html: 'Enviaremos sus registros de pago de su(s) empleador(es) a %{agency_acronym} para verificar sus ingresos. <strong>La mayoría de las personas completan este proceso en menos de 5 minutos.</strong> Solo siga estos pasos:'
     error_invalid_token: El enlace de invitación no es válido. Vuelva a comprobar el enlace e inténtelo de nuevo. Si sigue teniendo problemas, póngase en contacto con su trabajador social.
     error_missing_token_html: "<strong>Su sesión a finalizado debido a inactividad.</strong> Para continuar donde la dejó, haga clic en el enlace que recibió de su agencia del SNAP por correo electrónico. Si encuentra algún problema, póngase en contacto con su agencia del SNAP para pedir ayuda."
     error_no_access: No logramos cargar los datos de nómina para esta cuenta. Haga clic en el enlace que recibió de su agencia del SNAP para intentarlo de nuevo.

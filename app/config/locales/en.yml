@@ -200,10 +200,10 @@ en:
         step1: Search and sign into your employer or online payroll provider.
         step1_description: Use the login credentials you have for viewing your online pay stub. We won’t share or keep your login information. If you work for an app, like Uber, this would be the same login when you sign into the Uber app.
         step2: Review your payment information.
-        step2_description: You will be able to preview and approve everything that is shared with DTA.
+        step2_description: You will be able to preview and approve everything that is shared with %{agency_acronym}.
         step3: Submit your payment information.
         step3_description: We’ll automatically send it to %{agency_acronym}. This will help you prove your income and can help %{agency_acronym} get to a decision faster.
-        subheader_html: 'We’ll send your payment records from your employer(s) to DTA to verify your income. <strong>Most people complete this process in under 5 minutes.</strong> Just follow these steps:'
+        subheader_html: 'We’ll send your payment records from your employer(s) to %{agency_acronym} to verify your income. <strong>Most people complete this process in under 5 minutes.</strong> Just follow these steps:'
     error_invalid_token: The invitation link used is not valid. Double check the link and try again. If you continue experiencing issues, contact your caseworker.
     error_missing_token_html: "<strong>Your session has timed out due to inactivity.</strong> To continue where you left off, please click the link you received from your SNAP agency in your email. If you encounter any issues, contact your SNAP agency for assistance."
     error_no_access: We weren't able to load payroll data for this account. Please click the link you received from your SNAP agency to try again.

@@ -3,7 +3,7 @@
 <h1><%= title %></h1>
 
 <div class="usa-prose">
-  <p><%= t(".subheader_html") %></p>
+  <p><%= t(".subheader_html", agency_acronym: current_site.agency_short_name) %></p>
 </div>
 
 <ol class="usa-process-list">
@@ -13,7 +13,7 @@
   </li>
   <li class="usa-process-list__item">
     <h2 class="margin-bottom-1"><%= t(".step2") %></h2>
-    <p class="margin-top-0"><%= t(".step2_description") %></p>
+    <p class="margin-top-0"><%= t(".step2_description", agency_acronym: current_site.agency_short_name) %></p>
   </li>
   <li class="usa-process-list__item">
     <h2 class="margin-bottom-1"><%= t(".step3") %></h2>
