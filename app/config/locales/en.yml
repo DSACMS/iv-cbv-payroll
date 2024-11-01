@@ -347,7 +347,7 @@ en:
         description: 'We were unable to connect to your employer''s system due to an error. To continue, you can:'
         option_1: Go back to employer search to retry adding this employer.
         option_2: Go back to employer search to add another job.
-        option_3: Submit your income information for this employer by visiting DTA's website.
+        option_3: Submit your income information for this employer by visiting %{agency_acronym}'s website.
         title: We couldn't access your employer information
     synchronizations:
       indicators:
