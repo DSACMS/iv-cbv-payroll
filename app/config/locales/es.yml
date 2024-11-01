@@ -230,7 +230,7 @@ es:
         description: 'No pudimos conectarnos al sistema de su empleador debido a un error. Para continuar, puede:'
         option_1: Volver a la búsqueda de empleadores para nuevamente intentar agregar este empleador.
         option_2: Volver a la búsqueda de empleadores para agregar otro trabajo.
-        option_3: Envíe su información de ingresos a este empleador visitando el sitio web de DTA.
+        option_3: Envíe su información de ingresos a este empleador visitando el sitio web de %{agency_acronym}.
         title: No pudimos acceder a la información de su empleador
     synchronizations:
       indicators:
