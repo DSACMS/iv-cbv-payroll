@@ -14,6 +14,7 @@ class ApplicationMailer < ActionMailer::Base
       mailer: self.class.name,
       action: action_name,
       message_id: mail.message_id,
+      locale: I18n.locale,
 
       # Include a couple attributes that are passed in as params to subclasses,
       # to help with linking metadata without including any PII.
