@@ -21,7 +21,6 @@ class ApplicationController < ActionController::Base
     requested_locale = params[:locale]
     locale = CbvFlowInvitation::VALID_LOCALES.include?(requested_locale) ? requested_locale : I18n.default_locale
     I18n.with_locale(locale, &action)
-    NewRelicEventTracker.track("LanguageManuallySwitched", { requested_locale: locale })
   end
 
   def site_config
