@@ -411,6 +411,7 @@ en:
     boolean_true: 'Yes'
     date_picker_format: 'Format: mm/dd/yyyy'
     optional: Optional
+    tax_id_format: 'Format: 123456789'
   users:
     omniauth_callbacks:
       authentication_successful: You are signed in.
