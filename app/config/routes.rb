@@ -28,6 +28,7 @@ Rails.application.routes.draw do
       resource :entry, only: %i[show]
       resource :employer_search, only: %i[show]
       resource :synchronizations, only: %i[show update]
+      resource :synchronization_failures, only: %i[show]
       resource :summary, only: %i[show update], format: %i[html pdf]
       resource :missing_results, only: %i[show]
       resource :success, only: %i[show]
