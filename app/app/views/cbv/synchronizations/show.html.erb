@@ -6,7 +6,7 @@
   <p class="usa-prose">
     <%= t(".fetching_payroll_description") %>
   </p>
-  <%= form_with url: next_path, method: :get, class: "display-none", data: { 'cbv-synchronizations-target': "form" } do |f| %>
+  <%= form_with method: :patch, class: "display-none", data: { 'cbv-synchronizations-target': "form" } do |f| %>
     <input type="hidden" name="user[account_id]" value="<%= params[:user][:account_id] %>" data-cbv-synchronizations-target="userAccountId">
   <% end %>
   <div
