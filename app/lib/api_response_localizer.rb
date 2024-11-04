@@ -39,6 +39,6 @@ module ApiResponseLocalizer
 
   # set the I18n scope based on the class name
   def i18n_scope
-    "api_responses.#{self.class.name.underscore.remove('_service')}"
+    "#{self.class.name.underscore.remove('_service')}"
   end
 end
