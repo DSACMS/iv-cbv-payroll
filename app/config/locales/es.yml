@@ -53,24 +53,6 @@ es:
         no_radio: No, no tengo otro trabajo que cumpla con los criterios
         subheader: Por favor añada los otros trabajos que haya tenido en los últimos %{pay_income_days} días, incluso si ya no está en ese trabajo.
         yes_radio: Sí, tengo otro trabajo que cumpla con los criterios
-    agreements:
-      create:
-        error: Debe marcar la casilla de «acuerdo» para proceder.
-      show:
-        checkbox:
-          default: Marque esta casilla para indicar que está de acuerdo en permitirnos acceder a su información de pago y compartirla con %{agency_full_name}.
-          nyc: Marque esta casilla para indicar que está de acuerdo en permitirnos acceder a su información de pago y compartirla con %{agency_full_name}. No usaremos la información para ningún otro fin ni la divulgaremos a terceros.
-        continue: Continuar
-        header: Verifiquemos sus ingresos
-        step1: Busque su más reciente empleador o proveedor de nómina en línea.
-        step1_description: Un proveedor de nómina es un sistema que usan algunos empleadores o empresas para gestionar la nómina, procesar el pago y distribuir los cheques de pago y los depósitos directos. Algunos ejemplos de proveedores de pago populares son ADP, Paychex, Gusto, etc.
-        step2: Ingrese a su cuenta de empleador o proveedor de nómina.
-        step2_description: Use las credenciales de acceso que tiene para visualizar su talón de pago en línea. Si trabaja para una aplicación, tal como Uber, debería ser el mismo inicio de sesión que al ingresar a la aplicación Uber. No almacenaremos ni compartiremos su información de acceso.
-        step3: Revise su información de pago.
-        step3_description: La información de pago incluye la fecha de pago, el monto de pago y las horas trabajadas. Repita los pasos del 1 al 3 si tiene otros empleadores que agregar.
-        step4: Envíe su información de pago.
-        step4_description: Nosotros la enviaremos automáticamente a %{agency_acronym}.
-        steps_intro: 'Para verificar sus ingresos, tendrá que completar estos sencillos cuatro pasos:'
     employer_searches:
       show:
         can_not_find_employer: No logro encontrar mi empresa ni mi proveedor de nómina
@@ -103,29 +85,21 @@ es:
         what_is_html: "<strong>¿Qué es un proveedor de nómina?</strong> Un proveedor de nómina es un sistema que usan algunos empleadores o empresas para gestionar la nómina, procesar el pago y distribuir los cheques de pago y los depósitos directos. Algunos ejemplos de proveedores de pago populares son ADP, Paychex, Gusto, etc."
         you_ll_go: Usted irá a su portal de inicio de sesión e ingresará para ver su historial de pago.
     entries:
+      create:
+        error: Debe marcar la casilla de «acuerdo» para proceder.
       show:
-        cant_use_1: No ha recibido ingresos de un trabajo en los últimos 90 días
-        cant_use_2: Usted tiene un trabajo que paga por PayPal, Venmo, Cash App, etc.
-        cant_use_3: Usted tiene un trabajo que paga en efectivo
-        cant_use_4: Usted tiene un trabajo que le paga con un cheque impreso y no puede ver su cheque de pago en línea
-        cant_use_5: Usted tiene un trabajo que emite un 1099
-        cant_use_if: 'No podrá verificar sus ingresos con esta herramienta si:'
-        do_app_based_work: Realiza un trabajo que se basa en aplicaciones (como Uber, Lyft, DoorDash)
-        get_started: Comience
-        has_income_90_days: 'Puede usar esta herramienta si ha recibido ingresos en los últimos 90 días y:'
-        has_online_payroll_provider: Puede ver sus cheques de pago a través de su empresa o del proveedor de nómina en línea de su empresa. La mayoría de las personas que reciben talones de pago o formularios de impuesto W-2 tienen un proveedor de nómina en línea. Si no está seguro, pregunte a su empleador.
-        header:
-          default: "%{agency_acronym} está lanzando una nueva forma de verificar rápidamente sus ingresos"
-          ma: Proporcione al %{agency_acronym} sus ingresos de inmediato
-        security_message_html: "<strong>Su información está segura.</strong> No compartiremos ni almacenaremos su información de acceso. Podrá revisar y aprobar todo lo que se comparta con %{agency_acronym}."
-        stopped_working: Dejó de trabajar o perdió un trabajo (pero generó ingresos en los últimos 90 días).
-        subheader: Enviaremos los registros de pago de su(s) empleador(es) a %{agency_acronym}. Esto le ayudará a demostrar sus ingresos y puede ayudar a %{agency_acronym} a tomar una decisión con mayor rapidez.
-        subheader_1: Quién puede usar esta herramienta
-        subheader_2: Quién no puede usar esta herramienta
-        subheader_3: Qué necesita
-        you_can_get_started: 'Puede iniciar de inmediato con esta información:'
-        your_employers_name: El nombre de su empleador o del proveedor de nómina del mismo
-        your_login_credentials: Su información de acceso para ver sus talones de pago en línea
+        checkbox:
+          default: Marque esta casilla para aceptar que nos deja acceder a su información de pago y  compartirla con %{agency_full_name}. Marque esta casilla para aceptar que nos deja acceder a su información de pago y  compartirla con %{agency_full_name}.
+          nyc: Marque esta casilla para aceptar que nos deja acceder a su información de pago y  compartirla con %{agency_full_name}. No utilizaremos la información para ningún otro propósito ni la divulgaremos a ninguna otra parte.
+        continue: Comenzar
+        header: Verifiquemos sus ingresos
+        step1: Busque e inicie sesión en su empleador o proveedor de nómina en línea.
+        step1_description: Use las credenciales de inicio de sesión que tiene para ver su recibo de pago en línea. No compartiremos ni guardamos su información de inicio de sesión. Si trabaja para una aplicación, como Uber, este sería el mismo inicio de sesión cuando inicie sesión en la aplicación Uber.
+        step2: Revise su información de pago.
+        step2_description: Podrá hacer una vista previa y aprobar todo lo que se comparta con %{agency_acronym}.
+        step3: Envíe su información de pago.
+        step3_description: La enviaremos automáticamente a %{agency_acronym}. Esto lo ayudará a demostrar y comprobar sus ingresos y puede ayudar a %{agency_acronym} a tomar una decisión más rápida.
+        subheader_html: 'Enviaremos sus registros de pago de su(s) empleador(es) a %{agency_acronym} para verificar sus ingresos. <strong>La mayoría de las personas completan este proceso en menos de 5 minutos.</strong> Solo siga estos pasos:'
     error_invalid_token: El enlace de invitación no es válido. Vuelva a comprobar el enlace e inténtelo de nuevo. Si sigue teniendo problemas, póngase en contacto con su trabajador social.
     error_missing_token_html: "<strong>Su sesión a finalizado debido a inactividad.</strong> Para continuar donde la dejó, haga clic en el enlace que recibió de su agencia del SNAP por correo electrónico. Si encuentra algún problema, póngase en contacto con su agencia del SNAP para pedir ayuda."
     error_no_access: No logramos cargar los datos de nómina para esta cuenta. Haga clic en el enlace que recibió de su agencia del SNAP para intentarlo de nuevo.
@@ -219,6 +193,10 @@ es:
         none_found_confirmed: Hemos confirmado que no hay ningún pago de este empleador en los últimos 90 días. Esto sucede cuando el cliente no ha recibido ingresos por este trabajo durante ese tiempo.
         payment: Pago de %{amount} antes de pago impuestos en %{date}
         pdf:
+          agency_header_name:
+            ma: Massachusetts Department of Transitional Assistance
+            nyc: NYC Human Resources Administration
+            sandbox: CBV Test Agency
           caseworker:
             pay_period: Período de pago (%{pay_frequency})
           client:
@@ -234,17 +212,29 @@ es:
             header: Informe de verificación de ingresos
             report_details: Detalles del informe
           shared:
+            client_information: Información del cliente
             confirmation_code: Código de confirmación
+            employment_information: Información del empleo
+            report_details: Detalles del reporte
         phone_number: Teléfono del empleador
         send_report: Comparta mi informe con %{agency_acronym}
         table_caption: 'Empleador %{number}: %{employer_name}'
-        table_caption_no_name: 'Empleador %{number}:'
+        table_caption_no_name: Empleador %{number}
         total_income_from: 'Ingresos totales provenientes de %{employer_name}, antes del pago de impuestos: %{amount}'
         total_income_from_no_employer_name: 'Ingresos totales antes del pago de impuestos: %{amount}'
         total_payments: 'Ingresos totales de los últimos 90 días, antes del pago de impuestos: %{amount}'
         total_payments_desc: Este es el ingreso bruto total de su(s) trabajo(s) antes de que se le descuenten impuestos, beneficios y otras deducciones de su cheque.
       update:
         consent_to_authorize_warning: Debe marcar la casilla de acuerdo legal para proceder.
+    synchronization_failures:
+      show:
+        back_to_search: Volver a la búsqueda de empleadores
+        continue_to_report: Continuar con el informe
+        description: 'No pudimos conectarnos al sistema de su empleador debido a un error. Para continuar, puede:'
+        option_1: Volver a la búsqueda de empleadores para nuevamente intentar agregar este empleador.
+        option_2: Volver a la búsqueda de empleadores para agregar otro trabajo.
+        option_3: Envíe su información de ingresos a este empleador visitando el sitio web de %{agency_acronym}.
+        title: No pudimos acceder a la información de su empleador
     synchronizations:
       indicators:
         employment: Empleo
@@ -309,6 +299,7 @@ es:
   shared:
     agency_full_name:
       ma: Departamento de Asistencia Transitoria de Massachusetts
+      nyc: New York City Human Resources Administration
       sandbox: Agencia de pruebas CBV
     app_name:
       ma: DTA Connect
@@ -335,7 +326,7 @@ es:
         nyc: Un sitio web en colaboración con la Ciudad de Nueva York.
       primary: Menú principal
     languages:
-      en: Inglés
+      en: English
       es: Español
       fr: Francés
       zh: Chino
@@ -351,6 +342,7 @@ es:
     boolean_true: Sí
     date_picker_format: 'Formato: mm/dd/aaaa'
     optional: Opcional
+    tax_id_format: 'Formato: 123456789'
   users:
     omniauth_callbacks:
       authentication_successful: Ha iniciado sesión.

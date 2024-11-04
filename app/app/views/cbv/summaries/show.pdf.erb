@@ -33,7 +33,7 @@
 
 <%= render(TableComponent.new) do |table| %>
   <%= table.with_header do %>
-    <h3 class="margin-0"><%= t(".pdf.client.client_information") %></h3>
+    <h3 class="margin-0"><%= t(".pdf.shared.client_information") %></h3>
   <% end %>
   <% if current_site?(:ma) && !is_caseworker %>
     <%= table.with_row(t(".pdf.client.agency_id_number"), @cbv_flow.cbv_flow_invitation.agency_id_number) %>
@@ -57,14 +57,14 @@
 
 <%= render(TableComponent.new) do |table| %>
   <%= table.with_header do %>
-    <h3 class="margin-0"><%= t(".pdf.client.report_details") %></h3>
+    <h3 class="margin-0"><%= t(".pdf.shared.report_details") %></h3>
   <% end %>
   <% if @cbv_flow.confirmation_code.present? %>
     <%= table.with_row(t(".pdf.shared.confirmation_code"), @cbv_flow.confirmation_code) %>
   <% end %>
-  <%= table.with_row(site_translation(".application_or_recertification_date"), format_date(@cbv_flow.cbv_flow_invitation.snap_application_date)) %>
-  <%= table.with_row(t(".pdf.client.date_created"), format_date(@cbv_flow.consented_to_authorized_use_at)) %>
-  <%= table.with_row(t(".pdf.client.date_range"), t("shared.date_range", start_date: @cbv_flow.cbv_flow_invitation.paystubs_query_begins_at, end_date: @cbv_flow.cbv_flow_invitation.snap_application_date)) %>
+  <%= table.with_row(site_translation(".application_or_recertification_date"), format_parsed_date(@cbv_flow.cbv_flow_invitation.snap_application_date)) %>
+  <%= table.with_row(t(".pdf.client.date_created"), format_parsed_date(@cbv_flow.consented_to_authorized_use_at)) %>
+  <%= table.with_row(t(".pdf.client.date_range"), "#{format_parsed_date(@cbv_flow.cbv_flow_invitation.paystubs_query_begins_at)} to #{format_parsed_date(@cbv_flow.cbv_flow_invitation.snap_application_date)}") %>
   <% if is_caseworker %>
     <%= table.with_row(t(".pdf.caseworker.agreement_consent_timestamp"), @cbv_flow.consented_to_authorized_use_at) %>
     <% if current_site?(:ma) %>
@@ -85,7 +85,7 @@
         <% if employer_name %>
           <%= employer_name %> &mdash;
         <% end %>
-        <%= t(".pdf.client.employment_information") %>
+        <%= t(".pdf.shared.employment_information") %>
       </h4>
     <% end %>
     <% if is_caseworker && summary[:has_identity_data] %>
