@@ -122,5 +122,24 @@ RSpec.describe Webhooks::Pinwheel::EventsController do
         post :create, params: valid_params
       end
     end
+
+    context "for an 'pending' event outcome" do
+      let(:event_name) { "paystubs.fully_synced" }
+      let(:payload) do
+        {
+          "account_id" => account_id,
+          "end_user_id" => cbv_flow.pinwheel_end_user_id,
+          "outcome" => "pending"
+        }
+      end
+      let(:pinwheel_account) { PinwheelAccount.create!(cbv_flow: cbv_flow, supported_jobs: supported_jobs, pinwheel_account_id: account_id) }
+
+      it "updates the PinwheelAccount object with an error state" do
+        expect { post :create, params: valid_params }
+          .to change { pinwheel_account.reload.paystubs_errored_at }
+          .from(nil)
+          .to(within(1.second).of(Time.now))
+      end
+    end
   end
 end
