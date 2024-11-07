@@ -20,7 +20,7 @@
 
       <p><%= site_translation(".main_action_html", deadline: format_date(@cbv_flow_invitation.expires_at.to_s)) %></p>
 
-      <p class="margin-y-5">
+      <p class="margin-y-3">
         <a href="<%= @cbv_flow_invitation.to_url %>" class="usa-button width-auto" type="button">
           <%= t(".verify_income_button" ) %>
         </a>
