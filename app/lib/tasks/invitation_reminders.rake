@@ -10,7 +10,6 @@ namespace :invitation_reminders do
 
         ApplicantMailer.with(cbv_flow_invitation: invitation).invitation_reminder_email.deliver_now
         invitation.update(invitation_reminder_sent_at: DateTime.now)
-
       end
   end
 end
