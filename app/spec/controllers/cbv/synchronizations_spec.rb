@@ -17,5 +17,15 @@ RSpec.describe Cbv::SynchronizationsController do
 
       expect(response).to redirect_to(cbv_flow_payment_details_path(user: { account_id: pinwheel_account.pinwheel_account_id }))
     end
+
+    context "when the paystubs synchronization fails" do
+      it "redirects to the synchronization failures page" do
+        pinwheel_account = create(:pinwheel_account, :with_paystubs_errored, cbv_flow: cbv_flow)
+
+        patch :update, params: { user: { account_id: pinwheel_account.pinwheel_account_id } }
+
+        expect(response).to redirect_to(cbv_flow_synchronization_failures_path)
+      end
+    end
   end
 end

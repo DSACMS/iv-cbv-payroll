@@ -61,7 +61,7 @@ gem "actioncable-enhanced-postgresql-adapter"
 gem "aws-sdk-rails"
 
 # https://www.ruby-lang.org/en/news/2024/08/01/dos-rexml-cve-2024-41123/
-gem "rexml", "~> 3.3.6"
+gem "rexml", "~> 3.3.9"
 gem "gpgme", "~> 2.0", ">= 2.0.12"
 gem "pdf-reader", "~> 2.12.0"
 
@@ -80,7 +80,6 @@ group :development, :test do
   gem "selenium-webdriver"
   gem "standard", "~> 1.7"
   gem "timecop"
-  gem "wkhtmltopdf-binary"
 end
 
 group :development do
@@ -113,3 +112,4 @@ gem "devise", "~> 4.9"
 gem "omniauth-rails_csrf_protection", "~> 1.0"
 gem "omniauth-azure-activedirectory-v2"
 gem "view_component"
+gem "wkhtmltopdf-binary"
