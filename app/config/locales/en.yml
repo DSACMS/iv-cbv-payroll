@@ -266,6 +266,9 @@ en:
         header: Your payment information from %{employer_name}
         header_no_employer_name: Your payment information from your employer
         hourly_rate: Compensation amount
+        hours:
+          one: "%{count} hour"
+          other: "%{count} hours"
         hours_category:
           bereavement: Bereavement
           bonus: Bonus
@@ -293,9 +296,6 @@ en:
           tips: Tips
           unpaid: Unpaid
           vacation: Vacation
-        hours:
-          one: "%{count} hour"
-          other: "%{count} hours"
         hours_paid: "%{category}: Hours paid"
         none_found: We didn't find any payments from this employer in the past 90 days.
         none_found_description: This typically happens when you haven't received income from this job in the past 90 days. If you believe this is an error, please add a comment in the additional comments box. Otherwise, continue to the next page.

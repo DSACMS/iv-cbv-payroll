@@ -147,6 +147,9 @@ es:
         header: Su información de pago de %{employer_name}
         header_no_employer_name: Su información de pago por parte de su empleador
         hourly_rate: Monto de compensación
+        hours:
+          one: "%{count} hora"
+          other: "%{count} horas"
         hours_category:
           bereavement: Duelo
           bonus: Bono
@@ -174,9 +177,6 @@ es:
           tips: Propinas
           unpaid: Sin paga
           vacation: Vacaciones
-        hours:
-          one: "%{count} hora"
-          other: "%{count} horas"
         none_found: No se encontraron pagos.
         none_found_description: Esto usualmente ocurre cuando usted no ha recibido ingresos por este trabajo en los últimos 90 días. Si cree que esto es un error, agregue un comentario en la casilla de comentarios adicionales. De lo contrario, continúe en la página siguiente.
         number_of_hours_worked: Número de horas trabajadas
