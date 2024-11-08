@@ -50,14 +50,12 @@
 
       <%= table.with_data_point(:pay_period, payment[:start], payment[:end]) %>
       <%= table.with_data_point(:pay_gross, payment[:gross_pay_amount]) %>
-      <%= table.with_data_point(:net_pay_amount, payment[:net_pay_amount]) %>
       <%= table.with_data_point(:number_of_hours_worked, payment[:hours]) %>
-
       <% payment[:hours_by_earning_category].each do |category, total_hours| %>
         <% category_name = t("cbv.payment_details.show.hours_category.#{category}") %>
-        <% table.with_row("", t("cbv.payment_details.show.hours", description: category_name, count: total_hours)) %>
+        <% table.with_row(t("cbv.payment_details.show.hours_paid", category: category_name), t("cbv.payment_details.show.hours", count: total_hours)) %>
       <% end %>
-
+      <%= table.with_data_point(:net_pay_amount, payment[:net_pay_amount]) %>
       <% payment[:deductions].filter { |deduction| deduction[:amount] > 0 }.each do |deduction| %>
         <%= table.with_data_point(:deduction, deduction[:category], deduction[:amount]) %>
       <% end %>

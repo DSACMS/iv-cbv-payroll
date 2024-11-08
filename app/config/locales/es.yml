@@ -175,8 +175,8 @@ es:
           unpaid: Sin paga
           vacation: Vacaciones
         hours:
-          one: "%{description} - %{count} hora"
-          other: "%{description} - %{count} horas"
+          one: "%{count} hora"
+          other: "%{count} horas"
         none_found: No se encontraron pagos.
         none_found_description: Esto usualmente ocurre cuando usted no ha recibido ingresos por este trabajo en los últimos 90 días. Si cree que esto es un error, agregue un comentario en la casilla de comentarios adicionales. De lo contrario, continúe en la página siguiente.
         number_of_hours_worked: Número de horas trabajadas

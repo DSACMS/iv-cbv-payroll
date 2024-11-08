@@ -33,7 +33,7 @@ module Cbv::PaymentsHelper
         gross_pay_ytd: payment["gross_pay_ytd"].to_i,
         pay_date: payment["pay_date"],
         deductions: payment["deductions"].map { |deduction| { category: deduction["category"], amount: deduction["amount"] } },
-        account_id: payment["account_id"],
+        account_id: payment["account_id"]
       }
     end
   end
