@@ -3,7 +3,7 @@ namespace :invitation_reminders do
   task send_all: :environment do
     CbvFlowInvitation
       .where(invitation_reminder_sent_at: nil)
-      .where('created_at <= ?', 3.days.ago)
+      .where("created_at <= ?", 3.days.ago)
       .find_each do |invitation|
         next if invitation.expired?
         next if invitation.complete?
