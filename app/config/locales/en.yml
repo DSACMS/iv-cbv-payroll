@@ -49,23 +49,19 @@ en:
         default: Verify your income for your SNAP application or renewal
         ma: Verify your income to renew your SNAP benefits
     invitation_reminder_email:
-      agency_acronym:
-        default: DTA
-        nyc: NYC
-      agency_name:
-        default: Department of Transitional Assistance
-        nyc: Human Resources Administration Department of Social Services
       feedback_button: Share your feedback
       feedback_header: Do you have any comments about the SNAP pilot?
       footer: This is an automatically generated message from %{agency_acronym}. Please don't reply to this email.
       greeting: Hello,
       instructions: Log into your payroll provider account (for example, ADP, Lyft or Amazon Flex) to share your income data directly with %{agency_acronym}. If you miss the deadline, this link will expire and you'll need to request for a new invite.
       main_action_html:
-        default: "<strong>Verify your income</strong> as part of your SNAP recertification by <strong>%{deadline}</strong>."
+        ma: "<strong>Verify your income</strong> as part of your SNAP recertification by <strong>%{deadline}</strong>."
         nyc: "<strong>Verify your income</strong> as part of your SNAP application or recertification by <strong>%{deadline}</strong>."
+        sandbox: <strong>Verify your income</strong> as part of your application by <strong>%{deadline}</strong>."
       subject:
-        default: 'Reminder: Verify your income to renew your SNAP benefits'
+        ma: 'Reminder: Verify your income to renew your SNAP benefits'
         nyc: 'Reminder: Verify your income to renew or apply for your SNAP benefits'
+        sandbox: 'Reminder: Verify your income for your SNAP application or renewal'
       verify_income_button: Verify your income
   caseworker:
     cbv_flow_invitations:

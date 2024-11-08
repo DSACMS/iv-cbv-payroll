@@ -101,7 +101,7 @@ RSpec.describe ApplicantMailer, type: :mailer do
       Rake::Task['invitation_reminders:send_all'].execute
       email = ActionMailer::Base.deliveries.last
 
-      expect(email.subject).to eq("Reminder: Verify your income to renew your SNAP benefits")
+      expect(email.subject).to eq(I18n.t("applicant_mailer.invitation_reminder_email.subject.ma"))
     end
 
     it "has the correct subject line for nyc" do
@@ -109,7 +109,7 @@ RSpec.describe ApplicantMailer, type: :mailer do
       Rake::Task['invitation_reminders:send_all'].execute
       email = ActionMailer::Base.deliveries.last
 
-      expect(email.subject).to eq("Reminder: Verify your income to renew or apply for your SNAP benefits")
+      expect(email.subject).to eq(I18n.t("applicant_mailer.invitation_reminder_email.subject.nyc"))
     end
 
     it "does not send an email if the invitation is expired" do
