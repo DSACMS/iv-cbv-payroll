@@ -72,13 +72,16 @@ resource "aws_ecs_task_definition" "app" {
 
   container_definitions = jsonencode([
     {
-      name                   = local.container_name,
-      image                  = local.image_url,
-      memory                 = var.memory,
-      cpu                    = var.cpu,
-      networkMode            = "awsvpc",
-      essential              = true,
-      readonlyRootFilesystem = !var.enable_command_execution,
+      name        = local.container_name,
+      image       = local.image_url,
+      memory      = var.memory,
+      cpu         = var.cpu,
+      networkMode = "awsvpc",
+      essential   = true,
+      # TODO: Reenable readonlyRootFilesystem when we can have it behave
+      # consistently in dev (demo) and production.
+      # readonlyRootFilesystem = !var.enable_command_execution,
+      readonlyRootFilesystem = false,
 
       # Need to define all parameters in the healthCheck block even if we want
       # to use AWS's defaults, otherwise the terraform plan will show a diff
