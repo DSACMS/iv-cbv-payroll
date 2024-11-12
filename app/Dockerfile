@@ -29,9 +29,12 @@ FROM base AS build
 
 # Install packages needed to build gems
 RUN apt-get update -qq && \
-    apt-get install --no-install-recommends -y build-essential=12.9 \
-    git=1:2.39.5-0+deb12u1 libpq-dev=15.8-0+deb12u1 pkg-config=1.8.1-1 \
-    npm=9.2.0~ds1-1
+    apt-get install --no-install-recommends -y \
+      build-essential=12.9 \
+      git=1:2.39.5-0+deb12u1 \
+      libpq-dev=15.8-0+deb12u1 \
+      npm=9.2.0~ds1-1 \
+      pkg-config=1.8.1-1
 
 # Copy application code
 COPY . .
@@ -61,8 +64,9 @@ ENV TMPDIR="/rails/tmp"
 
 # Install packages needed for development
 RUN apt-get update -qq && \
-    apt-get install --no-install-recommends -y postgresql-client=15+248 \
-        graphviz=2.42.2-7+b3 && \
+    apt-get install --no-install-recommends -y \
+      postgresql-client=15+248 \
+      graphviz=2.42.2-7+b3 && \
     rm -rf /var/lib/apt/lists /var/cache/apt/archives
 
 RUN gem install bundler --no-document -v ${BUNDLER_VERSION} && \
@@ -108,10 +112,11 @@ ENV PIDFILE="/rails/tmp/pids/server.pid"
 # Install packages needed for deployment
 RUN apt-get update -qq && \
     apt-get install -y --no-install-recommends \
-        curl=7.88.1-10+deb12u7 \
+        curl=7.88.1-10+deb12u8 \
         libgpgme11=1.18.0-3+b1 \
         libvips42=8.14.1-3+deb12u1 \
-        linux-libc-dev=6.1.112-1 \
+        linux-libc-dev=6.1.115-1 \
+        openssl=3.0.15-1~deb12u1 \
         postgresql-client=15+248 \
         python-is-python3=3.11.2-1+deb12u1 \
         python3-venv=3.11.2-1+b1 \
