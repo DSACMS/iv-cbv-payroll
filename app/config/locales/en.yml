@@ -57,7 +57,7 @@ en:
       main_action_html:
         ma: "<strong>Verify your income</strong> as part of your SNAP recertification by <strong>%{deadline}</strong>."
         nyc: "<strong>Verify your income</strong> as part of your SNAP application or recertification by <strong>%{deadline}</strong>."
-        sandbox: <strong>Verify your income</strong> as part of your application by <strong>%{deadline}</strong>.
+        sandbox: "<strong>Verify your income</strong> as part of your application by <strong>%{deadline}</strong>."
       subject:
         ma: 'Reminder: Verify your income to renew your SNAP benefits'
         nyc: 'Reminder: Verify your income to renew or apply for your SNAP benefits'
