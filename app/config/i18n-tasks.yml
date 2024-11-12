@@ -132,6 +132,8 @@ ignore_missing:
     - "caseworker_mailer.summary_email.*"
     # Caseworker PDF strings that are only supported in English:
     - "cbv.summaries.show.pdf.caseworker.*"
+    # Applicant invitation reminder emails taht are only supported in English:
+    - "applicant_mailer.invitation_reminder_email.*"
 # - 'errors.messages.{accepted,blank,invalid,too_short,too_long}'
 # - '{devise,simple_form}.*'
 
