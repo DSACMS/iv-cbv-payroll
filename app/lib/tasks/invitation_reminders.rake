@@ -9,7 +9,7 @@ namespace :invitation_reminders do
         next if invitation.complete?
 
         ApplicantMailer.with(cbv_flow_invitation: invitation).invitation_reminder_email.deliver_now
-        invitation.update(invitation_reminder_sent_at: DateTime.now)
+        invitation.touch(:invitation_reminder_sent_at)
       end
   end
 end
