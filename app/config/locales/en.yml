@@ -1,5 +1,8 @@
 ---
 en:
+  pinwheel:
+    other: other
+    employed: employed
   activerecord:
     errors:
       models:
@@ -49,6 +52,7 @@ en:
         default: Verify your income for your SNAP application or renewal
         ma: Verify your income to renew your SNAP benefits
     invitation_reminder_email:
+      pilot_name: SNAP Income Pilot
       feedback_button: Share your feedback
       feedback_header: Do you have any comments about the SNAP pilot?
       footer: This is an automatically generated message from %{agency_acronym}. Please don't reply to this email.
@@ -58,10 +62,12 @@ en:
         ma: "<strong>Verify your income</strong> as part of your SNAP recertification by <strong>%{deadline}</strong>."
         nyc: "<strong>Verify your income</strong> as part of your SNAP application or recertification by <strong>%{deadline}</strong>."
         sandbox: "<strong>Verify your income</strong> as part of your application by <strong>%{deadline}</strong>."
+        default: "<strong>Verify your income</strong> as part of your application by <strong>%{deadline}</strong>."
       subject:
         ma: 'Reminder: Verify your income to renew your SNAP benefits'
         nyc: 'Reminder: Verify your income to renew or apply for your SNAP benefits'
         sandbox: 'Reminder: Verify your income for your SNAP application or renewal'
+        default: 'Reminder: Verify your income for your SNAP application or renewal'
       verify_income_button: Verify your income
   caseworker:
     cbv_flow_invitations:
