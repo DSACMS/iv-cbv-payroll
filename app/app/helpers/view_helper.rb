@@ -35,4 +35,26 @@ module ViewHelper
   def format_money(dollars_in_cents)
     number_to_currency(dollars_in_cents.to_f / 100)
   end
+
+  def translate_pinwheel_value(namespace, value)
+    # if the key isn't in spanish, just return the original value
+    return value unless I18n.locale == :es
+
+    i18n_key = "pinwheel.#{namespace}.#{value}"
+
+    # convert the key to snake_case, replacing hyphens with underscores
+    i18n_key = i18n_key.gsub("-", "_").downcase
+
+    if I18n.exists?(i18n_key)
+      return I18n.t(i18n_key)
+    end
+
+    if Rails.env.development? || Rails.env.test?
+      raise "Missing Pinwheel translation for #{namespace}.#{value}"
+    end
+
+    # In production, log warning and return original value
+    Rails.logger.warn "Unknown Pinwheel value for #{namespace}: #{value}"
+    value
+  end
 end

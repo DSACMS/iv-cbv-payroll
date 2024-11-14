@@ -3,8 +3,6 @@
 require "faraday"
 
 class PinwheelService
-  include ApiResponseLocalizer
-
   ENVIRONMENTS = {
     sandbox: {
       base_url: "https://sandbox.getpinwheel.com",
@@ -144,7 +142,4 @@ class PinwheelService
   def verify_signature(signature, generated_signature)
     ActiveSupport::SecurityUtils.secure_compare(signature, generated_signature)
   end
-
-  localize_methods :fetch_items, :fetch_accounts, :fetch_paystubs,
-                   :fetch_employment, :fetch_identity, :fetch_income_metadata
 end
