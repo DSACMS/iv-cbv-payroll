@@ -20,9 +20,9 @@ class Api::PinwheelController < ApplicationController
     @cbv_flow = CbvFlow.find(session[:cbv_flow_id])
 
     case user_action_params[:response_type]
-    when 'platform'
+    when "platform"
       track_selected_payroll_platform
-    when 'employer'
+    when "employer"
       track_selected_app_employer
     end
 

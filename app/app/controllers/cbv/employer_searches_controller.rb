@@ -37,7 +37,7 @@ class Cbv::EmployerSearchesController < Cbv::BaseController
     NewRelicEventTracker.track("ApplicantClickedPopularPayrollProviders", {
       timestamp: Time.now.to_i,
       cbv_flow_id: @cbv_flow.id,
-      invitation_id: @cbv_flow.cbv_flow_invitation_id,
+      invitation_id: @cbv_flow.cbv_flow_invitation_id
     })
   rescue => ex
     Rails.logger.error "Unable to track NewRelic event (ApplicantClickedPopularPayrollProviders): #{ex}"
@@ -47,7 +47,7 @@ class Cbv::EmployerSearchesController < Cbv::BaseController
     NewRelicEventTracker.track("ApplicantClickedPopularAppEmployers", {
       timestamp: Time.now.to_i,
       cbv_flow_id: @cbv_flow.id,
-      invitation_id: @cbv_flow.cbv_flow_invitation_id,
+      invitation_id: @cbv_flow.cbv_flow_invitation_id
     })
   rescue => ex
     Rails.logger.error "Unable to track NewRelic event (ApplicantClickedPopularAppEmployers): #{ex}"
