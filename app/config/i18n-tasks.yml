@@ -134,6 +134,8 @@ ignore_missing:
     - "cbv.summaries.show.pdf.caseworker.*"
     # Applicant invitation reminder emails taht are only supported in English:
     - "applicant_mailer.invitation_reminder_email.*"
+    # Pinwheel values that are only supported in English:
+    - "pinwheel.*"
 # - 'errors.messages.{accepted,blank,invalid,too_short,too_long}'
 # - '{devise,simple_form}.*'
 
@@ -144,6 +146,7 @@ ignore_unused:
     - "activerecord.errors.*" # model errors are not always explicitly used
     - "date.*" # date formats are not always explicitly used
     - "time.*" # time formats are not always explicitly used
+    - "pinwheel.*" # dynamically looked up pinwheel translations
 # - 'activerecord.attributes.*'
 # - '{devise,kaminari,will_paginate}.*'
 # - 'simple_form.{yes,no}'

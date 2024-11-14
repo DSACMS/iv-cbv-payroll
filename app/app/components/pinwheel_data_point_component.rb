@@ -16,8 +16,9 @@ class PinwheelDataPointComponent < ViewComponent::Base
   end
 
   def pay_period_with_frequency(start_date, end_date, pay_frequency)
+    translated_pay_frequency = translate_pinwheel_value("payment_frequencies", pay_frequency)
     {
-      label: I18n.t("cbv.summaries.show.pdf.caseworker.pay_period", pay_frequency: pay_frequency),
+      label: I18n.t("cbv.summaries.show.pdf.caseworker.pay_period", pay_frequency: translated_pay_frequency),
       value: I18n.t("cbv.payment_details.show.pay_period_value", start_date: format_date(start_date), end_date: format_date(end_date))
     }
   end
@@ -44,8 +45,9 @@ class PinwheelDataPointComponent < ViewComponent::Base
   end
 
   def deduction(category, amount)
+    translated_deduction_category = translate_pinwheel_value("deductions", category)
     {
-      label: I18n.t("cbv.payment_details.show.deductions", category: category&.humanize),
+      label: I18n.t("cbv.payment_details.show.deductions", category: translated_deduction_category&.humanize),
       value: format_money(amount)
     }
   end
@@ -72,23 +74,26 @@ class PinwheelDataPointComponent < ViewComponent::Base
   end
 
   def employment_status(status)
+    translated_status = translate_pinwheel_value("employment_statuses", status)
     {
       label: I18n.t("cbv.payment_details.show.employment_status"),
-      value: status&.humanize
+      value: translated_status&.humanize
     }
   end
 
   def pay_frequency(frequency)
+    translated_pay_frequency = translate_pinwheel_value("payment_frequencies", frequency)
     {
       label: I18n.t("cbv.payment_details.show.pay_frequency"),
-      value: frequency
+      value: translated_pay_frequency
     }
   end
 
   def hourly_rate(amount, unit)
+    translated_unit = translate_pinwheel_value("payment_frequencies", unit)
     {
       label: I18n.t("cbv.payment_details.show.hourly_rate"),
-      value: "#{format_money(amount)} #{unit}"
+      value: "#{format_money(amount)} #{translated_unit}"
     }
   end
 

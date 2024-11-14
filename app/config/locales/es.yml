@@ -293,17 +293,21 @@ es:
       description_2: Tenga en cuenta que este piloto está disponible actualmente solo para los participantes de SNAP en la ciudad de Nueva York y Massachusetts.
       description_3_html: '<p>Para participar, puede solicitar una invitación a su agencia del SNAP:</p><ul><li>Solicitantes de Massachusetts: Contactar al <a href="https://www.mass.gov/guides/how-to-contact-dta" target="_blank" rel="noopener noreferrer">Departamento de Asistencia Transitoria (DTA)</a></li><li>Solicitantes de la Ciudad de Nueva York: Contactar a la <a href="https://www.nyc.gov/site/hra/help/snap-application-frequently-asked-questions.page">Administración de Recursos Humanos (HRA)</a></li></ul>'
       header: Bienvenido al SNAP Income Pilot
-  payment_frequencies:
-    annually: anual
-    bi_weekly: cada dos semanas
-    daily: diario
-    hourly: por hora
-    monthly: mensual
-    per_mile: por milla
-    semi_monthly: dos veces al mes
-    semi_weekly: cada dos semanas
-    variable: variable
-    weekly: semanal
+  pinwheel:
+    deductions:
+      other: Otro
+    employment_statuses:
+      employed: empleado
+    payment_frequencies:
+      annually: anual
+      bi_weekly: cada dos semanas
+      daily: diario
+      hourly: por hora
+      monthly: mensual
+      per_mile: Por milla
+      semi_monthly: dos veces al mes
+      variable: variable
+      weekly: semanal
   shared:
     agency_full_name:
       ma: Departamento de Asistencia Transitoria de Massachusetts
