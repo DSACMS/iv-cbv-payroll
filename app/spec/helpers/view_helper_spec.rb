@@ -2,6 +2,12 @@ require 'rails_helper'
 
 RSpec.describe ViewHelper, type: :helper do
   describe '#translate_pinwheel_value' do
+    # Store the original locale before all tests
+    let(:original_locale) { I18n.default_locale }
+
+    # Reset locale after each test
+    after { I18n.locale = original_locale }
+
     context 'when locale is :es' do
       before { I18n.locale = :es }
 
