@@ -184,6 +184,7 @@ en:
         header: Find your current or most recent employer or payroll provider
         no_results_steps1: Check if your employer uses another business name or search for their payroll provider.
         no_results_steps2: Make sure you have spelled names correctly, then search again.
+        no_results_steps3: Choose from popular payroll providers or apps.
         no_results_steps_title: 'Try these steps first:'
         no_results_title: We couldn’t find your employer or payroll provider.
         payroll_providers: Payroll providers
