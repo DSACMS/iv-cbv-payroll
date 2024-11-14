@@ -1,7 +1,7 @@
 # This class is responsible for redacting data on all models in accordance with
 # our data retention policy.
 class DataRetentionService
-  # Redact unstarted invitations 7 days after they expire
+  # Redact unstarted and incomplete invitations 7 days after they expire
   REDACT_UNUSED_INVITATIONS_AFTER = 7.days
 
   # Redact transmitted CbvFlows 7 days after they are sent to caseworker
@@ -28,11 +28,26 @@ class DataRetentionService
       .unredacted
       .includes(:cbv_flow_invitation)
       .find_each do |cbv_flow|
-        invitation_redact_at = cbv_flow.cbv_flow_invitation.expires_at + REDACT_UNUSED_INVITATIONS_AFTER
-        next unless Time.now.after?(invitation_redact_at)
+        if cbv_flow.cbv_flow_invitation.present?
+          # Redact CbvFlow records (together with their invitations) some period
+          # after the invitation expires.
+          invitation_redact_at = cbv_flow.cbv_flow_invitation.expires_at + REDACT_UNUSED_INVITATIONS_AFTER
+          next unless Time.now.after?(invitation_redact_at)
 
-        cbv_flow.redact!
-        cbv_flow.cbv_flow_invitation.redact! if cbv_flow.cbv_flow_invitation.present?
+          cbv_flow.redact!
+          cbv_flow.cbv_flow_invitation.redact!
+        else
+          # Redact standalone CbvFlow records some period after their last
+          # update.
+          #
+          # Although the CbvFlow is not updated on every page, sessions time out
+          # after 30 minutes, so it would be extremely unlikely for a valid
+          # session to still be in progress after 7 days.
+          flow_redact_at = cbv_flow.updated_at + REDACT_UNUSED_INVITATIONS_AFTER
+          next unless Time.now.after?(flow_redact_at)
+
+          cbv_flow.redact!
+        end
       end
   end
 

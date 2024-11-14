@@ -115,17 +115,38 @@ search:
 #     formality: prefer_less
 ## Do not consider these keys missing:
 ignore_missing:
-  - 'shared.languages.*'
-  - 'shared.header.{title,close,demo_banner,menu}'
+  all:
+    - 'shared.languages.*'
+    - 'shared.header.{title,close,demo_banner,menu}'
+  en:
+    - "date.*"    # Defaults provided by rails-i18n
+    - "time.*"    # Defaults provided by rails-i18n
+    - "payment_frequencies.*"   # Helper method uses English values directly
+  es:
+    # Caseworker pages that are only supported in English:
+    - "caseworker.cbv_flow_invitations.*"
+    - "caseworker.dashboards.*"
+    - "caseworker.entries.*"
+    # Caseworker emails that are only supported in English:
+    - "activerecord.errors.models.cbv_flow_invitation.*"
+    - "caseworker_mailer.summary_email.*"
+    # Caseworker PDF strings that are only supported in English:
+    - "cbv.summaries.show.pdf.caseworker.*"
+    # Applicant invitation reminder emails taht are only supported in English:
+    - "applicant_mailer.invitation_reminder_email.*"
+    # Pinwheel values that are only supported in English:
+    - "pinwheel.*"
 # - 'errors.messages.{accepted,blank,invalid,too_short,too_long}'
 # - '{devise,simple_form}.*'
 
 ## Consider these keys used:
 ignore_unused:
-  - "*.{nyc,ma,sandbox,default}" # site-specific translations
-  - "activerecord.errors.*" # model errors are not always explicitly used
-  - "date.*" # date formats are not always explicitly used
-  - "time.*" # time formats are not always explicitly used
+  all:
+    - "*.{nyc,ma,sandbox,default}" # site-specific translations
+    - "activerecord.errors.*" # model errors are not always explicitly used
+    - "date.*" # date formats are not always explicitly used
+    - "time.*" # time formats are not always explicitly used
+    - "pinwheel.*" # dynamically looked up pinwheel translations
 # - 'activerecord.attributes.*'
 # - '{devise,kaminari,will_paginate}.*'
 # - 'simple_form.{yes,no}'

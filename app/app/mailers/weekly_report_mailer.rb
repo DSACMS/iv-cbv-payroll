@@ -41,7 +41,8 @@ class WeeklyReportMailer < ApplicationMailer
           invited_at: invitation.created_at,
           transmitted_at: cbv_flow&.transmitted_at,
           completed_at: cbv_flow&.consented_to_authorized_use_at,
-          snap_application_date: invitation.snap_application_date
+          snap_application_date: invitation.snap_application_date,
+          email_address: invitation.email_address
         }
 
         case current_site.id
