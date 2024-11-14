@@ -87,7 +87,6 @@ class PinwheelDataPointComponent < ViewComponent::Base
       label: I18n.t("cbv.payment_details.show.pay_frequency"),
       value: translated_pay_frequency
     }
-
   end
 
   def hourly_rate(amount, unit)
