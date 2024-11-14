@@ -1,8 +1,5 @@
 ---
 en:
-  pinwheel:
-    other: other
-    employed: employed
   activerecord:
     errors:
       models:
@@ -52,22 +49,21 @@ en:
         default: Verify your income for your SNAP application or renewal
         ma: Verify your income to renew your SNAP benefits
     invitation_reminder_email:
-      pilot_name: SNAP Income Pilot
       feedback_button: Share your feedback
       feedback_header: Do you have any comments about the SNAP pilot?
       footer: This is an automatically generated message from %{agency_acronym}. Please don't reply to this email.
       greeting: Hello,
       instructions: Log into your payroll provider account (for example, ADP, Lyft or Amazon Flex) to share your income data directly with %{agency_acronym}. If you miss the deadline, this link will expire and you'll need to request for a new invite.
       main_action_html:
+        default: "<strong>Verify your income</strong> as part of your application by <strong>%{deadline}</strong>."
         ma: "<strong>Verify your income</strong> as part of your SNAP recertification by <strong>%{deadline}</strong>."
         nyc: "<strong>Verify your income</strong> as part of your SNAP application or recertification by <strong>%{deadline}</strong>."
         sandbox: "<strong>Verify your income</strong> as part of your application by <strong>%{deadline}</strong>."
-        default: "<strong>Verify your income</strong> as part of your application by <strong>%{deadline}</strong>."
       subject:
+        default: 'Reminder: Verify your income for your SNAP application or renewal'
         ma: 'Reminder: Verify your income to renew your SNAP benefits'
         nyc: 'Reminder: Verify your income to renew or apply for your SNAP benefits'
         sandbox: 'Reminder: Verify your income for your SNAP application or renewal'
-        default: 'Reminder: Verify your income for your SNAP application or renewal'
       verify_income_button: Verify your income
   caseworker:
     cbv_flow_invitations:
@@ -392,6 +388,9 @@ en:
       description_2: Please note this pilot is currently available only to SNAP participants in New York City and Massachusetts.
       description_3_html: '<p>To participate, you can request an invitation from your SNAP agency:</p><ul><li>Massachusetts applicants: Contact the <a href="https://www.mass.gov/guides/how-to-contact-dta" target="_blank" rel="noopener noreferrer">Department of Transitional Assistance (DTA)</a></li><li>New York City applicants: Contact the <a href="https://www.nyc.gov/site/hra/help/snap-application-frequently-asked-questions.page">Human Resources Administration (HRA)</a></li></ul>'
       header: Welcome to the SNAP Income Pilot
+  pinwheel:
+    employed: employed
+    other: other
   shared:
     agency_full_name:
       ma: Massachusetts Department of Transitional Assistance

@@ -22,6 +22,16 @@ es:
       subject:
         default: Verifique sus ingresos para su solicitud o renovación de SNAP
         ma: Verifique sus ingresos para renovar sus beneficios de SNAP
+    invitation_reminder_email:
+      feedback_button: Comparta tus comentarios
+      feedback_header: "¿Tiene algún comentario sobre el programa piloto de SNAP?"
+      greeting: Hola,
+      instructions: Inicia sesión en su cuenta de proveedor de nóminas (por ejemplo, ADP, Lyft o Amazon Flex) para compartir sus datos de ingresos directamente con %{agency_acronym}. Si usted no cumple con la fecha límite, este enlace expirará y tendrá que solicitar una nueva invitación.
+      subject:
+        default: 'Recordatorio: Verifique sus ingresos para renovar sus beneficios de SNAP'
+        ma: 'Recordatorio: Verifique sus ingresos para renovar sus beneficios de SNAP'
+        nyc: 'Recordatorio: Verifique sus ingresos para renovar o solicitar sus beneficios de SNAP'
+      verify_income_button: Verifique sus ingresos
   caseworker:
     cbv_flow_invitations:
       create:
@@ -55,14 +65,18 @@ es:
         yes_radio: Sí, tengo otro trabajo que cumpla con los criterios
     employer_searches:
       show:
+        app_based_providers: Empleadores basados
         can_not_find_employer: No logro encontrar mi empresa ni mi proveedor de nómina
         employer_not_listed: "¿Su empleador no está en la lista?"
         exit_button_text: Salga y vaya a %{agency_short_name}
         header: Busque su más reciente empleador o proveedor de nómina
         no_results_steps1: Verifique si su empleador usa otro nombre empresarial o busque a su proveedor de nómina.
         no_results_steps2: Asegúrese de haber escrito correctamente los nombres, y busque de nuevo.
+        no_results_steps3: Elija entre proveedores o aplicaciones populares de nómina.
         no_results_steps_title: 'Intente estos pasos primero:'
         no_results_title: No pudimos encontrar su empleador ni su proveedor de nómina.
+        payroll_providers: Proveedores de nómina
+        popular_providers: O elija entre los proveedores o aplicaciones de nómina más populares
         results: Resultados
         review_button_text: Revisar mi informe de ingresos
         search: Buscar
@@ -89,8 +103,8 @@ es:
         error: Debe marcar la casilla de «acuerdo» para proceder.
       show:
         checkbox:
-          default: Marque esta casilla para aceptar que nos deja acceder a su información de pago y  compartirla con %{agency_full_name}. Marque esta casilla para aceptar que nos deja acceder a su información de pago y  compartirla con %{agency_full_name}.
-          nyc: Marque esta casilla para aceptar que nos deja acceder a su información de pago y  compartirla con %{agency_full_name}. No utilizaremos la información para ningún otro propósito ni la divulgaremos a ninguna otra parte.
+          default: Marque esta casilla para aceptar que nos deja acceder a su información de pago y compartirla con %{agency_full_name}. Marque esta casilla para aceptar que nos deja acceder a su información de pago y compartirla con %{agency_full_name}.
+          nyc: Marque esta casilla para aceptar que nos deja acceder a su información de pago y compartirla con %{agency_full_name}. No utilizaremos la información para ningún otro propósito ni la divulgaremos a ninguna otra parte.
         continue: Comenzar
         header: Verifiquemos sus ingresos
         step1: Busque e inicie sesión en su empleador o proveedor de nómina en línea.
@@ -296,8 +310,10 @@ es:
   pinwheel:
     deductions:
       other: Otro
+    employed: Empleado
     employment_statuses:
       employed: empleado
+    other: Otro
     payment_frequencies:
       annually: anual
       bi_weekly: cada dos semanas
