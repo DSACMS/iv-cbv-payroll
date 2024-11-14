@@ -22,7 +22,7 @@ class Webhooks::Pinwheel::EventsController < ApplicationController
       pinwheel_account = PinwheelAccount.find_by_pinwheel_account_id(params["payload"]["account_id"])
       pinwheel_account.update!(PinwheelAccount::EVENTS_MAP[params["event"]] => Time.now) if pinwheel_account.present?
 
-      if params.dig("payload", "outcome") == "error"
+      if params.dig("payload", "outcome") == "error" || params.dig("payload", "outcome") == "pending"
         pinwheel_account.update!(PinwheelAccount::EVENTS_ERRORS_MAP[params["event"]] => Time.now) if pinwheel_account.present?
       end
 
