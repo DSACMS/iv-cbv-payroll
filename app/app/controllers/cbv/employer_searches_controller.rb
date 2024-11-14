@@ -12,9 +12,9 @@ class Cbv::EmployerSearchesController < Cbv::BaseController
 
     case @type
     when "payroll"
-      track_clicked_popular_payroll_providers_event
+      track_clicked_popular_payroll_providers_event if params[:type].present?
     when "employer"
-      track_clicked_popular_app_employers_event
+      track_clicked_popular_app_employers_event if params[:type].present?
     end
   end
 
