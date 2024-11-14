@@ -30,6 +30,30 @@ RSpec.describe Cbv::EmployerSearchesController do
           ))
         get :show
       end
+
+      it "tracks event when clicking popular payroll providers" do
+        allow(NewRelicEventTracker).to receive(:track).with("ApplicantAccessedSearchPage", any_args)
+        expect(NewRelicEventTracker)
+          .to receive(:track)
+          .with("ApplicantClickedPopularPayrollProviders", hash_including(
+            timestamp: be_a(Integer),
+            cbv_flow_id: cbv_flow.id,
+            invitation_id: cbv_flow.cbv_flow_invitation_id
+          ))
+        get :show, params: { type: "payroll" }
+      end
+
+      it "tracks event when clicking popular app employers" do
+        allow(NewRelicEventTracker).to receive(:track).with("ApplicantAccessedSearchPage", any_args)
+        expect(NewRelicEventTracker)
+          .to receive(:track)
+          .with("ApplicantClickedPopularAppEmployers", hash_including(
+            timestamp: be_a(Integer),
+            cbv_flow_id: cbv_flow.id,
+            invitation_id: cbv_flow.cbv_flow_invitation_id
+          ))
+        get :show, params: { type: "employer" }
+      end
     end
 
     context "when there are no employer search results" do
