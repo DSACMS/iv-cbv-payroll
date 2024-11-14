@@ -1,5 +1,5 @@
 import { Controller } from "@hotwired/stimulus"
-import { loadPinwheel, initializePinwheel, fetchToken } from "../../utilities/pinwheel"
+import { loadPinwheel, initializePinwheel, fetchToken, trackUserAction } from "../../utilities/pinwheel"
 
 export default class extends Controller {
   static targets = [
@@ -52,9 +52,12 @@ export default class extends Controller {
   }
 
   async select(event) {
-    const { responseType, id } = event.target.dataset;
-    this.disableButtons()
     const locale = this.getDocumentLocale();
+
+    const { responseType, id, name } = event.target.dataset;
+    await trackUserAction(responseType, id, name, locale)
+
+    this.disableButtons()
     const { token } = await fetchToken(responseType, id, locale);
     this.submit(token);
   }

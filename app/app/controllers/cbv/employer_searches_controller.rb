@@ -12,9 +12,9 @@ class Cbv::EmployerSearchesController < Cbv::BaseController
 
     case @type
     when "payroll"
-      track_applicant_clicked_popular_payroll_provider_event
-    when "app"
-      track_applicant_clicked_popular_app_employer_event
+      track_clicked_popular_payroll_providers_event
+    when "employer"
+      track_clicked_popular_app_employers_event
     end
   end
 
@@ -33,24 +33,24 @@ class Cbv::EmployerSearchesController < Cbv::BaseController
     pinwheel.fetch_items(request_params)["data"]
   end
 
-  def track_applicant_clicked_popular_payroll_provider_event
-    NewRelicEventTracker.track("ApplicantClickedPopularPayrollProvider", {
+  def track_clicked_popular_payroll_providers_event
+    NewRelicEventTracker.track("ApplicantClickedPopularPayrollProviders", {
       timestamp: Time.now.to_i,
       cbv_flow_id: @cbv_flow.id,
       invitation_id: @cbv_flow.cbv_flow_invitation_id,
     })
   rescue => ex
-    Rails.logger.error "Unable to track NewRelic event (ApplicantClickedPopularPayrollProvider): #{ex}"
+    Rails.logger.error "Unable to track NewRelic event (ApplicantClickedPopularPayrollProviders): #{ex}"
   end
 
-  def track_applicant_clicked_popular_app_employer_event
-    NewRelicEventTracker.track("ApplicantClickedPopularAppEmployer", {
+  def track_clicked_popular_app_employers_event
+    NewRelicEventTracker.track("ApplicantClickedPopularAppEmployers", {
       timestamp: Time.now.to_i,
       cbv_flow_id: @cbv_flow.id,
       invitation_id: @cbv_flow.cbv_flow_invitation_id,
     })
   rescue => ex
-    Rails.logger.error "Unable to track NewRelic event (ApplicantClickedPopularAppEmployer): #{ex}"
+    Rails.logger.error "Unable to track NewRelic event (ApplicantClickedPopularAppEmployers): #{ex}"
   end
 
   def track_accessed_search_event
