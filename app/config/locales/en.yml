@@ -48,6 +48,21 @@ en:
       subject:
         default: Verify your income for your SNAP application or renewal
         ma: Verify your income to renew your SNAP benefits
+    invitation_reminder_email:
+      feedback_button: Share your feedback
+      feedback_header: Do you have any comments about the SNAP pilot?
+      footer: This is an automatically generated message from %{agency_acronym}. Please don't reply to this email.
+      greeting: Hello,
+      instructions: Log into your payroll provider account (for example, ADP, Lyft or Amazon Flex) to share your income data directly with %{agency_acronym}. If you miss the deadline, this link will expire and you'll need to request for a new invite.
+      main_action_html:
+        ma: "<strong>Verify your income</strong> as part of your SNAP recertification by <strong>%{deadline}</strong>."
+        nyc: "<strong>Verify your income</strong> as part of your SNAP application or recertification by <strong>%{deadline}</strong>."
+        sandbox: "<strong>Verify your income</strong> as part of your application by <strong>%{deadline}</strong>."
+      subject:
+        ma: 'Reminder: Verify your income to renew your SNAP benefits'
+        nyc: 'Reminder: Verify your income to renew or apply for your SNAP benefits'
+        sandbox: 'Reminder: Verify your income for your SNAP application or renewal'
+      verify_income_button: Verify your income
   caseworker:
     cbv_flow_invitations:
       create:
@@ -157,24 +172,6 @@ en:
         no_radio: No, I don’t have another job that meets the criteria
         subheader: Please add other jobs you’ve had in the past %{pay_income_days} days, even if you're no longer at that job.
         yes_radio: Yes, I have another job that meets the criteria
-    agreements:
-      create:
-        error: You must check the agreement checkbox to proceed.
-      show:
-        checkbox:
-          default: Check this box to agree to let us access your payment information and share it with the %{agency_full_name}.
-          nyc: Check this box to agree to let Nava access your payment information and share it with the %{agency_full_name}. We will not use the information for any other purpose nor redisclose it to any other party.
-        continue: Continue
-        header: Let's verify your income
-        step1: Find your most recent employer or online payroll provider.
-        step1_description: A payroll provider is a system that some employers or companies use to handle payroll, pay processing, and distribute paychecks and direct deposit. Examples of popular payroll providers are ADP, Paychex, Gusto, etc.
-        step2: Sign into your employer or payroll provider account.
-        step2_description: Use the login credentials you have for viewing your online pay stub. If you work for an app, like Uber, this would be the same login when you sign into the Uber app. We will not share or keep your login information.
-        step3: Review your payment information.
-        step3_description: Payment information includes pay date, pay amount, and hours worked. Repeat steps 1 to 3 if you have other employers to add.
-        step4: Submit your payment information.
-        step4_description: We’ll automatically send it to %{agency_acronym}.
-        steps_intro: 'To verify your income, you''ll need to complete these four simple steps:'
     employer_searches:
       show:
         can_not_find_employer: I can’t find my company or payroll provider
@@ -207,29 +204,21 @@ en:
         what_is_html: "<strong>What is a payroll provider?</strong> A payroll provider is a system that some employers or companies use to handle payroll, pay processing, and distribute paychecks and direct deposit. Examples of popular payroll providers are ADP, Paychex, Gusto, etc."
         you_ll_go: You’ll go to their login portal and sign in to see your payment history.
     entries:
+      create:
+        error: You must check the agreement checkbox to proceed.
       show:
-        cant_use_1: You haven’t earned income from a job in the past 90 days
-        cant_use_2: You have a job that pays via PayPal, Venmo, Cash App, etc.
-        cant_use_3: You have a job that pays in cash
-        cant_use_4: You have a job that pays you with a paper check and you cannot view your paycheck online
-        cant_use_5: You have a job that issues a 1099
-        cant_use_if: 'You won''t be able to verify your income with this tool if:'
-        do_app_based_work: Do app-based gig work (like Uber, Lyft, DoorDash)
-        get_started: Get Started
-        has_income_90_days: 'You can use this tool if you have earned income in the last 90 days and:'
-        has_online_payroll_provider: Can view your paychecks through your company or company's online payroll provider. Most people who receive pay stubs or W-2 tax forms have an online payroll provider. If you’re unsure, ask your employer.
-        header:
-          default: "%{agency_acronym} is piloting a new way to quickly verify your income"
-          ma: Get %{agency_acronym} your income right away
-        security_message_html: "<strong>Your information is secure.</strong> We won't share or keep your log in information. You will be able to preview and approve everything that is shared with %{agency_acronym}."
-        stopped_working: Have stopped working or lost a job (but earned income in the past 90 days).
-        subheader: We’ll send the payment records from your employer(s) to %{agency_acronym}. This will help you prove your income and can help %{agency_acronym} get to a decision faster.
-        subheader_1: Who can use this tool
-        subheader_2: Who can't use this tool
-        subheader_3: What you need
-        you_can_get_started: 'You can get started right away with this information:'
-        your_employers_name: Your employer's name or the name of their payroll provider
-        your_login_credentials: Your login information for viewing your paystubs online
+        checkbox:
+          default: Check this box to agree to let us access your payment information and share it with the %{agency_full_name}.
+          nyc: Check this box to agree to let Nava access your payment information and share it with the %{agency_full_name}. We will not use the information for any other purpose nor redisclose it to any other party.
+        continue: Get started
+        header: Let's verify your income
+        step1: Search and sign into your employer or online payroll provider.
+        step1_description: Use the login credentials you have for viewing your online pay stub. We won’t share or keep your login information. If you work for an app, like Uber, this would be the same login when you sign into the Uber app.
+        step2: Review your payment information.
+        step2_description: You will be able to preview and approve everything that is shared with %{agency_acronym}.
+        step3: Submit your payment information.
+        step3_description: We’ll automatically send it to %{agency_acronym}. This will help you prove your income and can help %{agency_acronym} get to a decision faster.
+        subheader_html: 'We’ll send your payment records from your employer(s) to %{agency_acronym} to verify your income. <strong>Most people complete this process in under 5 minutes.</strong> Just follow these steps:'
     error_invalid_token: The invitation link used is not valid. Double check the link and try again. If you continue experiencing issues, contact your caseworker.
     error_missing_token_html: "<strong>Your session has timed out due to inactivity.</strong> To continue where you left off, please click the link you received from your SNAP agency in your email. If you encounter any issues, contact your SNAP agency for assistance."
     error_no_access: We weren't able to load payroll data for this account. Please click the link you received from your SNAP agency to try again.
@@ -352,7 +341,10 @@ en:
             employment_payment_details: Employment and Payment details
             header: Income Verification Report
           shared:
+            client_information: Client Information
             confirmation_code: Confirmation code
+            employment_information: Employment information
+            report_details: Report Details
         phone_number: Employer phone
         send_report: Share my report with %{agency_acronym}
         table_caption: 'Employer %{number}: %{employer_name}'
@@ -363,6 +355,15 @@ en:
         total_payments_desc: This is the total gross income from your job(s) before taxes, benefits and deductions were taken out of your paycheck.
       update:
         consent_to_authorize_warning: You must check the legal agreement checkbox to proceed.
+    synchronization_failures:
+      show:
+        back_to_search: Back to employer search
+        continue_to_report: Continue to Report
+        description: 'We were unable to connect to your employer''s system due to an error. To continue, you can:'
+        option_1: Go back to employer search to retry adding this employer.
+        option_2: Go back to employer search to add another job.
+        option_3: Submit your income information for this employer by visiting %{agency_acronym}'s website.
+        title: We couldn't access your employer information
     synchronizations:
       indicators:
         employment: Employment
@@ -425,6 +426,7 @@ en:
     boolean_true: 'Yes'
     date_picker_format: 'Format: mm/dd/yyyy'
     optional: Optional
+    tax_id_format: 'Format: 123456789'
   users:
     omniauth_callbacks:
       authentication_successful: You are signed in.

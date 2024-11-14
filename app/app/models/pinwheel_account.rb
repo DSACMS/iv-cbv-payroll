@@ -50,6 +50,10 @@ class PinwheelAccount < ApplicationRecord
     end
   end
 
+  def has_required_data?
+    job_succeeded?("paystubs")
+  end
+
   private
 
   def event_columns_for(job)
