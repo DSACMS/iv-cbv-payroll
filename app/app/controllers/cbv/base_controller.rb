@@ -14,20 +14,18 @@ class Cbv::BaseController < ApplicationController
       if invitation.blank?
         return redirect_to(root_url, flash: { alert: t("cbv.error_invalid_token") })
       end
-
-      @cbv_flow = CbvFlow.create_from_invitation(invitation)
-      session[:cbv_flow_id] = @cbv_flow.id
-
       if invitation.expired?
-        track_expired_event(session[:cbv_flow_id])
+        track_expired_event(invitation.id)
         return redirect_to(cbv_flow_expired_invitation_path(site_id: invitation.site_id))
       end
       if invitation.complete?
         return redirect_to(cbv_flow_expired_invitation_path(site_id: invitation.site_id))
       end
 
+      @cbv_flow = CbvFlow.create_from_invitation(invitation)
+      session[:cbv_flow_id] = @cbv_flow.id
       track_invitation_clicked_event(invitation, @cbv_flow)
-      
+
     elsif session[:cbv_flow_id]
       begin
         @cbv_flow = CbvFlow.find(session[:cbv_flow_id])
@@ -87,7 +85,7 @@ class Cbv::BaseController < ApplicationController
     response.headers["Expires"] = "#{1.year.ago}"
   end
 
-  def track_timeout_event()
+  def track_timeout_event
     NewRelicEventTracker.track("ApplicantTimedOut", {
       timestamp: Time.now.to_i
     })
