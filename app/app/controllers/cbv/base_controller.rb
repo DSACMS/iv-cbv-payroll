@@ -14,22 +14,20 @@ class Cbv::BaseController < ApplicationController
       if invitation.blank?
         return redirect_to(root_url, flash: { alert: t("cbv.error_invalid_token") })
       end
+
+      @cbv_flow = CbvFlow.create_from_invitation(invitation)
+      session[:cbv_flow_id] = @cbv_flow.id
+
       if invitation.expired?
+        track_expired_event(session[:cbv_flow_id])
         return redirect_to(cbv_flow_expired_invitation_path(site_id: invitation.site_id))
       end
       if invitation.complete?
         return redirect_to(cbv_flow_expired_invitation_path(site_id: invitation.site_id))
       end
 
-      @cbv_flow = CbvFlow.create_from_invitation(invitation)
-      session[:cbv_flow_id] = @cbv_flow.id
-      NewRelicEventTracker.track("ClickedCBVInvitationLink", {
-        timestamp: Time.now.to_i,
-        invitation_id: invitation.id,
-        cbv_flow_id: @cbv_flow.id,
-        site_id: @cbv_flow.site_id,
-        seconds_since_invitation: (Time.now - invitation.created_at).to_i
-      })
+      track_invitation_clicked_event(invitation, @cbv_flow)
+      
     elsif session[:cbv_flow_id]
       begin
         @cbv_flow = CbvFlow.find(session[:cbv_flow_id])
@@ -89,11 +87,32 @@ class Cbv::BaseController < ApplicationController
     response.headers["Expires"] = "#{1.year.ago}"
   end
 
-  def track_timeout_event
+  def track_timeout_event()
     NewRelicEventTracker.track("ApplicantTimedOut", {
       timestamp: Time.now.to_i
     })
   rescue => ex
     Rails.logger.error "Unable to track NewRelic event (ApplicantTimedOut): #{ex}"
+  end
+
+  def track_expired_event(cbv_flow_id)
+    NewRelicEventTracker.track("ApplicantLinkExpired", {
+      cbv_flow_id: cbv_flow_id,
+      timestamp: Time.now.to_i
+    })
+  rescue => ex
+    Rails.logger.error "Unable to track NewRelic event (ApplicantLinkExpired): #{ex}"
+  end
+
+  def track_invitation_clicked_event(invitation, cbv_flow)
+    NewRelicEventTracker.track("ClickedCBVInvitationLink", {
+      timestamp: Time.now.to_i,
+      invitation_id: invitation.id,
+      cbv_flow_id: cbv_flow.id,
+      site_id: cbv_flow.site_id,
+      seconds_since_invitation: (Time.now - invitation.created_at).to_i
+    })
+  rescue => ex
+    Rails.logger.error "Unable to track NewRelic event (ClickedCBVInvitationLink): #{ex}"
   end
 end
