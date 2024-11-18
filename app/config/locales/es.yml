@@ -27,11 +27,6 @@ es:
       feedback_header: "¿Tiene algún comentario sobre el programa piloto de SNAP?"
       greeting: Hola,
       instructions: Inicia sesión en su cuenta de proveedor de nóminas (por ejemplo, ADP, Lyft o Amazon Flex) para compartir sus datos de ingresos directamente con %{agency_acronym}. Si usted no cumple con la fecha límite, este enlace expirará y tendrá que solicitar una nueva invitación.
-      subject:
-        default: 'Recordatorio: Verifique sus ingresos para renovar sus beneficios de SNAP'
-        ma: 'Recordatorio: Verifique sus ingresos para renovar sus beneficios de SNAP'
-        nyc: 'Recordatorio: Verifique sus ingresos para renovar o solicitar sus beneficios de SNAP'
-      verify_income_button: Verifique sus ingresos
   caseworker:
     cbv_flow_invitations:
       create:

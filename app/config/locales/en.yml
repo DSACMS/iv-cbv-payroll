@@ -388,9 +388,6 @@ en:
       description_2: Please note this pilot is currently available only to SNAP participants in New York City and Massachusetts.
       description_3_html: '<p>To participate, you can request an invitation from your SNAP agency:</p><ul><li>Massachusetts applicants: Contact the <a href="https://www.mass.gov/guides/how-to-contact-dta" target="_blank" rel="noopener noreferrer">Department of Transitional Assistance (DTA)</a></li><li>New York City applicants: Contact the <a href="https://www.nyc.gov/site/hra/help/snap-application-frequently-asked-questions.page">Human Resources Administration (HRA)</a></li></ul>'
       header: Welcome to the SNAP Income Pilot
-  pinwheel:
-    employed: employed
-    other: other
   shared:
     agency_full_name:
       ma: Massachusetts Department of Transitional Assistance
