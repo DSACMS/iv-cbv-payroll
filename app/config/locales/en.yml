@@ -269,37 +269,10 @@ en:
         hours:
           one: "%{count} hour"
           other: "%{count} hours"
-        hours_category:
-          bereavement: Bereavement
-          bonus: Bonus
-          commission: Commission
-          disability: Disability
-          double_overtime: Double Overtime
-          employer_contribution: Employer Contribution
-          fare: Fare
-          holiday: Holiday
-          hourly: Hourly Wage
-          life_insurance: Life Insurance
-          meal_comp: Meal Comp
-          medical: Medical
-          other: Other Pay
-          overtime: Overtime
-          parental: Parental
-          premium: Premium
-          pto: Paid Time Off
-          retirement: Retirement
-          retro_pay: Retroactive Pay
-          salary: Salary
-          shift_differential: Shift Differential
-          sick: Sick Time
-          stock: Stock
-          tips: Tips
-          unpaid: Unpaid
-          vacation: Vacation
         hours_paid: "%{category}: Hours paid"
         none_found: We didn't find any payments from this employer in the past 90 days.
         none_found_description: This typically happens when you haven't received income from this job in the past 90 days. If you believe this is an error, please add a comment in the additional comments box. Otherwise, continue to the next page.
-        number_of_hours_worked: Number of hours worked
+        number_of_hours_worked: Number of hours paid
         pay_date: 'Pay Date: %{pay_date}'
         pay_frequency: Pay period frequency
         pay_gross: Payment before taxes (gross)
@@ -413,6 +386,34 @@ en:
       description_2: Please note this pilot is currently available only to SNAP participants in New York City and Massachusetts.
       description_3_html: '<p>To participate, you can request an invitation from your SNAP agency:</p><ul><li>Massachusetts applicants: Contact the <a href="https://www.mass.gov/guides/how-to-contact-dta" target="_blank" rel="noopener noreferrer">Department of Transitional Assistance (DTA)</a></li><li>New York City applicants: Contact the <a href="https://www.nyc.gov/site/hra/help/snap-application-frequently-asked-questions.page">Human Resources Administration (HRA)</a></li></ul>'
       header: Welcome to the SNAP Income Pilot
+  pinwheel:
+    earnings_category:
+      bereavement: Bereavement
+      bonus: Bonus
+      commission: Commission
+      disability: Disability
+      double_overtime: Double Overtime
+      employer_contribution: Employer Contribution
+      fare: Fare
+      holiday: Holiday
+      hourly: Hourly Wage
+      life_insurance: Life Insurance
+      meal_comp: Meal Comp
+      medical: Medical
+      other: Other Pay
+      overtime: Overtime
+      parental: Parental
+      premium: Premium
+      pto: Paid Time Off
+      retirement: Retirement
+      retro_pay: Retroactive Pay
+      salary: Salary
+      shift_differential: Shift Differential
+      sick: Sick Time
+      stock: Stock
+      tips: Tips
+      unpaid: Unpaid
+      vacation: Vacation
   shared:
     agency_full_name:
       ma: Massachusetts Department of Transitional Assistance

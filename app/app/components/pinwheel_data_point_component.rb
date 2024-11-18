@@ -44,6 +44,15 @@ class PinwheelDataPointComponent < ViewComponent::Base
     }
   end
 
+  def earnings_entry(category, hours)
+    translated_category_name = translate_pinwheel_value("earnings_category", category)
+
+    {
+      label: I18n.t("cbv.payment_details.show.hours_paid", category: translated_category_name),
+      value: I18n.t("cbv.payment_details.show.hours", count: hours)
+    }
+  end
+
   def deduction(category, amount)
     translated_deduction_category = translate_pinwheel_value("deductions", category)
     {
