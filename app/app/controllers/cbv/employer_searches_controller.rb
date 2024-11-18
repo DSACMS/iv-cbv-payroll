@@ -8,20 +8,20 @@ class Cbv::EmployerSearchesController < Cbv::BaseController
     @query = search_params[:query]
     @employers = @query.blank? ? [] : fetch_employers(@query)
     @has_pinwheel_account = @cbv_flow.pinwheel_accounts.any?
-    @type = search_params[:type]
+    @selected_tab = search_params[:type] || "payroll"
 
-    case @type
+    case search_params[:type]
     when "payroll"
-      track_clicked_popular_payroll_providers_event if params[:type].present?
+      track_clicked_popular_payroll_providers_event
     when "employer"
-      track_clicked_popular_app_employers_event if params[:type].present?
+      track_clicked_popular_app_employers_event
     end
   end
 
   private
 
   def search_params
-    params.permit(:query, :type).with_defaults(type: "payroll")
+    params.permit(:query, :type)
   end
 
   def fetch_employers(query = "")
