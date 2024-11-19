@@ -70,6 +70,7 @@ es:
         results: Resultados
         review_button_text: Revisar mi informe de ingresos
         search: Buscar
+        search_label: 'Ingrese el nombre de su empleador actual o reciente o proveedor de nómina:'
         select: Seleccione
         select_button_aria_label: Abra una ventana de autenticación para que el empleador o proveedor de nómina importe su historial de pago.
         to_continue: 'Si aún no ve enumerado a su empleador ni a su proveedor de nómina:'
