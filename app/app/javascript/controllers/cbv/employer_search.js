@@ -1,5 +1,5 @@
 import { Controller } from "@hotwired/stimulus"
-import { loadPinwheel, initializePinwheel, fetchToken } from "../../utilities/pinwheel"
+import { loadPinwheel, initializePinwheel, fetchToken, trackUserAction } from "../../utilities/pinwheel"
 
 export default class extends Controller {
   static targets = [
@@ -48,13 +48,20 @@ export default class extends Controller {
   }
 
   getDocumentLocale() {
-    return document.documentElement.lang
+    const docLocale = document.documentElement.lang;
+    if (docLocale) return docLocale;
+    // Extract locale from URL path (e.g., /en/cbv/employer_search)
+    const pathMatch = window.location.pathname.match(/^\/([a-z]{2})\//i);
+    return pathMatch ? pathMatch[1] : 'en';
   }
 
   async select(event) {
-    const { responseType, id } = event.target.dataset;
-    this.disableButtons()
     const locale = this.getDocumentLocale();
+
+    const { responseType, id, name } = event.target.dataset;
+    await trackUserAction(responseType, id, name, locale)
+
+    this.disableButtons()
     const { token } = await fetchToken(responseType, id, locale);
     this.submit(token);
   }

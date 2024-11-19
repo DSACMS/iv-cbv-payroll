@@ -8,12 +8,20 @@ class Cbv::EmployerSearchesController < Cbv::BaseController
     @query = search_params[:query]
     @employers = @query.blank? ? [] : fetch_employers(@query)
     @has_pinwheel_account = @cbv_flow.pinwheel_accounts.any?
+    @selected_tab = search_params[:type] || "payroll"
+
+    case search_params[:type]
+    when "payroll"
+      track_clicked_popular_payroll_providers_event
+    when "employer"
+      track_clicked_popular_app_employers_event
+    end
   end
 
   private
 
   def search_params
-    params.permit(:query)
+    params.permit(:query, :type)
   end
 
   def fetch_employers(query = "")
@@ -23,6 +31,26 @@ class Cbv::EmployerSearchesController < Cbv::BaseController
     }
 
     pinwheel.fetch_items(request_params)["data"]
+  end
+
+  def track_clicked_popular_payroll_providers_event
+    NewRelicEventTracker.track("ApplicantClickedPopularPayrollProviders", {
+      timestamp: Time.now.to_i,
+      cbv_flow_id: @cbv_flow.id,
+      invitation_id: @cbv_flow.cbv_flow_invitation_id
+    })
+  rescue => ex
+    Rails.logger.error "Unable to track NewRelic event (ApplicantClickedPopularPayrollProviders): #{ex}"
+  end
+
+  def track_clicked_popular_app_employers_event
+    NewRelicEventTracker.track("ApplicantClickedPopularAppEmployers", {
+      timestamp: Time.now.to_i,
+      cbv_flow_id: @cbv_flow.id,
+      invitation_id: @cbv_flow.cbv_flow_invitation_id
+    })
+  rescue => ex
+    Rails.logger.error "Unable to track NewRelic event (ApplicantClickedPopularAppEmployers): #{ex}"
   end
 
   def track_accessed_search_event

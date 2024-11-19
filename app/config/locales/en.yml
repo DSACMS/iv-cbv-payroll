@@ -55,10 +55,12 @@ en:
       greeting: Hello,
       instructions: Log into your payroll provider account (for example, ADP, Lyft or Amazon Flex) to share your income data directly with %{agency_acronym}. If you miss the deadline, this link will expire and you'll need to request for a new invite.
       main_action_html:
+        default: "<strong>Verify your income</strong> as part of your application by <strong>%{deadline}</strong>."
         ma: "<strong>Verify your income</strong> as part of your SNAP recertification by <strong>%{deadline}</strong>."
         nyc: "<strong>Verify your income</strong> as part of your SNAP application or recertification by <strong>%{deadline}</strong>."
         sandbox: "<strong>Verify your income</strong> as part of your application by <strong>%{deadline}</strong>."
       subject:
+        default: 'Reminder: Verify your income for your SNAP application or renewal'
         ma: 'Reminder: Verify your income to renew your SNAP benefits'
         nyc: 'Reminder: Verify your income to renew or apply for your SNAP benefits'
         sandbox: 'Reminder: Verify your income for your SNAP application or renewal'
@@ -174,14 +176,18 @@ en:
         yes_radio: Yes, I have another job that meets the criteria
     employer_searches:
       show:
+        app_based_providers: App-based employers
         can_not_find_employer: I can’t find my company or payroll provider
         employer_not_listed: Employer not listed?
         exit_button_text: Exit and go to %{agency_short_name}
         header: Find your current or most recent employer or payroll provider
         no_results_steps1: Check if your employer uses another business name or search for their payroll provider.
         no_results_steps2: Make sure you have spelled names correctly, then search again.
+        no_results_steps3: Choose from popular payroll providers or apps.
         no_results_steps_title: 'Try these steps first:'
         no_results_title: We couldn’t find your employer or payroll provider.
+        payroll_providers: Payroll providers
+        popular_providers: Or choose from popular payroll providers or apps
         results: Results
         review_button_text: Review my income report
         search: Search
