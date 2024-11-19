@@ -63,6 +63,8 @@ es:
         no_results_steps2: Asegúrese de haber escrito correctamente los nombres, y busque de nuevo.
         no_results_steps_title: 'Intente estos pasos primero:'
         no_results_title: No pudimos encontrar su empleador ni su proveedor de nómina.
+        payroll_providers: Proveedores de nómina
+        popular_providers: O elija entre los proveedores o aplicaciones de nómina más populares
         results: Resultados
         review_button_text: Revisar mi informe de ingresos
         search: Buscar
