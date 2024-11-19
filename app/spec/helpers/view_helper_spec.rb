@@ -2,14 +2,12 @@ require 'rails_helper'
 
 RSpec.describe ViewHelper, type: :helper do
   describe '#translate_pinwheel_value' do
-    # Store the original locale before all tests
-    let(:original_locale) { I18n.default_locale }
-
-    # Reset locale after each test
-    after { I18n.locale = original_locale }
+    around do |ex|
+      I18n.with_locale(locale, &ex)
+    end
 
     context 'when locale is :es' do
-      before { I18n.locale = :es }
+      let(:locale) { :es }
 
       it 'returns the translated value if translation exists' do
         I18n.backend.store_translations(:es, {
@@ -45,11 +43,26 @@ RSpec.describe ViewHelper, type: :helper do
     end
 
     context 'when locale is not :es' do
-      before { I18n.locale = :en }
+      let(:locale) { :en }
 
-      it 'returns the original value regardless of translations' do
-        result = helper.translate_pinwheel_value('namespace', 'any_value')
-        expect(result).to eq('any_value')
+      it 'returns the English value' do
+        I18n.backend.store_translations(:en, {
+          pinwheel: {
+            namespace: {
+              some_value: 'Translated Value'
+            }
+          }
+        })
+
+        result = helper.translate_pinwheel_value('namespace', 'some_value')
+        expect(result).to eq('Translated Value')
+      end
+
+      context 'when there is no English value given' do
+        it 'returns the original value regardless of translations' do
+          result = helper.translate_pinwheel_value('namespace', 'any_value')
+          expect(result).to eq('any_value')
+        end
       end
     end
   end
