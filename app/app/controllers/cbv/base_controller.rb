@@ -1,5 +1,5 @@
 class Cbv::BaseController < ApplicationController
-  before_action :set_cbv_flow, :ensure_cbv_flow_not_yet_complete, :prevent_back_after_complete
+  before_action :set_cbv_flow, :ensure_cbv_flow_not_yet_complete, :prevent_back_after_complete, :capture_page_view
   helper_method :agency_url, :next_path, :get_comment_by_account_id, :current_site
 
   private
@@ -87,6 +87,20 @@ class Cbv::BaseController < ApplicationController
     response.headers["Cache-Control"] = "no-cache, no-store, max-age=0, must-revalidate"
     response.headers["Pragma"] = "no-cache"
     response.headers["Expires"] = "#{1.year.ago}"
+  end
+
+  def capture_page_view
+    client = DeviceDetector.new(request.headers["User-Agent"])
+    NewRelicEventTracker.track("CbvPageView", {
+      user_agent: request.headers["User-Agent"],
+      device_name: client.device_name,
+      device_type: client.device_type,
+      browser: client.name,
+      cbv_flow_id: @cbv_flow.id,
+      invitation_id: @cbv_flow.cbv_flow_invitation_id
+    })
+  rescue => ex
+    Rails.logger.error "Unable to track NewRelic event (CbvPageView): #{ex}"
   end
 
   def track_timeout_event
