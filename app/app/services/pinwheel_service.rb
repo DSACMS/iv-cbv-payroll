@@ -99,7 +99,7 @@ class PinwheelService
       id: "adde7178-43cd-4cc6-8857-65dfc54a77e8",
       name: "TaskRabbit",
       response_type: "employer",
-      logo_url: "https://cdn.getpinwheel.com/assets/employers/logos/Instacart%20%28Full%20Service%20Shopper%29.svg"
+      logo_url: "https://cdn.getpinwheel.com/assets/platforms/logos/search/taskRabbit.png"
     }
   ]
 

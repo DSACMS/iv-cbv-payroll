@@ -70,13 +70,8 @@ es:
         results: Resultados
         review_button_text: Revisar mi informe de ingresos
         search: Buscar
-        search_for_employer: Busque a su empleador o a su proveedor de nómina. Puede ser un antiguo empleador o un empleador actual. Compartiremos su información de ingresos con %{agency_acronym}.
         select: Seleccione
         select_button_aria_label: Abra una ventana de autenticación para que el empleador o proveedor de nómina importe su historial de pago.
-        to_access: 'Para acceder a su información de pago, busque alguna de las siguientes opciones:'
-        to_access_li_1_html: El <strong>nombre de su empleador</strong>
-        to_access_li_2_html: El <strong>proveedor de nómina</strong> del que recibe el pago
-        to_access_li_3_html: La <strong>aplicación</strong> con la que trabaja, tal como Uber, DoorDash, etc.
         to_continue: 'Si aún no ve enumerado a su empleador ni a su proveedor de nómina:'
         to_continue_li_1: Tendrá que enviar esa información de ingresos por separado.
         to_continue_li_1_html:
@@ -86,8 +81,6 @@ es:
         to_continue_li_2: Si tiene otros trabajos que añadir, búsquelos.
         to_continue_li_3: Si no tiene otros trabajos que añadir aquí, puede salir de este sitio.
         to_continue_li_3_continue: Si no tiene otros trabajos que añadir aquí, continúe a revisar su informe de ingresos.
-        what_is_html: "<strong>¿Qué es un proveedor de nómina?</strong> Un proveedor de nómina es un sistema que usan algunos empleadores o empresas para gestionar la nómina, procesar el pago y distribuir los cheques de pago y los depósitos directos. Algunos ejemplos de proveedores de pago populares son ADP, Paychex, Gusto, etc."
-        you_ll_go: Usted irá a su portal de inicio de sesión e ingresará para ver su historial de pago.
     entries:
       create:
         error: Debe marcar la casilla de «acuerdo» para proceder.
