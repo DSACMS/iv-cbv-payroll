@@ -180,7 +180,7 @@ en:
         can_not_find_employer: I can’t find my company or payroll provider
         employer_not_listed: Employer not listed?
         exit_button_text: Exit and go to %{agency_short_name}
-        header: Find your current or most recent employer or payroll provider
+        header: Search for your employer or payroll provider
         no_results_steps1: Check if your employer uses another business name or search for their payroll provider.
         no_results_steps2: Make sure you have spelled names correctly, then search again.
         no_results_steps3: Choose from popular payroll providers or apps.
@@ -191,13 +191,9 @@ en:
         results: Results
         review_button_text: Review my income report
         search: Search
-        search_for_employer: Search for your employer or payroll provider. This can be a former employer or a current employer. We will share your income information with %{agency_acronym}.
+        search_label: 'Enter the name of your current or recent employer or payroll provider:'
         select: Select
         select_button_aria_label: Open an authentication modal for the employer or payroll provider to import your payment history.
-        to_access: 'To access your payment information, search for any of the following:'
-        to_access_li_1_html: Your <strong>employer name</strong>
-        to_access_li_2_html: The <strong>payroll provider</strong> you get paid from
-        to_access_li_3_html: The <strong>app</strong> you work for, like Uber, DoorDash, etc
         to_continue: 'If you still don’t see your employer or payroll provider listed:'
         to_continue_li_1: You’ll need to submit that income information separately.
         to_continue_li_1_html:
@@ -207,8 +203,6 @@ en:
         to_continue_li_2: If you have other jobs to add, search for them.
         to_continue_li_3: If you have no other jobs to add here, you can exit this site.
         to_continue_li_3_continue: If you have no other jobs to add here, continue to review your income report.
-        what_is_html: "<strong>What is a payroll provider?</strong> A payroll provider is a system that some employers or companies use to handle payroll, pay processing, and distribute paychecks and direct deposit. Examples of popular payroll providers are ADP, Paychex, Gusto, etc."
-        you_ll_go: You’ll go to their login portal and sign in to see your payment history.
     entries:
       create:
         error: You must check the agreement checkbox to proceed.
