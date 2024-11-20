@@ -46,6 +46,7 @@
       <ol class="line-height-sans-5">
         <li><%= t("cbv.employer_searches.show.no_results_steps1") %></li>
         <li><%= t("cbv.employer_searches.show.no_results_steps2") %></li>
+        <li><%= t("cbv.employer_searches.show.no_results_steps3") %></li>
       </ol>
     </div>
     <h4><%= t("cbv.employer_searches.show.to_continue") %></h4>
@@ -64,12 +65,16 @@
     <% if @has_pinwheel_account %>
       <%= link_to t("cbv.employer_searches.show.review_button_text"), cbv_flow_summary_path, class: "usa-button margin-top-5", data: { turbo_frame: "_top" } %>
     <% else %>
-      <%= link_to t("cbv.employer_searches.show.exit_button_text", agency_short_name: current_site.agency_short_name), current_site.agency_contact_website, class: "usa-button margin-top-5", data: { turbo_frame: "_top" } %>
+      <%= link_to t("cbv.employer_searches.show.exit_button_text", agency_short_name: current_site.agency_short_name), current_site.agency_contact_website, class: "usa-button usa-button--outline margin-top-5", data: { turbo_frame: "_top" } %>
     <% end %>
+
+    <hr class="margin-y-5 border-base-light border-top-0" >
   <% elsif @employers.count > 0 %>
     <h2><%= t("cbv.employer_searches.show.employer_not_listed") %></h2>
     <%= link_to cbv_flow_missing_results_path, class: "usa-button usa-button--outline", data: { turbo_frame: "_top" } do %>
         <%= t("cbv.employer_searches.show.can_not_find_employer") %>
     <% end %>
+
+    <hr class="margin-y-5 border-base-light border-top-0" >
   <% end %>
 <% end %>

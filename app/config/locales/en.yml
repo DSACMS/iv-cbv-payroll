@@ -55,10 +55,12 @@ en:
       greeting: Hello,
       instructions: Log into your payroll provider account (for example, ADP, Lyft or Amazon Flex) to share your income data directly with %{agency_acronym}. If you miss the deadline, this link will expire and you'll need to request for a new invite.
       main_action_html:
+        default: "<strong>Verify your income</strong> as part of your application by <strong>%{deadline}</strong>."
         ma: "<strong>Verify your income</strong> as part of your SNAP recertification by <strong>%{deadline}</strong>."
         nyc: "<strong>Verify your income</strong> as part of your SNAP application or recertification by <strong>%{deadline}</strong>."
         sandbox: "<strong>Verify your income</strong> as part of your application by <strong>%{deadline}</strong>."
       subject:
+        default: 'Reminder: Verify your income for your SNAP application or renewal'
         ma: 'Reminder: Verify your income to renew your SNAP benefits'
         nyc: 'Reminder: Verify your income to renew or apply for your SNAP benefits'
         sandbox: 'Reminder: Verify your income for your SNAP application or renewal'
@@ -174,14 +176,18 @@ en:
         yes_radio: Yes, I have another job that meets the criteria
     employer_searches:
       show:
+        app_based_providers: App-based employers
         can_not_find_employer: I can’t find my company or payroll provider
         employer_not_listed: Employer not listed?
         exit_button_text: Exit and go to %{agency_short_name}
         header: Find your current or most recent employer or payroll provider
         no_results_steps1: Check if your employer uses another business name or search for their payroll provider.
         no_results_steps2: Make sure you have spelled names correctly, then search again.
+        no_results_steps3: Choose from popular payroll providers or apps.
         no_results_steps_title: 'Try these steps first:'
         no_results_title: We couldn’t find your employer or payroll provider.
+        payroll_providers: Payroll providers
+        popular_providers: Or choose from popular payroll providers or apps
         results: Results
         review_button_text: Review my income report
         search: Search
@@ -266,9 +272,13 @@ en:
         header: Your payment information from %{employer_name}
         header_no_employer_name: Your payment information from your employer
         hourly_rate: Compensation amount
+        hours:
+          one: "%{count} hour"
+          other: "%{count} hours"
+        hours_paid: "%{category}: Hours paid"
         none_found: We didn't find any payments from this employer in the past 90 days.
         none_found_description: This typically happens when you haven't received income from this job in the past 90 days. If you believe this is an error, please add a comment in the additional comments box. Otherwise, continue to the next page.
-        number_of_hours_worked: Number of hours worked
+        number_of_hours_worked: Total number of hours paid
         pay_date: 'Pay Date: %{pay_date}'
         pay_frequency: Pay period frequency
         pay_gross: Payment before taxes (gross)
@@ -382,6 +392,34 @@ en:
       description_2: Please note this pilot is currently available only to SNAP participants in New York City and Massachusetts.
       description_3_html: '<p>To participate, you can request an invitation from your SNAP agency:</p><ul><li>Massachusetts applicants: Contact the <a href="https://www.mass.gov/guides/how-to-contact-dta" target="_blank" rel="noopener noreferrer">Department of Transitional Assistance (DTA)</a></li><li>New York City applicants: Contact the <a href="https://www.nyc.gov/site/hra/help/snap-application-frequently-asked-questions.page">Human Resources Administration (HRA)</a></li></ul>'
       header: Welcome to the SNAP Income Pilot
+  pinwheel:
+    earnings_category:
+      bereavement: Bereavement
+      bonus: Bonus
+      commission: Commission
+      disability: Disability
+      double_overtime: Double Overtime
+      employer_contribution: Employer Contribution
+      fare: Fare
+      holiday: Holiday
+      hourly: Hourly Wage
+      life_insurance: Life Insurance
+      meal_comp: Meal Comp
+      medical: Medical
+      other: Other Pay
+      overtime: Overtime
+      parental: Parental
+      premium: Premium
+      pto: Paid Time Off
+      retirement: Retirement
+      retro_pay: Retroactive Pay
+      salary: Salary
+      shift_differential: Shift Differential
+      sick: Sick Time
+      stock: Stock
+      tips: Tips
+      unpaid: Unpaid
+      vacation: Vacation
   shared:
     agency_full_name:
       ma: Massachusetts Department of Transitional Assistance

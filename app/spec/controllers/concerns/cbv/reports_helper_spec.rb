@@ -50,6 +50,7 @@ RSpec.describe Cbv::ReportsHelper, type: :helper do
               start: "2020-12-10",
               gross_pay_ytd: 6971151,
               gross_pay_amount: 480720,
+              hours_by_earning_category: { "salary" => 80 },
               net_pay_amount: 321609
             }
           ],

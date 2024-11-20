@@ -55,14 +55,18 @@ es:
         yes_radio: Sí, tengo otro trabajo que cumpla con los criterios
     employer_searches:
       show:
+        app_based_providers: Empleadores basados
         can_not_find_employer: No logro encontrar mi empresa ni mi proveedor de nómina
         employer_not_listed: "¿Su empleador no está en la lista?"
         exit_button_text: Salga y vaya a %{agency_short_name}
         header: Busque su más reciente empleador o proveedor de nómina
         no_results_steps1: Verifique si su empleador usa otro nombre empresarial o busque a su proveedor de nómina.
         no_results_steps2: Asegúrese de haber escrito correctamente los nombres, y busque de nuevo.
+        no_results_steps3: Elija entre proveedores o aplicaciones populares de nómina.
         no_results_steps_title: 'Intente estos pasos primero:'
         no_results_title: No pudimos encontrar su empleador ni su proveedor de nómina.
+        payroll_providers: Proveedores de nómina
+        popular_providers: O elija entre los proveedores o aplicaciones de nómina más populares
         results: Resultados
         review_button_text: Revisar mi informe de ingresos
         search: Buscar
@@ -89,8 +93,8 @@ es:
         error: Debe marcar la casilla de «acuerdo» para proceder.
       show:
         checkbox:
-          default: Marque esta casilla para aceptar que nos deja acceder a su información de pago y  compartirla con %{agency_full_name}. Marque esta casilla para aceptar que nos deja acceder a su información de pago y  compartirla con %{agency_full_name}.
-          nyc: Marque esta casilla para aceptar que nos deja acceder a su información de pago y  compartirla con %{agency_full_name}. No utilizaremos la información para ningún otro propósito ni la divulgaremos a ninguna otra parte.
+          default: Marque esta casilla para aceptar que nos deja acceder a su información de pago y compartirla con %{agency_full_name}. Marque esta casilla para aceptar que nos deja acceder a su información de pago y compartirla con %{agency_full_name}.
+          nyc: Marque esta casilla para aceptar que nos deja acceder a su información de pago y compartirla con %{agency_full_name}. No utilizaremos la información para ningún otro propósito ni la divulgaremos a ninguna otra parte.
         continue: Comenzar
         header: Verifiquemos sus ingresos
         step1: Busque e inicie sesión en su empleador o proveedor de nómina en línea.
@@ -147,9 +151,13 @@ es:
         header: Su información de pago de %{employer_name}
         header_no_employer_name: Su información de pago por parte de su empleador
         hourly_rate: Monto de compensación
+        hours:
+          one: "%{count} hora"
+          other: "%{count} horas"
+        hours_paid: "%{category}: Horas pagadas"
         none_found: No se encontraron pagos.
         none_found_description: Esto usualmente ocurre cuando usted no ha recibido ingresos por este trabajo en los últimos 90 días. Si cree que esto es un error, agregue un comentario en la casilla de comentarios adicionales. De lo contrario, continúe en la página siguiente.
-        number_of_hours_worked: Número de horas trabajadas
+        number_of_hours_worked: Número total de horas pagadas
         pay_date: 'Fecha de pago: %{pay_date}'
         pay_frequency: Frecuencia del período de pago
         pay_gross: Pago antes de impuestos (bruto)
@@ -293,17 +301,48 @@ es:
       description_2: Tenga en cuenta que este piloto está disponible actualmente solo para los participantes de SNAP en la ciudad de Nueva York y Massachusetts.
       description_3_html: '<p>Para participar, puede solicitar una invitación a su agencia del SNAP:</p><ul><li>Solicitantes de Massachusetts: Contactar al <a href="https://www.mass.gov/guides/how-to-contact-dta" target="_blank" rel="noopener noreferrer">Departamento de Asistencia Transitoria (DTA)</a></li><li>Solicitantes de la Ciudad de Nueva York: Contactar a la <a href="https://www.nyc.gov/site/hra/help/snap-application-frequently-asked-questions.page">Administración de Recursos Humanos (HRA)</a></li></ul>'
       header: Bienvenido al SNAP Income Pilot
-  payment_frequencies:
-    annually: anual
-    bi_weekly: cada dos semanas
-    daily: diario
-    hourly: por hora
-    monthly: mensual
-    per_mile: por milla
-    semi_monthly: dos veces al mes
-    semi_weekly: cada dos semanas
-    variable: variable
-    weekly: semanal
+  pinwheel:
+    deductions:
+      other: Otro
+    earnings_category:
+      bereavement: Duelo
+      bonus: Bono
+      commission: Comisión
+      disability: Incapacidad
+      double_overtime: Horas extras dobles
+      employer_contribution: Contribución del empleador
+      fare: Tarifa
+      holiday: Vacaciones
+      hourly: Salario por hora
+      life_insurance: Seguro de vida
+      meal_comp: Compensación por comidas
+      medical: Médico
+      other: Otros pagos
+      overtime: Horas extras
+      parental: Pago por maternidad o paternidad
+      premium: Prima
+      pto: Tiempo libre pagado
+      retirement: Jubilación
+      retro_pay: Pago retroactivo
+      salary: Salario
+      shift_differential: Diferencial de turno
+      sick: Tiempo por enfermedad
+      stock: Acciones
+      tips: Propinas
+      unpaid: Sin paga
+      vacation: Vacaciones
+    employment_statuses:
+      employed: empleado
+    payment_frequencies:
+      annually: anual
+      bi_weekly: cada dos semanas
+      daily: diario
+      hourly: por hora
+      monthly: mensual
+      per_mile: Por milla
+      semi_monthly: dos veces al mes
+      variable: variable
+      weekly: semanal
   shared:
     agency_full_name:
       ma: Departamento de Asistencia Transitoria de Massachusetts

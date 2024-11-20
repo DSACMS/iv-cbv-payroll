@@ -17,7 +17,8 @@ module TestHelpers
         end: Date.today.end_of_month + i.months,
         hours: (40 * (i + 1)),
         rate: (10 + i),
-        deductions: []
+        deductions: [],
+        hours_by_earning_category: { salary: 80 }
       }
     end
   end

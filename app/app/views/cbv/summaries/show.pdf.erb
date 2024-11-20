@@ -120,12 +120,13 @@
       <% end %>
       <%= table.with_data_point(:pay_gross, payment[:gross_pay_amount], highlight: is_caseworker) %>
       <%= table.with_data_point(:number_of_hours_worked, payment[:hours], highlight: is_caseworker) %>
+      <% payment[:hours_by_earning_category].each do |category, total_hours| %>
+        <%= table.with_data_point(:earnings_entry, category, total_hours) %>
+      <% end %>
       <%= table.with_data_point(:net_pay_amount, payment[:net_pay_amount]) %>
-
       <% payment[:deductions].filter { |deduction| deduction[:amount] > 0 }.each do |deduction| %>
         <%= table.with_data_point(:deduction, deduction[:category], deduction[:amount]) %>
       <% end %>
-
       <%= table.with_data_point(:pay_gross_ytd, payment[:gross_pay_ytd]) %>
     <% end %>
   <% end %>

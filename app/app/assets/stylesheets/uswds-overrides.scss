@@ -25,4 +25,12 @@ $mobile-navbar-height: 4rem;
 .usa-nav__primary {
   flex-shrink: 0;
 }
-
+.maxw-half {
+  max-width: 50%;
+}
+.box-shadow-gray {
+  box-shadow: inset 0 0 0 1px color("base-light");
+}
+.pointer-events-none {
+  pointer-events: none;
+}
