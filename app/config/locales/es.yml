@@ -29,10 +29,10 @@ es:
       greeting: Hola,
       instructions: Inicia sesión en su cuenta de proveedor de nóminas (por ejemplo, ADP, Lyft o Amazon Flex) para compartir sus datos de ingresos directamente con %{agency_acronym}. Si usted no cumple con la fecha límite, este enlace expirará y tendrá que solicitar una nueva invitación.
       main_action_html:
-        default: "<strong>Verify your income</strong> as part of your SNAP recertification by <strong>%{deadline}</strong>."
-        ma: "<strong>Verify your income</strong> as part of your SNAP recertification by <strong>%{deadline}</strong>."
+        default: "<strong>Verifique sus ingresos</strong> como parte de su recertificación de SNAP antes del <strong>%{deadline}</strong>."
+        ma: "<strong>Verifique sus ingresos</strong> como parte de su recertificación de SNAP antes del <strong>%{deadline}</strong>."
         nyc: "<strong>Verify your income</strong> as part of your SNAP application or recertification by <strong>%{deadline}</strong>."
-        sandbox: "<strong>Verify your income</strong> as part of your SNAP recertification by <strong>%{deadline}</strong>."
+        sandbox: "<strong>Verifique sus ingresos</strong> como parte de su recertificación de SNAP antes del <strong>%{deadline}</strong>."
       subject:
         default: 'Recordatorio: Verifique sus ingresos para renovar sus beneficios de SNAP'
         ma: 'Recordatorio: Verifique sus ingresos para renovar sus beneficios de SNAP'
