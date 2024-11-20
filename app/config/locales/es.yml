@@ -59,7 +59,7 @@ es:
         can_not_find_employer: No logro encontrar mi empresa ni mi proveedor de nómina
         employer_not_listed: "¿Su empleador no está en la lista?"
         exit_button_text: Salga y vaya a %{agency_short_name}
-        header: Busque a su empleador o a su proveedor de nómina
+        header: Busque su empleador o proveedor de nómina
         no_results_steps1: Verifique si su empleador usa otro nombre empresarial o busque a su proveedor de nómina.
         no_results_steps2: Asegúrese de haber escrito correctamente los nombres, y busque de nuevo.
         no_results_steps3: Elija entre proveedores o aplicaciones populares de nómina.
@@ -70,7 +70,7 @@ es:
         results: Resultados
         review_button_text: Revisar mi informe de ingresos
         search: Buscar
-        search_label: 'Ingrese el nombre de su empleador actual o reciente o proveedor de nómina:'
+        search_label: 'Ingrese el nombre de su empleador actual o reciente o su proveedor de nómina:'
         select: Seleccione
         select_button_aria_label: Abra una ventana de autenticación para que el empleador o proveedor de nómina importe su historial de pago.
         to_continue: 'Si aún no ve enumerado a su empleador ni a su proveedor de nómina:'
