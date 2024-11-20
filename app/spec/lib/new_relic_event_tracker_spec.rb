@@ -6,6 +6,10 @@ RSpec.describe NewRelicEventTracker do
     let(:event_type) { 'TestEvent' }
     let(:attributes) { { key: 'value' } }
 
+    before do
+      allow(NewRelicEventTracker).to receive(:track).and_call_original
+    end
+
     it 'calls NewRelic::Agent.record_custom_event with correct parameters' do
       expect(NewRelic::Agent).to receive(:record_custom_event).with(event_type, attributes)
       described_class.track(event_type, attributes)

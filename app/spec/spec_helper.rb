@@ -99,6 +99,11 @@ RSpec.configure do |config|
   # as the one that triggered the failure.
   Kernel.srand config.seed
 
+  # Stub out NewRelicEventTracker so it doesn't make calls in test
+  config.before(:each) do
+    allow(NewRelicEventTracker).to receive(:track)
+  end
+
   # Mock the pinwheel method if it's not available in the test environment
   config.before(:each, type: [ :controller, :request, :service ]) do
     def pinwheel

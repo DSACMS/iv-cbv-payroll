@@ -58,6 +58,25 @@ RSpec.describe Cbv::EntriesController do
         })
       end
 
+      it "tracks a CbvPageView event (from the base controller)" do
+        allow(NewRelicEventTracker).to receive(:track)
+
+        request.headers["User-Agent"] = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36"
+        get :show, params: { token: invitation.auth_token }
+        cbv_flow = invitation.cbv_flows.first
+
+        expect(NewRelicEventTracker).to have_received(:track).with("CbvPageView", {
+          user_agent: be_a(String),
+          device_name: anything,
+          device_type: be_a(String),
+          browser: be_a(String),
+          invitation_id: invitation.id,
+          cbv_flow_id: cbv_flow.id,
+          site_id: invitation.site_id,
+          path: "/cbv/entry"
+        })
+      end
+
       context "when returning to an already-visited flow invitation" do
         let!(:existing_cbv_flow) { create(:cbv_flow, cbv_flow_invitation: invitation) }
 
