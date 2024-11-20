@@ -124,3 +124,11 @@ html {
   from {transform: rotate(0deg);}
   to {transform: rotate(360deg);}
 }
+
+// Allow decoupling header hierarchy from typographical style.
+// Currently only used in the invitation reminder mailer.
+
+.h3-style {
+  @include typeset-h3;
+  font-family: inherit;
+}
