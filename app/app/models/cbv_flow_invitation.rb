@@ -29,6 +29,7 @@ class CbvFlowInvitation < ApplicationRecord
   VALID_LOCALES = Rails.application.config.i18n.available_locales.map(&:to_s).freeze
 
   belongs_to :user
+  belongs_to :cbv_client, optional: true
   has_many :cbv_flows
 
   has_secure_token :auth_token, length: 36
