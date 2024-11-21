@@ -83,5 +83,34 @@ RSpec.describe Caseworker::CbvFlowInvitationsController, type: :controller do
         invitation_id: invitation.id
       })
     end
+
+    context "when validations succeed" do
+      it "creates a cbv_client record" do
+        expect {
+          post :create, params: {
+            site_id: nyc_params[:site_id],
+            cbv_flow_invitation: cbv_flow_invitation_params
+          }
+        }.to change(CbvClient, :count).by(1)
+
+        client = CbvClient.last
+        expect(client.first_name).to eq("Jane")
+      end
+    end
+
+    context "when validations fail" do
+      before do
+        cbv_flow_invitation_params[:first_name] = nil
+      end
+
+      it "does not create a cbv_client record" do
+        expect {
+          post :create, params: {
+            site_id: nyc_params[:site_id],
+            cbv_flow_invitation: cbv_flow_invitation_params
+          }
+        }.to change(CbvClient, :count).by(0)
+      end
+    end
   end
 end

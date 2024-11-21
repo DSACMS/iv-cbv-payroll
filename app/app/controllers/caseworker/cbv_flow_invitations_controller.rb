@@ -18,6 +18,7 @@ class Caseworker::CbvFlowInvitationsController < Caseworker::BaseController
     # handle errors from the mail service
     begin
       @cbv_flow_invitation = CbvInvitationService.new.invite(invitation_params, current_user)
+      @cbv_client = CbvClient.create_from_invitation(@cbv_flow_invitation)
     rescue => e
       flash[:alert] = t(".invite_failed",
                         email_address: cbv_flow_invitation_params[:email_address],
