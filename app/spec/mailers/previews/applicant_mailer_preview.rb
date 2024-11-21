@@ -26,6 +26,12 @@ class ApplicantMailerPreview < BaseMailerPreview
     ).invitation_reminder_email
   end
 
+  def invitation_reminder_email_nyc_spanish
+    ApplicantMailer.with(
+      cbv_flow_invitation: FactoryBot.create(:cbv_flow_invitation, :nyc, user: unique_user, language: "es")
+    ).invitation_reminder_email
+  end
+
   private
   def unique_user
     FactoryBot.create(:user, email: "#{SecureRandom.uuid}@example.com")
