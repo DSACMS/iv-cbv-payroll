@@ -3,7 +3,7 @@
 
 <section class="usa-section">
   <div class="bg-white padding-y-7 padding-x-7 border border-base-lighter measure-5 line-height-sans-4 margin-x-auto font-body-xs">
-    <h3>
+    <h1 class="h3-style">
       <span class="text-primary"><%= t("shared.pilot_name") %> | </span>
       <% if current_site?(:ma) %>
         <%= image_tag "dta_logo.png", class: "text-middle", style: "width: 140px" %>
@@ -12,7 +12,7 @@
       <% else %>
         <%= site_translation("shared.header.cbv_flow_title") %>
       <% end %>
-    </h3>
+    </h1>
     <div class="line-height-sans-5">
       <p>
         <%= t(".greeting") %>
@@ -26,9 +26,9 @@
         </a>
       </p>
       <p><%= t(".instructions", agency_acronym: current_site.agency_short_name) %></p>
-      <h3 class="margin-top-3" ><%= t(".feedback_header") %></h3>
+      <h1 class="h3-style margin-top-3" ><%= t(".feedback_header") %></h1>
       <p>
-        <a href="https://docs.google.com/forms/d/1E65H8Bcl3nYL8_OS5uwOqeN6p9G4aBXth6aHDoLlIoc/viewform" class="usa-button usa-button--outline width-auto" type="button">
+        <a href="https://docs.google.com/forms/d/1E65H8Bcl3nYL8_OS5uwOqeN6p9G4aBXth6aHDoLlIoc/viewform" class="usa-button usa-button--outline-email width-auto" type="button">
           <%= t(".feedback_button") %>
         </a>
       </p>

@@ -8,6 +8,14 @@ html {
   min-width: 320px;
 }
 
+.usa-button--outline-email {
+  // Because css rendering in email is fraught, we must replace the default
+  // USWDS strategy of using a box-shadow (it doesn't appear at all in gmail).
+  background-color: transparent;
+  border: 2px solid #005ea2;
+  color: #005ea2;
+}
+
 #main-content {
   // These are rough approximations just to roughly get the footer to show up
   // at the bottom of the screen by default.
@@ -115,4 +123,12 @@ html {
 @keyframes rotate-con {
   from {transform: rotate(0deg);}
   to {transform: rotate(360deg);}
+}
+
+// Allow decoupling header hierarchy from typographical style.
+// Currently only used in the invitation reminder mailer.
+
+.h3-style {
+  @include typeset-h3;
+  font-family: inherit;
 }
