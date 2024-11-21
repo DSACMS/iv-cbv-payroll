@@ -1,0 +1,3 @@
+class CbvClient < ApplicationRecord
+
+end
