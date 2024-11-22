@@ -26,6 +26,7 @@ Resolves [FFS-XXXX](https://jiraent.cms.gov/browse/FFS-XXXX).
   * This change will not affect the user experience (bugfix, dependency updates, etc.)
 - [ ] Acceptance testing prior to merge
   * This change can be verified visually via screenshots attached below or by sending a link to a local development environment to the acceptance tester
+  * Acceptance testing should be done by **design** for visual changes, **product** for behavior/logic changes, **or both** for changes that impact both.
 - [ ] Acceptance testing after merge
   * This change is hard to test locally, so we'll test it in the demo environment (deployed automatically after merge.)
   * Make sure to notify the team once this PR is merged so we don't inadvertently deploy the unaccepted change to production.
