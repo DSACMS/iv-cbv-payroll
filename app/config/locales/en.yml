@@ -341,7 +341,10 @@ en:
             client_report_information: Client and Report Information
             date_created: Date the income report was created
             date_range: Date range for the income report
-            description: We have collected your income information with your consent and sent it to your SNAP agency. Any additional income that you weren't able to add to this report should be shared separately with your SNAP agency.
+            description:
+              ma: We have collected your income information with your consent and sent it to %{agency_acronym}. Any additional income that you weren't able to add to this report should be shared separately with %{agency_acronym}.
+              nyc: We have collected your income information with your consent and sent it to %{agency_acronym}. Any additional income that you weren't able to add to this report should be shared separately with %{agency_acronym}.
+              sandbox: We have collected your income information with your consent and sent it to your SNAP agency. Any additional income that you weren't able to add to this report should be shared separately with your SNAP agency.
             employment_payment_details: Employment and Payment details
             header: Income Verification Report
           shared:
