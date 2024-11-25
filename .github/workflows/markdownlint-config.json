@@ -13,6 +13,9 @@
           "pattern": "^https://confluenceent.cms.gov"
         },
         {
+          "pattern": "^https://jiraent.cms.gov"
+        },
+        {
           "pattern": "^https://www.hhs.gov"
         }
     ],
