@@ -29,4 +29,4 @@ Resolves [FFS-XXXX](https://jiraent.cms.gov/browse/FFS-XXXX).
   * Acceptance testing should be done by **design** for visual changes, **product** for behavior/logic changes, **or both** for changes that impact both.
 - [ ] Acceptance testing after merge
   * This change is hard to test locally, so we'll test it in the demo environment (deployed automatically after merge.)
-  * Make sure to notify the team once this PR is merged so we don't inadvertently deploy the unaccepted change to production.
+  * Make sure to notify the team once this PR is merged so we don't inadvertently deploy the unaccepted change to production. (e.g. `:alert: Deploy block! @ffs-eng I just merged PR [#123] and will be doing acceptance testing in demo - please don't deploy until I'm finished!`)
