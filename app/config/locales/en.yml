@@ -83,9 +83,9 @@ en:
           todays_date: Today's date
       new:
         description_html:
+          default: "<p>Provide some details about the client so we can send them a link to verify their pay information. We'll request the past %{pay_income_days} days of income, based on the client's application/recertification date.</p><p>If multiple members of the household earn income, send an invite link to each household member.</p>"
           ma: "<p>Provide some details about the client so we can send them a link to verify their pay information. We'll request the past %{pay_income_days} days of income, based on today's date.</p><p>If multiple members of the household earn income, send an invite link to each household member.</p>"
-          nyc: "<p>Provide some details about the client so we can send them a link to verify their pay information. We'll request the past %{pay_income_days} days of income, based on the client's application/recertification date.</p><p>If multiple members of the household earn income, send an invite link to each household member.</p>"
-          sandbox: "<p>Provide some details about the client so we can send them a link to verify their pay information. We'll request the past %{pay_income_days} days of income, based on the client's application/recertification date.</p><p>If multiple members of the household earn income, send an invite link to each household member.</p>"
+
         form:
           submit: Send Invitation
         header: Send an invite link
