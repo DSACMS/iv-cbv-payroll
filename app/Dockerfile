@@ -32,7 +32,7 @@ RUN apt-get update -qq && \
     apt-get install --no-install-recommends -y \
       build-essential=12.9 \
       git=1:2.39.5-0+deb12u1 \
-      libpq-dev=15.9-0+deb12u1 \
+      libpq-dev=15.10-0+deb12u1 \
       npm=9.2.0~ds1-1 \
       pkg-config=1.8.1-1
 
