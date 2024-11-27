@@ -144,10 +144,16 @@ RSpec.describe ApplicantMailer, type: :mailer do
       Rake::Task['invitation_reminders:send_all'].execute
     end
 
-    it "renders the subject and body in English because Spanish is not yet supported" do
-      Rake::Task['invitation_reminders:send_all'].execute
-      email = ActionMailer::Base.deliveries.last
-      expect(email.subject).to eq(I18n.t('applicant_mailer.invitation_reminder_email.subject.ma'))
+    context "for an invitation in Spanish" do
+      before do
+        invitation.update(language: "es")
+      end
+
+      it "renders the subject and body in Spanish" do
+        Rake::Task['invitation_reminders:send_all'].execute
+        email = ActionMailer::Base.deliveries.last
+        expect(email.subject).to eq(I18n.t('applicant_mailer.invitation_reminder_email.subject.ma', locale: :es))
+      end
     end
   end
 end
