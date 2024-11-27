@@ -16,9 +16,6 @@ class CbvClient < ApplicationRecord
     cbv_flow_invitation.cbv_client = result
     cbv_flow_invitation.save(validate: false)
 
-    puts result
-
     result
-
   end
 end
