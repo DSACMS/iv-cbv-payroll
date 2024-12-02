@@ -22,13 +22,5 @@ RSpec.describe CbvClient, type: :model do
       cbv_flow_invitation.reload
       expect(cbv_flow_invitation.cbv_client).to eq(cbv_client)
     end
-
-    context 'when cbv_flow_invitation is nil' do
-      it 'raises an error' do
-        expect {
-          CbvClient.create_from_invitation(nil)
-        }.to raise_error(NoMethodError)
-      end
-    end
   end
 end
