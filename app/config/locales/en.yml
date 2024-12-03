@@ -24,6 +24,7 @@ en:
             last_name:
               blank: Enter the client's last name.
             snap_application_date:
+              default_invalid_date: Enter today's date or the date you contacted the client.
               ma_invalid_date: Enter today's date or the date you contacted the client. This date must be today or in the past year.
               nyc_invalid_date: SNAP interview date must be today or in the past 30 days.
   applicant_mailer:

@@ -29,6 +29,7 @@ class CbvFlowInvitation < ApplicationRecord
   VALID_LOCALES = Rails.application.config.i18n.available_locales.map(&:to_s).freeze
 
   belongs_to :user
+  belongs_to :cbv_client, optional: true
   has_many :cbv_flows
 
   has_secure_token :auth_token, length: 36
@@ -117,6 +118,9 @@ class CbvFlowInvitation < ApplicationRecord
 
     if raw_snap_application_date.is_a?(ActiveSupport::TimeWithZone) || raw_snap_application_date.is_a?(Time)
       self.snap_application_date = raw_snap_application_date.to_date
+      # handle ISO 8601 date format, e.g. "2021-01-01" which is Ruby's default when querying a date field
+    elsif raw_snap_application_date.is_a?(String) && raw_snap_application_date.match?(/^\d{4}-\d{2}-\d{2}$/)
+      self.snap_application_date = Date.parse(raw_snap_application_date)
     else
       begin
         new_date_format = Date.strptime(raw_snap_application_date.to_s, "%m/%d/%Y")
@@ -128,7 +132,7 @@ class CbvFlowInvitation < ApplicationRecord
         when "nyc"
           error = :nyc_invalid_date
         else
-          error = :invalid_date
+          error = :default_invalid_date
         end
         errors.add(:snap_application_date, error)
       end
