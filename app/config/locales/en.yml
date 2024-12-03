@@ -24,6 +24,7 @@ en:
             last_name:
               blank: Enter the client's last name.
             snap_application_date:
+              default_invalid_date: Enter today's date or the date you contacted the client.
               ma_invalid_date: Enter today's date or the date you contacted the client. This date must be today or in the past year.
               nyc_invalid_date: SNAP interview date must be today or in the past 30 days.
   applicant_mailer:
@@ -82,7 +83,9 @@ en:
           middle_name: Client's middle name
           todays_date: Today's date
       new:
-        description_html: "<p>Provide some details about the client so we can send them a link to verify their pay information. We'll request the past %{pay_income_days} days of income, based on the client's application date.</p><p>If multiple members of the household earn income, send an invite link to each household member.</p>"
+        description_html:
+          default: "<p>Provide some details about the client so we can send them a link to verify their pay information. We'll request the past %{pay_income_days} days of income, based on the client's application/recertification date.</p><p>If multiple members of the household earn income, send an invite link to each household member.</p>"
+          ma: "<p>Provide some details about the client so we can send them a link to verify their pay information. We'll request the past %{pay_income_days} days of income, based on today's date.</p><p>If multiple members of the household earn income, send an invite link to each household member.</p>"
         form:
           submit: Send Invitation
         header: Send an invite link
@@ -341,7 +344,7 @@ en:
             client_report_information: Client and Report Information
             date_created: Date the income report was created
             date_range: Date range for the income report
-            description: We have collected your income information with your consent and sent it to your SNAP agency. Any additional income that you weren't able to add to this report should be shared separately with your SNAP agency.
+            description: We have collected your income information with your consent and sent it to %{agency_acronym}. Any additional income that you weren't able to add to this report should be shared separately with %{agency_acronym}.
             employment_payment_details: Employment and Payment details
             header: Income Verification Report
           shared:

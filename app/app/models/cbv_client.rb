@@ -3,7 +3,7 @@ class CbvClient < ApplicationRecord
   has_one :cbv_flow_invitation
 
   def self.create_from_invitation(cbv_flow_invitation)
-    result = create(
+    client = create(
       case_number: cbv_flow_invitation.case_number,
       first_name: cbv_flow_invitation.first_name,
       middle_name: cbv_flow_invitation.middle_name,
@@ -13,9 +13,7 @@ class CbvClient < ApplicationRecord
       snap_application_date: cbv_flow_invitation.snap_application_date,
       beacon_id: cbv_flow_invitation.beacon_id
     )
-    cbv_flow_invitation.cbv_client = result
-    cbv_flow_invitation.save(validate: false)
-
-    result
+    cbv_flow_invitation.update!(cbv_client: client)
+    client
   end
 end
