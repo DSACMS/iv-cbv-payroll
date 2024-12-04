@@ -90,6 +90,8 @@ html {
   background-color: color("primary-darker");
 }
 .cbv-footer__content {
+  color: color("white");
+
   @include at-media-max($theme-header-min-width) {
     margin-left: units($theme-site-margins-mobile-width);
   }
@@ -100,8 +102,6 @@ html {
   }
   @include u-font("sans", 4);
   @include u-padding-y(2);
-
-  color: color("white");
 
   a,
   a:visited {
