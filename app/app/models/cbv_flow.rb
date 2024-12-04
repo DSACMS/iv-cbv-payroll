@@ -1,6 +1,7 @@
 class CbvFlow < ApplicationRecord
   has_many :pinwheel_accounts, dependent: :destroy
   belongs_to :cbv_flow_invitation, optional: true
+  belongs_to :cbv_client, optional: true
   validates :site_id, inclusion: Rails.application.config.sites.site_ids
 
   scope :incomplete, -> { where(confirmation_code: nil) }
