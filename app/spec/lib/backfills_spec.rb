@@ -31,11 +31,10 @@ RSpec.describe "backfills.rake" do
           snap_application_date: 31.days.ago.to_date
         })
         invitation.save(validate: false)
-        invitation.redact!
         invitation
       end
 
-      let(:valid_cbv_flow_invitation) do
+      let(:redacted_cbv_flow_invitation) do
         invitation = create(:cbv_flow_invitation)
         invitation.redact!
         invitation
@@ -51,11 +50,11 @@ RSpec.describe "backfills.rake" do
       end
 
       it "Back-fills cbv_clients from a valid cbv_flow_invitation" do
-        expect(valid_cbv_flow_invitation.cbv_client).to be_nil
+        expect(redacted_cbv_flow_invitation.cbv_client).to be_nil
         Rake::Task['backfills:cbv_clients'].execute
-        valid_cbv_flow_invitation.reload
-        expect(valid_cbv_flow_invitation.cbv_client).to be_present
-        expect_cbv_client_attributes_match(valid_cbv_flow_invitation)
+        redacted_cbv_flow_invitation.reload
+        expect(redacted_cbv_flow_invitation.cbv_client).to be_present
+        expect_cbv_client_attributes_match(redacted_cbv_flow_invitation)
       end
     end
   end
