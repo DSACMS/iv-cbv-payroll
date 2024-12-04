@@ -10,6 +10,7 @@
   transmission_method: shared_email
   transmission_method_configuration:
     email: <%= ENV['NYC_HRA_EMAIL'] %>
+  staff_portal_enabled: false
   sso:
     client_id:     <%= ENV["AZURE_NYC_DSS_CLIENT_ID"] %>
     client_secret: <%= ENV["AZURE_NYC_DSS_CLIENT_SECRET"] %>
@@ -31,6 +32,7 @@
   transmission_method_configuration:
     bucket: <%= ENV['MA_DTA_S3_BUCKET'] %>
     public_key: <%= ENV['MA_DTA_S3_PUBLIC_KEY'].inspect %>
+  staff_portal_enabled: true
   sso:
     client_id:     <%= ENV["AZURE_MA_DTA_CLIENT_ID"] %>
     client_secret: <%= ENV["AZURE_MA_DTA_CLIENT_SECRET"] %>
@@ -54,6 +56,7 @@
   transmission_method: shared_email
   transmission_method_configuration:
     email: <%= ENV['SLACK_TEST_EMAIL'] %>
+  staff_portal_enabled: true
   sso:
     client_id:     <%= ENV["AZURE_SANDBOX_CLIENT_ID"] %>
     client_secret: <%= ENV["AZURE_SANDBOX_CLIENT_SECRET"] %>

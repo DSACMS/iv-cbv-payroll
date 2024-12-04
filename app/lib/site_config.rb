@@ -31,6 +31,7 @@ class SiteConfig
       pay_income_days
       pinwheel_api_token
       pinwheel_environment
+      staff_portal_enabled
       sso
       transmission_method
       transmission_method_configuration
@@ -51,6 +52,7 @@ class SiteConfig
       @pinwheel_environment = yaml["pinwheel"]["environment"] || "sandbox"
       @transmission_method = yaml["transmission_method"]
       @transmission_method_configuration = yaml["transmission_method_configuration"]
+      @staff_portal_enabled = yaml["staff_portal_enabled"]
       @sso = yaml["sso"]
       @weekly_report = yaml["weekly_report"]
 
