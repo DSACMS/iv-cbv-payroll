@@ -10,7 +10,7 @@
   transmission_method: shared_email
   transmission_method_configuration:
     email: <%= ENV['NYC_HRA_EMAIL'] %>
-  staff_portal_enabled: false
+  staff_portal_enabled: true
   sso:
     client_id:     <%= ENV["AZURE_NYC_DSS_CLIENT_ID"] %>
     client_secret: <%= ENV["AZURE_NYC_DSS_CLIENT_SECRET"] %>
