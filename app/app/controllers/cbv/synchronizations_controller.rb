@@ -11,12 +11,10 @@ class Cbv::SynchronizationsController < Cbv::BaseController
   private
 
   def redirect_if_sync_finished
-    if @pinwheel_account && @pinwheel_account.has_fully_synced?
-      if @pinwheel_account.has_required_data?
-        redirect_to cbv_flow_payment_details_path(user: { account_id: @pinwheel_account.pinwheel_account_id })
-      else
-        redirect_to cbv_flow_synchronization_failures_path
-      end
+    if @pinwheel_account && @pinwheel_account.has_fully_synced? && @pinwheel_account.has_required_data?
+      redirect_to cbv_flow_payment_details_path(user: { account_id: @pinwheel_account.pinwheel_account_id })
+    else
+      redirect_to cbv_flow_synchronization_failures_path
     end
   end
 
