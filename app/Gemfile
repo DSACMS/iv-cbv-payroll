@@ -61,6 +61,10 @@ gem "wicked_pdf"
 gem "actioncable-enhanced-postgresql-adapter"
 gem "aws-sdk-rails"
 
+# profiling
+gem 'rack-mini-profiler'
+gem 'stackprof'
+
 # https://www.ruby-lang.org/en/news/2024/08/01/dos-rexml-cve-2024-41123/
 gem "rexml", "~> 3.3.9"
 gem "gpgme", "~> 2.0", ">= 2.0.12"
@@ -108,8 +112,8 @@ group :production do
   # Add plugin for pg gem to support AWS RDS IAM
   gem "pg-aws_rds_iam", "~> 0.5.0"
 end
-
 gem "devise", "~> 4.9"
+
 gem "omniauth-rails_csrf_protection", "~> 1.0"
 gem "omniauth-azure-activedirectory-v2"
 gem "view_component"
