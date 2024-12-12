@@ -12,7 +12,7 @@ class Cbv::SynchronizationsController < Cbv::BaseController
 
   def redirect_if_sync_finished
     if @pinwheel_account.nil?
-      redirect_to cbv_flow_synchronization_failures_path and return
+      return redirect_to cbv_flow_synchronization_failures_path
     end
 
     if @pinwheel_account.has_fully_synced?
