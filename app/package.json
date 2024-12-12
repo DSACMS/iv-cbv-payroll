@@ -16,7 +16,7 @@
     "postcss-minify": "^1.1.0",
     "postcss-nesting": "^12.1.5",
     "postcss-scss": "^4.0.9",
-    "sass": "^1.80.5",
+    "sass": "^1.80.6",
     "webpack": "^5.96.1",
     "webpack-cli": "^5.1.4"
   },
