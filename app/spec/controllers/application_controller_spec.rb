@@ -44,7 +44,7 @@ RSpec.describe ApplicationController, type: :controller do
       end
     end
 
-    context 'when in demo mode' do
+    context 'when in demo environment' do
       let(:domain_name) { "verify-demo.navapbc.cloud" }
 
       it 'authorizes mini profiler' do
@@ -53,8 +53,8 @@ RSpec.describe ApplicationController, type: :controller do
       end
     end
 
-    context 'when not in demo mode' do
-      let(:domain_name) { "some-other-domain.com" }
+    context 'when not in demo environment' do
+      let(:domain_name) { "snap-income-pilot.com" }
 
       it 'does not authorize mini profiler' do
         expect(Rack::MiniProfiler).not_to receive(:authorize_request)
