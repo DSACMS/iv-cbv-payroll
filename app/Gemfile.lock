@@ -320,6 +320,8 @@ GEM
       nio4r (~> 2.0)
     racc (1.8.1)
     rack (2.2.10)
+    rack-mini-profiler (3.3.1)
+      rack (>= 1.2.0)
     rack-protection (3.2.0)
       base64 (>= 0.1.0)
       rack (~> 2.2, >= 2.2.4)
@@ -458,6 +460,7 @@ GEM
       actionpack (>= 6.1)
       activesupport (>= 6.1)
       sprockets (>= 3.0.0)
+    stackprof (0.2.26)
     standard (1.39.2)
       language_server-protocol (~> 3.17.0.2)
       lint_roller (~> 1.0)
@@ -556,6 +559,7 @@ DEPENDENCIES
   pg-aws_rds_iam (~> 0.5.0)
   premailer-rails
   puma (~> 6.4.3)
+  rack-mini-profiler
   rails (~> 7.1.5, >= 7.1.5.1)
   rails-controller-testing
   rails-erd (~> 1.7)
@@ -568,6 +572,7 @@ DEPENDENCIES
   selenium-webdriver
   sidekiq (~> 6.4)
   sprockets-rails
+  stackprof
   standard (~> 1.7)
   stimulus-rails
   timecop
