@@ -39,6 +39,9 @@ class Caseworker::CbvFlowInvitationsController < Caseworker::BaseController
       return render :new
     end
 
+    # hydrate the cbv_client with the invitation if there are no cbv_flow_invitation errors
+    @cbv_client = CbvClient.create_from_invitation(@cbv_flow_invitation)
+
     flash[:slim_alert] = {
       message: t(".invite_success", email_address: cbv_flow_invitation_params[:email_address]),
       type: "success"

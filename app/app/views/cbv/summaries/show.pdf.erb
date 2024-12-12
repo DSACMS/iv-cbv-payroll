@@ -26,7 +26,7 @@
     </div>
   </div>
 <% else %>
-  <p><%= t(".pdf.client.description") %></p>
+  <p><%= t(".pdf.client.description", agency_acronym: current_site.agency_short_name) %></p>
 <% end %>
 
 <h2><%= t(".pdf.client.client_report_information") %></h2>
