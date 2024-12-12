@@ -60,6 +60,8 @@ gem "faraday", "~> 2.9.0"
 gem "wicked_pdf"
 gem "actioncable-enhanced-postgresql-adapter"
 gem "aws-sdk-rails"
+gem "aws-sdk-s3"
+gem "aws-actionmailer-ses"
 
 # https://www.ruby-lang.org/en/news/2024/08/01/dos-rexml-cve-2024-41123/
 gem "rexml", "~> 3.3.9"
