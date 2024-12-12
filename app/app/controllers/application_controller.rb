@@ -29,7 +29,7 @@ class ApplicationController < ActionController::Base
   end
 
   private
-  
+
   def show_translate_button?
     false
   end
