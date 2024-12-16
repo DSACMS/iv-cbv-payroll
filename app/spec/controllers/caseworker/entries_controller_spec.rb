@@ -27,5 +27,16 @@ RSpec.describe Caseworker::EntriesController do
         expect(unescaped_body).to include("Log in with your LAN ID")
       end
     end
+
+    context "when state is disabled" do
+      it "should show redirect to the root page" do
+        agency_short_name = site_config["sandbox"].agency_short_name
+        get :index, params: { site_id: "sandbox" }
+        expect(response).to be_successful
+        unescaped_body = CGI.unescapeHTML(response.body)
+        expect(unescaped_body).to include(I18n.t("caseworker.entries.index.header.sandbox", agency_short_name: agency_short_name))
+        expect(unescaped_body).to include("Log in using your existing agency account.")
+      end
+    end
   end
 end
