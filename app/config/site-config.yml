@@ -32,7 +32,7 @@
   transmission_method_configuration:
     bucket: <%= ENV['MA_DTA_S3_BUCKET'] %>
     public_key: <%= ENV['MA_DTA_S3_PUBLIC_KEY'].inspect %>
-  staff_portal_enabled: true
+  staff_portal_enabled: false
   sso:
     client_id:     <%= ENV["AZURE_MA_DTA_CLIENT_ID"] %>
     client_secret: <%= ENV["AZURE_MA_DTA_CLIENT_SECRET"] %>

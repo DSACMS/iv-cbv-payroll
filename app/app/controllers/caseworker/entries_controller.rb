@@ -8,7 +8,7 @@ class Caseworker::EntriesController < Caseworker::BaseController
   def redirect_if_disabled
     unless current_site.staff_portal_enabled
       redirect_to root_url, flash: {
-        slim_alert: { message: "Staff portal disabled", type: "error" }
+        slim_alert: { message: I18n.t("caseworker.entries.disabled"), type: "error" }
       }
     end
   end
