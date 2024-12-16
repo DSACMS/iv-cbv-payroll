@@ -58,5 +58,7 @@ terraform.tfstate.backup
 .vscode
 /config/credentials/development.key
 /app/config/credentials/master.key
-
 /config/credentials/production.key
+
+#Profiler
+/profiler
