@@ -52,14 +52,13 @@ locals {
       secret_store_name = "/service/${var.app_name}-${var.environment}/new-relic-env"
     },
     SKYLIGHT_AUTHENTICATION = {
-      manage_method = "manual"
+      manage_method     = "manual"
       secret_store_name = "/service/${var.app_name}-${var.environment}/skylight-authentication"
     },
     MAINTENANCE_MODE = {
       manage_method     = "manual"
       secret_store_name = "/service/${var.app_name}-${var.environment}/maintenance-mode"
     },
-
     # Transmission Configuration:
     NYC_HRA_EMAIL = {
       manage_method     = "manual"
