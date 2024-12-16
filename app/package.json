@@ -6,7 +6,7 @@
     "@hotwired/stimulus": "^3.2.2",
     "@hotwired/turbo-rails": "^8.0.12",
     "@rails/actioncable": "^7.2.200",
-    "@uswds/uswds": "^3.9.0",
+    "@uswds/uswds": "^3.10.0",
     "autoprefixer": "^10.4.20",
     "esbuild": "^0.24.0",
     "load-script": "^2.0.0",
@@ -16,7 +16,7 @@
     "postcss-minify": "^1.1.0",
     "postcss-nesting": "^12.1.5",
     "postcss-scss": "^4.0.9",
-    "sass": "^1.80.6",
+    "sass": "^1.81.0",
     "webpack": "^5.96.1",
     "webpack-cli": "^5.1.4"
   },
