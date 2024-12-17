@@ -10,7 +10,7 @@ RSpec.describe Caseworker::EntriesController do
       it "should show ma specific copy with a link to /sso/ma" do
         agency_short_name = site_config["ma"].agency_short_name
         get :index, params: { site_id: "ma" }
-        expect(response).not_to be_successful
+        expect(response).to redirect_to(root_url)
       end
     end
 
