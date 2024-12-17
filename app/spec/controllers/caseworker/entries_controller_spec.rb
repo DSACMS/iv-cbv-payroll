@@ -10,10 +10,7 @@ RSpec.describe Caseworker::EntriesController do
       it "should show ma specific copy with a link to /sso/ma" do
         agency_short_name = site_config["ma"].agency_short_name
         get :index, params: { site_id: "ma" }
-        expect(response).to be_successful
-        unescaped_body = CGI.unescapeHTML(response.body)
-        expect(unescaped_body).to include(I18n.t("caseworker.entries.index.header.ma", agency_short_name: agency_short_name))
-        expect(unescaped_body).to include("Continue to #{agency_short_name} log in page")
+        expect(response).to redirect_to(root_url)
       end
     end
 
@@ -25,6 +22,18 @@ RSpec.describe Caseworker::EntriesController do
         unescaped_body = CGI.unescapeHTML(response.body)
         expect(unescaped_body).to include(I18n.t("caseworker.entries.index.header.nyc", agency_short_name: agency_short_name))
         expect(unescaped_body).to include("Log in with your LAN ID")
+      end
+    end
+
+    context "when state is disabled" do
+      before do
+        stub_site_config_value("sandbox", "staff_portal_enabled", false)
+      end
+
+      it "redirect to the root page" do
+        agency_short_name = site_config["sandbox"].agency_short_name
+        get :index, params: { site_id: "sandbox" }
+        expect(response).to redirect_to(root_url)
       end
     end
   end
