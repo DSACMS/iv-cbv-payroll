@@ -30,7 +30,7 @@ RSpec.describe Caseworker::EntriesController do
         stub_site_config_value("sandbox", "staff_portal_enabled", false)
       end
 
-      it "should show redirect to the root page" do
+      it "redirect to the root page" do
         agency_short_name = site_config["sandbox"].agency_short_name
         get :index, params: { site_id: "sandbox" }
         expect(response).not_to be_successful
