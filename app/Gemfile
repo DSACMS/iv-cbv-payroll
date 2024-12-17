@@ -51,6 +51,7 @@ gem "device_detector"
 # Use Sass to process CSS
 # gem "sassc-rails"
 
+gem "mixpanel-ruby"
 gem "newrelic_rpm"
 
 gem "sidekiq", "~> 6.4"
