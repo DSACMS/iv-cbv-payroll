@@ -88,4 +88,9 @@ module TestHelpers
       }
     end
   end
+
+  def stub_site_config_value(site, key, value)
+    site_config = Rails.application.config.sites[site]
+    allow(site_config).to receive(key.to_sym).and_return(value)
+  end
 end

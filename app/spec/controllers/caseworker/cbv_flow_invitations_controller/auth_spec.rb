@@ -49,6 +49,7 @@ RSpec.describe Caseworker::CbvFlowInvitationsController do
         let(:site_id) { "ma" }
 
         before do
+          stub_site_config_value("ma", "staff_portal_enabled", true)
           sign_in ma_user
         end
 

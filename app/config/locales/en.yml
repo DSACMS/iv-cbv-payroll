@@ -124,6 +124,7 @@ en:
         reminder_3: For security reasons, you'll be logged out after 30 minutes of inactivity.
         reminder_4: If you encounter any issues with the tool, please use the Report feedback or bugs link.
     entries:
+      disabled: Staff portal disabled
       index:
         continue_to_login:
           ma: Continue to DTA log in page
