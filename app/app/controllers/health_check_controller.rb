@@ -1,5 +1,7 @@
 class HealthCheckController < ActionController::Base
   def ok
+    # keep the database connection alive
+    ActiveRecord::Base.connection.execute("SELECT 1")
     render json: { status: "ok", version: ENV["IMAGE_TAG"] }
   end
 
