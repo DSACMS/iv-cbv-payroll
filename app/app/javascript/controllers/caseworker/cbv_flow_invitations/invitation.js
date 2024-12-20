@@ -1,8 +1,9 @@
 import { Controller } from "@hotwired/stimulus"
 export default class extends Controller {
-    static targets = ["submitButton"]
+  static targets = ["form", "submitButton"]
 
-    disableSubmit() {
-        this.submitButtonTarget.disabled = true;
-    }
+  disableSubmit() {
+    this.submitButtonTarget.disabled = true;
+    this.formTarget.submit()
+  }
 }
