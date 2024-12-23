@@ -6,7 +6,5 @@ import { application } from "./application"
 
 import CbvEmployerSearch from "./cbv/employer_search"
 import CbvSynchronizationsController from "./cbv/synchronizations_controller"
-import CaseworkerInvitationController from "./caseworker/cbv_flow_invitations/invitation"
 application.register("cbv-employer-search", CbvEmployerSearch)
 application.register("cbv-synchronizations", CbvSynchronizationsController)
-application.register("caseworker-invitation", CaseworkerInvitationController)
