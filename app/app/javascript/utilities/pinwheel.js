@@ -25,14 +25,14 @@ export function initializePinwheel(Pinwheel, linkToken, callbacks) {
   return Pinwheel;
 }
 
-export const trackUserAction = (response_type, id, name, locale) => {
+export const trackUserAction = (eventName, attributes) => {
   return fetch(PINWHEEL_USER_ACTION, {
     method: 'post',
     headers: {
       'X-CSRF-Token': CSRF.token,
       'Content-Type': 'application/json'
     },
-    body: JSON.stringify({ response_type, id, name, locale }),
+    body: JSON.stringify({ pinwheel: { event_name: eventName, attributes } }),
   }).then(response => response.json());
 }
 
