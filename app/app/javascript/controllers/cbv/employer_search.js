@@ -57,9 +57,14 @@ export default class extends Controller {
 
   async select(event) {
     const locale = this.getDocumentLocale();
-
-    const { responseType, id, name } = event.target.dataset;
-    await trackUserAction(responseType, id, name, locale)
+    const { responseType, id, name, isDefaultOption } = event.target.dataset;
+    await trackUserAction("ApplicantSelectedEmployerOrPlatformItem", {
+      item_type: responseType,
+      item_id: id,
+      item_name: name,
+      is_default_option: isDefaultOption,
+      locale
+    })
 
     this.disableButtons()
     const { token } = await fetchToken(responseType, id, locale);
