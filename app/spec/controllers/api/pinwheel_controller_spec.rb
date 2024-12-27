@@ -115,5 +115,30 @@ RSpec.describe Api::PinwheelController do
         end
       end
     end
+
+    context "when tracking a PinwheelShowLoginPage event" do
+      let(:event_name) { "PinwheelShowLoginPage" }
+      let(:event_attributes) do
+        {
+          screen_name: "LOGIN",
+          employer_name: "Bob's Burgers",
+          platform_name: "Test Payroll Platform Name",
+          locale: "en"
+        }
+      end
+
+      it "tracks an event with NewRelic" do
+        expect(NewRelicEventTracker).to receive(:track).with("PinwheelShowLoginPage", {
+          timestamp: be_a(Integer),
+          cbv_flow_id: cbv_flow.id,
+          invitation_id: cbv_flow.cbv_flow_invitation_id,
+          locale: "en",
+          screen_name: "LOGIN",
+          employer_name: "Bob's Burgers",
+          platform_name: "Test Payroll Platform Name"
+        }.stringify_keys)
+        post :user_action, params: valid_params
+      end
+    end
   end
 end
