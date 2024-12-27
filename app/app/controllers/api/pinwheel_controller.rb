@@ -3,6 +3,14 @@ class Api::PinwheelController < ApplicationController
 
   EVENT_NAMES = %w[
     ApplicantSelectedEmployerOrPlatformItem
+    PinwheelAttemptClose
+    PinwheelAttemptLogin
+    PinwheelCloseModal
+    PinwheelError
+    PinwheelShowDefaultProviderSearch
+    PinwheelShowLoginPage
+    PinwheelShowProviderConfirmationPage
+    PinwheelSuccess
   ]
 
   # run the token here with the included employer/payroll provider id
@@ -51,7 +59,7 @@ class Api::PinwheelController < ApplicationController
   private
 
   def user_action_params
-    params.fetch(:pinwheel, {}).permit(:event_name, attributes: {})
+    params.fetch(:pinwheel, {}).permit(:event_name, :locale, attributes: {})
   end
 
   def token_params
