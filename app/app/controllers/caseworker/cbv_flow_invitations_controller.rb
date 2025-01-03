@@ -33,10 +33,10 @@ class Caseworker::CbvFlowInvitationsController < Caseworker::BaseController
       error_messages = @cbv_flow_invitation.errors.messages.values.flatten.map { |msg| "<li>#{msg}</li>" }.join
       error_messages = "<ul>#{error_messages}</ul>"
 
-      flash[:alert_heading] = error_header
-      flash[:alert] = error_messages.html_safe
+      flash.now[:alert_heading] = error_header
+      flash.now[:alert] = error_messages.html_safe
 
-      return render :new
+      return render :new, status: :unprocessable_entity
     end
 
     # hydrate the cbv_client with the invitation if there are no cbv_flow_invitation errors
