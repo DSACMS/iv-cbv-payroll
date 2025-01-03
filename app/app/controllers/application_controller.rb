@@ -67,13 +67,11 @@ class ApplicationController < ActionController::Base
   end
 
   def add_newrelic_metadata
-    newrelic_params = params.slice(:site_id, :locale).permit
-
     attributes = {
       cbv_flow_id: session[:cbv_flow_id],
       session_id: session.id.to_s,
-      site_id: newrelic_params[:site_id],
-      locale: newrelic_params[:locale],
+      site_id: params[:site_id],
+      locale: params[:locale],
       user_id: current_user.try(:id)
     }
 
