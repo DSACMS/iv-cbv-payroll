@@ -1,3 +1,5 @@
+require_relative "newrelic_event_map.rb"
+
 class MixpanelEventTracker
   def self.for_request(request)
     url_params = request.params.slice("site_id", "locale")
@@ -46,10 +48,10 @@ class MixpanelEventTracker
     end
 
     start_time = Time.now
-    
+
     # Map to the old NewRelic event name if present, otherwise just send NewRelic the event_type name
     newrelic_event_type = $newrelic_event_map[event_type]
-    if not newrelic_event_name.present?
+    if not newrelic_event_type.present?
       newrelic_event_type = event_type
     end
 
