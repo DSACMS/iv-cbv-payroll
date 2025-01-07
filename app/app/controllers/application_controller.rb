@@ -80,8 +80,8 @@ class ApplicationController < ActionController::Base
     NewRelic::Agent.add_custom_attributes(attributes)
   end
 
-  def mixpanel
-    @mixpanel ||= MixpanelEventTracker.for_request(request)
+  def event_logger
+    @event_logger ||= MixpanelEventTracker.for_request(request)
   end
 
   def redirect_if_maintenance_mode

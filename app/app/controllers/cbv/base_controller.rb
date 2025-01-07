@@ -86,29 +86,34 @@ class Cbv::BaseController < ApplicationController
   end
 
   def capture_page_view
-    client = DeviceDetector.new(request.headers["User-Agent"])
-    mixpanel.track("CbvPageView", {
-      device_name: client.device_name,
-      device_type: client.device_type,
-      browser: client.name,
-      cbv_flow_id: @cbv_flow.id,
-      invitation_id: @cbv_flow.cbv_flow_invitation_id,
-      site_id: @cbv_flow.site_id,
-      path: request.path
-    })
+    begin
+      event_logger.track("CbvPageView", request, {
+        cbv_flow_id: @cbv_flow.id,
+        invitation_id: @cbv_flow.cbv_flow_invitation_id,
+        site_id: @cbv_flow.site_id,
+        path: request.path
+      })
+    rescue => ex
+      raise unless Rails.env.production?
+      Rails.logger.error "Unable to track MixPanel event (CbvPageView): #{ex}"
+    end
 
-    NewRelicEventTracker.track("CbvPageView", {
-      user_agent: request.headers["User-Agent"],
-      device_name: client.device_name,
-      device_type: client.device_type,
-      browser: client.name,
-      cbv_flow_id: @cbv_flow.id,
-      invitation_id: @cbv_flow.cbv_flow_invitation_id,
-      site_id: @cbv_flow.site_id,
-      path: request.path
-    })
-  rescue => ex
-    Rails.logger.error "Unable to track NewRelic event (CbvPageView): #{ex}"
+    begin
+      device_detector = DeviceDetector.new(request.headers["User-Agent"])
+      NewRelicEventTracker.track("CbvPageView", {
+        user_agent: request.headers["User-Agent"],
+        device_name: device_detector.device_name,
+        device_type: device_detector.device_type,
+        browser: device_detector.name,
+        cbv_flow_id: @cbv_flow.id,
+        invitation_id: @cbv_flow.cbv_flow_invitation_id,
+        site_id: @cbv_flow.site_id,
+        path: request.path
+      })
+    rescue => ex
+      raise unless Rails.env.production?
+      Rails.logger.error "Unable to track NewRelic event (CbvPageView): #{ex}"
+    end
   end
 
   def track_timeout_event
