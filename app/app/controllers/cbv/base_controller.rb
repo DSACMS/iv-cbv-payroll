@@ -87,6 +87,16 @@ class Cbv::BaseController < ApplicationController
 
   def capture_page_view
     client = DeviceDetector.new(request.headers["User-Agent"])
+    mixpanel.track("CbvPageView", {
+      device_name: client.device_name,
+      device_type: client.device_type,
+      browser: client.name,
+      cbv_flow_id: @cbv_flow.id,
+      invitation_id: @cbv_flow.cbv_flow_invitation_id,
+      site_id: @cbv_flow.site_id,
+      path: request.path
+    })
+
     NewRelicEventTracker.track("CbvPageView", {
       user_agent: request.headers["User-Agent"],
       device_name: client.device_name,

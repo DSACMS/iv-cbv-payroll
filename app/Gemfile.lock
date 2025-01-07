@@ -245,6 +245,7 @@ GEM
     mini_mime (1.1.5)
     mini_portile2 (2.8.7)
     minitest (5.25.4)
+    mixpanel-ruby (2.3.0)
     msgpack (1.7.2)
     multi_xml (0.7.1)
       bigdecimal (~> 3.1)
@@ -550,6 +551,7 @@ DEPENDENCIES
   i18n-tasks (~> 1.0)
   jbuilder
   jsbundling-rails
+  mixpanel-ruby
   newrelic_rpm
   omniauth-azure-activedirectory-v2
   omniauth-rails_csrf_protection (~> 1.0)

@@ -77,6 +77,21 @@ RSpec.describe Cbv::EntriesController do
         })
       end
 
+      it "tracks a CbvPageView event with Mixpanel (from the base controller)" do
+        expect_any_instance_of(MixpanelEventTracker).to receive(:track).with("CbvPageView", {
+          device_name: anything,
+          device_type: be_a(String),
+          browser: be_a(String),
+          invitation_id: invitation.id,
+          cbv_flow_id: be_a(Integer),
+          site_id: invitation.site_id,
+          path: "/cbv/entry"
+        })
+
+        request.headers["User-Agent"] = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36"
+        get :show, params: { token: invitation.auth_token }
+      end
+
       context "when returning to an already-visited flow invitation" do
         let!(:existing_cbv_flow) { create(:cbv_flow, cbv_flow_invitation: invitation) }
 
