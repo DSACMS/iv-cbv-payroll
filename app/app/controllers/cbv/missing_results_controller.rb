@@ -6,7 +6,7 @@ class Cbv::MissingResultsController < Cbv::BaseController
   end
 
   def track_missing_results_event
-    NewRelicEventTracker.track("ApplicantAccessedMissingResultsPage", {
+    event_logger.track("ApplicantAccessedMissingResultsPage", request, {
       timestamp: Time.now.to_i,
       cbv_flow_id: @cbv_flow.id,
       invitation_id: @cbv_flow.cbv_flow_invitation_id

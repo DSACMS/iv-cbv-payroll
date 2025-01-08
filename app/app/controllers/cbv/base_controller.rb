@@ -1,5 +1,5 @@
 class Cbv::BaseController < ApplicationController
-  before_action :set_cbv_flow, :ensure_cbv_flow_not_yet_complete, :prevent_back_after_complete, :capture_page_view
+  before_action :set_cbv_flow, :ensure_cbv_flow_not_yet_complete, :prevent_back_after_complete
   helper_method :agency_url, :next_path, :get_comment_by_account_id, :current_site
 
   private
@@ -86,23 +86,21 @@ class Cbv::BaseController < ApplicationController
   end
 
   def capture_page_view
-    client = DeviceDetector.new(request.headers["User-Agent"])
-    NewRelicEventTracker.track("CbvPageView", {
-      user_agent: request.headers["User-Agent"],
-      device_name: client.device_name,
-      device_type: client.device_type,
-      browser: client.name,
-      cbv_flow_id: @cbv_flow.id,
-      invitation_id: @cbv_flow.cbv_flow_invitation_id,
-      site_id: @cbv_flow.site_id,
-      path: request.path
-    })
-  rescue => ex
-    Rails.logger.error "Unable to track NewRelic event (CbvPageView): #{ex}"
+    begin
+      event_logger.track("CbvPageView", request, {
+        cbv_flow_id: @cbv_flow.id,
+        invitation_id: @cbv_flow.cbv_flow_invitation_id,
+        site_id: @cbv_flow.site_id,
+        path: request.path
+      })
+    rescue => ex
+      raise unless Rails.env.production?
+      Rails.logger.error "Unable to track event (CbvPageView): #{ex}"
+    end
   end
 
   def track_timeout_event
-    NewRelicEventTracker.track("ApplicantTimedOut", {
+    event_logger.track("ApplicantTimedOut", request, {
       timestamp: Time.now.to_i
     })
   rescue => ex
@@ -110,7 +108,7 @@ class Cbv::BaseController < ApplicationController
   end
 
   def track_expired_event(invitation)
-    NewRelicEventTracker.track("ApplicantLinkExpired", {
+    event_logger.track("ApplicantLinkExpired", request, {
       invitation_id: invitation.id,
       timestamp: Time.now.to_i
     })
@@ -119,7 +117,7 @@ class Cbv::BaseController < ApplicationController
   end
 
   def track_invitation_clicked_event(invitation, cbv_flow)
-    NewRelicEventTracker.track("ClickedCBVInvitationLink", {
+    event_logger.track("ClickedCBVInvitationLink", request, {
       timestamp: Time.now.to_i,
       invitation_id: invitation.id,
       cbv_flow_id: cbv_flow.id,

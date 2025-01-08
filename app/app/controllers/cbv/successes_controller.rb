@@ -6,7 +6,7 @@ class Cbv::SuccessesController < Cbv::BaseController
   end
 
   def track_accessed_success_event
-    NewRelicEventTracker.track("ApplicantAccessedSuccessPage", {
+    event_logger.track("ApplicantAccessedSuccessPage", request, {
       timestamp: Time.now.to_i,
       cbv_flow_id: @cbv_flow.id,
       invitation_id: @cbv_flow.cbv_flow_invitation_id

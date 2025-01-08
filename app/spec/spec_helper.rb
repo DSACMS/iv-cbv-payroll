@@ -102,6 +102,7 @@ RSpec.configure do |config|
   # Stub out NewRelicEventTracker so it doesn't make calls in test
   config.before(:each) do
     allow(NewRelicEventTracker).to receive(:track)
+    allow_any_instance_of(MixpanelEventTracker).to receive(:track)
   end
 
   # Mock the pinwheel method if it's not available in the test environment

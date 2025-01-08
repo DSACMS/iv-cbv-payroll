@@ -1,6 +1,6 @@
 class Cbv::EntriesController < Cbv::BaseController
   def show
-    NewRelicEventTracker.track("ApplicantViewedAgreement", {
+    event_logger.track("ApplicantViewedAgreement", request, {
       timestamp: Time.now.to_i,
       site_id: @cbv_flow.site_id,
       cbv_flow_id: @cbv_flow.id,
@@ -10,7 +10,7 @@ class Cbv::EntriesController < Cbv::BaseController
 
   def create
     if params["agreement"] == "1"
-      NewRelicEventTracker.track("ApplicantAgreed", {
+      event_logger.track("ApplicantAgreed", request, {
         timestamp: Time.now.to_i,
         site_id: @cbv_flow.site_id,
         cbv_flow_id: @cbv_flow.id,
