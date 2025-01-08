@@ -13,6 +13,19 @@ class Api::PinwheelController < ApplicationController
     PinwheelSuccess
   ]
 
+  # Maps new Pinwheel event names (keys) to new Mixpanel event names we're using
+  MIXPANEL_EVENT_MAP = {
+    "PinwheelShowProviderConfirmationPage" => "ApplicantViewedPinwheelProviderConfirmation",
+    "PinwheelShowLoginPage" => "ApplicantViewedPinwheelLoginPage",
+    "PinwheelAttemptLogin" => "ApplicantAttemptedPinwheelLogin",
+    "PinwheelSuccess" => "ApplicantSucceededWithPinwheelLogin",
+    "PinwheelError" => "ApplicantEncounteredPinwheelError",
+    "PinwheelShowDefaultProviderSearch" => "ApplicantViewedPinwheelDefaultProviderSearch",
+    "PinwheelAttemptClose" => "ApplicantAttemptedClosingPinwheelModal",
+    "PinwheelCloseModal" => "ApplicantClosedPinwheelModal",
+    "PinwheelAccountSyncFinished" => "ApplicantFinishedPinwheelSync"
+  }
+
   # run the token here with the included employer/payroll provider id
   def create_token
     @cbv_flow = CbvFlow.find(session[:cbv_flow_id])
@@ -40,8 +53,15 @@ class Api::PinwheelController < ApplicationController
     event_attributes = user_action_params[:attributes].merge(base_attributes)
 
     if EVENT_NAMES.include?(event_name)
-      NewRelicEventTracker.track(
-        event_name,
+      # Map to the new Mixpanel event name if present, otherwise just send NewRelic the Pinwheel name
+      mixpanel_event_type = MIXPANEL_EVENT_MAP[event_name]
+      if not mixpanel_event_type.present?
+        mixpanel_event_type = event_name
+      end
+
+      event_logger.track(
+        mixpanel_event_type,
+        request,
         event_attributes.to_h
       )
     else

@@ -23,7 +23,7 @@ class CbvInvitationService
   private
 
   def track_event(cbv_flow_invitation, current_user)
-    event_logger.track("ApplicantInvitedToFlow", request, {
+    event_logger.track("ApplicantInvitedToFlow", nil, {
       timestamp: Time.now.to_i,
       user_id: current_user.id,
       caseworker_email_address: current_user.email,

@@ -1,6 +1,25 @@
 require_relative "newrelic_event_map.rb"
 
 class NewRelicEventTracker
+  # Maps new Mixpanel event names (keys) to old names we used in NewRelic dashboards (values)
+  NEWRELIC_EVENT_MAP = {
+    "CaseworkerLoggedIn" => "CaseworkerLogin",
+    "CaseworkerInvitedApplicantToFlow" => "ApplicantInvitedToFlow",
+    "UserManuallySwitchedLanguage" => "LanguageManuallySwitched",
+    "ApplicantClickedCBVInvitationLink" => "ClickedCBVInvitationLink",
+    "ApplicantViewedPinwheelProviderConfirmation" => "PinwheelShowProviderConfirmationPage",
+    "ApplicantViewedPinwheelLoginPage" => "PinwheelShowLoginPage",
+    "ApplicantAttemptedPinwheelLogin" => "PinwheelAttemptLogin",
+    "ApplicantSucceededWithPinwheelLogin" => "PinwheelSuccess",
+    "ApplicantEncounteredPinwheelError" => "PinwheelError",
+    "ApplicantViewedPinwheelDefaultProviderSearch" => "PinwheelShowDefaultProviderSearch",
+    "ApplicantAttemptedClosingPinwheelModal" => "PinwheelAttemptClose",
+    "ApplicantClosedPinwheelModal" => "PinwheelCloseModal",
+    "ApplicantFinishedPinwheelSync" => "PinwheelAccountSyncFinished",
+    "ApplicantSharedIncomeSummary" => "IncomeSummarySharedWithCaseworker",
+    "ApplicantAccessedExpiredLinkPage" => "ApplicantLinkExpired"
+  }
+
   def self.for_request(request)
     new()
   end
@@ -12,7 +31,7 @@ class NewRelicEventTracker
     start_time = Time.now
 
     # Map to the old NewRelic event name if present, otherwise just send NewRelic the event_type name
-    newrelic_event_type = $newrelic_event_map[event_type]
+    newrelic_event_type = NEWRELIC_EVENT_MAP[event_type]
     if not newrelic_event_type.present?
       newrelic_event_type = event_type
     end

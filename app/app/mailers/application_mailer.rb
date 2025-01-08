@@ -10,7 +10,7 @@ class ApplicationMailer < ActionMailer::Base
   private
 
   def track_delivery
-    event_logger.track("EmailSent", request, {
+    event_logger.track("EmailSent", nil, {
       mailer: self.class.name,
       action: action_name,
       message_id: mail.message_id,
@@ -22,4 +22,8 @@ class ApplicationMailer < ActionMailer::Base
       invitation_id: params[:cbv_flow_invitation]&.id
     })
   end
+end
+
+def event_logger
+  @event_logger ||= GenericEventTracker.for_request(nil)
 end
