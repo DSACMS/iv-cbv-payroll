@@ -4,7 +4,7 @@ class MixpanelEventTracker
   end
 
   def initialize()
-    @tracker = Mixpanel::Tracker.new(ENV["MIXPANEL_TOKEN"], MyErrorHandler.new)
+    @tracker = Mixpanel::Tracker.new(ENV["MIXPANEL_TOKEN"], MixpanelErrorHandler.new)
   end
 
   def track(event_type, request, attributes = {})
@@ -31,15 +31,6 @@ class MixpanelEventTracker
     # raise unless Rails.env.production?
 
     Rails.logger.error "    Failed to send event: #{e.message}"
-  end
-
-  class MyErrorHandler < Mixpanel::ErrorHandler
-
-    def handle(error)
-      # raise error unless Rails.env.production?
-      Rails.logger.error "    MixpanelErrorTracker:#{error.inspect}\n Backtrace: #{error.backtrace}"
-    end
-
   end
 end
 

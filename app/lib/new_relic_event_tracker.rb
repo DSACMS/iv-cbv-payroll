@@ -1,5 +1,3 @@
-require_relative "newrelic_event_map.rb"
-
 class NewRelicEventTracker
   # Maps new Mixpanel event names (keys) to old names we used in NewRelic dashboards (values)
   NEWRELIC_EVENT_MAP = {
