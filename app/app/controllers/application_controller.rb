@@ -81,7 +81,7 @@ class ApplicationController < ActionController::Base
   end
 
   def event_logger
-    @event_logger ||= MixpanelEventTracker.for_request(request)
+    @event_logger ||= GenericEventTracker.for_request(request)
   end
 
   def redirect_if_maintenance_mode

@@ -73,6 +73,8 @@ gem "rexml", "~> 3.3.9"
 gem "gpgme", "~> 2.0", ">= 2.0.12"
 gem "pdf-reader", "~> 2.12.0"
 
+gem "maybe_later"
+
 group :development, :test do
   gem "brakeman", "~> 5.2"
   gem "bundler-audit", "~> 0.9"

@@ -95,24 +95,7 @@ class Cbv::BaseController < ApplicationController
       })
     rescue => ex
       raise unless Rails.env.production?
-      Rails.logger.error "Unable to track MixPanel event (CbvPageView): #{ex}"
-    end
-
-    begin
-      device_detector = DeviceDetector.new(request.headers["User-Agent"])
-      NewRelicEventTracker.track("CbvPageView", {
-        user_agent: request.headers["User-Agent"],
-        device_name: device_detector.device_name,
-        device_type: device_detector.device_type,
-        browser: device_detector.name,
-        cbv_flow_id: @cbv_flow.id,
-        invitation_id: @cbv_flow.cbv_flow_invitation_id,
-        site_id: @cbv_flow.site_id,
-        path: request.path
-      })
-    rescue => ex
-      raise unless Rails.env.production?
-      Rails.logger.error "Unable to track NewRelic event (CbvPageView): #{ex}"
+      Rails.logger.error "Unable to track event (CbvPageView): #{ex}"
     end
   end
 
