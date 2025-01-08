@@ -10,7 +10,7 @@ class ApplicationMailer < ActionMailer::Base
   private
 
   def track_delivery
-    NewRelicEventTracker.track("EmailSent", {
+    event_logger.track("EmailSent", request, {
       mailer: self.class.name,
       action: action_name,
       message_id: mail.message_id,

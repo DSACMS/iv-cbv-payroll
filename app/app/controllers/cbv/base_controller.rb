@@ -100,7 +100,7 @@ class Cbv::BaseController < ApplicationController
   end
 
   def track_timeout_event
-    NewRelicEventTracker.track("ApplicantTimedOut", {
+    event_logger.track("ApplicantTimedOut", request, {
       timestamp: Time.now.to_i
     })
   rescue => ex
@@ -108,7 +108,7 @@ class Cbv::BaseController < ApplicationController
   end
 
   def track_expired_event(invitation)
-    NewRelicEventTracker.track("ApplicantLinkExpired", {
+    event_logger.track("ApplicantLinkExpired", request, {
       invitation_id: invitation.id,
       timestamp: Time.now.to_i
     })
@@ -117,7 +117,7 @@ class Cbv::BaseController < ApplicationController
   end
 
   def track_invitation_clicked_event(invitation, cbv_flow)
-    NewRelicEventTracker.track("ClickedCBVInvitationLink", {
+    event_logger.track("ClickedCBVInvitationLink", request, {
       timestamp: Time.now.to_i,
       invitation_id: invitation.id,
       cbv_flow_id: cbv_flow.id,

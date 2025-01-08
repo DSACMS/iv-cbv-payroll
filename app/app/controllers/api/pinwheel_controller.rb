@@ -67,7 +67,7 @@ class Api::PinwheelController < ApplicationController
   end
 
   def track_event
-    NewRelicEventTracker.track("ApplicantBeganLinkingEmployer", {
+    event_logger.track("ApplicantBeganLinkingEmployer", request, {
       cbv_flow_id: @cbv_flow.id,
       invitation_id: @cbv_flow.cbv_flow_invitation_id,
       response_type: token_params[:response_type]
