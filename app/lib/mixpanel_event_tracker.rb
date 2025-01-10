@@ -3,7 +3,7 @@ class MixpanelEventTracker
     new
   end
 
-  def initialize()
+  def initialize
     @tracker = Mixpanel::Tracker.new(ENV["MIXPANEL_TOKEN"], MixpanelErrorHandler.new)
   end
 
@@ -33,4 +33,3 @@ class MixpanelEventTracker
     Rails.logger.error "    Failed to send event: #{e.message}"
   end
 end
-

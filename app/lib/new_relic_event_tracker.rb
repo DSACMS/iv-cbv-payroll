@@ -1,9 +1,9 @@
 class NewRelicEventTracker
   # Maps new Mixpanel event names (keys) to old names we used in NewRelic dashboards (values)
+  # If an event is missing from this list, it means the names are the same between services
   NEWRELIC_EVENT_MAP = {
     "CaseworkerLoggedIn" => "CaseworkerLogin",
     "CaseworkerInvitedApplicantToFlow" => "ApplicantInvitedToFlow",
-    "UserManuallySwitchedLanguage" => "LanguageManuallySwitched",
     "ApplicantClickedCBVInvitationLink" => "ClickedCBVInvitationLink",
     "ApplicantViewedPinwheelProviderConfirmation" => "PinwheelShowProviderConfirmationPage",
     "ApplicantViewedPinwheelLoginPage" => "PinwheelShowLoginPage",

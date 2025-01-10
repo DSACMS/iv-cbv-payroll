@@ -55,7 +55,7 @@ class Webhooks::Pinwheel::EventsController < ApplicationController
   end
 
   def track_account_synced_event(cbv_flow, pinwheel_account)
-    event_logger.track("PinwheelAccountSyncFinished", request, {
+    event_logger.track("ApplicantFinishedPinwheelSync", request, {
       cbv_flow_id: cbv_flow.id,
       invitation_id: cbv_flow.cbv_flow_invitation_id,
       identity_success: pinwheel_account.job_succeeded?("identity"),
@@ -69,7 +69,7 @@ class Webhooks::Pinwheel::EventsController < ApplicationController
       sync_duration_seconds: Time.now - pinwheel_account.created_at
     })
   rescue => ex
-    Rails.logger.error "Unable to track NewRelic event (PinwheelAccountSyncFinished): #{ex}"
+    Rails.logger.error "Unable to track NewRelic event (ApplicantFinishedPinwheelSync): #{ex}"
   end
 
   def track_account_created_event(cbv_flow, platform_name)
