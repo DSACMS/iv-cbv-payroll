@@ -1,3 +1,5 @@
+# The purpose of this class is to allow us to file events with multiple event providers at once
+# If we no longer need to do this, it may be that this class has outlived its usefulness!
 class GenericEventTracker
   def self.for_request(request)
     defaults = {}
