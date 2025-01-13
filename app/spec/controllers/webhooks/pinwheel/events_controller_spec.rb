@@ -43,13 +43,20 @@ RSpec.describe Webhooks::Pinwheel::EventsController do
         }
       end
 
-      it "creates a PinwheelAccount object" do
-        expect(NewRelicEventTracker).to receive(:track)
-          .with("PinwheelAccountCreated", {
+      it "creates a PinwheelAccount object and logs events" do
+        expect_any_instance_of(MixpanelEventTracker).to receive(:track)
+          .with("PinwheelAccountCreated", anything, hash_including(
             cbv_flow_id: cbv_flow.id,
             invitation_id: cbv_flow.cbv_flow_invitation_id,
             platform_name: "acme"
-          })
+          ))
+
+        expect_any_instance_of(NewRelicEventTracker).to receive(:track)
+          .with("PinwheelAccountCreated", anything, hash_including(
+            cbv_flow_id: cbv_flow.id,
+            invitation_id: cbv_flow.cbv_flow_invitation_id,
+            platform_name: "acme"
+          ))
 
         expect do
           post :create, params: valid_params
@@ -96,7 +103,7 @@ RSpec.describe Webhooks::Pinwheel::EventsController do
           .to(within(1.second).of(Time.now))
       end
 
-      it "sends a NewRelic event when fully synced" do
+      it "sends events when fully synced" do
         pinwheel_account.update(
           created_at: 5.minutes.ago,
           employment_synced_at: Time.now,
@@ -104,8 +111,9 @@ RSpec.describe Webhooks::Pinwheel::EventsController do
           identity_synced_at: Time.now,
           identity_errored_at: Time.now
         )
-        expect(NewRelicEventTracker).to receive(:track)
-          .with("PinwheelAccountSyncFinished", {
+
+        expect_any_instance_of(MixpanelEventTracker).to receive(:track)
+          .with("ApplicantFinishedPinwheelSync", anything, hash_including(
             cbv_flow_id: cbv_flow.id,
             invitation_id: cbv_flow.cbv_flow_invitation_id,
             identity_success: false,
@@ -117,7 +125,22 @@ RSpec.describe Webhooks::Pinwheel::EventsController do
             paystubs_success: true,
             paystubs_supported: true,
             sync_duration_seconds: within(1.second).of(5.minutes)
-          })
+          ))
+
+        expect_any_instance_of(NewRelicEventTracker).to receive(:track)
+        .with("ApplicantFinishedPinwheelSync", anything, hash_including(
+          cbv_flow_id: cbv_flow.id,
+          invitation_id: cbv_flow.cbv_flow_invitation_id,
+          identity_success: false,
+          identity_supported: true,
+          income_success: true,
+          income_supported: true,
+          employment_success: true,
+          employment_supported: true,
+          paystubs_success: true,
+          paystubs_supported: true,
+          sync_duration_seconds: within(1.second).of(5.minutes)
+        ))
 
         post :create, params: valid_params
       end
