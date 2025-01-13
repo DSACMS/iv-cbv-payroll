@@ -29,26 +29,22 @@ class GenericEventTracker
   end
 
   def track(event_type, request, attributes = {})
-    MaybeLater.run {
-      if request.present?
-        device_detector = DeviceDetector.new(request.headers["User-Agent"])
-        attributes[:device_name] = device_detector.device_name
-        attributes[:device_type] = device_detector.device_type
-        attributes[:browser] = device_detector.name
+    if request.present?
+      device_detector = DeviceDetector.new(request.headers["User-Agent"])
+      attributes[:device_name] = device_detector.device_name
+      attributes[:device_type] = device_detector.device_type
+      attributes[:browser] = device_detector.name
+    end
+
+    combined_attributes = attributes.with_defaults(@default_attributes)
+
+    @trackers.map do |service, tracker|
+      begin
+        tracker.track(event_type, request, combined_attributes)
+      rescue StandardError => e
+        raise unless Rails.env.production?
+        Rails.logger.error "  Failed to track #{event_type} in #{service}: #{e.message}"
       end
-
-      combined_attributes = attributes.with_defaults(@default_attributes).stringify_keys
-
-      responses = @trackers.map do |service, tracker|
-        begin
-          tracker.track(event_type, request, combined_attributes)
-        rescue StandardError => e
-          raise unless Rails.env.production?
-          Rails.logger.error "  Failed to track #{event_type} in #{service}: #{e.message}"
-        end
-      end
-
-      responses
-    }
+    end
   end
 end

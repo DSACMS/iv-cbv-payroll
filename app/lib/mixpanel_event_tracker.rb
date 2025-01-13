@@ -8,7 +8,6 @@ class MixpanelEventTracker
   end
 
   def track(event_type, request, attributes = {})
-    Rails.logger.info "  Sending Mixpanel event #{event_type} with attributes: #{attributes}"
 
     start_time = Time.now
 
@@ -17,16 +16,17 @@ class MixpanelEventTracker
     distinct_id = attributes.fetch("invitation_id", "")
     distinct_id = "invitation-#{distinct_id}" if distinct_id.present?
 
-    begin
-      response = @tracker.track(distinct_id, event_type, attributes)
-      Rails.logger.info "    Mixpanel event sent in #{Time.now - start_time}"
-    rescue StandardError => e
-      # raise unless Rails.env.production?
+    MaybeLater.run {
+      Rails.logger.info "  Sending Mixpanel event #{event_type} with attributes: #{attributes}"
+      begin
+        @tracker.track(distinct_id, event_type, attributes)
+        Rails.logger.info "    Mixpanel event sent in #{Time.now - start_time}"
+      rescue StandardError => e
+        # raise unless Rails.env.production?
 
-      Rails.logger.error "    Failed to send Mixpanel event: #{e.message}"
-    end
-
-    response
+        Rails.logger.error "    Failed to send Mixpanel event: #{e.message}"
+      end
+    }
   rescue StandardError => e
     # raise unless Rails.env.production?
 
