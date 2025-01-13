@@ -43,42 +43,42 @@ RSpec.describe Cbv::EntriesController do
         )
       end
 
-      it "sends a NewRelic event with metadata" do
-        allow(NewRelicEventTracker).to receive(:track)
-
-        get :show, params: { token: invitation.auth_token }
-        cbv_flow = invitation.cbv_flows.first
-
-        expect(NewRelicEventTracker).to have_received(:track).with("ClickedCBVInvitationLink", {
+      it "sends events with metadata" do
+        expect_any_instance_of(MixpanelEventTracker).to receive(:track).with("ApplicantClickedCBVInvitationLink", anything, hash_including(
+          cbv_flow_id: be_a(Integer),
           timestamp: be_a(Integer),
           invitation_id: invitation.id,
-          cbv_flow_id: cbv_flow.id,
           site_id: invitation.site_id,
           seconds_since_invitation: seconds_since_invitation
-        })
-      end
+        ))
 
-      it "tracks a CbvPageView event (from the base controller)" do
-        allow(NewRelicEventTracker).to receive(:track)
-
-        request.headers["User-Agent"] = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36"
-        get :show, params: { token: invitation.auth_token }
-        cbv_flow = invitation.cbv_flows.first
-
-        expect(NewRelicEventTracker).to have_received(:track).with("CbvPageView", {
-          user_agent: be_a(String),
-          device_name: anything,
-          device_type: be_a(String),
-          browser: be_a(String),
+        expect_any_instance_of(MixpanelEventTracker).to receive(:track).with("ApplicantViewedAgreement", anything, hash_including(
+          cbv_flow_id: be_a(Integer),
+          timestamp: be_a(Integer),
           invitation_id: invitation.id,
-          cbv_flow_id: cbv_flow.id,
+          site_id: invitation.site_id
+        ))
+
+        expect_any_instance_of(NewRelicEventTracker).to receive(:track).with("ApplicantClickedCBVInvitationLink", anything, hash_including(
+          cbv_flow_id: be_a(Integer),
+          timestamp: be_a(Integer),
+          invitation_id: invitation.id,
           site_id: invitation.site_id,
-          path: "/cbv/entry"
-        })
+          seconds_since_invitation: seconds_since_invitation
+        ))
+
+        expect_any_instance_of(NewRelicEventTracker).to receive(:track).with("ApplicantViewedAgreement", anything, hash_including(
+          cbv_flow_id: be_a(Integer),
+          timestamp: be_a(Integer),
+          invitation_id: invitation.id
+        ))
+
+        get :show, params: { token: invitation.auth_token }
       end
 
-      it "tracks a CbvPageView event with Mixpanel (from the base controller)" do
-        expect_any_instance_of(MixpanelEventTracker).to receive(:track).with("CbvPageView", {
+      it "tracks CbvPageView events (from the base controller)" do
+        expect_any_instance_of(MixpanelEventTracker).to receive(:track).with("CbvPageView", anything, hash_including(
+          user_agent: be_a(String),
           device_name: anything,
           device_type: be_a(String),
           browser: be_a(String),
@@ -86,7 +86,33 @@ RSpec.describe Cbv::EntriesController do
           cbv_flow_id: be_a(Integer),
           site_id: invitation.site_id,
           path: "/cbv/entry"
-        })
+        ))
+
+        expect_any_instance_of(NewRelicEventTracker).to receive(:track).with("CbvPageView", anything, hash_including(
+          user_agent: be_a(String),
+          device_name: anything,
+          device_type: be_a(String),
+          browser: be_a(String),
+          invitation_id: invitation.id,
+          cbv_flow_id: be_a(Integer),
+          site_id: invitation.site_id,
+          path: "/cbv/entry"
+        ))
+
+        request.headers["User-Agent"] = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36"
+        get :show, params: { token: invitation.auth_token }
+      end
+
+      it "tracks a CbvPageView event with Mixpanel (from the base controller)" do
+        expect_any_instance_of(MixpanelEventTracker).to receive(:track).with("CbvPageView", anything, hash_including(
+          device_name: anything,
+          device_type: be_a(String),
+          browser: be_a(String),
+          invitation_id: invitation.id,
+          cbv_flow_id: be_a(Integer),
+          site_id: invitation.site_id,
+          path: "/cbv/entry"
+        ))
 
         request.headers["User-Agent"] = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36"
         get :show, params: { token: invitation.auth_token }
