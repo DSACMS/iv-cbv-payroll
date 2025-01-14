@@ -19,7 +19,7 @@ class NewRelicEventTracker
   }
 
   def self.for_request(request)
-    new()
+    new
   end
 
   def initialize

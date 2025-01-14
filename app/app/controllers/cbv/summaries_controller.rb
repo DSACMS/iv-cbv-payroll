@@ -89,7 +89,8 @@ class Cbv::SummariesController < Cbv::BaseController
         payments: @payments,
         employments: @employments,
         incomes: @incomes,
-        identities: @identities
+        identities: @identities,
+        existing_event_logger: event_logger
       ).summary_email.deliver_now
       @cbv_flow.touch(:transmitted_at)
       track_transmitted_event(@cbv_flow, @payments)

@@ -16,7 +16,10 @@ RSpec.describe ApplicantMailer, type: :mailer do
 
     let(:email) { 'me@email.com' }
     let(:cbv_flow_invitation) { create(:cbv_flow_invitation, email_address: email) }
-    let(:mail) { ApplicantMailer.with(cbv_flow_invitation: cbv_flow_invitation).invitation_email }
+    let(:mail) { ApplicantMailer.with(
+                  cbv_flow_invitation: cbv_flow_invitation,
+                  existing_event_logger: event_logger
+                ).invitation_email }
 
     it "renders the subject" do
       expect(mail.subject).to eq(I18n.t('applicant_mailer.invitation_email.subject.default'))

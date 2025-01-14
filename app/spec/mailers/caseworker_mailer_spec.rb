@@ -27,7 +27,8 @@ RSpec.describe CaseworkerMailer, type: :mailer do
       payments: payments,
       employments: employments,
       incomes: incomes,
-      identities: identities
+      identities: identities,
+      existing_event_logger: event_logger
     ).summary_email
   }
 

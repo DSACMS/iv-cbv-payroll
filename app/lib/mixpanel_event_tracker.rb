@@ -28,7 +28,7 @@ class MixpanelEventTracker
       end
     }
   rescue StandardError => e
-    # raise unless Rails.env.production?
+    raise unless Rails.env.production?
 
     Rails.logger.error "    Failed to send event: #{e.message}"
   end

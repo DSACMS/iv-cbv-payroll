@@ -25,7 +25,8 @@ class CaseworkerMailerPreview < BaseMailerPreview
       payments: payments,
       employments: employments,
       incomes: incomes,
-      identities: identities
+      identities: identities,
+      existing_event_logger: event_logger
     ).summary_email
   end
 end

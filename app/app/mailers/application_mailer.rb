@@ -22,8 +22,12 @@ class ApplicationMailer < ActionMailer::Base
       invitation_id: params[:cbv_flow_invitation]&.id
     })
   end
-end
 
-def event_logger
-  @event_logger ||= GenericEventTracker.for_request(nil)
+  def event_logger
+    if params[:existing_event_logger].present?
+      @event_logger = params[:existing_event_logger]
+    else
+      @event_logger ||= GenericEventTracker.for_request(nil)
+    end
+  end
 end
