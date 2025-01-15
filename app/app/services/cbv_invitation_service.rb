@@ -34,8 +34,7 @@ class CbvInvitationService
 
   def send_invitation_email(cbv_flow_invitation)
     ApplicantMailer.with(
-      cbv_flow_invitation: cbv_flow_invitation,
-      existing_event_logger: event_logger
+      cbv_flow_invitation: cbv_flow_invitation
     ).invitation_email.deliver_now
   end
 end

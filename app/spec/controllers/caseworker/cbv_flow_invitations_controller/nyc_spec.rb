@@ -67,21 +67,19 @@ RSpec.describe Caseworker::CbvFlowInvitationsController, type: :controller do
     end
 
     it "sends events" do
-      expect_any_instance_of(MixpanelEventTracker).to receive(:track).with("ApplicantInvitedToFlow", anything, hash_including(
-        timestamp: be_a(Integer),
-        user_id: user.id,
-        caseworker_email_address: user.email,
-        site_id: "nyc",
-        invitation_id: be_a(Integer)
+      expect_any_instance_of(MixpanelEventTracker).to receive(:track)
+      .with("EmailSent", anything, hash_including(
+        mailer: "ApplicantMailer",
+        action: "invitation_email",
+        message_id: be_a(String)
       ))
 
-      expect_any_instance_of(NewRelicEventTracker).to receive(:track).with("ApplicantInvitedToFlow", anything, hash_including(
-        timestamp: be_a(Integer),
-        user_id: user.id,
-        caseworker_email_address: user.email,
-        site_id: "nyc",
-        invitation_id: be_a(Integer)
-      ))
+      expect_any_instance_of(NewRelicEventTracker).to receive(:track)
+        .with("EmailSent", anything, hash_including(
+          mailer: "ApplicantMailer",
+          action: "invitation_email",
+          message_id: be_a(String)
+        ))
 
       post :create, params: {
         site_id: nyc_params[:site_id],
