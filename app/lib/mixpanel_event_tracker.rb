@@ -8,21 +8,22 @@ class MixpanelEventTracker
   end
 
   def track(event_type, request, attributes = {})
-
     start_time = Time.now
 
     # Use the "invitation_id" attribute as the distinct_id as it currently best
     # represents the concept of a unique user.
-    distinct_id = attributes.fetch("invitation_id", "")
-    distinct_id = "invitation-#{distinct_id}" if distinct_id.present?
+    invitation_id = attributes.fetch(:invitation_id, "")
+    distinct_id = "invitation-#{invitation_id}" if distinct_id.present?
+    attributes.merge!({:user_id => invitation_id})
 
+    # MaybeLater tries to run this code after the request has finished
     MaybeLater.run {
       Rails.logger.info "  Sending Mixpanel event #{event_type} with attributes: #{attributes}"
       begin
         @tracker.track(distinct_id, event_type, attributes)
         Rails.logger.info "    Mixpanel event sent in #{Time.now - start_time}"
       rescue StandardError => e
-        # raise unless Rails.env.production?
+        raise unless Rails.env.production?
 
         Rails.logger.error "    Failed to send Mixpanel event: #{e.message}"
       end

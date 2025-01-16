@@ -34,6 +34,7 @@ class NewRelicEventTracker
       newrelic_event_type = event_type
     end
 
+    # MaybeLater tries to run this code after the request has finished
     MaybeLater.run {
       Rails.logger.info "  Sending NewRelic event #{newrelic_event_type} with attributes: #{attributes}"
       begin
