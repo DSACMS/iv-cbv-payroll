@@ -14,7 +14,7 @@ class MixpanelEventTracker
     # represents the concept of a unique user.
     invitation_id = attributes.fetch(:invitation_id, "")
     distinct_id = "invitation-#{invitation_id}" if distinct_id.present?
-    attributes.merge!({:user_id => invitation_id})
+    attributes.merge!({ user_id: invitation_id })
 
     # MaybeLater tries to run this code after the request has finished
     MaybeLater.run {

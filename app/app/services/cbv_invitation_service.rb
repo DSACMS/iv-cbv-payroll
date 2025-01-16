@@ -1,5 +1,4 @@
 class CbvInvitationService
-
   def initialize(event_logger)
     @event_logger = event_logger
   end
