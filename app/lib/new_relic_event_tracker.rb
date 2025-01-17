@@ -5,6 +5,7 @@ class NewRelicEventTracker
     "CaseworkerLoggedIn" => "CaseworkerLogin",
     "CaseworkerInvitedApplicantToFlow" => "ApplicantInvitedToFlow",
     "ApplicantClickedCBVInvitationLink" => "ClickedCBVInvitationLink",
+    "ApplicantCreatedPinwheelAccount" => "PinwheelAccountCreated",
     "ApplicantViewedPinwheelProviderConfirmation" => "PinwheelShowProviderConfirmationPage",
     "ApplicantViewedPinwheelLoginPage" => "PinwheelShowLoginPage",
     "ApplicantAttemptedPinwheelLogin" => "PinwheelAttemptLogin",

@@ -73,7 +73,7 @@ class Webhooks::Pinwheel::EventsController < ApplicationController
   end
 
   def track_account_created_event(cbv_flow, platform_name)
-    event_logger.track("PinwheelAccountCreated", request, {
+    event_logger.track("ApplicantCreatedPinwheelAccount", request, {
       cbv_flow_id: cbv_flow.id,
       invitation_id: cbv_flow.cbv_flow_invitation_id,
       platform_name: platform_name

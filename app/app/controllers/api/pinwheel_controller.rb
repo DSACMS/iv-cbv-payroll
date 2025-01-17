@@ -15,6 +15,7 @@ class Api::PinwheelController < ApplicationController
 
   # Maps Pinwheel event names (keys) to new Mixpanel event names (values) we're using
   MIXPANEL_EVENT_MAP = {
+    "PinwheelAccountCreated" => "ApplicantCreatedPinwheelAccount",
     "PinwheelShowProviderConfirmationPage" => "ApplicantViewedPinwheelProviderConfirmation",
     "PinwheelShowLoginPage" => "ApplicantViewedPinwheelLoginPage",
     "PinwheelAttemptLogin" => "ApplicantAttemptedPinwheelLogin",
