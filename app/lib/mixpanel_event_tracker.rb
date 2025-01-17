@@ -21,7 +21,7 @@ class MixpanelEventTracker
       flow_id = attributes.fetch(:cbv_flow_id, "")
       @tracker.people.set(distinct_id, { :cbv_flow_id => flow_id })
     end
-    
+
     # MaybeLater tries to run this code after the request has finished
     MaybeLater.run {
       Rails.logger.info "  Sending Mixpanel event #{event_type} with attributes: #{attributes}"
