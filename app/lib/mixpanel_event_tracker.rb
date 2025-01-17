@@ -13,9 +13,15 @@ class MixpanelEventTracker
     # Use the "invitation_id" attribute as the distinct_id as it currently best
     # represents the concept of a unique user.
     invitation_id = attributes.fetch(:invitation_id, "")
-    distinct_id = "invitation-#{invitation_id}" if distinct_id.present?
-    attributes.merge!({ user_id: invitation_id })
+    distinct_id = ""
+    if invitation_id.present?
+      distinct_id = "invitation-#{invitation_id}"
 
+      # This creates a profile for a distinct user
+      flow_id = attributes.fetch(:cbv_flow_id, "")
+      @tracker.people.set(distinct_id, { :cbv_flow_id => flow_id })
+    end
+    
     # MaybeLater tries to run this code after the request has finished
     MaybeLater.run {
       Rails.logger.info "  Sending Mixpanel event #{event_type} with attributes: #{attributes}"
