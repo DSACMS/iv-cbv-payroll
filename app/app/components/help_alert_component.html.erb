@@ -1,0 +1,10 @@
+<% if visible? %>
+  <div class="usa-alert usa-alert--warning">
+    <div class="usa-alert__body">
+      <h3 class="usa-alert__heading"><%= t("help.alert.heading") %></h3>
+      <p class="usa-alert__text">
+        <%= t("help.alert.text_before") %> <%= link_to t("help.alert.help_options"), "#help-modal", aria: { controls: "help-modal" }, data: { open_modal: true } %>.
+      </p>
+    </div>
+  </div>
+<% end %>
