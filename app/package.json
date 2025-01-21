@@ -5,19 +5,19 @@
     "@csstools/postcss-sass": "^5.1.1",
     "@hotwired/stimulus": "^3.2.2",
     "@hotwired/turbo-rails": "^8.0.12",
-    "@rails/actioncable": "^7.2.200",
-    "@uswds/uswds": "^3.9.0",
+    "@rails/actioncable": "^7.2.201",
+    "@uswds/uswds": "^3.10.0",
     "autoprefixer": "^10.4.20",
     "esbuild": "^0.24.0",
     "load-script": "^2.0.0",
-    "postcss": "^8.4.47",
+    "postcss": "^8.4.49",
     "postcss-cli": "^11.0.0",
     "postcss-import": "^16.1.0",
     "postcss-minify": "^1.1.0",
     "postcss-nesting": "^12.1.5",
     "postcss-scss": "^4.0.9",
-    "sass": "^1.80.5",
-    "webpack": "^5.91.0",
+    "sass": "^1.83.0",
+    "webpack": "^5.97.0",
     "webpack-cli": "^5.1.4"
   },
   "scripts": {
@@ -30,6 +30,7 @@
   },
   "resolutions": {
     "@csstools/postcss-sass/@csstools/sass-import-resolve": "https://github.com/rahearn/sass-import-resolve",
-    "pa11y-ci/pa11y/semver": ">= 7.5.2"
+    "pa11y-ci/pa11y/semver": ">= 7.5.2",
+    "nanoid": "^5.0.9"
   }
 }

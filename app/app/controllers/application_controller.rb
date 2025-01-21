@@ -4,6 +4,7 @@ class ApplicationController < ActionController::Base
   around_action :switch_locale
   before_action :add_newrelic_metadata
   before_action :redirect_if_maintenance_mode
+  before_action :enable_mini_profiler_in_demo
 
   rescue_from ActionController::InvalidAuthenticityToken do
     redirect_to root_url, flash: { slim_alert: { type: "info", message_html:  t("cbv.error_missing_token_html") } }
@@ -28,6 +29,7 @@ class ApplicationController < ActionController::Base
   end
 
   private
+
   def show_translate_button?
     false
   end
@@ -46,6 +48,16 @@ class ApplicationController < ActionController::Base
     @current_site ||= site_config[params[:site_id]]
   end
 
+  def enable_mini_profiler_in_demo
+    return unless demo_mode?
+
+    Rack::MiniProfiler.authorize_request
+  end
+
+  def demo_mode?
+    ENV["DOMAIN_NAME"] == "verify-demo.navapbc.cloud"
+  end
+
   protected
 
   def pinwheel_for(cbv_flow)
@@ -55,13 +67,11 @@ class ApplicationController < ActionController::Base
   end
 
   def add_newrelic_metadata
-    newrelic_params = params.slice(:site_id, :locale).permit
-
     attributes = {
       cbv_flow_id: session[:cbv_flow_id],
       session_id: session.id.to_s,
-      site_id: newrelic_params[:site_id],
-      locale: newrelic_params[:locale],
+      site_id: params[:site_id],
+      locale: params[:locale],
       user_id: current_user.try(:id)
     }
 

@@ -30,20 +30,43 @@ export default class extends Controller {
     event.preventDefault()
   }
 
-  onPinwheelError(event) {
-    const { type, code } = event;
-    console.error("Got Pinwheel Error:", type, event);
-
-    if (window.NREUM) {
-      window.NREUM.addPageAction("PinwheelError", { type, code, cbvFlowId: this.cbvFlowIdValue })
-    }
-  }
-
   onPinwheelEvent(eventName, eventPayload) {
     if (eventName === 'success') {
-      const { accountId } = eventPayload;
+      const { accountId } = eventPayload
       this.userAccountIdTarget.value = accountId
+      trackUserAction("PinwheelSuccess", {
+        account_id: eventPayload.accountId,
+        platform_id: eventPayload.platformId
+      })
       this.formTarget.submit();
+    } else if (eventName === 'screen_transition') {
+      const { screenName } = eventPayload
+
+      switch (screenName) {
+        case "LOGIN":
+          trackUserAction("PinwheelShowLoginPage", {
+            screen_name: screenName,
+            employer_name: eventPayload.selectedEmployerName,
+            platform_name: eventPayload.selectedPlatformName
+          })
+          break
+        case "PROVIDER_CONFIRMATION":
+          trackUserAction("PinwheelShowProviderConfirmationPage", {})
+          break
+        case "SEARCH_DEFAULT":
+          trackUserAction("PinwheelShowDefaultProviderSearch", {})
+          break
+        case "EXIT_CONFIRMATION":
+          trackUserAction("PinwheelAttemptClose", {})
+          break
+      }
+    } else if (eventName === 'login_attempt') {
+      trackUserAction("PinwheelAttemptLogin", {})
+    } else if (eventName === 'error') {
+      const { type, code, message } = eventPayload
+      trackUserAction("PinwheelError", { type, code, message })
+    } else if (eventName === 'exit') {
+      trackUserAction("PinwheelCloseModal", {})
     }
   }
 
@@ -57,9 +80,14 @@ export default class extends Controller {
 
   async select(event) {
     const locale = this.getDocumentLocale();
-
-    const { responseType, id, name } = event.target.dataset;
-    await trackUserAction(responseType, id, name, locale)
+    const { responseType, id, name, isDefaultOption } = event.target.dataset;
+    await trackUserAction("ApplicantSelectedEmployerOrPlatformItem", {
+      item_type: responseType,
+      item_id: id,
+      item_name: name,
+      is_default_option: isDefaultOption,
+      locale
+    })
 
     this.disableButtons()
     const { token } = await fetchToken(responseType, id, locale);
@@ -69,7 +97,6 @@ export default class extends Controller {
   submit(token) {
     this.pinwheel.then(Pinwheel => initializePinwheel(Pinwheel, token, {
       onEvent: this.onPinwheelEvent.bind(this),
-      onError: this.onPinwheelError.bind(this),
       onExit: this.reenableButtons.bind(this),
     }));
   }

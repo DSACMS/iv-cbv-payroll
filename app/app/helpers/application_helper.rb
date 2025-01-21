@@ -73,4 +73,14 @@ module ApplicationHelper
   def coalesce_to_completed(status)
     [ :unsupported, :failed ].include?(status) ? :completed : status
   end
+
+  def uswds_form_with(model: false, scope: nil, url: nil, format: nil, **options, &block)
+    options[:builder] = UswdsFormBuilder
+    options[:data] ||= {}
+    options[:data][:turbo_frame] = "_top"
+
+    turbo_frame_tag(model) do
+      form_with(model: model, scope: scope, url: url, format: format, **options, &block)
+    end
+  end
 end

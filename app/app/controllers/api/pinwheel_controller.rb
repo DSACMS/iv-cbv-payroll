@@ -1,6 +1,18 @@
 class Api::PinwheelController < ApplicationController
   after_action :track_event, only: :create_token
 
+  EVENT_NAMES = %w[
+    ApplicantSelectedEmployerOrPlatformItem
+    PinwheelAttemptClose
+    PinwheelAttemptLogin
+    PinwheelCloseModal
+    PinwheelError
+    PinwheelShowDefaultProviderSearch
+    PinwheelShowLoginPage
+    PinwheelShowProviderConfirmationPage
+    PinwheelSuccess
+  ]
+
   # run the token here with the included employer/payroll provider id
   def create_token
     @cbv_flow = CbvFlow.find(session[:cbv_flow_id])
@@ -19,15 +31,27 @@ class Api::PinwheelController < ApplicationController
   def user_action
     @cbv_flow = CbvFlow.find(session[:cbv_flow_id])
 
-    case user_action_params[:response_type]
-    when "platform"
-      track_selected_payroll_platform
-    when "employer"
-      track_selected_app_employer
+    base_attributes = {
+      timestamp: Time.now.to_i,
+      cbv_flow_id: @cbv_flow.id,
+      invitation_id: @cbv_flow.cbv_flow_invitation_id
+    }
+    event_name = user_action_params[:event_name]
+    event_attributes = user_action_params[:attributes].merge(base_attributes)
+
+    if EVENT_NAMES.include?(event_name)
+      NewRelicEventTracker.track(
+        event_name,
+        event_attributes.to_h
+      )
+    else
+      raise "Unknown Event Type #{event_name.inspect}"
     end
 
     render json: { status: :ok }
   rescue => ex
+    raise ex unless Rails.env.production?
+
     Rails.logger.error "Unable to process user action: #{ex}"
     render json: { status: :error }, status: :unprocessable_entity
   end
@@ -35,39 +59,11 @@ class Api::PinwheelController < ApplicationController
   private
 
   def user_action_params
-    params.require(:pinwheel).permit(:response_type, :id, :name, :locale)
+    params.fetch(:pinwheel, {}).permit(:event_name, :locale, attributes: {})
   end
 
   def token_params
     params.require(:pinwheel).permit(:response_type, :id, :locale)
-  end
-
-  def track_selected_payroll_platform
-    @cbv_flow = CbvFlow.find(session[:cbv_flow_id])
-
-    NewRelicEventTracker.track("ApplicantSelectedPopularPayrollPlatform", {
-      timestamp: Time.now.to_i,
-      cbv_flow_id: @cbv_flow.id,
-      payroll_platform_id: user_action_params[:id],
-      payroll_platform_name: user_action_params[:name],
-      locale: user_action_params[:locale]
-    })
-  rescue => ex
-    Rails.logger.error "Unable to track NewRelic event (ApplicantSelectedPopularPayrollPlatform): #{ex}"
-  end
-
-  def track_selected_app_employer
-    @cbv_flow = CbvFlow.find(session[:cbv_flow_id])
-
-    NewRelicEventTracker.track("ApplicantSelectedPopularAppEmployer", {
-      timestamp: Time.now.to_i,
-      cbv_flow_id: @cbv_flow.id,
-      employer_id: user_action_params[:id],
-      employer_name: user_action_params[:name],
-      locale: user_action_params[:locale]
-    })
-  rescue => ex
-    Rails.logger.error "Unable to track NewRelic event (ApplicantSelectedPopularAppEmployer): #{ex}"
   end
 
   def track_event

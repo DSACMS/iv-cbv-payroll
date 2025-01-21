@@ -55,7 +55,6 @@ locals {
       manage_method     = "manual"
       secret_store_name = "/service/${var.app_name}-${var.environment}/maintenance-mode"
     },
-
     # Transmission Configuration:
     NYC_HRA_EMAIL = {
       manage_method     = "manual"
