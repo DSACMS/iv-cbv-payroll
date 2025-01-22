@@ -20,20 +20,23 @@ class Webhooks::Pinwheel::EventsController < ApplicationController
 
     if PinwheelAccount::EVENTS_MAP.keys.include?(params["event"])
       pinwheel_account = PinwheelAccount.find_by_pinwheel_account_id(params["payload"]["account_id"])
-      pinwheel_account.update!(PinwheelAccount::EVENTS_MAP[params["event"]] => Time.now) if pinwheel_account.present?
 
-      if params.dig("payload", "outcome") == "error" || params.dig("payload", "outcome") == "pending"
-        pinwheel_account.update!(PinwheelAccount::EVENTS_ERRORS_MAP[params["event"]] => Time.now) if pinwheel_account.present?
-      end
+      if pinwheel_account.present?
+        pinwheel_account.update!(PinwheelAccount::EVENTS_MAP[params["event"]] => Time.now)
 
-      if pinwheel_account.has_fully_synced?
-        track_account_synced_event(@cbv_flow, pinwheel_account)
+        if params.dig("payload", "outcome") == "error" || params.dig("payload", "outcome") == "pending"
+          pinwheel_account.update!(PinwheelAccount::EVENTS_ERRORS_MAP[params["event"]] => Time.now)
+        end
 
-        PaystubsChannel.broadcast_to(@cbv_flow, {
-          event: "cbv.status_update",
-          account_id: params["payload"]["account_id"],
-          has_fully_synced: true
-        })
+        if pinwheel_account.has_fully_synced?
+          track_account_synced_event(@cbv_flow, pinwheel_account)
+
+          PaystubsChannel.broadcast_to(@cbv_flow, {
+            event: "cbv.status_update",
+            account_id: params["payload"]["account_id"],
+            has_fully_synced: true
+          })
+        end
       end
     end
   end
@@ -55,7 +58,7 @@ class Webhooks::Pinwheel::EventsController < ApplicationController
   end
 
   def track_account_synced_event(cbv_flow, pinwheel_account)
-    NewRelicEventTracker.track("PinwheelAccountSyncFinished", {
+    event_logger.track("ApplicantFinishedPinwheelSync", request, {
       cbv_flow_id: cbv_flow.id,
       invitation_id: cbv_flow.cbv_flow_invitation_id,
       identity_success: pinwheel_account.job_succeeded?("identity"),
@@ -69,11 +72,11 @@ class Webhooks::Pinwheel::EventsController < ApplicationController
       sync_duration_seconds: Time.now - pinwheel_account.created_at
     })
   rescue => ex
-    Rails.logger.error "Unable to track NewRelic event (PinwheelAccountSyncFinished): #{ex}"
+    Rails.logger.error "Unable to track NewRelic event (ApplicantFinishedPinwheelSync): #{ex}"
   end
 
   def track_account_created_event(cbv_flow, platform_name)
-    NewRelicEventTracker.track("PinwheelAccountCreated", {
+    event_logger.track("ApplicantCreatedPinwheelAccount", request, {
       cbv_flow_id: cbv_flow.id,
       invitation_id: cbv_flow.cbv_flow_invitation_id,
       platform_name: platform_name
