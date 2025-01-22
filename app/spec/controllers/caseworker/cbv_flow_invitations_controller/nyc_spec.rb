@@ -5,6 +5,7 @@ RSpec.describe Caseworker::CbvFlowInvitationsController, type: :controller do
   let(:nyc_params) { { site_id: "nyc" } }
 
   before do
+    stub_site_config_value("nyc", "staff_portal_enabled", true)
     sign_in user
   end
 
