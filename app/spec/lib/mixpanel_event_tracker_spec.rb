@@ -1,7 +1,6 @@
 require 'rails_helper'
-require 'new_relic_event_tracker'
 
-RSpec.describe NewRelicEventTracker do
+RSpec.describe MixpanelEventTracker do
   describe '.track' do
     let(:event_type) { 'TestEvent' }
     let(:request) { nil }
@@ -15,17 +14,17 @@ RSpec.describe NewRelicEventTracker do
       end
 
       # Since we're stubbing this in spec_helper, make our tests in this file call original as well
-      allow_any_instance_of(NewRelicEventTracker).to receive(:track).and_call_original
+      allow_any_instance_of(MixpanelEventTracker).to receive(:track).and_call_original
     end
 
-    it 'calls NewRelic::Agent.record_custom_event with correct parameters' do
-      expect(NewRelic::Agent).to receive(:record_custom_event)
+    it 'calls Mixpanel::Tracker.track with correct parameters' do
+      expect_any_instance_of(Mixpanel::Tracker).to receive(:track)
       tracker.track(event_type, request, attributes)
     end
 
     context 'when an error occurs' do
       before do
-        allow(NewRelic::Agent).to receive(:record_custom_event).and_raise(StandardError.new('Test error'))
+        allow_any_instance_of(Mixpanel::Tracker).to receive(:track).and_raise(StandardError.new('Test error'))
       end
 
       it 'logs an error message' do

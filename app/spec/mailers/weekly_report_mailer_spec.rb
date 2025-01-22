@@ -50,9 +50,16 @@ RSpec.describe WeeklyReportMailer, type: :mailer do
     expect(mail.body.encoded).to include("Attached is a report from")
   end
 
-  it "tracks newrelic" do
-    expect(NewRelicEventTracker).to receive(:track)
-      .with("EmailSent", hash_including(
+  it "tracks events" do
+    expect_any_instance_of(MixpanelEventTracker).to receive(:track)
+      .with("EmailSent", anything, hash_including(
+        mailer: "WeeklyReportMailer",
+        action: "report_email",
+        message_id: be_a(String)
+      ))
+
+    expect_any_instance_of(NewRelicEventTracker).to receive(:track)
+      .with("EmailSent", anything, hash_including(
         mailer: "WeeklyReportMailer",
         action: "report_email",
         message_id: be_a(String)

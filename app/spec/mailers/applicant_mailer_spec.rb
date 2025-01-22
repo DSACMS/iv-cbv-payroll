@@ -16,7 +16,9 @@ RSpec.describe ApplicantMailer, type: :mailer do
 
     let(:email) { 'me@email.com' }
     let(:cbv_flow_invitation) { create(:cbv_flow_invitation, email_address: email) }
-    let(:mail) { ApplicantMailer.with(cbv_flow_invitation: cbv_flow_invitation).invitation_email }
+    let(:mail) { ApplicantMailer.with(
+                  cbv_flow_invitation: cbv_flow_invitation
+                ).invitation_email }
 
     it "renders the subject" do
       expect(mail.subject).to eq(I18n.t('applicant_mailer.invitation_email.subject.default'))
@@ -133,9 +135,16 @@ RSpec.describe ApplicantMailer, type: :mailer do
       expect(email.body.encoded).to include("Log into your payroll provider account")
     end
 
-    it "tracks newrelic" do
-      expect(NewRelicEventTracker).to receive(:track)
-        .with("EmailSent", hash_including(
+    it "tracks events" do
+      expect_any_instance_of(MixpanelEventTracker).to receive(:track)
+        .with("EmailSent", anything, hash_including(
+          mailer: "ApplicantMailer",
+          action: "invitation_reminder_email",
+          message_id: be_a(String)
+        ))
+
+      expect_any_instance_of(NewRelicEventTracker).to receive(:track)
+        .with("EmailSent", anything, hash_including(
           mailer: "ApplicantMailer",
           action: "invitation_reminder_email",
           message_id: be_a(String)

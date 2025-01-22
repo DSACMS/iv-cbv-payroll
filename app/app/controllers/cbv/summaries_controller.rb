@@ -21,7 +21,7 @@ class Cbv::SummariesController < Cbv::BaseController
     respond_to do |format|
       format.html
       format.pdf do
-        NewRelicEventTracker.track("ApplicantDownloadedIncomePDF", {
+        event_logger.track("ApplicantDownloadedIncomePDF", request, {
           timestamp: Time.now.to_i,
           site_id: @cbv_flow.site_id,
           cbv_flow_id: @cbv_flow.id,
@@ -192,7 +192,7 @@ class Cbv::SummariesController < Cbv::BaseController
   end
 
   def track_transmitted_event(cbv_flow, payments)
-    NewRelicEventTracker.track("IncomeSummarySharedWithCaseworker", {
+    event_logger.track("ApplicantSharedIncomeSummary", request, {
       timestamp: Time.now.to_i,
       site_id: cbv_flow.site_id,
       cbv_flow_id: cbv_flow.id,
@@ -209,7 +209,7 @@ class Cbv::SummariesController < Cbv::BaseController
   end
 
   def track_accessed_income_summary_event(cbv_flow, payments)
-    NewRelicEventTracker.track("ApplicantAccessedIncomeSummary", {
+    event_logger.track("ApplicantAccessedIncomeSummary", request, {
       timestamp: Time.now.to_i,
       site_id: cbv_flow.site_id,
       cbv_flow_id: cbv_flow.id,

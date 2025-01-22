@@ -41,7 +41,7 @@ jobs:
           database_url: ${{ steps.setup.outputs.database_url }}
 
       - name: Run OWASP Full Scan
-        uses: zaproxy/action-full-scan@v0.11.0
+        uses: zaproxy/action-full-scan@v0.12.0
         with:
           target: 'http://localhost:3000/'
           fail_action: true

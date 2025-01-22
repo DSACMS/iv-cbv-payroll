@@ -35,11 +35,16 @@ RSpec.describe Users::OmniauthCallbacksController do
         expect(controller.current_user).to eq(new_user)
       end
 
-      it "tracks a NewRelic event" do
-        expect(NewRelicEventTracker).to receive(:track).with("CaseworkerLogin", {
+      it "tracks events" do
+        expect_any_instance_of(MixpanelEventTracker).to receive(:track).with("CaseworkerLogin", anything, hash_including(
           site_id: "ma",
           user_id: be_a(Integer)
-        })
+        ))
+
+        expect_any_instance_of(NewRelicEventTracker).to receive(:track).with("CaseworkerLogin", anything, hash_including(
+          site_id: "ma",
+          user_id: be_a(Integer)
+        ))
 
         post :ma_dta
       end

@@ -56,7 +56,7 @@ class Users::OmniauthCallbacksController < Devise::OmniauthCallbacksController
   def track_event
     return unless @user&.persisted?
 
-    NewRelicEventTracker.track("CaseworkerLogin", {
+    event_logger.track("CaseworkerLogin", request, {
       site_id: @user.site_id,
       user_id: @user.id
     })
