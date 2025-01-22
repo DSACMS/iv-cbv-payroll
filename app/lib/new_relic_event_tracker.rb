@@ -27,15 +27,11 @@ class NewRelicEventTracker
   end
 
   def track(event_type, request, attributes = {})
-    start_time = Time.now
-
     # Map to the old NewRelic event name if present, otherwise just send NewRelic the event_type name
-    newrelic_event_type = NEWRELIC_EVENT_MAP[event_type]
-    if not newrelic_event_type.present?
-      newrelic_event_type = event_type
-    end
+    newrelic_event_type = NEWRELIC_EVENT_MAP[event_type] || event_type
 
     # MaybeLater tries to run this code after the request has finished
+    start_time = Time.now
     MaybeLater.run {
       Rails.logger.info "  Sending NewRelic event #{newrelic_event_type} with attributes: #{attributes}"
       begin

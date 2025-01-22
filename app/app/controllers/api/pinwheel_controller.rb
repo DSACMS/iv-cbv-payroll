@@ -55,10 +55,7 @@ class Api::PinwheelController < ApplicationController
 
     if EVENT_NAMES.include?(event_name)
       # Map to the new Mixpanel event name if present, otherwise just send NewRelic the Pinwheel name
-      mixpanel_event_type = MIXPANEL_EVENT_MAP[event_name]
-      if not mixpanel_event_type.present?
-        mixpanel_event_type = event_name
-      end
+      mixpanel_event_type = MIXPANEL_EVENT_MAP[event_name] || event_name
 
       event_logger.track(
         mixpanel_event_type,

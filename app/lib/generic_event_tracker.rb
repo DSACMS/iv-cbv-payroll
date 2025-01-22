@@ -30,6 +30,8 @@ class GenericEventTracker
     @default_attributes = default_attributes
   end
 
+  # Note that this method must be called from within request/response cycle
+  # because of our use of MaybeLater
   def track(event_type, request, attributes = {})
     if request.present?
       device_detector = DeviceDetector.new(request.headers["User-Agent"])
