@@ -19,16 +19,13 @@ class ApplicationController < ActionController::Base
   end
 
   def switch_locale(&action)
-    locale = params[:locale] || I18n.default_locale
+    requested_locale = params[:locale]
+    locale = CbvFlowInvitation::VALID_LOCALES.include?(requested_locale) ? requested_locale : I18n.default_locale
     I18n.with_locale(locale, &action)
   end
 
   def site_config
     Rails.application.config.sites
-  end
-
-  def default_url_options
-    { locale: I18n.locale }
   end
 
   private
@@ -53,6 +50,7 @@ class ApplicationController < ActionController::Base
 
   def enable_mini_profiler_in_demo
     return unless demo_mode?
+
     Rack::MiniProfiler.authorize_request
   end
 
@@ -64,6 +62,7 @@ class ApplicationController < ActionController::Base
 
   def pinwheel_for(cbv_flow)
     environment = site_config[cbv_flow.site_id].pinwheel_environment
+
     PinwheelService.new(environment)
   end
 
@@ -75,6 +74,7 @@ class ApplicationController < ActionController::Base
       locale: params[:locale],
       user_id: current_user.try(:id)
     }
+
     NewRelic::Agent.add_custom_attributes(attributes)
   end
 
