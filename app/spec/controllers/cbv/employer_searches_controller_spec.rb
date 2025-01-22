@@ -20,10 +20,10 @@ RSpec.describe Cbv::EmployerSearchesController do
         expect(response).to be_successful
       end
 
-      it "tracks a NewRelic event" do
-        expect(NewRelicEventTracker)
+      it "tracks a Mixpanel event" do
+        expect_any_instance_of(MixpanelEventTracker)
           .to receive(:track)
-          .with("ApplicantAccessedSearchPage", hash_including(
+          .with("ApplicantAccessedSearchPage", anything, hash_including(
             timestamp: be_a(Integer),
             cbv_flow_id: cbv_flow.id,
             invitation_id: cbv_flow.cbv_flow_invitation_id
@@ -31,11 +31,21 @@ RSpec.describe Cbv::EmployerSearchesController do
         get :show
       end
 
-      it "tracks event when clicking popular payroll providers" do
-        allow(NewRelicEventTracker).to receive(:track).with("ApplicantAccessedSearchPage", any_args)
-        expect(NewRelicEventTracker)
+      it "tracks a NewRelic event" do
+        expect_any_instance_of(NewRelicEventTracker)
           .to receive(:track)
-          .with("ApplicantClickedPopularPayrollProviders", hash_including(
+          .with("ApplicantAccessedSearchPage", anything, hash_including(
+            timestamp: be_a(Integer),
+            cbv_flow_id: cbv_flow.id,
+            invitation_id: cbv_flow.cbv_flow_invitation_id
+          ))
+        get :show
+      end
+
+      it "tracks Mixpanel event when clicking popular payroll providers" do
+        expect_any_instance_of(MixpanelEventTracker)
+          .to receive(:track)
+          .with("ApplicantClickedPopularPayrollProviders", anything, hash_including(
             timestamp: be_a(Integer),
             cbv_flow_id: cbv_flow.id,
             invitation_id: cbv_flow.cbv_flow_invitation_id
@@ -43,11 +53,32 @@ RSpec.describe Cbv::EmployerSearchesController do
         get :show, params: { type: "payroll" }
       end
 
-      it "tracks event when clicking popular app employers" do
-        allow(NewRelicEventTracker).to receive(:track).with("ApplicantAccessedSearchPage", any_args)
-        expect(NewRelicEventTracker)
+      it "tracks NewRelic event when clicking popular payroll providers" do
+        expect_any_instance_of(NewRelicEventTracker)
           .to receive(:track)
-          .with("ApplicantClickedPopularAppEmployers", hash_including(
+          .with("ApplicantClickedPopularPayrollProviders", anything, hash_including(
+            timestamp: be_a(Integer),
+            cbv_flow_id: cbv_flow.id,
+            invitation_id: cbv_flow.cbv_flow_invitation_id
+          ))
+        get :show, params: { type: "payroll" }
+      end
+
+      it "tracks a Mixpanel event when clicking popular app employers" do
+        expect_any_instance_of(MixpanelEventTracker)
+          .to receive(:track)
+          .with("ApplicantClickedPopularAppEmployers", anything, hash_including(
+            timestamp: be_a(Integer),
+            cbv_flow_id: cbv_flow.id,
+            invitation_id: cbv_flow.cbv_flow_invitation_id
+          ))
+        get :show, params: { type: "employer" }
+      end
+
+      it "tracks a NewRelic event when clicking popular app employers" do
+        expect_any_instance_of(NewRelicEventTracker)
+          .to receive(:track)
+          .with("ApplicantClickedPopularAppEmployers", anything, hash_including(
             timestamp: be_a(Integer),
             cbv_flow_id: cbv_flow.id,
             invitation_id: cbv_flow.cbv_flow_invitation_id
@@ -95,10 +126,22 @@ RSpec.describe Cbv::EmployerSearchesController do
         expect(response).to be_successful
       end
 
-      it "tracks a NewRelic event" do
-        expect(NewRelicEventTracker)
+      it "tracks a Mixpanel event" do
+        expect_any_instance_of(MixpanelEventTracker)
           .to receive(:track)
-          .with("ApplicantSearchedForEmployer", hash_including(
+          .with("ApplicantSearchedForEmployer", anything, hash_including(
+            cbv_flow_id: cbv_flow.id,
+            invitation_id: cbv_flow.cbv_flow_invitation_id,
+            num_results: 1,
+            has_pinwheel_account: false
+            ))
+        get :show, params: { query: "results" }
+      end
+
+      it "tracks a NewRelic event" do
+        expect_any_instance_of(NewRelicEventTracker)
+          .to receive(:track)
+          .with("ApplicantSearchedForEmployer", anything, hash_including(
             cbv_flow_id: cbv_flow.id,
             invitation_id: cbv_flow.cbv_flow_invitation_id,
             num_results: 1,

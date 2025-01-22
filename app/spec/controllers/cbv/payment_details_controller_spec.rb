@@ -39,10 +39,22 @@ RSpec.describe Cbv::PaymentDetailsController do
         expect(response).to be_successful
       end
 
-      it "tracks a NewRelic event" do
-        expect(NewRelicEventTracker)
+      it "tracks events" do
+        expect_any_instance_of(MixpanelEventTracker)
           .to receive(:track)
-          .with("ApplicantViewedPaymentDetails", hash_including(
+          .with("ApplicantViewedPaymentDetails", anything, hash_including(
+            cbv_flow_id: cbv_flow.id,
+            invitation_id: cbv_flow.cbv_flow_invitation_id,
+            pinwheel_account_id: pinwheel_account.id,
+            payments_length: 1,
+            has_employment_data: true,
+            has_paystubs_data: true,
+            has_income_data: true
+          ))
+
+        expect_any_instance_of(NewRelicEventTracker)
+          .to receive(:track)
+          .with("ApplicantViewedPaymentDetails", anything, hash_including(
             cbv_flow_id: cbv_flow.id,
             invitation_id: cbv_flow.cbv_flow_invitation_id,
             pinwheel_account_id: pinwheel_account.id,
@@ -217,10 +229,18 @@ RSpec.describe Cbv::PaymentDetailsController do
       expect(additional_information[account_id]["comment"]).to eq(comment)
     end
 
-    it "tracks a NewRelic event" do
-      expect(NewRelicEventTracker)
+    it "tracks events" do
+      expect_any_instance_of(MixpanelEventTracker)
         .to receive(:track)
-        .with("ApplicantSavedPaymentDetails", hash_including(
+        .with("ApplicantSavedPaymentDetails", anything, hash_including(
+          cbv_flow_id: cbv_flow.id,
+          invitation_id: cbv_flow.cbv_flow_invitation_id,
+          additional_information_length: comment.length
+        ))
+
+      expect_any_instance_of(NewRelicEventTracker)
+        .to receive(:track)
+        .with("ApplicantSavedPaymentDetails", anything, hash_including(
           cbv_flow_id: cbv_flow.id,
           invitation_id: cbv_flow.cbv_flow_invitation_id,
           additional_information_length: comment.length
