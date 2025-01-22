@@ -15,6 +15,10 @@ RSpec.describe Caseworker::EntriesController do
     end
 
     context "when state is nyc" do
+      before do
+        stub_site_config_value("nyc", "staff_portal_enabled", true)
+      end
+
       it "should show nyc specific copy with a link to /sso/nyc" do
         agency_short_name = site_config["nyc"].agency_short_name
         get :index, params: { site_id: "nyc" }
