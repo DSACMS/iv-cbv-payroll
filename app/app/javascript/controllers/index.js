@@ -4,8 +4,7 @@
 
 import { application } from "./application"
 
-import CbvEmployerSearch from "./cbv_employer_search_controller"
-import CbvSynchronizationsController from "./cbv_synchronizations_controller"
-
+import CbvEmployerSearch from "./cbv/employer_search"
+import CbvSynchronizationsController from "./cbv/synchronizations_controller"
 application.register("cbv-employer-search", CbvEmployerSearch)
 application.register("cbv-synchronizations", CbvSynchronizationsController)
