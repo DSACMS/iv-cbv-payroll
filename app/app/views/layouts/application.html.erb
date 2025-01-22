@@ -18,8 +18,6 @@
       <%= render "application/header" %>
       <main id="main-content">
         <section class="grid-container usa-section">
-          <%= render HelpAlertComponent.new(visible: params[:help] == "true", help_path: cbv_flow_help_index_path(locale: I18n.locale)) %>
-
           <% if flash[:notice] %>
             <div class="usa-alert usa-alert--info">
               <div class="usa-alert__body">
@@ -56,7 +54,5 @@
       </main>
       <%= render "application/footer" %>
     </div>
-
-    <%= render HelpModalComponent.new(open: params[:help_modal] == "true", help_path: cbv_flow_help_index_path(locale: I18n.locale)) %>
   </body>
 </html>

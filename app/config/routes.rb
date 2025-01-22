@@ -38,7 +38,6 @@ Rails.application.routes.draw do
 
       # Utility route to clear your session; useful during development
       resource :reset, only: %i[show]
-      resources :help, only: [ :index, :show ]
     end
 
     scope "/:site_id", module: :caseworker, constraints: { site_id: Regexp.union(Rails.application.config.sites.site_ids) } do
