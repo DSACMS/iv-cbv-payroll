@@ -67,6 +67,7 @@ export default class extends Controller {
       trackUserAction("PinwheelError", { type, code, message })
     } else if (eventName === 'exit') {
       trackUserAction("PinwheelCloseModal", {})
+      this.showHelpModal()
     }
   }
 
@@ -109,5 +110,11 @@ export default class extends Controller {
   reenableButtons() {
     this.employerButtonTargets
       .forEach(el => el.removeAttribute("disabled"))
+  }
+
+  showHelpModal() {
+    const url = new URL(window.location.href);
+    url.searchParams.set('help', 'true');
+    window.location.href = url.toString();
   }
 }
