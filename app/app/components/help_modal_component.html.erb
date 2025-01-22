@@ -1,0 +1,30 @@
+<%# Large modal with iframe content %>
+<div
+  class="usa-modal usa-modal--lg"
+  id="help-modal"
+  aria-labelledby="help-modal-heading"
+  aria-describedby="help-modal-description"
+  data-force-action>
+  <div class="usa-modal__content">
+    <div class="usa-modal__main">
+      <div class="usa-modal__body padding-0">
+        <iframe
+          src="<%= help_path %>"
+          class="width-full height-card-lg"
+          style="border: none; min-height: 400px;"
+          title="Help Content">
+        </iframe>
+      </div>
+    </div>
+
+    <button
+      type="button"
+      class="usa-button usa-modal__close"
+      aria-label="Close this window"
+      data-close-modal>
+      <svg class="usa-icon" aria-hidden="true" focusable="false" role="img">
+        <use xlink:href="/assets/@uswds/uswds/dist/img/usa-icons/close-ffbc61caf4be69eb734a7f3e93e96a4e2e3a163291b4ac04fc7c942dff396d27.svg"></use>
+      </svg>
+    </button>
+  </div>
+</div>
