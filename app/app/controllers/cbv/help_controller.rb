@@ -7,7 +7,7 @@ module Cbv
     end
 
     def show
-      @help_topic = params[:id]
+      @help_topic = params[:id].gsub('-', '_')
       @title = t("help.show.#{@help_topic}.title")
     end
   end

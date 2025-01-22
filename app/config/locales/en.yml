@@ -390,32 +390,93 @@ en:
       help_options: help options
       text_before: Check out our
     index:
-      company_id: I don't know my company ID
-      credentials: I don't feel comfortable entering my credentials
-      employer: I can't find the correct employer
-      feedback: Report feedback or bugs
-      password: I don't know my password
-      provider: I don't know my payroll provider
-      select_prompt: 'Select an option below:'
-      title: Need help connecting to your payroll provider?
-      username: I don't know my username
+      title: "Need help connecting to your payroll provider?"
+      select_prompt: "Select an option below:"
+      username: "I don't know my username"
+      password: "I don't know my password"
+      company_id: "I don't know my company ID"
+      employer: "I can't find the correct employer"
+      provider: "I don't know my payroll provider"
+      credentials: "I don't feel comfortable entering my login credentials"
+      feedback: "Report feedback or bugs"
     show:
-      go_back: Go back
+      go_back: "Go back"
       username:
-        intro: 'If you''ve forgotten your payroll provider username, try the following steps:'
+        title: "I don't know my username"
+        intro: "Try the following steps:"
         step1:
-          follow_instructions: Follow their instructions to recover your username.
-          help_link: Most payroll providers have a "Forgot Username" or "Need Help Logging In?" link.
-          title: Visit Your Payroll Provider's Login Page
-          verify_identity: You might need to provide your email address, employee ID, or other details to verify your identity.
+          title: "Go to your payroll providers login page"
+          follow_instructions: "Follow the steps to recover your username."
         step2:
-          search_emails: Look for any emails from your payroll provider or employer that might contain your username.
-          search_keywords: Search for keywords like "[Payroll Provider Name]," "login," or "credentials."
-          title: Check Your Email Inbox
+          title: "Check your email inbox"
+          search_emails: "Look for any emails from your payroll provider or employer that have your username."
+          search_keywords: "Search for words like \"[Payroll Provider Name],\" \"login,\" or \"credentials.\""
         step3:
-          contact_hr: If you still can't find your username, reach out to your HR or payroll administrator. They may be able to provide or reset your login details.
-          title: Contact Your Employer's HR Department
-        title: I don't know my username
+          title: "Contact your employer's Human Resource Team"
+          contact_hr: "Ask your employer's HR team to help get your payroll login details."
+      password:
+        title: "I don't know my password"
+        intro: "Try the following steps:"
+        step1:
+          title: "Go to your payroll providers login page"
+          follow_instructions: "Follow the steps to recover your password."
+        step2:
+          title: "Contact your employer's Human Resource Team"
+          contact_hr: "Ask your employer's HR team to help get your payroll login details."
+      company_id:
+        title: "I don't know my company ID"
+        intro: "Try the following steps:"
+        step1:
+          title: "Check your welcome materials"
+          welcome_materials: "Your company ID is often in your onboarding documents, welcome email, or payroll setup info."
+          search_keywords: "Search your email for keywords like \"payroll,\" \"[Payroll Provider Name],\" or \"company ID.\""
+        step2:
+          title: "Look on pay stubs or statements"
+          check_stubs: "Your company ID might be on old pay stubs, tax forms, or other payroll papers. Check there first if you have them."
+        step3:
+          title: "Contact your employer's Human Resources Department"
+          contact_hr: "Reach out to your HR or payroll administrator. They can help you get the company ID."
+      employer:
+        title: "I can't find the correct employer"
+        intro: "Try the following steps:"
+        step1:
+          title: "Search different versions of your employer's name"
+          parent_company: "If there's a parent company, try that name."
+          abbreviations: "Use abbreviations (e.g., \"ABC Inc.\" instead of \"ABC Corporation\")."
+          special_chars: "Leave out special characters or punctuation."
+          try_different: "Try different ways of writing your employer's name. For example:"
+        step2:
+          title: "Search by your payroll provider instead"
+          try_provider: "If your employer doesn't show up in the search, try looking for the payroll provider your company uses."
+          check_paystub: "If you don't know your payroll provider, check your pay stub for names like ADP, Paylocity, or Workday."
+        step3:
+          title: "If you still cannot find your employer or payroll provider"
+          different_way: "If your employer or payroll provider isn't listed, you will need to give your income information to your agency a different way."
+      provider:
+        title: "I don't know my payroll provider"
+        intro: "Try these steps:"
+        step1:
+          title: "Check your pay stub or tax documents"
+          check_names: "Look for names like ADP, Paylocity, or Workday on your paystub."
+        step2:
+          title: "Search your email inbox"
+          search_terms: "Check your inbox for terms like \"payroll,\" \"pay stub,\" or \"direct deposit.\""
+        step3:
+          title: "Contact your employer's Human Resources Department"
+          contact_hr: "Reach out to your HR or payroll administrator. They can help you get the company ID."
+      credentials:
+        title: "I don't feel comfortable entering my login credentials"
+        intro: "We understand your concerns about sharing your login information."
+        security_message: "Your security is important to us, and we want you to feel safe. Here's how we keep your information protected:"
+        step1:
+          title: "Your login information is encrypted and secure"
+          encryption: "We use strong encryption, like the kind banks use, to protect your information. Your credentials are securely transmitted and not stored by us."
+        step2:
+          title: "Your information is only used to check your income"
+          one_time: "We only use your login info to check your payroll details one time. It will not be used again, or for anything else."
+        step3:
+          title: "We use trusted services"
+          trusted: "The service we use to check your payroll data is a trusted by many companies to handle payroll data securely."
   pages:
     home:
       description_1: The SNAP Income Pilot is a new tool designed to help you connect your income details from your employer or payroll provider directly to your SNAP agency. We're currently testing this tool to ensure it works effectively.
