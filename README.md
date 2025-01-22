@@ -2,7 +2,6 @@ Income Verification: Consent-Based Verification (Payroll)
 ========================
 
 # About the Project
-
 Consent-Based Verification (CBV) is a prototype that allows benefit applicants to verify their income directly using payroll providers. It is currently being piloted for testing and validation purposes.
 
 # Development and Software Delivery Lifecycle
