@@ -133,15 +133,29 @@ html {
   font-family: inherit;
 }
 
-// Fix preventing buttons with a "display-block" class
-// from having vertically cut off content.
+/**
+ * Help Modal
+ */
+#help-iframe {
+  height: 68vh;
+}
+
+// Button display handling based on device orientation and screen size
 .usa-button {
   &.display-block,
   &[class*="margin-bottom"] {
     height: auto;
     min-height: 40px;
-    line-height: 1.3;
     white-space: normal;
     padding: 0.75rem 1.25rem;
+    
+    // Default to inline-block for portrait/mobile views
+    display: inline-block;
+    
+    // For landscape orientation on mobile devices and larger screens,
+    // switch to inline display for a more compact layout
+    @media screen and (orientation: landscape) and (min-width: $theme-header-min-width) {
+      display: inline;
+    }
   }
 }
