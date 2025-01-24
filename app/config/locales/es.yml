@@ -121,7 +121,6 @@ es:
     expired_invitations:
       show:
         body_1: Usted ya ha completado con éxito su proceso de verificación, o está intentando acceder a esta invitación después de que ha expirado.
-        body_2: Si aún debe verificar sus ingresos, comuníquese con su agencia y obtenga una nueva invitación.
         cta_button_html:
           ma: <a href="https://www.mass.gov/guides/how-to-contact-dta" class="usa-button">Visite el sitio web del DTA</a>
           nyc: <a href="https://www.nyc.gov/site/hra/help/snap-application-frequently-asked-questions.page" class="usa-button">Visite el sitio web de la HRA</a>

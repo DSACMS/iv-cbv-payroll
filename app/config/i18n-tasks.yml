@@ -134,6 +134,7 @@ ignore_missing:
     - "cbv.summaries.show.pdf.caseworker.*"
     # Pinwheel values that are only supported in English:
     - "pinwheel.*"
+    - "cbv.expired_invitations.show.body_2"
 # - 'errors.messages.{accepted,blank,invalid,too_short,too_long}'
 # - '{devise,simple_form}.*'
 
