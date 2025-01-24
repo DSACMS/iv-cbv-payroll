@@ -229,7 +229,7 @@ en:
     expired_invitations:
       show:
         body_1: You've either successfully completed your verification process, or are trying to access this invitation after it has expired.
-        body_2: If you still need to verify your income, please reach out to your agency to get a new invitation.
+        body_2: If you still need to verify your income, please submit your income information by visiting %{agency_short_name}'s website.
         cta_button_html:
           ma: <a href="https://www.mass.gov/guides/how-to-contact-dta" class="usa-button">Visit DTA website</a>
           nyc: <a href="https://www.nyc.gov/site/hra/help/snap-application-frequently-asked-questions.page" class="usa-button">Visit HRA website</a>
@@ -386,9 +386,8 @@ en:
       default: "%Y-%m-%d"
   pages:
     home:
-      description_1: The SNAP Income Pilot is a new tool designed to help you connect your income details from your employer or payroll provider directly to your SNAP agency. We're currently testing this tool to ensure it works effectively.
-      description_2: Please note this pilot is currently available only to SNAP participants in New York City and Massachusetts.
-      description_3_html: '<p>To participate, you can request an invitation from your SNAP agency:</p><ul><li>Massachusetts applicants: Contact the <a href="https://www.mass.gov/guides/how-to-contact-dta" target="_blank" rel="noopener noreferrer">Department of Transitional Assistance (DTA)</a></li><li>New York City applicants: Contact the <a href="https://www.nyc.gov/site/hra/help/snap-application-frequently-asked-questions.page">Human Resources Administration (HRA)</a></li></ul>'
+      description_1: The SNAP Income Pilot is a new tool designed to help you connect your income details from your employer or payroll provider directly to your SNAP agency.
+      description_2: Please note this pilot is not currently available.
       header: Welcome to the SNAP Income Pilot
   pinwheel:
     earnings_category:

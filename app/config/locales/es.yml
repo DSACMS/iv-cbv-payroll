@@ -121,7 +121,6 @@ es:
     expired_invitations:
       show:
         body_1: Usted ya ha completado con éxito su proceso de verificación, o está intentando acceder a esta invitación después de que ha expirado.
-        body_2: Si aún debe verificar sus ingresos, comuníquese con su agencia y obtenga una nueva invitación.
         cta_button_html:
           ma: <a href="https://www.mass.gov/guides/how-to-contact-dta" class="usa-button">Visite el sitio web del DTA</a>
           nyc: <a href="https://www.nyc.gov/site/hra/help/snap-application-frequently-asked-questions.page" class="usa-button">Visite el sitio web de la HRA</a>
@@ -310,7 +309,6 @@ es:
     home:
       description_1: El SNAP Income Pilot es una nueva herramienta diseñada para ayudarle a conectar los detalles de sus ingresos de su empleador o proveedor de nómina directamente con su agencia de SNAP. Actualmente estamos probando esta herramienta para asegurarnos de que funcione de manera eficaz.
       description_2: Tenga en cuenta que este piloto está disponible actualmente solo para los participantes de SNAP en la ciudad de Nueva York y Massachusetts.
-      description_3_html: '<p>Para participar, puede solicitar una invitación a su agencia del SNAP:</p><ul><li>Solicitantes de Massachusetts: Contactar al <a href="https://www.mass.gov/guides/how-to-contact-dta" target="_blank" rel="noopener noreferrer">Departamento de Asistencia Transitoria (DTA)</a></li><li>Solicitantes de la Ciudad de Nueva York: Contactar a la <a href="https://www.nyc.gov/site/hra/help/snap-application-frequently-asked-questions.page">Administración de Recursos Humanos (HRA)</a></li></ul>'
       header: Bienvenido al SNAP Income Pilot
   pinwheel:
     deductions:
