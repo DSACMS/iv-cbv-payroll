@@ -10,7 +10,13 @@ require "support/context/gpg_setup"
 require "view_component/system_test_helpers"
 
 require "capybara/rspec"
+require "rack/handler/puma"
 Capybara.default_driver = Capybara.javascript_driver
+Capybara.server = :puma
+Capybara.register_server :puma do |app, port, host|
+  require 'rack/handler/puma'
+  Rack::Handler::Puma.run(app, Host: host, Port: port, Silent: true)
+end
 
 # Add additional requires below this line. Rails is not loaded until this point!
 

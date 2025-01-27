@@ -1,5 +1,5 @@
 <% if visible? %>
-  <div class="usa-alert usa-alert--warning">
+  <div id="help-alert" class="usa-alert usa-alert--warning" data-testid="help-alert">
     <div class="usa-alert__body">
       <h3 class="usa-alert__heading"><%= t("help.alert.heading") %></h3>
       <p class="usa-alert__text">
@@ -7,4 +7,5 @@
       </p>
     </div>
   </div>
+  <%= render HelpModalComponent.new(help_path: help_path) %>
 <% end %>

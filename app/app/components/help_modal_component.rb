@@ -7,7 +7,7 @@ class HelpModalComponent < ViewComponent::Base
   private
 
   def modal_id
-    "help-modal-1"
+    "help-modal"
   end
 
   def open?
