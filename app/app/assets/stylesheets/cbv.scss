@@ -138,6 +138,14 @@ html {
  */
 #help-iframe {
   height: 68vh;
+  
+  /* Target mobile devices in portrait mode */
+  @include at-media-max('mobile-lg') {
+    @media (orientation: portrait) {
+      height: 73vh;
+      line-height: 1.3em;
+    }
+  }
 }
 
 // Button display handling based on device orientation and screen size
@@ -149,13 +157,12 @@ html {
     white-space: normal;
     padding: 0.75rem 1.25rem;
     
-    // Default to inline-block for portrait/mobile views
-    display: inline-block;
+    // Default to block display
+    display: block;
     
-    // For landscape orientation on mobile devices and larger screens,
-    // switch to inline display for a more compact layout
-    @media screen and (orientation: landscape) and (min-width: $theme-header-min-width) {
-      display: inline;
+    // Switch to inline-block for larger screens
+    @include at-media('mobile-lg') {
+      display: inline-block;
     }
   }
 }
