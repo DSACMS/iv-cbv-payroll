@@ -43,6 +43,10 @@ locals {
       manage_method     = "manual"
       secret_store_name = "/service/${var.app_name}-${var.environment}/slack-test-email"
     },
+    MIXPANEL_TOKEN = {
+      manage_method     = "manual"
+      secret_store_name = "/service/${var.app_name}-${var.environment}/mixpanel-token"
+    },
     NEWRELIC_KEY = {
       manage_method     = "manual"
       secret_store_name = "/service/${var.app_name}-${var.environment}/newrelic-key"

@@ -12,7 +12,7 @@ RSpec.describe Caseworker::CbvFlowInvitationsController do
     context "without authentication" do
       it "redirects to the sso login page" do
         get :new, params: valid_params
-        expect(response).to redirect_to(new_user_session_url)
+        expect(response).to redirect_to(root_url)
       end
     end
 
@@ -28,6 +28,7 @@ RSpec.describe Caseworker::CbvFlowInvitationsController do
     context "with authentication" do
       context "when site_id is nyc" do
         before do
+          stub_site_config_value("nyc", "staff_portal_enabled", true)
           sign_in nyc_user
         end
 
@@ -78,12 +79,13 @@ RSpec.describe Caseworker::CbvFlowInvitationsController do
 
         post :create, params: valid_params
 
-        expect(response).to redirect_to(new_user_session_url)
+        expect(response).to redirect_to(root_url)
       end
     end
 
     context "with authentication" do
       before do
+        stub_site_config_value("nyc", "staff_portal_enabled", true)
         sign_in nyc_user
       end
 

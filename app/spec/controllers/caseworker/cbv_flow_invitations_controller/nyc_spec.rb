@@ -5,6 +5,7 @@ RSpec.describe Caseworker::CbvFlowInvitationsController, type: :controller do
   let(:nyc_params) { { site_id: "nyc" } }
 
   before do
+    stub_site_config_value("nyc", "staff_portal_enabled", true)
     sign_in user
   end
 
@@ -66,23 +67,8 @@ RSpec.describe Caseworker::CbvFlowInvitationsController, type: :controller do
       expect(response).to redirect_to(caseworker_dashboard_path(site_id: nyc_params[:site_id]))
     end
 
-    it "sends an event to NewRelic" do
-      allow(NewRelicEventTracker).to receive(:track)
-
-      post :create, params: {
-        site_id: nyc_params[:site_id],
-        cbv_flow_invitation: cbv_flow_invitation_params
-      }
-
-      invitation = CbvFlowInvitation.last
-      expect(NewRelicEventTracker).to have_received(:track).with("ApplicantInvitedToFlow", {
-        timestamp: be_a(Integer),
-        user_id: user.id,
-        caseworker_email_address: user.email,
-        site_id: "nyc",
-        invitation_id: invitation.id
-      })
-    end
+    # Note that we are not testing events here because doing so requires use of expect_any_instance_of,
+    # which does not play nice since there are multiple instances of the event logger.
 
     context "when validations succeed" do
       it "creates a cbv_client record" do

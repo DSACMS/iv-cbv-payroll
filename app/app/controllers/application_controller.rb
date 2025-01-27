@@ -78,6 +78,10 @@ class ApplicationController < ActionController::Base
     NewRelic::Agent.add_custom_attributes(attributes)
   end
 
+  def event_logger
+    @event_logger ||= GenericEventTracker.for_request(request)
+  end
+
   def redirect_if_maintenance_mode
     if ENV["MAINTENANCE_MODE"] == "true"
       redirect_to maintenance_path
