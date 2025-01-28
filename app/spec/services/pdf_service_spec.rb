@@ -2,7 +2,7 @@ require 'rails_helper'
 
 RSpec.describe PdfService, type: :service do
   include PinwheelApiHelper
-  include Cbv::ReportsHelper
+  include Cbv::PinwheelDataHelper
   include ApplicationHelper
 
   let(:current_site) { Rails.application.config.sites["nyc"] }
