@@ -132,7 +132,7 @@ class Cbv::BaseController < ApplicationController
     return unless params[:help] == "true"
     
     flash.merge!(
-      alert: "#{t('help.alert.text_before')} #{helpers.render(HelpLinkComponent.new)}".html_safe,
+      alert: "#{t('help.alert.text_before')} #{helpers.render(partial: 'cbv/help/help_link', locals: { text: t('help.alert.help_options') })}".html_safe,
       alert_heading: t('help.alert.heading'),
       alert_type: "warning"
     )
