@@ -7,7 +7,7 @@
 Rails.application.configure do
   config.content_security_policy do |policy|
     policy.default_src :self
-    policy.font_src :self, :data
+    policy.font_src :self
     policy.form_action :self, "https://login.microsoftonline.com"
     policy.frame_ancestors :self
     policy.frame_src :self, "https://cdn.getpinwheel.com"
@@ -18,7 +18,7 @@ Rails.application.configure do
     policy.worker_src :self, "blob:"
     policy.style_src :self
     policy.style_src_elem :self
-    policy.style_src_attr :self
+    policy.style_src_attr "'unsafe-inline'"
   end
 
   # Generate session nonces for permitted importmap and inline scripts
