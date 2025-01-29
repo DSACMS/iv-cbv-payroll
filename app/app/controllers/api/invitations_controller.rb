@@ -2,8 +2,11 @@ class Api::InvitationsController < ApplicationController
   skip_forgery_protection
 
   def create
-    invitation_params = base_params.merge(site_specific_params)
-    @cbv_flow_invitation = CbvInvitationService.new(event_logger).invite(invitation_params, _service_account_user_shim)
+    if service_account_user.nil?
+      return render json: { error: "User not found" }, status: :unprocessable_entity
+    end
+
+    @cbv_flow_invitation = CbvInvitationService.new(event_logger).invite(cbv_flow_invitation_params, service_account_user)
 
     if @cbv_flow_invitation.errors.any?
       return render json: @cbv_flow_invitation.errors, status: :unprocessable_entity
@@ -16,37 +19,14 @@ class Api::InvitationsController < ApplicationController
     render json: { **@cbv_flow_invitation.as_json, url: @cbv_flow_invitation.to_url }, status: :created
   end
 
-  # todo: remove this shim, replace with real user
-  def _service_account_user_shim
-    User.new(email: "service@account.com", site_id: site_id)
-  end
-
-  def base_params
-    cbv_flow_invitation_params.slice(
-      :first_name,
-      :middle_name,
-      :language,
-      :last_name,
-      :email_address,
-      :snap_application_date,
-    ).merge(site_id: site_id)
-  end
-
-  # can these be inferred from the model?
-  def site_specific_params
-    case site_id
-    when "ma"
-      cbv_flow_invitation_params.slice(:agency_id_number, :beacon_id)
-    when "nyc"
-      cbv_flow_invitation_params.slice(:client_id_number, :case_number)
-    else
-      {}
-    end
+  # todo: replace with inference via API_KEY
+  def service_account_user
+    User.find_by(id: cbv_flow_invitation_params[:user_id])
   end
 
   # can these be inferred from the model?
   def cbv_flow_invitation_params
-    params.fetch(:cbv_flow_invitation, {}).permit(
+    params.permit(
       :first_name,
       :middle_name,
       :language,
@@ -57,10 +37,12 @@ class Api::InvitationsController < ApplicationController
       :snap_application_date,
       :agency_id_number,
       :beacon_id,
+      :user_id,
+      :site_id
     )
   end
 
   def site_id
-    params[:site_id]
+    cbv_flow_invitation_params[:site_id]
   end
 end
