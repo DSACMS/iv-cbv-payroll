@@ -10,6 +10,7 @@
         <iframe
           id="help-iframe"
           src="<%= help_path %>"
+          data-original-src="<%= help_path %>"
           class="width-full border-0"
           title="Help Content">
         </iframe>
@@ -26,4 +27,19 @@
       </svg>
     </button>
   </div>
-</div> 
+</div>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    const helpLinks = document.querySelectorAll('[data-help-modal-trigger]');
+    const helpIframe = document.getElementById('help-iframe');
+
+    helpLinks.forEach(link => {
+      link.addEventListener('click', function() {
+        if (helpIframe) {
+          helpIframe.src = helpIframe.getAttribute('data-original-src');
+        }
+      });
+    });
+  });
+</script> 
