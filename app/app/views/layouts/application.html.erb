@@ -18,8 +18,7 @@
       <%= render "application/header" %>
       <main id="main-content">
         <section class="grid-container usa-section">
-          <%= render HelpAlertComponent.new(visible: params[:help] == "true", help_path: cbv_flow_help_index_path(locale: I18n.locale)) %>
-
+        
           <% if flash[:notice] %>
             <div class="usa-alert usa-alert--info">
               <div class="usa-alert__body">
@@ -30,7 +29,7 @@
           <% end %>
 
           <% if flash[:alert] %>
-            <div class="usa-alert usa-alert--error">
+            <div class="usa-alert usa-alert--<%= flash[:alert_type] || 'error' %>">
               <div class="usa-alert__body">
                 <div class="usa-alert__heading"><%= flash[:alert_heading] || "Error" %></div>
                 <p class="usa-alert__text"><%= flash[:alert] %></p>
@@ -57,6 +56,6 @@
       <%= render "application/footer" %>
     </div>
 
-    <%= render HelpModalComponent.new(open: params[:help_modal] == "true", help_path: cbv_flow_help_index_path(locale: I18n.locale)) %>
+    <%= render partial: "cbv/help/help_modal", locals: { help_path: cbv_flow_help_index_path(locale: I18n.locale) } %>
   </body>
 </html>

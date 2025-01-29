@@ -3,7 +3,7 @@
     <%= t("help.show.#{@help_topic}.title") %>
   </h2>
 
-  <%= render HelpTopicContentComponent.new(topic: @help_topic) %>
+  <%= render partial: "help_topic_content", locals: { topic: @help_topic } %>
 
   <div class="margin-top-3">
     <%= link_to t("help.show.go_back"), cbv_flow_help_index_path, class: "usa-link" %>
