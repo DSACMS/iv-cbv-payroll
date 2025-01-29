@@ -1,8 +1,8 @@
 class Api::InvitationsController < ApplicationController
+  skip_forgery_protection
+
   def create
     invitation_params = base_params.merge(site_specific_params)
-    # handle errors from the mail service
-    # no longer relevant, do we need begin/rescue?
     @cbv_flow_invitation = CbvInvitationService.new(event_logger).invite(invitation_params, _service_account_user_shim)
 
     if @cbv_flow_invitation.errors.any?
