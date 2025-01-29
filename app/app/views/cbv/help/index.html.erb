@@ -27,7 +27,7 @@
       <%= t("help.index.credentials") %>
     <% end %>
 
-    <%= link_to cbv_flow_help_path("feedback", locale: I18n.locale), class: "usa-button margin-bottom-1 height-5 text-left display-block" do %>
+    <%= link_to current_site.caseworker_feedback_form, class: "usa-button margin-bottom-1 height-5 text-left display-block", target: "_blank" do %>
       <%= t("help.index.feedback") %>
     <% end %>
   </div>
