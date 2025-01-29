@@ -3,6 +3,7 @@
   id="help-modal"
   aria-labelledby="help-modal-heading"
   aria-describedby="help-modal-description"
+  data-controller="help"
 >
   <div class="usa-modal__content">
     <div class="usa-modal__main padding-0 margin-0 maxw-none-important">
@@ -10,9 +11,9 @@
         <iframe
           id="help-iframe"
           src="<%= help_path %>"
-          data-original-src="<%= help_path %>"
           class="width-full border-0"
-          title="Help Content">
+          title="Help Content"
+          data-help-target="iframe">
         </iframe>
       </div>
     </div>
@@ -28,18 +29,3 @@
     </button>
   </div>
 </div>
-
-<script>
-  document.addEventListener('DOMContentLoaded', function() {
-    const helpLinks = document.querySelectorAll('[data-help-modal-trigger]');
-    const helpIframe = document.getElementById('help-iframe');
-
-    helpLinks.forEach(link => {
-      link.addEventListener('click', function() {
-        if (helpIframe) {
-          helpIframe.src = helpIframe.getAttribute('data-original-src');
-        }
-      });
-    });
-  });
-</script> 

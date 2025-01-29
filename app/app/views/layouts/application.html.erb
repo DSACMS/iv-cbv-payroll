@@ -56,6 +56,6 @@
       <%= render "application/footer" %>
     </div>
 
-    <%= render partial: "cbv/help/help_modal", locals: { help_path: cbv_flow_help_index_path(locale: I18n.locale) } %>
+    <%= render partial: "cbv/help/help_modal", locals: { help_path: cbv_flow_help_index_path(locale: I18n.locale, r: SecureRandom.hex(4)) } %>
   </body>
 </html>
