@@ -54,7 +54,6 @@ ActiveRecord::Schema[7.1].define(version: 2025_01_30_160642) do
 
   create_table "cbv_flows", force: :cascade do |t|
     t.string "case_number"
-    t.string "argyle_user_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.date "payroll_data_available_from"
