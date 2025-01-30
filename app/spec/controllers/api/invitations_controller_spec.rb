@@ -47,5 +47,18 @@ RSpec.describe Api::InvitationsController do
         expect(JSON.parse(response.body).keys).to include("error")
       end
     end
+
+    context "invalid language" do
+      let(:invalid_user_params) do
+        valid_params.merge(language: "zn")
+      end
+
+      it "returns unprocessable entity" do
+        post :create, params: invalid_user_params
+
+        expect(response).to have_http_status(:unprocessable_entity)
+        expect(JSON.parse(response.body).keys).to include("language")
+      end
+    end
   end
 end
