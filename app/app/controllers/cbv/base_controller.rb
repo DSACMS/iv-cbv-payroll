@@ -129,19 +129,11 @@ class Cbv::BaseController < ApplicationController
   end
 
   def check_help_param
-    if params[:help] == "true"
-      help_link = helpers.render(partial: 'cbv/help/help_link', locals: { text: t('help.alert.help_options') })
+      help_link = helpers.render(partial: 'cbv/help/help_link', locals: { text: t('help.alert.help_options'), src: 'banner' })
       flash.merge!(
         alert: "#{t('help.alert.text_before')} #{help_link}",
         alert_heading: t('help.alert.heading'),
         alert_type: "warning"
       )
-    elsif flash[:alert_type] == "warning" && flash[:alert_heading] == t('help.alert.heading')
-      # flash is stored in the session, so it may still persist even without the params[:help]
-      # so we need to delete it here
-      flash.delete(:alert)
-      flash.delete(:alert_heading)
-      flash.delete(:alert_type)
-    end
   end
 end

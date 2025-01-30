@@ -1,13 +1,15 @@
 import { Controller } from "@hotwired/stimulus"
+import { trackUserAction } from "../utilities/help"
 
 export default class extends Controller {
   static targets = ["iframe"]
 
   connect() {
     document.addEventListener("click", (event) => {
-      if (event.target.matches("[data-close-modal]") || event.target.closest("[data-close-modal]")) {
-        this.prepareNextUrl()
-      }
+        if(event.target.href.matches("#help-modal")) {
+            const source = event.target.dataset.source
+            trackUserAction("ApplicantOpenedHelpModal", source)
+        }
     })
   }
 
