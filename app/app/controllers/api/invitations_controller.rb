@@ -14,7 +14,11 @@ class Api::InvitationsController < ApplicationController
 
     @cbv_client = CbvClient.create_from_invitation(@cbv_flow_invitation)
 
-    render json: { **@cbv_flow_invitation.as_json, url: @cbv_flow_invitation.to_url }, status: :created
+    render json: {
+      url: @cbv_flow_invitation.to_url,
+      expiration_date: @cbv_flow_invitation.expires_at,
+      language: @cbv_flow_invitation.language
+    }, status: :created
   end
 
   # todo: replace with inference via API_KEY
