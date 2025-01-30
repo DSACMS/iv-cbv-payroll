@@ -129,7 +129,7 @@ class Cbv::BaseController < ApplicationController
   end
 
   def check_help_param
-      help_link = helpers.render(partial: 'cbv/help/help_link', locals: { text: t('help.alert.help_options'), src: 'banner' })
+      help_link = helpers.render(partial: 'cbv/help/help_link', locals: { text: t('help.alert.help_options'), source: 'banner' })
       flash.merge!(
         alert: "#{t('help.alert.text_before')} #{help_link}",
         alert_heading: t('help.alert.heading'),

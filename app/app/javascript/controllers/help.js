@@ -5,12 +5,13 @@ export default class extends Controller {
   static targets = ["iframe"]
 
   connect() {
-    document.addEventListener("click", (event) => {
-        if(event.target.href.matches("#help-modal")) {
-            const source = event.target.dataset.source
-            trackUserAction("ApplicantOpenedHelpModal", source)
-        }
-    })
+    this.handleClick = (event) => {
+      if (event.target.href?.matches("#help-modal")) {
+        trackUserAction("ApplicantOpenedHelpModal", event.target.dataset.source)
+      }
+    }
+    
+    document.addEventListener("click", this.handleClick)
   }
 
   disconnect() {
