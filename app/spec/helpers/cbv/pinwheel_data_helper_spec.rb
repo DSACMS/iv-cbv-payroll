@@ -9,8 +9,11 @@ RSpec.describe Cbv::PinwheelDataHelper, type: :helper do
     load_relative_json_file('request_end_user_paystubs_response.json')['data']
   end
 
-  let(:employments) do
-    load_relative_json_file('request_employment_info_response.json')['data']
+  let(:employment) do
+    PinwheelService::Employment.new(
+      load_relative_json_file('request_employment_info_response.json')['data'],
+      environment: PinwheelService::ENVIRONMENTS[:sandbox]
+    )
   end
 
   let(:incomes) do
@@ -33,7 +36,7 @@ RSpec.describe Cbv::PinwheelDataHelper, type: :helper do
 
   describe "aggregate payments" do
     it "groups by employer" do
-      expect(helper.summarize_by_employer(parsed_payments, [ employments ], [ incomes ], [ identities ], cbv_flow.pinwheel_accounts)).to eq({
+      expect(helper.summarize_by_employer(parsed_payments, [ employment ], [ incomes ], [ identities ], cbv_flow.pinwheel_accounts)).to eq({
         account_id => {
           payments: [
             {
@@ -57,7 +60,7 @@ RSpec.describe Cbv::PinwheelDataHelper, type: :helper do
           has_income_data: true,
           has_employment_data: true,
           has_identity_data: true,
-          employment: employments,
+          employment: employment,
           income: incomes,
           identity: identities,
           total: 480720

@@ -25,7 +25,7 @@ module TestHelpers
 
   def stub_employments(account_id = SecureRandom.uuid)
     5.times.map do |i|
-      {
+      fields = {
         "account_id" => account_id,
         "status" => "employed",
         "start_date" => "2010-01-01",
@@ -39,6 +39,8 @@ module TestHelpers
         },
         "title" => nil
       }
+
+      PinwheelService::Employment.new(fields, environment: PinwheelService::ENVIRONMENTS[:sandbox])
     end
   end
 

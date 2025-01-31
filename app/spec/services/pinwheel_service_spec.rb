@@ -59,8 +59,19 @@ RSpec.describe PinwheelService, type: :service do
     end
   end
 
-  describe 'Error handling' do
-    skip 'raises an error when receiving a 400' do
+  describe "#fetch_employment" do
+    let(:account_id) { SecureRandom.uuid }
+
+    before do
+      stub_request_employment_info_response
+    end
+
+    it "returns an Employment object with expected attributes" do
+      employment = service.fetch_employment(account_id: account_id)
+
+      expect(employment).to be_a(PinwheelService::Employment)
+      expect(employment).to have_attributes(status: "employed", start_date: "2010-01-01")
+      expect(employment.employer_phone_number).to have_attributes(value: "+16126597057", type: "work")
     end
   end
 end

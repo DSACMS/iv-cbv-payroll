@@ -11,8 +11,12 @@ module Cbv::PinwheelDataHelper
     @payments = parse_payments(payments)
   end
 
-  def set_employments(account_id = nil)
-    @employments = account_id.nil? ? fetch_employments : fetch_employments_for_account_id(account_id)
+  def set_employments
+    @employments = @cbv_flow.pinwheel_accounts.map do |pinwheel_account|
+      next unless pinwheel_account.job_succeeded?("employment")
+
+      pinwheel.fetch_employment(account_id: pinwheel_account.pinwheel_account_id)
+    end.compact
   end
 
   def set_incomes(account_id = nil)
@@ -96,7 +100,7 @@ module Cbv::PinwheelDataHelper
           has_employment_data: has_employment_data,
           has_identity_data: has_identity_data,
           income: has_income_data && incomes.find { |income| income["account_id"] == account_id },
-          employment: has_employment_data && employments.find { |employment| employment["account_id"] == account_id },
+          employment: has_employment_data && employments.find { |employment| employment.account_id == account_id },
           identity: has_identity_data && identities.find { |identity| identity["account_id"] == account_id }
         }
       end
@@ -112,17 +116,6 @@ module Cbv::PinwheelDataHelper
 
   def fetch_payroll_for_account_id(account_id, from_pay_date, to_pay_date)
     pinwheel.fetch_paystubs(account_id: account_id, from_pay_date: from_pay_date, to_pay_date: to_pay_date)["data"]
-  end
-
-  def fetch_employments
-    fetch_known_end_user_account_ids.map do |account_id|
-      next [] unless does_pinwheel_account_support_job?(account_id, "employment")
-      fetch_employments_for_account_id account_id
-    end.flatten
-  end
-
-  def fetch_employments_for_account_id(account_id)
-    pinwheel.fetch_employment(account_id: account_id)["data"]
   end
 
   def fetch_incomes
