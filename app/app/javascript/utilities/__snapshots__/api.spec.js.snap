@@ -1,5 +1,13 @@
 // Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
+exports[`_fetchInternalService > has expected request body 1`] = `"{"response_type":"response_type","id":"id","locale":"en"}"`;
+
+exports[`_fetchInternalService > has expected response payload 1`] = `"good"`;
+
+exports[`fetchToken > has expected request body 1`] = `"{"response_type":"response_type","id":"id","locale":"en"}"`;
+
+exports[`fetchToken > has expected response payload 1`] = `"token-response"`;
+
 exports[`trackUserAction > has expected request body 1`] = `"{"pinwheel":{"event_name":"Event","attributes":{}}}"`;
 
 exports[`trackUserAction > has expected response payload 1`] = `

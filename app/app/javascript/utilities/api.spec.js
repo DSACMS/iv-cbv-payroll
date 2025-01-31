@@ -51,3 +51,94 @@ describe('trackUserAction', () => {
         fetch.mockReset()
     })
 })
+
+describe('fetchToken', () => {
+    beforeEach(async() => {
+        // Mock the fetch function.
+        const mockResponse = "token-response" 
+        fetch.mockResolvedValue(createFetchResponse(mockResponse))
+    })
+
+    it('sends a post request to the pinwheel tokens endpoint', async () => {
+        const data = await api.fetchToken("response_type", "id", "en")
+
+        // Check that fetch was called exactly once
+        expect(fetch).toHaveBeenCalledTimes(1);
+        expect(fetch.mock.calls[0][0]).toBe('/api/pinwheel/tokens')
+        expect(fetch.mock.calls[0][1]['method']).toBe('post')
+    })
+
+    it('includes CSRV and Content-Type headers', async () => {
+        const data = await api.fetchToken("response_type", "id", "en")
+        expect(fetch).toHaveBeenCalledTimes(1);
+        expect(fetch.mock.calls[0][1]).toHaveProperty('headers')
+        expect(fetch.mock.calls[0][1]['headers']).toHaveProperty('X-CSRF-Token')
+        expect(fetch.mock.calls[0][1]['headers']).toHaveProperty('Content-Type')
+        expect(fetch.mock.calls[0][1]['headers']['Content-Type']).toEqual('application/json')
+    })
+
+    it('has expected request body', async() => {
+        const data = await api.fetchToken("response_type", "id", "en")
+        expect(fetch.mock.calls[0][1]['body']).toMatchSnapshot()
+    })
+    it('has expected response payload', async() => {
+        const data = await api.fetchToken("response_type", "id", "en")
+        expect(data).toMatchSnapshot()
+    })
+        
+    afterEach(() => {
+        fetch.mockReset()
+    })
+})
+
+describe('_fetchInternalService', () => {
+    beforeEach(async() => {
+        // Mock the fetch function.
+        const mockResponse = "good"
+        fetch.mockResolvedValue(createFetchResponse(mockResponse))
+    })
+
+    it('sends a get request to the arbitrary endpoint', async () => {
+        const response = await api._fetchInternalService('/api/arbitrary', {
+            "method": "get",
+        })
+        // Check that fetch was called exactly once
+        expect(fetch).toHaveBeenCalledTimes(1);
+        expect(fetch.mock.calls[0][0]).toBe('/api/arbitrary')
+        expect(fetch.mock.calls[0][1]['method']).toBe('get')
+        expect(response).toBe('good')
+    })
+
+    it('includes CSRV and Content-Type headers', async () => {
+        const response = await api._fetchInternalService('/api/arbitrary', {
+            "method": "get",
+        })
+        expect(fetch).toHaveBeenCalledTimes(1);
+        expect(fetch.mock.calls[0][1]).toHaveProperty('headers')
+        expect(fetch.mock.calls[0][1]['headers']).toHaveProperty('X-CSRF-Token')
+        expect(fetch.mock.calls[0][1]['headers']).toHaveProperty('Content-Type')
+        expect(fetch.mock.calls[0][1]['headers']['Content-Type']).toEqual('application/json')
+    })
+
+    it('overrides headers', async() => {
+        const response = await api._fetchInternalService('/api/arbitrary', {
+            "method": "get",
+            "headers": {
+                "Content-Type": "application/csv",
+                "other": "header"
+            }
+        })
+
+        expect(fetch).toHaveBeenCalledTimes(1);
+        expect(fetch.mock.calls[0][1]).toHaveProperty('headers')
+        expect(fetch.mock.calls[0][1]['headers']).toHaveProperty('X-CSRF-Token')
+        expect(fetch.mock.calls[0][1]['headers']).toHaveProperty('Content-Type')
+        expect(fetch.mock.calls[0][1]['headers']['Content-Type']).toEqual('application/csv')
+        expect(fetch.mock.calls[0][1]['headers']).toHaveProperty('other')
+
+    })
+        
+    afterEach(() => {
+        fetch.mockReset()
+    })
+})
