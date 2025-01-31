@@ -1,36 +1,44 @@
-import { vi, describe, beforeEach, it, expect, test } from 'vitest'
+import { vi, describe, beforeEach, it, expect } from 'vitest'
 import { Application, Controller } from '@hotwired/stimulus';
 import EmployerSearchController from './employer_search'
+import { loadPinwheel} from '../../utilities/pinwheel'
+import { fetchToken } from '../../utilities/api';
 
-vi.mock('../../utilities/pinwheel.js', () => {
+vi.mock('../../utilities/pinwheel.js', async () => {
+    const pinwheelModule = await vi.importActual('../../utilities/pinwheel')
     return {
-      loadPinwheel: vi.fn(),
-      initializePinwheel: vi.fn(),
-      trackUserAction: vi.fn(),
-      fetchToken: vi.fn( () => "test-token")
+        ...pinwheelModule,
+        loadPinwheel: vi.fn(() => Promise.resolve({ data: {} })),
+        initializePinwheel: vi.fn(() => Promise.resolve({ data: {} })),
+        fetchToken: vi.fn(() => Promise.resolve("test-token"))
     }
   })
 
 describe('EmployerSearchController', () => {
   beforeEach(() => {
-    document.body.innerHTML = "<button \
-    id=\"btn\" \
-    data-controller=\"cbv-employer-search\" \
-    data-action=\"click->cbv-employer-search#select\" \
-    data-id=\"test employer\"> Hello World \
-  </button>"
+    document.body.innerHTML = `<button \
+    id="btn" 
+    data-controller="cbv-employer-search" 
+    data-action="click->cbv-employer-search#select" 
+    data-id="mock-employer-id"
+    data-response-type="mock-employer-responsetype"
+    data-name="mock-employer-name"
+    data-testid="employer-search-button"
+    type="button">Employee Search Button Text</button>`
 
     const application = Application.start();
     application.register('cbv-employer-search', EmployerSearchController);
   });
 
   it('shows hello world', () => {
-    console.log('helo')
-    
+  
+  //  pinwheel.loadPinwheel.mockResolvedValue('hello')
+    const element = document.getByTest
     const btn = document.getElementById('btn');
-    btn.click();
-    //expect(fetchToken).toHaveBeenCalled()
-    //expect(document).toHaveTextContent('Hello World')
+  //  console.log(document.querySelector('#btn').textContent)
+ //   btn.click();
+  //  expect(pinwheel.loadPinwheel).toHaveBeenCalled()
+ //   expect(document.querySelector('#btn').textContent).toBe('Employee Search Button Text')
   });
 })
 /*
