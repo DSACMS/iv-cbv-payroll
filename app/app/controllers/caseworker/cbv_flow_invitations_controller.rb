@@ -17,8 +17,13 @@ class Caseworker::CbvFlowInvitationsController < Caseworker::BaseController
     invitation_params = base_params.merge(site_specific_params)
     # handle errors from the mail service
     begin
-      @cbv_flow_invitation = CbvInvitationService.new(event_logger).invite(invitation_params, current_user)
+      @cbv_flow_invitation = CbvInvitationService.new(event_logger).invite(
+        invitation_params,
+        current_user,
+        delivery_method: :email
+      )
     rescue => e
+      Rails.logger.error("Error inviting applicant: #{e.message}")
       flash[:alert] = t(".invite_failed",
                         email_address: cbv_flow_invitation_params[:email_address],
                         error_message: e.message)
