@@ -4,7 +4,7 @@ class Api::InvitationsController < ApplicationController
   before_action :authenticate
 
   def create
-    @cbv_flow_invitation = CbvInvitationService.new(event_logger).invite(cbv_flow_invitation_params, @current_user)
+    @cbv_flow_invitation = CbvInvitationService.new(event_logger).invite(cbv_flow_invitation_params, @current_user, delivery_method: nil)
 
     if @cbv_flow_invitation.errors.any?
       return render json: @cbv_flow_invitation.errors, status: :unprocessable_entity
