@@ -19,11 +19,6 @@ class Api::InvitationsController < ApplicationController
     }, status: :created
   end
 
-  # todo: replace with inference via API_KEY
-  def service_account_user
-    User.find_by_valid_access_token(request.authorization)
-  end
-
   # can these be inferred from the model?
   def cbv_flow_invitation_params
     params.permit(
