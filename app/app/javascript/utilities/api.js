@@ -18,16 +18,20 @@ export const fetchToken = (response_type, id, locale) => {
 };
 
 export const _fetchInternalService = (uri, params) => {
-  const commonHeaders = {
+  const defaultHeaders = {
     'X-CSRF-Token': CSRF.token,
     'Content-Type': 'application/json'
   }
 
-  // append X-CSRF-Token and Content-Type headers to existing headers
-  const headers = params.headers ? Object.assign({}, commonHeaders, params.headers) :
-    commonHeaders;
+  return fetch(uri, _addHeadersToParams(defaultHeaders, params))
+    .then(response => response.json())
+}
 
-  params.headers = headers;
+const _addHeadersToParams = (defaultHeaders, params) => {
+  const requestedHeaders = params.headers;
+  params.headers = requestedHeaders ?
+    Object.assign({}, defaultHeaders, requestedHeaders) :
+    defaultHeaders;
 
-  return fetch(uri, params).then(response => response.json())
+  return params;
 }
