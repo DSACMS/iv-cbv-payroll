@@ -1,7 +1,7 @@
 class ApiAccessToken < ApplicationRecord
   belongs_to :user
 
-  has_secure_password :access_token, validations: false
+  encrypts :access_token, deterministic: true
 
   before_create do
     self.access_token = SecureRandom.urlsafe_base64

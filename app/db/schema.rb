@@ -16,7 +16,7 @@ ActiveRecord::Schema[7.1].define(version: 2025_01_31_150153) do
   enable_extension "plpgsql"
 
   create_table "api_access_tokens", force: :cascade do |t|
-    t.string "access_token_digest"
+    t.string "access_token"
     t.integer "user_id"
     t.datetime "deleted_at"
     t.datetime "created_at", null: false

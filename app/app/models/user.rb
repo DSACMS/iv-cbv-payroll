@@ -10,7 +10,7 @@ class User < ApplicationRecord
     ApiAccessToken.create(user: self).access_token
   end
 
-  def self.find_by_valid_access_token(token)
-    ApiAccessToken.all.find { |t| t.authenticate_access_token(token) }&.user
+  def self.find_by_access_token(token)
+    ApiAccessToken.find_by(access_token: token)&.user
   end
 end

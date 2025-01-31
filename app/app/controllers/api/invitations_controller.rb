@@ -45,7 +45,7 @@ class Api::InvitationsController < ApplicationController
 
   def authenticate
     authenticate_or_request_with_http_token do |token, options|
-      @current_user = User.find_by_valid_access_token(token)
+      @current_user = User.find_by_access_token(token)
     end
   end
 end
