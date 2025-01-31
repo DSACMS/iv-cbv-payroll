@@ -3,17 +3,21 @@ require "rails_helper"
 RSpec.describe Api::InvitationsController do
   describe "#create" do
     # must be existing user
-    let(:service_account_user) do
-      create(:user, email: "test@test.com", site_id: 'ma')
+    let(:api_access_token) do
+      user = create(:user, email: "test@test.com", site_id: 'ma')
+      create(:api_access_token, user_id: user.id)
     end
 
     let(:valid_params) do
       attributes_for(:cbv_flow_invitation,
         site_id: "ma",
         beacon_id: "ABC123",
-        agency_id_number: "7890120",
-        user_id: service_account_user.id
+        agency_id_number: "7890120"
       )
+    end
+
+    before do
+      request.headers["Authorization"] = "Bearer #{api_access_token.access_token}"
     end
 
     it "creates an invitation" do
@@ -35,16 +39,16 @@ RSpec.describe Api::InvitationsController do
       end
     end
 
-    context "invalid user" do
-      let(:invalid_user_params) do
-        valid_params.merge(user_id: 0)
+    context "unauthorized user" do
+      before do
+        request.headers["Authorization"] = nil
       end
 
       it "returns unprocessable entity" do
-        post :create, params: invalid_user_params
+        post :create, params: valid_params
 
-        expect(response).to have_http_status(:unprocessable_entity)
-        expect(JSON.parse(response.body).keys).to include("error")
+        expect(response).to have_http_status(:unauthorized)
+        expect(response.body).to include("HTTP Token: Access denied.")
       end
     end
 
