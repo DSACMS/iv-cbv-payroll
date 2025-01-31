@@ -10,10 +10,18 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2024_11_21_212921) do
+ActiveRecord::Schema[7.1].define(version: 2025_01_31_150153) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pgcrypto"
   enable_extension "plpgsql"
+
+  create_table "api_access_tokens", force: :cascade do |t|
+    t.string "access_token_digest"
+    t.integer "user_id"
+    t.datetime "deleted_at"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
 
   create_table "applicants", force: :cascade do |t|
     t.datetime "created_at", null: false
@@ -70,8 +78,8 @@ ActiveRecord::Schema[7.1].define(version: 2024_11_21_212921) do
     t.string "site_id"
     t.string "confirmation_code"
     t.datetime "transmitted_at"
-    t.datetime "redacted_at"
     t.datetime "consented_to_authorized_use_at"
+    t.datetime "redacted_at"
     t.bigint "cbv_client_id"
     t.index ["cbv_client_id"], name: "index_cbv_flows_on_cbv_client_id"
     t.index ["cbv_flow_invitation_id"], name: "index_cbv_flows_on_cbv_flow_invitation_id"

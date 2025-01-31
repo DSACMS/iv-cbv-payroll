@@ -1,12 +1,10 @@
 class Api::InvitationsController < ApplicationController
   skip_forgery_protection
 
-  def create
-    if service_account_user.nil?
-      return render json: { error: "User not found" }, status: :unprocessable_entity
-    end
+  before_action :authenticate
 
-    @cbv_flow_invitation = CbvInvitationService.new(event_logger).invite(cbv_flow_invitation_params, service_account_user)
+  def create
+    @cbv_flow_invitation = CbvInvitationService.new(event_logger).invite(cbv_flow_invitation_params, @current_user)
 
     if @cbv_flow_invitation.errors.any?
       return render json: @cbv_flow_invitation.errors, status: :unprocessable_entity
@@ -23,7 +21,7 @@ class Api::InvitationsController < ApplicationController
 
   # todo: replace with inference via API_KEY
   def service_account_user
-    User.find_by(id: cbv_flow_invitation_params[:user_id])
+    User.find_by_valid_access_token(request.authorization)
   end
 
   # can these be inferred from the model?
@@ -46,5 +44,13 @@ class Api::InvitationsController < ApplicationController
 
   def site_id
     cbv_flow_invitation_params[:site_id]
+  end
+
+  private
+
+  def authenticate
+    authenticate_or_request_with_http_token do |token, options|
+      @current_user = User.find_by_valid_access_token(token)
+    end
   end
 end
