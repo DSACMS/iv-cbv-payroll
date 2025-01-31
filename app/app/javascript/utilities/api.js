@@ -23,6 +23,7 @@ export const _fetchInternalService = (uri, params) => {
     'Content-Type': 'application/json'
   }
 
+  // append X-CSRF-Token and Content-Type headers to existing headers
   const headers = params.headers ? Object.assign({}, commonHeaders, params.headers) :
     commonHeaders;
 
