@@ -1,4 +1,3 @@
 FactoryBot.define do
-  factory :api_access_token do
-  end
+  factory :api_access_token
 end

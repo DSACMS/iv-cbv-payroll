@@ -4,8 +4,8 @@ RSpec.describe Api::InvitationsController do
   describe "#create" do
     # must be existing user
     let(:api_access_token) do
-      user = create(:user, email: "test@test.com", site_id: 'ma')
-      create(:api_access_token, user_id: user.id)
+      user = create(:user, :with_access_token, email: "test@test.com", site_id: 'ma')
+      user.api_access_tokens.first
     end
 
     let(:valid_params) do
