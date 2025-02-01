@@ -21,6 +21,8 @@ Rails.application.routes.draw do
 
     get "/health", to: "health_check#ok"
     get "/health/test_rendering", to: "health_check#test_rendering"
+    get "/help", to: "help#index", as: :help
+    get "/help/:topic", to: "help#show", as: :help_topic
     get "/maintenance", to: "maintenance#show"
     # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
 
@@ -38,7 +40,6 @@ Rails.application.routes.draw do
 
       # Utility route to clear your session; useful during development
       resource :reset, only: %i[show]
-      resources :help, only: [ :index, :show ]
     end
 
     scope "/:site_id", module: :caseworker, constraints: { site_id: Regexp.union(Rails.application.config.sites.site_ids) } do

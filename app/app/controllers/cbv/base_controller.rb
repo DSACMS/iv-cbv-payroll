@@ -1,5 +1,5 @@
 class Cbv::BaseController < ApplicationController
-  before_action :set_cbv_flow, :ensure_cbv_flow_not_yet_complete, :prevent_back_after_complete, :capture_page_view, :check_help_param
+  before_action :set_cbv_flow, :ensure_cbv_flow_not_yet_complete, :prevent_back_after_complete, :capture_page_view
   helper_method :agency_url, :next_path, :get_comment_by_account_id, :current_site
 
   private
@@ -126,14 +126,5 @@ class Cbv::BaseController < ApplicationController
     })
   rescue => ex
     Rails.logger.error "Unable to track event (ApplicantClickedCBVInvitationLink): #{ex}"
-  end
-
-  def check_help_param
-      help_link = helpers.render(partial: 'cbv/help/help_link', locals: { text: t('help.alert.help_options'), source: 'banner' })
-      flash.merge!(
-        alert: "#{t('help.alert.text_before')} #{help_link}",
-        alert_heading: t('help.alert.heading'),
-        alert_type: "warning"
-      )
   end
 end

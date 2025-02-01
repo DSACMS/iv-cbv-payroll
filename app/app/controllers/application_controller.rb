@@ -5,7 +5,8 @@ class ApplicationController < ActionController::Base
   before_action :add_newrelic_metadata
   before_action :redirect_if_maintenance_mode
   before_action :enable_mini_profiler_in_demo
-
+  after_action :check_help_param
+  
   rescue_from ActionController::InvalidAuthenticityToken do
     redirect_to root_url, flash: { slim_alert: { type: "info", message_html:  t("cbv.error_missing_token_html") } }
   end
@@ -85,6 +86,17 @@ class ApplicationController < ActionController::Base
   def redirect_if_maintenance_mode
     if ENV["MAINTENANCE_MODE"] == "true"
       redirect_to maintenance_path
+    end
+  end
+
+  def check_help_param
+    if params[:help] == "true"
+      help_link = helpers.render(partial: 'help/help_link', locals: { text: t('help.alert.help_options'), source: 'banner' })
+      flash.merge!(
+        alert: "#{t('help.alert.text_before')} #{help_link}",
+        alert_heading: t('help.alert.heading'),
+        alert_type: "warning"
+      )
     end
   end
 end

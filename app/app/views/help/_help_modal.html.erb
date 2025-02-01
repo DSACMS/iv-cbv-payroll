@@ -10,7 +10,7 @@
       <div class="usa-modal__body padding-0">
         <iframe
           id="help-iframe"
-          src="<%= help_path %>"
+          src="<%= help_path(site_id: params[:site_id]) %>"
           class="width-full border-0"
           title="Help Content"
           data-help-target="iframe"
