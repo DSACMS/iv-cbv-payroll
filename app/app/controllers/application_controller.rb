@@ -5,7 +5,7 @@ class ApplicationController < ActionController::Base
   before_action :add_newrelic_metadata
   before_action :redirect_if_maintenance_mode
   before_action :enable_mini_profiler_in_demo
-  after_action :check_help_param
+  before_action :check_help_param
   
   rescue_from ActionController::InvalidAuthenticityToken do
     redirect_to root_url, flash: { slim_alert: { type: "info", message_html:  t("cbv.error_missing_token_html") } }
