@@ -10,15 +10,10 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2024_11_21_212921) do
+ActiveRecord::Schema[7.1].define(version: 2025_01_30_160642) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pgcrypto"
   enable_extension "plpgsql"
-
-  create_table "applicants", force: :cascade do |t|
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-  end
 
   create_table "cbv_clients", force: :cascade do |t|
     t.string "case_number"
@@ -59,7 +54,6 @@ ActiveRecord::Schema[7.1].define(version: 2024_11_21_212921) do
 
   create_table "cbv_flows", force: :cascade do |t|
     t.string "case_number"
-    t.string "argyle_user_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.date "payroll_data_available_from"
@@ -70,19 +64,11 @@ ActiveRecord::Schema[7.1].define(version: 2024_11_21_212921) do
     t.string "site_id"
     t.string "confirmation_code"
     t.datetime "transmitted_at"
-    t.datetime "redacted_at"
     t.datetime "consented_to_authorized_use_at"
+    t.datetime "redacted_at"
     t.bigint "cbv_client_id"
     t.index ["cbv_client_id"], name: "index_cbv_flows_on_cbv_client_id"
     t.index ["cbv_flow_invitation_id"], name: "index_cbv_flows_on_cbv_flow_invitation_id"
-  end
-
-  create_table "connected_argyle_accounts", force: :cascade do |t|
-    t.uuid "user_id", null: false
-    t.uuid "account_id", null: false
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.index ["user_id", "account_id"], name: "index_connected_argyle_accounts_on_user_id_and_account_id", unique: true
   end
 
   create_table "pinwheel_accounts", force: :cascade do |t|
