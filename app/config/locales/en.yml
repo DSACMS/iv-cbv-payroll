@@ -532,13 +532,13 @@ en:
         nyc: Human Resources Administration
         sandbox: CBV Test Agency
       close: Close
+      help: Help
       log_out: Log out
       preheader:
         default: A website in partnership with CBV Test Agency.
         ma: A website in partnership with the Commonwealth of Massachusetts.
         nyc: A website in partnership with the City of New York.
       primary: Primary navigation
-      help: Help
     languages:
       en: English
       es: Español

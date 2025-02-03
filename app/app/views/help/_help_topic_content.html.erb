@@ -1,11 +1,11 @@
-<p><%= t("help.show.#{topic}.intro") if t("help.show.#{topic}.intro", default: '').present? %></p>
+<p><%= t("help.show.#{topic}.intro") if t("help.show.#{topic}.intro", default: "").present? %></p>
 
 <% if t("help.show.#{topic}.security_message", default: '').present? %>
   <p><%= t("help.show.#{topic}.security_message") %></p>
 <% end %>
 
 <ol>
-  <% steps = t("help.show.#{topic}", default: {}).select { |k, _| k.to_s.start_with?('step') } %>
+  <% steps = t("help.show.#{topic}", default: {}).select { |k, _| k.to_s.start_with?("step") } %>
   <% steps.each do |step, _| %>
     <li>
       <strong><%= t("help.show.#{topic}.#{step}.title") %></strong>
@@ -16,4 +16,4 @@
       </ul>
     </li>
   <% end %>
-</ol> 
+</ol>
