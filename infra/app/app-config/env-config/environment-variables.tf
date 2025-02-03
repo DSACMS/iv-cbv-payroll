@@ -61,15 +61,15 @@ locals {
     },
     ACTIVE_RECORD_ENCRYPTION_PRIMARY_KEY = {
       manage_method     = "manual"
-      secret_store_name = "/service/${var.app_name}-${var.environment}/active-record-encrpytion-primary-key"
+      secret_store_name = "/service/${var.app_name}-${var.environment}/active-record-encryption-primary-key"
     },
     ACTIVE_RECORD_ENCRYPTION_DETERMINISTIC_KEY = {
       manage_method     = "manual"
-      secret_store_name = "/service/${var.app_name}-${var.environment}/active-record-encrpytion-deterministic-key"
+      secret_store_name = "/service/${var.app_name}-${var.environment}/active-record-encryption-deterministic-key"
     },
     ACTIVE_RECORD_ENCRYPTION_KEY_DERIVATION_SALT = {
       manage_method     = "manual"
-      secret_store_name = "/service/${var.app_name}-${var.environment}/active-record-encrpytion-key-derivation-salt"
+      secret_store_name = "/service/${var.app_name}-${var.environment}/active-record-encryption-key-derivation-salt"
     },
 
 
