@@ -1,2 +1,0 @@
-class Applicant < ApplicationRecord
-end
