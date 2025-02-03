@@ -75,7 +75,7 @@ module Cbv::PinwheelDataHelper
 
   def fetch_paystubs(from_pay_date, to_pay_date)
     @cbv_flow.pinwheel_accounts.flat_map do |pinwheel_account|
-      next unless pinwheel_account.job_succeeded?("paystubs")
+      next [] unless pinwheel_account.job_succeeded?("paystubs")
 
       fetch_paystubs_for_account_id(pinwheel_account.pinwheel_account_id, from_pay_date, to_pay_date)
     end

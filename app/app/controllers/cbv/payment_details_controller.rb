@@ -95,7 +95,7 @@ class Cbv::PaymentDetailsController < Cbv::BaseController
   def pay_frequency
     return I18n.t("cbv.payment_details.show.unknown") unless has_income_data?
 
-    @income.pay_frequency
+    @income.pay_frequency&.humanize
   end
 
   def compensation_unit
