@@ -34,4 +34,4 @@ class Api::HelpController < ApplicationController
   def user_action_params
     params.permit(:event_name, :source)
   end
-end 
+end

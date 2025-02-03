@@ -56,4 +56,4 @@ RSpec.describe Api::HelpController, type: :controller do
       end
     end
   end
-end 
+end
