@@ -11,8 +11,8 @@ class User < ApplicationRecord
   end
 
   def self.find_by_access_token(token)
-    token = ApiAccessToken.find_by(access_token: token, deleted_at: nil)
+    token_user = ApiAccessToken.find_by(access_token: token, deleted_at: nil)&.user
 
-    token.user if token.user.is_service_account
+    token_user if token_user && token_user.is_service_account
   end
 end
