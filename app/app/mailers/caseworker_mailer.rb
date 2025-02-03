@@ -1,5 +1,5 @@
 class CaseworkerMailer < ApplicationMailer
-  helper "cbv/reports"
+  helper "cbv/pinwheel_data"
   helper :view, :application
   helper_method :current_site
   before_action :set_params
