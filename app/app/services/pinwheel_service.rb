@@ -15,6 +15,7 @@ class PinwheelService
 
   Employment = Class.new(ResponseObject)
   Identity = Class.new(ResponseObject)
+  Income = Class.new(ResponseObject)
 
   ENVIRONMENTS = {
     sandbox: {
@@ -174,8 +175,10 @@ class PinwheelService
     Identity.new(json["data"], environment: @environment)
   end
 
-  def fetch_income_metadata(account_id:)
-    @http.get(build_url("#{ACCOUNTS_ENDPOINT}/#{account_id}/income")).body
+  def fetch_income(account_id:)
+    json = @http.get(build_url("#{ACCOUNTS_ENDPOINT}/#{account_id}/income")).body
+
+    Income.new(json["data"], environment: @environment)
   end
 
   def fetch_platform(platform_id:)

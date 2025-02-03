@@ -17,7 +17,10 @@ RSpec.describe Cbv::PinwheelDataHelper, type: :helper do
   end
 
   let(:incomes) do
-    load_relative_json_file('request_income_metadata_response.json')['data']
+    PinwheelService::Income.new(
+      load_relative_json_file('request_income_metadata_response.json')['data'],
+      environment: PinwheelService::ENVIRONMENTS[:sandbox]
+    )
   end
 
   let(:identities) do

@@ -25,7 +25,7 @@ class Cbv::PaymentDetailsController < Cbv::BaseController
     end
 
     @employment = has_employment_data? && pinwheel.fetch_employment(account_id: account_id)
-    @income_metadata = has_income_data? && pinwheel.fetch_income_metadata(account_id: account_id)["data"]
+    @income = has_income_data? && pinwheel.fetch_income(account_id: account_id)["data"]
     @payments = has_paystubs_data? ? set_payments(account_id) : []
     @account_comment = account_comment
   end
@@ -89,19 +89,19 @@ class Cbv::PaymentDetailsController < Cbv::BaseController
   def pay_frequency
     return I18n.t("cbv.payment_details.show.unknown") unless has_income_data?
 
-    @income_metadata["pay_frequency"]
+    @income.pay_frequency
   end
 
   def compensation_unit
     return I18n.t("cbv.payment_details.show.unknown") unless has_income_data?
 
-    @income_metadata["compensation_unit"]
+    @income.compensation_unit
   end
 
   def compensation_amount
     return I18n.t("cbv.payment_details.show.unknown") unless has_income_data?
 
-    @income_metadata["compensation_amount"]
+    @income.compensation_amount
   end
 
   def gross_pay

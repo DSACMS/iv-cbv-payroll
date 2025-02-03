@@ -100,8 +100,8 @@
       <%= table.with_data_point(:employment_end_date, employment.termination_date) %>
     <% end %>
     <% if summary[:has_income_data] %>
-      <%= table.with_data_point(:pay_frequency, summary[:income]["pay_frequency"]&.humanize) %>
-      <%= table.with_data_point(:hourly_rate, summary[:income]["compensation_amount"], summary[:income]["compensation_unit"]) %>
+      <%= table.with_data_point(:pay_frequency, summary[:income].pay_frequency&.humanize) %>
+      <%= table.with_data_point(:hourly_rate, summary[:income].compensation_amount, summary[:income].compensation_unit) %>
     <% end %>
   <% end %>
 
@@ -115,7 +115,7 @@
           Pay Date: <%= format_date(payment[:pay_date]) %></h4>
       <% end %>
       <% if summary[:has_income_data] %>
-        <%= table.with_data_point(:pay_period_with_frequency, payment[:start], payment[:end], summary[:income]["pay_frequency"]&.humanize, highlight: is_caseworker) %>
+        <%= table.with_data_point(:pay_period_with_frequency, payment[:start], payment[:end], summary[:income].pay_frequency&.humanize, highlight: is_caseworker) %>
       <% else %>
         <%= table.with_data_point(:pay_period_with_frequency, payment[:start], payment[:end], t("cbv.payment_details.show.frequency_unknown"), highlight: is_caseworker) %>
       <% end %>
