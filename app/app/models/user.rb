@@ -6,10 +6,6 @@ class User < ApplicationRecord
 
   has_many :api_access_tokens, dependent: :destroy
 
-  def create_api_access_token
-    ApiAccessToken.create(user: self).access_token
-  end
-
   def self.find_by_access_token(token)
     token_user = ApiAccessToken.find_by(access_token: token, deleted_at: nil)&.user
 
