@@ -1,6 +1,6 @@
 import { vi, describe, beforeEach, afterEach, it, expect } from 'vitest'
 import * as api from './api'
-import * as fetchAPIService from './fetchAPIService'
+import * as fetchAPIService from './fetchInternalAPIService'
 
 global.fetch = vi.fn()
 
@@ -100,7 +100,7 @@ describe('_fetchInternalService', () => {
     })
 
     it('sends a get request to the arbitrary endpoint', async () => {
-        const response = await fetchAPIService.fetchAPIService('/api/arbitrary', {
+        const response = await fetchAPIService.fetchInternalAPIService('/api/arbitrary', {
             "method": "get",
         })
         // Check that fetch was called exactly once
@@ -111,7 +111,7 @@ describe('_fetchInternalService', () => {
     })
 
     it('includes CSRV and Content-Type headers', async () => {
-        const response = await fetchAPIService.fetchAPIService('/api/arbitrary', {
+        const response = await fetchAPIService.fetchInternalAPIService('/api/arbitrary', {
             "method": "get",
         })
         expect(fetch).toHaveBeenCalledTimes(1);
@@ -122,7 +122,7 @@ describe('_fetchInternalService', () => {
     })
 
     it('overrides headers', async() => {
-        const response = await fetchAPIService.fetchAPIService('/api/arbitrary', {
+        const response = await fetchAPIService.fetchInternalAPIService('/api/arbitrary', {
             "method": "get",
             "headers": {
                 "Content-Type": "application/csv",

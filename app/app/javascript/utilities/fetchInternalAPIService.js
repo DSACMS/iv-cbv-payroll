@@ -1,7 +1,7 @@
 import CSRF from './csrf';
 
 
-export const fetchAPIService = (uri, params) => {
+export const fetchInternalAPIService = (uri, params) => {
   const defaultHeaders = {
     'X-CSRF-Token': CSRF.token,
     'Content-Type': 'application/json'
