@@ -3,20 +3,18 @@
 require "faraday"
 
 class PinwheelService
-  class Data < ActiveResource::Base
+  class ResponseObject < ActiveResource::Base
     def initialize(*params, environment:)
       # ActiveResource requires us to set the `site` (the API base url) on the
       # class. Since Pinwheel's API base URL's differ per-environment, let's
-      # set the value just in time for these records to be instantiated.
-      #
-      # This is thread-unsafe, but hopefully since this is just instantiating
-      # an object, the GVL will prevent any other thread from interrupting us.
+      # set the value dynamically as these records are instantiated.
       self.class.site = environment[:base_url]
       super(*params)
     end
   end
 
-  Employment = Class.new(Data)
+  Employment = Class.new(ResponseObject)
+  Identity = Class.new(ResponseObject)
 
   ENVIRONMENTS = {
     sandbox: {
@@ -171,7 +169,9 @@ class PinwheelService
   end
 
   def fetch_identity(account_id:)
-    @http.get(build_url("#{ACCOUNTS_ENDPOINT}/#{account_id}/identity")).body
+    json = @http.get(build_url("#{ACCOUNTS_ENDPOINT}/#{account_id}/identity")).body
+
+    Identity.new(json["data"], environment: @environment)
   end
 
   def fetch_income_metadata(account_id:)

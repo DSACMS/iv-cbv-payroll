@@ -61,7 +61,7 @@ module TestHelpers
 
   def stub_identities(account_id = SecureRandom.uuid)
     5.times.map do |i|
-      {
+      fields = {
         "id" => "9583558c-f54c-455d-9519-554416106a0a",
         "created_at" => "2024-08-23T19:26:34.541298+00:00",
         "updated_at" => "2024-08-23T19:26:34.541298+00:00",
@@ -88,6 +88,8 @@ module TestHelpers
           }
         ]
       }
+
+      PinwheelService::Identity.new(fields, environment: PinwheelService::ENVIRONMENTS[:sandbox])
     end
   end
 

@@ -21,7 +21,10 @@ RSpec.describe Cbv::PinwheelDataHelper, type: :helper do
   end
 
   let(:identities) do
-    load_relative_json_file('request_identity_response.json')['data']
+    PinwheelService::Identity.new(
+      load_relative_json_file('request_identity_response.json')['data'],
+      environment: PinwheelService::ENVIRONMENTS[:sandbox]
+    )
   end
 
   let(:parsed_payments) do
