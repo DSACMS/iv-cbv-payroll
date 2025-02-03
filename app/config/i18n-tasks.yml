@@ -148,6 +148,8 @@ ignore_unused:
     - "date.*" # date formats are not always explicitly used
     - "time.*" # time formats are not always explicitly used
     - "pinwheel.*" # dynamically looked up pinwheel translations
+    - "help.show.*.intro" # dynamically looked up help translations
+    - "help.show.credentials.security_message" # dynamically looked up help translations
 # - 'activerecord.attributes.*'
 # - '{devise,kaminari,will_paginate}.*'
 # - 'simple_form.{yes,no}'
