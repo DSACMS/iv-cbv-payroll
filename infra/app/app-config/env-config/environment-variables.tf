@@ -59,6 +59,20 @@ locals {
       manage_method     = "manual"
       secret_store_name = "/service/${var.app_name}-${var.environment}/maintenance-mode"
     },
+    ACTIVE_RECORD_ENCRYPTION_PRIMARY_KEY = {
+      manage_method     = "manual"
+      secret_store_name = "/service/${var.app_name}-${var.environment}/active-record-encryption-primary-key"
+    },
+    ACTIVE_RECORD_ENCRYPTION_DETERMINISTIC_KEY = {
+      manage_method     = "manual"
+      secret_store_name = "/service/${var.app_name}-${var.environment}/active-record-encryption-deterministic-key"
+    },
+    ACTIVE_RECORD_ENCRYPTION_KEY_DERIVATION_SALT = {
+      manage_method     = "manual"
+      secret_store_name = "/service/${var.app_name}-${var.environment}/active-record-encryption-key-derivation-salt"
+    },
+
+
     # Transmission Configuration:
     NYC_HRA_EMAIL = {
       manage_method     = "manual"
