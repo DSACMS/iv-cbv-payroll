@@ -74,4 +74,106 @@ RSpec.describe PinwheelService, type: :service do
       expect(employment.employer_phone_number).to have_attributes(value: "+16126597057", type: "work")
     end
   end
+
+  describe PinwheelService::Paystub do
+    let(:raw_paystubs_json) do
+      load_relative_json_file('request_end_user_paystubs_response.json')['data']
+    end
+
+    let(:payments) do
+      raw_paystubs_json.map do |payment_json|
+        described_class.new(
+          payment_json,
+          environment: PinwheelService::ENVIRONMENTS[:sandbox]
+        )
+      end
+    end
+
+    it "has attributes necessary for rendering" do
+      expect(payments.first).to have_attributes(
+        start: "2020-12-10",
+        end: "2020-12-24",
+      )
+    end
+
+    describe "#hours" do
+      it "combines hours of earnings entries" do
+        expect(payments.first.hours).to eq(80)
+      end
+
+      context "when there are some 'earnings' entries with fewer hours worked" do
+        before do
+          raw_paystubs_json[0]["earnings"].prepend(
+            "amount" => 100,
+            "category" => "other",
+            "name" => "One Hour of Paid Fun",
+            "rate" => 10,
+            "hours" => 1
+          )
+          raw_paystubs_json[0]["earnings"].prepend(
+            "amount" => 100,
+            "category" => "other",
+            "name" => "Cell Phone",
+            "rate" => 0,
+            "hours" => 0
+          )
+        end
+
+        it "returns the 'hours' from the one with the most hours" do
+          expect(payments.first.hours).to eq(80)
+        end
+      end
+
+      context "when there are 'earnings' with category='overtime'" do
+        let(:raw_paystubs_json) do
+          load_relative_json_file('request_end_user_paystubs_with_overtime_response.json')['data']
+        end
+
+        it "adds in overtime into the base hours" do
+          # 18.0 = 13 hours (category="hourly") + 5 hours (category="overtime")
+          expect(payments.first.hours).to eq(18.0)
+        end
+      end
+
+      context "when no 'earnings' have hours worked" do
+        let(:raw_paystubs_json) do
+          load_relative_json_file('request_end_user_paystubs_with_no_hours_response.json')['data']
+        end
+
+        it "returns a 'nil' value for hours" do
+          expect(payments.first.hours).to eq(nil)
+        end
+      end
+
+      context "when there are 'earnings' with category='sick'" do
+        let(:raw_paystubs_json) do
+          load_relative_json_file('request_end_user_paystubs_with_sick_time_response.json')['data']
+        end
+
+        it "ignores the sick time entries" do
+          expect(payments.first.hours).to eq(4.0)
+        end
+      end
+
+      context "when there are 'earnings' with category='other'" do
+        let(:raw_paystubs_json) do
+          load_relative_json_file('request_end_user_paystubs_with_start_bonus_response.json')['data']
+        end
+
+        it "ignores the entries for those bonuses" do
+          expect(payments.first.hours).to eq(10.0)
+        end
+      end
+
+      context "when there are 'earnings' with category='premium'" do
+        let(:raw_paystubs_json) do
+          load_relative_json_file('request_end_user_paystubs_with_multiple_hourly_rates_response.json')['data']
+        end
+
+        it "ignores the entries for those bonuses" do
+          expect(payments.first.hours).to eq(3.5)
+        end
+      end
+    end
+  end
 end

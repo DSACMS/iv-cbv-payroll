@@ -25,8 +25,14 @@ class Cbv::PaymentDetailsController < Cbv::BaseController
     end
 
     @employment = has_employment_data? && pinwheel.fetch_employment(account_id: account_id)
-    @income = has_income_data? && pinwheel.fetch_income(account_id: account_id)["data"]
-    @payments = has_paystubs_data? ? set_payments(account_id) : []
+    @income = has_income_data? && pinwheel.fetch_income(account_id: account_id)
+
+    if has_paystubs_data?
+      set_payments(account_id)
+    else
+      @payments = []
+    end
+
     @account_comment = account_comment
   end
 
@@ -108,7 +114,7 @@ class Cbv::PaymentDetailsController < Cbv::BaseController
     return I18n.t("cbv.payment_details.show.unknown") unless has_paystubs_data?
 
     @payments
-      .map { |payment| payment[:gross_pay_amount] }
+      .map { |payment| payment.gross_pay_amount.to_i }
       .reduce(:+)
   end
 

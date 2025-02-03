@@ -3,20 +3,6 @@
 require "faraday"
 
 class PinwheelService
-  class ResponseObject < ActiveResource::Base
-    def initialize(*params, environment:)
-      # ActiveResource requires us to set the `site` (the API base url) on the
-      # class. Since Pinwheel's API base URL's differ per-environment, let's
-      # set the value dynamically as these records are instantiated.
-      self.class.site = environment[:base_url]
-      super(*params)
-    end
-  end
-
-  Employment = Class.new(ResponseObject)
-  Identity = Class.new(ResponseObject)
-  Income = Class.new(ResponseObject)
-
   ENVIRONMENTS = {
     sandbox: {
       base_url: "https://sandbox.getpinwheel.com",
@@ -117,6 +103,53 @@ class PinwheelService
     }
   ]
 
+  # Base class for wrapping responses from Pinwheel to allow accessing the data
+  # via dot-notation.
+  class ResponseObject < ActiveResource::Base
+    def initialize(*params, environment:)
+      # ActiveResource requires us to set the `site` (the API base url) on the
+      # class. Since Pinwheel's API base URL's differ per-environment, let's
+      # set the value dynamically as these records are instantiated.
+      self.class.site = environment[:base_url]
+      super(*params)
+    end
+  end
+  Employment = Class.new(ResponseObject)
+  Identity = Class.new(ResponseObject)
+  Income = Class.new(ResponseObject)
+  Paystub = Class.new(ResponseObject) do
+    alias_attribute :start, :pay_period_start
+    alias_attribute :end, :pay_period_end
+
+    def hours
+      base_hours = earnings
+        .filter { |e| e.category != "overtime" }
+        .map { |e| e.hours }
+        .compact
+        .max
+      return unless base_hours
+
+      # Add overtime hours to the base hours, because they tend to be additional
+      # work beyond the other entries. (As opposed to category="premium", which
+      # often duplicates other earnings' hours.)
+      #
+      # See FFS-1773.
+      overtime_hours = earnings
+        .filter { |e| e.category == "overtime" }
+        .sum { |e| e.hours || 0.0 }
+
+      base_hours + overtime_hours
+    end
+
+    def hours_by_earning_category
+      earnings
+        .filter { |e| e.hours && e.hours > 0 }
+        .group_by { |e| e.category }
+        .transform_values { |earnings| earnings.sum { |e| e.hours } }
+    end
+  end
+
+
   def initialize(environment, api_key = nil)
     @api_key = api_key || ENVIRONMENTS.fetch(environment.to_sym)[:api_key]
     @environment = ENVIRONMENTS.fetch(environment.to_sym) { |env| raise KeyError.new("PinwheelService unknown environment: #{env}") }
@@ -160,7 +193,8 @@ class PinwheelService
   end
 
   def fetch_paystubs(account_id:, **params)
-    @http.get(build_url("#{ACCOUNTS_ENDPOINT}/#{account_id}/paystubs"), params).body
+    json = @http.get(build_url("#{ACCOUNTS_ENDPOINT}/#{account_id}/paystubs"), params).body
+    json["data"].map { |paystub_json| Paystub.new(paystub_json, environment: @environment) }
   end
 
   def fetch_employment(account_id:)

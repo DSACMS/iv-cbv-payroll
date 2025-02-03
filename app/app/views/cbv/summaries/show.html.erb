@@ -44,7 +44,7 @@
     <tbody>
       <% summary[:payments].each do |payment| %>
         <tr>
-          <td><%= t(".payment", amount: format_money(payment[:gross_pay_amount]), date: format_date(payment[:pay_date])) %></td>
+          <td><%= t(".payment", amount: format_money(payment.gross_pay_amount), date: format_date(payment.pay_date)) %></td>
         </tr>
       <% end %>
     </tbody>
