@@ -35,8 +35,4 @@ class HelpController < ApplicationController
       end || site_config[params[:site_id]]
     end
   end
-
-  def site_config
-    Rails.application.config.sites
-  end
 end
