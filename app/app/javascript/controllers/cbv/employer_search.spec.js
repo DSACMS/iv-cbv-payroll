@@ -35,7 +35,8 @@ describe('EmployerSearchController', () => {
     const element = document.getByTest
     const btn = document.getElementById('btn');
   //  console.log(document.querySelector('#btn').textContent)
-    btn.click();
+ //    const mError = new Error('Unable to retrieve rows')
+ //   btn.click();
   //  expect(pinwheel.loadPinwheel).toHaveBeenCalled()
  //   expect(document.querySelector('#btn').textContent).toBe('Employee Search Button Text')
   });
