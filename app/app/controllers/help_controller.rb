@@ -32,7 +32,7 @@ class HelpController < ApplicationController
 
   def find_site_from_flow
     return unless session[:cbv_flow_id]
-    
+
     cbv_flow = CbvFlow.find_by(id: session[:cbv_flow_id])
     site_config[cbv_flow.site_id] if cbv_flow
   end
