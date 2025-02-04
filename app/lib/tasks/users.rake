@@ -1,5 +1,5 @@
 namespace :users do
-  desc "Redact data that is older than our retention policy"
+  desc "Promote an existing account to service account status, returning an access token"
   task promote_to_service_account: :environment do
     user = User.find(ENV["id"])
 
@@ -10,6 +10,7 @@ namespace :users do
     end
   end
 
+  desc "Demote an existing account, deleting all associated access tokens"
   task demote_service_account: :environment do
     user = User.find(ENV["id"])
 
