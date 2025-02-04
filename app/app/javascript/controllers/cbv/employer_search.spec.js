@@ -10,7 +10,6 @@ vi.mock('../../utilities/pinwheel.js', async () => {
         ...pinwheelModule,
         loadPinwheel: vi.fn(() => Promise.resolve({ data: {} })),
         initializePinwheel: vi.fn(() => Promise.resolve({ data: {} })),
-        fetchToken: vi.fn(() => Promise.resolve("test-token"))
     }
   })
 
@@ -36,7 +35,7 @@ describe('EmployerSearchController', () => {
     const element = document.getByTest
     const btn = document.getElementById('btn');
   //  console.log(document.querySelector('#btn').textContent)
- //   btn.click();
+    btn.click();
   //  expect(pinwheel.loadPinwheel).toHaveBeenCalled()
  //   expect(document.querySelector('#btn').textContent).toBe('Employee Search Button Text')
   });

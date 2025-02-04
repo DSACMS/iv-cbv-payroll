@@ -92,7 +92,7 @@ describe('fetchToken', () => {
     })
 })
 
-describe('_fetchInternalService', () => {
+describe('fetchInternalAPIService', () => {
     beforeEach(async() => {
         // Mock the fetch function.
         const mockResponse = "good"
