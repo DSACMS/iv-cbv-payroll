@@ -24,6 +24,7 @@ describe('trackUserAction', () => {
         const data = await api.trackUserAction("Event", {})
 
         // Check that fetch was called exactly once
+        expect(data.pinwheel.event_name).toBe("Event")
         expect(fetch).toHaveBeenCalledTimes(1);
         expect(fetch.mock.calls[0][0]).toBe('/api/pinwheel/user_action')
         expect(fetch.mock.calls[0][1]['method']).toBe('post')
