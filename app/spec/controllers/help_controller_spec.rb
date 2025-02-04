@@ -79,6 +79,7 @@ RSpec.describe HelpController, type: :controller do
         get :show, params: valid_params
         expect(response).to render_template(:show)
         expect(assigns(:help_topic)).to eq("employer")
+        expect(assigns(:title)).to eq(I18n.t("help.show.employer.title"))
       end
     end
 
