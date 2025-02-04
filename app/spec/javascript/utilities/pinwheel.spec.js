@@ -1,6 +1,6 @@
-import { vi, describe, beforeEach, afterEach, it, expect } from 'vitest'
-import * as pinwheel from './pinwheel'
-import loadScript from 'load-script'
+import { vi, describe, beforeEach, afterEach, it, expect } from "vitest";
+import * as pinwheel from "@js/utilities/pinwheel";
+import loadScript from "load-script";
 
 const MOCK_PINWHEEL_MODULE = { 
     open: vi.fn()

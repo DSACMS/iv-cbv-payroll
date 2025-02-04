@@ -1,6 +1,6 @@
-import { vi, describe, beforeEach, afterEach, it, expect } from 'vitest'
-import * as api from './api'
-import * as fetchAPIService from './fetchInternalAPIService'
+import { vi, describe, beforeEach, afterEach, it, expect } from "vitest";
+import * as api from "@js/utilities/api";
+import * as fetchAPIService from "@js/utilities/fetchInternalAPIService";
 
 global.fetch = vi.fn()
 
