@@ -6,7 +6,7 @@ export default class extends Controller {
 
   connect() {
     this.handleClick = (event) => {
-      if (event.target.href?.matches("#help-modal")) {
+      if (event.target.href?.includes("#help-modal")) {
         trackUserAction("ApplicantOpenedHelpModal", event.target.dataset.source)
       }
     }
