@@ -22,17 +22,17 @@ RSpec.describe ClientAgencyConfig do
   end
 
   describe "#initialize" do
-    it "loads the site config" do
+    it "loads the client agency config" do
       expect do
         ClientAgencyConfig.new(sample_config_path)
       end.not_to raise_error
     end
   end
 
-  describe "#site_ids" do
+  describe "#client_agency_ids" do
     it "returns the IDs" do
       config = ClientAgencyConfig.new(sample_config_path)
-      expect(config.site_ids).to match_array([ "foo", "bar" ])
+      expect(config.client_agency_ids).to match_array([ "foo", "bar" ])
     end
   end
 

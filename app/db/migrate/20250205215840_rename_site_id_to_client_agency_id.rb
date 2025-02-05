@@ -8,4 +8,4 @@ class RenameSiteIdToClientAgencyId < ActiveRecord::Migration[7.0]
     remove_index :users, name: "index_users_on_email_and_site_id"
     add_index :users, [:email, :client_agency_id], unique: true, name: "index_users_on_email_and_client_agency_id"
   end
-end 
+end
