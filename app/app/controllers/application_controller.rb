@@ -1,6 +1,6 @@
 class ApplicationController < ActionController::Base
   helper :view
-  helper_method :current_site, :show_translate_button?, :show_menu?
+  helper_method :current_client_agency, :show_translate_button?, :show_menu?
   around_action :switch_locale
   before_action :add_newrelic_metadata
   before_action :redirect_if_maintenance_mode
@@ -11,11 +11,11 @@ class ApplicationController < ActionController::Base
   end
 
   def after_sign_in_path_for(user)
-    caseworker_dashboard_path(site_id: user.site_id)
+    caseworker_dashboard_path(client_agency_id: user.client_agency_id)
   end
 
   def after_sign_out_path_for(resource_or_scope)
-    new_user_session_path(site_id: params[:site_id])
+    new_user_session_path(client_agency_id: params[:client_agency_id])
   end
 
   def switch_locale(&action)
@@ -24,8 +24,8 @@ class ApplicationController < ActionController::Base
     I18n.with_locale(locale, &action)
   end
 
-  def site_config
-    Rails.application.config.sites
+  def client_agency_config
+    Rails.application.config.client_agencies
   end
 
   private
@@ -44,8 +44,8 @@ class ApplicationController < ActionController::Base
     request.path == root_path
   end
 
-  def current_site
-    @current_site ||= site_config[params[:site_id]]
+  def current_client_agency
+    @current_client_agency ||= client_agency_config[params[:client_agency_id]]
   end
 
   def enable_mini_profiler_in_demo
@@ -61,7 +61,7 @@ class ApplicationController < ActionController::Base
   protected
 
   def pinwheel_for(cbv_flow)
-    environment = site_config[cbv_flow.site_id].pinwheel_environment
+    environment = client_agency_config[cbv_flow.client_agency_id].pinwheel_environment
 
     PinwheelService.new(environment)
   end
@@ -70,7 +70,7 @@ class ApplicationController < ActionController::Base
     attributes = {
       cbv_flow_id: session[:cbv_flow_id],
       session_id: session.id.to_s,
-      site_id: params[:site_id],
+      client_agency_id: params[:client_agency_id],
       locale: params[:locale],
       user_id: current_user.try(:id)
     }
