@@ -1,28 +1,28 @@
 module ApplicationHelper
-  def current_site?(site_id)
-    return false if current_site.nil?
+  def current_client_agency?(client_agency_id)
+    return false if current_client_agency.nil?
 
-    current_site.id.to_sym == site_id.to_sym
+    current_client_agency.id.to_sym == client_agency_id.to_sym
   end
 
-  # Render a translation that is specific to the current site. Define
-  # site-specific translations as:
+  # Render a translation that is specific to the current client agency. Define
+  # client agency-specific translations as:
   #
   # foo:
   #   nyc: Some String
   #   ma: Other String
   #   default: Default String
   #
-  # Then call this method with, `site_translation("foo")` and it will attempt
-  # to render the nested translation according to the site returned by a
-  # `current_site` method defined by your controller/mailer. If the translation
-  # is either missing or there is no current site, it will attempt to render a
+  # Then call this method with, `client_agency_translation("foo")` and it will attempt
+  # to render the nested translation according to the client agency returned by a
+  # `current_client_agency` method defined by your controller/mailer. If the translation
+  # is either missing or there is no current client agency, it will attempt to render a
   # "default" key.
-  def site_translation(i18n_base_key, **options)
+  def client_agency_translation(i18n_base_key, **options)
     default_key = "#{i18n_base_key}.default"
     i18n_key =
-      if current_site
-        "#{i18n_base_key}.#{current_site.id}"
+      if current_client_agency
+        "#{i18n_base_key}.#{current_client_agency.id}"
       else
         default_key
       end
@@ -59,8 +59,8 @@ module ApplicationHelper
   def feedback_form_url
     case params[:controller]
     when %r{^caseworker/}
-      if current_site && current_site.caseworker_feedback_form
-        current_site.caseworker_feedback_form
+      if current_client_agency && current_client_agency.caseworker_feedback_form
+        current_client_agency.caseworker_feedback_form
       else
         APPLICANT_FEEDBACK_FORM
       end

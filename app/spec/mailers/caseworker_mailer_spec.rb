@@ -5,12 +5,14 @@ RSpec.describe CaseworkerMailer, type: :mailer do
   include ViewHelper
   include ActionView::Helpers::SanitizeHelper # Include the sanitize helper
 
-  let(:cbv_flow) { create(:cbv_flow, :with_pinwheel_account,
-    case_number: "ABC1234",
-    confirmation_code: "00001",
-    site_id: "nyc",
-    consented_to_authorized_use_at: Time.now
-  )}
+  let(:cbv_flow) do
+    create(:cbv_flow, :with_pinwheel_account,
+      confirmation_code: "00001",
+      case_number: "ABC1234",
+      client_agency_id: "nyc",
+      pinwheel_token_id: "abc-def-ghi"
+    )
+  end
   let(:caseworker_email) { cbv_flow.cbv_flow_invitation.user.email }
   let(:account_id) { cbv_flow.pinwheel_accounts.first.pinwheel_account_id }
   let(:payments) { stub_payments(account_id) }
@@ -18,7 +20,7 @@ RSpec.describe CaseworkerMailer, type: :mailer do
   let(:incomes) { stub_incomes(account_id) }
   let(:identities) { stub_identities(account_id) }
   let(:email_address) { "test@example.com" }
-  let(:current_site) { SiteConfig.new(File.join(Rails.root, 'config', 'site-config.yml'))[cbv_flow.site_id] }
+  let(:current_client_agency) { ClientAgencyConfig.new(File.join(Rails.root, 'config', 'client-agency-config.yml'))[cbv_flow.client_agency_id] }
 
   let(:mail) {
     CaseworkerMailer.with(

@@ -71,7 +71,7 @@ en:
       create:
         invite_failed: 'Error sending invitation to %{email_address}: %{error_message}.'
         invite_success: Successfully delivered invitation to %{email_address}.
-      incorrect_site_id: Unable to send invitation due to missing site configuration.
+      incorrect_client_agency_id: Unable to send invitation due to missing client agency configuration.
       ma:
         invite:
           agency_id_number: Client's agency ID number

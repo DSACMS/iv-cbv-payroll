@@ -99,7 +99,7 @@ RSpec.describe ApplicantMailer, type: :mailer do
     end
 
     it "has the correct subject line for ma" do
-      invitation.update!(site_id: "ma")
+      invitation.update!(client_agency_id: "ma")
       Rake::Task['invitation_reminders:send_all'].execute
       email = ActionMailer::Base.deliveries.last
 
@@ -107,7 +107,7 @@ RSpec.describe ApplicantMailer, type: :mailer do
     end
 
     it "has the correct subject line for nyc" do
-      invitation.update!(site_id: "nyc", case_number: "00012345678A", client_id_number: "AB00000C", snap_application_date: invitation_sent_at - 30.minutes)
+      invitation.update!(client_agency_id: "nyc", case_number: "00012345678A", client_id_number: "AB00000C", snap_application_date: invitation_sent_at - 30.minutes)
       Rake::Task['invitation_reminders:send_all'].execute
       email = ActionMailer::Base.deliveries.last
 

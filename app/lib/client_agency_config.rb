@@ -1,23 +1,23 @@
 require "yaml"
 
-class SiteConfig
+class ClientAgencyConfig
   def initialize(config_path)
     template = ERB.new File.read(config_path)
-    @sites = YAML
+    @client_agencies = YAML
       .safe_load(template.result(binding))
-      .map { |s| [ s["id"], Site.new(s) ] }
+      .map { |s| [ s["id"], ClientAgency.new(s) ] }
       .to_h
   end
 
-  def site_ids
-    @sites.keys
+  def client_agency_ids
+    @client_agencies.keys
   end
 
-  def [](site_id)
-    @sites[site_id]
+  def [](client_agency_id)
+    @client_agencies[client_agency_id]
   end
 
-  class Site
+  class ClientAgency
     attr_reader(*%i[
       id
       agency_name
@@ -56,10 +56,10 @@ class SiteConfig
       @sso = yaml["sso"]
       @weekly_report = yaml["weekly_report"]
 
-      raise ArgumentError.new("Site missing id") if @id.blank?
-      raise ArgumentError.new("Site #{@id} missing required attribute `agency_name`") if @agency_name.blank?
-      raise ArgumentError.new("Site #{@id} missing required attribute `pinwheel.environment`") if @pinwheel_environment.blank?
+      raise ArgumentError.new("Client Agency missing id") if @id.blank?
+      raise ArgumentError.new("Client Agency #{@id} missing required attribute `agency_name`") if @agency_name.blank?
+      raise ArgumentError.new("Client Agency #{@id} missing required attribute `pinwheel.environment`") if @pinwheel_environment.blank?
       # TODO: Add a validation for the dependent attribute, transmission_method_configuration.email, if transmission_method is present
     end
   end
-end
+end 

@@ -40,8 +40,8 @@ Rails.application.routes.draw do
       resource :reset, only: %i[show]
     end
 
-    scope "/:site_id", module: :caseworker, constraints: { site_id: Regexp.union(Rails.application.config.sites.site_ids) } do
-      get "/sso", to: redirect("/%{site_id}") # Temporary: Remove once people get used to going to /:site_id as the login destination.
+    scope "/:client_agency_id", module: :caseworker, constraints: { client_agency_id: Regexp.union(Rails.application.config.client_agencies.client_agency_ids) } do
+      get "/sso", to: redirect("/%{client_agency_id}") # Temporary: Remove once people get used to going to /:client_agency_id as the login destination.
       root to: "entries#index", as: :new_user_session
 
       resource :dashboard, only: %i[show], as: :caseworker_dashboard
