@@ -1,0 +1,17 @@
+name: Vitest Javascript Unit Tests 
+
+on:
+  pull_request:
+    paths: ['app/**']
+
+jobs:
+  rspec:
+    name: Rubocop
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set up Ruby & Javascript
+        uses: ./.github/actions/setup-languages
+      - name: Run Vitest 
+        working-directory: app
+        run: npm run test 
