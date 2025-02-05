@@ -1,5 +1,5 @@
 class Caseworker::EntriesController < Caseworker::BaseController
   def index
-    @current_site = current_site
+    @current_client_agency = current_client_agency
   end
 end

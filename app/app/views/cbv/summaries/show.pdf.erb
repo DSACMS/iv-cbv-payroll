@@ -10,7 +10,7 @@
   <% if current_client_agency %>
     <span class="cbv-header__separator">|</span>
   <% end %>
-  <%= site_translation(".pdf.agency_header_name") %>
+  <%= client_agency_translation(".pdf.agency_header_name") %>
 </strong>
 
 <h1><%= t(".pdf.client.header") %></h1>
@@ -62,7 +62,7 @@
   <% if @cbv_flow.confirmation_code.present? %>
     <%= table.with_row(t(".pdf.shared.confirmation_code"), @cbv_flow.confirmation_code) %>
   <% end %>
-  <%= table.with_row(site_translation(".application_or_recertification_date"), format_parsed_date(@cbv_flow.cbv_flow_invitation.snap_application_date)) %>
+  <%= table.with_row(client_agency_translation(".application_or_recertification_date"), format_parsed_date(@cbv_flow.cbv_flow_invitation.snap_application_date)) %>
   <%= table.with_row(t(".pdf.client.date_created"), format_parsed_date(@cbv_flow.consented_to_authorized_use_at)) %>
   <%= table.with_row(t(".pdf.client.date_range"), "#{format_parsed_date(@cbv_flow.cbv_flow_invitation.paystubs_query_begins_at)} to #{format_parsed_date(@cbv_flow.cbv_flow_invitation.snap_application_date)}") %>
   <% if is_caseworker %>
