@@ -2,22 +2,22 @@
 
 <h1><%= t(".header") %></h1>
 <div class="usa-prose">
-  <p class="line-height-sans-5"><%= t(".not_listed_p1", agency_acronym: current_site.agency_short_name) %></p>
+  <p class="line-height-sans-5"><%= t(".not_listed_p1", agency_acronym: current_client_agency.agency_short_name) %></p>
 
-  <% if current_site.id == "ma" %>
+  <% if current_client_agency.id == "ma" %>
     <p><%= t(".dta_options_header") %></p>
-    <ul>
-      <li><%= t(".dta_options_1_html") %></li>
-      <li><%= t(".dta_options_2_html") %></li>
-      <li><%= t(".dta_options_3_html") %></li>
-      <li><%= t(".dta_options_4_html") %></li>
-      <li><%= t(".dta_options_5_html") %></li>
-    </ul>
+  <ul>
+    <li><%= t(".dta_options_1_html") %></li>
+    <li><%= t(".dta_options_2_html") %></li>
+    <li><%= t(".dta_options_3_html") %></li>
+    <li><%= t(".dta_options_4_html") %></li>
+    <li><%= t(".dta_options_5_html") %></li>
+  </ul>
   <% else %>
-    <p class="line-height-sans-5"><%= t(".not_listed_p2", agency_short_name: current_site.agency_short_name) %></p>
-  <% end %>
+    <p class="line-height-sans-5"><%= t(".not_listed_p2", agency_short_name: current_client_agency.agency_short_name) %></p>
+<% end %>
   <% unless @has_pinwheel_account %>
-    <%= site_translation(".exit_button_html") %>
+    <%= client_agency_translation(".exit_button_html") %>
   <% end %>
 </div>
 
@@ -25,7 +25,7 @@
   <hr class="margin-top-5 margin-bottom-5 border-base-light border-top-0">
   <h2><%= t(".no_more_jobs") %></h2>
   <div class="usa-prose">
-    <p><%= t(".continue_to_review", agency_acronym: current_site.agency_short_name) %></p>
+    <p><%= t(".continue_to_review", agency_acronym: current_client_agency.agency_short_name) %></p>
     <%= link_to t(".continue_button"), next_path, class: "usa-button" %>
   </div>
 <% end %>

@@ -64,11 +64,11 @@
       </ul>
     </div>
 
-    <% if @has_pinwheel_account %>
-      <%= link_to t("cbv.employer_searches.show.review_button_text"), cbv_flow_summary_path, class: "usa-button usa-button--outline margin-top-5", data: { turbo_frame: "_top" } %>
-    <% else %>
-      <%= link_to t("cbv.employer_searches.show.exit_button_text", agency_short_name: current_site.agency_short_name), current_site.agency_contact_website, class: "usa-button usa-button--outline margin-top-5", data: { turbo_frame: "_top" } %>
-    <% end %>
+      <% if @has_pinwheel_account %>
+        <%= link_to t("cbv.employer_searches.show.review_button_text"), cbv_flow_summary_path, class: "usa-button usa-button--outline margin-top-5", data: { turbo_frame: "_top" } %>
+      <% else %>
+        <%= link_to t("cbv.employer_searches.show.exit_button_text", agency_short_name: current_client_agency.agency_short_name), current_client_agency.agency_contact_website, class: "usa-button usa-button--outline margin-top-5", data: { turbo_frame: "_top" } %>
+      <% end %>
 
     <hr class="margin-y-5 border-base-light border-top-0" >
   <% elsif @employers.count > 0 %>

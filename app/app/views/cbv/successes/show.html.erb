@@ -1,25 +1,23 @@
-<% title = t(".header", agency_acronym: current_site.agency_short_name) %>
+<% title = t(".header", agency_acronym: current_client_agency.agency_short_name) %>
 <% content_for :title, title %>
 <div class="grid-col tablet:grid-col-10">
-  <h1><%= title %></h1>
+<h1><%= title %></h1>
 </div>
 
 <div class="usa-prose">
-  <p>
-    <%= t(".confirmation_code_html", confirmation_code: @cbv_flow.confirmation_code) %>
-  </p>
+  <p><%= t(".confirmation_code_html", confirmation_code: @cbv_flow.confirmation_code) %></p>
 
-  <p><%= t(".caseworker_received", agency_acronym: current_site.agency_short_name) %></p>
-  <p><%= t(".if_it_didnt_work", agency_acronym: current_site.agency_short_name) %></p>
-  <p><%= site_translation(".check_status") %></p>
-</div>
+  <p><%= t(".caseworker_received", agency_acronym: current_client_agency.agency_short_name) %></p>
+  <p><%= t(".if_it_didnt_work", agency_acronym: current_client_agency.agency_short_name) %></p>
+
+  <p><%= t(".check_status.#{@cbv_flow.client_agency_id}") %></p>
 
 <%= link_to cbv_flow_summary_path(format: "pdf"), target: "_blank", rel: "noopener noreferrer", class: "usa-button margin-top-3 usa-button--primary" do %>
   <%= t(".download") %>
-<% end %>
+    <% end %>
 
 <div>
   <%= link_to agency_url, target: "_blank", rel: "noopener noreferrer", class: "usa-button margin-top-3 usa-button usa-button--outline" do %>
-    <%= t(".back_to_agency", agency_short_name: current_site.agency_short_name) %>
+    <%= t(".back_to_agency", agency_short_name: current_client_agency.agency_short_name) %>
   <% end %>
 </div>
