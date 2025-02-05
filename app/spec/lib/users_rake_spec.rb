@@ -10,11 +10,11 @@ RSpec.describe "users.rake" do
     it "promotes a user to a service account" do
       user = create(:user)
       ENV["id"] = user.id.to_s
-      
+
       expect {
         Rake::Task['users:promote_to_service_account'].execute
       }.to change { user.reload.api_access_tokens.count }.by(1)
-      
+
       expect(user.is_service_account).to eq(true)
       expect(user.api_access_tokens.count).to eq(1)
     end
