@@ -56,6 +56,10 @@ Rails.application.routes.draw do
   end
 
   namespace :api do
+    scope :v1 do
+      post "/invitations", to: "invitations#create"
+    end
+
     scope :pinwheel do
       post "/tokens" => "pinwheel#create_token"
       post "/user_action" => "pinwheel#user_action"

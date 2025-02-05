@@ -29,6 +29,6 @@ Pull request environments are created by GitHub Actions workflows. There are two
 Using these reusable workflows, configure PR environments for each application with application-specific workflows:
 
 - `ci-[app_name]-pr-environment-checks.yml`
-  - Based on [ci-app-pr-environment-checks.yml](https://github.com/navapbc/template-infra/blob/main/.github/workflows/ci-app-pr-environment-checks.yml)
+  - Based on [ci-app-pr-environment-checks.yml](https://github.com/navapbc/template-infra/blob/main/.github/workflows/ci-%7B%7Bapp_name%7D%7D-pr-environment-checks.yml.jinja)
 - `ci-[app_name]-pr-environment-destroy.yml`
-  - Based on [ci-app-pr-environment-destroy.yml](https://github.com/navapbc/template-infra/blob/main/.github/workflows/ci-app-pr-environment-destroy.yml)
+  - Based on [ci-app-pr-environment-destroy.yml](https://github.com/navapbc/template-infra/blob/main/.github/workflows/ci-%7B%7Bapp_name%7D%7D-pr-environment-destroy.yml.jinja)
