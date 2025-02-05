@@ -22,7 +22,7 @@ RSpec.describe "users.rake" do
       Rake::Task['users:demote_service_account'].execute
       user.reload
       expect(user.is_service_account).to eq(false)
-      expect(user.api_access_tokens.count).to eq(0)
+      expect(user.api_access_tokens.where(deleted_at: nil).count).to eq(0)
     end
   end
 end

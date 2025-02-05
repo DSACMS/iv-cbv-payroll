@@ -15,7 +15,7 @@ namespace :users do
     user = User.find(ENV["id"])
 
     if user && user.update(is_service_account: false)
-      user.api_access_tokens.destroy_all
+      user.api_access_tokens.update_all(deleted_at: Time.now)
 
       puts "User #{ENV["id"]} (#{user.email}) is no longer a service account."
     end
