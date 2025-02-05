@@ -5,8 +5,8 @@ on:
     paths: ['app/**']
 
 jobs:
-  rspec:
-    name: Rubocop
+  vitest:
+    name: Vitest 
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
