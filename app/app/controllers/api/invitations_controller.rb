@@ -10,7 +10,7 @@ class Api::InvitationsController < ApplicationController
       return render json: @cbv_flow_invitation.errors, status: :unprocessable_entity
     end
 
-    @cbv_client = CbvClient.create_from_invitation(@cbv_flow_invitation)
+    @cbv_applicant = CbvApplicant.create_from_invitation(@cbv_flow_invitation)
 
     render json: {
       url: @cbv_flow_invitation.to_url,

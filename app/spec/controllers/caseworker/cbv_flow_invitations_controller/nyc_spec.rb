@@ -71,15 +71,15 @@ RSpec.describe Caseworker::CbvFlowInvitationsController, type: :controller do
     # which does not play nice since there are multiple instances of the event logger.
 
     context "when validations succeed" do
-      it "creates a cbv_client record" do
+      it "creates a cbv_applicant record" do
         expect {
           post :create, params: {
             site_id: nyc_params[:site_id],
             cbv_flow_invitation: cbv_flow_invitation_params
           }
-        }.to change(CbvClient, :count).by(1)
+        }.to change(CbvApplicant, :count).by(1)
 
-        client = CbvClient.last
+        client = CbvApplicant.last
         expect(client.first_name).to eq("Jane")
       end
     end
@@ -89,13 +89,13 @@ RSpec.describe Caseworker::CbvFlowInvitationsController, type: :controller do
         cbv_flow_invitation_params[:first_name] = nil
       end
 
-      it "does not create a cbv_client record" do
+      it "does not create a cbv_applicant record" do
         expect {
           post :create, params: {
             site_id: nyc_params[:site_id],
             cbv_flow_invitation: cbv_flow_invitation_params
           }
-        }.to change(CbvClient, :count).by(0)
+        }.to change(CbvApplicant, :count).by(0)
       end
     end
   end

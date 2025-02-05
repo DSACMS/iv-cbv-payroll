@@ -1,4 +1,4 @@
-class CbvClient < ApplicationRecord
+class CbvApplicant < ApplicationRecord
   has_one :cbv_flow
   has_one :cbv_flow_invitation
 
@@ -13,7 +13,7 @@ class CbvClient < ApplicationRecord
       snap_application_date: cbv_flow_invitation.snap_application_date,
       beacon_id: cbv_flow_invitation.beacon_id
     )
-    cbv_flow_invitation.update_column(:cbv_client_id, client.id)
+    cbv_flow_invitation.update_column(:cbv_applicant_id, client.id)
     client
   end
 end

@@ -44,8 +44,8 @@ class Caseworker::CbvFlowInvitationsController < Caseworker::BaseController
       return render :new, status: :unprocessable_entity
     end
 
-    # hydrate the cbv_client with the invitation if there are no cbv_flow_invitation errors
-    @cbv_client = CbvClient.create_from_invitation(@cbv_flow_invitation)
+    # hydrate the cbv_applicant with the invitation if there are no cbv_flow_invitation errors
+    @cbv_applicant = CbvApplicant.create_from_invitation(@cbv_flow_invitation)
 
     flash[:slim_alert] = {
       message: t(".invite_success", email_address: cbv_flow_invitation_params[:email_address]),

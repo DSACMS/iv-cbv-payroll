@@ -2,13 +2,13 @@ require "rails_helper"
 require "rake"
 
 RSpec.describe "backfills.rake" do
-  describe "backfills:cbv_clients" do
+  describe "backfills:cbv_applicants" do
     before(:all) do
       Rails.application.load_tasks
     end
 
-    def expect_cbv_client_attributes_match(invitation)
-      expect(invitation.cbv_client).to have_attributes(
+    def expect_cbv_applicant_attributes_match(invitation)
+      expect(invitation.cbv_applicant).to have_attributes(
         case_number: invitation.case_number,
         client_id_number: invitation.client_id_number,
         first_name: invitation.first_name,
@@ -40,21 +40,21 @@ RSpec.describe "backfills.rake" do
         invitation
       end
 
-      it "Back-fills cbv_clients from an invalid cbv_flow_invitation" do
-        expect(invalid_cbv_flow_invitation.cbv_client).to be_nil
+      it "Back-fills cbv_applicants from an invalid cbv_flow_invitation" do
+        expect(invalid_cbv_flow_invitation.cbv_applicant).to be_nil
         expect(invalid_cbv_flow_invitation.valid?).to eq(false)
-        Rake::Task['backfills:cbv_clients'].execute
+        Rake::Task['backfills:cbv_applicants'].execute
         invalid_cbv_flow_invitation.reload
-        expect(invalid_cbv_flow_invitation.cbv_client).to be_present
-        expect_cbv_client_attributes_match(invalid_cbv_flow_invitation)
+        expect(invalid_cbv_flow_invitation.cbv_applicant).to be_present
+        expect_cbv_applicant_attributes_match(invalid_cbv_flow_invitation)
       end
 
-      it "Back-fills cbv_clients from a valid cbv_flow_invitation" do
-        expect(redacted_cbv_flow_invitation.cbv_client).to be_nil
-        Rake::Task['backfills:cbv_clients'].execute
+      it "Back-fills cbv_applicants from a valid cbv_flow_invitation" do
+        expect(redacted_cbv_flow_invitation.cbv_applicant).to be_nil
+        Rake::Task['backfills:cbv_applicants'].execute
         redacted_cbv_flow_invitation.reload
-        expect(redacted_cbv_flow_invitation.cbv_client).to be_present
-        expect_cbv_client_attributes_match(redacted_cbv_flow_invitation)
+        expect(redacted_cbv_flow_invitation.cbv_applicant).to be_present
+        expect_cbv_applicant_attributes_match(redacted_cbv_flow_invitation)
       end
     end
   end
