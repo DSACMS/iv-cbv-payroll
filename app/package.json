@@ -30,7 +30,7 @@
   "devDependencies": {
     "jsdom": "^24.0.0",
     "pa11y-ci": "^3.1.0",
-    "vitest": "^3.0.4"
+    "vitest": "^3.0.5"
   },
   "resolutions": {
     "@csstools/postcss-sass/@csstools/sass-import-resolve": "https://github.com/rahearn/sass-import-resolve",
