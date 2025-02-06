@@ -28,14 +28,23 @@ RSpec.describe "backfills.rake" do
           language: nil,
           case_number: nil,
           client_id_number: nil,
-          snap_application_date: 31.days.ago.to_date
+          first_name: "Foo",
+          last_name: "Bar",
+          snap_application_date: 31.days.ago.to_date,
+          cbv_applicant: nil # intentionally don't create one to test the backfill
         })
         invitation.save(validate: false)
         invitation
       end
 
       let(:redacted_cbv_flow_invitation) do
-        invitation = create(:cbv_flow_invitation)
+        invitation = create(
+          :cbv_flow_invitation,
+          cbv_applicant: nil,
+          first_name: "Foo",
+          last_name: "Bar",
+          snap_application_date: "2024-01-01"
+        )
         invitation.redact!
         invitation
       end

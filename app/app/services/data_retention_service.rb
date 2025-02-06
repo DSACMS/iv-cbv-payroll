@@ -65,8 +65,10 @@ class DataRetentionService
   # Use after conducting a user test or other time we want to manually redact a
   # specific person's data in the system.
   def self.manually_redact_by_case_number!(case_number)
-    invitation = CbvFlowInvitation.find_by!(case_number: case_number)
-    invitation.redact!
-    invitation.cbv_flows.map(&:redact!)
+    applicant = CbvApplicant.find_by!(case_number: case_number)
+    # TODO: Make CbvApplicant redactable
+    # applicant.redact!
+    applicant.cbv_flow_invitation&.redact!
+    applicant.cbv_flow&.redact!
   end
 end

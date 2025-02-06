@@ -20,7 +20,7 @@ class CbvFlow < ApplicationRecord
   def self.create_from_invitation(cbv_flow_invitation)
     create(
       cbv_flow_invitation: cbv_flow_invitation,
-      case_number: cbv_flow_invitation.case_number,
+      case_number: cbv_flow_invitation.cbv_applicant.case_number,
       site_id: cbv_flow_invitation.site_id
     )
   end

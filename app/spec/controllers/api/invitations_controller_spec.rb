@@ -9,11 +9,9 @@ RSpec.describe Api::InvitationsController do
     end
 
     let(:valid_params) do
-      attributes_for(:cbv_flow_invitation,
-        site_id: "ma",
-        beacon_id: "ABC123",
-        agency_id_number: "7890120"
-      )
+      attributes_for(:cbv_flow_invitation, :ma).tap do |params|
+        params[:agency_partner_metadata] = attributes_for(:cbv_applicant, :ma)
+      end
     end
 
     before do
@@ -28,7 +26,8 @@ RSpec.describe Api::InvitationsController do
 
     context "invalid params" do
       let(:invalid_params) do
-        valid_params.except(:first_name)
+        valid_params[:agency_partner_metadata].delete(:first_name)
+        valid_params
       end
 
       it "returns unprocessable entity" do

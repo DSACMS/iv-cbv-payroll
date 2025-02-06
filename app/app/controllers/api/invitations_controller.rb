@@ -4,10 +4,15 @@ class Api::InvitationsController < ApplicationController
   before_action :authenticate
 
   def create
-    @cbv_flow_invitation = CbvInvitationService.new(event_logger).invite(cbv_flow_invitation_params, @current_user, delivery_method: nil)
+    @cbv_flow_invitation = CbvInvitationService.new(event_logger)
+      .invite(cbv_flow_invitation_params, @current_user, delivery_method: nil)
 
-    if @cbv_flow_invitation.errors.any?
-      return render json: @cbv_flow_invitation.errors, status: :unprocessable_entity
+    errors = @cbv_flow_invitation.errors
+    if errors.delete(:cbv_applicant)
+      errors.merge!(@cbv_flow_invitation.cbv_applicant.errors)
+    end
+    if errors.any?
+      return render json: errors, status: :unprocessable_entity
     end
 
     @cbv_applicant = CbvApplicant.create_from_invitation(@cbv_flow_invitation)
@@ -21,19 +26,27 @@ class Api::InvitationsController < ApplicationController
 
   # can these be inferred from the model?
   def cbv_flow_invitation_params
+    if params[:agency_partner_metadata]
+      params[:cbv_applicant_attributes] = params.delete(:agency_partner_metadata)
+    end
+    params[:email_address] = @current_user.email
+
     params.permit(
-      :first_name,
-      :middle_name,
       :language,
-      :last_name,
-      :client_id_number,
-      :case_number,
       :email_address,
-      :snap_application_date,
-      :agency_id_number,
-      :beacon_id,
+      :site_id,
       :user_id,
-      :site_id
+      cbv_applicant_attributes: [
+        :first_name,
+        :middle_name,
+        :last_name,
+        :site_id,
+        :client_id_number,
+        :case_number,
+        :snap_application_date,
+        :agency_id_number,
+        :beacon_id
+      ]
     )
   end
 

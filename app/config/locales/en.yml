@@ -3,7 +3,7 @@ en:
   activerecord:
     errors:
       models:
-        cbv_flow_invitation:
+        cbv_applicant:
           attributes:
             agency_id_number:
               blank: Enter a valid agency ID number.
@@ -14,19 +14,21 @@ en:
               invalid_format: Enter the case number in the ANGIE/sPOS format, i.e. 00012345678A.
             client_id_number:
               invalid_format: Enter the client's CIN in the correct format, XX00000X.
-            email_address:
-              blank: Enter the client's email address.
-              invalid_format: Enter an email address in the correct format, like name@example.com
             first_name:
               blank: Enter the client's first name.
-            language:
-              invalid_format: Language must be either English (en) or Spanish (es).
             last_name:
               blank: Enter the client's last name.
             snap_application_date:
               default_invalid_date: Enter today's date or the date you contacted the client.
               ma_invalid_date: Enter today's date or the date you contacted the client. This date must be today or in the past year.
               nyc_invalid_date: SNAP interview date must be today or in the past 30 days.
+        cbv_flow_invitation:
+          attributes:
+            email_address:
+              blank: Enter the client's email address.
+              invalid_format: Enter an email address in the correct format, like name@example.com
+            language:
+              invalid_format: Language must be either English (en) or Spanish (es).
   applicant_mailer:
     invitation_email:
       body_1:

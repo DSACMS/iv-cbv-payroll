@@ -1,40 +1,31 @@
 FactoryBot.define do
   factory :cbv_flow_invitation, class: "CbvFlowInvitation" do
-    first_name { "Jane" }
-    middle_name { "Sue" }
-    language { :en }
-    last_name { "Doe" }
     site_id { "sandbox" }
     email_address { "test@example.com" }
-    snap_application_date { Time.zone.today.strftime("%m/%d/%Y") }
+    language { :en }
     user
+
+    cbv_applicant
 
     trait :nyc do
       site_id { "nyc" }
 
-      case_number do
-        number = 11.times.map { rand(10) }.join
-        letter = ('A'..'Z').to_a.sample
-        "#{number}#{letter}"
-      end
-
-      client_id_number do
-        letters = 2.times.map { ('A'..'Z').to_a.sample }.join
-        numbers = 5.times.map { rand(10) }.join
-        last_letter = ('A'..'Z').to_a.sample
-        "#{letters}#{numbers}#{last_letter}"
-      end
+      cbv_applicant { create(:cbv_applicant, :nyc) }
     end
 
     trait :ma do
       site_id { "ma" }
 
-      agency_id_number do
-        7.times.map { rand(10) }.join
-      end
+      cbv_applicant { create(:cbv_applicant, :ma) }
+    end
 
-      beacon_id do
-        6.times.map { ('A'..'Z').to_a.sample }.join
+    transient do
+      cbv_applicant_attributes { {} }
+    end
+
+    after(:build) do |cbv_flow_invitation, evaluator|
+      if cbv_flow_invitation.cbv_applicant
+        cbv_flow_invitation.cbv_applicant.update(evaluator.cbv_applicant_attributes)
       end
     end
   end

@@ -7,8 +7,16 @@ RSpec.describe Cbv::SummariesController do
   let(:supported_jobs) { %w[income paystubs employment identity] }
   let(:flow_started_seconds_ago) { 300 }
   let(:employment_errored_at) { nil }
-  let(:cbv_flow) { create(:cbv_flow, :with_pinwheel_account, created_at: flow_started_seconds_ago.seconds.ago, case_number: "ABC1234", supported_jobs: supported_jobs, employment_errored_at: employment_errored_at) }
-  let(:cbv_flow_invitation) { cbv_flow.cbv_flow_invitation }
+  let(:cbv_applicant) { create(:cbv_applicant) }
+  let(:cbv_flow) do
+    create(:cbv_flow,
+      :with_pinwheel_account,
+      created_at: flow_started_seconds_ago.seconds.ago,
+      supported_jobs: supported_jobs,
+      employment_errored_at: employment_errored_at,
+      cbv_applicant: cbv_applicant
+    )
+  end
   let(:mock_site) { instance_double(SiteConfig::Site) }
   let(:nyc_user) { create(:user, email: "test@test.com", site_id: 'nyc') }
   let(:ma_user) { create(:user, email: "test@example.com", site_id: 'ma') }
@@ -22,7 +30,6 @@ RSpec.describe Cbv::SummariesController do
       "public_key"        => @public_key
     })
 
-    session[:cbv_flow_invitation] = cbv_flow_invitation
     cbv_flow.pinwheel_accounts.first.update(pinwheel_account_id: "03e29160-f7e7-4a28-b2d8-813640e030d3")
   end
 
@@ -32,8 +39,7 @@ RSpec.describe Cbv::SummariesController do
 
   describe "#show" do
     before do
-      cbv_flow_invitation.update(snap_application_date: Date.parse('2024-06-18'))
-      cbv_flow_invitation.update(created_at: Date.parse('2024-03-20'))
+      cbv_applicant.update(snap_application_date: Date.parse('2024-06-18'))
       session[:cbv_flow_id] = cbv_flow.id
       stub_request_end_user_accounts_response
       stub_request_end_user_paystubs_response
@@ -260,12 +266,12 @@ RSpec.describe Cbv::SummariesController do
         end
 
         it "generates, gzips, encrypts, and uploads PDF and CSV files to S3" do
-          agency_id_number = cbv_flow_invitation.agency_id_number
-          beacon_id = cbv_flow_invitation.beacon_id
+          agency_id_number = cbv_applicant.agency_id_number
+          beacon_id = cbv_applicant.beacon_id
 
           expect(s3_service_double).to receive(:upload_file).once do |file_path, file_name|
             expect(file_path).to end_with('.gpg')
-            expect(file_name).to start_with("outfiles/IncomeReport_#{cbv_flow_invitation.agency_id_number}_")
+            expect(file_name).to start_with("outfiles/IncomeReport_#{cbv_applicant.agency_id_number}_")
             expect(file_name).to end_with('.tar.gz.gpg')
             expect(File.exist?(file_path)).to be true
           end
@@ -278,9 +284,9 @@ RSpec.describe Cbv::SummariesController do
           end
 
           cbv_flow.update(site_id: "ma")
-          cbv_flow_invitation.update(site_id: "ma")
-          cbv_flow_invitation.update(beacon_id: beacon_id)
-          cbv_flow_invitation.update(agency_id_number: agency_id_number)
+          cbv_applicant.update(site_id: "ma")
+          cbv_applicant.update(beacon_id: beacon_id)
+          cbv_applicant.update(agency_id_number: agency_id_number)
 
           patch :update
         end

@@ -14,28 +14,32 @@ class Caseworker::CbvFlowInvitationsController < Caseworker::BaseController
   end
 
   def create
-    invitation_params = base_params.merge(site_specific_params)
     # handle errors from the mail service
     begin
       @cbv_flow_invitation = CbvInvitationService.new(event_logger).invite(
-        invitation_params,
+        invitation_params.merge(site_id: site_id),
         current_user,
         delivery_method: :email
       )
     rescue => e
       Rails.logger.error("Error inviting applicant: #{e.message}")
       flash[:alert] = t(".invite_failed",
-                        email_address: cbv_flow_invitation_params[:email_address],
+                        email_address: invitation_params[:email_address],
                         error_message: e.message)
       return redirect_to caseworker_dashboard_path(site_id: params[:site_id])
     end
 
-    if @cbv_flow_invitation.errors.any?
-      error_count = @cbv_flow_invitation.errors.size
+    errors = @cbv_flow_invitation.errors
+    if errors.delete(:cbv_applicant)
+      errors.merge!(@cbv_flow_invitation.cbv_applicant.errors)
+    end
+
+    if errors.any?
+      error_count = errors.size
       error_header = "#{helpers.pluralize(error_count, 'error')} occurred"
 
       # Collect error messages without attribute names
-      error_messages = @cbv_flow_invitation.errors.messages.values.flatten.map { |msg| "<li>#{msg}</li>" }.join
+      error_messages = errors.messages.values.flatten.map { |msg| "<li>#{msg}</li>" }.join
       error_messages = "<ul>#{error_messages}</ul>"
 
       flash.now[:alert_heading] = error_header
@@ -44,11 +48,8 @@ class Caseworker::CbvFlowInvitationsController < Caseworker::BaseController
       return render :new, status: :unprocessable_entity
     end
 
-    # hydrate the cbv_applicant with the invitation if there are no cbv_flow_invitation errors
-    @cbv_applicant = CbvApplicant.create_from_invitation(@cbv_flow_invitation)
-
     flash[:slim_alert] = {
-      message: t(".invite_success", email_address: cbv_flow_invitation_params[:email_address]),
+      message: t(".invite_success", email_address: invitation_params[:email_address]),
       type: "success"
     }
     redirect_to caseworker_dashboard_path(site_id: params[:site_id])
@@ -69,40 +70,20 @@ class Caseworker::CbvFlowInvitationsController < Caseworker::BaseController
     end
   end
 
-  def base_params
-    cbv_flow_invitation_params.slice(
-      :first_name,
-      :middle_name,
-      :language,
-      :last_name,
-      :email_address,
-      :snap_application_date,
-    ).merge(site_id: site_id)
-  end
-
-  def site_specific_params
-    case site_id
-    when "ma"
-      cbv_flow_invitation_params.slice(:agency_id_number, :beacon_id)
-    when "nyc"
-      cbv_flow_invitation_params.slice(:client_id_number, :case_number)
-    else
-      {}
-    end
-  end
-
-  def cbv_flow_invitation_params
+  def invitation_params
     params.fetch(:cbv_flow_invitation, {}).permit(
-      :first_name,
-      :middle_name,
       :language,
-      :last_name,
-      :client_id_number,
-      :case_number,
       :email_address,
-      :snap_application_date,
-      :agency_id_number,
-      :beacon_id,
+      cbv_applicant_attributes: [
+        :first_name,
+        :middle_name,
+        :last_name,
+        :client_id_number,
+        :case_number,
+        :snap_application_date,
+        :agency_id_number,
+        :beacon_id
+      ]
     )
   end
 
