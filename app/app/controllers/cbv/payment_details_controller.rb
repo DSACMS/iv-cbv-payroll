@@ -24,9 +24,15 @@ class Cbv::PaymentDetailsController < Cbv::BaseController
       return redirect_to(cbv_flow_entry_url, flash: { slim_alert: { message: t("cbv.error_no_access"), type: "error" } })
     end
 
-    @employment = has_employment_data? && pinwheel.fetch_employment(account_id: account_id)["data"]
-    @income_metadata = has_income_data? && pinwheel.fetch_income_metadata(account_id: account_id)["data"]
-    @payments = has_paystubs_data? ? set_payments(account_id) : []
+    @employment = has_employment_data? && pinwheel.fetch_employment(account_id: account_id)
+    @income = has_income_data? && pinwheel.fetch_income(account_id: account_id)
+
+    if has_paystubs_data?
+      set_payments(account_id)
+    else
+      @payments = []
+    end
+
     @account_comment = account_comment
   end
 
@@ -65,50 +71,50 @@ class Cbv::PaymentDetailsController < Cbv::BaseController
   def employer_name
     return I18n.t("cbv.payment_details.show.unknown") unless has_employment_data?
 
-    @employment["employer_name"]
+    @employment.employer_name
   end
 
   def employment_start_date
     return I18n.t("cbv.payment_details.show.unknown") unless has_employment_data?
 
-    @employment["start_date"]
+    @employment.start_date
   end
 
   def employment_end_date
     return I18n.t("cbv.payment_details.show.unknown") unless has_employment_data?
 
-    @employment["termination_date"]
+    @employment.termination_date
   end
 
   def employment_status
     return I18n.t("cbv.payment_details.show.unknown") unless has_employment_data?
 
-    @employment["status"]&.humanize
+    @employment.status&.humanize
   end
 
   def pay_frequency
     return I18n.t("cbv.payment_details.show.unknown") unless has_income_data?
 
-    @income_metadata["pay_frequency"]
+    @income.pay_frequency&.humanize
   end
 
   def compensation_unit
     return I18n.t("cbv.payment_details.show.unknown") unless has_income_data?
 
-    @income_metadata["compensation_unit"]
+    @income.compensation_unit
   end
 
   def compensation_amount
     return I18n.t("cbv.payment_details.show.unknown") unless has_income_data?
 
-    @income_metadata["compensation_amount"]
+    @income.compensation_amount
   end
 
   def gross_pay
     return I18n.t("cbv.payment_details.show.unknown") unless has_paystubs_data?
 
     @payments
-      .map { |payment| payment[:gross_pay_amount] }
+      .map { |payment| payment.gross_pay_amount.to_i }
       .reduce(:+)
   end
 
