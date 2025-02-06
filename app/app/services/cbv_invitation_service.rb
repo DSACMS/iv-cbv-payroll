@@ -35,6 +35,7 @@ class CbvInvitationService
       user_id: current_user.id,
       caseworker_email_address: current_user.email,
       site_id: cbv_flow_invitation.site_id,
+      cbv_applicant_id: cbv_flow_invitation.cbv_applicant_id,
       invitation_id: cbv_flow_invitation.id
     })
   end

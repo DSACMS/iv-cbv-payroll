@@ -24,6 +24,7 @@ class Cbv::SummariesController < Cbv::BaseController
         event_logger.track("ApplicantDownloadedIncomePDF", request, {
           timestamp: Time.now.to_i,
           site_id: @cbv_flow.site_id,
+          cbv_applicant_id: @cbv_flow.cbv_applicant_id,
           cbv_flow_id: @cbv_flow.id,
           invitation_id: @cbv_flow.cbv_flow_invitation_id,
           locale: I18n.locale
@@ -191,6 +192,7 @@ class Cbv::SummariesController < Cbv::BaseController
     event_logger.track("ApplicantSharedIncomeSummary", request, {
       timestamp: Time.now.to_i,
       site_id: cbv_flow.site_id,
+      cbv_applicant_id: cbv_flow.cbv_applicant_id,
       cbv_flow_id: cbv_flow.id,
       invitation_id: cbv_flow.cbv_flow_invitation_id,
       account_count: payments.map { |p| p[:account_id] }.uniq.count,
@@ -209,6 +211,7 @@ class Cbv::SummariesController < Cbv::BaseController
       timestamp: Time.now.to_i,
       site_id: cbv_flow.site_id,
       cbv_flow_id: cbv_flow.id,
+      cbv_applicant_id: cbv_flow.cbv_applicant_id,
       invitation_id: cbv_flow.cbv_flow_invitation_id,
       account_count: payments.map { |p| p.account_id }.uniq.count,
       paystub_count: payments.count,

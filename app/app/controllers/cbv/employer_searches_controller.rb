@@ -36,6 +36,7 @@ class Cbv::EmployerSearchesController < Cbv::BaseController
   def track_clicked_popular_payroll_providers_event
     event_logger.track("ApplicantClickedPopularPayrollProviders", request, {
       timestamp: Time.now.to_i,
+      cbv_applicant_id: @cbv_flow.cbv_applicant_id,
       cbv_flow_id: @cbv_flow.id,
       invitation_id: @cbv_flow.cbv_flow_invitation_id
     })
@@ -46,6 +47,7 @@ class Cbv::EmployerSearchesController < Cbv::BaseController
   def track_clicked_popular_app_employers_event
     event_logger.track("ApplicantClickedPopularAppEmployers", request, {
       timestamp: Time.now.to_i,
+      cbv_applicant_id: @cbv_flow.cbv_applicant_id,
       cbv_flow_id: @cbv_flow.id,
       invitation_id: @cbv_flow.cbv_flow_invitation_id
     })
@@ -58,6 +60,7 @@ class Cbv::EmployerSearchesController < Cbv::BaseController
 
     event_logger.track("ApplicantAccessedSearchPage", request, {
       timestamp: Time.now.to_i,
+      cbv_applicant_id: @cbv_flow.cbv_applicant_id,
       cbv_flow_id: @cbv_flow.id,
       invitation_id: @cbv_flow.cbv_flow_invitation_id
     })
@@ -70,6 +73,7 @@ class Cbv::EmployerSearchesController < Cbv::BaseController
 
     event_logger.track("ApplicantSearchedForEmployer", request, {
       timestamp: Time.now.to_i,
+      cbv_applicant_id: @cbv_flow.cbv_applicant_id,
       cbv_flow_id: @cbv_flow.id,
       invitation_id: @cbv_flow.cbv_flow_invitation_id,
       num_results: @employers.length,

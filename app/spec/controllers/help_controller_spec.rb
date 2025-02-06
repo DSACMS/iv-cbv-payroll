@@ -22,6 +22,7 @@ RSpec.describe HelpController, type: :controller do
           .to receive(:track)
           .with("ApplicantViewedHelpTopic", be_an(ActionController::TestRequest), hash_including(
             browser: nil,
+            cbv_applicant_id: cbv_flow.cbv_applicant_id,
             cbv_flow_id: cbv_flow.id,
             device_name: nil,
             device_type: nil,
@@ -37,6 +38,7 @@ RSpec.describe HelpController, type: :controller do
           .to receive(:track)
           .with("ApplicantViewedHelpTopic", be_an(ActionController::TestRequest), hash_including(
             browser: nil,
+            cbv_applicant_id: cbv_flow.cbv_applicant_id,
             cbv_flow_id: cbv_flow.id,
             device_name: nil,
             device_type: nil,
@@ -65,6 +67,7 @@ RSpec.describe HelpController, type: :controller do
           .to receive(:track)
           .with("ApplicantViewedHelpTopic", be_an(ActionController::TestRequest), hash_including(
             browser: nil,
+            cbv_applicant_id: nil,
             cbv_flow_id: nil,
             device_name: nil,
             device_type: nil,
