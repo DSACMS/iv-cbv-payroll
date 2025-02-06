@@ -11,7 +11,7 @@
     <%= render "help_topic_link", topic: "credentials", text: t("help.index.credentials") %>
 
     <% if current_site && current_site.caseworker_feedback_form.present? %>
-      <%= link_to current_site.caseworker_feedback_form, class: "usa-button margin-bottom-1 height-5 text-left display-block", target: "_blank" do %>
+      <%= link_to feedback_form_url, class: "usa-button margin-bottom-1 height-5 text-left display-block", target: "_blank" do %>
         <%= t("help.index.feedback") %>
       <% end %>
     <% end %>
