@@ -5,7 +5,9 @@ RSpec.describe Caseworker::CbvFlowInvitationsController do
   let(:ma_user) { create(:user, email: "test@test.com", site_id: 'ma') }
   let(:ma_params) { { site_id: "ma" } }
   let(:valid_params) do
-    attributes_for(:cbv_flow_invitation, :nyc)
+    attributes_for(:cbv_flow_invitation, :nyc).merge(
+      cbv_applicant_attributes: attributes_for(:cbv_applicant, :nyc)
+    )
   end
 
   describe "#new" do

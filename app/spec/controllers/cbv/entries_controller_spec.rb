@@ -40,7 +40,7 @@ RSpec.describe Cbv::EntriesController do
 
         cbv_flow = invitation.cbv_flows.first
         expect(cbv_flow).to have_attributes(
-          case_number: "ABC1234",
+          cbv_applicant: have_attributes(case_number: "ABC1234"),
           cbv_flow_invitation: invitation
         )
       end

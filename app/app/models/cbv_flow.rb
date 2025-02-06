@@ -4,6 +4,8 @@ class CbvFlow < ApplicationRecord
   belongs_to :cbv_applicant, optional: true
   validates :site_id, inclusion: Rails.application.config.sites.site_ids
 
+  accepts_nested_attributes_for :cbv_applicant
+
   scope :incomplete, -> { where(confirmation_code: nil) }
 
   include Redactable
@@ -20,8 +22,8 @@ class CbvFlow < ApplicationRecord
   def self.create_from_invitation(cbv_flow_invitation)
     create(
       cbv_flow_invitation: cbv_flow_invitation,
-      case_number: cbv_flow_invitation.cbv_applicant.case_number,
-      site_id: cbv_flow_invitation.site_id
+      cbv_applicant: cbv_flow_invitation.cbv_applicant,
+      site_id: cbv_flow_invitation.site_id,
     )
   end
 

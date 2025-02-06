@@ -18,6 +18,8 @@ class CbvFlowInvitation < ApplicationRecord
 
   has_secure_token :auth_token, length: 36
 
+  accepts_nested_attributes_for :cbv_applicant
+
   before_validation :normalize_language
   before_create :copy_fields_back_from_cbv_applicant
 
@@ -82,10 +84,6 @@ class CbvFlowInvitation < ApplicationRecord
 
   def to_url
     Rails.application.routes.url_helpers.cbv_flow_entry_url(token: auth_token, locale: language)
-  end
-
-  def cbv_applicant_attributes=(attributes)
-    build_cbv_applicant(attributes)
   end
 
   def normalize_language

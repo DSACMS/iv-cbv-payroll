@@ -17,7 +17,7 @@ class Caseworker::CbvFlowInvitationsController < Caseworker::BaseController
     # handle errors from the mail service
     begin
       @cbv_flow_invitation = CbvInvitationService.new(event_logger).invite(
-        invitation_params.merge(site_id: site_id),
+        invitation_params.deep_merge(site_id: site_id, cbv_applicant_attributes: { site_id: site_id }),
         current_user,
         delivery_method: :email
       )
@@ -29,17 +29,14 @@ class Caseworker::CbvFlowInvitationsController < Caseworker::BaseController
       return redirect_to caseworker_dashboard_path(site_id: params[:site_id])
     end
 
-    errors = @cbv_flow_invitation.errors
-    if errors.delete(:cbv_applicant)
-      errors.merge!(@cbv_flow_invitation.cbv_applicant.errors)
-    end
+    if @cbv_flow_invitation.errors.any?
+      @cbv_flow_invitation.errors.delete(:cbv_applicant)
 
-    if errors.any?
-      error_count = errors.size
+      error_count = @cbv_flow_invitation.errors.size
       error_header = "#{helpers.pluralize(error_count, 'error')} occurred"
 
       # Collect error messages without attribute names
-      error_messages = errors.messages.values.flatten.map { |msg| "<li>#{msg}</li>" }.join
+      error_messages = @cbv_flow_invitation.errors.messages.values.flatten.map { |msg| "<li>#{msg}</li>" }.join
       error_messages = "<ul>#{error_messages}</ul>"
 
       flash.now[:alert_heading] = error_header
