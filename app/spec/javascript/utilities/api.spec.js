@@ -44,7 +44,7 @@ describe('trackUserAction', () => {
         expect(fetch.mock.calls[0][1]['body']).toMatchSnapshot()
     })
     it('has expected response payload', async() => {
-        const data = await api.trackUserAction("Event", {})
+        const data = await api.trackUserAction("pinwheel", {})
         expect(data).toMatchSnapshot()
     })
         
