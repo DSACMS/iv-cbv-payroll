@@ -7,6 +7,11 @@ RSpec.describe "users.rake" do
       Rails.application.load_tasks
     end
 
+    before(:each) do
+      Rake::Task['users:promote_to_service_account'].reenable
+      Rake::Task['users:demote_service_account'].reenable
+    end
+
     it "promotes a user to a service account" do
       user = create(:user)
       ENV["id"] = user.id.to_s
