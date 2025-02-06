@@ -21,7 +21,7 @@ describe('trackUserAction', () => {
     })
 
     it('sends a post request to the user_action endpoint', async () => {
-        const data = await api.trackUserAction("Event", {})
+        const data = await api.trackUserAction("MockEventType", {})
 
         // Check that fetch was called exactly once
         expect(data.pinwheel.event_name).toBe("Event")
@@ -30,7 +30,7 @@ describe('trackUserAction', () => {
         expect(fetch.mock.calls[0][1]['method']).toBe('post')
     })
 
-    it('includes CSRF and Content-Type headers', async () => {
+    it('includes CSRV and Content-Type headers', async () => {
         const data = await api.trackUserAction("Event", {})
         expect(fetch).toHaveBeenCalledTimes(1);
         expect(fetch.mock.calls[0][1]).toHaveProperty('headers')
@@ -40,11 +40,11 @@ describe('trackUserAction', () => {
     })
 
     it('has expected request body', async() => {
-        const data = await api.trackUserAction("Event", {})
+        const data = await api.trackUserAction("MockEventType", {})
         expect(fetch.mock.calls[0][1]['body']).toMatchSnapshot()
     })
     it('has expected response payload', async() => {
-        const data = await api.trackUserAction("pinwheel", {})
+        const data = await api.trackUserAction("MockEventType", {})
         expect(data).toMatchSnapshot()
     })
         
@@ -70,7 +70,7 @@ describe('fetchToken', () => {
         expect(fetch.mock.calls[0][1]['method']).toBe('post')
     })
 
-    it('includes CSRF and Content-Type headers', async () => {
+    it('includes CSRV and Content-Type headers', async () => {
         const data = await api.fetchToken("response_type", "id", "en")
         expect(fetch).toHaveBeenCalledTimes(1);
         expect(fetch.mock.calls[0][1]).toHaveProperty('headers')
@@ -111,7 +111,7 @@ describe('fetchInternalAPIService', () => {
         expect(response).toBe('good')
     })
 
-    it('includes CSRF and Content-Type headers', async () => {
+    it('includes CSRV and Content-Type headers', async () => {
         const response = await fetchAPIService.fetchInternalAPIService('/api/arbitrary', {
             "method": "get",
         })
