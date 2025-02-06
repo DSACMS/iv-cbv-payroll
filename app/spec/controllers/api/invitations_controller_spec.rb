@@ -27,6 +27,7 @@ RSpec.describe Api::InvitationsController do
     context "invalid params" do
       let(:invalid_params) do
         valid_params[:agency_partner_metadata].delete(:first_name)
+        valid_params.delete(:site_id)
         valid_params
       end
 
@@ -34,7 +35,10 @@ RSpec.describe Api::InvitationsController do
         post :create, params: invalid_params
 
         expect(response).to have_http_status(:unprocessable_entity)
-        expect(JSON.parse(response.body).keys).to include("first_name")
+        parsed_response = JSON.parse(response.body)
+        expect(parsed_response.keys).not_to include("cbv_applicant")
+        expect(parsed_response.keys).to include("site_id")
+        expect(parsed_response.keys).to include("agency_partner_metadata.first_name")
       end
     end
 
