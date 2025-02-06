@@ -1,0 +1,11 @@
+<div class="padding-3">
+  <h2 class="margin-top-0">
+    <%= t("help.show.#{@help_topic}.title") %>
+  </h2>
+
+  <%= render partial: "help_topic_content", locals: { topic: @help_topic } %>
+
+  <div class="margin-top-3">
+    <%= link_to t("help.show.go_back"), help_path, class: "usa-link" %>
+  </div>
+</div>

@@ -21,6 +21,8 @@ Rails.application.routes.draw do
 
     get "/health", to: "health_check#ok"
     get "/health/test_rendering", to: "health_check#test_rendering"
+    get "/help", to: "help#index", as: :help
+    get "/help/:topic", to: "help#show", as: :help_topic
     get "/maintenance", to: "maintenance#show"
     # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
 
@@ -63,6 +65,10 @@ Rails.application.routes.draw do
     scope :pinwheel do
       post "/tokens" => "pinwheel#create_token"
       post "/user_action" => "pinwheel#user_action"
+    end
+
+    scope :help do
+      post :user_action, to: "help#user_action"
     end
   end
 end
