@@ -17,7 +17,7 @@
 <% payments_grouped_by_employer.each_with_index do |(account_id, summary), index| %>
   <table class="usa-table usa-table--borderless width-full">
     <h3>
-      <% employer_name = summary[:has_employment_data] ? summary.dig(:employment, "employer_name") : nil %>
+      <% employer_name = summary[:has_employment_data] ? summary[:employment].employer_name : nil %>
       <% if employer_name %>
         <%= t(".table_caption", number: index + 1, employer_name: employer_name) %>
       <% else %>
@@ -44,7 +44,7 @@
     <tbody>
       <% summary[:payments].each do |payment| %>
         <tr>
-          <td><%= t(".payment", amount: format_money(payment[:gross_pay_amount]), date: format_date(payment[:pay_date])) %></td>
+          <td><%= t(".payment", amount: format_money(payment.gross_pay_amount), date: format_date(payment.pay_date)) %></td>
         </tr>
       <% end %>
     </tbody>

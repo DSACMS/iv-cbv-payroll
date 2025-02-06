@@ -13,7 +13,7 @@ RSpec.describe CaseworkerMailer, type: :mailer do
   )}
   let(:caseworker_email) { cbv_flow.cbv_flow_invitation.user.email }
   let(:account_id) { cbv_flow.pinwheel_accounts.first.pinwheel_account_id }
-  let(:payments) { stub_post_processed_payments(account_id) }
+  let(:payments) { stub_payments(account_id) }
   let(:employments) { stub_employments(account_id) }
   let(:incomes) { stub_incomes(account_id) }
   let(:identities) { stub_identities(account_id) }

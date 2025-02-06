@@ -76,10 +76,6 @@ class Cbv::SummariesController < Cbv::BaseController
     params[:cbv_flow] && params[:cbv_flow][:consent_to_authorized_use] == "1"
   end
 
-  def total_gross_income
-    @payments.reduce(0) { |sum, payment| sum + payment[:gross_pay_amount] }
-  end
-
   def transmit_to_caseworker
     case current_site.transmission_method
     when "shared_email"
@@ -214,7 +210,7 @@ class Cbv::SummariesController < Cbv::BaseController
       site_id: cbv_flow.site_id,
       cbv_flow_id: cbv_flow.id,
       invitation_id: cbv_flow.cbv_flow_invitation_id,
-      account_count: payments.map { |p| p[:account_id] }.uniq.count,
+      account_count: payments.map { |p| p.account_id }.uniq.count,
       paystub_count: payments.count,
       account_count_with_additional_information:
         cbv_flow.additional_information.values.count { |info| info["comment"].present? },
