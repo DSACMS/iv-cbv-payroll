@@ -1,12 +1,18 @@
 namespace :users do
   desc "Promote an existing account to service account status, returning an access token"
   task promote_to_service_account: :environment do
-    user = User.find(ENV["id"])
+    ActiveRecord::Base.transaction do
+      user = User.find(ENV["id"])
+      puts "Found user #{user.id} with #{user.api_access_tokens.count} existing tokens"
 
-    if user && user.update(is_service_account: true)
-      token = user.api_access_tokens.create
+      if user && user.update(is_service_account: true)
+        puts "Updated user to service account"
+        user.api_access_tokens.create!
+        puts "Created new token"
 
-      puts "User #{ENV["id"]} (#{user.email}) is now a service account: #{token.access_token}"
+        puts "User #{ENV["id"]} (#{user.email}) is now a service account"
+        puts "User now has #{user.api_access_tokens.count} tokens"
+      end
     end
   end
 
