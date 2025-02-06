@@ -1,12 +1,7 @@
 require "rails_helper"
-require "rake"
 
 RSpec.describe "backfills.rake" do
   describe "backfills:cbv_applicants" do
-    before(:all) do
-      Rails.application.load_tasks
-    end
-
     def expect_cbv_applicant_attributes_match(invitation)
       expect(invitation.cbv_applicant).to have_attributes(
         case_number: invitation.case_number,
