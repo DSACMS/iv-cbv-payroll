@@ -30,7 +30,7 @@ describe('trackUserAction', () => {
         expect(fetch.mock.calls[0][1]['method']).toBe('post')
     })
 
-    it('includes CSRV and Content-Type headers', async () => {
+    it('includes CSRF and Content-Type headers', async () => {
         const data = await api.trackUserAction("Event", {})
         expect(fetch).toHaveBeenCalledTimes(1);
         expect(fetch.mock.calls[0][1]).toHaveProperty('headers')
@@ -70,7 +70,7 @@ describe('fetchToken', () => {
         expect(fetch.mock.calls[0][1]['method']).toBe('post')
     })
 
-    it('includes CSRV and Content-Type headers', async () => {
+    it('includes CSRF and Content-Type headers', async () => {
         const data = await api.fetchToken("response_type", "id", "en")
         expect(fetch).toHaveBeenCalledTimes(1);
         expect(fetch.mock.calls[0][1]).toHaveProperty('headers')
@@ -111,7 +111,7 @@ describe('fetchInternalAPIService', () => {
         expect(response).toBe('good')
     })
 
-    it('includes CSRV and Content-Type headers', async () => {
+    it('includes CSRF and Content-Type headers', async () => {
         const response = await fetchAPIService.fetchInternalAPIService('/api/arbitrary', {
             "method": "get",
         })
