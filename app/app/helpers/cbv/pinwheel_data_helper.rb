@@ -2,7 +2,7 @@ module Cbv::PinwheelDataHelper
   include ViewHelper
 
   def set_payments(account_id = nil)
-    applicant = @cbv_flow.cbv_flow_invitation.cbv_applicant
+    applicant = @cbv_flow.cbv_applicant
     to_pay_date = applicant.snap_application_date
     from_pay_date = applicant.paystubs_query_begins_at
     @payments =

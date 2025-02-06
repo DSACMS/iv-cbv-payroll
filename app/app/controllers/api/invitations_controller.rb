@@ -8,9 +8,6 @@ class Api::InvitationsController < ApplicationController
       .invite(cbv_flow_invitation_params, @current_user, delivery_method: nil)
 
     errors = @cbv_flow_invitation.errors
-    if errors.delete(:cbv_applicant)
-      errors.merge!(@cbv_flow_invitation.cbv_applicant.errors)
-    end
     if errors.any?
       return render json: errors, status: :unprocessable_entity
     end
@@ -27,7 +24,7 @@ class Api::InvitationsController < ApplicationController
   # can these be inferred from the model?
   def cbv_flow_invitation_params
     if params[:agency_partner_metadata]
-      params[:cbv_applicant_attributes] = params.delete(:agency_partner_metadata)
+      params[:cbv_applicant_attributes] = params.delete(:agency_partner_metadata).merge(site_id: params[:site_id])
     end
     params[:email_address] = @current_user.email
 
@@ -48,10 +45,6 @@ class Api::InvitationsController < ApplicationController
         :beacon_id
       ]
     )
-  end
-
-  def site_id
-    cbv_flow_invitation_params[:site_id]
   end
 
   private

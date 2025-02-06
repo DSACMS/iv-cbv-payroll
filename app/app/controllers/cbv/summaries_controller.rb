@@ -101,7 +101,7 @@ class Cbv::SummariesController < Cbv::BaseController
       time_now = Time.now
       beginning_date = (Date.parse(@payments_beginning_at).strftime("%b") rescue @payments_beginning_at)
       ending_date = (Date.parse(@payments_ending_at).strftime("%b%Y") rescue @payments_ending_at)
-      @file_name = "IncomeReport_#{@cbv_flow.cbv_flow_invitation.agency_id_number}_" \
+      @file_name = "IncomeReport_#{@cbv_flow.cbv_applicant.agency_id_number}_" \
         "#{beginning_date}-#{ending_date}_" \
         "Conf#{@cbv_flow.confirmation_code}_" \
         "#{time_now.strftime('%Y%m%d%H%M%S')}"
@@ -166,16 +166,16 @@ class Cbv::SummariesController < Cbv::BaseController
     pinwheel_account = PinwheelAccount.find_by(cbv_flow_id: @cbv_flow.id)
 
     data = {
-      client_id: @cbv_flow.cbv_flow_invitation.agency_id_number,
-      first_name: @cbv_flow.cbv_flow_invitation.first_name,
-      last_name: @cbv_flow.cbv_flow_invitation.last_name,
-      middle_name: @cbv_flow.cbv_flow_invitation.middle_name,
+      client_id: @cbv_flow.cbv_applicant.agency_id_number,
+      first_name: @cbv_flow.cbv_applicant.first_name,
+      last_name: @cbv_flow.cbv_applicant.last_name,
+      middle_name: @cbv_flow.cbv_applicant.middle_name,
       client_email_address: @cbv_flow.cbv_flow_invitation.email_address,
-      beacon_userid: @cbv_flow.cbv_flow_invitation.beacon_id,
-      app_date: @cbv_flow.cbv_flow_invitation.snap_application_date.strftime("%m/%d/%Y"),
+      beacon_userid: @cbv_flow.cbv_applicant.beacon_id,
+      app_date: @cbv_flow.cbv_applicant.snap_application_date.strftime("%m/%d/%Y"),
       report_date_created: pinwheel_account.created_at.strftime("%m/%d/%Y"),
       report_date_start: @cbv_flow.cbv_applicant.paystubs_query_begins_at.strftime("%m/%d/%Y"),
-      report_date_end: @cbv_flow.cbv_flow_invitation.snap_application_date.strftime("%m/%d/%Y"),
+      report_date_end: @cbv_flow.cbv_applicant.snap_application_date.strftime("%m/%d/%Y"),
       confirmation_code: @cbv_flow.confirmation_code,
       consent_timestamp: @cbv_flow.consented_to_authorized_use_at.strftime("%m/%d/%Y %H:%M:%S"),
       pdf_filename: "#{@file_name}.pdf",
