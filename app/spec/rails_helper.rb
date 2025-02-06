@@ -12,6 +12,8 @@ require "view_component/system_test_helpers"
 require "capybara/rspec"
 Capybara.default_driver = Capybara.javascript_driver
 
+Rails.application.load_tasks
+
 # Add additional requires below this line. Rails is not loaded until this point!
 
 # Requires supporting ruby files with custom matchers and macros, etc, in
