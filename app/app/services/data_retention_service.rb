@@ -8,6 +8,7 @@ class DataRetentionService
   REDACT_TRANSMITTED_CBV_FLOWS_AFTER = 7.days
 
   def redact_all!
+    redact_applicants
     redact_invitations
     redact_incomplete_cbv_flows
     redact_complete_cbv_flows
@@ -18,7 +19,10 @@ class DataRetentionService
       .unstarted
       .unredacted
       .find_each do |cbv_flow_invitation|
-        cbv_flow_invitation.redact! if Time.now.after?(cbv_flow_invitation.expires_at + REDACT_UNUSED_INVITATIONS_AFTER)
+        next unless Time.now.after?(cbv_flow_invitation.expires_at + REDACT_UNUSED_INVITATIONS_AFTER)
+
+        cbv_flow_invitation.redact!
+        cbv_flow_invitation.cbv_applicant&.redact!
       end
   end
 
@@ -36,6 +40,7 @@ class DataRetentionService
 
           cbv_flow.redact!
           cbv_flow.cbv_flow_invitation.redact!
+          cbv_flow.cbv_applicant&.redact!
         else
           # Redact standalone CbvFlow records some period after their last
           # update.
@@ -47,6 +52,7 @@ class DataRetentionService
           next unless Time.now.after?(flow_redact_at)
 
           cbv_flow.redact!
+          cbv_flow.cbv_applicant&.redact!
         end
       end
   end
@@ -59,6 +65,7 @@ class DataRetentionService
       .find_each do |cbv_flow|
         cbv_flow.redact!
         cbv_flow.cbv_flow_invitation.redact! if cbv_flow.cbv_flow_invitation.present?
+        cbv_flow.cbv_applicant&.redact!
       end
   end
 
@@ -66,9 +73,8 @@ class DataRetentionService
   # specific person's data in the system.
   def self.manually_redact_by_case_number!(case_number)
     applicant = CbvApplicant.find_by!(case_number: case_number)
-    # TODO: Make CbvApplicant redactable
-    # applicant.redact!
-    applicant.cbv_flow_invitation&.redact!
-    applicant.cbv_flow&.redact!
+    applicant.redact!
+    applicant.cbv_flow_invitations.map(&:redact!)
+    applicant.cbv_flows.map(&:redact!)
   end
 end

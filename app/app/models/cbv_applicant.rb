@@ -13,12 +13,11 @@ class CbvApplicant < ApplicationRecord
 
   PAYSTUB_REPORT_RANGE = 90.days
 
-  has_one :cbv_flow
-  has_one :cbv_flow_invitation
+  has_many :cbv_flows
+  has_many :cbv_flow_invitations
 
   before_validation :parse_snap_application_date
   before_validation :format_case_number
-  before_validation :set_site_id
 
   validates :first_name, presence: true
   validates :last_name, presence: true
@@ -39,6 +38,18 @@ class CbvApplicant < ApplicationRecord
     validate :nyc_snap_application_date_not_more_than_30_days_ago
     validate :nyc_snap_application_date_not_in_future
   end
+
+  include Redactable
+  has_redactable_fields(
+    first_name: :string,
+    middle_name: :string,
+    last_name: :string,
+    client_id_number: :string,
+    case_number: :string,
+    agency_id_number: :string,
+    beacon_id: :string,
+    snap_application_date: :date
+  )
 
   def self.create_from_invitation(cbv_flow_invitation)
     client = create!(
@@ -62,10 +73,6 @@ class CbvApplicant < ApplicationRecord
 
   def nyc_site?
     site_id == "nyc"
-  end
-
-  def set_site_id
-    self[:site_id] ||= cbv_flow_invitation.site_id || cbv_flow.site_id
   end
 
   def parse_snap_application_date
