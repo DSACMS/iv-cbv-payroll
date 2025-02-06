@@ -154,16 +154,18 @@ html {
   @include at-media(desktop) {
     height: 660px;
   }
+}
 
-  html {
-    overflow: hidden;
-  }
+.main-bullets {
+  list-style-type: disc;
+}
+.sub-bullets {
+  list-style-type: circle;
 }
 
 // Button display handling based on device orientation and screen size
 .usa-button {
-  &.display-block,
-  &[class*="margin-bottom"] {
+  &.display-block {
     height: auto;
     min-height: 40px;
     line-height: 1.3;
