@@ -18,6 +18,7 @@
       <%= render "application/header" %>
       <main id="main-content">
         <section class="grid-container usa-section">
+
           <% if flash[:notice] %>
             <div class="usa-alert usa-alert--info">
               <div class="usa-alert__body">
@@ -28,10 +29,10 @@
           <% end %>
 
           <% if flash[:alert] %>
-            <div class="usa-alert usa-alert--error">
+            <div class="usa-alert usa-alert--<%= flash[:alert_type] || "error" %>">
               <div class="usa-alert__body">
                 <div class="usa-alert__heading"><%= flash[:alert_heading] || "Error" %></div>
-                <div class="usa-alert__text"><%= flash[:alert] %></div>
+                <div class="usa-alert__text"><%= flash[:alert].html_safe %></div>
               </div>
             </div>
           <% end %>
@@ -54,5 +55,7 @@
       </main>
       <%= render "application/footer" %>
     </div>
+
+    <%= render partial: "help/help_modal", locals: { help_path: help_path(locale: I18n.locale, r: SecureRandom.hex(4)) } %>
   </body>
 </html>
