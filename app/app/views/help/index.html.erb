@@ -1,0 +1,20 @@
+<div class="padding-2">
+  <h2 class="margin-top-0"><%= t("help.index.title") %></h2>
+  <div class="usa-prose">
+    <p><%= t("help.index.select_prompt") %></p>
+
+    <%= render "help_topic_link", topic: "username", text: t("help.index.username") %>
+    <%= render "help_topic_link", topic: "password", text: t("help.index.password") %>
+    <%= render "help_topic_link", topic: "company-id", text: t("help.index.company_id") %>
+    <%= render "help_topic_link", topic: "employer", text: t("help.index.employer") %>
+    <%= render "help_topic_link", topic: "provider", text: t("help.index.provider") %>
+    <%= render "help_topic_link", topic: "credentials", text: t("help.index.credentials") %>
+
+    <% if current_site && current_site.caseworker_feedback_form.present? %>
+      <%= link_to feedback_form_url, class: "usa-button margin-bottom-1 height-5 text-left display-block", target: "_blank" do %>
+        <%= t("help.index.feedback") %>
+      <% end %>
+    <% end %>
+
+  </div>
+</div>

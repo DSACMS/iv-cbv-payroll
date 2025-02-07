@@ -9,7 +9,7 @@ Rails.application.configure do
     policy.default_src :self
     policy.font_src :self
     policy.form_action :self, "https://login.microsoftonline.com"
-    policy.frame_ancestors :none
+    policy.frame_ancestors :self
     policy.img_src :self, :data, "https://*.cloudinary.com", "https://cdn.getpinwheel.com"
     policy.object_src :none
     policy.script_src :self, "https://js-agent.newrelic.com", "https://*.nr-data.net", "https://cdn.getpinwheel.com"
