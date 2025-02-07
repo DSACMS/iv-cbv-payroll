@@ -8,7 +8,6 @@ class DataRetentionService
   REDACT_TRANSMITTED_CBV_FLOWS_AFTER = 7.days
 
   def redact_all!
-    redact_applicants
     redact_invitations
     redact_incomplete_cbv_flows
     redact_complete_cbv_flows
