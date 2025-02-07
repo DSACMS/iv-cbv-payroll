@@ -1,6 +1,5 @@
 require "rails_helper"
 require "active_support/testing/time_helpers"
-require "rake"
 
 RSpec.describe ApplicantMailer, type: :mailer do
   include ActiveSupport::Testing::TimeHelpers
@@ -78,10 +77,6 @@ RSpec.describe ApplicantMailer, type: :mailer do
     let(:now) { DateTime.now }
     let(:invitation_sent_at) { now - 5.days }
     let!(:invitation) { create(:cbv_flow_invitation, :ma, created_at: invitation_sent_at) }
-
-    before(:all) do
-      Rails.application.load_tasks
-    end
 
     before(:each) do
       travel_to(now)
