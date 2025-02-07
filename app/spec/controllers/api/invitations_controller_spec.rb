@@ -18,8 +18,12 @@ RSpec.describe Api::InvitationsController do
       request.headers["Authorization"] = "Bearer #{api_access_token.access_token}"
     end
 
-    it "creates an invitation" do
-      post :create, params: valid_params
+    it "creates an invitation with an associated cbv_applicant" do
+      expect do
+        post :create, params: valid_params
+      end.to change(CbvFlowInvitation, :count).by(1)
+        .and change(CbvApplicant, :count).by(1)
+
       expect(response).to have_http_status(:created)
       expect(JSON.parse(response.body).keys).to include("url")
     end
