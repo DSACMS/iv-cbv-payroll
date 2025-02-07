@@ -21,7 +21,7 @@ describe('trackUserAction', () => {
     })
 
     it('sends a post request to the user_action endpoint', async () => {
-        const data = await api.trackUserAction("Event", {})
+        const data = await api.trackUserAction("MockEventType", {})
 
         // Check that fetch was called exactly once
         expect(data.pinwheel.event_name).toBe("Event")
@@ -40,11 +40,11 @@ describe('trackUserAction', () => {
     })
 
     it('has expected request body', async() => {
-        const data = await api.trackUserAction("Event", {})
+        const data = await api.trackUserAction("MockEventType", {})
         expect(fetch.mock.calls[0][1]['body']).toMatchSnapshot()
     })
     it('has expected response payload', async() => {
-        const data = await api.trackUserAction("Event", {})
+        const data = await api.trackUserAction("MockEventType", {})
         expect(data).toMatchSnapshot()
     })
         

@@ -74,6 +74,7 @@ gem "gpgme", "~> 2.0", ">= 2.0.12"
 gem "pdf-reader", "~> 2.12.0"
 
 gem "maybe_later"
+gem "activeresource"
 
 group :development, :test do
   gem "brakeman", "~> 5.2"
@@ -82,13 +83,12 @@ group :development, :test do
   gem "debug", platforms: %i[mri mingw x64_mingw]
   gem "dotenv-rails", "~> 2.7"
   gem "erb_lint", require: false
-  gem "i18n-tasks", "~> 1.0"
+  gem "i18n-tasks", "~> 1.0", require: false
   gem "rspec-rails", "~> 6.1"
   gem "rubocop"
   gem "rubocop-rspec"
   gem "rubocop-rails-omakase"
   gem "selenium-webdriver"
-  gem "standard", "~> 1.7"
   gem "timecop"
 end
 
