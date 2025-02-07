@@ -1,8 +1,13 @@
-module.exports = {
+import autoprefixer from 'autoprefixer';
+import postcssMinify from 'postcss-minify';
+import postcssImport from 'postcss-import';
+import postcssSass from '@csstools/postcss-sass'
+
+export const config = {
   syntax: 'postcss-scss',
   plugins: [
-    require('postcss-import'),
-    require('@csstools/postcss-sass')({
+    postcssImport,
+    postcssSass({
       includePaths: ['./node_modules/@uswds/uswds/packages'],
       // Silence Sass 3.0.0 deprecation warnings in @uswds/uswds module. (Hopefully
       // uswds will upgrade to the new functions by 3.0.0's release.)
@@ -11,7 +16,9 @@ module.exports = {
       // See: https://github.com/csstools/postcss-sass/issues/45
       silenceDeprecations: ['legacy-js-api'],
     }),
-    require('autoprefixer'),
-    process.env.NODE_ENV === 'production' ? require('postcss-minify') : null,
+    autoprefixer,
+    process.env.NODE_ENV === 'production' ? postcssMinify : null,
   ],
 }
+
+export default config;

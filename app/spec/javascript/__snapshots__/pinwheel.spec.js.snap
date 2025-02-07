@@ -1,0 +1,11 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`initializePinwheel > opens Pinwheel modal 1`] = `
+[
+  {
+    "linkToken": "link-token",
+    "onError": [MockFunction spy],
+    "onSuccess": [MockFunction spy],
+  },
+]
+`;

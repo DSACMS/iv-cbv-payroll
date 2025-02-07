@@ -1,5 +1,7 @@
 import { Controller } from "@hotwired/stimulus"
-import { loadPinwheel, initializePinwheel, fetchToken, trackUserAction } from "../../utilities/pinwheel"
+import { loadPinwheel, initializePinwheel } from "../../utilities/pinwheel"
+import { fetchToken } from '../../utilities/api';
+import { trackUserAction } from '../../utilities/api';
 
 export default class extends Controller {
   static targets = [
