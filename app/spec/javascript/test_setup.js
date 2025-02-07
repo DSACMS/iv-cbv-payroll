@@ -8,8 +8,6 @@ global.window = window;
 global.document = window.document;
 global.Node = window.Node;
 
-// Set up Stimulus
-window.Stimulus = Application.start();
 
 // Mock CSRF token
 document.head.innerHTML = `
@@ -33,12 +31,16 @@ window.matchMedia = vi.fn().mockImplementation(query => ({
 
 // Reset all mocks before each test
 beforeEach(() => {
+  // Set up Stimulus
+  window.Stimulus = Application.start();
+
   vi.clearAllMocks();
   fetch.mockReset();
 });
 
 // Clean up after each test
 afterEach(() => {
+  window.Stimulus.stop()
   document.head.innerHTML = `
     <meta name="csrf-token" content="test-csrf-token">
   `;
