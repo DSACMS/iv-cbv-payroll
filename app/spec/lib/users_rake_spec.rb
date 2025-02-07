@@ -1,12 +1,7 @@
 require "rails_helper"
-require "rake"
 
 RSpec.describe "users.rake" do
   describe "promotes and demotes user service accounts" do
-    before(:all) do
-      Rails.application.load_tasks
-    end
-
     it "promotes a user to a service account" do
       user = create(:user)
       Rake::Task['users:promote_to_service_account'].invoke(user.id.to_s)
