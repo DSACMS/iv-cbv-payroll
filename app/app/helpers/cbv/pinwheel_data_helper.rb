@@ -36,7 +36,7 @@ module Cbv::PinwheelDataHelper
       next unless pinwheel_account.job_succeeded?("identity")
 
       pinwheel.fetch_identity(account_id: pinwheel_account.pinwheel_account_id)
-    end
+    end.compact
   end
 
   def hours_by_earning_category(earnings)
