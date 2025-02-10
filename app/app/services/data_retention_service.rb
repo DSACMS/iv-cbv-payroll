@@ -18,7 +18,10 @@ class DataRetentionService
       .unstarted
       .unredacted
       .find_each do |cbv_flow_invitation|
-        cbv_flow_invitation.redact! if Time.now.after?(cbv_flow_invitation.expires_at + REDACT_UNUSED_INVITATIONS_AFTER)
+        next unless Time.now.after?(cbv_flow_invitation.expires_at + REDACT_UNUSED_INVITATIONS_AFTER)
+
+        cbv_flow_invitation.redact!
+        cbv_flow_invitation.cbv_applicant&.redact!
       end
   end
 
@@ -36,6 +39,7 @@ class DataRetentionService
 
           cbv_flow.redact!
           cbv_flow.cbv_flow_invitation.redact!
+          cbv_flow.cbv_applicant&.redact!
         else
           # Redact standalone CbvFlow records some period after their last
           # update.
@@ -47,6 +51,7 @@ class DataRetentionService
           next unless Time.now.after?(flow_redact_at)
 
           cbv_flow.redact!
+          cbv_flow.cbv_applicant&.redact!
         end
       end
   end
@@ -59,14 +64,16 @@ class DataRetentionService
       .find_each do |cbv_flow|
         cbv_flow.redact!
         cbv_flow.cbv_flow_invitation.redact! if cbv_flow.cbv_flow_invitation.present?
+        cbv_flow.cbv_applicant&.redact!
       end
   end
 
   # Use after conducting a user test or other time we want to manually redact a
   # specific person's data in the system.
   def self.manually_redact_by_case_number!(case_number)
-    invitation = CbvFlowInvitation.find_by!(case_number: case_number)
-    invitation.redact!
-    invitation.cbv_flows.map(&:redact!)
+    applicant = CbvApplicant.find_by!(case_number: case_number)
+    applicant.redact!
+    applicant.cbv_flow_invitations.map(&:redact!)
+    applicant.cbv_flows.map(&:redact!)
   end
 end

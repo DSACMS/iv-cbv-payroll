@@ -48,6 +48,7 @@ class Api::PinwheelController < ApplicationController
     base_attributes = {
       timestamp: Time.now.to_i,
       cbv_flow_id: @cbv_flow.id,
+      cbv_applicant_id: @cbv_flow.cbv_applicant_id,
       invitation_id: @cbv_flow.cbv_flow_invitation_id
     }
     event_name = user_action_params[:event_name]
@@ -87,6 +88,7 @@ class Api::PinwheelController < ApplicationController
   def track_event
     event_logger.track("ApplicantBeganLinkingEmployer", request, {
       cbv_flow_id: @cbv_flow.id,
+      cbv_applicant_id: @cbv_flow.cbv_applicant_id,
       invitation_id: @cbv_flow.cbv_flow_invitation_id,
       response_type: token_params[:response_type]
     })

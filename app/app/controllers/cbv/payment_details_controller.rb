@@ -126,6 +126,7 @@ class Cbv::PaymentDetailsController < Cbv::BaseController
     return if @pinwheel_account.nil?
 
     event_logger.track("ApplicantViewedPaymentDetails", request, {
+      cbv_applicant_id: @cbv_flow.cbv_applicant_id,
       cbv_flow_id: @cbv_flow.id,
       invitation_id: @cbv_flow.cbv_flow_invitation_id,
       pinwheel_account_id: @pinwheel_account.id,
@@ -142,6 +143,7 @@ class Cbv::PaymentDetailsController < Cbv::BaseController
     comment_data = @cbv_flow.additional_information[params[:user][:account_id]]
 
     event_logger.track("ApplicantSavedPaymentDetails", request, {
+      cbv_applicant_id: @cbv_flow.cbv_applicant_id,
       cbv_flow_id: @cbv_flow.id,
       invitation_id: @cbv_flow.cbv_flow_invitation_id,
       additional_information_length: comment_data ? comment_data["comment"].length : 0

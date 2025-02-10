@@ -18,6 +18,7 @@ class ApplicationMailer < ActionMailer::Base
 
       # Include a couple attributes that are passed in as params to subclasses,
       # to help with linking metadata without including any PII.
+      cbv_applicant_id: params[:cbv_flow]&.cbv_applicant_id || params[:cbv_flow_invitation]&.cbv_applicant_id,
       cbv_flow_id: params[:cbv_flow]&.id,
       invitation_id: params[:cbv_flow_invitation]&.id
     })

@@ -110,6 +110,7 @@ class Cbv::BaseController < ApplicationController
   def track_expired_event(invitation)
     event_logger.track("ApplicantLinkExpired", request, {
       invitation_id: invitation.id,
+      cbv_applicant_id: invitation.cbv_applicant_id,
       timestamp: Time.now.to_i
     })
   rescue => ex
@@ -121,6 +122,7 @@ class Cbv::BaseController < ApplicationController
       timestamp: Time.now.to_i,
       invitation_id: invitation.id,
       cbv_flow_id: cbv_flow.id,
+      cbv_applicant_id: cbv_flow.cbv_applicant_id,
       site_id: cbv_flow.site_id,
       seconds_since_invitation: (Time.now - invitation.created_at).to_i
     })

@@ -8,6 +8,7 @@ class Cbv::MissingResultsController < Cbv::BaseController
   def track_missing_results_event
     event_logger.track("ApplicantAccessedMissingResultsPage", request, {
       timestamp: Time.now.to_i,
+      cbv_applicant_id: @cbv_flow.cbv_applicant_id,
       cbv_flow_id: @cbv_flow.id,
       invitation_id: @cbv_flow.cbv_flow_invitation_id
     })

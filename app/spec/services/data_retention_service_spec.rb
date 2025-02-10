@@ -3,7 +3,7 @@ require "rails_helper"
 RSpec.describe DataRetentionService do
   describe "#redact_invitations" do
     let!(:cbv_flow_invitation) do
-      create(:cbv_flow_invitation)
+      create(:cbv_flow_invitation, :nyc)
     end
     let(:service) { DataRetentionService.new }
     let(:now) { Time.now }
@@ -31,6 +31,14 @@ RSpec.describe DataRetentionService do
             email_address: "REDACTED@example.com",
             case_number: "REDACTED",
             auth_token: "REDACTED",
+            redacted_at: within(1.second).of(Time.now)
+          )
+        end
+
+        it "redacts the associated CbvApplicant" do
+          service.redact_invitations
+          expect(cbv_flow_invitation.cbv_applicant.reload).to have_attributes(
+            case_number: "REDACTED",
             redacted_at: within(1.second).of(Time.now)
           )
         end
@@ -71,6 +79,11 @@ RSpec.describe DataRetentionService do
         expect { service.redact_incomplete_cbv_flows }
           .not_to change { cbv_flow_invitation.reload.attributes }
       end
+
+      it "does not redact the CbvApplicant" do
+        expect { service.redact_incomplete_cbv_flows }
+          .not_to change { cbv_flow.cbv_applicant.reload.attributes }
+      end
     end
 
     context "after the deletion threshold" do
@@ -95,6 +108,13 @@ RSpec.describe DataRetentionService do
       it "redacts the associated invitation" do
         service.redact_incomplete_cbv_flows
         expect(cbv_flow_invitation.reload).to have_attributes(
+          case_number: "REDACTED"
+        )
+      end
+
+      it "redacts the associated CbvApplicant" do
+        service.redact_incomplete_cbv_flows
+        expect(cbv_flow.cbv_applicant.reload).to have_attributes(
           case_number: "REDACTED"
         )
       end
@@ -187,6 +207,11 @@ RSpec.describe DataRetentionService do
         expect { service.redact_complete_cbv_flows }
           .not_to change { cbv_flow_invitation.reload.attributes }
       end
+
+      it "does not redact the CbvApplicant" do
+        expect { service.redact_complete_cbv_flows }
+          .not_to change { cbv_flow.cbv_applicant.reload.attributes }
+      end
     end
 
     context "after the deletion threshold" do
@@ -208,6 +233,13 @@ RSpec.describe DataRetentionService do
         )
       end
 
+      it "redacts the associated applicant" do
+        service.redact_complete_cbv_flows
+        expect(cbv_flow.cbv_applicant.reload).to have_attributes(
+          case_number: "REDACTED"
+        )
+      end
+
       it "skips redacting already-redacted CbvFlows" do
         service.redact_complete_cbv_flows
 
@@ -218,14 +250,18 @@ RSpec.describe DataRetentionService do
   end
 
   describe ".manually_redact_by_case_number!" do
-    let(:cbv_flow_invitation) { create(:cbv_flow_invitation, case_number: "DELETEME001") }
-    let!(:cbv_flow) { create(:cbv_flow, cbv_flow_invitation: cbv_flow_invitation) }
-    let!(:second_cbv_flow) { create(:cbv_flow, cbv_flow_invitation: cbv_flow_invitation) }
+    let(:cbv_flow_invitation) { create(:cbv_flow_invitation, cbv_applicant_attributes: { case_number: "DELETEME001" }) }
+    let!(:cbv_flow) { CbvFlow.create_from_invitation(cbv_flow_invitation) }
+    let!(:second_cbv_flow) { CbvFlow.create_from_invitation(cbv_flow_invitation) }
 
     it "redacts the invitation and all flow objects" do
       DataRetentionService.manually_redact_by_case_number!("DELETEME001")
 
       expect(cbv_flow.reload).to have_attributes(
+        case_number: "REDACTED",
+        redacted_at: within(1.second).of(Time.now)
+      )
+      expect(cbv_flow.cbv_applicant.reload).to have_attributes(
         case_number: "REDACTED",
         redacted_at: within(1.second).of(Time.now)
       )
