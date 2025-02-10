@@ -2,6 +2,7 @@ import { Controller } from "@hotwired/stimulus"
 import { loadPinwheel, initializePinwheel } from "../../utilities/pinwheel"
 import { fetchToken } from '../../utilities/api';
 import { trackUserAction } from '../../utilities/api';
+import { getDocumentLocale } from "../../utilities/getDocumentLocale";
 
 export default class extends Controller {
   static targets = [
@@ -17,11 +18,11 @@ export default class extends Controller {
   pinwheel = loadPinwheel();
 
   connect() {
-    this.errorHandler = document.addEventListener("turbo:frame-missing", this.onTurboError)
+    this.errorHandler = this.element.addEventListener("turbo:frame-missing", this.onTurboError)
   }
 
   disconnect() {
-    document.removeEventListener("turbo:frame-missing", this.errorHandler)
+    this.element.removeEventListener("turbo:frame-missing", this.errorHandler)
   }
 
   onTurboError(event) {
@@ -30,6 +31,10 @@ export default class extends Controller {
     const location = event.detail.response.url
     event.detail.visit(location)
     event.preventDefault()
+  }
+
+  onSuccessEvent(eventPayload) {
+
   }
 
   onPinwheelEvent(eventName, eventPayload) {
@@ -72,16 +77,10 @@ export default class extends Controller {
     }
   }
 
-  getDocumentLocale() {
-    const docLocale = document.documentElement.lang;
-    if (docLocale) return docLocale;
-    // Extract locale from URL path (e.g., /en/cbv/employer_search)
-    const pathMatch = window.location.pathname.match(/^\/([a-z]{2})\//i);
-    return pathMatch ? pathMatch[1] : 'en';
-  }
+  
 
   async select(event) {
-    const locale = this.getDocumentLocale();
+    const locale = getDocumentLocale();
     const { responseType, id, name, isDefaultOption } = event.target.dataset;
     await trackUserAction("ApplicantSelectedEmployerOrPlatformItem", {
       item_type: responseType,
@@ -100,6 +99,7 @@ export default class extends Controller {
     this.pinwheel.then(Pinwheel => initializePinwheel(Pinwheel, token, {
       onEvent: this.onPinwheelEvent.bind(this),
       onExit: this.reenableButtons.bind(this),
+      onSuccess: this.onSuccessEvent.bind(this)
     }));
   }
 
