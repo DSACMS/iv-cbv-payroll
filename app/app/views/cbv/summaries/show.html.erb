@@ -5,7 +5,7 @@
 
 <div class="margin-bottom-6 usa-prose">
   <p>
-    <%= t(".description", start_date: @payments_beginning_at, end_date: @payments_ending_at, agency_acronym: current_client_agency.agency_short_name) %>
+    <%= t(".description", start_date: @payments_beginning_at, end_date: @payments_ending_at, agency_acronym: current_agency.agency_short_name) %>
   </p>
 </div>
 
@@ -56,7 +56,7 @@
 <%= form_with model: @cbv_flow, url: cbv_flow_summary_path, html: { class: "usa-form maxw-full" }, builder: UswdsFormBuilder, method: "patch" do |f| %>
   <% unless has_consent %>
     <h2><%= t(".consent_to_authorize_use_title") %></h2>
-<%= f.check_box(:consent_to_authorized_use, { 'label': client_agency_translation(".consent_to_authorize_use_html") }) %>
+<%= f.check_box(:consent_to_authorized_use, { 'label': agency_translation(".consent_to_authorize_use_html") }) %>
 <% end %>
-  <%= f.submit t(".send_report", agency_acronym: current_client_agency.agency_short_name), class: "margin-top-5" %>
+  <%= f.submit t(".send_report", agency_acronym: current_agency.agency_short_name), class: "margin-top-5" %>
 <% end %>

@@ -1,6 +1,6 @@
 class Cbv::BaseController < ApplicationController
   before_action :set_cbv_flow, :ensure_cbv_flow_not_yet_complete, :prevent_back_after_complete, :capture_page_view
-  helper_method :agency_url, :next_path, :get_comment_by_account_id, :current_client_agency
+  helper_method :agency_url, :next_path, :get_comment_by_account_id, :current_agency
 
   private
 
@@ -24,8 +24,6 @@ class Cbv::BaseController < ApplicationController
 
       @cbv_flow = CbvFlow.create_from_invitation(invitation)
       session[:cbv_flow_id] = @cbv_flow.id
-      return redirect_to(cbv_flow_expired_invitation_path(client_agency_id: invitation.client_agency_id))
-
       track_invitation_clicked_event(invitation, @cbv_flow)
 
     elsif session[:cbv_flow_id]
@@ -46,26 +44,26 @@ class Cbv::BaseController < ApplicationController
     redirect_to(cbv_flow_success_path)
   end
 
-  def current_client_agency
+  def current_agency
     return unless @cbv_flow.present? && @cbv_flow.client_agency_id.present?
 
-    @current_client_agency ||= client_agency_config[@cbv_flow.client_agency_id]
+    @current_site ||= agency_config[@cbv_flow.client_agency_id]
   end
 
   def next_path
     case params[:controller]
-    when "cbv/entries"
-      cbv_flow_employer_search_path
-    when "cbv/employer_searches"
-      cbv_flow_synchronizations_path
-    when "cbv/synchronizations"
-      cbv_flow_payment_details_path
-    when "cbv/missing_results"
-      cbv_flow_summary_path
-    when "cbv/payment_details"
-      cbv_flow_add_job_path
-    when "cbv/summaries"
-      cbv_flow_success_path
+      when "cbv/entries"
+        cbv_flow_employer_search_path
+      when "cbv/employer_searches"
+        cbv_flow_synchronizations_path
+      when "cbv/synchronizations"
+        cbv_flow_payment_details_path
+      when "cbv/missing_results"
+        cbv_flow_summary_path
+      when "cbv/payment_details"
+        cbv_flow_add_job_path
+      when "cbv/summaries"
+        cbv_flow_success_path
     end
   end
 
@@ -74,7 +72,7 @@ class Cbv::BaseController < ApplicationController
   end
 
   def agency_url
-    current_client_agency&.agency_contact_website
+    current_agency&.agency_contact_website
   end
 
   def get_comment_by_account_id(account_id)
@@ -90,11 +88,11 @@ class Cbv::BaseController < ApplicationController
   def capture_page_view
     begin
       event_logger.track("CbvPageView", request, {
-        cbv_flow_id: @cbv_flow&.id,
-        invitation_id: @cbv_flow&.cbv_flow_invitation_id,
-        client_agency_id: @cbv_flow&.client_agency_id,
+        cbv_flow_id: @cbv_flow.id,
+        invitation_id: @cbv_flow.cbv_flow_invitation_id,
+        client_agency_id: @cbv_flow.client_agency_id,
         path: request.path
-      }.compact)
+      })
     rescue => ex
       raise unless Rails.env.production?
       Rails.logger.error "Unable to track event (CbvPageView): #{ex}"

@@ -206,7 +206,7 @@ RSpec.describe CbvFlowInvitation, type: :model do
 
         it "does not require client_id_number" do
           invitation = CbvFlowInvitation.new(valid_attributes.merge(client_id_number: nil, client_agency_id: "ma"))
-          expect(invitation).to be_valid
+          expect(invitation).not_to be_valid
           expect(invitation.errors[:client_id_number]).to be_empty
         end
       end

@@ -3,7 +3,7 @@
 <h1><%= title %></h1>
 
 <div class="usa-prose">
-  <p><%= t(".subheader_html", agency_acronym: current_client_agency.agency_short_name) %></p>
+  <p><%= t(".subheader_html", agency_acronym: current_agency.agency_short_name) %></p>
 </div>
 
 <ol class="usa-process-list">
@@ -13,15 +13,15 @@
   </li>
   <li class="usa-process-list__item">
     <h2 class="margin-bottom-1"><%= t(".step2") %></h2>
-    <p class="margin-top-0"><%= t(".step2_description", agency_acronym: current_client_agency.agency_short_name) %></p>
+    <p class="margin-top-0"><%= t(".step2_description", agency_acronym: current_agency.agency_short_name) %></p>
   </li>
   <li class="usa-process-list__item">
     <h2 class="margin-bottom-1"><%= t(".step3") %></h2>
-    <p class="margin-top-0"><%= t(".step3_description", agency_acronym: current_client_agency.agency_short_name) %></p>
+    <p class="margin-top-0"><%= t(".step3_description", agency_acronym: current_agency.agency_short_name) %></p>
   </li>
 </ol>
 
 <%= form_with(url: cbv_flow_entry_path, builder: UswdsFormBuilder, data: { turbo: "false" }) do |f| %>
-  <%= f.check_box(:agreement, label: client_agency_translation(".checkbox", agency_full_name: client_agency_translation("shared.agency_full_name"))) %>
+  <%= f.check_box(:agreement, label: agency_translation(".checkbox", agency_full_name: agency_translation("shared.agency_full_name"))) %>
   <%= f.submit t(".continue") %>
 <% end %>

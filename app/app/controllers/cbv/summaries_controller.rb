@@ -60,8 +60,8 @@ class Cbv::SummariesController < Cbv::BaseController
       @cbv_flow.update(confirmation_code: confirmation_code)
     end
 
-    if !current_client_agency.transmission_method.present?
-      Rails.logger.info("No transmission method found for client agency #{current_client_agency.id}")
+    if !current_agency.transmission_method.present?
+      Rails.logger.info("No transmission method found for client agency #{current_agency.id}")
     else
       transmit_to_caseworker
     end
@@ -77,10 +77,10 @@ class Cbv::SummariesController < Cbv::BaseController
   end
 
   def transmit_to_caseworker
-    case current_client_agency.transmission_method
+    case current_agency.transmission_method
     when "shared_email"
       CaseworkerMailer.with(
-        email_address: current_client_agency.transmission_method_configuration.dig("email"),
+        email_address: current_agency.transmission_method_configuration.dig("email"),
         cbv_flow: @cbv_flow,
         payments: @payments,
         employments: @employments,
@@ -90,7 +90,7 @@ class Cbv::SummariesController < Cbv::BaseController
       @cbv_flow.touch(:transmitted_at)
       track_transmitted_event(@cbv_flow, @payments)
     when "s3"
-      config = current_client_agency.transmission_method_configuration
+      config = current_agency.transmission_method_configuration
       public_key = config["public_key"]
 
       if public_key.blank?
@@ -158,7 +158,7 @@ class Cbv::SummariesController < Cbv::BaseController
         tmp_encrypted_tar.close! if tmp_encrypted_tar
       end
     else
-      raise "Unsupported transmission method: #{current_client_agency.transmission_method}"
+      raise "Unsupported transmission method: #{current_agency.transmission_method}"
     end
   end
 

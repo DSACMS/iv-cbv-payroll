@@ -10,7 +10,7 @@
 <div class="usa-prose">
   <ul>
     <li><%= t(".reminder_1") %></li>
-    <li><%= t(".reminder_2", expires_days: t(".expires_within", count: current_client_agency.invitation_valid_days)) %></li>
+    <li><%= t(".reminder_2", expires_days: t(".expires_within", count: current_agency.invitation_valid_days)) %></li>
     <li><%= t(".reminder_3") %></li>
     <li><%= t(".reminder_4") %></li>
   </ul>

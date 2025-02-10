@@ -1,8 +1,8 @@
 module ApplicationHelper
-  def current_client_agency?(client_agency_id)
-    return false if current_client_agency.nil?
+  def current_agency?(client_agency_id)
+    return false if current_agency.nil?
 
-    current_client_agency.id.to_sym == client_agency_id.to_sym
+    current_agency.id.to_sym == client_agency_id.to_sym
   end
 
   # Render a translation that is specific to the current client agency. Define
@@ -13,16 +13,16 @@ module ApplicationHelper
   #   ma: Other String
   #   default: Default String
   #
-  # Then call this method with, `client_agency_translation("foo")` and it will attempt
+  # Then call this method with, `agency_translation("foo")` and it will attempt
   # to render the nested translation according to the client agency returned by a
-  # `current_client_agency` method defined by your controller/mailer. If the translation
+  # `current_agency` method defined by your controller/mailer. If the translation
   # is either missing or there is no current client agency, it will attempt to render a
   # "default" key.
-  def client_agency_translation(i18n_base_key, **options)
+  def agency_translation(i18n_base_key, **options)
     default_key = "#{i18n_base_key}.default"
     i18n_key =
-      if current_client_agency
-        "#{i18n_base_key}.#{current_client_agency.id}"
+      if current_agency
+        "#{i18n_base_key}.#{current_agency.id}"
       else
         default_key
       end
@@ -59,8 +59,8 @@ module ApplicationHelper
   def feedback_form_url
     case params[:controller]
     when %r{^caseworker/}
-      if current_client_agency && current_client_agency.caseworker_feedback_form
-        current_client_agency.caseworker_feedback_form
+      if current_agency && current_agency.caseworker_feedback_form.present?
+        current_agency.caseworker_feedback_form
       else
         APPLICANT_FEEDBACK_FORM
       end

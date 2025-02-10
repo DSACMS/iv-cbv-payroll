@@ -54,7 +54,7 @@
     <h4><%= t("cbv.employer_searches.show.to_continue") %></h4>
     <div class="usa-prose">
       <ul class="line-height-sans-5">
-        <li><%= t("cbv.employer_searches.show.to_continue_li_1") %> <%= client_agency_translation("cbv.employer_searches.show.to_continue_li_1_html") %></li>
+        <li><%= t("cbv.employer_searches.show.to_continue_li_1") %> <%= agency_translation("cbv.employer_searches.show.to_continue_li_1_html") %></li>
         <li><%= t("cbv.employer_searches.show.to_continue_li_2") %></li>
         <% if @has_pinwheel_account %>
           <li><%= t("cbv.employer_searches.show.to_continue_li_3_continue") %></li>
@@ -67,7 +67,7 @@
       <% if @has_pinwheel_account %>
         <%= link_to t("cbv.employer_searches.show.review_button_text"), cbv_flow_summary_path, class: "usa-button usa-button--outline margin-top-5", data: { turbo_frame: "_top" } %>
       <% else %>
-        <%= link_to t("cbv.employer_searches.show.exit_button_text", agency_short_name: current_client_agency.agency_short_name), current_client_agency.agency_contact_website, class: "usa-button usa-button--outline margin-top-5", data: { turbo_frame: "_top" } %>
+        <%= link_to t("cbv.employer_searches.show.exit_button_text", agency_short_name: current_agency.agency_short_name), current_agency.agency_contact_website, class: "usa-button usa-button--outline margin-top-5", data: { turbo_frame: "_top" } %>
       <% end %>
 
     <hr class="margin-y-5 border-base-light border-top-0" >

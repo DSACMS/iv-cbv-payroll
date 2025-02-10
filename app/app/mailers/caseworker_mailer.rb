@@ -1,7 +1,7 @@
 class CaseworkerMailer < ApplicationMailer
   helper "cbv/pinwheel_data"
   helper :view, :application
-  helper_method :current_client_agency
+  helper_method :current_agency
   before_action :set_params
 
   def summary_email
@@ -37,7 +37,7 @@ class CaseworkerMailer < ApplicationMailer
     end
   end
 
-  def current_client_agency
+  def current_agency
     client_agency_config[@cbv_flow.client_agency_id]
   end
 end

@@ -211,7 +211,7 @@ RSpec.describe Cbv::SummariesController do
           allow(mock_client_agency).to receive(:transmission_method_configuration).and_return({
              "email" => 'test@example.com'
           })
-          allow(controller).to receive(:current_client_agency).and_return(mock_client_agency)
+          allow(controller).to receive(:current_agency).and_return(mock_client_agency)
         end
 
         it "sends an email to the caseworker and updates transmitted_at" do
@@ -247,7 +247,7 @@ RSpec.describe Cbv::SummariesController do
             }
           )
 
-          allow(controller).to receive(:current_client_agency).and_return(mock_client_agency)
+          allow(controller).to receive(:current_agency).and_return(mock_client_agency)
 
           # Stub pinwheel_for method to return our double
           stub_request_end_user_accounts_response

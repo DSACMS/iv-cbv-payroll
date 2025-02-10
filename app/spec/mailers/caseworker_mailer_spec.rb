@@ -20,7 +20,7 @@ RSpec.describe CaseworkerMailer, type: :mailer do
   let(:incomes) { stub_incomes(account_id) }
   let(:identities) { stub_identities(account_id) }
   let(:email_address) { "test@example.com" }
-  let(:current_client_agency) { ClientAgencyConfig.new(File.join(Rails.root, 'config', 'client-agency-config.yml'))[cbv_flow.client_agency_id] }
+  let(:current_agency) { ClientAgencyConfig.new(File.join(Rails.root, 'config', 'client-agency-config.yml'))[cbv_flow.client_agency_id] }
 
   let(:mail) {
     CaseworkerMailer.with(

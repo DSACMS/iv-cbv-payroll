@@ -63,7 +63,7 @@ class Caseworker::CbvFlowInvitationsController < Caseworker::BaseController
   end
 
   def ensure_valid_params!
-    if client_agency_config.client_agency_ids.exclude?(client_agency_id)
+    if agency_config.client_agency_ids.exclude?(client_agency_id)
       flash[:alert] = t("caseworker.cbv_flow_invitations.incorrect_client_agency_id")
       redirect_to root_url
     end

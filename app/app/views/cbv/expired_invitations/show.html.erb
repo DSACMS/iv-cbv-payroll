@@ -4,9 +4,9 @@
 
 <div class="usa-prose">
   <p><%= t(".body_1") %></p>
-  <p><%= t(".body_2", agency_short_name: current_client_agency.agency_short_name) %></p>
+  <p><%= t(".body_2", agency_short_name: current_agency.agency_short_name) %></p>
 </div>
 
 <div class="margin-top-3">
-  <%= client_agency_translation(".cta_button_html") %>
+  <%= agency_translation(".cta_button_html") %>
 </div>

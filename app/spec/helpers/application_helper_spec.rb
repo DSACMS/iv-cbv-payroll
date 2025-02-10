@@ -1,8 +1,8 @@
 require "rails_helper"
 
 RSpec.describe ApplicationHelper do
-  describe "#client_agency_translation" do
-    let(:current_client_agency) { Rails.application.config.client_agencies["nyc"] }
+  describe "#agency_translation" do
+    let(:current_agency) { Rails.application.config.client_agencies["nyc"] }
     let(:available_translations) { <<~YAML }
       some_prefix:
         nyc: some string
@@ -11,7 +11,7 @@ RSpec.describe ApplicationHelper do
 
     before do
       without_partial_double_verification do
-        allow(helper).to receive(:current_client_agency).and_return(current_client_agency)
+        allow(helper).to receive(:current_agency).and_return(current_agency)
       end
     end
 
@@ -25,25 +25,25 @@ RSpec.describe ApplicationHelper do
       I18n.backend = previous_backend
     end
 
-    context "when the current_client_agency is specified" do
+    context "when the current_agency is specified" do
       it "uses the translation for the proper key" do
-        expect(helper.client_agency_translation("some_prefix")).to eq("some string")
+        expect(helper.agency_translation("some_prefix")).to eq("some string")
       end
 
       context "when there is not a translation for that client agency" do
-        let(:current_client_agency) { Rails.application.config.client_agencies["ma"] }
+        let(:current_agency) { Rails.application.config.client_agencies["ma"] }
 
         it "uses the translation for the default key" do
-          expect(helper.client_agency_translation("some_prefix")).to eq("default string")
+          expect(helper.agency_translation("some_prefix")).to eq("default string")
         end
       end
     end
 
-    context "when the current_client_agency is nil" do
-      let(:current_client_agency) { nil }
+    context "when the current_agency is nil" do
+      let(:current_agency) { nil }
 
       it "uses the translation for the default key" do
-        expect(helper.client_agency_translation("some_prefix")).to eq("default string")
+        expect(helper.agency_translation("some_prefix")).to eq("default string")
       end
     end
 
@@ -55,7 +55,7 @@ RSpec.describe ApplicationHelper do
       YAML
 
       it "interpolates the variables" do
-        expect(helper.client_agency_translation("some_prefix", variable: "string")).to eq("some string")
+        expect(helper.agency_translation("some_prefix", variable: "string")).to eq("some string")
       end
     end
 
@@ -68,42 +68,42 @@ RSpec.describe ApplicationHelper do
       YAML
 
       it "marks the string as HTML safe" do
-        expect(helper.client_agency_translation("some_prefix_html")).to eq("some <strong>bold</strong> text")
-        expect(helper.client_agency_translation("some_prefix_html")).to be_html_safe
+        expect(helper.agency_translation("some_prefix_html")).to eq("some <strong>bold</strong> text")
+        expect(helper.agency_translation("some_prefix_html")).to be_html_safe
       end
 
       context "when interpolating a variable" do
-        let(:current_client_agency) { Rails.application.config.client_agencies["ma"] }
+        let(:current_agency) { Rails.application.config.client_agencies["ma"] }
 
         it "sanitizes input parameters" do
-          expect(helper.client_agency_translation("some_prefix_html", variable: "<strong>bold</strong>"))
+          expect(helper.agency_translation("some_prefix_html", variable: "<strong>bold</strong>"))
             .to eq("some &lt;strong&gt;bold&lt;/strong&gt; text")
-          expect(helper.client_agency_translation("some_prefix_html")).to be_html_safe
+          expect(helper.agency_translation("some_prefix_html")).to be_html_safe
         end
 
         it "does not sanitize html_safe input parameters" do
-          expect(helper.client_agency_translation("some_prefix_html", variable: "<strong>bold</strong>".html_safe))
+          expect(helper.agency_translation("some_prefix_html", variable: "<strong>bold</strong>".html_safe))
             .to eq("some <strong>bold</strong> text")
-          expect(helper.client_agency_translation("some_prefix_html")).to be_html_safe
+          expect(helper.agency_translation("some_prefix_html")).to be_html_safe
         end
       end
     end
   end
 
   describe "#feedback_form_url" do
-    let(:current_client_agency) { nil }
+    let(:current_agency) { nil }
     let(:params) { {} }
 
     before do
         allow(helper).to receive(:params).and_return(params)
       without_partial_double_verification do
-        allow(helper).to receive(:current_client_agency).and_return(current_client_agency)
+        allow(helper).to receive(:current_agency).and_return(current_agency)
       end
     end
 
     context "on a CBV flow application page" do
       let(:params) { { controller: "cbv/summaries" } }
-      let(:current_client_agency) { Rails.application.config.client_agencies["nyc"] }
+      let(:current_agency) { Rails.application.config.client_agencies["nyc"] }
 
       it "shows the applicant-facing Google Form" do
         expect(helper.feedback_form_url).to eq(ApplicationHelper::APPLICANT_FEEDBACK_FORM)
@@ -112,10 +112,10 @@ RSpec.describe ApplicationHelper do
 
     context "on a NYC caseworker-facing page" do
       let(:params) { { controller: "caseworker/cbv_flow_invitations" } }
-      let(:current_client_agency) { Rails.application.config.client_agencies["nyc"] }
+      let(:current_agency) { Rails.application.config.client_agencies["nyc"] }
 
       it "shows the NYC feedback form" do
-        expect(helper.feedback_form_url).to eq(current_client_agency.caseworker_feedback_form)
+        expect(helper.feedback_form_url).to eq(current_agency.caseworker_feedback_form)
       end
     end
   end
@@ -128,5 +128,10 @@ RSpec.describe ApplicationHelper do
     it "returns in progress when the status is in progress" do
       expect(helper.coalesce_to_completed(:in_progress)).to eq(:in_progress)
     end
+  end
+
+  before(:each) do
+    puts "Helper class: #{helper.class}"
+    puts "Helper methods: #{helper.methods}"
   end
 end

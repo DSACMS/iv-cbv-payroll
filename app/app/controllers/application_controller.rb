@@ -1,10 +1,11 @@
 class ApplicationController < ActionController::Base
   helper :view
-  helper_method :current_client_agency, :show_translate_button?, :show_menu?
+  helper_method :current_agency, :show_translate_button?, :show_menu?
   around_action :switch_locale
   before_action :add_newrelic_metadata
   before_action :redirect_if_maintenance_mode
   before_action :enable_mini_profiler_in_demo
+  before_action :check_help_param
 
   rescue_from ActionController::InvalidAuthenticityToken do
     redirect_to root_url, flash: { slim_alert: { type: "info", message_html:  t("cbv.error_missing_token_html") } }
@@ -24,7 +25,7 @@ class ApplicationController < ActionController::Base
     I18n.with_locale(locale, &action)
   end
 
-  def client_agency_config
+  def agency_config
     Rails.application.config.client_agencies
   end
 
@@ -44,8 +45,8 @@ class ApplicationController < ActionController::Base
     request.path == root_path
   end
 
-  def current_client_agency
-    @current_client_agency ||= client_agency_config[params[:client_agency_id]]
+  def current_agency
+    @current_agency ||= agency_config[params[:client_agency_id]]
   end
 
   def enable_mini_profiler_in_demo
@@ -61,7 +62,7 @@ class ApplicationController < ActionController::Base
   protected
 
   def pinwheel_for(cbv_flow)
-    environment = client_agency_config[cbv_flow.client_agency_id].pinwheel_environment
+    environment = agency_config[cbv_flow.client_agency_id].pinwheel_environment
 
     PinwheelService.new(environment)
   end
@@ -85,6 +86,17 @@ class ApplicationController < ActionController::Base
   def redirect_if_maintenance_mode
     if ENV["MAINTENANCE_MODE"] == "true"
       redirect_to maintenance_path
+    end
+  end
+
+  def check_help_param
+    if params[:help] == "true"
+      help_link = helpers.render(partial: "help/help_link", locals: { text: t("help.alert.help_options"), source: "banner" })
+      flash.merge!(
+        alert: "#{t('help.alert.text_before')} #{help_link}",
+        alert_heading: t("help.alert.heading"),
+        alert_type: "warning"
+      )
     end
   end
 end
