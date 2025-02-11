@@ -1,7 +1,11 @@
-import { initializePinwheel, loadPinwheel } from "../utilities/pinwheel";
+import { initializePinwheel } from "../utilities/pinwheel";
 import { fetchToken, trackUserAction } from "../utilities/api";
 import loadScript from 'load-script';
 import { getDocumentLocale } from "../utilities/getDocumentLocale";
+
+declare global {
+    var Pinwheel: any;
+}
 
 abstract class ProviderWrapper {
     abstract successCallback?: Function;
@@ -59,6 +63,8 @@ export default class PinwheelProviderWrapper extends ProviderWrapper {
         accountId: string;
         platformId: string;
     }) {
+        //    this.userAccountIdTarget.value = accountId
+        //    this.formTarget.submit();
         await trackUserAction("PinwheelSuccess", {
             account_id: eventPayload.accountId,
             platform_id: eventPayload.platformId
@@ -69,11 +75,7 @@ export default class PinwheelProviderWrapper extends ProviderWrapper {
     }
 
     onEvent(eventName: string, eventPayload: any) {
-        if (eventName === 'success') {
-        //    this.userAccountIdTarget.value = accountId
-        //    this.formTarget.submit();
-
-        } else if (eventName === 'screen_transition') {
+        if (eventName === 'screen_transition') {
             const { screenName } = eventPayload
 
             switch (screenName) {

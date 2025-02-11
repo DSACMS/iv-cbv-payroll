@@ -8,11 +8,16 @@ const MOCK_PINWHEEL_AUTH_OBJECT = { token: 'test-token' };
 const MOCK_PINWHEEL_ERROR = "Failed to load SCRIPT"
 
 const mockPinwheelModule = { 
-    open: vi.fn(({onSuccess}) => {
+    open: vi.fn(({onSuccess, onEvent}) => {
         return  {
             triggerSuccessEvent: () => {
                 if (onSuccess) {
                     onSuccess({ accountId: 'account-id', platformId: 'platform-id'});
+                }
+            },
+            triggerEvent: (eventName, eventPayload) => {
+                if (onEvent) {
+                    onEvent(eventName, eventPayload)
                 }
             }
         }
@@ -78,8 +83,48 @@ describe('PinwheelWrapper', () => {
             await triggers.triggerSuccessEvent()
             expect(trackUserAction).toHaveBeenCalledTimes(2)
             expect(trackUserAction.mock.calls[1][0]).toBe('PinwheelSuccess')
-
-            expect(pinwheelProviderWrapperArgs.onSuccess).
+        })
+        it('should trigger the provided onSuccess callback', async () => {
+            await triggers.triggerSuccessEvent()
+            expect(pinwheelProviderWrapperArgs.onSuccess).toHaveBeenCalled()
+        })
+    })
+    describe('onEvent', () => {
+        it('should log screen_transition.LOGIN Event', async () => {
+            await triggers.triggerEvent("screen_transition", { "screenName": "LOGIN", selectedEmployerName: "ACME Inc", selectedPlatformName: "ADP" })
+            expect(trackUserAction).toHaveBeenCalledTimes(2)
+            expect(trackUserAction.mock.calls[1][0]).toBe('PinwheelShowLoginPage')
+        })
+        it('should log screen_transition.PROVIDER_CONFIRMATION event', async () => {
+            await triggers.triggerEvent("screen_transition", { "screenName": "PROVIDER_CONFIRMATION"})
+            expect(trackUserAction).toHaveBeenCalledTimes(2)
+            expect(trackUserAction.mock.calls[1][0]).toBe('PinwheelShowProviderConfirmationPage')
+        })
+        it('should log screen_transition.SEARCH_DEFAULT event', async () => {
+            await triggers.triggerEvent("screen_transition", { "screenName": "SEARCH_DEFAULT"})
+            expect(trackUserAction).toHaveBeenCalledTimes(2)
+            expect(trackUserAction.mock.calls[1][0]).toBe('PinwheelShowDefaultProviderSearch')
+        })
+        it('should log screen_transition.EXIT_CONFIRMATION event', async () => {
+            await triggers.triggerEvent("screen_transition", { "screenName": "EXIT_CONFIRMATION"})
+            expect(trackUserAction).toHaveBeenCalledTimes(2)
+            expect(trackUserAction.mock.calls[1][0]).toBe('PinwheelAttemptClose')
+        })
+        it('should log login_attempt event', async () => {
+            await triggers.triggerEvent("login_attempt")
+            expect(trackUserAction).toHaveBeenCalledTimes(2)
+            expect(trackUserAction.mock.calls[1][0]).toBe('PinwheelAttemptLogin')
+        })
+        it('should log error event', async () => {
+            await triggers.triggerEvent("error", { type: "error-type", "code": "code", "message":"default message"})
+            expect(trackUserAction).toHaveBeenCalledTimes(2)
+            expect(trackUserAction.mock.calls[1][0]).toBe('PinwheelError')
+            expect(trackUserAction.mock.calls[1][1]['type']).toBe('error-type')
+        })
+        it('should log exit event', async () => {
+            await triggers.triggerEvent("exit")
+            expect(trackUserAction).toHaveBeenCalledTimes(2)
+            expect(trackUserAction.mock.calls[1][0]).toBe('PinwheelCloseModal')
         })
     })
 })
