@@ -1,33 +1,79 @@
-import { loadPinwheel } from "../utilities/pinwheel";
-import { trackUserAction } from "../utilities/api";
+import { initializePinwheel, loadPinwheel } from "../utilities/pinwheel";
+import { fetchToken, trackUserAction } from "../utilities/api";
+import loadScript from 'load-script';
+import { getDocumentLocale } from "../utilities/getDocumentLocale";
 
-abstract class Provider {
-    abstract load(): void;
-    abstract init(): void;
+abstract class ProviderWrapper {
+    abstract successCallback?: Function;
+
+    abstract open(responseType : string, id : string, name : string, isDefaultOption : boolean): void;
     abstract onEvent(eventName : string, eventPayload : any): void;
 }
 
-export default class PinwheelProvider extends Provider {
-    load() {
-        loadPinwheel()
-    }
-    init() {
+export default class PinwheelProviderWrapper extends ProviderWrapper {
+    Pinwheel: any;
+    successCallback?: Function;
 
+    constructor(args : {
+        onSuccess?: Function;
+    } = { onSuccess: () => {}}) {
+        super();
+        this.successCallback = args.onSuccess;
+
+        this.load();
     }
 
-    onSuccess(eventPayload: any, callback: Function) {
-        const { accountId } = eventPayload
-        this.userAccountIdTarget.value = accountId
-        trackUserAction("PinwheelSuccess", {
+    async load() {
+        this.Pinwheel = await new Promise((resolve, reject) => {
+            loadScript('https://cdn.getpinwheel.com/pinwheel-v3.0.js', (err, script) => {
+                if (err) {
+                    reject(err);
+                } else {
+                    resolve(Pinwheel);
+                }
+            });
+        })
+    }
+
+    async open(responseType, id, name, isDefaultOption) {
+        const locale = getDocumentLocale();
+        await trackUserAction("ApplicantSelectedEmployerOrPlatformItem", {
+            item_type: responseType,
+            item_id: id,
+            item_name: name,
+            is_default_option: isDefaultOption,
+            locale
+        })
+
+        const { token } = await fetchToken(responseType, id, locale);
+
+        return this.Pinwheel.open({
+            token,
+            onSuccess: this.onSuccess.bind(this),
+            onEvent: this.onEvent.bind(this),
+            //onExit: this.reenableButtons.bind(this),
+        });
+    }
+
+    async onSuccess(eventPayload: {
+        accountId: string;
+        platformId: string;
+    }) {
+        await trackUserAction("PinwheelSuccess", {
             account_id: eventPayload.accountId,
             platform_id: eventPayload.platformId
         })
-        this.formTarget.submit();
-
+        if (this.successCallback) {
+            this.successCallback();
+        }
     }
+
     onEvent(eventName: string, eventPayload: any) {
         if (eventName === 'success') {
-                    } else if (eventName === 'screen_transition') {
+        //    this.userAccountIdTarget.value = accountId
+        //    this.formTarget.submit();
+
+        } else if (eventName === 'screen_transition') {
             const { screenName } = eventPayload
 
             switch (screenName) {

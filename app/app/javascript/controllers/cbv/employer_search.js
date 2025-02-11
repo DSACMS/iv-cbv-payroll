@@ -33,10 +33,6 @@ export default class extends Controller {
     event.preventDefault()
   }
 
-  onSuccessEvent(eventPayload) {
-
-  }
-
   onPinwheelEvent(eventName, eventPayload) {
     if (eventName === 'success') {
       const { accountId } = eventPayload
@@ -95,12 +91,12 @@ export default class extends Controller {
     this.submit(token);
   }
 
-  submit(token) {
-    this.pinwheel.then(Pinwheel => initializePinwheel(Pinwheel, token, {
+  async submit(token) {
+    const Pinwheel = await this.pinwheel
+    initializePinwheel(Pinwheel, token, {
       onEvent: this.onPinwheelEvent.bind(this),
       onExit: this.reenableButtons.bind(this),
-      onSuccess: this.onSuccessEvent.bind(this)
-    }));
+    });
   }
 
   disableButtons() {

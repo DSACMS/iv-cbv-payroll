@@ -1,11 +1,27 @@
 // Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
-exports[`initializePinwheel > opens Pinwheel modal 1`] = `
+exports[`PinwheelWrapper > onSuccess > should call track user action 1`] = `
 [
+  "ApplicantSelectedEmployerOrPlatformItem",
   {
-    "linkToken": "link-token",
-    "onError": [MockFunction spy],
-    "onSuccess": [MockFunction spy],
+    "is_default_option": false,
+    "item_id": "id",
+    "item_name": "name",
+    "item_type": "response-type",
+    "locale": "en",
+  },
+]
+`;
+
+exports[`PinwheelWrapper > open > should call track user action 1`] = `
+[
+  "ApplicantSelectedEmployerOrPlatformItem",
+  {
+    "is_default_option": false,
+    "item_id": "id",
+    "item_name": "name",
+    "item_type": "response-type",
+    "locale": "en",
   },
 ]
 `;

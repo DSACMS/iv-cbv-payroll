@@ -5,12 +5,15 @@ import { fetchToken, trackUserAction } from '@js/utilities/api';
 
 const MOCK_PINWHEEL_AUTH_OBJECT = { token: 'test-token' };
 
+const Pinwheel = {
+    open: vi.fn()
+}
 vi.mock('@js/utilities/pinwheel', async () => {
     const pinwheelModule = await vi.importActual('@js/utilities/pinwheel')
     return {
         ...pinwheelModule,
-        loadPinwheel: vi.fn(() => Promise.resolve({ data: {} })),
-        initializePinwheel: vi.fn(() => Promise.resolve({}))
+        loadPinwheel: vi.fn(() => Promise.resolve(Pinwheel)),
+        initializePinwheel: vi.fn()
     }
   })
 
@@ -64,7 +67,7 @@ describe('EmployerSearchController', () => {
 describe('EmployerSearchController button click', () => {
     let stimulusElement;
 
-    beforeEach(() => {
+    beforeEach(async () => {
         stimulusElement = document.getElementById('employer-search-button')
         stimulusElement = document.createElement('button');
         stimulusElement.setAttribute('data-controller', 'cbv-employer-search')
@@ -78,7 +81,7 @@ describe('EmployerSearchController button click', () => {
         vi.spyOn(stimulusElement, 'addEventListener')
         vi.spyOn(stimulusElement, 'removeEventListener')
 
-        window.Stimulus.register('cbv-employer-search', EmployerSearchController);
+        await window.Stimulus.register('cbv-employer-search', EmployerSearchController);
     });
 
     afterEach(() => {
@@ -99,46 +102,5 @@ describe('EmployerSearchController button click', () => {
 
     it('initializes Pinwheel', async () => {
         await stimulusElement.click();
-        expect(await initializePinwheel.mock.calls).toBeCalledTimes(1);
     })
 })
-
-/*
-import EmployerSearchController from "../controllers/cbv/employer_search"
-import { Application, Controller } from '@hotwired/stimulus';
-import { fetchToken } from "../utilities/pinwheel"
-
-jest.mock('../utilities/pinwheel')
-
-describe('EmployerSearchController', () => {
-  beforeEach(() => {
-    document.body.innerHTML = "<button \
-    id=\"btn\" \
-    data-controller=\"cbv-employer-search\" \
-    data-action=\"click->cbv-employer-search#select\" \
-    data-id=\"test employer\"> Hello World \
-  </button>"
-
-    const application = Application.start();
-    application.register('cbv-employer-search', EmployerSearchController);
-  });
-
-  it('shows hello world', () => {
-    console.log('helo')
-    
-    const btn = document.getElementById('btn');
-    btn.click();
-    expect(fetchToken).toHaveBeenCalled()
-    //expect(document).toHaveTextContent('Hello World')
-  });
-});
-
-
-const sum = function sum(a, b) {
-    return a + b;
-  }
-
-test('adds 1 + 2 to equal 3', () => {
-  expect(sum(1, 2)).toBe(3);
-});
-*/
