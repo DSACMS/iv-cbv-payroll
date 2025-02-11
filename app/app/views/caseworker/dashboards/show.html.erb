@@ -10,12 +10,12 @@
 <div class="usa-prose">
   <ul>
     <li><%= t(".reminder_1") %></li>
-    <li><%= t(".reminder_2", expires_days: t(".expires_within", count: current_site.invitation_valid_days)) %></li>
+    <li><%= t(".reminder_2", expires_days: t(".expires_within", count: current_agency.invitation_valid_days)) %></li>
     <li><%= t(".reminder_3") %></li>
     <li><%= t(".reminder_4") %></li>
   </ul>
 </div>
 
 <div class="margin-top-5">
-  <%= link_to t(".create_invitation"), new_invitation_path(site_id: params[:site_id]), class: "usa-button usa-button--primary" %>
+  <%= link_to t(".create_invitation"), new_invitation_path(client_agency_id: params[:client_agency_id]), class: "usa-button usa-button--primary" %>
 </div>

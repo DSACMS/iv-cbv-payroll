@@ -5,7 +5,7 @@ RSpec.describe PdfService, type: :service do
   include Cbv::PinwheelDataHelper
   include ApplicationHelper
 
-  let(:current_site) { Rails.application.config.sites["nyc"] }
+  let(:current_client_agency) { Rails.application.config.client_agencies["nyc"] }
   let(:caseworker_user) { create(:user, email: "#{SecureRandom.uuid}@example.com") }
   let(:invitation) { create(:cbv_flow_invitation, :nyc, user: caseworker_user) }
   let(:cbv_flow) do
@@ -34,7 +34,7 @@ RSpec.describe PdfService, type: :service do
       has_consent: false
     }
   end
-  let(:ma_user) { create(:user, email: "test@example.com", site_id: 'ma') }
+  let(:ma_user) { create(:user, email: "test@example.com", client_agency_id: 'ma') }
 
   before do
     cbv_flow.pinwheel_accounts.first.update(pinwheel_account_id: "03e29160-f7e7-4a28-b2d8-813640e030d3")

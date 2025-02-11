@@ -5,7 +5,7 @@ RSpec.describe HelpController, type: :controller do
     let(:valid_params) do
       {
         topic: "employer",
-        site_id: "sandbox"
+        client_agency_id: "sandbox"
       }
     end
 
@@ -14,7 +14,7 @@ RSpec.describe HelpController, type: :controller do
 
       before do
         session[:cbv_flow_id] = cbv_flow.id
-        valid_params[:site_id] = cbv_flow.site_id
+        valid_params[:client_agency_id] = cbv_flow.client_agency_id
       end
 
       it "tracks events with both trackers" do
@@ -28,7 +28,7 @@ RSpec.describe HelpController, type: :controller do
             ip: "0.0.0.0",
             language: I18n.locale,
             locale: nil,
-            site_id: cbv_flow.site_id,
+            client_agency_id: cbv_flow.client_agency_id,
             topic: "employer",
             user_agent: "Rails Testing"
           ))
@@ -43,7 +43,7 @@ RSpec.describe HelpController, type: :controller do
             ip: "0.0.0.0",
             language: I18n.locale,
             locale: nil,
-            site_id: cbv_flow.site_id,
+            client_agency_id: cbv_flow.client_agency_id,
             topic: "employer",
             user_agent: "Rails Testing"
           ))
@@ -71,7 +71,7 @@ RSpec.describe HelpController, type: :controller do
             ip: "0.0.0.0",
             language: I18n.locale,
             locale: nil,
-            site_id: "sandbox",
+            client_agency_id: "sandbox",
             topic: "employer",
             user_agent: "Rails Testing"
           ))

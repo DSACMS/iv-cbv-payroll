@@ -4,13 +4,13 @@ FactoryBot.define do
     middle_name { "Sue" }
     language { :en }
     last_name { "Doe" }
-    site_id { "sandbox" }
+    client_agency_id { "sandbox" }
     email_address { "test@example.com" }
     snap_application_date { Time.zone.today.strftime("%m/%d/%Y") }
     user
 
     trait :nyc do
-      site_id { "nyc" }
+      client_agency_id { "nyc" }
 
       case_number do
         number = 11.times.map { rand(10) }.join
@@ -27,7 +27,7 @@ FactoryBot.define do
     end
 
     trait :ma do
-      site_id { "ma" }
+      client_agency_id { "ma" }
 
       agency_id_number do
         7.times.map { rand(10) }.join

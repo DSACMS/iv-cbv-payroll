@@ -5,12 +5,12 @@
   <div class="bg-white padding-y-7 padding-x-7 border border-base-lighter measure-5 line-height-sans-4 margin-x-auto font-body-xs">
     <h1 class="h3-style">
       <span class="text-primary"><%= t("shared.pilot_name") %> | </span>
-      <% if current_site?(:ma) %>
+      <% if current_agency?(:ma) %>
         <%= image_tag "dta_logo.png", class: "text-middle", style: "width: 140px" %>
-      <% elsif current_site.id == "nyc" %>
+      <% elsif current_agency.id == "nyc" %>
         <%= image_tag "hra_logo.png", class: "text-middle", style: "width: 170px" %>
       <% else %>
-        <%= site_translation("shared.header.cbv_flow_title") %>
+        <%= agency_translation("shared.header.cbv_flow_title") %>
       <% end %>
     </h1>
     <div class="line-height-sans-5">
@@ -18,14 +18,14 @@
         <%= t(".greeting") %>
       </p>
 
-      <p><%= site_translation(".main_action_html", deadline: format_date(@cbv_flow_invitation.expires_at.to_s)) %></p>
+      <p><%= agency_translation(".main_action_html", deadline: format_date(@cbv_flow_invitation.expires_at.to_s)) %></p>
 
       <p class="margin-y-3">
         <a href="<%= @cbv_flow_invitation.to_url %>" class="usa-button width-auto" type="button">
           <%= t(".verify_income_button") %>
         </a>
       </p>
-      <p><%= t(".instructions", agency_acronym: current_site.agency_short_name) %></p>
+      <p><%= t(".instructions", agency_acronym: current_agency.agency_short_name) %></p>
       <h1 class="h3-style margin-top-3" ><%= t(".feedback_header") %></h1>
       <p>
         <a href="https://docs.google.com/forms/d/1E65H8Bcl3nYL8_OS5uwOqeN6p9G4aBXth6aHDoLlIoc/viewform" class="usa-button usa-button--outline-email width-auto" type="button">
@@ -37,7 +37,7 @@
     <hr class="margin-y-5">
 
     <p class="font-body-3xs">
-      <%= t(".footer", agency_acronym: current_site.agency_short_name) %>
+      <%= t(".footer", agency_acronym: current_agency.agency_short_name) %>
     </p>
   </div>
 </section>

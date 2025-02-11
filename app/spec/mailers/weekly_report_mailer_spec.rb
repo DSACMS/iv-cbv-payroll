@@ -5,12 +5,12 @@ RSpec.describe WeeklyReportMailer, type: :mailer do
   include ActiveSupport::Testing::TimeHelpers
 
   let(:now) { DateTime.new(2024, 9, 9, 9, 0, 0, "-04:00") }
-  let(:site_id) { "nyc" }
+  let(:client_agency_id) { "nyc" }
   let(:invitation_sent_at) { now - 5.days }
   let(:snap_app_date) { now.strftime("%Y-%m-%d") }
   let(:cbv_flow_invitation) do
     create(:cbv_flow_invitation,
-           site_id.to_sym,
+           client_agency_id.to_sym,
            created_at: invitation_sent_at,
            snap_application_date: invitation_sent_at - 1.day,
           )
@@ -21,7 +21,7 @@ RSpec.describe WeeklyReportMailer, type: :mailer do
       case_number: cbv_flow_invitation.case_number,
       confirmation_code: "00001",
       created_at: invitation_sent_at + 15.minutes,
-      site_id: site_id,
+      client_agency_id: client_agency_id,
       transmitted_at: invitation_sent_at + 30.minutes,
       cbv_flow_invitation_id: cbv_flow_invitation.id,
       consented_to_authorized_use_at: invitation_sent_at + 30.minutes
@@ -29,7 +29,7 @@ RSpec.describe WeeklyReportMailer, type: :mailer do
   end
   let(:mail) do
     WeeklyReportMailer
-      .with(report_date: now, site_id: cbv_flow.site_id)
+      .with(report_date: now, client_agency_id: cbv_flow.client_agency_id)
       .report_email
   end
   let(:previous_week_start_date) { now.beginning_of_week - 7.days }
@@ -105,7 +105,7 @@ RSpec.describe WeeklyReportMailer, type: :mailer do
     let!(:incomplete_flow) do
       create(:cbv_flow, :with_pinwheel_account,
              created_at: invitation_sent_at,
-             site_id: site_id,
+             client_agency_id: client_agency_id,
              cbv_flow_invitation: incomplete_invitation
             )
     end
@@ -124,8 +124,8 @@ RSpec.describe WeeklyReportMailer, type: :mailer do
     end
   end
 
-  context "for the MA site" do
-    let(:site_id) { "ma" }
+  context "for the MA client agency" do
+    let(:client_agency_id) { "ma" }
 
     it "renders the CSV data with MA-specific columns" do
       expect(mail.attachments.first.filename).to eq("weekly_report_20240902-20240908.csv")

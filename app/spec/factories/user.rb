@@ -1,6 +1,6 @@
 FactoryBot.define do
   factory :user do
-    site_id { "sandbox" }
+    client_agency_id { "sandbox" }
     sequence(:email) { |n| "user#{n}@example.com" }
 
     trait :with_access_token do

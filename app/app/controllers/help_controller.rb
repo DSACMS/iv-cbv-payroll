@@ -1,6 +1,6 @@
 class HelpController < ApplicationController
   layout "help"
-  helper_method :current_site
+  helper_method :current_agency
 
   def index
     @title = t("help.index.title")
@@ -16,7 +16,7 @@ class HelpController < ApplicationController
       topic: @help_topic,
       cbv_flow_id: session[:cbv_flow_id],
       invitation_id: cbv_flow&.cbv_flow_invitation_id,
-      site_id: current_site&.id,
+      client_agency_id: current_agency&.id,
       flow_started_seconds_ago: cbv_flow ? (Time.now - cbv_flow.created_at).to_i : nil,
       language: I18n.locale
     }.compact)
@@ -26,14 +26,14 @@ class HelpController < ApplicationController
 
   private
 
-  def current_site
-    @current_site ||= find_site_from_flow || site_config[params[:site_id]]
+  def current_agency
+    @current_agency ||= find_site_from_flow || agency_config[params[:client_agency_id]]
   end
 
   def find_site_from_flow
     return unless session[:cbv_flow_id]
 
     cbv_flow = CbvFlow.find_by(id: session[:cbv_flow_id])
-    site_config[cbv_flow.site_id] if cbv_flow
+    agency_config[cbv_flow.client_agency_id] if cbv_flow
   end
 end

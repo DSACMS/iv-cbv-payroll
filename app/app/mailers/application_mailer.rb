@@ -3,8 +3,8 @@ class ApplicationMailer < ActionMailer::Base
   layout "mailer"
   after_deliver :track_delivery
 
-  def site_config
-    Rails.application.config.sites
+  def client_agency_config
+    Rails.application.config.client_agencies
   end
 
   private

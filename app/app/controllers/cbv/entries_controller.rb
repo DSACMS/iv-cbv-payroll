@@ -2,7 +2,7 @@ class Cbv::EntriesController < Cbv::BaseController
   def show
     event_logger.track("ApplicantViewedAgreement", request, {
       timestamp: Time.now.to_i,
-      site_id: @cbv_flow.site_id,
+      client_agency_id: @cbv_flow.client_agency_id,
       cbv_flow_id: @cbv_flow.id,
       invitation_id: @cbv_flow.cbv_flow_invitation_id
     })
@@ -12,7 +12,7 @@ class Cbv::EntriesController < Cbv::BaseController
     if params["agreement"] == "1"
       event_logger.track("ApplicantAgreed", request, {
         timestamp: Time.now.to_i,
-        site_id: @cbv_flow.site_id,
+        client_agency_id: @cbv_flow.client_agency_id,
         cbv_flow_id: @cbv_flow.id,
         invitation_id: @cbv_flow.cbv_flow_invitation_id
       })

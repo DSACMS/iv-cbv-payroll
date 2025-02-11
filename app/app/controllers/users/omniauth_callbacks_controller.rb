@@ -32,10 +32,10 @@ class Users::OmniauthCallbacksController < Devise::OmniauthCallbacksController
 
   private
 
-  def login_with_oauth(email, site_id)
+  def login_with_oauth(email, client_agency_id)
     # TODO: Check that the email is permissible according to its domain
-    @user = User.find_for_authentication(email: email, site_id: site_id)
-    @user ||= User.create(email: email, site_id: site_id)
+    @user = User.find_for_authentication(email: email, client_agency_id: client_agency_id)
+    @user ||= User.create(email: email, client_agency_id: client_agency_id)
 
     if @user&.persisted?
       flash[:slim_alert] = { message: t("users.omniauth_callbacks.authentication_successful"), type: "info" }
@@ -45,8 +45,8 @@ class Users::OmniauthCallbacksController < Devise::OmniauthCallbacksController
     end
   end
 
-  def authorized?(email, site)
-    authorized_emails = Rails.application.config.sites["ma"].authorized_emails&.split(",").map(&:downcase)
+  def authorized?(email, client_agency)
+    authorized_emails = Rails.application.config.client_agencies["ma"].authorized_emails&.split(",").map(&:downcase)
 
     unless authorized_emails.blank?
       authorized_emails.include?(email.downcase)
@@ -57,7 +57,7 @@ class Users::OmniauthCallbacksController < Devise::OmniauthCallbacksController
     return unless @user&.persisted?
 
     event_logger.track("CaseworkerLogin", request, {
-      site_id: @user.site_id,
+      client_agency_id: @user.client_agency_id,
       user_id: @user.id
     })
   end
@@ -65,11 +65,11 @@ class Users::OmniauthCallbacksController < Devise::OmniauthCallbacksController
   def after_omniauth_failure_path_for(scope)
     case failed_strategy.name
     when "sandbox"
-      new_user_session_path(site_id: "sandbox")
+      new_user_session_path(client_agency_id: "sandbox")
     when "nyc_dss"
-      new_user_session_path(site_id: "nyc")
+      new_user_session_path(client_agency_id: "nyc")
     when "ma_dta"
-      new_user_session_path(site_id: "ma")
+      new_user_session_path(client_agency_id: "ma")
     end
   end
 end

@@ -33,12 +33,12 @@ class Api::InvitationsController < ApplicationController
       :agency_id_number,
       :beacon_id,
       :user_id,
-      :site_id
+      :client_agency_id
     )
   end
 
-  def site_id
-    cbv_flow_invitation_params[:site_id]
+  def client_agency_id
+    cbv_flow_invitation_params[:client_agency_id]
   end
 
   private

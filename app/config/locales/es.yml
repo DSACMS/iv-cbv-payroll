@@ -44,7 +44,7 @@ es:
       create:
         invite_failed: 'Error al enviar la invitació a %{email_address}: %{error_message}'
         invite_success: La invitación ha sido enviada con éxito a %{email_address}.
-      incorrect_site_id: No se ha podido enviar la invitación porque falta la configuración del sitio.
+      incorrect_client_agency_id: No se ha podido enviar la invitación porque falta la configuración del sitio.
   cbv:
     add_jobs:
       create:

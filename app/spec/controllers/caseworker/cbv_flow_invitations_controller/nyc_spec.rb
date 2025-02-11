@@ -1,11 +1,11 @@
 require "rails_helper"
 
 RSpec.describe Caseworker::CbvFlowInvitationsController, type: :controller do
-  let(:user) { create(:user, email: "test@test.com", site_id: 'nyc') }
-  let(:nyc_params) { { site_id: "nyc" } }
+  let(:user) { create(:user, email: "test@test.com", client_agency_id: 'nyc') }
+  let(:nyc_params) { { client_agency_id: "nyc" } }
 
   before do
-    stub_site_config_value("nyc", "staff_portal_enabled", true)
+    stub_client_agency_config_value("nyc", "staff_portal_enabled", true)
     sign_in user
   end
 
@@ -35,7 +35,7 @@ RSpec.describe Caseworker::CbvFlowInvitationsController, type: :controller do
 
     it "creates a CbvFlowInvitation record with the nyc fields" do
       post :create, params: {
-        site_id: nyc_params[:site_id],
+        client_agency_id: nyc_params[:client_agency_id],
         cbv_flow_invitation: cbv_flow_invitation_params
       }
 
@@ -50,7 +50,7 @@ RSpec.describe Caseworker::CbvFlowInvitationsController, type: :controller do
 
     it "creates a CbvFlowInvitation record without optional fields" do
       post :create, params: {
-        site_id: nyc_params[:site_id],
+        client_agency_id: nyc_params[:client_agency_id],
         cbv_flow_invitation: cbv_flow_invitation_params.except(:middle_name)
       }
       puts response.inspect
@@ -60,11 +60,11 @@ RSpec.describe Caseworker::CbvFlowInvitationsController, type: :controller do
 
     it "redirects back to the caseworker dashboard" do
       post :create, params: {
-        site_id: nyc_params[:site_id],
+        client_agency_id: nyc_params[:client_agency_id],
         cbv_flow_invitation: cbv_flow_invitation_params
       }
 
-      expect(response).to redirect_to(caseworker_dashboard_path(site_id: nyc_params[:site_id]))
+      expect(response).to redirect_to(caseworker_dashboard_path(client_agency_id: nyc_params[:client_agency_id]))
     end
 
     # Note that we are not testing events here because doing so requires use of expect_any_instance_of,
@@ -74,7 +74,7 @@ RSpec.describe Caseworker::CbvFlowInvitationsController, type: :controller do
       it "creates a cbv_client record" do
         expect {
           post :create, params: {
-            site_id: nyc_params[:site_id],
+            client_agency_id: nyc_params[:client_agency_id],
             cbv_flow_invitation: cbv_flow_invitation_params
           }
         }.to change(CbvClient, :count).by(1)
@@ -92,7 +92,7 @@ RSpec.describe Caseworker::CbvFlowInvitationsController, type: :controller do
       it "does not create a cbv_client record" do
         expect {
           post :create, params: {
-            site_id: nyc_params[:site_id],
+            client_agency_id: nyc_params[:client_agency_id],
             cbv_flow_invitation: cbv_flow_invitation_params
           }
         }.to change(CbvClient, :count).by(0)

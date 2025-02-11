@@ -15,7 +15,7 @@ RSpec.describe Webhooks::Pinwheel::EventsController do
       "X-Timestamp" => "test-timestamp"
     }
   end
-  let(:cbv_flow) { create(:cbv_flow, site_id: "sandbox") }
+  let(:cbv_flow) { create(:cbv_flow, client_agency_id: "sandbox") }
   let(:account_id) { "00000000-0000-0000-0000-000000000000" }
 
   before do
