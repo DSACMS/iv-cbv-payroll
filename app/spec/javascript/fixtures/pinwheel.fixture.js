@@ -25,11 +25,9 @@ export const mockPinwheelModule = {
     }),
 } 
 
-export const MOCK_LOAD_PINWHEEL_SUCCESS_IMPLEMENTATION = (url, callback) => {
-    vi.stubGlobal('Pinwheel', mockPinwheelModule)
-    callback(null, global.Pinwheel)
-}
-
 export const mockPinwheel = () => {
-    loadScript.mockImplementation(MOCK_LOAD_PINWHEEL_SUCCESS_IMPLEMENTATION)
+    loadScript.mockImplementation((url, callback) => {
+        vi.stubGlobal('Pinwheel', mockPinwheelModule)
+        callback(null, global.Pinwheel)
+    })
 }
