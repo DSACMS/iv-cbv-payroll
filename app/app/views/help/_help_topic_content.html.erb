@@ -1,0 +1,30 @@
+<p><%= t("help.show.#{topic}.intro") if t("help.show.#{topic}.intro", default: "").present? %></p>
+
+<% if t("help.show.#{topic}.security_message", default: '').present? %>
+  <p><%= t("help.show.#{topic}.security_message") %></p>
+<% end %>
+
+<ol>
+  <% steps = t("help.show.#{topic}", default: {}).select { |k, _| k.to_s.start_with?("step") } %>
+  <% steps.each do |step, _| %>
+    <li>
+      <strong><%= t("help.show.#{topic}.#{step}.title") %></strong>
+      <ul class="main-bullets">
+        <% t("help.show.#{topic}.#{step}.content", default: []).each do |content| %>
+          <% if content.is_a?(Array) %>
+            <li>
+              <%= content.first %>
+              <ul class="sub-bullets">
+                <% content[1..].each do |subcontent| %>
+                  <li><%= subcontent %></li>
+                <% end %>
+              </ul>
+            </li>
+          <% else %>
+            <li><%= content %></li>
+          <% end %>
+        <% end %>
+      </ul>
+    </li>
+  <% end %>
+</ol>
