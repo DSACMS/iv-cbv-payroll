@@ -1,6 +1,6 @@
 import { Controller } from "@hotwired/stimulus"
 import PinwheelIncomeDataAdapter, { ProviderFactory } from "../../adapters/PinwheelIncomeDataAdapter";
-import { createIncomeDataAdapter } from "../../adapters/createIncomeDataAdapter";
+import { createIncomeDataAdapter } from "../../utilities/createIncomeDataAdapter";
 
 export default class extends Controller {
   static targets = [
