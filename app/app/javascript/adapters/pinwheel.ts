@@ -6,12 +6,6 @@ declare global {
     var Pinwheel: any;
 }
 
-export const createProvider = (providerName: string) => {
-    switch(providerName) {
-        default:
-            return PinwheelIncomeDataAdapter;
-    }
-}
 abstract class IncomeDataAdapter {
     successCallback?: Function;
     exitCallback?: Function;

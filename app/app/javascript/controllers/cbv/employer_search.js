@@ -1,5 +1,6 @@
 import { Controller } from "@hotwired/stimulus"
-import PinwheelIncomeDataAdapter, { createProvider, ProviderFactory } from "../../adapters/pinwheel";
+import PinwheelIncomeDataAdapter, { ProviderFactory } from "../../adapters/pinwheel";
+import { createIncomeDataAdapter } from "../../adapters/createIncomeDataAdapter";
 
 export default class extends Controller {
   static targets = [
@@ -13,7 +14,7 @@ export default class extends Controller {
   }
 
   initialize() {
-    const IncomeDataAdapter = createProvider("pinwheel");
+    const IncomeDataAdapter = createIncomeDataAdapter("pinwheel");
 
     this.IncomeDataAdapter = new IncomeDataAdapter({
       onSuccess: this.onSuccess.bind(this),
