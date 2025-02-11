@@ -29,13 +29,13 @@ abstract class IncomeDataAdapter {
         this.load();
     }
 
-    async onExit() {
+    async onExit(eventPayload: any) {
         if (this.exitCallback) {
             this.exitCallback()
         }
     }
 
-    async onSuccess() {
+    async onSuccess(eventPayload: any) {
         if (this.successCallback) {
             this.successCallback()
         }
