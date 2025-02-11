@@ -1,6 +1,7 @@
 import { vi } from 'vitest';
 import { Application } from '@hotwired/stimulus';
 import { JSDOM } from 'jsdom';
+import loadScript from "load-script";
 
 const { window } = new JSDOM();
 
@@ -29,6 +30,12 @@ window.matchMedia = vi.fn().mockImplementation(query => ({
   dispatchEvent: vi.fn(),
 }));
 
+vi.mock('load-script', () => {
+  return {
+      default: vi.fn(),
+  }
+})
+
 // Reset all mocks before each test
 beforeEach(() => {
   // Set up Stimulus
@@ -41,6 +48,7 @@ beforeEach(() => {
 // Clean up after each test
 afterEach(() => {
   window.Stimulus.stop()
+  loadScript.mockReset()
   document.head.innerHTML = `
     <meta name="csrf-token" content="test-csrf-token">
   `;

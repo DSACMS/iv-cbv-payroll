@@ -33,22 +33,12 @@ const MOCK_LOAD_PINWHEEL_SUCCESS_IMPLEMENTATION = (url, callback) => {
     callback(null, global.Pinwheel)
 }
 
-const Pinwheel = {
-    open: vi.fn()
-}
-
 vi.mock('@js/utilities/api', async() => {
     const apiModule = await vi.importActual('@js/utilities/api')
     return {
         ...apiModule,
         trackUserAction: vi.fn((eventName, eventPayload) => Promise.resolve()),
         fetchToken: vi.fn(() => Promise.resolve(MOCK_PINWHEEL_AUTH_OBJECT)),
-    }
-})
-
-vi.mock('load-script', () => {
-    return {
-        default: vi.fn(),
     }
 })
 

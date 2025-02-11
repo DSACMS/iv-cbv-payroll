@@ -38,12 +38,6 @@ const MOCK_LOAD_PINWHEEL_SUCCESS_IMPLEMENTATION = (url, callback) => {
     callback(null, global.Pinwheel)
 }
 
-vi.mock('load-script', () => {
-    return {
-        default: vi.fn(),
-    }
-})
-
 vi.mock('@js/utilities/api', async () => {
     const apiModule = await vi.importActual('@js/utilities/api')
     return {
@@ -63,7 +57,6 @@ describe('PinwheelWrapper', () => {
         triggers = await pinwheelWrapper.open("response-type", "id", "name", false)
     })
     afterEach(() => {
-        loadScript.mockReset()
     })
 
     describe('open', () => {
