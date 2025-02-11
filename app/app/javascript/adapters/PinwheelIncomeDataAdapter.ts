@@ -22,17 +22,18 @@ export default class PinwheelIncomeDataAdapter extends IncomeDataAdapter {
         })
     }
 
-    async open(responseType, id, name, isDefaultOption) {
+    async open() {
         const locale = getDocumentLocale();
         await trackUserAction("ApplicantSelectedEmployerOrPlatformItem", {
-            item_type: responseType,
-            item_id: id,
-            item_name: name,
-            is_default_option: isDefaultOption,
+            item_type: this.requestData.responseType,
+            item_id: this.requestData.id,
+            item_name: this.requestData.name,
+            is_default_option: this.requestData.isDefaultOption,
+            provider: this.requestData.provider,
             locale
         })
 
-        const { token } = await fetchToken(responseType, id, locale);
+        const { token } = await fetchToken(this.requestData.responseType, this.requestData.id, locale);
 
         return this.Pinwheel.open({
             linkToken: token,

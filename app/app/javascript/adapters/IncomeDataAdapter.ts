@@ -1,17 +1,30 @@
+
+interface IncomeDataAdapterArgs {
+    requestData: RequestData,
+    onSuccess?: Function;
+    onExit?: Function;
+}
+
+interface RequestData {
+    responseType: string;
+    id: string;
+    isDefaultOption: boolean;
+    provider: string;
+    name: string;
+}
 export abstract class IncomeDataAdapter {
+    requestData: RequestData;
     successCallback?: Function;
     exitCallback?: Function;
 
     abstract load();
-    abstract open(responseType: string, id: string, name: string, isDefaultOption: boolean): void;
+    abstract open(): void;
     abstract onEvent(eventName: string, eventPayload: any): void;
 
-    constructor(args: {
-        onSuccess?: Function;
-        onExit?: Function;
-    } = { onSuccess: () => { } }) {
+    constructor(args: IncomeDataAdapterArgs) {
         this.successCallback = args.onSuccess;
         this.exitCallback = args.onExit;
+        this.requestData = args.requestData;
 
         this.load();
     }

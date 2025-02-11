@@ -9,6 +9,13 @@ const MOCK_PINWHEEL_ERROR = "Failed to load SCRIPT"
 
 const pinwheelIncomeDataAdapterArgs = {
     onSuccess: vi.fn(),
+    requestData: {
+        responseType: "response-type",
+        id: "id",
+        provider: "pinwheel",
+        name: "test-name",
+        isDefaultOption: true,
+    }
 }
 
 
@@ -20,7 +27,7 @@ describe('PinwheelIncomeDataAdapter', () => {
     beforeEach(async () => {
         mockPinwheel();
         adapter = new PinwheelIncomeDataAdapter(pinwheelIncomeDataAdapterArgs)
-        triggers = await adapter.open("response-type", "id", "name", false)
+        triggers = await adapter.open()
     })
     afterEach(() => {
     })

@@ -16,7 +16,16 @@ export default class extends Controller {
   initialize() {
     const IncomeDataAdapter = createIncomeDataAdapter("pinwheel");
 
+    const { responseType, id, name, isDefaultOption, provider } = this.element.dataset;
+
     this.IncomeDataAdapter = new IncomeDataAdapter({
+      requestData: {
+        responseType: responseType,
+        id,
+        isDefaultOption: isDefaultOption,
+        provider,
+        name
+      },
       onSuccess: this.onSuccess.bind(this),
       onExit: this.onExit.bind(this)
     })
@@ -27,7 +36,6 @@ export default class extends Controller {
   }
 
   disconnect() {
-    //delete(this.IncomeDataAdapter)
     this.element.removeEventListener("turbo:frame-missing", this.errorHandler)
   }
 
@@ -45,9 +53,8 @@ export default class extends Controller {
   }
 
   async select(event) {
-    const { responseType, id, name, isDefaultOption } = event.target.dataset;
     this.disableButtons()
-    await this.IncomeDataAdapter.open(responseType, id, name, isDefaultOption)
+    await this.IncomeDataAdapter.open()
   }
 
   disableButtons() {
