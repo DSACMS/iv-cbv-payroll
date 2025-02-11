@@ -26,7 +26,7 @@ guide for an introduction to the framework.
      * Chromedriver must be allowed to run. You can either do that by:
        * The command line: `xattr -d com.apple.quarantine $(which chromedriver)` (this is the only option if you are on Big Sur)
        * Manually: clicking "allow" when you run the integration tests for the first time and a dialogue opens up
-   * [Ngrok](https://ngrok.com/download): brew install ngrok/ngrok/ngrok
+   * [Ngrok](https://ngrok.com/downloads): brew install ngrok/ngrok/ngrok
      * Sign up for an account: https://dashboard.ngrok.com/signup
      * run `ngrok config add-authtoken {token goes here}`
 1. Set up rbenv and nodenv:
