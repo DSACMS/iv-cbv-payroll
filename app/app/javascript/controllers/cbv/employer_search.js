@@ -1,5 +1,5 @@
 import { Controller } from "@hotwired/stimulus"
-import PinwheelProviderWrapper from "../../providers/pinwheel";
+import PinwheelProviderWrapper, { createProvider, ProviderFactory } from "../../providers/pinwheel";
 
 export default class extends Controller {
   static targets = [
@@ -13,7 +13,9 @@ export default class extends Controller {
   }
 
   connect() {
-    this.pinwheelWrapper = new PinwheelProviderWrapper({
+    const ProviderWrapper = createProvider("pinwheel");
+
+    this.providerWrapper = new ProviderWrapper({
       onSuccess: this.onSuccess.bind(this),
       onExit: this.onExit.bind(this)
     })
@@ -21,7 +23,7 @@ export default class extends Controller {
   }
 
   disconnect() {
-    this.pinwheelWrapper = null;
+    this.providerWrapper = null;
     this.element.removeEventListener("turbo:frame-missing", this.errorHandler)
   }
 
@@ -41,7 +43,7 @@ export default class extends Controller {
   async select(event) {
     const { responseType, id, name, isDefaultOption } = event.target.dataset;
     this.disableButtons()
-    this.pinwheelWrapper.open(responseType, id, name, isDefaultOption)
+    this.providerWrapper.open(responseType, id, name, isDefaultOption)
   }
 
   disableButtons() {

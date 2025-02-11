@@ -7,10 +7,15 @@ declare global {
     var Pinwheel: any;
 }
 
+export const createProvider = (providerName: string) => {
+    if (providerName == "pinwheel") {
+        return PinwheelProviderWrapper;
+    }
+}
 abstract class ProviderWrapper {
     abstract successCallback?: Function;
     abstract exitCallback?: Function;
-
+    
     abstract open(responseType : string, id : string, name : string, isDefaultOption : boolean): void;
     abstract onEvent(eventName : string, eventPayload : any): void;
 }
