@@ -52,18 +52,18 @@ class Cbv::BaseController < ApplicationController
 
   def next_path
     case params[:controller]
-      when "cbv/entries"
-        cbv_flow_employer_search_path
-      when "cbv/employer_searches"
-        cbv_flow_synchronizations_path
-      when "cbv/synchronizations"
-        cbv_flow_payment_details_path
-      when "cbv/missing_results"
-        cbv_flow_summary_path
-      when "cbv/payment_details"
-        cbv_flow_add_job_path
-      when "cbv/summaries"
-        cbv_flow_success_path
+    when "cbv/entries"
+      cbv_flow_employer_search_path
+    when "cbv/employer_searches"
+      cbv_flow_synchronizations_path
+    when "cbv/synchronizations"
+      cbv_flow_payment_details_path
+    when "cbv/missing_results"
+      cbv_flow_summary_path
+    when "cbv/payment_details"
+      cbv_flow_add_job_path
+    when "cbv/summaries"
+      cbv_flow_success_path
     end
   end
 

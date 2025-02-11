@@ -62,4 +62,4 @@ class ClientAgencyConfig
       # TODO: Add a validation for the dependent attribute, transmission_method_configuration.email, if transmission_method is present
     end
   end
-end 
+end

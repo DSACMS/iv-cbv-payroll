@@ -95,7 +95,7 @@ RSpec.describe ApplicationHelper do
     let(:params) { {} }
 
     before do
-        allow(helper).to receive(:params).and_return(params)
+      allow(helper).to receive(:params).and_return(params)
       without_partial_double_verification do
         allow(helper).to receive(:current_agency).and_return(current_agency)
       end
