@@ -2,7 +2,7 @@ import { vi, describe, beforeEach, it, expect } from 'vitest'
 import EmployerSearchController from '@js/controllers/cbv/employer_search'
 import { fetchToken, trackUserAction } from '@js/utilities/api';
 import loadScript from "load-script";
-import { mockPinwheel, MOCK_PINWHEEL_AUTH_OBJECT } from '@test/fixtures/pinwheel.fixture';
+import { mockPinwheel, mockPinwheelAuthToken } from '@test/fixtures/pinwheel.fixture';
 
 describe('EmployerSearchController', () => {
     let stimulusElement;
@@ -75,7 +75,7 @@ describe('EmployerSearchController button click', () => {
     it('fetches Pinwheel token', async() => {
         await stimulusElement.click();
         expect(fetchToken).toBeCalledTimes(1);
-        expect(await fetchToken.mock.results[0].value).toStrictEqual(MOCK_PINWHEEL_AUTH_OBJECT)
+        expect(await fetchToken.mock.results[0].value).toStrictEqual(mockPinwheelAuthToken)
         expect(fetchToken.mock.calls[0]).toMatchSnapshot()
     });
 })

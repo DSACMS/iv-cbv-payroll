@@ -36,13 +36,13 @@ vi.mock('load-script', () => {
   }
 })
 
-const MOCK_PINWHEEL_AUTH_OBJECT = { token: 'test-token' };
+const mockPinwheelAuthToken = { token: 'test-token' };
 vi.mock('@js/utilities/api', async () => {
   const apiModule = await vi.importActual('@js/utilities/api')
   return {
       ...apiModule,
       trackUserAction: vi.fn((eventName, eventPayload) => Promise.resolve()),
-      fetchToken: vi.fn(() => Promise.resolve(MOCK_PINWHEEL_AUTH_OBJECT)),
+      fetchToken: vi.fn(() => Promise.resolve(mockPinwheelAuthToken)),
   }
 })
 

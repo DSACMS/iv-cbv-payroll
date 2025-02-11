@@ -4,7 +4,7 @@ import PinwheelProviderWrapper from "@js/providers/pinwheel";
 import { fetchToken, trackUserAction } from '@js/utilities/api';
 import { mockPinwheel } from "@test/fixtures/pinwheel.fixture";
 
-const MOCK_PINWHEEL_AUTH_OBJECT = { token: 'test-token' };
+const mockPinwheelAuthToken = { token: 'test-token' };
 const MOCK_PINWHEEL_ERROR = "Failed to load SCRIPT"
 
 const pinwheelProviderWrapperArgs = {

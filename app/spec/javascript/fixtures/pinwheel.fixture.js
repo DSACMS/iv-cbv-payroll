@@ -1,7 +1,7 @@
 import { vi, describe, beforeEach, it, expect } from 'vitest'
 import loadScript from "load-script";
 
-export const MOCK_PINWHEEL_AUTH_OBJECT = { token: 'test-token' };
+export const mockPinwheelAuthToken = { token: 'test-token' };
 
 export const mockPinwheelModule = { 
     open: vi.fn(({onSuccess, onExit, onEvent}) => {
