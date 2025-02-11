@@ -46,7 +46,7 @@ export default class extends Controller {
   async select(event) {
     const { responseType, id, name, isDefaultOption } = event.target.dataset;
     this.disableButtons()
-    this.providerWrapper.open(responseType, id, name, isDefaultOption)
+    await this.providerWrapper.open(responseType, id, name, isDefaultOption)
   }
 
   disableButtons() {
