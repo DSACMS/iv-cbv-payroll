@@ -2,9 +2,9 @@ export abstract class IncomeDataAdapter {
     successCallback?: Function;
     exitCallback?: Function;
 
+    abstract load();
     abstract open(responseType: string, id: string, name: string, isDefaultOption: boolean): void;
     abstract onEvent(eventName: string, eventPayload: any): void;
-    abstract load();
 
     constructor(args: {
         onSuccess?: Function;
