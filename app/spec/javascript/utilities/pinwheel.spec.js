@@ -2,57 +2,23 @@ import { vi, describe, beforeEach, afterEach, it, expect } from "vitest";
 import loadScript from "load-script";
 import PinwheelProviderWrapper from "@js/providers/pinwheel";
 import { fetchToken, trackUserAction } from '@js/utilities/api';
+import { mockPinwheel } from "@test/fixtures/pinwheel.fixture";
 
 const MOCK_PINWHEEL_AUTH_OBJECT = { token: 'test-token' };
 const MOCK_PINWHEEL_ERROR = "Failed to load SCRIPT"
-
-const mockPinwheelModule = { 
-    open: vi.fn(({onSuccess, onExit, onEvent}) => {
-        return  {
-            triggerSuccessEvent: () => {
-                if (onSuccess) {
-                    onSuccess({ accountId: 'account-id', platformId: 'platform-id'});
-                }
-            },
-            triggerExitEvent: () => {
-                if (onExit) {
-                    onExit();
-                }
-            },
-            triggerEvent: (eventName, eventPayload) => {
-                if (onEvent) {
-                    onEvent(eventName, eventPayload)
-                }
-            }
-        }
-    }),
-} 
 
 const pinwheelProviderWrapperArgs = {
     onSuccess: vi.fn(),
 }
 
 
-const MOCK_LOAD_PINWHEEL_SUCCESS_IMPLEMENTATION = (url, callback) => {
-    vi.stubGlobal('Pinwheel', mockPinwheelModule)
-    callback(null, global.Pinwheel)
-}
-
-vi.mock('@js/utilities/api', async () => {
-    const apiModule = await vi.importActual('@js/utilities/api')
-    return {
-        ...apiModule,
-        trackUserAction: vi.fn((eventName, eventPayload) => Promise.resolve()),
-        fetchToken: vi.fn(() => Promise.resolve(MOCK_PINWHEEL_AUTH_OBJECT)),
-    }
-})
 
 describe('PinwheelWrapper', () => {
     let pinwheelWrapper;
     let triggers;
         
     beforeEach(async () => {
-        loadScript.mockImplementation(MOCK_LOAD_PINWHEEL_SUCCESS_IMPLEMENTATION)
+        mockPinwheel();
         pinwheelWrapper = new PinwheelProviderWrapper(pinwheelProviderWrapperArgs)
         triggers = await pinwheelWrapper.open("response-type", "id", "name", false)
     })

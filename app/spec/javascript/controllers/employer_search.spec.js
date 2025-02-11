@@ -2,45 +2,7 @@ import { vi, describe, beforeEach, it, expect } from 'vitest'
 import EmployerSearchController from '@js/controllers/cbv/employer_search'
 import { fetchToken, trackUserAction } from '@js/utilities/api';
 import loadScript from "load-script";
-
-const MOCK_PINWHEEL_AUTH_OBJECT = { token: 'test-token' };
-
-
-const mockPinwheelModule = { 
-    open: vi.fn(({onSuccess, onExit, onEvent}) => {
-        return  {
-            triggerSuccessEvent: () => {
-                if (onSuccess) {
-                    onSuccess({ accountId: 'account-id', platformId: 'platform-id'});
-                }
-            },
-            triggerExitEvent: () => {
-                if (onExit) {
-                    onExit();
-                }
-            },
-            triggerEvent: (eventName, eventPayload) => {
-                if (onEvent) {
-                    onEvent(eventName, eventPayload)
-                }
-            }
-        }
-    }),
-} 
-
-const MOCK_LOAD_PINWHEEL_SUCCESS_IMPLEMENTATION = (url, callback) => {
-    vi.stubGlobal('Pinwheel', mockPinwheelModule)
-    callback(null, global.Pinwheel)
-}
-
-vi.mock('@js/utilities/api', async() => {
-    const apiModule = await vi.importActual('@js/utilities/api')
-    return {
-        ...apiModule,
-        trackUserAction: vi.fn((eventName, eventPayload) => Promise.resolve()),
-        fetchToken: vi.fn(() => Promise.resolve(MOCK_PINWHEEL_AUTH_OBJECT)),
-    }
-})
+import { mockPinwheel, MOCK_PINWHEEL_AUTH_OBJECT } from '@test/fixtures/pinwheel.fixture';
 
 describe('EmployerSearchController', () => {
     let stimulusElement;
@@ -82,7 +44,7 @@ describe('EmployerSearchController button click', () => {
     let stimulusElement;
 
     beforeEach(async () => {
-        loadScript.mockImplementation(MOCK_LOAD_PINWHEEL_SUCCESS_IMPLEMENTATION)
+        mockPinwheel();
 
         stimulusElement = document.getElementById('employer-search-button')
         stimulusElement = document.createElement('button');
@@ -112,7 +74,7 @@ describe('EmployerSearchController button click', () => {
     it('fetches Pinwheel token', async() => {
         await stimulusElement.click();
         expect(fetchToken).toBeCalledTimes(1);
-        expect(await fetchToken.mock.results[0].value).toBe(MOCK_PINWHEEL_AUTH_OBJECT)
+        expect(await fetchToken.mock.results[0].value).toStrictEqual(MOCK_PINWHEEL_AUTH_OBJECT)
         expect(fetchToken.mock.calls[0]).toMatchSnapshot()
     });
 })
