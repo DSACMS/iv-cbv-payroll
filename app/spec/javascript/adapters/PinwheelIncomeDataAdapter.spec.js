@@ -1,6 +1,6 @@
 import { vi, describe, beforeEach, afterEach, it, expect } from "vitest";
 import loadScript from "load-script";
-import PinwheelIncomeDataAdapter from "@js/adapters/pinwheel";
+import PinwheelIncomeDataAdapter from "@js/adapters/PinwheelIncomeDataAdapter";
 import { fetchToken, trackUserAction } from '@js/utilities/api';
 import { mockPinwheel } from "@test/fixtures/pinwheel.fixture";
 
@@ -13,14 +13,14 @@ const pinwheelIncomeDataAdapterArgs = {
 
 
 
-describe('PinwheelAdapter', () => {
-    let PinwheelAdapter;
+describe('PinwheelIncomeDataAdapter', () => {
+    let adapter;
     let triggers;
         
     beforeEach(async () => {
         mockPinwheel();
-        PinwheelAdapter = new PinwheelIncomeDataAdapter(pinwheelIncomeDataAdapterArgs)
-        triggers = await PinwheelAdapter.open("response-type", "id", "name", false)
+        adapter = new PinwheelIncomeDataAdapter(pinwheelIncomeDataAdapterArgs)
+        triggers = await adapter.open("response-type", "id", "name", false)
     })
     afterEach(() => {
     })
