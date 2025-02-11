@@ -7,8 +7,9 @@ declare global {
 }
 
 export const createProvider = (providerName: string) => {
-    if (providerName == "pinwheel") {
-        return PinwheelIncomeDataAdapter;
+    switch(providerName) {
+        default:
+            return PinwheelIncomeDataAdapter;
     }
 }
 abstract class IncomeDataAdapter {
@@ -92,21 +93,25 @@ export default class PinwheelIncomeDataAdapter extends IncomeDataAdapter {
     }
 
     onEvent(eventName: string, eventPayload: any) {
-        if (eventName === 'screen_transition') {
-            onScreenTransitionEvent();
-        } else if (eventName === 'login_attempt') {
-            trackUserAction("PinwheelAttemptLogin", {})
-        } else if (eventName === 'error') {
-            const { type, code, message } = eventPayload
-            trackUserAction("PinwheelError", { type, code, message })
-        } else if (eventName === 'exit') {
-            trackUserAction("PinwheelCloseModal", {})
+        switch (eventName) {
+            case "screen_transition":
+                onScreenTransitionEvent(eventPayload.screenName);
+                break;
+            case 'login_attempt':
+                trackUserAction("PinwheelAttemptLogin", {})
+                break;
+            case 'error':
+                const { type, code, message } = eventPayload
+                trackUserAction("PinwheelError", { type, code, message })
+                break;
+            case 'exit':
+                trackUserAction("PinwheelCloseModal", {})
+                break;
+                
         }
 
 
-        function onScreenTransitionEvent() {
-            const { screenName } = eventPayload;
-
+        function onScreenTransitionEvent(screenName) {
             switch (screenName) {
                 case "LOGIN":
                     trackUserAction("PinwheelShowLoginPage", {

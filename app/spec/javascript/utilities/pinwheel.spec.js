@@ -1,6 +1,6 @@
 import { vi, describe, beforeEach, afterEach, it, expect } from "vitest";
 import loadScript from "load-script";
-import PinwheelIncomeDataAdapter from "@js/providers/pinwheel";
+import PinwheelIncomeDataAdapter from "@js/adapters/pinwheel";
 import { fetchToken, trackUserAction } from '@js/utilities/api';
 import { mockPinwheel } from "@test/fixtures/pinwheel.fixture";
 
