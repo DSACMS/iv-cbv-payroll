@@ -1,8 +1,5 @@
 import { Controller } from "@hotwired/stimulus"
-import { loadPinwheel, initializePinwheel } from "../../utilities/pinwheel"
-import { fetchToken } from '../../utilities/api';
-import { trackUserAction } from '../../utilities/api';
-import { getDocumentLocale } from "../../utilities/getDocumentLocale";
+import PinwheelProviderWrapper from "../../providers/pinwheel";
 
 export default class extends Controller {
   static targets = [
@@ -15,13 +12,16 @@ export default class extends Controller {
     cbvFlowId: Number
   }
 
-  pinwheel = loadPinwheel();
-
   connect() {
+    this.pinwheelWrapper = new PinwheelProviderWrapper({
+      onSuccess: this.onSuccess.bind(this),
+      onExit: this.reenableButtons.bind(this)
+    })
     this.errorHandler = this.element.addEventListener("turbo:frame-missing", this.onTurboError)
   }
 
   disconnect() {
+    this.pinwheelWrapper = null;
     this.element.removeEventListener("turbo:frame-missing", this.errorHandler)
   }
 
@@ -33,70 +33,17 @@ export default class extends Controller {
     event.preventDefault()
   }
 
-  onPinwheelEvent(eventName, eventPayload) {
-    if (eventName === 'success') {
-      const { accountId } = eventPayload
+  onSuccess(accountId) {
       this.userAccountIdTarget.value = accountId
-      trackUserAction("PinwheelSuccess", {
-        account_id: eventPayload.accountId,
-        platform_id: eventPayload.platformId
-      })
       this.formTarget.submit();
-    } else if (eventName === 'screen_transition') {
-      const { screenName } = eventPayload
-
-      switch (screenName) {
-        case "LOGIN":
-          trackUserAction("PinwheelShowLoginPage", {
-            screen_name: screenName,
-            employer_name: eventPayload.selectedEmployerName,
-            platform_name: eventPayload.selectedPlatformName
-          })
-          break
-        case "PROVIDER_CONFIRMATION":
-          trackUserAction("PinwheelShowProviderConfirmationPage", {})
-          break
-        case "SEARCH_DEFAULT":
-          trackUserAction("PinwheelShowDefaultProviderSearch", {})
-          break
-        case "EXIT_CONFIRMATION":
-          trackUserAction("PinwheelAttemptClose", {})
-          break
-      }
-    } else if (eventName === 'login_attempt') {
-      trackUserAction("PinwheelAttemptLogin", {})
-    } else if (eventName === 'error') {
-      const { type, code, message } = eventPayload
-      trackUserAction("PinwheelError", { type, code, message })
-    } else if (eventName === 'exit') {
-      trackUserAction("PinwheelCloseModal", {})
-    }
   }
-
-  
 
   async select(event) {
+
     const locale = getDocumentLocale();
     const { responseType, id, name, isDefaultOption } = event.target.dataset;
-    await trackUserAction("ApplicantSelectedEmployerOrPlatformItem", {
-      item_type: responseType,
-      item_id: id,
-      item_name: name,
-      is_default_option: isDefaultOption,
-      locale
-    })
-
     this.disableButtons()
-    const { token } = await fetchToken(responseType, id, locale);
-    this.submit(token);
-  }
-
-  async submit(token) {
-    const Pinwheel = await this.pinwheel
-    initializePinwheel(Pinwheel, token, {
-      onEvent: this.onPinwheelEvent.bind(this),
-      onExit: this.reenableButtons.bind(this),
-    });
+    this.pinwheelWrapper.open(responseType, id, name, isDefaultOption)
   }
 
   disableButtons() {

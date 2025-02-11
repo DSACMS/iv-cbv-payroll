@@ -9,6 +9,7 @@ declare global {
 
 abstract class ProviderWrapper {
     abstract successCallback?: Function;
+    abstract exitCallback?: Function;
 
     abstract open(responseType : string, id : string, name : string, isDefaultOption : boolean): void;
     abstract onEvent(eventName : string, eventPayload : any): void;
@@ -17,12 +18,15 @@ abstract class ProviderWrapper {
 export default class PinwheelProviderWrapper extends ProviderWrapper {
     Pinwheel: any;
     successCallback?: Function;
+    exitCallback?: Function;
 
     constructor(args : {
         onSuccess?: Function;
+        onExit?: Function;
     } = { onSuccess: () => {}}) {
         super();
         this.successCallback = args.onSuccess;
+        this.exitCallback = args.onExit;
 
         this.load();
     }
@@ -54,48 +58,32 @@ export default class PinwheelProviderWrapper extends ProviderWrapper {
         return this.Pinwheel.open({
             token,
             onSuccess: this.onSuccess.bind(this),
+            onExit: this.onExit.bind(this),
             onEvent: this.onEvent.bind(this),
-            //onExit: this.reenableButtons.bind(this),
         });
     }
 
+    async onExit() {
+        if (this.exitCallback) {
+            this.exitCallback()
+        }
+    }
     async onSuccess(eventPayload: {
         accountId: string;
         platformId: string;
     }) {
-        //    this.userAccountIdTarget.value = accountId
-        //    this.formTarget.submit();
         await trackUserAction("PinwheelSuccess", {
             account_id: eventPayload.accountId,
             platform_id: eventPayload.platformId
         })
         if (this.successCallback) {
-            this.successCallback();
+            this.successCallback(eventPayload.accountId);
         }
     }
 
     onEvent(eventName: string, eventPayload: any) {
         if (eventName === 'screen_transition') {
-            const { screenName } = eventPayload
-
-            switch (screenName) {
-                case "LOGIN":
-                    trackUserAction("PinwheelShowLoginPage", {
-                        screen_name: screenName,
-                        employer_name: eventPayload.selectedEmployerName,
-                        platform_name: eventPayload.selectedPlatformName
-                    })
-                    break
-                case "PROVIDER_CONFIRMATION":
-                    trackUserAction("PinwheelShowProviderConfirmationPage", {})
-                    break
-                case "SEARCH_DEFAULT":
-                    trackUserAction("PinwheelShowDefaultProviderSearch", {})
-                    break
-                case "EXIT_CONFIRMATION":
-                    trackUserAction("PinwheelAttemptClose", {})
-                    break
-            }
+            onScreenTransitionEvent();
         } else if (eventName === 'login_attempt') {
             trackUserAction("PinwheelAttemptLogin", {})
         } else if (eventName === 'error') {
@@ -105,5 +93,28 @@ export default class PinwheelProviderWrapper extends ProviderWrapper {
             trackUserAction("PinwheelCloseModal", {})
         }
 
+
+        function onScreenTransitionEvent() {
+            const { screenName } = eventPayload;
+
+            switch (screenName) {
+                case "LOGIN":
+                    trackUserAction("PinwheelShowLoginPage", {
+                        screen_name: screenName,
+                        employer_name: eventPayload.selectedEmployerName,
+                        platform_name: eventPayload.selectedPlatformName
+                    });
+                    break;
+                case "PROVIDER_CONFIRMATION":
+                    trackUserAction("PinwheelShowProviderConfirmationPage", {});
+                    break;
+                case "SEARCH_DEFAULT":
+                    trackUserAction("PinwheelShowDefaultProviderSearch", {});
+                    break;
+                case "EXIT_CONFIRMATION":
+                    trackUserAction("PinwheelAttemptClose", {});
+                    break;
+            }
+        }
     }
 }

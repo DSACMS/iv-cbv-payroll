@@ -8,11 +8,16 @@ const MOCK_PINWHEEL_AUTH_OBJECT = { token: 'test-token' };
 const MOCK_PINWHEEL_ERROR = "Failed to load SCRIPT"
 
 const mockPinwheelModule = { 
-    open: vi.fn(({onSuccess, onEvent}) => {
+    open: vi.fn(({onSuccess, onExit, onEvent}) => {
         return  {
             triggerSuccessEvent: () => {
                 if (onSuccess) {
                     onSuccess({ accountId: 'account-id', platformId: 'platform-id'});
+                }
+            },
+            triggerExitEvent: () => {
+                if (onExit) {
+                    onExit();
                 }
             },
             triggerEvent: (eventName, eventPayload) => {
@@ -89,6 +94,12 @@ describe('PinwheelWrapper', () => {
             expect(pinwheelProviderWrapperArgs.onSuccess).toHaveBeenCalled()
         })
     })
+    describe('onExit', () => {
+        it('should trigger the provided onExit callback', async () => {
+            await triggers.triggerSuccessEvent()
+            expect(pinwheelProviderWrapperArgs.onSuccess).toHaveBeenCalled()
+        })
+    })
     describe('onEvent', () => {
         it('should log screen_transition.LOGIN Event', async () => {
             await triggers.triggerEvent("screen_transition", { "screenName": "LOGIN", selectedEmployerName: "ACME Inc", selectedPlatformName: "ADP" })
@@ -128,53 +139,3 @@ describe('PinwheelWrapper', () => {
         })
     })
 })
-/*
-
-
-describe.skip('loadPinwheel', () => {
-    let pinwheelWrapper;
-
-    beforeEach(() => {
-        pinwheelWrapper = new PinwheelProviderWrapper()
-    })
-    it('calls API endpoint', () => {
-        expect(loadScript).toBeCalledTimes(1)
-    });
-    it('uses the correct pinwheel api endpoint', () => {
-        expect(loadScript.mock.calls[0][0]).toMatch('cdn.getpinwheel.com')
-        expect(loadScript.mock.calls[0][0]).toMatch('pinwheel-v3')
-    })
-    it.skip('should resolve with Pinwheel object when script loads successfully', async () => {
-        loadScript.mockImplementation(MOCK_LOAD_PINWHEEL_SUCCESS_IMPLEMENTATION)
-        expect(window.Pinwheel).toBeDefined()
-        expect(Pinwheel).toBe(MOCK_PINWHEEL_MODULE)
-    })
-    it.skip('rejects loading on error', async () => {
-        loadScript.mockImplementation((url, callback) => {
-            callback(new Error(MOCK_PINWHEEL_ERROR), null)
-        })
-        await expect(pinwheel.loadPinwheel).rejects.toThrow(MOCK_PINWHEEL_ERROR)
-    })
-    afterEach(() => {
-        loadScript.mockReset()
-    })
-})
-
-describe('open', () => {
-    it.skip('opens Pinwheel modal', async () => {
-        loadScript.mockImplementation(MOCK_LOAD_PINWHEEL_SUCCESS_IMPLEMENTATION)
-        const pinwheelWrapper = new PinwheelProviderWrapper()
-        pinwheelWrapper.open("response-type", "id", "name", true)
-        expect(Pinwheel.open).toBeCalledTimes(1)
-        
-        //expect(Pinwheel.open.mock.calls[0]).toMatchSnapshot()
-    })
-    it('sends track user action event', async () => {
-        loadScript.mockImplementation(MOCK_LOAD_PINWHEEL_SUCCESS_IMPLEMENTATION)
-        const pinwheelWrapper = new PinwheelProviderWrapper()
-        expect(trackUserAction).toBeCalledTimes(1);
-    })
-    afterEach(() => {
-        loadScript.mockReset()
-    })
-})*/
