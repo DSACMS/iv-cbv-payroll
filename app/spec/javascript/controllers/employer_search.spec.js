@@ -33,9 +33,10 @@ describe('EmployerSearchController', () => {
         expect(stimulusElement.addEventListener).toHaveBeenCalledWith("turbo:frame-missing", expect.any(Function))
     });
 
-    it.skip('removes turbo:frame-missing listener on disconnect()', () => {
+    it('removes turbo:frame-missing listener on disconnect()', async() => {
+        await stimulusElement.remove();
         expect(stimulusElement.removeEventListener).toBeCalledTimes(1)
-        expect(stimulusElement.removeEventListener).toHaveBeenCalledWith("turbo:frame-missing", expect.any(Function))
+        expect(stimulusElement.removeEventListener.mock.calls[0][0]).toBe("turbo:frame-missing")
     })
 
 })
