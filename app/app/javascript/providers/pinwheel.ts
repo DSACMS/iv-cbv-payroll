@@ -1,4 +1,3 @@
-import { initializePinwheel } from "../utilities/pinwheel";
 import { fetchToken, trackUserAction } from "../utilities/api";
 import loadScript from 'load-script';
 import { getDocumentLocale } from "../utilities/getDocumentLocale";

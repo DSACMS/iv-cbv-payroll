@@ -12,18 +12,21 @@ export default class extends Controller {
     cbvFlowId: Number
   }
 
-  connect() {
+  initialize() {
     const ProviderWrapper = createProvider("pinwheel");
 
     this.providerWrapper = new ProviderWrapper({
       onSuccess: this.onSuccess.bind(this),
       onExit: this.onExit.bind(this)
     })
+  }
+
+  connect() {
     this.errorHandler = this.element.addEventListener("turbo:frame-missing", this.onTurboError)
   }
 
   disconnect() {
-    this.providerWrapper = null;
+    //delete(this.providerWrapper)
     this.element.removeEventListener("turbo:frame-missing", this.errorHandler)
   }
 

@@ -1,5 +1,4 @@
 import { vi, describe, beforeEach, afterEach, it, expect } from "vitest";
-import * as pinwheel from "@js/utilities/pinwheel";
 import loadScript from "load-script";
 import PinwheelProviderWrapper from "@js/providers/pinwheel";
 import { fetchToken, trackUserAction } from '@js/utilities/api';
