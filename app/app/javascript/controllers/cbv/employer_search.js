@@ -1,5 +1,7 @@
 import { Controller } from "@hotwired/stimulus"
-import { loadPinwheel, initializePinwheel, fetchToken, trackUserAction } from "../../utilities/pinwheel"
+import { loadPinwheel, initializePinwheel } from "../../utilities/pinwheel"
+import { fetchToken } from '../../utilities/api';
+import { trackUserAction } from '../../utilities/api';
 
 export default class extends Controller {
   static targets = [
@@ -67,6 +69,7 @@ export default class extends Controller {
       trackUserAction("PinwheelError", { type, code, message })
     } else if (eventName === 'exit') {
       trackUserAction("PinwheelCloseModal", {})
+      this.showHelpBanner()
     }
   }
 
@@ -109,5 +112,11 @@ export default class extends Controller {
   reenableButtons() {
     this.employerButtonTargets
       .forEach(el => el.removeAttribute("disabled"))
+  }
+
+  showHelpBanner() {
+    const url = new URL(window.location.href);
+    url.searchParams.set('help', 'true');
+    window.location.href = url.toString();
   }
 }
