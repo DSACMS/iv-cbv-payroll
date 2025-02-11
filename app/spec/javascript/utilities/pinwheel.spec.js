@@ -1,26 +1,26 @@
 import { vi, describe, beforeEach, afterEach, it, expect } from "vitest";
 import loadScript from "load-script";
-import PinwheelProviderWrapper from "@js/providers/pinwheel";
+import PinwheelIncomeDataAdapter from "@js/providers/pinwheel";
 import { fetchToken, trackUserAction } from '@js/utilities/api';
 import { mockPinwheel } from "@test/fixtures/pinwheel.fixture";
 
 const mockPinwheelAuthToken = { token: 'test-token' };
 const MOCK_PINWHEEL_ERROR = "Failed to load SCRIPT"
 
-const pinwheelProviderWrapperArgs = {
+const pinwheelIncomeDataAdapterArgs = {
     onSuccess: vi.fn(),
 }
 
 
 
-describe('PinwheelWrapper', () => {
-    let pinwheelWrapper;
+describe('PinwheelAdapter', () => {
+    let PinwheelAdapter;
     let triggers;
         
     beforeEach(async () => {
         mockPinwheel();
-        pinwheelWrapper = new PinwheelProviderWrapper(pinwheelProviderWrapperArgs)
-        triggers = await pinwheelWrapper.open("response-type", "id", "name", false)
+        PinwheelAdapter = new PinwheelIncomeDataAdapter(pinwheelIncomeDataAdapterArgs)
+        triggers = await PinwheelAdapter.open("response-type", "id", "name", false)
     })
     afterEach(() => {
     })
@@ -49,13 +49,13 @@ describe('PinwheelWrapper', () => {
         })
         it('should trigger the provided onSuccess callback', async () => {
             await triggers.triggerSuccessEvent()
-            expect(pinwheelProviderWrapperArgs.onSuccess).toHaveBeenCalled()
+            expect(pinwheelIncomeDataAdapterArgs.onSuccess).toHaveBeenCalled()
         })
     })
     describe('onExit', () => {
         it('should trigger the provided onExit callback', async () => {
             await triggers.triggerSuccessEvent()
-            expect(pinwheelProviderWrapperArgs.onSuccess).toHaveBeenCalled()
+            expect(pinwheelIncomeDataAdapterArgs.onSuccess).toHaveBeenCalled()
         })
     })
     describe('onEvent', () => {

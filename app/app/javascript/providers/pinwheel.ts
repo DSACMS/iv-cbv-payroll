@@ -8,10 +8,10 @@ declare global {
 
 export const createProvider = (providerName: string) => {
     if (providerName == "pinwheel") {
-        return PinwheelProviderWrapper;
+        return PinwheelIncomeDataAdapter;
     }
 }
-abstract class ProviderWrapper {
+abstract class IncomeDataAdapter {
     abstract successCallback?: Function;
     abstract exitCallback?: Function;
     
@@ -19,7 +19,7 @@ abstract class ProviderWrapper {
     abstract onEvent(eventName : string, eventPayload : any): void;
 }
 
-export default class PinwheelProviderWrapper extends ProviderWrapper {
+export default class PinwheelIncomeDataAdapter extends IncomeDataAdapter {
     Pinwheel: any;
     successCallback?: Function;
     exitCallback?: Function;
