@@ -56,7 +56,7 @@ export default class PinwheelProviderWrapper extends ProviderWrapper {
         const { token } = await fetchToken(responseType, id, locale);
 
         return this.Pinwheel.open({
-            token,
+            linkToken: token,
             onSuccess: this.onSuccess.bind(this),
             onExit: this.onExit.bind(this),
             onEvent: this.onEvent.bind(this),
