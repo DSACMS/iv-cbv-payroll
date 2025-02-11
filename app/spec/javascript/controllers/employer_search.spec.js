@@ -1,21 +1,41 @@
 import { vi, describe, beforeEach, it, expect } from 'vitest'
 import EmployerSearchController from '@js/controllers/cbv/employer_search'
-import { loadPinwheel, initializePinwheel} from '@js/utilities/pinwheel'
 import { fetchToken, trackUserAction } from '@js/utilities/api';
+import loadScript from "load-script";
 
 const MOCK_PINWHEEL_AUTH_OBJECT = { token: 'test-token' };
+
+
+const mockPinwheelModule = { 
+    open: vi.fn(({onSuccess, onExit, onEvent}) => {
+        return  {
+            triggerSuccessEvent: () => {
+                if (onSuccess) {
+                    onSuccess({ accountId: 'account-id', platformId: 'platform-id'});
+                }
+            },
+            triggerExitEvent: () => {
+                if (onExit) {
+                    onExit();
+                }
+            },
+            triggerEvent: (eventName, eventPayload) => {
+                if (onEvent) {
+                    onEvent(eventName, eventPayload)
+                }
+            }
+        }
+    }),
+} 
+
+const MOCK_LOAD_PINWHEEL_SUCCESS_IMPLEMENTATION = (url, callback) => {
+    vi.stubGlobal('Pinwheel', mockPinwheelModule)
+    callback(null, global.Pinwheel)
+}
 
 const Pinwheel = {
     open: vi.fn()
 }
-vi.mock('@js/utilities/pinwheel', async () => {
-    const pinwheelModule = await vi.importActual('@js/utilities/pinwheel')
-    return {
-        ...pinwheelModule,
-        loadPinwheel: vi.fn(() => Promise.resolve(Pinwheel)),
-        initializePinwheel: vi.fn()
-    }
-  })
 
 vi.mock('@js/utilities/api', async() => {
     const apiModule = await vi.importActual('@js/utilities/api')
@@ -26,6 +46,11 @@ vi.mock('@js/utilities/api', async() => {
     }
 })
 
+vi.mock('load-script', () => {
+    return {
+        default: vi.fn(),
+    }
+})
 
 describe('EmployerSearchController', () => {
     let stimulusElement;
@@ -47,12 +72,11 @@ describe('EmployerSearchController', () => {
         document.body.innerHTML = "";
     })
 
-    it('calls loadPinwheel on init', () => {
-        expect(loadPinwheel).toBeCalledTimes(1)
+    it('loads Pinwheel modal from external website on init', () => {
+        expect(loadScript).toBeCalledTimes(1)
     });
 
     it('adds turbo:frame-missing listener on connect()', () => {
-
         expect(stimulusElement.addEventListener).toBeCalledTimes(1)
         expect(stimulusElement.addEventListener).toHaveBeenCalledWith("turbo:frame-missing", expect.any(Function))
     });
@@ -68,6 +92,8 @@ describe('EmployerSearchController button click', () => {
     let stimulusElement;
 
     beforeEach(async () => {
+        loadScript.mockImplementation(MOCK_LOAD_PINWHEEL_SUCCESS_IMPLEMENTATION)
+
         stimulusElement = document.getElementById('employer-search-button')
         stimulusElement = document.createElement('button');
         stimulusElement.setAttribute('data-controller', 'cbv-employer-search')
@@ -99,8 +125,4 @@ describe('EmployerSearchController button click', () => {
         expect(await fetchToken.mock.results[0].value).toBe(MOCK_PINWHEEL_AUTH_OBJECT)
         expect(fetchToken.mock.calls[0]).toMatchSnapshot()
     });
-
-    it('initializes Pinwheel', async () => {
-        await stimulusElement.click();
-    })
 })

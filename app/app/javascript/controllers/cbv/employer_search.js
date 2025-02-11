@@ -39,8 +39,6 @@ export default class extends Controller {
   }
 
   async select(event) {
-
-    const locale = getDocumentLocale();
     const { responseType, id, name, isDefaultOption } = event.target.dataset;
     this.disableButtons()
     this.pinwheelWrapper.open(responseType, id, name, isDefaultOption)
