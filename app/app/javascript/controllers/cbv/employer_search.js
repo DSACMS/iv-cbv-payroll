@@ -1,5 +1,5 @@
 import { Controller } from "@hotwired/stimulus"
-import PinwheelIncomeDataAdapter, { ProviderFactory } from "../../adapters/pinwheel";
+import PinwheelIncomeDataAdapter, { ProviderFactory } from "../../adapters/PinwheelIncomeDataAdapter";
 import { createIncomeDataAdapter } from "../../adapters/createIncomeDataAdapter";
 
 export default class extends Controller {

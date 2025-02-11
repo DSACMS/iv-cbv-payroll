@@ -1,4 +1,4 @@
-import PinwheelIncomeDataAdapter from "./pinwheel";
+import PinwheelIncomeDataAdapter from "./PinwheelIncomeDataAdapter";
 
 
 export const createIncomeDataAdapter = (providerName: string) => {
