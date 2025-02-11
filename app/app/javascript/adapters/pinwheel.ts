@@ -12,28 +12,38 @@ export const createProvider = (providerName: string) => {
     }
 }
 abstract class IncomeDataAdapter {
-    abstract successCallback?: Function;
-    abstract exitCallback?: Function;
+    successCallback?: Function;
+    exitCallback?: Function;
     
     abstract open(responseType : string, id : string, name : string, isDefaultOption : boolean): void;
     abstract onEvent(eventName : string, eventPayload : any): void;
-}
-
-export default class PinwheelIncomeDataAdapter extends IncomeDataAdapter {
-    Pinwheel: any;
-    successCallback?: Function;
-    exitCallback?: Function;
+    abstract load();
 
     constructor(args : {
         onSuccess?: Function;
         onExit?: Function;
     } = { onSuccess: () => {}}) {
-        super();
         this.successCallback = args.onSuccess;
         this.exitCallback = args.onExit;
 
         this.load();
     }
+
+    async onExit() {
+        if (this.exitCallback) {
+            this.exitCallback()
+        }
+    }
+
+    async onSuccess() {
+        if (this.successCallback) {
+            this.successCallback()
+        }
+    }
+}
+
+export default class PinwheelIncomeDataAdapter extends IncomeDataAdapter {
+    Pinwheel: any;
 
     async load() {
         this.Pinwheel = await new Promise((resolve, reject) => {
@@ -67,11 +77,7 @@ export default class PinwheelIncomeDataAdapter extends IncomeDataAdapter {
         });
     }
 
-    async onExit() {
-        if (this.exitCallback) {
-            this.exitCallback()
-        }
-    }
+
     async onSuccess(eventPayload: {
         accountId: string;
         platformId: string;
