@@ -6,13 +6,15 @@ RSpec.describe SiteConfig do
     - id: foo
       agency_name: Foo Agency Name
       pinwheel:
-        api_token: foo
+        environment: foo
+      argyle:
         environment: foo
     - id: bar
       agency_name: Bar Agency Name
       pinwheel:
-        api_token: bar
         environment: bar
+      argyle:
+        environment: foo
   YAML
 
   before do

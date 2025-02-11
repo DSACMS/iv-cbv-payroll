@@ -7,6 +7,8 @@
   logo_square_path: hra_logo_square.png
   pinwheel:
     environment: <%= ENV["NYC_PINWHEEL_ENVIRONMENT"] %>
+  argyle:
+    environment: <%= ENV["SANDBOX_ARGYLE_ENVIRONMENT"] %>
   transmission_method: shared_email
   transmission_method_configuration:
     email: <%= ENV['NYC_HRA_EMAIL'] %>
@@ -28,6 +30,8 @@
   caseworker_feedback_form: https://forms.office.com/r/rfV04qjG9A
   pinwheel:
     environment: <%= ENV["MA_PINWHEEL_ENVIRONMENT"] %>
+  argyle:
+    environment: <%= ENV["SANDBOX_ARGYLE_ENVIRONMENT"] %>
   transmission_method: s3
   transmission_method_configuration:
     bucket: <%= ENV['MA_DTA_S3_BUCKET'] %>
@@ -53,6 +57,8 @@
   caseworker_feedback_form: https://docs.google.com/forms/d/e/1FAIpQLSfrUiz0oWE5jbXjPfl-idQQGPgxKplqFtcKq08UOhTaEa2k6A/viewform
   pinwheel:
     environment: <%= ENV["SANDBOX_PINWHEEL_ENVIRONMENT"] %>
+  argyle:
+    environment: <%= ENV["SANDBOX_ARGYLE_ENVIRONMENT"] %>
   transmission_method: shared_email
   transmission_method_configuration:
     email: <%= ENV['SLACK_TEST_EMAIL'] %>

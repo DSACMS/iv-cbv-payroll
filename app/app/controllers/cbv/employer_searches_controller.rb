@@ -6,7 +6,7 @@ class Cbv::EmployerSearchesController < Cbv::BaseController
 
   def show
     @query = search_params[:query]
-    @employers = @query.blank? ? [] : fetch_employers(@query)
+    @employers = @query.blank? ? [] : provider_search(@query)
     @has_pinwheel_account = @cbv_flow.pinwheel_accounts.any?
     @selected_tab = search_params[:type] || "payroll"
 
@@ -19,6 +19,10 @@ class Cbv::EmployerSearchesController < Cbv::BaseController
   end
 
   private
+
+  def provider_search(query = "")
+    ProviderSearchService.new(@cbv_flow.site_id).search(query)
+  end
 
   def search_params
     params.slice(:query, :type)
