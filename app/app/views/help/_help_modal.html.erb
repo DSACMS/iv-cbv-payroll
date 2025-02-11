@@ -1,0 +1,33 @@
+<div
+  class="usa-modal maxw-none-important"
+  id="help-modal"
+  aria-labelledby="help-modal-heading"
+  aria-describedby="help-modal-description"
+  data-controller="help"
+>
+  <div class="usa-modal__content">
+    <div class="usa-modal__main padding-0 margin-0 maxw-none-important">
+      <div class="usa-modal__body padding-0">
+        <iframe
+          id="help-iframe"
+          src="<%= help_path(site_id: params[:site_id]) %>"
+          class="width-full border-0"
+          title="Help Content"
+          data-help-target="iframe"
+          scrolling="no"
+          >
+        </iframe>
+      </div>
+    </div>
+
+    <button
+      type="button"
+      class="usa-button usa-modal__close"
+      aria-label="Close this window"
+      data-close-modal>
+      <svg class="usa-icon" aria-hidden="true" focusable="false" role="img">
+        <use xlink:href="<%= asset_path("@uswds/uswds/dist/img/sprite.svg#close") %>"></use>
+      </svg>
+    </button>
+  </div>
+</div>

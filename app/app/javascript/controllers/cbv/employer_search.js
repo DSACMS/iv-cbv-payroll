@@ -15,7 +15,7 @@ export default class extends Controller {
   connect() {
     this.pinwheelWrapper = new PinwheelProviderWrapper({
       onSuccess: this.onSuccess.bind(this),
-      onExit: this.reenableButtons.bind(this)
+      onExit: this.onExit.bind(this)
     })
     this.errorHandler = this.element.addEventListener("turbo:frame-missing", this.onTurboError)
   }
@@ -49,8 +49,15 @@ export default class extends Controller {
       .forEach(el => el.setAttribute("disabled", "disabled"))
   }
 
-  reenableButtons() {
+  onExit() {
+    this.showHelpBanner();
     this.employerButtonTargets
       .forEach(el => el.removeAttribute("disabled"))
+  }
+
+  showHelpBanner() {
+    const url = new URL(window.location.href);
+    url.searchParams.set('help', 'true');
+    window.location.href = url.toString();
   }
 }
