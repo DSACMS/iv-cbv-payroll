@@ -34,8 +34,7 @@ RUN apt-get update -qq && \
       git=1:2.39.5-0+deb12u1 \
       libpq-dev=15.10-0+deb12u1 \
       npm=9.2.0~ds1-1 \
-      pkg-config=1.8.1-1 \
-      libtasn1-6=4.19.0-2+deb12u1
+      pkg-config=1.8.1-1
 
 # Copy application code
 COPY . .

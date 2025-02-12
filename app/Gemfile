@@ -123,7 +123,3 @@ gem "omniauth-rails_csrf_protection", "~> 1.0"
 gem "omniauth-azure-activedirectory-v2"
 gem "view_component"
 gem "wkhtmltopdf-binary"
-
-# Explicitly set net-imap version to address GHSA-7fc5-f82f-cx69
-# see https://github.com/ruby/net-imap/security/advisories/GHSA-7fc5-f82f-cx69
-gem "net-imap", ">= 0.4.19"
