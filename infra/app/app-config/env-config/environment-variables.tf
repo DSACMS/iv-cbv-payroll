@@ -85,7 +85,13 @@ locals {
     MA_DTA_S3_PUBLIC_KEY = {
       manage_method     = "manual"
       secret_store_name = "/service/${var.app_name}-${var.environment}/ma-dta-s3-public-key"
-    }
+    },
+
+    # Feature Flags:
+    SUPPORTED_PROVIDERS = {
+      manage_method     = "manual"
+      secret_store_name = "/service/${var.app_name}-${var.environment}/supported-providers"
+    },
 
     # Pinwheel Configuration:
     PINWHEEL_API_TOKEN_PRODUCTION = {
@@ -111,6 +117,21 @@ locals {
     SANDBOX_PINWHEEL_ENVIRONMENT = {
       manage_method     = "manual"
       secret_store_name = "/service/${var.app_name}-${var.environment}/sandbox-pinwheel-environment"
+    },
+
+
+    # Argyle Configuration:
+    SANDBOX_ARGYLE_ENVIRONMENT = {
+      manage_method     = "manual"
+      secret_store_name = "/service/${var.app_name}-${var.environment}/sandbox-argyle-environment"
+    },
+    ARGYLE_API_TOKEN_SANDBOX_ID = {
+      manage_method     = "manual"
+      secret_store_name = "/service/${var.app_name}-${var.environment}/argyle-api-token-sandbox-id" 
+    },
+    ARGYLE_API_TOKEN_SANDBOX_SECRET = {
+      manage_method     = "manual"
+      secret_store_name = "/service/${var.app_name}-${var.environment}/argyle-api-token-sandbox-secret" 
     },
 
     # SSO Configuration:
