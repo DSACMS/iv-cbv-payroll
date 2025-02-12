@@ -35,9 +35,11 @@
   "resolutions": {
     "@csstools/postcss-sass/@csstools/sass-import-resolve": "https://github.com/rahearn/sass-import-resolve",
     "pa11y-ci/pa11y/semver": ">= 7.5.2",
+    "semver": ">= 7.5.2",
     "nanoid": "^5.0.9"
   },
   "overrides": {
-    "esbuild": "^0.25.0"
+    "esbuild": "^0.25.0",
+    "semver": ">= 7.5.2"
   }
 }
