@@ -551,7 +551,7 @@ DEPENDENCIES
   jsbundling-rails
   maybe_later
   mixpanel-ruby
-  net-imap (~> 0.4.19)
+  net-imap (= 0.4.19)
   newrelic_rpm
   omniauth-azure-activedirectory-v2
   omniauth-rails_csrf_protection (~> 1.0)
