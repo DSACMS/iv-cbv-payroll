@@ -23,7 +23,7 @@ class CbvFlowInvitation < ApplicationRecord
   before_validation :normalize_language
   before_create :copy_fields_back_from_cbv_applicant
 
-  validates :site_id, inclusion: Rails.application.config.sites.site_ids
+  validates :client_agency_id, inclusion: Rails.application.config.client_agencies.client_agency_ids
   validates :email_address, format: { with: EMAIL_REGEX, message: :invalid_format }
   validates_associated :cbv_applicant
   validates :language, inclusion: {
@@ -69,7 +69,7 @@ class CbvFlowInvitation < ApplicationRecord
   # after sending the invitation.
   def expires_at
     end_of_day_sent = created_at.in_time_zone(INVITATION_VALIDITY_TIME_ZONE).end_of_day
-    days_valid_for = Rails.application.config.sites[site_id].invitation_valid_days
+    days_valid_for = Rails.application.config.client_agencies[client_agency_id].invitation_valid_days
 
     end_of_day_sent + days_valid_for.days
   end

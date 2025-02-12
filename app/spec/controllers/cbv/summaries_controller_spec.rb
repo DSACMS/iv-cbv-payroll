@@ -17,12 +17,12 @@ RSpec.describe Cbv::SummariesController do
       cbv_applicant: cbv_applicant
     )
   end
-  let(:mock_site) { instance_double(SiteConfig::Site) }
-  let(:nyc_user) { create(:user, email: "test@test.com", site_id: 'nyc') }
-  let(:ma_user) { create(:user, email: "test@example.com", site_id: 'ma') }
+  let(:mock_client_agency) { instance_double(ClientAgencyConfig::ClientAgency) }
+  let(:nyc_user) { create(:user, email: "test@test.com", client_agency_id: 'nyc') }
+  let(:ma_user) { create(:user, email: "test@example.com", client_agency_id: 'ma') }
 
   before do
-    allow(mock_site).to receive(:transmission_method_configuration).and_return({
+    allow(mock_client_agency).to receive(:transmission_method_configuration).and_return({
       "bucket"            => "test-bucket",
       "region"            => "us-west-2",
       "access_key_id"     => "SOME_ACCESS_KEY",
@@ -168,8 +168,8 @@ RSpec.describe Cbv::SummariesController do
       before do
         cbv_flow.update(consented_to_authorized_use_at: Time.now)
         sign_in ma_user
-        allow(mock_site).to receive(:transmission_method).and_return('s3')
-        allow(mock_site).to receive(:id).and_return('ma')
+        allow(mock_client_agency).to receive(:transmission_method).and_return('s3')
+        allow(mock_client_agency).to receive(:id).and_return('ma')
         stub_request_end_user_accounts_response
         stub_request_end_user_paystubs_response
       end
@@ -200,8 +200,8 @@ RSpec.describe Cbv::SummariesController do
       before do
         cbv_flow.update(consented_to_authorized_use_at: Time.now)
 
-        # Set up the mock_site behavior
-        allow(mock_site).to receive(:transmission_method_configuration).and_return({
+        # Set up the mock_client_agency behavior
+        allow(mock_client_agency).to receive(:transmission_method_configuration).and_return({
          "bucket"            => "test-bucket",
          "region"            => "us-west-2",
          "access_key_id"     => "SOME_ACCESS_KEY",
@@ -213,11 +213,11 @@ RSpec.describe Cbv::SummariesController do
       context "when transmission method is shared_email" do
         before do
           sign_in nyc_user
-          allow(mock_site).to receive(:transmission_method).and_return('shared_email')
-          allow(mock_site).to receive(:transmission_method_configuration).and_return({
+          allow(mock_client_agency).to receive(:transmission_method).and_return('shared_email')
+          allow(mock_client_agency).to receive(:transmission_method_configuration).and_return({
              "email" => 'test@example.com'
           })
-          allow(controller).to receive(:current_site).and_return(mock_site)
+          allow(controller).to receive(:current_agency).and_return(mock_client_agency)
         end
 
         it "sends an email to the caseworker and updates transmitted_at" do
@@ -225,8 +225,6 @@ RSpec.describe Cbv::SummariesController do
             patch :update
           }.to change { ActionMailer::Base.deliveries.count }.by(1)
             .and change { cbv_flow.reload.transmitted_at }.from(nil)
-
-          # expect(controller).to have_received(:current_site)
 
           email = ActionMailer::Base.deliveries.last
           expect(email.to).to include('test@example.com')
@@ -246,7 +244,7 @@ RSpec.describe Cbv::SummariesController do
           sign_in user
           allow(S3Service).to receive(:new).and_return(s3_service_double)
           allow(s3_service_double).to receive(:upload_file)
-          allow(mock_site).to receive_messages(
+          allow(mock_client_agency).to receive_messages(
             id: 'ma',
             transmission_method: 's3',
             transmission_method_configuration: {
@@ -255,7 +253,7 @@ RSpec.describe Cbv::SummariesController do
             }
           )
 
-          allow(controller).to receive(:current_site).and_return(mock_site)
+          allow(controller).to receive(:current_agency).and_return(mock_client_agency)
 
           # Stub pinwheel_for method to return our double
           stub_request_end_user_accounts_response
@@ -283,8 +281,8 @@ RSpec.describe Cbv::SummariesController do
             csv_content
           end
 
-          cbv_flow.update(site_id: "ma")
-          cbv_applicant.update(site_id: "ma")
+          cbv_flow.update(client_agency_id: "ma")
+          cbv_applicant.update(client_agency_id: "ma")
           cbv_applicant.update(beacon_id: beacon_id)
           cbv_applicant.update(agency_id_number: agency_id_number)
 
@@ -292,7 +290,7 @@ RSpec.describe Cbv::SummariesController do
         end
 
         it "handles errors during file processing and upload" do
-          cbv_flow.update(site_id: 'ma')
+          cbv_flow.update(client_agency_id: 'ma')
           allow_any_instance_of(GpgEncryptable).to receive(:gpg_encrypt_file).and_raise(StandardError, "Encryption failed")
 
           expect {

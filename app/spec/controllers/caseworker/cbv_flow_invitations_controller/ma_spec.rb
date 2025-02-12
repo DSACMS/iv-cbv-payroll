@@ -1,11 +1,11 @@
 require "rails_helper"
 
 RSpec.describe Caseworker::CbvFlowInvitationsController, type: :controller do
-  let(:user) { create(:user, email: "test@test.com", site_id: 'ma') }
-  let(:ma_params) { { site_id: "ma" } }
+  let(:user) { create(:user, email: "test@test.com", client_agency_id: 'ma') }
+  let(:ma_params) { { client_agency_id: "ma" } }
 
   before do
-    stub_site_config_value("ma", "staff_portal_enabled", true)
+    stub_client_agency_config_value("ma", "staff_portal_enabled", true)
     sign_in user
   end
 
@@ -42,7 +42,7 @@ RSpec.describe Caseworker::CbvFlowInvitationsController, type: :controller do
 
     it "creates a CbvFlowInvitation record with the ma fields" do
       post :create, params: {
-        site_id: ma_params[:site_id],
+        client_agency_id: ma_params[:client_agency_id],
         cbv_flow_invitation: cbv_flow_invitation_params
       }
       expect(response).to have_http_status(:found)
@@ -62,7 +62,7 @@ RSpec.describe Caseworker::CbvFlowInvitationsController, type: :controller do
       cbv_flow_invitation_params[:cbv_applicant_attributes].delete(:agency_id_number)
 
       post :create, params: {
-        site_id: "ma",
+        client_agency_id: "ma",
         cbv_flow_invitation: cbv_flow_invitation_params
       }
       expected_errors = [
@@ -75,11 +75,11 @@ RSpec.describe Caseworker::CbvFlowInvitationsController, type: :controller do
 
     it "redirects back to the caseworker dashboard" do
       post :create, params: {
-        site_id: ma_params[:site_id],
+        client_agency_id: ma_params[:client_agency_id],
         cbv_flow_invitation: cbv_flow_invitation_params
       }
 
-      expect(response).to redirect_to(caseworker_dashboard_path(site_id: ma_params[:site_id]))
+      expect(response).to redirect_to(caseworker_dashboard_path(client_agency_id: ma_params[:client_agency_id]))
     end
   end
 end

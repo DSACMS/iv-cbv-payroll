@@ -64,8 +64,8 @@ RSpec.describe CbvApplicant, type: :model do
       end
     end
 
-    context "when site_id is 'nyc'" do
-      let(:nyc_attributes) { valid_attributes.merge(site_id: 'nyc') }
+    context "when client_agency_id is 'nyc'" do
+      let(:nyc_attributes) { valid_attributes.merge(client_agency_id: 'nyc') }
 
       context "user input is valid" do
         it "formats a 9-character case number with leading zeros" do
@@ -146,8 +146,8 @@ RSpec.describe CbvApplicant, type: :model do
       end
     end
 
-    context "when site_id is 'ma'" do
-      let(:ma_attributes) { valid_attributes.merge(site_id: 'ma') }
+    context "when client_agency_id is 'ma'" do
+      let(:ma_attributes) { valid_attributes.merge(client_agency_id: 'ma') }
 
       context "user input is invalid" do
         it "requires agency_id_number" do
@@ -183,7 +183,7 @@ RSpec.describe CbvApplicant, type: :model do
         end
 
         it "does not require client_id_number" do
-          applicant = CbvApplicant.new(valid_attributes.merge(client_id_number: nil, site_id: "ma"))
+          applicant = CbvApplicant.new(valid_attributes.merge(client_id_number: nil, client_agency_id: "ma"))
           expect(applicant).not_to be_valid
           expect(applicant.errors[:client_id_number]).to be_empty
         end

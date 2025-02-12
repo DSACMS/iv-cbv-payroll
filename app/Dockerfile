@@ -115,12 +115,13 @@ RUN apt-get update -qq && \
         curl=7.88.1-10+deb12u8 \
         libgpgme11=1.18.0-3+b1 \
         libvips42=8.14.1-3+deb12u1 \
-        linux-libc-dev=6.1.123-1 \
+        linux-libc-dev=6.1.128-1 \
         openssl=3.0.15-1~deb12u1 \
         postgresql-client=15+248 \
         python-is-python3=3.11.2-1+deb12u1 \
         python3-venv=3.11.2-1+b1 \
-        unzip=6.0-28 && \
+        unzip=6.0-28 \
+        libtasn1-6=4.19.0-2+deb12u1 && \
     rm -rf /var/lib/apt/lists /var/cache/apt/archives && \
     curl "https://s3.amazonaws.com/aws-cli/awscli-bundle.zip" -o "awscli-bundle.zip" && \
     unzip awscli-bundle.zip && \
@@ -130,7 +131,8 @@ RUN apt-get update -qq && \
 # Remove base rexml for GHSA-4xqq-m2hx-25v8
 RUN gem uninstall -i /usr/local/lib/ruby/gems/3.3.0 debug && \
     gem uninstall -i /usr/local/lib/ruby/gems/3.3.0 rss && \
-    gem uninstall -i /usr/local/lib/ruby/gems/3.3.0 rexml
+    gem uninstall -i /usr/local/lib/ruby/gems/3.3.0 rexml && \
+    gem uninstall -i /usr/local/lib/ruby/gems/3.3.0 net-imap || true
 
 # Install custom db migrate script
 COPY bin/db-migrate /usr/bin/
@@ -138,6 +140,10 @@ COPY bin/db-migrate /usr/bin/
 # Copy built artifacts: gems, application, binary dependencies
 COPY --from=release-build /usr/local/bundle /usr/local/bundle
 COPY --from=release-build /rails /rails
+
+# Clean up any unused gems and ensure we have the correct versions
+RUN bundle clean --force && \
+    bundle install --no-cache
 
 # Ensure all necessary directories exist
 RUN mkdir -p /rails/tmp/pids /rails/log /rails/db

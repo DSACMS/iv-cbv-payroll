@@ -1,13 +1,13 @@
 FactoryBot.define do
   factory :cbv_applicant do
-    site_id { "sandbox" }
+    client_agency_id { "sandbox" }
     first_name { "Jane" }
     middle_name { "Sue" }
     last_name { "Doe" }
     snap_application_date { Date.yesterday.strftime("%m/%d/%Y") }
 
     trait :nyc do
-      site_id { "nyc" }
+      client_agency_id { "nyc" }
 
       case_number do
         number = 11.times.map { rand(10) }.join
@@ -24,6 +24,8 @@ FactoryBot.define do
     end
 
     trait :ma do
+      client_agency_id { "ma" }
+
       agency_id_number do
         7.times.map { rand(10) }.join
       end

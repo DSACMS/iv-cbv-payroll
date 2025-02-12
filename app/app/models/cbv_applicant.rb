@@ -21,7 +21,7 @@ class CbvApplicant < ApplicationRecord
 
   validates :first_name, presence: true
   validates :last_name, presence: true
-  validates :site_id, presence: true
+  validates :client_agency_id, presence: true
 
   # MA specific validations
   with_options(if: :ma_site?) do
@@ -53,7 +53,7 @@ class CbvApplicant < ApplicationRecord
 
   def self.create_from_invitation(cbv_flow_invitation)
     client = create!(
-      site_id: cbv_flow_invitation.site_id,
+      client_agency_id: cbv_flow_invitation.client_agency_id,
       case_number: cbv_flow_invitation.case_number,
       first_name: cbv_flow_invitation.first_name,
       middle_name: cbv_flow_invitation.middle_name,
@@ -68,11 +68,11 @@ class CbvApplicant < ApplicationRecord
   end
 
   def ma_site?
-    site_id == "ma"
+    client_agency_id == "ma"
   end
 
   def nyc_site?
-    site_id == "nyc"
+    client_agency_id == "nyc"
   end
 
   def parse_snap_application_date
@@ -89,7 +89,7 @@ class CbvApplicant < ApplicationRecord
         new_date_format = Date.strptime(raw_snap_application_date.to_s, "%m/%d/%Y")
         self.snap_application_date = new_date_format
       rescue Date::Error => e
-        case site_id
+        case client_agency_id
         when "ma"
           error = :ma_invalid_date
         when "nyc"

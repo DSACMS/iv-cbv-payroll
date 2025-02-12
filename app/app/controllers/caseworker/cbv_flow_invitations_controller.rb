@@ -5,10 +5,10 @@ class Caseworker::CbvFlowInvitationsController < Caseworker::BaseController
   helper_method :language_options
 
   def new
-    @site_id = site_id
-    @cbv_flow_invitation = CbvFlowInvitation.new(site_id: site_id)
+    @client_agency_id = client_agency_id
+    @cbv_flow_invitation = CbvFlowInvitation.new(client_agency_id: client_agency_id)
 
-    if @site_id == "ma"
+    if @client_agency_id == "ma"
       @cbv_flow_invitation.snap_application_date ||= Date.today
     end
   end
@@ -17,7 +17,7 @@ class Caseworker::CbvFlowInvitationsController < Caseworker::BaseController
     # handle errors from the mail service
     begin
       @cbv_flow_invitation = CbvInvitationService.new(event_logger).invite(
-        invitation_params.deep_merge(site_id: site_id, cbv_applicant_attributes: { site_id: site_id }),
+        invitation_params.deep_merge(client_agency_id: client_agency_id, cbv_applicant_attributes: { client_agency_id: client_agency_id }),
         current_user,
         delivery_method: :email
       )
@@ -26,7 +26,7 @@ class Caseworker::CbvFlowInvitationsController < Caseworker::BaseController
       flash[:alert] = t(".invite_failed",
                         email_address: invitation_params[:email_address],
                         error_message: e.message)
-      return redirect_to caseworker_dashboard_path(site_id: params[:site_id])
+      return redirect_to caseworker_dashboard_path(client_agency_id: params[:client_agency_id])
     end
 
     if @cbv_flow_invitation.errors.any?
@@ -49,7 +49,7 @@ class Caseworker::CbvFlowInvitationsController < Caseworker::BaseController
       message: t(".invite_success", email_address: invitation_params[:email_address]),
       type: "success"
     }
-    redirect_to caseworker_dashboard_path(site_id: params[:site_id])
+    redirect_to caseworker_dashboard_path(client_agency_id: params[:client_agency_id])
   end
 
   private
@@ -61,8 +61,8 @@ class Caseworker::CbvFlowInvitationsController < Caseworker::BaseController
   end
 
   def ensure_valid_params!
-    if site_config.site_ids.exclude?(site_id)
-      flash[:alert] = t("caseworker.cbv_flow_invitations.incorrect_site_id")
+    if agency_config.client_agency_ids.exclude?(client_agency_id)
+      flash[:alert] = t("caseworker.cbv_flow_invitations.incorrect_client_agency_id")
       redirect_to root_url
     end
   end
@@ -84,7 +84,7 @@ class Caseworker::CbvFlowInvitationsController < Caseworker::BaseController
     )
   end
 
-  def site_id
-    params[:site_id]
+  def client_agency_id
+    params[:client_agency_id]
   end
 end

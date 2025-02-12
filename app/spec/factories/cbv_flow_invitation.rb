@@ -1,6 +1,6 @@
 FactoryBot.define do
   factory :cbv_flow_invitation, class: "CbvFlowInvitation" do
-    site_id { "sandbox" }
+    client_agency_id { "sandbox" }
     email_address { "test@example.com" }
     language { :en }
     user
@@ -8,13 +8,13 @@ FactoryBot.define do
     cbv_applicant
 
     trait :nyc do
-      site_id { "nyc" }
+      client_agency_id { "nyc" }
 
       cbv_applicant { create(:cbv_applicant, :nyc) }
     end
 
     trait :ma do
-      site_id { "ma" }
+      client_agency_id { "ma" }
 
       cbv_applicant { create(:cbv_applicant, :ma) }
     end

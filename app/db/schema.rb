@@ -35,7 +35,7 @@ ActiveRecord::Schema[7.1].define(version: 2025_02_06_012936) do
     t.datetime "redacted_at"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.string "site_id"
+    t.string "client_agency_id"
   end
 
   create_table "cbv_flow_invitations", force: :cascade do |t|
@@ -44,7 +44,7 @@ ActiveRecord::Schema[7.1].define(version: 2025_02_06_012936) do
     t.string "auth_token"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.string "site_id"
+    t.string "client_agency_id"
     t.string "first_name", null: false
     t.string "middle_name"
     t.string "last_name", null: false
@@ -70,13 +70,13 @@ ActiveRecord::Schema[7.1].define(version: 2025_02_06_012936) do
     t.string "pinwheel_token_id"
     t.uuid "pinwheel_end_user_id", default: -> { "gen_random_uuid()" }, null: false
     t.jsonb "additional_information", default: {}
-    t.string "site_id"
+    t.string "client_agency_id"
     t.string "confirmation_code"
     t.datetime "transmitted_at"
-    t.datetime "consented_to_authorized_use_at"
     t.datetime "redacted_at"
     t.bigint "cbv_applicant_id"
     t.index ["cbv_applicant_id"], name: "index_cbv_flows_on_cbv_applicant_id"
+    t.datetime "consented_to_authorized_use_at"
     t.index ["cbv_flow_invitation_id"], name: "index_cbv_flows_on_cbv_flow_invitation_id"
   end
 
@@ -98,7 +98,7 @@ ActiveRecord::Schema[7.1].define(version: 2025_02_06_012936) do
   end
 
   create_table "users", force: :cascade do |t|
-    t.string "site_id", null: false
+    t.string "client_agency_id", null: false
     t.string "email", default: "", null: false
     t.string "encrypted_password", default: "", null: false
     t.string "reset_password_token"
@@ -113,7 +113,7 @@ ActiveRecord::Schema[7.1].define(version: 2025_02_06_012936) do
     t.datetime "updated_at", null: false
     t.jsonb "invalidated_session_ids"
     t.boolean "is_service_account", default: false
-    t.index ["email", "site_id"], name: "index_users_on_email_and_site_id", unique: true
+    t.index ["email", "client_agency_id"], name: "index_users_on_email_and_client_agency_id", unique: true
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
   end
 

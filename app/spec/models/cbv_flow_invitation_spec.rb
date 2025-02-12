@@ -2,7 +2,7 @@ require 'rails_helper'
 
 RSpec.describe CbvFlowInvitation, type: :model do
   let(:valid_attributes) do
-    attributes_for(:cbv_flow_invitation, :nyc).merge(user: create(:user, site_id: "nyc"))
+    attributes_for(:cbv_flow_invitation, :nyc).merge(user: create(:user, client_agency_id: "nyc"))
   end
   let(:invalid_email_no_tld) { "johndoe@gmail" }
   let(:valid_email) { "johndoe@gmail.com" }
@@ -53,18 +53,18 @@ RSpec.describe CbvFlowInvitation, type: :model do
   end
 
   describe "#expired?" do
-    let(:site_id) { "sandbox" }
+    let(:client_agency_id) { "sandbox" }
     let(:invitation_valid_days) { 14 }
     let(:invitation) do
       create(:cbv_flow_invitation, valid_attributes.merge(
-        site_id: site_id,
+        client_agency_id: client_agency_id,
         created_at: invitation_sent_at
       ))
     end
     let(:now) { Time.now }
 
     before do
-      allow(Rails.application.config.sites[site_id])
+      allow(Rails.application.config.client_agencies[client_agency_id])
         .to receive(:invitation_valid_days)
         .and_return(invitation_valid_days)
     end
@@ -109,18 +109,18 @@ RSpec.describe CbvFlowInvitation, type: :model do
   end
 
   describe "#expires_at" do
-    let(:site_id) { "sandbox" }
+    let(:client_agency_id) { "sandbox" }
     let(:invitation_valid_days) { 14 }
     let(:invitation) do
       create(:cbv_flow_invitation, valid_attributes.merge(
-        site_id: site_id,
+        client_agency_id: client_agency_id,
         created_at: invitation_sent_at
       ))
     end
     let(:invitation_sent_at) { Time.new(2024, 8,  1, 12, 0, 0, "-04:00") }
 
     before do
-      allow(Rails.application.config.sites[site_id])
+      allow(Rails.application.config.client_agencies[client_agency_id])
         .to receive(:invitation_valid_days).and_return(invitation_valid_days)
     end
 

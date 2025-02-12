@@ -8,7 +8,7 @@ RSpec.describe CbvFlow, type: :model do
       cbv_flow = CbvFlow.create_from_invitation(cbv_flow_invitation)
       expect(cbv_flow).to have_attributes(
         cbv_applicant: cbv_flow_invitation.cbv_applicant,
-        site_id: "sandbox"
+        client_agency_id: "sandbox"
       )
     end
   end
