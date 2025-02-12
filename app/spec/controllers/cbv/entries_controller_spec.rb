@@ -48,7 +48,7 @@ RSpec.describe Cbv::EntriesController do
           cbv_flow_id: be_a(Integer),
           timestamp: be_a(Integer),
           invitation_id: invitation.id,
-          site_id: invitation.site_id,
+          client_agency_id: invitation.client_agency_id,
           seconds_since_invitation: seconds_since_invitation
         ))
 
@@ -56,14 +56,14 @@ RSpec.describe Cbv::EntriesController do
           cbv_flow_id: be_a(Integer),
           timestamp: be_a(Integer),
           invitation_id: invitation.id,
-          site_id: invitation.site_id
+          client_agency_id: invitation.client_agency_id
         ))
 
         expect_any_instance_of(NewRelicEventTracker).to receive(:track).with("ApplicantClickedCBVInvitationLink", anything, hash_including(
           cbv_flow_id: be_a(Integer),
           timestamp: be_a(Integer),
           invitation_id: invitation.id,
-          site_id: invitation.site_id,
+          client_agency_id: invitation.client_agency_id,
           seconds_since_invitation: seconds_since_invitation
         ))
 
@@ -84,7 +84,7 @@ RSpec.describe Cbv::EntriesController do
           browser: be_a(String),
           invitation_id: invitation.id,
           cbv_flow_id: be_a(Integer),
-          site_id: invitation.site_id,
+          client_agency_id: invitation.client_agency_id,
           path: "/cbv/entry"
         ))
 
@@ -95,7 +95,7 @@ RSpec.describe Cbv::EntriesController do
           browser: be_a(String),
           invitation_id: invitation.id,
           cbv_flow_id: be_a(Integer),
-          site_id: invitation.site_id,
+          client_agency_id: invitation.client_agency_id,
           path: "/cbv/entry"
         ))
 
@@ -110,7 +110,7 @@ RSpec.describe Cbv::EntriesController do
           browser: be_a(String),
           invitation_id: invitation.id,
           cbv_flow_id: be_a(Integer),
-          site_id: invitation.site_id,
+          client_agency_id: invitation.client_agency_id,
           path: "/cbv/entry"
         ))
 
@@ -143,7 +143,7 @@ RSpec.describe Cbv::EntriesController do
             expect { get :show, params: { token: invitation.auth_token } }
               .not_to change { session[:cbv_flow_id] }
 
-            expect(response).to redirect_to(cbv_flow_expired_invitation_path(site_id: invitation.site_id))
+            expect(response).to redirect_to(cbv_flow_expired_invitation_path(client_agency_id: invitation.client_agency_id))
           end
         end
       end
@@ -184,7 +184,7 @@ RSpec.describe Cbv::EntriesController do
           expect { get :show, params: { token: invitation.auth_token } }
             .not_to change { session[:cbv_flow_id] }
 
-          expect(response).to redirect_to(cbv_flow_expired_invitation_path(site_id: invitation.site_id))
+          expect(response).to redirect_to(cbv_flow_expired_invitation_path(client_agency_id: invitation.client_agency_id))
         end
       end
     end
