@@ -23,7 +23,7 @@ class Cbv::SummariesController < Cbv::BaseController
       format.pdf do
         event_logger.track("ApplicantDownloadedIncomePDF", request, {
           timestamp: Time.now.to_i,
-          site_id: @cbv_flow.site_id,
+          client_agency_id: @cbv_flow.client_agency_id,
           cbv_flow_id: @cbv_flow.id,
           invitation_id: @cbv_flow.cbv_flow_invitation_id,
           locale: I18n.locale
@@ -56,12 +56,12 @@ class Cbv::SummariesController < Cbv::BaseController
     end
 
     if @cbv_flow.confirmation_code.blank?
-      confirmation_code = generate_confirmation_code(@cbv_flow.site_id)
+      confirmation_code = generate_confirmation_code(@cbv_flow.client_agency_id)
       @cbv_flow.update(confirmation_code: confirmation_code)
     end
 
-    if !current_site.transmission_method.present?
-      Rails.logger.info("No transmission method found for site #{current_site.id}")
+    if !current_agency.transmission_method.present?
+      Rails.logger.info("No transmission method found for client agency #{current_agency.id}")
     else
       transmit_to_caseworker
     end
@@ -77,10 +77,10 @@ class Cbv::SummariesController < Cbv::BaseController
   end
 
   def transmit_to_caseworker
-    case current_site.transmission_method
+    case current_agency.transmission_method
     when "shared_email"
       CaseworkerMailer.with(
-        email_address: current_site.transmission_method_configuration.dig("email"),
+        email_address: current_agency.transmission_method_configuration.dig("email"),
         cbv_flow: @cbv_flow,
         payments: @payments,
         employments: @employments,
@@ -90,7 +90,7 @@ class Cbv::SummariesController < Cbv::BaseController
       @cbv_flow.touch(:transmitted_at)
       track_transmitted_event(@cbv_flow, @payments)
     when "s3"
-      config = current_site.transmission_method_configuration
+      config = current_agency.transmission_method_configuration
       public_key = config["public_key"]
 
       if public_key.blank?
@@ -158,7 +158,7 @@ class Cbv::SummariesController < Cbv::BaseController
         tmp_encrypted_tar.close! if tmp_encrypted_tar
       end
     else
-      raise "Unsupported transmission method: #{current_site.transmission_method}"
+      raise "Unsupported transmission method: #{current_agency.transmission_method}"
     end
   end
 
@@ -190,10 +190,10 @@ class Cbv::SummariesController < Cbv::BaseController
   def track_transmitted_event(cbv_flow, payments)
     event_logger.track("ApplicantSharedIncomeSummary", request, {
       timestamp: Time.now.to_i,
-      site_id: cbv_flow.site_id,
+      client_agency_id: cbv_flow.client_agency_id,
       cbv_flow_id: cbv_flow.id,
       invitation_id: cbv_flow.cbv_flow_invitation_id,
-      account_count: payments.map { |p| p[:account_id] }.uniq.count,
+      account_count: cbv_flow.pinwheel_accounts.count,
       paystub_count: payments.count,
       account_count_with_additional_information:
         cbv_flow.additional_information.values.count { |info| info["comment"].present? },
@@ -207,10 +207,10 @@ class Cbv::SummariesController < Cbv::BaseController
   def track_accessed_income_summary_event(cbv_flow, payments)
     event_logger.track("ApplicantAccessedIncomeSummary", request, {
       timestamp: Time.now.to_i,
-      site_id: cbv_flow.site_id,
+      client_agency_id: cbv_flow.client_agency_id,
       cbv_flow_id: cbv_flow.id,
       invitation_id: cbv_flow.cbv_flow_invitation_id,
-      account_count: payments.map { |p| p.account_id }.uniq.count,
+      account_count: cbv_flow.pinwheel_accounts.count,
       paystub_count: payments.count,
       account_count_with_additional_information:
         cbv_flow.additional_information.values.count { |info| info["comment"].present? },

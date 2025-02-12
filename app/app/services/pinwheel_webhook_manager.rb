@@ -17,7 +17,7 @@ class PinwheelWebhookManager
   ]
 
   def initialize
-    @sandbox_config = Rails.application.config.sites["sandbox"]
+    @sandbox_config = Rails.application.config.client_agencies["sandbox"]
     @pinwheel = PinwheelService.new(@sandbox_config.pinwheel_environment)
   end
 

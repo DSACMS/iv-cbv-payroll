@@ -10,7 +10,7 @@
     <%= render "help_topic_link", topic: "provider", text: t("help.index.provider") %>
     <%= render "help_topic_link", topic: "credentials", text: t("help.index.credentials") %>
 
-    <% if current_site && current_site.caseworker_feedback_form.present? %>
+    <% if current_agency && current_agency.caseworker_feedback_form.present? %>
       <%= link_to feedback_form_url, class: "usa-button margin-bottom-1 height-5 text-left display-block", target: "_blank" do %>
         <%= t("help.index.feedback") %>
       <% end %>

@@ -13,7 +13,7 @@ require "action_mailer/railtie"
 require "action_view/railtie"
 require "action_cable/engine"
 # require "rails/test_unit/railtie"
-require_relative "../lib/site_config.rb"
+require_relative "../lib/client_agency_config.rb"
 
 # Require the gems listed in Gemfile, including any gems
 # you've limited to :test, :development, or :production.
@@ -40,7 +40,7 @@ module IvCbvPayroll
     config.autoload_paths += %W[#{config.root}/lib]
     config.autoload_paths += %W[#{config.root}/app/helpers]
     config.autoload_paths += %W[#{config.root}/app/controllers/concerns]
-    config.sites = SiteConfig.new(Rails.root.join("config", "site-config.yml"))
+    config.client_agencies = ClientAgencyConfig.new(Rails.root.join("config", "client-agency-config.yml"))
 
     # See: https://guides.rubyonrails.org/active_record_encryption.html#setup
     config.active_record.encryption.primary_key = ENV["ACTIVE_RECORD_ENCRYPTION_PRIMARY_KEY"]
