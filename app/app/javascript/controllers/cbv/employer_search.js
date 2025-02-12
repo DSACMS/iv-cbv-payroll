@@ -14,9 +14,8 @@ export default class extends Controller {
   }
 
   initialize() {
-    const IncomeDataAdapter = createIncomeDataAdapter("pinwheel");
-
     const { responseType, id, name, isDefaultOption, provider } = this.element.dataset;
+    const IncomeDataAdapter = createIncomeDataAdapter(provider);
 
     this.IncomeDataAdapter = new IncomeDataAdapter({
       requestData: {
