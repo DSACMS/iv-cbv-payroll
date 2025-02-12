@@ -9,7 +9,7 @@ exports[`PinwheelIncomeDataAdapter > open > should call track user action 1`] = 
     "item_name": "test-name",
     "item_type": "response-type",
     "locale": "en",
-    "provider": "pinwheel",
+    "provider_name": "pinwheel",
   },
 ]
 `;

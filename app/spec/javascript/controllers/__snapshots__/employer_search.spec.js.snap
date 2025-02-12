@@ -9,7 +9,7 @@ exports[`EmployerSearchController button click > calls trackUserAction with data
     "item_name": "test-name",
     "item_type": "csv",
     "locale": "en",
-    "provider": "pinwheel",
+    "provider_name": "pinwheel",
   },
 ]
 `;
