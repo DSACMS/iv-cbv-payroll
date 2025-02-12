@@ -10,21 +10,22 @@ RSpec.describe WeeklyReportMailer, type: :mailer do
   let(:snap_app_date) { now.strftime("%Y-%m-%d") }
   let(:cbv_flow_invitation) do
     create(:cbv_flow_invitation,
-           client_agency_id.to_sym,
-           created_at: invitation_sent_at,
-           snap_application_date: invitation_sent_at - 1.day,
-          )
+      client_agency_id.to_sym,
+      created_at: invitation_sent_at
+    )
   end
   let(:cbv_flow) do
     create(
       :cbv_flow, :with_pinwheel_account,
-      case_number: cbv_flow_invitation.case_number,
       confirmation_code: "00001",
       created_at: invitation_sent_at + 15.minutes,
       client_agency_id: client_agency_id,
       transmitted_at: invitation_sent_at + 30.minutes,
-      cbv_flow_invitation_id: cbv_flow_invitation.id,
-      consented_to_authorized_use_at: invitation_sent_at + 30.minutes
+      cbv_flow_invitation: cbv_flow_invitation,
+      consented_to_authorized_use_at: invitation_sent_at + 30.minutes,
+      cbv_applicant_attributes: {
+        snap_application_date: invitation_sent_at - 1.day
+      }
     )
   end
   let(:mail) do
@@ -73,9 +74,9 @@ RSpec.describe WeeklyReportMailer, type: :mailer do
     expect(mail.attachments.first.content_type).to start_with('text/csv')
 
     expect(parsed_csv[0]).to match(
-      "client_id_number" => cbv_flow_invitation.client_id_number,
+      "client_id_number" => cbv_flow_invitation.cbv_applicant.client_id_number,
       "transmitted_at" => "2024-09-04 13:30:00 UTC",
-      "case_number" => cbv_flow.case_number,
+      "case_number" => cbv_flow_invitation.cbv_applicant.case_number,
       "invited_at" => "2024-09-04 13:00:00 UTC",
       "snap_application_date" => "2024-09-03",
       "completed_at" => "2024-09-04 13:30:00 UTC",
@@ -90,7 +91,7 @@ RSpec.describe WeeklyReportMailer, type: :mailer do
     it "excludes the record from the CSV" do
       expect(parsed_csv.length).to eq(0)
       expect(parsed_csv).not_to include(hash_including(
-        "client_id_number" => cbv_flow_invitation.client_id_number
+        "client_id_number" => cbv_flow_invitation.cbv_applicant.client_id_number
       ))
     end
   end
@@ -113,9 +114,9 @@ RSpec.describe WeeklyReportMailer, type: :mailer do
     it "includes them in the CSV data" do
       expect(parsed_csv.length).to eq(2)
       expect(parsed_csv).to include(hash_including(
-        "client_id_number" => incomplete_invitation.client_id_number,
+        "client_id_number" => incomplete_invitation.cbv_applicant.client_id_number,
         "transmitted_at" => nil,
-        "case_number" => incomplete_invitation.case_number,
+        "case_number" => incomplete_invitation.cbv_applicant.case_number,
         "invited_at" => "2024-09-04 13:00:00 UTC",
         "snap_application_date" => match(/\d\d\d\d-\d\d-\d\d/),
         "completed_at" => nil,
@@ -132,9 +133,9 @@ RSpec.describe WeeklyReportMailer, type: :mailer do
       expect(mail.attachments.first.content_type).to start_with('text/csv')
 
       expect(parsed_csv[0]).to match(
-        "beacon_id" => cbv_flow_invitation.beacon_id,
+        "beacon_id" => cbv_flow_invitation.cbv_applicant.beacon_id,
         "transmitted_at" => "2024-09-04 13:30:00 UTC",
-        "agency_id_number" => cbv_flow_invitation.agency_id_number,
+        "agency_id_number" => cbv_flow_invitation.cbv_applicant.agency_id_number,
         "invited_at" => "2024-09-04 13:00:00 UTC",
         "snap_application_date" => "2024-09-03",
         "completed_at" => "2024-09-04 13:30:00 UTC",

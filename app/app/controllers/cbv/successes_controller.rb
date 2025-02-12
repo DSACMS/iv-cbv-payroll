@@ -8,6 +8,7 @@ class Cbv::SuccessesController < Cbv::BaseController
   def track_accessed_success_event
     event_logger.track("ApplicantAccessedSuccessPage", request, {
       timestamp: Time.now.to_i,
+      cbv_applicant_id: @cbv_flow.cbv_applicant_id,
       cbv_flow_id: @cbv_flow.id,
       invitation_id: @cbv_flow.cbv_flow_invitation_id
     })

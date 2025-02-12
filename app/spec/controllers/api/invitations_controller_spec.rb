@@ -9,33 +9,40 @@ RSpec.describe Api::InvitationsController do
     end
 
     let(:valid_params) do
-      attributes_for(:cbv_flow_invitation,
-        client_agency_id: "ma",
-        beacon_id: "ABC123",
-        agency_id_number: "7890120"
-      )
+      attributes_for(:cbv_flow_invitation, :ma).tap do |params|
+        params[:agency_partner_metadata] = attributes_for(:cbv_applicant, :ma)
+      end
     end
 
     before do
       request.headers["Authorization"] = "Bearer #{api_access_token.access_token}"
     end
 
-    it "creates an invitation" do
-      post :create, params: valid_params
+    it "creates an invitation with an associated cbv_applicant" do
+      expect do
+        post :create, params: valid_params
+      end.to change(CbvFlowInvitation, :count).by(1)
+        .and change(CbvApplicant, :count).by(1)
+
       expect(response).to have_http_status(:created)
       expect(JSON.parse(response.body).keys).to include("url")
     end
 
     context "invalid params" do
       let(:invalid_params) do
-        valid_params.except(:first_name)
+        valid_params[:agency_partner_metadata].delete(:first_name)
+        valid_params.delete(:client_agency_id)
+        valid_params
       end
 
       it "returns unprocessable entity" do
         post :create, params: invalid_params
 
         expect(response).to have_http_status(:unprocessable_entity)
-        expect(JSON.parse(response.body).keys).to include("first_name")
+        parsed_response = JSON.parse(response.body)
+        expect(parsed_response.keys).not_to include("cbv_applicant")
+        expect(parsed_response.keys).to include("client_agency_id")
+        expect(parsed_response.keys).to include("agency_partner_metadata.first_name")
       end
     end
 

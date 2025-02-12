@@ -35,7 +35,9 @@ RSpec.describe Caseworker::CbvFlowInvitationsController, type: :controller do
 
   describe "#create" do
     let(:cbv_flow_invitation_params) do
-      attributes_for(:cbv_flow_invitation, client_agency_id: "ma", beacon_id: "ABC123", agency_id_number: "7890120")
+      attributes_for(:cbv_flow_invitation, :ma).merge(
+        cbv_applicant_attributes: attributes_for(:cbv_applicant, :ma)
+      )
     end
 
     it "creates a CbvFlowInvitation record with the ma fields" do
@@ -43,25 +45,29 @@ RSpec.describe Caseworker::CbvFlowInvitationsController, type: :controller do
         client_agency_id: ma_params[:client_agency_id],
         cbv_flow_invitation: cbv_flow_invitation_params
       }
+      expect(response).to have_http_status(:found)
 
       invitation = CbvFlowInvitation.all.last
       expect(invitation.first_name).to eq("Jane")
       expect(invitation.middle_name).to eq("Sue")
       expect(invitation.last_name).to eq("Doe")
-      expect(invitation.agency_id_number).to eq("7890120")
+      expect(invitation.agency_id_number).to eq(cbv_flow_invitation_params[:cbv_applicant_attributes][:agency_id_number])
       expect(invitation.email_address).to eq("test@example.com")
-      expect(invitation.snap_application_date).to eq(Time.zone.today)
-      expect(invitation.beacon_id).to eq("ABC123")
+      expect(invitation.snap_application_date).to eq(Date.yesterday)
+      expect(invitation.beacon_id).to eq(cbv_flow_invitation_params[:cbv_applicant_attributes][:beacon_id])
     end
 
     it "requires the ma fields" do
+      cbv_flow_invitation_params[:cbv_applicant_attributes].delete(:beacon_id)
+      cbv_flow_invitation_params[:cbv_applicant_attributes].delete(:agency_id_number)
+
       post :create, params: {
         client_agency_id: "ma",
-        cbv_flow_invitation: cbv_flow_invitation_params.except(:beacon_id, :agency_id_number)
+        cbv_flow_invitation: cbv_flow_invitation_params
       }
       expected_errors = [
-        I18n.t('activerecord.errors.models.cbv_flow_invitation.attributes.agency_id_number.invalid_format'),
-        I18n.t('activerecord.errors.models.cbv_flow_invitation.attributes.beacon_id.invalid_format')
+        I18n.t('activerecord.errors.models.cbv_applicant.attributes.agency_id_number.invalid_format'),
+        I18n.t('activerecord.errors.models.cbv_applicant.attributes.beacon_id.invalid_format')
       ]
       expected_error_message = "<ul><li>#{expected_errors.join('</li><li>')}</li></ul>"
       expect(flash[:alert]).to eq(expected_error_message)

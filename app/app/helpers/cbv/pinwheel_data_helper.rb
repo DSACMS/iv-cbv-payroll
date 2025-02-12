@@ -2,9 +2,9 @@ module Cbv::PinwheelDataHelper
   include ViewHelper
 
   def set_payments(account_id = nil)
-    invitation = @cbv_flow.cbv_flow_invitation
-    to_pay_date = invitation.snap_application_date
-    from_pay_date = invitation.paystubs_query_begins_at
+    applicant = @cbv_flow.cbv_applicant
+    to_pay_date = applicant.snap_application_date
+    from_pay_date = applicant.paystubs_query_begins_at
     @payments =
       if account_id.nil?
         fetch_paystubs(from_pay_date, to_pay_date)
@@ -36,7 +36,7 @@ module Cbv::PinwheelDataHelper
       next unless pinwheel_account.job_succeeded?("identity")
 
       pinwheel.fetch_identity(account_id: pinwheel_account.pinwheel_account_id)
-    end
+    end.compact
   end
 
   def hours_by_earning_category(earnings)
