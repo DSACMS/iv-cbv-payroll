@@ -10,7 +10,7 @@
   <p><%= t(".caseworker_received", agency_acronym: current_agency.agency_short_name) %></p>
   <p><%= t(".if_it_didnt_work", agency_acronym: current_agency.agency_short_name) %></p>
 
-  <p><%= t(".check_status.#{@cbv_flow.client_agency_id}") %></p>
+  <p><%= agency_translation(".check_status") %></p>
 
 <%= link_to cbv_flow_summary_path(format: "pdf"), target: "_blank", rel: "noopener noreferrer", class: "usa-button margin-top-3 usa-button--primary" do %>
   <%= t(".download") %>

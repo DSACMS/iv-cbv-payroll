@@ -129,9 +129,4 @@ RSpec.describe ApplicationHelper do
       expect(helper.coalesce_to_completed(:in_progress)).to eq(:in_progress)
     end
   end
-
-  before(:each) do
-    puts "Helper class: #{helper.class}"
-    puts "Helper methods: #{helper.methods}"
-  end
 end
