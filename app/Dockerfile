@@ -131,7 +131,9 @@ RUN apt-get update -qq && \
 # Remove base rexml for GHSA-4xqq-m2hx-25v8
 RUN gem uninstall -i /usr/local/lib/ruby/gems/3.3.0 debug && \
     gem uninstall -i /usr/local/lib/ruby/gems/3.3.0 rss && \
-    gem uninstall -i /usr/local/lib/ruby/gems/3.3.0 rexml
+    gem uninstall -i /usr/local/lib/ruby/gems/3.3.0 rexml && \
+    gem uninstall -i /usr/local/lib/ruby/gems/3.3.0 net-imap || true && \
+    gem install net-imap -v 0.4.19
 
 # Install custom db migrate script
 COPY bin/db-migrate /usr/bin/
