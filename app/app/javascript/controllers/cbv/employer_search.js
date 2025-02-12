@@ -13,15 +13,15 @@ export default class extends Controller {
   }
 
   initialize() {
-    const { responseType, id, name, isDefaultOption, provider } = this.element.dataset;
-    const IncomeDataAdapter = createIncomeDataAdapter(provider);
+    const { responseType, id, name, isDefaultOption, providerName } = this.element.dataset;
+    const IncomeDataAdapter = createIncomeDataAdapter(providerName);
 
     this.IncomeDataAdapter = new IncomeDataAdapter({
       requestData: {
-        responseType: responseType,
+        responseType,
         id,
-        isDefaultOption: isDefaultOption,
-        provider,
+        isDefaultOption,
+        providerName,
         name
       },
       onSuccess: this.onSuccess.bind(this),

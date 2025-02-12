@@ -9,7 +9,7 @@ interface RequestData {
     responseType: string;
     id: string;
     isDefaultOption: boolean;
-    provider: string;
+    providerName: string;
     name: string;
 }
 export abstract class IncomeDataAdapter {

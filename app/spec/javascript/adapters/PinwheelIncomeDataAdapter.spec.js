@@ -12,7 +12,7 @@ const pinwheelIncomeDataAdapterArgs = {
     requestData: {
         responseType: "response-type",
         id: "id",
-        provider: "pinwheel",
+        providerName: "pinwheel",
         name: "test-name",
         isDefaultOption: true,
     }

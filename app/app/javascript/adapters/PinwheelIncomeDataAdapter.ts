@@ -29,7 +29,7 @@ export default class PinwheelIncomeDataAdapter extends IncomeDataAdapter {
             item_id: this.requestData.id,
             item_name: this.requestData.name,
             is_default_option: this.requestData.isDefaultOption,
-            provider: this.requestData.provider,
+            provider_name: this.requestData.providerName,
             locale
         })
 

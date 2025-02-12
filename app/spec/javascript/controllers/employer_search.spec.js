@@ -55,7 +55,7 @@ describe('EmployerSearchController button click', () => {
         stimulusElement.setAttribute('data-id', 'test-id')
         stimulusElement.setAttribute('data-is-default-option', false)
         stimulusElement.setAttribute('data-name', 'test-name')
-        stimulusElement.setAttribute('data-provider', 'pinwheel')
+        stimulusElement.setAttribute('data-provider-name', 'pinwheel')
         document.body.appendChild(stimulusElement)
 
         vi.spyOn(stimulusElement, 'addEventListener')
