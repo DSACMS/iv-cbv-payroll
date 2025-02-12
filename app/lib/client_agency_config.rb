@@ -31,6 +31,7 @@ class ClientAgencyConfig
       pay_income_days
       pinwheel_api_token
       pinwheel_environment
+      argyle_environment
       staff_portal_enabled
       sso
       transmission_method
@@ -50,6 +51,7 @@ class ClientAgencyConfig
       @logo_square_path = yaml["logo_square_path"]
       @pay_income_days = yaml["pay_income_days"]
       @pinwheel_environment = yaml["pinwheel"]["environment"] || "sandbox"
+      @argyle_environment = yaml["argyle"]["environment"] || "sandbox"
       @transmission_method = yaml["transmission_method"]
       @transmission_method_configuration = yaml["transmission_method_configuration"]
       @staff_portal_enabled = yaml["staff_portal_enabled"]
