@@ -128,19 +128,16 @@ RUN apt-get update -qq && \
     ./awscli-bundle/install -i /usr/local/aws -b /usr/local/bin/aws && \
     rm -rf ./awscli-bundle awscli-bundle.zip
 
-# Remove base rexml for GHSA-4xqq-m2hx-25v8
-RUN gem uninstall -i /usr/local/lib/ruby/gems/3.3.0 debug && \
-    gem uninstall -i /usr/local/lib/ruby/gems/3.3.0 rss && \
-    gem uninstall -i /usr/local/lib/ruby/gems/3.3.0 rexml && \
-    gem uninstall -i /usr/local/lib/ruby/gems/3.3.0 net-imap || true && \
-    gem install net-imap -v 0.4.19
-
 # Install custom db migrate script
 COPY bin/db-migrate /usr/bin/
 
 # Copy built artifacts: gems, application, binary dependencies
 COPY --from=release-build /usr/local/bundle /usr/local/bundle
 COPY --from=release-build /rails /rails
+
+# Clean up any unused gems and ensure we have the correct versions
+RUN bundle clean --force && \
+    bundle install --no-cache
 
 # Ensure all necessary directories exist
 RUN mkdir -p /rails/tmp/pids /rails/log /rails/db
