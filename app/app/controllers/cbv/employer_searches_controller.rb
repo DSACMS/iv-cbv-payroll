@@ -21,20 +21,11 @@ class Cbv::EmployerSearchesController < Cbv::BaseController
   private
 
   def provider_search(query = "")
-    ProviderSearchService.new(@cbv_flow.site_id).search(query)
+    ProviderSearchService.new(@cbv_flow.client_agency_id).search(query)
   end
 
   def search_params
     params.slice(:query, :type)
-  end
-
-  def fetch_employers(query = "")
-    request_params = {
-      q: query,
-      supported_jobs: [ "paystubs" ]
-    }
-
-    pinwheel.fetch_items(request_params)["data"]
   end
 
   def track_clicked_popular_payroll_providers_event

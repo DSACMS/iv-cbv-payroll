@@ -23,6 +23,6 @@ class ProviderSearchService
   private
 
   def site_config
-    Rails.application.config.sites
+    Rails.application.config.client_agencies
   end
 end
