@@ -120,7 +120,8 @@ RUN apt-get update -qq && \
         postgresql-client=15+248 \
         python-is-python3=3.11.2-1+deb12u1 \
         python3-venv=3.11.2-1+b1 \
-        unzip=6.0-28 && \
+        unzip=6.0-28 \
+        libtasn1-6=4.19.0-2+deb12u1 && \
     rm -rf /var/lib/apt/lists /var/cache/apt/archives && \
     curl "https://s3.amazonaws.com/aws-cli/awscli-bundle.zip" -o "awscli-bundle.zip" && \
     unzip awscli-bundle.zip && \
