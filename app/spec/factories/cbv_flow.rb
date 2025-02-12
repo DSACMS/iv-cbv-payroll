@@ -3,7 +3,7 @@ FactoryBot.define do
     association :cbv_flow_invitation, factory: [ :cbv_flow_invitation ]
 
     case_number { "ABC1234" }
-    site_id { "sandbox" }
+    client_agency_id { "sandbox" }
 
     trait :completed do
       consented_to_authorized_use_at { 10.minutes.ago }
