@@ -13,21 +13,32 @@ interface RequestData {
     name: string;
 }
 export abstract class IncomeDataAdapter {
-    requestData: RequestData;
+    requestData?: RequestData;
     successCallback?: Function;
     exitCallback?: Function;
 
-    abstract load();
     abstract open(): void;
     abstract onEvent(eventName: string, eventPayload: any): void;
+    load() {};
 
-    constructor(args: IncomeDataAdapterArgs) {
-        this.successCallback = args.onSuccess;
-        this.exitCallback = args.onExit;
-        this.requestData = args.requestData;
-
+    constructor() {
         this.load();
     }
+
+    init(args: IncomeDataAdapterArgs) {
+
+        if (args.onSuccess) {
+            this.successCallback = args.onSuccess;
+        }
+
+        if (args.onExit) {
+            this.exitCallback = args.onExit;
+
+        }
+        if (args.requestData) {
+            this.requestData = args.requestData;
+        }
+    } 
 
     async onExit(eventPayload: any) {
         if (this.exitCallback) {

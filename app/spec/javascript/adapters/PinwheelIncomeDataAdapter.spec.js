@@ -26,7 +26,8 @@ describe('PinwheelIncomeDataAdapter', () => {
         
     beforeEach(async () => {
         mockPinwheel();
-        adapter = new PinwheelIncomeDataAdapter(pinwheelIncomeDataAdapterArgs)
+        adapter = new PinwheelIncomeDataAdapter()
+        adapter.init(pinwheelIncomeDataAdapterArgs)
         triggers = await adapter.open()
     })
     afterEach(() => {

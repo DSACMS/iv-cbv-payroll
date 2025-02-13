@@ -13,28 +13,20 @@ export default class extends Controller {
   }
 
   initialize() {
-    const { responseType, id, name, isDefaultOption, providerName } = this.element.dataset;
+    const { providerName } = this.element.dataset;
     const IncomeDataAdapter = createIncomeDataAdapter(providerName);
 
-    this.IncomeDataAdapter = new IncomeDataAdapter({
-      requestData: {
-        responseType,
-        id,
-        isDefaultOption,
-        providerName,
-        name
-      },
-      onSuccess: this.onSuccess.bind(this),
-      onExit: this.onExit.bind(this)
-    })
+    this.adapter = new IncomeDataAdapter()
   }
 
-  connect() {
+  async connect() {
     this.errorHandler = this.element.addEventListener("turbo:frame-missing", this.onTurboError)
+
   }
 
   disconnect() {
     this.element.removeEventListener("turbo:frame-missing", this.errorHandler)
+    delete(this.IncomeDataAdapter)
   }
 
   onTurboError(event) {
@@ -52,7 +44,20 @@ export default class extends Controller {
 
   async select(event) {
     this.disableButtons()
-    await this.IncomeDataAdapter.open()
+
+    const { responseType, id, name, isDefaultOption, providerName } = this.element.dataset;
+    this.adapter.init({
+      requestData: {
+        responseType,
+        id,
+        isDefaultOption,
+        providerName,
+        name
+      },
+      onSuccess: this.onSuccess.bind(this),
+      onExit: this.onExit.bind(this)
+    })
+    await this.adapter.open()
   }
 
   disableButtons() {

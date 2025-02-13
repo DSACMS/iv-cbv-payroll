@@ -21,26 +21,28 @@ export default class PinwheelIncomeDataAdapter extends IncomeDataAdapter {
             });
         })
     }
-
+    
     async open() {
         const locale = getDocumentLocale();
-        await trackUserAction("ApplicantSelectedEmployerOrPlatformItem", {
-            item_type: this.requestData.responseType,
-            item_id: this.requestData.id,
-            item_name: this.requestData.name,
-            is_default_option: this.requestData.isDefaultOption,
-            provider_name: this.requestData.providerName,
-            locale
-        })
+        if (this.requestData) {
+            await trackUserAction("ApplicantSelectedEmployerOrPlatformItem", {
+                item_type: this.requestData.responseType,
+                item_id: this.requestData.id,
+                item_name: this.requestData.name,
+                is_default_option: this.requestData.isDefaultOption,
+                provider_name: this.requestData.providerName,
+                locale
+            })
 
-        const { token } = await fetchToken(this.requestData.responseType, this.requestData.id, locale);
+            const { token } = await fetchToken(this.requestData.responseType, this.requestData.id, locale);
 
-        return this.Pinwheel.open({
-            linkToken: token,
-            onSuccess: this.onSuccess.bind(this),
-            onExit: this.onExit.bind(this),
-            onEvent: this.onEvent.bind(this),
-        });
+            return this.Pinwheel.open({
+                linkToken: token,
+                onSuccess: this.onSuccess.bind(this),
+                onExit: this.onExit.bind(this),
+                onEvent: this.onEvent.bind(this),
+            });
+        }
     }
 
 
