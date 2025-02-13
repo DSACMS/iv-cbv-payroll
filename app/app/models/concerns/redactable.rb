@@ -42,7 +42,10 @@ module Redactable
   end
 
   def redact!
-    self.class.fields_to_redact.each do |field, type|
+    fields_to_redact = self.class.fields_to_redact || self.class.superclass.fields_to_redact
+    raise "No fields to redact in #{self.class} (or its superclass)" unless fields_to_redact.present?
+
+    fields_to_redact.each do |field, type|
       self[field] = REDACTION_REPLACEMENTS[type]
     end
     self[REDACTED_TIMESTAMP_COLUMN] = Time.now

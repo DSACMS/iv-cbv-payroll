@@ -37,7 +37,7 @@ RSpec.describe CbvApplicant, type: :model do
         applicant = CbvApplicant.new(valid_attributes.merge(snap_application_date: nil))
         expect(applicant).not_to be_valid
         expect(applicant.errors[:snap_application_date]).to include(
-          I18n.t('activerecord.errors.models.cbv_applicant.attributes.snap_application_date.nyc_invalid_date'),
+          I18n.t('activerecord.errors.models.cbv_applicant/nyc.attributes.snap_application_date.nyc_invalid_date'),
         )
       end
 
@@ -45,7 +45,7 @@ RSpec.describe CbvApplicant, type: :model do
         applicant = CbvApplicant.new(valid_attributes.merge(snap_application_date: Date.tomorrow))
         expect(applicant).not_to be_valid
         expect(applicant.errors[:snap_application_date]).to include(
-          I18n.t('activerecord.errors.models.cbv_applicant.attributes.snap_application_date.nyc_invalid_date')
+          I18n.t('activerecord.errors.models.cbv_applicant/nyc.attributes.snap_application_date.nyc_invalid_date')
         )
       end
 
@@ -59,7 +59,7 @@ RSpec.describe CbvApplicant, type: :model do
         applicant = CbvApplicant.new(valid_attributes.merge(snap_application_date: "invalid"))
         expect(applicant).not_to be_valid
         expect(applicant.errors[:snap_application_date]).to include(
-          I18n.t('activerecord.errors.models.cbv_applicant.attributes.snap_application_date.nyc_invalid_date')
+          I18n.t('activerecord.errors.models.cbv_applicant/nyc.attributes.snap_application_date.nyc_invalid_date')
         )
       end
     end
@@ -84,7 +84,7 @@ RSpec.describe CbvApplicant, type: :model do
           applicant = CbvApplicant.new(nyc_attributes.merge(snap_application_date: 31.days.ago))
           expect(applicant).not_to be_valid
           expect(applicant.errors[:snap_application_date]).to include(
-            I18n.t('activerecord.errors.models.cbv_applicant.attributes.snap_application_date.nyc_invalid_date')
+            I18n.t('activerecord.errors.models.cbv_applicant/nyc.attributes.snap_application_date.nyc_invalid_date')
           )
         end
       end
@@ -94,7 +94,7 @@ RSpec.describe CbvApplicant, type: :model do
           applicant = CbvApplicant.new(nyc_attributes.merge(case_number: nil))
           expect(applicant).not_to be_valid
           expect(applicant.errors[:case_number]).to include(
-            I18n.t('activerecord.errors.models.cbv_applicant.attributes.case_number.invalid_format'),
+            I18n.t('activerecord.errors.models.cbv_applicant/nyc.attributes.case_number.invalid_format'),
           )
         end
 
@@ -102,7 +102,7 @@ RSpec.describe CbvApplicant, type: :model do
           applicant = CbvApplicant.new(nyc_attributes.merge(case_number: 'invalid'))
           expect(applicant).not_to be_valid
           expect(applicant.errors[:case_number]).to include(
-            I18n.t('activerecord.errors.models.cbv_applicant.attributes.case_number.invalid_format')
+            I18n.t('activerecord.errors.models.cbv_applicant/nyc.attributes.case_number.invalid_format')
           )
         end
 
@@ -110,7 +110,7 @@ RSpec.describe CbvApplicant, type: :model do
           applicant = CbvApplicant.new(nyc_attributes.merge(case_number: '123A'))
           expect(applicant).not_to be_valid
           expect(applicant.errors[:case_number]).to include(
-            I18n.t('activerecord.errors.models.cbv_applicant.attributes.case_number.invalid_format')
+            I18n.t('activerecord.errors.models.cbv_applicant/nyc.attributes.case_number.invalid_format')
           )
         end
 
@@ -124,7 +124,7 @@ RSpec.describe CbvApplicant, type: :model do
           applicant = CbvApplicant.new(nyc_attributes.merge(client_id_number: 'invalid'))
           expect(applicant).not_to be_valid
           expect(applicant.errors[:client_id_number]).to include(
-            I18n.t('activerecord.errors.models.cbv_applicant.attributes.client_id_number.invalid_format')
+            I18n.t('activerecord.errors.models.cbv_applicant/nyc.attributes.client_id_number.invalid_format')
           )
         end
 
@@ -132,7 +132,7 @@ RSpec.describe CbvApplicant, type: :model do
           applicant = CbvApplicant.new(nyc_attributes.merge(snap_application_date: "invalid"))
           expect(applicant).not_to be_valid
           expect(applicant.errors[:snap_application_date]).to include(
-            I18n.t('activerecord.errors.models.cbv_applicant.attributes.snap_application_date.nyc_invalid_date')
+            I18n.t('activerecord.errors.models.cbv_applicant/nyc.attributes.snap_application_date.nyc_invalid_date')
           )
         end
 
@@ -140,7 +140,7 @@ RSpec.describe CbvApplicant, type: :model do
           applicant = CbvApplicant.new(nyc_attributes.merge(client_id_number: nil))
           expect(applicant).not_to be_valid
           expect(applicant.errors[:client_id_number]).to include(
-            I18n.t('activerecord.errors.models.cbv_applicant.attributes.client_id_number.invalid_format')
+            I18n.t('activerecord.errors.models.cbv_applicant/nyc.attributes.client_id_number.invalid_format')
           )
         end
       end
@@ -154,7 +154,7 @@ RSpec.describe CbvApplicant, type: :model do
           applicant = CbvApplicant.new(ma_attributes)
           expect(applicant).not_to be_valid
           expect(applicant.errors[:agency_id_number]).to include(
-            I18n.t('activerecord.errors.models.cbv_applicant.attributes.agency_id_number.invalid_format'),
+            I18n.t('activerecord.errors.models.cbv_applicant/ma.attributes.agency_id_number.invalid_format'),
           )
         end
 
@@ -162,7 +162,7 @@ RSpec.describe CbvApplicant, type: :model do
           applicant = CbvApplicant.new(ma_attributes)
           expect(applicant).not_to be_valid
           expect(applicant.errors[:beacon_id]).to include(
-            I18n.t('activerecord.errors.models.cbv_applicant.attributes.beacon_id.invalid_format')
+            I18n.t('activerecord.errors.models.cbv_applicant/ma.attributes.beacon_id.invalid_format')
           )
         end
 
@@ -170,7 +170,7 @@ RSpec.describe CbvApplicant, type: :model do
           applicant = CbvApplicant.new(ma_attributes.merge(beacon_id: '12345'))
           expect(applicant).not_to be_valid
           expect(applicant.errors[:beacon_id]).to include(
-            I18n.t('activerecord.errors.models.cbv_applicant.attributes.beacon_id.invalid_format')
+            I18n.t('activerecord.errors.models.cbv_applicant/ma.attributes.beacon_id.invalid_format')
           )
         end
 
@@ -178,7 +178,7 @@ RSpec.describe CbvApplicant, type: :model do
           applicant = CbvApplicant.new(ma_attributes.merge(agency_id_number: 'invalid'))
           expect(applicant).not_to be_valid
           expect(applicant.errors[:agency_id_number]).to include(
-            I18n.t('activerecord.errors.models.cbv_applicant.attributes.agency_id_number.invalid_format')
+            I18n.t('activerecord.errors.models.cbv_applicant/ma.attributes.agency_id_number.invalid_format')
           )
         end
 

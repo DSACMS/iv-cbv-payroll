@@ -66,8 +66,8 @@ RSpec.describe Caseworker::CbvFlowInvitationsController, type: :controller do
         cbv_flow_invitation: cbv_flow_invitation_params
       }
       expected_errors = [
-        I18n.t('activerecord.errors.models.cbv_applicant.attributes.agency_id_number.invalid_format'),
-        I18n.t('activerecord.errors.models.cbv_applicant.attributes.beacon_id.invalid_format')
+        I18n.t('activerecord.errors.models.cbv_applicant/ma.attributes.agency_id_number.invalid_format'),
+        I18n.t('activerecord.errors.models.cbv_applicant/ma.attributes.beacon_id.invalid_format')
       ]
       expected_error_message = "<ul><li>#{expected_errors.join('</li><li>')}</li></ul>"
       expect(flash[:alert]).to eq(expected_error_message)
