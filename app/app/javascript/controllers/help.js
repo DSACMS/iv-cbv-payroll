@@ -9,7 +9,7 @@ export default class extends Controller {
                 if (event.target.href?.includes('#help-modal')) {
                   trackUserAction('ApplicantOpenedHelpModal', event.target.dataset.source)
                 }
-              }
+                  }
 
         document.addEventListener('click', this.handleClick)
   }
