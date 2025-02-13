@@ -10,14 +10,23 @@
 # $ git commit --no-verify
 # $ git commit -n
 
+# Check if there are any staged changes
+if git diff --cached --quiet; then
+    echo "No changes to commit"
+    exit 0
+fi
+
 echo "Running linter..."
-bundle exec rake standard
+(cd app && bundle exec rubocop --autocorrect-all)
 linter_status=$?
 
 if [ $linter_status -ne 0 ]; then
-    echo "Fix above before committing. Run 'git commit -n' to bypass linter."
+    echo "Fix remaining linting issues before committing. Run 'git commit -n' to bypass linter."
     exit 1
 fi
+
+# Stage the files that were auto-corrected by RuboCop
+git add app/**/*.rb
 
 echo "Running JavaScript/TypeScript formatter..."
 (cd app && npm run format)
@@ -40,18 +49,15 @@ COMMIT_MSG_FILE=$1
 # Get the current branch name
 BRANCH_NAME=$(git symbolic-ref --short HEAD)
 
-# Extract the ticket number from the branch name
-# This sed command looks for 'ffs' followed by an optional single character delimiter,
-# then captures all following digits
-TICKET=$(echo $BRANCH_NAME | sed -E 's/.*ffs[-_]?([0-9]+).*/\1/' | tr '[:lower:]' '[:upper:]')
-
-if [ -n "$TICKET" ]; then
+# Only proceed if branch starts with ffs- or FFS- followed by numbers
+if [[ $BRANCH_NAME =~ ^[Ff][Ff][Ss]-([0-9]+) ]]; then
+    TICKET="${BASH_REMATCH[1]}"
+    
     # Read the current commit message
     COMMIT_MSG=$(cat $COMMIT_MSG_FILE)
 
     # Check if the commit message already starts with the ticket number
     if [[ $COMMIT_MSG != FFS-$TICKET:* ]]; then
-        # Prepend the ticket number to the commit message
-        sed -i.bak "1s/^/FFS-$TICKET: /" $COMMIT_MSG_FILE
+        sed -i.bak '1s|^|FFS-'"$TICKET"': |' "$COMMIT_MSG_FILE"
     fi
 fi
