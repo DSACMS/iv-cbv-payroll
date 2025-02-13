@@ -1,19 +1,19 @@
-import { vi } from 'vitest';
-import { Application } from '@hotwired/stimulus';
+import { vi } from 'vitest'
+import { Application } from '@hotwired/stimulus'
 
 // Set up Stimulus
-window.Stimulus = Application.start();
+window.Stimulus = Application.start()
 
 // Mock CSRF token
 document.head.innerHTML = `
   <meta name="csrf-token" content="test-csrf-token">
-`;
+`
 
 // Mock fetch API
-global.fetch = vi.fn();
+global.fetch = vi.fn()
 
 // Mock window.matchMedia
-window.matchMedia = vi.fn().mockImplementation(query => ({
+window.matchMedia = vi.fn().mockImplementation((query) => ({
   matches: false,
   media: query,
   onchange: null,
@@ -22,17 +22,17 @@ window.matchMedia = vi.fn().mockImplementation(query => ({
   addEventListener: vi.fn(),
   removeEventListener: vi.fn(),
   dispatchEvent: vi.fn(),
-}));
+}))
 
 // Reset all mocks before each test
 beforeEach(() => {
-  vi.clearAllMocks();
-  fetch.mockReset();
-});
+  vi.clearAllMocks()
+  fetch.mockReset()
+})
 
 // Clean up after each test
 afterEach(() => {
   document.head.innerHTML = `
     <meta name="csrf-token" content="test-csrf-token">
-  `;
-}); 
+  `
+})
