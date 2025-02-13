@@ -20,7 +20,7 @@ if [ $linter_status -ne 0 ]; then
 fi
 
 echo "Running JavaScript/TypeScript formatter..."
-cd app && npm run format
+(cd app && npm run format)
 
 echo "Running Terraform formatter"
 files=$(git diff --cached --name-only terraform)
