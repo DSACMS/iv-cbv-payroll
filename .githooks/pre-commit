@@ -20,14 +20,7 @@ if [ $linter_status -ne 0 ]; then
 fi
 
 echo "Running JavaScript/TypeScript formatter..."
-# Get all staged .js, .jsx, .ts, and .tsx files from specific directories
-js_files=$(git diff --cached --name-only --diff-filter=ACMR "app/app/javascript/**/*.js" "app/app/javascript/**/*.jsx" "app/app/javascript/**/*.ts" "app/app/javascript/**/*.tsx" "app/spec/javascript/**/*.js" "app/spec/javascript/**/*.jsx" "app/spec/javascript/**/*.ts" "app/spec/javascript/**/*.tsx" | sed 's| |\\ |g')
-if [ -n "$js_files" ]; then
-    # Format the files
-    cd app && npx prettier --write $js_files
-    # Add the formatted files back to staging
-    git add $js_files
-fi
+cd app && npm run format
 
 echo "Running Terraform formatter"
 files=$(git diff --cached --name-only terraform)

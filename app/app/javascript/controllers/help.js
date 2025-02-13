@@ -2,19 +2,19 @@ import { Controller } from '@hotwired/stimulus'
 import { trackUserAction } from '../utilities/help'
 
 export default class extends Controller {
-  static targets = ['iframe']
+                  static targets = ['iframe']
 
-        connect() {
-    this.handleClick = (event) => {
-      if (event.target.href?.includes('#help-modal')) {
-        trackUserAction('ApplicantOpenedHelpModal', event.target.dataset.source)
-      }
-    }
+                  connect() {
+              this.handleClick = (event) => {
+                if (event.target.href?.includes('#help-modal')) {
+                  trackUserAction('ApplicantOpenedHelpModal', event.target.dataset.source)
+                }
+              }
 
-    document.addEventListener('click', this.handleClick)
+        document.addEventListener('click', this.handleClick)
   }
 
-  disconnect() {
+          disconnect() {
     document.removeEventListener('click', this.handleClick)
   }
 
