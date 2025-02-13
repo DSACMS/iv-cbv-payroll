@@ -14,7 +14,7 @@ export default class extends Controller {
         document.addEventListener('click', this.handleClick)
   }
 
-          disconnect() {
+              disconnect() {
     document.removeEventListener('click', this.handleClick)
   }
 
