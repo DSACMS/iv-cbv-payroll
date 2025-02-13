@@ -31,22 +31,26 @@ class Api::UserEventsController < ApplicationController
       timestamp: Time.now.to_i
     }
 
-    @cbv_flow = CbvFlow.find(session[:cbv_flow_id])
+    if session[:cbv_flow_id].present?
+      @cbv_flow = CbvFlow.find(session[:cbv_flow_id])
 
-    if @cbv_flow.present?
       base_attributes.merge!({
         cbv_flow_id: @cbv_flow.id,
         invitation_id: @cbv_flow.cbv_flow_invitation_id
       })
     end
 
-    event_name = user_action_params[:event_name]
-    event_attributes = user_action_params[:attributes].merge(base_attributes)
+    if user_action_params[:attributes].present?
+      event_attributes = user_action_params[:attributes].merge(base_attributes)
+    else
+      event_attributes = base_attributes
+    end
 
+    event_name = user_action_params[:event_name]
     if EVENT_NAMES.include?(event_name)
       # Map to the new Mixpanel event name if present, otherwise just send NewRelic the Pinwheel name
       mixpanel_event_type = MIXPANEL_EVENT_MAP[event_name] || event_name
-      
+
       event_logger.track(
         mixpanel_event_type,
         request,
@@ -57,6 +61,7 @@ class Api::UserEventsController < ApplicationController
     end
 
     render json: { status: :ok }
+
   rescue => ex
     raise ex unless Rails.env.production?
 
@@ -68,6 +73,6 @@ class Api::UserEventsController < ApplicationController
 
   def user_action_params
     # params.permit(:event_name, :source)
-    params.fetch(:pinwheel, {}).permit(:event_name, :locale, attributes: {})
+    params.fetch(:events, {}).permit(:event_name, :source, :locale, attributes: {})
   end
 end

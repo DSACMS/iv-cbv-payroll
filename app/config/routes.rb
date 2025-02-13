@@ -64,10 +64,9 @@ Rails.application.routes.draw do
 
     scope :pinwheel do
       post "/tokens" => "pinwheel#create_token"
-      post "/user_action" => "user_events#user_action"
     end
 
-    scope :help do
+    scope :events do
       post :user_action, to: "user_events#user_action"
     end
   end

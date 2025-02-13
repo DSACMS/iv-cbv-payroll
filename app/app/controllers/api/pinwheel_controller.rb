@@ -18,10 +18,6 @@ class Api::PinwheelController < ApplicationController
 
   private
 
-  def user_action_params
-    params.fetch(:pinwheel, {}).permit(:event_name, :locale, attributes: {})
-  end
-
   def token_params
     params.require(:pinwheel).permit(:response_type, :id, :locale)
   end
