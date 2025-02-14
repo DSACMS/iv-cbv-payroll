@@ -14,10 +14,7 @@ RSpec.describe Cbv::PinwheelDataHelper, type: :helper do
   end
 
   let(:employment) do
-    PinwheelService::Employment.new(
-      load_relative_json_file('request_employment_info_response.json')['data'],
-      environment: PinwheelService::ENVIRONMENTS[:sandbox]
-    )
+    ResponseObjects::Employment.from_pinwheel(load_relative_json_file('request_employment_info_response.json')['data'])
   end
 
   let(:incomes) do

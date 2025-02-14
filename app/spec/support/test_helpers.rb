@@ -43,7 +43,7 @@ module TestHelpers
         "title" => nil
       }
 
-      PinwheelService::Employment.new(fields, environment: PinwheelService::ENVIRONMENTS[:sandbox])
+      ResponseObjects::Employment.from_pinwheel(fields)
     end
   end
 

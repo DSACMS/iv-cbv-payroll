@@ -114,7 +114,7 @@ class PinwheelService
       super(*params)
     end
   end
-  Employment = Class.new(ResponseObject)
+  # Employment = Class.new(ResponseObject)
   Identity = Class.new(ResponseObject)
   Income = Class.new(ResponseObject)
 
@@ -168,7 +168,7 @@ class PinwheelService
   def fetch_employment(account_id:)
     json = @http.get(build_url("#{ACCOUNTS_ENDPOINT}/#{account_id}/employment")).body
 
-    Employment.new(json["data"], environment: @environment)
+    ResponseObjects::Employment.from_pinwheel(json["data"])
   end
 
   def fetch_identity(account_id:)
