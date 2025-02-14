@@ -13,7 +13,7 @@ class MixpanelEventTracker
     invitation_id = attributes.fetch(:invitation_id, "")
     distinct_id = ""
     if invitation_id.present?
-      distinct_id = "invitation-#{invitation_id}"
+      distinct_id = "applicant-#{invitation_id}"
 
       # This creates a profile for a distinct user
       flow_id = attributes.fetch(:cbv_flow_id, "")
