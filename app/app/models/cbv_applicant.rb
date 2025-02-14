@@ -1,15 +1,23 @@
 class CbvApplicant < ApplicationRecord
-  # Massachusetts: 7 digits
-  MA_AGENCY_ID_REGEX = /\A\d{7}\z/
+  # We use Single-Table Inheritance (STI) to create subclasses of this table
+  # logic to process subsets of the columns of this model relevant to each
+  # partner agency.
+  #
+  # The subclass is automatically instantiated by setting `client_agency_id`.
+  # For example, `client_agency_id = "ma"` will result in instantiating an
+  # instance of the CbvApplicant::Ma subclass, which contains all of its
+  # indexing data validations.
+  self.inheritance_column = "client_agency_id"
 
-  # Massachusetts: 6 alphanumeric characters
-  MA_BEACON_ID_REGEX = /\A[a-zA-Z0-9]{6}\z/
+  def self.sti_name
+    # "CbvApplicant::Ma" => "ma"
+    name.demodulize.downcase
+  end
 
-  # New York City: 11 digits followed by 1 uppercase letter
-  NYC_CASE_NUMBER_REGEX = /\A\d{11}[A-Z]\z/
-
-  # New York City: 2 uppercase letters, followed by 5 digits, followed by 1 uppercase letter
-  NYC_CLIENT_ID_REGEX = /\A[A-Z]{2}\d{5}[A-Z]\z/
+  def self.sti_class_for(type_name)
+    # "ma" => CbvApplicant::Ma
+    CbvApplicant.const_get(type_name.capitalize)
+  end
 
   PAYSTUB_REPORT_RANGE = 90.days
 
@@ -17,27 +25,10 @@ class CbvApplicant < ApplicationRecord
   has_many :cbv_flow_invitations
 
   before_validation :parse_snap_application_date
-  before_validation :format_case_number
 
   validates :first_name, presence: true
   validates :last_name, presence: true
   validates :client_agency_id, presence: true
-
-  # MA specific validations
-  with_options(if: :ma_site?) do
-    validates :agency_id_number, format: { with: MA_AGENCY_ID_REGEX, message: :invalid_format }
-    validates :beacon_id, format: { with: MA_BEACON_ID_REGEX, message: :invalid_format }
-    validate :ma_snap_application_date_not_more_than_1_year_ago
-    validate :ma_snap_application_date_not_in_future
-  end
-
-  # NYC specific validations
-  with_options(if: :nyc_site?) do
-    validates :case_number, format: { with: NYC_CASE_NUMBER_REGEX, message: :invalid_format }
-    validates :client_id_number, format: { with: NYC_CLIENT_ID_REGEX, message: :invalid_format }
-    validate :nyc_snap_application_date_not_more_than_30_days_ago
-    validate :nyc_snap_application_date_not_in_future
-  end
 
   include Redactable
   has_redactable_fields(
@@ -67,12 +58,8 @@ class CbvApplicant < ApplicationRecord
     client
   end
 
-  def ma_site?
-    client_agency_id == "ma"
-  end
-
-  def nyc_site?
-    client_agency_id == "nyc"
+  def paystubs_query_begins_at
+    PAYSTUB_REPORT_RANGE.before(snap_application_date)
   end
 
   def parse_snap_application_date
@@ -88,53 +75,9 @@ class CbvApplicant < ApplicationRecord
       begin
         new_date_format = Date.strptime(raw_snap_application_date.to_s, "%m/%d/%Y")
         self.snap_application_date = new_date_format
-      rescue Date::Error => e
-        case client_agency_id
-        when "ma"
-          error = :ma_invalid_date
-        when "nyc"
-          error = :nyc_invalid_date
-        else
-          error = :default_invalid_date
-        end
-        errors.add(:snap_application_date, error)
+      rescue Date::Error
+        errors.add(:snap_application_date, :invalid_date)
       end
     end
-  end
-
-  def ma_snap_application_date_not_in_future
-    if snap_application_date.present? && snap_application_date > Date.current
-      errors.add(:snap_application_date, :ma_invalid_date)
-    end
-  end
-
-  def ma_snap_application_date_not_more_than_1_year_ago
-    if snap_application_date.present? && snap_application_date < 1.year.ago.to_date
-      errors.add(:snap_application_date, :ma_invalid_date)
-    end
-  end
-
-  def nyc_snap_application_date_not_in_future
-    if snap_application_date.present? && snap_application_date > Date.current
-      errors.add(:snap_application_date, :nyc_invalid_date)
-    end
-  end
-
-  def nyc_snap_application_date_not_more_than_30_days_ago
-    if snap_application_date.present? && snap_application_date < 30.day.ago.to_date
-      errors.add(:snap_application_date, :nyc_invalid_date)
-    end
-  end
-
-  def format_case_number
-    return if case_number.blank?
-    case_number.upcase!
-    if case_number.length == 9
-      self.case_number = "000#{case_number}"
-    end
-  end
-
-  def paystubs_query_begins_at
-    PAYSTUB_REPORT_RANGE.before(snap_application_date)
   end
 end

@@ -129,7 +129,7 @@ ignore_missing:
     - "caseworker.entries.*"
     # Caseworker emails that are only supported in English:
     - "activerecord.errors.models.cbv_flow_invitation.*"
-    - "activerecord.errors.models.cbv_applicant.*"
+    - "activerecord.errors.models.cbv_applicant*"
     - "caseworker_mailer.summary_email.*"
     # Caseworker PDF strings that are only supported in English:
     - "cbv.summaries.show.pdf.caseworker.*"
