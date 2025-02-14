@@ -72,7 +72,6 @@ class Api::UserEventsController < ApplicationController
   private
 
   def user_action_params
-    # params.permit(:event_name, :source)
     params.fetch(:events, {}).permit(:event_name, :source, :locale, attributes: {})
   end
 end

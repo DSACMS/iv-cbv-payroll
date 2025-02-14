@@ -3,10 +3,10 @@ import { fetchInternal } from './fetchInternal';
 export const PINWHEEL_USER_ACTION = '/api/events/user_action';
 export const PINWHEEL_TOKENS_GENERATE = '/api/pinwheel/tokens';
 
-export const trackUserAction = (eventName, attributes, scope="events") => {
+export const trackUserAction = (eventName, attributes) => {
   return fetchInternal(PINWHEEL_USER_ACTION, {
     method: 'post',
-    body: JSON.stringify({ [scope]: { event_name: eventName, attributes } }),
+    body: JSON.stringify({ events: { event_name: eventName, attributes } }),
   })
 };
 
