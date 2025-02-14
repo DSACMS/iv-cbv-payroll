@@ -6,8 +6,9 @@ PAYSTUB_FIELDS = %i[
   pay_period_start
   pay_period_end
   pay_date
-  earnings
   deductions
+  hours_by_earning_category
+  hours
 ]
 
 module ResponseObjects
@@ -21,14 +22,10 @@ module ResponseObjects
         pay_period_start: response_body["pay_period_start"],
         pay_period_end: response_body["pay_period_end"],
         pay_date: response_body["pay_date"],
-        earnings: response_body["earnings"].map do |earning|
-          PaystubEarning.new(
-            category: earning["category"],
-            hours: earning["hours"],
-          )
-        end,
+        hours: PinwheelMethods.hours(response_body["earnings"]),
+        hours_by_earning_category: PinwheelMethods.hours_by_earning_category(response_body["earnings"]),
         deductions: response_body["deductions"].map do |deduction|
-          PaystubDeduction.new(
+          OpenStruct.new(
             category: deduction["category"],
             amount: deduction["amount"],
           )
@@ -38,11 +35,13 @@ module ResponseObjects
 
     alias_attribute :start, :pay_period_start
     alias_attribute :end, :pay_period_end
+  end
 
-    def hours
+  module PinwheelMethods
+    def self.hours(earnings)
       base_hours = earnings
-        .filter { |e| e.category != "overtime" }
-        .map { |e| e.hours }
+        .filter { |e| e["category"] != "overtime" }
+        .map { |e| e["hours"] }
         .compact
         .max
       return unless base_hours
@@ -53,27 +52,17 @@ module ResponseObjects
       #
       # See FFS-1773.
       overtime_hours = earnings
-        .filter { |e| e.category == "overtime" }
-        .sum { |e| e.hours || 0.0 }
+        .filter { |e| e["category"] == "overtime" }
+        .sum { |e| e["hours"] || 0.0 }
 
       base_hours + overtime_hours
     end
 
-    def hours_by_earning_category
+    def self.hours_by_earning_category(earnings)
       earnings
-        .filter { |e| e.hours && e.hours > 0 }
-        .group_by { |e| e.category }
-        .transform_values { |earnings| earnings.sum { |e| e.hours } }
+        .filter { |e| e["hours"] && e["hours"] > 0 }
+        .group_by { |e| e["category"] }
+        .transform_values { |earnings| earnings.sum { |e| e["hours"] } }
     end
   end
-
-  PaystubEarning = Struct.new(
-    :category,
-    :hours,
-  )
-
-  PaystubDeduction = Struct.new(
-    :category,
-    :amount,
-  )
 end

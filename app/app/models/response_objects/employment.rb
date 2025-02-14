@@ -17,13 +17,8 @@ module ResponseObjects
         start_date: response_body["start_date"],
         termination_date: response_body["termination_date"],
         status: response_body["status"],
-        employer_phone_number: OpenStruct.new(
-          value: response_body["employer_phone_number"]["value"],
-          type: response_body["employer_phone_number"]["type"],
-        ),
-        employer_address: OpenStruct.new(
-          raw: response_body["employer_address"]["raw"],
-        ),
+        employer_phone_number: response_body["employer_phone_number"]["value"],
+        employer_address: response_body["employer_address"]["raw"]
       )
     end
   end

@@ -93,8 +93,8 @@
     <% end %>
     <% if summary[:has_employment_data] %>
       <% employment = summary[:employment] %>
-      <%= table.with_data_point(:employer_phone, employment.employer_phone_number.value) %>
-      <%= table.with_data_point(:employer_address, employment.employer_address.raw) %>
+      <%= table.with_data_point(:employer_phone, employment.employer_phone_number) %>
+      <%= table.with_data_point(:employer_address, employment.employer_address) %>
       <%= table.with_data_point(:employment_status, employment.status) %>
       <%= table.with_data_point(:employment_start_date, employment.start_date) %>
       <%= table.with_data_point(:employment_end_date, employment.termination_date) %>
