@@ -17,7 +17,13 @@ class MixpanelEventTracker
 
       # This creates a profile for a distinct user
       flow_id = attributes.fetch(:cbv_flow_id, "")
-      @tracker.people.set(distinct_id, { cbv_flow_id: flow_id })
+
+      tracker_attrs =  { cbv_flow_id: flow_id }
+      if request.present?
+        tracker_attrs.merge!({ ip: request.ip })
+      end
+
+      @tracker.people.set(distinct_id, tracker_attrs)
     end
 
     # MaybeLater tries to run this code after the request has finished
