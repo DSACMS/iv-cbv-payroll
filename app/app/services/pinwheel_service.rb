@@ -180,7 +180,7 @@ class PinwheelService
   def fetch_income(account_id:)
     json = @http.get(build_url("#{ACCOUNTS_ENDPOINT}/#{account_id}/income")).body
 
-    Income.new(json["data"], environment: @environment)
+    ResponseObjects::Income.from_pinwheel(json["data"])
   end
 
   def fetch_platform(platform_id:)

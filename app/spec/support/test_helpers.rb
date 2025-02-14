@@ -60,7 +60,7 @@ module TestHelpers
         "pay_frequency" => "bi-weekly"
       }
 
-      PinwheelService::Income.new(fields, environment: PinwheelService::ENVIRONMENTS[:sandbox])
+      ResponseObjects::Income.from_pinwheel(fields)
     end
   end
 
