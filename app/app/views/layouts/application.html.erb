@@ -23,7 +23,7 @@
             <div class="usa-alert usa-alert--info">
               <div class="usa-alert__body">
                 <div class="usa-alert__heading">Information</div>
-                <p class="usa-alert__text"><%= flash[:notice] %></p>
+                <div class="usa-alert__text"><%= flash[:notice] %></div>
               </div>
             </div>
           <% end %>
@@ -32,7 +32,7 @@
             <div class="usa-alert usa-alert--<%= flash[:alert_type] || "error" %>">
               <div class="usa-alert__body">
                 <div class="usa-alert__heading"><%= flash[:alert_heading] || "Error" %></div>
-                <p class="usa-alert__text"><%= flash[:alert].html_safe %></p>
+                <div class="usa-alert__text"><%= flash[:alert].html_safe %></div>
               </div>
             </div>
           <% end %>
@@ -40,13 +40,13 @@
           <% if flash[:slim_alert] %>
             <div class="usa-alert usa-alert--<%= flash[:slim_alert]["type"] %> usa-alert--slim">
               <div class="usa-alert__body">
-                <p class="usa-alert__text">
+                <div class="usa-alert__text">
                   <% if flash[:slim_alert]["message_html"] %>
                     <%= flash[:slim_alert]["message_html"].html_safe %>
                   <% elsif flash[:slim_alert]["message"] %>
                     <%= flash[:slim_alert]["message"] %>
                   <% end %>
-                </p>
+                </div>
               </div>
             </div>
           <% end %>

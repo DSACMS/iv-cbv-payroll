@@ -33,28 +33,29 @@ class WeeklyReportMailer < ApplicationMailer
     CbvFlowInvitation
       .where(client_agency_id: current_agency.id)
       .where(created_at: report_range)
-      .includes(:cbv_flows)
+      .includes(:cbv_flows, :cbv_applicant)
       .map do |invitation|
         cbv_flow = invitation.cbv_flows.find(&:complete?)
+        applicant = invitation.cbv_applicant
 
         base_fields = {
           invited_at: invitation.created_at,
           transmitted_at: cbv_flow&.transmitted_at,
           completed_at: cbv_flow&.consented_to_authorized_use_at,
-          snap_application_date: invitation.snap_application_date,
+          snap_application_date: applicant.snap_application_date,
           email_address: invitation.email_address
         }
 
         case current_agency.id
         when "nyc"
           base_fields.merge(
-            client_id_number: invitation.client_id_number,
-            case_number: invitation.case_number,
+            client_id_number: applicant.client_id_number,
+            case_number: applicant.case_number,
           )
         when "ma"
           base_fields.merge(
-            agency_id_number: invitation.agency_id_number,
-            beacon_id: invitation.beacon_id
+            agency_id_number: applicant.agency_id_number,
+            beacon_id: applicant.beacon_id
           )
         end
       end

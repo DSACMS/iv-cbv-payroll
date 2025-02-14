@@ -3,7 +3,11 @@ require "rails_helper"
 RSpec.describe CbvInvitationService, type: :service do
   let(:event_logger) { instance_double('GenericEventTracker') }
   let(:service) { described_class.new(event_logger) }
-  let(:cbv_flow_invitation_params) { attributes_for(:cbv_flow_invitation) }
+  let(:cbv_flow_invitation_params) do
+    attributes_for(:cbv_flow_invitation).merge(
+      cbv_applicant_attributes: attributes_for(:cbv_applicant)
+    )
+  end
   let(:current_user) { create(:user) }
 
   before do

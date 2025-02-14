@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2025_02_05_215840) do
+ActiveRecord::Schema[7.1].define(version: 2025_02_06_012936) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pgcrypto"
   enable_extension "plpgsql"
@@ -23,7 +23,7 @@ ActiveRecord::Schema[7.1].define(version: 2025_02_05_215840) do
     t.datetime "updated_at", null: false
   end
 
-  create_table "cbv_clients", force: :cascade do |t|
+  create_table "cbv_applicants", force: :cascade do |t|
     t.string "case_number"
     t.string "first_name", null: false
     t.string "middle_name"
@@ -35,6 +35,7 @@ ActiveRecord::Schema[7.1].define(version: 2025_02_05_215840) do
     t.datetime "redacted_at"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.string "client_agency_id"
   end
 
   create_table "cbv_flow_invitations", force: :cascade do |t|
@@ -55,8 +56,8 @@ ActiveRecord::Schema[7.1].define(version: 2025_02_05_215840) do
     t.bigint "user_id"
     t.string "language"
     t.datetime "invitation_reminder_sent_at"
-    t.bigint "cbv_client_id"
-    t.index ["cbv_client_id"], name: "index_cbv_flow_invitations_on_cbv_client_id"
+    t.bigint "cbv_applicant_id"
+    t.index ["cbv_applicant_id"], name: "index_cbv_flow_invitations_on_cbv_applicant_id"
     t.index ["user_id"], name: "index_cbv_flow_invitations_on_user_id"
   end
 
@@ -72,10 +73,10 @@ ActiveRecord::Schema[7.1].define(version: 2025_02_05_215840) do
     t.string "client_agency_id"
     t.string "confirmation_code"
     t.datetime "transmitted_at"
-    t.datetime "consented_to_authorized_use_at"
     t.datetime "redacted_at"
-    t.bigint "cbv_client_id"
-    t.index ["cbv_client_id"], name: "index_cbv_flows_on_cbv_client_id"
+    t.bigint "cbv_applicant_id"
+    t.index ["cbv_applicant_id"], name: "index_cbv_flows_on_cbv_applicant_id"
+    t.datetime "consented_to_authorized_use_at"
     t.index ["cbv_flow_invitation_id"], name: "index_cbv_flows_on_cbv_flow_invitation_id"
   end
 

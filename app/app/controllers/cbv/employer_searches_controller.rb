@@ -6,7 +6,7 @@ class Cbv::EmployerSearchesController < Cbv::BaseController
 
   def show
     @query = search_params[:query]
-    @employers = @query.blank? ? [] : fetch_employers(@query)
+    @employers = @query.blank? ? [] : provider_search(@query)
     @has_pinwheel_account = @cbv_flow.pinwheel_accounts.any?
     @selected_tab = search_params[:type] || "payroll"
 
@@ -20,22 +20,18 @@ class Cbv::EmployerSearchesController < Cbv::BaseController
 
   private
 
-  def search_params
-    params.slice(:query, :type)
+  def provider_search(query = "")
+    ProviderSearchService.new(@cbv_flow.client_agency_id).search(query)
   end
 
-  def fetch_employers(query = "")
-    request_params = {
-      q: query,
-      supported_jobs: [ "paystubs" ]
-    }
-
-    pinwheel.fetch_items(request_params)["data"]
+  def search_params
+    params.slice(:query, :type)
   end
 
   def track_clicked_popular_payroll_providers_event
     event_logger.track("ApplicantClickedPopularPayrollProviders", request, {
       timestamp: Time.now.to_i,
+      cbv_applicant_id: @cbv_flow.cbv_applicant_id,
       cbv_flow_id: @cbv_flow.id,
       invitation_id: @cbv_flow.cbv_flow_invitation_id
     })
@@ -46,6 +42,7 @@ class Cbv::EmployerSearchesController < Cbv::BaseController
   def track_clicked_popular_app_employers_event
     event_logger.track("ApplicantClickedPopularAppEmployers", request, {
       timestamp: Time.now.to_i,
+      cbv_applicant_id: @cbv_flow.cbv_applicant_id,
       cbv_flow_id: @cbv_flow.id,
       invitation_id: @cbv_flow.cbv_flow_invitation_id
     })
@@ -58,6 +55,7 @@ class Cbv::EmployerSearchesController < Cbv::BaseController
 
     event_logger.track("ApplicantAccessedSearchPage", request, {
       timestamp: Time.now.to_i,
+      cbv_applicant_id: @cbv_flow.cbv_applicant_id,
       cbv_flow_id: @cbv_flow.id,
       invitation_id: @cbv_flow.cbv_flow_invitation_id
     })
@@ -70,6 +68,7 @@ class Cbv::EmployerSearchesController < Cbv::BaseController
 
     event_logger.track("ApplicantSearchedForEmployer", request, {
       timestamp: Time.now.to_i,
+      cbv_applicant_id: @cbv_flow.cbv_applicant_id,
       cbv_flow_id: @cbv_flow.id,
       invitation_id: @cbv_flow.cbv_flow_invitation_id,
       num_results: @employers.length,

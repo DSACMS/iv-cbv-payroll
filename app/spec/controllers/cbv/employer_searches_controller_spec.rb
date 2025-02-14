@@ -25,6 +25,7 @@ RSpec.describe Cbv::EmployerSearchesController do
           .to receive(:track)
           .with("ApplicantAccessedSearchPage", anything, hash_including(
             timestamp: be_a(Integer),
+            cbv_applicant_id: cbv_flow.cbv_applicant_id,
             cbv_flow_id: cbv_flow.id,
             invitation_id: cbv_flow.cbv_flow_invitation_id
           ))
@@ -36,6 +37,7 @@ RSpec.describe Cbv::EmployerSearchesController do
           .to receive(:track)
           .with("ApplicantAccessedSearchPage", anything, hash_including(
             timestamp: be_a(Integer),
+            cbv_applicant_id: cbv_flow.cbv_applicant_id,
             cbv_flow_id: cbv_flow.id,
             invitation_id: cbv_flow.cbv_flow_invitation_id
           ))
@@ -47,6 +49,7 @@ RSpec.describe Cbv::EmployerSearchesController do
           .to receive(:track)
           .with("ApplicantClickedPopularPayrollProviders", anything, hash_including(
             timestamp: be_a(Integer),
+            cbv_applicant_id: cbv_flow.cbv_applicant_id,
             cbv_flow_id: cbv_flow.id,
             invitation_id: cbv_flow.cbv_flow_invitation_id
           ))
@@ -58,6 +61,7 @@ RSpec.describe Cbv::EmployerSearchesController do
           .to receive(:track)
           .with("ApplicantClickedPopularPayrollProviders", anything, hash_including(
             timestamp: be_a(Integer),
+            cbv_applicant_id: cbv_flow.cbv_applicant_id,
             cbv_flow_id: cbv_flow.id,
             invitation_id: cbv_flow.cbv_flow_invitation_id
           ))
@@ -69,6 +73,7 @@ RSpec.describe Cbv::EmployerSearchesController do
           .to receive(:track)
           .with("ApplicantClickedPopularAppEmployers", anything, hash_including(
             timestamp: be_a(Integer),
+            cbv_applicant_id: cbv_flow.cbv_applicant_id,
             cbv_flow_id: cbv_flow.id,
             invitation_id: cbv_flow.cbv_flow_invitation_id
           ))
@@ -80,6 +85,7 @@ RSpec.describe Cbv::EmployerSearchesController do
           .to receive(:track)
           .with("ApplicantClickedPopularAppEmployers", anything, hash_including(
             timestamp: be_a(Integer),
+            cbv_applicant_id: cbv_flow.cbv_applicant_id,
             cbv_flow_id: cbv_flow.id,
             invitation_id: cbv_flow.cbv_flow_invitation_id
           ))
@@ -130,6 +136,7 @@ RSpec.describe Cbv::EmployerSearchesController do
         expect_any_instance_of(MixpanelEventTracker)
           .to receive(:track)
           .with("ApplicantSearchedForEmployer", anything, hash_including(
+            cbv_applicant_id: cbv_flow.cbv_applicant_id,
             cbv_flow_id: cbv_flow.id,
             invitation_id: cbv_flow.cbv_flow_invitation_id,
             num_results: 1,
@@ -142,6 +149,7 @@ RSpec.describe Cbv::EmployerSearchesController do
         expect_any_instance_of(NewRelicEventTracker)
           .to receive(:track)
           .with("ApplicantSearchedForEmployer", anything, hash_including(
+            cbv_applicant_id: cbv_flow.cbv_applicant_id,
             cbv_flow_id: cbv_flow.id,
             invitation_id: cbv_flow.cbv_flow_invitation_id,
             num_results: 1,

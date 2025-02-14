@@ -1,6 +1,7 @@
 FactoryBot.define do
   factory :cbv_flow do
-    association :cbv_flow_invitation, factory: [ :cbv_flow_invitation ]
+    cbv_flow_invitation
+    cbv_applicant
 
     case_number { "ABC1234" }
     client_agency_id { "sandbox" }
@@ -20,6 +21,17 @@ FactoryBot.define do
         cbv_flow.pinwheel_accounts = [
           create(:pinwheel_account, cbv_flow: cbv_flow, supported_jobs: evaluator.supported_jobs, employment_errored_at: evaluator.employment_errored_at)
         ]
+      end
+    end
+
+    transient do
+      cbv_applicant_attributes { {} }
+    end
+    after(:build) do |cbv_flow, evaluator|
+      cbv_flow.cbv_applicant.update(evaluator.cbv_applicant_attributes)
+
+      if cbv_flow.cbv_applicant && cbv_flow.cbv_flow_invitation
+        cbv_flow.cbv_flow_invitation.update(cbv_applicant: cbv_flow.cbv_applicant)
       end
     end
   end

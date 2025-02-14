@@ -15,8 +15,10 @@ RSpec.describe Cbv::EntriesController do
       let(:invitation) do
         create(
           :cbv_flow_invitation,
-          case_number: "ABC1234",
-          created_at: seconds_since_invitation.seconds.ago
+          created_at: seconds_since_invitation.seconds.ago,
+          cbv_applicant_attributes: {
+            case_number: "ABC1234"
+          }
         )
       end
 
@@ -38,7 +40,7 @@ RSpec.describe Cbv::EntriesController do
 
         cbv_flow = invitation.cbv_flows.first
         expect(cbv_flow).to have_attributes(
-          case_number: "ABC1234",
+          cbv_applicant: have_attributes(case_number: "ABC1234"),
           cbv_flow_invitation: invitation
         )
       end
