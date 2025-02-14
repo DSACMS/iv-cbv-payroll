@@ -1,17 +1,17 @@
-module ResponseObjects
-  Paystub = Struct.new(
-    :account_id,
-    :gross_pay_amount,
-    :net_pay_amount,
-    :gross_pay_ytd,
-    :pay_period_start,
-    :pay_period_end,
-    :pay_date,
-    :earnings,
-    :deductions,
+PAYSTUB_FIELDS = %i[
+  account_id
+  gross_pay_amount
+  net_pay_amount
+  gross_pay_ytd
+  pay_period_start
+  pay_period_end
+  pay_date
+  earnings
+  deductions
+]
 
-    keyword_init: true
-  ) do
+module ResponseObjects
+  Paystub = Struct.new(*PAYSTUB_FIELDS, keyword_init: true) do
     def self.from_pinwheel(response_body)
       new(
         account_id: response_body["account_id"],
