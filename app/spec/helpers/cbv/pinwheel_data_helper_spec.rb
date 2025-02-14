@@ -22,10 +22,7 @@ RSpec.describe Cbv::PinwheelDataHelper, type: :helper do
   end
 
   let(:identities) do
-    PinwheelService::Identity.new(
-      load_relative_json_file('request_identity_response.json')['data'],
-      environment: PinwheelService::ENVIRONMENTS[:sandbox]
-    )
+    ResponseObjects::Identity.from_pinwheel(load_relative_json_file('request_identity_response.json')['data'])
   end
 
   let!(:cbv_flow) { create(:cbv_flow, :with_pinwheel_account) }

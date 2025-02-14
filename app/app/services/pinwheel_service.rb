@@ -103,21 +103,6 @@ class PinwheelService
     }
   ]
 
-  # Base class for wrapping responses from Pinwheel to allow accessing the data
-  # via dot-notation.
-  class ResponseObject < ActiveResource::Base
-    def initialize(*params, environment:)
-      # ActiveResource requires us to set the `site` (the API base url) on the
-      # class. Since Pinwheel's API base URL's differ per-environment, let's
-      # set the value dynamically as these records are instantiated.
-      self.class.site = environment[:base_url]
-      super(*params)
-    end
-  end
-  # Employment = Class.new(ResponseObject)
-  Identity = Class.new(ResponseObject)
-  Income = Class.new(ResponseObject)
-
   def initialize(environment, api_key = nil)
     @api_key = api_key || ENVIRONMENTS.fetch(environment.to_sym)[:api_key]
     @environment = ENVIRONMENTS.fetch(environment.to_sym) { |env| raise KeyError.new("PinwheelService unknown environment: #{env}") }
@@ -174,7 +159,7 @@ class PinwheelService
   def fetch_identity(account_id:)
     json = @http.get(build_url("#{ACCOUNTS_ENDPOINT}/#{account_id}/identity")).body
 
-    Identity.new(json["data"], environment: @environment)
+    ResponseObjects::Identity.from_pinwheel(json["data"])
   end
 
   def fetch_income(account_id:)

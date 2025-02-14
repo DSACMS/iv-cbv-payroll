@@ -94,7 +94,7 @@ module TestHelpers
         ]
       }
 
-      PinwheelService::Identity.new(fields, environment: PinwheelService::ENVIRONMENTS[:sandbox])
+      ResponseObjects::Identity.from_pinwheel(fields)
     end
   end
 
