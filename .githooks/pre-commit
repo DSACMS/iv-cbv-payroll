@@ -11,7 +11,7 @@
 # $ git commit -n
 
 echo "Running linter..."
-bundle exec rake standard
+(cd app && bundle exec rake standard)
 linter_status=$?
 
 if [ $linter_status -ne 0 ]; then

@@ -1,27 +1,20 @@
 class Api::HelpController < ApplicationController
+  include CbvEventTracking
+
   EVENT_NAMES = %w[
     ApplicantOpenedHelpModal
   ]
 
   def user_action
-    base_attributes = {
-      timestamp: Time.now.to_i
-    }
-
     event_name = user_action_params[:event_name]
-    event_attributes = base_attributes.merge(source: user_action_params[:source])
+    event_attributes = { source: user_action_params[:source] }
 
     if EVENT_NAMES.include?(event_name)
-      event_logger.track(
-        event_name,
-        request,
-        event_attributes.to_h
-      )
+      track_event(event_name, request, event_attributes)
+      render json: { status: :ok }
     else
       raise "Unknown Event Type #{event_name.inspect}"
     end
-
-    render json: { status: :ok }
   rescue => ex
     raise ex unless Rails.env.production?
 

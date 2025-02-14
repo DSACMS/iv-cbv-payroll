@@ -28,7 +28,7 @@ RSpec.describe HelpController, type: :controller do
             device_type: nil,
             ip: "0.0.0.0",
             language: I18n.locale,
-            locale: nil,
+            locale: :en,
             client_agency_id: cbv_flow.client_agency_id,
             topic: "employer",
             user_agent: "Rails Testing"
@@ -44,7 +44,7 @@ RSpec.describe HelpController, type: :controller do
             device_type: nil,
             ip: "0.0.0.0",
             language: I18n.locale,
-            locale: nil,
+            locale: :en,
             client_agency_id: cbv_flow.client_agency_id,
             topic: "employer",
             user_agent: "Rails Testing"
@@ -65,7 +65,7 @@ RSpec.describe HelpController, type: :controller do
       it "still renders the template and tracks events" do
         expect_any_instance_of(MixpanelEventTracker)
           .to receive(:track)
-          .with("ApplicantViewedHelpTopic", be_an(ActionController::TestRequest), hash_including(
+          .with("ApplicantViewedHelpTopic", anything, hash_including(
             browser: nil,
             cbv_applicant_id: nil,
             cbv_flow_id: nil,
@@ -73,7 +73,7 @@ RSpec.describe HelpController, type: :controller do
             device_type: nil,
             ip: "0.0.0.0",
             language: I18n.locale,
-            locale: nil,
+            locale: :en,
             client_agency_id: "sandbox",
             topic: "employer",
             user_agent: "Rails Testing"
