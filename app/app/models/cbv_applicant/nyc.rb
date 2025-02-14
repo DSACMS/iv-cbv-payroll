@@ -9,8 +9,9 @@ class CbvApplicant::Nyc < CbvApplicant
 
   validates :case_number, format: { with: NYC_CASE_NUMBER_REGEX, message: :invalid_format }
   validates :client_id_number, format: { with: NYC_CLIENT_ID_REGEX, message: :invalid_format }
-  validates :snap_application_date, presence: true,
-    inclusion: { in: (Date.current - 30.days)..Date.current, message: :nyc_invalid_date }
+  validates :snap_application_date,
+    inclusion: { in: (Date.current - 30.days)..Date.current, message: :invalid_date },
+    if: -> { snap_application_date.present? }
 
   def format_case_number
     return if case_number.blank?

@@ -75,16 +75,8 @@ class CbvApplicant < ApplicationRecord
       begin
         new_date_format = Date.strptime(raw_snap_application_date.to_s, "%m/%d/%Y")
         self.snap_application_date = new_date_format
-      rescue Date::Error => e
-        case client_agency_id
-        when "ma"
-          error = :ma_invalid_date
-        when "nyc"
-          error = :nyc_invalid_date
-        else
-          error = :default_invalid_date
-        end
-        errors.add(:snap_application_date, error)
+      rescue Date::Error
+        errors.add(:snap_application_date, :invalid_date)
       end
     end
   end

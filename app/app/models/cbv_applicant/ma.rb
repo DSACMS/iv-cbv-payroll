@@ -7,6 +7,7 @@ class CbvApplicant::Ma < CbvApplicant
 
   validates :agency_id_number, format: { with: MA_AGENCY_ID_REGEX, message: :invalid_format }
   validates :beacon_id, format: { with: MA_BEACON_ID_REGEX, message: :invalid_format }
-  validates :snap_application_date, presence: true,
-    inclusion: { in: Date.current.prev_year..Date.current, message: :ma_invalid_date }
+  validates :snap_application_date,
+    inclusion: { in: Date.current.prev_year..Date.current, message: :invalid_date },
+    if: -> { snap_application_date.present? }
 end

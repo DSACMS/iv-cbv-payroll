@@ -20,7 +20,7 @@ RSpec.describe CbvApplicant::Nyc, type: :model do
       applicant = CbvApplicant.new(nyc_attributes.merge(snap_application_date: 31.days.ago))
       expect(applicant).not_to be_valid
       expect(applicant.errors[:snap_application_date]).to include(
-        I18n.t('activerecord.errors.models.cbv_applicant/nyc.attributes.snap_application_date.nyc_invalid_date')
+        I18n.t('activerecord.errors.models.cbv_applicant/nyc.attributes.snap_application_date.invalid_date')
       )
     end
   end
@@ -68,7 +68,7 @@ RSpec.describe CbvApplicant::Nyc, type: :model do
       applicant = CbvApplicant.new(nyc_attributes.merge(snap_application_date: "invalid"))
       expect(applicant).not_to be_valid
       expect(applicant.errors[:snap_application_date]).to include(
-        I18n.t('activerecord.errors.models.cbv_applicant/nyc.attributes.snap_application_date.nyc_invalid_date')
+        I18n.t('activerecord.errors.models.cbv_applicant/nyc.attributes.snap_application_date.invalid_date')
       )
     end
 
