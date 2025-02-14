@@ -6,8 +6,9 @@ PAYSTUB_FIELDS = %i[
   pay_period_start
   pay_period_end
   pay_date
-  earnings
   deductions
+  hours_by_earning_category
+  hours
 ]
 
 module ResponseObjects
@@ -21,12 +22,8 @@ module ResponseObjects
         pay_period_start: response_body["pay_period_start"],
         pay_period_end: response_body["pay_period_end"],
         pay_date: response_body["pay_date"],
-        earnings: response_body["earnings"].map do |earning|
-          PaystubEarning.new(
-            category: earning["category"],
-            hours: earning["hours"],
-          )
-        end,
+        hours: self.hours_from_pinwheel(response_body["earnings"]),
+        hours_by_earning_category: self.hours_by_earning_category_from_pinwheel(response_body["earnings"]),
         deductions: response_body["deductions"].map do |deduction|
           PaystubDeduction.new(
             category: deduction["category"],
@@ -39,31 +36,35 @@ module ResponseObjects
     alias_attribute :start, :pay_period_start
     alias_attribute :end, :pay_period_end
 
-    def hours
-      base_hours = earnings
-        .filter { |e| e.category != "overtime" }
-        .map { |e| e.hours }
-        .compact
-        .max
-      return unless base_hours
+    class << self
+      private
 
-      # Add overtime hours to the base hours, because they tend to be additional
-      # work beyond the other entries. (As opposed to category="premium", which
-      # often duplicates other earnings' hours.)
-      #
-      # See FFS-1773.
-      overtime_hours = earnings
-        .filter { |e| e.category == "overtime" }
-        .sum { |e| e.hours || 0.0 }
+      def hours_from_pinwheel(earnings)
+        base_hours = earnings
+          .filter { |e| e["category"] != "overtime" }
+          .map { |e| e["hours"] }
+          .compact
+          .max
+        return unless base_hours
 
-      base_hours + overtime_hours
-    end
+        # Add overtime hours to the base hours, because they tend to be additional
+        # work beyond the other entries. (As opposed to category="premium", which
+        # often duplicates other earnings' hours.)
+        #
+        # See FFS-1773.
+        overtime_hours = earnings
+          .filter { |e| e["category"] == "overtime" }
+          .sum { |e| e["hours"] || 0.0 }
 
-    def hours_by_earning_category
-      earnings
-        .filter { |e| e.hours && e.hours > 0 }
-        .group_by { |e| e.category }
-        .transform_values { |earnings| earnings.sum { |e| e.hours } }
+        base_hours + overtime_hours
+      end
+
+      def hours_by_earning_category_from_pinwheel(earnings)
+        earnings
+          .filter { |e| e["hours"] && e["hours"] > 0 }
+          .group_by { |e| e["category"] }
+          .transform_values { |earnings| earnings.sum { |e| e["hours"] } }
+      end
     end
   end
 
