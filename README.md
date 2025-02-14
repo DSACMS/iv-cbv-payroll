@@ -26,7 +26,7 @@ guide for an introduction to the framework.
      * Chromedriver must be allowed to run. You can either do that by:
        * The command line: `xattr -d com.apple.quarantine $(which chromedriver)` (this is the only option if you are on Big Sur)
        * Manually: clicking "allow" when you run the integration tests for the first time and a dialogue opens up
-   * [Ngrok](https://ngrok.com/download): brew install ngrok/ngrok/ngrok
+   * [Ngrok](https://ngrok.com/downloads): brew install ngrok/ngrok/ngrok
      * Sign up for an account: https://dashboard.ngrok.com/signup
      * run `ngrok config add-authtoken {token goes here}`
 1. Set up rbenv and nodenv:
@@ -109,21 +109,21 @@ $ i18n-tasks remove-unused # removes unused keys across locale files
 
 For more information on usage and helpful rake tasks to manage locale files, see [the documentation](https://github.com/glebm/i18n-tasks#usage).
 
-## "Site-specific" translations
+## "Client Agency-specific" translations
 
 The CBV pilot project is architected to be multi-tenant across jurisdictions we
 are actively piloting with. Each jurisdiction's agency is configured as a
-"site" in app/config/site-config.yml and has a short "id", e.g. "nyc", "ma",
+"client agency" in app/config/client-agency-config.yml and has a short "id", e.g. "nyc", "ma",
 and "sandbox".
 
-We often need to adjust copy specific to each site. The preferred way to do it
-is by using the `site_translation` helper, which wraps Rails's `t` view helper
-and looks for the current site's "id" as a sub-key of the given prefix.
+We often need to adjust copy specific to each client agency. The preferred way to do it
+is by using the `client_agency_translation` helper, which wraps Rails's `t` view helper
+and looks for the current client agency's "id" as a sub-key of the given prefix.
 
 Usage:
 
 ```erb
-<%= site_translation(".learn_more_html") %>
+<%= client_agency_translation(".learn_more_html") %>
 ```
 
 And the corresponding locale file:
@@ -214,7 +214,7 @@ If you're new to CBV, here's a summary of how to get started navigating the app.
 1. Search for your employer. When you select one, the local page will show you some fake credentials at the very bottom of the screen. Use these to sign in.
 1. Finally, you should be able to complete the applicant flow, including looking at the PDF.
 1. To complete the caseworker flow, add `?is_caseworker=true` to the /cbv/summary.pdf path to see the PDF that gets sent (it's different from the one we send the applicant!)
-1. Note: You can switch to a different pilot partner (state) by going to the irb prompt and running `CbvFlow.last.update(site_id: 'ma')`. Right now you can only pass it `ma` or `nyc`.
+1. Note: You can switch to a different pilot partner (state) by going to the irb prompt and running `CbvFlow.last.update(client_agency_id: 'ma')`. Right now you can only pass it `ma` or `nyc`.
 
 ## Pa11y Scan
 

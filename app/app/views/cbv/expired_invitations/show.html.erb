@@ -1,11 +1,12 @@
 <% content_for :title, t(".title") %>
+
 <h1><%= t(".title") %></h1>
 
 <div class="usa-prose">
   <p><%= t(".body_1") %></p>
-  <p><%= t(".body_2", agency_short_name: current_site.agency_short_name) %></p>
+  <p><%= t(".body_2", agency_short_name: current_agency.agency_short_name) %></p>
 </div>
 
 <div class="margin-top-3">
-  <%= site_translation(".cta_button_html") %>
+  <%= agency_translation(".cta_button_html") %>
 </div>

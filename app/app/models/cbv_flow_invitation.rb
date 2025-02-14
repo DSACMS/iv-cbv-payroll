@@ -38,7 +38,7 @@ class CbvFlowInvitation < ApplicationRecord
   before_validation :format_case_number, if: :nyc_site?
   before_validation :normalize_language
 
-  validates :site_id, inclusion: Rails.application.config.sites.site_ids
+  validates :client_agency_id, inclusion: Rails.application.config.client_agencies.client_agency_ids
   validates :first_name, presence: true
   validates :last_name, presence: true
   validates :email_address, format: { with: EMAIL_REGEX, message: :invalid_format }
@@ -81,7 +81,7 @@ class CbvFlowInvitation < ApplicationRecord
   # after sending the invitation.
   def expires_at
     end_of_day_sent = created_at.in_time_zone(INVITATION_VALIDITY_TIME_ZONE).end_of_day
-    days_valid_for = Rails.application.config.sites[site_id].invitation_valid_days
+    days_valid_for = Rails.application.config.client_agencies[client_agency_id].invitation_valid_days
 
     end_of_day_sent + days_valid_for.days
   end
@@ -105,11 +105,11 @@ class CbvFlowInvitation < ApplicationRecord
   private
 
   def nyc_site?
-    site_id == "nyc"
+    client_agency_id == "nyc"
   end
 
   def ma_site?
-    site_id == "ma"
+    client_agency_id == "ma"
   end
 
   def parse_snap_application_date
@@ -126,7 +126,7 @@ class CbvFlowInvitation < ApplicationRecord
         new_date_format = Date.strptime(raw_snap_application_date.to_s, "%m/%d/%Y")
         self.snap_application_date = new_date_format
       rescue Date::Error => e
-        case site_id
+        case client_agency_id
         when "ma"
           error = :ma_invalid_date
         when "nyc"

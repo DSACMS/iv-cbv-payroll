@@ -12,7 +12,7 @@ RSpec.describe Caseworker::DashboardsController do
       end
 
       it "renders successfully" do
-        get :show, params: { site_id: user.site_id }
+        get :show, params: { client_agency_id: user.client_agency_id }
 
         expect(response).to be_successful
       end
@@ -20,9 +20,9 @@ RSpec.describe Caseworker::DashboardsController do
 
     context "when not authenticated" do
       it "redirects to the SSO page" do
-        get :show, params: { site_id: "sandbox" }
+        get :show, params: { client_agency_id: "sandbox" }
 
-        expect(response).to redirect_to(new_user_session_path(site_id: "sandbox"))
+        expect(response).to redirect_to(new_user_session_path(client_agency_id: "sandbox"))
       end
     end
 
@@ -42,9 +42,9 @@ RSpec.describe Caseworker::DashboardsController do
       end
 
       it "redirects to the SSO page" do
-        get :show, params: { site_id: "sandbox" }
+        get :show, params: { client_agency_id: "sandbox" }
 
-        expect(response).to redirect_to(new_user_session_path(site_id: "sandbox"))
+        expect(response).to redirect_to(new_user_session_path(client_agency_id: "sandbox"))
       end
     end
   end

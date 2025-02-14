@@ -8,7 +8,7 @@ RSpec.describe CaseworkerMailer, type: :mailer do
   let(:cbv_flow) { create(:cbv_flow, :with_pinwheel_account,
     case_number: "ABC1234",
     confirmation_code: "00001",
-    site_id: "nyc",
+    client_agency_id: "nyc",
     consented_to_authorized_use_at: Time.now
   )}
   let(:caseworker_email) { cbv_flow.cbv_flow_invitation.user.email }
@@ -18,7 +18,7 @@ RSpec.describe CaseworkerMailer, type: :mailer do
   let(:incomes) { stub_incomes(account_id) }
   let(:identities) { stub_identities(account_id) }
   let(:email_address) { "test@example.com" }
-  let(:current_site) { SiteConfig.new(File.join(Rails.root, 'config', 'site-config.yml'))[cbv_flow.site_id] }
+  let(:current_agency) { ClientAgencyConfig.new(File.join(Rails.root, 'config', 'client-agency-config.yml'))[cbv_flow.client_agency_id] }
 
   let(:mail) {
     CaseworkerMailer.with(

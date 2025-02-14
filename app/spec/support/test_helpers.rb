@@ -101,8 +101,8 @@ module TestHelpers
     end
   end
 
-  def stub_site_config_value(site, key, value)
-    site_config = Rails.application.config.sites[site]
-    allow(site_config).to receive(key.to_sym).and_return(value)
+  def stub_client_agency_config_value(client_agency_id, key, value)
+    client_agency_config = Rails.application.config.client_agencies[client_agency_id]
+    allow(client_agency_config).to receive(key.to_sym).and_return(value)
   end
 end
