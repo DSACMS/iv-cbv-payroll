@@ -40,12 +40,7 @@ class Api::UserEventsController < ApplicationController
       })
     end
 
-    if user_action_params[:attributes].present?
-      event_attributes = user_action_params[:attributes].merge(base_attributes)
-    else
-      event_attributes = base_attributes
-    end
-
+    event_attributes = user_action_params[:attributes].merge(base_attributes)
     event_name = user_action_params[:event_name]
     if EVENT_NAMES.include?(event_name)
       # Map to the new Mixpanel event name if present, otherwise just send NewRelic the Pinwheel name
