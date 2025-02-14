@@ -9,20 +9,8 @@ class CbvApplicant::Nyc < CbvApplicant
 
   validates :case_number, format: { with: NYC_CASE_NUMBER_REGEX, message: :invalid_format }
   validates :client_id_number, format: { with: NYC_CLIENT_ID_REGEX, message: :invalid_format }
-  validate :nyc_snap_application_date_not_more_than_30_days_ago
-  validate :nyc_snap_application_date_not_in_future
-
-  def nyc_snap_application_date_not_in_future
-    if snap_application_date.present? && snap_application_date > Date.current
-      errors.add(:snap_application_date, :nyc_invalid_date)
-    end
-  end
-
-  def nyc_snap_application_date_not_more_than_30_days_ago
-    if snap_application_date.present? && snap_application_date < 30.day.ago.to_date
-      errors.add(:snap_application_date, :nyc_invalid_date)
-    end
-  end
+  validates :snap_application_date, presence: true,
+    inclusion: { in: (Date.current - 30.days)..Date.current, message: :nyc_invalid_date }
 
   def format_case_number
     return if case_number.blank?
