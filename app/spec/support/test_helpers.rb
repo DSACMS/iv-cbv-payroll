@@ -9,23 +9,20 @@ module TestHelpers
   def stub_payments(account_id = SecureRandom.uuid)
     5.times.map do |i|
       json = {
-        account_id: account_id,
-        employer: "Employer #{i + 1}",
-        net_pay_amount: (100 * (i + 1)),
-        gross_pay_amount: (120 * (i + 1)),
-        rate: (10 + i),
-        pay_date: "2020-01-14",
-        pay_period_start: "2020-01-01",
-        pay_period_end: "2020-01-14",
-        gross_pay_ytd: 1_000,
-        deductions: [],
-        earnings: []
+        "account_id" => account_id,
+        "employer" => "Employer #{i + 1}",
+        "net_pay_amount" => (100 * (i + 1)),
+        "gross_pay_amount" => (120 * (i + 1)),
+        "rate" => (10 + i),
+        "pay_date" => "2020-01-14",
+        "pay_period_start" => "2020-01-01",
+        "pay_period_end" => "2020-01-14",
+        "gross_pay_ytd" => 1_000,
+        "deductions" => [],
+        "earnings" => []
       }
 
-      PinwheelService::Paystub.new(
-        json,
-        environment: PinwheelService::ENVIRONMENTS[:sandbox]
-      )
+      ResponseObjects::Paystub.from_pinwheel(json)
     end
   end
 

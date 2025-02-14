@@ -75,17 +75,14 @@ RSpec.describe PinwheelService, type: :service do
     end
   end
 
-  describe PinwheelService::Paystub do
+  describe ResponseObjects::Paystub do
     let(:raw_paystubs_json) do
       load_relative_json_file('request_end_user_paystubs_response.json')['data']
     end
 
     let(:payments) do
       raw_paystubs_json.map do |payment_json|
-        described_class.new(
-          payment_json,
-          environment: PinwheelService::ENVIRONMENTS[:sandbox]
-        )
+        described_class.from_pinwheel(payment_json)
       end
     end
 

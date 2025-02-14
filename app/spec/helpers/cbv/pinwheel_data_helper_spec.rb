@@ -9,10 +9,7 @@ RSpec.describe Cbv::PinwheelDataHelper, type: :helper do
     raw_payments_json = load_relative_json_file('request_end_user_paystubs_response.json')['data']
 
     raw_payments_json.map do |payment_json|
-      PinwheelService::Paystub.new(
-        payment_json,
-        environment: PinwheelService::ENVIRONMENTS[:sandbox]
-      )
+      ResponseObjects::Paystub.from_pinwheel(payment_json)
     end
   end
 
