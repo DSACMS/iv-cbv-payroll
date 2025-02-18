@@ -9,10 +9,8 @@ describe('EmployerSearchController', () => {
     let stimulusElement;
 
     beforeEach(() => {
-        stimulusElement = document.getElementById('employer-search-button')
         stimulusElement = document.createElement('button');
         stimulusElement.setAttribute('data-controller', 'cbv-employer-search')
-        //stimulusElement.setAttribute('data-action', 'cbv-employer-search#select')
         document.body.appendChild(stimulusElement)
 
         vi.spyOn(stimulusElement, 'addEventListener')
@@ -48,7 +46,6 @@ describe('EmployerSearchController button click', () => {
     beforeEach(async () => {
         mockPinwheel();
 
-        stimulusElement = document.getElementById('employer-search-button')
         stimulusElement = document.createElement('button');
         stimulusElement.setAttribute('data-controller', 'cbv-employer-search')
         stimulusElement.setAttribute('data-action', 'cbv-employer-search#select')
