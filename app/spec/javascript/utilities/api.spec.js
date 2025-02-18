@@ -12,7 +12,7 @@ describe('trackUserAction', () => {
     beforeEach(async() => {
         // Mock the fetch function.
         const mockResponse = {
-            "pinwheel": {
+            "events": {
                 "event_name": "Event",
                 "attributes": {}
             }
@@ -24,9 +24,9 @@ describe('trackUserAction', () => {
         const data = await api.trackUserAction("MockEventType", {})
 
         // Check that fetch was called exactly once
-        expect(data.pinwheel.event_name).toBe("Event")
+        expect(data.events.event_name).toBe("Event")
         expect(fetch).toHaveBeenCalledTimes(1);
-        expect(fetch.mock.calls[0][0]).toBe('/api/pinwheel/user_action')
+        expect(fetch.mock.calls[0][0]).toBe('/api/events/user_action')
         expect(fetch.mock.calls[0][1]['method']).toBe('post')
     })
 
@@ -47,7 +47,7 @@ describe('trackUserAction', () => {
         const data = await api.trackUserAction("MockEventType", {})
         expect(data).toMatchSnapshot()
     })
-        
+
 
     afterEach(() => {
         fetch.mockReset()
@@ -57,7 +57,7 @@ describe('trackUserAction', () => {
 describe('fetchToken', () => {
     beforeEach(async() => {
         // Mock the fetch function.
-        const mockResponse = "token-response" 
+        const mockResponse = "token-response"
         fetch.mockResolvedValue(createFetchResponse(mockResponse))
     })
 
@@ -87,7 +87,7 @@ describe('fetchToken', () => {
         const data = await api.fetchToken("response_type", "id", "en")
         expect(data).toMatchSnapshot()
     })
-        
+
     afterEach(() => {
         fetch.mockReset()
     })
@@ -139,7 +139,7 @@ describe('fetchInternalAPIService', () => {
         expect(fetch.mock.calls[0][1]['headers']).toHaveProperty('other')
 
     })
-        
+
     afterEach(() => {
         fetch.mockReset()
     })
