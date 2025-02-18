@@ -4,6 +4,7 @@ class HelpController < ApplicationController
 
   def index
     @title = t("help.index.title")
+    render layout: false if turbo_frame_request?
   end
 
   def show
@@ -25,6 +26,8 @@ class HelpController < ApplicationController
     rescue => ex
       Rails.logger.error "Unable to track event (ApplicantViewedHelpTopic): #{ex}"
     end
+
+    render layout: false if turbo_frame_request?
   end
 
   private

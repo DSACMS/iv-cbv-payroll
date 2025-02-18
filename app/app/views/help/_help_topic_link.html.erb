@@ -1,4 +1,5 @@
 <%= link_to help_topic_path(topic: topic, locale: I18n.locale),
-    class: "usa-button margin-bottom-1 height-5 text-left display-block" do %>
+    class: "usa-button margin-bottom-1 height-5 text-left display-block",
+    data: { turbo_frame: "help_content" } do %>
   <%= text %>
 <% end %>
