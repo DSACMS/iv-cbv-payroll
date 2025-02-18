@@ -3,7 +3,6 @@ import EmployerSearchController from '@js/controllers/cbv/employer_search'
 import { fetchToken, trackUserAction } from '@js/utilities/api';
 import loadScript from "load-script";
 import { mockPinwheel, mockPinwheelAuthToken } from '@test/fixtures/pinwheel.fixture';
-import { fetchToken, trackUserAction } from '@js/utilities/api';
 
 describe('EmployerSearchController', () => {
     let stimulusElement;
