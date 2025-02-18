@@ -1,13 +1,13 @@
 import { fetchToken, trackUserAction } from "../utilities/api";
 import loadScript from 'load-script';
 import { getDocumentLocale } from "../utilities/getDocumentLocale";
-import { IncomeDataAdapter } from "./IncomeDataAdapter";
+import { ModalAdapter } from "./ModalAdapter";
 
 declare global {
     var Pinwheel: any;
 }
 
-export default class PinwheelIncomeDataAdapter extends IncomeDataAdapter {
+export default class PinwheelModalAdapter extends ModalAdapter {
     Pinwheel: any;
 
     async load() {

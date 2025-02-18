@@ -1,5 +1,5 @@
 
-interface IncomeDataAdapterArgs {
+interface ModalAdapterArgs {
     requestData: RequestData,
     onSuccess?: Function;
     onExit?: Function;
@@ -12,7 +12,7 @@ interface RequestData {
     providerName: string;
     name: string;
 }
-export abstract class IncomeDataAdapter {
+export abstract class ModalAdapter {
     requestData?: RequestData;
     successCallback?: Function;
     exitCallback?: Function;
@@ -25,7 +25,7 @@ export abstract class IncomeDataAdapter {
         this.load();
     }
 
-    init(args: IncomeDataAdapterArgs) {
+    init(args: ModalAdapterArgs) {
 
         if (args.onSuccess) {
             this.successCallback = args.onSuccess;

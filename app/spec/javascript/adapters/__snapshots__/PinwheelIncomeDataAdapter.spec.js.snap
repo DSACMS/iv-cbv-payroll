@@ -1,6 +1,6 @@
 // Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
-exports[`PinwheelIncomeDataAdapter > open > should call track user action 1`] = `
+exports[`PinwheelModalAdapter > open > should call track user action 1`] = `
 [
   "ApplicantSelectedEmployerOrPlatformItem",
   {

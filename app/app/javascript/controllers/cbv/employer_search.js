@@ -1,5 +1,5 @@
 import { Controller } from "@hotwired/stimulus"
-import { createIncomeDataAdapter } from "../../utilities/createIncomeDataAdapter";
+import { createModalAdapter } from "../../utilities/createModalAdapter";
 
 export default class extends Controller {
   static targets = [
@@ -14,9 +14,9 @@ export default class extends Controller {
 
   initialize() {
     const { providerName } = this.element.dataset;
-    const IncomeDataAdapter = createIncomeDataAdapter(providerName);
+    const ModalAdapter = createModalAdapter(providerName);
 
-    this.adapter = new IncomeDataAdapter()
+    this.adapter = new ModalAdapter()
   }
 
   async connect() {
@@ -26,7 +26,7 @@ export default class extends Controller {
 
   disconnect() {
     this.element.removeEventListener("turbo:frame-missing", this.errorHandler)
-    delete(this.IncomeDataAdapter)
+    delete(this.ModalAdapter)
   }
 
   onTurboError(event) {
