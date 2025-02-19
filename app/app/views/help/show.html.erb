@@ -1,11 +1,16 @@
-<div class="padding-3">
-  <h2 class="margin-top-0">
-    <%= t("help.show.#{@help_topic}.title") %>
-  </h2>
+<%= turbo_frame_tag "help_modal_content" do %>
+  <div class="padding-3">
+    <h2 class="margin-top-0">
+      <%= t("help.show.#{@help_topic}.title") %>
+    </h2>
 
-  <%= render partial: "help_topic_content", locals: { topic: @help_topic } %>
+    <%= render partial: "help_topic_content", locals: { topic: @help_topic } %>
 
-  <div class="margin-top-3">
-    <%= link_to t("help.show.go_back"), help_path, class: "usa-link" %>
+    <div class="margin-top-3">
+      <%= link_to t("help.show.go_back"),
+          help_path,
+          class: "usa-link",
+          data: { turbo_frame: "help_modal_content" } %>
+    </div>
   </div>
-</div>
+<% end %>

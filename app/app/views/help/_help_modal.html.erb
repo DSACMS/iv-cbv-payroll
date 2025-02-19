@@ -6,17 +6,11 @@
   data-controller="help"
 >
   <div class="usa-modal__content">
-    <div class="usa-modal__main padding-0 margin-0 maxw-none-important">
-      <div class="usa-modal__body padding-0">
-        <iframe
-          id="help-iframe"
-          src="<%= help_path(site_id: params[:site_id]) %>"
-          class="width-full border-0"
-          title="Help Content"
-          data-help-target="iframe"
-          scrolling="no"
-          >
-        </iframe>
+    <div class="usa-modal__main">
+      <div class="usa-modal__body" data-help-target="content">
+        <%= turbo_frame_tag "help_content" do %>
+          <%= render template: "help/index" %>
+        <% end %>
       </div>
     </div>
 
