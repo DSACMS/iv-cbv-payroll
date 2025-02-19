@@ -9,6 +9,17 @@ ARG RUBY_VERSION=3.3.5
 ##########################################################################################
 FROM registry.docker.com/library/ruby:$RUBY_VERSION-slim AS base
 
+# Upgrade packages in base image to address security issues.
+# We should be able to remove these after upgrading the base image to a version
+# that has the upgraded versions by default.
+# hadolint ignore=DL3008
+RUN apt-get update -qq && \
+    apt-get install -y --no-install-recommends \
+      libtasn1-6 \
+      libgnutls30 \
+      && \
+    rm -rf /var/lib/apt/lists /var/cache/apt/archives
+
 # Rails app lives here
 WORKDIR /rails
 
@@ -66,7 +77,8 @@ ENV TMPDIR="/rails/tmp"
 RUN apt-get update -qq && \
     apt-get install --no-install-recommends -y \
       postgresql-client=15+248 \
-      graphviz=2.42.2-7+b3 && \
+      graphviz=2.42.2-7+b3 \
+      && \
     rm -rf /var/lib/apt/lists /var/cache/apt/archives
 
 RUN gem install bundler --no-document -v ${BUNDLER_VERSION} && \
@@ -121,7 +133,7 @@ RUN apt-get update -qq && \
         python-is-python3=3.11.2-1+deb12u1 \
         python3-venv=3.11.2-1+b1 \
         unzip=6.0-28 \
-        libtasn1-6=4.19.0-2+deb12u1 && \
+        && \
     rm -rf /var/lib/apt/lists /var/cache/apt/archives && \
     curl "https://s3.amazonaws.com/aws-cli/awscli-bundle.zip" -o "awscli-bundle.zip" && \
     unzip awscli-bundle.zip && \
