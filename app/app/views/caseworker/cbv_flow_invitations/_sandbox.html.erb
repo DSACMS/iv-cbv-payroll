@@ -1,39 +1,43 @@
-<%= f.text_field :first_name, label: t(".invite.first_name") %>
+<% cbv_applicant = @cbv_flow_invitation.cbv_applicant ||
+     @cbv_flow_invitation.build_cbv_applicant(client_agency_id: @cbv_flow_invitation.client_agency_id) %>
+<%= f.fields_for :cbv_applicant, cbv_applicant do |f2| %>
+  <%= f2.text_field :first_name, label: t(".invite.first_name") %>
 
-<%= f.text_field :middle_name, label: t(".invite.middle_name") %>
+  <%= f2.text_field :middle_name, label: t(".invite.middle_name") %>
 
-<%= f.text_field :last_name, label: t(".invite.last_name") %>
+  <%= f2.text_field :last_name, label: t(".invite.last_name") %>
 
-<%= f.text_field :case_number, label: t(".invite.case_number") %>
+  <%= f2.text_field :case_number, label: t(".invite.case_number") %>
 
-<%= f.text_field :beacon_id, label: t(".invite.beacon_id") %>
+  <%= f2.text_field :beacon_id, label: t(".invite.beacon_id") %>
 
-<%= f.text_field :agency_id_number, label: t(".invite.agency_id_number") %>
+  <%= f2.text_field :agency_id_number, label: t(".invite.agency_id_number") %>
 
-<%= f.text_field :client_id_number, label: t(".invite.client_id_number") %>
+  <%= f2.text_field :client_id_number, label: t(".invite.client_id_number") %>
 
-<%= f.date_picker :snap_application_date, label: t(".invite.snap_application_date") %>
+  <%= f2.date_picker :snap_application_date, label: t(".invite.snap_application_date") %>
 
-<%= f.email_field :email_address, label: t(".invite.email_address") %>
+  <%= f.email_field :email_address, label: t(".invite.email_address") %>
 
-<div class="usa-form-group <%= "usa-form-group--error" if f.field_error(:language).present? %>">
-  <legend class="usa-legend"><%= t(".invite.language_label") %></legend>
-  <%= f.field_error :language %>
-  <div class="usa-radio-group">
-    <% language_options.each_with_index do |(value, label), index| %>
-      <div class="usa-radio usa-radio--tile">
-        <input
-          class="usa-radio__input usa-radio__input--tile"
-          id="language-<%= value %>-<%= index %>"
-          type="radio"
-          name="<%= f.object_name %>[language]"
-          value="<%= value %>"
-          <%= 'checked="checked"' if f.object.language == value %>
-        >
-        <label class="usa-radio__label" for="language-<%= value %>-<%= index %>">
-          <%= label %>
-        </label>
-      </div>
-    <% end %>
+  <div class="usa-form-group <%= "usa-form-group--error" if f.field_error(:language).present? %>">
+    <legend class="usa-legend"><%= t(".invite.language_label") %></legend>
+    <%= f.field_error :language %>
+    <div class="usa-radio-group">
+      <% language_options.each_with_index do |(value, label), index| %>
+        <div class="usa-radio usa-radio--tile">
+          <input
+            class="usa-radio__input usa-radio__input--tile"
+            id="language-<%= value %>-<%= index %>"
+            type="radio"
+            name="<%= f.object_name %>[language]"
+            value="<%= value %>"
+            <%= 'checked="checked"' if f.object.language == value %>
+          >
+          <label class="usa-radio__label" for="language-<%= value %>-<%= index %>">
+            <%= label %>
+          </label>
+        </div>
+      <% end %>
+    </div>
   </div>
-</div>
+<% end %>

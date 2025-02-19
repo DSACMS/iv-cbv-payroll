@@ -69,23 +69,19 @@ RSpec.describe PinwheelService, type: :service do
     it "returns an Employment object with expected attributes" do
       employment = service.fetch_employment(account_id: account_id)
 
-      expect(employment).to be_a(PinwheelService::Employment)
-      expect(employment).to have_attributes(status: "employed", start_date: "2010-01-01")
-      expect(employment.employer_phone_number).to have_attributes(value: "+16126597057", type: "work")
+      expect(employment).to be_a(ResponseObjects::Employment)
+      expect(employment).to have_attributes(status: "employed", start_date: "2010-01-01", employer_phone_number: "+16126597057")
     end
   end
 
-  describe PinwheelService::Paystub do
+  describe ResponseObjects::Paystub do
     let(:raw_paystubs_json) do
       load_relative_json_file('request_end_user_paystubs_response.json')['data']
     end
 
     let(:payments) do
       raw_paystubs_json.map do |payment_json|
-        described_class.new(
-          payment_json,
-          environment: PinwheelService::ENVIRONMENTS[:sandbox]
-        )
+        described_class.from_pinwheel(payment_json)
       end
     end
 

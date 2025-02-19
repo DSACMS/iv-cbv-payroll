@@ -75,7 +75,6 @@ gem "pdf-reader", "~> 2.12.0"
 gem "net-imap", "0.4.19"  # Fixing CVE-2025-25186
 
 gem "maybe_later"
-gem "activeresource"
 
 group :development, :test do
   gem "brakeman", "~> 5.2"

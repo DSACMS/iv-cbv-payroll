@@ -8,7 +8,7 @@ exports[`trackUserAction > has expected request body 1`] = `"{"pinwheel":{"event
 
 exports[`trackUserAction > has expected response payload 1`] = `
 {
-  "pinwheel": {
+  "events": {
     "attributes": {},
     "event_name": "Event",
   },

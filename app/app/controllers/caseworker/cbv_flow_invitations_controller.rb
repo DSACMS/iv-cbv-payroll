@@ -14,23 +14,24 @@ class Caseworker::CbvFlowInvitationsController < Caseworker::BaseController
   end
 
   def create
-    invitation_params = base_params.merge(client_agency_specific_params)
     # handle errors from the mail service
     begin
       @cbv_flow_invitation = CbvInvitationService.new(event_logger).invite(
-        invitation_params,
+        invitation_params.deep_merge(client_agency_id: client_agency_id, cbv_applicant_attributes: { client_agency_id: client_agency_id }),
         current_user,
         delivery_method: :email
       )
     rescue => e
       Rails.logger.error("Error inviting applicant: #{e.message}")
       flash[:alert] = t(".invite_failed",
-                        email_address: cbv_flow_invitation_params[:email_address],
+                        email_address: invitation_params[:email_address],
                         error_message: e.message)
       return redirect_to caseworker_dashboard_path(client_agency_id: params[:client_agency_id])
     end
 
     if @cbv_flow_invitation.errors.any?
+      @cbv_flow_invitation.errors.delete(:cbv_applicant)
+
       error_count = @cbv_flow_invitation.errors.size
       error_header = "#{helpers.pluralize(error_count, 'error')} occurred"
 
@@ -44,11 +45,8 @@ class Caseworker::CbvFlowInvitationsController < Caseworker::BaseController
       return render :new, status: :unprocessable_entity
     end
 
-    # hydrate the cbv_client with the invitation if there are no cbv_flow_invitation errors
-    @cbv_client = CbvClient.create_from_invitation(@cbv_flow_invitation)
-
     flash[:slim_alert] = {
-      message: t(".invite_success", email_address: cbv_flow_invitation_params[:email_address]),
+      message: t(".invite_success", email_address: invitation_params[:email_address]),
       type: "success"
     }
     redirect_to caseworker_dashboard_path(client_agency_id: params[:client_agency_id])
@@ -69,40 +67,20 @@ class Caseworker::CbvFlowInvitationsController < Caseworker::BaseController
     end
   end
 
-  def base_params
-    cbv_flow_invitation_params.slice(
-      :first_name,
-      :middle_name,
-      :language,
-      :last_name,
-      :email_address,
-      :snap_application_date,
-    ).merge(client_agency_id: client_agency_id)
-  end
-
-  def client_agency_specific_params
-    case client_agency_id
-    when "ma"
-      cbv_flow_invitation_params.slice(:agency_id_number, :beacon_id)
-    when "nyc"
-      cbv_flow_invitation_params.slice(:client_id_number, :case_number)
-    else
-      {}
-    end
-  end
-
-  def cbv_flow_invitation_params
+  def invitation_params
     params.fetch(:cbv_flow_invitation, {}).permit(
-      :first_name,
-      :middle_name,
       :language,
-      :last_name,
-      :client_id_number,
-      :case_number,
       :email_address,
-      :snap_application_date,
-      :agency_id_number,
-      :beacon_id,
+      cbv_applicant_attributes: [
+        :first_name,
+        :middle_name,
+        :last_name,
+        :client_id_number,
+        :case_number,
+        :snap_application_date,
+        :agency_id_number,
+        :beacon_id
+      ]
     )
   end
 

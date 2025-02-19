@@ -9,32 +9,20 @@ RSpec.describe Cbv::PinwheelDataHelper, type: :helper do
     raw_payments_json = load_relative_json_file('request_end_user_paystubs_response.json')['data']
 
     raw_payments_json.map do |payment_json|
-      PinwheelService::Paystub.new(
-        payment_json,
-        environment: PinwheelService::ENVIRONMENTS[:sandbox]
-      )
+      ResponseObjects::Paystub.from_pinwheel(payment_json)
     end
   end
 
   let(:employment) do
-    PinwheelService::Employment.new(
-      load_relative_json_file('request_employment_info_response.json')['data'],
-      environment: PinwheelService::ENVIRONMENTS[:sandbox]
-    )
+    ResponseObjects::Employment.from_pinwheel(load_relative_json_file('request_employment_info_response.json')['data'])
   end
 
   let(:incomes) do
-    PinwheelService::Income.new(
-      load_relative_json_file('request_income_metadata_response.json')['data'],
-      environment: PinwheelService::ENVIRONMENTS[:sandbox]
-    )
+    ResponseObjects::Income.from_pinwheel(load_relative_json_file('request_income_metadata_response.json')['data'])
   end
 
   let(:identities) do
-    PinwheelService::Identity.new(
-      load_relative_json_file('request_identity_response.json')['data'],
-      environment: PinwheelService::ENVIRONMENTS[:sandbox]
-    )
+    ResponseObjects::Identity.from_pinwheel(load_relative_json_file('request_identity_response.json')['data'])
   end
 
   let!(:cbv_flow) { create(:cbv_flow, :with_pinwheel_account) }

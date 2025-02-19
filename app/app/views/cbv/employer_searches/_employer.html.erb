@@ -9,13 +9,13 @@
       <div class="usa-card usa-card--flag usa-card--media-right flex-1">
         <div class="usa-card__container">
           <div class="usa-card__header">
-            <h3 class="usa-card__heading"><%= employer["name"] %></h3>
+            <h3 class="usa-card__heading"><%= employer.name %></h3>
           </div>
           <div class="display-none usa-card__media usa-card__media--inset">
-            <% if employer['logo_url'] %>
+            <% if employer.logo_url %>
               <div class="usa-card__img">
                 <img
-                  src="<%= employer["logo_url"] %>"
+                  src="<%= employer.logo_url %>"
                   alt="A placeholder image"
                 >
               </div>
@@ -24,10 +24,10 @@
           <div class="usa-card__footer">
             <button
               data-action="click->cbv-employer-search#select"
-              data-id="<%= employer["id"] %>"
-              data-response-type="<%= employer["response_type"] %>"
+              data-id="<%= employer.provider_options[:provider_id] %>"
+              data-response-type="<%= employer.provider_options[:response_type] %>"
               data-is-default-option="false"
-              data-name="<%= employer["name"] %>"
+              data-name="<%= employer.name %>"
               data-cbv-employer-search-target="employerButton"
               class="usa-button usa-button--outline"
               type="button"
