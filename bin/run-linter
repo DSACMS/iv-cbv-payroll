@@ -1,0 +1,51 @@
+#!/bin/bash
+# Monorepo helper to run linters in their respective "app" subdirectories.
+#
+# Usage:
+#   bin/run-linter --cd "$APP_NAME" -- [command...]
+#   bin/run-linter --cd app -- rubocop
+set -euo pipefail
+
+COMMAND=()
+CHANGE_DIRECTORY=""
+DEBUG="${DEBUG:-""}"
+
+debug() {
+  if [ -n "$DEBUG" ]; then
+    echo "$@"
+  fi
+}
+
+while [[ $# -gt 0 ]]; do
+  case $1 in
+    --cd)
+      CHANGE_DIRECTORY="$2"
+      shift;
+      shift;
+      ;;
+    --)
+      shift; # Remove "--" from arguments list.
+
+      while [[ $# -gt 0 ]]; do
+        # If the argument is a filename valid from the repo root, but we've
+        # changed directory, then rewrite the argument's path to be relative to
+        # the changed directory.
+        if [ -n "$CHANGE_DIRECTORY" -a -f "$1" ]; then
+          COMMAND+=("${1#${CHANGE_DIRECTORY}/}")
+        else
+          COMMAND+=("$1")
+        fi
+
+        shift;
+      done
+      ;;
+    *)
+      echo "Unknown argument $1";
+      exit 1
+      ;;
+  esac
+done
+
+debug "in ($CHANGE_DIRECTORY) will run (${COMMAND[@]})"
+cd "$CHANGE_DIRECTORY"
+exec "${COMMAND[@]}"

@@ -41,3 +41,6 @@ cask "session-manager-plugin"
 
 # necessary for file encryption
 brew "gpg"
+
+# linters / workflow tools
+brew "pre-commit"

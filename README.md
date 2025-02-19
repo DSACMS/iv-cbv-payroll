@@ -193,7 +193,7 @@ This translation import system allows for efficient management of translations a
 
 * Tests: `bundle exec rspec`
 * E2E tests: `RUN_E2E_TESTS=1 bundle exec rspec spec/e2e/`
-* Ruby linter: `bundle exec rake standard`
+* Ruby linter: `bundle exec rubocop`
 * Accessibility scan: `./bin/pa11y-scan`
 * Dynamic security scan: `./bin/owasp-scan`
 * Ruby static security scan: `bundle exec rake brakeman`
@@ -222,7 +222,9 @@ When new pages are added to the application, ensure they are added to `./.pa11yc
 
 ## Coding style and linters
 
-To enable automatic ruby linting and terraform formatting on every `git commit` follow the instructions at the top of `.githooks/pre-commit`
+To enable automatic ruby linting and terraform formatting on every `git commit`, run the command `pre-commit install`.
+
+This will run linters as configured by `.pre-commit-config.yml` before every commit. (For performance, it only runs linters on files that are being changed in the commit.)
 
 ## CI/CD
 
