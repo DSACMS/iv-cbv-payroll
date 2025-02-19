@@ -1,0 +1,45 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`EmployerSearchController button click > calls trackUserAction with data attributes from employer_search html 1`] = `
+[
+  "ApplicantSelectedEmployerOrPlatformItem",
+  {
+    "is_default_option": "false",
+    "item_id": "test-id",
+    "item_name": "test-name",
+    "item_type": "csv",
+    "locale": "en",
+    "provider_name": "pinwheel",
+  },
+]
+`;
+
+exports[`EmployerSearchController button click > fetches Pinwheel token 1`] = `
+[
+  "csv",
+  "test-id",
+  "en",
+]
+`;
+
+exports[`EmployerSearchController multiple instances on same page! > calls trackUserAction each time element is clicked 1`] = `
+[
+  "ApplicantSelectedEmployerOrPlatformItem",
+  {
+    "is_default_option": "false",
+    "item_id": "test-id-1",
+    "item_name": "test-name-1",
+    "item_type": "csv",
+    "locale": "en",
+    "provider_name": "pinwheel",
+  },
+]
+`;
+
+exports[`EmployerSearchController multiple instances on same page! > fetches Pinwheel token each time the button is clicked 1`] = `
+[
+  "csv",
+  "test-id-1",
+  "en",
+]
+`;

@@ -1,0 +1,36 @@
+{
+  "compilerOptions": {
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "target": "es2022",
+    "allowJs": true,
+    "noImplicitAny": true,
+    "moduleDetection": "force",
+    "isolatedModules": true,
+    "verbatimModuleSyntax": true,
+    "moduleResolution": "nodenext",
+    "module": "NodeNext",
+    "outDir": "app/assets/builds",
+    "paths": {
+      "*": [
+        "./node_modules"
+      ],
+      "@js": [
+        "./app/javascript"
+      ],
+      "@test": [
+        "./spec/javascript"
+      ],
+     "@types": [
+        "./app/javascript/types"
+      ],
+      "@": [
+        "./app"
+      ]
+    }
+  },
+  "include": [
+    "app/javascript",
+    "spec/javascript"
+  ],
+}

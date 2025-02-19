@@ -4,6 +4,10 @@ import * as fetchAPIService from "@js/utilities/fetchInternalAPIService";
 
 global.fetch = vi.fn()
 
+vi.mock('@js/utilities/api', async () => {
+    return  await vi.importActual('@js/utilities/api')
+})
+
 function createFetchResponse(data) {
   return { json: () => new Promise((resolve) => resolve(data)) }
 }

@@ -22,4 +22,3 @@ export const fetchToken = (response_type, id, locale) => {
     body: JSON.stringify({ response_type, id, locale }),
   })
 };
-
