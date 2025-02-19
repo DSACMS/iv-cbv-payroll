@@ -1,14 +1,10 @@
-import { fetchToken, trackUserAction } from "../utilities/api";
+import { fetchToken, trackUserAction } from "../utilities/api.js";
 import loadScript from 'load-script';
-import { getDocumentLocale } from "../utilities/getDocumentLocale";
-import { ModalAdapter } from "./ModalAdapter";
-
-declare global {
-    var Pinwheel: any;
-}
+import { getDocumentLocale } from "../utilities/getDocumentLocale.js";
+import { ModalAdapter } from "./ModalAdapter.js";
 
 export default class PinwheelModalAdapter extends ModalAdapter {
-    Pinwheel: any;
+    Pinwheel: Pinwheel;
 
     async load() {
         this.Pinwheel = await new Promise((resolve, reject) => {
@@ -78,7 +74,7 @@ export default class PinwheelModalAdapter extends ModalAdapter {
         }
 
 
-        function onScreenTransitionEvent(screenName) {
+        function onScreenTransitionEvent(screenName : string) {
             switch (screenName) {
                 case "LOGIN":
                     trackUserAction("PinwheelShowLoginPage", {

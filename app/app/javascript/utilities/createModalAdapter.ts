@@ -1,4 +1,4 @@
-import PinwheelModalAdapter from "../adapters/PinwheelModalAdapter";
+import PinwheelModalAdapter from "../adapters/PinwheelModalAdapter.js";
 
 
 export const createModalAdapter = (providerName: string) => {
