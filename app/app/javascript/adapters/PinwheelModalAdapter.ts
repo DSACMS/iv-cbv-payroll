@@ -42,10 +42,7 @@ export default class PinwheelModalAdapter extends ModalAdapter {
     }
 
 
-    async onSuccess(eventPayload: {
-        accountId: string;
-        platformId: string;
-    }) {
+    async onSuccess(eventPayload: LinkResult) {
         await trackUserAction("PinwheelSuccess", {
             account_id: eventPayload.accountId,
             platform_id: eventPayload.platformId

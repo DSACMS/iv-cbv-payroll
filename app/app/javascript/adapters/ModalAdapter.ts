@@ -1,17 +1,5 @@
+import type { RequestData, ModalAdapterArgs } from "./ModalAdapter.types.ts";
 
-interface ModalAdapterArgs {
-    requestData: RequestData,
-    onSuccess?: Function;
-    onExit?: Function;
-}
-
-interface RequestData {
-    responseType: string;
-    id: string;
-    isDefaultOption: boolean;
-    providerName: string;
-    name: string;
-}
 export abstract class ModalAdapter {
     requestData?: RequestData;
     successCallback?: Function;
