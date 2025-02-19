@@ -14,9 +14,7 @@ export default class extends Controller {
 
   initialize() {
     const { providerName } = this.element.dataset;
-    const ModalAdapter = createModalAdapter(providerName);
-
-    this.adapter = new ModalAdapter()
+    this.adapter = createModalAdapter(providerName);
   }
 
   async connect() {
