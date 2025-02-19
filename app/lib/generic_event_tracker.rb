@@ -9,6 +9,7 @@ class GenericEventTracker
         # Not setting device_id because Mixpanel fixates on that as the distinct_id, which we do not want
         ip: request.ip,
         cbv_flow_id: request.session[:cbv_flow_id],
+        cbv_applicant_id: request.session[:cbv_applicant_id],
         client_agency_id: url_params["client_agency_id"],
         locale: url_params["locale"],
         user_agent: request.headers["User-Agent"]

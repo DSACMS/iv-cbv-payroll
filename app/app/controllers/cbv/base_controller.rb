@@ -24,6 +24,8 @@ class Cbv::BaseController < ApplicationController
 
       @cbv_flow = CbvFlow.create_from_invitation(invitation)
       session[:cbv_flow_id] = @cbv_flow.id
+      session[:cbv_applicant_id] = @cbv_flow.cbv_applicant_id
+
       track_invitation_clicked_event(invitation, @cbv_flow)
 
     elsif session[:cbv_flow_id]
