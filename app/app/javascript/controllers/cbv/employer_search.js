@@ -12,11 +12,6 @@ export default class extends Controller {
     cbvFlowId: Number
   }
 
-  initialize() {
-    const { providerName } = this.element.dataset;
-    this.adapter = createModalAdapter(providerName);
-  }
-
   async connect() {
     this.errorHandler = this.element.addEventListener("turbo:frame-missing", this.onTurboError)
 
@@ -42,8 +37,9 @@ export default class extends Controller {
 
   async select(event) {
     this.disableButtons()
-
     const { responseType, id, name, isDefaultOption, providerName } = event.target.dataset;
+
+    this.adapter = createModalAdapter(providerName);
     this.adapter.init({
       requestData: {
         responseType,

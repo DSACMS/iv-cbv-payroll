@@ -1,9 +1,11 @@
 import PinwheelModalAdapter from "../adapters/PinwheelModalAdapter.js";
-
+import ArgyleModalAdapter from "../adapters/ArgyleModalAdapter.js";
 
 export const createModalAdapter = (providerName: string) => {
-    switch (providerName) {
-        default:
-            return new PinwheelModalAdapter();
-    }
+  switch (providerName) {
+    case "argyle":
+      return new ArgyleModalAdapter();
+    case "pinwheel":
+      return new PinwheelModalAdapter();
+  }
 };

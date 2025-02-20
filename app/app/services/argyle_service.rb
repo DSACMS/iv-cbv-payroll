@@ -11,6 +11,8 @@ class ArgyleService
     }
   }
 
+  USERS_ENDPOINT = 'https://api-sandbox.argyle.com/v2/users';
+
   def initialize(environment, api_key_id = nil, api_key_secret = nil)
     @api_key_id = api_key_id || ENVIRONMENTS.fetch(environment.to_sym)[:api_key_id]
     @api_key_secret = api_key_secret || ENVIRONMENTS.fetch(environment.to_sym)[:api_key_secret]
@@ -39,5 +41,9 @@ class ArgyleService
   # Fetch all Argyle items
   def items(query = nil)
     @http.get("items", { q: query }).body
+  end
+
+  def create_user
+    @http.post(USERS_ENDPOINT).body
   end
 end
