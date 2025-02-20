@@ -138,6 +138,7 @@ ignore_missing:
     - "cbv.expired_invitations.show.body_2"
     - "help.*"
     - "shared.header.help"
+    - "pages.{error_404,error_500}.*"
 # - 'errors.messages.{accepted,blank,invalid,too_short,too_long}'
 # - '{devise,simple_form}.*'
 
