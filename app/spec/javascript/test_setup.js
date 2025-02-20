@@ -1,8 +1,14 @@
 import { vi } from 'vitest';
 import { Application } from '@hotwired/stimulus';
+import { JSDOM } from 'jsdom';
+import loadScript from "load-script";
 
-// Set up Stimulus
-window.Stimulus = Application.start();
+const { window } = new JSDOM();
+
+global.window = window;
+global.document = window.document;
+global.Node = window.Node;
+
 
 // Mock CSRF token
 document.head.innerHTML = `
@@ -24,14 +30,35 @@ window.matchMedia = vi.fn().mockImplementation(query => ({
   dispatchEvent: vi.fn(),
 }));
 
+vi.mock('load-script', () => {
+  return {
+      default: vi.fn(),
+  }
+})
+
+const mockPinwheelAuthToken = { token: 'test-token' };
+vi.mock('@js/utilities/api', async () => {
+  const apiModule = await vi.importActual('@js/utilities/api')
+  return {
+      ...apiModule,
+      trackUserAction: vi.fn((eventName, eventPayload) => Promise.resolve()),
+      fetchToken: vi.fn(() => Promise.resolve(mockPinwheelAuthToken)),
+  }
+})
+
 // Reset all mocks before each test
 beforeEach(() => {
+  // Set up Stimulus
+  window.Stimulus = Application.start();
+
   vi.clearAllMocks();
   fetch.mockReset();
 });
 
 // Clean up after each test
 afterEach(() => {
+  window.Stimulus.stop()
+  loadScript.mockReset()
   document.head.innerHTML = `
     <meta name="csrf-token" content="test-csrf-token">
   `;
