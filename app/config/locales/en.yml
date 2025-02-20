@@ -517,6 +517,16 @@ en:
           title: Contact your employer's Human Resource Team
         title: I don't know my username
   pages:
+    error_404:
+      error_code_html: 'Error code: <strong>404</strong>'
+      header: We can't find the page you're looking for
+      return_to_entry: Return to entry page
+      return_to_welcome: Return to welcome page
+    error_500:
+      description: This is a problem on our end. There was an error with the server and our team has been notified. Please refresh your page, or try again later.
+      error_code_html: 'Error code: <strong>500</strong>'
+      header: It looks like something went wrong
+      refresh: Refresh page
     home:
       description_1: The SNAP Income Pilot is a new tool designed to help you connect your income details from your employer or payroll provider directly to your SNAP agency.
       description_2: Please note this pilot is not currently available.
