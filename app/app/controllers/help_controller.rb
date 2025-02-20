@@ -4,7 +4,7 @@ class HelpController < ApplicationController
 
   def index
     @title = t("help.index.title")
-    render layout: false if turbo_frame_request?
+    render layout: false
   end
 
   def show
