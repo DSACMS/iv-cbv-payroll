@@ -14,6 +14,7 @@ FROM registry.docker.com/library/ruby:$RUBY_VERSION-slim AS base
 # that has the upgraded versions by default.
 # hadolint ignore=DL3008
 RUN apt-get update -qq && \
+    apt-get upgrade -y libgnutls30 && \
     apt-get install -y --no-install-recommends \
       libtasn1-6 \
       libgnutls30 \

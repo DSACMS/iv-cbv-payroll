@@ -544,6 +544,7 @@ DEPENDENCIES
   mixpanel-ruby
   net-imap (= 0.4.19)
   newrelic_rpm
+  nokogiri (~> 1.18.3)
   omniauth-azure-activedirectory-v2
   omniauth-rails_csrf_protection (~> 1.0)
   pdf-reader (~> 2.12.0)
