@@ -1,0 +1,13 @@
+<% header = t(".header") %>
+<% content_for :title, header %>
+<h1><%= header %></h1>
+
+<div class="usa-prose">
+  <p><%= t(".error_code_html") %></p>
+
+  <% if @cbv_flow && @cbv_flow.cbv_flow_invitation %>
+    <%= link_to t(".return_to_entry"), @cbv_flow.cbv_flow_invitation.to_url %>
+  <% else %>
+    <%= link_to t(".return_to_welcome"), root_url %>
+  <% end %>
+</div>
