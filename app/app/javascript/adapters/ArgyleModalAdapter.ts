@@ -26,7 +26,7 @@ export default class ArgyleModalAdapter extends ModalAdapter {
       });
     })
   }
-  
+
   async open() {
     const locale = getDocumentLocale();
 
@@ -60,5 +60,8 @@ export default class ArgyleModalAdapter extends ModalAdapter {
     if (this.successCallback) {
       this.successCallback(eventPayload.accountId);
     }
+  }
+
+  onEvent(eventName: string, eventPayload: any) {
   }
 }
