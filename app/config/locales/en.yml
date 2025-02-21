@@ -598,3 +598,9 @@ en:
   users:
     omniauth_callbacks:
       authentication_successful: You are signed in.
+  session_timeout:
+    modal:
+      heading: "Do you need more time?"
+      description: "It looks like you're inactive. For your security, we will sign you out soon unless you choose to extend your session."
+      extend_button: "Yes, extend my session"
+      end_button: "End session"
