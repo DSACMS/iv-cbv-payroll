@@ -1,5 +1,5 @@
 declare global {
-    var Pinwheel: Pinwheel;
+  var Pinwheel: Pinwheel;
 }
 
 export {};
