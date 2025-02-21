@@ -11,7 +11,7 @@ class ArgyleService
     }
   }
 
-  USERS_ENDPOINT = 'https://api-sandbox.argyle.com/v2/users';
+  USERS_ENDPOINT = "https://api-sandbox.argyle.com/v2/users"
 
   def initialize(environment, api_key_id = nil, api_key_secret = nil)
     @api_key_id = api_key_id || ENVIRONMENTS.fetch(environment.to_sym)[:api_key_id]
