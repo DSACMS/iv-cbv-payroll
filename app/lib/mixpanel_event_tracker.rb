@@ -8,12 +8,12 @@ class MixpanelEventTracker
   end
 
   def track(event_type, request, attributes = {})
-    # Use the "invitation_id" attribute as the distinct_id as it currently best
+    # Use the "cbv_applicant_id" attribute as the distinct_id as it currently best
     # represents the concept of a unique user.
-    invitation_id = attributes.fetch(:invitation_id, "")
+    applicant_id = attributes.fetch(:cbv_applicant_id, "")
     distinct_id = ""
-    if invitation_id.present?
-      distinct_id = "applicant-#{invitation_id}"
+    if applicant_id.present?
+      distinct_id = "applicant-#{applicant_id}"
 
       # This creates a profile for a distinct user
       flow_id = attributes.fetch(:cbv_flow_id, "")
