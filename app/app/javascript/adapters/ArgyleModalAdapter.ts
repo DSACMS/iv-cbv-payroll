@@ -41,20 +41,26 @@ export default class ArgyleModalAdapter extends ModalAdapter {
       })
 
       const { user } = await fetchToken();
-
       return this.Argyle.create({
         userToken: user.user_token,
         items: [this.requestData.id],
         onAccountConnected: this.onSuccess.bind(this),
+        onTokenExpired: this.onTokenExpired.bind(this),
+        onAccountCreated: async (payload) => { await trackUserAction("ArgyleAccountCreated", payload) },
+        onAccountError: async (payload) => { await trackUserAction("ArgyleAccountError", payload) },
+        onAccountRemoved: async (payload) => { await trackUserAction("ArgyleAccountRemoved", payload) },
+        onClose: async () => { await trackUserAction("ArgyleCloseModal") },
+        onError: async(err : LinkError) => { await trackUserAction("ArgyleError", err)},
         sandbox: true, 
       }).open();
     }
   }
 
-  async onSuccess(eventPayload: LinkResult) {
+  async onSuccess(eventPayload: ArgyleAccountData) {
     await trackUserAction("ArgyleSuccess", {
       account_id: eventPayload.accountId,
-      platform_id: eventPayload.platformId
+      user_id: eventPayload.userId,
+      item_id: eventPayload.itemId,
     });
 
     if (this.successCallback) {
@@ -62,6 +68,11 @@ export default class ArgyleModalAdapter extends ModalAdapter {
     }
   }
 
+  async onTokenExpired(updateToken : Function) {
+      await trackUserAction("ArgyleTokenExpired")
+      const { user } = await fetchToken();
+      updateToken(user.user_token)
+  }
   onEvent(eventName: string, eventPayload: any) {
   }
 }
