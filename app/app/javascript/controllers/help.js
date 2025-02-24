@@ -10,16 +10,10 @@ export default class extends Controller {
         trackUserAction("ApplicantOpenedHelpModal", {
           source: event.target.dataset.source,
         });
+        // reset the help modal src on mousedown to ensure the help modal src is reset to "/help"
+        document.querySelector("#help_modal_content").src = "/help";
       }
     };
-    
-    // reset the help modal src on mousedown to ensure the help modal src is reset to "/help"
-    document
-      .querySelector('[aria-controls="help-modal"]')
-      .addEventListener("mousedown", () => {
-        document.querySelector("#help_modal_content").src = "/help";
-      });
-
     document.addEventListener("click", this.handleClick);
   }
 
