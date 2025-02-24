@@ -12,9 +12,8 @@ export default class extends Controller {
         });
       }
     };
-
     
-     // reset the help modal src on mousedown to ensure the help modal src is reset to "/help"
+    // reset the help modal src on mousedown to ensure the help modal src is reset to "/help"
     document
       .querySelector('[aria-controls="help-modal"]')
       .addEventListener("mousedown", () => {
