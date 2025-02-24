@@ -22,9 +22,6 @@ describe('EmployerSearchController', () => {
         document.body.innerHTML = "";
     })
 
-    it('loads Pinwheel modal from external website on init', () => {
-        expect(loadScript).toBeCalledTimes(1)
-    });
 
     it('adds turbo:frame-missing listener on connect()', () => {
         expect(stimulusElement.addEventListener).toBeCalledTimes(1)
@@ -65,6 +62,11 @@ describe('EmployerSearchController button click', () => {
         document.body.innerHTML = "";
     })
 
+    it('loads Pinwheel modal from external website on click', () => {
+        stimulusElement.click();
+        expect(loadScript).toBeCalledTimes(1)
+    });
+    
     it('calls trackUserAction with data attributes from employer_search html', () => {
         stimulusElement.click();
         expect(trackUserAction).toBeCalledTimes(1);

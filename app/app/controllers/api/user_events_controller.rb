@@ -10,6 +10,7 @@ class Api::UserEventsController < ApplicationController
     PinwheelShowLoginPage
     PinwheelShowProviderConfirmationPage
     PinwheelSuccess
+    ArgyleSuccess 
   ]
 
   # Maps Pinwheel event names (keys) to new Mixpanel event names (values) we're using
@@ -23,7 +24,8 @@ class Api::UserEventsController < ApplicationController
     "PinwheelShowDefaultProviderSearch" => "ApplicantViewedPinwheelDefaultProviderSearch",
     "PinwheelAttemptClose" => "ApplicantAttemptedClosingPinwheelModal",
     "PinwheelCloseModal" => "ApplicantClosedPinwheelModal",
-    "PinwheelAccountSyncFinished" => "ApplicantFinishedPinwheelSync"
+    "PinwheelAccountSyncFinished" => "ApplicantFinishedPinwheelSync",
+    "ArgyleSuccess" => "ApplicantSucceededWithArgyleLogin"
   }
 
   def user_action
