@@ -40,6 +40,7 @@ export default class extends Controller {
     const { responseType, id, name, isDefaultOption, providerName } = event.target.dataset;
 
     this.adapter = createModalAdapter(providerName);
+    await this.adapter.load()
     this.adapter.init({
       requestData: {
         responseType,

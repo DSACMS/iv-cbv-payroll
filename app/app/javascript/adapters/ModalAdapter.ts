@@ -7,11 +7,7 @@ export abstract class ModalAdapter {
 
   abstract open(): void;
   abstract onEvent(eventName: string, eventPayload: any): void;
-  load() {};
-
-  constructor() {
-    this.load();
-  }
+  async load() {};
 
   init(args: ModalAdapterArgs) {
     if (args.onSuccess) {
