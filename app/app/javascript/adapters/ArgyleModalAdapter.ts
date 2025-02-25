@@ -1,7 +1,7 @@
-import { trackUserAction } from "../utilities/api.js";
-import { fetchInternal } from '../utilities/fetchInternal.js';
+import { trackUserAction } from "@js/utilities/api.js";
+import { fetchInternal } from '@js/utilities/fetchInternal.js';
 import loadScript from 'load-script';
-import { getDocumentLocale } from "../utilities/getDocumentLocale.js";
+import { getDocumentLocale } from "@js/utilities/getDocumentLocale.js";
 import { ModalAdapter } from "./ModalAdapter.js";
 
 const ARGYLE_TOKENS_GENERATE = '/api/argyle/tokens';

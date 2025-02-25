@@ -1,6 +1,6 @@
-import { fetchToken, trackUserAction } from "../utilities/api.js";
+import { fetchToken, trackUserAction } from "@js/utilities/api.js";
 import loadScript from 'load-script';
-import { getDocumentLocale } from "../utilities/getDocumentLocale.js";
+import { getDocumentLocale } from "@js/utilities/getDocumentLocale.js";
 import { ModalAdapter } from "./ModalAdapter.js";
 
 export default class PinwheelModalAdapter extends ModalAdapter {
