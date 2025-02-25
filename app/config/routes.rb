@@ -71,4 +71,7 @@ Rails.application.routes.draw do
       post :user_action, to: "user_events#user_action"
     end
   end
+
+  match "/404", to: "pages#error_404", via: :all
+  match "/500", to: "pages#error_500", via: :all
 end

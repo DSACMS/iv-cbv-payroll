@@ -136,26 +136,6 @@ html {
 /**
  * Help Modal
  */
-#help-iframe {
-  min-height: 600px;
-  line-height: 1;
-
-  // Small screens such as mobile
-  @media screen and (max-width: 375px) {
-    height: 73vh;
-  }
-
-  // Medium screens such as tablets
-  @media screen and (min-width: 810px) {
-    height: 630px;
-  }
-
-  // Larger screens such as desktop
-  @include at-media(desktop) {
-    height: 660px;
-  }
-}
-
 .main-bullets {
   list-style-type: disc;
 }
