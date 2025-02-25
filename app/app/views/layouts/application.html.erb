@@ -54,12 +54,8 @@
         </section>
       </main>
       <%= render "application/footer" %>
-
-      <div data-cbv-sessions-timeout-target="modal" class="hidden">
-        <%= render "cbv/sessions/timeout_modal" %>
-      </div>
+      <%= render partial: "cbv/sessions/timeout_modal" %>
     </div>
-
     <%= render partial: "help/help_modal", locals: { help_path: help_path(locale: I18n.locale, r: SecureRandom.hex(4)) } %>
   </body>
 </html>

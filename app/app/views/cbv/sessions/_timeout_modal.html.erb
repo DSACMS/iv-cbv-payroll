@@ -1,4 +1,4 @@
-<div class="usa-modal" id="cbv-session-timeout-content" aria-labelledby="cbv-session-timeout-heading" aria-describedby="cbv-session-timeout-description">
+<div class="usa-modal" data-cbv-sessions-timeout-target="modal" id="cbv-session-timeout-modal" aria-labelledby="cbv-session-timeout-heading" aria-describedby="cbv-session-timeout-description">
   <div class="usa-modal__content">
     <div class="usa-modal__main">
       <h2 class="usa-modal__heading" id="cbv-session-timeout-heading">
@@ -12,13 +12,35 @@
       <div class="usa-modal__footer">
         <ul class="usa-button-group">
           <li class="usa-button-group__item">
-            <%= button_to t('session_timeout.modal.extend_button'), cbv_flow_extend_session_path, class: "usa-button", data: { turbo: true } %>
+            <button type="button" class="usa-button" 
+                    data-action="click->cbv-sessions-timeout#extendSession"
+                    data-cbv-sessions-timeout-target="extendButton"
+                    id="extend-session-button">
+              <%= t('session_timeout.modal.extend_button') %>
+            </button>
           </li>
           <li class="usa-button-group__item">
             <%= button_to t('session_timeout.modal.end_button'), destroy_user_session_path, method: :delete, class: "usa-button usa-button--outline" %>
           </li>
         </ul>
+        <div class="usa-alert usa-alert--info usa-alert--slim margin-top-2 display-none" data-cbv-sessions-timeout-target="statusMessage" id="session-extension-status">
+          <div class="usa-alert__body">
+            <p class="usa-alert__text" data-cbv-sessions-timeout-target="statusText"></p>
+          </div>
+        </div>
       </div>
     </div>
+    
   </div>
-</div> 
+</div>
+
+<%= link_to t('session_timeout.modal.trigger'), "#cbv-session-timeout-modal", {
+  aria: { controls: "cbv-session-timeout-modal" },
+  data: {
+    open_modal: true,
+    source: "session-timeout",
+    cbv_sessions_timeout_target: "trigger"
+  },
+  id: "session-timeout-trigger",
+  class: "visually-hidden"
+}.compact %>
