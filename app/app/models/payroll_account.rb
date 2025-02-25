@@ -1,4 +1,6 @@
-class PinwheelAccount < ApplicationRecord
+class PayrollAccount < ApplicationRecord
+  self.table_name = "pinwheel_accounts"
+
   belongs_to :cbv_flow
 
   after_update_commit {

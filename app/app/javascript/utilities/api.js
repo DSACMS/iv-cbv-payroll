@@ -15,7 +15,6 @@ export const trackUserAction = async  (eventName, attributes) => {
   }).then(response => response.json());
 }
 
-
 export const fetchToken = (response_type, id, locale) => {
   return fetchInternal(PINWHEEL_TOKENS_GENERATE, {
     method: 'post',

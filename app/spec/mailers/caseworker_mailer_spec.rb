@@ -12,7 +12,7 @@ RSpec.describe CaseworkerMailer, type: :mailer do
     consented_to_authorized_use_at: Time.now
   )}
   let(:caseworker_email) { cbv_flow.cbv_flow_invitation.user.email }
-  let(:account_id) { cbv_flow.pinwheel_accounts.first.pinwheel_account_id }
+  let(:account_id) { cbv_flow.payroll_accounts.first.pinwheel_account_id }
   let(:payments) { stub_payments(account_id) }
   let(:employments) { stub_employments(account_id) }
   let(:incomes) { stub_incomes(account_id) }
