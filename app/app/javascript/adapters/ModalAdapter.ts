@@ -23,7 +23,7 @@ export abstract class ModalAdapter {
     }
   } 
 
-  async onExit(eventPayload: any) {
+  async onExit(eventPayload: any = {}) {
     if (this.exitCallback) {
       this.exitCallback();
     }
