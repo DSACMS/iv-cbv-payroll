@@ -6,10 +6,12 @@ RSpec.describe CaseworkerMailer, type: :mailer do
   include ActionView::Helpers::SanitizeHelper # Include the sanitize helper
 
   let(:cbv_flow) { create(:cbv_flow, :with_pinwheel_account,
-    case_number: "ABC1234",
     confirmation_code: "00001",
     client_agency_id: "nyc",
-    consented_to_authorized_use_at: Time.now
+    consented_to_authorized_use_at: Time.now,
+    cbv_applicant_attributes: {
+      case_number: "ABC1234"
+    }
   )}
   let(:caseworker_email) { cbv_flow.cbv_flow_invitation.user.email }
   let(:account_id) { cbv_flow.pinwheel_accounts.first.pinwheel_account_id }
@@ -33,11 +35,11 @@ RSpec.describe CaseworkerMailer, type: :mailer do
 
   describe '#summary_email' do
     before do
-      cbv_flow.cbv_flow_invitation.update!(client_id_number: "123456")
+      cbv_flow.cbv_applicant.update!(client_id_number: "123456")
     end
 
     it 'renders the subject with case number' do
-      expect(mail.subject).to eq(I18n.t('caseworker_mailer.summary_email.subject', case_number: cbv_flow.case_number))
+      expect(mail.subject).to eq(I18n.t('caseworker_mailer.summary_email.subject', case_number: cbv_flow.cbv_applicant.case_number))
     end
 
     it 'sends to the correct email' do
@@ -45,7 +47,7 @@ RSpec.describe CaseworkerMailer, type: :mailer do
     end
 
     it 'renders the body' do
-      invitation = cbv_flow.cbv_flow_invitation
+      applicant = cbv_flow.cbv_applicant
 
       # Access the HTML part of the email and strip HTML tags
       email_html = mail.html_part.body.decoded
@@ -54,13 +56,13 @@ RSpec.describe CaseworkerMailer, type: :mailer do
       request_date = format_parsed_date(cbv_flow.created_at)
       expect(email_body).to include("Attached is an Income Verification Report PDF with confirmation number #{cbv_flow.confirmation_code}")
       expect(email_body).to include("confirm that their information has been submitted to HRA")
-      expect(email_body).to include("This report is associated with the case number ABC1234 and CIN #{invitation.client_id_number}")
+      expect(email_body).to include("This report is associated with the case number ABC1234 and CIN #{applicant.client_id_number}")
       expect(email_body).to include("It was requested by #{caseworker_email} on #{request_date}")
       expect(email_body).to include("submitted by the client on #{expected_date}")
     end
 
     it 'attaches a PDF which has a file name prefix of {case_number}_timestamp_' do
-      expect(mail.attachments.any? { |attachment| attachment.filename =~ /\A#{cbv_flow.case_number}_\d{14}_income_verification\.pdf\z/ }).to be true
+      expect(mail.attachments.any? { |attachment| attachment.filename =~ /\A#{cbv_flow.cbv_applicant.case_number}_\d{14}_income_verification\.pdf\z/ }).to be true
       expect(mail.attachments.first.content_type).to start_with('application/pdf')
     end
   end

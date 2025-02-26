@@ -29,7 +29,6 @@ RSpec.describe DataRetentionService do
           service.redact_invitations
           expect(cbv_flow_invitation.reload).to have_attributes(
             email_address: "REDACTED@example.com",
-            case_number: "REDACTED",
             auth_token: "REDACTED",
             redacted_at: within(1.second).of(Time.now)
           )
@@ -99,7 +98,6 @@ RSpec.describe DataRetentionService do
       it "redacts the incomplete CbvFlow" do
         service.redact_incomplete_cbv_flows
         expect(cbv_flow.reload).to have_attributes(
-          case_number: "REDACTED",
           pinwheel_end_user_id: "00000000-0000-0000-0000-000000000000",
           additional_information: {}
         )
@@ -108,7 +106,8 @@ RSpec.describe DataRetentionService do
       it "redacts the associated invitation" do
         service.redact_incomplete_cbv_flows
         expect(cbv_flow_invitation.reload).to have_attributes(
-          case_number: "REDACTED"
+          auth_token: "REDACTED",
+          redacted_at: within(1.second).of(now)
         )
       end
 
@@ -162,7 +161,6 @@ RSpec.describe DataRetentionService do
         it "redacts the incomplete CbvFlow" do
           service.redact_incomplete_cbv_flows
           expect(cbv_flow.reload).to have_attributes(
-            case_number: "REDACTED",
             pinwheel_end_user_id: "00000000-0000-0000-0000-000000000000",
             additional_information: {}
           )
@@ -220,7 +218,6 @@ RSpec.describe DataRetentionService do
       it "redacts the incomplete CbvFlow" do
         service.redact_complete_cbv_flows
         expect(cbv_flow.reload).to have_attributes(
-          case_number: "REDACTED",
           pinwheel_end_user_id: "00000000-0000-0000-0000-000000000000",
           additional_information: {}
         )
@@ -229,7 +226,8 @@ RSpec.describe DataRetentionService do
       it "redacts the associated invitation" do
         service.redact_complete_cbv_flows
         expect(cbv_flow_invitation.reload).to have_attributes(
-          case_number: "REDACTED"
+          auth_token: "REDACTED",
+          redacted_at: within(1.second).of(now)
         )
       end
 
@@ -258,7 +256,6 @@ RSpec.describe DataRetentionService do
       DataRetentionService.manually_redact_by_case_number!("DELETEME001")
 
       expect(cbv_flow.reload).to have_attributes(
-        case_number: "REDACTED",
         redacted_at: within(1.second).of(Time.now)
       )
       expect(cbv_flow.cbv_applicant.reload).to have_attributes(
@@ -266,11 +263,9 @@ RSpec.describe DataRetentionService do
         redacted_at: within(1.second).of(Time.now)
       )
       expect(second_cbv_flow.reload).to have_attributes(
-        case_number: "REDACTED",
         redacted_at: within(1.second).of(Time.now)
       )
       expect(cbv_flow_invitation.reload).to have_attributes(
-        case_number: "REDACTED",
         redacted_at: within(1.second).of(Time.now)
       )
     end

@@ -7,7 +7,7 @@ RSpec.describe Cbv::SummariesController do
   let(:supported_jobs) { %w[income paystubs employment identity] }
   let(:flow_started_seconds_ago) { 300 }
   let(:employment_errored_at) { nil }
-  let(:cbv_applicant) { create(:cbv_applicant) }
+  let(:cbv_applicant) { create(:cbv_applicant, case_number: "ABC1234") }
   let(:cbv_flow) do
     create(:cbv_flow,
       :with_pinwheel_account,
@@ -229,7 +229,7 @@ RSpec.describe Cbv::SummariesController do
           email = ActionMailer::Base.deliveries.last
           expect(email.to).to include('test@example.com')
           expect(email.subject).to include("Income Verification Report")
-          expect(email.body.encoded).to include(cbv_flow.case_number)
+          expect(email.body.encoded).to include(cbv_flow.cbv_applicant.case_number)
         end
 
         # Note that we are not testing events here because doing so requires use of expect_any_instance_of,

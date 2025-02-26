@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2025_02_06_012936) do
+ActiveRecord::Schema[7.1].define(version: 2025_02_25_225907) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pgcrypto"
   enable_extension "plpgsql"
@@ -40,18 +40,10 @@ ActiveRecord::Schema[7.1].define(version: 2025_02_06_012936) do
 
   create_table "cbv_flow_invitations", force: :cascade do |t|
     t.string "email_address"
-    t.string "case_number"
     t.string "auth_token"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.string "client_agency_id"
-    t.string "first_name", null: false
-    t.string "middle_name"
-    t.string "last_name", null: false
-    t.string "agency_id_number"
-    t.string "client_id_number"
-    t.date "snap_application_date", null: false
-    t.string "beacon_id"
     t.datetime "redacted_at"
     t.bigint "user_id"
     t.string "language"
@@ -62,7 +54,6 @@ ActiveRecord::Schema[7.1].define(version: 2025_02_06_012936) do
   end
 
   create_table "cbv_flows", force: :cascade do |t|
-    t.string "case_number"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.date "payroll_data_available_from"
