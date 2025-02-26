@@ -49,7 +49,7 @@ describe('ArgyleModalAdapter', () => {
         })
     })
 
-    describe('Account Connected (success event)', () => {
+    describe('event:onSucces', () => {
         it('calls track user action', async() => {
             await triggers.triggerAccountConnected()
             expect(trackUserAction).toHaveBeenCalledTimes(2)
@@ -60,50 +60,46 @@ describe('ArgyleModalAdapter', () => {
             expect(modalAdapterArgs.onSuccess).toHaveBeenCalled()
         })
     })
-    describe('onExit', () => {
-        it('triggers the provided onExit callback', async () => {
+    describe('event:onExit', () => {
+        it('triggers the provided onExit callback when modal closed', async () => {
             await triggers.triggerClose()
             expect(modalAdapterArgs.onExit).toHaveBeenCalled()
             expect(trackUserAction).toHaveBeenCalledTimes(2)
             expect(trackUserAction.mock.calls[1][0]).toBe('ArgyleCloseModal')
         })
+        it('triggers the provided onExit callback when modal throws error', async () => {
+            await triggers.triggerError()
+            expect(modalAdapterArgs.onExit).toHaveBeenCalled()
+            expect(trackUserAction).toHaveBeenCalledTimes(2)
+            expect(trackUserAction.mock.calls[1][0]).toBe('ArgyleError')
+        })
     })
-    describe.skip('onEvent', () => {
-        it('logs screen_transition.LOGIN Event', async () => {
-            await triggers.triggerEvent("screen_transition", { "screenName": "LOGIN", selectedEmployerName: "ACME Inc", selectedPlatformName: "ADP" })
+
+    describe('event:other', () => {
+        it('logs onAccountCreated Event', async () => {
+            await triggers.triggerAccountCreated()
             expect(trackUserAction).toHaveBeenCalledTimes(2)
-            expect(trackUserAction.mock.calls[1][0]).toBe('PinwheelShowLoginPage')
+            expect(trackUserAction.mock.calls[1][0]).toBe('ArgyleAccountCreated')
+            expect(trackUserAction.mock.calls[1][1]).toMatchSnapshot()
         })
-        it('logs screen_transition.PROVIDER_CONFIRMATION event', async () => {
-            await triggers.triggerEvent("screen_transition", { "screenName": "PROVIDER_CONFIRMATION"})
+        it('logs onAccountRemoved Event', async () => {
+            await triggers.triggerAccountRemoved()
             expect(trackUserAction).toHaveBeenCalledTimes(2)
-            expect(trackUserAction.mock.calls[1][0]).toBe('PinwheelShowProviderConfirmationPage')
+            expect(trackUserAction.mock.calls[1][0]).toBe('ArgyleAccountRemoved')
+            expect(trackUserAction.mock.calls[1][1]).toMatchSnapshot()
         })
-        it('logs screen_transition.SEARCH_DEFAULT event', async () => {
-            await triggers.triggerEvent("screen_transition", { "screenName": "SEARCH_DEFAULT"})
+        it('logs onAccountError Event', async () => {
+            await triggers.triggerAccountError()
             expect(trackUserAction).toHaveBeenCalledTimes(2)
-            expect(trackUserAction.mock.calls[1][0]).toBe('PinwheelShowDefaultProviderSearch')
+            expect(trackUserAction.mock.calls[1][0]).toBe('ArgyleAccountError')
+            expect(trackUserAction.mock.calls[1][1]).toMatchSnapshot()
         })
-        it('logs screen_transition.EXIT_CONFIRMATION event', async () => {
-            await triggers.triggerEvent("screen_transition", { "screenName": "EXIT_CONFIRMATION"})
+        it('refreshes token onTokenExpired', async () => {
+            const updateTokenMock = vi.fn()
+            await triggers.triggerTokenExpired(updateTokenMock)
+            expect(updateTokenMock).toHaveBeenCalledTimes(1)
             expect(trackUserAction).toHaveBeenCalledTimes(2)
-            expect(trackUserAction.mock.calls[1][0]).toBe('PinwheelAttemptClose')
-        })
-        it('logs login_attempt event', async () => {
-            await triggers.triggerEvent("login_attempt")
-            expect(trackUserAction).toHaveBeenCalledTimes(2)
-            expect(trackUserAction.mock.calls[1][0]).toBe('PinwheelAttemptLogin')
-        })
-        it('logs error event', async () => {
-            await triggers.triggerEvent("error", { type: "error-type", "code": "code", "message":"default message"})
-            expect(trackUserAction).toHaveBeenCalledTimes(2)
-            expect(trackUserAction.mock.calls[1][0]).toBe('PinwheelError')
-            expect(trackUserAction.mock.calls[1][1]['type']).toBe('error-type')
-        })
-        it('logs exit event', async () => {
-            await triggers.triggerEvent("exit")
-            expect(trackUserAction).toHaveBeenCalledTimes(2)
-            expect(trackUserAction.mock.calls[1][0]).toBe('PinwheelCloseModal')
+            expect(trackUserAction.mock.calls[1][0]).toBe('ArgyleTokenExpired')
         })
     })
 })

@@ -50,7 +50,7 @@ export default class ArgyleModalAdapter extends ModalAdapter {
   async onError(err: LinkError) {
     await trackUserAction("ArgyleError", err); 
     this.onExit()
-  }
+   }
 
   async onClose() {
     await trackUserAction("ArgyleCloseModal"); 
