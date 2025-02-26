@@ -3,15 +3,19 @@ import loadScript from "load-script";
 
 export const mockArgyleAuthToken = { user: { user_token: 'test-token' }};
 
+const triggers = ({ onAccountConnected}) => ({
+    triggerAccountConnected: () => {
+        if (onAccountConnected) {
+            onAccountConnected({ accountId: 'account-id', platformId: 'platform-id' });
+        }
+    },
+})
+
+
 export const mockArgyleModule = { 
-    create: vi.fn(({onAccountConnected, onTokenExpired, onAccountCreated, onAccountError, onAccountRemoved, onClose, onError}) => {
+    create: vi.fn((createParams) => {
         return  {
-            open: vi.fn(),
-            triggerAccountConnected: () => {
-                if (onAccountConnected) {
-                    onAccountConnected({ accountId: 'account-id', platformId: 'platform-id'});
-                }
-            },
+            open: vi.fn((other) => triggers(createParams,other)),
         }
     })
 } 

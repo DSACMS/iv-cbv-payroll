@@ -1,4 +1,4 @@
-import { trackUserAction, fetchArgleToken } from "@js/utilities/api.js";
+import { trackUserAction, fetchArgyleToken } from "@js/utilities/api.js";
 import loadScript from 'load-script';
 import { getDocumentLocale } from "@js/utilities/getDocumentLocale.js";
 import { ModalAdapter } from "./ModalAdapter.js";
@@ -40,8 +40,8 @@ export default class ArgyleModalAdapter extends ModalAdapter {
         onAccountCreated: async (payload) => { await trackUserAction("ArgyleAccountCreated", payload) },
         onAccountError: async (payload) => { await trackUserAction("ArgyleAccountError", payload) },
         onAccountRemoved: async (payload) => { await trackUserAction("ArgyleAccountRemoved", payload) },
-        onClose: async () => { await trackUserAction("ArgyleCloseModal") },
-        onError: async(err : LinkError) => { await trackUserAction("ArgyleError", err)},
+        onClose: async () => { await trackUserAction("ArgyleCloseModal"); this.onExit.bind(this) },
+        onError: async(err : LinkError) => { await trackUserAction("ArgyleError", err); this.onExit.bind(this)},
         sandbox: true, 
       }).open();
     }
