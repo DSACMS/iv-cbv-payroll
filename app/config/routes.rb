@@ -1,6 +1,7 @@
 require "sidekiq/web"
 
 Rails.application.routes.draw do
+
   devise_for :users,
     controllers: {
       sessions:           "users/sessions",
@@ -37,8 +38,6 @@ Rails.application.routes.draw do
       resource :add_job, only: %i[show create]
       resource :payment_details, only: %i[show update]
       resource :expired_invitation, only: %i[show]
-      post 'extend_session', to: 'sessions#extend', as: :extend_session
-
       # Utility route to clear your session; useful during development
       resource :reset, only: %i[show]
     end

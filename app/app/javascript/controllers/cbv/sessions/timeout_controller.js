@@ -1,93 +1,98 @@
 import { Controller } from "@hotwired/stimulus"
-import { sessionAdapter } from "../../../utilities/sessionAdapter"
+import * as ActionCable from '@rails/actioncable'
+import { extendSession } from "../../../utilities/sessionService"
 
 export default class extends Controller {
   static targets = ["modal", "trigger", "extendButton"]
-  static values = {
-    warningTime: { type: Number, default: 5000 }, // 5 seconds for testing
-    // warningTime: { type: Number, default: 25 * 60 * 1000 }, // 25 minutes in milliseconds
-    timeoutTime: { type: Number, default: 30 * 60 * 1000 }  // 30 minutes in milliseconds
-  }
+
+  cable = ActionCable.createConsumer();
+  subscription = null;
 
   connect() {
-    this.resetTimers()
-    this.addActivityListeners()
+    console.log('Timeout controller connected')
+    this.setupActionCable()
   }
 
   disconnect() {
     console.log('Timeout controller disconnected')
-    this.clearTimers()
-    this.removeActivityListeners()
-  }
-
-  resetTimers() {
-    console.log('Resetting timers')
-    this.clearTimers()
-    
-    console.log('Setting warning timer for', this.warningTimeValue, 'ms')
-    this.warningTimer = setTimeout(() => {
-      console.log('Warning timer triggered')
-      this.showWarning()
-    }, this.warningTimeValue)
-    
-    console.log('Setting timeout timer for', this.timeoutTimeValue, 'ms')
-    this.timeoutTimer = setTimeout(() => {
-      console.log('Timeout timer triggered')
-      this.timeout()
-    }, this.timeoutTimeValue)
-  }
-
-  clearTimers() {
-    if (this.warningTimer) {
-      console.log('Clearing warning timer')
-      clearTimeout(this.warningTimer)
-    }
-    if (this.timeoutTimer) {
-      console.log('Clearing timeout timer')
-      clearTimeout(this.timeoutTimer)
-    }
-    if (this.activityTimeout) {
-      console.log('Clearing activity timeout')
-      clearTimeout(this.activityTimeout)
+    if (this.subscription) {
+      this.subscription.unsubscribe()
     }
   }
 
-  addActivityListeners() {
-    console.log('Adding activity listeners')
-    this.boundHandleActivity = this.handleActivity.bind(this)
-    ;['mousedown', 'keydown', 'touchstart', 'scroll'].forEach(eventName => {
-      document.addEventListener(eventName, this.boundHandleActivity, true)
+  setupActionCable() {
+    console.log('Setting up ActionCable for session management')
+    this.subscription = this.cable.subscriptions.create({ channel: 'SessionChannel' }, {
+      connected: () => {
+        console.log("Connected to SessionChannel")
+      },
+      disconnected: () => {
+        console.log("Disconnected from SessionChannel")
+      },
+      received: (data) => {
+        console.log("Received message from SessionChannel:", data)
+        this.handleChannelMessage(data)
+      }
     })
   }
 
-  removeActivityListeners() {
-    console.log('Removing activity listeners')
-    if (this.boundHandleActivity) {
-      ;['mousedown', 'keydown', 'touchstart', 'scroll'].forEach(eventName => {
-        document.removeEventListener(eventName, this.boundHandleActivity, true)
-      })
+  handleChannelMessage(data) {
+    if (data.event === 'session.info') {
+      console.log('Received session info from server:', data)
+      
+      // If session is close to expiring, show warning
+      const warningThreshold = 5 * 60 * 1000; // 5 minutes
+      if (data.time_remaining_ms <= warningThreshold) {
+        console.log('Session close to expiring based on server info, showing warning')
+        this.showWarning(data.time_remaining_ms)
+      }
+    } else if (data.event === 'session.warning') {
+      console.log('Session warning received, showing modal')
+      this.showWarning(data.time_remaining_ms)
+    } else if (data.event === 'session.error') {
+      console.error('Session error:', data.message)
+      
+      // Re-enable the extend button
+      if (this.hasExtendButtonTarget) {
+        this.extendButtonTarget.disabled = false
+      }
     }
   }
 
-  handleActivity() {
-    console.log('Activity detected')
+  showWarning(timeRemainingMs) {
+    // Set a grace period timer based on remaining time or default to 5 minutes
+    const gracePeriod = timeRemainingMs || 5 * 60 * 1000; // Use time from server or 5 minutes
+    console.log(`Setting grace period timer for ${gracePeriod} ms`)
     
-    // Clear any pending activity timeout
-    if (this.activityTimeout) {
-      clearTimeout(this.activityTimeout)
-    }
-
-    // Wait 1 second after last activity before resetting timers
-    this.activityTimeout = setTimeout(() => {
-      this.resetTimers()
-    }, 1000)
-  }
-
-  showWarning() {
+    // Set timeout to redirect after grace period
+    setTimeout(() => {
+      console.log('Grace period expired, timing out the session')
+      this.timeout()
+    }, gracePeriod)
+    
     if (this.hasTriggerTarget) {
       this.triggerTarget.click()
     } else {
       console.error('Trigger target not found when trying to show warning')
+    }
+  }
+
+  closeModal() {
+    if (this.hasModalTarget) {
+      console.log('Closing modal')
+      // Use the USWDS modal close method if available
+      const modalElement = document.getElementById('cbv-session-timeout-modal')
+      if (modalElement && window.uswdsModal) {
+        window.uswdsModal.toggleModal(modalElement, false)
+      } else {
+        // Fallback: add 'display-none' class or similar
+        this.modalTarget.classList.add('is-hidden')
+      }
+      
+      // Re-enable the extend button
+      if (this.hasExtendButtonTarget) {
+        this.extendButtonTarget.disabled = false
+      }
     }
   }
 
@@ -98,17 +103,28 @@ export default class extends Controller {
   
   async extendSession() {
     try {
-      console.log('Calling sessionAdapter.extendSession()')
-      const response = await sessionAdapter.extendSession()
-      console.log('Session extended successfully, response:', response)
-      
-      // Close the modal
-      if (this.hasModalTarget) {
-        console.log('Closing modal')
-        this.resetTimers()
+      // Disable the extend button to prevent multiple clicks
+      if (this.hasExtendButtonTarget) {
+        this.extendButtonTarget.disabled = true
       }
+      
+      console.log('Extending session via API call')
+      
+      // Use the sessionService utility to extend the session
+      await extendSession();
+      console.log('Session extended successfully')
+      
+      // Close the modal after a short delay
+      setTimeout(() => {
+        this.closeModal()
+      }, 1500)
     } catch (error) {
       console.error('Failed to extend session:', error)
+      
+      // Re-enable the extend button
+      if (this.hasExtendButtonTarget) {
+        this.extendButtonTarget.disabled = false
+      }
     }
   }
 } 
