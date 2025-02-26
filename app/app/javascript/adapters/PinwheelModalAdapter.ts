@@ -1,4 +1,4 @@
-import { fetchToken, trackUserAction } from "@js/utilities/api.js";
+import { fetchPinwheelToken, trackUserAction } from "@js/utilities/api.js";
 import loadScript from 'load-script';
 import { getDocumentLocale } from "@js/utilities/getDocumentLocale.js";
 import { ModalAdapter } from "./ModalAdapter.js";
@@ -31,7 +31,7 @@ export default class PinwheelModalAdapter extends ModalAdapter {
         locale
       });
 
-      const { token } = await fetchToken(this.requestData.responseType, this.requestData.id, locale);
+      const { token } = await fetchPinwheelToken(this.requestData.responseType, this.requestData.id, locale);
 
       return this.Pinwheel.open({
         linkToken: token,

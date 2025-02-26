@@ -12,7 +12,7 @@ export const trackUserAction = async  (eventName, attributes) => {
   })
 }
 
-export const fetchToken = (response_type, id, locale) => {
+export const fetchPinwheelToken = (response_type, id, locale) => {
   return fetchInternal(PINWHEEL_TOKENS_GENERATE, {
     method: 'post',
     body: JSON.stringify({ response_type, id, locale }),

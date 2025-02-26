@@ -1,6 +1,6 @@
 import { vi, describe, beforeEach, it, expect } from 'vitest'
 import EmployerSearchController from '@js/controllers/cbv/employer_search'
-import { fetchToken, fetchArgyleToken, trackUserAction } from '@js/utilities/api';
+import { fetchPinwheelToken, fetchArgyleToken, trackUserAction } from '@js/utilities/api';
 import loadScript from "load-script";
 import { mockPinwheel, mockPinwheelAuthToken } from '@test/fixtures/pinwheel.fixture';
 import { mockArgyle, mockArgyleAuthToken } from '@test/fixtures/argyle.fixture.js';
@@ -75,10 +75,10 @@ describe('EmployerSearchController with pinwheel', () => {
     });
     it('fetches Pinwheel token', async() => {
         await stimulusElement.click();
-        await fetchToken
-        expect(await fetchToken).toBeCalled();
-        expect(await fetchToken.mock.results[0].value).toStrictEqual(mockPinwheelAuthToken)
-        expect(fetchToken.mock.calls[0]).toMatchSnapshot()
+        await fetchPinwheelToken
+        expect(await fetchPinwheelToken).toBeCalled();
+        expect(await fetchPinwheelToken.mock.results[0].value).toStrictEqual(mockPinwheelAuthToken)
+        expect(fetchPinwheelToken.mock.calls[0]).toMatchSnapshot()
     });
 })
 
@@ -188,9 +188,9 @@ describe('EmployerSearchController multiple instances on same page!', () => {
         await stimulusElement1.click();
         await stimulusElement1.click();
 
-        expect(await fetchToken).toBeCalledTimes(4);
-        expect(await fetchToken.mock.results[0].value).toStrictEqual(mockPinwheelAuthToken)
-        expect(fetchToken.mock.calls[0]).toMatchSnapshot()
+        expect(await fetchPinwheelToken).toBeCalledTimes(4);
+        expect(await fetchPinwheelToken.mock.results[0].value).toStrictEqual(mockPinwheelAuthToken)
+        expect(fetchPinwheelToken.mock.calls[0]).toMatchSnapshot()
     });
     it('removal of one button does not impact function of other button.', async () => {
         await stimulusElement1.remove();

@@ -43,7 +43,7 @@ vi.mock('@js/utilities/api', async () => {
   return {
       ...apiModule,
       trackUserAction: vi.fn((eventName, eventPayload) => Promise.resolve()),
-      fetchToken: vi.fn(() => Promise.resolve(mockPinwheelAuthToken)),
+      fetchPinwheelToken: vi.fn(() => Promise.resolve(mockPinwheelAuthToken)),
       fetchArgyleToken: vi.fn(() => Promise.resolve(mockArgyleAuthToken)),
   }
 })
