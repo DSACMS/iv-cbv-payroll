@@ -5,6 +5,7 @@ export const EVENTS_USER_ACTION = '/api/events/user_action';
 export const PINWHEEL_TOKENS_GENERATE = '/api/pinwheel/tokens';
 
 export const trackUserAction = async  (eventName, attributes) => {
+  console.log("this should never happen track user action")
   return fetch(EVENTS_USER_ACTION, {
     method: 'post',
     headers: {

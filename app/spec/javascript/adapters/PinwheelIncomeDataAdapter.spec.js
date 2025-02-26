@@ -27,6 +27,7 @@ describe('PinwheelModalAdapter', () => {
     beforeEach(async () => {
         mockPinwheel();
         adapter = new PinwheelModalAdapter()
+        adapter.load()
         adapter.init(pinwheelModalAdapterArgs)
         triggers = await adapter.open()
     })
