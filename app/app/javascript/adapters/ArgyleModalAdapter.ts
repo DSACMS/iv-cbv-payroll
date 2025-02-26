@@ -1,4 +1,4 @@
-import { trackUserAction, fetchArgyleToken } from "@js/utilities/api.js";
+import { trackUserAction, fetchArgleToken } from "@js/utilities/api.js";
 import loadScript from 'load-script';
 import { getDocumentLocale } from "@js/utilities/getDocumentLocale.js";
 import { ModalAdapter } from "./ModalAdapter.js";

@@ -19,7 +19,7 @@ export const fetchPinwheelToken = (response_type, id, locale) => {
   })
 };
 
-const fetchArgyleToken = () => {
+export const fetchArgyleToken = () => {
   return fetchInternal(ARGYLE_TOKENS_GENERATE, {
     method: 'post',
   })
