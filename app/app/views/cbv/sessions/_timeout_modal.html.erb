@@ -2,25 +2,25 @@
   <div class="usa-modal__content">
     <div class="usa-modal__main">
       <h2 class="usa-modal__heading" id="cbv-session-timeout-heading">
-        <%= t('session_timeout.modal.heading') %>
+        <%= t("session_timeout.modal.heading") %>
       </h2>
       <div class="usa-prose">
         <p id="cbv-session-timeout-description">
-          <%= t('session_timeout.modal.description') %>
+          <%= t("session_timeout.modal.description") %>
         </p>
       </div>
       <div class="usa-modal__footer">
         <ul class="usa-button-group">
           <li class="usa-button-group__item">
-            <button type="button" class="usa-button" 
+            <button type="button" class="usa-button"
                     data-action="click->cbv-sessions-timeout#extendSession"
                     data-cbv-sessions-timeout-target="extendButton"
                     id="extend-session-button">
-              <%= t('session_timeout.modal.extend_button') %>
+              <%= t("session_timeout.modal.extend_button") %>
             </button>
           </li>
           <li class="usa-button-group__item">
-            <%= button_to t('session_timeout.modal.end_button'), destroy_user_session_path, method: :delete, class: "usa-button usa-button--outline" %>
+            <%= button_to t("session_timeout.modal.end_button"), destroy_user_session_path, method: :delete, class: "usa-button usa-button--outline" %>
           </li>
         </ul>
         <div class="usa-alert usa-alert--info usa-alert--slim margin-top-2 display-none" data-cbv-sessions-timeout-target="statusMessage" id="session-extension-status">
@@ -30,11 +30,11 @@
         </div>
       </div>
     </div>
-    
+
   </div>
 </div>
 
-<%= link_to t('session_timeout.modal.trigger'), "#cbv-session-timeout-modal", {
+<%= link_to t("session_timeout.modal.trigger"), "#cbv-session-timeout-modal", {
   aria: { controls: "cbv-session-timeout-modal" },
   data: {
     open_modal: true,

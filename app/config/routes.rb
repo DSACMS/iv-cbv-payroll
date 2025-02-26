@@ -1,7 +1,6 @@
 require "sidekiq/web"
 
 Rails.application.routes.draw do
-
   devise_for :users,
     controllers: {
       sessions:           "users/sessions",
@@ -69,8 +68,6 @@ Rails.application.routes.draw do
     scope :events do
       post :user_action, to: "user_events#user_action"
     end
-
-    post '/extend_session', to: 'sessions#extend'
   end
 
   match "/404", to: "pages#error_404", via: :all

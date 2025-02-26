@@ -1,24 +1,29 @@
-/**
- * Utility functions for session management
- */
-import { fetchInternalAPIService } from './fetchInternalAPIService';
+import * as ActionCable from '@rails/actioncable';
 
 /**
- * Extends the user's session by making a POST request to the API
- * @returns {Promise<Response>} The fetch response
+ * Extends the user's session by sending a message through ActionCable
+ * @param {Object} existingSubscription - The existing ActionCable subscription (optional)
+ * @returns {Promise} A promise that resolves when the message is sent
  */
-export const extendSession = async () => {
-  const response = await fetchInternalAPIService('/api/extend_session', {
-    method: 'POST',
-    headers: {
-      'Accept': 'application/json'
-    },
-    credentials: 'same-origin'
+export const extendSession = async (existingSubscription = null) => {
+  return new Promise((resolve, reject) => {
+    let subscription = existingSubscription;
+    
+    if (!subscription) {
+      // Try to find an existing subscription from the default consumer
+      const consumer = ActionCable.getConsumer() || ActionCable.createConsumer();
+      subscription = consumer.subscriptions.findAll({
+        channel: 'SessionChannel'
+      })[0];
+    }
+
+    if (subscription) {
+      console.log('Using existing subscription to extend session');
+      subscription.perform('extend_session', {});
+      resolve();
+    } else {
+      console.error('No active SessionChannel subscription found');
+      reject(new Error('No active SessionChannel subscription found'));
+    }
   });
-  
-  if (!response.ok) {
-    throw new Error(`Failed to extend session: ${response.status}`);
-  }
-  
-  return response;
 }; 

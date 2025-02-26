@@ -6,6 +6,7 @@ class ApplicationController < ActionController::Base
   before_action :redirect_if_maintenance_mode
   before_action :enable_mini_profiler_in_demo
   before_action :check_help_param
+  before_action :track_user_activity
 
   rescue_from ActionController::InvalidAuthenticityToken do
     redirect_to root_url, flash: { slim_alert: { type: "info", message_html:  t("cbv.error_missing_token_html") } }
@@ -96,5 +97,9 @@ class ApplicationController < ActionController::Base
       flash.now[:alert_heading] = t("help.alert.heading")
       flash.now[:alert_type] = "warning"
     end
+  end
+
+  def track_user_activity
+    session[:last_activity_at] = Time.current.to_i
   end
 end
