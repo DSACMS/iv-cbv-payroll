@@ -1,16 +1,7 @@
-import { trackUserAction } from "@js/utilities/api.js";
-import { fetchInternal } from '@js/utilities/fetchInternal.js';
+import { trackUserAction, fetchArgyleToken } from "@js/utilities/api.js";
 import loadScript from 'load-script';
 import { getDocumentLocale } from "@js/utilities/getDocumentLocale.js";
 import { ModalAdapter } from "./ModalAdapter.js";
-
-const ARGYLE_TOKENS_GENERATE = '/api/argyle/tokens';
-
-const fetchToken = () => {
-  return fetchInternal(ARGYLE_TOKENS_GENERATE, {
-    method: 'post',
-  })
-};
 
 export default class ArgyleModalAdapter extends ModalAdapter {
   Argyle: Argyle;
@@ -40,7 +31,7 @@ export default class ArgyleModalAdapter extends ModalAdapter {
         locale
       })
 
-      const { user } = await fetchToken();
+      const { user } = await fetchArgyleToken();
       return this.Argyle.create({
         userToken: user.user_token,
         items: [this.requestData.id],
@@ -70,7 +61,7 @@ export default class ArgyleModalAdapter extends ModalAdapter {
 
   async onTokenExpired(updateToken : Function) {
       await trackUserAction("ArgyleTokenExpired")
-      const { user } = await fetchToken();
+      const { user } = await fetchArgyleToken();
       updateToken(user.user_token)
   }
   onEvent(eventName: string, eventPayload: any) {

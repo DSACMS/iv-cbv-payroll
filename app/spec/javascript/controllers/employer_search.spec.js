@@ -1,8 +1,9 @@
 import { vi, describe, beforeEach, it, expect } from 'vitest'
 import EmployerSearchController from '@js/controllers/cbv/employer_search'
-import { fetchToken, trackUserAction } from '@js/utilities/api';
+import { fetchToken, fetchArgyleToken, trackUserAction } from '@js/utilities/api';
 import loadScript from "load-script";
 import { mockPinwheel, mockPinwheelAuthToken } from '@test/fixtures/pinwheel.fixture';
+import { mockArgyle, mockArgyleAuthToken } from '@test/fixtures/argyle.fixture.js';
 
 describe('EmployerSearchController', () => {
     let stimulusElement;
@@ -45,8 +46,8 @@ describe('EmployerSearchController with pinwheel', () => {
         stimulusElement = document.createElement('button');
         stimulusElement.setAttribute('data-controller', 'cbv-employer-search')
         stimulusElement.setAttribute('data-action', 'cbv-employer-search#select')
-        stimulusElement.setAttribute('data-response-type', 'csv')
-        stimulusElement.setAttribute('data-id', 'test-id')
+        stimulusElement.setAttribute('data-response-type', 'employer')
+        stimulusElement.setAttribute('data-id', 'uuid')
         stimulusElement.setAttribute('data-is-default-option', false)
         stimulusElement.setAttribute('data-name', 'test-name')
         stimulusElement.setAttribute('data-provider-name', 'pinwheel')
@@ -72,12 +73,58 @@ describe('EmployerSearchController with pinwheel', () => {
         expect(await trackUserAction).toBeCalledTimes(1);
         expect(trackUserAction.mock.calls[0]).toMatchSnapshot()
     });
-    it.skip('fetches Pinwheel token', async() => {
+    it('fetches Pinwheel token', async() => {
         await stimulusElement.click();
         await fetchToken
         expect(await fetchToken).toBeCalled();
         expect(await fetchToken.mock.results[0].value).toStrictEqual(mockPinwheelAuthToken)
         expect(fetchToken.mock.calls[0]).toMatchSnapshot()
+    });
+})
+
+describe('EmployerSearchController with argyle', () => {
+    let stimulusElement;
+
+    beforeEach(async () => {
+        mockArgyle();
+
+        stimulusElement = document.createElement('button');
+        stimulusElement.setAttribute('data-controller', 'cbv-employer-search')
+        stimulusElement.setAttribute('data-action', 'cbv-employer-search#select')
+        stimulusElement.setAttribute('data-response-type', 'employer')
+        stimulusElement.setAttribute('data-id', 'uuid')
+        stimulusElement.setAttribute('data-is-default-option', false)
+        stimulusElement.setAttribute('data-name', 'test-name')
+        stimulusElement.setAttribute('data-provider-name', 'argyle')
+        document.body.appendChild(stimulusElement)
+
+        vi.spyOn(stimulusElement, 'addEventListener')
+        vi.spyOn(stimulusElement, 'removeEventListener')
+
+        await window.Stimulus.register('cbv-employer-search', EmployerSearchController);
+    });
+
+    afterEach(() => {
+        document.body.innerHTML = "";
+    })
+
+    it('loads argyle modal from external website on click', async() => {
+        await stimulusElement.click();
+        expect(loadScript).toBeCalledTimes(1)
+        expect(loadScript.mock.calls[0]).toMatchSnapshot()
+    });
+    
+    it('calls trackUserAction with data attributes from employer_search html', async () => {
+        await stimulusElement.click();
+        expect(await trackUserAction).toBeCalledTimes(1);
+        expect(trackUserAction.mock.calls[0]).toMatchSnapshot()
+    });
+    it('fetches argyle token', async() => {
+        await stimulusElement.click();
+        await fetchArgyleToken
+        expect(await fetchArgyleToken).toBeCalled();
+        expect(await fetchArgyleToken.mock.results[0].value).toStrictEqual(mockArgyleAuthToken)
+        expect(fetchArgyleToken.mock.calls[0]).toMatchSnapshot()
     });
 })
 
