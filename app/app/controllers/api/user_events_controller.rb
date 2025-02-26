@@ -14,7 +14,7 @@ class Api::UserEventsController < ApplicationController
     ArgyleAccountCreated
     ArgyleAccountError
     ArgyleAccountRemoved
-    ArgyleModalClosed
+    ArgyleCloseModal
     ArgyleError
     ArgyleTokenExpired
   ]

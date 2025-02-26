@@ -5,7 +5,7 @@ export const EVENTS_USER_ACTION = '/api/events/user_action';
 export const PINWHEEL_TOKENS_GENERATE = '/api/pinwheel/tokens';
 const ARGYLE_TOKENS_GENERATE = '/api/argyle/tokens';
 
-export const trackUserAction = async  (eventName, attributes) => {
+export const trackUserAction = async  (eventName, attributes={}) => {
   return fetchInternal(EVENTS_USER_ACTION, {
     method: 'post',
     body: JSON.stringify({ events: { event_name: eventName, attributes } }),

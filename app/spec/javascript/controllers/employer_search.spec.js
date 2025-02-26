@@ -134,26 +134,25 @@ describe('EmployerSearchController multiple instances on same page!', () => {
 
     beforeEach(async () => {
         mockPinwheel();
+        mockArgyle();
 
-        stimulusElement1 = document.getElementById('employer-search-button-1')
         stimulusElement1 = document.createElement('button');
         stimulusElement1.setAttribute('data-controller', 'cbv-employer-search')
         stimulusElement1.setAttribute('data-action', 'cbv-employer-search#select')
-        stimulusElement1.setAttribute('data-response-type', 'csv')
-        stimulusElement1.setAttribute('data-id', 'test-id-1')
+        stimulusElement1.setAttribute('data-response-type', 'employer')
+        stimulusElement1.setAttribute('data-id', 'test-uuid-1')
         stimulusElement1.setAttribute('data-is-default-option', false)
-        stimulusElement1.setAttribute('data-name', 'test-name-1')
+        stimulusElement1.setAttribute('data-name', 'ACME corp')
         stimulusElement1.setAttribute('data-provider-name', 'pinwheel')
 
-        stimulusElement2 = document.getElementById('employer-search-button-2')
         stimulusElement2 = document.createElement('button');
         stimulusElement2.setAttribute('data-controller', 'cbv-employer-search')
         stimulusElement2.setAttribute('data-action', 'cbv-employer-search#select')
-        stimulusElement2.setAttribute('data-response-type', 'csv')
-        stimulusElement2.setAttribute('data-id', 'test-id-2')
+        stimulusElement2.setAttribute('data-response-type', 'employer')
+        stimulusElement2.setAttribute('data-id', 'test-uuid-2')
         stimulusElement2.setAttribute('data-is-default-option', false)
-        stimulusElement2.setAttribute('data-name', 'test-name-2')
-        stimulusElement2.setAttribute('data-provider-name', 'pinwheel')
+        stimulusElement2.setAttribute('data-name', 'Beta LLC')
+        stimulusElement2.setAttribute('data-provider-name', 'argyle')
 
 
         document.body.appendChild(stimulusElement1)

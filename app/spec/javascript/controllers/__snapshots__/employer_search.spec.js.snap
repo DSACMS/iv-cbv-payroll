@@ -19,9 +19,9 @@ exports[`EmployerSearchController multiple instances on same page! > calls track
   "ApplicantSelectedEmployerOrPlatformItem",
   {
     "is_default_option": "false",
-    "item_id": "test-id-1",
-    "item_name": "test-name-1",
-    "item_type": "csv",
+    "item_id": "test-uuid-1",
+    "item_name": "ACME corp",
+    "item_type": "employer",
     "locale": "en",
     "provider_name": "pinwheel",
   },
