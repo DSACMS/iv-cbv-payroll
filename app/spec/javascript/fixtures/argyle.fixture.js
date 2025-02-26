@@ -3,12 +3,17 @@ import loadScript from "load-script";
 
 export const mockArgyleAuthToken = { user: { user_token: 'test-token' }};
 
-const triggers = ({ onAccountConnected}) => ({
+const triggers = ({ onAccountConnected, onClose}) => ({
     triggerAccountConnected: () => {
         if (onAccountConnected) {
             onAccountConnected({ accountId: 'account-id', platformId: 'platform-id' });
         }
     },
+    triggerClose: () => {
+        if(onClose) {
+            onClose()
+        }
+    }
 })
 
 

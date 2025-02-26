@@ -40,11 +40,21 @@ export default class ArgyleModalAdapter extends ModalAdapter {
         onAccountCreated: async (payload) => { await trackUserAction("ArgyleAccountCreated", payload) },
         onAccountError: async (payload) => { await trackUserAction("ArgyleAccountError", payload) },
         onAccountRemoved: async (payload) => { await trackUserAction("ArgyleAccountRemoved", payload) },
-        onClose: async () => { await trackUserAction("ArgyleCloseModal"); this.onExit.bind(this) },
-        onError: async(err : LinkError) => { await trackUserAction("ArgyleError", err); this.onExit.bind(this)},
+        onClose: this.onClose.bind(this),
+        onError: this.onError.bind(this),
         sandbox: true, 
       }).open();
     }
+  }
+
+  async onError(err: LinkError) {
+    await trackUserAction("ArgyleError", err); 
+    this.onExit()
+  }
+
+  async onClose() {
+    await trackUserAction("ArgyleCloseModal"); 
+    await this.onExit();
   }
 
   async onSuccess(eventPayload: ArgyleAccountData) {

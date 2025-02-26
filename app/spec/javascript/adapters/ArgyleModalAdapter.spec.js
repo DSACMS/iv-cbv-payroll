@@ -8,6 +8,7 @@ const MOCK_ARGYLE_ERROR = "Failed to load SCRIPT"
 
 const modalAdapterArgs = {
     onSuccess: vi.fn(),
+    onExit: vi.fn(),
     requestData: {
         responseType: "response-type",
         id: "id",
@@ -59,10 +60,12 @@ describe('ArgyleModalAdapter', () => {
             expect(modalAdapterArgs.onSuccess).toHaveBeenCalled()
         })
     })
-    describe.skip('onExit', () => {
+    describe('onExit', () => {
         it('triggers the provided onExit callback', async () => {
-            await triggers.triggerSuccessEvent()
-            expect(pinwheelModalAdapterArgs.onSuccess).toHaveBeenCalled()
+            await triggers.triggerClose()
+            expect(modalAdapterArgs.onExit).toHaveBeenCalled()
+            expect(trackUserAction).toHaveBeenCalledTimes(2)
+            expect(trackUserAction.mock.calls[1][0]).toBe('ArgyleCloseModal')
         })
     })
     describe.skip('onEvent', () => {
