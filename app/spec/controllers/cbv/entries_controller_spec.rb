@@ -134,7 +134,7 @@ RSpec.describe Cbv::EntriesController do
             existing_cbv_flow.update(confirmation_code: "FOOBAR")
           end
           let!(:connected_account) do
-            create(:pinwheel_account,
+            create(:payroll_account,
               cbv_flow: existing_cbv_flow,
               pinwheel_account_id: SecureRandom.uuid,
               created_at: 4.minutes.ago

@@ -27,6 +27,6 @@ class Cbv::SynchronizationsController < Cbv::BaseController
   def set_pinwheel_account
     account_id = params[:user][:account_id]
 
-    @pinwheel_account = @cbv_flow.pinwheel_accounts.find_by(pinwheel_account_id: account_id)
+    @pinwheel_account = @cbv_flow.payroll_accounts.find_by(pinwheel_account_id: account_id)
   end
 end

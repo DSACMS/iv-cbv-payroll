@@ -16,7 +16,7 @@ RSpec.describe Cbv::MissingResultsController do
     end
 
     context "when the user has already linked a pinwheel account" do
-      let!(:pinwheel_account) { create(:pinwheel_account, cbv_flow: cbv_flow) }
+      let!(:payroll_account) { create(:payroll_account, cbv_flow: cbv_flow) }
 
       it "renders successfully" do
         get :show
