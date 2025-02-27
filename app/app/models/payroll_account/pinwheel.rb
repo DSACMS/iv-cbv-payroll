@@ -1,4 +1,6 @@
 class PayrollAccount::Pinwheel < PayrollAccount
+  after_create :lookup_supported_jobs
+
   EVENTS_MAP = {
     "employment.added" => :employment_synced_at,
     "income.added" => :income_synced_at,
@@ -53,5 +55,20 @@ class PayrollAccount::Pinwheel < PayrollAccount
     sync_column = EVENTS_MAP.select { |key| key.start_with? job }&.values.last
 
     [ error_column, sync_column ]
+  end
+
+  def lookup_supported_jobs
+    platform_id = pinwheel.fetch_account(account_id: pinwheel_account_id)["data"]["platform_id"]
+    supported_jobs = pinwheel.fetch_platform(platform_id: platform_id)["data"]["supported_jobs"]
+
+    update(supported_jobs: supported_jobs)
+  end
+
+  def pinwheel
+    PinwheelService.new(site_config[cbv_flow.client_agency_id].pinwheel_environment)
+  end
+
+  def site_config
+    Rails.application.config.client_agencies
   end
 end

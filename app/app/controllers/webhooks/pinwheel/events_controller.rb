@@ -11,9 +11,8 @@ class Webhooks::Pinwheel::EventsController < ApplicationController
     end
 
     if params["event"] == "account.added"
-      supported_jobs = get_supported_jobs(params["payload"]["platform_id"])
       PayrollAccount
-        .create_with(cbv_flow: @cbv_flow, supported_jobs: supported_jobs)
+        .create_with(cbv_flow: @cbv_flow)
         .find_or_create_by(pinwheel_account_id: params["payload"]["account_id"])
       track_account_created_event(@cbv_flow, params["payload"]["platform_name"])
     end
@@ -91,9 +90,5 @@ class Webhooks::Pinwheel::EventsController < ApplicationController
 
   def set_pinwheel
     @pinwheel = @cbv_flow.present? ? pinwheel_for(@cbv_flow) : PinwheelService.new("sandbox", DUMMY_API_KEY)
-  end
-
-  def get_supported_jobs(platform_id)
-    @pinwheel.fetch_platform(platform_id: platform_id)["data"]["supported_jobs"]
   end
 end
