@@ -16,7 +16,7 @@ module Cbv::PinwheelDataHelper
   end
 
   def set_employments
-    @employments = @cbv_flow.pinwheel_accounts.map do |pinwheel_account|
+    @employments = @cbv_flow.payroll_accounts.map do |pinwheel_account|
       next unless pinwheel_account.job_succeeded?("employment")
 
       pinwheel.fetch_employment(account_id: pinwheel_account.pinwheel_account_id)
@@ -24,7 +24,7 @@ module Cbv::PinwheelDataHelper
   end
 
   def set_incomes
-    @incomes = @cbv_flow.pinwheel_accounts.map do |pinwheel_account|
+    @incomes = @cbv_flow.payroll_accounts.map do |pinwheel_account|
       next unless pinwheel_account.job_succeeded?("income")
 
       pinwheel.fetch_income(account_id: pinwheel_account.pinwheel_account_id)
@@ -32,7 +32,7 @@ module Cbv::PinwheelDataHelper
   end
 
   def set_identities
-    @identities = @cbv_flow.pinwheel_accounts.map do |pinwheel_account|
+    @identities = @cbv_flow.payroll_accounts.map do |pinwheel_account|
       next unless pinwheel_account.job_succeeded?("identity")
 
       pinwheel.fetch_identity(account_id: pinwheel_account.pinwheel_account_id)
@@ -43,7 +43,7 @@ module Cbv::PinwheelDataHelper
   end
 
   def payments_grouped_by_employer
-    summarize_by_employer(@payments, @employments, @incomes, @identities, @cbv_flow.pinwheel_accounts)
+    summarize_by_employer(@payments, @employments, @incomes, @identities, @cbv_flow.payroll_accounts)
   end
 
   def total_gross_income
@@ -74,7 +74,7 @@ module Cbv::PinwheelDataHelper
   private
 
   def fetch_paystubs(from_pay_date, to_pay_date)
-    @cbv_flow.pinwheel_accounts.flat_map do |pinwheel_account|
+    @cbv_flow.payroll_accounts.flat_map do |pinwheel_account|
       next [] unless pinwheel_account.job_succeeded?("paystubs")
 
       fetch_paystubs_for_account_id(pinwheel_account.pinwheel_account_id, from_pay_date, to_pay_date)
@@ -90,7 +90,7 @@ module Cbv::PinwheelDataHelper
   end
 
   def does_pinwheel_account_support_job?(account_id, job)
-    pinwheel_account = PinwheelAccount.find_by_pinwheel_account_id(account_id)
+    pinwheel_account = PayrollAccount.find_by_pinwheel_account_id(account_id)
     return false unless pinwheel_account
 
     pinwheel_account.job_succeeded?(job)

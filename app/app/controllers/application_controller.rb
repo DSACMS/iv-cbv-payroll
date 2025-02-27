@@ -97,11 +97,9 @@ class ApplicationController < ActionController::Base
   def check_help_param
     if params[:help] == "true"
       help_link = helpers.render(partial: "help/help_link", locals: { text: t("help.alert.help_options"), source: "banner" })
-      flash.merge!(
-        alert: "#{t('help.alert.text_before')} #{help_link}",
-        alert_heading: t("help.alert.heading"),
-        alert_type: "warning"
-      )
+      flash.now[:alert] = "#{t('help.alert.text_before')} #{help_link}"
+      flash.now[:alert_heading] = t("help.alert.heading")
+      flash.now[:alert_type] = "warning"
     end
   end
 end
