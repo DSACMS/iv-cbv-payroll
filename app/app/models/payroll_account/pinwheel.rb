@@ -1,5 +1,5 @@
 class PayrollAccount::Pinwheel < PayrollAccount
-  after_create :lookup_supported_jobs
+  after_create :lookup_supported_jobs, if: ->(payroll_account) { payroll_account.supported_jobs.empty? }
 
   EVENTS_MAP = {
     "employment.added" => :employment_synced_at,
