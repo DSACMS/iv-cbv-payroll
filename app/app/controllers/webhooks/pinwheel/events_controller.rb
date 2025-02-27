@@ -86,7 +86,7 @@ class Webhooks::Pinwheel::EventsController < ApplicationController
   end
 
   def set_cbv_flow
-    @cbv_flow = CbvFlow.find_by_pinwheel_end_user_id(params["payload"]["end_user_id"])
+    @cbv_flow = CbvFlow.find_by_end_user_id(params["payload"]["end_user_id"])
   end
 
   def set_pinwheel

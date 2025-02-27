@@ -37,7 +37,7 @@ RSpec.describe Webhooks::Pinwheel::EventsController do
       let(:payload) do
         {
           "platform_id" => "00000000-0000-0000-0000-000000011111",
-          "end_user_id" => cbv_flow.pinwheel_end_user_id,
+          "end_user_id" => cbv_flow.end_user_id,
           "account_id" => account_id,
           "platform_name" => "acme"
         }
@@ -90,7 +90,7 @@ RSpec.describe Webhooks::Pinwheel::EventsController do
       let(:payload) do
         {
           "account_id" => account_id,
-          "end_user_id" => cbv_flow.pinwheel_end_user_id,
+          "end_user_id" => cbv_flow.end_user_id,
           "outcome" => "success"
         }
       end
@@ -151,7 +151,7 @@ RSpec.describe Webhooks::Pinwheel::EventsController do
       let(:payload) do
         {
           "account_id" => account_id,
-          "end_user_id" => cbv_flow.pinwheel_end_user_id,
+          "end_user_id" => cbv_flow.end_user_id,
           "outcome" => "pending"
         }
       end

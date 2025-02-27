@@ -68,7 +68,7 @@ ActiveRecord::Schema[7.1].define(version: 2025_02_27_162123) do
     t.date "payroll_data_available_from"
     t.bigint "cbv_flow_invitation_id"
     t.string "pinwheel_token_id"
-    t.uuid "pinwheel_end_user_id", default: -> { "gen_random_uuid()" }, null: false
+    t.uuid "end_user_id", default: -> { "gen_random_uuid()" }, null: false
     t.jsonb "additional_information", default: {}
     t.string "client_agency_id"
     t.string "confirmation_code"
