@@ -13,7 +13,7 @@
   </head>
 
   <body>
-    <div id="root" data-controller="cbv-sessions-timeout">
+    <div id="root" data-controller="session" data-session-cbv-flow-id-value="<%= session[:cbv_flow_id] %>">
       <a class="usa-skipnav" href="#main-content"><%= t("shared.skip_link") %></a>
       <%= render "application/header" %>
       <main id="main-content">

@@ -18,12 +18,16 @@ export const extendSession = async (existingSubscription = null) => {
     }
 
     if (subscription) {
-      console.log('Using existing subscription to extend session');
-      subscription.perform('extend_session', {});
+      subscription.perform('extend_session');
       resolve();
-    } else {
-      console.error('No active SessionChannel subscription found');
-      reject(new Error('No active SessionChannel subscription found'));
     }
   });
-}; 
+};
+
+export function endSession(subscription) {
+  if (!subscription) {
+    return Promise.reject(new Error('No active subscription'))
+  }
+  
+  return subscription.perform('destroy_user_session')
+} 

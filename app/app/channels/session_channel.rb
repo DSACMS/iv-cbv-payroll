@@ -37,6 +37,23 @@ class SessionChannel < ApplicationCable::Channel
     Rails.logger.info "Session successfully extended for #{@cbv_flow.id}"
   end
 
+  def destroy_user_session
+
+    # remove the cbv_flow from the session
+    connection.session.delete(:cbv_flow_id)
+    puts connection.session
+
+    transmit({
+      event: "session.terminated",
+      message: "Your session has been ended",
+      cookie_name: Rails.application.config.session_options[:key],
+      redirect_to: Rails.application.routes.url_helpers.root_path
+    })
+    
+    # Ensure the connection is properly closed
+    connection.close
+  end
+
   def transmit_session_info
     timeout_in = get_timeout_setting
 
@@ -95,7 +112,6 @@ class SessionChannel < ApplicationCable::Channel
   end
 
   def check_session_activity
-    Rails.logger.debug "SessionChannel#check_session_activity called at #{Time.current}"
     return unless @cbv_flow
 
     # Get the timeout setting
@@ -130,20 +146,6 @@ class SessionChannel < ApplicationCable::Channel
         event: "session.warning",
         message: "Your session will expire soon",
         time_remaining_ms: time_until_timeout_ms
-      })
-    end
-
-    # Debug info in development
-    if Rails.env.development?
-      broadcast_to(current_channel_identifier, {
-        event: "session.debug",
-        message: "Session activity check ran",
-        time_remaining_ms: time_until_timeout_ms,
-        last_activity: last_active.iso8601,
-        timeout_in: session_timeout_limit.to_i,
-        current_time: Time.current.iso8601,
-        cbv_flow_id: @cbv_flow.id,
-        warning_sent_at: connection.instance_variable_get(:@warning_sent_at)&.iso8601
       })
     end
   end
