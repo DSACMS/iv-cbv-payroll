@@ -17,8 +17,8 @@ FactoryBot.define do
       end
 
       after(:build) do |cbv_flow, evaluator|
-        cbv_flow.pinwheel_accounts = [
-          create(:pinwheel_account, cbv_flow: cbv_flow, supported_jobs: evaluator.supported_jobs, employment_errored_at: evaluator.employment_errored_at)
+        cbv_flow.payroll_accounts = [
+          create(:payroll_account, cbv_flow: cbv_flow, supported_jobs: evaluator.supported_jobs, employment_errored_at: evaluator.employment_errored_at)
         ]
       end
     end

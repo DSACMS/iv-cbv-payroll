@@ -30,7 +30,7 @@ RSpec.describe Cbv::SummariesController do
       "public_key"        => @public_key
     })
 
-    cbv_flow.pinwheel_accounts.first.update(pinwheel_account_id: "03e29160-f7e7-4a28-b2d8-813640e030d3")
+    cbv_flow.payroll_accounts.first.update(pinwheel_account_id: "03e29160-f7e7-4a28-b2d8-813640e030d3")
   end
 
   around do |ex|

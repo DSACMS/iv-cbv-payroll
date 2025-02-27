@@ -13,10 +13,10 @@ class CaseworkerMailerPreview < BaseMailerPreview
       :completed,
       cbv_flow_invitation: invitation
     )
-    payments = stub_post_processed_payments(cbv_flow.pinwheel_accounts.first.pinwheel_account_id)
-    employments = stub_employments(cbv_flow.pinwheel_accounts.first.pinwheel_account_id)
-    incomes = stub_incomes(cbv_flow.pinwheel_accounts.first.pinwheel_account_id)
-    identities = stub_identities(cbv_flow.pinwheel_accounts.first.pinwheel_account_id)
+    payments = stub_post_processed_payments(cbv_flow.payroll_accounts.first.pinwheel_account_id)
+    employments = stub_employments(cbv_flow.payroll_accounts.first.pinwheel_account_id)
+    incomes = stub_incomes(cbv_flow.payroll_accounts.first.pinwheel_account_id)
+    identities = stub_identities(cbv_flow.payroll_accounts.first.pinwheel_account_id)
 
     CaseworkerMailer.with(
       email_address: invitation.email_address,

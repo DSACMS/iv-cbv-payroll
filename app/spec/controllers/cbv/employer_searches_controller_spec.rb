@@ -100,9 +100,9 @@ RSpec.describe Cbv::EmployerSearchesController do
 
       render_views
 
-      context "when the user at least one pinwheel_account associated with their cbv_flow" do
+      context "when the user at least one payroll_account associated with their cbv_flow" do
         it "renders the view with a link to the summary page" do
-          create(:pinwheel_account, cbv_flow_id: cbv_flow.id)
+          create(:payroll_account, cbv_flow_id: cbv_flow.id)
           get :show, params: { query: "no_results" }
           expect(response).to be_successful
           expect(response.body).to include("continue to review your income report")
@@ -110,7 +110,7 @@ RSpec.describe Cbv::EmployerSearchesController do
         end
       end
 
-      context "when the user has does not have a pinwheel_account associated with their cbv_flow" do
+      context "when the user has does not have a payroll_account associated with their cbv_flow" do
         it "renders the view with a link to exit income verification" do
           get :show, params: { query: "no_results" }
           expect(response).to be_successful
