@@ -37,7 +37,7 @@ class Api::UserEventsController < ApplicationController
     "ArgyleAccountRemoved" => "ApplicantRemovedArgyleAccount",
     "ArgyleCloseModal" => "ApplicantClosedArgyleModal",
     "ArgyleError" => "ApplicantEncounteredArgyleError",
-    "ArgyleTokenExpired" => "ApplicantEncounteredArgyleTokenExpired",
+    "ArgyleTokenExpired" => "ApplicantEncounteredArgyleTokenExpired"
   }
 
   def user_action
