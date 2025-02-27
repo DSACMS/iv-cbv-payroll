@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2025_02_26_205049) do
+ActiveRecord::Schema[7.1].define(version: 2025_02_27_162123) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pgcrypto"
   enable_extension "plpgsql"
@@ -80,7 +80,7 @@ ActiveRecord::Schema[7.1].define(version: 2025_02_26_205049) do
     t.index ["cbv_flow_invitation_id"], name: "index_cbv_flows_on_cbv_flow_invitation_id"
   end
 
-  create_table "pinwheel_accounts", force: :cascade do |t|
+  create_table "payroll_accounts", force: :cascade do |t|
     t.bigint "cbv_flow_id", null: false
     t.string "pinwheel_account_id"
     t.datetime "paystubs_synced_at", precision: nil
@@ -94,7 +94,7 @@ ActiveRecord::Schema[7.1].define(version: 2025_02_26_205049) do
     t.datetime "paystubs_errored_at", precision: nil
     t.datetime "identity_errored_at", precision: nil
     t.datetime "identity_synced_at", precision: nil
-    t.index ["cbv_flow_id"], name: "index_pinwheel_accounts_on_cbv_flow_id"
+    t.index ["cbv_flow_id"], name: "index_payroll_accounts_on_cbv_flow_id"
   end
 
   create_table "users", force: :cascade do |t|
@@ -119,5 +119,5 @@ ActiveRecord::Schema[7.1].define(version: 2025_02_26_205049) do
 
   add_foreign_key "cbv_flow_invitations", "users"
   add_foreign_key "cbv_flows", "cbv_flow_invitations"
-  add_foreign_key "pinwheel_accounts", "cbv_flows"
+  add_foreign_key "payroll_accounts", "cbv_flows"
 end

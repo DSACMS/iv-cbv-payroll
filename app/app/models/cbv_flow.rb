@@ -1,5 +1,5 @@
 class CbvFlow < ApplicationRecord
-  has_many :pinwheel_accounts, dependent: :destroy
+  has_many :payroll_accounts, dependent: :destroy
   belongs_to :cbv_flow_invitation, optional: true
   belongs_to :cbv_applicant, optional: true
   validates :client_agency_id, inclusion: Rails.application.config.client_agencies.client_agency_ids
@@ -28,6 +28,6 @@ class CbvFlow < ApplicationRecord
   end
 
   def has_account_with_required_data?
-    pinwheel_accounts.any?(&:has_required_data?)
+    payroll_accounts.any?(&:has_required_data?)
   end
 end

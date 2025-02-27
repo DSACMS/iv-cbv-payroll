@@ -11,7 +11,7 @@ RSpec.describe Cbv::SynchronizationFailuresController do
     end
 
     context "when the user has already linked a pinwheel account" do
-      let!(:pinwheel_account) { create(:pinwheel_account, cbv_flow: cbv_flow) }
+      let!(:payroll_account) { create(:payroll_account, cbv_flow: cbv_flow) }
 
       it "shows continue to report button" do
         get :show
@@ -19,8 +19,8 @@ RSpec.describe Cbv::SynchronizationFailuresController do
       end
     end
 
-    context "when the user has no successful pinwheel_accounts" do
-      let!(:pinwheel_account) { create(:pinwheel_account, :with_paystubs_errored, cbv_flow: cbv_flow) }
+    context "when the user has no successful payroll_accounts" do
+      let!(:payroll_account) { create(:payroll_account, :with_paystubs_errored, cbv_flow: cbv_flow) }
 
       it "shows cta button" do
         get :show

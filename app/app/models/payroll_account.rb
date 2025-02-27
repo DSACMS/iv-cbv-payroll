@@ -1,4 +1,4 @@
-class PinwheelAccount < ApplicationRecord
+class PayrollAccount < ApplicationRecord
   belongs_to :cbv_flow
 
   after_update_commit {
