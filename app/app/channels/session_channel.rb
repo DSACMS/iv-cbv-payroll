@@ -5,7 +5,7 @@ class SessionChannel < ApplicationCable::Channel
   def subscribed
     return unless connection.session[:cbv_flow_id]
     @cbv_flow = CbvFlow.find(connection.session[:cbv_flow_id])
-    stream_for @cbv_flow
+    stream_for @cbv_flow.id
 
     # Record connection time
     connection.instance_variable_set(:@session_channel_connected_at, Time.current)
