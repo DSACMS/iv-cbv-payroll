@@ -39,10 +39,6 @@ class SessionChannel < ApplicationCable::Channel
 
   def destroy_user_session
 
-    # remove the cbv_flow from the session
-    connection.session.delete(:cbv_flow_id)
-    puts connection.session
-
     transmit({
       event: "session.terminated",
       message: "Your session has been ended",
@@ -50,7 +46,6 @@ class SessionChannel < ApplicationCable::Channel
       redirect_to: Rails.application.routes.url_helpers.root_path
     })
     
-    # Ensure the connection is properly closed
     connection.close
   end
 
@@ -88,7 +83,6 @@ class SessionChannel < ApplicationCable::Channel
     if connection.session
       connection.session[:last_activity_at] = current_time.to_i
     end
-    Rails.logger.debug "Updated activity time for #{@cbv_flow.id} to #{current_time}"
   end
 
   def get_last_activity_time
