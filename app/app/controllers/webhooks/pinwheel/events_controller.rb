@@ -18,14 +18,14 @@ class Webhooks::Pinwheel::EventsController < ApplicationController
       track_account_created_event(@cbv_flow, params["payload"]["platform_name"])
     end
 
-    if PayrollAccount::EVENTS_MAP.keys.include?(params["event"])
+    if PayrollAccount::Pinwheel::EVENTS_MAP.keys.include?(params["event"])
       pinwheel_account = PayrollAccount.find_by_pinwheel_account_id(params["payload"]["account_id"])
 
       if pinwheel_account.present?
-        pinwheel_account.update!(PayrollAccount::EVENTS_MAP[params["event"]] => Time.now)
+        pinwheel_account.update!(PayrollAccount::Pinwheel::EVENTS_MAP[params["event"]] => Time.now)
 
         if params.dig("payload", "outcome") == "error" || params.dig("payload", "outcome") == "pending"
-          pinwheel_account.update!(PayrollAccount::EVENTS_ERRORS_MAP[params["event"]] => Time.now)
+          pinwheel_account.update!(PayrollAccount::Pinwheel::EVENTS_ERRORS_MAP[params["event"]] => Time.now)
         end
 
         if pinwheel_account.has_fully_synced?
