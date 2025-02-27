@@ -205,8 +205,6 @@ es:
           nyc: Marque esta casilla para confirmar que, a su leal saber y entender, la información proporcionada por usted es verdadera y completa. Usted accede a informar a la Administración de Recursos Humanos (HRA) de la Ciudad de Nueva York (NYC, por sus siglas en inglés) de cualquier ingreso no reflejado en este informe o cualquier discrepancia encontrada en la información recopilada con esta herramienta. Usted entiende que suministrar información precisa y completa es su responsabilidad, y que cualquier información falsa u omitida puede tener consecuencias legales.<br/><br/>Al enviar este informe, autoriza su uso para la verificación de los ingresos por parte del personal autorizado de la HRA.
           sandbox: Marque esta casilla para confirmar que, a su leal saber y entender, la información proporcionada por usted es verdadera y completa. Usted se compromete a informar a la Agencia de pruebas CBV sobre cualquier ingreso no reflejado en este informe o cualquier discrepancia hallada en la información recopilada con esta herramienta. Usted entiende que suministrar información precisa y completa es su responsabilidad, y que cualquier información falsa u omitida puede tener consecuencias legales. <br/><br/>Al enviar este informe, autoriza su uso para la verificación de los ingresos por parte del personal autorizado del CBV.
         consent_to_authorize_use_title: Acuerdo legal
-        description: El siguiente informe contiene sus ingresos de los últimos 90 días, del %{start_date} al %{end_date}. Revíselo antes de enviarlo a %{agency_acronym}.
-        header: Revise y presente su informe de ingresos
         none_found: No encontramos ningún pago de este empleador en los últimos 90 días.
         none_found_confirmed: Hemos confirmado que no hay ningún pago de este empleador en los últimos 90 días. Esto sucede cuando el cliente no ha recibido ingresos por este trabajo durante ese tiempo.
         payment: Pago de %{amount} antes de pago impuestos en %{date}
@@ -237,8 +235,6 @@ es:
         table_caption_no_name: Empleador %{number}
         total_income_from: 'Ingresos totales provenientes de %{employer_name}, antes del pago de impuestos: %{amount}'
         total_income_from_no_employer_name: 'Ingresos totales antes del pago de impuestos: %{amount}'
-        total_payments: 'Ingresos totales de los últimos 90 días, antes del pago de impuestos: %{amount}'
-        total_payments_desc: Este es el ingreso bruto total de su(s) trabajo(s) antes de que se le descuenten impuestos, beneficios y otras deducciones de su cheque.
       update:
         consent_to_authorize_warning: Debe marcar la casilla de acuerdo legal para proceder.
     synchronization_failures:
