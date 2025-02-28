@@ -56,7 +56,6 @@
       <%= render "application/footer" %>
       <%= render partial: "cbv/sessions/timeout_modal", locals: {
         cbv_flow_id: session[:cbv_flow_id],
-        cookie_name: Rails.application.config.session_options[:key],
         timeout: Rails.application.config.session_options[:expire_after]
       } %>
     </div>

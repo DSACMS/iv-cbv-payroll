@@ -1,5 +1,6 @@
 import { Controller } from "@hotwired/stimulus";
 import { getDocumentLocale } from "../utilities/getDocumentLocale";
+
 export default class extends Controller {
   static targets = [
     "modal",
@@ -7,7 +8,6 @@ export default class extends Controller {
   ];
 
   timeoutValue;
-  cookieName;
   cbvFlowId;
 
   connect() {
@@ -19,7 +19,6 @@ export default class extends Controller {
       return;
     }
 
-    this.cookieName = this.modalTarget.dataset.itemCookieNameParam;
     this.cbvFlowId = parseInt(this.modalTarget.dataset.itemCbvFlowIdParam, 10);
     this.timeoutValue = parseInt(this.modalTarget.dataset.itemTimeoutParam, 10);
 
@@ -57,10 +56,6 @@ export default class extends Controller {
   }
 
   extendSession() {
-    if (!this.cookieName) return;
-    
-    document.cookie = `${this.cookieName}=1; path=/; expires=${new Date(
-      Date.now() + this.timeoutValue * 1000
-    ).toUTCString()}`;
+    location.reload();
   }
 }
