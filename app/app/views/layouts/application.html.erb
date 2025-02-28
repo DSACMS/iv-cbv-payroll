@@ -57,8 +57,7 @@
       <%= render partial: "cbv/sessions/timeout_modal", locals: {
         cbv_flow_id: session[:cbv_flow_id],
         cookie_name: Rails.application.config.session_options[:key],
-        timeout: 100
-        # timeout: Rails.application.config.session_options[:expire_after]
+        timeout: Rails.application.config.session_options[:expire_after]
       } %>
     </div>
     <%= render partial: "help/help_modal", locals: { help_path: help_path(locale: I18n.locale, r: SecureRandom.hex(4)) } %>

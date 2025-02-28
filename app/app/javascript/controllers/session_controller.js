@@ -4,7 +4,6 @@ export default class extends Controller {
   static targets = [
     "modal",
     "extendButton",
-    "endButton",
   ];
 
   timeoutValue;
