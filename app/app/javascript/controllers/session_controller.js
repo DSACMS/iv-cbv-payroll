@@ -1,5 +1,5 @@
 import { Controller } from "@hotwired/stimulus";
-
+import { getDocumentLocale } from "../utilities/getDocumentLocale";
 export default class extends Controller {
   static targets = [
     "modal",
@@ -12,9 +12,10 @@ export default class extends Controller {
 
   connect() {
     console.log("Session controller connected");
-    // if the element is not the modal target, return because it does not have the data we need
+    
+    // if the element is not the modal target, return because only the modal target
+    // has the data we need
     if(!this.hasModalTarget) {
-      console.log("No modal target found for this controller instance");
       return;
     }
 
@@ -36,7 +37,8 @@ export default class extends Controller {
 
     // Set timer for the actual session expiration
     this.expirationTimer = setTimeout(() => {
-      this.endSession(false);
+      const locale = getDocumentLocale();
+      window.location = `/${locale}/cbv/entry?end_session=true&user_action=false`;
     }, expirationDelay);
   }
 
