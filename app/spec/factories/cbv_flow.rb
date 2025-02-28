@@ -3,7 +3,6 @@ FactoryBot.define do
     cbv_flow_invitation
     cbv_applicant
 
-    case_number { "ABC1234" }
     client_agency_id { "sandbox" }
 
     trait :completed do

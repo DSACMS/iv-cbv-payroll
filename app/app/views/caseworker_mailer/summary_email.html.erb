@@ -8,8 +8,8 @@
 </p>
 
 <p>
-  This report is associated with the case number <%= @cbv_flow.case_number %> and
-  CIN <%= @cbv_flow_invitation.client_id_number %>.
+  This report is associated with the case number <%= @cbv_applicant.case_number %> and
+  CIN <%= @cbv_applicant.client_id_number %>.
   It was requested by <%= @cbv_flow_invitation.user.email %>
   on <%= format_parsed_date(@cbv_flow_invitation.created_at) %>, and submitted by the client
   on <%= format_parsed_date(@cbv_flow.consented_to_authorized_use_at) %>.
