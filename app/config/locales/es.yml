@@ -150,7 +150,6 @@ es:
     payment_details:
       show:
         additional_information_header: Comentarios adicionales (opcional)
-        additional_information_label: Comparta cualquier comentario o información adicional sobre los detalles de pago anteriores que desea que %{agency_acronym} conozca. Por ejemplo, puede compartir si la información es inexacta o si ya no trabaja en ese empleo.
         continue: Continuar
         deductions: 'Deducción: %{category}'
         employment_end_date: Fecha de finalización del empleo
@@ -158,8 +157,6 @@ es:
         employment_start_date: Fecha de inicio del empleo
         employment_status: Estatus del empleo
         frequency_unknown: Frecuencia desconocida
-        header: Su información de pago de %{employer_name}
-        header_no_employer_name: Su información de pago por parte de su empleador
         hourly_rate: Monto de compensación
         hours:
           one: "%{count} hora"
@@ -177,7 +174,6 @@ es:
         pay_period_value: "%{start_date} al %{end_date}"
         payment_hours: "%{amount} horas"
         payments_and_deductions_table_header: Pagos y deducciones
-        subheader: Hemos recopilado sus registros de pago de los últimos 90 días, del %{start_date} al %{end_date}. Si falta información o esta es inexacta, añada un comentario para %{agency_acronym}. Esta información se incluirá en su informe de ingresos.
         total_gross_description: Estos son sus ingresos brutos totales provenientes de su trabajo, antes del pago de impuestos, beneficios y deducciones que se restaron de su cheque de pago.
         total_gross_income: 'Ingresos totales de los últimos 90 días, antes de impuestos: %{amount}'
         unknown: Desconocido
