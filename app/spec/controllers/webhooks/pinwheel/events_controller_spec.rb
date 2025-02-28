@@ -30,6 +30,7 @@ RSpec.describe Webhooks::Pinwheel::EventsController do
 
     before do
       stub_request_platform_response
+      stub_request_account_response
     end
 
     context "for an 'account.added' event" do

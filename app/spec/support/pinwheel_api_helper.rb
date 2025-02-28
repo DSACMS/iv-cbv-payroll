@@ -94,6 +94,15 @@ module PinwheelApiHelper
       )
   end
 
+  def stub_request_account_response
+    stub_request(:get, %r{#{PinwheelService::ACCOUNTS_ENDPOINT}/[0-9a-fA-F\-]{36}})
+      .to_return(
+        status: 200,
+        body: load_relative_json_file('request_account_response.json').to_json,
+        headers: { 'Content-Type': 'application/json;charset=UTF-8' }
+      )
+  end
+
   def request_employment_info_response_null_employment_status_bug
     stub_request(:get, %r{#{PinwheelService::ACCOUNTS_ENDPOINT}/[0-9a-fA-F\-]{36}/employment})
       .to_return(

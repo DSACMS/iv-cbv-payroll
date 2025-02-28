@@ -1,0 +1,27 @@
+{
+  "data": {
+    "created_at": "2025-02-26T23:22:39.113479+00:00",
+    "link_token_id": "f1d64987-7149-418a-be34-defaf8a6f6d9",
+    "platform_id": "913170d1-393c-4f35-8c23-df3133ce7529",
+    "connected": true,
+    "monitoring_status": "active",
+    "end_user_id": "7ac7d1fd-f80a-4f9b-ad7d-2fb15f1cb86f",
+    "id": "b4437a5a-cd80-4522-be35-810acfa7e389",
+    "data_updated_at": {
+      "direct_deposit_allocations": "2025-02-26T23:22:45.286680+00:00",
+      "income": "2025-02-26T23:22:47.337140+00:00",
+      "employment": "2025-02-26T23:22:45.892272+00:00",
+      "identity": "2025-02-26T23:22:46.688357+00:00",
+      "shifts": "2025-02-26T23:22:53.734883+00:00",
+      "paystubs": "2025-02-26T23:22:43.607708+00:00"
+    },
+    "data_refreshed_at": {
+      "direct_deposit_allocations": "2025-02-26T23:22:45.286680+00:00",
+      "income": "2025-02-26T23:22:47.337140+00:00",
+      "employment": "2025-02-26T23:22:45.892272+00:00",
+      "identity": "2025-02-26T23:22:46.688357+00:00",
+      "shifts": "2025-02-26T23:22:53.734883+00:00",
+      "paystubs": "2025-02-26T23:22:43.607708+00:00"
+    }
+  }
+}

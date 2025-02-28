@@ -141,6 +141,10 @@ class PinwheelService
     @http.get(build_url(ITEMS_ENDPOINT), options).body
   end
 
+  def fetch_account(account_id:)
+    json = @http.get(build_url("#{ACCOUNTS_ENDPOINT}/#{account_id}")).body
+  end
+
   def fetch_accounts(end_user_id:)
     @http.get(build_url("#{END_USERS}/#{end_user_id}/accounts")).body
   end
