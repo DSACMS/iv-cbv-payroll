@@ -10,7 +10,6 @@ class CbvFlow < ApplicationRecord
 
   include Redactable
   has_redactable_fields(
-    case_number: :string,
     end_user_id: :uuid,
     additional_information: :object
   )
