@@ -13,9 +13,9 @@ RSpec.describe Cbv::PaymentDetailsController do
     let(:income_errored_at) { nil }
     let(:paystubs_errored_at) { nil }
     let(:employment_errored_at) { nil }
-    let!(:pinwheel_account) do
+    let!(:payroll_account) do
       create(
-        :pinwheel_account,
+        :payroll_account,
         cbv_flow: cbv_flow,
         pinwheel_account_id: account_id,
         supported_jobs: supported_jobs,
@@ -45,7 +45,7 @@ RSpec.describe Cbv::PaymentDetailsController do
           .with("ApplicantViewedPaymentDetails", anything, hash_including(
             cbv_flow_id: cbv_flow.id,
             invitation_id: cbv_flow.cbv_flow_invitation_id,
-            pinwheel_account_id: pinwheel_account.id,
+            pinwheel_account_id: payroll_account.id,
             payments_length: 1,
             has_employment_data: true,
             has_paystubs_data: true,
@@ -57,7 +57,7 @@ RSpec.describe Cbv::PaymentDetailsController do
           .with("ApplicantViewedPaymentDetails", anything, hash_including(
             cbv_flow_id: cbv_flow.id,
             invitation_id: cbv_flow.cbv_flow_invitation_id,
-            pinwheel_account_id: pinwheel_account.id,
+            pinwheel_account_id: payroll_account.id,
             payments_length: 1,
             has_employment_data: true,
             has_paystubs_data: true,
@@ -197,8 +197,8 @@ RSpec.describe Cbv::PaymentDetailsController do
       end
 
       it "redirects to the entry page when the resolved pinwheel_account is present, but does not match the current session" do
-        existing_pinwheel_account = create(:pinwheel_account)
-        get :show, params: { user: { account_id: existing_pinwheel_account.pinwheel_account_id } }
+        existing_payroll_account = create(:payroll_account)
+        get :show, params: { user: { account_id: existing_payroll_account.pinwheel_account_id } }
         expect(response).to redirect_to(cbv_flow_entry_url)
         expect(flash[:slim_alert]).to be_present
         expect(flash[:slim_alert][:message]).to eq(I18n.t("cbv.error_no_access"))

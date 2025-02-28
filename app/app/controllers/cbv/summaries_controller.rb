@@ -119,7 +119,7 @@ class Cbv::SummariesController < Cbv::BaseController
           employments: @employments,
           incomes: @incomes,
           identities: @identities,
-          payments_grouped_by_employer: summarize_by_employer(@payments, @employments, @incomes, @identities, @cbv_flow.pinwheel_accounts),
+          payments_grouped_by_employer: summarize_by_employer(@payments, @employments, @incomes, @identities, @cbv_flow.payroll_accounts),
           has_consent: has_consent
         }
       )
@@ -164,7 +164,7 @@ class Cbv::SummariesController < Cbv::BaseController
   end
 
   def generate_csv
-    pinwheel_account = PinwheelAccount.find_by(cbv_flow_id: @cbv_flow.id)
+    pinwheel_account = PayrollAccount.find_by(cbv_flow_id: @cbv_flow.id)
 
     data = {
       client_id: @cbv_flow.cbv_applicant.agency_id_number,
@@ -195,7 +195,7 @@ class Cbv::SummariesController < Cbv::BaseController
       cbv_applicant_id: cbv_flow.cbv_applicant_id,
       cbv_flow_id: cbv_flow.id,
       invitation_id: cbv_flow.cbv_flow_invitation_id,
-      account_count: cbv_flow.pinwheel_accounts.count,
+      account_count: cbv_flow.payroll_accounts.count,
       paystub_count: payments.count,
       account_count_with_additional_information:
         cbv_flow.additional_information.values.count { |info| info["comment"].present? },
@@ -213,7 +213,7 @@ class Cbv::SummariesController < Cbv::BaseController
       cbv_flow_id: cbv_flow.id,
       cbv_applicant_id: cbv_flow.cbv_applicant_id,
       invitation_id: cbv_flow.cbv_flow_invitation_id,
-      account_count: cbv_flow.pinwheel_accounts.count,
+      account_count: cbv_flow.payroll_accounts.count,
       paystub_count: payments.count,
       account_count_with_additional_information:
         cbv_flow.additional_information.values.count { |info| info["comment"].present? },

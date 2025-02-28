@@ -28,12 +28,12 @@ RSpec.describe Cbv::PinwheelDataHelper, type: :helper do
   let!(:cbv_flow) { create(:cbv_flow, :with_pinwheel_account) }
 
   before do
-    cbv_flow.pinwheel_accounts.first.update(pinwheel_account_id: account_id)
+    cbv_flow.payroll_accounts.first.update(pinwheel_account_id: account_id)
   end
 
   describe "aggregate payments" do
     it "groups by employer" do
-      summarized = helper.summarize_by_employer(payments, [ employment ], [ incomes ], [ identities ], cbv_flow.pinwheel_accounts)
+      summarized = helper.summarize_by_employer(payments, [ employment ], [ incomes ], [ identities ], cbv_flow.payroll_accounts)
       expect(summarized).to be_a(Hash)
       expect(summarized).to include(account_id)
       expect(summarized[account_id]).to match(hash_including(

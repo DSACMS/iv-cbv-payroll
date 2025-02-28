@@ -1,5 +1,5 @@
 FactoryBot.define do
-  factory :pinwheel_account, class: "PinwheelAccount" do
+  factory :payroll_account, class: "PayrollAccount" do
     cbv_flow
     pinwheel_account_id { SecureRandom.uuid }
     paystubs_synced_at { DateTime.now }

@@ -9,7 +9,7 @@ class PaystubsChannel < ApplicationCable::Channel
   private
 
   def check_pinwheel_account_synchrony
-    pinwheel_account = PinwheelAccount.find_by_pinwheel_account_id(params["account_id"])
+    pinwheel_account = PayrollAccount.find_by_pinwheel_account_id(params["account_id"])
 
     if pinwheel_account.present?
       broadcast_to(@cbv_flow, {
