@@ -333,6 +333,7 @@ en:
           nyc: Check this box to confirm that the information provided by you is true and complete to the best of your knowledge. You agree to inform NYC Human Resources Administration (HRA) of any income not reflected in this report or any discrepancies found in the information gathered with this tool. You understand that providing accurate and complete information is your responsibility, and any false or omitted information may have legal consequences.<br/><br/>By sending this report, you authorize its use for income verification by authorized HRA personnel.
           sandbox: Check this box to confirm that the information provided by you is true and complete to the best of your knowledge. You agree to inform CBV Test Agency of any income not reflected in this report or any discrepancies found in the information gathered with this tool. You understand that providing accurate and complete information is your responsibility, and any false or omitted information may have legal consequences.<br/><br/>By sending this report, you authorize its use for income verification by authorized CBV personnel.
         consent_to_authorize_use_title: Legal Agreement
+        continue: Continue
         description: The report below has your income from the past 90 days, from  %{start_date} to %{end_date}. Please review it before sending.
         header: Review your income report
         none_found: We didn't find any payments from this employer in the past 90 days.
@@ -373,7 +374,6 @@ en:
             employment_information: Employment information
             report_details: Report Details
         phone_number: Employer phone
-        send_report: Share my report with %{agency_acronym}
         table_caption: 'Employer %{number}: %{employer_name}'
         table_caption_no_name: Employer %{number}
         total_income_from: 'Total income from %{employer_name} before taxes: %{amount}'
