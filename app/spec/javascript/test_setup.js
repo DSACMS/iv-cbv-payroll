@@ -2,6 +2,8 @@ import { vi } from 'vitest';
 import { Application } from '@hotwired/stimulus';
 import { JSDOM } from 'jsdom';
 import loadScript from "load-script";
+import { mockArgyleAuthToken } from './fixtures/argyle.fixture.js';
+import { mockPinwheelAuthToken } from './fixtures/pinwheel.fixture.js';
 
 const { window } = new JSDOM();
 
@@ -36,13 +38,13 @@ vi.mock('load-script', () => {
   }
 })
 
-const mockPinwheelAuthToken = { token: 'test-token' };
 vi.mock('@js/utilities/api', async () => {
   const apiModule = await vi.importActual('@js/utilities/api')
   return {
       ...apiModule,
       trackUserAction: vi.fn((eventName, eventPayload) => Promise.resolve()),
-      fetchToken: vi.fn(() => Promise.resolve(mockPinwheelAuthToken)),
+      fetchPinwheelToken: vi.fn(() => Promise.resolve(mockPinwheelAuthToken)),
+      fetchArgyleToken: vi.fn(() => Promise.resolve(mockArgyleAuthToken)),
   }
 })
 

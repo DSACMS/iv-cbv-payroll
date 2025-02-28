@@ -58,7 +58,7 @@ describe('trackUserAction', () => {
     })
 })
 
-describe('fetchToken', () => {
+describe('fetchPinwheelToken', () => {
     beforeEach(async() => {
         // Mock the fetch function.
         const mockResponse = "token-response"
@@ -66,7 +66,7 @@ describe('fetchToken', () => {
     })
 
     it('sends a post request to the pinwheel tokens endpoint', async () => {
-        const data = await api.fetchToken("response_type", "id", "en")
+        const data = await api.fetchPinwheelToken("response_type", "id", "en")
 
         // Check that fetch was called exactly once
         expect(fetch).toHaveBeenCalledTimes(1);
@@ -75,7 +75,7 @@ describe('fetchToken', () => {
     })
 
     it('includes CSRV and Content-Type headers', async () => {
-        const data = await api.fetchToken("response_type", "id", "en")
+        const data = await api.fetchPinwheelToken("response_type", "id", "en")
         expect(fetch).toHaveBeenCalledTimes(1);
         expect(fetch.mock.calls[0][1]).toHaveProperty('headers')
         expect(fetch.mock.calls[0][1]['headers']).toHaveProperty('X-CSRF-Token')
@@ -84,11 +84,11 @@ describe('fetchToken', () => {
     })
 
     it('has expected request body', async() => {
-        const data = await api.fetchToken("response_type", "id", "en")
+        const data = await api.fetchPinwheelToken("response_type", "id", "en")
         expect(fetch.mock.calls[0][1]['body']).toMatchSnapshot()
     })
     it('has expected response payload', async() => {
-        const data = await api.fetchToken("response_type", "id", "en")
+        const data = await api.fetchPinwheelToken("response_type", "id", "en")
         expect(data).toMatchSnapshot()
     })
 

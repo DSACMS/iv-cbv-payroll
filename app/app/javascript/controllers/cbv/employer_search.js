@@ -1,5 +1,5 @@
 import { Controller } from "@hotwired/stimulus"
-import { createModalAdapter } from "../../utilities/createModalAdapter";
+import { createModalAdapter } from "@js/utilities/createModalAdapter";
 
 export default class extends Controller {
   static targets = [
@@ -11,12 +11,7 @@ export default class extends Controller {
   static values = {
     cbvFlowId: Number
   }
-
-  initialize() {
-    const { providerName } = this.element.dataset;
-    this.adapter = createModalAdapter(providerName);
-  }
-
+  
   async connect() {
     this.errorHandler = this.element.addEventListener("turbo:frame-missing", this.onTurboError)
 
@@ -42,8 +37,10 @@ export default class extends Controller {
 
   async select(event) {
     this.disableButtons()
-
     const { responseType, id, name, isDefaultOption, providerName } = event.target.dataset;
+
+    this.adapter = createModalAdapter(providerName);
+    await this.adapter.load()
     this.adapter.init({
       requestData: {
         responseType,

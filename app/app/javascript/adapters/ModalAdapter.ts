@@ -7,11 +7,7 @@ export abstract class ModalAdapter {
 
   abstract open(): void;
   abstract onEvent(eventName: string, eventPayload: any): void;
-  load() {};
-
-  constructor() {
-    this.load();
-  }
+  async load() {};
 
   init(args: ModalAdapterArgs) {
     if (args.onSuccess) {
@@ -27,7 +23,7 @@ export abstract class ModalAdapter {
     }
   } 
 
-  async onExit(eventPayload: any) {
+  async onExit(eventPayload: any = {}) {
     if (this.exitCallback) {
       this.exitCallback();
     }

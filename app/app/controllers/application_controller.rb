@@ -67,6 +67,11 @@ class ApplicationController < ActionController::Base
     PinwheelService.new(environment)
   end
 
+  def argyle_for(cbv_flow)
+    environment = agency_config[cbv_flow.client_agency_id].argyle_environment
+    ArgyleService.new(environment)
+  end
+
   def add_newrelic_metadata
     attributes = {
       cbv_flow_id: session[:cbv_flow_id],
