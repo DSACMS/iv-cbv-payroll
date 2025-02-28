@@ -4,7 +4,6 @@ import { getDocumentLocale } from "../utilities/getDocumentLocale";
 export default class extends Controller {
   static targets = [
     "modal",
-    "extendButton",
   ];
 
   timeoutValue;
@@ -12,12 +11,6 @@ export default class extends Controller {
 
   connect() {
     console.log("Session controller connected");
-    
-    // if the element is not the modal target, return because only the modal target
-    // has the data we need
-    if(!this.hasModalTarget) {
-      return;
-    }
 
     this.cbvFlowId = parseInt(this.modalTarget.dataset.itemCbvFlowIdParam, 10);
     this.timeoutValue = parseInt(this.modalTarget.dataset.itemTimeoutParam, 10);
@@ -53,9 +46,5 @@ export default class extends Controller {
     console.log("Session controller disconnected");
     if (this.warningTimer) clearTimeout(this.warningTimer);
     if (this.expirationTimer) clearTimeout(this.expirationTimer);
-  }
-
-  extendSession() {
-    location.reload();
   }
 }

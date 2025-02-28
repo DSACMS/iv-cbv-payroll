@@ -21,11 +21,9 @@
         <ul class="usa-button-group">
           <li class="usa-button-group__item">
             <button type="button"
+                    onclick="location.reload()"
                     class="usa-button"
                     data-close-modal
-                    data-controller="session"
-                    data-session-target="extendButton"
-                    data-action="click->session#extendSession"
                     data-turbo="false"
                     id="extend-session-button">
               <%= t("session_timeout.modal.extend_button") %>
