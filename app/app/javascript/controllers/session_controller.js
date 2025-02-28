@@ -1,132 +1,66 @@
 import { Controller } from "@hotwired/stimulus";
-import * as ActionCable from "@rails/actioncable";
-import { extendSession, endSession } from "../utilities/sessionService";
-
-const consumer = ActionCable.createConsumer();
 
 export default class extends Controller {
-  static values = { cbvFlowId: String };
+  static targets = [
+    "modal",
+    "extendButton",
+    "endButton",
+  ];
 
-  subscription = null;
+  timeoutValue;
+  cookieName;
+  cbvFlowId;
 
   connect() {
     console.log("Session controller connected");
-    if (!this.subscription) {
-      this.setupActionCable();
+    // if the element is not the modal target, return because it does not have the data we need
+    if(!this.hasModalTarget) {
+      console.log("No modal target found for this controller instance");
+      return;
     }
+    console.log(this.modalTarget.dataset);
 
-    /*
-     * The Stimulus controller data-action="click->session#extendSession"
-     * is not working, so we need to add the event listeners manually.
-     * The Stimulus action descriptors do work when we add a data-controller="session"
-     * to the buttons, but this creates a new controller instance for each button which is
-     * not what we want because this will lead to a new websocket connection for each button!
-     */
+    this.cookieName = this.modalTarget.dataset.itemCookieNameParam;
+    this.cbvFlowId = parseInt(this.modalTarget.dataset.itemCbvFlowIdParam, 10);
+    this.timeoutValue = parseInt(this.modalTarget.dataset.itemTimeoutParam, 10);
 
-    // extend button
-    document.getElementById("extend-session-button").addEventListener(
-      "click",
-      this.handleExtendSession.bind(this)
-    );
+    // The timeoutValue comes from Rails as a number of seconds
+    // (e.g., 30.minutes = 1800 seconds)
+    
+    // Calculate when to show the warning (5 minutes before expiration)
+    const warningDelay = Math.max(this.timeoutValue - 5 * 60, 0) * 1000;
+    const expirationDelay = this.timeoutValue * 1000;
+    
+    // Set timer for the warning (5 minutes before expiration)
+    this.warningTimer = setTimeout(() => {
+      this.showWarning();
+    }, warningDelay);
 
-    // end button
-    document.getElementById("end-session-button").addEventListener(
-      "click",
-      this.handleEndSession.bind(this)
-    );
+    // Set timer for the actual session expiration
+    this.expirationTimer = setTimeout(() => {
+      this.endSession(false);
+    }, expirationDelay);
+  }
+
+  showWarning() {
+    if(!this.cbvFlowId) {
+      return; 
+    }
+    // show the modal
+    document.getElementById("open-session-modal-button").click();
   }
 
   disconnect() {
     console.log("Session controller disconnected");
-    if (this.subscription) {
-      this.subscription.unsubscribe();
-      this.subscription = null;
-    }
-
-    document.getElementById("extend-session-button").removeEventListener(
-      "click",
-      this.handleExtendSession.bind(this)
-    );
-
-    document.getElementById("end-session-button").removeEventListener(
-      "click",
-      this.handleEndSession.bind(this)
-    );
+    if (this.warningTimer) clearTimeout(this.warningTimer);
+    if (this.expirationTimer) clearTimeout(this.expirationTimer);
   }
 
-  setupActionCable() {
-    console.log(this.cbvFlowIdValue);
-    try {
-      this.subscription = consumer.subscriptions.create(
-        {
-          channel: "SessionChannel",
-          cbv_flow_id: this.cbvFlowIdValue,
-        },
-        {
-          connected: () => {},
-          disconnected: () => {},
-          rejected: () => {},
-          received: (data) => {
-            this.handleChannelMessage(data);
-          },
-        }
-      );
-    } catch (error) {
-      console.error("Error setting up ActionCable:", error);
-    }
-  }
-
-  handleChannelMessage(data) {
-    switch (data.event) {
-      case "session.warning":
-        this.showWarning(data.time_remaining_ms);
-        break;
-
-      case "session.extended":
-        // Close the modal after a short delay
-        setTimeout(() => {
-          document.getElementById("close-session-modal-button").click();
-        }, 1500);
-        break;
-
-      case "session.terminated":
-        document.cookie = `${data.cookie_name}=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;`;
-        this.timeout(data.redirect_to || "/");
-        break;
-    }
-  }
-
-  async handleExtendSession() {
-    await extendSession(this.subscription);
-  }
-
-  async handleEndSession() {
-    await endSession(this.subscription);
-  }
-
-  showWarning(timeRemainingMs) {
-    // Check if the modal is already visible before showing it again
-    const isModalAlreadyVisible = this.isModalVisible();
-    if (isModalAlreadyVisible) {
-      return;
-    }
-
-    // Set timeout to redirect after grace period
-    setTimeout(() => {
-      this.timeout();
-    }, timeRemainingMs);
-
-    document.getElementById("open-session-modal-button").click();
-  }
-
-  // Helper method to check if the modal is visible
-  isModalVisible() {
-    const modalElement = document.getElementById("session-timeout-modal");
-    return !modalElement.classList.contains("is-hidden");
-  }
-
-  async timeout(redirectTo = "/") {
-    await endSession(this.subscription);
-    window.location = redirectTo;
+  extendSession() {
+    if (!this.cookieName) return;
+    
+    document.cookie = `${this.cookieName}=1; path=/; expires=${new Date(
+      Date.now() + this.timeoutValue * 1000
+    ).toUTCString()}`;
   }
 }

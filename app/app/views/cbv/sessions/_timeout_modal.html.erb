@@ -1,5 +1,9 @@
 <div class="usa-modal"
+     data-controller="session"
      data-session-target="modal"
+     data-item-cbv-flow-id-param="<%= cbv_flow_id %>"
+     data-item-cookie-name-param="<%= cookie_name %>"
+     data-item-timeout-param="<%= timeout %>"
      data-force-action
      id="session-timeout-modal"
      aria-labelledby="session-timeout-heading"
@@ -17,21 +21,23 @@
       <div class="usa-modal__footer">
         <ul class="usa-button-group">
           <li class="usa-button-group__item">
-            <button type="button" 
+            <button type="button"
                     class="usa-button"
                     data-close-modal
+                    data-controller="session"
                     data-session-target="extendButton"
+                    data-action="click->session#extendSession"
+                    data-turbo="false"
                     id="extend-session-button">
               <%= t("session_timeout.modal.extend_button") %>
             </button>
           </li>
           <li class="usa-button-group__item">
-            <button type="button"
-                    class="usa-button usa-button--outline"
-                    data-session-target="endButton"
-                    id="end-session-button">
-              <%= t("session_timeout.modal.end_button") %>
-            </button>
+            <%= link_to t("session_timeout.modal.end_button"),
+                        cbv_flow_entry_url(end_session: true, user_action: true),
+                    class: "usa-button usa-button--outline",
+                    data: { close_modal: true, turbo: false },
+                    id: "end-session-button" %>
           </li>
         </ul>
       </div>
@@ -43,15 +49,6 @@
   href="#session-timeout-modal"
   aria-controls="session-timeout-modal"
   data-open-modal
-  data-session-target="openSessionModal"
   class="invisible"
   id="open-session-modal-button">
-</button>
-
-<button 
-  type="button"
-  data-close-modal
-  data-session-target="closeSessionModal"
-  class="invisible"
-  id="close-session-modal-button">
 </button>
