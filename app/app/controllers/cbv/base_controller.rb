@@ -1,5 +1,5 @@
 class Cbv::BaseController < ApplicationController
-  before_action :set_cbv_flow, :ensure_cbv_flow_not_yet_complete, :prevent_back_after_complete, :capture_page_view
+  before_action :set_cbv_flow, :check_session_expiry, :ensure_cbv_flow_not_yet_complete, :prevent_back_after_complete, :capture_page_view
   helper_method :agency_url, :next_path, :get_comment_by_account_id, :current_agency
 
   private
@@ -96,6 +96,16 @@ class Cbv::BaseController < ApplicationController
     rescue => ex
       raise unless Rails.env.production?
       Rails.logger.error "Unable to track event (CbvPageView): #{ex}"
+    end
+  end
+
+  def check_session_expiry
+    if params[:end_session] == "true"
+      session[:cbv_flow_id] = nil
+      if params[:user_action] == "false"
+        track_timeout_event
+      end
+      redirect_to root_url
     end
   end
 

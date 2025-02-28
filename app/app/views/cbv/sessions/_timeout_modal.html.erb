@@ -1,0 +1,51 @@
+<div class="usa-modal"
+     data-controller="session"
+     data-session-target="modal"
+     data-item-cbv-flow-id-param="<%= cbv_flow_id %>"
+     data-item-timeout-param="<%= timeout %>"
+     data-force-action
+     id="session-timeout-modal"
+     aria-labelledby="session-timeout-heading"
+     aria-describedby="session-timeout-description">
+  <div class="usa-modal__content">
+    <div class="usa-modal__main">
+      <h2 class="usa-modal__heading" id="session-heading">
+        <%= t("session_timeout.modal.heading") %>
+      </h2>
+      <div class="usa-prose">
+        <p id="cbv-session-timeout-description">
+          <%= t("session_timeout.modal.description") %>
+        </p>
+      </div>
+      <div class="usa-modal__footer">
+        <ul class="usa-button-group">
+          <li class="usa-button-group__item">
+            <button type="button"
+                    onclick="location.reload()"
+                    class="usa-button"
+                    data-close-modal
+                    data-turbo="false"
+                    id="extend-session-button">
+              <%= t("session_timeout.modal.extend_button") %>
+            </button>
+          </li>
+          <li class="usa-button-group__item">
+            <%= link_to t("session_timeout.modal.end_button"),
+                cbv_flow_entry_url(end_session: true, user_action: true),
+                class: "usa-button usa-button--outline",
+                data: { close_modal: true, turbo: false },
+                id: "end-session-button" %>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>
+
+<button
+  href="#session-timeout-modal"
+  aria-controls="session-timeout-modal"
+  data-open-modal
+  class="invisible"
+  id="open-session-modal-button">
+</button>
