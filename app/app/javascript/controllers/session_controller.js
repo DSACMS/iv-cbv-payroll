@@ -17,7 +17,6 @@ export default class extends Controller {
       console.log("No modal target found for this controller instance");
       return;
     }
-    console.log(this.modalTarget.dataset);
 
     this.cookieName = this.modalTarget.dataset.itemCookieNameParam;
     this.cbvFlowId = parseInt(this.modalTarget.dataset.itemCbvFlowIdParam, 10);
