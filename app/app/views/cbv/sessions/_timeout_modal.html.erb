@@ -1,7 +1,6 @@
 <div class="usa-modal"
      data-controller="session"
      data-session-target="modal"
-     data-item-cbv-flow-id-param="<%= cbv_flow_id %>"
      data-item-timeout-param="<%= timeout %>"
      data-force-action
      id="session-timeout-modal"
@@ -20,11 +19,12 @@
       <div class="usa-modal__footer">
         <ul class="usa-button-group">
           <li class="usa-button-group__item">
-            <%= button_to cbv_session_refresh_path,
+            <%= button_to cbv_flow_session_refresh_path,
                     class: "usa-button",
                     data: { 
                       turbo_stream: true,
-                      close_modal: true
+                      close_modal: true,
+                      action: "session#resetTimers"
                     },
                     id: "extend-session-button" do %>
               <%= t("session_timeout.modal.extend_button") %>
@@ -32,7 +32,7 @@
           </li>
           <li class="usa-button-group__item">
             <%= link_to t("session_timeout.modal.end_button"),
-                cbv_flow_entry_url(end_session: true, user_action: true),
+                cbv_flow_reset_path,
                 class: "usa-button usa-button--outline",
                 data: { close_modal: true, turbo: false },
                 id: "end-session-button" %>
