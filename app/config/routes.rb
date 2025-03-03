@@ -39,7 +39,7 @@ Rails.application.routes.draw do
       resource :expired_invitation, only: %i[show]
       # Utility route to clear your session; useful during development
       resource :reset, only: %i[show]
-      
+
       post "session/refresh", to: "session#refresh", as: :session_refresh
       delete "session", to: "session#destroy", as: :session_destroy
     end
