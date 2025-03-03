@@ -1,4 +1,4 @@
-class Cbv::SessionController < ApplicationController
+class Cbv::SessionsController < ApplicationController
   def refresh
     session[:last_seen] = Time.current
     respond_to do |format|
