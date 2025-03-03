@@ -20,14 +20,15 @@
       <div class="usa-modal__footer">
         <ul class="usa-button-group">
           <li class="usa-button-group__item">
-            <button type="button"
-                    onclick="location.reload()"
-                    class="usa-button"
-                    data-close-modal
-                    data-turbo="false"
-                    id="extend-session-button">
+            <%= button_to cbv_session_refresh_path,
+                    class: "usa-button",
+                    data: { 
+                      turbo_stream: true,
+                      close_modal: true
+                    },
+                    id: "extend-session-button" do %>
               <%= t("session_timeout.modal.extend_button") %>
-            </button>
+            <% end %>
           </li>
           <li class="usa-button-group__item">
             <%= link_to t("session_timeout.modal.end_button"),
