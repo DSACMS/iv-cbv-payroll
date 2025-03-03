@@ -54,10 +54,11 @@
         </section>
       </main>
       <%= render "application/footer" %>
-      <%= render partial: "cbv/sessions/timeout_modal", locals: {
-        cbv_flow_id: session[:cbv_flow_id],
-        timeout: Rails.application.config.session_options[:expire_after]
-      } %>
+      <% if session[:cbv_flow_id] %>
+        <%= render partial: "cbv/sessions/timeout_modal", locals: {
+          timeout: Rails.application.config.session_options[:expire_after]
+        } %>
+      <% end %>
     </div>
     <%= render partial: "help/help_modal", locals: { help_path: help_path(locale: I18n.locale, r: SecureRandom.hex(4)) } %>
   </body>

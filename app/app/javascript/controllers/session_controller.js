@@ -7,12 +7,10 @@ export default class extends Controller {
   ];
 
   timeoutValue;
-  cbvFlowId;
 
   connect() {
     console.log("Session controller connected");
 
-    this.cbvFlowId = parseInt(this.modalTarget.dataset.itemCbvFlowIdParam, 10);
     this.timeoutValue = parseInt(this.modalTarget.dataset.itemTimeoutParam, 10);
 
     // The timeoutValue comes from Rails as a number of seconds
@@ -24,7 +22,7 @@ export default class extends Controller {
     
     // Set timer for the warning (5 minutes before expiration)
     this.warningTimer = setTimeout(() => {
-      this.showWarning();
+      document.getElementById("open-session-modal-button").click();
     }, warningDelay);
 
     // Set timer for the actual session expiration
@@ -32,14 +30,6 @@ export default class extends Controller {
       const locale = getDocumentLocale();
       window.location = `/${locale}/cbv/entry?end_session=true&user_action=false`;
     }, expirationDelay);
-  }
-
-  showWarning() {
-    if(!this.cbvFlowId) {
-      return; 
-    }
-    // show the modal
-    document.getElementById("open-session-modal-button").click();
   }
 
   disconnect() {
