@@ -53,4 +53,4 @@
   <%= get_comment_by_account_id(account_id).dig("comment") != "" ? get_comment_by_account_id(account_id).dig("comment") : t("shared.not_applicable") %>
   <% end %>
 
-<%= button_to t("continue"), cbv_flow_submit_path, class: "btn btn-primary usa-button margin-y-5" %>
+<%= button_to t("continue"), cbv_flow_submit_path, class: "btn btn-primary usa-button margin-y-5", method: :get %>

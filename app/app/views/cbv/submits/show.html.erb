@@ -9,10 +9,22 @@
   <p><%= "You must check the legal agreement box to share your report." %></p>
 </div>
 
-<div class="usa-prose">
+<% if flash[:alert] %>
   <h2><%= "Legal agreement" %></h2>
   <%= form_with model: @cbv_flow, url: cbv_flow_summary_path, html: { class: "usa-form maxw-full" }, builder: UswdsFormBuilder, method: "patch" do |f| %>
-  <%= f.check_box(:consent_to_authorized_use, { 'label': "Check this box to confirm that the information provided by you is true and complete to the best of your knowledge. You agree to inform [Agency Name] of any income not reflected in this report or any discrepancies found in the information gathered with this tool. You understand that providing accurate and complete information is your responsibility, and any false or omitted information may have legal consequences. For more information on your rights and responsibilities regarding private information you share with [Agency Name] please refer to the Rights and Responsibilities you signed at application, found on [Agency Website]. By sending this report, you authorize its use for income verification by [Agency Name] and authorized personnel."}) %>
-  <%= f.submit t(".send_report", agency_acronym: current_agency.agency_short_name), class: "margin-top-5" %>
+
+  <div class="usa-alert usa-alert--<%= flash[:alert_type] || "error" %>">
+    <%= f.check_box(:consent_to_authorized_use, { 'label': "Check this box to confirm that the information provided by you is true and complete to the best of your knowledge. You agree to inform [Agency Name] of any income not reflected in this report or any discrepancies found in the information gathered with this tool. You understand that providing accurate and complete information is your responsibility, and any false or omitted information may have legal consequences. For more information on your rights and responsibilities regarding private information you share with [Agency Name] please refer to the Rights and Responsibilities you signed at application, found on [Agency Website]. By sending this report, you authorize its use for income verification by [Agency Name] and authorized personnel."}) %>
+  </div>
+
+  <%= f.submit "Share my report with [agency name]", class: "margin-top-5" %>
   <% end %>
-</div>
+<% else %>
+  <div class="usa-prose margin-y-5">
+    <h2><%= "Legal agreement" %></h2>
+    <%= form_with model: @cbv_flow, url: cbv_flow_summary_path, html: { class: "usa-form maxw-full" }, builder: UswdsFormBuilder, method: "patch" do |f| %>
+    <%= f.check_box(:consent_to_authorized_use, { 'label': "Check this box to confirm that the information provided by you is true and complete to the best of your knowledge. You agree to inform [Agency Name] of any income not reflected in this report or any discrepancies found in the information gathered with this tool. You understand that providing accurate and complete information is your responsibility, and any false or omitted information may have legal consequences. For more information on your rights and responsibilities regarding private information you share with [Agency Name] please refer to the Rights and Responsibilities you signed at application, found on [Agency Website]. By sending this report, you authorize its use for income verification by [Agency Name] and authorized personnel."}) %>
+    <%= f.submit "Share my report with [agency name]", class: "margin-top-5" %>
+    <% end %>
+  </div>
+<% end %>

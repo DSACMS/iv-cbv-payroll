@@ -235,8 +235,6 @@ es:
         table_caption_no_name: Empleador %{number}
         total_income_from: 'Ingresos totales provenientes de %{employer_name}, antes del pago de impuestos: %{amount}'
         total_income_from_no_employer_name: 'Ingresos totales antes del pago de impuestos: %{amount}'
-      update:
-        consent_to_authorize_warning: Debe marcar la casilla de acuerdo legal para proceder.
     synchronization_failures:
       show:
         back_to_search: Volver a la búsqueda de empleadores
