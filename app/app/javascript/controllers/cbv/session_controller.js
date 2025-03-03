@@ -7,7 +7,7 @@ export default class extends Controller {
 
   connect() {
     console.log("Session controller connected");
-    this.timeoutValue = parseInt(this.modalTarget.dataset.itemTimeoutParam, 10);
+    this.timeoutValue = parseInt(this.modalTarget.dataset.itemTimeoutParam);
     this.setupTimers();
   }
 
