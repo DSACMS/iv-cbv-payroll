@@ -27,7 +27,7 @@ export default class extends Controller {
 
     // Set timer for the actual session expiration
     this.expirationTimer = setTimeout(() => {
-      window.location = `/cbv/reset?timeout=true`;
+      window.location = `/cbv/session/end?timeout=true`;
     }, expirationDelay);
   }
 

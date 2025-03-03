@@ -6,4 +6,13 @@ class Cbv::SessionController < ApplicationController
       format.html { redirect_to request.referrer || root_path }
     end
   end
+
+  def end
+    if params[:timeout] == "true"
+      track_timeout_event
+    end
+
+    session[:cbv_flow_id] = nil
+    redirect_to root_url
+  end
 end
