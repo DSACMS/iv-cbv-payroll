@@ -6,7 +6,7 @@ import { application } from "./application"
 
 import CbvEmployerSearch from "./cbv/employer_search"
 import CbvSynchronizationsController from "./cbv/synchronizations_controller"
-import CbvSessionsTimeoutController from "./cbv/session_controller.js"
+import CbvSessionsTimeoutController from "./cbv/sessions_controller.js"
 import HelpController from "./help"
 
 application.register("cbv-employer-search", CbvEmployerSearch)
