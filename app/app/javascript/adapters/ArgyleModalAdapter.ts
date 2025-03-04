@@ -62,6 +62,4 @@ export default class ArgyleModalAdapter extends ModalAdapter {
       const { user } = await fetchArgyleToken();
       updateToken(user.user_token)
   }
-  onEvent(eventName: string, eventPayload: any) {
-  }
 }
