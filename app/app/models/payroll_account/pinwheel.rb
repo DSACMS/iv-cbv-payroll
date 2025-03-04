@@ -1,12 +1,4 @@
-class PinwheelAccount < ApplicationRecord
-  belongs_to :cbv_flow
-
-  after_update_commit {
-    I18n.with_locale(cbv_flow.cbv_flow_invitation.language) do
-      broadcast_replace target: self, partial: "cbv/synchronizations/indicators", locals: { pinwheel_account: self }
-    end
-  }
-
+class PayrollAccount::Pinwheel < PayrollAccount
   EVENTS_MAP = {
     "employment.added" => :employment_synced_at,
     "income.added" => :income_synced_at,

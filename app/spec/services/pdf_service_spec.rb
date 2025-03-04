@@ -16,12 +16,12 @@ RSpec.describe PdfService, type: :service do
       cbv_flow_invitation: invitation
     )
   end
-  let(:account_id) { cbv_flow.pinwheel_accounts.first.pinwheel_account_id }
+  let(:account_id) { cbv_flow.payroll_accounts.first.pinwheel_account_id }
   let(:payments) { stub_payments(account_id) }
   let(:employments) { stub_employments(account_id) }
   let(:incomes) { stub_incomes(account_id) }
   let(:identities) { stub_identities(account_id) }
-  let(:payments_grouped_by_employer) { summarize_by_employer(payments, employments, incomes, identities, cbv_flow.pinwheel_accounts) }
+  let(:payments_grouped_by_employer) { summarize_by_employer(payments, employments, incomes, identities, cbv_flow.payroll_accounts) }
   let(:variables) do
     {
       is_caseworker: true,
@@ -37,7 +37,7 @@ RSpec.describe PdfService, type: :service do
   let(:ma_user) { create(:user, email: "test@example.com", client_agency_id: 'ma') }
 
   before do
-    cbv_flow.pinwheel_accounts.first.update(pinwheel_account_id: "03e29160-f7e7-4a28-b2d8-813640e030d3")
+    cbv_flow.payroll_accounts.first.update(pinwheel_account_id: "03e29160-f7e7-4a28-b2d8-813640e030d3")
   end
 
   describe "#generate" do

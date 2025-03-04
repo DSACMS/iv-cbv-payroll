@@ -12,20 +12,20 @@ class Webhooks::Pinwheel::EventsController < ApplicationController
 
     if params["event"] == "account.added"
       supported_jobs = get_supported_jobs(params["payload"]["platform_id"])
-      PinwheelAccount
+      PayrollAccount
         .create_with(cbv_flow: @cbv_flow, supported_jobs: supported_jobs)
         .find_or_create_by(pinwheel_account_id: params["payload"]["account_id"])
       track_account_created_event(@cbv_flow, params["payload"]["platform_name"])
     end
 
-    if PinwheelAccount::EVENTS_MAP.keys.include?(params["event"])
-      pinwheel_account = PinwheelAccount.find_by_pinwheel_account_id(params["payload"]["account_id"])
+    if PayrollAccount::Pinwheel::EVENTS_MAP.keys.include?(params["event"])
+      pinwheel_account = PayrollAccount.find_by_pinwheel_account_id(params["payload"]["account_id"])
 
       if pinwheel_account.present?
-        pinwheel_account.update!(PinwheelAccount::EVENTS_MAP[params["event"]] => Time.now)
+        pinwheel_account.update!(PayrollAccount::Pinwheel::EVENTS_MAP[params["event"]] => Time.now)
 
         if params.dig("payload", "outcome") == "error" || params.dig("payload", "outcome") == "pending"
-          pinwheel_account.update!(PinwheelAccount::EVENTS_ERRORS_MAP[params["event"]] => Time.now)
+          pinwheel_account.update!(PayrollAccount::Pinwheel::EVENTS_ERRORS_MAP[params["event"]] => Time.now)
         end
 
         if pinwheel_account.has_fully_synced?
@@ -86,7 +86,7 @@ class Webhooks::Pinwheel::EventsController < ApplicationController
   end
 
   def set_cbv_flow
-    @cbv_flow = CbvFlow.find_by_pinwheel_end_user_id(params["payload"]["end_user_id"])
+    @cbv_flow = CbvFlow.find_by_end_user_id(params["payload"]["end_user_id"])
   end
 
   def set_pinwheel

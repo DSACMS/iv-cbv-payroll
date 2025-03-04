@@ -21,6 +21,10 @@ ignore:
   - vulnerability: GHSA-cx63-2mw6-8hw5
   - vulnerability: GHSA-qwmp-2cf2-g9g6
   - vulnerability: CVE-2024-4603
+  # TODO: Remove once we upgrade Ruby and these gem versions are no longer included by default.
+  - vulnerability: GHSA-gh9q-2xrm-x6qv # Ruby "cgi" version 0.4.1
+  - vulnerability: GHSA-mhwm-jh88-3gjf # Ruby "cgi" version 0.4.1
+  - vulnerability: GHSA-22h5-pq3x-2gf2 # Ruby "uri" version 0.13.1
 
 exclude:
   - '/rails/node_modules/@esbuild/*/bin/esbuild' # Ignore this go binary since it is only used in the asset build process

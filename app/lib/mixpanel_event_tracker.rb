@@ -20,7 +20,7 @@ class MixpanelEventTracker
 
       tracker_attrs =  { cbv_flow_id: flow_id }
       if request.present?
-        tracker_attrs.merge!({ ip: request.ip })
+        tracker_attrs.merge!({ "$ip": request.remote_ip })
       end
 
       @tracker.people.set(distinct_id, tracker_attrs)

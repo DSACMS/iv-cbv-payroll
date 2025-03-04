@@ -37,7 +37,7 @@ RSpec.describe Webhooks::Pinwheel::EventsController do
       let(:payload) do
         {
           "platform_id" => "00000000-0000-0000-0000-000000011111",
-          "end_user_id" => cbv_flow.pinwheel_end_user_id,
+          "end_user_id" => cbv_flow.end_user_id,
           "account_id" => account_id,
           "platform_name" => "acme"
         }
@@ -60,9 +60,9 @@ RSpec.describe Webhooks::Pinwheel::EventsController do
 
         expect do
           post :create, params: valid_params
-        end.to change(PinwheelAccount, :count).by(1)
+        end.to change(PayrollAccount, :count).by(1)
 
-        pinwheel_account = PinwheelAccount.last
+        pinwheel_account = PayrollAccount.last
         expect(pinwheel_account).to have_attributes(
           cbv_flow_id: cbv_flow.id,
           supported_jobs: include(*supported_jobs),
@@ -78,7 +78,7 @@ RSpec.describe Webhooks::Pinwheel::EventsController do
         it "discards the webhook" do
           expect do
             post :create, params: valid_params
-          end.not_to change(PinwheelAccount, :count)
+          end.not_to change(PayrollAccount, :count)
 
           expect(response).to be_unauthorized
         end
@@ -90,21 +90,21 @@ RSpec.describe Webhooks::Pinwheel::EventsController do
       let(:payload) do
         {
           "account_id" => account_id,
-          "end_user_id" => cbv_flow.pinwheel_end_user_id,
+          "end_user_id" => cbv_flow.end_user_id,
           "outcome" => "success"
         }
       end
-      let(:pinwheel_account) { PinwheelAccount.create!(cbv_flow: cbv_flow, supported_jobs: supported_jobs, pinwheel_account_id: account_id) }
+      let(:payroll_account) { PayrollAccount.create!(cbv_flow: cbv_flow, supported_jobs: supported_jobs, pinwheel_account_id: account_id) }
 
-      it "updates the PinwheelAccount object with the current timestamp" do
+      it "updates the PayrollAccount object with the current timestamp" do
         expect { post :create, params: valid_params }
-          .to change { pinwheel_account.reload.paystubs_synced_at }
+          .to change { payroll_account.reload.paystubs_synced_at }
           .from(nil)
           .to(within(1.second).of(Time.now))
       end
 
       it "sends events when fully synced" do
-        pinwheel_account.update(
+        payroll_account.update(
           created_at: 5.minutes.ago,
           employment_synced_at: Time.now,
           income_synced_at: Time.now,
@@ -151,15 +151,15 @@ RSpec.describe Webhooks::Pinwheel::EventsController do
       let(:payload) do
         {
           "account_id" => account_id,
-          "end_user_id" => cbv_flow.pinwheel_end_user_id,
+          "end_user_id" => cbv_flow.end_user_id,
           "outcome" => "pending"
         }
       end
-      let(:pinwheel_account) { PinwheelAccount.create!(cbv_flow: cbv_flow, supported_jobs: supported_jobs, pinwheel_account_id: account_id) }
+      let(:payroll_account) { PayrollAccount.create!(cbv_flow: cbv_flow, supported_jobs: supported_jobs, pinwheel_account_id: account_id) }
 
-      it "updates the PinwheelAccount object with an error state" do
+      it "updates the PayrollAccount object with an error state" do
         expect { post :create, params: valid_params }
-          .to change { pinwheel_account.reload.paystubs_errored_at }
+          .to change { payroll_account.reload.paystubs_errored_at }
           .from(nil)
           .to(within(1.second).of(Time.now))
       end

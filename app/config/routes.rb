@@ -64,11 +64,13 @@ Rails.application.routes.draw do
 
     scope :pinwheel do
       post "/tokens" => "pinwheel#create_token"
-      post "/user_action" => "pinwheel#user_action"
     end
 
-    scope :help do
-      post :user_action, to: "help#user_action"
+    scope :events do
+      post :user_action, to: "user_events#user_action"
     end
   end
+
+  match "/404", to: "pages#error_404", via: :all
+  match "/500", to: "pages#error_500", via: :all
 end

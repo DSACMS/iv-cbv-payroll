@@ -6,11 +6,12 @@ class CaseworkerMailer < ApplicationMailer
 
   def summary_email
     timestamp = Time.now.strftime("%Y%m%d%H%M%S")
-    filename = "#{@cbv_flow.case_number}_#{timestamp}_income_verification.pdf"
+    case_number = @cbv_flow.cbv_applicant.case_number
+    filename = "#{case_number}_#{timestamp}_income_verification.pdf"
     attachments[filename] = generate_pdf
     mail(
       to: @email_address,
-      subject: I18n.t("caseworker_mailer.summary_email.subject", case_number: @cbv_flow.case_number),
+      subject: I18n.t("caseworker_mailer.summary_email.subject", case_number: case_number),
     )
   end
 
@@ -20,6 +21,7 @@ class CaseworkerMailer < ApplicationMailer
     @cbv_flow = params[:cbv_flow]
     @email_address = params[:email_address]
     @cbv_flow_invitation = @cbv_flow.cbv_flow_invitation
+    @cbv_applicant = @cbv_flow.cbv_applicant
     # used in PDF generation
     @payments = params[:payments] if params[:payments]
     @employments = params[:employments]
