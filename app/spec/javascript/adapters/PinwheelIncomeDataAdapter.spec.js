@@ -3,9 +3,7 @@ import loadScript from "load-script";
 import PinwheelModalAdapter from "@js/adapters/PinwheelModalAdapter";
 import { fetchPinwheelToken, trackUserAction } from '@js/utilities/api';
 import { mockPinwheel } from "@test/fixtures/pinwheel.fixture";
-
-const mockPinwheelAuthToken = { token: 'test-token' };
-const MOCK_PINWHEEL_ERROR = "Failed to load SCRIPT"
+import { loadPinwheelResource } from "@js/utilities/loadProviderResources.ts";
 
 const pinwheelModalAdapterArgs = {
     onSuccess: vi.fn(),
@@ -18,16 +16,14 @@ const pinwheelModalAdapterArgs = {
     }
 }
 
-
-
 describe('PinwheelModalAdapter', () => {
     let adapter;
     let triggers;
         
     beforeEach(async () => {
         mockPinwheel();
+        await loadPinwheelResource()
         adapter = new PinwheelModalAdapter()
-        adapter.load()
         adapter.init(pinwheelModalAdapterArgs)
         triggers = await adapter.open()
     })

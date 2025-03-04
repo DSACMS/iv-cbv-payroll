@@ -1,22 +1,10 @@
 import { trackUserAction, fetchArgyleToken } from "@js/utilities/api.js";
-import loadScript from 'load-script';
 import { getDocumentLocale } from "@js/utilities/getDocumentLocale.js";
 import { ModalAdapter } from "./ModalAdapter.js";
+import load from "load-script";
 
 export default class ArgyleModalAdapter extends ModalAdapter {
   Argyle: Argyle;
-
-  async load() {
-    this.Argyle = await new Promise((resolve, reject) => {
-      loadScript('https://plugin.argyle.com/argyle.web.v5.js', (err, script) => {
-        if (err) {
-          reject(err);
-        } else {
-          resolve(Argyle);
-        }
-      });
-    })
-  }
 
   async open() {
     const locale = getDocumentLocale();
@@ -32,7 +20,7 @@ export default class ArgyleModalAdapter extends ModalAdapter {
       })
 
       const { user } = await fetchArgyleToken();
-      return this.Argyle.create({
+      return Argyle.create({
         userToken: user.user_token,
         items: [this.requestData.id],
         onAccountConnected: this.onSuccess.bind(this),

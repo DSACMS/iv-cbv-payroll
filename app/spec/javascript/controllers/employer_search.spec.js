@@ -2,8 +2,11 @@ import { vi, describe, beforeEach, it, expect } from 'vitest'
 import EmployerSearchController from '@js/controllers/cbv/employer_search'
 import { fetchPinwheelToken, fetchArgyleToken, trackUserAction } from '@js/utilities/api';
 import loadScript from "load-script";
-import { mockPinwheel, mockPinwheelAuthToken } from '@test/fixtures/pinwheel.fixture';
-import { mockArgyle, mockArgyleAuthToken } from '@test/fixtures/argyle.fixture.js';
+import { mockPinwheel, mockPinwheelAuthToken, mockPinwheelModule } from '@test/fixtures/pinwheel.fixture';
+import { mockArgyle, mockArgyleAuthToken, mockArgyleModule } from '@test/fixtures/argyle.fixture.js';
+
+vi.stubGlobal('Argyle', mockArgyleModule)
+vi.stubGlobal('Pinwheel', mockPinwheelModule)
 
 describe('EmployerSearchController', () => {
     let stimulusElement;
@@ -41,8 +44,6 @@ describe('EmployerSearchController with pinwheel', () => {
     let stimulusElement;
 
     beforeEach(async () => {
-        mockPinwheel();
-
         stimulusElement = document.createElement('button');
         stimulusElement.setAttribute('data-controller', 'cbv-employer-search')
         stimulusElement.setAttribute('data-action', 'cbv-employer-search#select')
@@ -86,8 +87,6 @@ describe('EmployerSearchController with argyle', () => {
     let stimulusElement;
 
     beforeEach(async () => {
-        mockArgyle();
-
         stimulusElement = document.createElement('button');
         stimulusElement.setAttribute('data-controller', 'cbv-employer-search')
         stimulusElement.setAttribute('data-action', 'cbv-employer-search#select')

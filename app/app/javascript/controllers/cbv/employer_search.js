@@ -1,5 +1,6 @@
 import { Controller } from "@hotwired/stimulus"
 import { createModalAdapter } from "@js/utilities/createModalAdapter";
+import { loadProviderResources } from "@js/utilities/loadProviderResources.ts";
 
 export default class extends Controller {
   static targets = [
@@ -10,6 +11,10 @@ export default class extends Controller {
 
   static values = {
     cbvFlowId: Number
+  }
+
+  async initialize() {
+    await loadProviderResources()
   }
   
   async connect() {
@@ -40,7 +45,6 @@ export default class extends Controller {
     const { responseType, id, name, isDefaultOption, providerName } = event.target.dataset;
 
     this.adapter = createModalAdapter(providerName);
-    await this.adapter.load()
     this.adapter.init({
       requestData: {
         responseType,

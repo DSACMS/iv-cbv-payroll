@@ -6,8 +6,6 @@ export abstract class ModalAdapter {
   exitCallback?: Function;
 
   abstract open(): void;
-  abstract onEvent(eventName: string, eventPayload: any): void;
-  async load() {};
 
   init(args: ModalAdapterArgs) {
     if (args.onSuccess) {

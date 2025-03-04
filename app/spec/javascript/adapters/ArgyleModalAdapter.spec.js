@@ -3,8 +3,7 @@ import loadScript from "load-script";
 import ArgyleModalAdapter from "@js/adapters/ArgyleModalAdapter";
 import { fetchArgyleToken, trackUserAction } from '@js/utilities/api';
 import { mockArgyle, mockArgyleAuthToken } from "@test/fixtures/argyle.fixture";
-
-const MOCK_ARGYLE_ERROR = "Failed to load SCRIPT"
+import { loadArgyleResource } from "@js/utilities/loadProviderResources.ts";
 
 const modalAdapterArgs = {
     onSuccess: vi.fn(),
@@ -18,16 +17,14 @@ const modalAdapterArgs = {
     }
 }
 
-
-
 describe('ArgyleModalAdapter', () => {
     let adapter;
     let triggers;
         
     beforeEach(async () => {
         mockArgyle();
+        await loadArgyleResource();
         adapter = new ArgyleModalAdapter()
-        adapter.load()
         adapter.init(modalAdapterArgs)
         triggers = await adapter.open()
     })
