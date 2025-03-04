@@ -19,9 +19,9 @@ class MixpanelEventTracker
       flow_id = attributes.fetch(:cbv_flow_id, "")
 
       tracker_attrs =  { cbv_flow_id: flow_id }
-      # if request.present?
-      tracker_attrs.merge!({ "$ip": "0" })
-      # end
+      if request.present?
+        tracker_attrs.merge!({ "$ip": request.remote_ip })
+      end
 
       @tracker.people.set(distinct_id, tracker_attrs)
     end
