@@ -190,6 +190,8 @@ GEM
     erubi (1.13.0)
     factory_bot (6.4.6)
       activesupport (>= 5.0.0)
+    faker (3.5.1)
+      i18n (>= 1.8.11, < 2)
     faraday (2.9.2)
       faraday-net_http (>= 2.0, < 3.2)
     faraday-net_http (3.1.1)
@@ -537,6 +539,7 @@ DEPENDENCIES
   dotenv-rails (~> 2.7)
   erb_lint
   factory_bot (~> 6.4)
+  faker
   faraday (~> 2.9.0)
   gpgme (~> 2.0, >= 2.0.12)
   i18n-tasks (~> 1.0)
