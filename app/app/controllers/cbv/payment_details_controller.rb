@@ -17,7 +17,7 @@ class Cbv::PaymentDetailsController < Cbv::BaseController
 
   def show
     account_id = params[:user][:account_id]
-    @pinwheel_account = @cbv_flow.pinwheel_accounts.find_by(pinwheel_account_id: account_id)
+    @pinwheel_account = @cbv_flow.payroll_accounts.find_by(pinwheel_account_id: account_id)
 
     # security check - make sure the account_id is associated with the current cbv_flow_id
     if @pinwheel_account.nil?

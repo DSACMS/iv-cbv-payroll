@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2025_02_06_012936) do
+ActiveRecord::Schema[7.1].define(version: 2025_03_03_000000) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pgcrypto"
   enable_extension "plpgsql"
@@ -40,18 +40,10 @@ ActiveRecord::Schema[7.1].define(version: 2025_02_06_012936) do
 
   create_table "cbv_flow_invitations", force: :cascade do |t|
     t.string "email_address"
-    t.string "case_number"
     t.string "auth_token"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.string "client_agency_id"
-    t.string "first_name", null: false
-    t.string "middle_name"
-    t.string "last_name", null: false
-    t.string "agency_id_number"
-    t.string "client_id_number"
-    t.date "snap_application_date", null: false
-    t.string "beacon_id"
     t.datetime "redacted_at"
     t.bigint "user_id"
     t.string "language"
@@ -62,13 +54,12 @@ ActiveRecord::Schema[7.1].define(version: 2025_02_06_012936) do
   end
 
   create_table "cbv_flows", force: :cascade do |t|
-    t.string "case_number"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.date "payroll_data_available_from"
     t.bigint "cbv_flow_invitation_id"
     t.string "pinwheel_token_id"
-    t.uuid "pinwheel_end_user_id", default: -> { "gen_random_uuid()" }, null: false
+    t.uuid "end_user_id", default: -> { "gen_random_uuid()" }, null: false
     t.jsonb "additional_information", default: {}
     t.string "client_agency_id"
     t.string "confirmation_code"
@@ -80,7 +71,7 @@ ActiveRecord::Schema[7.1].define(version: 2025_02_06_012936) do
     t.index ["cbv_flow_invitation_id"], name: "index_cbv_flows_on_cbv_flow_invitation_id"
   end
 
-  create_table "pinwheel_accounts", force: :cascade do |t|
+  create_table "payroll_accounts", force: :cascade do |t|
     t.bigint "cbv_flow_id", null: false
     t.string "pinwheel_account_id"
     t.datetime "paystubs_synced_at", precision: nil
@@ -94,7 +85,8 @@ ActiveRecord::Schema[7.1].define(version: 2025_02_06_012936) do
     t.datetime "paystubs_errored_at", precision: nil
     t.datetime "identity_errored_at", precision: nil
     t.datetime "identity_synced_at", precision: nil
-    t.index ["cbv_flow_id"], name: "index_pinwheel_accounts_on_cbv_flow_id"
+    t.string "type", default: "pinwheel", null: false
+    t.index ["cbv_flow_id"], name: "index_payroll_accounts_on_cbv_flow_id"
   end
 
   create_table "users", force: :cascade do |t|
@@ -119,5 +111,5 @@ ActiveRecord::Schema[7.1].define(version: 2025_02_06_012936) do
 
   add_foreign_key "cbv_flow_invitations", "users"
   add_foreign_key "cbv_flows", "cbv_flow_invitations"
-  add_foreign_key "pinwheel_accounts", "cbv_flows"
+  add_foreign_key "payroll_accounts", "cbv_flows"
 end

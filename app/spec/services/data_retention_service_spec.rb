@@ -29,7 +29,6 @@ RSpec.describe DataRetentionService do
           service.redact_invitations
           expect(cbv_flow_invitation.reload).to have_attributes(
             email_address: "REDACTED@example.com",
-            case_number: "REDACTED",
             auth_token: "REDACTED",
             redacted_at: within(1.second).of(Time.now)
           )
@@ -91,7 +90,7 @@ RSpec.describe DataRetentionService do
 
       before do
         cbv_flow.update(
-          pinwheel_end_user_id: "11111111-1111-1111-1111-111111111111",
+          end_user_id: "11111111-1111-1111-1111-111111111111",
           additional_information: { "account-id" => "some string here" }
         )
       end
@@ -99,8 +98,7 @@ RSpec.describe DataRetentionService do
       it "redacts the incomplete CbvFlow" do
         service.redact_incomplete_cbv_flows
         expect(cbv_flow.reload).to have_attributes(
-          case_number: "REDACTED",
-          pinwheel_end_user_id: "00000000-0000-0000-0000-000000000000",
+          end_user_id: "00000000-0000-0000-0000-000000000000",
           additional_information: {}
         )
       end
@@ -108,7 +106,8 @@ RSpec.describe DataRetentionService do
       it "redacts the associated invitation" do
         service.redact_incomplete_cbv_flows
         expect(cbv_flow_invitation.reload).to have_attributes(
-          case_number: "REDACTED"
+          auth_token: "REDACTED",
+          redacted_at: within(1.second).of(now)
         )
       end
 
@@ -162,8 +161,7 @@ RSpec.describe DataRetentionService do
         it "redacts the incomplete CbvFlow" do
           service.redact_incomplete_cbv_flows
           expect(cbv_flow.reload).to have_attributes(
-            case_number: "REDACTED",
-            pinwheel_end_user_id: "00000000-0000-0000-0000-000000000000",
+            end_user_id: "00000000-0000-0000-0000-000000000000",
             additional_information: {}
           )
         end
@@ -180,7 +178,7 @@ RSpec.describe DataRetentionService do
         .create_from_invitation(cbv_flow_invitation)
         .tap do |cbv_flow|
           cbv_flow.update(
-            pinwheel_end_user_id: "11111111-1111-1111-1111-111111111111",
+            end_user_id: "11111111-1111-1111-1111-111111111111",
             additional_information: { "account-id" => "some string here" },
             confirmation_code: "SANDBOX0002",
             transmitted_at: Time.new(2024, 8, 1, 12, 0, 0, "-04:00")
@@ -220,8 +218,7 @@ RSpec.describe DataRetentionService do
       it "redacts the incomplete CbvFlow" do
         service.redact_complete_cbv_flows
         expect(cbv_flow.reload).to have_attributes(
-          case_number: "REDACTED",
-          pinwheel_end_user_id: "00000000-0000-0000-0000-000000000000",
+          end_user_id: "00000000-0000-0000-0000-000000000000",
           additional_information: {}
         )
       end
@@ -229,7 +226,8 @@ RSpec.describe DataRetentionService do
       it "redacts the associated invitation" do
         service.redact_complete_cbv_flows
         expect(cbv_flow_invitation.reload).to have_attributes(
-          case_number: "REDACTED"
+          auth_token: "REDACTED",
+          redacted_at: within(1.second).of(now)
         )
       end
 
@@ -258,7 +256,6 @@ RSpec.describe DataRetentionService do
       DataRetentionService.manually_redact_by_case_number!("DELETEME001")
 
       expect(cbv_flow.reload).to have_attributes(
-        case_number: "REDACTED",
         redacted_at: within(1.second).of(Time.now)
       )
       expect(cbv_flow.cbv_applicant.reload).to have_attributes(
@@ -266,11 +263,9 @@ RSpec.describe DataRetentionService do
         redacted_at: within(1.second).of(Time.now)
       )
       expect(second_cbv_flow.reload).to have_attributes(
-        case_number: "REDACTED",
         redacted_at: within(1.second).of(Time.now)
       )
       expect(cbv_flow_invitation.reload).to have_attributes(
-        case_number: "REDACTED",
         redacted_at: within(1.second).of(Time.now)
       )
     end

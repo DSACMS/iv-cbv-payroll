@@ -278,7 +278,7 @@ en:
     payment_details:
       show:
         additional_information_header: Additional comments (optional)
-        additional_information_label: Share any comments or additional information about the payment details above that you’d like %{agency_acronym} to know. For example, you can share if the information is inaccurate or if you’re no longer working at that job.
+        additional_information_label: Share any comments or additional information about the income details above that you’d like %{agency_acronym} to know. For example, you can share if the information is inaccurate or if you’re no longer working at that job.
         continue: Continue
         deductions: 'Deduction: %{category}'
         employment_end_date: Employment end date
@@ -286,8 +286,8 @@ en:
         employment_start_date: Employment start date
         employment_status: Employment status
         frequency_unknown: Frequency Unknown
-        header: Your payment information from %{employer_name}
-        header_no_employer_name: Your payment information from your employer
+        header: Your income information from %{employer_name}
+        header_no_employer_name: Your income information from your employer
         hourly_rate: Compensation amount
         hours:
           one: "%{count} hour"
@@ -305,7 +305,7 @@ en:
         pay_period_value: "%{start_date} to %{end_date}"
         payment_hours: "%{amount} hours"
         payments_and_deductions_table_header: Payments and deductions
-        subheader: We have gathered your payment records from the past 90 days, from %{start_date} to %{end_date}. If the information is missing or inaccurate, add a comment for %{agency_acronym}. This information will be included in your income report.
+        subheader: We have gathered your income records from the past 90 days, from %{start_date} to %{end_date}. If the information is missing or inaccurate, add a comment for %{agency_acronym}. This will be included in your income report and linked to your SNAP application.
         total_gross_description: This is the total gross income from your job before taxes, benefits and deductions were taken out of your paycheck.
         total_gross_income: 'Total income from the past 90 days, before taxes: %{amount}'
         unknown: Unknown
@@ -517,6 +517,16 @@ en:
           title: Contact your employer's Human Resource Team
         title: I don't know my username
   pages:
+    error_404:
+      error_code_html: 'Error code: <strong>404</strong>'
+      header: We can't find the page you're looking for
+      return_to_entry: Return to entry page
+      return_to_welcome: Return to welcome page
+    error_500:
+      description: This is a problem on our end. There was an error with the server and our team has been notified. Please refresh your page, or try again later.
+      error_code_html: 'Error code: <strong>500</strong>'
+      header: It looks like something went wrong
+      refresh: Refresh page
     home:
       description_1: The SNAP Income Pilot is a new tool designed to help you connect your income details from your employer or payroll provider directly to your SNAP agency.
       description_2: Please note this pilot is not currently available.

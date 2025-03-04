@@ -7,7 +7,7 @@ class Cbv::EmployerSearchesController < Cbv::BaseController
   def show
     @query = search_params[:query]
     @employers = @query.blank? ? [] : provider_search(@query)
-    @has_pinwheel_account = @cbv_flow.pinwheel_accounts.any?
+    @has_pinwheel_account = @cbv_flow.payroll_accounts.any?
     @selected_tab = search_params[:type] || "payroll"
 
     case search_params[:type]
