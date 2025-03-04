@@ -1,7 +1,7 @@
 require "rails_helper"
 require "rake"
 
-RSpec.describe "seed:cbv_flow" do
+RSpec.describe "seed:cbv_user_flow" do
   before do
     # Clear any previously loaded tasks
     Rake::Task.clear
@@ -22,15 +22,15 @@ RSpec.describe "seed:cbv_flow" do
 
   it "creates a user, API token, CBV applicant, and CBV flow with default English locale" do
     expect {
-      Rake::Task["seed:cbv_flow"].invoke
+      Rake::Task["seed:cbv_user_flow"].invoke
     }.to change { User.count }.by(1)
       .and change { ApiAccessToken.count }.by(1)
       .and change { CbvApplicant.count }.by(1)
       .and change { CbvFlow.count }.by(1)
 
     # Verify the output includes the token in the URL with English locale
-    Rake::Task["seed:cbv_flow"].reenable
-    expect { Rake::Task["seed:cbv_flow"].invoke }.to output(/CBV flow URL: http:\/\/example.com\/en\/cbv\/entry\?token=/).to_stdout
+    Rake::Task["seed:cbv_user_flow"].reenable
+    expect { Rake::Task["seed:cbv_user_flow"].invoke }.to output(/CBV flow URL: http:\/\/example.com\/en\/cbv\/entry\?token=/).to_stdout
 
     user = User.find_by(email: "dev@example.com")
     expect(user).to be_present
@@ -58,7 +58,7 @@ RSpec.describe "seed:cbv_flow" do
   
   it "creates a CBV flow with Spanish locale when specified" do
     # Create a task with args hash to simulate command line args
-    task = Rake::Task["seed:cbv_flow"]
+    task = Rake::Task["seed:cbv_user_flow"]
     task.reenable # Allow the task to be run again
     
     expect {
@@ -77,7 +77,7 @@ RSpec.describe "seed:cbv_flow" do
   
   it "validates the locale parameter" do
     # Create a task with args hash to simulate command line args
-    task = Rake::Task["seed:cbv_flow"]
+    task = Rake::Task["seed:cbv_user_flow"]
     task.reenable # Allow the task to be run again
     
     # Test with invalid locale
@@ -91,7 +91,7 @@ RSpec.describe "seed:cbv_flow" do
   
   it "doesn't create duplicate records when run multiple times" do
     # Run once to create initial records
-    Rake::Task["seed:cbv_flow"].execute
+    Rake::Task["seed:cbv_user_flow"].execute
     
     # Get counts after first run
     user_count = User.count
@@ -99,7 +99,7 @@ RSpec.describe "seed:cbv_flow" do
     
     # Run again
     expect {
-      Rake::Task["seed:cbv_flow"].execute
+      Rake::Task["seed:cbv_user_flow"].execute
     }.to change { User.count }.by(0)
       .and change { ApiAccessToken.count }.by(0)
       .and change { CbvApplicant.count }.by(1) # Still creates a new applicant
@@ -150,49 +150,45 @@ RSpec.describe "seed:cbv_flow" do
       end
       
       # Run the task once to get a token
-      Rake::Task["seed:cbv_flow"].reenable
-      Rake::Task["seed:cbv_flow"].invoke
+      Rake::Task["seed:cbv_user_flow"].reenable
+      Rake::Task["seed:cbv_user_flow"].invoke
       
       # Run again to test the output
-      Rake::Task["seed:cbv_flow"].reenable
+      Rake::Task["seed:cbv_user_flow"].reenable
       expect {
-        Rake::Task["seed:cbv_flow"].invoke
+        Rake::Task["seed:cbv_user_flow"].invoke
       }.to output(/Shareable ngrok URL: https:\/\/example-ngrok.io\/en\/cbv\/entry\?token=/).to_stdout
     end
   end
 end
 
-RSpec.describe "seed:delete_cbv_flow" do
+RSpec.describe "seed:delete_cbv_user_flow" do
   before do
     # Clear any previously loaded tasks
     Rake::Task.clear
     # Load the Rails application tasks
     Rails.application.load_tasks
+    
+    # Mock the URL helper for the seed task
+    allow(Rails.application.routes.url_helpers).to receive(:cbv_flow_entry_url) do |args|
+      token = args[:token]
+      locale = args[:locale] || "en"
+      "http://example.com/#{locale}/cbv/entry?token=#{token}"
+    end
+    
+    # Mock the ngrok API call
+    stub_request(:get, "http://localhost:4040/api/tunnels")
+      .to_return(status: 404, body: "", headers: {})
   end
   
-  it "deletes a specific CBV flow and associated records" do
-    # Create a test flow
-    user = User.create!(email: "delete-test@example.com", client_agency_id: "sandbox", is_service_account: true)
-    cbv_applicant = CbvApplicant.create!(
-      client_agency_id: "sandbox",
-      first_name: "Delete",
-      last_name: "Test",
-      snap_application_date: Date.yesterday
-    )
-    cbv_flow_invitation = CbvFlowInvitation.create!(
-      user: user,
-      cbv_applicant: cbv_applicant,
-      client_agency_id: "sandbox",
-      email_address: "delete-test@example.com",
-      language: "en"
-    )
-    cbv_flow = CbvFlow.create!(
-      cbv_flow_invitation: cbv_flow_invitation,
-      cbv_applicant: cbv_applicant,
-      client_agency_id: "sandbox",
-      end_user_id: SecureRandom.uuid,
-      additional_information: {}
-    )
+  it "deletes a specific CBV flow and all associated records" do
+    Rake::Task["seed:cbv_user_flow"].invoke
+    
+    # Get the created flow and associated records
+    cbv_flow = CbvFlow.last
+    invitation = cbv_flow.cbv_flow_invitation
+    applicant = cbv_flow.cbv_applicant
+    user = invitation.user
     
     # Create a payroll account if the model exists
     if defined?(PayrollAccount)
@@ -204,9 +200,31 @@ RSpec.describe "seed:delete_cbv_flow" do
     end
     
     # Execute the task with the flow ID
-    expect {
-      Rake::Task["seed:delete_cbv_flow"].invoke(cbv_flow.id)
-    }.to output(/Deleting CBV flow with ID: #{cbv_flow.id}.*Successfully deleted CBV flow and associated records/m).to_stdout
+    Rake::Task["seed:delete_cbv_user_flow"].reenable
+    
+    # Verify the output includes information about what will be deleted
+    output = StringIO.new
+    $stdout = output
+    
+    Rake::Task["seed:delete_cbv_user_flow"].invoke(cbv_flow.id)
+    
+    $stdout = STDOUT
+    output_string = output.string
+    
+    # Check that the output contains the expected information
+    expect(output_string).to include("Deleting CBV user flow with ID: #{cbv_flow.id}")
+    expect(output_string).to include("The following records will be deleted:")
+    expect(output_string).to include("- 1 CbvFlow (ID: #{cbv_flow.id})")
+    
+    if defined?(PayrollAccount)
+      expect(output_string).to include("- 1 PayrollAccount(s) (via dependent: :destroy)")
+    end
+    
+    expect(output_string).to include("- 1 CbvFlowInvitation (ID: #{invitation.id})")
+    expect(output_string).to include("- 1 CbvApplicant (ID: #{applicant.id})")
+    expect(output_string).to include("- 1 ApiAccessToken(s)")
+    expect(output_string).to include("- 1 User (ID: #{user.id})")
+    expect(output_string).to include("Successfully deleted CBV user flow and all associated records")
     
     # Verify the flow is deleted
     expect(CbvFlow.find_by(id: cbv_flow.id)).to be_nil
@@ -216,93 +234,59 @@ RSpec.describe "seed:delete_cbv_flow" do
       expect(PayrollAccount.where(cbv_flow_id: cbv_flow.id).count).to eq(0)
     end
     
-    # Verify the invitation, user, and applicant still exist
-    expect(CbvFlowInvitation.find_by(id: cbv_flow_invitation.id)).to be_present
-    expect(User.find_by(id: user.id)).to be_present
-    expect(CbvApplicant.find_by(id: cbv_applicant.id)).to be_present
+    # Verify the invitation, user, and applicant are also deleted
+    expect(CbvFlowInvitation.find_by(id: invitation.id)).to be_nil
+    expect(User.find_by(id: user.id)).to be_nil
+    expect(CbvApplicant.find_by(id: applicant.id)).to be_nil
   end
   
   it "handles missing flow ID gracefully" do
     expect {
-      Rake::Task["seed:delete_cbv_flow"].invoke
+      Rake::Task["seed:delete_cbv_user_flow"].invoke
     }.to output(/Error: Please provide a CBV flow ID/).to_stdout
   end
   
   it "handles non-existent flow ID gracefully" do
     expect {
-      Rake::Task["seed:delete_cbv_flow"].invoke(999999)
+      Rake::Task["seed:delete_cbv_user_flow"].invoke(999999)
     }.to output(/Error: CBV flow with ID 999999 not found/).to_stdout
   end
 end
 
-RSpec.describe "seed:delete_all_cbv_flows" do
+RSpec.describe "seed:delete_all_cbv_user_flows" do
   before do
     # Clear any previously loaded tasks
     Rake::Task.clear
     # Load the Rails application tasks
     Rails.application.load_tasks
+    
+    # Mock the URL helper for the seed task
+    allow(Rails.application.routes.url_helpers).to receive(:cbv_flow_entry_url) do |args|
+      token = args[:token]
+      locale = args[:locale] || "en"
+      "http://example.com/#{locale}/cbv/entry?token=#{token}"
+    end
+    
+    # Mock the ngrok API call
+    stub_request(:get, "http://localhost:4040/api/tunnels")
+      .to_return(status: 404, body: "", headers: {})
   end
   
   it "deletes all CBV flows and associated records" do
-    # Create multiple test flows
-    user = User.create!(email: "delete-test@example.com", client_agency_id: "sandbox", is_service_account: true)
-    
-    # Create first flow
-    cbv_applicant1 = CbvApplicant.create!(
-      client_agency_id: "sandbox",
-      first_name: "Delete",
-      last_name: "Test1",
-      snap_application_date: Date.yesterday
-    )
-    cbv_flow_invitation1 = CbvFlowInvitation.create!(
-      user: user,
-      cbv_applicant: cbv_applicant1,
-      client_agency_id: "sandbox",
-      email_address: "delete-test1@example.com",
-      language: "en"
-    )
-    cbv_flow1 = CbvFlow.create!(
-      cbv_flow_invitation: cbv_flow_invitation1,
-      cbv_applicant: cbv_applicant1,
-      client_agency_id: "sandbox",
-      end_user_id: SecureRandom.uuid,
-      additional_information: {}
-    )
-    
-    # Create second flow
-    cbv_applicant2 = CbvApplicant.create!(
-      client_agency_id: "sandbox",
-      first_name: "Delete",
-      last_name: "Test2",
-      snap_application_date: Date.yesterday
-    )
-    cbv_flow_invitation2 = CbvFlowInvitation.create!(
-      user: user,
-      cbv_applicant: cbv_applicant2,
-      client_agency_id: "sandbox",
-      email_address: "delete-test2@example.com",
-      language: "en"
-    )
-    cbv_flow2 = CbvFlow.create!(
-      cbv_flow_invitation: cbv_flow_invitation2,
-      cbv_applicant: cbv_applicant2,
-      client_agency_id: "sandbox",
-      end_user_id: SecureRandom.uuid,
-      additional_information: {}
-    )
+    # Create multiple test flows using the seed task
+    Rake::Task["seed:cbv_user_flow"].invoke
+    Rake::Task["seed:cbv_user_flow"].reenable
+    Rake::Task["seed:cbv_user_flow"].invoke("es")
     
     # Create payroll accounts if the model exists
     if defined?(PayrollAccount)
-      PayrollAccount::Pinwheel.create!(
-        cbv_flow: cbv_flow1,
-        pinwheel_account_id: SecureRandom.uuid,
-        supported_jobs: %w[income]
-      )
-      PayrollAccount::Pinwheel.create!(
-        cbv_flow: cbv_flow2,
-        pinwheel_account_id: SecureRandom.uuid,
-        supported_jobs: %w[income]
-      )
+      CbvFlow.all.each do |flow|
+        PayrollAccount::Pinwheel.create!(
+          cbv_flow: flow,
+          pinwheel_account_id: SecureRandom.uuid,
+          supported_jobs: %w[income]
+        )
+      end
     end
     
     # Record initial counts
@@ -310,11 +294,31 @@ RSpec.describe "seed:delete_all_cbv_flows" do
     initial_invitation_count = CbvFlowInvitation.count
     initial_applicant_count = CbvApplicant.count
     initial_user_count = User.count
+    initial_payroll_account_count = defined?(PayrollAccount) ? PayrollAccount.count : 0
+    initial_api_token_count = ApiAccessToken.count
     
     # Execute the task
-    expect {
-      Rake::Task["seed:delete_all_cbv_flows"].execute
-    }.to output(/Successfully deleted #{initial_flow_count} CBV flows and their associated records/).to_stdout
+    Rake::Task["seed:delete_all_cbv_user_flows"].reenable
+    
+    # Capture and verify the output
+    output = StringIO.new
+    $stdout = output
+    
+    Rake::Task["seed:delete_all_cbv_user_flows"].execute
+    
+    $stdout = STDOUT
+    output_string = output.string
+    
+    # Check that the output contains the expected information
+    expect(output_string).to include("Deleting all CBV user flows and associated records...")
+    expect(output_string).to include("The following records will be deleted:")
+    expect(output_string).to include("- #{initial_flow_count} CbvFlow(s)")
+    expect(output_string).to include("- #{initial_payroll_account_count} PayrollAccount(s) (via dependent: :destroy)")
+    expect(output_string).to include("- #{initial_invitation_count} CbvFlowInvitation(s)")
+    expect(output_string).to include("- #{initial_applicant_count} CbvApplicant(s)")
+    expect(output_string).to include("- #{initial_api_token_count} ApiAccessToken(s)")
+    expect(output_string).to include("- #{initial_user_count} User(s)")
+    expect(output_string).to include("Successfully deleted #{initial_flow_count} CBV user flows and all associated records")
     
     # Verify all flows are deleted
     expect(CbvFlow.count).to eq(0)
@@ -324,9 +328,9 @@ RSpec.describe "seed:delete_all_cbv_flows" do
       expect(PayrollAccount.count).to eq(0)
     end
     
-    # Verify invitations, users and applicants are preserved
-    expect(CbvFlowInvitation.count).to eq(initial_invitation_count)
-    expect(User.count).to eq(initial_user_count)
-    expect(CbvApplicant.count).to eq(initial_applicant_count)
+    # Verify invitations, users and applicants are also deleted
+    expect(CbvFlowInvitation.count).to eq(0)
+    expect(User.where(email: "dev@example.com").count).to eq(0)
+    expect(CbvApplicant.count).to eq(0)
   end
 end 

@@ -1,13 +1,13 @@
 namespace :seed do
-  desc "Seed the database with a CBV flow for development"
-  task :cbv_flow, [:locale] => :environment do |_, args|
+  desc "Seed the database with a CBV user flow for development"
+  task :cbv_user_flow, [:locale] => :environment do |_, args|
     # Get the locale from args or default to English
     locale = args[:locale] || "en"
     
     # Validate locale
     unless ["en", "es"].include?(locale)
       puts "Error: Locale must be either 'en' (English) or 'es' (Spanish)"
-      puts "Example: rake seed:cbv_flow[es]"
+      puts "Example: rake seed:cbv_user_flow[es]"
       next
     end
 
@@ -79,7 +79,7 @@ namespace :seed do
       protocol: URI.parse(base_url).scheme
     )
 
-    puts "Created CBV flow with ID: #{cbv_flow.id}"
+    puts "Created CBV user flow with ID: #{cbv_flow.id}"
     puts "Access token: #{api_token.access_token}" if api_token.respond_to?(:access_token)
     puts "Invitation token: #{cbv_flow_invitation.auth_token}"
     puts "Language: #{locale}"
@@ -96,10 +96,10 @@ namespace :seed do
     puts "The flow will guide you through linking a payroll account."
   end
 
-  desc "Delete a specific CBV flow and all associated records"
-  task :delete_cbv_flow, [:cbv_flow_id] => :environment do |_, args|
+  desc "Delete a specific CBV user flow and all associated records"
+  task :delete_cbv_user_flow, [:cbv_flow_id] => :environment do |_, args|
     if args[:cbv_flow_id].blank?
-      puts "Error: Please provide a CBV flow ID. Example: rake seed:delete_cbv_flow[123]"
+      puts "Error: Please provide a CBV flow ID. Example: rake seed:delete_cbv_user_flow[123]"
       next
     end
 
@@ -111,26 +111,88 @@ namespace :seed do
       next
     end
 
-    puts "Deleting CBV flow with ID: #{cbv_flow_id}..."
+    puts "Deleting CBV user flow with ID: #{cbv_flow_id} and all associated records..."
+
+    # Count associated records before deletion
+    invitation = cbv_flow.cbv_flow_invitation
+    applicant = cbv_flow.cbv_applicant
+    user = invitation&.user
+    payroll_accounts_count = cbv_flow.payroll_accounts.count
+    api_tokens_count = user&.api_access_tokens&.count || 0
+
+    puts "The following records will be deleted:"
+    puts "- 1 CbvFlow (ID: #{cbv_flow.id})"
+    puts "- #{payroll_accounts_count} PayrollAccount(s) (via dependent: :destroy)"
+    puts "- 1 CbvFlowInvitation (ID: #{invitation.id})" if invitation.present?
+    puts "- 1 CbvApplicant (ID: #{applicant.id})" if applicant.present?
+    puts "- #{api_tokens_count} ApiAccessToken(s)" if api_tokens_count > 0
+    puts "- 1 User (ID: #{user.id})" if user.present?
 
     ActiveRecord::Base.transaction do
+      # Delete the flow first (this will delete payroll accounts via dependent: :destroy)
       cbv_flow.destroy!
       
-      puts "Successfully deleted CBV flow and associated records."
-      puts "Note: The invitation, user, and applicant were preserved."
+      # Delete the invitation
+      invitation.destroy! if invitation.present?
+      
+      # Delete the applicant
+      applicant.destroy! if applicant.present?
+      
+      # Delete the user and their API tokens
+      if user.present?
+        user.api_access_tokens.destroy_all
+        user.destroy!
+      end
+      
+      puts "Successfully deleted CBV user flow and all associated records."
     end
   end
 
-  desc "Delete all CBV flows and associated records"
-  task delete_all_cbv_flows: :environment do
-    puts "Deleting all CBV flows and associated records..."
+  desc "Delete all CBV user flows and associated records"
+  task delete_all_cbv_user_flows: :environment do
+    puts "Deleting all CBV user flows and associated records..."
+    
+    # Count records before deletion
+    cbv_flow_count = CbvFlow.count
+    payroll_accounts_count = PayrollAccount.count
+    
+    # Get all invitations and applicants associated with flows
+    invitation_ids = CbvFlowInvitation.joins(:cbv_flows).pluck(:id).uniq
+    invitation_count = invitation_ids.count
+    
+    applicant_ids = CbvApplicant.joins(:cbv_flows).distinct.pluck(:id)
+    applicant_count = applicant_ids.count
+    
+    # Get user IDs from invitations
+    user_ids = CbvFlowInvitation.where(id: invitation_ids).pluck(:user_id).compact.uniq
+    user_count = user_ids.count
+    
+    # Count API tokens
+    api_token_count = ApiAccessToken.where(user_id: user_ids).count
+    
+    puts "The following records will be deleted:"
+    puts "- #{cbv_flow_count} CbvFlow(s)"
+    puts "- #{payroll_accounts_count} PayrollAccount(s) (via dependent: :destroy)"
+    puts "- #{invitation_count} CbvFlowInvitation(s)"
+    puts "- #{applicant_count} CbvApplicant(s)"
+    puts "- #{api_token_count} ApiAccessToken(s)"
+    puts "- #{user_count} User(s)"
     
     ActiveRecord::Base.transaction do
-      cbv_flow_count = CbvFlow.count
+      # Delete flows first (this will delete payroll accounts via dependent: :destroy)
       CbvFlow.destroy_all
       
-      puts "Successfully deleted #{cbv_flow_count} CBV flows and their associated records."
-      puts "Note: Invitations, users, and applicants were preserved."
+      # Delete invitations
+      CbvFlowInvitation.where(id: invitation_ids).destroy_all
+      
+      # Delete applicants
+      CbvApplicant.where(id: applicant_ids).destroy_all
+      
+      # Delete API tokens and users
+      ApiAccessToken.where(user_id: user_ids).destroy_all
+      User.where(id: user_ids).destroy_all
+      
+      puts "Successfully deleted #{cbv_flow_count} CBV user flows and all associated records."
     end
   end
 end 
