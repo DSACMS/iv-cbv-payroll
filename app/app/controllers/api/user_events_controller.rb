@@ -17,7 +17,7 @@ class Api::UserEventsController < ApplicationController
     ArgyleCloseModal
     ArgyleError
     ArgyleTokenExpired
-    ModalAdapterError 
+    ModalAdapterError
   ]
 
   # Maps Pinwheel event names (keys) to new Mixpanel event names (values) we're using
