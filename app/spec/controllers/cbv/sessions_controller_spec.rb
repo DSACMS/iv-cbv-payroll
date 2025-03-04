@@ -2,18 +2,23 @@ require 'rails_helper'
 
 RSpec.describe Cbv::SessionsController, type: :controller do
   describe 'POST #refresh' do
-    context 'with turbo_stream format' do
-      it 'updates last_seen time and returns ok status' do
-        post :refresh, format: :turbo_stream
-        expect(session[:last_seen]).to be_within(1.second).of(Time.current)
-        expect(response).to have_http_status(:ok)
-      end
+    it 'updates last_seen time and returns ok status' do
+      initial_time = Time.current
+      session[:last_seen] = initial_time
+
+      post :refresh
+
+      # Verify session was updated
+      expect(session[:last_seen]).to be > initial_time
+      expect(session[:last_seen]).to be_within(1.second).of(Time.current)
+      expect(response).to have_http_status(:ok)
+      expect(response.body).to be_blank
     end
   end
 
   describe 'DELETE #end' do
     before do
-      session[:cbv_flow_id] = 'test_flow_id'
+      session[:cbv_flow_id] = create(:cbv_flow).id
     end
 
     context 'when timeout is true' do
