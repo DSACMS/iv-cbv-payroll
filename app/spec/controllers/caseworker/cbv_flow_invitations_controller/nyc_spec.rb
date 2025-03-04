@@ -42,11 +42,12 @@ RSpec.describe Caseworker::CbvFlowInvitationsController, type: :controller do
       }
 
       invitation = CbvFlowInvitation.last
-      expect(invitation.first_name).to eq("Jane")
-      expect(invitation.middle_name).to eq("Sue")
-      expect(invitation.last_name).to eq("Doe")
-      expect(invitation.client_id_number).to eq(cbv_flow_invitation_params[:cbv_applicant_attributes][:client_id_number])
-      expect(invitation.case_number).to eq(cbv_flow_invitation_params[:cbv_applicant_attributes][:case_number])
+      applicant = invitation.cbv_applicant
+      expect(applicant.first_name).to eq("Jane")
+      expect(applicant.middle_name).to eq("Sue")
+      expect(applicant.last_name).to eq("Doe")
+      expect(applicant.client_id_number).to eq(cbv_flow_invitation_params[:cbv_applicant_attributes][:client_id_number])
+      expect(applicant.case_number).to eq(cbv_flow_invitation_params[:cbv_applicant_attributes][:case_number])
       expect(invitation.email_address).to eq("test@example.com")
     end
 
@@ -58,7 +59,7 @@ RSpec.describe Caseworker::CbvFlowInvitationsController, type: :controller do
         cbv_flow_invitation: cbv_flow_invitation_params
       }
       invitation = CbvFlowInvitation.last
-      expect(invitation.middle_name).to be_nil
+      expect(invitation.cbv_applicant.middle_name).to be_nil
     end
 
     it "redirects back to the caseworker dashboard" do

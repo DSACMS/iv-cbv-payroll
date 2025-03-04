@@ -7,10 +7,6 @@ class Caseworker::CbvFlowInvitationsController < Caseworker::BaseController
   def new
     @client_agency_id = client_agency_id
     @cbv_flow_invitation = CbvFlowInvitation.new(client_agency_id: client_agency_id)
-
-    if @client_agency_id == "ma"
-      @cbv_flow_invitation.snap_application_date ||= Date.today
-    end
   end
 
   def create
