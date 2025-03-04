@@ -1,7 +1,6 @@
 import { trackUserAction, fetchArgyleToken } from "@js/utilities/api.js";
 import { getDocumentLocale } from "@js/utilities/getDocumentLocale.js";
 import { ModalAdapter } from "./ModalAdapter.js";
-import load from "load-script";
 
 export default class ArgyleModalAdapter extends ModalAdapter {
   Argyle: Argyle;
@@ -32,6 +31,13 @@ export default class ArgyleModalAdapter extends ModalAdapter {
         onError: this.onError.bind(this),
         sandbox: true, 
       }).open();
+    }
+    else {
+      // TODO this should throw an error, which should be caught by a document.onerror handler to show the user a crash message.
+      await trackUserAction("ModalAdapterError", {
+        message: "Missing requestData from init() function" 
+      })
+      this.onExit()
     }
   }
 
