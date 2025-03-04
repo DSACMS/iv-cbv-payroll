@@ -44,6 +44,6 @@ class ArgyleService
   end
 
   def create_user
-    @http.post(USERS_ENDPOINT).body
+    @http.post("/users").body
   end
 end
