@@ -24,15 +24,8 @@ class MixpanelEventTracker
       distinct_id = "applicant-#{applicant_id}"
     end
 
-    # The "0" for $ip is a signal to Mixpanel to infer location differently,
-    # since the IP they get is likely the address of our server, not the user.
-    client_ip = 0
-    if request.present?
-      client_ip = request.remote_ip
-    end
-
     # This creates a profile for a distinct user
-    @tracker.people.set(distinct_id, tracker_attrs, ip = client_ip) if distinct_id.present?
+    @tracker.people.set(distinct_id, tracker_attrs) if distinct_id.present?
 
     # MaybeLater tries to run this code after the request has finished
     MaybeLater.run {
