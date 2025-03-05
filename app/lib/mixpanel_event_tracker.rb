@@ -12,6 +12,10 @@ class MixpanelEventTracker
     tracker_attrs =  { }
     flow_id = attributes.fetch(:cbv_flow_id, "")
     tracker_attrs = {cbv_flow_id: flow_id} if flow_id.present?
+    
+    if request.present?
+      tracker_attrs.merge!({ "$ip": request.remote_ip })
+    end
 
     # For caseworker events, use the "user_id" attribute as the distinct_id
     # For client events, use the "cbv_applicant_id" attribute as the distinct_id as it currently best
