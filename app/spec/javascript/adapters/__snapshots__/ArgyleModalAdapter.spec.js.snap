@@ -1,0 +1,36 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`ArgyleModalAdapter > event:other > logs onAccountCreated Event 1`] = `
+{
+  "accountId": "account-id",
+  "platformId": "platform-id",
+}
+`;
+
+exports[`ArgyleModalAdapter > event:other > logs onAccountError Event 1`] = `
+{
+  "accountId": "account-id",
+  "platformId": "platform-id",
+}
+`;
+
+exports[`ArgyleModalAdapter > event:other > logs onAccountRemoved Event 1`] = `
+{
+  "accountId": "account-id",
+  "platformId": "platform-id",
+}
+`;
+
+exports[`ArgyleModalAdapter > open > calls track user action 1`] = `
+[
+  "ApplicantSelectedEmployerOrPlatformItem",
+  {
+    "is_default_option": true,
+    "item_id": "id",
+    "item_name": "test-name",
+    "item_type": "response-type",
+    "locale": "en",
+    "provider_name": "pinwheel",
+  },
+]
+`;
