@@ -45,10 +45,7 @@ export default class extends Controller {
     if (pinwheelPortal) {
       // Store the original z-index
       this.originalPinwheelZIndex = pinwheelPortal.style.zIndex || getComputedStyle(pinwheelPortal).zIndex;
-      
-      // Set a very low z-index to ensure it's below the session timeout modal
       pinwheelPortal.style.zIndex = "0";
-      console.log("Pinwheel portal z-index set to 0");
     }
   }
 
