@@ -7,6 +7,22 @@
 # Cmd+Shift+F.
 set -euo pipefail
 
+linkify_jira() {
+  # Convert "FFS-1234:" (or just "1234:") into a Jira link
+  sed -E 's/(FFS-)?([0-9]{3,4})(-[0-9]*)?: (.*)/\4 \[[FFS-\2](https:\/\/jiraent.cms.gov\/browse\/FFS-\2)\]/g' |
+    # Convert "(#123)" into a Github PR link
+    sed -E 's|\(#([0-9]*)\)|([#\1](https://github.com/DSACMS/iv-cbv-payroll/pull/\1))|' /dev/stdin
+}
+
+# Run with --test to test the regular expressions above
+if [ ${1:-""} = "--test" ]; then
+  echo "1234: Foo bar baz" | linkify_jira
+  echo "FFS-1234: Foo bar baz" | linkify_jira
+  echo "FFS-1234-3: Foo bar baz" | linkify_jira
+  echo "FFS-1234-3: Foo bar baz (#123)" | linkify_jira
+  exit
+fi
+
 if [ -t 1 ]; then
   echo "Copy-paste this output into Slack (on macOS, pipe this script to 'pbcopy'):" >&2
   echo "=================================================================" >&2
@@ -14,12 +30,11 @@ else
   echo "Copying commit list... (use Cmd+Shift+F to apply formatting after pasting it into Slack)" >&2
 fi
 
-git fetch
+git fetch --quiet
 prod=$(curl --silent https://snap-income-pilot.com/health | jq -r .version)
 current_sha=$(git rev-parse origin/main)
 echo '🚀 Will deploy `'${current_sha:0:7}'` to production: 🚀 (cc @cbv-product-team)'
-git log --no-decorate --pretty="format:• *%s* - %an" ${prod}..${current_sha} | \
-  sed -E 's/(FFS-)?([0-9]{3,4}): (.*)/\3 \[[FFS-\2](https:\/\/jiraent.cms.gov\/browse\/FFS-\2)\]/g'
+git log --no-decorate --pretty="format:• *%s* - %an" ${prod}..${current_sha} | linkify_jira
 
 echo
 echo
