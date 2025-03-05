@@ -7,7 +7,9 @@ class GenericEventTracker
       url_params = request.params.slice("client_agency_id", "locale")
       defaults = {
         # Not setting device_id because Mixpanel fixates on that as the distinct_id, which we do not want
-        ip: request.remote_ip,
+        # The "0" for $ip is a signal to Mixpanel to infer location differently,
+        # since the IP they get is likely the address of our server, not the user.
+        ip: "0",
         cbv_flow_id: request.session[:cbv_flow_id],
         client_agency_id: url_params["client_agency_id"],
         locale: url_params["locale"],
