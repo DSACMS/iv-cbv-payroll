@@ -1,30 +1,25 @@
 import { Controller } from "@hotwired/stimulus"
-import { createModalAdapter } from "@js/utilities/createModalAdapter";
-import { loadProviderResources } from "@js/utilities/loadProviderResources.ts";
+import { createModalAdapter } from "@js/utilities/createModalAdapter"
+import { loadProviderResources } from "@js/utilities/loadProviderResources.ts"
 
 export default class extends Controller {
-  static targets = [
-    "form",
-    "userAccountId",
-    "employerButton"
-  ];
+  static targets = ["form", "userAccountId", "employerButton"]
 
   static values = {
-    cbvFlowId: Number
+    cbvFlowId: Number,
   }
 
   async initialize() {
     await loadProviderResources()
   }
-  
+
   async connect() {
     this.errorHandler = this.element.addEventListener("turbo:frame-missing", this.onTurboError)
-
   }
 
   disconnect() {
     this.element.removeEventListener("turbo:frame-missing", this.errorHandler)
-    delete(this.ModalAdapter)
+    delete this.ModalAdapter
   }
 
   onTurboError(event) {
@@ -36,43 +31,41 @@ export default class extends Controller {
   }
 
   onSuccess(accountId) {
-      this.userAccountIdTarget.value = accountId
-      this.formTarget.submit();
+    this.userAccountIdTarget.value = accountId
+    this.formTarget.submit()
   }
 
   async select(event) {
     this.disableButtons()
-    const { responseType, id, name, isDefaultOption, providerName } = event.target.dataset;
+    const { responseType, id, name, isDefaultOption, providerName } = event.target.dataset
 
-    this.adapter = createModalAdapter(providerName);
+    this.adapter = createModalAdapter(providerName)
     this.adapter.init({
       requestData: {
         responseType,
         id,
         isDefaultOption,
         providerName,
-        name
+        name,
       },
       onSuccess: this.onSuccess.bind(this),
-      onExit: this.onExit.bind(this)
+      onExit: this.onExit.bind(this),
     })
     await this.adapter.open()
   }
 
   disableButtons() {
-    this.employerButtonTargets
-      .forEach(el => el.setAttribute("disabled", "disabled"))
+    this.employerButtonTargets.forEach((el) => el.setAttribute("disabled", "disabled"))
   }
 
   onExit() {
-    this.showHelpBanner();
-    this.employerButtonTargets
-      .forEach(el => el.removeAttribute("disabled"))
+    this.showHelpBanner()
+    this.employerButtonTargets.forEach((el) => el.removeAttribute("disabled"))
   }
 
   showHelpBanner() {
-    const url = new URL(window.location.href);
-    url.searchParams.set('help', 'true');
-    window.location.href = url.toString();
+    const url = new URL(window.location.href)
+    url.searchParams.set("help", "true")
+    window.location.href = url.toString()
   }
 }

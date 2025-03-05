@@ -1,13 +1,13 @@
-import { fetchPinwheelToken, trackUserAction } from "@js/utilities/api.js";
-import loadScript from 'load-script';
-import { getDocumentLocale } from "@js/utilities/getDocumentLocale.js";
-import { ModalAdapter } from "./ModalAdapter.js";
+import { fetchPinwheelToken, trackUserAction } from "@js/utilities/api.js"
+import loadScript from "load-script"
+import { getDocumentLocale } from "@js/utilities/getDocumentLocale.js"
+import { ModalAdapter } from "./ModalAdapter.js"
 
 export default class PinwheelModalAdapter extends ModalAdapter {
-  Pinwheel: Pinwheel;
- 
+  Pinwheel: Pinwheel
+
   async open() {
-    const locale = getDocumentLocale();
+    const locale = getDocumentLocale()
 
     if (this.requestData) {
       await trackUserAction("ApplicantSelectedEmployerOrPlatformItem", {
@@ -16,66 +16,69 @@ export default class PinwheelModalAdapter extends ModalAdapter {
         item_name: this.requestData.name,
         is_default_option: this.requestData.isDefaultOption,
         provider_name: this.requestData.providerName,
-        locale
-      });
+        locale,
+      })
 
-      const { token } = await fetchPinwheelToken(this.requestData.responseType, this.requestData.id, locale);
+      const { token } = await fetchPinwheelToken(
+        this.requestData.responseType,
+        this.requestData.id,
+        locale
+      )
 
       return Pinwheel.open({
         linkToken: token,
         onSuccess: this.onSuccess.bind(this),
         onExit: this.onExit.bind(this),
         onEvent: this.onEvent.bind(this),
-      });
+      })
     }
   }
-
 
   async onSuccess(eventPayload: LinkResult) {
     await trackUserAction("PinwheelSuccess", {
       account_id: eventPayload.accountId,
-      platform_id: eventPayload.platformId
+      platform_id: eventPayload.platformId,
     })
     if (this.successCallback) {
-      this.successCallback(eventPayload.accountId);
+      this.successCallback(eventPayload.accountId)
     }
   }
 
   onEvent(eventName: string, eventPayload: any) {
     switch (eventName) {
       case "screen_transition":
-        onScreenTransitionEvent(eventPayload.screenName);
-        break;
-      case 'login_attempt':
+        onScreenTransitionEvent(eventPayload.screenName)
+        break
+      case "login_attempt":
         trackUserAction("PinwheelAttemptLogin", {})
-        break;
-      case 'error':
+        break
+      case "error":
         const { type, code, message } = eventPayload
         trackUserAction("PinwheelError", { type, code, message })
-        break;
-      case 'exit':
+        break
+      case "exit":
         trackUserAction("PinwheelCloseModal", {})
-        break;
+        break
     }
 
-    function onScreenTransitionEvent(screenName : string) {
+    function onScreenTransitionEvent(screenName: string) {
       switch (screenName) {
         case "LOGIN":
           trackUserAction("PinwheelShowLoginPage", {
             screen_name: screenName,
             employer_name: eventPayload.selectedEmployerName,
-            platform_name: eventPayload.selectedPlatformName
-          });
-          break;
+            platform_name: eventPayload.selectedPlatformName,
+          })
+          break
         case "PROVIDER_CONFIRMATION":
-          trackUserAction("PinwheelShowProviderConfirmationPage", {});
-          break;
+          trackUserAction("PinwheelShowProviderConfirmationPage", {})
+          break
         case "SEARCH_DEFAULT":
-          trackUserAction("PinwheelShowDefaultProviderSearch", {});
-          break;
+          trackUserAction("PinwheelShowDefaultProviderSearch", {})
+          break
         case "EXIT_CONFIRMATION":
-          trackUserAction("PinwheelAttemptClose", {});
-          break;
+          trackUserAction("PinwheelAttemptClose", {})
+          break
       }
     }
   }

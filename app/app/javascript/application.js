@@ -6,7 +6,7 @@ import "@uswds/uswds"
 
 // make sure USWDS components are wired to their behavior after a Turbo navigation
 import components from "@uswds/uswds/src/js/components"
-let initialLoad = true;
+let initialLoad = true
 
 document.addEventListener("turbo:load", () => {
   if (initialLoad) {
@@ -20,8 +20,8 @@ document.addEventListener("turbo:load", () => {
     const behavior = components[key]
     behavior.on(target)
   })
-});
+})
 
 document.addEventListener("turbo:frame-render", () => {
-  initialLoad = true;
-});
+  initialLoad = true
+})
