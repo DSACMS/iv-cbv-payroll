@@ -8,22 +8,31 @@ class MixpanelEventTracker
   end
 
   def track(event_type, request, attributes = {})
-    # Use the "cbv_applicant_id" attribute as the distinct_id as it currently best
-    # represents the concept of a unique user.
-    applicant_id = attributes.fetch(:cbv_applicant_id, "")
     distinct_id = ""
-    if applicant_id.present?
+    tracker_attrs =  { }
+    flow_id = attributes.fetch(:cbv_flow_id, "")
+    tracker_attrs = {cbv_flow_id: flow_id} if flow_id.present?
+
+    # For caseworker events, use the "user_id" attribute as the distinct_id
+    # For client events, use the "cbv_applicant_id" attribute as the distinct_id as it currently best
+    # represents the concept of a unique user.
+    user_id = attributes.fetch(:user_id, "")
+    applicant_id = attributes.fetch(:cbv_applicant_id, "")
+    if user_id.present?
+      distinct_id = "caseworker-#{user_id}"
+    elsif applicant_id.present?
       distinct_id = "applicant-#{applicant_id}"
-
-      # This creates a profile for a distinct user
-      # The "0" for $ip is a signal to Mixpanel to infer location differently,
-      # since the IP they get is likely the address of our server, not the user.
-      flow_id = attributes.fetch(:cbv_flow_id, "")
-      tracker_attrs =  { cbv_flow_id: flow_id,
-                         "$ip": "0" }
-
-      @tracker.people.set(distinct_id, tracker_attrs)
     end
+
+    # The "0" for $ip is a signal to Mixpanel to infer location differently,
+    # since the IP they get is likely the address of our server, not the user.
+    client_ip = 0
+    if request.present?
+      client_ip = request.remote_ip
+    end
+
+    # This creates a profile for a distinct user
+    @tracker.people.set(distinct_id, tracker_attrs, ip = client_ip) if distinct_id.present?
 
     # MaybeLater tries to run this code after the request has finished
     MaybeLater.run {
