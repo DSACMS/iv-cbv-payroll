@@ -48,7 +48,7 @@ class Cbv::SummariesController < Cbv::BaseController
 
   def update
     unless has_consent
-      return redirect_to(cbv_flow_summary_path, flash: { alert: t(".consent_to_authorize_warning") })
+      return redirect_to(cbv_flow_submit_path, flash: { alert: t(".consent_to_authorize_warning") })
     end
 
     if params[:cbv_flow] && params[:cbv_flow][:consent_to_authorized_use] == "1"

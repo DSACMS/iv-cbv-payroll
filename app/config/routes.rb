@@ -32,6 +32,7 @@ Rails.application.routes.draw do
       resource :synchronizations, only: %i[show update]
       resource :synchronization_failures, only: %i[show]
       resource :summary, only: %i[show update], format: %i[html pdf]
+      resource :submit, only: %i[show]
       resource :missing_results, only: %i[show]
       resource :success, only: %i[show]
       resource :add_job, only: %i[show create]
