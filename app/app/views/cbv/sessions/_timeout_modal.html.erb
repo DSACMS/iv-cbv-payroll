@@ -1,0 +1,52 @@
+<div class="usa-modal"
+     data-controller="session"
+     data-session-target="modal"
+     data-item-timeout-param="<%= timeout %>"
+     data-force-action
+     id="session-timeout-modal"
+     aria-labelledby="session-timeout-heading"
+     aria-describedby="session-timeout-description">
+  <div class="usa-modal__content">
+    <div class="usa-modal__main">
+      <h2 class="usa-modal__heading" id="session-timeout-heading">
+        <%= t("session_timeout.modal.heading") %>
+      </h2>
+      <div class="usa-prose">
+        <p id="session-timeout-description">
+          <%= t("session_timeout.modal.description") %>
+        </p>
+      </div>
+      <div class="usa-modal__footer">
+        <ul class="usa-button-group">
+          <li class="usa-button-group__item">
+            <%= button_to cbv_flow_session_refresh_path,
+                    class: "usa-button",
+                    data: {
+                      turbo_stream: true,
+                      close_modal: true,
+                      action: "session#resetTimers"
+                    },
+                    id: "extend-session-button" do %>
+              <%= t("session_timeout.modal.extend_button") %>
+            <% end %>
+          </li>
+          <li class="usa-button-group__item">
+            <%= link_to t("session_timeout.modal.end_button"),
+                cbv_flow_session_end_path,
+                class: "usa-button usa-button--outline",
+                data: { close_modal: true, turbo: false },
+                id: "end-session-button" %>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>
+
+<button
+  href="#session-timeout-modal"
+  aria-controls="session-timeout-modal"
+  data-open-modal
+  class="invisible"
+  id="open-session-modal-button">
+</button>
