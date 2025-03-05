@@ -16,6 +16,8 @@ class MixpanelEventTracker
       distinct_id = "applicant-#{applicant_id}"
 
       # This creates a profile for a distinct user
+      # The "0" for $ip is a signal to Mixpanel to infer location differently,
+      # since the IP they get is likely the address of our server, not the user.
       flow_id = attributes.fetch(:cbv_flow_id, "")
       tracker_attrs =  { cbv_flow_id: flow_id,
                          "$ip": "0" }
