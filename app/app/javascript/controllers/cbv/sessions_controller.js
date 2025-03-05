@@ -30,6 +30,14 @@ export default class extends Controller {
 
     // Set timer for the warning (5 minutes before expiration)
     this.warningTimer = setTimeout(() => {
+      // Close all modals except the session timeout modal
+      const closeButtons = document.querySelectorAll("[data-close-modal]");
+      closeButtons.forEach(button => {
+        // Skip if this button is inside the session timeout modal
+        if (!button.closest('#session-timeout-modal')) {
+          button.click();
+        }
+      });
       document.getElementById("open-session-modal-button").click();
     }, warningDelay);
 
@@ -54,7 +62,6 @@ export default class extends Controller {
     const pinwheelPortal = document.querySelector(".pinwheel-portal");
     if (pinwheelPortal && this.originalPinwheelZIndex) {
       pinwheelPortal.style.zIndex = this.originalPinwheelZIndex;
-      console.log("Pinwheel portal z-index restored to", this.originalPinwheelZIndex);
     }
   }
 
