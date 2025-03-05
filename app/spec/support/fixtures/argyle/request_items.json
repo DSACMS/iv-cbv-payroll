@@ -1,1 +1,126 @@
-{"next":"https://api-sandbox.argyle.com/v2/items?q\u0026cursor=cD1ORVhUJnM9NTAwNDM2NCZ1PVVTUFMmb3JkZXJpbmc9LXNjb3JlJmxpbWl0PTEw","previous":null,"results":[{"id":"item_000248659","name":"Amazon","kind":"employer","known_limitations":null,"status":"healthy","status_details":null,"mapping_status":"verified","logo_url":"https://res.cloudinary.com/argyle-media/image/upload/v1728915995/partner-logos/amazon.png","is_grouping":true,"matching_score":null},{"id":"item_000002102","name":"Amazon A to Z","kind":"employer","known_limitations":"Due to platform integration with myADP, myADP platform limitation is inherited and Historical Payouts data is limited to 3 years per employment.","status":"healthy","status_details":null,"mapping_status":"verified","logo_url":"https://res.cloudinary.com/argyle-media/image/upload/v1726049653/partner-logos/Amazon%20A%20to%20Z.png","is_grouping":false,"matching_score":null},{"id":"item_000002104","name":"Amazon Flex","kind":"gig","known_limitations":"Historical activity retrieval is limited to 2018-01-01.","status":"healthy","status_details":null,"mapping_status":"verified","logo_url":"https://res.cloudinary.com/argyle-media/image/upload/v1566985961/partner-logos/amazon_flex.png","is_grouping":false,"matching_score":null},{"id":"item_000012375","name":"DoorDash","kind":"gig","known_limitations":"Historical activity retrieval is limited to 2018-01-01, and the detailed task information is limited to 2022.","status":"healthy","status_details":null,"mapping_status":"verified","logo_url":"https://res.cloudinary.com/argyle-media/image/upload/v1739973927/partner-logos/doordash.png","is_grouping":false,"matching_score":null},{"id":"item_000017676","name":"Grubhub Drivers","kind":"gig","known_limitations":"Due to platform limitations, only 2 months of historical Gig data is available.","status":"healthy","status_details":null,"mapping_status":"verified","logo_url":"https://res.cloudinary.com/argyle-media/image/upload/v1657284184/partner-logos/grubhub.png","is_grouping":false,"matching_score":null},{"id":"item_000019016","name":"Home Depot","kind":"employer","known_limitations":null,"status":"healthy","status_details":null,"mapping_status":"verified","logo_url":"https://res.cloudinary.com/argyle-media/image/upload/v1698400914/partner-logos/Home%20Depot.png","is_grouping":false,"matching_score":null},{"id":"item_000020392","name":"Instacart Shopper","kind":"gig","known_limitations":"Due to the Instacart app’s lack of concurrent session support, when a user connects their Instacart account via Argyle Link or when Argyle re-scans a connected account, the user is signed out of the Instacart app. To reduce the chances of a user being signed out while using the app, Instacart accounts are re-scanned every 24 hours between 0600 and 1200 UTC.\nIn addition, Instacart prevents Direct Deposit updates for 60 minutes after a user connects their account. For this reason we recommend a two-stage user flow to perform a DDS update: 1) asking the user to connect their account, 2) 60+ minutes later prompting them to return to confirm their new DDS settings. During this interim users should not sign in to their Instacart account outside of Argyle Link.\nHistorical activity retrieval is limited to 2018-01-01.","status":"healthy","status_details":null,"mapping_status":"verified","logo_url":"https://res.cloudinary.com/argyle-media/image/upload/v1713529256/partner-logos/Instacart%20Shopper.png","is_grouping":false,"matching_score":null},{"id":"item_000024123","name":"Lyft Driver","kind":"gig","known_limitations":null,"status":"healthy","status_details":null,"mapping_status":"verified","logo_url":"https://res.cloudinary.com/argyle-media/image/upload/v1734954175/partner-logos/Lyft%20Driver.png","is_grouping":false,"matching_score":null},{"id":"item_000041078","name":"Uber Driver","kind":"gig","known_limitations":"Due to platform limitations:\nHistorical gig and paystub availability is restricted to 2 years.\nOnly the last 2 digits of SSN are provided.\nRental car-related data availability is limited.","status":"healthy","status_details":null,"mapping_status":"verified","logo_url":"https://res.cloudinary.com/argyle-media/image/upload/v1730994902/partner-logos/Uber%20Driver.png","is_grouping":false,"matching_score":null},{"id":"item_000041653","name":"USPS","kind":"employer","known_limitations":"After January 15, 2023, employees are required to perform a one-time reset to their Self-Service Profile (SSP) password and set up Multifactor Authentication (MFA) to access LiteBlue.\n\nDue to platform limitations, data refresh requires user re-authentication.\nDue to platform limitations, only the last 41 Paystubs are available. This corresponds to approximately 1.5 years of historical paystub information.","status":"healthy","status_details":null,"mapping_status":"verified","logo_url":"https://res.cloudinary.com/argyle-media/image/upload/v1713529235/partner-logos/usps.png","is_grouping":false,"matching_score":null}]}
+{
+    "next": "https://api-sandbox.argyle.com/v2/items?q&cursor=cD1ORVhUJnM9NTAwNDM2NCZ1PVVTUFMmb3JkZXJpbmc9LXNjb3JlJmxpbWl0PTEw",
+    "previous": null,
+    "results": [
+        {
+            "id": "item_000248659",
+            "name": "Amazon",
+            "kind": "employer",
+            "known_limitations": null,
+            "status": "healthy",
+            "status_details": null,
+            "mapping_status": "verified",
+            "logo_url": "https://res.cloudinary.com/argyle-media/image/upload/v1728915995/partner-logos/amazon.png",
+            "is_grouping": true,
+            "matching_score": null
+        },
+        {
+            "id": "item_000002102",
+            "name": "Amazon A to Z",
+            "kind": "employer",
+            "known_limitations": "Due to platform integration with myADP, myADP platform limitation is inherited and Historical Payouts data is limited to 3 years per employment.",
+            "status": "healthy",
+            "status_details": null,
+            "mapping_status": "verified",
+            "logo_url": "https://res.cloudinary.com/argyle-media/image/upload/v1726049653/partner-logos/Amazon%20A%20to%20Z.png",
+            "is_grouping": false,
+            "matching_score": null
+        },
+        {
+            "id": "item_000002104",
+            "name": "Amazon Flex",
+            "kind": "gig",
+            "known_limitations": "Historical activity retrieval is limited to 2018-01-01.",
+            "status": "healthy",
+            "status_details": null,
+            "mapping_status": "verified",
+            "logo_url": "https://res.cloudinary.com/argyle-media/image/upload/v1566985961/partner-logos/amazon_flex.png",
+            "is_grouping": false,
+            "matching_score": null
+        },
+        {
+            "id": "item_000012375",
+            "name": "DoorDash",
+            "kind": "gig",
+            "known_limitations": "Historical activity retrieval is limited to 2018-01-01, and the detailed task information is limited to 2022.",
+            "status": "healthy",
+            "status_details": null,
+            "mapping_status": "verified",
+            "logo_url": "https://res.cloudinary.com/argyle-media/image/upload/v1739973927/partner-logos/doordash.png",
+            "is_grouping": false,
+            "matching_score": null
+        },
+        {
+            "id": "item_000017676",
+            "name": "Grubhub Drivers",
+            "kind": "gig",
+            "known_limitations": "Due to platform limitations, only 2 months of historical Gig data is available.",
+            "status": "healthy",
+            "status_details": null,
+            "mapping_status": "verified",
+            "logo_url": "https://res.cloudinary.com/argyle-media/image/upload/v1657284184/partner-logos/grubhub.png",
+            "is_grouping": false,
+            "matching_score": null
+        },
+        {
+            "id": "item_000019016",
+            "name": "Home Depot",
+            "kind": "employer",
+            "known_limitations": null,
+            "status": "healthy",
+            "status_details": null,
+            "mapping_status": "verified",
+            "logo_url": "https://res.cloudinary.com/argyle-media/image/upload/v1698400914/partner-logos/Home%20Depot.png",
+            "is_grouping": false,
+            "matching_score": null
+        },
+        {
+            "id": "item_000020392",
+            "name": "Instacart Shopper",
+            "kind": "gig",
+            "known_limitations": "Due to the Instacart app’s lack of concurrent session support, when a user connects their Instacart account via Argyle Link or when Argyle re-scans a connected account, the user is signed out of the Instacart app. To reduce the chances of a user being signed out while using the app, Instacart accounts are re-scanned every 24 hours between 0600 and 1200 UTC.\nIn addition, Instacart prevents Direct Deposit updates for 60 minutes after a user connects their account. For this reason we recommend a two-stage user flow to perform a DDS update: 1) asking the user to connect their account, 2) 60+ minutes later prompting them to return to confirm their new DDS settings. During this interim users should not sign in to their Instacart account outside of Argyle Link.\nHistorical activity retrieval is limited to 2018-01-01.",
+            "status": "healthy",
+            "status_details": null,
+            "mapping_status": "verified",
+            "logo_url": "https://res.cloudinary.com/argyle-media/image/upload/v1713529256/partner-logos/Instacart%20Shopper.png",
+            "is_grouping": false,
+            "matching_score": null
+        },
+        {
+            "id": "item_000024123",
+            "name": "Lyft Driver",
+            "kind": "gig",
+            "known_limitations": null,
+            "status": "healthy",
+            "status_details": null,
+            "mapping_status": "verified",
+            "logo_url": "https://res.cloudinary.com/argyle-media/image/upload/v1734954175/partner-logos/Lyft%20Driver.png",
+            "is_grouping": false,
+            "matching_score": null
+        },
+        {
+            "id": "item_000041078",
+            "name": "Uber Driver",
+            "kind": "gig",
+            "known_limitations": "Due to platform limitations:\nHistorical gig and paystub availability is restricted to 2 years.\nOnly the last 2 digits of SSN are provided.\nRental car-related data availability is limited.",
+            "status": "healthy",
+            "status_details": null,
+            "mapping_status": "verified",
+            "logo_url": "https://res.cloudinary.com/argyle-media/image/upload/v1730994902/partner-logos/Uber%20Driver.png",
+            "is_grouping": false,
+            "matching_score": null
+        },
+        {
+            "id": "item_000041653",
+            "name": "USPS",
+            "kind": "employer",
+            "known_limitations": "After January 15, 2023, employees are required to perform a one-time reset to their Self-Service Profile (SSP) password and set up Multifactor Authentication (MFA) to access LiteBlue.\n\nDue to platform limitations, data refresh requires user re-authentication.\nDue to platform limitations, only the last 41 Paystubs are available. This corresponds to approximately 1.5 years of historical paystub information.",
+            "status": "healthy",
+            "status_details": null,
+            "mapping_status": "verified",
+            "logo_url": "https://res.cloudinary.com/argyle-media/image/upload/v1713529235/partner-logos/usps.png",
+            "is_grouping": false,
+            "matching_score": null
+        }
+    ]
+}

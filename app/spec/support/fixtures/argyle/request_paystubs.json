@@ -1,0 +1,703 @@
+{
+    "results": [
+        {
+            "id": "c7f88cf2-5267-37a9-9d78-b2f9dd942a2e",
+            "account": "01954440-8c8b-cd52-4a1f-f7aa07d136ed",
+            "payroll_document": null,
+            "deduction_list": [],
+            "filing_status": [],
+            "tax_list": [],
+            "status": "completed",
+            "paystub_date": "2025-02-24T00:00:00Z",
+            "paystub_period": {
+                "start_date": null,
+                "end_date": null
+            },
+            "currency": "USD",
+            "gross_pay": "19.53",
+            "deductions": null,
+            "taxes": null,
+            "net_pay": "19.53",
+            "reimbursements": null,
+            "hours": null,
+            "fees": null,
+            "net_pay_ytd": "429.15",
+            "gross_pay_ytd": "429.15",
+            "metadata": {},
+            "employer": "Uber Driver",
+            "employer_address": null,
+            "created_at": "2025-02-26T21:56:26.219Z",
+            "updated_at": "2025-02-26T21:56:26.219Z",
+            "destinations": [],
+            "hours_ytd": "0.00",
+            "deductions_ytd": "0.00",
+            "taxes_ytd": "0.00",
+            "gross_pay_list": [],
+            "gross_pay_list_totals": null,
+            "employment": "26396fa4-6213-39a6-902a-f9a85d26db4d"
+        },
+        {
+            "id": "b2c1d851-e1e0-33d4-bbfa-2e3868979361",
+            "account": "01954449-1753-b8b9-8cd9-77b4be11db19",
+            "payroll_document": null,
+            "deduction_list": [],
+            "filing_status": [],
+            "tax_list": [],
+            "status": "completed",
+            "paystub_date": "2025-02-20T00:00:00Z",
+            "paystub_period": {
+                "start_date": null,
+                "end_date": null
+            },
+            "currency": "USD",
+            "gross_pay": "36.33",
+            "deductions": null,
+            "taxes": null,
+            "net_pay": "36.33",
+            "reimbursements": null,
+            "hours": null,
+            "fees": null,
+            "net_pay_ytd": "369.77",
+            "gross_pay_ytd": "369.77",
+            "metadata": {},
+            "employer": "Lyft Driver",
+            "employer_address": null,
+            "created_at": "2025-02-26T22:03:41.088Z",
+            "updated_at": "2025-02-26T22:03:41.088Z",
+            "destinations": [],
+            "hours_ytd": "0.00",
+            "deductions_ytd": "0.00",
+            "taxes_ytd": "0.00",
+            "gross_pay_list": [],
+            "gross_pay_list_totals": null,
+            "employment": "31188b69-703a-3d6e-b6f6-24073ca84263"
+        },
+        {
+            "id": "14251c2b-ccaf-3c22-a093-cea40a3c0b18",
+            "account": "019539bc-f99a-54df-bf3a-1b44eda07475",
+            "payroll_document": "019539bd-3daa-2fc2-b78c-03634c3b8b3f",
+            "deduction_list": [
+                {
+                    "amount": "11.93",
+                    "name": "Dental",
+                    "tax_classification": null,
+                    "amount_ytd": "95.43"
+                },
+                {
+                    "amount": "23.86",
+                    "name": "Vision",
+                    "tax_classification": "pre_tax",
+                    "amount_ytd": "23.86"
+                }
+            ],
+            "filing_status": [
+                {
+                    "type": "federal",
+                    "location": null,
+                    "status": "married filing separately"
+                },
+                {
+                    "type": "state",
+                    "location": "NY",
+                    "status": "single"
+                }
+            ],
+            "tax_list": [
+                {
+                    "amount": "83.50",
+                    "name": "OASDI",
+                    "type": "fica",
+                    "amount_ytd": "298.22"
+                },
+                {
+                    "amount": "131.22",
+                    "name": "CA State Income Tax",
+                    "type": "state",
+                    "amount_ytd": "381.73"
+                }
+            ],
+            "status": "completed",
+            "paystub_date": "2025-02-17T00:00:00Z",
+            "paystub_period": {
+                "start_date": "2025-01-30T00:00:00Z",
+                "end_date": "2025-02-13T00:00:00Z"
+            },
+            "currency": "USD",
+            "gross_pay": "1192.87",
+            "deductions": "35.79",
+            "taxes": "214.72",
+            "net_pay": "942.36",
+            "reimbursements": "0.00",
+            "hours": "36.97",
+            "fees": null,
+            "net_pay_ytd": "3666.17",
+            "gross_pay_ytd": "4863.81",
+            "metadata": {},
+            "employer": "Accenture",
+            "employer_address": {
+                "city": "Seattle",
+                "state": "WA",
+                "country": "US",
+                "postal_code": "98109",
+                "line1": "202 Westlake Ave N",
+                "line2": null
+            },
+            "created_at": "2025-02-24T20:54:18.427Z",
+            "updated_at": "2025-02-24T20:54:18.427Z",
+            "destinations": [],
+            "hours_ytd": "273.07",
+            "deductions_ytd": "250.50",
+            "taxes_ytd": "954.31",
+            "gross_pay_list": [
+                {
+                    "name": "Regular",
+                    "type": "base",
+                    "start_date": "2025-01-30",
+                    "end_date": "2025-02-13",
+                    "rate": "32.2696",
+                    "hours": "36.9657",
+                    "amount": "1192.87",
+                    "hours_ytd": "273.0700",
+                    "amount_ytd": "4771.48"
+                },
+                {
+                    "name": "Commission",
+                    "type": "commission",
+                    "start_date": null,
+                    "end_date": null,
+                    "rate": null,
+                    "hours": null,
+                    "amount": null,
+                    "hours_ytd": null,
+                    "amount_ytd": "92.33"
+                }
+            ],
+            "gross_pay_list_totals": {
+                "base": {
+                    "amount": "1192.87",
+                    "amount_ytd": "4771.48",
+                    "hours": "36.9657",
+                    "hours_ytd": "273.0700",
+                    "rate_implied": "32.2700",
+                    "rate_implied_ytd": "17.4700"
+                },
+                "overtime": null,
+                "commission": {
+                    "amount": null,
+                    "amount_ytd": "92.33",
+                    "hours": null,
+                    "hours_ytd": null,
+                    "rate_implied": null,
+                    "rate_implied_ytd": null
+                },
+                "bonus": null,
+                "other": null
+            },
+            "employment": "b528a78b-152a-3bc3-a5b8-44a03c0b2ddc"
+        },
+        {
+            "id": "461baf58-3383-3958-b4c9-adb25abb118d",
+            "account": "01954423-a310-c7f7-1cf5-744f0033821f",
+            "payroll_document": "01954423-fd40-3c8a-8f4d-52f1b15aecae",
+            "deduction_list": [
+                {
+                    "amount": "20.55",
+                    "name": "Vision",
+                    "tax_classification": "pre_tax",
+                    "amount_ytd": "20.55"
+                },
+                {
+                    "amount": "82.19",
+                    "name": "Dental",
+                    "tax_classification": null,
+                    "amount_ytd": "143.84"
+                },
+                {
+                    "amount": "61.65",
+                    "name": "Dental",
+                    "tax_classification": null,
+                    "amount_ytd": "205.49"
+                }
+            ],
+            "filing_status": [
+                {
+                    "type": "federal",
+                    "location": null,
+                    "status": "married filing separately"
+                },
+                {
+                    "type": "local",
+                    "location": "New York",
+                    "status": "single"
+                }
+            ],
+            "tax_list": [
+                {
+                    "amount": "164.39",
+                    "name": "OASDI",
+                    "type": "fica",
+                    "amount_ytd": "575.36"
+                }
+            ],
+            "status": "completed",
+            "paystub_date": "2025-02-17T00:00:00Z",
+            "paystub_period": {
+                "start_date": "2025-01-26T00:00:00Z",
+                "end_date": "2025-02-09T00:00:00Z"
+            },
+            "currency": "USD",
+            "gross_pay": "2054.85",
+            "deductions": "164.39",
+            "taxes": "164.39",
+            "net_pay": "1726.07",
+            "reimbursements": "0.00",
+            "hours": "47.19",
+            "fees": null,
+            "net_pay_ytd": "6356.83",
+            "gross_pay_ytd": "8219.40",
+            "metadata": {},
+            "employer": "ACME",
+            "employer_address": {
+                "city": "Seattle",
+                "state": "WA",
+                "country": "US",
+                "postal_code": "98109",
+                "line1": "202 Westlake Ave N",
+                "line2": null
+            },
+            "created_at": "2025-02-26T21:22:44.290Z",
+            "updated_at": "2025-02-26T21:22:44.290Z",
+            "destinations": [],
+            "hours_ytd": "233.61",
+            "deductions_ytd": "410.98",
+            "taxes_ytd": "1458.95",
+            "gross_pay_list": [
+                {
+                    "name": "Regular",
+                    "type": "base",
+                    "start_date": "2025-01-26",
+                    "end_date": "2025-02-09",
+                    "rate": "43.5471",
+                    "hours": "47.1868",
+                    "amount": "2054.85",
+                    "hours_ytd": "233.6100",
+                    "amount_ytd": "8219.40"
+                }
+            ],
+            "gross_pay_list_totals": {
+                "base": {
+                    "amount": "2054.85",
+                    "amount_ytd": "8219.40",
+                    "hours": "47.1868",
+                    "hours_ytd": "233.6100",
+                    "rate_implied": "43.5500",
+                    "rate_implied_ytd": "35.1800"
+                },
+                "overtime": null,
+                "commission": null,
+                "bonus": null,
+                "other": null
+            },
+            "employment": "1932bc3e-687f-36d4-94ce-3b576ad0967e"
+        },
+        {
+            "id": "999de8a4-2662-3a61-be0c-9c2544a91e5f",
+            "account": "0195435d-6b2a-548c-306d-007f609cfadd",
+            "payroll_document": "0195435d-baeb-b1eb-2f23-fae0300e6126",
+            "deduction_list": [
+                {
+                    "amount": "64.71",
+                    "name": "Roth",
+                    "tax_classification": "post_tax",
+                    "amount_ytd": "97.06"
+                },
+                {
+                    "amount": "64.71",
+                    "name": "Roth",
+                    "tax_classification": "post_tax",
+                    "amount_ytd": "161.77"
+                }
+            ],
+            "filing_status": [
+                {
+                    "type": "federal",
+                    "location": null,
+                    "status": "married filing separately"
+                }
+            ],
+            "tax_list": [
+                {
+                    "amount": "323.54",
+                    "name": "Federal Income Tax",
+                    "type": "federal",
+                    "amount_ytd": "647.08"
+                }
+            ],
+            "status": "completed",
+            "paystub_date": "2025-02-17T00:00:00Z",
+            "paystub_period": {
+                "start_date": "2025-01-28T00:00:00Z",
+                "end_date": "2025-02-11T00:00:00Z"
+            },
+            "currency": "USD",
+            "gross_pay": "3617.52",
+            "deductions": "129.42",
+            "taxes": "323.54",
+            "net_pay": "3169.56",
+            "reimbursements": "5.00",
+            "hours": "47.84",
+            "fees": null,
+            "net_pay_ytd": "11167.61",
+            "gross_pay_ytd": "13323.66",
+            "metadata": {},
+            "employer": "ACM LLC",
+            "employer_address": {
+                "city": "Seattle",
+                "state": "WA",
+                "country": "US",
+                "postal_code": "98109",
+                "line1": "202 Westlake Ave N",
+                "line2": null
+            },
+            "created_at": "2025-02-26T17:46:11.338Z",
+            "updated_at": "2025-02-26T17:46:11.338Z",
+            "destinations": [],
+            "hours_ytd": "252.99",
+            "deductions_ytd": "355.89",
+            "taxes_ytd": "1811.82",
+            "gross_pay_list": [
+                {
+                    "name": "Regular",
+                    "type": "base",
+                    "start_date": "2025-01-28",
+                    "end_date": "2025-02-11",
+                    "rate": "67.6280",
+                    "hours": "47.8408",
+                    "amount": "3235.38",
+                    "hours_ytd": "252.9900",
+                    "amount_ytd": "12941.52"
+                },
+                {
+                    "name": "Commission",
+                    "type": "commission",
+                    "start_date": "2025-02-05",
+                    "end_date": "2025-02-06",
+                    "rate": null,
+                    "hours": null,
+                    "amount": "382.14",
+                    "hours_ytd": null,
+                    "amount_ytd": "382.14"
+                }
+            ],
+            "gross_pay_list_totals": {
+                "base": {
+                    "amount": "3235.38",
+                    "amount_ytd": "12941.52",
+                    "hours": "47.8408",
+                    "hours_ytd": "252.9900",
+                    "rate_implied": "67.6300",
+                    "rate_implied_ytd": "51.1500"
+                },
+                "overtime": null,
+                "commission": {
+                    "amount": "382.14",
+                    "amount_ytd": "382.14",
+                    "hours": null,
+                    "hours_ytd": null,
+                    "rate_implied": null,
+                    "rate_implied_ytd": null
+                },
+                "bonus": null,
+                "other": null
+            },
+            "employment": "5c05c7a3-8281-31d2-ae83-699099ca45d6"
+        },
+        {
+            "id": "a87f5acb-c7d3-3c33-89f5-f168910b9f58",
+            "account": "019539d9-25f1-6077-f204-ada14bd6b914",
+            "payroll_document": "019539d9-5867-9c2b-df9b-aaa347ba1526",
+            "deduction_list": [
+                {
+                    "amount": "33.75",
+                    "name": "401K",
+                    "tax_classification": "pre_tax",
+                    "amount_ytd": "50.95"
+                },
+                {
+                    "amount": "45.00",
+                    "name": "Vision",
+                    "tax_classification": "pre_tax",
+                    "amount_ytd": "72.44"
+                }
+            ],
+            "filing_status": [
+                {
+                    "type": "federal",
+                    "location": null,
+                    "status": "married filing separately"
+                }
+            ],
+            "tax_list": [
+                {
+                    "amount": "135.00",
+                    "name": "Social Security Tax",
+                    "type": "fica",
+                    "amount_ytd": "272.57"
+                }
+            ],
+            "status": "completed",
+            "paystub_date": "2025-02-17T00:00:00Z",
+            "paystub_period": {
+                "start_date": "2025-01-29T00:00:00Z",
+                "end_date": "2025-02-17T00:00:00Z"
+            },
+            "currency": "USD",
+            "gross_pay": "1222.43",
+            "deductions": "78.75",
+            "taxes": "135.00",
+            "net_pay": "1008.68",
+            "reimbursements": "0.00",
+            "hours": "46.13",
+            "fees": null,
+            "net_pay_ytd": "4883.01",
+            "gross_pay_ytd": "6145.24",
+            "metadata": {},
+            "employer": "Accenture",
+            "employer_address": {
+                "city": "Seattle",
+                "state": "WA",
+                "country": "US",
+                "postal_code": "98109",
+                "line1": "202 Westlake Ave N",
+                "line2": null
+            },
+            "created_at": "2025-02-24T21:25:00.243Z",
+            "updated_at": "2025-02-24T21:25:00.243Z",
+            "destinations": [],
+            "hours_ytd": "243.50",
+            "deductions_ytd": "257.57",
+            "taxes_ytd": "1014.46",
+            "gross_pay_list": [
+                {
+                    "name": "Regular",
+                    "type": "base",
+                    "start_date": "2025-01-29",
+                    "end_date": "2025-02-17",
+                    "rate": "24.3900",
+                    "hours": "46.1271",
+                    "amount": "1125.04",
+                    "hours_ytd": "243.5000",
+                    "amount_ytd": "5938.99"
+                },
+                {
+                    "name": "Bonus",
+                    "type": "bonus",
+                    "start_date": "2025-02-16",
+                    "end_date": "2025-02-16",
+                    "rate": null,
+                    "hours": null,
+                    "amount": "13.54",
+                    "hours_ytd": null,
+                    "amount_ytd": "13.54"
+                },
+                {
+                    "name": "Incentive",
+                    "type": "bonus",
+                    "start_date": "2025-02-11",
+                    "end_date": "2025-02-11",
+                    "rate": null,
+                    "hours": null,
+                    "amount": "83.85",
+                    "hours_ytd": null,
+                    "amount_ytd": "83.85"
+                },
+                {
+                    "name": "Commission",
+                    "type": "commission",
+                    "start_date": null,
+                    "end_date": null,
+                    "rate": null,
+                    "hours": null,
+                    "amount": null,
+                    "hours_ytd": null,
+                    "amount_ytd": "108.86"
+                }
+            ],
+            "gross_pay_list_totals": {
+                "base": {
+                    "amount": "1125.04",
+                    "amount_ytd": "5938.99",
+                    "hours": "46.1271",
+                    "hours_ytd": "243.5000",
+                    "rate_implied": "24.3900",
+                    "rate_implied_ytd": "24.3900"
+                },
+                "overtime": null,
+                "commission": {
+                    "amount": null,
+                    "amount_ytd": "108.86",
+                    "hours": null,
+                    "hours_ytd": null,
+                    "rate_implied": null,
+                    "rate_implied_ytd": null
+                },
+                "bonus": {
+                    "amount": "97.39",
+                    "amount_ytd": "97.39",
+                    "hours": null,
+                    "hours_ytd": null,
+                    "rate_implied": null,
+                    "rate_implied_ytd": null
+                },
+                "other": null
+            },
+            "employment": "52615d3b-1ff6-3fe3-9165-25986cd5645a"
+        },
+        {
+            "id": "f92d0a1c-28fc-3d6b-878c-aed569b0e9df",
+            "account": "01954440-8c8b-cd52-4a1f-f7aa07d136ed",
+            "payroll_document": null,
+            "deduction_list": [],
+            "filing_status": [],
+            "tax_list": [],
+            "status": "completed",
+            "paystub_date": "2025-02-17T00:00:00Z",
+            "paystub_period": {
+                "start_date": null,
+                "end_date": null
+            },
+            "currency": "USD",
+            "gross_pay": "59.62",
+            "deductions": null,
+            "taxes": null,
+            "net_pay": "59.62",
+            "reimbursements": null,
+            "hours": null,
+            "fees": null,
+            "net_pay_ytd": "409.62",
+            "gross_pay_ytd": "409.62",
+            "metadata": {},
+            "employer": "Uber Driver",
+            "employer_address": null,
+            "created_at": "2025-02-26T21:56:26.188Z",
+            "updated_at": "2025-02-26T21:56:26.188Z",
+            "destinations": [],
+            "hours_ytd": "0.00",
+            "deductions_ytd": "0.00",
+            "taxes_ytd": "0.00",
+            "gross_pay_list": [],
+            "gross_pay_list_totals": null,
+            "employment": "26396fa4-6213-39a6-902a-f9a85d26db4d"
+        },
+        {
+            "id": "bbdbd350-643c-377f-adfe-eb73feecaf18",
+            "account": "01954449-1753-b8b9-8cd9-77b4be11db19",
+            "payroll_document": null,
+            "deduction_list": [],
+            "filing_status": [],
+            "tax_list": [],
+            "status": "completed",
+            "paystub_date": "2025-02-13T00:00:00Z",
+            "paystub_period": {
+                "start_date": null,
+                "end_date": null
+            },
+            "currency": "USD",
+            "gross_pay": "66.49",
+            "deductions": null,
+            "taxes": null,
+            "net_pay": "66.49",
+            "reimbursements": null,
+            "hours": null,
+            "fees": null,
+            "net_pay_ytd": "333.44",
+            "gross_pay_ytd": "333.44",
+            "metadata": {},
+            "employer": "Lyft Driver",
+            "employer_address": null,
+            "created_at": "2025-02-26T22:03:41.126Z",
+            "updated_at": "2025-02-26T22:03:41.126Z",
+            "destinations": [],
+            "hours_ytd": "0.00",
+            "deductions_ytd": "0.00",
+            "taxes_ytd": "0.00",
+            "gross_pay_list": [],
+            "gross_pay_list_totals": null,
+            "employment": "31188b69-703a-3d6e-b6f6-24073ca84263"
+        },
+        {
+            "id": "4d73d910-a1b6-3cab-aaa0-99f9b8c53321",
+            "account": "01954440-8c8b-cd52-4a1f-f7aa07d136ed",
+            "payroll_document": null,
+            "deduction_list": [],
+            "filing_status": [],
+            "tax_list": [],
+            "status": "completed",
+            "paystub_date": "2025-02-10T00:00:00Z",
+            "paystub_period": {
+                "start_date": null,
+                "end_date": null
+            },
+            "currency": "USD",
+            "gross_pay": "82.91",
+            "deductions": null,
+            "taxes": null,
+            "net_pay": "82.91",
+            "reimbursements": null,
+            "hours": null,
+            "fees": null,
+            "net_pay_ytd": "350.00",
+            "gross_pay_ytd": "350.00",
+            "metadata": {},
+            "employer": "Uber Driver",
+            "employer_address": null,
+            "created_at": "2025-02-26T21:56:26.204Z",
+            "updated_at": "2025-02-26T21:56:26.204Z",
+            "destinations": [],
+            "hours_ytd": "0.00",
+            "deductions_ytd": "0.00",
+            "taxes_ytd": "0.00",
+            "gross_pay_list": [],
+            "gross_pay_list_totals": null,
+            "employment": "26396fa4-6213-39a6-902a-f9a85d26db4d"
+        },
+        {
+            "id": "80130ab0-4338-3f0c-8d59-af68d9b09bac",
+            "account": "01954449-1753-b8b9-8cd9-77b4be11db19",
+            "payroll_document": null,
+            "deduction_list": [],
+            "filing_status": [],
+            "tax_list": [],
+            "status": "completed",
+            "paystub_date": "2025-02-06T00:00:00Z",
+            "paystub_period": {
+                "start_date": null,
+                "end_date": null
+            },
+            "currency": "USD",
+            "gross_pay": "11.21",
+            "deductions": null,
+            "taxes": null,
+            "net_pay": "11.21",
+            "reimbursements": null,
+            "hours": null,
+            "fees": null,
+            "net_pay_ytd": "266.95",
+            "gross_pay_ytd": "266.95",
+            "metadata": {},
+            "employer": "Lyft Driver",
+            "employer_address": null,
+            "created_at": "2025-02-26T22:03:41.144Z",
+            "updated_at": "2025-02-26T22:03:41.144Z",
+            "destinations": [],
+            "hours_ytd": "0.00",
+            "deductions_ytd": "0.00",
+            "taxes_ytd": "0.00",
+            "gross_pay_list": [],
+            "gross_pay_list_totals": null,
+            "employment": "31188b69-703a-3d6e-b6f6-24073ca84263"
+        }
+    ],
+    "next": "https://api-sandbox.argyle.com/v2/paystubs?cursor=Y2xpZW50SWQ9MDE4ZjA4MzQtZDY5YS04NzliLTA1Y2ItZGRkZTAzMzAyNGYwJmludmVyc2VTb3J0PWZhbHNlJmxpbWl0PTEwJnJvd0tleT1TJTIzQyUyMzAxOGYwODM0LWQ2OWEtODc5Yi0wNWNiLWRkZGUwMzMwMjRmMCUyMzQ2MTE2ODQyNzk4ODY1ODc5MDMlMjMxNjZhMDkzNy03ZTU2LTM3YzctODZmYy1iNDFlNWM1MDViOTE%3D",
+    "previous": null
+}

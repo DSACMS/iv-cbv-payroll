@@ -11,7 +11,18 @@ RSpec.describe ArgyleService, type: :service do
     end
 
     it 'returns a non-empty response' do
-      response = service.items('test') 
+      response = service.items('test')
+      expect(response).not_to be_empty
+    end
+  end
+
+  describe '#fetch_paystubs' do
+    before do
+      stub_request_paystubs_response
+    end
+
+    it 'returns a non-empty response' do
+      response = service.fetch_paystubs(account_id: end_user_id)
       expect(response).not_to be_empty
     end
   end
