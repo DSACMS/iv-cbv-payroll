@@ -553,7 +553,6 @@ DEPENDENCIES
   pg-aws_rds_iam (~> 0.5.0)
   premailer-rails
   puma (~> 6.4.3)
-  rack (>= 2.2.12)
   rack-mini-profiler
   rails (~> 7.1.5, >= 7.1.5.1)
   rails-controller-testing
