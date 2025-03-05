@@ -84,7 +84,6 @@ group :development, :test do
   gem "debug", platforms: %i[mri mingw x64_mingw]
   gem "dotenv-rails", "~> 2.7"
   gem "erb_lint", require: false
-  gem "faker"
   gem "i18n-tasks", "~> 1.0", require: false
   gem "rspec-rails", "~> 6.1"
   gem "rubocop"
