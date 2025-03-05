@@ -70,6 +70,7 @@ gem "stackprof"
 
 # https://www.ruby-lang.org/en/news/2024/08/01/dos-rexml-cve-2024-41123/
 gem "rexml", "~> 3.3.9"
+gem "rack", ">= 2.2.12"  # Fixing GHSA-8cgq-6mh2-7j6v
 gem "gpgme", "~> 2.0", ">= 2.0.12"
 gem "pdf-reader", "~> 2.12.0"
 gem "net-imap", "0.4.19"  # Fixing CVE-2025-25186
