@@ -4,11 +4,19 @@ export default class extends Controller {
   static targets = ["modal"];
 
   timeoutValue;
+  originalPinwheelZIndex;
 
   connect() {
     console.log("Session controller connected");
     this.timeoutValue = parseInt(this.modalTarget.dataset.itemTimeoutParam);
     this.setupTimers();
+    
+    // Add event listeners for modal open/close
+    document.getElementById("open-session-modal-button").addEventListener("click", this.handleModalOpen.bind(this));
+    const closeButtons = document.querySelectorAll("[data-close-modal]");
+    closeButtons.forEach(button => {
+      button.addEventListener("click", this.handleModalClose.bind(this));
+    });
   }
 
   setupTimers() {
@@ -31,6 +39,28 @@ export default class extends Controller {
     }, expirationDelay);
   }
 
+  handleModalOpen() {
+    // Find the pinwheel portal if it exists
+    const pinwheelPortal = document.querySelector(".pinwheel-portal");
+    if (pinwheelPortal) {
+      // Store the original z-index
+      this.originalPinwheelZIndex = pinwheelPortal.style.zIndex || getComputedStyle(pinwheelPortal).zIndex;
+      
+      // Set a very low z-index to ensure it's below the session timeout modal
+      pinwheelPortal.style.zIndex = "0";
+      console.log("Pinwheel portal z-index set to 0");
+    }
+  }
+
+  handleModalClose() {
+    // Restore the original z-index when the session modal is closed
+    const pinwheelPortal = document.querySelector(".pinwheel-portal");
+    if (pinwheelPortal && this.originalPinwheelZIndex) {
+      pinwheelPortal.style.zIndex = this.originalPinwheelZIndex;
+      console.log("Pinwheel portal z-index restored to", this.originalPinwheelZIndex);
+    }
+  }
+
   /*
    reset the timers when the session is extended
    see _timeout_modal.html.erb for the button that triggers this
@@ -43,5 +73,12 @@ export default class extends Controller {
     console.log("Session controller disconnected");
     if (this.warningTimer) clearTimeout(this.warningTimer);
     if (this.expirationTimer) clearTimeout(this.expirationTimer);
+    
+    // Remove event listeners
+    document.getElementById("open-session-modal-button")?.removeEventListener("click", this.handleModalOpen);
+    const closeButtons = document.querySelectorAll("[data-close-modal]");
+    closeButtons.forEach(button => {
+      button.removeEventListener("click", this.handleModalClose);
+    });
   }
 }
