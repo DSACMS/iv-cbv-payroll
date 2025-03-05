@@ -21,7 +21,6 @@ class CbvFlowInvitation < ApplicationRecord
   accepts_nested_attributes_for :cbv_applicant
 
   before_validation :normalize_language
-  before_create :copy_fields_back_from_cbv_applicant
 
   validates :client_agency_id, inclusion: Rails.application.config.client_agencies.client_agency_ids
   validates :email_address, format: { with: EMAIL_REGEX, message: :invalid_format }
@@ -34,36 +33,11 @@ class CbvFlowInvitation < ApplicationRecord
 
   include Redactable
   has_redactable_fields(
-    first_name: :string,
-    middle_name: :string,
-    last_name: :string,
-    client_id_number: :string,
-    case_number: :string,
-    agency_id_number: :string,
-    beacon_id: :string,
     email_address: :email,
-    snap_application_date: :date,
     auth_token: :string
   )
 
   scope :unstarted, -> { left_outer_joins(:cbv_flows).where(cbv_flows: { id: nil }) }
-
-  # Temporarily copy fields back to the invitation so we can not violate the
-  # NOT NULL constraints until we delete these columns.
-  def copy_fields_back_from_cbv_applicant
-    return unless cbv_applicant.present?
-
-    assign_attributes(
-      first_name: cbv_applicant.first_name,
-      middle_name: cbv_applicant.middle_name,
-      last_name: cbv_applicant.last_name,
-      client_id_number: cbv_applicant.client_id_number,
-      case_number: cbv_applicant.case_number,
-      agency_id_number: cbv_applicant.agency_id_number,
-      beacon_id: cbv_applicant.beacon_id,
-      snap_application_date: cbv_applicant.snap_application_date
-    )
-  end
 
   # Invitations are valid until 11:59pm Eastern Time on the (e.g.) 14th day
   # after sending the invitation.

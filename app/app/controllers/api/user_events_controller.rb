@@ -10,6 +10,14 @@ class Api::UserEventsController < ApplicationController
     PinwheelShowLoginPage
     PinwheelShowProviderConfirmationPage
     PinwheelSuccess
+    ArgyleSuccess
+    ArgyleAccountCreated
+    ArgyleAccountError
+    ArgyleAccountRemoved
+    ArgyleCloseModal
+    ArgyleError
+    ArgyleTokenExpired
+    ModalAdapterError
   ]
 
   # Maps Pinwheel event names (keys) to new Mixpanel event names (values) we're using
@@ -23,7 +31,15 @@ class Api::UserEventsController < ApplicationController
     "PinwheelShowDefaultProviderSearch" => "ApplicantViewedPinwheelDefaultProviderSearch",
     "PinwheelAttemptClose" => "ApplicantAttemptedClosingPinwheelModal",
     "PinwheelCloseModal" => "ApplicantClosedPinwheelModal",
-    "PinwheelAccountSyncFinished" => "ApplicantFinishedPinwheelSync"
+    "PinwheelAccountSyncFinished" => "ApplicantFinishedPinwheelSync",
+    "ArgyleSuccess" => "ApplicantSucceededWithArgyleLogin",
+    "ArgyleAccountCreated" => "ApplicantCreatedArgyleAccount",
+    "ArgyleAccountError" => "ApplicantEncounteredArgyleAccountError",
+    "ArgyleAccountRemoved" => "ApplicantRemovedArgyleAccount",
+    "ArgyleCloseModal" => "ApplicantClosedArgyleModal",
+    "ArgyleError" => "ApplicantEncounteredArgyleError",
+    "ArgyleTokenExpired" => "ApplicantEncounteredArgyleTokenExpired",
+    "ModalAdapterError" => "ApplicantEncounteredModalAdapterError"
   }
 
   def user_action

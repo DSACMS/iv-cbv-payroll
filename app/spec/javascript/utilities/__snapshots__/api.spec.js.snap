@@ -1,8 +1,8 @@
 // Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
-exports[`fetchToken > has expected request body 1`] = `"{"response_type":"response_type","id":"id","locale":"en"}"`;
+exports[`fetchPinwheelToken > has expected request body 1`] = `"{"response_type":"response_type","id":"id","locale":"en"}"`;
 
-exports[`fetchToken > has expected response payload 1`] = `"token-response"`;
+exports[`fetchPinwheelToken > has expected response payload 1`] = `"token-response"`;
 
 exports[`trackUserAction > has expected request body 1`] = `"{"events":{"event_name":"MockEventType","attributes":{}}}"`;
 

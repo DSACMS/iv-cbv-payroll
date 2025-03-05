@@ -47,14 +47,15 @@ RSpec.describe Caseworker::CbvFlowInvitationsController, type: :controller do
       }
       expect(response).to have_http_status(:found)
 
-      invitation = CbvFlowInvitation.all.last
-      expect(invitation.first_name).to eq("Jane")
-      expect(invitation.middle_name).to eq("Sue")
-      expect(invitation.last_name).to eq("Doe")
-      expect(invitation.agency_id_number).to eq(cbv_flow_invitation_params[:cbv_applicant_attributes][:agency_id_number])
+      invitation = CbvFlowInvitation.last
+      applicant = invitation.cbv_applicant
+      expect(applicant.first_name).to eq("Jane")
+      expect(applicant.middle_name).to eq("Sue")
+      expect(applicant.last_name).to eq("Doe")
+      expect(applicant.agency_id_number).to eq(cbv_flow_invitation_params[:cbv_applicant_attributes][:agency_id_number])
       expect(invitation.email_address).to eq("test@example.com")
-      expect(invitation.snap_application_date).to eq(Date.yesterday)
-      expect(invitation.beacon_id).to eq(cbv_flow_invitation_params[:cbv_applicant_attributes][:beacon_id])
+      expect(applicant.snap_application_date).to eq(Date.yesterday)
+      expect(applicant.beacon_id).to eq(cbv_flow_invitation_params[:cbv_applicant_attributes][:beacon_id])
     end
 
     it "requires the ma fields" do

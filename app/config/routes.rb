@@ -67,6 +67,10 @@ Rails.application.routes.draw do
       post "/tokens" => "pinwheel#create_token"
     end
 
+    scope :argyle do
+      post "/tokens" => "argyle#create"
+    end
+
     scope :events do
       post :user_action, to: "user_events#user_action"
     end
