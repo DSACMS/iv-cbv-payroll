@@ -9,10 +9,10 @@ class MixpanelEventTracker
 
   def track(event_type, request, attributes = {})
     distinct_id = ""
-    tracker_attrs =  { }
+    tracker_attrs =  {}
     flow_id = attributes.fetch(:cbv_flow_id, "")
-    tracker_attrs = {cbv_flow_id: flow_id} if flow_id.present?
-    
+    tracker_attrs = { cbv_flow_id: flow_id } if flow_id.present?
+
     if request.present?
       tracker_attrs.merge!({ "$ip": request.remote_ip })
     end
