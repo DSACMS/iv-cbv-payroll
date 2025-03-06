@@ -316,6 +316,8 @@ en:
         page_header: Submit your income report
         share_report_button: Share my report with %{agency_acronym}
         warning: Your income report will be attached to your SNAP application.<br>You must check the legal agreement box to share your report.
+      update:
+        consent_to_authorize_warning: Please check the legal agreement box to share your report.
     successes:
       show:
         back_to_agency: Go to %{agency_short_name} website
@@ -388,8 +390,6 @@ en:
         total_income_from_no_employer_name: 'Total income before taxes: %{amount}'
         total_payments: 'Total income from past 90 days, before taxes: %{amount}'
         total_payments_desc: This is the total gross income from your job(s) before taxes, benefits, and deductions were taken out.
-      update:
-        consent_to_authorize_warning: Please check the legal agreement box to share your report.
     synchronization_failures:
       show:
         back_to_search: Back to employer search
