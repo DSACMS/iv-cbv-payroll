@@ -48,6 +48,7 @@ class Cbv::SummariesController < Cbv::BaseController
 
   def update
     unless has_consent
+      @cbv_flow.errors.add(:consent_to_authorized_use, :blank, message: "Please check the legal agreement box to share your report.")
       return redirect_to(cbv_flow_submit_path, flash: { alert: t(".consent_to_authorize_warning") })
     end
 

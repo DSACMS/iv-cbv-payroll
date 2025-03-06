@@ -1,30 +1,29 @@
-<% title = "Submit your income report" %>
+<% title = t(".page_header") %>
 <% content_for :title, title %>
 <div class="grid-col tablet:grid-col-10">
 <h1><%= title %></h1>
 </div>
 
 <div class="usa-prose">
-  <p><%= "Your income report will be attached to your SNAP application." %></p>
-  <p><%= "You must check the legal agreement box to share your report." %></p>
+  <p><%= raw(t(".warning")) %></p>
 </div>
 
 <% if flash[:alert] %>
-  <h2><%= "Legal agreement" %></h2>
+  <h2><%= t(".legal_header") %></h2>
   <%= form_with model: @cbv_flow, url: cbv_flow_summary_path, html: { class: "usa-form maxw-full" }, builder: UswdsFormBuilder, method: "patch" do |f| %>
 
   <div class="usa-alert usa-alert--<%= flash[:alert_type] || "error" %>">
-    <%= f.check_box(:consent_to_authorized_use, { 'label': "Check this box to confirm that the information provided by you is true and complete to the best of your knowledge. You agree to inform [Agency Name] of any income not reflected in this report or any discrepancies found in the information gathered with this tool. You understand that providing accurate and complete information is your responsibility, and any false or omitted information may have legal consequences. For more information on your rights and responsibilities regarding private information you share with [Agency Name] please refer to the Rights and Responsibilities you signed at application, found on [Agency Website]. By sending this report, you authorize its use for income verification by [Agency Name] and authorized personnel."}) %>
+    <%= f.check_box(:consent_to_authorized_use, { 'label': raw(t(".consent_checkbox_label", agency_acronym: current_agency.agency_short_name))}) %>
   </div>
 
-  <%= f.submit "Share my report with [agency name]", class: "margin-top-5" %>
+  <%= f.submit t(".share_report_button", agency_acronym: current_agency.agency_short_name), class: "margin-top-5" %>
   <% end %>
 <% else %>
   <div class="usa-prose margin-y-5">
-    <h2><%= "Legal agreement" %></h2>
+    <h2><%= t(".legal_header") %></h2>
     <%= form_with model: @cbv_flow, url: cbv_flow_summary_path, html: { class: "usa-form maxw-full" }, builder: UswdsFormBuilder, method: "patch" do |f| %>
-    <%= f.check_box(:consent_to_authorized_use, { 'label': "Check this box to confirm that the information provided by you is true and complete to the best of your knowledge. You agree to inform [Agency Name] of any income not reflected in this report or any discrepancies found in the information gathered with this tool. You understand that providing accurate and complete information is your responsibility, and any false or omitted information may have legal consequences. For more information on your rights and responsibilities regarding private information you share with [Agency Name] please refer to the Rights and Responsibilities you signed at application, found on [Agency Website]. By sending this report, you authorize its use for income verification by [Agency Name] and authorized personnel."}) %>
-    <%= f.submit "Share my report with [agency name]", class: "margin-top-5" %>
+    <%= f.check_box :consent_to_authorized_use, { 'label': raw(t(".consent_checkbox_label", agency_acronym: current_agency.agency_short_name))} %>
+    <%= f.submit t(".share_report_button", agency_acronym: current_agency.agency_short_name), class: "margin-top-5" %>
     <% end %>
   </div>
 <% end %>
