@@ -1,23 +1,11 @@
-import { fetchToken, trackUserAction } from "../utilities/api.js";
+import { fetchPinwheelToken, trackUserAction } from "@js/utilities/api.js";
 import loadScript from 'load-script';
-import { getDocumentLocale } from "../utilities/getDocumentLocale.js";
+import { getDocumentLocale } from "@js/utilities/getDocumentLocale.js";
 import { ModalAdapter } from "./ModalAdapter.js";
 
 export default class PinwheelModalAdapter extends ModalAdapter {
   Pinwheel: Pinwheel;
-
-  async load() {
-    this.Pinwheel = await new Promise((resolve, reject) => {
-      loadScript('https://cdn.getpinwheel.com/pinwheel-v3.0.js', (err, script) => {
-        if (err) {
-          reject(err);
-        } else {
-          resolve(Pinwheel);
-        }
-      });
-    })
-  }
-  
+ 
   async open() {
     const locale = getDocumentLocale();
 
@@ -31,9 +19,9 @@ export default class PinwheelModalAdapter extends ModalAdapter {
         locale
       });
 
-      const { token } = await fetchToken(this.requestData.responseType, this.requestData.id, locale);
+      const { token } = await fetchPinwheelToken(this.requestData.responseType, this.requestData.id, locale);
 
-      return this.Pinwheel.open({
+      return Pinwheel.open({
         linkToken: token,
         onSuccess: this.onSuccess.bind(this),
         onExit: this.onExit.bind(this),

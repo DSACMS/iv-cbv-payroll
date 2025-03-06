@@ -13,19 +13,19 @@
     "outDir": "app/assets/builds",
     "paths": {
       "*": [
-        "./node_modules"
+        "./node_modules/*"
       ],
-      "@js": [
-        "./app/javascript"
+      "@js/*": [
+        "./app/javascript/*"
       ],
-      "@test": [
-        "./spec/javascript"
+      "@test/*": [
+        "./spec/javascript/*"
       ],
-     "@types": [
-        "./app/javascript/types"
+     "@types/*": [
+        "./app/javascript/types/*"
       ],
-      "@": [
-        "./app"
+      "@/*": [
+        "./app/*"
       ]
     }
   },

@@ -1,6 +1,6 @@
 // Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
-exports[`EmployerSearchController button click > calls trackUserAction with data attributes from employer_search html 1`] = `
+exports[`EmployerSearchController Pinwheel Modal Adapter > calls trackUserAction with data attributes from employer_search html 1`] = `
 [
   "ApplicantSelectedEmployerOrPlatformItem",
   {
@@ -14,22 +14,14 @@ exports[`EmployerSearchController button click > calls trackUserAction with data
 ]
 `;
 
-exports[`EmployerSearchController button click > fetches Pinwheel token 1`] = `
-[
-  "csv",
-  "test-id",
-  "en",
-]
-`;
-
 exports[`EmployerSearchController multiple instances on same page! > calls trackUserAction each time element is clicked 1`] = `
 [
   "ApplicantSelectedEmployerOrPlatformItem",
   {
     "is_default_option": "false",
-    "item_id": "test-id-1",
-    "item_name": "test-name-1",
-    "item_type": "csv",
+    "item_id": "test-uuid-1",
+    "item_name": "ACME corp",
+    "item_type": "employer",
     "locale": "en",
     "provider_name": "pinwheel",
   },
@@ -40,6 +32,51 @@ exports[`EmployerSearchController multiple instances on same page! > fetches Pin
 [
   "csv",
   "test-id-1",
+  "en",
+]
+`;
+
+exports[`EmployerSearchController with argyle > calls trackUserAction with data attributes from employer_search html 1`] = `
+[
+  "ApplicantSelectedEmployerOrPlatformItem",
+  {
+    "is_default_option": "false",
+    "item_id": "uuid",
+    "item_name": "test-name",
+    "item_type": "employer",
+    "locale": "en",
+    "provider_name": "argyle",
+  },
+]
+`;
+
+exports[`EmployerSearchController with argyle > fetches argyle token 1`] = `[]`;
+
+exports[`EmployerSearchController with argyle > loads argyle modal from external website on click 1`] = `
+[
+  "https://plugin.argyle.com/argyle.web.v5.js",
+  [Function],
+]
+`;
+
+exports[`EmployerSearchController with pinwheel > calls trackUserAction with data attributes from employer_search html 1`] = `
+[
+  "ApplicantSelectedEmployerOrPlatformItem",
+  {
+    "is_default_option": "false",
+    "item_id": "uuid",
+    "item_name": "test-name",
+    "item_type": "employer",
+    "locale": "en",
+    "provider_name": "pinwheel",
+  },
+]
+`;
+
+exports[`EmployerSearchController with pinwheel > fetches Pinwheel token 1`] = `
+[
+  "employer",
+  "uuid",
   "en",
 ]
 `;
