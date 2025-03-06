@@ -33,10 +33,35 @@ module ResponseObjects
       )
     end
 
+
+    def self.from_argyle(paystubs_response_body)
+      new(
+        account_id: response_body["account"],
+        gross_pay_amount: response_body["gross_pay"],
+        net_pay_amount: response_body["net_pay"],
+        gross_pay_ytd: response_body["gross_pay_ytd"],
+        pay_period_start: response_body["pay_period"]["start_date"],
+        pay_period_end: response_body["pay_period"]["end_date"],
+        pay_date: response_body["paystub_date"],
+        hours: response_body["hours"],
+        hours_by_earning_category: response_body["gross_pay_list"].map do |gross_pay_item|
+          OpenStruct.new(
+            category: gross_pay_item["type"],
+            hours: gross_pay_item["hours"],
+          )
+        end,
+        deductions: response_body["deduction_list"].map do |deduction|
+          OpenStruct.new(
+            category: deduction["tax_classification"],
+            amount: deduction["amount"],
+          )
+        end,
+      )
+    end
+
     alias_attribute :start, :pay_period_start
     alias_attribute :end, :pay_period_end
   end
-
   module PinwheelMethods
     def self.hours(earnings)
       base_hours = earnings

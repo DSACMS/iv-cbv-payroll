@@ -1,0 +1,187 @@
+{
+    "next": null,
+    "previous": null,
+    "results": [
+        {
+            "id": "01954449-1753-b8b9-8cd9-77b4be11db19",
+            "user": "0195441c-5a5f-7d86-3be1-fa5797a441a6",
+            "employers": [
+                "Lyft Driver"
+            ],
+            "item": "item_000024123",
+            "source": "argyle_sandbox",
+            "created_at": "2025-02-26T22:03:15.718479Z",
+            "updated_at": "2025-02-26T22:05:14.987616Z",
+            "scanned_at": "2025-02-26T22:04:52.909487Z",
+            "connection": {
+                "status": "connected",
+                "error_code": null,
+                "error_message": null,
+                "updated_at": "2025-02-26T22:03:30.606428Z"
+            },
+            "direct_deposit_switch": {
+                "status": "idle",
+                "error_code": null,
+                "error_message": null,
+                "updated_at": "2025-02-26T22:03:16.059091Z"
+            },
+            "availability": {
+                "gigs": {
+                    "status": "synced",
+                    "updated_at": "2025-02-26T22:05:14.591846Z",
+                    "available_count": 2393,
+                    "available_from": "2022-05-26T22:03:30Z",
+                    "available_to": "2025-02-26T12:02:10Z"
+                },
+                "shifts": {
+                    "status": "synced",
+                    "updated_at": "2025-02-26T22:04:50.502237Z",
+                    "available_count": 0,
+                    "available_from": null,
+                    "available_to": null
+                },
+                "paystubs": {
+                    "status": "synced",
+                    "updated_at": "2025-02-26T22:05:14.421661Z",
+                    "available_count": 144,
+                    "available_from": "2022-05-26T22:03:30Z",
+                    "available_to": "2025-02-20T00:00:00Z"
+                },
+                "payroll_documents": {
+                    "status": "synced",
+                    "updated_at": "2025-02-26T22:03:33.868143Z"
+                },
+                "identities": {
+                    "status": "synced",
+                    "updated_at": "2025-02-26T22:05:14.792144Z"
+                },
+                "ratings": {
+                    "status": "synced",
+                    "updated_at": "2025-02-26T22:04:52.642065Z"
+                },
+                "vehicles": {
+                    "status": "synced",
+                    "updated_at": "2025-02-26T22:03:33.887125Z"
+                },
+                "deposit_destinations": {
+                    "status": "synced",
+                    "updated_at": "2025-02-26T22:03:32.177667Z"
+                },
+                "user_forms": null,
+                "user_uploads": null
+            },
+            "ongoing_refresh": {
+                "status": "enabled"
+            }
+        },
+        {
+            "id": "01954447-d202-faca-2a01-1861f39e0e86",
+            "user": "0195441c-5a5f-7d86-3be1-fa5797a441a6",
+            "employers": [],
+            "item": "item_000020392",
+            "source": "argyle_sandbox",
+            "created_at": "2025-02-26T22:01:52.441034Z",
+            "updated_at": "2025-02-26T22:11:53.634198Z",
+            "scanned_at": null,
+            "connection": {
+                "status": "error",
+                "error_code": "mfa_timeout",
+                "error_message": "This user did not complete multi-factor authentication.",
+                "updated_at": "2025-02-26T22:11:53.417285Z"
+            },
+            "direct_deposit_switch": {
+                "status": "idle",
+                "error_code": null,
+                "error_message": null,
+                "updated_at": "2025-02-26T22:01:52.868602Z"
+            },
+            "availability": {
+                "gigs": null,
+                "shifts": null,
+                "paystubs": null,
+                "payroll_documents": null,
+                "identities": null,
+                "ratings": null,
+                "vehicles": null,
+                "deposit_destinations": null,
+                "user_forms": null,
+                "user_uploads": null
+            },
+            "ongoing_refresh": {
+                "status": "idle"
+            }
+        },
+        {
+            "id": "01954440-8c8b-cd52-4a1f-f7aa07d136ed",
+            "user": "0195441c-5a5f-7d86-3be1-fa5797a441a6",
+            "employers": [
+                "Uber Driver"
+            ],
+            "item": "item_000041078",
+            "source": "argyle_sandbox",
+            "created_at": "2025-02-26T21:53:55.907174Z",
+            "updated_at": "2025-02-26T21:57:41.151118Z",
+            "scanned_at": "2025-02-26T21:57:36.482239Z",
+            "connection": {
+                "status": "connected",
+                "error_code": null,
+                "error_message": null,
+                "updated_at": "2025-02-26T21:56:17.467233Z"
+            },
+            "direct_deposit_switch": {
+                "status": "idle",
+                "error_code": null,
+                "error_message": null,
+                "updated_at": "2025-02-26T21:53:56.374685Z"
+            },
+            "availability": {
+                "gigs": {
+                    "status": "synced",
+                    "updated_at": "2025-02-26T21:57:40.873143Z",
+                    "available_count": 2368,
+                    "available_from": "2022-06-27T21:56:17Z",
+                    "available_to": "2025-02-26T20:40:29Z"
+                },
+                "shifts": {
+                    "status": "synced",
+                    "updated_at": "2025-02-26T21:57:34.254754Z",
+                    "available_count": 0,
+                    "available_from": null,
+                    "available_to": null
+                },
+                "paystubs": {
+                    "status": "synced",
+                    "updated_at": "2025-02-26T21:57:40.708501Z",
+                    "available_count": 140,
+                    "available_from": "2022-06-27T21:56:17Z",
+                    "available_to": "2025-02-24T00:00:00Z"
+                },
+                "payroll_documents": {
+                    "status": "synced",
+                    "updated_at": "2025-02-26T21:56:20.360100Z"
+                },
+                "identities": {
+                    "status": "synced",
+                    "updated_at": "2025-02-26T21:57:40.940274Z"
+                },
+                "ratings": {
+                    "status": "synced",
+                    "updated_at": "2025-02-26T21:57:36.238637Z"
+                },
+                "vehicles": {
+                    "status": "synced",
+                    "updated_at": "2025-02-26T21:56:20.375923Z"
+                },
+                "deposit_destinations": {
+                    "status": "synced",
+                    "updated_at": "2025-02-26T21:56:18.662289Z"
+                },
+                "user_forms": null,
+                "user_uploads": null
+            },
+            "ongoing_refresh": {
+                "status": "enabled"
+            }
+        }
+    ]
+}

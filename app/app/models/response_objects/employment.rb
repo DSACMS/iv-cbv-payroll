@@ -21,5 +21,16 @@ module ResponseObjects
         employer_address: response_body.dig("employer_address", "raw")
       )
     end
+    def self.from_argyle(identity_response_body)
+      new(
+        account_id: identity_response_body["account"],
+        employer_name: identity_response_body["employer"],
+        start_date: identity_response_body["hire_date"],
+        termination_date: identity_response_body["termination_date"],
+        status: identity_response_body["employment_status"],
+        employer_phone_number: "",
+        employer_address: ""
+      )
+    end
   end
 end

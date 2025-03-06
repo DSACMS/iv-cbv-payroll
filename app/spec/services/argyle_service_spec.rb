@@ -22,8 +22,10 @@ RSpec.describe ArgyleService, type: :service do
     end
 
     it 'returns a non-empty response' do
+      # a.fetch_paystubs(user: "0195441c-5a5f-7d86-3be1-fa5797a441a6", from_start_date: "2025-02-20", to_start_
       response = service.fetch_paystubs(account_id: end_user_id)
       expect(response).not_to be_empty
     end
   end
+  # a.fetch_employment(user: "0195441c-5a5f-7d86-3be1-fa5797a441a6" )
 end
