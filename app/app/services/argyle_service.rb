@@ -102,11 +102,12 @@ class ArgyleService
       |f| f.puts(fetch_accounts(user: user_id).to_json)
     }
     File.open("spec/support/fixtures/argyle/#{user_id}/request_paystubs.json", "wb") {
-      |f| f.puts(fetch_paystubs(user: user_id, from_start_date: "2025-02-20", to_start_date: "2025-02-26").to_json)
+      |f| f.puts(fetch_paystubs(user: user_id).to_json)
+      # , from_start_date: "2025-02-20", to_start_date: "2025-02-26").to_json)
     }
   end
 
   def create_user
-    @http.post("/users").body
+    @http.post("users").body
   end
 end
