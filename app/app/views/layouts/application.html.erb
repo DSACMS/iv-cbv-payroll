@@ -23,7 +23,7 @@
             <div class="usa-alert usa-alert--info">
               <div class="usa-alert__body">
                 <div class="usa-alert__heading">Information</div>
-                <div class="usa-alert__text"><%= flash[:notice] %></div>
+                <div class="usa-alert__text"><%= flash[:notice].html_safe %></div>
               </div>
             </div>
           <% end %>

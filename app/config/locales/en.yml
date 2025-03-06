@@ -243,7 +243,7 @@ en:
         step3_description: We’ll automatically send it to %{agency_acronym}. This will help you prove your income and can help %{agency_acronym} get to a decision faster.
         subheader_html: 'We’ll send your payment records from your employer(s) to %{agency_acronym} to verify your income. <strong>Most people complete this process in under 5 minutes.</strong> Just follow these steps:'
     error_invalid_token: The invitation link used is not valid. Double check the link and try again. If you continue experiencing issues, contact your caseworker.
-    error_missing_token_html: "<strong>Your session has timed out due to inactivity.</strong> To continue where you left off, please click the link you received from your SNAP agency in your email. If you encounter any issues, contact your SNAP agency for assistance."
+    error_missing_token_html: "<strong>Your session has timed out due to inactivity.</strong> Please reuse the same link you used to begin your session. If you encounter any issues, contact your benefits agency for assistance."
     error_no_access: We weren't able to load payroll data for this account. Please click the link you received from your SNAP agency to try again.
     expired_invitations:
       show:
