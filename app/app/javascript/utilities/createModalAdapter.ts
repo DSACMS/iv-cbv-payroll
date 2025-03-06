@@ -7,5 +7,7 @@ export const createModalAdapter = (providerName: string) => {
       return new ArgyleModalAdapter();
     case "pinwheel":
       return new PinwheelModalAdapter();
+    default:
+      console.error("Unknown createModalAdapter provider:", providerName);
   }
 };
