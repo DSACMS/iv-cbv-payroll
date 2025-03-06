@@ -25,7 +25,7 @@ RSpec.describe Api::InvitationsController do
         .and change(CbvApplicant, :count).by(1)
 
       expect(response).to have_http_status(:created)
-      expect(JSON.parse(response.body).keys).to include("url")
+      expect(JSON.parse(response.body).keys).to include("tokenized_url")
     end
 
     context "invalid params" do
@@ -35,14 +35,22 @@ RSpec.describe Api::InvitationsController do
         valid_params
       end
 
-      it "returns unprocessable entity" do
+      it "returns unprocessable entity with structured error response" do
         post :create, params: invalid_params
 
         expect(response).to have_http_status(:unprocessable_entity)
         parsed_response = JSON.parse(response.body)
-        expect(parsed_response.keys).not_to include("cbv_applicant")
-        expect(parsed_response.keys).to include("client_agency_id")
-        expect(parsed_response.keys).to include("agency_partner_metadata.first_name")
+
+        # Check for structured error response
+        expect(parsed_response).to have_key("errors")
+        expect(parsed_response["errors"]).to be_an(Array)
+
+        # Extract error fields for easier testing
+        error_fields = parsed_response["errors"].map { |e| e["field"] }
+
+        expect(error_fields).not_to include("cbv_applicant")
+        expect(error_fields).to include("client_agency_id")
+        expect(error_fields).to include("agency_partner_metadata.first_name")
       end
     end
 
@@ -68,7 +76,44 @@ RSpec.describe Api::InvitationsController do
         post :create, params: invalid_user_params
 
         expect(response).to have_http_status(:unprocessable_entity)
-        expect(JSON.parse(response.body).keys).to include("language")
+        parsed_response = JSON.parse(response.body)
+        expect(parsed_response).to have_key("errors")
+        expect(parsed_response["errors"].map { |e| e["field"] }).to include("language")
+      end
+    end
+
+    context "with email_address outside of agency_partner_metadata" do
+      let(:params_with_email_outside) do
+        params = valid_params.deep_dup
+        params[:email_address] = "direct@example.com"
+        params
+      end
+
+      it "uses the provided email_address" do
+        post :create, params: params_with_email_outside
+
+        expect(response).to have_http_status(:created)
+        invitation = CbvFlowInvitation.last
+        expect(invitation.email_address).to eq("direct@example.com")
+      end
+    end
+
+    context "with application_date instead of snap_application_date" do
+      let(:params_with_application_date) do
+        params = valid_params.deep_dup
+        params[:agency_partner_metadata].delete(:snap_application_date)
+        # Use ISO format (YYYY-MM-DD) to avoid ambiguity
+        params[:application_date] = "2025-01-03"
+        params
+      end
+
+      it "maps application_date to snap_application_date" do
+        post :create, params: params_with_application_date
+
+        expect(response).to have_http_status(:created)
+        invitation = CbvFlowInvitation.last
+        # January 3, 2025
+        expect(invitation.cbv_applicant.snap_application_date).to eq(Date.new(2025, 1, 3))
       end
     end
   end
