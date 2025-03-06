@@ -23,7 +23,7 @@
             <div class="usa-alert usa-alert--info">
               <div class="usa-alert__body">
                 <div class="usa-alert__heading">Information</div>
-                <div class="usa-alert__text"><%= flash[:notice] %></div>
+                <div class="usa-alert__text"><%= flash[:notice].html_safe %></div>
               </div>
             </div>
           <% end %>
@@ -54,8 +54,12 @@
         </section>
       </main>
       <%= render "application/footer" %>
+      <% if session[:cbv_flow_id] %>
+        <%= render partial: "cbv/sessions/timeout_modal", locals: {
+          timeout: Rails.application.config.session_options[:expire_after]
+        } %>
+      <% end %>
     </div>
-
     <%= render partial: "help/help_modal", locals: { help_path: help_path(locale: I18n.locale, r: SecureRandom.hex(4)) } %>
   </body>
 </html>
