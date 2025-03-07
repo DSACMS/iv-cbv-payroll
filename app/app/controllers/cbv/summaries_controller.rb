@@ -1,3 +1,4 @@
+# TODO what else can I delete here?
 require "csv"
 require "tempfile"
 require "zlib"
@@ -5,37 +6,12 @@ require "zlib"
 class Cbv::SummariesController < Cbv::BaseController
   include Cbv::PinwheelDataHelper
 
-  before_action :set_employments, only: %i[show update]
-  before_action :set_incomes, only: %i[show update]
-  before_action :set_payments, only: %i[show update]
-  before_action :set_identities, only: %i[show update]
+  before_action :set_employments, only: %i[show]
+  before_action :set_incomes, only: %i[show]
+  before_action :set_payments, only: %i[show]
+  before_action :set_identities, only: %i[show]
 
   def show
-    respond_to do |format|
-      format.html
-      format.pdf do
-        event_logger.track("ApplicantDownloadedIncomePDF", request, {
-          timestamp: Time.now.to_i,
-          client_agency_id: @cbv_flow.client_agency_id,
-          cbv_applicant_id: @cbv_flow.cbv_applicant_id,
-          cbv_flow_id: @cbv_flow.id,
-          invitation_id: @cbv_flow.cbv_flow_invitation_id,
-          locale: I18n.locale
-        })
-
-        render pdf: "#{@cbv_flow.id}",
-          layout: "pdf",
-          locals: { is_caseworker: Rails.env.development? && params[:is_caseworker] },
-          footer: { right: "Income Verification Report | Page [page] of [topage]", font_size: 10 },
-          margin:  {
-            top:               10,
-            bottom:            10,
-            left:              10,
-            right:             10
-          }
-      end
-    end
-
     track_accessed_income_summary_event(@cbv_flow, @payments)
   end
 

@@ -4,18 +4,48 @@ class Cbv::SubmitsController < Cbv::BaseController
   include TarFileCreatable
   include CsvHelper
 
+  before_action :set_employments, only: %i[show update]
+  before_action :set_incomes, only: %i[show update]
+  before_action :set_payments, only: %i[show update]
+  before_action :set_identities, only: %i[show update]
+
   helper "cbv/pinwheel_data"
 
   helper_method :has_consent
   skip_before_action :ensure_cbv_flow_not_yet_complete, if: -> { params[:format] == "pdf" }
 
   def show
+    respond_to do |format|
+      format.html
+      format.pdf do
+        event_logger.track("ApplicantDownloadedIncomePDF", request, {
+          timestamp: Time.now.to_i,
+          client_agency_id: @cbv_flow.client_agency_id,
+          cbv_applicant_id: @cbv_flow.cbv_applicant_id,
+          cbv_flow_id: @cbv_flow.id,
+          invitation_id: @cbv_flow.cbv_flow_invitation_id,
+          locale: I18n.locale
+        })
+
+        render pdf: "#{@cbv_flow.id}",
+          layout: "pdf",
+          locals: { is_caseworker: Rails.env.development? && params[:is_caseworker] },
+          footer: { right: "Income Verification Report | Page [page] of [topage]", font_size: 10 },
+          margin:  {
+            top:               10,
+            bottom:            10,
+            left:              10,
+            right:             10
+          }
+      end
+    end
+
     track_accessed_submit_event(@cbv_flow)
   end
 
   def update
     unless has_consent
-      @cbv_flow.errors.add(:consent_to_authorized_use, :blank, message: t(.consent_to_authorize_warning))
+      @cbv_flow.errors.add(:consent_to_authorized_use, :blank, message: t(".consent_to_authorize_warning"))
       return redirect_to(cbv_flow_submit_path, flash: { alert: t(".consent_to_authorize_warning") })
     end
 
@@ -79,7 +109,7 @@ class Cbv::SubmitsController < Cbv::BaseController
       pdf_service = PdfService.new
       @pdf_output = pdf_service.generate(
         renderer: self,
-        template: "cbv/summaries/show",
+        template: "cbv/submits/show",
         variables: {
           is_caseworker: true,
           cbv_flow: @cbv_flow,
