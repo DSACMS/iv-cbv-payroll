@@ -67,9 +67,12 @@ class ArgyleService
 
   # https://docs.argyle.com/api-reference/paystubs#list
   def fetch_paystubs(**params)
-    # json["data"].map { |paystub_json| ResponseObjects::Paystub.from_pinwheel(paystub_json) }
     # TODO: paginate
-    @http.get(PAYSTUBS_ENDPOINT, params).body
+    $stdout.puts "Hello"
+
+    Rails.logger.debug "Interesting stuff"
+    json = @http.get(PAYSTUBS_ENDPOINT, params).body
+    json["results"].map { |paystub_json| ResponseObjects::Paystub.from_argyle(paystub_json) }
   end
 
   # https://docs.argyle.com/api-reference/employments#list
