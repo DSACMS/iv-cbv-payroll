@@ -37,9 +37,9 @@ module ResponseObjects
     def self.from_argyle(response_body)
       new(
         account_id: response_body["account"],
-        gross_pay_amount: response_body["gross_pay"],
-        net_pay_amount: response_body["net_pay"],
-        gross_pay_ytd: response_body["gross_pay_ytd"],
+        gross_pay_amount: ArgyleMethods.format_currency(response_body["gross_pay"]),
+        net_pay_amount: ArgyleMethods.format_currency(response_body["net_pay"]),
+        gross_pay_ytd: ArgyleMethods.format_currency(response_body["gross_pay_ytd"]),
         pay_period_start: ArgyleMethods.format_date(response_body["paystub_period"]["start_date"]),
         pay_period_end: ArgyleMethods.format_date(response_body["paystub_period"]["end_date"]),
         pay_date: ArgyleMethods.format_date(response_body["paystub_date"]),
@@ -48,7 +48,7 @@ module ResponseObjects
         deductions: response_body["deduction_list"].map do |deduction|
           OpenStruct.new(
             category: deduction["name"],
-            amount: deduction["amount"],
+            amount: ArgyleMethods.format_currency(deduction["amount"]),
           )
         end,
       )
@@ -92,6 +92,11 @@ module ResponseObjects
       return unless date
 
       DateTime.parse(date).strftime("%Y-%m-%d")
+    end
+
+    def self.format_currency(amount)
+      return unless amount
+      amount.to_f
     end
 
     def self.hours_by_earning_category(gross_pay_list)
