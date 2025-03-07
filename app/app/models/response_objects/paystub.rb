@@ -40,9 +40,9 @@ module ResponseObjects
         gross_pay_amount: response_body["gross_pay"],
         net_pay_amount: response_body["net_pay"],
         gross_pay_ytd: response_body["gross_pay_ytd"],
-        pay_period_start: DateTime.parse(response_body["paystub_period"]["start_date"]).strftime("%Y-%m-%d"),
-        pay_period_end: DateTime.parse(response_body["paystub_period"]["end_date"]).strftime("%Y-%m-%d"),
-        pay_date: response_body["paystub_date"],
+        pay_period_start: ArgyleMethods.format_date(response_body["paystub_period"]["start_date"]),
+        pay_period_end: ArgyleMethods.format_date(response_body["paystub_period"]["end_date"]),
+        pay_date: ArgyleMethods.format_date(response_body["paystub_date"]),
         hours: response_body["hours"],
         hours_by_earning_category: response_body["gross_pay_list"].map do |gross_pay_item|
           OpenStruct.new(
@@ -62,6 +62,7 @@ module ResponseObjects
     alias_attribute :start, :pay_period_start
     alias_attribute :end, :pay_period_end
   end
+
   module PinwheelMethods
     def self.hours(earnings)
       base_hours = earnings
@@ -88,6 +89,14 @@ module ResponseObjects
         .filter { |e| e["hours"] && e["hours"] > 0 }
         .group_by { |e| e["category"] }
         .transform_values { |earnings| earnings.sum { |e| e["hours"] } }
+    end
+  end
+
+  module ArgyleMethods
+    def self.format_date(date)
+      return unless date
+
+      DateTime.parse(date).strftime("%Y-%m-%d")
     end
   end
 end

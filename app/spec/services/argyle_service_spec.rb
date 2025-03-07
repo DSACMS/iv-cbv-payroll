@@ -1,9 +1,5 @@
 require 'rails_helper'
 
-BOB_USER_FOLDER = "bob"
-SARAH_USER_FOLDER = "sarah"
-JOE_USER_FOLDER = "joe"
-
 RSpec.describe ArgyleService, type: :service do
   include ArgyleApiHelper
   let(:service) { ArgyleService.new("sandbox", "FAKE_API_KEY") }
@@ -21,28 +17,72 @@ RSpec.describe ArgyleService, type: :service do
   # end
 
   describe '#fetch_paystubs' do
-    before do
-      stub_request_paystubs_response(BOB_USER_FOLDER)
+    context "for Bob, a Uber driver" do
+      before do
+        stub_request_paystubs_response("bob")
+      end
+
+      it 'returns a non-empty response' do
+        paystubs = service.fetch_paystubs(account: end_user_id)
+        expect(paystubs.length).to eq(2)
+
+        expect(paystubs[0]).to be_a(ResponseObjects::Paystub)
+        expect(paystubs[0]).to have_attributes(
+          account_id: "01954440-8c8b-cd52-4a1f-f7aa07d136ed",
+          gross_pay_amount: "19.53",
+          net_pay_amount: "19.53",
+          gross_pay_ytd: "429.15",
+          pay_date: "2025-02-24",
+          hours_by_earning_category: [],
+          deductions: []
+        )
+        expect(paystubs[1]).to have_attributes(
+          account_id: "01954449-1753-b8b9-8cd9-77b4be11db19",
+          gross_pay_amount: "36.33",
+          net_pay_amount: "36.33",
+          gross_pay_ytd: "369.77",
+          pay_date: "2025-02-20",
+          hours_by_earning_category: [],
+          deductions: []
+        )
+      end
     end
 
-    it 'returns a non-empty response' do
-      # a.fetch_paystubs(user: "0195441c-5a5f-7d86-3be1-fa5797a441a6", from_start_date: "2025-02-20", to_start_
-      paystubs = service.fetch_paystubs(account: end_user_id)
-      expect(paystubs.length).to eq(2)
+    context "for Joe, a W2 employee" do
+      before do
+        stub_request_paystubs_response("joe")
+      end
 
-      expect(paystubs[0]).to be_a(ResponseObjects::Paystub)
+      it 'returns a non-empty response' do
+        paystubs = service.fetch_paystubs(account: end_user_id)
+        expect(paystubs.length).to eq(10)
 
-      expect(paystubs[0]).to have_attributes(
-        account_id: "01954440-8c8b-cd52-4a1f-f7aa07d136ed",
-        gross_pay_amount: "19.53",
-        net_pay_amount: "19.53",
-        gross_pay_ytd: "429.15",
-        pay_date: "2025-02-24",
-        hours_by_earning_category: [],
-        deductions: []
-      )
-      # expect(response).not_to be_empty
+        expect(paystubs[0]).to be_a(ResponseObjects::Paystub)
+        expect(paystubs[0]).to have_attributes(
+          account_id: "01956d62-18a0-090f-bc09-2ac44b7edf99",
+          gross_pay_amount: "5492.06",
+          net_pay_amount: "3350.16",
+          gross_pay_ytd: "16476.18",
+          pay_date: "2025-03-03",
+          hours_by_earning_category: {
+            "base" => 92.9177
+          },
+          deductions: match_array([
+            have_attributes(category: "pre_tax", amount: "109.84"),
+            have_attributes(category: "pre_tax", amount: "219.68"),
+            have_attributes(category: nil, amount: "219.68")
+          ])
+        )
+        expect(paystubs[1]).to have_attributes(
+          account_id: "01954449-1753-b8b9-8cd9-77b4be11db19",
+          gross_pay_amount: "36.33",
+          net_pay_amount: "36.33",
+          gross_pay_ytd: "369.77",
+          pay_date: "2025-02-20",
+          hours_by_earning_category: [],
+          deductions: []
+        )
+      end
     end
   end
-  # a.fetch_employment(user: "0195441c-5a5f-7d86-3be1-fa5797a441a6" )
 end
