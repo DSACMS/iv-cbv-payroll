@@ -1,11 +1,11 @@
 TODO on this branch:
 
 [x] 1. Wrap up Bob test data
-[ ] 2. Write tests for all three test users
+[x] 2. Write tests for all three test users. (I skipped Sarah for now because bob + joe covered cases)
 [ ] 3. User ID --> Account ID refactor
-[ ] 4. Rewrite ArgyleService methods to instantiate response objects based on /identities
+[x] 4. Rewrite ArgyleService methods to instantiate response objects based on /identities
 [ ] 5. Then, update PinwheelDataHelper to use ArgyleService
 [ ] 6. Figure out missing fields for employer address/phone
 [ ] 7. Update view logic as necessary
-[ ] 8. Verify that Argyle dollar amount strings are being rendered correctly
+[x] 8. Verify that Argyle dollar amount strings are being rendered correctly
 [ ] 9. DRY ArgyleMethods.format_currency and format_date
