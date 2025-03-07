@@ -44,15 +44,10 @@ module ResponseObjects
         pay_period_end: ArgyleMethods.format_date(response_body["paystub_period"]["end_date"]),
         pay_date: ArgyleMethods.format_date(response_body["paystub_date"]),
         hours: response_body["hours"],
-        hours_by_earning_category: response_body["gross_pay_list"].map do |gross_pay_item|
-          OpenStruct.new(
-            category: gross_pay_item["type"],
-            hours: gross_pay_item["hours"],
-          )
-        end,
+        hours_by_earning_category: ArgyleMethods.hours_by_earning_category(response_body["gross_pay_list"]),
         deductions: response_body["deduction_list"].map do |deduction|
           OpenStruct.new(
-            category: deduction["tax_classification"],
+            category: deduction["name"],
             amount: deduction["amount"],
           )
         end,
@@ -97,6 +92,13 @@ module ResponseObjects
       return unless date
 
       DateTime.parse(date).strftime("%Y-%m-%d")
+    end
+
+    def self.hours_by_earning_category(gross_pay_list)
+      gross_pay_list
+         .filter { |e| e["hours"].present? }
+         .group_by { |e| e["type"] }
+         .transform_values { |earnings| earnings.sum { |e| e["hours"].to_f } }
     end
   end
 end

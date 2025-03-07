@@ -33,7 +33,7 @@ RSpec.describe ArgyleService, type: :service do
           net_pay_amount: "19.53",
           gross_pay_ytd: "429.15",
           pay_date: "2025-02-24",
-          hours_by_earning_category: [],
+          hours_by_earning_category: {},
           deductions: []
         )
         expect(paystubs[1]).to have_attributes(
@@ -42,7 +42,7 @@ RSpec.describe ArgyleService, type: :service do
           net_pay_amount: "36.33",
           gross_pay_ytd: "369.77",
           pay_date: "2025-02-20",
-          hours_by_earning_category: [],
+          hours_by_earning_category: {},
           deductions: []
         )
       end
@@ -68,19 +68,25 @@ RSpec.describe ArgyleService, type: :service do
             "base" => 92.9177
           },
           deductions: match_array([
-            have_attributes(category: "pre_tax", amount: "109.84"),
-            have_attributes(category: "pre_tax", amount: "219.68"),
-            have_attributes(category: nil, amount: "219.68")
+            have_attributes(category: "401K", amount: "109.84"),
+            have_attributes(category: "Vision", amount: "219.68"),
+            have_attributes(category: "Dental", amount: "219.68")
           ])
         )
         expect(paystubs[1]).to have_attributes(
-          account_id: "01954449-1753-b8b9-8cd9-77b4be11db19",
+          account_id: "01956d62-18a0-090f-bc09-2ac44b7edf99",
           gross_pay_amount: "36.33",
           net_pay_amount: "36.33",
           gross_pay_ytd: "369.77",
           pay_date: "2025-02-20",
-          hours_by_earning_category: [],
-          deductions: []
+          hours_by_earning_category: {
+            "base" => 174.4026
+          },
+          deductions: match_array([
+            have_attributes(category: "Dental", amount: "164.76"),
+            have_attributes(category: "Roth", amount: "164.76"),
+            have_attributes(category: "Garnishment", amount: "164.76")
+          ])
         )
       end
     end
