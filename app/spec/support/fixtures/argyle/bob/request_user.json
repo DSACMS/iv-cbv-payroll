@@ -1,15 +1,12 @@
 {
-    "id": "0195441c-5a5f-7d86-3be1-fa5797a441a6",
-    "created_at": "2025-02-26T21:14:23.712349Z",
+    "id": "019571bb-e574-a88e-7d7b-15c886499696",
+    "created_at": "2025-03-07T17:51:34.261176Z",
     "items_connected": [
-        "item_000024123",
-        "item_000020392",
-        "item_000041078"
+        "item_000024123"
     ],
     "employers_connected": [
-        "Uber Driver",
         "Lyft Driver"
     ],
     "external_metadata": {},
-    "external_id": "testing"
+    "external_id": null
 }

@@ -1,0 +1,10 @@
+TODO on this branch:
+
+1. Wrap up Bob test data
+2. Write tests for all three test users
+3. User ID --> Account ID refactor
+4. Rewrite ArgyleService methods to instantiate response objects based on /identities
+5. Then, update PinwheelDataHelper to use ArgyleService
+6. Figure out missing fields for employer address/phone
+7. Update view logic as necessary
+8. Verify that Argyle dollar amount strings are being rendered correctly
