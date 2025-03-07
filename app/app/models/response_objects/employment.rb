@@ -27,10 +27,22 @@ module ResponseObjects
         employer_name: identity_response_body["employer"],
         start_date: identity_response_body["hire_date"],
         termination_date: identity_response_body["termination_date"],
-        status: identity_response_body["employment_status"],
-        employer_phone_number: "",
-        employer_address: ""
+        status: ArgyleMethods.format_employment_status(identity_response_body["employment_status"]),
       )
+    end
+  end
+  module ArgyleMethods
+    def self.format_employment_status(employment_status)
+      return unless employment_status
+
+      case employment_status
+      when "active"
+        "employed"
+      when "inactive"
+        "furloughed"
+      else
+        employment_status
+      end
     end
   end
 end
