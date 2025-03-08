@@ -14,7 +14,7 @@ class PayrollAccount < ApplicationRecord
 
   private
 
-  def webhook_event(event_name, event_outcome = nil)
+  def find_webhook_event(event_name, event_outcome = nil)
     webhook_events.find do |webhook_event|
       webhook_event.event_name == event_name &&
         (event_outcome.nil? || webhook_event.event_outcome == event_outcome.to_s)

@@ -9,14 +9,14 @@ class PayrollAccount::Pinwheel < PayrollAccount
   }
 
   def has_fully_synced?
-    (supported_jobs.exclude?("paystubs") || webhook_event(JOBS_TO_WEBHOOK_EVENTS["paystubs"]).present?) &&
-      (supported_jobs.exclude?("employment") || webhook_event(JOBS_TO_WEBHOOK_EVENTS["employment"]).present?) &&
-      (supported_jobs.exclude?("income") || webhook_event(JOBS_TO_WEBHOOK_EVENTS["income"]).present?) &&
-      (supported_jobs.exclude?("identity") || webhook_event(JOBS_TO_WEBHOOK_EVENTS["identity"]).present?)
+    (supported_jobs.exclude?("paystubs") || find_webhook_event(JOBS_TO_WEBHOOK_EVENTS["paystubs"]).present?) &&
+      (supported_jobs.exclude?("employment") || find_webhook_event(JOBS_TO_WEBHOOK_EVENTS["employment"]).present?) &&
+      (supported_jobs.exclude?("income") || find_webhook_event(JOBS_TO_WEBHOOK_EVENTS["income"]).present?) &&
+      (supported_jobs.exclude?("identity") || find_webhook_event(JOBS_TO_WEBHOOK_EVENTS["identity"]).present?)
   end
 
   def job_succeeded?(job)
-    supported_jobs.include?(job) && webhook_event(JOBS_TO_WEBHOOK_EVENTS[job], :success).present?
+    supported_jobs.include?(job) && find_webhook_event(JOBS_TO_WEBHOOK_EVENTS[job], :success).present?
   end
 
   def synchronization_status(job)
@@ -24,9 +24,9 @@ class PayrollAccount::Pinwheel < PayrollAccount
       :unsupported
     elsif job_succeeded?(job)
       :succeeded
-    elsif webhook_event(JOBS_TO_WEBHOOK_EVENTS[job], :success).nil? && webhook_event(JOBS_TO_WEBHOOK_EVENTS[job], :error).nil?
+    elsif find_webhook_event(JOBS_TO_WEBHOOK_EVENTS[job], :success).nil? && find_webhook_event(JOBS_TO_WEBHOOK_EVENTS[job], :error).nil?
       :in_progress
-    elsif webhook_event(JOBS_TO_WEBHOOK_EVENTS[job], :error).present?
+    elsif find_webhook_event(JOBS_TO_WEBHOOK_EVENTS[job], :error).present?
       :failed
     end
   end
