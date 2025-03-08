@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2025_03_03_000000) do
+ActiveRecord::Schema[7.1].define(version: 2025_03_05_033826) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pgcrypto"
   enable_extension "plpgsql"
@@ -109,7 +109,17 @@ ActiveRecord::Schema[7.1].define(version: 2025_03_03_000000) do
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
   end
 
+  create_table "webhook_events", force: :cascade do |t|
+    t.string "event_name"
+    t.string "event_outcome"
+    t.bigint "payroll_account_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["payroll_account_id"], name: "index_webhook_events_on_payroll_account_id"
+  end
+
   add_foreign_key "cbv_flow_invitations", "users"
   add_foreign_key "cbv_flows", "cbv_flow_invitations"
   add_foreign_key "payroll_accounts", "cbv_flows"
+  add_foreign_key "webhook_events", "payroll_accounts"
 end

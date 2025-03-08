@@ -13,12 +13,17 @@ FactoryBot.define do
     trait :with_pinwheel_account do
       transient do
         supported_jobs { %w[income paystubs employment identity] }
-        employment_errored_at { nil }
+        with_errored_jobs { [] }
       end
 
       after(:build) do |cbv_flow, evaluator|
         cbv_flow.payroll_accounts = [
-          create(:payroll_account, cbv_flow: cbv_flow, supported_jobs: evaluator.supported_jobs, employment_errored_at: evaluator.employment_errored_at)
+          create(:payroll_account,
+            :pinwheel_fully_synced,
+            with_errored_jobs: evaluator.with_errored_jobs,
+            cbv_flow: cbv_flow,
+            supported_jobs: evaluator.supported_jobs,
+          )
         ]
       end
     end

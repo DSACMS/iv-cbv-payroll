@@ -5,7 +5,8 @@ RSpec.describe Cbv::SynchronizationsController do
 
   let(:cbv_flow) { create(:cbv_flow) }
 
-  let(:payroll_account) { create(:payroll_account, cbv_flow: cbv_flow) }
+  let(:errored_jobs) { [] }
+  let(:payroll_account) { create(:payroll_account, :pinwheel_fully_synced, with_errored_jobs: errored_jobs, cbv_flow: cbv_flow) }
 
   before do
     session[:cbv_flow_id] = cbv_flow.id
@@ -19,9 +20,9 @@ RSpec.describe Cbv::SynchronizationsController do
     end
 
     context "when the paystubs synchronization fails" do
-      it "redirects to the synchronization failures page" do
-        payroll_account = create(:payroll_account, :with_paystubs_errored, cbv_flow: cbv_flow)
+      let(:errored_jobs) { [ "paystubs" ] }
 
+      it "redirects to the synchronization failures page" do
         patch :update, params: { user: { account_id: payroll_account.pinwheel_account_id } }
 
         expect(response).to redirect_to(cbv_flow_synchronization_failures_path)

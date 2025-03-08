@@ -10,18 +10,15 @@ RSpec.describe Cbv::PaymentDetailsController do
     let(:account_id) { SecureRandom.uuid }
     let(:comment) { "This is a test comment" }
     let(:supported_jobs) { %w[income paystubs employment] }
-    let(:income_errored_at) { nil }
-    let(:paystubs_errored_at) { nil }
-    let(:employment_errored_at) { nil }
+    let(:errored_jobs) { [] }
     let!(:payroll_account) do
       create(
         :payroll_account,
+        :pinwheel_fully_synced,
+        with_errored_jobs: errored_jobs,
         cbv_flow: cbv_flow,
         pinwheel_account_id: account_id,
         supported_jobs: supported_jobs,
-        income_errored_at: income_errored_at,
-        paystubs_errored_at: paystubs_errored_at,
-        employment_errored_at: employment_errored_at
       )
     end
 
@@ -137,7 +134,7 @@ RSpec.describe Cbv::PaymentDetailsController do
 
     context "for an account that supports income data but Pinwheel was unable to retrieve it" do
       let(:supported_jobs) { %w[paystubs employment income] }
-      let(:income_errored_at) { Time.current.iso8601 }
+      let(:errored_jobs) { [ "income" ] }
 
       it "renders properly without the income data" do
         get :show, params: { user: { account_id: account_id } }
@@ -149,7 +146,7 @@ RSpec.describe Cbv::PaymentDetailsController do
 
     context "for an account that supports employment data but Pinwheel was unable to retrieve" do
       let(:supported_jobs) { %w[paystubs employment income] }
-      let(:employment_errored_at) { Time.current.iso8601 }
+      let(:errored_jobs) { [ "employment" ] }
 
       it "renders properly without the employment data" do
         get :show, params: { user: { account_id: account_id } }
@@ -160,7 +157,7 @@ RSpec.describe Cbv::PaymentDetailsController do
 
     context "for an account that supports paystubs data but Pinwheel was unable to retrieve" do
       let(:supported_jobs) { %w[paystubs employment income] }
-      let(:paystubs_errored_at) { Time.current.iso8601 }
+      let(:errored_jobs) { [ "paystubs" ] }
 
       it "renders properly without the paystubs data" do
         get :show, params: { user: { account_id: account_id } }
