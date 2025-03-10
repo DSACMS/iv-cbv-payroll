@@ -76,7 +76,7 @@ class ArgyleService
     @http.get(build_url("users/#{user}")).body
   end
 
-  # https://docs.argyle.com/api-reference/identities#retrieve
+  # https://docs.argyle.com/api-reference/identities#list
   def fetch_identities_api(**params)
     # todo: paginate
     @http.get("identities", params).body
