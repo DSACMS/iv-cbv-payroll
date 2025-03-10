@@ -87,6 +87,8 @@ class ArgyleService
   def fetch_paystubs_api(**params)
     # TODO: paginate
     @http.get(PAYSTUBS_ENDPOINT, params).body
+  def create_user
+    @http.post("users").body
   end
 end
 
