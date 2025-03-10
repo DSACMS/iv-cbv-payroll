@@ -1,6 +1,7 @@
 class Cbv::EmployerSearchesController < Cbv::BaseController
   # Disable CSP since Pinwheel relies on inline styles
   content_security_policy false, only: :show
+  before_action :check_pinwheel_initialization
   after_action :track_accessed_search_event, only: :show
   after_action :track_applicant_searched_event, only: :show
 
@@ -19,6 +20,14 @@ class Cbv::EmployerSearchesController < Cbv::BaseController
   end
 
   private
+
+  def check_pinwheel_initialization
+    return unless Rails.env.development?
+
+    if Rails.application.config.pinwheel_initialization_error
+      flash.now[:alert] = "Unable to initialize Pinwheel: #{Rails.application.config.pinwheel_initialization_error}"
+    end
+  end
 
   def provider_search(query = "")
     ProviderSearchService.new(@cbv_flow.client_agency_id).search(query)
