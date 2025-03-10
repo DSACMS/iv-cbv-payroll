@@ -1,3 +1,6 @@
+require_relative "ArgyleFormatMethods"
+require_relative "PinwheelFormatMethods"
+
 PAYSTUB_FIELDS = %i[
   account_id
   gross_pay_amount
@@ -22,8 +25,8 @@ module ResponseObjects
         pay_period_start: response_body["pay_period_start"],
         pay_period_end: response_body["pay_period_end"],
         pay_date: response_body["pay_date"],
-        hours: PinwheelMethods.hours(response_body["earnings"]),
-        hours_by_earning_category: PinwheelMethods.hours_by_earning_category(response_body["earnings"]),
+        hours: PinwheelFormatMethods.hours(response_body["earnings"]),
+        hours_by_earning_category: PinwheelFormatMethods.hours_by_earning_category(response_body["earnings"]),
         deductions: response_body["deductions"].map do |deduction|
           OpenStruct.new(
             category: deduction["category"],
@@ -37,18 +40,18 @@ module ResponseObjects
     def self.from_argyle(response_body)
       new(
         account_id: response_body["account"],
-        gross_pay_amount: ArgyleMethods.format_currency(response_body["gross_pay"]),
-        net_pay_amount: ArgyleMethods.format_currency(response_body["net_pay"]),
-        gross_pay_ytd: ArgyleMethods.format_currency(response_body["gross_pay_ytd"]),
-        pay_period_start: ArgyleMethods.format_date(response_body["paystub_period"]["start_date"]),
-        pay_period_end: ArgyleMethods.format_date(response_body["paystub_period"]["end_date"]),
-        pay_date: ArgyleMethods.format_date(response_body["paystub_date"]),
+        gross_pay_amount: ArgyleFormatMethods.format_currency(response_body["gross_pay"]),
+        net_pay_amount: ArgyleFormatMethods.format_currency(response_body["net_pay"]),
+        gross_pay_ytd: ArgyleFormatMethods.format_currency(response_body["gross_pay_ytd"]),
+        pay_period_start: ArgyleFormatMethods.format_date(response_body["paystub_period"]["start_date"]),
+        pay_period_end: ArgyleFormatMethods.format_date(response_body["paystub_period"]["end_date"]),
+        pay_date: ArgyleFormatMethods.format_date(response_body["paystub_date"]),
         hours: response_body["hours"],
-        hours_by_earning_category: ArgyleMethods.hours_by_earning_category(response_body["gross_pay_list"]),
+        hours_by_earning_category: ArgyleFormatMethods.hours_by_earning_category(response_body["gross_pay_list"]),
         deductions: response_body["deduction_list"].map do |deduction|
           OpenStruct.new(
             category: deduction["name"],
-            amount: ArgyleMethods.format_currency(deduction["amount"]),
+            amount: ArgyleFormatMethods.format_currency(deduction["amount"]),
           )
         end,
       )
@@ -56,54 +59,5 @@ module ResponseObjects
 
     alias_attribute :start, :pay_period_start
     alias_attribute :end, :pay_period_end
-  end
-
-  module PinwheelMethods
-    def self.hours(earnings)
-      base_hours = earnings
-        .filter { |e| e["category"] != "overtime" }
-        .map { |e| e["hours"] }
-        .compact
-        .max
-      return unless base_hours
-
-      # Add overtime hours to the base hours, because they tend to be additional
-      # work beyond the other entries. (As opposed to category="premium", which
-      # often duplicates other earnings' hours.)
-      #
-      # See FFS-1773.
-      overtime_hours = earnings
-        .filter { |e| e["category"] == "overtime" }
-        .sum { |e| e["hours"] || 0.0 }
-
-      base_hours + overtime_hours
-    end
-
-    def self.hours_by_earning_category(earnings)
-      earnings
-        .filter { |e| e["hours"] && e["hours"] > 0 }
-        .group_by { |e| e["category"] }
-        .transform_values { |earnings| earnings.sum { |e| e["hours"] } }
-    end
-  end
-
-  module ArgyleMethods
-    def self.format_date(date)
-      return unless date
-
-      DateTime.parse(date).strftime("%Y-%m-%d")
-    end
-
-    def self.format_currency(amount)
-      return unless amount
-      amount.to_f
-    end
-
-    def self.hours_by_earning_category(gross_pay_list)
-      gross_pay_list
-         .filter { |e| e["hours"].present? }
-         .group_by { |e| e["type"] }
-         .transform_values { |earnings| earnings.sum { |e| e["hours"].to_f } }
-    end
   end
 end

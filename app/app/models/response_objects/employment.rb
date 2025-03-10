@@ -1,3 +1,5 @@
+require_relative "ArgyleFormatMethods"
+
 EMPLOYMENT_FIELDS = %i[
   account_id
   employer_name
@@ -7,7 +9,6 @@ EMPLOYMENT_FIELDS = %i[
   employer_phone_number
   employer_address
 ]
-
 module ResponseObjects
   Employment = Struct.new(*EMPLOYMENT_FIELDS, keyword_init: true) do
     def self.from_pinwheel(response_body)
@@ -27,22 +28,8 @@ module ResponseObjects
         employer_name: identity_response_body["employer"],
         start_date: identity_response_body["hire_date"],
         termination_date: identity_response_body["termination_date"],
-        status: ArgyleMethods.format_employment_status(identity_response_body["employment_status"]),
+        status: ArgyleFormatMethods.format_employment_status(identity_response_body["employment_status"]),
       )
-    end
-  end
-  module ArgyleMethods
-    def self.format_employment_status(employment_status)
-      return unless employment_status
-
-      case employment_status
-      when "active"
-        "employed"
-      when "inactive"
-        "furloughed"
-      else
-        employment_status
-      end
     end
   end
 end

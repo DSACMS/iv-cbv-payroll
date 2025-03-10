@@ -7,11 +7,11 @@ RSpec.describe ArgyleService, type: :service do
 
   describe '#fetch_items' do
     before do
-      stub_request_items_response(BOB_USER_FOLDER)
+      stub_request_items_response("bob")
     end
 
     it 'returns a non-empty response' do
-      response = service.items('test')
+      response = service.items(query: "test")
       expect(response).not_to be_empty
     end
   end

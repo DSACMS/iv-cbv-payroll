@@ -1,3 +1,5 @@
+require_relative "ArgyleFormatMethods"
+
 INCOME_FIELDS = %i[
   account_id
   pay_frequency
@@ -22,13 +24,6 @@ module ResponseObjects
         compensation_amount: ArgyleMethods.format_currency(identities_response_body["base_pay"]["amount"]),
         compensation_unit: identities_response_body["base_pay"]["currency"],
       )
-    end
-  end
-
-  module ArgyleMethods
-    def self.format_currency(amount)
-      return unless amount
-      amount.to_f
     end
   end
 end
