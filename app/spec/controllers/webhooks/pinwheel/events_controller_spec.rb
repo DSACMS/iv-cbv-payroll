@@ -94,55 +94,61 @@ RSpec.describe Webhooks::Pinwheel::EventsController do
           "outcome" => "success"
         }
       end
-      let(:payroll_account) { PayrollAccount.create!(cbv_flow: cbv_flow, supported_jobs: supported_jobs, pinwheel_account_id: account_id) }
+      let!(:payroll_account) { create(:payroll_account, cbv_flow: cbv_flow, supported_jobs: supported_jobs, pinwheel_account_id: account_id) }
 
-      it "updates the PayrollAccount object with the current timestamp" do
-        expect { post :create, params: valid_params }
-          .to change { payroll_account.reload.paystubs_synced_at }
-          .from(nil)
-          .to(within(1.second).of(Time.now))
+      it "creates a WebhookEvent with outcome=success" do
+        post :create, params: valid_params
+
+        expect(payroll_account.webhook_events)
+          .to include(have_attributes(event_name: "paystubs.fully_synced", event_outcome: "success"))
+        expect(payroll_account.job_succeeded?("paystubs")).to be_truthy
       end
 
-      it "sends events when fully synced" do
-        payroll_account.update(
-          created_at: 5.minutes.ago,
-          employment_synced_at: Time.now,
-          income_synced_at: Time.now,
-          identity_synced_at: Time.now,
-          identity_errored_at: Time.now
-        )
+      context "when fully synced" do
+        let!(:payroll_account) do
+          create(
+            :payroll_account,
+            :pinwheel_fully_synced,
+            cbv_flow: cbv_flow,
+            supported_jobs: supported_jobs,
+            pinwheel_account_id: account_id,
+            created_at: 5.minutes.ago
+          )
+        end
 
-        expect_any_instance_of(MixpanelEventTracker).to receive(:track)
-          .with("ApplicantFinishedPinwheelSync", anything, hash_including(
-            cbv_flow_id: cbv_flow.id,
-            invitation_id: cbv_flow.cbv_flow_invitation_id,
-            identity_success: false,
-            identity_supported: true,
-            income_success: true,
-            income_supported: true,
-            employment_success: true,
-            employment_supported: true,
-            paystubs_success: true,
-            paystubs_supported: true,
-            sync_duration_seconds: within(1.second).of(5.minutes)
-          ))
+        it "sends events when fully synced" do
+          expect_any_instance_of(MixpanelEventTracker).to receive(:track)
+            .with("ApplicantFinishedPinwheelSync", anything, hash_including(
+              cbv_flow_id: cbv_flow.id,
+              invitation_id: cbv_flow.cbv_flow_invitation_id,
+              identity_success: true,
+              identity_supported: true,
+              income_success: true,
+              income_supported: true,
+              employment_success: true,
+              employment_supported: true,
+              paystubs_success: true,
+              paystubs_supported: true,
+              sync_duration_seconds: within(1.second).of(5.minutes)
+            ))
 
-        expect_any_instance_of(NewRelicEventTracker).to receive(:track)
-        .with("ApplicantFinishedPinwheelSync", anything, hash_including(
-          cbv_flow_id: cbv_flow.id,
-          invitation_id: cbv_flow.cbv_flow_invitation_id,
-          identity_success: false,
-          identity_supported: true,
-          income_success: true,
-          income_supported: true,
-          employment_success: true,
-          employment_supported: true,
-          paystubs_success: true,
-          paystubs_supported: true,
-          sync_duration_seconds: within(1.second).of(5.minutes)
-        ))
+          expect_any_instance_of(NewRelicEventTracker).to receive(:track)
+            .with("ApplicantFinishedPinwheelSync", anything, hash_including(
+              cbv_flow_id: cbv_flow.id,
+              invitation_id: cbv_flow.cbv_flow_invitation_id,
+              identity_success: true,
+              identity_supported: true,
+              income_success: true,
+              income_supported: true,
+              employment_success: true,
+              employment_supported: true,
+              paystubs_success: true,
+              paystubs_supported: true,
+              sync_duration_seconds: within(1.second).of(5.minutes)
+            ))
 
-        post :create, params: valid_params
+          post :create, params: valid_params
+        end
       end
     end
 
@@ -155,13 +161,14 @@ RSpec.describe Webhooks::Pinwheel::EventsController do
           "outcome" => "pending"
         }
       end
-      let(:payroll_account) { PayrollAccount.create!(cbv_flow: cbv_flow, supported_jobs: supported_jobs, pinwheel_account_id: account_id) }
+      let!(:payroll_account) { create(:payroll_account, cbv_flow: cbv_flow, supported_jobs: supported_jobs, pinwheel_account_id: account_id) }
 
-      it "updates the PayrollAccount object with an error state" do
-        expect { post :create, params: valid_params }
-          .to change { payroll_account.reload.paystubs_errored_at }
-          .from(nil)
-          .to(within(1.second).of(Time.now))
+      it "creates a WebhookEvent with 'pending' outcome" do
+        post :create, params: valid_params
+
+        expect(payroll_account.webhook_events)
+          .to include(have_attributes(event_name: "paystubs.fully_synced", event_outcome: "pending"))
+        expect(payroll_account.job_succeeded?("paystubs")).to be_falsey
       end
     end
   end

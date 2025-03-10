@@ -40,12 +40,11 @@ RSpec.describe Cbv::PinwheelDataHelper, type: :helper do
         has_income_data: true,
         has_employment_data: true,
         has_identity_data: true,
-        employment: employment,
-        income: incomes,
-        identity: identities,
-        payments: payments,
         total: 480720
       ))
+      expect(summarized[account_id][:employment]).to match(employment)
+      expect(summarized[account_id][:income]).to match(incomes)
+      expect(summarized[account_id][:identity]).to match(identities)
     end
   end
 end

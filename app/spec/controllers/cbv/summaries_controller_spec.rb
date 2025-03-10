@@ -5,15 +5,15 @@ RSpec.describe Cbv::SummariesController do
   include_context "gpg_setup"
 
   let(:supported_jobs) { %w[income paystubs employment identity] }
+  let(:errored_jobs) { [] }
   let(:flow_started_seconds_ago) { 300 }
-  let(:employment_errored_at) { nil }
   let(:cbv_applicant) { create(:cbv_applicant, case_number: "ABC1234") }
   let(:cbv_flow) do
     create(:cbv_flow,
       :with_pinwheel_account,
+      with_errored_jobs: errored_jobs,
       created_at: flow_started_seconds_ago.seconds.ago,
       supported_jobs: supported_jobs,
-      employment_errored_at: employment_errored_at,
       cbv_applicant: cbv_applicant
     )
   end
@@ -43,7 +43,7 @@ RSpec.describe Cbv::SummariesController do
       session[:cbv_flow_id] = cbv_flow.id
       stub_request_end_user_accounts_response
       stub_request_end_user_paystubs_response
-      stub_request_employment_info_response unless employment_errored_at
+      stub_request_employment_info_response unless errored_jobs.include?("employment")
       stub_request_income_metadata_response if supported_jobs.include?("income")
       stub_request_identity_response
     end
@@ -82,7 +82,7 @@ RSpec.describe Cbv::SummariesController do
 
       context "when a supported job errors" do
         let(:supported_jobs) { %w[income paystubs employment] }
-        let(:employment_errored_at) { Time.current.iso8601 }
+        let(:errored_jobs) { [ "employment" ] }
 
         it "renders pdf properly" do
           get :show, format: :pdf
