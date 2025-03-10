@@ -1,5 +1,3 @@
-:first_
-
 module ArgyleApiHelper
   def stub_request_items_response(userFolder)
     stub_request(:get, %r{#{ArgyleService::ITEMS_ENDPOINT}})
