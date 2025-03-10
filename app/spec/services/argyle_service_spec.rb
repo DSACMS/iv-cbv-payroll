@@ -226,49 +226,20 @@ RSpec.describe ArgyleService, type: :service do
         stub_request_identities_response("bob")
       end
 
-      it 'returns an array of ResponseObjects::Employment' do
-        employments = service.fetch_indentities(account: account_id)
-        expect(employments.length).to eq(1)
+      it 'returns an array of ResponseObjects:Identity' do
+        identities = service.fetch_identities(account: account_id)
+        expect(identities.length).to eq(1)
 
-        expect(employments[0]).to be_a(ResponseObjects::Employment)
+        expect(identities[0]).to be_a(ResponseObjects::Identity)
       end
 
-      it 'returns an array of ResponseObjects::Employment' do
-        employments = service.fetch_employment(account: account_id)
+      it 'returns expected attributes' do
+        identities = service.fetch_identities(account: account_id)
 
-        expect(employments[0]).to have_attributes(
+        expect(identities[0]).to have_attributes(
           account_id: "019571bc-2f60-3955-d972-dbadfe0913a8",
-          employer_name: "Lyft Driver",
-          start_date: "2022-04-07",
-          status: "employed",
+          full_name: "Bob Jones"
         )
-      end
-    end
-
-    context "for mapping employment status" do
-      it 'employment status inactive => furloughed' do
-        employment = ResponseObjects::Employment.from_argyle({
-          "employment_status" => "inactive"
-      })
-        expect(employment).to have_attributes(
-            status: "furloughed",
-          )
-      end
-      it 'employment status active => employed' do
-        employment = ResponseObjects::Employment.from_argyle({
-          "employment_status" => "active"
-      })
-        expect(employment).to have_attributes(
-            status: "employed",
-          )
-      end
-      it 'employment status terminated = terminated' do
-        employment = ResponseObjects::Employment.from_argyle({
-          "employment_status" => "terminated"
-      })
-        expect(employment).to have_attributes(
-            status: "terminated",
-          )
       end
     end
   end
