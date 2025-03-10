@@ -58,6 +58,13 @@ class ArgyleService
     json["results"].map { |identity_json| ResponseObjects::Income.from_argyle(identity_json) }
   end
 
+  # https://docs.argyle.com/api-reference/identities#retrieve
+  def fetch_identities(**params)
+    # todo: paginate
+    json = fetch_identities_api(**params)
+    json["results"].map { |identity_json| ResponseObjects::Identity.from_argyle(identity_json) }
+  end
+
   # Fetch all Argyle items
   # https://docs.argyle.com/api-reference/items#list
   def items(query = nil)
