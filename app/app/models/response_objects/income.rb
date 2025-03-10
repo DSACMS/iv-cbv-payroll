@@ -21,7 +21,7 @@ module ResponseObjects
       new(
         account_id: identities_response_body["account"],
         pay_frequency: identities_response_body["base_pay"]["period"],
-        compensation_amount: ArgyleMethods.format_currency(identities_response_body["base_pay"]["amount"]),
+        compensation_amount: ArgyleFormatMethods.format_currency(identities_response_body["base_pay"]["amount"]),
         compensation_unit: identities_response_body["base_pay"]["currency"],
       )
     end

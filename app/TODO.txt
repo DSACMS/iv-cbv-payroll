@@ -8,4 +8,4 @@ TODO on this branch:
 [ ] 6. Figure out missing fields for employer address/phone
 [ ] 7. Update view logic as necessary
 [x] 8. Verify that Argyle dollar amount strings are being rendered correctly
-[ ] 9. DRY ArgyleMethods.format_currency and format_date
+[x] 9. DRY ArgyleMethods.format_currency and format_date
