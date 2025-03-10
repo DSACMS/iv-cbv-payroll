@@ -1,8 +1,3 @@
-# TODO what else can I delete here?
-require "csv"
-require "tempfile"
-require "zlib"
-
 class Cbv::SummariesController < Cbv::BaseController
   include Cbv::PinwheelDataHelper
 

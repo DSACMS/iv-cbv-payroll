@@ -1,3 +1,7 @@
+require "csv"
+require "tempfile"
+require "zlib"
+
 class Cbv::SubmitsController < Cbv::BaseController
   include Cbv::PinwheelDataHelper
   include GpgEncryptable
