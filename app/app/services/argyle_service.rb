@@ -64,7 +64,6 @@ class ArgyleService
     @http.get(ITEMS_ENDPOINT, { q: query }).body
   end
 
-
   # https://docs.argyle.com/api-reference/users#retrieve
   def fetch_user_api(user:)
     @http.get(build_url("users/#{user}")).body
@@ -87,46 +86,44 @@ class ArgyleService
   def fetch_paystubs_api(**params)
     # TODO: paginate
     @http.get(PAYSTUBS_ENDPOINT, params).body
+  end
+
   def create_user
     @http.post("users").body
   end
-end
 
-# https://docs.argyle.com/api-reference/employments#list
-def fetch_employment_api(**params)
-  # json["data"].map { |paystub_json| ResponseObjects::Paystub.from_pinwheel(paystub_json) }
-  @http.get("employments", params).body
-end
+  # https://docs.argyle.com/api-reference/employments#list
+  def fetch_employment_api(**params)
+    # json["data"].map { |paystub_json| ResponseObjects::Paystub.from_pinwheel(paystub_json) }
+    @http.get("employments", params).body
+  end
 
-# TODO: refactor this into common function between argyle_service/pinwheel_service
-def build_url(endpoint)
-  @http.build_url(endpoint).to_s
-end
+  # TODO: refactor this into common function between argyle_service/pinwheel_service
+  def build_url(endpoint)
+    @http.build_url(endpoint).to_s
+  end
 
-def _tmp_fetch_all(user_id:, user_name:)
-  FileUtils.mkdir_p "spec/support/fixtures/argyle/#{user_id}"
+  def _tmp_fetch_all(user_id:, user_name:)
+    FileUtils.mkdir_p "spec/support/fixtures/argyle/#{user_id}"
 
-  File.open("spec/support/fixtures/argyle/#{user_id}/request_user.json", "wb") {
-   |f| f.puts(fetch_user_api(user: user_id).to_json)
-  }
+    File.open("spec/support/fixtures/argyle/#{user_id}/request_user.json", "wb") {
+    |f| f.puts(fetch_user_api(user: user_id).to_json)
+    }
 
-  File.open("spec/support/fixtures/argyle/#{user_id}/request_identity.json", "wb") {
-  |f| f.puts(fetch_identity_api(account: user_id).to_json)
-  }
+    File.open("spec/support/fixtures/argyle/#{user_id}/request_identity.json", "wb") {
+    |f| f.puts(fetch_identity_api(account: user_id).to_json)
+    }
 
-  File.open("spec/support/fixtures/argyle/#{user_id}/request_employment.json", "wb") {
-   |f| f.puts(fetch_employment_api(account:).to_json)
-  }
+    File.open("spec/support/fixtures/argyle/#{user_id}/request_employment.json", "wb") {
+    |f| f.puts(fetch_employment_api(account:).to_json)
+    }
 
-  File.open("spec/support/fixtures/argyle/#{user_id}/request_accounts.json", "wb") {
-   |f| f.puts(fetch_accounts_api(account:).to_json)
-  }
-  File.open("spec/support/fixtures/argyle/#{user_name}/request_paystubs.json", "wb") {
-    |f| f.puts(fetch_paystubs_api(user: user_id).to_json)
-    # , from_start_date: "2025-02-20", to_start_date: "2025-02-26").to_json)
-  }
-end
-
-def create_user
-  @http.post("users").body
+    File.open("spec/support/fixtures/argyle/#{user_id}/request_accounts.json", "wb") {
+    |f| f.puts(fetch_accounts_api(account:).to_json)
+    }
+    File.open("spec/support/fixtures/argyle/#{user_name}/request_paystubs.json", "wb") {
+      |f| f.puts(fetch_paystubs_api(user: user_id).to_json)
+      # , from_start_date: "2025-02-20", to_start_date: "2025-02-26").to_json)
+    }
+  end
 end
