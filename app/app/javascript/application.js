@@ -8,6 +8,14 @@ import "@uswds/uswds"
 import components from "@uswds/uswds/src/js/components"
 let initialLoad = true
 
+const reinitializeUSWDS = () => {
+  const target = document.body
+  Object.keys(components).forEach((key) => {
+    const behavior = components[key]
+    behavior.on(target)
+  })
+}
+
 document.addEventListener("turbo:load", () => {
   if (initialLoad) {
     // initial domready is handled by `import "uswds"` code
@@ -15,11 +23,11 @@ document.addEventListener("turbo:load", () => {
     return
   }
 
-  const target = document.body
-  Object.keys(components).forEach((key) => {
-    const behavior = components[key]
-    behavior.on(target)
-  })
+  reinitializeUSWDS()
+})
+
+document.addEventListener("turbo:render", () => {
+  reinitializeUSWDS()
 })
 
 document.addEventListener("turbo:frame-render", () => {
