@@ -39,8 +39,9 @@ Rails.application.routes.draw do
       resource :payment_details, only: %i[show update]
       resource :expired_invitation, only: %i[show]
 
-      # Utility route to clear your session; useful during development
-      resource :reset, only: %i[show]
+      # Session management
+      post "session/refresh", to: "sessions#refresh", as: :session_refresh
+      get "session/end", to: "sessions#end", as: :session_end
     end
 
     scope "/:client_agency_id", module: :caseworker, constraints: { client_agency_id: Regexp.union(Rails.application.config.client_agencies.client_agency_ids) } do
