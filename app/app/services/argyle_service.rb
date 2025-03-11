@@ -20,6 +20,7 @@ class ArgyleService
   ACCOUNTS_ENDPOINT = "accounts"
   EMPLOYMENTS_ENDPOINT = "employments"
   GIGS_ENDPOINT= "gigs"
+  SHIFTS_ENDPOINT= "shifts"
 
   def initialize(environment, api_key_id = nil, api_key_secret = nil)
     @api_key_id = api_key_id || ENVIRONMENTS.fetch(environment.to_sym)[:api_key_id]
@@ -70,6 +71,11 @@ class ArgyleService
     json["results"].map { |identity_json| ResponseObjects::Identity.from_argyle(identity_json) }
   end
 
+  def fetch_gigs(**params)
+    json = fetch_gigs_api(**params)
+    json["results"].map { |gigs_json| ResponseObjects::Gig.from_argyle(gigs_json) }
+  end
+
   # Fetch all Argyle items
   # https://docs.argyle.com/api-reference/items#list
   def items(query = nil)
@@ -100,10 +106,16 @@ class ArgyleService
     @http.get(PAYSTUBS_ENDPOINT, params).body
   end
 
-  # https://docs.argyle.com/api-reference/paystubs#list
+  # https://docs.argyle.com/api-reference/gigs#list
   def fetch_gigs_api(**params)
     # TODO: paginate
     @http.get(GIGS_ENDPOINT, params).body
+  end
+
+  # https://docs.argyle.com/api-reference/gigs#list
+  def fetch_shifts_api(**params)
+    # TODO: paginate
+    @http.get(SHIFTS_ENDPOINT, params).body
   end
 
   def create_user
