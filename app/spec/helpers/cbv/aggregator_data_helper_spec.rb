@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe Cbv::PinwheelDataHelper, type: :helper do
+RSpec.describe Cbv::AggregatorDataHelper, type: :helper do
   include PinwheelApiHelper
 
   let(:account_id) { "03e29160-f7e7-4a28-b2d8-813640e030d3" }

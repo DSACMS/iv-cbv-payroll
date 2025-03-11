@@ -1,5 +1,5 @@
 class CaseworkerMailer < ApplicationMailer
-  helper "cbv/pinwheel_data"
+  helper "cbv/aggregator_data"
   helper :view, :application
   helper_method :current_agency
   before_action :set_params

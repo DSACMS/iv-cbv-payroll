@@ -1,5 +1,5 @@
 class Cbv::PaymentDetailsController < Cbv::BaseController
-  include Cbv::PinwheelDataHelper
+  include Cbv::AggregatorDataHelper
 
   helper_method :employer_name,
     :gross_pay,

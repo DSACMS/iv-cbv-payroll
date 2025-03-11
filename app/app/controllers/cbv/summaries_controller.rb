@@ -3,12 +3,12 @@ require "tempfile"
 require "zlib"
 
 class Cbv::SummariesController < Cbv::BaseController
-  include Cbv::PinwheelDataHelper
+  include Cbv::AggregatorDataHelper
   include GpgEncryptable
   include TarFileCreatable
   include CsvHelper
 
-  helper "cbv/pinwheel_data"
+  helper "cbv/aggregator_data"
 
   helper_method :has_consent
   before_action :set_employments, only: %i[show update]

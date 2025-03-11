@@ -1,4 +1,4 @@
-module Cbv::PinwheelDataHelper
+module Cbv::AggregatorDataHelper
   include ViewHelper
 
   def set_payments(account_id = nil)
