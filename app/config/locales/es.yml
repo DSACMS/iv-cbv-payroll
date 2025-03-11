@@ -182,17 +182,32 @@ es:
         total_gross_income: 'Ingresos totales de los últimos 90 días, antes de impuestos: %{amount}'
         unknown: Desconocido
     submits:
-      consent_checkbox_label: Check this box to confirm that the information provided by you is true and complete to the best of your knowledge. You agree to inform %{agency_acronym} of any income not reflected in this report or any discrepancies found in the information gathered with this tool. You understand that providing accurate and complete information is your responsibility, and any false or omitted information may have legal consequences. For more information on your rights and responsibilities regarding private information you share with %{agency_acronym} please refer to the Rights and Responsibilities you signed at application, found on [Agency Website].By sending this report, you authorize its use for income verification by %{agency_acronym} and authorized personnel.
-      legal_header: Legal agreement
-      page_header: Submit your income report
-      share_report_button: Share my report with %{agency_acronym}
       show:
-        consent_checkbox_label: Consent checkbox label
-        legal_header: Legal header
-        page_header: Page header
-        share_report_button: Share report button
-        warning: Warning
-      warning: Your income report will be attached to your SNAP application.<br>You must check the legal agreement box to share your report.
+        legal_header: Legal agreement
+        page_header: Submit your income report
+        pdf:
+          agency_header_name:
+            ma: Massachusetts Department of Transitional Assistance
+            nyc: NYC Human Resources Administration
+            sandbox: CBV Test Agency
+          caseworker:
+            pay_period: Período de pago (%{pay_frequency})
+          client:
+            address: Dirección del empleador
+            agency_id_number: ID de la agencia del cliente
+            client_report_information: Información sobre el cliente y el informe
+            date_created: Fecha en que se creó el informe de ingresos
+            date_range: Rango de fechas para el informe de ingresos
+            description: Hemos recopilado información de sus ingresos con su consentimiento y la hemos enviado a %{agency_acronym}. Cualquier ingreso adicional que no pudo añadir a este informe debe compartirse por separado con %{agency_acronym}.
+            employment_payment_details: Detalles de empleo y pago
+            header: Informe de verificación de ingresos
+          shared:
+            client_information: Información del cliente
+            confirmation_code: Código de confirmación
+            employment_information: Información del empleo
+            report_details: Detalles del reporte
+        share_report_button: Share my report with %{agency_acronym}
+        warning: Your income report will be attached to your SNAP application.<br>You must check the legal agreement box to share your report.
     successes:
       show:
         back_to_agency: Vaya al sitio web de %{agency_short_name}
@@ -223,27 +238,6 @@ es:
         none_found: No encontramos ningún pago de este empleador en los últimos 90 días.
         none_found_confirmed: Hemos confirmado que no hay ningún pago de este empleador en los últimos 90 días. Esto sucede cuando el cliente no ha recibido ingresos por este trabajo durante ese tiempo.
         payment: Pago de %{amount} antes de pago impuestos en %{date}
-        pdf:
-          agency_header_name:
-            ma: Massachusetts Department of Transitional Assistance
-            nyc: NYC Human Resources Administration
-            sandbox: CBV Test Agency
-          caseworker:
-            pay_period: Período de pago (%{pay_frequency})
-          client:
-            address: Dirección del empleador
-            agency_id_number: ID de la agencia del cliente
-            client_report_information: Información sobre el cliente y el informe
-            date_created: Fecha en que se creó el informe de ingresos
-            date_range: Rango de fechas para el informe de ingresos
-            description: Hemos recopilado información de sus ingresos con su consentimiento y la hemos enviado a %{agency_acronym}. Cualquier ingreso adicional que no pudo añadir a este informe debe compartirse por separado con %{agency_acronym}.
-            employment_payment_details: Detalles de empleo y pago
-            header: Informe de verificación de ingresos
-          shared:
-            client_information: Información del cliente
-            confirmation_code: Código de confirmación
-            employment_information: Información del empleo
-            report_details: Detalles del reporte
         phone_number: Teléfono del empleador
         send_report: Comparta mi informe con %{agency_acronym}
         table_caption: 'Empleador %{number}: %{employer_name}'
