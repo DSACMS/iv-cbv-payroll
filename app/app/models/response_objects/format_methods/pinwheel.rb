@@ -1,4 +1,4 @@
-module PinwheelFormatMethods
+module ResponseObjects::FormatMethods::Pinwheel
   def self.hours(earnings)
     base_hours = earnings
       .filter { |e| e["category"] != "overtime" }

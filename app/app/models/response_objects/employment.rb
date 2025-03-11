@@ -26,7 +26,7 @@ module ResponseObjects
         employer_name: identity_response_body["employer"],
         start_date: identity_response_body["hire_date"],
         termination_date: identity_response_body["termination_date"],
-        status: ArgyleFormatMethods.format_employment_status(identity_response_body["employment_status"]),
+        status: ResponseObjects::FormatMethods::Argyle.format_employment_status(identity_response_body["employment_status"]),
       )
     end
   end
