@@ -16,6 +16,9 @@ class ArgyleService
   ITEMS_ENDPOINT = "items"
   PAYSTUBS_ENDPOINT = "paystubs"
   IDENTITIES_ENDPOINT = "identities"
+  USERS_ENDPOINT = "users"
+  ACCOUNTS_ENDPOINT = "accounts"
+  EMPLOYMENTS_ENDPOINT = "employments"
 
   def initialize(environment, api_key_id = nil, api_key_secret = nil)
     @api_key_id = api_key_id || ENVIRONMENTS.fetch(environment.to_sym)[:api_key_id]
@@ -74,20 +77,20 @@ class ArgyleService
 
   # https://docs.argyle.com/api-reference/users#retrieve
   def fetch_user_api(user:)
-    @http.get(build_url("users/#{user}")).body
+    @http.get(build_url("#{USERS_ENDPOINT}/#{user}")).body
   end
 
   # https://docs.argyle.com/api-reference/identities#list
   def fetch_identities_api(**params)
     # todo: paginate
-    @http.get("identities", params).body
+    @http.get(IDENTITIES_ENDPOINT, params).body
   end
 
   # https://docs.argyle.com/api-reference/accounts#list
   def fetch_accounts_api(**params)
     # TODO: paginate
     # json["data"].map { |paystub_json| ResponseObjects::Paystub.from_pinwheel(paystub_json) }
-    @http.get("accounts", params).body
+    @http.get(ACCOUNTS_ENDPOINT, params).body
   end
 
   # https://docs.argyle.com/api-reference/paystubs#list
@@ -97,13 +100,13 @@ class ArgyleService
   end
 
   def create_user
-    @http.post("users").body
+    @http.post(USERS_ENDPOINT).body
   end
 
   # https://docs.argyle.com/api-reference/employments#list
-  def fetch_employment_api(**params)
+  def fetch_employments_api(**params)
     # json["data"].map { |paystub_json| ResponseObjects::Paystub.from_pinwheel(paystub_json) }
-    @http.get("employments", params).body
+    @http.get(EMPLOYMENTS_ENDPOINT, params).body
   end
 
   # TODO: refactor this into common function between argyle_service/pinwheel_service
