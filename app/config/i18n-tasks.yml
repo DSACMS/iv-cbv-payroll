@@ -135,6 +135,7 @@ ignore_missing:
     - "cbv.submits.show.pdf.caseworker.*"
     # Pinwheel values that are only supported in English:
     - "pinwheel.*"
+    # Currently awaiting translation:
     - "cbv.expired_invitations.show.body_2"
     - "help.*"
     - "shared.header.help"
