@@ -2,6 +2,7 @@
 
 require "faraday"
 require "fileutils"
+require "json"
 
 class ArgyleService
   ENVIRONMENTS = {
@@ -110,27 +111,39 @@ class ArgyleService
     @http.build_url(endpoint).to_s
   end
 
-  def _tmp_fetch_all(user_id:, user_name:)
-    FileUtils.mkdir_p "spec/support/fixtures/argyle/#{user_id}"
+  def store_mock_response(responsePayload:, folderName: "other", fileName:)
+    FileUtils.mkdir_p "spec/support/fixtures/argyle/#{folderName}"
 
-    File.open("spec/support/fixtures/argyle/#{user_id}/request_user.json", "wb") {
-    |f| f.puts(fetch_user_api(user: user_id).to_json)
-    }
+    File.open("spec/support/fixtures/argyle/#{folderName}/#{fileName}.json", "wb") do
+      |f| f.puts(JSON.pretty_generate(responsePayload))
+    end
+  end
 
-    File.open("spec/support/fixtures/argyle/#{user_id}/request_identity.json", "wb") {
-    |f| f.puts(fetch_identity_api(account: user_id).to_json)
-    }
+  # Only for use in sandbox environment for test mocking
+  def fetch__and_store_mock_data_for_user(argyle_user_id:, folderName:)
+    store_mock_response(
+      folderName: folderName,
+      fileName: "request_user",
+      responsePayload: fetch_user_api(user: argyle_user_id))
 
-    File.open("spec/support/fixtures/argyle/#{user_id}/request_employment.json", "wb") {
-    |f| f.puts(fetch_employment_api(account:).to_json)
-    }
+    store_mock_response(
+      folderName: folderName,
+      fileName: "request_identity",
+      responsePayload: fetch_identities_api(user: argyle_user_id))
 
-    File.open("spec/support/fixtures/argyle/#{user_id}/request_accounts.json", "wb") {
-    |f| f.puts(fetch_accounts_api(account:).to_json)
-    }
-    File.open("spec/support/fixtures/argyle/#{user_name}/request_paystubs.json", "wb") {
-      |f| f.puts(fetch_paystubs_api(user: user_id).to_json)
-      # , from_start_date: "2025-02-20", to_start_date: "2025-02-26").to_json)
-    }
+    store_mock_response(
+      folderName: folderName,
+      fileName: "request_employment",
+      responsePayload: fetch_employment_api(user: argyle_user_id))
+
+    store_mock_response(
+      folderName: folderName,
+      fileName: "request_accounts",
+      responsePayload: fetch_accounts_api(user: argyle_user_id))
+
+    store_mock_response(
+      folderName: folderName,
+      fileName: "request_paystubs",
+      responsePayload: fetch_paystubs_api(user: argyle_user_id))
   end
 end
