@@ -247,5 +247,4 @@ class Cbv::SubmitsController < Cbv::BaseController
   rescue => ex
     Rails.logger.error "Unable to track event (ApplicantAccessedIncomeSummary): #{ex}"
   end
-
 end
