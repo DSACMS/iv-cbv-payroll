@@ -15,11 +15,18 @@ inherit_gem:
 AllCops:
   NewCops: enable
 
-# Overrides
-Layout/IndentationWidth:
+# Re-enable some Cops not included in the rubocop-rails-omakase configuration:
+# https://github.com/rails/rubocop-rails-omakase/blob/main/rubocop.yml
+Layout/EmptyLineBetweenDefs:
   Enabled: true
+Layout/EndAlignment:
+  EnforcedStyleAlignWith: keyword
 Layout/IndentationConsistency:
   Enabled: true
   EnforcedStyle: normal
-Layout/EndAlignment:
-  EnforcedStyleAlignWith: keyword
+Layout/IndentationWidth:
+  Enabled: true
+Layout/ParameterAlignment:
+  Enabled: true
+Naming/VariableName:
+  Enabled: true
