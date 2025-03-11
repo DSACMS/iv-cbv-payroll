@@ -19,6 +19,7 @@ class ArgyleService
   USERS_ENDPOINT = "users"
   ACCOUNTS_ENDPOINT = "accounts"
   EMPLOYMENTS_ENDPOINT = "employments"
+  GIGS_ENDPOINT= "gigs"
 
   def initialize(environment, api_key_id = nil, api_key_secret = nil)
     @api_key_id = api_key_id || ENVIRONMENTS.fetch(environment.to_sym)[:api_key_id]
@@ -97,6 +98,12 @@ class ArgyleService
   def fetch_paystubs_api(**params)
     # TODO: paginate
     @http.get(PAYSTUBS_ENDPOINT, params).body
+  end
+
+  # https://docs.argyle.com/api-reference/paystubs#list
+  def fetch_gigs_api(**params)
+    # TODO: paginate
+    @http.get(GIGS_ENDPOINT, params).body
   end
 
   def create_user
