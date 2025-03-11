@@ -139,21 +139,21 @@ RSpec.describe ArgyleService, type: :service do
     end
   end
 
-  describe '#fetch_employment' do
+  describe '#fetch_employments' do
     context "for Bob, a Uber driver" do
       before do
         stub_request_identities_response("bob")
       end
 
       it 'returns an array of ResponseObjects::Employment' do
-        employments = service.fetch_employment(account: account_id)
+        employments = service.fetch_employments(account: account_id)
         expect(employments.length).to eq(1)
 
         expect(employments[0]).to be_a(ResponseObjects::Employment)
       end
 
       it 'returns an array of ResponseObjects::Employment' do
-        employments = service.fetch_employment(account: account_id)
+        employments = service.fetch_employments(account: account_id)
 
         expect(employments[0]).to have_attributes(
           account_id: "019571bc-2f60-3955-d972-dbadfe0913a8",
@@ -194,21 +194,21 @@ RSpec.describe ArgyleService, type: :service do
     end
   end
 
-  describe '#fetch_income' do
+  describe '#fetch_incomes' do
     context "for Joe, a W2 employee" do
       before do
         stub_request_identities_response("joe")
       end
 
       it 'returns an array of ResponseObjects::Income' do
-        incomes = service.fetch_income(account: account_id)
+        incomes = service.fetch_incomes(account: account_id)
         expect(incomes.length).to eq(1)
 
         expect(incomes[0]).to be_a(ResponseObjects::Income)
       end
 
       it 'returns income object with expected attributes' do
-        incomes = service.fetch_income(account: account_id)
+        incomes = service.fetch_incomes(account: account_id)
 
         expect(incomes[0]).to have_attributes(
           account_id: "01956d62-18a0-090f-bc09-2ac44b7edf99",

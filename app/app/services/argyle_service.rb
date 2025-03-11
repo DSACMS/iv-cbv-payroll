@@ -50,13 +50,13 @@ class ArgyleService
     json["results"].map { |paystub_json| ResponseObjects::Paystub.from_argyle(paystub_json) }
   end
 
-  def fetch_employment(**params)
+  def fetch_employments(**params)
     # Note: we actually fetch Argyle's identity API instead of employment for the correct data
     json = fetch_identities_api(**params)
     json["results"].map { |identity_json| ResponseObjects::Employment.from_argyle(identity_json) }
   end
 
-  def fetch_income(**params)
+  def fetch_incomes(**params)
     # Note: we actually fetch Argyle's identity API instead of employment for the correct data
     json = fetch_identities_api(**params)
     json["results"].map { |identity_json| ResponseObjects::Income.from_argyle(identity_json) }
