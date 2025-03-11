@@ -1,6 +1,3 @@
-require_relative "ArgyleFormatMethods"
-require_relative "PinwheelFormatMethods"
-
 PAYSTUB_FIELDS = %i[
   account_id
   gross_pay_amount

@@ -1,5 +1,3 @@
-require_relative "ArgyleFormatMethods"
-
 EMPLOYMENT_FIELDS = %i[
   account_id
   employer_name

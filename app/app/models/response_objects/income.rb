@@ -1,5 +1,3 @@
-require_relative "ArgyleFormatMethods"
-
 INCOME_FIELDS = %i[
   account_id
   pay_frequency
