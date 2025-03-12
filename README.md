@@ -29,6 +29,9 @@ guide for an introduction to the framework.
    * [Ngrok](https://ngrok.com/downloads): brew install ngrok/ngrok/ngrok
      * Sign up for an account: https://dashboard.ngrok.com/signup
      * run `ngrok config add-authtoken {token goes here}`
+   * [pre-commit](https://pre-commit.com/)
+     * This configures your local git to run linters locally during a git commit. See [#coding-style-and-linters](#coding-style-and-linters) for a summary of which ones we use.
+     * Run `pre-commit install` to opt-into running these linters. (They will run during CI regardless.)
 1. Set up rbenv and nodenv:
    * `echo 'if which nodenv >/dev/null 2>/dev/null; then eval "$(nodenv init -)"; fi' >> ~/.zshrc`
    * `echo 'if which rbenv >/dev/null 2>/dev/null; then eval "$(rbenv init -)"; fi' >> ~/.zshrc`
@@ -193,14 +196,12 @@ This translation import system allows for efficient management of translations a
 
 * Tests: `bundle exec rspec`
 * E2E tests: `RUN_E2E_TESTS=1 bundle exec rspec spec/e2e/`
-* Ruby linter: `bundle exec rubocop`
 * Accessibility scan: `./bin/pa11y-scan`
 * Dynamic security scan: `./bin/owasp-scan`
+* Ruby style linter: `bundle exec rubocop`
 * Ruby static security scan: `bundle exec rake brakeman`
 * Ruby dependency checks: `bundle exec rake bundler:audit`
 * JS dependency checks: `bundle exec rake npm:audit`
-
-Run everything: `bundle exec rake`
 
 ## Manual Testing
 If you're new to CBV, here's a summary of how to get started navigating the app.
@@ -225,6 +226,15 @@ When new pages are added to the application, ensure they are added to `./.pa11yc
 To enable automatic ruby linting and terraform formatting on every `git commit`, run the command `pre-commit install`.
 
 This will run linters as configured by `.pre-commit-config.yml` before every commit. (For performance, it only runs linters on files that are being changed in the commit.)
+
+We use the following linters:
+
+* **Ruby**: Rubocop, ErbLint
+* **JavaScript**: Prettier
+* **Markdown**: MarkdownLint
+* **GH Actions**: ActionLint
+* **Bash**: ShellCheck
+* **Terraform**: `terraform fmt`
 
 ## CI/CD
 
@@ -342,9 +352,3 @@ All contributions to this project will be released under the CC0 dedication. By 
 # Core Team
 
 See [CODEOWNERS.md](./CODEOWNERS.md)
-
-
-
-
-
-
