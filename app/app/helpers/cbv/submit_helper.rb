@@ -1,2 +1,0 @@
-module Cbv::SubmitHelper
-end

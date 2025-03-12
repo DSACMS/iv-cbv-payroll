@@ -5,13 +5,13 @@
 </div>
 
 <div class="usa-prose">
-  <p><%= raw(t(".warning")) %></p>
+  <p><%= t(".warning_html") %></p>
 </div>
 
 <div class="usa-prose margin-y-5">
   <h2><%= t(".legal_header") %></h2>
   <%= form_with model: @cbv_flow, url: cbv_flow_submit_path, html: { class: "usa-form maxw-full" }, builder: UswdsFormBuilder, method: "patch" do |f| %>
-  <%= f.check_box :consent_to_authorized_use, { 'label': raw(t(".consent_checkbox_label", agency_acronym: current_agency.agency_short_name)) } %>
+  <%= f.check_box :consent_to_authorized_use, { 'label': t(".consent_checkbox_label_html", agency_acronym: current_agency.agency_short_name) } %>
   <%= f.submit t(".share_report_button", agency_acronym: current_agency.agency_short_name), class: "margin-top-5" %>
   <% end %>
 </div>
