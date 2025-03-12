@@ -54,7 +54,9 @@ class Api::InvitationsController < ApplicationController
   end
 
   def errors_to_json(errors)
-    # Generates a structured error response with an errors object
+    # Generates a Hash of attribute => error_message and translates the
+    # internal names of objects (cbv_applicant) to the external names
+    # (agency_partner_metadata)
     error_messages = errors.map do |error|
       next if error.attribute == :cbv_applicant
 
