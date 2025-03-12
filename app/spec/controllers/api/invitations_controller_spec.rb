@@ -11,6 +11,9 @@ RSpec.describe Api::InvitationsController do
     let(:valid_params) do
       attributes_for(:cbv_flow_invitation, :ma).tap do |params|
         params[:agency_partner_metadata] = attributes_for(:cbv_applicant, :ma)
+        # ensure that client_agency_id is not considered a valid param. it should be inferred from the api token
+        params[:agency_partner_metadata].delete(:client_agency_id)
+        params.delete(:client_agency_id)
       end
     end
 
@@ -28,10 +31,19 @@ RSpec.describe Api::InvitationsController do
       expect(JSON.parse(response.body).keys).to include("tokenized_url")
     end
 
+    it "creates an invitation with the client_agency_id from the api token" do
+      expect do
+        post :create, params: valid_params.merge(client_agency_id: 'AAA')
+      end.to change(CbvFlowInvitation, :count).by(1)
+        .and change(CbvApplicant, :count).by(1)
+
+      invitation = CbvFlowInvitation.last
+      expect(invitation.client_agency_id).to eq("ma")
+    end
+
     context "invalid params" do
       let(:invalid_params) do
         valid_params[:agency_partner_metadata].delete(:first_name)
-        valid_params.delete(:client_agency_id)
         valid_params
       end
 
@@ -49,7 +61,6 @@ RSpec.describe Api::InvitationsController do
         error_fields = parsed_response["errors"].map { |e| e["field"] }
 
         expect(error_fields).not_to include("cbv_applicant")
-        expect(error_fields).to include("client_agency_id")
         expect(error_fields).to include("agency_partner_metadata.first_name")
       end
     end
