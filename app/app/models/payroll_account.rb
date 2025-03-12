@@ -10,10 +10,14 @@ class PayrollAccount < ApplicationRecord
   end
 
   belongs_to :cbv_flow
+  has_many :webhook_events
 
-  after_update_commit {
-    I18n.with_locale(cbv_flow.cbv_flow_invitation.language) do
-      broadcast_replace target: self, partial: "cbv/synchronizations/indicators", locals: { pinwheel_account: self }
+  private
+
+  def find_webhook_event(event_name, event_outcome = nil)
+    webhook_events.find do |webhook_event|
+      webhook_event.event_name == event_name &&
+        (event_outcome.nil? || webhook_event.event_outcome == event_outcome.to_s)
     end
-  }
+  end
 end
