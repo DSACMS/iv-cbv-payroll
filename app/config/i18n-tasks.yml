@@ -136,11 +136,11 @@ ignore_missing:
     # Pinwheel values that are only supported in English:
     - "pinwheel.*"
     # Currently awaiting translation:
-    - "cbv.expired_invitations.show.body_2"
-    - "help.*"
-    - "shared.header.help"
-    - "session_timeout.*"
-    - "pages.{error_404,error_500}.*"
+    # - "cbv.expired_invitations.show.body_2" # FFS-2471
+    # - "help.*" # FFS-2471
+    # - "shared.header.help" # FFS-2471
+    # - "session_timeout.*" # FFS-2471
+    # - "pages.{error_404,error_500}.*" # FFS-2471
 # - 'errors.messages.{accepted,blank,invalid,too_short,too_long}'
 # - '{devise,simple_form}.*'
 
