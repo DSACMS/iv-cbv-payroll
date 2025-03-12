@@ -81,40 +81,5 @@ RSpec.describe Api::InvitationsController do
         expect(parsed_response["errors"].map { |e| e["field"] }).to include("language")
       end
     end
-
-    context "with email_address outside of agency_partner_metadata" do
-      let(:params_with_email_outside) do
-        params = valid_params.deep_dup
-        params[:email_address] = "direct@example.com"
-        params
-      end
-
-      it "uses the provided email_address" do
-        post :create, params: params_with_email_outside
-
-        expect(response).to have_http_status(:created)
-        invitation = CbvFlowInvitation.last
-        expect(invitation.email_address).to eq("direct@example.com")
-      end
-    end
-
-    context "with application_date instead of snap_application_date" do
-      let(:params_with_application_date) do
-        params = valid_params.deep_dup
-        params[:agency_partner_metadata].delete(:snap_application_date)
-        # Use ISO format (YYYY-MM-DD) to avoid ambiguity
-        params[:application_date] = "2025-01-03"
-        params
-      end
-
-      it "maps application_date to snap_application_date" do
-        post :create, params: params_with_application_date
-
-        expect(response).to have_http_status(:created)
-        invitation = CbvFlowInvitation.last
-        # January 3, 2025
-        expect(invitation.cbv_applicant.snap_application_date).to eq(Date.new(2025, 1, 3))
-      end
-    end
   end
 end

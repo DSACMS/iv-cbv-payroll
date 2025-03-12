@@ -22,28 +22,15 @@ class Api::InvitationsController < ApplicationController
   # can these be inferred from the model?
   def cbv_flow_invitation_params
     if (applicant_attributes = params.delete(:agency_partner_metadata))
-      # Move email_address out of agency_partner_metadata if it exists there
-      if applicant_attributes[:email_address].present?
-        params[:email_address] = applicant_attributes.delete(:email_address)
-      end
-      
-      # Handle application_date to snap_application_date mapping
-      if params[:application_date].present?
-        applicant_attributes[:snap_application_date] = params.delete(:application_date)
-      end
-      
       params[:cbv_applicant_attributes] = applicant_attributes.merge(client_agency_id: params[:client_agency_id])
     end
-    
-    # Default to current user's email if not provided
-    params[:email_address] ||= @current_user.email
+    params[:email_address] = @current_user.email
 
     params.permit(
       :language,
       :email_address,
       :client_agency_id,
       :user_id,
-      :application_date,
       cbv_applicant_attributes: [
         :first_name,
         :middle_name,
