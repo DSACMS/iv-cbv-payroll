@@ -53,10 +53,4 @@
   <%= get_comment_by_account_id(account_id).dig("comment") != "" ? get_comment_by_account_id(account_id).dig("comment") : t("shared.not_applicable") %>
   <% end %>
 
-<%= form_with model: @cbv_flow, url: cbv_flow_summary_path, html: { class: "usa-form maxw-full" }, builder: UswdsFormBuilder, method: "patch" do |f| %>
-  <% unless has_consent %>
-    <h2><%= t(".consent_to_authorize_use_title") %></h2>
-<%= f.check_box(:consent_to_authorized_use, { 'label': agency_translation(".consent_to_authorize_use_html") }) %>
-<% end %>
-  <%= f.submit t(".send_report", agency_acronym: current_agency.agency_short_name), class: "margin-top-5" %>
-<% end %>
+<%= button_to t("continue"), cbv_flow_submit_path, class: "btn btn-primary usa-button margin-y-5", method: :get %>

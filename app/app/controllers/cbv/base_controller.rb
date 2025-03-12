@@ -63,6 +63,8 @@ class Cbv::BaseController < ApplicationController
     when "cbv/payment_details"
       cbv_flow_add_job_path
     when "cbv/summaries"
+      cbv_flow_submits_path
+    when "cbv/submits"
       cbv_flow_success_path
     end
   end
