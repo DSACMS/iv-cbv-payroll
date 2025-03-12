@@ -150,7 +150,7 @@ es:
     payment_details:
       show:
         additional_information_header: Comentarios adicionales (opcional)
-        additional_information_label: Comparta cualquier comentario o información adicional sobre los detalles de pago anteriores que desea que %{agency_acronym} conozca. Por ejemplo, puede compartir si la información es inexacta o si ya no trabaja en ese empleo.
+        additional_information_label:
         continue: Continuar
         deductions: 'Deducción: %{category}'
         employment_end_date: Fecha de finalización del empleo
@@ -158,8 +158,8 @@ es:
         employment_start_date: Fecha de inicio del empleo
         employment_status: Estatus del empleo
         frequency_unknown: Frecuencia desconocida
-        header: Su información de pago de %{employer_name}
-        header_no_employer_name: Su información de pago por parte de su empleador
+        header:
+        header_no_employer_name:
         hourly_rate: Monto de compensación
         hours:
           one: "%{count} hora"
@@ -177,27 +177,27 @@ es:
         pay_period_value: "%{start_date} al %{end_date}"
         payment_hours: "%{amount} horas"
         payments_and_deductions_table_header: Pagos y deducciones
-        subheader: Hemos recopilado sus registros de pago de los últimos 90 días, del %{start_date} al %{end_date}. Si falta información o esta es inexacta, añada un comentario para %{agency_acronym}. Esta información se incluirá en su informe de ingresos.
+        subheader:
         total_gross_description: Estos son sus ingresos brutos totales provenientes de su trabajo, antes del pago de impuestos, beneficios y deducciones que se restaron de su cheque de pago.
         total_gross_income: 'Ingresos totales de los últimos 90 días, antes de impuestos: %{amount}'
         unknown: Desconocido
     submits:
       show:
-        additional_information_title: Is there anything else you'd like your caseworker to know about your income?
+        additional_information_title:
         application_or_recertification_date:
-          ma: Date client was contacted
-          nyc: SNAP application or recertification interview date
-          sandbox: SNAP application or recertification interview date
-        consent_checkbox_label_html: Check this box to confirm that the information provided by you is true and complete to the best of your knowledge. You agree to inform %{agency_acronym} of any income not reflected in this report or any discrepancies found in the information gathered with this tool. You understand that providing accurate and complete information is your responsibility, and any false or omitted information may have legal consequences. For more information on your rights and responsibilities regarding private information you share with %{agency_acronym} please refer to the Rights and Responsibilities you signed at application, found on the %{agency_acronym} website.<br><br>By sending this report, you authorize its use for income verification by %{agency_acronym} and authorized personnel.
-        legal_header: Legal agreement
-        none_found: We didn't find any payments from this employer in the past 90 days.
-        none_found_confirmed: We've confirmed that there are no payments from this employer in the past 90 days. This happens when the client hasn't received income from this job during that time.
-        page_header: Submit your income report
+          ma:
+          nyc:
+          sandbox:
+        consent_checkbox_label_html:
+        legal_header:
+        none_found:
+        none_found_confirmed:
+        page_header:
         pdf:
           agency_header_name:
-            ma: Massachusetts Department of Transitional Assistance
-            nyc: NYC Human Resources Administration
-            sandbox: CBV Test Agency
+            ma:
+            nyc:
+            sandbox:
           caseworker:
             pay_period: Período de pago (%{pay_frequency})
           client:
@@ -214,11 +214,11 @@ es:
             confirmation_code: Código de confirmación
             employment_information: Información del empleo
             report_details: Detalles del reporte
-        share_report_button: Share my report with %{agency_acronym}
-        table_caption_no_name: Employer %{number}
-        warning_html: Your income report will be attached to your SNAP application.<br>You must check the legal agreement box to share your report.
+        share_report_button:
+        table_caption_no_name:
+        warning_html:
       update:
-        consent_to_authorize_warning: Please check the legal agreement box to share your report.
+        consent_to_authorize_warning:
     successes:
       show:
         back_to_agency: Vaya al sitio web de %{agency_short_name}
@@ -241,8 +241,8 @@ es:
           ma: Marque esta casilla para confirmar que, a su leal saber y entender, la información proporcionada por usted es verdadera y completa. Usted se compromete a informar al DTA sobre cualquier ingreso no reflejado en este informe o cualquier discrepancia hallada en la información recopilada con esta herramienta. Usted entiende que suministrar información precisa y completa es su responsabilidad, y que cualquier información falsa u omitida puede tener consecuencias legales. Para obtener más información sobre sus derechos y responsabilidades en relación a la información privada que comparte con el DTA, consulte los Derechos y Responsabilidades que firmó en la solicitud, que se encuentran en <a href="https://www.mass.gov/lists/department-of-transitional-assistance-rights-responsibilities-and-penalties">Mass.gov</a>. <br/><br/>Al enviar este informe, usted autoriza el uso de esta verificación de ingresos por parte de personal autorizado del DTA.
           nyc: Marque esta casilla para confirmar que, a su leal saber y entender, la información proporcionada por usted es verdadera y completa. Usted accede a informar a la Administración de Recursos Humanos (HRA) de la Ciudad de Nueva York (NYC, por sus siglas en inglés) de cualquier ingreso no reflejado en este informe o cualquier discrepancia encontrada en la información recopilada con esta herramienta. Usted entiende que suministrar información precisa y completa es su responsabilidad, y que cualquier información falsa u omitida puede tener consecuencias legales.<br/><br/>Al enviar este informe, autoriza su uso para la verificación de los ingresos por parte del personal autorizado de la HRA.
           sandbox: Marque esta casilla para confirmar que, a su leal saber y entender, la información proporcionada por usted es verdadera y completa. Usted se compromete a informar a la Agencia de pruebas CBV sobre cualquier ingreso no reflejado en este informe o cualquier discrepancia hallada en la información recopilada con esta herramienta. Usted entiende que suministrar información precisa y completa es su responsabilidad, y que cualquier información falsa u omitida puede tener consecuencias legales. <br/><br/>Al enviar este informe, autoriza su uso para la verificación de los ingresos por parte del personal autorizado del CBV.
-        description: The report below has your income from the past 90 days, from  %{start_date} to %{end_date}. Please review it before sending.
-        header: Review your income report
+        description:
+        header:
         none_found: No encontramos ningún pago de este empleador en los últimos 90 días.
         payment: Pago de %{amount} antes de pago impuestos en %{date}
         phone_number: Teléfono del empleador
@@ -250,8 +250,8 @@ es:
         table_caption_no_name: Empleador %{number}
         total_income_from: 'Ingresos totales provenientes de %{employer_name}, antes del pago de impuestos: %{amount}'
         total_income_from_no_employer_name: 'Ingresos totales antes del pago de impuestos: %{amount}'
-        total_payments: 'Total income from past 90 days, before taxes: %{amount}'
-        total_payments_desc: This is the total gross income from your job(s) before taxes, benefits, and deductions were taken out.
+        total_payments:
+        total_payments_desc:
     synchronization_failures:
       show:
         back_to_search: Volver a la búsqueda de empleadores
@@ -367,7 +367,7 @@ es:
   shared:
     agency_full_name:
       ma: Departamento de Asistencia Transitoria de Massachusetts
-      nyc: New York City Human Resources Administration
+      nyc:
       sandbox: Agencia de pruebas CBV
     app_name:
       ma: DTA Connect
