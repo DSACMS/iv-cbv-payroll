@@ -3,7 +3,7 @@ require "tempfile"
 require "zlib"
 
 class Cbv::SubmitsController < Cbv::BaseController
-  include Cbv::PinwheelDataHelper
+  include Cbv::AggregatorDataHelper
   include GpgEncryptable
   include TarFileCreatable
   include CsvHelper
