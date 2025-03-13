@@ -46,4 +46,38 @@ class ArgyleService
   def create_user
     @http.post("users").body
   end
+
+  # Webhook management methods
+  def fetch_webhook_subscriptions
+    @http.get("webhooks").body
+  end
+
+  def create_webhook_subscription(events, url, secret = nil)
+    payload = {
+      events: events,
+      name: "Automated subscription",
+      url: url
+    }
+    payload[:secret] = secret if secret.present?
+
+    @http.post("webhooks", payload).body
+  end
+
+  def delete_webhook_subscription(id)
+    @http.delete("webhooks/#{id}").body
+  end
+
+  def generate_signature_digest(payload, secret)
+    OpenSSL::HMAC.hexdigest(OpenSSL::Digest.new("sha512"), secret, payload)
+  end
+
+  def verify_signature(signature, payload, secret)
+    expected = generate_signature_digest(payload, secret)
+    ActiveSupport::SecurityUtils.secure_compare(signature, expected)
+  end
+
+  # Property to access the webhook secret
+  def webhook_secret
+    @api_key_secret
+  end
 end

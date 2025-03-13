@@ -1,0 +1,13 @@
+{
+  "data": {
+    "account": "3c469df3-7386-4fd9-a2b8-95bdd73b217c",
+    "available_count": "150",
+    "available_from": "2024-03-13",
+    "available_to": "2025-03-13",
+    "user": "29bddba7-3ec5-4931-a87a-da2df10a6978"
+  },
+  "event": "gigs.fully_synced",
+  "name": "test_webhook",
+  "controller": "webhooks/argyle/events",
+  "action": "create"
+}

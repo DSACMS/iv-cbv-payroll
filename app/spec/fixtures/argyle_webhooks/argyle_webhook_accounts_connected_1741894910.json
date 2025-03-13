@@ -1,0 +1,18 @@
+{
+  "data": {
+    "resource": {
+      "connection": {
+        "status": "connected"
+      },
+      "id": "e321162e-010c-4a66-9112-b971c0fac053",
+      "providers_connected": [
+        "Sample Provider"
+      ]
+    },
+    "user": "9cb65df9-2668-4819-8f47-a05dcd1a3a9c"
+  },
+  "event": "accounts.connected",
+  "name": "test_webhook",
+  "controller": "webhooks/argyle/events",
+  "action": "create"
+}

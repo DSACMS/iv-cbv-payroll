@@ -56,6 +56,10 @@ Rails.application.routes.draw do
     namespace :pinwheel do
       resources :events, only: :create
     end
+
+    namespace :argyle do
+      resources :events, only: :create
+    end
   end
 
   namespace :api do
