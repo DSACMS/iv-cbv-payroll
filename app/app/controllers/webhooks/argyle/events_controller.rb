@@ -11,14 +11,14 @@ class Webhooks::Argyle::EventsController < ApplicationController
   def create
     # Record webhook for testing if in test environment
     record_webhook_for_testing if Rails.env.test?
-    
+
     # Handle different event types
     case params["event"]
     when "accounts.connected"
       handle_account_connected
     when "gigs.fully_synced"
       handle_gigs_fully_synced
-    # Handle other event types as needed
+      # Handle other event types as needed
     end
 
     # Record the webhook event
@@ -46,11 +46,11 @@ class Webhooks::Argyle::EventsController < ApplicationController
 
   def handle_account_connected
     account_id = params.dig("data", "resource", "id")
-    
+
     # If we already have a CbvFlow from set_cbv_flow, use that
     if @cbv_flow
       @payroll_account = @cbv_flow.payroll_accounts.find_or_create_by(
-        type: :argyle, 
+        type: :argyle,
         pinwheel_account_id: account_id
       ) do |new_payroll_account|
         new_payroll_account.supported_jobs = determine_supported_jobs
@@ -60,7 +60,7 @@ class Webhooks::Argyle::EventsController < ApplicationController
       @cbv_flow = CbvFlow.joins("LEFT JOIN payroll_accounts ON payroll_accounts.cbv_flow_id = cbv_flows.id AND payroll_accounts.type = 'argyle'")
                          .where("payroll_accounts.id IS NULL")
                          .first
-      
+
       if @cbv_flow
         @payroll_account = @cbv_flow.payroll_accounts.create!(
           type: :argyle,
@@ -77,17 +77,17 @@ class Webhooks::Argyle::EventsController < ApplicationController
     # Find the appropriate payroll account based on the account ID in the webhook
     account_id = params.dig("data", "account")
     @payroll_account = PayrollAccount.find_by(type: :argyle, pinwheel_account_id: account_id)
-    
+
     # If we found the payroll account but not the cbv_flow, set it now
     @cbv_flow ||= @payroll_account&.cbv_flow
   end
 
   def authorize_webhook
     signature = request.headers["X-Argyle-Signature"]
-    
+
     # Use the configured secret or a dummy one
     secret = @argyle&.webhook_secret || DUMMY_SECRET
-    
+
     unless verify_signature(signature, secret)
       render json: { error: "Invalid signature" }, status: :unauthorized
     end
@@ -95,7 +95,7 @@ class Webhooks::Argyle::EventsController < ApplicationController
 
   def verify_signature(signature, secret)
     return true if Rails.env.test? && !signature.present?
-    
+
     @argyle.verify_signature(signature, request.raw_post, secret)
   end
 
@@ -103,13 +103,13 @@ class Webhooks::Argyle::EventsController < ApplicationController
     # Extract user ID and account ID from the webhook
     user_id = params.dig("data", "user")
     account_id = params.dig("data", "resource", "id") || params.dig("data", "account")
-    
+
     if account_id.present?
       # First try to find an existing PayrollAccount with this account ID
       payroll_account = PayrollAccount.find_by(type: :argyle, pinwheel_account_id: account_id)
       @cbv_flow = payroll_account&.cbv_flow
     end
-    
+
     # If we couldn't find a CbvFlow and this is an accounts.connected event,
     # we need to find all CbvFlows that don't have an Argyle account yet
     if @cbv_flow.nil? && params["event"] == "accounts.connected"
@@ -141,7 +141,7 @@ class Webhooks::Argyle::EventsController < ApplicationController
 
   def track_events
     return unless @webhook_event
-    
+
     if @webhook_event.event_name == "accounts.connected"
       event_logger.track("ApplicantCreatedArgyleAccount", request, {
         cbv_applicant_id: @cbv_flow.cbv_applicant_id,
@@ -171,9 +171,9 @@ class Webhooks::Argyle::EventsController < ApplicationController
 
   def update_synchronization_page
     return unless @payroll_account
-    
+
     @payroll_account.broadcast_replace(
-      partial: "cbv/synchronizations/indicators", 
+      partial: "cbv/synchronizations/indicators",
       locals: { argyle_account: @payroll_account }
     )
   rescue => ex
@@ -182,13 +182,13 @@ class Webhooks::Argyle::EventsController < ApplicationController
 
   def record_webhook_for_testing
     return unless Rails.env.test?
-    
+
     filename = "argyle_webhook_#{params["event"].gsub(".", "_")}_#{Time.now.to_i}.json"
     path = Rails.root.join("spec/fixtures/argyle_webhooks", filename)
-    
+
     FileUtils.mkdir_p(File.dirname(path))
     File.write(path, JSON.pretty_generate(params.to_unsafe_h))
-    
+
     Rails.logger.info "✅ Recorded Argyle webhook to #{path} for testing"
   end
 end
