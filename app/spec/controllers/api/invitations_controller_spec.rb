@@ -25,7 +25,7 @@ RSpec.describe Api::InvitationsController do
         .and change(CbvApplicant, :count).by(1)
 
       expect(response).to have_http_status(:created)
-      expect(JSON.parse(response.body).keys).to include("url")
+      expect(JSON.parse(response.body).keys).to include("tokenized_url")
     end
 
     context "invalid params" do
@@ -35,14 +35,22 @@ RSpec.describe Api::InvitationsController do
         valid_params
       end
 
-      it "returns unprocessable entity" do
+      it "returns unprocessable entity with structured error response" do
         post :create, params: invalid_params
 
         expect(response).to have_http_status(:unprocessable_entity)
         parsed_response = JSON.parse(response.body)
-        expect(parsed_response.keys).not_to include("cbv_applicant")
-        expect(parsed_response.keys).to include("client_agency_id")
-        expect(parsed_response.keys).to include("agency_partner_metadata.first_name")
+
+        # Check for structured error response
+        expect(parsed_response).to have_key("errors")
+        expect(parsed_response["errors"]).to be_an(Array)
+
+        # Extract error fields for easier testing
+        error_fields = parsed_response["errors"].map { |e| e["field"] }
+
+        expect(error_fields).not_to include("cbv_applicant")
+        expect(error_fields).to include("client_agency_id")
+        expect(error_fields).to include("agency_partner_metadata.first_name")
       end
     end
 
@@ -68,7 +76,9 @@ RSpec.describe Api::InvitationsController do
         post :create, params: invalid_user_params
 
         expect(response).to have_http_status(:unprocessable_entity)
-        expect(JSON.parse(response.body).keys).to include("language")
+        parsed_response = JSON.parse(response.body)
+        expect(parsed_response).to have_key("errors")
+        expect(parsed_response["errors"].map { |e| e["field"] }).to include("language")
       end
     end
   end

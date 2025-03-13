@@ -13,7 +13,7 @@ class Api::InvitationsController < ApplicationController
     end
 
     render json: {
-      url: @cbv_flow_invitation.to_url,
+      tokenized_url: @cbv_flow_invitation.to_url,
       expiration_date: @cbv_flow_invitation.expires_at,
       language: @cbv_flow_invitation.language
     }, status: :created
@@ -57,7 +57,7 @@ class Api::InvitationsController < ApplicationController
     # Generates a Hash of attribute => error_message and translates the
     # internal names of objects (cbv_applicant) to the external names
     # (agency_partner_metadata)
-    errors.map do |error|
+    error_messages = errors.map do |error|
       next if error.attribute == :cbv_applicant
 
       error_message = error.message
@@ -67,10 +67,12 @@ class Api::InvitationsController < ApplicationController
         prefix, attribute_name = error.attribute.to_s.split(".")
         prefix = "agency_partner_metadata" if prefix == "cbv_applicant"
 
-        [ "#{prefix}.#{attribute_name}", error_message ]
+        { field: "#{prefix}.#{attribute_name}", message: error_message }
       else
-        [ error.attribute, error_message ]
+        { field: error.attribute, message: error_message }
       end
-    end.compact.to_h
+    end.compact
+
+    { errors: error_messages }
   end
 end
