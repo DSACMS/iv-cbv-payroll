@@ -13,7 +13,7 @@ class Cbv::SubmitsController < Cbv::BaseController
   before_action :set_payments, only: %i[show update]
   before_action :set_identities, only: %i[show update]
 
-  helper "cbv/pinwheel_data"
+  helper "cbv/aggregator_data"
 
   helper_method :has_consent
   skip_before_action :ensure_cbv_flow_not_yet_complete, if: -> { params[:format] == "pdf" }
