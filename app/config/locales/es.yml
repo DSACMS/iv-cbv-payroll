@@ -196,8 +196,8 @@ es:
         pdf:
           agency_header_name:
             ma: Departamento de Asistencia Transitoria de Massachusetts
-            nyc: La Administración de Recursos Humanos
-            sandbox: CBV Test Agency
+            nyc: Administración de Recursos Humanos
+            sandbox: Agencia de pruebas CBV
           caseworker:
             pay_period: Período de pago (%{pay_frequency})
           client:
