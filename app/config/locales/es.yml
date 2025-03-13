@@ -181,35 +181,18 @@ es:
         total_gross_description: Estos son sus ingresos brutos totales provenientes de su trabajo, antes del pago de impuestos, beneficios y deducciones que se restaron de su cheque de pago.
         total_gross_income: 'Ingresos totales de los últimos 90 días, antes de impuestos: %{amount}'
         unknown: Desconocido
-    successes:
+    submits:
       show:
-        back_to_agency: Vaya al sitio web de %{agency_short_name}
-        caseworker_received: Hemos enviado su información de pago a %{agency_acronym}. Ellos lo contactarán si se necesita alguna información adicional.
-        check_status:
-          ma: Para comprobar el estado de su recertificación de SNAP puede visitar el sitio web del DTA.
-          nyc: Para comprobar el estado de su solicitud o recertificación de SNAP puede visitar el sitio web del HRA.
-        confirmation_code_html: "<strong>Código de confirmación </strong>: %{confirmation_code}"
-        download: Descargue una copia del informe
-        header: Su informe de ingresos ha sido compartido de forma exitosa con %{agency_acronym}
-        if_it_didnt_work: Si usted no logró encontrar un empleador, o uno de sus empleadores no tiene un proveedor de nómina en línea, por favor, suministre su información de pago directamente a %{agency_acronym}.
-    summaries:
-      show:
-        additional_comments: Comentarios adicionales
-        additional_information_title: "¿Hay algo más que desea que su trabajador social sepa sobre sus ingresos?"
+        additional_information_title: Is there anything else you'd like your caseworker to know about your income?
         application_or_recertification_date:
-          ma: Fecha de la entrevista de recertificación
-          nyc: Fecha de solicitud o recertificación
-          sandbox: Fecha de solicitud o recertificación
-        consent_to_authorize_use_html:
-          ma: Marque esta casilla para confirmar que, a su leal saber y entender, la información proporcionada por usted es verdadera y completa. Usted se compromete a informar al DTA sobre cualquier ingreso no reflejado en este informe o cualquier discrepancia hallada en la información recopilada con esta herramienta. Usted entiende que suministrar información precisa y completa es su responsabilidad, y que cualquier información falsa u omitida puede tener consecuencias legales. Para obtener más información sobre sus derechos y responsabilidades en relación a la información privada que comparte con el DTA, consulte los Derechos y Responsabilidades que firmó en la solicitud, que se encuentran en <a href="https://www.mass.gov/lists/department-of-transitional-assistance-rights-responsibilities-and-penalties">Mass.gov</a>. <br/><br/>Al enviar este informe, usted autoriza el uso de esta verificación de ingresos por parte de personal autorizado del DTA.
-          nyc: Marque esta casilla para confirmar que, a su leal saber y entender, la información proporcionada por usted es verdadera y completa. Usted accede a informar a la Administración de Recursos Humanos (HRA) de la Ciudad de Nueva York (NYC, por sus siglas en inglés) de cualquier ingreso no reflejado en este informe o cualquier discrepancia encontrada en la información recopilada con esta herramienta. Usted entiende que suministrar información precisa y completa es su responsabilidad, y que cualquier información falsa u omitida puede tener consecuencias legales.<br/><br/>Al enviar este informe, autoriza su uso para la verificación de los ingresos por parte del personal autorizado de la HRA.
-          sandbox: Marque esta casilla para confirmar que, a su leal saber y entender, la información proporcionada por usted es verdadera y completa. Usted se compromete a informar a la Agencia de pruebas CBV sobre cualquier ingreso no reflejado en este informe o cualquier discrepancia hallada en la información recopilada con esta herramienta. Usted entiende que suministrar información precisa y completa es su responsabilidad, y que cualquier información falsa u omitida puede tener consecuencias legales. <br/><br/>Al enviar este informe, autoriza su uso para la verificación de los ingresos por parte del personal autorizado del CBV.
-        consent_to_authorize_use_title: Acuerdo legal
-        description: El siguiente informe contiene sus ingresos de los últimos 90 días, del %{start_date} al %{end_date}. Revíselo antes de enviarlo a %{agency_acronym}.
-        header: Revise y presente su informe de ingresos
-        none_found: No encontramos ningún pago de este empleador en los últimos 90 días.
-        none_found_confirmed: Hemos confirmado que no hay ningún pago de este empleador en los últimos 90 días. Esto sucede cuando el cliente no ha recibido ingresos por este trabajo durante ese tiempo.
-        payment: Pago de %{amount} antes de pago impuestos en %{date}
+          ma: Date client was contacted
+          nyc: SNAP application or recertification interview date
+          sandbox: SNAP application or recertification interview date
+        consent_checkbox_label_html: Check this box to confirm that the information provided by you is true and complete to the best of your knowledge. You agree to inform %{agency_acronym} of any income not reflected in this report or any discrepancies found in the information gathered with this tool. You understand that providing accurate and complete information is your responsibility, and any false or omitted information may have legal consequences. For more information on your rights and responsibilities regarding private information you share with %{agency_acronym} please refer to the Rights and Responsibilities you signed at application, found on the %{agency_acronym} website.<br><br>By sending this report, you authorize its use for income verification by %{agency_acronym} and authorized personnel.
+        legal_header: Legal agreement
+        none_found: We didn't find any payments from this employer in the past 90 days.
+        none_found_confirmed: We've confirmed that there are no payments from this employer in the past 90 days. This happens when the client hasn't received income from this job during that time.
+        page_header: Submit your income report
         pdf:
           agency_header_name:
             ma: Massachusetts Department of Transitional Assistance
@@ -231,16 +214,44 @@ es:
             confirmation_code: Código de confirmación
             employment_information: Información del empleo
             report_details: Detalles del reporte
+        share_report_button: Share my report with %{agency_acronym}
+        table_caption_no_name: Employer %{number}
+        warning_html: Your income report will be attached to your SNAP application.<br>You must check the legal agreement box to share your report.
+      update:
+        consent_to_authorize_warning: Please check the legal agreement box to share your report.
+    successes:
+      show:
+        back_to_agency: Vaya al sitio web de %{agency_short_name}
+        caseworker_received: Hemos enviado su información de pago a %{agency_acronym}. Ellos lo contactarán si se necesita alguna información adicional.
+        check_status:
+          ma: Para comprobar el estado de su recertificación de SNAP puede visitar el sitio web del DTA.
+          nyc: Para comprobar el estado de su solicitud o recertificación de SNAP puede visitar el sitio web del HRA.
+        confirmation_code_html: "<strong>Código de confirmación </strong>: %{confirmation_code}"
+        download: Descargue una copia del informe
+        header: Su informe de ingresos ha sido compartido de forma exitosa con %{agency_acronym}
+        if_it_didnt_work: Si usted no logró encontrar un empleador, o uno de sus empleadores no tiene un proveedor de nómina en línea, por favor, suministre su información de pago directamente a %{agency_acronym}.
+    summaries:
+      show:
+        additional_comments: Comentarios adicionales
+        application_or_recertification_date:
+          ma: Fecha de la entrevista de recertificación
+          nyc: Fecha de solicitud o recertificación
+          sandbox: Fecha de solicitud o recertificación
+        consent_to_authorize_use_html:
+          ma: Marque esta casilla para confirmar que, a su leal saber y entender, la información proporcionada por usted es verdadera y completa. Usted se compromete a informar al DTA sobre cualquier ingreso no reflejado en este informe o cualquier discrepancia hallada en la información recopilada con esta herramienta. Usted entiende que suministrar información precisa y completa es su responsabilidad, y que cualquier información falsa u omitida puede tener consecuencias legales. Para obtener más información sobre sus derechos y responsabilidades en relación a la información privada que comparte con el DTA, consulte los Derechos y Responsabilidades que firmó en la solicitud, que se encuentran en <a href="https://www.mass.gov/lists/department-of-transitional-assistance-rights-responsibilities-and-penalties">Mass.gov</a>. <br/><br/>Al enviar este informe, usted autoriza el uso de esta verificación de ingresos por parte de personal autorizado del DTA.
+          nyc: Marque esta casilla para confirmar que, a su leal saber y entender, la información proporcionada por usted es verdadera y completa. Usted accede a informar a la Administración de Recursos Humanos (HRA) de la Ciudad de Nueva York (NYC, por sus siglas en inglés) de cualquier ingreso no reflejado en este informe o cualquier discrepancia encontrada en la información recopilada con esta herramienta. Usted entiende que suministrar información precisa y completa es su responsabilidad, y que cualquier información falsa u omitida puede tener consecuencias legales.<br/><br/>Al enviar este informe, autoriza su uso para la verificación de los ingresos por parte del personal autorizado de la HRA.
+          sandbox: Marque esta casilla para confirmar que, a su leal saber y entender, la información proporcionada por usted es verdadera y completa. Usted se compromete a informar a la Agencia de pruebas CBV sobre cualquier ingreso no reflejado en este informe o cualquier discrepancia hallada en la información recopilada con esta herramienta. Usted entiende que suministrar información precisa y completa es su responsabilidad, y que cualquier información falsa u omitida puede tener consecuencias legales. <br/><br/>Al enviar este informe, autoriza su uso para la verificación de los ingresos por parte del personal autorizado del CBV.
+        description: The report below has your income from the past 90 days, from  %{start_date} to %{end_date}. Please review it before sending.
+        header: Review your income report
+        none_found: No encontramos ningún pago de este empleador en los últimos 90 días.
+        payment: Pago de %{amount} antes de pago impuestos en %{date}
         phone_number: Teléfono del empleador
-        send_report: Comparta mi informe con %{agency_acronym}
         table_caption: 'Empleador %{number}: %{employer_name}'
         table_caption_no_name: Empleador %{number}
         total_income_from: 'Ingresos totales provenientes de %{employer_name}, antes del pago de impuestos: %{amount}'
         total_income_from_no_employer_name: 'Ingresos totales antes del pago de impuestos: %{amount}'
-        total_payments: 'Ingresos totales de los últimos 90 días, antes del pago de impuestos: %{amount}'
-        total_payments_desc: Este es el ingreso bruto total de su(s) trabajo(s) antes de que se le descuenten impuestos, beneficios y otras deducciones de su cheque.
-      update:
-        consent_to_authorize_warning: Debe marcar la casilla de acuerdo legal para proceder.
+        total_payments: 'Total income from past 90 days, before taxes: %{amount}'
+        total_payments_desc: This is the total gross income from your job(s) before taxes, benefits, and deductions were taken out.
     synchronization_failures:
       show:
         back_to_search: Volver a la búsqueda de empleadores
@@ -259,6 +270,7 @@ es:
       show:
         fetching_payroll_description: Esto puede tardar algunos minutos. Mantenga abierta esta ventana mientras trabajamos en esto.
         header: Estamos recopilando los detalles de pago de su empleador.
+  continue: Continue
   date:
     abbr_day_names:
     - Dom

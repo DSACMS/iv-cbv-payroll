@@ -309,35 +309,18 @@ en:
         total_gross_description: This is the total gross income from your job before taxes, benefits and deductions were taken out of your paycheck.
         total_gross_income: 'Total income from the past 90 days, before taxes: %{amount}'
         unknown: Unknown
-    successes:
+    submits:
       show:
-        back_to_agency: Go to %{agency_short_name} website
-        caseworker_received: We have delivered your payment information to %{agency_acronym}. They will contact you if any additional information is needed.
-        check_status:
-          ma: To check the status of your SNAP recertification you can visit DTA's website.
-          nyc: To check the status of your SNAP application or recertification you can visit HRA's website.
-        confirmation_code_html: "<strong>Confirmation code</strong>: %{confirmation_code}"
-        download: Download a copy of the report
-        header: Your income report has been successfully shared with %{agency_acronym}
-        if_it_didnt_work: If you weren't able to find an employer, or one of your employers doesn't have an online payroll provider, please provide your payment information directly to %{agency_acronym}.
-    summaries:
-      show:
-        additional_comments: Additional comments
         additional_information_title: Is there anything else you'd like your caseworker to know about your income?
         application_or_recertification_date:
           ma: Date client was contacted
           nyc: SNAP application or recertification interview date
           sandbox: SNAP application or recertification interview date
-        consent_to_authorize_use_html:
-          ma: Check this box to confirm that the information provided by you is true and complete to the best of your knowledge. You agree to inform DTA of any income not reflected in this report or any discrepancies found in the information gathered with this tool. You understand that providing accurate and complete information is your responsibility, and any false or omitted information may have legal consequences. For more information on your rights and responsibilities regarding private information you share with DTA, please refer to the Rights and Responsibilities you signed at application, found on <a href="https://www.mass.gov/lists/department-of-transitional-assistance-rights-responsibilities-and-penalties">Mass.gov</a>.<br/><br/>By sending this report, you authorize its use for income verification by authorized DTA personnel.
-          nyc: Check this box to confirm that the information provided by you is true and complete to the best of your knowledge. You agree to inform NYC Human Resources Administration (HRA) of any income not reflected in this report or any discrepancies found in the information gathered with this tool. You understand that providing accurate and complete information is your responsibility, and any false or omitted information may have legal consequences.<br/><br/>By sending this report, you authorize its use for income verification by authorized HRA personnel.
-          sandbox: Check this box to confirm that the information provided by you is true and complete to the best of your knowledge. You agree to inform CBV Test Agency of any income not reflected in this report or any discrepancies found in the information gathered with this tool. You understand that providing accurate and complete information is your responsibility, and any false or omitted information may have legal consequences.<br/><br/>By sending this report, you authorize its use for income verification by authorized CBV personnel.
-        consent_to_authorize_use_title: Legal Agreement
-        description: The report below has your income from the past 90 days from, from %{start_date} to %{end_date}. Please review it before you send it to %{agency_acronym}.
-        header: Review and submit your income report
+        consent_checkbox_label_html: Check this box to confirm that the information provided by you is true and complete to the best of your knowledge. You agree to inform %{agency_acronym} of any income not reflected in this report or any discrepancies found in the information gathered with this tool. You understand that providing accurate and complete information is your responsibility, and any false or omitted information may have legal consequences. For more information on your rights and responsibilities regarding private information you share with %{agency_acronym} please refer to the Rights and Responsibilities you signed at application, found on the %{agency_acronym} website.<br><br>By sending this report, you authorize its use for income verification by %{agency_acronym} and authorized personnel.
+        legal_header: Legal agreement
         none_found: We didn't find any payments from this employer in the past 90 days.
         none_found_confirmed: We've confirmed that there are no payments from this employer in the past 90 days. This happens when the client hasn't received income from this job during that time.
-        payment: Payment of %{amount} before taxes on %{date}
+        page_header: Submit your income report
         pdf:
           agency_header_name:
             ma: Massachusetts Department of Transitional Assistance
@@ -372,16 +355,44 @@ en:
             confirmation_code: Confirmation code
             employment_information: Employment information
             report_details: Report Details
+        share_report_button: Share my report with %{agency_acronym}
+        table_caption_no_name: Employer %{number}
+        warning_html: Your income report will be attached to your SNAP application.<br>You must check the legal agreement box to share your report.
+      update:
+        consent_to_authorize_warning: Please check the legal agreement box to share your report.
+    successes:
+      show:
+        back_to_agency: Go to %{agency_short_name} website
+        caseworker_received: We have delivered your payment information to %{agency_acronym}. They will contact you if any additional information is needed.
+        check_status:
+          ma: To check the status of your SNAP recertification you can visit DTA's website.
+          nyc: To check the status of your SNAP application or recertification you can visit HRA's website.
+        confirmation_code_html: "<strong>Confirmation code</strong>: %{confirmation_code}"
+        download: Download a copy of the report
+        header: Your income report has been successfully shared with %{agency_acronym}
+        if_it_didnt_work: If you weren't able to find an employer, or one of your employers doesn't have an online payroll provider, please provide your payment information directly to %{agency_acronym}.
+    summaries:
+      show:
+        additional_comments: Additional comments
+        application_or_recertification_date:
+          ma: Date client was contacted
+          nyc: SNAP application or recertification interview date
+          sandbox: SNAP application or recertification interview date
+        consent_to_authorize_use_html:
+          ma: Check this box to confirm that the information provided by you is true and complete to the best of your knowledge. You agree to inform DTA of any income not reflected in this report or any discrepancies found in the information gathered with this tool. You understand that providing accurate and complete information is your responsibility, and any false or omitted information may have legal consequences. For more information on your rights and responsibilities regarding private information you share with DTA, please refer to the Rights and Responsibilities you signed at application, found on <a href="https://www.mass.gov/lists/department-of-transitional-assistance-rights-responsibilities-and-penalties">Mass.gov</a>.<br/><br/>By sending this report, you authorize its use for income verification by authorized DTA personnel.
+          nyc: Check this box to confirm that the information provided by you is true and complete to the best of your knowledge. You agree to inform NYC Human Resources Administration (HRA) of any income not reflected in this report or any discrepancies found in the information gathered with this tool. You understand that providing accurate and complete information is your responsibility, and any false or omitted information may have legal consequences.<br/><br/>By sending this report, you authorize its use for income verification by authorized HRA personnel.
+          sandbox: Check this box to confirm that the information provided by you is true and complete to the best of your knowledge. You agree to inform CBV Test Agency of any income not reflected in this report or any discrepancies found in the information gathered with this tool. You understand that providing accurate and complete information is your responsibility, and any false or omitted information may have legal consequences.<br/><br/>By sending this report, you authorize its use for income verification by authorized CBV personnel.
+        description: The report below has your income from the past 90 days, from  %{start_date} to %{end_date}. Please review it before sending.
+        header: Review your income report
+        none_found: We didn't find any payments from this employer in the past 90 days.
+        payment: Payment of %{amount} before taxes on %{date}
         phone_number: Employer phone
-        send_report: Share my report with %{agency_acronym}
         table_caption: 'Employer %{number}: %{employer_name}'
         table_caption_no_name: Employer %{number}
         total_income_from: 'Total income from %{employer_name} before taxes: %{amount}'
         total_income_from_no_employer_name: 'Total income before taxes: %{amount}'
-        total_payments: 'Total income from the past 90 days, before taxes: %{amount}'
-        total_payments_desc: This is the total gross income from your job(s) before taxes, benefits and deductions were taken out of your paycheck.
-      update:
-        consent_to_authorize_warning: You must check the legal agreement checkbox to proceed.
+        total_payments: 'Total income from past 90 days, before taxes: %{amount}'
+        total_payments_desc: This is the total gross income from your job(s) before taxes, benefits, and deductions were taken out.
     synchronization_failures:
       show:
         back_to_search: Back to employer search
@@ -400,6 +411,7 @@ en:
       show:
         fetching_payroll_description: This may take a few minutes. Please keep this window open while we work on this.
         header: We’re gathering your payment details from your employer
+  continue: Continue
   date:
     formats:
       default: "%Y-%m-%d"
