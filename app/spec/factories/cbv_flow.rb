@@ -2,14 +2,9 @@ FactoryBot.define do
   factory :cbv_flow do
     cbv_flow_invitation
     cbv_applicant
+    argyle_user_id { SecureRandom.uuid }
 
     client_agency_id { "sandbox" }
-
-    # Add transient attribute for testing
-    transient do
-      argyle_user_id { SecureRandom.uuid }
-      cbv_applicant_attributes { {} }
-    end
 
     trait :completed do
       consented_to_authorized_use_at { 10.minutes.ago }
@@ -52,6 +47,9 @@ FactoryBot.define do
       end
     end
 
+    transient do
+      cbv_applicant_attributes { {} }
+    end
     after(:build) do |cbv_flow, evaluator|
       cbv_flow.cbv_applicant.update(evaluator.cbv_applicant_attributes)
 
