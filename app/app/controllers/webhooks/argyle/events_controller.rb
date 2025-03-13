@@ -9,8 +9,6 @@ class Webhooks::Argyle::EventsController < ApplicationController
   DUMMY_SECRET = "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
 
   def create
-    # Record webhook for testing if in test environment
-    record_webhook_for_testing if Rails.env.test?
 
     # Handle different event types
     case params["event"]
@@ -110,14 +108,6 @@ class Webhooks::Argyle::EventsController < ApplicationController
       @cbv_flow = payroll_account&.cbv_flow
     end
 
-    # If we couldn't find a CbvFlow and this is an accounts.connected event,
-    # we need to find all CbvFlows that don't have an Argyle account yet
-    if @cbv_flow.nil? && params["event"] == "accounts.connected"
-      # For new connections, we'll handle this in the handle_account_connected method
-      # by creating a new PayrollAccount for the first CbvFlow without an Argyle account
-      return true
-    end
-
     unless @cbv_flow
       Rails.logger.info "Unable to find CbvFlow for Argyle account_id: #{account_id}"
       render json: { status: "ok" }
@@ -129,13 +119,10 @@ class Webhooks::Argyle::EventsController < ApplicationController
   end
 
   def determine_event_outcome
-    # Logic to determine event outcome from the webhook payload
-    # Default to 'success' unless there's an error indication
     params.dig("data", "error").present? ? "error" : "success"
   end
 
   def determine_supported_jobs
-    # Get available jobs directly from the model
     PayrollAccount::Argyle.available_jobs
   end
 
@@ -178,17 +165,5 @@ class Webhooks::Argyle::EventsController < ApplicationController
     )
   rescue => ex
     Rails.logger.error "Unable to update synchronization page: #{ex}"
-  end
-
-  def record_webhook_for_testing
-    return unless Rails.env.test?
-
-    filename = "argyle_webhook_#{params["event"].gsub(".", "_")}_#{Time.now.to_i}.json"
-    path = Rails.root.join("spec/fixtures/argyle_webhooks", filename)
-
-    FileUtils.mkdir_p(File.dirname(path))
-    File.write(path, JSON.pretty_generate(params.to_unsafe_h))
-
-    Rails.logger.info "✅ Recorded Argyle webhook to #{path} for testing"
   end
 end
