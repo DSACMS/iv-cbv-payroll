@@ -113,40 +113,4 @@ class ArgyleService
   def build_url(endpoint)
     @http.build_url(endpoint).to_s
   end
-
-  def store_mock_response(responsePayload:, folderName: "other", fileName:)
-    FileUtils.mkdir_p "spec/support/fixtures/argyle/#{folderName}"
-
-    File.open("spec/support/fixtures/argyle/#{folderName}/#{fileName}.json", "wb") do
-      |f| f.puts(JSON.pretty_generate(responsePayload))
-    end
-  end
-
-  # Only for use in sandbox environment for test mocking
-  def fetch__and_store_mock_data_for_user(argyle_user_id:, folderName:)
-    store_mock_response(
-      folderName: folderName,
-      fileName: "request_user",
-      responsePayload: fetch_user_api(user: argyle_user_id))
-
-    store_mock_response(
-      folderName: folderName,
-      fileName: "request_identity",
-      responsePayload: fetch_identities_api(user: argyle_user_id))
-
-    store_mock_response(
-      folderName: folderName,
-      fileName: "request_employment",
-      responsePayload: fetch_employment_api(user: argyle_user_id))
-
-    store_mock_response(
-      folderName: folderName,
-      fileName: "request_accounts",
-      responsePayload: fetch_accounts_api(user: argyle_user_id))
-
-    store_mock_response(
-      folderName: folderName,
-      fileName: "request_paystubs",
-      responsePayload: fetch_paystubs_api(user: argyle_user_id))
-  end
 end
