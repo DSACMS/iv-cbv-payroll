@@ -6,7 +6,6 @@ namespace :argyle_sandbox_data do
     elsif not (ENV.key?("ARGYLE_SANDBOX") and ENV["ARGYLE_SANDBOX"])
       puts "ARGYLE_SANDBOX must be set to 'true' in .env"
     else
-      puts(ENV["ARGYLE_SANDBOX"])
       puts ":mock_folder_name was: '#{args[:mock_folder_name]}'"
       puts ":argyle_user_id was: '#{args[:argyle_user_id]}'"
       a = ArgyleMockDataFetcher.new
@@ -31,7 +30,6 @@ namespace :argyle_sandbox_data do
 
     # Only for use in sandbox environment for test mocking
     def fetch_and_store_mock_data_for_user(mock_folder_name:, argyle_user_id:)
-      puts("hkrhkehrkhe", argyle_user_id)
       store_mock_response(
         folder_name: mock_folder_name,
         file_name: "request_user",
