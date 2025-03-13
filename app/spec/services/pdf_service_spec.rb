@@ -45,7 +45,7 @@ RSpec.describe PdfService, type: :service do
       pdf_service = PdfService.new
       @pdf_results = pdf_service.generate(
         renderer: ApplicationController.renderer,
-        template: 'cbv/summaries/show',
+        template: 'cbv/submits/show',
         variables: variables
       )
       expect(@pdf_results&.content).to include('%PDF-1.4')

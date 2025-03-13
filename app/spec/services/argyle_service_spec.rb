@@ -168,7 +168,7 @@ RSpec.describe ArgyleService, type: :service do
       it 'employment status inactive => furloughed' do
         employment = ResponseObjects::Employment.from_argyle({
           "employment_status" => "inactive"
-      })
+        })
         expect(employment).to have_attributes(
             status: "furloughed",
           )
