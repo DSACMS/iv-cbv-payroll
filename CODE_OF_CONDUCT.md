@@ -14,4 +14,4 @@ This Code of Conduct is adapted from the [Contributor Covenant](http://contribut
 
 ## Acknowledgements
 
-This CODE_OF_CONDUCT.md was originally forked from the United States Digital Service [Justice40](https://thejustice40.com) open source [repository](https://github.com/usds/justice40-tool), and we would like to acknowledge and thank the community for their contributions.
+This CODE_OF_CONDUCT.md was originally forked from the [United States Digital Service](https://usds.gov) [Justice40](https://thejustice40.com) open source [repository](https://github.com/usds/justice40-tool), and we would like to acknowledge and thank the community for their contributions.
