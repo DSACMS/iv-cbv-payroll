@@ -34,7 +34,7 @@ class CbvInvitationService
       timestamp: Time.now.to_i,
       user_id: current_user.id,
       caseworker_email_address: current_user.email,
-      client_agency_id: cbv_flow_invitation.client_agency_id,
+      client_agency_id: current_user.client_agency_id,
       cbv_applicant_id: cbv_flow_invitation.cbv_applicant_id,
       invitation_id: cbv_flow_invitation.id
     })
