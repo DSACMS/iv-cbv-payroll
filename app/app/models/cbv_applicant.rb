@@ -40,7 +40,7 @@ class CbvApplicant < ApplicationRecord
   )
 
   def paystubs_query_begins_at
-    PAYSTUB_REPORT_RANGE.before(created_at-90)
+    PAYSTUB_REPORT_RANGE.before(snap_application_date)
   end
 
   def set_default_snap_application_date
