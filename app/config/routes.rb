@@ -26,6 +26,10 @@ Rails.application.routes.draw do
     get "/maintenance", to: "maintenance#show"
     # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
 
+    scope "/:client_agency_id", module: :cbv, constraints: { client_agency_id: Regexp.union(Rails.application.config.client_agencies.client_agency_ids) } do
+      get "new", to: "entries#show", as: :new
+    end
+
     scope "/cbv", as: :cbv_flow, module: :cbv do
       resource :entry, only: %i[show create]
       resource :employer_search, only: %i[show]
