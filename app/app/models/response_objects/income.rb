@@ -15,6 +15,7 @@ module ResponseObjects
         compensation_unit: response_body["compensation_unit"],
       )
     end
+
     def self.from_argyle(identities_response_body)
       new(
         account_id: identities_response_body["account"],
