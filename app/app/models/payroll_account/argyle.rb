@@ -2,7 +2,7 @@ class PayrollAccount::Argyle < PayrollAccount
   JOBS_TO_WEBHOOK_EVENTS = {
     "identities" => "identities.added",
     "paystubs" => "paystubs.added",
-    "gigs" => "gigs.fully_synced"
+    "users" => "users.fully_synced"
   }
 
   def has_fully_synced?
