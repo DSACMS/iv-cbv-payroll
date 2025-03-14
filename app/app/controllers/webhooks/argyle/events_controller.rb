@@ -1,6 +1,6 @@
 class Webhooks::Argyle::EventsController < ApplicationController
   before_action :set_cbv_flow, :set_argyle, :authorize_webhook
-  after_action :track_events, :update_synchronization_page
+  after_action :track_events
   skip_before_action :verify_authenticity_token
 
   # To prevent timing attacks, we attempt to verify the webhook signature
@@ -8,56 +8,34 @@ class Webhooks::Argyle::EventsController < ApplicationController
   # valid `cbv_flow`.
   DUMMY_SECRET = "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
 
+  # argyle's event outcomes are implied by the event name themselves i.e. accounts.failed (implies error)
+  # users.fully_synced (implies success)
+  EVENT_OUTCOMES = {
+    "accounts.failed" => :error,
+    "users.fully_synced" => :success
+  }.freeze
+
   def create
-    @account_id = params.dig("data", "account")
-
-    case params["event"]
-      # accounts.connected is concerned with a SUCCESSFUL user auth with a provider
-      # accounts.added is fired irregardless of a SUCCESSFUL attempt.
-    when "accounts.connected"
-      @payroll_account = handle_account_connected
-    when "gigs.fully_synced"
-      handle_gigs_fully_synced
-    else
-      Rails.logger.info "Received unregistered webhook event: #{params["event"]}"
+    @payroll_account = @cbv_flow.payroll_accounts.find_or_create_by(
+      type: :argyle,
+      pinwheel_account_id: @account_id # this column will be renamed to something more abstract later. it's not pinwheel specific.
+    ) do |new_payroll_account|
+      new_payroll_account.supported_jobs = determine_supported_jobs
     end
 
-    if @payroll_account
-      @webhook_event = WebhookEvent.create!(
-        payroll_account: @payroll_account,
-        event_name: params["event"],
-        event_outcome: determine_event_outcome,
-      )
-    end
-
-    # Broadcast status updates if needed
-    if @payroll_account&.has_fully_synced?
-      PaystubsChannel.broadcast_to(@cbv_flow, {
-        event: "cbv.status_update",
-        account_id: @payroll_account.pinwheel_account_id,
-        has_fully_synced: true
-      })
-    end
+    @webhook_event = WebhookEvent.create!(
+      payroll_account: @payroll_account,
+      event_name: params["event"],
+      event_outcome: EVENT_OUTCOMES[params["event"]],
+    )
 
     render json: { status: "ok" }
   end
 
   private
 
-  def handle_account_connected
-    if @cbv_flow
-      @payroll_account = @cbv_flow.payroll_accounts.find_or_create_by(
-        type: :argyle,
-        # this column will be renamed to something more abstract later. it's not pinwheel specific.
-        pinwheel_account_id: @account_id
-      ) do |new_payroll_account|
-        new_payroll_account.supported_jobs = determine_supported_jobs
-      end
-    end
-  end
-
   def handle_gigs_fully_synced
-    @payroll_account = PayrollAccount.find_by(type: :argyle, pinwheel_account_id: @account_id)
+    PayrollAccount.find_by(type: :argyle, pinwheel_account_id: @account_id)
   end
 
   # @see https://docs.argyle.com/api-guide/webhooks
@@ -77,15 +55,8 @@ class Webhooks::Argyle::EventsController < ApplicationController
   end
 
   def set_cbv_flow
-    # Extract user ID and account ID from the webhook
-    user_id = params.dig("data", "user")
-    account_id = params.dig("data", "resource", "id") || params.dig("data", "account")
-
-    if account_id.present?
-      # First try to find an existing PayrollAccount with this account ID
-      payroll_account = PayrollAccount.find_by(type: :argyle, pinwheel_account_id: account_id)
-      @cbv_flow = payroll_account&.cbv_flow
-    end
+    cbv_user_id = params.dig("data", "resource", "id")
+    @cbv_flow = CbvFlow.find_by_end_user_id(cbv_user_id)
 
     unless @cbv_flow
       Rails.logger.info "Unable to find CbvFlow for Argyle account_id: #{account_id}"
@@ -95,10 +66,6 @@ class Webhooks::Argyle::EventsController < ApplicationController
 
   def set_argyle
     @argyle = @cbv_flow.present? ? argyle_for(@cbv_flow) : ArgyleService.new("sandbox")
-  end
-
-  def determine_event_outcome
-    params.dig("data", "error").present? ? "error" : "success"
   end
 
   def determine_supported_jobs
@@ -133,16 +100,5 @@ class Webhooks::Argyle::EventsController < ApplicationController
     raise ex unless Rails.env.production?
 
     Rails.logger.error "Unable to track event (in #{self.class.name}): #{ex}"
-  end
-
-  def update_synchronization_page
-    return unless @payroll_account
-
-    @payroll_account.broadcast_replace(
-      partial: "cbv/synchronizations/indicators",
-      locals: { argyle_account: @payroll_account }
-    )
-  rescue => ex
-    Rails.logger.error "Unable to update synchronization page: #{ex}"
   end
 end
