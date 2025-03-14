@@ -243,4 +243,38 @@ RSpec.describe ArgyleService, type: :service do
       end
     end
   end
+  describe '#fetch_report_data' do
+    context "for Bob, a Uber driver" do
+      before do
+        stub_request_identities_response("bob")
+        stub_request_paystubs_response("bob")
+      end
+
+      it 'returns an array of ResponseObjects:Identity' do
+        data = service.fetch_report_data(account: account_id)
+
+        assert_requested :get, "https://api-sandbox.argyle.com/v2/identities?account=abc123"
+        assert_requested :get, "https://api-sandbox.argyle.com/v2/paystubs?account=abc123"
+
+        expect(data).to be_a(ResponseObjects::AggregatorReport)
+        expect(data.identity).to be_a(ResponseObjects::Identity)
+        expect(data.incomes).to all(be_a(ResponseObjects::Income))
+        expect(data.employments).to all(be_a(ResponseObjects::Employment))
+        expect(data.paystubs).to all(be_a(ResponseObjects::Paystub))
+
+
+        expect(data.employments.length).to eq(1)
+        expect(data.paystubs.length).to eq(10)
+      end
+
+      # it 'returns expected attributes' do
+      #  identities = service.fetch_identities(account: account_id)
+
+      #  expect(identities[0]).to have_attributes(
+      #    account_id: "019571bc-2f60-3955-d972-dbadfe0913a8",
+      #    full_name: "Bob Jones"
+      #  )
+      # end
+    end
+  end
 end
