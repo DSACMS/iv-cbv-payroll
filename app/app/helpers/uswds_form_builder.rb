@@ -225,7 +225,6 @@ class UswdsFormBuilder < ActionView::Helpers::FormBuilder
     end
   end
 
-
   # Render the label, hint text, and error message for a form field
   def us_text_field_label(attribute, text = nil, options = {})
     hint_option = options.delete(:hint)

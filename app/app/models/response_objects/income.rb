@@ -15,5 +15,14 @@ module ResponseObjects
         compensation_unit: response_body["compensation_unit"],
       )
     end
+
+    def self.from_argyle(identities_response_body)
+      new(
+        account_id: identities_response_body["account"],
+        pay_frequency: identities_response_body["base_pay"]["period"],
+        compensation_amount: ResponseObjects::FormatMethods::Argyle.format_currency(identities_response_body["base_pay"]["amount"]),
+        compensation_unit: identities_response_body["base_pay"]["currency"],
+      )
+    end
   end
 end
