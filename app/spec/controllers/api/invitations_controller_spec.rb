@@ -38,7 +38,6 @@ RSpec.describe Api::InvitationsController do
         .and change(CbvApplicant, :count).by(1)
 
       invitation = CbvFlowInvitation.last
-      expect(invitation.client_agency_id).to_not eq('invalid_client_agency_id')
       expect(invitation.client_agency_id).to eq("ma")
     end
 
