@@ -27,11 +27,8 @@ class CbvFlow < ApplicationRecord
   end
 
   def self.create_without_invitation(client_agency_id)
-    # Tom: we only had create_from_invitation to keep the logic of copying the fields in one place.
-    # use create! while testing to at least make it easier to work with
-    create!(
-      cbv_applicant: CbvApplicant.create!(
-      ), #Tom: might not even need to create this if none of the fields are useful... maybe we do that on the new page I'm adding
+    create(
+      cbv_applicant: CbvApplicant.create(client_agency_id: client_agency_id),
       client_agency_id: client_agency_id
     )
   end
