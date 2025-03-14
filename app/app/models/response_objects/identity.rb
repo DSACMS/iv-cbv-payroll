@@ -11,6 +11,7 @@ module ResponseObjects
         full_name: response_body["full_name"],
       )
     end
+
     def self.from_argyle(identity_response_body)
       new(
         account_id: identity_response_body["account"],

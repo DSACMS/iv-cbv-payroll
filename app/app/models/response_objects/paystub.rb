@@ -33,7 +33,6 @@ module ResponseObjects
       )
     end
 
-
     def self.from_argyle(response_body)
       new(
         account_id: response_body["account"],
