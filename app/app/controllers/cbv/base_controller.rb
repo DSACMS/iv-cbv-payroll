@@ -10,14 +10,12 @@ class Cbv::BaseController < ApplicationController
 
   def set_cbv_flow
     if request.path.end_with?("/new")
-      Rails.logger.info("TIMOTEST CBV: Creating new CBV flow")
       @cbv_flow = CbvFlow.create_without_invitation(params[:client_agency_id])
-      Rails.logger.info("TIMOTEST CBV: #{@cbv_flow.inspect}")
       session[:cbv_flow_id] = @cbv_flow.id
 
       # Tom: kind of what I had in mind, yes. Don't love checking the request path
       # instead make a specific controller... maybe we should make a generic link controller? Doesn't have to have a view. It would just redirect to entries controller.
-      
+
 
     elsif params[:token].present?
       invitation = CbvFlowInvitation.find_by(auth_token: params[:token])
