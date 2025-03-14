@@ -1,5 +1,7 @@
 class Cbv::EntriesController < Cbv::BaseController
   def show
+    @current_agency = current_agency
+    
     event_logger.track("ApplicantViewedAgreement", request, {
       timestamp: Time.now.to_i,
       client_agency_id: @cbv_flow.client_agency_id,
