@@ -1,5 +1,5 @@
 class Cbv::ExpiredInvitationsController < Cbv::BaseController
-  skip_before_action :set_cbv_flow, :ensure_cbv_flow_not_yet_complete
+  skip_before_action :set_cbv_flow, :ensure_cbv_flow_not_yet_complete, :capture_page_view
   helper_method :current_agency
 
   def show
