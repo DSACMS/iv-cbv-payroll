@@ -20,6 +20,7 @@ module ResponseObjects
         employer_address: response_body.dig("employer_address", "raw")
       )
     end
+
     def self.from_argyle(identity_response_body)
       new(
         account_id: identity_response_body["account"],
