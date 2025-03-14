@@ -9,17 +9,19 @@ class Webhooks::Argyle::EventsController < ApplicationController
   DUMMY_SECRET = "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
 
   def create
+    @account_id = params.dig("data", "account")
 
-    # Handle different event types
     case params["event"]
+      # accounts.connected is concerned with a SUCCESSFUL user auth with a provider
+      # accounts.added is fired irregardless of a SUCCESSFUL attempt.
     when "accounts.connected"
-      handle_account_connected
+      @payroll_account = handle_account_connected
     when "gigs.fully_synced"
       handle_gigs_fully_synced
-      # Handle other event types as needed
+    else
+      Rails.logger.info "Received unregistered webhook event: #{params["event"]}"
     end
 
-    # Record the webhook event
     if @payroll_account
       @webhook_event = WebhookEvent.create!(
         payroll_account: @payroll_account,
@@ -43,43 +45,22 @@ class Webhooks::Argyle::EventsController < ApplicationController
   private
 
   def handle_account_connected
-    account_id = params.dig("data", "resource", "id")
-
-    # If we already have a CbvFlow from set_cbv_flow, use that
     if @cbv_flow
       @payroll_account = @cbv_flow.payroll_accounts.find_or_create_by(
         type: :argyle,
-        pinwheel_account_id: account_id
+        # this column will be renamed to something more abstract later. it's not pinwheel specific.
+        pinwheel_account_id: @account_id
       ) do |new_payroll_account|
         new_payroll_account.supported_jobs = determine_supported_jobs
-      end
-    else
-      # Find the first CbvFlow that doesn't have an Argyle account yet
-      @cbv_flow = CbvFlow.joins("LEFT JOIN payroll_accounts ON payroll_accounts.cbv_flow_id = cbv_flows.id AND payroll_accounts.type = 'argyle'")
-                         .where("payroll_accounts.id IS NULL")
-                         .first
-
-      if @cbv_flow
-        @payroll_account = @cbv_flow.payroll_accounts.create!(
-          type: :argyle,
-          pinwheel_account_id: account_id,
-          supported_jobs: determine_supported_jobs
-        )
-      else
-        Rails.logger.info "No CbvFlow without an Argyle account found for new connection"
       end
     end
   end
 
   def handle_gigs_fully_synced
-    # Find the appropriate payroll account based on the account ID in the webhook
-    account_id = params.dig("data", "account")
-    @payroll_account = PayrollAccount.find_by(type: :argyle, pinwheel_account_id: account_id)
-
-    # If we found the payroll account but not the cbv_flow, set it now
-    @cbv_flow ||= @payroll_account&.cbv_flow
+    @payroll_account = PayrollAccount.find_by(type: :argyle, pinwheel_account_id: @account_id)
   end
 
+  # @see https://docs.argyle.com/api-guide/webhooks
   def authorize_webhook
     signature = request.headers["X-Argyle-Signature"]
 
@@ -92,8 +73,6 @@ class Webhooks::Argyle::EventsController < ApplicationController
   end
 
   def verify_signature(signature, secret)
-    return true if Rails.env.test? && !signature.present?
-
     @argyle.verify_signature(signature, request.raw_post, secret)
   end
 
