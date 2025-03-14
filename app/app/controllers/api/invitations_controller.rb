@@ -21,12 +21,11 @@ class Api::InvitationsController < ApplicationController
 
   # can these be inferred from the model?
   def cbv_flow_invitation_params
-    if (applicant_attributes = params.delete(:agency_partner_metadata))
-      params[:cbv_applicant_attributes] = applicant_attributes.merge(client_agency_id: @current_user.client_agency_id)
-    end
+    client_agency_id = @current_user.client_agency_id
+    params[:cbv_applicant_attributes] = params.delete(:agency_partner_metadata).merge(client_agency_id: client_agency_id)
     params[:email_address] = @current_user.email
 
-    params.permit(
+    permitted = params.permit(
       :language,
       :email_address,
       :user_id,
@@ -38,10 +37,14 @@ class Api::InvitationsController < ApplicationController
         :case_number,
         :snap_application_date,
         :agency_id_number,
-        :beacon_id,
-        :client_agency_id
+        :beacon_id
       ]
-    ).merge(client_agency_id: @current_user.client_agency_id)
+    )
+
+    permitted.deep_merge!(
+      client_agency_id: client_agency_id,
+      cbv_applicant_attributes: { client_agency_id: client_agency_id }
+    )
   end
 
   private
