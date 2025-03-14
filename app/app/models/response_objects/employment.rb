@@ -7,6 +7,7 @@ EMPLOYMENT_FIELDS = %i[
   employer_phone_number
   employer_address
 ]
+
 module ResponseObjects
   Employment = Struct.new(*EMPLOYMENT_FIELDS, keyword_init: true) do
     def self.from_pinwheel(response_body)
@@ -20,6 +21,7 @@ module ResponseObjects
         employer_address: response_body.dig("employer_address", "raw")
       )
     end
+
     def self.from_argyle(identity_response_body)
       new(
         account_id: identity_response_body["account"],
