@@ -26,9 +26,6 @@ class Api::InvitationsController < ApplicationController
     end
     params[:email_address] = @current_user.email
 
-    # Remove client_agency_id from params to ensure it's not coming from the request
-    params.delete(:client_agency_id)
-
     params.permit(
       :language,
       :email_address,

@@ -3,7 +3,7 @@ require "rails_helper"
 RSpec.describe Api::InvitationsController do
   describe "#create" do
     # must be existing user
-    let(:api_access_token) do
+    let(:api_access_token_instance) do
       user = create(:user, :with_access_token, email: "test@test.com", client_agency_id: 'ma', is_service_account: true)
       user.api_access_tokens.first
     end
@@ -18,7 +18,7 @@ RSpec.describe Api::InvitationsController do
     end
 
     before do
-      request.headers["Authorization"] = "Bearer #{api_access_token.access_token}"
+      request.headers["Authorization"] = "Bearer #{api_access_token_instance.access_token}"
     end
 
     it "creates an invitation with an associated cbv_applicant" do
@@ -31,13 +31,14 @@ RSpec.describe Api::InvitationsController do
       expect(JSON.parse(response.body).keys).to include("tokenized_url")
     end
 
-    it "creates an invitation with the client_agency_id from the api token" do
+    it "creates an invitation using the client_agency_id in the access_token" do
       expect do
-        post :create, params: valid_params.merge(client_agency_id: 'AAA')
+        post :create, params: valid_params
       end.to change(CbvFlowInvitation, :count).by(1)
         .and change(CbvApplicant, :count).by(1)
 
       invitation = CbvFlowInvitation.last
+      expect(invitation.client_agency_id).to_not eq('invalid_client_agency_id')
       expect(invitation.client_agency_id).to eq("ma")
     end
 
