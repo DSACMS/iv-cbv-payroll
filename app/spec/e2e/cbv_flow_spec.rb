@@ -31,7 +31,7 @@ RSpec.describe "e2e CBV flow test", type: :feature, js: true do
   after(:all, js: true) do
     if @subscription_id
       puts "[PINWHEEL] Deleting webhook subscription id: #{@subscription_id}"
-      PinwheelService.new("sandbox").delete_webhook_subscription(@subscription_id)
+      AggregatorService::Pinwheel.new("sandbox").delete_webhook_subscription(@subscription_id)
     end
 
     # TODO: Remove these when we stub out Pinwheel usage:

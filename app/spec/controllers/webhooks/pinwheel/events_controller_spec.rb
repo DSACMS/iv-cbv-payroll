@@ -20,7 +20,7 @@ RSpec.describe Webhooks::Pinwheel::EventsController do
 
   before do
     request.headers.merge!(request_headers)
-    allow_any_instance_of(PinwheelService).to receive(:generate_signature_digest)
+    allow_any_instance_of(AggregatorService::Pinwheel).to receive(:generate_signature_digest)
       .with("test-timestamp", anything)
       .and_return("v2=test-signature")
   end

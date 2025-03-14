@@ -2,7 +2,7 @@
 
 require "faraday"
 
-class PinwheelService
+class AggregatorService::Pinwheel < AggregatorService::Aggregator
   ENVIRONMENTS = {
     sandbox: {
       base_url: "https://sandbox.getpinwheel.com",
@@ -105,7 +105,7 @@ class PinwheelService
 
   def initialize(environment, api_key = nil)
     @api_key = api_key || ENVIRONMENTS.fetch(environment.to_sym)[:api_key]
-    @environment = ENVIRONMENTS.fetch(environment.to_sym) { |env| raise KeyError.new("PinwheelService unknown environment: #{env}") }
+    @environment = ENVIRONMENTS.fetch(environment.to_sym) { |env| raise KeyError.new("AggregatorService::Pinwheel unknown environment: #{env}") }
 
     client_options = {
       request: {
@@ -131,6 +131,20 @@ class PinwheelService
         bodies: true,
         log_level: :debug
     end
+  end
+
+  def fetch_report_data(account:)
+    return unless pinwheel_account.job_succeeded?("employment") and
+     pinwheel_account.job_succeeded?("income") and
+     pinwheel_account.job_succeeded?("identity") and
+     pinwheel_account.job_succeeded?("paystubs")
+
+    ResponseObjects::AggregatorReport.new(
+      identity: fetch_identity(account_id: account),
+      employments: fetch_employment(account_id: account),
+      incomes: fetch_income(account_id: account),
+      paystubs: fetch_paystubs(account_id: account)
+    )
   end
 
   def build_url(endpoint)

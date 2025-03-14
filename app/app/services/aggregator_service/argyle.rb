@@ -4,7 +4,7 @@ require "faraday"
 require "fileutils"
 require "json"
 
-class ArgyleService
+class AggregatorService::Argyle < AggregatorService::Aggregator
   ENVIRONMENTS = {
     sandbox: {
       base_url: "https://api-sandbox.argyle.com/v2",
@@ -43,6 +43,19 @@ class ArgyleService
         bodies: true,
         log_level: :debug
     end
+  end
+
+  def fetch_report_data(account:, **params)
+    identities_json = fetch_identities_api(account: account, **params)
+    paystubs_json = fetch_paystubs_api(account: account, **params)
+
+    # todo: add in search by account id
+    ResponseObjects::AggregatorReport.new(
+      identity: ResponseObjects::Identity.from_argyle(identities_json["results"][0]),
+      employments: identities_json["results"].map { |identity_json| ResponseObjects::Employment.from_argyle(identity_json) },
+      incomes: identities_json["results"].map { |identity_json| ResponseObjects::Income.from_argyle(identity_json) },
+      paystubs: paystubs_json["results"].map { |paystub_json| ResponseObjects::Paystub.from_argyle(paystub_json) }
+    )
   end
 
   def fetch_paystubs(**params)

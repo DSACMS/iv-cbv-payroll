@@ -1,8 +1,8 @@
 require 'rails_helper'
 
-RSpec.describe ArgyleService, type: :service do
+RSpec.describe AggregatorService::Argyle, type: :service do
   include ArgyleApiHelper
-  let(:service) { ArgyleService.new("sandbox", "FAKE_API_KEY") }
+  let(:service) { AggregatorService::Argyle.new("sandbox", "FAKE_API_KEY") }
   let(:account_id) { 'abc123' }
 
   describe '#fetch_items' do

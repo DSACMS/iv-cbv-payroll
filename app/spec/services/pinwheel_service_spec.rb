@@ -1,8 +1,8 @@
 require 'rails_helper'
 
-RSpec.describe PinwheelService, type: :service do
+RSpec.describe AggregatorService::Pinwheel, type: :service do
   include PinwheelApiHelper
-  let(:service) { PinwheelService.new("sandbox", "FAKE_API_KEY") }
+  let(:service) { AggregatorService::Pinwheel.new("sandbox", "FAKE_API_KEY") }
   let(:end_user_id) { 'abc123' }
 
   describe '#fetch_items' do
@@ -36,7 +36,7 @@ RSpec.describe PinwheelService, type: :service do
 
   describe "#verify_webhook_signature" do
     # https://docs.pinwheelapi.com/public/docs/webhook-signature-verification
-    let(:service) { PinwheelService.new("sandbox", "TEST_KEY") }
+    let(:service) { AggregatorService::Pinwheel.new("sandbox", "TEST_KEY") }
     let(:raw_request_body) {
       load_relative_file('test_data_1_base.json')
     }

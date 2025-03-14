@@ -9,11 +9,11 @@ class ProviderSearchService
     SUPPORTED_PROVIDERS.map do |provider|
       case provider
       when :pinwheel
-        PinwheelService.new(@client_agency_config.pinwheel_environment).fetch_items(q: query)["data"].map do |result|
+        AggregatorService::Pinwheel.new(@client_agency_config.pinwheel_environment).fetch_items(q: query)["data"].map do |result|
           ResponseObjects::SearchResult.from_pinwheel(result)
         end
       when :argyle
-        ArgyleService.new(@client_agency_config.argyle_environment).items(query)["results"].map do |result|
+        AggregatorService::Argyle.new(@client_agency_config.argyle_environment).items(query)["results"].map do |result|
           ResponseObjects::SearchResult.from_argyle(result)
         end
       end
