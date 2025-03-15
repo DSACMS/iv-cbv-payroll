@@ -133,20 +133,6 @@ module Aggregators::Sdk
       end
     end
 
-    def fetch_report_data(account:)
-      return unless pinwheel_account.job_succeeded?("employment") and
-      pinwheel_account.job_succeeded?("income") and
-      pinwheel_account.job_succeeded?("identity") and
-      pinwheel_account.job_succeeded?("paystubs")
-
-      Aggregators::ResponseObjects::AggregatorReport.new(
-        identity: fetch_identity(account_id: account),
-        employments: fetch_employment(account_id: account),
-        incomes: fetch_income(account_id: account),
-        paystubs: fetch_paystubs(account_id: account)
-      )
-    end
-
     def build_url(endpoint)
       @http.build_url(endpoint).to_s
     end
@@ -160,26 +146,39 @@ module Aggregators::Sdk
     end
 
     def fetch_paystubs(account_id:, **params)
-      json = @http.get(build_url("#{ACCOUNTS_ENDPOINT}/#{account_id}/paystubs"), params).body
+      json = fetch_paystubs_api(account_id: account_id, **params)
       json["data"].map { |paystub_json| Aggregators::ResponseObjects::Paystub.from_pinwheel(paystub_json) }
     end
 
-    def fetch_employment(account_id:)
-      json = @http.get(build_url("#{ACCOUNTS_ENDPOINT}/#{account_id}/employment")).body
+    def fetch_paystubs_api(account_id:, **params)
+      @http.get(build_url("#{ACCOUNTS_ENDPOINT}/#{account_id}/paystubs"), params).body
+    end
 
+    def fetch_employment(account_id:)
+      json = fetch_employment_api(account_id: account_id)
       Aggregators::ResponseObjects::Employment.from_pinwheel(json["data"])
     end
 
-    def fetch_identity(account_id:)
-      json = @http.get(build_url("#{ACCOUNTS_ENDPOINT}/#{account_id}/identity")).body
+    def fetch_employment_api(account_id:)
+      @http.get(build_url("#{ACCOUNTS_ENDPOINT}/#{account_id}/employment")).body
+    end
 
+    def fetch_identity(account_id:)
+      json = fetch_identity_api(account_id: account_id)
       Aggregators::ResponseObjects::Identity.from_pinwheel(json["data"])
     end
 
-    def fetch_income(account_id:)
-      json = @http.get(build_url("#{ACCOUNTS_ENDPOINT}/#{account_id}/income")).body
+    def fetch_identity_api(account_id:)
+      @http.get(build_url("#{ACCOUNTS_ENDPOINT}/#{account_id}/identity")).body
+    end
 
+    def fetch_income(account_id:)
+      json = fetch_income_api(account_id: account_id)
       Aggregators::ResponseObjects::Income.from_pinwheel(json["data"])
+    end
+
+    def fetch_income_api(account_id:)
+      @http.get(build_url("#{ACCOUNTS_ENDPOINT}/#{account_id}/income")).body
     end
 
     def fetch_platform(platform_id:)
