@@ -1,21 +1,15 @@
 require 'rails_helper'
 
 RSpec.describe Aggregators::ResponseObjects::Identity do
-  let(:pinwheel_response) do
-    {
-      "account_id" => "12345",
-      "full_name" => "John Doe"
-    }
-  end
-
-  let(:argyle_response) do
-    {
-      "account" => "67890",
-      "full_name" => "Jane Smith"
-    }
-  end
-
   describe '.from_pinwheel' do
+    let(:pinwheel_response) do
+        {
+          "account_id" => "12345",
+          "full_name" => "John Doe"
+        }
+      end
+
+
     it 'creates an Identity object from pinwheel response' do
       identity = described_class.from_pinwheel(pinwheel_response)
       expect(identity.account_id).to eq("12345")
@@ -24,6 +18,13 @@ RSpec.describe Aggregators::ResponseObjects::Identity do
   end
 
   describe '.from_argyle' do
+    let(:argyle_response) do
+       {
+         "account" => "67890",
+         "full_name" => "Jane Smith"
+       }
+     end
+
     it 'creates an Identity object from argyle response' do
       identity = described_class.from_argyle(argyle_response)
       expect(identity.account_id).to eq("67890")

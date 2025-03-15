@@ -1,27 +1,16 @@
 require 'rails_helper'
 
 RSpec.describe Aggregators::ResponseObjects::Income do
-  let(:pinwheel_response) do
-    {
-      "account_id" => "12345",
-      "pay_frequency" => "monthly",
-      "compensation_amount" => 50.24,
-      "compensation_unit" => "USD"
-    }
-  end
-
-  let(:argyle_response) do
-    {
-      "account" => "67890",
-      "base_pay" => {
-        "period" => "semimonthly",
-        "amount" => "50.24",
-        "currency" => "USD"
-      }
-    }
-  end
-
   describe '.from_pinwheel' do
+    let(:pinwheel_response) do
+        {
+          "account_id" => "12345",
+          "pay_frequency" => "monthly",
+          "compensation_amount" => 50.24,
+          "compensation_unit" => "USD"
+        }
+      end
+
     it 'creates an Income object from pinwheel response' do
       income = described_class.from_pinwheel(pinwheel_response)
 
@@ -33,6 +22,16 @@ RSpec.describe Aggregators::ResponseObjects::Income do
   end
 
   describe '.from_argyle' do
+    let(:argyle_response) do
+      {
+        "account" => "67890",
+        "base_pay" => {
+          "period" => "semimonthly",
+          "amount" => "50.24",
+          "currency" => "USD"
+        }
+      }
+    end
     it 'creates an Income object from argyle response' do
       income = described_class.from_argyle(argyle_response)
 
