@@ -37,7 +37,7 @@
     </div>
 
     <div class="grid-row grid-gap margin-top-2">
-        <% (@selected_tab == "payroll" ? AggregatorService::Pinwheel::TOP_PROVIDERS : AggregatorService::Pinwheel::TOP_EMPLOYERS).each do |provider| %>
+        <% (@selected_tab == "payroll" ? Aggregators::Sdk::PinwheelService::TOP_PROVIDERS : Aggregators::Sdk::PinwheelService::TOP_EMPLOYERS).each do |provider| %>
         <div class="grid-col-4 tablet:grid-col-2 margin-top-2">
             <button data-action="click->cbv-employer-search#select" data-id="<%= provider[:id] %>" data-name="<%= provider[:name] %>" data-response-type="<%= provider[:response_type] %>" data-provider-name="pinwheel" data-is-default-option="true" data-cbv-employer-search-target="employerButton" type="button" class="width-full usa-button usa-button--outline box-shadow-gray">
                 <figure class="margin-0 pointer-events-none">

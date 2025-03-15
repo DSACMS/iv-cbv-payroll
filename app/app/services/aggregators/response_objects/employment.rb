@@ -8,7 +8,7 @@ EMPLOYMENT_FIELDS = %i[
   employer_address
 ]
 
-module ResponseObjects
+module Aggregators::ResponseObjects
   Employment = Struct.new(*EMPLOYMENT_FIELDS, keyword_init: true) do
     def self.from_pinwheel(response_body)
       new(
@@ -28,7 +28,7 @@ module ResponseObjects
         employer_name: identity_response_body["employer"],
         start_date: identity_response_body["hire_date"],
         termination_date: identity_response_body["termination_date"],
-        status: ResponseObjects::FormatMethods::Argyle.format_employment_status(identity_response_body["employment_status"]),
+        status: Aggregators::FormatMethods::Argyle.format_employment_status(identity_response_body["employment_status"]),
       )
     end
   end

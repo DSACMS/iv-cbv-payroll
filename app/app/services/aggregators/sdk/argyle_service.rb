@@ -4,8 +4,8 @@ require "faraday"
 require "fileutils"
 require "json"
 
-module AggregatorService
-  class Argyle < Aggregator
+module Aggregators::Sdk
+  class ArgyleService
     ENVIRONMENTS = {
       sandbox: {
         base_url: "https://api-sandbox.argyle.com/v2",
@@ -46,46 +46,34 @@ module AggregatorService
       end
     end
 
-    def fetch_report_data(account:, **params)
-      identities_json = fetch_identities_api(account: account, **params)
-      paystubs_json = fetch_paystubs_api(account: account, **params)
-
-      # todo: add in search by account id
-      ResponseObjects::AggregatorReport.new(
-        identity: ResponseObjects::Identity.from_argyle(identities_json["results"][0]),
-        employments: identities_json["results"].map { |identity_json| ResponseObjects::Employment.from_argyle(identity_json) },
-        incomes: identities_json["results"].map { |identity_json| ResponseObjects::Income.from_argyle(identity_json) },
-        paystubs: paystubs_json["results"].map { |paystub_json| ResponseObjects::Paystub.from_argyle(paystub_json) }
-      )
-    end
-
     def fetch_paystubs(**params)
       json = fetch_paystubs_api(**params)
-      json["results"].map { |paystub_json| ResponseObjects::Paystub.from_argyle(paystub_json) }
+      json["results"].map { |paystub_json| Aggregators::ResponseObjects::Paystub.from_argyle(paystub_json) }
     end
 
     def fetch_employments(**params)
       # Note: we actually fetch Argyle's identity API instead of employment for the correct data
       json = fetch_identities_api(**params)
-      json["results"].map { |identity_json| ResponseObjects::Employment.from_argyle(identity_json) }
+      json["results"].map { |identity_json| Aggregators::ResponseObjects::Employment.from_argyle(identity_json) }
     end
 
     def fetch_incomes(**params)
       # Note: we actually fetch Argyle's identity API instead of employment for the correct data
       json = fetch_identities_api(**params)
-      json["results"].map { |identity_json| ResponseObjects::Income.from_argyle(identity_json) }
+      json["results"].map { |identity_json| Aggregators::ResponseObjects::Income.from_argyle(identity_json) }
     end
 
     # https://docs.argyle.com/api-reference/identities#retrieve
     def fetch_identities(**params)
       # todo: paginate
       json = fetch_identities_api(**params)
-      json["results"].map { |identity_json| ResponseObjects::Identity.from_argyle(identity_json) }
+      json["results"].map { |identity_json| Aggregators::ResponseObjects::Identity.from_argyle(identity_json) }
     end
 
     # Fetch all Argyle items
     # https://docs.argyle.com/api-reference/items#list
     def items(query = nil)
+      puts("HIHIHIHIh")
       @http.get(ITEMS_ENDPOINT, { q: query }).body
     end
 
@@ -103,7 +91,7 @@ module AggregatorService
     # https://docs.argyle.com/api-reference/accounts#list
     def fetch_accounts_api(**params)
       # TODO: paginate
-      # json["data"].map { |paystub_json| ResponseObjects::Paystub.from_pinwheel(paystub_json) }
+      # json["data"].map { |paystub_json| Aggregators::ResponseObjects::Paystub.from_pinwheel(paystub_json) }
       @http.get(ACCOUNTS_ENDPOINT, params).body
     end
 
@@ -119,7 +107,7 @@ module AggregatorService
 
     # https://docs.argyle.com/api-reference/employments#list
     def fetch_employments_api(**params)
-      # json["data"].map { |paystub_json| ResponseObjects::Paystub.from_pinwheel(paystub_json) }
+      # json["data"].map { |paystub_json| Aggregators::ResponseObjects::Paystub.from_pinwheel(paystub_json) }
       @http.get(EMPLOYMENTS_ENDPOINT, params).body
     end
 

@@ -3,7 +3,7 @@ IDENTITY_FIELDS = %i[
   full_name
 ]
 
-module ResponseObjects
+module Aggregators::ResponseObjects
   Identity = Struct.new(*IDENTITY_FIELDS, keyword_init: true) do
     def self.from_pinwheel(response_body)
       new(

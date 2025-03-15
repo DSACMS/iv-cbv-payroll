@@ -1,8 +1,8 @@
 # frozen_string_literal: true
 
 require "faraday"
-module AggregatorService
-  class Pinwheel < Aggregator
+module Aggregators::Sdk
+  class PinwheelService
     ENVIRONMENTS = {
       sandbox: {
         base_url: "https://sandbox.getpinwheel.com",
@@ -105,7 +105,7 @@ module AggregatorService
 
     def initialize(environment, api_key = nil)
       @api_key = api_key || ENVIRONMENTS.fetch(environment.to_sym)[:api_key]
-      @environment = ENVIRONMENTS.fetch(environment.to_sym) { |env| raise KeyError.new("AggregatorService::Pinwheel unknown environment: #{env}") }
+      @environment = ENVIRONMENTS.fetch(environment.to_sym) { |env| raise KeyError.new("Aggregators::Sdk::PinwheelService unknown environment: #{env}") }
 
       client_options = {
         request: {
@@ -139,7 +139,7 @@ module AggregatorService
       pinwheel_account.job_succeeded?("identity") and
       pinwheel_account.job_succeeded?("paystubs")
 
-      ResponseObjects::AggregatorReport.new(
+      Aggregators::ResponseObjects::AggregatorReport.new(
         identity: fetch_identity(account_id: account),
         employments: fetch_employment(account_id: account),
         incomes: fetch_income(account_id: account),
@@ -161,25 +161,25 @@ module AggregatorService
 
     def fetch_paystubs(account_id:, **params)
       json = @http.get(build_url("#{ACCOUNTS_ENDPOINT}/#{account_id}/paystubs"), params).body
-      json["data"].map { |paystub_json| ResponseObjects::Paystub.from_pinwheel(paystub_json) }
+      json["data"].map { |paystub_json| Aggregators::ResponseObjects::Paystub.from_pinwheel(paystub_json) }
     end
 
     def fetch_employment(account_id:)
       json = @http.get(build_url("#{ACCOUNTS_ENDPOINT}/#{account_id}/employment")).body
 
-      ResponseObjects::Employment.from_pinwheel(json["data"])
+      Aggregators::ResponseObjects::Employment.from_pinwheel(json["data"])
     end
 
     def fetch_identity(account_id:)
       json = @http.get(build_url("#{ACCOUNTS_ENDPOINT}/#{account_id}/identity")).body
 
-      ResponseObjects::Identity.from_pinwheel(json["data"])
+      Aggregators::ResponseObjects::Identity.from_pinwheel(json["data"])
     end
 
     def fetch_income(account_id:)
       json = @http.get(build_url("#{ACCOUNTS_ENDPOINT}/#{account_id}/income")).body
 
-      ResponseObjects::Income.from_pinwheel(json["data"])
+      Aggregators::ResponseObjects::Income.from_pinwheel(json["data"])
     end
 
     def fetch_platform(platform_id:)

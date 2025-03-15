@@ -1,6 +1,6 @@
 module ArgyleApiHelper
   def stub_request_items_response(user_folder)
-    stub_request(:get, %r{#{AggregatorService::Argyle::ITEMS_ENDPOINT}})
+    stub_request(:get, %r{#{Aggregators::Sdk::ArgyleService::ITEMS_ENDPOINT}})
       .to_return(
         status: 200,
         body: load_relative_json_file(user_folder, 'request_items.json').to_json,
@@ -9,7 +9,7 @@ module ArgyleApiHelper
   end
 
   def stub_request_paystubs_response(user_folder)
-    stub_request(:get, %r{#{AggregatorService::Argyle::PAYSTUBS_ENDPOINT}})
+    stub_request(:get, %r{#{Aggregators::Sdk::ArgyleService::PAYSTUBS_ENDPOINT}})
       .to_return(
         status: 200,
         body: load_relative_json_file(user_folder, 'request_paystubs.json').to_json,
@@ -18,7 +18,7 @@ module ArgyleApiHelper
   end
 
   def stub_request_identities_response(user_folder)
-    stub_request(:get, %r{#{AggregatorService::Argyle::IDENTITIES_ENDPOINT}})
+    stub_request(:get, %r{#{Aggregators::Sdk::ArgyleService::IDENTITIES_ENDPOINT}})
       .to_return(
         status: 200,
         body: load_relative_json_file(user_folder, 'request_identity.json').to_json,

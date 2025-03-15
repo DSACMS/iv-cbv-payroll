@@ -7,7 +7,7 @@ module PinwheelApiHelper
   end
 
   def stub_request_items_response
-    stub_request(:get, /#{AggregatorService::Pinwheel::ITEMS_ENDPOINT}/)
+    stub_request(:get, /#{Aggregators::Sdk::PinwheelService::ITEMS_ENDPOINT}/)
       .to_return(
         status: 200,
         body: {
@@ -25,7 +25,7 @@ module PinwheelApiHelper
   end
 
   def stub_request_items_no_items_response
-    stub_request(:get, /#{AggregatorService::Pinwheel::ITEMS_ENDPOINT}/)
+    stub_request(:get, /#{Aggregators::Sdk::PinwheelService::ITEMS_ENDPOINT}/)
       .to_return(
         status: 200,
         body: {
@@ -36,7 +36,7 @@ module PinwheelApiHelper
   end
 
   def stub_create_token_response(end_user_id: 'user_id')
-    stub_request(:post, /#{AggregatorService::Pinwheel::USER_TOKENS_ENDPOINT}/)
+    stub_request(:post, /#{Aggregators::Sdk::PinwheelService::USER_TOKENS_ENDPOINT}/)
       .to_return(
         status: 200,
         body: {
@@ -50,7 +50,7 @@ module PinwheelApiHelper
   end
 
   def stub_refresh_user_token_response
-    stub_request(:post, /#{AggregatorService::Pinwheel::USER_TOKENS_ENDPOINT}/)
+    stub_request(:post, /#{Aggregators::Sdk::PinwheelService::USER_TOKENS_ENDPOINT}/)
       .to_return(
         status: 200,
         body: { "user_token": "abc123" }.to_json,
@@ -59,7 +59,7 @@ module PinwheelApiHelper
   end
 
   def stub_request_end_user_paystubs_response
-    stub_request(:get, %r{#{AggregatorService::Pinwheel::ACCOUNTS_ENDPOINT}/[0-9a-fA-F\-]{36}/paystubs})
+    stub_request(:get, %r{#{Aggregators::Sdk::PinwheelService::ACCOUNTS_ENDPOINT}/[0-9a-fA-F\-]{36}/paystubs})
       .to_return(
         status: 200,
         body: load_relative_json_file('request_end_user_paystubs_response.json').to_json,
@@ -68,7 +68,7 @@ module PinwheelApiHelper
   end
 
   def stub_request_employment_info_response
-    stub_request(:get, %r{#{AggregatorService::Pinwheel::ACCOUNTS_ENDPOINT}/[0-9a-fA-F\-]{36}/employment})
+    stub_request(:get, %r{#{Aggregators::Sdk::PinwheelService::ACCOUNTS_ENDPOINT}/[0-9a-fA-F\-]{36}/employment})
       .to_return(
         status: 200,
         body: load_relative_json_file('request_employment_info_response.json').to_json,
@@ -77,7 +77,7 @@ module PinwheelApiHelper
   end
 
   def stub_request_income_metadata_response
-    stub_request(:get, %r{#{AggregatorService::Pinwheel::ACCOUNTS_ENDPOINT}/[0-9a-fA-F\-]{36}/income})
+    stub_request(:get, %r{#{Aggregators::Sdk::PinwheelService::ACCOUNTS_ENDPOINT}/[0-9a-fA-F\-]{36}/income})
       .to_return(
         status: 200,
         body: load_relative_json_file('request_income_metadata_response.json').to_json,
@@ -86,7 +86,7 @@ module PinwheelApiHelper
   end
 
   def stub_request_end_user_accounts_response
-    stub_request(:get, %r{#{AggregatorService::Pinwheel::END_USERS}/[0-9a-fA-F\-]{36}/accounts})
+    stub_request(:get, %r{#{Aggregators::Sdk::PinwheelService::END_USERS}/[0-9a-fA-F\-]{36}/accounts})
       .to_return(
         status: 200,
         body: load_relative_json_file('request_end_user_accounts_response.json').to_json,
@@ -95,7 +95,7 @@ module PinwheelApiHelper
   end
 
   def request_employment_info_response_null_employment_status_bug
-    stub_request(:get, %r{#{AggregatorService::Pinwheel::ACCOUNTS_ENDPOINT}/[0-9a-fA-F\-]{36}/employment})
+    stub_request(:get, %r{#{Aggregators::Sdk::PinwheelService::ACCOUNTS_ENDPOINT}/[0-9a-fA-F\-]{36}/employment})
       .to_return(
         status: 200,
         body: load_relative_json_file('request_employment_info_response_null_employment_status_bug.json').to_json,
@@ -104,7 +104,7 @@ module PinwheelApiHelper
   end
 
   def stub_request_identity_response
-    stub_request(:get, %r{#{AggregatorService::Pinwheel::ACCOUNTS_ENDPOINT}/[0-9a-fA-F\-]{36}/identity})
+    stub_request(:get, %r{#{Aggregators::Sdk::PinwheelService::ACCOUNTS_ENDPOINT}/[0-9a-fA-F\-]{36}/identity})
       .to_return(
         status: 200,
         body: load_relative_json_file('request_identity_response.json').to_json,
@@ -113,7 +113,7 @@ module PinwheelApiHelper
   end
 
   def stub_request_platform_response
-    stub_request(:get, %r{#{AggregatorService::Pinwheel::PLATFORMS_ENDPOINT}/[0-9a-fA-F\-]{36}})
+    stub_request(:get, %r{#{Aggregators::Sdk::PinwheelService::PLATFORMS_ENDPOINT}/[0-9a-fA-F\-]{36}})
       .to_return(
         status: 200,
         body: load_relative_json_file('request_platform_response.json').to_json,

@@ -64,12 +64,12 @@ class ApplicationController < ActionController::Base
   def pinwheel_for(cbv_flow)
     environment = agency_config[cbv_flow.client_agency_id].pinwheel_environment
 
-    AggregatorService::Pinwheel.new(environment)
+    Aggregators::Sdk::PinwheelService.new(environment)
   end
 
   def argyle_for(cbv_flow)
     environment = agency_config[cbv_flow.client_agency_id].argyle_environment
-    AggregatorService::Argyle.new(environment)
+    Aggregators::Sdk::ArgyleService.new(environment)
   end
 
   def add_newrelic_metadata

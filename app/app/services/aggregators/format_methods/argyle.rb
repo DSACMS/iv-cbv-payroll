@@ -1,4 +1,4 @@
-module ResponseObjects::FormatMethods::Argyle
+module Aggregators::FormatMethods::Argyle
   def self.format_employment_status(employment_status)
     return unless employment_status
 

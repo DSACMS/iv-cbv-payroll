@@ -1,10 +1,20 @@
-module ResponseObjects
+module Aggregators
   class AggregatorReport
-    def initialize(identity:, incomes:, employments:, paystubs:)
-      @identity = identity
-      @incomes = incomes
-      @employments = employments
-      @paystubs = paystubs
+    def initialize(payroll_accounts_ids: [])
+      @has_fetched = false
+      @payroll_account_ids = payroll_accounts_ids
+      @identity = []
+      @incomes = []
+      @employments = []
+      @paystubs = []
+    end
+
+    def fetch
+      raise "This method should be implemented in a subclass"
+    end
+
+    def has_fetched?
+      @has_fetched
     end
 
     def identity
@@ -14,6 +24,7 @@ module ResponseObjects
     def incomes
       @incomes
     end
+
     def employments
       @employments
     end
@@ -42,6 +53,7 @@ module ResponseObjects
           }
         end
     end
+
     def hours_by_earning_category(earnings)
     end
 
