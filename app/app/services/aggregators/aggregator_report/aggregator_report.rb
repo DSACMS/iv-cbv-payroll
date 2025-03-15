@@ -17,6 +17,11 @@ module Aggregators
       @has_fetched
     end
 
+    def is_ready_to_fetch?
+      # TODO: this should be based on whether the webhooks have synced
+      true
+    end
+
     def identity
       @identity
     end
