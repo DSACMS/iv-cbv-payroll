@@ -35,3 +35,9 @@ repos:
     language: ruby
     files: '^app/config/locales/.*.yml$'
     pass_filenames: false
+
+  - id: shellcheck
+    name: shellcheck
+    entry: shellcheck
+    language: system        # installed via `brew bundle`
+    files: '^bin/.*$'

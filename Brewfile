@@ -44,3 +44,4 @@ brew "gpg"
 
 # linters / workflow tools
 brew "pre-commit"
+brew "shellcheck"

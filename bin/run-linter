@@ -30,8 +30,8 @@ while [[ $# -gt 0 ]]; do
         # If the argument is a filename valid from the repo root, but we've
         # changed directory, then rewrite the argument's path to be relative to
         # the changed directory.
-        if [ -n "$CHANGE_DIRECTORY" -a -f "$1" ]; then
-          COMMAND+=("${1#${CHANGE_DIRECTORY}/}")
+        if [ -n "$CHANGE_DIRECTORY" ] && [ -f "$1" ]; then
+          COMMAND+=("${1#"${CHANGE_DIRECTORY}"/}")
         else
           COMMAND+=("$1")
         fi
@@ -46,6 +46,6 @@ while [[ $# -gt 0 ]]; do
   esac
 done
 
-debug "in ($CHANGE_DIRECTORY) will run (${COMMAND[@]})"
+debug "in ($CHANGE_DIRECTORY) will run (${COMMAND[*]})"
 cd "$CHANGE_DIRECTORY"
 exec "${COMMAND[@]}"
