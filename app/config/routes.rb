@@ -27,7 +27,7 @@ Rails.application.routes.draw do
     # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
 
     scope "/:client_agency_id", module: :cbv, constraints: { client_agency_id: Regexp.union(Rails.application.config.client_agencies.client_agency_ids) } do
-      get "new", to: "entries#show", as: :new
+      get "new", to: "generic_links#show", as: :new
     end
 
     scope "/cbv", as: :cbv_flow, module: :cbv do

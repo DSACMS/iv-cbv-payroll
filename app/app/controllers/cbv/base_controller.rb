@@ -9,15 +9,7 @@ class Cbv::BaseController < ApplicationController
   end
 
   def set_cbv_flow
-    if request.path.end_with?("/new")
-      @cbv_flow = CbvFlow.create_without_invitation(params[:client_agency_id])
-      session[:cbv_flow_id] = @cbv_flow.id
-
-      # Tom: kind of what I had in mind, yes. Don't love checking the request path
-      # instead make a specific controller... maybe we should make a generic link controller? Doesn't have to have a view. It would just redirect to entries controller.
-
-
-    elsif params[:token].present?
+    if params[:token].present?
       invitation = CbvFlowInvitation.find_by(auth_token: params[:token])
       if invitation.blank?
         return redirect_to(root_url, flash: { alert: t("cbv.error_invalid_token") })
@@ -60,6 +52,8 @@ class Cbv::BaseController < ApplicationController
 
   def next_path
     case params[:controller]
+    when "cbv/generic_links"
+      cbv_flow_entry_path
     when "cbv/entries"
       cbv_flow_employer_search_path
     when "cbv/employer_searches"
