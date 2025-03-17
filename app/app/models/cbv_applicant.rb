@@ -44,7 +44,7 @@ class CbvApplicant < ApplicationRecord
   end
 
   def set_default_snap_application_date
-    self.snap_application_date ||= Time.current - 90.days
+    self.snap_application_date ||= Time.current
   end
 
   def parse_snap_application_date
