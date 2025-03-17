@@ -5,8 +5,9 @@ class CbvInvitationService
 
   def invite(cbv_flow_invitation_params, current_user, delivery_method: :email)
     cbv_flow_invitation_params[:user] = current_user
-    cbv_flow_invitation = CbvFlowInvitation.create(cbv_flow_invitation_params)
-
+    cbv_flow_invitation = CbvFlowInvitation.new(cbv_flow_invitation_params)
+    cbv_flow_invitation.valid?(:caseworker_invitation)
+    
     if cbv_flow_invitation.errors.any?
       e = cbv_flow_invitation.errors.full_messages.join(", ")
       Rails.logger.warn("Error inviting applicant: #{e}")

@@ -1,5 +1,5 @@
 <% cbv_applicant = @cbv_flow_invitation.cbv_applicant ||
-     @cbv_flow_invitation.build_cbv_applicant(client_agency_id: @cbv_flow_invitation.client_agency_id) %>
+     @cbv_flow_invitation.build_cbv_applicant(client_agency_id: @cbv_flow_invitation.client_agency_id, caseworker_invitation: true) %>
 <%= f.fields_for :cbv_applicant, cbv_applicant do |f2| %>
   <%= f2.text_field :first_name, label: t(".invite.first_name") %>
 

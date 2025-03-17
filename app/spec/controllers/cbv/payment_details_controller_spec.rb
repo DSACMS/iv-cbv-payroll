@@ -7,7 +7,6 @@ RSpec.describe Cbv::PaymentDetailsController do
     render_views
 
     let(:current_time) { Date.parse('2024-06-18') }
-    let (:snap_application_date) {current_time - 90}
     let(:cbv_applicant) { create(:cbv_applicant, created_at: current_time, case_number: "ABC1234") }
     let(:account_id) { SecureRandom.uuid }
     let(:comment) { "This is a test comment" }
@@ -35,7 +34,6 @@ RSpec.describe Cbv::PaymentDetailsController do
 
     before do
       session[:cbv_flow_id] = cbv_flow.id
-      cbv_applicant.update(snap_application_date: current_time - 90)
       stub_request_end_user_accounts_response
       stub_request_end_user_paystubs_response
       stub_request_income_metadata_response if supported_jobs.include?("income")

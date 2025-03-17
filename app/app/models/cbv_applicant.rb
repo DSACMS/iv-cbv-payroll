@@ -1,5 +1,6 @@
 class CbvApplicant < ApplicationRecord
   after_initialize :set_default_snap_application_date, if: :new_record?
+  attr_accessor :caseworker_invitation
   # We use Single-Table Inheritance (STI) to create subclasses of this table
   # logic to process subsets of the columns of this model relevant to each
   # partner agency.
@@ -44,7 +45,7 @@ class CbvApplicant < ApplicationRecord
   end
 
   def set_default_snap_application_date
-    self.snap_application_date ||= Time.current
+    self.snap_application_date ||= Time.current unless :caseworker_invitation
   end
 
   def parse_snap_application_date

@@ -31,7 +31,7 @@ RSpec.describe Cbv::SubmitsController do
       "public_key"        => @public_key
     })
 
-    cbv_applicant.update(snap_application_date: current_time - 90)
+    cbv_applicant.update(snap_application_date: current_time)
 
     cbv_flow.payroll_accounts.first.update(pinwheel_account_id: "03e29160-f7e7-4a28-b2d8-813640e030d3")
   end
@@ -56,9 +56,9 @@ RSpec.describe Cbv::SubmitsController do
       it "renders properly" do
         get :show
         expect(controller.send(:has_consent)).to be_falsey
-        # 90 days before created_at
+        # 90 days before snap_application_date
         start_date = "March 20, 2024"
-        # Should be the formatted version of created_at
+        # Should be the formatted version of snap_application_date
         end_date = "June 18, 2024"
         expect(assigns[:payments_ending_at]).to eq(end_date)
         expect(assigns[:payments_beginning_at]).to eq(start_date)
