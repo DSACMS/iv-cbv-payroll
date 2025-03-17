@@ -91,7 +91,7 @@ RSpec.describe Caseworker::CbvFlowInvitationsController, type: :controller do
       end
 
       it "sends an invitation" do
-        post :create, params: {
+        post :create, pagit chrams: {
             client_agency_id: 'nyc',
           cbv_flow_invitation: valid_params
         }

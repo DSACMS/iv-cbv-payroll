@@ -6,11 +6,22 @@ RSpec.describe Cbv::PaymentDetailsController do
   describe "#show" do
     render_views
 
-    let!(:cbv_flow) { create(:cbv_flow) }
+    let(:current_time) { Date.parse('2024-06-18') }
+    let (:snap_application_date) {current_time - 90}
+    let(:cbv_applicant) { create(:cbv_applicant, created_at: current_time, case_number: "ABC1234") }
     let(:account_id) { SecureRandom.uuid }
     let(:comment) { "This is a test comment" }
     let(:supported_jobs) { %w[income paystubs employment] }
     let(:errored_jobs) { [] }
+    let(:cbv_flow) do
+      create(:cbv_flow,
+        :with_pinwheel_account,
+        with_errored_jobs: errored_jobs,
+        created_at: current_time,
+        supported_jobs: supported_jobs,
+        cbv_applicant: cbv_applicant
+      )
+    end
     let!(:payroll_account) do
       create(
         :payroll_account,
@@ -24,6 +35,7 @@ RSpec.describe Cbv::PaymentDetailsController do
 
     before do
       session[:cbv_flow_id] = cbv_flow.id
+      cbv_applicant.update(snap_application_date: current_time - 90)
       stub_request_end_user_accounts_response
       stub_request_end_user_paystubs_response
       stub_request_income_metadata_response if supported_jobs.include?("income")
