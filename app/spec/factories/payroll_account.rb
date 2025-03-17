@@ -25,5 +25,28 @@ FactoryBot.define do
         end
       end
     end
+
+    # Add new trait for Argyle PayrollAccounts
+    trait :argyle do
+      type { "argyle" }
+      # Get supported jobs directly from the model
+      supported_jobs { PayrollAccount::Argyle.available_jobs }
+    end
+
+    trait :argyle_fully_synced do
+      argyle
+
+      after(:build) do |payroll_account, evaluator|
+        payroll_account.supported_jobs.each do |job|
+          event_name = PayrollAccount::Argyle::JOBS_TO_WEBHOOK_EVENTS[job]
+
+          payroll_account.webhook_events << build(
+            :webhook_event,
+            event_name: event_name,
+            event_outcome: evaluator.with_errored_jobs.include?(job) ? "error" : "success"
+          )
+        end
+      end
+    end
   end
 end

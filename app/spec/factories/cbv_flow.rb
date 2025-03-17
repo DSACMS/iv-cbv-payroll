@@ -2,6 +2,7 @@ FactoryBot.define do
   factory :cbv_flow do
     cbv_flow_invitation
     cbv_applicant
+    argyle_user_id { SecureRandom.uuid }
 
     client_agency_id { "sandbox" }
 
@@ -20,6 +21,24 @@ FactoryBot.define do
         cbv_flow.payroll_accounts = [
           create(:payroll_account,
             :pinwheel_fully_synced,
+            with_errored_jobs: evaluator.with_errored_jobs,
+            cbv_flow: cbv_flow,
+            supported_jobs: evaluator.supported_jobs,
+          )
+        ]
+      end
+    end
+
+    trait :with_argyle_account do
+      transient do
+        supported_jobs { PayrollAccount::Argyle.available_jobs }
+        with_errored_jobs { [] }
+      end
+
+      after(:build) do |cbv_flow, evaluator|
+        cbv_flow.payroll_accounts = [
+          create(:payroll_account,
+            :argyle_fully_synced,
             with_errored_jobs: evaluator.with_errored_jobs,
             cbv_flow: cbv_flow,
             supported_jobs: evaluator.supported_jobs,
