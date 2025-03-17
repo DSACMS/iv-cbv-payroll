@@ -1,16 +1,17 @@
 module Aggregators
   class AggregatorReport
-    def initialize(payroll_accounts_ids: [])
+    def initialize(payroll_accounts: [])
       @has_fetched = false
-      @payroll_account_ids = payroll_accounts_ids
-      @identity = []
+      @payroll_account= payroll_accounts
+      @identittes = []
       @incomes = []
       @employments = []
       @paystubs = []
     end
 
     def fetch
-      raise "This method should be implemented in a subclass"
+      return false unless is_ready_to_fetch?
+      fetch_report_data
     end
 
     def has_fetched?
@@ -18,12 +19,11 @@ module Aggregators
     end
 
     def is_ready_to_fetch?
-      # TODO: this should be based on whether the webhooks have synced
-      true
+      raise "This method should be implemented in a subclass"
     end
 
-    def identity
-      @identity
+    def identities
+      @identities
     end
 
     def incomes
@@ -69,5 +69,10 @@ module Aggregators
     def total_gross_income
       @payments.reduce(0) { |sum, payment| sum + payment.gross_pay_amount }
     end
+  end
+
+  private
+  def fetch_report_data
+    raise "This method should be implemented in a subclass"
   end
 end
