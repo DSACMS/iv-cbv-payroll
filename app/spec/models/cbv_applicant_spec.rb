@@ -10,12 +10,17 @@ RSpec.describe CbvApplicant, type: :model do
     end
 
     describe "snap_application_date" do
-      it "requires snap_application_date" do
+      it "does not require snap_application_date in the generic link workflow, sets default" do
         applicant = CbvApplicant.new(valid_attributes.merge(snap_application_date: nil))
+        expect(applicant).to be_valid
+        expect(applicant.snap_application_date).to eq(Date.current)
+
+      end
+
+      it "does not set a default snap_application_date in the caseworker workflow" do
+        applicant = CbvApplicant.new(valid_attributes.merge(snap_application_date: nil, caseworker_invitation: true))
         expect(applicant).not_to be_valid
-        expect(applicant.errors[:snap_application_date]).to include(
-          I18n.t('activerecord.errors.models.cbv_applicant/nyc.attributes.snap_application_date.invalid_date'),
-        )
+        expect(applicant.snap_application_date).to eq(nil)
       end
 
       it "validates snap_application_date is not in the future" do
@@ -32,12 +37,17 @@ RSpec.describe CbvApplicant, type: :model do
         expect(applicant.snap_application_date).to eq(Date.new(2023, 8, 15))
       end
 
-      it "adds an error when snap_application_date is not a valid date" do
-        applicant = CbvApplicant.new(valid_attributes.merge(snap_application_date: "invalid"))
+      it "adds an error when snap_application_date is not a valid date in a caseworker workflow" do
+        applicant = CbvApplicant.new(valid_attributes.merge(snap_application_date: "invalid", caseworker_invitation: true))
         expect(applicant).not_to be_valid
         expect(applicant.errors[:snap_application_date]).to include(
           I18n.t('activerecord.errors.models.cbv_applicant/nyc.attributes.snap_application_date.invalid_date')
         )
+      end
+
+      it "doesn't add an error when snap_application_date is not a valid date in the generic link workflow" do
+        applicant = CbvApplicant.new(valid_attributes.merge(snap_application_date: "invalid"))
+        expect(applicant).to be_valid
       end
     end
   end
