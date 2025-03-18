@@ -44,6 +44,6 @@ repos:
 
   - id: prettier
     name: prettier
-    entry: bin/run-linter --cd app -- npm run format-precommit
+    entry: bin/run-linter --cd app -- npm run format:precommit
     language: node
     files: '^app/.*\.(js|ts)$'
