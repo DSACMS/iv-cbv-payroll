@@ -9,12 +9,9 @@ module Aggregators::AggregatorReports
 
     def fetch
       begin
-        puts("iihih")
         identities_json = @argyle_service.fetch_identities_api
         paystubs_json = @argyle_service.fetch_paystubs_api
 
-        puts("identities_json", identities_json)
-        puts("paystubs_json", paystubs_json)
         @identities = transform_identities(identities_json)
         @employments = transform_employments(identities_json)
         @incomes =  transform_incomes(identities_json)
