@@ -1,0 +1,126 @@
+{
+    "next": "https://api-sandbox.argyle.com/v2/items?cursor=cD1ORVhUJnM9NzAwMDAwMCZ1PUluc3Blcml0eSZvcmRlcmluZz0tc2NvcmUmbGltaXQ9MTA%3D",
+    "previous": null,
+    "results": [
+        {
+            "id": "item_000004422",
+            "name": "BambooHR",
+            "kind": "platform",
+            "known_limitations": "Due to platform limitations, payouts data retrieved from JSON response might have different values compared to Paystub PDF.",
+            "status": "healthy",
+            "status_details": null,
+            "mapping_status": "verified",
+            "logo_url": "https://res.cloudinary.com/argyle-media/image/upload/v1633092900/partner-logos/bamboohr_platform.png",
+            "is_grouping": false,
+            "matching_score": null
+        },
+        {
+            "id": "item_000011368",
+            "name": "Dayforce",
+            "kind": "platform",
+            "known_limitations": null,
+            "status": "healthy",
+            "status_details": null,
+            "mapping_status": "verified",
+            "logo_url": "https://res.cloudinary.com/argyle-media/image/upload/v1733753304/partner-logos/Dayforce%20HCM.png",
+            "is_grouping": false,
+            "matching_score": null
+        },
+        {
+            "id": "item_000017495",
+            "name": "Greenshades",
+            "kind": "platform",
+            "known_limitations": null,
+            "status": "healthy",
+            "status_details": null,
+            "mapping_status": "verified",
+            "logo_url": "https://res.cloudinary.com/argyle-media/image/upload/v1655463363/partner-logos/greenshades.png",
+            "is_grouping": false,
+            "matching_score": null
+        },
+        {
+            "id": "item_000029602",
+            "name": "Paperless Pay",
+            "kind": "platform",
+            "known_limitations": null,
+            "status": "healthy",
+            "status_details": null,
+            "mapping_status": "verified",
+            "logo_url": "https://res.cloudinary.com/argyle-media/image/upload/v1626959992/partner-logos/paperless_pay.png",
+            "is_grouping": false,
+            "matching_score": null
+        },
+        {
+            "id": "item_000011367",
+            "name": "Dayforce",
+            "kind": "platform",
+            "known_limitations": null,
+            "status": "healthy",
+            "status_details": null,
+            "mapping_status": "verified",
+            "logo_url": "https://res.cloudinary.com/argyle-media/image/upload/v1734620893/partner-logos/dayforcehcm.png",
+            "is_grouping": true,
+            "matching_score": null
+        },
+        {
+            "id": "item_000041140",
+            "name": "UKG Pro (UltiPro)",
+            "kind": "platform",
+            "known_limitations": null,
+            "status": "healthy",
+            "status_details": null,
+            "mapping_status": "verified",
+            "logo_url": "https://res.cloudinary.com/argyle-media/image/upload/v1629479266/partner-logos/ultipro_platform.jpg",
+            "is_grouping": true,
+            "matching_score": null
+        },
+        {
+            "id": "item_000043816",
+            "name": "Workday",
+            "kind": "platform",
+            "known_limitations": null,
+            "status": "healthy",
+            "status_details": null,
+            "mapping_status": "verified",
+            "logo_url": "https://res.cloudinary.com/argyle-media/image/upload/v1595950192/partner-logos/workday_platform.png",
+            "is_grouping": true,
+            "matching_score": null
+        },
+        {
+            "id": "item_000026933",
+            "name": "ADP",
+            "kind": "platform",
+            "known_limitations": "Due to an ongoing platform issue, ongoing refresh is temporarily unavailable.\nDue to platform limitations, only 3 years of paystub data is available. ",
+            "status": "healthy",
+            "status_details": null,
+            "mapping_status": "verified",
+            "logo_url": "https://res.cloudinary.com/argyle-media/image/upload/v1699281518/partner-logos/adp.png",
+            "is_grouping": false,
+            "matching_score": null
+        },
+        {
+            "id": "item_000017821",
+            "name": "Gusto",
+            "kind": "platform",
+            "known_limitations": null,
+            "status": "issues",
+            "status_details": "We have identified issues with the underlying platform. We are actively investigating and will provide an update by March 20, 11:00 UTC at the latest.",
+            "mapping_status": "verified",
+            "logo_url": "https://res.cloudinary.com/argyle-media/image/upload/v1594718493/partner-logos/gusto_platform.png",
+            "is_grouping": false,
+            "matching_score": null
+        },
+        {
+            "id": "item_000020372",
+            "name": "Insperity",
+            "kind": "platform",
+            "known_limitations": "Due to platform limitations, data refresh may require user re-authentication.",
+            "status": "healthy",
+            "status_details": null,
+            "mapping_status": "verified",
+            "logo_url": "https://res.cloudinary.com/argyle-media/image/upload/v1632065692/partner-logos/insperity_premier.png",
+            "is_grouping": false,
+            "matching_score": null
+        }
+    ]
+}

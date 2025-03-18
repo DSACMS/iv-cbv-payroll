@@ -11,7 +11,9 @@ class ArgyleService
     }
   }
 
-  USERS_ENDPOINT = "https://api-sandbox.argyle.com/v2/users"
+  ITEMS_ENDPOINT = "items"
+  USERS_ENDPOINT = "users"
+  WEBHOOKS_ENDPOINT = "webhooks"
 
   def initialize(environment, api_key_id = nil, api_key_secret = nil)
     @api_key_id = api_key_id || ENVIRONMENTS.fetch(environment.to_sym)[:api_key_id]
@@ -42,14 +44,13 @@ class ArgyleService
   def items(query = nil)
     @http.get("items", { q: query }).body
   end
-
   def create_user
     @http.post("users").body
   end
 
   # Webhook management methods
   def fetch_webhook_subscriptions
-    @http.get("webhooks").body
+    @http.get("#{WEBHOOKS_ENDPOINT}").body
   end
 
   def create_webhook_subscription(events, url, secret = nil)
@@ -60,11 +61,11 @@ class ArgyleService
     }
     payload[:secret] = secret if secret.present?
 
-    @http.post("webhooks", payload).body
+    @http.post("#{WEBHOOKS_ENDPOINT}", payload).body
   end
 
   def delete_webhook_subscription(id)
-    @http.delete("webhooks/#{id}").body
+    @http.delete("#{WEBHOOKS_ENDPOINT}/#{id}").body
   end
 
   def generate_signature_digest(payload, secret)
