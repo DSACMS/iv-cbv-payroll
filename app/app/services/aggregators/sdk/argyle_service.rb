@@ -46,34 +46,9 @@ module Aggregators::Sdk
       end
     end
 
-    def fetch_paystubs(**params)
-      json = fetch_paystubs_api(**params)
-      json["results"].map { |paystub_json| Aggregators::ResponseObjects::Paystub.from_argyle(paystub_json) }
-    end
-
-    def fetch_employments(**params)
-      # Note: we actually fetch Argyle's identity API instead of employment for the correct data
-      json = fetch_identities_api(**params)
-      json["results"].map { |identity_json| Aggregators::ResponseObjects::Employment.from_argyle(identity_json) }
-    end
-
-    def fetch_incomes(**params)
-      # Note: we actually fetch Argyle's identity API instead of employment for the correct data
-      json = fetch_identities_api(**params)
-      json["results"].map { |identity_json| Aggregators::ResponseObjects::Income.from_argyle(identity_json) }
-    end
-
-    # https://docs.argyle.com/api-reference/identities#retrieve
-    def fetch_identities(**params)
-      # todo: paginate
-      json = fetch_identities_api(**params)
-      json["results"].map { |identity_json| Aggregators::ResponseObjects::Identity.from_argyle(identity_json) }
-    end
-
     # Fetch all Argyle items
     # https://docs.argyle.com/api-reference/items#list
     def items(query = nil)
-      puts("HIHIHIHIh")
       @http.get(ITEMS_ENDPOINT, { q: query }).body
     end
 

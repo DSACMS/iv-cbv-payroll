@@ -1,9 +1,10 @@
-module Aggregators
+# This is an abstract class that should be inherited by all aggregator report classes.
+module Aggregators::AggregatorReports
   class AggregatorReport
     def initialize(payroll_accounts: [])
       @has_fetched = false
-      @payroll_account= payroll_accounts
-      @identittes = []
+      @payroll_accounts = payroll_accounts
+      @identities = []
       @incomes = []
       @employments = []
       @paystubs = []

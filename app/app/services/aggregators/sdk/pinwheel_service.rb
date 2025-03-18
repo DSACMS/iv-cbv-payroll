@@ -145,36 +145,17 @@ module Aggregators::Sdk
       @http.get(build_url("#{END_USERS}/#{end_user_id}/accounts")).body
     end
 
-    def fetch_paystubs(account_id:, **params)
-      json = fetch_paystubs_api(account_id: account_id, **params)
-      json["data"].map { |paystub_json| Aggregators::ResponseObjects::Paystub.from_pinwheel(paystub_json) }
-    end
-
+    
     def fetch_paystubs_api(account_id:, **params)
       @http.get(build_url("#{ACCOUNTS_ENDPOINT}/#{account_id}/paystubs"), params).body
-    end
-
-    def fetch_employment(account_id:)
-      json = fetch_employment_api(account_id: account_id)
-      Aggregators::ResponseObjects::Employment.from_pinwheel(json["data"])
     end
 
     def fetch_employment_api(account_id:)
       @http.get(build_url("#{ACCOUNTS_ENDPOINT}/#{account_id}/employment")).body
     end
 
-    def fetch_identity(account_id:)
-      json = fetch_identity_api(account_id: account_id)
-      Aggregators::ResponseObjects::Identity.from_pinwheel(json["data"])
-    end
-
     def fetch_identity_api(account_id:)
       @http.get(build_url("#{ACCOUNTS_ENDPOINT}/#{account_id}/identity")).body
-    end
-
-    def fetch_income(account_id:)
-      json = fetch_income_api(account_id: account_id)
-      Aggregators::ResponseObjects::Income.from_pinwheel(json["data"])
     end
 
     def fetch_income_api(account_id:)

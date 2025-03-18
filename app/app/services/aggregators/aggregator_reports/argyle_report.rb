@@ -1,19 +1,25 @@
-module Aggregators
+module Aggregators::AggregatorReports
   class ArgyleReport < AggregatorReport
-    private
+    include Aggregators::ResponseObjects
 
-    def fetch_report_data
+    def initialize(payroll_accounts: [], argyle_service:)
+      super(payroll_accounts: payroll_accounts)
+      @argyle_service = argyle_service
+    end
+
+    def fetch
       begin
-        identities_json = fetch_identities_api(account: account, **params)
-        paystubs_json = fetch_paystubs_api(account: account, **params)
+        identities_json = @argyle_service.fetch_identities_api
+        paystubs_json = @argyle_service.fetch_paystubs_api
 
-        @identities = transform_identity(identities_json),
-        @employments = transform_employments(identities_json),
-        @incomes =  transform_incomes(identities_json),
+        @identities = transform_identities(identities_json)
+        @employments = transform_employments(identities_json)
+        @incomes =  transform_incomes(identities_json)
         @paystubs = transform_paystubs(paystubs_json)
 
         @has_fetched = true
       rescue StandardError => e
+        puts("error", e)
         Rails.logger.error("Report Fetch Error: #{e.message}")
         @has_fetched = false
       end
@@ -21,7 +27,7 @@ module Aggregators
       @has_fetched
     end
 
-    def transform_identity(identities_json)
+    def transform_identities(identities_json)
       identities_json["results"].map do |identity_json|
         Identity.from_argyle(identity_json)
       end

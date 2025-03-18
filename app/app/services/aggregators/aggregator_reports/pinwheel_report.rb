@@ -1,4 +1,4 @@
-module Aggregators
+module Aggregators::AggregatorReports
   class PinwheelReport < AggregatorReport
     def is_ready_to_fetch?
       @payroll_accounts.all? do |payroll_account|
@@ -12,17 +12,24 @@ module Aggregators
     private
 
     def fetch_report_data
-      begin
-        @identities = fetch_identity(account_id: account),
-        @employments = fetch_employment(account_id: account),
-        @incomes = fetch_income(account_id: account),
-        @paystubs = fetch_paystubs(account_id: account)
-      rescue StandardError => e
-        Rails.logger.error("Report Fetch Error: #{e.message}")
-        @has_fetched = false
+      @payroll_accounts.each do |account|
+        begin
+          fetch_report_data_for_account(account)
+        rescue StandardError => e
+          Rails.logger.error("Report Fetch Error: #{e.message}")
+          return @has_fetched = false
+        end
       end
+      @has_fetched = true
+    end
 
-      @has_fetched
+    def fetch_report_data_for_account(account)
+      begin
+        @identities.append(fetch_identity(account_id: account))
+        @employments.append(fetch_employment(account_id: account))
+        @incomes.append(fetch_income(account_id: account))
+        @paystubs.append(fetch_paystubs(account_id: account))
+      end
     end
 
     def transform_paystubs
