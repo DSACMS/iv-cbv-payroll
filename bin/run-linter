@@ -4,6 +4,9 @@
 # Usage:
 #   bin/run-linter --cd "$APP_NAME" -- [command...]
 #   bin/run-linter --cd app -- rubocop
+#
+# Run it in DEBUG mode for a bit of extra debugging verbosity:
+#   DEBUG=1 bin/run-linter --cd app -- rubocop
 set -euo pipefail
 
 COMMAND=()
