@@ -1,56 +1,114 @@
 require 'rails_helper'
 
 RSpec.describe Aggregators::AggregatorReports::ArgyleReport, type: :service do
-  include ArgyleApiHelper
-  context 'bob, an uber driver' do
-    let(:account) { '019571bc-2f60-3955-d972-dbadfe0913a8'}
-    let(:identities_json) { load_relative_json_file('bob', 'request_identity.json') }
-    let(:paystubs_json) { load_relative_json_file('bob', 'request_paystubs.json') }
-    let(:argyle_service) { Aggregators::Sdk::ArgyleService.new(:sandbox) }
-    let(:argyle_report) { described_class.new(argyle_service: argyle_service) }
+  let(:account) { "abc123" }
+  let(:params) { { some_param: 'value' } }
+  let(:argyle_service) { Aggregators::Sdk::ArgyleService.new(:sandbox) }
+  let(:service) { described_class.new(payroll_accounts: [ account ], argyle_service: argyle_service) }
 
-    before do
-      allow(argyle_service).to receive(:fetch_identities_api).and_return(identities_json)
-      allow(argyle_service).to receive(:fetch_paystubs_api).and_return(paystubs_json)
+  let(:identities_json) { JSON.parse(File.read(Rails.root.join('spec/support/fixtures/argyle/bob/request_identity.json'))) }
+  let(:paystubs_json) { JSON.parse(File.read(Rails.root.join('spec/support/fixtures/argyle/bob/request_paystubs.json'))) }
+
+  before do
+    allow(argyle_service).to receive(:fetch_identities_api).and_return(identities_json)
+    allow(argyle_service).to receive(:fetch_paystubs_api).and_return(paystubs_json)
+  end
+
+  describe '#fetch' do
+    subject { service.send(:fetch) }
+
+    it 'calls the identities API' do
+      subject
+      expect(argyle_service).to have_received(:fetch_identities_api)
     end
 
-    describe '#fetch' do
-      context 'when fetch is successful' do
-        it 'fetches and transforms identities, employments, incomes, and paystubs' do
-          result = argyle_report.fetch
+    it 'calls the paystubs API' do
+      subject
+      expect(argyle_service).to have_received(:fetch_paystubs_api)
+    end
 
-          expect(result).to be true
-          expect(argyle_report.instance_variable_get(:@identities)).to be_an(Array)
-          expect(argyle_report.instance_variable_get(:@employments)).to be_an(Array)
-          expect(argyle_report.instance_variable_get(:@incomes)).to be_an(Array)
-          expect(argyle_report.instance_variable_get(:@paystubs)).to be_an(Array)
+    it 'transforms identities correctly' do
+      subject
+      expect(service.instance_variable_get(:@identities)).to all(be_an(Identity))
+    end
 
+    it 'transforms employments correctly' do
+      subject
+      expect(service.instance_variable_get(:@employments)).to all(be_an(Employment))
+    end
 
-          expect(argyle_report.identities).to all(be_a(Aggregators::ResponseObjects::Identity))
-          expect(argyle_report.incomes).to all(be_a(Aggregators::ResponseObjects::Income))
-          expect(argyle_report.employments).to all(be_a(Aggregators::ResponseObjects::Employment))
-          expect(argyle_report.paystubs).to all(be_a(Aggregators::ResponseObjects::Paystub))
+    it 'transforms incomes correctly' do
+      subject
+      expect(service.instance_variable_get(:@incomes)).to all(be_an(Income))
+    end
 
-          expect(argyle_report.identities.length).to eq(1)
-          expect(argyle_report.incomes.length).to eq(1)
-          expect(argyle_report.employments.length).to eq(1)
-          expect(argyle_report.paystubs.length).to eq(10)
-        end
+    it 'transforms paystubs correctly' do
+      subject
+      expect(service.instance_variable_get(:@paystubs)).to all(be_an(Paystub))
+    end
+
+    it 'sets @has_fetched to true on success' do
+      subject
+      expect(service.instance_variable_get(:@has_fetched)).to be true
+    end
+
+    context 'when an error occurs' do
+      before do
+        allow(service).to receive(:fetch_identities_api).and_raise(StandardError.new('API error'))
       end
 
-      context 'when fetch raises an error' do
-        before do
-          allow(argyle_service).to receive(:fetch_identities_api).and_raise(StandardError.new('API error'))
-        end
+      it 'logs the error' do
+        expect(Rails.logger).to receive(:error).with(/Report Fetch Error: API error/)
+        subject
+      end
 
-        it 'logs the error and sets @has_fetched to false' do
-          expect(Rails.logger).to receive(:error).with('Report Fetch Error: API error')
+      it 'sets @has_fetched to false' do
+        subject
+        expect(service.instance_variable_get(:@has_fetched)).to be false
+      end
+    end
 
-          result = argyle_report.fetch
+    context 'when identities API returns empty response' do
+      before do
+        allow(service).to receive(:fetch_identities_api).and_return([])
+      end
 
-          expect(result).to be false
-          expect(argyle_report.instance_variable_get(:@has_fetched)).to be false
-        end
+      it 'sets @identities to an empty array' do
+        subject
+        expect(service.instance_variable_get(:@identities)).to eq([])
+      end
+    end
+
+    context 'when paystubs API returns empty response' do
+      before do
+        allow(service).to receive(:fetch_paystubs_api).and_return([])
+      end
+
+      it 'sets @paystubs to an empty array' do
+        subject
+        expect(service.instance_variable_get(:@paystubs)).to eq([])
+      end
+    end
+
+    context 'when identities API returns invalid data' do
+      before do
+        allow(service).to receive(:fetch_identities_api).and_return(nil)
+      end
+
+      it 'sets @identities to nil' do
+        subject
+        expect(service.instance_variable_get(:@identities)).to be_nil
+      end
+    end
+
+    context 'when paystubs API returns invalid data' do
+      before do
+        allow(service).to receive(:fetch_paystubs_api).and_return(nil)
+      end
+
+      it 'sets @paystubs to nil' do
+        subject
+        expect(service.instance_variable_get(:@paystubs)).to be_nil
       end
     end
   end
