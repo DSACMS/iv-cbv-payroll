@@ -26,7 +26,8 @@
     "build:css": "postcss ./app/assets/stylesheets/application.postcss.css -o ./app/assets/builds/application.css",
     "pa11y-ci": "pa11y-ci --config .pa11yci",
     "test": "vitest",
-    "format": "prettier --write \"app/javascript/**/*.{js,jsx,ts,tsx}\" \"spec/javascript/**/*.{js,jsx,ts,tsx}\""
+    "format": "prettier --write \"app/javascript/**/*.{js,jsx,ts,tsx}\" \"spec/javascript/**/*.{js,jsx,ts,tsx}\"",
+    "format-precommit": "prettier --write"
   },
   "devDependencies": {
     "jsdom": "^24.0.0",

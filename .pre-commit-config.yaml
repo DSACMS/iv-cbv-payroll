@@ -26,14 +26,14 @@ repos:
     name: i18n-normalize
     entry: bin/run-linter --cd app -- bundle exec i18n-tasks normalize
     language: ruby
-    files: '^app/config/locales/.*.yml$'
+    files: '^app/config/locales/.*\.yml$'
     pass_filenames: false
 
   - id: i18n-missing
     name: i18n-missing
     entry: bin/run-linter --cd app -- bundle exec i18n-tasks missing
     language: ruby
-    files: '^app/config/locales/.*.yml$'
+    files: '^app/config/locales/.*\.yml$'
     pass_filenames: false
 
   - id: shellcheck
@@ -41,3 +41,9 @@ repos:
     entry: shellcheck
     language: system        # installed via `brew bundle`
     files: '^bin/.*$'
+
+  - id: prettier
+    name: prettier
+    entry: bin/run-linter --cd app -- npm run format-precommit
+    language: node
+    files: '^app/.*\.(js|ts)$'
