@@ -32,8 +32,6 @@ class ArgyleWebhooksManager
   def create_subscription_if_necessary(tunnel_url, name)
     receiver_url = URI.join(tunnel_url, "/webhooks/argyle/events").to_s
     subscriptions = existing_subscriptions_with_name(name)
-    puts "subscriptions: #{subscriptions.inspect}"
-    puts "receiver_url: #{receiver_url}"
     existing_subscription = subscriptions.find do |subscription|
       subscription["url"] == receiver_url && subscription["events"] == WEBHOOK_EVENTS
     end
@@ -48,6 +46,7 @@ class ArgyleWebhooksManager
       response = @argyle.create_webhook_subscription(WEBHOOK_EVENTS, receiver_url, name)
       new_webhook_subscription_id = response["id"]
       puts "  ✅ Set up Argyle webhook: #{new_webhook_subscription_id}"
+      puts " Argyle webhook url: #{receiver_url}"
 
       new_webhook_subscription_id
     end
