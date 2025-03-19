@@ -4,8 +4,11 @@ RSpec.describe Aggregators::AggregatorReports::ArgyleReport, type: :service do
   include ArgyleApiHelper
   let(:account) { "abc123" }
   let(:params) { { some_param: 'value' } }
+  let!(:payroll_accounts) do
+    create_list(:payroll_account, 3, :pinwheel_fully_synced, pinwheel_account_id: account)
+  end
   let(:argyle_service) { Aggregators::Sdk::ArgyleService.new(:sandbox) }
-  let(:service) { described_class.new(payroll_accounts: [ account ], argyle_service: argyle_service) }
+  let(:service) { described_class.new(payroll_accounts: payroll_accounts, argyle_service: argyle_service) }
 
   let(:identities_json) { load_relative_json_file('bob', 'request_identity.json') }
   let(:paystubs_json) { load_relative_json_file('bob', 'request_paystubs.json') }

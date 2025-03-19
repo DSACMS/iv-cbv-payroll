@@ -7,11 +7,8 @@ module Aggregators::AggregatorReports
       @argyle_service = argyle_service
     end
 
-    def is_ready_to_fetch?
-      true
-    end
-
-    def fetch
+    private
+    def fetch_report_data
       begin
         identities_json = @argyle_service.fetch_identities_api
         paystubs_json = @argyle_service.fetch_paystubs_api
@@ -23,7 +20,6 @@ module Aggregators::AggregatorReports
 
         @has_fetched = true
       rescue StandardError => e
-        debugger
         Rails.logger.error("Report Fetch Error: #{e.message}")
         @has_fetched = false
       end
