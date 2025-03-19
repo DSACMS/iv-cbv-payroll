@@ -37,7 +37,7 @@ class Caseworker::CbvFlowInvitationsController < Caseworker::BaseController
 
       flash.now[:alert_heading] = error_header
       flash.now[:alert] = error_messages.html_safe
-
+      
       return render :new, status: :unprocessable_entity
     end
 
