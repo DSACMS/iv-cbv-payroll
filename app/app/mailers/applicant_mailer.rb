@@ -10,13 +10,6 @@ class ApplicantMailer < ApplicationMailer
     )
   end
 
-  def invitation_reminder_email
-    mail(
-      to: @cbv_flow_invitation.email_address,
-      subject: view_context.agency_translation("applicant_mailer.invitation_reminder_email.subject")
-    )
-  end
-
   private
 
   def set_locale(&action)

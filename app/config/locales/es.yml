@@ -22,23 +22,6 @@ es:
       subject:
         default: Verifique sus ingresos para su solicitud o renovación de SNAP
         ma: Verifique sus ingresos para renovar sus beneficios de SNAP
-    invitation_reminder_email:
-      feedback_button: Comparta tus comentarios
-      feedback_header: "¿Tiene algún comentario sobre el programa piloto de SNAP?"
-      footer: Este es un mensaje generado automáticamente de %{agency_acronym}. No responda a este correo electrónico.
-      greeting: Hola,
-      instructions: Inicia sesión en su cuenta de proveedor de nóminas (por ejemplo, ADP, Lyft o Amazon Flex) para compartir sus datos de ingresos directamente con %{agency_acronym}. Si usted no cumple con la fecha límite, este enlace expirará y tendrá que solicitar una nueva invitación.
-      main_action_html:
-        default: "<strong>Verifique sus ingresos</strong> como parte de su recertificación de SNAP antes del <strong>%{deadline}</strong>."
-        ma: "<strong>Verifique sus ingresos</strong> como parte de su recertificación de SNAP antes del <strong>%{deadline}</strong>."
-        nyc: "<strong>Verifique sus ingresos</strong> como parte de su solicitud o recertificación de SNAP antes del <strong>%{deadline}</strong>."
-        sandbox: "<strong>Verifique sus ingresos</strong> como parte de su recertificación de SNAP antes del <strong>%{deadline}</strong>."
-      subject:
-        default: 'Recordatorio: Verifique sus ingresos para renovar sus beneficios de SNAP'
-        ma: 'Recordatorio: Verifique sus ingresos para renovar sus beneficios de SNAP'
-        nyc: 'Recordatorio: Verifique sus ingresos para renovar o solicitar sus beneficios de SNAP'
-        sandbox: 'Recordatorio: Verifique sus ingresos para renovar sus beneficios de SNAP'
-      verify_income_button: Verifique sus ingresos
   caseworker:
     cbv_flow_invitations:
       create:

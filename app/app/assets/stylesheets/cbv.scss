@@ -125,14 +125,6 @@ html {
   to {transform: rotate(360deg);}
 }
 
-// Allow decoupling header hierarchy from typographical style.
-// Currently only used in the invitation reminder mailer.
-
-.h3-style {
-  @include typeset-h3;
-  font-family: inherit;
-}
-
 /**
  * Help Modal
  */
@@ -151,10 +143,10 @@ html {
     line-height: 1.3;
     white-space: normal;
     padding: 0.75rem 1.25rem;
-    
+
     // Default to block display
     display: block;
-    
+
     // Switch to inline-block for larger screens
     @include at-media('mobile-lg') {
       display: inline-block;
