@@ -19,7 +19,6 @@ module Aggregators::AggregatorReports
 
         @has_fetched = true
       rescue StandardError => e
-        puts("error", e)
         Rails.logger.error("Report Fetch Error: #{e.message}")
         @has_fetched = false
       end
