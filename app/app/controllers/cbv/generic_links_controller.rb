@@ -12,6 +12,6 @@ class Cbv::GenericLinksController < Cbv::BaseController
   def ensure_valid_client_agency_id
     return if agency_config.client_agency_ids.include?(params[:client_agency_id])
 
-    redirect_to root_url, flash: { info: "Invalid link used to begin CBV. Try clicking the link again or contact your local SNAP agency for help." }
+    redirect_to root_url, flash: { info: t("cbv.error_invalid_link") }
   end
 end
