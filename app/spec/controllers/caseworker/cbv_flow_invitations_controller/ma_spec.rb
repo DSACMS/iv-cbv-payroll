@@ -54,7 +54,7 @@ RSpec.describe Caseworker::CbvFlowInvitationsController, type: :controller do
       expect(applicant.last_name).to eq("Doe")
       expect(applicant.agency_id_number).to eq(cbv_flow_invitation_params[:cbv_applicant_attributes][:agency_id_number])
       expect(invitation.email_address).to eq("test@example.com")
-      expect(applicant.snap_application_date).to eq(Date.yesterday)
+      expect(applicant.snap_application_date).to eq(Date.current)
       expect(applicant.beacon_id).to eq(cbv_flow_invitation_params[:cbv_applicant_attributes][:beacon_id])
     end
 
