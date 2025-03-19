@@ -26,10 +26,6 @@ Rails.application.routes.draw do
     get "/maintenance", to: "maintenance#show"
     # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
 
-    scope "/:client_agency_id", module: :cbv, constraints: { client_agency_id: Regexp.union(Rails.application.config.client_agencies.client_agency_ids) } do
-      get "new", to: "generic_links#show", as: :new
-    end
-
     scope "/cbv", as: :cbv_flow, module: :cbv do
       resource :entry, only: %i[show create]
       resource :employer_search, only: %i[show]
@@ -42,6 +38,11 @@ Rails.application.routes.draw do
       resource :add_job, only: %i[show create]
       resource :payment_details, only: %i[show update]
       resource :expired_invitation, only: %i[show]
+
+      # Generic link
+      scope "links/:client_agency_id", constraints: { client_agency_id: Regexp.union(Rails.application.config.client_agencies.client_agency_ids) } do
+        root to: "generic_links#show", as: :new
+      end
 
       # Session management
       post "session/refresh", to: "sessions#refresh", as: :session_refresh
