@@ -21,21 +21,19 @@ RSpec.describe Aggregators::AggregatorReports::PinwheelReport, type: :service do
 
   before do
     allow(pinwheel_service).to receive(:fetch_identity_api).with(account_id: account).and_return(identities_json)
-    allow(pinwheel_service).to receive(:fetch_income_api).and_return(incomes_json)
-    allow(pinwheel_service).to receive(:fetch_employment_api).and_return(incomes_json)
-    allow(pinwheel_service).to receive(:fetch_paystubs_api).and_return(paystubs_json)
+    allow(pinwheel_service).to receive(:fetch_income_api).with(account_id: account).and_return(incomes_json)
+    allow(pinwheel_service).to receive(:fetch_employment_api).with(account_id: account).and_return(incomes_json)
+    allow(pinwheel_service).to receive(:fetch_paystubs_api).with(account_id: account).and_return(paystubs_json)
   end
 
 
   describe '#fetch' do
-    it 'calls the identities API' do
+    it 'calls the expected API\'s for each payroll account' do
       service.fetch
-      expect(pinwheel_service).to have_received(:fetch_identity_api).with(account_id: account)
-    end
-
-    it 'calls the paystubs API' do
-      service.fetch
-      expect(pinwheel_service).to have_received(:fetch_paystubs_api)
+      expect(pinwheel_service).to have_received(:fetch_identity_api).with(account_id: account).exactly(3).times
+      expect(pinwheel_service).to have_received(:fetch_paystubs_api).with(account_id: account).exactly(3).times
+      expect(pinwheel_service).to have_received(:fetch_employment_api).with(account_id: account).exactly(3).times
+      expect(pinwheel_service).to have_received(:fetch_income_api).with(account_id: account).exactly(3).times
     end
 
     it 'transforms all response objects correctly' do
@@ -53,13 +51,13 @@ RSpec.describe Aggregators::AggregatorReports::PinwheelReport, type: :service do
 
     context 'when an error occurs' do
       before do
-        allow(pinwheel_service).to receive(:fetch_identities_api).and_raise(StandardError.new('API error'))
+        allow(pinwheel_service).to receive(:fetch_identity_api).and_raise(StandardError.new('API error'))
         allow(Rails.logger).to receive(:error)
       end
 
-      xit 'logs the error' do
+      it 'logs the error' do
         service.fetch
-        expect(Rails.logger).to receive(:error).with(/Report Fetch Error: API error/)
+        expect(Rails.logger).to have_received(:error).with(/Report Fetch Error: API error/)
       end
 
       it 'sets @has_fetched to false' do
@@ -70,7 +68,7 @@ RSpec.describe Aggregators::AggregatorReports::PinwheelReport, type: :service do
 
     context 'when identities API returns empty response' do
       before do
-        allow(pinwheel_service).to receive(:fetch_identities_api).and_return(empty_pinwheel_result)
+        allow(pinwheel_service).to receive(:fetch_identity_api).and_return(empty_pinwheel_result)
       end
 
       it 'sets @identities to an empty array' do
@@ -81,8 +79,10 @@ RSpec.describe Aggregators::AggregatorReports::PinwheelReport, type: :service do
 
     context 'when API\'s returns empty responses' do
       before do
-        allow(pinwheel_service).to receive(:fetch_paystubs_api).and_return(empty_pinwheel_result)
-        allow(pinwheel_service).to receive(:fetch_identities_api).and_return(empty_pinwheel_result)
+        allow(pinwheel_service).to receive(:fetch_identity_api).with(account_id: account).and_return(empty_pinwheel_result)
+        allow(pinwheel_service).to receive(:fetch_income_api).with(account_id: account).and_return(empty_pinwheel_result)
+        allow(pinwheel_service).to receive(:fetch_employment_api).with(account_id: account).and_return(empty_pinwheel_result)
+        allow(pinwheel_service).to receive(:fetch_paystubs_api).with(account_id: account).and_return(empty_pinwheel_result)
       end
 
       it 'sets all instance variables to empty arrays' do
