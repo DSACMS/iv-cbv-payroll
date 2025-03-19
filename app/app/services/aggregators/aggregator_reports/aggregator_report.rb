@@ -20,7 +20,9 @@ module Aggregators::AggregatorReports
     end
 
     def is_ready_to_fetch?
-      raise "This method should be implemented in a subclass"
+      @payroll_accounts.all? do |payroll_account|
+        payroll_account.has_fully_synced?
+      end
     end
 
     def identities

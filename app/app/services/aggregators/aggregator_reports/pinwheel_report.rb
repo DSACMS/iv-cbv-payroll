@@ -1,17 +1,15 @@
 module Aggregators::AggregatorReports
   class PinwheelReport < AggregatorReport
-    def is_ready_to_fetch?
-      @payroll_accounts.all? do |payroll_account|
-        payroll_account.job_succeeded?("employment") &&
-        payroll_account.job_succeeded?("income") &&
-        payroll_account.job_succeeded?("identity") &&
-        payroll_account.job_succeeded?("paystubs")
-      end
+    def initialize(payroll_accounts: [], pinwheel_service:)
+      puts("init_start")
+      super(payroll_accounts: payroll_accounts)
+      @pinwheel_service = pinwheel_service
+      puts("init_end")
     end
-
     private
 
     def fetch_report_data
+      puts("fetch_report_start")
       @payroll_accounts.each do |account|
         begin
           fetch_report_data_for_account(account)
@@ -21,36 +19,36 @@ module Aggregators::AggregatorReports
         end
       end
       @has_fetched = true
+      puts("fetch_report_end")
     end
 
     def fetch_report_data_for_account(account)
       begin
-        @identities.append(fetch_identity(account_id: account))
-        @employments.append(fetch_employment(account_id: account))
-        @incomes.append(fetch_income(account_id: account))
-        @paystubs.append(fetch_paystubs(account_id: account))
+        @identities.append(fetch_identity(account_id: account.pinwheel_account_id))
+        @employments.append(fetch_employment(account_id: account.pinwheel_account_id))
+        @incomes.append(fetch_income(account_id: account.pinwheel_account_id))
+        @paystubs.append(fetch_paystubs(account_id: account.pinwheel_account_id))
       end
     end
 
     def transform_paystubs
-      json = @http.get(build_url("#{ACCOUNTS_ENDPOINT}/#{account_id}/paystubs"), params).body
+      json = @pinhweel_service.fetch_paystubs_api
       json["data"].map { |paystub_json| Aggregators::ResponseObjects::Paystub.from_pinwheel(paystub_json) }
     end
 
     def fetch_employment(account_id:)
-      json = @http.get(build_url("#{ACCOUNTS_ENDPOINT}/#{account_id}/employment")).body
-
+      json = @pinhweel_service.fetch_employment_api(account_id: account_id)
       Aggregators::ResponseObjects::Employment.from_pinwheel(json["data"])
     end
 
     def fetch_identity(account_id:)
-      json = @http.get(build_url("#{ACCOUNTS_ENDPOINT}/#{account_id}/identity")).body
+      json = @pinwheel_service.fetch_identity_api(account_id: account_id)
 
       Aggregators::ResponseObjects::Identity.from_pinwheel(json["data"])
     end
 
     def fetch_income(account_id:)
-      json = @http.get(build_url("#{ACCOUNTS_ENDPOINT}/#{account_id}/income")).body
+      json = @pinwheel_service.fetch_income_api(account_id: account_id)
 
       Aggregators::ResponseObjects::Income.from_pinwheel(json["data"])
     end
