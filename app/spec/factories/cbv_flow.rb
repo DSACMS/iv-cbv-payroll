@@ -2,7 +2,6 @@ FactoryBot.define do
   factory :cbv_flow do
     cbv_flow_invitation
     cbv_applicant
-    argyle_user_id { SecureRandom.uuid }
 
     client_agency_id { "sandbox" }
 
