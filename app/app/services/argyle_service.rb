@@ -7,7 +7,8 @@ class ArgyleService
     sandbox: {
       base_url: "https://api-sandbox.argyle.com/v2",
       api_key_id: ENV["ARGYLE_API_TOKEN_SANDBOX_ID"],
-      api_key_secret: ENV["ARGYLE_API_TOKEN_SANDBOX_SECRET"]
+      api_key_secret: ENV["ARGYLE_API_TOKEN_SANDBOX_SECRET"],
+      webhook_secret: ENV["ARGYLE_WEBHOOK_SECRET_SANDBOX"]
     }
   }
 
@@ -18,6 +19,7 @@ class ArgyleService
   def initialize(environment, api_key_id = nil, api_key_secret = nil)
     @api_key_id = api_key_id || ENVIRONMENTS.fetch(environment.to_sym)[:api_key_id]
     @api_key_secret = api_key_secret || ENVIRONMENTS.fetch(environment.to_sym)[:api_key_secret]
+    @webhook_secret = ENVIRONMENTS.fetch(environment.to_sym)[:webhook_secret]
     @environment = ENVIRONMENTS.fetch(environment.to_sym) { |env| raise KeyError.new("ArgyleService unknown environment: #{env}") }
 
     client_options = {
@@ -42,24 +44,25 @@ class ArgyleService
 
   # Fetch all Argyle items
   def items(query = nil)
-    @http.get("items", { q: query }).body
+    @http.get("#{ITEMS_ENDPOINT}", { q: query }).body
   end
+
   def create_user
-    @http.post("users").body
+    @http.post("#{USERS_ENDPOINT}").body
   end
 
   # Webhook management methods
-  def fetch_webhook_subscriptions
+  def get_webhook_subscriptions
     @http.get("#{WEBHOOKS_ENDPOINT}").body
   end
 
-  def create_webhook_subscription(events, url, secret = nil)
+  def create_webhook_subscription(events, url, name)
     payload = {
       events: events,
-      name: "Automated subscription",
-      url: url
+      name: name,
+      url: url,
+      secret: @webhook_secret
     }
-    payload[:secret] = secret if secret.present?
 
     @http.post("#{WEBHOOKS_ENDPOINT}", payload).body
   end
@@ -77,8 +80,7 @@ class ArgyleService
     ActiveSupport::SecurityUtils.secure_compare(signature, expected)
   end
 
-  # Property to access the webhook secret
   def webhook_secret
-    @api_key_secret
+    @webhook_secret
   end
 end

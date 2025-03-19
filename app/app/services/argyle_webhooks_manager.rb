@@ -20,9 +20,9 @@ class ArgyleWebhooksManager
     @argyle = ArgyleService.new(@sandbox_config.argyle_environment)
   end
 
-  def existing_subscriptions(name)
-    subscriptions = @argyle.fetch_webhook_subscriptions["data"]
-    subscriptions.find_all { |subscription| subscription["url"].end_with?(format_identifier_hash(name)) }
+  def existing_subscriptions_with_name(formatted_identifier_name)
+    @subscriptions = @argyle.get_webhook_subscriptions["results"]
+    @subscriptions.find_all { |subscription| subscription["name"] == formatted_identifier_name }
   end
 
   def remove_subscriptions(subscriptions)
@@ -33,8 +33,8 @@ class ArgyleWebhooksManager
   end
 
   def create_subscription_if_necessary(tunnel_url, name)
-    receiver_url = URI.join(tunnel_url, "/webhooks/argyle/events", format_identifier_hash(name)).to_s
-    subscriptions = existing_subscriptions(name)
+    receiver_url = URI.join(tunnel_url, "/webhooks/argyle/events").to_s
+    subscriptions = existing_subscriptions_with_name(name)
     existing_subscription = subscriptions.find do |subscription|
       subscription["url"] == receiver_url && subscription["events"] == WEBHOOK_EVENTS
     end
@@ -48,8 +48,8 @@ class ArgyleWebhooksManager
       remove_subscriptions(subscriptions)
 
       puts "  Registering Argyle webhooks for Ngrok tunnel in Argyle #{@sandbox_config.argyle_environment}..."
-      response = @argyle.create_webhook_subscription(WEBHOOK_EVENTS, receiver_url)
-      new_webhook_subscription_id = response["data"]["id"]
+      response = @argyle.create_webhook_subscription(WEBHOOK_EVENTS, receiver_url, name)
+      new_webhook_subscription_id = response["id"]
       puts "  ✅ Set up Argyle webhook: #{new_webhook_subscription_id}"
 
       new_webhook_subscription_id
@@ -57,6 +57,6 @@ class ArgyleWebhooksManager
   end
 
   def format_identifier_hash(identifier)
-    "#subscription_name=#{identifier}"
+    "ngrok_subscription_#{identifier}"
   end
 end

@@ -120,6 +120,4 @@ module PinwheelApiHelper
         headers: { 'Content-Type': 'application/json;charset=UTF-8' }
       )
   end
-
-
 end

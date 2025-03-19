@@ -4,7 +4,7 @@
     "results": [
         {
             "id": "f77044cb-4eb2-466c-b5d8-537ac05af9a8",
-            "name": "gardner-sandbox",
+            "name": "ngrok_subscription_test_webhook",
             "events": [
                 "accounts.updated",
                 "accounts.added"
