@@ -1,5 +1,5 @@
 class CbvApplicant < ApplicationRecord
-  attr_accessor :caseworker_invitation
+  after_initialize :set_snap_application_date, if: :new_record?
   # We use Single-Table Inheritance (STI) to create subclasses of this table
   # logic to process subsets of the columns of this model relevant to each
   # partner agency.
@@ -44,10 +44,13 @@ class CbvApplicant < ApplicationRecord
     PAYSTUB_REPORT_RANGE.before(snap_application_date)
   end
 
+  def set_snap_application_date
+    self.snap_application_date ||= Date.current
+  end
+
   def parse_snap_application_date
     raw_snap_application_date = @attributes["snap_application_date"]&.value_before_type_cast
     return if raw_snap_application_date.is_a?(Date)
-    # return if raw_snap_application_date.nil? and self.caseworker_invitation
 
     if raw_snap_application_date.is_a?(ActiveSupport::TimeWithZone) || raw_snap_application_date.is_a?(Time)
       self.snap_application_date = raw_snap_application_date.to_date
@@ -59,10 +62,8 @@ class CbvApplicant < ApplicationRecord
         new_date_format = Date.strptime(raw_snap_application_date.to_s, "%m/%d/%Y")
         self.snap_application_date = new_date_format
       rescue Date::Error
-        errors.add(:snap_application_date, :invalid_date) if self.caseworker_invitation
+        errors.add(:snap_application_date, :invalid_date)
       end
     end
-
-    self.snap_application_date ||= Time.current unless self.caseworker_invitation
   end
 end

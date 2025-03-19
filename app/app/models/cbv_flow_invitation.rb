@@ -30,7 +30,7 @@ class CbvFlowInvitation < ApplicationRecord
     message: :invalid_format,
     case_sensitive: false
   }
-  validate :applicant_information, on: :caseworker_invitation
+  validate :applicant_information
 
   include Redactable
   has_redactable_fields(

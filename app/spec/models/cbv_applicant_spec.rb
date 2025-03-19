@@ -18,7 +18,7 @@ RSpec.describe CbvApplicant, type: :model do
       end
 
       it "does not set a default snap_application_date in the caseworker workflow" do
-        applicant = CbvApplicant.new(valid_attributes.merge(snap_application_date: nil, caseworker_invitation: true))
+        applicant = CbvApplicant.new(valid_attributes.merge(snap_application_date: nil))
         expect(applicant).not_to be_valid
         expect(applicant.snap_application_date).to eq(nil)
       end
@@ -38,7 +38,7 @@ RSpec.describe CbvApplicant, type: :model do
       end
 
       it "adds an error when snap_application_date is not a valid date in a caseworker workflow" do
-        applicant = CbvApplicant.new(valid_attributes.merge(snap_application_date: "invalid", caseworker_invitation: true))
+        applicant = CbvApplicant.new(valid_attributes.merge(snap_application_date: "invalid"))
         expect(applicant).not_to be_valid
         expect(applicant.errors[:snap_application_date]).to include(
           I18n.t('activerecord.errors.models.cbv_applicant/nyc.attributes.snap_application_date.invalid_date')
