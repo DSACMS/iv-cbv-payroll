@@ -1,13 +1,14 @@
 require 'rails_helper'
 
 RSpec.describe Aggregators::AggregatorReports::ArgyleReport, type: :service do
+  include ArgyleApiHelper
   let(:account) { "abc123" }
   let(:params) { { some_param: 'value' } }
   let(:argyle_service) { Aggregators::Sdk::ArgyleService.new(:sandbox) }
   let(:service) { described_class.new(payroll_accounts: [ account ], argyle_service: argyle_service) }
 
-  let(:identities_json) { JSON.parse(File.read(Rails.root.join('spec/support/fixtures/argyle/bob/request_identity.json'))) }
-  let(:paystubs_json) { JSON.parse(File.read(Rails.root.join('spec/support/fixtures/argyle/bob/request_paystubs.json'))) }
+  let(:identities_json) { load_relative_json_file('bob', 'request_identity.json') }
+  let(:paystubs_json) { load_relative_json_file('bob', 'request_paystubs.json') }
   let(:empty_argyle_result) { { "result" => [] } }
 
   before do
