@@ -6,7 +6,7 @@ module Aggregators::AggregatorReports
     end
     private
 
-    def fetch_report_data
+    def fetch_report_data(from_date: nil, to_date: nil)
       @payroll_accounts.each do |account|
         begin
           fetch_report_data_for_account(account)
@@ -18,7 +18,7 @@ module Aggregators::AggregatorReports
       @has_fetched = true
     end
 
-    def fetch_report_data_for_account(account)
+    def fetch_report_data_for_account(account, from_date: nil, to_date: nil)
       begin
         @identities.append(fetch_identity(account_id: account.pinwheel_account_id))
         @employments.append(fetch_employment(account_id: account.pinwheel_account_id))

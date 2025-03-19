@@ -10,9 +10,9 @@ module Aggregators::AggregatorReports
       @paystubs = []
     end
 
-    def fetch
+    def fetch(from_date: nil, to_date: nil)
       return false unless is_ready_to_fetch?
-      fetch_report_data
+      fetch_report_data(from_date: from_date, to_date: to_date)
     end
 
     def has_fetched?
