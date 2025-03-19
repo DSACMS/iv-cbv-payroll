@@ -47,7 +47,6 @@ RSpec.describe ArgyleWebhooksManager, type: :service do
 
   describe '#remove_subscriptions' do
     it "removes an existing user's subscriptions" do
-      # Set up expectations for delete call
       expect(argyle_service).to receive(:delete_webhook_subscription).with(existing_subscriptions.first["id"])
 
       # After deletion, the get_webhook_subscriptions should return empty results for this name
@@ -64,20 +63,25 @@ RSpec.describe ArgyleWebhooksManager, type: :service do
 
   describe '#create_subscription_if_necessary' do
     context 'when the subscription does not exist' do
-      it 'creates a subscription if it does not exist' do
+      it 'creates a new subscription when there is no matching subscription' do
         receiver_url = URI.join(ngrok_url, "/webhooks/argyle/events").to_s
 
-        # For this test, we want to mimic a case where there's an existing subscription
-        # that needs to be removed, then a new one created
-        existing_sub = existing_subscriptions.first.merge('events' => [ "different_events" ])
+        # Make sure URL doesn't match to trigger the "else" branch
+        existing_sub = existing_subscriptions.first.merge(
+          'url' => "https://different-url.ngrok.io/webhooks/argyle/events",
+          'events' => [ "different_events" ]
+        )
 
-        # Simulate we have an existing subscription but with different config
         allow(argyle_webhooks_manager).to receive(:existing_subscriptions_with_name)
           .with(webhook_name)
-          .and_return([ existing_sub ])
+          .and_return([existing_sub])
 
-        # Expect delete call to be made for existing subscription
-        expect(argyle_service).to receive(:delete_webhook_subscription).with(existing_sub["id"])
+        # For this case, delete should NOT be called
+        expect(argyle_service).not_to receive(:delete_webhook_subscription)
+
+        expect(STDOUT).to receive(:puts).with("  Registering Argyle webhooks for Ngrok tunnel in Argyle sandbox...")
+        expect(STDOUT).to receive(:puts).with("  ✅ Set up Argyle webhook: #{create_webhook_subscription_response["id"]}")
+        expect(STDOUT).to receive(:puts).with(" Argyle webhook url: #{receiver_url}")
 
         expect(argyle_service).to receive(:create_webhook_subscription).with(
           ArgyleWebhooksManager::WEBHOOK_EVENTS,
@@ -85,39 +89,40 @@ RSpec.describe ArgyleWebhooksManager, type: :service do
           webhook_name
         ).and_return(create_webhook_subscription_response)
 
-        # First expect the removal message from the existing subscription
-        expect(STDOUT).to receive(:puts).with("  Removing existing Argyle webhook subscription (url = #{existing_sub["url"]})")
-        expect(STDOUT).to receive(:puts).with("  Registering Argyle webhooks for Ngrok tunnel in Argyle sandbox...")
-        expect(STDOUT).to receive(:puts).with("  ✅ Set up Argyle webhook: #{create_webhook_subscription_response["id"]}")
-
-        argyle_webhooks_manager.create_subscription_if_necessary(ngrok_url, webhook_name)
+        result = argyle_webhooks_manager.create_subscription_if_necessary(ngrok_url, webhook_name)
+        expect(result).to eq(create_webhook_subscription_response["id"])
       end
 
-      it 'removes existing subscriptions and creates a new one' do
+      it 'reuses an existing subscription and removes others with same name' do
         receiver_url = URI.join(ngrok_url, "/webhooks/argyle/events").to_s
 
-        # For this test, use a different URL to clearly distinguish it
-        existing_sub = existing_subscriptions.first.merge('url' => "https://old-url.ngrok.io/webhooks/argyle/events")
+        matching_sub = {
+          "id" => "matching-subscription-id",
+          "name" => webhook_name,
+          "url" => receiver_url,
+          "events" => ArgyleWebhooksManager::WEBHOOK_EVENTS
+        }
 
-        # Simulate we have an existing subscription with a different URL
+        other_sub = {
+          "id" => "other-subscription-id",
+          "name" => webhook_name,
+          "url" => "https://old-url.ngrok.io/webhooks/argyle/events",
+          "events" => ArgyleWebhooksManager::WEBHOOK_EVENTS
+        }
+
         allow(argyle_webhooks_manager).to receive(:existing_subscriptions_with_name)
           .with(webhook_name)
-          .and_return([ existing_sub ])
+          .and_return([ matching_sub, other_sub ])
 
-        # Expect delete call to be made for existing subscription
-        expect(argyle_service).to receive(:delete_webhook_subscription).with(existing_sub["id"])
+        expect(STDOUT).to receive(:puts).with("  Existing Argyle webhook subscription found in Argyle sandbox: #{receiver_url}")
+        expect(argyle_webhooks_manager).to receive(:remove_subscriptions).with([other_sub]).and_call_original
+        expect(STDOUT).to receive(:puts).with("  Removing existing Argyle webhook subscription (url = #{other_sub["url"]})")
+        expect(argyle_service).to receive(:delete_webhook_subscription).with(other_sub["id"])
+        # Should NOT create a new subscription since we're reusing existing
+        expect(argyle_service).not_to receive(:create_webhook_subscription)
 
-        expect(argyle_service).to receive(:create_webhook_subscription).with(
-          ArgyleWebhooksManager::WEBHOOK_EVENTS,
-          receiver_url,
-          webhook_name
-        ).and_return(create_webhook_subscription_response)
-
-        expect(STDOUT).to receive(:puts).with("  Removing existing Argyle webhook subscription (url = #{existing_sub["url"]})")
-        expect(STDOUT).to receive(:puts).with("  Registering Argyle webhooks for Ngrok tunnel in Argyle sandbox...")
-        expect(STDOUT).to receive(:puts).with("  ✅ Set up Argyle webhook: #{create_webhook_subscription_response["id"]}")
-
-        argyle_webhooks_manager.create_subscription_if_necessary(ngrok_url, webhook_name)
+        result = argyle_webhooks_manager.create_subscription_if_necessary(ngrok_url, webhook_name)
+        expect(result).to eq(matching_sub["id"])
       end
     end
   end
