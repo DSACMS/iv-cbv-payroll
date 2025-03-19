@@ -68,35 +68,17 @@ RSpec.describe Aggregators::AggregatorReports::ArgyleReport, type: :service do
       end
     end
 
-    context 'when paystubs API returns empty response' do
+    context 'when API\'s returns empty responses' do
       before do
         allow(argyle_service).to receive(:fetch_paystubs_api).and_return(empty_argyle_result)
+        allow(argyle_service).to receive(:fetch_identities_api).and_return(empty_argyle_result)
       end
 
-      it 'sets @paystubs to an empty array' do
-        service.fetch
-        expect(service.instance_variable_get(:@paystubs)).to eq([])
-      end
-    end
-
-    context 'when identities API returns invalid data' do
-      before do
-        allow(argyle_service).to receive(:fetch_identities_api).and_return(nil)
-      end
-
-      it 'sets @identities to empty' do
+      it 'sets all instance variables to empty arrays' do
         service.fetch
         expect(service.instance_variable_get(:@identities)).to eq([])
-      end
-    end
-
-    context 'when paystubs API returns invalid data' do
-      before do
-        allow(argyle_service).to receive(:fetch_paystubs_api).and_return(nil)
-      end
-
-      it 'sets @paystubs to []' do
-        service.fetch
+        expect(service.instance_variable_get(:@incomes)).to eq([])
+        expect(service.instance_variable_get(:@employments)).to eq([])
         expect(service.instance_variable_get(:@paystubs)).to eq([])
       end
     end
