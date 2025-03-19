@@ -14,4 +14,4 @@ jobs:
         uses: ./.github/actions/setup-languages
       - name: Run Erblint
         working-directory: app
-        run: bundle exec erblint --lint-all
+        run: bundle exec erb_lint --lint-all
