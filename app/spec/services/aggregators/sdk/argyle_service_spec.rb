@@ -157,6 +157,13 @@ RSpec.describe Aggregators::Sdk::ArgyleService, type: :service do
 
       expect { service.fetch_paystubs_api() }.to raise_error(Faraday::ServerError)
     end
+
+    it 'raises Pagination not implemented error if a new page is found.' do
+      stub_request(:get, "https://api-sandbox.argyle.com/v2/paystubs?limit=200")
+      .to_return(status: 200, body: { "next": "https://next-page-url" }.to_json, headers: {})
+
+      expect { service.fetch_paystubs_api() }.to raise_error("Pagination not implemented")
+    end
   end
   describe '#fetch_employments_api' do
     before do

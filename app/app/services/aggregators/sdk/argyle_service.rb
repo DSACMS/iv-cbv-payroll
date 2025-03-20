@@ -101,7 +101,7 @@ module Aggregators::Sdk
         to_start_date: to_start_date,
         limit: limit }.compact
       page_response = @http.get(PAYSTUBS_ENDPOINT, params).body
-      raise "Pagination not implemented" if page_response.has_value?("next")
+      raise "Pagination not implemented" if page_response["next"].present?
       page_response
     end
 
