@@ -4,7 +4,8 @@ on:
     types: [opened, ready_for_review, reopened]
 
 jobs:
-  test:
+  reviewer-lottery:
+    name: Add random reviewer via Reviewer Lottery
     runs-on: ubuntu-latest
     permissions:
       pull-requests: write
