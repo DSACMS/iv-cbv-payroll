@@ -71,7 +71,14 @@ module Aggregators::Sdk
     end
 
     # https://docs.argyle.com/api-reference/paystubs#list
-    def fetch_paystubs_api(**params)
+    def fetch_paystubs_api(account: nil, user: nil, employment: nil, from_start_date: nil, to_start_date: nil, limit: 100)
+      params = {
+        account: account,
+        user: user,
+        employment: employment,
+        from_start_date: from_start_date,
+        to_start_date: to_start_date,
+        limit: limit }.compact
       # TODO: paginate
       @http.get(PAYSTUBS_ENDPOINT, params).body
     end
@@ -81,8 +88,9 @@ module Aggregators::Sdk
     end
 
     # https://docs.argyle.com/api-reference/employments#list
-    def fetch_employments_api(**params)
-      # json["data"].map { |paystub_json| Aggregators::ResponseObjects::Paystub.from_pinwheel(paystub_json) }
+    def fetch_employments_api(user: nil, account: nil)
+      raise ArgumentError if user.nil? && account.nil?
+      params = { user: user, account: account }.compact
       @http.get(EMPLOYMENTS_ENDPOINT, params).body
     end
 

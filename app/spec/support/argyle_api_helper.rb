@@ -26,6 +26,15 @@ module ArgyleApiHelper
       )
   end
 
+  def stub_request_employments_response(user_folder)
+    stub_request(:get, %r{#{Aggregators::Sdk::ArgyleService::EMPLOYMENTS_ENDPOINT}})
+      .to_return(
+        status: 200,
+        body: load_relative_json_file(user_folder, 'request_employment.json').to_json,
+        headers: { 'Content-Type': 'application/json;charset=UTF-8' }
+      )
+  end
+
   def load_relative_file(user_folder, filename)
     File.read(File.join(
       File.dirname(__FILE__),
