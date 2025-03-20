@@ -58,7 +58,13 @@ module Aggregators::Sdk
     end
 
     # https://docs.argyle.com/api-reference/identities#list
-    def fetch_identities_api(**params)
+    def fetch_identities_api(account: nil, user: nil,
+                             employment: nil, limit: 10)
+      params = {
+        account: account,
+        user: user,
+        employment: employment,
+        limit: limit }.compact
       # todo: paginate
       @http.get(IDENTITIES_ENDPOINT, params).body
     end
@@ -71,7 +77,9 @@ module Aggregators::Sdk
     end
 
     # https://docs.argyle.com/api-reference/paystubs#list
-    def fetch_paystubs_api(account: nil, user: nil, employment: nil, from_start_date: nil, to_start_date: nil, limit: 100)
+    def fetch_paystubs_api(account: nil, user: nil,
+                           employment: nil, from_start_date: nil,
+                           to_start_date: nil, limit: 100)
       params = {
         account: account,
         user: user,
