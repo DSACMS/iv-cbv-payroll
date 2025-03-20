@@ -1,7 +1,11 @@
 class Cbv::ApplicantInformationsController < Cbv::BaseController
-  before_action :redirect_when_info_present
+  before_action :redirect_when_in_invitation_flow, :redirect_when_info_present
 
   def show
+  end
+
+  def update
+    redirect_to next_path
   end
 
   def redirect_when_info_present
@@ -11,5 +15,9 @@ class Cbv::ApplicantInformationsController < Cbv::BaseController
     return if !@cbv_flow.cbv_applicant.last_name.present?
 
     redirect_to next_path
+  end
+
+  def redirect_when_in_invitation_flow
+    redirect_to next_path if @cbv_flow.cbv_flow_invitation.present?
   end
 end

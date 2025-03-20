@@ -5,3 +5,10 @@
   <%= "This information will be used to connect your income information to your [agency] application. Please make sure the information you enter is the same as what is shown on your application." %>
 </div>
 <h2><%= "Application information" %></h2>
+<div class="usa-prose">
+  <%= "This information may be found on {agency-specific instructions}." %>
+</div>
+<%= uswds_form_with(model: @cbv_flow.cbv_applicant, url: cbv_flow_applicant_information_path, method: "patch") do |f| %>
+  <%= render partial: "cbv/applicant_informations/#{@cbv_flow.client_agency_id}", locals: { f: f } %>
+  <%= f.submit "Submit" %>
+<% end %>
