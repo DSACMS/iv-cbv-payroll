@@ -1,0 +1,49 @@
+# See https://pre-commit.com for more information
+# See https://pre-commit.com/hooks.html for more hooks
+repos:
+- repo: https://github.com/pre-commit/pre-commit-hooks
+  rev: v3.2.0
+  hooks:
+  - id: trailing-whitespace
+  - id: end-of-file-fixer
+  - id: check-yaml
+
+- repo: local
+  hooks:
+  - id: rubocop
+    name: rubocop
+    entry: bin/run-linter --cd app -- bundle exec rubocop --autocorrect
+    language: ruby
+    files: '^app/.*\.rb$'
+
+  - id: erblint
+    name: erblint
+    entry: bin/run-linter --cd app -- bundle exec erb_lint --autocorrect
+    language: ruby
+    files: '^app/.*\.erb$'
+
+  - id: i18n-normalize
+    name: i18n-normalize
+    entry: bin/run-linter --cd app -- bundle exec i18n-tasks normalize
+    language: ruby
+    files: '^app/config/locales/.*\.yml$'
+    pass_filenames: false
+
+  - id: i18n-missing
+    name: i18n-missing
+    entry: bin/run-linter --cd app -- bundle exec i18n-tasks missing
+    language: ruby
+    files: '^app/config/locales/.*\.yml$'
+    pass_filenames: false
+
+  - id: shellcheck
+    name: shellcheck
+    entry: shellcheck
+    language: system        # installed via `brew bundle`
+    files: '^bin/.*$'
+
+  - id: prettier
+    name: prettier
+    entry: bin/run-linter --cd app -- npm run format:precommit
+    language: node
+    files: '^app/.*\.(js|ts)$'
