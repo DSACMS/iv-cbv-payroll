@@ -104,6 +104,26 @@ RSpec.describe Aggregators::AggregatorReports::ArgyleReport, type: :service do
       allow(argyle_service).to receive(:fetch_paystubs_api).and_return(paystubs_json)
     end
 
+    context "#summarize_by_employer" do
+      subject { service.summarize_by_employer }
+      it 'returns a hash with account_id as key' do
+        service.fetch
+
+        expect(subject).to have_key(account)
+
+        expect(service.summarize_by_employer[account]).to be_a(Hash)
+        expect(service.summarize_by_employer[account][:has_income_data]).to be_truthy
+        expect(service.summarize_by_employer[account][:has_employment_data]).to be_truthy
+        expect(service.summarize_by_employer[account][:has_identity_data]).to be_truthy
+        expect(subject[account][:paystubs]).to all(be_a(Aggregators::ResponseObjects::Paystub))
+        expect(subject[account][:income]).to be_a(Aggregators::ResponseObjects::Income)
+        expect(subject[account][:employment]).to be_a(Aggregators::ResponseObjects::Employment)
+        expect(subject[account][:identity]).to be_a(Aggregators::ResponseObjects::Identity)
+      end
+      it 'has expected total pay amount of 547.68' do
+        expect(service.summarize_by_employer[account][:total]).to eq(547.68)
+      end
+    end
     context "identities" do
       it 'returns an array of aggregators::responseobjects:identity' do
         service.fetch
@@ -190,6 +210,24 @@ RSpec.describe Aggregators::AggregatorReports::ArgyleReport, type: :service do
       allow(argyle_service).to receive(:fetch_paystubs_api).and_return(paystubs_json)
     end
 
+    context "#summarize_by_employer" do
+      subject { service.summarize_by_employer }
+      it 'returns a hash with account_id as key' do
+        service.fetch
+
+        expect(subject).to have_key(account)
+
+        expect(service.summarize_by_employer[account]).to be_a(Hash)
+        expect(service.summarize_by_employer[account][:has_income_data]).to be_truthy
+        expect(service.summarize_by_employer[account][:has_employment_data]).to be_truthy
+        expect(service.summarize_by_employer[account][:has_identity_data]).to be_truthy
+        expect(service.summarize_by_employer[account][:total]).to eq(61380.90)
+        expect(subject[account][:paystubs]).to all(be_a(Aggregators::ResponseObjects::Paystub))
+        expect(subject[account][:income]).to be_a(Aggregators::ResponseObjects::Income)
+        expect(subject[account][:employment]).to be_a(Aggregators::ResponseObjects::Employment)
+        expect(subject[account][:identity]).to be_a(Aggregators::ResponseObjects::Identity)
+      end
+    end
     context "incomes" do
       it 'returns an array of Aggregators::ResponseObjects::Income' do
         service.fetch

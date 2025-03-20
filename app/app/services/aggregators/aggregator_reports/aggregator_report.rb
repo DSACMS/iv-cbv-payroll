@@ -41,36 +41,31 @@ module Aggregators::AggregatorReports
       @paystubs
     end
 
-    def summarize_by_employer(payments, employments, incomes, identities, pinwheel_accounts)
-      pinwheel_accounts
-        .each_with_object({}) do |pinwheel_account, hash|
-          account_id = pinwheel_account.pinwheel_account_id
-          has_income_data = pinwheel_account.job_succeeded?("income")
-          has_employment_data = pinwheel_account.job_succeeded?("employment")
-          has_identity_data = pinwheel_account.job_succeeded?("identity")
-          account_payments = payments.filter { |payment| payment.account_id == account_id }
+    def summarize_by_employer
+      @payroll_accounts
+        .each_with_object({}) do |payroll_account, hash|
+          account_id = payroll_account.pinwheel_account_id
+          has_income_data = payroll_account.job_succeeded?("income")
+          has_employment_data = payroll_account.job_succeeded?("employment")
+          has_identity_data = payroll_account.job_succeeded?("identity")
+          account_paystubs = @paystubs.filter { |paystub| paystub.account_id == account_id }
+          debugger
           hash[account_id] ||= {
-            total: account_payments.sum { |payment| payment.gross_pay_amount },
+            total: account_paystubs.sum { |paystub| paystub.gross_pay_amount },
             has_income_data: has_income_data,
             has_employment_data: has_employment_data,
             has_identity_data: has_identity_data,
-            income: has_income_data && incomes.find { |income| income.account_id == account_id },
-            employment: has_employment_data && employments.find { |employment| employment.account_id == account_id },
-            identity: has_identity_data && identities.find { |identity| identity.account_id == account_id },
-            payments: account_payments
+            # TODO: what happens if more than one income/employment/identity on an account?
+            income: has_income_data && @incomes.find { |income| income.account_id == account_id },
+            employment: has_employment_data && @employments.find { |employment| employment.account_id == account_id },
+            identity: has_identity_data && @identities.find { |identity| identity.account_id == account_id },
+            paystubs: account_paystubs
           }
         end
     end
 
-    def hours_by_earning_category(earnings)
-    end
-
-    def payments_grouped_by_employer
-      summarize_by_employer(@payments, @employments, @incomes, @identities, @cbv_flow.payroll_accounts)
-    end
-
     def total_gross_income
-      @payments.reduce(0) { |sum, payment| sum + payment.gross_pay_amount }
+      @paystubs.reduce(0) { |sum, paystub| sum + paystub.gross_pay_amount }
     end
   end
 
