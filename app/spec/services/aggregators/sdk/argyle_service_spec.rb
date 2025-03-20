@@ -56,6 +56,61 @@ RSpec.describe Aggregators::Sdk::ArgyleService, type: :service do
       expect { service.fetch_identities_api() }.to raise_error(Faraday::ServerError)
     end
   end
+
+  describe '#fetch_accounts_api' do
+    let(:requests) { WebMock::RequestRegistry.instance.requested_signatures.hash.keys }
+    before do
+      stub_request_accounts_response("bob")
+    end
+
+    it 'calls the correct endpoint' do
+      service.fetch_accounts_api()
+      expect(requests.first.uri.to_s).to include("/v2/accounts")
+    end
+
+    it 'sets limit of 10 accounts by default' do
+      service.fetch_accounts_api()
+      expect(requests.first.uri.query).to include("limit=10")
+    end
+
+    it 'accepts param user' do
+      service.fetch_accounts_api(user: user_id)
+      expect(requests.first.uri.query).to include("user=user123")
+      expect(requests.first.uri.query).to include("limit=10")
+    end
+
+    it 'accepts param ongoing_refresh_status' do
+      service.fetch_accounts_api(ongoing_refresh_status: "enabled")
+      expect(requests.first.uri.query).to include("ongoing_refresh_status=enabled")
+      expect(requests.first.uri.query).to include("limit=10")
+    end
+
+    it 'rejects invalid ongoing_refresh_status' do
+      expect { service.fetch_accounts_api(ongoing_refresh_status: "invalid_status") }.to raise_error(ArgumentError, "Invalid ongoing_refresh_status: invalid_status")
+    end
+
+    it 'accepts multiple params including ongoing_refresh_status' do
+      service.fetch_accounts_api(user: user_id, ongoing_refresh_status: "enabled", limit: 50)
+      expect(requests.first.uri.query).to include("user=user123")
+      expect(requests.first.uri.query).to include("ongoing_refresh_status=enabled")
+      expect(requests.first.uri.query).to include("limit=50")
+    end
+
+    it 'returns a non-empty response' do
+      response = service.fetch_accounts_api()
+      expect(response).not_to be_empty
+      expect(response).to be_an_instance_of(Hash)
+      expect(response).to have_key("results")
+      expect(response).to have_key("next")
+    end
+
+    it 'raises Faraday::ServerError on 500 error' do
+      stub_request(:get, "https://api-sandbox.argyle.com/v2/accounts?limit=10")
+      .to_return(status: 500, body: "", headers: {})
+
+      expect { service.fetch_accounts_api() }.to raise_error(Faraday::ServerError)
+    end
+  end
   describe '#fetch_paystubs_api' do
     let(:requests) { WebMock::RequestRegistry.instance.requested_signatures.hash.keys }
     before do

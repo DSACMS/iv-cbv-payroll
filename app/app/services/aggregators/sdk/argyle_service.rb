@@ -70,7 +70,18 @@ module Aggregators::Sdk
     end
 
     # https://docs.argyle.com/api-reference/accounts#list
-    def fetch_accounts_api(**params)
+    def fetch_accounts_api(user: nil, item: nil, ongoing_refresh_status: nil, limit: 10)
+      valid_statuses = [ "idle", "enabled", "disabled" ]
+      if ongoing_refresh_status && !valid_statuses.include?(ongoing_refresh_status)
+        raise ArgumentError, "Invalid ongoing_refresh_status: #{ongoing_refresh_status}"
+      end
+
+      params = {
+        user: user,
+        item: item,
+        ongoing_refresh_status: ongoing_refresh_status,
+        limit: limit }.compact
+
       # TODO: paginate
       # json["data"].map { |paystub_json| Aggregators::ResponseObjects::Paystub.from_pinwheel(paystub_json) }
       @http.get(ACCOUNTS_ENDPOINT, params).body
