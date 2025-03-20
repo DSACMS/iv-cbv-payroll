@@ -38,6 +38,12 @@ Rails.application.routes.draw do
       resource :add_job, only: %i[show create]
       resource :payment_details, only: %i[show update]
       resource :expired_invitation, only: %i[show]
+      resource :applicant_information, only: %i[show update]
+
+      # Generic link
+      scope "links/:client_agency_id", constraints: { client_agency_id: Regexp.union(Rails.application.config.client_agencies.client_agency_ids) } do
+        root to: "generic_links#show", as: :new
+      end
 
       # Generic link
       scope "links/:client_agency_id", constraints: { client_agency_id: Regexp.union(Rails.application.config.client_agencies.client_agency_ids) } do

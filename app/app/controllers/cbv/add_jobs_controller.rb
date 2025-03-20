@@ -3,14 +3,12 @@ class Cbv::AddJobsController < Cbv::BaseController
   end
 
   def create
-    additional_jobs = params[:additional_jobs]
-    if additional_jobs == "true"
-      redirect_to cbv_flow_employer_search_path
-    elsif additional_jobs == "false"
-      redirect_to cbv_flow_summary_path
-    else
+    destination = next_add_jobs_path(params[:additional_jobs])
+
+    if destination == cbv_flow_add_job_path
       flash[:slim_alert] = { message: t(".notice_no_answer"), type: "error" }
-      redirect_to cbv_flow_add_job_path
     end
+
+    redirect_to destination
   end
 end
