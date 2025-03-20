@@ -21,14 +21,19 @@ RSpec.describe Aggregators::AggregatorReports::ArgyleReport, type: :service do
     end
 
 
-    it 'calls the identities API' do
+    it 'sets @has_fetched to true on success' do
       service.fetch
-      expect(argyle_service).to have_received(:fetch_identities_api)
+      expect(service.instance_variable_get(:@has_fetched)).to be true
     end
 
-    it 'calls the paystubs API' do
+    it 'calls the identities API for each account' do
       service.fetch
-      expect(argyle_service).to have_received(:fetch_paystubs_api)
+      expect(argyle_service).to have_received(:fetch_identities_api).exactly(3).times
+    end
+
+    it 'calls the paystubs API for each account' do
+      service.fetch
+      expect(argyle_service).to have_received(:fetch_paystubs_api).exactly(3).times
     end
 
     it 'transforms all response objects correctly' do
@@ -52,7 +57,7 @@ RSpec.describe Aggregators::AggregatorReports::ArgyleReport, type: :service do
 
       it 'logs the error' do
         service.fetch
-        expect(Rails.logger).to have_received(:error).with(/Report Fetch Error: API error/)
+        expect(Rails.logger).to have_received(:error).with(/Report Fetch Error: API error/).exactly(3).times
       end
 
       it 'sets @has_fetched to false' do
@@ -121,6 +126,7 @@ RSpec.describe Aggregators::AggregatorReports::ArgyleReport, type: :service do
         expect(subject[account][:identity]).to be_a(Aggregators::ResponseObjects::Identity)
       end
       it 'has expected total pay amount of 547.68' do
+        service.fetch
         expect(service.summarize_by_employer[account][:total]).to eq(547.68)
       end
     end

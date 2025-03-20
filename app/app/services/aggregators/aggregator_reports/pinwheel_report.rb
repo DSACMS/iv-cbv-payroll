@@ -6,17 +6,6 @@ module Aggregators::AggregatorReports
     end
     private
 
-    def fetch_report_data(from_date: nil, to_date: nil)
-      @payroll_accounts.each do |account|
-        begin
-          fetch_report_data_for_account(account)
-        rescue StandardError => e
-          Rails.logger.error("Report Fetch Error: #{e.message}")
-          return @has_fetched = false
-        end
-      end
-      @has_fetched = true
-    end
 
     def fetch_report_data_for_account(account, from_date: nil, to_date: nil)
       begin

@@ -12,7 +12,7 @@ module Aggregators::AggregatorReports
 
     def fetch(from_date: nil, to_date: nil)
       return false unless is_ready_to_fetch?
-      fetch_report_data(from_date: from_date, to_date: to_date)
+      fetch_report_data(from_date, to_date)
     end
 
     def has_fetched?
@@ -70,7 +70,7 @@ module Aggregators::AggregatorReports
   end
 
   private
-  def fetch_report_data
-    raise "This method should be implemented in a subclass"
+  def fetch_report_data(from_date, to_date)
+    raise "must implement in subclass"
   end
 end
