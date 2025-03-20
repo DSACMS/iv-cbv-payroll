@@ -64,10 +64,22 @@ class Cbv::BaseController < ApplicationController
       cbv_flow_summary_path
     when "cbv/payment_details"
       cbv_flow_add_job_path
+    when "cbv/applicant_informations"
+      cbv_flow_summaries_path
     when "cbv/summaries"
       cbv_flow_submits_path
     when "cbv/submits"
       cbv_flow_success_path
+    end
+  end
+
+  def next_add_jobs_path(additional_jobs)
+    cbv_flow_add_job_path if !additional_jobs.present?
+
+    if additional_jobs == "true"
+      cbv_flow_employer_search_path
+    else
+      cbv_flow_applicant_information_path
     end
   end
 
