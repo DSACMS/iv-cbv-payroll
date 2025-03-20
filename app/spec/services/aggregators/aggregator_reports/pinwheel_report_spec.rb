@@ -3,7 +3,6 @@ require 'rails_helper'
 RSpec.describe Aggregators::AggregatorReports::PinwheelReport, type: :service do
   include PinwheelApiHelper
   let(:account) { "abc123" }
-  let(:params) { { some_param: 'value' } }
 
   let!(:payroll_accounts) do
     create_list(:payroll_account, 3, :pinwheel_fully_synced, pinwheel_account_id: account)

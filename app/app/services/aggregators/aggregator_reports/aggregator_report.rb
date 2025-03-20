@@ -49,7 +49,7 @@ module Aggregators::AggregatorReports
           has_employment_data = payroll_account.job_succeeded?("employment")
           has_identity_data = payroll_account.job_succeeded?("identity")
           account_paystubs = @paystubs.filter { |paystub| paystub.account_id == account_id }
-          debugger
+
           hash[account_id] ||= {
             total: account_paystubs.sum { |paystub| paystub.gross_pay_amount },
             has_income_data: has_income_data,

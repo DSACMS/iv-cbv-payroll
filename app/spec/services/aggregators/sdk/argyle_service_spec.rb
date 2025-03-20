@@ -122,18 +122,18 @@ RSpec.describe Aggregators::Sdk::ArgyleService, type: :service do
     end
     it 'sets limit of 100 paystubs by default' do
       service.fetch_paystubs_api()
-      expect(requests.first.uri.query).to include("limit=100")
+      expect(requests.first.uri.query).to include("limit=200")
     end
     it 'accepts param account' do
       service.fetch_paystubs_api(account: account_id)
       expect(requests.first.uri.query).to include("account=account123")
-      expect(requests.first.uri.query).to include("limit=100")
+      expect(requests.first.uri.query).to include("limit=200")
     end
 
     it 'accepts param user' do
       service.fetch_paystubs_api(user: user_id)
       expect(requests.first.uri.query).to include("user=user123")
-      expect(requests.first.uri.query).to include("limit=100")
+      expect(requests.first.uri.query).to include("limit=200")
     end
 
     it 'accepts multiple params' do
@@ -152,7 +152,7 @@ RSpec.describe Aggregators::Sdk::ArgyleService, type: :service do
     end
 
     it 'raises Faraday::ServerError on 500 error' do
-      stub_request(:get, "https://api-sandbox.argyle.com/v2/paystubs?limit=100")
+      stub_request(:get, "https://api-sandbox.argyle.com/v2/paystubs?limit=200")
       .to_return(status: 500, body: "", headers: {})
 
       expect { service.fetch_paystubs_api() }.to raise_error(Faraday::ServerError)

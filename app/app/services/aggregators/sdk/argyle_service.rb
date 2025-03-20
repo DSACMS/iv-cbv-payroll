@@ -92,7 +92,7 @@ module Aggregators::Sdk
     # https://docs.argyle.com/api-reference/paystubs#list
     def fetch_paystubs_api(account: nil, user: nil,
                            employment: nil, from_start_date: nil,
-                           to_start_date: nil, limit: 100)
+                           to_start_date: nil, limit: 200)
       params = {
         account: account,
         user: user,
@@ -100,8 +100,9 @@ module Aggregators::Sdk
         from_start_date: from_start_date,
         to_start_date: to_start_date,
         limit: limit }.compact
-      # TODO: paginate
-      @http.get(PAYSTUBS_ENDPOINT, params).body
+      page_response = @http.get(PAYSTUBS_ENDPOINT, params).body
+      raise "Pagination not implemented" if page_response.has_value?("next")
+      page_response
     end
 
     def create_user

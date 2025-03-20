@@ -11,7 +11,6 @@ module Aggregators::AggregatorReports
     def fetch_report_data(from_date: nil, to_date: nil)
       begin
         identities_json = @argyle_service.fetch_identities_api
-        # TODO: handle pagination of paystubs
         paystubs_json = @argyle_service.fetch_paystubs_api
 
         @identities = transform_identities(identities_json)
