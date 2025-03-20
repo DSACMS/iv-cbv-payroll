@@ -10,6 +10,7 @@ module Aggregators::AggregatorReports
       @paystubs = []
     end
 
+    # TODO: Make these params required. update tests.
     def fetch(from_date: nil, to_date: nil)
       return false unless is_ready_to_fetch?
       fetch_report_data(from_date, to_date)
