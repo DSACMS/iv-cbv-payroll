@@ -4,7 +4,8 @@ FactoryBot.define do
     first_name { "Jane" }
     middle_name { "Sue" }
     last_name { "Doe" }
-    snap_application_date { Date.yesterday.strftime("%m/%d/%Y") }
+    created_at { Date.current.strftime("%m/%d/%Y") }
+    snap_application_date { Date.current.strftime("%m/%d/%Y") }
 
     trait :nyc do
       client_agency_id { "nyc" }

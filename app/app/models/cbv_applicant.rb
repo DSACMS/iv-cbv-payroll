@@ -1,4 +1,5 @@
 class CbvApplicant < ApplicationRecord
+  after_initialize :set_snap_application_date, if: :new_record?
   # We use Single-Table Inheritance (STI) to create subclasses of this table
   # logic to process subsets of the columns of this model relevant to each
   # partner agency.
@@ -25,9 +26,6 @@ class CbvApplicant < ApplicationRecord
   has_many :cbv_flow_invitations
 
   before_validation :parse_snap_application_date
-
-  validates :first_name, presence: true
-  validates :last_name, presence: true
   validates :client_agency_id, presence: true
 
   include Redactable
@@ -44,6 +42,10 @@ class CbvApplicant < ApplicationRecord
 
   def paystubs_query_begins_at
     PAYSTUB_REPORT_RANGE.before(snap_application_date)
+  end
+
+  def set_snap_application_date
+    self.snap_application_date ||= Date.current
   end
 
   def parse_snap_application_date

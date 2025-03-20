@@ -61,7 +61,7 @@ RSpec.describe Api::InvitationsController do
         error_fields = parsed_response["errors"].map { |e| e["field"] }
 
         expect(error_fields).not_to include("cbv_applicant")
-        expect(error_fields).to include("agency_partner_metadata.first_name")
+        expect(error_fields).to include("cbv_applicant.first_name")
       end
     end
 

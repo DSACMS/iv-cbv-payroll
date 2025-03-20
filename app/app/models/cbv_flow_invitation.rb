@@ -30,6 +30,7 @@ class CbvFlowInvitation < ApplicationRecord
     message: :invalid_format,
     case_sensitive: false
   }
+  validate :applicant_information
 
   include Redactable
   has_redactable_fields(
@@ -62,5 +63,11 @@ class CbvFlowInvitation < ApplicationRecord
 
   def normalize_language
     self.language = language.to_s.downcase if language.present?
+  end
+
+  def applicant_information
+    errors.add(:'cbv_applicant.first_name', I18n.t("activerecord.errors.models.cbv_applicant.attributes.first_name.blank")) if cbv_applicant.first_name.blank?
+    errors.add(:'cbv_applicant.last_name', I18n.t("activerecord.errors.models.cbv_applicant.attributes.last_name.blank")) if cbv_applicant.last_name.blank?
+    errors.add(:'cbv_applicant.snap_application_date', I18n.t("activerecord.errors.models.cbv_applicant.attributes.snap_application_date.invalid_date")) if cbv_applicant.snap_application_date.blank?
   end
 end

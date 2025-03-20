@@ -141,6 +141,7 @@ ignore_missing:
     - "shared.header.help"
     - "session_timeout.*"
     - "pages.{error_404,error_500}.*"
+    - "cbv.error_invalid_link" # FFS-2540
 # - 'errors.messages.{accepted,blank,invalid,too_short,too_long}'
 # - '{devise,simple_form}.*'
 
