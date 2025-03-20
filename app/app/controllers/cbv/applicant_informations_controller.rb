@@ -1,7 +1,10 @@
 class Cbv::ApplicantInformationsController < Cbv::BaseController
+  include Cbv::PinwheelDataHelper
   before_action :redirect_when_in_invitation_flow, :redirect_when_info_present
+  before_action :set_identities, only: %i[show update]
 
   def show
+    Rails.logger.info("TIMOTEST ApplicantInformationsController show: identities: #{@identities.inspect}")
   end
 
   def update
