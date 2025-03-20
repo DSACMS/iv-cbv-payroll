@@ -70,6 +70,8 @@ module Aggregators::Sdk
     end
 
     # https://docs.argyle.com/api-reference/accounts#list
+    # Note: we get all account information from the identities endpoint, so this is not
+    # currently used.
     def fetch_accounts_api(user: nil, item: nil, ongoing_refresh_status: nil, limit: 10)
       valid_statuses = [ "idle", "enabled", "disabled" ]
       if ongoing_refresh_status && !valid_statuses.include?(ongoing_refresh_status)
@@ -107,6 +109,8 @@ module Aggregators::Sdk
     end
 
     # https://docs.argyle.com/api-reference/employments#list
+    # Note: we get all employment information from the identities endpoint, so this is not
+    # currently used.
     def fetch_employments_api(user: nil, account: nil)
       raise ArgumentError if user.nil? && account.nil?
       params = { user: user, account: account }.compact
