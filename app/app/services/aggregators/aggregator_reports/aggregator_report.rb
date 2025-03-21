@@ -1,19 +1,21 @@
 # This is an abstract class that should be inherited by all aggregator report classes.
 module Aggregators::AggregatorReports
   class AggregatorReport
-    def initialize(payroll_accounts: [])
+    def initialize(payroll_accounts: [], from_date: nil, to_date: nil)
       @has_fetched = false
       @payroll_accounts = payroll_accounts
       @identities = []
       @incomes = []
       @employments = []
       @paystubs = []
+      @from_date = from_date
+      @to_date = to_date
     end
 
     # TODO: Make these params required. update tests.
-    def fetch(from_date: nil, to_date: nil)
+    def fetch
       return false unless is_ready_to_fetch?
-      fetch_report_data(from_date, to_date)
+      fetch_report_data
     end
 
     def has_fetched?
@@ -24,6 +26,14 @@ module Aggregators::AggregatorReports
       @payroll_accounts.all? do |payroll_account|
         payroll_account.has_fully_synced?
       end
+    end
+
+    def from_date
+      @from_date
+    end
+
+    def to_date
+      @to_date
     end
 
     def identities
@@ -50,7 +60,6 @@ module Aggregators::AggregatorReports
           has_employment_data = payroll_account.job_succeeded?("employment")
           has_identity_data = payroll_account.job_succeeded?("identity")
           account_paystubs = @paystubs.filter { |paystub| paystub.account_id == account_id }
-
           hash[account_id] ||= {
             total: account_paystubs.sum { |paystub| paystub.gross_pay_amount },
             has_income_data: has_income_data,
