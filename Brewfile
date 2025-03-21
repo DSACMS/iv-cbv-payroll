@@ -23,7 +23,7 @@ cask "chromedriver"
 # used by rails-erd documentation tool
 brew "graphviz"
 
-# used in terraform/create_space_deployer.sh
+# used in many scripts in "infra"
 brew "jq"
 
 # queue for sidekiq jobs
@@ -41,3 +41,7 @@ cask "session-manager-plugin"
 
 # necessary for file encryption
 brew "gpg"
+
+# linters / workflow tools
+brew "pre-commit"
+brew "shellcheck"

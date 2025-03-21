@@ -13,10 +13,5 @@ locals {
       task_command        = ["bin/rails", "data_deletion:redact_all"]
       schedule_expression = "cron(0 14 ? * * *)" # Every day at 2pm UTC (9am EST / 10am EDT)
     }
-
-    send_invitation_reminders = {
-      task_command        = ["bin/rails", "invitation_reminders:send_all"]
-      schedule_expression = "cron(0 14 ? * * *)" # Every day at 2pm UTC (9am EST / 10am EDT)
-    }
   }
 }

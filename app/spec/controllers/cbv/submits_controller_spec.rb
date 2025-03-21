@@ -6,14 +6,14 @@ RSpec.describe Cbv::SubmitsController do
 
   let(:supported_jobs) { %w[income paystubs employment identity] }
   let(:errored_jobs) { [] }
-  let(:flow_started_seconds_ago) { 300 }
+  let(:current_time) { Date.parse('2024-06-18') }
   let(:employment_errored_at) { nil }
-  let(:cbv_applicant) { create(:cbv_applicant, case_number: "ABC1234") }
+  let(:cbv_applicant) { create(:cbv_applicant, created_at: current_time, case_number: "ABC1234") }
   let(:cbv_flow) do
     create(:cbv_flow,
       :with_pinwheel_account,
       with_errored_jobs: errored_jobs,
-      created_at: flow_started_seconds_ago.seconds.ago,
+      created_at: current_time,
       supported_jobs: supported_jobs,
       cbv_applicant: cbv_applicant
     )
@@ -31,6 +31,8 @@ RSpec.describe Cbv::SubmitsController do
       "public_key"        => @public_key
     })
 
+    cbv_applicant.update(snap_application_date: current_time)
+
     cbv_flow.payroll_accounts.first.update(pinwheel_account_id: "03e29160-f7e7-4a28-b2d8-813640e030d3")
   end
 
@@ -40,7 +42,6 @@ RSpec.describe Cbv::SubmitsController do
 
   describe "#show" do
     before do
-      cbv_applicant.update(snap_application_date: Date.parse('2024-06-18'))
       session[:cbv_flow_id] = cbv_flow.id
       stub_request_end_user_accounts_response
       stub_request_end_user_paystubs_response

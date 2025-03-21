@@ -68,23 +68,6 @@ en:
       subject:
         default: Verify your income for your SNAP application or renewal
         ma: Verify your income to renew your SNAP benefits
-    invitation_reminder_email:
-      feedback_button: Share your feedback
-      feedback_header: Do you have any comments about the SNAP pilot?
-      footer: This is an automatically generated message from %{agency_acronym}. Please don't reply to this email.
-      greeting: Hello,
-      instructions: Log into your payroll provider account (for example, ADP, Lyft or Amazon Flex) to share your income data directly with %{agency_acronym}. If you miss the deadline, this link will expire and you'll need to request for a new invite.
-      main_action_html:
-        default: "<strong>Verify your income</strong> as part of your application by <strong>%{deadline}</strong>."
-        ma: "<strong>Verify your income</strong> as part of your SNAP recertification by <strong>%{deadline}</strong>."
-        nyc: "<strong>Verify your income</strong> as part of your SNAP application or recertification by <strong>%{deadline}</strong>."
-        sandbox: "<strong>Verify your income</strong> as part of your application by <strong>%{deadline}</strong>."
-      subject:
-        default: 'Reminder: Verify your income for your SNAP application or renewal'
-        ma: 'Reminder: Verify your income to renew your SNAP benefits'
-        nyc: 'Reminder: Verify your income to renew or apply for your SNAP benefits'
-        sandbox: 'Reminder: Verify your income for your SNAP application or renewal'
-      verify_income_button: Verify your income
   caseworker:
     cbv_flow_invitations:
       create:
@@ -242,6 +225,7 @@ en:
         step3: Submit your payment information.
         step3_description: We’ll automatically send it to %{agency_acronym}. This will help you prove your income and can help %{agency_acronym} get to a decision faster.
         subheader_html: 'We’ll send your payment records from your employer(s) to %{agency_acronym} to verify your income. <strong>Most people complete this process in under 5 minutes.</strong> Just follow these steps:'
+    error_invalid_link: Invalid link used to begin CBV. Try clicking the link again or contact your caseworker for help.
     error_invalid_token: The invitation link used is not valid. Double check the link and try again. If you continue experiencing issues, contact your caseworker.
     error_missing_token_html: "<strong>Your session has timed out due to inactivity.</strong> Please reuse the same link you used to begin your session. If you encounter any issues, contact your benefits agency for assistance."
     error_no_access: We weren't able to load payroll data for this account. Please click the link you received from your SNAP agency to try again.

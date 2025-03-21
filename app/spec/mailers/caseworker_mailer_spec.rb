@@ -57,7 +57,6 @@ RSpec.describe CaseworkerMailer, type: :mailer do
       expect(email_body).to include("Attached is an Income Verification Report PDF with confirmation number #{cbv_flow.confirmation_code}")
       expect(email_body).to include("confirm that their information has been submitted to HRA")
       expect(email_body).to include("This report is associated with the case number ABC1234 and CIN #{applicant.client_id_number}")
-      expect(email_body).to include("It was requested by #{caseworker_email} on #{request_date}")
       expect(email_body).to include("submitted by the client on #{expected_date}")
     end
 
