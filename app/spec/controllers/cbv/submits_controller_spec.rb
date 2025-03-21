@@ -268,7 +268,7 @@ RSpec.describe Cbv::SubmitsController do
       context "when transmission method is s3" do
         let(:user) { create(:user, email: "test@test.com") }
         let(:s3_service_double) { instance_double(S3Service) }
-        # let(:pinwheel_service_double) { instance_double(PinwheelService) }
+        # let(:pinwheel_service_double) { instance_double(Aggregators::Sdk::PinwheelService) }
         before do
           sign_in user
           allow(S3Service).to receive(:new).and_return(s3_service_double)

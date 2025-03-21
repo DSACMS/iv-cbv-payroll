@@ -1,0 +1,183 @@
+{
+  "data": [
+    {
+      "account_id": "03e29160-f7e7-4a28-b2d8-813640e030d3",
+      "check_amount": 328609,
+      "created_at": "2021-01-10T19:54:45.745660+00:00",
+      "currency": "USD",
+      "deductions": [
+        {
+          "amount": 7012,
+          "category": "retirement",
+          "name": "401k",
+          "type": "pre_tax"
+        },
+        {
+          "amount": 57692,
+          "category": "commuter",
+          "name": "MTA",
+          "type": "post_tax"
+        },
+        {
+          "amount": 0,
+          "category": "empty_deduction",
+          "name": "empty_deduction",
+          "type": "empty_deduction"
+        }
+      ],
+      "document": {
+        "download_url": "https://s3.us-east-1.amazonaws.com/paystub_document",
+        "download_url_expiration": "2022-04-04T18:13:55.123450+00:00",
+        "id": "aea8cc55-93fa-452d-8eac-b83c80b19a41"
+      },
+      "earnings": [
+        {
+          "amount": 380720,
+          "category": "salary",
+          "hours": 80,
+          "name": "Regular",
+          "rate": 4759
+        },
+        {
+          "amount": 100000,
+          "category": "bonus",
+          "hours": null,
+          "name": "Bonus",
+          "rate": null
+        }
+      ],
+      "employer_name": "Acme Corp",
+      "gross_pay_amount": 480720,
+      "gross_pay_ytd": 6971151,
+      "id": "497f6eca-6276-4993-bfeb-53cbbbba6f08",
+      "net_pay_amount": 321609,
+      "net_pay_ytd": 4357992,
+      "pay_date": "2020-12-31",
+      "pay_period_end": "2020-12-24",
+      "pay_period_start": "2020-12-10",
+      "taxes": [
+        {
+          "amount": 65158,
+          "category": "federal_income",
+          "name": "Federal Income"
+        },
+        {
+          "amount": 29249,
+          "category": "state_income",
+          "name": "State Income"
+        }
+      ],
+      "time_off": [
+        {
+          "available_hours": 41.5,
+          "category": "pto",
+          "earned_hours": 0,
+          "name": "Vacation",
+          "used_hours": 38.5
+        },
+        {
+          "available_hours": 41.5,
+          "category": "sick",
+          "earned_hours": 0,
+          "name": "Sick Leave",
+          "used_hours": 38.5
+        }
+      ],
+      "total_deductions": 64704,
+      "total_reimbursements": 7000,
+      "total_taxes": 94407
+    },
+    {
+      "account_id": "03e29160-f7e7-4a28-b2d8-813640e030d3",
+      "check_amount": 328609,
+      "created_at": "2021-02-10T19:54:45.745660+00:00",
+      "currency": "USD",
+      "deductions": [
+        {
+          "amount": 7012,
+          "category": "retirement",
+          "name": "401k",
+          "type": "pre_tax"
+        },
+        {
+          "amount": 57692,
+          "category": "commuter",
+          "name": "MTA",
+          "type": "post_tax"
+        },
+        {
+          "amount": 0,
+          "category": "empty_deduction",
+          "name": "empty_deduction",
+          "type": "empty_deduction"
+        }
+      ],
+      "document": {
+        "download_url": "https://s3.us-east-1.amazonaws.com/paystub_document",
+        "download_url_expiration": "2022-04-04T18:13:55.123450+00:00",
+        "id": "aea8cc55-93fa-452d-8eac-b83c80b19a41"
+      },
+      "earnings": [
+        {
+          "amount": 380720,
+          "category": "salary",
+          "hours": 80,
+          "name": "Regular",
+          "rate": 4759
+        },
+        {
+          "amount": 100000,
+          "category": "bonus",
+          "hours": null,
+          "name": "Bonus",
+          "rate": null
+        }
+      ],
+      "employer_name": "Acme Corp",
+      "gross_pay_amount": 480720,
+      "gross_pay_ytd": 6971151,
+      "id": "497f6eca-6276-4993-bfeb-53cbbbba6f08",
+      "net_pay_amount": 321609,
+      "net_pay_ytd": 4357992,
+      "pay_date": "2021-1-31",
+      "pay_period_end": "2021-1-24",
+      "pay_period_start": "2021-1-10",
+      "taxes": [
+        {
+          "amount": 65158,
+          "category": "federal_income",
+          "name": "Federal Income"
+        },
+        {
+          "amount": 29249,
+          "category": "state_income",
+          "name": "State Income"
+        }
+      ],
+      "time_off": [
+        {
+          "available_hours": 41.5,
+          "category": "pto",
+          "earned_hours": 0,
+          "name": "Vacation",
+          "used_hours": 38.5
+        },
+        {
+          "available_hours": 41.5,
+          "category": "sick",
+          "earned_hours": 0,
+          "name": "Sick Leave",
+          "used_hours": 38.5
+        }
+      ],
+      "total_deductions": 64704,
+      "total_reimbursements": 7000,
+      "total_taxes": 94407
+    }
+  ],
+  "meta": {
+    "count": 2,
+    "next_curor": "eyJlbXBsb3llciI6ICJVbml0ZWQgUGFyY2VsIFNlcnZpY2UifQ==",
+    "refreshed_at": "2021-02-10T19:54:45.745660+00:00"
+  }
+}

@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe Cbv::PinwheelDataHelper, type: :helper do
+RSpec.describe Cbv::AggregatorDataHelper, type: :helper do
   include PinwheelApiHelper
 
   let(:account_id) { "03e29160-f7e7-4a28-b2d8-813640e030d3" }
@@ -9,20 +9,20 @@ RSpec.describe Cbv::PinwheelDataHelper, type: :helper do
     raw_payments_json = load_relative_json_file('request_end_user_paystubs_response.json')['data']
 
     raw_payments_json.map do |payment_json|
-      ResponseObjects::Paystub.from_pinwheel(payment_json)
+      Aggregators::ResponseObjects::Paystub.from_pinwheel(payment_json)
     end
   end
 
   let(:employment) do
-    ResponseObjects::Employment.from_pinwheel(load_relative_json_file('request_employment_info_response.json')['data'])
+    Aggregators::ResponseObjects::Employment.from_pinwheel(load_relative_json_file('request_employment_info_response.json')['data'])
   end
 
   let(:incomes) do
-    ResponseObjects::Income.from_pinwheel(load_relative_json_file('request_income_metadata_response.json')['data'])
+    Aggregators::ResponseObjects::Income.from_pinwheel(load_relative_json_file('request_income_metadata_response.json')['data'])
   end
 
   let(:identities) do
-    ResponseObjects::Identity.from_pinwheel(load_relative_json_file('request_identity_response.json')['data'])
+    Aggregators::ResponseObjects::Identity.from_pinwheel(load_relative_json_file('request_identity_response.json')['data'])
   end
 
   let!(:cbv_flow) { create(:cbv_flow, :with_pinwheel_account) }

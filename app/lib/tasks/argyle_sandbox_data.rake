@@ -15,7 +15,7 @@ namespace :argyle_sandbox_data do
 
   class ArgyleMockDataFetcher
     def initialize
-      @argyle = ArgyleService.new("sandbox")
+      @argyle = Aggregators::Sdk::ArgyleService.new("sandbox")
     end
 
     def store_mock_response(response_payload:, folder_name: "other", file_name:)

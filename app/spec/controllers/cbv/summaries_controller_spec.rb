@@ -52,16 +52,37 @@ RSpec.describe Cbv::SummariesController do
     context "when rendering views" do
       render_views
 
-      it "renders properly" do
-        get :show
-        # 90 days before snap_application_date
-        start_date = "March 20, 2024"
-        # Should be the formatted version of snap_application_date
-        end_date = "June 18, 2024"
-        expect(assigns[:payments_ending_at]).to eq(end_date)
-        expect(assigns[:payments_beginning_at]).to eq(start_date)
-        expect(response.body).to include("Review your income report")
-        expect(response).to be_successful
+      context "with 1 paystub" do
+        it "renders properly with 1 paystub" do
+          get :show
+          doc = Nokogiri::HTML(response.body)
+
+          expect(doc.css("title").text).to include("Review your income report")
+          expect(doc.at_xpath("//*[@data-testid=\"summary-description\"]").content).to include("from 2024-03-20 to 2024-06-18")
+          expect(doc.at_xpath("//*[@data-testid=\"paystub-table-caption\"]").content).to include("Employer 1: Acme Corporation")
+          expect(doc.at_xpath("//*[@data-testid=\"paystub-total-income\"]").content).to include("$4,807.20")
+          expect(doc.at_xpath("//tr[@data-testid=\"paystub-row\"]").count).to eq(1)
+          expect(doc.at_xpath("//tr[@data-testid=\"paystub-row\"]/td[1]").content).to include("Payment of $4,807.20")
+          #
+          expect(response).to be_successful
+        end
+      end
+      context "with 3 paystubs" do
+        before do
+        stub_request_end_user_multiple_paystubs_response
+      end
+        it "renders properly with 2 paystubs" do
+          get :show
+          doc = Nokogiri::HTML(response.body)
+          expect(response).to be_successful
+          expect(doc.css("title").text).to include("Review your income report")
+          expect(doc.at_xpath("//*[@data-testid=\"summary-description\"]").content).to include("from 2024-03-20 to 2024-06-18")
+          expect(doc.at_xpath("//*[@data-testid=\"paystub-table-caption\"]").content).to include("Employer 1: Acme Corporation")
+          expect(doc.at_xpath("//*[@data-testid=\"paystub-total-income\"]").content).to include("$9,614.40")
+          expect(doc.at_xpath("//*[@data-testid=\"paystub-table\"]").css("td").count).to eq(2)
+          expect(doc.at_xpath("//*[@data-testid=\"paystub-table\"]").css("td")[0].content).to include("Payment of $4,807.20")
+          expect(doc.at_xpath("//*[@data-testid=\"paystub-table\"]").css("td")[1].content).to include("Payment of $4,807.20")
+        end
       end
     end
 
