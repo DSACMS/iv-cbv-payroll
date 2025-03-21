@@ -73,7 +73,7 @@
   <% end %>
 <% end %>
 
-<h2><%= t(".pdf.client.employment_paystub_details") %></h2>
+<h2><%= t(".pdf.client.employment_payment_details") %></h2>
 
 <% @aggregator_report.summarize_by_employer.each_with_index do |(account_id, summary), index| %>
   <% employer_name = summary[:has_employment_data] ? summary[:employment].employer_name : nil %>
@@ -117,7 +117,7 @@
       <% if summary[:has_income_data] %>
         <%= table.with_data_point(:pay_period_with_frequency, paystub.start, paystub.end, summary[:income].pay_frequency&.humanize, highlight: is_caseworker) %>
       <% else %>
-        <%= table.with_data_point(:pay_period_with_frequency, paystub.start, paystub.end, t("cbv.paystub_details.show.frequency_unknown"), highlight: is_caseworker) %>
+        <%= table.with_data_point(:pay_period_with_frequency, paystub.start, paystub.end, t("cbv.payment_details.show.frequency_unknown"), highlight: is_caseworker) %>
       <% end %>
       <%= table.with_data_point(:pay_gross, paystub.gross_pay_amount, highlight: is_caseworker) %>
       <%= table.with_data_point(:number_of_hours_worked, paystub.hours, highlight: is_caseworker) %>
