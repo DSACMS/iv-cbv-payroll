@@ -1,6 +1,8 @@
 module Aggregators::AggregatorReports
   class PinwheelReport < AggregatorReport
-    def initialize(payroll_accounts: [], pinwheel_service:, from_date: nil, to_date: nil)
+    attr_accessor :pinwheel_service
+
+    def initialize(payroll_accounts: [], pinwheel_service: nil, from_date: nil, to_date: nil)
       super(payroll_accounts: payroll_accounts, from_date: from_date, to_date: to_date)
       @pinwheel_service = pinwheel_service
     end

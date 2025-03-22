@@ -1,6 +1,8 @@
 # This is an abstract class that should be inherited by all aggregator report classes.
 module Aggregators::AggregatorReports
   class AggregatorReport
+    attr_accessor :payroll_accounts, :identities, :incomes, :employments, :paystubs, :from_date, :to_date, :has_fetched
+
     def initialize(payroll_accounts: [], from_date: nil, to_date: nil)
       @has_fetched = false
       @payroll_accounts = payroll_accounts
@@ -26,30 +28,6 @@ module Aggregators::AggregatorReports
       @payroll_accounts.all? do |payroll_account|
         payroll_account.has_fully_synced?
       end
-    end
-
-    def from_date
-      @from_date
-    end
-
-    def to_date
-      @to_date
-    end
-
-    def identities
-      @identities
-    end
-
-    def incomes
-      @incomes
-    end
-
-    def employments
-      @employments
-    end
-
-    def paystubs
-      @paystubs
     end
 
     def summarize_by_employer

@@ -82,13 +82,10 @@ class Cbv::SubmitsController < Cbv::BaseController
       CaseworkerMailer.with(
         email_address: current_agency.transmission_method_configuration.dig("email"),
         cbv_flow: @cbv_flow,
-        payments: @aggregator_report.paystubs,
-        employments: @aggregator_report.employments,
-        incomes: @aggregator_report.incomes,
-        identities: @aggregator_report.identities
+        aggregator_report: @aggregator_report,
       ).summary_email.deliver_now
       @cbv_flow.touch(:transmitted_at)
-      track_transmitted_event(@cbv_flow, @aggregator_report.payments)
+      track_transmitted_event(@cbv_flow, @aggregator_report.paystubs)
     when "s3"
       config = current_agency.transmission_method_configuration
       public_key = config["public_key"]
