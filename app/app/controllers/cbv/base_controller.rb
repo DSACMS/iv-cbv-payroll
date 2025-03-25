@@ -76,12 +76,13 @@ class Cbv::BaseController < ApplicationController
   end
 
   def next_add_jobs_path(additional_jobs)
-    cbv_flow_add_job_path if !additional_jobs.present?
-
     if additional_jobs == "true"
       cbv_flow_employer_search_path
-    else
+    elsif additional_jobs == "false"
       cbv_flow_applicant_information_path
+    else
+      flash[:slim_alert] = { message: t(".notice_no_answer"), type: "error" }
+      cbv_flow_add_job_path
     end
   end
 
@@ -150,7 +151,12 @@ class Cbv::BaseController < ApplicationController
   end
 
   def load_applicant_attrs
-    @applicant_attrs = Rails.application.config.client_agencies[@cbv_flow.client_agency_id].required_applicant_attrs.compact.keys.map(&:to_sym)
-    @required_applicant_attrs = Rails.application.config.client_agencies[@cbv_flow.client_agency_id].required_applicant_attrs.select { |_, required| required }.keys.map(&:to_sym)
+    if !@cbv_flow.present?
+      @applicant_attrs = []
+      @required_applicant_attrs = []
+    else
+      @applicant_attrs = Rails.application.config.client_agencies[@cbv_flow.client_agency_id].required_applicant_attrs.compact.keys.map(&:to_sym)
+      @required_applicant_attrs = Rails.application.config.client_agencies[@cbv_flow.client_agency_id].required_applicant_attrs.select { |_, required| required }.keys.map(&:to_sym)
+    end
   end
 end

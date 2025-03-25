@@ -58,7 +58,7 @@ class ClientAgencyConfig
       @staff_portal_enabled = yaml["staff_portal_enabled"]
       @sso = yaml["sso"]
       @weekly_report = yaml["weekly_report"]
-      @required_applicant_attrs = yaml["required_applicant_attrs"]
+      @required_applicant_attrs = yaml["required_applicant_attrs"] || {}
 
       raise ArgumentError.new("Client Agency missing id") if @id.blank?
       raise ArgumentError.new("Client Agency #{@id} missing required attribute `agency_name`") if @agency_name.blank?
