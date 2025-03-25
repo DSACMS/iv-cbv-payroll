@@ -56,15 +56,15 @@
 <% if !@cbv_flow.cbv_flow_invitation.present? %>
 <br/><br/>
 <table class="usa-table usa-table--borderless width-full">
-  <h3>Your information</h3>
+  <h3> <% t(".your_information") %></h3>
   <div class="usa-prose">
-    <p><%= "This must match what is shown on your [agency] application." %></p>
+    <p><%= t(".must_match", agency_acronym: current_agency.agency_short_name) %></p>
   </div>
   <thead class="border-top-05">
           <tr>
       <th class="padding-3" style="background-color: #d9e8f6;">
         <h4 class="margin-0">
-          <%= "Application information" %>
+          <%= t(".application_information") %>
         </h4>
       </th>
       <th class="padding-3" style="background-color: #d9e8f6; text-align: right;">
@@ -82,11 +82,10 @@
           </tr>
   </thead>
   <tbody>
-    <%# probably want something like Rails.application.config.client_agencies[client_agency_id].user_attrs %>
     <% Rails.application.config.client_agencies[@cbv_flow.client_agency_id].required_applicant_attrs.each do |item| %>
       <% if @cbv_flow.cbv_applicant[item[0]].present? %>
         <tr>
-          <td><%= item[0] %></td>
+          <td><%= t(".applicant_informations.show.#{@cbv_flow.client_agency_id}.#{item[0]}") %></td>
           <td><%= @cbv_flow.cbv_applicant[item[0]] %></td>
         </tr>
       <% end %>

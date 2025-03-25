@@ -11,7 +11,7 @@ class Cbv::ApplicantInformationsController < Cbv::BaseController
       @cbv_applicant.update!(applicant_params[:cbv_applicant])
     rescue => e
       Rails.logger.error("Error updating applicant: #{e.message}")
-      flash[:alert] = "An error occurred while updating the applicant information. Please try again."
+      flash[:alert] = t(".error_updating_applicant")
       return redirect_to cbv_flow_applicant_information_path
     end
 
@@ -21,11 +21,11 @@ class Cbv::ApplicantInformationsController < Cbv::BaseController
 
     if missing_attrs.any?
       missing_attrs.each do |attr|
-        @cbv_applicant.errors.add(attr, "can't be blank")
+        @cbv_applicant.errors.add(attr, t("activerecord.errors.models.generic_flow.cbv_applicant/#{@cbv_flow.client_agency_id}.#{attr}.blank"))
       end
 
       error_count = @cbv_applicant.errors.size
-      error_header = "#{helpers.pluralize(error_count, 'error')} occurred"
+      error_header = "#{helpers.pluralize(error_count, 'error')} occurred" #TODO: is this properly tokenized?
 
       # Collect error messages without attribute names
       error_messages = @cbv_applicant.errors.messages.values.flatten.map { |msg| "<li>#{msg}</li>" }.join

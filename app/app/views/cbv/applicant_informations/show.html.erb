@@ -1,15 +1,15 @@
 <% content_for :title, t(".header") %>
 
-<h1><%= "Your information" %></h1>
+<h1><%= t(".your_information") %></h1>
 <div class="usa-prose">
-  <%= "This information will be used to connect your income information to your [agency] application. Please make sure the information you enter is the same as what is shown on your application." %>
+  <%= t(".explanation") %>
 </div>
-<h2><%= "Application information" %></h2>
+<h2><%= t(".application_information") %></h2>
 <div class="usa-prose">
-  <%= "This information may be found on {agency-specific instructions}." %>
+  <%= t(".application_information_explanation") %>
 </div>
 <%= uswds_form_with(model: @cbv_applicant, url: cbv_flow_applicant_information_path, method: "patch") do |f| %>
   <%= render partial: "cbv/applicant_informations/#{@cbv_flow.client_agency_id}", locals: { f: f } %>
   <br/>
-  <%= f.submit "Continue" %>
+  <%= f.submit t(".continue") %>
 <% end %>
