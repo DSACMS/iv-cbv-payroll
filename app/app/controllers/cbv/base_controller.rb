@@ -1,4 +1,3 @@
-$sandbox_user_attrs = %i[first_name middle_name last_name case_number]
 class Cbv::BaseController < ApplicationController
   before_action :set_cbv_flow, :ensure_cbv_flow_not_yet_complete, :prevent_back_after_complete, :capture_page_view
   helper_method :agency_url, :next_path, :get_comment_by_account_id, :current_agency
@@ -25,6 +24,7 @@ class Cbv::BaseController < ApplicationController
 
       @cbv_flow = CbvFlow.create_from_invitation(invitation)
       session[:cbv_flow_id] = @cbv_flow.id
+      load_applicant_attrs
       track_invitation_clicked_event(invitation, @cbv_flow)
 
     elsif session[:cbv_flow_id]
@@ -33,6 +33,7 @@ class Cbv::BaseController < ApplicationController
       rescue ActiveRecord::RecordNotFound
         redirect_to root_url
       end
+      load_applicant_attrs
     else
       track_timeout_event
       redirect_to root_url, flash: { slim_alert: { type: "info", message_html: t("cbv.error_missing_token_html") } }
@@ -146,5 +147,10 @@ class Cbv::BaseController < ApplicationController
     })
   rescue => ex
     Rails.logger.error "Unable to track event (ApplicantClickedCBVInvitationLink): #{ex}"
+  end
+
+  def load_applicant_attrs
+    @applicant_attrs = Rails.application.config.client_agencies[@cbv_flow.client_agency_id].required_applicant_attrs.compact.keys.map(&:to_sym)
+    @required_applicant_attrs = Rails.application.config.client_agencies[@cbv_flow.client_agency_id].required_applicant_attrs.select { |_, required| required }.keys.map(&:to_sym)
   end
 end

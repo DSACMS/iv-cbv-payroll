@@ -1,10 +1,7 @@
 <% cbv_applicant = @cbv_flow.cbv_applicant %>
 <%= f.fields_for :cbv_applicant, cbv_applicant do |f2| %>
   <%= f2.text_field :first_name, label: "First name:" %>
-
   <%= f2.text_field :middle_name, label: "Middle name:" %>
-
   <%= f2.text_field :last_name, label: "Last name:" %>
-
   <%= f2.text_field :case_number, label: t(".cbv_applicant.case_number") %>
 <% end %>

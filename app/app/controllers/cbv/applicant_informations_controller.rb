@@ -1,8 +1,7 @@
 class Cbv::ApplicantInformationsController < Cbv::BaseController
   include Cbv::PinwheelDataHelper
   before_action :set_cbv_applicant, only: %i[show update]
-  before_action :redirect_when_in_invitation_flow, :redirect_when_info_present
-  before_action :set_identities, only: %i[show update]
+  before_action :redirect_when_in_invitation_flow, :redirect_when_info_present, only: :show
 
   def show
   end
@@ -16,16 +15,39 @@ class Cbv::ApplicantInformationsController < Cbv::BaseController
       return redirect_to cbv_flow_applicant_information_path
     end
 
+    missing_attrs = @required_applicant_attrs.reject do |attr|
+      @cbv_applicant.send(attr).present?
+    end
+
+    if missing_attrs.any?
+      missing_attrs.each do |attr|
+        @cbv_applicant.errors.add(attr, "can't be blank")
+      end
+
+      error_count = @cbv_applicant.errors.size
+      error_header = "#{helpers.pluralize(error_count, 'error')} occurred"
+
+      # Collect error messages without attribute names
+      error_messages = @cbv_applicant.errors.messages.values.flatten.map { |msg| "<li>#{msg}</li>" }.join
+      error_messages = "<ul>#{error_messages}</ul>"
+
+      flash.now[:alert_heading] = error_header
+      flash.now[:alert] = error_messages.html_safe
+
+      return render :show, status: :unprocessable_entity
+    end
+
     redirect_to next_path
   end
 
   def redirect_when_info_present
-    # Determine if we have enough information about the applicant to continue
-    return if !@cbv_flow.cbv_applicant.case_number.present?
-    return if !@cbv_flow.cbv_applicant.first_name.present?
-    return if !@cbv_flow.cbv_applicant.last_name.present?
+    return if params[:force_show] == "true"
 
-    redirect_to next_path
+    missing_attrs = @required_applicant_attrs.reject do |attr|
+      @cbv_applicant.send(attr).present?
+    end
+
+    redirect_to next_path if missing_attrs.empty?
   end
 
   def redirect_when_in_invitation_flow
@@ -34,7 +56,7 @@ class Cbv::ApplicantInformationsController < Cbv::BaseController
 
   def applicant_params
     params.fetch("cbv_applicant_#{@cbv_flow.client_agency_id}", {}).permit(
-      cbv_applicant: $sandbox_user_attrs
+      cbv_applicant: @applicant_attrs
     )
   end
 
