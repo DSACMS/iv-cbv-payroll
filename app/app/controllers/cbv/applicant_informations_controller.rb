@@ -34,12 +34,7 @@ class Cbv::ApplicantInformationsController < Cbv::BaseController
 
   def applicant_params
     params.fetch("cbv_applicant_#{@cbv_flow.client_agency_id}", {}).permit(
-      :cbv_applicant => [
-        :first_name,
-        :middle_name,
-        :last_name,
-        :case_number
-      ]
+      cbv_applicant: $sandbox_user_attrs
     )
   end
 

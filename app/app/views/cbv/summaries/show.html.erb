@@ -53,4 +53,34 @@
   <%= get_comment_by_account_id(account_id).dig("comment") != "" ? get_comment_by_account_id(account_id).dig("comment") : t("shared.not_applicable") %>
   <% end %>
 
+<% if !@cbv_flow_invitation.present? %>
+<br/><br/>
+<table class="usa-table usa-table--borderless width-full">
+  <h3>Your information</h3>
+  <div class="usa-prose">
+    <p><%= "This must match what is shown on your [agency] application." %></p>
+  </div>
+  <thead class="border-top-05">
+          <tr>
+      <th class="padding-3" style="background-color: #d9e8f6;" colspan="2">
+        <h4 class="margin-0">
+          <%# TIMOTEST TODO: Edit link %>
+          <%= "Application information" %>
+        </h4>
+      </th>
+          </tr>
+  </thead>
+  <tbody>
+    <% $sandbox_user_attrs.each do |item| %>
+      <% if @cbv_flow.cbv_applicant[item].present? %>
+        <tr>
+          <td><%= item %></td>
+          <td><%= @cbv_flow.cbv_applicant[item] %></td>
+        </tr>
+      <% end %>
+    <% end %>
+  </tbody>
+  </table>
+<% end %>
+
 <%= button_to t("continue"), cbv_flow_submit_path, class: "btn btn-primary usa-button margin-y-5", method: :get %>
