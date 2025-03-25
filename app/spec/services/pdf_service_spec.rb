@@ -5,39 +5,17 @@ RSpec.describe PdfService, type: :service do
   include Cbv::AggregatorDataHelper
   include ApplicationHelper
 
-  let(:current_client_agency) { Rails.application.config.client_agencies["nyc"] }
-  let(:caseworker_user) { create(:user, email: "#{SecureRandom.uuid}@example.com") }
-  let(:invitation) { create(:cbv_flow_invitation, :nyc, user: caseworker_user) }
-  let(:cbv_flow) do
-    create(
-      :cbv_flow,
-      :with_pinwheel_account,
-      consented_to_authorized_use_at: Time.now,
-      cbv_flow_invitation: invitation
-    )
-  end
-  let(:account_id) { cbv_flow.payroll_accounts.first.pinwheel_account_id }
-  let(:payments) { stub_payments(account_id) }
-  let(:employments) { stub_employments(account_id) }
-  let(:incomes) { stub_incomes(account_id) }
-  let(:identities) { stub_identities(account_id) }
-  let(:payments_grouped_by_employer) { summarize_by_employer(payments, employments, incomes, identities, cbv_flow.payroll_accounts) }
+  let(:current_time) { Date.parse('2024-06-18') }
+  let(:cbv_flow) { create(:cbv_flow) }
+
+  let(:pinwheel_report) { build(:pinwheel_report, :with_pinwheel_account) }
   let(:variables) do
     {
       is_caseworker: true,
       cbv_flow: cbv_flow,
-      payments: payments,
-      employments: employments,
-      incomes: incomes,
-      identities: identities,
-      payments_grouped_by_employer: payments_grouped_by_employer,
+      aggregator_report: pinwheel_report,
       has_consent: false
     }
-  end
-  let(:ma_user) { create(:user, email: "test@example.com", client_agency_id: 'ma') }
-
-  before do
-    cbv_flow.payroll_accounts.first.update(pinwheel_account_id: "03e29160-f7e7-4a28-b2d8-813640e030d3")
   end
 
   describe "#generate" do
