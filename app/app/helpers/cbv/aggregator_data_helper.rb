@@ -11,6 +11,16 @@ module Cbv::AggregatorDataHelper
 
     @aggregator_report.fetch()
   end
+
+  def set_aggregator_report_for_account(payroll_account)
+    @aggregator_report = PinwheelReport.new(
+      payroll_accounts: [ payroll_account ],
+      pinwheel_service: pinwheel,
+      from_date: @cbv_flow.cbv_applicant.paystubs_query_begins_at,
+      to_date: @cbv_flow.cbv_applicant.snap_application_date)
+
+    @aggregator_report.fetch()
+  end
   # def set_payments(account_id = nil)
   #   applicant = @cbv_flow.cbv_applicant
   #   to_pay_date = applicant.snap_application_date

@@ -1,6 +1,5 @@
 FactoryBot.define do
   factory :pinwheel_report, class: 'Aggregators::AggregatorReports::PinwheelReport' do
-    payroll_accounts { [] }
     identities { [
       Aggregators::ResponseObjects::Identity.new(
         account_id: "account1",
@@ -39,7 +38,7 @@ FactoryBot.define do
         deductions: [
           OpenStruct.new(
             category: "tax",
-            amount: "111.11",
+            amount: 111.11,
           )
       ]),
       Aggregators::ResponseObjects::Paystub.new(
@@ -58,12 +57,21 @@ FactoryBot.define do
         deductions: [
           OpenStruct.new(
             category: "tax",
-            amount: "111.11",
+            amount: 111.11,
+          ),
+          OpenStruct.new(
+            category: "Empty deduction",
+            amount: 0.00,
           )
       ])
     ] }
     from_date { "2021-09-01" }
     to_date { "2021-09-30" }
     pinwheel_service { "hi" }
+    payroll_accounts { [] }
+
+    trait :no_paystubs do
+      paystubs { [] }
+    end
   end
 end

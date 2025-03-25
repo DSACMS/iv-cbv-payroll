@@ -30,6 +30,17 @@ module Aggregators::AggregatorReports
       end
     end
 
+
+    AccountReportStruct = Struct.new(:identity, :income, :employment, :paystubs)
+    def find_account_report(account_id)
+      AccountReportStruct.new(
+      @identities.find { |identity| identity.account_id == account_id },
+      @incomes.find { |income| income.account_id == account_id },
+      @employments.find { |employment| employment.account_id == account_id },
+      @paystubs.filter { |paystub| paystub.account_id == account_id }
+      )
+    end
+
     def summarize_by_employer
       @payroll_accounts
         .each_with_object({}) do |payroll_account, hash|
