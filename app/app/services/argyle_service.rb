@@ -18,9 +18,9 @@ class ArgyleService
   ENVIRONMENTS = {
     sandbox: {
       base_url: "https://api-sandbox.argyle.com/v2",
-      api_key_id: ENV["ARGYLE_API_TOKEN_SANDBOX_ID"],
-      api_key_secret: ENV["ARGYLE_API_TOKEN_SANDBOX_SECRET"],
-      webhook_secret: ENV["ARGYLE_WEBHOOK_SECRET_SANDBOX"]
+      api_key_id: ENV["ARGYLE_SANDBOX_API_TOKEN_ID"],
+      api_key_secret: ENV["ARGYLE_SANDBOX_API_TOKEN_SECRET"],
+      webhook_secret: ENV["ARGYLE_SANDBOX_WEBHOOK_SECRET"]
     }
   }
 
@@ -33,7 +33,7 @@ class ArgyleService
     @api_key_secret = api_key_secret || ENVIRONMENTS.fetch(environment.to_sym)[:api_key_secret]
     @webhook_secret = ENVIRONMENTS.fetch(environment.to_sym)[:webhook_secret]
     @environment = ENVIRONMENTS.fetch(environment.to_sym) { |env| raise ConfigurationError.new("ArgyleService unknown environment: #{env}") }
-    
+
     client_options = {
       request: {
         open_timeout: 5,
@@ -42,7 +42,7 @@ class ArgyleService
       },
       url: @environment[:base_url],
       headers: {
-        "Content-Type" => "application/json",
+        "Content-Type" => "application/json"
       }
     }
     @http = Faraday.new(client_options) do |conn|
@@ -86,17 +86,13 @@ class ArgyleService
     make_request(:delete, "#{WEBHOOKS_ENDPOINT}/#{id}")
   end
 
-  def generate_signature_digest(payload, secret)
-    OpenSSL::HMAC.hexdigest(OpenSSL::Digest.new("sha512"), secret, payload)
+  def generate_signature_digest(payload)
+    OpenSSL::HMAC.hexdigest(OpenSSL::Digest.new("sha512"), @webhook_secret, payload)
   end
 
-  def verify_signature(signature, payload, secret)
-    expected = generate_signature_digest(payload, secret)
+  def verify_signature(signature, payload)
+    expected = generate_signature_digest(payload)
     ActiveSupport::SecurityUtils.secure_compare(signature, expected)
-  end
-
-  def webhook_secret
-    @webhook_secret
   end
 
   private

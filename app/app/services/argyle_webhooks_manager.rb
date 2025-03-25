@@ -6,10 +6,9 @@
 class ArgyleWebhooksManager
   WEBHOOK_EVENTS = %w[
     users.fully_synced
-    accounts.connected
-    identities.added
-    paystubs.added
+    paystubs.fully_synced
     gigs.fully_synced
+    accounts.failed
   ]
 
   def initialize

@@ -11,14 +11,17 @@ class Webhooks::Argyle::EventsController < ApplicationController
   # argyle's event outcomes are implied by the event name themselves i.e. accounts.failed (implies error)
   # users.fully_synced (implies success)
   EVENT_OUTCOMES = {
-    "accounts.failed" => :error,
-    "users.fully_synced" => :success
+    "gigs.fully_synced" => :success,
+    "paystubs.fully_synced" => :success,
+    "users.fully_synced" => :success,
+    "accounts.failed" => :error
   }.freeze
 
   def create
+    puts "Params are: #{params["payload"]}"
     @payroll_account = @cbv_flow.payroll_accounts.find_or_create_by(
       type: :argyle,
-      pinwheel_account_id: @account_id # this column will be renamed to something more abstract later. it's not pinwheel specific.
+      pinwheel_account_id: params["data"]["external_id"]
     ) do |new_payroll_account|
       new_payroll_account.supported_jobs = determine_supported_jobs
     end
@@ -42,21 +45,18 @@ class Webhooks::Argyle::EventsController < ApplicationController
   def authorize_webhook
     signature = request.headers["X-Argyle-Signature"]
 
-    # Use the configured secret or a dummy one
-    secret = @argyle&.webhook_secret || DUMMY_SECRET
-
-    unless verify_signature(signature, secret)
+    unless verify_signature(signature)
       render json: { error: "Invalid signature" }, status: :unauthorized
     end
   end
 
-  def verify_signature(signature, secret)
-    @argyle.verify_signature(signature, request.raw_post, secret)
+  def verify_signature(signature)
+    @argyle.verify_signature(signature, request.raw_post)
   end
 
   def set_cbv_flow
-    cbv_user_id = params.dig("data", "resource", "id")
-    @cbv_flow = CbvFlow.find_by_end_user_id(cbv_user_id)
+    account_id = params.dig("data", "resource", "external_id")
+    @cbv_flow = CbvFlow.find_by_end_user_id(account_id)
 
     unless @cbv_flow
       Rails.logger.info "Unable to find CbvFlow for Argyle account_id: #{account_id}"
@@ -65,7 +65,8 @@ class Webhooks::Argyle::EventsController < ApplicationController
   end
 
   def set_argyle
-    @argyle = @cbv_flow.present? ? argyle_for(@cbv_flow) : ArgyleService.new("sandbox")
+    account_type = Rails.env.production? ? "production" : "sandbox"
+    @argyle = @cbv_flow.present? ? argyle_for(@cbv_flow) : ArgyleService.new(account_type)
   end
 
   def determine_supported_jobs
