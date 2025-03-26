@@ -2,8 +2,8 @@ module Aggregators::AggregatorReports
   class PinwheelReport < AggregatorReport
     attr_accessor :pinwheel_service
 
-    def initialize(payroll_accounts: [], pinwheel_service: nil, from_date: nil, to_date: nil)
-      super(payroll_accounts: payroll_accounts, from_date: from_date, to_date: to_date)
+    def initialize(pinwheel_service: nil, **params)
+      super(**params)
       @pinwheel_service = pinwheel_service
     end
     private
@@ -30,8 +30,7 @@ module Aggregators::AggregatorReports
     end
 
     def fetch_paystubs(account_id:)
-      # TODO: add @from_date and @to_date
-      json = @pinwheel_service.fetch_paystubs_api(account_id: account_id)
+      json = @pinwheel_service.fetch_paystubs_api(account_id: account_id, from_pay_date: @from_date, to_pay_date: @to_date)
       json["data"].map { |paystub_json| Aggregators::ResponseObjects::Paystub.from_pinwheel(paystub_json) }
     end
 
