@@ -8,20 +8,6 @@ module Aggregators::AggregatorReports
     end
     private
 
-    # TODO: bring this to abstract class
-    def fetch_report_data
-      all_successful = true
-      begin
-        @payroll_accounts.each do |account|
-          fetch_report_data_for_account(account)
-        end
-      rescue StandardError => e
-        Rails.logger.error("Report Fetch Error: #{e.message}")
-        all_successful = false
-      end
-      @has_fetched = all_successful
-    end
-
     def fetch_report_data_for_account(account)
       @identities.append(fetch_identity(account_id: account.pinwheel_account_id))
       @employments.append(fetch_employment(account_id: account.pinwheel_account_id))

@@ -3,13 +3,15 @@ require 'rails_helper'
 RSpec.describe Aggregators::AggregatorReports::PinwheelReport, type: :service do
   include PinwheelApiHelper
   let(:account) { "abc123" }
+  let(:from_date) { "2021-01-01" }
+  let(:to_date) { "2021-04-31" }
 
   let!(:payroll_accounts) do
     create_list(:payroll_account, 3, :pinwheel_fully_synced, pinwheel_account_id: account)
   end
 
   let(:pinwheel_service) { Aggregators::Sdk::PinwheelService.new(:sandbox) }
-  let(:service) { described_class.new(payroll_accounts: payroll_accounts, pinwheel_service: pinwheel_service) }
+  let(:service) { described_class.new(payroll_accounts: payroll_accounts, pinwheel_service: pinwheel_service, from_date: from_date, to_date: to_date) }
 
   let(:identities_json) { load_relative_json_file('request_identity_response.json') }
   let(:incomes_json) { load_relative_json_file('request_income_metadata_response.json') }
@@ -22,7 +24,7 @@ RSpec.describe Aggregators::AggregatorReports::PinwheelReport, type: :service do
     allow(pinwheel_service).to receive(:fetch_identity_api).with(account_id: account).and_return(identities_json)
     allow(pinwheel_service).to receive(:fetch_income_api).with(account_id: account).and_return(incomes_json)
     allow(pinwheel_service).to receive(:fetch_employment_api).with(account_id: account).and_return(incomes_json)
-    allow(pinwheel_service).to receive(:fetch_paystubs_api).with(account_id: account).and_return(paystubs_json)
+    allow(pinwheel_service).to receive(:fetch_paystubs_api).with(account_id: account, from_pay_date: from_date, to_pay_date: to_date).and_return(paystubs_json)
   end
 
 
@@ -30,7 +32,7 @@ RSpec.describe Aggregators::AggregatorReports::PinwheelReport, type: :service do
     it 'calls the expected API\'s for each payroll account' do
       service.fetch
       expect(pinwheel_service).to have_received(:fetch_identity_api).with(account_id: account).exactly(3).times
-      expect(pinwheel_service).to have_received(:fetch_paystubs_api).with(account_id: account).exactly(3).times
+      expect(pinwheel_service).to have_received(:fetch_paystubs_api).with(account_id: account, from_pay_date: from_date, to_pay_date: to_date).exactly(3).times
       expect(pinwheel_service).to have_received(:fetch_employment_api).with(account_id: account).exactly(3).times
       expect(pinwheel_service).to have_received(:fetch_income_api).with(account_id: account).exactly(3).times
     end
