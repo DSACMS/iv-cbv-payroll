@@ -30,7 +30,10 @@ class Cbv::SubmitsController < Cbv::BaseController
 
         render pdf: "#{@cbv_flow.id}",
           layout: "pdf",
-          locals: { is_caseworker: Rails.env.development? && params[:is_caseworker] },
+          locals: {
+            is_caseworker: Rails.env.development? && params[:is_caseworker],
+            aggregator_report: @aggregator_report
+          },
           footer: { right: "Income Verification Report | Page [page] of [topage]", font_size: 10 },
           margin:  {
             top:               10,
