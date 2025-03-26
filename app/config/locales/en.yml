@@ -197,7 +197,7 @@ en:
         application_information: Application information
         application_information_explanation: This information may be found on your agency's website.
         continue: Continue
-        explanation: This information will be used to connect your income information to your [agency] application. Please make sure the information you enter is the same as what is shown on your application.
+        explanation: This information will be used to connect your income information to your %{agency_short_name} application. Please make sure the information you enter is the same as what is shown on your application.
         your_information: Your information
       update:
         error_updating_applicant: An error occurred while updating the applicant information. Please try again.

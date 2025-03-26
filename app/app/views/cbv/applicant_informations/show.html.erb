@@ -2,7 +2,7 @@
 
 <h1><%= t(".your_information") %></h1>
 <div class="usa-prose">
-  <%= t(".explanation") %>
+  <%= t(".explanation", agency_short_name: current_agency.agency_short_name) %>
 </div>
 <h2><%= t(".application_information") %></h2>
 <div class="usa-prose">
