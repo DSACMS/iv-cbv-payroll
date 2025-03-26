@@ -25,7 +25,7 @@ class Cbv::ApplicantInformationsController < Cbv::BaseController
       end
 
       error_count = @cbv_applicant.errors.size
-      error_header = "#{helpers.pluralize(error_count, 'error')} occurred" #TODO: is this properly tokenized?
+      error_header = "#{helpers.pluralize(error_count, 'error')} occurred" # TODO: is this properly tokenized?
 
       # Collect error messages without attribute names
       error_messages = @cbv_applicant.errors.messages.values.flatten.map { |msg| "<li>#{msg}</li>" }.join
