@@ -4,6 +4,7 @@ class Cbv::ApplicantInformationsController < Cbv::BaseController
   before_action :redirect_when_in_invitation_flow, :redirect_when_info_present, only: :show
 
   def show
+    track_applicant_information_access_event()
   end
 
   def update
@@ -34,6 +35,8 @@ class Cbv::ApplicantInformationsController < Cbv::BaseController
       flash.now[:alert_heading] = error_header
       flash.now[:alert] = error_messages.html_safe
 
+      track_applicant_information_error_event(error_messages.html_safe)
+
       return render :show, status: :unprocessable_entity
     end
 
@@ -62,5 +65,34 @@ class Cbv::ApplicantInformationsController < Cbv::BaseController
 
   def set_cbv_applicant
     @cbv_applicant = @cbv_flow.cbv_applicant
+  end
+
+  def track_applicant_information_access_event
+    if params[:force_show] == "true"
+      event_logger.track("ApplicantClickedEditInformationLink", request, {
+        timestamp: Time.now.to_i,
+        cbv_applicant_id: @cbv_flow.cbv_applicant_id,
+        cbv_flow_id: @cbv_flow.id
+      })
+    else
+      event_logger.track("ApplicantAccessedInformationPage", request, {
+        timestamp: Time.now.to_i,
+        cbv_applicant_id: @cbv_flow.cbv_applicant_id,
+        cbv_flow_id: @cbv_flow.id
+      })
+    end
+  rescue => ex
+    Rails.logger.error "Unable to track event on ApplicantInformation page #{ex}"
+  end
+
+  def track_applicant_information_error_event(error_string)
+    event_logger.track("ApplicantEncounteredInformationPageError", request, {
+      timestamp: Time.now.to_i,
+      cbv_applicant_id: @cbv_flow.cbv_applicant_id,
+      cbv_flow_id: @cbv_flow.id,
+      error_string: error_string
+    })
+  rescue => ex
+    Rails.logger.error "Unable to track event (ApplicantEncounteredInformationPageError): #{ex}"
   end
 end
