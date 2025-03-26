@@ -1,7 +1,0 @@
-{
-  "events": ["accounts.connected"],
-  "name": "test-webhook",
-  "url": "https://your-webhook-backend.com",
-  "secret": "optional-secret",
-  "config": { "include_resource": true }
-}

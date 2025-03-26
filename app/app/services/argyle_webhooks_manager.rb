@@ -4,13 +4,6 @@
 # The webhooks will be registered in the Argyle environment listed under the
 # "sandbox" site in site-config.yml.
 class ArgyleWebhooksManager
-  WEBHOOK_EVENTS = %w[
-    users.fully_synced
-    paystubs.fully_synced
-    gigs.fully_synced
-    accounts.failed
-  ]
-
   def initialize
     @sandbox_config = Rails.application.config.client_agencies["sandbox"]
     @argyle = ArgyleService.new(@sandbox_config.argyle_environment)
@@ -32,7 +25,7 @@ class ArgyleWebhooksManager
     receiver_url = URI.join(tunnel_url, "/webhooks/argyle/events").to_s
     subscriptions = existing_subscriptions_with_name(name)
     existing_subscription = subscriptions.find do |subscription|
-      subscription["url"] == receiver_url && subscription["events"] == WEBHOOK_EVENTS
+      subscription["url"] == receiver_url && subscription["events"] == @argyle.get_webhook_events
     end
 
     if existing_subscription
@@ -42,7 +35,7 @@ class ArgyleWebhooksManager
       existing_subscription["id"]
     else
       puts "  Registering Argyle webhooks for Ngrok tunnel in Argyle #{@sandbox_config.argyle_environment}..."
-      response = @argyle.create_webhook_subscription(WEBHOOK_EVENTS, receiver_url, name)
+      response = @argyle.create_webhook_subscription(@argyle.get_webhook_events, receiver_url, name)
       new_webhook_subscription_id = response["id"]
       puts "  ✅ Set up Argyle webhook: #{new_webhook_subscription_id}"
       puts " Argyle webhook url: #{receiver_url}"

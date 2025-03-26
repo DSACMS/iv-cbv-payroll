@@ -28,6 +28,40 @@ class ArgyleService
   USERS_ENDPOINT = "users"
   WEBHOOKS_ENDPOINT = "webhooks"
 
+  # Argyle's event outcomes are implied by the event name themselves i.e. accounts.failed (implies error)
+  # users.fully_synced (implies success)
+
+  # Define all webhook events we're interested in with their outcomes
+  # and corresponding synchronizations page "job"
+  SUBSCRIBED_WEBHOOK_EVENTS = {
+    # Successfully synced
+    "users.fully_synced" => {
+      status: :success,
+      job: %w[income]
+    },
+    "identities.added" => {
+      status: :success,
+      job: %w[identity]
+    },
+    "paystubs.fully_synced" => {
+      status: :success,
+      job: %w[paystubs employment]
+    },
+    "gigs.fully_synced" => {
+      status: :success,
+      job: nil # TODO: [FFS-XXX] update front-end/client to support gig sync status
+    },
+    "accounts.connected" => {
+      status: :success,
+      job: nil # we're not concerned with reporting this to the front-end/client
+    },
+    # Failed to sync
+    "accounts.failed" => {
+      status: :failed,
+      job: nil
+    }
+  }.freeze
+
   def initialize(environment, api_key_id = nil, api_key_secret = nil)
     @api_key_id = api_key_id || ENVIRONMENTS.fetch(environment.to_sym)[:api_key_id]
     @api_key_secret = api_key_secret || ENVIRONMENTS.fetch(environment.to_sym)[:api_key_secret]
@@ -71,6 +105,10 @@ class ArgyleService
     make_request(:get, WEBHOOKS_ENDPOINT)
   end
 
+  def get_environment
+    @environment
+  end
+
   def create_webhook_subscription(events, url, name)
     payload = {
       events: events,
@@ -93,6 +131,18 @@ class ArgyleService
   def verify_signature(signature, payload)
     expected = generate_signature_digest(payload)
     ActiveSupport::SecurityUtils.secure_compare(signature, expected)
+  end
+
+  def get_webhook_events
+    SUBSCRIBED_WEBHOOK_EVENTS.keys
+  end
+
+  def get_supported_jobs
+    SUBSCRIBED_WEBHOOK_EVENTS.values.map { |event| event[:job] }.flatten.compact
+  end
+
+  def get_webhook_event_outcome(event)
+    SUBSCRIBED_WEBHOOK_EVENTS[event][:status]
   end
 
   private

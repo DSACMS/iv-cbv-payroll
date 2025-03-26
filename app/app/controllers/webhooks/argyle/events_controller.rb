@@ -8,69 +8,59 @@ class Webhooks::Argyle::EventsController < ApplicationController
   # valid `cbv_flow`.
   DUMMY_SECRET = "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
 
-  # argyle's event outcomes are implied by the event name themselves i.e. accounts.failed (implies error)
-  # users.fully_synced (implies success)
-  EVENT_OUTCOMES = {
-    "gigs.fully_synced" => :success,
-    "paystubs.fully_synced" => :success,
-    "users.fully_synced" => :success,
-    "accounts.failed" => :error
-  }.freeze
-
   def create
-    puts "Params are: #{params["payload"]}"
     @payroll_account = @cbv_flow.payroll_accounts.find_or_create_by(
       type: :argyle,
-      pinwheel_account_id: params["data"]["external_id"]
+      pinwheel_account_id: @end_user_id
     ) do |new_payroll_account|
-      new_payroll_account.supported_jobs = determine_supported_jobs
+      new_payroll_account.supported_jobs = @argyle_service.get_supported_jobs
     end
 
     @webhook_event = WebhookEvent.create!(
       payroll_account: @payroll_account,
       event_name: params["event"],
-      event_outcome: EVENT_OUTCOMES[params["event"]],
+      event_outcome: @argyle_service.get_webhook_event_outcome(params["event"]),
     )
 
+    # TODO: uncomment this if we want to broadcast Argyle fully synced to the frontend
+    #
+    # if @payroll_account.has_fully_synced?
+    #   PaystubsChannel.broadcast_to(@cbv_flow, {
+    #     event: "cbv.status_update",
+    #     account_id: params["data"]["external_id"],
+    #     has_fully_synced: true
+    #   })
+    # end
+
+    # For now, we'll just render ok for some type of logging
     render json: { status: "ok" }
   end
 
   private
 
-  def handle_gigs_fully_synced
-    PayrollAccount.find_by(type: :argyle, pinwheel_account_id: @account_id)
-  end
-
   # @see https://docs.argyle.com/api-guide/webhooks
   def authorize_webhook
-    signature = request.headers["X-Argyle-Signature"]
+    # ignore any webhooks that are not in the list of supported webhook events
+    return unless @argyle_service.get_webhook_events.include?(params["event"])
 
-    unless verify_signature(signature)
+    unless @argyle_service.verify_signature(request.headers["X-Argyle-Signature"], request.raw_post)
       render json: { error: "Invalid signature" }, status: :unauthorized
     end
   end
 
-  def verify_signature(signature)
-    @argyle.verify_signature(signature, request.raw_post)
-  end
-
   def set_cbv_flow
-    account_id = params.dig("data", "resource", "external_id")
-    @cbv_flow = CbvFlow.find_by_end_user_id(account_id)
+    @end_user_id = params.dig("data", "resource", "external_id")
+    @cbv_flow = CbvFlow.find_by_end_user_id(@end_user_id)
 
     unless @cbv_flow
-      Rails.logger.info "Unable to find CbvFlow for Argyle account_id: #{account_id}"
+      Rails.logger.info "Unable to find CbvFlow for Argyle external_id: #{@end_user_id}"
       render json: { status: "ok" }
     end
   end
 
   def set_argyle
     account_type = Rails.env.production? ? "production" : "sandbox"
-    @argyle = @cbv_flow.present? ? argyle_for(@cbv_flow) : ArgyleService.new(account_type)
-  end
-
-  def determine_supported_jobs
-    PayrollAccount::Argyle.available_jobs
+    @argyle_service = @cbv_flow.present? ? argyle_for(@cbv_flow) : ArgyleService.new(account_type)
   end
 
   def track_events

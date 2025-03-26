@@ -38,7 +38,7 @@ FactoryBot.define do
 
       after(:build) do |payroll_account, evaluator|
         payroll_account.supported_jobs.each do |job|
-          event_name = PayrollAccount::Argyle::JOBS_TO_WEBHOOK_EVENTS[job]
+          event_name = PayrollAccount::Argyle.jobs_to_webhook_events[job]
 
           payroll_account.webhook_events << build(
             :webhook_event,
