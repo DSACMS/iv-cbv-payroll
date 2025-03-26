@@ -45,6 +45,11 @@ Rails.application.routes.draw do
         root to: "generic_links#show", as: :new
       end
 
+      # Generic link
+      scope "links/:client_agency_id", constraints: { client_agency_id: Regexp.union(Rails.application.config.client_agencies.client_agency_ids) } do
+        root to: "generic_links#show", as: :new
+      end
+
       # Session management
       post "session/refresh", to: "sessions#refresh", as: :session_refresh
       get "session/end", to: "sessions#end", as: :session_end
