@@ -2,8 +2,8 @@ module Aggregators::AggregatorReports
   class ArgyleReport < AggregatorReport
     include Aggregators::ResponseObjects
 
-    def initialize(payroll_accounts: [], argyle_service:)
-      super(payroll_accounts: payroll_accounts)
+    def initialize(argyle_service:, **params)
+      super(**params)
       @argyle_service = argyle_service
     end
 
