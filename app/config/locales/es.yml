@@ -29,9 +29,10 @@ es:
         invite_success: La invitación ha sido enviada con éxito a %{email_address}.
       incorrect_client_agency_id: No se ha podido enviar la invitación porque falta la configuración del sitio.
   cbv:
-    add_jobs:
-      create:
+    base:
+      next_add_jobs_path:
         notice_no_answer: Debe seleccionar una respuesta para continuar.
+    add_jobs:
       show:
         answer_no_bullet_1: Usted no tiene otro trabajo (actual o reciente)
         answer_no_bullet_2: Usted tiene un trabajo que le paga por PayPal, Venmo, Cash App, etc.

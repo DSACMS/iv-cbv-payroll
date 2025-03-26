@@ -170,9 +170,10 @@ en:
       greeting: Hello,
       subject: Income Verification Report %{case_number} has been received
   cbv:
-    add_jobs:
-      create:
+    base:
+      next_add_jobs_path:
         notice_no_answer: You must select an answer to continue.
+    add_jobs:
       show:
         answer_no_bullet_1: You don't have another job (current or recent)
         answer_no_bullet_2: You have a job that pays you via PayPal, Venmo, Cash App, etc
@@ -195,7 +196,8 @@ en:
         subheader: Please add other jobs you’ve had in the past %{pay_income_days} days, even if you're no longer at that job.
         yes_radio: Yes, I have another job that meets the criteria
     applicant_informations:
-      error_updating_applicant: An error occurred while updating the applicant information. Please try again.
+      update:
+        error_updating_applicant: An error occurred while updating the applicant information. Please try again.
       show:
         application_information: Application information
         application_information_explanation: This information may be found on your agency's website.
