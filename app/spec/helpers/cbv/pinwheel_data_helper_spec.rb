@@ -25,7 +25,7 @@ RSpec.describe Cbv::PinwheelDataHelper, type: :helper do
     ResponseObjects::Identity.from_pinwheel(load_relative_json_file('request_identity_response.json')['data'])
   end
 
-  let!(:cbv_flow) { create(:cbv_flow, :with_pinwheel_account) }
+  let!(:cbv_flow) { create(:cbv_flow, :invited, :with_pinwheel_account) }
 
   before do
     cbv_flow.payroll_accounts.first.update(pinwheel_account_id: account_id)

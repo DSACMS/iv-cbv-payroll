@@ -121,7 +121,7 @@ RSpec.describe Cbv::EntriesController do
       end
 
       context "when returning to an already-visited flow invitation" do
-        let!(:existing_cbv_flow) { create(:cbv_flow, cbv_flow_invitation: invitation) }
+        let!(:existing_cbv_flow) { create(:cbv_flow, :invited, cbv_flow_invitation: invitation) }
 
         it "creates a new CbvFlow object" do
           get :show, params: { token: invitation.auth_token }
@@ -152,7 +152,7 @@ RSpec.describe Cbv::EntriesController do
 
       context "when there is a CbvFlow from a different invitation in the session" do
         let(:other_invitation) { create(:cbv_flow_invitation) }
-        let(:other_cbv_flow) { create(:cbv_flow, cbv_flow_invitation: other_invitation) }
+        let(:other_cbv_flow) { create(:cbv_flow, :invited, cbv_flow_invitation: other_invitation) }
 
         before do
           session[:cbv_flow_id] = other_cbv_flow.id

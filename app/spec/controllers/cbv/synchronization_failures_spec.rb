@@ -4,7 +4,7 @@ RSpec.describe Cbv::SynchronizationFailuresController do
   describe "#show" do
     render_views
 
-    let(:cbv_flow) { create(:cbv_flow) }
+    let(:cbv_flow) { create(:cbv_flow, :invited) }
 
     before do
       session[:cbv_flow_id] = cbv_flow.id

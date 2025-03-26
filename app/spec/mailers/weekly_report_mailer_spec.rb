@@ -104,7 +104,7 @@ RSpec.describe WeeklyReportMailer, type: :mailer do
             )
     end
     let!(:incomplete_flow) do
-      create(:cbv_flow, :with_pinwheel_account,
+      create(:cbv_flow, :invited, :with_pinwheel_account,
              created_at: invitation_sent_at,
              client_agency_id: client_agency_id,
              cbv_flow_invitation: incomplete_invitation

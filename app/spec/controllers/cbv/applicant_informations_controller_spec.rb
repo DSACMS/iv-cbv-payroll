@@ -5,7 +5,6 @@ RSpec.describe Cbv::ApplicantInformationsController, type: :controller do
     let(:current_time) { Time.now }
     let(:cbv_flow) do
       create(:cbv_flow,
-        :generic,
         created_at: current_time
       )
     end
@@ -19,6 +18,8 @@ RSpec.describe Cbv::ApplicantInformationsController, type: :controller do
 
       it "renders the sandbox fields" do
         get :show
+
+        puts "response.status: #{response.status}"
 
         expect(response.body).to include("first_name")
         expect(response.body).to include("middle_name")

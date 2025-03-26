@@ -8,8 +8,6 @@ class Cbv::ApplicantInformationsController < Cbv::BaseController
   end
 
   def update
-    Rails.logger.info("TIMOTEST params: #{params.inspect}")
-
     begin
       @cbv_applicant.update!(applicant_params[:cbv_applicant])
     rescue => e

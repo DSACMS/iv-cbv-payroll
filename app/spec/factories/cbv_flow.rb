@@ -1,8 +1,9 @@
 FactoryBot.define do
   factory :cbv_flow do
-    if !trait :generic
+    trait :invited do
       cbv_flow_invitation
     end
+
     cbv_applicant
 
     client_agency_id { "sandbox" }
