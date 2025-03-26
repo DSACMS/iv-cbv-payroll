@@ -21,7 +21,7 @@ class Cbv::ApplicantInformationsController < Cbv::BaseController
 
     if missing_attrs.any?
       missing_attrs.each do |attr|
-        @cbv_applicant.errors.add(attr, t("activerecord.errors.models.generic_flow.cbv_applicant/#{@cbv_flow.client_agency_id}.#{attr}.blank"))
+        @cbv_applicant.errors.add(attr, t("cbv.applicant_informations.show.fields/#{@cbv_flow.client_agency_id}.#{attr}.blank"))
       end
 
       error_count = @cbv_applicant.errors.size

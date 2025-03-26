@@ -39,20 +39,6 @@ en:
               invalid_format: Enter the case number in the ANGIE/sPOS format, i.e. 00012345678A.
             client_id_number:
               invalid_format: Enter the client's CIN in the correct format, XX00000X.
-        generic_flow:
-          cbv_applicant/sandbox:
-            first_name:
-              blank: Enter your first name.
-              prompt: First name
-            last_name:
-              blank: Enter your last name.
-              prompt: Last name
-            middle_name:
-              blank: Enter your middle name.
-              prompt: Middle name
-            case_number:
-              blank: Enter your case number.
-              prompt: Case number
         cbv_flow_invitation:
           attributes:
             email_address:
@@ -170,9 +156,6 @@ en:
       greeting: Hello,
       subject: Income Verification Report %{case_number} has been received
   cbv:
-    base:
-      next_add_jobs_path:
-        notice_no_answer: You must select an answer to continue.
     add_jobs:
       show:
         answer_no_bullet_1: You don't have another job (current or recent)
@@ -196,19 +179,26 @@ en:
         subheader: Please add other jobs you’ve had in the past %{pay_income_days} days, even if you're no longer at that job.
         yes_radio: Yes, I have another job that meets the criteria
     applicant_informations:
-      update:
-        error_updating_applicant: An error occurred while updating the applicant information. Please try again.
       show:
         application_information: Application information
         application_information_explanation: This information may be found on your agency's website.
         continue: Continue
-        your_information: Your information
         explanation: This information will be used to connect your income information to your [agency] application. Please make sure the information you enter is the same as what is shown on your application.
-        sandbox:
-          first_name: First name
-          last_name: Last name
-          middle_name: Middle name
-          case_number: Case number
+        fields/sandbox:
+          case_number:
+            blank: Enter your case number.
+          first_name:
+            blank: Enter your first name.
+          last_name:
+            blank: Enter your last name.
+          middle_name:
+            blank: Enter your middle name.
+        your_information: Your information
+      update:
+        error_updating_applicant: An error occurred while updating the applicant information. Please try again.
+    base:
+      next_add_jobs_path:
+        notice_no_answer: You must select an answer to continue.
     employer_searches:
       show:
         app_based_providers: App-based employers
