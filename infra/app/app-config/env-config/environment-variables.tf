@@ -35,10 +35,6 @@ locals {
       manage_method     = "manual"
       secret_store_name = "/service/${var.app_name}-${var.environment}/rails-master-key"
     },
-    CBV_INVITE_SECRET = {
-      manage_method     = "manual"
-      secret_store_name = "/service/${var.app_name}-${var.environment}/cbv-invite-secret"
-    },
     SLACK_TEST_EMAIL = {
       manage_method     = "manual"
       secret_store_name = "/service/${var.app_name}-${var.environment}/slack-test-email"
