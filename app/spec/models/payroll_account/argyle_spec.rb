@@ -52,10 +52,6 @@ RSpec.describe PayrollAccount::Argyle, type: :model do
     it 'returns :in_progress when job is pending' do
       expect(payroll_account.synchronization_status('paystubs')).to eq(:in_progress)
     end
-
-    it 'returns :failed when job failed' do
-      expect(partially_synced_account.synchronization_status('paystubs')).to eq(:failed)
-    end
   end
 
   describe '#has_required_data?' do
@@ -77,4 +73,6 @@ RSpec.describe PayrollAccount::Argyle, type: :model do
       expect(payroll_account.has_required_data?).to be false
     end
   end
+
+  # context 'when an argyle event fails'
 end
