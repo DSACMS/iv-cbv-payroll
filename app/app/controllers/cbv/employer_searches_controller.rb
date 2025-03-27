@@ -10,6 +10,8 @@ class Cbv::EmployerSearchesController < Cbv::BaseController
     @employers = @query.blank? ? [] : provider_search(@query)
     @has_pinwheel_account = @cbv_flow.payroll_accounts.any?
     @selected_tab = search_params[:type] || "payroll"
+    @pinwheel_search_result_count = 0
+    @argyle_search_result_count = 0
 
     case search_params[:type]
     when "payroll"
@@ -30,7 +32,10 @@ class Cbv::EmployerSearchesController < Cbv::BaseController
   end
 
   def provider_search(query = "")
-    ProviderSearchService.new(@cbv_flow.client_agency_id).search(query)
+    search_results = ProviderSearchService.new(@cbv_flow.client_agency_id).search(query)
+    @pinwheel_search_result_count = search_results.count { |item| item.provider_name == :pinwheel }
+    @argyle_search_result_count = search_results.count { |item| item.provider_name == :argyle }
+    search_results
   end
 
   def search_params
@@ -82,6 +87,8 @@ class Cbv::EmployerSearchesController < Cbv::BaseController
       invitation_id: @cbv_flow.cbv_flow_invitation_id,
       num_results: @employers.length,
       has_pinwheel_account: @has_pinwheel_account,
+      pinwheel_result_count: @pinwheel_result_count,
+      argyle_result_count: @argyle_result_count,
       query: search_params[:query]
     })
   rescue => ex
