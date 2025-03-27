@@ -29,12 +29,11 @@ class ArgyleService
   WEBHOOKS_ENDPOINT = "webhooks"
 
   # Argyle's event outcomes are implied by the event name themselves i.e. accounts.failed (implies error)
-  # users.fully_synced (implies success)
+  # x.fully_synced (implies success)
 
   # Define all webhook events we're interested in with their outcomes
   # and corresponding synchronizations page "job"
   SUBSCRIBED_WEBHOOK_EVENTS = {
-    # Successfully synced
     "users.fully_synced" => {
       status: :success,
       job: %w[income]
@@ -49,16 +48,16 @@ class ArgyleService
     },
     "gigs.fully_synced" => {
       status: :success,
-      job: nil # TODO: [FFS-XXX] update front-end/client to support gig sync status
+      job: [] # TODO: [FFS-XXX] update front-end/client to support gig sync status
     },
     "accounts.connected" => {
       status: :success,
-      job: nil # we're not concerned with reporting this to the front-end/client
+      job: [] # we're not concerned with reporting this to the front-end/client
     },
     # Failed to sync
     "accounts.failed" => {
       status: :failed,
-      job: nil
+      job: %w[paystubs]
     }
   }.freeze
 
@@ -96,8 +95,9 @@ class ArgyleService
     make_request(:get, ITEMS_ENDPOINT, { q: query })
   end
 
-  def create_user
-    make_request(:post, USERS_ENDPOINT)
+  def create_user(cbv_flow_end_user_id = nil)
+    payload = cbv_flow_end_user_id.present? ? { external_id: cbv_flow_end_user_id } : {}
+    make_request(:post, USERS_ENDPOINT, payload)
   end
 
   # Webhook management methods
@@ -114,7 +114,18 @@ class ArgyleService
       events: events,
       name: name,
       url: url,
-      secret: @webhook_secret
+      secret: @webhook_secret,
+      # Not all events support the include_resource so we'll omit it
+      #
+      # @response
+      # Argyle API error: 400 -
+      # {"config"=>["only allowed for accounts.added, accounts.connected, accounts.failed, 
+      # accounts.updated, gigs.partially_synced, items.removed, items.updated, paystubs.partially_synced, 
+      # shifts.partially_synced"]}
+
+      # config: {
+      #   include_resource: true
+      # }
     }
 
     make_request(:post, WEBHOOKS_ENDPOINT, payload)
@@ -128,23 +139,27 @@ class ArgyleService
     OpenSSL::HMAC.hexdigest(OpenSSL::Digest.new("sha512"), @webhook_secret, payload)
   end
 
-  def verify_signature(signature, payload)
+  def self.verify_signature(signature, payload)
     expected = generate_signature_digest(payload)
     ActiveSupport::SecurityUtils.secure_compare(signature, expected)
   end
 
-  def get_webhook_events
+  def self.get_webhook_events
     SUBSCRIBED_WEBHOOK_EVENTS.keys
   end
 
-  def get_supported_jobs
+  def self.get_supported_jobs
     SUBSCRIBED_WEBHOOK_EVENTS.values.map { |event| event[:job] }.flatten.compact
   end
 
-  def get_webhook_event_outcome(event)
+  def self.get_webhook_event_outcome(event)
     SUBSCRIBED_WEBHOOK_EVENTS[event][:status]
   end
 
+  def self.get_webhook_event_jobs(event)
+    SUBSCRIBED_WEBHOOK_EVENTS[event][:job]
+  end
+  
   private
 
   def make_request(method, endpoint, params = nil)

@@ -11,9 +11,20 @@ class Webhooks::Argyle::EventsController < ApplicationController
   def create
     @payroll_account = @cbv_flow.payroll_accounts.find_or_create_by(
       type: :argyle,
-      pinwheel_account_id: @end_user_id
+      pinwheel_account_id: @argyle_account_id
     ) do |new_payroll_account|
       new_payroll_account.supported_jobs = @argyle_service.get_supported_jobs
+    end
+
+    # update the payroll [event]_synced_at timestamps
+    if @argyle_service.get_webhook_event_outcome(params["event"]) == :success
+      job_names = @argyle_service.get_webhook_event_jobs(params["event"])
+      if job_names.present?
+        job_names.each do |job_name|
+          timestamp_attr = "#{job_name}_synced_at"
+          @payroll_account.update("#{timestamp_attr}": Time.now)
+        end
+      end
     end
 
     @webhook_event = WebhookEvent.create!(
@@ -32,7 +43,6 @@ class Webhooks::Argyle::EventsController < ApplicationController
     #   })
     # end
 
-    # For now, we'll just render ok for some type of logging
     render json: { status: "ok" }
   end
 
@@ -49,11 +59,12 @@ class Webhooks::Argyle::EventsController < ApplicationController
   end
 
   def set_cbv_flow
-    @end_user_id = params.dig("data", "resource", "external_id")
-    @cbv_flow = CbvFlow.find_by_end_user_id(@end_user_id)
+    argyle_user_id = params.dig("data", "user")
+    @argyle_account_id = params.dig("data", "account")
+    @cbv_flow = CbvFlow.where(end_user_id: argyle_user_id).order(created_at: :desc).first
 
     unless @cbv_flow
-      Rails.logger.info "Unable to find CbvFlow for Argyle external_id: #{@end_user_id}"
+      Rails.logger.info "Unable to find CbvFlow for Argyle with account: #{@argyle_account_id}"
       render json: { status: "ok" }
     end
   end

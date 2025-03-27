@@ -4,47 +4,78 @@ FactoryBot.define do
 
     trait :argyle do
       transient do
+        user { ENV["USER"] }
         event_type { "users.fully_synced" }
-        cbv_flow { create(:cbv_flow) }
-        account_id { SecureRandom.uuid }
+        argyle_account_id { SecureRandom.uuid }
+        argyle_user_id { SecureRandom.uuid }
         provider { "Amazon A to Z" }
         argyle_service { ArgyleService.new(:sandbox) }
       end
 
       after(:build) do |webhook_request, evaluator|
         webhook_request.payload = case evaluator.event_type
+
+        when "accounts.connected"
+          {
+            "event" => evaluator.event_type,
+            "name" => evaluator.user,
+            "data" => {
+              "account" => evaluator.argyle_account_id,
+              "user" => evaluator.argyle_user_id
+            }
+          }
+        when "identities.added"
+          {
+            "event" => evaluator.event_type,
+            "name" => evaluator.user,
+            "data" => {
+              "account" => evaluator.argyle_account_id,
+              "user" => evaluator.argyle_user_id,
+              "identity" => SecureRandom.uuid
+            }
+          }
         when "users.fully_synced"
           {
             "event" => evaluator.event_type,
-            "name" => "test_webhook",
+            "name" => evaluator.user,
             "data" => {
-              "user" => evaluator.cbv_flow.end_user_id,
+              "user" => evaluator.argyle_user_id,
               "resource" => {
-                "id" => evaluator.cbv_flow.end_user_id,
-                "accounts_connected" => [evaluator.account_id],
-                "items_connected" => ["item_#{SecureRandom.hex(6)}"],
-                "employers_connected" => [evaluator.provider],
+                "id" => evaluator.argyle_user_id,
+                "accounts_connected" => [ evaluator.argyle_account_id ],
+                "items_connected" => [ "item_#{SecureRandom.hex(6)}" ],
+                "employers_connected" => [ evaluator.provider ],
                 "external_metadata" => {},
-                "external_id" => evaluator.cbv_flow.end_user_id,
+                "external_id" => evaluator.argyle_user_id,
                 "created_at" => Time.current.iso8601
               }
             }
           }
-        when "accounts.connected"
+        when "paystubs.fully_synced"
           {
             "event" => evaluator.event_type,
-            "name" => "test_webhook",
+            "name" => evaluator.user,
             "data" => {
-              "user" => evaluator.cbv_flow.end_user_id,
-              "resource" => {
-                "id" => evaluator.account_id,
-                "connection" => {
-                  "status" => "connected"
-                },
-                "providers_connected" => [evaluator.provider]
-              }
+              "account" => evaluator.argyle_account_id,
+              "user" => evaluator.argyle_user_id,
+              "available_from" => 3.years.ago.iso8601,
+              "available_to" => 1.year.from_now.iso8601,
+              "available_count" => 153
             }
-          } end
+          }
+        when "gigs.fully_synced"
+          {
+            "event" => evaluator.event_type,
+            "name" => evaluator.user,
+            "data" => {
+              "account" => evaluator.argyle_account_id,
+              "user" => evaluator.argyle_user_id,
+              "available_from" => 3.years.ago.iso8601,
+              "available_to" => 1.year.from_now.iso8601,
+              "available_count" => 2503
+            }
+          }
+        end
 
         # Generate Argyle signature using the service
         webhook_request.headers ||= {}
