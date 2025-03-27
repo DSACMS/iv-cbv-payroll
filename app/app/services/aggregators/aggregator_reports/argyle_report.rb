@@ -2,7 +2,7 @@ module Aggregators::AggregatorReports
   class ArgyleReport < AggregatorReport
     include Aggregators::ResponseObjects
 
-    def initialize(argyle_service:, **params)
+    def initialize(argyle_service: nil, **params)
       super(**params)
       @argyle_service = argyle_service
     end

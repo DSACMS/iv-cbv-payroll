@@ -14,7 +14,7 @@ module Aggregators::AggregatorReports
       @to_date = to_date
     end
 
-    # TODO: Make these params required. update tests.
+    # TODO: move from_date and to_date to fetch() method and make required.
     def fetch
       return false unless is_ready_to_fetch?
       fetch_report_data
