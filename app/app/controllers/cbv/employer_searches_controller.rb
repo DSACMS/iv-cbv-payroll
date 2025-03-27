@@ -87,8 +87,8 @@ class Cbv::EmployerSearchesController < Cbv::BaseController
       invitation_id: @cbv_flow.cbv_flow_invitation_id,
       num_results: @employers.length,
       has_payroll_account: @has_payroll_account,
-      pinwheel_result_count: @pinwheel_result_count,
-      argyle_result_count: @argyle_result_count,
+      pinwheel_result_count: @@pinwheel_search_result_count,
+      argyle_result_count: @argyle_search_result_count,
       query: search_params[:query]
     })
   rescue => ex

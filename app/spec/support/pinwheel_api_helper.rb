@@ -6,7 +6,7 @@ module PinwheelApiHelper
     ENV[variable] = previous_value
   end
 
-  def stub_request_items_response
+  def pinwheel_stub_request_items_response
     stub_request(:get, /#{PinwheelService::ITEMS_ENDPOINT}/)
       .to_return(
         status: 200,
@@ -24,7 +24,7 @@ module PinwheelApiHelper
       )
   end
 
-  def stub_request_items_no_items_response
+  def pinwheel_stub_request_items_no_items_response
     stub_request(:get, /#{PinwheelService::ITEMS_ENDPOINT}/)
       .to_return(
         status: 200,
@@ -35,7 +35,7 @@ module PinwheelApiHelper
       )
   end
 
-  def stub_create_token_response(end_user_id: 'user_id')
+  def pinwheel_stub_create_token_response(end_user_id: 'user_id')
     stub_request(:post, /#{PinwheelService::USER_TOKENS_ENDPOINT}/)
       .to_return(
         status: 200,
@@ -49,7 +49,7 @@ module PinwheelApiHelper
       )
   end
 
-  def stub_refresh_user_token_response
+  def pinwheel_stub_refresh_user_token_response
     stub_request(:post, /#{PinwheelService::USER_TOKENS_ENDPOINT}/)
       .to_return(
         status: 200,
@@ -58,77 +58,77 @@ module PinwheelApiHelper
       )
   end
 
-  def stub_request_end_user_paystubs_response
+  def pinwheel_stub_request_end_user_paystubs_response
     stub_request(:get, %r{#{PinwheelService::ACCOUNTS_ENDPOINT}/[0-9a-fA-F\-]{36}/paystubs})
       .to_return(
         status: 200,
-        body: load_relative_json_file('request_end_user_paystubs_response.json').to_json,
+        body: pinwheel_load_relative_json_file('request_end_user_paystubs_response.json').to_json,
         headers: { 'Content-Type': 'application/json;charset=UTF-8' }
       )
   end
 
-  def stub_request_employment_info_response
+  def pinwheel_stub_request_employment_info_response
     stub_request(:get, %r{#{PinwheelService::ACCOUNTS_ENDPOINT}/[0-9a-fA-F\-]{36}/employment})
       .to_return(
         status: 200,
-        body: load_relative_json_file('request_employment_info_response.json').to_json,
+        body: pinwheel_load_relative_json_file('request_employment_info_response.json').to_json,
         headers: { 'Content-Type': 'application/json;charset=UTF-8' }
       )
   end
 
-  def stub_request_income_metadata_response
+  def pinwheel_stub_request_income_metadata_response
     stub_request(:get, %r{#{PinwheelService::ACCOUNTS_ENDPOINT}/[0-9a-fA-F\-]{36}/income})
       .to_return(
         status: 200,
-        body: load_relative_json_file('request_income_metadata_response.json').to_json,
+        body: pinwheel_load_relative_json_file('request_income_metadata_response.json').to_json,
         headers: { 'Content-Type': 'application/json;charset=UTF-8' }
       )
   end
 
-  def stub_request_end_user_accounts_response
+  def pinwheel_stub_request_end_user_accounts_response
     stub_request(:get, %r{#{PinwheelService::END_USERS}/[0-9a-fA-F\-]{36}/accounts})
       .to_return(
         status: 200,
-        body: load_relative_json_file('request_end_user_accounts_response.json').to_json,
+        body: pinwheel_load_relative_json_file('request_end_user_accounts_response.json').to_json,
         headers: { 'Content-Type': 'application/json;charset=UTF-8' }
       )
   end
 
-  def request_employment_info_response_null_employment_status_bug
+  def pinwheel_request_employment_info_response_null_employment_status_bug
     stub_request(:get, %r{#{PinwheelService::ACCOUNTS_ENDPOINT}/[0-9a-fA-F\-]{36}/employment})
       .to_return(
         status: 200,
-        body: load_relative_json_file('request_employment_info_response_null_employment_status_bug.json').to_json,
+        body: pinwheel_load_relative_json_file('request_employment_info_response_null_employment_status_bug.json').to_json,
         headers: { 'Content-Type': 'application/json;charset=UTF-8' }
       )
   end
 
-  def stub_request_identity_response
+  def pinwheel_stub_request_identity_response
     stub_request(:get, %r{#{PinwheelService::ACCOUNTS_ENDPOINT}/[0-9a-fA-F\-]{36}/identity})
       .to_return(
         status: 200,
-        body: load_relative_json_file('request_identity_response.json').to_json,
+        body: pinwheel_load_relative_json_file('request_identity_response.json').to_json,
         headers: { 'Content-Type': 'application/json;charset=UTF-8' }
       )
   end
 
-  def stub_request_platform_response
+  def pinwheel_stub_request_platform_response
     stub_request(:get, %r{#{PinwheelService::PLATFORMS_ENDPOINT}/[0-9a-fA-F\-]{36}})
       .to_return(
         status: 200,
-        body: load_relative_json_file('request_platform_response.json').to_json,
+        body: pinwheel_load_relative_json_file('request_platform_response.json').to_json,
         headers: { 'Content-Type': 'application/json;charset=UTF-8' }
       )
   end
 
-  def load_relative_file(filename)
+  def pinwheel_load_relative_file(filename)
     File.read(File.join(
       File.dirname(__FILE__),
       "fixtures/pinwheel/#{filename}"
     ))
   end
 
-  def load_relative_json_file(filename)
-    JSON.parse(load_relative_file(filename))
+  def pinwheel_load_relative_json_file(filename)
+    JSON.parse(pinwheel_load_relative_file(filename))
   end
 end
