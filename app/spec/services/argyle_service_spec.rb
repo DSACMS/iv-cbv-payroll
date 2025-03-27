@@ -7,7 +7,7 @@ RSpec.describe ArgyleService, type: :service do
 
   describe '#fetch_items' do
     before do
-      stub_request_items_response("bob")
+      argyle_stub_request_items_response("bob")
     end
 
     it 'returns a non-empty response' do
@@ -19,7 +19,7 @@ RSpec.describe ArgyleService, type: :service do
   describe '#fetch_paystubs' do
     context "for Bob, a Uber driver" do
       before do
-        stub_request_paystubs_response("bob")
+        argyle_stub_request_paystubs_response("bob")
       end
 
       it 'returns an array of ResponseObjects::Paystub' do
@@ -55,7 +55,7 @@ RSpec.describe ArgyleService, type: :service do
 
     context "for Joe, a W2 employee" do
       before do
-        stub_request_paystubs_response("joe")
+        argyle_stub_request_paystubs_response("joe")
       end
 
       it 'returns an array of ResponseObjects::Paystub' do
@@ -142,7 +142,7 @@ RSpec.describe ArgyleService, type: :service do
   describe '#fetch_employments' do
     context "for Bob, a Uber driver" do
       before do
-        stub_request_identities_response("bob")
+        argyle_stub_request_identities_response("bob")
       end
 
       it 'returns an array of ResponseObjects::Employment' do
@@ -197,7 +197,7 @@ RSpec.describe ArgyleService, type: :service do
   describe '#fetch_incomes' do
     context "for Joe, a W2 employee" do
       before do
-        stub_request_identities_response("joe")
+        argyle_stub_request_identities_response("joe")
       end
 
       it 'returns an array of ResponseObjects::Income' do
@@ -223,7 +223,7 @@ RSpec.describe ArgyleService, type: :service do
   describe '#fetch_identity' do
     context "for Bob, a Uber driver" do
       before do
-        stub_request_identities_response("bob")
+        argyle_stub_request_identities_response("bob")
       end
 
       it 'returns an array of ResponseObjects:Identity' do

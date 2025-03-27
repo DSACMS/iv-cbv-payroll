@@ -43,11 +43,11 @@ RSpec.describe Cbv::SubmitsController do
   describe "#show" do
     before do
       session[:cbv_flow_id] = cbv_flow.id
-      stub_request_end_user_accounts_response
-      stub_request_end_user_paystubs_response
-      stub_request_employment_info_response unless errored_jobs.include?("employment")
-      stub_request_income_metadata_response if supported_jobs.include?("income")
-      stub_request_identity_response
+      pinwheel_stub_request_end_user_accounts_response
+      pinwheel_stub_request_end_user_paystubs_response
+      pinwheel_stub_request_employment_info_response unless errored_jobs.include?("employment")
+      pinwheel_stub_request_income_metadata_response if supported_jobs.include?("income")
+      pinwheel_tub_request_identity_response
     end
 
     context "when rendering views" do
@@ -155,11 +155,11 @@ RSpec.describe Cbv::SubmitsController do
     before do
       session[:cbv_flow_id] = cbv_flow.id
       sign_in nyc_user
-      stub_request_end_user_accounts_response
-      stub_request_end_user_paystubs_response
-      stub_request_employment_info_response
-      stub_request_income_metadata_response
-      stub_request_identity_response
+      pinwheel_stub_request_end_user_accounts_response
+      pinwheel_stub_request_end_user_paystubs_response
+      pinwheel_stub_request_employment_info_response
+      pinwheel_stub_request_income_metadata_response
+      pinwheel_stub_request_identity_response
     end
 
     context "without consent" do
@@ -199,8 +199,8 @@ RSpec.describe Cbv::SubmitsController do
         sign_in ma_user
         allow(mock_client_agency).to receive(:transmission_method).and_return('s3')
         allow(mock_client_agency).to receive(:id).and_return('ma')
-        stub_request_end_user_accounts_response
-        stub_request_end_user_paystubs_response
+        pinwheel_stub_request_end_user_accounts_response
+        pinwheel_stub_request_end_user_paystubs_response
       end
 
       it "sends the email" do
@@ -285,11 +285,11 @@ RSpec.describe Cbv::SubmitsController do
           allow(controller).to receive(:current_agency).and_return(mock_client_agency)
 
           # Stub pinwheel_for method to return our double
-          stub_request_end_user_accounts_response
-          stub_request_end_user_paystubs_response
-          stub_request_employment_info_response
-          stub_request_income_metadata_response
-          stub_request_identity_response
+          pinwheel_stub_request_end_user_accounts_response
+          pinwheel_stub_request_end_user_paystubs_response
+          pinwheel_stub_request_employment_info_response
+          pinwheel_stub_request_income_metadata_response
+          pinwheel_stub_request_identity_response
         end
 
         it "generates, gzips, encrypts, and uploads PDF and CSV files to S3" do

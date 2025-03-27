@@ -25,12 +25,12 @@ class ProviderSearchService
   # TODO: this data should be loading from a config file instead of from hardcoded arrays within this file
   # TODO: the second parameter here should not be needed, but is here for testing until the reading of the actual env config
   #   is no longer part of the service creation
-  def top_aggregator_options(type, override_provider = nil)
+  def top_aggregator_options(type)
     case type
     when "payroll"
-      ResponseObjects::SearchResult.from_aggregator_options(TOP_PROVIDERS, override_provider || SUPPORTED_PROVIDERS)
+      ResponseObjects::SearchResult.from_aggregator_options(TOP_PROVIDERS, SUPPORTED_PROVIDERS)
     when "employer"
-      ResponseObjects::SearchResult.from_aggregator_options(TOP_EMPLOYERS, override_provider || SUPPORTED_PROVIDERS)
+      ResponseObjects::SearchResult.from_aggregator_options(TOP_EMPLOYERS, SUPPORTED_PROVIDERS)
     end
   end
 

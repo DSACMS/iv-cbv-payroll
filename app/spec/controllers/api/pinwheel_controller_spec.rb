@@ -13,7 +13,7 @@ RSpec.describe Api::PinwheelController do
 
     before do
       session[:cbv_flow_id] = cbv_flow.id
-      stub_create_token_response
+      pinwheel_stub_create_token_response
     end
 
     it "creates a link token with Pinwheel" do

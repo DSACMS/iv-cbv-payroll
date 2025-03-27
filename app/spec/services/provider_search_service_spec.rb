@@ -2,6 +2,7 @@ require 'rails_helper'
 
 RSpec.describe ProviderSearchService, type: :service do
   include PinwheelApiHelper
+  include ArgyleApiHelper
   let(:service) { ProviderSearchService.new("sandbox") }
 
   describe "#search" do
@@ -10,7 +11,8 @@ RSpec.describe ProviderSearchService, type: :service do
     end
 
     before do
-      stub_request_items_response
+      pinwheel_stub_request_items_response
+      argyle_stub_request_items_response("bob")
     end
 
     it "returns results from all enabled providers" do
@@ -19,6 +21,7 @@ RSpec.describe ProviderSearchService, type: :service do
     end
 
     it "returns results with correct structure" do
+      stub_const("ProviderSearchService::SUPPORTED_PROVIDERS", [ :pinwheel ])
       results = service.search("test")
       result = results.first
       puts result
@@ -30,14 +33,24 @@ RSpec.describe ProviderSearchService, type: :service do
         logo_url: a_kind_of(String)
       )
     end
+
+    it 'returns argyle results only when both argyle and pinwheel are present' do
+      stub_const("ProviderSearchService::SUPPORTED_PROVIDERS", [ :argyle, :pinwheel ])
+      results = service.search("test")
+
+      pinwheel_results = results.count { |item| item.provider_name == :pinwheel }
+      argyle_results = results.count { |item| item.provider_name == :argyle }
+      expect(pinwheel_results).to eq 0
+      expect(argyle_results).to eq 10
+    end
   end
 
-  # TODO: These test would be more effective once the top providers are being loaded from config so we could create
-  # a config that sets up specific test cases around having pinwheel/argyle/both ids
+  # # TODO: These test would be more effective once the top providers are being loaded from config so we could create
+  # # a config that sets up specific test cases around having pinwheel/argyle/both ids
   describe '#top_aggregator_options' do
-
     it 'returns properly formatted top payroll providers' do
-      results = service.top_aggregator_options("payroll", [:pinwheel])
+      stub_const("ProviderSearchService::SUPPORTED_PROVIDERS", [ :pinwheel ])
+      results = service.top_aggregator_options("payroll")
       first_result = results.first
       puts first_result
 
@@ -51,7 +64,8 @@ RSpec.describe ProviderSearchService, type: :service do
     end
 
     it 'returns properly formatted top employer providers' do
-      results = service.top_aggregator_options("employer", [:pinwheel])
+      stub_const("ProviderSearchService::SUPPORTED_PROVIDERS", [ :pinwheel ])
+      results = service.top_aggregator_options("employer")
       first_result = results.first
 
       expect(results.length).to eq(6)
@@ -64,7 +78,8 @@ RSpec.describe ProviderSearchService, type: :service do
     end
 
     it 'returns pinwheel payroll providers when pinwheel is configured' do
-      results = service.top_aggregator_options("payroll", [:pinwheel])
+      stub_const("ProviderSearchService::SUPPORTED_PROVIDERS", [ :pinwheel ])
+      results = service.top_aggregator_options("payroll")
       first_result = results.first
 
       expect(first_result).to have_attributes(
@@ -76,7 +91,8 @@ RSpec.describe ProviderSearchService, type: :service do
     end
 
     it 'returns argyle payroll providers when argyle is configured' do
-      results = service.top_aggregator_options("payroll", [:argyle])
+      stub_const("ProviderSearchService::SUPPORTED_PROVIDERS", [ :argyle ])
+      results = service.top_aggregator_options("payroll")
       first_result = results.first
 
       expect(first_result).to have_attributes(
@@ -88,8 +104,8 @@ RSpec.describe ProviderSearchService, type: :service do
     end
 
     it 'returns argyle id and provider name when both are configured and there are two ids' do
-      ENV["SUPPORTED_PROVIDERS"] = "pinwheel,argyle"
-      results = service.top_aggregator_options("payroll", [:argyle,:pinwheel])
+      stub_const("ProviderSearchService::SUPPORTED_PROVIDERS", [ :argyle, :pinwheel ])
+      results = service.top_aggregator_options("payroll")
       first_result = results.first
 
       expect(first_result).to have_attributes(
@@ -100,5 +116,4 @@ RSpec.describe ProviderSearchService, type: :service do
       )
     end
   end
- 
 end

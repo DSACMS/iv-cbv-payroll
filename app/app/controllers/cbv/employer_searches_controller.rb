@@ -8,7 +8,7 @@ class Cbv::EmployerSearchesController < Cbv::BaseController
   def show
     @query = search_params[:query]
     @employers = @query.blank? ? [] : provider_search(@query)
-    @has_pinwheel_account = @cbv_flow.payroll_accounts.any?
+    @has_payroll_account = @cbv_flow.payroll_accounts.any?
     @selected_tab = search_params[:type] || "payroll"
     @pinwheel_search_result_count = 0
     @argyle_search_result_count = 0
@@ -86,7 +86,7 @@ class Cbv::EmployerSearchesController < Cbv::BaseController
       cbv_flow_id: @cbv_flow.id,
       invitation_id: @cbv_flow.cbv_flow_invitation_id,
       num_results: @employers.length,
-      has_pinwheel_account: @has_pinwheel_account,
+      has_payroll_account: @has_payroll_account,
       pinwheel_result_count: @pinwheel_result_count,
       argyle_result_count: @argyle_result_count,
       query: search_params[:query]

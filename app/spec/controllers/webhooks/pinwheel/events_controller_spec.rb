@@ -29,7 +29,7 @@ RSpec.describe Webhooks::Pinwheel::EventsController do
     let(:supported_jobs) { [ "paystubs", "identity", "income", "employment" ] }
 
     before do
-      stub_request_platform_response
+      pinwheel_stub_request_platform_response
     end
 
     context "for an 'account.added' event" do
