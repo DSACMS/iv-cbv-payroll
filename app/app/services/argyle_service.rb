@@ -48,7 +48,7 @@ class ArgyleService
     },
     "gigs.fully_synced" => {
       status: :success,
-      job: [] # TODO: [FFS-XXX] update front-end/client to support gig sync status
+      job: %w[gigs] # TODO: [FFS-XXX] update front-end/client to support gigs sync status
     },
     "accounts.connected" => {
       status: :success,
@@ -149,7 +149,7 @@ class ArgyleService
   end
 
   def self.get_supported_jobs
-    SUBSCRIBED_WEBHOOK_EVENTS.values.map { |event| event[:job] }.flatten.compact
+    SUBSCRIBED_WEBHOOK_EVENTS.values.map { |event| event[:job] }.flatten.compact.uniq
   end
 
   def self.get_webhook_event_outcome(event)

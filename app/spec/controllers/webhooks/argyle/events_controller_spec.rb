@@ -43,7 +43,7 @@ RSpec.describe Webhooks::Argyle::EventsController, type: :controller do
         argyle_user_id: options[:argyle_user_id] || argyle_user_id,
         cbv_flow: options[:cbv_flow] || cbv_flow,
         account_id: options[:account_id]
-      )
+      ).payload
     end
   end
 
@@ -54,7 +54,7 @@ RSpec.describe Webhooks::Argyle::EventsController, type: :controller do
 
       it 'creates a new payroll account' do
         expect {
-          post :create, params: webhook_request.payload
+          post :create, params: webhook_request
         }.to change(PayrollAccount, :count).by(1)
 
         expect(response).to have_http_status(:ok)
@@ -66,7 +66,7 @@ RSpec.describe Webhooks::Argyle::EventsController, type: :controller do
 
       it 'creates a new payroll account' do
         expect {
-          post :create, params: webhook_request.payload
+          post :create, params: webhook_request
         }.to change(PayrollAccount, :count).by(1)
       end
     end
@@ -85,10 +85,39 @@ RSpec.describe Webhooks::Argyle::EventsController, type: :controller do
       it 'tracks analytics when account is fully synced' do
         # First add some webhook events to make has_fully_synced? true
         create(:webhook_event, payroll_account: payroll_account, event_name: 'identities.added')
-        create(:webhook_event, payroll_account: payroll_account, event_name: 'paystubs.added')
+        create(:webhook_event, payroll_account: payroll_account, event_name: 'paystubs.fully_synced')
 
         expect(controller).to receive(:track_events)
-        post :create, params: webhook_request.payload
+        post :create, params: webhook_request
+      end
+    end
+
+    context 'with all events successfully synced' do
+      let(:account_connected_webhook) { create_webhook_request.call("accounts.connected") }
+      let(:identities_added_webhook) { create_webhook_request.call("identities.added") }
+      let(:paystubs_fully_synced_webhook) { create_webhook_request.call("paystubs.fully_synced") }
+      let(:gigs_fully_synced_webhook) { create_webhook_request.call("gigs.fully_synced") }
+      let(:users_fully_synced_webhook) { create_webhook_request.call("users.fully_synced") }
+
+      it 'tracks analytics when account is fully synced' do
+        expect(controller).to receive(:track_events)
+        # after observing the webhook 
+        post :create, params: account_connected_webhook
+        post :create, params: identities_added_webhook
+        post :create, params: users_fully_synced_webhook
+        post :create, params: paystubs_fully_synced_webhook
+        post :create, params: gigs_fully_synced_webhook
+
+        # expect only one PayrollAccount to be created
+        expect(PayrollAccount.count).to eq(1)
+        expect(PayrollAccount.first.pinwheel_account_id).to eq(argyle_account_id)
+        expect(PayrollAccount.first.cbv_flow).to eq(cbv_flow)
+        
+        # the PayrollAccount should have 5 webhook events
+        expect(PayrollAccount.first.webhook_events.count).to eq(5)
+
+        # the PayrollAccount should be considered fully synced
+        expect(PayrollAccount.first.has_fully_synced?).to be_truthy
       end
     end
   end

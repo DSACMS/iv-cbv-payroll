@@ -32,11 +32,6 @@ class PayrollAccount::Argyle < PayrollAccount
     jobs_to_webhook_events.keys
   end
 
-  # def self.available_jobs
-  #   %w[identities paystubs gigs employment income]
-  # end
-
-
   # Generate jobs to webhook events mapping from ArgyleService
   def self.jobs_to_webhook_events
     ArgyleService::SUBSCRIBED_WEBHOOK_EVENTS.each_with_object({}) do |(event, details), hash|

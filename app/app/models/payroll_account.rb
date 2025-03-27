@@ -10,7 +10,7 @@ class PayrollAccount < ApplicationRecord
   end
 
   belongs_to :cbv_flow
-  has_many :webhook_events, dependent: :destroy
+  has_many :webhook_events
 
   private
 

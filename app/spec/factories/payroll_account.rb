@@ -29,8 +29,7 @@ FactoryBot.define do
     # Add new trait for Argyle PayrollAccounts
     trait :argyle do
       type { "argyle" }
-      # Get supported jobs directly from the model
-      supported_jobs { PayrollAccount::Argyle.available_jobs }
+      supported_jobs { ArgyleService.get_supported_jobs }
     end
 
     trait :argyle_fully_synced do
