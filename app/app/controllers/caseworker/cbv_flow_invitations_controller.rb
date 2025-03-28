@@ -29,7 +29,7 @@ class Caseworker::CbvFlowInvitationsController < Caseworker::BaseController
       @cbv_flow_invitation.errors.delete(:cbv_applicant)
 
       error_count = @cbv_flow_invitation.errors.size
-      error_header = "#{helpers.pluralize(error_count, 'error')} occurred" # TODO: is this properly tokenized?
+      error_header = "#{helpers.pluralize(error_count, 'error')} occurred"
 
       # Collect error messages without attribute names
       error_messages = @cbv_flow_invitation.errors.messages.values.flatten.map { |msg| "<li>#{msg}</li>" }.join

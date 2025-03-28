@@ -73,7 +73,7 @@
   invitation_valid_days: 14
   weekly_report:
     recipient: ffs-eng@navapbc.com
-  required_applicant_attrs:
+  applicant_attributes:
     first_name: true
     middle_name: false
     last_name: true

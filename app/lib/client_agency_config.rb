@@ -37,7 +37,7 @@ class ClientAgencyConfig
       transmission_method
       transmission_method_configuration
       weekly_report
-      required_applicant_attrs
+      applicant_attributes
     ])
 
     def initialize(yaml)
@@ -58,7 +58,7 @@ class ClientAgencyConfig
       @staff_portal_enabled = yaml["staff_portal_enabled"]
       @sso = yaml["sso"]
       @weekly_report = yaml["weekly_report"]
-      @required_applicant_attrs = yaml["required_applicant_attrs"] || {}
+      @applicant_attributes = yaml["applicant_attributes"] || {}
 
       raise ArgumentError.new("Client Agency missing id") if @id.blank?
       raise ArgumentError.new("Client Agency #{@id} missing required attribute `agency_name`") if @agency_name.blank?

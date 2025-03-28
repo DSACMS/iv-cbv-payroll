@@ -4,7 +4,7 @@ class Cbv::ApplicantInformationsController < Cbv::BaseController
   before_action :redirect_when_in_invitation_flow, :redirect_when_info_present, only: :show
 
   def show
-    track_applicant_information_access_event()
+    track_applicant_information_access_event
   end
 
   def update
@@ -16,7 +16,7 @@ class Cbv::ApplicantInformationsController < Cbv::BaseController
       return redirect_to cbv_flow_applicant_information_path
     end
 
-    missing_attrs = @required_applicant_attrs.reject do |attr|
+    missing_attrs = @required_applicant_attributes.reject do |attr|
       @cbv_applicant.send(attr).present?
     end
 
@@ -26,7 +26,7 @@ class Cbv::ApplicantInformationsController < Cbv::BaseController
       end
 
       error_count = @cbv_applicant.errors.size
-      error_header = "#{helpers.pluralize(error_count, 'error')} occurred" # TODO: is this properly tokenized?
+      error_header = t(".error_header", count: error_count)
 
       # Collect error messages without attribute names
       error_messages = @cbv_applicant.errors.messages.values.flatten.map { |msg| "<li>#{msg}</li>" }.join
@@ -46,7 +46,7 @@ class Cbv::ApplicantInformationsController < Cbv::BaseController
   def redirect_when_info_present
     return if params[:force_show] == "true"
 
-    missing_attrs = @required_applicant_attrs.reject do |attr|
+    missing_attrs = @required_applicant_attributes.reject do |attr|
       @cbv_applicant.send(attr).present?
     end
 

@@ -75,17 +75,6 @@ class Cbv::BaseController < ApplicationController
     end
   end
 
-  def next_add_jobs_path(additional_jobs)
-    if additional_jobs == "true"
-      cbv_flow_employer_search_path
-    elsif additional_jobs == "false"
-      cbv_flow_applicant_information_path
-    else
-      flash[:slim_alert] = { message: t(".notice_no_answer"), type: "error" }
-      cbv_flow_add_job_path
-    end
-  end
-
   def pinwheel
     pinwheel_for(@cbv_flow)
   end
@@ -152,11 +141,11 @@ class Cbv::BaseController < ApplicationController
 
   def load_applicant_attrs
     if !@cbv_flow.present?
-      @applicant_attrs = []
-      @required_applicant_attrs = []
+      @applicant_attributes = []
+      @required_applicant_attributes = []
     else
-      @applicant_attrs = Rails.application.config.client_agencies[@cbv_flow.client_agency_id].required_applicant_attrs.compact.keys.map(&:to_sym)
-      @required_applicant_attrs = Rails.application.config.client_agencies[@cbv_flow.client_agency_id].required_applicant_attrs.select { |_, required| required }.keys.map(&:to_sym)
+      @applicant_attributes = Rails.application.config.client_agencies[@cbv_flow.client_agency_id].applicant_attributes.compact.keys.map(&:to_sym)
+      @required_applicant_attributes = Rails.application.config.client_agencies[@cbv_flow.client_agency_id].applicant_attributes.select { |_, required| required }.keys.map(&:to_sym)
     end
   end
 end

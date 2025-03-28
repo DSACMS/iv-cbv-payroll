@@ -82,7 +82,7 @@
           </tr>
   </thead>
   <tbody>
-    <% Rails.application.config.client_agencies[@cbv_flow.client_agency_id].required_applicant_attrs.each do |item| %>
+    <% Rails.application.config.client_agencies[@cbv_flow.client_agency_id].required_applicant_attributes.each do |item| %>
       <% if @cbv_flow.cbv_applicant[item[0]].present? %>
         <tr>
           <td><%= t(".applicant_informations.show.#{@cbv_flow.client_agency_id}.#{item[0]}") %></td>
