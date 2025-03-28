@@ -1,14 +1,14 @@
 <% content_for :title, t(".header") %>
 <h1>
-    <%= t(".header") %>
+  <%= t(".header") %>
 </h1>
 
 <div data-controller="cbv-employer-search" data-cbv-employer-search-cbv-flow-id-value="<%= @cbv_flow.id %>">
-    <div class="usa-prose">
-        <p><%= t(".search_label") %></p>
-    </div>
+  <div class="usa-prose">
+      <p><%= t(".search_label") %></p>
+  </div>
 
-    <%= form_with url: cbv_flow_employer_search_path, method: :get, class: "usa-search usa-search--big margin-y-4", html: { role: "search" }, data: { turbo_frame: "employers", turbo_action: "advance" } do |f| %>
+  <%= form_with url: cbv_flow_employer_search_path, method: :get, class: "usa-search usa-search--big margin-y-4", html: { role: "search" }, data: { turbo_frame: "employers", turbo_action: "advance" } do |f| %>
     <%= f.label :query, "Search for your employer", class: "usa-sr-only" %>
     <%= f.text_field :query, value: @query, class: "usa-input", type: "search" %>
     <button
@@ -19,27 +19,27 @@
         </span>
         <%= image_tag "@uswds/uswds/dist/img/usa-icons-bg/search--white.svg", class: "usa-search__submit-icon", alt: "Search" %>
     </button>
-    <% end %>
+  <% end %>
 
-    <%= render partial: "employer", locals: { employer: @employers } %>
+  <%= render partial: "employer", locals: { employer: @employers } %>
 
-    <%= form_with url: next_path, method: :get, class: "display-none", data: { 'cbv-employer-search-target': "form" } do |f| %>
+  <%= form_with url: next_path, method: :get, class: "display-none", data: { 'cbv-employer-search-target': "form" } do |f| %>
     <input type="hidden" name="user[account_id]" data-cbv-employer-search-target="userAccountId">
-    <% end %>
+  <% end %>
 
-    <h2><%= t(".popular_providers") %></h2>
-    <%= turbo_frame_tag "popular" do %>
+  <h2><%= t(".popular_providers") %></h2>
+  <%= turbo_frame_tag "popular" do %>
     <div class="grid-row maxw-mobile-lg margin-left-0 padding-left-0 margin-top-4">
-        <%= link_to t(".payroll_providers"), cbv_flow_employer_search_path(type: :payroll),
+      <%= link_to t(".payroll_providers"), cbv_flow_employer_search_path(type: :payroll),
         class: "grid-col usa-button margin-0 radius-right-0 #{@selected_tab != 'payroll' && 'usa-button--outline'}",
         data: { turbo_frame: "popular", turbo_action: "advance", turbo_prefetch: false } %>
-        <%= link_to t(".app_based_providers"), cbv_flow_employer_search_path(type: :employer),
+      <%= link_to t(".app_based_providers"), cbv_flow_employer_search_path(type: :employer),
         class: "grid-col usa-button margin-0 radius-left-0 #{@selected_tab != 'employer' && 'usa-button--outline'}",
         data: { turbo_frame: "popular", turbo_action: "advance", turbo_prefetch: false } %>
     </div>
 
     <div class="grid-row grid-gap margin-top-2">
-        <% (@selected_tab == "payroll" ? Aggregators::Sdk::PinwheelService::TOP_PROVIDERS : Aggregators::Sdk::PinwheelService::TOP_EMPLOYERS).each do |provider| %>
+      <% (@selected_tab == "payroll" ? Aggregators::Sdk::PinwheelService::TOP_PROVIDERS : Aggregators::Sdk::PinwheelService::TOP_EMPLOYERS).each do |provider| %>
         <div class="grid-col-4 tablet:grid-col-2 margin-top-2">
             <button data-action="click->cbv-employer-search#select"
                     data-id="<%= provider[:id] %>"
@@ -58,7 +58,7 @@
                 </figure>
             </button>
         </div>
-        <% end %>
+      <% end %>
     </div>
-    <% end %>
+  <% end %>
 </div>
