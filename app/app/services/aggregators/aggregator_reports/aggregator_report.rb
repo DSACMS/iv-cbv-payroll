@@ -10,6 +10,7 @@ module Aggregators::AggregatorReports
       @incomes = []
       @employments = []
       @paystubs = []
+      @gigs = []
       @from_date = from_date
       @to_date = to_date
     end
@@ -51,7 +52,8 @@ module Aggregators::AggregatorReports
       @identities.find { |identity| identity.account_id == account_id },
       @incomes.find { |income| income.account_id == account_id },
       @employments.find { |employment| employment.account_id == account_id },
-      @paystubs.filter { |paystub| paystub.account_id == account_id }
+      @paystubs.filter { |paystub| paystub.account_id == account_id },
+      @gigs.filter { |gig| gig.account_id == account_id }
       )
     end
 
@@ -72,7 +74,8 @@ module Aggregators::AggregatorReports
             income: has_income_data && @incomes.find { |income| income.account_id == account_id },
             employment: has_employment_data && @employments.find { |employment| employment.account_id == account_id },
             identity: has_identity_data && @identities.find { |identity| identity.account_id == account_id },
-            paystubs: account_paystubs
+            paystubs: account_paystubs,
+            gigs: @gigs.filter { |gig| gig.account_id == account_id }
           }
         end
     end

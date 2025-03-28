@@ -108,7 +108,16 @@ module Aggregators::Sdk
     end
 
     # https://docs.argyle.com/api-reference/gigs#list
-    def fetch_gigs_api(**params)
+    def fetch_gigs_api(account: nil, user: nil,
+                       from_start_datetime: nil,
+                       to_start_datetime: nil, limit: 200)
+      params = {
+        account: account,
+        user: user,
+        employment: employment,
+        from_start_datetime: from_start_datetime,
+        to_start_datetime: to_start_datetime,
+        limit: limit }.compact
       # TODO: paginate
       @http.get(GIGS_ENDPOINT, params).body
     end
