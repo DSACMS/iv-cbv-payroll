@@ -1,7 +1,7 @@
 # This is an abstract class that should be inherited by all aggregator report classes.
 module Aggregators::AggregatorReports
   class AggregatorReport
-    attr_accessor :payroll_accounts, :identities, :incomes, :employments, :paystubs, :from_date, :to_date, :has_fetched
+    attr_accessor :payroll_accounts, :identities, :incomes, :employments, :gigs, :paystubs, :from_date, :to_date, :has_fetched
 
     def initialize(payroll_accounts: [], from_date: nil, to_date: nil)
       @has_fetched = false

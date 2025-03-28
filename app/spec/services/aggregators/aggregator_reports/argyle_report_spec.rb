@@ -70,24 +70,23 @@ RSpec.describe Aggregators::AggregatorReports::ArgyleReport, type: :service do
         expect(argyle_report.instance_variable_get(:@has_fetched)).to be false
       end
     end
-  end
-  describe '#fetch_gigs' do
+
+    describe '#fetch_gigs' do
     context "for Bob, a Uber driver" do
       before do
         allow(argyle_service).to receive(:fetch_gigs_api).and_return(gigs_json)
       end
 
       it 'returns an array of ResponseObjects::Gig' do
-        gigs = argyle_service.fetch_gigs(account: account_id)
-        expect(gigs.length).to eq(100)
+        argyle_report.send(:fetch_report_data)
+        expect(argyle_report.gigs.length).to eq(100)
 
-        expect(gigs[0]).to be_a(ResponseObjects::Gig)
+        expect(argyle_report.gigs[0]).to be_a(Aggregators::ResponseObjects::Gig)
       end
 
       it 'returns with expected attributes' do
-        gigs = argyle_service.fetch_gigs(account: account_id)
-
-        expect(gigs[0]).to have_attributes(
+        argyle_report.send(:fetch_report_data)
+        expect(argyle_report.gigs[0]).to have_attributes(
         account_id: "019571bc-2f60-3955-d972-dbadfe0913a8",
         gig_type: "rideshare",
         gig_status: "cancelled",
@@ -98,7 +97,7 @@ RSpec.describe Aggregators::AggregatorReports::ArgyleReport, type: :service do
         compensation_amount: 0.0,
         compensation_unit: "USD"
         )
-        expect(gigs[1]).to have_attributes(
+        expect(argyle_report.gigs[1]).to have_attributes(
           account_id: "019571bc-2f60-3955-d972-dbadfe0913a8",
           gig_type: "rideshare",
           gig_status: "completed",
@@ -109,7 +108,7 @@ RSpec.describe Aggregators::AggregatorReports::ArgyleReport, type: :service do
           compensation_amount: 10.24,
           compensation_unit: "USD"
         )
-        expect(gigs[3]).to have_attributes(
+        expect(argyle_report.gigs[3]).to have_attributes(
           account_id: "019571bc-2f60-3955-d972-dbadfe0913a8",
           gig_type: "rideshare",
           gig_status: "completed",
@@ -122,5 +121,6 @@ RSpec.describe Aggregators::AggregatorReports::ArgyleReport, type: :service do
         )
       end
     end
+  end
   end
 end

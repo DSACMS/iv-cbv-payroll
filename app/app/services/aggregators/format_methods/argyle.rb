@@ -32,6 +32,6 @@ module Aggregators::FormatMethods::Argyle
 
   def self.seconds_to_hours(seconds)
     return unless seconds
-    seconds / 3600
+    (seconds / 3600.0).round(2)
   end
 end
