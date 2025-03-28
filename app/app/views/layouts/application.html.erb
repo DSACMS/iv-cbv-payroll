@@ -1,7 +1,6 @@
 <!DOCTYPE html>
 <html lang="<%= I18n.locale %>">
-
-<head>
+  <head>
     <title><%= content_for?(:title) ? yield(:title) : "" %> | SNAP Income Pilot</title>
     <meta name="viewport" content="width=device-width,initial-scale=1">
     <%= csrf_meta_tags %>
@@ -11,57 +10,56 @@
 
     <%= stylesheet_link_tag "application", "data-turbo-track": "reload" %>
     <%= javascript_include_tag "application", "data-turbo-track": "reload", type: "module" %>
-</head>
+  </head>
 
-<body>
+  <body>
     <div id="root">
-        <a class="usa-skipnav" href="#main-content"><%= t("shared.skip_link") %></a>
-        <%= render "application/header" %>
-        <main id="main-content">
-            <section class="grid-container usa-section">
+      <a class="usa-skipnav" href="#main-content"><%= t("shared.skip_link") %></a>
+      <%= render "application/header" %>
+      <main id="main-content">
+        <section class="grid-container usa-section">
 
-                <% if flash[:notice] %>
-                <div class="usa-alert usa-alert--info">
-                    <div class="usa-alert__body">
-                        <div class="usa-alert__heading">Information</div>
-                        <div class="usa-alert__text"><%= flash[:notice].html_safe %></div>
-                    </div>
-                </div>
-                <% end %>
+          <% if flash[:notice] %>
+            <div class="usa-alert usa-alert--info">
+              <div class="usa-alert__body">
+                <div class="usa-alert__heading">Information</div>
+                <div class="usa-alert__text"><%= flash[:notice].html_safe %></div>
+              </div>
+            </div>
+          <% end %>
 
-                <% if flash[:alert] %>
-                <div class="usa-alert usa-alert--<%= flash[:alert_type] || "error" %>">
-                    <div class="usa-alert__body">
-                        <div class="usa-alert__heading"><%= flash[:alert_heading] || "Error" %></div>
-                        <div class="usa-alert__text"><%= flash[:alert].html_safe %></div>
-                    </div>
-                </div>
-                <% end %>
+          <% if flash[:alert] %>
+            <div class="usa-alert usa-alert--<%= flash[:alert_type] || "error" %>">
+              <div class="usa-alert__body">
+                <div class="usa-alert__heading"><%= flash[:alert_heading] || "Error" %></div>
+                <div class="usa-alert__text"><%= flash[:alert].html_safe %></div>
+              </div>
+            </div>
+          <% end %>
 
-                <% if flash[:slim_alert] %>
-                <div class="usa-alert usa-alert--<%= flash[:slim_alert]["type"] %> usa-alert--slim">
-                    <div class="usa-alert__body">
-                        <div class="usa-alert__text">
-                            <% if flash[:slim_alert]["message_html"] %>
-                            <%= flash[:slim_alert]["message_html"].html_safe %>
-                            <% elsif flash[:slim_alert]["message"] %>
-                            <%= flash[:slim_alert]["message"] %>
-                            <% end %>
-                        </div>
-                    </div>
+          <% if flash[:slim_alert] %>
+            <div class="usa-alert usa-alert--<%= flash[:slim_alert]["type"] %> usa-alert--slim">
+              <div class="usa-alert__body">
+                <div class="usa-alert__text">
+                  <% if flash[:slim_alert]["message_html"] %>
+                    <%= flash[:slim_alert]["message_html"].html_safe %>
+                  <% elsif flash[:slim_alert]["message"] %>
+                    <%= flash[:slim_alert]["message"] %>
+                  <% end %>
                 </div>
-                <% end %>
-                <%= yield %>
-            </section>
-        </main>
-        <%= render "application/footer" %>
-        <% if session[:cbv_flow_id] %>
+              </div>
+            </div>
+          <% end %>
+          <%= yield %>
+        </section>
+      </main>
+      <%= render "application/footer" %>
+      <% if session[:cbv_flow_id] %>
         <%= render partial: "cbv/sessions/timeout_modal", locals: {
           timeout: Rails.application.config.session_options[:expire_after]
         } %>
-        <% end %>
+      <% end %>
     </div>
     <%= render partial: "help/help_modal", locals: { help_path: help_path(locale: I18n.locale, r: SecureRandom.hex(4)) } %>
-</body>
-
+  </body>
 </html>
