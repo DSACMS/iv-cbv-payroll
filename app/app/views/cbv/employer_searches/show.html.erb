@@ -11,7 +11,9 @@
     <%= form_with url: cbv_flow_employer_search_path, method: :get, class: "usa-search usa-search--big margin-y-4", html: { role: "search" }, data: { turbo_frame: "employers", turbo_action: "advance" } do |f| %>
     <%= f.label :query, "Search for your employer", class: "usa-sr-only" %>
     <%= f.text_field :query, value: @query, class: "usa-input", type: "search" %>
-    <button class="usa-button" type="submit">
+    <button
+      class="usa-button"
+      type="submit">
         <span class="usa-search__submit-text">
             <%= t(".search") %>
         </span>
@@ -40,9 +42,18 @@
         <% (@selected_tab == "payroll" ? Aggregators::Sdk::PinwheelService::TOP_PROVIDERS : Aggregators::Sdk::PinwheelService::TOP_EMPLOYERS).each do |provider| %>
         <div class="grid-col-4 tablet:grid-col-2 margin-top-2">
             <button data-action="click->cbv-employer-search#select"
-                    data-id="<%= provider[:id] %>" data-name="<%= provider[:name] %>" data-response-type="<%= provider[:response_type] %>" data-provider-name="pinwheel" data-is-default-option="true" data-cbv-employer-search-target="employerButton" type="button" class="width-full usa-button usa-button--outline box-shadow-gray">
+                    data-id="<%= provider[:id] %>"
+                    data-name="<%= provider[:name] %>"
+                    data-response-type="<%= provider[:response_type] %>"
+                    data-provider-name="pinwheel"
+                    data-is-default-option="true"
+                    data-cbv-employer-search-target="employerButton"
+                    type="button"
+                    class="width-full usa-button usa-button--outline box-shadow-gray">
                 <figure class="margin-0 pointer-events-none">
-                    <img class="usa-icon--size-7 radius-pill width-6 height-6" src="<%= provider[:logo_url] %>" alt="">
+                    <img class="usa-icon--size-7 radius-pill width-6 height-6"
+                         src="<%= provider[:logo_url] %>"
+                         alt="">
                     <figcaption class="margin-top-1"><%= provider[:name] %></figcaption>
                 </figure>
             </button>
