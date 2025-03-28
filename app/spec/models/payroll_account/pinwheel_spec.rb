@@ -3,7 +3,7 @@ require 'rails_helper'
 RSpec.describe PayrollAccount::Pinwheel, type: :model do
   let(:account_id) { SecureRandom.uuid }
   let(:supported_jobs) { %w[income paystubs employment] }
-  let!(:cbv_flow) { create(:cbv_flow, pinwheel_token_id: "abc-def-ghi", client_agency_id: "sandbox") }
+  let!(:cbv_flow) { create(:cbv_flow, :invited, pinwheel_token_id: "abc-def-ghi", client_agency_id: "sandbox") }
   let!(:payroll_account) do
     create(:payroll_account, cbv_flow: cbv_flow, pinwheel_account_id: account_id, supported_jobs: supported_jobs)
   end

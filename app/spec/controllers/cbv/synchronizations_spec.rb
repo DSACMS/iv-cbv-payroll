@@ -3,7 +3,7 @@ require 'rails_helper'
 RSpec.describe Cbv::SynchronizationsController do
   render_views
 
-  let(:cbv_flow) { create(:cbv_flow) }
+  let(:cbv_flow) { create(:cbv_flow, :invited) }
 
   let(:errored_jobs) { [] }
   let(:payroll_account) { create(:payroll_account, :pinwheel_fully_synced, with_errored_jobs: errored_jobs, cbv_flow: cbv_flow) }

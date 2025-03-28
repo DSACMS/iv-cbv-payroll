@@ -1,0 +1,7 @@
+<% cbv_applicant = @cbv_flow.cbv_applicant %>
+<%= f.fields_for :cbv_applicant, cbv_applicant do |f2| %>
+  <%= f2.text_field :first_name, label: t(".fields.first_name.prompt") %>
+  <%= f2.text_field :middle_name, label: t(".fields.middle_name.prompt") %>
+  <%= f2.text_field :last_name, label: t(".fields.last_name.prompt") %>
+  <%= f2.text_field :case_number, label: t(".fields.case_number.prompt") %>
+<% end %>

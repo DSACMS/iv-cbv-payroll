@@ -5,7 +5,9 @@ RSpec.describe CaseworkerMailer, type: :mailer do
   include ViewHelper
   include ActionView::Helpers::SanitizeHelper # Include the sanitize helper
 
-  let(:cbv_flow) { create(:cbv_flow, :with_pinwheel_account,
+  let(:cbv_flow) { create(:cbv_flow,
+    :invited,
+    :with_pinwheel_account,
     confirmation_code: "00001",
     client_agency_id: "nyc",
     consented_to_authorized_use_at: Time.now,

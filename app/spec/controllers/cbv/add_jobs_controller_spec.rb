@@ -1,7 +1,7 @@
 require "rails_helper"
 
 RSpec.describe Cbv::AddJobsController do
-  let(:cbv_flow) { create(:cbv_flow) }
+  let(:cbv_flow) { create(:cbv_flow, :invited) }
 
   before do
     session[:cbv_flow_id] = cbv_flow.id
@@ -24,7 +24,7 @@ RSpec.describe Cbv::AddJobsController do
 
     it 'redirects when false radio button is selected' do
       post :create, params: { 'additional_jobs': 'false' }
-      expect(response).to redirect_to(cbv_flow_summary_path)
+      expect(response).to redirect_to(cbv_flow_applicant_information_path)
     end
 
     it 'redirects with notice when no radio button has been selected' do

@@ -53,4 +53,45 @@
   <%= get_comment_by_account_id(account_id).dig("comment") != "" ? get_comment_by_account_id(account_id).dig("comment") : t("shared.not_applicable") %>
   <% end %>
 
+<% if !@cbv_flow.cbv_flow_invitation.present? %>
+<br><br>
+<table class="usa-table usa-table--borderless width-full">
+  <h3> <% t(".your_information") %></h3>
+  <div class="usa-prose">
+    <p><%= t(".must_match", agency_acronym: current_agency.agency_short_name) %></p>
+  </div>
+  <thead class="border-top-05">
+          <tr>
+      <th class="padding-3" style="background-color: #d9e8f6;">
+        <h4 class="margin-0">
+          <%= t(".application_information") %>
+        </h4>
+      </th>
+      <th class="padding-3" style="background-color: #d9e8f6; text-align: right;">
+        <h4 class="margin-0">
+          <a class="usa-link" href="<%= cbv_flow_applicant_information_path(force_show: true) %>">
+            <svg class="usa-icon usa-icon--size-1" aria-hidden="true" role="img">
+              <use
+                xlink:href="<%= asset_path("@uswds/uswds/dist/img/sprite.svg#edit") %>"
+              ></use>
+            </svg>
+            Edit
+          </a>
+        </h4>
+      </th>
+          </tr>
+  </thead>
+  <tbody>
+    <% Rails.application.config.client_agencies[@cbv_flow.client_agency_id].required_applicant_attributes.each do |item| %>
+      <% if @cbv_flow.cbv_applicant[item[0]].present? %>
+        <tr>
+          <td><%= t(".applicant_informations.show.#{@cbv_flow.client_agency_id}.#{item[0]}") %></td>
+          <td><%= @cbv_flow.cbv_applicant[item[0]] %></td>
+        </tr>
+      <% end %>
+    <% end %>
+  </tbody>
+  </table>
+<% end %>
+
 <%= button_to t("continue"), cbv_flow_submit_path, class: "btn btn-primary usa-button margin-y-5", method: :get %>

@@ -18,7 +18,7 @@ RSpec.describe Cbv::SessionsController, type: :controller do
 
   describe 'DELETE #end' do
     before do
-      session[:cbv_flow_id] = create(:cbv_flow).id
+      session[:cbv_flow_id] = create(:cbv_flow, :invited).id
     end
 
     context 'when timeout is true' do

@@ -5,7 +5,7 @@ RSpec.describe "Help Features", type: :feature, js: true do
   include PinwheelApiHelper
 
   let(:cbv_flow_invitation) { create(:cbv_flow_invitation) }
-  let(:cbv_flow) { create(:cbv_flow, cbv_flow_invitation: cbv_flow_invitation) }
+  let(:cbv_flow) { create(:cbv_flow, :invited, cbv_flow_invitation: cbv_flow_invitation) }
 
   before(:all) do
     WebMock.allow_net_connect!
