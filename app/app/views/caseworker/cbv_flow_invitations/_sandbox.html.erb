@@ -1,11 +1,17 @@
 <% cbv_applicant = @cbv_flow_invitation.cbv_applicant ||
      @cbv_flow_invitation.build_cbv_applicant(client_agency_id: @cbv_flow_invitation.client_agency_id) %>
 <%= f.fields_for :cbv_applicant, cbv_applicant do |f2| %>
-  <%= f2.text_field :first_name, label: t(".invite.first_name"), class: ("usa-input--error" if @cbv_flow_invitation.errors[:'cbv_applicant.first_name'].present?) %>
+  <div class="usa-form-group <%= "usa-form-group--error" if @cbv_flow_invitation.errors[:'cbv_applicant.first_name'].present? %>">
+    <%= f2.text_field :first_name, label: t(".invite.first_name"), class: ("usa-input--error" if @cbv_flow_invitation.errors[:'cbv_applicant.first_name'].present?) %>
+    <%= f.field_error :'cbv_applicant.first_name' %>
+  </div>
 
   <%= f2.text_field :middle_name, label: t(".invite.middle_name") %>
 
-  <%= f2.text_field :last_name, label: t(".invite.last_name"), class: ("usa-input--error" if @cbv_flow_invitation.errors[:'cbv_applicant.last_name'].present?) %>
+  <div class="usa-form-group <%= "usa-form-group--error" if @cbv_flow_invitation.errors[:'cbv_applicant.last_name'].present? %>">
+    <%= f2.text_field :last_name, label: t(".invite.last_name"), class: ("usa-input--error" if @cbv_flow_invitation.errors[:'cbv_applicant.last_name'].present?) %>
+    <%= f.field_error :'cbv_applicant.last_name' %>
+  </div>
 
   <%= f2.text_field :case_number, label: t(".invite.case_number") %>
 
