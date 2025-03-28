@@ -129,6 +129,7 @@ en:
       disabled: Staff portal disabled
       index:
         continue_to_login:
+          default: Continue to log in page
           ma: Continue to DTA log in page
           nyc: Log in with your LAN ID
           sandbox: Continue to CBV Test Agency log in page
