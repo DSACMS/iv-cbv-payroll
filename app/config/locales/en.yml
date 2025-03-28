@@ -11,6 +11,10 @@ en:
               blank: Enter the client's last name.
             snap_application_date:
               invalid_date: Enter today's date or the date you contacted the client.
+        cbv_applicant/az_des:
+          attributes:
+            case_number:
+              blank: Enter the client's case number.
         cbv_applicant/ma:
           attributes:
             agency_id_number:
@@ -70,6 +74,11 @@ en:
         ma: Verify your income to renew your SNAP benefits
   caseworker:
     cbv_flow_invitations:
+      az_des:
+        invite:
+          case_number: Case number
+          email_address: Client's email address
+          language_label: In what language should we send the invitation?
       create:
         invite_failed: 'Error sending invitation to %{email_address}: %{error_message}.'
         invite_success: Successfully delivered invitation to %{email_address}.
@@ -308,6 +317,7 @@ en:
         page_header: Submit your income report
         pdf:
           agency_header_name:
+            az_des: Department of Economic Security
             ma: Massachusetts Department of Transitional Assistance
             nyc: NYC Human Resources Administration
             sandbox: CBV Test Agency
@@ -564,10 +574,12 @@ en:
       heading: Do you need more time?
   shared:
     agency_full_name:
+      az_des: Arizona Department of Economic Security
       ma: Massachusetts Department of Transitional Assistance
       nyc: New York City Human Resources Administration
       sandbox: CBV Test Agency
     app_name:
+      az_des: MyFamilyBenefits
       ma: DTA Connect
       nyc: ACCESS HRA
       sandbox: CBVApp
@@ -580,6 +592,7 @@ en:
     header:
       aria_label: Main navigation
       cbv_flow_title:
+        az_des: Department of Economic Security
         ma: Department of Transitional Assistance
         nyc: Human Resources Administration
         sandbox: CBV Test Agency
@@ -587,6 +600,7 @@ en:
       help: Help
       log_out: Log out
       preheader:
+        az_des: A website in partnership with the Arizona Department of Economic Security.
         default: A website in partnership with CBV Test Agency.
         ma: A website in partnership with the Commonwealth of Massachusetts.
         nyc: A website in partnership with the City of New York.

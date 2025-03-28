@@ -16,8 +16,8 @@ class CbvApplicant < ApplicationRecord
   end
 
   def self.sti_class_for(type_name)
-    # "ma" => CbvApplicant::Ma
-    CbvApplicant.const_get(type_name.capitalize)
+    # "az_des" => CbvApplicant::AzDes
+    CbvApplicant.const_get(type_name.camelize)
   end
 
   PAYSTUB_REPORT_RANGE = 90.days
