@@ -12,7 +12,7 @@ RSpec.describe Aggregators::AggregatorReports::PinwheelReport, type: :service do
   end
 
   let(:pinwheel_service) { Aggregators::Sdk::PinwheelService.new(:sandbox) }
-  let(:service) { described_class.new(payroll_accounts: payroll_accounts, pinwheel_service: pinwheel_service, from_date: from_date, to_date: to_date) }
+  let(:report) { described_class.new(payroll_accounts: payroll_accounts, pinwheel_service: pinwheel_service, from_date: from_date, to_date: to_date) }
 
   let(:identities_json) { pinwheel_load_relative_json_file('request_identity_response.json') }
   let(:incomes_json) { pinwheel_load_relative_json_file('request_income_metadata_response.json') }
@@ -28,10 +28,9 @@ RSpec.describe Aggregators::AggregatorReports::PinwheelReport, type: :service do
     allow(pinwheel_service).to receive(:fetch_paystubs_api).with(account_id: account, from_pay_date: from_date, to_pay_date: to_date).and_return(paystubs_json)
   end
 
-
   describe '#fetch' do
     it 'calls the expected API\'s for each payroll account' do
-      service.fetch
+      report.fetch
       expect(pinwheel_service).to have_received(:fetch_identity_api).with(account_id: account).exactly(3).times
       expect(pinwheel_service).to have_received(:fetch_paystubs_api).with(account_id: account, from_pay_date: from_date, to_pay_date: to_date).exactly(3).times
       expect(pinwheel_service).to have_received(:fetch_employment_api).with(account_id: account).exactly(3).times
@@ -39,16 +38,16 @@ RSpec.describe Aggregators::AggregatorReports::PinwheelReport, type: :service do
     end
 
     it 'transforms all response objects correctly' do
-      service.fetch
-      expect(service.instance_variable_get(:@identities)).to all(be_an(Aggregators::ResponseObjects::Identity))
-      expect(service.instance_variable_get(:@employments)).to all(be_an(Aggregators::ResponseObjects::Employment))
-      expect(service.instance_variable_get(:@incomes)).to all(be_an(Aggregators::ResponseObjects::Income))
-      expect(service.instance_variable_get(:@paystubs)).to all(be_an(Aggregators::ResponseObjects::Paystub))
+      report.fetch
+      expect(report.instance_variable_get(:@identities)).to all(be_an(Aggregators::ResponseObjects::Identity))
+      expect(report.instance_variable_get(:@employments)).to all(be_an(Aggregators::ResponseObjects::Employment))
+      expect(report.instance_variable_get(:@incomes)).to all(be_an(Aggregators::ResponseObjects::Income))
+      expect(report.instance_variable_get(:@paystubs)).to all(be_an(Aggregators::ResponseObjects::Paystub))
     end
 
     it 'sets @has_fetched to true on success' do
-      service.fetch
-      expect(service.instance_variable_get(:@has_fetched)).to be true
+      report.fetch
+      expect(report.instance_variable_get(:@has_fetched)).to be true
     end
 
     context 'when an error occurs' do
@@ -58,13 +57,13 @@ RSpec.describe Aggregators::AggregatorReports::PinwheelReport, type: :service do
       end
 
       it 'logs the error' do
-        service.fetch
+        report.fetch
         expect(Rails.logger).to have_received(:error).with(/Report Fetch Error: API error/)
       end
 
       it 'sets @has_fetched to false' do
-        service.fetch
-        expect(service.instance_variable_get(:@has_fetched)).to be false
+        report.fetch
+        expect(report.instance_variable_get(:@has_fetched)).to be false
       end
     end
 
@@ -74,8 +73,8 @@ RSpec.describe Aggregators::AggregatorReports::PinwheelReport, type: :service do
       end
 
       it 'sets @identities to an empty array' do
-        service.fetch
-        expect(service.instance_variable_get(:@identities)).to eq([])
+        report.fetch
+        expect(report.instance_variable_get(:@identities)).to eq([])
       end
     end
 
@@ -88,11 +87,11 @@ RSpec.describe Aggregators::AggregatorReports::PinwheelReport, type: :service do
       end
 
       it 'sets all instance variables to empty arrays' do
-        service.fetch
-        expect(service.instance_variable_get(:@identities)).to eq([])
-        expect(service.instance_variable_get(:@incomes)).to eq([])
-        expect(service.instance_variable_get(:@employments)).to eq([])
-        expect(service.instance_variable_get(:@paystubs)).to eq([])
+        report.fetch
+        expect(report.instance_variable_get(:@identities)).to eq([])
+        expect(report.instance_variable_get(:@incomes)).to eq([])
+        expect(report.instance_variable_get(:@employments)).to eq([])
+        expect(report.instance_variable_get(:@paystubs)).to eq([])
       end
     end
   end

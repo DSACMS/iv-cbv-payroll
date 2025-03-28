@@ -44,6 +44,7 @@ module Aggregators::ResponseObjects
         pay_date: Aggregators::FormatMethods::Argyle.format_date(response_body["paystub_date"]),
         hours: response_body["hours"],
         hours_by_earning_category: Aggregators::FormatMethods::Argyle.hours_by_earning_category(response_body["gross_pay_list"]),
+        # TODO: Add earnings entries here.
         deductions: response_body["deduction_list"].map do |deduction|
           OpenStruct.new(
             category: deduction["name"],

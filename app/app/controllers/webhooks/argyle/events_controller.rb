@@ -17,12 +17,12 @@ class Webhooks::Argyle::EventsController < ApplicationController
       # All other webhooks have a params["data"]["account"], which we can use
       # to find the account.
       account_id = params.dig("data", "account")
-      payroll_account = @cbv_flow.payroll_accounts.find_or_create_by(type: :argyle, pinwheel_account_id: account_id) do |new_payroll_account|
+      @payroll_account = @cbv_flow.payroll_accounts.find_or_create_by(type: :argyle, pinwheel_account_id: account_id) do |new_payroll_account|
         new_payroll_account.supported_jobs = Aggregators::Webhooks::Argyle.get_supported_jobs
       end
 
-      webhook_event = create_webhook_event_for_account(params["event"], payroll_account)
-      update_synchronization_page(payroll_account)
+      webhook_event = create_webhook_event_for_account(params["event"], @payroll_account)
+      update_synchronization_page(@payroll_account)
       track_events(webhook_event)
     end
 
@@ -92,17 +92,60 @@ class Webhooks::Argyle::EventsController < ApplicationController
         provider_name: params.dig("data", "resource", "providers_connected")&.first
       })
     elsif @payroll_account&.has_fully_synced?
+      report = Aggregators::AggregatorReports::ArgyleReport.new(
+        payroll_accounts: [ @payroll_account ],
+        argyle_service: argyle_for(@cbv_flow),
+        from_date: @cbv_flow.cbv_applicant.paystubs_query_begins_at,
+        to_date: @cbv_flow.cbv_applicant.snap_application_date
+      )
+      report.fetch
+
       event_logger.track("ApplicantFinishedArgyleSync", request, {
         cbv_applicant_id: @cbv_flow.cbv_applicant_id,
         cbv_flow_id: @cbv_flow.id,
         invitation_id: @cbv_flow.cbv_flow_invitation_id,
-        identities_success: @payroll_account.job_succeeded?("identities"),
-        identities_supported: @payroll_account.supported_jobs.include?("identities"),
+        sync_duration_seconds: Time.now - @payroll_account.created_at,
+
+        # Identity fields (originally from "identities" endpoint)
+        identity_success: @payroll_account.job_succeeded?("identity"),
+        identity_supported: @payroll_account.supported_jobs.include?("identity"),
+        identity_count: report.identities.length,
+        identity_full_name_present: report.identities.first&.full_name&.present?,
+        identity_full_name_length: report.identities.first&.full_name&.length,
+        identity_date_of_birth_present: report.identities.first&.date_of_birth.present?,
+        identity_ssn_present: report.identities.first&.ssn.present?,
+        identity_emails_count: report.identities.sum { |i| i.emails.length },
+        identity_phone_numbers_count: report.identities.sum { |i| i.phone_numbers.length },
+
+        # Income fields (originally from "identities" endpoint)
+        income_success: @payroll_account.job_succeeded?("income"),
+        income_supported: @payroll_account.supported_jobs.include?("income"),
+        income_compensation_amount_present: report.incomes.first&.compensation_amount.present?,
+        income_compensation_unit_present: report.incomes.first&.compensation_unit.present?,
+        income_pay_frequency_present: report.incomes.first&.pay_frequency.present?,
+
+        # Paystubs fields
         paystubs_success: @payroll_account.job_succeeded?("paystubs"),
         paystubs_supported: @payroll_account.supported_jobs.include?("paystubs"),
+        paystubs_count: report.paystubs.length,
+        paystubs_deductions_count: report.paystubs.sum { |p| p.deductions.length },
+        paystubs_hours_by_earning_category_count: report.paystubs.sum { |p| p.hours_by_earning_category.length },
+        paystubs_hours_present: report.paystubs.first&.hours.present?,
+
+        # Employment fields (originally from "identities" endpoint)
+        employment_success: @payroll_account.job_succeeded?("employment"),
+        employment_supported: @payroll_account.supported_jobs.include?("employment"),
+        employment_status: report.employments.first&.status,
+        employment_employer_name: report.employments.first&.employer_name,
+        employment_employer_address_present: report.employments.first&.employer_address&.present?,
+        employment_employer_phone_number_present: report.employments.first&.employer_name&.present?,
+        employment_start_date: report.employments.first&.start_date,
+        employment_termination_date: report.employments.first&.termination_date,
+
+        # Gigs fields
         gigs_success: @payroll_account.job_succeeded?("gigs"),
-        gigs_supported: @payroll_account.supported_jobs.include?("gigs"),
-        sync_duration_seconds: Time.now - @payroll_account.created_at
+        gigs_supported: @payroll_account.supported_jobs.include?("gigs")
+        # TODO: Add gig fields
       })
     end
   rescue => ex
