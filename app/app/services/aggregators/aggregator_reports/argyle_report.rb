@@ -8,7 +8,6 @@ module Aggregators::AggregatorReports
     end
 
     private
-    # TODO: bring this to abstract class
     def fetch_report_data_for_account(account)
       identities_json = @argyle_service.fetch_identities_api(account: account)
       paystubs_json = @argyle_service.fetch_paystubs_api(account: account, from_start_date: @from_date, to_start_date: @to_date)

@@ -65,7 +65,6 @@ module Aggregators::Sdk
         user: user,
         employment: employment,
         limit: limit }.compact
-      # todo: paginate
       @http.get(IDENTITIES_ENDPOINT, params).body
     end
 
@@ -84,8 +83,6 @@ module Aggregators::Sdk
         ongoing_refresh_status: ongoing_refresh_status,
         limit: limit }.compact
 
-      # TODO: paginate
-      # json["data"].map { |paystub_json| Aggregators::ResponseObjects::Paystub.from_pinwheel(paystub_json) }
       @http.get(ACCOUNTS_ENDPOINT, params).body
     end
 
@@ -118,7 +115,6 @@ module Aggregators::Sdk
       @http.get(EMPLOYMENTS_ENDPOINT, params).body
     end
 
-    # TODO: refactor this into common function between argyle_service/pinwheel_service
     def build_url(endpoint)
       @http.build_url(endpoint).to_s
     end

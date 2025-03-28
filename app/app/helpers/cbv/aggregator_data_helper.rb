@@ -45,7 +45,7 @@ module Cbv::AggregatorDataHelper
   def makeArgyleReport(payroll_account: nil)
     report = ArgyleReport.new(
         payroll_accounts: if payroll_account.present? then [ payroll_account ] else filter_payroll_accounts("argyle") end,
-        pinwheel_service: argyle,
+        argyle_service: argyle,
         from_date: @cbv_flow.cbv_applicant.paystubs_query_begins_at,
         to_date: @cbv_flow.cbv_applicant.snap_application_date)
     report.fetch
