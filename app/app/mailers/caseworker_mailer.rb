@@ -1,5 +1,5 @@
 class CaseworkerMailer < ApplicationMailer
-  helper "cbv/pinwheel_data"
+  helper "cbv/aggregator_data"
   helper :view, :application
   helper_method :current_agency
   before_action :set_params
@@ -23,17 +23,14 @@ class CaseworkerMailer < ApplicationMailer
     @cbv_flow_invitation = @cbv_flow.cbv_flow_invitation
     @cbv_applicant = @cbv_flow.cbv_applicant
     # used in PDF generation
-    @payments = params[:payments] if params[:payments]
-    @employments = params[:employments]
-    @incomes = params[:incomes]
-    @identities = params[:identities]
+    @aggregator_report = params[:aggregator_report]
   end
 
   def generate_pdf
     I18n.with_locale(:en) do
       # caseworkers should receive the report in English
       WickedPdf.new.pdf_from_string(
-        render_to_string(template: "cbv/summaries/show", layout: "pdf", formats: [ :pdf ], locals: { is_caseworker: true }),
+        render_to_string(template: "cbv/submits/show", layout: "pdf", formats: [ :pdf ], locals: { is_caseworker: true, aggregator_report: @aggregator_report }),
         footer: { right: "Income Verification Report | Page [page] of [topage]", font_size: 10 }
       )
     end

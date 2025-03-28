@@ -1,6 +1,6 @@
 class Cbv::PaymentDetailsController < Cbv::BaseController
-  include Cbv::PinwheelDataHelper
-
+  include Cbv::AggregatorDataHelper
+  # helper "cbv/aggregator_data"
   helper_method :employer_name,
     :gross_pay,
     :employment_start_date,
@@ -24,15 +24,8 @@ class Cbv::PaymentDetailsController < Cbv::BaseController
       return redirect_to(cbv_flow_entry_url, flash: { slim_alert: { message: t("cbv.error_no_access"), type: "error" } })
     end
 
-    @employment = has_employment_data? && pinwheel.fetch_employment(account_id: account_id)
-    @income = has_income_data? && pinwheel.fetch_income(account_id: account_id)
-
-    if has_paystubs_data?
-      set_payments(account_id)
-    else
-      @payments = []
-    end
-
+    set_aggregator_report_for_account(@pinwheel_account)
+    @payroll_account_report = @aggregator_report.find_account_report(account_id)
     @account_comment = account_comment
   end
 
@@ -71,50 +64,50 @@ class Cbv::PaymentDetailsController < Cbv::BaseController
   def employer_name
     return I18n.t("cbv.payment_details.show.unknown") unless has_employment_data?
 
-    @employment.employer_name
+    @payroll_account_report.employment.employer_name
   end
 
   def employment_start_date
     return I18n.t("cbv.payment_details.show.unknown") unless has_employment_data?
 
-    @employment.start_date
+    @payroll_account_report.employment.start_date
   end
 
   def employment_end_date
     return I18n.t("cbv.payment_details.show.unknown") unless has_employment_data?
 
-    @employment.termination_date
+    @payroll_account_report.employment.termination_date
   end
 
   def employment_status
     return I18n.t("cbv.payment_details.show.unknown") unless has_employment_data?
 
-    @employment.status&.humanize
+    @payroll_account_report.employment.status&.humanize
   end
 
   def pay_frequency
     return I18n.t("cbv.payment_details.show.unknown") unless has_income_data?
 
-    @income.pay_frequency&.humanize
+    @payroll_account_report.income.pay_frequency&.humanize
   end
 
   def compensation_unit
     return I18n.t("cbv.payment_details.show.unknown") unless has_income_data?
 
-    @income.compensation_unit
+    @payroll_account_report.income.compensation_unit
   end
 
   def compensation_amount
     return I18n.t("cbv.payment_details.show.unknown") unless has_income_data?
 
-    @income.compensation_amount
+    @payroll_account_report.income.compensation_amount
   end
 
   def gross_pay
     return I18n.t("cbv.payment_details.show.unknown") unless has_paystubs_data?
 
-    @payments
-      .map { |payment| payment.gross_pay_amount.to_i }
+    @payroll_account_report.paystubs
+      .map { |paystub| paystub.gross_pay_amount.to_i }
       .reduce(:+)
   end
 
@@ -124,13 +117,12 @@ class Cbv::PaymentDetailsController < Cbv::BaseController
 
   def track_viewed_event
     return if @pinwheel_account.nil?
-
     event_logger.track("ApplicantViewedPaymentDetails", request, {
       cbv_applicant_id: @cbv_flow.cbv_applicant_id,
       cbv_flow_id: @cbv_flow.id,
       invitation_id: @cbv_flow.cbv_flow_invitation_id,
       pinwheel_account_id: @pinwheel_account.id,
-      payments_length: @payments.length,
+      payments_length: @payroll_account_report.paystubs.length,
       has_employment_data: has_employment_data?,
       has_paystubs_data: has_paystubs_data?,
       has_income_data: has_income_data?

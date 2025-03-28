@@ -26,6 +26,13 @@ class CbvFlow < ApplicationRecord
     )
   end
 
+  def self.create_without_invitation(client_agency_id)
+    create(
+      cbv_applicant: CbvApplicant.create(client_agency_id: client_agency_id),
+      client_agency_id: client_agency_id
+    )
+  end
+
   def has_account_with_required_data?
     payroll_accounts.any?(&:has_required_data?)
   end

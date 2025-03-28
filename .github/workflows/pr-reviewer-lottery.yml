@@ -1,0 +1,16 @@
+name: "Add random reviewer via Reviewer Lottery"
+on:
+  pull_request_target:
+    types: [opened, ready_for_review, reopened]
+
+jobs:
+  reviewer-lottery:
+    name: Add random reviewer via Reviewer Lottery
+    runs-on: ubuntu-latest
+    permissions:
+      pull-requests: write
+    steps:
+    - uses: actions/checkout@v4
+    - uses: uesteibar/reviewer-lottery@v3
+      with:
+        repo-token: ${{ secrets.GITHUB_TOKEN }}

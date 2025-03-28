@@ -1,0 +1,153 @@
+<strong>
+  <% if current_agency?(:ma) %>
+    <%= image_tag wicked_pdf_asset_base64(current_agency.logo_square_path), class: "text-middle cbv-header__agency-logo cbv-header__agency-logo--#{current_agency.id}" %>
+  <% elsif current_agency?(:nyc) %>
+    <%= image_tag wicked_pdf_asset_base64(current_agency.logo_square_path), class: "text-middle cbv-header__agency-logo cbv-header__agency-logo--#{current_agency.id}" %>
+  <% end %>
+  <span class="cbv-header__pilot-name">
+    <%= t("shared.pilot_name") %>
+  </span>
+  <% if current_agency %>
+    <span class="cbv-header__separator">|</span>
+  <% end %>
+  <%= agency_translation(".pdf.agency_header_name") %>
+</strong>
+
+<h1><%= t(".pdf.client.header") %></h1>
+
+<% if is_caseworker %>
+  <p><%= t(".pdf.caseworker.description") %></p>
+  <div class="usa-alert usa-alert--info">
+    <div class="usa-alert__body">
+      <p class="usa-alert__text">
+        <strong><%= t(".pdf.caseworker.how_to_header") %></strong>
+        <%= t(".pdf.caseworker.how_to") %>
+      </p>
+    </div>
+  </div>
+<% else %>
+  <p><%= t(".pdf.client.description", agency_acronym: current_agency.agency_short_name) %></p>
+<% end %>
+
+<h2><%= t(".pdf.client.client_report_information") %></h2>
+
+<%= render(TableComponent.new) do |table| %>
+  <%= table.with_header do %>
+    <h3 class="margin-0"><%= t(".pdf.shared.client_information") %></h3>
+  <% end %>
+  <% if current_agency?(:ma) && !is_caseworker %>
+    <%= table.with_row(t(".pdf.client.agency_id_number"), @cbv_flow.cbv_applicant.agency_id_number) %>
+  <% end %>
+  <% if is_caseworker %>
+    <%= table.with_row(t(".pdf.caseworker.first_name"), @cbv_flow.cbv_applicant.first_name) %>
+    <%= table.with_row(t(".pdf.caseworker.middle_name"), @cbv_flow.cbv_applicant.middle_name) %>
+    <%= table.with_row(t(".pdf.caseworker.last_name"), @cbv_flow.cbv_applicant.last_name) %>
+
+    <% if current_agency?(:nyc) %>
+      <%= table.with_row(t(".pdf.caseworker.client_id_number"), @cbv_flow.cbv_applicant.client_id_number) %>
+      <%= table.with_row(t(".pdf.caseworker.case_number"), @cbv_flow.cbv_applicant.case_number) %>
+    <% end %>
+
+    <% if current_agency?(:ma) %>
+      <%= table.with_row(t(".pdf.caseworker.client_email_address"), @cbv_flow.cbv_applicant.email_address) %>
+      <%= table.with_row(t(".pdf.caseworker.snap_agency_id"), @cbv_flow.cbv_applicant.agency_id_number) %>
+    <% end %>
+  <% end %>
+<% end %>
+
+<%= render(TableComponent.new) do |table| %>
+  <%= table.with_header do %>
+    <h3 class="margin-0"><%= t(".pdf.shared.report_details") %></h3>
+  <% end %>
+  <% if @cbv_flow.confirmation_code.present? %>
+    <%= table.with_row(t(".pdf.shared.confirmation_code"), @cbv_flow.confirmation_code) %>
+  <% end %>
+  <%= table.with_row(agency_translation(".application_or_recertification_date"), format_parsed_date(@cbv_flow.cbv_applicant.snap_application_date)) %>
+  <%= table.with_row(t(".pdf.client.date_created"), format_parsed_date(@cbv_flow.consented_to_authorized_use_at)) %>
+  <%= table.with_row(t(".pdf.client.date_range"), "#{format_parsed_date(@cbv_flow.cbv_applicant.paystubs_query_begins_at)} to #{format_parsed_date(@cbv_flow.cbv_applicant.snap_application_date)}") %>
+  <% if is_caseworker %>
+    <%= table.with_row(t(".pdf.caseworker.agreement_consent_timestamp"), @cbv_flow.consented_to_authorized_use_at) %>
+    <% if current_agency?(:ma) %>
+      <%= table.with_row(t(".pdf.caseworker.staff_beacon_id_wel_id"), @cbv_flow.cbv_applicant.beacon_id) %>
+    <% end %>
+  <% end %>
+<% end %>
+
+<h2><%= t(".pdf.client.employment_payment_details") %></h2>
+
+<% aggregator_report.summarize_by_employer.each_with_index do |(account_id, summary), index| %>
+  <% employer_name = summary[:has_employment_data] ? summary[:employment].employer_name : nil %>
+  <h3><%= t(".table_caption_no_name", number: index + 1) %>: <%= employer_name %></h3>
+
+  <%= render(TableComponent.new) do |table| %>
+    <%= table.with_header do %>
+      <h4 class="margin-0">
+        <% if employer_name %>
+          <%= employer_name %> &mdash;
+        <% end %>
+        <%= t(".pdf.shared.employment_information") %>
+      </h4>
+    <% end %>
+    <% if is_caseworker && summary[:has_identity_data] %>
+      <%= table.with_data_point(:client_full_name, summary[:identity].full_name) %>
+    <% end %>
+    <% if summary[:has_employment_data] %>
+      <% employment = summary[:employment] %>
+      <%= table.with_data_point(:employer_phone, employment.employer_phone_number) %>
+      <%= table.with_data_point(:employer_address, employment.employer_address) %>
+      <%= table.with_data_point(:employment_status, employment.status) %>
+      <%= table.with_data_point(:employment_start_date, employment.start_date) %>
+      <%= table.with_data_point(:employment_end_date, employment.termination_date) %>
+    <% end %>
+    <% if summary[:has_income_data] %>
+      <%= table.with_data_point(:pay_frequency, summary[:income].pay_frequency&.humanize) %>
+      <%= table.with_data_point(:hourly_rate, summary[:income].compensation_amount, summary[:income].compensation_unit) %>
+    <% end %>
+  <% end %>
+
+  <% summary[:paystubs].each do |paystub| %>
+    <%= render(TableComponent.new) do |table| %>
+      <%= table.with_header do %>
+        <h4 class="margin-0">
+          <% if employer_name %>
+            <%= employer_name %> &mdash;
+          <% end %>
+          Pay Date: <%= format_date(paystub.pay_date) %></h4>
+      <% end %>
+      <% if summary[:has_income_data] %>
+        <%= table.with_data_point(:pay_period_with_frequency, paystub.start, paystub.end, summary[:income].pay_frequency&.humanize, highlight: is_caseworker) %>
+      <% else %>
+        <%= table.with_data_point(:pay_period_with_frequency, paystub.start, paystub.end, t("cbv.payment_details.show.frequency_unknown"), highlight: is_caseworker) %>
+      <% end %>
+      <%= table.with_data_point(:pay_gross, paystub.gross_pay_amount, highlight: is_caseworker) %>
+      <%= table.with_data_point(:number_of_hours_worked, paystub.hours, highlight: is_caseworker) %>
+      <% paystub.hours_by_earning_category.each do |category, total_hours| %>
+        <%= table.with_data_point(:earnings_entry, category, total_hours) %>
+      <% end %>
+      <%= table.with_data_point(:net_pay_amount, paystub.net_pay_amount) %>
+      <% paystub.deductions.filter { |deduction| deduction.amount > 0 }.each do |deduction| %>
+        <%= table.with_data_point(:deduction, deduction.category, deduction.amount) %>
+      <% end %>
+      <%= table.with_data_point(:pay_gross_ytd, paystub.gross_pay_ytd) %>
+    <% end %>
+  <% end %>
+  <% if summary[:paystubs].empty? %>
+    <%= render(TableComponent.new) do |table| %>
+      <%= table.with_header do %>
+        <h4 class="margin-0">
+          <% if employer_name %>
+            <%= employer_name %> &mdash;
+          <% end %>
+          <%= t(".none_found") %>
+        </h4>
+      <% end %>
+      <%= table.with_row(t(".none_found_confirmed")) %>
+    <% end %>
+  <% end %>
+
+  <% if @cbv_flow.additional_information.dig(account_id, "comment").present? %>
+    <h2><%= t(".additional_information_title") %></h2>
+
+    <p><%= @cbv_flow.additional_information.dig(account_id, "comment") %></p>
+  <% end %>
+<% end %>

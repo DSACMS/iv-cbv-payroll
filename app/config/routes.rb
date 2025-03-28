@@ -31,12 +31,18 @@ Rails.application.routes.draw do
       resource :employer_search, only: %i[show]
       resource :synchronizations, only: %i[show update]
       resource :synchronization_failures, only: %i[show]
-      resource :summary, only: %i[show update], format: %i[html pdf]
+      resource :summary, only: %i[show update]
+      resource :submit, only: %i[show update], format: %i[html pdf]
       resource :missing_results, only: %i[show]
       resource :success, only: %i[show]
       resource :add_job, only: %i[show create]
       resource :payment_details, only: %i[show update]
       resource :expired_invitation, only: %i[show]
+
+      # Generic link
+      scope "links/:client_agency_id", constraints: { client_agency_id: Regexp.union(Rails.application.config.client_agencies.client_agency_ids) } do
+        root to: "generic_links#show", as: :new
+      end
 
       # Session management
       post "session/refresh", to: "sessions#refresh", as: :session_refresh

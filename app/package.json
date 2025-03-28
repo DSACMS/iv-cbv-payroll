@@ -5,19 +5,19 @@
   "dependencies": {
     "@csstools/postcss-sass": "^5.1.1",
     "@hotwired/stimulus": "^3.2.2",
-    "@hotwired/turbo-rails": "^8.0.12",
+    "@hotwired/turbo-rails": "^8.0.13",
     "@rails/actioncable": "^7.2.201",
     "@uswds/uswds": "^3.11.0",
     "autoprefixer": "^10.4.20",
     "esbuild": "^0.25.0",
     "load-script": "^2.0.0",
-    "postcss": "^8.5.2",
+    "postcss": "^8.5.3",
     "postcss-cli": "^11.0.0",
     "postcss-import": "^16.1.0",
     "postcss-minify": "^1.1.0",
     "postcss-nesting": "^12.1.5",
     "postcss-scss": "^4.0.9",
-    "sass": "^1.85.0",
+    "sass": "^1.85.1",
     "webpack": "^5.98.0",
     "webpack-cli": "^5.1.4"
   },
@@ -26,7 +26,8 @@
     "build:css": "postcss ./app/assets/stylesheets/application.postcss.css -o ./app/assets/builds/application.css",
     "pa11y-ci": "pa11y-ci --config .pa11yci",
     "test": "vitest",
-    "format": "prettier --write \"app/javascript/**/*.{js,jsx,ts,tsx}\" \"spec/javascript/**/*.{js,jsx,ts,tsx}\""
+    "format": "prettier --write \"app/javascript/**/*.{js,jsx,ts,tsx}\" \"spec/javascript/**/*.{js,jsx,ts,tsx}\"",
+    "format:precommit": "prettier --write"
   },
   "devDependencies": {
     "jsdom": "^24.0.0",

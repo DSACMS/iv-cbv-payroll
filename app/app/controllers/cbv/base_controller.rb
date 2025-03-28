@@ -52,6 +52,8 @@ class Cbv::BaseController < ApplicationController
 
   def next_path
     case params[:controller]
+    when "cbv/generic_links"
+      cbv_flow_entry_path
     when "cbv/entries"
       cbv_flow_employer_search_path
     when "cbv/employer_searches"
@@ -63,6 +65,8 @@ class Cbv::BaseController < ApplicationController
     when "cbv/payment_details"
       cbv_flow_add_job_path
     when "cbv/summaries"
+      cbv_flow_submits_path
+    when "cbv/submits"
       cbv_flow_success_path
     end
   end

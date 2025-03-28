@@ -132,14 +132,16 @@ ignore_missing:
     - "activerecord.errors.models.cbv_applicant*"
     - "caseworker_mailer.summary_email.*"
     # Caseworker PDF strings that are only supported in English:
-    - "cbv.summaries.show.pdf.caseworker.*"
+    - "cbv.submits.show.pdf.caseworker.*"
     # Pinwheel values that are only supported in English:
     - "pinwheel.*"
+    # Currently awaiting translation:
     - "cbv.expired_invitations.show.body_2"
     - "help.*"
     - "shared.header.help"
     - "session_timeout.*"
     - "pages.{error_404,error_500}.*"
+    - "cbv.error_invalid_link" # FFS-2540
 # - 'errors.messages.{accepted,blank,invalid,too_short,too_long}'
 # - '{devise,simple_form}.*'
 
