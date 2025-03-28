@@ -23,6 +23,7 @@
   invitation_valid_days: 14
   weekly_report:
     recipient: <%= ENV['NYC_HRA_EMAIL'] %>
+
 - id: ma
   agency_name: Department of Transitional Assistance
   agency_short_name: DTA
@@ -50,6 +51,38 @@
   logo_square_path: dta_logo_square.png
   weekly_report:
     recipient: <%= ENV['MA_WEEKLY_REPORT_RECIPIENTS'] %>
+
+- id: az_des
+  agency_name: Department of Economic Security
+  agency_short_name: DES
+  agency_contact_website: https://des.az.gov/services/basic-needs/food-assistance/contact-des
+  # No caseworker feedback form since they will only be interacting with the PDFs
+  # caseworker_feedback_form: null
+  pinwheel:
+    environment: <%= ENV["AZ_DES_PINWHEEL_ENVIRONMENT"] %>
+  argyle:
+    environment: <%= ENV["AZ_DES_ARGYLE_ENVIRONMENT"] %>
+  # TODO: this will be SFTP:
+  transmission_method: shared_email
+  transmission_method_configuration:
+    email: <%= ENV['SLACK_TEST_EMAIL'] %>
+  # TODO: Disable staff portal before pilot launch
+  staff_portal_enabled: true
+  sso:
+    client_id:     <%= ENV["AZURE_SANDBOX_CLIENT_ID"] %>
+    client_secret: <%= ENV["AZURE_SANDBOX_CLIENT_SECRET"] %>
+    tenant_id:     <%= ENV["AZURE_SANDBOX_TENANT_ID"] %>
+    scope: "openid"
+    name: "az_des"
+  pay_income_days: 90
+  invitation_valid_days: 14
+  # TODO: Get permission to use the AZ DES logo.
+  # logo_path: dta_logo.png
+  # logo_square_path: dta_logo_square.png
+  # TODO: Enable the weekly report after pilot launch.
+  # weekly_report:
+  #   recipient: <%= ENV['AZ_DES_WEEKLY_REPORT_RECIPIENTS'] %>
+
 - id: sandbox
   agency_name: CBV Test Agency
   agency_short_name: CBV
