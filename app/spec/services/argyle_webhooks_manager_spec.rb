@@ -15,6 +15,8 @@ RSpec.describe ArgyleWebhooksManager, type: :service do
   let(:create_webhook_subscription_response) { load_relative_json_file('argyle', 'response_create_webhook_subscription.json') }
   # Define sandbox_config as a let variable for easier access in tests
   let(:sandbox_config) { double("SandboxConfig", argyle_environment: "sandbox") }
+  # Define the webhook events
+  let(:webhook_events) { ArgyleService.get_webhook_events }
 
   before do
     @all_subscriptions = stub_webhook_subscriptions['results']
@@ -27,6 +29,7 @@ RSpec.describe ArgyleWebhooksManager, type: :service do
     allow(argyle_service).to receive(:create_webhook_subscription).and_return(create_webhook_subscription_response)
     allow(argyle_service).to receive(:get_webhook_subscriptions).and_return({ "results" => @all_subscriptions })
     allow(argyle_service).to receive(:delete_webhook_subscription)
+
 
 
     # This ensures the puts message will have a consistent environment name
@@ -74,7 +77,7 @@ RSpec.describe ArgyleWebhooksManager, type: :service do
 
         allow(argyle_webhooks_manager).to receive(:existing_subscriptions_with_name)
           .with(webhook_name)
-          .and_return([existing_sub])
+          .and_return([ existing_sub ])
 
         # For this case, delete should NOT be called
         expect(argyle_service).not_to receive(:delete_webhook_subscription)
@@ -84,7 +87,7 @@ RSpec.describe ArgyleWebhooksManager, type: :service do
         expect(STDOUT).to receive(:puts).with(" Argyle webhook url: #{receiver_url}")
 
         expect(argyle_service).to receive(:create_webhook_subscription).with(
-          ArgyleWebhooksManager::WEBHOOK_EVENTS,
+          webhook_events,
           receiver_url,
           webhook_name
         ).and_return(create_webhook_subscription_response)
@@ -100,14 +103,14 @@ RSpec.describe ArgyleWebhooksManager, type: :service do
           "id" => "matching-subscription-id",
           "name" => webhook_name,
           "url" => receiver_url,
-          "events" => ArgyleWebhooksManager::WEBHOOK_EVENTS
+          "events" => webhook_events
         }
 
         other_sub = {
           "id" => "other-subscription-id",
           "name" => webhook_name,
           "url" => "https://old-url.ngrok.io/webhooks/argyle/events",
-          "events" => ArgyleWebhooksManager::WEBHOOK_EVENTS
+          "events" => webhook_events
         }
 
         allow(argyle_webhooks_manager).to receive(:existing_subscriptions_with_name)
@@ -115,7 +118,7 @@ RSpec.describe ArgyleWebhooksManager, type: :service do
           .and_return([ matching_sub, other_sub ])
 
         expect(STDOUT).to receive(:puts).with("  Existing Argyle webhook subscription found in Argyle sandbox: #{receiver_url}")
-        expect(argyle_webhooks_manager).to receive(:remove_subscriptions).with([other_sub]).and_call_original
+        expect(argyle_webhooks_manager).to receive(:remove_subscriptions).with([ other_sub ]).and_call_original
         expect(STDOUT).to receive(:puts).with("  Removing existing Argyle webhook subscription (url = #{other_sub["url"]})")
         expect(argyle_service).to receive(:delete_webhook_subscription).with(other_sub["id"])
         # Should NOT create a new subscription since we're reusing existing

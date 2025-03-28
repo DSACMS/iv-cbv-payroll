@@ -1,5 +1,5 @@
 class Webhooks::Argyle::EventsController < ApplicationController
-  before_action :set_cbv_flow, :set_argyle, :authorize_webhook
+  before_action :set_cbv_flow, :set_argyle, :authorize_webhook, :set_argyle_account_id
   after_action :track_events
   skip_before_action :verify_authenticity_token
 
@@ -9,16 +9,15 @@ class Webhooks::Argyle::EventsController < ApplicationController
   DUMMY_SECRET = "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
 
   def create
-    # Handle the users.fully_synced event with potentially multiple accounts
+    # Handle the users.fully_synced event with potentially multiple accounts.
     # If users add more than one account then this array will contain the IDs
-    # of all the accounts that were connected. In this instance we would not
-    # be able to infer the @argyle_account_id directly from a top-level property
-    # of the payload.
+    # of all the accounts that were connected. In this instance we need to
+    # iterate over the accounts and process a webhook event for each account.
     if params["event"] == "users.fully_synced"
       handle_users_fully_synced
     end
 
-    # Regular single-account flow
+    # This condition is met when an Argyle webhook contains a single "account" value in the payload
     if @argyle_account_id.present?
       @payroll_account = process_account(@argyle_account_id, params["event"])
     end
@@ -30,16 +29,26 @@ class Webhooks::Argyle::EventsController < ApplicationController
 
   def handle_users_fully_synced
     accounts_connected = params.dig("data", "resource", "accounts_connected")
-    
+
     if accounts_connected.present?
+      # Get the payroll accounts that do not have a webhook event for "users.fully_synced"
+      # rather than iterating over each account entry that Argyle sends back.
+      #
+      # In the event that a user adds multiple payroll accounts we do not want to
+      # record duplicate webhook events
+      payroll_accounts_to_sync = @cbv_flow.payroll_accounts.where.not(
+        id: @cbv_flow.payroll_accounts
+              .joins(:webhook_events)
+              .where(webhook_events: { event_name: params["event"] })
+      ).to_a
+
       # Handle each connected account separately
-      accounts_connected.each do |account_id|
-        process_account(account_id, params["event"])
+      payroll_accounts_to_sync.each do |account|
+        process_account(account.pinwheel_account_id, params["event"])
       end
     end
   end
 
-  # Shared method to process an account for any webhook event
   def process_account(account_id, event_name)
     payroll_account = @cbv_flow.payroll_accounts.find_or_create_by(
       type: :argyle,
@@ -48,18 +57,6 @@ class Webhooks::Argyle::EventsController < ApplicationController
       new_payroll_account.supported_jobs = @argyle_service.get_supported_jobs
     end
 
-    # Update the timestamps based on the event
-    if @argyle_service.get_webhook_event_outcome(event_name) == :success
-      job_names = @argyle_service.get_webhook_event_jobs(event_name)
-      if job_names.present?
-        job_names.each do |job_name|
-          timestamp_attr = "#{job_name}_synced_at"
-          payroll_account.update("#{timestamp_attr}": Time.now)
-        end
-      end
-    end
-
-    # Create a webhook event for this account
     webhook_event = WebhookEvent.create!(
       payroll_account: payroll_account,
       event_name: event_name,
@@ -86,9 +83,12 @@ class Webhooks::Argyle::EventsController < ApplicationController
     end
   end
 
+  def set_argyle_account_id
+    @argyle_account_id = params.dig("data", "account")
+  end
+
   def set_cbv_flow
     argyle_user_id = params.dig("data", "user")
-    @argyle_account_id = params.dig("data", "account")
 
     @cbv_flow = CbvFlow.where(end_user_id: argyle_user_id).order(created_at: :desc).first
 

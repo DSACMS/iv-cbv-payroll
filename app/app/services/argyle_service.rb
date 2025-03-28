@@ -21,6 +21,12 @@ class ArgyleService
       api_key_id: ENV["ARGYLE_SANDBOX_API_TOKEN_ID"],
       api_key_secret: ENV["ARGYLE_SANDBOX_API_TOKEN_SECRET"],
       webhook_secret: ENV["ARGYLE_SANDBOX_WEBHOOK_SECRET"]
+    },
+    production: {
+      base_url: "https://api.argyle.com/v2",
+      api_key_id: ENV["ARGYLE_API_TOKEN_ID"],
+      api_key_secret: ENV["ARGYLE_API_TOKEN_SECRET"],
+      webhook_secret: ENV["ARGYLE_WEBHOOK_SECRET"]
     }
   }
 
@@ -53,18 +59,13 @@ class ArgyleService
     "accounts.connected" => {
       status: :success,
       job: [] # we're not concerned with reporting this to the front-end/client
-    },
-    # Failed to sync
-    "accounts.failed" => {
-      status: :failed,
-      job: %w[paystubs]
     }
   }.freeze
 
-  def initialize(environment, api_key_id = nil, api_key_secret = nil)
+  def initialize(environment, api_key_id = nil, api_key_secret = nil, webhook_secret = nil)
     @api_key_id = api_key_id || ENVIRONMENTS.fetch(environment.to_sym)[:api_key_id]
     @api_key_secret = api_key_secret || ENVIRONMENTS.fetch(environment.to_sym)[:api_key_secret]
-    @webhook_secret = ENVIRONMENTS.fetch(environment.to_sym)[:webhook_secret]
+    @webhook_secret = webhook_secret || ENVIRONMENTS.fetch(environment.to_sym)[:webhook_secret]
     @environment = ENVIRONMENTS.fetch(environment.to_sym) { |env| raise ConfigurationError.new("ArgyleService unknown environment: #{env}") }
 
     client_options = {
@@ -105,24 +106,21 @@ class ArgyleService
     make_request(:get, WEBHOOKS_ENDPOINT)
   end
 
-  def get_environment
-    @environment
-  end
-
   def create_webhook_subscription(events, url, name)
     payload = {
       events: events,
       name: name,
       url: url,
-      secret: @webhook_secret,
-      # Not all events support the include_resource so we'll omit it
+      secret: @webhook_secret
+
+      # Not all events support the "include_resource" parameter so we'll omit it
       #
       # @response
       # Argyle API error: 400 -
-      # {"config"=>["only allowed for accounts.added, accounts.connected, accounts.failed, 
-      # accounts.updated, gigs.partially_synced, items.removed, items.updated, paystubs.partially_synced, 
-      # shifts.partially_synced"]}
-
+      # {"config"=>["only allowed for accounts.added, accounts.connected, accounts.failed,
+      # accounts.updated, gigs.partially_synced, items.removed, items.updated, paystubs.partially_synced,
+      # shifts.partially_synced"]
+      #
       # config: {
       #   include_resource: true
       # }
@@ -139,8 +137,20 @@ class ArgyleService
     OpenSSL::HMAC.hexdigest(OpenSSL::Digest.new("sha512"), @webhook_secret, payload)
   end
 
+  # Get the appropriate webhook secret based on Rails environment
+  def self.get_webhook_secret
+    # Default to production unless explicitly in sandbox mode
+    if Rails.env.production? || ENV["ARGYLE_SANDBOX"] != "true"
+      ENV["ARGYLE_WEBHOOK_SECRET"]
+    else
+      ENV["ARGYLE_SANDBOX_WEBHOOK_SECRET"]
+    end
+  end
+
+  # Verify the signature using the appropriate webhook secret 
   def self.verify_signature(signature, payload)
-    expected = generate_signature_digest(payload)
+    webhook_secret = get_webhook_secret
+    expected = OpenSSL::HMAC.hexdigest(OpenSSL::Digest.new("sha512"), webhook_secret, payload)
     ActiveSupport::SecurityUtils.secure_compare(signature, expected)
   end
 
@@ -159,7 +169,7 @@ class ArgyleService
   def self.get_webhook_event_jobs(event)
     SUBSCRIBED_WEBHOOK_EVENTS[event][:job]
   end
-  
+
   private
 
   def make_request(method, endpoint, params = nil)

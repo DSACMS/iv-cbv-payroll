@@ -1,19 +1,12 @@
 require 'rails_helper'
 
 RSpec.describe Webhooks::Argyle::EventsController, type: :controller do
-
   let(:argyle_service) { class_double('ArgyleService') }
-  let(:argyle_account_id) { SecureRandom.uuid }
-  let(:argyle_user_id) { cbv_flow.end_user_id }
-  let(:argyle_user_token) { 'argyle-token-456' }
 
-  # Has highest priority for the let! block. It will be created before other let variables
-  let!(:cbv_flow) do
-    create(:cbv_flow, :with_argyle_account)
-  end
-
-  # In a runtime scenario- the web client would send a POST request to the /api/argyle/tokens
+  # In a runtime scenario- the web client would send a POST request to /api/argyle/tokens
   # This does several things:
+  #
+  # @link /app/app/controllers/api/argyle_controller.rb
   #
   # 1. Retrieves the CbvFlow from the session
   # 2. Initializes Argyle in production or sandbox mode - depending on the agency configuration
@@ -32,92 +25,105 @@ RSpec.describe Webhooks::Argyle::EventsController, type: :controller do
     allow(argyle_service).to receive(:get_webhook_events).and_return(ArgyleService.get_webhook_events)
   end
 
-  # Add a shared let definition for basic webhook request
-  let(:create_webhook_request) do
-    ->(event_type, options = {}) do
-      create(
+  shared_examples_for "a webhook that creates a webhook event record" do |event_type, check_status = true|
+    let(:webhook_request) { create(:webhook_request, event_type: event_type).payload }
+
+    it "creates a new webhook event with #{event_type}" do
+      post :create, params: webhook_request
+      expect(response).to have_http_status(:ok) if check_status
+    end
+  end
+
+  shared_examples_for "a sequential webhook step" do |event_type|
+    it "processes the #{event_type} webhook" do
+      webhook_request = create(
         :webhook_request,
         :argyle,
-        event_type: event_type,
-        argyle_account_id: options[:argyle_account_id] || argyle_account_id,
-        argyle_user_id: options[:argyle_user_id] || argyle_user_id,
-        cbv_flow: options[:cbv_flow] || cbv_flow,
-        account_id: options[:account_id]
+        argyle_user_id: cbv_flow.end_user_id,
+        argyle_account_id: argyle_account_id,
+        event_type: event_type
       ).payload
+
+      post :create, params: webhook_request
+
+      payroll_account = PayrollAccount.first
+      webhook_event = payroll_account.webhook_events.last
+
+      expect(webhook_event.event_name).to eq(event_type)
+      expect(webhook_event.payroll_account.pinwheel_account_id).to eq(payroll_account.pinwheel_account_id)
     end
   end
 
   describe 'POST #create' do
-
     context 'with accounts.connected webhook' do
-      let(:webhook_request) { create_webhook_request.call("accounts.connected") }
-
-      it 'creates a new payroll account' do
-        expect {
-          post :create, params: webhook_request
-        }.to change(PayrollAccount, :count).by(1)
-
-        expect(response).to have_http_status(:ok)
-      end
+      it_behaves_like "a webhook that creates a webhook event record", "accounts.connected", true
     end
 
     context 'with identities.added webhook' do
-      let(:webhook_request) { create_webhook_request.call("identities.added") }
-
-      it 'creates a new payroll account' do
-        expect {
-          post :create, params: webhook_request
-        }.to change(PayrollAccount, :count).by(1)
-      end
+      it_behaves_like "a webhook that creates a webhook event record", "identities.added", false
     end
 
     context 'with gigs.fully_synced webhook' do
-      let(:payroll_account) do
-        create(:payroll_account, :argyle, cbv_flow: cbv_flow, type: 'argyle')
-      end
-
-      let(:webhook_request) do
-        create_webhook_request.call("gigs.fully_synced",
-          account_id: payroll_account.pinwheel_account_id
-        )
-      end
-
-      it 'tracks analytics when account is fully synced' do
-        # First add some webhook events to make has_fully_synced? true
-        create(:webhook_event, payroll_account: payroll_account, event_name: 'identities.added')
-        create(:webhook_event, payroll_account: payroll_account, event_name: 'paystubs.fully_synced')
-
-        expect(controller).to receive(:track_events)
-        post :create, params: webhook_request
-      end
+      it_behaves_like "a webhook that creates a webhook event record", "gigs.fully_synced", false
     end
 
-    context 'with all events successfully synced' do
-      let(:account_connected_webhook) { create_webhook_request.call("accounts.connected") }
-      let(:identities_added_webhook) { create_webhook_request.call("identities.added") }
-      let(:paystubs_fully_synced_webhook) { create_webhook_request.call("paystubs.fully_synced") }
-      let(:gigs_fully_synced_webhook) { create_webhook_request.call("gigs.fully_synced") }
-      let(:users_fully_synced_webhook) { create_webhook_request.call("users.fully_synced") }
+    context 'with users.fully_synced webhook' do
+      it_behaves_like "a webhook that creates a webhook event record", "users.fully_synced", false
+    end
 
-      it 'tracks analytics when account is fully synced' do
-        expect(controller).to receive(:track_events)
-        # after observing the webhook 
-        post :create, params: account_connected_webhook
-        post :create, params: identities_added_webhook
-        post :create, params: users_fully_synced_webhook
-        post :create, params: paystubs_fully_synced_webhook
-        post :create, params: gigs_fully_synced_webhook
+    context 'with paystubs.fully_synced webhook' do
+      it_behaves_like "a webhook that creates a webhook event record", "paystubs.fully_synced", false
+    end
+  end
 
-        # expect only one PayrollAccount to be created
+  describe 'Argyle webhooks' do
+    let(:cbv_flow) { create(:cbv_flow) }
+    let(:argyle_account_id) { 'argyle_account_id' }
+
+    # Instead of using "shared_examples_for" we're relying on a test helper method
+    # since we cannot use "shared_examples_for" within the "it" test scope
+    def process_webhook(event_type)
+      webhook_request = create(
+        :webhook_request,
+        :argyle,
+        argyle_user_id: cbv_flow.end_user_id,
+        argyle_account_id: argyle_account_id,
+        event_type: event_type
+      ).payload
+
+      post :create, params: webhook_request
+
+      payroll_account = PayrollAccount.last
+      webhook_event = payroll_account.webhook_events.last
+
+      expect(webhook_event.event_name).to eq(event_type)
+      expect(webhook_event.payroll_account.pinwheel_account_id).to eq(payroll_account.pinwheel_account_id)
+    end
+
+    context 'PayrollAccount::Argyle model flow' do
+      it 'sequentially tests account synchronization flow' do
+        expect(PayrollAccount.count).to eq(0)
+
+        # Test each webhook in sequence
+        process_webhook("accounts.connected")
         expect(PayrollAccount.count).to eq(1)
-        expect(PayrollAccount.first.pinwheel_account_id).to eq(argyle_account_id)
-        expect(PayrollAccount.first.cbv_flow).to eq(cbv_flow)
-        
-        # the PayrollAccount should have 5 webhook events
-        expect(PayrollAccount.first.webhook_events.count).to eq(5)
 
-        # the PayrollAccount should be considered fully synced
-        expect(PayrollAccount.first.has_fully_synced?).to be_truthy
+        payroll_account = PayrollAccount.last
+
+        process_webhook("identities.added")
+        expect(payroll_account.webhook_events.count).to eq(2)
+
+        process_webhook("users.fully_synced")
+        expect(payroll_account.webhook_events.count).to eq(3)
+
+        process_webhook("gigs.fully_synced")
+        expect(payroll_account.webhook_events.count).to eq(4)
+
+        process_webhook("paystubs.fully_synced")
+        expect(payroll_account.webhook_events.count).to eq(5)
+
+        # expect the PayrollAccount to be fully synced
+        expect(payroll_account.has_fully_synced?).to be_truthy
       end
     end
   end

@@ -6,6 +6,10 @@ FactoryBot.define do
     last_name { "Doe" }
     snap_application_date { Date.yesterday.strftime("%m/%d/%Y") }
 
+    # Factory bot needs this to instantiate the proper subclass
+    # @see https://stackoverflow.com/questions/57504422/how-to-make-factorybot-return-the-right-sti-sub-class
+    initialize_with { CbvApplicant.sti_class_for(client_agency_id).new }
+
     trait :nyc do
       client_agency_id { "nyc" }
 
