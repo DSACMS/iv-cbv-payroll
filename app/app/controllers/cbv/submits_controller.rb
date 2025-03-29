@@ -210,7 +210,7 @@ class Cbv::SubmitsController < Cbv::BaseController
 
   def generate_confirmation_code(prefix = nil)
     [
-      prefix,
+      prefix.gsub("_", ""),
       (Time.now.to_i % 36 ** 3).to_s(36).tr("OISB", "0158").rjust(3, "0"),
       @cbv_flow.id.to_s.rjust(4, "0")
     ].compact.join.upcase

@@ -1,0 +1,15 @@
+require 'rails_helper'
+
+RSpec.describe CbvApplicant::AzDes, type: :model do
+  let(:ma_attributes) { attributes_for(:cbv_applicant, :az_des) }
+
+  context "user input is invalid" do
+    it "requires case_number" do
+      applicant = CbvApplicant.new(ma_attributes.without(:case_number))
+      expect(applicant).not_to be_valid
+      expect(applicant.errors[:case_number]).to include(
+        I18n.t('activerecord.errors.models.cbv_applicant/az_des.attributes.case_number.blank'),
+      )
+    end
+  end
+end
