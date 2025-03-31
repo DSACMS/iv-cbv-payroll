@@ -178,6 +178,7 @@ es:
         page_header: Submit your income report
         pdf:
           agency_header_name:
+            az_des: Department of Economic Security
             ma: Massachusetts Department of Transitional Assistance
             nyc: NYC Human Resources Administration
             sandbox: CBV Test Agency
@@ -349,10 +350,12 @@ es:
       weekly: semanal
   shared:
     agency_full_name:
+      az_des: Departamento de Seguridad Económica de Arizona
       ma: Departamento de Asistencia Transitoria de Massachusetts
       nyc: New York City Human Resources Administration
       sandbox: Agencia de pruebas CBV
     app_name:
+      az_des: MyFamilyBenefits
       ma: DTA Connect
       nyc: ACCESS HRA
       sandbox: CBVApp
@@ -365,12 +368,14 @@ es:
     header:
       aria_label: Menú principal
       cbv_flow_title:
+        az_des: Departamento de Seguridad Económica
         ma: Departamento de Asistencia Transitoria
         nyc: Administración de Recursos Humanos
         sandbox: Agencia de pruebas CBV
       close: Cerrar
       log_out: Cerrar sesión
       preheader:
+        az_des: Un sitio web en colaboración el Departamento de Seguridad Económica de Arizona.
         default: Un sitio web en colaboración con la Agencia de pruebas CBV.
         ma: Un sitio web en colaboración con el Estado de Massachusetts.
         nyc: Un sitio web en colaboración con la Ciudad de Nueva York.
