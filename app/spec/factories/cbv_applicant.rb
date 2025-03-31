@@ -35,5 +35,17 @@ FactoryBot.define do
         6.times.map { ('A'..'Z').to_a.sample }.join
       end
     end
+
+    trait :az_des do
+      client_agency_id { "az_des" }
+      first_name { nil }
+      middle_name { nil }
+      last_name { nil }
+
+      case_number do
+        # TODO: Determine actual AZ DES case number format.
+        8.times.map { rand(10) }.join
+      end
+    end
   end
 end

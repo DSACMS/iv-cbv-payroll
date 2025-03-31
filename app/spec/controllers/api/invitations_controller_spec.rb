@@ -2,15 +2,15 @@ require "rails_helper"
 
 RSpec.describe Api::InvitationsController do
   describe "#create" do
-    # must be existing user
+    let(:client_agency_id) { "ma".to_sym }
     let(:api_access_token_instance) do
-      user = create(:user, :with_access_token, email: "test@test.com", client_agency_id: 'ma', is_service_account: true)
+      user = create(:user, :with_access_token, email: "test@test.com", client_agency_id: client_agency_id, is_service_account: true)
       user.api_access_tokens.first
     end
 
     let(:valid_params) do
-      attributes_for(:cbv_flow_invitation, :ma).tap do |params|
-        params[:agency_partner_metadata] = attributes_for(:cbv_applicant, :ma)
+      attributes_for(:cbv_flow_invitation, client_agency_id).tap do |params|
+        params[:agency_partner_metadata] = attributes_for(:cbv_applicant, client_agency_id)
         # ensure that client_agency_id is not considered a valid param. it should be inferred from the api token
         params[:agency_partner_metadata].delete(:client_agency_id)
         params.delete(:client_agency_id)
@@ -38,7 +38,21 @@ RSpec.describe Api::InvitationsController do
         .and change(CbvApplicant, :count).by(1)
 
       invitation = CbvFlowInvitation.last
-      expect(invitation.client_agency_id).to eq("ma")
+      expect(invitation.client_agency_id).to eq(client_agency_id.to_s)
+    end
+
+    context "when inviting a user in AZ DES" do
+      let(:client_agency_id) { "az_des".to_sym }
+
+      it "creates an invitation" do
+        expect do
+          post :create, params: valid_params
+        end.to change(CbvFlowInvitation, :count).by(1)
+          .and change(CbvApplicant, :count).by(1)
+
+        invitation = CbvFlowInvitation.last
+        expect(invitation.client_agency_id).to eq(client_agency_id.to_s)
+      end
     end
 
     context "invalid params" do

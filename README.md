@@ -12,6 +12,8 @@ guide for an introduction to the framework.
 
 ## Setup
 
+Most developers on the team code using macOS, so we recommend that platform if possible. Some of these steps may not apply to other platforms.
+
 1. Install Xcode Command Line Tools: ```xcode-select --install```
 1. Install homebrew dependencies: `brew bundle`
    * rbenv
@@ -60,6 +62,8 @@ guide for an introduction to the framework.
 Environment variables can be set in development using the [dotenv](https://github.com/bkeepers/dotenv) gem.
 
 Any changes to variables in `.env` that should not be checked into git should be set in `.env.local`.
+
+For a list of **which environment variables can be modified for local development**, see the comments in `.env.local`.
 
 If you wish to override a config globally for the `test` Rails environment you can set it in `.env.test.local`.
 However, any config that should be set on other machines should either go into `.env` or be explicitly set as part
