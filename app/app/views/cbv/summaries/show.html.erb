@@ -69,14 +69,10 @@
       </th>
       <th class="padding-3" style="background-color: #d9e8f6; text-align: right;">
         <h4 class="margin-0">
-          <a class="usa-link" href="<%= cbv_flow_applicant_information_path(force_show: true) %>">
-            <svg class="usa-icon usa-icon--size-1" aria-hidden="true" role="img">
-              <use
-                xlink:href="<%= asset_path("@uswds/uswds/dist/img/sprite.svg#edit") %>"
-              ></use>
-            </svg>
+          <%= link_to cbv_flow_applicant_information_path, class: "usa-link" do %>
+            <%= image_tag "@uswds/uswds/dist/img/usa-icons/edit.svg", role: "img", alt: "" %>
             Edit
-          </a>
+          <% end %>
         </h4>
       </th>
           </tr>
