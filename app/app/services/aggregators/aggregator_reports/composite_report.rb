@@ -18,19 +18,39 @@ module Aggregators::AggregatorReports
         @incomes += aggregator_report.incomes
         @paystubs += aggregator_report.paystubs
 
-        @from_date = aggregator_report.from_date if earlier_date(aggregator_report.from_date, @from_date)
-        @to_date = aggregator_report.to_date if earlier_date(@to_date, aggregator_report.to_date)
+        @from_date = earlier_date(aggregator_report.from_date, @from_date)
+        @to_date = later_date(@to_date, aggregator_report.to_date)
       end
       @has_fetched = true
     end
 
     def earlier_date(a, b)
-      if a.present? and b.present?
-        Date.parse(a) < Date.parse(b)
+      if a.present? && b.present?
+        if Date.parse(a) < Date.parse(b)
+          a
+        else
+          b
+        end
       elsif a.present?
-        Date.parse(a)
+        a
       elsif b.present?
-        Date.parse(b)
+        b
+      else
+        nil
+      end
+    end
+
+    def later_date(a, b)
+      if a.present? && b.present?
+        if Date.parse(a) > Date.parse(b)
+          a
+        else
+          b
+        end
+      elsif a.present?
+        a
+      elsif b.present?
+        b
       else
         nil
       end
