@@ -22,9 +22,9 @@ module Aggregators::Sdk
     EMPLOYMENTS_ENDPOINT = "employments"
 
     def initialize(environment, api_key_id = nil, api_key_secret = nil)
+      @environment = ENVIRONMENTS.fetch(environment.to_sym) { |env| raise KeyError.new("ArgyleService unknown environment: #{env}") }
       @api_key_id = api_key_id || ENVIRONMENTS.fetch(environment.to_sym)[:api_key_id]
       @api_key_secret = api_key_secret || ENVIRONMENTS.fetch(environment.to_sym)[:api_key_secret]
-      @environment = ENVIRONMENTS.fetch(environment.to_sym) { |env| raise KeyError.new("ArgyleService unknown environment: #{env}") }
 
       client_options = {
         request: {

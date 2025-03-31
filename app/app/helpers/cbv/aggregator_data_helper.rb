@@ -3,7 +3,7 @@ module Cbv::AggregatorDataHelper
   include Aggregators::AggregatorReports
 
   def set_aggregator_report
-    if has_payroll_accounts("pinwheel") and has_payroll_accounts("argyle")
+    if has_payroll_accounts("pinwheel") && has_payroll_accounts("argyle")
       @aggregator_report = CompositeReport([ make_pinwheel_report, make_argyle_report ])
     elsif has_payroll_accounts("pinwheel")
       @aggregator_report = make_pinwheel_report

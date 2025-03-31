@@ -38,32 +38,30 @@
 <% end %>
 
 <%= render(TableComponent.new) do |table| %>
-<%= table.with_header do %>
-<h3 class="margin-0"><%= t("cbv.payment_details.show.payments_and_deductions_table_header") %></h3>
-<% end %>
+  <%= table.with_header do %>
+  <h3 class="margin-0"><%= t("cbv.payment_details.show.payments_and_deductions_table_header") %></h3>
+  <% end %>
 
-<% if @payroll_account_report.paystubs.any? %>
-<% @payroll_account_report.paystubs.each do |payment| %>
-<%= table.with_row_section do |row| %>
-<h4 class="margin-0"><%= t("cbv.payment_details.show.pay_date", pay_date: format_date(payment.pay_date)) %></h4>
-<% end %>
-
-<%= table.with_data_point(:pay_period, payment.start, payment.end) %>
-<%= table.with_data_point(:pay_gross, payment.gross_pay_amount) %>
-<%= table.with_data_point(:number_of_hours_worked, payment.hours) %>
-<% payment.hours_by_earning_category.each do |category, total_hours| %>
-<%= table.with_data_point(:earnings_entry, category, total_hours) %>
-<% end %>
-<%= table.with_data_point(:net_pay_amount, payment.net_pay_amount) %>
-<% payment.deductions.filter { |deduction| deduction.amount > 0 }.each do |deduction| %>
-<%= table.with_data_point(:deduction, deduction.category, deduction.amount) %>
-<% end %>
-
-<%= table.with_data_point(:pay_gross_ytd, payment.gross_pay_ytd) %>
-<% end %>
-<% else %>
-<%= table.with_row(t(".none_found")) %>
-<% end %>
+  <% if @payroll_account_report.paystubs.any? %>
+    <% @payroll_account_report.paystubs.each do |payment| %>
+      <%= table.with_row_section do |row| %>
+        <h4 class="margin-0"><%= t("cbv.payment_details.show.pay_date", pay_date: format_date(payment.pay_date)) %></h4>
+      <% end %>
+      <%= table.with_data_point(:pay_period, payment.start, payment.end) %>
+      <%= table.with_data_point(:pay_gross, payment.gross_pay_amount) %>
+      <%= table.with_data_point(:number_of_hours_worked, payment.hours) %>
+      <% payment.hours_by_earning_category.each do |category, total_hours| %>
+        <%= table.with_data_point(:earnings_entry, category, total_hours) %>
+      <% end %>
+      <%= table.with_data_point(:net_pay_amount, payment.net_pay_amount) %>
+      <% payment.deductions.filter { |deduction| deduction.amount > 0 }.each do |deduction| %>
+        <%= table.with_data_point(:deduction, deduction.category, deduction.amount) %>
+      <% end %>
+      <%= table.with_data_point(:pay_gross_ytd, payment.gross_pay_ytd) %>
+    <% end %>
+  <% else %>
+    <%= table.with_row(t(".none_found")) %>
+  <% end %>
 <% end %>
 
 <div class="usa-form-group margin-top-5">
