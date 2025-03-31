@@ -50,7 +50,7 @@ class Cbv::EmployerSearchesController < Cbv::BaseController
       invitation_id: @cbv_flow.cbv_flow_invitation_id
     })
   rescue => ex
-    Rails.logger.error "Unable to track NewRelic event (ApplicantClickedPopularPayrollProviders): #{ex}"
+    Rails.logger.error "Unable to track event (ApplicantClickedPopularPayrollProviders): #{ex}"
   end
 
   def track_clicked_popular_app_employers_event
@@ -61,7 +61,7 @@ class Cbv::EmployerSearchesController < Cbv::BaseController
       invitation_id: @cbv_flow.cbv_flow_invitation_id
     })
   rescue => ex
-    Rails.logger.error "Unable to track NewRelic event (ApplicantClickedPopularAppEmployers): #{ex}"
+    Rails.logger.error "Unable to track event (ApplicantClickedPopularAppEmployers): #{ex}"
   end
 
   def track_accessed_search_event
@@ -74,7 +74,7 @@ class Cbv::EmployerSearchesController < Cbv::BaseController
       invitation_id: @cbv_flow.cbv_flow_invitation_id
     })
   rescue => ex
-    Rails.logger.error "Unable to track NewRelic event (ApplicantAccessedSearchPage): #{ex}"
+    Rails.logger.error "Unable to track event (ApplicantAccessedSearchPage): #{ex}"
   end
 
   def track_applicant_searched_event
@@ -87,11 +87,11 @@ class Cbv::EmployerSearchesController < Cbv::BaseController
       invitation_id: @cbv_flow.cbv_flow_invitation_id,
       num_results: @employers.length,
       has_payroll_account: @has_payroll_account,
-      pinwheel_result_count: @@pinwheel_search_result_count,
+      pinwheel_result_count: @pinwheel_search_result_count,
       argyle_result_count: @argyle_search_result_count,
       query: search_params[:query]
     })
   rescue => ex
-    Rails.logger.error "Unable to track NewRelic event (ApplicantSearchedForEmployer): #{ex}"
+    Rails.logger.error "Unable to track event (ApplicantSearchedForEmployer): #{ex}"
   end
 end

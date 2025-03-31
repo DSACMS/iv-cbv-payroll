@@ -27,8 +27,6 @@ class NewRelicEventTracker
   end
 
   def track(event_type, request, attributes = {})
-    puts "ATT"
-    puts attributes
     # Map to the old NewRelic event name if present, otherwise just send NewRelic the event_type name
     newrelic_event_type = NEWRELIC_EVENT_MAP[event_type] || event_type
 
