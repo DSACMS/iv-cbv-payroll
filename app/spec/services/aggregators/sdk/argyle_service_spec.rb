@@ -20,7 +20,7 @@ RSpec.describe Aggregators::Sdk::ArgyleService, type: :service do
       let(:service) { Aggregators::Sdk::ArgyleService.new("sandbox") }
 
       it 'initializes with the correct environment' do
-        expect(service.environment[:environment]).to eq("sandbox")
+        expect(service.configuration[:environment]).to eq("sandbox")
       end
     end
 
@@ -28,7 +28,7 @@ RSpec.describe Aggregators::Sdk::ArgyleService, type: :service do
       let(:service) { Aggregators::Sdk::ArgyleService.new("production") }
 
       it 'initializes with the correct environment' do
-        expect(service.environment[:environment]).to eq("production")
+        expect(service.configuration[:environment]).to eq("production")
       end
     end
 
@@ -36,7 +36,7 @@ RSpec.describe Aggregators::Sdk::ArgyleService, type: :service do
       let(:service) { Aggregators::Sdk::ArgyleService.new("sandbox") }
 
       it 'initializes with the correct environment' do
-        expect(service.environment[:environment]).to eq("sandbox")
+        expect(service.configuration[:environment]).to eq("sandbox")
       end
     end
 
@@ -49,8 +49,8 @@ RSpec.describe Aggregators::Sdk::ArgyleService, type: :service do
       end
 
       it 'initializes with the correct environment' do
-        expect(implicitly_declared_service.environment[:environment]).to eq("sandbox")
-        expect(implicitly_declared_service.environment[:webhook_secret]).to eq(env_implied_webhook_secret)
+        expect(implicitly_declared_service.configuration[:environment]).to eq("sandbox")
+        expect(implicitly_declared_service.configuration[:webhook_secret]).to eq(env_implied_webhook_secret)
       end
     end
 
@@ -62,8 +62,8 @@ RSpec.describe Aggregators::Sdk::ArgyleService, type: :service do
       let(:explicitly_declared_service) { Aggregators::Sdk::ArgyleService.new("sandbox", "FAKE_API_KEY", api_key_secret, webhook_secret) }
 
       it 'initializes with the correct environment' do
-        expect(explicitly_declared_service.environment[:environment]).to eq("sandbox")
-        expect(explicitly_declared_service.environment[:webhook_secret]).to eq(webhook_secret)
+        expect(explicitly_declared_service.configuration[:environment]).to eq("sandbox")
+        expect(explicitly_declared_service.configuration[:webhook_secret]).to eq(webhook_secret)
       end
     end
   end

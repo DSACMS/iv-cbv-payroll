@@ -8,10 +8,10 @@ module Aggregators::Sdk
   class ArgyleService
     include ApiService
 
-    # Configure the configuration mappings with lambdas for lazy evaluation
+    # Configure the configuration mappings with lambdas for lazy evaluation.
     # This allows us to evaluate the environment variables only when they are needed
-    # mock the environment variables for testing.
-    # Defining the configuration as a const means that the configuration is evaluated
+    # and mock the environment variables for testing.
+    # Defining the configuration as a constant means that the configuration is evaluated
     # when the class is loaded, not when the instance is created.
     configure(
       {
@@ -46,13 +46,13 @@ module Aggregators::Sdk
     WEBHOOKS_ENDPOINT = "webhooks"
 
     def initialize(environment, api_key_id = nil, api_key_secret = nil, webhook_secret = nil)
-      @environment = self.class.get_environment(environment)
+      @configuration = get_configuration(environment)
 
       # prioritize the constructor args over the environment variables
-      @environment[:api_key_id] = api_key_id if api_key_id
-      @environment[:api_key_secret] = api_key_secret if api_key_secret
-      @environment[:webhook_secret] = webhook_secret if webhook_secret
-      @webhook_secret = @environment[:webhook_secret]
+      @configuration[:api_key_id] = api_key_id if api_key_id
+      @configuration[:api_key_secret] = api_key_secret if api_key_secret
+      @configuration[:webhook_secret] = webhook_secret if webhook_secret
+      @webhook_secret = @configuration[:webhook_secret]
 
       client_options = {
         request: {
@@ -60,13 +60,13 @@ module Aggregators::Sdk
           timeout: 5,
           params_encoder: Faraday::FlatParamsEncoder
         },
-        url: @environment[:base_url],
+        url: @configuration[:base_url],
         headers: {
           "Content-Type" => "application/json"
         }
       }
       @http = Faraday.new(client_options) do |conn|
-        conn.set_basic_auth @environment[:api_key_id], @environment[:api_key_secret]
+        conn.set_basic_auth @configuration[:api_key_id], @configuration[:api_key_secret]
         conn.response :raise_error
         conn.response :json, content_type: "application/json"
         conn.response :logger,
@@ -81,7 +81,7 @@ module Aggregators::Sdk
       make_request(:get, WEBHOOKS_ENDPOINT)
     end
 
-    def create_webhook_subscription(events, url, name, webhook_secret = @webhook_secret)
+    def create_webhook_subscription(events, url, name, webhook_secret = @configuration[:webhook_secret])
       payload = {
         events: events,
         name: name,

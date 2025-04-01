@@ -2,7 +2,7 @@ module ApiService
   extend ActiveSupport::Concern
 
   included do
-    attr_reader :environment
+    attr_reader :configuration
 
     # Add class methods to any class that includes this module
     class_object = self
@@ -19,22 +19,30 @@ module ApiService
         @default_config_key
       end
 
-      def get_environment(env = nil)
-        env_sym = env&.to_sym
+      def get_configuration(config_key = nil)
+        config_key_sym = config_key&.to_sym
 
         # First try the requested environment
-        if env_sym && @configuration_mapping.key?(env_sym)
-          return @configuration_mapping[env_sym].call
+        if config_key_sym && @configuration_mapping.key?(config_key_sym)
+          @configuration = @configuration_mapping[config_key_sym].call
         end
 
         # If that fails, try the default environment
         if @default_config_key
-          return @configuration_mapping[@default_config_key].call
+          @configuration = @configuration_mapping[@default_config_key].call
         end
 
-        raise ArgumentError, "Invalid environment: #{env}. No default environment configured."
+        if @configuration.nil?
+          raise ArgumentError, "Could not find configuration for '#{config_key}'"
+        end
+
+        @configuration
       end
     end
+  end
+
+  def get_configuration(config_key = nil)
+    self.class.get_configuration(config_key)
   end
 
   def build_url(endpoint)
