@@ -45,7 +45,7 @@ module ArgyleApiHelper
   end
 
   def stub_get_webhook_subscriptions_response
-    stub_request(:get, /#{ArgyleService::WEBHOOKS_ENDPOINT}/)
+    stub_request(:get, /#{Aggregators::Sdk::ArgyleService::WEBHOOKS_ENDPOINT}/)
       .to_return(
         status: 200,
         body:   @webhooks.to_json,
@@ -54,7 +54,7 @@ module ArgyleApiHelper
   end
 
   def stub_create_webhook_subscription_response
-    stub_request(:post, /#{ArgyleService::WEBHOOKS_ENDPOINT}/)
+    stub_request(:post, /#{Aggregators::Sdk::ArgyleService::WEBHOOKS_ENDPOINT}/)
       .to_return do |_|
       response = load_relative_json_file('argyle', 'response_create_webhook_subscription.json')
       {
@@ -66,7 +66,7 @@ module ArgyleApiHelper
   end
 
   def stub_delete_webhook
-    stub_request(:delete, /#{ArgyleService::WEBHOOKS_ENDPOINT}\/(.*)/)
+    stub_request(:delete, /#{Aggregators::Sdk::ArgyleService::WEBHOOKS_ENDPOINT}\/(.*)/)
       .to_return do |request|
       webhook_id = request.uri.path.split('/').last
       @webhooks['results'].reject! { |webhook| webhook['id'] == webhook_id }

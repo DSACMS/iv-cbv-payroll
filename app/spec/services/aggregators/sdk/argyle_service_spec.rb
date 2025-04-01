@@ -8,6 +8,7 @@ RSpec.describe Aggregators::Sdk::ArgyleService, type: :service do
   let(:service) { Aggregators::Sdk::ArgyleService.new("sandbox", "FAKE_API_KEY") }
   let(:account_id) { 'account123' }
   let(:user_id) { 'user123' }
+  let(:webhook_secret) { 'test_webhook_secret' }
 
   before(:all) do
     @test_fixture_directory = 'argyle'
@@ -20,12 +21,12 @@ RSpec.describe Aggregators::Sdk::ArgyleService, type: :service do
     end
 
     it 'calls the correct endpoint' do
-      service.fetch_identities_api()
+      service.fetch_identities_api
       expect(requests.first.uri.to_s).to include("/v2/identities")
     end
 
     it 'sets limit of 100 identities by default' do
-      service.fetch_identities_api()
+      service.fetch_identities_api
       expect(requests.first.uri.query).to include("limit=10")
     end
 
@@ -49,7 +50,7 @@ RSpec.describe Aggregators::Sdk::ArgyleService, type: :service do
     end
 
     it 'returns a non-empty response' do
-      response = service.fetch_identities_api()
+      response = service.fetch_identities_api
       expect(response).not_to be_empty
       expect(response).to be_an_instance_of(Hash)
       expect(response).to have_key("results")
@@ -60,7 +61,7 @@ RSpec.describe Aggregators::Sdk::ArgyleService, type: :service do
       stub_request(:get, "https://api-sandbox.argyle.com/v2/identities?limit=10")
       .to_return(status: 500, body: "", headers: {})
 
-      expect { service.fetch_identities_api() }.to raise_error(Faraday::ServerError)
+      expect { service.fetch_identities_api }.to raise_error(Faraday::ServerError)
     end
   end
 
@@ -71,12 +72,12 @@ RSpec.describe Aggregators::Sdk::ArgyleService, type: :service do
     end
 
     it 'calls the correct endpoint' do
-      service.fetch_accounts_api()
+      service.fetch_accounts_api
       expect(requests.first.uri.to_s).to include("/v2/accounts")
     end
 
     it 'sets limit of 10 accounts by default' do
-      service.fetch_accounts_api()
+      service.fetch_accounts_api
       expect(requests.first.uri.query).to include("limit=10")
     end
 
@@ -104,7 +105,7 @@ RSpec.describe Aggregators::Sdk::ArgyleService, type: :service do
     end
 
     it 'returns a non-empty response' do
-      response = service.fetch_accounts_api()
+      response = service.fetch_accounts_api
       expect(response).not_to be_empty
       expect(response).to be_an_instance_of(Hash)
       expect(response).to have_key("results")
@@ -115,7 +116,7 @@ RSpec.describe Aggregators::Sdk::ArgyleService, type: :service do
       stub_request(:get, "https://api-sandbox.argyle.com/v2/accounts?limit=10")
       .to_return(status: 500, body: "", headers: {})
 
-      expect { service.fetch_accounts_api() }.to raise_error(Faraday::ServerError)
+      expect { service.fetch_accounts_api }.to raise_error(Faraday::ServerError)
     end
   end
 
@@ -125,11 +126,11 @@ RSpec.describe Aggregators::Sdk::ArgyleService, type: :service do
       stub_request_paystubs_response("bob")
     end
     it 'calls the correct endpoint' do
-      service.fetch_paystubs_api()
+      service.fetch_paystubs_api
       expect(requests.first.uri.to_s).to include("/v2/paystubs")
     end
     it 'sets limit of 100 paystubs by default' do
-      service.fetch_paystubs_api()
+      service.fetch_paystubs_api
       expect(requests.first.uri.query).to include("limit=200")
     end
     it 'accepts param account' do
@@ -152,7 +153,7 @@ RSpec.describe Aggregators::Sdk::ArgyleService, type: :service do
     end
 
     it 'returns a non-empty response' do
-      response = service.fetch_paystubs_api()
+      response = service.fetch_paystubs_api
       expect(response).not_to be_empty
       expect(response).to be_an_instance_of(Hash)
       expect(response).to have_key("results")
@@ -163,14 +164,14 @@ RSpec.describe Aggregators::Sdk::ArgyleService, type: :service do
       stub_request(:get, "https://api-sandbox.argyle.com/v2/paystubs?limit=200")
       .to_return(status: 500, body: "", headers: {})
 
-      expect { service.fetch_paystubs_api() }.to raise_error(Faraday::ServerError)
+      expect { service.fetch_paystubs_api }.to raise_error(Faraday::ServerError)
     end
 
     it 'raises Pagination not implemented error if a new page is found.' do
       stub_request(:get, "https://api-sandbox.argyle.com/v2/paystubs?limit=200")
       .to_return(status: 200, body: { "next": "https://next-page-url" }.to_json, headers: {})
 
-      expect { service.fetch_paystubs_api() }.to raise_error("Pagination not implemented")
+      expect { service.fetch_paystubs_api }.to raise_error("Pagination not implemented")
     end
   end
 
@@ -190,7 +191,7 @@ RSpec.describe Aggregators::Sdk::ArgyleService, type: :service do
     end
 
     it 'rejects empty params' do
-      expect { service.fetch_employments_api() }.to raise_error(ArgumentError)
+      expect { service.fetch_employments_api }.to raise_error(ArgumentError)
     end
 
     it 'returns a non-empty response' do

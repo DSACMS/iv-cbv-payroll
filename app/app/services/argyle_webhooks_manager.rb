@@ -6,7 +6,7 @@
 class ArgyleWebhooksManager
   def initialize
     @sandbox_config = Rails.application.config.client_agencies["sandbox"]
-    @argyle = ArgyleService.new(@sandbox_config.argyle_environment)
+    @argyle = Aggregators::Sdk::ArgyleService.new(@sandbox_config.argyle_environment)
   end
 
   def existing_subscriptions_with_name(formatted_identifier_name)

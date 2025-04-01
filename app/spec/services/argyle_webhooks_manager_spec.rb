@@ -11,10 +11,10 @@ RSpec.describe ArgyleWebhooksManager, type: :service do
   let(:existing_subscriptions) do
     all_webhook_subscriptions.find_all { |subscription| subscription["name"] == webhook_name }
   end
-  let(:argyle_service) { instance_double(ArgyleService) }
+  let(:argyle_service) { instance_double(Aggregators::Sdk::ArgyleService) }
   let(:argyle_webhooks_manager) do
     # Allow the test to use our mocked ArgyleService
-    allow(ArgyleService).to receive(:new).and_return(argyle_service)
+    allow(Aggregators::Sdk::ArgyleService).to receive(:new).and_return(argyle_service)
     described_class.new
   end
   let(:create_webhook_subscription_response) { load_relative_json_file('argyle', 'response_create_webhook_subscription.json') }

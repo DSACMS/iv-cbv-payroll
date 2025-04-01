@@ -130,14 +130,14 @@ module PinwheelApiHelper
       )
   end
 
-  def load_relative_file(filename)
-    File.read(File.join(
-      File.dirname(__FILE__),
-      "fixtures/pinwheel/#{filename}"
-    ))
-  end
-
-  def load_relative_json_file(filename)
-    JSON.parse(load_relative_file(filename))
-  end
+  # def load_relative_file(filename)
+  #   File.read(File.join(
+  #     File.dirname(__FILE__),
+  #     "fixtures/pinwheel/#{filename}"
+  #   ))
+  # end
+  #
+  # def load_relative_json_file(filename)
+  #   JSON.parse(load_relative_file(filename))
+  # end
 end
