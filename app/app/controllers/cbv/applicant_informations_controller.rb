@@ -1,5 +1,4 @@
 class Cbv::ApplicantInformationsController < Cbv::BaseController
-  include Cbv::PinwheelDataHelper
   before_action :set_cbv_applicant, only: %i[show update]
   before_action :redirect_when_in_invitation_flow, :redirect_when_info_present, only: :show
 

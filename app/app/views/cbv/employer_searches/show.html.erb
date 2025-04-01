@@ -13,19 +13,18 @@
     <%= f.text_field :query, value: @query, class: "usa-input", type: "search" %>
     <button
       class="usa-button"
-      type="submit"
-    >
-      <span class="usa-search__submit-text">
-        <%= t(".search") %>
-      </span>
-      <%= image_tag "@uswds/uswds/dist/img/usa-icons-bg/search--white.svg", class: "usa-search__submit-icon", alt: "Search" %>
+      type="submit">
+        <span class="usa-search__submit-text">
+            <%= t(".search") %>
+        </span>
+        <%= image_tag "@uswds/uswds/dist/img/usa-icons-bg/search--white.svg", class: "usa-search__submit-icon", alt: "Search" %>
     </button>
   <% end %>
 
   <%= render partial: "employer", locals: { employer: @employers } %>
 
   <%= form_with url: next_path, method: :get, class: "display-none", data: { 'cbv-employer-search-target': "form" } do |f| %>
-    <input type="hidden" name="user[account_id]" data-cbv-employer-search-target="userAccountId" >
+    <input type="hidden" name="user[account_id]" data-cbv-employer-search-target="userAccountId">
   <% end %>
 
   <h2><%= t(".popular_providers") %></h2>
@@ -40,28 +39,24 @@
     </div>
 
     <div class="grid-row grid-gap margin-top-2">
-      <% (@selected_tab == "payroll" ? PinwheelService::TOP_PROVIDERS : PinwheelService::TOP_EMPLOYERS).each do |provider| %>
+      <% (@selected_tab == "payroll" ? Aggregators::Sdk::PinwheelService::TOP_PROVIDERS : Aggregators::Sdk::PinwheelService::TOP_EMPLOYERS).each do |provider| %>
         <div class="grid-col-4 tablet:grid-col-2 margin-top-2">
-          <button
-            data-action="click->cbv-employer-search#select"
-            data-id="<%= provider[:id] %>"
-            data-name="<%= provider[:name] %>"
-            data-response-type="<%= provider[:response_type] %>"
-            data-provider-name="pinwheel"
-            data-is-default-option="true"
-            data-cbv-employer-search-target="employerButton"
-            type="button"
-            class="width-full usa-button usa-button--outline box-shadow-gray"
-          >
-            <figure class="margin-0 pointer-events-none">
-              <img
-                class="usa-icon--size-7 radius-pill width-6 height-6"
-                src="<%= provider[:logo_url] %>"
-                alt=""
-              >
-              <figcaption class="margin-top-1"><%= provider[:name] %></figcaption>
-            </figure>
-          </button>
+            <button data-action="click->cbv-employer-search#select"
+                    data-id="<%= provider[:id] %>"
+                    data-name="<%= provider[:name] %>"
+                    data-response-type="<%= provider[:response_type] %>"
+                    data-provider-name="pinwheel"
+                    data-is-default-option="true"
+                    data-cbv-employer-search-target="employerButton"
+                    type="button"
+                    class="width-full usa-button usa-button--outline box-shadow-gray">
+                <figure class="margin-0 pointer-events-none">
+                    <img class="usa-icon--size-7 radius-pill width-6 height-6"
+                         src="<%= provider[:logo_url] %>"
+                         alt="">
+                    <figcaption class="margin-top-1"><%= provider[:name] %></figcaption>
+                </figure>
+            </button>
         </div>
       <% end %>
     </div>

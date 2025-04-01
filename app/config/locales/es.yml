@@ -176,6 +176,7 @@ es:
           sandbox: SNAP application or recertification interview date
         pdf:
           agency_header_name:
+            az_des: Department of Economic Security
             ma: Massachusetts Department of Transitional Assistance
             nyc: NYC Human Resources Administration
             sandbox: CBV Test Agency
@@ -218,7 +219,8 @@ es:
           ma: Marque esta casilla para confirmar que, a su leal saber y entender, la información proporcionada por usted es verdadera y completa. Usted se compromete a informar al DTA sobre cualquier ingreso no reflejado en este informe o cualquier discrepancia hallada en la información recopilada con esta herramienta. Usted entiende que suministrar información precisa y completa es su responsabilidad, y que cualquier información falsa u omitida puede tener consecuencias legales. Para obtener más información sobre sus derechos y responsabilidades en relación a la información privada que comparte con el DTA, consulte los Derechos y Responsabilidades que firmó en la solicitud, que se encuentran en <a href="https://www.mass.gov/lists/department-of-transitional-assistance-rights-responsibilities-and-penalties">Mass.gov</a>. <br/><br/>Al enviar este informe, usted autoriza el uso de esta verificación de ingresos por parte de personal autorizado del DTA.
           nyc: Marque esta casilla para confirmar que, a su leal saber y entender, la información proporcionada por usted es verdadera y completa. Usted accede a informar a la Administración de Recursos Humanos (HRA) de la Ciudad de Nueva York (NYC, por sus siglas en inglés) de cualquier ingreso no reflejado en este informe o cualquier discrepancia encontrada en la información recopilada con esta herramienta. Usted entiende que suministrar información precisa y completa es su responsabilidad, y que cualquier información falsa u omitida puede tener consecuencias legales.<br/><br/>Al enviar este informe, autoriza su uso para la verificación de los ingresos por parte del personal autorizado de la HRA.
           sandbox: Marque esta casilla para confirmar que, a su leal saber y entender, la información proporcionada por usted es verdadera y completa. Usted se compromete a informar a la Agencia de pruebas CBV sobre cualquier ingreso no reflejado en este informe o cualquier discrepancia hallada en la información recopilada con esta herramienta. Usted entiende que suministrar información precisa y completa es su responsabilidad, y que cualquier información falsa u omitida puede tener consecuencias legales. <br/><br/>Al enviar este informe, autoriza su uso para la verificación de los ingresos por parte del personal autorizado del CBV.
-        description: The report below has your income from the past 90 days, from  %{start_date} to %{end_date}. Please review it before sending.
+        description: The report below has your income from the past 90 days, from %{start_date} to %{end_date}. Please review it before sending.
+        header: Review your income report
         none_found: No encontramos ningún pago de este empleador en los últimos 90 días.
         payment: Pago de %{amount} antes de pago impuestos en %{date}
         phone_number: Teléfono del empleador
@@ -340,10 +342,12 @@ es:
       weekly: semanal
   shared:
     agency_full_name:
+      az_des: Departamento de Seguridad Económica de Arizona
       ma: Departamento de Asistencia Transitoria de Massachusetts
       nyc: New York City Human Resources Administration
       sandbox: Agencia de pruebas CBV
     app_name:
+      az_des: MyFamilyBenefits
       ma: DTA Connect
       nyc: ACCESS HRA
       sandbox: CBVApp
@@ -356,12 +360,14 @@ es:
     header:
       aria_label: Menú principal
       cbv_flow_title:
+        az_des: Departamento de Seguridad Económica
         ma: Departamento de Asistencia Transitoria
         nyc: Administración de Recursos Humanos
         sandbox: Agencia de pruebas CBV
       close: Cerrar
       log_out: Cerrar sesión
       preheader:
+        az_des: Un sitio web en colaboración el Departamento de Seguridad Económica de Arizona.
         default: Un sitio web en colaboración con la Agencia de pruebas CBV.
         ma: Un sitio web en colaboración con el Estado de Massachusetts.
         nyc: Un sitio web en colaboración con la Ciudad de Nueva York.

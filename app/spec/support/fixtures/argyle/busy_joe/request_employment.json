@@ -1,0 +1,40 @@
+{
+  "results": [
+    {
+      "id": "9a24fd47-6dd3-3ccd-90b9-87621f616fdd",
+      "employer": "Walmart",
+      "employment_status": "terminated",
+      "origin": "retrieved",
+      "user": "01958c05-58ae-a867-e2a2-a120af48d140",
+      "account": "01959b16-5b52-2e43-ffcc-06bc8717eb8b",
+      "created_at": "2025-03-15T18:34:58.172Z"
+    },
+    {
+      "id": "c6ff0d2a-28e7-354a-8bf4-7ef78cdfac52",
+      "employer": "Whole Foods",
+      "employment_status": "terminated",
+      "origin": "retrieved",
+      "user": "01958c05-58ae-a867-e2a2-a120af48d140",
+      "account": "01959b15-8b7f-5487-212d-2c0f50e3ec96",
+      "created_at": "2025-03-15T18:34:23.724Z"
+    },
+    {
+      "id": "8fcff3a6-bf0c-3651-8701-8582bc21f452",
+      "employer": "Aramark",
+      "employment_status": "active",
+      "origin": "retrieved",
+      "user": "01958c05-58ae-a867-e2a2-a120af48d140",
+      "account": "01959b15-8b7f-5487-212d-2c0f50e3ec96",
+      "created_at": "2025-03-15T18:34:23.701Z"
+    },
+    {
+      "id": "161440ee-8427-325f-b05f-f1dc507ae6b6",
+      "employer": "Target",
+      "employment_status": "active",
+      "origin": "acquired",
+      "user": "01958c05-58ae-a867-e2a2-a120af48d140",
+      "account": "01958c05-982e-0ff3-47d8-9d469d6d7957",
+      "created_at": "2025-03-12T20:22:26.458Z"
+    }
+  ]
+}

@@ -22,7 +22,7 @@ module TestHelpers
         "earnings" => []
       }
 
-      ResponseObjects::Paystub.from_pinwheel(json)
+      Aggregators::ResponseObjects::Paystub.from_pinwheel(json)
     end
   end
 
@@ -43,7 +43,7 @@ module TestHelpers
         "title" => nil
       }
 
-      ResponseObjects::Employment.from_pinwheel(fields)
+      Aggregators::ResponseObjects::Employment.from_pinwheel(fields)
     end
   end
 
@@ -60,7 +60,7 @@ module TestHelpers
         "pay_frequency" => "bi-weekly"
       }
 
-      ResponseObjects::Income.from_pinwheel(fields)
+      Aggregators::ResponseObjects::Income.from_pinwheel(fields)
     end
   end
 
@@ -94,7 +94,7 @@ module TestHelpers
         ]
       }
 
-      ResponseObjects::Identity.from_pinwheel(fields)
+      Aggregators::ResponseObjects::Identity.from_pinwheel(fields)
     end
   end
 

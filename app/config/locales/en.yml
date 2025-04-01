@@ -11,6 +11,10 @@ en:
               blank: Enter the client's last name.
             snap_application_date:
               invalid_date: Enter today's date or the date you contacted the client.
+        cbv_applicant/az_des:
+          attributes:
+            case_number:
+              blank: Enter the client's case number.
         cbv_applicant/ma:
           attributes:
             agency_id_number:
@@ -70,6 +74,11 @@ en:
         ma: Verify your income to renew your SNAP benefits
   caseworker:
     cbv_flow_invitations:
+      az_des:
+        invite:
+          case_number: Case number
+          email_address: Client's email address
+          language_label: In what language should we send the invitation?
       create:
         invite_failed: 'Error sending invitation to %{email_address}: %{error_message}.'
         invite_success: Successfully delivered invitation to %{email_address}.
@@ -129,6 +138,7 @@ en:
       disabled: Staff portal disabled
       index:
         continue_to_login:
+          default: Continue to log in page
           ma: Continue to DTA log in page
           nyc: Log in with your LAN ID
           sandbox: Continue to CBV Test Agency log in page
@@ -334,6 +344,7 @@ en:
         page_header: Submit your income report
         pdf:
           agency_header_name:
+            az_des: Department of Economic Security
             ma: Massachusetts Department of Transitional Assistance
             nyc: NYC Human Resources Administration
             sandbox: CBV Test Agency
@@ -394,7 +405,7 @@ en:
           ma: Check this box to confirm that the information provided by you is true and complete to the best of your knowledge. You agree to inform DTA of any income not reflected in this report or any discrepancies found in the information gathered with this tool. You understand that providing accurate and complete information is your responsibility, and any false or omitted information may have legal consequences. For more information on your rights and responsibilities regarding private information you share with DTA, please refer to the Rights and Responsibilities you signed at application, found on <a href="https://www.mass.gov/lists/department-of-transitional-assistance-rights-responsibilities-and-penalties">Mass.gov</a>.<br/><br/>By sending this report, you authorize its use for income verification by authorized DTA personnel.
           nyc: Check this box to confirm that the information provided by you is true and complete to the best of your knowledge. You agree to inform NYC Human Resources Administration (HRA) of any income not reflected in this report or any discrepancies found in the information gathered with this tool. You understand that providing accurate and complete information is your responsibility, and any false or omitted information may have legal consequences.<br/><br/>By sending this report, you authorize its use for income verification by authorized HRA personnel.
           sandbox: Check this box to confirm that the information provided by you is true and complete to the best of your knowledge. You agree to inform CBV Test Agency of any income not reflected in this report or any discrepancies found in the information gathered with this tool. You understand that providing accurate and complete information is your responsibility, and any false or omitted information may have legal consequences.<br/><br/>By sending this report, you authorize its use for income verification by authorized CBV personnel.
-        description: The report below has your income from the past 90 days, from  %{start_date} to %{end_date}. Please review it before sending.
+        description: The report below has your income from the past 90 days, from %{start_date} to %{end_date}. Please review it before sending.
         header: Review your income report
         must_match: This must match what is shown on your %{agency_acronym} application.
         none_found: We didn't find any payments from this employer in the past 90 days.
@@ -593,10 +604,12 @@ en:
       heading: Do you need more time?
   shared:
     agency_full_name:
+      az_des: Arizona Department of Economic Security
       ma: Massachusetts Department of Transitional Assistance
       nyc: New York City Human Resources Administration
       sandbox: CBV Test Agency
     app_name:
+      az_des: MyFamilyBenefits
       ma: DTA Connect
       nyc: ACCESS HRA
       sandbox: CBVApp
@@ -609,6 +622,7 @@ en:
     header:
       aria_label: Main navigation
       cbv_flow_title:
+        az_des: Department of Economic Security
         ma: Department of Transitional Assistance
         nyc: Human Resources Administration
         sandbox: CBV Test Agency
@@ -616,6 +630,7 @@ en:
       help: Help
       log_out: Log out
       preheader:
+        az_des: A website in partnership with the Arizona Department of Economic Security.
         default: A website in partnership with CBV Test Agency.
         ma: A website in partnership with the Commonwealth of Massachusetts.
         nyc: A website in partnership with the City of New York.
