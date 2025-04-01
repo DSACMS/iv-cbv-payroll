@@ -3,6 +3,12 @@ require "rails_helper"
 RSpec.describe Webhooks::Pinwheel::EventsController do
   include PinwheelApiHelper
 
+  attr_reader :test_fixture_directory
+
+  before(:all) do
+    @test_fixture_directory = 'pinwheel'
+  end
+
   let(:valid_params) do
     {
       "event" => event_name,

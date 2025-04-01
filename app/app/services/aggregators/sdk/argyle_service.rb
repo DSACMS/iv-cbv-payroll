@@ -177,6 +177,7 @@ module Aggregators::Sdk
       status = e.response&.dig(:status)
       body = e.response&.dig(:body)
       Rails.logger.error "Argyle API error: #{status} - #{body}"
+      raise e
     rescue StandardError => e
       Rails.logger.error "Unexpected error in Argyle API request: #{e.message}"
     end

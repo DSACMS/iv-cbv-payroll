@@ -2,6 +2,13 @@ require 'rails_helper'
 
 RSpec.describe Aggregators::AggregatorReports::PinwheelReport, type: :service do
   include PinwheelApiHelper
+
+  attr_reader :test_fixture_directory
+
+  before(:all) do
+    @test_fixture_directory = 'pinwheel'
+  end
+
   let(:account) { "abc123" }
   let(:from_date) { "2021-01-01" }
   let(:to_date) { "2021-04-31" }

@@ -3,10 +3,16 @@ require 'rails_helper'
 RSpec.describe ArgyleWebhooksManager, type: :service do
   include ArgyleApiHelper
 
+  attr_reader :test_fixture_directory
+
+  before(:all) do
+    @test_fixture_directory = 'argyle'
+  end
+
   let(:ngrok_url) { 'https://ngrok-url.com' }
   let(:webhook_name) { subject.format_identifier_hash('test_webhook') }
   let(:all_webhook_subscriptions) do
-    load_relative_json_file('argyle', 'response_get_webhook_subscriptions.json')['results']
+    load_relative_json_file('response_get_webhook_subscriptions.json')['results']
   end
   let(:existing_subscriptions) do
     all_webhook_subscriptions.find_all { |subscription| subscription["name"] == webhook_name }
@@ -17,7 +23,7 @@ RSpec.describe ArgyleWebhooksManager, type: :service do
     allow(Aggregators::Sdk::ArgyleService).to receive(:new).and_return(argyle_service)
     described_class.new
   end
-  let(:create_webhook_subscription_response) { load_relative_json_file('argyle', 'response_create_webhook_subscription.json') }
+  let(:create_webhook_subscription_response) { load_relative_json_file('response_create_webhook_subscription.json') }
   # Define sandbox_config as a let variable for easier access in tests
   let(:sandbox_config) { double("SandboxConfig", argyle_environment: "sandbox") }
   # Define the webhook events

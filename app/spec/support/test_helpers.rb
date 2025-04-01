@@ -103,26 +103,26 @@ module TestHelpers
     allow(client_agency_config).to receive(key.to_sym).and_return(value)
   end
 
-  def load_relative_file(service_name, filename)
-    prefix = @test_fixture_directory
+  def load_relative_file(filename, directory = nil)
+    base_directory = "fixtures"
 
-    # if prefix is available, use it
-    if prefix.present?
-      file_path = File.join(
-        File.dirname(__FILE__),
-        "fixtures/#{prefix}/#{service_name}/#{filename}"
-      )
-    else
-      file_path = File.join(
-        File.dirname(__FILE__),
-        "fixtures/#{service_name}/#{filename}"
-      )
+    if @test_fixture_directory.present?
+      base_directory = "fixtures/#{@test_fixture_directory}"
     end
+
+    if directory.present?
+      base_directory = "#{base_directory}/#{directory}"
+    end
+
+    file_path = File.join(
+      File.dirname(__FILE__),
+      "#{base_directory}/#{filename}"
+    )
 
     File.read(file_path)
   end
 
-  def load_relative_json_file(service_name, filename)
-    JSON.parse(load_relative_file(service_name, filename))
+  def load_relative_json_file(filename, directory = nil)
+    JSON.parse(load_relative_file(filename, directory))
   end
 end

@@ -2,8 +2,15 @@ require 'rails_helper'
 
 RSpec.describe Aggregators::Sdk::PinwheelService, type: :service do
   include PinwheelApiHelper
+
+  attr_reader :test_fixture_directory
+
   let(:service) { Aggregators::Sdk::PinwheelService.new("sandbox", "FAKE_API_KEY") }
   let(:end_user_id) { 'abc123' }
+
+  before(:all) do
+    @test_fixture_directory = 'pinwheel'
+  end
 
   describe '#fetch_items' do
     before do
