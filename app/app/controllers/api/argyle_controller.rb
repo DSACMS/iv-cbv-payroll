@@ -1,5 +1,4 @@
 class Api::ArgyleController < ApplicationController
-
   # This API endpoint is used to associate the user's CbvFlow
   # with a user_token and user id (id) supplied by Argyle.
   # This enables the client to retrieve an Argyle user_token to open
