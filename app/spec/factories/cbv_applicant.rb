@@ -7,6 +7,8 @@ FactoryBot.define do
     created_at { Date.current.strftime("%m/%d/%Y") }
     snap_application_date { Date.current.strftime("%m/%d/%Y") }
 
+    # initialize_with { CbvApplicant.sti_class_for(client_agency_id).new }
+
     trait :nyc do
       client_agency_id { "nyc" }
 

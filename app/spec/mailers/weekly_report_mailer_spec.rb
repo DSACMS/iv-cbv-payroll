@@ -43,6 +43,10 @@ RSpec.describe WeeklyReportMailer, type: :mailer do
     travel_to(now)
   end
 
+  after do
+    travel_back
+  end
+
   it "renders the subject" do
     expect(mail.subject).to eq("CBV Pilot - Weekly Report Email")
   end

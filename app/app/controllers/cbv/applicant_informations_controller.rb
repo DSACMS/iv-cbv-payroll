@@ -16,16 +16,9 @@ class Cbv::ApplicantInformationsController < Cbv::BaseController
       return redirect_to cbv_flow_applicant_information_path
     end
 
-    missing_attrs = @required_applicant_attributes.reject do |attr|
-      @cbv_applicant.send(attr).present?
-    end
-
-    if missing_attrs.any?
-      missing_attrs.each do |attr|
-        @cbv_applicant.errors.add(attr, t("cbv.applicant_informations.#{@cbv_flow.client_agency_id}.fields.#{attr}.blank"))
-      end
-
-      error_count = @cbv_applicant.errors.size
+    @cbv_applicant.has_required_applicant_attributes
+    error_count = @cbv_applicant.errors.size
+    if error_count > 0
       error_header = t(".error_header", count: error_count)
 
       # Collect error messages without attribute names
@@ -46,7 +39,7 @@ class Cbv::ApplicantInformationsController < Cbv::BaseController
   def redirect_when_info_present
     return if params[:force_show] == "true"
 
-    missing_attrs = @required_applicant_attributes.reject do |attr|
+    missing_attrs = @cbv_applicant.required_applicant_attributes.reject do |attr|
       @cbv_applicant.send(attr).present?
     end
 
@@ -59,7 +52,7 @@ class Cbv::ApplicantInformationsController < Cbv::BaseController
 
   def applicant_params
     params.fetch("cbv_applicant_#{@cbv_flow.client_agency_id}", {}).permit(
-      cbv_applicant: @applicant_attrs
+      cbv_applicant: @cbv_applicant.applicant_attributes
     )
   end
 

@@ -4,9 +4,7 @@ RSpec.describe Cbv::ApplicantInformationsController, type: :controller do
   describe "#show" do
     let(:current_time) { Time.now }
     let(:cbv_flow) do
-      create(:cbv_flow,
-        created_at: current_time
-      )
+      create(:cbv_flow)
     end
 
     before do
@@ -18,8 +16,6 @@ RSpec.describe Cbv::ApplicantInformationsController, type: :controller do
 
       it "renders the sandbox fields" do
         get :show
-
-        puts "response.status: #{response.status}"
 
         expect(response.body).to include("first_name")
         expect(response.body).to include("middle_name")
@@ -40,10 +36,10 @@ RSpec.describe Cbv::ApplicantInformationsController, type: :controller do
         }
 
         expect(response).to have_http_status(:unprocessable_entity)
-        expect(response.body).not_to include(I18n.t(".cbv.applicant_informations.sandbox.fields.first_name.blank"))
-        expect(response.body).not_to include(I18n.t(".cbv.applicant_informations.sandbox.fields.middle_name.blank"))
-        expect(response.body).to include(I18n.t(".cbv.applicant_informations.sandbox.fields.last_name.blank"))
-        expect(response.body).to include(I18n.t(".cbv.applicant_informations.sandbox.fields.case_number.blank"))
+        expect(response.body).not_to include(I18n.t("cbv.applicant_informations.sandbox.fields.first_name.blank"))
+        expect(response.body).not_to include(I18n.t("cbv.applicant_informations.sandbox.fields.middle_name.blank"))
+        expect(response.body).to include(I18n.t("cbv.applicant_informations.sandbox.fields.last_name.blank"))
+        expect(response.body).to include(I18n.t("cbv.applicant_informations.sandbox.fields.case_number.blank"))
       end
 
       it "redirects to summary when fields are satisfied" do
