@@ -1,4 +1,4 @@
-module ResponseObjects
+module Aggregators::ResponseObjects
   ProviderOptions = Struct.new(:response_type, :provider_id)
   SearchResult = Struct.new(:provider_name, :provider_options, :name, :logo_url, keyword_init: true) do
     def self.from_pinwheel(response_body)

@@ -13,19 +13,18 @@
     <%= f.text_field :query, value: @query, class: "usa-input", type: "search" %>
     <button
       class="usa-button"
-      type="submit"
-    >
-      <span class="usa-search__submit-text">
-        <%= t(".search") %>
-      </span>
-      <%= image_tag "@uswds/uswds/dist/img/usa-icons-bg/search--white.svg", class: "usa-search__submit-icon", alt: "Search" %>
+      type="submit">
+        <span class="usa-search__submit-text">
+            <%= t(".search") %>
+        </span>
+        <%= image_tag "@uswds/uswds/dist/img/usa-icons-bg/search--white.svg", class: "usa-search__submit-icon", alt: "Search" %>
     </button>
   <% end %>
 
   <%= render partial: "employer", locals: { employer: @employers } %>
 
   <%= form_with url: next_path, method: :get, class: "display-none", data: { 'cbv-employer-search-target': "form" } do |f| %>
-    <input type="hidden" name="user[account_id]" data-cbv-employer-search-target="userAccountId" >
+    <input type="hidden" name="user[account_id]" data-cbv-employer-search-target="userAccountId">
   <% end %>
 
   <h2><%= t(".popular_providers") %></h2>

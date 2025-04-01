@@ -8,14 +8,14 @@ class ProviderSearchService
   def search(query = "")
     results = []
     if SUPPORTED_PROVIDERS.include?(:argyle)
-      results = ArgyleService.new(@client_agency_config.argyle_environment).items(query)["results"].map do |result|
-        ResponseObjects::SearchResult.from_argyle(result)
+      results = Aggregators::Sdk::ArgyleService.new(@client_agency_config.argyle_environment).items(query)["results"].map do |result|
+        Aggregators::ResponseObjects::SearchResult.from_argyle(result)
       end
     end
 
     if results.length == 0 && SUPPORTED_PROVIDERS.include?(:pinwheel)
-      results = (PinwheelService.new(@client_agency_config.pinwheel_environment).fetch_items(q: query)["data"].map do |result|
-        ResponseObjects::SearchResult.from_pinwheel(result)
+      results = (Aggregators::Sdk::PinwheelService.new(@client_agency_config.pinwheel_environment).fetch_items(q: query)["data"].map do |result|
+        Aggregators::ResponseObjects::SearchResult.from_pinwheel(result)
       end << results).flatten!
     end
 
