@@ -205,4 +205,61 @@ RSpec.describe Aggregators::Sdk::ArgyleService, type: :service do
       expect { service.fetch_employments_api(account: account_id) }.to raise_error(Faraday::ServerError)
     end
   end
+
+  describe '#create_user' do
+    context 'with external_id' do
+      let(:external_id) { 'external_123' }
+
+      it 'makes a POST request with external_id' do
+        expect(service).to receive(:make_request)
+                             .with(:post, 'users', { external_id: external_id })
+        service.create_user(external_id)
+      end
+    end
+
+    context 'without external_id' do
+      it 'makes a POST request without external_id' do
+        expect(service).to receive(:make_request)
+                             .with(:post, 'users', {})
+        service.create_user
+      end
+    end
+  end
+
+  describe '#get_webhook_subscriptions' do
+    it 'makes a GET request to webhooks endpoint' do
+      expect(service).to receive(:make_request)
+                           .with(:get, 'webhooks')
+      service.get_webhook_subscriptions
+    end
+  end
+
+  describe '#create_webhook_subscription' do
+    let(:events) { [ 'users.fully_synced' ] }
+    let(:url) { 'https://example.com/webhook' }
+    let(:name) { 'Test Webhook' }
+    let(:expected_payload) do
+      {
+        events: events,
+        name: name,
+        url: url,
+        secret: webhook_secret
+      }
+    end
+
+    it 'makes a POST request to create webhook subscription with correct payload' do
+      expect(service).to receive(:make_request).with(:post, 'webhooks', expected_payload)
+      service.create_webhook_subscription(events, url, name)
+    end
+  end
+
+  describe '#delete_webhook_subscription' do
+    let(:webhook_id) { '123' }
+
+    it 'makes a DELETE request to remove webhook subscription' do
+      expect(service).to receive(:make_request)
+                           .with(:delete, "webhooks/#{webhook_id}")
+      service.delete_webhook_subscription(webhook_id)
+    end
+  end
 end
