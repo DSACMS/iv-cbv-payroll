@@ -5,13 +5,67 @@ RSpec.describe Aggregators::Sdk::ArgyleService, type: :service do
 
   attr_reader :test_fixture_directory
 
-  let(:service) { Aggregators::Sdk::ArgyleService.new("sandbox", "FAKE_API_KEY") }
+  let(:api_key_secret) { 'api_key_secret' }
+  let(:webhook_secret) { 'test_webhook_secret' }
+  let(:service) { Aggregators::Sdk::ArgyleService.new("sandbox", "FAKE_API_KEY", api_key_secret, webhook_secret) }
   let(:account_id) { 'account123' }
   let(:user_id) { 'user123' }
-  let(:webhook_secret) { 'test_webhook_secret' }
 
   before(:all) do
     @test_fixture_directory = 'argyle'
+  end
+
+  describe '#initialize' do
+    context 'when the environment is sandbox' do
+      let(:service) { Aggregators::Sdk::ArgyleService.new("sandbox") }
+
+      it 'initializes with the correct environment' do
+        expect(service.environment[:environment]).to eq("sandbox")
+      end
+    end
+
+    context 'when the environment is production' do
+      let(:service) { Aggregators::Sdk::ArgyleService.new("production") }
+
+      it 'initializes with the correct environment' do
+        expect(service.environment[:environment]).to eq("production")
+      end
+    end
+
+    context 'when the environment is not provided' do
+      let(:service) { Aggregators::Sdk::ArgyleService.new("sandbox") }
+
+      it 'initializes with the correct environment' do
+        expect(service.environment[:environment]).to eq("sandbox")
+      end
+    end
+
+    context 'when environment variables are implied from the environment' do
+      let(:implicitly_declared_service) { Aggregators::Sdk::ArgyleService.new("sandbox") }
+      let(:env_implied_webhook_secret) { 'env_implied_webhook_secret' }
+
+      around do | example |
+        stub_environment_variable('ARGYLE_SANDBOX_WEBHOOK_SECRET', env_implied_webhook_secret, &example)
+      end
+
+      it 'initializes with the correct environment' do
+        expect(implicitly_declared_service.environment[:environment]).to eq("sandbox")
+        expect(implicitly_declared_service.environment[:webhook_secret]).to eq(env_implied_webhook_secret)
+      end
+    end
+
+    context 'constructor args override environment variables' do
+      around do | example |
+        stub_environment_variable('ARGYLE_SANDBOX_WEBHOOK_SECRET', 'env_implied_webhook_secret', &example)
+      end
+
+      let(:explicitly_declared_service) { Aggregators::Sdk::ArgyleService.new("sandbox", "FAKE_API_KEY", api_key_secret, webhook_secret) }
+
+      it 'initializes with the correct environment' do
+        expect(explicitly_declared_service.environment[:environment]).to eq("sandbox")
+        expect(explicitly_declared_service.environment[:webhook_secret]).to eq(webhook_secret)
+      end
+    end
   end
 
   describe '#fetch_identities_api' do

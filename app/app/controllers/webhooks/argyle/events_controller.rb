@@ -78,7 +78,7 @@ class Webhooks::Argyle::EventsController < ApplicationController
     # ignore any webhooks that are not in the list of supported webhook events
     return unless Webhooks::Argyle.get_webhook_events.include?(params["event"])
 
-    unless Webhooks::Argyle.verify_signature(request.headers["X-Argyle-Signature"], request.raw_post, @argyle_service.webhook_secret)
+    unless Webhooks::Argyle.verify_signature(request.headers["X-Argyle-Signature"], request.raw_post, @argyle_service.environment.webhook_secret)
       render json: { error: "Invalid signature" }, status: :unauthorized
     end
   end
