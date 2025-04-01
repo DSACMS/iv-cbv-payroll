@@ -2,9 +2,16 @@ require 'rails_helper'
 
 RSpec.describe Aggregators::Sdk::ArgyleService, type: :service do
   include ArgyleApiHelper
+
+  attr_reader :test_fixture_directory
+
   let(:service) { Aggregators::Sdk::ArgyleService.new("sandbox", "FAKE_API_KEY") }
   let(:account_id) { 'account123' }
   let(:user_id) { 'user123' }
+
+  before(:all) do
+    @test_fixture_directory = 'argyle'
+  end
 
   describe '#fetch_identities_api' do
     let(:requests) { WebMock::RequestRegistry.instance.requested_signatures.hash.keys }
@@ -111,6 +118,7 @@ RSpec.describe Aggregators::Sdk::ArgyleService, type: :service do
       expect { service.fetch_accounts_api() }.to raise_error(Faraday::ServerError)
     end
   end
+
   describe '#fetch_paystubs_api' do
     let(:requests) { WebMock::RequestRegistry.instance.requested_signatures.hash.keys }
     before do
@@ -165,6 +173,7 @@ RSpec.describe Aggregators::Sdk::ArgyleService, type: :service do
       expect { service.fetch_paystubs_api() }.to raise_error("Pagination not implemented")
     end
   end
+
   describe '#fetch_employments_api' do
     before do
       stub_request_employments_response("bob")

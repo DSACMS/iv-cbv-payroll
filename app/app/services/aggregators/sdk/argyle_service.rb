@@ -164,13 +164,13 @@ module Aggregators::Sdk
 
     def make_request(method, endpoint, params = nil)
       response = case method
-        when :get
-          @http.get(endpoint, params)
-        when :post
-          @http.post(endpoint, params&.to_json)
-        when :delete
-          @http.delete(endpoint)
-      end
+                 when :get
+                   @http.get(endpoint, params)
+                 when :post
+                   @http.post(endpoint, params&.to_json)
+                 when :delete
+                   @http.delete(endpoint)
+                 end
 
       response.body
     rescue Faraday::Error => e
