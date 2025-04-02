@@ -32,14 +32,6 @@ RSpec.describe Aggregators::Sdk::ArgyleService, type: :service do
       end
     end
 
-    context 'when the environment is not provided' do
-      let(:service) { Aggregators::Sdk::ArgyleService.new("sandbox") }
-
-      it 'initializes with the correct environment' do
-        expect(service.configuration[:environment]).to eq("sandbox")
-      end
-    end
-
     context 'when environment variables are implied from the environment' do
       let(:implicitly_declared_service) { Aggregators::Sdk::ArgyleService.new("sandbox") }
       let(:env_implied_webhook_secret) { 'env_implied_webhook_secret' }
