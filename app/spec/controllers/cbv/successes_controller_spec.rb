@@ -4,7 +4,7 @@ RSpec.describe Cbv::SuccessesController do
   include PinwheelApiHelper
 
   describe "#show" do
-    let(:cbv_flow) { create(:cbv_flow, confirmation_code: "NYC12345") }
+    let(:cbv_flow) { create(:cbv_flow, :invited, confirmation_code: "NYC12345") }
 
     before do
       pinwheel_stub_request_end_user_paystubs_response

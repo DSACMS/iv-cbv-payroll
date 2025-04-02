@@ -5,7 +5,7 @@ RSpec.describe Cbv::EmployerSearchesController do
   include ArgyleApiHelper
 
   describe "#show" do
-    let(:cbv_flow) { create(:cbv_flow) }
+    let(:cbv_flow) { create(:cbv_flow, :invited) }
     let(:pinwheel_token_id) { "abc-def-ghi" }
     let(:user_token) { "foobar" }
 

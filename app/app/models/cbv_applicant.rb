@@ -1,5 +1,8 @@
 class CbvApplicant < ApplicationRecord
   after_initialize :set_snap_application_date, if: :new_record?
+  after_initialize :set_applicant_attributes
+  attr_reader :applicant_attributes, :required_applicant_attributes
+
   # We use Single-Table Inheritance (STI) to create subclasses of this table
   # logic to process subsets of the columns of this model relevant to each
   # partner agency.
@@ -40,6 +43,18 @@ class CbvApplicant < ApplicationRecord
     snap_application_date: :date
   )
 
+  def validate_required_applicant_attributes
+    missing_attrs = @required_applicant_attributes.reject do |attr|
+      self.send(attr).present?
+    end
+
+    if missing_attrs.any?
+      missing_attrs.each do |attr|
+        errors.add(attr, I18n.t("cbv.applicant_informations.#{client_agency_id}.fields.#{attr}.blank"))
+      end
+    end
+  end
+
   def paystubs_query_begins_at
     PAYSTUB_REPORT_RANGE.before(snap_application_date)
   end
@@ -65,5 +80,10 @@ class CbvApplicant < ApplicationRecord
         errors.add(:snap_application_date, :invalid_date)
       end
     end
+  end
+
+  def set_applicant_attributes
+    @applicant_attributes = Rails.application.config.client_agencies[client_agency_id]&.applicant_attributes&.compact&.keys&.map(&:to_sym) || []
+    @required_applicant_attributes = Rails.application.config.client_agencies[client_agency_id]&.applicant_attributes&.select { |key, attributes| attributes["required"] }&.keys&.map(&:to_sym) || []
   end
 end

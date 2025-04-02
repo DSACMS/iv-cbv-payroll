@@ -20,7 +20,7 @@ RSpec.describe PagesController do
     end
 
     describe "when a cbv_flow_id is in the session" do
-      let(:cbv_flow) { create(:cbv_flow) }
+      let(:cbv_flow) { create(:cbv_flow, :invited) }
 
       it "renders with a link to restart that CBV flow" do
         get :error_404, session: { cbv_flow_id: cbv_flow.id }

@@ -13,6 +13,7 @@ RSpec.describe Cbv::SubmitsController do
 
   let(:cbv_flow) do
     create(:cbv_flow,
+      :invited,
       :with_pinwheel_account,
       with_errored_jobs: errored_jobs,
       created_at: current_time,
