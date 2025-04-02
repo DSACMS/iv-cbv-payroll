@@ -21,4 +21,4 @@ assignees: @maintainers
 -  [X] Reviewers - Can be assigned as reviewers for pull-requests 
  
 ## Any other details or information to share with the project maintainers? 
--  Outside collaborator access to repository in case of USDS account access loss.
+-  Test outside collab user account, per DSAC outside collab procedure
