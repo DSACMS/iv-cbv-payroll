@@ -87,18 +87,6 @@ module Aggregators::Sdk
         name: name,
         url: url,
         secret: webhook_secret
-
-        # Not all events support the "include_resource" parameter so we'll omit it
-        #
-        # @response
-        # Argyle API error: 400 -
-        # {"config"=>["only allowed for accounts.added, accounts.connected, accounts.failed,
-        # accounts.updated, gigs.partially_synced, items.removed, items.updated, paystubs.partially_synced,
-        # shifts.partially_synced"]
-        #
-        # config: {
-        #   include_resource: true
-        # }
       }
 
       make_request(:post, WEBHOOKS_ENDPOINT, payload)
