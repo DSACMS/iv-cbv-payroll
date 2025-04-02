@@ -143,7 +143,6 @@ ignore_missing:
     - "pages.{error_404,error_500}.*"
     - "cbv.error_invalid_link" # FFS-2540
     - "cbv.applicant_informations.*" # FFS-2540
-    - "cbv.add_jobs.create.notice_no_answer" # FFS-2540
     # Missing discovered in FFS-2540
     - "cbv.submits.show.additional_information_title"
     - "cbv.submits.show.page_header"
