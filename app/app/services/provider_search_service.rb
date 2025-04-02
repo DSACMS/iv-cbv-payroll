@@ -22,9 +22,7 @@ class ProviderSearchService
     results
   end
 
-  # TODO: this data should be loading from a config file instead of from hardcoded arrays within this file
-  # TODO: the second parameter here should not be needed, but is here for testing until the reading of the actual env config
-  #   is no longer part of the service creation
+  # TODO: this data should be loading from a config file instead of from hardcoded arrays within this file - see FFS-2661
   def top_aggregator_options(type)
     case type
     when "payroll"
@@ -40,7 +38,7 @@ class ProviderSearchService
     Rails.application.config.client_agencies
   end
 
-  # TODO: move these to a config file
+  # TODO: move these to a config file - see FFS-2661
   TOP_PROVIDERS = [
     {
       name: "ADP",
