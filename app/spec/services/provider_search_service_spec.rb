@@ -24,11 +24,10 @@ RSpec.describe ProviderSearchService, type: :service do
       stub_const("ProviderSearchService::SUPPORTED_PROVIDERS", [ :pinwheel ])
       results = service.search("test")
       result = results.first
-      puts result
 
       expect(result).to have_attributes(
         provider_name: :pinwheel,
-        provider_options: an_object_having_attributes(response_type: a_kind_of(String), provider_id: a_kind_of(String)),
+        provider_options: have_attributes(response_type: a_kind_of(String), provider_id: a_kind_of(String)),
         name: a_kind_of(String),
         logo_url: a_kind_of(String)
       )
@@ -48,72 +47,84 @@ RSpec.describe ProviderSearchService, type: :service do
   # # TODO: These test would be more effective once the top providers are being loaded from config so we could create
   # # a config that sets up specific test cases around having pinwheel/argyle/both ids
   describe '#top_aggregator_options' do
-    it 'returns properly formatted top payroll providers' do
-      stub_const("ProviderSearchService::SUPPORTED_PROVIDERS", [ :pinwheel ])
-      results = service.top_aggregator_options("payroll")
-      first_result = results.first
-      puts first_result
+    context "when only pinwheel is enabled" do
+      before do
+        stub_const("ProviderSearchService::SUPPORTED_PROVIDERS", [ :pinwheel ])
+      end
+      
+      it 'returns properly formatted top payroll providers' do
+        results = service.top_aggregator_options("payroll")
+        first_result = results.first
 
-      expect(results.length).to eq(6)
-      expect(first_result).to have_attributes(
-        provider_name: "pinwheel",
-        provider_options: an_object_having_attributes(response_type: a_kind_of(String), provider_id: a_kind_of(String)),
-        name: a_kind_of(String),
-        logo_url: a_kind_of(String)
-      )
+        expect(results.length).to eq(6)
+        expect(first_result).to have_attributes(
+          provider_name: "pinwheel",
+          provider_options: have_attributes(response_type: a_kind_of(String), provider_id: a_kind_of(String)),
+          name: a_kind_of(String),
+          logo_url: a_kind_of(String)
+        )
+      end
+
+      it 'returns properly formatted top employer providers' do
+        results = service.top_aggregator_options("employer")
+        first_result = results.first
+
+        expect(results.length).to eq(6)
+        expect(first_result).to have_attributes(
+          provider_name: "pinwheel",
+          provider_options: have_attributes(response_type: a_kind_of(String), provider_id: a_kind_of(String)),
+          name: a_kind_of(String),
+          logo_url: a_kind_of(String)
+        )
+      end
+
+      it 'returns pinwheel payroll providers when pinwheel is configured' do
+        results = service.top_aggregator_options("payroll")
+        first_result = results.first
+
+        expect(first_result).to have_attributes(
+          provider_name: "pinwheel",
+          provider_options: have_attributes(response_type: a_kind_of(String), provider_id: a_kind_of(String)),
+          name: a_kind_of(String),
+          logo_url: a_kind_of(String)
+        )
+      end
     end
 
-    it 'returns properly formatted top employer providers' do
-      stub_const("ProviderSearchService::SUPPORTED_PROVIDERS", [ :pinwheel ])
-      results = service.top_aggregator_options("employer")
-      first_result = results.first
+    context "when only argyle is enabled" do
+      before do
+        stub_const("ProviderSearchService::SUPPORTED_PROVIDERS", [ :argyle ])
+      end
 
-      expect(results.length).to eq(6)
-      expect(first_result).to have_attributes(
-        provider_name: "pinwheel",
-        provider_options: an_object_having_attributes(response_type: a_kind_of(String), provider_id: a_kind_of(String)),
-        name: a_kind_of(String),
-        logo_url: a_kind_of(String)
-      )
+      it 'returns argyle payroll providers when argyle is configured' do
+        results = service.top_aggregator_options("payroll")
+        first_result = results.first
+
+        expect(first_result).to have_attributes(
+          provider_name: "argyle",
+          provider_options: have_attributes(response_type: a_kind_of(String), provider_id: a_kind_of(String)),
+          name: a_kind_of(String),
+          logo_url: a_kind_of(String)
+        )
+      end
     end
 
-    it 'returns pinwheel payroll providers when pinwheel is configured' do
-      stub_const("ProviderSearchService::SUPPORTED_PROVIDERS", [ :pinwheel ])
-      results = service.top_aggregator_options("payroll")
-      first_result = results.first
+    context "when both pinwheel and argyle are enabled" do
+      before do
+        stub_const("ProviderSearchService::SUPPORTED_PROVIDERS", [ :argyle, :pinwheel ])
+      end
 
-      expect(first_result).to have_attributes(
-        provider_name: "pinwheel",
-        provider_options: an_object_having_attributes(response_type: a_kind_of(String), provider_id: a_kind_of(String)),
-        name: a_kind_of(String),
-        logo_url: a_kind_of(String)
-      )
-    end
+      it 'returns argyle id and provider name when both are configured and there are two ids' do
+        results = service.top_aggregator_options("payroll")
+        first_result = results.first
 
-    it 'returns argyle payroll providers when argyle is configured' do
-      stub_const("ProviderSearchService::SUPPORTED_PROVIDERS", [ :argyle ])
-      results = service.top_aggregator_options("payroll")
-      first_result = results.first
-
-      expect(first_result).to have_attributes(
-        provider_name: "argyle",
-        provider_options: an_object_having_attributes(response_type: a_kind_of(String), provider_id: a_kind_of(String)),
-        name: a_kind_of(String),
-        logo_url: a_kind_of(String)
-      )
-    end
-
-    it 'returns argyle id and provider name when both are configured and there are two ids' do
-      stub_const("ProviderSearchService::SUPPORTED_PROVIDERS", [ :argyle, :pinwheel ])
-      results = service.top_aggregator_options("payroll")
-      first_result = results.first
-
-      expect(first_result).to have_attributes(
-        provider_name: "argyle",
-        provider_options: an_object_having_attributes(response_type: a_kind_of(String), provider_id: a_kind_of(String)),
-        name: a_kind_of(String),
-        logo_url: a_kind_of(String)
-      )
+        expect(first_result).to have_attributes(
+          provider_name: "argyle",
+          provider_options: have_attributes(response_type: a_kind_of(String), provider_id: a_kind_of(String)),
+          name: a_kind_of(String),
+          logo_url: a_kind_of(String)
+        )
+      end
     end
   end
 end

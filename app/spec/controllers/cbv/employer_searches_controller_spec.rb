@@ -142,8 +142,8 @@ RSpec.describe Cbv::EmployerSearchesController do
             invitation_id: cbv_flow.cbv_flow_invitation_id,
             num_results: 1,
             has_payroll_account: false,
-            pinwheel_result_count: a_kind_of(Numeric),
-            argyle_result_count: a_kind_of(Numeric)
+            pinwheel_result_count: 1,
+            argyle_result_count: 0
             ))
         get :show, params: { query: "results" }
       end
@@ -157,8 +157,8 @@ RSpec.describe Cbv::EmployerSearchesController do
             invitation_id: cbv_flow.cbv_flow_invitation_id,
             num_results: 1,
             has_payroll_account: false,
-            pinwheel_result_count: a_kind_of(Numeric),
-            argyle_result_count: a_kind_of(Numeric)
+            pinwheel_result_count: 1,
+            argyle_result_count: 0
             ))
         get :show, params: { query: "results" }
       end

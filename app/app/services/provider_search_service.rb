@@ -14,9 +14,9 @@ class ProviderSearchService
     end
 
     if results.length == 0 && SUPPORTED_PROVIDERS.include?(:pinwheel)
-      results = (Aggregators::Sdk::PinwheelService.new(@client_agency_config.pinwheel_environment).fetch_items(q: query)["data"].map do |result|
+      results = Aggregators::Sdk::PinwheelService.new(@client_agency_config.pinwheel_environment).fetch_items(q: query)["data"].map do |result|
         Aggregators::ResponseObjects::SearchResult.from_pinwheel(result)
-      end << results).flatten!
+      end
     end
 
     results
