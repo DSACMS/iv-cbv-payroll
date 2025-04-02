@@ -22,6 +22,14 @@ class Users::OmniauthCallbacksController < Devise::OmniauthCallbacksController
     end
   end
 
+  def az_des
+    response_params = request.env["omniauth.auth"]["info"]
+    Rails.logger.info "Login successful from #{response_params["email"]} (name: #{response_params["name"]}, nickname: #{response_params["nickname"]})"
+    email = response_params["email"]
+
+    login_with_oauth(email, "az_des")
+  end
+
   def sandbox
     response_params = request.env["omniauth.auth"]["info"]
     Rails.logger.info "Login successful from #{response_params["email"]} (name: #{response_params["name"]}, nickname: #{response_params["nickname"]})"

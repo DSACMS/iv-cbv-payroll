@@ -9,6 +9,8 @@ RSpec.describe Cbv::SubmitsController do
   let(:current_time) { Date.parse('2024-06-18') }
   let(:employment_errored_at) { nil }
   let(:cbv_applicant) { create(:cbv_applicant, created_at: current_time, case_number: "ABC1234") }
+  let(:pinwheel_report) { build(:pinwheel_report, :with_pinwheel_account) }
+
   let(:cbv_flow) do
     create(:cbv_flow,
       :with_pinwheel_account,
@@ -43,11 +45,7 @@ RSpec.describe Cbv::SubmitsController do
   describe "#show" do
     before do
       session[:cbv_flow_id] = cbv_flow.id
-      stub_request_end_user_accounts_response
-      stub_request_end_user_paystubs_response
-      stub_request_employment_info_response unless errored_jobs.include?("employment")
-      stub_request_income_metadata_response if supported_jobs.include?("income")
-      stub_request_identity_response
+      allow(Aggregators::AggregatorReports::PinwheelReport).to receive(:new).and_return(pinwheel_report)
     end
 
     context "when rendering views" do
@@ -56,12 +54,6 @@ RSpec.describe Cbv::SubmitsController do
       it "renders properly" do
         get :show
         expect(controller.send(:has_consent)).to be_falsey
-        # 90 days before snap_application_date
-        start_date = "March 20, 2024"
-        # Should be the formatted version of snap_application_date
-        end_date = "June 18, 2024"
-        expect(assigns[:payments_ending_at]).to eq(end_date)
-        expect(assigns[:payments_beginning_at]).to eq(start_date)
         expect(response.body).to include("Legal agreement")
         expect(response).to be_successful
       end
@@ -155,11 +147,7 @@ RSpec.describe Cbv::SubmitsController do
     before do
       session[:cbv_flow_id] = cbv_flow.id
       sign_in nyc_user
-      stub_request_end_user_accounts_response
-      stub_request_end_user_paystubs_response
-      stub_request_employment_info_response
-      stub_request_income_metadata_response
-      stub_request_identity_response
+      allow(Aggregators::AggregatorReports::PinwheelReport).to receive(:new).and_return(pinwheel_report)
     end
 
     context "without consent" do
@@ -177,6 +165,14 @@ RSpec.describe Cbv::SubmitsController do
         patch :update, params: { cbv_flow: { consent_to_authorized_use: "1" } }
         cbv_flow.reload
         expect(cbv_flow.confirmation_code).to start_with("SANDBOX")
+      end
+
+      it "removes underscores from the agency name" do
+        cbv_flow.update(client_agency_id: "az_des")
+        expect(cbv_flow.confirmation_code).to be_nil
+        patch :update, params: { cbv_flow: { consent_to_authorized_use: "1" } }
+        cbv_flow.reload
+        expect(cbv_flow.confirmation_code).to start_with("AZDES")
       end
     end
 
@@ -199,8 +195,7 @@ RSpec.describe Cbv::SubmitsController do
         sign_in ma_user
         allow(mock_client_agency).to receive(:transmission_method).and_return('s3')
         allow(mock_client_agency).to receive(:id).and_return('ma')
-        stub_request_end_user_accounts_response
-        stub_request_end_user_paystubs_response
+        allow(Aggregators::AggregatorReports::PinwheelReport).to receive(:new).and_return(pinwheel_report)
       end
 
       it "sends the email" do
@@ -247,6 +242,7 @@ RSpec.describe Cbv::SubmitsController do
              "email" => 'test@example.com'
           })
           allow(controller).to receive(:current_agency).and_return(mock_client_agency)
+          allow(Aggregators::AggregatorReports::PinwheelReport).to receive(:new).and_return(pinwheel_report)
         end
 
         it "sends an email to the caseworker and updates transmitted_at" do
@@ -268,7 +264,7 @@ RSpec.describe Cbv::SubmitsController do
       context "when transmission method is s3" do
         let(:user) { create(:user, email: "test@test.com") }
         let(:s3_service_double) { instance_double(S3Service) }
-        # let(:pinwheel_service_double) { instance_double(PinwheelService) }
+        # let(:pinwheel_service_double) { instance_double(Aggregators::Sdk::PinwheelService) }
         before do
           sign_in user
           allow(S3Service).to receive(:new).and_return(s3_service_double)

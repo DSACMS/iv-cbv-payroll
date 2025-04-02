@@ -3,17 +3,14 @@ require "tempfile"
 require "zlib"
 
 class Cbv::SubmitsController < Cbv::BaseController
-  include Cbv::PinwheelDataHelper
+  include Cbv::AggregatorDataHelper
   include GpgEncryptable
   include TarFileCreatable
   include CsvHelper
 
-  before_action :set_employments, only: %i[show update]
-  before_action :set_incomes, only: %i[show update]
-  before_action :set_payments, only: %i[show update]
-  before_action :set_identities, only: %i[show update]
+  before_action :set_aggregator_report, only: %i[show update]
 
-  helper "cbv/pinwheel_data"
+  helper "cbv/aggregator_data"
 
   helper_method :has_consent
   skip_before_action :ensure_cbv_flow_not_yet_complete, if: -> { params[:format] == "pdf" }
@@ -33,7 +30,10 @@ class Cbv::SubmitsController < Cbv::BaseController
 
         render pdf: "#{@cbv_flow.id}",
           layout: "pdf",
-          locals: { is_caseworker: Rails.env.development? && params[:is_caseworker] },
+          locals: {
+            is_caseworker: Rails.env.development? && params[:is_caseworker],
+            aggregator_report: @aggregator_report
+          },
           footer: { right: "Income Verification Report | Page [page] of [topage]", font_size: 10 },
           margin:  {
             top:               10,
@@ -85,13 +85,10 @@ class Cbv::SubmitsController < Cbv::BaseController
       CaseworkerMailer.with(
         email_address: current_agency.transmission_method_configuration.dig("email"),
         cbv_flow: @cbv_flow,
-        payments: @payments,
-        employments: @employments,
-        incomes: @incomes,
-        identities: @identities
+        aggregator_report: @aggregator_report,
       ).summary_email.deliver_now
       @cbv_flow.touch(:transmitted_at)
-      track_transmitted_event(@cbv_flow, @payments)
+      track_transmitted_event(@cbv_flow, @aggregator_report.paystubs)
     when "s3"
       config = current_agency.transmission_method_configuration
       public_key = config["public_key"]
@@ -102,8 +99,8 @@ class Cbv::SubmitsController < Cbv::BaseController
       end
 
       time_now = Time.now
-      beginning_date = (Date.parse(@payments_beginning_at).strftime("%b") rescue @payments_beginning_at)
-      ending_date = (Date.parse(@payments_ending_at).strftime("%b%Y") rescue @payments_ending_at)
+      beginning_date = (Date.parse(@aggregator_report.from_date).strftime("%b") rescue @aggregator_report.from_date)
+      ending_date = (Date.parse(@aggregator_report.to_date).strftime("%b%Y") rescue @aggregator_report.to_date)
       @file_name = "IncomeReport_#{@cbv_flow.cbv_applicant.agency_id_number}_" \
         "#{beginning_date}-#{ending_date}_" \
         "Conf#{@cbv_flow.confirmation_code}_" \
@@ -117,11 +114,7 @@ class Cbv::SubmitsController < Cbv::BaseController
         variables: {
           is_caseworker: true,
           cbv_flow: @cbv_flow,
-          payments: @payments,
-          employments: @employments,
-          incomes: @incomes,
-          identities: @identities,
-          payments_grouped_by_employer: summarize_by_employer(@payments, @employments, @incomes, @identities, @cbv_flow.payroll_accounts),
+          aggregator_report: @aggregator_report,
           has_consent: has_consent
         }
       )
@@ -153,7 +146,7 @@ class Cbv::SubmitsController < Cbv::BaseController
         s3_service.upload_file(tmp_encrypted_tar.path, "outfiles/#{@file_name}.tar.gz.gpg")
 
         @cbv_flow.touch(:transmitted_at)
-        track_transmitted_event(@cbv_flow, @payments)
+        track_transmitted_event(@cbv_flow, @aggregator_report.paystubs)
       rescue => ex
         Rails.logger.error "Failed to transmit to caseworker: #{ex.message}"
         raise
@@ -166,7 +159,7 @@ class Cbv::SubmitsController < Cbv::BaseController
   end
 
   def generate_csv
-    pinwheel_account = PayrollAccount.find_by(cbv_flow_id: @cbv_flow.id)
+    payroll_account = PayrollAccount.find_by(cbv_flow_id: @cbv_flow.id)
 
     data = {
       client_id: @cbv_flow.cbv_applicant.agency_id_number,
@@ -176,7 +169,7 @@ class Cbv::SubmitsController < Cbv::BaseController
       client_email_address: @cbv_flow.cbv_flow_invitation.email_address,
       beacon_userid: @cbv_flow.cbv_applicant.beacon_id,
       app_date: @cbv_flow.cbv_applicant.snap_application_date.strftime("%m/%d/%Y"),
-      report_date_created: pinwheel_account.created_at.strftime("%m/%d/%Y"),
+      report_date_created: payroll_account.created_at.strftime("%m/%d/%Y"),
       report_date_start: @cbv_flow.cbv_applicant.paystubs_query_begins_at.strftime("%m/%d/%Y"),
       report_date_end: @cbv_flow.cbv_applicant.snap_application_date.strftime("%m/%d/%Y"),
       confirmation_code: @cbv_flow.confirmation_code,
@@ -210,7 +203,7 @@ class Cbv::SubmitsController < Cbv::BaseController
 
   def generate_confirmation_code(prefix = nil)
     [
-      prefix,
+      prefix.gsub("_", ""),
       (Time.now.to_i % 36 ** 3).to_s(36).tr("OISB", "0158").rjust(3, "0"),
       @cbv_flow.id.to_s.rjust(4, "0")
     ].compact.join.upcase

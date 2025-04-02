@@ -1,13 +1,10 @@
 class Cbv::SummariesController < Cbv::BaseController
-  include Cbv::PinwheelDataHelper
+  include Cbv::AggregatorDataHelper
 
-  before_action :set_employments, only: %i[show]
-  before_action :set_incomes, only: %i[show]
-  before_action :set_payments, only: %i[show]
-  before_action :set_identities, only: %i[show]
+  before_action :set_aggregator_report, only: %i[show]
 
   def show
-    track_accessed_income_summary_event(@cbv_flow, @payments)
+    track_accessed_income_summary_event(@cbv_flow, @aggregator_report.paystubs)
   end
 
   def track_accessed_income_summary_event(cbv_flow, payments)
@@ -18,7 +15,7 @@ class Cbv::SummariesController < Cbv::BaseController
       cbv_applicant_id: cbv_flow.cbv_applicant_id,
       invitation_id: cbv_flow.cbv_flow_invitation_id,
       account_count: cbv_flow.payroll_accounts.count,
-      paystub_count: payments.count,
+      paystub_count: @aggregator_report.paystubs.count,
       account_count_with_additional_information:
         cbv_flow.additional_information.values.count { |info| info["comment"].present? },
       flow_started_seconds_ago: (Time.now - cbv_flow.created_at).to_i,
