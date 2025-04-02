@@ -15,7 +15,7 @@ RSpec.describe Aggregators::ResponseObjects::SearchResult, type: :model do
       search_result = described_class.from_pinwheel(response_body)
       expect(search_result.provider_name).to eq(:pinwheel)
       expect(search_result.provider_options.response_type).to eq("success")
-      expect(search_result.provider_options.provider_id).to eq("123" )
+      expect(search_result.provider_options.provider_id).to eq("123")
       expect(search_result.name).to eq("ACME Corporation")
       expect(search_result.logo_url).to eq("http://example.com/logo.png")
     end
@@ -35,7 +35,7 @@ RSpec.describe Aggregators::ResponseObjects::SearchResult, type: :model do
       search_result = described_class.from_argyle(response_body)
       expect(search_result.provider_name).to eq(:argyle)
       expect(search_result.provider_options.response_type).to eq("success")
-      expect(search_result.provider_options.provider_id).to eq("456" )
+      expect(search_result.provider_options.provider_id).to eq("456")
       expect(search_result.name).to eq("ACME Corporation")
       expect(search_result.logo_url).to eq("http://example.com/logo.png")
     end

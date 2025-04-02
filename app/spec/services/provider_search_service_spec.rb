@@ -51,7 +51,7 @@ RSpec.describe ProviderSearchService, type: :service do
       before do
         stub_const("ProviderSearchService::SUPPORTED_PROVIDERS", [ :pinwheel ])
       end
-      
+
       it 'returns properly formatted top payroll providers' do
         results = service.top_aggregator_options("payroll")
         first_result = results.first
