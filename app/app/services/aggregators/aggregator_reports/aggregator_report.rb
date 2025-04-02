@@ -45,7 +45,7 @@ module Aggregators::AggregatorReports
 
 
 
-    AccountReportStruct = Struct.new(:identity, :income, :employment, :paystubs)
+    AccountReportStruct = Struct.new(:identity, :income, :employment, :paystubs, :gigs)
     def find_account_report(account_id)
       AccountReportStruct.new(
       @identities.find { |identity| identity.account_id == account_id },
