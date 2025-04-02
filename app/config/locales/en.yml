@@ -167,7 +167,7 @@ en:
       subject: Income Verification Report %{case_number} has been received
   cbv:
     add_jobs:
-      create:
+      next_path:
         notice_no_answer: You must select an answer to continue.
       show:
         answer_no_bullet_1: You don't have another job (current or recent)
@@ -190,6 +190,32 @@ en:
         no_radio: No, I don’t have another job that meets the criteria
         subheader: Please add other jobs you’ve had in the past %{pay_income_days} days, even if you're no longer at that job.
         yes_radio: Yes, I have another job that meets the criteria
+    applicant_informations:
+      sandbox:
+        fields:
+          case_number:
+            blank: Enter your case number.
+            prompt: Case number
+          first_name:
+            blank: Enter your first name.
+            prompt: First name
+          last_name:
+            blank: Enter your last name.
+            prompt: Last name
+          middle_name:
+            blank: Enter your middle name.
+            prompt: Middle name
+      show:
+        application_information: Application information
+        application_information_explanation: This information may be found on your agency's website.
+        continue: Continue
+        explanation: This information will be used to connect your income information to your %{agency_short_name} application. Please make sure the information you enter is the same as what is shown on your application.
+        your_information: Your information
+      update:
+        error_header:
+          one: "%{count} error"
+          other: "%{count} errors"
+        error_updating_applicant: An error occurred while updating the applicant information. Please try again.
     employer_searches:
       show:
         app_based_providers: App-based employers
@@ -369,6 +395,7 @@ en:
     summaries:
       show:
         additional_comments: Additional comments
+        application_information: Application information
         application_or_recertification_date:
           ma: Date client was contacted
           nyc: SNAP application or recertification interview date
@@ -379,6 +406,7 @@ en:
           sandbox: Check this box to confirm that the information provided by you is true and complete to the best of your knowledge. You agree to inform CBV Test Agency of any income not reflected in this report or any discrepancies found in the information gathered with this tool. You understand that providing accurate and complete information is your responsibility, and any false or omitted information may have legal consequences.<br/><br/>By sending this report, you authorize its use for income verification by authorized CBV personnel.
         description: The report below has your income from the past 90 days, from %{start_date} to %{end_date}. Please review it before sending.
         header: Review your income report
+        must_match: This must match what is shown on your %{agency_acronym} application.
         none_found: We didn't find any payments from this employer in the past 90 days.
         payment: Payment of %{amount} before taxes on %{date}
         phone_number: Employer phone
@@ -388,6 +416,7 @@ en:
         total_income_from_no_employer_name: 'Total income before taxes: %{amount}'
         total_payments: 'Total income from past 90 days, before taxes: %{amount}'
         total_payments_desc: This is the total gross income from your job(s) before taxes, benefits, and deductions were taken out.
+        your_information: Your information
     synchronization_failures:
       show:
         back_to_search: Back to employer search

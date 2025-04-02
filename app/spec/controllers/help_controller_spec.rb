@@ -10,7 +10,7 @@ RSpec.describe HelpController, type: :controller do
     end
 
     context "with a valid CBV flow" do
-      let(:cbv_flow) { create(:cbv_flow) }
+      let(:cbv_flow) { create(:cbv_flow, :invited) }
 
       before do
         session[:cbv_flow_id] = cbv_flow.id

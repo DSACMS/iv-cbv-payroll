@@ -143,7 +143,7 @@ RSpec.describe DataRetentionService do
     end
 
     context "when the CbvFlow has no invitation" do
-      let(:cbv_flow) { create(:cbv_flow, cbv_flow_invitation: nil) }
+      let(:cbv_flow) { create(:cbv_flow, :invited, cbv_flow_invitation: nil) }
       let(:deletion_threshold) { cbv_flow.updated_at + DataRetentionService::REDACT_UNUSED_INVITATIONS_AFTER }
 
       context "before the deletion threshold" do
