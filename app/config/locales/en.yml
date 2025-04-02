@@ -167,6 +167,8 @@ en:
       subject: Income Verification Report %{case_number} has been received
   cbv:
     add_jobs:
+      next_path:
+        notice_no_answer: You must select an answer to continue.
       show:
         answer_no_bullet_1: You don't have another job (current or recent)
         answer_no_bullet_2: You have a job that pays you via PayPal, Venmo, Cash App, etc
@@ -214,9 +216,6 @@ en:
           one: "%{count} error"
           other: "%{count} errors"
         error_updating_applicant: An error occurred while updating the applicant information. Please try again.
-    base:
-      next_add_jobs_path:
-        notice_no_answer: You must select an answer to continue.
     employer_searches:
       show:
         app_based_providers: App-based employers

@@ -3,13 +3,7 @@ class Cbv::AddJobsController < Cbv::BaseController
   end
 
   def create
-    destination = next_path()
-
-    if destination == cbv_flow_add_job_path
-      flash[:slim_alert] = { message: t("cbv.base.next_add_jobs_path.notice_no_answer"), type: "error" }
-    end
-
-    redirect_to destination
+    redirect_to next_path
   end
 
   def next_path
@@ -18,7 +12,7 @@ class Cbv::AddJobsController < Cbv::BaseController
     elsif params[:additional_jobs] == "false"
       cbv_flow_applicant_information_path
     else
-      flash[:slim_alert] = { message: t(".notice_no_answer"), type: "error" }
+      flash[:slim_alert] = { message: t("cbv.add_jobs.next_path.notice_no_answer"), type: "error" }
       cbv_flow_add_job_path
     end
   end

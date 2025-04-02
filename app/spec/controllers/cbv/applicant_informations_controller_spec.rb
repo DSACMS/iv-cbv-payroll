@@ -2,7 +2,6 @@ require "rails_helper"
 
 RSpec.describe Cbv::ApplicantInformationsController, type: :controller do
   describe "#show" do
-    let(:current_time) { Time.now }
     let(:cbv_flow) do
       create(:cbv_flow)
     end
@@ -11,7 +10,8 @@ RSpec.describe Cbv::ApplicantInformationsController, type: :controller do
       session[:cbv_flow_id] = cbv_flow.id
     end
 
-    context "when rendering views" do
+    context "when the user is uninvited" do
+      let(:cbv_flow) { create(:cbv_flow) }
       render_views
 
       it "renders the sandbox fields" do
@@ -53,6 +53,36 @@ RSpec.describe Cbv::ApplicantInformationsController, type: :controller do
             }
           }
         }
+
+        expect(response).to redirect_to(cbv_flow_summary_path)
+      end
+
+      it "stays on the page if fields are satisfied and the force_show parameter is present" do
+        get :show, params: {
+          cbv_applicant_sandbox: {
+            cbv_applicant: {
+              first_name: "Tim", # required
+              middle_name: "",
+              last_name: "Miller", # required
+              case_number: "9971" # required
+            }
+          },
+          force_show: true
+        }
+
+        expect(response.body).to include("first_name")
+        expect(response.body).to include("middle_name")
+        expect(response.body).to include("last_name")
+        expect(response.body).to include("case_number")
+      end
+    end
+
+    context "when the user is invited" do
+      let(:cbv_flow) { create(:cbv_flow, :invited) }
+      render_views
+
+      it "redirects to the summary" do
+        get :show
 
         expect(response).to redirect_to(cbv_flow_summary_path)
       end

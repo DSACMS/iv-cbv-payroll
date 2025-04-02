@@ -43,7 +43,7 @@ class CbvApplicant < ApplicationRecord
     snap_application_date: :date
   )
 
-  def has_required_applicant_attributes
+  def validate_required_applicant_attributes
     missing_attrs = @required_applicant_attributes.reject do |attr|
       self.send(attr).present?
     end

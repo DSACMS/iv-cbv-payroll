@@ -15,7 +15,7 @@ class Cbv::ApplicantInformationsController < Cbv::BaseController
       return redirect_to cbv_flow_applicant_information_path
     end
 
-    @cbv_applicant.has_required_applicant_attributes
+    @cbv_applicant.validate_required_applicant_attributes
     error_count = @cbv_applicant.errors.size
     if error_count > 0
       error_header = t(".error_header", count: error_count)
