@@ -3,6 +3,8 @@
 * @tdooner (Tom Dooner)
 * @jeffcatania-usds (Jeff Catania)
 * @clediggins-usds (Cle Diggins)
+* @daphnegold  (Daphne Gold)
+* @millerti (Tim Miller)
 
 # Repo Domains
 The top level of this repository contains subfolders for different projects with different ownership.
