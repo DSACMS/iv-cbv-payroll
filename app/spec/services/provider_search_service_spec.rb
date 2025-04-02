@@ -58,7 +58,7 @@ RSpec.describe ProviderSearchService, type: :service do
 
         expect(results.length).to eq(6)
         expect(first_result).to have_attributes(
-          provider_name: "pinwheel",
+          provider_name: :pinwheel,
           provider_options: have_attributes(response_type: a_kind_of(String), provider_id: a_kind_of(String)),
           name: a_kind_of(String),
           logo_url: a_kind_of(String)
@@ -71,7 +71,7 @@ RSpec.describe ProviderSearchService, type: :service do
 
         expect(results.length).to eq(6)
         expect(first_result).to have_attributes(
-          provider_name: "pinwheel",
+          provider_name: :pinwheel,
           provider_options: have_attributes(response_type: a_kind_of(String), provider_id: a_kind_of(String)),
           name: a_kind_of(String),
           logo_url: a_kind_of(String)
@@ -83,7 +83,7 @@ RSpec.describe ProviderSearchService, type: :service do
         first_result = results.first
 
         expect(first_result).to have_attributes(
-          provider_name: "pinwheel",
+          provider_name: :pinwheel,
           provider_options: have_attributes(response_type: a_kind_of(String), provider_id: a_kind_of(String)),
           name: a_kind_of(String),
           logo_url: a_kind_of(String)
@@ -101,7 +101,7 @@ RSpec.describe ProviderSearchService, type: :service do
         first_result = results.first
 
         expect(first_result).to have_attributes(
-          provider_name: "argyle",
+          provider_name: :argyle,
           provider_options: have_attributes(response_type: a_kind_of(String), provider_id: a_kind_of(String)),
           name: a_kind_of(String),
           logo_url: a_kind_of(String)
@@ -119,7 +119,7 @@ RSpec.describe ProviderSearchService, type: :service do
         first_result = results.first
 
         expect(first_result).to have_attributes(
-          provider_name: "argyle",
+          provider_name: :argyle,
           provider_options: have_attributes(response_type: a_kind_of(String), provider_id: a_kind_of(String)),
           name: a_kind_of(String),
           logo_url: a_kind_of(String)
