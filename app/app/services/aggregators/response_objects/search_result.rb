@@ -38,7 +38,7 @@ module Aggregators::ResponseObjects
             provider_id = argyle_id
             provider_name = "argyle"
           elsif pinwheel_id != nil
-            provider_id = pinwheel
+            provider_id = pinwheel_id
             provider_name = "pinwheel"
           end
         else

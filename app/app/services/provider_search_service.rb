@@ -28,9 +28,9 @@ class ProviderSearchService
   def top_aggregator_options(type)
     case type
     when "payroll"
-      ResponseObjects::SearchResult.from_aggregator_options(TOP_PROVIDERS, SUPPORTED_PROVIDERS)
+      Aggregators::ResponseObjects::SearchResult.from_aggregator_options(TOP_PROVIDERS, SUPPORTED_PROVIDERS)
     when "employer"
-      ResponseObjects::SearchResult.from_aggregator_options(TOP_EMPLOYERS, SUPPORTED_PROVIDERS)
+      Aggregators::ResponseObjects::SearchResult.from_aggregator_options(TOP_EMPLOYERS, SUPPORTED_PROVIDERS)
     end
   end
 

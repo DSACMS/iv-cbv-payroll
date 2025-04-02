@@ -24,8 +24,8 @@ module PinwheelApiHelper
       )
   end
 
-  def stub_request_items_no_items_response
-    stub_request(:get, /#{PinwheelService::ITEMS_ENDPOINT}/)
+  def pinwheel_stub_request_items_no_items_response
+    stub_request(:get, /#{Aggregators::Sdk::PinwheelService::ITEMS_ENDPOINT}/)
       .to_return(
         status: 200,
         body: {
@@ -71,7 +71,7 @@ module PinwheelApiHelper
     stub_request(:get, %r{#{Aggregators::Sdk::PinwheelService::ACCOUNTS_ENDPOINT}/[0-9a-fA-F\-]{36}/paystubs})
       .to_return(
         status: 200,
-        body: load_relative_json_file('request_end_user_multiple_paystubs_response.json').to_json,
+        body: pinwheel_load_relative_json_file('request_end_user_multiple_paystubs_response.json').to_json,
         headers: { 'Content-Type': 'application/json;charset=UTF-8' }
       )
   end
@@ -80,7 +80,7 @@ module PinwheelApiHelper
     stub_request(:get, %r{#{Aggregators::Sdk::PinwheelService::ACCOUNTS_ENDPOINT}/[0-9a-fA-F\-]{36}/paystubs})
       .to_return(
         status: 200,
-        body: load_relative_json_file('request_end_user_multiple_paystubs_response.json').to_json,
+        body: pinwheel_load_relative_json_file('request_end_user_multiple_paystubs_response.json').to_json,
         headers: { 'Content-Type': 'application/json;charset=UTF-8' }
       )
   end

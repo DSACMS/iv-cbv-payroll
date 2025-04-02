@@ -36,7 +36,7 @@ module ArgyleApiHelper
   end
 
   def argyle_stub_request_identities_response(user_folder)
-    argyle_stub_request(:get, %r{#{Aggregators::Sdk::ArgyleService::IDENTITIES_ENDPOINT}})
+    stub_request(:get, %r{#{Aggregators::Sdk::ArgyleService::IDENTITIES_ENDPOINT}})
       .to_return(
         status: 200,
         body: argyle_load_relative_json_file(user_folder, 'request_identity.json').to_json,
@@ -44,20 +44,20 @@ module ArgyleApiHelper
       )
   end
 
-  def stub_request_employments_response(user_folder)
+  def argyle_stub_request_employments_response(user_folder)
     stub_request(:get, %r{#{Aggregators::Sdk::ArgyleService::EMPLOYMENTS_ENDPOINT}})
       .to_return(
         status: 200,
-        body: load_relative_json_file(user_folder, 'request_employment.json').to_json,
+        body: argyle_load_relative_json_file(user_folder, 'request_employment.json').to_json,
         headers: { 'Content-Type': 'application/json;charset=UTF-8' }
       )
   end
 
-  def stub_request_employments_response(user_folder)
+  def argyle_stub_request_employments_response(user_folder)
     stub_request(:get, %r{#{Aggregators::Sdk::ArgyleService::EMPLOYMENTS_ENDPOINT}})
       .to_return(
         status: 200,
-        body: load_relative_json_file(user_folder, 'request_employment.json').to_json,
+        body: argyle_load_relative_json_file(user_folder, 'request_employment.json').to_json,
         headers: { 'Content-Type': 'application/json;charset=UTF-8' }
       )
   end

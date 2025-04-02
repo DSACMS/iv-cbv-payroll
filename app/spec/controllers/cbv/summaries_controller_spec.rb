@@ -69,7 +69,7 @@ RSpec.describe Cbv::SummariesController do
       end
       context "with 3 paystubs" do
         before do
-        stub_request_end_user_multiple_paystubs_response
+        pinwheel_stub_request_end_user_multiple_paystubs_response
       end
         it "renders properly with 2 paystubs" do
           get :show
