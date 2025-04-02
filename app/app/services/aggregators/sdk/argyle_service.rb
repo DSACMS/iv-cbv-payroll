@@ -24,9 +24,9 @@ module Aggregators::Sdk
     SHIFTS_ENDPOINT = "shifts"
 
     def initialize(environment, api_key_id = nil, api_key_secret = nil)
+      @environment = ENVIRONMENTS.fetch(environment.to_sym) { |env| raise KeyError.new("ArgyleService unknown environment: #{env}") }
       @api_key_id = api_key_id || ENVIRONMENTS.fetch(environment.to_sym)[:api_key_id]
       @api_key_secret = api_key_secret || ENVIRONMENTS.fetch(environment.to_sym)[:api_key_secret]
-      @environment = ENVIRONMENTS.fetch(environment.to_sym) { |env| raise KeyError.new("ArgyleService unknown environment: #{env}") }
 
       client_options = {
         request: {
@@ -67,7 +67,6 @@ module Aggregators::Sdk
         user: user,
         employment: employment,
         limit: limit }.compact
-      # todo: paginate
       @http.get(IDENTITIES_ENDPOINT, params).body
     end
 
@@ -86,8 +85,6 @@ module Aggregators::Sdk
         ongoing_refresh_status: ongoing_refresh_status,
         limit: limit }.compact
 
-      # TODO: paginate
-      # json["data"].map { |paystub_json| Aggregators::ResponseObjects::Paystub.from_pinwheel(paystub_json) }
       @http.get(ACCOUNTS_ENDPOINT, params).body
     end
 
@@ -124,7 +121,6 @@ module Aggregators::Sdk
 
     # https://docs.argyle.com/api-reference/gigs#list
     def fetch_shifts_api(**params)
-      # TODO: paginate
       @http.get(SHIFTS_ENDPOINT, params).body
     end
 
@@ -141,7 +137,6 @@ module Aggregators::Sdk
       @http.get(EMPLOYMENTS_ENDPOINT, params).body
     end
 
-    # TODO: refactor this into common function between argyle_service/pinwheel_service
     def build_url(endpoint)
       @http.build_url(endpoint).to_s
     end

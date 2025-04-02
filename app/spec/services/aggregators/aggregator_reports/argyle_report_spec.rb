@@ -18,7 +18,9 @@ RSpec.describe Aggregators::AggregatorReports::ArgyleReport, type: :service do
   end
 
   describe '#fetch_report_data' do
-    subject { argyle_report.send(:fetch_report_data) }
+    before do
+      argyle_report.send(:fetch_report_data)
+    end
 
     it 'calls the identities API' do
       subject
@@ -62,11 +64,11 @@ RSpec.describe Aggregators::AggregatorReports::ArgyleReport, type: :service do
 
       it 'logs the error' do
         expect(Rails.logger).to receive(:error).with(/Report Fetch Error: API error/)
-        subject
+        argyle_report.send(:fetch_report_data)
       end
 
       it 'sets @has_fetched to false' do
-        subject
+        argyle_report.send(:fetch_report_data)
         expect(argyle_report.instance_variable_get(:@has_fetched)).to be false
       end
     end

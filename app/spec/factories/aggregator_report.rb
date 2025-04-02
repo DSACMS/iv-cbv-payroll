@@ -3,11 +3,14 @@ FactoryBot.define do
     transient do
       pinwheel_service { Aggregators::Sdk::PinwheelService.new(:sandbox) }
     end
-    identities { [
-      Aggregators::ResponseObjects::Identity.new(
-        account_id: "account1",
-        full_name: "John Smith."
-    ) ]}
+    identities do
+      [
+        Aggregators::ResponseObjects::Identity.new(
+          account_id: "account1",
+          full_name: "John Smith."
+        )
+      ]
+    end
     incomes { [
       Aggregators::ResponseObjects::Income.new(
         account_id: "account1",

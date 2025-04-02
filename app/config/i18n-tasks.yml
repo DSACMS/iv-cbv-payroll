@@ -148,7 +148,7 @@ ignore_missing:
 ## Consider these keys used:
 ignore_unused:
   all:
-    - "*.{nyc,ma,sandbox,default}" # site-specific translations
+    - "*.{nyc,ma,sandbox,az_des,default}" # site-specific translations
     - "activerecord.errors.*" # model errors are not always explicitly used
     - "date.*" # date formats are not always explicitly used
     - "time.*" # time formats are not always explicitly used

@@ -1,4 +1,6 @@
 module Aggregators::FormatMethods::Argyle
+  # Note: this method is to map Argyle's employment status with Pinwheel's for consistency
+  # between the two providers.
   def self.format_employment_status(employment_status)
     return unless employment_status
 
