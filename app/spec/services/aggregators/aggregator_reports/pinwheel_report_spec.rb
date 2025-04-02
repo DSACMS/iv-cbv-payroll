@@ -13,10 +13,10 @@ RSpec.describe Aggregators::AggregatorReports::PinwheelReport, type: :service do
   let(:pinwheel_service) { Aggregators::Sdk::PinwheelService.new(:sandbox) }
   let(:service) { described_class.new(payroll_accounts: payroll_accounts, pinwheel_service: pinwheel_service, from_date: from_date, to_date: to_date) }
 
-  let(:identities_json) { load_relative_json_file('request_identity_response.json') }
-  let(:incomes_json) { load_relative_json_file('request_income_metadata_response.json') }
-  let(:employments_json) { load_relative_json_file('request_employment_info_response.json') }
-  let(:paystubs_json) { load_relative_json_file('request_end_user_paystubs_response.json') }
+  let(:identities_json) { pinwheel_load_relative_json_file('request_identity_response.json') }
+  let(:incomes_json) { pinwheel_load_relative_json_file('request_income_metadata_response.json') }
+  let(:employments_json) { pinwheel_load_relative_json_file('request_employment_info_response.json') }
+  let(:paystubs_json) { pinwheel_load_relative_json_file('request_end_user_paystubs_response.json') }
 
   let(:empty_pinwheel_result) { { "result" => [] } }
 

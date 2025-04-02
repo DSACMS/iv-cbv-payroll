@@ -7,8 +7,8 @@ RSpec.describe Cbv::SuccessesController do
     let(:cbv_flow) { create(:cbv_flow, :invited, confirmation_code: "NYC12345") }
 
     before do
-      stub_request_end_user_paystubs_response
-      stub_request_end_user_accounts_response
+      pinwheel_stub_request_end_user_paystubs_response
+      pinwheel_stub_request_end_user_accounts_response
       session[:cbv_flow_id] = cbv_flow.id
     end
 

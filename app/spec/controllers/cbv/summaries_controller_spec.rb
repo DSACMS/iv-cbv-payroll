@@ -43,11 +43,11 @@ RSpec.describe Cbv::SummariesController do
   describe "#show" do
     before do
       session[:cbv_flow_id] = cbv_flow.id
-      stub_request_end_user_accounts_response
-      stub_request_end_user_paystubs_response
-      stub_request_employment_info_response unless errored_jobs.include?("employment")
-      stub_request_income_metadata_response if supported_jobs.include?("income")
-      stub_request_identity_response
+      pinwheel_stub_request_end_user_accounts_response
+      pinwheel_stub_request_end_user_paystubs_response
+      pinwheel_stub_request_employment_info_response unless errored_jobs.include?("employment")
+      pinwheel_stub_request_income_metadata_response if supported_jobs.include?("income")
+      pinwheel_stub_request_identity_response
     end
 
     context "when rendering views" do
@@ -70,7 +70,7 @@ RSpec.describe Cbv::SummariesController do
       end
       context "with 3 paystubs" do
         before do
-        stub_request_end_user_multiple_paystubs_response
+        pinwheel_stub_request_end_user_multiple_paystubs_response
       end
         it "renders properly with 2 paystubs" do
           get :show

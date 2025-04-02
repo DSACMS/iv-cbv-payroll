@@ -9,7 +9,7 @@ RSpec.describe Aggregators::Sdk::ArgyleService, type: :service do
   describe '#fetch_identities_api' do
     let(:requests) { WebMock::RequestRegistry.instance.requested_signatures.hash.keys }
     before do
-      stub_request_identities_response("bob")
+      argyle_stub_request_identities_response("bob")
     end
 
     it 'calls the correct endpoint' do
@@ -60,7 +60,7 @@ RSpec.describe Aggregators::Sdk::ArgyleService, type: :service do
   describe '#fetch_accounts_api' do
     let(:requests) { WebMock::RequestRegistry.instance.requested_signatures.hash.keys }
     before do
-      stub_request_accounts_response("bob")
+      argyle_stub_request_accounts_response("bob")
     end
 
     it 'calls the correct endpoint' do
@@ -114,7 +114,7 @@ RSpec.describe Aggregators::Sdk::ArgyleService, type: :service do
   describe '#fetch_paystubs_api' do
     let(:requests) { WebMock::RequestRegistry.instance.requested_signatures.hash.keys }
     before do
-      stub_request_paystubs_response("bob")
+      argyle_stub_request_paystubs_response("bob")
     end
     it 'calls the correct endpoint' do
       service.fetch_paystubs_api()
@@ -167,7 +167,7 @@ RSpec.describe Aggregators::Sdk::ArgyleService, type: :service do
   end
   describe '#fetch_employments_api' do
     before do
-      stub_request_employments_response("bob")
+      argyle_stub_request_employments_response("bob")
     end
 
     it 'accepts param account' do

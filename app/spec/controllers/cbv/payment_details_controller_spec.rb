@@ -37,10 +37,10 @@ RSpec.describe Cbv::PaymentDetailsController do
 
     before do
       session[:cbv_flow_id] = cbv_flow.id
-      stub_request_end_user_accounts_response
-      stub_request_end_user_paystubs_response
-      stub_request_income_metadata_response if supported_jobs.include?("income")
-      stub_request_employment_info_response
+      pinwheel_stub_request_end_user_accounts_response
+      pinwheel_stub_request_end_user_paystubs_response
+      pinwheel_stub_request_income_metadata_response if supported_jobs.include?("income")
+      pinwheel_stub_request_employment_info_response
       allow(Aggregators::AggregatorReports::PinwheelReport).to receive(:new).and_return(pinwheel_report)
     end
 
@@ -184,7 +184,7 @@ RSpec.describe Cbv::PaymentDetailsController do
 
     context "when employment status is blank" do
       before do
-        request_employment_info_response_null_employment_status_bug
+        pinwheel_request_employment_info_response_null_employment_status_bug
       end
 
       it "renders properly" do
