@@ -15,6 +15,7 @@ RSpec.describe Aggregators::AggregatorReports::ArgyleReport, type: :service do
   before do
     allow(argyle_service).to receive(:fetch_identities_api).and_return(identities_json)
     allow(argyle_service).to receive(:fetch_paystubs_api).and_return(paystubs_json)
+    allow(argyle_service).to receive(:fetch_gigs_api).and_return(gigs_json)
   end
 
   describe '#fetch_report_data' do
@@ -23,37 +24,30 @@ RSpec.describe Aggregators::AggregatorReports::ArgyleReport, type: :service do
     end
 
     it 'calls the identities API' do
-      subject
       expect(argyle_service).to have_received(:fetch_identities_api).with(account: account)
     end
 
     it 'calls the paystubs API' do
-      subject
       expect(argyle_service).to have_received(:fetch_paystubs_api).with(account: account, from_start_date: from_date, to_start_date: to_date)
     end
 
     it 'transforms identities correctly' do
-      subject
       expect(argyle_report.instance_variable_get(:@identities)).to all(be_an(Aggregators::ResponseObjects::Identity))
     end
 
     it 'transforms employments correctly' do
-      subject
       expect(argyle_report.instance_variable_get(:@employments)).to all(be_an(Aggregators::ResponseObjects::Employment))
     end
 
     it 'transforms incomes correctly' do
-      subject
       expect(argyle_report.instance_variable_get(:@incomes)).to all(be_an(Aggregators::ResponseObjects::Income))
     end
 
     it 'transforms paystubs correctly' do
-      subject
       expect(argyle_report.instance_variable_get(:@paystubs)).to all(be_an(Aggregators::ResponseObjects::Paystub))
     end
 
     it 'sets @has_fetched to true on success' do
-      subject
       expect(argyle_report.instance_variable_get(:@has_fetched)).to be true
     end
 
@@ -81,7 +75,7 @@ RSpec.describe Aggregators::AggregatorReports::ArgyleReport, type: :service do
 
       it 'returns an array of ResponseObjects::Gig' do
         argyle_report.send(:fetch_report_data)
-        expect(argyle_report.gigs.length).to eq(100)
+        expect(argyle_report.gigs.length).to eq(200)
 
         expect(argyle_report.gigs[0]).to be_a(Aggregators::ResponseObjects::Gig)
       end
