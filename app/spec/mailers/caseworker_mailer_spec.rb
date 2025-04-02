@@ -14,11 +14,7 @@ RSpec.describe CaseworkerMailer, type: :mailer do
     }
   )}
   let(:caseworker_email) { cbv_flow.cbv_flow_invitation.user.email }
-  let(:account_id) { cbv_flow.payroll_accounts.first.pinwheel_account_id }
-  let(:payments) { stub_payments(account_id) }
-  let(:employments) { stub_employments(account_id) }
-  let(:incomes) { stub_incomes(account_id) }
-  let(:identities) { stub_identities(account_id) }
+  let(:pinwheel_report) { build(:pinwheel_report, :with_pinwheel_account) }
   let(:email_address) { "test@example.com" }
   let(:current_agency) { ClientAgencyConfig.new(File.join(Rails.root, 'config', 'client-agency-config.yml'))[cbv_flow.client_agency_id] }
 
@@ -26,10 +22,7 @@ RSpec.describe CaseworkerMailer, type: :mailer do
     CaseworkerMailer.with(
       email_address: email_address,
       cbv_flow: cbv_flow,
-      payments: payments,
-      employments: employments,
-      incomes: incomes,
-      identities: identities
+      aggregator_report: pinwheel_report,
     ).summary_email
   }
 
