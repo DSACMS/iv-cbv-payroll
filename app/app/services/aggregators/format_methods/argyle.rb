@@ -31,4 +31,9 @@ module Aggregators::FormatMethods::Argyle
        .group_by { |e| e["type"] }
        .transform_values { |earnings| earnings.sum { |e| e["hours"].to_f } }
   end
+
+  def self.seconds_to_hours(seconds)
+    return unless seconds
+    (seconds / 3600.0).round(2)
+  end
 end

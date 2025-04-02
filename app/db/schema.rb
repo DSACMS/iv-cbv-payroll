@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2025_03_18_171130) do
+ActiveRecord::Schema[7.1].define(version: 2025_03_28_011255) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pgcrypto"
   enable_extension "plpgsql"
@@ -48,8 +48,8 @@ ActiveRecord::Schema[7.1].define(version: 2025_03_18_171130) do
     t.bigint "user_id"
     t.string "language"
     t.bigint "cbv_applicant_id"
-    t.index ["cbv_applicant_id"], name: "index_cbv_flow_invitations_on_cbv_applicant_id"
-    t.index ["user_id"], name: "index_cbv_flow_invitations_on_user_id"
+    t.index [ "cbv_applicant_id" ], name: "index_cbv_flow_invitations_on_cbv_applicant_id"
+    t.index [ "user_id" ], name: "index_cbv_flow_invitations_on_user_id"
   end
 
   create_table "cbv_flows", force: :cascade do |t|
@@ -66,8 +66,8 @@ ActiveRecord::Schema[7.1].define(version: 2025_03_18_171130) do
     t.datetime "consented_to_authorized_use_at"
     t.datetime "redacted_at"
     t.bigint "cbv_applicant_id"
-    t.index ["cbv_applicant_id"], name: "index_cbv_flows_on_cbv_applicant_id"
-    t.index ["cbv_flow_invitation_id"], name: "index_cbv_flows_on_cbv_flow_invitation_id"
+    t.index [ "cbv_applicant_id" ], name: "index_cbv_flows_on_cbv_applicant_id"
+    t.index [ "cbv_flow_invitation_id" ], name: "index_cbv_flows_on_cbv_flow_invitation_id"
   end
 
   create_table "payroll_accounts", force: :cascade do |t|
@@ -85,7 +85,8 @@ ActiveRecord::Schema[7.1].define(version: 2025_03_18_171130) do
     t.datetime "identity_errored_at", precision: nil
     t.datetime "identity_synced_at", precision: nil
     t.string "type", default: "pinwheel", null: false
-    t.index ["cbv_flow_id"], name: "index_payroll_accounts_on_cbv_flow_id"
+    t.datetime "gigs_synced_at", precision: nil
+    t.index [ "cbv_flow_id" ], name: "index_payroll_accounts_on_cbv_flow_id"
   end
 
   create_table "users", force: :cascade do |t|
@@ -104,8 +105,8 @@ ActiveRecord::Schema[7.1].define(version: 2025_03_18_171130) do
     t.datetime "updated_at", null: false
     t.jsonb "invalidated_session_ids"
     t.boolean "is_service_account", default: false
-    t.index ["email", "client_agency_id"], name: "index_users_on_email_and_client_agency_id", unique: true
-    t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
+    t.index [ "email", "client_agency_id" ], name: "index_users_on_email_and_client_agency_id", unique: true
+    t.index [ "reset_password_token" ], name: "index_users_on_reset_password_token", unique: true
   end
 
   create_table "webhook_events", force: :cascade do |t|
@@ -114,7 +115,7 @@ ActiveRecord::Schema[7.1].define(version: 2025_03_18_171130) do
     t.bigint "payroll_account_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index ["payroll_account_id"], name: "index_webhook_events_on_payroll_account_id"
+    t.index [ "payroll_account_id" ], name: "index_webhook_events_on_payroll_account_id"
   end
 
   add_foreign_key "cbv_flow_invitations", "users"

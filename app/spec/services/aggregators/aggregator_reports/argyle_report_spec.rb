@@ -9,11 +9,13 @@ RSpec.describe Aggregators::AggregatorReports::ArgyleReport, type: :service do
   let(:argyle_report) { described_class.new(payroll_accounts: [ account ], argyle_service: argyle_service, from_date: from_date, to_date: to_date) }
 
   let(:identities_json) { JSON.parse(File.read(Rails.root.join('spec/support/fixtures/argyle/bob/request_identity.json'))) }
+  let(:gigs_json) { JSON.parse(File.read(Rails.root.join('spec/support/fixtures/argyle/bob/request_gigs.json'))) }
   let(:paystubs_json) { JSON.parse(File.read(Rails.root.join('spec/support/fixtures/argyle/bob/request_paystubs.json'))) }
 
   before do
     allow(argyle_service).to receive(:fetch_identities_api).and_return(identities_json)
     allow(argyle_service).to receive(:fetch_paystubs_api).and_return(paystubs_json)
+    allow(argyle_service).to receive(:fetch_gigs_api).and_return(gigs_json)
   end
 
   describe '#fetch_report_data' do
@@ -64,5 +66,57 @@ RSpec.describe Aggregators::AggregatorReports::ArgyleReport, type: :service do
         expect(argyle_report.instance_variable_get(:@has_fetched)).to be false
       end
     end
+
+    describe '#fetch_gigs' do
+    context "for Bob, a Uber driver" do
+      before do
+        allow(argyle_service).to receive(:fetch_gigs_api).and_return(gigs_json)
+      end
+
+      it 'returns an array of ResponseObjects::Gig' do
+        argyle_report.send(:fetch_report_data)
+        expect(argyle_report.gigs.length).to eq(200)
+
+        expect(argyle_report.gigs[0]).to be_a(Aggregators::ResponseObjects::Gig)
+      end
+
+      it 'returns with expected attributes' do
+        argyle_report.send(:fetch_report_data)
+        expect(argyle_report.gigs[0]).to have_attributes(
+        account_id: "019571bc-2f60-3955-d972-dbadfe0913a8",
+        gig_type: "rideshare",
+        gig_status: "cancelled",
+        hours: nil,
+        start_date: "2025-03-06",
+        end_date: nil,
+        compensation_category: "work",
+        compensation_amount: 0.0,
+        compensation_unit: "USD"
+        )
+        expect(argyle_report.gigs[1]).to have_attributes(
+          account_id: "019571bc-2f60-3955-d972-dbadfe0913a8",
+          gig_type: "rideshare",
+          gig_status: "completed",
+          hours: 0.09,
+          start_date: "2025-03-05",
+          end_date: "2025-03-05",
+          compensation_category: "work",
+          compensation_amount: 10.24,
+          compensation_unit: "USD"
+        )
+        expect(argyle_report.gigs[3]).to have_attributes(
+          account_id: "019571bc-2f60-3955-d972-dbadfe0913a8",
+          gig_type: "rideshare",
+          gig_status: "completed",
+          hours: 0.56,
+          start_date: "2025-03-05",
+          end_date: "2025-03-05",
+          compensation_category: "work",
+          compensation_amount: 19.45,
+          compensation_unit: "USD"
+        )
+      end
+    end
+  end
   end
 end

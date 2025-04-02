@@ -5,11 +5,13 @@ class PayrollAccount::Pinwheel < PayrollAccount
     "paystubs" => "paystubs.fully_synced",
     "employment" => "employment.added",
     "income" => "income.added",
-    "identity" => "identity.added"
+    "identity" => "identity.added",
+    "gigs" => "gigs.fully_synced"
   }
 
   def has_fully_synced?
     (supported_jobs.exclude?("paystubs") || find_webhook_event(JOBS_TO_WEBHOOK_EVENTS["paystubs"]).present?) &&
+      (supported_jobs.exclude?("gigs") || find_webhook_event(JOBS_TO_WEBHOOK_EVENTS["gigs"]).present?) &&
       (supported_jobs.exclude?("employment") || find_webhook_event(JOBS_TO_WEBHOOK_EVENTS["employment"]).present?) &&
       (supported_jobs.exclude?("income") || find_webhook_event(JOBS_TO_WEBHOOK_EVENTS["income"]).present?) &&
       (supported_jobs.exclude?("identity") || find_webhook_event(JOBS_TO_WEBHOOK_EVENTS["identity"]).present?)

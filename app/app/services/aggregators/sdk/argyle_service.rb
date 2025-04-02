@@ -20,6 +20,8 @@ module Aggregators::Sdk
     USERS_ENDPOINT = "users"
     ACCOUNTS_ENDPOINT = "accounts"
     EMPLOYMENTS_ENDPOINT = "employments"
+    GIGS_ENDPOINT = "gigs"
+    SHIFTS_ENDPOINT = "shifts"
 
     def initialize(environment, api_key_id = nil, api_key_secret = nil)
       @environment = ENVIRONMENTS.fetch(environment.to_sym) { |env| raise KeyError.new("ArgyleService unknown environment: #{env}") }
@@ -100,6 +102,26 @@ module Aggregators::Sdk
       page_response = @http.get(PAYSTUBS_ENDPOINT, params).body
       raise "Pagination not implemented" if page_response["next"].present?
       page_response
+    end
+
+    # https://docs.argyle.com/api-reference/gigs#list
+    def fetch_gigs_api(account: nil, user: nil,
+                       from_start_datetime: nil,
+                       to_start_datetime: nil, limit: 200)
+      params = {
+        account: account,
+        user: user,
+        employment: employment,
+        from_start_datetime: from_start_datetime,
+        to_start_datetime: to_start_datetime,
+        limit: limit }.compact
+      # TODO: paginate
+      @http.get(GIGS_ENDPOINT, params).body
+    end
+
+    # https://docs.argyle.com/api-reference/gigs#list
+    def fetch_shifts_api(**params)
+      @http.get(SHIFTS_ENDPOINT, params).body
     end
 
     def create_user
