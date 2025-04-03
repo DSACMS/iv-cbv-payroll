@@ -49,6 +49,7 @@ describe("ArgyleModalAdapter", () => {
           sandbox: mockArgyleAuthToken.isSandbox,
         })
       )
+      expect(mockArgyleAuthToken.isSandbox).toBe(true)
     })
   })
 
