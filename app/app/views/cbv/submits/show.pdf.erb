@@ -30,6 +30,9 @@
 <% end %>
 
 <h2><%= t(".pdf.client.client_report_information") %></h2>
+<% if is_caseworker %>
+  <sup>1</sup><span><%= "Client-provided information" %></span>
+<% end %>
 
 <%= render(TableComponent.new) do |table| %>
   <%= table.with_header do %>
@@ -39,9 +42,11 @@
     <%= table.with_row(t(".pdf.client.agency_id_number"), @cbv_flow.cbv_applicant.agency_id_number) %>
   <% end %>
   <% if is_caseworker %>
-    <%= table.with_row(t(".pdf.caseworker.first_name"), @cbv_flow.cbv_applicant.first_name) %>
-    <%= table.with_row(t(".pdf.caseworker.middle_name"), @cbv_flow.cbv_applicant.middle_name) %>
-    <%= table.with_row(t(".pdf.caseworker.last_name"), @cbv_flow.cbv_applicant.last_name) %>
+      <% @cbv_flow.cbv_applicant.applicant_attributes.each do |item| %>
+      <% if @cbv_flow.cbv_applicant[item].present? %>
+        <%= table.with_row(t("cbv.applicant_informations.show.#{@cbv_flow.client_agency_id}.#{item}"), @cbv_flow.cbv_applicant[item]) %>
+      <% end %>
+    <% end %>
 
     <% if current_agency?(:nyc) %>
       <%= table.with_row(t(".pdf.caseworker.client_id_number"), @cbv_flow.cbv_applicant.client_id_number) %>
