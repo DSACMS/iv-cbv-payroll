@@ -31,4 +31,14 @@ module Aggregators::FormatMethods::Argyle
        .group_by { |e| e["type"] }
        .transform_values { |earnings| earnings.sum { |e| e["hours"].to_f } }
   end
+
+  def self.format_employer_address(a_paystub)
+    return unless a_paystub.present? && a_paystub["employer_address"].present?
+    employer_address = a_paystub["employer_address"]
+    [
+      employer_address["line1"],
+      employer_address["line2"],
+      "#{employer_address['city']}, #{employer_address['state']} #{employer_address['postal_code']}"
+    ].compact.join(", ")
+  end
 end
