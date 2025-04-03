@@ -1,7 +1,7 @@
 class Cbv::EmployerSearchesController < Cbv::BaseController
   # Disable CSP since Pinwheel relies on inline styles
   content_security_policy false, only: :show
-  before_action :check_pinwheel_initialization
+  before_action :check_webhooks_initialization_in_development
   after_action :track_accessed_search_event, only: :show
   after_action :track_applicant_searched_event, only: :show
 
@@ -21,11 +21,11 @@ class Cbv::EmployerSearchesController < Cbv::BaseController
 
   private
 
-  def check_pinwheel_initialization
+  def check_webhooks_initialization_in_development
     return unless Rails.env.development?
 
-    if Rails.application.config.pinwheel_initialization_error
-      flash.now[:alert] = "Unable to initialize Pinwheel: #{Rails.application.config.pinwheel_initialization_error}"
+    if Rails.application.config.webhooks_initialization_error
+      flash.now[:alert] = "Unable to initialize Pinwheel or Argyle webhooeks: #{Rails.application.config.webhooks_initialization_error}"
     end
   end
 

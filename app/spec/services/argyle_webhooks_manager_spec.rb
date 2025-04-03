@@ -10,9 +10,9 @@ RSpec.describe ArgyleWebhooksManager, type: :service do
   end
 
   let(:ngrok_url) { 'https://ngrok-url.com' }
-  let(:webhook_name) { subject.format_identifier_hash('test_webhook') }
+  let(:webhook_name) { 'test_webhook' }
   let(:all_webhook_subscriptions) do
-    load_relative_json_file('response_get_webhook_subscriptions.json')['results']
+    load_relative_json_file('argyle', 'response_get_webhook_subscriptions.json')['results']
   end
   let(:existing_subscriptions) do
     all_webhook_subscriptions.find_all { |subscription| subscription["name"] == webhook_name }
@@ -23,7 +23,7 @@ RSpec.describe ArgyleWebhooksManager, type: :service do
     allow(Aggregators::Sdk::ArgyleService).to receive(:new).and_return(argyle_service)
     described_class.new
   end
-  let(:create_webhook_subscription_response) { load_relative_json_file('response_create_webhook_subscription.json') }
+  let(:create_webhook_subscription_response) { load_relative_json_file('argyle', 'response_create_webhook_subscription.json') }
   # Define sandbox_config as a let variable for easier access in tests
   let(:sandbox_config) { double("SandboxConfig", argyle_environment: "sandbox") }
   # Define the webhook events
@@ -87,9 +87,11 @@ RSpec.describe ArgyleWebhooksManager, type: :service do
           .with(webhook_name)
           .and_return([ existing_sub ])
 
-        # For this case, delete should NOT be called
-        expect(argyle_service).not_to receive(:delete_webhook_subscription)
+        expect(argyle_service).to receive(:delete_webhook_subscription).with(
+          existing_sub["id"]
+        )
 
+        expect(STDOUT).to receive(:puts).with("  Removing existing Argyle webhook subscription (url = https://different-url.ngrok.io/webhooks/argyle/events)")
         expect(STDOUT).to receive(:puts).with("  Registering Argyle webhooks for Ngrok tunnel in Argyle sandbox...")
         expect(STDOUT).to receive(:puts).with("  ✅ Set up Argyle webhook: #{create_webhook_subscription_response["id"]}")
         expect(STDOUT).to receive(:puts).with(" Argyle webhook url: #{receiver_url}")

@@ -9,9 +9,9 @@ class ArgyleWebhooksManager
     @argyle = Aggregators::Sdk::ArgyleService.new(@sandbox_config.argyle_environment)
   end
 
-  def existing_subscriptions_with_name(formatted_identifier_name)
+  def existing_subscriptions_with_name(name)
     @subscriptions = @argyle.get_webhook_subscriptions["results"]
-    @subscriptions.find_all { |subscription| subscription["name"] == formatted_identifier_name }
+    @subscriptions.find_all { |subscription| subscription["name"] == name }
   end
 
   def remove_subscriptions(subscriptions)
@@ -34,6 +34,8 @@ class ArgyleWebhooksManager
 
       existing_subscription["id"]
     else
+      remove_subscriptions(subscriptions)
+
       puts "  Registering Argyle webhooks for Ngrok tunnel in Argyle #{@sandbox_config.argyle_environment}..."
       response = @argyle.create_webhook_subscription(Webhooks::Argyle.get_webhook_events, receiver_url, name)
       new_webhook_subscription_id = response["id"]
@@ -42,9 +44,5 @@ class ArgyleWebhooksManager
 
       new_webhook_subscription_id
     end
-  end
-
-  def format_identifier_hash(identifier)
-    "ngrok_subscription_#{identifier}"
   end
 end

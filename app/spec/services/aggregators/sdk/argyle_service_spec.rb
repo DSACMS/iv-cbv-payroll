@@ -16,11 +16,20 @@ RSpec.describe Aggregators::Sdk::ArgyleService, type: :service do
   end
 
   describe '#initialize' do
+    before do
+      # Stub out the values in ArgyleService::ENVIRONMENTS with known values we
+      # can assert are loaded correctly.
+      stub_const("#{described_class}::ENVIRONMENTS", described_class::ENVIRONMENTS.dup.tap do |hash|
+        hash[:sandbox][:api_key_secret] = api_key_secret
+        hash[:production][:api_key_secret] = "production-#{api_key_secret}"
+      end)
+    end
+
     context 'when the environment is sandbox' do
       let(:service) { Aggregators::Sdk::ArgyleService.new("sandbox") }
 
       it 'initializes with the correct environment' do
-        expect(service.configuration[:environment]).to eq("sandbox")
+        expect(service.instance_variable_get(:@api_key_secret)).to eq(api_key_secret)
       end
     end
 
@@ -28,34 +37,7 @@ RSpec.describe Aggregators::Sdk::ArgyleService, type: :service do
       let(:service) { Aggregators::Sdk::ArgyleService.new("production") }
 
       it 'initializes with the correct environment' do
-        expect(service.configuration[:environment]).to eq("production")
-      end
-    end
-
-    context 'when environment variables are implied from the environment' do
-      let(:implicitly_declared_service) { Aggregators::Sdk::ArgyleService.new("sandbox") }
-      let(:env_implied_webhook_secret) { 'env_implied_webhook_secret' }
-
-      around do | example |
-        stub_environment_variable('ARGYLE_SANDBOX_WEBHOOK_SECRET', env_implied_webhook_secret, &example)
-      end
-
-      it 'initializes with the correct environment' do
-        expect(implicitly_declared_service.configuration[:environment]).to eq("sandbox")
-        expect(implicitly_declared_service.configuration[:webhook_secret]).to eq(env_implied_webhook_secret)
-      end
-    end
-
-    context 'constructor args override environment variables' do
-      around do | example |
-        stub_environment_variable('ARGYLE_SANDBOX_WEBHOOK_SECRET', 'env_implied_webhook_secret', &example)
-      end
-
-      let(:explicitly_declared_service) { Aggregators::Sdk::ArgyleService.new("sandbox", "FAKE_API_KEY", api_key_secret, webhook_secret) }
-
-      it 'initializes with the correct environment' do
-        expect(explicitly_declared_service.configuration[:environment]).to eq("sandbox")
-        expect(explicitly_declared_service.configuration[:webhook_secret]).to eq(webhook_secret)
+        expect(service.instance_variable_get(:@api_key_secret)).to eq("production-#{api_key_secret}")
       end
     end
   end
@@ -247,7 +229,7 @@ RSpec.describe Aggregators::Sdk::ArgyleService, type: :service do
 
     it 'raises Faraday::ServerError on 500 error' do
       stub_request(:get, "https://api-sandbox.argyle.com/v2/employments?account=account123")
-      .to_return(status: 500, body: "", headers: {})
+        .to_return(status: 500, body: "", headers: {})
 
       expect { service.fetch_employments_api(account: account_id) }.to raise_error(Faraday::ServerError)
     end
@@ -258,26 +240,27 @@ RSpec.describe Aggregators::Sdk::ArgyleService, type: :service do
       let(:external_id) { 'external_123' }
 
       it 'makes a POST request with external_id' do
-        expect(service).to receive(:make_request)
-                             .with(:post, 'users', { external_id: external_id })
+        stub = stub_request(:post, "https://api-sandbox.argyle.com/v2/users")
+          .with(body: { external_id: external_id }.to_json)
         service.create_user(external_id)
+        expect(stub).to have_been_requested
       end
     end
 
     context 'without external_id' do
       it 'makes a POST request without external_id' do
-        expect(service).to receive(:make_request)
-                             .with(:post, 'users', {})
+        stub = stub_request(:post, "https://api-sandbox.argyle.com/v2/users")
         service.create_user
+        expect(stub).to have_been_requested
       end
     end
   end
 
   describe '#get_webhook_subscriptions' do
     it 'makes a GET request to webhooks endpoint' do
-      expect(service).to receive(:make_request)
-                           .with(:get, 'webhooks')
+      stub = stub_request(:get, "https://api-sandbox.argyle.com/v2/webhooks")
       service.get_webhook_subscriptions
+      expect(stub).to have_been_requested
     end
   end
 
@@ -295,8 +278,10 @@ RSpec.describe Aggregators::Sdk::ArgyleService, type: :service do
     end
 
     it 'makes a POST request to create webhook subscription with correct payload' do
-      expect(service).to receive(:make_request).with(:post, 'webhooks', expected_payload)
+      stub = stub_request(:post, "https://api-sandbox.argyle.com/v2/webhooks")
+        .with(body: expected_payload.to_json)
       service.create_webhook_subscription(events, url, name)
+      expect(stub).to have_been_requested
     end
   end
 
@@ -304,9 +289,9 @@ RSpec.describe Aggregators::Sdk::ArgyleService, type: :service do
     let(:webhook_id) { '123' }
 
     it 'makes a DELETE request to remove webhook subscription' do
-      expect(service).to receive(:make_request)
-                           .with(:delete, "webhooks/#{webhook_id}")
+      stub = stub_request(:delete, "https://api-sandbox.argyle.com/v2/webhooks/#{webhook_id}")
       service.delete_webhook_subscription(webhook_id)
+      expect(stub).to have_been_requested
     end
   end
 end

@@ -6,36 +6,20 @@ require "json"
 
 module Aggregators::Sdk
   class ArgyleService
-    include ApiService
-
-    # Configure the configuration mappings with lambdas for lazy evaluation.
-    # This allows us to evaluate the environment variables only when they are needed
-    # and mock the environment variables for testing.
-    # Defining the configuration as a constant means that the configuration is evaluated
-    # when the class is loaded, not when the instance is created.
-    configure(
-      {
-        sandbox: -> {
-          {
-            api_key_id: ENV["ARGYLE_SANDBOX_API_TOKEN_ID"],
-            api_key_secret: ENV["ARGYLE_SANDBOX_API_TOKEN_SECRET"],
-            webhook_secret: ENV["ARGYLE_SANDBOX_WEBHOOK_SECRET"],
-            base_url: "https://api-sandbox.argyle.com/v2",
-            environment: "sandbox"
-          }
-        },
-        production: -> {
-          {
-            api_key_id: ENV["ARGYLE_API_TOKEN_ID"],
-            api_key_secret: ENV["ARGYLE_API_TOKEN_SECRET"],
-            webhook_secret: ENV["ARGYLE_WEBHOOK_SECRET"],
-            base_url: "https://api.argyle.com/v2",
-            environment: "production"
-          }
-        },
-        default: :sandbox
+    ENVIRONMENTS = {
+      sandbox: {
+        base_url: "https://api-sandbox.argyle.com/v2",
+        api_key_id: ENV["ARGYLE_API_TOKEN_SANDBOX_ID"],
+        api_key_secret: ENV["ARGYLE_API_TOKEN_SANDBOX_SECRET"],
+        webhook_secret: ENV["ARGYLE_SANDBOX_WEBHOOK_SECRET"]
+      },
+      production: {
+        base_url: "https://api.argyle.com/v2",
+        api_key_id: ENV["ARGYLE_API_TOKEN_ID"],
+        api_key_secret: ENV["ARGYLE_API_TOKEN_SECRET"],
+        webhook_secret: ENV["ARGYLE_WEBHOOK_SECRET"]
       }
-    )
+    }
 
     ITEMS_ENDPOINT = "items"
     PAYSTUBS_ENDPOINT = "paystubs"
@@ -45,14 +29,14 @@ module Aggregators::Sdk
     EMPLOYMENTS_ENDPOINT = "employments"
     WEBHOOKS_ENDPOINT = "webhooks"
 
-    def initialize(environment, api_key_id = nil, api_key_secret = nil, webhook_secret = nil)
-      @configuration = get_configuration(environment)
+    attr_reader :webhook_secret
 
-      # prioritize the constructor args over the environment variables
-      @configuration[:api_key_id] = api_key_id if api_key_id
-      @configuration[:api_key_secret] = api_key_secret if api_key_secret
-      @configuration[:webhook_secret] = webhook_secret if webhook_secret
-      @webhook_secret = @configuration[:webhook_secret]
+    def initialize(environment, api_key_id = nil, api_key_secret = nil, webhook_secret = nil)
+      @environment = ENVIRONMENTS.fetch(environment.to_sym) { |env| raise KeyError.new("ArgyleService unknown environment: #{env}") }
+      @api_key_id = api_key_id || @environment[:api_key_id]
+      @api_key_secret = api_key_secret || @environment[:api_key_secret]
+      @webhook_secret = webhook_secret || @environment[:webhook_secret]
+      @base_url = @environment[:base_url]
 
       client_options = {
         request: {
@@ -60,13 +44,13 @@ module Aggregators::Sdk
           timeout: 5,
           params_encoder: Faraday::FlatParamsEncoder
         },
-        url: @configuration[:base_url],
+        url: @base_url,
         headers: {
           "Content-Type" => "application/json"
         }
       }
       @http = Faraday.new(client_options) do |conn|
-        conn.set_basic_auth @configuration[:api_key_id], @configuration[:api_key_secret]
+        conn.set_basic_auth @api_key_id, @api_key_secret
         conn.response :raise_error
         conn.response :json, content_type: "application/json"
         conn.response :logger,
@@ -78,33 +62,33 @@ module Aggregators::Sdk
     end
 
     def get_webhook_subscriptions
-      make_request(:get, WEBHOOKS_ENDPOINT)
+      @http.get(build_url(WEBHOOKS_ENDPOINT)).body
     end
 
-    def create_webhook_subscription(events, url, name, webhook_secret = @configuration[:webhook_secret])
+    def create_webhook_subscription(events, url, name)
       payload = {
         events: events,
         name: name,
         url: url,
-        secret: webhook_secret
+        secret: @webhook_secret
       }
 
-      make_request(:post, WEBHOOKS_ENDPOINT, payload)
+      @http.post(build_url(WEBHOOKS_ENDPOINT), payload.to_json).body
     end
 
     def delete_webhook_subscription(id)
-      make_request(:delete, "#{WEBHOOKS_ENDPOINT}/#{id}")
+      @http.delete(build_url("#{WEBHOOKS_ENDPOINT}/#{id}")).body
     end
 
     # Fetch all Argyle items
     # https://docs.argyle.com/api-reference/items#list
     def items(query = nil)
-      make_request(:get, ITEMS_ENDPOINT, { q: query })
+      @http.get(build_url(ITEMS_ENDPOINT), { q: query }).body
     end
 
     # https://docs.argyle.com/api-reference/users#retrieve
     def fetch_user_api(user:)
-      make_request(:get, "#{USERS_ENDPOINT}/#{user}")
+      @http.get(build_url("#{USERS_ENDPOINT}/#{user}")).body
     end
 
     # https://docs.argyle.com/api-reference/identities#list
@@ -113,8 +97,9 @@ module Aggregators::Sdk
         account: account,
         user: user,
         employment: employment,
-        limit: limit }.compact
-      make_request(:get, IDENTITIES_ENDPOINT, params)
+        limit: limit
+      }.compact
+      @http.get(build_url(IDENTITIES_ENDPOINT), params).body
     end
 
     # https://docs.argyle.com/api-reference/accounts#list
@@ -132,7 +117,7 @@ module Aggregators::Sdk
         ongoing_refresh_status: ongoing_refresh_status,
         limit: limit }.compact
 
-      make_request(:get, ACCOUNTS_ENDPOINT, params)
+      @http.get(build_url(ACCOUNTS_ENDPOINT), params).body
     end
 
     # https://docs.argyle.com/api-reference/paystubs#list
@@ -151,14 +136,14 @@ module Aggregators::Sdk
         from_start_date: from_start_date,
         to_start_date: to_start_date,
         limit: limit }.compact
-      page_response = make_request(:get, PAYSTUBS_ENDPOINT, params)
+      page_response = @http.get(build_url(PAYSTUBS_ENDPOINT), params).body
       raise "Pagination not implemented" if page_response["next"].present?
       page_response
     end
 
     def create_user(cbv_flow_end_user_id = nil)
       params = cbv_flow_end_user_id.present? ? { external_id: cbv_flow_end_user_id } : {}
-      make_request(:post, USERS_ENDPOINT, params)
+      @http.post(build_url(USERS_ENDPOINT), params.to_json).body
     end
 
     # https://docs.argyle.com/api-reference/employments#list
@@ -167,7 +152,11 @@ module Aggregators::Sdk
     def fetch_employments_api(user: nil, account: nil)
       raise ArgumentError if user.nil? && account.nil?
       params = { user: user, account: account }.compact
-      make_request(:get, EMPLOYMENTS_ENDPOINT, params)
+      @http.get(build_url(EMPLOYMENTS_ENDPOINT), params).body
+    end
+
+    def build_url(endpoint)
+      @http.build_url(endpoint).to_s
     end
   end
 end
