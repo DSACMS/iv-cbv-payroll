@@ -1,4 +1,4 @@
 <% content_for :title, t(".header") %>
-<div data-controller="polling" data-polling-url-value="<%= cbv_flow_synchronizations_path(params: params) %>">
+<div data-controller="polling" data-polling-url-value="<%= cbv_flow_synchronizations_path(params: { user: {account_id: params.to_unsafe_h[:user][:account_id]} }) %>">
   <%= render 'status' %>
 </div>
