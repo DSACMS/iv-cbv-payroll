@@ -103,26 +103,12 @@ module TestHelpers
     allow(client_agency_config).to receive(key.to_sym).and_return(value)
   end
 
-  def load_relative_file(filename, directory = nil)
-    base_directory = "fixtures"
-
-    if @test_fixture_directory.present?
-      base_directory = "fixtures/#{@test_fixture_directory}"
-    end
-
-    if directory.present?
-      base_directory = "#{base_directory}/#{directory}"
-    end
-
-    file_path = File.join(
-      File.dirname(__FILE__),
-      "#{base_directory}/#{filename}"
-    )
-
-    File.read(file_path)
+  def load_relative_file(*fixture_path)
+    absolute_path = Rails.root.join("spec", "support", "fixtures", *fixture_path)
+    File.read(absolute_path)
   end
 
-  def load_relative_json_file(filename, directory = nil)
-    JSON.parse(load_relative_file(filename, directory))
+  def load_relative_json_file(*fixture_path)
+    JSON.parse(load_relative_file(*fixture_path))
   end
 end

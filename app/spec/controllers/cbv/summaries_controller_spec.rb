@@ -4,12 +4,6 @@ RSpec.describe Cbv::SummariesController do
   include PinwheelApiHelper
   include_context "gpg_setup"
 
-  attr_reader :test_fixture_directory
-
-  before(:all) do
-    @test_fixture_directory = 'pinwheel'
-  end
-
   let(:supported_jobs) { %w[income paystubs employment identity] }
   let(:errored_jobs) { [] }
   let(:current_time) { Date.parse('2024-06-18') }

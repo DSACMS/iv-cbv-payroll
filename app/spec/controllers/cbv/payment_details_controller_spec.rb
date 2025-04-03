@@ -3,12 +3,6 @@ require "rails_helper"
 RSpec.describe Cbv::PaymentDetailsController do
   include PinwheelApiHelper
 
-  attr_reader :test_fixture_directory
-
-  before(:all) do
-    @test_fixture_directory = 'pinwheel'
-  end
-
   describe "#show" do
     render_views
 

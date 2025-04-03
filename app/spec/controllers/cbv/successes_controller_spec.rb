@@ -3,12 +3,6 @@ require "rails_helper"
 RSpec.describe Cbv::SuccessesController do
   include PinwheelApiHelper
 
-  attr_reader :test_fixture_directory
-
-  before(:all) do
-    @test_fixture_directory = 'pinwheel'
-  end
-
   describe "#show" do
     let(:cbv_flow) { create(:cbv_flow, confirmation_code: "NYC12345") }
 

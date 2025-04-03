@@ -3,12 +3,6 @@ require 'rails_helper'
 RSpec.describe ArgyleWebhooksManager, type: :service do
   include ArgyleApiHelper
 
-  attr_reader :test_fixture_directory
-
-  before(:all) do
-    @test_fixture_directory = 'argyle'
-  end
-
   let(:ngrok_url) { 'https://ngrok-url.com' }
   let(:webhook_name) { 'test_webhook' }
   let(:all_webhook_subscriptions) do

@@ -3,12 +3,6 @@ require 'rails_helper'
 RSpec.describe Aggregators::AggregatorReports::PinwheelReport, type: :service do
   include PinwheelApiHelper
 
-  attr_reader :test_fixture_directory
-
-  before(:all) do
-    @test_fixture_directory = 'pinwheel'
-  end
-
   let(:account) { "abc123" }
   let(:from_date) { "2021-01-01" }
   let(:to_date) { "2021-04-31" }
@@ -20,10 +14,10 @@ RSpec.describe Aggregators::AggregatorReports::PinwheelReport, type: :service do
   let(:pinwheel_service) { Aggregators::Sdk::PinwheelService.new(:sandbox) }
   let(:service) { described_class.new(payroll_accounts: payroll_accounts, pinwheel_service: pinwheel_service, from_date: from_date, to_date: to_date) }
 
-  let(:identities_json) { load_relative_json_file('request_identity_response.json') }
-  let(:incomes_json) { load_relative_json_file('request_income_metadata_response.json') }
-  let(:employments_json) { load_relative_json_file('request_employment_info_response.json') }
-  let(:paystubs_json) { load_relative_json_file('request_end_user_paystubs_response.json') }
+  let(:identities_json) { load_relative_json_file('pinwheel', 'request_identity_response.json') }
+  let(:incomes_json) { load_relative_json_file('pinwheel', 'request_income_metadata_response.json') }
+  let(:employments_json) { load_relative_json_file('pinwheel', 'request_employment_info_response.json') }
+  let(:paystubs_json) { load_relative_json_file('pinwheel', 'request_end_user_paystubs_response.json') }
 
   let(:empty_pinwheel_result) { { "result" => [] } }
 

@@ -3,17 +3,11 @@ require 'rails_helper'
 RSpec.describe Aggregators::Sdk::ArgyleService, type: :service do
   include ArgyleApiHelper
 
-  attr_reader :test_fixture_directory
-
   let(:api_key_secret) { 'api_key_secret' }
   let(:webhook_secret) { 'test_webhook_secret' }
   let(:service) { Aggregators::Sdk::ArgyleService.new("sandbox", "FAKE_API_KEY", api_key_secret, webhook_secret) }
   let(:account_id) { 'account123' }
   let(:user_id) { 'user123' }
-
-  before(:all) do
-    @test_fixture_directory = 'argyle'
-  end
 
   describe '#initialize' do
     before do
