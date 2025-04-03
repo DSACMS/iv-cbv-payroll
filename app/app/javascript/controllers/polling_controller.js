@@ -13,6 +13,7 @@ export default class extends Controller {
             })
                 .then((response) => response.text())
                 .then((html) => {
+                    // on redirect stop the interval to ensure that the payment details page loads before the turboframe gets another command
                     if (html.includes("turbo-stream action=\"redirect")) {
                         clearInterval(this.interval);
                     }
@@ -20,10 +21,5 @@ export default class extends Controller {
                 })
         },
             2000)
-    }
-
-    // TODO: Is this actually needed?
-    finishedTargetConnected() {
-        clearInterval(this.interval)
     }
 }
