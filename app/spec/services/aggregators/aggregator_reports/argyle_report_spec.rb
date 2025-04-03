@@ -10,7 +10,7 @@ RSpec.describe Aggregators::AggregatorReports::ArgyleReport, type: :service do
 
   describe '#fetch_report_data' do
     context "bob, a W-2 employee" do
-      let(:argyle_report) { described_class.new(payroll_accounts: [ account ], argyle_service: argyle_service, from_date: from_date, to_date: to_date) }
+      let(:argyle_report) { Aggregators::AggregatorReports::ArgyleReport.new(payroll_accounts: [ account ], argyle_service: argyle_service, from_date: from_date, to_date: to_date) }
       before do
         allow(argyle_service).to receive(:fetch_identities_api).and_return(argyle_load_relative_json_file("bob", "request_identity.json"))
         allow(argyle_service).to receive(:fetch_paystubs_api).and_return(argyle_load_relative_json_file("bob", "request_paystubs.json"))
@@ -54,7 +54,7 @@ RSpec.describe Aggregators::AggregatorReports::ArgyleReport, type: :service do
       end
     end
     context "joe, a W-2 employee" do
-      let(:argyle_report) { described_class.new(payroll_accounts: [ account ], argyle_service: argyle_service, from_date: from_date, to_date: to_date) }
+      let(:argyle_report) { Aggregators::AggregatorReports::ArgyleReport.new(payroll_accounts: [ account ], argyle_service: argyle_service, from_date: from_date, to_date: to_date) }
       before do
         allow(argyle_service).to receive(:fetch_identities_api).and_return(argyle_load_relative_json_file("joe", "request_identity.json"))
         allow(argyle_service).to receive(:fetch_paystubs_api).and_return(argyle_load_relative_json_file("joe", "request_paystubs.json"))
@@ -102,7 +102,7 @@ RSpec.describe Aggregators::AggregatorReports::ArgyleReport, type: :service do
   describe '#most_recent_paystub_with_address' do
     it('returns nil when no paystubs returned') do
       paystubs = { "results" => [] }
-      expect(described_class.most_recent_paystub_with_address(paystubs)).to be_nil
+      expect(Aggregators::AggregatorReports::ArgyleReport.most_recent_paystub_with_address(paystubs)).to be_nil
     end
 
     it 'returns nil when no employer_address is present' do
@@ -114,7 +114,7 @@ RSpec.describe Aggregators::AggregatorReports::ArgyleReport, type: :service do
           }
         ]
       }
-      expect(described_class.most_recent_paystub_with_address(paystubs)).to be_nil
+      expect(Aggregators::AggregatorReports::ArgyleReport.most_recent_paystub_with_address(paystubs)).to be_nil
     end
 
     it 'returns nil when employer_address.line1 is nil' do
@@ -126,7 +126,7 @@ RSpec.describe Aggregators::AggregatorReports::ArgyleReport, type: :service do
           }
         ]
       }
-      expect(described_class.most_recent_paystub_with_address(paystubs)).to be_nil
+      expect(Aggregators::AggregatorReports::ArgyleReport.most_recent_paystub_with_address(paystubs)).to be_nil
     end
 
     it 'returns the most recent paystub with a valid employer_address' do
@@ -142,7 +142,7 @@ RSpec.describe Aggregators::AggregatorReports::ArgyleReport, type: :service do
           }
         ]
       }
-      result = described_class.most_recent_paystub_with_address(paystubs)
+      result = Aggregators::AggregatorReports::ArgyleReport.most_recent_paystub_with_address(paystubs)
       expect(result["employer_address"]["line1"]).to eq("456 Elm St")
     end
   end

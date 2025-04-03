@@ -43,6 +43,7 @@ module Aggregators::AggregatorReports
     end
 
 
+
     AccountReportStruct = Struct.new(:identity, :income, :employment, :paystubs)
     def find_account_report(account_id)
       AccountReportStruct.new(
