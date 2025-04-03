@@ -357,6 +357,7 @@ en:
             client_email_address: Client's email address
             client_full_name: Client full name (linked to payroll account)
             client_id_number: CIN
+            client_provided_information: Client-provided information
             description: The following income information was retrieved with the client's consent and has been submitted by them to their benefits agency. The client is also able to download a client-facing copy of this report.
             how_to: This report includes payment information from the past 90 days. In most cases, you only need to review income from the last 30 days for eligibility purposes. Use data beyond the 30-day period only if necessary. Key fields for income verification are highlighted in yellow.
             how_to_header: 'How to use this report:'
