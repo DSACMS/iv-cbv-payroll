@@ -44,7 +44,7 @@
   <% if is_caseworker %>
       <% @cbv_flow.cbv_applicant.applicant_attributes.each do |item| %>
       <% if @cbv_flow.cbv_applicant[item].present? %>
-        <%= table.with_row(t("cbv.applicant_informations.show.#{@cbv_flow.client_agency_id}.#{item}"), @cbv_flow.cbv_applicant[item]) %>
+        <%= table.with_row(t("cbv.applicant_informations.show.#{@cbv_flow.client_agency_id}.#{item}") + raw("<sup>1</sup>"), @cbv_flow.cbv_applicant[item]) %>
       <% end %>
     <% end %>
 
