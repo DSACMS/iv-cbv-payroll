@@ -1,7 +1,6 @@
 require 'rails_helper'
 
 RSpec.describe Webhooks::Argyle::EventsController, type: :controller do
-  let(:argyle_service) { class_double('ArgyleService') }
   let(:argyle_webhook) { class_double('Webhooks::Argyle') }
 
   # In a runtime scenario- the web client would send a POST request to /api/argyle/tokens
@@ -10,13 +9,11 @@ RSpec.describe Webhooks::Argyle::EventsController, type: :controller do
   # @link /app/app/controllers/api/argyle_controller.rb
   #
   # 1. Retrieves the CbvFlow from the session
-  # 2. Initializes Argyle in production or sandbox mode - depending on the agency configuration
-  # 3. Creates an Argyle user which returns an Argyle user "id" and "user_token"
-  # 4. Updates the CbvFlow with the Argyle user "id" and "user_token"
-  # 5. Returns the "user_token" to the web client which can
+  # 2. Creates an Argyle user which returns an Argyle user "id" and "user_token"
+  # 3. Updates the CbvFlow with the Argyle user "id" and "user_token"
+  # 4. Returns the "user_token" to the web client which can
   #    be used to create an Argyle "Link" or open the Argyle modal
   before do
-    allow(controller).to receive(:set_argyle) { controller.instance_variable_set(:@argyle_service, argyle_service) }
     allow(controller).to receive(:authorize_webhook).and_return(true)
     allow(controller).to receive(:event_logger).and_return(double(track: true))
     allow(argyle_webhook).to receive(:verify_signature).and_return(true)
@@ -40,7 +37,7 @@ RSpec.describe Webhooks::Argyle::EventsController, type: :controller do
       webhook_request = create(
         :webhook_request,
         :argyle,
-        argyle_user_id: cbv_flow.end_user_id,
+        argyle_user_id: cbv_flow.argyle_user_id,
         argyle_account_id: argyle_account_id,
         event_type: event_type
       ).payload
@@ -78,7 +75,7 @@ RSpec.describe Webhooks::Argyle::EventsController, type: :controller do
   end
 
   describe 'Argyle webhooks' do
-    let(:cbv_flow) { create(:cbv_flow) }
+    let(:cbv_flow) { create(:cbv_flow, argyle_user_id: "abc-def-ghi") }
     let(:argyle_account_id) { 'argyle_account_id' }
 
     # Instead of using "shared_examples_for" we're relying on a test helper method
@@ -87,7 +84,7 @@ RSpec.describe Webhooks::Argyle::EventsController, type: :controller do
       webhook_request = create(
         :webhook_request,
         :argyle,
-        argyle_user_id: cbv_flow.end_user_id,
+        argyle_user_id: cbv_flow.argyle_user_id,
         argyle_account_id: argyle_account_id,
         event_type: event_type
       ).payload

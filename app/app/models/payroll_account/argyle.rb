@@ -1,4 +1,12 @@
 class PayrollAccount::Argyle < PayrollAccount
+  scope :awaiting_fully_synced_webhook, -> do
+    joins(<<~SQL).where(webhook_events: { id: nil })
+      LEFT OUTER JOIN webhook_events
+      ON webhook_events.payroll_account_id = payroll_accounts.id
+      AND webhook_events.event_name = 'users.fully_synced'
+    SQL
+  end
+
   # Jobs are used to map real-time Argyle data retrieval with the synchronizations page indicators
   # We can assume that when the paystubs are fully synced, the employment and paystubs are also fully synced
   def has_fully_synced?
