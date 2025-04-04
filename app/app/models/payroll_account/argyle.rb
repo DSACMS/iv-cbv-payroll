@@ -11,12 +11,12 @@ class PayrollAccount::Argyle < PayrollAccount
   # We can assume that when the paystubs are fully synced, the employment and paystubs are also fully synced
   def has_fully_synced?
     supported_jobs.all? do |job|
-      supported_jobs.exclude?(job) || find_webhook_event(self.class.jobs_to_webhook_events[job]).present?
+      supported_jobs.exclude?(job) || find_webhook_event(self.class.event_for_job(job)).present?
     end
   end
 
   def job_succeeded?(job)
-    supported_jobs.include?(job) && find_webhook_event(self.class.jobs_to_webhook_events[job], "success").present?
+    supported_jobs.include?(job) && find_webhook_event(self.class.event_for_job(job), "success").present?
   end
 
   def synchronization_status(job)
@@ -24,9 +24,9 @@ class PayrollAccount::Argyle < PayrollAccount
       :unsupported
     elsif job_succeeded?(job)
       :succeeded
-    elsif find_webhook_event(self.class.jobs_to_webhook_events[job], "success").nil? && find_webhook_event(self.class.jobs_to_webhook_events[job], "error").nil?
+    elsif find_webhook_event(self.class.event_for_job(job), "success").nil? && find_webhook_event(self.class.event_for_job(job), "error").nil?
       :in_progress
-    elsif find_webhook_event(self.class.jobs_to_webhook_events[job], "error").present?
+    elsif find_webhook_event(self.class.event_for_job(job), "error").present?
       :failed
     end
   end
@@ -35,19 +35,12 @@ class PayrollAccount::Argyle < PayrollAccount
     job_succeeded?("paystubs") || job_succeeded?("gigs")
   end
 
-  # Helper method to get supported job types from the hash keys
-  def self.available_jobs
-    jobs_to_webhook_events.keys
-  end
-
-  # Generate jobs to webhook events mapping from ArgyleService
-  def self.jobs_to_webhook_events
-    Webhooks::Argyle::SUBSCRIBED_WEBHOOK_EVENTS.each_with_object({}) do |(event, details), hash|
-      next unless details[:job].is_a?(Array)
-
-      details[:job].each do |job|
-        hash[job] = event
-      end
+  def self.event_for_job(job)
+    matching_event = Webhooks::Argyle::SUBSCRIBED_WEBHOOK_EVENTS.find do |event_name, config|
+      config[:job].include?(job)
     end
+    raise "No event for job named: #{job}" unless matching_event.present?
+
+    matching_event.first
   end
 end

@@ -42,13 +42,9 @@ FactoryBot.define do
 
       after(:build) do |payroll_account, evaluator|
         payroll_account.supported_jobs.each do |job|
-          # Get the mapping from jobs to webhook events
-          webhook_events_map = PayrollAccount::Argyle.jobs_to_webhook_events
-          event_name = webhook_events_map[job]
-
           payroll_account.webhook_events << build(
             :webhook_event,
-            event_name: event_name,
+            event_name: PayrollAccount::Argyle.event_for_job(job),
             event_outcome: evaluator.with_errored_jobs.include?(job) ? "error" : "success"
           )
         end
