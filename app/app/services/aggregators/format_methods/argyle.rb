@@ -22,7 +22,9 @@ module Aggregators::FormatMethods::Argyle
 
   def self.format_currency(amount)
     return unless amount
-    amount.to_f
+    dollars, cents = amount.split(".").map(&:to_i)
+
+    (dollars * 100) + cents
   end
 
   def self.hours_by_earning_category(gross_pay_list)
