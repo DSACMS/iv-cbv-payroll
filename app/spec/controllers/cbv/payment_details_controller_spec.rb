@@ -14,6 +14,7 @@ RSpec.describe Cbv::PaymentDetailsController do
     let(:errored_jobs) { [] }
     let(:cbv_flow) do
       create(:cbv_flow,
+        :invited,
         :with_pinwheel_account,
         with_errored_jobs: errored_jobs,
         created_at: current_time,
@@ -36,10 +37,10 @@ RSpec.describe Cbv::PaymentDetailsController do
 
     before do
       session[:cbv_flow_id] = cbv_flow.id
-      stub_request_end_user_accounts_response
-      stub_request_end_user_paystubs_response
-      stub_request_income_metadata_response if supported_jobs.include?("income")
-      stub_request_employment_info_response
+      pinwheel_stub_request_end_user_accounts_response
+      pinwheel_stub_request_end_user_paystubs_response
+      pinwheel_stub_request_income_metadata_response if supported_jobs.include?("income")
+      pinwheel_stub_request_employment_info_response
       allow(Aggregators::AggregatorReports::PinwheelReport).to receive(:new).and_return(pinwheel_report)
     end
 
@@ -183,7 +184,7 @@ RSpec.describe Cbv::PaymentDetailsController do
 
     context "when employment status is blank" do
       before do
-        request_employment_info_response_null_employment_status_bug
+        pinwheel_request_employment_info_response_null_employment_status_bug
       end
 
       it "renders properly" do
@@ -219,7 +220,7 @@ RSpec.describe Cbv::PaymentDetailsController do
   end
 
   describe "#update" do
-    let!(:cbv_flow) { create(:cbv_flow) }
+    let!(:cbv_flow) { create(:cbv_flow, :invited) }
     let(:account_id) { SecureRandom.uuid }
     let(:comment) { "This is a test comment" }
 

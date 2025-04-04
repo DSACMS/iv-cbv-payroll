@@ -1,6 +1,9 @@
 FactoryBot.define do
   factory :cbv_flow do
-    cbv_flow_invitation
+    trait :invited do
+      cbv_flow_invitation
+    end
+
     cbv_applicant
 
     client_agency_id { "sandbox" }

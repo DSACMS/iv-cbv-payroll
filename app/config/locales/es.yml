@@ -30,7 +30,7 @@ es:
       incorrect_client_agency_id: No se ha podido enviar la invitación porque falta la configuración del sitio.
   cbv:
     add_jobs:
-      create:
+      next_path:
         notice_no_answer: Debe seleccionar una respuesta para continuar.
       show:
         answer_no_bullet_1: Usted no tiene otro trabajo (actual o reciente)
@@ -53,6 +53,9 @@ es:
         no_radio: No, no tengo otro trabajo que cumpla con los criterios
         subheader: Por favor añada los otros trabajos que haya tenido en los últimos %{pay_income_days} días, incluso si ya no está en ese trabajo.
         yes_radio: Sí, tengo otro trabajo que cumpla con los criterios
+    applicant_informations:
+      show:
+        continue: Continuar
     employer_searches:
       show:
         app_based_providers: Empleadores basados
@@ -166,16 +169,10 @@ es:
         unknown: Desconocido
     submits:
       show:
-        additional_information_title: Is there anything else you'd like your caseworker to know about your income?
         application_or_recertification_date:
           ma: Date client was contacted
           nyc: SNAP application or recertification interview date
           sandbox: SNAP application or recertification interview date
-        consent_checkbox_label_html: Check this box to confirm that the information provided by you is true and complete to the best of your knowledge. You agree to inform %{agency_acronym} of any income not reflected in this report or any discrepancies found in the information gathered with this tool. You understand that providing accurate and complete information is your responsibility, and any false or omitted information may have legal consequences. For more information on your rights and responsibilities regarding private information you share with %{agency_acronym} please refer to the Rights and Responsibilities you signed at application, found on the %{agency_acronym} website.<br><br>By sending this report, you authorize its use for income verification by %{agency_acronym} and authorized personnel.
-        legal_header: Legal agreement
-        none_found: We didn't find any payments from this employer in the past 90 days.
-        none_found_confirmed: We've confirmed that there are no payments from this employer in the past 90 days. This happens when the client hasn't received income from this job during that time.
-        page_header: Submit your income report
         pdf:
           agency_header_name:
             az_des: Department of Economic Security
@@ -198,11 +195,7 @@ es:
             confirmation_code: Código de confirmación
             employment_information: Información del empleo
             report_details: Detalles del reporte
-        share_report_button: Share my report with %{agency_acronym}
         table_caption_no_name: Employer %{number}
-        warning_html: Your income report will be attached to your SNAP application.<br>You must check the legal agreement box to share your report.
-      update:
-        consent_to_authorize_warning: Please check the legal agreement box to share your report.
     successes:
       show:
         back_to_agency: Vaya al sitio web de %{agency_short_name}
@@ -234,8 +227,6 @@ es:
         table_caption_no_name: Empleador %{number}
         total_income_from: 'Ingresos totales provenientes de %{employer_name}, antes del pago de impuestos: %{amount}'
         total_income_from_no_employer_name: 'Ingresos totales antes del pago de impuestos: %{amount}'
-        total_payments: 'Total income from past 90 days, before taxes: %{amount}'
-        total_payments_desc: This is the total gross income from your job(s) before taxes, benefits, and deductions were taken out.
     synchronization_failures:
       show:
         back_to_search: Volver a la búsqueda de empleadores
@@ -254,7 +245,7 @@ es:
       show:
         fetching_payroll_description: Esto puede tardar algunos minutos. Mantenga abierta esta ventana mientras trabajamos en esto.
         header: Estamos recopilando los detalles de pago de su empleador.
-  continue: Continue
+  continue: Continuar
   date:
     abbr_day_names:
     - Dom

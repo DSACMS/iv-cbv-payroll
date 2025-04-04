@@ -8,7 +8,7 @@ class Cbv::EmployerSearchesController < Cbv::BaseController
   def show
     @query = search_params[:query]
     @employers = @query.blank? ? [] : provider_search(@query)
-    @has_pinwheel_account = @cbv_flow.payroll_accounts.any?
+    @has_payroll_account = @cbv_flow.payroll_accounts.any?
     @selected_tab = search_params[:type] || "payroll"
 
     case search_params[:type]
@@ -45,7 +45,7 @@ class Cbv::EmployerSearchesController < Cbv::BaseController
       invitation_id: @cbv_flow.cbv_flow_invitation_id
     })
   rescue => ex
-    Rails.logger.error "Unable to track NewRelic event (ApplicantClickedPopularPayrollProviders): #{ex}"
+    Rails.logger.error "Unable to track event (ApplicantClickedPopularPayrollProviders): #{ex}"
   end
 
   def track_clicked_popular_app_employers_event
@@ -56,7 +56,7 @@ class Cbv::EmployerSearchesController < Cbv::BaseController
       invitation_id: @cbv_flow.cbv_flow_invitation_id
     })
   rescue => ex
-    Rails.logger.error "Unable to track NewRelic event (ApplicantClickedPopularAppEmployers): #{ex}"
+    Rails.logger.error "Unable to track event (ApplicantClickedPopularAppEmployers): #{ex}"
   end
 
   def track_accessed_search_event
@@ -69,7 +69,7 @@ class Cbv::EmployerSearchesController < Cbv::BaseController
       invitation_id: @cbv_flow.cbv_flow_invitation_id
     })
   rescue => ex
-    Rails.logger.error "Unable to track NewRelic event (ApplicantAccessedSearchPage): #{ex}"
+    Rails.logger.error "Unable to track event (ApplicantAccessedSearchPage): #{ex}"
   end
 
   def track_applicant_searched_event
@@ -81,10 +81,12 @@ class Cbv::EmployerSearchesController < Cbv::BaseController
       cbv_flow_id: @cbv_flow.id,
       invitation_id: @cbv_flow.cbv_flow_invitation_id,
       num_results: @employers.length,
-      has_pinwheel_account: @has_pinwheel_account,
+      has_payroll_account: @has_payroll_account,
+      pinwheel_result_count: @employers.count { |item| item.provider_name == :pinwheel },
+      argyle_result_count: @employers.count { |item| item.provider_name == :argyle },
       query: search_params[:query]
     })
   rescue => ex
-    Rails.logger.error "Unable to track NewRelic event (ApplicantSearchedForEmployer): #{ex}"
+    Rails.logger.error "Unable to track event (ApplicantSearchedForEmployer): #{ex}"
   end
 end

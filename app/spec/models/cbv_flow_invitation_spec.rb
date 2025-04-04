@@ -76,8 +76,9 @@ RSpec.describe CbvFlowInvitation, type: :model do
     subject { invitation.expired? }
 
     context "within the validity window" do
-      let(:invitation_sent_at) { Time.new(2024, 8,  1, 12, 0, 0, "-04:00") }
-      let(:now)                { Time.new(2024, 8, 14, 12, 0, 0, "-04:00") }
+      let(:invitation_sent_at)    { Time.new(2024, 8,  1, 12, 0, 0, "-04:00") }
+      let(:snap_application_date) { Time.new(2024, 8,  1, 12, 0, 0, "-04:00") }
+      let(:now)                   { Time.new(2024, 8, 14, 12, 0, 0, "-04:00") }
 
       it { is_expected.to eq(false) }
 

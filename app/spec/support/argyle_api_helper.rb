@@ -1,45 +1,54 @@
 module ArgyleApiHelper
-  def stub_request_items_response(user_folder)
+  def argyle_stub_request_items_response(user_folder)
     stub_request(:get, %r{#{Aggregators::Sdk::ArgyleService::ITEMS_ENDPOINT}})
       .to_return(
         status: 200,
-        body: load_relative_json_file('argyle', user_folder, 'request_items.json').to_json,
+        body: argyle_load_relative_json_file(user_folder, 'request_items.json').to_json,
         headers: { 'Content-Type': 'application/json;charset=UTF-8' }
       )
   end
 
-  def stub_request_paystubs_response(user_folder)
+  def argyle_stub_request_paystubs_response(user_folder)
     stub_request(:get, %r{#{Aggregators::Sdk::ArgyleService::PAYSTUBS_ENDPOINT}})
       .to_return(
         status: 200,
-        body: load_relative_json_file('argyle', user_folder, 'request_paystubs.json').to_json,
+        body: argyle_load_relative_json_file(user_folder, 'request_paystubs.json').to_json,
         headers: { 'Content-Type': 'application/json;charset=UTF-8' }
       )
   end
 
-  def stub_request_accounts_response(user_folder)
+  def argyle_stub_request_accounts_response(user_folder)
     stub_request(:get, %r{#{Aggregators::Sdk::ArgyleService::ACCOUNTS_ENDPOINT}})
       .to_return(
         status: 200,
-        body: load_relative_json_file('argyle', user_folder, 'request_accounts.json').to_json,
+        body: argyle_load_relative_json_file(user_folder, 'request_accounts.json').to_json,
         headers: { 'Content-Type': 'application/json;charset=UTF-8' }
       )
   end
 
-  def stub_request_identities_response(user_folder)
+  def argyle_stub_request_accounts_response(user_folder)
+    stub_request(:get, %r{#{Aggregators::Sdk::ArgyleService::ACCOUNTS_ENDPOINT}})
+      .to_return(
+        status: 200,
+        body: argyle_load_relative_json_file(user_folder, 'request_accounts.json').to_json,
+        headers: { 'Content-Type': 'application/json;charset=UTF-8' }
+      )
+  end
+
+  def argyle_stub_request_identities_response(user_folder)
     stub_request(:get, %r{#{Aggregators::Sdk::ArgyleService::IDENTITIES_ENDPOINT}})
       .to_return(
         status: 200,
-        body: load_relative_json_file('argyle', user_folder, 'request_identity.json').to_json,
+        body: argyle_load_relative_json_file(user_folder, 'request_identity.json').to_json,
         headers: { 'Content-Type': 'application/json;charset=UTF-8' }
       )
   end
 
-  def stub_request_employments_response(user_folder)
+  def argyle_stub_request_employments_response(user_folder)
     stub_request(:get, %r{#{Aggregators::Sdk::ArgyleService::EMPLOYMENTS_ENDPOINT}})
       .to_return(
         status: 200,
-        body: load_relative_json_file('argyle', user_folder, 'request_employment.json').to_json,
+        body: argyle_load_relative_json_file(user_folder, 'request_employment.json').to_json,
         headers: { 'Content-Type': 'application/json;charset=UTF-8' }
       )
   end
@@ -55,7 +64,7 @@ module ArgyleApiHelper
 
   def stub_create_user_response
     stub_request(:post, /#{Aggregators::Sdk::ArgyleService::USERS_ENDPOINT}/).to_return do |_|
-      response = load_relative_json_file('argyle', 'response_create_user.json')
+      response = argyle_load_relative_json_file('', 'response_create_user.json')
       {
         status: 200,
         body:   response.to_json,
@@ -66,7 +75,7 @@ module ArgyleApiHelper
 
   def stub_create_user_token_response
     stub_request(:post, /#{Aggregators::Sdk::ArgyleService::USER_TOKENS_ENDPOINT}/).to_return do |_|
-      response = load_relative_json_file('argyle', 'response_create_user_token.json')
+      response = argyle_load_relative_json_file('', 'response_create_user_token.json')
       {
         status: 200,
         body:   response.to_json,
@@ -78,7 +87,7 @@ module ArgyleApiHelper
   def stub_create_webhook_subscription_response
     stub_request(:post, /#{Aggregators::Sdk::ArgyleService::WEBHOOKS_ENDPOINT}/)
       .to_return do |_|
-      response = load_relative_json_file('argyle', 'response_create_webhook_subscription.json')
+      response = argyle_load_relative_json_file('', 'response_create_webhook_subscription.json')
       {
         status: 200,
         body:   response.to_json,
@@ -99,12 +108,14 @@ module ArgyleApiHelper
     end
   end
 
-  # this is separated so that we can use the same stubbed data for multiple tests
-  def stub_webhook_subscriptions
-    @webhooks = read_webhooks_fixture
+  def argyle_load_relative_file(user_folder, filename)
+    File.read(File.join(
+      File.dirname(__FILE__),
+      "fixtures/argyle/#{user_folder}/#{filename}"
+    ))
   end
 
-  def read_webhooks_fixture
-    load_relative_json_file('argyle', 'response_get_webhook_subscriptions.json')
+  def argyle_load_relative_json_file(user_folder, filename)
+    JSON.parse(argyle_load_relative_file(user_folder, filename))
   end
 end

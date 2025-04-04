@@ -39,24 +39,28 @@
     </div>
 
     <div class="grid-row grid-gap margin-top-2">
-      <% (@selected_tab == "payroll" ? Aggregators::Sdk::PinwheelService::TOP_PROVIDERS : Aggregators::Sdk::PinwheelService::TOP_EMPLOYERS).each do |provider| %>
+      <% (ProviderSearchService.new(@cbv_flow.client_agency_id).top_aggregator_options(@selected_tab)).each do |provider| %>
         <div class="grid-col-4 tablet:grid-col-2 margin-top-2">
-            <button data-action="click->cbv-employer-search#select"
-                    data-id="<%= provider[:id] %>"
-                    data-name="<%= provider[:name] %>"
-                    data-response-type="<%= provider[:response_type] %>"
-                    data-provider-name="pinwheel"
-                    data-is-default-option="true"
-                    data-cbv-employer-search-target="employerButton"
-                    type="button"
-                    class="width-full usa-button usa-button--outline box-shadow-gray">
-                <figure class="margin-0 pointer-events-none">
-                    <img class="usa-icon--size-7 radius-pill width-6 height-6"
-                         src="<%= provider[:logo_url] %>"
-                         alt="">
-                    <figcaption class="margin-top-1"><%= provider[:name] %></figcaption>
-                </figure>
-            </button>
+          <button
+            data-action="click->cbv-employer-search#select"
+            data-id="<%= provider.provider_options.provider_id %>"
+            data-name="<%= provider.name %>"
+            data-response-type="<%= provider.provider_options.response_type %>"
+            data-provider-name="<%= provider.provider_name %>"
+            data-is-default-option="true"
+            data-cbv-employer-search-target="employerButton"
+            type="button"
+            class="width-full usa-button usa-button--outline box-shadow-gray"
+          >
+            <figure class="margin-0 pointer-events-none">
+              <img
+                class="usa-icon--size-7 radius-pill width-6 height-6"
+                src="<%= provider.logo_url %>"
+                alt=""
+              >
+              <figcaption class="margin-top-1"><%= provider.name %></figcaption>
+            </figure>
+          </button>
         </div>
       <% end %>
     </div>

@@ -106,3 +106,12 @@
   invitation_valid_days: 14
   weekly_report:
     recipient: ffs-eng@navapbc.com
+  applicant_attributes:
+    first_name:
+      required: true
+    middle_name:
+      required: false
+    last_name:
+      required: true
+    case_number:
+      required: true

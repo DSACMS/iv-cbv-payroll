@@ -8,7 +8,7 @@ RSpec.describe Aggregators::Sdk::PinwheelService, type: :service do
 
   describe '#fetch_items' do
     before do
-      stub_request_items_response
+      pinwheel_stub_request_items_response
     end
 
     it 'returns a non-empty response' do
@@ -19,7 +19,7 @@ RSpec.describe Aggregators::Sdk::PinwheelService, type: :service do
 
   describe '#create_link_token' do
     before do
-      stub_create_token_response(end_user_id: end_user_id)
+      pinwheel_stub_create_token_response(end_user_id: end_user_id)
     end
 
     it 'returns a user token' do
@@ -39,7 +39,7 @@ RSpec.describe Aggregators::Sdk::PinwheelService, type: :service do
     # https://docs.pinwheelapi.com/public/docs/webhook-signature-verification
     let(:service) { Aggregators::Sdk::PinwheelService.new("sandbox", "TEST_KEY") }
     let(:raw_request_body) {
-      load_relative_file('pinwheel', 'test_data_1_base.json')
+      pinwheel_load_relative_file('test_data_1_base.json')
     }
 
     let(:timestamp) {
@@ -64,7 +64,7 @@ RSpec.describe Aggregators::Sdk::PinwheelService, type: :service do
     let(:account_id) { SecureRandom.uuid }
 
     before do
-      stub_request_employment_info_response
+      pinwheel_stub_request_employment_info_response
     end
 
     xit "returns an Employment object with expected attributes" do
@@ -77,7 +77,7 @@ RSpec.describe Aggregators::Sdk::PinwheelService, type: :service do
 
   describe Aggregators::ResponseObjects::Paystub do
     let(:raw_paystubs_json) do
-      load_relative_json_file('pinwheel', 'request_end_user_paystubs_response.json')['data']
+      pinwheel_load_relative_json_file('request_end_user_paystubs_response.json')['data']
     end
 
     let(:payments) do
@@ -123,7 +123,7 @@ RSpec.describe Aggregators::Sdk::PinwheelService, type: :service do
 
       context "when there are 'earnings' with category='overtime'" do
         let(:raw_paystubs_json) do
-          load_relative_json_file('pinwheel', 'request_end_user_paystubs_with_overtime_response.json')['data']
+          pinwheel_load_relative_json_file('request_end_user_paystubs_with_overtime_response.json')['data']
         end
 
         it "adds in overtime into the base hours" do
@@ -134,7 +134,7 @@ RSpec.describe Aggregators::Sdk::PinwheelService, type: :service do
 
       context "when no 'earnings' have hours worked" do
         let(:raw_paystubs_json) do
-          load_relative_json_file('pinwheel', 'request_end_user_paystubs_with_no_hours_response.json')['data']
+          pinwheel_load_relative_json_file('request_end_user_paystubs_with_no_hours_response.json')['data']
         end
 
         it "returns a 'nil' value for hours" do
@@ -144,7 +144,7 @@ RSpec.describe Aggregators::Sdk::PinwheelService, type: :service do
 
       context "when there are 'earnings' with category='sick'" do
         let(:raw_paystubs_json) do
-          load_relative_json_file('pinwheel', 'request_end_user_paystubs_with_sick_time_response.json')['data']
+          pinwheel_load_relative_json_file('request_end_user_paystubs_with_sick_time_response.json')['data']
         end
 
         it "ignores the sick time entries" do
@@ -154,7 +154,7 @@ RSpec.describe Aggregators::Sdk::PinwheelService, type: :service do
 
       context "when there are 'earnings' with category='other'" do
         let(:raw_paystubs_json) do
-          load_relative_json_file('pinwheel', 'request_end_user_paystubs_with_start_bonus_response.json')['data']
+          pinwheel_load_relative_json_file('request_end_user_paystubs_with_start_bonus_response.json')['data']
         end
 
         it "ignores the entries for those bonuses" do
@@ -164,7 +164,7 @@ RSpec.describe Aggregators::Sdk::PinwheelService, type: :service do
 
       context "when there are 'earnings' with category='premium'" do
         let(:raw_paystubs_json) do
-          load_relative_json_file('pinwheel', 'request_end_user_paystubs_with_multiple_hourly_rates_response.json')['data']
+          pinwheel_load_relative_json_file('request_end_user_paystubs_with_multiple_hourly_rates_response.json')['data']
         end
 
         it "ignores the entries for those bonuses" do

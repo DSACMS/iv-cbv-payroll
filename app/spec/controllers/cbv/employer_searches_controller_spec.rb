@@ -2,9 +2,10 @@ require "rails_helper"
 
 RSpec.describe Cbv::EmployerSearchesController do
   include PinwheelApiHelper
+  include ArgyleApiHelper
 
   describe "#show" do
-    let(:cbv_flow) { create(:cbv_flow) }
+    let(:cbv_flow) { create(:cbv_flow, :invited) }
     let(:pinwheel_token_id) { "abc-def-ghi" }
     let(:user_token) { "foobar" }
 
@@ -95,7 +96,7 @@ RSpec.describe Cbv::EmployerSearchesController do
 
     context "when there are no employer search results" do
       before do
-        stub_request_items_no_items_response
+        pinwheel_stub_request_items_no_items_response
       end
 
       render_views
@@ -122,7 +123,7 @@ RSpec.describe Cbv::EmployerSearchesController do
 
     context "when there are search results" do
       before do
-        stub_request_items_response
+        pinwheel_stub_request_items_response
       end
 
       render_views
@@ -140,7 +141,9 @@ RSpec.describe Cbv::EmployerSearchesController do
             cbv_flow_id: cbv_flow.id,
             invitation_id: cbv_flow.cbv_flow_invitation_id,
             num_results: 1,
-            has_pinwheel_account: false
+            has_payroll_account: false,
+            pinwheel_result_count: 1,
+            argyle_result_count: 0
             ))
         get :show, params: { query: "results" }
       end
@@ -153,7 +156,9 @@ RSpec.describe Cbv::EmployerSearchesController do
             cbv_flow_id: cbv_flow.id,
             invitation_id: cbv_flow.cbv_flow_invitation_id,
             num_results: 1,
-            has_pinwheel_account: false
+            has_payroll_account: false,
+            pinwheel_result_count: 1,
+            argyle_result_count: 0
             ))
         get :show, params: { query: "results" }
       end
