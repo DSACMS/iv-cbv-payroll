@@ -31,8 +31,8 @@ RSpec.describe Aggregators::FormatMethods::Argyle, type: :service do
   end
 
   describe '.format_currency' do
-    it 'converts string amount to float' do
-      expect(described_class.format_currency("123.45")).to eq(123.45)
+    it 'converts string amount to the number of cents' do
+      expect(described_class.format_currency("123.45")).to eq(12345)
     end
 
     it 'returns nil for nil input' do

@@ -32,9 +32,9 @@ module Aggregators::AggregatorReports
     def fetch_report_data
       begin
         all_successful = true
-        @payroll_accounts.each do |account|
-            fetch_report_data_for_account(account)
-          end
+        @payroll_accounts.each do |payroll_account|
+          fetch_report_data_for_account(payroll_account)
+        end
       rescue StandardError => e
         Rails.logger.error("Report Fetch Error: #{e.message}")
         all_successful = false
@@ -42,15 +42,13 @@ module Aggregators::AggregatorReports
       @has_fetched = all_successful
     end
 
-
-
     AccountReportStruct = Struct.new(:identity, :income, :employment, :paystubs)
     def find_account_report(account_id)
       AccountReportStruct.new(
-      @identities.find { |identity| identity.account_id == account_id },
-      @incomes.find { |income| income.account_id == account_id },
-      @employments.find { |employment| employment.account_id == account_id },
-      @paystubs.filter { |paystub| paystub.account_id == account_id }
+        @identities.find { |identity| identity.account_id == account_id },
+        @incomes.find { |income| income.account_id == account_id },
+        @employments.find { |employment| employment.account_id == account_id },
+        @paystubs.filter { |paystub| paystub.account_id == account_id }
       )
     end
 

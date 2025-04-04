@@ -1,0 +1,15 @@
+{
+  "id": "85fab193-1195-47e3-951b-fbbfbbac3d3e",
+  "name": "george-test-delete-later",
+  "events": [
+    "accounts.connected"
+  ],
+  "config": {
+    "include_resource": true
+  },
+  "secret": "optional-secret",
+  "url": "https://your-webhook-backend.com",
+  "created_at": "2025-03-18T21:10:32.226533Z",
+  "updated_at": "2025-03-18T21:10:32.228399Z",
+  "last_sent_at": null
+}

@@ -2,14 +2,14 @@ require 'rails_helper'
 
 RSpec.describe Aggregators::AggregatorReports::ArgyleReport, type: :service do
   include Aggregators::ResponseObjects
-  let(:account) { "abc123" }
+  let(:account) { create(:payroll_account, :argyle) }
   let(:from_date) { "2021-01-01" }
   let(:to_date) { "2021-03-31" }
   let(:argyle_service) { Aggregators::Sdk::ArgyleService.new(:sandbox) }
   let(:argyle_report) { described_class.new(payroll_accounts: [ account ], argyle_service: argyle_service, from_date: from_date, to_date: to_date) }
 
-  let(:identities_json) { JSON.parse(File.read(Rails.root.join('spec/support/fixtures/argyle/bob/request_identity.json'))) }
-  let(:paystubs_json) { JSON.parse(File.read(Rails.root.join('spec/support/fixtures/argyle/bob/request_paystubs.json'))) }
+  let(:identities_json) { load_relative_json_file('argyle', 'bob', 'request_identity.json') }
+  let(:paystubs_json) { load_relative_json_file('argyle', 'bob', 'request_paystubs.json') }
 
   before do
     allow(argyle_service).to receive(:fetch_identities_api).and_return(identities_json)
@@ -22,11 +22,11 @@ RSpec.describe Aggregators::AggregatorReports::ArgyleReport, type: :service do
     end
 
     it 'calls the identities API' do
-      expect(argyle_service).to have_received(:fetch_identities_api).with(account: account)
+      expect(argyle_service).to have_received(:fetch_identities_api).with(account: account.pinwheel_account_id)
     end
 
     it 'calls the paystubs API' do
-      expect(argyle_service).to have_received(:fetch_paystubs_api).with(account: account, from_start_date: from_date, to_start_date: to_date)
+      expect(argyle_service).to have_received(:fetch_paystubs_api).with(account: account.pinwheel_account_id, from_start_date: from_date, to_start_date: to_date)
     end
 
     it 'transforms identities correctly' do

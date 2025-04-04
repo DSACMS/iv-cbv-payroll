@@ -12,7 +12,7 @@ repos:
   hooks:
   - id: rubocop
     name: rubocop
-    entry: bin/run-linter --cd app -- bundle exec rubocop --autocorrect
+    entry: bin/run-linter --cd app -- bundle exec rubocop --autocorrect --force-exclusion
     language: ruby
     files: '^app/.*\.rb$'
 
