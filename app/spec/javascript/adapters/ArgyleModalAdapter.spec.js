@@ -43,6 +43,14 @@ describe("ArgyleModalAdapter", () => {
     it("opens argyle modal", async () => {
       expect(Argyle.create).toHaveBeenCalledTimes(1)
     })
+    it("passes sandbox flag from token response", async () => {
+      expect(Argyle.create).toHaveBeenCalledWith(
+        expect.objectContaining({
+          sandbox: mockArgyleAuthToken.isSandbox,
+        })
+      )
+      expect(mockArgyleAuthToken.isSandbox).toBe(true)
+    })
   })
 
   describe("event:onSucces", () => {
