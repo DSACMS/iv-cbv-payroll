@@ -22,6 +22,7 @@ describe("ArgyleModalAdapter", () => {
   let triggers
 
   beforeEach(async () => {
+    vi.useFakeTimers()
     mockArgyle()
     await loadArgyleResource()
     adapter = new ArgyleModalAdapter()
@@ -53,6 +54,7 @@ describe("ArgyleModalAdapter", () => {
     })
     it("triggers the modal adapter onSuccess callback", async () => {
       await triggers.triggerAccountConnected()
+      vi.advanceTimersByTime(1000)
       expect(modalAdapterArgs.onSuccess).toHaveBeenCalled()
     })
   })
