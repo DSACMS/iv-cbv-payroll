@@ -75,6 +75,10 @@ class Cbv::BaseController < ApplicationController
     pinwheel_for(@cbv_flow)
   end
 
+  def argyle
+    argyle_for(@cbv_flow)
+  end
+
   def agency_url
     current_agency&.agency_contact_website
   end
