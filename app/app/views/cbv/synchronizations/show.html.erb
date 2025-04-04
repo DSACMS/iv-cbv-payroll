@@ -1,20 +1,4 @@
 <% content_for :title, t(".header") %>
-<div data-controller="cbv-synchronizations">
-  <h1>
-    <%= t(".header") %>
-  </h1>
-  <p class="usa-prose">
-    <%= t(".fetching_payroll_description") %>
-  </p>
-  <%= form_with method: :patch, class: "display-none", data: { 'cbv-synchronizations-target': "form" } do |f| %>
-    <input type="hidden" name="user[account_id]" value="<%= params[:user][:account_id] %>" data-cbv-synchronizations-target="userAccountId">
-  <% end %>
-  <div
-    class="grid-container"
-  >
-    <%= turbo_stream_from(@pinwheel_account) %>
-    <% if @pinwheel_account.present? %>
-      <%= render partial: "cbv/synchronizations/indicators", locals: { pinwheel_account: @pinwheel_account } %>
-    <% end %>
-  </div>
+<div data-controller="polling" data-polling-url-value="<%= cbv_flow_synchronizations_path(params: { user: { account_id: params.to_unsafe_h[:user][:account_id] } }) %>">
+  <%= render "status" %>
 </div>
