@@ -25,6 +25,7 @@ module Aggregators::Sdk
     PAYSTUBS_ENDPOINT = "paystubs"
     IDENTITIES_ENDPOINT = "identities"
     USERS_ENDPOINT = "users"
+    USER_TOKENS_ENDPOINT = "user-tokens"
     ACCOUNTS_ENDPOINT = "accounts"
     EMPLOYMENTS_ENDPOINT = "employments"
     WEBHOOKS_ENDPOINT = "webhooks"
@@ -144,6 +145,11 @@ module Aggregators::Sdk
     def create_user(cbv_flow_end_user_id = nil)
       params = cbv_flow_end_user_id.present? ? { external_id: cbv_flow_end_user_id } : {}
       @http.post(build_url(USERS_ENDPOINT), params.to_json).body
+    end
+
+    # https://docs.argyle.com/api-reference/user-tokens#create
+    def create_user_token(user_id)
+      @http.post(build_url(USER_TOKENS_ENDPOINT), { user: user_id }.to_json).body
     end
 
     # https://docs.argyle.com/api-reference/employments#list

@@ -1,22 +1,39 @@
 class Api::ArgyleController < ApplicationController
-  # This API endpoint is used to associate the user's CbvFlow
-  # with a user_token and user id (id) supplied by Argyle.
-  # This enables the client to retrieve an Argyle user_token to open
-  # the Argyle modal or create an Argyle Link. It also provides a means
-  # to associate an incoming webhook request sent by Argyle with an instance
-  # of CBV PayrollAccount::Argyle
+  after_action :track_event
+
+  # This API endpoint is used to fetch a `user_token` to allow the user to open
+  # the Argyle modal.
   #
   # @see https://docs.argyle.com/link/user-tokens
   def create
     @cbv_flow = CbvFlow.find(session[:cbv_flow_id])
     argyle = argyle_for(@cbv_flow)
-    argyle.create_user(@cbv_flow.end_user_id) => {id:, user_token:}
 
-    @cbv_flow.update({
-      pinwheel_token_id: user_token,
-      end_user_id: id
+    user_token = if @cbv_flow.argyle_user_id.blank?
+                   response = argyle.create_user(@cbv_flow.end_user_id)
+
+                   # Store the argyle_user_id to allow us to associate incoming webhooks with
+                   # this CbvFlow.
+                   @cbv_flow.update(argyle_user_id: response["id"])
+
+                   response["user_token"]
+                 else
+                   # If the user has already been created in Argyle, let's just
+                   # make them a new link token with the same user.
+                   response = argyle.create_user_token(@cbv_flow.argyle_user_id)
+                   response["user_token"]
+                 end
+
+    render json: { status: :ok, user: { user_token: user_token } }
+  end
+
+  def track_event
+    event_logger.track("ApplicantBeganLinkingEmployer", request, {
+      cbv_flow_id: @cbv_flow.id,
+      cbv_applicant_id: @cbv_flow.cbv_applicant_id,
+      invitation_id: @cbv_flow.cbv_flow_invitation_id
     })
-
-    render json: { status: :ok, user_token: user_token }
+  rescue => ex
+    Rails.logger.error "Unable to track event (ApplicantBeganLinkingEmployer): #{ex}"
   end
 end

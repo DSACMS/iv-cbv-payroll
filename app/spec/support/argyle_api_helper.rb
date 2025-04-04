@@ -53,6 +53,28 @@ module ArgyleApiHelper
       )
   end
 
+  def stub_create_user_response
+    stub_request(:post, /#{Aggregators::Sdk::ArgyleService::USERS_ENDPOINT}/).to_return do |_|
+      response = load_relative_json_file('argyle', 'response_create_user.json')
+      {
+        status: 200,
+        body:   response.to_json,
+        headers: { 'Content-Type' => 'application/json' }
+      }
+    end
+  end
+
+  def stub_create_user_token_response
+    stub_request(:post, /#{Aggregators::Sdk::ArgyleService::USER_TOKENS_ENDPOINT}/).to_return do |_|
+      response = load_relative_json_file('argyle', 'response_create_user_token.json')
+      {
+        status: 200,
+        body:   response.to_json,
+        headers: { 'Content-Type' => 'application/json' }
+      }
+    end
+  end
+
   def stub_create_webhook_subscription_response
     stub_request(:post, /#{Aggregators::Sdk::ArgyleService::WEBHOOKS_ENDPOINT}/)
       .to_return do |_|
