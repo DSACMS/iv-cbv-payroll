@@ -3,10 +3,14 @@ require 'rails_helper'
 RSpec.describe Api::ArgyleController, type: :controller do
   describe "POST #create" do
     it "includes isSandbox flag in response" do
-      allow(ENV).to receive(:[]).and_return(nil)
-      allow(ENV).to receive(:[]).with("ARGYLE_SANDBOX").and_return("true")
-      allow(CbvFlow).to receive(:find).and_return(double)
-      allow(controller).to receive(:argyle_for).and_return(double(create_user: {}))
+      cbv_flow = double('cbv_flow', client_agency_id: 'test_agency')
+      argyle = double('argyle', create_user: {})
+
+      allow(CbvFlow).to receive(:find).and_return(cbv_flow)
+      allow(controller).to receive(:argyle_for).and_return(argyle)
+      allow(controller).to receive(:agency_config).and_return({
+        'test_agency' => double(argyle_environment: 'sandbox')
+      })
 
       post :create
 
