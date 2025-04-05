@@ -159,6 +159,7 @@ ignore_missing:
     - "cbv.summaries.show.your_information"
     - "cbv.summaries.show.must_match"
     - "cbv.summaries.show.application_information"
+    - "cbv.submits.show.client_provided_information" # FFS-2552
 # - 'errors.messages.{accepted,blank,invalid,too_short,too_long}'
 # - '{devise,simple_form}.*'
 

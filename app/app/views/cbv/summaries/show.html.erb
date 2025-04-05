@@ -80,7 +80,7 @@
     <% @cbv_flow.cbv_applicant.applicant_attributes.each do |item| %>
       <% if @cbv_flow.cbv_applicant[item].present? %>
         <tr>
-          <td><%= t(".applicant_informations.show.#{@cbv_flow.client_agency_id}.#{item}") %></td>
+          <td><%= t("cbv.applicant_informations.#{@cbv_flow.client_agency_id}.fields.#{item}.prompt") %></td>
           <td><%= @cbv_flow.cbv_applicant[item] %></td>
         </tr>
       <% end %>
