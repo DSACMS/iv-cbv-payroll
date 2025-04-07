@@ -2,14 +2,16 @@ require 'rails_helper'
 
 RSpec.describe Aggregators::AggregatorReports::ArgyleReport, type: :service do
   include Aggregators::ResponseObjects
+  include ArgyleApiHelper
+
   let(:account) { create(:payroll_account, :argyle) }
   let(:from_date) { "2021-01-01" }
   let(:to_date) { "2021-03-31" }
   let(:argyle_service) { Aggregators::Sdk::ArgyleService.new(:sandbox) }
   let(:argyle_report) { described_class.new(payroll_accounts: [ account ], argyle_service: argyle_service, from_date: from_date, to_date: to_date) }
 
-  let(:identities_json) { load_relative_json_file('argyle', 'bob', 'request_identity.json') }
-  let(:paystubs_json) { load_relative_json_file('argyle', 'bob', 'request_paystubs.json') }
+  let(:identities_json) { argyle_load_relative_json_file('bob', 'request_identity.json') }
+  let(:paystubs_json) { argyle_load_relative_json_file('bob', 'request_paystubs.json') }
 
   before do
     allow(argyle_service).to receive(:fetch_identities_api).and_return(identities_json)

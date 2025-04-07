@@ -1,4 +1,5 @@
 import { Controller } from "@hotwired/stimulus"
+import CSRF from "../utilities/csrf"
 
 export default class extends Controller {
   static values = { url: String }
@@ -6,14 +7,13 @@ export default class extends Controller {
 
   connect() {
     this.interval = setInterval(() => {
-      const csrfToken = document.querySelector("meta[name='csrf-token']").content
       fetch(this.urlValue, {
-        headers: { ...this.headers, "X-CSRF-Token": csrfToken },
+        headers: { ...this.headers, "X-CSRF-Token": CSRF.token },
         method: "PATCH",
       })
         .then((response) => response.text())
         .then((html) => {
-          // on redirect stop the interval to ensure that the payment details page loads before the turboframe gets another command
+          // on redirect stop the interval to ensure that the target page page loads before the turboframe gets another command
           if (html.includes('turbo-stream action="redirect')) {
             clearInterval(this.interval)
           }

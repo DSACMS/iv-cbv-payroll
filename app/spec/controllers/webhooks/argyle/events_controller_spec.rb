@@ -19,8 +19,8 @@ RSpec.describe Webhooks::Argyle::EventsController, type: :controller do
     allow(argyle_webhook).to receive(:verify_signature).and_return(true)
     allow(argyle_webhook).to receive(:get_webhook_event_jobs).and_return([])
     allow(argyle_webhook).to receive(:get_webhook_event_outcome).and_return(:success)
-    allow(argyle_webhook).to receive(:get_supported_jobs).and_return(Webhooks::Argyle.get_supported_jobs)
-    allow(argyle_webhook).to receive(:get_webhook_events).and_return(Webhooks::Argyle.get_webhook_events)
+    allow(argyle_webhook).to receive(:get_supported_jobs).and_return(Aggregators::Webhooks::Argyle.get_supported_jobs)
+    allow(argyle_webhook).to receive(:get_webhook_events).and_return(Aggregators::Webhooks::Argyle.get_webhook_events)
   end
 
   shared_examples_for "a webhook that creates a webhook event record" do |event_type, check_status = true|

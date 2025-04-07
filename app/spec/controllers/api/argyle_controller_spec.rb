@@ -41,6 +41,20 @@ RSpec.describe Api::ArgyleController do
           ))
         post :create
       end
+
+      it "includes isSandbox flag in response" do
+        argyle = double('argyle', create_user: {})
+
+        allow(CbvFlow).to receive(:find).and_return(cbv_flow)
+        allow(controller).to receive(:argyle_for).and_return(argyle)
+        allow(controller).to receive(:agency_config).and_return({
+          cbv_flow.client_agency_id => double(argyle_environment: 'sandbox')
+        })
+
+        post :create
+
+        expect(JSON.parse(response.body)["isSandbox"]).to eq(true)
+      end
     end
 
     context "when the CbvFlow already has an argyle_user_id" do

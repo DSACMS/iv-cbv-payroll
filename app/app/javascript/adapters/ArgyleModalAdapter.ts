@@ -18,7 +18,7 @@ export default class ArgyleModalAdapter extends ModalAdapter {
         locale,
       })
 
-      const { user } = await fetchArgyleToken()
+      const { user, isSandbox } = await fetchArgyleToken()
       return Argyle.create({
         userToken: user.user_token,
         items: [this.requestData.id],
@@ -35,7 +35,7 @@ export default class ArgyleModalAdapter extends ModalAdapter {
         },
         onClose: this.onClose.bind(this),
         onError: this.onError.bind(this),
-        sandbox: true,
+        sandbox: isSandbox,
       }).open()
     } else {
       // TODO this should throw an error, which should be caught by a document.onerror handler to show the user a crash message.

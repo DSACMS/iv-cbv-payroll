@@ -9,6 +9,7 @@ class Api::ArgyleController < ApplicationController
     @cbv_flow = CbvFlow.find(session[:cbv_flow_id])
     argyle = argyle_for(@cbv_flow)
 
+    is_sandbox_environment = agency_config[@cbv_flow.client_agency_id].argyle_environment == "sandbox"
     user_token = if @cbv_flow.argyle_user_id.blank?
                    response = argyle.create_user(@cbv_flow.end_user_id)
 
@@ -24,7 +25,7 @@ class Api::ArgyleController < ApplicationController
                    response["user_token"]
                  end
 
-    render json: { status: :ok, user: { user_token: user_token } }
+    render json: { status: :ok, user: { user_token: user_token }, isSandbox: is_sandbox_environment }
   end
 
   def track_event
