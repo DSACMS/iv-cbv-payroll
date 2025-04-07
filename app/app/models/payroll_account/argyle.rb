@@ -36,7 +36,7 @@ class PayrollAccount::Argyle < PayrollAccount
   end
 
   def self.event_for_job(job)
-    matching_event = Webhooks::Argyle::SUBSCRIBED_WEBHOOK_EVENTS.find do |event_name, config|
+    matching_event = Aggregators::Webhooks::Argyle::SUBSCRIBED_WEBHOOK_EVENTS.find do |event_name, config|
       config[:job].include?(job)
     end
     raise "No event for job named: #{job}" unless matching_event.present?

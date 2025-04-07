@@ -12,7 +12,7 @@ RSpec.describe PayrollAccount::Argyle, type: :model do
 
     it 'returns true when all supported jobs have corresponding webhook events' do
       expect(synced_account.has_fully_synced?).to be true
-      expect(synced_account.webhook_events.count).to eq(Webhooks::Argyle.get_supported_jobs.count)
+      expect(synced_account.webhook_events.count).to eq(Aggregators::Webhooks::Argyle.get_supported_jobs.count)
     end
 
     describe '#job_succeeded?' do

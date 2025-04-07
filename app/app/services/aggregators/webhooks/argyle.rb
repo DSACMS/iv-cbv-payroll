@@ -1,4 +1,4 @@
-module Webhooks
+module Aggregators::Webhooks
   class Argyle
     # Argyle's event outcomes are implied by the event name themselves i.e. accounts.failed (implies error)
     # x.fully_synced (implies success)
@@ -32,6 +32,7 @@ module Webhooks
     end
 
     # Verify the signature using the appropriate webhook secret
+    # See: https://docs.argyle.com/api-guide/webhooks
     def self.verify_signature(signature, payload, webhook_secret)
       expected = OpenSSL::HMAC.hexdigest(OpenSSL::Digest.new("sha512"), webhook_secret, payload)
       ActiveSupport::SecurityUtils.secure_compare(signature, expected)

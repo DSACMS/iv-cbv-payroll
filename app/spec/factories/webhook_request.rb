@@ -81,7 +81,7 @@ FactoryBot.define do
 
         # Generate Argyle signature using the service
         webhook_request.headers ||= {}
-        webhook_request.headers["x-argyle-signature"] = Webhooks::Argyle.generate_signature_digest(
+        webhook_request.headers["x-argyle-signature"] = Aggregators::Webhooks::Argyle.generate_signature_digest(
           webhook_request.payload.to_json,
           evaluator.webhook_secret
         )

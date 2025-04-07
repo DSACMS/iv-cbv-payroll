@@ -21,7 +21,7 @@ RSpec.describe ArgyleWebhooksManager, type: :service do
   # Define sandbox_config as a let variable for easier access in tests
   let(:sandbox_config) { double("SandboxConfig", argyle_environment: "sandbox") }
   # Define the webhook events
-  let(:webhook_events) { Webhooks::Argyle.get_webhook_events }
+  let(:webhook_events) { Aggregators::Webhooks::Argyle.get_webhook_events }
 
   before do
     # use our stubbed data for the response

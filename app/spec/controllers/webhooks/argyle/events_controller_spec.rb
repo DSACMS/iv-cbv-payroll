@@ -1,7 +1,7 @@
 require 'rails_helper'
 
 RSpec.describe Webhooks::Argyle::EventsController, type: :controller do
-  let(:argyle_webhook) { class_double('Webhooks::Argyle') }
+  let(:argyle_webhook) { class_double('Aggregators::Webhooks::Argyle') }
 
   # In a runtime scenario- the web client would send a POST request to /api/argyle/tokens
   # This does several things:

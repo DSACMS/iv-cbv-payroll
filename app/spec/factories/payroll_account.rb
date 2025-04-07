@@ -34,7 +34,7 @@ FactoryBot.define do
     # Add new trait for Argyle PayrollAccounts
     trait :argyle do
       type { "argyle" }
-      supported_jobs { Webhooks::Argyle.get_supported_jobs }
+      supported_jobs { Aggregators::Webhooks::Argyle.get_supported_jobs }
     end
 
     trait :argyle_fully_synced do

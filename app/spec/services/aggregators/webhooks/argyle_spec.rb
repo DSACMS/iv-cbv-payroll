@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe Webhooks::Argyle, type: :service do
+RSpec.describe Aggregators::Webhooks::Argyle, type: :service do
   describe '#generate_signature_digest' do
     let(:payload) { '{"event": "test"}' }
     let(:webhook_secret) { 'test_webhook_secret' }
