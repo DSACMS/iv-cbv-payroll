@@ -1,7 +1,7 @@
 import { vi, describe, beforeEach, it, expect } from "vitest"
 import loadScript from "load-script"
 
-export const mockArgyleAuthToken = { user: { user_token: "test-token" } }
+export const mockArgyleAuthToken = { user: { user_token: "test-token" }, isSandbox: true }
 export const mockArgyleAccountData = { accountId: "account-id", platformId: "platform-id" }
 
 const triggers = ({
