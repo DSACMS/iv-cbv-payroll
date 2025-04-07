@@ -54,6 +54,7 @@ class Webhooks::Pinwheel::EventsController < ApplicationController
       event_logger.track("ApplicantCreatedPinwheelAccount", request, {
         cbv_applicant_id: @cbv_flow.cbv_applicant_id,
         cbv_flow_id: @cbv_flow.id,
+        client_agency_id: @cbv_flow.client_agency_id,
         invitation_id: @cbv_flow.cbv_flow_invitation_id,
         platform_name: params["payload"]["platform_name"]
       })
@@ -61,6 +62,7 @@ class Webhooks::Pinwheel::EventsController < ApplicationController
       event_logger.track("ApplicantFinishedPinwheelSync", request, {
         cbv_applicant_id: @cbv_flow.cbv_applicant_id,
         cbv_flow_id: @cbv_flow.id,
+        client_agency_id: @cbv_flow.client_agency_id,
         invitation_id: @cbv_flow.cbv_flow_invitation_id,
         identity_success: @payroll_account.job_succeeded?("identity"),
         identity_supported: @payroll_account.supported_jobs.include?("identity"),
