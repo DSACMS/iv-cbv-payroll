@@ -25,7 +25,7 @@ class Cbv::EmployerSearchesController < Cbv::BaseController
     return unless Rails.env.development?
 
     if Rails.application.config.webhooks_initialization_error
-      flash.now[:alert] = "Unable to initialize Pinwheel or Argyle webhooeks: #{Rails.application.config.webhooks_initialization_error}"
+      flash.now[:alert] = "Unable to initialize Pinwheel or Argyle webhooks: #{Rails.application.config.webhooks_initialization_error}"
     end
   end
 

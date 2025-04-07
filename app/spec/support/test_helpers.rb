@@ -102,13 +102,4 @@ module TestHelpers
     client_agency_config = Rails.application.config.client_agencies[client_agency_id]
     allow(client_agency_config).to receive(key.to_sym).and_return(value)
   end
-
-  def load_relative_file(*fixture_path)
-    absolute_path = Rails.root.join("spec", "support", "fixtures", *fixture_path)
-    File.read(absolute_path)
-  end
-
-  def load_relative_json_file(*fixture_path)
-    JSON.parse(load_relative_file(*fixture_path))
-  end
 end
