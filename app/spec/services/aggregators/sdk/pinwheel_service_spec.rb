@@ -172,4 +172,18 @@ RSpec.describe Aggregators::Sdk::PinwheelService, type: :service do
       end
     end
   end
+
+  describe "#fetch_shifts_api" do
+    let(:account_id) { SecureRandom.uuid }
+
+    before do
+      stub_request_end_user_shifts_response
+    end
+
+    it "returns shifts data for the specified account" do
+      response = service.fetch_shifts_api(account_id: account_id)
+
+      expect(response['data'].first['type']).to eq('shift')
+    end
+  end
 end
