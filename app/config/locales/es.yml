@@ -54,8 +54,31 @@ es:
         subheader: Por favor añada los otros trabajos que haya tenido en los últimos %{pay_income_days} días, incluso si ya no está en ese trabajo.
         yes_radio: Sí, tengo otro trabajo que cumpla con los criterios
     applicant_informations:
+      sandbox:
+        fields:
+          case_number:
+            blank: Escriba su número de caso.
+            prompt: Número de caso
+          first_name:
+            blank: Escriba su nombre.
+            prompt: Nombre
+          last_name:
+            blank: Escriba su apellido.
+            prompt: Apellido
+          middle_name:
+            blank: Escriba su segundo nombre.
+            prompt: Segundo nombre
       show:
+        application_information: Información relacionada con la solicitud
+        application_information_explanation: Esta información se puede encontrar en el sitio web de la agencia.
         continue: Continuar
+        explanation: Esta información se emplea para vincular la información de sus ingresos con la información presente en la solicitud que presentó ante %{agency_short_name} . Por ello, asegúrese de que la información que ingrese sea la misma que se muestra en su solicitud.
+        your_information: Su información
+      update:
+        error_header:
+          one: "%{count} error"
+          other: "%{count} errores"
+        error_updating_applicant: Se produjo un error al actualizar la información del solicitante. Vuelva a intentarlo.
     employer_searches:
       show:
         app_based_providers: Empleadores basados
@@ -101,12 +124,14 @@ es:
         step3: Envíe su información de pago.
         step3_description: La enviaremos automáticamente a %{agency_acronym}. Esto lo ayudará a demostrar y comprobar sus ingresos y puede ayudar a %{agency_acronym} a tomar una decisión más rápida.
         subheader_html: 'Enviaremos sus registros de pago de su(s) empleador(es) a %{agency_acronym} para verificar sus ingresos. <strong>La mayoría de las personas completan este proceso en menos de 5 minutos.</strong> Solo siga estos pasos:'
+    error_invalid_link: Se utilizó un enlace no válido para iniciar CBV. Vuelva a hacer clic en el enlace, o bien directamente póngase en contacto con su asistente de caso para obtener ayuda.
     error_invalid_token: El enlace de invitación no es válido. Vuelva a comprobar el enlace e inténtelo de nuevo. Si sigue teniendo problemas, póngase en contacto con su trabajador social.
     error_missing_token_html: "<strong>Su sesión a finalizado debido a inactividad.</strong> Para continuar donde la dejó, haga clic en el enlace que recibió de su agencia del SNAP por correo electrónico. Si encuentra algún problema, póngase en contacto con su agencia del SNAP para pedir ayuda."
     error_no_access: No logramos cargar los datos de nómina para esta cuenta. Haga clic en el enlace que recibió de su agencia del SNAP para intentarlo de nuevo.
     expired_invitations:
       show:
         body_1: Usted ya ha completado con éxito su proceso de verificación, o está intentando acceder a esta invitación después de que ha expirado.
+        body_2: Si todavía no termina de verificar sus ingresos, envíe su información de ingresos desde el mismo sitio web de %{agency_short_name}.
         cta_button_html:
           ma: <a href="https://www.mass.gov/guides/how-to-contact-dta" class="usa-button">Visite el sitio web del DTA</a>
           nyc: <a href="https://www.nyc.gov/site/hra/help/snap-application-frequently-asked-questions.page" class="usa-button">Visite el sitio web de la HRA</a>
@@ -169,10 +194,16 @@ es:
         unknown: Desconocido
     submits:
       show:
+        additional_information_title: "¿Existe algún otro detalle que le gustaría que su asistente de caso conozca en relación con sus ingresos?"
         application_or_recertification_date:
           ma: Date client was contacted
           nyc: SNAP application or recertification interview date
           sandbox: SNAP application or recertification interview date
+        consent_checkbox_label_html: Marque esta casilla para confirmar que, a su leal saber y entender, la información proporcionada es verdadera y está completa. Se compromete a informar a %{agency_acronym} de cualquier ingreso que no se vea reflejado en este informe, así como de cualquier discrepancia que encuentre en la información recopilada mediante el uso de esta herramienta. Comprende que proporcionar información precisa y completa es su responsabilidad y que presentar cualquier información falsa, o bien abstenerse de brindar cierta información, puede acarrear consecuencias legales. Para obtener más información acerca de sus derechos y obligaciones con respecto a la información privada que comparte con %{agency_acronym}, consulte el apartado Derechos y obligaciones que firmó en la solicitud. Este apartado se encuentra disponible en el sitio web de %{agency_acronym}.<br><br>Al presentar este informe, autoriza su uso para fines de verificación de ingresos por parte del personal autorizado de %{agency_acronym}.
+        legal_header: Consentimiento legal
+        none_found: No se encontró ningún pago de este empleador en los últimos 90 días.
+        none_found_confirmed: Pudimos confirmar que este empleador no realizó ningún pago en los últimos 90 días. Esto sucede cuando el cliente no percibe ingresos de este trabajo durante tal período de tiempo.
+        page_header: Envíe un informe de ingresos
         pdf:
           agency_header_name:
             az_des: Department of Economic Security
@@ -195,7 +226,11 @@ es:
             confirmation_code: Código de confirmación
             employment_information: Información del empleo
             report_details: Detalles del reporte
+        share_report_button: Autorizo que se comparta mi informe con %{agency_acronym}
         table_caption_no_name: Employer %{number}
+        warning_html: Su informe de ingresos se adjuntará a la solicitud para el Programa de Asistencia Nutricional Suplementaria (SNAP, Supplemental Nutrition Assistance Program) que presente.<br>A fin de compartir este informe, debe marcar la casilla de consentimiento legal.
+      update:
+        consent_to_authorize_warning: A fin de compartir su informe, marque la casilla de consentimiento legal.
     successes:
       show:
         back_to_agency: Vaya al sitio web de %{agency_short_name}
@@ -210,6 +245,7 @@ es:
     summaries:
       show:
         additional_comments: Comentarios adicionales
+        application_information: Información relacionada con la solicitud
         application_or_recertification_date:
           ma: Fecha de la entrevista de recertificación
           nyc: Fecha de solicitud o recertificación
@@ -220,6 +256,7 @@ es:
           sandbox: Marque esta casilla para confirmar que, a su leal saber y entender, la información proporcionada por usted es verdadera y completa. Usted se compromete a informar a la Agencia de pruebas CBV sobre cualquier ingreso no reflejado en este informe o cualquier discrepancia hallada en la información recopilada con esta herramienta. Usted entiende que suministrar información precisa y completa es su responsabilidad, y que cualquier información falsa u omitida puede tener consecuencias legales. <br/><br/>Al enviar este informe, autoriza su uso para la verificación de los ingresos por parte del personal autorizado del CBV.
         description: The report below has your income from the past 90 days, from %{start_date} to %{end_date}. Please review it before sending.
         header: Review your income report
+        must_match: Estos datos deben coincidir con lo que se muestra en la solicitud que presentó ante %{agency_acronym}.
         none_found: No encontramos ningún pago de este empleador en los últimos 90 días.
         payment: Pago de %{amount} antes de pago impuestos en %{date}
         phone_number: Teléfono del empleador
@@ -227,6 +264,9 @@ es:
         table_caption_no_name: Empleador %{number}
         total_income_from: 'Ingresos totales provenientes de %{employer_name}, antes del pago de impuestos: %{amount}'
         total_income_from_no_employer_name: 'Ingresos totales antes del pago de impuestos: %{amount}'
+        total_payments: 'Ingresos totales correspondiente a los últimos 90 días, antes de impuestos: %{amount}'
+        total_payments_desc: Este importe refleja el ingreso bruto total por sus contraprestaciones, antes de impuestos, beneficios y deducciones.
+        your_information: Su información
     synchronization_failures:
       show:
         back_to_search: Volver a la búsqueda de empleadores
@@ -292,7 +332,127 @@ es:
     - Octubre
     - Noviembre
     - Diciembre
+  help:
+    alert:
+      heading: "¿Tiene problemas para vincularse con el proveedor de nómina asignado?"
+      help_options: opciones de ayuda
+      text_before: Consulte la sección dedicada
+    index:
+      company_id: No sé la identificación de mi empresa
+      credentials: No me siento cómodo para ingresar mis credenciales de inicio de sesión
+      employer: No logro encontrar el empleador correcto
+      feedback: Informe de comentarios o errores
+      password: No sé mi contraseña
+      provider: No sé quién es mi proveedor de nómina
+      select_prompt: 'Seleccione una de las siguientes opciones:'
+      title: "¿Necesita ayuda para ponerse en contacto con el proveedor de nómina asignado?"
+      username: No sé mi nombre de usuario
+    show:
+      company_id:
+        intro: 'Ahora, pruebe los siguientes pasos:'
+        step1:
+          content:
+          - En general, la identificación de su empresa aparece en los documentos de incorporación, el correo electrónico de bienvenida o la información de configuración de nómina.
+          - Busque en su correo electrónico palabras clave, por ejemplo, "nómina", "[Nombre del proveedor de nómina]" o "identificación de la empresa".
+          title: Revise todos los materiales de bienvenida que haya recibido
+        step2:
+          content:
+          - Es posible que encuentre la identificación de su empresa en recibos de pago antiguos, formularios de impuestos, así como en cualquier otro documento relacionado con la nómina. Compruebe primero en estos recursos si encuentra la información.
+          title: Revise los recibos de pago o los resúmenes de cuenta.
+        step3:
+          content:
+          - Póngase en contacto con el encargado de Recursos Humanos o de Nómina de la empresa. Cualquiera de estas personas pueden ayudarlo a conseguir la identificación de la empresa.
+          title: Póngase en contacto con el representante de departamento Recursos Humanos de su empleador.
+        title: No sé la identificación de mi empresa
+      credentials:
+        intro: Entendemos todas las inquietudes que pueda tener para compartir su información de inicio de sesión.
+        security_message: 'Sin embargo, debe saber que su seguridad es importante para nosotros y queremos que se sienta seguro. A continuación, detallamos cómo protegemos su información:'
+        step1:
+          content:
+          - Aplicamos en método de cifrado fuerte, similar al que usan los bancos, para proteger su información. Sus credenciales se transmiten de forma segura y jamás las almacenamos.
+          title: Su información de inicio de sesión se encuentra cifrada y protegida.
+        step2:
+          content:
+          - Solo usamos su información de inicio de sesión a los fines de verificar los detalles relacionados con la nómina una vez. Su información de inicio de sesión no se volverá a usar ni se usará para ningún otro fin.
+          title: Su información solo se emplea a los fines de verificar sus ingresos.
+        step3:
+          content: El servicio que contratamos para verificar sus datos de nómina es de confianza; es más, muchas empresas también lo contratan para tratar los datos de nómina de manera segura.
+          title: Contratamos servicios de confianza.
+        title: No me siento cómodo para ingresar mis credenciales de inicio de sesión
+      employer:
+        intro: 'Ahora, pruebe los siguientes pasos:'
+        step1:
+          content:
+          - Si hay una empresa matriz, use ese nombre primero.
+          - Use abreviaturas (p. ej., "ABC Inc." en lugar de "ABC Corporation").
+          - No escriba caracteres especiales; tampoco incluya signos de puntuación.
+          - - 'Pruebe diferentes formas de escribir el nombre de su empleador; por ejemplo:'
+            - Elimine los caracteres especiales y tampoco incluya signos de puntuación.
+            - Pruebe con escribir el nombre de la empresa matriz, si corresponde.
+          title: Busque diferentes versiones del nombre de su empleador.
+        step2:
+          content:
+          - Si aún así su empleador no aparece en los resultados de búsqueda, busque, en su lugar, el proveedor de nómina que utiliza su empresa.
+          - Si no conoce el nombre de su proveedor de nómina, revise el recibo de pago en busca de nombres, por ejemplo, ADP, Paylocity o Workday.
+          title: En su lugar, busque por proveedor de nómina.
+        step3:
+          content:
+          - Si su empleador o proveedor de nómina no figura en la lista, deberá proporcionar su información de ingresos a la agencia de otra manera.
+          title: Si aún así no puede encontrar a su empleador o proveedor de nómina, siga los pasos a continuación.
+        title: No logro encontrar el empleador correcto
+      go_back: Atrás
+      password:
+        intro: 'Ahora, pruebe los siguientes pasos:'
+        step1:
+          content:
+          - Siga las indicaciones en pantalla para recuperar su contraseña.
+          title: Vaya a la página de inicio de sesión de su proveedor de nómina.
+        step2:
+          content:
+          - Pídele al equipo de Recursos Humanos de su empleador que le ayude a obtener los datos de inicio de sesión en relación con su nómina.
+          title: Póngase en contacto con el equipo de Recursos Humanos de su empleador.
+        title: No sé mi contraseña
+      provider:
+        intro: 'Pruebe estas opciones:'
+        step1:
+          content:
+          - Busque nombres como ADP, Paylocity o Workday en sus recibos de pago.
+          title: Revise sus recibos de pago o los documentos fiscales.
+        step2:
+          content:
+          - En su bandeja de entrada, busque términos clave, como "nómina", "recibo de pago" o "depósito directo".
+          title: Busque en la bandeja de entrada de su correo electrónico.
+        step3:
+          content:
+          - Póngase en contacto con el encargado de Recursos Humanos o de Nómina de la empresa. Cualquiera de estas personas pueden ayudarlo a conseguir la identificación de la empresa.
+          title: Póngase en contacto con el representante de departamento Recursos Humanos de su empleador.
+        title: No sé quién es mi proveedor de nómina
+      username:
+        intro: 'Ahora, pruebe los siguientes pasos:'
+        step1:
+          content:
+          - Siga las indicaciones en pantalla para recuperar su nombre de usuario.
+          title: Vaya a la página de inicio de sesión de su proveedor de nómina.
+        step2:
+          content:
+          - Busque palabras clave, por ejemplo, "[Nombre del proveedor de nómina]", "inicio de sesión" o "credenciales".
+          title: Revise la bandeja de entrada de su correo electrónico.
+        step3:
+          content:
+          - Pídele al equipo de Recursos Humanos de su empleador que le ayude a obtener los datos de inicio de sesión en relación con su nómina.
+          title: Póngase en contacto con el equipo de Recursos Humanos de su empleador.
+        title: No sé mi nombre de usuario
   pages:
+    error_404:
+      error_code_html: 'Código de error: <strong>404</strong>'
+      header: No pudimos encontrar la página que está buscando.
+      return_to_entry: Volver a la página de entrada
+      return_to_welcome: Volver a la página de bienvenida
+    error_500:
+      description: Se trata de un problema en nuestro servidor. Se produjo un error en el servidor. Nuestro equipo ya se encuentra trabajando para resolverlo. Actualice la página o vuelva a intentarlo más tarde.
+      error_code_html: 'Código de error: <strong>500</strong>'
+      header: "¡Parece que algo salió mal!"
+      refresh: Actualizar página
     home:
       description_1: El SNAP Income Pilot es una nueva herramienta diseñada para ayudarle a conectar los detalles de sus ingresos de su empleador o proveedor de nómina directamente con su agencia de SNAP. Actualmente estamos probando esta herramienta para asegurarnos de que funcione de manera eficaz.
       description_2: Tenga en cuenta que este piloto está disponible actualmente solo para los participantes de SNAP en la ciudad de Nueva York y Massachusetts.
@@ -339,6 +499,12 @@ es:
       semi_monthly: dos veces al mes
       variable: variable
       weekly: semanal
+  session_timeout:
+    modal:
+      description: Parece no está realizando ninguna acción. Por motivos de seguridad, su sesión se cerrará, salvo que elija extender el tiempo de esta sesión.
+      end_button: Finalizar esta sesión.
+      extend_button: Sí, extender el tiempo de mi sesión.
+      heading: "¿Necesita más tiempo en la sesión?"
   shared:
     agency_full_name:
       az_des: Departamento de Seguridad Económica de Arizona
@@ -364,6 +530,7 @@ es:
         nyc: Administración de Recursos Humanos
         sandbox: Agencia de pruebas CBV
       close: Cerrar
+      help: Ayuda
       log_out: Cerrar sesión
       preheader:
         az_des: Un sitio web en colaboración el Departamento de Seguridad Económica de Arizona.
