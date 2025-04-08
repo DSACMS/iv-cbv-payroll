@@ -20,7 +20,7 @@ module Aggregators::AggregatorReports
       )
 
       @identities.append(*transform_identities(identities_json))
-      @employments.append(*transform_employments(identities_json, self.class.most_recent_paystub_with_address(paystubs_json)))
+      @employments.append(*transform_employments(identities_json, ArgyleReport.most_recent_paystub_with_address(paystubs_json)))
       @incomes.append(*transform_incomes(identities_json))
       @paystubs.append(*transform_paystubs(paystubs_json))
     end
