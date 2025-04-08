@@ -38,6 +38,7 @@ module Aggregators::AggregatorReports
         end
       rescue StandardError => e
         Rails.logger.error("Report Fetch Error: #{e.message}")
+        puts e.message
         all_successful = false
       end
       @has_fetched = all_successful
@@ -47,6 +48,12 @@ module Aggregators::AggregatorReports
 
     AccountReportStruct = Struct.new(:identity, :income, :employment, :paystubs, :gigs)
     def find_account_report(account_id)
+      puts "finding account report for #{account_id}"
+      puts "identities: #{@identities}"
+      puts "incomes: #{@incomes}"
+      puts "employments: #{@employments}"
+      puts "paystubs: #{@paystubs}"
+
       AccountReportStruct.new(
       @identities.find { |identity| identity.account_id == account_id },
       @incomes.find { |income| income.account_id == account_id },

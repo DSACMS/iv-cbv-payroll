@@ -161,15 +161,17 @@ module Aggregators::Sdk
       params = {
         account: account,
         user: user,
-        employment: employment,
         from_start_datetime: from_start_datetime,
         to_start_datetime: to_start_datetime,
         limit: limit }.compact
-      # TODO: paginate
-      page_response  = @http.post(build_url(GIGS_ENDPOINT), params.to_json).body
 
-      raise "Pagination not implemented" if page_response["next"].present?
-      page_response
+      # TODO: paginate
+      puts "fetching gigs with params: #{params}"
+      puts "GIGS_ENDPOINT: #{GIGS_ENDPOINT}"
+      puts "build_url: #{build_url(GIGS_ENDPOINT)}"
+      result = @http.get(build_url(GIGS_ENDPOINT), params.to_json).body
+      puts "result: #{result}"
+      result
     end
 
     # https://docs.argyle.com/api-reference/gigs#list
