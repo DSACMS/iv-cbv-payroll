@@ -166,12 +166,7 @@ module Aggregators::Sdk
         limit: limit }.compact
 
       # TODO: paginate
-      puts "fetching gigs with params: #{params}"
-      puts "GIGS_ENDPOINT: #{GIGS_ENDPOINT}"
-      puts "build_url: #{build_url(GIGS_ENDPOINT)}"
-      result = @http.get(build_url(GIGS_ENDPOINT), params.to_json).body
-      puts "result: #{result}"
-      result
+      @http.get(GIGS_ENDPOINT, params).body
     end
 
     # https://docs.argyle.com/api-reference/gigs#list
