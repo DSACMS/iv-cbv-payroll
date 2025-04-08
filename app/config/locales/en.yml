@@ -433,6 +433,8 @@ en:
         income: Income
         paystubs: Paystubs
       show:
+        header: We’re gathering your payment details from your employer
+      status:
         fetching_payroll_description: This may take a few minutes. Please keep this window open while we work on this.
         header: We’re gathering your payment details from your employer
   continue: Continue

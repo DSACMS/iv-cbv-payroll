@@ -1,0 +1,13 @@
+<%= turbo_frame_tag "synchronization" do %>
+  <h1>
+    <%= t(".header") %>
+  </h1>
+  <p class="usa-prose">
+    <%= t(".fetching_payroll_description") %>
+  </p>
+    <div class="grid-container">
+    <% if @pinwheel_account.present? %>
+      <%= render partial: "cbv/synchronizations/indicators", locals: { pinwheel_account: @pinwheel_account } %>
+    <% end %>
+  </div>
+<% end %>
