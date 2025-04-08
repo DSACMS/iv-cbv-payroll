@@ -11,5 +11,5 @@ application.register("session", CbvSessionsTimeoutController)
 application.register("help", HelpController)
 
 Turbo.StreamActions.redirect = function () {
-    Turbo.visit(this.target);
-};
+  Turbo.visit(this.target)
+}
