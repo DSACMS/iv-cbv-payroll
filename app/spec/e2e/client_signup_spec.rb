@@ -1,6 +1,7 @@
 require 'rails_helper'
 
-RSpec.describe 'User Steps through signing up', type: :system do
+RSpec.describe 'Client Steps through signing up', type: :system do
+
   before do
     driven_by(:selenium_chrome_headless) # Change to :selenium_chrome if you want to see the browser
     WebMock.disable_net_connect!(allow_localhost: true)
@@ -22,7 +23,7 @@ RSpec.describe 'User Steps through signing up', type: :system do
   end
 
 
-  it 'tries to sign up a new person through the flow' do
+  it 'tries to sign up a new client through the flow' do
     visit "sandbox/sso"
     click_on "Continue to CBV Test Agency log in page"
     click_on "Create a new invitation"

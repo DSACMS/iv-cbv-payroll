@@ -91,6 +91,10 @@ RSpec.describe Users::OmniauthCallbacksController do
 
     context "when the user is not authorized" do
       it "redirects to root url with an alert" do
+        ma_config = ClientAgencyConfig::ClientAgency.new({"authorized_emails" => nil, "pinwheel" => {"environment" => "sandbox"},
+                                                          "id" => "ma", "agency_name" => "Department of Transitional Assistance",
+                                                          "argyle" =>  {"environment" => "sandbox"}})
+        allow(Rails.application.config.client_agencies).to receive(:[]).with("ma").and_return(ma_config)
         post :ma_dta
         expect(response).to redirect_to(root_url)
         expect(flash[:alert]).to be_present

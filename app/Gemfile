@@ -91,6 +91,7 @@ group :development, :test do
   gem "rubocop-rails-omakase"
   gem "selenium-webdriver"
   gem "timecop"
+  gem "vcr"
 end
 
 group :development do
@@ -112,6 +113,7 @@ group :test do
   gem "webmock"
   gem "factory_bot", "~> 6.4"
   gem "rails-controller-testing"
+  gem 'puffing-billy'
 end
 
 group :production do
