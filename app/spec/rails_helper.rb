@@ -39,6 +39,45 @@ rescue ActiveRecord::PendingMigrationError => e
   puts e.to_s.strip
   exit 1
 end
+
+VCR.configure do |config|
+  config.cassette_library_dir = "fixtures/vcr_cassettes"
+  config.hook_into :webmock
+  config.ignore_request do |request|
+    request.uri.include?("http://127.0.0.1")
+  end
+  config.ignore_hosts '127.0.0.1', 'localhost', 'logs.browser-intake-datadoghq.com', "firefox-settings-attachments.cdn.mozilla.net",
+                      "firefox.settings.services.mozilla.com", "plugin.argyle.com", "switchboard.pwhq.net",
+                      "cdn.getpinwheel.com", "featuregates.org", "datadog", "events.statsigapi.net", "content-signature-2.cdn.mozilla.net"
+  config.default_cassette_options = { :record => :once }
+  config.filter_sensitive_data("<SANDBOX_SECRET_TOKEN>") { ENV["PINWHEEL_API_TOKEN_SANDBOX"] }
+end
+
+require 'billy/capybara/rspec'
+Capybara.javascript_driver = :selenium_billy
+
+Billy.configure do |c|
+  c.cache = true
+  c.persist_cache = true
+  c.cache_path = 'spec/req_cache/'
+  # c.non_whitelisted_requests_disabled = true
+  c.whitelist << /cdn\.getpinwheel\.com/
+  c.whitelist << /mozilla\./
+  c.whitelist << /plugin\.argyle\.com/
+  c.whitelist << /statsigapi/
+  c.whitelist << /featuregates/
+  c.whitelist << /switchboard/
+  c.whitelist << /datadog/
+  c.whitelist << /cloudinary/
+end
+Billy.proxy.restore_cache
+
+
+
+
+
+
+
 RSpec.configure do |config|
   # Include a handful of useful helpers we've written
   config.include TestHelpers
@@ -47,6 +86,13 @@ RSpec.configure do |config|
   # examples within a transaction, remove the following line or assign false
   # instead of true.
   config.use_transactional_fixtures = true
+
+  config.around(:each, :vcr) do |example|
+    vcr_metadata = example.metadata.dig(:vcr)
+    VCR.use_cassette(vcr_metadata[:name], record: vcr_metadata[:record]) do
+      example.call
+    end
+  end
 
   # You can uncomment this line to turn off ActiveRecord support entirely.
   # config.use_active_record = false

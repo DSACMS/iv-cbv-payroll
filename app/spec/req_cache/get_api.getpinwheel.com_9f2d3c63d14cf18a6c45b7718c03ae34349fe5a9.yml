@@ -1,0 +1,18 @@
+---
+:scope:
+:url: https://api.getpinwheel.com/v1/link/ui/step_result/?date=1744148821056
+:body: ''
+:status: 200
+:method: get
+:headers:
+  Date: Tue, 08 Apr 2025 21:47:02 GMT
+  Content-Type: application/json
+  Content-Length: '749'
+  Connection: close
+  server: TI-84
+  access-control-allow-origin: "*"
+  access-control-allow-credentials: 'true'
+  x-pinwheel-request-id: 42c2d2e7-4368-42cb-bbce-9e657bc993a3
+  strict-transport-security: max-age=31536000; includeSubDomains;
+:content: '{"data":{"response_type":"next","template":{"template_type":"form","fields":[{"key":"username","field_type":"text","field_subtype":"plaintext","label":"Username","locked_field":false,"min_length":null,"max_length":null,"pattern":null,"placeholder":null,"options":null,"payload":null,"hint":null,"initial_value":null,"should_obfuscate":false},{"key":"password","field_type":"text","field_subtype":"password","label":"Password","locked_field":false,"min_length":null,"max_length":null,"pattern":null,"placeholder":null,"options":null,"payload":null,"hint":null,"initial_value":null,"should_obfuscate":true}],"title":"Log
+  into your payroll account","subtitle":"Enter your login credentials to continue","text_list":[],"actions":[],"button_text":null}}}'

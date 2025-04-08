@@ -1,0 +1,350 @@
+---
+http_interactions:
+- request:
+    method: delete
+    uri: https://sandbox.getpinwheel.com/v1/webhooks/39b1409e-7c96-49a5-9121-c8c817be51fc
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Content-Type:
+      - application/json
+      Pinwheel-Version:
+      - '2023-11-22'
+      X-Api-Secret:
+      - "<SANDBOX_SECRET_TOKEN>"
+      User-Agent:
+      - Faraday v2.9.2
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Accept:
+      - "*/*"
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Date:
+      - Tue, 08 Apr 2025 22:16:59 GMT
+      Content-Type:
+      - application/json
+      Content-Length:
+      - '2'
+      Connection:
+      - keep-alive
+      Server:
+      - uvicorn
+      Pinwheel-Version:
+      - '2023-11-22'
+      Content-Security-Policy:
+      - frame-ancestors 'none'
+      Strict-Transport-Security:
+      - max-age=31536000; includeSubDomains;
+      X-Pinwheel-Request-Id:
+      - 06bc898a-8dcd-4407-becc-3ab23ed5dd5f
+    body:
+      encoding: UTF-8
+      string: "{}"
+  recorded_at: Tue, 08 Apr 2025 22:16:59 GMT
+- request:
+    method: get
+    uri: https://sandbox.getpinwheel.com/v1/webhooks
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Content-Type:
+      - application/json
+      Pinwheel-Version:
+      - '2023-11-22'
+      X-Api-Secret:
+      - "<SANDBOX_SECRET_TOKEN>"
+      User-Agent:
+      - Faraday v2.9.2
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Accept:
+      - "*/*"
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Date:
+      - Tue, 08 Apr 2025 22:21:39 GMT
+      Content-Type:
+      - application/json
+      Content-Length:
+      - '3356'
+      Connection:
+      - keep-alive
+      Server:
+      - uvicorn
+      Pinwheel-Version:
+      - '2023-11-22'
+      Content-Security-Policy:
+      - frame-ancestors 'none'
+      Strict-Transport-Security:
+      - max-age=31536000; includeSubDomains;
+      X-Pinwheel-Request-Id:
+      - d175b926-eb97-4ed0-9634-9ea4273d93b3
+    body:
+      encoding: UTF-8
+      string: '{"meta":{"count":8,"next_cursor":null},"data":[{"url":"https://54a2-76-255-28-250.ngrok-free.app/webhooks/pinwheel/events#subscription_name=timmiller","status":"active","enabled_events":["account.added","paystubs.added","paystubs.fully_synced","employment.added","income.added","identity.added"],"version":"2023-11-22","id":"f05849cc-7051-4fd1-98ff-8004cce59c52","created_at":"2025-04-08T21:51:15.195650+00:00","last_updated":"2025-04-08T21:51:15.195650+00:00"},{"url":"https://c991-2600-1700-5135-a000-bc83-478c-d8cd-492f.ngrok-free.app/webhooks/pinwheel/events#subscription_name=daphnegold","status":"active","enabled_events":["account.added","paystubs.added","paystubs.fully_synced","employment.added","income.added","identity.added"],"version":"2023-11-22","id":"45a7136b-b114-4168-ad8c-af83f19e1e1c","created_at":"2025-04-07T17:22:05.125181+00:00","last_updated":"2025-04-07T17:22:05.125181+00:00"},{"url":"https://2db0-136-226-6-90.ngrok-free.app/webhooks/pinwheel/events#subscription_name=cdiggins","status":"active","enabled_events":["account.added","paystubs.added","paystubs.fully_synced","employment.added","income.added","identity.added"],"version":"2023-11-22","id":"dc398791-ff94-40d9-b79f-dfd6c2e87e2a","created_at":"2025-04-04T18:29:31.040814+00:00","last_updated":"2025-04-04T18:29:31.040814+00:00"},{"url":"https://63e1-136-226-18-179.ngrok-free.app/webhooks/pinwheel/events#subscription_name=cb3c","status":"active","enabled_events":["account.added","paystubs.added","paystubs.fully_synced","employment.added","income.added","identity.added"],"version":"2023-11-22","id":"9f86d34f-2037-4aa2-a7e7-5e33543763f1","created_at":"2025-04-04T01:08:06.918130+00:00","last_updated":"2025-04-04T01:08:06.918130+00:00"},{"url":"https://848c-24-6-157-50.ngrok-free.app/webhooks/pinwheel/events#subscription_name=tdooner","status":"active","enabled_events":["account.added","paystubs.added","paystubs.fully_synced","employment.added","income.added","identity.added"],"version":"2023-11-22","id":"bbc7cb5f-dbe4-458e-9231-e6682a7c9e46","created_at":"2025-04-03T22:27:11.530522+00:00","last_updated":"2025-04-03T22:27:11.530522+00:00"},{"url":"https://848b-107-5-204-44.ngrok-free.app/webhooks/pinwheel/events#subscription_name=georgebyers","status":"active","enabled_events":["account.added","paystubs.added","paystubs.fully_synced","employment.added","income.added","identity.added"],"version":"2023-11-22","id":"b9b44900-b551-457a-bc6d-cbc53035b3c9","created_at":"2025-03-26T21:05:59.548737+00:00","last_updated":"2025-03-26T21:05:59.548737+00:00"},{"url":"https://verify-demo.navapbc.cloud/webhooks/pinwheel/events#subscription_name=DEMO","status":"active","enabled_events":["account.added","paystubs.added","paystubs.fully_synced","employment.added","income.added","identity.added"],"version":"2023-11-22","id":"70c82b8a-df85-49d9-9550-13a531432634","created_at":"2024-08-28T16:05:16.714531+00:00","last_updated":"2024-08-28T16:05:16.714531+00:00"},{"url":"https://snap-income-pilot.com/webhooks/pinwheel/events#subscription_name=DEMO","status":"active","enabled_events":["account.added","paystubs.added","paystubs.fully_synced","employment.added","income.added","identity.added"],"version":"2023-11-22","id":"13098bf4-2e60-4dbd-a7c3-522c696d385c","created_at":"2024-08-26T21:13:40.296166+00:00","last_updated":"2024-08-26T21:13:40.296166+00:00"}]}'
+  recorded_at: Tue, 08 Apr 2025 22:21:39 GMT
+- request:
+    method: post
+    uri: https://sandbox.getpinwheel.com/v1/webhooks
+    body:
+      encoding: UTF-8
+      string: '{"enabled_events":["account.added","paystubs.added","paystubs.fully_synced","employment.added","income.added","identity.added"],"url":"https://8e1d-174-174-120-155.ngrok-free.app/webhooks/pinwheel/events#subscription_name=n4fd","status":"active","version":"2023-11-22"}'
+    headers:
+      Content-Type:
+      - application/json
+      Pinwheel-Version:
+      - '2023-11-22'
+      X-Api-Secret:
+      - "<SANDBOX_SECRET_TOKEN>"
+      User-Agent:
+      - Faraday v2.9.2
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Accept:
+      - "*/*"
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Date:
+      - Tue, 08 Apr 2025 22:21:39 GMT
+      Content-Type:
+      - application/json
+      Content-Length:
+      - '420'
+      Connection:
+      - keep-alive
+      Server:
+      - uvicorn
+      Pinwheel-Version:
+      - '2023-11-22'
+      Content-Security-Policy:
+      - frame-ancestors 'none'
+      Strict-Transport-Security:
+      - max-age=31536000; includeSubDomains;
+      X-Pinwheel-Request-Id:
+      - 6d0140c7-3e43-41b9-92a4-37560e739362
+    body:
+      encoding: UTF-8
+      string: '{"data":{"url":"https://8e1d-174-174-120-155.ngrok-free.app/webhooks/pinwheel/events#subscription_name=n4fd","status":"active","enabled_events":["account.added","paystubs.added","paystubs.fully_synced","employment.added","income.added","identity.added"],"version":"2023-11-22","id":"0dd08f63-8cac-4fab-aa25-86a691338be8","created_at":"2025-04-08T22:21:39.898294+00:00","last_updated":"2025-04-08T22:21:39.898294+00:00"}}'
+  recorded_at: Tue, 08 Apr 2025 22:21:39 GMT
+- request:
+    method: get
+    uri: https://sandbox.getpinwheel.com/v1/search?q=foo
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Content-Type:
+      - application/json
+      Pinwheel-Version:
+      - '2023-11-22'
+      X-Api-Secret:
+      - "<SANDBOX_SECRET_TOKEN>"
+      User-Agent:
+      - Faraday v2.9.2
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Accept:
+      - "*/*"
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Date:
+      - Tue, 08 Apr 2025 22:21:44 GMT
+      Content-Type:
+      - application/json
+      Content-Length:
+      - '13366'
+      Connection:
+      - keep-alive
+      Server:
+      - uvicorn
+      Pinwheel-Version:
+      - '2023-11-22'
+      Content-Security-Policy:
+      - frame-ancestors 'none'
+      Strict-Transport-Security:
+      - max-age=31536000; includeSubDomains;
+      X-Pinwheel-Request-Id:
+      - 6192842c-c8a7-49cd-878b-c27084ea96e6
+    body:
+      encoding: UTF-8
+      string: '{"meta":{"count":25},"data":[{"id":"859220e1-1c6b-48bc-8d36-0d2c491dfed0","name":"Foot
+        Locker","platform_type":"payroll","last_updated":"2022-11-01T18:16:46.793247+00:00","logo_url":"https://cdn.getpinwheel.com/assets/employers/logos/Foot%20Locker.svg","supported_jobs":["tax_forms","identity","direct_deposit_switch","paystubs","direct_deposit_allocations","income","company_incomes","employment","shifts"],"fractional_amount_supported":true,"amount_supported":true,"min_amount":null,"max_amount":null,"response_type":"employer","min_percentage":1,"max_percentage":99,"percentage_supported":true},{"id":"5a8cfb92-3373-4e65-b41b-54e821e79671","name":"McKee
+        Foods","platform_type":"payroll","last_updated":"2024-11-07T17:01:54.781450+00:00","logo_url":"https://cdn.getpinwheel.com/assets/employers/logos/McKee%20Foods.png","supported_jobs":["tax_forms","company_employments","company_census","identity","direct_deposit_switch","paystubs","direct_deposit_allocations","income","company_incomes","employment","shifts"],"fractional_amount_supported":false,"amount_supported":true,"min_amount":null,"max_amount":null,"response_type":"employer","min_percentage":1,"max_percentage":99,"percentage_supported":true},{"id":"bc507614-8b07-41b6-a00c-daa0d2890350","name":"Tyson
+        Foods","platform_type":"payroll","last_updated":"2023-08-22T20:06:41.070099+00:00","logo_url":"https://cdn.getpinwheel.com/assets/employers/logos/Tyson%20Foods.png","supported_jobs":["tax_forms","company_employments","company_census","identity","direct_deposit_switch","paystubs","direct_deposit_allocations","income","company_incomes","employment","shifts"],"fractional_amount_supported":true,"amount_supported":true,"min_amount":null,"max_amount":null,"response_type":"employer","min_percentage":1,"max_percentage":99,"percentage_supported":false},{"id":"ccfe6b12-f4ab-449d-af38-78e88bdc432c","name":"Food
+        4 Less","platform_type":"payroll","last_updated":"2023-06-13T16:05:06.555758+00:00","logo_url":null,"supported_jobs":["tax_forms","identity","direct_deposit_switch","paystubs","direct_deposit_allocations","income","company_incomes","employment","shifts"],"fractional_amount_supported":true,"amount_supported":true,"min_amount":null,"max_amount":null,"response_type":"employer","min_percentage":1,"max_percentage":99,"percentage_supported":true},{"id":"ed8e8c70-9650-43dd-bba4-bec9b23b0f32","name":"Food
+        Depot","platform_type":"payroll","last_updated":"2024-11-21T20:24:05.298129+00:00","logo_url":null,"supported_jobs":["tax_forms","identity","paystubs","direct_deposit_switch","direct_deposit_allocations","income","company_incomes","employment","shifts"],"fractional_amount_supported":true,"amount_supported":true,"min_amount":null,"max_amount":null,"response_type":"employer","min_percentage":1,"max_percentage":99,"percentage_supported":true},{"id":"59ed4400-e530-4972-812e-d397efce637a","name":"Food
+        Lion","platform_type":"payroll","last_updated":"2023-09-25T19:27:11.934599+00:00","logo_url":null,"supported_jobs":["tax_forms","identity","direct_deposit_switch","paystubs","direct_deposit_allocations","income","company_incomes","employment","shifts"],"fractional_amount_supported":false,"amount_supported":true,"min_amount":null,"max_amount":null,"response_type":"employer","min_percentage":1,"max_percentage":99,"percentage_supported":false},{"id":"41e23a45-bdf9-47ea-ab94-303c19de7ff2","name":"Foods
+        Co.","platform_type":"payroll","last_updated":"2023-06-13T16:05:06.555758+00:00","logo_url":null,"supported_jobs":["tax_forms","identity","direct_deposit_switch","paystubs","direct_deposit_allocations","income","company_incomes","employment","shifts"],"fractional_amount_supported":true,"amount_supported":true,"min_amount":null,"max_amount":null,"response_type":"employer","min_percentage":1,"max_percentage":99,"percentage_supported":true},{"id":"73fb1dae-7e5f-4e5b-86a0-ace234351439","name":"76
+        Gas Station & Food Mart","platform_type":"payroll","last_updated":"2024-01-16T17:19:29.270713+00:00","logo_url":null,"supported_jobs":["tax_forms","identity","direct_deposit_switch","paystubs","direct_deposit_allocations","income","company_incomes","employment","shifts"],"fractional_amount_supported":true,"amount_supported":true,"min_amount":null,"max_amount":null,"response_type":"employer","min_percentage":1,"max_percentage":99,"percentage_supported":true},{"id":"715486cb-54a4-4f17-a4a8-5466245b7605","name":"AVI
+        Foodsystems","platform_type":"payroll","last_updated":"2024-01-16T17:19:29.270713+00:00","logo_url":null,"supported_jobs":["tax_forms","identity","direct_deposit_switch","paystubs","direct_deposit_allocations","income","company_incomes","employment","shifts"],"fractional_amount_supported":true,"amount_supported":true,"min_amount":null,"max_amount":null,"response_type":"employer","min_percentage":1,"max_percentage":99,"percentage_supported":true},{"id":"8655f036-9b70-4faa-a415-32377fc5cef7","name":"American
+        Dehydrated Foods, LLC","platform_type":"payroll","last_updated":"2024-11-01T15:26:32.374781+00:00","logo_url":null,"supported_jobs":["tax_forms","company_employments","company_census","identity","direct_deposit_switch","paystubs","direct_deposit_allocations","income","company_paystubs","company_incomes","employment","shifts"],"fractional_amount_supported":false,"amount_supported":true,"min_amount":null,"max_amount":null,"response_type":"employer","min_percentage":1,"max_percentage":99,"percentage_supported":true},{"id":"b2ced3e1-b123-4f54-aaf6-03e8c16a19aa","name":"Arla
+        Foods, Inc.","platform_type":"payroll","last_updated":"2025-02-28T20:14:17.143370+00:00","logo_url":null,"supported_jobs":["tax_forms","company_employments","company_census","identity","paystubs","direct_deposit_switch","direct_deposit_allocations","income","company_incomes","employment","shifts"],"fractional_amount_supported":false,"amount_supported":true,"min_amount":null,"max_amount":null,"response_type":"employer","min_percentage":1,"max_percentage":99,"percentage_supported":true},{"id":"260143e7-0866-44cd-a795-0bf9c15ca175","name":"Be
+        Worthy Foods","platform_type":"payroll","last_updated":"2024-01-16T17:19:29.270713+00:00","logo_url":null,"supported_jobs":["tax_forms","company_employments","company_census","identity","direct_deposit_switch","paystubs","direct_deposit_allocations","income","employment","shifts"],"fractional_amount_supported":true,"amount_supported":true,"min_amount":null,"max_amount":null,"response_type":"employer","min_percentage":1,"max_percentage":99,"percentage_supported":false},{"id":"4ae15949-d1f4-40c9-96d2-e12a0996f7ed","name":"Blue
+        Line Foodservice Distribution","platform_type":"payroll","last_updated":"2025-02-13T21:55:20.274906+00:00","logo_url":null,"supported_jobs":["tax_forms","company_employments","company_census","identity","paystubs","direct_deposit_switch","direct_deposit_allocations","income","company_incomes","employment","shifts"],"fractional_amount_supported":false,"amount_supported":true,"min_amount":null,"max_amount":null,"response_type":"employer","min_percentage":1,"max_percentage":99,"percentage_supported":true},{"id":"c1c25cc0-6f0c-428a-8243-d7e28287125f","name":"Border
+        Foods","platform_type":"payroll","last_updated":"2025-03-19T23:19:22.707781+00:00","logo_url":null,"supported_jobs":["tax_forms","identity","direct_deposit_switch","paystubs","direct_deposit_allocations","income","company_incomes","employment","shifts"],"fractional_amount_supported":true,"amount_supported":true,"min_amount":null,"max_amount":null,"response_type":"employer","min_percentage":1,"max_percentage":99,"percentage_supported":true},{"id":"4943e082-dbe7-4732-8c42-9ac16a1e210a","name":"Bottom
+        Dollar Food","platform_type":"payroll","last_updated":"2023-02-16T15:47:02.914404+00:00","logo_url":null,"supported_jobs":["tax_forms","identity","direct_deposit_switch","paystubs","direct_deposit_allocations","income","company_incomes","employment","shifts"],"fractional_amount_supported":false,"amount_supported":true,"min_amount":null,"max_amount":null,"response_type":"employer","min_percentage":1,"max_percentage":99,"percentage_supported":false},{"id":"abba5280-bdbf-47a5-bb2b-a05779641e39","name":"Charter
+        Foods Inc","platform_type":"payroll","last_updated":"2024-11-21T21:21:03.780802+00:00","logo_url":null,"supported_jobs":["tax_forms","company_employments","company_census","identity","direct_deposit_switch","paystubs","direct_deposit_allocations","income","company_incomes","employment","shifts"],"fractional_amount_supported":true,"amount_supported":true,"min_amount":null,"max_amount":null,"response_type":"employer","min_percentage":1,"max_percentage":99,"percentage_supported":false},{"id":"26423a51-f8e4-4e11-9592-1fbcc930be93","name":"Cloverdale
+        Foods Co.","platform_type":"payroll","last_updated":"2025-02-28T20:14:17.143370+00:00","logo_url":null,"supported_jobs":["tax_forms","identity","direct_deposit_switch","paystubs","direct_deposit_allocations","income","company_incomes","employment","shifts"],"fractional_amount_supported":false,"amount_supported":true,"min_amount":null,"max_amount":null,"response_type":"employer","min_percentage":1,"max_percentage":99,"percentage_supported":false},{"id":"3449a450-a3b5-4d56-80c1-c05d447c5e53","name":"ConAgra
+        Foods Packaged Foods","platform_type":"payroll","last_updated":"2025-02-13T22:10:27.819739+00:00","logo_url":null,"supported_jobs":["tax_forms","company_employments","company_census","identity","paystubs","direct_deposit_switch","direct_deposit_allocations","income","company_incomes","employment","shifts"],"fractional_amount_supported":false,"amount_supported":true,"min_amount":null,"max_amount":null,"response_type":"employer","min_percentage":1,"max_percentage":99,"percentage_supported":true},{"id":"35883773-5d90-4d35-8444-f46683231d80","name":"Cotti
+        Foods Corporation","platform_type":"payroll","last_updated":"2024-01-16T17:19:29.270713+00:00","logo_url":null,"supported_jobs":["tax_forms","identity","paystubs","direct_deposit_switch","direct_deposit_allocations","income","company_incomes","employment","shifts"],"fractional_amount_supported":true,"amount_supported":true,"min_amount":null,"max_amount":null,"response_type":"employer","min_percentage":1,"max_percentage":99,"percentage_supported":true},{"id":"014fafe8-03b0-44ca-982e-4b76e9dc0c93","name":"Crocs
+        Footwear","platform_type":"payroll","last_updated":"2024-01-16T17:19:29.270713+00:00","logo_url":null,"supported_jobs":["tax_forms","identity","direct_deposit_switch","paystubs","direct_deposit_allocations","income","company_incomes","employment","shifts"],"fractional_amount_supported":true,"amount_supported":true,"min_amount":null,"max_amount":null,"response_type":"employer","min_percentage":1,"max_percentage":99,"percentage_supported":true},{"id":"cfe01d72-eca9-4fa4-b407-1e00620158ca","name":"DN-Angel
+        Food-Hells Kitchen","platform_type":"payroll","last_updated":"2025-02-13T22:19:46.215106+00:00","logo_url":null,"supported_jobs":["tax_forms","company_employments","company_census","identity","paystubs","direct_deposit_switch","direct_deposit_allocations","income","company_incomes","employment","shifts"],"fractional_amount_supported":false,"amount_supported":true,"min_amount":null,"max_amount":null,"response_type":"employer","min_percentage":1,"max_percentage":99,"percentage_supported":true},{"id":"5d439ed3-ca0d-48af-8cb3-13823d633371","name":"Downs
+        Food Group Inc.","platform_type":"payroll","last_updated":"2025-02-28T20:14:17.143370+00:00","logo_url":null,"supported_jobs":["tax_forms","company_employments","company_census","identity","paystubs","direct_deposit_switch","direct_deposit_allocations","income","company_incomes","employment","shifts"],"fractional_amount_supported":false,"amount_supported":true,"min_amount":null,"max_amount":null,"response_type":"employer","min_percentage":1,"max_percentage":99,"percentage_supported":true},{"id":"c2aa7627-5250-43b4-aaf0-361c9f4e162c","name":"FPL
+        Food LLC","platform_type":"payroll","last_updated":"2024-01-16T17:19:29.270713+00:00","logo_url":null,"supported_jobs":["tax_forms","identity","direct_deposit_switch","paystubs","direct_deposit_allocations","income","company_incomes","employment","shifts"],"fractional_amount_supported":true,"amount_supported":true,"min_amount":null,"max_amount":null,"response_type":"employer","min_percentage":1,"max_percentage":99,"percentage_supported":true},{"id":"c2d92f7d-3c5b-4ba2-b669-650c1f283d86","name":"Fourteen
+        Foods","platform_type":"payroll","last_updated":"2025-03-19T23:19:22.707781+00:00","logo_url":null,"supported_jobs":["tax_forms","identity","direct_deposit_switch","paystubs","direct_deposit_allocations","income","company_incomes","employment","shifts"],"fractional_amount_supported":true,"amount_supported":true,"min_amount":null,"max_amount":null,"response_type":"employer","min_percentage":1,"max_percentage":99,"percentage_supported":true},{"id":"c6159d2f-1fba-4566-b04d-667769776104","name":"Georgia
+        Foods Llc","platform_type":"payroll","last_updated":"2023-10-27T15:06:31.448680+00:00","logo_url":null,"supported_jobs":["tax_forms","identity","paystubs","direct_deposit_switch","direct_deposit_allocations","income","company_incomes","employment","shifts"],"fractional_amount_supported":true,"amount_supported":true,"min_amount":null,"max_amount":null,"response_type":"employer","min_percentage":1,"max_percentage":99,"percentage_supported":true}]}'
+  recorded_at: Tue, 08 Apr 2025 22:21:44 GMT
+- request:
+    method: post
+    uri: https://sandbox.getpinwheel.com/v1/link_tokens
+    body:
+      encoding: UTF-8
+      string: '{"org_name":"SNAP Income Pilot","required_jobs":["paystubs"],"end_user_id":"8bbb654f-79df-444c-b4b6-4c2fdaad3837","skip_intro_screen":true,"language":"en","employer_id":"5a8cfb92-3373-4e65-b41b-54e821e79671"}'
+    headers:
+      Content-Type:
+      - application/json
+      Pinwheel-Version:
+      - '2023-11-22'
+      X-Api-Secret:
+      - "<SANDBOX_SECRET_TOKEN>"
+      User-Agent:
+      - Faraday v2.9.2
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Accept:
+      - "*/*"
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Date:
+      - Tue, 08 Apr 2025 22:21:45 GMT
+      Content-Type:
+      - application/json
+      Content-Length:
+      - '1730'
+      Connection:
+      - keep-alive
+      Server:
+      - uvicorn
+      Pinwheel-Version:
+      - '2023-11-22'
+      Content-Security-Policy:
+      - frame-ancestors 'none'
+      Strict-Transport-Security:
+      - max-age=31536000; includeSubDomains;
+      X-Pinwheel-Request-Id:
+      - b539421e-991d-47d7-8dcc-f61c90cf43b4
+    body:
+      encoding: UTF-8
+      string: '{"data":{"mode":"sandbox","id":"f046f85d-4e91-469d-a061-61cacf4dddd2","token":"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJkYXRhIjp7InJlcXVpcmVkX2pvYnMiOlsicGF5c3R1YnMiXSwib3JnX25hbWUiOiJTTkFQIEluY29tZSBQaWxvdCIsImFsbG9jYXRpb24iOm51bGwsInBsYXRmb3JtX2tleSI6bnVsbCwic2tpcF9pbnRyb19zY3JlZW4iOnRydWUsInNraXBfZXhpdF9zdXJ2ZXkiOmZhbHNlLCJlbXBsb3llcl9pZCI6IjVhOGNmYjkyLTMzNzMtNGU2NS1iNDFiLTU0ZTgyMWU3OTY3MSIsImRpc2FibGVfZGlyZWN0X2RlcG9zaXRfc3BsaXR0aW5nIjpmYWxzZSwicGxhdGZvcm1faWQiOm51bGwsInNraXBfZGVwb3NpdF9jb25maXJtYXRpb24iOm51bGwsInBsYXRmb3JtX3R5cGUiOm51bGwsImxhbmd1YWdlIjoiZW4iLCJlbmRfdXNlcl9pZCI6IjhiYmI2NTRmLTc5ZGYtNDQ0Yy1iNGI2LTRjMmZkYWFkMzgzNyIsImFjY291bnRfaWQiOm51bGwsImRvY3VtZW50X3VwbG9hZHMiOm51bGwsImVuYWJsZV9jYXJkX3N3aXRjaCI6ZmFsc2UsInNtYXJ0X2JyYW5jaCI6bnVsbCwiZW5hYmxlX3VzZXJfaW5wdXRfYmFua19pbmZvIjpmYWxzZSwidGFncyI6bnVsbCwiY29tcGFueV9jb25uZWN0IjpudWxsLCJkZXBvc2l0X2Zvcm1zIjoiZGlzYWJsZWQiLCJlbmRfdXNlciI6bnVsbCwiaGFzX3VzZXJfYXV0aGVudGljYXRpb25fZGF0YSI6ZmFsc2UsImhhc19lbnJfcGlpIjpmYWxzZSwiZW5jcnlwdGVkX2pzb24iOm51bGwsImVuY3J5cHRpb25fZW52ZWxvcGUiOm51bGwsImVuYWJsZV9iaWxsX25hdmlnYXRvciI6ZmFsc2UsImNhcmRzIjpudWxsLCJtaXNzaW5nX3VzZXJfYXV0aGVudGljYXRpb25fZmllbGRzIjpudWxsLCJlbmFibGVfc2VsZl9pZCI6ZmFsc2UsIm1vZGUiOiJzYW5kYm94IiwiYXBpX2tleSI6IjIwYzQ0ZmIwNGQyNjVkMjJmZDdkOGFjY2M2NTlmMDBhY2NiZjBiMjBmZmNjYjc0NGIzOTQ4OTUyMDc3Nzk2MWMiLCJ0b2tlbl9pZCI6ImYwNDZmODVkLTRlOTEtNDY5ZC1hMDYxLTYxY2FjZjRkZGRkMiIsImpvYiI6InBheXN0dWJzIiwiX3VpZCI6IjcyNTY0NzZhLWU1YmEtNGVkZS04NTdhLWJkODQ4MjkyZmU4NyIsIndvcmtzcGFjZV9uYW1lIjoiTmF2YSBQQkMiLCJ3b3Jrc3BhY2VfdHlwZSI6ImNsaWVudCIsImhvbWVyX3VybCI6bnVsbH0sImlhdCI6MTc0NDE1MDkwNSwiZXhwIjoxNzQ0MTU0NTA1fQ.5hKT9KkpC_FA0zaGD2EoUaJvzmvtp0iS4uR67vfNoEo","smart_branch_url":null,"expires":"2025-04-08T23:21:45.169408+00:00"}}'
+  recorded_at: Tue, 08 Apr 2025 22:21:45 GMT
+- request:
+    method: get
+    uri: https://sandbox.getpinwheel.com/v1/platforms/5965580e-380f-4b86-8a8a-7278c77f73cb
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Content-Type:
+      - application/json
+      Pinwheel-Version:
+      - '2023-11-22'
+      X-Api-Secret:
+      - "<SANDBOX_SECRET_TOKEN>"
+      User-Agent:
+      - Faraday v2.9.2
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Accept:
+      - "*/*"
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Date:
+      - Tue, 08 Apr 2025 22:21:48 GMT
+      Content-Type:
+      - application/json
+      Content-Length:
+      - '576'
+      Connection:
+      - keep-alive
+      Server:
+      - uvicorn
+      Pinwheel-Version:
+      - '2023-11-22'
+      Content-Security-Policy:
+      - frame-ancestors 'none'
+      Strict-Transport-Security:
+      - max-age=31536000; includeSubDomains;
+      X-Pinwheel-Request-Id:
+      - dd194731-9b2f-429f-9595-6282782b4683
+    body:
+      encoding: UTF-8
+      string: '{"data":{"id":"5965580e-380f-4b86-8a8a-7278c77f73cb","name":"Workday","type":"payroll","fractional_amount_supported":false,"min_amount":null,"max_amount":null,"last_updated":"2024-10-04T21:31:31.481595+00:00","logo_url":"https://cdn.getpinwheel.com/assets/platforms/logos/search/cfmpw.png","percentage_supported":true,"min_percentage":1,"max_percentage":99,"supported_jobs":["company_census","employment","shifts","paystubs","direct_deposit_allocations","tax_forms","direct_deposit_switch","income","identity","company_employments","company_incomes"],"amount_supported":true}}'
+  recorded_at: Tue, 08 Apr 2025 22:21:48 GMT
+- request:
+    method: delete
+    uri: https://sandbox.getpinwheel.com/v1/webhooks/0dd08f63-8cac-4fab-aa25-86a691338be8
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Content-Type:
+      - application/json
+      Pinwheel-Version:
+      - '2023-11-22'
+      X-Api-Secret:
+      - "<SANDBOX_SECRET_TOKEN>"
+      User-Agent:
+      - Faraday v2.9.2
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Accept:
+      - "*/*"
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Date:
+      - Tue, 08 Apr 2025 22:21:49 GMT
+      Content-Type:
+      - application/json
+      Content-Length:
+      - '2'
+      Connection:
+      - keep-alive
+      Server:
+      - uvicorn
+      Pinwheel-Version:
+      - '2023-11-22'
+      Content-Security-Policy:
+      - frame-ancestors 'none'
+      Strict-Transport-Security:
+      - max-age=31536000; includeSubDomains;
+      X-Pinwheel-Request-Id:
+      - 38bdf08d-bdd8-477a-bccb-198cb1a53f12
+    body:
+      encoding: UTF-8
+      string: "{}"
+  recorded_at: Tue, 08 Apr 2025 22:21:49 GMT
+recorded_with: VCR 6.3.1
