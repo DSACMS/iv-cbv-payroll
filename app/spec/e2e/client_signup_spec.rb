@@ -1,7 +1,6 @@
 require 'rails_helper'
 
 RSpec.describe 'User Steps through signing up', type: :system do
-
   before do
     driven_by(:selenium_chrome_headless) # Change to :selenium_chrome if you want to see the browser
     WebMock.disable_net_connect!(allow_localhost: true)

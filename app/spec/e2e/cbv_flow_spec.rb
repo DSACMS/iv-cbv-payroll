@@ -85,5 +85,4 @@ RSpec.describe "e2e CBV flow test", type: :feature, js: true do
 
     # TODO: Test PDF rendering by writing it to a file
   end
-
 end
