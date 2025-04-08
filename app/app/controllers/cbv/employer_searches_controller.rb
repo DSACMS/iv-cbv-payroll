@@ -1,7 +1,7 @@
 class Cbv::EmployerSearchesController < Cbv::BaseController
   # Disable CSP since Pinwheel relies on inline styles
   content_security_policy false, only: :show
-  before_action :check_pinwheel_initialization
+  before_action :check_webhooks_initialization_in_development
   after_action :track_accessed_search_event, only: :show
   after_action :track_applicant_searched_event, only: :show
 
@@ -21,11 +21,11 @@ class Cbv::EmployerSearchesController < Cbv::BaseController
 
   private
 
-  def check_pinwheel_initialization
+  def check_webhooks_initialization_in_development
     return unless Rails.env.development?
 
-    if Rails.application.config.pinwheel_initialization_error
-      flash.now[:alert] = "Unable to initialize Pinwheel: #{Rails.application.config.pinwheel_initialization_error}"
+    if Rails.application.config.webhooks_initialization_error
+      flash.now[:alert] = "Unable to initialize Pinwheel or Argyle webhooks: #{Rails.application.config.webhooks_initialization_error}"
     end
   end
 
@@ -42,6 +42,7 @@ class Cbv::EmployerSearchesController < Cbv::BaseController
       timestamp: Time.now.to_i,
       cbv_applicant_id: @cbv_flow.cbv_applicant_id,
       cbv_flow_id: @cbv_flow.id,
+      client_agency_id: current_agency&.id,
       invitation_id: @cbv_flow.cbv_flow_invitation_id
     })
   rescue => ex
@@ -53,6 +54,7 @@ class Cbv::EmployerSearchesController < Cbv::BaseController
       timestamp: Time.now.to_i,
       cbv_applicant_id: @cbv_flow.cbv_applicant_id,
       cbv_flow_id: @cbv_flow.id,
+      client_agency_id: current_agency&.id,
       invitation_id: @cbv_flow.cbv_flow_invitation_id
     })
   rescue => ex
@@ -66,6 +68,7 @@ class Cbv::EmployerSearchesController < Cbv::BaseController
       timestamp: Time.now.to_i,
       cbv_applicant_id: @cbv_flow.cbv_applicant_id,
       cbv_flow_id: @cbv_flow.id,
+      client_agency_id: current_agency&.id,
       invitation_id: @cbv_flow.cbv_flow_invitation_id
     })
   rescue => ex
@@ -79,6 +82,7 @@ class Cbv::EmployerSearchesController < Cbv::BaseController
       timestamp: Time.now.to_i,
       cbv_applicant_id: @cbv_flow.cbv_applicant_id,
       cbv_flow_id: @cbv_flow.id,
+      client_agency_id: current_agency&.id,
       invitation_id: @cbv_flow.cbv_flow_invitation_id,
       num_results: @employers.length,
       has_payroll_account: @has_payroll_account,
