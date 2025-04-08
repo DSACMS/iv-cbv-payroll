@@ -4,13 +4,16 @@ RSpec.describe Aggregators::AggregatorReports::ArgyleReport, type: :service do
   include ArgyleApiHelper
   include Aggregators::ResponseObjects
   let(:account) { "abc123" }
+  let!(:payroll_account) do
+    create(:payroll_account, :argyle_fully_synced, pinwheel_account_id: account)
+  end
   let(:from_date) { "2021-01-01" }
   let(:to_date) { "2021-03-31" }
   let(:argyle_service) { Aggregators::Sdk::ArgyleService.new(:sandbox) }
 
   describe '#fetch_report_data' do
     context "bob, a W-2 employee" do
-      let(:argyle_report) { Aggregators::AggregatorReports::ArgyleReport.new(payroll_accounts: [ account ], argyle_service: argyle_service, from_date: from_date, to_date: to_date) }
+      let(:argyle_report) { Aggregators::AggregatorReports::ArgyleReport.new(payroll_accounts: [ payroll_account ], argyle_service: argyle_service, from_date: from_date, to_date: to_date) }
       before do
         allow(argyle_service).to receive(:fetch_identities_api).and_return(argyle_load_relative_json_file("bob", "request_identity.json"))
         allow(argyle_service).to receive(:fetch_paystubs_api).and_return(argyle_load_relative_json_file("bob", "request_paystubs.json"))
@@ -54,7 +57,9 @@ RSpec.describe Aggregators::AggregatorReports::ArgyleReport, type: :service do
       end
     end
     context "joe, a W-2 employee" do
-      let(:argyle_report) { Aggregators::AggregatorReports::ArgyleReport.new(payroll_accounts: [ account ], argyle_service: argyle_service, from_date: from_date, to_date: to_date) }
+      let(:argyle_report) { Aggregators::AggregatorReports::ArgyleReport.new(payroll_accounts: [ payroll_account ],
+                                                                             argyle_service: argyle_service,
+                                                                             from_date: from_date, to_date: to_date) }
       before do
         allow(argyle_service).to receive(:fetch_identities_api).and_return(argyle_load_relative_json_file("joe", "request_identity.json"))
         allow(argyle_service).to receive(:fetch_paystubs_api).and_return(argyle_load_relative_json_file("joe", "request_paystubs.json"))
