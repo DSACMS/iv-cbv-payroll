@@ -42,6 +42,7 @@ class Cbv::EmployerSearchesController < Cbv::BaseController
       timestamp: Time.now.to_i,
       cbv_applicant_id: @cbv_flow.cbv_applicant_id,
       cbv_flow_id: @cbv_flow.id,
+      client_agency_id: current_agency&.id,
       invitation_id: @cbv_flow.cbv_flow_invitation_id
     })
   rescue => ex
@@ -53,6 +54,7 @@ class Cbv::EmployerSearchesController < Cbv::BaseController
       timestamp: Time.now.to_i,
       cbv_applicant_id: @cbv_flow.cbv_applicant_id,
       cbv_flow_id: @cbv_flow.id,
+      client_agency_id: current_agency&.id,
       invitation_id: @cbv_flow.cbv_flow_invitation_id
     })
   rescue => ex
@@ -66,6 +68,7 @@ class Cbv::EmployerSearchesController < Cbv::BaseController
       timestamp: Time.now.to_i,
       cbv_applicant_id: @cbv_flow.cbv_applicant_id,
       cbv_flow_id: @cbv_flow.id,
+      client_agency_id: current_agency&.id,
       invitation_id: @cbv_flow.cbv_flow_invitation_id
     })
   rescue => ex
@@ -79,6 +82,7 @@ class Cbv::EmployerSearchesController < Cbv::BaseController
       timestamp: Time.now.to_i,
       cbv_applicant_id: @cbv_flow.cbv_applicant_id,
       cbv_flow_id: @cbv_flow.id,
+      client_agency_id: current_agency&.id,
       invitation_id: @cbv_flow.cbv_flow_invitation_id,
       num_results: @employers.length,
       has_payroll_account: @has_payroll_account,
