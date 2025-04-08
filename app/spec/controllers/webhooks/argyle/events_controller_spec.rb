@@ -104,8 +104,12 @@ RSpec.describe Webhooks::Argyle::EventsController, type: :controller do
       let(:fake_event_logger) { instance_double(GenericEventTracker) }
 
       before do
-        argyle_stub_request_identities_response('bob')
-        argyle_stub_request_paystubs_response('bob')
+        allow_any_instance_of(Aggregators::Sdk::ArgyleService)
+          .to receive(:fetch_identities_api)
+          .and_return(argyle_load_relative_json_file("sarah", "request_identity.json"))
+        allow_any_instance_of(Aggregators::Sdk::ArgyleService)
+          .to receive(:fetch_paystubs_api)
+          .and_return(argyle_load_relative_json_file("sarah", "request_paystubs.json"))
         allow(controller).to receive(:event_logger).and_return(fake_event_logger)
         allow(fake_event_logger).to receive(:track)
       end
@@ -154,7 +158,7 @@ RSpec.describe Webhooks::Argyle::EventsController, type: :controller do
             identity_supported: true,
             identity_count: 1,
             identity_full_name_present: true,
-            identity_full_name_length: 9,
+            identity_full_name_length: 15,
             identity_date_of_birth_present: true,
             identity_ssn_present: true,
             identity_emails_count: 1,
@@ -163,26 +167,32 @@ RSpec.describe Webhooks::Argyle::EventsController, type: :controller do
             # Income fields
             income_success: true,
             income_supported: true,
-            income_compensation_amount_present: false,
-            income_compensation_unit_present: false,
-            income_pay_frequency_present: false,
+            income_compensation_amount_present: true,
+            income_compensation_unit_present: true,
+            income_pay_frequency_present: true,
 
             # Paystubs fields
             paystubs_success: true,
             paystubs_supported: true,
             paystubs_count: 10,
-            paystubs_deductions_count: 0,
-            paystubs_hours_by_earning_category_count: 0,
-            paystubs_hours_present: false,
+            paystubs_deductions_count: 16,
+            paystubs_hours_by_earning_category_count: 10,
+            paystubs_hours_present: true,
+            paystubs_earnings_count: 33,
+            paystubs_earnings_with_hours_count: 10,
+            paystubs_earnings_type_base_count: 10,
+            paystubs_earnings_type_bonus_count: 10,
+            paystubs_earnings_type_overtime_count: 5,
+            paystubs_earnings_type_commission_count: 8,
 
             # Employment fields
             employment_success: true,
             employment_supported: true,
             employment_status: "employed",
-            employment_employer_name: "Lyft Driver",
-            employment_employer_address_present: nil,
+            employment_employer_name: "Whole Foods",
+            employment_employer_address_present: true,
             employment_employer_phone_number_present: true,
-            employment_start_date: "2022-04-07",
+            employment_start_date: "2022-08-08",
             employment_termination_date: nil,
 
             # Gigs fields

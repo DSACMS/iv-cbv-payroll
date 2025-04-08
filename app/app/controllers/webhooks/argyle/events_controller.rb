@@ -131,6 +131,12 @@ class Webhooks::Argyle::EventsController < ApplicationController
         paystubs_deductions_count: report.paystubs.sum { |p| p.deductions.length },
         paystubs_hours_by_earning_category_count: report.paystubs.sum { |p| p.hours_by_earning_category.length },
         paystubs_hours_present: report.paystubs.first&.hours.present?,
+        paystubs_earnings_count: report.paystubs.sum { |p| p.earnings.length },
+        paystubs_earnings_with_hours_count: report.paystubs.sum { |p| p.earnings.count { |e| e.hours.present? } },
+        paystubs_earnings_type_base_count: report.paystubs.sum { |p| p.earnings.count { |e| e.category == "base" } },
+        paystubs_earnings_type_bonus_count: report.paystubs.sum { |p| p.earnings.count { |e| e.category == "bonus" } },
+        paystubs_earnings_type_overtime_count: report.paystubs.sum { |p| p.earnings.count { |e| e.category == "overtime" } },
+        paystubs_earnings_type_commission_count: report.paystubs.sum { |p| p.earnings.count { |e| e.category == "commission" } },
 
         # Employment fields (originally from "identities" endpoint)
         employment_success: @payroll_account.job_succeeded?("employment"),
@@ -145,7 +151,7 @@ class Webhooks::Argyle::EventsController < ApplicationController
         # Gigs fields
         gigs_success: @payroll_account.job_succeeded?("gigs"),
         gigs_supported: @payroll_account.supported_jobs.include?("gigs")
-        # TODO: Add gig fields
+        # TODO: Add fields from /gigs after FFS-2575.
       })
     end
   rescue => ex

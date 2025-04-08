@@ -99,6 +99,11 @@ class Webhooks::Pinwheel::EventsController < ApplicationController
         paystubs_deductions_count: report.paystubs.sum { |p| p.deductions.length },
         paystubs_hours_by_earning_category_count: report.paystubs.sum { |p| p.hours_by_earning_category.length },
         paystubs_hours_present: report.paystubs.first&.hours.present?,
+        paystubs_earnings_count: report.paystubs.sum { |p| p.earnings.length },
+        paystubs_earnings_with_hours_count: report.paystubs.sum { |p| p.earnings.count { |e| e.hours.present? } },
+        paystubs_earnings_category_salary_count: report.paystubs.sum { |p| p.earnings.count { |e| e.category == "salary" } },
+        paystubs_earnings_category_bonus_count: report.paystubs.sum { |p| p.earnings.count { |e| e.category == "bonus" } },
+        paystubs_earnings_category_overtime_count: report.paystubs.sum { |p| p.earnings.count { |e| e.category == "overtime" } },
 
         # Employment fields
         employment_success: @payroll_account.job_succeeded?("employment"),
@@ -110,7 +115,7 @@ class Webhooks::Pinwheel::EventsController < ApplicationController
         employment_start_date: report.employments.first&.start_date,
         employment_termination_date: report.employments.first&.termination_date
 
-        # TODO: Add fields from /shifts
+        # TODO: Add fields from /shifts after FFS-2550.
       })
     end
   rescue => ex

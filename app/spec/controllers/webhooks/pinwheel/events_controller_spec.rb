@@ -133,6 +133,7 @@ RSpec.describe Webhooks::Pinwheel::EventsController do
               cbv_flow_id: cbv_flow.id,
               cbv_applicant_id: cbv_flow.cbv_applicant_id,
               invitation_id: cbv_flow.cbv_flow_invitation_id,
+              client_agency_id: "sandbox",
               sync_duration_seconds: within(1.second).of(5.minutes),
 
               # Identity fields
@@ -160,6 +161,11 @@ RSpec.describe Webhooks::Pinwheel::EventsController do
               paystubs_deductions_count: 6,
               paystubs_hours_by_earning_category_count: 2,
               paystubs_hours_present: true,
+              paystubs_earnings_count: 4,
+              paystubs_earnings_with_hours_count: 2,
+              paystubs_earnings_category_salary_count: 2,
+              paystubs_earnings_category_bonus_count: 2,
+              paystubs_earnings_category_overtime_count: 0,
 
               # Employment fields
               employment_success: true,
