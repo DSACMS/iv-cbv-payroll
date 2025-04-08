@@ -103,7 +103,7 @@ RSpec.describe Aggregators::AggregatorReports::ArgyleReport, type: :service do
           start_date: "2025-03-05",
           end_date: "2025-03-05",
           compensation_category: "work",
-          compensation_amount: 10.24,
+          compensation_amount: 1024,
           compensation_unit: "USD"
         )
         expect(argyle_report.gigs[3]).to have_attributes(
@@ -114,7 +114,7 @@ RSpec.describe Aggregators::AggregatorReports::ArgyleReport, type: :service do
           start_date: "2025-03-05",
           end_date: "2025-03-05",
           compensation_category: "work",
-          compensation_amount: 19.45,
+          compensation_amount: 1945,
           compensation_unit: "USD"
         )
       end
