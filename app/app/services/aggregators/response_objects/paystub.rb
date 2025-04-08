@@ -24,12 +24,7 @@ module Aggregators::ResponseObjects
         pay_date: response_body["pay_date"],
         hours: Aggregators::FormatMethods::Pinwheel.hours(response_body["earnings"]),
         hours_by_earning_category: Aggregators::FormatMethods::Pinwheel.hours_by_earning_category(response_body["earnings"]),
-        deductions: response_body["deductions"].map do |deduction|
-          OpenStruct.new(
-            category: deduction["category"],
-            amount: deduction["amount"],
-          )
-        end,
+        deductions: Aggregators::FormatMethods::Pinwheel.format_deductions(response_body["deductions"]),
       )
     end
 
@@ -39,18 +34,26 @@ module Aggregators::ResponseObjects
         gross_pay_amount: Aggregators::FormatMethods::Argyle.format_currency(response_body["gross_pay"]),
         net_pay_amount: Aggregators::FormatMethods::Argyle.format_currency(response_body["net_pay"]),
         gross_pay_ytd: Aggregators::FormatMethods::Argyle.format_currency(response_body["gross_pay_ytd"]),
-        pay_period_start: Aggregators::FormatMethods::Argyle.format_date(response_body["paystub_period"]["start_date"]),
-        pay_period_end: Aggregators::FormatMethods::Argyle.format_date(response_body["paystub_period"]["end_date"]),
+        pay_period_start: Aggregators::FormatMethods::Argyle.format_date(response_body.dig("paystub_period", "start_date")),
+        pay_period_end: Aggregators::FormatMethods::Argyle.format_date(response_body.dig("paystub_period", "end_date")),
         pay_date: Aggregators::FormatMethods::Argyle.format_date(response_body["paystub_date"]),
         hours: response_body["hours"],
         hours_by_earning_category: Aggregators::FormatMethods::Argyle.hours_by_earning_category(response_body["gross_pay_list"]),
-        deductions: response_body["deduction_list"].map do |deduction|
-          OpenStruct.new(
-            category: deduction["name"],
-            amount: Aggregators::FormatMethods::Argyle.format_currency(deduction["amount"]),
-          )
-        end,
+        deductions: Aggregators::FormatMethods::Argyle.format_deductions(response_body["deduction_list"])
       )
+    end
+
+    def earnings_meet_requirements?
+      true
+    end
+
+    def meets_requirements?
+      self.pay_date.present? &&
+      self.pay_period_start.present? &&
+      self.pay_period_end.present? &&
+      self.gross_pay_amount.present? &&
+      self.hours.present? &&
+      self.earnings_meet_requirements?
     end
 
     alias_attribute :start, :pay_period_start

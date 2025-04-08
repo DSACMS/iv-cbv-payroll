@@ -31,5 +31,9 @@ module Aggregators::ResponseObjects
         status: Aggregators::FormatMethods::Argyle.format_employment_status(identity_response_body["employment_status"]),
       )
     end
+
+    def meets_requirements?
+      self.employer_name.present?
+    end
   end
 end

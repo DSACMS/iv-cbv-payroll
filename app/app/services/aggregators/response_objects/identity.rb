@@ -18,5 +18,9 @@ module Aggregators::ResponseObjects
         full_name: identity_response_body["full_name"],
       )
     end
+
+    def meets_requirements?
+      self.full_name.present?
+    end
   end
 end

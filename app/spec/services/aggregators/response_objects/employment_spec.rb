@@ -23,6 +23,29 @@ RSpec.describe Aggregators::ResponseObjects::Employment do
       expect(employment.status).to eq("active")
       expect(employment.employer_phone_number).to eq("123-456-7890")
       expect(employment.employer_address).to eq("123 Main St, Anytown, USA")
+      expect(employment.meets_requirements?).to eq(true)
+    end
+
+    describe '#.meets_requirements?' do
+      it('meets requirements with all attributes') do
+        employment = described_class.from_pinwheel(pinwheel_response)
+        expect(employment.meets_requirements?).to eq(true)
+      end
+
+      it('meets requirements with minimum defined attributes') do
+        employment = described_class.from_pinwheel({ "employer_name" => "Acme Corp" })
+        expect(employment.meets_requirements?).to eq(true)
+      end
+
+      it('does not meet requirements with no attributes') do
+        employment = described_class.from_pinwheel({})
+        expect(employment.meets_requirements?).to eq(false)
+      end
+
+      it('does not meet requirements with blank attributes') do
+        employment = described_class.from_pinwheel({ "employer_name" => "" })
+        expect(employment.meets_requirements?).to eq(false)
+      end
     end
   end
 
@@ -43,6 +66,28 @@ RSpec.describe Aggregators::ResponseObjects::Employment do
       expect(employment.start_date).to eq("2019-01-01")
       expect(employment.termination_date).to eq("2020-01-01")
       expect(employment.status).to eq("employed")
+    end
+
+    describe '#.meets_requirements? for minimum reporting requirements' do
+      it('meets requirements with all defined attributes') do
+        employment = described_class.from_argyle(argyle_response)
+        expect(employment.meets_requirements?).to eq(true)
+      end
+
+      it('meets requirements with minimum defined attributes') do
+        employment = described_class.from_argyle({ "employer" => "Acme Corp" })
+        expect(employment.meets_requirements?).to eq(true)
+      end
+
+      it('does not meet requirements when no attributes defined') do
+        employment = described_class.from_argyle({})
+        expect(employment.meets_requirements?).to eq(false)
+      end
+
+      it('does not meet requirements with attributes defined as empty') do
+        employment = described_class.from_argyle({ "employer" => "" })
+        expect(employment.meets_requirements?).to eq(false)
+      end
     end
   end
 end

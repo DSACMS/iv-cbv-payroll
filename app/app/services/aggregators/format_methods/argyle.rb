@@ -15,7 +15,7 @@ module Aggregators::FormatMethods::Argyle
   end
 
   def self.format_date(date)
-    return unless date
+    return unless date.present?
 
     DateTime.parse(date).strftime("%Y-%m-%d")
   end
@@ -26,9 +26,20 @@ module Aggregators::FormatMethods::Argyle
   end
 
   def self.hours_by_earning_category(gross_pay_list)
+    return unless  gross_pay_list.kind_of? Array
     gross_pay_list
        .filter { |e| e["hours"].present? }
        .group_by { |e| e["type"] }
        .transform_values { |earnings| earnings.sum { |e| e["hours"].to_f } }
+  end
+
+  def self.format_deductions(deductions_list)
+    return unless  deductions_list.kind_of? Array
+    deductions_list.map do |deduction|
+      OpenStruct.new(
+        category: deduction["name"],
+        amount: Aggregators::FormatMethods::Argyle.format_currency(deduction["amount"]),
+        )
+    end
   end
 end

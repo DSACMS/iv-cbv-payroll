@@ -11,7 +11,9 @@ RSpec.describe Aggregators::ResponseObjects::Paystub, type: :model do
           "pay_period_start" => "2023-01-01",
           "pay_period_end" => "2023-01-15",
           "pay_date" => "2023-01-20",
-          "earnings" => [],
+          "earnings" => [
+            { "category" => "base", "amount" => 1500.89, "hours" => 42 }
+          ],
           "deductions" => [
             { "category" => "tax", "amount" => 500.89 },
             { "category" => "insurance", "amount" => 100.12 }
@@ -34,6 +36,24 @@ RSpec.describe Aggregators::ResponseObjects::Paystub, type: :model do
       expect(paystub.deductions.first.category).to eq("tax")
       expect(paystub.deductions.first.amount).to eq(500.89)
     end
+
+    describe '#.meets_requirements?' do
+      it('meets requirements with all attributes') do
+        paystub = described_class.from_pinwheel(pinwheel_response)
+        expect(paystub.meets_requirements?).to eq(true)
+      end
+
+      it('does not meet requirements with no attributes') do
+        paystub = described_class.from_pinwheel({})
+        expect(paystub.meets_requirements?).to eq(false)
+      end
+
+      it('does not meet requirements with blank attributes') do
+        pinwheel_response["pay_date"] = ""
+        paystub = described_class.from_pinwheel(pinwheel_response)
+        expect(paystub.meets_requirements?).to eq(false)
+      end
+    end
   end
 
   describe '.from_argyle' do
@@ -46,7 +66,19 @@ RSpec.describe Aggregators::ResponseObjects::Paystub, type: :model do
           "paystub_period" => { "start_date" => "2023-01-01", "end_date" => "2023-01-15" },
           "paystub_date" => "2023-01-20",
           "hours" => 80,
-          "gross_pay_list" => [],
+          "gross_pay_list" => [
+            {
+              "name": "Regular",
+              "type": "base",
+              "start_date": "2025-01-27",
+              "end_date": "2025-02-24",
+              "rate": "59.1067",
+              "hours": "92.9177",
+              "amount": "5492.06",
+              "hours_ytd": "429.8200",
+              "amount_ytd": "16476.18"
+            }
+          ],
           "deduction_list" => [
             { "name" => "tax", "amount" => "600.90" },
             { "name" => "insurance", "amount" => "120.34" }
@@ -66,6 +98,24 @@ RSpec.describe Aggregators::ResponseObjects::Paystub, type: :model do
       expect(paystub.deductions.size).to eq(2)
       expect(paystub.deductions.first.category).to eq("tax")
       expect(paystub.deductions.first.amount).to eq(600.90)
+    end
+
+    describe '#.meets_requirements?' do
+      it("meets requirements with all attributes") do
+        paystub = described_class.from_argyle(argyle_response)
+        expect(paystub.meets_requirements?).to eq(true)
+      end
+
+      it('does not meet requirements with no attributes') do
+        paystub = described_class.from_argyle({})
+        expect(paystub.meets_requirements?).to eq(false)
+      end
+
+      it('does not meet requirements with blank attributes') do
+        argyle_response["paystub_date"] = ""
+        paystub = described_class.from_argyle(argyle_response)
+        expect(paystub.meets_requirements?).to eq(false)
+      end
     end
   end
 end

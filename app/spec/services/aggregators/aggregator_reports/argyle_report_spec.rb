@@ -2,6 +2,7 @@ require 'rails_helper'
 
 RSpec.describe Aggregators::AggregatorReports::ArgyleReport, type: :service do
   include Aggregators::ResponseObjects
+  include ArgyleApiHelper
   let(:account) { "abc123" }
   let(:from_date) { "2021-01-01" }
   let(:to_date) { "2021-03-31" }
@@ -63,6 +64,29 @@ RSpec.describe Aggregators::AggregatorReports::ArgyleReport, type: :service do
         argyle_report.send(:fetch_report_data)
         expect(argyle_report.instance_variable_get(:@has_fetched)).to be false
       end
+    end
+  end
+
+  describe '#meets_minimum_reporting_requirements?' do
+    it 'Joe, a W2 worker meets requirements' do
+      allow(argyle_service).to receive(:fetch_identities_api).and_return(argyle_load_relative_json_file('joe', 'request_identity.json'))
+      allow(argyle_service).to receive(:fetch_paystubs_api).and_return(argyle_load_relative_json_file('joe', 'request_paystubs.json'))
+      argyle_report.send(:fetch_report_data)
+      expect(argyle_report.meets_minimum_reporting_requirements?).to eq(true)
+    end
+
+    it 'Sarah, a W2 worker meets requirements' do
+      allow(argyle_service).to receive(:fetch_identities_api).and_return(argyle_load_relative_json_file('sarah', 'request_identity.json'))
+      allow(argyle_service).to receive(:fetch_paystubs_api).and_return(argyle_load_relative_json_file('sarah', 'request_paystubs.json'))
+      argyle_report.send(:fetch_report_data)
+      expect(argyle_report.meets_minimum_reporting_requirements?).to eq(true)
+    end
+
+    it 'Bob, a Gig worker does not meet requirements' do
+      allow(argyle_service).to receive(:fetch_identities_api).and_return(argyle_load_relative_json_file('bob', 'request_identity.json'))
+      allow(argyle_service).to receive(:fetch_paystubs_api).and_return(argyle_load_relative_json_file('bob', 'request_paystubs.json'))
+      argyle_report.send(:fetch_report_data)
+      expect(argyle_report.meets_minimum_reporting_requirements?).to eq(false)
     end
   end
 end

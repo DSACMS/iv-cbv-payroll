@@ -76,6 +76,13 @@ module Aggregators::AggregatorReports
         end
     end
 
+    def meets_minimum_reporting_requirements?
+      # note: there are no minimum reporting requirements on the income response object.
+      @identities.all? { |identity| identity.meets_requirements? } &&
+      @employments.all? { |employment| employment.meets_requirements? } &&
+      @paystubs.all? { |paystub | paystub.meets_requirements? }
+    end
+
     def total_gross_income
       @paystubs.reduce(0) { |sum, paystub| sum + paystub.gross_pay_amount }
     end
