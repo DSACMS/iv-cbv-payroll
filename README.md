@@ -71,6 +71,8 @@ of the test.
 
 To run locally, use `bin/dev`
 
+To run database migrations on the test environment that is used by rpec tests, run `RAILS_ENV=test bin/rails db:schema:load`
+
 ## Branching model
 When beginning work on a feature, create a new branch based off of `main` and make the commits for that feature there.
 
@@ -78,7 +80,7 @@ We intend to use short-lived branches so as to minimize the cost of integrating 
 
 ## Story Acceptance
 
-TBD
+We strive for all features to be acceptance tested prior to merge. The process is outline in the [Github PR Template](/.github/pull_request_template.md).
 
 # Security
 

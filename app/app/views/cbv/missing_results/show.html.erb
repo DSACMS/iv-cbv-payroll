@@ -16,12 +16,12 @@
   <% else %>
     <p class="line-height-sans-5"><%= t(".not_listed_p2", agency_short_name: current_agency.agency_short_name) %></p>
 <% end %>
-  <% unless @has_pinwheel_account %>
+  <% unless @has_payroll_account %>
     <%= agency_translation(".exit_button_html") %>
   <% end %>
 </div>
 
-<% if @has_pinwheel_account %>
+<% if @has_payroll_account %>
   <hr class="margin-top-5 margin-bottom-5 border-base-light border-top-0">
   <h2><%= t(".no_more_jobs") %></h2>
   <div class="usa-prose">

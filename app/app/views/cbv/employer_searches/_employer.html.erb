@@ -24,8 +24,8 @@
           <div class="usa-card__footer">
             <button
               data-action="click->cbv-employer-search#select"
-              data-id="<%= employer.provider_options[:provider_id] %>"
-              data-response-type="<%= employer.provider_options[:response_type] %>"
+              data-id="<%= employer.provider_options.provider_id %>"
+              data-response-type="<%= employer.provider_options.response_type %>"
               data-is-default-option="false"
               data-name="<%= employer.name %>"
               data-cbv-employer-search-target="employerButton"
@@ -57,7 +57,7 @@
       <ul class="line-height-sans-5">
         <li><%= t("cbv.employer_searches.show.to_continue_li_1") %> <%= agency_translation("cbv.employer_searches.show.to_continue_li_1_html") %></li>
         <li><%= t("cbv.employer_searches.show.to_continue_li_2") %></li>
-        <% if @has_pinwheel_account %>
+        <% if @has_payroll_account %>
           <li><%= t("cbv.employer_searches.show.to_continue_li_3_continue") %></li>
         <% else %>
           <li><%= t("cbv.employer_searches.show.to_continue_li_3") %></li>
@@ -65,7 +65,7 @@
       </ul>
     </div>
 
-      <% if @has_pinwheel_account %>
+      <% if @has_payroll_account %>
         <%= link_to t("cbv.employer_searches.show.review_button_text"), cbv_flow_summary_path, class: "usa-button usa-button--outline margin-top-5", data: { turbo_frame: "_top" } %>
       <% else %>
         <%= link_to t("cbv.employer_searches.show.exit_button_text", agency_short_name: current_agency.agency_short_name), current_agency.agency_contact_website, class: "usa-button usa-button--outline margin-top-5", data: { turbo_frame: "_top" } %>

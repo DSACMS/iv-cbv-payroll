@@ -5,16 +5,16 @@ RSpec.describe Aggregators::ResponseObjects::Paystub, type: :model do
     let(:pinwheel_response) do
         {
           "account_id" => "12345",
-          "gross_pay_amount" => 5000.23,
-          "net_pay_amount" => 4000.45,
-          "gross_pay_ytd" => 20000.67,
+          "gross_pay_amount" => 500023,
+          "net_pay_amount" => 400045,
+          "gross_pay_ytd" => 2000067,
           "pay_period_start" => "2023-01-01",
           "pay_period_end" => "2023-01-15",
           "pay_date" => "2023-01-20",
           "earnings" => [],
           "deductions" => [
-            { "category" => "tax", "amount" => 500.89 },
-            { "category" => "insurance", "amount" => 100.12 }
+            { "category" => "tax", "amount" => 50089 },
+            { "category" => "insurance", "amount" => 10012 }
           ]
         }
       end
@@ -24,15 +24,15 @@ RSpec.describe Aggregators::ResponseObjects::Paystub, type: :model do
       paystub = described_class.from_pinwheel(pinwheel_response)
 
       expect(paystub.account_id).to eq("12345")
-      expect(paystub.gross_pay_amount).to eq(5000.23)
-      expect(paystub.net_pay_amount).to eq(4000.45)
-      expect(paystub.gross_pay_ytd).to eq(20000.67)
+      expect(paystub.gross_pay_amount).to eq(500023)
+      expect(paystub.net_pay_amount).to eq(400045)
+      expect(paystub.gross_pay_ytd).to eq(2000067)
       expect(paystub.pay_period_start).to eq("2023-01-01")
       expect(paystub.pay_period_end).to eq("2023-01-15")
       expect(paystub.pay_date).to eq("2023-01-20")
       expect(paystub.deductions.size).to eq(2)
       expect(paystub.deductions.first.category).to eq("tax")
-      expect(paystub.deductions.first.amount).to eq(500.89)
+      expect(paystub.deductions.first.amount).to eq(50089)
     end
   end
 
@@ -57,15 +57,15 @@ RSpec.describe Aggregators::ResponseObjects::Paystub, type: :model do
       paystub = described_class.from_argyle(argyle_response)
 
       expect(paystub.account_id).to eq("67890")
-      expect(paystub.gross_pay_amount).to eq(6000.34)
-      expect(paystub.net_pay_amount).to eq(4800.56)
-      expect(paystub.gross_pay_ytd).to eq(24000.78)
+      expect(paystub.gross_pay_amount).to eq(600034)
+      expect(paystub.net_pay_amount).to eq(480056)
+      expect(paystub.gross_pay_ytd).to eq(2400078)
       expect(paystub.pay_period_start).to eq("2023-01-01")
       expect(paystub.pay_period_end).to eq("2023-01-15")
       expect(paystub.pay_date).to eq("2023-01-20")
       expect(paystub.deductions.size).to eq(2)
       expect(paystub.deductions.first.category).to eq("tax")
-      expect(paystub.deductions.first.amount).to eq(600.90)
+      expect(paystub.deductions.first.amount).to eq(60090)
     end
   end
 end

@@ -4,7 +4,7 @@ RSpec.describe Api::PinwheelController do
   include PinwheelApiHelper
 
   context "#create_token" do
-    let(:cbv_flow) { create(:cbv_flow) }
+    let(:cbv_flow) { create(:cbv_flow, :invited) }
     let(:valid_params) do
       {
         pinwheel: { response_type: "employer", id: "123" }
@@ -13,7 +13,7 @@ RSpec.describe Api::PinwheelController do
 
     before do
       session[:cbv_flow_id] = cbv_flow.id
-      stub_create_token_response
+      pinwheel_stub_create_token_response
     end
 
     it "creates a link token with Pinwheel" do

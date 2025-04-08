@@ -18,7 +18,7 @@ export default class ArgyleModalAdapter extends ModalAdapter {
         locale,
       })
 
-      const { user } = await fetchArgyleToken()
+      const { user, isSandbox } = await fetchArgyleToken()
       return Argyle.create({
         userToken: user.user_token,
         items: [this.requestData.id],
@@ -35,7 +35,7 @@ export default class ArgyleModalAdapter extends ModalAdapter {
         },
         onClose: this.onClose.bind(this),
         onError: this.onError.bind(this),
-        sandbox: true,
+        sandbox: isSandbox,
       }).open()
     } else {
       // TODO this should throw an error, which should be caught by a document.onerror handler to show the user a crash message.
@@ -64,7 +64,11 @@ export default class ArgyleModalAdapter extends ModalAdapter {
     })
 
     if (this.successCallback) {
-      this.successCallback(eventPayload.accountId)
+      setTimeout(() => {
+        // TODO[FFS-2675]: Remove this artifical delay. It current exists to
+        // allow time for Argyle to send us the `accounts.connected` webhook.
+        this.successCallback(eventPayload.accountId)
+      }, 1000)
     }
   }
 

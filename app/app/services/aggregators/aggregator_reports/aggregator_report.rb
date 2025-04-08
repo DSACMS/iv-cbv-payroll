@@ -33,9 +33,9 @@ module Aggregators::AggregatorReports
     def fetch_report_data
       begin
         all_successful = true
-        @payroll_accounts.each do |account|
-            fetch_report_data_for_account(account)
-          end
+        @payroll_accounts.each do |payroll_account|
+          fetch_report_data_for_account(payroll_account)
+        end
       rescue StandardError => e
         Rails.logger.error("Report Fetch Error: #{e.message}")
         all_successful = false

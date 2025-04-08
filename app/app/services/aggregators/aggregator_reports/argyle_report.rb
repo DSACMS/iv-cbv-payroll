@@ -8,10 +8,18 @@ module Aggregators::AggregatorReports
     end
 
     private
-    def fetch_report_data_for_account(account)
-      identities_json = @argyle_service.fetch_identities_api(account: account)
-      paystubs_json = @argyle_service.fetch_paystubs_api(account: account, from_start_date: @from_date, to_start_date: @to_date)
-      gigs_json = @argyle_service.fetch_gigs_api(account: account, from_start_datetime: @from_date, to_start_datetime: @to_date)
+    def fetch_report_data_for_account(payroll_account)
+      identities_json = @argyle_service.fetch_identities_api(
+        account: payroll_account.pinwheel_account_id
+      )
+      paystubs_json = @argyle_service.fetch_paystubs_api(
+        account: payroll_account.pinwheel_account_id,
+        from_start_date: @from_date,
+        to_start_date: @to_date
+      )
+      gigs_json = @argyle_service.fetch_gigs_api(account: payroll_account.pinwheel_account_id,
+                                                 from_start_datetime: @from_date,
+                                                 to_start_datetime: @to_date)
 
       @identities.append(*transform_identities(identities_json))
       @employments.append(*transform_employments(identities_json))

@@ -64,6 +64,8 @@ class Cbv::BaseController < ApplicationController
       cbv_flow_summary_path
     when "cbv/payment_details"
       cbv_flow_add_job_path
+    when "cbv/applicant_informations"
+      cbv_flow_summary_path
     when "cbv/summaries"
       cbv_flow_submits_path
     when "cbv/submits"
@@ -73,6 +75,10 @@ class Cbv::BaseController < ApplicationController
 
   def pinwheel
     pinwheel_for(@cbv_flow)
+  end
+
+  def argyle
+    argyle_for(@cbv_flow)
   end
 
   def agency_url
