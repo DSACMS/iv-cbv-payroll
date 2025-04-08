@@ -136,6 +136,8 @@ ignore_missing:
     # Pinwheel values that are only supported in English:
     - "pinwheel.*"
     # Currently awaiting translation:
+    - "cbv.summaries.show.description"  # FFS-2562
+    - "cbv.summaries.show.header"       # FFS-2494
     # - "example.strings.*" # Tag with ticket number that created or modified the string
 
 ## Consider these keys used:
