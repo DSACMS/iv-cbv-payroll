@@ -165,7 +165,6 @@ module Aggregators::Sdk
         to_start_datetime: to_start_datetime,
         limit: limit }.compact
 
-      # TODO: paginate
       @http.get(GIGS_ENDPOINT, params).body
     end
 
