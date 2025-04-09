@@ -26,6 +26,7 @@ class Api::PinwheelController < ApplicationController
     event_logger.track("ApplicantBeganLinkingEmployer", request, {
       cbv_flow_id: @cbv_flow.id,
       cbv_applicant_id: @cbv_flow.cbv_applicant_id,
+      client_agency_id: @cbv_flow.client_agency_id,
       invitation_id: @cbv_flow.cbv_flow_invitation_id,
       response_type: token_params[:response_type]
     })

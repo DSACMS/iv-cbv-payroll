@@ -21,6 +21,8 @@ RUN apt-get update -qq && \
       libc-dev \
       # CVE-2025-0395 \
       libc-dev-bin \
+      # CVE-2025-31115 \
+      liblzma5 \
       && \
     rm -rf /var/lib/apt/lists /var/cache/apt/archives
 

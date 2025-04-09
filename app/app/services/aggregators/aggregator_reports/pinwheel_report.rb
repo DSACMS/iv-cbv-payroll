@@ -6,6 +6,7 @@ module Aggregators::AggregatorReports
       super(**params)
       @pinwheel_service = pinwheel_service
     end
+
     private
 
     def fetch_report_data_for_account(account)

@@ -27,8 +27,7 @@ RSpec.describe HelpController, type: :controller do
             device_name: nil,
             device_type: nil,
             ip: "0.0.0.0",
-            language: I18n.locale,
-            locale: nil,
+            locale: I18n.locale,
             client_agency_id: cbv_flow.client_agency_id,
             topic: "employer",
             user_agent: "Rails Testing"
@@ -43,8 +42,7 @@ RSpec.describe HelpController, type: :controller do
             device_name: nil,
             device_type: nil,
             ip: "0.0.0.0",
-            language: I18n.locale,
-            locale: nil,
+            locale: I18n.locale,
             client_agency_id: cbv_flow.client_agency_id,
             topic: "employer",
             user_agent: "Rails Testing"
@@ -72,8 +70,7 @@ RSpec.describe HelpController, type: :controller do
             device_name: nil,
             device_type: nil,
             ip: "0.0.0.0",
-            language: I18n.locale,
-            locale: nil,
+            locale: I18n.locale,
             client_agency_id: "sandbox",
             topic: "employer",
             user_agent: "Rails Testing"

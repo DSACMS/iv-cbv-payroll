@@ -64,12 +64,14 @@ class Cbv::ApplicantInformationsController < Cbv::BaseController
       event_logger.track("ApplicantClickedEditInformationLink", request, {
         timestamp: Time.now.to_i,
         cbv_applicant_id: @cbv_flow.cbv_applicant_id,
+        client_agency_id: current_agency&.id,
         cbv_flow_id: @cbv_flow.id
       })
     else
       event_logger.track("ApplicantAccessedInformationPage", request, {
         timestamp: Time.now.to_i,
         cbv_applicant_id: @cbv_flow.cbv_applicant_id,
+        client_agency_id: current_agency&.id,
         cbv_flow_id: @cbv_flow.id
       })
     end
@@ -82,6 +84,7 @@ class Cbv::ApplicantInformationsController < Cbv::BaseController
       timestamp: Time.now.to_i,
       cbv_applicant_id: @cbv_flow.cbv_applicant_id,
       cbv_flow_id: @cbv_flow.id,
+      client_agency_id: current_agency&.id,
       error_string: error_string
     })
   rescue => ex

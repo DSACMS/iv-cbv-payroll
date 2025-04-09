@@ -5,6 +5,7 @@ class GenericEventTracker
     defaults = {}
     if request.present?
       url_params = request.params.slice("client_agency_id", "locale")
+
       defaults = {
         # Not setting device_id because Mixpanel fixates on that as the distinct_id, which we do not want
         ip: request.remote_ip,

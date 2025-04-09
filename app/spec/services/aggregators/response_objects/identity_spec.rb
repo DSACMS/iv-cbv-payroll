@@ -1,34 +1,38 @@
 require 'rails_helper'
 
 RSpec.describe Aggregators::ResponseObjects::Identity do
+  include PinwheelApiHelper
+  include ArgyleApiHelper
+
   describe '.from_pinwheel' do
     let(:pinwheel_response) do
-        {
-          "account_id" => "12345",
-          "full_name" => "John Doe"
-        }
-      end
-
+      pinwheel_load_relative_json_file('request_identity_response.json')["data"]
+    end
 
     it 'creates an Identity object from pinwheel response' do
       identity = described_class.from_pinwheel(pinwheel_response)
-      expect(identity.account_id).to eq("12345")
-      expect(identity.full_name).to eq("John Doe")
+      expect(identity.account_id).to eq("03e29160-f7e7-4a28-b2d8-813640e030d3")
+      expect(identity.full_name).to eq("Ash Userton")
+      expect(identity.emails).to eq([ "user_good@example.com" ])
+      expect(identity.phone_numbers).to eq([ { "type" => nil, "value" => "+12345556789" } ])
+      expect(identity.ssn).to eq("XXX-XX-1234")
+      expect(identity.date_of_birth).to eq("1993-08-28")
     end
   end
 
   describe '.from_argyle' do
     let(:argyle_response) do
-       {
-         "account" => "67890",
-         "full_name" => "Jane Smith"
-       }
-     end
+      argyle_load_relative_json_file('bob', 'request_identity.json')["results"].first
+    end
 
     it 'creates an Identity object from argyle response' do
       identity = described_class.from_argyle(argyle_response)
-      expect(identity.account_id).to eq("67890")
-      expect(identity.full_name).to eq("Jane Smith")
+      expect(identity.account_id).to eq("019571bc-2f60-3955-d972-dbadfe0913a8")
+      expect(identity.full_name).to eq("Bob Jones")
+      expect(identity.emails).to eq([ "test1@argyle.com" ])
+      expect(identity.phone_numbers).to eq([ "+18009000010" ])
+      expect(identity.ssn).to eq("522-09-1191")
+      expect(identity.date_of_birth).to eq("1980-10-10")
     end
   end
 end

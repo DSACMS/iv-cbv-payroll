@@ -80,7 +80,7 @@ We intend to use short-lived branches so as to minimize the cost of integrating 
 
 ## Story Acceptance
 
-TBD
+We strive for all features to be acceptance tested prior to merge. The process is outline in the [Github PR Template](/.github/pull_request_template.md).
 
 # Security
 

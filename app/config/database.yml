@@ -61,7 +61,7 @@ development:
 test:
   <<: *default
   database: iv_cbv_payroll_test
-  host: <%= ENV.fetch("DB_HOST") { "localhost" } %>
+  host: <%= ENV.fetch("DB_HOST") { nil } %>
   username: <%= ENV.fetch("DB_USERNAME") { nil } %>
   # The password associated with the postgres role (username).
   password: <%= ENV.fetch("DB_PASSWORD") { nil } %>

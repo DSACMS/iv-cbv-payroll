@@ -10,7 +10,7 @@ class Cbv::SummariesController < Cbv::BaseController
   def track_accessed_income_summary_event(cbv_flow, payments)
     event_logger.track("ApplicantAccessedIncomeSummary", request, {
       timestamp: Time.now.to_i,
-      client_agency_id: cbv_flow.client_agency_id,
+      client_agency_id: current_agency&.id,
       cbv_flow_id: cbv_flow.id,
       cbv_applicant_id: cbv_flow.cbv_applicant_id,
       invitation_id: cbv_flow.cbv_flow_invitation_id,

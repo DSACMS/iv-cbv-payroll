@@ -57,8 +57,7 @@
       "pay_date": "2020-12-31",
       "pay_period_end": "2020-12-24",
       "pay_period_start": "2020-12-10",
-      "taxes": [
-      ],
+      "taxes": [],
       "time_off": [
         {
           "available_hours": 41.5,

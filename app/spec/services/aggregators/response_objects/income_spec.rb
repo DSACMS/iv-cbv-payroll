@@ -6,7 +6,7 @@ RSpec.describe Aggregators::ResponseObjects::Income do
         {
           "account_id" => "12345",
           "pay_frequency" => "monthly",
-          "compensation_amount" => 50.24,
+          "compensation_amount" => 1000,
           "compensation_unit" => "USD"
         }
       end
@@ -16,7 +16,7 @@ RSpec.describe Aggregators::ResponseObjects::Income do
 
       expect(income.account_id).to eq("12345")
       expect(income.pay_frequency).to eq("monthly")
-      expect(income.compensation_amount).to eq(50.24)
+      expect(income.compensation_amount).to eq(1000)
       expect(income.compensation_unit).to eq("USD")
     end
   end
@@ -37,7 +37,7 @@ RSpec.describe Aggregators::ResponseObjects::Income do
 
       expect(income.account_id).to eq("67890")
       expect(income.pay_frequency).to eq("semimonthly")
-      expect(income.compensation_amount).to eq(50.24)
+      expect(income.compensation_amount).to eq(5024)
       expect(income.compensation_unit).to eq("USD")
     end
   end
