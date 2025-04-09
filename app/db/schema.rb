@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2025_03_18_171130) do
+ActiveRecord::Schema[7.1].define(version: 2025_04_04_005946) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pgcrypto"
   enable_extension "plpgsql"
@@ -66,6 +66,7 @@ ActiveRecord::Schema[7.1].define(version: 2025_03_18_171130) do
     t.datetime "consented_to_authorized_use_at"
     t.datetime "redacted_at"
     t.bigint "cbv_applicant_id"
+    t.string "argyle_user_id"
     t.index ["cbv_applicant_id"], name: "index_cbv_flows_on_cbv_applicant_id"
     t.index ["cbv_flow_invitation_id"], name: "index_cbv_flows_on_cbv_flow_invitation_id"
   end

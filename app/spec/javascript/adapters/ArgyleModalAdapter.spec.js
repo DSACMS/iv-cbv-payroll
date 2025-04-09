@@ -22,6 +22,7 @@ describe("ArgyleModalAdapter", () => {
   let triggers
 
   beforeEach(async () => {
+    vi.useFakeTimers()
     mockArgyle()
     await loadArgyleResource()
     adapter = new ArgyleModalAdapter()
@@ -43,6 +44,14 @@ describe("ArgyleModalAdapter", () => {
     it("opens argyle modal", async () => {
       expect(Argyle.create).toHaveBeenCalledTimes(1)
     })
+    it("passes sandbox flag from token response", async () => {
+      expect(Argyle.create).toHaveBeenCalledWith(
+        expect.objectContaining({
+          sandbox: mockArgyleAuthToken.isSandbox,
+        })
+      )
+      expect(mockArgyleAuthToken.isSandbox).toBe(true)
+    })
   })
 
   describe("event:onSucces", () => {
@@ -53,6 +62,7 @@ describe("ArgyleModalAdapter", () => {
     })
     it("triggers the modal adapter onSuccess callback", async () => {
       await triggers.triggerAccountConnected()
+      vi.advanceTimersByTime(1000) // TODO[FFS-2675]: Remove this timer advancement
       expect(modalAdapterArgs.onSuccess).toHaveBeenCalled()
     })
   })

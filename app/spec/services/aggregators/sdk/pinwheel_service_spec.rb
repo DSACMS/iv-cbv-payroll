@@ -2,6 +2,7 @@ require 'rails_helper'
 
 RSpec.describe Aggregators::Sdk::PinwheelService, type: :service do
   include PinwheelApiHelper
+
   let(:service) { Aggregators::Sdk::PinwheelService.new("sandbox", "FAKE_API_KEY") }
   let(:end_user_id) { 'abc123' }
 

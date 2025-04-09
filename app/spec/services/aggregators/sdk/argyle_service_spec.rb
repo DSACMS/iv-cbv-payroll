@@ -2,9 +2,39 @@ require 'rails_helper'
 
 RSpec.describe Aggregators::Sdk::ArgyleService, type: :service do
   include ArgyleApiHelper
-  let(:service) { Aggregators::Sdk::ArgyleService.new("sandbox", "FAKE_API_KEY") }
+
+  let(:api_key_secret) { 'api_key_secret' }
+  let(:webhook_secret) { 'test_webhook_secret' }
+  let(:service) { Aggregators::Sdk::ArgyleService.new("sandbox", "FAKE_API_KEY", api_key_secret, webhook_secret) }
   let(:account_id) { 'account123' }
   let(:user_id) { 'user123' }
+
+  describe '#initialize' do
+    before do
+      # Stub out the values in ArgyleService::ENVIRONMENTS with known values we
+      # can assert are loaded correctly.
+      stub_const("#{described_class}::ENVIRONMENTS", described_class::ENVIRONMENTS.dup.tap do |hash|
+        hash[:sandbox][:api_key_secret] = api_key_secret
+        hash[:production][:api_key_secret] = "production-#{api_key_secret}"
+      end)
+    end
+
+    context 'when the environment is sandbox' do
+      let(:service) { Aggregators::Sdk::ArgyleService.new("sandbox") }
+
+      it 'initializes with the correct environment' do
+        expect(service.instance_variable_get(:@api_key_secret)).to eq(api_key_secret)
+      end
+    end
+
+    context 'when the environment is production' do
+      let(:service) { Aggregators::Sdk::ArgyleService.new("production") }
+
+      it 'initializes with the correct environment' do
+        expect(service.instance_variable_get(:@api_key_secret)).to eq("production-#{api_key_secret}")
+      end
+    end
+  end
 
   describe '#fetch_identities_api' do
     let(:requests) { WebMock::RequestRegistry.instance.requested_signatures.hash.keys }
@@ -13,12 +43,12 @@ RSpec.describe Aggregators::Sdk::ArgyleService, type: :service do
     end
 
     it 'calls the correct endpoint' do
-      service.fetch_identities_api()
+      service.fetch_identities_api
       expect(requests.first.uri.to_s).to include("/v2/identities")
     end
 
     it 'sets limit of 100 identities by default' do
-      service.fetch_identities_api()
+      service.fetch_identities_api
       expect(requests.first.uri.query).to include("limit=10")
     end
 
@@ -42,7 +72,7 @@ RSpec.describe Aggregators::Sdk::ArgyleService, type: :service do
     end
 
     it 'returns a non-empty response' do
-      response = service.fetch_identities_api()
+      response = service.fetch_identities_api
       expect(response).not_to be_empty
       expect(response).to be_an_instance_of(Hash)
       expect(response).to have_key("results")
@@ -53,7 +83,7 @@ RSpec.describe Aggregators::Sdk::ArgyleService, type: :service do
       stub_request(:get, "https://api-sandbox.argyle.com/v2/identities?limit=10")
       .to_return(status: 500, body: "", headers: {})
 
-      expect { service.fetch_identities_api() }.to raise_error(Faraday::ServerError)
+      expect { service.fetch_identities_api }.to raise_error(Faraday::ServerError)
     end
   end
 
@@ -64,12 +94,12 @@ RSpec.describe Aggregators::Sdk::ArgyleService, type: :service do
     end
 
     it 'calls the correct endpoint' do
-      service.fetch_accounts_api()
+      service.fetch_accounts_api
       expect(requests.first.uri.to_s).to include("/v2/accounts")
     end
 
     it 'sets limit of 10 accounts by default' do
-      service.fetch_accounts_api()
+      service.fetch_accounts_api
       expect(requests.first.uri.query).to include("limit=10")
     end
 
@@ -97,7 +127,7 @@ RSpec.describe Aggregators::Sdk::ArgyleService, type: :service do
     end
 
     it 'returns a non-empty response' do
-      response = service.fetch_accounts_api()
+      response = service.fetch_accounts_api
       expect(response).not_to be_empty
       expect(response).to be_an_instance_of(Hash)
       expect(response).to have_key("results")
@@ -108,20 +138,21 @@ RSpec.describe Aggregators::Sdk::ArgyleService, type: :service do
       stub_request(:get, "https://api-sandbox.argyle.com/v2/accounts?limit=10")
       .to_return(status: 500, body: "", headers: {})
 
-      expect { service.fetch_accounts_api() }.to raise_error(Faraday::ServerError)
+      expect { service.fetch_accounts_api }.to raise_error(Faraday::ServerError)
     end
   end
+
   describe '#fetch_paystubs_api' do
     let(:requests) { WebMock::RequestRegistry.instance.requested_signatures.hash.keys }
     before do
       argyle_stub_request_paystubs_response("bob")
     end
     it 'calls the correct endpoint' do
-      service.fetch_paystubs_api()
+      service.fetch_paystubs_api
       expect(requests.first.uri.to_s).to include("/v2/paystubs")
     end
     it 'sets limit of 100 paystubs by default' do
-      service.fetch_paystubs_api()
+      service.fetch_paystubs_api
       expect(requests.first.uri.query).to include("limit=200")
     end
     it 'accepts param account' do
@@ -144,7 +175,7 @@ RSpec.describe Aggregators::Sdk::ArgyleService, type: :service do
     end
 
     it 'returns a non-empty response' do
-      response = service.fetch_paystubs_api()
+      response = service.fetch_paystubs_api
       expect(response).not_to be_empty
       expect(response).to be_an_instance_of(Hash)
       expect(response).to have_key("results")
@@ -155,16 +186,17 @@ RSpec.describe Aggregators::Sdk::ArgyleService, type: :service do
       stub_request(:get, "https://api-sandbox.argyle.com/v2/paystubs?limit=200")
       .to_return(status: 500, body: "", headers: {})
 
-      expect { service.fetch_paystubs_api() }.to raise_error(Faraday::ServerError)
+      expect { service.fetch_paystubs_api }.to raise_error(Faraday::ServerError)
     end
 
     it 'raises Pagination not implemented error if a new page is found.' do
       stub_request(:get, "https://api-sandbox.argyle.com/v2/paystubs?limit=200")
       .to_return(status: 200, body: { "next": "https://next-page-url" }.to_json, headers: {})
 
-      expect { service.fetch_paystubs_api() }.to raise_error("Pagination not implemented")
+      expect { service.fetch_paystubs_api }.to raise_error("Pagination not implemented")
     end
   end
+
   describe '#fetch_employments_api' do
     before do
       argyle_stub_request_employments_response("bob")
@@ -181,7 +213,7 @@ RSpec.describe Aggregators::Sdk::ArgyleService, type: :service do
     end
 
     it 'rejects empty params' do
-      expect { service.fetch_employments_api() }.to raise_error(ArgumentError)
+      expect { service.fetch_employments_api }.to raise_error(ArgumentError)
     end
 
     it 'returns a non-empty response' do
@@ -191,9 +223,69 @@ RSpec.describe Aggregators::Sdk::ArgyleService, type: :service do
 
     it 'raises Faraday::ServerError on 500 error' do
       stub_request(:get, "https://api-sandbox.argyle.com/v2/employments?account=account123")
-      .to_return(status: 500, body: "", headers: {})
+        .to_return(status: 500, body: "", headers: {})
 
       expect { service.fetch_employments_api(account: account_id) }.to raise_error(Faraday::ServerError)
+    end
+  end
+
+  describe '#create_user' do
+    context 'with external_id' do
+      let(:external_id) { 'external_123' }
+
+      it 'makes a POST request with external_id' do
+        stub = stub_request(:post, "https://api-sandbox.argyle.com/v2/users")
+          .with(body: { external_id: external_id }.to_json)
+        service.create_user(external_id)
+        expect(stub).to have_been_requested
+      end
+    end
+
+    context 'without external_id' do
+      it 'makes a POST request without external_id' do
+        stub = stub_request(:post, "https://api-sandbox.argyle.com/v2/users")
+        service.create_user
+        expect(stub).to have_been_requested
+      end
+    end
+  end
+
+  describe '#get_webhook_subscriptions' do
+    it 'makes a GET request to webhooks endpoint' do
+      stub = stub_request(:get, "https://api-sandbox.argyle.com/v2/webhooks")
+      service.get_webhook_subscriptions
+      expect(stub).to have_been_requested
+    end
+  end
+
+  describe '#create_webhook_subscription' do
+    let(:events) { [ 'users.fully_synced' ] }
+    let(:url) { 'https://example.com/webhook' }
+    let(:name) { 'Test Webhook' }
+    let(:expected_payload) do
+      {
+        events: events,
+        name: name,
+        url: url,
+        secret: webhook_secret
+      }
+    end
+
+    it 'makes a POST request to create webhook subscription with correct payload' do
+      stub = stub_request(:post, "https://api-sandbox.argyle.com/v2/webhooks")
+        .with(body: expected_payload.to_json)
+      service.create_webhook_subscription(events, url, name)
+      expect(stub).to have_been_requested
+    end
+  end
+
+  describe '#delete_webhook_subscription' do
+    let(:webhook_id) { '123' }
+
+    it 'makes a DELETE request to remove webhook subscription' do
+      stub = stub_request(:delete, "https://api-sandbox.argyle.com/v2/webhooks/#{webhook_id}")
+      service.delete_webhook_subscription(webhook_id)
+      expect(stub).to have_been_requested
     end
   end
 end

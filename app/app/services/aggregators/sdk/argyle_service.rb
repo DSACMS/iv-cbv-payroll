@@ -10,7 +10,14 @@ module Aggregators::Sdk
       sandbox: {
         base_url: "https://api-sandbox.argyle.com/v2",
         api_key_id: ENV["ARGYLE_API_TOKEN_SANDBOX_ID"],
-        api_key_secret: ENV["ARGYLE_API_TOKEN_SANDBOX_SECRET"]
+        api_key_secret: ENV["ARGYLE_API_TOKEN_SANDBOX_SECRET"],
+        webhook_secret: ENV["ARGYLE_SANDBOX_WEBHOOK_SECRET"]
+      },
+      production: {
+        base_url: "https://api.argyle.com/v2",
+        api_key_id: ENV["ARGYLE_API_TOKEN_ID"],
+        api_key_secret: ENV["ARGYLE_API_TOKEN_SECRET"],
+        webhook_secret: ENV["ARGYLE_WEBHOOK_SECRET"]
       }
     }
 
@@ -18,13 +25,19 @@ module Aggregators::Sdk
     PAYSTUBS_ENDPOINT = "paystubs"
     IDENTITIES_ENDPOINT = "identities"
     USERS_ENDPOINT = "users"
+    USER_TOKENS_ENDPOINT = "user-tokens"
     ACCOUNTS_ENDPOINT = "accounts"
     EMPLOYMENTS_ENDPOINT = "employments"
+    WEBHOOKS_ENDPOINT = "webhooks"
 
-    def initialize(environment, api_key_id = nil, api_key_secret = nil)
+    attr_reader :webhook_secret
+
+    def initialize(environment, api_key_id = nil, api_key_secret = nil, webhook_secret = nil)
       @environment = ENVIRONMENTS.fetch(environment.to_sym) { |env| raise KeyError.new("ArgyleService unknown environment: #{env}") }
-      @api_key_id = api_key_id || ENVIRONMENTS.fetch(environment.to_sym)[:api_key_id]
-      @api_key_secret = api_key_secret || ENVIRONMENTS.fetch(environment.to_sym)[:api_key_secret]
+      @api_key_id = api_key_id || @environment[:api_key_id]
+      @api_key_secret = api_key_secret || @environment[:api_key_secret]
+      @webhook_secret = webhook_secret || @environment[:webhook_secret]
+      @base_url = @environment[:base_url]
 
       client_options = {
         request: {
@@ -32,7 +45,10 @@ module Aggregators::Sdk
           timeout: 5,
           params_encoder: Faraday::FlatParamsEncoder
         },
-        url: @environment[:base_url]
+        url: @base_url,
+        headers: {
+          "Content-Type" => "application/json"
+        }
       }
       @http = Faraday.new(client_options) do |conn|
         conn.set_basic_auth @api_key_id, @api_key_secret
@@ -46,10 +62,29 @@ module Aggregators::Sdk
       end
     end
 
+    def get_webhook_subscriptions
+      @http.get(build_url(WEBHOOKS_ENDPOINT)).body
+    end
+
+    def create_webhook_subscription(events, url, name)
+      payload = {
+        events: events,
+        name: name,
+        url: url,
+        secret: @webhook_secret
+      }
+
+      @http.post(build_url(WEBHOOKS_ENDPOINT), payload.to_json).body
+    end
+
+    def delete_webhook_subscription(id)
+      @http.delete(build_url("#{WEBHOOKS_ENDPOINT}/#{id}")).body
+    end
+
     # Fetch all Argyle items
     # https://docs.argyle.com/api-reference/items#list
     def items(query = nil)
-      @http.get(ITEMS_ENDPOINT, { q: query }).body
+      @http.get(build_url(ITEMS_ENDPOINT), { q: query }).body
     end
 
     # https://docs.argyle.com/api-reference/users#retrieve
@@ -58,21 +93,21 @@ module Aggregators::Sdk
     end
 
     # https://docs.argyle.com/api-reference/identities#list
-    def fetch_identities_api(account: nil, user: nil,
-                             employment: nil, limit: 10)
+    def fetch_identities_api(account: nil, user: nil, employment: nil, limit: 10)
       params = {
         account: account,
         user: user,
         employment: employment,
-        limit: limit }.compact
-      @http.get(IDENTITIES_ENDPOINT, params).body
+        limit: limit
+      }.compact
+      @http.get(build_url(IDENTITIES_ENDPOINT), params).body
     end
 
     # https://docs.argyle.com/api-reference/accounts#list
     # Note: we get all account information from the identities endpoint, so this is not
     # currently used.
     def fetch_accounts_api(user: nil, item: nil, ongoing_refresh_status: nil, limit: 10)
-      valid_statuses = [ "idle", "enabled", "disabled" ]
+      valid_statuses = %w[idle enabled disabled]
       if ongoing_refresh_status && !valid_statuses.include?(ongoing_refresh_status)
         raise ArgumentError, "Invalid ongoing_refresh_status: #{ongoing_refresh_status}"
       end
@@ -83,13 +118,18 @@ module Aggregators::Sdk
         ongoing_refresh_status: ongoing_refresh_status,
         limit: limit }.compact
 
-      @http.get(ACCOUNTS_ENDPOINT, params).body
+      @http.get(build_url(ACCOUNTS_ENDPOINT), params).body
     end
 
     # https://docs.argyle.com/api-reference/paystubs#list
-    def fetch_paystubs_api(account: nil, user: nil,
-                           employment: nil, from_start_date: nil,
-                           to_start_date: nil, limit: 200)
+    def fetch_paystubs_api(
+      account: nil,
+      user: nil,
+      employment: nil,
+      from_start_date: nil,
+      to_start_date: nil,
+      limit: 200
+    )
       params = {
         account: account,
         user: user,
@@ -97,13 +137,19 @@ module Aggregators::Sdk
         from_start_date: from_start_date,
         to_start_date: to_start_date,
         limit: limit }.compact
-      page_response = @http.get(PAYSTUBS_ENDPOINT, params).body
+      page_response = @http.get(build_url(PAYSTUBS_ENDPOINT), params).body
       raise "Pagination not implemented" if page_response["next"].present?
       page_response
     end
 
-    def create_user
-      @http.post(USERS_ENDPOINT).body
+    def create_user(cbv_flow_end_user_id = nil)
+      params = cbv_flow_end_user_id.present? ? { external_id: cbv_flow_end_user_id } : {}
+      @http.post(build_url(USERS_ENDPOINT), params.to_json).body
+    end
+
+    # https://docs.argyle.com/api-reference/user-tokens#create
+    def create_user_token(user_id)
+      @http.post(build_url(USER_TOKENS_ENDPOINT), { user: user_id }.to_json).body
     end
 
     # https://docs.argyle.com/api-reference/employments#list
@@ -112,7 +158,7 @@ module Aggregators::Sdk
     def fetch_employments_api(user: nil, account: nil)
       raise ArgumentError if user.nil? && account.nil?
       params = { user: user, account: account }.compact
-      @http.get(EMPLOYMENTS_ENDPOINT, params).body
+      @http.get(build_url(EMPLOYMENTS_ENDPOINT), params).body
     end
 
     def build_url(endpoint)
