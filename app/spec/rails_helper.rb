@@ -49,7 +49,7 @@ VCR.configure do |config|
   config.ignore_hosts '127.0.0.1', 'localhost', 'logs.browser-intake-datadoghq.com', "firefox-settings-attachments.cdn.mozilla.net",
                       "firefox.settings.services.mozilla.com", "plugin.argyle.com", "switchboard.pwhq.net",
                       "cdn.getpinwheel.com", "featuregates.org", "datadog", "events.statsigapi.net", "content-signature-2.cdn.mozilla.net"
-  config.default_cassette_options = { :record => :once }
+  config.default_cassette_options = { record: :once }
   config.filter_sensitive_data("<SANDBOX_SECRET_TOKEN>") { ENV["PINWHEEL_API_TOKEN_SANDBOX"] }
 end
 

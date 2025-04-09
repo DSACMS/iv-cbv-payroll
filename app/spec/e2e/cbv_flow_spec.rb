@@ -1,6 +1,9 @@
 require "rails_helper"
 
 # flip this to "all" if you need to record a new interaction
+# to run these tests with record: :all, make sure you have a .env.test.local with PINWHEEL_API_TOKEN_SANDBOX, then you can run this test via running
+# to run these tests at all,
+# explicitly via rubymine, or RUN_E2E_TESTS=1 bundle exec rspec spec/e2e/cbb_flow_spec.rb
 RECORD_OPTION = :none
 
 RSpec.describe "e2e CBV flow test", type: :feature, js: true, vcr: { record: RECORD_OPTION, name: "e2e_cbv_flow_english" } do

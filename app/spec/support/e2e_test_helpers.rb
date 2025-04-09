@@ -19,7 +19,7 @@ module E2eTestHelpers
   HARDCODED_PLATFORM_ID = "5965580e-380f-4b86-8a8a-7278c77f73cb"
 
   def simulate_next_step_and_webhooks
-    Billy.proxy.stub(%r(ui/step_result), method: "get").and_return(headers: {
+    Billy.proxy.stub(%r{ui/step_result}, method: "get").and_return(headers: {
       'Access-Control-Allow-Origin' => '*',
       'Access-Control-Allow-Methods' => 'GET, POST, PUT, DELETE, OPTIONS',
       'Access-Control-Allow-Headers' => 'Content-Type, Authorization'
@@ -27,7 +27,7 @@ module E2eTestHelpers
                                                              json: {
                                                                "data": {
                                                                  "response_type": "success",
-                                                                 "account_id": MAGIC_ID,
+                                                                 "account_id": HARDCODED_ACCOUNT_ID,
                                                                  "masked_accounts":  nil
                                                                }
                                                              }
@@ -35,10 +35,9 @@ module E2eTestHelpers
     simulate_account_added_event(CbvFlow.last)
   end
 
-
   def simulate_account_added_event(cbv_flow)
     pinwheel = Aggregators::Sdk::PinwheelService.new("sandbox")
-    @payroll_account = cbv_flow.payroll_accounts.find_or_create_by(type: :pinwheel, pinwheel_account_id:HARDCODED_ACCOUNT_ID ) do |new_payroll_account|
+    @payroll_account = cbv_flow.payroll_accounts.find_or_create_by(type: :pinwheel, pinwheel_account_id: HARDCODED_ACCOUNT_ID) do |new_payroll_account|
       new_payroll_account.supported_jobs = pinwheel.fetch_platform(platform_id: HARDCODED_PLATFORM_ID)["data"]["supported_jobs"]
     end
 
@@ -49,7 +48,6 @@ module E2eTestHelpers
       event_outcome: "success",
       )
   end
-
 
   def mock_cbv_flow_responses
     headahs = {
@@ -120,7 +118,7 @@ module E2eTestHelpers
 
 
     )
-    Billy.proxy.stub(%r(ui/next), method: "post").and_return(headers: {
+    Billy.proxy.stub(%r{ui/next}, method: "post").and_return(headers: {
       'Access-Control-Allow-Origin' => '*',
       'Access-Control-Allow-Methods' => 'GET, POST, PUT, DELETE, OPTIONS',
       'Access-Control-Allow-Headers' => 'Content-Type, Authorization'
