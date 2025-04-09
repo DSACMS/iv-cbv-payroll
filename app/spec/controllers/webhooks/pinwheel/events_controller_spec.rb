@@ -115,37 +115,69 @@ RSpec.describe Webhooks::Pinwheel::EventsController do
             created_at: 5.minutes.ago
           )
         end
+        let(:event_logger) { instance_double(GenericEventTracker) }
 
-        it "sends events when fully synced" do
-          expect_any_instance_of(MixpanelEventTracker).to receive(:track)
-            .with("ApplicantFinishedPinwheelSync", anything, hash_including(
+        before do
+          pinwheel_stub_request_identity_response
+          pinwheel_stub_request_income_metadata_response
+          pinwheel_stub_request_end_user_multiple_paystubs_response
+          pinwheel_stub_request_employment_info_response
+
+          allow(controller).to receive(:event_logger).and_return(event_logger)
+        end
+
+        it "sends full report analytics when synced" do
+          expect(event_logger).to receive(:track) do |event_name, _request, attributes|
+            expect(event_name).to eq("ApplicantFinishedPinwheelSync")
+            expect(attributes).to include(
               cbv_flow_id: cbv_flow.id,
+              cbv_applicant_id: cbv_flow.cbv_applicant_id,
               invitation_id: cbv_flow.cbv_flow_invitation_id,
+              client_agency_id: "sandbox",
+              sync_duration_seconds: within(1.second).of(5.minutes),
+
+              # Identity fields
               identity_success: true,
               identity_supported: true,
-              income_success: true,
-              income_supported: true,
-              employment_success: true,
-              employment_supported: true,
-              paystubs_success: true,
-              paystubs_supported: true,
-              sync_duration_seconds: within(1.second).of(5.minutes)
-            ))
+              identity_count: 1,
+              identity_full_name_present: true,
+              identity_full_name_length: 11,
+              identity_date_of_birth_present: true,
+              identity_ssn_present: true,
+              identity_emails_count: 1,
+              identity_phone_numbers_count: 1,
 
-          expect_any_instance_of(NewRelicEventTracker).to receive(:track)
-            .with("ApplicantFinishedPinwheelSync", anything, hash_including(
-              cbv_flow_id: cbv_flow.id,
-              invitation_id: cbv_flow.cbv_flow_invitation_id,
-              identity_success: true,
-              identity_supported: true,
+              # Income fields
               income_success: true,
               income_supported: true,
-              employment_success: true,
-              employment_supported: true,
+              income_compensation_amount_present: true,
+              income_compensation_unit_present: true,
+              income_pay_frequency_present: true,
+
+              # Paystubs fields
               paystubs_success: true,
               paystubs_supported: true,
-              sync_duration_seconds: within(1.second).of(5.minutes)
-            ))
+              paystubs_count: 2,
+              paystubs_deductions_count: 6,
+              paystubs_hours_by_earning_category_count: 2,
+              paystubs_hours_present: true,
+              paystubs_earnings_count: 4,
+              paystubs_earnings_with_hours_count: 2,
+              paystubs_earnings_category_salary_count: 2,
+              paystubs_earnings_category_bonus_count: 2,
+              paystubs_earnings_category_overtime_count: 0,
+
+              # Employment fields
+              employment_success: true,
+              employment_supported: true,
+              employment_status: "employed",
+              employment_employer_name: "Acme Corporation",
+              employment_employer_address_present: true,
+              employment_employer_phone_number_present: true,
+              employment_start_date: "2010-01-01",
+              employment_termination_date: nil
+            )
+          end
 
           post :create, params: valid_params
         end

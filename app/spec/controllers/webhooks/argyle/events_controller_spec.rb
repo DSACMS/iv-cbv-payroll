@@ -1,6 +1,8 @@
 require 'rails_helper'
 
 RSpec.describe Webhooks::Argyle::EventsController, type: :controller do
+  include ArgyleApiHelper
+
   let(:argyle_webhook) { class_double('Aggregators::Webhooks::Argyle') }
 
   # In a runtime scenario- the web client would send a POST request to /api/argyle/tokens
@@ -100,6 +102,19 @@ RSpec.describe Webhooks::Argyle::EventsController, type: :controller do
     end
 
     context 'PayrollAccount::Argyle model flow' do
+      let(:fake_event_logger) { instance_double(GenericEventTracker) }
+
+      before do
+        allow_any_instance_of(Aggregators::Sdk::ArgyleService)
+          .to receive(:fetch_identities_api)
+          .and_return(argyle_load_relative_json_file("sarah", "request_identity.json"))
+        allow_any_instance_of(Aggregators::Sdk::ArgyleService)
+          .to receive(:fetch_paystubs_api)
+          .and_return(argyle_load_relative_json_file("sarah", "request_paystubs.json"))
+        allow(controller).to receive(:event_logger).and_return(fake_event_logger)
+        allow(fake_event_logger).to receive(:track)
+      end
+
       it 'sequentially tests account synchronization flow' do
         expect(PayrollAccount.count).to eq(0)
 
@@ -123,6 +138,71 @@ RSpec.describe Webhooks::Argyle::EventsController, type: :controller do
 
         # expect the PayrollAccount to be fully synced
         expect(payroll_account.has_fully_synced?).to be_truthy
+      end
+
+      it 'tracks an ApplicantFinishedArgyleSync event' do
+        process_webhook("accounts.connected")
+        process_webhook("identities.added")
+        process_webhook("users.fully_synced")
+        process_webhook("gigs.fully_synced")
+
+        expect(fake_event_logger).to receive(:track) do |event_name, _request, attributes|
+          expect(event_name).to eq("ApplicantFinishedArgyleSync")
+          expect(attributes).to include(
+            cbv_flow_id: cbv_flow.id,
+            cbv_applicant_id: cbv_flow.cbv_applicant_id,
+            invitation_id: cbv_flow.cbv_flow_invitation_id,
+            sync_duration_seconds: be_a(Numeric),
+
+            # Identity fields
+            identity_success: true,
+            identity_supported: true,
+            identity_count: 1,
+            identity_full_name_present: true,
+            identity_full_name_length: 15,
+            identity_date_of_birth_present: true,
+            identity_ssn_present: true,
+            identity_emails_count: 1,
+            identity_phone_numbers_count: 1,
+
+            # Income fields
+            income_success: true,
+            income_supported: true,
+            income_compensation_amount_present: true,
+            income_compensation_unit_present: true,
+            income_pay_frequency_present: true,
+
+            # Paystubs fields
+            paystubs_success: true,
+            paystubs_supported: true,
+            paystubs_count: 10,
+            paystubs_deductions_count: 16,
+            paystubs_hours_by_earning_category_count: 10,
+            paystubs_hours_present: true,
+            paystubs_earnings_count: 33,
+            paystubs_earnings_with_hours_count: 10,
+            paystubs_earnings_type_base_count: 10,
+            paystubs_earnings_type_bonus_count: 10,
+            paystubs_earnings_type_overtime_count: 5,
+            paystubs_earnings_type_commission_count: 8,
+
+            # Employment fields
+            employment_success: true,
+            employment_supported: true,
+            employment_status: "employed",
+            employment_employer_name: "Whole Foods",
+            employment_employer_address_present: true,
+            employment_employer_phone_number_present: true,
+            employment_start_date: "2022-08-08",
+            employment_termination_date: nil,
+
+            # Gigs fields
+            gigs_success: true,
+            gigs_supported: true
+          )
+        end
+
+        process_webhook("paystubs.fully_synced")
       end
     end
   end

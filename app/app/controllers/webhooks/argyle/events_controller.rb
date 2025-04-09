@@ -84,6 +84,8 @@ class Webhooks::Argyle::EventsController < ApplicationController
   end
 
   def track_events(webhook_event)
+    payroll_account = webhook_event.payroll_account
+
     if webhook_event.event_name == "accounts.connected"
       event_logger.track("ApplicantCreatedArgyleAccount", request, {
         cbv_applicant_id: @cbv_flow.cbv_applicant_id,
@@ -91,18 +93,76 @@ class Webhooks::Argyle::EventsController < ApplicationController
         invitation_id: @cbv_flow.cbv_flow_invitation_id,
         provider_name: params.dig("data", "resource", "providers_connected")&.first
       })
-    elsif @payroll_account&.has_fully_synced?
+    elsif payroll_account&.has_fully_synced?
+      report = Aggregators::AggregatorReports::ArgyleReport.new(
+        payroll_accounts: [ payroll_account ],
+        argyle_service: argyle_for(@cbv_flow),
+        from_date: @cbv_flow.cbv_applicant.paystubs_query_begins_at,
+        to_date: @cbv_flow.cbv_applicant.snap_application_date
+      )
+      report.fetch
+
       event_logger.track("ApplicantFinishedArgyleSync", request, {
         cbv_applicant_id: @cbv_flow.cbv_applicant_id,
         cbv_flow_id: @cbv_flow.id,
         invitation_id: @cbv_flow.cbv_flow_invitation_id,
-        identities_success: @payroll_account.job_succeeded?("identities"),
-        identities_supported: @payroll_account.supported_jobs.include?("identities"),
-        paystubs_success: @payroll_account.job_succeeded?("paystubs"),
-        paystubs_supported: @payroll_account.supported_jobs.include?("paystubs"),
-        gigs_success: @payroll_account.job_succeeded?("gigs"),
-        gigs_supported: @payroll_account.supported_jobs.include?("gigs"),
-        sync_duration_seconds: Time.now - @payroll_account.created_at
+        sync_duration_seconds: Time.now - payroll_account.created_at,
+
+        # #####################################################################
+        # Add attributes to track provider data quality.
+        #
+        # **Important Note**: We do not send PII to our analytics platforms!
+        # As such, any field here that deals with PII should coerce it into a
+        # boolean (with `#present?`) or perform a function to anonymize the
+        # value (like `length`) before sending it to the event logger.
+        # #####################################################################
+
+        # Identity fields (originally from "identities" endpoint)
+        identity_success: payroll_account.job_succeeded?("identity"),
+        identity_supported: payroll_account.supported_jobs.include?("identity"),
+        identity_count: report.identities.length,
+        identity_full_name_present: report.identities.first&.full_name&.present?,
+        identity_full_name_length: report.identities.first&.full_name&.length,
+        identity_date_of_birth_present: report.identities.first&.date_of_birth.present?,
+        identity_ssn_present: report.identities.first&.ssn.present?,
+        identity_emails_count: report.identities.sum { |i| i.emails.length },
+        identity_phone_numbers_count: report.identities.sum { |i| i.phone_numbers.length },
+
+        # Income fields (originally from "identities" endpoint)
+        income_success: payroll_account.job_succeeded?("income"),
+        income_supported: payroll_account.supported_jobs.include?("income"),
+        income_compensation_amount_present: report.incomes.first&.compensation_amount.present?,
+        income_compensation_unit_present: report.incomes.first&.compensation_unit.present?,
+        income_pay_frequency_present: report.incomes.first&.pay_frequency.present?,
+
+        # Paystubs fields
+        paystubs_success: payroll_account.job_succeeded?("paystubs"),
+        paystubs_supported: payroll_account.supported_jobs.include?("paystubs"),
+        paystubs_count: report.paystubs.length,
+        paystubs_deductions_count: report.paystubs.sum { |p| p.deductions.length },
+        paystubs_hours_by_earning_category_count: report.paystubs.sum { |p| p.hours_by_earning_category.length },
+        paystubs_hours_present: report.paystubs.first&.hours.present?,
+        paystubs_earnings_count: report.paystubs.sum { |p| p.earnings.length },
+        paystubs_earnings_with_hours_count: report.paystubs.sum { |p| p.earnings.count { |e| e.hours.present? } },
+        paystubs_earnings_type_base_count: report.paystubs.sum { |p| p.earnings.count { |e| e.category == "base" } },
+        paystubs_earnings_type_bonus_count: report.paystubs.sum { |p| p.earnings.count { |e| e.category == "bonus" } },
+        paystubs_earnings_type_overtime_count: report.paystubs.sum { |p| p.earnings.count { |e| e.category == "overtime" } },
+        paystubs_earnings_type_commission_count: report.paystubs.sum { |p| p.earnings.count { |e| e.category == "commission" } },
+
+        # Employment fields (originally from "identities" endpoint)
+        employment_success: payroll_account.job_succeeded?("employment"),
+        employment_supported: payroll_account.supported_jobs.include?("employment"),
+        employment_status: report.employments.first&.status,
+        employment_employer_name: report.employments.first&.employer_name,
+        employment_employer_address_present: report.employments.first&.employer_address&.present?,
+        employment_employer_phone_number_present: report.employments.first&.employer_name&.present?,
+        employment_start_date: report.employments.first&.start_date,
+        employment_termination_date: report.employments.first&.termination_date,
+
+        # Gigs fields
+        gigs_success: payroll_account.job_succeeded?("gigs"),
+        gigs_supported: payroll_account.supported_jobs.include?("gigs")
+        # TODO: Add fields from /gigs after FFS-2575.
       })
     end
   rescue => ex
