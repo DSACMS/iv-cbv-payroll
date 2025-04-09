@@ -31,7 +31,7 @@ RSpec.describe "e2e CBV flow test", type: :feature, js: true, vcr: { record: REC
         @ngrok.tunnel_url,
         ENV["USER"]
       )
-    end
+    end if @subscription_id && RECORD_OPTION == :all
   end
 
   after(:all, js: true) do
