@@ -6,7 +6,7 @@ on:
 
 jobs:
   rspec:
-    name: Rspec
+    name: E2E Rspec
     runs-on: ubuntu-22.04
     services:
       postgres:
@@ -38,4 +38,8 @@ jobs:
           DATABASE_URL: ${{ steps.setup.outputs.database_url }}
           RAILS_MASTER_KEY: 0f5db7adba61669d4cc45dfa6b2464d7
           RUN_E2E_TESTS: 1
+          PINWHEEL_API_TOKEN_SANDBOX: a-valid-token-aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+          PINWHEEL_SANDBOX: true
+          SUPPORTED_PROVIDERS: pinwheel
+
         run:  bundle exec rspec ./spec/e2e
