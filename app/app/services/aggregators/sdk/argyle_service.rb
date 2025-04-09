@@ -28,6 +28,8 @@ module Aggregators::Sdk
     USER_TOKENS_ENDPOINT = "user-tokens"
     ACCOUNTS_ENDPOINT = "accounts"
     EMPLOYMENTS_ENDPOINT = "employments"
+    GIGS_ENDPOINT = "gigs"
+    SHIFTS_ENDPOINT = "shifts"
     WEBHOOKS_ENDPOINT = "webhooks"
 
     attr_reader :webhook_secret
@@ -150,6 +152,25 @@ module Aggregators::Sdk
     # https://docs.argyle.com/api-reference/user-tokens#create
     def create_user_token(user_id)
       @http.post(build_url(USER_TOKENS_ENDPOINT), { user: user_id }.to_json).body
+    end
+
+    # https://docs.argyle.com/api-reference/gigs#list
+    def fetch_gigs_api(account: nil, user: nil,
+                       from_start_datetime: nil,
+                       to_start_datetime: nil, limit: 200)
+      params = {
+        account: account,
+        user: user,
+        from_start_datetime: from_start_datetime,
+        to_start_datetime: to_start_datetime,
+        limit: limit }.compact
+
+      @http.get(GIGS_ENDPOINT, params).body
+    end
+
+    # https://docs.argyle.com/api-reference/gigs#list
+    def fetch_shifts_api(**params)
+      @http.get(SHIFTS_ENDPOINT, params).body
     end
 
     # https://docs.argyle.com/api-reference/employments#list
