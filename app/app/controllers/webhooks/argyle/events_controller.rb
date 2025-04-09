@@ -108,6 +108,15 @@ class Webhooks::Argyle::EventsController < ApplicationController
         invitation_id: @cbv_flow.cbv_flow_invitation_id,
         sync_duration_seconds: Time.now - payroll_account.created_at,
 
+        # #####################################################################
+        # Add attributes to track provider data quality.
+        #
+        # **Important Note**: We do not send PII to our analytics platforms!
+        # As such, any field here that deals with PII should coerce it into a
+        # boolean (with `#present?`) or perform a function to anonymize the
+        # value (like `length`) before sending it to the event logger.
+        # #####################################################################
+
         # Identity fields (originally from "identities" endpoint)
         identity_success: payroll_account.job_succeeded?("identity"),
         identity_supported: payroll_account.supported_jobs.include?("identity"),
