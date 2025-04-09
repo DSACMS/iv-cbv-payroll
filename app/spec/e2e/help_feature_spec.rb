@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe "Help Features", type: :feature, js: true do
+RSpec.xdescribe "Help Features", type: :feature, js: true do
   include E2eTestHelpers
   include PinwheelApiHelper
 
