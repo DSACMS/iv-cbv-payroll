@@ -61,7 +61,6 @@ module Aggregators::AggregatorReports
 
     def transform_gigs(gigs_json)
       gigs_json["results"].map do |gig_json|
-        puts("gig json: #{gig_json}")
         Gig.from_argyle(gig_json)
       end
     end
