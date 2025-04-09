@@ -31,8 +31,8 @@ RSpec.describe Aggregators::FormatMethods::Argyle, type: :service do
   end
 
   describe '.format_currency' do
-    it 'converts string amount to float' do
-      expect(described_class.format_currency("123.45")).to eq(123.45)
+    it 'converts string amount to the number of cents' do
+      expect(described_class.format_currency("123.45")).to eq(12345)
     end
 
     it 'returns nil for nil input' do
@@ -58,6 +58,43 @@ RSpec.describe Aggregators::FormatMethods::Argyle, type: :service do
       gross_pay_list.append({ "type" => "bonus", "hours" => nil })
       result = described_class.hours_by_earning_category(gross_pay_list)
       expect(result).to eq({ "regular" => 75.0, "overtime" => 5.0 })
+    end
+  end
+  describe '.format_employer_address' do
+    it 'handles nil paystub' do
+      a_paystub_json = nil
+      expect(described_class.format_employer_address(a_paystub_json)).to be_nil
+    end
+    it 'handles nil employer_address' do
+      a_paystub_json = {
+        "employer_address" => nil
+      }
+      expect(described_class.format_employer_address(a_paystub_json)).to be_nil
+    end
+    it 'formats address properly without line2' do
+      a_paystub_json = {
+        "employer_address" => {
+        "line1" =>  "123 Main St",
+        "line2" => nil,
+        "city" => "Anytown",
+        "state" => "NY",
+        "postal_code" => "12345"
+        }
+      }
+      expect(described_class.format_employer_address(a_paystub_json)).to eq("123 Main St, Anytown, NY 12345")
+    end
+
+    it 'formats address properly with line2' do
+      a_paystub_json = {
+        "employer_address" => {
+          "line1" =>  "123 Main St",
+          "line2" => "Unit 2",
+          "city" => "Anytown",
+          "state" => "NY",
+          "postal_code" => "12345"
+        }
+      }
+      expect(described_class.format_employer_address(a_paystub_json)).to eq("123 Main St, Unit 2, Anytown, NY 12345")
     end
   end
 end

@@ -119,6 +119,7 @@ class Cbv::PaymentDetailsController < Cbv::BaseController
     event_logger.track("ApplicantViewedPaymentDetails", request, {
       cbv_applicant_id: @cbv_flow.cbv_applicant_id,
       cbv_flow_id: @cbv_flow.id,
+      client_agency_id: current_agency&.id,
       invitation_id: @cbv_flow.cbv_flow_invitation_id,
       pinwheel_account_id: @pinwheel_account.id,
       payments_length: @payroll_account_report.paystubs.length,
@@ -136,6 +137,7 @@ class Cbv::PaymentDetailsController < Cbv::BaseController
     event_logger.track("ApplicantSavedPaymentDetails", request, {
       cbv_applicant_id: @cbv_flow.cbv_applicant_id,
       cbv_flow_id: @cbv_flow.id,
+      client_agency_id: current_agency&.id,
       invitation_id: @cbv_flow.cbv_flow_invitation_id,
       additional_information_length: comment_data ? comment_data["comment"].length : 0
     })

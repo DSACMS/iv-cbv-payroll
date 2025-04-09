@@ -22,7 +22,9 @@ module Aggregators::FormatMethods::Argyle
 
   def self.format_currency(amount)
     return unless amount
-    amount.to_f
+    dollars, cents = amount.split(".").map(&:to_i)
+
+    (dollars * 100) + cents
   end
 
   def self.hours_by_earning_category(gross_pay_list)
@@ -30,5 +32,15 @@ module Aggregators::FormatMethods::Argyle
        .filter { |e| e["hours"].present? }
        .group_by { |e| e["type"] }
        .transform_values { |earnings| earnings.sum { |e| e["hours"].to_f } }
+  end
+
+  def self.format_employer_address(a_paystub)
+    return unless a_paystub.present? && a_paystub["employer_address"].present?
+    employer_address = a_paystub["employer_address"]
+    [
+      employer_address["line1"],
+      employer_address["line2"],
+      "#{employer_address['city']}, #{employer_address['state']} #{employer_address['postal_code']}"
+    ].compact.join(", ")
   end
 end

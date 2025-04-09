@@ -20,8 +20,10 @@ module Aggregators::ResponseObjects
       new(
         account_id: identities_response_body["account"],
         pay_frequency: identities_response_body["base_pay"]["period"],
-        compensation_amount: Aggregators::FormatMethods::Argyle.format_currency(identities_response_body["base_pay"]["amount"]),
-        compensation_unit: identities_response_body["base_pay"]["currency"],
+        compensation_amount: Aggregators::FormatMethods::Argyle.format_currency(
+          identities_response_body["base_pay"]["amount"]
+        ),
+        compensation_unit: identities_response_body["base_pay"]["currency"]
       )
     end
   end

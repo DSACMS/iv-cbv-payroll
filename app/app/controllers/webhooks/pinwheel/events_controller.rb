@@ -1,6 +1,6 @@
 class Webhooks::Pinwheel::EventsController < ApplicationController
   before_action :set_cbv_flow, :set_pinwheel, :authorize_webhook
-  after_action :track_events, :update_synchonization_page
+  after_action :track_events
   skip_before_action :verify_authenticity_token
 
   # To prevent timing attacks, we attempt to verify the webhook signature
@@ -18,14 +18,6 @@ class Webhooks::Pinwheel::EventsController < ApplicationController
       event_name: params["event"],
       event_outcome: params.dig("payload", "outcome"),
     )
-
-    if @payroll_account.has_fully_synced?
-      PaystubsChannel.broadcast_to(@cbv_flow, {
-        event: "cbv.status_update",
-        account_id: params["payload"]["account_id"],
-        has_fully_synced: true
-      })
-    end
   end
 
   private
@@ -62,6 +54,7 @@ class Webhooks::Pinwheel::EventsController < ApplicationController
       event_logger.track("ApplicantCreatedPinwheelAccount", request, {
         cbv_applicant_id: @cbv_flow.cbv_applicant_id,
         cbv_flow_id: @cbv_flow.id,
+        client_agency_id: @cbv_flow.client_agency_id,
         invitation_id: @cbv_flow.cbv_flow_invitation_id,
         platform_name: params["payload"]["platform_name"]
       })
@@ -69,6 +62,7 @@ class Webhooks::Pinwheel::EventsController < ApplicationController
       event_logger.track("ApplicantFinishedPinwheelSync", request, {
         cbv_applicant_id: @cbv_flow.cbv_applicant_id,
         cbv_flow_id: @cbv_flow.id,
+        client_agency_id: @cbv_flow.client_agency_id,
         invitation_id: @cbv_flow.cbv_flow_invitation_id,
         identity_success: @payroll_account.job_succeeded?("identity"),
         identity_supported: @payroll_account.supported_jobs.include?("identity"),
@@ -85,9 +79,5 @@ class Webhooks::Pinwheel::EventsController < ApplicationController
     raise ex unless Rails.env.production?
 
     Rails.logger.error "Unable to track NewRelic event (in #{self.class.name}): #{ex}"
-  end
-
-  def update_synchonization_page
-    @payroll_account.broadcast_replace(partial: "cbv/synchronizations/indicators", locals: { pinwheel_account: @payroll_account })
   end
 end
