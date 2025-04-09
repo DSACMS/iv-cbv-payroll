@@ -22,13 +22,14 @@ module Aggregators::ResponseObjects
       )
     end
 
-    def self.from_argyle(identity_response_body)
+    def self.from_argyle(identity_response_body, a_paystub_response_body = nil)
       new(
         account_id: identity_response_body["account"],
         employer_name: identity_response_body["employer"],
         start_date: identity_response_body["hire_date"],
         termination_date: identity_response_body["termination_date"],
         status: Aggregators::FormatMethods::Argyle.format_employment_status(identity_response_body["employment_status"]),
+        employer_address: Aggregators::FormatMethods::Argyle.format_employer_address(a_paystub_response_body)
       )
     end
   end

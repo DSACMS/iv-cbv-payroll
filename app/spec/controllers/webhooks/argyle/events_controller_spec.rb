@@ -23,54 +23,55 @@ RSpec.describe Webhooks::Argyle::EventsController, type: :controller do
     allow(argyle_webhook).to receive(:get_webhook_events).and_return(Aggregators::Webhooks::Argyle.get_webhook_events)
   end
 
-  shared_examples_for "a webhook that creates a webhook event record" do |event_type, check_status = true|
-    let(:webhook_request) { create(:webhook_request, event_type: event_type).payload }
-
-    it "creates a new webhook event with #{event_type}" do
-      post :create, params: webhook_request
-      expect(response).to have_http_status(:ok) if check_status
-    end
-  end
-
-  shared_examples_for "a sequential webhook step" do |event_type|
-    it "processes the #{event_type} webhook" do
-      webhook_request = create(
+  shared_examples_for "receiving a webhook" do |event_type|
+    let(:webhook_request) do
+      create(
         :webhook_request,
         :argyle,
-        argyle_user_id: cbv_flow.argyle_user_id,
-        argyle_account_id: argyle_account_id,
-        event_type: event_type
-      ).payload
+        event_type: event_type,
+        argyle_user_id: cbv_flow.argyle_user_id
+      )
+    end
 
-      post :create, params: webhook_request
-
-      payroll_account = PayrollAccount.first
-      webhook_event = payroll_account.webhook_events.last
-
-      expect(webhook_event.event_name).to eq(event_type)
-      expect(webhook_event.payroll_account.pinwheel_account_id).to eq(payroll_account.pinwheel_account_id)
+    it "creates a WebhookEvent with #{event_type}" do
+      expect { post :create, params: webhook_request.payload }
+        .to change(WebhookEvent, :count).by(1)
+      expect(response).to have_http_status(:ok)
     end
   end
 
   describe 'POST #create' do
+    let!(:cbv_flow) { create(:cbv_flow, argyle_user_id: "abc-def-ghi") }
+
     context 'with accounts.connected webhook' do
-      it_behaves_like "a webhook that creates a webhook event record", "accounts.connected", true
+      it_behaves_like "receiving a webhook", "accounts.connected"
     end
 
     context 'with identities.added webhook' do
-      it_behaves_like "a webhook that creates a webhook event record", "identities.added", false
+      it_behaves_like "receiving a webhook", "identities.added"
     end
 
     context 'with gigs.fully_synced webhook' do
-      it_behaves_like "a webhook that creates a webhook event record", "gigs.fully_synced", false
+      it_behaves_like "receiving a webhook", "gigs.fully_synced"
     end
 
     context 'with users.fully_synced webhook' do
-      it_behaves_like "a webhook that creates a webhook event record", "users.fully_synced", false
+      # The users.fully_synced webhook is the only one that requires the
+      # payroll account to already have been created by a previous webhook.
+      before do
+        create(
+          :payroll_account,
+          :argyle,
+          cbv_flow: cbv_flow,
+          pinwheel_account_id: webhook_request.argyle_account_id,
+        )
+      end
+
+      it_behaves_like "receiving a webhook", "users.fully_synced"
     end
 
     context 'with paystubs.fully_synced webhook' do
-      it_behaves_like "a webhook that creates a webhook event record", "paystubs.fully_synced", false
+      it_behaves_like "receiving a webhook", "paystubs.fully_synced"
     end
   end
 

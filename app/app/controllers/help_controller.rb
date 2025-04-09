@@ -21,7 +21,7 @@ class HelpController < ApplicationController
         invitation_id: cbv_flow&.cbv_flow_invitation_id,
         client_agency_id: current_agency&.id,
         flow_started_seconds_ago: cbv_flow ? (Time.now - cbv_flow.created_at).to_i : nil,
-        language: I18n.locale
+        locale: I18n.locale
       })
     rescue => ex
       Rails.logger.error "Unable to track event (ApplicantViewedHelpTopic): #{ex}"

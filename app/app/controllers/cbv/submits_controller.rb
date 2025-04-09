@@ -21,7 +21,7 @@ class Cbv::SubmitsController < Cbv::BaseController
       format.pdf do
         event_logger.track("ApplicantDownloadedIncomePDF", request, {
           timestamp: Time.now.to_i,
-          client_agency_id: @cbv_flow.client_agency_id,
+          client_agency_id: current_agency&.id,
           cbv_applicant_id: @cbv_flow.cbv_applicant_id,
           cbv_flow_id: @cbv_flow.id,
           invitation_id: @cbv_flow.cbv_flow_invitation_id,
@@ -31,7 +31,7 @@ class Cbv::SubmitsController < Cbv::BaseController
         render pdf: "#{@cbv_flow.id}",
           layout: "pdf",
           locals: {
-            is_caseworker: Rails.env.development? && params[:is_caseworker],
+            is_caseworker: (Rails.env.development? || Rails.env.test?) && params[:is_caseworker],
             aggregator_report: @aggregator_report
           },
           footer: { right: "Income Verification Report | Page [page] of [topage]", font_size: 10 },
@@ -195,7 +195,7 @@ class Cbv::SubmitsController < Cbv::BaseController
       account_count_with_additional_information:
         cbv_flow.additional_information.values.count { |info| info["comment"].present? },
       flow_started_seconds_ago: (Time.now - cbv_flow.created_at).to_i,
-      language: I18n.locale
+      locale: I18n.locale
     })
   rescue => ex
     Rails.logger.error "Failed to track NewRelic event: #{ex.message}"
@@ -230,12 +230,12 @@ class Cbv::SubmitsController < Cbv::BaseController
   def track_accessed_submit_event(cbv_flow)
     event_logger.track("ApplicantAccessedSubmitPage", request, {
       timestamp: Time.now.to_i,
-      client_agency_id: cbv_flow.client_agency_id,
+      client_agency_id: current_agency&.id,
       cbv_flow_id: cbv_flow.id,
       cbv_applicant_id: cbv_flow.cbv_applicant_id,
       invitation_id: cbv_flow.cbv_flow_invitation_id,
       flow_started_seconds_ago: (Time.now - cbv_flow.created_at).to_i,
-      language: I18n.locale
+      locale: I18n.locale
     })
   rescue => ex
     Rails.logger.error "Unable to track event (ApplicantAccessedIncomeSummary): #{ex}"
