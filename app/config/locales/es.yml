@@ -59,15 +59,19 @@ es:
           case_number:
             blank: Escriba su número de caso.
             prompt: Número de caso
+            super_one_html: Número de caso<sup>1</sup>
           first_name:
             blank: Escriba su nombre.
             prompt: Nombre
+            super_one_html: Nombre<sup>1</sup>
           last_name:
             blank: Escriba su apellido.
             prompt: Apellido
+            super_one_html: Apellido<sup>1</sup>
           middle_name:
             blank: Escriba su segundo nombre.
             prompt: Segundo nombre
+            super_one_html: Segundo nombre<sup>1</sup>
       show:
         application_information: Información relacionada con la solicitud
         application_information_explanation: Esta información se puede encontrar en el sitio web de la agencia.
