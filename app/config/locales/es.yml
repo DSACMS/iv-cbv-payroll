@@ -380,7 +380,8 @@ es:
           - Solo usamos su información de inicio de sesión a los fines de verificar los detalles relacionados con la nómina una vez. Su información de inicio de sesión no se volverá a usar ni se usará para ningún otro fin.
           title: Su información solo se emplea a los fines de verificar sus ingresos.
         step3:
-          content: El servicio que contratamos para verificar sus datos de nómina es de confianza; es más, muchas empresas también lo contratan para tratar los datos de nómina de manera segura.
+          content:
+          - El servicio que contratamos para verificar sus datos de nómina es de confianza; es más, muchas empresas también lo contratan para tratar los datos de nómina de manera segura.
           title: Contratamos servicios de confianza.
         title: No me siento cómodo para ingresar mis credenciales de inicio de sesión
       employer:
