@@ -79,6 +79,13 @@ Billy.proxy.restore_cache
 
 
 RSpec.configure do |config|
+  config.before(:each, type: :feature) do
+    Capybara.current_driver = :selenium_chrome_headless
+  end
+
+  # Remove this line if you're not using ActiveRecord or ActiveRecord fixtures
+  config.fixture_path = "#{::Rails.root}/spec/fixtures"
+
   # Include a handful of useful helpers we've written
   config.include TestHelpers
 
