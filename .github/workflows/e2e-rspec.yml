@@ -1,0 +1,41 @@
+name: e2e rspec tests
+
+on:
+  pull_request:
+    paths: ['app/**']
+
+jobs:
+  rspec:
+    name: Rspec
+    runs-on: ubuntu-22.04
+    services:
+      postgres:
+        image: postgres
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+        ports: ["5432:5432"]
+        env:
+          POSTGRES_DB: iv_cbv_payroll_test
+          POSTGRES_USER: cidbuser
+          POSTGRES_PASSWORD: postgres
+
+    steps:
+      - uses: actions/checkout@v4
+      - uses: ./.github/actions/cleanup-gemfile
+
+      - id: setup
+        uses: ./.github/actions/setup-project
+        with:
+          rails_env: test
+
+      - name: Run rspec
+        working-directory: app
+        env:
+          RAILS_ENV: test
+          DATABASE_URL: ${{ steps.setup.outputs.database_url }}
+          RAILS_MASTER_KEY: 0f5db7adba61669d4cc45dfa6b2464d7
+          RUN_E2E_TESTS: 1
+        run: bundle exec rspec
