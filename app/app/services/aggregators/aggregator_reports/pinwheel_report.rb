@@ -13,11 +13,23 @@ module Aggregators::AggregatorReports
       @employments.append(fetch_employment(account_id: account.pinwheel_account_id))
       @incomes.append(fetch_income(account_id: account.pinwheel_account_id))
       @paystubs.append(*fetch_paystubs(account_id: account.pinwheel_account_id))
+      @gigs.append(*fetch_gigs(account_id: account.pinwheel_account_id))
     end
 
     def fetch_paystubs(account_id:)
       json = @pinwheel_service.fetch_paystubs_api(account_id: account_id, from_pay_date: @from_date, to_pay_date: @to_date)
       json["data"].map { |paystub_json| Aggregators::ResponseObjects::Paystub.from_pinwheel(paystub_json) }
+    end
+
+    def fetch_gigs(account_id:)
+      json = @pinwheel_service.fetch_shifts_api(account_id: account_id)
+      transform_gigs(json)
+    end
+
+    def transform_gigs(shifts_json)
+      shifts_json["data"].map do |shift_json|
+        Aggregators::ResponseObjects::Gig.from_pinwheel(shift_json)
+      end
     end
 
     def fetch_employment(account_id:)

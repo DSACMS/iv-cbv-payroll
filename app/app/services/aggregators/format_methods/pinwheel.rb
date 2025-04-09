@@ -25,4 +25,9 @@ module Aggregators::FormatMethods::Pinwheel
       .group_by { |e| e["category"] }
       .transform_values { |earnings| earnings.sum { |e| e["hours"] } }
   end
+
+  def self.format_currency(amount)
+    return unless amount
+    amount.to_f / 100.0 # Pinwheel amounts are in cents
+  end
 end
