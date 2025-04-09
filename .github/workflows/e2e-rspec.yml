@@ -31,11 +31,11 @@ jobs:
         with:
           rails_env: test
 
-      - name: Run rspec
+      - name: Run e2e tests via rspec
         working-directory: app
         env:
           RAILS_ENV: test
           DATABASE_URL: ${{ steps.setup.outputs.database_url }}
           RAILS_MASTER_KEY: 0f5db7adba61669d4cc45dfa6b2464d7
           RUN_E2E_TESTS: 1
-        run: bundle exec rspec
+        run:  bundle exec rspec ./spec/e2e
