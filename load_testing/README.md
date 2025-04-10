@@ -1,3 +1,9 @@
+installing k6 locally:
+
+```
+brew install k6
+```
+
 instructions for running load tests locally:
 
 In Grafana, add a data source: choose InfluxDB
