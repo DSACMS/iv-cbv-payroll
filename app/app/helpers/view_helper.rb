@@ -36,8 +36,10 @@ module ViewHelper
     number_to_currency(dollars_in_cents.to_f / 100)
   end
 
-  def translate_pinwheel_value(namespace, value)
-    i18n_key = "pinwheel.#{namespace}.#{value}"
+  def translate_aggregator_value(namespace, value)
+    i18n_key = "aggregator_strings.#{namespace}.#{value}"
+
+    Rails.logger.info("TIMOTEST translate_aggregator_value: #{i18n_key}")
 
     # convert the key to snake_case, replacing hyphens with underscores
     i18n_key = i18n_key.gsub("-", "_").downcase
