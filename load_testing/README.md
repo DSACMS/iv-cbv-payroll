@@ -19,4 +19,4 @@ Figure out what CBV flow invitation tokens you want to use locally
 
 Then pass those into the script
 
-K6_OUT=influxdb k6 run loadtest.js --env USER_TOKENS=<COMMA_SEPERATED_TOKENS>
+K6_OUT=influxdb k6 run loadtest.js --env USER_TOKENS=<COMMA_SEPERATED_TOKENS> --env URL_BASE=http://localhost:3000
