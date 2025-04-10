@@ -1,7 +1,7 @@
 # This is an abstract class that should be inherited by all aggregator report classes.
 module Aggregators::AggregatorReports
   class AggregatorReport
-    attr_accessor :payroll_accounts, :identities, :incomes, :employments, :paystubs, :from_date, :to_date, :has_fetched
+    attr_accessor :payroll_accounts, :identities, :incomes, :employments, :gigs, :paystubs, :from_date, :to_date, :has_fetched
 
     def initialize(payroll_accounts: [], from_date: nil, to_date: nil)
       @has_fetched = false
@@ -10,6 +10,7 @@ module Aggregators::AggregatorReports
       @incomes = []
       @employments = []
       @paystubs = []
+      @gigs = []
       @from_date = from_date
       @to_date = to_date
     end
@@ -42,13 +43,16 @@ module Aggregators::AggregatorReports
       @has_fetched = all_successful
     end
 
-    AccountReportStruct = Struct.new(:identity, :income, :employment, :paystubs)
+
+
+    AccountReportStruct = Struct.new(:identity, :income, :employment, :paystubs, :gigs)
     def find_account_report(account_id)
       AccountReportStruct.new(
-        @identities.find { |identity| identity.account_id == account_id },
-        @incomes.find { |income| income.account_id == account_id },
-        @employments.find { |employment| employment.account_id == account_id },
-        @paystubs.filter { |paystub| paystub.account_id == account_id }
+      @identities.find { |identity| identity.account_id == account_id },
+      @incomes.find { |income| income.account_id == account_id },
+      @employments.find { |employment| employment.account_id == account_id },
+      @paystubs.filter { |paystub| paystub.account_id == account_id },
+      @gigs.filter { |gig| gig.account_id == account_id }
       )
     end
 
@@ -69,7 +73,8 @@ module Aggregators::AggregatorReports
             income: has_income_data && @incomes.find { |income| income.account_id == account_id },
             employment: has_employment_data && @employments.find { |employment| employment.account_id == account_id },
             identity: has_identity_data && @identities.find { |identity| identity.account_id == account_id },
-            paystubs: account_paystubs
+            paystubs: account_paystubs,
+            gigs: @gigs.filter { |gig| gig.account_id == account_id }
           }
         end
     end

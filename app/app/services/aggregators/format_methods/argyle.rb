@@ -43,4 +43,9 @@ module Aggregators::FormatMethods::Argyle
       "#{employer_address['city']}, #{employer_address['state']} #{employer_address['postal_code']}"
     ].compact.join(", ")
   end
+
+  def self.seconds_to_hours(seconds)
+    return unless seconds
+    (seconds / 3600.0).round(2)
+  end
 end

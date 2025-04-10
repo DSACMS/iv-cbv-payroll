@@ -16,7 +16,6 @@ FactoryBot.define do
       after(:build) do |webhook_request, evaluator|
         webhook_request.payload =
           case evaluator.event_type
-
           when "accounts.connected"
             {
               "event" => evaluator.event_type,
