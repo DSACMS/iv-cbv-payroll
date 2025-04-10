@@ -111,6 +111,9 @@ RSpec.describe Webhooks::Argyle::EventsController, type: :controller do
         allow_any_instance_of(Aggregators::Sdk::ArgyleService)
           .to receive(:fetch_paystubs_api)
           .and_return(argyle_load_relative_json_file("sarah", "request_paystubs.json"))
+        allow_any_instance_of(Aggregators::Sdk::ArgyleService)
+          .to receive(:fetch_gigs_api)
+          .and_return(argyle_load_relative_json_file("bob", "request_gigs.json"))
         allow(controller).to receive(:event_logger).and_return(fake_event_logger)
         allow(fake_event_logger).to receive(:track)
       end
