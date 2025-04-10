@@ -49,11 +49,11 @@ module ViewHelper
       value
     else
       if Rails.env.development? || Rails.env.test?
-        raise "Missing Pinwheel translation for #{namespace}.#{value}"
+        raise "Missing aggregator translation for #{namespace}.#{value}"
       end
 
       # In production, log warning and return original value
-      Rails.logger.warn "Unknown Pinwheel value for #{namespace}: #{value}"
+      Rails.logger.warn "Unknown aggregator value for #{namespace}: #{value}"
 
       value
     end
