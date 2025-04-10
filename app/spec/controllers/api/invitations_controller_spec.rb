@@ -81,6 +81,23 @@ RSpec.describe Api::InvitationsController do
       end
     end
 
+    context "params not included in the agency's valid attributes" do
+      let(:params_with_invalid_attributes) do
+        # client_id_number is only valid for NYC (not MA)
+        valid_params[:agency_partner_metadata][:client_id_number] = "1234567"
+        valid_params
+      end
+
+      it "creates the invitation but does not set the invalid attribute" do
+        expect do
+          post :create, params: params_with_invalid_attributes
+        end.to change(CbvFlowInvitation, :count).by(1)
+
+        invitation = CbvFlowInvitation.last
+        expect(invitation.cbv_applicant.client_id_number).to be_nil
+      end
+    end
+
     context "unauthorized user" do
       before do
         request.headers["Authorization"] = nil
