@@ -39,8 +39,6 @@ module ViewHelper
   def translate_aggregator_value(namespace, value)
     i18n_key = "aggregator_strings.#{namespace}.#{value}"
 
-    Rails.logger.info("TIMOTEST translate_aggregator_value: #{i18n_key}")
-
     # convert the key to snake_case, replacing hyphens with underscores
     i18n_key = i18n_key.gsub("-", "_").downcase
 
