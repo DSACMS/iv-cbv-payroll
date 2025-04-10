@@ -178,7 +178,7 @@ RSpec.describe Aggregators::Sdk::PinwheelService, type: :service do
     let(:account_id) { SecureRandom.uuid }
 
     before do
-      pinwheel_stub_request_end_user_shifts_response
+      pinwheel_stub_request_shifts_response
     end
 
     it "returns shifts data for the specified account" do
