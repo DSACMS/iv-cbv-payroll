@@ -5,6 +5,7 @@ class CbvApplicant::AzDes < CbvApplicant
     middle_name
     last_name
     case_number
+    income_changes
   ]
 
   validates :case_number, presence: true
