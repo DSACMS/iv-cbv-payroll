@@ -18,6 +18,7 @@ RSpec.describe Aggregators::AggregatorReports::PinwheelReport, type: :service do
   let(:incomes_json) { pinwheel_load_relative_json_file('request_income_metadata_response.json') }
   let(:employments_json) { pinwheel_load_relative_json_file('request_employment_info_response.json') }
   let(:paystubs_json) { pinwheel_load_relative_json_file('request_end_user_paystubs_response.json') }
+  let(:shifts_json) { pinwheel_load_relative_json_file('request_end_user_shifts_response.json') }
 
   let(:empty_pinwheel_result) { { "result" => [] } }
 
@@ -26,6 +27,7 @@ RSpec.describe Aggregators::AggregatorReports::PinwheelReport, type: :service do
     allow(pinwheel_service).to receive(:fetch_income_api).with(account_id: account).and_return(incomes_json)
     allow(pinwheel_service).to receive(:fetch_employment_api).with(account_id: account).and_return(incomes_json)
     allow(pinwheel_service).to receive(:fetch_paystubs_api).with(account_id: account, from_pay_date: from_date, to_pay_date: to_date).and_return(paystubs_json)
+    allow(pinwheel_service).to receive(:fetch_shifts_api).with(account_id: account).and_return(shifts_json)
   end
 
   describe '#fetch' do
@@ -35,6 +37,7 @@ RSpec.describe Aggregators::AggregatorReports::PinwheelReport, type: :service do
       expect(pinwheel_service).to have_received(:fetch_paystubs_api).with(account_id: account, from_pay_date: from_date, to_pay_date: to_date).exactly(3).times
       expect(pinwheel_service).to have_received(:fetch_employment_api).with(account_id: account).exactly(3).times
       expect(pinwheel_service).to have_received(:fetch_income_api).with(account_id: account).exactly(3).times
+      expect(pinwheel_service).to have_received(:fetch_shifts_api).with(account_id: account).exactly(3).times
     end
 
     it 'transforms all response objects correctly' do
@@ -43,6 +46,7 @@ RSpec.describe Aggregators::AggregatorReports::PinwheelReport, type: :service do
       expect(report.instance_variable_get(:@employments)).to all(be_an(Aggregators::ResponseObjects::Employment))
       expect(report.instance_variable_get(:@incomes)).to all(be_an(Aggregators::ResponseObjects::Income))
       expect(report.instance_variable_get(:@paystubs)).to all(be_an(Aggregators::ResponseObjects::Paystub))
+      expect(report.instance_variable_get(:@gigs)).to all(be_an(Aggregators::ResponseObjects::Gig))
     end
 
     it 'sets @has_fetched to true on success' do
