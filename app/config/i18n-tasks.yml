@@ -136,32 +136,9 @@ ignore_missing:
     # Pinwheel values that are only supported in English:
     - "pinwheel.*"
     # Currently awaiting translation:
-    - "cbv.expired_invitations.show.body_2"
-    - "help.*"
-    - "shared.header.help"
-    - "session_timeout.*"
-    - "pages.{error_404,error_500}.*"
-    - "cbv.error_invalid_link" # FFS-2540
-    - "cbv.applicant_informations.*" # FFS-2540
-    # Missing discovered in FFS-2540
-    - "cbv.submits.show.additional_information_title"
-    - "cbv.submits.show.page_header"
-    - "cbv.submits.show.warning_html"
-    - "cbv.submits.show.legal_header"
-    - "cbv.submits.show.consent_checkbox_label_html"
-    - "cbv.submits.show.share_report_button"
-    - "cbv.submits.show.none_found"
-    - "cbv.submits.show.none_found_confirmed"
-    - "cbv.submits.update.consent_to_authorize_warning"
-    - "cbv.summaries.show.header"
-    - "cbv.summaries.show.total_payments"
-    - "cbv.summaries.show.total_payments_desc"
-    - "cbv.summaries.show.your_information"
-    - "cbv.summaries.show.must_match"
-    - "cbv.summaries.show.application_information"
-    - "cbv.submits.show.client_provided_information" # FFS-2552
-# - 'errors.messages.{accepted,blank,invalid,too_short,too_long}'
-# - '{devise,simple_form}.*'
+    - "cbv.summaries.show.description"  # FFS-2562
+    - "cbv.summaries.show.header"       # FFS-2494
+    # - "example.strings.*" # Tag with ticket number that created or modified the string
 
 ## Consider these keys used:
 ignore_unused:
