@@ -14,7 +14,7 @@ gem "sprockets-rails"
 gem "pg", "~> 1.1"
 
 # Use the Puma web server [https://github.com/puma/puma]
-gem "puma", "~> 6.4.3"
+gem "puma", "~> 6.5.0"
 
 # Bundle and transpile JavaScript [https://github.com/rails/jsbundling-rails]
 gem "jsbundling-rails"
@@ -91,6 +91,7 @@ group :development, :test do
   gem "rubocop-rails-omakase"
   gem "selenium-webdriver"
   gem "timecop"
+  gem "vcr"
 end
 
 group :development do
@@ -112,6 +113,7 @@ group :test do
   gem "webmock"
   gem "factory_bot", "~> 6.4"
   gem "rails-controller-testing"
+  gem "puffing-billy"
 end
 
 group :production do

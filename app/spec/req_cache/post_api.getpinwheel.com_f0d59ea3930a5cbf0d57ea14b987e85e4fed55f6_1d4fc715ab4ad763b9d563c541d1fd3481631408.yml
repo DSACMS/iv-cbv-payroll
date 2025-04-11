@@ -1,0 +1,17 @@
+---
+:scope:
+:url: https://api.getpinwheel.com/v1/link/ui/next/
+:body: '{"encryption_info":null,"payload":{"username":"user_good","password":"pass_good"}}'
+:status: 200
+:method: post
+:headers:
+  Date: Tue, 08 Apr 2025 21:47:02 GMT
+  Content-Type: application/json
+  Content-Length: '68'
+  Connection: close
+  server: TI-84
+  access-control-allow-origin: "*"
+  access-control-allow-credentials: 'true'
+  x-pinwheel-request-id: 0dd50c9f-eb35-4b9d-b662-1502986117b2
+  strict-transport-security: max-age=31536000; includeSubDomains;
+:content: '{"data":{"response_type":"processing","title":null,"subtitle":null}}'
