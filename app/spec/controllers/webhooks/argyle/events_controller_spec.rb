@@ -193,11 +193,14 @@ RSpec.describe Webhooks::Argyle::EventsController, type: :controller do
             employment_success: true,
             employment_supported: true,
             employment_status: "employed",
+            employment_type: "w2",
             employment_employer_name: "Whole Foods",
             employment_employer_address_present: true,
             employment_employer_phone_number_present: true,
             employment_start_date: "2022-08-08",
             employment_termination_date: nil,
+            employment_type_w2_count: 1,
+            employment_type_gig_count: 0,
 
             # Gigs fields
             gigs_success: true,

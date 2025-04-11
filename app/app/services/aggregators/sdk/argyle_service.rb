@@ -168,7 +168,7 @@ module Aggregators::Sdk
       @http.get(GIGS_ENDPOINT, params).body
     end
 
-    # https://docs.argyle.com/api-reference/gigs#list
+    # https://docs.argyle.com/api-reference/shifts#list
     def fetch_shifts_api(**params)
       @http.get(SHIFTS_ENDPOINT, params).body
     end

@@ -48,4 +48,12 @@ module Aggregators::FormatMethods::Argyle
     return unless seconds
     (seconds / 3600.0).round(2)
   end
+
+  def self.employment_type(employment_type)
+    if employment_type == "contractor"
+      :gig
+    else
+      :w2
+    end
+  end
 end

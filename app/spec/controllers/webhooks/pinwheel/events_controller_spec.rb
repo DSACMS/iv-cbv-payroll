@@ -170,12 +170,15 @@ RSpec.describe Webhooks::Pinwheel::EventsController do
               # Employment fields
               employment_success: true,
               employment_supported: true,
+              employment_type: "w2",
               employment_status: "employed",
               employment_employer_name: "Acme Corporation",
               employment_employer_address_present: true,
               employment_employer_phone_number_present: true,
               employment_start_date: "2010-01-01",
-              employment_termination_date: nil
+              employment_termination_date: nil,
+              employment_type_w2_count: 1,
+              employment_type_gig_count: 0
             )
           end
 

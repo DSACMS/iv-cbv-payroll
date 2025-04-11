@@ -122,7 +122,10 @@ class Webhooks::Pinwheel::EventsController < ApplicationController
         employment_employer_address_present: report.employments.first&.employer_address&.present?,
         employment_employer_phone_number_present: report.employments.first&.employer_name&.present?,
         employment_start_date: report.employments.first&.start_date,
-        employment_termination_date: report.employments.first&.termination_date
+        employment_termination_date: report.employments.first&.termination_date,
+        employment_type: report.employments.first&.employment_type&.to_s,
+        employment_type_w2_count: report.employments.count { |e| e.employment_type == :w2 },
+        employment_type_gig_count: report.employments.count { |e| e.employment_type == :gig }
 
         # TODO: Add fields from /shifts after FFS-2550.
       })

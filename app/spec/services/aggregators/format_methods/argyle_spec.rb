@@ -97,4 +97,24 @@ RSpec.describe Aggregators::FormatMethods::Argyle, type: :service do
       expect(described_class.format_employer_address(a_paystub_json)).to eq("123 Main St, Unit 2, Anytown, NY 12345")
     end
   end
+
+  describe ".employment_type" do
+    context "when employment_type is 'contractor'" do
+      let(:employment_type) { "contractor" }
+
+      it "returns :gig" do
+        expect(described_class.employment_type(employment_type))
+          .to eq(:gig)
+      end
+    end
+
+    context "when employment_type is not 'contractor'" do
+      let(:employment_type) { "full-time" }
+
+      it "returns :w2" do
+        expect(described_class.employment_type(employment_type))
+          .to eq(:w2)
+      end
+    end
+  end
 end
