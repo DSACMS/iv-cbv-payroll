@@ -23,6 +23,10 @@ class CbvApplicant < ApplicationRecord
     CbvApplicant.const_get(type_name.camelize)
   end
 
+  def self.valid_attributes_for_agency(client_agency_id)
+    sti_class_for(client_agency_id).const_get(:VALID_ATTRIBUTES)
+  end
+
   PAYSTUB_REPORT_RANGE = 90.days
 
   has_many :cbv_flows
