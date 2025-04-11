@@ -56,9 +56,11 @@ en:
       dental: Dental
       garnishment: Garnishment
       other: Other
+      roth: Roth
       vision: Vision
     earnings_category:
       base: Base Pay
+      benefits: Benefits
       bereavement: Bereavement
       bonus: Bonus
       commission: Commission
@@ -87,15 +89,20 @@ en:
       vacation: Vacation
     employment_statuses:
       employed: employed
+      inactive: inactive
+      terminated: terminated
     payment_frequencies:
       annual: annual
       annually: annual
       bi_weekly: bi-weekly
+      biweekly: bi-weekly
       daily: daily
       hourly: hourly
       monthly: monthly
       per_mile: per mile
+      quarterly: quarterly
       semi_monthly: semi-monthly
+      semimonthly: semi-monthly
       usd: USD
       variable: variable
       weekly: weekly

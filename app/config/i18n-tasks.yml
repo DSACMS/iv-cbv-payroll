@@ -136,15 +136,20 @@ ignore_missing:
 
     # Currently awaiting translation:
     # - "example.strings.*"   # Tag with ticket number that created or modified the string
-    - "cbv.summaries.show.description"              # FFS-2562
-    - "cbv.summaries.show.header"                   # FFS-2494
-    - "aggregator_strings.deductions.401k"          # FFS-2723
-    - "aggregator_strings.deductions.dental"        # FFS-2723
-    - "aggregator_strings.deductions.garnishment"   # FFS-2723
-    - "aggregator_strings.deductions.other"         # FFS-2723
-    - "aggregator_strings.deductions.vision"        # FFS-2723
-    - "aggregator_strings.earnings_category.base"   # FFS-2723
-    - "aggregator_strings.payment_frequencies.usd"  # FFS-2723
+    - "cbv.summaries.show.description"                    # FFS-2562
+    - "cbv.summaries.show.header"                         # FFS-2494
+    - "aggregator_strings.deductions.401k"                # FFS-2723
+    - "aggregator_strings.deductions.dental"              # FFS-2723
+    - "aggregator_strings.deductions.garnishment"         # FFS-2723
+    - "aggregator_strings.deductions.other"               # FFS-2723
+    - "aggregator_strings.deductions.vision"              # FFS-2723
+    - "aggregator_strings.earnings_category.base"         # FFS-2723
+    - "aggregator_strings.payment_frequencies.usd"        # FFS-2723
+    - "aggregator_strings.earnings_category.benefits"     # FFS-2723
+    - "aggregator_strings.employment_statuses.inactive"   # FFS-2723
+    - "aggregator_strings.employment_statuses.terminated" # FFS-2723
+    - "aggregator_strings.payment_frequencies.quarterly"  # FFS-2723
+    - "aggregator_strings.deductions.roth"                # FFS-2723
 
 ## Consider these keys used:
 ignore_unused:

@@ -34,11 +34,13 @@ es:
       annual: anual
       annually: anual
       bi_weekly: cada dos semanas
+      biweekly: cada dos semanas
       daily: diario
       hourly: por hora
       monthly: mensual
       per_mile: Por milla
       semi_monthly: dos veces al mes
+      semimonthly: dos veces al mes
       variable: variable
       weekly: semanal
   applicant_mailer:
