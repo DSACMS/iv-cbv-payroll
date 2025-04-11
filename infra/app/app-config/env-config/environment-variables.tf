@@ -129,6 +129,22 @@ locals {
       manage_method     = "manual"
       secret_store_name = "/service/${var.app_name}-${var.environment}/argyle-api-token-sandbox-secret"
     },
+    ARGYLE_SANDBOX_WEBHOOK_SECRET = {
+      manage_method     = "manual"
+      secret_store_name = "/service/${var.app_name}-${var.environment}/argyle-sandbox-webhook-secret"
+    },
+    ARGYLE_API_TOKEN_ID = {
+      manage_method     = "manual"
+      secret_store_name = "/service/${var.app_name}-${var.environment}/argyle-api-token-id"
+    },
+    ARGYLE_API_TOKEN_SECRET = {
+      manage_method     = "manual"
+      secret_store_name = "/service/${var.app_name}-${var.environment}/argyle-api-token-secret"
+    },
+    ARGYLE_WEBHOOK_SECRET = {
+      manage_method     = "manual"
+      secret_store_name = "/service/${var.app_name}-${var.environment}/argyle-webhook-secret"
+    },
 
     # SSO Configuration:
     AZURE_NYC_DSS_CLIENT_ID = {
