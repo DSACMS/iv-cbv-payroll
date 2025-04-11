@@ -20,6 +20,12 @@ RSpec.describe Cbv::SynchronizationsController do
       expect(response.body).to include("turbo-stream action=\"redirect\"")
     end
 
+    it "does not fire tracking event if its for the polling purposes" do
+      expect_any_instance_of(GenericEventTracker).not_to receive(:track)
+
+      patch :update, params: { user: { account_id: payroll_account.pinwheel_account_id } }
+    end
+
     context "when the paystubs synchronization fails" do
       let(:errored_jobs) { [ "paystubs" ] }
 
