@@ -52,6 +52,8 @@ RSpec.describe Api::InvitationsController do
 
         invitation = CbvFlowInvitation.last
         expect(invitation.client_agency_id).to eq(client_agency_id.to_s)
+        expect(invitation.cbv_applicant.income_changes.length).to eq(2)
+        expect(invitation.cbv_applicant.income_changes[0]["member_name"]).to eq("Mark Scout")
       end
     end
 
@@ -76,6 +78,23 @@ RSpec.describe Api::InvitationsController do
 
         expect(error_fields).not_to include("cbv_applicant")
         expect(error_fields).to include("cbv_applicant.first_name")
+      end
+    end
+
+    context "params not included in the agency's valid attributes" do
+      let(:params_with_invalid_attributes) do
+        # client_id_number is only valid for NYC (not MA)
+        valid_params[:agency_partner_metadata][:client_id_number] = "1234567"
+        valid_params
+      end
+
+      it "creates the invitation but does not set the invalid attribute" do
+        expect do
+          post :create, params: params_with_invalid_attributes
+        end.to change(CbvFlowInvitation, :count).by(1)
+
+        invitation = CbvFlowInvitation.last
+        expect(invitation.cbv_applicant.client_id_number).to be_nil
       end
     end
 

@@ -1,7 +1,10 @@
 require 'rails_helper'
+require_relative "../cbv_applicant_spec.rb"
 
 RSpec.describe CbvApplicant::AzDes, type: :model do
   let(:az_attributes) { attributes_for(:cbv_applicant, :az_des) }
+
+  it_behaves_like "a CbvApplicant subclass", "az_des"
 
   context "user input is invalid" do
     it "requires case_number" do
