@@ -133,28 +133,36 @@ ignore_missing:
     - "caseworker_mailer.summary_email.*"
     # Caseworker PDF strings that are only supported in English:
     - "cbv.submits.show.pdf.caseworker.*"
-    # Pinwheel values that are only supported in English:
-    - "pinwheel.*"
+
     # Currently awaiting translation:
-    - "cbv.summaries.show.description"  # FFS-2562
-    - "cbv.summaries.show.header"       # FFS-2494
-    # - "example.strings.*" # Tag with ticket number that created or modified the string
+    # - "example.strings.*"   # Tag with ticket number that created or modified the string
+    - "cbv.summaries.show.description"                    # FFS-2562
+    - "cbv.summaries.show.header"                         # FFS-2494
+    - "aggregator_strings.deductions.401k"                # FFS-2723
+    - "aggregator_strings.deductions.dental"              # FFS-2723
+    - "aggregator_strings.deductions.garnishment"         # FFS-2723
+    - "aggregator_strings.deductions.other"               # FFS-2723
+    - "aggregator_strings.deductions.vision"              # FFS-2723
+    - "aggregator_strings.earnings_category.base"         # FFS-2723
+    - "aggregator_strings.payment_frequencies.usd"        # FFS-2723
+    - "aggregator_strings.earnings_category.benefits"     # FFS-2723
+    - "aggregator_strings.employment_statuses.inactive"   # FFS-2723
+    - "aggregator_strings.employment_statuses.terminated" # FFS-2723
+    - "aggregator_strings.payment_frequencies.quarterly"  # FFS-2723
+    - "aggregator_strings.deductions.roth"                # FFS-2723
 
 ## Consider these keys used:
 ignore_unused:
   all:
-    - "*.{nyc,ma,sandbox,az_des,default}" # site-specific translations
-    - "activerecord.errors.*" # model errors are not always explicitly used
-    - "date.*" # date formats are not always explicitly used
-    - "time.*" # time formats are not always explicitly used
-    - "pinwheel.*" # dynamically looked up pinwheel translations
-    - "help.show.*.intro" # dynamically looked up help translations
-    - "help.show.credentials.security_message" # dynamically looked up help translations
-# - 'activerecord.attributes.*'
-# - '{devise,kaminari,will_paginate}.*'
-# - 'simple_form.{yes,no}'
-# - 'simple_form.{placeholders,hints,labels}.*'
-# - 'simple_form.{error_notification,required}.:'
+    - "*.{nyc,ma,sandbox,az_des,default}"       # site-specific translations
+    - "activerecord.errors.*"                   # model errors are not always explicitly used
+    - "date.*"                                  # date formats are not always explicitly used
+    - "time.*"                                  # time formats are not always explicitly used
+    - "aggregator_strings.*"                    # dynamically looked up aggregator translations
+    - "help.show.*.intro"                       # dynamically looked up help translations
+    - "help.show.credentials.security_message"  # dynamically looked up help translations
+
+## Unused examples of how to use this file:
 
 ## Exclude these keys from the `i18n-tasks eq-base' report:
 # ignore_eq_base:
