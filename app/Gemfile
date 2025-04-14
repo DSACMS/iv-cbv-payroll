@@ -58,6 +58,9 @@ gem "sidekiq", "~> 6.4"
 
 gem "faraday", "~> 2.9.0"
 
+# used to validate minimum reporting business logic requirements
+gem "dry-validation"
+
 gem "wicked_pdf"
 gem "actioncable-enhanced-postgresql-adapter"
 gem "aws-sdk-rails"

@@ -1,6 +1,6 @@
 class Webhooks::Pinwheel::EventsController < ApplicationController
   before_action :set_cbv_flow, :set_pinwheel, :authorize_webhook
-  after_action :track_events
+  after_action :process_webhook_event
   skip_before_action :verify_authenticity_token
 
   # To prevent timing attacks, we attempt to verify the webhook signature

@@ -11,7 +11,7 @@ class Webhooks::Argyle::EventsController < ApplicationController
       # account IDs and creates webhook events for any accounts that don't yet
       # have a "users.fully_synced" event.
       handle_users_fully_synced.each do |webhook_event|
-        track_events(webhook_event)
+        process_webhook_event(webhook_event)
       end
     else
       # All other webhooks have a params["data"]["account"], which we can use
@@ -23,7 +23,7 @@ class Webhooks::Argyle::EventsController < ApplicationController
 
       webhook_event = create_webhook_event_for_account(params["event"], payroll_account)
       update_synchronization_page(payroll_account)
-      track_events(webhook_event)
+      process_webhook_event(webhook_event)
     end
 
     render json: { status: "ok" }
@@ -83,7 +83,7 @@ class Webhooks::Argyle::EventsController < ApplicationController
     end
   end
 
-  def track_events(webhook_event)
+  def process_webhook_event(webhook_event)
     payroll_account = webhook_event.payroll_account
 
     if webhook_event.event_name == "accounts.connected"
@@ -101,7 +101,13 @@ class Webhooks::Argyle::EventsController < ApplicationController
         to_date: @cbv_flow.cbv_applicant.snap_application_date
       )
       report.fetch
+      log_sync_finish(payroll_account, report)
+      validate_minimum_reporting_requirements(report)
+    end
+  end
 
+  def log_sync_finish(payroll_account, report)
+    begin
       event_logger.track("ApplicantFinishedArgyleSync", request, {
         cbv_applicant_id: @cbv_flow.cbv_applicant_id,
         cbv_flow_id: @cbv_flow.id,
@@ -167,11 +173,38 @@ class Webhooks::Argyle::EventsController < ApplicationController
         gigs_supported: payroll_account.supported_jobs.include?("gigs")
         # TODO: Add fields from /gigs after FFS-2575.
       })
-    end
   rescue => ex
     raise ex unless Rails.env.production?
 
     Rails.logger.error "Unable to track event (in #{self.class.name}): #{ex}"
+    end
+  end
+
+  def validate_minimum_reporting_requirements(report)
+    schema = Aggregators::Contracts::MinimumReportingRequirementsSchema.new
+    schema = schema.call({
+      identities: report.identities,
+      employments: report.employments,
+      paystubs: report.paystubs,
+      is_w2: true
+    })
+
+    is_success = schema.success?
+
+    begin
+      if is_success
+        event_logger.track("ApplicantMinimumReportingRequirementsMet", request, {})
+      else
+        event_logger.track("ApplicantMinimumReportingRequirementsNotMet", request, {
+          errors: schema.errors.to_h.transform_values { |value| value.join(", ") }
+        })
+      end
+    rescue => ex
+      raise ex unless Rails.env.production?
+
+      Rails.logger.error "Unable to track event (in #{self.class.name}): #{ex}"
+    end
+    redirect_to cbv_flow_synchronization_failures_path unless is_success
   end
 
   def update_synchronization_page(payroll_account)
