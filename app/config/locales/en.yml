@@ -433,6 +433,7 @@ en:
             client_information: Client Information
             confirmation_code: Confirmation code
             employment_information: Employment information
+            pay_date: 'Pay Date: %{pay_date}'
             report_details: Report Details
         share_report_button: Share my report with %{agency_acronym}
         table_caption_no_name: Employer %{number}

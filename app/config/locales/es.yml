@@ -272,6 +272,7 @@ es:
             client_information: Información del cliente
             confirmation_code: Código de confirmación
             employment_information: Información del empleo
+            pay_date: 'Fecha de pago: %{pay_date}'
             report_details: Detalles del reporte
         share_report_button: Autorizo que se comparta mi informe con %{agency_acronym}
         table_caption_no_name: Employer %{number}
