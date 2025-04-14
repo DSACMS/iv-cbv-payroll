@@ -50,6 +50,62 @@ en:
               invalid_format: Enter an email address in the correct format, like name@example.com
             language:
               invalid_format: Language must be either English (en) or Spanish (es).
+  aggregator_strings:
+    deductions:
+      401k: 401k
+      dental: Dental
+      garnishment: Garnishment
+      other: Other
+      roth: Roth
+      vision: Vision
+    earnings_category:
+      base: Base Pay
+      benefits: Benefits
+      bereavement: Bereavement
+      bonus: Bonus
+      commission: Commission
+      disability: Disability
+      double_overtime: Double Overtime
+      employer_contribution: Employer Contribution
+      fare: Fare
+      holiday: Holiday
+      hourly: Hourly Wage
+      life_insurance: Life Insurance
+      meal_comp: Meal Comp
+      medical: Medical
+      other: Other Pay
+      overtime: Overtime
+      parental: Parental
+      premium: Premium
+      pto: Paid Time Off
+      retirement: Retirement
+      retro_pay: Retroactive Pay
+      salary: Salary
+      shift_differential: Shift Differential
+      sick: Sick Time
+      stock: Stock
+      tips: Tips
+      unpaid: Unpaid
+      vacation: Vacation
+    employment_statuses:
+      employed: employed
+      inactive: inactive
+      terminated: terminated
+    payment_frequencies:
+      annual: annual
+      annually: annual
+      bi_weekly: bi-weekly
+      biweekly: bi-weekly
+      daily: daily
+      hourly: hourly
+      monthly: monthly
+      per_mile: per mile
+      quarterly: quarterly
+      semi_monthly: semi-monthly
+      semimonthly: semi-monthly
+      usd: USD
+      variable: variable
+      weekly: weekly
   applicant_mailer:
     invitation_email:
       body_1:
@@ -377,6 +433,7 @@ en:
             client_information: Client Information
             confirmation_code: Confirmation code
             employment_information: Employment information
+            pay_date: 'Pay Date: %{pay_date}'
             report_details: Report Details
         share_report_button: Share my report with %{agency_acronym}
         table_caption_no_name: Employer %{number}
@@ -571,34 +628,6 @@ en:
       description_1: The SNAP Income Pilot is a new tool designed to help you connect your income details from your employer or payroll provider directly to your SNAP agency.
       description_2: Please note this pilot is not currently available.
       header: Welcome to the SNAP Income Pilot
-  pinwheel:
-    earnings_category:
-      bereavement: Bereavement
-      bonus: Bonus
-      commission: Commission
-      disability: Disability
-      double_overtime: Double Overtime
-      employer_contribution: Employer Contribution
-      fare: Fare
-      holiday: Holiday
-      hourly: Hourly Wage
-      life_insurance: Life Insurance
-      meal_comp: Meal Comp
-      medical: Medical
-      other: Other Pay
-      overtime: Overtime
-      parental: Parental
-      premium: Premium
-      pto: Paid Time Off
-      retirement: Retirement
-      retro_pay: Retroactive Pay
-      salary: Salary
-      shift_differential: Shift Differential
-      sick: Sick Time
-      stock: Stock
-      tips: Tips
-      unpaid: Unpaid
-      vacation: Vacation
   session_timeout:
     modal:
       description: It looks like you're inactive. For your security, we will sign you out soon unless you choose to extend your session.
