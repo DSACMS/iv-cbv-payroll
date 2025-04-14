@@ -64,19 +64,12 @@ class Caseworker::CbvFlowInvitationsController < Caseworker::BaseController
   end
 
   def invitation_params
+    valid_applicant_attributes = CbvApplicant.valid_attributes_for_agency(client_agency_id)
+
     params.fetch(:cbv_flow_invitation, {}).permit(
       :language,
       :email_address,
-      cbv_applicant_attributes: [
-        :first_name,
-        :middle_name,
-        :last_name,
-        :client_id_number,
-        :case_number,
-        :snap_application_date,
-        :agency_id_number,
-        :beacon_id
-      ]
+      cbv_applicant_attributes: valid_applicant_attributes
     )
   end
 

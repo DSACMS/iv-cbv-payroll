@@ -63,4 +63,24 @@ RSpec.describe Aggregators::FormatMethods::Pinwheel do
       expect(described_class.hours_by_earning_category(earnings)).to eq({})
     end
   end
+
+  describe ".employment_type" do
+    context "for a gig platform (Uber)" do
+      let(:employer_name) { "Uber (Driver)" }
+
+      it "returns :gig" do
+        expect(described_class.employment_type(employer_name))
+          .to eq(:gig)
+      end
+    end
+
+    context "for a non-gig platform (Walmart)" do
+      let(:employer_name) { "Walmart" }
+
+      it "returns :w2" do
+        expect(described_class.employment_type(employer_name))
+          .to eq(:w2)
+      end
+    end
+  end
 end

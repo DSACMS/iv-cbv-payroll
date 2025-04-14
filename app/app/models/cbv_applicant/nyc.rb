@@ -1,4 +1,14 @@
 class CbvApplicant::Nyc < CbvApplicant
+  # Attributes usable in the invitation API and caseworker page.
+  VALID_ATTRIBUTES = %i[
+    first_name
+    middle_name
+    last_name
+    case_number
+    client_id_number
+    snap_application_date
+  ]
+
   # New York City: 11 digits followed by 1 uppercase letter
   NYC_CASE_NUMBER_REGEX = /\A\d{11}[A-Z]\z/
 
