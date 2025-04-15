@@ -117,7 +117,7 @@
           <% if employer_name %>
             <%= employer_name %> &mdash;
           <% end %>
-          Pay Date: <%= format_date(paystub.pay_date) %></h4>
+          <%= t(".pdf.shared.pay_date", pay_date: format_date(paystub.pay_date)) %></h4>
       <% end %>
       <% if summary[:has_income_data] %>
         <%= table.with_data_point(:pay_period_with_frequency, paystub.start, paystub.end, summary[:income].pay_frequency&.humanize, highlight: is_caseworker) %>

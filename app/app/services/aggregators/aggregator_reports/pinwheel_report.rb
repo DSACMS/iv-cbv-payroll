@@ -12,7 +12,11 @@ module Aggregators::AggregatorReports
     def fetch_report_data_for_account(account)
       @identities.append(fetch_identity(account_id: account.pinwheel_account_id))
       @employments.append(fetch_employment(account_id: account.pinwheel_account_id))
-      @incomes.append(fetch_income(account_id: account.pinwheel_account_id))
+
+      if account.job_succeeded?("income")
+        @incomes.append(fetch_income(account_id: account.pinwheel_account_id))
+      end
+
       @paystubs.append(*fetch_paystubs(account_id: account.pinwheel_account_id))
     end
 
