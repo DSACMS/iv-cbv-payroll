@@ -104,9 +104,6 @@ export default class ArgyleModalAdapter extends ModalAdapter {
       case "mfa - opened":
         await trackUserAction("ApplicantAccessedArgyleModalMFAScreen")
         break
-      case "link - closed":
-        await trackUserAction("ApplicantAttemptedClosingArgyleModal")
-        break
       default:
         break
     }

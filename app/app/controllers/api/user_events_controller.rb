@@ -22,7 +22,6 @@ class Api::UserEventsController < ApplicationController
     ApplicantViewedArgyleLoginPage
     ApplicantAttemptedArgyleLogin
     ApplicantViewedArgyleDefaultProviderSearch
-    ApplicantAttemptedClosingArgyleModal
     ApplicantAccessedArgyleModalMFAScreen
     ApplicantEncounteredArgyleInvalidCredentialsLoginError
     ApplicantEncounteredArgyleAuthRequiredLoginError
