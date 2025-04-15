@@ -193,6 +193,28 @@ RSpec.describe Cbv::PaymentDetailsController do
       end
     end
 
+    context "when the 'hours' value is nil" do
+      before do
+        pinwheel_stub_request_end_user_no_hours_response
+      end
+
+      it "redirects to the synchronization failure page" do
+        get :show, params: { user: { account_id: account_id } }
+        expect(response).to redirect_to(cbv_flow_synchronization_failures_path)
+      end
+
+      context "but the user is a Gig worker" do
+        before do
+          pinwheel_stub_request_employment_info_gig_worker_response
+        end
+
+        it "renders properly" do
+          get :show, params: { user: { account_id: account_id } }
+          expect(response).to be_successful
+        end
+      end
+    end
+
     context "when deductions include a zero dollar amount" do
       it "does not show that deduction" do
         get :show, params: { user: { account_id: account_id } }

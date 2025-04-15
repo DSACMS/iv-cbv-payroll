@@ -1,6 +1,9 @@
 module Aggregators::AggregatorReports
   class ArgyleReport < AggregatorReport
     include Aggregators::ResponseObjects
+    include ActiveModel::Validations
+
+    validates_with Aggregators::Validators::UsefulReportValidator, on: :useful_report
 
     def initialize(argyle_service: nil, **params)
       super(**params)

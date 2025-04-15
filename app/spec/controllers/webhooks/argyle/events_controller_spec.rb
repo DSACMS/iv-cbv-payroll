@@ -211,14 +211,14 @@ RSpec.describe Webhooks::Argyle::EventsController, type: :controller do
         process_webhook("paystubs.fully_synced")
       end
 
-      it 'tracks an ApplicantMinimumReportingRequirementsMet event' do
+      it 'tracks an ApplicantReportMetUsefulRequirements event' do
         process_webhook("accounts.connected")
         process_webhook("identities.added")
         process_webhook("users.fully_synced")
         process_webhook("gigs.fully_synced")
 
         expect(fake_event_logger).to receive(:track)
-           .with("ApplicantMinimumReportingRequirementsMet", anything, anything).exactly(1).times
+           .with("ApplicantReportMetUsefulRequirements", anything, anything).exactly(1).times
 
         process_webhook("paystubs.fully_synced")
       end

@@ -102,7 +102,7 @@ class Webhooks::Argyle::EventsController < ApplicationController
       )
       report.fetch
       log_sync_finish(payroll_account, report)
-      validate_minimum_reporting_requirements(report)
+      validate_useful_report_requirements(report)
     end
   end
 
@@ -173,38 +173,25 @@ class Webhooks::Argyle::EventsController < ApplicationController
         gigs_supported: payroll_account.supported_jobs.include?("gigs")
         # TODO: Add fields from /gigs after FFS-2575.
       })
-  rescue => ex
-    raise ex unless Rails.env.production?
-
-    Rails.logger.error "Unable to track event (in #{self.class.name}): #{ex}"
-    end
-  end
-
-  def validate_minimum_reporting_requirements(report)
-    schema = Aggregators::Contracts::MinimumReportingRequirementsSchema.new
-    schema = schema.call({
-      identities: report.identities,
-      employments: report.employments,
-      paystubs: report.paystubs,
-      is_w2: true
-    })
-
-    is_success = schema.success?
-
-    begin
-      if is_success
-        event_logger.track("ApplicantMinimumReportingRequirementsMet", request, {})
-      else
-        event_logger.track("ApplicantMinimumReportingRequirementsNotMet", request, {
-          errors: schema.errors.to_h.transform_values { |value| value.join(", ") }
-        })
-      end
     rescue => ex
       raise ex unless Rails.env.production?
 
       Rails.logger.error "Unable to track event (in #{self.class.name}): #{ex}"
     end
-    redirect_to cbv_flow_synchronization_failures_path unless is_success
+  end
+
+  def validate_useful_report_requirements(report)
+    if report.valid?(:useful_report)
+      event_logger.track("ApplicantReportMetUsefulRequirements", request, {})
+    else
+      event_logger.track("ApplicantReportFailedUsefulRequirements", request, {
+        errors: report.errors.full_messages.join(", ")
+      })
+    end
+  rescue => ex
+    raise ex unless Rails.env.production?
+
+    Rails.logger.error "Unable to track event (in #{self.class.name}): #{ex}"
   end
 
   def update_synchronization_page(payroll_account)
