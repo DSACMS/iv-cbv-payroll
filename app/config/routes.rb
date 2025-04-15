@@ -1,4 +1,3 @@
-require "sidekiq/web"
 
 Rails.application.routes.draw do
   devise_for :users,
@@ -9,10 +8,6 @@ Rails.application.routes.draw do
 
   devise_scope :user do
     delete "sign_out", to: "devise/sessions#destroy", as: :destroy_user_session
-  end
-
-  if Rails.env.development?
-    mount Sidekiq::Web => "/sidekiq"
   end
 
   scope "(:locale)", locale: /#{I18n.available_locales.join("|")}/, format: "html"  do

@@ -22,38 +22,72 @@ default: &default
   pool: <%= ENV.fetch("RAILS_MAX_THREADS") { 5 } %>
 
 development:
-  <<: *default
-  adapter: postgresql
-  encoding: unicode
-  database: <%= ENV.fetch("DB_NAME") { "iv_cbv_payroll_development" } %>
-  pool: <%= ENV.fetch("RAILS_MAX_THREADS") { 5 } %>
+  queue:
+    <<: *default
+    adapter: postgresql
+    encoding: unicode
+    database: <%= ENV.fetch("DB_NAME") { "iv_cbv_payroll_development" } %>
+    pool: <%= ENV.fetch("RAILS_MAX_THREADS") { 5 } %>
 
-  # The specified database role being used to connect to postgres.
-  # To create additional roles in postgres see `$ createuser --help`.
-  # When left blank, postgres will use the default role. This is
-  # the same name as the operating system user running Rails.
-  username: <%= ENV.fetch("DB_USERNAME") { nil } %>
+    # The specified database role being used to connect to postgres.
+    # To create additional roles in postgres see `$ createuser --help`.
+    # When left blank, postgres will use the default role. This is
+    # the same name as the operating system user running Rails.
+    username: <%= ENV.fetch("DB_USERNAME") { nil } %>
 
-  # The password associated with the postgres role (username).
-  password: <%= ENV.fetch("DB_PASSWORD") { nil } %>
+    # The password associated with the postgres role (username).
+    password: <%= ENV.fetch("DB_PASSWORD") { nil } %>
 
-  # Connect on a TCP socket. Omitted by default since the client uses a
-  # domain socket that doesn't need configuration. Windows does not have
-  # domain sockets, so uncomment these lines.
-  host: <%= ENV.fetch("DB_HOST") { "localhost" } %>
+    # Connect on a TCP socket. Omitted by default since the client uses a
+    # domain socket that doesn't need configuration. Windows does not have
+    # domain sockets, so uncomment these lines.
+    host: <%= ENV.fetch("DB_HOST") { "localhost" } %>
 
-  # The TCP port the server listens on. Defaults to 5432.
-  # If your server runs on a different port number, change accordingly.
-  #port: 5432
+    # The TCP port the server listens on. Defaults to 5432.
+    # If your server runs on a different port number, change accordingly.
+    #port: 5432
 
-  # Schema search path. The server defaults to $user,public
-  #schema_search_path: myapp,sharedapp,public
+    # Schema search path. The server defaults to $user,public
+    #schema_search_path: myapp,sharedapp,public
 
-  # Minimum log levels, in increasing order:
-  #   debug5, debug4, debug3, debug2, debug1,
-  #   log, notice, warning, error, fatal, and panic
-  # Defaults to warning.
-  #min_messages: notice
+    # Minimum log levels, in increasing order:
+    #   debug5, debug4, debug3, debug2, debug1,
+    #   log, notice, warning, error, fatal, and panic
+    # Defaults to warning.
+    #min_messages: notice
+  primary:
+    <<: *default
+    adapter: postgresql
+    encoding: unicode
+    database: <%= ENV.fetch("DB_NAME") { "iv_cbv_payroll_development" } %>
+    pool: <%= ENV.fetch("RAILS_MAX_THREADS") { 5 } %>
+
+    # The specified database role being used to connect to postgres.
+    # To create additional roles in postgres see `$ createuser --help`.
+    # When left blank, postgres will use the default role. This is
+    # the same name as the operating system user running Rails.
+    username: <%= ENV.fetch("DB_USERNAME") { nil } %>
+
+    # The password associated with the postgres role (username).
+    password: <%= ENV.fetch("DB_PASSWORD") { nil } %>
+
+    # Connect on a TCP socket. Omitted by default since the client uses a
+    # domain socket that doesn't need configuration. Windows does not have
+    # domain sockets, so uncomment these lines.
+    host: <%= ENV.fetch("DB_HOST") { "localhost" } %>
+
+    # The TCP port the server listens on. Defaults to 5432.
+    # If your server runs on a different port number, change accordingly.
+    #port: 5432
+
+    # Schema search path. The server defaults to $user,public
+    #schema_search_path: myapp,sharedapp,public
+
+    # Minimum log levels, in increasing order:
+    #   debug5, debug4, debug3, debug2, debug1,
+    #   log, notice, warning, error, fatal, and panic
+    # Defaults to warning.
+    #min_messages: notice
 
 # Warning: The database defined as "test" will be erased and
 # re-generated from your development database when you run "rake".
@@ -86,6 +120,15 @@ test:
 # Read https://guides.rubyonrails.org/configuring.html#configuring-a-database
 # for a full overview on how database connection configuration can be specified.
 #
+queue:
+  database: <%= ENV.fetch("DB_NAME") { nil } %>
+  pool: <%= ENV.fetch("RAILS_MAX_THREADS") { 5 } %>
+  username: <%= ENV.fetch("DB_USER") { nil } %>
+  password: <%= ENV.fetch("DB_PASS") { nil } %>
+  port: <%= ENV.fetch("DB_PORT") { 5432 } %>
+  host: <%= ENV.fetch("DB_HOST") { "localhost" } %>
+  aws_rds_iam_auth_token_generator: default
+
 production:
   <<: *default
   database: <%= ENV.fetch("DB_NAME") { nil } %>

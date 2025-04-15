@@ -54,7 +54,7 @@ gem "device_detector"
 gem "mixpanel-ruby"
 gem "newrelic_rpm"
 
-gem "sidekiq", "~> 6.4"
+gem "solid_queue"
 
 gem "faraday", "~> 2.9.0"
 

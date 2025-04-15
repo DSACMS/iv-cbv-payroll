@@ -26,9 +26,6 @@ brew "graphviz"
 # used in many scripts in "infra"
 brew "jq"
 
-# queue for sidekiq jobs
-brew "redis"
-
 # ngrok local tunnel to receive webhooks
 cask "ngrok"
 
