@@ -118,6 +118,8 @@ ignore_missing:
   all:
     - 'shared.languages.*'
     - 'shared.header.{title,close,demo_banner,menu}'
+    - "cbv.applicant_informations.la_ldh.*" # FFS-2682
+
   en:
     - "date.*"    # Defaults provided by rails-i18n
     - "time.*"    # Defaults provided by rails-i18n
