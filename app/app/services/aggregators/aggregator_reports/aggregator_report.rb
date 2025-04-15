@@ -48,11 +48,11 @@ module Aggregators::AggregatorReports
     AccountReportStruct = Struct.new(:identity, :income, :employment, :paystubs, :gigs)
     def find_account_report(account_id)
       AccountReportStruct.new(
-      @identities.find { |identity| identity.account_id == account_id },
-      @incomes.find { |income| income.account_id == account_id },
-      @employments.find { |employment| employment.account_id == account_id },
-      @paystubs.filter { |paystub| paystub.account_id == account_id },
-      @gigs.filter { |gig| gig.account_id == account_id }
+        @identities.find { |identity| identity.account_id == account_id },
+        @incomes.find { |income| income.account_id == account_id },
+        @employments.find { |employment| employment.account_id == account_id },
+        @paystubs.find_all { |paystub| paystub.account_id == account_id },
+        @gigs.find_all { |gig| gig.account_id == account_id }
       )
     end
 
