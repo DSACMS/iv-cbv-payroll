@@ -15,6 +15,7 @@ type ArgyleInitializationParams = {
   onAccountRemoved?: (payload: ArgyleAccountData) => void
   onClose?: () => void
   onError?: (payload: LinkError) => void
+  onUIEvent?: (payload: ArgyeUIEvent) => void
   sandbox?: boolean
 }
 
@@ -38,5 +39,7 @@ type ArgyeUIEvent = {
     userId: string
     accountId?: string
     itemId?: string
+    errorCode?: string
+    errorMessage?: string
   }
 }
