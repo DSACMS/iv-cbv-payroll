@@ -450,14 +450,12 @@ GEM
       rexml (~> 3.2, >= 3.2.5)
       rubyzip (>= 1.2.2, < 3.0)
       websocket (~> 1.0)
-    sidekiq (6.5.12)
-      connection_pool (>= 2.2.5, < 3)
-      rack (~> 2.0)
-      redis (>= 4.5.0, < 5)
     smart_properties (1.17.0)
     snaky_hash (2.0.1)
       hashie
       version_gem (~> 1.1, >= 1.1.1)
+    solid_queue (0.2.2)
+      rails (~> 7.1)
     sprockets (4.2.1)
       concurrent-ruby (~> 1.0)
       rack (>= 2.2.4, < 4)
@@ -513,6 +511,7 @@ GEM
 
 PLATFORMS
   aarch64-linux
+  arm64-darwin-21
   arm64-darwin-23
   arm64-darwin-24
   x86_64-darwin-20
@@ -567,7 +566,7 @@ DEPENDENCIES
   rubocop-rails-omakase
   rubocop-rspec
   selenium-webdriver
-  sidekiq (~> 6.4)
+  solid_queue
   sprockets-rails
   stackprof
   stimulus-rails
