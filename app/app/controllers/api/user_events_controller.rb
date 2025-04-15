@@ -30,6 +30,7 @@ class Api::UserEventsController < ApplicationController
     ApplicantEncounteredArgyleExpiredCredentialsLoginError
     ApplicantEncounteredArgyleInvalidAuthLoginError
     ApplicantEncounteredArgyleMfaCanceledLoginError
+    ApplicantUpdatedArgyleSearchTerm
   ]
 
   # Maps aggregator event names (keys) to new Mixpanel event names (values) we're using

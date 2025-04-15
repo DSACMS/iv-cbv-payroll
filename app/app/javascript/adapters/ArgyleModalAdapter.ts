@@ -92,6 +92,12 @@ export default class ArgyleModalAdapter extends ModalAdapter {
       case "search - link item selected":
         await trackUserAction("ApplicantViewedArgyleProviderConfirmation")
         break
+      case "search - term updated":
+        await trackUserAction("ApplicantUpdatedArgyleSearchTerm", {
+          term: payload.properties.term,
+          tab: payload.properties.tab,
+        })
+        break
       case "login - form submitted":
         await trackUserAction("ApplicantAttemptedArgyleLogin")
         break

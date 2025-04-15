@@ -41,5 +41,7 @@ type ArgyeUIEvent = {
     itemId?: string
     errorCode?: string
     errorMessage?: string
+    term?: string
+    tab?: string
   }
 }
