@@ -20,7 +20,7 @@ class ProviderSearchService
     if @providers.include?(:pinwheel) && (results.length == 0 || !any_exact_matches?(results, query))
       pinwheel_service = Aggregators::Sdk::PinwheelService.new(@client_agency_config.pinwheel_environment)
 
-      pinwheel_results = pinwheel_service.fetch_items(q: query)["data"].map do |result|
+      pinwheel_results = pinwheel_service.fetch_items(q: query, supported_jobs: %w[paystubs])["data"].map do |result|
         Aggregators::ResponseObjects::SearchResult.from_pinwheel(result)
       end
 
