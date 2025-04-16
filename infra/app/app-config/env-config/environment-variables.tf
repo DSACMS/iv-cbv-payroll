@@ -102,7 +102,7 @@ locals {
       manage_method     = "manual"
       secret_store_name = "/service/${var.app_name}-${var.environment}/pinwheel-api-token-sandbox"
     },
-    AZ_PINWHEEL_ENVIRONMENT = {
+    AZ_DES_PINWHEEL_ENVIRONMENT = {
       manage_method     = "manual"
       secret_store_name = "/service/${var.app_name}-${var.environment}/az-pinwheel-environment"
     },
