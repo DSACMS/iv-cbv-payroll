@@ -414,6 +414,7 @@ en:
         pdf:
           agency_header_name:
             az_des: Department of Economic Security
+            la_ldh: Department of Health
             ma: Massachusetts Department of Transitional Assistance
             nyc: NYC Human Resources Administration
             sandbox: CBV Test Agency
@@ -647,6 +648,7 @@ en:
   shared:
     agency_full_name:
       az_des: Arizona Department of Economic Security
+      la_ldh: Louisiana Department of Health
       ma: Massachusetts Department of Transitional Assistance
       nyc: New York City Human Resources Administration
       sandbox: CBV Test Agency
@@ -665,6 +667,7 @@ en:
       aria_label: Main navigation
       cbv_flow_title:
         az_des: Department of Economic Security
+        la_ldh: Department of Health
         ma: Department of Transitional Assistance
         nyc: Human Resources Administration
         sandbox: CBV Test Agency
@@ -673,6 +676,7 @@ en:
       log_out: Log out
       preheader:
         az_des: A website in partnership with the Arizona Department of Economic Security.
+        la_ldh: A website in partnership with the Louisiana Department of Health
         default: A website in partnership with CBV Test Agency.
         ma: A website in partnership with the Commonwealth of Massachusetts.
         nyc: A website in partnership with the City of New York.

@@ -260,6 +260,7 @@ es:
         pdf:
           agency_header_name:
             az_des: Department of Economic Security
+            la_ldh: Department of Health
             ma: Massachusetts Department of Transitional Assistance
             nyc: NYC Human Resources Administration
             sandbox: CBV Test Agency
