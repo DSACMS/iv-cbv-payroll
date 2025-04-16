@@ -40,6 +40,7 @@ RSpec.describe Cbv::PaymentDetailsController do
       pinwheel_stub_request_end_user_paystubs_response
       pinwheel_stub_request_income_metadata_response if supported_jobs.include?("income")
       pinwheel_stub_request_employment_info_response
+      pinwheel_stub_request_shifts_response
     end
 
     context "when pinwheel values are present" do
