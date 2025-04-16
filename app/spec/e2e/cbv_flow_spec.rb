@@ -60,6 +60,8 @@ RSpec.describe "e2e CBV flow test", type: :feature, js: true, vcr: { record: REC
     expect(page).to have_content("McKee Foods")
     find("div.usa-card__container", text: "McKee Foods").click_button(I18n.t("cbv.employer_searches.show.select"))
 
+    sleep(2)
+
     # Pinwheel modal
     pinwheel_modal = page.find("iframe.pinwheel-modal-show")
     page.within_frame(pinwheel_modal) do
