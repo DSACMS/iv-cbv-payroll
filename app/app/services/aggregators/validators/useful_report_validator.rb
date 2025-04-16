@@ -27,12 +27,12 @@ module Aggregators::Validators
 
     def validate_paystub(report, paystub, is_w2_worker)
       report.errors.add(:paystubs, "Paystub has no pay_date") unless paystub.pay_date.present?
-      report.errors.add(:paystubs, "Paystub has no pay_period_start") unless paystub.pay_period_start.present?
-      report.errors.add(:paystubs, "Paystub has no pay_period_end") unless paystub.pay_period_end.present?
       report.errors.add(:paystubs, "Paystub has no gross_pay_amount") unless paystub.gross_pay_amount.present?
       report.errors.add(:paystubs, "Paystub has invalid gross_pay_amount") unless paystub.gross_pay_amount.to_f > 0
 
       if is_w2_worker
+        report.errors.add(:paystubs, "Paystub has no pay_period_start") unless paystub.pay_period_start.present?
+        report.errors.add(:paystubs, "Paystub has no pay_period_end") unless paystub.pay_period_end.present?
         report.errors.add(:paystubs, "Paystub has no hours") unless paystub.hours.present?
         report.errors.add(:paystubs, "Paystub has invalid hours") unless paystub.hours.to_f > 0
       end

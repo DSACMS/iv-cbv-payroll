@@ -74,6 +74,21 @@ RSpec.describe Aggregators::Validators::UsefulReportValidator do
       )
     end
 
+    let(:valid_gig_paystub) do
+      Aggregators::ResponseObjects::Paystub.new(
+        account_id: "123",
+        gross_pay_amount: 1000.0,
+        net_pay_amount: 800.0,
+        gross_pay_ytd: 12000.0,
+        pay_period_start: nil,
+        pay_period_end: nil,
+        pay_date: "2023-01-01",
+        deductions: [],
+        hours_by_earning_category: { "Regular" => 40.0 },
+        hours: 40.0
+      )
+    end
+
     let(:invalid_paystub) do
       Aggregators::ResponseObjects::Paystub.new(
         account_id: "123",
@@ -186,6 +201,17 @@ RSpec.describe Aggregators::Validators::UsefulReportValidator do
           expect(report).not_to be_valid(:useful_report)
           expect(report.errors[:employments]).to include(/Employment has no employer_name/)
         end
+      end
+    end
+
+    context 'with paystub records from a gig employer' do
+      let(:identities) { [ valid_identity ] }
+      let(:employments) { [ gig_employment ] }
+      let(:paystubs) { [ valid_gig_paystub ] }
+
+      it "is valid for a gig worker" do
+        expect(report).to be_valid(:useful_report)
+        expect(report.errors).to be_empty
       end
     end
 
