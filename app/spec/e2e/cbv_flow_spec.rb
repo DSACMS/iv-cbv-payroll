@@ -54,6 +54,7 @@ RSpec.describe "e2e CBV flow test", type: :feature, js: true, vcr: { record: REC
     click_button I18n.t("cbv.entries.show.continue")
 
     # /cbv/employer_search
+    sleep(1)
     verify_page(page, title: I18n.t("cbv.employer_searches.show.header"))
     fill_in name: "query", with: "foo"
     click_button I18n.t("cbv.employer_searches.show.search")
