@@ -20,7 +20,7 @@ module Aggregators::ResponseObjects
         status: response_body["status"],
         employer_phone_number: response_body.dig("employer_phone_number", "value"),
         employer_address: response_body.dig("employer_address", "raw"),
-        employment_type: Aggregators::FormatMethods::Pinwheel.employment_type(response_body["id"])
+        employment_type: Aggregators::FormatMethods::Pinwheel.employment_type(response_body["employer_name"])
       )
     end
 
