@@ -97,6 +97,7 @@ RSpec.describe Cbv::EmployerSearchesController do
     context "when there are no employer search results" do
       before do
         pinwheel_stub_request_items_no_items_response
+        argyle_stub_request_items_response("bob", "no_results")
       end
 
       render_views
@@ -124,6 +125,7 @@ RSpec.describe Cbv::EmployerSearchesController do
     context "when there are search results" do
       before do
         pinwheel_stub_request_items_response
+        argyle_stub_request_items_response("bob", "results")
       end
 
       render_views
