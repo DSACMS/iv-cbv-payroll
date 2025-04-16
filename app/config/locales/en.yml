@@ -676,8 +676,8 @@ en:
       log_out: Log out
       preheader:
         az_des: A website in partnership with the Arizona Department of Economic Security.
-        la_ldh: A website in partnership with the Louisiana Department of Health
         default: A website in partnership with CBV Test Agency.
+        la_ldh: A website in partnership with the Louisiana Department of Health
         ma: A website in partnership with the Commonwealth of Massachusetts.
         nyc: A website in partnership with the City of New York.
       primary: Primary navigation
