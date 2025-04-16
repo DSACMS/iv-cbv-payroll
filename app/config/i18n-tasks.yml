@@ -151,6 +151,10 @@ ignore_missing:
     - "aggregator_strings.payment_frequencies.quarterly"  # FFS-2723
     - "aggregator_strings.deductions.roth"                # FFS-2723
 
+    # LA LDH
+    - "shared.agency_full_name.la_ldh"                    # n/a
+    - "shared.header.cbv_flow_title.la_ldh"               # n/a
+    - "shared.header.preheader.la_ldh"                    # n/a
 ## Consider these keys used:
 ignore_unused:
   all:
