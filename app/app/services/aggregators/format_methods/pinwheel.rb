@@ -25,4 +25,8 @@ module Aggregators::FormatMethods::Pinwheel
       .group_by { |e| e["category"] }
       .transform_values { |earnings| earnings.sum { |e| e["hours"] } }
   end
+
+  def self.total_earnings_amount(earnings)
+    earnings.sum { |earning| earning["amount"] }
+  end
 end
