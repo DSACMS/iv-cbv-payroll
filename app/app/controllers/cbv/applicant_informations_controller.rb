@@ -8,7 +8,6 @@ class Cbv::ApplicantInformationsController < Cbv::BaseController
 
   def update
     begin
-      props = applicant_params[:cbv_applicant]
       @cbv_applicant.update!(applicant_params[:cbv_applicant])
     rescue => e
       Rails.logger.error("Error updating applicant: #{e.message}")
