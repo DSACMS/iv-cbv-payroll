@@ -110,6 +110,9 @@
   # TODO[FFS-2690]: Enable the weekly report
   # weekly_report:
   #   recipient: <%= ENV['LA_LDH_WEEKLY_REPORT_RECIPIENTS'] %>
+  applicant_attributes:
+    case_number:
+      required: false
 
 - id: sandbox
   agency_name: CBV Test Agency

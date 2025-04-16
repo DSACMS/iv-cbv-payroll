@@ -15,6 +15,10 @@ en:
           attributes:
             case_number:
               blank: Enter the client's case number.
+        cbv_applicant/la_ldh:
+          attributes:
+            case_number:
+              blank: Enter the client's case number.
         cbv_applicant/ma:
           attributes:
             agency_id_number:
@@ -247,6 +251,12 @@ en:
         subheader: Please add other jobs you’ve had in the past %{pay_income_days} days, even if you're no longer at that job.
         yes_radio: Yes, I have another job that meets the criteria
     applicant_informations:
+      la_ldh:
+        fields:
+          case_number:
+            blank: Enter your case number.
+            prompt: Case number
+            super_one_html: Case number<sup>1</sup>
       sandbox:
         fields:
           case_number:
