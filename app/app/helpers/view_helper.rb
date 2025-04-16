@@ -36,8 +36,10 @@ module ViewHelper
     number_to_currency(dollars_in_cents.to_f / 100)
   end
 
-  def translate_pinwheel_value(namespace, value)
-    i18n_key = "pinwheel.#{namespace}.#{value}"
+  def translate_aggregator_value(namespace, value)
+    return unless value.present?
+
+    i18n_key = "aggregator_strings.#{namespace}.#{value}"
 
     # convert the key to snake_case, replacing hyphens with underscores
     i18n_key = i18n_key.gsub("-", "_").downcase
@@ -49,11 +51,11 @@ module ViewHelper
       value
     else
       if Rails.env.development? || Rails.env.test?
-        raise "Missing Pinwheel translation for #{namespace}.#{value}"
+        raise "Missing aggregator translation for #{namespace}.#{value}"
       end
 
       # In production, log warning and return original value
-      Rails.logger.warn "Unknown Pinwheel value for #{namespace}: #{value}"
+      Rails.logger.warn "Unknown aggregator value for #{namespace}: #{value}"
 
       value
     end

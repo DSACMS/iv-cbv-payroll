@@ -19,31 +19,24 @@ class Api::InvitationsController < ApplicationController
     }, status: :created
   end
 
-  # can these be inferred from the model?
   def cbv_flow_invitation_params
     client_agency_id = @current_user.client_agency_id
-    params[:cbv_applicant_attributes] = params.delete(:agency_partner_metadata).merge(client_agency_id: client_agency_id)
-    params[:email_address] = @current_user.email
 
-    permitted = params.permit(
-      :language,
-      :email_address,
-      :user_id,
-      cbv_applicant_attributes: [
-        :first_name,
-        :middle_name,
-        :last_name,
-        :client_id_number,
-        :case_number,
-        :snap_application_date,
-        :agency_id_number,
-        :beacon_id
-      ]
-    )
+    # Allow params in the VALID_ATTRIBUTES array for the relevant agency
+    # CbvApplicant subclass.
+    metadata_params = params.delete(:agency_partner_metadata)
+    allowed_metadata_params = metadata_params.slice(*CbvApplicant.valid_attributes_for_agency(client_agency_id))
 
+    # Permit top-level params of the invitation itself, while merging back in
+    # the allowed applicant attributes.
+    permitted = params.permit(:language, :email_address, :user_id)
     permitted.deep_merge!(
       client_agency_id: client_agency_id,
-      cbv_applicant_attributes: { client_agency_id: client_agency_id }
+      email_address: @current_user.email,
+      cbv_applicant_attributes: {
+        client_agency_id: client_agency_id,
+        **allowed_metadata_params.permit!
+      }
     )
   end
 

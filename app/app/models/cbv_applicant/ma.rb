@@ -1,4 +1,14 @@
 class CbvApplicant::Ma < CbvApplicant
+  # Attributes usable in the invitation API and caseworker page.
+  VALID_ATTRIBUTES = %i[
+    first_name
+    middle_name
+    last_name
+    agency_id_number
+    beacon_id
+    snap_application_date
+  ]
+
   # Massachusetts: 7 digits
   MA_AGENCY_ID_REGEX = /\A\d{7}\z/
 

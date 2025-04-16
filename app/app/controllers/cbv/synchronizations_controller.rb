@@ -1,6 +1,7 @@
 class Cbv::SynchronizationsController < Cbv::BaseController
   before_action :set_pinwheel_account, only: %i[show update]
   before_action :redirect_if_sync_finished, only: %i[show]
+  skip_before_action :capture_page_view, only: %i[update]
 
   def show
   end
