@@ -113,7 +113,6 @@ class CaseWorkerTransmitterJob < ApplicationJob
     end
   end
 
-
   def generate_csv
     payroll_account = PayrollAccount.find_by(cbv_flow_id: cbv_flow.id)
 

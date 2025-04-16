@@ -54,7 +54,7 @@ RSpec.describe CaseWorkerTransmitterJob, type: :job do
     end
 
     context "when transmission method is shared_email" do
-      let(:transmission_method) { "shared_email"}
+      let(:transmission_method) { "shared_email" }
       let(:transmission_method_configuration) { {
         "email" => 'test@example.com'
       }}
@@ -99,9 +99,9 @@ RSpec.describe CaseWorkerTransmitterJob, type: :job do
     context "when transmission method is s3" do
       let(:user) { create(:user, email: "test@test.com") }
       let(:s3_service_double) { instance_double(S3Service) }
-      let(:transmission_method) { "s3"}
-      let(:mocked_client_id) { "ma"}
-      let(:transmission_method_configuration) {{
+      let(:transmission_method) { "s3" }
+      let(:mocked_client_id) { "ma" }
+      let(:transmission_method_configuration) { {
         "bucket"     => "test-bucket",
         "public_key" => @public_key
       }}

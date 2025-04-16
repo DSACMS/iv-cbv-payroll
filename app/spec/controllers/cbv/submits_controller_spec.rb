@@ -82,7 +82,7 @@ RSpec.describe Cbv::SubmitsController do
 
       context "when a supported job errors" do
         let(:supported_jobs) { %w[income paystubs employment] }
-        let(:errored_jobs) { ["employment"] }
+        let(:errored_jobs) { [ "employment" ] }
 
         it "renders pdf properly" do
           get :show, format: :pdf
@@ -175,7 +175,7 @@ RSpec.describe Cbv::SubmitsController do
 
     context "when a supported job errors" do
       let(:supported_jobs) { %w[income paystubs employment] }
-      let(:errored_jobs) { ["employment"] }
+      let(:errored_jobs) { [ "employment" ] }
 
       it "renders pdf properly" do
         get :show, format: :pdf
@@ -214,13 +214,11 @@ RSpec.describe Cbv::SubmitsController do
       end
 
       context "with consent" do
-
         it "queues a job and redirects to success screen" do
           expect(CaseWorkerTransmitterJob).to receive(:perform_later).with(cbv_flow.id)
           patch :update, params: { cbv_flow: { consent_to_authorized_use: "1" } }
           expect(response).to redirect_to({ controller: :successes, action: :show })
         end
-
       end
     end
 
@@ -236,8 +234,6 @@ RSpec.describe Cbv::SubmitsController do
         patch :update, params: { cbv_flow: { consent_to_authorized_use: "1" } }
         expect(response).to redirect_to({ controller: :successes, action: :show })
       end
-
     end
-
   end
 end
