@@ -35,7 +35,7 @@ module Aggregators::ResponseObjects
         start_date: response_body["start_date"],
         end_date: response_body["end_date"],
         compensation_category: response_body["earnings"].first["category"],
-        compensation_amount: response_body["earnings"].first["amount"], # Pinwheel already provides amounts in cents
+        compensation_amount: Aggregators::FormatMethods::Pinwheel.total_earnings_amount(response_body["earnings"]),
         compensation_unit: response_body["currency"]
       )
     end
