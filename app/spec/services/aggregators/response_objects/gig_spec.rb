@@ -20,7 +20,7 @@ RSpec.describe Aggregators::ResponseObjects::Gig do
         start_date: gig_data["start_date"],
         end_date: gig_data["end_date"],
         hours: PinwheelFormatter.hours(gig_data["earnings"]),
-        compensation_amount: gig_data["earnings"].first["amount"],
+        compensation_amount: PinwheelFormatter.total_earnings_amount(gig_data["earnings"]),
         compensation_unit: gig_data["currency"],
         gig_status: nil
       )
