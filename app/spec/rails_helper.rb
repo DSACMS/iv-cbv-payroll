@@ -54,7 +54,6 @@ VCR.configure do |config|
 end
 
 require 'billy/capybara/rspec'
-Capybara.javascript_driver = :selenium_billy
 
 Billy.configure do |c|
   c.cache = true
@@ -80,7 +79,7 @@ Billy.proxy.restore_cache
 
 RSpec.configure do |config|
   config.before(:each, type: :feature) do
-    Capybara.current_driver = :selenium_chrome_headless
+    Capybara.current_driver = :selenium_chrome_headless_billy
   end
 
   # Remove this line if you're not using ActiveRecord or ActiveRecord fixtures
