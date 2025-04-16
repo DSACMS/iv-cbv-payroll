@@ -10,16 +10,7 @@ module PinwheelApiHelper
     stub_request(:get, /#{Aggregators::Sdk::PinwheelService::ITEMS_ENDPOINT}/)
       .to_return(
         status: 200,
-        body: {
-          data: [
-            {
-              id: "12345",
-              name: "Some Employer Name",
-              logo_url: "https://example.com/logo.jpg",
-              response_type: "employer"
-            }
-          ]
-        }.to_json,
+        body: pinwheel_load_relative_json_file('request_items_response.json').to_json,
         headers: { content_type: 'application/json;charset=UTF-8' }
       )
   end
