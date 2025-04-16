@@ -45,7 +45,7 @@ RSpec.describe ViewHelper, type: :helper do
     context 'when locale is not :es' do
       let(:locale) { :en }
 
-      it 'returns the English value' do
+      before do
         I18n.backend.store_translations(:en, {
           aggregator_strings: {
             namespace: {
@@ -53,9 +53,18 @@ RSpec.describe ViewHelper, type: :helper do
             }
           }
         })
+      end
 
+      it 'returns the English value' do
         result = helper.translate_aggregator_value('namespace', 'some_value')
         expect(result).to eq('Translated Value')
+      end
+
+      context 'when the value is nil' do
+        it 'returns nil' do
+          result = helper.translate_aggregator_value('namespace', nil)
+          expect(result).to be_nil
+        end
       end
 
       context 'when there is no English value given' do

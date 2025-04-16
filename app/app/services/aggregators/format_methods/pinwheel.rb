@@ -41,6 +41,10 @@ module Aggregators::FormatMethods::Pinwheel
       .transform_values { |earnings| earnings.sum { |e| e["hours"] } }
   end
 
+  def self.total_earnings_amount(earnings)
+    earnings.sum { |earning| earning["amount"] }
+  end
+
   def self.employment_type(employer_name)
     if GIG_PLATFORM_NAMES.include?(employer_name)
       :gig

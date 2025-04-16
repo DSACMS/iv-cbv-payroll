@@ -37,6 +37,8 @@ module ViewHelper
   end
 
   def translate_aggregator_value(namespace, value)
+    return unless value.present?
+
     i18n_key = "aggregator_strings.#{namespace}.#{value}"
 
     # convert the key to snake_case, replacing hyphens with underscores
