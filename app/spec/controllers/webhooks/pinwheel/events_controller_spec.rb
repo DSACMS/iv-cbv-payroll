@@ -122,6 +122,7 @@ RSpec.describe Webhooks::Pinwheel::EventsController do
           pinwheel_stub_request_income_metadata_response
           pinwheel_stub_request_end_user_multiple_paystubs_response
           pinwheel_stub_request_employment_info_response
+          pinwheel_stub_request_shifts_response
 
           allow(controller).to receive(:event_logger).and_return(event_logger)
         end
