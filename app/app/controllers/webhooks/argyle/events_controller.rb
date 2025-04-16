@@ -195,6 +195,6 @@ class Webhooks::Argyle::EventsController < ApplicationController
   end
 
   def update_synchronization_page(payroll_account)
-    payroll_account.broadcast_replace(partial: "cbv/synchronizations/indicators", locals: { pinwheel_account: payroll_account })
+    payroll_account.broadcast_replace(partial: "cbv/synchronizations/indicators", locals: { payroll_account: payroll_account })
   end
 end
