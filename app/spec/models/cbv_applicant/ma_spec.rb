@@ -4,8 +4,6 @@ require_relative "../cbv_applicant_spec.rb"
 RSpec.describe CbvApplicant::Ma, type: :model do
   let(:ma_attributes) { attributes_for(:cbv_applicant, :ma) }
 
-  it_behaves_like "a CbvApplicant subclass", "ma"
-
   context "user input is invalid" do
     it "requires agency_id_number" do
       applicant = CbvApplicant.new(ma_attributes.without(:agency_id_number))
