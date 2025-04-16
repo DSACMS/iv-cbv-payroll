@@ -25,5 +25,19 @@ module Aggregators::ResponseObjects
         compensation_unit: response_body["income"]["currency"]
       )
     end
+
+    def self.from_pinwheel(response_body)
+      new(
+        account_id: response_body["account_id"],
+        gig_type: response_body["type"],
+        gig_status: nil, # pinwheel shifts don't have status
+        hours: Aggregators::FormatMethods::Pinwheel.hours(response_body["earnings"]),
+        start_date: response_body["start_date"],
+        end_date: response_body["end_date"],
+        compensation_category: response_body["earnings"].first["category"],
+        compensation_amount: Aggregators::FormatMethods::Pinwheel.total_earnings_amount(response_body["earnings"]),
+        compensation_unit: response_body["currency"]
+      )
+    end
   end
 end

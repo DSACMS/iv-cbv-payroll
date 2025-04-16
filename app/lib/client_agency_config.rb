@@ -9,6 +9,10 @@ class ClientAgencyConfig
       .to_h
   end
 
+  def self.client_agencies
+    Rails.application.config.client_agencies
+  end
+
   def client_agency_ids
     @client_agencies.keys
   end
