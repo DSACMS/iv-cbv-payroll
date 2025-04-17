@@ -47,8 +47,8 @@ VCR.configure do |config|
     request.uri.include?("http://127.0.0.1")
   end
   config.ignore_hosts '127.0.0.1', 'localhost', 'logs.browser-intake-datadoghq.com', "firefox-settings-attachments.cdn.mozilla.net",
-                      "firefox.settings.services.mozilla.com", "plugin.argyle.com", "switchboard.pwhq.net",
-                      "cdn.getpinwheel.com", "featuregates.org", "datadog", "events.statsigapi.net", "content-signature-2.cdn.mozilla.net"
+                      "firefox.settings.services.mozilla.com", "plugin.argyle.com", "switchboard.pwhq.net", "passwordsleakcheck-pa.googleapis.com",
+                      "cdn.getpinwheel.com", "featuregates.org", "datadog", "events.statsigapi.net", "content-signature-2.cdn.mozilla.net", "content-autofill.googleapis.com"
   config.default_cassette_options = { record: :once }
   config.filter_sensitive_data("<SANDBOX_SECRET_TOKEN>") { ENV["PINWHEEL_API_TOKEN_SANDBOX"] }
 end
@@ -68,6 +68,8 @@ Billy.configure do |c|
   c.whitelist << /switchboard/
   c.whitelist << /datadog/
   c.whitelist << /cloudinary/
+  c.whitelist << /googleapis/
+  c.whitelist << /google\.com/
 end
 Billy.proxy.restore_cache
 
