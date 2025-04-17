@@ -114,9 +114,9 @@ locals {
       manage_method     = "manual"
       secret_store_name = "/service/${var.app_name}-${var.environment}/ma-pinwheel-environment"
     },
-    LA_PINWHEEL_ENVIRONMENT = {
+    LA_LDH_PINWHEEL_ENVIRONMENT = {
       manage_method     = "manual"
-      secret_store_name = "/service/${var.app_name}-${var.environment}/la-pinwheel-environment"
+      secret_store_name = "/service/${var.app_name}-${var.environment}/la-ldh-pinwheel-environment"
     },
     SANDBOX_PINWHEEL_ENVIRONMENT = {
       manage_method     = "manual"
