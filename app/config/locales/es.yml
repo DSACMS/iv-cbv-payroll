@@ -97,6 +97,12 @@ es:
         subheader: Por favor añada los otros trabajos que haya tenido en los últimos %{pay_income_days} días, incluso si ya no está en ese trabajo.
         yes_radio: Sí, tengo otro trabajo que cumpla con los criterios
     applicant_informations:
+      la_ldh:
+        fields:
+          case_number:
+            blank: Escriba su número de caso.
+            prompt: Número de caso
+            super_one_html: Número de caso<sup>1</sup>
       sandbox:
         fields:
           case_number:
@@ -254,6 +260,7 @@ es:
         pdf:
           agency_header_name:
             az_des: Department of Economic Security
+            la_ldh: Department of Health
             ma: Massachusetts Department of Transitional Assistance
             nyc: NYC Human Resources Administration
             sandbox: CBV Test Agency

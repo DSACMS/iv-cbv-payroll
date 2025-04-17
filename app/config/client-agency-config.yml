@@ -83,6 +83,37 @@
   # weekly_report:
   #   recipient: <%= ENV['AZ_DES_WEEKLY_REPORT_RECIPIENTS'] %>
 
+- id: la_ldh
+  agency_name: Department of Health
+  agency_short_name: LDH
+  agency_contact_website: https://ldh.la.gov/contact-us
+  # caseworker_feedback_form: n/a
+  # TODO[FFS-2689]: Add Louisiana DPH logo, these assets are not available yet.
+  # logo_path: ldh_logo.png
+  # logo_square_path: ldh_logo_square.png
+  pinwheel:
+    environment: <%= ENV["LA_LDH_PINWHEEL_ENVIRONMENT"] %>
+  argyle:
+    environment: <%= ENV["LA_LDH_ARGYLE_ENVIRONMENT"] %>
+  transmission_method: shared_email
+  transmission_method_configuration:
+    email: <%= ENV['SLACK_TEST_EMAIL'] %>
+  staff_portal_enabled: false
+  # sso:
+  #   client_id:     <%= ENV["AZURE_LA_LDH_CLIENT_ID"] %>
+  #   client_secret: <%= ENV["AZURE_LA_LDH_CLIENT_SECRET"] %>
+  #   tenant_id:     <%= ENV["AZURE_LA_LDH_TENANT_ID"] %>
+  #   scope: "openid"
+  #   name: "la_ldh"
+  pay_income_days: 90
+  invitation_valid_days: 14
+  # TODO[FFS-2690]: Enable the weekly report
+  # weekly_report:
+  #   recipient: <%= ENV['LA_LDH_WEEKLY_REPORT_RECIPIENTS'] %>
+  applicant_attributes:
+    case_number:
+      required: false
+
 - id: sandbox
   agency_name: CBV Test Agency
   agency_short_name: CBV

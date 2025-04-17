@@ -75,5 +75,14 @@ FactoryBot.define do
         ]
       end
     end
+
+    trait :la_ldh do
+      client_agency_id { "la_ldh" }
+
+      case_number do
+        # TODO: Determine actual LA LDH case number format.
+        8.times.map { rand(10) }.join
+      end
+    end
   end
 end

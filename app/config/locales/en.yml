@@ -15,6 +15,10 @@ en:
           attributes:
             case_number:
               blank: Enter the client's case number.
+        cbv_applicant/la_ldh:
+          attributes:
+            case_number:
+              blank: Enter the client's case number.
         cbv_applicant/ma:
           attributes:
             agency_id_number:
@@ -247,6 +251,12 @@ en:
         subheader: Please add other jobs you’ve had in the past %{pay_income_days} days, even if you're no longer at that job.
         yes_radio: Yes, I have another job that meets the criteria
     applicant_informations:
+      la_ldh:
+        fields:
+          case_number:
+            blank: Enter your case number.
+            prompt: Case number
+            super_one_html: Case number<sup>1</sup>
       sandbox:
         fields:
           case_number:
@@ -404,6 +414,7 @@ en:
         pdf:
           agency_header_name:
             az_des: Department of Economic Security
+            la_ldh: Department of Health
             ma: Massachusetts Department of Transitional Assistance
             nyc: NYC Human Resources Administration
             sandbox: CBV Test Agency
@@ -637,6 +648,7 @@ en:
   shared:
     agency_full_name:
       az_des: Arizona Department of Economic Security
+      la_ldh: Louisiana Department of Health
       ma: Massachusetts Department of Transitional Assistance
       nyc: New York City Human Resources Administration
       sandbox: CBV Test Agency
@@ -655,6 +667,7 @@ en:
       aria_label: Main navigation
       cbv_flow_title:
         az_des: Department of Economic Security
+        la_ldh: Department of Health
         ma: Department of Transitional Assistance
         nyc: Human Resources Administration
         sandbox: CBV Test Agency
@@ -664,6 +677,7 @@ en:
       preheader:
         az_des: A website in partnership with the Arizona Department of Economic Security.
         default: A website in partnership with CBV Test Agency.
+        la_ldh: A website in partnership with the Louisiana Department of Health
         ma: A website in partnership with the Commonwealth of Massachusetts.
         nyc: A website in partnership with the City of New York.
       primary: Primary navigation
