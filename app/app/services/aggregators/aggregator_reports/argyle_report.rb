@@ -8,6 +8,7 @@ module Aggregators::AggregatorReports
     end
 
     private
+
     def fetch_report_data_for_account(payroll_account)
       identities_json = @argyle_service.fetch_identities_api(
         account: payroll_account.pinwheel_account_id
