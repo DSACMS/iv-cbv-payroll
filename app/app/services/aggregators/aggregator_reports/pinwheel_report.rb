@@ -1,6 +1,10 @@
 module Aggregators::AggregatorReports
   class PinwheelReport < AggregatorReport
+    include ActiveModel::Validations
+
     attr_accessor :pinwheel_service
+
+    validates_with Aggregators::Validators::UsefulReportValidator, on: :useful_report
 
     def initialize(pinwheel_service: nil, **params)
       super(**params)

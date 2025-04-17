@@ -1,6 +1,6 @@
 class Webhooks::Pinwheel::EventsController < ApplicationController
   before_action :set_cbv_flow, :set_pinwheel, :authorize_webhook
-  after_action :track_events
+  after_action :process_webhook_event
   skip_before_action :verify_authenticity_token
 
   # To prevent timing attacks, we attempt to verify the webhook signature
@@ -49,7 +49,7 @@ class Webhooks::Pinwheel::EventsController < ApplicationController
     @pinwheel.fetch_platform(platform_id: platform_id)["data"]["supported_jobs"]
   end
 
-  def track_events
+  def process_webhook_event
     if @webhook_event.event_name == "account.added"
       event_logger.track("ApplicantCreatedPinwheelAccount", request, {
         cbv_applicant_id: @cbv_flow.cbv_applicant_id,
@@ -66,6 +66,8 @@ class Webhooks::Pinwheel::EventsController < ApplicationController
         to_date: @cbv_flow.cbv_applicant.snap_application_date
       )
       report.fetch
+
+      validate_useful_report_requirements(report)
 
       event_logger.track("ApplicantFinishedPinwheelSync", request, {
         cbv_applicant_id: @cbv_flow.cbv_applicant_id,
@@ -134,5 +136,19 @@ class Webhooks::Pinwheel::EventsController < ApplicationController
     raise ex unless Rails.env.production?
 
     Rails.logger.error "Unable to track NewRelic event (in #{self.class.name}): #{ex}"
+  end
+
+  def validate_useful_report_requirements(report)
+    if report.valid?(:useful_report)
+      event_logger.track("ApplicantReportMetUsefulRequirements", request, {})
+    else
+      event_logger.track("ApplicantReportFailedUsefulRequirements", request, {
+        errors: report.errors.full_messages.join(", ")
+      })
+    end
+  rescue => ex
+    raise ex unless Rails.env.production?
+
+    Rails.logger.error "Unable to track event (in #{self.class.name}): #{ex}"
   end
 end

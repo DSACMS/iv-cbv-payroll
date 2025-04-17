@@ -125,11 +125,13 @@ RSpec.describe Webhooks::Pinwheel::EventsController do
           pinwheel_stub_request_shifts_response
 
           allow(controller).to receive(:event_logger).and_return(event_logger)
+          allow(event_logger).to receive(:track)
         end
 
         it "sends full report analytics when synced" do
           expect(event_logger).to receive(:track) do |event_name, _request, attributes|
-            expect(event_name).to eq("ApplicantFinishedPinwheelSync")
+            next unless event_name == "ApplicantFinishedPinwheelSync"
+
             expect(attributes).to include(
               cbv_flow_id: cbv_flow.id,
               cbv_applicant_id: cbv_flow.cbv_applicant_id,
@@ -184,6 +186,24 @@ RSpec.describe Webhooks::Pinwheel::EventsController do
           end
 
           post :create, params: valid_params
+        end
+
+        it "sends a ApplicantReportMetUsefulRequirements event" do
+          expect(event_logger).to receive(:track).with("ApplicantReportMetUsefulRequirements", anything, anything)
+
+          post :create, params: valid_params
+        end
+
+        context "when not meeting the useful report validations" do
+          before do
+            pinwheel_stub_request_end_user_no_hours_response
+          end
+
+          it "sends a ApplicantReportFailedUsefulRequirements event" do
+            expect(event_logger).to receive(:track).with("ApplicantReportFailedUsefulRequirements", anything, anything)
+
+            post :create, params: valid_params
+          end
         end
       end
     end
