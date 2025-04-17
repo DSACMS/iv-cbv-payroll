@@ -21,6 +21,9 @@ module Aggregators::Sdk
       }
     }
 
+    # See: https://console.argyle.com/flows
+    FLOW_ID = "BXSHLUUJ"
+
     ITEMS_ENDPOINT = "items"
     PAYSTUBS_ENDPOINT = "paystubs"
     IDENTITIES_ENDPOINT = "identities"
