@@ -92,7 +92,7 @@
   # logo_path: ldh_logo.png
   # logo_square_path: ldh_logo_square.png
   pinwheel:
-    environment: <%= ENV["LA_PINWHEEL_ENVIRONMENT"] %>
+    environment: <%= ENV["LA_LDH_PINWHEEL_ENVIRONMENT"] %>
   argyle:
     environment: <%= ENV["SANDBOX_ARGYLE_ENVIRONMENT"] %>
   transmission_method: shared_email
