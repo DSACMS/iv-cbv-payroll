@@ -161,14 +161,12 @@ export default class ArgyleModalAdapter extends ModalAdapter {
   }
 
   sanitizePayload(payload: any): any {
-    if (!payload) {
-      return payload
-    }
-
     let sanitizedPayload = { ...payload }
 
-    delete sanitizedPayload.properties.accountId
-    delete sanitizedPayload.properties.userId
+    if (sanitizedPayload.properties) {
+      delete sanitizedPayload.properties.accountId
+      delete sanitizedPayload.properties.userId
+    }
 
     return sanitizedPayload
   }
