@@ -25,13 +25,13 @@ export default class ArgyleModalAdapter extends ModalAdapter {
         onAccountConnected: this.onSuccess.bind(this),
         onTokenExpired: this.onTokenExpired.bind(this),
         onAccountCreated: async (payload) => {
-          await trackUserAction("ArgyleAccountCreated")
+          await trackUserAction("ArgyleAccountCreated", this.sanitizePayload(payload))
         },
         onAccountError: async (payload) => {
-          await trackUserAction("ArgyleAccountError")
+          await trackUserAction("ArgyleAccountError", this.sanitizePayload(payload))
         },
         onAccountRemoved: async (payload) => {
-          await trackUserAction("ArgyleAccountRemoved")
+          await trackUserAction("ArgyleAccountRemoved", this.sanitizePayload(payload))
         },
         onUIEvent: async (payload) => {
           await this.onUIEvent(payload)
@@ -62,47 +62,75 @@ export default class ArgyleModalAdapter extends ModalAdapter {
   async onUIEvent(payload: ArgyeUIEvent) {
     switch (payload.name) {
       case "search - opened":
-        await trackUserAction("ApplicantViewedArgyleDefaultProviderSearch")
+        await trackUserAction(
+          "ApplicantViewedArgyleDefaultProviderSearch",
+          this.sanitizePayload(payload)
+        )
         break
       case "login - opened":
         switch (payload.properties.errorCode) {
           case "auth_required":
-            await trackUserAction("ApplicantEncounteredArgyleAuthRequiredLoginError")
+            await trackUserAction(
+              "ApplicantEncounteredArgyleAuthRequiredLoginError",
+              this.sanitizePayload(payload)
+            )
             break
           case "connection_unavailable":
-            await trackUserAction("ApplicantEncounteredArgyleConnectionUnavailableLoginError")
+            await trackUserAction(
+              "ApplicantEncounteredArgyleConnectionUnavailableLoginError",
+              this.sanitizePayload(payload)
+            )
             break
           case "expired_credentials":
-            await trackUserAction("ApplicantEncounteredArgyleExpiredCredentialsLoginError")
+            await trackUserAction(
+              "ApplicantEncounteredArgyleExpiredCredentialsLoginError",
+              this.sanitizePayload(payload)
+            )
             break
           case "invalid_auth":
-            await trackUserAction("ApplicantEncounteredArgyleInvalidAuthLoginError")
+            await trackUserAction(
+              "ApplicantEncounteredArgyleInvalidAuthLoginError",
+              this.sanitizePayload(payload)
+            )
             break
           case "invalid_credentials":
-            await trackUserAction("ApplicantEncounteredArgyleInvalidCredentialsLoginError")
+            await trackUserAction(
+              "ApplicantEncounteredArgyleInvalidCredentialsLoginError",
+              this.sanitizePayload(payload)
+            )
             break
           case "mfa_cancelled_by_the_user":
-            await trackUserAction("ApplicantEncounteredArgyleMfaCanceledLoginError")
+            await trackUserAction(
+              "ApplicantEncounteredArgyleMfaCanceledLoginError",
+              this.sanitizePayload(payload)
+            )
             break
           default:
-            await trackUserAction("ApplicantViewedArgyleLoginPage")
+            await trackUserAction("ApplicantViewedArgyleLoginPage", this.sanitizePayload(payload))
             break
         }
         break
       case "search - link item selected":
-        await trackUserAction("ApplicantViewedArgyleProviderConfirmation")
+        await trackUserAction(
+          "ApplicantViewedArgyleProviderConfirmation",
+          this.sanitizePayload(payload)
+        )
         break
       case "search - term updated":
         await trackUserAction("ApplicantUpdatedArgyleSearchTerm", {
           term: payload.properties.term,
           tab: payload.properties.tab,
+          payload: payload,
         })
         break
       case "login - form submitted":
-        await trackUserAction("ApplicantAttemptedArgyleLogin")
+        await trackUserAction("ApplicantAttemptedArgyleLogin", this.sanitizePayload(payload))
         break
       case "mfa - opened":
-        await trackUserAction("ApplicantAccessedArgyleModalMFAScreen")
+        await trackUserAction(
+          "ApplicantAccessedArgyleModalMFAScreen",
+          this.sanitizePayload(payload)
+        )
         break
       default:
         break
@@ -114,6 +142,7 @@ export default class ArgyleModalAdapter extends ModalAdapter {
       account_id: eventPayload.accountId,
       user_id: eventPayload.userId,
       item_id: eventPayload.itemId,
+      payload: eventPayload,
     })
 
     if (this.successCallback) {
@@ -129,5 +158,14 @@ export default class ArgyleModalAdapter extends ModalAdapter {
     await trackUserAction("ArgyleTokenExpired")
     const { user } = await fetchArgyleToken()
     updateToken(user.user_token)
+  }
+
+  sanitizePayload(payload: any): any {
+    let sanitizedPayload = { ...payload }
+
+    delete sanitizedPayload.properties.accountId
+    delete sanitizedPayload.properties.userId
+
+    return sanitizedPayload
   }
 }
