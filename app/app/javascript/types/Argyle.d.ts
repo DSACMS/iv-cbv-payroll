@@ -6,6 +6,8 @@ type LinkError = {
 }
 
 type ArgyleInitializationParams = {
+  // See: https://docs.argyle.com/link/initialization
+  flowId: string
   userToken: string
   items: string[]
   onAccountConnected?: (payload: ArgyleAccountData) => void
