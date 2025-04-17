@@ -216,6 +216,10 @@ GEM
       rails-i18n
       rainbow (>= 2.2.2, < 4.0)
       terminal-table (>= 1.5.1)
+    importmap-rails (2.1.0)
+      actionpack (>= 6.0.0)
+      activesupport (>= 6.0.0)
+      railties (>= 6.0.0)
     io-console (0.8.0)
     irb (1.14.2)
       rdoc (>= 4.0.0)
@@ -249,6 +253,16 @@ GEM
     mini_mime (1.1.5)
     mini_portile2 (2.8.7)
     minitest (5.25.5)
+    mission_control-jobs (1.0.2)
+      actioncable (>= 7.1)
+      actionpack (>= 7.1)
+      activejob (>= 7.1)
+      activerecord (>= 7.1)
+      importmap-rails (>= 1.2.1)
+      irb (~> 1.13)
+      railties (>= 7.1)
+      stimulus-rails
+      turbo-rails
     mixpanel-ruby (2.3.0)
     msgpack (1.7.2)
     multi_xml (0.7.1)
@@ -545,6 +559,7 @@ DEPENDENCIES
   jbuilder
   jsbundling-rails
   maybe_later
+  mission_control-jobs
   mixpanel-ruby
   net-imap (= 0.4.19)
   newrelic_rpm
