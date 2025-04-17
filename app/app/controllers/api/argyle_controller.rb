@@ -25,7 +25,14 @@ class Api::ArgyleController < ApplicationController
                    response["user_token"]
                  end
 
-    render json: { status: :ok, user: { user_token: user_token }, isSandbox: is_sandbox_environment }
+    render json: {
+      status: :ok,
+      isSandbox: is_sandbox_environment,
+      flowId: Aggregators::Sdk::ArgyleService::FLOW_ID,
+      user: {
+        user_token: user_token
+      }
+    }
   end
 
   def track_event
