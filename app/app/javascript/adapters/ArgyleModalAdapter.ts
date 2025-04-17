@@ -161,6 +161,10 @@ export default class ArgyleModalAdapter extends ModalAdapter {
   }
 
   sanitizePayload(payload: any): any {
+    if (!payload) {
+      return payload
+    }
+
     let sanitizedPayload = { ...payload }
 
     delete sanitizedPayload.properties.accountId
