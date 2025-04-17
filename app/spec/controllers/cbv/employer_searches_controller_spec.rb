@@ -97,6 +97,7 @@ RSpec.describe Cbv::EmployerSearchesController do
     context "when there are no employer search results" do
       before do
         pinwheel_stub_request_items_no_items_response
+        argyle_stub_request_items_response("bob", "no_results")
       end
 
       render_views
@@ -124,6 +125,7 @@ RSpec.describe Cbv::EmployerSearchesController do
     context "when there are search results" do
       before do
         pinwheel_stub_request_items_response
+        argyle_stub_request_items_response("bob", "results")
       end
 
       render_views
@@ -140,9 +142,9 @@ RSpec.describe Cbv::EmployerSearchesController do
             cbv_applicant_id: cbv_flow.cbv_applicant_id,
             cbv_flow_id: cbv_flow.id,
             invitation_id: cbv_flow.cbv_flow_invitation_id,
-            num_results: 1,
+            num_results: 2,
             has_payroll_account: false,
-            pinwheel_result_count: 1,
+            pinwheel_result_count: 2,
             argyle_result_count: 0
             ))
         get :show, params: { query: "results" }
@@ -155,9 +157,9 @@ RSpec.describe Cbv::EmployerSearchesController do
             cbv_applicant_id: cbv_flow.cbv_applicant_id,
             cbv_flow_id: cbv_flow.id,
             invitation_id: cbv_flow.cbv_flow_invitation_id,
-            num_results: 1,
+            num_results: 2,
             has_payroll_account: false,
-            pinwheel_result_count: 1,
+            pinwheel_result_count: 2,
             argyle_result_count: 0
             ))
         get :show, params: { query: "results" }

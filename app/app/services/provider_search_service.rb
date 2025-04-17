@@ -1,22 +1,32 @@
 class ProviderSearchService
   SUPPORTED_PROVIDERS = (ENV["SUPPORTED_PROVIDERS"] || "pinwheel")&.split(",")&.map(&:to_sym)
 
-  def initialize(client_agency_id)
+  def initialize(client_agency_id, providers: SUPPORTED_PROVIDERS)
     @client_agency_config = site_config[client_agency_id]
+    @providers = providers
   end
 
   def search(query = "")
     results = []
-    if SUPPORTED_PROVIDERS.include?(:argyle)
-      results = Aggregators::Sdk::ArgyleService.new(@client_agency_config.argyle_environment).items(query)["results"].map do |result|
+
+    if @providers.include?(:argyle)
+      argyle_service = Aggregators::Sdk::ArgyleService.new(@client_agency_config.argyle_environment)
+
+      results = argyle_service.items(query)["results"].map do |result|
         Aggregators::ResponseObjects::SearchResult.from_argyle(result)
       end
     end
 
-    if results.length == 0 && SUPPORTED_PROVIDERS.include?(:pinwheel)
-      results = Aggregators::Sdk::PinwheelService.new(@client_agency_config.pinwheel_environment).fetch_items(q: query)["data"].map do |result|
+    if @providers.include?(:pinwheel) && (results.length == 0 || !any_exact_matches?(results, query))
+      pinwheel_service = Aggregators::Sdk::PinwheelService.new(@client_agency_config.pinwheel_environment)
+
+      pinwheel_results = pinwheel_service.fetch_items(q: query, supported_jobs: %w[paystubs])["data"].map do |result|
         Aggregators::ResponseObjects::SearchResult.from_pinwheel(result)
       end
+
+      # Use Pinwheel's results if there aren't any results from Argyle, or
+      # there is an exact match from Pinwheel.
+      results = pinwheel_results if results.length == 0 || any_exact_matches?(pinwheel_results, query)
     end
 
     results
@@ -26,9 +36,9 @@ class ProviderSearchService
   def top_aggregator_options(type)
     case type
     when "payroll"
-      Aggregators::ResponseObjects::SearchResult.from_aggregator_options(TOP_PROVIDERS, SUPPORTED_PROVIDERS)
+      Aggregators::ResponseObjects::SearchResult.from_aggregator_options(TOP_PROVIDERS, @providers)
     when "employer"
-      Aggregators::ResponseObjects::SearchResult.from_aggregator_options(TOP_EMPLOYERS, SUPPORTED_PROVIDERS)
+      Aggregators::ResponseObjects::SearchResult.from_aggregator_options(TOP_EMPLOYERS, @providers)
     end
   end
 
@@ -36,6 +46,15 @@ class ProviderSearchService
 
   def site_config
     Rails.application.config.client_agencies
+  end
+
+  def any_exact_matches?(results, original_query)
+    results.any? { |result| normalize_name(result.name) == normalize_name(original_query) }
+  end
+
+  def normalize_name(name)
+    # "Wal-Mart, LLC" => "walmartllc"
+    name.downcase.gsub(/[^0-9a-z]+/, "")
   end
 
   # TODO: move these to a config file - see FFS-2661

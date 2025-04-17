@@ -1,12 +1,14 @@
 require 'rails_helper'
 
-RSpec.shared_examples "a CbvApplicant subclass" do |agency_id|
-  it "has a list of VALID_ATTRIBUTES" do
-    expect(CbvApplicant.valid_attributes_for_agency(agency_id)).to be_present
-  end
-end
-
 RSpec.describe CbvApplicant, type: :model do
+  describe "all valid types of agencies" do
+    ClientAgencyConfig.client_agencies.client_agency_ids.each do |client_agency_id|
+      it "has a list of VALID_ATTRIBUTES for #{client_agency_id}" do
+        expect(CbvApplicant.valid_attributes_for_agency(client_agency_id)).to be_present
+      end
+    end
+  end
+
   describe "validations" do
     let(:valid_attributes) { attributes_for(:cbv_applicant, :nyc) }
 

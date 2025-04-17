@@ -8,7 +8,7 @@ RSpec.describe Cbv::PaymentDetailsController do
 
     let(:current_time) { Date.parse('2024-06-18') }
     let(:cbv_applicant) { create(:cbv_applicant, created_at: current_time, case_number: "ABC1234") }
-    let(:account_id) { "account1" }
+    let(:account_id) { "03e29160-f7e7-4a28-b2d8-813640e030d3" }
     let(:comment) { "This is a test comment" }
     let(:supported_jobs) { %w[income paystubs employment] }
     let(:errored_jobs) { [] }
@@ -32,16 +32,14 @@ RSpec.describe Cbv::PaymentDetailsController do
         supported_jobs: supported_jobs,
       )
     end
-    let(:pinwheel_report) { build(:pinwheel_report) }
-    let(:pinwheel_report_no_paystubs) { build(:pinwheel_report, :no_paystubs) }
 
     before do
       session[:cbv_flow_id] = cbv_flow.id
+      pinwheel_stub_request_identity_response
       pinwheel_stub_request_end_user_accounts_response
       pinwheel_stub_request_end_user_paystubs_response
       pinwheel_stub_request_income_metadata_response if supported_jobs.include?("income")
       pinwheel_stub_request_employment_info_response
-      allow(Aggregators::AggregatorReports::PinwheelReport).to receive(:new).and_return(pinwheel_report)
     end
 
     context "when pinwheel values are present" do
@@ -57,7 +55,7 @@ RSpec.describe Cbv::PaymentDetailsController do
             cbv_flow_id: cbv_flow.id,
             invitation_id: cbv_flow.cbv_flow_invitation_id,
             pinwheel_account_id: payroll_account.id,
-            payments_length: 2,
+            payments_length: 1,
             has_employment_data: true,
             has_paystubs_data: true,
             has_income_data: true
@@ -69,7 +67,7 @@ RSpec.describe Cbv::PaymentDetailsController do
            cbv_flow_id: cbv_flow.id,
            invitation_id: cbv_flow.cbv_flow_invitation_id,
            pinwheel_account_id: payroll_account.id,
-           payments_length: 2,
+           payments_length: 1,
            has_employment_data: true,
            has_paystubs_data: true,
            has_income_data: true
@@ -173,9 +171,11 @@ RSpec.describe Cbv::PaymentDetailsController do
       let(:supported_jobs) { %w[paystubs employment income] }
       let(:errored_jobs) { [ "paystubs" ] }
 
-      it "renders properly without the paystubs data" do
-        allow(Aggregators::AggregatorReports::PinwheelReport).to receive(:new).and_return(build(:pinwheel_report, :no_paystubs))
+      before do
+        pinwheel_stub_request_end_user_no_paystubs_response
+      end
 
+      it "renders properly without the paystubs data" do
         get :show, params: { user: { account_id: account_id } }
         expect(response).to be_successful
         expect(response.body).to include("find any payments from this employer in the past 90 days.")

@@ -12,13 +12,23 @@ module Aggregators::AggregatorReports
     def fetch_report_data_for_account(account)
       @identities.append(fetch_identity(account_id: account.pinwheel_account_id))
       @employments.append(fetch_employment(account_id: account.pinwheel_account_id))
-      @incomes.append(fetch_income(account_id: account.pinwheel_account_id))
+
+      if account.job_succeeded?("income")
+        @incomes.append(fetch_income(account_id: account.pinwheel_account_id))
+      end
+
       @paystubs.append(*fetch_paystubs(account_id: account.pinwheel_account_id))
+      @gigs.append(*fetch_gigs(account_id: account.pinwheel_account_id))
     end
 
     def fetch_paystubs(account_id:)
       json = @pinwheel_service.fetch_paystubs_api(account_id: account_id, from_pay_date: @from_date, to_pay_date: @to_date)
       json["data"].map { |paystub_json| Aggregators::ResponseObjects::Paystub.from_pinwheel(paystub_json) }
+    end
+
+    def fetch_gigs(account_id:)
+      gigs_json = @pinwheel_service.fetch_shifts_api(account_id: account_id)
+      gigs_json["data"].map { |gig_json| Aggregators::ResponseObjects::Gig.from_pinwheel(gig_json) }
     end
 
     def fetch_employment(account_id:)

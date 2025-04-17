@@ -1,6 +1,7 @@
 module ArgyleApiHelper
-  def argyle_stub_request_items_response(user_folder)
+  def argyle_stub_request_items_response(user_folder, query)
     stub_request(:get, %r{#{Aggregators::Sdk::ArgyleService::ITEMS_ENDPOINT}})
+      .with(query: { "q" => query })
       .to_return(
         status: 200,
         body: argyle_load_relative_json_file(user_folder, 'request_items.json').to_json,

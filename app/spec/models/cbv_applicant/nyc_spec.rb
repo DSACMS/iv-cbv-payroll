@@ -4,8 +4,6 @@ require_relative "../cbv_applicant_spec.rb"
 RSpec.describe CbvApplicant::Nyc, type: :model do
   let(:nyc_attributes) { attributes_for(:cbv_applicant, :nyc) }
 
-  it_behaves_like "a CbvApplicant subclass", "nyc"
-
   context "user input is valid" do
     it "formats a 9-character case number with leading zeros" do
       applicant = CbvApplicant.new(nyc_attributes.merge(case_number: '12345678A'))
