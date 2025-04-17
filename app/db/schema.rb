@@ -87,7 +87,6 @@ ActiveRecord::Schema[7.1].define(version: 2025_04_16_224415) do
     t.datetime "identity_errored_at", precision: nil
     t.datetime "identity_synced_at", precision: nil
     t.string "type", default: "pinwheel", null: false
-    t.datetime "gigs_synced_at", precision: nil
     t.index ["cbv_flow_id"], name: "index_payroll_accounts_on_cbv_flow_id"
   end
 

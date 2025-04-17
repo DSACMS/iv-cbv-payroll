@@ -55,6 +55,9 @@ development:
     #   log, notice, warning, error, fatal, and panic
     # Defaults to warning.
     #min_messages: notice
+
+    # Disable gssencmode for macOS M2 chip to avoid local postgres connection issues
+    <% if RUBY_PLATFORM =~ /darwin/ %>gssencmode: disable<% end %>
   primary:
     <<: *default
     adapter: postgresql
@@ -99,6 +102,9 @@ test:
   username: <%= ENV.fetch("DB_USERNAME") { nil } %>
   # The password associated with the postgres role (username).
   password: <%= ENV.fetch("DB_PASSWORD") { nil } %>
+  # Disable gssencmode for macOS M2 chip to avoid local postgres connection issues
+  <% if RUBY_PLATFORM =~ /darwin/ %>gssencmode: disable<% end %>
+
 
 # As with config/credentials.yml, you never want to store sensitive information,
 # like your database password, in your source code. If your source code is
