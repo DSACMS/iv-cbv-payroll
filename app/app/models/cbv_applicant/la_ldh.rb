@@ -6,8 +6,4 @@ class CbvApplicant::LaLdh < CbvApplicant
     last_name
     case_number
   ]
-
-  # Making case_number optional.
-  # TODO: Confirm the case_number format.
-  validates :case_number, presence: false
 end
