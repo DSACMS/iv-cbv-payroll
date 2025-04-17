@@ -11,7 +11,7 @@ class Webhooks::Argyle::EventsController < ApplicationController
       # account IDs and creates webhook events for any accounts that don't yet
       # have a "users.fully_synced" event.
       handle_users_fully_synced.each do |webhook_event|
-        track_events(webhook_event)
+        process_webhook_event(webhook_event)
       end
     else
       # All other webhooks have a params["data"]["account"], which we can use
@@ -23,7 +23,7 @@ class Webhooks::Argyle::EventsController < ApplicationController
 
       webhook_event = create_webhook_event_for_account(params["event"], payroll_account)
       update_synchronization_page(payroll_account)
-      track_events(webhook_event)
+      process_webhook_event(webhook_event)
     end
 
     render json: { status: "ok" }
@@ -83,7 +83,7 @@ class Webhooks::Argyle::EventsController < ApplicationController
     end
   end
 
-  def track_events(webhook_event)
+  def process_webhook_event(webhook_event)
     payroll_account = webhook_event.payroll_account
 
     if webhook_event.event_name == "accounts.connected"
@@ -101,7 +101,13 @@ class Webhooks::Argyle::EventsController < ApplicationController
         to_date: @cbv_flow.cbv_applicant.snap_application_date
       )
       report.fetch
+      log_sync_finish(payroll_account, report)
+      validate_useful_report_requirements(report)
+    end
+  end
 
+  def log_sync_finish(payroll_account, report)
+    begin
       event_logger.track("ApplicantFinishedArgyleSync", request, {
         cbv_applicant_id: @cbv_flow.cbv_applicant_id,
         cbv_flow_id: @cbv_flow.id,
@@ -167,6 +173,20 @@ class Webhooks::Argyle::EventsController < ApplicationController
         gigs_supported: payroll_account.supported_jobs.include?("gigs")
         # TODO: Add fields from /gigs after FFS-2575.
       })
+    rescue => ex
+      raise ex unless Rails.env.production?
+
+      Rails.logger.error "Unable to track event (in #{self.class.name}): #{ex}"
+    end
+  end
+
+  def validate_useful_report_requirements(report)
+    if report.valid?(:useful_report)
+      event_logger.track("ApplicantReportMetUsefulRequirements", request, {})
+    else
+      event_logger.track("ApplicantReportFailedUsefulRequirements", request, {
+        errors: report.errors.full_messages.join(", ")
+      })
     end
   rescue => ex
     raise ex unless Rails.env.production?
@@ -175,6 +195,6 @@ class Webhooks::Argyle::EventsController < ApplicationController
   end
 
   def update_synchronization_page(payroll_account)
-    payroll_account.broadcast_replace(partial: "cbv/synchronizations/indicators", locals: { pinwheel_account: payroll_account })
+    payroll_account.broadcast_replace(partial: "cbv/synchronizations/indicators", locals: { payroll_account: payroll_account })
   end
 end

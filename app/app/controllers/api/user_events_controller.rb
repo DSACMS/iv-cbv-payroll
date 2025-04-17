@@ -18,9 +18,21 @@ class Api::UserEventsController < ApplicationController
     ArgyleError
     ArgyleTokenExpired
     ModalAdapterError
+    ApplicantViewedArgyleProviderConfirmation
+    ApplicantViewedArgyleLoginPage
+    ApplicantAttemptedArgyleLogin
+    ApplicantViewedArgyleDefaultProviderSearch
+    ApplicantAccessedArgyleModalMFAScreen
+    ApplicantEncounteredArgyleInvalidCredentialsLoginError
+    ApplicantEncounteredArgyleAuthRequiredLoginError
+    ApplicantEncounteredArgyleConnectionUnavailableLoginError
+    ApplicantEncounteredArgyleExpiredCredentialsLoginError
+    ApplicantEncounteredArgyleInvalidAuthLoginError
+    ApplicantEncounteredArgyleMfaCanceledLoginError
+    ApplicantUpdatedArgyleSearchTerm
   ]
 
-  # Maps Pinwheel event names (keys) to new Mixpanel event names (values) we're using
+  # Maps aggregator event names (keys) to new Mixpanel event names (values) we're using
   MIXPANEL_EVENT_MAP = {
     "PinwheelAccountCreated" => "ApplicantCreatedPinwheelAccount",
     "PinwheelShowProviderConfirmationPage" => "ApplicantViewedPinwheelProviderConfirmation",

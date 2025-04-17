@@ -6,6 +6,8 @@ type LinkError = {
 }
 
 type ArgyleInitializationParams = {
+  // See: https://docs.argyle.com/link/initialization
+  flowId: string
   userToken: string
   items: string[]
   onAccountConnected?: (payload: ArgyleAccountData) => void
@@ -15,6 +17,7 @@ type ArgyleInitializationParams = {
   onAccountRemoved?: (payload: ArgyleAccountData) => void
   onClose?: () => void
   onError?: (payload: LinkError) => void
+  onUIEvent?: (payload: ArgyeUIEvent) => void
   sandbox?: boolean
 }
 
@@ -38,5 +41,15 @@ type ArgyeUIEvent = {
     userId: string
     accountId?: string
     itemId?: string
+    errorCode?:
+      | "auth_required"
+      | "connection_unavailable"
+      | "expired_credentials"
+      | "invalid_auth"
+      | "invalid_credentials"
+      | "mfa_cancelled_by_the_user"
+    errorMessage?: string
+    term?: string
+    tab?: string
   }
 }

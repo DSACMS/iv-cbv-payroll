@@ -6,8 +6,8 @@
     <%= t(".fetching_payroll_description") %>
   </p>
     <div class="grid-container">
-    <% if @pinwheel_account.present? %>
-      <%= render partial: "cbv/synchronizations/indicators", locals: { pinwheel_account: @pinwheel_account } %>
+    <% if @payroll_account.present? %>
+      <%= render partial: "cbv/synchronizations/indicators", locals: { payroll_account: @payroll_account } %>
     <% end %>
   </div>
 <% end %>
