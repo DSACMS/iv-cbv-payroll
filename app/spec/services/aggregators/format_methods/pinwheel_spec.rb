@@ -64,6 +64,28 @@ RSpec.describe Aggregators::FormatMethods::Pinwheel do
     end
   end
 
+  describe '.total_earnings_amount' do
+    it 'sums amounts across all earnings' do
+      earnings = [
+        { "category" => "hourly", "amount" => 4000 },
+        { "category" => "overtime", "amount" => 1500 },
+        { "category" => "bonus", "amount" => 2000 }
+      ]
+      expect(described_class.total_earnings_amount(earnings)).to eq(7500)
+    end
+
+    it 'returns 0 if there are no earnings' do
+      expect(described_class.total_earnings_amount([])).to eq(0)
+    end
+
+    it 'properly handles a single earning' do
+      earnings = [
+        { "category" => "hourly", "amount" => 4000 }
+      ]
+      expect(described_class.total_earnings_amount(earnings)).to eq(4000)
+    end
+  end
+
   describe ".employment_type" do
     context "for a gig platform (Uber)" do
       let(:employer_name) { "Uber (Driver)" }

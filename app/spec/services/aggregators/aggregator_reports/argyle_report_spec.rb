@@ -20,6 +20,7 @@ RSpec.describe Aggregators::AggregatorReports::ArgyleReport, type: :service do
     allow(argyle_service).to receive(:fetch_paystubs_api).and_return(paystubs_json)
     allow(argyle_service).to receive(:fetch_gigs_api).and_return(gigs_json)
   end
+
   describe '#fetch_report_data' do
     context "bob, a W-2 employee" do
       let(:argyle_report) { Aggregators::AggregatorReports::ArgyleReport.new(payroll_accounts: [ payroll_account ], argyle_service: argyle_service, from_date: from_date, to_date: to_date) }

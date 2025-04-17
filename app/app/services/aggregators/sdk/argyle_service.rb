@@ -85,8 +85,8 @@ module Aggregators::Sdk
 
     # Fetch all Argyle items
     # https://docs.argyle.com/api-reference/items#list
-    def items(query = nil)
-      @http.get(build_url(ITEMS_ENDPOINT), { q: query }).body
+    def items(query = nil, status = %w[healthy issues])
+      @http.get(build_url(ITEMS_ENDPOINT), { q: query, status: status }).body
     end
 
     # https://docs.argyle.com/api-reference/users#retrieve

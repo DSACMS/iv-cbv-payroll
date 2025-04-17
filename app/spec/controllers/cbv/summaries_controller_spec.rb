@@ -48,6 +48,7 @@ RSpec.describe Cbv::SummariesController do
       pinwheel_stub_request_employment_info_response unless errored_jobs.include?("employment")
       pinwheel_stub_request_income_metadata_response if supported_jobs.include?("income")
       pinwheel_stub_request_identity_response
+      pinwheel_stub_request_shifts_response
     end
 
     context "when rendering views" do
