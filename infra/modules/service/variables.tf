@@ -44,6 +44,12 @@ variable "desired_instance_count" {
   default     = 1
 }
 
+variable "desired_solidqueue_instance_count" {
+  type        = number
+  description = "Number of background instances of the task definition to place and keep running."
+  default     = 1
+}
+
 variable "domain_name" {
   type        = string
   description = "The fully qualified domain name for the application"
