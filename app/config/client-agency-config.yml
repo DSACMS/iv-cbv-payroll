@@ -94,7 +94,7 @@
   pinwheel:
     environment: <%= ENV["LA_LDH_PINWHEEL_ENVIRONMENT"] %>
   argyle:
-    environment: <%= ENV["SANDBOX_ARGYLE_ENVIRONMENT"] %>
+    environment: <%= ENV["LA_LDH_ARGYLE_ENVIRONMENT"] %>
   transmission_method: shared_email
   transmission_method_configuration:
     email: <%= ENV['SLACK_TEST_EMAIL'] %>

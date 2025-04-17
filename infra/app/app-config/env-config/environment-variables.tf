@@ -125,6 +125,14 @@ locals {
 
 
     # Argyle Configuration:
+    AZ_DES_ARGYLE_ENVIRONMENT = {
+      manage_method     = "manual"
+      secret_store_name = "/service/${var.app_name}-${var.environment}/az-des-argyle-environment"
+    },
+    LA_LDH_ARGYLE_ENVIRONMENT = {
+      manage_method     = "manual"
+      secret_store_name = "/service/${var.app_name}-${var.environment}/la-ldh-argyle-environment"
+    },
     SANDBOX_ARGYLE_ENVIRONMENT = {
       manage_method     = "manual"
       secret_store_name = "/service/${var.app_name}-${var.environment}/sandbox-argyle-environment"
