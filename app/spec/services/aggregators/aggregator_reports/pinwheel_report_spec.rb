@@ -33,7 +33,7 @@ RSpec.describe Aggregators::AggregatorReports::PinwheelReport, type: :service do
   describe '#fetch' do
     context "multiple pinwheel accounts" do
       let(:payroll_accounts) { [
-        create(:payroll_account, :pinwheel_identity_only_synced, pinwheel_account_id: "account2"),
+        create(:payroll_account, :pinwheel_fully_synced, pinwheel_account_id: "account2", with_errored_jobs: %i[income paystubs]),
         create(:payroll_account, :pinwheel_fully_synced, pinwheel_account_id: account)
       ] }
 

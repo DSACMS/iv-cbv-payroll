@@ -25,7 +25,9 @@ module Cbv::AggregatorDataHelper
   end
 
   def filter_payroll_accounts(aggregator)
-    @cbv_flow.payroll_accounts.filter { |payroll_account| payroll_account.type == aggregator }
+    @cbv_flow.payroll_accounts.filter do |payroll_account|
+      payroll_account.type == aggregator && payroll_account.successfully_synced?
+    end
   end
 
   def has_payroll_accounts(aggregator)
