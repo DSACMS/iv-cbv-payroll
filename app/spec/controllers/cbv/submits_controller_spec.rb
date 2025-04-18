@@ -13,12 +13,12 @@ RSpec.describe Cbv::SubmitsController do
 
   let(:cbv_flow) do
     create(:cbv_flow,
-      :invited,
-      :with_pinwheel_account,
-      with_errored_jobs: errored_jobs,
-      created_at: current_time,
-      supported_jobs: supported_jobs,
-      cbv_applicant: cbv_applicant
+           :invited,
+           :with_pinwheel_account,
+           with_errored_jobs: errored_jobs,
+           created_at: current_time,
+           supported_jobs: supported_jobs,
+           cbv_applicant: cbv_applicant
     )
   end
   let(:mock_client_agency) { instance_double(ClientAgencyConfig::ClientAgency) }
@@ -27,12 +27,12 @@ RSpec.describe Cbv::SubmitsController do
 
   before do
     allow(mock_client_agency).to receive(:transmission_method_configuration).and_return({
-      "bucket"            => "test-bucket",
-      "region"            => "us-west-2",
-      "access_key_id"     => "SOME_ACCESS_KEY",
-      "secret_access_key" => "SOME_SECRET_ACCESS_KEY",
-      "public_key"        => @public_key
-    })
+                                                                                          "bucket" => "test-bucket",
+                                                                                          "region" => "us-west-2",
+                                                                                          "access_key_id" => "SOME_ACCESS_KEY",
+                                                                                          "secret_access_key" => "SOME_SECRET_ACCESS_KEY",
+                                                                                          "public_key" => @public_key
+                                                                                        })
 
     cbv_applicant.update(snap_application_date: current_time)
 
@@ -197,183 +197,42 @@ RSpec.describe Cbv::SubmitsController do
       allow(Aggregators::AggregatorReports::PinwheelReport).to receive(:new).and_return(pinwheel_report)
     end
 
-    context "without consent" do
-      it "redirects back with an alert" do
-        patch :update
-        expect(response).to redirect_to(cbv_flow_submit_path)
-        expect(flash[:alert]).to be_present
-        expect(flash[:alert]).to eq("Please check the legal agreement box to share your report.")
+    describe "with activejob enabled" do
+      around do |example|
+        ClimateControl.modify ACTIVEJOB_ENABLED: 'true' do
+          example.run
+        end
       end
-    end
-
-    context "with consent" do
-      it "generates a new confirmation code" do
-        expect(cbv_flow.confirmation_code).to be_nil
-        patch :update, params: { cbv_flow: { consent_to_authorized_use: "1" } }
-        cbv_flow.reload
-        expect(cbv_flow.confirmation_code).to start_with("SANDBOX")
-      end
-
-      it "removes underscores from the agency name" do
-        cbv_flow.update(client_agency_id: "az_des")
-        expect(cbv_flow.confirmation_code).to be_nil
-        patch :update, params: { cbv_flow: { consent_to_authorized_use: "1" } }
-        cbv_flow.reload
-        expect(cbv_flow.confirmation_code).to start_with("AZDES")
-      end
-    end
-
-    context "when confirmation_code already exists" do
-      let(:existing_confirmation_code) { "SANDBOX000" }
-
-      before do
-        cbv_flow.update(confirmation_code: existing_confirmation_code)
-      end
-
-      it "does not override the existing confirmation code" do
-        expect(cbv_flow.reload.confirmation_code).to eq(existing_confirmation_code)
-        expect { patch :update }.not_to change { cbv_flow.reload.confirmation_code }
-      end
-    end
-
-    context "when sending an email to the caseworker" do
-      before do
-        cbv_flow.update(consented_to_authorized_use_at: Time.now)
-        sign_in ma_user
-        allow(mock_client_agency).to receive(:transmission_method).and_return('s3')
-        allow(mock_client_agency).to receive(:id).and_return('ma')
-        pinwheel_stub_request_end_user_accounts_response
-        pinwheel_stub_request_end_user_paystubs_response
-        allow(Aggregators::AggregatorReports::PinwheelReport).to receive(:new).and_return(pinwheel_report)
-      end
-
-      it "sends the email" do
-        expect do
+      context "without consent" do
+        it "redirects back with an alert" do
+          expect(CaseWorkerTransmitterJob).not_to receive(:perform_later)
           patch :update
-        end.to change { ActionMailer::Base.deliveries.count }.by(1)
-
-        email = ActionMailer::Base.deliveries.last
-        expect(email.subject).to eq("Income Verification Report ABC1234 has been received")
+          expect(response).to redirect_to(cbv_flow_submit_path)
+          expect(flash[:alert]).to be_present
+          expect(flash[:alert]).to eq("Please check the legal agreement box to share your report.")
+        end
       end
 
-      it "stores the current time as transmitted_at" do
-        expect { patch :update }
-          .to change { cbv_flow.reload.transmitted_at }
-                .from(nil)
-                .to(within(5.second).of(Time.now))
+      context "with consent" do
+        it "queues a job and redirects to success screen" do
+          expect(CaseWorkerTransmitterJob).to receive(:perform_later).with(cbv_flow.id)
+          patch :update, params: { cbv_flow: { consent_to_authorized_use: "1" } }
+          expect(response).to redirect_to({ controller: :successes, action: :show })
+        end
+      end
+    end
+
+    describe "with activejob disabled" do
+      around do |example|
+        ClimateControl.modify ACTIVEJOB_ENABLED: nil do
+          example.run
+        end
       end
 
-      it "redirects to success screen" do
-        patch :update
+      it "runs the task immediately with consent" do
+        expect(CaseWorkerTransmitterJob).to receive(:perform_now)
+        patch :update, params: { cbv_flow: { consent_to_authorized_use: "1" } }
         expect(response).to redirect_to({ controller: :successes, action: :show })
-      end
-    end
-
-    context "#transmit_to_caseworker" do
-      before do
-        cbv_flow.update(consented_to_authorized_use_at: Time.now)
-
-        # Set up the mock_client_agency behavior
-        allow(mock_client_agency).to receive(:transmission_method_configuration).and_return({
-         "bucket"            => "test-bucket",
-         "region"            => "us-west-2",
-         "access_key_id"     => "SOME_ACCESS_KEY",
-         "secret_access_key" => "SOME_SECRET_ACCESS_KEY",
-         "public_key"        => @public_key
-         })
-      end
-
-      context "when transmission method is shared_email" do
-        before do
-          sign_in nyc_user
-          allow(mock_client_agency).to receive(:transmission_method).and_return('shared_email')
-          allow(mock_client_agency).to receive(:transmission_method_configuration).and_return({
-             "email" => 'test@example.com'
-          })
-          allow(controller).to receive(:current_agency).and_return(mock_client_agency)
-          allow(Aggregators::AggregatorReports::PinwheelReport).to receive(:new).and_return(pinwheel_report)
-        end
-
-        it "sends an email to the caseworker and updates transmitted_at" do
-          expect {
-            patch :update
-          }.to change { ActionMailer::Base.deliveries.count }.by(1)
-            .and change { cbv_flow.reload.transmitted_at }.from(nil)
-
-          email = ActionMailer::Base.deliveries.last
-          expect(email.to).to include('test@example.com')
-          expect(email.subject).to include("Income Verification Report")
-          expect(email.body.encoded).to include(cbv_flow.cbv_applicant.case_number)
-        end
-
-        # Note that we are not testing events here because doing so requires use of expect_any_instance_of,
-        # which does not play nice since there are multiple instances of the event logger.
-      end
-
-      context "when transmission method is s3" do
-        let(:user) { create(:user, email: "test@test.com") }
-        let(:s3_service_double) { instance_double(S3Service) }
-        # let(:pinwheel_service_double) { instance_double(Aggregators::Sdk::PinwheelService) }
-        before do
-          sign_in user
-          allow(S3Service).to receive(:new).and_return(s3_service_double)
-          allow(s3_service_double).to receive(:upload_file)
-          allow(mock_client_agency).to receive_messages(
-            id: 'ma',
-            transmission_method: 's3',
-            transmission_method_configuration: {
-              "bucket"     => "test-bucket",
-              "public_key" => @public_key
-            }
-          )
-
-          allow(controller).to receive(:current_agency).and_return(mock_client_agency)
-
-          # Stub pinwheel_for method to return our double
-          pinwheel_stub_request_end_user_accounts_response
-          pinwheel_stub_request_end_user_paystubs_response
-          pinwheel_stub_request_employment_info_response
-          pinwheel_stub_request_income_metadata_response
-          pinwheel_stub_request_identity_response
-        end
-
-        it "generates, gzips, encrypts, and uploads PDF and CSV files to S3" do
-          agency_id_number = cbv_applicant.agency_id_number
-          beacon_id = cbv_applicant.beacon_id
-
-          expect(s3_service_double).to receive(:upload_file).once do |file_path, file_name|
-            expect(file_path).to end_with('.gpg')
-            expect(file_name).to start_with("outfiles/IncomeReport_#{cbv_applicant.agency_id_number}_")
-            expect(file_name).to end_with('.tar.gz.gpg')
-            expect(File.exist?(file_path)).to be true
-          end
-
-          expect(CSV).to receive(:generate).and_wrap_original do |original_method, *args, &block|
-            csv_content = original_method.call(*args, &block)
-            csv_rows = CSV.parse(csv_content, headers: true)
-            expect(csv_rows[0]["client_id"]).to eq(agency_id_number)
-            csv_content
-          end
-
-          cbv_flow.update(client_agency_id: "ma")
-          cbv_applicant.update(client_agency_id: "ma")
-          cbv_applicant.update(beacon_id: beacon_id)
-          cbv_applicant.update(agency_id_number: agency_id_number)
-
-          patch :update
-        end
-
-        it "handles errors during file processing and upload" do
-          cbv_flow.update(client_agency_id: 'ma')
-          allow_any_instance_of(GpgEncryptable).to receive(:gpg_encrypt_file).and_raise(StandardError, "Encryption failed")
-
-          expect {
-            patch :update
-          }.to raise_error(StandardError, "Encryption failed")
-
-          expect(s3_service_double).not_to have_received(:upload_file)
-          expect(cbv_flow.reload.transmitted_at).to be_nil
-        end
       end
     end
   end

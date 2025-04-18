@@ -11,10 +11,6 @@ applications:
     RAILS_SERVE_STATIC_FILES: true
     NEW_RELIC_LOG: stdout
   processes:
-  - type: worker
-    instances: ((worker_instances))
-    memory: ((worker_memory))
-    command: bundle exec sidekiq
   - type: web
     instances: ((web_instances))
     memory: ((web_memory))

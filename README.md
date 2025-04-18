@@ -48,9 +48,8 @@ Most developers on the team code using macOS, so we recommend that platform if p
 1. Install JS dependencies
    * `nodenv rehash`
    * `npm install`
-1. Start postgres & redis:
+1. Start postgres:
    * `brew services start postgresql@12`
-   * `brew services start redis`
 1. Get development credentials from 1Password: search for "CBV .env.local secrets" and copy its ".env.local" section into a file called that in the app directory.
 1. Create database: `bin/rails db:create`
 1. Run migrations: `bin/rails db:migrate`
