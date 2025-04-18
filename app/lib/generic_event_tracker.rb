@@ -11,7 +11,7 @@ class GenericEventTracker
         ip: request.remote_ip,
         cbv_flow_id: request.session[:cbv_flow_id],
         client_agency_id: url_params["client_agency_id"],
-        locale: url_params["locale"],
+        locale: url_params["locale"] || I18n.locale.to_s,
         user_agent: request.headers["User-Agent"]
       }
     end
