@@ -15,6 +15,19 @@ FactoryBot.define do
       with_errored_jobs { %w[] }
     end
 
+    trait :pinwheel_identity_only_synced do
+      type { "pinwheel" }
+      after(:build) do |payroll_account, evaluator|
+        event_name = PayrollAccount::Pinwheel::JOBS_TO_WEBHOOK_EVENTS["identity"]
+
+        payroll_account.webhook_events << build(
+          :webhook_event,
+          event_name: event_name,
+          event_outcome: "success"
+        )
+      end
+    end
+
     trait :pinwheel_fully_synced do
       type { "pinwheel" }
 

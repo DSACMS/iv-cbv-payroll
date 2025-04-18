@@ -24,16 +24,20 @@ module Aggregators::AggregatorReports
       @has_fetched
     end
 
-    def is_ready_to_fetch?
-      @payroll_accounts.all? do |payroll_account|
+    def payroll_fetchable_accounts
+      @payroll_accounts.select do |payroll_account|
         payroll_account.has_fully_synced?
       end
+    end
+
+    def is_ready_to_fetch?
+      payroll_fetchable_accounts.present?
     end
 
     def fetch_report_data
       begin
         all_successful = true
-        @payroll_accounts.each do |payroll_account|
+        payroll_fetchable_accounts.each do |payroll_account|
           fetch_report_data_for_account(payroll_account)
         end
       rescue StandardError => e
