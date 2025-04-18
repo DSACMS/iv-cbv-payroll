@@ -267,6 +267,7 @@ RSpec.describe Aggregators::Sdk::ArgyleService, type: :service do
         events: events,
         name: name,
         url: url,
+        config: nil,
         secret: webhook_secret
       }
     end
