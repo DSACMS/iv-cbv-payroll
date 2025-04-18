@@ -1,0 +1,18 @@
+---
+:scope:
+:url: https://api.getpinwheel.com/v1/link/ui/step_result/?date=1744149038744
+:body: ''
+:status: 400
+:method: get
+:headers:
+  Date: Tue, 08 Apr 2025 21:50:39 GMT
+  Content-Type: application/json
+  Content-Length: '151'
+  Connection: close
+  server: TI-84
+  access-control-allow-origin: "*"
+  access-control-allow-credentials: 'true'
+  x-pinwheel-request-id: 30e8bee9-da4e-4cac-a571-4bd3b8cdcd63
+  strict-transport-security: max-age=31536000; includeSubDomains;
+:content: '{"error":{"type":"RECORD_NOT_FOUND","code":"NO_ACTIVE_SESSION_FOUND","status_code":400,"message":"There
+  is not an active session for this link token"}}'

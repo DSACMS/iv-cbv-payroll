@@ -1,0 +1,17 @@
+---
+:scope:
+:url: https://api.getpinwheel.com/v1/link/ui/step_result/?date=1744148819510
+:body: ''
+:status: 200
+:method: get
+:headers:
+  Date: Tue, 08 Apr 2025 21:47:00 GMT
+  Content-Type: application/json
+  Content-Length: '68'
+  Connection: close
+  server: TI-84
+  access-control-allow-origin: "*"
+  access-control-allow-credentials: 'true'
+  x-pinwheel-request-id: ecc76177-2680-41af-8d0e-e5b9d4ecefea
+  strict-transport-security: max-age=31536000; includeSubDomains;
+:content: '{"data":{"response_type":"processing","title":null,"subtitle":null}}'

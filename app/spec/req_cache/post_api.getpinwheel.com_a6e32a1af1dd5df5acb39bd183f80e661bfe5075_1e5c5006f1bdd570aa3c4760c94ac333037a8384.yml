@@ -1,0 +1,22 @@
+---
+:scope:
+:url: https://api.getpinwheel.com/v1/link/ui/initialize/
+:body: '{"employer_id":"5a8cfb92-3373-4e65-b41b-54e821e79671","job":"login"}'
+:status: 200
+:method: post
+:headers:
+  Date: Tue, 08 Apr 2025 21:46:57 GMT
+  Content-Type: application/json
+  Content-Length: '696'
+  Connection: close
+  server: TI-84
+  access-control-allow-origin: "*"
+  access-control-allow-credentials: 'true'
+  x-pinwheel-request-id: 5147bb92-14a0-4efd-9b37-d2b115cee031
+  strict-transport-security: max-age=31536000; includeSubDomains;
+:content: '{"data":{"response_type":"next","template":{"template_type":"form","fields":[{"key":"company","field_type":"text","field_subtype":"plaintext","label":"Workday
+  Organization ID","locked_field":false,"min_length":null,"max_length":null,"pattern":"^\\S*$","placeholder":"ex.
+  chipotle, circlek, etc.","options":null,"payload":null,"hint":{"label":"What is
+  my Workday Organization ID?","text_list":["To find your employer''s Workday Organization
+  ID, log into your Workday account, click on Profile (button in top right), then
+  click on My Account, then click on Organization ID."]},"initial_value":null,"should_obfuscate":false}],"title":"","subtitle":"","text_list":[],"actions":[],"button_text":null}}}'
