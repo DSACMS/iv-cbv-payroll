@@ -51,16 +51,6 @@ RSpec.describe CaseWorkerTransmitterJob, type: :job do
   context "#transmit_to_caseworker" do
     let(:supported_jobs) { %w[income paystubs employment identity] }
     let(:argyle_report) { build(:argyle_report, :with_argyle_account) }
-    let(:cbv_flow) do
-      create(:cbv_flow,
-             :invited,
-             :with_argyle_account,
-             with_errored_jobs: errored_jobs,
-             created_at: current_time,
-             supported_jobs: supported_jobs,
-             cbv_applicant: cbv_applicant
-      )
-    end
 
     before do
       cbv_flow.update(consented_to_authorized_use_at: Time.now)
@@ -71,6 +61,16 @@ RSpec.describe CaseWorkerTransmitterJob, type: :job do
       let(:transmission_method_configuration) { {
         "email" => 'test@example.com'
       }}
+      let(:cbv_flow) do
+        create(:cbv_flow,
+               :invited,
+               :with_argyle_account,
+               with_errored_jobs: errored_jobs,
+               created_at: current_time,
+               supported_jobs: supported_jobs,
+               cbv_applicant: cbv_applicant
+        )
+      end
 
       before do
         allow(Aggregators::AggregatorReports::ArgyleReport).to receive(:new).and_return(argyle_report)
