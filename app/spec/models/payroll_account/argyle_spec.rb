@@ -24,14 +24,14 @@ RSpec.describe PayrollAccount::Argyle, type: :model do
     describe '#has_required_data?' do
       it 'returns true when paystubs succeeded' do
         account = create(:payroll_account, :argyle, cbv_flow: cbv_flow)
-        create(:webhook_event, payroll_account: account, event_name: 'paystubs.fully_synced', event_outcome: 'success')
+        create(:webhook_event, payroll_account: account, event_name: 'paystubs.partially_synced', event_outcome: 'success')
 
         expect(account.has_required_data?).to be true
       end
 
       it 'returns true when gigs succeeded' do
         account = create(:payroll_account, :argyle, cbv_flow: cbv_flow)
-        create(:webhook_event, payroll_account: account, event_name: 'gigs.fully_synced', event_outcome: 'success')
+        create(:webhook_event, payroll_account: account, event_name: 'gigs.partially_synced', event_outcome: 'success')
 
         expect(account.has_required_data?).to be true
       end
