@@ -55,7 +55,7 @@
 
 <% if @cbv_flow.cbv_flow_invitation.blank? %>
 <table class="usa-table usa-table--borderless width-full margin-top-2">
-  <h3> <% t(".your_information") %></h3>
+  <h3><%= t(".your_information") %></h3>
   <div class="usa-prose">
     <p><%= t(".must_match", agency_acronym: current_agency.agency_short_name) %></p>
   </div>
