@@ -49,8 +49,40 @@ RSpec.describe CaseWorkerTransmitterJob, type: :job do
   end
 
   context "#transmit_to_caseworker" do
+    let(:supported_jobs) { %w[income paystubs employment identity] }
+    let(:argyle_report) { build(:argyle_report, :with_argyle_account) }
+    let(:cbv_flow) do
+      create(:cbv_flow,
+             :invited,
+             :with_argyle_account,
+             with_errored_jobs: errored_jobs,
+             created_at: current_time,
+             supported_jobs: supported_jobs,
+             cbv_applicant: cbv_applicant
+      )
+    end
+
     before do
       cbv_flow.update(consented_to_authorized_use_at: Time.now)
+    end
+
+    context "argyle report" do
+      let(:transmission_method) { "shared_email" }
+      let(:transmission_method_configuration) { {
+        "email" => 'test@example.com'
+      }}
+
+      before do
+        allow(Aggregators::AggregatorReports::ArgyleReport).to receive(:new).and_return(argyle_report)
+      end
+
+      it "generates a new confirmation code and generates email" do
+        expect { described_class.new.perform(cbv_flow.id) }.to change { cbv_flow.reload.confirmation_code }.to start_with("SANDBOX")
+        email = ActionMailer::Base.deliveries.last
+        expect(email.to).to include('test@example.com')
+        expect(email.subject).to include("Income Verification Report")
+        expect(email.body.encoded).to include(cbv_flow.cbv_applicant.case_number)
+      end
     end
 
     context "when transmission method is shared_email" do
