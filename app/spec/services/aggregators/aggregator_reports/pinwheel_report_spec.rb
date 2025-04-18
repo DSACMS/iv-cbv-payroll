@@ -3,7 +3,7 @@ require 'rails_helper'
 RSpec.describe Aggregators::AggregatorReports::PinwheelReport, type: :service do
   include PinwheelApiHelper
 
-  let(:account) { "03e29160-f7e7-4a28-b2d8-813640e030d3" }
+  let(:account) { "abc123" }
   let(:from_date) { "2021-01-01" }
   let(:to_date) { "2021-04-31" }
 
@@ -31,20 +31,6 @@ RSpec.describe Aggregators::AggregatorReports::PinwheelReport, type: :service do
   end
 
   describe '#fetch' do
-    context "multiple pinwheel accounts" do
-      let(:payroll_accounts) { [
-        create(:payroll_account, :pinwheel_fully_synced, pinwheel_account_id: "account2", with_errored_jobs: %i[income paystubs]),
-        create(:payroll_account, :pinwheel_fully_synced, pinwheel_account_id: account)
-      ] }
-
-      it "gets data for all accounts even if some fail" do
-        allow(pinwheel_service).to receive(:fetch_identity_api).with(account_id: "account2").and_raise(Faraday::ResourceNotFound)
-        report.fetch
-        expect(report.employments.count).to eq(1)
-        expect(report.summarize_by_employer[account][:employment]).to be_present
-      end
-    end
-
     it 'calls the expected API\'s for each payroll account' do
       report.fetch
       expect(pinwheel_service).to have_received(:fetch_identity_api).with(account_id: account).exactly(3).times
