@@ -10,6 +10,7 @@ module Aggregators::AggregatorReports
     end
 
     private
+
     def combine_reports(aggregator_reports)
       aggregator_reports.each do |aggregator_report|
         @payroll_accounts += aggregator_report.payroll_accounts
@@ -25,34 +26,28 @@ module Aggregators::AggregatorReports
     end
 
     def earlier_date(a, b)
-      if a.present? && b.present?
-        if Date.parse(a) < Date.parse(b)
-          a
-        else
-          b
-        end
-      elsif a.present?
-        a
-      elsif b.present?
-        b
-      else
-        nil
+      a_date = a.to_date if a.present?
+      b_date = b.to_date if b.present?
+
+      if a_date.present? && b_date.present?
+        [ a_date, b_date ].min
+      elsif a_date.present?
+        a_date
+      elsif b_date.present?
+        b_date
       end
     end
 
     def later_date(a, b)
-      if a.present? && b.present?
-        if Date.parse(a) > Date.parse(b)
-          a
-        else
-          b
-        end
-      elsif a.present?
-        a
-      elsif b.present?
-        b
-      else
-        nil
+      a_date = a.to_date if a.present?
+      b_date = b.to_date if b.present?
+
+      if a_date.present? && b_date.present?
+        [ a_date, b_date ].max
+      elsif a_date.present?
+        a_date
+      elsif b_date.present?
+        b_date
       end
     end
   end

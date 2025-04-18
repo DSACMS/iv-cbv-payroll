@@ -34,11 +34,11 @@ RSpec.describe Aggregators::AggregatorReports::CompositeReport, type: :service d
     end
 
     it 'sets the earliest from_date' do
-      expect(subject.from_date).to eq("2021-08-01")
+      expect(subject.from_date).to eq(Date.parse("2021-08-01"))
     end
 
     it 'sets the latest to_date' do
-      expect(subject.to_date).to eq("2021-10-30")
+      expect(subject.to_date).to eq(Date.parse("2021-10-30"))
     end
 
     it 'sets has_fetched to true' do

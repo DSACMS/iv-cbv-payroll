@@ -2,6 +2,7 @@ require "rails_helper"
 
 RSpec.describe Cbv::SummariesController do
   include PinwheelApiHelper
+  include ArgyleApiHelper
   include_context "gpg_setup"
 
   let(:supported_jobs) { %w[income paystubs employment identity] }
@@ -69,6 +70,7 @@ RSpec.describe Cbv::SummariesController do
           expect(response).to be_successful
         end
       end
+
       context "with 3 paystubs" do
         before do
         pinwheel_stub_request_end_user_multiple_paystubs_response
@@ -84,6 +86,23 @@ RSpec.describe Cbv::SummariesController do
           expect(doc.at_xpath("//*[@data-testid=\"paystub-table\"]").css("td").count).to eq(2)
           expect(doc.at_xpath("//*[@data-testid=\"paystub-table\"]").css("td")[0].content).to include("Payment of $4,807.20")
           expect(doc.at_xpath("//*[@data-testid=\"paystub-table\"]").css("td")[1].content).to include("Payment of $4,807.20")
+        end
+      end
+
+      context "with both Argyle and Pinwheel data" do
+        let!(:argyle_account) do
+          create(:payroll_account, :argyle_bob, cbv_flow: cbv_flow)
+        end
+
+        before do
+          argyle_stub_request_identities_response('bob')
+          argyle_stub_request_paystubs_response('bob')
+          argyle_stub_request_gigs_response('bob')
+        end
+
+        it "renders properly" do
+          get :show
+          expect(response).to be_successful
         end
       end
     end
