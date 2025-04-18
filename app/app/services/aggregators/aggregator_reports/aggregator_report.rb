@@ -25,7 +25,9 @@ module Aggregators::AggregatorReports
     end
 
     def is_ready_to_fetch?
-      @payroll_accounts.present?
+      @payroll_accounts.all? do |payroll_account|
+        payroll_account.has_fully_synced?
+      end
     end
 
     def fetch_report_data
