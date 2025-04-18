@@ -58,7 +58,7 @@ class Cbv::SubmitsController < Cbv::BaseController
       @cbv_flow.update(consented_to_authorized_use_at: timestamp)
     end
 
-    if ENV["ACTIVEJOB_ENABLED"]
+    if ENV["ACTIVEJOB_ENABLED"] == "true"
       CaseWorkerTransmitterJob.perform_later(@cbv_flow.id)
     else
       CaseWorkerTransmitterJob.perform_now(@cbv_flow.id)
