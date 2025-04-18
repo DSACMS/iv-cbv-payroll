@@ -3,7 +3,6 @@ module Aggregators::AggregatorReports
     include ActiveModel::Validations
 
     attr_accessor :pinwheel_service
-    attr_reader :employments
 
     validates_with Aggregators::Validators::UsefulReportValidator, on: :useful_report
 
