@@ -31,6 +31,24 @@ FactoryBot.define do
       end
     end
 
+    trait :with_argyle_account do
+      transient do
+        supported_jobs { Aggregators::Webhooks::Argyle.get_supported_jobs }
+        with_errored_jobs { [] }
+      end
+
+      after(:build) do |cbv_flow, evaluator|
+        cbv_flow.payroll_accounts = [
+          create(:payroll_account,
+                 :argyle_fully_synced,
+                 with_errored_jobs: evaluator.with_errored_jobs,
+                 cbv_flow: cbv_flow,
+                 supported_jobs: evaluator.supported_jobs,
+                 )
+        ]
+      end
+    end
+
     transient do
       cbv_applicant_attributes { {} }
     end
