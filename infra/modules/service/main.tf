@@ -73,7 +73,7 @@ resource "aws_ecs_task_definition" "solid_queue" {
       cpu         = var.cpu,
       networkMode = "awsvpc",
       essential   = true,
-      command   = ["bin/rails", "solid_queue:start"],
+      command     = ["bin/rails", "solid_queue:start"],
       # TODO: Reenable readonlyRootFilesystem when we can have it behave
       # consistently in dev (demo) and production.
       # readonlyRootFilesystem = !var.enable_command_execution,
