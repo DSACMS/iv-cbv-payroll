@@ -17,7 +17,7 @@ class PayrollAccount::Pinwheel < PayrollAccount
 
   def successfully_synced?
     JOBS_TO_WEBHOOK_EVENTS.keys.all? do |job|
-      job_succeeded?(job)
+      supported_jobs.exclude?(job) || job_succeeded?(job)
     end
   end
 

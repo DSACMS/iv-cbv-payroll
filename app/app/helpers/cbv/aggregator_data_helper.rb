@@ -10,7 +10,7 @@ module Cbv::AggregatorDataHelper
     elsif has_payroll_accounts("argyle")
       @aggregator_report = make_argyle_report
     else
-      raise "No reports found"
+      Rails.logger.error "no reports found for #{@cbv_flow.id}"
     end
   end
 
