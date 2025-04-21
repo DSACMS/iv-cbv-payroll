@@ -1,53 +1,12 @@
-data "aws_caller_identity" "current" {}
-data "aws_region" "current" {}
 
-locals {
-  alb_name                = var.service_name
-  cluster_name            = var.service_name
-  container_name          = var.service_name
-  log_group_name          = "service/${var.service_name}"
-  log_stream_prefix       = var.service_name
-  task_executor_role_name = "${var.service_name}-task-executor"
-  image_url               = "${var.image_repository_url}:${var.image_tag}"
-
-  base_environment_variables = [
-    { name : "DOMAIN_NAME", value : tostring(var.domain_name) },
-    { name : "PORT", value : tostring(var.container_port) },
-    { name : "AWS_DEFAULT_REGION", value : data.aws_region.current.name },
-    { name : "AWS_REGION", value : data.aws_region.current.name },
-    { name : "IMAGE_TAG", value : var.image_tag },
-  ]
-  db_environment_variables = var.db_vars == null ? [] : [
-    { name : "DB_HOST", value : var.db_vars.connection_info.host },
-    { name : "DB_PORT", value : var.db_vars.connection_info.port },
-    { name : "DB_USER", value : var.db_vars.connection_info.user },
-    { name : "DB_NAME", value : var.db_vars.connection_info.db_name },
-    { name : "DB_SCHEMA", value : var.db_vars.connection_info.schema_name },
-  ]
-  environment_variables = concat(
-    local.base_environment_variables,
-    local.db_environment_variables,
-    [
-      for name, value in var.extra_environment_variables :
-      { name : name, value : value }
-    ],
-  )
-}
-
-#-------------------
-# Service Execution
-#-------------------
-
-resource "aws_ecs_service" "app" {
-  name                   = var.service_name
+resource "aws_ecs_service" "solid_queue" {
+  name                   = "${var.service_name}-solid_queue"
   cluster                = aws_ecs_cluster.cluster.arn
   launch_type            = "FARGATE"
-  task_definition        = aws_ecs_task_definition.app.arn
-  desired_count          = var.desired_instance_count
+  task_definition        = aws_ecs_task_definition.solid_queue.arn
+  desired_count          = var.desired_solidqueue_instance_count
   enable_execute_command = var.enable_command_execution ? true : null
 
-  # Allow changes to the desired_count without differences in terraform plan.
-  # This allows autoscaling to manage the desired count for us.
   lifecycle {
     ignore_changes = [desired_count]
   }
@@ -55,17 +14,14 @@ resource "aws_ecs_service" "app" {
   network_configuration {
     assign_public_ip = false
     subnets          = var.private_subnet_ids
-    security_groups  = [aws_security_group.app.id]
+    security_groups  = [aws_security_group.app.id] # Or another SG if needed
   }
 
-  load_balancer {
-    target_group_arn = aws_lb_target_group.app_tg.arn
-    container_name   = var.service_name
-    container_port   = var.container_port
-  }
 }
 
-resource "aws_ecs_task_definition" "app" {
+
+
+resource "aws_ecs_task_definition" "solid_queue" {
   family             = var.service_name
   execution_role_arn = aws_iam_role.task_executor.arn
   task_role_arn      = aws_iam_role.app_service.arn
@@ -78,6 +34,7 @@ resource "aws_ecs_task_definition" "app" {
       cpu         = var.cpu,
       networkMode = "awsvpc",
       essential   = true,
+      command     = ["bin/rails", "solid_queue:start"],
       # TODO: Reenable readonlyRootFilesystem when we can have it behave
       # consistently in dev (demo) and production.
       # readonlyRootFilesystem = !var.enable_command_execution,
@@ -138,13 +95,4 @@ resource "aws_ecs_task_definition" "app" {
 
   # Reference https://docs.aws.amazon.com/AmazonECS/latest/developerguide/task-networking.html
   network_mode = "awsvpc"
-}
-
-resource "aws_ecs_cluster" "cluster" {
-  name = local.cluster_name
-
-  setting {
-    name  = "containerInsights"
-    value = "enabled"
-  }
 }
