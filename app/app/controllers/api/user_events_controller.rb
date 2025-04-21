@@ -30,6 +30,7 @@ class Api::UserEventsController < ApplicationController
     ApplicantEncounteredArgyleInvalidAuthLoginError
     ApplicantEncounteredArgyleMfaCanceledLoginError
     ApplicantUpdatedArgyleSearchTerm
+    ApplicantManuallySwitchedLanguage
   ]
 
   # Maps aggregator event names (keys) to new Mixpanel event names (values) we're using
@@ -51,7 +52,8 @@ class Api::UserEventsController < ApplicationController
     "ArgyleCloseModal" => "ApplicantClosedArgyleModal",
     "ArgyleError" => "ApplicantEncounteredArgyleError",
     "ArgyleTokenExpired" => "ApplicantEncounteredArgyleTokenExpired",
-    "ModalAdapterError" => "ApplicantEncounteredModalAdapterError"
+    "ModalAdapterError" => "ApplicantEncounteredModalAdapterError",
+    "ApplicantManuallySwitchedLanguage" => "UserManuallySwitchedLanguage"
   }
 
   def user_action
@@ -72,6 +74,7 @@ class Api::UserEventsController < ApplicationController
 
     event_attributes = user_action_params[:attributes].merge(base_attributes)
     event_name = user_action_params[:event_name]
+
     if EVENT_NAMES.include?(event_name)
       # Map to the new Mixpanel event name if present, otherwise just send NewRelic the Pinwheel name
       mixpanel_event_type = MIXPANEL_EVENT_MAP[event_name] || event_name
