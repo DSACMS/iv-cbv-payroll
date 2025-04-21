@@ -125,9 +125,9 @@
         <%= table.with_data_point(:pay_period_with_frequency, paystub.start, paystub.end, t("cbv.payment_details.show.frequency_unknown"), highlight: is_caseworker) %>
       <% end %>
       <%= table.with_data_point(:pay_gross, paystub.gross_pay_amount, highlight: is_caseworker) %>
-      <%= table.with_data_point(:number_of_hours_worked, paystub.hours, highlight: is_caseworker) %>
+      <%= table.with_data_point(:number_of_hours_worked, format_hours(paystub.hours), highlight: is_caseworker) %>
       <% paystub.hours_by_earning_category.each do |category, total_hours| %>
-        <%= table.with_data_point(:earnings_entry, category, total_hours) %>
+        <%= table.with_data_point(:earnings_entry, category, format_hours(total_hours)) %>
       <% end %>
       <%= table.with_data_point(:net_pay_amount, paystub.net_pay_amount) %>
       <% paystub.deductions.filter { |deduction| deduction.amount > 0 }.each do |deduction| %>
