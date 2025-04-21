@@ -7,9 +7,9 @@ class HealthCheckController < ActionController::Base
 
   def solid_queue_ok
     if File.exist?(Rails.root.join("tmp/solid_queue.pid"))
-      render plain: "OK", status: :ok
+      render json: { status: "ok", version: ENV["IMAGE_TAG"] }
     else
-      render plain: "PID file missing", status: :service_unavailable
+      render json: { status: "service_unavailable", version: ENV["IMAGE_TAG"] }
     end
   end
 
