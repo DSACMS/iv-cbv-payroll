@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class PinwheelDataPointComponent < ViewComponent::Base
-  include ViewHelper
+  include ReportViewHelper
 
   def initialize(field, *values, highlight: false)
     @field = send(field, *values)
@@ -40,7 +40,7 @@ class PinwheelDataPointComponent < ViewComponent::Base
   def number_of_hours_worked(hours)
     {
       label: I18n.t("cbv.payment_details.show.number_of_hours_worked"),
-      value: I18n.t("cbv.payment_details.show.payment_hours", amount: hours)
+      value: I18n.t("cbv.payment_details.show.payment_hours", amount: format_hours(hours))
     }
   end
 
@@ -49,7 +49,7 @@ class PinwheelDataPointComponent < ViewComponent::Base
 
     {
       label: I18n.t("cbv.payment_details.show.hours_paid", category: translated_category_name),
-      value: I18n.t("cbv.payment_details.show.hours", count: hours)
+      value: I18n.t("cbv.payment_details.show.hours", count: format_hours(hours))
     }
   end
 
