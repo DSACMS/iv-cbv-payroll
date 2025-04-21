@@ -211,7 +211,7 @@ RSpec.describe Api::UserEventsController, type: :controller do
     end
 
     context "when tracking a UserManuallySwitchedLanguage event" do
-      let(:event_name) { "UserManuallySwitchedLanguage" }
+      let(:event_name) { "ApplicantManuallySwitchedLanguage" }
       let(:event_attributes) do
         {
           locale: "es"

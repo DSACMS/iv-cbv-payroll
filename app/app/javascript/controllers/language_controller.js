@@ -6,7 +6,7 @@ export default class extends Controller {
   switchLocale(event) {
     const locale = event.currentTarget.dataset.locale
 
-    trackUserAction("UserManuallySwitchedLanguage", {
+    trackUserAction("ApplicantManuallySwitchedLanguage", {
       locale: locale,
     })
   }

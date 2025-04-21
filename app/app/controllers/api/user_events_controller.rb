@@ -30,7 +30,7 @@ class Api::UserEventsController < ApplicationController
     ApplicantEncounteredArgyleInvalidAuthLoginError
     ApplicantEncounteredArgyleMfaCanceledLoginError
     ApplicantUpdatedArgyleSearchTerm
-    UserManuallySwitchedLanguage
+    ApplicantManuallySwitchedLanguage
   ]
 
   # Maps aggregator event names (keys) to new Mixpanel event names (values) we're using
@@ -52,7 +52,8 @@ class Api::UserEventsController < ApplicationController
     "ArgyleCloseModal" => "ApplicantClosedArgyleModal",
     "ArgyleError" => "ApplicantEncounteredArgyleError",
     "ArgyleTokenExpired" => "ApplicantEncounteredArgyleTokenExpired",
-    "ModalAdapterError" => "ApplicantEncounteredModalAdapterError"
+    "ModalAdapterError" => "ApplicantEncounteredModalAdapterError",
+    "ApplicantManuallySwitchedLanguage" => "UserManuallySwitchedLanguage"
   }
 
   def user_action
