@@ -27,6 +27,8 @@ class ClientAgencyConfig
       agency_name
       agency_short_name
       agency_contact_website
+      agency_demo_domain
+      agency_production_domain
       authorized_emails
       caseworker_feedback_form
       invitation_valid_days
@@ -49,6 +51,8 @@ class ClientAgencyConfig
       @agency_name = yaml["agency_name"]
       @agency_short_name = yaml["agency_short_name"]
       @agency_contact_website = yaml["agency_contact_website"]
+      @agency_demo_domain = yaml["agency_demo_domain"]
+      @agency_production_domain = yaml["agency_production_domain"]
       @authorized_emails = yaml["authorized_emails"] || ""
       @caseworker_feedback_form = yaml["caseworker_feedback_form"]
       @invitation_valid_days = yaml["invitation_valid_days"]
