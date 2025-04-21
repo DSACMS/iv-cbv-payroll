@@ -12,6 +12,8 @@ module Aggregators::Validators
       is_w2_worker = report.employments.none? { |e| e.employment_type == :gig }
       if report.paystubs.any?
         report.paystubs.each { |p| validate_paystub(report, p, is_w2_worker) }
+        gross_pay_total += report.paystubs.each { |p| p.gross_pay_amount.to_f }.sum
+        report.errors.add(:paystubs, "Report has invalid gross_pay_total") unless gross_pay_total > 0
       end
     end
 
@@ -28,7 +30,6 @@ module Aggregators::Validators
     def validate_paystub(report, paystub, is_w2_worker)
       report.errors.add(:paystubs, "Paystub has no pay_date") unless paystub.pay_date.present?
       report.errors.add(:paystubs, "Paystub has no gross_pay_amount") unless paystub.gross_pay_amount.present?
-      report.errors.add(:paystubs, "Paystub has invalid gross_pay_amount") unless paystub.gross_pay_amount.to_f > 0
 
       if is_w2_worker
         report.errors.add(:paystubs, "Paystub has no pay_period_start") unless paystub.pay_period_start.present?
