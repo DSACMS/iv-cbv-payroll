@@ -1,8 +1,8 @@
 class ApplicationMailer < ActionMailer::Base
+  include ReportViewHelper
   default from: "noreply@mail.#{ENV["DOMAIN_NAME"]}"
   layout "mailer"
   after_deliver :track_delivery
-  helper MoneyHelper
 
   def client_agency_config
     Rails.application.config.client_agencies

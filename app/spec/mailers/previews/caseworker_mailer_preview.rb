@@ -1,7 +1,7 @@
 
 # Preview all emails at http://localhost:3000/rails/mailers/caseworker_mailer
 class CaseworkerMailerPreview < BaseMailerPreview
-  include ViewHelper
+  include ReportViewHelper
   include TestHelpers
 
   def summary_email

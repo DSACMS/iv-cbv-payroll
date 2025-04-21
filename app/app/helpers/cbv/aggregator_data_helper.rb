@@ -1,5 +1,5 @@
 module Cbv::AggregatorDataHelper
-  include ViewHelper
+  include ReportViewHelper
   include Aggregators::AggregatorReports
 
   def set_aggregator_report

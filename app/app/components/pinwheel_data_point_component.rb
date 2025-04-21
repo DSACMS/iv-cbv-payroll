@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class PinwheelDataPointComponent < ViewComponent::Base
-  include ViewHelper
+  include ReportViewHelper
 
   def initialize(field, *values, highlight: false)
     @field = send(field, *values)
