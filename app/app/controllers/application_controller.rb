@@ -82,6 +82,13 @@ class ApplicationController < ActionController::Base
         return agency_id
       end
     end
+
+    raise "Unknown domain #{request.host}"
+  rescue => ex
+    raise ex unless Rails.env.production?
+
+    Rails.logger.error ex.to_s
+    nil
   end
 
   protected

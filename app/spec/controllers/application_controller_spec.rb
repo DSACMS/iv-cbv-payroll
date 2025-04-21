@@ -75,12 +75,7 @@ RSpec.describe ApplicationController, type: :controller do
 
     before do
       allow(ENV).to receive(:[]).and_call_original
-      allow(ENV).to receive(:[]).with("ALTERNATE_DOMAIN_NAMES").and_return([
-        "la.verify-demo.navapbc.cloud",
-        "nyc.verify-demo.navapbc.cloud",
-        "ma.verify-demo.navapbc.cloud",
-        "sandbox.verify-demo.navapbc.cloud"
-      ].join(","))
+      allow(ENV).to receive(:[]).with("ALTERNATE_DOMAIN_NAMES").and_return(%w[demo.example.org example.org/agency].join(","))
 
       routes.draw do
         get 'test_action', to: 'anonymous#test_action'
@@ -96,17 +91,22 @@ RSpec.describe ApplicationController, type: :controller do
     end
 
     it "identifies the correct agency config based on the domain name" do
-      # Mock request with a specific domain
       request.host = "la.reportmyincome.org"
-
-      # Create a method to test domain detection
       result = controller.send(:detect_client_agency_from_domain)
-
       expect(result).to eq("la_ldh")
     end
 
-    it "returns nil when domain doesn't match any agency config" do
+    it "raises an error when domain doesn't match any agency config" do
       request.host = "unknown.example.org"
+
+      expect {
+        controller.send(:detect_client_agency_from_domain)
+      }.to raise_error(RuntimeError, "Unknown domain unknown.example.org")
+    end
+
+    it "returns nil when an exception occurs in production" do
+      request.host = "unknown.example.org"
+      allow(Rails.env).to receive(:production?).and_return(true)
 
       result = controller.send(:detect_client_agency_from_domain)
 
