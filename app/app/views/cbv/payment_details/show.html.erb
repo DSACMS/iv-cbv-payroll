@@ -49,9 +49,9 @@
       <% end %>
       <%= table.with_data_point(:pay_period, payment.start, payment.end) %>
       <%= table.with_data_point(:pay_gross, payment.gross_pay_amount) %>
-      <%= table.with_data_point(:number_of_hours_worked, format_hours(payment.hours)) %>
+      <%= table.with_data_point(:number_of_hours_worked, payment.hours) %>
       <% payment.hours_by_earning_category.each do |category, total_hours| %>
-        <%= table.with_data_point(:earnings_entry, category, format_hours(total_hours)) %>
+        <%= table.with_data_point(:earnings_entry, category, total_hours) %>
       <% end %>
       <%= table.with_data_point(:net_pay_amount, payment.net_pay_amount) %>
       <% payment.deductions.filter { |deduction| deduction.amount > 0 }.each do |deduction| %>
