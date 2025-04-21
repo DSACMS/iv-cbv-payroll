@@ -5,6 +5,14 @@ class HealthCheckController < ActionController::Base
     render json: { status: "ok", version: ENV["IMAGE_TAG"] }
   end
 
+  def solid_queue_ok
+    if File.exist?(Rails.root.join("tmp/solid_queue.pid"))
+      render plain: "OK", status: :ok
+    else
+      render plain: "PID file missing", status: :service_unavailable
+    end
+  end
+
   def test_rendering
     return head :not_found unless Rails.env.development?
 

@@ -48,7 +48,7 @@ resource "aws_ecs_task_definition" "solid_queue" {
         retries  = 3,
         timeout  = 5,
         command = ["CMD-SHELL",
-          "curl --fail http://localhost:${var.container_port}/health"
+          "curl --fail http://localhost:${var.container_port}/health/solid_queue_ok"
         ]
       },
       environment = local.environment_variables,
