@@ -301,7 +301,7 @@ en:
         payroll_providers: Payroll providers
         popular_providers: Or choose from popular payroll providers or apps
         results: Results
-        review_button_text: Review my income report
+        review_button_text: Continue
         search: Search
         search_label: 'Enter the name of your current or recent employer or payroll provider:'
         select: Select
@@ -314,7 +314,7 @@ en:
           sandbox: <a href="https://example.com/contact">Go to CBV's website</a> to learn about other ways to report your income.
         to_continue_li_2: If you have other jobs to add, search for them.
         to_continue_li_3: If you have no other jobs to add here, you can exit this site.
-        to_continue_li_3_continue: If you have no other jobs to add here, continue to review your income report.
+        to_continue_li_3_continue: If you have no other jobs to add here, continue.
     entries:
       create:
         error: You must check the agreement checkbox to proceed.

@@ -106,8 +106,9 @@ RSpec.describe Cbv::EmployerSearchesController do
           create(:payroll_account, cbv_flow_id: cbv_flow.id)
           get :show, params: { query: "no_results" }
           expect(response).to be_successful
-          expect(response.body).to include("continue to review your income report")
-          expect(response.body).to include("Review my income report")
+          expect(response.body).to include("If you have no other jobs to add here, continue")
+          expect(response.body).to include("Continue")
+          expect(response.body).to include(cbv_flow_applicant_information_path)
         end
       end
 
