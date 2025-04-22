@@ -9,6 +9,11 @@ RSpec.describe ApplicationController, type: :controller do
         render plain: I18n.locale.to_s
       end
     end
+
+    def show
+      @agency = current_agency
+      render plain: @agency.id
+    end
   end
 
   describe '#switch_locale' do
@@ -76,18 +81,15 @@ RSpec.describe ApplicationController, type: :controller do
     end
 
     before do
-      allow(ENV).to receive(:[]).and_call_original
-      allow(ENV).to receive(:[]).with("ALTERNATE_DOMAIN_NAMES").and_return(%w[demo.example.org example.org/agency].join(","))
-
       routes.draw do
-        get 'test_action', to: 'anonymous#test_action'
+        get 'show', to: 'anonymous#show'
       end
     end
 
     it "identifies the correct agency config based on the domain name" do
       request.host = "la.reportmyincome.org"
-      result = controller.send(:detect_client_agency_from_domain)
-      expect(result).to eq("la_ldh")
+      get :show
+      expect(response.body).to eq("la_ldh")
     end
 
     it "returns nil when domain does not match a configured client agency" do
