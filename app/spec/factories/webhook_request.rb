@@ -52,6 +52,19 @@ FactoryBot.define do
                 }
               }
             }
+          when "paystubs.partially_synced"
+            {
+              "event" => evaluator.event_type,
+              "name" => evaluator.user,
+              "data" => {
+                "account" => evaluator.argyle_account_id,
+                "user" => evaluator.argyle_user_id,
+                "available_from" => 30.days.ago.iso8601,
+                "available_to" => 1.day.ago.iso8601,
+                "available_count" => 16,
+                "days_synced" => 30
+              }
+            }
           when "paystubs.fully_synced"
             {
               "event" => evaluator.event_type,
@@ -62,6 +75,20 @@ FactoryBot.define do
                 "available_from" => 3.years.ago.iso8601,
                 "available_to" => 1.year.from_now.iso8601,
                 "available_count" => 153
+              }
+            }
+          when "gigs.partially_synced"
+            {
+              "event" => evaluator.event_type,
+              "name" => evaluator.user,
+              "data" => {
+                "account" => evaluator.argyle_account_id,
+                "user" => evaluator.argyle_user_id,
+                "item_id" => "item_000041078",
+                "available_from" => 30.days.ago.iso8601,
+                "available_to" => 1.days.ago.iso8601,
+                "available_count" => 16,
+                "days_synced" => 30
               }
             }
           when "gigs.fully_synced"
@@ -76,6 +103,8 @@ FactoryBot.define do
                 "available_count" => 2503
               }
             }
+          else
+            raise "No webhook request factory defined for type = #{evaluator.event_type}"
           end
 
         # Generate Argyle signature using the service

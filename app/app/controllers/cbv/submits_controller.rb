@@ -9,6 +9,7 @@ class Cbv::SubmitsController < Cbv::BaseController
   include CsvHelper
 
   before_action :set_aggregator_report, only: %i[show update]
+  before_action :check_aggregator_report, only: %i[show update]
 
   helper "cbv/aggregator_data"
 
@@ -68,6 +69,13 @@ class Cbv::SubmitsController < Cbv::BaseController
   end
 
   private
+
+  def check_aggregator_report
+    if @aggregator_report.nil?
+      Rails.logger.error "Aggregator report nil for #{@cbv_flow.id}. Investigate, as we didn't think it should be possible to get here because at least one account should be usable."
+      redirect_to cbv_flow_synchronization_failures_path
+    end
+  end
 
   def has_consent
     return true if @cbv_flow.consented_to_authorized_use_at.present?

@@ -1,4 +1,5 @@
 class ApplicationMailer < ActionMailer::Base
+  helper :report_view
   default from: "noreply@mail.#{ENV["DOMAIN_NAME"]}"
   layout "mailer"
   after_deliver :track_delivery

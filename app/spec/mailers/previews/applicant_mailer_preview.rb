@@ -1,6 +1,6 @@
 # Preview all emails at http://localhost:3000/rails/mailers/applicant_mailer
 class ApplicantMailerPreview < BaseMailerPreview
-  include ViewHelper
+  include ReportViewHelper
 
   def invitation_email_dta
     ApplicantMailer.with(

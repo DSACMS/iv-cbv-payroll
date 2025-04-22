@@ -35,6 +35,14 @@ locals {
       manage_method     = "manual"
       secret_store_name = "/service/${var.app_name}-${var.environment}/rails-master-key"
     },
+    MISSION_CONTROL_USER = {
+      manage_method     = "manual"
+      secret_store_name = "/service/${var.app_name}-${var.environment}/mission-control-user"
+    },
+    MISSION_CONTROL_PASSWORD = {
+      manage_method     = "manual"
+      secret_store_name = "/service/${var.app_name}-${var.environment}/mission-control-password"
+    },
     SLACK_TEST_EMAIL = {
       manage_method     = "manual"
       secret_store_name = "/service/${var.app_name}-${var.environment}/slack-test-email"
@@ -87,6 +95,11 @@ locals {
     SUPPORTED_PROVIDERS = {
       manage_method     = "manual"
       secret_store_name = "/service/${var.app_name}-${var.environment}/supported-providers"
+    },
+
+    ACTIVEJOB_ENABLED = {
+      manage_method     = "manual"
+      secret_store_name = "/service/${var.app_name}-${var.environment}/activejob-enabled"
     },
 
     # Pinwheel Configuration:

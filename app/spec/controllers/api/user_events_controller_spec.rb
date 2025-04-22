@@ -209,5 +209,34 @@ RSpec.describe Api::UserEventsController, type: :controller do
         post :user_action, params: valid_params
       end
     end
+
+    context "when tracking a UserManuallySwitchedLanguage event" do
+      let(:event_name) { "ApplicantManuallySwitchedLanguage" }
+      let(:event_attributes) do
+        {
+          locale: "es"
+        }
+      end
+
+      it "tracks an event with Mixpanel" do
+        expect_any_instance_of(MixpanelEventTracker).to receive(:track).with("UserManuallySwitchedLanguage", anything, hash_including(
+          timestamp: be_a(Integer),
+          cbv_flow_id: cbv_flow.id,
+          invitation_id: cbv_flow.cbv_flow_invitation_id,
+          locale: "es"
+        ))
+        post :user_action, params: valid_params
+      end
+
+      it "tracks an event with NewRelic" do
+        expect_any_instance_of(NewRelicEventTracker).to receive(:track).with("UserManuallySwitchedLanguage", anything, hash_including(
+          timestamp: be_a(Integer),
+          cbv_flow_id: cbv_flow.id,
+          invitation_id: cbv_flow.cbv_flow_invitation_id,
+          locale: "es"
+        ))
+        post :user_action, params: valid_params
+      end
+    end
   end
 end

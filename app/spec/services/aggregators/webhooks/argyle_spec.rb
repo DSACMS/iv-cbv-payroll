@@ -13,8 +13,35 @@ RSpec.describe Aggregators::Webhooks::Argyle, type: :service do
   end
 
   describe '.get_webhook_events' do
-    it 'returns array of supported webhook events' do
-      expect(described_class.get_webhook_events).to eq(described_class::SUBSCRIBED_WEBHOOK_EVENTS.keys)
+    let(:expected_non_partial_events) do
+      %w[
+        identities.added
+        accounts.connected
+        users.fully_synced
+        paystubs.fully_synced
+        gigs.fully_synced
+      ]
+    end
+
+    let(:expected_partial_events) do
+      %w[
+        paystubs.partially_synced
+        gigs.partially_synced
+      ]
+    end
+
+    it 'returns array of non-partial webhook events by default' do
+      expect(described_class.get_webhook_events).to match_array(expected_non_partial_events)
+    end
+
+    it 'returns array of partial webhook events with type = :partial' do
+      expect(described_class.get_webhook_events(type: :partial)).to match_array(expected_partial_events)
+    end
+
+    it 'returns array of all webhook events with type = :all' do
+      expect(described_class.get_webhook_events(type: :all)).to match_array(
+        expected_non_partial_events + expected_partial_events
+      )
     end
   end
 

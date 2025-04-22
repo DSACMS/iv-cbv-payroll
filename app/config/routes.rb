@@ -82,9 +82,7 @@ Rails.application.routes.draw do
     end
   end
 
-  if Rails.env.development?
-    mount MissionControl::Jobs::Engine, at: "/jobs"
-  end
+  mount MissionControl::Jobs::Engine, at: "/jobs"
 
   match "/404", to: "pages#error_404", via: :all
   match "/500", to: "pages#error_500", via: :all
