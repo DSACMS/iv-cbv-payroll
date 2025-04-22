@@ -46,15 +46,13 @@ module IvCbvPayroll
     config.client_agencies = ClientAgencyConfig.new(Rails.root.join("config", "client-agency-config.yml"))
 
     # Configure allowed hosts
-    if ENV["DOMAIN_NAME"].present?
-      config.hosts << ENV["DOMAIN_NAME"]
-    end
+    config.hosts << ENV["DOMAIN_NAME"]
 
-    # Add alternate domain names if specified
-    if ENV["ALTERNATE_DOMAIN_NAMES"].present?
-      ENV["ALTERNATE_DOMAIN_NAMES"].split(",").map(&:strip).each do |domain|
-        config.hosts << domain if domain.present?
-      end
+    # Configure allowed hosts inferred from the client-agency-config.yml file
+    config.client_agencies.client_agency_ids.each do |agency_id|
+      agency = config.client_agencies[agency_id]
+      config.hosts << agency.agency_demo_domain
+      config.hosts << agency.agency_production_domain
     end
 
     # Health check endpoints should be accessible from any host

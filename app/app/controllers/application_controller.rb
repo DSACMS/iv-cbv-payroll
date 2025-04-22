@@ -76,19 +76,10 @@ class ApplicationController < ActionController::Base
   def detect_client_agency_from_domain
     return nil unless request.host.present?
 
-    agency_config.client_agency_ids.each do |agency_id|
+    agency_config.client_agency_ids.find do |agency_id|
       agency = agency_config[agency_id]
-      if [ agency.agency_demo_domain, agency.agency_production_domain ].compact.include?(request.host)
-        return agency_id
-      end
+      [ agency.agency_demo_domain, agency.agency_production_domain ].compact.include?(request.host)
     end
-
-    raise "Unknown domain #{request.host}"
-  rescue => ex
-    raise ex unless Rails.env.production?
-
-    Rails.logger.error ex.to_s
-    nil
   end
 
   protected

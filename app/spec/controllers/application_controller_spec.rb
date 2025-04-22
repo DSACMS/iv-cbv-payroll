@@ -84,34 +84,16 @@ RSpec.describe ApplicationController, type: :controller do
       end
     end
 
-    it "ensures all agency domains are included in ALTERNATE_DOMAIN_NAMES" do
-      allowed_domains = ENV.fetch("ALTERNATE_DOMAIN_NAMES", "").split(",").map(&:strip)
-      client_domains.each do |domain_value|
-        expect(allowed_domains).to include(domain_value),
-        "Expected ALTERNATE_DOMAIN_NAMES to include #{domain_value}"
-      end
-    end
-
     it "identifies the correct agency config based on the domain name" do
       request.host = "la.reportmyincome.org"
       result = controller.send(:detect_client_agency_from_domain)
       expect(result).to eq("la_ldh")
     end
 
-    it "raises an error when domain doesn't match any agency config" do
-      request.host = "unknown.example.org"
-
-      expect {
-        controller.send(:detect_client_agency_from_domain)
-      }.to raise_error(RuntimeError, "Unknown domain unknown.example.org")
-    end
-
-    it "returns nil when an exception occurs in production" do
+    it "returns nil when domain does not match a configured client agency" do
       request.host = "unknown.example.org"
       allow(Rails.env).to receive(:production?).and_return(true)
-
       result = controller.send(:detect_client_agency_from_domain)
-
       expect(result).to be_nil
     end
   end
