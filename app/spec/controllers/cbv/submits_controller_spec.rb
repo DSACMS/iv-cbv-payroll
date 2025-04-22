@@ -90,6 +90,17 @@ RSpec.describe Cbv::SubmitsController do
         end
       end
 
+      context "when multiple accounts, one errored one good" do
+        let(:supported_jobs) { %w[income paystubs employment] }
+        let(:errored_jobs) { [ "employment" ] }
+
+        it "renders a pdf" do
+          create(:payroll_account, :pinwheel_fully_synced, cbv_flow: cbv_flow, pinwheel_account_id: "account1")
+          expect(response).to be_successful
+          expect(response.header['Content-Type']).to include 'pdf'
+        end
+      end
+
       context "when rendering for a caseworker" do
         it "shows the right client information fields" do
           get :show, format: :pdf, params: {
