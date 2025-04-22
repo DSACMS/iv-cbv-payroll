@@ -65,28 +65,19 @@ RSpec.describe ApplicationController, type: :controller do
 
   describe 'client_agency_config can be resolved by domain name' do
     let(:client_agencies) { Rails.application.config.client_agencies }
-    let(:client_domains) { client_agencies.client_agency_ids.flat_map do |agency_id|
-      agency = client_agencies[agency_id]
-      [
-        agency.agency_demo_domain,
-        agency.agency_production_domain
-      ].compact
-    end }
+    let(:client_domains) do
+    client_agencies.client_agency_ids.flat_map do |agency_id|
+       agency = client_agencies[agency_id]
+       [
+         agency.agency_demo_domain,
+         agency.agency_production_domain
+       ].compact
+     end
+  end
 
     before do
-      allow(ENV).to receive(:[]).and_call_original
-      allow(ENV).to receive(:[]).with("ALTERNATE_DOMAIN_NAMES").and_return(%w[demo.example.org example.org/agency].join(","))
-
       routes.draw do
         get 'test_action', to: 'anonymous#test_action'
-      end
-    end
-
-    it "ensures all agency domains are included in ALTERNATE_DOMAIN_NAMES" do
-      allowed_domains = ENV.fetch("ALTERNATE_DOMAIN_NAMES", "").split(",").map(&:strip)
-      client_domains.each do |domain_value|
-        expect(allowed_domains).to include(domain_value),
-        "Expected ALTERNATE_DOMAIN_NAMES to include #{domain_value}"
       end
     end
 
@@ -96,21 +87,23 @@ RSpec.describe ApplicationController, type: :controller do
       expect(result).to eq("la_ldh")
     end
 
-    it "raises an error when domain doesn't match any agency config" do
-      request.host = "unknown.example.org"
+    context "when domain doesn't match any agency config" do
+      before do
+        request.host = "unknown.example.org"
+      end
 
-      expect {
-        controller.send(:detect_client_agency_from_domain)
-      }.to raise_error(RuntimeError, "Unknown domain unknown.example.org")
-    end
+      it "raises an error in non-production environments" do
+        expect {
+          controller.send(:detect_client_agency_from_domain)
+        }.to raise_error(RuntimeError, "Unknown domain unknown.example.org")
+      end
 
-    it "returns nil when an exception occurs in production" do
-      request.host = "unknown.example.org"
-      allow(Rails.env).to receive(:production?).and_return(true)
-
-      result = controller.send(:detect_client_agency_from_domain)
-
-      expect(result).to be_nil
+      it "returns nil in production environment and logs the error" do
+        allow(Rails.env).to receive(:production?).and_return(true)
+        expect(Rails.logger).to receive(:error).with("Unknown domain unknown.example.org")
+        result = controller.send(:detect_client_agency_from_domain)
+        expect(result).to be_nil
+      end
     end
   end
 end

@@ -5,7 +5,7 @@
   caseworker_feedback_form: https://forms.office.com/r/B66WeqsBFE
   logo_path: hra_logo.png
   logo_square_path: hra_logo_square.png
-  agency_demo_domain: nyc.verify-demo.navapbc.cloud
+  agency_demo_domain: nyc-verify-demo.navapbc.cloud
   agency_production_domain: nyc.reportmyincome.org
   pinwheel:
     environment: <%= ENV["NYC_PINWHEEL_ENVIRONMENT"] %>
@@ -31,7 +31,7 @@
   agency_short_name: DTA
   agency_contact_website: https://www.mass.gov/guides/how-to-contact-dta
   caseworker_feedback_form: https://forms.office.com/r/rfV04qjG9A
-  agency_demo_domain: ma.verify-demo.navapbc.cloud
+  agency_demo_domain: ma-verify-demo.navapbc.cloud
   agency_production_domain: ma.reportmyincome.org
   pinwheel:
     environment: <%= ENV["MA_PINWHEEL_ENVIRONMENT"] %>
@@ -62,7 +62,7 @@
   agency_contact_website: https://des.az.gov/services/basic-needs/food-assistance/contact-des
   # No caseworker feedback form since they will only be interacting with the PDFs
   # caseworker_feedback_form: null
-  agency_demo_domain: az.verify-demo.navapbc.cloud
+  agency_demo_domain: az-verify-demo.navapbc.cloud
   agency_production_domain: az.reportmyincome.org
   pinwheel:
     environment: <%= ENV["AZ_DES_PINWHEEL_ENVIRONMENT"] %>
@@ -97,7 +97,7 @@
   # TODO[FFS-2689]: Add Louisiana DPH logo, these assets are not available yet.
   # logo_path: ldh_logo.png
   # logo_square_path: ldh_logo_square.png
-  agency_demo_domain: la.verify-demo.navapbc.cloud
+  agency_demo_domain: la-verify-demo.navapbc.cloud
   agency_production_domain: la.reportmyincome.org
   pinwheel:
     environment: <%= ENV["LA_LDH_PINWHEEL_ENVIRONMENT"] %>
@@ -127,7 +127,7 @@
   agency_short_name: CBV
   agency_contact_website: https://www.exampl.com/contact
   caseworker_feedback_form: https://docs.google.com/forms/d/e/1FAIpQLSfrUiz0oWE5jbXjPfl-idQQGPgxKplqFtcKq08UOhTaEa2k6A/viewform
-  agency_demo_domain: sandbox.verify-demo.navapbc.cloud
+  agency_demo_domain: sandbox-verify-demo.navapbc.cloud
   agency_production_domain: sandbox.reportmyincome.org
   pinwheel:
     environment: <%= ENV["SANDBOX_PINWHEEL_ENVIRONMENT"] %>
