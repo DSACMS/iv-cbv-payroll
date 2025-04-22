@@ -97,6 +97,11 @@ locals {
       secret_store_name = "/service/${var.app_name}-${var.environment}/supported-providers"
     },
 
+    ACTIVEJOB_ENABLED = {
+      manage_method     = "manual"
+      secret_store_name = "/service/${var.app_name}-${var.environment}/activejob-enabled"
+    },
+
     # Pinwheel Configuration:
     PINWHEEL_API_TOKEN_PRODUCTION = {
       manage_method     = "manual"
