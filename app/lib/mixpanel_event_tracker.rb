@@ -31,12 +31,9 @@ class MixpanelEventTracker
     # This creates a profile for a distinct user
     @tracker.people.set(distinct_id, tracker_attrs) if distinct_id.present?
 
-    # MaybeLater tries to run this code after the request_attributes has finished
     start_time = Time.now
     Rails.logger.info "  Sending Mixpanel event #{event_type} with attributes: #{attributes}"
-    begin
-      @tracker.track(distinct_id, event_type, attributes)
-      Rails.logger.info "    Mixpanel event sent in #{Time.now - start_time}"
-    end
+    @tracker.track(distinct_id, event_type, attributes)
+    Rails.logger.info "    Mixpanel event sent in #{Time.now - start_time}"
   end
 end
