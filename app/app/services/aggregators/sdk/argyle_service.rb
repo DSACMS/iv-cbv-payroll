@@ -71,11 +71,12 @@ module Aggregators::Sdk
       @http.get(build_url(WEBHOOKS_ENDPOINT)).body
     end
 
-    def create_webhook_subscription(events, url, name)
+    def create_webhook_subscription(events, url, name, config = {})
       payload = {
         events: events,
         name: name,
         url: url,
+        config: config.presence,
         secret: @webhook_secret
       }
 

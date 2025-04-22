@@ -1,29 +1,56 @@
 module Aggregators::Webhooks
   class Argyle
-    # Argyle's event outcomes are implied by the event name themselves i.e. accounts.failed (implies error)
-    # x.fully_synced (implies success)
-    # Define all webhook events we're interested in with their outcomes
-    # and corresponding synchronizations page "job"
+    # When we receive a webhook from Argyle, we store the `status` for the
+    # `job`(s) based on the webhook event name.
+    #
+    # E.g. "identites.added" indicates success of the identity and income jobs.
+    #
+    # For webhooks with `type: :partial`, additional logic must be applied to:
+    # 1. Register the partially_synced webhooks (potentially multiple times)
+    #    for any partial sync status needed for an agency.
+    # 2. Determine whether the partially_synced success is sufficient to meet
+    #    the agency's data requirements.
     SUBSCRIBED_WEBHOOK_EVENTS = {
-      "users.fully_synced" => {
-        status: :success,
-        job: %w[income]
-      },
       "identities.added" => {
         status: :success,
-        job: %w[identity]
+        type: :non_partial,
+        job: %w[identity income]
       },
+      "paystubs.partially_synced" => {
+        status: :success,
+        type: :partial,
+        job: %w[paystubs employment]
+      },
+      "gigs.partially_synced" => {
+        status: :success,
+        type: :partial,
+        job: %w[gigs]
+      },
+
+      # We're not concerned with reporting these to the front-end/client.
+      "accounts.connected" => {
+        status: :success,
+        type: :non_partial,
+        job: []
+      },
+      "users.fully_synced" => {
+        status: :success,
+        type: :non_partial,
+        job: %w[]
+      },
+
+      # The *.fully_synced events may take a long time to return; so we'll
+      # store them for measurement purposes, but not tie any jobs' success to
+      # their completion.
       "paystubs.fully_synced" => {
         status: :success,
-        job: %w[paystubs employment]
+        type: :non_partial,
+        job: []
       },
       "gigs.fully_synced" => {
         status: :success,
-        job: %w[gigs] # TODO: [FFS-XXX] update front-end/client to support gigs sync status
-      },
-      "accounts.connected" => {
-        status: :success,
-        job: [] # we're not concerned with reporting this to the front-end/client
+        type: :non_partial,
+        job: []
       }
     }.freeze
 
@@ -38,8 +65,8 @@ module Aggregators::Webhooks
       ActiveSupport::SecurityUtils.secure_compare(signature, expected)
     end
 
-    def self.get_webhook_events
-      SUBSCRIBED_WEBHOOK_EVENTS.keys
+    def self.get_webhook_events(type: :non_partial)
+      SUBSCRIBED_WEBHOOK_EVENTS.filter_map { |event_name, event| event_name if type == :all || event[:type] == type }
     end
 
     def self.get_supported_jobs
