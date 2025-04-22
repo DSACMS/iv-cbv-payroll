@@ -6,12 +6,12 @@ on:
 jobs:
   reviewer-lottery:
     name: Add random reviewer via Reviewer Lottery
-    if: contains(github.event.pull_request.requested_reviewers.*.login, '') && contains(github.event.pull_request.requested_teams.*.slug, '')
     runs-on: ubuntu-latest
     permissions:
       pull-requests: write
     steps:
     - uses: actions/checkout@v4
     - uses: uesteibar/reviewer-lottery@v3
+      if: join(github.event.pull_request_target.requested_reviewers.*.login) == ''
       with:
         repo-token: ${{ secrets.GITHUB_TOKEN }}
