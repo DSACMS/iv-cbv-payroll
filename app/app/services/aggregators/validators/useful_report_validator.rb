@@ -12,9 +12,6 @@ module Aggregators::Validators
       is_w2_worker = report.employments.none? { |e| e.employment_type == :gig }
       if report.paystubs.any?
         report.paystubs.each { |p| validate_paystub(report, p, is_w2_worker) }
-        hours_total = 0
-        report.paystubs.each { |p| hours_total += p.hours.to_f if p.hours.present? }
-        report.errors.add(:paystubs, "Report has invalid hours total") unless hours_total > 0
       end
     end
 

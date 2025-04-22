@@ -226,8 +226,7 @@ RSpec.describe Aggregators::Validators::UsefulReportValidator do
           /Paystub has no pay_date/,
           /Paystub has no pay_period_start/,
           /Paystub has no pay_period_end/,
-          /Paystub has invalid gross_pay_amount/,
-          /Paystub has invalid hours/
+          /Paystub has invalid gross_pay_amount/
         )
       end
 
