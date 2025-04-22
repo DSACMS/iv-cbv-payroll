@@ -72,6 +72,7 @@ class Cbv::SubmitsController < Cbv::BaseController
 
   def check_aggregator_report
     if @aggregator_report.nil?
+      Rails.logger.error "Aggregator report nil for #{@cbv_flow.id}. Investigate, as we didn't think it should be possible to get here because at least one account should be usable."
       redirect_to cbv_flow_synchronization_failures_path
     end
   end
