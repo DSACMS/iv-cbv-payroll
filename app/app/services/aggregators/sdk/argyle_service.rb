@@ -24,7 +24,7 @@ module Aggregators::Sdk
     # See: https://console.argyle.com/flows
     FLOW_ID = "BXSHLUUJ"
 
-    ITEMS_ENDPOINT = "items"
+    EMPLOYER_SEARCH_ENDPOINT = "employer-search"
     PAYSTUBS_ENDPOINT = "paystubs"
     IDENTITIES_ENDPOINT = "identities"
     USERS_ENDPOINT = "users"
@@ -87,10 +87,10 @@ module Aggregators::Sdk
       @http.delete(build_url("#{WEBHOOKS_ENDPOINT}/#{id}")).body
     end
 
-    # Fetch all Argyle items
-    # https://docs.argyle.com/api-reference/items#list
-    def items(query = nil, status = %w[healthy issues])
-      @http.get(build_url(ITEMS_ENDPOINT), { q: query, status: status }).body
+    # Search for Argyle employer
+    # https://docs.argyle.com/api-reference/employer-search#list
+    def employer_search(query, status = %w[healthy issues])
+      @http.get(build_url(EMPLOYER_SEARCH_ENDPOINT), { q: query, status: status }).body
     end
 
     # https://docs.argyle.com/api-reference/users#retrieve
