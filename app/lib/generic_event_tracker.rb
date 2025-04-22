@@ -10,6 +10,8 @@ class GenericEventTracker
     end
     if ENV["ACTIVEJOB_ENABLED"] == "true"
       EventTrackingJob.perform_later(event_type, request_data, merged_attributes)
+    elsif Rails.env.test?
+      EventTrackingJob.perform_now(event_type, request_data, merged_attributes)
     else
       MaybeLater.run do
         EventTrackingJob.perform_now(event_type, request_data, merged_attributes)
