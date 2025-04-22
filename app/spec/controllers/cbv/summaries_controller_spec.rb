@@ -23,7 +23,15 @@ RSpec.describe Cbv::SummariesController do
   let(:nyc_user) { create(:user, email: "test@test.com", client_agency_id: 'nyc') }
   let(:ma_user) { create(:user, email: "test@example.com", client_agency_id: 'ma') }
 
+
+  let(:mixpanel_event_stub) { instance_double(MixpanelEventTracker) }
+  let(:newrelic_event_stub) { instance_double(NewRelicEventTracker) }
+
   before do
+    allow(MixpanelEventTracker).to receive(:new).and_return(mixpanel_event_stub)
+    allow(NewRelicEventTracker).to receive(:new).and_return(newrelic_event_stub)
+    allow(newrelic_event_stub).to receive(:track)
+    allow(mixpanel_event_stub).to receive(:track)
     allow(mock_client_agency).to receive(:transmission_method_configuration).and_return({
       "bucket"            => "test-bucket",
       "region"            => "us-west-2",
@@ -108,14 +116,14 @@ RSpec.describe Cbv::SummariesController do
     end
 
     it "tracks events" do
-      expect_any_instance_of(MixpanelEventTracker)
+      expect(mixpanel_event_stub)
         .to receive(:track)
         .with("ApplicantAccessedIncomeSummary", anything, hash_including(
           cbv_flow_id: cbv_flow.id,
           invitation_id: cbv_flow.cbv_flow_invitation_id
         ))
 
-      expect_any_instance_of(NewRelicEventTracker)
+      expect(newrelic_event_stub)
         .to receive(:track)
         .with("ApplicantAccessedIncomeSummary", anything, hash_including(
           cbv_flow_id: cbv_flow.id,

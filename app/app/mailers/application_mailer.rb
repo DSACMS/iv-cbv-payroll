@@ -26,6 +26,6 @@ class ApplicationMailer < ActionMailer::Base
   end
 
   def event_logger
-    @event_logger ||= GenericEventTracker.for_request(nil)
+    @event_logger ||= GenericEventTracker.new
   end
 end

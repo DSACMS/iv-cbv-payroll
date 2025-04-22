@@ -45,8 +45,6 @@ class Cbv::EmployerSearchesController < Cbv::BaseController
       client_agency_id: current_agency&.id,
       invitation_id: @cbv_flow.cbv_flow_invitation_id
     })
-  rescue => ex
-    Rails.logger.error "Unable to track event (ApplicantClickedPopularPayrollProviders): #{ex}"
   end
 
   def track_clicked_popular_app_employers_event
