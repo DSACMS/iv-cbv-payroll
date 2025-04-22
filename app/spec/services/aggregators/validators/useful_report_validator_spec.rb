@@ -225,7 +225,8 @@ RSpec.describe Aggregators::Validators::UsefulReportValidator do
         expect(report.errors[:paystubs]).to include(
           /Paystub has no pay_date/,
           /Paystub has no pay_period_start/,
-          /Paystub has no pay_period_end/
+          /Paystub has no pay_period_end/,
+          /Paystub has invalid gross_pay_amount/
         )
       end
 
