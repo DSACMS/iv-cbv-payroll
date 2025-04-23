@@ -224,15 +224,30 @@ RSpec.describe Webhooks::Argyle::EventsController, type: :controller do
         process_webhook("paystubs.partially_synced")
       end
 
-      it 'tracks an ApplicantEncounteredArgyleSyncError event' do
+      it 'sequentially tests argyle accounts.updated system_error' do
+        expect(PayrollAccount.count).to eq(0)
+
+        process_webhook("accounts.updated", variant: :invalid_mfa)
         process_webhook("accounts.updated", variant: :connecting)
         process_webhook("accounts.connected")
         process_webhook("accounts.updated", variant: :connected)
 
+        expect(PayrollAccount.count).to eq(1)
+        payroll_account = PayrollAccount.last
+
+        allow(payroll_account).to receive(:broadcast_replace)
+
+        expect(payroll_account.identity_errored_at).to be_nil
+
         expect(fake_event_logger).to receive(:track)
                                        .with("ApplicantEncounteredArgyleSyncError", anything, anything).exactly(1).times
+        expect(payroll_account).to receive(:broadcast_replace)
+                                       .exactly(1).times
 
         process_webhook("accounts.updated", variant: :system_error)
+        expect(payroll_account.webhook_events.count).to eq(5)
+        #   expect(payroll_account.identity_errored_at).to be_present
+        # expect(payroll_account.has_fully_synced?).to be_nil
       end
     end
   end
