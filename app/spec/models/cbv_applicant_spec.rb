@@ -9,6 +9,27 @@ RSpec.describe CbvApplicant, type: :model do
     end
   end
 
+  describe "#has_applicant_attribute_missing?" do
+    before do
+      allow_any_instance_of(ClientAgencyConfig::ClientAgency).to receive(:applicant_attributes).and_return(
+        { first_name: "required" }
+      )
+    end
+
+    let(:cbv_applicant) { create(:cbv_applicant, first_name: nil) }
+    it "returns true if a field missing" do
+      cbv_applicant.set_applicant_attributes
+      expect(cbv_applicant.required_applicant_attributes).to be_present
+      expect(cbv_applicant.has_applicant_attribute_missing?).to eq(true)
+    end
+
+    it "returns false if a field not missing" do
+      cbv_applicant.set_applicant_attributes
+      cbv_applicant.first_name = "Dean Venture"
+      expect(cbv_applicant.has_applicant_attribute_missing?).to eq(false)
+    end
+  end
+
   describe "validations" do
     let(:valid_attributes) { attributes_for(:cbv_applicant, :nyc) }
 

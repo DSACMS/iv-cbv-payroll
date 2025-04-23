@@ -137,10 +137,10 @@ RSpec.describe Webhooks::Argyle::EventsController, type: :controller do
         process_webhook("users.fully_synced")
         expect(payroll_account.webhook_events.count).to eq(3)
 
-        process_webhook("gigs.fully_synced")
+        process_webhook("gigs.partially_synced")
         expect(payroll_account.webhook_events.count).to eq(4)
 
-        process_webhook("paystubs.fully_synced")
+        process_webhook("paystubs.partially_synced")
         expect(payroll_account.webhook_events.count).to eq(5)
 
         # expect the PayrollAccount to be fully synced
@@ -151,7 +151,7 @@ RSpec.describe Webhooks::Argyle::EventsController, type: :controller do
         process_webhook("accounts.connected")
         process_webhook("identities.added")
         process_webhook("users.fully_synced")
-        process_webhook("gigs.fully_synced")
+        process_webhook("gigs.partially_synced")
 
         expect(fake_event_logger).to receive(:track) do |event_name, _request, attributes|
           expect(event_name).to eq("ApplicantFinishedArgyleSync")
@@ -212,19 +212,19 @@ RSpec.describe Webhooks::Argyle::EventsController, type: :controller do
           )
         end
 
-        process_webhook("paystubs.fully_synced")
+        process_webhook("paystubs.partially_synced")
       end
 
       it 'tracks an ApplicantReportMetUsefulRequirements event' do
         process_webhook("accounts.connected")
         process_webhook("identities.added")
         process_webhook("users.fully_synced")
-        process_webhook("gigs.fully_synced")
+        process_webhook("gigs.partially_synced")
 
         expect(fake_event_logger).to receive(:track)
            .with("ApplicantReportMetUsefulRequirements", anything, anything).exactly(1).times
 
-        process_webhook("paystubs.fully_synced")
+        process_webhook("paystubs.partially_synced")
       end
     end
   end

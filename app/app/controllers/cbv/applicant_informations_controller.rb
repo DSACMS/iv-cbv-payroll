@@ -38,11 +38,7 @@ class Cbv::ApplicantInformationsController < Cbv::BaseController
   def redirect_when_info_present
     return if params[:force_show] == "true"
 
-    missing_attrs = @cbv_applicant.required_applicant_attributes.reject do |attr|
-      @cbv_applicant.send(attr).present?
-    end
-
-    redirect_to next_path if missing_attrs.empty?
+    redirect_to next_path unless @cbv_applicant.has_applicant_attribute_missing?
   end
 
   def redirect_when_in_invitation_flow

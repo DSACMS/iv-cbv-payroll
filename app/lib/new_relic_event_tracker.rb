@@ -32,16 +32,8 @@ class NewRelicEventTracker
 
     # MaybeLater tries to run this code after the request has finished
     start_time = Time.now
-    MaybeLater.run {
-      Rails.logger.info "  Sending NewRelic event #{newrelic_event_type} with attributes: #{attributes}"
-      begin
-        NewRelic::Agent.record_custom_event(newrelic_event_type, attributes)
-        Rails.logger.info "    NewRelic event sent in #{Time.now - start_time}"
-      rescue StandardError => e
-        raise unless Rails.env.production?
-
-        Rails.logger.error "    Failed to send NewRelic event: #{e.message}"
-      end
-    }
+    Rails.logger.info "  Sending NewRelic event #{newrelic_event_type} with attributes: #{attributes}"
+    NewRelic::Agent.record_custom_event(newrelic_event_type, attributes)
+    Rails.logger.info "    NewRelic event sent in #{Time.now - start_time}"
   end
 end

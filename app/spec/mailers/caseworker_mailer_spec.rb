@@ -2,7 +2,7 @@ require "rails_helper"
 require 'action_view' # Include this to use the `strip_tags` helper
 
 RSpec.describe CaseworkerMailer, type: :mailer do
-  include ViewHelper
+  include ReportViewHelper
   include ActionView::Helpers::SanitizeHelper # Include the sanitize helper
 
   let(:cbv_flow) { create(:cbv_flow,

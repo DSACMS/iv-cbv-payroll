@@ -250,6 +250,18 @@ RSpec.describe Aggregators::Sdk::ArgyleService, type: :service do
     end
   end
 
+  describe "#employer_search" do
+    before do
+      argyle_stub_request_employer_search_response("bob")
+    end
+
+    it "makes a request with the proper arguments" do
+      service.employer_search("walgreens")
+      expect(a_request(:get, "https://api-sandbox.argyle.com/v2/employer-search?q=walgreens&status=healthy&status=issues"))
+        .to have_been_requested
+    end
+  end
+
   describe '#get_webhook_subscriptions' do
     it 'makes a GET request to webhooks endpoint' do
       stub = stub_request(:get, "https://api-sandbox.argyle.com/v2/webhooks")
@@ -267,6 +279,7 @@ RSpec.describe Aggregators::Sdk::ArgyleService, type: :service do
         events: events,
         name: name,
         url: url,
+        config: nil,
         secret: webhook_secret
       }
     end

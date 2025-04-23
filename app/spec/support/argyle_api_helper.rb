@@ -1,9 +1,9 @@
 module ArgyleApiHelper
-  def argyle_stub_request_items_response(user_folder)
-    stub_request(:get, %r{#{Aggregators::Sdk::ArgyleService::ITEMS_ENDPOINT}})
+  def argyle_stub_request_employer_search_response(user_folder)
+    stub_request(:get, %r{#{Aggregators::Sdk::ArgyleService::EMPLOYER_SEARCH_ENDPOINT}})
       .to_return(
         status: 200,
-        body: argyle_load_relative_json_file(user_folder, 'request_items.json').to_json,
+        body: argyle_load_relative_json_file(user_folder, 'request_employer_search.json').to_json,
         headers: { 'Content-Type': 'application/json;charset=UTF-8' }
       )
   end

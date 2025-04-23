@@ -55,6 +55,9 @@ gem "mixpanel-ruby"
 gem "newrelic_rpm"
 
 gem "solid_queue"
+# dashboard to manage solid queue
+gem "mission_control-jobs"
+
 
 gem "faraday", "~> 2.9.0"
 
@@ -91,7 +94,6 @@ group :development, :test do
   gem "rubocop-rails-omakase"
   gem "selenium-webdriver"
   gem "timecop"
-  gem "mission_control-jobs"
 end
 
 group :development do

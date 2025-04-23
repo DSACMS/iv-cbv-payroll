@@ -12,7 +12,7 @@ class ProviderSearchService
     if @providers.include?(:argyle)
       argyle_service = Aggregators::Sdk::ArgyleService.new(@client_agency_config.argyle_environment)
 
-      results = argyle_service.items(query)["results"].map do |result|
+      results = argyle_service.employer_search(query)["results"].map do |result|
         Aggregators::ResponseObjects::SearchResult.from_argyle(result)
       end
     end

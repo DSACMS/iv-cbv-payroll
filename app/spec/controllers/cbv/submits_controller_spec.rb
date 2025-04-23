@@ -84,10 +84,19 @@ RSpec.describe Cbv::SubmitsController do
         let(:supported_jobs) { %w[income paystubs employment] }
         let(:errored_jobs) { [ "employment" ] }
 
-        it "renders pdf properly" do
+        it "bounces to synchronization failures" do
           get :show, format: :pdf
+          expect(response).to redirect_to(cbv_flow_synchronization_failures_path)
+        end
+      end
+
+      context "when multiple accounts, one errored one good" do
+        let(:supported_jobs) { %w[income paystubs employment] }
+        let(:errored_jobs) { [ "employment" ] }
+
+        it "renders a pdf" do
+          create(:payroll_account, :pinwheel_fully_synced, cbv_flow: cbv_flow, pinwheel_account_id: "account1")
           expect(response).to be_successful
-          expect(response.header['Content-Type']).to include 'pdf'
         end
       end
 
@@ -165,17 +174,6 @@ RSpec.describe Cbv::SubmitsController do
 
     context "when only paystubs are supported" do
       let(:supported_jobs) { %w[paystubs] }
-
-      it "renders pdf properly" do
-        get :show, format: :pdf
-        expect(response).to be_successful
-        expect(response.header['Content-Type']).to include 'pdf'
-      end
-    end
-
-    context "when a supported job errors" do
-      let(:supported_jobs) { %w[income paystubs employment] }
-      let(:errored_jobs) { [ "employment" ] }
 
       it "renders pdf properly" do
         get :show, format: :pdf

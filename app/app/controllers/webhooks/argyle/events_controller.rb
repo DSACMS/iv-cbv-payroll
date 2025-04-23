@@ -74,11 +74,13 @@ class Webhooks::Argyle::EventsController < ApplicationController
   def authorize_webhook
     argyle_service = @cbv_flow.present? ? argyle_for(@cbv_flow) : ArgyleService.new("sandbox")
 
-    unless Aggregators::Webhooks::Argyle.get_webhook_events.include?(params["event"])
+    unless Aggregators::Webhooks::Argyle.get_webhook_events(type: :all).include?(params["event"])
+      Rails.logger.info "Ignoring unhandled webhook: #{params["event"]}"
       render json: { info: "Unhandled webhook" }, status: :ok
     end
 
     unless Aggregators::Webhooks::Argyle.verify_signature(request.headers["X-Argyle-Signature"], request.raw_post, argyle_service.webhook_secret)
+      Rails.logger.info "Ignoring webhook with invalid signature: #{params["event"]}"
       render json: { error: "Invalid signature" }, status: :unauthorized
     end
   end

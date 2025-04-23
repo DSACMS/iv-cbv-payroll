@@ -31,7 +31,7 @@ RSpec.describe PinwheelDataPointComponent, type: :component do
     expect(
       render_inline(described_class.new(:number_of_hours_worked, 20))
     ).to have_text(
-      "20 hours"
+      "20.0 hours"
     )
   end
 

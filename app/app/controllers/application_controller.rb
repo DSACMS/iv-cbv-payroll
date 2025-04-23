@@ -85,7 +85,7 @@ class ApplicationController < ActionController::Base
   end
 
   def event_logger
-    @event_logger ||= GenericEventTracker.for_request(request)
+    @event_logger ||= GenericEventTracker.new
   end
 
   def redirect_if_maintenance_mode

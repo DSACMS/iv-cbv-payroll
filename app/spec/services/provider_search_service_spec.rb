@@ -9,7 +9,7 @@ RSpec.describe ProviderSearchService, type: :service do
   describe "#search" do
     before do
       pinwheel_stub_request_items_response
-      argyle_stub_request_items_response("bob")
+      argyle_stub_request_employer_search_response("bob")
     end
 
     it "returns results with correct structure" do
@@ -34,7 +34,7 @@ RSpec.describe ProviderSearchService, type: :service do
       it "defaults to Argyle results if there are no Pinwheel exact matches" do
         results = service.search(query)
         expect(results.count { |r| r.provider_name == :pinwheel }).to eq(0)
-        expect(results.count { |r| r.provider_name == :argyle }).to eq(10)
+        expect(results.count { |r| r.provider_name == :argyle }).to eq(8)
       end
 
       context "when there *is* an exact match in Pinwheel" do
@@ -56,7 +56,7 @@ RSpec.describe ProviderSearchService, type: :service do
       let(:query) do
         # This value is exactly present *Argyle's* request stub, but not
         # Pinwheel's.
-        "Amazon Flex"
+        "Walgreens"
       end
 
       it "does not try to query Pinwheel" do
@@ -65,7 +65,7 @@ RSpec.describe ProviderSearchService, type: :service do
 
         results = service.search(query)
         expect(results.count { |r| r.provider_name == :pinwheel }).to eq(0)
-        expect(results.count { |r| r.provider_name == :argyle }).to eq(10)
+        expect(results.count { |r| r.provider_name == :argyle }).to eq(8)
       end
     end
 
@@ -74,8 +74,8 @@ RSpec.describe ProviderSearchService, type: :service do
 
       pinwheel_results = results.count { |item| item.provider_name == :pinwheel }
       argyle_results = results.count { |item| item.provider_name == :argyle }
-      expect(pinwheel_results).to eq 0
-      expect(argyle_results).to eq 10
+      expect(pinwheel_results).to eq(0)
+      expect(argyle_results).to eq(8)
     end
 
     context "when only pinwheel is enabled" do
@@ -92,7 +92,7 @@ RSpec.describe ProviderSearchService, type: :service do
 
       it "returns results from argyle" do
         results = service.search("test")
-        expect(results.length).to eq(10)
+        expect(results.length).to eq(8)
       end
     end
   end

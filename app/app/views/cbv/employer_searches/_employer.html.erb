@@ -66,8 +66,8 @@
     </div>
 
       <% if @has_payroll_account %>
-        <%= link_to t("cbv.employer_searches.show.review_button_text"), cbv_flow_summary_path, class: "usa-button usa-button--outline margin-top-5", data: { turbo_frame: "_top" } %>
-      <% else %>
+        <%= link_to t("cbv.employer_searches.show.review_button_text"), cbv_flow_applicant_information_path, class: "usa-button usa-button--outline margin-top-5", data: { turbo_frame: "_top" } %>
+     <% else %>
         <%= link_to t("cbv.employer_searches.show.exit_button_text", agency_short_name: current_agency.agency_short_name), current_agency.agency_contact_website, class: "usa-button usa-button--outline margin-top-5", data: { turbo_frame: "_top" } %>
       <% end %>
 
