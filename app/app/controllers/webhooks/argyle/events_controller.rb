@@ -113,7 +113,7 @@ class Webhooks::Argyle::EventsController < ApplicationController
         invitation_id: @cbv_flow.cbv_flow_invitation_id,
         provider_name: params.dig("data", "resource", "providers_connected")&.first
       })
-    elsif webhook_event.event_name == "accounts.connected"
+    elsif webhook_event.event_name == "accounts.updated"
       process_accounts_updated_event(webhook_event)
     elsif payroll_account&.has_fully_synced?
       report = Aggregators::AggregatorReports::ArgyleReport.new(
