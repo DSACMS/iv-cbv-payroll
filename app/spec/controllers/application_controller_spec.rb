@@ -9,6 +9,11 @@ RSpec.describe ApplicationController, type: :controller do
         render plain: I18n.locale.to_s
       end
     end
+
+    def show
+      @agency = current_agency
+      render plain: @agency.id
+    end
   end
 
   describe '#switch_locale' do
@@ -60,6 +65,26 @@ RSpec.describe ApplicationController, type: :controller do
         expect(Rack::MiniProfiler).not_to receive(:authorize_request)
         get :test_action
       end
+    end
+  end
+
+  describe 'client_agency_config can be resolved by domain name' do
+    before do
+      routes.draw do
+        get 'show', to: 'anonymous#show'
+      end
+    end
+
+    it "identifies the correct agency config based on the domain name" do
+      request.host = "la.reportmyincome.org"
+      get :show
+      expect(response.body).to eq("la_ldh")
+    end
+
+    it "returns nil when domain does not match a configured client agency" do
+      request.host = "unknown.example.org"
+      result = controller.send(:detect_client_agency_from_domain)
+      expect(result).to be_nil
     end
   end
 end

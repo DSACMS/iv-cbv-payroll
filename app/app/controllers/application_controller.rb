@@ -46,7 +46,21 @@ class ApplicationController < ActionController::Base
   end
 
   def current_agency
-    @current_agency ||= agency_config[params[:client_agency_id]]
+    # First try to get the agency from the client_agency_id parameter
+    return @current_agency if @current_agency.present?
+
+    if params[:client_agency_id].present?
+      @current_agency = agency_config[params[:client_agency_id]]
+      return @current_agency if @current_agency.present?
+    end
+
+    # If not found from params, try to detect from domain
+    client_agency_id_from_domain = detect_client_agency_from_domain
+    if client_agency_id_from_domain.present?
+      @current_agency = agency_config[client_agency_id_from_domain]
+    end
+
+    @current_agency
   end
 
   def enable_mini_profiler_in_demo
@@ -57,6 +71,15 @@ class ApplicationController < ActionController::Base
 
   def demo_mode?
     ENV["DOMAIN_NAME"] == "verify-demo.navapbc.cloud"
+  end
+
+  def detect_client_agency_from_domain
+    return nil unless request.host.present?
+
+    agency_config.client_agency_ids.find do |agency_id|
+      agency = agency_config[agency_id]
+      [ agency.agency_demo_domain, agency.agency_production_domain ].compact.include?(request.host)
+    end
   end
 
   protected
