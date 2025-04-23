@@ -1,29 +1,39 @@
-installing k6 locally:
+### Installing k6 locally & starting container:
 
 ```
 brew install k6
+
+docker-compose up
 ```
 
-instructions for running load tests locally:
+### Instructions for running load tests locally:
+
+Grafana URL: http://localhost:3001
+Default username: admin
+Default password: admin
 
 In Grafana, add a data source: choose InfluxDB
 
-URL: influxdb:8086
+URL: http://influxdb:8086
 
 Database: k6
 
 HTTP method: GET
 
-In grafana, add a dashboard:
+Click save & test
+
+In Grafana, add a dashboard:
 
 use this dashboard as inspiration:
 https://grafana.com/grafana/dashboards/13719-k6-load-testing-results-by-groups/
 
-Figure out what CBV flow invitation tokens you want to use locally
+If you'd like to import this dashboard, select "import dashboard" and copy-paste the above URL.
 
-Then pass those into the script
+### Grabbing appropriate user tokens
 
-K6_OUT=influxdb k6 run loadtest.js --env USER_TOKENS=<COMMA_SEPERATED_TOKENS> --env URL_BASE=http://localhost:3000
+Set up a user in the environment you'd like to load test. While logged in as the user, in the browser console, grab the cookie `_iv_cbv_payroll_session`. Put the **NON** url decoded value, supply that into USER_TOKENS below.
+
+K6_OUT=influxdb k6 run loadtest.js --env USER_TOKENS=<COMMA_SEPERATED_TOKENS> --env URL=<example: https://verify-demo.navapbc.cloud/cbv/employer_search>
 
 ####
 
@@ -52,9 +62,3 @@ sudo dnf install k6
 # running without dumping into influxdb
 
 k6 run loadtest.js --env USER_TOKENS=<COMMA_SEPERATED_TOKENS> --env URL_BASE=https://verify-demo.navapbc.cloud
-
-# grabbing appropriate user tokens
-
-You'll need a cbv flow invitation URL that isn't expired. Then log in manually yourself, set up whatever you want to
-do (in this case, making sure there's an appropriate pdf generated). Then go to inspect element in chrome -->
-application --> cookies. Get the NON url decoded value, supply that into USER_TOKENS above.
