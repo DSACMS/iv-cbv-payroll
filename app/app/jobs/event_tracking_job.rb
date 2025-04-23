@@ -24,6 +24,7 @@ class EventTrackingJob < ApplicationJob
         service.track(event_type, request, attributes)
       rescue StandardError => e
         Rails.logger.error "  Failed to track #{event_type} in #{service}: #{e.message}"
+        raise e
       end
     end
   end

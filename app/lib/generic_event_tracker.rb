@@ -10,8 +10,6 @@ class GenericEventTracker
     end
     if ENV["ACTIVEJOB_ENABLED"] == "true"
       EventTrackingJob.perform_later(event_type, request_data, merged_attributes)
-    elsif Rails.env.test?
-      EventTrackingJob.perform_now(event_type, request_data, merged_attributes)
     else
       MaybeLater.run do
         EventTrackingJob.perform_now(event_type, request_data, merged_attributes)
@@ -21,18 +19,18 @@ class GenericEventTracker
 
   private
   def prep_request_attributes(request)
-    defaults = {}
+    defaults = { timestamp: Time.now.to_i }
     if request.present?
       url_params = request.params.slice("client_agency_id", "locale")
 
-      defaults = {
+      defaults = defaults.merge({
         # Not setting device_id because Mixpanel fixates on that as the distinct_id, which we do not want
         ip: request.remote_ip,
         cbv_flow_id: request.session[:cbv_flow_id],
         client_agency_id: url_params["client_agency_id"],
         locale: url_params["locale"] || I18n.locale.to_s,
         user_agent: request.headers["User-Agent"]
-      }
+      })
     end
     defaults
   end
