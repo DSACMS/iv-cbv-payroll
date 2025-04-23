@@ -57,10 +57,6 @@ RSpec.describe Webhooks::Argyle::EventsController, type: :controller do
       it_behaves_like "receiving a webhook", "gigs.fully_synced"
     end
 
-    context 'with accounts.updated webhook' do
-      it_behaves_like "receiving a webhook", "accounts.updated"
-    end
-
     context 'with users.fully_synced webhook' do
       # The users.fully_synced webhook is the only one that requires the
       # payroll account to already have been created by a previous webhook.
@@ -87,13 +83,14 @@ RSpec.describe Webhooks::Argyle::EventsController, type: :controller do
 
     # Instead of using "shared_examples_for" we're relying on a test helper method
     # since we cannot use "shared_examples_for" within the "it" test scope
-    def process_webhook(event_type)
+    def process_webhook(event_type, variant: :connecting)
       webhook_request = create(
         :webhook_request,
         :argyle,
         argyle_user_id: cbv_flow.argyle_user_id,
         argyle_account_id: argyle_account_id,
-        event_type: event_type
+        event_type: event_type,
+        variant: variant
       ).payload
 
       post :create, params: webhook_request
@@ -225,6 +222,17 @@ RSpec.describe Webhooks::Argyle::EventsController, type: :controller do
            .with("ApplicantReportMetUsefulRequirements", anything, anything).exactly(1).times
 
         process_webhook("paystubs.partially_synced")
+      end
+
+      it 'tracks an ApplicantEncounteredArgyleSyncError event' do
+        process_webhook("accounts.updated", variant: :connecting)
+        process_webhook("accounts.connected")
+        process_webhook("accounts.updated", variant: :connected)
+
+        expect(fake_event_logger).to receive(:track)
+                                       .with("ApplicantEncounteredArgyleSyncError", anything, anything).exactly(1).times
+
+        process_webhook("accounts.updated", variant: :system_error)
       end
     end
   end
