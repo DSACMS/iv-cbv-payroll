@@ -10,6 +10,8 @@ class Cbv::SynchronizationsController < Cbv::BaseController
   end
 
   def update
+    session[:poll_count] ||= 0
+
     if session[:poll_count] >= MAX_POLLS
       render turbo_stream: turbo_stream.action(:redirect, cbv_flow_synchronization_failures_path)
       return
@@ -17,9 +19,7 @@ class Cbv::SynchronizationsController < Cbv::BaseController
 
     session[:poll_count] += 1
 
-    if @payroll_account.nil?
-      render turbo_stream: turbo_stream.replace(:synchronization, partial: "status")
-    elsif @payroll_account.has_fully_synced?
+    if @payroll_account&.has_fully_synced?
       render turbo_stream: turbo_stream.action(
         :redirect,
         cbv_flow_payment_details_path(user: { account_id: @payroll_account.pinwheel_account_id })
