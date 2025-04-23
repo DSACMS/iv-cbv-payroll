@@ -9,6 +9,16 @@ RSpec.describe HelpController, type: :controller do
       }
     end
 
+    let(:mixpanel_event_stub) { instance_double(MixpanelEventTracker) }
+    let(:newrelic_event_stub) { instance_double(NewRelicEventTracker) }
+
+    before do
+      allow(MixpanelEventTracker).to receive(:new).and_return(mixpanel_event_stub)
+      allow(NewRelicEventTracker).to receive(:new).and_return(newrelic_event_stub)
+      allow(newrelic_event_stub).to receive(:track)
+      allow(mixpanel_event_stub).to receive(:track)
+    end
+
     context "with a valid CBV flow" do
       let(:cbv_flow) { create(:cbv_flow, :invited) }
 
@@ -18,9 +28,9 @@ RSpec.describe HelpController, type: :controller do
       end
 
       it "tracks events with both trackers" do
-        expect_any_instance_of(MixpanelEventTracker)
+        expect(mixpanel_event_stub)
           .to receive(:track)
-          .with("ApplicantViewedHelpTopic", be_an(ActionController::TestRequest), hash_including(
+          .with("ApplicantViewedHelpTopic", anything, hash_including(
             browser: nil,
             cbv_applicant_id: cbv_flow.cbv_applicant_id,
             cbv_flow_id: cbv_flow.id,
@@ -33,9 +43,9 @@ RSpec.describe HelpController, type: :controller do
             user_agent: "Rails Testing"
           ))
 
-        expect_any_instance_of(NewRelicEventTracker)
+        expect(newrelic_event_stub)
           .to receive(:track)
-          .with("ApplicantViewedHelpTopic", be_an(ActionController::TestRequest), hash_including(
+          .with("ApplicantViewedHelpTopic", anything, hash_including(
             browser: nil,
             cbv_applicant_id: cbv_flow.cbv_applicant_id,
             cbv_flow_id: cbv_flow.id,
@@ -61,9 +71,9 @@ RSpec.describe HelpController, type: :controller do
 
     context "without a CBV flow" do
       it "still renders the template and tracks events" do
-        expect_any_instance_of(MixpanelEventTracker)
+        expect(mixpanel_event_stub)
           .to receive(:track)
-          .with("ApplicantViewedHelpTopic", be_an(ActionController::TestRequest), hash_including(
+          .with("ApplicantViewedHelpTopic", anything, hash_including(
             browser: nil,
             cbv_applicant_id: nil,
             cbv_flow_id: nil,
