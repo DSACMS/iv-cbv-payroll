@@ -10,6 +10,9 @@ module Aggregators::Webhooks
     #    for any partial sync status needed for an agency.
     # 2. Determine whether the partially_synced success is sufficient to meet
     #    the agency's data requirements.
+    #
+    # For webhooks with `type: :include_resource, the webhook subscription will include the
+    # { "include_resource": true } config to include the resource in the webhook payload.
     SUBSCRIBED_WEBHOOK_EVENTS = {
       "identities.added" => {
         status: :success,
@@ -54,6 +57,7 @@ module Aggregators::Webhooks
       },
       "accounts.updated" => {
         status: :success,
+        type: :include_resource,
         job: [] # we're not concerned with reporting this to the front-end/client
       }
     }.freeze

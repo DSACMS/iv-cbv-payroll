@@ -7,7 +7,7 @@ class Cbv::SynchronizationsController < Cbv::BaseController
   end
 
   def update
-    if @payroll_account.nil?
+    if @payroll_account.nil? || @payroll_account.identity_errored_at.present?
       render turbo_stream: turbo_stream.action(:redirect, cbv_flow_synchronization_failures_path)
     elsif @payroll_account.has_fully_synced?
       render turbo_stream: turbo_stream.action(

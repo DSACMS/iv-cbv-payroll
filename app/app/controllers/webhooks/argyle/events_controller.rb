@@ -87,17 +87,18 @@ class Webhooks::Argyle::EventsController < ApplicationController
 
   def process_accounts_updated_event(webhook_event)
     payroll_account = webhook_event.payroll_account
-    connection_status = params.dig("data", "connection", "status")
-    return unless connection_status == "error"
+    connection_status = params.dig("data", "resource", "connection", "status")
+    error_code = params.dig("data", "resource", "connection", "error_code")
+    return unless connection_status == "error" && error_code == "system_error"
 
     event_logger.track("ApplicantEncounteredArgyleSyncError", request, {
       cbv_applicant_id: @cbv_flow.cbv_applicant_id,
       cbv_flow_id: @cbv_flow.id,
       invitation_id: @cbv_flow.cbv_flow_invitation_id,
       connection_status: connection_status,
-      argyle_error_code: params.dig("data", "connection", "error_code"),
-      argyle_error_message: params.dig("data", "connection", "error_message"),
-      argyle_error_updated_at: params.dig("data", "connection", "updated_at")
+      argyle_error_code: error_code,
+      argyle_error_message: params.dig("data", "resource", "connection", "error_message"),
+      argyle_error_updated_at: params.dig("data", "resource", "connection", "updated_at")
     })
 
     payroll_account.update(identity_errored_at: Time.now)
@@ -114,7 +115,7 @@ class Webhooks::Argyle::EventsController < ApplicationController
         invitation_id: @cbv_flow.cbv_flow_invitation_id,
         provider_name: params.dig("data", "resource", "providers_connected")&.first
       })
-    elsif webhook_event.event_name == "accounts.connected"
+    elsif webhook_event.event_name == "accounts.updated"
       process_accounts_updated_event(webhook_event)
     elsif payroll_account&.has_fully_synced?
       report = Aggregators::AggregatorReports::ArgyleReport.new(
