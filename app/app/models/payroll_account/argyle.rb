@@ -22,7 +22,8 @@ class PayrollAccount::Argyle < PayrollAccount
   end
 
   def job_succeeded?(job)
-    supported_jobs.include?(job) && find_webhook_event(self.class.event_for_job(job), "success").present?
+    supported_jobs.include?(job) && find_webhook_event(self.class.event_for_job(job), "success").present? &&
+      find_webhook_event(self.class.event_for_job(job), "error").nil?
   end
 
   def synchronization_status(job)

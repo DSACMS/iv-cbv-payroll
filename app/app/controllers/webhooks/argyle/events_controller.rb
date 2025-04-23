@@ -99,7 +99,7 @@ class Webhooks::Argyle::EventsController < ApplicationController
       argyle_error_updated_at: params.dig("data", "resource", "connection", "updated_at")
     })
 
-    payroll_account.update(identity_errored_at: Time.now)
+    webhook_event.update(event_outcome: "error")
     update_synchronization_page(payroll_account)
   end
 

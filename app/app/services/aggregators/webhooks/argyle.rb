@@ -56,9 +56,9 @@ module Aggregators::Webhooks
         job: []
       },
       "accounts.updated" => {
-        status: :success,
+        status: :success, # this gets overwritten dynamically on system_error in events_controller
         type: :include_resource,
-        job: [] # we're not concerned with reporting this to the front-end/client
+        job: %w[accounts] # the accounts job is strictly used to pass state on system_error
       }
     }.freeze
 
