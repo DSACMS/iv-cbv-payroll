@@ -2,7 +2,7 @@
 
 require "rails_helper"
 
-RSpec.describe PinwheelDataPointComponent, type: :component do
+RSpec.describe AggregateDataPointComponent, type: :component do
   it "renders pay_period" do
     expect(
       render_inline(described_class.new(:pay_period, "2024-01-01", "2024-01-15"))

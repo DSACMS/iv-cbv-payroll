@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class PinwheelDataPointComponent < ViewComponent::Base
+class AggregateDataPointComponent < ViewComponent::Base
   include ReportViewHelper
 
   def initialize(field, *values, highlight: false)
