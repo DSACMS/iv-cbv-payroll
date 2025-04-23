@@ -76,6 +76,67 @@ FactoryBot.define do
                 "available_count" => 2503
               }
             }
+          when "accounts.updated"
+            {
+              "event" => evaluator.event_type,
+              "name" => evaluator.user,
+              "data" => {
+                "account" => evaluator.argyle_account_id,
+                "user" => evaluator.argyle_user_id,
+                "employers" => [],
+                "item" => [ "item_#{SecureRandom.hex(6)}" ],
+                "source" => "argyle_sandbox",
+                "created_at" => Time.current.iso8601,
+                "updated_at" => Time.current.iso8601,
+                "scanned_at" => Time.current.iso8601,
+                "connection" => {
+                  "status" => "error",
+                  "error_code" => "system_error",
+                  "error_message" => "Argyle encountered a problem connecting to this account. Our team has been notified and is investigating.",
+                  "updated_at" => Time.current.iso8601
+                },
+                "availability" => {
+                  "gigs" => {
+                    "status" => "sync_failed",
+                    "updated_at" => Time.current.iso8601,
+                    "available_count" => nil,
+                    "available_from" => nil,
+                    "available_to" => nil
+                  },
+                  "paystubs" => {
+                    "status" => "sync_failed",
+                    "updated_at" => Time.current.iso8601,
+                    "available_count" => nil,
+                    "available_from" => nil,
+                    "available_to" => nil
+                  },
+                  "payroll_documents" => {
+                    "status" => "sync_failed",
+                    "updated_at" => Time.current.iso8601
+                  },
+                  "identities" => {
+                    "status" => "sync_failed",
+                    "updated_at" => Time.current.iso8601
+                  },
+                  "ratings" => {
+                    "status" => "sync_failed",
+                    "updated_at" => Time.current.iso8601
+                  },
+                  "vehicles" => {
+                    "status" => "sync_failed",
+                    "updated_at" => Time.current.iso8601
+                  },
+                  "deposit_destinations" => {
+                    "status" => "sync_failed",
+                    "updated_at" => Time.current.iso8601
+                  },
+                  "user_forms" => nil
+                },
+                "ongoing_refresh" => {
+                  "status" => "disabled"
+                }
+              }
+            }
           end
 
         # Generate Argyle signature using the service

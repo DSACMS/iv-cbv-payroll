@@ -57,6 +57,10 @@ RSpec.describe Webhooks::Argyle::EventsController, type: :controller do
       it_behaves_like "receiving a webhook", "gigs.fully_synced"
     end
 
+    context 'with accounts.updated webhook' do
+      it_behaves_like "receiving a webhook", "accounts.updated"
+    end
+
     context 'with users.fully_synced webhook' do
       # The users.fully_synced webhook is the only one that requires the
       # payroll account to already have been created by a previous webhook.

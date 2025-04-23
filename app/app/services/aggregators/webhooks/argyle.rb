@@ -24,6 +24,10 @@ module Aggregators::Webhooks
       "accounts.connected" => {
         status: :success,
         job: [] # we're not concerned with reporting this to the front-end/client
+      },
+      "accounts.updated" => {
+        status: :success,
+        job: [] # we're not concerned with reporting this to the front-end/client
       }
     }.freeze
 
