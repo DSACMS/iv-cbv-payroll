@@ -14,7 +14,8 @@ Default password: admin
 
 In Grafana, add a data source: choose InfluxDB
 
-URL: http://influxdb:8086
+URL: http://influxdb:8086 <!-- markdown-link-check-disable-line -->
+
 
 Database: k6
 
@@ -33,7 +34,8 @@ If you'd like to import this dashboard, select "import dashboard" and copy-paste
 
 Set up a user in the environment you'd like to load test. While logged in as the user, in the browser console, grab the cookie `_iv_cbv_payroll_session`. Put the **NON** url decoded value, supply that into USER_TOKENS below.
 
-K6_OUT=influxdb k6 run loadtest.js --env USER_TOKENS=<COMMA_SEPERATED_TOKENS> --env URL=<example: https://verify-demo.navapbc.cloud/cbv/employer_search>
+K6_OUT=influxdb k6 run loadtest.js --env USER_TOKENS=<COMMA_SEPERATED_TOKENS> --env URL=<example: https://verify-demo.navapbc.cloud/cbv/employer_search> <!-- markdown-link-check-disable-line -->
+
 
 ####
 
