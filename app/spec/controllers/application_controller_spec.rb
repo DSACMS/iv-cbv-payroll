@@ -83,7 +83,6 @@ RSpec.describe ApplicationController, type: :controller do
 
     it "returns nil when domain does not match a configured client agency" do
       request.host = "unknown.example.org"
-      allow(Rails.env).to receive(:production?).and_return(true)
       result = controller.send(:detect_client_agency_from_domain)
       expect(result).to be_nil
     end
