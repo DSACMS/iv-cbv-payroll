@@ -246,9 +246,6 @@ GEM
       net-smtp
     marcel (1.0.4)
     matrix (0.4.2)
-    maybe_later (0.0.4)
-      concurrent-ruby (~> 1.1.9)
-      railties (>= 6.0.0)
     method_source (1.1.0)
     mini_mime (1.1.5)
     mini_portile2 (2.8.7)
@@ -558,7 +555,6 @@ DEPENDENCIES
   i18n-tasks (~> 1.0)
   jbuilder
   jsbundling-rails
-  maybe_later
   mission_control-jobs
   mixpanel-ruby
   net-imap (= 0.4.20)

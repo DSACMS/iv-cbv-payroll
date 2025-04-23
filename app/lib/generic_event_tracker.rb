@@ -8,13 +8,7 @@ class GenericEventTracker
     else
       request_data = nil
     end
-    if ENV["ACTIVEJOB_ENABLED"] == "true"
-      EventTrackingJob.perform_later(event_type, request_data, merged_attributes)
-    else
-      MaybeLater.run do
-        EventTrackingJob.perform_now(event_type, request_data, merged_attributes)
-      end
-    end
+    EventTrackingJob.perform_later(event_type, request_data, merged_attributes)
   end
 
   private

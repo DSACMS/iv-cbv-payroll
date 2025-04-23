@@ -116,16 +116,9 @@ RSpec.describe Cbv::SummariesController do
     end
 
     it "tracks events" do
-      expect(mixpanel_event_stub)
-        .to receive(:track)
-        .with("ApplicantAccessedIncomeSummary", anything, hash_including(
-          cbv_flow_id: cbv_flow.id,
-          invitation_id: cbv_flow.cbv_flow_invitation_id
-        ))
+      allow(EventTrackingJob).to receive(:perform_later).with("CbvPageView", anything, anything)
 
-      expect(newrelic_event_stub)
-        .to receive(:track)
-        .with("ApplicantAccessedIncomeSummary", anything, hash_including(
+      expect(EventTrackingJob).to receive(:perform_later).with("ApplicantAccessedIncomeSummary", anything, hash_including(
           cbv_flow_id: cbv_flow.id,
           invitation_id: cbv_flow.cbv_flow_invitation_id
         ))

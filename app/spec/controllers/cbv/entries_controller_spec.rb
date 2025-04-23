@@ -45,20 +45,10 @@ RSpec.describe Cbv::EntriesController do
         )
       end
 
-      let(:mixpanel_event_stub) { instance_double(MixpanelEventTracker) }
-      let(:newrelic_event_stub) { instance_double(NewRelicEventTracker) }
-
-      before do
-        allow(MixpanelEventTracker).to receive(:new).and_return(mixpanel_event_stub)
-        allow(NewRelicEventTracker).to receive(:new).and_return(newrelic_event_stub)
-        allow(newrelic_event_stub).to receive(:track)
-        allow(mixpanel_event_stub).to receive(:track)
-      end
-
       it "sends events with metadata" do
         request.headers["User-Agent"] = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36"
 
-        expect(mixpanel_event_stub).to receive(:track).with("ApplicantClickedCBVInvitationLink", anything, hash_including(
+        expect(EventTrackingJob).to receive(:perform_later).with("ApplicantClickedCBVInvitationLink", anything, hash_including(
           cbv_flow_id: be_a(Integer),
           timestamp: be_a(Integer),
           invitation_id: invitation.id,
@@ -66,62 +56,34 @@ RSpec.describe Cbv::EntriesController do
           seconds_since_invitation: seconds_since_invitation
         ))
 
-        expect(mixpanel_event_stub).to receive(:track).with("CbvPageView", anything, hash_including(
+        expect(EventTrackingJob).to receive(:perform_later).with("CbvPageView", anything, hash_including(
           user_agent: be_a(String),
-          device_name: anything,
-          device_type: be_a(String),
-          browser: be_a(String),
           invitation_id: invitation.id,
           cbv_flow_id: be_a(Integer),
           client_agency_id: invitation.client_agency_id,
           path: "/cbv/entry"
         ))
 
-        expect(newrelic_event_stub).to receive(:track).with("CbvPageView", anything, hash_including(
-          user_agent: be_a(String),
-          device_name: anything,
-          device_type: be_a(String),
-          browser: be_a(String),
-          invitation_id: invitation.id,
-          cbv_flow_id: be_a(Integer),
-          client_agency_id: invitation.client_agency_id,
-          path: "/cbv/entry"
-        ))
-
-        expect(mixpanel_event_stub).to receive(:track).with("ApplicantViewedAgreement", anything, hash_including(
+        expect(EventTrackingJob).to receive(:perform_later).with("ApplicantViewedAgreement", anything, hash_including(
           cbv_flow_id: be_a(Integer),
           timestamp: be_a(Integer),
           invitation_id: invitation.id,
           client_agency_id: invitation.client_agency_id
         ))
 
-        expect(newrelic_event_stub).to receive(:track).with("ApplicantClickedCBVInvitationLink", anything, hash_including(
-          cbv_flow_id: be_a(Integer),
-          timestamp: be_a(Integer),
-          invitation_id: invitation.id,
-          client_agency_id: invitation.client_agency_id,
-          seconds_since_invitation: seconds_since_invitation
-        ))
-
-        expect(newrelic_event_stub).to receive(:track).with("ApplicantViewedAgreement", anything, hash_including(
-          cbv_flow_id: be_a(Integer),
-          timestamp: be_a(Integer),
-          invitation_id: invitation.id
-        ))
-
         get :show, params: { token: invitation.auth_token }
       end
 
       it "tracks a CbvPageView event with Mixpanel (from the base controller)" do
-        expect(mixpanel_event_stub).to receive(:track).with("CbvPageView", anything, hash_including(
-          device_name: anything,
-          device_type: be_a(String),
-          browser: be_a(String),
+        expect(EventTrackingJob).to receive(:perform_later).with("CbvPageView", anything, hash_including(
           invitation_id: invitation.id,
           cbv_flow_id: be_a(Integer),
           client_agency_id: invitation.client_agency_id,
           path: "/cbv/entry"
         ))
+
+        allow(EventTrackingJob).to receive(:perform_later).with("ApplicantClickedCBVInvitationLink", anything, anything)
+        allow(EventTrackingJob).to receive(:perform_later).with("ApplicantViewedAgreement", anything, anything)
 
         request.headers["User-Agent"] = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36"
         get :show, params: { token: invitation.auth_token }

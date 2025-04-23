@@ -32,18 +32,10 @@ RSpec.describe Api::UserEventsController, type: :controller do
       end
 
       it "tracks an event with Mixpanel" do
-        expect_any_instance_of(MixpanelEventTracker).to receive(:track).with("ApplicantOpenedHelpModal", anything, hash_including(
+        expect(EventTrackingJob).to receive(:perform_later).with("ApplicantOpenedHelpModal", anything, hash_including(
           timestamp: be_a(Integer),
           source: "banner",
           cbv_flow_id: cbv_flow.id
-        ))
-        post :user_action, params: valid_params
-      end
-
-      it "tracks an event with NewRelic" do
-        expect_any_instance_of(NewRelicEventTracker).to receive(:track).with("ApplicantOpenedHelpModal", anything, hash_including(
-          timestamp: be_a(Integer),
-          source: "banner"
         ))
         post :user_action, params: valid_params
       end
@@ -102,21 +94,7 @@ RSpec.describe Api::UserEventsController, type: :controller do
         end
 
         it "tracks an event with Mixpanel (with selected_tab = platform)" do
-          expect_any_instance_of(MixpanelEventTracker).to receive(:track).with("ApplicantSelectedEmployerOrPlatformItem", anything, hash_including(
-            timestamp: be_a(Integer),
-            cbv_flow_id: cbv_flow.id,
-            invitation_id: cbv_flow.cbv_flow_invitation_id,
-            item_type: "platform",
-            item_id: "123",
-            item_name: "Test Payroll Provider",
-            is_default_option: "true",
-            locale: "en"
-          ))
-          post :user_action, params: valid_params
-        end
-
-        it "tracks an event with NewRelic (with selected_tab = platform)" do
-          expect_any_instance_of(NewRelicEventTracker).to receive(:track).with("ApplicantSelectedEmployerOrPlatformItem", anything, hash_including(
+          expect(EventTrackingJob).to receive(:perform_later).with("ApplicantSelectedEmployerOrPlatformItem", anything, hash_including(
             timestamp: be_a(Integer),
             cbv_flow_id: cbv_flow.id,
             invitation_id: cbv_flow.cbv_flow_invitation_id,
@@ -142,21 +120,7 @@ RSpec.describe Api::UserEventsController, type: :controller do
         end
 
         it "tracks an event with Mixpanel (with selected_tab = employer)" do
-          expect_any_instance_of(MixpanelEventTracker).to receive(:track).with("ApplicantSelectedEmployerOrPlatformItem", anything, hash_including(
-            timestamp: be_a(Integer),
-            cbv_flow_id: cbv_flow.id,
-            invitation_id: cbv_flow.cbv_flow_invitation_id,
-            item_type: "employer",
-            item_id: "123",
-            item_name: "Test Employer",
-            is_default_option: "true",
-            locale: "en"
-          ))
-          post :user_action, params: valid_params
-        end
-
-        it "tracks an event with NewRelic (with selected_tab = employer)" do
-          expect_any_instance_of(NewRelicEventTracker).to receive(:track).with("ApplicantSelectedEmployerOrPlatformItem", anything, hash_including(
+          expect(EventTrackingJob).to receive(:perform_later).with("ApplicantSelectedEmployerOrPlatformItem", anything, hash_including(
             timestamp: be_a(Integer),
             cbv_flow_id: cbv_flow.id,
             invitation_id: cbv_flow.cbv_flow_invitation_id,
@@ -183,21 +147,7 @@ RSpec.describe Api::UserEventsController, type: :controller do
       end
 
       it "tracks an event with Mixpanel" do
-        expect_any_instance_of(MixpanelEventTracker).to receive(:track).with("ApplicantViewedPinwheelLoginPage", anything, hash_including(
-          timestamp: be_a(Integer),
-          cbv_flow_id: cbv_flow.id,
-          invitation_id: cbv_flow.cbv_flow_invitation_id,
-          locale: "en",
-          screen_name: "LOGIN",
-          employer_name: "Bob's Burgers",
-          platform_name: "Test Payroll Platform Name"
-        ))
-        post :user_action, params: valid_params
-      end
-
-      # We detect the new name for these events in NewRelic because we change the name from within the :track method
-      it "tracks an event with NewRelic" do
-        expect_any_instance_of(NewRelicEventTracker).to receive(:track).with("ApplicantViewedPinwheelLoginPage", anything, hash_including(
+        expect(EventTrackingJob).to receive(:perform_later).with("ApplicantViewedPinwheelLoginPage", anything, hash_including(
           timestamp: be_a(Integer),
           cbv_flow_id: cbv_flow.id,
           invitation_id: cbv_flow.cbv_flow_invitation_id,
@@ -219,17 +169,7 @@ RSpec.describe Api::UserEventsController, type: :controller do
       end
 
       it "tracks an event with Mixpanel" do
-        expect_any_instance_of(MixpanelEventTracker).to receive(:track).with("UserManuallySwitchedLanguage", anything, hash_including(
-          timestamp: be_a(Integer),
-          cbv_flow_id: cbv_flow.id,
-          invitation_id: cbv_flow.cbv_flow_invitation_id,
-          locale: "es"
-        ))
-        post :user_action, params: valid_params
-      end
-
-      it "tracks an event with NewRelic" do
-        expect_any_instance_of(NewRelicEventTracker).to receive(:track).with("UserManuallySwitchedLanguage", anything, hash_including(
+        expect(EventTrackingJob).to receive(:perform_later).with("UserManuallySwitchedLanguage", anything, hash_including(
           timestamp: be_a(Integer),
           cbv_flow_id: cbv_flow.id,
           invitation_id: cbv_flow.cbv_flow_invitation_id,

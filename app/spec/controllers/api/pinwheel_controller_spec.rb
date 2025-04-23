@@ -24,20 +24,7 @@ RSpec.describe Api::PinwheelController do
     end
 
     it "tracks a Mixpanel event" do
-      expect_any_instance_of(MixpanelEventTracker)
-        .to receive(:track)
-        .with("ApplicantBeganLinkingEmployer", anything, hash_including(
-          cbv_flow_id: cbv_flow.id,
-          invitation_id: cbv_flow.cbv_flow_invitation_id,
-          response_type: "employer",
-        ))
-      post :create_token, params: valid_params
-    end
-
-    it "tracks a NewRelic event" do
-      expect_any_instance_of(NewRelicEventTracker)
-        .to receive(:track)
-        .with("ApplicantBeganLinkingEmployer", anything, hash_including(
+      expect(EventTrackingJob).to receive(:perform_later).with("ApplicantBeganLinkingEmployer", anything, hash_including(
           cbv_flow_id: cbv_flow.id,
           invitation_id: cbv_flow.cbv_flow_invitation_id,
           response_type: "employer",
