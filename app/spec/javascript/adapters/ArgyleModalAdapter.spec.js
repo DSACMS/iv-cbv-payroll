@@ -76,7 +76,6 @@ describe("ArgyleModalAdapter", () => {
     })
     it("triggers the modal adapter onSuccess callback", async () => {
       await triggers.triggerAccountConnected()
-      vi.advanceTimersByTime(1000) // TODO[FFS-2675]: Remove this timer advancement
       expect(modalAdapterArgs.onSuccess).toHaveBeenCalled()
     })
   })
