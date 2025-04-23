@@ -69,17 +69,6 @@ RSpec.describe ApplicationController, type: :controller do
   end
 
   describe 'client_agency_config can be resolved by domain name' do
-    let(:client_agencies) { Rails.application.config.client_agencies }
-    let(:client_domains) do
-      client_agencies.client_agency_ids.flat_map do |agency_id|
-        agency = client_agencies[agency_id]
-        [
-          agency.agency_demo_domain,
-          agency.agency_production_domain
-        ].compact
-      end
-    end
-
     before do
       routes.draw do
         get 'show', to: 'anonymous#show'
