@@ -216,17 +216,6 @@ RSpec.describe Cbv::PaymentDetailsController do
       end
     end
 
-    context "when some paystubs have hours but others do not" do
-      before do
-        pinwheel_stub_request_end_user_valid_and_invalid_paystubs_response
-      end
-
-      it "renders properly" do
-        get :show, params: { user: { account_id: account_id } }
-        expect(response).to be_successful
-      end
-    end
-
     context "when deductions include a zero dollar amount" do
       it "does not show that deduction" do
         get :show, params: { user: { account_id: account_id } }

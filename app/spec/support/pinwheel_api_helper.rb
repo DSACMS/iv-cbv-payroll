@@ -85,15 +85,6 @@ module PinwheelApiHelper
       )
   end
 
-  def pinwheel_stub_request_end_user_valid_and_invalid_paystubs_response
-    stub_request(:get, %r{#{Aggregators::Sdk::PinwheelService::ACCOUNTS_ENDPOINT}/[0-9a-fA-F\-]{36}/paystubs})
-      .to_return(
-        status: 200,
-        body: pinwheel_load_relative_json_file('request_end_user_valid_and_invalid_paystubs_response.json').to_json,
-        headers: { 'Content-Type': 'application/json;charset=UTF-8' }
-      )
-  end
-
   def pinwheel_stub_request_employment_info_response
     stub_request(:get, %r{#{Aggregators::Sdk::PinwheelService::ACCOUNTS_ENDPOINT}/[0-9a-fA-F\-]{36}/employment})
       .to_return(

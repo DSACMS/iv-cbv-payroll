@@ -104,6 +104,36 @@ RSpec.describe Aggregators::Validators::UsefulReportValidator do
       )
     end
 
+    let(:valid_paystub_with_hours) do
+      Aggregators::ResponseObjects::Paystub.new(
+        account_id: "123",
+        gross_pay_amount: 1000.0,
+        net_pay_amount: 800.0,
+        gross_pay_ytd: 12000.0,
+        pay_period_start: "2022-12-01",
+        pay_period_end: "2022-12-31",
+        pay_date: "2023-01-01",
+        deductions: [],
+        hours_by_earning_category: { "Regular" => 40.0 },
+        hours: 40.0
+      )
+    end
+
+    let(:valid_paystub_without_hours) do
+      Aggregators::ResponseObjects::Paystub.new(
+        account_id: "123",
+        gross_pay_amount: 1000.0,
+        net_pay_amount: 800.0,
+        gross_pay_ytd: 12000.0,
+        pay_period_start: "2022-12-01",
+        pay_period_end: "2022-12-31",
+        pay_date: "2023-01-01",
+        deductions: [],
+        hours_by_earning_category: {},
+        hours: nil
+      )
+    end
+
     let(:gig_employment) do
       Aggregators::ResponseObjects::Employment.new(
         account_id: "123",
@@ -238,6 +268,17 @@ RSpec.describe Aggregators::Validators::UsefulReportValidator do
           expect(report).to be_valid(:useful_report)
           expect(report.errors).to be_empty
         end
+      end
+    end
+
+    context 'with some paystub records that have hours and others that do not' do
+      let(:identities) { [ valid_identity ] }
+      let(:employments) { [ valid_employment ] }
+      let(:paystubs) { [ valid_paystub_with_hours, valid_paystub_without_hours ] }
+
+      it 'is valid' do
+        expect(report).to be_valid(:useful_report)
+        expect(report.errors).to be_empty
       end
     end
   end
