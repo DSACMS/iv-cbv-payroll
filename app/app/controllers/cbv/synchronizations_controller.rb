@@ -3,22 +3,10 @@ class Cbv::SynchronizationsController < Cbv::BaseController
   before_action :redirect_if_sync_finished, only: %i[show]
   skip_before_action :capture_page_view, only: %i[update]
 
-  MAX_POLLS = 60 # poll for 2 mins
-
   def show
-    session[:poll_count] = 0
   end
 
   def update
-    session[:poll_count] ||= 0
-
-    if session[:poll_count] >= MAX_POLLS
-      render turbo_stream: turbo_stream.action(:redirect, cbv_flow_synchronization_failures_path)
-      return
-    end
-
-    session[:poll_count] += 1
-
     if @payroll_account&.has_fully_synced?
       render turbo_stream: turbo_stream.action(
         :redirect,

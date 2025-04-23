@@ -25,12 +25,6 @@ RSpec.describe Cbv::SynchronizationsController do
       expect(response).to be_successful
       expect(response).to render_template(:show)
     end
-
-    it "resets poll count" do
-      get :show, params: { user: { account_id: nonexistent_id } }
-
-      expect(session[:poll_count]).to eq(0)
-    end
   end
 
   describe "#update" do
@@ -51,19 +45,6 @@ RSpec.describe Cbv::SynchronizationsController do
       expect_any_instance_of(GenericEventTracker).not_to receive(:track)
 
       patch :update, params: { user: { account_id: payroll_account.pinwheel_account_id } }
-    end
-
-    it "increments poll count" do
-      patch :update, params: { user: { account_id: nonexistent_id } }
-
-      expect(session[:poll_count]).to eq(1)
-    end
-
-    it "redirects to failures after max polls" do
-      session[:poll_count] = Cbv::SynchronizationsController::MAX_POLLS
-      patch :update, params: { user: { account_id: nonexistent_id } }
-
-      expect(response.body).to include("synchronization_failures")
     end
 
     context "when the paystubs synchronization fails" do
