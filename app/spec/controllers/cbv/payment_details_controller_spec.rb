@@ -2,6 +2,15 @@ require "rails_helper"
 
 RSpec.describe Cbv::PaymentDetailsController do
   include PinwheelApiHelper
+  let(:mixpanel_event_stub) { instance_double(MixpanelEventTracker) }
+  let(:newrelic_event_stub) { instance_double(NewRelicEventTracker) }
+
+  before do
+    allow(MixpanelEventTracker).to receive(:new).and_return(mixpanel_event_stub)
+    allow(NewRelicEventTracker).to receive(:new).and_return(newrelic_event_stub)
+    allow(newrelic_event_stub).to receive(:track)
+    allow(mixpanel_event_stub).to receive(:track)
+  end
 
   describe "#show" do
     render_views
@@ -50,7 +59,7 @@ RSpec.describe Cbv::PaymentDetailsController do
       end
 
       it "tracks events" do
-        expect_any_instance_of(MixpanelEventTracker)
+        expect(mixpanel_event_stub)
           .to receive(:track)
           .with("ApplicantViewedPaymentDetails", anything, hash_including(
             cbv_flow_id: cbv_flow.id,
@@ -62,7 +71,7 @@ RSpec.describe Cbv::PaymentDetailsController do
             has_income_data: true
           ))
 
-        expect_any_instance_of(NewRelicEventTracker)
+        expect(newrelic_event_stub)
          .to receive(:track)
          .with("ApplicantViewedPaymentDetails", anything, hash_including(
            cbv_flow_id: cbv_flow.id,
@@ -266,7 +275,7 @@ RSpec.describe Cbv::PaymentDetailsController do
     end
 
     it "tracks events" do
-      expect_any_instance_of(MixpanelEventTracker)
+      expect(mixpanel_event_stub)
         .to receive(:track)
         .with("ApplicantSavedPaymentDetails", anything, hash_including(
           cbv_flow_id: cbv_flow.id,
@@ -274,7 +283,7 @@ RSpec.describe Cbv::PaymentDetailsController do
           additional_information_length: comment.length
         ))
 
-      expect_any_instance_of(NewRelicEventTracker)
+      expect(newrelic_event_stub)
         .to receive(:track)
         .with("ApplicantSavedPaymentDetails", anything, hash_including(
           cbv_flow_id: cbv_flow.id,

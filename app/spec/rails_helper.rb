@@ -12,6 +12,11 @@ require "view_component/system_test_helpers"
 require "capybara/rspec"
 Capybara.default_driver = Capybara.javascript_driver
 
+MaybeLater.config do |config|
+  config.invoke_even_if_server_is_unsupported = true
+  config.inline_by_default = true
+end
+
 Rails.application.load_tasks
 
 # Add additional requires below this line. Rails is not loaded until this point!
@@ -48,6 +53,17 @@ RSpec.configure do |config|
   # instead of true.
   config.use_transactional_fixtures = true
 
+  config.before(:each, type: :controller) do
+    allow(MaybeLater).to receive(:run) do |&block|
+      block.call
+    end
+  end
+
+  config.before(:each, type: :mailer) do
+    allow(MaybeLater).to receive(:run) do |&block|
+      block.call
+    end
+  end
   # You can uncomment this line to turn off ActiveRecord support entirely.
   # config.use_active_record = false
 
