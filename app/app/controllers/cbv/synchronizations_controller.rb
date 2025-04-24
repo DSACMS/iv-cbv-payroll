@@ -7,9 +7,7 @@ class Cbv::SynchronizationsController < Cbv::BaseController
   end
 
   def update
-    if @payroll_account.nil?
-      render turbo_stream: turbo_stream.action(:redirect, cbv_flow_synchronization_failures_path)
-    elsif @payroll_account.has_fully_synced?
+    if @payroll_account&.has_fully_synced?
       render turbo_stream: turbo_stream.action(
         :redirect,
         cbv_flow_payment_details_path(user: { account_id: @payroll_account.pinwheel_account_id })
@@ -22,9 +20,7 @@ class Cbv::SynchronizationsController < Cbv::BaseController
   private
 
   def redirect_if_sync_finished
-    if @payroll_account.nil?
-      redirect_to cbv_flow_synchronization_failures_path
-    elsif @payroll_account.has_fully_synced?
+    if @payroll_account&.has_fully_synced?
       redirect_to cbv_flow_payment_details_path(user: { account_id: @payroll_account.pinwheel_account_id })
     end
   end
