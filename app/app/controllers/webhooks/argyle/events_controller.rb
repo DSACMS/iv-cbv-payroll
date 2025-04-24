@@ -89,7 +89,7 @@ class Webhooks::Argyle::EventsController < ApplicationController
     error_code = params.dig("data", "resource", "connection", "error_code")
     return unless connection_status == "error" && error_code == "system_error"
 
-    event_logger.track("ApplicantEncounteredArgyleSyncError", request, {
+    event_logger.track("ApplicantEncounteredArgyleAccountSystemError", request, {
       cbv_applicant_id: @cbv_flow.cbv_applicant_id,
       cbv_flow_id: @cbv_flow.id,
       invitation_id: @cbv_flow.cbv_flow_invitation_id,
