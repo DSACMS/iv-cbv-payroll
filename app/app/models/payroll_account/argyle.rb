@@ -27,8 +27,8 @@ class PayrollAccount::Argyle < PayrollAccount
   end
 
   def synchronization_status_for_accounts_job
-    job = "accounts"
-    if find_webhook_event(self.class.event_for_job(job), "error").present?
+    # the argyle accounts.updated event requires special handling because it's outcome is dynamic based on its payload.
+    if find_webhook_event("accounts.updated", "error").present?
       :failed
     else
       :succeeded

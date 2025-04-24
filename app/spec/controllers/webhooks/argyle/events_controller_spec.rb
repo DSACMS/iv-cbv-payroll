@@ -241,7 +241,7 @@ RSpec.describe Webhooks::Argyle::EventsController, type: :controller do
         expect(payroll_account.identity_errored_at).to be_nil
 
         expect(fake_event_logger).to receive(:track)
-                                       .with("ApplicantEncounteredArgyleSyncError", anything, anything).exactly(1).times
+                                       .with("ApplicantEncounteredArgyleAccountSystemError", anything, anything).exactly(1).times
 
         # expect {
         # }.to change { payroll_account.reload.synchronization_status("accounts") }
