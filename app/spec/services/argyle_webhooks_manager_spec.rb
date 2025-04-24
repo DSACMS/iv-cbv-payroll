@@ -24,6 +24,7 @@ RSpec.describe ArgyleWebhooksManager, type: :service do
   # Define the webhook events
   let(:non_partial_webhook_events) { Aggregators::Webhooks::Argyle.get_webhook_events(type: :non_partial) }
   let(:partial_webhook_events) { Aggregators::Webhooks::Argyle.get_webhook_events(type: :partial) }
+  let(:include_resource_webhook_events) { Aggregators::Webhooks::Argyle.get_webhook_events(type: :include_resource) }
 
   before do
     # use our stubbed data for the response
@@ -90,9 +91,9 @@ RSpec.describe ArgyleWebhooksManager, type: :service do
         )
 
         expect(test_logger).to receive(:puts).with("  Removing existing Argyle webhook subscription (url = https://different-url.ngrok.io/webhooks/argyle/events)")
-        expect(test_logger).to receive(:puts).with("  Registering Argyle webhooks for Ngrok tunnel in Argyle sandbox...").twice
-        expect(test_logger).to receive(:puts).with("  ✅ Set up Argyle webhook: #{create_webhook_subscription_response["id"]}").twice
-        expect(test_logger).to receive(:puts).with(" Argyle webhook url: #{receiver_url}").twice
+        expect(test_logger).to receive(:puts).with("  Registering Argyle webhooks for Ngrok tunnel in Argyle sandbox...").exactly(3).times
+        expect(test_logger).to receive(:puts).with("  ✅ Set up Argyle webhook: #{create_webhook_subscription_response["id"]}").exactly(3).times
+        expect(test_logger).to receive(:puts).with(" Argyle webhook url: #{receiver_url}").exactly(3).times
 
         expect(argyle_service).to receive(:create_webhook_subscription).with(
           non_partial_webhook_events,
@@ -107,6 +108,14 @@ RSpec.describe ArgyleWebhooksManager, type: :service do
           webhook_name + "-partial",
           { days_synced: 90 }
         ).and_return(create_webhook_subscription_response)
+
+        expect(argyle_service).to receive(:create_webhook_subscription).with(
+          include_resource_webhook_events,
+          receiver_url,
+          webhook_name + "-include-resource",
+          { include_resource: true }
+        ).and_return(create_webhook_subscription_response)
+
 
         result = argyle_webhooks_manager.create_subscriptions_if_necessary(ngrok_url, webhook_name)
         expect(result).to eq(create_webhook_subscription_response["id"])
@@ -137,16 +146,17 @@ RSpec.describe ArgyleWebhooksManager, type: :service do
 
         expect(test_logger).to receive(:puts).with("  Existing Argyle webhook subscription found in Argyle sandbox: #{receiver_url}")
         expect(argyle_webhooks_manager).to receive(:remove_subscriptions).with([ other_sub ]).and_call_original # non-partial
-        expect(argyle_webhooks_manager).to receive(:remove_subscriptions).with([]).and_call_original # no subscriptions for partial webhooks
-        expect(test_logger).to receive(:puts).with("  Registering Argyle webhooks for Ngrok tunnel in Argyle sandbox...")
+        expect(argyle_webhooks_manager).to receive(:remove_subscriptions).with([]).and_call_original.twice # no subscriptions for partial and include-resource webhooks
+        expect(test_logger).to receive(:puts).with("  Registering Argyle webhooks for Ngrok tunnel in Argyle sandbox...").twice
         expect(test_logger).to receive(:puts).with("  Removing existing Argyle webhook subscription (url = #{other_sub["url"]})")
-        expect(test_logger).to receive(:puts).with("  ✅ Set up Argyle webhook: #{create_webhook_subscription_response["id"]}")
-        expect(test_logger).to receive(:puts).with(" Argyle webhook url: #{receiver_url}")
+        expect(test_logger).to receive(:puts).with("  ✅ Set up Argyle webhook: #{create_webhook_subscription_response["id"]}").twice
+        expect(test_logger).to receive(:puts).with(" Argyle webhook url: #{receiver_url}").twice
         expect(argyle_service).to receive(:delete_webhook_subscription).with(other_sub["id"])
         # Should NOT create a new subscription since we're reusing existing
         expect(argyle_service).not_to receive(:create_webhook_subscription).with(array_including("paystubs.fully_synced"), anything, anything, anything)
         # But it will create a subscription for the partially synced webhooks, since we didn't set it up earlier in the test
         expect(argyle_service).to receive(:create_webhook_subscription).with(array_including("paystubs.partially_synced"), anything, anything, anything)
+        expect(argyle_service).to receive(:create_webhook_subscription).with(array_including("accounts.updated"), anything, anything, anything)
 
         argyle_webhooks_manager.create_subscriptions_if_necessary(ngrok_url, webhook_name)
       end

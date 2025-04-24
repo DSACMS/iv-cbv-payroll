@@ -83,13 +83,14 @@ RSpec.describe Webhooks::Argyle::EventsController, type: :controller do
 
     # Instead of using "shared_examples_for" we're relying on a test helper method
     # since we cannot use "shared_examples_for" within the "it" test scope
-    def process_webhook(event_type)
+    def process_webhook(event_type, variant: :connecting)
       webhook_request = create(
         :webhook_request,
         :argyle,
         argyle_user_id: cbv_flow.argyle_user_id,
         argyle_account_id: argyle_account_id,
-        event_type: event_type
+        event_type: event_type,
+        variant: variant
       ).payload
 
       post :create, params: webhook_request
@@ -221,6 +222,32 @@ RSpec.describe Webhooks::Argyle::EventsController, type: :controller do
            .with("ApplicantReportMetUsefulRequirements", anything, anything).exactly(1).times
 
         process_webhook("paystubs.partially_synced")
+      end
+
+      it 'sequentially tests argyle "system_error" on accounts.updated' do
+        expect(PayrollAccount.count).to eq(0)
+
+        process_webhook("accounts.updated", variant: :invalid_mfa)
+        process_webhook("accounts.updated", variant: :connecting)
+        process_webhook("accounts.connected")
+        process_webhook("accounts.updated", variant: :connected)
+
+        expect(PayrollAccount.count).to eq(1)
+        payroll_account = PayrollAccount.last
+
+        expect_any_instance_of(PayrollAccount).to receive(:broadcast_replace).twice
+
+        expect(payroll_account.identity_errored_at).to be_nil
+
+        expect(fake_event_logger).to receive(:track)
+                                       .with("ApplicantEncounteredArgyleAccountSystemError", anything, anything).exactly(1).times
+
+        process_webhook("accounts.updated", variant: :system_error)
+        payroll_account.reload.webhook_events.reload
+
+        expect(payroll_account.webhook_events.count).to eq(5)
+        expect(payroll_account.synchronization_status("accounts")).to equal(:failed)
+        expect(payroll_account.has_fully_synced?).to be_falsey
       end
     end
   end

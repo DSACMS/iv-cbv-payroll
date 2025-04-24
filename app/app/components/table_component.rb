@@ -9,7 +9,7 @@ class TableComponent < ViewComponent::Base
     },
     section: TableRowSectionHeaderComponent,
     data_point: {
-      renders: PinwheelDataPointComponent,
+      renders: AggregateDataPointComponent,
       as: :data_point
     }
   }
