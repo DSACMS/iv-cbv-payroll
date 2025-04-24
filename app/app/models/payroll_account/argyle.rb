@@ -48,8 +48,8 @@ class PayrollAccount::Argyle < PayrollAccount
     end
   end
 
-  def has_required_data?
-    job_succeeded?("paystubs") || job_succeeded?("gigs")
+  def necessary_jobs_succeeded?
+    job_succeeded?("accounts") && (job_succeeded?("paystubs") || job_succeeded?("gigs"))
   end
 
   def self.event_for_job(job)

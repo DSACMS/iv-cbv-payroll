@@ -37,7 +37,7 @@ class PayrollAccount::Pinwheel < PayrollAccount
     end
   end
 
-  def has_required_data?
+  def necessary_jobs_succeeded?
     job_succeeded?("paystubs")
   end
 end
