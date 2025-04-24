@@ -84,9 +84,10 @@ RSpec.describe Cbv::SubmitsController do
         let(:supported_jobs) { %w[income paystubs employment] }
         let(:errored_jobs) { [ "employment" ] }
 
-        it "bounces to synchronization failures" do
+        it "renders pdf properly" do
           get :show, format: :pdf
-          expect(response).to redirect_to(cbv_flow_synchronization_failures_path)
+          expect(response).to be_successful
+          expect(response.header['Content-Type']).to include 'pdf'
         end
       end
 

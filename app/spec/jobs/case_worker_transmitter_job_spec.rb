@@ -7,7 +7,6 @@ RSpec.describe CaseWorkerTransmitterJob, type: :job do
 
 
   let(:cbv_applicant) { create(:cbv_applicant, created_at: current_time, case_number: "ABC1234") }
-  let(:supported_jobs) { %w[income paystubs employment identity] }
   let(:errored_jobs) { [] }
   let(:current_time) { Date.parse('2024-06-18') }
   let(:pinwheel_report) { build(:pinwheel_report, :with_pinwheel_account) }
@@ -18,7 +17,6 @@ RSpec.describe CaseWorkerTransmitterJob, type: :job do
            :with_pinwheel_account,
            with_errored_jobs: errored_jobs,
            created_at: current_time,
-           supported_jobs: supported_jobs,
            cbv_applicant: cbv_applicant
     )
   end
@@ -49,7 +47,6 @@ RSpec.describe CaseWorkerTransmitterJob, type: :job do
   end
 
   context "#transmit_to_caseworker" do
-    let(:supported_jobs) { %w[income paystubs employment identity] }
     let(:argyle_report) { build(:argyle_report, :with_argyle_account) }
 
     before do
@@ -67,7 +64,6 @@ RSpec.describe CaseWorkerTransmitterJob, type: :job do
                :with_argyle_account,
                with_errored_jobs: errored_jobs,
                created_at: current_time,
-               supported_jobs: supported_jobs,
                cbv_applicant: cbv_applicant
         )
       end
