@@ -20,7 +20,7 @@ class PayrollAccount::Argyle < PayrollAccount
   end
 
   def job_succeeded?(job)
-    supported_jobs.include?(job) && find_webhook_event(self.class.event_for_job(job), "success").present?
+    job_status(job) == :succeeded
   end
 
   def accounts_job_status
@@ -39,10 +39,10 @@ class PayrollAccount::Argyle < PayrollAccount
       accounts_job_status
     elsif find_webhook_event(self.class.event_for_job(job), "success").present?
       :succeeded
-    elsif find_webhook_event(self.class.event_for_job(job), "success").nil? && find_webhook_event(self.class.event_for_job(job), "error").nil?
-      :in_progress
     elsif find_webhook_event(self.class.event_for_job(job), "error").present?
       :failed
+    else
+      :in_progress
     end
   end
 

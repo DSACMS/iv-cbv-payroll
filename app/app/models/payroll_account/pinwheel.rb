@@ -22,18 +22,18 @@ class PayrollAccount::Pinwheel < PayrollAccount
   end
 
   def job_succeeded?(job)
-    supported_jobs.include?(job) && find_webhook_event(JOBS_TO_WEBHOOK_EVENTS[job], :success).present?
+    job_status(job) == :succeeded
   end
 
   def job_status(job)
     if supported_jobs.exclude?(job)
       :unsupported
-    elsif job_succeeded?(job)
+    elsif find_webhook_event(JOBS_TO_WEBHOOK_EVENTS[job], :success).present?
       :succeeded
-    elsif find_webhook_event(JOBS_TO_WEBHOOK_EVENTS[job], :success).nil? && find_webhook_event(JOBS_TO_WEBHOOK_EVENTS[job], :error).nil?
-      :in_progress
     elsif find_webhook_event(JOBS_TO_WEBHOOK_EVENTS[job], :error).present?
       :failed
+    else
+      :in_progress
     end
   end
 
