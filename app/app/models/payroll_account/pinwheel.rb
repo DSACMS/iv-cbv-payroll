@@ -25,7 +25,7 @@ class PayrollAccount::Pinwheel < PayrollAccount
     supported_jobs.include?(job) && find_webhook_event(JOBS_TO_WEBHOOK_EVENTS[job], :success).present?
   end
 
-  def synchronization_status(job)
+  def job_status(job)
     if supported_jobs.exclude?(job)
       :unsupported
     elsif job_succeeded?(job)
