@@ -34,7 +34,7 @@ module Aggregators::Webhooks
       "accounts.connected" => {
         status: :success,
         type: :non_partial,
-        job: []
+        job: %w[accounts]
       },
       "users.fully_synced" => {
         status: :success,
