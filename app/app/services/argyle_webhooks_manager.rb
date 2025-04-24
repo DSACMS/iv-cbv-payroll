@@ -36,6 +36,7 @@ class ArgyleWebhooksManager
 
     create_subscription(receiver_url, name, :non_partial)
     create_subscription(receiver_url, "#{name}-partial", :partial)
+    create_subscription(receiver_url, "#{name}-include-resource", :include_resource)
   end
 
   private
@@ -76,6 +77,8 @@ class ArgyleWebhooksManager
 
   def webhook_subscription_config(webhooks_type)
     return nil if webhooks_type == :non_partial
+
+    return { "include_resource": true } if webhooks_type == :include_resource
 
     # Configure the `paystubs.partially_synced` and `gigs.partially_synced`
     # webhooks to trigger early based on the largest value of pay_income_days.

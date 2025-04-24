@@ -56,5 +56,17 @@ FactoryBot.define do
         end
       end
     end
+
+    trait :argyle_system_error_encountered do
+      argyle
+
+      after(:build) do |payroll_account, evaluator|
+        payroll_account.webhook_events << build(
+          :webhook_event,
+          event_name: "accounts.updated",
+          event_outcome:  "error"
+        )
+      end
+    end
   end
 end

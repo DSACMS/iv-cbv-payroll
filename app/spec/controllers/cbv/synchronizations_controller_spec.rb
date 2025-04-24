@@ -91,5 +91,17 @@ RSpec.describe Cbv::SynchronizationsController do
         expect(response).to render_template(partial: "_status")
       end
     end
+
+    context "when argyle encounters 'accounts.update' system_error webhook" do
+      let(:errored_jobs) { [ "accounts" ] }
+      let(:payroll_account) { create(:payroll_account, :argyle_fully_synced, :argyle_system_error_encountered, with_errored_jobs: errored_jobs, cbv_flow: cbv_flow) }
+
+      it "redirects to the synchronizations failures page" do
+        patch :update, params: { user: { account_id: payroll_account.pinwheel_account_id } }
+
+        expect(response.body).to include("cbv/synchronization_failures")
+        expect(response.body).to include("turbo-stream action=\"redirect\"")
+      end
+    end
   end
 end
