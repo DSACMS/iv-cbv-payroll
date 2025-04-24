@@ -45,6 +45,21 @@ module IvCbvPayroll
     config.autoload_paths += %W[#{config.root}/app/controllers/concerns]
     config.client_agencies = ClientAgencyConfig.new(Rails.root.join("config", "client-agency-config.yml"))
 
+    # Configure allowed hosts
+    config.hosts << ENV["DOMAIN_NAME"]
+
+    # Configure allowed hosts inferred from the client-agency-config.yml file
+    config.client_agencies.client_agency_ids.each do |agency_id|
+      agency = config.client_agencies[agency_id]
+      config.hosts << agency.agency_demo_domain
+      config.hosts << agency.agency_production_domain
+    end
+
+    # Health check endpoints should be accessible from any host
+    config.host_authorization = {
+      exclude: ->(request) { %r{^/health}.match?(request.path) }
+    }
+
     # See: https://guides.rubyonrails.org/active_record_encryption.html#setup
     config.active_record.encryption.primary_key = ENV["ACTIVE_RECORD_ENCRYPTION_PRIMARY_KEY"]
     config.active_record.encryption.deterministic_key = ENV["ACTIVE_RECORD_ENCRYPTION_DETERMINISTIC_KEY"]

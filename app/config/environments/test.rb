@@ -29,6 +29,9 @@ Rails.application.configure do
   config.cache_store = :null_store
   routes.default_url_options[:host] = ENV.fetch("DOMAIN_NAME", "localhost")
 
+  # Allow the various hosts that tests are using
+  config.hosts << "www.example.com"
+
   # Raise exceptions instead of rendering exception templates.
   config.action_dispatch.show_exceptions = false
 
