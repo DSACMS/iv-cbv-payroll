@@ -4,6 +4,7 @@ FactoryBot.define do
     pinwheel_account_id { SecureRandom.uuid }
     supported_jobs { %w[income paystubs employment identity] }
     type { "pinwheel" }
+    synchronization_status { :in_progress }
 
     # Factory bot needs this to instantiate the proper subclass
     # @see https://stackoverflow.com/questions/57504422/how-to-make-factorybot-return-the-right-sti-sub-class
@@ -17,6 +18,7 @@ FactoryBot.define do
 
     trait :pinwheel_fully_synced do
       type { "pinwheel" }
+      synchronization_status { :succeeded }
 
       after(:build) do |payroll_account, evaluator|
         payroll_account.supported_jobs.each do |job|
@@ -27,6 +29,12 @@ FactoryBot.define do
             event_name: event_name,
             event_outcome: evaluator.with_errored_jobs.include?(job) ? "error" : "success"
           )
+        end
+
+        if payroll_account.necessary_jobs_succeeded?
+          payroll_account.synchronization_status = :succeeded
+        else
+          payroll_account.synchronization_status = :failed
         end
       end
     end
@@ -54,6 +62,12 @@ FactoryBot.define do
             event_outcome: evaluator.with_errored_jobs.include?(job) ? "error" : "success"
           )
         end
+
+        if payroll_account.necessary_jobs_succeeded?
+          payroll_account.synchronization_status = :succeeded
+        else
+          payroll_account.synchronization_status = :failed
+        end
       end
     end
 
@@ -61,6 +75,7 @@ FactoryBot.define do
       argyle
 
       after(:build) do |payroll_account, evaluator|
+        payroll_account.synchronization_status = :failed
         payroll_account.webhook_events << build(
           :webhook_event,
           event_name: "accounts.updated",

@@ -120,13 +120,13 @@ RSpec.describe Webhooks::Argyle::EventsController, type: :controller do
       end
 
       it 'sequentially tests account synchronization flow' do
-        expect(PayrollAccount.count).to eq(0)
-
         # Test each webhook in sequence
-        process_webhook("accounts.connected")
-        expect(PayrollAccount.count).to eq(1)
+        expect do
+          process_webhook("accounts.connected")
+        end.to change(PayrollAccount, :count).by(1)
 
         payroll_account = PayrollAccount.last
+        expect(payroll_account.sync_in_progress?).to eq(true)
 
         process_webhook("identities.added")
         expect(payroll_account.webhook_events.count).to eq(2)
@@ -142,6 +142,7 @@ RSpec.describe Webhooks::Argyle::EventsController, type: :controller do
 
         # expect the PayrollAccount to be fully synced
         expect(payroll_account.has_fully_synced?).to be_truthy
+        expect(payroll_account.reload.sync_succeeded?).to eq(true)
       end
 
       it 'tracks an ApplicantFinishedArgyleSync event' do
@@ -248,6 +249,7 @@ RSpec.describe Webhooks::Argyle::EventsController, type: :controller do
 
         expect(payroll_account.webhook_events.count).to eq(5)
         expect(payroll_account.job_status("accounts")).to equal(:failed)
+        expect(payroll_account.sync_failed?).to equal(true)
         expect(payroll_account.has_fully_synced?).to be_falsey
       end
     end

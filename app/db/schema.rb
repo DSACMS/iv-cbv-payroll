@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2025_04_16_224415) do
+ActiveRecord::Schema[7.1].define(version: 2025_04_24_211730) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pgcrypto"
   enable_extension "plpgsql"
@@ -87,6 +87,7 @@ ActiveRecord::Schema[7.1].define(version: 2025_04_16_224415) do
     t.datetime "identity_errored_at", precision: nil
     t.datetime "identity_synced_at", precision: nil
     t.string "type", default: "pinwheel", null: false
+    t.string "synchronization_status"
     t.index ["cbv_flow_id"], name: "index_payroll_accounts_on_cbv_flow_id"
   end
 
