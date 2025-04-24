@@ -141,7 +141,7 @@ def build_accounts_updated_payload(evaluator)
           "updated_at" => Time.current.iso8601,
           "scanned_at" => Time.current.iso8601,
           "connection" => {
-            "status" => "connected",
+            "status" => "connecting",
             "error_code" => nil,
             "error_message" => nil,
             "updated_at" => nil
