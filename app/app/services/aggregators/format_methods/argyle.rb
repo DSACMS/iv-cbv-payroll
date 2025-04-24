@@ -21,10 +21,18 @@ module Aggregators::FormatMethods::Argyle
   end
 
   def self.format_currency(amount)
-    return unless amount
+    return unless amount.blank?
     dollars, cents = amount.split(".").map(&:to_i)
 
     (dollars * 100) + cents
+  end
+
+  def self.hours_computed(response_hours, response_gross_pay_list)
+    if response_hours.present? && response_hours.to_f > 0
+      response_hours
+    else
+      hours_by_earning_category(response_gross_pay_list).max[1]
+    end
   end
 
   def self.hours_by_earning_category(gross_pay_list)
