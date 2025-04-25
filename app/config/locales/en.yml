@@ -231,21 +231,20 @@ en:
         notice_no_answer: You must select an answer to continue.
       show:
         answer_no_bullet_1: You don't have another job (current or recent)
-        answer_no_bullet_2: You have a job that pays you via PayPal, Venmo, Cash App, etc
+        answer_no_bullet_2: You have a job that pays you via PayPal, Venmo, Cash App, etc.
         answer_no_bullet_3: You have a job that pays you in cash
-        answer_no_bullet_4: You have a job that pays you with a paper check and you cannot view your paycheck online
+        answer_no_bullet_4: You have a job that pays you with a paper check and you can't view your paycheck online
         answer_no_bullet_5: You have a job that issues a 1099
         answer_no_header: 'Answer NO if:'
-        answer_yes_bullet_1: You have a job that has an online payroll provider
-        answer_yes_bullet_2: You have a job that lets you view paystubs online
+        answer_yes_bullet_1: Your job has an online payroll provider
+        answer_yes_bullet_2: Your job lets you view pay stubs online
         answer_yes_bullet_3: Your job is app-based (Uber, DoorDash, Lyft, Instacart, etc.)
         answer_yes_header_html: 'Answer YES if <em>any</em> of these are true about your current or recent job:'
         continue: Continue
         criteria_disclaimer: 'Note: If you''ve had other jobs in the past %{pay_income_days} days that don''t meet these criteria, you may need to submit that income information separately.'
         header: Do you have another job to report?
         learn_more_link_html:
-          ma: Learn more on <a href="https://www.mass.gov/guides/how-to-contact-dta" target="_blank" rel="noopener noreferer">DTA's website</a>.
-          nyc: Learn more on <a href="https://www.nyc.gov/site/hra/help/snap-application-frequently-asked-questions.page" target="_blank" rel="noopener noreferer">HRA's website</a>.
+          la_ldh: Learn more on <a href="http://MyMedicaid.LA.GOV" target="_blank" rel="noopener noreferrer">LDH's website</a>.
           sandbox: Learn more on <a href="https://www.mass.gov/guides/how-to-contact-dta" target="_blank" rel="noopener noreferrer">CBV Test Agency's website</a>.
         no_radio: No, I don’t have another job that meets the criteria
         subheader: Please add other jobs you’ve had in the past %{pay_income_days} days, even if you're no longer at that job.

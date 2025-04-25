@@ -82,16 +82,13 @@ es:
         answer_no_bullet_4: Usted tiene un trabajo que le paga con un cheque impreso y no puede ver su cheque de pago en línea
         answer_no_bullet_5: Usted tiene un trabajo que emite un 1099
         answer_no_header: 'Responda que NO si:'
-        answer_yes_bullet_1: Su trabajo tiene un proveedor de nómina en línea
-        answer_yes_bullet_2: Su trabajo le permite ver sus talones de pago en línea
         answer_yes_bullet_3: Su trabajo se basa en aplicaciones (Uber, DoorDash, Lyft, Instacart, etc.)
         answer_yes_header_html: 'Responda que SÍ si <em>cualquiera</em> de las siguientes afirmaciones son ciertas sobre su trabajo actual o reciente:'
         continue: Continuar
         criteria_disclaimer: 'Nota: Si ha tenido otros trabajos en los últimos %{pay_income_days} días que no cumplen estos criterios, es posible que tenga que presentar información de ese ingreso por separado.'
         header: "¿Tiene otro trabajo que declarar?"
         learn_more_link_html:
-          ma: Obtenga más información en <a href="https://www.mass.gov/guides/how-to-contact-dta" target="_blank" rel="noopener noreferer">el sitio web de DTA</a>.
-          nyc: Obtenga más información en <a href="https://www.nyc.gov/site/hra/help/snap-application-frequently-asked-questions.page" target="_blank" rel="noopener noreferer">el sitio web de HRA</a>.
+          la_ldh: Obtenga más información en <a href="http://MyMedicaid.LA.GOV" target="_blank" rel="noopener noreferer">el sitio web de LDH</a>.
           sandbox: Obtenga más información en <a href="https://www.mass.gov/guides/how-to-contact-dta" target="_blank" rel="noopener noreferrer">el sitio web de CBV Test Agency</a>.
         no_radio: No, no tengo otro trabajo que cumpla con los criterios
         subheader: Por favor añada los otros trabajos que haya tenido en los últimos %{pay_income_days} días, incluso si ya no está en ese trabajo.
