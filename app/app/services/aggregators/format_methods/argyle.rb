@@ -27,6 +27,14 @@ module Aggregators::FormatMethods::Argyle
     (dollars * 100) + cents
   end
 
+  def self.hours_computed(response_hours, response_gross_pay_list)
+    if response_hours.present? && response_hours.to_f > 0
+      response_hours
+    else
+      hours_by_earning_category(response_gross_pay_list).map { |_category, hours| hours }.max
+    end
+  end
+
   def self.hours_by_earning_category(gross_pay_list)
     gross_pay_list
        .filter { |e| e["hours"].present? }

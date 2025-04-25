@@ -92,5 +92,53 @@ RSpec.describe Aggregators::ResponseObjects::Paystub, type: :model do
       expect(paystub.earnings.first.category).to eq("base")
       expect(paystub.earnings.first.name).to eq("Regular")
     end
+
+    context 'with realistic USDS employee data structure' do
+      let(:argyle_response) do
+        {
+          "account" => "67890",
+          "gross_pay" => "6000.34",
+          "net_pay" => "4800.56",
+          "gross_pay_ytd" => "24000.78",
+          "paystub_period" => { "start_date" => "2023-01-01", "end_date" => "2023-01-15" },
+          "paystub_date" => "2023-01-20",
+          "hours" => 0,
+          "gross_pay_list" => [
+              {
+                "name" => "REGULAR PAY",
+                "type" => "base",
+                "start_date" => nil,
+                "end_date" => nil,
+                "rate" => nil,
+                "hours" => "80.0000",
+                "amount" => "2000.00", # Redacted, made up
+                "hours_ytd" => nil,
+                "amount_ytd" => nil
+              },
+              {
+                "name" => "REGULAR PAY",
+                "type" => "base",
+                "start_date" => nil,
+                "end_date" => nil,
+                "rate" => nil,
+                "hours" => "0.0000",
+                "amount" => "0.00",
+                "hours_ytd" => nil,
+                "amount_ytd" => nil
+              }
+          ],
+          "deduction_list" => [
+            { "name" => "tax", "amount" => "600.90" },
+            { "name" => "insurance", "amount" => "120.34" }
+          ]
+        }
+      end
+
+      it 'creates a Paystub object from argyle response' do
+        paystub = described_class.from_argyle(argyle_response)
+
+        expect(paystub.hours).to eq(80)
+      end
+    end
   end
 end
