@@ -7,8 +7,6 @@ class PayrollAccount::Argyle < PayrollAccount
     SQL
   end
 
-  # Jobs are used to map real-time Argyle data retrieval with the synchronizations page indicators
-  # We can assume that when the paystubs are fully synced, the employment and paystubs are also fully synced
   def has_fully_synced?
     supported_jobs.all? do |job|
       supported_jobs.exclude?(job) || find_webhook_event(self.class.event_for_job(job)).present?
