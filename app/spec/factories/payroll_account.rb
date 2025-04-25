@@ -43,6 +43,21 @@ FactoryBot.define do
       pinwheel_account_id { "019571bc-2f60-3955-d972-dbadfe0913a8" }
     end
 
+    trait :argyle_partially_synced do
+      argyle
+
+      after(:build) do |payroll_account, evaluator|
+        # Only sync the first 2 jobs
+        payroll_account.supported_jobs.first(2).each do |job|
+          payroll_account.webhook_events << build(
+            :webhook_event,
+            event_name: PayrollAccount::Argyle.event_for_job(job),
+            event_outcome: evaluator.with_errored_jobs.include?(job) ? "error" : "success"
+          )
+        end
+      end
+    end
+
     trait :argyle_fully_synced do
       argyle
 

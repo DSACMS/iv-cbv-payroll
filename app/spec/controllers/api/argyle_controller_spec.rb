@@ -96,17 +96,17 @@ RSpec.describe Api::ArgyleController do
         it "redirects to the payment_details page" do
           post :create, params: { item_id: argyle_item_id }
 
-          expect(response).to redirect_to(cbv_flow_payment_details_path)
+          expect(response).to redirect_to(cbv_flow_payment_details_path(user: { account_id: cbv_flow.payroll_accounts.first.pinwheel_account_id }))
         end
       end
 
       context "if the payroll is not fully synced" do
-        let(:cbv_flow) { create(:cbv_flow) }
+        let(:cbv_flow) { create(:cbv_flow, :with_argyle_account, partially_synced: true) }
 
         it "redirects to the synchronizations page" do
           post :create, params: { item_id: argyle_item_id }
 
-          expect(response).to redirect_to(cbv_flow_synchronizations_path)
+          expect(response).to redirect_to(cbv_flow_synchronizations_path(user: { account_id: cbv_flow.payroll_accounts.first.pinwheel_account_id }))
         end
       end
     end
