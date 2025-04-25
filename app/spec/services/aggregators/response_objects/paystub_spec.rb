@@ -111,7 +111,7 @@ RSpec.describe Aggregators::ResponseObjects::Paystub, type: :model do
                 "end_date" => nil,
                 "rate" => nil,
                 "hours" => "80.0000",
-                "amount" => "AMOUNT",
+                "amount" => "2000.00", # Redacted, made up
                 "hours_ytd" => nil,
                 "amount_ytd" => nil
               },

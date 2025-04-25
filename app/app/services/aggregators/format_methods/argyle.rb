@@ -21,10 +21,9 @@ module Aggregators::FormatMethods::Argyle
   end
 
   def self.format_currency(amount)
-    return if amount.blank?
-    return unless amount.include?(".")
-
+    return unless amount
     dollars, cents = amount.split(".").map(&:to_i)
+
     (dollars * 100) + cents
   end
 
