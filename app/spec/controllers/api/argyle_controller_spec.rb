@@ -3,16 +3,22 @@ require "rails_helper"
 RSpec.describe Api::ArgyleController do
   include ArgyleApiHelper
 
-  context "#create" do
+  describe "#create" do
     let(:cbv_flow) { create(:cbv_flow) }
+    # get the argyle user id and item e.g. payroll/provider to include in the fetch_user_api_response stub
+    let(:argyle_user_id) { argyle_load_relative_json_file('', 'response_create_user.json')["id"] }
+    let(:argyle_item_id) { argyle_load_relative_json_file("bob", "request_user.json")["items_connected"].first }
 
     before do
       session[:cbv_flow_id] = cbv_flow.id
     end
 
-    context "when the Cbv Flow does not have an argyle_user_id" do
+    context "when the CbvFlow does not have an argyle_user_id" do
       before do
         stub_create_user_response
+        argyle_stub_fetch_user_api_response('bob', {
+          id: argyle_user_id
+        })
       end
 
       it "creates a user with Argyle, returning its token" do
@@ -45,6 +51,7 @@ RSpec.describe Api::ArgyleController do
       it "includes isSandbox flag in response" do
         argyle = double('argyle', create_user: {})
 
+        allow(argyle).to receive(:fetch_user_api).and_return({})
         allow(CbvFlow).to receive(:find).and_return(cbv_flow)
         allow(controller).to receive(:argyle_for).and_return(argyle)
         allow(controller).to receive(:agency_config).and_return({
@@ -62,6 +69,7 @@ RSpec.describe Api::ArgyleController do
 
       before do
         stub_create_user_token_response
+        argyle_stub_fetch_user_api_response('bob', { id: cbv_flow.argyle_user_id })
       end
 
       it "creates a token for the existing Argyle user" do
@@ -74,18 +82,32 @@ RSpec.describe Api::ArgyleController do
 
     context "when the payroll account or employer has already been linked" do
       before do
+        stub_create_user_response
         stub_create_user_token_response
-        argyle_stub_fetch_user_api_response("bob")
-      end
-      let(:cbv_flow) { create(:cbv_flow) }
-      let(:argyle_item_id) do
-        argyle_load_relative_json_file("bob", "request_user.json")["items_connected"].first
+        argyle_stub_fetch_user_api_response('bob', {
+          id: argyle_user_id,
+          items_connected: [ argyle_item_id ]
+        })
       end
 
-      it "sends a redirect header for the existing Argyle user if the account is linked" do
-        post :create, params: { item_id: argyle_item_id }
+      context "if the payroll account is fully synced" do
+        let(:cbv_flow) { create(:cbv_flow, :with_argyle_account) }
 
-        expect(response).to redirect_to(cbv_flow_entry_path)
+        it "redirects to the payment_details page" do
+          post :create, params: { item_id: argyle_item_id }
+
+          expect(response).to redirect_to(cbv_flow_payment_details_path)
+        end
+      end
+
+      context "if the payroll is not fully synced" do
+        let(:cbv_flow) { create(:cbv_flow) }
+
+        it "redirects to the synchronizations page" do
+          post :create, params: { item_id: argyle_item_id }
+
+          expect(response).to redirect_to(cbv_flow_synchronizations_path)
+        end
       end
     end
   end

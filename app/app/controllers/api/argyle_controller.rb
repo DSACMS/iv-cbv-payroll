@@ -26,9 +26,8 @@ class Api::ArgyleController < ApplicationController
                    response["user_token"]
                  end
 
+    # Redirect if the user is attempting connect a previously connected account
     argyle_user = argyle.fetch_user_api(user: @cbv_flow.argyle_user_id)
-
-    # Check if the item_id is already connected
     if item_id.present? && argyle_user["items_connected"]&.include?(item_id)
       payroll_account = PayrollAccount::Argyle.find_by(cbv_flow: @cbv_flow)
 
