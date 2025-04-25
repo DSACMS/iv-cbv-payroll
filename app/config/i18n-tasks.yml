@@ -131,6 +131,7 @@ ignore_missing:
     - "activerecord.errors.models.cbv_flow_invitation.*"
     - "activerecord.errors.models.cbv_applicant*"
     - "caseworker_mailer.summary_email.*"
+    - "shared.email_subject.la_ldh"   # LA LDH email subject for caseworkers
     # Caseworker PDF strings that are only supported in English:
     - "cbv.submits.show.pdf.caseworker.*"
 
