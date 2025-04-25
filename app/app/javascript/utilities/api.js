@@ -19,9 +19,20 @@ export const fetchPinwheelToken = (response_type, id, locale) => {
   })
 }
 
-export const fetchArgyleToken = (itemId) => {
-  return fetchInternal(ARGYLE_TOKENS_GENERATE, {
+export const fetchArgyleToken = async (itemId) => {
+  const response = await fetch(ARGYLE_TOKENS_GENERATE, {
     method: "post",
-    body: JSON.stringify({itemId})
+    headers: {
+      "X-CSRF-Token": CSRF.token,
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({item_id: itemId})
   })
+
+  if (response.redirected) {
+    window.location.href = response.url
+    return
+  }
+  
+  return response.json()
 }

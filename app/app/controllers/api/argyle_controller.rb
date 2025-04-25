@@ -32,9 +32,9 @@ class Api::ArgyleController < ApplicationController
       payroll_account = PayrollAccount::Argyle.find_by(cbv_flow: @cbv_flow)
 
       if payroll_account&.has_fully_synced?
-        return redirect_to cbv_flow_payment_details_path
+        return redirect_to cbv_flow_payment_details_path(user: { account_id: payroll_account.pinwheel_account_id })
       else
-        return redirect_to cbv_flow_synchronizations_path
+        return redirect_to cbv_flow_synchronizations_path(user: { account_id: payroll_account.pinwheel_account_id })
       end
     end
 
