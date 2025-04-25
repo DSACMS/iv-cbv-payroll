@@ -19,8 +19,9 @@ export const fetchPinwheelToken = (response_type, id, locale) => {
   })
 }
 
-export const fetchArgyleToken = () => {
+export const fetchArgyleToken = (itemId) => {
   return fetchInternal(ARGYLE_TOKENS_GENERATE, {
     method: "post",
+    body: JSON.stringify({itemId})
   })
 }

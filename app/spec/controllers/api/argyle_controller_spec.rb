@@ -71,5 +71,22 @@ RSpec.describe Api::ArgyleController do
           .to include("user" => { "user_token" => be_a(String) })
       end
     end
+
+    context "when the payroll account or employer has already been linked" do
+      before do
+        stub_create_user_token_response
+        argyle_stub_fetch_user_api_response("bob")
+      end
+      let(:cbv_flow) { create(:cbv_flow) }
+      let(:argyle_item_id) do
+        argyle_load_relative_json_file("bob", "request_user.json")["items_connected"].first
+      end
+
+      it "sends a redirect header for the existing Argyle user if the account is linked" do
+        post :create, params: { item_id: argyle_item_id }
+
+        expect(response).to redirect_to(cbv_flow_entry_path)
+      end
+    end
   end
 end

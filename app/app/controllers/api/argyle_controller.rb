@@ -8,6 +8,7 @@ class Api::ArgyleController < ApplicationController
   def create
     @cbv_flow = CbvFlow.find(session[:cbv_flow_id])
     argyle = argyle_for(@cbv_flow)
+    item_id = params[:item_id]
 
     is_sandbox_environment = agency_config[@cbv_flow.client_agency_id].argyle_environment == "sandbox"
     user_token = if @cbv_flow.argyle_user_id.blank?
@@ -25,6 +26,19 @@ class Api::ArgyleController < ApplicationController
                    response["user_token"]
                  end
 
+    argyle_user = argyle.fetch_user_api(user: @cbv_flow.argyle_user_id)
+
+    # Check if the item_id is already connected
+    if item_id.present? && argyle_user["items_connected"]&.include?(item_id)
+      payroll_account = PayrollAccount::Argyle.find_by(cbv_flow: @cbv_flow)
+
+      if payroll_account&.has_fully_synced?
+        return redirect_to cbv_flow_payment_details_path
+      else
+        return redirect_to cbv_flow_synchronizations_path
+      end
+    end
+
     render json: {
       status: :ok,
       isSandbox: is_sandbox_environment,
@@ -36,6 +50,7 @@ class Api::ArgyleController < ApplicationController
   end
 
   def track_event
+    puts "Tracking event, #{@cbv_flow.id}, Request: #{request.inspect}"
     event_logger.track("ApplicantBeganLinkingEmployer", request, {
       cbv_flow_id: @cbv_flow.id,
       cbv_applicant_id: @cbv_flow.cbv_applicant_id,
