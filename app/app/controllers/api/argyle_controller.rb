@@ -50,7 +50,6 @@ class Api::ArgyleController < ApplicationController
   end
 
   def track_event
-    puts "Tracking event, #{@cbv_flow.id}, Request: #{request.inspect}"
     event_logger.track("ApplicantBeganLinkingEmployer", request, {
       cbv_flow_id: @cbv_flow.id,
       cbv_applicant_id: @cbv_flow.cbv_applicant_id,
