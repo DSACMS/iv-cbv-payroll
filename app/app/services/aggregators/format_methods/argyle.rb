@@ -32,7 +32,7 @@ module Aggregators::FormatMethods::Argyle
     if response_hours.present? && response_hours.to_f > 0
       response_hours
     else
-      hours_by_earning_category(response_gross_pay_list)&.max_by { |_, value| value }&.[](1)
+      hours_by_earning_category(response_gross_pay_list).map { |_category, hours| hours }.max
     end
   end
 
