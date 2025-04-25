@@ -9,7 +9,7 @@ class PayrollAccount::Argyle < PayrollAccount
 
   def has_fully_synced?
     supported_jobs.all? do |job|
-      supported_jobs.exclude?(job) || find_webhook_event(self.class.event_for_job(job)).present?
+      supported_jobs.exclude?(job) || find_webhook_event_for_job(job).present?
     end
   end
 
@@ -17,24 +17,13 @@ class PayrollAccount::Argyle < PayrollAccount
     job_status(job) == :succeeded
   end
 
-  def accounts_job_status
-    # the argyle accounts.updated event requires special handling because it's outcome is dynamic based on its payload.
-    if find_webhook_event("accounts.updated", "error").present?
-      :failed
-    else
-      :succeeded
-    end
-  end
-
   def job_status(job)
     if supported_jobs.exclude?(job)
       :unsupported
-    elsif job == "accounts"
-      accounts_job_status
-    elsif find_webhook_event(self.class.event_for_job(job), "success").present?
-      :succeeded
-    elsif find_webhook_event(self.class.event_for_job(job), "error").present?
+    elsif find_webhook_event_for_job(job, "error").present?
       :failed
+    elsif find_webhook_event_for_job(job, "success").present?
+      :succeeded
     else
       :in_progress
     end
@@ -44,12 +33,10 @@ class PayrollAccount::Argyle < PayrollAccount
     job_succeeded?("accounts") && (job_succeeded?("paystubs") || job_succeeded?("gigs"))
   end
 
-  def self.event_for_job(job)
-    matching_event = Aggregators::Webhooks::Argyle::SUBSCRIBED_WEBHOOK_EVENTS.find do |event_name, config|
-      config[:job].include?(job)
+  def find_webhook_event_for_job(job, event_outcome = nil)
+    webhook_events.find do |webhook_event|
+      Aggregators::Webhooks::Argyle::EVENT_NAMES_BY_JOB[job].include?(webhook_event.event_name) &&
+        (event_outcome.nil? || webhook_event.event_outcome == event_outcome.to_s)
     end
-    raise "No event for job named: #{job}" unless matching_event.present?
-
-    matching_event.first
   end
 end

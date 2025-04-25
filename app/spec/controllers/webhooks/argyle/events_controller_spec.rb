@@ -143,6 +143,18 @@ RSpec.describe Webhooks::Argyle::EventsController, type: :controller do
       expect(payroll_account.reload.sync_succeeded?).to eq(true)
     end
 
+    it "is fully synced even without the *.partially_synced events" do
+      process_webhook("accounts.connected")
+      process_webhook("identities.added")
+      process_webhook("gigs.fully_synced")
+      process_webhook("paystubs.fully_synced")
+      process_webhook("users.fully_synced")
+
+      payroll_account = PayrollAccount.last
+      expect(payroll_account.has_fully_synced?).to eq(true)
+      expect(payroll_account.reload.sync_succeeded?).to eq(true)
+    end
+
     it 'tracks an ApplicantFinishedArgyleSync event' do
       process_webhook("accounts.connected")
       process_webhook("identities.added")
