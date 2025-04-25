@@ -50,7 +50,11 @@ exports[`EmployerSearchController with argyle > calls trackUserAction with data 
 ]
 `;
 
-exports[`EmployerSearchController with argyle > fetches argyle token 1`] = `[]`;
+exports[`EmployerSearchController with argyle > fetches argyle token 1`] = `
+[
+  "uuid",
+]
+`;
 
 exports[`EmployerSearchController with argyle > loads argyle modal from external website on click 1`] = `
 [
