@@ -15,12 +15,6 @@ class PayrollAccount::Pinwheel < PayrollAccount
       (supported_jobs.exclude?("identity") || find_webhook_event(JOBS_TO_WEBHOOK_EVENTS["identity"]).present?)
   end
 
-  def successfully_synced?
-    JOBS_TO_WEBHOOK_EVENTS.keys.all? do |job|
-      supported_jobs.exclude?(job) || job_succeeded?(job)
-    end
-  end
-
   def job_succeeded?(job)
     job_status(job) == :succeeded
   end

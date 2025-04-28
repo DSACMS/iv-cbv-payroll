@@ -5,6 +5,11 @@ RSpec.describe PayrollAccount::Argyle, type: :model do
   let(:payroll_account) { create(:payroll_account, :argyle, cbv_flow: cbv_flow) }
   let(:synced_account) { create(:payroll_account, :argyle_fully_synced, cbv_flow: cbv_flow) }
 
+  it "has a synchronization_status of 'unknown' by default" do
+    payroll_account = cbv_flow.payroll_accounts.create
+    expect(payroll_account.sync_unknown?).to eq(true)
+  end
+
   describe '#has_fully_synced?' do
     it 'returns false when no webhook events exist' do
       expect(payroll_account.has_fully_synced?).to be false

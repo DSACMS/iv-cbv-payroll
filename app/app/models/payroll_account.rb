@@ -12,6 +12,13 @@ class PayrollAccount < ApplicationRecord
   belongs_to :cbv_flow
   has_many :webhook_events
 
+  enum :synchronization_status, {
+    unknown: "unknown",              # defines the method: sync_unknown?
+    in_progress: "in_progress",      # defines the method: sync_in_progress?
+    succeeded: "succeeded",          # defines the method: sync_succeeded?
+    failed: "failed"                 # defines the method: sync_failed?
+  }, prefix: "sync"
+
   # Returns whether we have received all expected webhooks for the sync
   # process, regardless of whether any of them are errors.
   #

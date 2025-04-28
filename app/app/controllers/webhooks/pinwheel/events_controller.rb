@@ -67,7 +67,11 @@ class Webhooks::Pinwheel::EventsController < ApplicationController
       )
       report.fetch
 
-      validate_useful_report_requirements(report)
+      if @payroll_account.necessary_jobs_succeeded? && validate_useful_report_requirements(report)
+        @payroll_account.update(synchronization_status: :succeeded)
+      else
+        @payroll_account.update(synchronization_status: :failed)
+      end
 
       event_logger.track("ApplicantFinishedPinwheelSync", request, {
         cbv_applicant_id: @cbv_flow.cbv_applicant_id,
@@ -139,7 +143,8 @@ class Webhooks::Pinwheel::EventsController < ApplicationController
   end
 
   def validate_useful_report_requirements(report)
-    if report.valid?(:useful_report)
+    report_is_valid = report.valid?(:useful_report)
+    if report_is_valid
       event_logger.track("ApplicantReportMetUsefulRequirements", request, {})
     else
       event_logger.track("ApplicantReportFailedUsefulRequirements", request, {
@@ -150,5 +155,7 @@ class Webhooks::Pinwheel::EventsController < ApplicationController
     raise ex unless Rails.env.production?
 
     Rails.logger.error "Unable to track event (in #{self.class.name}): #{ex}"
+  ensure
+    return report_is_valid
   end
 end

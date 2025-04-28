@@ -13,12 +13,6 @@ class PayrollAccount::Argyle < PayrollAccount
     end
   end
 
-  def successfully_synced?
-    supported_jobs.all? do |job|
-      supported_jobs.exclude?(job) || job_succeeded?(job)
-    end
-  end
-
   def job_succeeded?(job)
     job_status(job) == :succeeded
   end
