@@ -291,7 +291,7 @@ en:
     employer_searches:
       show:
         app_based_providers: App-based employers
-        can_not_find_employer: I can’t find my company or payroll provider
+        can_not_find_employer: I can’t find my employer or payroll provider
         employer_not_listed: Employer not listed?
         exit_button_text: Exit and go to %{agency_short_name}
         header: Search for your employer or payroll provider
@@ -311,12 +311,11 @@ en:
         to_continue: 'If you still don’t see your employer or payroll provider listed:'
         to_continue_li_1: You’ll need to submit that income information separately.
         to_continue_li_1_html:
-          ma: <a href="https://www.mass.gov/guides/how-to-contact-dta">Go to DTA's website</a> to learn about other ways to report your income.
-          nyc: <a href="https://www.nyc.gov/site/hra/help/snap-application-frequently-asked-questions.page">Go to HRA's website</a> to learn about other ways to report your income.
+          la_ldh: <a href="http://mymedicaid.la.gov/">Go to LDH's website</a> to learn about other ways to report your income.
           sandbox: <a href="https://example.com/contact">Go to CBV's website</a> to learn about other ways to report your income.
         to_continue_li_2: If you have other jobs to add, search for them.
         to_continue_li_3: If you have no other jobs to add here, you can exit this site.
-        to_continue_li_3_continue: If you have no other jobs to add here, continue to complete your income report.
+        to_continue_li_3_continue: If you have no other jobs to add here, continue to review your income report.
     entries:
       create:
         error: You must check the agreement checkbox to proceed.

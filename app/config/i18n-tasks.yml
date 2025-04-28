@@ -152,9 +152,12 @@ ignore_missing:
     - "aggregator_strings.deductions.roth"                # FFS-2723
 
     # LA LDH
-    - "shared.agency_full_name.la_ldh"                    # FFS-2668
-    - "shared.header.cbv_flow_title.la_ldh"               # FFS-2668
-    - "shared.header.preheader.la_ldh"                    # FFS-2668
+    - "shared.agency_full_name.la_ldh"                        # FFS-2668
+    - "shared.header.cbv_flow_title.la_ldh"                   # FFS-2668
+    - "shared.header.preheader.la_ldh"                        # FFS-2668
+    - "cbv.employer_searches.show.can_not_find_employer"      # FFS-2668
+    - "cbv.employer_searches.show.to_continue_li_3_continue"  # FFS-2668
+
 ## Consider these keys used:
 ignore_unused:
   all:

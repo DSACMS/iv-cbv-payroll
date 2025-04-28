@@ -55,7 +55,7 @@
     <h4><%= t("cbv.employer_searches.show.to_continue") %></h4>
     <div class="usa-prose">
       <ul class="line-height-sans-5">
-        <li><%= t("cbv.employer_searches.show.to_continue_li_1") %> <%= agency_translation("cbv.employer_searches.show.to_continue_li_1_html") %></li>
+        <li><%= t("cbv.employer_searches.show.to_continue_li_1", agency_short_name: current_agency.agency_short_name) %> <%= agency_translation("cbv.employer_searches.show.to_continue_li_1_html") %></li>
         <li><%= t("cbv.employer_searches.show.to_continue_li_2") %></li>
         <% if @has_payroll_account %>
           <li><%= t("cbv.employer_searches.show.to_continue_li_3_continue") %></li>
