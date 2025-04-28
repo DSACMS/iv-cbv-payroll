@@ -94,14 +94,14 @@ RSpec.describe PayrollAccount::Pinwheel, type: :model do
     end
   end
 
-  describe "#synchronization_status" do
+  describe "#job_status" do
     context "when the job's status is succeeded" do
       before do
         create_webhook_events
       end
 
       it "returns succeeded" do
-        expect(payroll_account.synchronization_status('income')).to eq(:succeeded)
+        expect(payroll_account.job_status('income')).to eq(:succeeded)
       end
     end
 
@@ -111,13 +111,13 @@ RSpec.describe PayrollAccount::Pinwheel, type: :model do
       end
 
       it "returns failed" do
-        expect(payroll_account.synchronization_status('income')).to eq(:failed)
+        expect(payroll_account.job_status('income')).to eq(:failed)
       end
     end
 
     context "when the job has no events (either successful or errored)" do
       it "returns in_progress" do
-        expect(payroll_account.synchronization_status('income')).to eq(:in_progress)
+        expect(payroll_account.job_status('income')).to eq(:in_progress)
       end
     end
 
@@ -125,7 +125,7 @@ RSpec.describe PayrollAccount::Pinwheel, type: :model do
       let(:supported_jobs) { super() - [ "income" ] }
 
       it "returns unsupported" do
-        expect(payroll_account.synchronization_status('income')).to eq(:unsupported)
+        expect(payroll_account.job_status('income')).to eq(:unsupported)
       end
     end
   end
