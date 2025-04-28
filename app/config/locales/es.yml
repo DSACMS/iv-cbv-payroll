@@ -199,14 +199,11 @@ es:
         dta_options_5_html: Trabaje con <a href="https://www.mass.gov/info-details/snap-outreach-partners#snap-outreach-partners-" target="_blank" rel="noopener noreferer">un aliado de SNAP Outreach</a> para presentar sus documentos.
         dta_options_header: 'Puede presentar su información de ingresos usando uno de los siguientes métodos:'
         exit_button_html:
-          ma: <a href="https://www.mass.gov/guides/how-to-contact-dta" class="usa-button">Salga y vaya a DTA</a>
-          nyc: <a href="https://www.nyc.gov/site/hra/help/snap-application-frequently-asked-questions.page" class="usa-button">Salga y vaya a HRA</a>
           sandbox: <a href="https://www.mass.gov/guides/how-to-contact-dta" class="usa-button">Salga y vaya a la Agencia de prueba CBV</a>
         header: Cómo informar sus ingresos si su empleador o proveedor de nómina no están listados
         more_jobs: Si tiene más trabajos que reportar
         no_more_jobs: Si no tiene más trabajos que reportar
         not_listed_p1: Si su empleador o proveedor de nómina no están listados en este sitio, tendrá que compartir su información de ingresos por este trabajo directamente con %{agency_acronym}.
-        not_listed_p2: Visite %{agency_short_name} para obtener más información sobre cómo presentar documentos.
         you_can_search: Puede buscar otro empleador o proveedor de nómina. Este sitio apoya a los empleadores con proveedores de nómina en línea o servicios basados en aplicaciones. Algunos ejemplos son Amazon, Walmart, McDonald’s, Uber, DoorDash, Lyft e Instacart.
     payment_details:
       show:

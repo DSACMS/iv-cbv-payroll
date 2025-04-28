@@ -159,6 +159,12 @@ ignore_missing:
     # LA add_jobs
     - "cbv.add_jobs.show.answer_yes_bullet_1"             # FFS-2688
     - "cbv.add_jobs.show.answer_yes_bullet_2"             # FFS-2688
+
+    # LA missing_results
+    - "cbv.missing_results.show.exit_button_html.la_ldh"  # FFS-2688
+    - "cbv.missing_results.show.not_listed_p2"            # FFS-2688
+    - "cbv.missing_results.show.not_listed_p2_link_html.la_ldh"   # FFS-2688
+    - "cbv.missing_results.show.not_listed_p2_link_html.sandbox"  # FFS-2688
 ## Consider these keys used:
 ignore_unused:
   all:
