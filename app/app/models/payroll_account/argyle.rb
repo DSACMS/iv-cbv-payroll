@@ -7,8 +7,6 @@ class PayrollAccount::Argyle < PayrollAccount
     SQL
   end
 
-  # Jobs are used to map real-time Argyle data retrieval with the synchronizations page indicators
-  # We can assume that when the paystubs are fully synced, the employment and paystubs are also fully synced
   def has_fully_synced?
     supported_jobs.all? do |job|
       supported_jobs.exclude?(job) || find_webhook_event(self.class.event_for_job(job)).present?
@@ -22,10 +20,10 @@ class PayrollAccount::Argyle < PayrollAccount
   end
 
   def job_succeeded?(job)
-    supported_jobs.include?(job) && find_webhook_event(self.class.event_for_job(job), "success").present?
+    job_status(job) == :succeeded
   end
 
-  def synchronization_status_for_accounts_job
+  def accounts_job_status
     # the argyle accounts.updated event requires special handling because it's outcome is dynamic based on its payload.
     if find_webhook_event("accounts.updated", "error").present?
       :failed
@@ -34,22 +32,22 @@ class PayrollAccount::Argyle < PayrollAccount
     end
   end
 
-  def synchronization_status(job)
+  def job_status(job)
     if supported_jobs.exclude?(job)
       :unsupported
     elsif job == "accounts"
-      synchronization_status_for_accounts_job
-    elsif job_succeeded?(job)
+      accounts_job_status
+    elsif find_webhook_event(self.class.event_for_job(job), "success").present?
       :succeeded
-    elsif find_webhook_event(self.class.event_for_job(job), "success").nil? && find_webhook_event(self.class.event_for_job(job), "error").nil?
-      :in_progress
     elsif find_webhook_event(self.class.event_for_job(job), "error").present?
       :failed
+    else
+      :in_progress
     end
   end
 
-  def has_required_data?
-    job_succeeded?("paystubs") || job_succeeded?("gigs")
+  def necessary_jobs_succeeded?
+    job_succeeded?("accounts") && (job_succeeded?("paystubs") || job_succeeded?("gigs"))
   end
 
   def self.event_for_job(job)

@@ -21,23 +21,33 @@ RSpec.describe PayrollAccount::Argyle, type: :model do
       end
     end
 
-    describe '#has_required_data?' do
+    describe '#necessary_jobs_succeeded?' do
+      let(:account) { create(:payroll_account, :argyle, cbv_flow: cbv_flow) }
+
       it 'returns true when paystubs succeeded' do
-        account = create(:payroll_account, :argyle, cbv_flow: cbv_flow)
         create(:webhook_event, payroll_account: account, event_name: 'paystubs.partially_synced', event_outcome: 'success')
 
-        expect(account.has_required_data?).to be true
+        expect(account.necessary_jobs_succeeded?).to be true
       end
 
       it 'returns true when gigs succeeded' do
-        account = create(:payroll_account, :argyle, cbv_flow: cbv_flow)
         create(:webhook_event, payroll_account: account, event_name: 'gigs.partially_synced', event_outcome: 'success')
 
-        expect(account.has_required_data?).to be true
+        expect(account.necessary_jobs_succeeded?).to be true
       end
 
       it 'returns false when neither paystubs nor gigs succeeded' do
-        expect(payroll_account.has_required_data?).to be false
+        expect(payroll_account.necessary_jobs_succeeded?).to be false
+      end
+
+      context "when the accounts job fails" do
+        before do
+          create(:webhook_event, payroll_account: account, event_name: "accounts.updated", event_outcome: "error")
+        end
+
+        it "returns false" do
+          expect(payroll_account.necessary_jobs_succeeded?).to be false
+        end
       end
     end
   end

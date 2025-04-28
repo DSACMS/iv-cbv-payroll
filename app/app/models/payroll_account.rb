@@ -12,6 +12,37 @@ class PayrollAccount < ApplicationRecord
   belongs_to :cbv_flow
   has_many :webhook_events
 
+  # Returns whether we have received all expected webhooks for the sync
+  # process, regardless of whether any of them are errors.
+  #
+  # To determine whether the sync was ultimately successful, use the value of
+  # the `synchronization_status` column (via `sync_succeeded?`).
+  def has_fully_synced?
+    raise NotImplementedError
+  end
+
+  # Returns whether the job was successful.
+  def job_succeeded?(job)
+    raise NotImplementedError
+  end
+
+  # Returns the status of the job. Valid return values are:
+  #   :unsupported - The job is not supported for this account.
+  #   :succeeded   - The job completed successfully.
+  #   :failed      - The job completed with an error.
+  #   :in_progress - The job has not yet completed.
+  def job_status(job)
+    raise NotImplementedError
+  end
+
+  # Returns whether the minimal set of webhooks succeeded.
+  #
+  # This is an early way to bail out of even fetching the report if we know the
+  # data is not going to be present.
+  def necessary_jobs_succeeded?
+    raise NotImplementedError
+  end
+
   private
 
   def find_webhook_event(event_name, event_outcome = nil)
