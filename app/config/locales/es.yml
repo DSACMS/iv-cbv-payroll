@@ -192,12 +192,6 @@ es:
         back_button: Regrese a la búsqueda del empleador
         continue_button: Continúe a «revisar mi informe»
         continue_to_review: Continúe a revisar la información de ingresos que logró encontrar antes de enviarla a %{agency_acronym}.
-        dta_options_1_html: Use <a href="https://www.mass.gov/info-details/help-using-dta-connect" target="_blank" rel="noopener noreferer">DTA Connect</a> para cargar y enviar sus documentos de ingresos.
-        dta_options_2_html: Envíe sus documentos al DTA <a href="https://www.mass.gov/guides/how-to-contact-dta#-mail-or-fax-" target="_blank" rel="noopener noreferer">por fax</a> junto con una carátula.
-        dta_options_3_html: Envíe sus documentos al DTA <a href="https://www.mass.gov/guides/how-to-contact-dta#-mail-or-fax-" target="_blank" rel="noopener noreferer">por correo postal</a> junto con una carátula.
-        dta_options_4_html: Entregue sus documentos en <a href="https://www.mass.gov/guides/how-to-contact-dta#-mail-or-fax-" target="_blank" rel="noopener noreferer">una oficina local</a> del DTA.
-        dta_options_5_html: Trabaje con <a href="https://www.mass.gov/info-details/snap-outreach-partners#snap-outreach-partners-" target="_blank" rel="noopener noreferer">un aliado de SNAP Outreach</a> para presentar sus documentos.
-        dta_options_header: 'Puede presentar su información de ingresos usando uno de los siguientes métodos:'
         exit_button_html:
           sandbox: <a href="https://www.mass.gov/guides/how-to-contact-dta" class="usa-button">Salga y vaya a la Agencia de prueba CBV</a>
         header: Cómo informar sus ingresos si su empleador o proveedor de nómina no están listados
