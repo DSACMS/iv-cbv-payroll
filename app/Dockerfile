@@ -128,12 +128,20 @@ ENV GNUPGHOME="/rails/tmp"
 ENV PIDFILE="/rails/tmp/pids/server.pid"
 
 # Install packages needed for deployment
+#
+# To debug a missing package version (i.e. if one of these versions gets
+# superceded in the upstream package repo), run:
+#
+#   docker run -ti registry.docker.com/library/ruby:3.3.5-slim bash
+#   apt-get install [package]
+#
+# and notice the version that was installed.
 RUN apt-get update -qq && \
     apt-get install -y --no-install-recommends \
         curl=7.88.1-10+deb12u12 \
         libgpgme11=1.18.0-3+b1 \
         libvips42=8.14.1-3+deb12u1 \
-        linux-libc-dev=6.1.133-1 \
+        linux-libc-dev=6.1.135-1 \
         openssl=3.0.15-1~deb12u1 \
         postgresql-client=15+248 \
         python-is-python3=3.11.2-1+deb12u1 \
