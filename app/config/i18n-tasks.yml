@@ -155,6 +155,10 @@ ignore_missing:
     - "shared.agency_full_name.la_ldh"                    # FFS-2668
     - "shared.header.cbv_flow_title.la_ldh"               # FFS-2668
     - "shared.header.preheader.la_ldh"                    # FFS-2668
+
+    # LA add_jobs
+    - "cbv.add_jobs.show.answer_yes_bullet_1"             # FFS-2688
+    - "cbv.add_jobs.show.answer_yes_bullet_2"             # FFS-2688
 ## Consider these keys used:
 ignore_unused:
   all:
