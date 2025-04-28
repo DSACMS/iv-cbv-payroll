@@ -1,4 +1,20 @@
-<% cbv_applicant = @cbv_flow.cbv_applicant %>
-<%= f.fields_for :cbv_applicant, cbv_applicant do |f2| %>
-  <%= f2.text_field :case_number, label: t(".fields.case_number.prompt") %>
+<% content_for :title, t(".your_information") %>
+
+<h1><%= t("cbv.applicant_informations.show.your_information") %></h1>
+<div class="usa-prose">
+  <%= t("cbv.applicant_informations.show.explanation", agency_short_name: current_agency.agency_short_name) %>
+</div>
+<h2><%= t("cbv.applicant_informations.show.application_information") %></h2>
+<div class="usa-prose">
+  <%= t("cbv.applicant_informations.show.application_information_explanation", agency_short_name: current_agency.agency_short_name) %>
+</div>
+<%= uswds_form_with(model: @cbv_applicant, url: cbv_flow_applicant_information_path, method: "patch") do |f| %>
+  <% cbv_applicant = @cbv_flow.cbv_applicant %>
+  <%= f.fields_for :cbv_applicant, cbv_applicant do |f2| %>
+    <%= f2.text_field :case_number, label: t(".fields.case_number.prompt") %>
+  <% end %>
+  <br>
+  <%= f.submit t("cbv.applicant_informations.show.continue") %>
 <% end %>
+
+
