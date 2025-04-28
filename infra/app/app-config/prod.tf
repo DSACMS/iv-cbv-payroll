@@ -5,7 +5,7 @@ module "prod_config" {
   default_region                  = module.project_config.default_region
   environment                     = "prod"
   network_name                    = "prod"
-  domain_name                     = "snap-income-pilot.com"
+  domain_name                     = "reportmyincome.org"
   enable_https                    = true
   has_database                    = local.has_database
   has_incident_management_service = local.has_incident_management_service
@@ -17,6 +17,10 @@ module "prod_config" {
   service_cpu                    = 1024
   service_memory                 = 4096
   service_desired_instance_count = 3
+
+  # Create DNS records for these `additional_domains` in the default hosted
+  # zone (this is necessary to support CBV agency subdomains).
+  additional_domains = ["*.reportmyincome.org"]
 
   # Enables ECS Exec access for debugging or jump access.
   # Defaults to `false`. Uncomment the next line to enable.

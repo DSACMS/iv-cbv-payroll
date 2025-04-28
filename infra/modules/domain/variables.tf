@@ -1,8 +1,9 @@
 variable "certificate_configs" {
   type = map(object({
-    source           = string
-    private_key      = optional(string)
-    certificate_body = optional(string)
+    source                    = string
+    private_key               = optional(string)
+    certificate_body          = optional(string)
+    subject_alternative_names = optional(list(string))
   }))
   description = <<EOT
     Map from domains to certificate configuration objects for that domain.

@@ -10,7 +10,8 @@ locals {
 
         certificate_configs = {
           "verify-demo.navapbc.cloud" = {
-            source = "issued"
+            source                    = "issued"
+            subject_alternative_names = ["*.navapbc.cloud"]
           }
           # Example certificate configuration for a certificate that is managed by the project
           # "sub.domain.com" = {
@@ -30,17 +31,17 @@ locals {
       single_nat_gateway = true
     }
 
-    staging = {
-      account_name               = "staging"
-      database_subnet_group_name = "staging"
+    # staging = {
+    #   account_name               = "staging"
+    #   database_subnet_group_name = "staging"
 
-      domain_config = {
-        manage_dns  = true
-        hosted_zone = "hosted.zone.for.staging.network.com"
+    #   domain_config = {
+    #     manage_dns  = true
+    #     hosted_zone = "hosted.zone.for.staging.network.com"
 
-        certificate_configs = {}
-      }
-    }
+    #     certificate_configs = {}
+    #   }
+    # }
 
     prod = {
       account_name               = "nava-ffs-prod"
@@ -48,11 +49,12 @@ locals {
 
       domain_config = {
         manage_dns  = true
-        hosted_zone = "snap-income-pilot.com"
+        hosted_zone = "reportmyincome.org"
 
         certificate_configs = {
-          "snap-income-pilot.com" = {
-            source = "issued"
+          "reportmyincome.org" = {
+            source                    = "issued"
+            subject_alternative_names = ["*.reportmyincome.org"]
           }
         }
       }

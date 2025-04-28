@@ -47,3 +47,15 @@ repos:
     entry: bin/run-linter --cd app -- npm run format:precommit
     language: node
     files: '^app/.*\.(js|ts)$'
+
+  - id: terraform_fmt
+    name: Terraform Fmt
+    entry: terraform fmt
+    language: system
+    files: 'infra/.*\.tf$'
+
+  - id: checkov
+    name: Checkov
+    entry: checkov --quiet --output sarif --framework terraform -f
+    language: system
+    files: 'infra/.*\.tf$'

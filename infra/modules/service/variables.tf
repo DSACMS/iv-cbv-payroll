@@ -1,3 +1,9 @@
+variable "additional_domains" {
+  type        = list(string)
+  description = "Any additional domains also register DNS records to point to the load balancer."
+  default     = []
+}
+
 variable "aws_services_security_group_id" {
   type        = string
   description = "Security group ID for VPC endpoints that access AWS Services"
