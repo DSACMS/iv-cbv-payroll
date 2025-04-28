@@ -1,22 +1,8 @@
-<h1>We're undergoing maintenance.</h1>
-The site is not available right now. Any information you entered will not be saved.
+<% header = t("maintenance.header") %>
+<% content_for :title, header %>
+<h1><%= header %></h1>
 
-<p>
-  <strong>If you live in Massachusetts:</strong>
-</p>
-
-You can submit your income information for your SNAP recertification using one of the following methods:
-
-<ul>
-  <li>Use&nbsp;<a href="https://www.mass.gov/info-details/help-using-dta-connect" rel="nofollow">DTA Connect</a>&nbsp;to upload and submit your income documents.&nbsp;</li>
-  <li><a href="https://www.mass.gov/guides/how-to-contact-dta#-mail-or-fax-" rel="nofollow">Fax</a>&nbsp;your documents to DTA along with a cover sheet.</li>
-  <li><a href="https://www.mass.gov/guides/how-to-contact-dta#-mail-or-fax-" rel="nofollow">Mail</a>&nbsp;your documents to DTA along with a cover sheet.</li>
-  <li>Drop your documents off at a<a href="https://www.mass.gov/guides/how-to-contact-dta#-local-dta-office-" rel="nofollow">&nbsp;local DTA office.</a></li>
-  <li>Work with a&nbsp;<a href="https://www.mass.gov/info-details/snap-outreach-partners#snap-outreach-partners-" rel="nofollow">SNAP Outreach Partner</a>&nbsp;to submit your documents.</li>
-</ul>
-
-<p>
-  <strong>If you live in New York City:</strong>
-</p>
-
-<a href="https://www.nyc.gov/site/hra/help/snap-application-frequently-asked-questions.page" rel="nofollow">Visit HRA's website</a> for more information on how to submit proof of income for your SNAP application or recertification.
+<div class="usa-prose">
+  <p><%= t("maintenance.body_1") %></p>
+  <p><%= t("maintenance.body_2") %></p>
+</div>

@@ -625,6 +625,10 @@ en:
           - Ask your employer's HR team to help get your payroll login details.
           title: Contact your employer's Human Resource Team
         title: I don't know my username
+  maintenance:
+    body_1: The site is not available right now. Any information you entered will not be saved.
+    body_2: Visit your agency's website for more information on how to submit proof of income for your benefits.
+    header: We're undergoing maintenance
   pages:
     error_404:
       error_code_html: 'Error code: <strong>404</strong>'
@@ -688,7 +692,7 @@ en:
       fr: Français
       zh: 中文
     not_applicable: N/A
-    pilot_name: SNAP Income Pilot
+    pilot_name: Report My Income
     skip_link: Skip to main content
   time:
     formats:
