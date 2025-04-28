@@ -77,9 +77,10 @@ RSpec.describe Webhooks::Argyle::EventsController, type: :controller do
     end
   end
 
-  describe 'Argyle webhooks' do
+  describe 'when receiving webhooks for a full Argyle sync' do
     let(:cbv_flow) { create(:cbv_flow, argyle_user_id: "abc-def-ghi") }
     let(:argyle_account_id) { 'argyle_account_id' }
+    let(:fake_event_logger) { instance_double(GenericEventTracker) }
 
     # Instead of using "shared_examples_for" we're relying on a test helper method
     # since we cannot use "shared_examples_for" within the "it" test scope
@@ -102,156 +103,164 @@ RSpec.describe Webhooks::Argyle::EventsController, type: :controller do
       expect(webhook_event.payroll_account.pinwheel_account_id).to eq(payroll_account.pinwheel_account_id)
     end
 
-    context 'PayrollAccount::Argyle model flow' do
-      let(:fake_event_logger) { instance_double(GenericEventTracker) }
+    before do
+      allow_any_instance_of(Aggregators::Sdk::ArgyleService)
+        .to receive(:fetch_identities_api)
+        .and_return(argyle_load_relative_json_file("sarah", "request_identity.json"))
+      allow_any_instance_of(Aggregators::Sdk::ArgyleService)
+        .to receive(:fetch_paystubs_api)
+        .and_return(argyle_load_relative_json_file("sarah", "request_paystubs.json"))
+      allow_any_instance_of(Aggregators::Sdk::ArgyleService)
+        .to receive(:fetch_gigs_api)
+        .and_return(argyle_load_relative_json_file("bob", "request_gigs.json"))
+      allow(controller).to receive(:event_logger).and_return(fake_event_logger)
+      allow(fake_event_logger).to receive(:track)
+    end
 
-      before do
-        allow_any_instance_of(Aggregators::Sdk::ArgyleService)
-          .to receive(:fetch_identities_api)
-          .and_return(argyle_load_relative_json_file("sarah", "request_identity.json"))
-        allow_any_instance_of(Aggregators::Sdk::ArgyleService)
-          .to receive(:fetch_paystubs_api)
-          .and_return(argyle_load_relative_json_file("sarah", "request_paystubs.json"))
-        allow_any_instance_of(Aggregators::Sdk::ArgyleService)
-          .to receive(:fetch_gigs_api)
-          .and_return(argyle_load_relative_json_file("bob", "request_gigs.json"))
-        allow(controller).to receive(:event_logger).and_return(fake_event_logger)
-        allow(fake_event_logger).to receive(:track)
-      end
-
-      it 'sequentially tests account synchronization flow' do
-        # Test each webhook in sequence
-        expect do
-          process_webhook("accounts.connected")
-        end.to change(PayrollAccount, :count).by(1)
-
-        payroll_account = PayrollAccount.last
-        expect(payroll_account.sync_in_progress?).to eq(true)
-
-        process_webhook("identities.added")
-        expect(payroll_account.webhook_events.count).to eq(2)
-
-        process_webhook("users.fully_synced")
-        expect(payroll_account.webhook_events.count).to eq(3)
-
-        process_webhook("gigs.partially_synced")
-        expect(payroll_account.webhook_events.count).to eq(4)
-
-        process_webhook("paystubs.partially_synced")
-        expect(payroll_account.webhook_events.count).to eq(5)
-
-        # expect the PayrollAccount to be fully synced
-        expect(payroll_account.has_fully_synced?).to be_truthy
-        expect(payroll_account.reload.sync_succeeded?).to eq(true)
-      end
-
-      it 'tracks an ApplicantFinishedArgyleSync event' do
+    it "results in a fully synced payroll account" do
+      # Test each webhook in sequence
+      expect do
         process_webhook("accounts.connected")
-        process_webhook("identities.added")
-        process_webhook("users.fully_synced")
-        process_webhook("gigs.partially_synced")
+      end.to change(PayrollAccount, :count).by(1)
 
-        expect(fake_event_logger).to receive(:track) do |event_name, _request, attributes|
-          expect(event_name).to eq("ApplicantFinishedArgyleSync")
-          expect(attributes).to include(
-            cbv_flow_id: cbv_flow.id,
-            cbv_applicant_id: cbv_flow.cbv_applicant_id,
-            invitation_id: cbv_flow.cbv_flow_invitation_id,
-            sync_duration_seconds: be_a(Numeric),
+      payroll_account = PayrollAccount.last
+      expect(payroll_account.sync_in_progress?).to eq(true)
 
-            # Identity fields
-            identity_success: true,
-            identity_supported: true,
-            identity_count: 1,
-            identity_full_name_present: true,
-            identity_full_name_length: 15,
-            identity_date_of_birth_present: true,
-            identity_ssn_present: true,
-            identity_emails_count: 1,
-            identity_phone_numbers_count: 1,
+      process_webhook("identities.added")
+      expect(payroll_account.webhook_events.count).to eq(2)
 
-            # Income fields
-            income_success: true,
-            income_supported: true,
-            income_compensation_amount_present: true,
-            income_compensation_unit_present: true,
-            income_pay_frequency_present: true,
+      process_webhook("users.fully_synced")
+      expect(payroll_account.webhook_events.count).to eq(3)
 
-            # Paystubs fields
-            paystubs_success: true,
-            paystubs_supported: true,
-            paystubs_count: 10,
-            paystubs_deductions_count: 16,
-            paystubs_hours_by_earning_category_count: 10,
-            paystubs_hours_present: true,
-            paystubs_earnings_count: 33,
-            paystubs_earnings_with_hours_count: 10,
-            paystubs_earnings_type_base_count: 10,
-            paystubs_earnings_type_bonus_count: 10,
-            paystubs_earnings_type_overtime_count: 5,
-            paystubs_earnings_type_commission_count: 8,
+      process_webhook("gigs.partially_synced")
+      expect(payroll_account.webhook_events.count).to eq(4)
 
-            # Employment fields
-            employment_success: true,
-            employment_supported: true,
-            employment_status: "employed",
-            employment_type: "w2",
-            employment_employer_name: "Whole Foods",
-            employment_employer_address_present: true,
-            employment_employer_phone_number_present: true,
-            employment_start_date: "2022-08-08",
-            employment_termination_date: nil,
-            employment_type_w2_count: 1,
-            employment_type_gig_count: 0,
+      process_webhook("paystubs.partially_synced")
+      expect(payroll_account.webhook_events.count).to eq(5)
 
-            # Gigs fields
-            gigs_success: true,
-            gigs_supported: true
-          )
-        end
+      # expect the PayrollAccount to be fully synced
+      expect(payroll_account.has_fully_synced?).to be_truthy
+      expect(payroll_account.reload.sync_succeeded?).to eq(true)
+    end
 
-        process_webhook("paystubs.partially_synced")
+    it "is fully synced even without the *.partially_synced events" do
+      process_webhook("accounts.connected")
+      process_webhook("identities.added")
+      process_webhook("gigs.fully_synced")
+      process_webhook("paystubs.fully_synced")
+      process_webhook("users.fully_synced")
+
+      payroll_account = PayrollAccount.last
+      expect(payroll_account.has_fully_synced?).to eq(true)
+      expect(payroll_account.reload.sync_succeeded?).to eq(true)
+    end
+
+    it 'tracks an ApplicantFinishedArgyleSync event' do
+      process_webhook("accounts.connected")
+      process_webhook("identities.added")
+      process_webhook("users.fully_synced")
+      process_webhook("gigs.partially_synced")
+
+      expect(fake_event_logger).to receive(:track) do |event_name, _request, attributes|
+        expect(event_name).to eq("ApplicantFinishedArgyleSync")
+        expect(attributes).to include(
+          cbv_flow_id: cbv_flow.id,
+          cbv_applicant_id: cbv_flow.cbv_applicant_id,
+          invitation_id: cbv_flow.cbv_flow_invitation_id,
+          sync_duration_seconds: be_a(Numeric),
+
+          # Identity fields
+          identity_success: true,
+          identity_supported: true,
+          identity_count: 1,
+          identity_full_name_present: true,
+          identity_full_name_length: 15,
+          identity_date_of_birth_present: true,
+          identity_ssn_present: true,
+          identity_emails_count: 1,
+          identity_phone_numbers_count: 1,
+
+          # Income fields
+          income_success: true,
+          income_supported: true,
+          income_compensation_amount_present: true,
+          income_compensation_unit_present: true,
+          income_pay_frequency_present: true,
+
+          # Paystubs fields
+          paystubs_success: true,
+          paystubs_supported: true,
+          paystubs_count: 10,
+          paystubs_deductions_count: 16,
+          paystubs_hours_by_earning_category_count: 10,
+          paystubs_hours_present: true,
+          paystubs_earnings_count: 33,
+          paystubs_earnings_with_hours_count: 10,
+          paystubs_earnings_type_base_count: 10,
+          paystubs_earnings_type_bonus_count: 10,
+          paystubs_earnings_type_overtime_count: 5,
+          paystubs_earnings_type_commission_count: 8,
+
+          # Employment fields
+          employment_success: true,
+          employment_supported: true,
+          employment_status: "employed",
+          employment_type: "w2",
+          employment_employer_name: "Whole Foods",
+          employment_employer_address_present: true,
+          employment_employer_phone_number_present: true,
+          employment_start_date: "2022-08-08",
+          employment_termination_date: nil,
+          employment_type_w2_count: 1,
+          employment_type_gig_count: 0,
+
+          # Gigs fields
+          gigs_success: true,
+          gigs_supported: true
+        )
       end
 
-      it 'tracks an ApplicantReportMetUsefulRequirements event' do
-        process_webhook("accounts.connected")
-        process_webhook("identities.added")
-        process_webhook("users.fully_synced")
-        process_webhook("gigs.partially_synced")
+      process_webhook("paystubs.partially_synced")
+    end
 
-        expect(fake_event_logger).to receive(:track)
-           .with("ApplicantReportMetUsefulRequirements", anything, anything).exactly(1).times
+    it 'tracks an ApplicantReportMetUsefulRequirements event' do
+      process_webhook("accounts.connected")
+      process_webhook("identities.added")
+      process_webhook("users.fully_synced")
+      process_webhook("gigs.partially_synced")
 
-        process_webhook("paystubs.partially_synced")
-      end
+      expect(fake_event_logger).to receive(:track)
+         .with("ApplicantReportMetUsefulRequirements", anything, anything).exactly(1).times
 
-      it 'sequentially tests argyle "system_error" on accounts.updated' do
-        expect(PayrollAccount.count).to eq(0)
+      process_webhook("paystubs.partially_synced")
+    end
 
-        process_webhook("accounts.updated", variant: :invalid_mfa)
-        process_webhook("accounts.updated", variant: :connecting)
-        process_webhook("accounts.connected")
-        process_webhook("accounts.updated", variant: :connected)
+    it 'results in a sync failure after receiving "system_error" on accounts.updated' do
+      expect(PayrollAccount.count).to eq(0)
 
-        expect(PayrollAccount.count).to eq(1)
-        payroll_account = PayrollAccount.last
+      process_webhook("accounts.updated", variant: :invalid_mfa)
+      process_webhook("accounts.updated", variant: :connecting)
+      process_webhook("accounts.connected")
+      process_webhook("accounts.updated", variant: :connected)
 
-        expect_any_instance_of(PayrollAccount).to receive(:broadcast_replace).twice
+      expect(PayrollAccount.count).to eq(1)
+      payroll_account = PayrollAccount.last
 
-        expect(payroll_account.identity_errored_at).to be_nil
+      expect_any_instance_of(PayrollAccount).to receive(:broadcast_replace).twice
 
-        expect(fake_event_logger)
-          .to receive(:track)
-          .with("ApplicantEncounteredArgyleAccountSystemError", anything, anything).exactly(1).times
+      expect(payroll_account.identity_errored_at).to be_nil
 
-        process_webhook("accounts.updated", variant: :system_error)
-        payroll_account.reload.webhook_events.reload
+      expect(fake_event_logger)
+        .to receive(:track)
+        .with("ApplicantEncounteredArgyleAccountSystemError", anything, anything).exactly(1).times
 
-        expect(payroll_account.webhook_events.count).to eq(5)
-        expect(payroll_account.job_status("accounts")).to equal(:failed)
-        expect(payroll_account.sync_failed?).to equal(true)
-        expect(payroll_account.has_fully_synced?).to be_falsey
-      end
+      process_webhook("accounts.updated", variant: :system_error)
+      payroll_account.reload.webhook_events.reload
+
+      expect(payroll_account.webhook_events.count).to eq(5)
+      expect(payroll_account.job_status("accounts")).to equal(:failed)
+      expect(payroll_account.sync_failed?).to equal(true)
+      expect(payroll_account.has_fully_synced?).to be_falsey
     end
   end
 end
