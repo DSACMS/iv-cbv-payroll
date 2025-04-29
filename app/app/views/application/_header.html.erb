@@ -21,10 +21,13 @@
           <% has_square_logo = current_agency && current_agency.logo_path %>
           <div class="<%= has_square_logo ?
             "display-none tablet:display-flex" : "display-flex" %> flex-align-center">
-            <% if current_agency && current_agency.logo_square_path %>
+            <% if current_agency&.logo_square_path %>
               <%= image_tag current_agency.logo_square_path, class: "cbv-header__agency-logo cbv-header__agency-logo--#{current_agency.id}" %>
+            <% elsif current_agency&.logo_path %>
+              <%= image_tag current_agency.logo_path, class: "cbv-header__agency-logo cbv-header__agency-logo--#{current_agency.id}" %>
+            <% else %>
+              <%= agency_translation("shared.header.cbv_flow_title") %>
             <% end %>
-            <%= agency_translation("shared.header.cbv_flow_title") %>
           </div>
 
           <% if current_agency && current_agency.logo_path %>
