@@ -54,15 +54,8 @@ FactoryBot.define do
     trait :argyle_partially_synced do
       argyle
 
-      after(:build) do |payroll_account, evaluator|
-        # Only sync the first 2 jobs
-        payroll_account.supported_jobs.first(2).each do |job|
-          payroll_account.webhook_events << build(
-            :webhook_event,
-            event_name: PayrollAccount::Argyle.event_for_job(job),
-            event_outcome: evaluator.with_errored_jobs.include?(job) ? "error" : "success"
-          )
-        end
+      after(:build) do |payroll_account, _|
+        payroll_account.synchronization_status = :in_progress
       end
     end
 

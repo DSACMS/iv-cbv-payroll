@@ -27,12 +27,13 @@ class Api::ArgyleController < ApplicationController
                  end
 
     # Redirect if the user is attempting connect a previously connected account
-    argyle_user = argyle.fetch_user_api(user: @cbv_flow.argyle_user_id)
-    payroll_account = PayrollAccount::Argyle.find_by(cbv_flow: @cbv_flow)
+    connected_argyle_accounts = argyle.fetch_accounts_api(user: @cbv_flow.argyle_user_id, item: item_id)["results"]
 
-    if item_id.present? && argyle_user["items_connected"]&.include?(item_id)
+    if item_id.present? && connected_argyle_accounts.any?
+      argyle_account = connected_argyle_accounts.first
+      payroll_account = @cbv_flow.payroll_accounts.find_by(pinwheel_account_id: argyle_account["id"])
 
-      if payroll_account&.has_fully_synced?
+      if payroll_account.sync_succeeded?
         return redirect_to cbv_flow_payment_details_path(user: { account_id: payroll_account.pinwheel_account_id })
       else
         return redirect_to cbv_flow_synchronizations_path(user: { account_id: payroll_account.pinwheel_account_id })
