@@ -30,8 +30,9 @@ locals {
 resource "aws_acm_certificate" "issued" {
   for_each = local.issued_certificate_configs
 
-  domain_name       = each.key
-  validation_method = "DNS"
+  domain_name               = each.key
+  validation_method         = "DNS"
+  subject_alternative_names = each.value.subject_alternative_names
 
   lifecycle {
     create_before_destroy = true
