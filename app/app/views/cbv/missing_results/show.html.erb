@@ -3,20 +3,10 @@
 <h1><%= t(".header") %></h1>
 <div class="usa-prose">
   <p class="line-height-sans-5"><%= t(".not_listed_p1", agency_acronym: current_agency.agency_short_name) %></p>
-
-  <% if current_agency.id == "ma" %>
-    <p><%= t(".dta_options_header") %></p>
-  <ul>
-    <li><%= t(".dta_options_1_html") %></li>
-    <li><%= t(".dta_options_2_html") %></li>
-    <li><%= t(".dta_options_3_html") %></li>
-    <li><%= t(".dta_options_4_html") %></li>
-    <li><%= t(".dta_options_5_html") %></li>
-  </ul>
+  <% if @has_payroll_account %>
+    <p class="line-height-sans-5"><%= agency_translation(".not_listed_p2_link_html", agency_short_name: current_agency.agency_short_name) %></p>
   <% else %>
     <p class="line-height-sans-5"><%= t(".not_listed_p2", agency_short_name: current_agency.agency_short_name) %></p>
-<% end %>
-  <% unless @has_payroll_account %>
     <%= agency_translation(".exit_button_html") %>
   <% end %>
 </div>
