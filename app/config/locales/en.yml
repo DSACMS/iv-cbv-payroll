@@ -448,7 +448,7 @@ en:
         consent_to_authorize_warning: Please check the legal agreement box to share your report.
     successes:
       show:
-        back_to_agency: Go to %{agency_short_name}'s' website
+        back_to_agency: Go to %{agency_short_name}'s website
         caseworker_received: We have delivered your payment information to %{agency_acronym}. They will contact you if any additional information is needed.
         confirmation_code_html: "<strong>Confirmation code</strong>: %{confirmation_code}"
         download: Download a copy of the report
