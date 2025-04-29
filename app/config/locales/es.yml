@@ -233,8 +233,6 @@ es:
       show:
         additional_information_title: "¿Existe algún otro detalle que le gustaría que su asistente de caso conozca en relación con sus ingresos?"
         application_or_recertification_date:
-          ma: Date client was contacted
-          nyc: SNAP application or recertification interview date
           sandbox: SNAP application or recertification interview date
         legal_header: Consentimiento legal
         none_found: No se encontró ningún pago de este empleador en los últimos 90 días.
@@ -244,8 +242,6 @@ es:
           agency_header_name:
             az_des: Department of Economic Security
             la_ldh: Department of Health
-            ma: Massachusetts Department of Transitional Assistance
-            nyc: NYC Human Resources Administration
             sandbox: CBV Test Agency
           caseworker:
             pay_period: Período de pago (%{pay_frequency})
