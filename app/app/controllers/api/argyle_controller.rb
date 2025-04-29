@@ -33,10 +33,10 @@ class Api::ArgyleController < ApplicationController
       argyle_account = connected_argyle_accounts.first
       payroll_account = @cbv_flow.payroll_accounts.find_by(pinwheel_account_id: argyle_account["id"])
 
-      if payroll_account.sync_succeeded?
-        return redirect_to cbv_flow_payment_details_path(user: { account_id: payroll_account.pinwheel_account_id })
-      else
+      if payroll_account.sync_in_progress?
         return redirect_to cbv_flow_synchronizations_path(user: { account_id: payroll_account.pinwheel_account_id })
+      else
+        return redirect_to cbv_flow_payment_details_path(user: { account_id: payroll_account.pinwheel_account_id })
       end
     end
 
