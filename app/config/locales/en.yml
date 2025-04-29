@@ -278,8 +278,6 @@ en:
             prompt: Middle name
             super_one_html: Middle name<sup>1</sup>
       show:
-        application_information: Application information
-        application_information_explanation: This information may be found on your agency's website.
         continue: Continue
         explanation: This information will be used to connect your income information to your %{agency_short_name} application. Please make sure the information you enter is the same as what is shown on your application.
         your_information: Your information

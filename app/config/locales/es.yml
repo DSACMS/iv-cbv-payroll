@@ -113,8 +113,6 @@ es:
             prompt: Segundo nombre
             super_one_html: Segundo nombre<sup>1</sup>
       show:
-        application_information: Información relacionada con la solicitud
-        application_information_explanation: Esta información se puede encontrar en el sitio web de la agencia.
         continue: Continuar
         explanation: Esta información se emplea para vincular la información de sus ingresos con la información presente en la solicitud que presentó ante %{agency_short_name} . Por ello, asegúrese de que la información que ingrese sea la misma que se muestra en su solicitud.
         your_information: Su información
