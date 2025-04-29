@@ -236,7 +236,6 @@ es:
           ma: Date client was contacted
           nyc: SNAP application or recertification interview date
           sandbox: SNAP application or recertification interview date
-        consent_checkbox_label_html: Marque esta casilla para confirmar que, a su leal saber y entender, la información proporcionada es verdadera y está completa. Se compromete a informar a %{agency_acronym} de cualquier ingreso que no se vea reflejado en este informe, así como de cualquier discrepancia que encuentre en la información recopilada mediante el uso de esta herramienta. Comprende que proporcionar información precisa y completa es su responsabilidad y que presentar cualquier información falsa, o bien abstenerse de brindar cierta información, puede acarrear consecuencias legales. Para obtener más información acerca de sus derechos y obligaciones con respecto a la información privada que comparte con %{agency_acronym}, consulte el apartado Derechos y obligaciones que firmó en la solicitud. Este apartado se encuentra disponible en el sitio web de %{agency_acronym}.<br><br>Al presentar este informe, autoriza su uso para fines de verificación de ingresos por parte del personal autorizado de %{agency_acronym}.
         legal_header: Consentimiento legal
         none_found: No se encontró ningún pago de este empleador en los últimos 90 días.
         none_found_confirmed: Pudimos confirmar que este empleador no realizó ningún pago en los últimos 90 días. Esto sucede cuando el cliente no percibe ingresos de este trabajo durante tal período de tiempo.
@@ -267,7 +266,7 @@ es:
             report_details: Detalles del reporte
         share_report_button: Autorizo que se comparta mi informe con %{agency_acronym}
         table_caption_no_name: Employer %{number}
-        warning_html: Su informe de ingresos se adjuntará a la solicitud para el Programa de Asistencia Nutricional Suplementaria (SNAP, Supplemental Nutrition Assistance Program) que presente.<br>A fin de compartir este informe, debe marcar la casilla de consentimiento legal.
+        warning_2: A fin de compartir este informe, debe marcar la casilla de consentimiento legal.
       update:
         consent_to_authorize_warning: A fin de compartir su informe, marque la casilla de consentimiento legal.
     successes:
