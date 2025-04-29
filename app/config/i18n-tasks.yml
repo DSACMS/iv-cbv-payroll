@@ -182,6 +182,10 @@ ignore_missing:
     # LA submit (FFS-2688)
     - "cbv.submits.show.consent_checkbox_label_html"
     - "cbv.submits.show.warning_1"
+    
+    # LA success (FFS-2688)
+    - "cbv.successes.show.follow_up"
+    - "cbv.successes.show.if_it_didnt_work"
 ## Consider these keys used:
 ignore_unused:
   all:
