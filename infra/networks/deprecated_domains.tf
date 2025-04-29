@@ -14,6 +14,8 @@
 # #############################################################################
 
 resource "aws_acm_certificate" "deprecated_certificate" {
+  count = var.network_name == "prod" ? 1 : 0
+
   domain_name       = "snap-income-pilot.com"
   key_algorithm     = "RSA_2048"
   validation_method = "DNS"
@@ -26,13 +28,17 @@ resource "aws_acm_certificate" "deprecated_certificate" {
 resource "aws_route53_zone" "deprecated_zone" {
   # checkov:skip=CKV2_AWS_38:No need for DNSSEC on this deprecated zone.
   # checkov:skip=CKV2_AWS_39:No need to manage DNS query logging on this deprecated zone.
+  count = var.network_name == "prod" ? 1 : 0
+
   name = "snap-income-pilot.com"
 }
 
 resource "aws_route53_record" "deprecated_validation" {
+  count = var.network_name == "prod" ? 1 : 0
+
   name    = "_68adda3cfec681d22de0bf4e66e946f8.snap-income-pilot.com"
   records = ["_3a86b1ee62e6e99d96fa7ebf4af0dab5.sdgjtdhdhz.acm-validations.aws."]
   ttl     = 60
   type    = "CNAME"
-  zone_id = aws_route53_zone.deprecated_zone.id
+  zone_id = aws_route53_zone.deprecated_zone[0].id
 }
