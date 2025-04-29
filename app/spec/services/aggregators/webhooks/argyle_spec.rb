@@ -30,6 +30,12 @@ RSpec.describe Aggregators::Webhooks::Argyle, type: :service do
       ]
     end
 
+    let(:expected_include_resource_events) do
+      %w[
+        accounts.updated
+      ]
+    end
+
     it 'returns array of non-partial webhook events by default' do
       expect(described_class.get_webhook_events).to match_array(expected_non_partial_events)
     end
@@ -38,9 +44,14 @@ RSpec.describe Aggregators::Webhooks::Argyle, type: :service do
       expect(described_class.get_webhook_events(type: :partial)).to match_array(expected_partial_events)
     end
 
+    it 'returns array of include_resource webhook events with type = :include_resource' do
+      expect(described_class.get_webhook_events(type: :include_resource)).to match_array(expected_include_resource_events)
+    end
+
+
     it 'returns array of all webhook events with type = :all' do
       expect(described_class.get_webhook_events(type: :all)).to match_array(
-        expected_non_partial_events + expected_partial_events
+        expected_non_partial_events + expected_partial_events + expected_include_resource_events
       )
     end
   end

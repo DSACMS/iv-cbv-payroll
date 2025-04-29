@@ -12,6 +12,12 @@ module Aggregators::Validators
       is_w2_worker = report.employments.none? { |e| e.employment_type == :gig }
       if report.paystubs.any?
         report.paystubs.each { |p| validate_paystub(report, p, is_w2_worker) }
+
+        if is_w2_worker
+          hours_total = 0
+          report.paystubs.each { |p| hours_total += p.hours.to_f if p.hours.present? }
+          report.errors.add(:paystubs, "Report has invalid hours total") unless hours_total > 0
+        end
       end
     end
 
@@ -33,8 +39,6 @@ module Aggregators::Validators
       if is_w2_worker
         report.errors.add(:paystubs, "Paystub has no pay_period_start") unless paystub.pay_period_start.present?
         report.errors.add(:paystubs, "Paystub has no pay_period_end") unless paystub.pay_period_end.present?
-        report.errors.add(:paystubs, "Paystub has no hours") unless paystub.hours.present?
-        report.errors.add(:paystubs, "Paystub has invalid hours") unless paystub.hours.to_f > 0
       end
     end
   end

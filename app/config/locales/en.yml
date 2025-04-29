@@ -224,28 +224,29 @@ en:
   caseworker_mailer:
     summary_email:
       greeting: Hello,
-      subject: Income Verification Report %{case_number} has been received
+      subject:
+        default: Income Verification Report %{case_number} has been received
+        la_ldh: 'CBV Report: Confirmation Code %{confirmation_code}'
   cbv:
     add_jobs:
       next_path:
         notice_no_answer: You must select an answer to continue.
       show:
         answer_no_bullet_1: You don't have another job (current or recent)
-        answer_no_bullet_2: You have a job that pays you via PayPal, Venmo, Cash App, etc
+        answer_no_bullet_2: You have a job that pays you via PayPal, Venmo, Cash App, etc.
         answer_no_bullet_3: You have a job that pays you in cash
-        answer_no_bullet_4: You have a job that pays you with a paper check and you cannot view your paycheck online
+        answer_no_bullet_4: You have a job that pays you with a paper check and you can't view your paycheck online
         answer_no_bullet_5: You have a job that issues a 1099
         answer_no_header: 'Answer NO if:'
-        answer_yes_bullet_1: You have a job that has an online payroll provider
-        answer_yes_bullet_2: You have a job that lets you view paystubs online
+        answer_yes_bullet_1: Your job has an online payroll provider
+        answer_yes_bullet_2: Your job lets you view pay stubs online
         answer_yes_bullet_3: Your job is app-based (Uber, DoorDash, Lyft, Instacart, etc.)
         answer_yes_header_html: 'Answer YES if <em>any</em> of these are true about your current or recent job:'
         continue: Continue
         criteria_disclaimer: 'Note: If you''ve had other jobs in the past %{pay_income_days} days that don''t meet these criteria, you may need to submit that income information separately.'
         header: Do you have another job to report?
         learn_more_link_html:
-          ma: Learn more on <a href="https://www.mass.gov/guides/how-to-contact-dta" target="_blank" rel="noopener noreferer">DTA's website</a>.
-          nyc: Learn more on <a href="https://www.nyc.gov/site/hra/help/snap-application-frequently-asked-questions.page" target="_blank" rel="noopener noreferer">HRA's website</a>.
+          la_ldh: Learn more on <a href="http://MyMedicaid.LA.GOV" target="_blank" rel="noopener noreferrer">LDH's website</a>.
           sandbox: Learn more on <a href="https://www.mass.gov/guides/how-to-contact-dta" target="_blank" rel="noopener noreferrer">CBV Test Agency's website</a>.
         no_radio: No, I don’t have another job that meets the criteria
         subheader: Please add other jobs you’ve had in the past %{pay_income_days} days, even if you're no longer at that job.
@@ -289,7 +290,7 @@ en:
     employer_searches:
       show:
         app_based_providers: App-based employers
-        can_not_find_employer: I can’t find my company or payroll provider
+        can_not_find_employer: I can’t find my employer or payroll provider
         employer_not_listed: Employer not listed?
         exit_button_text: Exit and go to %{agency_short_name}
         header: Search for your employer or payroll provider
@@ -309,12 +310,11 @@ en:
         to_continue: 'If you still don’t see your employer or payroll provider listed:'
         to_continue_li_1: You’ll need to submit that income information separately.
         to_continue_li_1_html:
-          ma: <a href="https://www.mass.gov/guides/how-to-contact-dta">Go to DTA's website</a> to learn about other ways to report your income.
-          nyc: <a href="https://www.nyc.gov/site/hra/help/snap-application-frequently-asked-questions.page">Go to HRA's website</a> to learn about other ways to report your income.
+          la_ldh: <a href="http://mymedicaid.la.gov/">Go to LDH's website</a> to learn about other ways to report your income.
           sandbox: <a href="https://example.com/contact">Go to CBV's website</a> to learn about other ways to report your income.
         to_continue_li_2: If you have other jobs to add, search for them.
         to_continue_li_3: If you have no other jobs to add here, you can exit this site.
-        to_continue_li_3_continue: If you have no other jobs to add here, continue to complete your income report.
+        to_continue_li_3_continue: If you have no other jobs to add here, continue to review your income report.
     entries:
       create:
         error: You must check the agreement checkbox to proceed.
@@ -337,11 +337,9 @@ en:
     error_no_access: We weren't able to load payroll data for this account. Please click the link you received from your SNAP agency to try again.
     expired_invitations:
       show:
-        body_1: You've either successfully completed your verification process, or are trying to access this invitation after it has expired.
-        body_2: If you still need to verify your income, please submit your income information by visiting %{agency_short_name}'s website.
+        body_1: If you still need to verify your income, please submit your income information by visiting %{agency_short_name}'s website.
         cta_button_html:
-          ma: <a href="https://www.mass.gov/guides/how-to-contact-dta" class="usa-button">Visit DTA website</a>
-          nyc: <a href="https://www.nyc.gov/site/hra/help/snap-application-frequently-asked-questions.page" class="usa-button">Visit HRA website</a>
+          la_ldh: <a href="http://mymedicaid.la.gov/" class="usa-button">Visit LDH's website</a>
           sandbox: <a href="https://www.mass.gov/guides/how-to-contact-dta" class="usa-button">Learn more at CBV Test Agency</a>
         title: Your invitation to verify income has expired
     missing_results:
@@ -349,21 +347,17 @@ en:
         back_button: Go back to employer search
         continue_button: Continue to review my report
         continue_to_review: Continue to review the income information you were able to find before you submit it to %{agency_acronym}.
-        dta_options_1_html: Use <a href="https://www.mass.gov/info-details/help-using-dta-connect" target="_blank" rel="noopener noreferer">DTA Connect</a> to upload and submit your income documents.
-        dta_options_2_html: <a href="https://www.mass.gov/guides/how-to-contact-dta#-mail-or-fax-" target="_blank" rel="noopener noreferer">Fax</a> your documents to DTA along with a cover sheet.
-        dta_options_3_html: <a href="https://www.mass.gov/guides/how-to-contact-dta#-mail-or-fax-" target="_blank" rel="noopener noreferer">Mail</a> your documents to DTA along with a cover sheet.
-        dta_options_4_html: Drop your documents off at a <a href="https://www.mass.gov/guides/how-to-contact-dta#-mail-or-fax-" target="_blank" rel="noopener noreferer">local DTA office</a>.
-        dta_options_5_html: Work with a <a href="https://www.mass.gov/info-details/snap-outreach-partners#snap-outreach-partners-" target="_blank" rel="noopener noreferer">SNAP Outreach Partner</a> to submit your documents.
-        dta_options_header: 'You can submit your income information using one of the following methods:'
         exit_button_html:
-          ma: <a href="https://www.mass.gov/guides/how-to-contact-dta" class="usa-button">Exit and go to DTA</a>
-          nyc: <a href="https://www.nyc.gov/site/hra/help/snap-application-frequently-asked-questions.page" class="usa-button">Exit and go to HRA</a>
+          la_ldh: <a href="http://mymedicaid.la.gov/" class="usa-button">Exit and go to Louisiana Department of Health</a>
           sandbox: <a href="https://www.mass.gov/guides/how-to-contact-dta" class="usa-button">Exit and go to CBV Test Agency</a>
         header: How to report income if your employer or payroll provider isn’t listed
         more_jobs: If you have more jobs to report
         no_more_jobs: If you don't have more jobs to report
         not_listed_p1: If your employer or payroll provider isn’t listed on this site, you’ll need to share your income information for this job directly with %{agency_acronym}.
-        not_listed_p2: Visit %{agency_short_name} for more information on how to submit documents.
+        not_listed_p2: Visit %{agency_short_name}'s website for more information on how to submit documents.
+        not_listed_p2_link_html:
+          la_ldh: Visit <a href="http://mymedicaid.la.gov/">%{agency_short_name}'s website</a> for more information on how to submit documents.
+          sandbox: Visit <a href="https://www.mass.gov/guides/how-to-contact-dta">%{agency_short_name}'s website</a> for more information on how to submit documents.
         you_can_search: You can search for another employer or payroll provider. This site supports employers with online payroll providers or app-based services. Examples include Amazon, Walmart, McDonald’s, Uber, DoorDash, Lyft, and Instacart.
     payment_details:
       show:
@@ -403,10 +397,8 @@ en:
       show:
         additional_information_title: Is there anything else you'd like your caseworker to know about your income?
         application_or_recertification_date:
-          ma: Date client was contacted
-          nyc: SNAP application or recertification interview date
           sandbox: SNAP application or recertification interview date
-        consent_checkbox_label_html: Check this box to confirm that the information provided by you is true and complete to the best of your knowledge. You agree to inform %{agency_acronym} of any income not reflected in this report or any discrepancies found in the information gathered with this tool. You understand that providing accurate and complete information is your responsibility, and any false or omitted information may have legal consequences. For more information on your rights and responsibilities regarding private information you share with %{agency_acronym} please refer to the Rights and Responsibilities you signed at application, found on the %{agency_acronym} website.<br><br>By sending this report, you authorize its use for income verification by %{agency_acronym} and authorized personnel.
+        consent_checkbox_label_html: 'Check this box to confirm: <ul><li>The information provided by you is true and complete to the best of your knowledge.</li><li>You agree to inform the %{agency_full_name} of any income not reflected in this report or any discrepancies found in the information gathered with this tool.</li><li>You understand that providing accurate and complete information is your responsibility, and any false or omitted information may have legal consequences.</li></ul> By sending this report, you authorize its use for income verification by authorized %{agency_short_name} personnel.'
         legal_header: Legal agreement
         none_found: We didn't find any payments from this employer in the past 90 days.
         none_found_confirmed: We've confirmed that there are no payments from this employer in the past 90 days. This happens when the client hasn't received income from this job during that time.
@@ -415,8 +407,6 @@ en:
           agency_header_name:
             az_des: Department of Economic Security
             la_ldh: Department of Health
-            ma: Massachusetts Department of Transitional Assistance
-            nyc: NYC Human Resources Administration
             sandbox: CBV Test Agency
           caseworker:
             agreement_consent_timestamp: Agreement Consent Timestamp
@@ -448,20 +438,19 @@ en:
             report_details: Report Details
         share_report_button: Share my report with %{agency_acronym}
         table_caption_no_name: Employer %{number}
-        warning_html: Your income report will be attached to your SNAP application.<br>You must check the legal agreement box to share your report.
+        warning_1: Your income report will be attached to your Medicaid application.
+        warning_2: You must check the legal agreement box to share your report.
       update:
         consent_to_authorize_warning: Please check the legal agreement box to share your report.
     successes:
       show:
-        back_to_agency: Go to %{agency_short_name} website
+        back_to_agency: Go to %{agency_short_name}'s website
         caseworker_received: We have delivered your payment information to %{agency_acronym}. They will contact you if any additional information is needed.
-        check_status:
-          ma: To check the status of your SNAP recertification you can visit DTA's website.
-          nyc: To check the status of your SNAP application or recertification you can visit HRA's website.
         confirmation_code_html: "<strong>Confirmation code</strong>: %{confirmation_code}"
         download: Download a copy of the report
+        follow_up: To check the status of your Medicaid application you can visit %{agency_acronym}'s website.
         header: Your income report has been successfully shared with %{agency_acronym}
-        if_it_didnt_work: If you weren't able to find an employer, or one of your employers doesn't have an online payroll provider, please provide your payment information directly to %{agency_acronym}.
+        if_it_didnt_work: If you weren't able to find an employer, or one of your employers doesn't have an online payroll provider, please provide this information directly to %{agency_acronym}.
     summaries:
       show:
         additional_comments: Additional comments
@@ -624,6 +613,10 @@ en:
           - Ask your employer's HR team to help get your payroll login details.
           title: Contact your employer's Human Resource Team
         title: I don't know my username
+  maintenance:
+    body_1: The site is not available right now. Any information you entered will not be saved.
+    body_2: Visit your agency's website for more information on how to submit proof of income for your benefits.
+    header: We're undergoing maintenance
   pages:
     error_404:
       error_code_html: 'Error code: <strong>404</strong>'
@@ -687,7 +680,7 @@ en:
       fr: Français
       zh: 中文
     not_applicable: N/A
-    pilot_name: SNAP Income Pilot
+    pilot_name: Report My Income
     skip_link: Skip to main content
   time:
     formats:

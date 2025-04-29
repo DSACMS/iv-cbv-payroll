@@ -18,7 +18,7 @@ export default class ArgyleModalAdapter extends ModalAdapter {
         locale,
       })
 
-      const { user, isSandbox, flowId } = await fetchArgyleToken()
+      const { user, isSandbox, flowId } = await fetchArgyleToken(this.requestData.id)
       return Argyle.create({
         userToken: user.user_token,
         flowId: flowId,
@@ -147,11 +147,7 @@ export default class ArgyleModalAdapter extends ModalAdapter {
     })
 
     if (this.successCallback) {
-      setTimeout(() => {
-        // TODO[FFS-2675]: Remove this artifical delay. It current exists to
-        // allow time for Argyle to send us the `accounts.connected` webhook.
-        this.successCallback(eventPayload.accountId)
-      }, 1000)
+      this.successCallback(eventPayload.accountId)
     }
   }
 

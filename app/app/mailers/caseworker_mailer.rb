@@ -11,7 +11,9 @@ class CaseworkerMailer < ApplicationMailer
     attachments[filename] = generate_pdf
     mail(
       to: @email_address,
-      subject: I18n.t("caseworker_mailer.summary_email.subject", case_number: case_number),
+      subject: view_context.agency_translation("caseworker_mailer.summary_email.subject",
+                                case_number: case_number,
+                                confirmation_code: @cbv_flow.confirmation_code),
     )
   end
 

@@ -2,30 +2,32 @@ import http from 'k6/http';
 import { sleep, check, group } from 'k6';
 
 export let options = {
-    vus: 2, // number of virtual users
-    duration: '5s',
+    // TODO: pass in users and duration from command line
+    vus: 100, // number of virtual users
+    duration: '30s',
 };
 
 const TOKENS = __ENV.USER_TOKENS;
-const URL = __ENV.URL_BASE;
+const URL = __ENV.URL;
 
 if(TOKENS === undefined) {
     throw new Error("cant run script. please defined ENV USER_TOKENS");
 }
 
 if(URL === undefined) {
-    throw new Error("cant run script. please defined ENV URL_BASE");
+    throw new Error("cant run script. please defined ENV URL");
 }
 
 export default function () {
     let headers;
-    // let tokenList = TOKENS.split(",");
+    let tokenList = TOKENS.split(",");
     group("logging in", () => {
-        let res = http.get(`${URL}/sandbox`);
-        check(res, { 'status is 200': (r) => (r.status === 200) });
+        // TODO: pass in base url + path from command line
+        // let res = http.get(`${URL}/sandbox`);
+        // check(res, { 'status is 200': (r) => (r.status === 200) });
 
 
-        let randomToken = TOKENS[Math.floor(Math.random() * TOKENS.length)]
+        let randomToken = tokenList[Math.floor(Math.random() * tokenList.length)]
 
         headers = {
             'Cookie': `_iv_cbv_payroll_session=${randomToken}`,
@@ -34,7 +36,7 @@ export default function () {
 
 
     group("Submission page", () => {
-        const res3 = http.get(`${URL}/cbv/submit.pdf`, { headers });
+        const res3 = http.get(URL, { headers });
 
         check(res3, {
             'authorized page loaded': (r) => r.status === 200,

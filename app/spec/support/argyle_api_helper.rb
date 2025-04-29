@@ -35,15 +35,6 @@ module ArgyleApiHelper
       )
   end
 
-  def argyle_stub_request_accounts_response(user_folder)
-    stub_request(:get, %r{#{Aggregators::Sdk::ArgyleService::ACCOUNTS_ENDPOINT}})
-      .to_return(
-        status: 200,
-        body: argyle_load_relative_json_file(user_folder, 'request_accounts.json').to_json,
-        headers: { 'Content-Type': 'application/json;charset=UTF-8' }
-      )
-  end
-
   def argyle_stub_request_identities_response(user_folder)
     stub_request(:get, %r{#{Aggregators::Sdk::ArgyleService::IDENTITIES_ENDPOINT}})
       .to_return(
@@ -126,5 +117,17 @@ module ArgyleApiHelper
 
   def argyle_load_relative_json_file(user_folder, filename)
     JSON.parse(argyle_load_relative_file(user_folder, filename))
+  end
+
+  def argyle_user_property_for(user_folder, fixture_type, property = nil)
+    data = argyle_load_relative_json_file(user_folder, "request_#{fixture_type}.json")
+
+    return data unless property
+
+    if data.key?('results')
+      data['results'].map { |result| result[property] }
+    else
+      data[property]
+    end
   end
 end

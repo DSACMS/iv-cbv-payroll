@@ -15,29 +15,23 @@ class PayrollAccount::Pinwheel < PayrollAccount
       (supported_jobs.exclude?("identity") || find_webhook_event(JOBS_TO_WEBHOOK_EVENTS["identity"]).present?)
   end
 
-  def successfully_synced?
-    JOBS_TO_WEBHOOK_EVENTS.keys.all? do |job|
-      supported_jobs.exclude?(job) || job_succeeded?(job)
-    end
-  end
-
   def job_succeeded?(job)
-    supported_jobs.include?(job) && find_webhook_event(JOBS_TO_WEBHOOK_EVENTS[job], :success).present?
+    job_status(job) == :succeeded
   end
 
-  def synchronization_status(job)
+  def job_status(job)
     if supported_jobs.exclude?(job)
       :unsupported
-    elsif job_succeeded?(job)
+    elsif find_webhook_event(JOBS_TO_WEBHOOK_EVENTS[job], :success).present?
       :succeeded
-    elsif find_webhook_event(JOBS_TO_WEBHOOK_EVENTS[job], :success).nil? && find_webhook_event(JOBS_TO_WEBHOOK_EVENTS[job], :error).nil?
-      :in_progress
     elsif find_webhook_event(JOBS_TO_WEBHOOK_EVENTS[job], :error).present?
       :failed
+    else
+      :in_progress
     end
   end
 
-  def has_required_data?
+  def necessary_jobs_succeeded?
     job_succeeded?("paystubs")
   end
 end

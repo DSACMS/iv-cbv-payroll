@@ -82,16 +82,13 @@ es:
         answer_no_bullet_4: Usted tiene un trabajo que le paga con un cheque impreso y no puede ver su cheque de pago en línea
         answer_no_bullet_5: Usted tiene un trabajo que emite un 1099
         answer_no_header: 'Responda que NO si:'
-        answer_yes_bullet_1: Su trabajo tiene un proveedor de nómina en línea
-        answer_yes_bullet_2: Su trabajo le permite ver sus talones de pago en línea
         answer_yes_bullet_3: Su trabajo se basa en aplicaciones (Uber, DoorDash, Lyft, Instacart, etc.)
         answer_yes_header_html: 'Responda que SÍ si <em>cualquiera</em> de las siguientes afirmaciones son ciertas sobre su trabajo actual o reciente:'
         continue: Continuar
         criteria_disclaimer: 'Nota: Si ha tenido otros trabajos en los últimos %{pay_income_days} días que no cumplen estos criterios, es posible que tenga que presentar información de ese ingreso por separado.'
         header: "¿Tiene otro trabajo que declarar?"
         learn_more_link_html:
-          ma: Obtenga más información en <a href="https://www.mass.gov/guides/how-to-contact-dta" target="_blank" rel="noopener noreferer">el sitio web de DTA</a>.
-          nyc: Obtenga más información en <a href="https://www.nyc.gov/site/hra/help/snap-application-frequently-asked-questions.page" target="_blank" rel="noopener noreferer">el sitio web de HRA</a>.
+          la_ldh: Obtenga más información en <a href="http://MyMedicaid.LA.GOV" target="_blank" rel="noopener noreferer">el sitio web de LDH</a>.
           sandbox: Obtenga más información en <a href="https://www.mass.gov/guides/how-to-contact-dta" target="_blank" rel="noopener noreferrer">el sitio web de CBV Test Agency</a>.
         no_radio: No, no tengo otro trabajo que cumpla con los criterios
         subheader: Por favor añada los otros trabajos que haya tenido en los últimos %{pay_income_days} días, incluso si ya no está en ese trabajo.
@@ -135,7 +132,6 @@ es:
     employer_searches:
       show:
         app_based_providers: Empleadores basados
-        can_not_find_employer: No logro encontrar mi empresa ni mi proveedor de nómina
         employer_not_listed: "¿Su empleador no está en la lista?"
         exit_button_text: Salga y vaya a %{agency_short_name}
         header: Busque su empleador o proveedor de nómina
@@ -155,12 +151,10 @@ es:
         to_continue: 'Si aún no ve enumerado a su empleador ni a su proveedor de nómina:'
         to_continue_li_1: Tendrá que enviar esa información de ingresos por separado.
         to_continue_li_1_html:
-          ma: <a href="https://www.mass.gov/guides/how-to-contact-dta">Vaya al sitio web del DTA</a> para informarse de otras formas de notificar sus ingresos.
-          nyc: <a href="https://www.nyc.gov/site/hra/help/snap-application-frequently-asked-questions.page">Vaya al sitio web de la HRA</a> para informarse de otras formas de notificar sus ingresos.
+          la_ldh: <a href="http://mymedicaid.la.gov/">Vaya al sitio web del LDH</a> para informarse de otras formas de notificar sus ingresos.
           sandbox: <a href="https://example.com/contact">Vaya al sitio web del CBV</a> para informarse de otras formas de notificar sus ingresos.
         to_continue_li_2: Si tiene otros trabajos que añadir, búsquelos.
         to_continue_li_3: Si no tiene otros trabajos que añadir aquí, puede salir de este sitio.
-        to_continue_li_3_continue: Si no tiene otros trabajos que añadir aquí, continúe a revisar su informe de ingresos.
     entries:
       create:
         error: Debe marcar la casilla de «acuerdo» para proceder.
@@ -183,11 +177,9 @@ es:
     error_no_access: No logramos cargar los datos de nómina para esta cuenta. Haga clic en el enlace que recibió de su agencia del SNAP para intentarlo de nuevo.
     expired_invitations:
       show:
-        body_1: Usted ya ha completado con éxito su proceso de verificación, o está intentando acceder a esta invitación después de que ha expirado.
-        body_2: Si todavía no termina de verificar sus ingresos, envíe su información de ingresos desde el mismo sitio web de %{agency_short_name}.
+        body_1: Si todavía no termina de verificar sus ingresos, envíe su información de ingresos desde el mismo sitio web de %{agency_short_name}.
         cta_button_html:
-          ma: <a href="https://www.mass.gov/guides/how-to-contact-dta" class="usa-button">Visite el sitio web del DTA</a>
-          nyc: <a href="https://www.nyc.gov/site/hra/help/snap-application-frequently-asked-questions.page" class="usa-button">Visite el sitio web de la HRA</a>
+          la_ldh: <a href="http://mymedicaid.la.gov/" class="usa-button">Visite el sitio web del LDH</a>
           sandbox: <a href="https://www.mass.gov/guides/how-to-contact-dta" class="usa-button">Obtenga más información en la Agencia de pruebas CBV</a>
         title: Su invitación para verificar ingresos ha expirado
     missing_results:
@@ -195,21 +187,12 @@ es:
         back_button: Regrese a la búsqueda del empleador
         continue_button: Continúe a «revisar mi informe»
         continue_to_review: Continúe a revisar la información de ingresos que logró encontrar antes de enviarla a %{agency_acronym}.
-        dta_options_1_html: Use <a href="https://www.mass.gov/info-details/help-using-dta-connect" target="_blank" rel="noopener noreferer">DTA Connect</a> para cargar y enviar sus documentos de ingresos.
-        dta_options_2_html: Envíe sus documentos al DTA <a href="https://www.mass.gov/guides/how-to-contact-dta#-mail-or-fax-" target="_blank" rel="noopener noreferer">por fax</a> junto con una carátula.
-        dta_options_3_html: Envíe sus documentos al DTA <a href="https://www.mass.gov/guides/how-to-contact-dta#-mail-or-fax-" target="_blank" rel="noopener noreferer">por correo postal</a> junto con una carátula.
-        dta_options_4_html: Entregue sus documentos en <a href="https://www.mass.gov/guides/how-to-contact-dta#-mail-or-fax-" target="_blank" rel="noopener noreferer">una oficina local</a> del DTA.
-        dta_options_5_html: Trabaje con <a href="https://www.mass.gov/info-details/snap-outreach-partners#snap-outreach-partners-" target="_blank" rel="noopener noreferer">un aliado de SNAP Outreach</a> para presentar sus documentos.
-        dta_options_header: 'Puede presentar su información de ingresos usando uno de los siguientes métodos:'
         exit_button_html:
-          ma: <a href="https://www.mass.gov/guides/how-to-contact-dta" class="usa-button">Salga y vaya a DTA</a>
-          nyc: <a href="https://www.nyc.gov/site/hra/help/snap-application-frequently-asked-questions.page" class="usa-button">Salga y vaya a HRA</a>
           sandbox: <a href="https://www.mass.gov/guides/how-to-contact-dta" class="usa-button">Salga y vaya a la Agencia de prueba CBV</a>
         header: Cómo informar sus ingresos si su empleador o proveedor de nómina no están listados
         more_jobs: Si tiene más trabajos que reportar
         no_more_jobs: Si no tiene más trabajos que reportar
         not_listed_p1: Si su empleador o proveedor de nómina no están listados en este sitio, tendrá que compartir su información de ingresos por este trabajo directamente con %{agency_acronym}.
-        not_listed_p2: Visite %{agency_short_name} para obtener más información sobre cómo presentar documentos.
         you_can_search: Puede buscar otro empleador o proveedor de nómina. Este sitio apoya a los empleadores con proveedores de nómina en línea o servicios basados en aplicaciones. Algunos ejemplos son Amazon, Walmart, McDonald’s, Uber, DoorDash, Lyft e Instacart.
     payment_details:
       show:
@@ -249,10 +232,7 @@ es:
       show:
         additional_information_title: "¿Existe algún otro detalle que le gustaría que su asistente de caso conozca en relación con sus ingresos?"
         application_or_recertification_date:
-          ma: Date client was contacted
-          nyc: SNAP application or recertification interview date
           sandbox: SNAP application or recertification interview date
-        consent_checkbox_label_html: Marque esta casilla para confirmar que, a su leal saber y entender, la información proporcionada es verdadera y está completa. Se compromete a informar a %{agency_acronym} de cualquier ingreso que no se vea reflejado en este informe, así como de cualquier discrepancia que encuentre en la información recopilada mediante el uso de esta herramienta. Comprende que proporcionar información precisa y completa es su responsabilidad y que presentar cualquier información falsa, o bien abstenerse de brindar cierta información, puede acarrear consecuencias legales. Para obtener más información acerca de sus derechos y obligaciones con respecto a la información privada que comparte con %{agency_acronym}, consulte el apartado Derechos y obligaciones que firmó en la solicitud. Este apartado se encuentra disponible en el sitio web de %{agency_acronym}.<br><br>Al presentar este informe, autoriza su uso para fines de verificación de ingresos por parte del personal autorizado de %{agency_acronym}.
         legal_header: Consentimiento legal
         none_found: No se encontró ningún pago de este empleador en los últimos 90 días.
         none_found_confirmed: Pudimos confirmar que este empleador no realizó ningún pago en los últimos 90 días. Esto sucede cuando el cliente no percibe ingresos de este trabajo durante tal período de tiempo.
@@ -261,8 +241,6 @@ es:
           agency_header_name:
             az_des: Department of Economic Security
             la_ldh: Department of Health
-            ma: Massachusetts Department of Transitional Assistance
-            nyc: NYC Human Resources Administration
             sandbox: CBV Test Agency
           caseworker:
             pay_period: Período de pago (%{pay_frequency})
@@ -283,20 +261,16 @@ es:
             report_details: Detalles del reporte
         share_report_button: Autorizo que se comparta mi informe con %{agency_acronym}
         table_caption_no_name: Employer %{number}
-        warning_html: Su informe de ingresos se adjuntará a la solicitud para el Programa de Asistencia Nutricional Suplementaria (SNAP, Supplemental Nutrition Assistance Program) que presente.<br>A fin de compartir este informe, debe marcar la casilla de consentimiento legal.
+        warning_2: A fin de compartir este informe, debe marcar la casilla de consentimiento legal.
       update:
         consent_to_authorize_warning: A fin de compartir su informe, marque la casilla de consentimiento legal.
     successes:
       show:
         back_to_agency: Vaya al sitio web de %{agency_short_name}
         caseworker_received: Hemos enviado su información de pago a %{agency_acronym}. Ellos lo contactarán si se necesita alguna información adicional.
-        check_status:
-          ma: Para comprobar el estado de su recertificación de SNAP puede visitar el sitio web del DTA.
-          nyc: Para comprobar el estado de su solicitud o recertificación de SNAP puede visitar el sitio web del HRA.
         confirmation_code_html: "<strong>Código de confirmación </strong>: %{confirmation_code}"
         download: Descargue una copia del informe
         header: Su informe de ingresos ha sido compartido de forma exitosa con %{agency_acronym}
-        if_it_didnt_work: Si usted no logró encontrar un empleador, o uno de sus empleadores no tiene un proveedor de nómina en línea, por favor, suministre su información de pago directamente a %{agency_acronym}.
     summaries:
       show:
         additional_comments: Comentarios adicionales
@@ -558,7 +532,6 @@ es:
       fr: Francés
       zh: Chino
     not_applicable: N/C
-    pilot_name: SNAP Income Pilot
     skip_link: Saltar al contenido principal
   time:
     formats:

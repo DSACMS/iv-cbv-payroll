@@ -11,3 +11,18 @@ resource "aws_route53_record" "app" {
     evaluate_target_health = true
   }
 }
+
+# Register additional domains as aliases as well. These must be provided as
+# subject_alternative_names to the load balancer certificate as well.
+resource "aws_route53_record" "additional_domains" {
+  for_each = toset(var.additional_domains)
+
+  name    = each.value
+  zone_id = var.hosted_zone_id
+  type    = "A"
+  alias {
+    name                   = aws_lb.alb.dns_name
+    zone_id                = aws_lb.alb.zone_id
+    evaluate_target_health = true
+  }
+}

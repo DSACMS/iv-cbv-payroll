@@ -7,46 +7,36 @@ class PayrollAccount::Argyle < PayrollAccount
     SQL
   end
 
-  # Jobs are used to map real-time Argyle data retrieval with the synchronizations page indicators
-  # We can assume that when the paystubs are fully synced, the employment and paystubs are also fully synced
   def has_fully_synced?
     supported_jobs.all? do |job|
-      supported_jobs.exclude?(job) || find_webhook_event(self.class.event_for_job(job)).present?
-    end
-  end
-
-  def successfully_synced?
-    supported_jobs.all? do |job|
-      supported_jobs.exclude?(job) || job_succeeded?(job)
+      supported_jobs.exclude?(job) || find_webhook_event_for_job(job).present?
     end
   end
 
   def job_succeeded?(job)
-    supported_jobs.include?(job) && find_webhook_event(self.class.event_for_job(job), "success").present?
+    job_status(job) == :succeeded
   end
 
-  def synchronization_status(job)
+  def job_status(job)
     if supported_jobs.exclude?(job)
       :unsupported
-    elsif job_succeeded?(job)
-      :succeeded
-    elsif find_webhook_event(self.class.event_for_job(job), "success").nil? && find_webhook_event(self.class.event_for_job(job), "error").nil?
-      :in_progress
-    elsif find_webhook_event(self.class.event_for_job(job), "error").present?
+    elsif find_webhook_event_for_job(job, "error").present?
       :failed
+    elsif find_webhook_event_for_job(job, "success").present?
+      :succeeded
+    else
+      :in_progress
     end
   end
 
-  def has_required_data?
-    job_succeeded?("paystubs") || job_succeeded?("gigs")
+  def necessary_jobs_succeeded?
+    job_succeeded?("accounts") && (job_succeeded?("paystubs") || job_succeeded?("gigs"))
   end
 
-  def self.event_for_job(job)
-    matching_event = Aggregators::Webhooks::Argyle::SUBSCRIBED_WEBHOOK_EVENTS.find do |event_name, config|
-      config[:job].include?(job)
+  def find_webhook_event_for_job(job, event_outcome = nil)
+    webhook_events.find do |webhook_event|
+      Aggregators::Webhooks::Argyle::EVENT_NAMES_BY_JOB[job].include?(webhook_event.event_name) &&
+        (event_outcome.nil? || webhook_event.event_outcome == event_outcome.to_s)
     end
-    raise "No event for job named: #{job}" unless matching_event.present?
-
-    matching_event.first
   end
 end
