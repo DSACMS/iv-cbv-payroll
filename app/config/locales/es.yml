@@ -280,7 +280,6 @@ es:
         confirmation_code_html: "<strong>Código de confirmación </strong>: %{confirmation_code}"
         download: Descargue una copia del informe
         header: Su informe de ingresos ha sido compartido de forma exitosa con %{agency_acronym}
-        if_it_didnt_work: Si usted no logró encontrar un empleador, o uno de sus empleadores no tiene un proveedor de nómina en línea, por favor, suministre su información de pago directamente a %{agency_acronym}.
     summaries:
       show:
         additional_comments: Comentarios adicionales

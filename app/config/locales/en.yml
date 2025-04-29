@@ -448,15 +448,16 @@ en:
         consent_to_authorize_warning: Please check the legal agreement box to share your report.
     successes:
       show:
-        back_to_agency: Go to %{agency_short_name} website
+        back_to_agency: Go to %{agency_short_name}'s' website
         caseworker_received: We have delivered your payment information to %{agency_acronym}. They will contact you if any additional information is needed.
         check_status:
           ma: To check the status of your SNAP recertification you can visit DTA's website.
           nyc: To check the status of your SNAP application or recertification you can visit HRA's website.
         confirmation_code_html: "<strong>Confirmation code</strong>: %{confirmation_code}"
         download: Download a copy of the report
+        follow_up: To check the status of your Medicaid application you can visit %{agency_acronym}'s website.
         header: Your income report has been successfully shared with %{agency_acronym}
-        if_it_didnt_work: If you weren't able to find an employer, or one of your employers doesn't have an online payroll provider, please provide your payment information directly to %{agency_acronym}.
+        if_it_didnt_work: If you weren't able to find an employer, or one of your employers doesn't have an online payroll provider, please provide this information directly to %{agency_acronym}.
     summaries:
       show:
         additional_comments: Additional comments
