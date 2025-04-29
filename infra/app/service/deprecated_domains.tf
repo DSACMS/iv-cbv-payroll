@@ -20,8 +20,8 @@ resource "aws_route53_record" "deprecated_snapincomepilot" {
   zone_id = data.aws_route53_zone.deprecated_snapincomepilot[count.index].id
   type    = "A"
   alias {
-    name                   = "reportmyincome.org"
-    zone_id                = data.aws_route53_zone.zone[0].id
+    name                   = data.aws_lb.production_load_balancer.dns_name
+    zone_id                = data.aws_lb.production_load_balancer.zone_id
     evaluate_target_health = true
   }
 }
