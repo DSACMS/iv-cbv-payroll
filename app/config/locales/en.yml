@@ -450,9 +450,6 @@ en:
       show:
         back_to_agency: Go to %{agency_short_name}'s' website
         caseworker_received: We have delivered your payment information to %{agency_acronym}. They will contact you if any additional information is needed.
-        check_status:
-          ma: To check the status of your SNAP recertification you can visit DTA's website.
-          nyc: To check the status of your SNAP application or recertification you can visit HRA's website.
         confirmation_code_html: "<strong>Confirmation code</strong>: %{confirmation_code}"
         download: Download a copy of the report
         follow_up: To check the status of your Medicaid application you can visit %{agency_acronym}'s website.
