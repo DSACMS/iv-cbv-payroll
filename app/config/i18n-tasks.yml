@@ -166,7 +166,7 @@ ignore_missing:
 
     # LA expired (FFS-2688)
     - "cbv.expired_invitations.show.cta_button_html.la_ldh"
-    
+
     # LA maintenance (FFS-2688)
     - "maintenance.body_1"
     - "maintenance.body_2"
@@ -182,10 +182,17 @@ ignore_missing:
     # LA submit (FFS-2688)
     - "cbv.submits.show.consent_checkbox_label_html"
     - "cbv.submits.show.warning_1"
-    
+
     # LA success (FFS-2688)
     - "cbv.successes.show.follow_up"
     - "cbv.successes.show.if_it_didnt_work"
+
+    # LA client_pdf (FFS-2688)
+    - "aggregator_strings.payment_frequencies.annual"
+    - "aggregator_strings.payment_frequencies.annually"
+    - "cbv.payment_details.show.employment_end_date"
+    - "cbv.submits.show.application_or_recertification_date.la_ldh"
+    - "cbv.submits.show.none_found"
 ## Consider these keys used:
 ignore_unused:
   all:

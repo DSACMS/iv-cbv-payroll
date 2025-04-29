@@ -96,20 +96,20 @@ en:
       inactive: inactive
       terminated: terminated
     payment_frequencies:
-      annual: annual
-      annually: annual
-      bi_weekly: bi-weekly
-      biweekly: bi-weekly
-      daily: daily
-      hourly: hourly
-      monthly: monthly
-      per_mile: per mile
-      quarterly: quarterly
-      semi_monthly: semi-monthly
-      semimonthly: semi-monthly
+      annual: Annually
+      annually: Annually
+      bi_weekly: Bi-weekly
+      biweekly: Bi-weekly
+      daily: Daily
+      hourly: Hourly
+      monthly: Monthly
+      per_mile: Per mile
+      quarterly: Quarterly
+      semi_monthly: Semi-monthly
+      semimonthly: Semi-monthly
       usd: USD
-      variable: variable
-      weekly: weekly
+      variable: Variable
+      weekly: Weekly
   applicant_mailer:
     invitation_email:
       body_1:
@@ -365,7 +365,7 @@ en:
         additional_information_label: Share any comments or additional information about the income details above that you’d like %{agency_acronym} to know. For example, you can share if the information is inaccurate or if you’re no longer working at that job.
         continue: Continue
         deductions: 'Deduction: %{category}'
-        employment_end_date: Employment end date
+        employment_end_date: Employment termination date
         employment_information_table_header: Employment information
         employment_start_date: Employment start date
         employment_status: Employment status
@@ -397,10 +397,11 @@ en:
       show:
         additional_information_title: Is there anything else you'd like your caseworker to know about your income?
         application_or_recertification_date:
+          la_ldh: Medicaid application date
           sandbox: SNAP application or recertification interview date
         consent_checkbox_label_html: 'Check this box to confirm: <ul><li>The information provided by you is true and complete to the best of your knowledge.</li><li>You agree to inform the %{agency_full_name} of any income not reflected in this report or any discrepancies found in the information gathered with this tool.</li><li>You understand that providing accurate and complete information is your responsibility, and any false or omitted information may have legal consequences.</li></ul> By sending this report, you authorize its use for income verification by authorized %{agency_short_name} personnel.'
         legal_header: Legal agreement
-        none_found: We didn't find any payments from this employer in the past 90 days.
+        none_found: No payments from this employer in the past 90 days
         none_found_confirmed: We've confirmed that there are no payments from this employer in the past 90 days. This happens when the client hasn't received income from this job during that time.
         page_header: Submit your income report
         pdf:
@@ -431,11 +432,11 @@ en:
             employment_payment_details: Employment and Payment details
             header: Income Verification Report
           shared:
-            client_information: Client Information
+            client_information: Client information
             confirmation_code: Confirmation code
             employment_information: Employment information
             pay_date: 'Pay Date: %{pay_date}'
-            report_details: Report Details
+            report_details: Report details
         share_report_button: Share my report with %{agency_acronym}
         table_caption_no_name: Employer %{number}
         warning_1: Your income report will be attached to your Medicaid application.
