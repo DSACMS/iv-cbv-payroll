@@ -270,7 +270,7 @@ GEM
     mutex_m (0.3.0)
     net-http (0.4.1)
       uri
-    net-imap (0.4.19)
+    net-imap (0.4.20)
       date
       net-protocol
     net-pop (0.1.2)
@@ -561,7 +561,7 @@ DEPENDENCIES
   maybe_later
   mission_control-jobs
   mixpanel-ruby
-  net-imap (= 0.4.19)
+  net-imap (= 0.4.20)
   newrelic_rpm
   omniauth-azure-activedirectory-v2
   omniauth-rails_csrf_protection (~> 1.0)
