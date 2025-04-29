@@ -45,7 +45,7 @@ module Aggregators::ResponseObjects
         pay_period_end: Aggregators::FormatMethods::Argyle.format_date(response_body["paystub_period"]["end_date"]),
         pay_date: Aggregators::FormatMethods::Argyle.format_date(response_body["paystub_date"]),
         earnings: response_body["gross_pay_list"].map { |i| Earning.from_argyle(i) },
-        hours: response_body["hours"],
+        hours: Aggregators::FormatMethods::Argyle.hours_computed(response_body["hours"], response_body["gross_pay_list"]),
         hours_by_earning_category: Aggregators::FormatMethods::Argyle.hours_by_earning_category(response_body["gross_pay_list"]),
         deductions: response_body["deduction_list"].map do |deduction|
           OpenStruct.new(

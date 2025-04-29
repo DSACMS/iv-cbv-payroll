@@ -1,3 +1,9 @@
+variable "additional_domains" {
+  type        = list(string)
+  description = "Any additional domains also register DNS records to point to the load balancer."
+  default     = []
+}
+
 variable "app_name" {
   type = string
 }

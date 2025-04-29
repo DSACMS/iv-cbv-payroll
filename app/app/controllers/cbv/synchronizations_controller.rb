@@ -7,7 +7,11 @@ class Cbv::SynchronizationsController < Cbv::BaseController
   end
 
   def update
-    if @payroll_account&.has_fully_synced?
+    if @payroll_account&.job_status("accounts") == :failed
+      # argyle throws a "system_error" in the payload of "accounts.updated" webhook.
+      # The "accounts" sync status will be set to :failed in that case. The sync status will be :unsupported for pinwheel.
+      render turbo_stream: turbo_stream.action(:redirect, cbv_flow_synchronization_failures_path)
+    elsif @payroll_account&.has_fully_synced?
       render turbo_stream: turbo_stream.action(
         :redirect,
         cbv_flow_payment_details_path(user: { account_id: @payroll_account.pinwheel_account_id })
