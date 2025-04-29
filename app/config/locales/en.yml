@@ -340,8 +340,7 @@ en:
         body_1: You've either successfully completed your verification process, or are trying to access this invitation after it has expired.
         body_2: If you still need to verify your income, please submit your income information by visiting %{agency_short_name}'s website.
         cta_button_html:
-          ma: <a href="https://www.mass.gov/guides/how-to-contact-dta" class="usa-button">Visit DTA website</a>
-          nyc: <a href="https://www.nyc.gov/site/hra/help/snap-application-frequently-asked-questions.page" class="usa-button">Visit HRA website</a>
+          la_ldh: <a href="http://mymedicaid.la.gov/" class="usa-button">Visit LDH's website</a>
           sandbox: <a href="https://www.mass.gov/guides/how-to-contact-dta" class="usa-button">Learn more at CBV Test Agency</a>
         title: Your invitation to verify income has expired
     missing_results:
