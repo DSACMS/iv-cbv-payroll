@@ -397,10 +397,8 @@ en:
       show:
         additional_information_title: Is there anything else you'd like your caseworker to know about your income?
         application_or_recertification_date:
-          ma: Date client was contacted
-          nyc: SNAP application or recertification interview date
           sandbox: SNAP application or recertification interview date
-        consent_checkbox_label_html: Check this box to confirm that the information provided by you is true and complete to the best of your knowledge. You agree to inform %{agency_acronym} of any income not reflected in this report or any discrepancies found in the information gathered with this tool. You understand that providing accurate and complete information is your responsibility, and any false or omitted information may have legal consequences. For more information on your rights and responsibilities regarding private information you share with %{agency_acronym} please refer to the Rights and Responsibilities you signed at application, found on the %{agency_acronym} website.<br><br>By sending this report, you authorize its use for income verification by %{agency_acronym} and authorized personnel.
+        consent_checkbox_label_html: 'Check this box to confirm: <ul><li>The information provided by you is true and complete to the best of your knowledge.</li><li>You agree to inform the %{agency_full_name} of any income not reflected in this report or any discrepancies found in the information gathered with this tool.</li><li>You understand that providing accurate and complete information is your responsibility, and any false or omitted information may have legal consequences.</li></ul> By sending this report, you authorize its use for income verification by authorized %{agency_short_name} personnel.'
         legal_header: Legal agreement
         none_found: We didn't find any payments from this employer in the past 90 days.
         none_found_confirmed: We've confirmed that there are no payments from this employer in the past 90 days. This happens when the client hasn't received income from this job during that time.
@@ -409,8 +407,6 @@ en:
           agency_header_name:
             az_des: Department of Economic Security
             la_ldh: Department of Health
-            ma: Massachusetts Department of Transitional Assistance
-            nyc: NYC Human Resources Administration
             sandbox: CBV Test Agency
           caseworker:
             agreement_consent_timestamp: Agreement Consent Timestamp
@@ -442,7 +438,8 @@ en:
             report_details: Report Details
         share_report_button: Share my report with %{agency_acronym}
         table_caption_no_name: Employer %{number}
-        warning_html: Your income report will be attached to your SNAP application.<br>You must check the legal agreement box to share your report.
+        warning_1: Your income report will be attached to your Medicaid application.
+        warning_2: You must check the legal agreement box to share your report.
       update:
         consent_to_authorize_warning: Please check the legal agreement box to share your report.
     successes:
