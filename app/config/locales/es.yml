@@ -180,8 +180,7 @@ es:
         body_1: Usted ya ha completado con éxito su proceso de verificación, o está intentando acceder a esta invitación después de que ha expirado.
         body_2: Si todavía no termina de verificar sus ingresos, envíe su información de ingresos desde el mismo sitio web de %{agency_short_name}.
         cta_button_html:
-          ma: <a href="https://www.mass.gov/guides/how-to-contact-dta" class="usa-button">Visite el sitio web del DTA</a>
-          nyc: <a href="https://www.nyc.gov/site/hra/help/snap-application-frequently-asked-questions.page" class="usa-button">Visite el sitio web de la HRA</a>
+          la_ldh: <a href="http://mymedicaid.la.gov/" class="usa-button">Visite el sitio web del LDH</a>
           sandbox: <a href="https://www.mass.gov/guides/how-to-contact-dta" class="usa-button">Obtenga más información en la Agencia de pruebas CBV</a>
         title: Su invitación para verificar ingresos ha expirado
     missing_results:
