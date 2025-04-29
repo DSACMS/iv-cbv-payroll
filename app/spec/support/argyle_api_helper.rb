@@ -62,18 +62,6 @@ module ArgyleApiHelper
       )
   end
 
-  def argyle_stub_fetch_user_api_response(user_folder = 'bob', override_properties = {})
-    fixture_data = argyle_load_relative_json_file(user_folder, 'request_user.json').symbolize_keys
-    fixture_data.merge!(override_properties)
-    account_id = fixture_data[:id]
-    stub_request(:get, %r{#{Aggregators::Sdk::ArgyleService::USERS_ENDPOINT}/#{account_id}})
-      .to_return(
-        status: 200,
-        body: fixture_data.to_json,
-        headers: { 'Content-Type' => 'application/json' }
-      )
-  end
-
   def stub_create_user_response
     stub_request(:post, /#{Aggregators::Sdk::ArgyleService::USERS_ENDPOINT}/).to_return do |_|
       response = argyle_load_relative_json_file('', 'response_create_user.json')
