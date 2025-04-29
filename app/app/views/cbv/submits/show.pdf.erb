@@ -135,7 +135,7 @@
         <%= table.with_data_point(:earnings_entry, category, total_hours) %>
       <% end %>
       <% if is_w2_worker %>
-        <%= table.with_data_point(:net_pay_amount, net_pay_amount) %>
+        <%= table.with_data_point(:net_pay_amount, paystub.net_pay_amount) %>
         <% paystub.deductions.filter { |deduction| deduction.amount > 0 }.each do |deduction| %>
           <%= table.with_data_point(:deduction, deduction.category, deduction.amount) %>
         <% end %>
