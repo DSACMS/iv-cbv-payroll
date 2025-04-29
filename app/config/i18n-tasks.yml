@@ -164,6 +164,9 @@ ignore_missing:
     - "cbv.add_jobs.show.answer_yes_bullet_1"
     - "cbv.add_jobs.show.answer_yes_bullet_2"
 
+    # LA expired (FFS-2688)
+    - "cbv.expired_invitations.show.cta_button_html.la_ldh"
+    
     # LA maintenance (FFS-2688)
     - "maintenance.body_1"
     - "maintenance.body_2"

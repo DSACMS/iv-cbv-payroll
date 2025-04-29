@@ -337,8 +337,7 @@ en:
     error_no_access: We weren't able to load payroll data for this account. Please click the link you received from your SNAP agency to try again.
     expired_invitations:
       show:
-        body_1: You've either successfully completed your verification process, or are trying to access this invitation after it has expired.
-        body_2: If you still need to verify your income, please submit your income information by visiting %{agency_short_name}'s website.
+        body_1: If you still need to verify your income, please submit your income information by visiting %{agency_short_name}'s website.
         cta_button_html:
           la_ldh: <a href="http://mymedicaid.la.gov/" class="usa-button">Visit LDH's website</a>
           sandbox: <a href="https://www.mass.gov/guides/how-to-contact-dta" class="usa-button">Learn more at CBV Test Agency</a>
