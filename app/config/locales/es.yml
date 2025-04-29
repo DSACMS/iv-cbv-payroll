@@ -483,10 +483,6 @@ es:
       error_code_html: 'Código de error: <strong>500</strong>'
       header: "¡Parece que algo salió mal!"
       refresh: Actualizar página
-    home:
-      description_1: El SNAP Income Pilot es una nueva herramienta diseñada para ayudarle a conectar los detalles de sus ingresos de su empleador o proveedor de nómina directamente con su agencia de SNAP. Actualmente estamos probando esta herramienta para asegurarnos de que funcione de manera eficaz.
-      description_2: Tenga en cuenta que este piloto está disponible actualmente solo para los participantes de SNAP en la ciudad de Nueva York y Massachusetts.
-      header: Bienvenido al SNAP Income Pilot
   session_timeout:
     modal:
       description: Parece no está realizando ninguna acción. Por motivos de seguridad, su sesión se cerrará, salvo que elija extender el tiempo de esta sesión.

@@ -629,9 +629,10 @@ en:
       header: It looks like something went wrong
       refresh: Refresh page
     home:
-      description_1: The SNAP Income Pilot is a new tool designed to help you connect your income details from your employer or payroll provider directly to your SNAP agency.
-      description_2: Please note this pilot is not currently available.
-      header: Welcome to the SNAP Income Pilot
+      description_1: Report My Income is a new tool designed to help you connect your income details from your employer or payroll provider directly to your benefits agency. We’re currently testing this tool to ensure it works effectively.
+      description_2: Please note this pilot is currently available only to participants in Arizona, Illinois, and Louisiana.
+      description_3: Visit your agency's website for more information on how to submit proof of income for your benefits.
+      header: Welcome to Report My Income
   session_timeout:
     modal:
       description: It looks like you're inactive. For your security, we will sign you out soon unless you choose to extend your session.
