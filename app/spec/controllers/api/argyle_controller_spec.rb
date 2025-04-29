@@ -8,7 +8,7 @@ RSpec.describe Api::ArgyleController do
     # get the argyle user id and item e.g. payroll/provider to include in the fetch_user_api_response stub
     let(:argyle_user_id) { argyle_load_relative_json_file('', 'response_create_user.json')["id"] }
     let(:argyle_item_id) { argyle_user_property_for("bob", "user", "items_connected").first }
-    let(:argyle_account_id) { argyle_user_property_for("bob", "user", "account") }
+    let(:argyle_account_id) { argyle_user_property_for("bob", "user", "id") }
 
     before do
       session[:cbv_flow_id] = cbv_flow.id
