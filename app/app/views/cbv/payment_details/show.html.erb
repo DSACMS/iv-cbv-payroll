@@ -5,7 +5,7 @@
 </h1>
 
 <div class="usa-prose">
-  <p><%= t(".subheader", start_date: @aggregator_report.from_date, end_date: @aggregator_report.to_date, agency_acronym: current_agency.agency_short_name) %></p>
+  <p><%= agency_translation(".subheader", start_date: @aggregator_report.from_date.strftime("%B %-d, %Y"), end_date: @aggregator_report.to_date.strftime("%B %-d, %Y"), agency_acronym: current_agency.agency_short_name) %></p>
 </div>
 
 <% if @payroll_account_report.paystubs.any? %>
@@ -49,11 +49,8 @@
       <% end %>
       <%= table.with_data_point(:pay_period, payment.start, payment.end) %>
       <%= table.with_data_point(:pay_gross, payment.gross_pay_amount) %>
-      <%= table.with_data_point(:number_of_hours_worked, payment.hours) %>
-      <% payment.hours_by_earning_category.each do |category, total_hours| %>
-        <%= table.with_data_point(:earnings_entry, category, total_hours) %>
-      <% end %>
       <%= table.with_data_point(:net_pay_amount, payment.net_pay_amount) %>
+      <%= table.with_data_point(:number_of_hours_worked, payment.hours) %>
       <% payment.deductions.filter { |deduction| deduction.amount > 0 }.each do |deduction| %>
         <%= table.with_data_point(:deduction, deduction.category, deduction.amount) %>
       <% end %>

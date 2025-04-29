@@ -175,6 +175,12 @@ ignore_missing:
     - "cbv.missing_results.show.not_listed_p2"            # FFS-2688
     - "cbv.missing_results.show.not_listed_p2_link_html.la_ldh"   # FFS-2688
     - "cbv.missing_results.show.not_listed_p2_link_html.sandbox"  # FFS-2688
+
+    # LA payment_details (FFS-2688)
+    - "cbv.payment_details.show.number_of_hours_worked"
+    - "cbv.payment_details.show.pay_frequency"
+    - "cbv.payment_details.show.subheader.la_ldh"
+
 ## Consider these keys used:
 ignore_unused:
   all:
