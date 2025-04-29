@@ -132,7 +132,6 @@ es:
     employer_searches:
       show:
         app_based_providers: Empleadores basados
-        can_not_find_employer: No logro encontrar mi empresa ni mi proveedor de nómina
         employer_not_listed: "¿Su empleador no está en la lista?"
         exit_button_text: Salga y vaya a %{agency_short_name}
         header: Busque su empleador o proveedor de nómina
@@ -152,12 +151,10 @@ es:
         to_continue: 'Si aún no ve enumerado a su empleador ni a su proveedor de nómina:'
         to_continue_li_1: Tendrá que enviar esa información de ingresos por separado.
         to_continue_li_1_html:
-          ma: <a href="https://www.mass.gov/guides/how-to-contact-dta">Vaya al sitio web del DTA</a> para informarse de otras formas de notificar sus ingresos.
-          nyc: <a href="https://www.nyc.gov/site/hra/help/snap-application-frequently-asked-questions.page">Vaya al sitio web de la HRA</a> para informarse de otras formas de notificar sus ingresos.
+          la_ldh: <a href="http://mymedicaid.la.gov/">Vaya al sitio web del LDH</a> para informarse de otras formas de notificar sus ingresos.
           sandbox: <a href="https://example.com/contact">Vaya al sitio web del CBV</a> para informarse de otras formas de notificar sus ingresos.
         to_continue_li_2: Si tiene otros trabajos que añadir, búsquelos.
         to_continue_li_3: Si no tiene otros trabajos que añadir aquí, puede salir de este sitio.
-        to_continue_li_3_continue: Si no tiene otros trabajos que añadir aquí, continúe a revisar su informe de ingresos.
     entries:
       create:
         error: Debe marcar la casilla de «acuerdo» para proceder.
