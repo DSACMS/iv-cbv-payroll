@@ -18,17 +18,10 @@
             <% end %>
           </div>
 
-            has_logo = current_agency && current_agency.logo_path.present?
-            has_square_logo = current_agency && current_agency.logo_square_path.present?
-
-            logo_path = if has_square_logo
-                          current_agency.logo_square_path
-                        elsif has_logo
-                         current_agency.logo_path
-                        end
-
-            show_agency_text = has_square_logo || !has_logo
-          %>
+          <% has_logo = current_agency && current_agency.logo_path.present? %>
+          <% has_square_logo = current_agency && current_agency.logo_square_path.present? %>
+          <% logo_path = has_square_logo ? current_agency.logo_square_path : (has_logo ? current_agency.logo_path : nil) %>
+          <% show_agency_text = has_square_logo || !has_logo %>
 
           <div class="<%= has_logo ?
             "display-none tablet:display-flex" : "display-flex" %> flex-align-center">
