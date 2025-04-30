@@ -4,11 +4,11 @@
   <% elsif current_agency?(:nyc) %>
     <%= image_tag wicked_pdf_asset_base64(current_agency.logo_square_path), class: "text-middle cbv-header__agency-logo cbv-header__agency-logo--#{current_agency.id}" %>
   <% end %>
-  <span class="cbv-header__pilot-name font-sans-lg">
+  <span class="cbv-header__pilot-name font-sans-md">
     <%= t("shared.pilot_name") %>
   </span>
   <% if current_agency %>
-    <span class="cbv-header__separator text-primary font-sans-lg">|</span>
+    <span class="cbv-header__separator text-primary font-sans-md">|</span>
   <% end %>
   <% if current_agency.present? %>
     <div class="display-inline-block text-middle cbv-header__agency-logo--<%= current_agency.id %>">
