@@ -35,15 +35,6 @@ module ArgyleApiHelper
       )
   end
 
-  def argyle_stub_request_accounts_response(user_folder)
-    stub_request(:get, %r{#{Aggregators::Sdk::ArgyleService::ACCOUNTS_ENDPOINT}})
-      .to_return(
-        status: 200,
-        body: argyle_load_relative_json_file(user_folder, 'request_accounts.json').to_json,
-        headers: { 'Content-Type': 'application/json;charset=UTF-8' }
-      )
-  end
-
   def argyle_stub_request_identities_response(user_folder)
     stub_request(:get, %r{#{Aggregators::Sdk::ArgyleService::IDENTITIES_ENDPOINT}})
       .to_return(
