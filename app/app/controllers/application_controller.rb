@@ -4,7 +4,6 @@ class ApplicationController < ActionController::Base
   around_action :switch_locale
   before_action :add_newrelic_metadata
   before_action :redirect_if_maintenance_mode
-  before_action :redirect_to_client_agency_entries
   before_action :enable_mini_profiler_in_demo
   before_action :check_help_param
 
@@ -115,13 +114,6 @@ class ApplicationController < ActionController::Base
   def redirect_if_maintenance_mode
     if ENV["MAINTENANCE_MODE"] == "true"
       redirect_to maintenance_path
-    end
-  end
-
-  def redirect_to_client_agency_entries
-    client_agency_id = detect_client_agency_from_domain
-    if client_agency_id.present?
-      redirect_to cbv_flow_new_path(client_agency_id: client_agency_id)
     end
   end
 

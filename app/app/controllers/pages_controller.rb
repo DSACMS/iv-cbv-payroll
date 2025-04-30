@@ -1,5 +1,14 @@
 class PagesController < ApplicationController
+  before_action :redirect_to_client_agency_entries
+
   def home
+  end
+
+  def redirect_to_client_agency_entries
+    client_agency_id = detect_client_agency_from_domain
+    if client_agency_id.present?
+      redirect_to cbv_flow_new_path(client_agency_id: client_agency_id)
+    end
   end
 
   def error_404
