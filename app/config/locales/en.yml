@@ -255,9 +255,10 @@ en:
       la_ldh:
         fields:
           case_number:
-            blank: Enter your case number.
-            prompt: Case number
-            super_one_html: Case number<sup>1</sup>
+            blank: Enter your Medicaid case number.
+            help_text: This 13-digit case number can be found on notices from Louisiana Department of Health
+            prompt: Medicaid case number (optional)
+            super_one_html: Medicaid case number<sup>1</sup>
       sandbox:
         fields:
           case_number:
@@ -277,8 +278,6 @@ en:
             prompt: Middle name
             super_one_html: Middle name<sup>1</sup>
       show:
-        application_information: Application information
-        application_information_explanation: This information may be found on your agency's website.
         continue: Continue
         explanation: This information will be used to connect your income information to your %{agency_short_name} application. Please make sure the information you enter is the same as what is shown on your application.
         your_information: Your information
