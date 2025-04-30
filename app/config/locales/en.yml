@@ -96,20 +96,20 @@ en:
       inactive: inactive
       terminated: terminated
     payment_frequencies:
-      annual: annual
-      annually: annual
-      bi_weekly: bi-weekly
-      biweekly: bi-weekly
-      daily: daily
-      hourly: hourly
-      monthly: monthly
-      per_mile: per mile
-      quarterly: quarterly
-      semi_monthly: semi-monthly
-      semimonthly: semi-monthly
+      annual: Annually
+      annually: Annually
+      bi_weekly: Bi-weekly
+      biweekly: Bi-weekly
+      daily: Daily
+      hourly: Hourly
+      monthly: Monthly
+      per_mile: Per mile
+      quarterly: Quarterly
+      semi_monthly: Semi-monthly
+      semimonthly: Semi-monthly
       usd: USD
-      variable: variable
-      weekly: weekly
+      variable: Variable
+      weekly: Weekly
   applicant_mailer:
     invitation_email:
       body_1:
@@ -255,9 +255,10 @@ en:
       la_ldh:
         fields:
           case_number:
-            blank: Enter your case number.
-            prompt: Case number
-            super_one_html: Case number<sup>1</sup>
+            blank: Enter your Medicaid case number.
+            help_text: This 13-digit case number can be found on notices from Louisiana Department of Health
+            prompt: Medicaid case number (optional)
+            super_one_html: Medicaid case number<sup>1</sup>
       sandbox:
         fields:
           case_number:
@@ -277,8 +278,6 @@ en:
             prompt: Middle name
             super_one_html: Middle name<sup>1</sup>
       show:
-        application_information: Application information
-        application_information_explanation: This information may be found on your agency's website.
         continue: Continue
         explanation: This information will be used to connect your income information to your %{agency_short_name} application. Please make sure the information you enter is the same as what is shown on your application.
         your_information: Your information
@@ -365,7 +364,7 @@ en:
         additional_information_label: Share any comments or additional information about the income details above that you’d like %{agency_acronym} to know. For example, you can share if the information is inaccurate or if you’re no longer working at that job.
         continue: Continue
         deductions: 'Deduction: %{category}'
-        employment_end_date: Employment end date
+        employment_end_date: Employment termination date
         employment_information_table_header: Employment information
         employment_start_date: Employment start date
         employment_status: Employment status
@@ -397,10 +396,11 @@ en:
       show:
         additional_information_title: Is there anything else you'd like your caseworker to know about your income?
         application_or_recertification_date:
+          la_ldh: Medicaid application date
           sandbox: SNAP application or recertification interview date
         consent_checkbox_label_html: 'Check this box to confirm: <ul><li>The information provided by you is true and complete to the best of your knowledge.</li><li>You agree to inform the %{agency_full_name} of any income not reflected in this report or any discrepancies found in the information gathered with this tool.</li><li>You understand that providing accurate and complete information is your responsibility, and any false or omitted information may have legal consequences.</li></ul> By sending this report, you authorize its use for income verification by authorized %{agency_short_name} personnel.'
         legal_header: Legal agreement
-        none_found: We didn't find any payments from this employer in the past 90 days.
+        none_found: No payments from this employer in the past 90 days
         none_found_confirmed: We've confirmed that there are no payments from this employer in the past 90 days. This happens when the client hasn't received income from this job during that time.
         page_header: Submit your income report
         pdf:
@@ -431,11 +431,11 @@ en:
             employment_payment_details: Employment and Payment details
             header: Income Verification Report
           shared:
-            client_information: Client Information
+            client_information: Client information
             confirmation_code: Confirmation code
             employment_information: Employment information
             pay_date: 'Pay Date: %{pay_date}'
-            report_details: Report Details
+            report_details: Report details
         share_report_button: Share my report with %{agency_acronym}
         table_caption_no_name: Employer %{number}
         warning_1: Your income report will be attached to your Medicaid application.
@@ -629,9 +629,10 @@ en:
       header: It looks like something went wrong
       refresh: Refresh page
     home:
-      description_1: The SNAP Income Pilot is a new tool designed to help you connect your income details from your employer or payroll provider directly to your SNAP agency.
-      description_2: Please note this pilot is not currently available.
-      header: Welcome to the SNAP Income Pilot
+      description_1: Report My Income is a new tool designed to help you connect your income details from your employer or payroll provider directly to your benefits agency. We’re currently testing this tool to ensure it works effectively.
+      description_2: Please note this pilot is currently available only to participants in Arizona, Illinois, and Louisiana.
+      description_3: Visit your agency's website for more information on how to submit proof of income for your benefits.
+      header: Welcome to Report My Income
   session_timeout:
     modal:
       description: It looks like you're inactive. For your security, we will sign you out soon unless you choose to extend your session.

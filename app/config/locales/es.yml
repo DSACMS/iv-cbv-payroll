@@ -31,18 +31,16 @@ es:
     employment_statuses:
       employed: empleado
     payment_frequencies:
-      annual: anual
-      annually: anual
-      bi_weekly: cada dos semanas
-      biweekly: cada dos semanas
-      daily: diario
-      hourly: por hora
-      monthly: mensual
+      bi_weekly: Cada dos semanas
+      biweekly: Cada dos semanas
+      daily: Diario
+      hourly: Por hora
+      monthly: Mensual
       per_mile: Por milla
-      semi_monthly: dos veces al mes
-      semimonthly: dos veces al mes
-      variable: variable
-      weekly: semanal
+      semi_monthly: Dos veces al mes
+      semimonthly: Dos veces al mes
+      variable: Variable
+      weekly: Semanal
   applicant_mailer:
     invitation_email:
       body_1:
@@ -94,12 +92,6 @@ es:
         subheader: Por favor añada los otros trabajos que haya tenido en los últimos %{pay_income_days} días, incluso si ya no está en ese trabajo.
         yes_radio: Sí, tengo otro trabajo que cumpla con los criterios
     applicant_informations:
-      la_ldh:
-        fields:
-          case_number:
-            blank: Escriba su número de caso.
-            prompt: Número de caso
-            super_one_html: Número de caso<sup>1</sup>
       sandbox:
         fields:
           case_number:
@@ -119,8 +111,6 @@ es:
             prompt: Segundo nombre
             super_one_html: Segundo nombre<sup>1</sup>
       show:
-        application_information: Información relacionada con la solicitud
-        application_information_explanation: Esta información se puede encontrar en el sitio web de la agencia.
         continue: Continuar
         explanation: Esta información se emplea para vincular la información de sus ingresos con la información presente en la solicitud que presentó ante %{agency_short_name} . Por ello, asegúrese de que la información que ingrese sea la misma que se muestra en su solicitud.
         your_information: Su información
@@ -200,7 +190,6 @@ es:
         additional_information_label: Comparta cualquier comentario o información adicional sobre los detalles de pago anteriores que desea que %{agency_acronym} conozca. Por ejemplo, puede compartir si la información es inexacta o si ya no trabaja en ese empleo.
         continue: Continuar
         deductions: 'Deducción: %{category}'
-        employment_end_date: Fecha de finalización del empleo
         employment_information_table_header: Información sobre el empleo
         employment_start_date: Fecha de inicio del empleo
         employment_status: Estatus del empleo
@@ -234,7 +223,6 @@ es:
         application_or_recertification_date:
           sandbox: SNAP application or recertification interview date
         legal_header: Consentimiento legal
-        none_found: No se encontró ningún pago de este empleador en los últimos 90 días.
         none_found_confirmed: Pudimos confirmar que este empleador no realizó ningún pago en los últimos 90 días. Esto sucede cuando el cliente no percibe ingresos de este trabajo durante tal período de tiempo.
         page_header: Envíe un informe de ingresos
         pdf:
@@ -483,10 +471,6 @@ es:
       error_code_html: 'Código de error: <strong>500</strong>'
       header: "¡Parece que algo salió mal!"
       refresh: Actualizar página
-    home:
-      description_1: El SNAP Income Pilot es una nueva herramienta diseñada para ayudarle a conectar los detalles de sus ingresos de su empleador o proveedor de nómina directamente con su agencia de SNAP. Actualmente estamos probando esta herramienta para asegurarnos de que funcione de manera eficaz.
-      description_2: Tenga en cuenta que este piloto está disponible actualmente solo para los participantes de SNAP en la ciudad de Nueva York y Massachusetts.
-      header: Bienvenido al SNAP Income Pilot
   session_timeout:
     modal:
       description: Parece no está realizando ninguna acción. Por motivos de seguridad, su sesión se cerrará, salvo que elija extender el tiempo de esta sesión.
