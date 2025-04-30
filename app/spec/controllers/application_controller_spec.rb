@@ -13,10 +13,6 @@ RSpec.describe ApplicationController, type: :controller do
       @agency = current_agency
       render plain: @agency.id
     end
-
-    def index
-      render plain: 'root'
-    end
   end
 
   describe '#switch_locale' do
@@ -81,36 +77,13 @@ RSpec.describe ApplicationController, type: :controller do
     it "identifies the correct agency config based on the domain name" do
       request.host = "la.reportmyincome.org"
       get :show
-      # a redirect occurs here so we'll need to check the "location" header
-      expect(response.location).to include("cbv/links/la_ldh")
+      expect(response.body).to eq("la_ldh")
     end
 
     it "returns nil when domain does not match a configured client agency" do
       request.host = "unknown.example.org"
       result = controller.send(:detect_client_agency_from_domain)
       expect(result).to be_nil
-    end
-  end
-
-  describe '#redirect_to_client_agency_entries' do
-    before do
-      routes.draw do
-        root to: 'anonymous#index'
-        get '/cbv/links/:client_agency_id', to: 'anonymous#index', as: 'cbv_flow_new'
-      end
-    end
-
-    it 'redirects to generic links page with client agency ID when hostname matches a client agency domain' do
-      request.host = 'la.reportmyincome.org'
-      get :index
-      expect(response).to redirect_to(cbv_flow_new_path(client_agency_id: 'la_ldh'))
-    end
-
-    it 'does not redirect when hostname does not match any client agency domain' do
-      request.host = 'unknown.example.org'
-      get :index
-      expect(response).to have_http_status(:ok)
-      expect(response.body).to eq('root')
     end
   end
 end
