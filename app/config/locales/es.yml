@@ -31,18 +31,16 @@ es:
     employment_statuses:
       employed: empleado
     payment_frequencies:
-      annual: anual
-      annually: anual
-      bi_weekly: cada dos semanas
-      biweekly: cada dos semanas
-      daily: diario
-      hourly: por hora
-      monthly: mensual
+      bi_weekly: Cada dos semanas
+      biweekly: Cada dos semanas
+      daily: Diario
+      hourly: Por hora
+      monthly: Mensual
       per_mile: Por milla
-      semi_monthly: dos veces al mes
-      semimonthly: dos veces al mes
-      variable: variable
-      weekly: semanal
+      semi_monthly: Dos veces al mes
+      semimonthly: Dos veces al mes
+      variable: Variable
+      weekly: Semanal
   applicant_mailer:
     invitation_email:
       body_1:
@@ -192,7 +190,6 @@ es:
         additional_information_label: Comparta cualquier comentario o información adicional sobre los detalles de pago anteriores que desea que %{agency_acronym} conozca. Por ejemplo, puede compartir si la información es inexacta o si ya no trabaja en ese empleo.
         continue: Continuar
         deductions: 'Deducción: %{category}'
-        employment_end_date: Fecha de finalización del empleo
         employment_information_table_header: Información sobre el empleo
         employment_start_date: Fecha de inicio del empleo
         employment_status: Estatus del empleo
@@ -226,7 +223,6 @@ es:
         application_or_recertification_date:
           sandbox: SNAP application or recertification interview date
         legal_header: Consentimiento legal
-        none_found: No se encontró ningún pago de este empleador en los últimos 90 días.
         none_found_confirmed: Pudimos confirmar que este empleador no realizó ningún pago en los últimos 90 días. Esto sucede cuando el cliente no percibe ingresos de este trabajo durante tal período de tiempo.
         page_header: Envíe un informe de ingresos
         pdf:

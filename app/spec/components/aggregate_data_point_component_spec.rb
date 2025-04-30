@@ -79,7 +79,7 @@ RSpec.describe AggregateDataPointComponent, type: :component do
     expect(
       render_inline(described_class.new(:pay_frequency, "bi-weekly"))
     ).to have_text(
-      "bi-weekly"
+      "Bi-weekly"
     )
   end
 
@@ -87,7 +87,7 @@ RSpec.describe AggregateDataPointComponent, type: :component do
     expect(
       render_inline(described_class.new(:hourly_rate, 10000, "hourly"))
     ).to have_text(
-      "$100.00 hourly"
+      "$100.00 Hourly"
     )
   end
 

@@ -198,6 +198,13 @@ ignore_missing:
     - "pages.home.description_2"
     - "pages.home.description_3"
     - "pages.home.header"
+    
+    # LA client_pdf (FFS-2688)
+    - "aggregator_strings.payment_frequencies.annual"
+    - "aggregator_strings.payment_frequencies.annually"
+    - "cbv.payment_details.show.employment_end_date"
+    - "cbv.submits.show.application_or_recertification_date.la_ldh"
+    - "cbv.submits.show.none_found"
 ## Consider these keys used:
 ignore_unused:
   all:
