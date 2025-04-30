@@ -7,12 +7,15 @@
   <span class="cbv-header__pilot-name font-sans-md">
     <%= t("shared.pilot_name") %>
   </span>
-  <% if current_agency %>
+  <% if current_agency&.logo_path.present? %>
     <span class="cbv-header__separator text-primary font-sans-md">|</span>
-  <% end %>
-  <% if current_agency.present? %>
     <div class="display-inline-block text-middle cbv-header__agency-logo--<%= current_agency.id %>">
       <%= image_tag wicked_pdf_asset_base64(current_agency.logo_path) %>
+    </div>
+  <% elsif current_agency.present? %>
+    <span class="cbv-header__separator text-primary font-sans-md">|</span>
+    <div class="display-inline-block text-middle cbv-header__agency-logo--<%= current_agency.id %>">
+      <%= agency_translation(".pdf.agency_header_name") %>
     </div>
   <% else %>
     <%= agency_translation(".pdf.agency_header_name") %>
