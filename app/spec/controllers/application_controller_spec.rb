@@ -75,9 +75,9 @@ RSpec.describe ApplicationController, type: :controller do
     end
 
     it "identifies the correct agency config based on the domain name" do
-      request.host = "la.reportmyincome.org"
+      request.host = "sandbox.reportmyincome.org"
       get :show
-      expect(response.body).to eq("la_ldh")
+      expect(response.body).to eq("sandbox")
     end
 
     it "returns nil when domain does not match a configured client agency" do
