@@ -2,23 +2,20 @@
   <% if current_agency?(:ma) || current_agency?(:nyc) %>
     <%= image_tag wicked_pdf_asset_base64(current_agency.logo_square_path), class: "text-middle cbv-header__agency-logo cbv-header__agency-logo--#{current_agency.id}" %>
   <% end %>
-  <span class="cbv-header__pilot-name font-sans-md">
+  <span class="cbv-header__pilot-name font-sans-md text-middle">
     <%= t("shared.pilot_name") %>
   </span>
 
-  <% agency_name = agency_translation(".pdf.agency_header_name") %>
-
   <% if current_agency.present? %>
-    <span class="cbv-header__separator text-primary font-sans-md">|</span>
-    <div class="display-inline-block text-middle cbv-header__agency-logo--<%= current_agency.id %>">
-      <% if current_agency&.logo_path.present? %>
+    <span class="cbv-header__separator text-primary font-sans-md text-middle">|</span>
+
+    <% if current_agency&.logo_path.present? %>
+      <div class="display-inline-block text-middle cbv-header__agency-logo--<%= current_agency.id %>">
         <%= image_tag wicked_pdf_asset_base64(current_agency.logo_path) %>
-      <% else %>
-        <%= agency_name %>
-      <% end %>
-    </div>
-  <% else %>
-    <%= agency_name %>
+      </div>
+    <% else %>
+      <span class="text-middle font-sans-md" style="white-space: nowrap;"><%= agency_translation(".pdf.agency_header_name") %></span>
+    <% end %>
   <% end %>
 </strong>
 
