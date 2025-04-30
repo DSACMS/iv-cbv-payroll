@@ -187,6 +187,18 @@ ignore_missing:
     - "cbv.successes.show.follow_up"
     - "cbv.successes.show.if_it_didnt_work"
 
+    # LA applicant_information (FFS-2688)
+    - "cbv.applicant_informations.la_ldh.fields.case_number.blank"
+    - "cbv.applicant_informations.la_ldh.fields.case_number.help_text"
+    - "cbv.applicant_informations.la_ldh.fields.case_number.prompt"
+    - "cbv.applicant_informations.la_ldh.fields.case_number.super_one_html"
+    
+    # LA welcome (FFS-2688)
+    - "pages.home.description_1"
+    - "pages.home.description_2"
+    - "pages.home.description_3"
+    - "pages.home.header"
+    
     # LA client_pdf (FFS-2688)
     - "aggregator_strings.payment_frequencies.annual"
     - "aggregator_strings.payment_frequencies.annually"
