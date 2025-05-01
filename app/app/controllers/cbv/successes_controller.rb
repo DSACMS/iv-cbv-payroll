@@ -1,8 +1,19 @@
 class Cbv::SuccessesController < Cbv::BaseController
   before_action :track_accessed_success_event, only: :show
   skip_before_action :ensure_cbv_flow_not_yet_complete
+  skip_before_action :track_accessed_success_event, only: :check_code
 
   def show
+  end
+
+  def check_code
+    @cbv_flow.reload
+
+    render turbo_stream: turbo_stream.replace(
+      "confirmation_code",
+      partial: "confirmation_code",
+      locals: { cbv_flow: @cbv_flow }
+    )
   end
 
   def track_accessed_success_event

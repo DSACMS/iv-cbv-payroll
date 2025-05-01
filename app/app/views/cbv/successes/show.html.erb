@@ -5,7 +5,7 @@
 </div>
 
 <div class="usa-prose">
-  <p><%= t(".confirmation_code_html", confirmation_code: @cbv_flow.confirmation_code) %></p>
+  <%= render partial: "confirmation_code", locals: { cbv_flow: @cbv_flow } %>
 
   <p><%= t(".caseworker_received", agency_acronym: current_agency.agency_short_name) %></p>
   <p><%= t(".if_it_didnt_work", agency_acronym: current_agency.agency_short_name) %></p>
@@ -13,7 +13,7 @@
 
   <%= link_to cbv_flow_submit_path(format: "pdf"), target: "_blank", rel: "noopener noreferrer", class: "usa-button margin-top-3 usa-button--primary" do %>
     <%= t(".download") %>
-      <% end %>
+  <% end %>
 
   <div>
     <%= link_to agency_url, target: "_blank", rel: "noopener noreferrer", class: "usa-button margin-top-3 usa-button usa-button--outline" do %>
