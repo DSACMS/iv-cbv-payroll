@@ -3,7 +3,6 @@ require 'rails_helper'
 RSpec.describe ApplicationController, type: :controller do
   controller do
     skip_around_action :switch_locale
-
     def test_action
       switch_locale do
         render plain: I18n.locale.to_s
@@ -68,7 +67,7 @@ RSpec.describe ApplicationController, type: :controller do
     end
   end
 
-  describe 'client_agency_config can be resolved by domain name' do
+  describe '#detect_client_agency_from_domain' do
     before do
       routes.draw do
         get 'show', to: 'anonymous#show'
@@ -76,9 +75,9 @@ RSpec.describe ApplicationController, type: :controller do
     end
 
     it "identifies the correct agency config based on the domain name" do
-      request.host = "la.reportmyincome.org"
+      request.host = "sandbox.reportmyincome.org"
       get :show
-      expect(response.body).to eq("la_ldh")
+      expect(response.body).to eq("sandbox")
     end
 
     it "returns nil when domain does not match a configured client agency" do
