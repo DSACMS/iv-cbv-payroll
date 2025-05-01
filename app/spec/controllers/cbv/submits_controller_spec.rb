@@ -222,7 +222,7 @@ RSpec.describe Cbv::SubmitsController do
 
         render_views
 
-        subject {
+        it "renders properly" do
           get :show, format: :pdf
           pdf = PDF::Reader.new(StringIO.new(response.body))
           pdf_text = ""
@@ -230,18 +230,15 @@ RSpec.describe Cbv::SubmitsController do
             pdf_text += page.text
           end
           pdf_text.gsub! "\n", " "
-        }
 
-        it "renders properly" do
           expect(response).to be_successful
+          expect(pdf_text).to include("Pay Date")
+          expect(pdf_text).to include("Gross pay YTD")
+          expect(pdf_text).not_to include("Pay period")
+          expect(pdf_text).not_to include("Payments after taxes and deductions (net)")
+          expect(pdf_text).not_to include("Deduction")
+          expect(pdf_text).not_to include("Base Pay")
         end
-
-        it { is_expected.to include("Pay Date") }
-        it { is_expected.to include("Gross pay YTD") }
-        it { is_expected.not_to include("Pay period") }
-        it { is_expected.not_to include("Payments after taxes and deductions (net)") }
-        it { is_expected.not_to include("Deduction") }
-        it { is_expected.not_to include("Base Pay") }
       end
 
       context "for Sarah (a w2 worker)" do
@@ -277,7 +274,7 @@ RSpec.describe Cbv::SubmitsController do
 
         render_views
 
-        subject {
+        it "renders properly" do
           get :show, format: :pdf
           pdf = PDF::Reader.new(StringIO.new(response.body))
           pdf_text = ""
@@ -285,18 +282,15 @@ RSpec.describe Cbv::SubmitsController do
             pdf_text += page.text
           end
           pdf_text.gsub! "\n", " "
-        }
 
-        it "renders properly" do
           expect(response).to be_successful
+          expect(pdf_text).to include("Pay Date")
+          expect(pdf_text).to include("Gross pay YTD")
+          expect(pdf_text).to include("Pay period")
+          expect(pdf_text).to include("Payment after taxes and deductions (net)")
+          expect(pdf_text).to include("Deduction")
+          expect(pdf_text).to include("Base Pay")
         end
-
-        it { is_expected.to include("Pay Date") }
-        it { is_expected.to include("Gross pay YTD") }
-        it { is_expected.to include("Pay period") }
-        it { is_expected.to include("Payment after taxes and deductions (net)") }
-        it { is_expected.to include("Deduction") }
-        it { is_expected.to include("Base Pay") }
       end
     end
   end
