@@ -12,6 +12,6 @@
   },
   "dependencies": {
     "@axe-core/playwright": "^4.10.1",
-    "dotenv": "^16.4.7"
+    "dotenv": "^16.5.0"
   }
 }
