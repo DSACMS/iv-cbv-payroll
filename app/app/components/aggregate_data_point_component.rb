@@ -126,4 +126,18 @@ class AggregateDataPointComponent < ViewComponent::Base
       value: full_name
     }
   end
+
+  def date_of_birth(date_of_birth)
+    {
+      label: I18n.t("cbv.submits.show.pdf.shared.date_of_birth"),
+      value: date_of_birth
+    }
+  end
+
+  def last_4_ssn(ssn)
+    {
+      label: I18n.t("cbv.submits.show.pdf.caseworker.last_4_ssn"),
+      value: ssn
+    }
+  end
 end

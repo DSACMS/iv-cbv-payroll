@@ -133,6 +133,7 @@ ignore_missing:
     - "caseworker_mailer.summary_email.*"
     # Caseworker PDF strings that are only supported in English:
     - "cbv.submits.show.pdf.caseworker.*"
+    - "cbv.submits.show.pdf.shared.date_of_birth"
 
     # Currently awaiting translation:
     # - "example.strings.*"   # Tag with ticket number that created or modified the string
@@ -192,13 +193,13 @@ ignore_missing:
     - "cbv.applicant_informations.la_ldh.fields.case_number.help_text"
     - "cbv.applicant_informations.la_ldh.fields.case_number.prompt"
     - "cbv.applicant_informations.la_ldh.fields.case_number.super_one_html"
-    
+
     # LA welcome (FFS-2688)
     - "pages.home.description_1"
     - "pages.home.description_2"
     - "pages.home.description_3"
     - "pages.home.header"
-    
+
     # LA client_pdf (FFS-2688)
     - "aggregator_strings.payment_frequencies.annual"
     - "aggregator_strings.payment_frequencies.annually"

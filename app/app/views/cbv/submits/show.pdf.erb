@@ -93,8 +93,10 @@
         <%= t(".pdf.shared.employment_information") %>
       </h4>
     <% end %>
-    <% if is_caseworker && summary[:has_identity_data] %>
-      <%= table.with_data_point(:client_full_name, summary[:identity].full_name) %>
+    <% if summary[:has_identity_data] %>
+      <%= table.with_data_point(:client_full_name, summary[:identity].full_name) if is_caseworker %>
+      <%= table.with_data_point(:last_4_ssn, summary[:identity].ssn) if is_caseworker %>
+      <%= table.with_data_point(:date_of_birth, summary[:identity].date_of_birth) %>
     <% end %>
     <% if summary[:has_employment_data] %>
       <% employment = summary[:employment] %>
