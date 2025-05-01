@@ -239,7 +239,7 @@ RSpec.describe Cbv::SubmitsController do
         it { is_expected.to include("Pay Date") }
         it { is_expected.to include("Gross pay YTD") }
         it { is_expected.not_to include("Pay period") }
-        it { is_expected.not_to include("Payments after taxes and deductions(net)") }
+        it { is_expected.not_to include("Payments after taxes and deductions (net)") }
         it { is_expected.not_to include("Deduction") }
         it { is_expected.not_to include("Base Pay") }
       end
