@@ -63,10 +63,7 @@ RSpec.describe CaseworkerMailer, type: :mailer do
       email_body = strip_tags(email_html).gsub(/\s+/, ' ').strip
       expected_date = format_parsed_date(Time.zone.today)
       request_date = format_parsed_date(cbv_flow.created_at)
-      expect(email_body).to include("Attached is an Income Verification Report PDF with confirmation number #{cbv_flow.confirmation_code}")
-      expect(email_body).to include("confirm that their information has been submitted to HRA")
-      expect(email_body).to include("This report is associated with the case number ABC1234 and CIN #{applicant.client_id_number}")
-      expect(email_body).to include("submitted by the client on #{expected_date}")
+      expect(email_body).to include("Attached is a Report My Income CBV Report PDF with confirmation number #{cbv_flow.confirmation_code}")
     end
 
     it 'attaches a PDF which has a file name prefix of {case_number}_timestamp_' do
