@@ -31,7 +31,7 @@ RSpec.describe Aggregators::ResponseObjects::Identity do
       expect(identity.full_name).to eq("Bob Jones")
       expect(identity.emails).to eq([ "test1@argyle.com" ])
       expect(identity.phone_numbers).to eq([ "+18009000010" ])
-      expect(identity.ssn).to eq("1191")
+      expect(identity.ssn).to eq("XXX-XX-1191")
       expect(identity.date_of_birth).to eq("1980-10-10")
     end
 
