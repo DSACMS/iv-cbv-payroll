@@ -34,7 +34,7 @@
             <% end %>
           </div>
 
-          <% if current_agency && current_agency.logo_path %>
+          <% if has_logo %>
             <%= image_tag current_agency.logo_path, class: "cbv-header__agency-logo cbv-header__agency-logo--#{current_agency.id} tablet:display-none" %>
           <% end %>
         </em>
