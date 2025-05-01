@@ -51,12 +51,6 @@ FactoryBot.define do
       pinwheel_account_id { "019571bc-2f60-3955-d972-dbadfe0913a8" }
     end
 
-    trait :argyle_sarah do
-      argyle_fully_synced
-
-      pinwheel_account_id { "01956d5f-cb8d-af2f-9232-38bce8531f58" }
-    end
-
     trait :argyle_fully_synced do
       argyle
 

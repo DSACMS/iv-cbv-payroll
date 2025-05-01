@@ -18,7 +18,7 @@ export default class ArgyleModalAdapter extends ModalAdapter {
         locale,
       })
 
-      const { user, isSandbox, flowId } = await fetchArgyleToken()
+      const { user, isSandbox, flowId } = await fetchArgyleToken(this.requestData.id)
       return Argyle.create({
         userToken: user.user_token,
         flowId: flowId,

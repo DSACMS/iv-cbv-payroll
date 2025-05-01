@@ -118,4 +118,16 @@ module ArgyleApiHelper
   def argyle_load_relative_json_file(user_folder, filename)
     JSON.parse(argyle_load_relative_file(user_folder, filename))
   end
+
+  def argyle_user_property_for(user_folder, fixture_type, property = nil)
+    data = argyle_load_relative_json_file(user_folder, "request_#{fixture_type}.json")
+
+    return data unless property
+
+    if data.key?('results')
+      data['results'].map { |result| result[property] }
+    else
+      data[property]
+    end
+  end
 end

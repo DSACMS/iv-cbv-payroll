@@ -17,6 +17,10 @@ module "dev_config" {
   service_memory                 = 4096
   service_desired_instance_count = 3
 
+  # Create DNS records for these `additional_domains` in the default hosted
+  # zone (this is necessary to support CBV agency subdomains).
+  additional_domains = ["*.navapbc.cloud"]
+
   # Enable and configure identity provider.
   enable_identity_provider = local.enable_identity_provider
 

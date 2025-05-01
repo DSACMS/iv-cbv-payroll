@@ -106,7 +106,7 @@
     <% end %>
     <% if summary[:has_income_data] && is_w2_worker %>
       <%= table.with_data_point(:pay_frequency, summary[:income].pay_frequency&.humanize) %>
-      <%= table.with_data_point(:hourly_rate, summary[:income].compensation_amount, summary[:income].compensation_unit) %>
+      <%= table.with_data_point(:hourly_rate, summary[:income].compensation_amount, summary[:income].pay_frequency) %>
     <% end %>
   <% end %>
 

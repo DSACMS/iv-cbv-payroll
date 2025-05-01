@@ -1,4 +1,4 @@
 <% cbv_applicant = @cbv_flow.cbv_applicant %>
 <%= f.fields_for :cbv_applicant, cbv_applicant do |f2| %>
-  <%= f2.text_field :case_number, label: t(".fields.case_number.prompt") %>
+  <%= f2.text_field :case_number, label: t(".fields.case_number.prompt"), hint: t(".fields.case_number.help_text") %>
 <% end %>
