@@ -9,12 +9,15 @@
         <%= image_tag "dta_logo.png", class: "text-middle", style: "width: 140px" %>
       <% elsif current_agency.id == "nyc" %>
         <%= image_tag "hra_logo.png", class: "text-middle", style: "width: 170px" %>
+      <% elsif current_agency.id == "la_ldh" %>
+        <%= image_tag "hra_logo.png", class: "text-middle", style: "width: 170px" %>
+        <%# TIMOTEST TODO: implement image here too %>
       <% else %>
         <%= agency_translation("shared.header.cbv_flow_title") %>
       <% end %>
     </h3>
     <h1>
-      <%= agency_translation(".header") %>
+      <%= agency_translation(".header", agency_short_name: current_agency.agency_short_name) %>
     </h1>
     <div class="line-height-sans-5">
       <p>
@@ -22,11 +25,17 @@
       </p>
 
       <p><%= agency_translation(".body_1", agency_acronym: current_agency.agency_short_name) %></p>
-      <p><%= agency_translation(".body_2_html", deadline: format_date(@cbv_flow_invitation.expires_at.to_s)) %></p>
-      <p><%= agency_translation(".body_3", app_name: agency_translation("shared.app_name")) %></p>
+
+      <% if @cbv_flow.cbv_flow_invitation_id.present? %>
+        <p><%= agency_translation(".tokenized_link_deadline", deadline: format_date(@cbv_flow_invitation.expires_at.to_s)) %></p>
+      <% else %>
+        <p><%= t(".generic_link_deadline", deadline: format_date(@cbv_flow_invitation.expires_at.to_s)) %></p>
+      <% end %>
+
+      <p><%= t(".body_3", app_name: agency_translation("shared.app_name")) %></p>
 
       <p>
-        <%= t(".button_caption") %>
+        <%= agency_translation(".button_caption") %>
       </p>
     </div>
 
@@ -39,7 +48,7 @@
     <hr >
 
     <p class="font-body-3xs">
-      <%= t(".footer") %>
+      <%= agency_translation(".footer", agency_acronym: current_agency.agency_short_name) %>
     </p>
   </div>
 </section>

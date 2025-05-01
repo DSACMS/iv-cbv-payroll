@@ -114,24 +114,25 @@ en:
     invitation_email:
       body_1:
         default: "%{agency_acronym} wants you to verify your income as part of your SNAP application or recertification. The SNAP Income Pilot is a new tool designed to help you share your income data directly with %{agency_acronym} by logging into your payroll provider."
-        ma: "%{agency_acronym} wants you to verify your income as part of your SNAP recertification. The SNAP Income Pilot is a new tool designed to help you share your income data directly with %{agency_acronym} by logging into your payroll provider."
-      body_2_html:
-        default: This process is unique to you. Please don't share this invitation with anyone else. <strong>You have until %{deadline}, to complete your verification.</strong> Otherwise, you can request a new invitation.
-        ma: This process is unique to you. Please don't share this invitation with anyone else. <strong>You have until %{deadline}, to complete your verification.</strong>
-      body_3:
-        default: This is an optional tool. If you decide that you don't want to use it, you can provide income documents via the %{app_name} app, fax, mail, or in-person.
-        ma: This is an optional tool. If you decide that you don't want to use it, you can provide proof of your gross income and hours using %{app_name}, by fax, by mail, or in-person.
+        la_ldh: "%{agency_acronym} wants you to verify your income as part of your Medicaid application. The Medicaid Income Pilot is a new tool designed to help you share your income data directly with %{agency_acronym} by logging into your payroll provider or app-based/gig work employer."
+      body_3: This is an optional tool. If you decide that you don't want to use it, you can provide income documents via the %{app_name}.
       button: Verify your income
-      button_caption: 'To verify your income with the SNAP Income Pilot, click the button below:'
-      footer: This is an automatically generated message from your SNAP agency. Please don’t reply to this email.
+      button_caption:
+        default: 'To verify your income with the SNAP Income Pilot, click the button below:'
+        la_ldh: 'To verify your income with the Medicaid Income Pilot, click the button below:'
+      footer:
+        default: This is an automatically generated message from your SNAP agency. Please don’t reply to this email.
+        la_ldh: This is an automatically generated message from %{agency_acronym}. Please don’t reply to this email.
+      generic_link_deadline: You have until %{deadline} to complete your verification.
       greeting: Hello,
       header:
-        ma: DTA has sent you an invitation to verify your income
-        nyc: HRA has sent you an invitation to verify your income
+        la_ldh: "%{agency_short_name} has sent you an invitation to report your income"
         sandbox: CBV Test Agency has sent you an invitation to verify your income
       subject:
         default: Verify your income for your SNAP application or renewal
-        ma: Verify your income to renew your SNAP benefits
+        la_ldh: Verify your income for your Medicaid application
+      tokenized_link_deadline_html:
+        default: "<strong>You have until %{deadline} to complete your verification.</strong> Do not share this invitation with anyone outside your household."
   caseworker:
     cbv_flow_invitations:
       az_des:
