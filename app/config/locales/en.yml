@@ -420,6 +420,7 @@ en:
             how_to_header: 'How to use this report:'
             pay_period: Pay period (%{pay_frequency})
             snap_agency_id: SNAP Agency ID
+            ssn: SSN
             staff_beacon_id_wel_id: Staff BEACON ID (WELID)
           client:
             address: Employer address
@@ -433,6 +434,7 @@ en:
           shared:
             client_information: Client information
             confirmation_code: Confirmation code
+            date_of_birth: Date of Birth
             employment_information: Employment information
             pay_date: 'Pay Date: %{pay_date}'
             report_details: Report details
