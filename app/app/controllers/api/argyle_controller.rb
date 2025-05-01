@@ -8,6 +8,7 @@ class Api::ArgyleController < ApplicationController
   def create
     @cbv_flow = CbvFlow.find(session[:cbv_flow_id])
     argyle = argyle_for(@cbv_flow)
+    item_id = params[:item_id]
 
     is_sandbox_environment = agency_config[@cbv_flow.client_agency_id].argyle_environment == "sandbox"
     user_token = if @cbv_flow.argyle_user_id.blank?
@@ -24,6 +25,20 @@ class Api::ArgyleController < ApplicationController
                    response = argyle.create_user_token(@cbv_flow.argyle_user_id)
                    response["user_token"]
                  end
+
+    # Redirect if the user is attempting connect a previously connected account
+    connected_argyle_accounts = argyle.fetch_accounts_api(user: @cbv_flow.argyle_user_id, item: item_id)["results"]
+
+    if item_id.present? && connected_argyle_accounts.any?
+      argyle_account = connected_argyle_accounts.first
+      payroll_account = @cbv_flow.payroll_accounts.find_by(pinwheel_account_id: argyle_account["id"])
+
+      if payroll_account.sync_in_progress?
+        return redirect_to cbv_flow_synchronizations_path(user: { account_id: payroll_account.pinwheel_account_id })
+      else
+        return redirect_to cbv_flow_payment_details_path(user: { account_id: payroll_account.pinwheel_account_id })
+      end
+    end
 
     render json: {
       status: :ok,

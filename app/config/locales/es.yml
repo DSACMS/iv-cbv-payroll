@@ -31,18 +31,16 @@ es:
     employment_statuses:
       employed: empleado
     payment_frequencies:
-      annual: anual
-      annually: anual
-      bi_weekly: cada dos semanas
-      biweekly: cada dos semanas
-      daily: diario
-      hourly: por hora
-      monthly: mensual
+      bi_weekly: Cada dos semanas
+      biweekly: Cada dos semanas
+      daily: Diario
+      hourly: Por hora
+      monthly: Mensual
       per_mile: Por milla
-      semi_monthly: dos veces al mes
-      semimonthly: dos veces al mes
-      variable: variable
-      weekly: semanal
+      semi_monthly: Dos veces al mes
+      semimonthly: Dos veces al mes
+      variable: Variable
+      weekly: Semanal
   applicant_mailer:
     invitation_email:
       body_1:
@@ -94,12 +92,6 @@ es:
         subheader: Por favor añada los otros trabajos que haya tenido en los últimos %{pay_income_days} días, incluso si ya no está en ese trabajo.
         yes_radio: Sí, tengo otro trabajo que cumpla con los criterios
     applicant_informations:
-      la_ldh:
-        fields:
-          case_number:
-            blank: Escriba su número de caso.
-            prompt: Número de caso
-            super_one_html: Número de caso<sup>1</sup>
       sandbox:
         fields:
           case_number:
@@ -119,8 +111,6 @@ es:
             prompt: Segundo nombre
             super_one_html: Segundo nombre<sup>1</sup>
       show:
-        application_information: Información relacionada con la solicitud
-        application_information_explanation: Esta información se puede encontrar en el sitio web de la agencia.
         continue: Continuar
         explanation: Esta información se emplea para vincular la información de sus ingresos con la información presente en la solicitud que presentó ante %{agency_short_name} . Por ello, asegúrese de que la información que ingrese sea la misma que se muestra en su solicitud.
         your_information: Su información
@@ -177,11 +167,9 @@ es:
     error_no_access: No logramos cargar los datos de nómina para esta cuenta. Haga clic en el enlace que recibió de su agencia del SNAP para intentarlo de nuevo.
     expired_invitations:
       show:
-        body_1: Usted ya ha completado con éxito su proceso de verificación, o está intentando acceder a esta invitación después de que ha expirado.
-        body_2: Si todavía no termina de verificar sus ingresos, envíe su información de ingresos desde el mismo sitio web de %{agency_short_name}.
+        body_1: Si todavía no termina de verificar sus ingresos, envíe su información de ingresos desde el mismo sitio web de %{agency_short_name}.
         cta_button_html:
-          ma: <a href="https://www.mass.gov/guides/how-to-contact-dta" class="usa-button">Visite el sitio web del DTA</a>
-          nyc: <a href="https://www.nyc.gov/site/hra/help/snap-application-frequently-asked-questions.page" class="usa-button">Visite el sitio web de la HRA</a>
+          la_ldh: <a href="http://mymedicaid.la.gov/" class="usa-button">Visite el sitio web del LDH</a>
           sandbox: <a href="https://www.mass.gov/guides/how-to-contact-dta" class="usa-button">Obtenga más información en la Agencia de pruebas CBV</a>
         title: Su invitación para verificar ingresos ha expirado
     missing_results:
@@ -202,7 +190,6 @@ es:
         additional_information_label: Comparta cualquier comentario o información adicional sobre los detalles de pago anteriores que desea que %{agency_acronym} conozca. Por ejemplo, puede compartir si la información es inexacta o si ya no trabaja en ese empleo.
         continue: Continuar
         deductions: 'Deducción: %{category}'
-        employment_end_date: Fecha de finalización del empleo
         employment_information_table_header: Información sobre el empleo
         employment_start_date: Fecha de inicio del empleo
         employment_status: Estatus del empleo
@@ -233,20 +220,14 @@ es:
       show:
         additional_information_title: "¿Existe algún otro detalle que le gustaría que su asistente de caso conozca en relación con sus ingresos?"
         application_or_recertification_date:
-          ma: Date client was contacted
-          nyc: SNAP application or recertification interview date
           sandbox: SNAP application or recertification interview date
-        consent_checkbox_label_html: Marque esta casilla para confirmar que, a su leal saber y entender, la información proporcionada es verdadera y está completa. Se compromete a informar a %{agency_acronym} de cualquier ingreso que no se vea reflejado en este informe, así como de cualquier discrepancia que encuentre en la información recopilada mediante el uso de esta herramienta. Comprende que proporcionar información precisa y completa es su responsabilidad y que presentar cualquier información falsa, o bien abstenerse de brindar cierta información, puede acarrear consecuencias legales. Para obtener más información acerca de sus derechos y obligaciones con respecto a la información privada que comparte con %{agency_acronym}, consulte el apartado Derechos y obligaciones que firmó en la solicitud. Este apartado se encuentra disponible en el sitio web de %{agency_acronym}.<br><br>Al presentar este informe, autoriza su uso para fines de verificación de ingresos por parte del personal autorizado de %{agency_acronym}.
         legal_header: Consentimiento legal
-        none_found: No se encontró ningún pago de este empleador en los últimos 90 días.
         none_found_confirmed: Pudimos confirmar que este empleador no realizó ningún pago en los últimos 90 días. Esto sucede cuando el cliente no percibe ingresos de este trabajo durante tal período de tiempo.
         page_header: Envíe un informe de ingresos
         pdf:
           agency_header_name:
             az_des: Department of Economic Security
             la_ldh: Department of Health
-            ma: Massachusetts Department of Transitional Assistance
-            nyc: NYC Human Resources Administration
             sandbox: CBV Test Agency
           caseworker:
             pay_period: Período de pago (%{pay_frequency})
@@ -267,20 +248,16 @@ es:
             report_details: Detalles del reporte
         share_report_button: Autorizo que se comparta mi informe con %{agency_acronym}
         table_caption_no_name: Employer %{number}
-        warning_html: Su informe de ingresos se adjuntará a la solicitud para el Programa de Asistencia Nutricional Suplementaria (SNAP, Supplemental Nutrition Assistance Program) que presente.<br>A fin de compartir este informe, debe marcar la casilla de consentimiento legal.
+        warning_2: A fin de compartir este informe, debe marcar la casilla de consentimiento legal.
       update:
         consent_to_authorize_warning: A fin de compartir su informe, marque la casilla de consentimiento legal.
     successes:
       show:
         back_to_agency: Vaya al sitio web de %{agency_short_name}
         caseworker_received: Hemos enviado su información de pago a %{agency_acronym}. Ellos lo contactarán si se necesita alguna información adicional.
-        check_status:
-          ma: Para comprobar el estado de su recertificación de SNAP puede visitar el sitio web del DTA.
-          nyc: Para comprobar el estado de su solicitud o recertificación de SNAP puede visitar el sitio web del HRA.
         confirmation_code_html: "<strong>Código de confirmación </strong>: %{confirmation_code}"
         download: Descargue una copia del informe
         header: Su informe de ingresos ha sido compartido de forma exitosa con %{agency_acronym}
-        if_it_didnt_work: Si usted no logró encontrar un empleador, o uno de sus empleadores no tiene un proveedor de nómina en línea, por favor, suministre su información de pago directamente a %{agency_acronym}.
     summaries:
       show:
         additional_comments: Comentarios adicionales
@@ -493,10 +470,6 @@ es:
       error_code_html: 'Código de error: <strong>500</strong>'
       header: "¡Parece que algo salió mal!"
       refresh: Actualizar página
-    home:
-      description_1: El SNAP Income Pilot es una nueva herramienta diseñada para ayudarle a conectar los detalles de sus ingresos de su empleador o proveedor de nómina directamente con su agencia de SNAP. Actualmente estamos probando esta herramienta para asegurarnos de que funcione de manera eficaz.
-      description_2: Tenga en cuenta que este piloto está disponible actualmente solo para los participantes de SNAP en la ciudad de Nueva York y Massachusetts.
-      header: Bienvenido al SNAP Income Pilot
   session_timeout:
     modal:
       description: Parece no está realizando ninguna acción. Por motivos de seguridad, su sesión se cerrará, salvo que elija extender el tiempo de esta sesión.
