@@ -64,4 +64,9 @@ module Aggregators::FormatMethods::Argyle
       :w2
     end
   end
+
+  def self.obfuscate_ssn(full_ssn)
+    return unless full_ssn
+    "XXX-XX-#{full_ssn.last(4).to_s.rjust(4, "X")}"
+  end
 end
