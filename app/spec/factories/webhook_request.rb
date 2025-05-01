@@ -54,16 +54,18 @@ FactoryBot.define do
               }
             }
           when "paystubs.partially_synced"
+            days_synced = evaluator.variant == :six_months ? 182 : 30
+
             {
               "event" => evaluator.event_type,
               "name" => evaluator.user,
               "data" => {
                 "account" => evaluator.argyle_account_id,
                 "user" => evaluator.argyle_user_id,
-                "available_from" => 30.days.ago.iso8601,
+                "available_from" => days_synced.days.ago.iso8601,
                 "available_to" => 1.day.ago.iso8601,
                 "available_count" => 16,
-                "days_synced" => 30
+                "days_synced" => days_synced
               }
             }
           when "paystubs.fully_synced"
@@ -79,6 +81,8 @@ FactoryBot.define do
               }
             }
           when "gigs.partially_synced"
+            days_synced = evaluator.variant == :six_months ? 182 : 30
+
             {
               "event" => evaluator.event_type,
               "name" => evaluator.user,
@@ -86,10 +90,10 @@ FactoryBot.define do
                 "account" => evaluator.argyle_account_id,
                 "user" => evaluator.argyle_user_id,
                 "item_id" => "item_000041078",
-                "available_from" => 30.days.ago.iso8601,
+                "available_from" => days_synced.days.ago.iso8601,
                 "available_to" => 1.days.ago.iso8601,
                 "available_count" => 16,
-                "days_synced" => 30
+                "days_synced" => days_synced
               }
             }
           when "gigs.fully_synced"
@@ -122,6 +126,7 @@ FactoryBot.define do
 end
 
 private
+
 def build_accounts_updated_payload(evaluator)
   case evaluator.variant
   when :connecting

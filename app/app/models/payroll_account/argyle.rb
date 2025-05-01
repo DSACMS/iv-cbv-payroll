@@ -39,4 +39,18 @@ class PayrollAccount::Argyle < PayrollAccount
         (event_outcome.nil? || webhook_event.event_outcome == event_outcome.to_s)
     end
   end
+
+  def sync_started_at
+    # Argyle sends `account.updated` webhook events while the user still has
+    # the modal open (as they complete MFA). Since the user may take
+    # arbitrarily long to complete MFA, we don't want to count this against the
+    # sync time.
+    account_connected_at = webhook_events
+      .find { |webhook_event| webhook_event.event_name == "accounts.connected" }
+      &.created_at
+
+    # If, for some reason, we didn't get the `accounts.connected` event (?),
+    # let's at least not crash anything that depends on this method.
+    account_connected_at || created_at
+  end
 end
