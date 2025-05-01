@@ -260,9 +260,9 @@ RSpec.describe Cbv::SubmitsController do
           create(
             :payroll_account,
             :argyle_fully_synced,
-            :argyle_sarah,
             with_errored_jobs: errored_jobs,
             cbv_flow: cbv_flow,
+            pinwheel_account_id: account_id,
             supported_jobs: supported_jobs,
             )
         end
