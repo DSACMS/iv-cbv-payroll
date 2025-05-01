@@ -54,7 +54,7 @@ RSpec.describe Aggregators::ResponseObjects::Identity do
         expect(identity.ssn).to eq("22")
       end
 
-      it "nil" do
+      it "handles a nil ssn" do
         argyle_response["ssn"] = nil
         identity = described_class.from_argyle(argyle_response)
         expect(identity.ssn).to be_nil
