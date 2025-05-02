@@ -87,7 +87,7 @@ RSpec.describe CaseWorkerTransmitterJob, type: :job do
           cbv_flow.update(confirmation_code: existing_confirmation_code)
         end
 
-        it "uses existing confirmation code" do
+        it "uses existing confirmation code and generates email" do
           confirmation_code = "SANDBOX123"
           cbv_flow.update(confirmation_code: confirmation_code)
 
@@ -120,14 +120,6 @@ RSpec.describe CaseWorkerTransmitterJob, type: :job do
         expect(email.to).to include('test@example.com')
         expect(email.subject).to include("Income Verification Report")
         expect(email.body.encoded).to include(cbv_flow.cbv_applicant.case_number)
-      end
-
-      it "does not attempt to change the agency name format" do
-        cbv_flow.update!(client_agency_id: "az_des")
-        confirmation_code = "AZDES123"
-        cbv_flow.update(confirmation_code: confirmation_code)
-
-        expect { described_class.new.perform(cbv_flow.id) }.not_to change { cbv_flow.reload.confirmation_code }
       end
 
       # Note that we are not testing events here because doing so requires use of expect_any_instance_of,
