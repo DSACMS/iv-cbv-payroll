@@ -94,11 +94,6 @@ es:
     applicant_informations:
       la_ldh:
         fields:
-          case_number:
-            blank: Escriba su número de caso de Medicaid.
-            help_text: Este número de caso de 13 dígitos se puede encontrar en los avisos del Departamento de Salud de Luisiana
-            prompt: Número de caso de Medicaid (opcional)
-            super_one_html: Número de caso de Medicaid<sup>1</sup>
           date_of_birth:
             blank: Escriba su fecha de nacimiento.
             prompt: Fecha de nacimiento
