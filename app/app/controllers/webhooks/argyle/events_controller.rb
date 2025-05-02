@@ -251,9 +251,16 @@ class Webhooks::Argyle::EventsController < ApplicationController
   def validate_useful_report_requirements(report)
     report_is_valid = report.valid?(:useful_report)
     if report_is_valid
-      event_logger.track("ApplicantReportMetUsefulRequirements", request, {})
+      event_logger.track("ApplicantReportMetUsefulRequirements", request,
+        cbv_applicant_id: @cbv_flow.cbv_applicant_id,
+        cbv_flow_id: @cbv_flow.id,
+        invitation_id: @cbv_flow.cbv_flow_invitation_id
+      )
     else
       event_logger.track("ApplicantReportFailedUsefulRequirements", request, {
+        cbv_applicant_id: @cbv_flow.cbv_applicant_id,
+        cbv_flow_id: @cbv_flow.id,
+        invitation_id: @cbv_flow.cbv_flow_invitation_id,
         errors: report.errors.full_messages.join(", ")
       })
     end

@@ -231,8 +231,15 @@ RSpec.describe Webhooks::Argyle::EventsController, type: :controller do
       process_webhook("users.fully_synced")
       process_webhook("gigs.partially_synced")
 
-      expect(fake_event_logger).to receive(:track)
-         .with("ApplicantReportMetUsefulRequirements", anything, anything).exactly(1).times
+      expect(fake_event_logger).to receive(:track).with(
+        "ApplicantReportMetUsefulRequirements",
+        anything,
+        include(
+          cbv_flow_id: cbv_flow.id,
+          cbv_applicant_id: cbv_flow.cbv_applicant_id,
+          invitation_id: cbv_flow.cbv_flow_invitation_id,
+        )
+      ).exactly(1).times
 
       process_webhook("paystubs.partially_synced")
     end
