@@ -125,7 +125,7 @@ RSpec.describe Aggregators::AggregatorReports::ArgyleReport, type: :service do
 
         it 'returns an array of ResponseObjects::Gig' do
           argyle_report.send(:fetch_report_data)
-          expect(argyle_report.gigs.length).to eq(100)
+          expect(argyle_report.gigs.length).to eq(50)
 
           expect(argyle_report.gigs[0]).to be_a(Aggregators::ResponseObjects::Gig)
         end

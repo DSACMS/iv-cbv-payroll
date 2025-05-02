@@ -29,6 +29,7 @@ class Cbv::PaymentDetailsController < Cbv::BaseController
     end
 
     @payroll_account_report = @aggregator_report.find_account_report(account_id)
+    @is_w2_worker = @payroll_account_report.employment.employment_type == :w2
     @account_comment = account_comment
   end
 
