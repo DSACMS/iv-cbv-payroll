@@ -206,7 +206,7 @@ ignore_missing:
     - "cbv.submits.show.application_or_recertification_date.la_ldh"
     - "cbv.submits.show.none_found"
 
-    # LA employer_search and help (FFS-2688)
+    # LA help (FFS-2688)
     - "help.alert.heading"
     - "help.alert.help_options"
     - "help.show.credentials.step2.content"
@@ -214,6 +214,11 @@ ignore_missing:
     - "help.show.employer.step1.title"
     - "help.show.employer.step3.content"
     - "help.show.provider.step3.content"
+
+    # LA employer_search (FFS-2688)
+    - "cbv.employer_searches.show.header"
+    - "cbv.employer_searches.show.search_label_2"
+    - "cbv.employer_searches.show.search_label_html"
 ## Consider these keys used:
 ignore_unused:
   all:
