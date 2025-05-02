@@ -236,48 +236,62 @@ RSpec.describe Webhooks::Argyle::EventsController, type: :controller do
       process_webhook("paystubs.partially_synced")
     end
 
-    it "tracks an ApplicantReceivedArgyleData event with multiple partially_synced events" do
-      process_webhook("accounts.connected")
-      process_webhook("identities.added")
-      process_webhook("gigs.partially_synced")
-
-      expect(fake_event_logger).to receive(:track) do |event_name, _request, attributes|
-        expect(event_name).to eq("ApplicantReceivedArgyleData")
-        expect(attributes).to include(
-          cbv_flow_id: cbv_flow.id,
-          cbv_applicant_id: cbv_flow.cbv_applicant_id,
-          invitation_id: cbv_flow.cbv_flow_invitation_id,
-          sync_duration_seconds: be_a(Numeric),
-          sync_data: "ninety_days"
-        )
+    context "with multiple partially_synced events" do
+      it "tracks only a single ApplicantFinishedArgyleSync event" do
+        expect(fake_event_logger).to receive(:track).with("ApplicantFinishedArgyleSync", anything, anything).once
+        expect(fake_event_logger).to receive(:track).with("ApplicantReceivedArgyleData", anything, anything)
+        process_webhook("accounts.connected")
+        process_webhook("identities.added")
+        process_webhook("gigs.partially_synced")
+        process_webhook("gigs.partially_synced", variant: :six_months)
+        process_webhook("paystubs.partially_synced")
+        process_webhook("paystubs.partially_synced", variant: :six_months)
+        process_webhook("users.fully_synced")
       end
-      process_webhook("paystubs.partially_synced")
 
-      expect(fake_event_logger).to receive(:track) do |event_name, _request, attributes|
-        expect(event_name).to eq("ApplicantReceivedArgyleData")
-        expect(attributes).to include(
-          cbv_flow_id: cbv_flow.id,
-          cbv_applicant_id: cbv_flow.cbv_applicant_id,
-          invitation_id: cbv_flow.cbv_flow_invitation_id,
-          sync_data: "six_months",
-          sync_duration_seconds: be_a(Numeric),
-          sync_event: "paystubs.partially_synced"
-        )
-      end
-      process_webhook("paystubs.partially_synced", variant: :six_months)
+      it "tracks an ApplicantReceivedArgyleData event" do
+        process_webhook("accounts.connected")
+        process_webhook("identities.added")
+        process_webhook("gigs.partially_synced")
 
-      expect(fake_event_logger).to receive(:track) do |event_name, _request, attributes|
-        expect(event_name).to eq("ApplicantReceivedArgyleData")
-        expect(attributes).to include(
-          cbv_flow_id: cbv_flow.id,
-          cbv_applicant_id: cbv_flow.cbv_applicant_id,
-          invitation_id: cbv_flow.cbv_flow_invitation_id,
-          sync_data: "fully_synced",
-          sync_duration_seconds: be_a(Numeric),
-          sync_event: "users.fully_synced"
-        )
+        expect(fake_event_logger).to receive(:track) do |event_name, _request, attributes|
+          expect(event_name).to eq("ApplicantReceivedArgyleData")
+          expect(attributes).to include(
+            cbv_flow_id: cbv_flow.id,
+            cbv_applicant_id: cbv_flow.cbv_applicant_id,
+            invitation_id: cbv_flow.cbv_flow_invitation_id,
+            sync_duration_seconds: be_a(Numeric),
+            sync_data: "ninety_days"
+          )
+        end
+        process_webhook("paystubs.partially_synced")
+
+        expect(fake_event_logger).to receive(:track) do |event_name, _request, attributes|
+          expect(event_name).to eq("ApplicantReceivedArgyleData")
+          expect(attributes).to include(
+            cbv_flow_id: cbv_flow.id,
+            cbv_applicant_id: cbv_flow.cbv_applicant_id,
+            invitation_id: cbv_flow.cbv_flow_invitation_id,
+            sync_data: "six_months",
+            sync_duration_seconds: be_a(Numeric),
+            sync_event: "paystubs.partially_synced"
+          )
+        end
+        process_webhook("paystubs.partially_synced", variant: :six_months)
+
+        expect(fake_event_logger).to receive(:track) do |event_name, _request, attributes|
+          expect(event_name).to eq("ApplicantReceivedArgyleData")
+          expect(attributes).to include(
+            cbv_flow_id: cbv_flow.id,
+            cbv_applicant_id: cbv_flow.cbv_applicant_id,
+            invitation_id: cbv_flow.cbv_flow_invitation_id,
+            sync_data: "fully_synced",
+            sync_duration_seconds: be_a(Numeric),
+            sync_event: "users.fully_synced"
+          )
+        end
+        process_webhook("users.fully_synced")
       end
-      process_webhook("users.fully_synced")
     end
 
     it 'results in a sync failure after receiving "system_error" on accounts.updated' do

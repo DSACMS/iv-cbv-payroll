@@ -122,6 +122,8 @@ class Webhooks::Argyle::EventsController < ApplicationController
     elsif webhook_event.event_name == "accounts.updated"
       process_accounts_updated_event(webhook_event)
     elsif payroll_account.has_fully_synced?
+      return if payroll_account.sync_succeeded? || payroll_account.sync_failed?
+
       report = Aggregators::AggregatorReports::ArgyleReport.new(
         payroll_accounts: [ payroll_account ],
         argyle_service: argyle_for(@cbv_flow),
