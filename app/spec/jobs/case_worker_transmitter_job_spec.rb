@@ -101,7 +101,7 @@ RSpec.describe CaseWorkerTransmitterJob, type: :job do
         end
 
         it "does not override the existing confirmation code" do
-          expect { described_class.new.perform(cbv_flow.id) }.not_to change { cbv_flow.reload.client_agency_id }
+          expect { described_class.new.perform(cbv_flow.id) }.not_to change { cbv_flow.reload.confirmation_code }
         end
       end
 
