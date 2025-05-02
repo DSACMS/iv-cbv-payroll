@@ -34,6 +34,7 @@ Rails.application.routes.draw do
       resource :expired_invitation, only: %i[show]
       resource :applicant_information, only: %i[show update]
 
+      # Turbo Streams
       get :check_code, to: "successes#check_code"
 
       # Generic link
