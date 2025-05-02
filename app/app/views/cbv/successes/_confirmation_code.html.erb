@@ -1,6 +1,0 @@
-<div id="confirmation_code">
-  <p><%= t("cbv.successes.show.confirmation_code_html", confirmation_code: cbv_flow.confirmation_code.presence || "—") %></p>
-  <% unless cbv_flow.confirmation_code.present? %>
-    <%= turbo_frame_tag "confirmation_code_refresh", src: cbv_flow_check_code_path, refresh: "2" %>
-  <% end %>
-</div>

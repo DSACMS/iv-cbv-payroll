@@ -47,7 +47,6 @@ RSpec.configure do |config|
       !%w[new create].include?(request.params[:action]) &&
       response.body.present? &&
       response.status == 200 &&
-      response.content_type =~ /html/ &&
-      request.format != :turbo_stream
+      response.content_type =~ /html/
   end
 end
