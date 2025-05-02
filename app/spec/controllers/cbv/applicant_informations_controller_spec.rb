@@ -20,6 +20,7 @@ RSpec.describe Cbv::ApplicantInformationsController, type: :controller do
         expect(response.body).to include("first_name")
         expect(response.body).to include("middle_name")
         expect(response.body).to include("last_name")
+        expect(response.body).to include("date_of_birth")
         expect(response.body).to include("case_number")
       end
 
@@ -30,6 +31,7 @@ RSpec.describe Cbv::ApplicantInformationsController, type: :controller do
               first_name: "Tim", # required
               middle_name: "",
               last_name: "", # required
+              date_of_birth: "", # required
               case_number: "" # required
             }
           }
@@ -39,6 +41,7 @@ RSpec.describe Cbv::ApplicantInformationsController, type: :controller do
         expect(response.body).not_to include(I18n.t("cbv.applicant_informations.sandbox.fields.first_name.blank"))
         expect(response.body).not_to include(I18n.t("cbv.applicant_informations.sandbox.fields.middle_name.blank"))
         expect(response.body).to include(I18n.t("cbv.applicant_informations.sandbox.fields.last_name.blank"))
+        expect(response.body).to include(I18n.t("cbv.applicant_informations.sandbox.fields.date_of_birth.blank"))
         expect(response.body).to include(I18n.t("cbv.applicant_informations.sandbox.fields.case_number.blank"))
       end
 
@@ -49,6 +52,7 @@ RSpec.describe Cbv::ApplicantInformationsController, type: :controller do
               first_name: "Tim", # required
               middle_name: "",
               last_name: "Miller", # required
+              date_of_birth: "01/01/1980", # required
               case_number: "9971" # required
             }
           }
@@ -64,6 +68,7 @@ RSpec.describe Cbv::ApplicantInformationsController, type: :controller do
               first_name: "Tim", # required
               middle_name: "",
               last_name: "Miller", # required
+              date_of_birth: "01/01/1980", # required
               case_number: "9971" # required
             }
           },

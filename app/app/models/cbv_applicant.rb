@@ -44,7 +44,8 @@ class CbvApplicant < ApplicationRecord
     case_number: :string,
     agency_id_number: :string,
     beacon_id: :string,
-    snap_application_date: :date
+    snap_application_date: :date,
+    date_of_birth: :date
   )
 
   def has_applicant_attribute_missing?

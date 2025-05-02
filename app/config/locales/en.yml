@@ -259,12 +259,20 @@ en:
             help_text: This 13-digit case number can be found on notices from Louisiana Department of Health
             prompt: Medicaid case number (optional)
             super_one_html: Medicaid case number<sup>1</sup>
+          date_of_birth:
+            blank: Enter your date of birth.
+            prompt: Date of birth
+            super_one_html: Date of birth<sup>1</sup>
       sandbox:
         fields:
           case_number:
             blank: Enter your case number.
             prompt: Case number
             super_one_html: Case number<sup>1</sup>
+          date_of_birth:
+            blank: Enter your date of birth.
+            prompt: Date of birth
+            super_one_html: Date of birth<sup>1</sup>
           first_name:
             blank: Enter your first name.
             prompt: First name
