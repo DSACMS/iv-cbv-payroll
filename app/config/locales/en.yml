@@ -123,7 +123,6 @@ en:
       footer:
         default: This is an automatically generated message from your SNAP agency. Please don’t reply to this email.
         la_ldh: This is an automatically generated message from %{agency_acronym}. Please don’t reply to this email.
-      generic_link_deadline: You have until %{deadline} to complete your verification.
       greeting: Hello,
       header:
         la_ldh: "%{agency_short_name} has sent you an invitation to report your income"

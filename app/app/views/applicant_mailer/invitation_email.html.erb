@@ -25,13 +25,7 @@
       </p>
 
       <p><%= agency_translation(".body_1", agency_acronym: current_agency.agency_short_name) %></p>
-
-      <% if @cbv_flow.cbv_flow_invitation_id.present? %>
-        <p><%= agency_translation(".tokenized_link_deadline", deadline: format_date(@cbv_flow_invitation.expires_at.to_s)) %></p>
-      <% else %>
-        <p><%= t(".generic_link_deadline", deadline: format_date(@cbv_flow_invitation.expires_at.to_s)) %></p>
-      <% end %>
-
+      <p><%= agency_translation(".tokenized_link_deadline", deadline: format_date(@cbv_flow_invitation.expires_at.to_s)) %></p>
       <p><%= t(".body_3", app_name: agency_translation("shared.app_name")) %></p>
 
       <p>
