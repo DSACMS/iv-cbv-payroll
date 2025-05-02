@@ -319,8 +319,7 @@ en:
         error: You must check the agreement checkbox to proceed.
       show:
         checkbox:
-          default: Check this box to agree to let us access your payment information and share it with the %{agency_full_name}.
-          nyc: Check this box to agree to let Nava access your payment information and share it with the %{agency_full_name}. We will not use the information for any other purpose nor redisclose it to any other party.
+          default: Check this box to agree to let us access your payment information and share it with %{agency_full_name}. We will not use the information for any other purpose nor redisclose it to any other party.
         continue: Get started
         header: Let's verify your income
         step1: Search and sign into your employer or online payroll provider.
@@ -329,7 +328,7 @@ en:
         step2_description: You will be able to preview and approve everything that is shared with %{agency_acronym}.
         step3: Submit your payment information.
         step3_description: We’ll automatically send it to %{agency_acronym}. This will help you prove your income and can help %{agency_acronym} get to a decision faster.
-        subheader_html: 'We’ll send your payment records from your employer(s) to %{agency_acronym} to verify your income. <strong>Most people complete this process in under 5 minutes.</strong> Just follow these steps:'
+        subheader_html: 'We’ll send your payment records from your employer(s) to %{agency_acronym} to verify your income. <strong>Most people complete this process in about 5 minutes.</strong> Just follow these steps:'
     error_invalid_link: Invalid link used to begin CBV. Try clicking the link again or contact your caseworker for help.
     error_invalid_token: The invitation link used is not valid. Double check the link and try again. If you continue experiencing issues, contact your caseworker.
     error_missing_token_html: "<strong>Your session has timed out due to inactivity.</strong> Please reuse the same link you used to begin your session. If you encounter any issues, contact your benefits agency for assistance."
