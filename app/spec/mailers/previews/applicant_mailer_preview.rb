@@ -4,13 +4,22 @@ class ApplicantMailerPreview < BaseMailerPreview
 
   def invitation_email_dta
     ApplicantMailer.with(
-      cbv_flow_invitation: FactoryBot.create(:cbv_flow_invitation, :ma, user: unique_user, language: I18n.locale)
+      cbv_flow_invitation: FactoryBot.create(:cbv_flow_invitation, :ma, user: unique_user, language: I18n.locale),
+      cbv_flow: FactoryBot.create(:cbv_flow, :with_pinwheel_account)
     ).invitation_email
   end
 
   def invitation_email_nyc
     ApplicantMailer.with(
-      cbv_flow_invitation: FactoryBot.create(:cbv_flow_invitation, :nyc, user: unique_user, language: I18n.locale)
+      cbv_flow_invitation: FactoryBot.create(:cbv_flow_invitation, :nyc, user: unique_user, language: I18n.locale),
+      cbv_flow: FactoryBot.create(:cbv_flow, :with_pinwheel_account)
+    ).invitation_email
+  end
+
+  def invitation_email_la_ldh
+    ApplicantMailer.with(
+      cbv_flow_invitation: FactoryBot.create(:cbv_flow_invitation, :la_ldh, user: unique_user, language: I18n.locale),
+      cbv_flow: FactoryBot.create(:cbv_flow, :with_pinwheel_account)
     ).invitation_email
   end
 

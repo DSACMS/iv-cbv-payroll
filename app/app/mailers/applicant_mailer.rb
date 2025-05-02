@@ -18,6 +18,7 @@ class ApplicantMailer < ApplicationMailer
 
   def set_params
     @cbv_flow_invitation = params[:cbv_flow_invitation]
+    @cbv_flow = params[:cbv_flow]
   end
 
   def current_agency

@@ -45,24 +45,12 @@ es:
     invitation_email:
       body_1:
         default: "%{agency_acronym} quiere que usted verifique sus ingresos como parte de su solicitud o recertificación del Programa de Asistencia Nutricional Suplementaria (SNAP, por sus siglas en inglés). El SNAP Income Pilot (Piloto de ingresos) es una nueva herramienta diseñada para ayudarle a compartir información de sus ingresos directamente con %{agency_acronym} iniciando sesión en su proveedor de nóminas."
-        ma: "%{agency_acronym} quiere que usted verifique sus ingresos como parte de su solicitud o recertificación del Programa de Asistencia Nutricional Suplementaria (SNAP, por sus siglas en inglés). El SNAP Income Pilot (Piloto de ingresos) es una nueva herramienta diseñada para ayudarle a compartir información de sus ingresos directamente con %{agency_acronym} iniciando sesión en su proveedor de nóminas."
-      body_2_html:
-        default: Este proceso es solo para usted. Por favor, no comparta esta invitación con nadie más. <strong>Tiene hasta el %{deadline}, para realizar su verificación.</strong> De lo contrario, puede solicitar una nueva invitación.
-        ma: Este proceso es solo para usted. Por favor, no comparta esta invitación con nadie más. <strong>Tiene hasta el %{deadline}, para realizar su verificación.</strong>
-      body_3:
-        default: Esta es una herramienta opcional. Si decide que no desea usarla, puede proveer los documentos de sus ingresos a través de la aplicación %{app_name}, fax, correo postal o en persona.
-        ma: Esta es una herramienta opcional. Si decide no usarla, puede proveer el comprobante de sus ingresos brutos y horas usando %{app_name}, por fax, por correo postal o en persona.
       button: Verifique sus ingresos
-      button_caption: 'Para verificar sus ingresos con el SNAP Income Pilot, haga clic en el siguiente botón:'
-      footer: Este es un mensaje generado automáticamente desde su agencia de SNAP. Por favor no conteste a este correo electrónico.
       greeting: "¡Hola!"
       header:
-        ma: El Departamento de Asistencia Transitoria (DTA, por sus siglas en inglés) le ha enviado una invitación para verificar sus ingresos
-        nyc: La Administración de Recursos Humanos (HRA, por sus siglas en inglés) le ha enviado una invitación para verificar sus ingresos
         sandbox: La Agencia de pruebas CBV le ha enviado una invitación para verificar sus ingresos
       subject:
         default: Verifique sus ingresos para su solicitud o renovación de SNAP
-        ma: Verifique sus ingresos para renovar sus beneficios de SNAP
   caseworker:
     cbv_flow_invitations:
       create:

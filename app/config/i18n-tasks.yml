@@ -192,19 +192,31 @@ ignore_missing:
     - "cbv.applicant_informations.la_ldh.fields.case_number.help_text"
     - "cbv.applicant_informations.la_ldh.fields.case_number.prompt"
     - "cbv.applicant_informations.la_ldh.fields.case_number.super_one_html"
-    
+
     # LA welcome (FFS-2688)
     - "pages.home.description_1"
     - "pages.home.description_2"
     - "pages.home.description_3"
     - "pages.home.header"
-    
+
     # LA client_pdf (FFS-2688)
     - "aggregator_strings.payment_frequencies.annual"
     - "aggregator_strings.payment_frequencies.annually"
     - "cbv.payment_details.show.employment_end_date"
     - "cbv.submits.show.application_or_recertification_date.la_ldh"
     - "cbv.submits.show.none_found"
+
+    # LA inviations (FFS-2688)
+    - "applicant_mailer.invitation_email.body_1.la_ldh"
+    - "applicant_mailer.invitation_email.body_3"
+    - "applicant_mailer.invitation_email.button_caption.default"
+    - "applicant_mailer.invitation_email.button_caption.la_ldh"
+    - "applicant_mailer.invitation_email.footer.default"
+    - "applicant_mailer.invitation_email.footer.la_ldh"
+    - "applicant_mailer.invitation_email.generic_link_deadline"
+    - "applicant_mailer.invitation_email.header.la_ldh"
+    - "applicant_mailer.invitation_email.subject.la_ldh"
+    - "applicant_mailer.invitation_email.tokenized_link_deadline_html.default"
 ## Consider these keys used:
 ignore_unused:
   all:
