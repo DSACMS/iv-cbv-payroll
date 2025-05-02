@@ -13,19 +13,14 @@ class CaseworkerMailerPreview < BaseMailerPreview
       :completed,
       cbv_flow_invitation: invitation
     )
-    payments = stub_post_processed_payments(cbv_flow.payroll_accounts.first.pinwheel_account_id)
-    employments = stub_employments(cbv_flow.payroll_accounts.first.pinwheel_account_id)
-    incomes = stub_incomes(cbv_flow.payroll_accounts.first.pinwheel_account_id)
-    identities = stub_identities(cbv_flow.payroll_accounts.first.pinwheel_account_id)
+
+    aggregator_report = FactoryBot.build(:pinwheel_report)
 
     CaseworkerMailer.with(
       email_address: invitation.email_address,
       cbv_flow: cbv_flow,
       case_number: "12345",
-      payments: payments,
-      employments: employments,
-      incomes: incomes,
-      identities: identities
+      aggregator_report: aggregator_report
     ).summary_email
   end
 end

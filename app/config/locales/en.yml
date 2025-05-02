@@ -227,7 +227,7 @@ en:
       greeting: Hello,
       subject:
         default: Income Verification Report %{case_number} has been received
-        la_ldh: 'CBV Report: Confirmation Code %{confirmation_code}'
+        la_ldh: CBV Report %{confirmation_code}
   cbv:
     add_jobs:
       next_path:

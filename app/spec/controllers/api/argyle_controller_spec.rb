@@ -55,9 +55,6 @@ RSpec.describe Api::ArgyleController do
 
         allow(CbvFlow).to receive(:find).and_return(cbv_flow)
         allow(controller).to receive(:argyle_for).and_return(argyle)
-        allow(controller).to receive(:agency_config).and_return({
-          cbv_flow.client_agency_id => double(argyle_environment: 'sandbox')
-        })
 
         post :create
 

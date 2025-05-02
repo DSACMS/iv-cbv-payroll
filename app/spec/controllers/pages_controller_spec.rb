@@ -37,4 +37,12 @@ RSpec.describe PagesController do
       expect(response.body).to include("It looks like something went wrong")
     end
   end
+
+  describe "#redirect_to_client_agency_entries" do
+    it "redirects to the client agency entries page when the hostname matches a client agency domain" do
+      request.host = "la.reportmyincome.org"
+      get :home
+      expect(response).to redirect_to(cbv_flow_new_path(client_agency_id: "la_ldh"))
+    end
+  end
 end
