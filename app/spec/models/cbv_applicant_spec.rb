@@ -80,7 +80,7 @@ RSpec.describe CbvApplicant, type: :model do
     describe "date_of_birth" do
       let(:date_of_birth) { Date.new(1980, 1, 1) }
 
-      context "for sandbox agency" do
+      context "agency with date_of_birth required" do
         before do
           allow_any_instance_of(ClientAgencyConfig::ClientAgency).to receive(:applicant_attributes).and_return(
             {
@@ -107,34 +107,7 @@ RSpec.describe CbvApplicant, type: :model do
         end
       end
 
-      context "for la_ldh agency" do
-        before do
-          allow_any_instance_of(ClientAgencyConfig::ClientAgency).to receive(:applicant_attributes).and_return(
-            {
-              case_number: { "required" => false },
-              date_of_birth: { "required" => true }
-            }
-          )
-        end
-
-        it "is required" do
-          applicant = build(:cbv_applicant, :la_ldh, date_of_birth: nil)
-          applicant.set_applicant_attributes
-          applicant.validate_required_applicant_attributes
-          expect(applicant.errors[:date_of_birth]).to include(
-            I18n.t("cbv.applicant_informations.la_ldh.fields.date_of_birth.blank")
-          )
-        end
-
-        it "is valid when provided" do
-          applicant = build(:cbv_applicant, :la_ldh, date_of_birth: date_of_birth)
-          applicant.set_applicant_attributes
-          applicant.validate_required_applicant_attributes
-          expect(applicant.errors[:date_of_birth]).to be_empty
-        end
-      end
-
-      context "for other agencies" do
+      context "agency that does not require date_of_birth" do
         it "is not required for nyc agency" do
           applicant = build(:cbv_applicant, :nyc, date_of_birth: nil)
           applicant.set_applicant_attributes
