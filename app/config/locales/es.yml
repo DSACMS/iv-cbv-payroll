@@ -350,10 +350,6 @@ es:
     - Noviembre
     - Diciembre
   help:
-    alert:
-      heading: "¿Tiene problemas para vincularse con el proveedor de nómina asignado?"
-      help_options: opciones de ayuda
-      text_before: Consulte la sección dedicada
     index:
       company_id: No sé la identificación de mi empresa
       credentials: No me siento cómodo para ingresar mis credenciales de inicio de sesión
@@ -389,12 +385,8 @@ es:
           - Aplicamos en método de cifrado fuerte, similar al que usan los bancos, para proteger su información. Sus credenciales se transmiten de forma segura y jamás las almacenamos.
           title: Su información de inicio de sesión se encuentra cifrada y protegida.
         step2:
-          content:
-          - Solo usamos su información de inicio de sesión a los fines de verificar los detalles relacionados con la nómina una vez. Su información de inicio de sesión no se volverá a usar ni se usará para ningún otro fin.
           title: Su información solo se emplea a los fines de verificar sus ingresos.
         step3:
-          content:
-          - El servicio que contratamos para verificar sus datos de nómina es de confianza; es más, muchas empresas también lo contratan para tratar los datos de nómina de manera segura.
           title: Contratamos servicios de confianza.
         title: No me siento cómodo para ingresar mis credenciales de inicio de sesión
       employer:
@@ -402,20 +394,14 @@ es:
         step1:
           content:
           - Si hay una empresa matriz, use ese nombre primero.
-          - Use abreviaturas (p. ej., "ABC Inc." en lugar de "ABC Corporation").
+          - Use abreviaturas (p. ej., "ABC Co." en lugar de "ABC Corporation").
           - No escriba caracteres especiales; tampoco incluya signos de puntuación.
-          - - 'Pruebe diferentes formas de escribir el nombre de su empleador; por ejemplo:'
-            - Elimine los caracteres especiales y tampoco incluya signos de puntuación.
-            - Pruebe con escribir el nombre de la empresa matriz, si corresponde.
-          title: Busque diferentes versiones del nombre de su empleador.
         step2:
           content:
           - Si aún así su empleador no aparece en los resultados de búsqueda, busque, en su lugar, el proveedor de nómina que utiliza su empresa.
           - Si no conoce el nombre de su proveedor de nómina, revise el recibo de pago en busca de nombres, por ejemplo, ADP, Paylocity o Workday.
           title: En su lugar, busque por proveedor de nómina.
         step3:
-          content:
-          - Si su empleador o proveedor de nómina no figura en la lista, deberá proporcionar su información de ingresos a la agencia de otra manera.
           title: Si aún así no puede encontrar a su empleador o proveedor de nómina, siga los pasos a continuación.
         title: No logro encontrar el empleador correcto
       go_back: Atrás
@@ -441,8 +427,6 @@ es:
           - En su bandeja de entrada, busque términos clave, como "nómina", "recibo de pago" o "depósito directo".
           title: Busque en la bandeja de entrada de su correo electrónico.
         step3:
-          content:
-          - Póngase en contacto con el encargado de Recursos Humanos o de Nómina de la empresa. Cualquiera de estas personas pueden ayudarlo a conseguir la identificación de la empresa.
           title: Póngase en contacto con el representante de departamento Recursos Humanos de su empleador.
         title: No sé quién es mi proveedor de nómina
       username:

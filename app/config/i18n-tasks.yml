@@ -192,19 +192,28 @@ ignore_missing:
     - "cbv.applicant_informations.la_ldh.fields.case_number.help_text"
     - "cbv.applicant_informations.la_ldh.fields.case_number.prompt"
     - "cbv.applicant_informations.la_ldh.fields.case_number.super_one_html"
-    
+
     # LA welcome (FFS-2688)
     - "pages.home.description_1"
     - "pages.home.description_2"
     - "pages.home.description_3"
     - "pages.home.header"
-    
+
     # LA client_pdf (FFS-2688)
     - "aggregator_strings.payment_frequencies.annual"
     - "aggregator_strings.payment_frequencies.annually"
     - "cbv.payment_details.show.employment_end_date"
     - "cbv.submits.show.application_or_recertification_date.la_ldh"
     - "cbv.submits.show.none_found"
+
+    # LA employer_search and help (FFS-2688)
+    - "help.alert.heading"
+    - "help.alert.help_options"
+    - "help.show.credentials.step2.content"
+    - "help.show.credentials.step3.content"
+    - "help.show.employer.step1.title"
+    - "help.show.employer.step3.content"
+    - "help.show.provider.step3.content"
 ## Consider these keys used:
 ignore_unused:
   all:
