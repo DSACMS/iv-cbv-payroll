@@ -146,7 +146,7 @@ class Webhooks::Argyle::EventsController < ApplicationController
     if params["event"] == "paystubs.partially_synced" || params["event"] == "gigs.partially_synced"
       days_synced = params["data"]["days_synced"].to_i
       sync_data = if days_synced < 182
-                    :sixty_days
+                    :ninety_days
                   else
                     :six_months
                   end

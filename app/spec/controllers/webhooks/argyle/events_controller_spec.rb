@@ -248,7 +248,7 @@ RSpec.describe Webhooks::Argyle::EventsController, type: :controller do
           cbv_applicant_id: cbv_flow.cbv_applicant_id,
           invitation_id: cbv_flow.cbv_flow_invitation_id,
           sync_duration_seconds: be_a(Numeric),
-          sync_data: "sixty_days"
+          sync_data: "ninety_days"
         )
       end
       process_webhook("paystubs.partially_synced")
