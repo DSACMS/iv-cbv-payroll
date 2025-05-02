@@ -59,6 +59,11 @@ class Cbv::SubmitsController < Cbv::BaseController
       @cbv_flow.update(consented_to_authorized_use_at: timestamp)
     end
 
+    if @cbv_flow.confirmation_code.blank?
+      confirmation_code = generate_confirmation_code(@cbv_flow)
+      @cbv_flow.update!(confirmation_code: confirmation_code)
+    end
+
     if ENV["ACTIVEJOB_ENABLED"] == "true"
       CaseWorkerTransmitterJob.perform_later(@cbv_flow.id)
     else
@@ -94,5 +99,14 @@ class Cbv::SubmitsController < Cbv::BaseController
     })
   rescue => ex
     Rails.logger.error "Unable to track event (ApplicantAccessedIncomeSummary): #{ex}"
+  end
+
+  def generate_confirmation_code(cbv_flow)
+    prefix = cbv_flow.client_agency_id
+    [
+      prefix.gsub("_", ""),
+      (Time.now.to_i % 36 ** 3).to_s(36).tr("OISB", "0158").rjust(3, "0"),
+      cbv_flow.id.to_s.rjust(4, "0")
+    ].compact.join.upcase
   end
 end
