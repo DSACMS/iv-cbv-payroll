@@ -46,7 +46,7 @@ RSpec.describe CaseworkerMailer, type: :mailer do
         end
 
         it 'uses the custom format with confirmation code' do
-          expect(mail.subject).to eq("CBV Report: Confirmation Code #{cbv_flow.confirmation_code}")
+          expect(mail.subject).to eq("CBV Report #{cbv_flow.confirmation_code}")
         end
       end
     end
