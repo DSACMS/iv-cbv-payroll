@@ -13,11 +13,6 @@ class CaseWorkerTransmitterJob < ApplicationJob
     @cbv_flow = cbv_flow
     current_agency = current_agency(@cbv_flow)
 
-    # Confirmation code is now generated in the SubmitsController
-    if cbv_flow.confirmation_code.blank?
-      Rails.logger.warn("CbvFlow #{cbv_flow_id} does not have a confirmation code. This should have been generated in the SubmitsController.")
-    end
-
     if current_agency.transmission_method.empty?
       Rails.logger.info("No transmission method found for client agency #{current_agency.id}")
       return

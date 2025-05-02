@@ -105,11 +105,6 @@ RSpec.describe CaseWorkerTransmitterJob, type: :job do
         end
       end
 
-      it "logs a warning if no confirmation code exists" do
-        expect(Rails.logger).to receive(:warn).with(/does not have a confirmation code/)
-        described_class.new.perform(cbv_flow.id)
-      end
-
       it "sends an email to the caseworker and updates transmitted_at" do
         expect {
           described_class.new.perform(cbv_flow.id)
