@@ -192,6 +192,12 @@ ignore_missing:
     - "cbv.applicant_informations.la_ldh.fields.case_number.help_text"
     - "cbv.applicant_informations.la_ldh.fields.case_number.prompt"
     - "cbv.applicant_informations.la_ldh.fields.case_number.super_one_html"
+    - "cbv.applicant_informations.la_ldh.fields.date_of_birth.blank"
+    - "cbv.applicant_informations.la_ldh.fields.date_of_birth.prompt"
+    - "cbv.applicant_informations.la_ldh.fields.date_of_birth.super_one_html"
+    - "cbv.applicant_informations.sandbox.fields.date_of_birth.blank"
+    - "cbv.applicant_informations.sandbox.fields.date_of_birth.prompt"
+    - "cbv.applicant_informations.sandbox.fields.date_of_birth.super_one_html"
     
     # LA welcome (FFS-2688)
     - "pages.home.description_1"
