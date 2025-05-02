@@ -375,6 +375,15 @@ RSpec.describe Cbv::SubmitsController do
       expect(cbv_flow.confirmation_code).to start_with(cbv_flow.client_agency_id.gsub("_", "").upcase)
     end
 
+    it "removes underscores from the agency name in the confirmation code" do
+      cbv_flow.update!(client_agency_id: "az_des")
+      expect(cbv_flow.confirmation_code).to be_nil
+
+      patch :update, params: { cbv_flow: { consent_to_authorized_use: "1" } }
+
+      expect(cbv_flow.reload.confirmation_code).to start_with("AZDES")
+    end
+
     it "does not overwrite an existing confirmation code" do
       existing_code = "SANDBOX123"
       cbv_flow.update(confirmation_code: existing_code)
