@@ -78,6 +78,7 @@ class Webhooks::Pinwheel::EventsController < ApplicationController
         cbv_flow_id: @cbv_flow.id,
         client_agency_id: @cbv_flow.client_agency_id,
         invitation_id: @cbv_flow.cbv_flow_invitation_id,
+        pinwheel_environment: agency_config[@cbv_flow.client_agency_id].pinwheel_environment,
         sync_duration_seconds: Time.now - @payroll_account.created_at,
 
         # #####################################################################

@@ -137,6 +137,7 @@ RSpec.describe Webhooks::Pinwheel::EventsController do
               cbv_applicant_id: cbv_flow.cbv_applicant_id,
               invitation_id: cbv_flow.cbv_flow_invitation_id,
               client_agency_id: "sandbox",
+              pinwheel_environment: "sandbox",
               sync_duration_seconds: within(1.second).of(5.minutes),
 
               # Identity fields
