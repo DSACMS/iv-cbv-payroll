@@ -39,7 +39,7 @@ class CbvApplicant < ApplicationRecord
   validates :date_of_birth, comparison: {
     less_than: Date.current,
      message: :future_date
-  }, if: :date_of_birth_required?
+  }, if: -> { date_of_birth_required? && date_of_birth.present? }
 
   # validate that the date_of_birth is not more than 110 years ago
   validates :date_of_birth, comparison: {

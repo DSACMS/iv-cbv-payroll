@@ -7,21 +7,22 @@ class Cbv::ApplicantInformationsController < Cbv::BaseController
   end
 
   def update
-    begin
-      @cbv_applicant.update!(applicant_params[:cbv_applicant])
-    rescue => e
-      Rails.logger.error("Error updating applicant: #{e.message}")
-      flash[:alert] = t(".error_updating_applicant")
-      return redirect_to cbv_flow_applicant_information_path
+    @cbv_applicant.assign_attributes(applicant_params[:cbv_applicant])
+    @cbv_applicant.valid? # run the model validations
+    @cbv_applicant.validate_required_applicant_attributes # run the attributes validations
+
+    if @cbv_applicant.errors.empty?
+      @cbv_applicant.save!
+      redirect_to next_path
+      return
     end
 
-    @cbv_applicant.validate_required_applicant_attributes
     error_count = @cbv_applicant.errors.size
     if error_count > 0
       error_header = t(".error_header", count: error_count)
 
-      # Collect error messages without attribute names
-      error_messages = @cbv_applicant.errors.messages.values.flatten.map { |msg| "<li>#{msg}</li>" }.join
+      # Use @cbv_applicant.errors directly since we added all errors back to it
+      error_messages = @cbv_applicant.errors.map { |error| "<li>#{error.message}</li>" }.join
       error_messages = "<ul>#{error_messages}</ul>"
 
       flash.now[:alert_heading] = error_header
@@ -29,10 +30,11 @@ class Cbv::ApplicantInformationsController < Cbv::BaseController
 
       track_applicant_information_error_event(error_messages.html_safe)
 
-      return render :show, status: :unprocessable_entity
+      render :show, status: :unprocessable_entity
+    else
+      flash[:alert] = t(".error_updating_applicant")
+      redirect_to cbv_flow_applicant_information_path
     end
-
-    redirect_to next_path
   end
 
   def redirect_when_info_present
