@@ -35,6 +35,18 @@ class CbvApplicant < ApplicationRecord
   before_validation :parse_snap_application_date
   validates :client_agency_id, presence: true
 
+  # validate that the date_of_birth is in the past
+  validates :date_of_birth, comparison: {
+    less_than: Date.current,
+     message: :future_date
+  }, if: :date_of_birth_required?
+
+  # validate that the date_of_birth is not more than 110 years ago
+  validates :date_of_birth, comparison: {
+    greater_than_or_equal_to: 110.years.ago.to_date,
+    message: :invalid_date
+  }, if: :date_of_birth_required?
+
   include Redactable
   has_redactable_fields(
     first_name: :string,
@@ -96,5 +108,10 @@ class CbvApplicant < ApplicationRecord
   def set_applicant_attributes
     @applicant_attributes = Rails.application.config.client_agencies[client_agency_id]&.applicant_attributes&.compact&.keys&.map(&:to_sym) || []
     @required_applicant_attributes = Rails.application.config.client_agencies[client_agency_id]&.applicant_attributes&.select { |key, attributes| attributes["required"] }&.keys&.map(&:to_sym) || []
+  end
+
+  def date_of_birth_required?
+    required_attrs = Rails.application.config.client_agencies[client_agency_id]&.applicant_attributes&.select { |key, attributes| attributes["required"] }&.keys&.map(&:to_sym) || []
+    required_attrs.include?(:date_of_birth)
   end
 end

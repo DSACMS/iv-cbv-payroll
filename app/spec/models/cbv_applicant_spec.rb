@@ -85,7 +85,7 @@ RSpec.describe CbvApplicant, type: :model do
           allow_any_instance_of(ClientAgencyConfig::ClientAgency).to receive(:applicant_attributes).and_return(
             {
               first_name: { "required" => true },
-              date_of_birth: { "required" => true }
+              date_of_birth: { "required" => true, "type" => "date" }
             }
           )
         end
@@ -104,6 +104,22 @@ RSpec.describe CbvApplicant, type: :model do
           applicant.set_applicant_attributes
           applicant.validate_required_applicant_attributes
           expect(applicant.errors[:date_of_birth]).to be_empty
+        end
+
+        it "adds an error when date_of_birth is in the future" do
+          applicant = build(:cbv_applicant, :sandbox, date_of_birth: Date.tomorrow)
+          applicant.valid?
+          expect(applicant.errors[:date_of_birth]).to include(
+            I18n.t('activerecord.errors.models.cbv_applicant/sandbox.attributes.date_of_birth.future_date')
+          )
+        end
+
+        it "adds an error when date_of_birth is more than 110 years in the past" do
+          applicant = build(:cbv_applicant, :sandbox, date_of_birth: 111.years.ago.to_date)
+          applicant.valid?
+          expect(applicant.errors[:date_of_birth]).to include(
+            I18n.t('activerecord.errors.models.cbv_applicant/sandbox.attributes.date_of_birth.invalid_date')
+          )
         end
       end
 

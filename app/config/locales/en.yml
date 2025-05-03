@@ -5,6 +5,9 @@ en:
       models:
         cbv_applicant:
           attributes:
+            date_of_birth:
+              future_date: Date of birth must be today or in the past
+              invalid_date: Enter a valid date of birth
             first_name:
               blank: Enter the client's first name.
             last_name:
@@ -19,6 +22,9 @@ en:
           attributes:
             case_number:
               blank: Enter the client's case number.
+            date_of_birth:
+              future_date: Date of birth must be today or in the past
+              invalid_date: Enter a valid date of birth
         cbv_applicant/ma:
           attributes:
             agency_id_number:
@@ -47,6 +53,9 @@ en:
               invalid_format: Enter the case number in the ANGIE/sPOS format, i.e. 00012345678A.
             client_id_number:
               invalid_format: Enter the client's CIN in the correct format, XX00000X.
+            date_of_birth:
+              future_date: Date of birth must be today or in the past
+              invalid_date: Enter a valid date of birth
         cbv_flow_invitation:
           attributes:
             email_address:
@@ -261,7 +270,8 @@ en:
             super_one_html: Medicaid case number<sup>1</sup>
           date_of_birth:
             blank: Enter your date of birth.
-            prompt: Date of birth
+            help_text: 'For example: January 19 2000'
+            prompt: Your date of birth
             super_one_html: Date of birth<sup>1</sup>
       sandbox:
         fields:
@@ -271,6 +281,7 @@ en:
             super_one_html: Case number<sup>1</sup>
           date_of_birth:
             blank: Enter your date of birth.
+            help_text: 'For example: January 19 2000'
             prompt: Date of birth
             super_one_html: Date of birth<sup>1</sup>
           first_name:
