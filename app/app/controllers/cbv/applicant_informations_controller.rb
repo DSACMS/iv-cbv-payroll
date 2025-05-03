@@ -12,9 +12,14 @@ class Cbv::ApplicantInformationsController < Cbv::BaseController
     @cbv_applicant.validate_required_applicant_attributes # run the attributes validations
 
     if @cbv_applicant.errors.empty?
-      @cbv_applicant.save!
-      redirect_to next_path
-      return
+      begin
+        @cbv_applicant.save
+        return redirect_to next_path
+      rescue => e
+        Rails.logger.error("Error updating applicant: #{e.message}")
+        flash[:alert] = t(".error_updating_applicant")
+        return redirect_to cbv_flow_applicant_information_path
+      end
     end
 
     error_count = @cbv_applicant.errors.size
