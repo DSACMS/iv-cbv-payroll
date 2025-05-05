@@ -13,17 +13,10 @@ class CaseWorkerTransmitterJob < ApplicationJob
     @cbv_flow = cbv_flow
     current_agency = current_agency(@cbv_flow)
 
-    if cbv_flow.confirmation_code.blank?
-      confirmation_code = generate_confirmation_code(cbv_flow)
-      cbv_flow.update!(confirmation_code: confirmation_code)
-    end
-
-
     if current_agency.transmission_method.empty?
       Rails.logger.info("No transmission method found for client agency #{current_agency.id}")
       return
     end
-
 
     aggregator_report = set_aggregator_report
 
@@ -154,15 +147,6 @@ class CaseWorkerTransmitterJob < ApplicationJob
     })
   rescue => ex
     Rails.logger.error "Failed to track NewRelic event: #{ex.message}"
-  end
-
-  def generate_confirmation_code(cbv_flow)
-    prefix = cbv_flow.client_agency_id
-    [
-      prefix.gsub("_", ""),
-      (Time.now.to_i % 36 ** 3).to_s(36).tr("OISB", "0158").rjust(3, "0"),
-      cbv_flow.id.to_s.rjust(4, "0")
-    ].compact.join.upcase
   end
 
   def gzip_file(input_tempfile)

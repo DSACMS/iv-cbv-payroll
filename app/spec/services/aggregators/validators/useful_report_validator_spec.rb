@@ -253,11 +253,19 @@ RSpec.describe Aggregators::Validators::UsefulReportValidator do
       it 'fails when required values are missing' do
         expect(report).not_to be_valid(:useful_report)
         expect(report.errors[:paystubs]).to include(
-          /Paystub has no pay_date/,
-          /Paystub has no pay_period_start/,
-          /Paystub has no pay_period_end/,
-          /Paystub has invalid gross_pay_amount/
+          /No paystub has pay_date/,
+          /No paystub has valid gross_pay_amount/,
+          /Report has invalid hours total/
         )
+      end
+
+      context 'with one valid paystub record as well' do
+        let(:paystubs) { [ invalid_paystub, valid_paystub ] }
+
+        it 'succeeds with one valid paystub record' do
+          expect(report).to be_valid(:useful_report)
+          expect(report.errors).to be_empty
+        end
       end
 
       context 'for a non-W2 worker' do
@@ -267,6 +275,15 @@ RSpec.describe Aggregators::Validators::UsefulReportValidator do
         it 'succeeds when hours_by_earning_category has no positive hours for non-w2 worker' do
           expect(report).to be_valid(:useful_report)
           expect(report.errors).to be_empty
+        end
+
+        context 'with one valid paystub record as well' do
+          let(:paystubs) { [ invalid_paystub, valid_paystub_for_gig_worker ] }
+
+          it 'succeeds with one valid paystub record' do
+            expect(report).to be_valid(:useful_report)
+            expect(report.errors).to be_empty
+          end
         end
       end
     end

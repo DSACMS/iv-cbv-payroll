@@ -24,6 +24,7 @@ class Webhooks::Argyle::EventsController < ApplicationController
 
       webhook_event = create_webhook_event_for_account(params["event"], payroll_account)
       update_synchronization_page(payroll_account)
+      log_data_sync_events(payroll_account, params)
       process_webhook_event(webhook_event)
     end
 
@@ -49,6 +50,7 @@ class Webhooks::Argyle::EventsController < ApplicationController
     syncing_payroll_accounts.map do |payroll_account|
       webhook_event = create_webhook_event_for_account(params["event"], payroll_account)
       update_synchronization_page(payroll_account)
+      log_data_sync_events(payroll_account, params)
       webhook_event
     end
   end
@@ -138,13 +140,44 @@ class Webhooks::Argyle::EventsController < ApplicationController
     end
   end
 
+  # For analytics during testing (and maybe for the pilots as well) we want to
+  # measure the time it takes for real users at extra time intervals.
+  def log_data_sync_events(payroll_account, params)
+    if params["event"] == "paystubs.partially_synced" || params["event"] == "gigs.partially_synced"
+      days_synced = params["data"]["days_synced"].to_i
+      sync_data = if days_synced < 182
+                    :sixty_days
+                  else
+                    :six_months
+                  end
+
+      event_logger.track("ApplicantReceivedArgyleData", request, {
+        cbv_applicant_id: @cbv_flow.cbv_applicant_id,
+        cbv_flow_id: @cbv_flow.id,
+        invitation_id: @cbv_flow.cbv_flow_invitation_id,
+        sync_data: sync_data.to_s,
+        sync_duration_seconds: Time.now - payroll_account.sync_started_at,
+        sync_event: params["event"]
+      })
+    elsif params["event"] == "users.fully_synced"
+      event_logger.track("ApplicantReceivedArgyleData", request, {
+        cbv_applicant_id: @cbv_flow.cbv_applicant_id,
+        cbv_flow_id: @cbv_flow.id,
+        invitation_id: @cbv_flow.cbv_flow_invitation_id,
+        sync_data: "fully_synced",
+        sync_duration_seconds: Time.now - payroll_account.sync_started_at,
+        sync_event: params["event"]
+      })
+    end
+  end
+
   def log_sync_finish(payroll_account, report)
     begin
       event_logger.track("ApplicantFinishedArgyleSync", request, {
         cbv_applicant_id: @cbv_flow.cbv_applicant_id,
         cbv_flow_id: @cbv_flow.id,
         invitation_id: @cbv_flow.cbv_flow_invitation_id,
-        sync_duration_seconds: Time.now - payroll_account.created_at,
+        sync_duration_seconds: Time.now - payroll_account.sync_started_at,
 
         # #####################################################################
         # Add attributes to track provider data quality.

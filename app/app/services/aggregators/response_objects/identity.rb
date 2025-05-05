@@ -26,7 +26,7 @@ module Aggregators::ResponseObjects
         full_name: identity_response_body["full_name"],
         date_of_birth: identity_response_body["birth_date"],
         emails: [ identity_response_body["email"] ],
-        ssn: identity_response_body["ssn"],
+        ssn: Aggregators::FormatMethods::Argyle.obfuscate_ssn(identity_response_body["ssn"]),
         phone_numbers: [ identity_response_body["phone_number"] ]
       )
     end

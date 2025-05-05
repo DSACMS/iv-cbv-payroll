@@ -18,7 +18,7 @@
     "postcss-nesting": "^12.1.5",
     "postcss-scss": "^4.0.9",
     "sass": "^1.86.3",
-    "webpack": "^5.99.1",
+    "webpack": "^5.99.5",
     "webpack-cli": "^5.1.4"
   },
   "scripts": {
@@ -33,6 +33,7 @@
     "jsdom": "^24.0.0",
     "pa11y-ci": "^3.1.0",
     "prettier": "^3.5.3",
+    "vite": "~6.2.7",
     "vitest": "^3.0.5"
   },
   "resolutions": {

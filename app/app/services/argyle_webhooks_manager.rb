@@ -36,6 +36,7 @@ class ArgyleWebhooksManager
 
     create_subscription(receiver_url, name, :non_partial)
     create_subscription(receiver_url, "#{name}-partial", :partial)
+    create_subscription(receiver_url, "#{name}-partial-six-months", :partial, { days_synced: 182 })
     create_subscription(receiver_url, "#{name}-include-resource", :include_resource)
   end
 
@@ -45,7 +46,7 @@ class ArgyleWebhooksManager
     @_existing_subscriptions ||= @argyle.get_webhook_subscriptions["results"]
   end
 
-  def create_subscription(receiver_url, name, webhooks_type)
+  def create_subscription(receiver_url, name, webhooks_type, webhooks_config = {})
     subscriptions = existing_subscriptions_with_name(name)
     existing_subscription = subscriptions.find do |subscription|
       subscription["url"] == receiver_url &&
@@ -65,7 +66,7 @@ class ArgyleWebhooksManager
         Aggregators::Webhooks::Argyle.get_webhook_events(type: webhooks_type),
         receiver_url,
         name,
-        webhook_subscription_config(webhooks_type)
+        webhook_subscription_config(webhooks_type, webhooks_config)
       )
       new_webhook_subscription_id = response["id"]
       @logger.puts "  ✅ Set up Argyle webhook: #{new_webhook_subscription_id}"
@@ -75,21 +76,24 @@ class ArgyleWebhooksManager
     end
   end
 
-  def webhook_subscription_config(webhooks_type)
-    return nil if webhooks_type == :non_partial
+  def webhook_subscription_config(webhooks_type, webhooks_config)
+    case webhooks_type
+    when :non_partial
+      nil
+    when :include_resource
+      { "include_resource": true }
+    when :partial
+      # Configure the `paystubs.partially_synced` and `gigs.partially_synced`
+      # webhooks to trigger early based on the largest value of pay_income_days.
+      #
+      # We may want to eventually create webhook subscriptions for every value of
+      # pay_income_days, so that agencies with shorter amounts of required data
+      # can benefit from a quicker sync.
+      largest_pay_income_days = Rails.application.config.client_agencies.client_agency_ids.map do |agency_id|
+        Rails.application.config.client_agencies[agency_id].pay_income_days
+      end.compact.max
 
-    return { "include_resource": true } if webhooks_type == :include_resource
-
-    # Configure the `paystubs.partially_synced` and `gigs.partially_synced`
-    # webhooks to trigger early based on the largest value of pay_income_days.
-    #
-    # We may want to eventually create webhook subscriptions for every value of
-    # pay_income_days, so that agencies with shorter amounts of required data
-    # can benefit from a quicker sync.
-    largest_pay_income_days = Rails.application.config.client_agencies.client_agency_ids.map do |agency_id|
-      Rails.application.config.client_agencies[agency_id].pay_income_days
-    end.compact.max
-
-    { days_synced: largest_pay_income_days }
+      { days_synced: webhooks_config[:days_synced] || largest_pay_income_days }
+    end
   end
 end

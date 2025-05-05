@@ -81,7 +81,7 @@ RSpec.describe Aggregators::Sdk::ArgyleService, type: :service do
 
     it 'raises Faraday::ServerError on 500 error' do
       stub_request(:get, "https://api-sandbox.argyle.com/v2/identities?limit=10")
-      .to_return(status: 500, body: "", headers: {})
+        .to_return(status: 500, body: "", headers: {})
 
       expect { service.fetch_identities_api }.to raise_error(Faraday::ServerError)
     end
@@ -144,17 +144,21 @@ RSpec.describe Aggregators::Sdk::ArgyleService, type: :service do
 
   describe '#fetch_paystubs_api' do
     let(:requests) { WebMock::RequestRegistry.instance.requested_signatures.hash.keys }
+
     before do
       argyle_stub_request_paystubs_response("bob")
     end
+
     it 'calls the correct endpoint' do
       service.fetch_paystubs_api
       expect(requests.first.uri.to_s).to include("/v2/paystubs")
     end
+
     it 'sets limit of 100 paystubs by default' do
       service.fetch_paystubs_api
       expect(requests.first.uri.query).to include("limit=200")
     end
+
     it 'accepts param account' do
       service.fetch_paystubs_api(account: account_id)
       expect(requests.first.uri.query).to include("account=account123")
@@ -184,16 +188,30 @@ RSpec.describe Aggregators::Sdk::ArgyleService, type: :service do
 
     it 'raises Faraday::ServerError on 500 error' do
       stub_request(:get, "https://api-sandbox.argyle.com/v2/paystubs?limit=200")
-      .to_return(status: 500, body: "", headers: {})
+        .to_return(status: 500, body: "", headers: {})
 
       expect { service.fetch_paystubs_api }.to raise_error(Faraday::ServerError)
     end
 
-    it 'raises Pagination not implemented error if a new page is found.' do
-      stub_request(:get, "https://api-sandbox.argyle.com/v2/paystubs?limit=200")
-      .to_return(status: 200, body: { "next": "https://next-page-url" }.to_json, headers: {})
+    context "when the response is paginated" do
+      before do
+        argyle_stub_request_paystubs_response("busy_joe")
+      end
 
-      expect { service.fetch_paystubs_api }.to raise_error("Pagination not implemented")
+      it "fetches multiple pages of records" do
+        service.fetch_paystubs_api
+
+        expect(a_request(:get, "https://api-sandbox.argyle.com/v2/paystubs?limit=200"))
+          .to have_been_requested
+
+        expect(a_request(:get, %r{/paystubs\?cursor=}))
+          .to have_been_requested
+      end
+
+      it "returns all records in a big array" do
+        # Each page has 5 items
+        expect(service.fetch_paystubs_api["results"].length).to eq(10)
+      end
     end
   end
 
@@ -226,6 +244,29 @@ RSpec.describe Aggregators::Sdk::ArgyleService, type: :service do
         .to_return(status: 500, body: "", headers: {})
 
       expect { service.fetch_employments_api(account: account_id) }.to raise_error(Faraday::ServerError)
+    end
+  end
+
+  describe "#fetch_gigs_api" do
+    context "when the response is paginated" do
+      before do
+        argyle_stub_request_gigs_response("bob")
+      end
+
+      it "fetches multiple pages of records" do
+        service.fetch_gigs_api
+
+        expect(a_request(:get, "https://api-sandbox.argyle.com/v2/gigs?limit=200"))
+          .to have_been_requested
+
+        expect(a_request(:get, %r{/gigs\?cursor=}))
+          .to have_been_requested
+      end
+
+      it "returns all records in a big array" do
+        # Each page has 50 items
+        expect(service.fetch_gigs_api["results"].length).to eq(100)
+      end
     end
   end
 
