@@ -78,6 +78,7 @@ class Webhooks::Pinwheel::EventsController < ApplicationController
         cbv_flow_id: @cbv_flow.id,
         client_agency_id: @cbv_flow.client_agency_id,
         invitation_id: @cbv_flow.cbv_flow_invitation_id,
+        pinwheel_environment: agency_config[@cbv_flow.client_agency_id].pinwheel_environment,
         sync_duration_seconds: Time.now - @payroll_account.created_at,
 
         # #####################################################################
@@ -145,11 +146,18 @@ class Webhooks::Pinwheel::EventsController < ApplicationController
   def validate_useful_report_requirements(report)
     report_is_valid = report.valid?(:useful_report)
     if report_is_valid
-      event_logger.track("ApplicantReportMetUsefulRequirements", request, {})
+      event_logger.track("ApplicantReportMetUsefulRequirements", request,
+        cbv_applicant_id: @cbv_flow.cbv_applicant_id,
+        cbv_flow_id: @cbv_flow.id,
+        invitation_id: @cbv_flow.cbv_flow_invitation_id
+      )
     else
-      event_logger.track("ApplicantReportFailedUsefulRequirements", request, {
+      event_logger.track("ApplicantReportFailedUsefulRequirements", request,
+        cbv_applicant_id: @cbv_flow.cbv_applicant_id,
+        cbv_flow_id: @cbv_flow.id,
+        invitation_id: @cbv_flow.cbv_flow_invitation_id,
         errors: report.errors.full_messages.join(", ")
-      })
+      )
     end
   rescue => ex
     raise ex unless Rails.env.production?

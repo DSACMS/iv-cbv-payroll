@@ -122,6 +122,8 @@ class Webhooks::Argyle::EventsController < ApplicationController
     elsif webhook_event.event_name == "accounts.updated"
       process_accounts_updated_event(webhook_event)
     elsif payroll_account.has_fully_synced?
+      return if payroll_account.sync_succeeded? || payroll_account.sync_failed?
+
       report = Aggregators::AggregatorReports::ArgyleReport.new(
         payroll_accounts: [ payroll_account ],
         argyle_service: argyle_for(@cbv_flow),
@@ -146,7 +148,7 @@ class Webhooks::Argyle::EventsController < ApplicationController
     if params["event"] == "paystubs.partially_synced" || params["event"] == "gigs.partially_synced"
       days_synced = params["data"]["days_synced"].to_i
       sync_data = if days_synced < 182
-                    :sixty_days
+                    :ninety_days
                   else
                     :six_months
                   end
@@ -177,6 +179,7 @@ class Webhooks::Argyle::EventsController < ApplicationController
         cbv_applicant_id: @cbv_flow.cbv_applicant_id,
         cbv_flow_id: @cbv_flow.id,
         invitation_id: @cbv_flow.cbv_flow_invitation_id,
+        argyle_environment: agency_config[@cbv_flow.client_agency_id].argyle_environment,
         sync_duration_seconds: Time.now - payroll_account.sync_started_at,
 
         # #####################################################################
@@ -248,9 +251,16 @@ class Webhooks::Argyle::EventsController < ApplicationController
   def validate_useful_report_requirements(report)
     report_is_valid = report.valid?(:useful_report)
     if report_is_valid
-      event_logger.track("ApplicantReportMetUsefulRequirements", request, {})
+      event_logger.track("ApplicantReportMetUsefulRequirements", request,
+        cbv_applicant_id: @cbv_flow.cbv_applicant_id,
+        cbv_flow_id: @cbv_flow.id,
+        invitation_id: @cbv_flow.cbv_flow_invitation_id
+      )
     else
       event_logger.track("ApplicantReportFailedUsefulRequirements", request, {
+        cbv_applicant_id: @cbv_flow.cbv_applicant_id,
+        cbv_flow_id: @cbv_flow.id,
+        invitation_id: @cbv_flow.cbv_flow_invitation_id,
         errors: report.errors.full_messages.join(", ")
       })
     end

@@ -129,6 +129,7 @@ RSpec.describe Webhooks::Pinwheel::EventsController do
               cbv_applicant_id: cbv_flow.cbv_applicant_id,
               invitation_id: cbv_flow.cbv_flow_invitation_id,
               client_agency_id: "sandbox",
+              pinwheel_environment: "sandbox",
               sync_duration_seconds: within(1.second).of(5.minutes),
 
               # Identity fields
@@ -181,7 +182,15 @@ RSpec.describe Webhooks::Pinwheel::EventsController do
         end
 
         it "sends a ApplicantReportMetUsefulRequirements event" do
-          expect(event_logger).to receive(:track).with("ApplicantReportMetUsefulRequirements", anything, anything)
+          expect(event_logger).to receive(:track).with(
+            "ApplicantReportMetUsefulRequirements",
+            anything,
+            include(
+              cbv_flow_id: cbv_flow.id,
+              cbv_applicant_id: cbv_flow.cbv_applicant_id,
+              invitation_id: cbv_flow.cbv_flow_invitation_id,
+            )
+          )
 
           post :create, params: valid_params
         end
