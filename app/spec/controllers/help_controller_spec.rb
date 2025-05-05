@@ -17,7 +17,7 @@ RSpec.describe HelpController, type: :controller do
         valid_params[:client_agency_id] = cbv_flow.client_agency_id
       end
 
-      it "tracks events with both trackers" do
+      it "tracks events for help topic" do
         expect(EventTrackingJob).to receive(:perform_later).with("ApplicantViewedHelpTopic", anything, hash_including(
             cbv_applicant_id: cbv_flow.cbv_applicant_id,
             cbv_flow_id: cbv_flow.id,
