@@ -33,7 +33,7 @@
   <%= table.with_data_point(:employment_status, employment_status) %>
   <% if has_income_data? && @is_w2_worker %>
     <%= table.with_data_point(:pay_frequency, pay_frequency) %>
-    <%= table.with_data_point(:hourly_rate, compensation_amount, compensation_unit) %>
+    <%= table.with_data_point(:hourly_rate, compensation_amount, pay_frequency) %>
   <% end %>
 <% end %>
 
@@ -47,14 +47,11 @@
       <%= table.with_row_section do |row| %>
         <h4 class="margin-0"><%= t("cbv.payment_details.show.pay_date", pay_date: format_date(payment.pay_date)) %></h4>
       <% end %>
-      <%= table.with_data_point(:pay_period, payment.start, payment.end) if @is_w2_worker %>
+      <%= table.with_data_point(:pay_period_with_frequency, payment.start, payment.end, pay_frequency) if @is_w2_worker %>
       <%= table.with_data_point(:pay_gross, payment.gross_pay_amount) %>
+      <%= table.with_data_point(:net_pay_amount, payment.net_pay_amount) %>
       <% if @is_w2_worker %>
         <%= table.with_data_point(:number_of_hours_worked, payment.hours) %>
-        <% payment.hours_by_earning_category.each do |category, total_hours| %>
-          <%= table.with_data_point(:earnings_entry, category, total_hours) %>
-        <% end %>
-        <%= table.with_data_point(:net_pay_amount, payment.net_pay_amount) %>
         <% payment.deductions.filter { |deduction| deduction.amount > 0 }.each do |deduction| %>
           <%= table.with_data_point(:deduction, deduction.category, deduction.amount) %>
         <% end %>
