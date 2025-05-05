@@ -454,7 +454,7 @@ en:
     summaries:
       show:
         additional_comments: Additional comments
-        application_information: Application information
+        application_information: Applicant information
         application_or_recertification_date:
           ma: Date client was contacted
           nyc: SNAP application or recertification interview date
@@ -471,10 +471,10 @@ en:
         phone_number: Employer phone
         table_caption: 'Employer %{number}: %{employer_name}'
         table_caption_no_name: Employer %{number}
-        total_income_from: 'Total income from %{employer_name} before taxes: %{amount}'
+        total_income_from: 'Total income before taxes from %{employer_name}: %{amount}'
         total_income_from_no_employer_name: 'Total income before taxes: %{amount}'
         total_payments: 'Total income from past 90 days, before taxes: %{amount}'
-        total_payments_desc: This is the total gross income from your job(s) before taxes, benefits, and deductions were taken out.
+        total_payments_desc: This is the total gross income from your job(s) before taxes, benefits and deductions were taken out of your paycheck.
         your_information: Your information
     synchronization_failures:
       show:

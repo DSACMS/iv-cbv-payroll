@@ -262,7 +262,6 @@ es:
     summaries:
       show:
         additional_comments: Comentarios adicionales
-        application_information: Información relacionada con la solicitud
         application_or_recertification_date:
           ma: Fecha de la entrevista de recertificación
           nyc: Fecha de solicitud o recertificación
@@ -277,10 +276,8 @@ es:
         phone_number: Teléfono del empleador
         table_caption: 'Empleador %{number}: %{employer_name}'
         table_caption_no_name: Empleador %{number}
-        total_income_from: 'Ingresos totales provenientes de %{employer_name}, antes del pago de impuestos: %{amount}'
         total_income_from_no_employer_name: 'Ingresos totales antes del pago de impuestos: %{amount}'
         total_payments: 'Ingresos totales correspondiente a los últimos 90 días, antes de impuestos: %{amount}'
-        total_payments_desc: Este importe refleja el ingreso bruto total por sus contraprestaciones, antes de impuestos, beneficios y deducciones.
         your_information: Su información
     synchronization_failures:
       show:
