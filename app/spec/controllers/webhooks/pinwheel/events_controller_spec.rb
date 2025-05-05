@@ -44,15 +44,7 @@ RSpec.describe Webhooks::Pinwheel::EventsController do
       end
 
       it "creates a PinwheelAccount object and logs events" do
-        expect_any_instance_of(MixpanelEventTracker).to receive(:track)
-          .with("ApplicantCreatedPinwheelAccount", anything, hash_including(
-            cbv_flow_id: cbv_flow.id,
-            invitation_id: cbv_flow.cbv_flow_invitation_id,
-            platform_name: "acme"
-          ))
-
-        expect_any_instance_of(NewRelicEventTracker).to receive(:track)
-          .with("ApplicantCreatedPinwheelAccount", anything, hash_including(
+        expect(EventTrackingJob).to receive(:perform_later).with("ApplicantCreatedPinwheelAccount", anything, hash_including(
             cbv_flow_id: cbv_flow.id,
             invitation_id: cbv_flow.cbv_flow_invitation_id,
             platform_name: "acme"
