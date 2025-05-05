@@ -45,7 +45,7 @@ class CbvApplicant < ApplicationRecord
   validates :date_of_birth, comparison: {
     greater_than_or_equal_to: 110.years.ago.to_date,
     message: :invalid_date
-  }, if: :date_of_birth_required?
+  }, if: -> { date_of_birth_required? && date_of_birth.present? }
 
   include Redactable
   has_redactable_fields(
@@ -66,6 +66,10 @@ class CbvApplicant < ApplicationRecord
     end
   end
 
+  def is_valid?
+    valid? && validate_required_applicant_attributes.empty?
+  end
+
   def validate_required_applicant_attributes
     missing_attrs = @required_applicant_attributes.reject do |attr|
       self.send(attr).present?
@@ -76,6 +80,8 @@ class CbvApplicant < ApplicationRecord
         errors.add(attr, I18n.t("cbv.applicant_informations.#{client_agency_id}.fields.#{attr}.blank"))
       end
     end
+
+    missing_attrs
   end
 
   def paystubs_query_begins_at

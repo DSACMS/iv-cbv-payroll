@@ -8,10 +8,8 @@ class Cbv::ApplicantInformationsController < Cbv::BaseController
 
   def update
     @cbv_applicant.assign_attributes(applicant_params[:cbv_applicant])
-    @cbv_applicant.valid? # run the model validations
-    @cbv_applicant.validate_required_applicant_attributes # run the attributes validations
 
-    if @cbv_applicant.errors.empty?
+    if @cbv_applicant.is_valid?
       begin
         @cbv_applicant.save
         return redirect_to next_path

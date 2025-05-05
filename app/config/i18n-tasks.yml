@@ -187,7 +187,7 @@ ignore_missing:
     - "cbv.successes.show.follow_up"
     - "cbv.successes.show.if_it_didnt_work"
 
-    # LA applicant_information (FFS-2688)
+    # LA applicant_information (FFS-2773)
     - "cbv.applicant_informations.la_ldh.fields.case_number.blank"
     - "cbv.applicant_informations.la_ldh.fields.case_number.help_text"
     - "cbv.applicant_informations.la_ldh.fields.case_number.prompt"
