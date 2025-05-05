@@ -32,7 +32,9 @@ class CbvApplicant < ApplicationRecord
   has_many :cbv_flows
   has_many :cbv_flow_invitations
 
-  before_validation :parse_snap_application_date
+  before_validation { parse_date("snap_application_date") }
+  before_validation { parse_date("date_of_birth") if self["date_of_birth"].present? }
+
   validates :client_agency_id, presence: true
 
   # validate that the date_of_birth is in the past
@@ -92,21 +94,21 @@ class CbvApplicant < ApplicationRecord
     self.snap_application_date ||= Date.current
   end
 
-  def parse_snap_application_date
-    raw_snap_application_date = @attributes["snap_application_date"]&.value_before_type_cast
-    return if raw_snap_application_date.is_a?(Date)
+  def parse_date(attribute)
+    raw_date = @attributes[attribute]&.value_before_type_cast
+    return if raw_date.is_a?(Date)
 
-    if raw_snap_application_date.is_a?(ActiveSupport::TimeWithZone) || raw_snap_application_date.is_a?(Time)
-      self.snap_application_date = raw_snap_application_date.to_date
+    if raw_date.is_a?(ActiveSupport::TimeWithZone) || raw_date.is_a?(Time)
+      self[attribute] = raw_date.to_date
       # handle ISO 8601 date format, e.g. "2021-01-01" which is Ruby's default when querying a date field
-    elsif raw_snap_application_date.is_a?(String) && raw_snap_application_date.match?(/^\d{4}-\d{2}-\d{2}$/)
-      self.snap_application_date = Date.parse(raw_snap_application_date)
+    elsif raw_date.is_a?(String) && raw_date.match?(/^\d{4}-\d{2}-\d{2}$/)
+      self[attribute] = Date.parse(raw_date)
     else
       begin
-        new_date_format = Date.strptime(raw_snap_application_date.to_s, "%m/%d/%Y")
-        self.snap_application_date = new_date_format
+        new_date_format = Date.strptime(raw_date.to_s, "%m/%d/%Y")
+        self[attribute] = new_date_format
       rescue Date::Error
-        errors.add(:snap_application_date, :invalid_date)
+        errors.add(attribute, :invalid_date)
       end
     end
   end
@@ -121,7 +123,7 @@ class CbvApplicant < ApplicationRecord
     .include?(attribute)
   end
 
-  def get_client_attribute_type(attribute)
+  def get_applicant_attribute_type(attribute)
     Rails.application.config.client_agencies[client_agency_id]&.applicant_attributes&.dig(attribute, "type")
   end
 
