@@ -14,6 +14,7 @@ class PinwheelWebhookManager
     employment.added
     income.added
     identity.added
+    shifts.added
   ]
 
   def initialize
