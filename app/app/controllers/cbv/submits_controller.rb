@@ -64,12 +64,7 @@ class Cbv::SubmitsController < Cbv::BaseController
       @cbv_flow.update!(confirmation_code: confirmation_code)
     end
 
-    if ENV["ACTIVEJOB_ENABLED"] == "true"
-      CaseWorkerTransmitterJob.perform_later(@cbv_flow.id)
-    else
-      CaseWorkerTransmitterJob.perform_now(@cbv_flow.id)
-    end
-
+    CaseWorkerTransmitterJob.perform_later(@cbv_flow.id)
     redirect_to next_path
   end
 

@@ -30,7 +30,6 @@ class NewRelicEventTracker
     # Map to the old NewRelic event name if present, otherwise just send NewRelic the event_type name
     newrelic_event_type = NEWRELIC_EVENT_MAP[event_type] || event_type
 
-    # MaybeLater tries to run this code after the request has finished
     start_time = Time.now
     Rails.logger.info "  Sending NewRelic event #{newrelic_event_type} with attributes: #{attributes}"
     NewRelic::Agent.record_custom_event(newrelic_event_type, attributes)
