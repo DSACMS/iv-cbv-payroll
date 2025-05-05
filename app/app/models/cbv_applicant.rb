@@ -39,13 +39,13 @@ class CbvApplicant < ApplicationRecord
   validates :date_of_birth, comparison: {
     less_than: Date.current,
      message: :future_date
-  }, if: -> { date_of_birth_required? && date_of_birth.present? }
+  }, if: -> { is_applicant_attribute_required?(:date_of_birth) && date_of_birth.present? }
 
   # validate that the date_of_birth is not more than 110 years ago
   validates :date_of_birth, comparison: {
     greater_than_or_equal_to: 110.years.ago.to_date,
     message: :invalid_date
-  }, if: -> { date_of_birth_required? && date_of_birth.present? }
+  }, if: -> { is_applicant_attribute_required?(:date_of_birth) && date_of_birth.present? }
 
   include Redactable
   has_redactable_fields(
@@ -113,11 +113,21 @@ class CbvApplicant < ApplicationRecord
 
   def set_applicant_attributes
     @applicant_attributes = Rails.application.config.client_agencies[client_agency_id]&.applicant_attributes&.compact&.keys&.map(&:to_sym) || []
-    @required_applicant_attributes = Rails.application.config.client_agencies[client_agency_id]&.applicant_attributes&.select { |key, attributes| attributes["required"] }&.keys&.map(&:to_sym) || []
+    @required_applicant_attributes = get_required_applicant_attributes
   end
 
-  def date_of_birth_required?
-    required_attrs = Rails.application.config.client_agencies[client_agency_id]&.applicant_attributes&.select { |key, attributes| attributes["required"] }&.keys&.map(&:to_sym) || []
-    required_attrs.include?(:date_of_birth)
+  def is_applicant_attribute_required?(attribute)
+    get_required_applicant_attributes
+    .include?(attribute)
+  end
+
+  def get_client_attribute_type(attribute)
+    Rails.application.config.client_agencies[client_agency_id]&.applicant_attributes&.dig(attribute, "type")
+  end
+
+  private
+
+  def get_required_applicant_attributes
+    Rails.application.config.client_agencies[client_agency_id]&.applicant_attributes&.select { |key, attributes| attributes["required"] }&.keys&.map(&:to_sym) || []
   end
 end
