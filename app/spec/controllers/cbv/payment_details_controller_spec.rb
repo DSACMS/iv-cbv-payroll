@@ -2,6 +2,7 @@ require "rails_helper"
 
 RSpec.describe Cbv::PaymentDetailsController do
   include PinwheelApiHelper
+  include ArgyleApiHelper
 
   describe "#show" do
     render_views
