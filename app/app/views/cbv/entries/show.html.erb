@@ -25,3 +25,37 @@
   <%= f.check_box(:agreement, label: agency_translation(".checkbox", agency_full_name: agency_translation("shared.agency_full_name"))) %>
   <%= f.submit t(".continue") %>
 <% end %>
+
+<div class="divider margin-top-5"></div>
+
+<div class="usa-accordion usa-accordion--bordered margin-top-5">
+  <h4 class="usa-accordion__heading usa-prose">
+    <button
+      type="button"
+      class="usa-accordion__button"
+      aria-controls="who_is_this_for_accordion"
+    >
+      <%= t(".who_is_this_for_title") %>
+    </button>
+  </h4>
+  <div id="who_is_this_for_accordion" class="usa-accordion__content usa-prose">
+    <p>
+      <%= t(".who_is_this_for_body") %>
+    </p>
+  </div>
+  <h4 class="usa-accordion__heading usa-prose">
+    <button
+      type="button"
+      class="usa-accordion__button"
+      aria-controls="what_if_i_cant_use_this_accordion"
+    >
+      <%= t(".what_if_i_cant_use_this_title") %>
+    </button>
+  </h4>
+  <div id="what_if_i_cant_use_this_accordion" class="usa-accordion__content usa-prose">
+    <p>
+      <%= t(".what_if_i_cant_use_this_body_1", agency_short_name: current_agency.agency_short_name) %>
+      <%= agency_translation(".what_if_i_cant_use_this_body_2_html") %>
+    </p>
+  </div>
+</div>
