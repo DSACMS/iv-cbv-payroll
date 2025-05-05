@@ -69,7 +69,7 @@ RSpec.describe Cbv::SummariesController do
           doc = Nokogiri::HTML(response.body)
 
           expect(doc.css("title").text).to include("Review your income report")
-          expect(doc.at_xpath("//*[@data-testid=\"summary-description\"]").content).to include("from 2024-03-20 to 2024-06-18")
+          expect(doc.at_xpath("//*[@data-testid=\"summary-description\"]").content).to include("from March 20, 2024 to June 18, 2024")
           expect(doc.at_xpath("//*[@data-testid=\"paystub-table-caption\"]").content).to include("Employer 1: Acme Corporation")
           expect(doc.at_xpath("//*[@data-testid=\"paystub-total-income\"]").content).to include("$4,807.20")
           expect(doc.at_xpath("//tr[@data-testid=\"paystub-row\"]").count).to eq(1)
@@ -88,7 +88,7 @@ RSpec.describe Cbv::SummariesController do
           doc = Nokogiri::HTML(response.body)
           expect(response).to be_successful
           expect(doc.css("title").text).to include("Review your income report")
-          expect(doc.at_xpath("//*[@data-testid=\"summary-description\"]").content).to include("from 2024-03-20 to 2024-06-18")
+          expect(doc.at_xpath("//*[@data-testid=\"summary-description\"]").content).to include("from March 20, 2024 to June 18, 2024")
           expect(doc.at_xpath("//*[@data-testid=\"paystub-table-caption\"]").content).to include("Employer 1: Acme Corporation")
           expect(doc.at_xpath("//*[@data-testid=\"paystub-total-income\"]").content).to include("$9,614.40")
           expect(doc.at_xpath("//*[@data-testid=\"paystub-table\"]").css("td").count).to eq(2)
@@ -116,16 +116,9 @@ RSpec.describe Cbv::SummariesController do
     end
 
     it "tracks events" do
-      expect(mixpanel_event_stub)
-        .to receive(:track)
-        .with("ApplicantAccessedIncomeSummary", anything, hash_including(
-          cbv_flow_id: cbv_flow.id,
-          invitation_id: cbv_flow.cbv_flow_invitation_id
-        ))
+      allow(EventTrackingJob).to receive(:perform_later).with("CbvPageView", anything, anything)
 
-      expect(newrelic_event_stub)
-        .to receive(:track)
-        .with("ApplicantAccessedIncomeSummary", anything, hash_including(
+      expect(EventTrackingJob).to receive(:perform_later).with("ApplicantAccessedIncomeSummary", anything, hash_including(
           cbv_flow_id: cbv_flow.id,
           invitation_id: cbv_flow.cbv_flow_invitation_id
         ))

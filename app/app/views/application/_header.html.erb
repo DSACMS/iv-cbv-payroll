@@ -18,16 +18,23 @@
             <% end %>
           </div>
 
-          <% has_square_logo = current_agency && current_agency.logo_path %>
-          <div class="<%= has_square_logo ?
+          <% has_logo = current_agency && current_agency.logo_path.present? %>
+          <% has_square_logo = current_agency && current_agency.logo_square_path.present? %>
+          <% logo_path = has_square_logo ? current_agency.logo_square_path : (has_logo ? current_agency.logo_path : nil) %>
+          <% show_agency_text = has_square_logo || !has_logo %>
+
+          <div class="<%= has_logo ?
             "display-none tablet:display-flex" : "display-flex" %> flex-align-center">
-            <% if current_agency && current_agency.logo_square_path %>
-              <%= image_tag current_agency.logo_square_path, class: "cbv-header__agency-logo cbv-header__agency-logo--#{current_agency.id}" %>
+            <% if logo_path %>
+              <%= image_tag logo_path, class: "cbv-header__agency-logo cbv-header__agency-logo--#{current_agency.id}" %>
             <% end %>
-            <%= agency_translation("shared.header.cbv_flow_title") %>
+
+            <% if show_agency_text %>
+              <%= agency_translation("shared.header.cbv_flow_title") %>
+            <% end %>
           </div>
 
-          <% if current_agency && current_agency.logo_path %>
+          <% if has_logo %>
             <%= image_tag current_agency.logo_path, class: "cbv-header__agency-logo cbv-header__agency-logo--#{current_agency.id} tablet:display-none" %>
           <% end %>
         </em>

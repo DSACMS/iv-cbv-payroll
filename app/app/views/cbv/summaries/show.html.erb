@@ -5,7 +5,7 @@
 
 <div class="margin-bottom-6 usa-prose" data-testid="summary-description">
   <p>
-      <%= t(".description", start_date: @aggregator_report.from_date, end_date: @aggregator_report.to_date, agency_acronym: current_agency.agency_short_name) %>
+      <%= t(".description", start_date: format_date(@aggregator_report.from_date), end_date: format_date(@aggregator_report.to_date), agency_acronym: current_agency.agency_short_name) %>
   </p>
 </div>
 

@@ -3,15 +3,6 @@ require "rails_helper"
 RSpec.describe Cbv::PaymentDetailsController do
   include PinwheelApiHelper
   include ArgyleApiHelper
-  let(:mixpanel_event_stub) { instance_double(MixpanelEventTracker) }
-  let(:newrelic_event_stub) { instance_double(NewRelicEventTracker) }
-
-  before do
-    allow(MixpanelEventTracker).to receive(:new).and_return(mixpanel_event_stub)
-    allow(NewRelicEventTracker).to receive(:new).and_return(newrelic_event_stub)
-    allow(newrelic_event_stub).to receive(:track)
-    allow(mixpanel_event_stub).to receive(:track)
-  end
 
   describe "#show" do
     render_views
@@ -60,9 +51,8 @@ RSpec.describe Cbv::PaymentDetailsController do
       end
 
       it "tracks events" do
-        expect(mixpanel_event_stub)
-          .to receive(:track)
-          .with("ApplicantViewedPaymentDetails", anything, hash_including(
+        allow(EventTrackingJob).to receive(:perform_later).with("CbvPageView", anything, anything)
+        expect(EventTrackingJob).to receive(:perform_later).with("ApplicantViewedPaymentDetails", anything, hash_including(
             cbv_flow_id: cbv_flow.id,
             invitation_id: cbv_flow.cbv_flow_invitation_id,
             pinwheel_account_id: payroll_account.id,
@@ -71,18 +61,6 @@ RSpec.describe Cbv::PaymentDetailsController do
             has_paystubs_data: true,
             has_income_data: true
           ))
-
-        expect(newrelic_event_stub)
-         .to receive(:track)
-         .with("ApplicantViewedPaymentDetails", anything, hash_including(
-           cbv_flow_id: cbv_flow.id,
-           invitation_id: cbv_flow.cbv_flow_invitation_id,
-           pinwheel_account_id: payroll_account.id,
-           payments_length: 1,
-           has_employment_data: true,
-           has_paystubs_data: true,
-           has_income_data: true
-         ))
 
         get :show, params: { user: { account_id: account_id } }
       end
@@ -367,17 +345,9 @@ RSpec.describe Cbv::PaymentDetailsController do
     end
 
     it "tracks events" do
-      expect(mixpanel_event_stub)
-        .to receive(:track)
-        .with("ApplicantSavedPaymentDetails", anything, hash_including(
-          cbv_flow_id: cbv_flow.id,
-          invitation_id: cbv_flow.cbv_flow_invitation_id,
-          additional_information_length: comment.length
-        ))
+      allow(EventTrackingJob).to receive(:perform_later).with("CbvPageView", anything, anything)
 
-      expect(newrelic_event_stub)
-        .to receive(:track)
-        .with("ApplicantSavedPaymentDetails", anything, hash_including(
+      expect(EventTrackingJob).to receive(:perform_later).with("ApplicantSavedPaymentDetails", anything, hash_including(
           cbv_flow_id: cbv_flow.id,
           invitation_id: cbv_flow.cbv_flow_invitation_id,
           additional_information_length: comment.length
