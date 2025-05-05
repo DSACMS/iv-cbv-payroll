@@ -56,18 +56,18 @@ RSpec.describe CbvApplicant, type: :model do
       end
     end
 
-    describe "#is_valid?" do
+    describe "#validate_base_and_applicant_attributes?" do
       let(:valid_applicant) { build(:cbv_applicant, :sandbox, case_number: '123') }
       let(:invalid_applicant) { build(:cbv_applicant, :sandbox, date_of_birth: nil, case_number: nil) }
 
       it "returns true when all validation methods pass" do
         valid_applicant.set_applicant_attributes
-        expect(valid_applicant.is_valid?).to be true
+        expect(valid_applicant.validate_base_and_applicant_attributes?).to be true
       end
 
       it "returns false when validate_required_applicant_attributes contains entries" do
         invalid_applicant.set_applicant_attributes
-        expect(invalid_applicant.is_valid?).to be false
+        expect(invalid_applicant.validate_base_and_applicant_attributes?).to be false
       end
     end
 

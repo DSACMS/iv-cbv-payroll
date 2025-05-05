@@ -159,4 +159,3 @@
       required: true
     date_of_birth:
       required: true
-      type: date

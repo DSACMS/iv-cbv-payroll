@@ -9,7 +9,7 @@ class Cbv::ApplicantInformationsController < Cbv::BaseController
   def update
     @cbv_applicant.assign_attributes(applicant_params[:cbv_applicant])
 
-    if @cbv_applicant.is_valid?
+    if @cbv_applicant.validate_base_and_applicant_attributes?
       begin
         @cbv_applicant.save
         return redirect_to next_path

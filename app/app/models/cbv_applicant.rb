@@ -68,7 +68,7 @@ class CbvApplicant < ApplicationRecord
     end
   end
 
-  def is_valid?
+  def validate_base_and_applicant_attributes?
     valid? && validate_required_applicant_attributes.empty?
   end
 
@@ -121,10 +121,6 @@ class CbvApplicant < ApplicationRecord
   def is_applicant_attribute_required?(attribute)
     get_required_applicant_attributes
     .include?(attribute)
-  end
-
-  def get_applicant_attribute_type(attribute)
-    Rails.application.config.client_agencies[client_agency_id]&.applicant_attributes&.dig(attribute, "type")
   end
 
   private
