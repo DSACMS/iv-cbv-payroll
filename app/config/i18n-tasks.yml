@@ -215,6 +215,11 @@ ignore_missing:
     - "cbv.entries.show.what_if_i_cant_use_this_title"
     - "cbv.entries.show.who_is_this_for_body"
     - "cbv.entries.show.who_is_this_for_title"
+    
+    # LA summary (FFS-2688)
+    - "cbv.summaries.show.application_information"
+    - "cbv.summaries.show.total_income_from"
+    - "cbv.summaries.show.total_payments_desc"
 ## Consider these keys used:
 ignore_unused:
   all:
