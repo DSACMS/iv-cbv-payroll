@@ -94,9 +94,7 @@
   agency_short_name: LDH
   agency_contact_website: https://ldh.la.gov/contact-us
   # caseworker_feedback_form: n/a
-  # TODO[FFS-2689]: Add Louisiana DPH logo, these assets are not available yet.
-  # logo_path: ldh_logo.png
-  # logo_square_path: ldh_logo_square.png
+  logo_path: ldh_logo.svg
   agency_demo_domain: la-verify-demo.navapbc.cloud
   agency_production_domain: la.reportmyincome.org
   pinwheel:

@@ -187,11 +187,13 @@ ignore_missing:
     - "cbv.successes.show.follow_up"
     - "cbv.successes.show.if_it_didnt_work"
 
-    # LA applicant_information (FFS-2773)
+    # LA applicant_information (FFS-2688)
     - "cbv.applicant_informations.la_ldh.fields.case_number.blank"
     - "cbv.applicant_informations.la_ldh.fields.case_number.help_text"
     - "cbv.applicant_informations.la_ldh.fields.case_number.prompt"
     - "cbv.applicant_informations.la_ldh.fields.case_number.super_one_html"
+
+    # LA applicant_information errors (FFS-2773)
     - "cbv.applicant_informations.la_ldh.fields.date_of_birth.blank"
     - "cbv.applicant_informations.la_ldh.fields.date_of_birth.prompt"
     - "cbv.applicant_informations.la_ldh.fields.date_of_birth.super_one_html"
@@ -201,19 +203,23 @@ ignore_missing:
     - "cbv.applicant_informations.sandbox.fields.date_of_birth.super_one_html"
     - "cbv.applicant_informations.sandbox.fields.date_of_birth.help_text"
 
-
     # LA welcome (FFS-2688)
     - "pages.home.description_1"
     - "pages.home.description_2"
     - "pages.home.description_3"
     - "pages.home.header"
-    
+
     # LA client_pdf (FFS-2688)
     - "aggregator_strings.payment_frequencies.annual"
     - "aggregator_strings.payment_frequencies.annually"
     - "cbv.payment_details.show.employment_end_date"
     - "cbv.submits.show.application_or_recertification_date.la_ldh"
     - "cbv.submits.show.none_found"
+
+    # LA summary (FFS-2688)
+    - "cbv.summaries.show.application_information"
+    - "cbv.summaries.show.total_income_from"
+    - "cbv.summaries.show.total_payments_desc"
 ## Consider these keys used:
 ignore_unused:
   all:
