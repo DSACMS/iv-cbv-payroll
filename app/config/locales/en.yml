@@ -320,8 +320,7 @@ en:
         error: You must check the agreement checkbox to proceed.
       show:
         checkbox:
-          default: Check this box to agree to let us access your payment information and share it with the %{agency_full_name}.
-          nyc: Check this box to agree to let Nava access your payment information and share it with the %{agency_full_name}. We will not use the information for any other purpose nor redisclose it to any other party.
+          default: Check this box to agree to let us access your payment information and share it with %{agency_full_name}. We will not use the information for any other purpose nor redisclose it to any other party.
         continue: Get started
         header: Let's verify your income
         step1: Search and sign into your employer or online payroll provider.
@@ -330,7 +329,14 @@ en:
         step2_description: You will be able to preview and approve everything that is shared with %{agency_acronym}.
         step3: Submit your payment information.
         step3_description: We’ll automatically send it to %{agency_acronym}. This will help you prove your income and can help %{agency_acronym} get to a decision faster.
-        subheader_html: 'We’ll send your payment records from your employer(s) to %{agency_acronym} to verify your income. <strong>Most people complete this process in under 5 minutes.</strong> Just follow these steps:'
+        subheader_html: 'We’ll send your payment records from your employer(s) to %{agency_acronym} to verify your income. <strong>Most people complete this process in about 5 minutes.</strong> Just follow these steps:'
+        what_if_i_cant_use_this_body_1: If you need to report your income and can’t use this tool, then you’ll need to share your income information for this job directly with %{agency_short_name}.
+        what_if_i_cant_use_this_body_2_html:
+          default: Visit <a href="https://example.com/contact">CBV's website</a> for more information on how to submit documents.
+          la_ldh: 'You can: <ul><li>Upload documents through the Self Service Portal online at <a href="https://MyMedicaid.LA.GOV">MyMedicaid.LA.GOV</a></li><li>Send documents through US Mail: Louisiana Medicaid/LaCHIP, P.O. Box 91283, Baton Rouge, LA 70821-9278</li><li>Email documents: <a href="mailto:MyMedicaid@la.gov">MyMedicaid@la.gov</a></li><li>Bring your documents to the Medicaid office of choice.</li></ul>'
+        what_if_i_cant_use_this_title: What if I can't use this tool?
+        who_is_this_for_body: You can use this tool if you have earned income in the last 90 days (even if you’re no longer working), and you can access your paystubs online or work for an app-based company like Uber, Lyft or Amazon Flex.
+        who_is_this_for_title: Who is this tool for?
     error_invalid_link: Invalid link used to begin CBV. Try clicking the link again or contact your caseworker for help.
     error_invalid_token: The invitation link used is not valid. Double check the link and try again. If you continue experiencing issues, contact your caseworker.
     error_missing_token_html: "<strong>Your session has timed out due to inactivity.</strong> Please reuse the same link you used to begin your session. If you encounter any issues, contact your benefits agency for assistance."

@@ -71,15 +71,34 @@ html {
 .cbv-header__agency-logo {
   @include u-margin-right(1);
   height: 45px;
+
+  @include at-media-max($theme-header-min-width) {
+    height: 30px;
+    max-width: 200px;
+  }
 }
 .cbv-header__agency-logo--ma {
   height: 45px;
+
+  @include at-media-max($theme-header-min-width) {
+    height: 30px;
+  }
 }
 .cbv-header__agency-logo--nyc {
   height: 30px;
 
   @include at-media($theme-header-min-width) {
     height: 25px;
+  }
+}
+.cbv-header__agency-logo--la_ldh {
+  height: 45px;
+  width: 320px;
+
+  @include at-media-max($theme-header-min-width) {
+    height: 30px;
+    width: 200px;
+    min-width: 125px;
   }
 }
 
@@ -160,4 +179,13 @@ html {
 .invisible {
     visibility: hidden;
     position: absolute;
+}
+
+/*
+* Entry
+*/
+.divider {
+  width: 125px;
+  height: 10px;
+  background-color: #D9E8F6
 }

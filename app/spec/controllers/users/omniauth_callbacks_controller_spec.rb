@@ -36,12 +36,7 @@ RSpec.describe Users::OmniauthCallbacksController do
       end
 
       it "tracks events" do
-        expect_any_instance_of(MixpanelEventTracker).to receive(:track).with("CaseworkerLogin", anything, hash_including(
-          client_agency_id: "ma",
-          user_id: be_a(Integer)
-        ))
-
-        expect_any_instance_of(NewRelicEventTracker).to receive(:track).with("CaseworkerLogin", anything, hash_including(
+        expect(EventTrackingJob).to receive(:perform_later).with("CaseworkerLogin", anything, hash_including(
           client_agency_id: "ma",
           user_id: be_a(Integer)
         ))

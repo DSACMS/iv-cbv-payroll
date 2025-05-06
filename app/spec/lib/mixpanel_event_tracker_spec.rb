@@ -8,11 +8,6 @@ RSpec.describe MixpanelEventTracker do
     let(:tracker) { described_class.for_request(nil) }
 
     before do
-      # Make MaybeLater execute immediately instead of after the request, which doesn't exist
-      allow(MaybeLater).to receive(:run) do |&block|
-        block.call
-      end
-
       # Since we're stubbing this in spec_helper, make our tests in this file call original as well
       allow_any_instance_of(MixpanelEventTracker).to receive(:track).and_call_original
     end
