@@ -6,7 +6,7 @@ class PayrollAccount::Pinwheel < PayrollAccount
     "employment" => "employment.added",
     "income" => "income.added",
     "identity" => "identity.added",
-    "gigs" => "shifts.added"
+    "shifts" => "shifts.added"
   }
 
   def has_fully_synced?

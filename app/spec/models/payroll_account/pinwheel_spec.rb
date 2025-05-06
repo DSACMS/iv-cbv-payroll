@@ -8,7 +8,7 @@ RSpec.describe PayrollAccount::Pinwheel, type: :model do
     create(:payroll_account, cbv_flow: cbv_flow, pinwheel_account_id: account_id, supported_jobs: supported_jobs)
   end
 
-  def create_webhook_events(income_success: true, employment_success: true, paystubs_success: true, income_errored: false)
+  def create_webhook_events(income_success: true, employment_success: true, paystubs_success: true, income_errored: false, shifts_success: false)
     if income_success
       create(:webhook_event, event_name: "income.added", payroll_account: payroll_account)
     elsif income_errored
@@ -21,6 +21,10 @@ RSpec.describe PayrollAccount::Pinwheel, type: :model do
 
     if paystubs_success
       create(:webhook_event, event_name: "paystubs.fully_synced", payroll_account: payroll_account)
+    end
+
+    if shifts_success
+      create(:webhook_event, event_name: "shifts.added", payroll_account: payroll_account)
     end
   end
 
@@ -54,6 +58,24 @@ RSpec.describe PayrollAccount::Pinwheel, type: :model do
 
       it "returns true when income_synced_at is nil" do
         expect(payroll_account.has_fully_synced?).to be_truthy
+      end
+    end
+
+    context "when shifts is supported" do
+      let(:supported_jobs) { super() + %w[shifts] }
+
+      it "is false before shifts.added webhook has arrived" do
+        expect(payroll_account.has_fully_synced?).to eq(false)
+      end
+
+      context "after the shifts.added webhook arrives" do
+        before do
+          create_webhook_events(shifts_success: true)
+        end
+
+        it "is true" do
+          expect(payroll_account.has_fully_synced?).to eq(true)
+        end
       end
     end
   end
