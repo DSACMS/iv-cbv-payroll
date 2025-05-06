@@ -132,9 +132,18 @@ class Webhooks::Pinwheel::EventsController < ApplicationController
         employment_termination_date: report.employments.first&.termination_date,
         employment_type: report.employments.first&.employment_type&.to_s,
         employment_type_w2_count: report.employments.count { |e| e.employment_type == :w2 },
-        employment_type_gig_count: report.employments.count { |e| e.employment_type == :gig }
+        employment_type_gig_count: report.employments.count { |e| e.employment_type == :gig },
 
-        # TODO: Add fields from /shifts after FFS-2550.
+        # Shifts fields
+        gigs_success: @payroll_account.job_succeeded?("shifts"),
+        gigs_supported: @payroll_account.supported_jobs.include?("shifts"),
+        gigs_count: report.gigs.length,
+        gigs_pay_present_count: report.gigs.count { |g| g.compensation_amount.present? },
+        gigs_start_date_present_count: report.gigs.count { |g| g.start_date.present? },
+        gigs_type_delivery_count: report.gigs.count { |g| g.gig_type == "delivery" },
+        gigs_type_other_count: report.gigs.count { |g| g.gig_type == "other" },
+        gigs_type_rideshare_count: report.gigs.count { |g| g.gig_type == "rideshare" },
+        gigs_type_shift_count: report.gigs.count { |g| g.gig_type == "shift" }
       })
     end
   rescue => ex

@@ -238,8 +238,22 @@ class Webhooks::Argyle::EventsController < ApplicationController
 
         # Gigs fields
         gigs_success: payroll_account.job_succeeded?("gigs"),
-        gigs_supported: payroll_account.supported_jobs.include?("gigs")
-        # TODO: Add fields from /gigs after FFS-2575.
+        gigs_supported: payroll_account.supported_jobs.include?("gigs"),
+        gigs_count: report.gigs.length,
+        gigs_duration_present_count: report.gigs.count { |g| g.hours.present? },
+        gigs_earning_type_adjustment_count: report.gigs.count { |g| g.compensation_category == "adjustment" },
+        gigs_earning_type_incentive_count: report.gigs.count { |g| g.compensation_category == "incentive" },
+        gigs_earning_type_offer_count: report.gigs.count { |g| g.compensation_category == "offer" },
+        gigs_earning_type_other_count: report.gigs.count { |g| g.compensation_category == "other" },
+        gigs_earning_type_work_count: report.gigs.count { |g| g.compensation_category == "work" },
+        gigs_pay_present_count: report.gigs.count { |g| g.compensation_amount.present? },
+        gigs_status_cancelled_count: report.gigs.count { |g| g.gig_status == "cancelled" },
+        gigs_status_completed_count: report.gigs.count { |g| g.gig_status == "completed" },
+        gigs_status_scheduled_count: report.gigs.count { |g| g.gig_status == "scheduled" },
+        gigs_type_delivery_count: report.gigs.count { |g| g.gig_type == "delivery" },
+        gigs_type_hourly_count: report.gigs.count { |g| g.gig_type == "hourly" },
+        gigs_type_rideshare_count: report.gigs.count { |g| g.gig_type == "rideshare" },
+        gigs_type_services_count: report.gigs.count { |g| g.gig_type == "services" }
       })
     rescue => ex
       raise ex unless Rails.env.production?

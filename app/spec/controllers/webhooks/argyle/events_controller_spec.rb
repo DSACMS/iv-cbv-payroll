@@ -218,7 +218,22 @@ RSpec.describe Webhooks::Argyle::EventsController, type: :controller do
 
           # Gigs fields
           gigs_success: true,
-          gigs_supported: true
+          gigs_supported: true,
+          gigs_count: 50,
+          gigs_duration_present_count: 40,
+          gigs_earning_type_adjustment_count: 0,
+          gigs_earning_type_incentive_count: 0,
+          gigs_earning_type_offer_count: 0,
+          gigs_earning_type_other_count: 0,
+          gigs_earning_type_work_count: 50,
+          gigs_pay_present_count: 50,
+          gigs_status_cancelled_count: 10,
+          gigs_status_completed_count: 40,
+          gigs_status_scheduled_count: 0,
+          gigs_type_delivery_count: 0,
+          gigs_type_hourly_count: 0,
+          gigs_type_rideshare_count: 50,
+          gigs_type_services_count: 0
         )
       end
 
