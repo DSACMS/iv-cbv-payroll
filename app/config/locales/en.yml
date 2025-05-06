@@ -292,7 +292,7 @@ en:
         can_not_find_employer: I can’t find my employer or payroll provider
         employer_not_listed: Employer not listed?
         exit_button_text: Exit and go to %{agency_short_name}
-        header: Search for your employer or payroll provider
+        header: Search and log in to your employer or online payroll provider.
         no_results_steps1: Check if your employer uses another business name or search for their payroll provider.
         no_results_steps2: Make sure you have spelled names correctly, then search again.
         no_results_steps3: Choose from popular payroll providers or apps.
@@ -303,7 +303,8 @@ en:
         results: Results
         review_button_text: Continue
         search: Search
-        search_label: 'Enter the name of your current or recent employer or payroll provider:'
+        search_label_2: This is to verify your income using a secure verification service. Your login credentials will never be stored or shared by us.
+        search_label_html: "<strong>You will need to enter your payroll provider login credentials for this step.</strong>"
         select: Select
         select_button_aria_label: Open an authentication modal for the employer or payroll provider to import your payment history.
         to_continue: 'If you still don’t see your employer or payroll provider listed:'
@@ -500,9 +501,8 @@ en:
       default: "%Y-%m-%d"
   help:
     alert:
-      heading: Having trouble linking to your payroll provider?
-      help_options: help options
-      text_before: Check out our
+      heading: Need help connecting to your payroll provider?
+      help_options: Get help here.
     index:
       company_id: I don't know my company ID
       credentials: I don't feel comfortable entering my login credentials
@@ -539,11 +539,11 @@ en:
           title: Your login information is encrypted and secure
         step2:
           content:
-          - We only use your login info to check your payroll details one time. It will not be used again, or for anything else.
+          - We only use your login information to check your payroll details once. It will not be used again, or for anything else.
           title: Your information is only used to check your income
         step3:
           content:
-          - The service we use to check your payroll data is a trusted by many companies to handle payroll data securely.
+          - The service we use to check your payroll data is trusted by many companies to handle payroll data securely.
           title: We use trusted services
         title: I don't feel comfortable entering my login credentials
       employer:
@@ -551,12 +551,8 @@ en:
         step1:
           content:
           - If there's a parent company, try that name.
-          - Use abbreviations (e.g., "ABC Inc." instead of "ABC Corporation").
+          - Use abbreviations (e.g., "ABC Co." instead of "ABC Corporation").
           - Leave out special characters or punctuation.
-          - - 'Try different ways of writing your employer''s name. For example:'
-            - Use abbreviations (e.g., "ABC Inc." instead of "ABC Corporation")
-            - Remove special characters or punctuation
-            - Try the parent company name if applicable
           title: Search different versions of your employer's name
         step2:
           content:
@@ -592,7 +588,7 @@ en:
           title: Search your email inbox
         step3:
           content:
-          - Reach out to your HR or payroll administrator. They can help you get the company ID.
+          - Reach out to your HR or payroll administrator to get the name of your payroll provider.
           title: Contact your employer's Human Resources Department
         title: I don't know my payroll provider
       username:

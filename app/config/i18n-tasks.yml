@@ -206,6 +206,19 @@ ignore_missing:
     - "cbv.submits.show.application_or_recertification_date.la_ldh"
     - "cbv.submits.show.none_found"
 
+    # LA help (FFS-2688)
+    - "help.alert.heading"
+    - "help.alert.help_options"
+    - "help.show.credentials.step2.content"
+    - "help.show.credentials.step3.content"
+    - "help.show.employer.step1.title"
+    - "help.show.employer.step3.content"
+    - "help.show.provider.step3.content"
+
+    # LA employer_search (FFS-2688)
+    - "cbv.employer_searches.show.header"
+    - "cbv.employer_searches.show.search_label_2"
+    - "cbv.employer_searches.show.search_label_html"
     # LA entry (FFS-2688)
     - "cbv.entries.show.checkbox.default"
     - "cbv.entries.show.subheader_html"
