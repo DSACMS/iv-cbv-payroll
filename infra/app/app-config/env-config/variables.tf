@@ -79,6 +79,11 @@ variable "network_name" {
   type        = string
 }
 
+variable "newrelic_account_id" {
+  description = "NewRelic Account ID"
+  type        = string
+}
+
 variable "project_name" {
   type = string
 }
