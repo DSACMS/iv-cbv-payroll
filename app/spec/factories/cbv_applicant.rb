@@ -4,7 +4,7 @@ FactoryBot.define do
     first_name { "Jane" }
     middle_name { "Sue" }
     last_name { "Doe" }
-    date_of_birth { Date.new(1980, 1, 1) }
+    date_of_birth {  "03/19/1992" }
     created_at { Date.current.strftime("%m/%d/%Y") }
     snap_application_date { Date.current.strftime("%m/%d/%Y") }
 

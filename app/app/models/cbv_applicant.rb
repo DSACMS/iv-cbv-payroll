@@ -32,8 +32,8 @@ class CbvApplicant < ApplicationRecord
   has_many :cbv_flows
   has_many :cbv_flow_invitations
 
-  before_validation { parse_date("snap_application_date") }
-  before_validation { parse_date("date_of_birth") if self["date_of_birth"].present? }
+  # before_validation { parse_date("snap_application_date") if self["snap_application_date"].present? }
+  # before_validation { parse_date("date_of_birth") if self["date_of_birth"].present? }
 
   validates :client_agency_id, presence: true
 
@@ -49,6 +49,10 @@ class CbvApplicant < ApplicationRecord
     message: :invalid_date
   }, if: -> { is_applicant_attribute_required?(:date_of_birth) && date_of_birth.present? }
 
+  validates :snap_application_date, presence: {
+    message: :invalid_date
+  }
+
   include Redactable
   has_redactable_fields(
     first_name: :string,
@@ -61,6 +65,14 @@ class CbvApplicant < ApplicationRecord
     snap_application_date: :date,
     date_of_birth: :date
   )
+
+  def date_of_birth=(value)
+    self[:date_of_birth] = parse_date(value)
+  end
+
+  def snap_application_date=(value)
+    self[:snap_application_date] = parse_date(value)
+  end
 
   def has_applicant_attribute_missing?
     @required_applicant_attributes.any? do |attr|
@@ -94,25 +106,6 @@ class CbvApplicant < ApplicationRecord
     self.snap_application_date ||= Date.current
   end
 
-  def parse_date(attribute)
-    raw_date = @attributes[attribute]&.value_before_type_cast
-    return if raw_date.is_a?(Date)
-
-    if raw_date.is_a?(ActiveSupport::TimeWithZone) || raw_date.is_a?(Time)
-      self[attribute] = raw_date.to_date
-      # handle ISO 8601 date format, e.g. "2021-01-01" which is Ruby's default when querying a date field
-    elsif raw_date.is_a?(String) && raw_date.match?(/^\d{4}-\d{2}-\d{2}$/)
-      self[attribute] = Date.parse(raw_date)
-    else
-      begin
-        new_date_format = Date.strptime(raw_date.to_s, "%m/%d/%Y")
-        self[attribute] = new_date_format
-      rescue Date::Error
-        errors.add(attribute, :invalid_date)
-      end
-    end
-  end
-
   def set_applicant_attributes
     @applicant_attributes = Rails.application.config.client_agencies[client_agency_id]&.applicant_attributes&.compact&.keys&.map(&:to_sym) || []
     @required_applicant_attributes = get_required_applicant_attributes
@@ -124,6 +117,17 @@ class CbvApplicant < ApplicationRecord
   end
 
   private
+  def parse_date(value)
+    return value if value.is_a?(Date)
+
+    if value.is_a?(String) && value.present?
+      begin
+        Date.strptime(value, "%m/%d/%Y")
+      rescue ArgumentError
+        nil
+      end
+    end
+  end
 
   def get_required_applicant_attributes
     Rails.application.config.client_agencies[client_agency_id]&.applicant_attributes&.select { |key, attributes| attributes["required"] }&.keys&.map(&:to_sym) || []

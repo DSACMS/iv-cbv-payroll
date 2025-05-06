@@ -52,7 +52,7 @@ RSpec.describe Cbv::ApplicantInformationsController, type: :controller do
               first_name: "Tim", # required
               middle_name: "",
               last_name: "Miller", # required
-              date_of_birth: "01/01/1980", # required
+              date_of_birth: "03/19/1992", # required
               case_number: "9971" # required
             }
           }
