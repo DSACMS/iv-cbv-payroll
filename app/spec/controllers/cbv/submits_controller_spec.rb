@@ -218,6 +218,7 @@ RSpec.describe Cbv::SubmitsController do
           argyle_stub_request_identities_response("bob")
           argyle_stub_request_paystubs_response("bob")
           argyle_stub_request_gigs_response("bob")
+          argyle_stub_request_account_response("bob")
         end
 
         render_views
@@ -269,6 +270,7 @@ RSpec.describe Cbv::SubmitsController do
           argyle_stub_request_identities_response("sarah")
           argyle_stub_request_paystubs_response("sarah")
           argyle_stub_request_gigs_response("sarah")
+          argyle_stub_request_account_response("sarah")
           Timecop.freeze(Time.local(2025, 04, 1, 0, 0))
         end
 

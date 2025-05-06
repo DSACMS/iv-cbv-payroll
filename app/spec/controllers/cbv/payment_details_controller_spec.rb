@@ -258,6 +258,7 @@ RSpec.describe Cbv::PaymentDetailsController do
           argyle_stub_request_identities_response("bob")
           argyle_stub_request_paystubs_response("bob")
           argyle_stub_request_gigs_response("bob")
+          argyle_stub_request_account_response("bob")
           get :show, params: { user: { account_id: account_id } }
         end
 
@@ -303,6 +304,7 @@ RSpec.describe Cbv::PaymentDetailsController do
           argyle_stub_request_identities_response("sarah")
           argyle_stub_request_paystubs_response("sarah")
           argyle_stub_request_gigs_response("sarah")
+          argyle_stub_request_account_response("sarah")
           get :show, params: { user: { account_id: account_id } }
         end
 

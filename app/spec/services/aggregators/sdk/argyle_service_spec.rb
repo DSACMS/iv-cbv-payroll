@@ -142,6 +142,35 @@ RSpec.describe Aggregators::Sdk::ArgyleService, type: :service do
     end
   end
 
+  describe '#fetch_account_api' do
+    let(:requests) { WebMock::RequestRegistry.instance.requested_signatures.hash.keys }
+    before do
+      argyle_stub_request_account_response("bob")
+    end
+
+    it 'calls the correct endpoint' do
+      service.fetch_account_api(account: account_id)
+      expect(requests.first.uri.to_s).to include("/v2/accounts/#{account_id}")
+    end
+
+    it 'returns a non-empty response' do
+      response = service.fetch_account_api(account: account_id)
+      expect(response).not_to be_empty
+      expect(response).to be_an_instance_of(Hash)
+    end
+
+    it 'raises an ArgumentError' do
+      expect { service.fetch_account_api }.to raise_error(ArgumentError, "account is required")
+    end
+
+    it 'raises Faraday::ServerError on 500 error' do
+      stub_request(:get, "https://api-sandbox.argyle.com/v2/accounts/#{account_id}")
+        .to_return(status: 500, body: "", headers: {})
+
+      expect { service.fetch_account_api(account: account_id) }.to raise_error(Faraday::ServerError)
+    end
+  end
+
   describe '#fetch_paystubs_api' do
     let(:requests) { WebMock::RequestRegistry.instance.requested_signatures.hash.keys }
 
