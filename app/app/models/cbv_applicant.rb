@@ -39,7 +39,7 @@ class CbvApplicant < ApplicationRecord
 
   # validate that the date_of_birth is in the past
   validates :date_of_birth, comparison: {
-    less_than: Date.current,
+    less_than_or_equal_to: Date.current,
      message: :future_date
   }, if: -> { is_applicant_attribute_required?(:date_of_birth) && date_of_birth.present? }
 
