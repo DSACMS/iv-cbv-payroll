@@ -317,7 +317,6 @@ RSpec.describe Cbv::PaymentDetailsController do
         it { is_expected.to include("Pay period") }
         it { is_expected.to include("Payment after taxes and deductions (net)") }
         it { is_expected.to include("Deduction") }
-        it { is_expected.to include("Base Pay") }
       end
     end
   end

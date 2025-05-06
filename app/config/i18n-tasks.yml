@@ -206,6 +206,11 @@ ignore_missing:
     - "cbv.submits.show.application_or_recertification_date.la_ldh"
     - "cbv.submits.show.none_found"
 
+    # LA payment_details (FFS-2688)
+    - "cbv.payment_details.show.number_of_hours_worked"
+    - "cbv.payment_details.show.pay_frequency"
+    - "cbv.payment_details.show.subheader.la_ldh"
+
     # LA help (FFS-2688)
     - "help.alert.heading"
     - "help.alert.help_options"
@@ -219,6 +224,7 @@ ignore_missing:
     - "cbv.employer_searches.show.header"
     - "cbv.employer_searches.show.search_label_2"
     - "cbv.employer_searches.show.search_label_html"
+    
     # LA entry (FFS-2688)
     - "cbv.entries.show.checkbox.default"
     - "cbv.entries.show.subheader_html"
