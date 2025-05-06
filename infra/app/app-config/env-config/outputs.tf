@@ -47,6 +47,12 @@ output "identity_provider_config" {
   value = local.identity_provider_config
 }
 
+output "newrelic_config" {
+  value = {
+    account_id = var.newrelic_account_id
+  }
+}
+
 output "notifications_config" {
   value = local.notifications_config
 }
