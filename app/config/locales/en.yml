@@ -279,7 +279,7 @@ en:
             super_one_html: Middle name<sup>1</sup>
       show:
         continue: Continue
-        explanation: This information will be used to connect your income information to your %{agency_short_name} application. Please make sure the information you enter is the same as what is shown on your application.
+        explanation: This information will be used to connect your income information to your %{agency_short_name} benefits. Please make sure the information you enter is the same as what is shown on your application.
         your_information: Your information
       update:
         error_header:
@@ -396,7 +396,7 @@ en:
         payment_hours: "%{amount} hours"
         payments_and_deductions_table_header: Payments and deductions
         subheader:
-          la_ldh: We have gathered your income records from the past 90 days, from %{start_date} to %{end_date}. If the information is missing or inaccurate, add a comment for %{agency_acronym}. This will be included in your income report and linked to your Medicaid application.
+          la_ldh: We have gathered your income records from the past 90 days, from %{start_date} to %{end_date}. If the information is missing or inaccurate, add a comment for %{agency_acronym}. This will be included in your income report and linked to your Medicaid benefits.
           sandbox: We have gathered your income records from the past 90 days, from %{start_date} to %{end_date}. If the information is missing or inaccurate, add a comment for %{agency_acronym}. This will be included in your income report and linked to your SNAP application.
         total_gross_description: This is the total gross income from your job before taxes, benefits and deductions were taken out of your paycheck.
         total_gross_income: 'Total income from the past 90 days, before taxes: %{amount}'
@@ -447,7 +447,7 @@ en:
             report_details: Report details
         share_report_button: Share my report with %{agency_acronym}
         table_caption_no_name: Employer %{number}
-        warning_1: Your income report will be attached to your Medicaid application.
+        warning_1: Your income report will be attached to your Medicaid benefits.
         warning_2: You must check the legal agreement box to share your report.
       update:
         consent_to_authorize_warning: Please check the legal agreement box to share your report.
@@ -457,7 +457,7 @@ en:
         caseworker_received: We have delivered your payment information to %{agency_acronym}. They will contact you if any additional information is needed.
         confirmation_code_html: "<strong>Confirmation code</strong>: %{confirmation_code}"
         download: Download a copy of the report
-        follow_up: To check the status of your Medicaid application you can visit %{agency_acronym}'s website.
+        follow_up: To check the status of your Medicaid benefits you can visit %{agency_acronym}'s website.
         header: Your income report has been successfully shared with %{agency_acronym}
         if_it_didnt_work: If you weren't able to find an employer, or one of your employers doesn't have an online payroll provider, please provide this information directly to %{agency_acronym}.
     summaries:
