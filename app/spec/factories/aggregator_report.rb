@@ -25,7 +25,8 @@ FactoryBot.define do
         employer_name: "ACME Corp.",
         start_date: "2020-01-01",
         termination_date: nil,
-        status: "employed"
+        status: "employed",
+        account_source: "pinwheel_payroll_provider"
     )
     ] }
     paystubs { [
@@ -109,7 +110,8 @@ FactoryBot.define do
         employer_name: "Argyle Test Corp.",
         start_date: "2021-01-01",
         termination_date: nil,
-        status: "employed"
+        status: "employed",
+        account_source: "argyle_sandbox"
     )
     ] }
     paystubs { [

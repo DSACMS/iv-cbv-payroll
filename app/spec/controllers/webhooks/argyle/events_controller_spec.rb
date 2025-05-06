@@ -113,6 +113,9 @@ RSpec.describe Webhooks::Argyle::EventsController, type: :controller do
       allow_any_instance_of(Aggregators::Sdk::ArgyleService)
         .to receive(:fetch_gigs_api)
         .and_return(argyle_load_relative_json_file("bob", "request_gigs.json"))
+      allow_any_instance_of(Aggregators::Sdk::ArgyleService)
+        .to receive(:fetch_account_api)
+              .and_return(argyle_load_relative_json_file("bob", "request_account.json"))
       allow(controller).to receive(:event_logger).and_return(fake_event_logger)
       allow(fake_event_logger).to receive(:track)
     end
@@ -209,6 +212,7 @@ RSpec.describe Webhooks::Argyle::EventsController, type: :controller do
           employment_status: "employed",
           employment_type: "w2",
           employment_employer_name: "Whole Foods",
+          employment_account_source: "argyle_sandbox",
           employment_employer_address_present: true,
           employment_employer_phone_number_present: true,
           employment_start_date: "2022-08-08",
