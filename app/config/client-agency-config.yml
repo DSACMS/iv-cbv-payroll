@@ -121,7 +121,6 @@
       required: false
     date_of_birth:
       required: true
-      type: date
 
 - id: sandbox
   agency_name: CBV Test Agency
