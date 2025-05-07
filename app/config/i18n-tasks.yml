@@ -133,7 +133,6 @@ ignore_missing:
     - "caseworker_mailer.summary_email.*"
     # Caseworker PDF strings that are only supported in English:
     - "cbv.submits.show.pdf.caseworker.*"
-    - "cbv.submits.show.pdf.shared.date_of_birth"
 
     # Currently awaiting translation:
     # - "example.strings.*"   # Tag with ticket number that created or modified the string

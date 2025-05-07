@@ -62,7 +62,7 @@
     <% end %>
 
     <% if current_agency?(:ma) %>
-      <%= table.with_row(t(".pdf.caseworker.client_email_address"), @cbv_flow.cbv_applicantujemail_address) %>
+      <%= table.with_row(t(".pdf.caseworker.client_email_address"), @cbv_flow.cbv_applicant.email_address) %>
       <%= table.with_row(t(".pdf.caseworker.snap_agency_id"), @cbv_flow.cbv_applicant.agency_id_number) %>
     <% end %>
   <% end %>
