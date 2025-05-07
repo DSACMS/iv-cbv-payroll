@@ -3,7 +3,7 @@ import { sleep, check, group } from 'k6';
 
 export let options = {
     // TODO: pass in users and duration from command line
-    vus: 100, // number of virtual users
+    vus: 1500, // number of virtual users
     duration: '30s',
 };
 

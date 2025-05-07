@@ -32,7 +32,7 @@ If you'd like to import this dashboard, select "import dashboard" and copy-paste
 
 ### Grabbing appropriate user tokens
 
-Set up a user in the environment you'd like to load test. While logged in as the user, in the browser console, grab the cookie `_iv_cbv_payroll_session`. Put the **NON** url decoded value, supply that into USER_TOKENS below.
+Set up a user in the environment you'd like to load test. While logged in as the user, in the browser console application tab, grab the cookie `_iv_cbv_payroll_session`. Put the **NON** url decoded value, supply that into USER_TOKENS below.
 
 K6_OUT=influxdb k6 run loadtest.js --env USER_TOKENS=<COMMA_SEPERATED_TOKENS> --env URL=<example: https://verify-demo.navapbc.cloud/cbv/employer_search> <!-- markdown-link-check-disable-line -->
 
