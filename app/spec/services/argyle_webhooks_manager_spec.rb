@@ -91,9 +91,9 @@ RSpec.describe ArgyleWebhooksManager, type: :service do
         )
 
         expect(test_logger).to receive(:puts).with("  Removing existing Argyle webhook subscription (url = https://different-url.ngrok.io/webhooks/argyle/events)")
-        expect(test_logger).to receive(:puts).with("  Registering Argyle webhooks for Ngrok tunnel in Argyle sandbox...").exactly(3).times
-        expect(test_logger).to receive(:puts).with("  ✅ Set up Argyle webhook: #{create_webhook_subscription_response["id"]}").exactly(3).times
-        expect(test_logger).to receive(:puts).with(" Argyle webhook url: #{receiver_url}").exactly(3).times
+        expect(test_logger).to receive(:puts).with("  Registering Argyle webhooks for Ngrok tunnel in Argyle sandbox...").exactly(4).times
+        expect(test_logger).to receive(:puts).with("  ✅ Set up Argyle webhook: #{create_webhook_subscription_response["id"]}").exactly(4).times
+        expect(test_logger).to receive(:puts).with(" Argyle webhook url: #{receiver_url}").exactly(4).times
 
         expect(argyle_service).to receive(:create_webhook_subscription).with(
           non_partial_webhook_events,
@@ -146,15 +146,16 @@ RSpec.describe ArgyleWebhooksManager, type: :service do
 
         expect(test_logger).to receive(:puts).with("  Existing Argyle webhook subscription found in Argyle sandbox: #{receiver_url}")
         expect(argyle_webhooks_manager).to receive(:remove_subscriptions).with([ other_sub ]).and_call_original # non-partial
-        expect(argyle_webhooks_manager).to receive(:remove_subscriptions).with([]).and_call_original.twice # no subscriptions for partial and include-resource webhooks
-        expect(test_logger).to receive(:puts).with("  Registering Argyle webhooks for Ngrok tunnel in Argyle sandbox...").twice
+        expect(argyle_webhooks_manager).to receive(:remove_subscriptions).with([]).and_call_original.exactly(3).times # no subscriptions for partial and include-resource webhooks
+        expect(test_logger).to receive(:puts).with("  Registering Argyle webhooks for Ngrok tunnel in Argyle sandbox...").exactly(3).times
         expect(test_logger).to receive(:puts).with("  Removing existing Argyle webhook subscription (url = #{other_sub["url"]})")
-        expect(test_logger).to receive(:puts).with("  ✅ Set up Argyle webhook: #{create_webhook_subscription_response["id"]}").twice
-        expect(test_logger).to receive(:puts).with(" Argyle webhook url: #{receiver_url}").twice
+        expect(test_logger).to receive(:puts).with("  ✅ Set up Argyle webhook: #{create_webhook_subscription_response["id"]}").exactly(3).times
+        expect(test_logger).to receive(:puts).with(" Argyle webhook url: #{receiver_url}").exactly(3).times
         expect(argyle_service).to receive(:delete_webhook_subscription).with(other_sub["id"])
         # Should NOT create a new subscription since we're reusing existing
         expect(argyle_service).not_to receive(:create_webhook_subscription).with(array_including("paystubs.fully_synced"), anything, anything, anything)
         # But it will create a subscription for the partially synced webhooks, since we didn't set it up earlier in the test
+        expect(argyle_service).to receive(:create_webhook_subscription).with(array_including("paystubs.partially_synced"), anything, anything, anything)
         expect(argyle_service).to receive(:create_webhook_subscription).with(array_including("paystubs.partially_synced"), anything, anything, anything)
         expect(argyle_service).to receive(:create_webhook_subscription).with(array_including("accounts.updated"), anything, anything, anything)
 

@@ -11,13 +11,7 @@ module Aggregators::Validators
 
       is_w2_worker = report.employments.none? { |e| e.employment_type == :gig }
       if report.paystubs.any?
-        report.paystubs.each { |p| validate_paystub(report, p, is_w2_worker) }
-
-        if is_w2_worker
-          hours_total = 0
-          report.paystubs.each { |p| hours_total += p.hours.to_f if p.hours.present? }
-          report.errors.add(:paystubs, "Report has invalid hours total") unless hours_total > 0
-        end
+        validate_paystubs(report, is_w2_worker)
       end
     end
 
@@ -31,14 +25,15 @@ module Aggregators::Validators
       report.errors.add(:employments, "Employment has no employer_name") unless employment.employer_name.present?
     end
 
-    def validate_paystub(report, paystub, is_w2_worker)
-      report.errors.add(:paystubs, "Paystub has no pay_date") unless paystub.pay_date.present?
-      report.errors.add(:paystubs, "Paystub has no gross_pay_amount") unless paystub.gross_pay_amount.present?
-      report.errors.add(:paystubs, "Paystub has invalid gross_pay_amount") unless paystub.gross_pay_amount.to_f > 0
+    def validate_paystubs(report, is_w2_worker)
+      report.errors.add(:paystubs, "No paystub has pay_date") unless report.paystubs.any? { |paystub| paystub.pay_date.present? }
+      report.errors.add(:paystubs, "No paystub has gross_pay_amount") unless report.paystubs.any? { |paystub| paystub.gross_pay_amount.present? }
+      report.errors.add(:paystubs, "No paystub has valid gross_pay_amount") unless report.paystubs.any? { |paystub| paystub.gross_pay_amount.to_f > 0 }
 
       if is_w2_worker
-        report.errors.add(:paystubs, "Paystub has no pay_period_start") unless paystub.pay_period_start.present?
-        report.errors.add(:paystubs, "Paystub has no pay_period_end") unless paystub.pay_period_end.present?
+        hours_total = 0
+        report.paystubs.each { |p| hours_total += p.hours.to_f if p.hours.present? }
+        report.errors.add(:paystubs, "Report has invalid hours total") unless hours_total > 0
       end
     end
   end

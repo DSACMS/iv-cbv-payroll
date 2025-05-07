@@ -143,9 +143,10 @@ module Aggregators::Sdk
         from_start_date: from_start_date,
         to_start_date: to_start_date,
         limit: limit }.compact
-      page_response = @http.get(build_url(PAYSTUBS_ENDPOINT), params).body
-      raise "Pagination not implemented" if page_response["next"].present?
-      page_response
+
+      with_pagination do
+        @http.get(build_url(PAYSTUBS_ENDPOINT), params).body
+      end
     end
 
     def create_user(cbv_flow_end_user_id = nil)
@@ -169,7 +170,9 @@ module Aggregators::Sdk
         to_start_datetime: to_start_datetime,
         limit: limit }.compact
 
-      @http.get(GIGS_ENDPOINT, params).body
+      with_pagination do
+        @http.get(GIGS_ENDPOINT, params).body
+      end
     end
 
     # https://docs.argyle.com/api-reference/shifts#list
@@ -188,6 +191,25 @@ module Aggregators::Sdk
 
     def build_url(endpoint)
       @http.build_url(endpoint).to_s
+    end
+
+    private
+
+    # Surround any request with this method as long as the request returns an
+    # array of `results` and a `next` cursor to traverse to future pages.
+    def with_pagination(&block)
+      initial_response = block.call
+      results = initial_response["results"]
+      next_cursor = initial_response["next"]
+
+      while next_cursor.present?
+        response = @http.get(next_cursor).body
+
+        results.concat(response["results"])
+        next_cursor = response["next"]
+      end
+
+      { "results" => results, "next" => nil }
     end
   end
 end

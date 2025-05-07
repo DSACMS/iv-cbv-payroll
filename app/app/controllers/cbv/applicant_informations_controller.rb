@@ -7,32 +7,30 @@ class Cbv::ApplicantInformationsController < Cbv::BaseController
   end
 
   def update
-    begin
-      @cbv_applicant.update!(applicant_params[:cbv_applicant])
-    rescue => e
-      Rails.logger.error("Error updating applicant: #{e.message}")
-      flash[:alert] = t(".error_updating_applicant")
-      return redirect_to cbv_flow_applicant_information_path
+    @cbv_applicant.assign_attributes(applicant_params[:cbv_applicant])
+
+    if  @cbv_applicant.validate_base_and_applicant_attributes? && @cbv_applicant.save
+      return redirect_to next_path
     end
 
-    @cbv_applicant.validate_required_applicant_attributes
-    error_count = @cbv_applicant.errors.size
-    if error_count > 0
-      error_header = t(".error_header", count: error_count)
+    error_header = t(".error_header", count: @cbv_applicant.errors.count)
 
-      # Collect error messages without attribute names
-      error_messages = @cbv_applicant.errors.messages.values.flatten.map { |msg| "<li>#{msg}</li>" }.join
-      error_messages = "<ul>#{error_messages}</ul>"
+    # Use @cbv_applicant.errors directly since we added all errors back to it
+    error_messages = @cbv_applicant.errors.map { |error| "<li>#{error.message}</li>" }.join
+    error_messages = "<ul>#{error_messages}</ul>"
 
-      flash.now[:alert_heading] = error_header
-      flash.now[:alert] = error_messages.html_safe
+    flash.now[:alert_heading] = error_header
+    flash.now[:alert] = error_messages.html_safe
 
-      track_applicant_information_error_event(error_messages.html_safe)
+    track_applicant_information_error_event(error_messages.html_safe)
 
-      return render :show, status: :unprocessable_entity
-    end
+    render :show, status: :unprocessable_entity
 
-    redirect_to next_path
+    # note: if we TRULY want that rescue behavior, keep it here. i still think this was a legacy of the save! hack, but it can go here
+  rescue Exception => e
+    Rails.logger.error("Error updating applicant: #{e.message}")
+    flash[:alert] = t(".error_updating_applicant")
+    redirect_to cbv_flow_applicant_information_path
   end
 
   def redirect_when_info_present

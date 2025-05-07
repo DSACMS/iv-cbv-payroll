@@ -31,8 +31,34 @@ RSpec.describe Aggregators::ResponseObjects::Identity do
       expect(identity.full_name).to eq("Bob Jones")
       expect(identity.emails).to eq([ "test1@argyle.com" ])
       expect(identity.phone_numbers).to eq([ "+18009000010" ])
-      expect(identity.ssn).to eq("522-09-1191")
+      expect(identity.ssn).to eq("XXX-XX-1191")
       expect(identity.date_of_birth).to eq("1980-10-10")
+    end
+
+    context "test variations of ssn" do
+      it "shortens full ssn to 4 digits" do
+        argyle_response["ssn"] = "000-11-2222"
+        identity = described_class.from_argyle(argyle_response)
+        expect(identity.ssn).to eq("XXX-XX-2222")
+      end
+
+      it "shortens 4-digit ssn to 4 digits" do
+        argyle_response["ssn"] = "2222"
+        identity = described_class.from_argyle(argyle_response)
+        expect(identity.ssn).to eq("XXX-XX-2222")
+      end
+
+      it "shortens 2-digit ssn to 4 digits" do
+        argyle_response["ssn"] = "22"
+        identity = described_class.from_argyle(argyle_response)
+        expect(identity.ssn).to eq("XXX-XX-XX22")
+      end
+
+      it "handles a nil ssn" do
+        argyle_response["ssn"] = nil
+        identity = described_class.from_argyle(argyle_response)
+        expect(identity.ssn).to be_nil
+      end
     end
   end
 end

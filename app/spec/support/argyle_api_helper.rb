@@ -9,21 +9,41 @@ module ArgyleApiHelper
   end
 
   def argyle_stub_request_paystubs_response(user_folder)
-    stub_request(:get, %r{#{Aggregators::Sdk::ArgyleService::PAYSTUBS_ENDPOINT}})
+    stub_request(:get, %r{#{Aggregators::Sdk::ArgyleService::PAYSTUBS_ENDPOINT}(?!\?cursor=)})
       .to_return(
         status: 200,
         body: argyle_load_relative_json_file(user_folder, 'request_paystubs.json').to_json,
         headers: { 'Content-Type': 'application/json;charset=UTF-8' }
       )
+
+    # Stub the second page of paystub results, if we have a stub for it
+    if File.exist?(argyle_fixture_path(user_folder, 'request_paystubs_page_2.json'))
+      stub_request(:get, %r{#{Aggregators::Sdk::ArgyleService::PAYSTUBS_ENDPOINT}\?cursor=})
+        .to_return(
+          status: 200,
+          body: argyle_load_relative_json_file(user_folder, 'request_paystubs_page_2.json').to_json,
+          headers: { 'Content-Type': 'application/json;charset=UTF-8' }
+        )
+    end
   end
 
   def argyle_stub_request_gigs_response(user_folder)
-    stub_request(:get, %r{#{Aggregators::Sdk::ArgyleService::GIGS_ENDPOINT}})
+    stub_request(:get, %r{#{Aggregators::Sdk::ArgyleService::GIGS_ENDPOINT}(?!\?cursor=)})
       .to_return(
         status: 200,
         body: argyle_load_relative_json_file(user_folder, 'request_gigs.json').to_json,
         headers: { 'Content-Type': 'application/json;charset=UTF-8' }
       )
+
+    # Stub the second page of gigs results, if we have a stub for it
+    if File.exist?(argyle_fixture_path(user_folder, 'request_gigs_page_2.json'))
+      stub_request(:get, %r{#{Aggregators::Sdk::ArgyleService::GIGS_ENDPOINT}\?cursor=})
+        .to_return(
+          status: 200,
+          body: argyle_load_relative_json_file(user_folder, 'request_gigs_page_2.json').to_json,
+          headers: { 'Content-Type': 'application/json;charset=UTF-8' }
+        )
+    end
   end
 
   def argyle_stub_request_accounts_response(user_folder)
@@ -108,15 +128,12 @@ module ArgyleApiHelper
     end
   end
 
-  def argyle_load_relative_file(user_folder, filename)
-    File.read(File.join(
-      File.dirname(__FILE__),
-      "fixtures/argyle/#{user_folder}/#{filename}"
-    ))
+  def argyle_fixture_path(user_folder, filename)
+    File.join(File.dirname(__FILE__), "fixtures/argyle/#{user_folder}/#{filename}")
   end
 
   def argyle_load_relative_json_file(user_folder, filename)
-    JSON.parse(argyle_load_relative_file(user_folder, filename))
+    JSON.parse(File.read(argyle_fixture_path(user_folder, filename)))
   end
 
   def argyle_user_property_for(user_folder, fixture_type, property = nil)

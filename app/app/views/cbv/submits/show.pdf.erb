@@ -1,20 +1,25 @@
 <strong>
-  <% if current_agency?(:ma) %>
-    <%= image_tag wicked_pdf_asset_base64(current_agency.logo_square_path), class: "text-middle cbv-header__agency-logo cbv-header__agency-logo--#{current_agency.id}" %>
-  <% elsif current_agency?(:nyc) %>
+  <% if current_agency?(:ma) || current_agency?(:nyc) %>
     <%= image_tag wicked_pdf_asset_base64(current_agency.logo_square_path), class: "text-middle cbv-header__agency-logo cbv-header__agency-logo--#{current_agency.id}" %>
   <% end %>
-  <span class="cbv-header__pilot-name">
+  <span class="cbv-header__pilot-name font-sans-md text-middle">
     <%= t("shared.pilot_name") %>
   </span>
-  <% if current_agency %>
-    <span class="cbv-header__separator">|</span>
+
+  <% if current_agency.present? %>
+    <span class="cbv-header__separator text-primary font-sans-md text-middle">|</span>
+
+    <% if current_agency&.logo_path.present? %>
+      <div class="display-inline-block text-middle cbv-header__agency-logo--<%= current_agency.id %>">
+        <%= image_tag wicked_pdf_asset_base64(current_agency.logo_path) %>
+      </div>
+    <% else %>
+      <span class="text-middle font-sans-md" style="white-space: nowrap;"><%= agency_translation(".pdf.agency_header_name") %></span>
+    <% end %>
   <% end %>
-  <%= agency_translation(".pdf.agency_header_name") %>
 </strong>
 
 <h1><%= t(".pdf.client.header") %></h1>
-
 <% if is_caseworker %>
   <p><%= t(".pdf.caseworker.description") %></p>
   <div class="usa-alert usa-alert--info">
@@ -82,6 +87,7 @@
 
 <% aggregator_report.summarize_by_employer.each_with_index do |(account_id, summary), index| %>
   <% employer_name = summary[:has_employment_data] ? summary[:employment].employer_name : nil %>
+  <% is_w2_worker = summary[:has_employment_data] && summary[:employment].employment_type == :w2 %>
   <h3><%= t(".table_caption_no_name", number: index + 1) %>: <%= employer_name %></h3>
 
   <%= render(TableComponent.new) do |table| %>
@@ -105,7 +111,7 @@
       <%= table.with_data_point(:employment_start_date, employment.start_date) %>
       <%= table.with_data_point(:employment_end_date, employment.termination_date) %>
     <% end %>
-    <% if summary[:has_income_data] %>
+    <% if summary[:has_income_data] && is_w2_worker %>
       <%= table.with_data_point(:pay_frequency, summary[:income].pay_frequency&.humanize) %>
       <%= table.with_data_point(:hourly_rate, summary[:income].compensation_amount, summary[:income].pay_frequency) %>
     <% end %>
@@ -120,21 +126,31 @@
           <% end %>
           <%= t(".pdf.shared.pay_date", pay_date: format_date(paystub.pay_date)) %></h4>
       <% end %>
-      <% if summary[:has_income_data] %>
-        <%= table.with_data_point(:pay_period_with_frequency, paystub.start, paystub.end, summary[:income].pay_frequency&.humanize, highlight: is_caseworker) %>
-      <% else %>
-        <%= table.with_data_point(:pay_period_with_frequency, paystub.start, paystub.end, t("cbv.payment_details.show.frequency_unknown"), highlight: is_caseworker) %>
+      <% if is_w2_worker %>
+        <% if summary[:has_income_data] %>
+          <%= table.with_data_point(:pay_period_with_frequency, paystub.start, paystub.end, summary[:income].pay_frequency&.humanize, highlight: is_caseworker) %>
+        <% else %>
+          <%= table.with_data_point(:pay_period_with_frequency, paystub.start, paystub.end, t("cbv.payment_details.show.frequency_unknown"), highlight: is_caseworker) %>
+        <% end %>
       <% end %>
       <%= table.with_data_point(:pay_gross, paystub.gross_pay_amount, highlight: is_caseworker) %>
-      <%= table.with_data_point(:number_of_hours_worked, paystub.hours, highlight: is_caseworker) %>
+      <% if is_w2_worker %>
+        <%= table.with_data_point(:number_of_hours_worked, paystub.hours, highlight: is_caseworker) %>
+      <% end %>
       <% paystub.hours_by_earning_category.each do |category, total_hours| %>
         <%= table.with_data_point(:earnings_entry, category, total_hours) %>
       <% end %>
-      <%= table.with_data_point(:net_pay_amount, paystub.net_pay_amount) %>
-      <% paystub.deductions.filter { |deduction| deduction.amount > 0 }.each do |deduction| %>
-        <%= table.with_data_point(:deduction, deduction.category, deduction.amount) %>
+      <% if is_w2_worker || paystub.net_pay_amount.to_f > 0 %>
+        <%= table.with_data_point(:net_pay_amount, paystub.net_pay_amount) %>
       <% end %>
-      <%= table.with_data_point(:pay_gross_ytd, paystub.gross_pay_ytd) %>
+      <% if is_w2_worker %>
+        <% paystub.deductions.filter { |deduction| deduction.amount > 0 }.each do |deduction| %>
+          <%= table.with_data_point(:deduction, deduction.category, deduction.amount) %>
+        <% end %>
+      <% end %>
+      <% if is_w2_worker || paystub.gross_pay_ytd.to_f > 0 %>
+        <%= table.with_data_point(:pay_gross_ytd, paystub.gross_pay_ytd) %>
+      <% end %>
     <% end %>
   <% end %>
   <% if summary[:paystubs].empty? %>

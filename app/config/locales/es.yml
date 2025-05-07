@@ -262,25 +262,14 @@ es:
     summaries:
       show:
         additional_comments: Comentarios adicionales
-        application_information: Información relacionada con la solicitud
-        application_or_recertification_date:
-          ma: Fecha de la entrevista de recertificación
-          nyc: Fecha de solicitud o recertificación
-          sandbox: Fecha de solicitud o recertificación
-        consent_to_authorize_use_html:
-          ma: Marque esta casilla para confirmar que, a su leal saber y entender, la información proporcionada por usted es verdadera y completa. Usted se compromete a informar al DTA sobre cualquier ingreso no reflejado en este informe o cualquier discrepancia hallada en la información recopilada con esta herramienta. Usted entiende que suministrar información precisa y completa es su responsabilidad, y que cualquier información falsa u omitida puede tener consecuencias legales. Para obtener más información sobre sus derechos y responsabilidades en relación a la información privada que comparte con el DTA, consulte los Derechos y Responsabilidades que firmó en la solicitud, que se encuentran en <a href="https://www.mass.gov/lists/department-of-transitional-assistance-rights-responsibilities-and-penalties">Mass.gov</a>. <br/><br/>Al enviar este informe, usted autoriza el uso de esta verificación de ingresos por parte de personal autorizado del DTA.
-          nyc: Marque esta casilla para confirmar que, a su leal saber y entender, la información proporcionada por usted es verdadera y completa. Usted accede a informar a la Administración de Recursos Humanos (HRA) de la Ciudad de Nueva York (NYC, por sus siglas en inglés) de cualquier ingreso no reflejado en este informe o cualquier discrepancia encontrada en la información recopilada con esta herramienta. Usted entiende que suministrar información precisa y completa es su responsabilidad, y que cualquier información falsa u omitida puede tener consecuencias legales.<br/><br/>Al enviar este informe, autoriza su uso para la verificación de los ingresos por parte del personal autorizado de la HRA.
-          sandbox: Marque esta casilla para confirmar que, a su leal saber y entender, la información proporcionada por usted es verdadera y completa. Usted se compromete a informar a la Agencia de pruebas CBV sobre cualquier ingreso no reflejado en este informe o cualquier discrepancia hallada en la información recopilada con esta herramienta. Usted entiende que suministrar información precisa y completa es su responsabilidad, y que cualquier información falsa u omitida puede tener consecuencias legales. <br/><br/>Al enviar este informe, autoriza su uso para la verificación de los ingresos por parte del personal autorizado del CBV.
         must_match: Estos datos deben coincidir con lo que se muestra en la solicitud que presentó ante %{agency_acronym}.
         none_found: No encontramos ningún pago de este empleador en los últimos 90 días.
         payment: Pago de %{amount} antes de pago impuestos en %{date}
         phone_number: Teléfono del empleador
         table_caption: 'Empleador %{number}: %{employer_name}'
         table_caption_no_name: Empleador %{number}
-        total_income_from: 'Ingresos totales provenientes de %{employer_name}, antes del pago de impuestos: %{amount}'
         total_income_from_no_employer_name: 'Ingresos totales antes del pago de impuestos: %{amount}'
         total_payments: 'Ingresos totales correspondiente a los últimos 90 días, antes de impuestos: %{amount}'
-        total_payments_desc: Este importe refleja el ingreso bruto total por sus contraprestaciones, antes de impuestos, beneficios y deducciones.
         your_information: Su información
     synchronization_failures:
       show:
