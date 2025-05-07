@@ -461,7 +461,6 @@ en:
           shared:
             client_information: Client information
             confirmation_code: Confirmation code
-            date_of_birth: Date of Birth
             employment_information: Employment information
             pay_date: 'Pay Date: %{pay_date}'
             report_details: Report details
