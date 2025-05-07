@@ -520,7 +520,7 @@ en:
         intro: 'Try the following steps:'
         step1:
           content:
-          - Your company ID is often in your onboarding documents, welcome email, or payroll setup info.
+          - Your company ID is often in your onboarding documents, welcome email, or payroll setup information.
           - Search your email for keywords like "payroll," "[Payroll Provider Name]," or "company ID."
           title: Check your welcome materials
         step2:
