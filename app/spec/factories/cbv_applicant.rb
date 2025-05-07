@@ -4,6 +4,7 @@ FactoryBot.define do
     first_name { "Jane" }
     middle_name { "Sue" }
     last_name { "Doe" }
+    date_of_birth {  "03/19/1992" }
     created_at { Date.current.strftime("%m/%d/%Y") }
     snap_application_date { Date.current.strftime("%m/%d/%Y") }
 
@@ -22,6 +23,10 @@ FactoryBot.define do
         last_letter = ('A'..'Z').to_a.sample
         "#{letters}#{numbers}#{last_letter}"
       end
+    end
+
+    trait :sandbox do
+      client_agency_id { "sandbox" }
     end
 
     trait :ma do

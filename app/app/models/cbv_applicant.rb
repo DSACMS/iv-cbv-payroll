@@ -32,8 +32,26 @@ class CbvApplicant < ApplicationRecord
   has_many :cbv_flows
   has_many :cbv_flow_invitations
 
-  before_validation :parse_snap_application_date
+  # before_validation { parse_date("snap_application_date") if self["snap_application_date"].present? }
+  # before_validation { parse_date("date_of_birth") if self["date_of_birth"].present? }
+
   validates :client_agency_id, presence: true
+
+  # validate that the date_of_birth is in the past
+  validates :date_of_birth, comparison: {
+    less_than_or_equal_to: Date.current,
+     message: :future_date
+  }, if: -> { is_applicant_attribute_required?(:date_of_birth) && date_of_birth.present? }
+
+  # validate that the date_of_birth is not more than 110 years ago
+  validates :date_of_birth, comparison: {
+    greater_than_or_equal_to: 110.years.ago.to_date,
+    message: :invalid_date
+  }, if: -> { is_applicant_attribute_required?(:date_of_birth) && date_of_birth.present? }
+
+  validates :snap_application_date, presence: {
+    message: :invalid_date
+  }
 
   include Redactable
   has_redactable_fields(
@@ -44,13 +62,26 @@ class CbvApplicant < ApplicationRecord
     case_number: :string,
     agency_id_number: :string,
     beacon_id: :string,
-    snap_application_date: :date
+    snap_application_date: :date,
+    date_of_birth: :date
   )
+
+  def date_of_birth=(value)
+    self[:date_of_birth] = parse_date(value)
+  end
+
+  def snap_application_date=(value)
+    self[:snap_application_date] = parse_date(value)
+  end
 
   def has_applicant_attribute_missing?
     @required_applicant_attributes.any? do |attr|
       self[attr].nil?
     end
+  end
+
+  def validate_base_and_applicant_attributes?
+    valid? && validate_required_applicant_attributes.empty?
   end
 
   def validate_required_applicant_attributes
@@ -63,6 +94,8 @@ class CbvApplicant < ApplicationRecord
         errors.add(attr, I18n.t("cbv.applicant_informations.#{client_agency_id}.fields.#{attr}.blank"))
       end
     end
+
+    missing_attrs
   end
 
   def paystubs_query_begins_at
@@ -73,27 +106,30 @@ class CbvApplicant < ApplicationRecord
     self.snap_application_date ||= Date.current
   end
 
-  def parse_snap_application_date
-    raw_snap_application_date = @attributes["snap_application_date"]&.value_before_type_cast
-    return if raw_snap_application_date.is_a?(Date)
+  def set_applicant_attributes
+    @applicant_attributes = Rails.application.config.client_agencies[client_agency_id]&.applicant_attributes&.compact&.keys&.map(&:to_sym) || []
+    @required_applicant_attributes = get_required_applicant_attributes
+  end
 
-    if raw_snap_application_date.is_a?(ActiveSupport::TimeWithZone) || raw_snap_application_date.is_a?(Time)
-      self.snap_application_date = raw_snap_application_date.to_date
-      # handle ISO 8601 date format, e.g. "2021-01-01" which is Ruby's default when querying a date field
-    elsif raw_snap_application_date.is_a?(String) && raw_snap_application_date.match?(/^\d{4}-\d{2}-\d{2}$/)
-      self.snap_application_date = Date.parse(raw_snap_application_date)
-    else
+  def is_applicant_attribute_required?(attribute)
+    get_required_applicant_attributes
+    .include?(attribute)
+  end
+
+  private
+  def parse_date(value)
+    return value if value.is_a?(Date)
+
+    if value.is_a?(String) && value.present?
       begin
-        new_date_format = Date.strptime(raw_snap_application_date.to_s, "%m/%d/%Y")
-        self.snap_application_date = new_date_format
-      rescue Date::Error
-        errors.add(:snap_application_date, :invalid_date)
+        Date.strptime(value, "%m/%d/%Y")
+      rescue ArgumentError
+        nil
       end
     end
   end
 
-  def set_applicant_attributes
-    @applicant_attributes = Rails.application.config.client_agencies[client_agency_id]&.applicant_attributes&.compact&.keys&.map(&:to_sym) || []
-    @required_applicant_attributes = Rails.application.config.client_agencies[client_agency_id]&.applicant_attributes&.select { |key, attributes| attributes["required"] }&.keys&.map(&:to_sym) || []
+  def get_required_applicant_attributes
+    Rails.application.config.client_agencies[client_agency_id]&.applicant_attributes&.select { |key, attributes| attributes["required"] }&.keys&.map(&:to_sym) || []
   end
 end

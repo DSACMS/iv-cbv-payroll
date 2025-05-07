@@ -81,7 +81,13 @@
       <% if @cbv_flow.cbv_applicant[item].present? %>
         <tr>
           <td><%= t("cbv.applicant_informations.#{@cbv_flow.client_agency_id}.fields.#{item}.prompt") %></td>
-          <td><%= @cbv_flow.cbv_applicant[item] %></td>
+          <td>
+            <% if item == :date_of_birth %>
+              <%= format_date(@cbv_flow.cbv_applicant[item]) %>
+            <% else %>
+              <%= @cbv_flow.cbv_applicant[item] %>
+            <% end %>
+          </td>
         </tr>
       <% end %>
     <% end %>

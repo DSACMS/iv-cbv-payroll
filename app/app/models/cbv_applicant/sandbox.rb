@@ -3,5 +3,7 @@ class CbvApplicant::Sandbox < CbvApplicant
     first_name
     middle_name
     last_name
+    case_number
+    date_of_birth
   ]
 end

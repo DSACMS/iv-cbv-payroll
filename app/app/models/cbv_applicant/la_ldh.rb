@@ -5,5 +5,6 @@ class CbvApplicant::LaLdh < CbvApplicant
     middle_name
     last_name
     case_number
+    date_of_birth
   ]
 end
