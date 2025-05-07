@@ -246,7 +246,7 @@ en:
         criteria_disclaimer: 'Note: If you''ve had other jobs in the past %{pay_income_days} days that don''t meet these criteria, you may need to submit that income information separately.'
         header: Do you have another job to report?
         learn_more_link_html:
-          la_ldh: Learn more on <a href="%{agency_url}" target="_blank" rel="noopener noreferrer">LDH's website</a>.
+          la_ldh: Learn more on <a href="%{agency_url} target="_blank"" target="_blank" rel="noopener noreferrer">LDH's website</a>.
           sandbox: Learn more on <a href="https://www.mass.gov/guides/how-to-contact-dta" target="_blank" rel="noopener noreferrer">CBV Test Agency's website</a>.
         no_radio: No, I don’t have another job that meets the criteria
         subheader: Please add other jobs you’ve had in the past %{pay_income_days} days, even if you're no longer at that job.
@@ -309,8 +309,8 @@ en:
         to_continue: 'If you still don’t see your employer or payroll provider listed:'
         to_continue_li_1: You’ll need to submit that income information separately.
         to_continue_li_1_html:
-          la_ldh: <a href="%{agency_url}">Go to LDH's website</a> to learn about other ways to report your income.
-          sandbox: <a href="https://example.com/contact">Go to CBV's website</a> to learn about other ways to report your income.
+          la_ldh: <a href="%{agency_url}" target="_blank">Go to LDH's website</a> to learn about other ways to report your income.
+          sandbox: <a href="https://example.com/contact" target="_blank">Go to CBV's website</a> to learn about other ways to report your income.
         to_continue_li_2: If you have other jobs to add, search for them.
         to_continue_li_3: If you have no other jobs to add here, you can exit this site.
         to_continue_li_3_continue: If you have no other jobs to add here, continue to review your income report.
@@ -331,8 +331,8 @@ en:
         subheader_html: 'We’ll send your payment records from your employer(s) to %{agency_acronym} to verify your income. <strong>Most people complete this process in about 5 minutes.</strong> Just follow these steps:'
         what_if_i_cant_use_this_body_1: If you need to report your income and can’t use this tool, then you’ll need to share your income information for this job directly with %{agency_short_name}.
         what_if_i_cant_use_this_body_2_html:
-          default: Visit <a href="https://example.com/contact">CBV's website</a> for more information on how to submit documents.
-          la_ldh: 'You can: <ul><li>Upload documents through the Self Service Portal online at <a href="%{agency_url}">%{agency_url}</a></li><li>Send documents through US Mail: Louisiana Medicaid/LaCHIP, P.O. Box 91283, Baton Rouge, LA 70821-9278</li><li>Email documents: <a href="mailto:MyMedicaid@la.gov">MyMedicaid@la.gov</a></li><li>Bring your documents to the Medicaid office of choice.</li></ul>'
+          default: Visit <a href="https://example.com/contact" target="_blank">CBV's website</a> for more information on how to submit documents.
+          la_ldh: 'You can: <ul><li>Upload documents through the Self Service Portal online at <a href="%{agency_url}" target="_blank">%{agency_url}</a></li><li>Send documents through US Mail: Louisiana Medicaid/LaCHIP, P.O. Box 91283, Baton Rouge, LA 70821-9278</li><li>Email documents: <a href="mailto:MyMedicaid@la.gov">MyMedicaid@la.gov</a></li><li>Bring your documents to the Medicaid office of choice.</li></ul>'
         what_if_i_cant_use_this_title: What if I can't use this tool?
         who_is_this_for_body: You can use this tool if you have earned income in the last 90 days (even if you’re no longer working), and you can access your paystubs online or work for an app-based company like Uber, Lyft or Amazon Flex.
         who_is_this_for_title: Who is this tool for?
@@ -344,8 +344,8 @@ en:
       show:
         body_1: If you still need to verify your income, please submit your income information by visiting %{agency_short_name}'s website.
         cta_button_html:
-          la_ldh: <a href="%{agency_url}" class="usa-button">Visit LDH's website</a>
-          sandbox: <a href="https://www.mass.gov/guides/how-to-contact-dta" class="usa-button">Learn more at CBV Test Agency</a>
+          la_ldh: <a href="%{agency_url}" class="usa-button" target="_blank">Visit LDH's website</a>
+          sandbox: <a href="https://www.mass.gov/guides/how-to-contact-dta" class="usa-button" target="_blank">Learn more at CBV Test Agency</a>
         title: Your invitation to verify income has expired
     missing_results:
       show:
@@ -353,16 +353,16 @@ en:
         continue_button: Continue to review my report
         continue_to_review: Continue to review the income information you were able to find before you submit it to %{agency_acronym}.
         exit_button_html:
-          la_ldh: <a href="%{agency_url}" class="usa-button">Exit and go to Louisiana Department of Health</a>
-          sandbox: <a href="https://www.mass.gov/guides/how-to-contact-dta" class="usa-button">Exit and go to CBV Test Agency</a>
+          la_ldh: <a href="%{agency_url}" class="usa-button" target="_blank">Exit and go to Louisiana Department of Health</a>
+          sandbox: <a href="https://www.mass.gov/guides/how-to-contact-dta" class="usa-button" target="_blank">Exit and go to CBV Test Agency</a>
         header: How to report income if your employer or payroll provider isn’t listed
         more_jobs: If you have more jobs to report
         no_more_jobs: If you don't have more jobs to report
         not_listed_p1: If your employer or payroll provider isn’t listed on this site, you’ll need to share your income information for this job directly with %{agency_acronym}.
         not_listed_p2: Visit %{agency_short_name}'s website for more information on how to submit documents.
         not_listed_p2_link_html:
-          la_ldh: Visit <a href="%{agency_url}">%{agency_short_name}'s website</a> for more information on how to submit documents.
-          sandbox: Visit <a href="https://www.mass.gov/guides/how-to-contact-dta">%{agency_short_name}'s website</a> for more information on how to submit documents.
+          la_ldh: Visit <a href="%{agency_url}" target="_blank">%{agency_short_name}'s website</a> for more information on how to submit documents.
+          sandbox: Visit <a href="https://www.mass.gov/guides/how-to-contact-dta" target="_blank">%{agency_short_name}'s website</a> for more information on how to submit documents.
         you_can_search: You can search for another employer or payroll provider. This site supports employers with online payroll providers or app-based services. Examples include Amazon, Walmart, McDonald’s, Uber, DoorDash, Lyft, and Instacart.
     payment_details:
       show:
