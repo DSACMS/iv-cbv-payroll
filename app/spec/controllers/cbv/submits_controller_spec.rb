@@ -58,90 +58,90 @@ RSpec.describe Cbv::SubmitsController do
       end
 
       context "when rendering views" do
-      render_views
+        render_views
 
-      it "renders properly" do
-        get :show
-        expect(controller.send(:has_consent)).to be_falsey
-        expect(response.body).to include("Legal agreement")
-        expect(response).to be_successful
-      end
-
-      it "renders pdf properly" do
-        get :show, format: :pdf
-        expect(response).to be_successful
-        expect(response.header['Content-Type']).to include 'pdf'
-      end
-
-      context "when only paystubs are supported" do
-        let(:supported_jobs) { %w[paystubs] }
+        it "renders properly" do
+          get :show
+          expect(controller.send(:has_consent)).to be_falsey
+          expect(response.body).to include("Legal agreement")
+          expect(response).to be_successful
+        end
 
         it "renders pdf properly" do
           get :show, format: :pdf
           expect(response).to be_successful
           expect(response.header['Content-Type']).to include 'pdf'
         end
-      end
 
-      context "when a supported job errors" do
-        let(:supported_jobs) { %w[income paystubs employment] }
-        let(:errored_jobs) { [ "employment" ] }
+        context "when only paystubs are supported" do
+          let(:supported_jobs) { %w[paystubs] }
 
-        it "renders pdf properly" do
-          get :show, format: :pdf
-          expect(response).to be_successful
-          expect(response.header['Content-Type']).to include 'pdf'
+          it "renders pdf properly" do
+            get :show, format: :pdf
+            expect(response).to be_successful
+            expect(response.header['Content-Type']).to include 'pdf'
+          end
+        end
+
+        context "when a supported job errors" do
+          let(:supported_jobs) { %w[income paystubs employment] }
+          let(:errored_jobs) { [ "employment" ] }
+
+          it "renders pdf properly" do
+            get :show, format: :pdf
+            expect(response).to be_successful
+            expect(response.header['Content-Type']).to include 'pdf'
+          end
+        end
+
+        context "when multiple accounts, one errored one good" do
+          let(:supported_jobs) { %w[income paystubs employment] }
+          let(:errored_jobs) { [ "employment" ] }
+
+          it "renders a pdf" do
+            create(:payroll_account, :pinwheel_fully_synced, cbv_flow: cbv_flow, pinwheel_account_id: "account1")
+            expect(response).to be_successful
+          end
+        end
+
+        context "when rendering for a caseworker" do
+          it "shows the right client information fields" do
+            get :show, format: :pdf, params: {
+                is_caseworker: "true"
+              }
+
+            pdf = PDF::Reader.new(StringIO.new(response.body))
+            pdf_text = ""
+            pdf.pages.each do |page|
+              pdf_text += page.text
+            end
+
+            expect(pdf_text).to include(I18n.t("cbv.applicant_informations.sandbox.fields.first_name.prompt"))
+            expect(pdf_text).to include(I18n.t("cbv.applicant_informations.sandbox.fields.middle_name.prompt"))
+            expect(pdf_text).to include(I18n.t("cbv.applicant_informations.sandbox.fields.last_name.prompt"))
+            expect(pdf_text).to include(I18n.t("cbv.applicant_informations.sandbox.fields.case_number.prompt"))
+            expect(pdf_text).to include(I18n.t("cbv.submits.show.pdf.caseworker.ssn"))
+          end
+        end
+
+        context "when rendering for a client" do
+          it "does not show the client information fields" do
+            get :show, format: :pdf
+
+            pdf = PDF::Reader.new(StringIO.new(response.body))
+            pdf_text = ""
+            pdf.pages.each do |page|
+              pdf_text += page.text
+            end
+
+            expect(pdf_text).not_to include(I18n.t("cbv.applicant_informations.sandbox.fields.first_name.prompt"))
+            expect(pdf_text).not_to include(I18n.t("cbv.applicant_informations.sandbox.fields.middle_name.prompt"))
+            expect(pdf_text).not_to include(I18n.t("cbv.applicant_informations.sandbox.fields.last_name.prompt"))
+            expect(pdf_text).not_to include(I18n.t("cbv.applicant_informations.sandbox.fields.case_number.prompt"))
+            expect(pdf_text).not_to include(I18n.t("cbv.submits.show.pdf.caseworker.ssn"))
+          end
         end
       end
-
-      context "when multiple accounts, one errored one good" do
-        let(:supported_jobs) { %w[income paystubs employment] }
-        let(:errored_jobs) { [ "employment" ] }
-
-        it "renders a pdf" do
-          create(:payroll_account, :pinwheel_fully_synced, cbv_flow: cbv_flow, pinwheel_account_id: "account1")
-          expect(response).to be_successful
-        end
-      end
-
-      context "when rendering for a caseworker" do
-      it "shows the right client information fields" do
-      get :show, format: :pdf, params: {
-          is_caseworker: "true"
-        }
-
-      pdf = PDF::Reader.new(StringIO.new(response.body))
-      pdf_text = ""
-      pdf.pages.each do |page|
-        pdf_text += page.text
-      end
-
-      expect(pdf_text).to include(I18n.t("cbv.applicant_informations.sandbox.fields.first_name.prompt"))
-      expect(pdf_text).to include(I18n.t("cbv.applicant_informations.sandbox.fields.middle_name.prompt"))
-      expect(pdf_text).to include(I18n.t("cbv.applicant_informations.sandbox.fields.last_name.prompt"))
-      expect(pdf_text).to include(I18n.t("cbv.applicant_informations.sandbox.fields.case_number.prompt"))
-      expect(pdf_text).to include(I18n.t("cbv.submits.show.pdf.caseworker.ssn"))
-    end
-    end
-
-      context "when rendering for a client" do
-      it "does not show the client information fields" do
-      get :show, format: :pdf
-
-      pdf = PDF::Reader.new(StringIO.new(response.body))
-      pdf_text = ""
-      pdf.pages.each do |page|
-        pdf_text += page.text
-      end
-
-      expect(pdf_text).not_to include(I18n.t("cbv.applicant_informations.sandbox.fields.first_name.prompt"))
-      expect(pdf_text).not_to include(I18n.t("cbv.applicant_informations.sandbox.fields.middle_name.prompt"))
-      expect(pdf_text).not_to include(I18n.t("cbv.applicant_informations.sandbox.fields.last_name.prompt"))
-      expect(pdf_text).not_to include(I18n.t("cbv.applicant_informations.sandbox.fields.case_number.prompt"))
-      expect(pdf_text).not_to include(I18n.t("cbv.submits.show.pdf.caseworker.ssn"))
-    end
-    end
-    end
 
       context "when legal agreement checked" do
         before do
