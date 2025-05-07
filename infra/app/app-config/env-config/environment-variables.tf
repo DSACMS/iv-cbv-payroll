@@ -7,6 +7,9 @@ locals {
     RAILS_LOG_TO_STDOUT      = "true"
     RAILS_SERVE_STATIC_FILES = "true"
 
+    # Configure the number of threads for puma, database connection, and queue jobs
+    RAILS_MAX_THREADS = "5"
+
     # Set to true to inform the app that it is running in a container
     DOCKERIZED = "true"
     # LOG_LEVEL               = "info"
