@@ -119,6 +119,8 @@
   applicant_attributes:
     case_number:
       required: false
+    date_of_birth:
+      required: true
 
 - id: sandbox
   agency_name: CBV Test Agency
@@ -153,4 +155,6 @@
     last_name:
       required: true
     case_number:
+      required: true
+    date_of_birth:
       required: true
