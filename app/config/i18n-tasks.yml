@@ -242,6 +242,7 @@ ignore_missing:
 
     # LA fixes (FFS-2688)
     - "cbv.applicant_informations.show.explanation"
+    - "cbv.employer_searches.show.exit_button_text"
 ## Consider these keys used:
 ignore_unused:
   all:
