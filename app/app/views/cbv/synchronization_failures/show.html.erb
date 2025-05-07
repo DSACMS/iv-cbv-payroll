@@ -23,7 +23,7 @@
     <% if @cbv_flow.has_account_with_required_data? %>
       <%= link_to t(".continue_to_report"), cbv_flow_summary_path, class: "usa-button" %>
     <% else %>
-      <%= agency_translation("cbv.expired_invitations.show.cta_button_html") %>
+      <%= agency_translation("cbv.expired_invitations.show.cta_button_html", agency_url: agency_url) %>
     <% end %>
   </li>
 </ul>

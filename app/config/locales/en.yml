@@ -255,7 +255,7 @@ en:
         criteria_disclaimer: 'Note: If you''ve had other jobs in the past %{pay_income_days} days that don''t meet these criteria, you may need to submit that income information separately.'
         header: Do you have another job to report?
         learn_more_link_html:
-          la_ldh: Learn more on <a href="http://MyMedicaid.LA.GOV" target="_blank" rel="noopener noreferrer">LDH's website</a>.
+          la_ldh: Learn more on <a href="%{agency_url} target="_blank" rel="noopener noreferrer">LDH's website</a>.
           sandbox: Learn more on <a href="https://www.mass.gov/guides/how-to-contact-dta" target="_blank" rel="noopener noreferrer">CBV Test Agency's website</a>.
         no_radio: No, I don’t have another job that meets the criteria
         subheader: Please add other jobs you’ve had in the past %{pay_income_days} days, even if you're no longer at that job.
@@ -298,7 +298,7 @@ en:
             super_one_html: Middle name<sup>1</sup>
       show:
         continue: Continue
-        explanation: This information will be used to connect your income information to your %{agency_short_name} application. Please make sure the information you enter is the same as what is shown on your application.
+        explanation: This information will be used to connect your income information to your %{agency_short_name} benefits. Please make sure the information you enter is the same as what is shown on your application.
         your_information: Your information
       update:
         error_header:
@@ -310,8 +310,8 @@ en:
         app_based_providers: App-based employers
         can_not_find_employer: I can’t find my employer or payroll provider
         employer_not_listed: Employer not listed?
-        exit_button_text: Exit and go to %{agency_short_name}
-        header: Search and log in to your employer or online payroll provider.
+        exit_button_text: Exit and go to %{agency_short_name}'s website
+        header: Search for your employer or payroll provider
         no_results_steps1: Check if your employer uses another business name or search for their payroll provider.
         no_results_steps2: Make sure you have spelled names correctly, then search again.
         no_results_steps3: Choose from popular payroll providers or apps.
@@ -322,15 +322,14 @@ en:
         results: Results
         review_button_text: Continue
         search: Search
-        search_label_2: This is to verify your income using a secure verification service. Your login credentials will never be stored or shared by us.
-        search_label_html: "<strong>You will need to enter your payroll provider login credentials for this step.</strong>"
+        search_label: 'Enter the name of your current or recent employer or payroll provider:'
         select: Select
         select_button_aria_label: Open an authentication modal for the employer or payroll provider to import your payment history.
         to_continue: 'If you still don’t see your employer or payroll provider listed:'
         to_continue_li_1: You’ll need to submit that income information separately.
         to_continue_li_1_html:
-          la_ldh: <a href="http://mymedicaid.la.gov/">Go to LDH's website</a> to learn about other ways to report your income.
-          sandbox: <a href="https://example.com/contact">Go to CBV's website</a> to learn about other ways to report your income.
+          la_ldh: <a href="%{agency_url}" target="_blank" rel="noopener noreferrer">Go to LDH's website</a> to learn about other ways to report your income.
+          sandbox: <a href="https://example.com/contact" target="_blank" rel="noopener noreferrer">Go to CBV's website</a> to learn about other ways to report your income.
         to_continue_li_2: If you have other jobs to add, search for them.
         to_continue_li_3: If you have no other jobs to add here, you can exit this site.
         to_continue_li_3_continue: If you have no other jobs to add here, continue to review your income report.
@@ -351,8 +350,8 @@ en:
         subheader_html: 'We’ll send your payment records from your employer(s) to %{agency_acronym} to verify your income. <strong>Most people complete this process in about 5 minutes.</strong> Just follow these steps:'
         what_if_i_cant_use_this_body_1: If you need to report your income and can’t use this tool, then you’ll need to share your income information for this job directly with %{agency_short_name}.
         what_if_i_cant_use_this_body_2_html:
-          default: Visit <a href="https://example.com/contact">CBV's website</a> for more information on how to submit documents.
-          la_ldh: 'You can: <ul><li>Upload documents through the Self Service Portal online at <a href="https://MyMedicaid.LA.GOV">MyMedicaid.LA.GOV</a></li><li>Send documents through US Mail: Louisiana Medicaid/LaCHIP, P.O. Box 91283, Baton Rouge, LA 70821-9278</li><li>Email documents: <a href="mailto:MyMedicaid@la.gov">MyMedicaid@la.gov</a></li><li>Bring your documents to the Medicaid office of choice.</li></ul>'
+          default: Visit <a href="https://example.com/contact" target="_blank" rel="noopener noreferrer">CBV's website</a> for more information on how to submit documents.
+          la_ldh: 'You can: <ul><li>Upload documents through the Self Service Portal online at <a href="%{agency_url}" target="_blank" rel="noopener noreferrer">%{agency_url}</a></li><li>Send documents through US Mail: Louisiana Medicaid/LaCHIP, P.O. Box 91283, Baton Rouge, LA 70821-9278</li><li>Email documents: <a href="mailto:MyMedicaid@la.gov">MyMedicaid@la.gov</a></li><li>Bring your documents to the Medicaid office of choice.</li></ul>'
         what_if_i_cant_use_this_title: What if I can't use this tool?
         who_is_this_for_body: You can use this tool if you have earned income in the last 90 days (even if you’re no longer working), and you can access your paystubs online or work for an app-based company like Uber, Lyft or Amazon Flex.
         who_is_this_for_title: Who is this tool for?
@@ -364,8 +363,8 @@ en:
       show:
         body_1: If you still need to verify your income, please submit your income information by visiting %{agency_short_name}'s website.
         cta_button_html:
-          la_ldh: <a href="http://mymedicaid.la.gov/" class="usa-button">Visit LDH's website</a>
-          sandbox: <a href="https://www.mass.gov/guides/how-to-contact-dta" class="usa-button">Learn more at CBV Test Agency</a>
+          la_ldh: <a href="%{agency_url}" class="usa-button" target="_blank" rel="noopener noreferrer">Visit LDH's website</a>
+          sandbox: <a href="https://www.mass.gov/guides/how-to-contact-dta" class="usa-button" target="_blank" rel="noopener noreferrer">Learn more at CBV Test Agency</a>
         title: Your invitation to verify income has expired
     missing_results:
       show:
@@ -373,16 +372,16 @@ en:
         continue_button: Continue to review my report
         continue_to_review: Continue to review the income information you were able to find before you submit it to %{agency_acronym}.
         exit_button_html:
-          la_ldh: <a href="http://mymedicaid.la.gov/" class="usa-button">Exit and go to Louisiana Department of Health</a>
-          sandbox: <a href="https://www.mass.gov/guides/how-to-contact-dta" class="usa-button">Exit and go to CBV Test Agency</a>
+          la_ldh: <a href="%{agency_url}" class="usa-button" target="_blank" rel="noopener noreferrer">Exit and go to Louisiana Department of Health</a>
+          sandbox: <a href="https://www.mass.gov/guides/how-to-contact-dta" class="usa-button" target="_blank" rel="noopener noreferrer">Exit and go to CBV Test Agency</a>
         header: How to report income if your employer or payroll provider isn’t listed
         more_jobs: If you have more jobs to report
         no_more_jobs: If you don't have more jobs to report
         not_listed_p1: If your employer or payroll provider isn’t listed on this site, you’ll need to share your income information for this job directly with %{agency_acronym}.
         not_listed_p2: Visit %{agency_short_name}'s website for more information on how to submit documents.
         not_listed_p2_link_html:
-          la_ldh: Visit <a href="http://mymedicaid.la.gov/">%{agency_short_name}'s website</a> for more information on how to submit documents.
-          sandbox: Visit <a href="https://www.mass.gov/guides/how-to-contact-dta">%{agency_short_name}'s website</a> for more information on how to submit documents.
+          la_ldh: Visit <a href="%{agency_url}" target="_blank" rel="noopener noreferrer">%{agency_short_name}'s website</a> for more information on how to submit documents.
+          sandbox: Visit <a href="https://www.mass.gov/guides/how-to-contact-dta" target="_blank" rel="noopener noreferrer">%{agency_short_name}'s website</a> for more information on how to submit documents.
         you_can_search: You can search for another employer or payroll provider. This site supports employers with online payroll providers or app-based services. Examples include Amazon, Walmart, McDonald’s, Uber, DoorDash, Lyft, and Instacart.
     payment_details:
       show:
@@ -415,7 +414,7 @@ en:
         payment_hours: "%{amount} hours"
         payments_and_deductions_table_header: Payments and deductions
         subheader:
-          la_ldh: We have gathered your income records from the past 90 days, from %{start_date} to %{end_date}. If the information is missing or inaccurate, add a comment for %{agency_acronym}. This will be included in your income report and linked to your Medicaid application.
+          la_ldh: We have gathered your income records from the past 90 days, from %{start_date} to %{end_date}. If the information is missing or inaccurate, add a comment for %{agency_acronym}. This will be included in your income report and linked to your Medicaid benefits.
           sandbox: We have gathered your income records from the past 90 days, from %{start_date} to %{end_date}. If the information is missing or inaccurate, add a comment for %{agency_acronym}. This will be included in your income report and linked to your SNAP application.
         total_gross_description: This is the total gross income from your job before taxes, benefits and deductions were taken out of your paycheck.
         total_gross_income: 'Total income from the past 90 days, before taxes: %{amount}'
@@ -466,7 +465,7 @@ en:
             report_details: Report details
         share_report_button: Share my report with %{agency_acronym}
         table_caption_no_name: Employer %{number}
-        warning_1: Your income report will be attached to your Medicaid application.
+        warning_1: Your income report will be attached to your Medicaid benefits.
         warning_2: You must check the legal agreement box to share your report.
       update:
         consent_to_authorize_warning: Please check the legal agreement box to share your report.
@@ -476,7 +475,7 @@ en:
         caseworker_received: We have delivered your payment information to %{agency_acronym}. They will contact you if any additional information is needed.
         confirmation_code_html: "<strong>Confirmation code</strong>: %{confirmation_code}"
         download: Download a copy of the report
-        follow_up: To check the status of your Medicaid application you can visit %{agency_acronym}'s website.
+        follow_up: To check the status of your Medicaid benefits you can visit %{agency_acronym}'s website.
         header: Your income report has been successfully shared with %{agency_acronym}
         if_it_didnt_work: If you weren't able to find an employer, or one of your employers doesn't have an online payroll provider, please provide this information directly to %{agency_acronym}.
     summaries:
@@ -539,7 +538,7 @@ en:
         intro: 'Try the following steps:'
         step1:
           content:
-          - Your company ID is often in your onboarding documents, welcome email, or payroll setup info.
+          - Your company ID is often in your onboarding documents, welcome email, or payroll setup information.
           - Search your email for keywords like "payroll," "[Payroll Provider Name]," or "company ID."
           title: Check your welcome materials
         step2:

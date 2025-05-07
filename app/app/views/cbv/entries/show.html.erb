@@ -28,7 +28,7 @@
 
 <div class="divider margin-top-5"></div>
 
-<div class="usa-accordion usa-accordion--bordered margin-top-5">
+<div class="usa-accordion usa-accordion--bordered usa-accordion--multiselectable margin-top-5" data-allow-multiple>
   <h4 class="usa-accordion__heading usa-prose">
     <button
       type="button"
@@ -55,7 +55,7 @@
   <div id="what_if_i_cant_use_this_accordion" class="usa-accordion__content usa-prose">
     <p>
       <%= t(".what_if_i_cant_use_this_body_1", agency_short_name: current_agency.agency_short_name) %>
-      <%= agency_translation(".what_if_i_cant_use_this_body_2_html") %>
+      <%= agency_translation(".what_if_i_cant_use_this_body_2_html", agency_url: "https://mymedicaid.la.gov/") %>
     </p>
   </div>
 </div>

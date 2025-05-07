@@ -234,7 +234,7 @@ ignore_missing:
     - "cbv.employer_searches.show.header"
     - "cbv.employer_searches.show.search_label_2"
     - "cbv.employer_searches.show.search_label_html"
-    
+
     # LA entry (FFS-2688)
     - "cbv.entries.show.checkbox.default"
     - "cbv.entries.show.subheader_html"
@@ -244,11 +244,15 @@ ignore_missing:
     - "cbv.entries.show.what_if_i_cant_use_this_title"
     - "cbv.entries.show.who_is_this_for_body"
     - "cbv.entries.show.who_is_this_for_title"
-    
+
     # LA summary (FFS-2688)
     - "cbv.summaries.show.application_information"
     - "cbv.summaries.show.total_income_from"
     - "cbv.summaries.show.total_payments_desc"
+
+    # LA fixes (FFS-2688)
+    - "cbv.applicant_informations.show.explanation"
+    - "cbv.employer_searches.show.exit_button_text"
 ## Consider these keys used:
 ignore_unused:
   all:

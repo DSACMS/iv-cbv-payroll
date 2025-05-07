@@ -92,7 +92,7 @@
 - id: la_ldh
   agency_name: Department of Health
   agency_short_name: LDH
-  agency_contact_website: https://ldh.la.gov/contact-us
+  agency_contact_website: https://ldh.la.gov/renew-medicaid
   # caseworker_feedback_form: n/a
   logo_path: ldh_logo.svg
   agency_demo_domain: la-verify-demo.navapbc.cloud
