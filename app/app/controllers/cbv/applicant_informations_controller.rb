@@ -9,35 +9,28 @@ class Cbv::ApplicantInformationsController < Cbv::BaseController
   def update
     @cbv_applicant.assign_attributes(applicant_params[:cbv_applicant])
 
-    if @cbv_applicant.validate_base_and_applicant_attributes?
-      begin
-        @cbv_applicant.save
-        return redirect_to next_path
-      rescue => e
-        Rails.logger.error("Error updating applicant: #{e.message}")
-        flash[:alert] = t(".error_updating_applicant")
-        return redirect_to cbv_flow_applicant_information_path
-      end
+    if  @cbv_applicant.validate_base_and_applicant_attributes? && @cbv_applicant.save
+      return redirect_to next_path
     end
 
-    error_count = @cbv_applicant.errors.size
-    if error_count > 0
-      error_header = t(".error_header", count: error_count)
+    error_header = t(".error_header", count: @cbv_applicant.errors.count)
 
-      # Use @cbv_applicant.errors directly since we added all errors back to it
-      error_messages = @cbv_applicant.errors.map { |error| "<li>#{error.message}</li>" }.join
-      error_messages = "<ul>#{error_messages}</ul>"
+    # Use @cbv_applicant.errors directly since we added all errors back to it
+    error_messages = @cbv_applicant.errors.map { |error| "<li>#{error.message}</li>" }.join
+    error_messages = "<ul>#{error_messages}</ul>"
 
-      flash.now[:alert_heading] = error_header
-      flash.now[:alert] = error_messages.html_safe
+    flash.now[:alert_heading] = error_header
+    flash.now[:alert] = error_messages.html_safe
 
-      track_applicant_information_error_event(error_messages.html_safe)
+    track_applicant_information_error_event(error_messages.html_safe)
 
-      render :show, status: :unprocessable_entity
-    else
-      flash[:alert] = t(".error_updating_applicant")
-      redirect_to cbv_flow_applicant_information_path
-    end
+    render :show, status: :unprocessable_entity
+
+    # note: if we TRULY want that rescue behavior, keep it here. i still think this was a legacy of the save! hack, but it can go here
+  rescue Exception => e
+    Rails.logger.error("Error updating applicant: #{e.message}")
+    flash[:alert] = t(".error_updating_applicant")
+    redirect_to cbv_flow_applicant_information_path
   end
 
   def redirect_when_info_present

@@ -270,7 +270,7 @@ en:
             super_one_html: Medicaid case number<sup>1</sup>
           date_of_birth:
             blank: Enter your date of birth.
-            help_text: 'Format: mm/dd/yyyy'
+            help_text: Use the format mm/dd/yyyy
             prompt: Your date of birth
             super_one_html: Date of birth<sup>1</sup>
       sandbox:
@@ -281,7 +281,7 @@ en:
             super_one_html: Case number<sup>1</sup>
           date_of_birth:
             blank: Enter your date of birth.
-            help_text: 'Format: mm/dd/yyyy'
+            help_text: Use the format mm/dd/yyyy
             prompt: Date of birth
             super_one_html: Date of birth<sup>1</sup>
           first_name:
