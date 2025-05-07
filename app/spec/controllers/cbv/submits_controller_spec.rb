@@ -329,40 +329,19 @@ RSpec.describe Cbv::SubmitsController do
       allow(Aggregators::AggregatorReports::PinwheelReport).to receive(:new).and_return(pinwheel_report)
     end
 
-    describe "with activejob enabled" do
-      around do |example|
-        ClimateControl.modify ACTIVEJOB_ENABLED: 'true' do
-          example.run
-        end
-      end
-      context "without consent" do
-        it "redirects back with an alert" do
-          expect(CaseWorkerTransmitterJob).not_to receive(:perform_later)
-          patch :update
-          expect(response).to redirect_to(cbv_flow_submit_path)
-          expect(flash[:alert]).to be_present
-          expect(flash[:alert]).to eq("Please check the legal agreement box to share your report.")
-        end
-      end
-
-      context "with consent" do
-        it "queues a job and redirects to success screen" do
-          expect(CaseWorkerTransmitterJob).to receive(:perform_later).with(cbv_flow.id)
-          patch :update, params: { cbv_flow: { consent_to_authorized_use: "1" } }
-          expect(response).to redirect_to({ controller: :successes, action: :show })
-        end
+    context "without consent" do
+      it "redirects back with an alert" do
+        expect(CaseWorkerTransmitterJob).not_to receive(:perform_later)
+        patch :update
+        expect(response).to redirect_to(cbv_flow_submit_path)
+        expect(flash[:alert]).to be_present
+        expect(flash[:alert]).to eq("Please check the legal agreement box to share your report.")
       end
     end
 
-    describe "with activejob disabled" do
-      around do |example|
-        ClimateControl.modify ACTIVEJOB_ENABLED: nil do
-          example.run
-        end
-      end
-
-      it "runs the task immediately with consent" do
-        expect(CaseWorkerTransmitterJob).to receive(:perform_now)
+    context "with consent" do
+      it "queues a job and redirects to success screen" do
+        expect(CaseWorkerTransmitterJob).to receive(:perform_later).with(cbv_flow.id)
         patch :update, params: { cbv_flow: { consent_to_authorized_use: "1" } }
         expect(response).to redirect_to({ controller: :successes, action: :show })
       end

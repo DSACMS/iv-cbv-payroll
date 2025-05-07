@@ -26,7 +26,7 @@ RSpec.describe Webhooks::Pinwheel::EventsController do
   end
 
   describe "#create" do
-    let(:supported_jobs) { [ "paystubs", "identity", "income", "employment" ] }
+    let(:supported_jobs) { %w[paystubs identity income employment shifts] }
 
     before do
       pinwheel_stub_request_platform_response
@@ -44,15 +44,7 @@ RSpec.describe Webhooks::Pinwheel::EventsController do
       end
 
       it "creates a PinwheelAccount object and logs events" do
-        expect_any_instance_of(MixpanelEventTracker).to receive(:track)
-          .with("ApplicantCreatedPinwheelAccount", anything, hash_including(
-            cbv_flow_id: cbv_flow.id,
-            invitation_id: cbv_flow.cbv_flow_invitation_id,
-            platform_name: "acme"
-          ))
-
-        expect_any_instance_of(NewRelicEventTracker).to receive(:track)
-          .with("ApplicantCreatedPinwheelAccount", anything, hash_including(
+        expect(EventTrackingJob).to receive(:perform_later).with("ApplicantCreatedPinwheelAccount", anything, hash_including(
             cbv_flow_id: cbv_flow.id,
             invitation_id: cbv_flow.cbv_flow_invitation_id,
             platform_name: "acme"
@@ -125,10 +117,10 @@ RSpec.describe Webhooks::Pinwheel::EventsController do
           pinwheel_stub_request_shifts_response
 
           allow(controller).to receive(:event_logger).and_return(event_logger)
-          allow(event_logger).to receive(:track)
         end
 
         it "sends full report analytics when synced" do
+          expect(event_logger).to receive(:track).with("ApplicantReportMetUsefulRequirements", anything, anything)
           expect(event_logger).to receive(:track) do |event_name, _request, attributes|
             next unless event_name == "ApplicantFinishedPinwheelSync"
 
@@ -137,6 +129,7 @@ RSpec.describe Webhooks::Pinwheel::EventsController do
               cbv_applicant_id: cbv_flow.cbv_applicant_id,
               invitation_id: cbv_flow.cbv_flow_invitation_id,
               client_agency_id: "sandbox",
+              pinwheel_environment: "sandbox",
               sync_duration_seconds: within(1.second).of(5.minutes),
 
               # Identity fields
@@ -181,7 +174,18 @@ RSpec.describe Webhooks::Pinwheel::EventsController do
               employment_start_date: "2010-01-01",
               employment_termination_date: nil,
               employment_type_w2_count: 1,
-              employment_type_gig_count: 0
+              employment_type_gig_count: 0,
+
+              # Gigs fields
+              gigs_success: true,
+              gigs_supported: true,
+              gigs_count: 3,
+              gigs_pay_present_count: 3,
+              gigs_start_date_present_count: 3,
+              gigs_type_delivery_count: 0,
+              gigs_type_other_count: 0,
+              gigs_type_rideshare_count: 0,
+              gigs_type_shift_count: 3
             )
           end
 
@@ -189,7 +193,16 @@ RSpec.describe Webhooks::Pinwheel::EventsController do
         end
 
         it "sends a ApplicantReportMetUsefulRequirements event" do
-          expect(event_logger).to receive(:track).with("ApplicantReportMetUsefulRequirements", anything, anything)
+          expect(event_logger).to receive(:track).with("ApplicantFinishedPinwheelSync", anything, anything)
+          expect(event_logger).to receive(:track).with(
+            "ApplicantReportMetUsefulRequirements",
+            anything,
+            include(
+              cbv_flow_id: cbv_flow.id,
+              cbv_applicant_id: cbv_flow.cbv_applicant_id,
+              invitation_id: cbv_flow.cbv_flow_invitation_id,
+            )
+          )
 
           post :create, params: valid_params
         end
@@ -200,6 +213,7 @@ RSpec.describe Webhooks::Pinwheel::EventsController do
           end
 
           it "sends a ApplicantReportFailedUsefulRequirements event" do
+            expect(event_logger).to receive(:track).with("ApplicantFinishedPinwheelSync", anything, anything)
             expect(event_logger).to receive(:track).with("ApplicantReportFailedUsefulRequirements", anything, anything)
 
             post :create, params: valid_params

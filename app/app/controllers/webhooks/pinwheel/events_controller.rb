@@ -78,6 +78,7 @@ class Webhooks::Pinwheel::EventsController < ApplicationController
         cbv_flow_id: @cbv_flow.id,
         client_agency_id: @cbv_flow.client_agency_id,
         invitation_id: @cbv_flow.cbv_flow_invitation_id,
+        pinwheel_environment: agency_config[@cbv_flow.client_agency_id].pinwheel_environment,
         sync_duration_seconds: Time.now - @payroll_account.created_at,
 
         # #####################################################################
@@ -131,9 +132,18 @@ class Webhooks::Pinwheel::EventsController < ApplicationController
         employment_termination_date: report.employments.first&.termination_date,
         employment_type: report.employments.first&.employment_type&.to_s,
         employment_type_w2_count: report.employments.count { |e| e.employment_type == :w2 },
-        employment_type_gig_count: report.employments.count { |e| e.employment_type == :gig }
+        employment_type_gig_count: report.employments.count { |e| e.employment_type == :gig },
 
-        # TODO: Add fields from /shifts after FFS-2550.
+        # Shifts fields
+        gigs_success: @payroll_account.job_succeeded?("shifts"),
+        gigs_supported: @payroll_account.supported_jobs.include?("shifts"),
+        gigs_count: report.gigs.length,
+        gigs_pay_present_count: report.gigs.count { |g| g.compensation_amount.present? },
+        gigs_start_date_present_count: report.gigs.count { |g| g.start_date.present? },
+        gigs_type_delivery_count: report.gigs.count { |g| g.gig_type == "delivery" },
+        gigs_type_other_count: report.gigs.count { |g| g.gig_type == "other" },
+        gigs_type_rideshare_count: report.gigs.count { |g| g.gig_type == "rideshare" },
+        gigs_type_shift_count: report.gigs.count { |g| g.gig_type == "shift" }
       })
     end
   rescue => ex
@@ -145,11 +155,18 @@ class Webhooks::Pinwheel::EventsController < ApplicationController
   def validate_useful_report_requirements(report)
     report_is_valid = report.valid?(:useful_report)
     if report_is_valid
-      event_logger.track("ApplicantReportMetUsefulRequirements", request, {})
+      event_logger.track("ApplicantReportMetUsefulRequirements", request,
+        cbv_applicant_id: @cbv_flow.cbv_applicant_id,
+        cbv_flow_id: @cbv_flow.id,
+        invitation_id: @cbv_flow.cbv_flow_invitation_id
+      )
     else
-      event_logger.track("ApplicantReportFailedUsefulRequirements", request, {
+      event_logger.track("ApplicantReportFailedUsefulRequirements", request,
+        cbv_applicant_id: @cbv_flow.cbv_applicant_id,
+        cbv_flow_id: @cbv_flow.id,
+        invitation_id: @cbv_flow.cbv_flow_invitation_id,
         errors: report.errors.full_messages.join(", ")
-      })
+      )
     end
   rescue => ex
     raise ex unless Rails.env.production?

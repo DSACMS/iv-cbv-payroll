@@ -217,10 +217,43 @@ ignore_missing:
     - "cbv.submits.show.application_or_recertification_date.la_ldh"
     - "cbv.submits.show.none_found"
 
+    # LA payment_details (FFS-2688)
+    - "cbv.payment_details.show.number_of_hours_worked"
+    - "cbv.payment_details.show.pay_frequency"
+    - "cbv.payment_details.show.subheader.la_ldh"
+
+    # LA help (FFS-2688)
+    - "help.alert.heading"
+    - "help.alert.help_options"
+    - "help.show.credentials.step2.content"
+    - "help.show.credentials.step3.content"
+    - "help.show.employer.step1.title"
+    - "help.show.employer.step3.content"
+    - "help.show.provider.step3.content"
+
+    # LA employer_search (FFS-2688)
+    - "cbv.employer_searches.show.header"
+    - "cbv.employer_searches.show.search_label_2"
+    - "cbv.employer_searches.show.search_label_html"
+
+    # LA entry (FFS-2688)
+    - "cbv.entries.show.checkbox.default"
+    - "cbv.entries.show.subheader_html"
+    - "cbv.entries.show.what_if_i_cant_use_this_body_1"
+    - "cbv.entries.show.what_if_i_cant_use_this_body_2_html.default"
+    - "cbv.entries.show.what_if_i_cant_use_this_body_2_html.la_ldh"
+    - "cbv.entries.show.what_if_i_cant_use_this_title"
+    - "cbv.entries.show.who_is_this_for_body"
+    - "cbv.entries.show.who_is_this_for_title"
+
     # LA summary (FFS-2688)
     - "cbv.summaries.show.application_information"
     - "cbv.summaries.show.total_income_from"
     - "cbv.summaries.show.total_payments_desc"
+
+    # LA fixes (FFS-2688)
+    - "cbv.applicant_informations.show.explanation"
+    - "cbv.employer_searches.show.exit_button_text"
 ## Consider these keys used:
 ignore_unused:
   all:

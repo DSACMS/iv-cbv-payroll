@@ -9,16 +9,6 @@ RSpec.describe HelpController, type: :controller do
       }
     end
 
-    let(:mixpanel_event_stub) { instance_double(MixpanelEventTracker) }
-    let(:newrelic_event_stub) { instance_double(NewRelicEventTracker) }
-
-    before do
-      allow(MixpanelEventTracker).to receive(:new).and_return(mixpanel_event_stub)
-      allow(NewRelicEventTracker).to receive(:new).and_return(newrelic_event_stub)
-      allow(newrelic_event_stub).to receive(:track)
-      allow(mixpanel_event_stub).to receive(:track)
-    end
-
     context "with a valid CBV flow" do
       let(:cbv_flow) { create(:cbv_flow, :invited) }
 
@@ -27,30 +17,10 @@ RSpec.describe HelpController, type: :controller do
         valid_params[:client_agency_id] = cbv_flow.client_agency_id
       end
 
-      it "tracks events with both trackers" do
-        expect(mixpanel_event_stub)
-          .to receive(:track)
-          .with("ApplicantViewedHelpTopic", anything, hash_including(
-            browser: nil,
+      it "tracks events for help topic" do
+        expect(EventTrackingJob).to receive(:perform_later).with("ApplicantViewedHelpTopic", anything, hash_including(
             cbv_applicant_id: cbv_flow.cbv_applicant_id,
             cbv_flow_id: cbv_flow.id,
-            device_name: nil,
-            device_type: nil,
-            ip: "0.0.0.0",
-            locale: I18n.locale,
-            client_agency_id: cbv_flow.client_agency_id,
-            topic: "employer",
-            user_agent: "Rails Testing"
-          ))
-
-        expect(newrelic_event_stub)
-          .to receive(:track)
-          .with("ApplicantViewedHelpTopic", anything, hash_including(
-            browser: nil,
-            cbv_applicant_id: cbv_flow.cbv_applicant_id,
-            cbv_flow_id: cbv_flow.id,
-            device_name: nil,
-            device_type: nil,
             ip: "0.0.0.0",
             locale: I18n.locale,
             client_agency_id: cbv_flow.client_agency_id,
@@ -71,14 +41,7 @@ RSpec.describe HelpController, type: :controller do
 
     context "without a CBV flow" do
       it "still renders the template and tracks events" do
-        expect(mixpanel_event_stub)
-          .to receive(:track)
-          .with("ApplicantViewedHelpTopic", anything, hash_including(
-            browser: nil,
-            cbv_applicant_id: nil,
-            cbv_flow_id: nil,
-            device_name: nil,
-            device_type: nil,
+        expect(EventTrackingJob).to receive(:perform_later).with("ApplicantViewedHelpTopic", anything, hash_including(
             ip: "0.0.0.0",
             locale: I18n.locale,
             client_agency_id: "sandbox",

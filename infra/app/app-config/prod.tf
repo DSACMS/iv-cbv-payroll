@@ -26,4 +26,7 @@ module "prod_config" {
   # Defaults to `false`. Uncomment the next line to enable.
   # ⚠️ Warning! It is not recommended to enable this in a production environment.
   # enable_command_execution = true
+
+  # NewRelic configuration for metrics
+  newrelic_account_id = "4619676"
 }
