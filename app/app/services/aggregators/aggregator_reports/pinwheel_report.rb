@@ -25,6 +25,17 @@ module Aggregators::AggregatorReports
       @gigs.append(*fetch_gigs(account_id: account.pinwheel_account_id))
     end
 
+    def fetch_account(account_id:)
+      account_json = @pinwheel_service.fetch_account(account_id: account_id)
+      account_json["data"]
+    end
+
+    def fetch_platform(account_id:)
+      account_body = self.fetch_account(account_id: account_id)
+      platform_json = @pinwheel_service.fetch_platform(platform_id: account_body["platform_id"])
+      platform_json["data"]
+    end
+
     def fetch_paystubs(account_id:)
       json = @pinwheel_service.fetch_paystubs_api(account_id: account_id, from_pay_date: @from_date, to_pay_date: @to_date)
       json["data"].map { |paystub_json| Aggregators::ResponseObjects::Paystub.from_pinwheel(paystub_json) }
@@ -36,8 +47,10 @@ module Aggregators::AggregatorReports
     end
 
     def fetch_employment(account_id:)
+      platform_body = fetch_platform(account_id: account_id)
+
       json = @pinwheel_service.fetch_employment_api(account_id: account_id)
-      Aggregators::ResponseObjects::Employment.from_pinwheel(json["data"])
+      Aggregators::ResponseObjects::Employment.from_pinwheel(json["data"], platform_body)
     end
 
     def fetch_identity(account_id:)

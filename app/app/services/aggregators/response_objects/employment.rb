@@ -12,7 +12,7 @@ module Aggregators::ResponseObjects
   ]
 
   Employment = Struct.new(*EMPLOYMENT_FIELDS, keyword_init: true) do
-    def self.from_pinwheel(response_body)
+    def self.from_pinwheel(response_body, platform_body)
       new(
         account_id: response_body["account_id"],
         employer_name: response_body["employer_name"],
@@ -22,7 +22,7 @@ module Aggregators::ResponseObjects
         employer_phone_number: response_body.dig("employer_phone_number", "value"),
         employer_address: response_body.dig("employer_address", "raw"),
         employment_type: Aggregators::FormatMethods::Pinwheel.employment_type(response_body["employer_name"]),
-        account_source: nil
+        account_source: platform_body&.dig("name")
       )
     end
 
