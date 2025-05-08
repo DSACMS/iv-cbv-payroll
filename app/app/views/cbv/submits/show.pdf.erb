@@ -35,7 +35,7 @@
 <% end %>
 
 <h2><%= t(".pdf.client.client_report_information") %></h2>
-<% if @cbv_flow.cbv_applicant.applicant_attributes&.filter {|item| item.present?}.length > 0 %>
+<% if @cbv_flow.cbv_applicant.applicant_attributes.present? %>
   <sup>1</sup><span><%= t(".pdf.caseworker.client_provided_information") %></span>
 <% end %>
 
