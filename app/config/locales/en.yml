@@ -522,6 +522,7 @@ en:
   date:
     formats:
       default: "%Y-%m-%d"
+      long: "%B %-d, %Y"
   help:
     alert:
       heading: Need help connecting to your payroll provider?

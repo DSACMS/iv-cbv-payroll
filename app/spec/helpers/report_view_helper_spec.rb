@@ -87,4 +87,75 @@ RSpec.describe ReportViewHelper, type: :helper do
       end
     end
   end
+
+  describe '#format_date and #format_parsed_date' do
+    around do |ex|
+      I18n.with_locale(locale, &ex)
+    end
+
+    context 'when locale is :en' do
+      let(:locale) { :en }
+
+      it 'formats January 1st correctly' do
+        date_string = "2023-01-01"
+        expect(helper.format_date(date_string)).to eq('January 1, 2023')
+
+        date_string = "2023-1-1"
+        expect(helper.format_date(date_string)).to eq('January 1, 2023')
+
+        date = Date.new(2023, 1, 1)
+        expect(helper.format_date(date)).to eq('January 1, 2023')
+        expect(helper.format_parsed_date(date)).to eq('January 1, 2023')
+      end
+
+      it 'formats February 28th correctly' do
+        date_string = "2023-02-28"
+        expect(helper.format_date(date_string)).to eq('February 28, 2023')
+
+        date = Date.new(2023, 2, 28)
+        expect(helper.format_date(date)).to eq('February 28, 2023')
+        expect(helper.format_parsed_date(date)).to eq('February 28, 2023')
+      end
+
+      it 'formats December 31st correctly' do
+        date_string = "2023-12-31"
+        expect(helper.format_date(date_string)).to eq('December 31, 2023')
+
+        date = Date.new(2023, 12, 31)
+        expect(helper.format_date(date)).to eq('December 31, 2023')
+        expect(helper.format_parsed_date(date)).to eq('December 31, 2023')
+      end
+    end
+
+    context 'when locale is :es' do
+      let(:locale) { :es }
+
+      it 'formats January 1st correctly' do
+        date_string = "2023-1-1"
+        expect(helper.format_date(date_string)).to eq('1 de Enero de 2023')
+
+        date = Date.new(2023, 1, 1)
+        expect(helper.format_date(date)).to eq('1 de Enero de 2023')
+        expect(helper.format_parsed_date(date)).to eq('1 de Enero de 2023')
+      end
+
+      it 'formats February 28th correctly' do
+        date_string = "2023-02-28"
+        expect(helper.format_date(date_string)).to eq('28 de Febrero de 2023')
+
+        date = Date.new(2023, 2, 28)
+        expect(helper.format_date(date)).to eq('28 de Febrero de 2023')
+        expect(helper.format_parsed_date(date)).to eq('28 de Febrero de 2023')
+      end
+
+      it 'formats December 31st correctly' do
+        date_string = "2023-12-31"
+        expect(helper.format_date(date_string)).to eq('31 de Diciembre de 2023')
+
+        date = Date.new(2023, 12, 31)
+        expect(helper.format_date(date)).to eq('31 de Diciembre de 2023')
+        expect(helper.format_parsed_date(date)).to eq('31 de Diciembre de 2023')
+      end
+    end
+  end
 end
