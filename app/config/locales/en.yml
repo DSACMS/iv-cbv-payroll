@@ -484,7 +484,9 @@ en:
         application_information: Applicant information
         description: The report below has your income from the past 90 days, from %{start_date} to %{end_date}. Please review it before sending.
         header: Review your income report
-        must_match: This must match what is shown on your %{agency_acronym} application.
+        must_match:
+          default: This must match what is shown on your %{agency_acronym} application.
+          la_ldh: This must match what is shown on your Medicaid benefits.
         none_found: We didn't find any payments from this employer in the past 90 days.
         payment: Payment of %{amount} before taxes on %{date}
         phone_number: Employer phone
