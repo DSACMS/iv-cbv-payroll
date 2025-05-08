@@ -147,44 +147,44 @@ RSpec.describe ReportViewHelper, type: :helper do
 
       it 'formats January 1st correctly' do
         date_string = "2023-1-1"
-        expect(helper.format_date(date_string)).to eq('1 de Enero de 2023')
+        expect(helper.format_date(date_string)).to eq('1 de enero de 2023')
 
         date = Date.new(2023, 1, 1)
-        expect(helper.format_date(date)).to eq('1 de Enero de 2023')
-        expect(helper.format_parsed_date(date)).to eq('1 de Enero de 2023')
+        expect(helper.format_date(date)).to eq('1 de enero de 2023')
+        expect(helper.format_parsed_date(date)).to eq('1 de enero de 2023')
       end
 
       it 'formats February 28th correctly' do
         date_string = "2023-02-28"
-        expect(helper.format_date(date_string)).to eq('28 de Febrero de 2023')
+        expect(helper.format_date(date_string)).to eq('28 de febrero de 2023')
 
         date = Date.new(2023, 2, 28)
-        expect(helper.format_date(date)).to eq('28 de Febrero de 2023')
-        expect(helper.format_parsed_date(date)).to eq('28 de Febrero de 2023')
+        expect(helper.format_date(date)).to eq('28 de febrero de 2023')
+        expect(helper.format_parsed_date(date)).to eq('28 de febrero de 2023')
       end
 
       it 'formats December 31st correctly' do
         date_string = "2023-12-31"
-        expect(helper.format_date(date_string)).to eq('31 de Diciembre de 2023')
+        expect(helper.format_date(date_string)).to eq('31 de diciembre de 2023')
 
         date = Date.new(2023, 12, 31)
-        expect(helper.format_date(date)).to eq('31 de Diciembre de 2023')
-        expect(helper.format_parsed_date(date)).to eq('31 de Diciembre de 2023')
+        expect(helper.format_date(date)).to eq('31 de diciembre de 2023')
+        expect(helper.format_parsed_date(date)).to eq('31 de diciembre de 2023')
       end
 
       it 'formats a date with "%b" format as August correctly' do
         date_string = Date.new(2023, 8, 7) # A Tuesday
         format = "%b"
 
-        expect(helper.format_date(date_string, format: format)).to match(/Ago/)
+        expect(helper.format_date(date_string, format: format)).to match(/ago\./)
       end
 
       it 'formats a date with "%A" format as Wednesday correctly' do
         date_string = Date.new(2023, 11, 8) # A Wednesday
         format = { format: "%A" }
 
-        expect(helper.format_date(date_string, format: format)).to match(/Miércoles/)
-        expect(helper.format_parsed_date(date_string, format: format)).to match(/Miércoles/)
+        expect(helper.format_date(date_string, format: format)).to match(/miércoles/)
+        expect(helper.format_parsed_date(date_string, format: format)).to match(/miércoles/)
       end
     end
   end
