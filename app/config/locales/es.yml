@@ -294,7 +294,7 @@ es:
     - Vie
     - Sáb
     abbr_month_names:
-    - nil
+    -
     - Ene
     - Feb
     - Mar
@@ -319,7 +319,7 @@ es:
       default: "%d/%m/%Y"
       long: "%-d de %B de %Y"
     month_names:
-    - nil
+    -
     - Enero
     - Febrero
     - Marzo

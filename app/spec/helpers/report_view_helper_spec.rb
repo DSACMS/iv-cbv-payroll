@@ -125,6 +125,21 @@ RSpec.describe ReportViewHelper, type: :helper do
         expect(helper.format_date(date)).to eq('December 31, 2023')
         expect(helper.format_parsed_date(date)).to eq('December 31, 2023')
       end
+
+      it 'formats a date with "%b" format as August correctly' do
+        date_string = Date.new(2023, 8, 7) # A Tuesday
+        format = "%b"
+
+        expect(helper.format_date(date_string, format: format)).to match(/Aug/)
+      end
+
+      it 'formats a date with "%A" format as Wednesday correctly' do
+        date_string = Date.new(2023, 11, 8) # A Wednesday
+        format = "%A"
+
+        expect(helper.format_date(date_string, format: format)).to match(/Wednesday/)
+        expect(helper.format_parsed_date(date_string, format: format)).to match(/Wednesday/)
+      end
     end
 
     context 'when locale is :es' do
@@ -155,6 +170,21 @@ RSpec.describe ReportViewHelper, type: :helper do
         date = Date.new(2023, 12, 31)
         expect(helper.format_date(date)).to eq('31 de Diciembre de 2023')
         expect(helper.format_parsed_date(date)).to eq('31 de Diciembre de 2023')
+      end
+
+      it 'formats a date with "%b" format as August correctly' do
+        date_string = Date.new(2023, 8, 7) # A Tuesday
+        format = "%b"
+
+        expect(helper.format_date(date_string, format: format)).to match(/Ago/)
+      end
+
+      it 'formats a date with "%A" format as Wednesday correctly' do
+        date_string = Date.new(2023, 11, 8) # A Wednesday
+        format = { format: "%A" }
+
+        expect(helper.format_date(date_string, format: format)).to match(/Miércoles/)
+        expect(helper.format_parsed_date(date_string, format: format)).to match(/Miércoles/)
       end
     end
   end
