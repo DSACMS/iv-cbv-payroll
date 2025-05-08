@@ -35,7 +35,7 @@
 <% end %>
 
 <h2><%= t(".pdf.client.client_report_information") %></h2>
-<% if is_caseworker %>
+<% if @cbv_flow.cbv_applicant.applicant_attributes.present? %>
   <sup>1</sup><span><%= t(".pdf.caseworker.client_provided_information") %></span>
 <% end %>
 
@@ -46,13 +46,16 @@
   <% if current_agency?(:ma) && !is_caseworker %>
     <%= table.with_row(t(".pdf.client.agency_id_number"), @cbv_flow.cbv_applicant.agency_id_number) %>
   <% end %>
-  <% if is_caseworker %>
-      <% @cbv_flow.cbv_applicant.applicant_attributes.each do |item| %>
-      <% if @cbv_flow.cbv_applicant[item].present? %>
+  <% @cbv_flow.cbv_applicant.applicant_attributes.each do |item| %>
+    <% if @cbv_flow.cbv_applicant[item].present? %>
+      <% if item == :date_of_birth %>
+        <%= table.with_row(t("cbv.applicant_informations.#{@cbv_flow.client_agency_id}.fields.#{item}.super_one_html"), format_date(@cbv_flow.cbv_applicant[item])) %>
+      <% else %>
         <%= table.with_row(t("cbv.applicant_informations.#{@cbv_flow.client_agency_id}.fields.#{item}.super_one_html"), @cbv_flow.cbv_applicant[item]) %>
       <% end %>
     <% end %>
-
+  <% end %>
+  <% if is_caseworker %>
     <% if current_agency?(:nyc) %>
       <%= table.with_row(t(".pdf.caseworker.client_id_number"), @cbv_flow.cbv_applicant.client_id_number) %>
       <%= table.with_row(t(".pdf.caseworker.case_number"), @cbv_flow.cbv_applicant.case_number) %>
@@ -101,6 +104,7 @@
     <% end %>
     <% if is_caseworker && summary[:has_identity_data] %>
       <%= table.with_data_point(:client_full_name, summary[:identity].full_name) %>
+      <%= table.with_data_point(:ssn, summary[:identity].ssn) %>
     <% end %>
     <% if summary[:has_employment_data] %>
       <% employment = summary[:employment] %>

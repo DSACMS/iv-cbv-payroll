@@ -126,4 +126,11 @@ class AggregateDataPointComponent < ViewComponent::Base
       value: full_name
     }
   end
+
+  def ssn(ssn)
+    {
+      label: I18n.t("cbv.submits.show.pdf.caseworker.ssn"),
+      value: ssn
+    }
+  end
 end
