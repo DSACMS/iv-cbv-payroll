@@ -255,7 +255,7 @@ en:
         criteria_disclaimer: 'Note: If you''ve had other jobs in the past %{pay_income_days} days that don''t meet these criteria, you may need to submit that income information separately.'
         header: Do you have another job to report?
         learn_more_link_html:
-          la_ldh: Learn more on <a href="%{agency_url} target="_blank" rel="noopener noreferrer">LDH's website</a>.
+          la_ldh: Learn more on <a href="%{agency_url}" target="_blank" rel="noopener noreferrer">LDH's website</a>.
           sandbox: Learn more on <a href="https://www.mass.gov/guides/how-to-contact-dta" target="_blank" rel="noopener noreferrer">CBV Test Agency's website</a>.
         no_radio: No, I don’t have another job that meets the criteria
         subheader: Please add other jobs you’ve had in the past %{pay_income_days} days, even if you're no longer at that job.
@@ -447,6 +447,7 @@ en:
             how_to_header: 'How to use this report:'
             pay_period: Pay period (%{pay_frequency})
             snap_agency_id: SNAP Agency ID
+            ssn: SSN
             staff_beacon_id_wel_id: Staff BEACON ID (WELID)
           client:
             address: Employer address
@@ -484,7 +485,9 @@ en:
         application_information: Applicant information
         description: The report below has your income from the past 90 days, from %{start_date} to %{end_date}. Please review it before sending.
         header: Review your income report
-        must_match: This must match what is shown on your %{agency_acronym} application.
+        must_match:
+          default: This must match what is shown on your %{agency_acronym} application.
+          la_ldh: This must match what is shown on your Medicaid benefits.
         none_found: We didn't find any payments from this employer in the past 90 days.
         payment: Payment of %{amount} before taxes on %{date}
         phone_number: Employer phone

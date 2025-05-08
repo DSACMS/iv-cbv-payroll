@@ -255,7 +255,6 @@ es:
     summaries:
       show:
         additional_comments: Comentarios adicionales
-        must_match: Estos datos deben coincidir con lo que se muestra en la solicitud que presentó ante %{agency_acronym}.
         none_found: No encontramos ningún pago de este empleador en los últimos 90 días.
         payment: Pago de %{amount} antes de pago impuestos en %{date}
         phone_number: Teléfono del empleador
