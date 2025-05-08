@@ -176,7 +176,7 @@ RSpec.describe ReportViewHelper, type: :helper do
         date_string = Date.new(2023, 8, 7) # A Tuesday
         format = "%b"
 
-        expect(helper.format_date(date_string, format: format)).to match(/ago\./)
+        expect(helper.format_date(date_string, format: format)).to match(/ago/)
       end
 
       it 'formats a date with "%A" format as Wednesday correctly' do

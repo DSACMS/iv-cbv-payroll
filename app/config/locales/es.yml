@@ -286,27 +286,27 @@ es:
   continue: Continuar
   date:
     abbr_day_names:
-    - Do
-    - Lu
-    - Ma
-    - Mi
-    - Ju
-    - Vi
-    - Sá
+    - dom
+    - lun
+    - mar
+    - mié
+    - jue
+    - vie
+    - sáb
     abbr_month_names:
     -
-    - ene.
-    - feb.
-    - mar.
-    - abr.
-    - may.
-    - jun.
-    - jul.
-    - ago.
-    - sep.
-    - oct.
-    - nov.
-    - dic.
+    - ene
+    - feb
+    - mar
+    - abr
+    - may
+    - jun
+    - jul
+    - ago
+    - sep
+    - oct
+    - nov
+    - dic
     day_names:
     - domingo
     - lunes
@@ -316,8 +316,9 @@ es:
     - viernes
     - sábado
     formats:
-      default: "%d/%m/%Y"
+      default: "%-d/%-m/%Y"
       long: "%-d de %B de %Y"
+      short: "%-d de %b"
     month_names:
     -
     - enero
