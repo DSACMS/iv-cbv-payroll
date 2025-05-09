@@ -106,6 +106,7 @@ RSpec.describe Cbv::SummariesController do
           argyle_stub_request_identities_response('bob')
           argyle_stub_request_paystubs_response('bob')
           argyle_stub_request_gigs_response('bob')
+          argyle_stub_request_account_response('bob')
         end
 
         it "renders properly" do

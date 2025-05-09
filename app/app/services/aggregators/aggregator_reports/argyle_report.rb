@@ -16,6 +16,9 @@ module Aggregators::AggregatorReports
       identities_json = @argyle_service.fetch_identities_api(
         account: payroll_account.pinwheel_account_id
       )
+      account_json = @argyle_service.fetch_account_api(
+        account: payroll_account.pinwheel_account_id
+      )
       paystubs_json = @argyle_service.fetch_paystubs_api(
         account: payroll_account.pinwheel_account_id,
         from_start_date: @from_date,
@@ -26,7 +29,9 @@ module Aggregators::AggregatorReports
                                                  to_start_datetime: @to_date)
 
       @identities.append(*transform_identities(identities_json))
-      @employments.append(*transform_employments(identities_json, ArgyleReport.most_recent_paystub_with_address(paystubs_json)))
+      @employments.append(*transform_employments(identities_json,
+                                                 ArgyleReport.most_recent_paystub_with_address(paystubs_json),
+                                                 account_json))
       @incomes.append(*transform_incomes(identities_json))
       @paystubs.append(*transform_paystubs(paystubs_json))
       @gigs.append(*transform_gigs(gigs_json))
@@ -38,9 +43,9 @@ module Aggregators::AggregatorReports
       end
     end
 
-    def transform_employments(identities_json, a_paystub_json)
+    def transform_employments(identities_json, a_paystub_json, account_json)
       identities_json["results"].map do |identity_json|
-        Employment.from_argyle(identity_json, a_paystub_json)
+        Employment.from_argyle(identity_json, a_paystub_json, account_json)
       end
     end
 

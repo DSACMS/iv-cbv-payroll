@@ -1,0 +1,73 @@
+{
+  "id": "01959b15-8b7f-5487-212d-2c0f50e3ec96",
+  "user": "01958c05-58ae-a867-e2a2-a120af48d140",
+  "employers": [
+    "Aramark",
+    "Whole Foods"
+  ],
+  "item": "item_000029932",
+  "source": "argyle_sandbox",
+  "created_at": "2025-03-15T18:33:55.419626Z",
+  "updated_at": "2025-03-15T18:36:18.451039Z",
+  "scanned_at": "2025-03-15T18:36:17.924519Z",
+  "connection": {
+    "status": "connected",
+    "error_code": null,
+    "error_message": null,
+    "updated_at": "2025-03-15T18:34:21.053086Z"
+  },
+  "direct_deposit_switch": {
+    "status": "idle",
+    "error_code": null,
+    "error_message": null,
+    "updated_at": "2025-03-15T18:33:55.661262Z"
+  },
+  "availability": {
+    "gigs": {
+      "status": "synced",
+      "updated_at": "2025-03-15T18:36:16.182462Z",
+      "available_count": 0,
+      "available_from": null,
+      "available_to": null
+    },
+    "shifts": {
+      "status": "synced",
+      "updated_at": "2025-03-15T18:36:17.937346Z",
+      "available_count": 391,
+      "available_from": "2022-09-15T18:34:20Z",
+      "available_to": "2025-03-16T00:00:00Z"
+    },
+    "paystubs": {
+      "status": "synced",
+      "updated_at": "2025-03-15T18:36:18.066454Z",
+      "available_count": 256,
+      "available_from": "2022-09-15T18:34:20Z",
+      "available_to": "2025-03-13T00:00:00Z"
+    },
+    "payroll_documents": {
+      "status": "synced",
+      "updated_at": "2025-03-15T18:34:24.460755Z"
+    },
+    "identities": {
+      "status": "synced",
+      "updated_at": "2025-03-15T18:34:31.588394Z"
+    },
+    "ratings": {
+      "status": "synced",
+      "updated_at": "2025-03-15T18:34:24.474262Z"
+    },
+    "vehicles": {
+      "status": "synced",
+      "updated_at": "2025-03-15T18:34:24.477322Z"
+    },
+    "deposit_destinations": {
+      "status": "synced",
+      "updated_at": "2025-03-15T18:34:22.618540Z"
+    },
+    "user_forms": null,
+    "user_uploads": null
+  },
+  "ongoing_refresh": {
+    "status": "disabled"
+  }
+}

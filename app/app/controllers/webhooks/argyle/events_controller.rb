@@ -228,6 +228,7 @@ class Webhooks::Argyle::EventsController < ApplicationController
         employment_supported: payroll_account.supported_jobs.include?("employment"),
         employment_status: report.employments.first&.status,
         employment_employer_name: report.employments.first&.employer_name,
+        employment_account_source: report.employments.first&.account_source,
         employment_employer_address_present: report.employments.first&.employer_address&.present?,
         employment_employer_phone_number_present: report.employments.first&.employer_name&.present?,
         employment_start_date: report.employments.first&.start_date,
