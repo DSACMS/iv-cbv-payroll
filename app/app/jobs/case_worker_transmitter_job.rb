@@ -29,6 +29,9 @@ class CaseWorkerTransmitterJob < ApplicationJob
 
   def transmit_to_caseworker(current_agency, aggregator_report, cbv_flow)
     case current_agency.transmission_method
+    when "sftp"
+      CaseworkerApplicationDeliverer.new(cbv_flow, current_agency, aggregator_report).deliver_sftp!
+      track_transmitted_event(cbv_flow, aggregator_report.paystubs)
     when "shared_email"
       CaseworkerMailer.with(
         email_address: current_agency.transmission_method_configuration.dig("email"),
