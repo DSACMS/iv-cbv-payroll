@@ -1,0 +1,21 @@
+---
+:scope:
+:url: https://api.getpinwheel.com/v1/link/ui/initialization_context/?employer_id=5a8cfb92-3373-4e65-b41b-54e821e79671
+:body: ''
+:status: 200
+:method: options
+:headers:
+  Date: Tue, 08 Apr 2025 21:46:55 GMT
+  Content-Type: text/plain; charset=utf-8
+  Content-Length: '2'
+  Connection: close
+  server: TI-84
+  vary: Origin
+  access-control-allow-methods: DELETE, GET, HEAD, OPTIONS, PATCH, POST, PUT
+  access-control-max-age: '600'
+  access-control-allow-credentials: 'true'
+  access-control-allow-origin: https://cdn.getpinwheel.com
+  access-control-allow-headers: content-type,dersh-id,login_attempt_id,modal_session_id,pinwheel-link-token,unique_user_id,x-ct,x-sdk,x-sdk-version
+  x-pinwheel-request-id: 3378e0c3-aa0f-496c-9222-d51358537ecd
+  strict-transport-security: max-age=31536000; includeSubDomains;
+:content: OK
