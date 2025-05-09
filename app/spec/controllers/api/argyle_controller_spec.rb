@@ -18,7 +18,7 @@ RSpec.describe Api::ArgyleController do
     context "when the CbvFlow does not have an argyle_user_id" do
       before do
         stub_create_user_response
-        argyle_stub_request_accounts_response('bob')
+        argyle_stub_request_empty_accounts_response
       end
 
       it "creates a user with Argyle, returning its token" do
@@ -60,10 +60,15 @@ RSpec.describe Api::ArgyleController do
       end
 
       it "creates a token for the existing Argyle user" do
+        expect_any_instance_of(Aggregators::Sdk::ArgyleService)
+          .to receive(:create_user_token)
+          .with(cbv_flow.argyle_user_id)
+          .and_return("user_token" => "fake-user-token")
+
         post :create, params: valid_params
 
         expect(JSON.parse(response.body))
-          .to include("user" => { "user_token" => be_a(String) })
+          .to include("user" => { "user_token" => "fake-user-token" })
       end
     end
 
@@ -76,6 +81,8 @@ RSpec.describe Api::ArgyleController do
     end
 
     context "when the payroll account or employer has already been linked" do
+      let(:cbv_flow) { create(:cbv_flow, argyle_user_id: argyle_user_id) }
+
       before do
         stub_create_user_response
         stub_create_user_token_response
@@ -87,7 +94,7 @@ RSpec.describe Api::ArgyleController do
       end
 
       context "if the payroll account is fully synced" do
-        let(:cbv_flow) { create(:cbv_flow, :with_argyle_account) }
+        let(:cbv_flow) { create(:cbv_flow, :with_argyle_account, argyle_user_id: argyle_user_id) }
 
         before do
           # Update the pinwheel_account_id to match the one returned by fetch_accounts_api
@@ -101,23 +108,37 @@ RSpec.describe Api::ArgyleController do
         end
       end
 
-      context "if the payroll is not fully synced" do
-        let(:cbv_flow) { create(:cbv_flow, :with_argyle_account, partially_synced: true) }
+      context "if the payroll sync is in progress" do
+        let(:cbv_flow) { create(:cbv_flow, :with_argyle_account, argyle_user_id: argyle_user_id, sync_in_progress: true) }
+        let(:payroll_account) { cbv_flow.payroll_accounts.first }
 
         before do
           # Update the pinwheel_account_id to match the one returned by fetch_accounts_api
-          cbv_flow.payroll_accounts.first.update(pinwheel_account_id: argyle_account_id)
+          payroll_account.update(pinwheel_account_id: argyle_account_id)
         end
 
-        it "redirects to the synchronizations page" do
+        it "returns the token for the existing argyle user without redirecting" do
           post :create, params: valid_params
 
-          expect(response).to redirect_to(cbv_flow_synchronizations_path(user: { account_id: cbv_flow.payroll_accounts.first.pinwheel_account_id }))
+          expect(JSON.parse(response.body))
+            .to include("user" => { "user_token" => be_a(String) })
+        end
+
+        context "after receiving the accounts.connected webhook" do
+          before do
+            create(:webhook_event, payroll_account: payroll_account, event_name: "accounts.connected")
+          end
+
+          it "redirects to the synchronizations page" do
+            post :create, params: valid_params
+
+            expect(response).to redirect_to(cbv_flow_synchronizations_path(user: { account_id: payroll_account.pinwheel_account_id }))
+          end
         end
       end
 
       context "when multiple accounts exist but only one is related to the item" do
-        let(:cbv_flow) { create(:cbv_flow, :with_argyle_account) }
+        let(:cbv_flow) { create(:cbv_flow, :with_argyle_account, argyle_user_id: argyle_user_id) }
         let(:other_argyle_account_id) { "acc_987654321" }
 
         before do
