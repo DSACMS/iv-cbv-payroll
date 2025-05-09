@@ -137,7 +137,7 @@ RSpec.describe CaseWorkerTransmitterJob, type: :job do
       let(:user) { create(:user, email: "test@test.com") }
       let(:sftp_double) { instance_double(SftpGateway) }
       let(:transmission_method) { "sftp" }
-      let(:mocked_client_id) { "la_ldh" }
+      let(:mocked_client_id) { "az_des" }
       let(:transmission_method_configuration) { {
         "user" => "user",
         "password" => "password",
