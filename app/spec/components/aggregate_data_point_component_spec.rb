@@ -7,7 +7,7 @@ RSpec.describe AggregateDataPointComponent, type: :component do
     expect(
       render_inline(described_class.new(:pay_period, "2024-01-01", "2024-01-15"))
     ).to have_text(
-      "January 01, 2024 to January 15, 2024"
+      "January 1, 2024 to January 15, 2024"
     )
   end
 
@@ -55,7 +55,7 @@ RSpec.describe AggregateDataPointComponent, type: :component do
     expect(
       render_inline(described_class.new(:employment_start_date, "2024-01-01"))
     ).to have_text(
-      "January 01, 2024"
+      "January 1, 2024"
     )
   end
 
@@ -63,7 +63,7 @@ RSpec.describe AggregateDataPointComponent, type: :component do
     expect(
       render_inline(described_class.new(:employment_end_date, "2024-01-01"))
     ).to have_text(
-      "January 01, 2024"
+      "January 1, 2024"
     )
   end
 
