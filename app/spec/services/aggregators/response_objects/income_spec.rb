@@ -26,10 +26,11 @@ RSpec.describe Aggregators::ResponseObjects::Income do
       {
         "account" => "67890",
         "base_pay" => {
-          "period" => "semimonthly",
+          "period" => "biweekly",
           "amount" => "50.24",
           "currency" => "USD"
-        }
+        },
+        "pay_cycle" => "semimonthly"
       }
     end
     it 'creates an Income object from argyle response' do
