@@ -133,6 +133,43 @@ RSpec.describe CaseWorkerTransmitterJob, type: :job do
       end
     end
 
+    context "when transmission method is sftp" do
+      let(:user) { create(:user, email: "test@test.com") }
+      let(:sftp_double) { instance_double(SftpGateway) }
+      let(:transmission_method) { "sftp" }
+      let(:mocked_client_id) { "la_ldh" }
+      let(:transmission_method_configuration) { {
+        "user" => "user",
+        "password" => "password",
+        "url" => "sftp.com",
+        "sftp_directory" => "test"
+      }}
+      before do
+        allow(SftpGateway).to receive(:new).and_return(sftp_double)
+        allow(sftp_double).to receive(:upload_data)
+      end
+
+      it "generates and sends data to SFTP" do
+        agency_id_number = cbv_applicant.agency_id_number
+        beacon_id = cbv_applicant.beacon_id
+
+        expect(sftp_double).to receive(:upload_data).with(anything, /test\/IncomeReport__Sep-Sep2021_Conf_\d*\.csv/) do |csv_content, _|
+          csv_rows = CSV.parse(csv_content, headers: true)
+          expect(csv_rows[0]["client_id"]).to eq(agency_id_number)
+        end
+        expect(sftp_double).to receive(:upload_data).with(anything, /test\/IncomeReport__Sep-Sep2021_Conf_\d*\.pdf/)
+
+
+        cbv_flow.update(client_agency_id: "ma")
+        cbv_applicant.update(client_agency_id: "ma")
+        cbv_applicant.update(beacon_id: beacon_id)
+        cbv_applicant.update(agency_id_number: agency_id_number)
+
+        described_class.new.perform(cbv_flow.id)
+      end
+    end
+
+
     context "when transmission method is s3" do
       let(:user) { create(:user, email: "test@test.com") }
       let(:s3_service_double) { instance_double(S3Service) }
