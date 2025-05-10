@@ -33,7 +33,7 @@
   <%= table.with_data_point(:employment_status, employment_status) %>
   <% if has_income_data? && @is_w2_worker %>
     <%= table.with_data_point(:pay_frequency, pay_frequency) %>
-    <%= table.with_data_point(:hourly_rate, compensation_amount, pay_frequency) %>
+    <%= table.with_data_point(:hourly_rate, compensation_amount, compensation_unit) %>
   <% end %>
 <% end %>
 

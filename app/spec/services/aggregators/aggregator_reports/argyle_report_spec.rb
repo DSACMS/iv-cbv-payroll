@@ -140,8 +140,7 @@ RSpec.describe Aggregators::AggregatorReports::ArgyleReport, type: :service do
           start_date: "2025-03-06",
           end_date: nil,
           compensation_category: "work",
-          compensation_amount: 0.0,
-          compensation_unit: "USD"
+          compensation_amount: 0.0
           )
           expect(argyle_report.gigs[1]).to have_attributes(
             account_id: "019571bc-2f60-3955-d972-dbadfe0913a8",
@@ -151,8 +150,7 @@ RSpec.describe Aggregators::AggregatorReports::ArgyleReport, type: :service do
             start_date: "2025-03-05",
             end_date: "2025-03-05",
             compensation_category: "work",
-            compensation_amount: 1024,
-            compensation_unit: "USD"
+            compensation_amount: 1024
           )
           expect(argyle_report.gigs[3]).to have_attributes(
             account_id: "019571bc-2f60-3955-d972-dbadfe0913a8",
@@ -162,8 +160,7 @@ RSpec.describe Aggregators::AggregatorReports::ArgyleReport, type: :service do
             start_date: "2025-03-05",
             end_date: "2025-03-05",
             compensation_category: "work",
-            compensation_amount: 1945,
-            compensation_unit: "USD"
+            compensation_amount: 1945
           )
         end
       end

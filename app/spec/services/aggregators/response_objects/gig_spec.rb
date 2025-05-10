@@ -21,7 +21,6 @@ RSpec.describe Aggregators::ResponseObjects::Gig do
         end_date: gig_data["end_date"],
         hours: PinwheelFormatter.hours(gig_data["earnings"]),
         compensation_amount: PinwheelFormatter.total_earnings_amount(gig_data["earnings"]),
-        compensation_unit: gig_data["currency"],
         gig_status: nil
       )
     end
@@ -41,7 +40,6 @@ RSpec.describe Aggregators::ResponseObjects::Gig do
         end_date: ArgyleFormatter.format_date(gig_data["end_datetime"]),
         hours: ArgyleFormatter.seconds_to_hours(gig_data["duration"]),
         compensation_amount: ArgyleFormatter.format_currency(gig_data["income"]["pay"]),
-        compensation_unit: gig_data["income"]["currency"],
         gig_status: gig_data["status"]
       )
     end
