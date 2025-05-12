@@ -8,7 +8,7 @@ class HealthCheckController < ActionController::Base
   def test_ok
     # adding a second database query to distinguish healthiness of using one query vs another
     random_id = CbvFlow.last&.id || 10000
-    PerformanceTestingJob.perform_later(Random.new.rand(1..random_id))
+    TestQueueingJob.perform_later(Random.new.rand(1..random_id))
     render json: { status: "ok" }
   end
 
