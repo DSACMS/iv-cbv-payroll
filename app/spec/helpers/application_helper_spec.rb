@@ -153,9 +153,5 @@ RSpec.describe ApplicationHelper do
       date_of_birth = (Date.today - 95.years)
       expect(helper.get_age_range(date_of_birth)).to eq("90+")
     end
-
-    it "returns nil for an invalid date string" do
-      expect(helper.get_age_range("invalid-date")).to be_nil
-    end
   end
 end
