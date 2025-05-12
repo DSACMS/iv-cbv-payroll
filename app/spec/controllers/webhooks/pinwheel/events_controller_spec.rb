@@ -142,6 +142,9 @@ RSpec.describe Webhooks::Pinwheel::EventsController do
               identity_ssn_present: true,
               identity_emails_count: 1,
               identity_phone_numbers_count: 1,
+              identity_age_range: "30-39",
+              identity_age_range_applicant: "30-39",
+              identity_zip_code: "99999",
 
               # Income fields
               income_success: true,

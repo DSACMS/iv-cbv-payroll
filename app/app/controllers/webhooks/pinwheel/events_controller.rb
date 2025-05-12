@@ -1,4 +1,6 @@
 class Webhooks::Pinwheel::EventsController < ApplicationController
+  include ApplicationHelper
+
   before_action :set_cbv_flow, :set_pinwheel, :authorize_webhook
   after_action :process_webhook_event
   skip_before_action :verify_authenticity_token
@@ -100,6 +102,9 @@ class Webhooks::Pinwheel::EventsController < ApplicationController
         identity_ssn_present: report.identities.first&.ssn.present?,
         identity_emails_count: report.identities.sum { |i| i.emails.length },
         identity_phone_numbers_count: report.identities.sum { |i| i.phone_numbers.length },
+        identity_zip_code: report.identities.first&.zip_code,
+        identity_age_range: get_age_range(report.identities.first&.date_of_birth),
+        identity_age_range_applicant: get_age_range(@cbv_flow.cbv_applicant.date_of_birth),
 
         # Income fields
         income_success: @payroll_account.job_succeeded?("income"),

@@ -129,4 +129,33 @@ RSpec.describe ApplicationHelper do
       expect(helper.coalesce_to_completed(:in_progress)).to eq(:in_progress)
     end
   end
+
+  describe "#get_age_range" do
+    it "returns nil for invalid date input" do
+      expect(helper.get_age_range("invalid-date")).to be_nil
+    end
+
+    it "returns age range when the date of birth is a string" do
+      expect(helper.get_age_range("1990-01-01")).to eq("30-39")
+    end
+
+    it "returns '0-18' for a date of birth 10 years ago" do
+      date_of_birth = (Date.today - 10.years)
+      expect(helper.get_age_range(date_of_birth)).to eq("0-18")
+    end
+
+    it "returns '18-25' for a date of birth 20 years ago" do
+      date_of_birth = (Date.today - 20.years)
+      expect(helper.get_age_range(date_of_birth)).to eq("18-25")
+    end
+
+    it "returns '90+' for a date of birth 95 years ago" do
+      date_of_birth = (Date.today - 95.years)
+      expect(helper.get_age_range(date_of_birth)).to eq("90+")
+    end
+
+    it "returns nil for an invalid date string" do
+      expect(helper.get_age_range("invalid-date")).to be_nil
+    end
+  end
 end
