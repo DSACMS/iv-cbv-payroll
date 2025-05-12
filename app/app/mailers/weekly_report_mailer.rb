@@ -57,6 +57,11 @@ class WeeklyReportMailer < ApplicationMailer
             agency_id_number: applicant.agency_id_number,
             beacon_id: applicant.beacon_id
           )
+        when "la_ldh"
+          base_fields.merge(
+            case_number: applicant.case_number,
+            date_of_birth: applicant.date_of_birth
+          )
         end
       end
   end
