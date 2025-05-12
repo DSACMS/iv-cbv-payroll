@@ -144,7 +144,6 @@ ignore_missing:
     - "aggregator_strings.deductions.other"               # FFS-2723
     - "aggregator_strings.deductions.vision"              # FFS-2723
     - "aggregator_strings.earnings_category.base"         # FFS-2723
-    - "aggregator_strings.payment_frequencies.usd"        # FFS-2723
     - "aggregator_strings.earnings_category.benefits"     # FFS-2723
     - "aggregator_strings.employment_statuses.inactive"   # FFS-2723
     - "aggregator_strings.employment_statuses.terminated" # FFS-2723
