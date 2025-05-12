@@ -103,7 +103,7 @@
     environment: <%= ENV["LA_LDH_ARGYLE_ENVIRONMENT"] %>
   transmission_method: shared_email
   transmission_method_configuration:
-    email: <%= ENV['SLACK_TEST_EMAIL'] %>
+    email: <%= ENV['LA_LDH_EMAIL'] %>
   staff_portal_enabled: false
   # sso:
   #   client_id:     <%= ENV["AZURE_LA_LDH_CLIENT_ID"] %>

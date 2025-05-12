@@ -90,6 +90,10 @@ locals {
       manage_method     = "manual"
       secret_store_name = "/service/${var.app_name}-${var.environment}/ma-dta-s3-public-key"
     },
+    LA_LDH_EMAIL = {
+      manage_method     = "manual"
+      secret_store_name = "/service/${var.app_name}-${var.environment}/la-ldh-email"
+    },
 
     # Feature Flags:
     SUPPORTED_PROVIDERS = {
