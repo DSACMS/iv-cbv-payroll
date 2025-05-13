@@ -78,12 +78,6 @@ variable "vpc_id" {
   description = "Uniquely identifies the VPC."
 }
 
-variable "enable_performance_insights" {
-  description = "Whether to enable Performance Insights for the RDS instance. Usually enabled only in production."
-  type        = bool
-  default     = false
-}
-
 variable "serverless_min_capacity" {
   description = "The minimum capacity for the Aurora Serverless cluster. Value should be in Aurora capacity units (ACU)"
   type        = number
