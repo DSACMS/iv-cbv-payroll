@@ -104,6 +104,10 @@ RSpec.describe Webhooks::Argyle::EventsController, type: :controller do
     end
 
     before do
+      # The report metric, "paystubs_days_since_last_paid" will use Timecop
+      # for a static date to reference as "now". This allows for consistent test results
+      Timecop.freeze(Time.local(2025, 5, 15))
+
       allow_any_instance_of(Aggregators::Sdk::ArgyleService)
         .to receive(:fetch_identities_api)
         .and_return(argyle_load_relative_json_file("sarah", "request_identity.json"))
@@ -115,6 +119,10 @@ RSpec.describe Webhooks::Argyle::EventsController, type: :controller do
         .and_return(argyle_load_relative_json_file("bob", "request_gigs.json"))
       allow(controller).to receive(:event_logger).and_return(fake_event_logger)
       allow(fake_event_logger).to receive(:track)
+    end
+
+    after do
+      Timecop.return
     end
 
     it "results in a fully synced payroll account" do
@@ -202,6 +210,7 @@ RSpec.describe Webhooks::Argyle::EventsController, type: :controller do
           paystubs_earnings_type_bonus_count: 10,
           paystubs_earnings_type_overtime_count: 5,
           paystubs_earnings_type_commission_count: 8,
+          paystubs_days_since_last_paid: 73,
 
           # Employment fields
           employment_success: true,
