@@ -23,7 +23,7 @@ module Aggregators::ResponseObjects
         compensation_amount: Aggregators::FormatMethods::Argyle.format_currency(
           identities_response_body["base_pay"]["amount"]
         ),
-        compensation_unit: identities_response_body["base_pay"]["currency"]
+        compensation_unit: identities_response_body["base_pay"]["period"]
       )
     end
   end
