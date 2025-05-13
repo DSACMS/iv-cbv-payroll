@@ -98,6 +98,12 @@ variable "service_desired_instance_count" {
   default = 1
 }
 
+variable "desired_solidqueue_instance_count" {
+  type        = number
+  description = "Number of SolidQueue worker instances to run"
+  default     = 1
+}
+
 variable "service_memory" {
   type    = number
   default = 512
