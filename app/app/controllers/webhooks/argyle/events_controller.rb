@@ -222,7 +222,7 @@ class Webhooks::Argyle::EventsController < ApplicationController
         paystubs_earnings_type_bonus_count: report.paystubs.sum { |p| p.earnings.count { |e| e.category == "bonus" } },
         paystubs_earnings_type_overtime_count: report.paystubs.sum { |p| p.earnings.count { |e| e.category == "overtime" } },
         paystubs_earnings_type_commission_count: report.paystubs.sum { |p| p.earnings.count { |e| e.category == "commission" } },
-        paystubs_days_since_last_paid: report.paystubs.map { |p| Date.parse(p.pay_date) }.compact.max&.then { |last_pay_date| (Date.current - last_pay_date).to_i },
+        paystubs_days_since_last_pay_date: report.paystubs.map { |p| Date.parse(p.pay_date) }.compact.max&.then { |last_pay_date| (Date.current - last_pay_date).to_i },
 
         # Employment fields (originally from "identities" endpoint)
         employment_success: payroll_account.job_succeeded?("employment"),

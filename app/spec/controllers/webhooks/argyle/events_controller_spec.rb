@@ -210,7 +210,7 @@ RSpec.describe Webhooks::Argyle::EventsController, type: :controller do
           paystubs_earnings_type_bonus_count: 10,
           paystubs_earnings_type_overtime_count: 5,
           paystubs_earnings_type_commission_count: 8,
-          paystubs_days_since_last_paid: 73,
+          paystubs_days_since_last_pay_date: 73,
 
           # Employment fields
           employment_success: true,

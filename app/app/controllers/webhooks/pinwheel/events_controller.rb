@@ -120,7 +120,7 @@ class Webhooks::Pinwheel::EventsController < ApplicationController
         paystubs_earnings_category_salary_count: report.paystubs.sum { |p| p.earnings.count { |e| e.category == "salary" } },
         paystubs_earnings_category_bonus_count: report.paystubs.sum { |p| p.earnings.count { |e| e.category == "bonus" } },
         paystubs_earnings_category_overtime_count: report.paystubs.sum { |p| p.earnings.count { |e| e.category == "overtime" } },
-        paystubs_days_since_last_paid: report.paystubs.map { |p| Date.parse(p.pay_date) }.compact.max&.then { |last_pay_date| (Date.current - last_pay_date).to_i },
+        paystubs_days_since_last_pay_date: report.paystubs.map { |p| Date.parse(p.pay_date) }.compact.max&.then { |last_pay_date| (Date.current - last_pay_date).to_i },
 
         # Employment fields
         employment_success: @payroll_account.job_succeeded?("employment"),
