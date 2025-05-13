@@ -111,3 +111,15 @@ variable "service_override_extra_environment_variables" {
   EOT
   default     = {}
 }
+
+variable "database_serverless_min_capacity" {
+  description = "The minimum capacity for the Aurora Serverless cluster in ACUs (Aurora Capacity Units)"
+  type        = number
+  default     = 0.5
+}
+
+variable "database_serverless_max_capacity" {
+  description = "The maximum capacity for the Aurora Serverless cluster in ACUs (Aurora Capacity Units)"
+  type        = number
+  default     = 1.0
+}
