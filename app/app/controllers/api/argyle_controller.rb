@@ -9,6 +9,9 @@ class Api::ArgyleController < ApplicationController
     @cbv_flow = CbvFlow.find(session[:cbv_flow_id])
     argyle = argyle_for(@cbv_flow)
     item_id = params[:item_id]
+    unless item_id.present?
+      return render json: { status: :error, message: "Invalid item_id" }, status: :unprocessable_entity
+    end
 
     is_sandbox_environment = agency_config[@cbv_flow.client_agency_id].argyle_environment == "sandbox"
     user_token = if @cbv_flow.argyle_user_id.blank?
@@ -29,7 +32,7 @@ class Api::ArgyleController < ApplicationController
     # Redirect if the user is attempting connect a previously connected account
     connected_argyle_accounts = argyle.fetch_accounts_api(user: @cbv_flow.argyle_user_id, item: item_id)["results"]
 
-    if item_id.present? && connected_argyle_accounts.any?
+    if connected_argyle_accounts.any?
       argyle_account = connected_argyle_accounts.first
       payroll_account = @cbv_flow.payroll_accounts.find_by(pinwheel_account_id: argyle_account["id"])
 

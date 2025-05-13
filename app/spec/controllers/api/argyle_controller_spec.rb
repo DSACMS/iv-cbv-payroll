@@ -9,6 +9,7 @@ RSpec.describe Api::ArgyleController do
     let(:argyle_user_id) { argyle_load_relative_json_file('', 'response_create_user.json')["id"] }
     let(:argyle_item_id) { argyle_user_property_for("bob", "user", "items_connected").first }
     let(:argyle_account_id) { argyle_user_property_for("bob", "user", "id") }
+    let(:valid_params) { { item_id: argyle_item_id } }
 
     before do
       session[:cbv_flow_id] = cbv_flow.id
@@ -21,7 +22,7 @@ RSpec.describe Api::ArgyleController do
       end
 
       it "creates a user with Argyle, returning its token" do
-        post :create
+        post :create, params: valid_params
 
         expect(JSON.parse(response.body))
           .to include("user" => { "user_token" => be_a(String) })
@@ -32,7 +33,7 @@ RSpec.describe Api::ArgyleController do
             cbv_flow_id: cbv_flow.id,
             invitation_id: cbv_flow.cbv_flow_invitation_id,
           ))
-        post :create
+        post :create, params: valid_params
       end
 
       it "includes isSandbox flag in response" do
@@ -44,7 +45,7 @@ RSpec.describe Api::ArgyleController do
         allow(CbvFlow).to receive(:find).and_return(cbv_flow)
         allow(controller).to receive(:argyle_for).and_return(argyle)
 
-        post :create
+        post :create, params: valid_params
 
         expect(JSON.parse(response.body)["isSandbox"]).to eq(true)
       end
@@ -59,10 +60,18 @@ RSpec.describe Api::ArgyleController do
       end
 
       it "creates a token for the existing Argyle user" do
-        post :create
+        post :create, params: valid_params
 
         expect(JSON.parse(response.body))
           .to include("user" => { "user_token" => be_a(String) })
+      end
+    end
+
+    context "when called without an item ID" do
+      it "renders an error" do
+        post :create, params: {}
+        expect(response.status).to eq(422)
+        expect(JSON.parse(response.body)).to include("status" => "error")
       end
     end
 
@@ -86,7 +95,7 @@ RSpec.describe Api::ArgyleController do
         end
 
         it "redirects to the payment_details page" do
-          post :create, params: { item_id: argyle_item_id }
+          post :create, params: valid_params
 
           expect(response).to redirect_to(cbv_flow_payment_details_path(user: { account_id: cbv_flow.payroll_accounts.first.pinwheel_account_id }))
         end
@@ -101,7 +110,7 @@ RSpec.describe Api::ArgyleController do
         end
 
         it "redirects to the synchronizations page" do
-          post :create, params: { item_id: argyle_item_id }
+          post :create, params: valid_params
 
           expect(response).to redirect_to(cbv_flow_synchronizations_path(user: { account_id: cbv_flow.payroll_accounts.first.pinwheel_account_id }))
         end
@@ -120,7 +129,7 @@ RSpec.describe Api::ArgyleController do
         end
 
         it "finds the correct payroll account for the item and redirects accordingly" do
-          post :create, params: { item_id: argyle_item_id }
+          post :create, params: valid_params
 
           expect(response).to redirect_to(cbv_flow_payment_details_path(user: { account_id: argyle_account_id }))
         end
