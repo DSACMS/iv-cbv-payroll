@@ -99,8 +99,8 @@ variable "service_desired_instance_count" {
 }
 
 variable "desired_solidqueue_instance_count" {
-  type        = number
   description = "Number of SolidQueue worker instances to run"
+  type        = number
   default     = 1
 }
 
