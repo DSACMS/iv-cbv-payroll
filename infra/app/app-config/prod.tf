@@ -20,7 +20,7 @@ module "prod_config" {
   service_cpu                       = 1024
   service_memory                    = 4096
   service_desired_instance_count    = 10
-  desired_solidqueue_instance_count = 2
+  solidqueue_desired_instance_count = 2
 
   # Create DNS records for these `additional_domains` in the default hosted
   # zone (this is necessary to support CBV agency subdomains).

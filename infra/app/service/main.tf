@@ -176,7 +176,7 @@ module "service" {
   cpu                               = local.service_config.cpu
   memory                            = local.service_config.memory
   desired_instance_count            = local.service_config.desired_instance_count
-  desired_solidqueue_instance_count = local.service_config.desired_solidqueue_instance_count
+  solidqueue_desired_instance_count = local.service_config.solidqueue_desired_instance_count
   enable_command_execution          = local.service_config.enable_command_execution
 
   aws_services_security_group_id = data.aws_security_groups.aws_services.ids[0]

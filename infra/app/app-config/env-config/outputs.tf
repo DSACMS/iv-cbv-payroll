@@ -25,7 +25,7 @@ output "service_config" {
     cpu                               = var.service_cpu
     memory                            = var.service_memory
     desired_instance_count            = var.service_desired_instance_count
-    desired_solidqueue_instance_count = var.desired_solidqueue_instance_count
+    solidqueue_desired_instance_count = var.solidqueue_desired_instance_count
     enable_command_execution          = var.enable_command_execution
     additional_domains                = var.additional_domains
 
