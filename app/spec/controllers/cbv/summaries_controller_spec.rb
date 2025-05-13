@@ -104,11 +104,28 @@ RSpec.describe Cbv::SummariesController do
           create(:payroll_account, :argyle_bob, cbv_flow: cbv_flow)
         end
 
+        let(:pinwheel_identities_json) { pinwheel_load_relative_json_file('request_identity_response.json') }
+        let(:pinwheel_incomes_json) { pinwheel_load_relative_json_file('request_income_metadata_response.json') }
+        let(:pinwheel_employments_json) { pinwheel_load_relative_json_file('request_employment_info_response.json') }
+        let(:pinwheel_paystubs_json) { pinwheel_load_relative_json_file('request_end_user_paystubs_response.json') }
+        let(:pinwheel_shifts_json) { pinwheel_load_relative_json_file('request_end_user_shifts_response.json') }
+        let(:pinwheel_account_json) { pinwheel_load_relative_json_file('request_end_user_account_response.json') }
+        let(:pinwheel_platform_json) { pinwheel_load_relative_json_file('request_platform_response.json') }
+
+
         before do
           argyle_stub_request_identities_response('bob')
           argyle_stub_request_paystubs_response('bob')
           argyle_stub_request_gigs_response('bob')
           argyle_stub_request_account_response('bob')
+
+          # Note: there are conflict issues on the regex stubs between argyle and pinwheel.
+          # So hardcoding the PinwheelService calls to avoid this conflict.  This is unique to testing the CompositeReport
+          allow_any_instance_of(Aggregators::Sdk::PinwheelService).to receive(:fetch_identity_api).and_return(pinwheel_identities_json)
+          allow_any_instance_of(Aggregators::Sdk::PinwheelService).to receive(:fetch_account).and_return(pinwheel_account_json)
+          allow_any_instance_of(Aggregators::Sdk::PinwheelService).to receive(:fetch_platform).and_return(pinwheel_platform_json)
+          allow_any_instance_of(Aggregators::Sdk::PinwheelService).to receive(:fetch_employment_api).and_return(pinwheel_employments_json)
+          allow_any_instance_of(Aggregators::Sdk::PinwheelService).to receive(:fetch_income_api).and_return(pinwheel_incomes_json)
         end
 
         it "renders properly" do
