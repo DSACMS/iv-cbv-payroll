@@ -9,6 +9,14 @@ RSpec.describe PagesController do
       expect(response).to be_successful
       expect(response.body).to include("Welcome")
     end
+
+    context "when on an agency subdomain" do
+      it "redirects to the client agency entries page when the hostname matches a client agency domain" do
+        request.host = "la.reportmyincome.org"
+        get :home
+        expect(response).to redirect_to(cbv_flow_new_path(client_agency_id: "la_ldh"))
+      end
+    end
   end
 
   describe "#error_404" do
@@ -28,6 +36,17 @@ RSpec.describe PagesController do
         expect(response.body).to include("Return to entry page")
       end
     end
+
+    describe "when on an agency subdomain" do
+      let(:cbv_flow) { create(:cbv_flow, :invited) }
+
+      it "renders" do
+        request.host = "la.reportmyincome.org"
+        get :error_404, session: { cbv_flow_id: cbv_flow.id }
+        expect(response.status).to eq(404)
+        expect(response.body).to include("Return to entry page")
+      end
+    end
   end
 
   describe "#error_500" do
@@ -36,13 +55,16 @@ RSpec.describe PagesController do
       expect(response.status).to eq(500)
       expect(response.body).to include("It looks like something went wrong")
     end
-  end
 
-  describe "#redirect_to_client_agency_entries" do
-    it "redirects to the client agency entries page when the hostname matches a client agency domain" do
-      request.host = "la.reportmyincome.org"
-      get :home
-      expect(response).to redirect_to(cbv_flow_new_path(client_agency_id: "la_ldh"))
+    describe "when on an agency subdomain" do
+      let(:cbv_flow) { create(:cbv_flow, :invited) }
+
+      it "renders" do
+        request.host = "la.reportmyincome.org"
+        get :error_500, session: { cbv_flow_id: cbv_flow.id }
+        expect(response.status).to eq(500)
+        expect(response.body).to include("It looks like something went wrong")
+      end
     end
   end
 end
