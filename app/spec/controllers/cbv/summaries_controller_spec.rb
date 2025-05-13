@@ -54,6 +54,8 @@ RSpec.describe Cbv::SummariesController do
       session[:cbv_flow_id] = cbv_flow.id
       pinwheel_stub_request_end_user_accounts_response
       pinwheel_stub_request_end_user_paystubs_response
+      pinwheel_stub_request_end_user_account_response
+      pinwheel_stub_request_platform_response
       pinwheel_stub_request_employment_info_response unless errored_jobs.include?("employment")
       pinwheel_stub_request_income_metadata_response if supported_jobs.include?("income")
       pinwheel_stub_request_identity_response

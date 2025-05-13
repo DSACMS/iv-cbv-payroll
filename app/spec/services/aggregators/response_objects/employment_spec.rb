@@ -3,19 +3,37 @@ require 'rails_helper'
 RSpec.describe Aggregators::ResponseObjects::Employment do
   describe '.from_pinwheel' do
     let(:pinwheel_response) do
-        {
-          "account_id" => "12345",
-          "employer_name" => "Acme Corp",
-          "start_date" => "2020-01-01",
-          "termination_date" => "2021-01-01",
-          "status" => "active",
-          "employer_phone_number" => { "value" => "123-456-7890" },
-          "employer_address" => { "raw" => "123 Main St, Anytown, USA" }
-        }
-      end
+      {
+        "account_id" => "12345",
+        "employer_name" => "Acme Corp",
+        "start_date" => "2020-01-01",
+        "termination_date" => "2021-01-01",
+        "status" => "active",
+        "employer_phone_number" => { "value" => "123-456-7890" },
+        "employer_address" => { "raw" => "123 Main St, Anytown, USA" }
+      }
+    end
+
+    let(:platform_response) do
+      {
+        "id"=> "00000000-0000-0000-0000-000000011111",
+        "name"=> "Testing Payroll Provider Inc.",
+        "type"=> "payroll",
+        "fractional_amount_supported"=> false,
+        "min_amount"=> nil,
+        "max_amount"=> nil,
+        "last_updated"=> "2023-05-05T15=>18=>39.312868+00=>00",
+        "logo_url"=> nil,
+        "percentage_supported"=> false,
+        "min_percentage"=> 1,
+        "max_percentage"=> 99,
+        "supported_jobs"=> %w[direct_deposit_allocations income identity employment tax_forms direct_deposit_switch paystubs shifts],
+        "amount_supported" => true
+      }
+    end
 
     it 'creates an Employment object with correct attributes' do
-      employment = described_class.from_pinwheel(pinwheel_response)
+      employment = described_class.from_pinwheel(pinwheel_response, platform_response)
       expect(employment.account_id).to eq("12345")
       expect(employment.employer_name).to eq("Acme Corp")
       expect(employment.start_date).to eq("2020-01-01")
