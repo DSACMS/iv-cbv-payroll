@@ -90,16 +90,15 @@ module ApplicationHelper
     nil
   end
 
-  def get_age_range(date_of_birth)
+  def get_age_range(date_of_birth, now: Date.today)
     dob = date_string_to_date(date_of_birth)
     return nil unless dob
 
-    today = Date.today
-    age = today.year - dob.year
-    this_years_birthday = Date.new(today.year, dob.month, dob.day)
+    age = now.year - dob.year
+    this_years_birthday = Date.new(now.year, dob.month, dob.day)
 
     # Subtract 1 if birthday hasn't occurred yet this year
-    age -= 1 if today < this_years_birthday
+    age -= 1 if now < this_years_birthday
 
     case age
     when 0..18 then "0-18"
