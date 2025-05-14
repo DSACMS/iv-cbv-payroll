@@ -109,11 +109,14 @@ RSpec.describe Webhooks::Pinwheel::EventsController do
         end
         let(:event_logger) { instance_double(GenericEventTracker) }
 
-        before do
-          # The report metric, "paystubs_days_since_last_paid" will use Timecop
-          # for a static date to reference as "now". This allows for consistent test results
-          Timecop.freeze(Time.local(2025, 5, 15))
+        around do |ex|
+          # The report metric, "paystubs_days_since_last_pay_date" will use Timecop
+          # for a static date to reference as "now".
+          # This prevents date drifting where test results may vary over time
+          Timecop.freeze(Time.local(2025, 5, 15), &ex)
+        end
 
+        before do
           pinwheel_stub_request_identity_response
           pinwheel_stub_request_income_metadata_response
           pinwheel_stub_request_end_user_multiple_paystubs_response
@@ -121,10 +124,6 @@ RSpec.describe Webhooks::Pinwheel::EventsController do
           pinwheel_stub_request_shifts_response
 
           allow(controller).to receive(:event_logger).and_return(event_logger)
-        end
-
-        after do
-          Timecop.return
         end
 
         it "sends full report analytics when synced" do
