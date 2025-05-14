@@ -46,7 +46,7 @@ class Webhooks::Pinwheel::EventsController < ApplicationController
   end
 
   def get_supported_jobs(platform_id)
-    @pinwheel.fetch_platform(platform_id: platform_id)["data"]["supported_jobs"]
+    @pinwheel.fetch_platform(platform_id)["data"]["supported_jobs"]
   end
 
   def process_webhook_event
