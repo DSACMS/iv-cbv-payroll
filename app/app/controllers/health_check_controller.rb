@@ -5,6 +5,13 @@ class HealthCheckController < ActionController::Base
     render json: { status: "ok", version: ENV["IMAGE_TAG"] }
   end
 
+  def test_queueing
+    # adding a second database query to distinguish healthiness of using one query vs another
+    random_id = CbvFlow.last&.id || 10000
+    TestQueueingJob.perform_later(Random.new.rand(1..random_id))
+    render json: { status: "ok" }
+  end
+
   def test_rendering
     return head :not_found unless Rails.env.development?
 

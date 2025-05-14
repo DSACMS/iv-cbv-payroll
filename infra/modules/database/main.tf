@@ -34,6 +34,7 @@ resource "aws_rds_cluster" "db" {
   storage_encrypted           = true
   kms_key_id                  = aws_kms_key.db.arn
   allow_major_version_upgrade = false
+  enable_http_endpoint        = true
 
   db_cluster_parameter_group_name = aws_rds_cluster_parameter_group.rds_query_logging.name
 
@@ -49,8 +50,8 @@ resource "aws_rds_cluster" "db" {
   deletion_protection = !var.is_temporary
 
   serverlessv2_scaling_configuration {
-    max_capacity = 1.0
-    min_capacity = 0.5
+    max_capacity = var.serverless_max_capacity
+    min_capacity = var.serverless_min_capacity
   }
 
   db_subnet_group_name   = var.database_subnet_group_name
@@ -60,14 +61,16 @@ resource "aws_rds_cluster" "db" {
 }
 
 resource "aws_rds_cluster_instance" "primary" {
-  identifier                 = local.primary_instance_name
-  cluster_identifier         = aws_rds_cluster.db.id
-  instance_class             = "db.serverless"
-  engine                     = aws_rds_cluster.db.engine
-  engine_version             = aws_rds_cluster.db.engine_version
-  auto_minor_version_upgrade = true
-  monitoring_role_arn        = aws_iam_role.rds_enhanced_monitoring.arn
-  monitoring_interval        = 30
+  identifier                      = local.primary_instance_name
+  cluster_identifier              = aws_rds_cluster.db.id
+  instance_class                  = "db.serverless"
+  engine                          = aws_rds_cluster.db.engine
+  engine_version                  = aws_rds_cluster.db.engine_version
+  auto_minor_version_upgrade      = true
+  monitoring_role_arn             = aws_iam_role.rds_enhanced_monitoring.arn
+  monitoring_interval             = 30
+  performance_insights_enabled    = true
+  performance_insights_kms_key_id = aws_kms_key.db.arn
 }
 
 resource "aws_kms_key" "db" {

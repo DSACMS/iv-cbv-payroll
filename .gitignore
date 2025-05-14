@@ -53,6 +53,7 @@ spec/examples.txt
 secrets.auto.tfvars
 terraform.tfstate
 terraform.tfstate.backup
+results.sarif
 
 #IDE Specific (RubyMine)
 .idea

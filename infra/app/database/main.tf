@@ -92,4 +92,7 @@ module "database" {
   private_subnet_ids             = data.aws_subnets.database.ids
   aws_services_security_group_id = data.aws_security_groups.aws_services.ids[0]
   is_temporary                   = local.is_temporary
+
+  serverless_min_capacity = local.database_config.serverless_min_capacity
+  serverless_max_capacity = local.database_config.serverless_max_capacity
 }

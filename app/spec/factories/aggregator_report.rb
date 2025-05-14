@@ -16,7 +16,7 @@ FactoryBot.define do
         account_id: "account1",
         pay_frequency: "weekly",
         compensation_amount: 4444.44,
-        compensation_unit: "USD"
+        compensation_unit: "hourly"
       )
     ] }
     employments { [
@@ -100,7 +100,7 @@ FactoryBot.define do
         account_id: "argyle_report1",
         pay_frequency: "bi-weekly",
         compensation_amount: 500.00,
-        compensation_unit: "USD"
+        compensation_unit: "hourly"
       )
     ] }
     employments { [
