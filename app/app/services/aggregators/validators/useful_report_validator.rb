@@ -37,9 +37,7 @@ module Aggregators::Validators
       hours_total = 0
       employment_paystubs.each { |p| hours_total += p.hours.to_f if p.hours.present? }
 
-      if (not employment.status.present?) &&
-        (not employment.termination_date.present?) &&
-        (hours_total == 0 and employment_paystubs.sum { |paystub| paystub.gross_pay_amount.to_f } == 0)
+      if hours_total == 0 && employment_paystubs.sum { |paystub| paystub.gross_pay_amount.to_f } == 0
         unemployment_status = true
       end
       unemployment_status
