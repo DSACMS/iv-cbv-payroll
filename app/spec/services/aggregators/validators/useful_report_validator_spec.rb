@@ -16,7 +16,6 @@ RSpec.describe Aggregators::Validators::UsefulReportValidator do
     allow(report).to receive(:paystubs).and_return(paystubs)
     allow(report).to receive(:incomes).and_return(incomes)
     allow(report).to receive(:gigs).and_return(gigs)
-    report.fetch
   end
 
   describe '#validate' do
