@@ -12,7 +12,7 @@ RSpec.describe Aggregators::Validators::UsefulReportValidator do
 
   before do
     # This is trying to isolate this test so that it only handles this unit of code
-    # WARNING!!! If you print the report in the debugger the underlying properties will be empty because 
+    # WARNING!!! If you print the report in the debugger the underlying properties will be empty because
     # we're overwriting the response to each of the properties of the object via these calls.
     # TODO WE SHOULD CLEAN THIS UP.
     allow(report).to receive(:identities).and_return(identities)
@@ -369,9 +369,9 @@ RSpec.describe Aggregators::Validators::UsefulReportValidator do
 
     context 'with fully terminated employment' do
       let(:identities) { [ valid_identity ] }
-      let(:employments) { [fully_terminated_employment ] }
+      let(:employments) { [ fully_terminated_employment ] }
       let(:paystubs) { [ invalid_paystub ] }
-      
+
       it 'is valid even with invalid paystubs' do
         expect(report).to be_valid(:useful_report)
         expect(report.errors).to be_empty
@@ -380,9 +380,9 @@ RSpec.describe Aggregators::Validators::UsefulReportValidator do
 
     context 'with terminated status only' do
       let(:identities) { [ valid_identity ] }
-      let(:employments) { [terminated_status_employment ] }
+      let(:employments) { [ terminated_status_employment ] }
       let(:paystubs) { [ invalid_paystub ] }
-      
+
       it 'is valid even with invalid paystubs' do
         expect(report).to be_valid(:useful_report)
         expect(report.errors).to be_empty
@@ -391,9 +391,9 @@ RSpec.describe Aggregators::Validators::UsefulReportValidator do
 
     context 'with terminated date only' do
       let(:identities) { [ valid_identity ] }
-      let(:employments) { [terminated_date_employment ] }
+      let(:employments) { [ terminated_date_employment ] }
       let(:paystubs) { [ invalid_paystub ] }
-      
+
       it 'is valid even with invalid paystubs' do
         expect(report).to be_valid(:useful_report)
         expect(report.errors).to be_empty
@@ -402,9 +402,9 @@ RSpec.describe Aggregators::Validators::UsefulReportValidator do
 
     context 'with employed status but terminated date' do
       let(:identities) { [ valid_identity ] }
-      let(:employments) { [employed_status_terminated_date_employment ] }
+      let(:employments) { [ employed_status_terminated_date_employment ] }
       let(:paystubs) { [ invalid_paystub ] }
-      
+
       it 'is valid even with invalid paystubs' do
         expect(report).to be_valid(:useful_report)
         expect(report.errors).to be_empty
@@ -415,7 +415,7 @@ RSpec.describe Aggregators::Validators::UsefulReportValidator do
       let(:identities) { [ valid_identity ] }
       let(:employments) { [ empty_employment ] }
       let(:paystubs) { [ invalid_paystub ] }
-      
+
       # We want to generate a report to show that no hours or payments have been made. This shows lack of income
       it 'is valid even with invalid paystubs' do
         expect(report).to be_valid(:useful_report)

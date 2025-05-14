@@ -39,10 +39,10 @@ module Aggregators::Validators
 
       if (not employment.status.present?) &&
         (not employment.termination_date.present?) &&
-        (hours_total == 0 and employment_paystubs.sum { |paystub| paystub.gross_pay_amount.to_f} == 0)
+        (hours_total == 0 and employment_paystubs.sum { |paystub| paystub.gross_pay_amount.to_f } == 0)
         unemployment_status = true
       end
-      return unemployment_status
+      unemployment_status
     end
 
     def paystubs_for_account(report, account_id)
@@ -58,7 +58,6 @@ module Aggregators::Validators
     end
 
     def validate_paystubs(report, is_w2_worker, paystubs)
-
       report.errors.add(:paystubs, "No paystub has pay_date") unless paystubs.any? { |paystub| paystub.pay_date.present? }
       report.errors.add(:paystubs, "No paystub has gross_pay_amount") unless paystubs.any? { |paystub| paystub.gross_pay_amount.present? }
       report.errors.add(:paystubs, "No paystub has valid gross_pay_amount") unless paystubs.any? { |paystub| paystub.gross_pay_amount.to_f > 0 }
