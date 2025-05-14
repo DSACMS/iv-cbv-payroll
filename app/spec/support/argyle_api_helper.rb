@@ -46,6 +46,15 @@ module ArgyleApiHelper
     end
   end
 
+  def argyle_stub_request_account_response(user_folder)
+    stub_request(:get, %r{#{Aggregators::Sdk::ArgyleService::ACCOUNTS_ENDPOINT}/[0-9a-fA-F\-]{36}})
+      .to_return(
+        status: 200,
+        body: argyle_load_relative_json_file(user_folder, 'request_account.json').to_json,
+        headers: { 'Content-Type': 'application/json;charset=UTF-8' }
+      )
+  end
+
   def argyle_stub_request_empty_accounts_response
     stub_request(:get, %r{#{Aggregators::Sdk::ArgyleService::ACCOUNTS_ENDPOINT}})
       .to_return(
@@ -53,6 +62,7 @@ module ArgyleApiHelper
         body: <<~JSON,
           {"next":null,"previous":null,"results":[]}
         JSON
+
         headers: { 'Content-Type': 'application/json;charset=UTF-8' }
       )
   end

@@ -38,6 +38,8 @@ RSpec.describe Cbv::PaymentDetailsController do
       session[:cbv_flow_id] = cbv_flow.id
       pinwheel_stub_request_identity_response
       pinwheel_stub_request_end_user_accounts_response
+      pinwheel_stub_request_end_user_account_response
+      pinwheel_stub_request_platform_response
       pinwheel_stub_request_end_user_paystubs_response
       pinwheel_stub_request_income_metadata_response if supported_jobs.include?("income")
       pinwheel_stub_request_employment_info_response
@@ -277,6 +279,7 @@ RSpec.describe Cbv::PaymentDetailsController do
           argyle_stub_request_identities_response("bob")
           argyle_stub_request_paystubs_response("bob")
           argyle_stub_request_gigs_response("bob")
+          argyle_stub_request_account_response("bob")
           get :show, params: { user: { account_id: account_id } }
         end
 
@@ -322,6 +325,7 @@ RSpec.describe Cbv::PaymentDetailsController do
           argyle_stub_request_identities_response("sarah")
           argyle_stub_request_paystubs_response("sarah")
           argyle_stub_request_gigs_response("sarah")
+          argyle_stub_request_account_response("sarah")
           get :show, params: { user: { account_id: account_id } }
         end
 

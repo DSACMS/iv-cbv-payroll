@@ -66,6 +66,10 @@ module Aggregators::Sdk
       @http.get(build_url("#{END_USERS}/#{end_user_id}/accounts")).body
     end
 
+    def fetch_account(account_id:)
+      @http.get(build_url("#{ACCOUNTS_ENDPOINT}/#{account_id}")).body
+    end
+
     def fetch_paystubs_api(account_id:, **params)
       @http.get(build_url("#{ACCOUNTS_ENDPOINT}/#{account_id}/paystubs"), params).body
     end
@@ -86,7 +90,7 @@ module Aggregators::Sdk
       @http.get(build_url("#{ACCOUNTS_ENDPOINT}/#{account_id}/income")).body
     end
 
-    def fetch_platform(platform_id:)
+    def fetch_platform(platform_id)
       @http.get(build_url("#{PLATFORMS_ENDPOINT}/#{platform_id}")).body
     end
 
