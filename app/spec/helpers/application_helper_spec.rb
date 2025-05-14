@@ -144,9 +144,9 @@ RSpec.describe ApplicationHelper do
       expect(helper.get_age_range(date_of_birth)).to eq("0-18")
     end
 
-    it "returns '18-25' for a date of birth 20 years ago" do
+    it "returns '19-25' for a date of birth 20 years ago" do
       date_of_birth = (Date.today - 20.years)
-      expect(helper.get_age_range(date_of_birth)).to eq("18-25")
+      expect(helper.get_age_range(date_of_birth)).to eq("19-25")
     end
 
     it "returns '90+' for a date of birth 95 years ago" do
