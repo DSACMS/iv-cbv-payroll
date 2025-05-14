@@ -84,10 +84,10 @@ RSpec.describe Aggregators::ResponseObjects::Employment do
       }
     end
 
-    let(:account_resposne) do
+    let(:account_response) do
       {
-        "item": "item-1",
-        "source": "Testing Payroll Provider Inc."
+        "item" => "item-1",
+        "source" => "Testing Payroll Provider Inc."
       }
     end
 
@@ -103,26 +103,14 @@ RSpec.describe Aggregators::ResponseObjects::Employment do
       expect(employment.employer_id).to be_nil
     end
 
-    it 'creates an Employment object with paystub, no account' do
-      employment = described_class.from_argyle(argyle_response)
+    it 'creates an Employment object with paystub and account' do
+      employment = described_class.from_argyle(argyle_response, a_paystub_response, account_response)
       expect(employment.account_id).to eq("67890")
       expect(employment.employer_name).to eq("Beta Inc")
       expect(employment.start_date).to eq("2019-01-01")
       expect(employment.termination_date).to eq("2020-01-01")
       expect(employment.status).to eq("employed")
-      expect(employment.employer_address).to eq("123 Main St, Anytown, NY 11111")
-      expect(employment.account_source).to be_nil
-      expect(employment.employer_id).to be_nil
-    end
-
-    it 'creates an Employment object with account, no paystub' do
-      employment = described_class.from_argyle(argyle_response)
-      expect(employment.account_id).to eq("67890")
-      expect(employment.employer_name).to eq("Beta Inc")
-      expect(employment.start_date).to eq("2019-01-01")
-      expect(employment.termination_date).to eq("2020-01-01")
-      expect(employment.status).to eq("employed")
-      expect(employment.employer_address).to be_nil
+      expect(employment.employer_address).to eq("123 Main St, Anytown, New York 11111")
       expect(employment.account_source).to eq("Testing Payroll Provider Inc.")
       expect(employment.employer_id).to eq("item-1")
     end
