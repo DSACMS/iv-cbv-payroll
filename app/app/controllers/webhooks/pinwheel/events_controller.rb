@@ -120,7 +120,7 @@ class Webhooks::Pinwheel::EventsController < ApplicationController
         paystubs_hours_average: paystub_hours.sum.to_f / paystub_hours.length,
         paystubs_hours_by_earning_category_count: report.paystubs.sum { |p| p.hours_by_earning_category.length },
         paystubs_hours_max: paystub_hours.max,
-        paystubs_hours_median: paystub_hours[paystub_hours.length / 2],
+        paystubs_hours_median: paystub_hours.sort[paystub_hours.length / 2],
         paystubs_hours_min: paystub_hours.min,
         paystubs_hours_present: report.paystubs.first&.hours.present?,
         paystubs_earnings_count: report.paystubs.sum { |p| p.earnings.length },
@@ -129,7 +129,7 @@ class Webhooks::Pinwheel::EventsController < ApplicationController
         paystubs_earnings_category_bonus_count: report.paystubs.sum { |p| p.earnings.count { |e| e.category == "bonus" } },
         paystubs_earnings_category_overtime_count: report.paystubs.sum { |p| p.earnings.count { |e| e.category == "overtime" } },
         paystubs_gross_pay_amounts_max: paystub_gross_pay_amounts.max,
-        paystubs_gross_pay_amounts_median: paystub_gross_pay_amounts[paystub_gross_pay_amounts.length / 2],
+        paystubs_gross_pay_amounts_median: paystub_gross_pay_amounts.sort[paystub_gross_pay_amounts.length / 2],
         paystubs_gross_pay_amounts_average: paystub_gross_pay_amounts.sum.to_f / paystub_gross_pay_amounts.length,
         paystubs_gross_pay_amounts_min: paystub_gross_pay_amounts.min,
 
