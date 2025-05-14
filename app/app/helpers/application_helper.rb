@@ -103,7 +103,7 @@ module ApplicationHelper
 
     case age
     when 0..18 then "0-18"
-    when 18..25 then "18-25"
+    when 19..25 then "19-25"
     when 26..29 then "26-29"
     when 30..39 then "30-39"
     when 40..49 then "40-49"
