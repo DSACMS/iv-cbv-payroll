@@ -156,6 +156,22 @@ RSpec.describe Aggregators::Validators::UsefulReportValidator do
       )
     end
 
+    let(:empty_paystub) do
+      Aggregators::ResponseObjects::Paystub.new(
+        account_id: "123",
+        gross_pay_amount: 0.0,
+        net_pay_amount: 0.0,
+        gross_pay_ytd: 0.0,
+        pay_period_start: nil,
+        pay_period_end: nil,
+        pay_date: nil,
+        deducßions: [],
+        hours_by_earning_category: {},
+        hours: 0.0
+      )
+    end
+
+
     let(:invalid_paystub) do
       Aggregators::ResponseObjects::Paystub.new(
         account_id: "123",
@@ -167,7 +183,7 @@ RSpec.describe Aggregators::Validators::UsefulReportValidator do
         pay_date: nil,
         deductions: [],
         hours_by_earning_category: {},
-        hours: 0.0
+        hours: 10.0
       )
     end
 
@@ -411,10 +427,10 @@ RSpec.describe Aggregators::Validators::UsefulReportValidator do
       end
     end
 
-    context 'with empty employment status and empty termination date' do
+    context 'with empty employment status, empty termination date, empty paystub' do
       let(:identities) { [ valid_identity ] }
       let(:employments) { [ empty_employment ] }
-      let(:paystubs) { [ invalid_paystub ] }
+      let(:paystubs) { [ empty_paystub ] }
 
       # We want to generate a report to show that no hours or payments have been made. This shows lack of income
       it 'is valid even with invalid paystubs' do
