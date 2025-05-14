@@ -157,21 +157,29 @@ RSpec.describe Webhooks::Pinwheel::EventsController do
               income_compensation_amount_present: true,
               income_compensation_unit_present: true,
               income_pay_frequency_present: true,
+              income_pay_frequency: "bi-weekly",
 
               # Paystubs fields
               paystubs_success: true,
               paystubs_supported: true,
               paystubs_count: 2,
               paystubs_deductions_count: 6,
-              paystubs_hours_by_earning_category_count: 2,
               paystubs_hours_present: true,
+              paystubs_hours_average: 80.0,
+              paystubs_hours_by_earning_category_count: 2,
+              paystubs_hours_max: 80.0,
+              paystubs_hours_median: 80.0,
+              paystubs_hours_min: 80.0,
               paystubs_earnings_count: 4,
               paystubs_earnings_with_hours_count: 2,
               paystubs_earnings_category_salary_count: 2,
               paystubs_earnings_category_bonus_count: 2,
               paystubs_earnings_category_overtime_count: 0,
+              paystubs_gross_pay_amounts_average: 480720.0,
+              paystubs_gross_pay_amounts_max: 480720,
+              paystubs_gross_pay_amounts_median: 480720,
+              paystubs_gross_pay_amounts_min: 480720,
               paystubs_days_since_last_pay_date: 1565,
-
 
               # Employment fields
               employment_success: true,

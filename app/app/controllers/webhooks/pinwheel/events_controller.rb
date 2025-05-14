@@ -73,6 +73,9 @@ class Webhooks::Pinwheel::EventsController < ApplicationController
         @payroll_account.update(synchronization_status: :failed)
       end
 
+      paystub_hours = report.paystubs.filter_map(&:hours).map(&:to_f)
+      paystub_gross_pay_amounts = report.paystubs.filter_map(&:gross_pay_amount)
+
       event_logger.track("ApplicantFinishedPinwheelSync", request, {
         cbv_applicant_id: @cbv_flow.cbv_applicant_id,
         cbv_flow_id: @cbv_flow.id,
@@ -107,19 +110,28 @@ class Webhooks::Pinwheel::EventsController < ApplicationController
         income_compensation_amount_present: report.incomes.first&.compensation_amount.present?,
         income_compensation_unit_present: report.incomes.first&.compensation_unit.present?,
         income_pay_frequency_present: report.incomes.first&.pay_frequency.present?,
+        income_pay_frequency: report.incomes.first&.pay_frequency,
 
         # Paystubs fields
         paystubs_success: @payroll_account.job_succeeded?("paystubs"),
         paystubs_supported: @payroll_account.supported_jobs.include?("paystubs"),
         paystubs_count: report.paystubs.length,
         paystubs_deductions_count: report.paystubs.sum { |p| p.deductions.length },
+        paystubs_hours_average: paystub_hours.sum.to_f / paystub_hours.length,
         paystubs_hours_by_earning_category_count: report.paystubs.sum { |p| p.hours_by_earning_category.length },
+        paystubs_hours_max: paystub_hours.max,
+        paystubs_hours_median: paystub_hours[paystub_hours.length / 2],
+        paystubs_hours_min: paystub_hours.min,
         paystubs_hours_present: report.paystubs.first&.hours.present?,
         paystubs_earnings_count: report.paystubs.sum { |p| p.earnings.length },
         paystubs_earnings_with_hours_count: report.paystubs.sum { |p| p.earnings.count { |e| e.hours.present? } },
         paystubs_earnings_category_salary_count: report.paystubs.sum { |p| p.earnings.count { |e| e.category == "salary" } },
         paystubs_earnings_category_bonus_count: report.paystubs.sum { |p| p.earnings.count { |e| e.category == "bonus" } },
         paystubs_earnings_category_overtime_count: report.paystubs.sum { |p| p.earnings.count { |e| e.category == "overtime" } },
+        paystubs_gross_pay_amounts_max: paystub_gross_pay_amounts.max,
+        paystubs_gross_pay_amounts_median: paystub_gross_pay_amounts[paystub_gross_pay_amounts.length / 2],
+        paystubs_gross_pay_amounts_average: paystub_gross_pay_amounts.sum.to_f / paystub_gross_pay_amounts.length,
+        paystubs_gross_pay_amounts_min: paystub_gross_pay_amounts.min,
         paystubs_days_since_last_pay_date: report.paystubs.map { |p| Date.parse(p.pay_date) }.compact.max&.then { |last_pay_date| (Date.current - last_pay_date).to_i },
 
         # Employment fields

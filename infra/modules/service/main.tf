@@ -46,12 +46,6 @@ resource "aws_ecs_service" "app" {
   desired_count          = var.desired_instance_count
   enable_execute_command = var.enable_command_execution ? true : null
 
-  # Allow changes to the desired_count without differences in terraform plan.
-  # This allows autoscaling to manage the desired count for us.
-  lifecycle {
-    ignore_changes = [desired_count]
-  }
-
   network_configuration {
     assign_public_ip = false
     subnets          = var.private_subnet_ids

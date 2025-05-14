@@ -196,13 +196,18 @@ RSpec.describe Webhooks::Argyle::EventsController, type: :controller do
           income_compensation_amount_present: true,
           income_compensation_unit_present: true,
           income_pay_frequency_present: true,
+          income_pay_frequency: "biweekly",
 
           # Paystubs fields
           paystubs_success: true,
           paystubs_supported: true,
           paystubs_count: 10,
           paystubs_deductions_count: 16,
+          paystubs_hours_average: 64.848,
           paystubs_hours_by_earning_category_count: 10,
+          paystubs_hours_max: 83.04,
+          paystubs_hours_median: 66.11,
+          paystubs_hours_min: 51.87,
           paystubs_hours_present: true,
           paystubs_earnings_count: 33,
           paystubs_earnings_with_hours_count: 10,
@@ -210,6 +215,10 @@ RSpec.describe Webhooks::Argyle::EventsController, type: :controller do
           paystubs_earnings_type_bonus_count: 10,
           paystubs_earnings_type_overtime_count: 5,
           paystubs_earnings_type_commission_count: 8,
+          paystubs_gross_pay_amounts_max: 192328,
+          paystubs_gross_pay_amounts_min: 120139,
+          paystubs_gross_pay_amounts_average: 152914.4,
+          paystubs_gross_pay_amounts_median: 153103,
           paystubs_days_since_last_pay_date: 73,
 
           # Employment fields
