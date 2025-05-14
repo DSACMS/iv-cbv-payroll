@@ -8,15 +8,12 @@ module Aggregators::Validators
 
       report.errors.add(:employments, "No employments present") unless report.employments.present?
       report.employments.each { |e| validate_employment(report, e) }
-      report.employments.each do |employment|
-        employment_paystubs = paystubs_for_account(report, employment.account_id)
-        # If not actively employed we don't want to run paystub level validations.
-        # Its important that we share any confirmation of loss of employment with the state agency
-        unless is_unemployed(employment, employment_paystubs)
-          is_w2_worker = employment.employment_type == :w2
-          if report.paystubs.any?
-            validate_paystubs(report, is_w2_worker, employment_paystubs)
-          end
+      # If not actively employed we don't want to run paystub level validations.
+      # Its important that we share any confirmation of loss of employment with the state agency
+      unless is_unemployed(report)
+        is_w2_worker = report.employments.none? { |e| e.employment_type == :gig }
+        if report.paystubs.any?
+          validate_paystubs(report, is_w2_worker)
         end
       end
     end
@@ -27,20 +24,18 @@ module Aggregators::Validators
     # Not actively employed means status is not 'employed' OR
     # termination_date is not empty OR
     # The acccount has empty employment status, no termination date, no gross pay and no hours
-    def is_unemployed(employment, employment_paystubs)
-      # assume they're employed
-      unemployment_status = false
-      # TODO turn employment status into a constant or a symbol
-      # only want to set employment status to true don't want to have it set to true and then unset later
-      unemployment_status = true if employment.status.present? && employment.status != "employed"
-      unemployment_status = true if employment.termination_date.present?
-      hours_total = 0
-      employment_paystubs.each { |p| hours_total += p.hours.to_f if p.hours.present? }
-
-      if hours_total == 0 && employment_paystubs.sum { |paystub| paystub.gross_pay_amount.to_f } == 0
-        unemployment_status = true
+    def is_unemployed(report)
+      report.employments.each do |employment|
+        employment_paystubs = paystubs_for_account(report, employment.account_id)
+        # TODO turn employment status into a constant or a symbol
+        return true if employment.status.present? && employment.status != "employed"
+        return true if employment.termination_date.present?
+        hours_total = employment_paystubs.filter { | p| p.hours.present? }.sum { |p| p.hours.to_f }
+        gross_pay_total = employment_paystubs.sum { |paystub| paystub.gross_pay_amount.to_f }
+        return true if hours_total == 0 && gross_pay_total == 0
       end
-      unemployment_status
+      # We know the person is employed if we hit this point
+      false
     end
 
     def paystubs_for_account(report, account_id)
@@ -55,10 +50,10 @@ module Aggregators::Validators
       report.errors.add(:employments, "Employment has no employer_name") unless employment.employer_name.present?
     end
 
-    def validate_paystubs(report, is_w2_worker, paystubs)
-      report.errors.add(:paystubs, "No paystub has pay_date") unless paystubs.any? { |paystub| paystub.pay_date.present? }
-      report.errors.add(:paystubs, "No paystub has gross_pay_amount") unless paystubs.any? { |paystub| paystub.gross_pay_amount.present? }
-      report.errors.add(:paystubs, "No paystub has valid gross_pay_amount") unless paystubs.any? { |paystub| paystub.gross_pay_amount.to_f > 0 }
+    def validate_paystubs(report, is_w2_worker)
+      report.errors.add(:paystubs, "No paystub has pay_date") unless report.paystubs.any? { |paystub| paystub.pay_date.present? }
+      report.errors.add(:paystubs, "No paystub has gross_pay_amount") unless report.paystubs.any? { |paystub| paystub.gross_pay_amount.present? }
+      report.errors.add(:paystubs, "No paystub has valid gross_pay_amount") unless report.paystubs.any? { |paystub| paystub.gross_pay_amount.to_f > 0 }
 
       # Removing hours check for LA launch - FFS-2866 ticket to add back logic for SNAP only pilots
       # if is_w2_worker

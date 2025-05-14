@@ -165,7 +165,7 @@ RSpec.describe Aggregators::Validators::UsefulReportValidator do
         pay_period_start: nil,
         pay_period_end: nil,
         pay_date: nil,
-        deducßions: [],
+        deductions: [],
         hours_by_earning_category: {},
         hours: 0.0
       )
