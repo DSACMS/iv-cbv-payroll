@@ -9,6 +9,7 @@ module Aggregators::ResponseObjects
     employer_address
     employment_type
     account_source
+    employer_id
   ]
 
   Employment = Struct.new(*EMPLOYMENT_FIELDS, keyword_init: true) do
@@ -22,7 +23,8 @@ module Aggregators::ResponseObjects
         employer_phone_number: response_body.dig("employer_phone_number", "value"),
         employer_address: response_body.dig("employer_address", "raw"),
         employment_type: Aggregators::FormatMethods::Pinwheel.employment_type(response_body["employer_name"]),
-        account_source: platform_body&.dig("name")
+        account_source: platform_body&.dig("name"),
+        employer_id: response_body["id"]
       )
     end
 
@@ -35,7 +37,8 @@ module Aggregators::ResponseObjects
         status: Aggregators::FormatMethods::Argyle.format_employment_status(identity_response_body["employment_status"]),
         employer_address: Aggregators::FormatMethods::Argyle.format_employer_address(a_paystub_response_body),
         employment_type: Aggregators::FormatMethods::Argyle.employment_type(identity_response_body["employment_type"]),
-        account_source: account_json&.dig("source")
+        account_source: account_json&.dig("source"),
+        employer_id: account_json&.dig("item")
       )
     end
   end

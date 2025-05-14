@@ -222,6 +222,7 @@ RSpec.describe Webhooks::Argyle::EventsController, type: :controller do
           employment_type: "w2",
           employment_employer_name: "Whole Foods",
           employment_account_source: "argyle_sandbox",
+          employment_employer_id: "item_000024123",
           employment_employer_address_present: true,
           employment_employer_phone_number_present: true,
           employment_start_date: "2022-08-08",
