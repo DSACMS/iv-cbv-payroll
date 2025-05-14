@@ -23,6 +23,12 @@
           "category": "empty_deduction",
           "name": "empty_deduction",
           "type": "empty_deduction"
+        },
+        {
+          "amount": null,
+          "category": "nil_amount_deduction",
+          "name": "Nil Amount Deduction",
+          "type": "post_tax"
         }
       ],
       "document": {
