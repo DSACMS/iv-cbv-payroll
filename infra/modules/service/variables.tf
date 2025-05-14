@@ -50,7 +50,7 @@ variable "desired_instance_count" {
   default     = 1
 }
 
-variable "desired_solidqueue_instance_count" {
+variable "solidqueue_desired_instance_count" {
   type        = number
   description = "Number of background instances of the task definition to place and keep running."
   default     = 1

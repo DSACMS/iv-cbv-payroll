@@ -15,6 +15,7 @@ Rails.application.routes.draw do
     root "pages#home"
 
     get "/health", to: "health_check#ok"
+    get "/health/test_queueing", to: "health_check#test_queueing"
     get "/health/test_rendering", to: "health_check#test_rendering"
     get "/help", to: "help#index", as: :help
     get "/help/:topic", to: "help#show", as: :help_topic

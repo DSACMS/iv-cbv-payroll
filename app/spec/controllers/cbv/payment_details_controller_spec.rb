@@ -67,6 +67,16 @@ RSpec.describe Cbv::PaymentDetailsController do
         get :show, params: { user: { account_id: account_id } }
       end
 
+      it "should properly display pay frequency and compensation amount" do
+        get :show, params: { user: { account_id: account_id } }
+        expect(response).to be_successful
+
+        doc = Nokogiri::HTML(response.body)
+
+        expect(doc.xpath("//tr[contains(., 'Pay frequency')]").text).to include('Bi-weekly')
+        expect(doc.xpath("//tr[contains(., 'Compensation amount')]").text).to include('$10.00 Hourly')
+      end
+
       context "when account comment exists" do
         let(:updated_at) { Time.current.iso8601 }
 
@@ -321,6 +331,13 @@ RSpec.describe Cbv::PaymentDetailsController do
         it { is_expected.to include("Pay period") }
         it { is_expected.to include("Payment after taxes and deductions (net)") }
         it { is_expected.to include("Deduction") }
+
+        it "should properly display pay frequency and compensation amount" do
+          doc = Nokogiri::HTML(response.body)
+
+          expect(doc.xpath("//tr[contains(., 'Pay frequency')]").text).to include('Bi-weekly')
+          expect(doc.xpath("//tr[contains(., 'Compensation amount')]").text).to include('$23.16 Hourly')
+        end
       end
     end
   end

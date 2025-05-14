@@ -1,5 +1,5 @@
 class PagesController < ApplicationController
-  before_action :redirect_to_client_agency_entries
+  before_action :redirect_to_client_agency_entries, only: %i[home]
 
   def home
   end

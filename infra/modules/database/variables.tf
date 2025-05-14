@@ -77,3 +77,15 @@ variable "vpc_id" {
   type        = string
   description = "Uniquely identifies the VPC."
 }
+
+variable "serverless_min_capacity" {
+  description = "The minimum capacity for the Aurora Serverless cluster. Value should be in Aurora capacity units (ACU)"
+  type        = number
+  default     = 0.5
+}
+
+variable "serverless_max_capacity" {
+  description = "The maximum capacity for the Aurora Serverless cluster. Value should be in Aurora capacity units (ACU)"
+  type        = number
+  default     = 1.0
+}
