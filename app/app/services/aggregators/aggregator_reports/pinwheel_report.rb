@@ -54,7 +54,6 @@ module Aggregators::AggregatorReports
 
     def fetch_employment(account_id:)
       platform_body = fetch_platform(account_id: account_id)
-
       json = @pinwheel_service.fetch_employment_api(account_id: account_id)
       Aggregators::ResponseObjects::Employment.from_pinwheel(json["data"], platform_body)
     end
