@@ -1,5 +1,6 @@
 require 'rails_helper'
 require 'csv'
+
 RSpec.describe CaseWorkerTransmitterJob, type: :job do
   include PinwheelApiHelper
   include_context "gpg_setup"
@@ -10,6 +11,7 @@ RSpec.describe CaseWorkerTransmitterJob, type: :job do
   let(:errored_jobs) { [] }
   let(:current_time) { Date.parse('2024-06-18') }
   let(:pinwheel_report) { build(:pinwheel_report, :with_pinwheel_account) }
+  let(:fake_event_logger) { instance_double(GenericEventTracker, track: nil) }
 
   let(:cbv_flow) do
     create(:cbv_flow,
@@ -44,6 +46,10 @@ RSpec.describe CaseWorkerTransmitterJob, type: :job do
     allow(mock_client_agency).to receive(:id).and_return(mocked_client_id)
     allow(mock_client_agency).to receive(:transmission_method).and_return(transmission_method)
     allow(mock_client_agency).to receive(:transmission_method_configuration).and_return(transmission_method_configuration)
+
+    allow_any_instance_of(described_class)
+      .to receive(:event_logger)
+      .and_return(fake_event_logger)
   end
 
   context "#transmit_to_caseworker" do
@@ -117,8 +123,14 @@ RSpec.describe CaseWorkerTransmitterJob, type: :job do
         expect(email.body.encoded).to include(cbv_flow.cbv_applicant.case_number)
       end
 
-      # Note that we are not testing events here because doing so requires use of expect_any_instance_of,
-      # which does not play nice since there are multiple instances of the event logger.
+      it "tracks an ApplicantSharedIncomeSummary event" do
+        described_class.new.perform(cbv_flow.id)
+
+        expect(fake_event_logger).to have_received(:track)
+          .with("ApplicantSharedIncomeSummary", anything, include(
+            cbv_flow_id: cbv_flow.id
+          ))
+      end
     end
 
     context "when transmission method is s3" do
@@ -172,6 +184,15 @@ RSpec.describe CaseWorkerTransmitterJob, type: :job do
 
         expect(s3_service_double).not_to have_received(:upload_file)
         expect(cbv_flow.reload.transmitted_at).to be_nil
+      end
+
+      it "tracks an ApplicantSharedIncomeSummary event" do
+        described_class.new.perform(cbv_flow.id)
+
+        expect(fake_event_logger).to have_received(:track)
+          .with("ApplicantSharedIncomeSummary", anything, include(
+            cbv_flow_id: cbv_flow.id
+          ))
       end
     end
   end
