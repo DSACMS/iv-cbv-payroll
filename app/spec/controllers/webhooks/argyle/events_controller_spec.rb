@@ -349,7 +349,7 @@ RSpec.describe Webhooks::Argyle::EventsController, type: :controller do
       payroll_account.reload.webhook_events.reload
 
       expect(payroll_account.webhook_events.count).to eq(5)
-      expect(payroll_account.job_status("accounts")).to equal(:failed)
+      expect(payroll_account.job_status("accounts")).to eq(:failed)
       expect(payroll_account.sync_failed?).to equal(true)
       expect(payroll_account.has_fully_synced?).to be_falsey
     end
