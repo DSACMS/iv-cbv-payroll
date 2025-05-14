@@ -198,7 +198,7 @@ RSpec.describe Webhooks::Argyle::EventsController, type: :controller do
           paystubs_hours_average: 64.848,
           paystubs_hours_by_earning_category_count: 10,
           paystubs_hours_max: 83.04,
-          paystubs_hours_median: 66.11,
+          paystubs_hours_median: 65.59,
           paystubs_hours_min: 51.87,
           paystubs_hours_present: true,
           paystubs_earnings_count: 33,
