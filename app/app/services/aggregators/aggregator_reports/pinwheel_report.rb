@@ -33,8 +33,8 @@ module Aggregators::AggregatorReports
     def fetch_platform(account_id:)
       # Note: the fetch_platform call is only for additional analytics, so it's OK to fail.
       begin
-        account_body = self.fetch_account(account_id: account_id)
-        platform_json = @pinwheel_service.fetch_platform(platform_id: account_body["platform_id"])
+        account_body = fetch_account(account_id: account_id)
+        platform_json = @pinwheel_service.fetch_platform(account_body["platform_id"])
         platform_json["data"]
       rescue StandardError => e
         Rails.logger.error "Failed to fetch platform: #{e.message}"

@@ -90,7 +90,7 @@ module Aggregators::Sdk
       @http.get(build_url("#{ACCOUNTS_ENDPOINT}/#{account_id}/income")).body
     end
 
-    def fetch_platform(platform_id:)
+    def fetch_platform(platform_id)
       @http.get(build_url("#{PLATFORMS_ENDPOINT}/#{platform_id}")).body
     end
 
