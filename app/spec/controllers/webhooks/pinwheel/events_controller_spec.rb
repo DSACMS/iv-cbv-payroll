@@ -209,7 +209,7 @@ RSpec.describe Webhooks::Pinwheel::EventsController do
 
         context "when not meeting the useful report validations" do
           before do
-            pinwheel_stub_request_end_user_no_hours_response
+            pinwheel_stub_request_end_user_no_paydate_response
           end
 
           it "sends a ApplicantReportFailedUsefulRequirements event" do

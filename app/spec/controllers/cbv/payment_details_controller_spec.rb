@@ -197,10 +197,11 @@ RSpec.describe Cbv::PaymentDetailsController do
         pinwheel_stub_request_end_user_no_hours_response
       end
 
-      it "redirects to the synchronization failure page" do
-        get :show, params: { user: { account_id: account_id } }
-        expect(response).to redirect_to(cbv_flow_synchronization_failures_path)
-      end
+      # Removing hours check for LA launch - FFS-2866 ticket to add back logic for SNAP only pilots
+      # it "redirects to the synchronization failure page" do
+      #   get :show, params: { user: { account_id: account_id } }
+      #   expect(response).to redirect_to(cbv_flow_synchronization_failures_path)
+      # end
 
       context "but the user is a Gig worker" do
         before do
