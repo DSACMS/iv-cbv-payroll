@@ -131,6 +131,10 @@ RSpec.describe ApplicationHelper do
   end
 
   describe "#get_age_range" do
+    around do |ex|
+      Timecop.freeze(Time.local(2025, 5, 15), &ex)
+    end
+
     it "returns nil for invalid date input" do
       expect(helper.get_age_range("invalid-date")).to be_nil
     end
