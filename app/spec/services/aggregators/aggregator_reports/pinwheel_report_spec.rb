@@ -32,7 +32,7 @@ RSpec.describe Aggregators::AggregatorReports::PinwheelReport, type: :service do
     allow(pinwheel_service).to receive(:fetch_paystubs_api).with(account_id: account, from_pay_date: from_date, to_pay_date: to_date).and_return(paystubs_json)
     allow(pinwheel_service).to receive(:fetch_shifts_api).with(account_id: account).and_return(shifts_json)
     allow(pinwheel_service).to receive(:fetch_account).with(account_id: account).and_return(account_json)
-    allow(pinwheel_service).to receive(:fetch_platform).with(platform_id: platform_id).and_return(platform_json)
+    allow(pinwheel_service).to receive(:fetch_platform).with(platform_id).and_return(platform_json)
   end
 
   describe '#fetch' do
@@ -44,7 +44,7 @@ RSpec.describe Aggregators::AggregatorReports::PinwheelReport, type: :service do
       expect(pinwheel_service).to have_received(:fetch_employment_api).with(account_id: account).exactly(1).times
       expect(pinwheel_service).to have_received(:fetch_income_api).with(account_id: account).exactly(1).times
       expect(pinwheel_service).to have_received(:fetch_shifts_api).with(account_id: account).exactly(1).times
-      expect(pinwheel_service).to have_received(:fetch_platform).with(platform_id: platform_id).exactly(1).times
+      expect(pinwheel_service).to have_received(:fetch_platform).with(platform_id).exactly(1).times
     end
 
     it 'transforms all response objects correctly' do
