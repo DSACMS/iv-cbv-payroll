@@ -132,18 +132,33 @@ RSpec.describe Aggregators::AggregatorReports::PinwheelReport, type: :service do
 
     context 'when an error occurs' do
       before do
-        allow(pinwheel_service).to receive(:fetch_identity_api).and_raise(StandardError.new('API error'))
         allow(Rails.logger).to receive(:error)
       end
 
-      it 'logs the error' do
+      it 'logs error on fetch_identity' do
+        allow(pinwheel_service).to receive(:fetch_identity_api).and_raise(StandardError.new('API error'))
+
         report.fetch
         expect(Rails.logger).to have_received(:error).with(/Report Fetch Error: API error/)
+        expect(report.has_fetched).to be false
       end
 
-      it 'sets @has_fetched to false' do
+      it 'continues if an error on fetch_platform' do
+        allow(pinwheel_service).to receive(:fetch_platform).and_raise(StandardError.new('API error'))
+
         report.fetch
-        expect(report.has_fetched).to be false
+        expect(Rails.logger).to have_received(:error).with(/Failed to fetch platform: API error/)
+        expect(report.has_fetched).to be true
+        expect(report.employments.first).to have_attributes(
+                                                   account_id: account,
+                                                   account_source: nil,
+                                                   employment_type: :w2,
+                                                   employer_address: "20429 Pinwheel Drive, New York City, NY 99999",
+                                                   employer_name: "Acme Corporation",
+                                                   start_date: "2010-01-01",
+                                                   status: "employed",
+                                                   termination_date: nil,
+                                                   )
       end
     end
 

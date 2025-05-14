@@ -35,6 +35,18 @@ RSpec.describe Aggregators::ResponseObjects::Employment do
     it 'creates an Employment object with correct attributes' do
       employment = described_class.from_pinwheel(pinwheel_response, platform_response)
       expect(employment.account_id).to eq("12345")
+      expect(employment.account_source).to eq("Testing Payroll Provider Inc.")
+      expect(employment.employer_name).to eq("Acme Corp")
+      expect(employment.start_date).to eq("2020-01-01")
+      expect(employment.termination_date).to eq("2021-01-01")
+      expect(employment.status).to eq("active")
+      expect(employment.employer_phone_number).to eq("123-456-7890")
+      expect(employment.employer_address).to eq("123 Main St, Anytown, USA")
+    end
+
+    it 'creates an Employment object with nil platform' do
+      employment = described_class.from_pinwheel(pinwheel_response)
+      expect(employment.account_id).to eq("12345")
       expect(employment.employer_name).to eq("Acme Corp")
       expect(employment.start_date).to eq("2020-01-01")
       expect(employment.termination_date).to eq("2021-01-01")

@@ -12,7 +12,7 @@ module Aggregators::ResponseObjects
   ]
 
   Employment = Struct.new(*EMPLOYMENT_FIELDS, keyword_init: true) do
-    def self.from_pinwheel(response_body, platform_body)
+    def self.from_pinwheel(response_body, platform_body = nil)
       new(
         account_id: response_body["account_id"],
         employer_name: response_body["employer_name"],
