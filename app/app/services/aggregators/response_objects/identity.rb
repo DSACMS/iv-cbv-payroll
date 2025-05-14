@@ -6,6 +6,7 @@ module Aggregators::ResponseObjects
     emails
     ssn
     phone_numbers
+    zip_code
   ]
 
   Identity = Struct.new(*IDENTITY_FIELDS, keyword_init: true) do
@@ -16,7 +17,8 @@ module Aggregators::ResponseObjects
         date_of_birth: response_body["date_of_birth"],
         emails: response_body["emails"],
         ssn: ("XXX-XX-#{response_body["last_four_ssn"]}" if response_body["last_four_ssn"].present?),
-        phone_numbers: response_body["phone_numbers"]
+        phone_numbers: response_body["phone_numbers"],
+        zip_code: response_body.dig("address", "postal_code")
       )
     end
 
@@ -27,7 +29,8 @@ module Aggregators::ResponseObjects
         date_of_birth: identity_response_body["birth_date"],
         emails: [ identity_response_body["email"] ],
         ssn: Aggregators::FormatMethods::Argyle.obfuscate_ssn(identity_response_body["ssn"]),
-        phone_numbers: [ identity_response_body["phone_number"] ]
+        phone_numbers: [ identity_response_body["phone_number"] ],
+        zip_code: identity_response_body.dig("address", "postal_code")
       )
     end
   end
