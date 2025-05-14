@@ -144,6 +144,7 @@ RSpec.describe Aggregators::Sdk::ArgyleService, type: :service do
 
   describe '#fetch_account_api' do
     let(:requests) { WebMock::RequestRegistry.instance.requested_signatures.hash.keys }
+    let(:account_id) { "019571bc-2f60-3955-d972-dbadfe0913a8" }
     before do
       argyle_stub_request_account_response("bob")
     end
