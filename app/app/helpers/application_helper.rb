@@ -84,12 +84,15 @@ module ApplicationHelper
     end
   end
 
+  def date_string_to_date(date_string)
+    date_string.is_a?(Date) ? date_string : Date.parse(date_string)
+  rescue
+    nil
+  end
+
   def get_age_range(date_of_birth)
-    begin
-      dob = date_of_birth.is_a?(Date) ? date_of_birth : Date.parse(date_of_birth.to_s)
-    rescue
-      return nil
-    end
+    dob = date_string_to_date(date_of_birth)
+    return nil unless dob
 
     today = Date.today
     age = today.year - dob.year
@@ -100,7 +103,7 @@ module ApplicationHelper
 
     case age
     when 0..18 then "0-18"
-    when 19..25 then "18-25"
+    when 18..25 then "18-25"
     when 26..29 then "26-29"
     when 30..39 then "30-39"
     when 40..49 then "40-49"
