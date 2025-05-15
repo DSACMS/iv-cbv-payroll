@@ -60,7 +60,6 @@ class WeeklyReportMailer < ApplicationMailer
         when "la_ldh"
           base_fields.merge(
             case_number: applicant.case_number,
-            date_of_birth: applicant.date_of_birth
           )
         end
       end
