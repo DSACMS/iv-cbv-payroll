@@ -8,7 +8,7 @@ RSpec.describe Aggregators::FormatMethods::Argyle, type: :service do
     end
 
     it 'returns "furloughed" for "inactive"' do
-      expect(described_class.format_employment_status("inactive")).to eq("furloughed")
+      expect(described_class.format_employment_status("inactive")).to eq("inactive")
     end
 
     it 'returns the original status for other values' do

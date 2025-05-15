@@ -7,8 +7,6 @@ module Aggregators::FormatMethods::Argyle
     case employment_status
     when "active"
       "employed"
-    when "inactive"
-      "furloughed"
     else
       employment_status
     end
