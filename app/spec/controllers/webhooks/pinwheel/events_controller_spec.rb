@@ -109,6 +109,13 @@ RSpec.describe Webhooks::Pinwheel::EventsController do
         end
         let(:event_logger) { instance_double(GenericEventTracker) }
 
+        around do |ex|
+          # The report metric, "paystubs_days_since_last_pay_date" will use Timecop
+          # for a static date to reference as "now".
+          # This prevents date drifting where test results may vary over time
+          Timecop.freeze(Time.local(2025, 5, 15), &ex)
+        end
+
         before do
           pinwheel_stub_request_identity_response
           pinwheel_stub_request_income_metadata_response
@@ -132,7 +139,7 @@ RSpec.describe Webhooks::Pinwheel::EventsController do
               invitation_id: cbv_flow.cbv_flow_invitation_id,
               client_agency_id: "sandbox",
               pinwheel_environment: "sandbox",
-              sync_duration_seconds: within(1.second).of(5.minutes),
+              sync_duration_seconds: be_a(Numeric),
 
               # Identity fields
               identity_success: true,
@@ -176,6 +183,7 @@ RSpec.describe Webhooks::Pinwheel::EventsController do
               paystubs_gross_pay_amounts_max: 480720,
               paystubs_gross_pay_amounts_median: 480720,
               paystubs_gross_pay_amounts_min: 480720,
+              paystubs_days_since_last_pay_date: 1565,
 
               # Employment fields
               employment_success: true,

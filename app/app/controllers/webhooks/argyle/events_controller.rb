@@ -239,6 +239,7 @@ class Webhooks::Argyle::EventsController < ApplicationController
         paystubs_gross_pay_amounts_median: paystub_gross_pay_amounts.sort[paystub_gross_pay_amounts.length / 2],
         paystubs_gross_pay_amounts_average: paystub_gross_pay_amounts.sum.to_f / paystub_gross_pay_amounts.length,
         paystubs_gross_pay_amounts_min: paystub_gross_pay_amounts.min,
+        paystubs_days_since_last_pay_date: report.paystubs.map { |p| Date.parse(p.pay_date) }.compact.max&.then { |last_pay_date| (Date.current - last_pay_date).to_i },
 
         # Employment fields (originally from "identities" endpoint)
         employment_success: payroll_account.job_succeeded?("employment"),

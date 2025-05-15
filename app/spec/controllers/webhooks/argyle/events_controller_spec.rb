@@ -103,6 +103,13 @@ RSpec.describe Webhooks::Argyle::EventsController, type: :controller do
       expect(webhook_event.payroll_account.pinwheel_account_id).to eq(payroll_account.pinwheel_account_id)
     end
 
+    around do |ex|
+      # The report metric, "paystubs_days_since_last_pay_date" will use Timecop
+      # for a static date to reference as "now".
+      # This prevents date drifting where test results may vary over time
+      Timecop.freeze(Time.local(2025, 5, 15), &ex)
+    end
+
     before do
       allow_any_instance_of(Aggregators::Sdk::ArgyleService)
         .to receive(:fetch_identities_api)
@@ -217,6 +224,7 @@ RSpec.describe Webhooks::Argyle::EventsController, type: :controller do
           paystubs_gross_pay_amounts_min: 120139,
           paystubs_gross_pay_amounts_average: 152914.4,
           paystubs_gross_pay_amounts_median: 153103,
+          paystubs_days_since_last_pay_date: 73,
 
           # Employment fields
           employment_success: true,
