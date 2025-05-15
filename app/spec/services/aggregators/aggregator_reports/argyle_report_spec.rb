@@ -189,7 +189,7 @@ RSpec.describe Aggregators::AggregatorReports::ArgyleReport, type: :service do
       expect(report.days_since_last_paydate).to be_nil
     end
 
-    it "returns the least date when dates available" do
+    it "returns the latest date when dates available, compared to current time" do
       paystubs = [ OpenStruct.new(pay_date: "2021-02-01"), OpenStruct.new(pay_date: "2021-03-02") ]
       report = described_class.new
       report.paystubs = paystubs
