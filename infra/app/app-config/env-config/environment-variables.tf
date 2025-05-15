@@ -3,9 +3,10 @@ locals {
   # This is a map rather than a list so that variables can be easily
   # overridden per environment using terraform's `merge` function
   default_extra_environment_variables = {
-    # Example environment variables
+    # Environment variables for all terraform-deployed environments
     RAILS_LOG_TO_STDOUT      = "true"
     RAILS_SERVE_STATIC_FILES = "true"
+    RAILS_MAX_THREADS        = 10
 
     # Set to true to inform the app that it is running in a container
     DOCKERIZED = "true"

@@ -1,3 +1,45 @@
+# Load Testing
+## Running a Load Test
+Load tests must be performed from our loadtesting EC2 instance in order for accurate readings to be useful.
+
+Follow these steps to perform a load test:
+
+### Preparation
+1. Ensure you're running k6 within EC2
+2. Ensure you've pre-scaled up the ECS service and database cluster to expected load levels. Standard levels are:
+    * ECS service (app-dev) = 10 containers (tasks)
+    * DB cluster (app-dev) = 10 ACUs
+3. Pause the "default" queue so we don't track a ton of useless Mixpanel events during the test.
+    * https://verify-demo.navapbc.cloud/jobs      (un/pw in 1Password)
+
+### Running the test
+3. Get a fresh COOKIE by starting the CBV session and copying out the value of the cookie
+    ```
+    export COOKIE=$(curl -L --cookie-jar - https://verify-demo.navapbc.cloud/cbv/links/sandbox | grep _iv_cbv_payroll_session | cut -f 7)
+    ```
+4. Then run this script like:
+    ```
+    k6 run loadtest.js --env "COOKIE=$COOKIE" --env URL=https://verify-demo.navapbc.cloud/cbv/employer_search
+    ```
+5. Record the metrics by copying them into Confluence.
+    * Louisiana - https://confluenceent.cms.gov/display/SFIV/Louisiana+%7C+Pre-launch+Load+Testing+Benchmarks+and+SLOs
+
+### Cleanup
+6. Delete all jobs enqueued within the "default" job queue:
+    ```
+    # in top-level of repo
+    bin/ecs-console
+
+    # in the Rails console that opens:
+    > SolidQueue::Queue.new("default").clear
+    ```
+7. Resume the "default" queue execution.
+    * https://verify-demo.navapbc.cloud/jobs      (un/pw in 1Password)
+
+
+## Developing Locally with K6
+The instructions below are for local development/prototyping of the load testing script (not intended to produce calibrated metrics).
+
 ### Installing k6 locally & starting container:
 
 ```
@@ -63,4 +105,4 @@ sudo dnf install k6
 
 # running without dumping into influxdb
 
-k6 run loadtest.js --env USER_TOKENS=<COMMA_SEPERATED_TOKENS> --env URL_BASE=https://verify-demo.navapbc.cloud
+k6 run loadtest.js --env COOKIE=<YOUR_COOKIE> --env URL=https://verify-demo.navapbc.cloud

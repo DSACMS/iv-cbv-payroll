@@ -114,6 +114,8 @@ RSpec.describe Webhooks::Pinwheel::EventsController do
           pinwheel_stub_request_income_metadata_response
           pinwheel_stub_request_end_user_multiple_paystubs_response
           pinwheel_stub_request_employment_info_response
+          pinwheel_stub_request_end_user_account_response
+          pinwheel_stub_request_platform_response
           pinwheel_stub_request_shifts_response
 
           allow(controller).to receive(:event_logger).and_return(event_logger)
@@ -142,6 +144,9 @@ RSpec.describe Webhooks::Pinwheel::EventsController do
               identity_ssn_present: true,
               identity_emails_count: 1,
               identity_phone_numbers_count: 1,
+              identity_age_range: "30-39",
+              identity_age_range_applicant: "30-39",
+              identity_zip_code: "99999",
 
               # Income fields
               income_success: true,
@@ -177,6 +182,8 @@ RSpec.describe Webhooks::Pinwheel::EventsController do
               employment_supported: true,
               employment_type: "w2",
               employment_status: "employed",
+              employment_account_source: "Testing Payroll Provider Inc.",
+              employment_employer_id: "a3e3a4ff-ff5f-4b7c-b347-3e497a729aac",
               employment_employer_name: "Acme Corporation",
               employment_employer_address_present: true,
               employment_employer_phone_number_present: true,
