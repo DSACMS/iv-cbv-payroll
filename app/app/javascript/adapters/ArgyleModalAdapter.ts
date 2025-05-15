@@ -141,7 +141,7 @@ export default class ArgyleModalAdapter extends ModalAdapter {
   async onSuccess(eventPayload: ArgyleAccountData) {
     await trackUserAction("ArgyleSuccess", {
       account_id: eventPayload.accountId,
-      user_id: eventPayload.userId,
+      argyle_user_id: eventPayload.userId,
       item_id: eventPayload.itemId,
       payload: eventPayload,
     })

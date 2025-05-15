@@ -49,6 +49,7 @@
         }
       ],
       "employer_name": "Acme Corp",
+      "status": "employed",
       "gross_pay_amount": 69891,
       "gross_pay_ytd": null,
       "id": "497f6eca-6276-4993-bfeb-53cbbbba6f08",

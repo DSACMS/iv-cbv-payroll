@@ -16,7 +16,7 @@ FactoryBot.define do
         account_id: "account1",
         pay_frequency: "weekly",
         compensation_amount: 4444.44,
-        compensation_unit: "USD"
+        compensation_unit: "hourly"
       )
     ] }
     employments { [
@@ -25,7 +25,8 @@ FactoryBot.define do
         employer_name: "ACME Corp.",
         start_date: "2020-01-01",
         termination_date: nil,
-        status: "employed"
+        status: "employed",
+        account_source: "pinwheel_payroll_provider"
     )
     ] }
     paystubs { [
@@ -100,7 +101,7 @@ FactoryBot.define do
         account_id: "argyle_report1",
         pay_frequency: "bi-weekly",
         compensation_amount: 500.00,
-        compensation_unit: "USD"
+        compensation_unit: "hourly"
       )
     ] }
     employments { [
@@ -109,7 +110,8 @@ FactoryBot.define do
         employer_name: "Argyle Test Corp.",
         start_date: "2021-01-01",
         termination_date: nil,
-        status: "employed"
+        status: "employed",
+        account_source: "argyle_sandbox"
     )
     ] }
     paystubs { [

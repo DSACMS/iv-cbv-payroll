@@ -1,15 +1,10 @@
-
 resource "aws_ecs_service" "solid_queue" {
   name                   = "${var.service_name}-solid_queue"
   cluster                = aws_ecs_cluster.cluster.arn
   launch_type            = "FARGATE"
   task_definition        = aws_ecs_task_definition.solid_queue.arn
-  desired_count          = var.desired_solidqueue_instance_count
+  desired_count          = var.solidqueue_desired_instance_count
   enable_execute_command = var.enable_command_execution ? true : null
-
-  lifecycle {
-    ignore_changes = [desired_count]
-  }
 
   network_configuration {
     assign_public_ip = false

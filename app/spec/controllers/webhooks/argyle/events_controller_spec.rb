@@ -103,6 +103,13 @@ RSpec.describe Webhooks::Argyle::EventsController, type: :controller do
       expect(webhook_event.payroll_account.pinwheel_account_id).to eq(payroll_account.pinwheel_account_id)
     end
 
+    around do |ex|
+      # The report metric, "paystubs_days_since_last_pay_date" will use Timecop
+      # for a static date to reference as "now".
+      # This prevents date drifting where test results may vary over time
+      Timecop.freeze(Time.local(2025, 5, 15), &ex)
+    end
+
     before do
       allow_any_instance_of(Aggregators::Sdk::ArgyleService)
         .to receive(:fetch_identities_api)
@@ -113,6 +120,9 @@ RSpec.describe Webhooks::Argyle::EventsController, type: :controller do
       allow_any_instance_of(Aggregators::Sdk::ArgyleService)
         .to receive(:fetch_gigs_api)
         .and_return(argyle_load_relative_json_file("bob", "request_gigs.json"))
+      allow_any_instance_of(Aggregators::Sdk::ArgyleService)
+        .to receive(:fetch_account_api)
+              .and_return(argyle_load_relative_json_file("bob", "request_account.json"))
       allow(controller).to receive(:event_logger).and_return(fake_event_logger)
       allow(fake_event_logger).to receive(:track)
     end
@@ -181,6 +191,10 @@ RSpec.describe Webhooks::Argyle::EventsController, type: :controller do
           identity_ssn_present: true,
           identity_emails_count: 1,
           identity_phone_numbers_count: 1,
+          identity_age_range: "40-49",
+          identity_age_range_applicant: "30-39",
+          identity_zip_code: "10281",
+          identity_account_id: "01956d5f-cb8d-af2f-9232-38bce8531f58",
 
           # Income fields
           income_success: true,
@@ -188,13 +202,18 @@ RSpec.describe Webhooks::Argyle::EventsController, type: :controller do
           income_compensation_amount_present: true,
           income_compensation_unit_present: true,
           income_pay_frequency_present: true,
+          income_pay_frequency: "biweekly",
 
           # Paystubs fields
           paystubs_success: true,
           paystubs_supported: true,
           paystubs_count: 10,
           paystubs_deductions_count: 16,
+          paystubs_hours_average: 64.848,
           paystubs_hours_by_earning_category_count: 10,
+          paystubs_hours_max: 83.04,
+          paystubs_hours_median: 65.59,
+          paystubs_hours_min: 51.87,
           paystubs_hours_present: true,
           paystubs_earnings_count: 33,
           paystubs_earnings_with_hours_count: 10,
@@ -202,6 +221,11 @@ RSpec.describe Webhooks::Argyle::EventsController, type: :controller do
           paystubs_earnings_type_bonus_count: 10,
           paystubs_earnings_type_overtime_count: 5,
           paystubs_earnings_type_commission_count: 8,
+          paystubs_gross_pay_amounts_max: 192328,
+          paystubs_gross_pay_amounts_min: 120139,
+          paystubs_gross_pay_amounts_average: 152914.4,
+          paystubs_gross_pay_amounts_median: 153103,
+          paystubs_days_since_last_pay_date: 73,
 
           # Employment fields
           employment_success: true,
@@ -209,6 +233,8 @@ RSpec.describe Webhooks::Argyle::EventsController, type: :controller do
           employment_status: "employed",
           employment_type: "w2",
           employment_employer_name: "Whole Foods",
+          employment_account_source: "argyle_sandbox",
+          employment_employer_id: "item_000024123",
           employment_employer_address_present: true,
           employment_employer_phone_number_present: true,
           employment_start_date: "2022-08-08",
@@ -340,7 +366,7 @@ RSpec.describe Webhooks::Argyle::EventsController, type: :controller do
       payroll_account.reload.webhook_events.reload
 
       expect(payroll_account.webhook_events.count).to eq(5)
-      expect(payroll_account.job_status("accounts")).to equal(:failed)
+      expect(payroll_account.job_status("accounts")).to eq(:failed)
       expect(payroll_account.sync_failed?).to equal(true)
       expect(payroll_account.has_fully_synced?).to be_falsey
     end

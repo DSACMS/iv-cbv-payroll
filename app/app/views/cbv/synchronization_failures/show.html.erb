@@ -21,7 +21,7 @@
   </li>
   <li class="usa-button-group__item">
     <% if @cbv_flow.has_account_with_required_data? %>
-      <%= link_to t(".continue_to_report"), cbv_flow_summary_path, class: "usa-button" %>
+      <%= link_to t(".continue_to_report"), cbv_flow_applicant_information_path, class: "usa-button" %>
     <% else %>
       <%= agency_translation("cbv.expired_invitations.show.cta_button_html", agency_url: agency_url) %>
     <% end %>

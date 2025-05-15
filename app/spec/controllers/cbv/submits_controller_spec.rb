@@ -263,6 +263,7 @@ RSpec.describe Cbv::SubmitsController do
           argyle_stub_request_identities_response("bob")
           argyle_stub_request_paystubs_response("bob")
           argyle_stub_request_gigs_response("bob")
+          argyle_stub_request_account_response("bob")
         end
 
         render_views
@@ -289,7 +290,7 @@ RSpec.describe Cbv::SubmitsController do
       context "for Sarah (a w2 worker)" do
         let(:cbv_applicant) { create(:cbv_applicant, created_at: current_time, case_number: "ABC1234") }
         let(:account_id) { "01956d5f-cb8d-af2f-9232-38bce8531f58" }
-        let(:supported_jobs) { %w[accounts identity paystubs employment] }
+        let(:supported_jobs) { %w[accounts identity paystubs employment income] }
         let(:errored_jobs) { [] }
         let(:cbv_flow) do
           create(:cbv_flow,
@@ -314,6 +315,7 @@ RSpec.describe Cbv::SubmitsController do
           argyle_stub_request_identities_response("sarah")
           argyle_stub_request_paystubs_response("sarah")
           argyle_stub_request_gigs_response("sarah")
+          argyle_stub_request_account_response("sarah")
           Timecop.freeze(Time.local(2025, 04, 1, 0, 0))
         end
 
@@ -335,6 +337,8 @@ RSpec.describe Cbv::SubmitsController do
           expect(pdf_text).to include("Payment after taxes and deductions (net)")
           expect(pdf_text).to include("Deduction")
           expect(pdf_text).to include("Base Pay")
+
+          expect(pdf_text).to include("$23.16 Hourly")
         end
       end
     end

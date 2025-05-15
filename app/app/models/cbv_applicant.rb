@@ -32,9 +32,6 @@ class CbvApplicant < ApplicationRecord
   has_many :cbv_flows
   has_many :cbv_flow_invitations
 
-  # before_validation { parse_date("snap_application_date") if self["snap_application_date"].present? }
-  # before_validation { parse_date("date_of_birth") if self["date_of_birth"].present? }
-
   validates :client_agency_id, presence: true
 
   # validate that the date_of_birth is in the past

@@ -33,7 +33,7 @@
   <%= table.with_data_point(:employment_status, employment_status) %>
   <% if has_income_data? && @is_w2_worker %>
     <%= table.with_data_point(:pay_frequency, pay_frequency) %>
-    <%= table.with_data_point(:hourly_rate, compensation_amount, pay_frequency) %>
+    <%= table.with_data_point(:hourly_rate, compensation_amount, compensation_unit) %>
   <% end %>
 <% end %>
 
@@ -52,7 +52,7 @@
       <%= table.with_data_point(:net_pay_amount, payment.net_pay_amount) %>
       <% if @is_w2_worker %>
         <%= table.with_data_point(:number_of_hours_worked, payment.hours) %>
-        <% payment.deductions.filter { |deduction| deduction.amount > 0 }.each do |deduction| %>
+        <% payment.deductions.filter { |deduction| deduction.amount.to_f > 0 }.each do |deduction| %>
           <%= table.with_data_point(:deduction, deduction.category, deduction.amount) %>
         <% end %>
       <% end %>

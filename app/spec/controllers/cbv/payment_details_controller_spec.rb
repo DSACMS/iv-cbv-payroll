@@ -38,6 +38,8 @@ RSpec.describe Cbv::PaymentDetailsController do
       session[:cbv_flow_id] = cbv_flow.id
       pinwheel_stub_request_identity_response
       pinwheel_stub_request_end_user_accounts_response
+      pinwheel_stub_request_end_user_account_response
+      pinwheel_stub_request_platform_response
       pinwheel_stub_request_end_user_paystubs_response
       pinwheel_stub_request_income_metadata_response if supported_jobs.include?("income")
       pinwheel_stub_request_employment_info_response
@@ -63,6 +65,16 @@ RSpec.describe Cbv::PaymentDetailsController do
           ))
 
         get :show, params: { user: { account_id: account_id } }
+      end
+
+      it "should properly display pay frequency and compensation amount" do
+        get :show, params: { user: { account_id: account_id } }
+        expect(response).to be_successful
+
+        doc = Nokogiri::HTML(response.body)
+
+        expect(doc.xpath("//tr[contains(., 'Pay frequency')]").text).to include('Bi-weekly')
+        expect(doc.xpath("//tr[contains(., 'Compensation amount')]").text).to include('$10.00 Hourly')
       end
 
       context "when account comment exists" do
@@ -187,7 +199,8 @@ RSpec.describe Cbv::PaymentDetailsController do
         pinwheel_stub_request_end_user_no_hours_response
       end
 
-      it "redirects to the synchronization failure page" do
+      # Removing hours check for LA launch - FFS-2866 ticket to add back logic for SNAP only pilots
+      xit "redirects to the synchronization failure page" do
         get :show, params: { user: { account_id: account_id } }
         expect(response).to redirect_to(cbv_flow_synchronization_failures_path)
       end
@@ -209,6 +222,15 @@ RSpec.describe Cbv::PaymentDetailsController do
         get :show, params: { user: { account_id: account_id } }
         expect(response.body).to include("tax")
         expect(response.body).not_to include("Empty deduction")
+      end
+    end
+
+    context "when deductions include a nil amount" do
+      it "converts nil to zero and does not show that deduction" do
+        get :show, params: { user: { account_id: account_id } }
+        expect(response).to be_successful
+        expect(response.body).to include("tax")
+        expect(response.body).not_to include("Nil Amount Deduction")
       end
     end
 
@@ -258,6 +280,7 @@ RSpec.describe Cbv::PaymentDetailsController do
           argyle_stub_request_identities_response("bob")
           argyle_stub_request_paystubs_response("bob")
           argyle_stub_request_gigs_response("bob")
+          argyle_stub_request_account_response("bob")
           get :show, params: { user: { account_id: account_id } }
         end
 
@@ -303,6 +326,7 @@ RSpec.describe Cbv::PaymentDetailsController do
           argyle_stub_request_identities_response("sarah")
           argyle_stub_request_paystubs_response("sarah")
           argyle_stub_request_gigs_response("sarah")
+          argyle_stub_request_account_response("sarah")
           get :show, params: { user: { account_id: account_id } }
         end
 
@@ -317,6 +341,13 @@ RSpec.describe Cbv::PaymentDetailsController do
         it { is_expected.to include("Pay period") }
         it { is_expected.to include("Payment after taxes and deductions (net)") }
         it { is_expected.to include("Deduction") }
+
+        it "should properly display pay frequency and compensation amount" do
+          doc = Nokogiri::HTML(response.body)
+
+          expect(doc.xpath("//tr[contains(., 'Pay frequency')]").text).to include('Bi-weekly')
+          expect(doc.xpath("//tr[contains(., 'Compensation amount')]").text).to include('$23.16 Hourly')
+        end
       end
     end
   end

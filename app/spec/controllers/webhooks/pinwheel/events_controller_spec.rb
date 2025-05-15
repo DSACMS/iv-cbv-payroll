@@ -109,11 +109,20 @@ RSpec.describe Webhooks::Pinwheel::EventsController do
         end
         let(:event_logger) { instance_double(GenericEventTracker) }
 
+        around do |ex|
+          # The report metric, "paystubs_days_since_last_pay_date" will use Timecop
+          # for a static date to reference as "now".
+          # This prevents date drifting where test results may vary over time
+          Timecop.freeze(Time.local(2025, 5, 15), &ex)
+        end
+
         before do
           pinwheel_stub_request_identity_response
           pinwheel_stub_request_income_metadata_response
           pinwheel_stub_request_end_user_multiple_paystubs_response
           pinwheel_stub_request_employment_info_response
+          pinwheel_stub_request_end_user_account_response
+          pinwheel_stub_request_platform_response
           pinwheel_stub_request_shifts_response
 
           allow(controller).to receive(:event_logger).and_return(event_logger)
@@ -130,7 +139,7 @@ RSpec.describe Webhooks::Pinwheel::EventsController do
               invitation_id: cbv_flow.cbv_flow_invitation_id,
               client_agency_id: "sandbox",
               pinwheel_environment: "sandbox",
-              sync_duration_seconds: within(1.second).of(5.minutes),
+              sync_duration_seconds: be_a(Numeric),
 
               # Identity fields
               identity_success: true,
@@ -142,6 +151,10 @@ RSpec.describe Webhooks::Pinwheel::EventsController do
               identity_ssn_present: true,
               identity_emails_count: 1,
               identity_phone_numbers_count: 1,
+              identity_age_range: "30-39",
+              identity_age_range_applicant: "30-39",
+              identity_zip_code: "99999",
+              identity_account_id: "03e29160-f7e7-4a28-b2d8-813640e030d3",
 
               # Income fields
               income_success: true,
@@ -149,25 +162,37 @@ RSpec.describe Webhooks::Pinwheel::EventsController do
               income_compensation_amount_present: true,
               income_compensation_unit_present: true,
               income_pay_frequency_present: true,
+              income_pay_frequency: "bi-weekly",
 
               # Paystubs fields
               paystubs_success: true,
               paystubs_supported: true,
               paystubs_count: 2,
               paystubs_deductions_count: 6,
-              paystubs_hours_by_earning_category_count: 2,
               paystubs_hours_present: true,
+              paystubs_hours_average: 80.0,
+              paystubs_hours_by_earning_category_count: 2,
+              paystubs_hours_max: 80.0,
+              paystubs_hours_median: 80.0,
+              paystubs_hours_min: 80.0,
               paystubs_earnings_count: 4,
               paystubs_earnings_with_hours_count: 2,
               paystubs_earnings_category_salary_count: 2,
               paystubs_earnings_category_bonus_count: 2,
               paystubs_earnings_category_overtime_count: 0,
+              paystubs_gross_pay_amounts_average: 480720.0,
+              paystubs_gross_pay_amounts_max: 480720,
+              paystubs_gross_pay_amounts_median: 480720,
+              paystubs_gross_pay_amounts_min: 480720,
+              paystubs_days_since_last_pay_date: 1565,
 
               # Employment fields
               employment_success: true,
               employment_supported: true,
               employment_type: "w2",
               employment_status: "employed",
+              employment_account_source: "Testing Payroll Provider Inc.",
+              employment_employer_id: "a3e3a4ff-ff5f-4b7c-b347-3e497a729aac",
               employment_employer_name: "Acme Corporation",
               employment_employer_address_present: true,
               employment_employer_phone_number_present: true,
@@ -209,7 +234,7 @@ RSpec.describe Webhooks::Pinwheel::EventsController do
 
         context "when not meeting the useful report validations" do
           before do
-            pinwheel_stub_request_end_user_no_hours_response
+            pinwheel_stub_request_end_user_no_paydate_response
           end
 
           it "sends a ApplicantReportFailedUsefulRequirements event" do

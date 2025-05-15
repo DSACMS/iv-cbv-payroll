@@ -14,17 +14,20 @@ RSpec.describe Aggregators::AggregatorReports::ArgyleReport, type: :service do
   let(:identities_json) { argyle_load_relative_json_file('bob', 'request_identity.json') }
   let(:paystubs_json) { argyle_load_relative_json_file('bob', 'request_paystubs.json') }
   let(:gigs_json) { argyle_load_relative_json_file('bob', 'request_gigs.json') }
+  let(:account_json) { argyle_load_relative_json_file('bob', 'request_account.json') }
 
   before do
     allow(argyle_service).to receive(:fetch_identities_api).and_return(identities_json)
     allow(argyle_service).to receive(:fetch_paystubs_api).and_return(paystubs_json)
     allow(argyle_service).to receive(:fetch_gigs_api).and_return(gigs_json)
+    allow(argyle_service).to receive(:fetch_account_api).and_return(account_json)
   end
 
   describe '#fetch_report_data' do
     context "bob, a W-2 employee" do
       let(:argyle_report) { Aggregators::AggregatorReports::ArgyleReport.new(payroll_accounts: [ payroll_account ], argyle_service: argyle_service, from_date: from_date, to_date: to_date) }
       before do
+        allow(argyle_service).to receive(:fetch_account_api).and_return(argyle_load_relative_json_file("bob", "request_account.json"))
         allow(argyle_service).to receive(:fetch_identities_api).and_return(argyle_load_relative_json_file("bob", "request_identity.json"))
         allow(argyle_service).to receive(:fetch_paystubs_api).and_return(argyle_load_relative_json_file("bob", "request_paystubs.json"))
         argyle_report.send(:fetch_report_data)
@@ -48,6 +51,11 @@ RSpec.describe Aggregators::AggregatorReports::ArgyleReport, type: :service do
 
       it 'sets @has_fetched to true on success' do
         expect(argyle_report.has_fetched).to be true
+      end
+
+
+      it 'should have an employment account_source' do
+        expect(argyle_report.employments.first.account_source).to match(/argyle_sandbox/)
       end
 
       context 'when an error occurs' do
@@ -140,8 +148,7 @@ RSpec.describe Aggregators::AggregatorReports::ArgyleReport, type: :service do
           start_date: "2025-03-06",
           end_date: nil,
           compensation_category: "work",
-          compensation_amount: 0.0,
-          compensation_unit: "USD"
+          compensation_amount: 0.0
           )
           expect(argyle_report.gigs[1]).to have_attributes(
             account_id: "019571bc-2f60-3955-d972-dbadfe0913a8",
@@ -151,8 +158,7 @@ RSpec.describe Aggregators::AggregatorReports::ArgyleReport, type: :service do
             start_date: "2025-03-05",
             end_date: "2025-03-05",
             compensation_category: "work",
-            compensation_amount: 1024,
-            compensation_unit: "USD"
+            compensation_amount: 1024
           )
           expect(argyle_report.gigs[3]).to have_attributes(
             account_id: "019571bc-2f60-3955-d972-dbadfe0913a8",
@@ -162,8 +168,7 @@ RSpec.describe Aggregators::AggregatorReports::ArgyleReport, type: :service do
             start_date: "2025-03-05",
             end_date: "2025-03-05",
             compensation_category: "work",
-            compensation_amount: 1945,
-            compensation_unit: "USD"
+            compensation_amount: 1945
           )
         end
       end

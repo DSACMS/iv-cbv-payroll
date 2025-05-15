@@ -11,6 +11,10 @@ RSpec.describe Aggregators::Validators::UsefulReportValidator do
   let(:gigs) { [] }
 
   before do
+    # This is trying to isolate this test so that it only handles this unit of code
+    # WARNING!!! If you print the report in the debugger the underlying properties will be empty because
+    # we're overwriting the response to each of the properties of the object via these calls.
+    # TODO WE SHOULD CLEAN THIS UP.
     allow(report).to receive(:identities).and_return(identities)
     allow(report).to receive(:employments).and_return(employments)
     allow(report).to receive(:paystubs).and_return(paystubs)
@@ -39,7 +43,59 @@ RSpec.describe Aggregators::Validators::UsefulReportValidator do
         employer_name: "Example Company",
         start_date: "2022-01-01",
         termination_date: nil,
-        status: "active",
+        status: "employed",
+        employer_phone_number: "555-555-5555",
+        employer_address: "1234 Example Street",
+        employment_type: :w2
+      )
+    end
+
+    let(:terminated_status_employment) do
+      Aggregators::ResponseObjects::Employment.new(
+        account_id: "123",
+        employer_name: "Example Company",
+        start_date: "2022-01-01",
+        termination_date: nil,
+        status: "furloughed",
+        employer_phone_number: "555-555-5555",
+        employer_address: "1234 Example Street",
+        employment_type: :w2
+      )
+    end
+
+    let(:terminated_date_employment) do
+      Aggregators::ResponseObjects::Employment.new(
+        account_id: "123",
+        employer_name: "Example Company",
+        start_date: "2022-01-01",
+        termination_date: "2025-01-01",
+        status: "",
+        employer_phone_number: "555-555-5555",
+        employer_address: "1234 Example Street",
+        employment_type: :w2
+      )
+    end
+
+    let(:employed_status_terminated_date_employment) do
+      Aggregators::ResponseObjects::Employment.new(
+        account_id: "123",
+        employer_name: "Example Company",
+        start_date: "2022-01-01",
+        termination_date: "2025-01-01",
+        status: "employed",
+        employer_phone_number: "555-555-5555",
+        employer_address: "1234 Example Street",
+        employment_type: :w2
+      )
+    end
+
+    let(:fully_terminated_employment) do
+      Aggregators::ResponseObjects::Employment.new(
+        account_id: "123",
+        employer_name: "Example Company",
+        start_date: "2022-01-01",
+        termination_date: "2025-01-01",
+        status: "furloughed",
         employer_phone_number: "555-555-5555",
         employer_address: "1234 Example Street",
         employment_type: :w2
@@ -52,9 +108,20 @@ RSpec.describe Aggregators::Validators::UsefulReportValidator do
         employer_name: "",
         start_date: "2022-01-01",
         termination_date: nil,
-        status: "active",
+        status: "employed",
         employer_phone_number: "555-555-5555",
         employer_address: "1234 Example Street",
+        employment_type: :w2
+      )
+    end
+
+    let(:empty_employment) do
+      Aggregators::ResponseObjects::Employment.new(
+        account_id: "123",
+        employer_name: "Example Company",
+        start_date: "2022-01-01",
+        termination_date: "",
+        status: "",
         employment_type: :w2
       )
     end
@@ -89,6 +156,22 @@ RSpec.describe Aggregators::Validators::UsefulReportValidator do
       )
     end
 
+    let(:empty_paystub) do
+      Aggregators::ResponseObjects::Paystub.new(
+        account_id: "123",
+        gross_pay_amount: 0.0,
+        net_pay_amount: 0.0,
+        gross_pay_ytd: 0.0,
+        pay_period_start: nil,
+        pay_period_end: nil,
+        pay_date: nil,
+        deductions: [],
+        hours_by_earning_category: {},
+        hours: 0.0
+      )
+    end
+
+
     let(:invalid_paystub) do
       Aggregators::ResponseObjects::Paystub.new(
         account_id: "123",
@@ -100,7 +183,7 @@ RSpec.describe Aggregators::Validators::UsefulReportValidator do
         pay_date: nil,
         deductions: [],
         hours_by_earning_category: {},
-        hours: 0.0
+        hours: 10.0
       )
     end
 
@@ -254,8 +337,9 @@ RSpec.describe Aggregators::Validators::UsefulReportValidator do
         expect(report).not_to be_valid(:useful_report)
         expect(report.errors[:paystubs]).to include(
           /No paystub has pay_date/,
-          /No paystub has valid gross_pay_amount/,
-          /Report has invalid hours total/
+          /No paystub has valid gross_pay_amount/
+          # Removing hours check for LA launch - FFS-2866 ticket to add back logic for SNAP only pilots
+          # /Report has invalid hours total/
         )
       end
 
@@ -294,6 +378,62 @@ RSpec.describe Aggregators::Validators::UsefulReportValidator do
       let(:paystubs) { [ valid_paystub_with_hours, valid_paystub_without_hours ] }
 
       it 'is valid' do
+        expect(report).to be_valid(:useful_report)
+        expect(report.errors).to be_empty
+      end
+    end
+
+    context 'with fully terminated employment' do
+      let(:identities) { [ valid_identity ] }
+      let(:employments) { [ fully_terminated_employment ] }
+      let(:paystubs) { [ invalid_paystub ] }
+
+      it 'is valid even with invalid paystubs' do
+        expect(report).to be_valid(:useful_report)
+        expect(report.errors).to be_empty
+      end
+    end
+
+    context 'with terminated status only' do
+      let(:identities) { [ valid_identity ] }
+      let(:employments) { [ terminated_status_employment ] }
+      let(:paystubs) { [ invalid_paystub ] }
+
+      it 'is valid even with invalid paystubs' do
+        expect(report).to be_valid(:useful_report)
+        expect(report.errors).to be_empty
+      end
+    end
+
+    context 'with terminated date only' do
+      let(:identities) { [ valid_identity ] }
+      let(:employments) { [ terminated_date_employment ] }
+      let(:paystubs) { [ invalid_paystub ] }
+
+      it 'is valid even with invalid paystubs' do
+        expect(report).to be_valid(:useful_report)
+        expect(report.errors).to be_empty
+      end
+    end
+
+    context 'with employed status but terminated date' do
+      let(:identities) { [ valid_identity ] }
+      let(:employments) { [ employed_status_terminated_date_employment ] }
+      let(:paystubs) { [ invalid_paystub ] }
+
+      it 'is valid even with invalid paystubs' do
+        expect(report).to be_valid(:useful_report)
+        expect(report.errors).to be_empty
+      end
+    end
+
+    context 'with empty employment status, empty termination date, empty paystub' do
+      let(:identities) { [ valid_identity ] }
+      let(:employments) { [ empty_employment ] }
+      let(:paystubs) { [ empty_paystub ] }
+
+      # We want to generate a report to show that no hours or payments have been made. This shows lack of income
+      it 'is valid even with invalid paystubs' do
         expect(report).to be_valid(:useful_report)
         expect(report.errors).to be_empty
       end

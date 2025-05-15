@@ -56,7 +56,10 @@ module Aggregators::Webhooks
         job: %w[gigs]
       },
       "accounts.updated" => {
-        status: :success, # this gets overwritten dynamically on system_error in events_controller
+        # Use "unknown" status since this webhook is triggered before successful Argyle login.
+        # The status is overwritten dynamically in Argyle::EventsController if the account login
+        # fails. For success, we need to await the `accounts.connected` webhook.
+        status: :unknown,
         type: :include_resource,
         job: %w[accounts] # the accounts job is strictly used to pass state on system_error
       }
