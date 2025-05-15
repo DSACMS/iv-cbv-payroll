@@ -82,6 +82,12 @@ module Aggregators::AggregatorReports
     def total_gross_income
       @paystubs.reduce(0) { |sum, paystub| sum + paystub.gross_pay_amount }
     end
+
+    def days_since_last_paydate
+      latest_paystub_date = paystubs.map(&:pay_date).compact.map { |pay_date| Date.parse(pay_date) }.max
+      return nil if latest_paystub_date.nil?
+      (Date.current - latest_paystub_date).to_i
+    end
   end
 
   private

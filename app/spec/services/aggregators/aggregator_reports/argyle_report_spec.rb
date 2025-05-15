@@ -3,6 +3,8 @@ require 'rails_helper'
 RSpec.describe Aggregators::AggregatorReports::ArgyleReport, type: :service do
   include ArgyleApiHelper
   include Aggregators::ResponseObjects
+  include ActiveSupport::Testing::TimeHelpers
+
   let(:account) { "abc123" }
   let!(:payroll_account) do
     create(:payroll_account, :argyle_fully_synced, pinwheel_account_id: account)
@@ -172,6 +174,26 @@ RSpec.describe Aggregators::AggregatorReports::ArgyleReport, type: :service do
           )
         end
       end
+    end
+  end
+
+  describe "#days_since_last_paydate" do
+    before do
+      travel_to Time.new(2021, 4, 1, 0, 0, 0, "-04:00")
+    end
+
+    it "returns nil if no paystub date information available" do
+      paystubs = [ OpenStruct.new(pay_date: nil) ]
+      report = described_class.new
+      report.paystubs = paystubs
+      expect(report.days_since_last_paydate).to be_nil
+    end
+
+    it "returns the least date when dates available" do
+      paystubs = [ OpenStruct.new(pay_date: "2021-02-01"), OpenStruct.new(pay_date: "2021-03-02") ]
+      report = described_class.new
+      report.paystubs = paystubs
+      expect(report.days_since_last_paydate).to eq(30)
     end
   end
 
