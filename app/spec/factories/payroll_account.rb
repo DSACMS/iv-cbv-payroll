@@ -51,7 +51,7 @@ FactoryBot.define do
       pinwheel_account_id { "019571bc-2f60-3955-d972-dbadfe0913a8" }
     end
 
-    trait :argyle_partially_synced do
+    trait :argyle_sync_in_progress do
       argyle
 
       after(:build) do |payroll_account, _|

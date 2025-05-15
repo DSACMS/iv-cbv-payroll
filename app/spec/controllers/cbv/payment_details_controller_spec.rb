@@ -38,6 +38,8 @@ RSpec.describe Cbv::PaymentDetailsController do
       session[:cbv_flow_id] = cbv_flow.id
       pinwheel_stub_request_identity_response
       pinwheel_stub_request_end_user_accounts_response
+      pinwheel_stub_request_end_user_account_response
+      pinwheel_stub_request_platform_response
       pinwheel_stub_request_end_user_paystubs_response
       pinwheel_stub_request_income_metadata_response if supported_jobs.include?("income")
       pinwheel_stub_request_employment_info_response
@@ -222,6 +224,15 @@ RSpec.describe Cbv::PaymentDetailsController do
       end
     end
 
+    context "when deductions include a nil amount" do
+      it "converts nil to zero and does not show that deduction" do
+        get :show, params: { user: { account_id: account_id } }
+        expect(response).to be_successful
+        expect(response.body).to include("tax")
+        expect(response.body).not_to include("Nil Amount Deduction")
+      end
+    end
+
     context "when a user attempts to access pinwheel account information not in the current session" do
       it "redirects to the entry page when the resolved pinwheel_account is nil" do
         get :show, params: { user: { account_id: "1234" } }
@@ -268,6 +279,7 @@ RSpec.describe Cbv::PaymentDetailsController do
           argyle_stub_request_identities_response("bob")
           argyle_stub_request_paystubs_response("bob")
           argyle_stub_request_gigs_response("bob")
+          argyle_stub_request_account_response("bob")
           get :show, params: { user: { account_id: account_id } }
         end
 
@@ -313,6 +325,7 @@ RSpec.describe Cbv::PaymentDetailsController do
           argyle_stub_request_identities_response("sarah")
           argyle_stub_request_paystubs_response("sarah")
           argyle_stub_request_gigs_response("sarah")
+          argyle_stub_request_account_response("sarah")
           get :show, params: { user: { account_id: account_id } }
         end
 

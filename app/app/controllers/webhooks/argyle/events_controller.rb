@@ -1,4 +1,6 @@
 class Webhooks::Argyle::EventsController < ApplicationController
+  include ApplicationHelper
+
   before_action :set_cbv_flow, :authorize_webhook
   skip_before_action :verify_authenticity_token
 
@@ -204,6 +206,9 @@ class Webhooks::Argyle::EventsController < ApplicationController
         identity_ssn_present: report.identities.first&.ssn.present?,
         identity_emails_count: report.identities.sum { |i| i.emails.length },
         identity_phone_numbers_count: report.identities.sum { |i| i.phone_numbers.length },
+        identity_zip_code: report.identities.first&.zip_code,
+        identity_age_range: get_age_range(report.identities.first&.date_of_birth),
+        identity_age_range_applicant: get_age_range(@cbv_flow.cbv_applicant.date_of_birth),
 
         # Income fields (originally from "identities" endpoint)
         income_success: payroll_account.job_succeeded?("income"),
@@ -221,7 +226,7 @@ class Webhooks::Argyle::EventsController < ApplicationController
         paystubs_hours_average: paystub_hours.sum.to_f / paystub_hours.length,
         paystubs_hours_by_earning_category_count: report.paystubs.sum { |p| p.hours_by_earning_category.length },
         paystubs_hours_max: paystub_hours.max,
-        paystubs_hours_median: paystub_hours[paystub_hours.length / 2],
+        paystubs_hours_median: paystub_hours.sort[paystub_hours.length / 2],
         paystubs_hours_min: paystub_hours.min,
         paystubs_hours_present: report.paystubs.first&.hours.present?,
         paystubs_earnings_count: report.paystubs.sum { |p| p.earnings.length },
@@ -231,7 +236,7 @@ class Webhooks::Argyle::EventsController < ApplicationController
         paystubs_earnings_type_overtime_count: report.paystubs.sum { |p| p.earnings.count { |e| e.category == "overtime" } },
         paystubs_earnings_type_commission_count: report.paystubs.sum { |p| p.earnings.count { |e| e.category == "commission" } },
         paystubs_gross_pay_amounts_max: paystub_gross_pay_amounts.max,
-        paystubs_gross_pay_amounts_median: paystub_gross_pay_amounts[paystub_gross_pay_amounts.length / 2],
+        paystubs_gross_pay_amounts_median: paystub_gross_pay_amounts.sort[paystub_gross_pay_amounts.length / 2],
         paystubs_gross_pay_amounts_average: paystub_gross_pay_amounts.sum.to_f / paystub_gross_pay_amounts.length,
         paystubs_gross_pay_amounts_min: paystub_gross_pay_amounts.min,
         paystubs_days_since_last_pay_date: report.paystubs.map { |p| Date.parse(p.pay_date) }.compact.max&.then { |last_pay_date| (Date.current - last_pay_date).to_i },
@@ -241,6 +246,8 @@ class Webhooks::Argyle::EventsController < ApplicationController
         employment_supported: payroll_account.supported_jobs.include?("employment"),
         employment_status: report.employments.first&.status,
         employment_employer_name: report.employments.first&.employer_name,
+        employment_account_source: report.employments.first&.account_source,
+        employment_employer_id: report.employments.first&.employer_id,
         employment_employer_address_present: report.employments.first&.employer_address&.present?,
         employment_employer_phone_number_present: report.employments.first&.employer_name&.present?,
         employment_start_date: report.employments.first&.start_date,

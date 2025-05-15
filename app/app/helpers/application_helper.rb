@@ -83,4 +83,37 @@ module ApplicationHelper
       form_with(model: model, scope: scope, url: url, format: format, **options, &block)
     end
   end
+
+  def date_string_to_date(date_string)
+    date_string.is_a?(Date) ? date_string : Date.parse(date_string)
+  rescue
+    nil
+  end
+
+  def get_age_range(date_of_birth, now: Date.today)
+    dob = date_string_to_date(date_of_birth)
+    return nil unless dob
+
+    age = now.year - dob.year
+    this_years_birthday = Date.new(now.year, dob.month, dob.day)
+
+    # Subtract 1 if birthday hasn't occurred yet this year
+    age -= 1 if now < this_years_birthday
+
+    case age
+    when 0..18 then "0-18"
+    when 19..25 then "19-25"
+    when 26..29 then "26-29"
+    when 30..39 then "30-39"
+    when 40..49 then "40-49"
+    when 50..54 then "50-54"
+    when 55..59 then "55-59"
+    when 60..64 then "60-64"
+    when 65..69 then "65-69"
+    when 70..74 then "70-74"
+    when 75..79 then "75-79"
+    when 80..89 then "80-89"
+    else "90+"
+    end
+  end
 end

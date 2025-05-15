@@ -187,4 +187,40 @@ RSpec.describe Aggregators::Sdk::PinwheelService, type: :service do
       expect(response['data'].first['type']).to eq('shift')
     end
   end
+
+  describe "#fetch_platform" do
+    let(:platform_id) { "00000000-0000-0000-0000-000000011111" }
+
+    before do
+      pinwheel_stub_request_platform_response
+    end
+
+    it "returns platform data for the specified platform" do
+      response = service.fetch_platform(platform_id)
+
+      expect(response['data']).to include(
+                                    "id" => platform_id,
+                                    "name" => "Testing Payroll Provider Inc.",
+                                    "type" => "payroll"
+                                  )
+    end
+  end
+
+
+  describe "#fetch_account" do
+    let(:account_id) { SecureRandom.uuid }
+
+    before do
+      pinwheel_stub_request_end_user_account_response
+    end
+
+    it "returns account data for the specified account" do
+      response = service.fetch_account(account_id: account_id)
+
+      expect(response['data']).to have_key('end_user_id')
+      expect(response['data']).to have_key('id')
+      expect(response['data']).to have_key('platform_id')
+      expect(response['data']['platform_id']).to eq("fce3eee0-285b-496f-9b36-30e976194736")
+    end
+  end
 end

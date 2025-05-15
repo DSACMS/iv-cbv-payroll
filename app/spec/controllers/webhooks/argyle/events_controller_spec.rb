@@ -120,6 +120,9 @@ RSpec.describe Webhooks::Argyle::EventsController, type: :controller do
       allow_any_instance_of(Aggregators::Sdk::ArgyleService)
         .to receive(:fetch_gigs_api)
         .and_return(argyle_load_relative_json_file("bob", "request_gigs.json"))
+      allow_any_instance_of(Aggregators::Sdk::ArgyleService)
+        .to receive(:fetch_account_api)
+              .and_return(argyle_load_relative_json_file("bob", "request_account.json"))
       allow(controller).to receive(:event_logger).and_return(fake_event_logger)
       allow(fake_event_logger).to receive(:track)
     end
@@ -188,6 +191,9 @@ RSpec.describe Webhooks::Argyle::EventsController, type: :controller do
           identity_ssn_present: true,
           identity_emails_count: 1,
           identity_phone_numbers_count: 1,
+          identity_age_range: "40-49",
+          identity_age_range_applicant: "30-39",
+          identity_zip_code: "10281",
 
           # Income fields
           income_success: true,
@@ -205,7 +211,7 @@ RSpec.describe Webhooks::Argyle::EventsController, type: :controller do
           paystubs_hours_average: 64.848,
           paystubs_hours_by_earning_category_count: 10,
           paystubs_hours_max: 83.04,
-          paystubs_hours_median: 66.11,
+          paystubs_hours_median: 65.59,
           paystubs_hours_min: 51.87,
           paystubs_hours_present: true,
           paystubs_earnings_count: 33,
@@ -226,6 +232,8 @@ RSpec.describe Webhooks::Argyle::EventsController, type: :controller do
           employment_status: "employed",
           employment_type: "w2",
           employment_employer_name: "Whole Foods",
+          employment_account_source: "argyle_sandbox",
+          employment_employer_id: "item_000024123",
           employment_employer_address_present: true,
           employment_employer_phone_number_present: true,
           employment_start_date: "2022-08-08",
@@ -357,7 +365,7 @@ RSpec.describe Webhooks::Argyle::EventsController, type: :controller do
       payroll_account.reload.webhook_events.reload
 
       expect(payroll_account.webhook_events.count).to eq(5)
-      expect(payroll_account.job_status("accounts")).to equal(:failed)
+      expect(payroll_account.job_status("accounts")).to eq(:failed)
       expect(payroll_account.sync_failed?).to equal(true)
       expect(payroll_account.has_fully_synced?).to be_falsey
     end
