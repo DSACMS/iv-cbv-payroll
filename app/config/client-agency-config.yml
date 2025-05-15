@@ -125,7 +125,7 @@
 - id: sandbox
   agency_name: CBV Test Agency
   agency_short_name: CBV
-  agency_contact_website: https://www.exampl.com/contact
+  agency_contact_website: https://www.example.com/contact
   caseworker_feedback_form: https://docs.google.com/forms/d/e/1FAIpQLSfrUiz0oWE5jbXjPfl-idQQGPgxKplqFtcKq08UOhTaEa2k6A/viewform
   agency_demo_domain: sandbox-verify-demo.navapbc.cloud
   agency_production_domain: sandbox.reportmyincome.org
