@@ -209,6 +209,7 @@ class Webhooks::Argyle::EventsController < ApplicationController
         identity_zip_code: report.identities.first&.zip_code,
         identity_age_range: get_age_range(report.identities.first&.date_of_birth),
         identity_age_range_applicant: get_age_range(@cbv_flow.cbv_applicant.date_of_birth),
+        identity_account_id: report.identities.first&.account_id,
 
         # Income fields (originally from "identities" endpoint)
         income_success: payroll_account.job_succeeded?("income"),

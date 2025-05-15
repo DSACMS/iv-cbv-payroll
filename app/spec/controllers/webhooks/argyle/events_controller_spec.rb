@@ -194,6 +194,7 @@ RSpec.describe Webhooks::Argyle::EventsController, type: :controller do
           identity_age_range: "40-49",
           identity_age_range_applicant: "30-39",
           identity_zip_code: "10281",
+          identity_account_id: "01956d5f-cb8d-af2f-9232-38bce8531f58",
 
           # Income fields
           income_success: true,
