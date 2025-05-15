@@ -132,7 +132,7 @@ class CaseWorkerTransmitterJob < ApplicationJob
   end
 
   def track_transmitted_event(cbv_flow, payments)
-    event_logger.track("ApplicantSharedIncomeSummary", request, {
+    event_logger.track("ApplicantSharedIncomeSummary", nil, {
       timestamp: Time.now.to_i,
       client_agency_id: cbv_flow.client_agency_id,
       cbv_applicant_id: cbv_flow.cbv_applicant_id,
@@ -146,6 +146,8 @@ class CaseWorkerTransmitterJob < ApplicationJob
       locale: I18n.locale
     })
   rescue => ex
+    raise ex unless Rails.env.production?
+
     Rails.logger.error "Failed to track NewRelic event: #{ex.message}"
   end
 

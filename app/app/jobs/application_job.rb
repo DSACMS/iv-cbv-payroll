@@ -4,4 +4,8 @@ class ApplicationJob < ActiveJob::Base
 
   # Most jobs are safe to ignore if the underlying records are no longer available
   # discard_on ActiveJob::DeserializationError
+
+  def event_logger
+    @event_logger ||= GenericEventTracker.new
+  end
 end

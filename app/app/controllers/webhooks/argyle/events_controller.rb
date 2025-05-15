@@ -114,14 +114,7 @@ class Webhooks::Argyle::EventsController < ApplicationController
   def process_webhook_event(webhook_event)
     payroll_account = webhook_event.payroll_account
 
-    if webhook_event.event_name == "accounts.connected"
-      event_logger.track("ApplicantCreatedArgyleAccount", request, {
-        cbv_applicant_id: @cbv_flow.cbv_applicant_id,
-        cbv_flow_id: @cbv_flow.id,
-        invitation_id: @cbv_flow.cbv_flow_invitation_id,
-        provider_name: params.dig("data", "resource", "providers_connected")&.first
-      })
-    elsif webhook_event.event_name == "accounts.updated"
+    if webhook_event.event_name == "accounts.updated"
       process_accounts_updated_event(webhook_event)
     elsif payroll_account.has_fully_synced?
       return if payroll_account.sync_succeeded? || payroll_account.sync_failed?
