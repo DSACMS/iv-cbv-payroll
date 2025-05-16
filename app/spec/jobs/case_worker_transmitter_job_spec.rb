@@ -1,11 +1,13 @@
 require 'rails_helper'
 require 'csv'
+require 'active_support/testing/time_helpers'
 
 RSpec.describe CaseWorkerTransmitterJob, type: :job do
   include PinwheelApiHelper
+  include ActiveSupport::Testing::TimeHelpers
+
   include_context "gpg_setup"
   let(:mock_client_agency) { instance_double(ClientAgencyConfig::ClientAgency) }
-
 
   let(:cbv_applicant) { create(:cbv_applicant, created_at: current_time, case_number: "ABC1234") }
   let(:errored_jobs) { [] }
@@ -63,7 +65,7 @@ RSpec.describe CaseWorkerTransmitterJob, type: :job do
       let(:transmission_method) { "shared_email" }
       let(:transmission_method_configuration) { {
         "email" => 'test@example.com'
-      }}
+      } }
       let(:cbv_flow) do
         create(:cbv_flow,
                :invited,
@@ -84,7 +86,7 @@ RSpec.describe CaseWorkerTransmitterJob, type: :job do
       let(:transmission_method) { "shared_email" }
       let(:transmission_method_configuration) { {
         "email" => 'test@example.com'
-      }}
+      } }
 
       context "when confirmation_code exists" do
         let(:existing_confirmation_code) { "SANDBOX000" }
@@ -143,32 +145,26 @@ RSpec.describe CaseWorkerTransmitterJob, type: :job do
         "password" => "password",
         "url" => "sftp.com",
         "sftp_directory" => "test"
-      }}
+      } }
       before do
         allow(SftpGateway).to receive(:new).and_return(sftp_double)
         allow(sftp_double).to receive(:upload_data)
       end
 
-      it "generates and sends data to SFTP" do
+      it "generates and sends data to SFTP and updates transmitted_at" do
         agency_id_number = cbv_applicant.agency_id_number
         beacon_id = cbv_applicant.beacon_id
 
-        expect(sftp_double).to receive(:upload_data).with(anything, /test\/IncomeReport__Sep-Sep2021_Conf_\d*\.csv/) do |csv_content, _|
-          csv_rows = CSV.parse(csv_content, headers: true)
-          expect(csv_rows[0]["client_id"]).to eq(agency_id_number)
-        end
-        expect(sftp_double).to receive(:upload_data).with(anything, /test\/IncomeReport__Sep-Sep2021_Conf_\d*\.pdf/)
+        travel_to Time.zone.parse('2025-01-01 08:00:30')
+        cbv_flow.update!(confirmation_code: "AZDES001", client_agency_id: "ma")
+        cbv_flow.cbv_applicant.update!(case_number: "01000", client_agency_id: "ma", beacon_id: beacon_id, agency_id_number: agency_id_number)
+
+        expect(sftp_double).to receive(:upload_data).with(anything, /test\/CBVPilot_01000_20250101_ConfAZDES001.pdf/)
 
 
-        cbv_flow.update(client_agency_id: "ma")
-        cbv_applicant.update(client_agency_id: "ma")
-        cbv_applicant.update(beacon_id: beacon_id)
-        cbv_applicant.update(agency_id_number: agency_id_number)
-
-        described_class.new.perform(cbv_flow.id)
+        expect { described_class.new.perform(cbv_flow.id) }.to change { cbv_flow.reload.transmitted_at }
       end
     end
-
 
     context "when transmission method is s3" do
       let(:user) { create(:user, email: "test@test.com") }
@@ -176,9 +172,9 @@ RSpec.describe CaseWorkerTransmitterJob, type: :job do
       let(:transmission_method) { "s3" }
       let(:mocked_client_id) { "ma" }
       let(:transmission_method_configuration) { {
-        "bucket"     => "test-bucket",
+        "bucket" => "test-bucket",
         "public_key" => @public_key
-      }}
+      } }
       # let(:pinwheel_service_double) { instance_double(Aggregators::Sdk::PinwheelService) }
       before do
         allow(S3Service).to receive(:new).and_return(s3_service_double)

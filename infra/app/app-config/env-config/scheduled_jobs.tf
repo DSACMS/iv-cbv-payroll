@@ -14,6 +14,11 @@ locals {
       schedule_expression = "cron(* * * * *)" # every minute
     }
 
+    send_az_reports = {
+      task_command        = ["bin/rails", "az_des:deliver_csv_reports"]
+      schedule_expression = "cron(0 15 ? * * *)" # Every day at 3pm UTC (8am MST / 10am EST / 9am EDT)
+    }
+
     redact_data = {
       task_command        = ["bin/rails", "data_deletion:redact_all"]
       schedule_expression = "cron(0 14 ? * * *)" # Every day at 2pm UTC (9am EST / 10am EDT)
