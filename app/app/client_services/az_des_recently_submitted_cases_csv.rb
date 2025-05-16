@@ -1,4 +1,4 @@
-class AzDesReport < CsvGenerator
+class AzDesRecentlySubmittedCasesCsv < CsvGenerator
   def generate_csv(cbv_flows)
     data = cbv_flows.map do |cbv_flow|
       {

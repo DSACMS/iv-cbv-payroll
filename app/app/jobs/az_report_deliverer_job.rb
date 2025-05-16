@@ -6,7 +6,7 @@ class AzReportDelivererJob < ApplicationJob
       return
     end
 
-    csv = AzDesReport.new.generate_csv(cbv_applicants_delivered_recently)
+    csv = AzDesRecentlySubmittedCasesCsv.new.generate_csv(cbv_applicants_delivered_recently)
 
     sftp_gateway.upload_data(csv, "#{config["sftp_directory"]}/#{filename(date_start)}.pdf")
 
