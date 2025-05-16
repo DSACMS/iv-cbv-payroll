@@ -71,10 +71,10 @@
   # TODO[FFS-2628]: This will be SFTP:
   transmission_method: sftp
   transmission_method_configuration:
-    user: <%= ENV['LA_SFTP_USER'] %>
-    password: <%= ENV['LA_SFTP_PASSWORD'] %>
-    url: <%= ENV['LA_SFTP_URL'] %>
-    sftp_directory: <%= ENV['LA_SFTP_DIRECTORY'] %>
+    user: <%= ENV['AZ_DES_SFTP_USER'] %>
+    password: <%= ENV['AZ_DES_SFTP_PASSWORD'] %>
+    url: <%= ENV['AZ_DES_SFTP_URL'] %>
+    sftp_directory: <%= ENV['AZ_DES_SFTP_DIRECTORY'] %>
   # TODO: Disable staff portal before pilot launch
   staff_portal_enabled: true
   sso:
