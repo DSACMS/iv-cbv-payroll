@@ -43,4 +43,16 @@ RSpec.describe CbvApplicant::Ma, type: :model do
       expect(applicant.errors[:client_id_number]).to be_empty
     end
   end
+
+  it "redacts all sensitive PII fields" do
+    applicant = CbvApplicant.create(ma_attributes)
+    applicant.redact!
+    expect(applicant).to have_attributes(
+      first_name: "REDACTED",
+      middle_name: "REDACTED",
+      last_name: "REDACTED",
+      agency_id_number: "REDACTED",
+      beacon_id: "REDACTED",
+    )
+  end
 end

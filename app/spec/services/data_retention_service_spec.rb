@@ -37,7 +37,7 @@ RSpec.describe DataRetentionService do
         it "redacts the associated CbvApplicant" do
           service.redact_invitations
           expect(cbv_flow_invitation.cbv_applicant.reload).to have_attributes(
-            case_number: "REDACTED",
+            first_name: "REDACTED",
             redacted_at: within(1.second).of(Time.now)
           )
         end
@@ -114,7 +114,7 @@ RSpec.describe DataRetentionService do
       it "redacts the associated CbvApplicant" do
         service.redact_incomplete_cbv_flows
         expect(cbv_flow.cbv_applicant.reload).to have_attributes(
-          case_number: "REDACTED"
+          first_name: "REDACTED"
         )
       end
 
@@ -234,7 +234,7 @@ RSpec.describe DataRetentionService do
       it "redacts the associated applicant" do
         service.redact_complete_cbv_flows
         expect(cbv_flow.cbv_applicant.reload).to have_attributes(
-          case_number: "REDACTED"
+          first_name: "REDACTED"
         )
       end
 
@@ -259,7 +259,7 @@ RSpec.describe DataRetentionService do
         redacted_at: within(1.second).of(Time.now)
       )
       expect(cbv_flow.cbv_applicant.reload).to have_attributes(
-        case_number: "REDACTED",
+        first_name: "REDACTED",
         redacted_at: within(1.second).of(Time.now)
       )
       expect(second_cbv_flow.reload).to have_attributes(

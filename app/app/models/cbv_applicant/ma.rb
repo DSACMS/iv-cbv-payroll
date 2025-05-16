@@ -23,4 +23,12 @@ class CbvApplicant::Ma < CbvApplicant
       message: :invalid_date
     },
     if: -> { snap_application_date.present? }
+
+  has_redactable_fields(
+    first_name: :string,
+    middle_name: :string,
+    last_name: :string,
+    agency_id_number: :string,
+    beacon_id: :string
+  )
 end
