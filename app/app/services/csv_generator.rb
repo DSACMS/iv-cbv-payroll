@@ -3,10 +3,13 @@ class CsvGenerator
     raise "not implemented"
   end
 
-  def self.create_csv(data)
+  def self.create_csv_multiple_datapoints(rows)
     csv_string = CSV.generate do |csv|
-      csv << data.keys
-      csv << data.values
+      first_row = rows.first
+      csv << first_row.keys
+      rows.each do |row|
+        csv << row.values
+      end
     end
     StringIO.new(csv_string)
   end
