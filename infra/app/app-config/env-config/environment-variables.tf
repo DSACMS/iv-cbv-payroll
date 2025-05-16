@@ -217,6 +217,22 @@ locals {
       manage_method     = "manual"
       secret_store_name = "/service/${var.app_name}-${var.environment}/azure-sandbox-tenant-id"
     },
+   AZ_DES_SFTP_USER = {
+      manage_method     = "manual"
+      secret_store_name = "/service/${var.app_name}-${var.environment}/az-des-sftp-user"
+    },
+   AZ_DES_SFTP_PASSWORD = {
+      manage_method     = "manual"
+      secret_store_name = "/service/${var.app_name}-${var.environment}/az-des-sftp-password"
+    },
+   AZ_DES_SFTP_URL = {
+      manage_method     = "manual"
+      secret_store_name = "/service/${var.app_name}-${var.environment}/az-des-sftp-url"
+    },
+   AZ_DES_SFTP_DIRECTORY = {
+      manage_method     = "manual"
+      secret_store_name = "/service/${var.app_name}-${var.environment}/az-des-sftp-directory"
+    },
 
     # Other site-specific Configuration:
     MA_DTA_ALLOWED_CASEWORKER_EMAILS = {
