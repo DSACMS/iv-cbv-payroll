@@ -152,10 +152,8 @@ RSpec.describe WeeklyReportMailer, type: :mailer do
         "case_number" => cbv_flow_invitation.cbv_applicant.case_number,
         "transmitted_at" => "2024-09-04 13:30:00 UTC",
         "invited_at" => "2024-09-04 13:00:00 UTC",
-        "snap_application_date" => "2024-09-03",
         "completed_at" => "2024-09-04 13:30:00 UTC",
-        "email_address" => "test@example.com"
-      )
+       )
       expect(parsed_csv.length).to eq(1)
     end
   end
