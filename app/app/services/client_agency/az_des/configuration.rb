@@ -8,8 +8,21 @@ class ClientAgency::AzDes::Configuration
   end
 
   def self.pdf_filename(cbv_flow, time)
-    "CBVPilot_#{cbv_flow.cbv_applicant.case_number}_" \
+    time = time.in_time_zone("America/Phoenix")
+    "CBVPilot_#{cbv_flow.cbv_applicant.case_number.rjust(8, '0')}_" \
       "#{time.strftime('%Y%m%d')}_" \
       "Conf#{cbv_flow.confirmation_code}"
+  end
+
+  def self.format_timezone(time)
+    return nil if time.nil?
+
+    time.in_time_zone("America/Phoenix").strftime("%m/%d/%Y %H:%M:%S")
+  end
+
+  def self.format_date(time)
+    return nil if time.nil?
+
+    time.in_time_zone("America/Phoenix").strftime("%m/%d/%Y")
   end
 end

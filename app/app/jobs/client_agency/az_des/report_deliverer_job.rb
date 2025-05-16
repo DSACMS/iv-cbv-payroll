@@ -8,7 +8,7 @@ class ClientAgency::AzDes::ReportDelivererJob < ApplicationJob
 
     csv = ClientAgency::AzDes::RecentlySubmittedCasesCsv.new.generate_csv(cbv_applicants_delivered_recently)
 
-    sftp_gateway.upload_data(csv, "#{config["sftp_directory"]}/#{filename(date_start)}.pdf")
+    sftp_gateway.upload_data(csv, "#{config["sftp_directory"]}/#{filename(date_start)}")
 
     Rails.logger.info "delivered #{cbv_applicants_delivered_recently.count} applications for az_des in time range #{date_start}..#{date_end}"
   end
