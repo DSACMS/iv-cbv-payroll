@@ -149,9 +149,8 @@ RSpec.describe WeeklyReportMailer, type: :mailer do
       expect(mail.attachments.first.content_type).to start_with('text/csv')
 
       expect(parsed_csv[0]).to match(
-        "case_number" => cbv_flow_invitation.cbv_applicant.case_number,
+        "case_number" => cbv_flow.cbv_applicant.case_number,
         "transmitted_at" => "2024-09-04 13:30:00 UTC",
-        "invited_at" => "2024-09-04 13:00:00 UTC",
         "completed_at" => "2024-09-04 13:30:00 UTC",
        )
       expect(parsed_csv.length).to eq(1)
