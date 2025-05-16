@@ -1,7 +1,7 @@
 require 'rails_helper'
 require 'csv'
 
-RSpec.describe AzReportDelivererJob, type: :job do
+RSpec.describe ClientAgency::AzDes::ReportDelivererJob, type: :job do
   let(:sftp_gateway) { instance_double(SftpGateway) }
   before do
     allow(SftpGateway).to receive(:new).and_return(sftp_gateway)
@@ -14,7 +14,7 @@ RSpec.describe AzReportDelivererJob, type: :job do
                         transmitted_at: Date.new(2025, 5, 1))
       cbv_flow.cbv_applicant.update!(case_number: "12345")
 
-      allow(AzDesConfiguration).to receive(:sftp_transmission_configuration).and_return(
+      allow(ClientAgency::AzDes::Configuration).to receive(:sftp_transmission_configuration).and_return(
         {
           "sftp_directory" => "test"
         }
