@@ -140,4 +140,21 @@ RSpec.describe WeeklyReportMailer, type: :mailer do
       expect(parsed_csv.length).to eq(1)
     end
   end
+
+  context "for the LA LDH client agency" do
+    let(:client_agency_id) { "la_ldh" }
+
+    it "renders the CSV data with LA-specific columns" do
+      expect(mail.attachments.first.filename).to eq("weekly_report_20240902-20240908.csv")
+      expect(mail.attachments.first.content_type).to start_with('text/csv')
+
+      expect(parsed_csv[0]).to match(
+        "case_number" => cbv_flow_invitation.cbv_applicant.case_number,
+        "transmitted_at" => "2024-09-04 13:30:00 UTC",
+        "invited_at" => "2024-09-04 13:00:00 UTC",
+        "completed_at" => "2024-09-04 13:30:00 UTC",
+       )
+      expect(parsed_csv.length).to eq(1)
+    end
+  end
 end

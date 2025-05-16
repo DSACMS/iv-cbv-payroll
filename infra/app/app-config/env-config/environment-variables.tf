@@ -235,5 +235,9 @@ locals {
       manage_method     = "manual"
       secret_store_name = "/service/${var.app_name}-${var.environment}/ma-weekly-report-recipients"
     },
+    LA_LDH_WEEKLY_REPORT_RECIPIENTS = {
+      manage_method     = "manual"
+      secret_store_name = "/service/${var.app_name}-${var.environment}/la-ldh-weekly-report-recipients"
+    },
   }
 }

@@ -41,9 +41,7 @@ class WeeklyReportMailer < ApplicationMailer
         base_fields = {
           invited_at: invitation.created_at,
           transmitted_at: cbv_flow&.transmitted_at,
-          completed_at: cbv_flow&.consented_to_authorized_use_at,
-          snap_application_date: applicant.snap_application_date,
-          email_address: invitation.email_address
+          completed_at: cbv_flow&.consented_to_authorized_use_at
         }
 
         case current_agency.id
@@ -51,11 +49,19 @@ class WeeklyReportMailer < ApplicationMailer
           base_fields.merge(
             client_id_number: applicant.client_id_number,
             case_number: applicant.case_number,
+            snap_application_date: applicant.snap_application_date,
+            email_address: invitation.email_address
           )
         when "ma"
           base_fields.merge(
             agency_id_number: applicant.agency_id_number,
-            beacon_id: applicant.beacon_id
+            beacon_id: applicant.beacon_id,
+            snap_application_date: applicant.snap_application_date,
+            email_address: invitation.email_address
+          )
+        when "la_ldh"
+          base_fields.merge(
+            case_number: applicant.case_number,
           )
         end
       end
