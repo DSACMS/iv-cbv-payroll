@@ -217,19 +217,19 @@ locals {
       manage_method     = "manual"
       secret_store_name = "/service/${var.app_name}-${var.environment}/azure-sandbox-tenant-id"
     },
-   AZ_DES_SFTP_USER = {
+    AZ_DES_SFTP_USER = {
       manage_method     = "manual"
       secret_store_name = "/service/${var.app_name}-${var.environment}/az-des-sftp-user"
     },
-   AZ_DES_SFTP_PASSWORD = {
+    AZ_DES_SFTP_PASSWORD = {
       manage_method     = "manual"
       secret_store_name = "/service/${var.app_name}-${var.environment}/az-des-sftp-password"
     },
-   AZ_DES_SFTP_URL = {
+    AZ_DES_SFTP_URL = {
       manage_method     = "manual"
       secret_store_name = "/service/${var.app_name}-${var.environment}/az-des-sftp-url"
     },
-   AZ_DES_SFTP_DIRECTORY = {
+    AZ_DES_SFTP_DIRECTORY = {
       manage_method     = "manual"
       secret_store_name = "/service/${var.app_name}-${var.environment}/az-des-sftp-directory"
     },
