@@ -1,4 +1,4 @@
-class AzDesConfiguration
+class ClientAgency::AzDes::Configuration
   def self.sftp_transmission_configuration
     Rails.application.config.client_agencies["az_des"].transmission_method_configuration
   end
