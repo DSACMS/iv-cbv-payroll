@@ -7,6 +7,7 @@ class CbvFlow < ApplicationRecord
   accepts_nested_attributes_for :cbv_applicant
 
   scope :incomplete, -> { where(confirmation_code: nil) }
+  scope :completed, -> { where.not(confirmation_code: nil) }
 
   include Redactable
   has_redactable_fields(
