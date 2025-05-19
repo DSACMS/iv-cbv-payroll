@@ -9,8 +9,8 @@ RSpec.describe ClientAgency::AzDes::ReportDelivererJob, type: :job do
 
   context "#perform" do
     it "generates csv when there is a case that has been submitted during time period specified" do
-      authorized_timestamp = Time.new(2025, 1, 1, 10).in_time_zone("UTC")
-      transmitted_at = Time.new(2025, 5, 1, 1).in_time_zone("UTC")
+      authorized_timestamp = Time.find_zone("UTC").local(2025, 1, 1, 10)
+      transmitted_at = Time.find_zone("UTC").local(2025, 5, 1, 1)
       cbv_flow = create(:cbv_flow, :completed, :invited, client_agency_id: "az_des",
                         consented_to_authorized_use_at: authorized_timestamp,
                         transmitted_at: transmitted_at)
@@ -28,8 +28,8 @@ RSpec.describe ClientAgency::AzDes::ReportDelivererJob, type: :job do
         expect(csv.headers).to eq([ "case_number", "confirmation_code", "cbv_link_created_timestamp", "cbv_link_clicked_timestamp", "report_created_timestamp", "report_date_start", "report_date_end", "consent_timestamp", "pdf_filename", "pdf_filetype", "language" ])
         row = csv.first
         expect(row["case_number"]).to eq("12345")
-        expect(row["consent_timestamp"]).to eq("01/01/2025 11:00:00")
-        expect(row["pdf_filename"]).to eq("CBVPilot_00012345_20250501_ConfSANDBOX0010002.pdf")
+        expect(row["consent_timestamp"]).to eq("01/01/2025 03:00:00")
+        expect(row["pdf_filename"]).to eq("CBVPilot_00012345_20250430_ConfSANDBOX0010002.pdf")
       end
 
       described_class.perform_now(Date.new(2025, 4, 1), Date.new(2025, 5, 2))
