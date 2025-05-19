@@ -7,7 +7,7 @@ ARG RUBY_VERSION=3.4.4
 ##########################################################################################
 # BASE: Shared base docker image
 ##########################################################################################
-FROM registry.docker.com/library/ruby:$RUBY_VERSION-slim AS base
+FROM registry.docker.com/library/ruby:$RUBY_VERSION AS base
 
 # Upgrade packages in base image to address security issues.
 # We should be able to remove these after upgrading the base image to a version
