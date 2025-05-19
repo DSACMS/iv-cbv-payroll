@@ -43,6 +43,7 @@ class WeeklyReportMailer < ApplicationMailer
       next if invitation && !report_range.cover?(invitation.created_at)
 
       base_fields = {
+        started_at: flow.created_at,
         transmitted_at: flow.transmitted_at,
         completed_at: flow.consented_to_authorized_use_at
       }
