@@ -71,6 +71,7 @@ RSpec.describe WeeklyReportMailer, type: :mailer do
 
     expect(parsed_csv[0]).to match(
       "client_id_number" => cbv_flow_invitation.cbv_applicant.client_id_number,
+      "started_at" => "2024-09-04 13:15:00 UTC",
       "transmitted_at" => "2024-09-04 13:30:00 UTC",
       "case_number" => cbv_flow_invitation.cbv_applicant.case_number,
       "invited_at" => "2024-09-04 13:00:00 UTC",
@@ -96,7 +97,7 @@ RSpec.describe WeeklyReportMailer, type: :mailer do
     let!(:incomplete_invitation) do
       create(:cbv_flow_invitation,
              :nyc,
-             created_at: invitation_sent_at,
+             created_at: invitation_sent_at
             )
     end
     let!(:incomplete_flow) do
@@ -121,6 +122,7 @@ RSpec.describe WeeklyReportMailer, type: :mailer do
 
       expect(parsed_csv[0]).to match(
         "beacon_id" => cbv_flow_invitation.cbv_applicant.beacon_id,
+        "started_at" => "2024-09-04 13:15:00 UTC",
         "transmitted_at" => "2024-09-04 13:30:00 UTC",
         "agency_id_number" => cbv_flow_invitation.cbv_applicant.agency_id_number,
         "invited_at" => "2024-09-04 13:00:00 UTC",
@@ -141,6 +143,7 @@ RSpec.describe WeeklyReportMailer, type: :mailer do
 
       expect(parsed_csv[0]).to match(
         "case_number" => cbv_flow.cbv_applicant.case_number,
+        "started_at" => "2024-09-04 13:15:00 UTC",
         "transmitted_at" => "2024-09-04 13:30:00 UTC",
         "completed_at" => "2024-09-04 13:30:00 UTC",
        )
