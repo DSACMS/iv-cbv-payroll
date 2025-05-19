@@ -208,7 +208,7 @@ RSpec.describe Webhooks::Argyle::EventsController, type: :controller do
           paystubs_success: true,
           paystubs_supported: true,
           paystubs_count: 10,
-          paystubs_deductions_count: 16,
+          paystubs_deductions_count: 17,
           paystubs_hours_average: 64.848,
           paystubs_hours_by_earning_category_count: 10,
           paystubs_hours_max: 83.04,
