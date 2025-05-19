@@ -92,7 +92,7 @@ RSpec.describe WeeklyReportMailer, type: :mailer do
     end
   end
 
-  context "when there are is an incomplete CbvFlow" do
+  context "when there is an incomplete CbvFlow" do
     let!(:incomplete_invitation) do
       create(:cbv_flow_invitation,
              :nyc,
@@ -107,17 +107,8 @@ RSpec.describe WeeklyReportMailer, type: :mailer do
             )
     end
 
-    it "includes them in the CSV data" do
-      expect(parsed_csv.length).to eq(2)
-      expect(parsed_csv).to include(hash_including(
-        "client_id_number" => incomplete_invitation.cbv_applicant.client_id_number,
-        "transmitted_at" => nil,
-        "case_number" => incomplete_invitation.cbv_applicant.case_number,
-        "invited_at" => "2024-09-04 13:00:00 UTC",
-        "snap_application_date" => match(/\d\d\d\d-\d\d-\d\d/),
-        "completed_at" => nil,
-        "email_address" => "test@example.com"
-      ))
+    it "excludes incomplete flows from the CSV data" do
+      expect(parsed_csv.length).to eq(1)
     end
   end
 
