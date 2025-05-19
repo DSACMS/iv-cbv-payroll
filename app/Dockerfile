@@ -49,7 +49,7 @@ RUN apt-get update -qq && \
     apt-get install --no-install-recommends -y \
       build-essential=12.9 \
       git=1:2.39.5-0+deb12u2 \
-      libpq-dev=15.12-0+deb12u2 \
+      libpq-dev=15.13-0+deb12u1 \
       npm=9.2.0~ds1-1 \
       pkg-config=1.8.1-1
 
@@ -142,7 +142,7 @@ RUN apt-get update -qq && \
         libgpgme11=1.18.0-3+b1 \
         libvips42=8.14.1-3+deb12u2 \
         linux-libc-dev=6.1.135-1 \
-        openssl=3.0.15-1~deb12u1 \
+        openssl=3.0.16-1~deb12u1 \
         postgresql-client=15+248 \
         python-is-python3=3.11.2-1+deb12u1 \
         python3-venv=3.11.2-1+b1 \
