@@ -33,6 +33,7 @@ class WeeklyReportMailer < ApplicationMailer
     client_agency_id = current_agency.id
 
     flows = CbvFlow.where(client_agency_id: client_agency_id)
+                   .completed
                    .includes(:cbv_applicant, :cbv_flow_invitation)
 
     results = flows.map do |flow|
