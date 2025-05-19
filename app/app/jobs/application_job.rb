@@ -6,7 +6,6 @@ class ApplicationJob < ActiveJob::Base
   # Uses https://edgeguides.rubyonrails.org/active_job_basics.html#error-reporting-on-jobs as a pattern
   # in order to send information to newrelic that we had a failed job and enable alerting on said failed job.
   rescue_from(Exception) do |error|
-    puts "what the cluck"
     job = self.class
     queue_name = job.queue_name || "default"
     job_class = job || "UnknownJob"
