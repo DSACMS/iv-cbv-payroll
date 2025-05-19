@@ -18,7 +18,7 @@ class ClientAgency::AzDes::ReportDelivererJob < ApplicationJob
   end
 
   def filename(date_start)
-    "#{date_start.strftime('%Y%m%d')}_summary.csv"
+    "#{date_start.in_time_zone("America/Phoenix").strftime('%Y%m%d')}_summary.csv"
   end
 
   def config
