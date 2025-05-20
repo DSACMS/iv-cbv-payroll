@@ -178,6 +178,7 @@ RSpec.describe Webhooks::Argyle::EventsController, type: :controller do
           cbv_flow_id: cbv_flow.id,
           cbv_applicant_id: cbv_flow.cbv_applicant_id,
           invitation_id: cbv_flow.cbv_flow_invitation_id,
+          client_agency_id: "sandbox",
           argyle_environment: "sandbox",
           sync_duration_seconds: be_a(Numeric),
 
