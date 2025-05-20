@@ -9,6 +9,7 @@ RSpec.describe Aggregators::AggregatorReports::AggregatorReport, type: :service 
         Aggregators::ResponseObjects::Paystub.new(gross_pay_amount: nil)
       ]
 
+      expect { report.total_gross_income }.not_to raise_error
       expect(report.total_gross_income).to eq(100)
     end
   end
