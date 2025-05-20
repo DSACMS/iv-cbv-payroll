@@ -23,5 +23,9 @@ RSpec.describe Cbv::MissingResultsController do
         expect(response).to be_successful
       end
     end
+
+    context "shows the continue to review my report link when the cbv_flow has a fully_synced payroll account" do
+
+    end
   end
 end

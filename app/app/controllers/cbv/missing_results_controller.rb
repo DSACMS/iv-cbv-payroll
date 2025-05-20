@@ -2,6 +2,7 @@ class Cbv::MissingResultsController < Cbv::BaseController
   before_action :track_missing_results_event, only: :show
 
   def show
+    @has_payroll_account = @cbv_flow.payroll_accounts.any?
   end
 
   def track_missing_results_event
