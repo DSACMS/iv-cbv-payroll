@@ -1,6 +1,8 @@
 require 'rails_helper'
 
 RSpec.describe PayrollAccount::Argyle, type: :model do
+  include ArgyleApiHelper
+
   let(:cbv_flow) { create(:cbv_flow) }
   let(:payroll_account) { create(:payroll_account, :argyle, cbv_flow: cbv_flow) }
   let(:synced_account) { create(:payroll_account, :argyle_fully_synced, cbv_flow: cbv_flow) }
@@ -79,6 +81,32 @@ RSpec.describe PayrollAccount::Argyle, type: :model do
 
         expect(payroll_account.necessary_jobs_succeeded?).to be false
       end
+    end
+  end
+
+  describe "#redact!" do
+    let(:fake_argyle) { double(Aggregators::Sdk::ArgyleService, delete_account_api: nil) }
+
+    before do
+      expected_environment = Rails.application.config.client_agencies[cbv_flow.client_agency_id].argyle_environment
+
+      allow(Aggregators::Sdk::ArgyleService)
+        .to receive(:new)
+        .with(expected_environment)
+        .and_return(fake_argyle)
+    end
+
+    it "calls the DELETE /accounts/:id API" do
+      payroll_account.redact!
+
+      expect(fake_argyle).to have_received(:delete_account_api)
+        .with(account: payroll_account.pinwheel_account_id)
+    end
+
+    it "updates the redacted_at timestamp" do
+      expect { payroll_account.redact! }
+        .to change { payroll_account.reload.redacted_at }
+        .from(nil).to(within(1.second).of(Time.now))
     end
   end
 end

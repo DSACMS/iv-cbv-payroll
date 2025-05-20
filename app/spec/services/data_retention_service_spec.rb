@@ -83,6 +83,13 @@ RSpec.describe DataRetentionService do
         expect { service.redact_incomplete_cbv_flows }
           .not_to change { cbv_flow.cbv_applicant.reload.attributes }
       end
+
+      it "does not redact an associated PayrollAccount" do
+        payroll_account = create(:payroll_account, cbv_flow: cbv_flow)
+
+        expect { service.redact_incomplete_cbv_flows }
+          .not_to change { payroll_account.reload.attributes }
+      end
     end
 
     context "after the deletion threshold" do
@@ -115,6 +122,14 @@ RSpec.describe DataRetentionService do
         service.redact_incomplete_cbv_flows
         expect(cbv_flow.cbv_applicant.reload).to have_attributes(
           case_number: "REDACTED"
+        )
+      end
+
+      it "redacts an associated PayrollAccount" do
+        payroll_account = create(:payroll_account, cbv_flow: cbv_flow)
+        service.redact_incomplete_cbv_flows
+        expect(payroll_account.reload).to have_attributes(
+          redacted_at: within(1.second).of(now)
         )
       end
 
@@ -165,6 +180,14 @@ RSpec.describe DataRetentionService do
             additional_information: {}
           )
         end
+
+        it "redacts an associated PayrollAccount" do
+          payroll_account = create(:payroll_account, cbv_flow: cbv_flow)
+          service.redact_incomplete_cbv_flows
+          expect(payroll_account.reload).to have_attributes(
+            redacted_at: within(1.second).of(now)
+          )
+        end
       end
     end
   end
@@ -210,6 +233,13 @@ RSpec.describe DataRetentionService do
         expect { service.redact_complete_cbv_flows }
           .not_to change { cbv_flow.cbv_applicant.reload.attributes }
       end
+
+      it "does not redact an associated PayrollAccount" do
+        payroll_account = create(:payroll_account, cbv_flow: cbv_flow)
+
+        expect { service.redact_complete_cbv_flows }
+          .not_to change { payroll_account.reload.attributes }
+      end
     end
 
     context "after the deletion threshold" do
@@ -238,6 +268,14 @@ RSpec.describe DataRetentionService do
         )
       end
 
+      it "redacts an associated PayrollAccount" do
+        payroll_account = create(:payroll_account, cbv_flow: cbv_flow)
+        service.redact_complete_cbv_flows
+        expect(payroll_account.reload).to have_attributes(
+          redacted_at: within(1.second).of(now)
+        )
+      end
+
       it "skips redacting already-redacted CbvFlows" do
         service.redact_complete_cbv_flows
 
@@ -251,6 +289,7 @@ RSpec.describe DataRetentionService do
     let(:cbv_flow_invitation) { create(:cbv_flow_invitation, cbv_applicant_attributes: { case_number: "DELETEME001" }) }
     let!(:cbv_flow) { CbvFlow.create_from_invitation(cbv_flow_invitation) }
     let!(:second_cbv_flow) { CbvFlow.create_from_invitation(cbv_flow_invitation) }
+    let!(:payroll_account) { create(:payroll_account, cbv_flow: second_cbv_flow) }
 
     it "redacts the invitation and all flow objects" do
       DataRetentionService.manually_redact_by_case_number!("DELETEME001")
@@ -266,6 +305,9 @@ RSpec.describe DataRetentionService do
         redacted_at: within(1.second).of(Time.now)
       )
       expect(cbv_flow_invitation.reload).to have_attributes(
+        redacted_at: within(1.second).of(Time.now)
+      )
+      expect(payroll_account.reload).to have_attributes(
         redacted_at: within(1.second).of(Time.now)
       )
     end

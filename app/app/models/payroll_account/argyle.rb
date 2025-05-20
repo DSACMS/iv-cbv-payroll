@@ -53,4 +53,15 @@ class PayrollAccount::Argyle < PayrollAccount
     # let's at least not crash anything that depends on this method.
     account_connected_at || created_at
   end
+
+  def redact!
+    argyle_environment = Rails.application.config.client_agencies[cbv_flow.client_agency_id].argyle_environment
+    argyle = Aggregators::Sdk::ArgyleService.new(argyle_environment)
+    argyle.delete_account_api(account: pinwheel_account_id)
+    touch(:redacted_at)
+  rescue => ex
+    raise ex unless Rails.env.production?
+
+    Rails.logger.error "Unable to redact PayrollAccount::Argyle Account ID #{pinwheel_account_id} - #{ex.message}"
+  end
 end

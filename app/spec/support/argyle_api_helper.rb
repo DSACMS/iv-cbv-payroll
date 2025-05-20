@@ -76,6 +76,15 @@ module ArgyleApiHelper
       )
   end
 
+  def argyle_stub_delete_account_response
+    stub_request(:delete, %r{#{Aggregators::Sdk::ArgyleService::ACCOUNTS_ENDPOINT}/[0-9a-fA-F\-]{36}})
+      .to_return(
+        status: 204,
+        body: "",
+        headers: { 'Content-Type': 'application/json;charset=UTF-8' }
+      )
+  end
+
   def argyle_stub_request_identities_response(user_folder)
     stub_request(:get, %r{#{Aggregators::Sdk::ArgyleService::IDENTITIES_ENDPOINT}})
       .to_return(
