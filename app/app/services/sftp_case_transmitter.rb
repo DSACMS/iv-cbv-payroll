@@ -8,7 +8,7 @@ class SftpCaseTransmitter
   end
 
   def deliver_sftp!
-    config = current_agency.transmission_method_configuration
+    config = current_agency.transmission_method_configuration.with_indifferent_access
     sftp_gateway = SftpGateway.new(config)
     transmitted_time = Time.now
     filename = ClientAgency::AzDes::Configuration.pdf_filename(cbv_flow, transmitted_time)
