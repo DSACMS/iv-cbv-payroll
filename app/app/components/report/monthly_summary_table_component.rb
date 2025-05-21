@@ -25,9 +25,9 @@ class Report::MonthlySummaryTableComponent < ViewComponent::Base
       result[month_string] = {
         paystubs: paystubs_in_month,
         gigs: gigs_in_month,
-        accrued_gross_earnings: paystubs_in_month.reduce(0) { |sum, paystub| sum + (paystub.gross_pay_amount || 0) },
+        accrued_gross_earnings: paystubs_in_month.sum { |paystub| paystub.gross_pay_amount || 0 },
         total_gig_hours: gigs_in_month.sum { |gig| gig.hours },
-        partial_month_range: self.class.partial_month_range(month_string, extracted_dates_in_month, from_date, to_date)
+        partial_month_range: self.class.partial_month_details(month_string, extracted_dates_in_month, from_date, to_date)
       }
     end
 
@@ -84,6 +84,7 @@ class Report::MonthlySummaryTableComponent < ViewComponent::Base
   # Given a list of dates, returns a deduplicated list of months in reverse chronological order (newest first).
   def self.unique_months(dates)
     dates.map { |date| self.format_month(date) }
+         .compact
          .uniq
          .sort_by { |month_string| self.parse_month_safely(month_string) }
          .reverse
