@@ -29,7 +29,7 @@ RSpec.describe ClientAgency::AzDes::ReportDelivererJob, type: :job do
         row = csv.first
         expect(row["case_number"]).to eq("12345")
         expect(row["consent_timestamp"]).to eq("01/01/2025 03:00:00")
-        expect(row["pdf_filename"]).to eq("CBVPilot_00012345_20250430_ConfSANDBOX0010002.pdf")
+        expect(row["pdf_filename"]).to eq("CBVPilot_00012345_20250101_ConfSANDBOX0010002.pdf")
       end
 
       described_class.perform_now(Date.new(2025, 4, 1), Date.new(2025, 5, 2))

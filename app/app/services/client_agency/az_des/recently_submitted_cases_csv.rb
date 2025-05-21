@@ -10,7 +10,7 @@ class ClientAgency::AzDes::RecentlySubmittedCasesCsv < CsvGenerator
         report_date_start: ClientAgency::AzDes::Configuration.format_timezone(cbv_flow.cbv_applicant.paystubs_query_begins_at),
         report_date_end: ClientAgency::AzDes::Configuration.format_timezone(cbv_flow.cbv_applicant.snap_application_date),
         consent_timestamp: ClientAgency::AzDes::Configuration.format_timezone(cbv_flow.consented_to_authorized_use_at),
-        pdf_filename: "#{ClientAgency::AzDes::Configuration.pdf_filename(cbv_flow, cbv_flow.transmitted_at)}.pdf",
+        pdf_filename: "#{ClientAgency::AzDes::Configuration.pdf_filename(cbv_flow, cbv_flow.consented_to_authorized_use_at)}.pdf",
         pdf_filetype: "application/pdf",
         language: cbv_flow.cbv_flow_invitation.language
       }

@@ -9,11 +9,9 @@ class SftpCaseTransmitter
 
   def deliver_sftp!
     config = current_agency.transmission_method_configuration.with_indifferent_access
-    sftp_gateway = SftpGateway.new(config)
-    transmitted_time = Time.now
-    filename = ClientAgency::AzDes::Configuration.pdf_filename(cbv_flow, transmitted_time)
+    sftp_gateway = SftpGateway.new(config)  
+    filename = ClientAgency::AzDes::Configuration.pdf_filename(cbv_flow, cbv_flow.consented_to_authorized_use_at)
     sftp_gateway.upload_data(StringIO.new(pdf_output.content), "#{config["sftp_directory"]}/#{filename}.pdf")
-    cbv_flow.update!(transmitted_at: transmitted_time)
   end
 
   def pdf_output
