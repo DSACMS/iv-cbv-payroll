@@ -53,7 +53,7 @@ RSpec.describe Report::MonthlySummaryTableComponent, type: :component do
       describe "#summarize_by_month" do
         it "returns a hash of monthly totals" do
           summary_component = described_class.new(argyle_report, payroll_account)
-          expect(summary_component.summarize_by_month).to eq({
+          expect(summary_component.summarize_by_month(from_date: Date.parse("2025-01-08"))).to eq({
             "2025-04" => {
               "gigs" => 100,
               "paystubs" => 100,
@@ -65,6 +65,78 @@ RSpec.describe Report::MonthlySummaryTableComponent, type: :component do
           })
         end
       end
+    end
+  end
+
+  describe ".partial_month_details" do
+    it "detects complete month when there are no activities" do
+      current_month_string = "2025-01"
+      activity_dates = []
+      from_date = Date.parse("2025-01-01")
+      to_date = Date.parse("2025-03-31")
+
+      partial_month_details = described_class.partial_month_details(current_month_string, activity_dates, from_date, to_date)
+      expect(partial_month_details).to an_object_eq_to({
+                                                         is_partial_month: false,
+                                                         included_range_start: "2025-01-01",
+                                                         included_range_end: "2025-01-31"
+                                                       })
+    end
+
+    it "detects complete first month when there is an activity on the first day" do
+      current_month_string = "2025-01"
+      activity_dates = [ Date.parse("2025-01-01") ]
+      from_date = Date.parse("2025-01-01")
+      to_date = Date.parse("2025-03-31")
+
+      partial_month_details = described_class.partial_month_details(current_month_string, activity_dates, from_date, to_date)
+      expect(partial_month_details).to an_object_eq_to({
+                                                         is_partial_month: false,
+                                                         included_range_start: "2025-01-01",
+                                                         included_range_end: "2025-01-31"
+                                                       })
+    end
+
+    it "detects complete last month when there is an activity on the last day" do
+      current_month_string = "2025-03"
+      activity_dates = [ Date.parse("2025-03-31") ]
+      from_date = Date.parse("2025-01-01")
+      to_date = Date.parse("2025-03-31")
+
+      partial_month_details = described_class.partial_month_details(current_month_string, activity_dates, from_date, to_date)
+      expect(partial_month_details).to an_object_eq_to({
+                                                         is_partial_month: false,
+                                                         included_range_start: "2025-03-01",
+                                                         included_range_end: "2025-03-31"
+                                                       })
+    end
+
+    it "detects partial first month" do
+      current_month_string = "2025-01"
+      activity_dates = [ Date.parse("2025-01-04"), Date.parse("2025-01-06") ]
+      from_date = Date.parse("2025-01-01")
+      to_date = Date.parse("2025-03-31")
+
+      partial_month_details = described_class.partial_month_details(current_month_string, activity_dates, from_date, to_date)
+      expect(partial_month_details).to an_object_eq_to({
+                                                         is_partial_month: true,
+                                                         included_range_start: "2025-01-04",
+                                                         included_range_end: "2025-01-31"
+                                                       })
+    end
+
+    it "detects partial last month" do
+      current_month_string = "2025-03"
+      activity_dates = [ Date.parse("2025-03-04"), Date.parse("2025-03-06") ]
+      from_date = Date.parse("2025-01-01")
+      to_date = Date.parse("2025-03-31")
+
+      partial_month_details = described_class.partial_month_details(current_month_string, activity_dates, from_date, to_date)
+      expect(partial_month_details).to an_object_eq_to({
+                                                         is_partial_month: true,
+                                                         included_range_start: "2025-03-01",
+                                                         included_range_end: "2025-03-06"
+                                                       })
     end
   end
 end
