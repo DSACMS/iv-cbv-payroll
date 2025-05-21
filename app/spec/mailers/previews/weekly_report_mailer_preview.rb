@@ -2,7 +2,7 @@
 class WeeklyReportMailerPreview < ActionMailer::Preview
   def report_email
     WeeklyReportMailer.with(
-      client_agency_id: "nyc",
+      client_agency_id: "la_ldh",
       report_date: Date.today
     ).report_email
   end
