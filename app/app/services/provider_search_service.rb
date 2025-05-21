@@ -1,6 +1,9 @@
 class ProviderSearchService
   SUPPORTED_PROVIDERS = (ENV["SUPPORTED_PROVIDERS"] || "pinwheel")&.split(",")&.map(&:to_sym)
 
+  # We are temporarily blocking these employers because they return data in a form we don't expect
+  # and they constitute unearned income, which our current state partner (LA) does not want us to report.
+
   # item_000136007 - SSA
   # item_000042186 - Veterans Affairs
   # item_000023897 - Louisiana Workforce Commission, which administers Unemployment Insurance
