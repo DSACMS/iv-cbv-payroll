@@ -6,11 +6,11 @@ class SftpGateway
     @password = options[:password]
   end
 
-  def upload_data(local_data, remote_file_location)
+  def upload_data(local_file, remote_file_location)
     session = Net::SSH.start(url, user, password: password, port: 22)
     sftp = Net::SFTP::Session.new(session)
     sftp.connect!
-    sftp.upload! local_data, remote_file_location
+    sftp.upload! local_file, remote_file_location
     sftp.channel.eof!
     # https://github.com/net-ssh/net-ssh/issues/716
     sftp.close_channel
