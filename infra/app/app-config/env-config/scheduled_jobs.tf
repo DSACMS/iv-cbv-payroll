@@ -9,6 +9,11 @@ locals {
       schedule_expression = "cron(0 12 ? * MON *)" # Every Monday at 12pm UTC (7am EST / 8am EDT)
     }
 
+    send_newrelic_queue_metrics = {
+      task_command        = ["bin/rails", "telemetry:send_queue_metrics"]
+      schedule_expression = "cron(* * * * *)" # every minute
+    }
+
     redact_data = {
       task_command        = ["bin/rails", "data_deletion:redact_all"]
       schedule_expression = "cron(0 14 ? * * *)" # Every day at 2pm UTC (9am EST / 10am EDT)
