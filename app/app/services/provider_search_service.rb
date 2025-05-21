@@ -1,6 +1,11 @@
 class ProviderSearchService
   SUPPORTED_PROVIDERS = (ENV["SUPPORTED_PROVIDERS"] || "pinwheel")&.split(",")&.map(&:to_sym)
 
+  # item_000136007 - SSA
+  # item_000042186 - Veterans Affairs
+  BLOCKED_ARGYLE_EMPLOYERS = %w[item_000136007 item_000042186]
+  BLOCKED_PINWHEEL_EMPLOYERS = %w[]
+
   def initialize(client_agency_id, providers: SUPPORTED_PROVIDERS)
     @client_agency_config = site_config[client_agency_id]
     @providers = providers
@@ -15,6 +20,8 @@ class ProviderSearchService
       results = argyle_service.employer_search(query)["results"].map do |result|
         Aggregators::ResponseObjects::SearchResult.from_argyle(result)
       end
+
+      results = filter_results(results, BLOCKED_ARGYLE_EMPLOYERS)
     end
 
     if @providers.include?(:pinwheel) && (results.length == 0 || !any_exact_matches?(results, query))
@@ -27,9 +34,15 @@ class ProviderSearchService
       # Use Pinwheel's results if there aren't any results from Argyle, or
       # there is an exact match from Pinwheel.
       results = pinwheel_results if results.length == 0 || any_exact_matches?(pinwheel_results, query)
+
+      results = filter_results(results, BLOCKED_PINWHEEL_EMPLOYERS)
     end
 
     results
+  end
+
+  def filter_results(results, blocked_employers)
+    results.select { |result| !result.provider_options.provider_id.in? blocked_employers }
   end
 
   # TODO: this data should be loading from a config file instead of from hardcoded arrays within this file - see FFS-2661
