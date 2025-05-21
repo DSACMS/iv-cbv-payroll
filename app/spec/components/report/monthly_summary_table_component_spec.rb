@@ -22,7 +22,7 @@ RSpec.describe Report::MonthlySummaryTableComponent, type: :component do
       )
   end
 
-  context "with argyle" do
+  context "with argyle stubs" do
     context "with bob, a gig-worker" do
       let(:argyle_report) { Aggregators::AggregatorReports::ArgyleReport.new(payroll_accounts: [ payroll_account ], argyle_service: argyle_service) }# , from_date: current_time, to_date: current_time) }
       before do
@@ -42,16 +42,17 @@ RSpec.describe Report::MonthlySummaryTableComponent, type: :component do
         expect(argyle_report.gigs.length).to be(100)
       end
 
-      xit "renders helllllo" do
-        expect(
-          render_inline(described_class.new)
+      it "renders helllllo" do
+        rendered_page = render_inline(described_class.new(argyle_report, payroll_account))
+        puts(rendered_page)
+        expect(rendered_page
         ).to have_text(
                "Helllllllo"
              )
       end
 
       describe "#summarize_by_month" do
-        it "returns a hash of monthly totals" do
+        xit "returns a hash of monthly totals" do
           summary_component = described_class.new(argyle_report, payroll_account)
           expect(summary_component.summarize_by_month(from_date: Date.parse("2025-01-08"))).to eq({
             "2025-04" => {

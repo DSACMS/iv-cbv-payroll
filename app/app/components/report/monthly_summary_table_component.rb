@@ -1,4 +1,6 @@
 class Report::MonthlySummaryTableComponent < ViewComponent::Base
+  include ReportViewHelper
+
   def initialize(report, payroll_account)
     @payroll_account = payroll_account
     @report = report

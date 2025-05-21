@@ -517,11 +517,19 @@ en:
       status:
         fetching_payroll_description: This may take a few minutes. Please keep this window open while we work on this.
         header: We’re gathering your payment details from your employer
+  components:
+    report:
+      monthly_summary_table:
+        accrued_gross_earnings: Accrued gross earnings
+        footnote: The “Accrued gross earnings” column sums the payments made in that month. The “Total hours worked” column sums the time it took to complete every gig worked in that month. There may be gigs worked in a month that were paid in the following month.
+        month: Month
+        total_gig_hours: Total hours worked
   continue: Continue
   date:
     formats:
       default: "%Y-%m-%d"
       long: "%B %-d, %Y"
+      month_year: "%B %Y"
   help:
     alert:
       heading: Need help connecting to your payroll provider?
