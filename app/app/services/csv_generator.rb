@@ -1,3 +1,5 @@
+require "csv"
+
 class CsvGenerator
   def generate_csv(cbv_flow, pdf_output, filename)
     raise "not implemented"
