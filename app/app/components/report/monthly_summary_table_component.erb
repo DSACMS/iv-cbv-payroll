@@ -1,9 +1,10 @@
 <table class="usa-table usa-table--borderless width-full">
   <thead class="border-top-05">
-  <tr>
-    <th class="padding-3" style="background-color: #d9e8f6;" colspan="2">
-    </th>
-  </tr>
+    <tr>
+      <th class="padding-3" style="background-color: #d9e8f6;" colspan="3">
+        <h1>Employer Name - Monthly Summary</h1>
+      </th>
+    </tr>
   </thead>
   <tbody>
   <% self.summarize_by_month.each_with_index do |(month_string, summary), index| %>
@@ -15,7 +16,6 @@
 <h1>Month: <%= format_parsed_date(self.class.parse_month_safely(month_string), :month_year) %></h1>
 <%= render(TableComponent.new) do |table| %>
   <%= table.with_header do %>
-    <h1>HELLO HEADER</h1>
   <% end %>
   <%= table.with_data_point(:month, self.class.parse_month_safely(month_string)) %>
   <%= table.with_data_point(:accrued_gross_earnings, summary[:accrued_gross_earnings]) %>
