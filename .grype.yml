@@ -25,8 +25,6 @@ ignore:
   - vulnerability: GHSA-gh9q-2xrm-x6qv # Ruby "cgi" version 0.4.1
   - vulnerability: GHSA-mhwm-jh88-3gjf # Ruby "cgi" version 0.4.1
   - vulnerability: GHSA-22h5-pq3x-2gf2 # Ruby "uri" version 0.13.1
-  - vulnerability: CVE-2024-38541 # linux-lib-c-dev version 6.1.135-1
-  - vulnerability: CVE-2024-26739 # linux-lib-c-dev version 6.1.135-1
 
 exclude:
   - '/rails/node_modules/@esbuild/*/bin/esbuild' # Ignore this go binary since it is only used in the asset build process

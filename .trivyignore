@@ -10,5 +10,3 @@
 #  Issue:         Why there is a finding and why this is here or not been removed
 #  Last checked:  Date last checked in scans
 #The-CVE-or-vuln-id # Remove comment at start of line
-CVE-2024-38541 # linux-lib-c-dev version 6.1.135-1
-CVE-2024-26739 # linux-lib-c-dev version 6.1.135-1
