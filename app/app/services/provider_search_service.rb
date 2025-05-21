@@ -31,11 +31,11 @@ class ProviderSearchService
         Aggregators::ResponseObjects::SearchResult.from_pinwheel(result)
       end
 
+      results = filter_results(results, BLOCKED_PINWHEEL_EMPLOYERS)
+
       # Use Pinwheel's results if there aren't any results from Argyle, or
       # there is an exact match from Pinwheel.
       results = pinwheel_results if results.length == 0 || any_exact_matches?(pinwheel_results, query)
-
-      results = filter_results(results, BLOCKED_PINWHEEL_EMPLOYERS)
     end
 
     results
