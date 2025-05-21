@@ -141,7 +141,7 @@ RUN apt-get update -qq && \
         curl=7.88.1-10+deb12u12 \
         libgpgme11=1.18.0-3+b1 \
         libvips42=8.14.1-3+deb12u2 \
-        linux-libc-dev=6.1.135-1 \
+        linux-libc-dev=6.1.137-1 \
         openssl=3.0.16-1~deb12u1 \
         postgresql-client=15+248 \
         python-is-python3=3.11.2-1+deb12u1 \
