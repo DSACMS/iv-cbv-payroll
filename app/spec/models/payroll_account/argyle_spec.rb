@@ -108,5 +108,30 @@ RSpec.describe PayrollAccount::Argyle, type: :model do
         .to change { payroll_account.reload.redacted_at }
         .from(nil).to(within(1.second).of(Time.now))
     end
+
+    context "when something goes wrong with the redaction process in production" do
+      before do
+        allow(fake_argyle).to receive(:delete_account_api)
+          .with(account: payroll_account.pinwheel_account_id)
+          .and_raise(StandardError.new("Random error occurred!"))
+
+        allow(Rails.env).to receive(:production?).and_return(true)
+        allow(Rails.logger).to receive(:error)
+
+        allow_any_instance_of(NewRelicEventTracker)
+          .to receive(:track)
+      end
+
+      it "logs to the Rails logger and to NewRelic" do
+        expect_any_instance_of(NewRelicEventTracker)
+          .to receive(:track)
+          .with("DataRedactionFailure", nil, include(
+            account_id: payroll_account.pinwheel_account_id
+          ))
+        expect(Rails.logger).to receive(:error).with(/Unable to redact/)
+
+        payroll_account.redact!
+      end
+    end
   end
 end
