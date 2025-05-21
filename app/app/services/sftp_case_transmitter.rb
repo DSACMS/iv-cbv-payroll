@@ -12,7 +12,7 @@ class SftpCaseTransmitter
     sftp_gateway = SftpGateway.new(config)
     transmitted_time = Time.now
     filename = ClientAgency::AzDes::Configuration.pdf_filename(cbv_flow, transmitted_time)
-    sftp_gateway.upload_data(pdf_output.content, "#{config["sftp_directory"]}/#{filename}.pdf")
+    sftp_gateway.upload_data(StringIO.new(pdf_output.content), "#{config["sftp_directory"]}/#{filename}.pdf")
     cbv_flow.update!(transmitted_at: transmitted_time)
   end
 
