@@ -10,7 +10,7 @@ Follow these steps to perform a load test:
     * ECS service (app-dev) = 10 containers (tasks)
     * DB cluster (app-dev) = 10 ACUs
 3. Pause the "default" queue so we don't track a ton of useless Mixpanel events during the test.
-    * https://verify-demo.navapbc.cloud/jobs      (un/pw in 1Password)
+    * https://verify-demo.navapbc.cloud/jobs      (un/pw in 1Password) <!-- markdown-link-check-disable-line -->
 
 ### Running the test
 3. Get a fresh COOKIE by starting the CBV session and copying out the value of the cookie
@@ -34,7 +34,7 @@ Follow these steps to perform a load test:
     > SolidQueue::Queue.new("default").clear
     ```
 7. Resume the "default" queue execution.
-    * https://verify-demo.navapbc.cloud/jobs      (un/pw in 1Password)
+    * https://verify-demo.navapbc.cloud/jobs      (un/pw in 1Password) <!-- markdown-link-check-disable-line -->
 
 
 ## Developing Locally with K6
