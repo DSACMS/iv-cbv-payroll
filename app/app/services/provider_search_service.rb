@@ -46,7 +46,7 @@ class ProviderSearchService
   end
 
   def filter_results(results, blocked_employers)
-    results.select { |result| !result.provider_options.provider_id.in? blocked_employers }
+    results.select { |result| blocked_employers.exclude?(result.provider_options.provider_id) }
   end
 
   # TODO: this data should be loading from a config file instead of from hardcoded arrays within this file - see FFS-2661
