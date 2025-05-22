@@ -11,7 +11,9 @@ class ProviderSearchService
   # item_000136007 - SSA
   # item_000042186 - Veterans Affairs
   # item_000023897 - Louisiana Workforce Commission, which administers Unemployment Insurance
-  BLOCKED_ARGYLE_EMPLOYERS = %w[item_000136007 item_000042186 item_000023897]
+  # item_000012092 - Disability
+  # item_000033060 - Retirement
+  BLOCKED_ARGYLE_EMPLOYERS = %w[item_000136007 item_000042186 item_000023897 item_000012092 item_000033060]
 
   # 0bab321e-64ea-4047-8d8a-44ba283f6cd8 - Social Security Administration - Retirement, Survivors, Disability benefits
   # 3f7b6ce9-6371-4bb8-8c2f-051c446dc55c - Veterans Affairs benefits
