@@ -1,4 +1,6 @@
 class CbvApplicant < ApplicationRecord
+  include Redactable
+
   after_initialize :set_snap_application_date, if: :new_record?
   after_initialize :set_applicant_attributes
   attr_reader :applicant_attributes, :required_applicant_attributes
@@ -49,19 +51,6 @@ class CbvApplicant < ApplicationRecord
   validates :snap_application_date, presence: {
     message: :invalid_date
   }
-
-  include Redactable
-  has_redactable_fields(
-    first_name: :string,
-    middle_name: :string,
-    last_name: :string,
-    client_id_number: :string,
-    case_number: :string,
-    agency_id_number: :string,
-    beacon_id: :string,
-    snap_application_date: :date,
-    date_of_birth: :date
-  )
 
   def date_of_birth=(value)
     self[:date_of_birth] = parse_date(value)

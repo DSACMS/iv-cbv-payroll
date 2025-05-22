@@ -83,4 +83,16 @@ RSpec.describe CbvApplicant::Nyc, type: :model do
       )
     end
   end
+
+  it "redacts all sensitive PII fields" do
+    applicant = CbvApplicant.create(nyc_attributes)
+    applicant.redact!
+    expect(applicant).to have_attributes(
+      first_name: "REDACTED",
+      middle_name: "REDACTED",
+      last_name: "REDACTED",
+      case_number: "REDACTED",
+      client_id_number: "REDACTED",
+    )
+  end
 end
