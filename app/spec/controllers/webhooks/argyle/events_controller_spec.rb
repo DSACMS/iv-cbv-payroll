@@ -177,6 +177,7 @@ RSpec.describe Webhooks::Argyle::EventsController, type: :controller do
         expect(attributes).to include(
           cbv_flow_id: cbv_flow.id,
           cbv_applicant_id: cbv_flow.cbv_applicant_id,
+          client_agency_id: cbv_flow.client_agency_id,
           invitation_id: cbv_flow.cbv_flow_invitation_id,
           argyle_environment: "sandbox",
           sync_duration_seconds: be_a(Numeric),
@@ -208,7 +209,7 @@ RSpec.describe Webhooks::Argyle::EventsController, type: :controller do
           paystubs_success: true,
           paystubs_supported: true,
           paystubs_count: 10,
-          paystubs_deductions_count: 16,
+          paystubs_deductions_count: 17,
           paystubs_hours_average: 64.848,
           paystubs_hours_by_earning_category_count: 10,
           paystubs_hours_max: 83.04,

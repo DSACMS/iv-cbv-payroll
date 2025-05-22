@@ -11,7 +11,7 @@
   <% end %>
 </div>
 
-<% if @has_payroll_account %>
+<% if @cbv_flow.has_account_with_required_data? %>
   <hr class="margin-top-5 margin-bottom-5 border-base-light border-top-0">
   <h2><%= t(".no_more_jobs") %></h2>
   <div class="usa-prose">

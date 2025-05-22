@@ -71,6 +71,7 @@ RSpec.describe WeeklyReportMailer, type: :mailer do
 
     expect(parsed_csv[0]).to match(
       "client_id_number" => cbv_flow_invitation.cbv_applicant.client_id_number,
+      "started_at" => "2024-09-04 13:15:00 UTC",
       "transmitted_at" => "2024-09-04 13:30:00 UTC",
       "case_number" => cbv_flow_invitation.cbv_applicant.case_number,
       "invited_at" => "2024-09-04 13:00:00 UTC",
@@ -92,11 +93,11 @@ RSpec.describe WeeklyReportMailer, type: :mailer do
     end
   end
 
-  context "when there are is an incomplete CbvFlow" do
+  context "when there is an incomplete CbvFlow" do
     let!(:incomplete_invitation) do
       create(:cbv_flow_invitation,
              :nyc,
-             created_at: invitation_sent_at,
+             created_at: invitation_sent_at
             )
     end
     let!(:incomplete_flow) do
@@ -107,17 +108,8 @@ RSpec.describe WeeklyReportMailer, type: :mailer do
             )
     end
 
-    it "includes them in the CSV data" do
-      expect(parsed_csv.length).to eq(2)
-      expect(parsed_csv).to include(hash_including(
-        "client_id_number" => incomplete_invitation.cbv_applicant.client_id_number,
-        "transmitted_at" => nil,
-        "case_number" => incomplete_invitation.cbv_applicant.case_number,
-        "invited_at" => "2024-09-04 13:00:00 UTC",
-        "snap_application_date" => match(/\d\d\d\d-\d\d-\d\d/),
-        "completed_at" => nil,
-        "email_address" => "test@example.com"
-      ))
+    it "excludes incomplete flows from the CSV data" do
+      expect(parsed_csv.length).to eq(1)
     end
   end
 
@@ -130,6 +122,7 @@ RSpec.describe WeeklyReportMailer, type: :mailer do
 
       expect(parsed_csv[0]).to match(
         "beacon_id" => cbv_flow_invitation.cbv_applicant.beacon_id,
+        "started_at" => "2024-09-04 13:15:00 UTC",
         "transmitted_at" => "2024-09-04 13:30:00 UTC",
         "agency_id_number" => cbv_flow_invitation.cbv_applicant.agency_id_number,
         "invited_at" => "2024-09-04 13:00:00 UTC",
@@ -137,6 +130,23 @@ RSpec.describe WeeklyReportMailer, type: :mailer do
         "completed_at" => "2024-09-04 13:30:00 UTC",
         "email_address" => "test@example.com"
       )
+      expect(parsed_csv.length).to eq(1)
+    end
+  end
+
+  context "for the LA LDH client agency" do
+    let(:client_agency_id) { "la_ldh" }
+
+    it "renders the CSV data with LA-specific columns" do
+      expect(mail.attachments.first.filename).to eq("weekly_report_20240902-20240908.csv")
+      expect(mail.attachments.first.content_type).to start_with('text/csv')
+
+      expect(parsed_csv[0]).to match(
+        "case_number" => cbv_flow.cbv_applicant.case_number,
+        "started_at" => "2024-09-04 13:15:00 UTC",
+        "transmitted_at" => "2024-09-04 13:30:00 UTC",
+        "completed_at" => "2024-09-04 13:30:00 UTC",
+       )
       expect(parsed_csv.length).to eq(1)
     end
   end

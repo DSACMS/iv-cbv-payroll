@@ -113,9 +113,8 @@
   #   name: "la_ldh"
   pay_income_days: 90
   invitation_valid_days: 14
-  # TODO[FFS-2690]: Enable the weekly report
-  # weekly_report:
-  #   recipient: <%= ENV['LA_LDH_WEEKLY_REPORT_RECIPIENTS'] %>
+  weekly_report:
+    recipient: <%= ENV['LA_LDH_WEEKLY_REPORT_RECIPIENTS'] %>
   applicant_attributes:
     case_number:
       required: false

@@ -80,7 +80,7 @@ module Aggregators::AggregatorReports
     end
 
     def total_gross_income
-      @paystubs.reduce(0) { |sum, paystub| sum + paystub.gross_pay_amount }
+      @paystubs.reduce(0) { |sum, paystub| sum + (paystub.gross_pay_amount || 0) }
     end
 
     def days_since_last_paydate

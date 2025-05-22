@@ -30,35 +30,49 @@ class WeeklyReportMailer < ApplicationMailer
   end
 
   def weekly_report_data(current_agency, report_range)
-    CbvFlowInvitation
-      .where(client_agency_id: current_agency.id)
-      .where(created_at: report_range)
-      .includes(:cbv_flows, :cbv_applicant)
-      .map do |invitation|
-        cbv_flow = invitation.cbv_flows.find(&:complete?)
-        applicant = invitation.cbv_applicant
+    client_agency_id = current_agency.id
 
-        base_fields = {
-          invited_at: invitation.created_at,
-          transmitted_at: cbv_flow&.transmitted_at,
-          completed_at: cbv_flow&.consented_to_authorized_use_at,
-          snap_application_date: applicant.snap_application_date,
-          email_address: invitation.email_address
-        }
+    flows = CbvFlow.where(client_agency_id: client_agency_id)
+                   .completed
+                   .includes(:cbv_applicant, :cbv_flow_invitation)
 
-        case current_agency.id
-        when "nyc"
-          base_fields.merge(
-            client_id_number: applicant.client_id_number,
-            case_number: applicant.case_number,
-          )
-        when "ma"
-          base_fields.merge(
-            agency_id_number: applicant.agency_id_number,
-            beacon_id: applicant.beacon_id
-          )
-        end
+    results = flows.map do |flow|
+      applicant = flow.cbv_applicant
+      invitation = flow.cbv_flow_invitation
+
+      next if invitation && !report_range.cover?(invitation.created_at)
+
+      base_fields = {
+        started_at: flow.created_at,
+        transmitted_at: flow.transmitted_at,
+        completed_at: flow.consented_to_authorized_use_at
+      }
+
+      case client_agency_id
+      when "nyc"
+        base_fields.merge(
+          client_id_number: applicant.client_id_number,
+          case_number: applicant.case_number,
+          email_address: invitation&.email_address,
+          invited_at: invitation&.created_at,
+          snap_application_date: applicant.snap_application_date
+        )
+      when "ma"
+        base_fields.merge(
+          agency_id_number: applicant.agency_id_number,
+          beacon_id: applicant.beacon_id,
+          email_address: invitation&.email_address,
+          invited_at: invitation&.created_at,
+          snap_application_date: applicant.snap_application_date
+        )
+      when "la_ldh"
+        base_fields.merge(
+          case_number: applicant.case_number
+        )
       end
+    end.compact
+
+    results
   end
 
   def generate_csv(rows)

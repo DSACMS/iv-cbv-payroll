@@ -339,6 +339,7 @@ RSpec.describe Cbv::SubmitsController do
           expect(pdf_text).to include("Base Pay")
 
           expect(pdf_text).to include("$23.16 Hourly")
+          expect(pdf_text).not_to include("Nil")
         end
       end
     end

@@ -16,6 +16,12 @@
                     "name": "Garnishment",
                     "tax_classification": "post_tax",
                     "amount_ytd": "67.89"
+                },
+                {
+                    "amount": null,
+                    "name": "Nil Deduction Amount",
+                    "tax_classification": "post_tax",
+                    "amount_ytd": null
                 }
             ],
             "filing_status": [
