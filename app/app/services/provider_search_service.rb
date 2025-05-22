@@ -1,8 +1,12 @@
 class ProviderSearchService
   SUPPORTED_PROVIDERS = (ENV["SUPPORTED_PROVIDERS"] || "pinwheel")&.split(",")&.map(&:to_sym)
 
-  # We are temporarily blocking these employers because they return data in a form we don't expect
-  # and they constitute unearned income, which our current state partner (LA) does not want us to report.
+  # We are blocking these employers because they constitute unearned
+  # income, which our current state partner (LA) does not want us to report.
+  # They're also returning data in a format that we don't expect, and since our
+  # state partner doesn't even want us to report this data, we won't fix that
+  # discrepancy at this time. We may reconsider later, especially as we add
+  # more states.
 
   # item_000136007 - SSA
   # item_000042186 - Veterans Affairs
