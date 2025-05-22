@@ -133,6 +133,11 @@ module Aggregators::Sdk
       @http.get(build_url("#{ACCOUNTS_ENDPOINT}/#{account}")).body
     end
 
+    # https://docs.argyle.com/api-reference/accounts#delete
+    def delete_account_api(account:)
+      @http.delete(build_url("#{ACCOUNTS_ENDPOINT}/#{account}")).body
+    end
+
     # https://docs.argyle.com/api-reference/paystubs#list
     def fetch_paystubs_api(
       account: nil,
