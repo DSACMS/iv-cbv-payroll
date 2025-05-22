@@ -141,7 +141,7 @@ RUN apt-get update -qq && \
         curl=7.88.1-10+deb12u12 \
         libgpgme11=1.18.0-3+b1 \
         libvips42=8.14.1-3+deb12u2 \
-        linux-libc-dev=6.1.135-1 \
+        linux-libc-dev=6.1.137-1 \
         openssl=3.0.16-1~deb12u1 \
         postgresql-client=15+248 \
         python-is-python3=3.11.2-1+deb12u1 \
@@ -149,10 +149,10 @@ RUN apt-get update -qq && \
         unzip=6.0-28 \
         && \
     rm -rf /var/lib/apt/lists /var/cache/apt/archives && \
-    curl "https://s3.amazonaws.com/aws-cli/awscli-bundle.zip" -o "awscli-bundle.zip" && \
-    unzip awscli-bundle.zip && \
-    ./awscli-bundle/install -i /usr/local/aws -b /usr/local/bin/aws && \
-    rm -rf ./awscli-bundle awscli-bundle.zip
+    curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip" && \
+    unzip awscliv2.zip && \
+    ./aws/install && \
+    rm -rf ./aws awscliv2.zip
 
 # Remove base rexml for GHSA-4xqq-m2hx-25v8
 RUN gem uninstall -i /usr/local/lib/ruby/gems/3.3.0 debug && \
