@@ -1,4 +1,6 @@
 class ApplicationJob < ActiveJob::Base
+  retry_on StandardError, wait: :polynomially_longer, attempts: 5
+
   def event_logger
     @event_logger ||= GenericEventTracker.new
   end
