@@ -156,10 +156,10 @@ RSpec.describe CaseWorkerTransmitterJob, type: :job do
         beacon_id = cbv_applicant.beacon_id
 
         travel_to Time.zone.parse('2025-01-01 08:00:30')
-        cbv_flow.update!(confirmation_code: "AZDES001", client_agency_id: "ma")
+        cbv_flow.update!(confirmation_code: "AZDES001", client_agency_id: "ma", consented_to_authorized_use_at: Time.now)
         cbv_flow.cbv_applicant.update!(case_number: "01000", client_agency_id: "ma", beacon_id: beacon_id, agency_id_number: agency_id_number)
 
-        expect(sftp_double).to receive(:upload_data).with(anything, /test\/CBVPilot_00001000_20250521_ConfAZDES001.pdf/)
+        expect(sftp_double).to receive(:upload_data).with(anything, /test\/CBVPilot_00001000_20250101_ConfAZDES001.pdf/)
 
 
         expect { described_class.new.perform(cbv_flow.id) }.to change { cbv_flow.reload.transmitted_at }
