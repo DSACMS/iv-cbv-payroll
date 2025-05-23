@@ -16,8 +16,8 @@
     <%= table.with_row do |row| %>
       <% row.with_data_cell do |cell| %>
         <%= format_parsed_date(self.class.parse_month_safely(month_string), :month_year) %>
-        <% if summary[:partial_month_range][:is_patial_month] %>
-          <span class="text-muted">It's a partial!</span>
+          <% if summary[:partial_month_range][:is_partial_month] %>
+            <br ><span class="text-muted">It's a partial!</span>
           <% end %>
       <% end %>
       <%= row.with_data_cell.with_content(format_money(summary[:accrued_gross_earnings])) %>

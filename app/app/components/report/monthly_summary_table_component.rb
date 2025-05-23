@@ -11,9 +11,11 @@ class Report::MonthlySummaryTableComponent < ViewComponent::Base
     account_id = @payroll_account.pinwheel_account_id # payroll_account.pinwheel_account_id
     paystubs = @report.paystubs.filter { |paystub| paystub.account_id == account_id }
     gigs = @report.gigs.filter { |gig| gig.account_id == account_id }
-
     extracted_dates = self.class.extract_dates(paystubs, gigs)
     months = self.class.unique_months(extracted_dates)
+
+    from_date = self.class.parse_month_safely(months.last) if from_date.nil?
+    to_date = self.class.parse_month_safely(months.first) if to_date.nil?
 
     # Group paystubs and gigs by month
     grouped_data = months.each_with_object({}) do |month_string, result|
