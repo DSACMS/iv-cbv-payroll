@@ -79,8 +79,8 @@ RSpec.describe Report::MonthlySummaryTableComponent, type: :component do
       partial_month_details = described_class.partial_month_details(current_month_string, activity_dates, from_date, to_date)
       expect(partial_month_details).to an_object_eq_to({
                                                          is_partial_month: false,
-                                                         included_range_start: "2025-01-01",
-                                                         included_range_end: "2025-01-31"
+                                                         included_range_start: Date.parse("2025-01-01"),
+                                                         included_range_end: Date.parse("2025-01-31")
                                                        })
     end
 
@@ -93,8 +93,8 @@ RSpec.describe Report::MonthlySummaryTableComponent, type: :component do
       partial_month_details = described_class.partial_month_details(current_month_string, activity_dates, from_date, to_date)
       expect(partial_month_details).to an_object_eq_to({
                                                          is_partial_month: false,
-                                                         included_range_start: "2025-01-01",
-                                                         included_range_end: "2025-01-31"
+                                                         included_range_start: Date.parse("2025-01-01"),
+                                                         included_range_end: Date.parse("2025-01-31")
                                                        })
     end
 
@@ -107,8 +107,8 @@ RSpec.describe Report::MonthlySummaryTableComponent, type: :component do
       partial_month_details = described_class.partial_month_details(current_month_string, activity_dates, from_date, to_date)
       expect(partial_month_details).to an_object_eq_to({
                                                          is_partial_month: false,
-                                                         included_range_start: "2025-03-01",
-                                                         included_range_end: "2025-03-31"
+                                                         included_range_start: Date.parse("2025-03-01"),
+                                                         included_range_end: Date.parse("2025-03-31")
                                                        })
     end
 
@@ -121,8 +121,8 @@ RSpec.describe Report::MonthlySummaryTableComponent, type: :component do
       partial_month_details = described_class.partial_month_details(current_month_string, activity_dates, from_date, to_date)
       expect(partial_month_details).to an_object_eq_to({
                                                          is_partial_month: true,
-                                                         included_range_start: "2025-01-04",
-                                                         included_range_end: "2025-01-31"
+                                                         included_range_start: Date.parse("2025-01-04"),
+                                                         included_range_end: Date.parse("2025-01-31")
                                                        })
     end
 
@@ -135,8 +135,8 @@ RSpec.describe Report::MonthlySummaryTableComponent, type: :component do
       partial_month_details = described_class.partial_month_details(current_month_string, activity_dates, from_date, to_date)
       expect(partial_month_details).to an_object_eq_to({
                                                          is_partial_month: true,
-                                                         included_range_start: "2025-03-01",
-                                                         included_range_end: "2025-03-06"
+                                                         included_range_start: Date.parse("2025-03-01"),
+                                                         included_range_end: Date.parse("2025-03-06")
                                                        })
     end
   end

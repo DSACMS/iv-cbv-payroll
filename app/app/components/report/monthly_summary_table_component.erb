@@ -17,7 +17,7 @@
       <% row.with_data_cell do |cell| %>
         <%= format_parsed_date(self.class.parse_month_safely(month_string), :month_year) %>
           <% if summary[:partial_month_range][:is_partial_month] %>
-            <br ><span class="text-muted">It's a partial!</span>
+            <br ><span class="text-muted"><%= I18n.t("components.report.monthly_summary_table.partial_month_text", start_date:  summary[:partial_month_range][:include_range_start], end_date: nil) %></span>
           <% end %>
       <% end %>
       <%= row.with_data_cell.with_content(format_money(summary[:accrued_gross_earnings])) %>

@@ -44,18 +44,18 @@ class Report::MonthlySummaryTableComponent < ViewComponent::Base
   # report range is the first of a month and the end is the last of a month.
   # In all other cases we will mark the first and last months as partial.
   def self.partial_month_details(current_month_string, activity_dates, report_from_date, report_to_date)
-    start_of_month = self.format_date(self.parse_month_safely(current_month_string).beginning_of_month)
-    end_of_month = self.format_date(self.parse_month_safely(current_month_string).end_of_month)
+    start_of_month = self.parse_month_safely(current_month_string).beginning_of_month
+    end_of_month = self.parse_month_safely(current_month_string).end_of_month
 
     # Note: activity_dates should always have an item due to how this method is called.
     if activity_dates.empty?
       { is_partial_month: false, included_range_start: start_of_month, included_range_end: end_of_month }
     ## String comparisons of current month to report month range
     elsif current_month_string == self.format_month(report_from_date)
-      earliest_activity = self.format_date(activity_dates.min)
+      earliest_activity = activity_dates.min
       { is_partial_month: earliest_activity != start_of_month, included_range_start: earliest_activity, included_range_end: end_of_month }
     elsif current_month_string == self.format_month(report_to_date)
-      latest_activity = self.format_date(activity_dates.max)
+      latest_activity = activity_dates.max
       { is_partial_month: latest_activity != end_of_month, included_range_start: start_of_month, included_range_end: latest_activity }
     else
       { is_partial_month: false, included_range_start: start_of_month, included_range_end: end_of_month }
