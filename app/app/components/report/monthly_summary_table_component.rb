@@ -4,13 +4,13 @@ class Report::MonthlySummaryTableComponent < ViewComponent::Base
   def initialize(report, payroll_account)
     @payroll_account = payroll_account
     @report = report
+    @employer_name = "test employer name"
   end
 
   def summarize_by_month(from_date: nil, to_date: nil)
     account_id = @payroll_account.pinwheel_account_id # payroll_account.pinwheel_account_id
     paystubs = @report.paystubs.filter { |paystub| paystub.account_id == account_id }
     gigs = @report.gigs.filter { |gig| gig.account_id == account_id }
-    employment = @report.employments.filter { |employment| employment.account_id == account_id }.first
 
     extracted_dates = self.class.extract_dates(paystubs, gigs)
     months = self.class.unique_months(extracted_dates)
@@ -96,5 +96,17 @@ class Report::MonthlySummaryTableComponent < ViewComponent::Base
   # this is used as a helper to determine all unique months present in the report.
   def self.extract_dates(paystubs, gigs)
     (paystubs.map { |paystub| parse_date_safely(paystub.pay_date) } + gigs.map { |gig| parse_date_safely(gig.start_date) }).compact
+  end
+
+  def accrued_gross_earnings_cell_value(accrued_gross_earnings)
+    format_money(accrued_gross_earnings)
+  end
+
+  def total_gig_hours_cell_value(total_gig_hours)
+    total_gig_hours
+  end
+
+  def month_cell_value(date)
+    format_parsed_date(date, :month_year)
   end
 end

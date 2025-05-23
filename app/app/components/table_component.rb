@@ -11,10 +11,6 @@ class TableComponent < ViewComponent::Base
     data_point: {
       renders: AggregateDataPointComponent,
       as: :data_point
-    },
-    data_row: {
-      renders: AggregateDataRowComponent,
-      as: :data_row
     }
   }
 

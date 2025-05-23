@@ -523,6 +523,7 @@ en:
         accrued_gross_earnings: Accrued gross earnings
         footnote: The “Accrued gross earnings” column sums the payments made in that month. The “Total hours worked” column sums the time it took to complete every gig worked in that month. There may be gigs worked in a month that were paid in the following month.
         month: Month
+        monthly_summary: Monthly Summary
         total_gig_hours: Total hours worked
   continue: Continue
   date:

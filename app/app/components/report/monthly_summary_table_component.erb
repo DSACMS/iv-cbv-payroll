@@ -1,50 +1,28 @@
-<table class="usa-table usa-table--borderless width-full">
-  <thead class="border-top-05">
-    <tr>
-      <th class="padding-3" style="background-color: #d9e8f6;" colspan="3">
-        <h1>Employer Name - Monthly Summary</h1>
-      </th>
-    </tr>
-  </thead>
-  <tbody>
-  <% self.summarize_by_month.each_with_index do |(month_string, summary), index| %>
-    <tr></tr>
-  <% end %>
-  </tbody>
-</table>
-
-<h1>Month: <%= format_parsed_date(self.class.parse_month_safely(month_string), :month_year) %></h1>
 <%= render(TableComponent.new) do |table| %>
   <%= table.with_header do %>
+    <h4 class="margin-0">
+      <% if @employer_name.present? %>
+        <%= @employer_name %> &mdash;
+      <% end %>
+      <%= I18n.t("components.report.monthly_summary_table.monthly_summary") %>
+    </h4>
   <% end %>
-  <%= table.with_data_point(:month, self.class.parse_month_safely(month_string)) %>
-  <%= table.with_data_point(:accrued_gross_earnings, summary[:accrued_gross_earnings]) %>
-  <%= table.with_data_point(:total_gig_hours, summary[:total_gig_hours]) %>
+  <%= table.with_row do |row| %>
+    <%= row.with_data_cell.with_content(I18n.t("components.report.monthly_summary_table.month")) %>
+    <%= row.with_data_cell.with_content(I18n.t("components.report.monthly_summary_table.accrued_gross_earnings")) %>
+    <%= row.with_data_cell.with_content(I18n.t("components.report.monthly_summary_table.total_gig_hours")) %>
+  <% end %>
+  <% self.summarize_by_month.each_with_index do |(month_string, summary), index| %>
+    <%= table.with_row do |row| %>
+      <% row.with_data_cell do |cell| %>
+        <%= format_parsed_date(self.class.parse_month_safely(month_string), :month_year) %>
+        <% if summary[:partial_month_range][:is_patial_month] %>
+          <span class="text-muted">It's a partial!</span>
+          <% end %>
+      <% end %>
+      <%= row.with_data_cell.with_content(format_money(summary[:accrued_gross_earnings])) %>
+      <%= row.with_data_cell.with_content(summary[:total_gig_hours]) %>
+    <% end %>
+  <% end %>
 <% end %>
-<%# <%=# table.with_row(t(".pdf.client.date_created"), format_parsed_date(@cbv_flow.consented_to_authorized_use_at)) %>
-<%#   <%= table.with_header do %>
-
-<%# <h3><%= t(".table_caption_no_name", number: index + 1) %> <%#= employer_name ></h3>
-<%#       <h4 class="margin-0">
-<%#         <% if employer_name %>
-<%#           <%= employer_name %>
-<%#         <% end %>
-<%#         <%= t(".pdf.shared.employment_information") %>
-<%#       </h4>
-<%#     <% end %>
-<%#     <% if is_caseworker && summary[:has_identity_data] %>
-<%#       <%= table.with_data_point(:client_full_name, summary[:identity].full_name) %>
-<%#       <%= table.with_data_point(:ssn, summary[:identity].ssn) %>
-<%#     <% end %>
-<%#     <% if summary[:has_employment_data] %>
-<%#       <% employment = summary[:employment] %>
-<%#       <%= table.with_data_point(:employer_phone, employment.employer_phone_number) %>
-<%#       <%= table.with_data_point(:employer_address, employment.employer_address) %>
-<%#       <%= table.with_data_point(:employment_status, employment.status) %>
-<%#       <%= table.with_data_point(:employment_start_date, employment.start_date) %>
-<%#       <%= table.with_data_point(:employment_end_date, employment.termination_date) %>
-<%#     <% end %>
-<%#     <% if summary[:has_income_data] && is_w2_worker %>
-<%#       <%= table.with_data_point(:pay_frequency, summary[:income].pay_frequency&.humanize) %>
-<%#       <%= table.with_data_point(:hourly_rate, summary[:income].compensation_amount, summary[:income].compensation_unit) %>
-<%#     <% end %>
+<caption><%= I18n.t("components.report.monthly_summary_table.footnote") %></caption>
