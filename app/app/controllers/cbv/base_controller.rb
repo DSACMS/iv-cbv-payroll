@@ -18,8 +18,12 @@ class Cbv::BaseController < ApplicationController
         track_expired_event(invitation)
         return redirect_to(cbv_flow_expired_invitation_path(client_agency_id: invitation.client_agency_id))
       end
-      if invitation.complete?
-        return redirect_to(cbv_flow_expired_invitation_path(client_agency_id: invitation.client_agency_id))
+
+      client_agency = agency_config[invitation.client_agency_id]
+      unless client_agency.allow_invitation_reuse
+        if invitation.complete?
+          return redirect_to(cbv_flow_expired_invitation_path(client_agency_id: invitation.client_agency_id))
+        end
       end
 
       @cbv_flow = CbvFlow.create_from_invitation(invitation)
