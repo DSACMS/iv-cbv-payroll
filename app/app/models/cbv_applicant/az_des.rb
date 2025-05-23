@@ -8,5 +8,12 @@ class CbvApplicant::AzDes < CbvApplicant
     income_changes
   ]
 
+  has_redactable_fields(
+    first_name: :string,
+    middle_name: :string,
+    last_name: :string,
+    # TODO[FFS-2669]: Redact income_changes by removing member name only.
+  )
+
   validates :case_number, presence: true
 end

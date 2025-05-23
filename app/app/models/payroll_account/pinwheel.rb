@@ -36,4 +36,9 @@ class PayrollAccount::Pinwheel < PayrollAccount
   def necessary_jobs_succeeded?
     job_succeeded?("paystubs")
   end
+
+  def redact!
+    # Do nothing, as Pinwheel does not support the deletion of data via API.
+    touch(:redacted_at)
+  end
 end

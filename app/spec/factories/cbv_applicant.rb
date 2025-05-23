@@ -88,6 +88,8 @@ FactoryBot.define do
         # TODO: Determine actual LA LDH case number format.
         8.times.map { rand(10) }.join
       end
+
+      date_of_birth { Date.new(2000, 1, 1) }
     end
   end
 end

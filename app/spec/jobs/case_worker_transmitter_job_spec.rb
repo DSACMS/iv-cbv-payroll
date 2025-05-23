@@ -11,7 +11,7 @@ RSpec.describe CaseWorkerTransmitterJob, type: :job do
 
   let(:cbv_applicant) { create(:cbv_applicant, created_at: current_time, case_number: "ABC1234") }
   let(:errored_jobs) { [] }
-  let(:current_time) { Date.parse('2024-06-18') }
+  let(:current_time) { DateTime.parse('2024-06-18 00:00:00') }
   let(:pinwheel_report) { build(:pinwheel_report, :with_pinwheel_account) }
   let(:fake_event_logger) { instance_double(GenericEventTracker, track: nil) }
 
@@ -20,9 +20,13 @@ RSpec.describe CaseWorkerTransmitterJob, type: :job do
            :invited,
            :with_pinwheel_account,
            with_errored_jobs: errored_jobs,
-           created_at: current_time,
+           created_at: current_time - 10.minutes,
            cbv_applicant: cbv_applicant
     )
+  end
+
+  around do |ex|
+    Timecop.freeze(current_time, &ex)
   end
 
   let(:transmission_method) {
@@ -130,7 +134,8 @@ RSpec.describe CaseWorkerTransmitterJob, type: :job do
 
         expect(fake_event_logger).to have_received(:track)
           .with("ApplicantSharedIncomeSummary", anything, include(
-            cbv_flow_id: cbv_flow.id
+            cbv_flow_id: cbv_flow.id,
+            flow_started_seconds_ago: 10.minutes.to_i,
           ))
       end
     end
@@ -175,7 +180,7 @@ RSpec.describe CaseWorkerTransmitterJob, type: :job do
         "bucket" => "test-bucket",
         "public_key" => @public_key
       } }
-      # let(:pinwheel_service_double) { instance_double(Aggregators::Sdk::PinwheelService) }
+
       before do
         allow(S3Service).to receive(:new).and_return(s3_service_double)
         allow(s3_service_double).to receive(:upload_file)
