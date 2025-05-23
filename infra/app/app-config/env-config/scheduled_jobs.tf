@@ -11,7 +11,7 @@ locals {
 
     send_newrelic_queue_metrics = {
       task_command        = ["bin/rails", "telemetry:send_queue_metrics"]
-      schedule_expression = "cron(* * * * *)" # every minute
+      schedule_expression = "cron(* * ? * * *)" # every minute
     }
 
     send_az_reports = {
