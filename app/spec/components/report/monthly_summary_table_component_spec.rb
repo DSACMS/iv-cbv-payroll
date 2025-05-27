@@ -94,81 +94,81 @@ RSpec.describe Report::MonthlySummaryTableComponent, type: :component do
     end
   end
 
-  describe ".partial_month_details" do
-    it "detects complete month when there are no activities" do
-      current_month_string = "2025-01"
-      activity_dates = []
-      from_date = Date.parse("2025-01-01")
-      to_date = Date.parse("2025-03-31")
-
-      partial_month_details = described_class.partial_month_details(current_month_string, activity_dates, from_date, to_date)
-      expect(partial_month_details).to an_object_eq_to({
-                                                         is_partial_month: false,
-                                                         included_range_start: Date.parse("2025-01-01"),
-                                                         included_range_end: Date.parse("2025-01-31")
-                                                       })
-    end
-
-    it "detects complete first month when there is an activity on the first day" do
-      current_month_string = "2025-01"
-      activity_dates = [ Date.parse("2025-01-01") ]
-      from_date = Date.parse("2025-01-01")
-      to_date = Date.parse("2025-03-31")
-
-      partial_month_details = described_class.partial_month_details(current_month_string, activity_dates, from_date, to_date)
-      expect(partial_month_details).to an_object_eq_to({
-                                                         is_partial_month: false,
-                                                         included_range_start: Date.parse("2025-01-01"),
-                                                         included_range_end: Date.parse("2025-01-31")
-                                                       })
-    end
-
-    it "detects complete last month when there is an activity on the last day" do
-      current_month_string = "2025-03"
-      activity_dates = [ Date.parse("2025-03-31") ]
-      from_date = Date.parse("2025-01-01")
-      to_date = Date.parse("2025-03-31")
-
-      partial_month_details = described_class.partial_month_details(current_month_string, activity_dates, from_date, to_date)
-      expect(partial_month_details).to an_object_eq_to({
-                                                         is_partial_month: false,
-                                                         included_range_start: Date.parse("2025-03-01"),
-                                                         included_range_end: Date.parse("2025-03-31")
-                                                       })
-    end
-
-    it "detects partial first month" do
-      current_month_string = "2025-01"
-      activity_dates = [ Date.parse("2025-01-04"), Date.parse("2025-01-06") ]
-      from_date = Date.parse("2025-01-01")
-      to_date = Date.parse("2025-03-31")
-
-      partial_month_details = described_class.partial_month_details(current_month_string, activity_dates, from_date, to_date)
-      expect(partial_month_details).to an_object_eq_to({
-                                                         is_partial_month: true,
-                                                         included_range_start: Date.parse("2025-01-04"),
-                                                         included_range_end: Date.parse("2025-01-31")
-                                                       })
-    end
-
-    it "detects partial last month" do
-      current_month_string = "2025-03"
-      activity_dates = [ Date.parse("2025-03-04"), Date.parse("2025-03-06") ]
-      from_date = Date.parse("2025-01-01")
-      to_date = Date.parse("2025-03-31")
-
-      partial_month_details = described_class.partial_month_details(current_month_string, activity_dates, from_date, to_date)
-      expect(partial_month_details).to an_object_eq_to({
-                                                         is_partial_month: true,
-                                                         included_range_start: Date.parse("2025-03-01"),
-                                                         included_range_end: Date.parse("2025-03-06")
-                                                       })
-    end
-  end
-
   # TODO: move this to a different test file
   describe "module monthly_summary_table_helper" do
     subject { described_class }
+
+    describe ".partial_month_details" do
+      it "detects complete month when there are no activities" do
+        current_month_string = "2025-01"
+        activity_dates = []
+        from_date = Date.parse("2025-01-01")
+        to_date = Date.parse("2025-03-31")
+
+        partial_month_details = subject.partial_month_details(current_month_string, activity_dates, from_date, to_date)
+        expect(partial_month_details).to an_object_eq_to({
+                                                           is_partial_month: false,
+                                                           included_range_start: Date.parse("2025-01-01"),
+                                                           included_range_end: Date.parse("2025-01-31")
+                                                         })
+      end
+
+      it "detects complete first month when there is an activity on the first day" do
+        current_month_string = "2025-01"
+        activity_dates = [ Date.parse("2025-01-01") ]
+        from_date = Date.parse("2025-01-01")
+        to_date = Date.parse("2025-03-31")
+
+        partial_month_details = subject.partial_month_details(current_month_string, activity_dates, from_date, to_date)
+        expect(partial_month_details).to an_object_eq_to({
+                                                           is_partial_month: false,
+                                                           included_range_start: Date.parse("2025-01-01"),
+                                                           included_range_end: Date.parse("2025-01-31")
+                                                         })
+      end
+
+      it "detects complete last month when there is an activity on the last day" do
+        current_month_string = "2025-03"
+        activity_dates = [ Date.parse("2025-03-31") ]
+        from_date = Date.parse("2025-01-01")
+        to_date = Date.parse("2025-03-31")
+
+        partial_month_details = subject.partial_month_details(current_month_string, activity_dates, from_date, to_date)
+        expect(partial_month_details).to an_object_eq_to({
+                                                           is_partial_month: false,
+                                                           included_range_start: Date.parse("2025-03-01"),
+                                                           included_range_end: Date.parse("2025-03-31")
+                                                         })
+      end
+
+      it "detects partial first month" do
+        current_month_string = "2025-01"
+        activity_dates = [ Date.parse("2025-01-04"), Date.parse("2025-01-06") ]
+        from_date = Date.parse("2025-01-01")
+        to_date = Date.parse("2025-03-31")
+
+        partial_month_details = subject.partial_month_details(current_month_string, activity_dates, from_date, to_date)
+        expect(partial_month_details).to an_object_eq_to({
+                                                           is_partial_month: true,
+                                                           included_range_start: Date.parse("2025-01-04"),
+                                                           included_range_end: Date.parse("2025-01-31")
+                                                         })
+      end
+
+      it "detects partial last month" do
+        current_month_string = "2025-03"
+        activity_dates = [ Date.parse("2025-03-04"), Date.parse("2025-03-06") ]
+        from_date = Date.parse("2025-01-01")
+        to_date = Date.parse("2025-03-31")
+
+        partial_month_details = subject.partial_month_details(current_month_string, activity_dates, from_date, to_date)
+        expect(partial_month_details).to an_object_eq_to({
+                                                           is_partial_month: true,
+                                                           included_range_start: Date.parse("2025-03-01"),
+                                                           included_range_end: Date.parse("2025-03-06")
+                                                         })
+      end
+    end
 
     describe ".parse_date_safely" do
       it "parses a valid date string" do
