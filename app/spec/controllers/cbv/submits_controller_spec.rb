@@ -37,6 +37,7 @@ RSpec.describe Cbv::SubmitsController do
         create(:cbv_flow,
                :invited,
                :with_pinwheel_account,
+               :completed,
                with_errored_jobs: errored_jobs,
                created_at: current_time,
                supported_jobs: supported_jobs,
@@ -60,11 +61,24 @@ RSpec.describe Cbv::SubmitsController do
       context "when rendering views" do
         render_views
 
-        it "renders properly" do
-          get :show
-          expect(controller.send(:has_consent)).to be_falsey
-          expect(response.body).to include("Legal agreement")
-          expect(response).to be_successful
+        context "with incomplete cbv_flow" do
+          let(:cbv_flow) do
+            create(:cbv_flow,
+                   :invited,
+                   :with_pinwheel_account,
+                   with_errored_jobs: errored_jobs,
+                   created_at: current_time,
+                   supported_jobs: supported_jobs,
+                   cbv_applicant: cbv_applicant
+            )
+          end
+
+          it "renders properly" do
+            get :show
+            expect(controller.send(:has_consent)).to be_falsey
+            expect(response.body).to include("Legal agreement")
+            expect(response).to be_successful
+          end
         end
 
         it "renders pdf properly" do
@@ -239,6 +253,7 @@ RSpec.describe Cbv::SubmitsController do
         let(:errored_jobs) { [] }
         let(:cbv_flow) do
           create(:cbv_flow,
+                 :completed,
                  :invited,
                  :with_argyle_account,
                  with_errored_jobs: errored_jobs,
@@ -294,6 +309,7 @@ RSpec.describe Cbv::SubmitsController do
         let(:errored_jobs) { [] }
         let(:cbv_flow) do
           create(:cbv_flow,
+                 :completed,
                  :invited,
                  created_at: current_time,
                  cbv_applicant: cbv_applicant
