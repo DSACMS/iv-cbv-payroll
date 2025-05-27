@@ -19,6 +19,8 @@ class Cbv::BaseController < ApplicationController
         return redirect_to(cbv_flow_expired_invitation_path(client_agency_id: invitation.client_agency_id))
       end
 
+      # using invitation.client_agency_id directly instead of current_agency
+      # because cbv_flow isn't created yet at this point
       client_agency = agency_config[invitation.client_agency_id]
       unless client_agency.allow_invitation_reuse
         if invitation.complete?
