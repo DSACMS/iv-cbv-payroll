@@ -7,20 +7,20 @@
       <%= I18n.t("components.report.monthly_summary_table.monthly_summary") %>
     </h4>
   <% end %>
-  <%= table.with_row do |row| %>
-    <%= row.with_data_cell.with_content(I18n.t("components.report.monthly_summary_table.month")) %>
-    <%= row.with_data_cell.with_content(I18n.t("components.report.monthly_summary_table.accrued_gross_earnings")) %>
-    <%= row.with_data_cell.with_content(I18n.t("components.report.monthly_summary_table.total_gig_hours")) %>
+  <%= table.with_subheader_row(class_names: "subheader-row") do |row| %>
+    <%= row.with_data_cell(is_header: true).with_content(I18n.t("components.report.monthly_summary_table.month")) %>
+    <%= row.with_data_cell(is_header: true).with_content(I18n.t("components.report.monthly_summary_table.accrued_gross_earnings")) %>
+    <%= row.with_data_cell(is_header: true).with_content(I18n.t("components.report.monthly_summary_table.total_gig_hours")) %>
   <% end %>
   <% self.summarize_by_month.each_with_index do |(month_string, summary), index| %>
     <%= table.with_row do |row| %>
       <% row.with_data_cell do |cell| %>
-        <%= format_parsed_date(self.class.parse_month_safely(month_string), :month_year) %>
+        <%= format_parsed_date(parse_month_safely(month_string), :month_year) %>
           <% if summary[:partial_month_range][:is_partial_month] %>
-            <br ><span class="text-muted"><%= I18n.t("components.report.monthly_summary_table.partial_month_text", start_date:  summary[:partial_month_range][:include_range_start], end_date: nil) %></span>
+            <br ><span class="partial-month-description"><%= summary[:partial_month_range][:description] %></span>
           <% end %>
       <% end %>
-      <%= row.with_data_cell.with_content(format_money(summary[:accrued_gross_earnings])) %>
+      <%= row.with_data_cell(class_names: "worlds").with_content(format_money(summary[:accrued_gross_earnings])) %>
       <%= row.with_data_cell.with_content(summary[:total_gig_hours]) %>
     <% end %>
   <% end %>

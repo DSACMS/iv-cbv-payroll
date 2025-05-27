@@ -529,6 +529,7 @@ en:
   continue: Continue
   date:
     formats:
+      day_of_month: "%b-%-d"
       default: "%Y-%m-%d"
       long: "%B %-d, %Y"
       month_year: "%B %Y"

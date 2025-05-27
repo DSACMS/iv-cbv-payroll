@@ -1,5 +1,6 @@
 require "rails_helper"
 
+
 RSpec.describe Report::MonthlySummaryTableComponent, type: :component do
   include ArgyleApiHelper
   let(:current_time) { Date.parse('2024-06-18') }
@@ -38,17 +39,41 @@ RSpec.describe Report::MonthlySummaryTableComponent, type: :component do
         argyle_report.fetch
       end
 
+      subject { render_inline(described_class.new(argyle_report, payroll_account)) }
+
       it "argyle_report is properly fetched" do
         expect(argyle_report.gigs.length).to be(100)
       end
 
-      it "renders helllllo" do
-        rendered_page = render_inline(described_class.new(argyle_report, payroll_account))
-        puts(rendered_page)
-        expect(rendered_page
-        ).to have_text(
-               "Helllllllo"
-             )
+      it "includes table header" do
+        expect(subject.css("thead h4").to_html).to include "test employer name"
+        expect(subject.css("thead h4").to_html).to include "Monthly Summary"
+
+        # assert that there are 3 column headers in table
+        expect(subject.css("thead tr.subheader-row th").length).to eq(3)
+      end
+
+      it "renders the Month column with the correct date format" do
+        expect(subject.css("thead tr.subheader-row th:nth-child(1)").to_html).to include "Month"
+        expect(subject.css("tbody tr:nth-child(1) td:nth-child(1)").to_html).to include "March 2025"
+        expect(subject.css("tbody tr:nth-child(2) td:nth-child(1)").to_html).to include "February 2025"
+        expect(subject.css("tbody tr:nth-child(3) td:nth-child(1)").to_html).to include "January 2025"
+      end
+
+      it "renders the Accrued gross earnings column with the correct currency format" do
+        expect(subject.css("thead tr.subheader-row th:nth-child(2)").to_html).to include "Accrued gross earnings"
+        expect(subject.css("tbody tr:nth-child(1) td:nth-child(2)").to_html).to include "$34.56"
+        expect(subject.css("tbody tr:nth-child(2) td:nth-child(2)").to_html).to include "$230.75"
+        expect(subject.css("tbody tr:nth-child(3) td:nth-child(2)").to_html).to include "$282.37"
+      end
+
+      it "renders the Total hours worked column with correct summation" do
+        subject = render_inline(described_class.new(argyle_report, payroll_account))
+
+        expect(subject.css("thead tr.subheader-row th:nth-child(3)").to_html).to include "Total hours worked"
+        expect(subject.css("tbody tr:nth-child(1) td:nth-child(3)").to_html).to include "3.61"
+        expect(subject.css("tbody tr:nth-child(2) td:nth-child(3)").to_html).to include "21.82"
+        expect(subject.css("tbody tr:nth-child(3) td:nth-child(3)").to_html).to include "4.74"
       end
 
       describe "#summarize_by_month" do
@@ -141,132 +166,138 @@ RSpec.describe Report::MonthlySummaryTableComponent, type: :component do
     end
   end
 
-  describe ".parse_date_safely" do
-    it "parses a valid date string" do
-      valid_date = "2024-12-25"
-      parsed_date = described_class.parse_date_safely(valid_date)
-      expect(parsed_date).to eq(Date.parse(valid_date))
+  # TODO: move this to a different test file
+  describe "module monthly_summary_table_helper" do
+    subject { described_class }
+
+    describe ".parse_date_safely" do
+      it "parses a valid date string" do
+        valid_date = "2024-12-25"
+        parsed_date = subject.parse_date_safely(valid_date)
+        expect(parsed_date).to eq(Date.parse(valid_date))
+      end
+
+      it "returns nil for an invalid date string" do
+        invalid_date = "invalid-date-string"
+        parsed_date = subject.parse_date_safely(invalid_date)
+        expect(parsed_date).to be_nil
+      end
+
+      it "returns nil for nil input" do
+        parsed_date = subject.parse_date_safely(nil)
+        expect(parsed_date).to be_nil
+      end
+
+      it "returns nil for empty string input" do
+        parsed_date = subject.parse_date_safely("")
+        expect(parsed_date).to be_nil
+      end
     end
 
-    it "returns nil for an invalid date string" do
-      invalid_date = "invalid-date-string"
-      parsed_date = described_class.parse_date_safely(invalid_date)
-      expect(parsed_date).to be_nil
+    describe ".parse_month_safely" do
+      it "parses a valid month string" do
+        valid_month = "2024-12"
+        parsed_date = subject.parse_month_safely(valid_month)
+        expect(parsed_date).to eq(Date.new(2024, 12, 01))
+      end
+
+      it "returns nil for an invalid month string" do
+        invalid_month = "invalid-month-string"
+        parsed_date = subject.parse_month_safely(invalid_month)
+        expect(parsed_date).to be_nil
+      end
+
+      it "returns nil for nil input" do
+        parsed_date = subject.parse_month_safely(nil)
+        expect(parsed_date).to be_nil
+      end
+
+      it "returns nil for empty string input" do
+        parsed_date = subject.parse_month_safely("")
+        expect(parsed_date).to be_nil
+      end
     end
 
-    it "returns nil for nil input" do
-      parsed_date = described_class.parse_date_safely(nil)
-      expect(parsed_date).to be_nil
+    describe ".format_date" do
+      it "formats a valid date correctly" do
+        date = Date.new(2024, 12, 25)
+        formatted_date = subject.format_date(date)
+        expect(formatted_date).to eq("2024-12-25")
+      end
+
+      it "returns nil for nil input" do
+        formatted_date = subject.format_date(nil)
+        expect(formatted_date).to be_nil
+      end
     end
 
-    it "returns nil for empty string input" do
-      parsed_date = described_class.parse_date_safely("")
-      expect(parsed_date).to be_nil
-    end
-  end
+    describe ".format_month" do
+      subject { described_class }
+      it "formats a valid month correctly" do
+        month = Date.new(2024, 12, 13)
+        formatted_month = subject.format_month(month)
+        expect(formatted_month).to eq("2024-12")
+      end
 
-  describe ".parse_month_safely" do
-    it "parses a valid month string" do
-      valid_month = "2024-12"
-      parsed_date = described_class.parse_month_safely(valid_month)
-      expect(parsed_date).to eq(Date.new(2024, 12, 01))
-    end
-
-    it "returns nil for an invalid month string" do
-      invalid_month = "invalid-month-string"
-      parsed_date = described_class.parse_month_safely(invalid_month)
-      expect(parsed_date).to be_nil
+      it "returns nil for nil input" do
+        formatted_month = subject.format_month(nil)
+        expect(formatted_month).to be_nil
+      end
     end
 
-    it "returns nil for nil input" do
-      parsed_date = described_class.parse_month_safely(nil)
-      expect(parsed_date).to be_nil
-    end
+    describe ".unique_months" do
+      it "returns a unique list of months in reverse chronological order" do
+        dates = [
+          Date.new(2025, 3, 15),
+          Date.new(2025, 2, 25),
+          Date.new(2025, 3, 5),
+          Date.new(2025, 1, 1)
+        ]
 
-    it "returns nil for empty string input" do
-      parsed_date = described_class.parse_month_safely("")
-      expect(parsed_date).to be_nil
-    end
-  end
+        unique_months = subject.unique_months(dates)
 
-  describe ".format_date" do
-    it "formats a valid date correctly" do
-      date = Date.new(2024, 12, 25)
-      formatted_date = described_class.format_date(date)
-      expect(formatted_date).to eq("2024-12-25")
-    end
+        expect(unique_months).to eq([ "2025-03", "2025-02", "2025-01" ])
+      end
 
-    it "returns nil for nil input" do
-      formatted_date = described_class.format_date(nil)
-      expect(formatted_date).to be_nil
-    end
-  end
+      it "returns an empty array when given an empty list" do
+        dates = []
 
-  describe ".format_month" do
-    it "formats a valid month correctly" do
-      month = Date.new(2024, 12, 13)
-      formatted_month = described_class.format_month(month)
-      expect(formatted_month).to eq("2024-12")
-    end
+        unique_months = subject.unique_months(dates)
 
-    it "returns nil for nil input" do
-      formatted_month = described_class.format_month(nil)
-      expect(formatted_month).to be_nil
-    end
-  end
+        expect(unique_months).to eq([])
+      end
 
-  describe ".unique_months" do
-    it "returns a unique list of months in reverse chronological order" do
-      dates = [
-        Date.new(2025, 3, 15),
-        Date.new(2025, 2, 25),
-        Date.new(2025, 3, 5),
-        Date.new(2025, 1, 1)
-      ]
+      it "handles a list with dates all in the same month" do
+        dates = [
+          Date.new(2025, 3, 15),
+          Date.new(2025, 3, 5),
+          Date.new(2025, 3, 10)
+        ]
 
-      unique_months = described_class.unique_months(dates)
+        unique_months = subject.unique_months(dates)
 
-      expect(unique_months).to eq([ "2025-03", "2025-02", "2025-01" ])
-    end
+        expect(unique_months).to eq([ "2025-03" ])
+      end
 
-    it "returns an empty array when given an empty list" do
-      dates = []
+      it "handles nil values gracefully" do
+        dates = [
+          Date.new(2025, 3, 15),
+          nil,
+          Date.new(2025, 3, 5)
+        ]
 
-      unique_months = described_class.unique_months(dates)
+        unique_months = subject.unique_months(dates)
 
-      expect(unique_months).to eq([])
-    end
+        expect(unique_months).to eq([ "2025-03" ])
+      end
 
-    it "handles a list with dates all in the same month" do
-      dates = [
-        Date.new(2025, 3, 15),
-        Date.new(2025, 3, 5),
-        Date.new(2025, 3, 10)
-      ]
+      it "handles a list with only nil values" do
+        dates = [ nil, nil, nil ]
 
-      unique_months = described_class.unique_months(dates)
+        unique_months = subject.unique_months(dates)
 
-      expect(unique_months).to eq([ "2025-03" ])
-    end
-
-    it "handles nil values gracefully" do
-      dates = [
-        Date.new(2025, 3, 15),
-        nil,
-        Date.new(2025, 3, 5)
-      ]
-
-      unique_months = described_class.unique_months(dates)
-
-      expect(unique_months).to eq([ "2025-03" ])
-    end
-
-    it "handles a list with only nil values" do
-      dates = [ nil, nil, nil ]
-
-      unique_months = described_class.unique_months(dates)
-
-      expect(unique_months).to eq([])
+        expect(unique_months).to eq([])
+      end
     end
   end
 end

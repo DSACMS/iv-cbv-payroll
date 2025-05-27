@@ -5,6 +5,9 @@
         <%= header %>
       </th>
     </tr>
+    <% if subheader_row.present? %>
+      <%= subheader_row %>
+    <% end %>
   </thead>
   <tbody>
     <% rows.each do |row| %>
