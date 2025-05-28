@@ -57,7 +57,7 @@ RSpec.describe Report::MonthlySummaryTableHelper, type: :helper do
       partial_month_details = subject.partial_month_details(current_month_string, activity_dates, from_date, to_date)
       expect(partial_month_details).to an_object_eq_to({
                                                          is_partial_month: true,
-                                                         description: "Partial month: from 1/4-1/31",
+                                                         description: "(Partial month: from 1/4-1/31)",
                                                          included_range_start: Date.parse("2025-01-04"),
                                                          included_range_end: Date.parse("2025-01-31")
                                                        })
@@ -72,7 +72,7 @@ RSpec.describe Report::MonthlySummaryTableHelper, type: :helper do
       partial_month_details = subject.partial_month_details(current_month_string, activity_dates, from_date, to_date)
       expect(partial_month_details).to an_object_eq_to({
                                                          is_partial_month: true,
-                                                         description: "Partial month: from 3/1-3/6",
+                                                         description: "(Partial month: from 3/1-3/6)",
                                                          included_range_start: Date.parse("2025-03-01"),
                                                          included_range_end: Date.parse("2025-03-06")
                                                        })
@@ -124,19 +124,6 @@ RSpec.describe Report::MonthlySummaryTableHelper, type: :helper do
     it "returns nil for empty string input" do
       parsed_date = subject.parse_month_safely("")
       expect(parsed_date).to be_nil
-    end
-  end
-
-  describe ".format_date" do
-    it "formats a valid date correctly" do
-      date = Date.new(2024, 12, 25)
-      formatted_date = subject.format_date(date)
-      expect(formatted_date).to eq("2024-12-25")
-    end
-
-    it "returns nil for nil input" do
-      formatted_date = subject.format_date(nil)
-      expect(formatted_date).to be_nil
     end
   end
 

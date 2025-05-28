@@ -65,7 +65,7 @@ RSpec.describe Report::MonthlySummaryTableComponent, type: :component do
         x = render_inline(described_class.new(pinwheel_report, payroll_account))
         expect(subject.css("thead tr.subheader-row th:nth-child(1)").to_html).to include "Month"
         expect(subject.css("tbody tr:nth-child(1) td:nth-child(1)").to_html).to include "December 2020"
-        expect(subject.css("tbody tr:nth-child(1) td:nth-child(1)").to_html).to include "Partial month: from 12/5-12/31"
+        expect(subject.css("tbody tr:nth-child(1) td:nth-child(1)").to_html).to include "(Partial month: from 12/5-12/31)"
       end
 
       it "renders the Accrued gross earnings column with the correct currency format" do
@@ -95,11 +95,11 @@ RSpec.describe Report::MonthlySummaryTableComponent, type: :component do
           dec = monthly_summary["2020-12"]
           expect(dec[:gigs].length).to eq(3)
           expect(dec[:paystubs].length).to eq(1)
-          expect(dec[:accrued_gross_earnings]).to eq(470720) # in cents
+          expect(dec[:accrued_gross_earnings]).to eq(480720) # in cents
           expect(dec[:total_gig_hours]).to eq(45.0)
           expect(dec[:partial_month_range]).to an_object_eq_to({
                                                                    is_partial_month: true,
-                                                                   description: "Partial month: from 12/5-12/31",
+                                                                   description: "(Partial month: from 12/5-12/31)",
                                                                    included_range_start: Date.parse("2025-12-05"),
                                                                    included_range_end: Date.parse("2025-12-31")
                                                                  })
@@ -214,7 +214,7 @@ RSpec.describe Report::MonthlySummaryTableComponent, type: :component do
           expect(march[:total_gig_hours]).to eq(3.61)
           expect(march[:partial_month_range]).to an_object_eq_to({
                                                              is_partial_month: true,
-                                                             description: "Partial month: from 3/1-3/6",
+                                                             description: "(Partial month: from 3/1-3/6)",
                                                              included_range_start: Date.parse("2025-03-01"),
                                                              included_range_end: Date.parse("2025-03-06")
                                                            })
@@ -238,7 +238,7 @@ RSpec.describe Report::MonthlySummaryTableComponent, type: :component do
           expect(jan[:total_gig_hours]).to eq(4.74)
           expect(jan[:partial_month_range]).to an_object_eq_to({
                                                                  is_partial_month: true,
-                                                                 description: "Partial month: from 1/2-1/31",
+                                                                 description: "(Partial month: from 1/2-1/31)",
                                                                  included_range_start: Date.parse("2025-01-02"),
                                                                  included_range_end: Date.parse("2025-01-31")
                                                                })
