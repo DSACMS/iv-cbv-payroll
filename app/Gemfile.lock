@@ -2,6 +2,7 @@ GEM
   remote: https://rubygems.org/
   specs:
     Ascii85 (1.1.1)
+    abbrev (0.1.2)
     actioncable (7.1.5.1)
       actionpack (= 7.1.5.1)
       activesupport (= 7.1.5.1)
@@ -546,6 +547,7 @@ PLATFORMS
   x86_64-linux
 
 DEPENDENCIES
+  abbrev (~> 0.1.2)
   actioncable-enhanced-postgresql-adapter
   aws-actionmailer-ses
   aws-sdk-rails
@@ -568,6 +570,7 @@ DEPENDENCIES
   factory_bot (~> 6.4)
   faraday (~> 2.9.0)
   gpgme (~> 2.0, >= 2.0.12)
+  highline (~> 3.1)
   i18n-tasks (~> 1.0)
   jbuilder
   jsbundling-rails
