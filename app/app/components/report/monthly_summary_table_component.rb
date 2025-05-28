@@ -3,26 +3,24 @@ class Report::MonthlySummaryTableComponent < ViewComponent::Base
   include Report::MonthlySummaryTableHelper
 
   def initialize(report, payroll_account)
-    @payroll_account = payroll_account
+    # Note: payroll_account may either be the ID or the payroll_account object
+    @account_id = payroll_account.class == String ? payroll_account : payroll_account.pinwheel_account_id
     @report = report
     @employer_name = employer_name
   end
 
   def employer_name
-    account_id = @payroll_account.pinwheel_account_id
-    employment = @report.employments.find { |e| e.account_id == account_id }
+    employment = @report.employments.find { |e| e.account_id == @account_id }
     employment.employer_name if employment
   end
 
   def paystubs
-    account_id = @payroll_account.pinwheel_account_id
-    @report.paystubs.filter { |paystub| paystub.account_id == account_id }
+    @report.paystubs.filter { |paystub| paystub.account_id == @account_id }
   end
 
   def summarize_by_month(from_date: nil, to_date: nil)
-    account_id = @payroll_account.pinwheel_account_id
-    paystubs = @report.paystubs.filter { |paystub| paystub.account_id == account_id }
-    gigs = @report.gigs.filter { |gig| gig.account_id == account_id }
+    paystubs = @report.paystubs.filter { |paystub| paystub.account_id == @account_id }
+    gigs = @report.gigs.filter { |gig| gig.account_id == @account_id }
     extracted_dates = extract_dates(paystubs, gigs)
     months = unique_months(extracted_dates)
 
