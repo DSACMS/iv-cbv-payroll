@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe Report::MonthlySummaryTableHelper, type: :helper do
+RSpec.describe Cbv::MonthlySummaryHelper, type: :helper do
   subject {  helper }
   describe ".partial_month_details" do
     it "detects complete month when there are no activities" do

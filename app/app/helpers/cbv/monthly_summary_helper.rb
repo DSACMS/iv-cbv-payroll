@@ -1,4 +1,4 @@
-module Report::MonthlySummaryTableHelper
+module Cbv::MonthlySummaryHelper
   include ReportViewHelper
   # Calculate whether the current month is a partial month.
   # When you compute the row month labels, usually the first and last month will need to be

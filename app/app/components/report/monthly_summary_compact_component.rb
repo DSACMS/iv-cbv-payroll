@@ -1,4 +1,4 @@
-class Report::MonthlySummaryTableComponent < ViewComponent::Base
+class Report::MonthlySummaryCompactComponent < ViewComponent::Base
   include ReportViewHelper
   include Cbv::MonthlySummaryHelper
 
@@ -9,6 +9,7 @@ class Report::MonthlySummaryTableComponent < ViewComponent::Base
     @account_id = payroll_account.class == String ? payroll_account : payroll_account.pinwheel_account_id
     account_report = report.find_account_report(@account_id)
     @paystubs = account_report&.paystubs
+    @total_gross_earnings = @paystubs.reduce(0) { |sum, paystub| sum + (paystub.gross_pay_amount || 0) }
     @employer_name = account_report&.dig(:employment, :employer_name)
     @monthly_summary_data = report.summarize_by_month[@account_id]
   end

@@ -1,7 +1,7 @@
 # This is an abstract class that should be inherited by all aggregator report classes.
 module Aggregators::AggregatorReports
   class AggregatorReport
-    include Report::MonthlySummaryTableHelper
+    include Cbv::MonthlySummaryHelper
 
     attr_accessor :payroll_accounts, :identities, :incomes, :employments, :gigs, :paystubs, :from_date, :to_date, :has_fetched
 
