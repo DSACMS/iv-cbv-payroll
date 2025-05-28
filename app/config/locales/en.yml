@@ -524,7 +524,9 @@ en:
         footnote: The “Accrued gross earnings” column sums the payments made in that month. The “Total hours worked” column sums the time it took to complete every gig worked in that month. There may be gigs worked in a month that were paid in the following month.
         month: Month
         monthly_summary: Monthly Summary
-        partial_month_text: 'Partial month: from %{start_date}-%{end_date}'
+        partial_month_text: "(Partial month: from %{start_date}-%{end_date})"
+        payments_from_header: Payments from %{employer_name}
+        payments_from_text: These were the dates that the client was paid for their work at %{employer_name} and the gross pay amount.
         total_gig_hours: Total hours worked
   continue: Continue
   date:

@@ -189,3 +189,10 @@ html {
   height: 10px;
   background-color: #D9E8F6
 }
+
+.subheader-row {
+  > th {
+    font-weight: normal;
+    background-color: #e6e6e6;
+  }
+}

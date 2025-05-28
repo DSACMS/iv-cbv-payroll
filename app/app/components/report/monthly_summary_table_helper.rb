@@ -45,7 +45,7 @@ module Report::MonthlySummaryTableHelper
     date.strftime("%Y-%m")
   end
 
-  def format_date(date)
+  def format_full_date(date)
     return nil unless date
     date.strftime("%Y-%m-%d")
   end

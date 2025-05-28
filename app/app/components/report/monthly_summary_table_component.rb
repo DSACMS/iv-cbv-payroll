@@ -14,6 +14,11 @@ class Report::MonthlySummaryTableComponent < ViewComponent::Base
     employment.employer_name if employment
   end
 
+  def paystubs
+    account_id = @payroll_account.pinwheel_account_id
+    @report.paystubs.filter { |paystub| paystub.account_id == account_id }
+  end
+
   def summarize_by_month(from_date: nil, to_date: nil)
     account_id = @payroll_account.pinwheel_account_id
     paystubs = @report.paystubs.filter { |paystub| paystub.account_id == account_id }
