@@ -46,7 +46,7 @@ RSpec.describe PdfService, type: :service do
       let(:locale) { :es }
       it 'generates a PDF file in english' do
       pdf_service = PdfService.new(language: :en)
-      F @pdf_results = pdf_service.generate(
+      @pdf_results = pdf_service.generate(
               renderer: ApplicationController.renderer,
               template: 'cbv/submits/show',
               variables: variables
