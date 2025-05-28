@@ -56,14 +56,8 @@
     <% end %>
   <% end %>
   <% if is_caseworker %>
-    <% if current_agency?(:nyc) %>
-      <%= table.with_row(t(".pdf.caseworker.client_id_number"), @cbv_flow.cbv_applicant.client_id_number) %>
-      <%= table.with_row(t(".pdf.caseworker.case_number"), @cbv_flow.cbv_applicant.case_number) %>
-    <% end %>
-
-    <% if current_agency?(:ma) %>
-      <%= table.with_row(t(".pdf.caseworker.client_email_address"), @cbv_flow.cbv_applicant.email_address) %>
-      <%= table.with_row(t(".pdf.caseworker.snap_agency_id"), @cbv_flow.cbv_applicant.agency_id_number) %>
+    <% ClientAgency::CaseworkerReportSpecificFieldDecider.caseworker_specific_fields(@cbv_flow).each do |field_name, field_value| %>
+      <%= table.with_row(t(field_name), field_value) %>
     <% end %>
   <% end %>
 <% end %>
