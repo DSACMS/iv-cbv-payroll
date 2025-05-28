@@ -2,7 +2,6 @@ GEM
   remote: https://rubygems.org/
   specs:
     Ascii85 (1.1.1)
-    abbrev (0.1.2)
     actioncable (7.1.5.1)
       actionpack (= 7.1.5.1)
       activesupport (= 7.1.5.1)
@@ -134,7 +133,8 @@ GEM
     bindex (0.8.1)
     bootsnap (1.18.4)
       msgpack (~> 1.2)
-    brakeman (5.4.1)
+    brakeman (7.0.2)
+      racc
     builder (3.3.0)
     bundler-audit (0.9.1)
       bundler (>= 1.2.0, < 3)
@@ -547,13 +547,12 @@ PLATFORMS
   x86_64-linux
 
 DEPENDENCIES
-  abbrev (~> 0.1.2)
   actioncable-enhanced-postgresql-adapter
   aws-actionmailer-ses
   aws-sdk-rails
   aws-sdk-s3
   bootsnap
-  brakeman (~> 5.2)
+  brakeman
   bundler-audit (~> 0.9)
   capybara
   cgi (>= 0.4.2)
