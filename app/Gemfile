@@ -83,7 +83,7 @@ gem "net-imap", "0.4.20"  # Fixing GHSA-j3g3-5qv5-52m
 gem "cgi", ">= 0.4.2"     # Fixing GHSA-mhwm-jh88-3gjf
 
 group :development, :test do
-  gem "brakeman", "~> 5.2"
+  gem "brakeman"
   gem "bundler-audit", "~> 0.9"
   gem "capybara"
   gem "debug", platforms: %i[mri mingw x64_mingw]
@@ -134,5 +134,3 @@ gem "net-sftp"
 gem "net-ssh"
 
 gem "highline", "~> 3.1"
-
-gem "abbrev", "~> 0.1.2"
