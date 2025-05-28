@@ -16,7 +16,7 @@ class SftpCaseTransmitter
 
   def pdf_output
     @_pdf_output ||= begin
-                       pdf_service = PdfService.new
+                       pdf_service = PdfService.new(language: :en)
                        pdf_service.generate(
                          renderer: Cbv::SubmitsController.new,
                          template: "cbv/submits/show",
