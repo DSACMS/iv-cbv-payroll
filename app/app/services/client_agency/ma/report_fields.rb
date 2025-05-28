@@ -1,4 +1,4 @@
-class ClientAgency::AzDes::ReportFields
+class ClientAgency::Ma::ReportFields
   def self.fields_for(cbv_flow)
     [
       [ ".pdf.caseworker.client_email_address", @cbv_flow.cbv_applicant.client_email_address ],
