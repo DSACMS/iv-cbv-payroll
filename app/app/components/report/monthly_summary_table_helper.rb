@@ -1,4 +1,5 @@
 module Report::MonthlySummaryTableHelper
+  include ReportViewHelper
   # Calculate whether the current month is a partial month.
   # When you compute the row month labels, usually the first and last month will need to be
   # labeled a "partial month" per the design. The only exception to this is if the start of the

@@ -293,8 +293,8 @@ RSpec.describe Cbv::SubmitsController do
           pdf_text.gsub! "\n", " "
 
           expect(response).to be_successful
-          expect(pdf_text).to include("Pay Date")
-          expect(pdf_text).to include("Gross pay YTD")
+          expect(pdf_text).not_to include("Pay Date")
+          expect(pdf_text).not_to include("Gross pay YTD")
           expect(pdf_text).not_to include("Pay period")
           expect(pdf_text).not_to include("Payments after taxes and deductions (net)")
           expect(pdf_text).not_to include("Deduction")

@@ -1,6 +1,8 @@
 # This is an abstract class that should be inherited by all aggregator report classes.
 module Aggregators::AggregatorReports
   class AggregatorReport
+    include Report::MonthlySummaryTableHelper
+
     attr_accessor :payroll_accounts, :identities, :incomes, :employments, :gigs, :paystubs, :from_date, :to_date, :has_fetched
 
     def initialize(payroll_accounts: [], from_date: nil, to_date: nil)
@@ -79,6 +81,39 @@ module Aggregators::AggregatorReports
         end
     end
 
+    def summarize_by_month(from_date: nil, to_date: nil)
+      @payroll_accounts
+        .each_with_object({}) do |payroll_account, hash|
+          account_id = payroll_account.pinwheel_account_id
+          paystubs = @paystubs.filter { |paystub| paystub.account_id == account_id }
+          gigs = @gigs.filter { |gig| gig.account_id == account_id }
+          extracted_dates = extract_dates(paystubs, gigs)
+          months = unique_months(extracted_dates)
+
+          from_date = parse_month_safely(months.last) if from_date.nil?
+          to_date = parse_month_safely(months.first) if to_date.nil?
+
+          # Group paystubs and gigs by month
+          grouped_data = months.each_with_object({}) do |month_string, result|
+            month_beginning = parse_month_safely(month_string).beginning_of_month
+            month_end = month_beginning.end_of_month
+
+            paystubs_in_month = paystubs.select { |paystub| parse_date_safely(paystub.pay_date)&.between?(month_beginning, month_end) }
+            gigs_in_month = gigs.select { |gig| parse_date_safely(gig.end_date)&.between?(month_beginning, month_end) }
+            extracted_dates_in_month = extract_dates(paystubs_in_month, gigs_in_month)
+
+            result[month_string] = {
+              paystubs: paystubs_in_month,
+              gigs: gigs_in_month,
+              accrued_gross_earnings: paystubs_in_month.sum { |paystub| paystub.gross_pay_amount || 0 },
+              total_gig_hours: gigs_in_month.sum { |gig| gig.hours },
+              partial_month_range: partial_month_details(month_string, extracted_dates_in_month, from_date, to_date)
+            }
+          end
+          hash[account_id] ||= grouped_data
+        end
+    end
+
     def total_gross_income
       @paystubs.reduce(0) { |sum, paystub| sum + (paystub.gross_pay_amount || 0) }
     end
@@ -88,10 +123,5 @@ module Aggregators::AggregatorReports
       return nil if latest_paystub_date.nil?
       (Date.current - latest_paystub_date).to_i
     end
-  end
-
-  private
-  def fetch_report_data(from_date, to_date)
-    raise "must implement in subclass"
   end
 end

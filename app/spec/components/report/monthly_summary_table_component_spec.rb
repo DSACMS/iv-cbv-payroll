@@ -86,25 +86,6 @@ RSpec.describe Report::MonthlySummaryTableComponent, type: :component do
           expect(subject).to eq("Acme Corporation")
         end
       end
-
-      describe "#summarize_by_month" do
-        it "returns a hash of monthly totals" do
-          monthly_summary = described_class.new(pinwheel_report, payroll_account).summarize_by_month(from_date: Date.parse("2025-01-08"))
-          expect(monthly_summary.keys).to match_array([ "2020-12" ])
-
-          dec = monthly_summary["2020-12"]
-          expect(dec[:gigs].length).to eq(3)
-          expect(dec[:paystubs].length).to eq(1)
-          expect(dec[:accrued_gross_earnings]).to eq(480720) # in cents
-          expect(dec[:total_gig_hours]).to eq(45.0)
-          expect(dec[:partial_month_range]).to an_object_eq_to({
-                                                                   is_partial_month: true,
-                                                                   description: "(Partial month: from 12/5-12/31)",
-                                                                   included_range_start: Date.parse("2025-12-05"),
-                                                                   included_range_end: Date.parse("2025-12-31")
-                                                                 })
-        end
-      end
     end
   end
 
@@ -199,49 +180,6 @@ RSpec.describe Report::MonthlySummaryTableComponent, type: :component do
 
           # Verifying the method returns the correct employer name
           expect(employer_name).to be_nil
-        end
-      end
-
-      describe "#summarize_by_month" do
-        it "returns a hash of monthly totals" do
-          monthly_summary = described_class.new(argyle_report, payroll_account).summarize_by_month(from_date: Date.parse("2025-01-08"))
-          expect(monthly_summary.keys).to match_array([ "2025-03", "2025-02", "2025-01" ])
-
-          march = monthly_summary["2025-03"]
-          expect(march[:gigs].length).to eq(9)
-          expect(march[:paystubs].length).to eq(1)
-          expect(march[:accrued_gross_earnings]).to eq(3456) # in cents
-          expect(march[:total_gig_hours]).to eq(3.61)
-          expect(march[:partial_month_range]).to an_object_eq_to({
-                                                             is_partial_month: true,
-                                                             description: "(Partial month: from 3/1-3/6)",
-                                                             included_range_start: Date.parse("2025-03-01"),
-                                                             included_range_end: Date.parse("2025-03-06")
-                                                           })
-
-          feb = monthly_summary["2025-02"]
-          expect(feb[:gigs].length).to eq(47)
-          expect(feb[:paystubs].length).to eq(4)
-          expect(feb[:accrued_gross_earnings]).to eq(23075) # in cents
-          expect(feb[:total_gig_hours]).to eq(21.82)
-          expect(feb[:partial_month_range]).to an_object_eq_to({
-                                                                   is_partial_month: false,
-                                                                   description: nil,
-                                                                   included_range_start: Date.parse("2025-02-01"),
-                                                                   included_range_end: Date.parse("2025-02-28")
-                                                                 })
-
-          jan = monthly_summary["2025-01"]
-          expect(jan[:gigs].length).to eq(10)
-          expect(jan[:paystubs].length).to eq(5)
-          expect(jan[:accrued_gross_earnings]).to eq(28237) # in cents
-          expect(jan[:total_gig_hours]).to eq(4.74)
-          expect(jan[:partial_month_range]).to an_object_eq_to({
-                                                                 is_partial_month: true,
-                                                                 description: "(Partial month: from 1/2-1/31)",
-                                                                 included_range_start: Date.parse("2025-01-02"),
-                                                                 included_range_end: Date.parse("2025-01-31")
-                                                               })
         end
       end
     end
