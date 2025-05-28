@@ -50,11 +50,6 @@ module Cbv::MonthlySummaryHelper
     date.strftime("%Y-%m")
   end
 
-  def format_full_date(date)
-    return nil unless date
-    date.strftime("%Y-%m-%d")
-  end
-
   def partial_month_description(range_start, range_end)
     I18n.t("components.report.monthly_summary_table.partial_month_text",
            start_date: format_parsed_date(range_start, :day_of_month),
@@ -74,17 +69,5 @@ module Cbv::MonthlySummaryHelper
   # this is used as a helper to determine all unique months present in the report.
   def extract_dates(paystubs, gigs)
     (paystubs.map { |paystub| parse_date_safely(paystub.pay_date) } + gigs.map { |gig| parse_date_safely(gig.start_date) }).compact
-  end
-
-  def accrued_gross_earnings_cell_value(accrued_gross_earnings)
-    format_money(accrued_gross_earnings)
-  end
-
-  def total_gig_hours_cell_value(total_gig_hours)
-    total_gig_hours
-  end
-
-  def month_cell_value(date)
-    format_parsed_date(date, :month_year)
   end
 end

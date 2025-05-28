@@ -1,5 +1,6 @@
     <%= render(TableComponent.new) do |table| %>
-      <%= table.with_header.with_content(t("components.report.monthly_summary_table.compact.total_income_header", employer_name: @employer_name, accrued_gross_earnings: format_money(@total_gross_earnings))) %>
+      <%= table.with_header
+               .with_content(t("components.report.monthly_summary_table.compact.total_income_header", employer_name: @employer_name, accrued_gross_earnings: format_money(@total_gross_earnings))) %>
     <% @monthly_summary_data.each_with_index do |(month_string, summary), index| %>
         <%= table.with_row(t("components.report.monthly_summary_table.compact.month_income", month: format_date(parse_month_safely(month_string), :month_year), accrued_gross_earnings: format_money(summary[:accrued_gross_earnings]))) %>
     <% end %>
