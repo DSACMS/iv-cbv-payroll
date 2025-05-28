@@ -72,15 +72,13 @@
     environment: <%= ENV["AZ_DES_PINWHEEL_ENVIRONMENT"] %>
   argyle:
     environment: <%= ENV["AZ_DES_ARGYLE_ENVIRONMENT"] %>
-  # TODO[FFS-2628]: This will be SFTP:
   transmission_method: sftp
   transmission_method_configuration:
     user: <%= ENV['AZ_DES_SFTP_USER'] %>
     password: <%= ENV['AZ_DES_SFTP_PASSWORD'] %>
     url: <%= ENV['AZ_DES_SFTP_URL'] %>
     sftp_directory: <%= ENV['AZ_DES_SFTP_DIRECTORY'] %>
-  # TODO: Disable staff portal before pilot launch
-  staff_portal_enabled: true
+  staff_portal_enabled: false
   sso:
     client_id:     <%= ENV["AZURE_SANDBOX_CLIENT_ID"] %>
     client_secret: <%= ENV["AZURE_SANDBOX_CLIENT_SECRET"] %>
