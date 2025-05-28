@@ -43,8 +43,8 @@
   <%= table.with_header do %>
     <h3 class="margin-0"><%= t(".pdf.shared.client_information") %></h3>
   <% end %>
-  <% if current_agency?(:ma) && !is_caseworker %>
-    <%= table.with_row(t(".pdf.client.agency_id_number"), @cbv_flow.cbv_applicant.agency_id_number) %>
+  <% ClientAgency::CaseworkerReportSpecificFieldDecider.applicant_specific_fields(@cbv_flow).each do |field, value| %>
+    <%= table.with_row(t(field), value) %>
   <% end %>
   <% @cbv_flow.cbv_applicant.applicant_attributes.each do |item| %>
     <% if @cbv_flow.cbv_applicant[item].present? %>
