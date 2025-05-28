@@ -33,7 +33,7 @@
     <div class="usa-prose"><p><%= I18n.t("components.report.monthly_summary_table.payments_from_text", employer_name: @employer_name) %></p></div>
 
     <ul class="usa-list">
-      <% self.paystubs.each do |paystub| %>
+      <% @paystubs.each do |paystub| %>
         <li><%= format_date(paystub.pay_date, :long) %> - <%= format_money(paystub.gross_pay_amount) %></li>
       <% end %>
     </ul>
