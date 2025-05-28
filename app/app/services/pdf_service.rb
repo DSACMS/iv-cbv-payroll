@@ -13,14 +13,23 @@ class PdfService
     end
   end
 
+  attr_reader :language
+
+  def initialize(language:)
+    @language = language
+  end
+
   def generate(renderer:, template:, variables: {})
-    html_content = renderer.render_to_string(
-      template: template,
-      formats: [ :pdf ],
-      layout: "layouts/pdf",
-      locals: variables,
-      assigns: variables
-    )
+    html_content = I18n.with_locale(language) do
+      renderer.render_to_string(
+        template: template,
+        formats: [ :pdf ],
+        layout: "layouts/pdf",
+        locals: variables,
+        assigns: variables
+      )
+    end
+
 
     begin
       pdf_content = WickedPdf.new.pdf_from_string(html_content)

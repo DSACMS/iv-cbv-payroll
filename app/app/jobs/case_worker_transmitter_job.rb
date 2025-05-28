@@ -60,7 +60,7 @@ class CaseWorkerTransmitterJob < ApplicationJob
         "#{time_now.strftime('%Y%m%d%H%M%S')}"
 
       # Generate PDF
-      pdf_service = PdfService.new
+      pdf_service = PdfService.new(language: :en)
       @pdf_output = pdf_service.generate(
         renderer: Cbv::SubmitsController.new,
         template: "cbv/submits/show",
