@@ -192,7 +192,7 @@ html {
 
 .subheader-row {
   > th {
-    font-weight: normal;
-    background-color: #e6e6e6;
+    font-weight: bold;
+    background-color: color('base-lightest');
   }
 }

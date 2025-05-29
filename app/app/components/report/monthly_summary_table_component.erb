@@ -8,7 +8,7 @@
           <%= I18n.t("components.report.monthly_summary_table.monthly_summary") %>
         </h4>
       <% end %>
-      <%= table.with_subheader_row(class_names: "subheader-row") do |row| %>
+      <%= table.with_subheader_row(class_names: "subheader-row base-lightest") do |row| %>
         <%= row.with_data_cell(is_header: true)
                .with_content(I18n.t("components.report.monthly_summary_table.month")) %>
         <%= row.with_data_cell(is_header: true)
@@ -21,7 +21,7 @@
           <% row.with_data_cell do |cell| %>
             <%= format_parsed_date(parse_month_safely(month_string), :month_year) %>
               <% if summary[:partial_month_range][:is_partial_month] %>
-                <br ><span class="text-light partial-month-description"><%= summary[:partial_month_range][:description] %></span>
+                <br ><span class="text-gray-70 partial-month-description"><%= summary[:partial_month_range][:description] %></span>
               <% end %>
           <% end %>
           <%= row.with_data_cell
@@ -31,7 +31,7 @@
         <% end %>
       <% end %>
     <% end %>
-    <p class="usa-prose"><%= I18n.t("components.report.monthly_summary_table.footnote") %></p>
+  <div class="usa-prose font-body-xs"><p><%= I18n.t("components.report.monthly_summary_table.footnote") %></p></div>
 
   <div>
     <h2><%= I18n.t("components.report.monthly_summary_table.payments_from_header", employer_name: @employer_name) %></h2>

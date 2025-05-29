@@ -523,7 +523,7 @@ en:
         accrued_gross_earnings: Accrued gross earnings
         compact:
           month_income: "%{month} gross earnings: %{accrued_gross_earnings}"
-          total_income_header: 'Total Income from %{employer_name} before taxes: %{accrued_gross_earnings}'
+          total_income_header: 'Total income from %{employer_name} before taxes: %{accrued_gross_earnings}'
         footnote: The “Accrued gross earnings” column sums the payments made in that month. The “Total hours worked” column sums the time it took to complete every gig worked in that month. There may be gigs worked in a month that were paid in the following month.
         month: Month
         monthly_summary: Monthly Summary
