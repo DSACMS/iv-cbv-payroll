@@ -251,13 +251,13 @@ en:
         answer_yes_bullet_3: Your job is app-based (Uber, DoorDash, Lyft, Instacart, etc.)
         answer_yes_header_html: 'Answer YES if <em>any</em> of these are true about your current or recent job:'
         continue: Continue
-        criteria_disclaimer: 'Note: If you''ve had other jobs in the past %{pay_income_days} days that don''t meet these criteria, you may need to submit that income information separately.'
+        criteria_disclaimer: 'Note: If you''ve had other jobs in the past 90 days that don''t meet these criteria, you may need to submit that income information separately.'
         header: Do you have another job to report?
         learn_more_link_html:
           la_ldh: Learn more on <a href="%{agency_url}" target="_blank" rel="noopener noreferrer">LDH's website</a>.
           sandbox: Learn more on <a href="https://www.mass.gov/guides/how-to-contact-dta" target="_blank" rel="noopener noreferrer">CBV Test Agency's website</a>.
         no_radio: No, I don’t have another job that meets the criteria
-        subheader: Please add other jobs you’ve had in the past %{pay_income_days} days, even if you're no longer at that job.
+        subheader: Please add other jobs you’ve had in the past 90 days, even if you're no longer at that job.
         yes_radio: Yes, I have another job that meets the criteria
     applicant_informations:
       la_ldh:
