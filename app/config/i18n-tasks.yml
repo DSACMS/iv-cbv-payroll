@@ -154,6 +154,7 @@ ignore_missing:
     - "shared.agency_full_name.az_des"
     - "shared.agency_abbreviation.az_des"
     - "shared.benefit.az_des"
+    - "shared.reporting_purpose.az_des"
 
     # LA LDH (FFS-2668)
     - "shared.agency_full_name.la_ldh"
@@ -161,6 +162,7 @@ ignore_missing:
     - "shared.header.cbv_flow_title.la_ldh"
     - "shared.header.preheader.la_ldh"
     - "shared.agency_abbreviation.la_ldh"
+    - "shared.reporting_purpose.la_ldh"
 
     # LA employer_search (FFS-2688)
     - "cbv.employer_searches.show.can_not_find_employer"

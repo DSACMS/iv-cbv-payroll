@@ -492,6 +492,10 @@ es:
       fr: Francés
       zh: Chino
     not_applicable: N/C
+    reporting_purpose:
+      ma: beneficios
+      nyc: beneficios
+      sandbox: beneficios
     skip_link: Saltar al contenido principal
   time:
     formats:

@@ -711,6 +711,12 @@ en:
       zh: 中文
     not_applicable: N/A
     pilot_name: Report My Income
+    reporting_purpose:
+      az_des: Mid Approval Contact form
+      la_ldh: benefits
+      ma: benefits
+      nyc: benefits
+      sandbox: benefits
     skip_link: Skip to main content
   time:
     formats:
