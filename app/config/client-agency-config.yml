@@ -59,7 +59,7 @@
 - id: az_des
   agency_name: Department of Economic Security/Family Assistance Administration 
   agency_short_name: DES/FAA
-  agency_contact_website: https://des.az.gov/services/basic-needs/food-assistance/contact-des
+  agency_contact_website: https://myfamilybenefits.azdes.gov/
   # No caseworker feedback form since they will only be interacting with the PDFs
   # caseworker_feedback_form: null
   agency_demo_domain: az-verify-demo.navapbc.cloud
