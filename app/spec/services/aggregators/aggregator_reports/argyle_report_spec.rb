@@ -9,8 +9,8 @@ RSpec.describe Aggregators::AggregatorReports::ArgyleReport, type: :service do
   let!(:payroll_account) do
     create(:payroll_account, :argyle_fully_synced, pinwheel_account_id: account)
   end
-  let(:from_date) { "2021-01-01" }
-  let(:to_date) { "2021-03-31" }
+  let(:days_ago_to_fetch) { 90 }
+  let(:today) { Date.today }
   let(:argyle_service) { Aggregators::Sdk::ArgyleService.new(:sandbox) }
 
   let(:identities_json) { argyle_load_relative_json_file('bob', 'request_identity.json') }
@@ -25,9 +25,21 @@ RSpec.describe Aggregators::AggregatorReports::ArgyleReport, type: :service do
     allow(argyle_service).to receive(:fetch_account_api).and_return(account_json)
   end
 
+  around do |ex|
+    Timecop.freeze(today, &ex)
+  end
+
   describe '#fetch_report_data' do
+    let(:argyle_report) do
+      Aggregators::AggregatorReports::ArgyleReport.new(
+        payroll_accounts: [ payroll_account ],
+        argyle_service: argyle_service,
+        days_to_fetch_for_w2: days_ago_to_fetch,
+        days_to_fetch_for_gig: days_ago_to_fetch
+      )
+    end
+
     context "bob, a W-2 employee" do
-      let(:argyle_report) { Aggregators::AggregatorReports::ArgyleReport.new(payroll_accounts: [ payroll_account ], argyle_service: argyle_service, from_date: from_date, to_date: to_date) }
       before do
         allow(argyle_service).to receive(:fetch_account_api).and_return(argyle_load_relative_json_file("bob", "request_account.json"))
         allow(argyle_service).to receive(:fetch_identities_api).and_return(argyle_load_relative_json_file("bob", "request_identity.json"))
@@ -37,7 +49,7 @@ RSpec.describe Aggregators::AggregatorReports::ArgyleReport, type: :service do
 
       it 'calls the right APIs' do
         expect(argyle_service).to have_received(:fetch_identities_api).with(account: account)
-        expect(argyle_service).to have_received(:fetch_paystubs_api).with(account: account, from_start_date: from_date, to_start_date: to_date)
+        expect(argyle_service).to have_received(:fetch_paystubs_api).with(account: account, from_start_date: days_ago_to_fetch.days.ago, to_start_date: today)
       end
 
       it 'transforms response object correctly' do
@@ -76,10 +88,8 @@ RSpec.describe Aggregators::AggregatorReports::ArgyleReport, type: :service do
         end
       end
     end
+
     context "joe, a W-2 employee" do
-      let(:argyle_report) { Aggregators::AggregatorReports::ArgyleReport.new(payroll_accounts: [ payroll_account ],
-                                                                             argyle_service: argyle_service,
-                                                                             from_date: from_date, to_date: to_date) }
       before do
         allow(argyle_service).to receive(:fetch_identities_api).and_return(argyle_load_relative_json_file("joe", "request_identity.json"))
         allow(argyle_service).to receive(:fetch_paystubs_api).and_return(argyle_load_relative_json_file("joe", "request_paystubs.json"))
@@ -88,7 +98,7 @@ RSpec.describe Aggregators::AggregatorReports::ArgyleReport, type: :service do
 
       it 'calls the right APIs' do
         expect(argyle_service).to have_received(:fetch_identities_api).with(account: account)
-        expect(argyle_service).to have_received(:fetch_paystubs_api).with(account: account, from_start_date: from_date, to_start_date: to_date)
+        expect(argyle_service).to have_received(:fetch_paystubs_api).with(account: account, from_start_date: days_ago_to_fetch.days.ago, to_start_date: today)
       end
 
       it 'transforms response objects correctly' do
@@ -125,8 +135,6 @@ RSpec.describe Aggregators::AggregatorReports::ArgyleReport, type: :service do
 
     describe '#fetch_gigs' do
       context "for Bob, a Uber driver" do
-        let(:argyle_report) { Aggregators::AggregatorReports::ArgyleReport.new(payroll_accounts: [ payroll_account ], argyle_service: argyle_service, from_date: from_date, to_date: to_date) }
-
         before do
           allow(argyle_service).to receive(:fetch_identities_api).and_return(argyle_load_relative_json_file("bob", "request_identity.json"))
           allow(argyle_service).to receive(:fetch_paystubs_api).and_return(argyle_load_relative_json_file("bob", "request_paystubs.json"))
@@ -178,22 +186,40 @@ RSpec.describe Aggregators::AggregatorReports::ArgyleReport, type: :service do
   end
 
   describe "#days_since_last_paydate" do
+    let(:argyle_report) do
+      described_class.new(
+        payroll_accounts: [ payroll_account ],
+        argyle_service: argyle_service,
+        days_to_fetch_for_w2: days_ago_to_fetch,
+        days_to_fetch_for_gig: days_ago_to_fetch
+      )
+    end
+
     before do
       travel_to Time.new(2021, 4, 1, 0, 0, 0, "-04:00")
+      allow(argyle_report)
+        .to receive(:paystubs)
+        .and_return(paystubs)
     end
 
-    it "returns nil if no paystub date information available" do
-      paystubs = [ OpenStruct.new(pay_date: nil) ]
-      report = described_class.new
-      report.paystubs = paystubs
-      expect(report.days_since_last_paydate).to be_nil
+    context "when no paystub date information is available" do
+      let(:paystubs) do
+        [ OpenStruct.new(pay_date: nil) ]
+      end
+
+      it "returns nil if no paystub date information available" do
+        expect(argyle_report.days_since_last_paydate).to be_nil
+      end
     end
 
-    it "returns the latest date when dates available, compared to current time" do
-      paystubs = [ OpenStruct.new(pay_date: "2021-02-01"), OpenStruct.new(pay_date: "2021-03-02") ]
-      report = described_class.new
-      report.paystubs = paystubs
-      expect(report.days_since_last_paydate).to eq(30)
+    context "when the latest date is available" do
+      let(:paystubs) do
+        [ OpenStruct.new(pay_date: "2021-02-01"), OpenStruct.new(pay_date: "2021-03-02") ]
+      end
+
+      it "returns the latest date when dates available, compared to current time" do
+        expect(argyle_report.days_since_last_paydate).to eq(30)
+      end
     end
   end
 

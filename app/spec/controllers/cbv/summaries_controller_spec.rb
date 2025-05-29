@@ -46,7 +46,7 @@ RSpec.describe Cbv::SummariesController do
   end
 
   around do |ex|
-    Timecop.freeze(&ex)
+    Timecop.freeze(current_time, &ex)
   end
 
   describe "#show" do

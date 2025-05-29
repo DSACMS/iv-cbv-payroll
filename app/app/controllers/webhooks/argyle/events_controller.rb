@@ -137,8 +137,8 @@ class Webhooks::Argyle::EventsController < ApplicationController
       report = Aggregators::AggregatorReports::ArgyleReport.new(
         payroll_accounts: [ payroll_account ],
         argyle_service: argyle_for(@cbv_flow),
-        from_date: @cbv_flow.cbv_applicant.paystubs_query_begins_at,
-        to_date: @cbv_flow.cbv_applicant.snap_application_date
+        days_to_fetch_for_w2: agency_config[@cbv_flow.client_agency_id].pay_income_days[:w2],
+        days_to_fetch_for_gig: agency_config[@cbv_flow.client_agency_id].pay_income_days[:gig]
       )
       report.fetch
 

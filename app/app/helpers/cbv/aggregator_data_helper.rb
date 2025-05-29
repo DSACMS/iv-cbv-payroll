@@ -4,7 +4,11 @@ module Cbv::AggregatorDataHelper
 
   def set_aggregator_report
     if has_payroll_accounts("pinwheel") && has_payroll_accounts("argyle")
-      @aggregator_report = CompositeReport.new([ make_pinwheel_report, make_argyle_report ])
+      @aggregator_report = CompositeReport.new(
+        [ make_pinwheel_report, make_argyle_report ],
+        days_to_fetch_for_w2: agency_config[@cbv_flow.client_agency_id].pay_income_days[:w2],
+        days_to_fetch_for_gig: agency_config[@cbv_flow.client_agency_id].pay_income_days[:gig]
+      )
     elsif has_payroll_accounts("pinwheel")
       @aggregator_report = make_pinwheel_report
     elsif has_payroll_accounts("argyle")
@@ -36,20 +40,22 @@ module Cbv::AggregatorDataHelper
 
   def make_pinwheel_report(payroll_account: nil)
     report = PinwheelReport.new(
-        payroll_accounts: if payroll_account.present? then [ payroll_account ] else filter_payroll_accounts("pinwheel") end,
-        pinwheel_service: pinwheel,
-        from_date: @cbv_flow.cbv_applicant.paystubs_query_begins_at,
-        to_date: @cbv_flow.cbv_applicant.snap_application_date)
+      payroll_accounts: if payroll_account.present? then [ payroll_account ] else filter_payroll_accounts("pinwheel") end,
+      pinwheel_service: pinwheel,
+      days_to_fetch_for_w2: agency_config[@cbv_flow.client_agency_id].pay_income_days[:w2],
+      days_to_fetch_for_gig: agency_config[@cbv_flow.client_agency_id].pay_income_days[:gig]
+    )
     report.fetch
     report
   end
 
   def make_argyle_report(payroll_account: nil)
     report = ArgyleReport.new(
-        payroll_accounts: if payroll_account.present? then [ payroll_account ] else filter_payroll_accounts("argyle") end,
-        argyle_service: argyle,
-        from_date: @cbv_flow.cbv_applicant.paystubs_query_begins_at,
-        to_date: @cbv_flow.cbv_applicant.snap_application_date)
+      payroll_accounts: if payroll_account.present? then [ payroll_account ] else filter_payroll_accounts("argyle") end,
+      argyle_service: argyle,
+      days_to_fetch_for_w2: agency_config[@cbv_flow.client_agency_id].pay_income_days[:w2],
+      days_to_fetch_for_gig: agency_config[@cbv_flow.client_agency_id].pay_income_days[:gig]
+    )
     report.fetch
     report
   end
