@@ -446,6 +446,10 @@ es:
       extend_button: Sí, extender el tiempo de mi sesión.
       heading: "¿Necesita más tiempo en la sesión?"
   shared:
+    agency_abbreviation:
+      ma: DTA
+      nyc: HRA
+      sandbox: CBV
     agency_full_name:
       az_des: Departamento de Seguridad Económica de Arizona
       ma: Departamento de Asistencia Transitoria de Massachusetts

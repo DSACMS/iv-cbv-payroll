@@ -657,8 +657,14 @@ en:
       extend_button: Yes, extend my session
       heading: Do you need more time?
   shared:
+    agency_abbreviation:
+      az_des: DES/FAA
+      la_ldh: LDH
+      ma: DTA
+      nyc: HRA
+      sandbox: CBV
     agency_full_name:
-      az_des: Arizona Department of Economic Security
+      az_des: Department of Economic Security/Family Assistance Administration 
       la_ldh: Louisiana Department of Health
       ma: Massachusetts Department of Transitional Assistance
       nyc: New York City Human Resources Administration

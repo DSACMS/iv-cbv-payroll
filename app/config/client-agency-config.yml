@@ -57,8 +57,8 @@
     recipient: <%= ENV['MA_WEEKLY_REPORT_RECIPIENTS'] %>
 
 - id: az_des
-  agency_name: Department of Economic Security
-  agency_short_name: DES
+  agency_name: Department of Economic Security/Family Assistance Administration 
+  agency_short_name: DES/FAA
   agency_contact_website: https://des.az.gov/services/basic-needs/food-assistance/contact-des
   # No caseworker feedback form since they will only be interacting with the PDFs
   # caseworker_feedback_form: null
