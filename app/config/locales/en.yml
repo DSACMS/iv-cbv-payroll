@@ -657,7 +657,7 @@ en:
       extend_button: Yes, extend my session
       heading: Do you need more time?
   shared:
-    agency_abbreviation:
+    agency_acronym:
       az_des: DES/FAA
       la_ldh: LDH
       ma: DTA

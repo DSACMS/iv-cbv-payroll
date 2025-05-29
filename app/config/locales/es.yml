@@ -446,7 +446,7 @@ es:
       extend_button: Sí, extender el tiempo de mi sesión.
       heading: "¿Necesita más tiempo en la sesión?"
   shared:
-    agency_abbreviation:
+    agency_acronym:
       ma: DTA
       nyc: HRA
       sandbox: CBV
