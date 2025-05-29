@@ -156,6 +156,9 @@ ignore_missing:
     - "shared.benefit.az_des"
     - "shared.reporting_purpose.az_des"
 
+    # AZ DES submit (FFS-2648)
+    - "cbv.submits.show.warning_1"
+
     # LA LDH (FFS-2668)
     - "shared.agency_full_name.la_ldh"
     - "shared.benefit.la_ldh"
@@ -189,7 +192,6 @@ ignore_missing:
 
     # LA submit (FFS-2688)
     - "cbv.submits.show.consent_checkbox_label_html"
-    - "cbv.submits.show.warning_1"
 
     # LA success (FFS-2688)
     - "cbv.successes.show.follow_up"

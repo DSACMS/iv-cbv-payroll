@@ -465,7 +465,7 @@ en:
             report_details: Report details
         share_report_button: Share my report with %{agency_acronym}
         table_caption_no_name: Employer %{number}
-        warning_1: Your income report will be attached to your Medicaid benefits.
+        warning_1: Your income report will be attached to your %{benefit} %{reporting_purpose} with the state.
         warning_2: You must check the legal agreement box to share your report.
       update:
         consent_to_authorize_warning: Please check the legal agreement box to share your report.
