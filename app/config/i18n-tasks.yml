@@ -149,7 +149,7 @@ ignore_missing:
     - "aggregator_strings.employment_statuses.terminated" # FFS-2723
     - "aggregator_strings.payment_frequencies.quarterly"  # FFS-2723
     - "aggregator_strings.deductions.roth"                # FFS-2723
-    - "components.report.monthly_summary_table.*"
+    - "components.report.monthly_summary_table.*" # FFS-2668
 
     # LA LDH (FFS-2668)
     - "shared.agency_full_name.la_ldh"
