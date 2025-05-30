@@ -132,5 +132,3 @@ gem "wkhtmltopdf-binary"
 
 gem "net-sftp"
 gem "net-ssh"
-
-gem "highline", "~> 3.1"
