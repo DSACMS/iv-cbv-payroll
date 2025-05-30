@@ -1,4 +1,5 @@
 # i18n-tasks finds and manages missing and unused translations: https://github.com/glebm/i18n-tasks
+# <% require './lib/i18n_csv_tasks' %>
 
 # The "main" locale.
 base_locale: en
@@ -266,6 +267,18 @@ ignore_unused:
     - "aggregator_strings.*"                    # dynamically looked up aggregator translations
     - "help.show.*.intro"                       # dynamically looked up help translations
     - "help.show.credentials.security_message"  # dynamically looked up help translations
+
+csv:
+  # see: https://github.com/glebm/i18n-tasks/wiki/Custom-CSV-import-and-export-tasks
+  # usage:
+  #   bundle exec i18n-tasks csv-export
+  export:
+    - "tmp/exported-locales.csv"
+  # usage:
+  #   bundle exec i18n-tasks csv-import
+  import: []
+    #- tmp/i18n-export/main.csv
+    #- tmp/i18n-export/faqs.csv
 
 ## Unused examples of how to use this file:
 
