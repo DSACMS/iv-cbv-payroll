@@ -15,13 +15,11 @@ export default class extends Controller {
 
   copy() {
     trackUserAction("ApplicantCopiedInvitationLink")
-    const inputElement = this.inputTarget
-    
-    if (!inputElement) {
+    if(!this.hasInputTarget) {
       return
     }
 
-    navigator.clipboard.writeText(inputElement.value).then(() => {
+    navigator.clipboard.writeText(this.inputTarget.value).then(() => {
       this.showSuccess()
     })
   }
