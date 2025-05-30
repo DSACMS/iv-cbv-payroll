@@ -13,7 +13,7 @@ class Cbv::SuccessesController < Cbv::BaseController
 
     if %w[az_des sandbox].include?(@cbv_flow.client_agency_id)
       if (invitation_link = @cbv_flow.cbv_flow_invitation&.to_url)
-        URI.parse(invitation_link).tap { |uri| uri.host = domain; uri.scheme = "https" }.to_s
+        URI.parse(invitation_link).tap { |uri| uri.host = domain; uri.scheme = "https"; uri.port = nil }.to_s
       else
         "https://#{domain}"
       end
