@@ -77,6 +77,66 @@ RSpec.describe Cbv::MonthlySummaryHelper, type: :helper do
                                                          included_range_end: Date.parse("2025-03-06")
                                                        })
     end
+
+    it "detects partial when it's all the same month" do
+      current_month_string = "2025-03"
+      activity_dates = [ Date.parse("2025-03-04"), Date.parse("2025-03-06") ]
+      from_date = Date.parse("2025-03-01")
+      to_date = Date.parse("2025-03-31")
+
+      partial_month_details = subject.partial_month_details(current_month_string, activity_dates, from_date, to_date)
+      expect(partial_month_details).to an_object_eq_to({
+                                                         is_partial_month: true,
+                                                         description: "(Partial month: from 3/4-3/6)",
+                                                         included_range_start: Date.parse("2025-03-04"),
+                                                         included_range_end: Date.parse("2025-03-06")
+                                                       })
+    end
+
+    it "detects complete when it's the full month" do
+      current_month_string = "2025-03"
+      activity_dates = [ Date.parse("2025-03-01"), Date.parse("2025-03-31") ]
+      from_date = Date.parse("2025-03-01")
+      to_date = Date.parse("2025-03-31")
+
+      partial_month_details = subject.partial_month_details(current_month_string, activity_dates, from_date, to_date)
+      expect(partial_month_details).to an_object_eq_to({
+                                                         is_partial_month: false,
+                                                         description: nil,
+                                                         included_range_start: Date.parse("2025-03-01"),
+                                                         included_range_end: Date.parse("2025-03-31")
+                                                       })
+    end
+
+    it "detects partial when last day of first month" do
+      current_month_string = "2025-02"
+      activity_dates = [ Date.parse("2025-02-28") ]
+      from_date = Date.parse("2025-02-28")
+      to_date = Date.parse("2025-05-30")
+
+      partial_month_details = subject.partial_month_details(current_month_string, activity_dates, from_date, to_date)
+      expect(partial_month_details).to an_object_eq_to({
+                                                         is_partial_month: true,
+                                                         description: "(Partial month: from 2/28-2/28)",
+                                                         included_range_start: Date.parse("2025-02-28"),
+                                                         included_range_end: Date.parse("2025-02-28")
+                                                       })
+    end
+
+    it "if no reporting dates are specified, no partial month calculation" do
+      current_month_string = "2025-02"
+      activity_dates = [ Date.parse("2025-02-28") ]
+      from_date = nil
+      to_date = nil
+
+      partial_month_details = subject.partial_month_details(current_month_string, activity_dates, from_date, to_date)
+      expect(partial_month_details).to an_object_eq_to({
+                                                         is_partial_month: false,
+                                                         description: nil,
+                                                         included_range_start: Date.parse("2025-02-1"),
+                                                         included_range_end: Date.parse("2025-02-28")
+                                                       })
+    end
   end
 
   describe ".parse_date_safely" do

@@ -90,8 +90,8 @@ module Aggregators::AggregatorReports
           extracted_dates = extract_dates(paystubs, gigs)
           months = unique_months(extracted_dates)
 
-          from_date = parse_month_safely(months.last) if from_date.nil?
-          to_date = parse_month_safely(months.first) if to_date.nil?
+          from_date = @from_date if from_date.nil?
+          to_date = @to_date if to_date.nil?
 
           # Group paystubs and gigs by month
           grouped_data = months.each_with_object({}) do |month_string, result|

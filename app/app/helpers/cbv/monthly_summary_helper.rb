@@ -11,25 +11,26 @@ module Cbv::MonthlySummaryHelper
     earliest_activity = activity_dates.min&.to_date
     latest_activity = activity_dates.max&.to_date
 
-    # Note: activity_dates should always have an item due to how this method is called.
-    if activity_dates.empty?
-      { is_partial_month: false, description: nil, included_range_start: start_of_month, included_range_end: end_of_month }
-      ## String comparisons of current month to report month range
-    elsif current_month_string == self.format_month(report_from_date) && current_month_string == self.format_month(report_to_date)
-      is_partial_month = earliest_activity != start_of_month || latest_activity != end_of_month
-      partial_month_description = is_partial_month ? partial_month_description(earliest_activity, latest_activity) : nil
-      { is_partial_month: is_partial_month, description: partial_month_description, included_range_start: earliest_activity, included_range_end: latest_activity }
-    elsif current_month_string == self.format_month(report_from_date)
-      is_partial_month = earliest_activity != start_of_month
-      partial_month_description = is_partial_month ? partial_month_description(earliest_activity, end_of_month) : nil
-      { is_partial_month: is_partial_month, description: partial_month_description, included_range_start: earliest_activity, included_range_end: end_of_month }
-    elsif current_month_string == self.format_month(report_to_date)
-      is_partial_month = latest_activity != end_of_month
-      partial_month_description = is_partial_month ? partial_month_description(start_of_month, latest_activity) : nil
-      { is_partial_month: is_partial_month,  description: partial_month_description, included_range_start: start_of_month, included_range_end: latest_activity }
-    else
-      { is_partial_month: false, description: nil, included_range_start: start_of_month, included_range_end: end_of_month }
-    end
+    is_first_month = current_month_string == self.format_month(report_from_date)
+    is_last_month = current_month_string == self.format_month(report_to_date)
+
+    details = { is_partial_month: false, description: nil, included_range_start: start_of_month, included_range_end: end_of_month }
+    return details if !is_first_month && !is_last_month
+    return details if activity_dates.empty?
+
+    is_partial_start = is_first_month && (earliest_activity != start_of_month)
+    is_partial_end = is_last_month && (latest_activity != end_of_month)
+
+    is_partial_month = (is_partial_start && is_first_month) || (is_partial_end && is_last_month)
+
+    included_range_start = is_partial_start ? earliest_activity : start_of_month
+    included_range_end = is_partial_end ? latest_activity : end_of_month
+
+    details[:is_partial_month] = is_partial_month
+    details[:description] = is_partial_month ? partial_month_description(included_range_start, included_range_end) : nil
+    details[:included_range_start] = included_range_start
+    details[:included_range_end] = included_range_end
+    details
   end
 
   # date_strings are used in ResponseObjects to store months in the "2010-01-01" format.
