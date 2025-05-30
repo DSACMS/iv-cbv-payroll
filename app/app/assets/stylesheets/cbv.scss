@@ -203,6 +203,8 @@ input#invitation_link{
   border-left: none;
   height: 3rem;
 }
-.usa-button--success {
+
+.usa-button--success,
+.usa-button--success:hover {
   background-color: #00A91C;
 }
