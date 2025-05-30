@@ -368,9 +368,7 @@ en:
         back_button: Go back to employer search
         continue_button: Continue to review my report
         continue_to_review: Continue to review the income information you were able to find before you submit it to %{agency_acronym}.
-        exit_button_html:
-          la_ldh: <a href="%{agency_url}" class="usa-button" target="_blank" rel="noopener noreferrer">Exit and go to Louisiana Department of Health</a>
-          sandbox: <a href="https://www.mass.gov/guides/how-to-contact-dta" class="usa-button" target="_blank" rel="noopener noreferrer">Exit and go to CBV Test Agency</a>
+        exit_button_html: <a href="%{agency_contact_website}" class="usa-button" target="_blank" rel="noopener noreferrer">Exit and go to %{agency_full_name}</a>
         header: How to report income if your employer or payroll provider isn’t listed
         more_jobs: If you have more jobs to report
         no_more_jobs: If you don't have more jobs to report
