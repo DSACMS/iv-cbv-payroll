@@ -44,6 +44,7 @@ class ClientAgencyConfig
       transmission_method_configuration
       weekly_report
       applicant_attributes
+      allow_invitation_reuse
     ])
 
     def initialize(yaml)
@@ -67,6 +68,7 @@ class ClientAgencyConfig
       @sso = yaml["sso"]
       @weekly_report = yaml["weekly_report"]
       @applicant_attributes = yaml["applicant_attributes"] || {}
+      @allow_invitation_reuse = yaml["allow_invitation_reuse"] || false
 
       raise ArgumentError.new("Client Agency missing id") if @id.blank?
       raise ArgumentError.new("Client Agency #{@id} missing required attribute `agency_name`") if @agency_name.blank?

@@ -50,6 +50,12 @@ class PayrollAccount < ApplicationRecord
     raise NotImplementedError
   end
 
+  # Redact data associated with this PayrollAccount when triggered by the
+  # DataRetentionService.
+  def redact!
+    raise NotImplementedError
+  end
+
   private
 
   def find_webhook_event(event_name, event_outcome = nil)
