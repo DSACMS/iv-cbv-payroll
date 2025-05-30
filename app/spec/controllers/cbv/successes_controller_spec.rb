@@ -33,32 +33,36 @@ RSpec.describe Cbv::SuccessesController do
       end
 
       describe "invitation_link" do
-        let(:cbv_flow_with_invitation) { create(:cbv_flow, :invited) }
-
         context "in production environment" do
-          before do
-            session[:cbv_flow_id] = cbv_flow_with_invitation.id
-          end
-
           it "uses agency production domain" do
             allow(Rails.env).to receive(:production?).and_return(true)
             get :show
 
-            expected_url = "https://sandbox.reportmyincome.org/en/cbv/entry?token=#{cbv_flow_with_invitation.cbv_flow_invitation.auth_token}"
+            expected_url = "https://sandbox.reportmyincome.org/en/cbv/entry?token=#{cbv_flow.cbv_flow_invitation.auth_token}"
             expect(response.body).to include(expected_url)
           end
         end
 
         context "in non-production environment" do
-          before do
-            session[:cbv_flow_id] = cbv_flow_with_invitation.id
-          end
-
           it "uses agency demo domain" do
             allow(Rails.env).to receive(:production?).and_return(false)
             get :show
 
-            expected_url = "https://sandbox-verify-demo.navapbc.cloud/en/cbv/entry?token=#{cbv_flow_with_invitation.cbv_flow_invitation.auth_token}"
+            expected_url = "https://sandbox-verify-demo.navapbc.cloud/en/cbv/entry?token=#{cbv_flow.cbv_flow_invitation.auth_token}"
+            expect(response.body).to include(expected_url)
+          end
+        end
+
+        context "when the agency does not use a tokenized link" do
+          before do
+            cbv_flow.update(client_agency_id: "la_ldh")
+          end
+
+          it "generates a generic link" do
+            allow(Rails.env).to receive(:production?).and_return(false)
+            get :show
+
+            expected_url = "https://la-verify-demo.navapbc.cloud/en/cbv/links/la_ldh"
             expect(response.body).to include(expected_url)
           end
         end

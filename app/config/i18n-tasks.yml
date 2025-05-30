@@ -268,6 +268,18 @@ ignore_missing:
     # LA fixes-2 (FFS-2688)
     - "cbv.summaries.show.must_match.default"
     - "cbv.summaries.show.must_match.la_ldh"
+
+    - "cbv.successes.show.copy_link"
+    - "cbv.successes.show.copied_link"
+    - "cbv.successes.show.share_invitation_link_content"
+    - "cbv.successes.show.share_invitation_link_title"
+    - "cbv.successes.show.whats_next"
+    - "cbv.successes.show.whats_next_1"
+    - "cbv.successes.show.whats_next_2"
+    - "cbv.successes.show.whats_next_1.content"
+    - "cbv.successes.show.whats_next_1.title"
+    - "cbv.successes.show.whats_next_2.content"
+    - "cbv.successes.show.whats_next_2.title"
 ## Consider these keys used:
 ignore_unused:
   all:
