@@ -133,7 +133,8 @@ GEM
     bindex (0.8.1)
     bootsnap (1.18.4)
       msgpack (~> 1.2)
-    brakeman (5.4.1)
+    brakeman (7.0.2)
+      racc
     builder (3.3.0)
     bundler-audit (0.9.1)
       bundler (>= 1.2.0, < 3)
@@ -160,6 +161,7 @@ GEM
       addressable
     cssbundling-rails (1.4.1)
       railties (>= 6.0.0)
+    csv (3.3.4)
     date (3.4.1)
     debase (0.2.5.beta2)
       debase-ruby_core_source (>= 0.10.12)
@@ -550,12 +552,13 @@ DEPENDENCIES
   aws-sdk-rails
   aws-sdk-s3
   bootsnap
-  brakeman (~> 5.2)
+  brakeman
   bundler-audit (~> 0.9)
   capybara
   cgi (>= 0.4.2)
   climate_control (~> 1.0)
   cssbundling-rails
+  csv
   debase (~> 0.2.5.beta2)
   debase-ruby_core_source (~> 3.3, >= 3.3.1)
   debug
@@ -607,7 +610,7 @@ DEPENDENCIES
   wkhtmltopdf-binary
 
 RUBY VERSION
-   ruby 3.3.5p100
+   ruby 3.4.4p34
 
 BUNDLED WITH
    2.4.0

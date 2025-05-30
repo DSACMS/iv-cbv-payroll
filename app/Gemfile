@@ -2,13 +2,17 @@ source "https://rubygems.org"
 git_source(:github) { |repo| "https://github.com/#{repo}.git" }
 
 
-ruby "3.3.5"
+ruby "3.4.4"
 
 # Bundle edge Rails instead: gem "rails", github: "rails/rails", branch: "main"
 gem "rails", "~> 7.1.5", ">= 7.1.5.1"
 
 # The original asset pipeline for Rails [https://github.com/rails/sprockets-rails]
 gem "sprockets-rails"
+
+
+# as of ruby 3.4, csv is no longer a default gem
+gem "csv"
 
 # Use postgresql as the database for Active Record
 gem "pg", "~> 1.1"
@@ -79,7 +83,7 @@ gem "net-imap", "0.4.20"  # Fixing GHSA-j3g3-5qv5-52m
 gem "cgi", ">= 0.4.2"     # Fixing GHSA-mhwm-jh88-3gjf
 
 group :development, :test do
-  gem "brakeman", "~> 5.2"
+  gem "brakeman"
   gem "bundler-audit", "~> 0.9"
   gem "capybara"
   gem "debug", platforms: %i[mri mingw x64_mingw]
