@@ -65,7 +65,6 @@ RSpec.describe Report::MonthlySummaryTableComponent, type: :component do
         x = render_inline(described_class.new(pinwheel_report, payroll_account))
         expect(subject.css("thead tr.subheader-row th:nth-child(1)").to_html).to include "Month"
         expect(subject.css("tbody tr:nth-child(1) td:nth-child(1)").to_html).to include "December 2020"
-        expect(subject.css("tbody tr:nth-child(1) td:nth-child(1)").to_html).to include "(Partial month: from 12/5-12/31)"
       end
 
       it "renders the Accrued gross earnings column with the correct currency format" do

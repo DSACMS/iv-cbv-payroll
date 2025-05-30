@@ -54,7 +54,7 @@ RSpec.describe Report::MonthlySummaryCompactComponent, type: :component do
       end
 
       it "includes expected table data" do
-        expect(subject.css("thead").to_html).to include "Total Income from Acme Corporation before taxes: $4,807.2"
+        expect(subject.css("thead").to_html).to include "Total income from Acme Corporation before taxes: $4,807.20"
         expect(subject.css("tbody tr:nth-child(1)").to_html).to include "December 2020"
       end
     end
@@ -100,7 +100,7 @@ RSpec.describe Report::MonthlySummaryCompactComponent, type: :component do
       end
 
       it "includes expected table data" do
-        expect(subject.css("thead").to_html).to include "Total Income from Lyft Driver before taxes: $547.68"
+        expect(subject.css("thead").to_html).to include "Total income from Lyft Driver before taxes: $547.68"
         expect(subject.css("tbody tr:nth-child(1)").to_html).to include "March 2025 gross earnings: $34.56"
         expect(subject.css("tbody tr:nth-child(2)").to_html).to include "February 2025 gross earnings: $230.75"
         expect(subject.css("tbody tr:nth-child(3)").to_html).to include "January 2025 gross earnings: $282.37"

@@ -80,7 +80,7 @@ RSpec.describe Aggregators::AggregatorReports::ArgyleReport, type: :service do
       describe "#summarize_by_month" do
         let (:account) { "019571bc-2f60-3955-d972-dbadfe0913a8" }
         it "returns a hash of monthly totals" do
-          monthly_summary_all_accounts = argyle_report.summarize_by_month(from_date: Date.parse("2025-01-08"))
+          monthly_summary_all_accounts = argyle_report.summarize_by_month(from_date: Date.parse("2025-01-08"), to_date: Date.parse("2025-03-31"))
           expect(monthly_summary_all_accounts.keys).to match_array([ account ])
 
           monthly_summary = monthly_summary_all_accounts[account]
