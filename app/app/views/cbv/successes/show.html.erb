@@ -13,7 +13,7 @@
 
   <h2><%= t(".whats_next") %></h2>
 
-  <% whats_next_1 = t('.whats_next_1') %>
+  <% whats_next_1 = t(".whats_next_1") %>
   <ul>
     <li>
       <strong><%= whats_next_1[:title] %></strong>
@@ -40,19 +40,19 @@
   <div class="border border-info-light bg-info-lighter padding-2 margin-top-3 radius-md">
     <h4 class="margin-top-0"><%= t(".share_invitation_link_title") %></h4>
     <p><%= t(".share_invitation_link_content") %></p>
-    
+
     <div class="display-flex flex-align-center" data-controller="copy-link">
       <%= form_with(builder: UswdsFormBuilder, html: { style: "display: contents;" }) do |f| %>
         <%= f.label :invitation_link, "Invitation link", class: "usa-sr-only" %>
-        <input value="<%= @invitation_link %>" readonly class="usa-input" style="flex: 1;" data-copy-link-target="input" type="text" name="invitation_link" id="invitation_link">
+        <input value="<%= @invitation_link %>" autocomplete="off" readonly class="usa-input" style="flex: 1;" data-copy-link-target="input" type="text" name="invitation_link" id="invitation_link">
         <%# default button variant %>
         <%= f.button_with_icon(t(".copy_link"),
               class: "copy-link-button",
               icon: "content_copy",
               icon_position: :leading,
               variant: :primary,
-              type: 'button',
-              data: { 
+              type: "button",
+              data: {
                 copy_link_target: "copyLinkButton",
                 action: "click->copy-link#copy"
               }) %>
@@ -62,9 +62,9 @@
               icon: "check_circle",
               icon_position: :leading,
               variant: :success,
-              type: 'button',
+              type: "button",
               data: {
-                copy_link_target: "successButton",
+                copy_link_target: "successButton"
               }) %>
       <% end %>
     </div>

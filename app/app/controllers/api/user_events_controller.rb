@@ -1,6 +1,7 @@
 class Api::UserEventsController < ApplicationController
   EVENT_NAMES = %w[
     ApplicantOpenedHelpModal
+    ApplicantCopiedInvitationLink
     ApplicantSelectedEmployerOrPlatformItem
     PinwheelAttemptClose
     PinwheelAttemptLogin

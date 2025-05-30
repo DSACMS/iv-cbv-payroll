@@ -198,12 +198,12 @@ class UswdsFormBuilder < ActionView::Helpers::FormBuilder
   end
 
   def button_with_icon(value = "Button", options = {})
-    button_classes = ["usa-button"]
+    button_classes = [ "usa-button" ]
 
     icon_name = options.delete(:icon)
     icon_position = options.delete(:icon_position) || :leading
     variant = options.delete(:variant)
-    button_type = options.delete(:type) || 'button'
+    button_type = options.delete(:type) || "button"
     custom_class = options.delete(:class)
 
     if variant

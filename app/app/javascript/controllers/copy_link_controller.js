@@ -1,4 +1,5 @@
 import { Controller } from "@hotwired/stimulus"
+import { trackUserAction } from "../utilities/api"
 
 export default class extends Controller {
   static targets = ["copyLinkButton", "input", "successButton"]
@@ -13,6 +14,7 @@ export default class extends Controller {
   }
 
   copy() {
+    trackUserAction("ApplicantCopiedInvitationLink")
     const inputElement = this.inputTarget
     
     if (!inputElement) {

@@ -29,7 +29,7 @@ RSpec.describe Cbv::SuccessesController do
       it "shows copy link button" do
         get :show
         expect(response.body).to include(I18n.t("cbv.successes.show.copy_link"))
-        expect(response.body).to have_selector('button[data-controller="copy-link"]')
+        expect(response.body).to have_selector('button[data-copy-link-target="copyLinkButton"]')
       end
 
       describe "invitation_link" do
