@@ -11,9 +11,13 @@ class ClientAgency::AzDes::Configuration
 
   def self.pdf_filename(cbv_flow, time)
     time = time.in_time_zone("America/Phoenix")
-    "CBVPilot_#{cbv_flow.cbv_applicant.case_number.rjust(8, '0')}_" \
+    "CBVPilot_#{case_number(cbv_flow)}_" \
       "#{time.strftime('%Y%m%d')}_" \
       "Conf#{cbv_flow.confirmation_code}"
+  end
+
+  def self.case_number(cbv_flow)
+    cbv_flow.cbv_applicant.case_number.rjust(8, "0")
   end
 
   def self.format_timezone(time)

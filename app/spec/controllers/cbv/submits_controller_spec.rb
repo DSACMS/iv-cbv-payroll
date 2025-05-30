@@ -104,6 +104,25 @@ RSpec.describe Cbv::SubmitsController do
           end
         end
 
+        context "when rendering for a az des caseworker" do
+          it "shows the right client information fields" do
+            cbv_flow.update!(client_agency_id: "az_des")
+            cbv_flow.cbv_applicant.update!(case_number: "12345")
+            get :show, format: :pdf, params: {
+             is_caseworker: "true"
+           }
+
+            pdf = PDF::Reader.new(StringIO.new(response.body))
+            pdf_text = ""
+            pdf.pages.each do |page|
+              pdf_text += page.text
+            end
+
+            expect(pdf_text).to include("Case number")
+            expect(pdf_text).to include("00012345")
+          end
+        end
+
         context "with sandbox client agency" do
           context "when rendering for a caseworker" do
             it "shows the right client information fields" do
