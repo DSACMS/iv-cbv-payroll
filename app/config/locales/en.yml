@@ -473,27 +473,19 @@ en:
         consent_to_authorize_warning: Please check the legal agreement box to share your report.
     successes:
       show:
-        back_to_agency: Go to %{agency_short_name}'s website
-        caseworker_received: We have delivered your payment information to %{agency_acronym}. They will contact you if any additional information is needed.
         confirmation_code_html: "<strong>Your confirmation code</strong>: %{confirmation_code}"
         copied_link: Copied link
         copy_link: Copy link
         download: Download a copy of the report
-        follow_up: To check the status of your Medicaid benefits you can visit %{agency_acronym}'s website.
         header: Your income report has been successfully shared with %{agency_acronym}
-        if_it_didnt_work: If you weren't able to find an employer, or one of your employers doesn't have an online payroll provider, please provide this information directly to %{agency_acronym}.
         share_invitation_link_content: Share this link with all household members named on your application so they can report their income.
         share_invitation_link_title: Does anyone else in your household earn income?
         whats_next: What's next?
-        whats_next_1:
-          content:
-          - If you weren't able to find an employer, or if one of your employers doesn't have an online payroll provider, please provide this information directly to %{agency_acronym}.
-          - Visit %{agency_acronym}'s website for more information
-          title: 'If you need to report other income:'
-        whats_next_2:
-          content:
-          - If you have a few minutes, please share your experience with this tool using %{agency_feedback_form}.
-          title: Tell us about your experience
+        whats_next_1_li_1: If you weren't able to find an employer, or if one of your employers doesn't have an online payroll provider, please provide this information directly to %{agency_acronym}.
+        whats_next_1_li_2: Visit %{agency_acronym}'s website for more information
+        whats_next_1_title: 'If you need to report other income:'
+        whats_next_2_li_1: If you have a few minutes, please share your experience with this tool using %{agency_feedback_form}.
+        whats_next_2_title: Tell us about your experience
     summaries:
       show:
         additional_comments: Additional comments

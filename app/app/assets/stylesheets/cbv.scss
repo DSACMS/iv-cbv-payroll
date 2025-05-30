@@ -197,6 +197,17 @@ input#invitation_link{
   margin-top: 0;
   border-right: none;
   height: 3rem;
+  
+  // Hide visually but keep in DOM for copying on smaller screens
+  position: absolute;
+  left: -9999px;
+  opacity: 0;
+  
+  @include at-media('tablet') {
+    position: static;
+    left: auto;
+    opacity: 1;
+  }
 }
 .copy-link-button {
   border-radius: 0 0.25rem 0.25rem 0;

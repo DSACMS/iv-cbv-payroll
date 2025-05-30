@@ -13,26 +13,21 @@
 
   <h2><%= t(".whats_next") %></h2>
 
-  <% whats_next_1 = t(".whats_next_1") %>
   <ul>
     <li>
-      <strong><%= whats_next_1[:title] %></strong>
+      <strong><%= t(".whats_next_1_title") %></strong>
       <ul style="list-style-type: disc;">
-        <% whats_next_1[:content].each do |item| %>
-          <li><%= item % { agency_acronym: current_agency.agency_short_name } %></li>
-        <% end %>
+        <li><%= t(".whats_next_1_li_1", agency_acronym: current_agency.agency_short_name) %></li>
+        <li><%= t(".whats_next_1_li_2", agency_acronym: current_agency.agency_short_name) %></li>
       </ul>
     </li>
   </ul>
 
-  <% whats_next_2 = t(".whats_next_2") %>
   <ul>
     <li>
-      <strong><%= whats_next_2[:title] %></strong>
+      <strong><%= t(".whats_next_2_title") %></strong>
       <ul style="list-style-type: disc;">
-        <% whats_next_2[:content].each do |item| %>
-          <li><%= (item % { agency_feedback_form: link_to("our short feedback form", current_agency.caseworker_feedback_form, target: "_blank", rel: "noopener noreferrer") }).html_safe %></li>
-        <% end %>
+        <li><%= t(".whats_next_2_li_1", agency_feedback_form: link_to("our short feedback form", current_agency.caseworker_feedback_form, target: "_blank", rel: "noopener noreferrer")).html_safe %></li>
       </ul>
     </li>
   </ul>
