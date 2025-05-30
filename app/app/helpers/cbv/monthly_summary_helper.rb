@@ -36,6 +36,7 @@ module Cbv::MonthlySummaryHelper
   # date_strings are used in ResponseObjects to store months in the "2010-01-01" format.
   # This is a local static method to parse these into date objects. May return nil on error.
   def parse_date_safely(date_string)
+    return date_string if date_string.class == Date || date_string.class == DateTime
     DateTime.parse(date_string) rescue nil
   end
 

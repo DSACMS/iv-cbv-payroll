@@ -82,6 +82,9 @@ module Aggregators::AggregatorReports
     end
 
     def summarize_by_month(from_date: nil, to_date: nil)
+      from_date = parse_date_safely(@from_date) if from_date.nil?
+      to_date = parse_date_safely(@to_date) if to_date.nil?
+
       @payroll_accounts
         .each_with_object({}) do |payroll_account, hash|
           account_id = payroll_account.pinwheel_account_id
@@ -89,9 +92,6 @@ module Aggregators::AggregatorReports
           gigs = @gigs.filter { |gig| gig.account_id == account_id }
           extracted_dates = extract_dates(paystubs, gigs)
           months = unique_months(extracted_dates)
-
-          from_date = @from_date if from_date.nil?
-          to_date = @to_date if to_date.nil?
 
           # Group paystubs and gigs by month
           grouped_data = months.each_with_object({}) do |month_string, result|
