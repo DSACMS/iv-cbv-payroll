@@ -90,7 +90,7 @@ class ArgyleWebhooksManager
       # pay_income_days, so that agencies with shorter amounts of required data
       # can benefit from a quicker sync.
       largest_pay_income_days = Rails.application.config.client_agencies.client_agency_ids.map do |agency_id|
-        Rails.application.config.client_agencies[agency_id].pay_income_days
+        Rails.application.config.client_agencies[agency_id].pay_income_days[:w2]
       end.compact.max
 
       { days_synced: webhooks_config[:days_synced] || largest_pay_income_days }

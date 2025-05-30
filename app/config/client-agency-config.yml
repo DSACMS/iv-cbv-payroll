@@ -21,7 +21,9 @@
     tenant_id:     <%= ENV["AZURE_NYC_DSS_TENANT_ID"] %>
     scope: "openid"
     name: "nyc_dss"
-  pay_income_days: 90
+  pay_income_days:
+    w2: 90
+    gig: 90
   invitation_valid_days: 14
   weekly_report:
     recipient: <%= ENV['NYC_HRA_EMAIL'] %>
@@ -49,7 +51,9 @@
     scope: "openid"
     name: "ma_dta"
   authorized_emails: <%= ENV["MA_DTA_ALLOWED_CASEWORKER_EMAILS"] %>
-  pay_income_days: 90
+  pay_income_days:
+    w2: 90
+    gig: 90
   invitation_valid_days: 14
   logo_path: dta_logo.png
   logo_square_path: dta_logo_square.png
@@ -83,7 +87,9 @@
     tenant_id:     <%= ENV["AZURE_SANDBOX_TENANT_ID"] %>
     scope: "openid"
     name: "az_des"
-  pay_income_days: 90
+  pay_income_days:
+    w2: 90
+    gig: 182
   invitation_valid_days: 10
   allow_invitation_reuse: true
   # TODO[FFS-2629]: Get permission to use the AZ DES logo.
@@ -115,7 +121,9 @@
   #   tenant_id:     <%= ENV["AZURE_LA_LDH_TENANT_ID"] %>
   #   scope: "openid"
   #   name: "la_ldh"
-  pay_income_days: 90
+  pay_income_days:
+    w2: 90
+    gig: 90
   invitation_valid_days: 14
   weekly_report:
     recipient: <%= ENV['LA_LDH_WEEKLY_REPORT_RECIPIENTS'] %>
@@ -146,7 +154,9 @@
     tenant_id:     <%= ENV["AZURE_SANDBOX_TENANT_ID"] %>
     scope: "openid"
     name: "sandbox"
-  pay_income_days: 90
+  pay_income_days:
+    w2: 90
+    gig: 90
   invitation_valid_days: 14
   weekly_report:
     recipient: ffs-eng@navapbc.com
