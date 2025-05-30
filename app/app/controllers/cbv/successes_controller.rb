@@ -3,6 +3,23 @@ class Cbv::SuccessesController < Cbv::BaseController
   skip_before_action :ensure_cbv_flow_not_yet_complete
 
   def show
+    @invitation_link = invitation_link
+  end
+
+  private
+
+  def invitation_link
+    domain = Rails.env.production? ? current_agency.agency_production_domain : current_agency.agency_demo_domain
+
+    if %w[az_des sandbox].include?(@cbv_flow.client_agency_id)
+      if (invitation_link = @cbv_flow.cbv_flow_invitation&.to_url)
+        URI.parse(invitation_link).tap { |uri| uri.host = domain; uri.scheme = "https"; uri.port = nil }.to_s
+      else
+        "https://#{domain}"
+      end
+    else # generate a generic link
+      "https://#{domain}/en/cbv/links/#{@cbv_flow.client_agency_id}"
+    end
   end
 
   def track_accessed_success_event
