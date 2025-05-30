@@ -151,10 +151,23 @@ ignore_missing:
     - "aggregator_strings.deductions.roth"                # FFS-2723
     - "components.report.monthly_summary_table.*" # FFS-2668
 
+    # AZ DES (FFS-2648)
+    - "shared.agency_full_name.az_des"
+    - "shared.agency_acronym.az_des"
+    - "shared.benefit.az_des"
+    - "shared.reporting_purpose.az_des"
+
+    # AZ DES submit (FFS-2648)
+    - "cbv.submits.show.warning_1"
+    - "cbv.submits.show.consent_checkbox_label_html.az_des"
+
     # LA LDH (FFS-2668)
     - "shared.agency_full_name.la_ldh"
+    - "shared.benefit.la_ldh"
     - "shared.header.cbv_flow_title.la_ldh"
     - "shared.header.preheader.la_ldh"
+    - "shared.agency_acronym.la_ldh"
+    - "shared.reporting_purpose.la_ldh"
 
     # LA employer_search (FFS-2688)
     - "cbv.employer_searches.show.can_not_find_employer"
@@ -180,8 +193,7 @@ ignore_missing:
     - "cbv.missing_results.show.not_listed_p2_link_html.sandbox"
 
     # LA submit (FFS-2688)
-    - "cbv.submits.show.consent_checkbox_label_html"
-    - "cbv.submits.show.warning_1"
+    - "cbv.submits.show.consent_checkbox_label_html.default"
 
     # LA success (FFS-2688)
     - "cbv.successes.show.follow_up"

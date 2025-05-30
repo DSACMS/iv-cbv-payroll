@@ -448,6 +448,10 @@ es:
       extend_button: Sí, extender el tiempo de mi sesión.
       heading: "¿Necesita más tiempo en la sesión?"
   shared:
+    agency_acronym:
+      ma: DTA
+      nyc: HRA
+      sandbox: CBV
     agency_full_name:
       az_des: Departamento de Seguridad Económica de Arizona
       ma: Departamento de Asistencia Transitoria de Massachusetts
@@ -461,6 +465,10 @@ es:
     banner:
       lock: Candado
       locked_padlock: Un candado cerrado
+    benefit:
+      ma: SNAP
+      nyc: SNAP
+      sandbox: SNAP
     error_unauthorized: La URL a la que estás accediendo está prohibida para el usuario actual. Verifique que está conectado como el usuario correcto e intente acceder de nuevo a la URL.
     footer:
       feedback: Notifique comentarios o errores
@@ -486,6 +494,10 @@ es:
       fr: Francés
       zh: Chino
     not_applicable: N/C
+    reporting_purpose:
+      ma: beneficios
+      nyc: beneficios
+      sandbox: beneficios
     skip_link: Saltar al contenido principal
   time:
     formats:
