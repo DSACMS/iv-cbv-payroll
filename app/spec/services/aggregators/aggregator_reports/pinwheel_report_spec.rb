@@ -70,6 +70,28 @@ RSpec.describe Aggregators::AggregatorReports::PinwheelReport, type: :service do
       expect(report.gigs.length).to eq(3)
     end
 
+    describe "#summarize_by_month" do
+      it "returns a hash of monthly totals" do
+        report.fetch
+        monthly_summary_all_accounts = report.summarize_by_month(from_date: Date.parse("2020-12-05"))
+        expect(monthly_summary_all_accounts.keys).to match_array([ account ])
+        monthly_summary = monthly_summary_all_accounts[account]
+        expect(monthly_summary.keys).to match_array([ "2020-12" ])
+
+        dec = monthly_summary["2020-12"]
+        expect(dec[:gigs].length).to eq(3)
+        expect(dec[:paystubs].length).to eq(1)
+        expect(dec[:accrued_gross_earnings]).to eq(480720) # in cents
+        expect(dec[:total_gig_hours]).to eq(45.0)
+        expect(dec[:partial_month_range]).to an_object_eq_to({
+                                                               is_partial_month: true,
+                                                               description: "(Partial month: from 12/5-12/31)",
+                                                               included_range_start: Date.parse("2020-12-05"),
+                                                               included_range_end: Date.parse("2020-12-31")
+                                                             })
+      end
+    end
+
     describe "#summarize_by_employer" do
       it "should return an array of employer objects" do
         report.fetch

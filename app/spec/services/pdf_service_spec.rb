@@ -6,7 +6,8 @@ RSpec.describe PdfService, type: :service do
   include ApplicationHelper
 
   let(:current_time) { Date.parse('2024-06-18') }
-  let(:cbv_flow) { create(:cbv_flow, :invited) }
+
+  let(:cbv_flow) { create(:cbv_flow, :invited, :completed) }
 
   let(:pinwheel_report) { build(:pinwheel_report, :with_pinwheel_account) }
   let(:variables) do
@@ -36,6 +37,7 @@ RSpec.describe PdfService, type: :service do
       )
       expect(@pdf_results&.content).to include('%PDF-1.4')
       expect(@pdf_results&.html).to include('Gross pay YTD')
+      expect(@pdf_results&.html).not_to include('Monthly Summary')
       expect(@pdf_results&.html).to include('Agreement Consent Timestamp')
       expect(@pdf_results&.file_size).to be > 0
     end

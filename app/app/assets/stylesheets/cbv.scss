@@ -189,3 +189,10 @@ html {
   height: 10px;
   background-color: #D9E8F6
 }
+
+.subheader-row {
+  > th {
+    font-weight: bold;
+    background-color: color('base-lightest');
+  }
+}

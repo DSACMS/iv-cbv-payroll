@@ -1,7 +1,8 @@
 # frozen_string_literal: true
 
 class TableComponent < ViewComponent::Base
-  renders_one :header
+  renders_one :header, TableHeaderComponent
+  renders_one :subheader_row, TableRowComponent
   renders_many :rows, types: {
     content: {
       renders: TableRowComponent,
