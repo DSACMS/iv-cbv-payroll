@@ -104,8 +104,8 @@ RSpec.describe Cbv::SubmitsController do
           end
         end
 
-        context "when rendering for a client caseworker" do
-          it "shows the right client information fields for az des" do
+        context "when rendering for a az des caseworker" do
+          it "shows the right client information fields" do
             cbv_flow.update!(client_agency_id: "az_des")
             cbv_flow.cbv_applicant.update!(case_number: "12345")
             get :show, format: :pdf, params: {
