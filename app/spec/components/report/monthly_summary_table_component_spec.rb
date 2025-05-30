@@ -117,8 +117,11 @@ RSpec.describe Report::MonthlySummaryTableComponent, type: :component do
         argyle_stub_request_paystubs_response("bob")
         argyle_stub_request_gigs_response("bob")
         argyle_stub_request_account_response("bob")
-        Timecop.freeze(Time.local(2025, 04, 1, 0, 0))
         argyle_report.fetch
+      end
+
+      around do |ex|
+        Timecop.freeze(Time.local(2025, 04, 1, 0, 0), &ex)
       end
 
       subject { render_inline(described_class.new(argyle_report, payroll_account)) }

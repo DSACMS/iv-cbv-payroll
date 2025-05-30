@@ -84,13 +84,18 @@ RSpec.describe Report::MonthlySummaryCompactComponent, type: :component do
 
     context "with bob, a gig-worker" do
       let(:argyle_report) { Aggregators::AggregatorReports::ArgyleReport.new(payroll_accounts: [ payroll_account ], argyle_service: argyle_service) }# , from_date: current_time, to_date: current_time) }
+
       before do
         argyle_stub_request_identities_response("bob")
         argyle_stub_request_paystubs_response("bob")
         argyle_stub_request_gigs_response("bob")
         argyle_stub_request_account_response("bob")
-        Timecop.freeze(Time.local(2025, 04, 1, 0, 0))
         argyle_report.fetch
+      end
+
+
+      around do |ex|
+        Timecop.freeze(Time.local(2025, 04, 1, 0, 0), &ex)
       end
 
       subject { render_inline(described_class.new(argyle_report, payroll_account)) }
