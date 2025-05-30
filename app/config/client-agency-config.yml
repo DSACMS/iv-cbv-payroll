@@ -69,9 +69,12 @@
   argyle:
     environment: <%= ENV["AZ_DES_ARGYLE_ENVIRONMENT"] %>
   # TODO[FFS-2628]: This will be SFTP:
-  transmission_method: shared_email
+  transmission_method: sftp
   transmission_method_configuration:
-    email: <%= ENV['SLACK_TEST_EMAIL'] %>
+    user: <%= ENV['AZ_DES_SFTP_USER'] %>
+    password: <%= ENV['AZ_DES_SFTP_PASSWORD'] %>
+    url: <%= ENV['AZ_DES_SFTP_URL'] %>
+    sftp_directory: <%= ENV['AZ_DES_SFTP_DIRECTORY'] %>
   # TODO: Disable staff portal before pilot launch
   staff_portal_enabled: true
   sso:
@@ -81,7 +84,8 @@
     scope: "openid"
     name: "az_des"
   pay_income_days: 90
-  invitation_valid_days: 14
+  invitation_valid_days: 10
+  allow_invitation_reuse: true
   # TODO[FFS-2629]: Get permission to use the AZ DES logo.
   # logo_path: dta_logo.png
   # logo_square_path: dta_logo_square.png

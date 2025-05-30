@@ -29,7 +29,7 @@ class DataRetentionService
     CbvFlow
       .incomplete
       .unredacted
-      .includes(:cbv_flow_invitation)
+      .includes(:cbv_flow_invitation, :payroll_accounts)
       .find_each do |cbv_flow|
         if cbv_flow.cbv_flow_invitation.present?
           # Redact CbvFlow records (together with their invitations) some period
@@ -40,6 +40,7 @@ class DataRetentionService
           cbv_flow.redact!
           cbv_flow.cbv_flow_invitation.redact!
           cbv_flow.cbv_applicant&.redact!
+          cbv_flow.payroll_accounts.each(&:redact!)
         else
           # Redact standalone CbvFlow records some period after their last
           # update.
@@ -52,6 +53,7 @@ class DataRetentionService
 
           cbv_flow.redact!
           cbv_flow.cbv_applicant&.redact!
+          cbv_flow.payroll_accounts.each(&:redact!)
         end
       end
   end
@@ -60,11 +62,12 @@ class DataRetentionService
     CbvFlow
       .unredacted
       .where("transmitted_at < ?", REDACT_TRANSMITTED_CBV_FLOWS_AFTER.ago)
-      .includes(:cbv_flow_invitation)
+      .includes(:cbv_flow_invitation, :payroll_accounts)
       .find_each do |cbv_flow|
         cbv_flow.redact!
         cbv_flow.cbv_flow_invitation.redact! if cbv_flow.cbv_flow_invitation.present?
         cbv_flow.cbv_applicant&.redact!
+        cbv_flow.payroll_accounts.each(&:redact!)
       end
   end
 
@@ -75,5 +78,6 @@ class DataRetentionService
     applicant.redact!
     applicant.cbv_flow_invitations.map(&:redact!)
     applicant.cbv_flows.map(&:redact!)
+    applicant.cbv_flows.each { |cbv_flow| cbv_flow.payroll_accounts.each(&:redact!) }
   end
 end

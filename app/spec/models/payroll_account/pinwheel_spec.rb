@@ -151,4 +151,12 @@ RSpec.describe PayrollAccount::Pinwheel, type: :model do
       end
     end
   end
+
+  describe "#redact!" do
+    it "updates the redacted_at timestamp" do
+      expect { payroll_account.redact! }
+        .to change { payroll_account.reload.redacted_at }
+        .from(nil).to(within(1.second).of(Time.now))
+    end
+  end
 end
