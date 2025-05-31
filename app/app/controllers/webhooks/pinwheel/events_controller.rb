@@ -64,8 +64,8 @@ class Webhooks::Pinwheel::EventsController < ApplicationController
       report = Aggregators::AggregatorReports::PinwheelReport.new(
         payroll_accounts: [ @payroll_account ],
         pinwheel_service: @pinwheel,
-        from_date: @cbv_flow.cbv_applicant.paystubs_query_begins_at,
-        to_date: @cbv_flow.cbv_applicant.snap_application_date
+        days_to_fetch_for_w2: agency_config[@cbv_flow.client_agency_id].pay_income_days[:w2],
+        days_to_fetch_for_gig: agency_config[@cbv_flow.client_agency_id].pay_income_days[:gig]
       )
       report.fetch
 

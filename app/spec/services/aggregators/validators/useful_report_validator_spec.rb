@@ -2,7 +2,7 @@ require 'rails_helper'
 
 RSpec.describe Aggregators::Validators::UsefulReportValidator do
   let(:report) do
-    Aggregators::AggregatorReports::ArgyleReport.new(argyle_service: nil)
+    Aggregators::AggregatorReports::ArgyleReport.new(argyle_service: nil, days_to_fetch_for_w2: 90, days_to_fetch_for_gig: 90)
   end
   let(:identities) { [] }
   let(:employments) { [] }

@@ -344,6 +344,32 @@ RSpec.describe Webhooks::Argyle::EventsController, type: :controller do
       end
     end
 
+    context "for a client agency with pay_income_days > 90 days" do
+      before do
+        allow(Rails.application.config.client_agencies[cbv_flow.client_agency_id])
+          .to receive(:pay_income_days)
+          .and_return({ w2: 182, gig: 182 })
+
+        process_webhook("accounts.connected")
+        process_webhook("identities.added")
+        process_webhook("gigs.partially_synced")
+        process_webhook("paystubs.partially_synced")
+      end
+
+      it "does not mark the sync completed with only 90 days of data" do
+        payroll_account = PayrollAccount.last
+        expect(payroll_account.synchronization_status).to eq("in_progress")
+      end
+
+      it "marks the sync completed after receiving enough data" do
+        process_webhook("gigs.partially_synced", variant: :six_months)
+        process_webhook("paystubs.partially_synced", variant: :six_months)
+
+        payroll_account = PayrollAccount.last
+        expect(payroll_account.synchronization_status).to eq("succeeded")
+      end
+    end
+
     it 'results in a sync failure after receiving "system_error" on accounts.updated' do
       expect(PayrollAccount.count).to eq(0)
 

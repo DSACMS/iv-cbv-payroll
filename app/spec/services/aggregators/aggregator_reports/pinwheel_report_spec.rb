@@ -5,15 +5,22 @@ RSpec.describe Aggregators::AggregatorReports::PinwheelReport, type: :service do
 
   let(:account) { "03e29160-f7e7-4a28-b2d8-813640e030d3" }
   let(:platform_id) { "fce3eee0-285b-496f-9b36-30e976194736" }
-  let(:from_date) { "2021-01-01" }
-  let(:to_date) { "2021-04-31" }
+  let(:today) { Date.today }
+  let(:days_ago_to_fetch) { 90 }
 
   let!(:payroll_account) do
     create(:payroll_account, :pinwheel_fully_synced, pinwheel_account_id: account)
   end
 
   let(:pinwheel_service) { Aggregators::Sdk::PinwheelService.new(:sandbox) }
-  let(:report) { described_class.new(payroll_accounts: [ payroll_account ], pinwheel_service: pinwheel_service, from_date: from_date, to_date: to_date) }
+  let(:report) do
+    described_class.new(
+      payroll_accounts: [ payroll_account ],
+      pinwheel_service: pinwheel_service,
+      days_to_fetch_for_w2: days_ago_to_fetch,
+      days_to_fetch_for_gig: days_ago_to_fetch
+    )
+  end
 
   let(:identities_json) { pinwheel_load_relative_json_file('request_identity_response.json') }
   let(:incomes_json) { pinwheel_load_relative_json_file('request_income_metadata_response.json') }
@@ -29,10 +36,14 @@ RSpec.describe Aggregators::AggregatorReports::PinwheelReport, type: :service do
     allow(pinwheel_service).to receive(:fetch_identity_api).with(account_id: account).and_return(identities_json)
     allow(pinwheel_service).to receive(:fetch_income_api).with(account_id: account).and_return(incomes_json)
     allow(pinwheel_service).to receive(:fetch_employment_api).with(account_id: account).and_return(employments_json)
-    allow(pinwheel_service).to receive(:fetch_paystubs_api).with(account_id: account, from_pay_date: from_date, to_pay_date: to_date).and_return(paystubs_json)
+    allow(pinwheel_service).to receive(:fetch_paystubs_api).with(account_id: account, from_pay_date: days_ago_to_fetch.days.ago, to_pay_date: today).and_return(paystubs_json)
     allow(pinwheel_service).to receive(:fetch_shifts_api).with(account_id: account).and_return(shifts_json)
     allow(pinwheel_service).to receive(:fetch_account).with(account_id: account).and_return(account_json)
     allow(pinwheel_service).to receive(:fetch_platform).with(platform_id).and_return(platform_json)
+  end
+
+  around do |ex|
+    Timecop.freeze(today, &ex)
   end
 
   describe '#fetch' do
@@ -40,7 +51,7 @@ RSpec.describe Aggregators::AggregatorReports::PinwheelReport, type: :service do
       report.fetch
       expect(pinwheel_service).to have_received(:fetch_identity_api).with(account_id: account).exactly(1).times
       expect(pinwheel_service).to have_received(:fetch_account).with(account_id: account).exactly(1).times
-      expect(pinwheel_service).to have_received(:fetch_paystubs_api).with(account_id: account, from_pay_date: from_date, to_pay_date: to_date).exactly(1).times
+      expect(pinwheel_service).to have_received(:fetch_paystubs_api).with(account_id: account, from_pay_date: days_ago_to_fetch.days.ago, to_pay_date: today).exactly(1).times
       expect(pinwheel_service).to have_received(:fetch_employment_api).with(account_id: account).exactly(1).times
       expect(pinwheel_service).to have_received(:fetch_income_api).with(account_id: account).exactly(1).times
       expect(pinwheel_service).to have_received(:fetch_shifts_api).with(account_id: account).exactly(1).times

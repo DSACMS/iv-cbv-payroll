@@ -1,8 +1,13 @@
 FactoryBot.define do
   factory :pinwheel_report, class: 'Aggregators::AggregatorReports::PinwheelReport' do
-    transient do
-      pinwheel_service { Aggregators::Sdk::PinwheelService.new(:sandbox) }
+    initialize_with do
+      Aggregators::AggregatorReports::PinwheelReport.new(
+        pinwheel_service: nil,
+        days_to_fetch_for_w2: 90,
+        days_to_fetch_for_gig: 90
+      )
     end
+
     identities do
       [
         Aggregators::ResponseObjects::Identity.new(
@@ -72,8 +77,6 @@ FactoryBot.define do
           )
       ])
     ] }
-    from_date { "2021-09-01" }
-    to_date { "2021-09-30" }
     payroll_accounts { [] }
 
     trait :no_paystubs do
@@ -86,9 +89,14 @@ FactoryBot.define do
       ] }
     end
   end
+
   factory :argyle_report, class: 'Aggregators::AggregatorReports::ArgyleReport' do
-    transient do
-      argyle_service { Aggregators::Sdk::ArgyleService.new(:sandbox) }
+    initialize_with do
+      Aggregators::AggregatorReports::ArgyleReport.new(
+        argyle_service: nil,
+        days_to_fetch_for_w2: 90,
+        days_to_fetch_for_gig: 90
+      )
     end
 
     identities { [
@@ -156,8 +164,6 @@ FactoryBot.define do
           )
       ])
     ] }
-    from_date { "2021-08-01" }
-    to_date { "2021-10-30" }
     payroll_accounts { [] }
 
     trait :no_paystubs do

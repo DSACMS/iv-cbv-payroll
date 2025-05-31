@@ -20,12 +20,12 @@ module Aggregators::Webhooks
         job: %w[identity income]
       },
       "paystubs.partially_synced" => {
-        status: :success,
+        status: :unknown,
         type: :partial,
         job: %w[paystubs employment]
       },
       "gigs.partially_synced" => {
-        status: :success,
+        status: :unknown,
         type: :partial,
         job: %w[gigs]
       },

@@ -2,8 +2,9 @@ require 'rails_helper'
 
 RSpec.describe Aggregators::AggregatorReports::AggregatorReport, type: :service do
   describe '#total_gross_income' do
+    let(:report) { build(:pinwheel_report) }
+
     it 'handles nil gross_pay_amount values' do
-      report = Aggregators::AggregatorReports::AggregatorReport.new
       report.paystubs = [
         Aggregators::ResponseObjects::Paystub.new(gross_pay_amount: 100),
         Aggregators::ResponseObjects::Paystub.new(gross_pay_amount: nil)

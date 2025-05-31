@@ -43,7 +43,11 @@ module Aggregators::AggregatorReports
     end
 
     def fetch_paystubs(account_id:)
-      json = @pinwheel_service.fetch_paystubs_api(account_id: account_id, from_pay_date: @from_date, to_pay_date: @to_date)
+      json = @pinwheel_service.fetch_paystubs_api(
+        account_id: account_id,
+        from_pay_date: from_date,
+        to_pay_date: to_date
+      )
       json["data"].map { |paystub_json| Aggregators::ResponseObjects::Paystub.from_pinwheel(paystub_json) }
     end
 
@@ -55,6 +59,12 @@ module Aggregators::AggregatorReports
     def fetch_employment(account_id:)
       platform_body = fetch_platform(account_id: account_id)
       json = @pinwheel_service.fetch_employment_api(account_id: account_id)
+
+      # Override the date range when fetching a gig job.
+      if Aggregators::FormatMethods::Pinwheel.employment_type(json.dig("data", "employer_name")) == :gig
+        @fetched_days = @days_to_fetch_for_gig
+      end
+
       Aggregators::ResponseObjects::Employment.from_pinwheel(json["data"], platform_body)
     end
 

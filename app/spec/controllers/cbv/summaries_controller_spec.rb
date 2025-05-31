@@ -46,7 +46,7 @@ RSpec.describe Cbv::SummariesController do
   end
 
   around do |ex|
-    Timecop.freeze(&ex)
+    Timecop.freeze(current_time, &ex)
   end
 
   describe "#show" do
@@ -71,7 +71,6 @@ RSpec.describe Cbv::SummariesController do
           doc = Nokogiri::HTML(response.body)
 
           expect(doc.css("title").text).to include("Review your income report")
-          expect(doc.at_xpath("//*[@data-testid=\"summary-description\"]").content).to include("from March 20, 2024 to June 18, 2024")
           expect(doc.at_xpath("//*[@data-testid=\"paystub-table-caption\"]").content).to include("Employer 1: Acme Corporation")
           expect(doc.at_xpath("//*[@data-testid=\"paystub-total-income\"]").content).to include("$4,807.20")
           expect(doc.at_xpath("//tr[@data-testid=\"paystub-row\"]").count).to eq(1)
@@ -90,7 +89,6 @@ RSpec.describe Cbv::SummariesController do
           doc = Nokogiri::HTML(response.body)
           expect(response).to be_successful
           expect(doc.css("title").text).to include("Review your income report")
-          expect(doc.at_xpath("//*[@data-testid=\"summary-description\"]").content).to include("from March 20, 2024 to June 18, 2024")
           expect(doc.at_xpath("//*[@data-testid=\"paystub-table-caption\"]").content).to include("Employer 1: Acme Corporation")
           expect(doc.at_xpath("//*[@data-testid=\"paystub-total-income\"]").content).to include("$9,614.40")
           expect(doc.at_xpath("//*[@data-testid=\"paystub-table\"]").css("td").count).to eq(2)

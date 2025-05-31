@@ -54,7 +54,7 @@ FactoryBot.define do
               }
             }
           when "paystubs.partially_synced"
-            days_synced = evaluator.variant == :six_months ? 182 : 30
+            days_synced = evaluator.variant == :six_months ? 182 : 90
 
             {
               "event" => evaluator.event_type,
@@ -81,7 +81,7 @@ FactoryBot.define do
               }
             }
           when "gigs.partially_synced"
-            days_synced = evaluator.variant == :six_months ? 182 : 30
+            days_synced = evaluator.variant == :six_months ? 182 : 90
 
             {
               "event" => evaluator.event_type,

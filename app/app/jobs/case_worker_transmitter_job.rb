@@ -123,8 +123,6 @@ class CaseWorkerTransmitterJob < ApplicationJob
       beacon_userid: cbv_flow.cbv_applicant.beacon_id,
       app_date: cbv_flow.cbv_applicant.snap_application_date.strftime("%m/%d/%Y"),
       report_date_created: payroll_account.created_at.strftime("%m/%d/%Y"),
-      report_date_start: cbv_flow.cbv_applicant.paystubs_query_begins_at.strftime("%m/%d/%Y"),
-      report_date_end: cbv_flow.cbv_applicant.snap_application_date.strftime("%m/%d/%Y"),
       confirmation_code: cbv_flow.confirmation_code,
       consent_timestamp: cbv_flow.consented_to_authorized_use_at.strftime("%m/%d/%Y %H:%M:%S"),
       pdf_filename: "#{@file_name}.pdf",

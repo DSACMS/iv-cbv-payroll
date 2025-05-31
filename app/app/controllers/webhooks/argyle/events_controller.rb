@@ -111,19 +111,34 @@ class Webhooks::Argyle::EventsController < ApplicationController
     update_synchronization_page(payroll_account)
   end
 
-  def process_webhook_event(webhook_event)
-    payroll_account = webhook_event.payroll_account
+  def process_partially_synced_event(webhook_event)
+    # Check if this webhook signifies a completed sync (i.e. that we have
+    # fetched at least `pay_income_days` of data). If so, update the webhook to
+    # have a "success" outcome.
+    client_agency_config = agency_config[@cbv_flow.client_agency_id]
+    days_synced = params.dig("data", "days_synced")
+    if days_synced.to_i >= client_agency_config.pay_income_days.values.max
+      webhook_event.update(event_outcome: "success")
+      webhook_event.reload # force its payroll_account to reload webhook events
+    end
+  end
 
+  def process_webhook_event(webhook_event)
     if webhook_event.event_name == "accounts.updated"
       process_accounts_updated_event(webhook_event)
-    elsif payroll_account.has_fully_synced?
+    elsif webhook_event.event_name == "gigs.partially_synced" || webhook_event.event_name == "paystubs.partially_synced"
+      process_partially_synced_event(webhook_event)
+    end
+
+    payroll_account = webhook_event.payroll_account
+    if payroll_account.has_fully_synced?
       return if payroll_account.sync_succeeded? || payroll_account.sync_failed?
 
       report = Aggregators::AggregatorReports::ArgyleReport.new(
         payroll_accounts: [ payroll_account ],
         argyle_service: argyle_for(@cbv_flow),
-        from_date: @cbv_flow.cbv_applicant.paystubs_query_begins_at,
-        to_date: @cbv_flow.cbv_applicant.snap_application_date
+        days_to_fetch_for_w2: agency_config[@cbv_flow.client_agency_id].pay_income_days[:w2],
+        days_to_fetch_for_gig: agency_config[@cbv_flow.client_agency_id].pay_income_days[:gig]
       )
       report.fetch
 
