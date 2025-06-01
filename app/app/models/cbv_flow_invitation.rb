@@ -57,7 +57,7 @@ class CbvFlowInvitation < ApplicationRecord
     cbv_flows.any?(&:complete?)
   end
 
-  def to_url(*options)
+  def to_url(**options)
     Rails.application.routes.url_helpers.cbv_flow_entry_url({ token: auth_token, locale: language, **options }.compact)
   end
 
