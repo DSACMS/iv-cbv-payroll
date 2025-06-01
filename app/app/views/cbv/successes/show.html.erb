@@ -17,8 +17,8 @@
     <li>
       <strong><%= t(".whats_next_1_title") %></strong>
       <ul style="list-style-type: disc;">
-        <li><%= t(".whats_next_1_li_1", agency_acronym: current_agency.agency_short_name) %></li>
-        <li><%= t(".whats_next_1_li_2", agency_acronym: current_agency.agency_short_name) %></li>
+        <li><%= t(".whats_next_1_li_1", agency_acronym: current_agency.agency_short_name).html_safe %></li>
+        <li><%= t(".whats_next_1_li_2", agency_acronym: current_agency.agency_short_name, agency_website: current_agency.agency_contact_website).html_safe %></li>
       </ul>
     </li>
   </ul>
@@ -27,7 +27,7 @@
     <li>
       <strong><%= t(".whats_next_2_title") %></strong>
       <ul style="list-style-type: disc;">
-        <li><%= t(".whats_next_2_li_1", agency_feedback_form: link_to("our short feedback form", current_agency.caseworker_feedback_form, target: "_blank", rel: "noopener noreferrer")).html_safe %></li>
+        <li><%= t(".whats_next_2_li_1", agency_feedback_form: current_agency.caseworker_feedback_form).html_safe %></li>
       </ul>
     </li>
   </ul>
