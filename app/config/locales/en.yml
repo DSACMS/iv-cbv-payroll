@@ -478,6 +478,7 @@ en:
         copy_link: Copy link
         download: Download a copy of the report
         header: Your income report has been successfully shared with %{agency_acronym}
+        invitation_link_label: Invitation link
         share_invitation_link_content: Share this link with all household members named on your application so they can report their income.
         share_invitation_link_title: Does anyone else in your household earn income?
         whats_next: What's next?

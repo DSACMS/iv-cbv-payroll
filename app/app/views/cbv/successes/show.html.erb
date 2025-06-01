@@ -38,7 +38,7 @@
 
     <div class="display-flex flex-align-center" data-controller="copy-link">
       <%= form_with(builder: UswdsFormBuilder, html: { style: "display: contents;" }) do |f| %>
-        <%= f.label :invitation_link, "Invitation link", class: "usa-sr-only" %>
+        <%= f.label :invitation_link, t(".invitation_link_label"), class: "usa-sr-only" %>
         <input value="<%= @invitation_link %>" autocomplete="off" readonly class="usa-input" style="flex: 1;" data-copy-link-target="input" type="text" name="invitation_link" id="invitation_link">
         <%# default button variant %>
         <%= f.button_with_icon(t(".copy_link"),

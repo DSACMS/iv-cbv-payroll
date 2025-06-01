@@ -32,7 +32,7 @@ RSpec.describe Cbv::SuccessesController do
         expect(response.body).to have_selector('button[data-copy-link-target="copyLinkButton"]')
       end
 
-      describe "invitation_link" do
+      describe "#invitation_link" do
         context "in production environment" do
           it "uses agency production domain" do
             allow(Rails.env).to receive(:production?).and_return(true)

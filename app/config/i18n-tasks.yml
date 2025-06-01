@@ -274,6 +274,7 @@ ignore_missing:
     - "cbv.successes.show.copied_link"
     - "cbv.successes.show.share_invitation_link_content"
     - "cbv.successes.show.share_invitation_link_title"
+    - "cbv.successes.show.invitation_link_label"
     - "cbv.successes.show.whats_next"
     - "cbv.successes.show.whats_next_1_title"
     - "cbv.successes.show.whats_next_1_li_1"

@@ -9,16 +9,12 @@ class Cbv::SuccessesController < Cbv::BaseController
   private
 
   def invitation_link
-    domain = Rails.env.production? ? current_agency.agency_production_domain : current_agency.agency_demo_domain
+    host = Rails.env.production? ? current_agency.agency_production_domain : current_agency.agency_demo_domain
 
-    if %w[az_des sandbox].include?(@cbv_flow.client_agency_id)
-      if (invitation_link = @cbv_flow.cbv_flow_invitation&.to_url)
-        URI.parse(invitation_link).tap { |uri| uri.host = domain; uri.scheme = "https"; uri.port = nil }.to_s
-      else
-        "https://#{domain}"
-      end
+    if @cbv_flow.cbv_flow_invitation.present?
+      @cbv_flow.cbv_flow_invitation.to_url(host: host)
     else # generate a generic link
-      "https://#{domain}/en/cbv/links/#{@cbv_flow.client_agency_id}"
+      "https://#{host}/en/cbv/links/#{@cbv_flow.client_agency_id}"
     end
   end
 

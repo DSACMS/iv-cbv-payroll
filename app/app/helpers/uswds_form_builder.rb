@@ -201,7 +201,6 @@ class UswdsFormBuilder < ActionView::Helpers::FormBuilder
     button_classes = [ "usa-button" ]
 
     icon_name = options.delete(:icon)
-    icon_position = options.delete(:icon_position) || :leading
     variant = options.delete(:variant)
     button_type = options.delete(:type) || "button"
     custom_class = options.delete(:class)
@@ -223,7 +222,7 @@ class UswdsFormBuilder < ActionView::Helpers::FormBuilder
     if icon_name
       icon_sprite_path = @template.asset_path("@uswds/uswds/dist/img/sprite.svg")
       icon_path = "#{icon_sprite_path}##{icon_name}"
-      icon_wrapper_class = "usa-button__icon--#{icon_position}"
+      icon_wrapper_class = "usa-button__icon--leading"
 
       icon_svg = @template.content_tag(:svg, class: "usa-icon", "aria-hidden": true, focusable: false, role: "img") do
         @template.tag.use("", href: icon_path)
@@ -231,15 +230,8 @@ class UswdsFormBuilder < ActionView::Helpers::FormBuilder
 
       text_span = @template.content_tag(:span, value, class: "usa-button__text")
 
-      if icon_position == :leading
-        button_content_elements << @template.content_tag(:span, icon_svg, class: icon_wrapper_class)
-        button_content_elements << text_span
-      else
-        button_content_elements << text_span
-        button_content_elements << @template.content_tag(:span, icon_svg, class: icon_wrapper_class)
-      end
-    else
-      button_content_elements << value
+      button_content_elements << @template.content_tag(:span, icon_svg, class: icon_wrapper_class)
+      button_content_elements << text_span
     end
 
     @template.button_tag(button_content_elements.join.html_safe, options)
