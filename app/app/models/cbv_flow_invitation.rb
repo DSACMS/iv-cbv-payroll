@@ -57,8 +57,8 @@ class CbvFlowInvitation < ApplicationRecord
     cbv_flows.any?(&:complete?)
   end
 
-  def to_url(host: nil)
-    Rails.application.routes.url_helpers.cbv_flow_entry_url({ token: auth_token, locale: language, host: host, protocol: "https" }.compact)
+  def to_url(*options)
+    Rails.application.routes.url_helpers.cbv_flow_entry_url({ token: auth_token, locale: language, **options }.compact)
   end
 
   def normalize_language

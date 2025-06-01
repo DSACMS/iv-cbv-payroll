@@ -4,13 +4,8 @@ import { trackUserAction } from "../utilities/api"
 export default class extends Controller {
   static targets = ["copyLinkButton", "input", "successButton"]
 
-  connect() {
-    if(this.hasCopyLinkButtonTarget){
-        this.copyLinkButtonTarget.style.marginTop = "0"
-    }
-    if(this.hasSuccessButtonTarget) {
-      this.successButtonTarget.style.marginTop = "0"
-    }
+  disconnect() {
+    if (this.successTimer) clearTimeout(this.successTimer);
   }
 
   copy() {
@@ -32,7 +27,10 @@ export default class extends Controller {
       this.copyLinkButtonTarget.classList.add('invisible')
     }
   
-    setTimeout(() => {
+    // Clear any existing timeout before setting a new one
+    if (this.successTimer) clearTimeout(this.successTimer);
+    
+    this.successTimer = setTimeout(() => {
       if(this.hasSuccessButtonTarget) {
         this.successButtonTarget.classList.add('invisible')
       }
