@@ -5,6 +5,7 @@ RSpec.describe Cbv::SuccessesController do
 
   describe "#show" do
     let(:cbv_flow) { create(:cbv_flow, :invited, confirmation_code: "NYC12345") }
+    let(:cbv_flow_without_invitation) { create(:cbv_flow, confirmation_code: "NYC12345") }
     let(:agency_config) { Rails.application.config.client_agencies["sandbox"] }
 
     before do
@@ -53,16 +54,16 @@ RSpec.describe Cbv::SuccessesController do
           end
         end
 
-        context "when the agency does not use a tokenized link" do
+        context "when the cbv_flow originates from a generic link" do
           before do
-            cbv_flow.update(client_agency_id: "la_ldh")
+            session[:cbv_flow_id] = cbv_flow_without_invitation.id
           end
 
           it "generates a generic link" do
             allow(Rails.env).to receive(:production?).and_return(false)
             get :show
 
-            expected_url = "https://la-verify-demo.navapbc.cloud/en/cbv/links/la_ldh"
+            expected_url = "https://sandbox-verify-demo.navapbc.cloud/en/cbv/links/sandbox"
             expect(response.body).to include(expected_url)
           end
         end
