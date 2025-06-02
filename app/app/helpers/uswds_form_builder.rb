@@ -205,7 +205,7 @@ class UswdsFormBuilder < ActionView::Helpers::FormBuilder
 
     local_options = options.dup
 
-    button_classes = ["usa-button"]
+    button_classes = [ "usa-button" ]
 
     icon_name = local_options.delete(:icon)
     variant = local_options.delete(:variant)
@@ -233,10 +233,10 @@ class UswdsFormBuilder < ActionView::Helpers::FormBuilder
       icon_svg_tag = @template.content_tag(:svg, class: "usa-icon", "aria-hidden": true, focusable: false, role: "img") do
         @template.tag.use("", href: icon_path)
       end
-      
+
       icon_span_html = @template.content_tag(:span, icon_svg_tag, class: "usa-button__icon--leading")
       text_span_html = @template.content_tag(:span, value, class: "usa-button__text")
-      
+
       content_parts << icon_span_html
       content_parts << text_span_html
     else
@@ -252,7 +252,7 @@ class UswdsFormBuilder < ActionView::Helpers::FormBuilder
     actual_url = local_options.delete(:url)
     raise ArgumentError, "options hash must include :url for link_with_icon" if actual_url.nil?
 
-    button_classes = ["usa-button"]
+    button_classes = [ "usa-button" ]
 
     icon_name = local_options.delete(:icon)
     variant = local_options.delete(:variant)
@@ -278,10 +278,10 @@ class UswdsFormBuilder < ActionView::Helpers::FormBuilder
       icon_svg_tag = @template.content_tag(:svg, class: "usa-icon", "aria-hidden": true, focusable: false, role: "img") do
         @template.tag.use("", href: icon_path)
       end
-      
+
       icon_span_html = @template.content_tag(:span, icon_svg_tag, class: "usa-button__icon--leading")
       text_span_html = @template.content_tag(:span, value_text, class: "usa-button__text")
-      
+
       content_parts << icon_span_html
       content_parts << text_span_html
     else
