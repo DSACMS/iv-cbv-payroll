@@ -215,7 +215,10 @@ input#invitation_link{
   }
 }
 
-.usa-button--success,
-.usa-button--success:hover {
-  background-color: #00A91C;
+.usa-button--success {
+  background-color: color("green-cool-40v");
+  
+  &:hover {
+    background-color: color("green-cool-40v");
+  }
 }
