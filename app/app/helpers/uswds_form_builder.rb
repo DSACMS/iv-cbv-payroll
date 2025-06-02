@@ -198,12 +198,19 @@ class UswdsFormBuilder < ActionView::Helpers::FormBuilder
   end
 
   def button_with_icon(value = "Button", options = {})
-    button_classes = [ "usa-button" ]
+    if value.is_a?(Hash) && options.empty?
+      options = value
+      value = "Button"
+    end
 
-    icon_name = options.delete(:icon)
-    variant = options.delete(:variant)
-    button_type = options.delete(:type) || "button"
-    custom_class = options.delete(:class)
+    local_options = options.dup
+
+    button_classes = ["usa-button"]
+
+    icon_name = local_options.delete(:icon)
+    variant = local_options.delete(:variant)
+    button_type = local_options.delete(:type) || "button"
+    custom_class = local_options.delete(:class)
 
     if variant
       variant = Array(variant)
@@ -214,27 +221,74 @@ class UswdsFormBuilder < ActionView::Helpers::FormBuilder
 
     all_classes = button_classes.join(" ")
     all_classes += " #{custom_class}" if custom_class
-    options[:class] = all_classes
-    options[:type] = button_type
+    local_options[:class] = all_classes
+    local_options[:type] = button_type
 
-    button_content_elements = []
+    content_parts = []
 
     if icon_name
       icon_sprite_path = @template.asset_path("@uswds/uswds/dist/img/sprite.svg")
       icon_path = "#{icon_sprite_path}##{icon_name}"
-      icon_wrapper_class = "usa-button__icon--leading"
 
-      icon_svg = @template.content_tag(:svg, class: "usa-icon", "aria-hidden": true, focusable: false, role: "img") do
+      icon_svg_tag = @template.content_tag(:svg, class: "usa-icon", "aria-hidden": true, focusable: false, role: "img") do
         @template.tag.use("", href: icon_path)
       end
-
-      text_span = @template.content_tag(:span, value, class: "usa-button__text")
-
-      button_content_elements << @template.content_tag(:span, icon_svg, class: icon_wrapper_class)
-      button_content_elements << text_span
+      
+      icon_span_html = @template.content_tag(:span, icon_svg_tag, class: "usa-button__icon--leading")
+      text_span_html = @template.content_tag(:span, value, class: "usa-button__text")
+      
+      content_parts << icon_span_html
+      content_parts << text_span_html
+    else
+      content_parts << value
     end
 
-    @template.button_tag(button_content_elements.join.html_safe, options)
+    @template.button_tag(content_parts.join.html_safe, local_options)
+  end
+
+  def link_with_icon(value_text, options = {})
+    local_options = options.dup
+
+    actual_url = local_options.delete(:url)
+    raise ArgumentError, "options hash must include :url for link_with_icon" if actual_url.nil?
+
+    button_classes = ["usa-button"]
+
+    icon_name = local_options.delete(:icon)
+    variant = local_options.delete(:variant)
+    custom_class = local_options.delete(:class)
+
+    if variant
+      variant = Array(variant)
+      variant.each do |v|
+        button_classes << "usa-button--#{v.to_s.dasherize}"
+      end
+    end
+
+    all_classes = button_classes.join(" ")
+    all_classes += " #{custom_class}" if custom_class
+    local_options[:class] = all_classes
+
+    content_parts = []
+
+    if icon_name
+      icon_sprite_path = @template.asset_path("@uswds/uswds/dist/img/sprite.svg")
+      icon_path = "#{icon_sprite_path}##{icon_name}"
+
+      icon_svg_tag = @template.content_tag(:svg, class: "usa-icon", "aria-hidden": true, focusable: false, role: "img") do
+        @template.tag.use("", href: icon_path)
+      end
+      
+      icon_span_html = @template.content_tag(:span, icon_svg_tag, class: "usa-button__icon--leading")
+      text_span_html = @template.content_tag(:span, value_text, class: "usa-button__text")
+      
+      content_parts << icon_span_html
+      content_parts << text_span_html
+    else
+      content_parts << value_text
+    end
+
+    @template.link_to(content_parts.join.html_safe, actual_url, local_options)
   end
 
   private

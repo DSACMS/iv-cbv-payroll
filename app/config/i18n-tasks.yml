@@ -272,6 +272,7 @@ ignore_missing:
     # AZ (FFS-XXXX)
     - "cbv.successes.show.copy_link"
     - "cbv.successes.show.copied_link"
+    - "cbv.successes.show.confirmation_code_html"
     - "cbv.successes.show.share_invitation_link_content"
     - "cbv.successes.show.share_invitation_link_title"
     - "cbv.successes.show.invitation_link_label"

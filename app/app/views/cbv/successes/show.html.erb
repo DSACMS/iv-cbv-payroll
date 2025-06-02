@@ -5,15 +5,23 @@
 
   <div class="usa-prose">
     <p><%= t(".confirmation_code_html", confirmation_code: @cbv_flow.confirmation_code) %></p>
-
-    <%= link_to cbv_flow_submit_path(format: "pdf"), target: "_blank", rel: "noopener noreferrer", class: "usa-button usa-button--primary" do %>
-      <%= t(".download") %>
+    <%= form_with(builder: UswdsFormBuilder, html: { style: "display: contents;" }) do |f| %>
+      <%= f.link_with_icon(t(".download"),
+                             icon: "file_download",
+                             icon_position: :leading,
+                             variant: :primary,
+                             type: "link",
+                             url: cbv_flow_submit_path(format: "pdf"),
+                             target: "_blank",
+                             rel: "noopener noreferrer"
+                             ) %>
     <% end %>
+
   </div>
 
   <h2><%= t(".whats_next") %></h2>
 
-  <ul>
+  <ul class="line-height-sans-5">
     <li>
       <strong><%= t(".whats_next_1_title") %></strong>
       <ul style="list-style-type: disc;">
@@ -23,7 +31,7 @@
     </li>
   </ul>
 
-  <ul>
+  <ul class="line-height-sans-5">
     <li>
       <strong><%= t(".whats_next_2_title") %></strong>
       <ul style="list-style-type: disc;">

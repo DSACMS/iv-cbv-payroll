@@ -247,7 +247,6 @@ es:
         consent_to_authorize_warning: A fin de compartir su informe, marque la casilla de consentimiento legal.
     successes:
       show:
-        confirmation_code_html: "<strong>Código de confirmación </strong>: %{confirmation_code}"
         download: Descargue una copia del informe
         header: Su informe de ingresos ha sido compartido de forma exitosa con %{agency_acronym}
     summaries:
