@@ -4,8 +4,14 @@ RSpec.describe Aggregators::AggregatorReports::CompositeReport, type: :service d
   let(:pinwheel_report) { build(:pinwheel_report, :with_pinwheel_account) }
   let(:argyle_report) { build(:argyle_report, :with_argyle_account) }
 
-  describe '#init' do
-    subject { Aggregators::AggregatorReports::CompositeReport.new([ pinwheel_report, argyle_report ]) }
+  describe '#initialize' do
+    subject do
+      Aggregators::AggregatorReports::CompositeReport.new(
+        [ pinwheel_report, argyle_report ],
+        days_to_fetch_for_w2: 90,
+        days_to_fetch_for_gig: 90
+      )
+    end
 
     it 'merges identities from both reports' do
       expect(subject.identities.length).to be(2)
@@ -31,14 +37,6 @@ RSpec.describe Aggregators::AggregatorReports::CompositeReport, type: :service d
       expect(subject.paystubs).to all(be_a(Aggregators::ResponseObjects::Paystub))
       expect(subject.paystubs.filter { |d| d.account_id == "account1" }.length).to be(2)
       expect(subject.paystubs.filter { |d| d.account_id == "argyle_report1" }.length).to be(2)
-    end
-
-    it 'sets the earliest from_date' do
-      expect(subject.from_date).to eq(Date.parse("2021-08-01"))
-    end
-
-    it 'sets the latest to_date' do
-      expect(subject.to_date).to eq(Date.parse("2021-10-30"))
     end
 
     it 'sets has_fetched to true' do

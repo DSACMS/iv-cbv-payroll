@@ -5,23 +5,32 @@
 </h1>
 
 <div class="usa-prose">
-  <p><%= agency_translation(".subheader", start_date: format_date(@aggregator_report.from_date), end_date: format_date(@aggregator_report.to_date), agency_acronym: current_agency.agency_short_name) %></p>
+  <p>
+    <%= t(".subheader",
+        start_date: format_date(@aggregator_report.from_date),
+        end_date: format_date(@aggregator_report.to_date),
+        agency_acronym: agency_translation("shared.agency_acronym"),
+        report_data_range: report_data_range(@aggregator_report),
+        benefit: agency_translation("shared.benefit"),
+        reporting_purpose: agency_translation("shared.reporting_purpose")
+      ) %>
+  </p>
 </div>
 
 <% if @payroll_account_report.paystubs.any? %>
-<h2><%= t(".total_gross_income", amount: format_money(gross_pay)) %></h2>
-<div class="usa-prose">
-  <p><%= t(".total_gross_description") %></p>
-</div>
+  <h2><%= t(".total_gross_income", amount: format_money(gross_pay), report_data_range: report_data_range(@aggregator_report)) %></h2>
+  <div class="usa-prose">
+    <p><%= t(".total_gross_description") %></p>
+  </div>
 <% else %>
-<h2 class="site-preview-heading">
-  <%= t(".none_found") %>
-</h2>
-<div class="usa-prose">
-  <p>
-    <%= t(".none_found_description") %>
-  </p>
-</div>
+  <h2 class="site-preview-heading">
+    <%= t(".none_found", report_data_range: report_data_range(@aggregator_report)) %>
+  </h2>
+  <div class="usa-prose">
+    <p>
+      <%= t(".none_found_description", report_data_range: report_data_range(@aggregator_report)) %>
+    </p>
+  </div>
 <% end %>
 
 <%= render(TableComponent.new) do |table| %>
@@ -61,7 +70,7 @@
       <% end %>
     <% end %>
   <% else %>
-    <%= table.with_row(t(".none_found")) %>
+    <%= table.with_row(t(".none_found", report_data_range: report_data_range(@aggregator_report))) %>
   <% end %>
 <% end %>
 

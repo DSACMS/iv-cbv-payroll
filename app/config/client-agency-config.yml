@@ -21,7 +21,9 @@
     tenant_id:     <%= ENV["AZURE_NYC_DSS_TENANT_ID"] %>
     scope: "openid"
     name: "nyc_dss"
-  pay_income_days: 90
+  pay_income_days:
+    w2: 90
+    gig: 90
   invitation_valid_days: 14
   weekly_report:
     recipient: <%= ENV['NYC_HRA_EMAIL'] %>
@@ -49,7 +51,9 @@
     scope: "openid"
     name: "ma_dta"
   authorized_emails: <%= ENV["MA_DTA_ALLOWED_CASEWORKER_EMAILS"] %>
-  pay_income_days: 90
+  pay_income_days:
+    w2: 90
+    gig: 90
   invitation_valid_days: 14
   logo_path: dta_logo.png
   logo_square_path: dta_logo_square.png
@@ -68,22 +72,22 @@
     environment: <%= ENV["AZ_DES_PINWHEEL_ENVIRONMENT"] %>
   argyle:
     environment: <%= ENV["AZ_DES_ARGYLE_ENVIRONMENT"] %>
-  # TODO[FFS-2628]: This will be SFTP:
   transmission_method: sftp
   transmission_method_configuration:
     user: <%= ENV['AZ_DES_SFTP_USER'] %>
     password: <%= ENV['AZ_DES_SFTP_PASSWORD'] %>
     url: <%= ENV['AZ_DES_SFTP_URL'] %>
     sftp_directory: <%= ENV['AZ_DES_SFTP_DIRECTORY'] %>
-  # TODO: Disable staff portal before pilot launch
-  staff_portal_enabled: true
+  staff_portal_enabled: false
   sso:
     client_id:     <%= ENV["AZURE_SANDBOX_CLIENT_ID"] %>
     client_secret: <%= ENV["AZURE_SANDBOX_CLIENT_SECRET"] %>
     tenant_id:     <%= ENV["AZURE_SANDBOX_TENANT_ID"] %>
     scope: "openid"
     name: "az_des"
-  pay_income_days: 90
+  pay_income_days:
+    w2: 90
+    gig: 182
   invitation_valid_days: 10
   allow_invitation_reuse: true
   # TODO[FFS-2629]: Get permission to use the AZ DES logo.
@@ -115,7 +119,9 @@
   #   tenant_id:     <%= ENV["AZURE_LA_LDH_TENANT_ID"] %>
   #   scope: "openid"
   #   name: "la_ldh"
-  pay_income_days: 90
+  pay_income_days:
+    w2: 90
+    gig: 90
   invitation_valid_days: 14
   weekly_report:
     recipient: <%= ENV['LA_LDH_WEEKLY_REPORT_RECIPIENTS'] %>
@@ -146,7 +152,9 @@
     tenant_id:     <%= ENV["AZURE_SANDBOX_TENANT_ID"] %>
     scope: "openid"
     name: "sandbox"
-  pay_income_days: 90
+  pay_income_days:
+    w2: 90
+    gig: 90
   invitation_valid_days: 14
   allow_invitation_reuse: true
   weekly_report:

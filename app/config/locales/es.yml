@@ -83,13 +83,13 @@ es:
         answer_yes_bullet_3: Su trabajo se basa en aplicaciones (Uber, DoorDash, Lyft, Instacart, etc.)
         answer_yes_header_html: 'Responda que SÍ si <em>cualquiera</em> de las siguientes afirmaciones son ciertas sobre su trabajo actual o reciente:'
         continue: Continuar
-        criteria_disclaimer: 'Nota: Si ha tenido otros trabajos en los últimos %{pay_income_days} días que no cumplen estos criterios, es posible que tenga que presentar información de ese ingreso por separado.'
+        criteria_disclaimer: 'Nota: Si ha tenido otros trabajos en los últimos 90 días que no cumplen estos criterios, es posible que tenga que presentar información de ese ingreso por separado.'
         header: "¿Tiene otro trabajo que declarar?"
         learn_more_link_html:
           la_ldh: Obtenga más información en <a href="%{agency_url}" target="_blank" rel="noopener noreferer">el sitio web de LDH</a>.
           sandbox: Obtenga más información en <a href="https://www.mass.gov/guides/how-to-contact-dta" target="_blank" rel="noopener noreferrer">el sitio web de CBV Test Agency</a>.
         no_radio: No, no tengo otro trabajo que cumpla con los criterios
-        subheader: Por favor añada los otros trabajos que haya tenido en los últimos %{pay_income_days} días, incluso si ya no está en ese trabajo.
+        subheader: Por favor añada los otros trabajos que haya tenido en los últimos 90 días, incluso si ya no está en ese trabajo.
         yes_radio: Sí, tengo otro trabajo que cumpla con los criterios
     applicant_informations:
       sandbox:
@@ -188,15 +188,12 @@ es:
         employment_start_date: Fecha de inicio del empleo
         employment_status: Estatus del empleo
         frequency_unknown: Frecuencia desconocida
-        header: Su información de pago de %{employer_name}
-        header_no_employer_name: Su información de pago por parte de su empleador
         hourly_rate: Monto de compensación
         hours:
           one: "%{count} hora"
           other: "%{count} horas"
         hours_paid: "%{category}: Horas pagadas"
-        none_found: No se encontraron pagos.
-        none_found_description: Esto usualmente ocurre cuando usted no ha recibido ingresos por este trabajo en los últimos 90 días. Si cree que esto es un error, agregue un comentario en la casilla de comentarios adicionales. De lo contrario, continúe en la página siguiente.
+        none_found_description: Esto usualmente ocurre cuando usted no ha recibido ingresos por este trabajo en los últimos %{report_data_range}. Si cree que esto es un error, agregue un comentario en la casilla de comentarios adicionales. De lo contrario, continúe en la página siguiente.
         pay_date: 'Fecha de pago: %{pay_date}'
         pay_gross: Pago antes de impuestos (bruto)
         pay_gross_ytd: Remuneración bruta desde el inicio del año a la fecha (YTD, por sus siglas en inglés)
@@ -205,10 +202,8 @@ es:
         pay_period_value: "%{start_date} al %{end_date}"
         payment_hours: "%{amount} horas"
         payments_and_deductions_table_header: Pagos y deducciones
-        subheader:
-          sandbox: Hemos recopilado sus registros de pago de los últimos 90 días, del %{start_date} al %{end_date}. Si falta información o esta es inexacta, añada un comentario para %{agency_acronym}. Esta información se incluirá en su informe de ingresos.
         total_gross_description: Estos son sus ingresos brutos totales provenientes de su trabajo, antes del pago de impuestos, beneficios y deducciones que se restaron de su cheque de pago.
-        total_gross_income: 'Ingresos totales de los últimos 90 días, antes de impuestos: %{amount}'
+        total_gross_income: 'Ingresos totales de los últimos %{report_data_range}, antes de impuestos: %{amount}'
         unknown: Desconocido
     submits:
       show:
@@ -216,7 +211,6 @@ es:
         application_or_recertification_date:
           sandbox: SNAP application or recertification interview date
         legal_header: Consentimiento legal
-        none_found_confirmed: Pudimos confirmar que este empleador no realizó ningún pago en los últimos 90 días. Esto sucede cuando el cliente no percibe ingresos de este trabajo durante tal período de tiempo.
         page_header: Envíe un informe de ingresos
         pdf:
           agency_header_name:
@@ -252,13 +246,11 @@ es:
     summaries:
       show:
         additional_comments: Comentarios adicionales
-        none_found: No encontramos ningún pago de este empleador en los últimos 90 días.
         payment: Pago de %{amount} antes de pago impuestos en %{date}
         phone_number: Teléfono del empleador
         table_caption: 'Empleador %{number}: %{employer_name}'
         table_caption_no_name: Empleador %{number}
         total_income_from_no_employer_name: 'Ingresos totales antes del pago de impuestos: %{amount}'
-        total_payments: 'Ingresos totales correspondiente a los últimos 90 días, antes de impuestos: %{amount}'
         your_information: Su información
     synchronization_failures:
       show:
@@ -489,6 +481,8 @@ es:
       fr: Francés
       zh: Chino
     not_applicable: N/C
+    report_data_range:
+      ninety_days: 90 días
     reporting_purpose:
       ma: beneficios
       nyc: beneficios

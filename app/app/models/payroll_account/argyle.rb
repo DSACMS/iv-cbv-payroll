@@ -8,8 +8,13 @@ class PayrollAccount::Argyle < PayrollAccount
   end
 
   def has_fully_synced?
+    # Consider the sync finished if every webhook has returned either an error
+    # or success. Any webhook with an "unknown" status will not impact the
+    # result of this method.
     supported_jobs.all? do |job|
-      supported_jobs.exclude?(job) || find_webhook_event_for_job(job).present?
+      supported_jobs.exclude?(job) ||
+        find_webhook_event_for_job(job, "error").present? ||
+        find_webhook_event_for_job(job, "success").present?
     end
   end
 

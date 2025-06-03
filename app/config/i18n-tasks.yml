@@ -269,7 +269,19 @@ ignore_missing:
     - "cbv.summaries.show.must_match.default"
     - "cbv.summaries.show.must_match.la_ldh"
 
-    # AZ (FFS-XXXX)
+    # AZ six months of data (FFS-2875)
+    - "cbv.payment_details.show.header"
+    - "cbv.payment_details.show.none_found"
+    - "cbv.payment_details.show.header_no_employer_name"
+    - "cbv.payment_details.show.subheader"
+    - "cbv.submits.show.none_found_confirmed"
+    - "cbv.summaries.show.none_found"
+    - "shared.report_data_range.six_months"
+    - "shared.agency_acronym.*" # duplicative of Daphne's branch
+    - "shared.benefit.*" # duplicative of Daphne's branch
+    - "shared.reporting_purpose.*" # duplicative of Daphne's branch
+
+      # multi-earner link
     - "cbv.successes.show.copy_link"
     - "cbv.successes.show.copied_link"
     - "cbv.successes.show.confirmation_code_html"
@@ -282,7 +294,6 @@ ignore_missing:
     - "cbv.successes.show.whats_next_1_li_2"
     - "cbv.successes.show.whats_next_2_title"
     - "cbv.successes.show.whats_next_2_li_1"
-
 ## Consider these keys used:
 ignore_unused:
   all:

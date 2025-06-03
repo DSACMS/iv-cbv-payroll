@@ -71,7 +71,7 @@
   <% end %>
   <%= table.with_row(agency_translation(".application_or_recertification_date"), format_parsed_date(@cbv_flow.cbv_applicant.snap_application_date)) %>
   <%= table.with_row(t(".pdf.client.date_created"), format_parsed_date(@cbv_flow.consented_to_authorized_use_at)) %>
-  <%= table.with_row(t(".pdf.client.date_range"), "#{format_parsed_date(@cbv_flow.cbv_applicant.paystubs_query_begins_at)} to #{format_parsed_date(@cbv_flow.cbv_applicant.snap_application_date)}") %>
+  <%= table.with_row(t(".pdf.client.date_range"), "#{format_parsed_date(aggregator_report.from_date)} to #{format_parsed_date(aggregator_report.to_date)}") %>
   <% if is_caseworker %>
     <%= table.with_row(t(".pdf.caseworker.agreement_consent_timestamp"), @cbv_flow.consented_to_authorized_use_at) %>
     <% if current_agency?(:ma) %>
