@@ -70,7 +70,7 @@
       <% end %>
     <% end %>
   <% else %>
-    <%= table.with_row(t(".none_found")) %>
+    <%= table.with_row(t(".none_found", report_data_range: report_data_range(@aggregator_report))) %>
   <% end %>
 <% end %>
 
