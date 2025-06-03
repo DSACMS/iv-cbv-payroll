@@ -197,6 +197,7 @@ class UswdsFormBuilder < ActionView::Helpers::FormBuilder
     end
   end
 
+  # Custom button with icon (https://designsystem.digital.gov/components/button/)
   def button_with_icon(value = "Button", options = {})
     if value.is_a?(Hash) && options.empty?
       options = value
@@ -234,11 +235,8 @@ class UswdsFormBuilder < ActionView::Helpers::FormBuilder
         @template.tag.use("", href: icon_path)
       end
 
-      icon_span_html = @template.content_tag(:span, icon_svg_tag, class: "usa-button__icon--leading")
-      text_span_html = @template.content_tag(:span, value, class: "usa-button__text")
-
-      content_parts << icon_span_html
-      content_parts << text_span_html
+      content_parts << icon_svg_tag
+      content_parts << value
     else
       content_parts << value
     end
@@ -252,7 +250,7 @@ class UswdsFormBuilder < ActionView::Helpers::FormBuilder
     actual_url = local_options.delete(:url)
     raise ArgumentError, "options hash must include :url for link_with_icon" if actual_url.nil?
 
-    button_classes = [ "usa-button" ]
+    button_classes = [ "usa-link" ]
 
     icon_name = local_options.delete(:icon)
     variant = local_options.delete(:variant)
@@ -261,7 +259,7 @@ class UswdsFormBuilder < ActionView::Helpers::FormBuilder
     if variant
       variant = Array(variant)
       variant.each do |v|
-        button_classes << "usa-button--#{v.to_s.dasherize}"
+        button_classes << "usa-link--#{v.to_s.dasherize}"
       end
     end
 
@@ -279,14 +277,10 @@ class UswdsFormBuilder < ActionView::Helpers::FormBuilder
         @template.tag.use("", href: icon_path)
       end
 
-      icon_span_html = @template.content_tag(:span, icon_svg_tag, class: "usa-button__icon--leading")
-      text_span_html = @template.content_tag(:span, value_text, class: "usa-button__text")
-
-      content_parts << icon_span_html
-      content_parts << text_span_html
-    else
-      content_parts << value_text
+      content_parts << icon_svg_tag
     end
+
+    content_parts << value_text
 
     @template.link_to(content_parts.join.html_safe, actual_url, local_options)
   end

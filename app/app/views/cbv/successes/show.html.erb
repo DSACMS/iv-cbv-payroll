@@ -8,6 +8,7 @@
     <%= form_with(builder: UswdsFormBuilder, html: { style: "display: contents;" }) do |f| %>
       <%= f.link_with_icon(t(".download"),
                              icon: "file_download",
+                             class: "usa-button",
                              icon_position: :leading,
                              variant: :primary,
                              type: "link",
