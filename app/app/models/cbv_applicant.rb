@@ -29,8 +29,6 @@ class CbvApplicant < ApplicationRecord
     sti_class_for(client_agency_id).const_get(:VALID_ATTRIBUTES)
   end
 
-  PAYSTUB_REPORT_RANGE = 90.days
-
   has_many :cbv_flows
   has_many :cbv_flow_invitations
 
@@ -84,16 +82,12 @@ class CbvApplicant < ApplicationRecord
     missing_attrs
   end
 
-  def paystubs_query_begins_at
-    PAYSTUB_REPORT_RANGE.before(snap_application_date)
-  end
-
   def set_snap_application_date
     self.snap_application_date ||= Date.current
   end
 
   def set_applicant_attributes
-    @applicant_attributes = Rails.application.config.client_agencies[client_agency_id]&.applicant_attributes&.compact&.keys&.map(&:to_sym) || []
+    @applicant_attributes = agency_config&.applicant_attributes&.compact&.keys&.map(&:to_sym) || []
     @required_applicant_attributes = get_required_applicant_attributes
   end
 
@@ -103,6 +97,7 @@ class CbvApplicant < ApplicationRecord
   end
 
   private
+
   def parse_date(value)
     return value if value.is_a?(Date)
 
@@ -116,6 +111,10 @@ class CbvApplicant < ApplicationRecord
   end
 
   def get_required_applicant_attributes
-    Rails.application.config.client_agencies[client_agency_id]&.applicant_attributes&.select { |key, attributes| attributes["required"] }&.keys&.map(&:to_sym) || []
+    agency_config&.applicant_attributes&.select { |key, attributes| attributes["required"] }&.keys&.map(&:to_sym) || []
+  end
+
+  def agency_config
+    Rails.application.config.client_agencies[client_agency_id]
   end
 end

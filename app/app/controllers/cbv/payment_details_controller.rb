@@ -1,5 +1,6 @@
 class Cbv::PaymentDetailsController < Cbv::BaseController
   include Cbv::AggregatorDataHelper
+
   helper_method :employer_name,
     :gross_pay,
     :employment_start_date,
