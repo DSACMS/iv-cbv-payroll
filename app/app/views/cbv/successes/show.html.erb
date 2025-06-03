@@ -5,7 +5,7 @@
 
   <div class="usa-prose">
     <p><%= t(".confirmation_code_html", confirmation_code: @cbv_flow.confirmation_code) %></p>
-    <%= form_with(builder: UswdsFormBuilder, html: { style: "display: contents;" }) do |f| %>
+    <%= form_with(builder: UswdsFormBuilder, html: { style: "display: contents;", class: "" }) do |f| %>
       <%= f.link_with_icon(t(".download"),
                              icon: "file_download",
                              class: "usa-button",
