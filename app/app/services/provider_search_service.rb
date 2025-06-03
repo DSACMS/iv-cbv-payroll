@@ -1,6 +1,24 @@
 class ProviderSearchService
   SUPPORTED_PROVIDERS = (ENV["SUPPORTED_PROVIDERS"] || "pinwheel")&.split(",")&.map(&:to_sym)
 
+  # We are blocking these employers because they constitute unearned
+  # income, which our current state partner (LA) does not want us to report.
+  # They're also returning data in a format that we don't expect, and since our
+  # state partner doesn't even want us to report this data, we won't fix that
+  # discrepancy at this time. We may reconsider later, especially as we add
+  # more states.
+
+  # item_000136007 - SSA
+  # item_000042186 - Veterans Affairs
+  # item_000023897 - Louisiana Workforce Commission, which administers Unemployment Insurance
+  # item_000012092 - Disability
+  # item_000033060 - Retirement
+  BLOCKED_ARGYLE_EMPLOYERS = %w[item_000136007 item_000042186 item_000023897 item_000012092 item_000033060]
+
+  # 0bab321e-64ea-4047-8d8a-44ba283f6cd8 - Social Security Administration - Retirement, Survivors, Disability benefits
+  # 3f7b6ce9-6371-4bb8-8c2f-051c446dc55c - Veterans Affairs benefits
+  BLOCKED_PINWHEEL_EMPLOYERS = %w[0bab321e-64ea-4047-8d8a-44ba283f6cd8 3f7b6ce9-6371-4bb8-8c2f-051c446dc55c]
+
   def initialize(client_agency_id, providers: SUPPORTED_PROVIDERS)
     @client_agency_config = site_config[client_agency_id]
     @providers = providers
@@ -15,6 +33,8 @@ class ProviderSearchService
       results = argyle_service.employer_search(query)["results"].map do |result|
         Aggregators::ResponseObjects::SearchResult.from_argyle(result)
       end
+
+      results = filter_results(results, BLOCKED_ARGYLE_EMPLOYERS)
     end
 
     if @providers.include?(:pinwheel) && (results.length == 0 || !any_exact_matches?(results, query))
@@ -27,9 +47,15 @@ class ProviderSearchService
       # Use Pinwheel's results if there aren't any results from Argyle, or
       # there is an exact match from Pinwheel.
       results = pinwheel_results if results.length == 0 || any_exact_matches?(pinwheel_results, query)
+
+      results = filter_results(results, BLOCKED_PINWHEEL_EMPLOYERS)
     end
 
     results
+  end
+
+  def filter_results(results, blocked_employers)
+    results.select { |result| blocked_employers.exclude?(result.provider_options.provider_id) }
   end
 
   # TODO: this data should be loading from a config file instead of from hardcoded arrays within this file - see FFS-2661

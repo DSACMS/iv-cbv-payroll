@@ -57,9 +57,9 @@
     recipient: <%= ENV['MA_WEEKLY_REPORT_RECIPIENTS'] %>
 
 - id: az_des
-  agency_name: Department of Economic Security
-  agency_short_name: DES
-  agency_contact_website: https://des.az.gov/services/basic-needs/food-assistance/contact-des
+  agency_name: Department of Economic Security/Family Assistance Administration 
+  agency_short_name: DES/FAA
+  agency_contact_website: https://myfamilybenefits.azdes.gov/
   # No caseworker feedback form since they will only be interacting with the PDFs
   # caseworker_feedback_form: null
   agency_demo_domain: az-verify-demo.navapbc.cloud
@@ -69,9 +69,12 @@
   argyle:
     environment: <%= ENV["AZ_DES_ARGYLE_ENVIRONMENT"] %>
   # TODO[FFS-2628]: This will be SFTP:
-  transmission_method: shared_email
+  transmission_method: sftp
   transmission_method_configuration:
-    email: <%= ENV['SLACK_TEST_EMAIL'] %>
+    user: <%= ENV['AZ_DES_SFTP_USER'] %>
+    password: <%= ENV['AZ_DES_SFTP_PASSWORD'] %>
+    url: <%= ENV['AZ_DES_SFTP_URL'] %>
+    sftp_directory: <%= ENV['AZ_DES_SFTP_DIRECTORY'] %>
   # TODO: Disable staff portal before pilot launch
   staff_portal_enabled: true
   sso:
@@ -81,7 +84,8 @@
     scope: "openid"
     name: "az_des"
   pay_income_days: 90
-  invitation_valid_days: 14
+  invitation_valid_days: 10
+  allow_invitation_reuse: true
   # TODO[FFS-2629]: Get permission to use the AZ DES logo.
   # logo_path: dta_logo.png
   # logo_square_path: dta_logo_square.png

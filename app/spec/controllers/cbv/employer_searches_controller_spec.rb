@@ -112,6 +112,22 @@ RSpec.describe Cbv::EmployerSearchesController do
         ))
         get :show, params: { query: "results" }
       end
+
+      context "when some results should be blocked" do
+        before do
+          pinwheel_stub_request_items_response
+          stub_const("ProviderSearchService::BLOCKED_PINWHEEL_EMPLOYERS", [ "fce3eee0-285b-496f-9b36-30e976194736" ])
+        end
+
+        render_views
+
+        it "renders successfully without those results" do
+          get :show, params: { query: "results" }
+          expect(response).to be_successful
+          expect(response.body).not_to include("Acme Payroll")
+          expect(response.body).to include("Lumon")
+        end
+      end
     end
   end
 end

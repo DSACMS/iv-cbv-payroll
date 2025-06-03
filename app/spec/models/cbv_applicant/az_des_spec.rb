@@ -13,4 +13,16 @@ RSpec.describe CbvApplicant::AzDes, type: :model do
       )
     end
   end
+
+  it "redacts all sensitive PII fields" do
+    applicant = CbvApplicant.create(az_attributes)
+    applicant.redact!
+    expect(applicant).to have_attributes(
+      first_name: "REDACTED",
+      middle_name: "REDACTED",
+      last_name: "REDACTED",
+      case_number: /[0-9]+/, # Not redacted as it's not sensitive PII
+      # TODO[FFS-2669]: Test the redaction of income_changes
+    )
+  end
 end

@@ -1,13 +1,13 @@
 # syntax = docker/dockerfile:1
 
 # Make sure RUBY_VERSION matches the Ruby version in .ruby-version and Gemfile
-ARG RUBY_VERSION=3.3.5
+ARG RUBY_VERSION=3.4.4
 
 
 ##########################################################################################
 # BASE: Shared base docker image
 ##########################################################################################
-FROM registry.docker.com/library/ruby:$RUBY_VERSION-slim AS base
+FROM registry.docker.com/library/ruby:$RUBY_VERSION AS base
 
 # Upgrade packages in base image to address security issues.
 # We should be able to remove these after upgrading the base image to a version
@@ -18,11 +18,11 @@ RUN apt-get update -qq && \
       libtasn1-6 \
       libgnutls30 \
       # CVE-2025-0395 \
-      libc-dev \
-      # CVE-2025-0395 \
       libc-dev-bin \
       # CVE-2025-31115 \
       liblzma5 \
+      # CVE-2025-37990 \
+      linux-libc-dev \
       && \
     rm -rf /var/lib/apt/lists /var/cache/apt/archives
 
@@ -132,7 +132,7 @@ ENV PIDFILE="/rails/tmp/pids/server.pid"
 # To debug a missing package version (i.e. if one of these versions gets
 # superceded in the upstream package repo), run:
 #
-#   docker run -ti registry.docker.com/library/ruby:3.3.5-slim bash
+#   docker run -ti registry.docker.com/library/ruby:3.3.5 bash
 #   apt-get install [package]
 #
 # and notice the version that was installed.
@@ -141,7 +141,6 @@ RUN apt-get update -qq && \
         curl=7.88.1-10+deb12u12 \
         libgpgme11=1.18.0-3+b1 \
         libvips42=8.14.1-3+deb12u2 \
-        linux-libc-dev=6.1.137-1 \
         openssl=3.0.16-1~deb12u1 \
         postgresql-client=15+248 \
         python-is-python3=3.11.2-1+deb12u1 \

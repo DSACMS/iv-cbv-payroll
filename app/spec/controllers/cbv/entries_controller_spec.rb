@@ -110,11 +110,38 @@ RSpec.describe Cbv::EntriesController do
             )
           end
 
-          it "redirects to the expired invitation URL" do
-            expect { get :show, params: { token: invitation.auth_token } }
-              .not_to change { session[:cbv_flow_id] }
+          context "when an agency doesn't allow invitation reuse" do
+            before do
+              allow_any_instance_of(ClientAgencyConfig::ClientAgency)
+                .to receive(:allow_invitation_reuse)
+                .and_return(false)
+            end
 
-            expect(response).to redirect_to(cbv_flow_expired_invitation_path(client_agency_id: invitation.client_agency_id))
+            it "redirects to the expired invitation URL" do
+              expect { get :show, params: { token: invitation.auth_token } }
+                .not_to change { session[:cbv_flow_id] }
+
+              expect(response).to redirect_to(cbv_flow_expired_invitation_path(client_agency_id: invitation.client_agency_id))
+            end
+          end
+
+          context "when an agency allows invitation reuse" do
+            before do
+              allow_any_instance_of(ClientAgencyConfig::ClientAgency)
+                .to receive(:allow_invitation_reuse)
+                .and_return(true)
+            end
+
+            it "creates a new CbvFlow object" do
+              expect { get :show, params: { token: invitation.auth_token } }
+                .to change { session[:cbv_flow_id] }
+                  .from(nil)
+                  .to(be_an(Integer))
+                .and change(CbvFlow, :count).by(1)
+
+              expect(assigns(:cbv_flow)).to be_present
+              expect(assigns(:cbv_flow).cbv_flow_invitation).to eq(invitation)
+            end
           end
         end
       end

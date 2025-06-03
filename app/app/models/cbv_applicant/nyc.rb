@@ -26,6 +26,14 @@ class CbvApplicant::Nyc < CbvApplicant
     },
     if: -> { snap_application_date.present? }
 
+  has_redactable_fields(
+    first_name: :string,
+    middle_name: :string,
+    last_name: :string,
+    case_number: :string,
+    client_id_number: :string,
+  )
+
   def format_case_number
     return if case_number.blank?
     case_number.upcase!
