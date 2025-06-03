@@ -268,18 +268,20 @@ RSpec.describe UswdsFormBuilder do
     end
 
     context 'with options hash as first parameter' do
-      let(:result) { builder.button_with_icon(icon: 'save', type: 'submit') }
+      let(:result) { builder.button_with_icon(icon: 'save_alt', type: 'submit') }
 
       it 'treats the hash as options and uses default button text' do
         expect(result).to have_element(:button, type: 'submit', class: 'usa-button')
         expect(result).to have_text('Button')
+        expect(result).to have_element(:svg, class: 'usa-icon')
+        expect(result).to have_element(:use, href: /.svg#save_alt/)
       end
     end
 
     context 'with icon' do
       let(:result) { builder.button_with_icon('Copy', icon: 'content_copy') }
 
-      it 'outputs a button with icon and text spans' do
+      it 'outputs a button with icon' do
         expect(result).to have_element(:button, class: 'usa-button')
         expect(result).to have_element(:svg, class: 'usa-icon')
         expect(result).to have_element(:use, href: /.svg#content_copy/)
@@ -319,10 +321,12 @@ RSpec.describe UswdsFormBuilder do
     end
 
     context 'with icon and variant' do
-      let(:result) { builder.button_with_icon('Save', icon: 'save', variant: 'big') }
+      let(:result) { builder.button_with_icon('Save', icon: 'save_alt', variant: 'big') }
 
       it 'outputs button with both icon and variant styling' do
         expect(result).to have_element(:button, class: 'usa-button usa-button--big')
+        expect(result).to have_element(:svg, class: 'usa-icon')
+        expect(result).to have_element(:use, href: /.svg#save_alt/)
       end
     end
   end

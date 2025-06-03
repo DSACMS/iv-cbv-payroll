@@ -46,9 +46,9 @@
     <p><%= t(".share_invitation_link_content") %></p>
 
     <div class="display-flex flex-align-center" data-controller="copy-link">
-      <%= form_with(builder: UswdsFormBuilder, html: { style: "display: contents;" }) do |f| %>
+      <%= form_with(builder: UswdsFormBuilder, html: { style: "display: contents;", class: "" }) do |f| %>
         <%= f.label :invitation_link, t(".invitation_link_label"), class: "usa-sr-only" %>
-        <input value="<%= @invitation_link %>" autocomplete="off" readonly class="usa-input" style="flex: 1;" data-copy-link-target="input" type="text" name="invitation_link" id="invitation_link">
+        <input value="<%= @invitation_link %>" autocomplete="off" readonly class="usa-input margin-top-0" style="flex: 1;" data-copy-link-target="input" type="text" name="invitation_link" id="invitation_link">
         <%# default button variant %>
         <%= f.button_with_icon(t(".copy_link"),
               class: "copy-link-button",
