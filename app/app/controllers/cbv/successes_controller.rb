@@ -9,12 +9,10 @@ class Cbv::SuccessesController < Cbv::BaseController
   private
 
   def invitation_link
-    host = Rails.env.production? ? current_agency.agency_production_domain : current_agency.agency_demo_domain
-
     if @cbv_flow.cbv_flow_invitation.present?
-      @cbv_flow.cbv_flow_invitation.to_url(host: host, protocol: "https")
-    else # generate a generic link
-      "https://#{host}/en/cbv/links/#{@cbv_flow.client_agency_id}"
+      @cbv_flow.cbv_flow_invitation.to_url(protocol: "https")
+    else
+      @cbv_flow.to_generic_url
     end
   end
 

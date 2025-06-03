@@ -37,4 +37,12 @@ class CbvFlow < ApplicationRecord
   def has_account_with_required_data?
     payroll_accounts.any?(&:sync_succeeded?)
   end
+
+  def to_generic_url
+    client_agency = Rails.application.config.client_agencies[client_agency_id]
+    raise ArgumentError.new("Client Agency #{client_agency_id} not found") unless client_agency
+
+    host = Rails.env.production? ? client_agency.agency_production_domain : client_agency.agency_demo_domain
+    "https://#{host}/en/cbv/links/#{client_agency_id}"
+  end
 end
