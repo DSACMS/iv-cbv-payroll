@@ -1,13 +1,13 @@
 # syntax = docker/dockerfile:1
 
 # Make sure RUBY_VERSION matches the Ruby version in .ruby-version and Gemfile
-ARG RUBY_VERSION=3.3.5
+ARG RUBY_VERSION=3.4.4
 
 
 ##########################################################################################
 # BASE: Shared base docker image
 ##########################################################################################
-FROM registry.docker.com/library/ruby:$RUBY_VERSION-slim AS base
+FROM registry.docker.com/library/ruby:$RUBY_VERSION AS base
 
 # Upgrade packages in base image to address security issues.
 # We should be able to remove these after upgrading the base image to a version
@@ -132,7 +132,7 @@ ENV PIDFILE="/rails/tmp/pids/server.pid"
 # To debug a missing package version (i.e. if one of these versions gets
 # superceded in the upstream package repo), run:
 #
-#   docker run -ti registry.docker.com/library/ruby:3.3.5-slim bash
+#   docker run -ti registry.docker.com/library/ruby:3.3.5 bash
 #   apt-get install [package]
 #
 # and notice the version that was installed.
