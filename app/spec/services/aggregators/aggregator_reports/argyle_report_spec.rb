@@ -10,6 +10,7 @@ RSpec.describe Aggregators::AggregatorReports::ArgyleReport, type: :service do
     create(:payroll_account, :argyle_fully_synced, pinwheel_account_id: account)
   end
   let(:days_ago_to_fetch) { 90 }
+  let(:days_ago_to_fetch_for_gig) { 90 }
   let(:today) { Date.today }
   let(:argyle_service) { Aggregators::Sdk::ArgyleService.new(:sandbox) }
 
@@ -35,7 +36,7 @@ RSpec.describe Aggregators::AggregatorReports::ArgyleReport, type: :service do
         payroll_accounts: [ payroll_account ],
         argyle_service: argyle_service,
         days_to_fetch_for_w2: days_ago_to_fetch,
-        days_to_fetch_for_gig: days_ago_to_fetch
+        days_to_fetch_for_gig: days_ago_to_fetch_for_gig
       )
     end
 
@@ -70,6 +71,18 @@ RSpec.describe Aggregators::AggregatorReports::ArgyleReport, type: :service do
 
       it 'should have an employment account_source' do
         expect(argyle_report.employments.first.account_source).to match(/argyle_sandbox/)
+      end
+
+      context "when in an agency configured to grab 182 days of gig data" do
+        let(:days_ago_to_fetch_for_gig) { 182 }
+
+        it "fetches 182 days" do
+          expect(argyle_service).to have_received(:fetch_paystubs_api)
+            .with(account: anything, from_start_date: 182.days.ago, to_start_date: Date.current)
+
+          expect(argyle_report.from_date).to eq(182.days.ago)
+          expect(argyle_report.to_date).to eq(Date.current)
+        end
       end
 
       context 'when an error occurs' do
@@ -114,6 +127,18 @@ RSpec.describe Aggregators::AggregatorReports::ArgyleReport, type: :service do
 
       it 'sets @has_fetched to true on success' do
         expect(argyle_report.has_fetched).to be true
+      end
+
+      context "when in an agency configured to grab 182 days of gig data" do
+        let(:days_ago_to_fetch_for_gig) { 182 }
+
+        it "fetches only 90 days (because Joe is not a gig employee)" do
+          expect(argyle_service).to have_received(:fetch_paystubs_api)
+            .with(account: anything, from_start_date: 90.days.ago, to_start_date: Date.current)
+
+          expect(argyle_report.from_date).to eq(90.days.ago)
+          expect(argyle_report.to_date).to eq(Date.current)
+        end
       end
 
       context 'when an error occurs' do

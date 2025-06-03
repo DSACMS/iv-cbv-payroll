@@ -7,6 +7,7 @@ RSpec.describe Aggregators::AggregatorReports::PinwheelReport, type: :service do
   let(:platform_id) { "fce3eee0-285b-496f-9b36-30e976194736" }
   let(:today) { Date.today }
   let(:days_ago_to_fetch) { 90 }
+  let(:days_ago_to_fetch_for_gig) { 90 }
 
   let!(:payroll_account) do
     create(:payroll_account, :pinwheel_fully_synced, pinwheel_account_id: account)
@@ -18,7 +19,7 @@ RSpec.describe Aggregators::AggregatorReports::PinwheelReport, type: :service do
       payroll_accounts: [ payroll_account ],
       pinwheel_service: pinwheel_service,
       days_to_fetch_for_w2: days_ago_to_fetch,
-      days_to_fetch_for_gig: days_ago_to_fetch
+      days_to_fetch_for_gig: days_ago_to_fetch_for_gig
     )
   end
 
@@ -79,6 +80,42 @@ RSpec.describe Aggregators::AggregatorReports::PinwheelReport, type: :service do
       expect(report.incomes.length).to eq(1)
       expect(report.paystubs.length).to eq(1)
       expect(report.gigs.length).to eq(3)
+    end
+
+    context "in an agency configured to fetch 182 days of gig data" do
+      let(:days_ago_to_fetch_for_gig) { 182 }
+
+      it "fetches 90 days of data for a non-gig employee" do
+        report.fetch
+        expect(pinwheel_service).to have_received(:fetch_paystubs_api).with(
+          account_id: account,
+          from_pay_date: days_ago_to_fetch.days.ago,
+          to_pay_date: today
+        ).exactly(1).times
+
+        expect(report.from_date).to eq(days_ago_to_fetch.days.ago)
+        expect(report.to_date).to eq(Date.current)
+      end
+
+      context "for a gig employee" do
+        let(:employments_json) { pinwheel_load_relative_json_file('request_employment_info_gig_worker_response.json') }
+
+        before do
+          allow(pinwheel_service).to receive(:fetch_paystubs_api).with(account_id: account, from_pay_date: days_ago_to_fetch_for_gig.days.ago, to_pay_date: today).and_return(paystubs_json)
+        end
+
+        it "fetches 182 days of data" do
+          report.fetch
+          expect(pinwheel_service).to have_received(:fetch_paystubs_api).with(
+            account_id: account,
+            from_pay_date: days_ago_to_fetch_for_gig.days.ago,
+            to_pay_date: today
+          ).exactly(1).times
+
+          expect(report.from_date).to eq(days_ago_to_fetch_for_gig.days.ago)
+          expect(report.to_date).to eq(Date.current)
+        end
+      end
     end
 
     describe "#summarize_by_employer" do

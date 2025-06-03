@@ -93,7 +93,11 @@ module Aggregators::AggregatorReports
     end
 
     def to_date
-      Date.current
+      # Use the CBV flow as the basis for the end of the report range, as it
+      # reflects the actual time that the user was completing the flow (as
+      # opposed to the invitation, which they could have been sitting on for
+      # many days.)
+      @payroll_accounts.first.cbv_flow.created_at.to_date
     end
   end
 end
