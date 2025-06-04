@@ -53,6 +53,11 @@ html {
   align-items: center;
   color: color("primary-darker");
   display: flex;
+
+  @include at-media-max($theme-header-min-width) {
+    flex-wrap: wrap;
+    align-items: flex-start;
+  }
 }
 .cbv-header__pilot-name {
   color: color("primary");
@@ -60,6 +65,7 @@ html {
 
   @include at-media-max($theme-header-min-width) {
     @include u-margin-y(0.5);
+    width: 100%;
   }
 }
 .cbv-header__nav {
@@ -107,6 +113,7 @@ html {
   @include at-media-max($theme-header-min-width) {
     height: 30px;
     max-width: 200px;
+    margin-top: 0.25rem;
   }
 }
 
