@@ -308,8 +308,10 @@ es:
     - viernes
     - sábado
     formats:
+      day_of_month: "%-d/%-m"
       default: "%-d/%-m/%Y"
       long: "%-d de %B de %Y"
+      month_year: "%B de %Y"
       short: "%-d de %b"
     month_names:
     -

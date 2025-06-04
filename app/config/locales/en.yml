@@ -473,11 +473,20 @@ en:
       show:
         back_to_agency: Go to %{agency_short_name}'s website
         caseworker_received: We have delivered your payment information to %{agency_acronym}. They will contact you if any additional information is needed.
-        confirmation_code_html: "<strong>Confirmation code</strong>: %{confirmation_code}"
+        confirmation_code_html: "<strong>Your confirmation code</strong>: %{confirmation_code}"
+        copied_link: Copied link
+        copy_link: Copy link
         download: Download a copy of the report
         follow_up: To check the status of your %{benefit} %{reporting_purpose} you can visit <a href="%{agency_url}" target="_blank" rel="noopener noreferrer">%{agency_acronym}'s website</a>.
         header: Your income report has been successfully shared with %{agency_acronym}
         if_it_didnt_work: If you weren't able to find an employer, or one of your employers doesn't have an online payroll provider, please provide this information directly to %{agency_acronym}.
+        invitation_link_label: Invitation link
+        share_invitation_link_content: Share this link with all household members named on your application so they can report their income.
+        share_invitation_link_title: Does anyone else in your household earn income?
+        whats_next: What's next?
+        whats_next_1_li_1: If you weren't able to find an employer, or if one of your employers doesn't have an online payroll provider, please provide this information directly to %{agency_acronym}.
+        whats_next_1_li_2: Visit <a href="%{agency_website}" target="_blank" rel="noopener noreferrer">%{agency_acronym}'s website</a> for more information.
+        whats_next_1_title: 'If you need to report other income:'
     summaries:
       show:
         additional_comments: Additional comments
@@ -515,11 +524,33 @@ en:
       status:
         fetching_payroll_description: This may take a few minutes. Please keep this window open while we work on this.
         header: We’re gathering your payment details from your employer
+  components:
+    report:
+      monthly_summary_table:
+        accrued_gross_earnings: Accrued gross earnings
+        compact:
+          footnote:
+            definition_accrued_gross_earnings: '"Accrued gross earnings" sums the payments made in that month.'
+            definition_total_hours_worked: '"Total hours worked" sums the time it took to complete every gig worked in that month. There may be gigs worked in a month that were paid in the following month.'
+            definition_verified_mileage_expenses: '"Verified mileage expenses" uses mileage from the Platform/App. We multiply this by the federal mileage rate ($.70 for 2025), which covers all costs related to a car. These can be costs like gas, car payments or leasing fees, car insurance, repairs, and maintenance.'
+            what_does_this_mean: What does this information mean?
+          month_income: "%{month} gross earnings: %{accrued_gross_earnings}"
+          total_income_header: 'Total income from %{employer_name} before taxes: %{accrued_gross_earnings}'
+        dollars_times_miles: "(%{dollar_amount} x %{ number_of_miles } miles)"
+        month: Month
+        monthly_summary: Monthly Summary
+        partial_month_text: "(Partial month: from %{start_date}-%{end_date})"
+        payments_from_header: Payments from %{employer_name}
+        payments_from_text: These were the dates that the client was paid for their work at %{employer_name} and the gross pay amount.
+        total_gig_hours: Total hours worked
+        verified_mileage_expenses: Verified mileage expenses
   continue: Continue
   date:
     formats:
+      day_of_month: "%-m/%-d"
       default: "%Y-%m-%d"
       long: "%B %-d, %Y"
+      month_year: "%B %Y"
   help:
     alert:
       heading: Need help connecting to your payroll provider?
