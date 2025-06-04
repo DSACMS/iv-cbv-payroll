@@ -101,6 +101,14 @@ html {
     min-width: 125px;
   }
 }
+.cbv-header__agency-logo--az_des {
+  height: 45px;
+
+  @include at-media-max($theme-header-min-width) {
+    height: 30px;
+    max-width: 200px;
+  }
+}
 
 /*
  * Footer
