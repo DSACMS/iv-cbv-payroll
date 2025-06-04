@@ -293,6 +293,7 @@ ignore_unused:
     - "help.show.credentials.security_message"  # dynamically looked up help translations
     - "cbv.submits.show.pdf.caseworker.*" #dynamically looked up translations
     - "cbv.submits.show.pdf.client.agency_id_number" #dynamically looked up translations
+    - "components.report.monthly_summary_table.*" # FFS-2668 - this should be removed when actually used
 
 ## Unused examples of how to use this file:
 
