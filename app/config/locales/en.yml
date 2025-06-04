@@ -326,9 +326,7 @@ en:
         select_button_aria_label: Open an authentication modal for the employer or payroll provider to import your payment history.
         to_continue: 'If you still don’t see your employer or payroll provider listed:'
         to_continue_li_1: You’ll need to submit that income information separately.
-        to_continue_li_1_html:
-          la_ldh: <a href="%{agency_url}" target="_blank" rel="noopener noreferrer">Go to LDH's website</a> to learn about other ways to report your income.
-          sandbox: <a href="https://example.com/contact" target="_blank" rel="noopener noreferrer">Go to CBV's website</a> to learn about other ways to report your income.
+        to_continue_li_1_html: <a href="%{agency_contact_website}" target="_blank" rel="noopener noreferrer">Go to %{agency_short_name}'s website</a> to learn about other ways to report your income.
         to_continue_li_2: If you have other jobs to add, search for them.
         to_continue_li_3: If you have no other jobs to add here, you can exit this site.
         to_continue_li_3_continue: If you have no other jobs to add here, continue to review your income report.
@@ -370,9 +368,7 @@ en:
         back_button: Go back to employer search
         continue_button: Continue to review my report
         continue_to_review: Continue to review the income information you were able to find before you submit it to %{agency_acronym}.
-        exit_button_html:
-          la_ldh: <a href="%{agency_url}" class="usa-button" target="_blank" rel="noopener noreferrer">Exit and go to Louisiana Department of Health</a>
-          sandbox: <a href="https://www.mass.gov/guides/how-to-contact-dta" class="usa-button" target="_blank" rel="noopener noreferrer">Exit and go to CBV Test Agency</a>
+        exit_button_html: <a href="%{agency_contact_website}" class="usa-button" target="_blank" rel="noopener noreferrer">Exit and go to %{agency_full_name}</a>
         header: How to report income if your employer or payroll provider isn’t listed
         more_jobs: If you have more jobs to report
         no_more_jobs: If you don't have more jobs to report
@@ -522,11 +518,33 @@ en:
       status:
         fetching_payroll_description: This may take a few minutes. Please keep this window open while we work on this.
         header: We’re gathering your payment details from your employer
+  components:
+    report:
+      monthly_summary_table:
+        accrued_gross_earnings: Accrued gross earnings
+        compact:
+          footnote:
+            definition_accrued_gross_earnings: '"Accrued gross earnings" sums the payments made in that month.'
+            definition_total_hours_worked: '"Total hours worked" sums the time it took to complete every gig worked in that month. There may be gigs worked in a month that were paid in the following month.'
+            definition_verified_mileage_expenses: '"Verified mileage expenses" uses mileage from the Platform/App. We multiply this by the federal mileage rate ($.70 for 2025), which covers all costs related to a car. These can be costs like gas, car payments or leasing fees, car insurance, repairs, and maintenance.'
+            what_does_this_mean: What does this information mean?
+          month_income: "%{month} gross earnings: %{accrued_gross_earnings}"
+          total_income_header: 'Total income from %{employer_name} before taxes: %{accrued_gross_earnings}'
+        dollars_times_miles: "(%{dollar_amount} x %{ number_of_miles } miles)"
+        month: Month
+        monthly_summary: Monthly Summary
+        partial_month_text: "(Partial month: from %{start_date}-%{end_date})"
+        payments_from_header: Payments from %{employer_name}
+        payments_from_text: These were the dates that the client was paid for their work at %{employer_name} and the gross pay amount.
+        total_gig_hours: Total hours worked
+        verified_mileage_expenses: Verified mileage expenses
   continue: Continue
   date:
     formats:
+      day_of_month: "%-m/%-d"
       default: "%Y-%m-%d"
       long: "%B %-d, %Y"
+      month_year: "%B %Y"
   help:
     alert:
       heading: Need help connecting to your payroll provider?
