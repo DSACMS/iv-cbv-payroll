@@ -517,8 +517,8 @@ en:
         accrued_gross_earnings: Accrued gross earnings
         compact:
           footnote:
-            definition_accrued_gross_earnings: ""Accrued gross earnings" sums the payments made in that month."
-            definition_total_hours_worked: ""Total hours worked" sums the time it took to complete every gig worked in that month. There may be gigs worked in a month that were paid in the following month."
+            definition_accrued_gross_earnings: '"Accrued gross earnings" sums the payments made in that month.'
+            definition_total_hours_worked: '"Total hours worked" sums the time it took to complete every gig worked in that month. There may be gigs worked in a month that were paid in the following month.'
             definition_verified_mileage_expenses: '"Verified mileage expenses" uses mileage from the Platform/App. We multiply this by the federal mileage rate ($.70 for 2025), which covers all costs related to a car. These can be costs like gas, car payments or leasing fees, car insurance, repairs, and maintenance.'
             what_does_this_mean: What does this information mean?
           month_income: "%{month} gross earnings: %{accrued_gross_earnings}"
