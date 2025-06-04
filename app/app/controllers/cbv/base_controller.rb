@@ -28,6 +28,7 @@ class Cbv::BaseController < ApplicationController
         end
       end
 
+
       @cbv_flow = CbvFlow.create_from_invitation(invitation)
       session[:cbv_flow_id] = @cbv_flow.id
       track_invitation_clicked_event(invitation, @cbv_flow)
@@ -143,9 +144,18 @@ class Cbv::BaseController < ApplicationController
       cbv_flow_id: cbv_flow.id,
       cbv_applicant_id: cbv_flow.cbv_applicant_id,
       client_agency_id: current_agency&.id,
-      seconds_since_invitation: (Time.now - invitation.created_at).to_i
+      seconds_since_invitation: (Time.now - invitation.created_at).to_i,
+      number_household_members:  count_unique_members(invitation, cbv_flow),
+      number_reports_completed: invitation.cbv_flows.where.not(consented_to_authorized_use_at: nil).count,
+      number_links_started: invitation.cbv_flows.count
     })
-  rescue => ex
-    Rails.logger.error "Unable to track event (ApplicantClickedCBVInvitationLink): #{ex}"
+    # rescue => ex
+    # Rails.logger.error "Unable to track event (ApplicantClickedCBVInvitationLink): #{ex}"
+  end
+
+  def count_unique_members(invitation, cbv_flow)
+    return 1 if invitation.cbv_applicant.income_changes.blank?
+
+    invitation.cbv_applicant.income_changes.map { |income_change| income_change.with_indifferent_access[:member_name] }.uniq.count
   end
 end
