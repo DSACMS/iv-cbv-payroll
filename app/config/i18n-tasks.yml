@@ -149,6 +149,7 @@ ignore_missing:
     - "aggregator_strings.employment_statuses.terminated" # FFS-2723
     - "aggregator_strings.payment_frequencies.quarterly"  # FFS-2723
     - "aggregator_strings.deductions.roth"                # FFS-2723
+    - "components.report.monthly_summary_table.*" # FFS-2668
 
     # AZ DES (FFS-2648)
     - "shared.agency_full_name.az_des"
@@ -292,6 +293,7 @@ ignore_unused:
     - "help.show.credentials.security_message"  # dynamically looked up help translations
     - "cbv.submits.show.pdf.caseworker.*" #dynamically looked up translations
     - "cbv.submits.show.pdf.client.agency_id_number" #dynamically looked up translations
+    - "components.report.monthly_summary_table.*" # FFS-2668 - this should be removed when actually used
 
 ## Unused examples of how to use this file:
 
