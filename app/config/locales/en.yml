@@ -347,8 +347,8 @@ en:
         subheader_html: 'We’ll send your payment records from your employer(s) to %{agency_acronym} to verify your income. <strong>Most people complete this process in about 5 minutes.</strong> Just follow these steps:'
         what_if_i_cant_use_this_body_1: If you need to report your income and can’t use this tool, then you’ll need to share your income information for this job directly with %{agency_short_name}.
         what_if_i_cant_use_this_body_2_html:
-          default: Visit <a href="https://example.com/contact" target="_blank" rel="noopener noreferrer">CBV's website</a> for more information on how to submit documents.
-          la_ldh: 'You can: <ul><li>Upload documents through the Self Service Portal online at <a href="%{agency_url}" target="_blank" rel="noopener noreferrer">%{agency_url}</a></li><li>Send documents through US Mail: Louisiana Medicaid/LaCHIP, P.O. Box 91283, Baton Rouge, LA 70821-9278</li><li>Email documents: <a href="mailto:MyMedicaid@la.gov">MyMedicaid@la.gov</a></li><li>Bring your documents to the Medicaid office of choice.</li></ul>'
+          default: Visit <a href="%{agency_url}" target="_blank" rel="noopener noreferrer">%{agency_acronym}’s website</a> for more information on how to submit documents.
+          la_ldh: 'You can: <ul><li>Upload documents through the Self Service Portal online at <a href="https://mymedicaid.la.gov/" target="_blank" rel="noopener noreferrer">https://mymedicaid.la.gov/</a></li><li>Send documents through US Mail: Louisiana Medicaid/LaCHIP, P.O. Box 91283, Baton Rouge, LA 70821-9278</li><li>Email documents: <a href="mailto:MyMedicaid@la.gov">MyMedicaid@la.gov</a></li><li>Bring your documents to the Medicaid office of choice.</li></ul>'
         what_if_i_cant_use_this_title: What if I can't use this tool?
         who_is_this_for_body: You can use this tool if you have earned income in the last 90 days (even if you’re no longer working), and you can access your paystubs online or work for an app-based company like Uber, Lyft or Amazon Flex.
         who_is_this_for_title: Who is this tool for?
@@ -471,7 +471,7 @@ en:
         caseworker_received: We have delivered your payment information to %{agency_acronym}. They will contact you if any additional information is needed.
         confirmation_code_html: "<strong>Confirmation code</strong>: %{confirmation_code}"
         download: Download a copy of the report
-        follow_up: To check the status of your Medicaid benefits you can visit %{agency_acronym}'s website.
+        follow_up: To check the status of your %{benefit} %{reporting_purpose} you can visit <a href="%{agency_url}" target="_blank" rel="noopener noreferrer">%{agency_acronym}'s website</a>.
         header: Your income report has been successfully shared with %{agency_acronym}
         if_it_didnt_work: If you weren't able to find an employer, or one of your employers doesn't have an online payroll provider, please provide this information directly to %{agency_acronym}.
     summaries:

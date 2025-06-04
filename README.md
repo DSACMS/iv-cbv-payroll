@@ -43,6 +43,8 @@ Most developers on the team code using macOS, so we recommend that platform if p
 1. Install Ruby: `rbenv install`
 1. Install NodeJS `nodenv install`
 1. Install Ruby dependencies: `bundle install`
+   * If you get an error from debase, run this command: ```gem install debase -v0.2.5.beta2 -- --with-cflags="-Wno-incompatible-function-pointer-types"```
+   * Also we should probably fix this (TODO)
 1. Install JS dependencies
    * `nodenv rehash`
    * `npm install`
