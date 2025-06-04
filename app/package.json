@@ -44,6 +44,7 @@
   },
   "overrides": {
     "esbuild": "^0.25.0",
-    "semver": ">= 7.5.2"
+    "semver": ">= 7.5.2",
+    "tar-fs": "2.1.3"
   }
 }
