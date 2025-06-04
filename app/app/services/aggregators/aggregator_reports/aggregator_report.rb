@@ -3,9 +3,9 @@ module Aggregators::AggregatorReports
   class AggregatorReport
     include Cbv::MonthlySummaryHelper
 
-    attr_accessor :payroll_accounts, :identities, :incomes, :employments, :gigs, :paystubs, :from_date, :to_date, :has_fetched
+    attr_accessor :payroll_accounts, :identities, :incomes, :employments, :gigs, :paystubs, :has_fetched, :fetched_days
 
-    def initialize(payroll_accounts: [], from_date: nil, to_date: nil)
+    def initialize(payroll_accounts: [], days_to_fetch_for_w2: nil, days_to_fetch_for_gig: nil)
       @has_fetched = false
       @payroll_accounts = payroll_accounts
       @identities = []
@@ -13,8 +13,9 @@ module Aggregators::AggregatorReports
       @employments = []
       @paystubs = []
       @gigs = []
-      @from_date = from_date
-      @to_date = to_date
+      @days_to_fetch_for_w2 = days_to_fetch_for_w2
+      @days_to_fetch_for_gig = days_to_fetch_for_gig
+      @fetched_days = days_to_fetch_for_w2
     end
 
     def fetch
@@ -44,8 +45,6 @@ module Aggregators::AggregatorReports
       end
       @has_fetched = all_successful
     end
-
-
 
     AccountReportStruct = Struct.new(:identity, :income, :employment, :paystubs, :gigs)
     def find_account_report(account_id)
@@ -122,6 +121,18 @@ module Aggregators::AggregatorReports
       latest_paystub_date = paystubs.map(&:pay_date).compact.map { |pay_date| Date.parse(pay_date) }.max
       return nil if latest_paystub_date.nil?
       (Date.current - latest_paystub_date).to_i
+    end
+
+    def from_date
+      @fetched_days.days.ago.to_date
+    end
+
+    def to_date
+      # Use the CBV flow as the basis for the end of the report range, as it
+      # reflects the actual time that the user was completing the flow (as
+      # opposed to the invitation, which they could have been sitting on for
+      # many days.)
+      @payroll_accounts.first.cbv_flow.created_at.to_date
     end
   end
 end

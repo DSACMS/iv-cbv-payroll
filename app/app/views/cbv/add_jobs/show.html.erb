@@ -1,6 +1,6 @@
 <% content_for :title, t(".header") %>
 <h1><%= t(".header") %></h1>
-<p><%= t(".subheader", pay_income_days: current_agency.pay_income_days) %></p>
+<p><%= t(".subheader") %></p>
 
 <div data-controller="cbv-add-job">
   <h2><%= t(".answer_yes_header_html") %></h2>
@@ -24,7 +24,7 @@
   </ul>
 
     <p class="margin-bottom-2">
-      <%= t(".criteria_disclaimer", pay_income_days: current_agency.pay_income_days) %>
+      <%= t(".criteria_disclaimer") %>
       <%= agency_translation(".learn_more_link_html", agency_url: agency_url) %>
     </p>
 </div>

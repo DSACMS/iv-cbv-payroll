@@ -7,7 +7,10 @@
     <p class="line-height-sans-5"><%= agency_translation(".not_listed_p2_link_html", agency_url: agency_url, agency_short_name: current_agency.agency_short_name) %></p>
   <% else %>
     <p class="line-height-sans-5"><%= t(".not_listed_p2", agency_short_name: current_agency.agency_short_name) %></p>
-    <%= agency_translation(".exit_button_html", agency_url: agency_url) %>
+    <%= t(".exit_button_html",
+      agency_contact_website: current_agency.agency_contact_website,
+      agency_full_name: agency_translation("shared.agency_full_name")
+    ) %>
   <% end %>
 </div>
 
