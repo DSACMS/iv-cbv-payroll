@@ -43,6 +43,6 @@ class CbvFlow < ApplicationRecord
     raise ArgumentError.new("Client Agency #{client_agency_id} not found") unless client_agency
 
     host = Rails.env.production? ? client_agency.agency_production_domain : client_agency.agency_demo_domain
-    "https://#{host}/en/cbv/links/#{client_agency_id}"
+    Rails.application.routes.url_helpers.cbv_flow_new_url({ client_agency_id: client_agency_id, host: host })
   end
 end
