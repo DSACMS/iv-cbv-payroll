@@ -4,13 +4,13 @@ RSpec.describe Cbv::MonthlySummaryHelper, type: :helper do
   subject {  helper }
   describe ".partial_month_details" do
     it "detects complete month when there are no activities" do
-      current_month_string = "2025-01"
+      current_month = Date.parse("2025-01-01")
       activity_dates = []
       from_date = Date.parse("2025-01-01")
       to_date = Date.parse("2025-03-31")
 
-      partial_month_details = subject.partial_month_details(current_month_string, activity_dates, from_date, to_date)
-      expect(partial_month_details).to an_object_eq_to({
+      partial_month_details = subject.partial_month_details(current_month, activity_dates, from_date, to_date)
+      expect(partial_month_details).to eq({
                                                          is_partial_month: false,
                                                          description: nil,
                                                          included_range_start: Date.parse("2025-01-01"),
@@ -19,12 +19,12 @@ RSpec.describe Cbv::MonthlySummaryHelper, type: :helper do
     end
 
     it "detects complete first month when there is an activity on the first day" do
-      current_month_string = "2025-01"
+      current_month = Date.parse("2025-01-01")
       activity_dates = [ Date.parse("2025-01-01") ]
       from_date = Date.parse("2025-01-01")
       to_date = Date.parse("2025-03-31")
 
-      partial_month_details = subject.partial_month_details(current_month_string, activity_dates, from_date, to_date)
+      partial_month_details = subject.partial_month_details(current_month, activity_dates, from_date, to_date)
       expect(partial_month_details).to an_object_eq_to({
                                                          is_partial_month: false,
                                                          description: nil,
@@ -34,12 +34,12 @@ RSpec.describe Cbv::MonthlySummaryHelper, type: :helper do
     end
 
     it "detects complete last month when there is an activity on the last day" do
-      current_month_string = "2025-03"
+      current_month = Date.parse("2025-03-01")
       activity_dates = [ Date.parse("2025-03-31") ]
       from_date = Date.parse("2025-01-01")
       to_date = Date.parse("2025-03-31")
 
-      partial_month_details = subject.partial_month_details(current_month_string, activity_dates, from_date, to_date)
+      partial_month_details = subject.partial_month_details(current_month, activity_dates, from_date, to_date)
       expect(partial_month_details).to an_object_eq_to({
                                                          is_partial_month: false,
                                                          description: nil,
@@ -49,12 +49,12 @@ RSpec.describe Cbv::MonthlySummaryHelper, type: :helper do
     end
 
     it "detects partial first month" do
-      current_month_string = "2025-01"
+      current_month = Date.parse("2025-01-01")
       activity_dates = [ Date.parse("2025-01-04"), Date.parse("2025-01-06") ]
       from_date = Date.parse("2025-01-01")
       to_date = Date.parse("2025-03-31")
 
-      partial_month_details = subject.partial_month_details(current_month_string, activity_dates, from_date, to_date)
+      partial_month_details = subject.partial_month_details(current_month, activity_dates, from_date, to_date)
       expect(partial_month_details).to an_object_eq_to({
                                                          is_partial_month: true,
                                                          description: "(Partial month: from 1/4-1/31)",
@@ -64,12 +64,12 @@ RSpec.describe Cbv::MonthlySummaryHelper, type: :helper do
     end
 
     it "detects partial last month" do
-      current_month_string = "2025-03"
+      current_month = Date.parse("2025-03-01")
       activity_dates = [ Date.parse("2025-03-04"), Date.parse("2025-03-06") ]
       from_date = Date.parse("2025-01-01")
       to_date = Date.parse("2025-03-31")
 
-      partial_month_details = subject.partial_month_details(current_month_string, activity_dates, from_date, to_date)
+      partial_month_details = subject.partial_month_details(current_month, activity_dates, from_date, to_date)
       expect(partial_month_details).to an_object_eq_to({
                                                          is_partial_month: true,
                                                          description: "(Partial month: from 3/1-3/6)",
@@ -79,12 +79,12 @@ RSpec.describe Cbv::MonthlySummaryHelper, type: :helper do
     end
 
     it "detects partial when it's all the same month" do
-      current_month_string = "2025-03"
+      current_month = Date.parse("2025-03-01")
       activity_dates = [ Date.parse("2025-03-04"), Date.parse("2025-03-06") ]
       from_date = Date.parse("2025-03-01")
       to_date = Date.parse("2025-03-31")
 
-      partial_month_details = subject.partial_month_details(current_month_string, activity_dates, from_date, to_date)
+      partial_month_details = subject.partial_month_details(current_month, activity_dates, from_date, to_date)
       expect(partial_month_details).to an_object_eq_to({
                                                          is_partial_month: true,
                                                          description: "(Partial month: from 3/4-3/6)",
@@ -94,12 +94,12 @@ RSpec.describe Cbv::MonthlySummaryHelper, type: :helper do
     end
 
     it "detects complete when it's the full month" do
-      current_month_string = "2025-03"
+      current_month = Date.parse("2025-03-01")
       activity_dates = [ Date.parse("2025-03-01"), Date.parse("2025-03-31") ]
       from_date = Date.parse("2025-03-01")
       to_date = Date.parse("2025-03-31")
 
-      partial_month_details = subject.partial_month_details(current_month_string, activity_dates, from_date, to_date)
+      partial_month_details = subject.partial_month_details(current_month, activity_dates, from_date, to_date)
       expect(partial_month_details).to an_object_eq_to({
                                                          is_partial_month: false,
                                                          description: nil,
@@ -109,12 +109,12 @@ RSpec.describe Cbv::MonthlySummaryHelper, type: :helper do
     end
 
     it "detects partial when last day of first month" do
-      current_month_string = "2025-02"
+      current_month = Date.parse("2025-02-01")
       activity_dates = [ Date.parse("2025-02-28") ]
       from_date = Date.parse("2025-02-28")
       to_date = Date.parse("2025-05-30")
 
-      partial_month_details = subject.partial_month_details(current_month_string, activity_dates, from_date, to_date)
+      partial_month_details = subject.partial_month_details(current_month, activity_dates, from_date, to_date)
       expect(partial_month_details).to an_object_eq_to({
                                                          is_partial_month: true,
                                                          description: "(Partial month: from 2/28-2/28)",
@@ -124,12 +124,12 @@ RSpec.describe Cbv::MonthlySummaryHelper, type: :helper do
     end
 
     it "if no reporting dates are specified, no partial month calculation" do
-      current_month_string = "2025-02"
+      current_month = Date.parse("2025-02-01")
       activity_dates = [ Date.parse("2025-02-28") ]
       from_date = nil
       to_date = nil
 
-      partial_month_details = subject.partial_month_details(current_month_string, activity_dates, from_date, to_date)
+      partial_month_details = subject.partial_month_details(current_month, activity_dates, from_date, to_date)
       expect(partial_month_details).to an_object_eq_to({
                                                          is_partial_month: false,
                                                          description: nil,
@@ -187,19 +187,6 @@ RSpec.describe Cbv::MonthlySummaryHelper, type: :helper do
     end
   end
 
-  describe ".format_month" do
-    it "formats a valid month correctly" do
-      month = Date.new(2024, 12, 13)
-      formatted_month = subject.format_month(month)
-      expect(formatted_month).to eq("2024-12")
-    end
-
-    it "returns nil for nil input" do
-      formatted_month = subject.format_month(nil)
-      expect(formatted_month).to be_nil
-    end
-  end
-
   describe ".unique_months" do
     it "returns a unique list of months in reverse chronological order" do
       dates = [
@@ -211,7 +198,11 @@ RSpec.describe Cbv::MonthlySummaryHelper, type: :helper do
 
       unique_months = subject.unique_months(dates)
 
-      expect(unique_months).to eq([ "2025-03", "2025-02", "2025-01" ])
+      expect(unique_months).to eq([
+                                    Date.new(2025, 3, 1),
+                                    Date.new(2025, 2, 1),
+                                    Date.new(2025, 1, 1)
+                                  ])
     end
 
     it "returns an empty array when given an empty list" do
@@ -231,7 +222,9 @@ RSpec.describe Cbv::MonthlySummaryHelper, type: :helper do
 
       unique_months = subject.unique_months(dates)
 
-      expect(unique_months).to eq([ "2025-03" ])
+      expect(unique_months).to eq([
+                                    Date.new(2025, 3, 1)
+                                  ])
     end
 
     it "handles nil values gracefully" do
@@ -243,7 +236,9 @@ RSpec.describe Cbv::MonthlySummaryHelper, type: :helper do
 
       unique_months = subject.unique_months(dates)
 
-      expect(unique_months).to eq([ "2025-03" ])
+      expect(unique_months).to eq([
+                                    Date.new(2025, 3, 1)
+                                  ])
     end
 
     it "handles a list with only nil values" do

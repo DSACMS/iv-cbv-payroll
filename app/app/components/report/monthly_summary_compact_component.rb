@@ -8,8 +8,8 @@ class Report::MonthlySummaryCompactComponent < ViewComponent::Base
     # Note: payroll_account may either be the ID or the payroll_account object
     @account_id = payroll_account.class == String ? payroll_account : payroll_account.pinwheel_account_id
     account_report = report.find_account_report(@account_id)
-    @paystubs = account_report&.paystubs
-    @total_gross_earnings = @paystubs.reduce(0) { |sum, paystub| sum + (paystub.gross_pay_amount || 0) }
+    @paystubs = Array(account_report&.paystubs)
+    @total_gross_earnings = @paystubs.sum { |paystub| paystub.gross_pay_amount || 0 }
     @employer_name = account_report&.dig(:employment, :employer_name)
     @monthly_summary_data = report.summarize_by_month[@account_id]
   end

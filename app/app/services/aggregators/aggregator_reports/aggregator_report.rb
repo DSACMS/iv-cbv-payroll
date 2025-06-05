@@ -58,31 +58,30 @@ module Aggregators::AggregatorReports
     end
 
     def summarize_by_employer
-      @payroll_accounts
-        .each_with_object({}) do |payroll_account, hash|
-          account_id = payroll_account.pinwheel_account_id
-          has_income_data = payroll_account.job_succeeded?("income")
-          has_employment_data = payroll_account.job_succeeded?("employment")
-          has_identity_data = payroll_account.job_succeeded?("identity")
-          account_paystubs = @paystubs.filter { |paystub| paystub.account_id == account_id }
-          hash[account_id] ||= {
-            total: account_paystubs.sum { |paystub| paystub.gross_pay_amount },
-            has_income_data: has_income_data,
-            has_employment_data: has_employment_data,
-            has_identity_data: has_identity_data,
-            # TODO: what happens if more than one income/employment/identity on an account?
-            income: has_income_data && @incomes.find { |income| income.account_id == account_id },
-            employment: has_employment_data && @employments.find { |employment| employment.account_id == account_id },
-            identity: has_identity_data && @identities.find { |identity| identity.account_id == account_id },
-            paystubs: account_paystubs,
-            gigs: @gigs.filter { |gig| gig.account_id == account_id }
-          }
-        end
+      @payroll_accounts.each_with_object({}) do |payroll_account, hash|
+        account_id = payroll_account.pinwheel_account_id
+        has_income_data = payroll_account.job_succeeded?("income")
+        has_employment_data = payroll_account.job_succeeded?("employment")
+        has_identity_data = payroll_account.job_succeeded?("identity")
+        account_paystubs = @paystubs.filter { |paystub| paystub.account_id == account_id }
+        hash[account_id] ||= {
+          total: account_paystubs.sum { |paystub| paystub.gross_pay_amount },
+          has_income_data: has_income_data,
+          has_employment_data: has_employment_data,
+          has_identity_data: has_identity_data,
+          # TODO: what happens if more than one income/employment/identity on an account?
+          income: has_income_data && @incomes.find { |income| income.account_id == account_id },
+          employment: has_employment_data && @employments.find { |employment| employment.account_id == account_id },
+          identity: has_identity_data && @identities.find { |identity| identity.account_id == account_id },
+          paystubs: account_paystubs,
+          gigs: @gigs.filter { |gig| gig.account_id == account_id }
+        }
+      end
     end
 
     def summarize_by_month(from_date: nil, to_date: nil)
-      from_date = parse_date_safely(@from_date) if from_date.nil?
-      to_date = parse_date_safely(@to_date) if to_date.nil?
+      from_date = parse_date_safely(self.from_date) if from_date.nil?
+      to_date = parse_date_safely(self.to_date) if to_date.nil?
 
       @payroll_accounts
         .each_with_object({}) do |payroll_account, hash|
@@ -93,9 +92,10 @@ module Aggregators::AggregatorReports
           months = unique_months(extracted_dates)
 
           # Group paystubs and gigs by month
-          grouped_data = months.each_with_object({}) do |month_string, result|
-            month_beginning = parse_month_safely(month_string).beginning_of_month
-            month_end = month_beginning.end_of_month
+          hash[account_id] ||= months.each_with_object({}) do |month, result|
+            month_string = month.strftime("%Y-%m")
+            month_beginning = month.beginning_of_month
+            month_end = month.end_of_month
 
             paystubs_in_month = paystubs.select { |paystub| parse_date_safely(paystub.pay_date)&.between?(month_beginning, month_end) }
             gigs_in_month = gigs.select { |gig| parse_date_safely(gig.end_date)&.between?(month_beginning, month_end) }
@@ -106,10 +106,9 @@ module Aggregators::AggregatorReports
               gigs: gigs_in_month,
               accrued_gross_earnings: paystubs_in_month.sum { |paystub| paystub.gross_pay_amount || 0 },
               total_gig_hours: gigs_in_month.sum { |gig| gig.hours },
-              partial_month_range: partial_month_details(month_string, extracted_dates_in_month, from_date, to_date)
+              partial_month_range: partial_month_details(month, extracted_dates_in_month, from_date, to_date)
             }
           end
-          hash[account_id] ||= grouped_data
         end
     end
 

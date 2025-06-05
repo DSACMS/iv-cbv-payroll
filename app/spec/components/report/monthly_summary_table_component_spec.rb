@@ -34,7 +34,7 @@ RSpec.describe Report::MonthlySummaryTableComponent, type: :component do
     end
 
     context "with a gig-worker" do
-      let(:pinwheel_report) { Aggregators::AggregatorReports::PinwheelReport.new(payroll_accounts: [ payroll_account ], pinwheel_service: pinwheel_service) }
+      let(:pinwheel_report) { Aggregators::AggregatorReports::PinwheelReport.new(payroll_accounts: [ payroll_account ], pinwheel_service: pinwheel_service, days_to_fetch_for_w2: 90, days_to_fetch_for_gig: 182) }
       before do
         pinwheel_stub_request_identity_response
         pinwheel_stub_request_end_user_accounts_response
@@ -50,7 +50,7 @@ RSpec.describe Report::MonthlySummaryTableComponent, type: :component do
       subject { render_inline(described_class.new(pinwheel_report, payroll_account)) }
 
       it "pinwheel_report is properly fetched" do
-        expect(pinwheel_report.gigs.length).to be(3)
+        expect(pinwheel_report.gigs.length).to eq(3)
       end
 
       it "includes table header" do
@@ -111,7 +111,7 @@ RSpec.describe Report::MonthlySummaryTableComponent, type: :component do
     end
 
     context "with bob, a gig-worker" do
-      let(:argyle_report) { Aggregators::AggregatorReports::ArgyleReport.new(payroll_accounts: [ payroll_account ], argyle_service: argyle_service) }# , from_date: current_time, to_date: current_time) }
+      let(:argyle_report) { Aggregators::AggregatorReports::ArgyleReport.new(payroll_accounts: [ payroll_account ], argyle_service: argyle_service, days_to_fetch_for_w2: 90, days_to_fetch_for_gig: 182) }
       before do
         argyle_stub_request_identities_response("bob")
         argyle_stub_request_paystubs_response("bob")

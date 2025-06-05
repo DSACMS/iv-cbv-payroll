@@ -5,14 +5,14 @@ module Cbv::MonthlySummaryHelper
   # labeled a "partial month" per the design. The only exception to this is if the start of the
   # report range is the first of a month and the end is the last of a month.
   # In all other cases we will mark the first and last months as partial.
-  def partial_month_details(current_month_string, activity_dates, report_from_date, report_to_date)
-    start_of_month = parse_month_safely(current_month_string).beginning_of_month
-    end_of_month = parse_month_safely(current_month_string).end_of_month
+  def partial_month_details(current_month, activity_dates, report_from_date, report_to_date)
+    start_of_month = current_month
+    end_of_month = current_month.end_of_month
     earliest_activity = activity_dates.min&.to_date
     latest_activity = activity_dates.max&.to_date
 
-    is_first_month = current_month_string == self.format_month(report_from_date)
-    is_last_month = current_month_string == self.format_month(report_to_date)
+    is_first_month = start_of_month == report_from_date&.beginning_of_month
+    is_last_month = start_of_month == report_to_date&.beginning_of_month
 
     details = { is_partial_month: false, description: nil, included_range_start: start_of_month, included_range_end: end_of_month }
     return details if !is_first_month && !is_last_month
@@ -37,19 +37,13 @@ module Cbv::MonthlySummaryHelper
   # This is a local static method to parse these into date objects. May return nil on error.
   def parse_date_safely(date_string)
     return date_string if date_string.class == Date || date_string.class == DateTime
-    DateTime.parse(date_string) rescue nil
+    DateTime.parse(date_string).to_date rescue nil
   end
 
   # month_strings are used in the context of the monthly summaries in the format "2010-01".
   # This method parses these into date objects.  May return nil on error.
   def parse_month_safely(month_string)
     Date.strptime(month_string, "%Y-%m") rescue nil
-  end
-
-  # formats a date object into a month string "2010-05"
-  def format_month(date)
-    return nil unless date
-    date.strftime("%Y-%m")
   end
 
   def partial_month_description(range_start, range_end)
@@ -60,10 +54,10 @@ module Cbv::MonthlySummaryHelper
 
   # Given a list of dates, returns a deduplicated list of months in reverse chronological order (newest first).
   def unique_months(dates)
-    dates.map { |date| format_month(date) }
+    dates.map { |date| date&.beginning_of_month }
          .compact
          .uniq
-         .sort_by { |month_string| parse_month_safely(month_string) }
+         .sort_by { |date| date }
          .reverse
   end
 
