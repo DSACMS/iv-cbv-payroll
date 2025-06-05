@@ -10,7 +10,7 @@ RSpec.describe Cbv::MonthlySummaryHelper, type: :helper do
       to_date = Date.parse("2025-03-31")
 
       partial_month_details = subject.partial_month_details(current_month_string, activity_dates, from_date, to_date)
-      expect(partial_month_details).to an_object_eq_to({
+      expect(partial_month_details).to eq({
                                                          is_partial_month: false,
                                                          description: nil,
                                                          included_range_start: Date.parse("2025-01-01"),

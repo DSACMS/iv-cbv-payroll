@@ -11,8 +11,8 @@ module Cbv::MonthlySummaryHelper
     earliest_activity = activity_dates.min&.to_date
     latest_activity = activity_dates.max&.to_date
 
-    is_first_month = current_month_string == self.format_month(report_from_date)
-    is_last_month = current_month_string == self.format_month(report_to_date)
+    is_first_month = start_of_month == report_from_date&.beginning_of_month
+    is_last_month = start_of_month == report_to_date&.beginning_of_month
 
     details = { is_partial_month: false, description: nil, included_range_start: start_of_month, included_range_end: end_of_month }
     return details if !is_first_month && !is_last_month

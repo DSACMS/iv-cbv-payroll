@@ -81,8 +81,8 @@ module Aggregators::AggregatorReports
     end
 
     def summarize_by_month(from_date: nil, to_date: nil)
-      from_date = parse_date_safely(@from_date) if from_date.nil?
-      to_date = parse_date_safely(@to_date) if to_date.nil?
+      from_date = parse_date_safely(self.from_date) if from_date.nil?
+      to_date = parse_date_safely(self.to_date) if to_date.nil?
 
       @payroll_accounts
         .each_with_object({}) do |payroll_account, hash|
@@ -93,7 +93,7 @@ module Aggregators::AggregatorReports
           months = unique_months(extracted_dates)
 
           # Group paystubs and gigs by month
-          grouped_data = months.each_with_object({}) do |month_string, result|
+          hash[account_id] ||= months.each_with_object({}) do |month_string, result|
             month_beginning = parse_month_safely(month_string).beginning_of_month
             month_end = month_beginning.end_of_month
 
@@ -109,7 +109,6 @@ module Aggregators::AggregatorReports
               partial_month_range: partial_month_details(month_string, extracted_dates_in_month, from_date, to_date)
             }
           end
-          hash[account_id] ||= grouped_data
         end
     end
 
