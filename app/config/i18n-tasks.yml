@@ -1,4 +1,5 @@
 # i18n-tasks finds and manages missing and unused translations: https://github.com/glebm/i18n-tasks
+# <% require './lib/i18n_csv_tasks' %>
 
 # The "main" locale.
 base_locale: en
@@ -308,6 +309,18 @@ ignore_unused:
     - "cbv.submits.show.pdf.caseworker.*" #dynamically looked up translations
     - "cbv.submits.show.pdf.client.agency_id_number" #dynamically looked up translations
     - "components.report.monthly_summary_table.*" # FFS-2668 - this should be removed when actually used
+
+csv:
+  # see: https://github.com/glebm/i18n-tasks/wiki/Custom-CSV-import-and-export-tasks
+  # usage:
+  #   bundle exec i18n-tasks csv-export
+  export:
+    - "tmp/exported-locales.csv"
+  # usage:
+  #   bundle exec i18n-tasks csv-import
+  import: []
+    #- tmp/i18n-export/main.csv
+    #- tmp/i18n-export/faqs.csv
 
 ## Unused examples of how to use this file:
 
