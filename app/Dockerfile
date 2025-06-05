@@ -138,20 +138,20 @@ ENV PIDFILE="/rails/tmp/pids/server.pid"
 # and notice the version that was installed.
 RUN apt-get update -qq && \
     apt-get install -y --no-install-recommends \
-        curl=7.88.1-10+deb12u12 \
         libgpgme11=1.18.0-3+b1 \
         libvips42=8.14.1-3+deb12u2 \
         openssl=3.0.16-1~deb12u1 \
         postgresql-client=15+248 \
         python-is-python3=3.11.2-1+deb12u1 \
         python3-venv=3.11.2-1+b1 \
-        unzip=6.0-28 \
+        python3-pip=23.0.1+dfsg-1 \
         && \
     rm -rf /var/lib/apt/lists /var/cache/apt/archives && \
-    curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip" && \
-    unzip awscliv2.zip && \
-    ./aws/install && \
-    rm -rf ./aws awscliv2.zip
+    python3 -m venv /opt/aws-cli-venv && \
+    /opt/aws-cli-venv/bin/pip install --no-cache-dir --upgrade pip && \
+    /opt/aws-cli-venv/bin/pip install --no-cache-dir "setuptools>=78.1.1" && \
+    /opt/aws-cli-venv/bin/pip install --no-cache-dir awscli && \
+    ln -s /opt/aws-cli-venv/bin/aws /usr/local/bin/aws
 
 # Remove base rexml for GHSA-4xqq-m2hx-25v8
 RUN gem uninstall -i /usr/local/lib/ruby/gems/3.3.0 debug && \
