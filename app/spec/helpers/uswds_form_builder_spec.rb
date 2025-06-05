@@ -249,4 +249,151 @@ RSpec.describe UswdsFormBuilder do
       end
     end
   end
+
+  describe '#button_with_icon' do
+    let(:result) { builder.button_with_icon('Save') }
+
+    it 'outputs a button with default classes' do
+      expect(result).to have_element(:button, type: 'button', class: 'usa-button')
+      expect(result).to have_text('Save')
+    end
+
+    context 'with default value when no text provided' do
+      let(:result) { builder.button_with_icon }
+
+      it 'outputs a button with default text' do
+        expect(result).to have_element(:button, type: 'button', class: 'usa-button')
+        expect(result).to have_text('Button')
+      end
+    end
+
+    context 'with options hash as first parameter' do
+      let(:result) { builder.button_with_icon(icon: 'save_alt', type: 'submit') }
+
+      it 'treats the hash as options and uses default button text' do
+        expect(result).to have_element(:button, type: 'submit', class: 'usa-button')
+        expect(result).to have_text('Button')
+        expect(result).to have_element(:svg, class: 'usa-icon')
+        expect(result).to have_element(:use, href: /.svg#save_alt/)
+      end
+    end
+
+    context 'with icon' do
+      let(:result) { builder.button_with_icon('Copy', icon: 'content_copy') }
+
+      it 'outputs a button with icon' do
+        expect(result).to have_element(:button, class: 'usa-button')
+        expect(result).to have_element(:svg, class: 'usa-icon')
+        expect(result).to have_element(:use, href: /.svg#content_copy/)
+      end
+    end
+
+    context 'with variant' do
+      let(:result) { builder.button_with_icon('Delete', variant: 'secondary') }
+
+      it 'adds variant class' do
+        expect(result).to have_element(:button, class: 'usa-button usa-button--secondary')
+      end
+    end
+
+    context 'with multiple variants' do
+      let(:result) { builder.button_with_icon('Delete', variant: %w[secondary outline]) }
+
+      it 'adds multiple variant classes' do
+        expect(result).to have_element(:button, class: 'usa-button usa-button--secondary usa-button--outline')
+      end
+    end
+
+    context 'with custom type' do
+      let(:result) { builder.button_with_icon('Submit', type: 'submit') }
+
+      it 'sets the button type' do
+        expect(result).to have_element(:button, type: 'submit')
+      end
+    end
+
+    context 'with custom class' do
+      let(:result) { builder.button_with_icon('Save', class: 'custom-class') }
+
+      it 'adds custom class to button' do
+        expect(result).to have_element(:button, class: 'usa-button custom-class')
+      end
+    end
+
+    context 'with icon and variant' do
+      let(:result) { builder.button_with_icon('Save', icon: 'save_alt', variant: 'big') }
+
+      it 'outputs button with both icon and variant styling' do
+        expect(result).to have_element(:button, class: 'usa-button usa-button--big')
+        expect(result).to have_element(:svg, class: 'usa-icon')
+        expect(result).to have_element(:use, href: /.svg#save_alt/)
+      end
+    end
+  end
+
+  describe '#link_with_icon' do
+    let(:result) { builder.link_with_icon('View Details', url: '/details') }
+
+    it 'outputs a link with link styling' do
+      expect(result).to have_element(:a, href: '/details', class: 'usa-link')
+      expect(result).to have_text('View Details')
+    end
+
+    context 'without url option' do
+      it 'raises an ArgumentError' do
+        expect { builder.link_with_icon('View Details') }.to raise_error(ArgumentError, 'options hash must include :url for link_with_icon')
+      end
+    end
+
+    context 'with icon' do
+      let(:result) { builder.link_with_icon('View Details', url: '/details', icon: 'file_download') }
+
+      it 'outputs a link with icon' do
+        expect(result).to have_element(:a, href: '/details', class: 'usa-link')
+        expect(result).to have_element(:svg, class: 'usa-icon')
+        expect(result).to have_element(:use, href: /.svg#file_download/)
+      end
+    end
+
+    context 'with variant' do
+      let(:result) { builder.link_with_icon('Cancel', url: '/cancel', variant: 'unstyled') }
+
+      it 'adds variant class' do
+        expect(result).to have_element(:a, class: 'usa-link usa-link--unstyled')
+      end
+    end
+
+    context 'with multiple variants' do
+      let(:result) { builder.link_with_icon('Edit', url: '/edit', variant: %w[secondary outline]) }
+
+      it 'adds multiple variant classes' do
+        expect(result).to have_element(:a, class: 'usa-link usa-link--secondary usa-link--outline')
+      end
+    end
+
+    context 'with custom class' do
+      let(:result) { builder.link_with_icon('Download', url: '/download', class: 'download-link') }
+
+      it 'adds custom class to link' do
+        expect(result).to have_element(:a, class: 'usa-link download-link')
+      end
+    end
+
+    context 'with icon and variant' do
+      let(:result) { builder.link_with_icon('Download', url: '/download', icon: 'file_download', variant: 'accent_cool') }
+
+      it 'outputs link with both icon and variant styling' do
+        expect(result).to have_element(:a, href: '/download', class: 'usa-link usa-link--accent-cool')
+        expect(result).to have_element(:use, href: /.svg#file_download/)
+      end
+    end
+
+    context 'with underscored variant name' do
+      let(:result) { builder.link_with_icon('Test', url: '/test', variant: 'accent_warm') }
+
+      it 'converts underscores to dashes in CSS class' do
+        expect(result).to have_element(:a, class: 'usa-link usa-link--accent-warm')
+      end
+    end
+  end
 end
