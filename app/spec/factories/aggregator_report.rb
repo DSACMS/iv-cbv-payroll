@@ -31,6 +31,7 @@ FactoryBot.define do
         start_date: "2020-01-01",
         termination_date: nil,
         status: "employed",
+        employment_type: :w2,
         account_source: "pinwheel_payroll_provider"
     )
     ] }
@@ -119,6 +120,7 @@ FactoryBot.define do
         start_date: "2021-01-01",
         termination_date: nil,
         status: "employed",
+        employment_type: :w2,
         account_source: "argyle_sandbox"
     )
     ] }
