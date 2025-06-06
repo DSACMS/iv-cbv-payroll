@@ -97,7 +97,7 @@ RSpec.describe Aggregators::AggregatorReports::PinwheelReport, type: :service do
         expect(dec[:total_gig_hours]).to eq(45.0)
         expect(dec[:partial_month_range]).to an_object_eq_to({
                                                                is_partial_month: true,
-                                                               description: "(Partial month: from 12/5-12/31)",
+                                                               description: "(Partial month: from Dec 5-Dec 31)",
                                                                included_range_start: Date.parse("2020-12-05"),
                                                                included_range_end: Date.parse("2020-12-31")
                                                              })
