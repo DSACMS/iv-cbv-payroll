@@ -45,6 +45,36 @@ RSpec.describe Cbv::EntriesController do
         )
       end
 
+      context "with multiple cbv flows" do
+        it "does the thing" do
+          expect(EventTrackingJob).to receive(:perform_later).with("ApplicantClickedCBVInvitationLink", anything, hash_including(
+            cbv_flow_id: be_a(Integer),
+            timestamp: be_a(Integer),
+            invitation_id: invitation.id,
+            client_agency_id: invitation.client_agency_id,
+            seconds_since_invitation: seconds_since_invitation
+          ))
+
+          expect(EventTrackingJob).to receive(:perform_later).with("CbvPageView", anything, hash_including(
+            user_agent: be_a(String),
+            invitation_id: invitation.id,
+            cbv_flow_id: be_a(Integer),
+            client_agency_id: invitation.client_agency_id,
+            path: "/cbv/entry"
+          ))
+
+          expect(EventTrackingJob).to receive(:perform_later).with("ApplicantViewedAgreement", anything, hash_including(
+            cbv_flow_id: be_a(Integer),
+            timestamp: be_a(Integer),
+            invitation_id: invitation.id,
+            client_agency_id: invitation.client_agency_id
+          ))
+
+          get :show, params: { token: invitation.auth_token }
+        end
+      end
+
+
       it "sends events with metadata" do
         request.headers["User-Agent"] = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36"
 
