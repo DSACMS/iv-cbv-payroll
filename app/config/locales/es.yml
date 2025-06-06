@@ -9,7 +9,7 @@ es:
       roth: Cuenta Roth
       vision: Cuidado de la vista
     earnings_category:
-      base: Salario básico
+      base: Salario Base
       benefits: Beneficios
       bereavement: Duelo
       bonus: Bono
@@ -65,7 +65,7 @@ es:
         ma: Este proceso es solo para usted. Por favor, no comparta esta invitación con nadie más. <strong>Tiene hasta el %{deadline}, para realizar su verificación.</strong>
       body_3:
         default: Esta es una herramienta opcional. Si decide que no desea usarla, puede proveer los documentos de sus ingresos a través de la aplicación %{app_name}, fax, correo postal o en persona.
-        ma: Esta es una herramienta opcional. Si decide no usarla, puede proveer el comprobante de sus ingresos brutos y horas usando %{app_name}, por fax, por correo postal o en persona.
+        ma: Esta es una herramienta opcional. Si decide no usarla, puede proveer el comprobante de su ingreso anual y horas usando %{app_name}, por fax, por correo postal o en persona.
       button: Verifique sus ingresos
       button_caption: 'Para verificar sus ingresos con el SNAP Income Pilot, haga clic en el siguiente botón:'
       footer: Este es un mensaje generado automáticamente desde su agencia de SNAP. Por favor no conteste a este correo electrónico.
@@ -95,9 +95,9 @@ es:
         answer_no_bullet_5: Usted tiene un trabajo que emite un 1099
         answer_no_header: 'Responda que NO si:'
         answer_yes_bullet_1: Su trabajo cuenta con un servicio de proveedor de nómina en línea
-        answer_yes_bullet_2: Su trabajo le permite consultar recibos de sueldo en línea
+        answer_yes_bullet_2: Su trabajo le permite ver sus recibos de pago en línea
         answer_yes_bullet_3: Su trabajo se basa en aplicaciones (Uber, DoorDash, Lyft, Instacart, etc.)
-        answer_yes_header_html: 'Responda que SÍ si <em>cualquiera</em> de las siguientes afirmaciones son ciertas sobre su trabajo actual o reciente:'
+        answer_yes_header_html: Responda SÍ si <em>alguna</em> de estas afirmaciones son verdaderas sobre su trabajo actual o reciente.
         continue: Continuar
         criteria_disclaimer: 'Nota: Si ha tenido otros trabajos en los últimos 90 días que no cumplen estos criterios, es posible que tenga que presentar información de ese ingreso por separado.'
         header: "¿Tiene otro trabajo que declarar?"
@@ -173,8 +173,9 @@ es:
         select: Seleccione
         select_button_aria_label: Abra una ventana de autenticación para que el empleador o proveedor de nómina importe su historial de pago.
         to_continue: 'Si aún no ve enumerado a su empleador ni a su proveedor de nómina:'
-        to_continue_li_1: Tendrá que enviar esa información de ingresos por separado.
-        to_continue_li_1_html: <a href="%{agency_contact_website}" target="_blank" rel="noopener noreferrer">Vaya al sitio web del %{agency_short_name}</a> para informarse de otras formas de notificar sus ingresos.
+        to_continue_li_1: Deberá enviar esa información de ingresos por separado.
+        to_continue_li_1_html:
+          la_ldh: <a href="%{agency_url}" target="_blank" rel="noopener noreferrer">Visite el sitio web del DES </a> para informarse de otras formas de notificar sus ingresos.
         to_continue_li_2: Si tiene otros trabajos que añadir, búsquelos.
         to_continue_li_3: Si no tiene otros trabajos que añadir aquí, puede salir de este sitio.
         to_continue_li_3_continue: Si no tiene otros trabajos para agregar aquí, siga revisando su informe de ingresos.
@@ -214,16 +215,16 @@ es:
     missing_results:
       show:
         back_button: Regrese a la búsqueda del empleador
-        continue_button: Continúe a «revisar mi informe»
-        continue_to_review: Continúe a revisar la información de ingresos que logró encontrar antes de enviarla a %{agency_acronym}.
+        continue_button: Continúe a «Revisar mi reporte»
+        continue_to_review: Continúe a revisar la información de ingresos que pudo encontrar antes de enviarla a %{agency_acronym}.
         exit_button_html: <a href="%{agency_contact_website}" class="usa-button" target="_blank" rel="noopener noreferrer">Salir y acceder al sitio web %{agency_full_name}</a>
-        header: Cómo informar sus ingresos si su empleador o proveedor de nómina no están listados
+        header: Cómo reportar ingresos si su empleador o proveedor de nómina no figura en la lista
         more_jobs: Si tiene más trabajos que reportar
         no_more_jobs: Si no tiene más trabajos que reportar
         not_listed_p1: Si su empleador o proveedor de nómina no están listados en este sitio, tendrá que compartir su información de ingresos por este trabajo directamente con %{agency_acronym}.
         not_listed_p2: Para obtener más información sobre cómo enviar los documentos requeridos, visite el sitio web de %{agency_short_name}.
         not_listed_p2_link_html:
-          la_ldh: Para obtener más información sobre cómo enviar documentos, visite el sitio web de <a href="%{agency_url}" target="_blank" rel="noopener noreferrer">%{agency_short_name}</a>.
+          la_ldh: Visite <a href="%{agency_url}" target="_blank" rel="noopener noreferrer">el sitio web del %{agency_short_name}</a> para obtener más información sobre cómo enviar documentos.
           sandbox: Para obtener más información sobre cómo enviar documentos, visite el sitio web de <a href="https://www.mass.gov/guides/how-to-contact-dta" target="_blank" rel="noopener noreferrer">%{agency_short_name}</a>.
         you_can_search: Puede buscar otro empleador o proveedor de nómina. Este sitio apoya a los empleadores con proveedores de nómina en línea o servicios basados en aplicaciones. Algunos ejemplos son Amazon, Walmart, McDonald’s, Uber, DoorDash, Lyft e Instacart.
     payment_details:
@@ -250,14 +251,14 @@ es:
         pay_date: 'Fecha de pago: %{pay_date}'
         pay_frequency: Frecuencia de pago
         pay_gross: Pago antes de impuestos (bruto)
-        pay_gross_ytd: Remuneración bruta desde el inicio del año a la fecha (YTD, por sus siglas en inglés)
+        pay_gross_ytd: Salario Bruto Acumulado del Año
         pay_net: Pago después de impuestos y deducciones (neto)
         pay_period: Período de pago
         pay_period_value: "%{start_date} al %{end_date}"
         payment_hours: "%{amount} horas"
         payments_and_deductions_table_header: Pagos y deducciones
         subheader: Hemos recopilado sus registros de ingresos de los últimos %{report_data_range}, conforme a la solicitud de %{agency_acronym}. Estos registros se extienden desde el %{start_date} hasta el %{end_date}. Si hay información faltante o si algunos datos no son exactos, escriba un comentario para %{agency_acronym}. Esta nota se incluirá en su informe de ingresos y se vinculará a su %{benefit} %{reporting_purpose}.
-        total_gross_description: Estos son sus ingresos brutos totales provenientes de su trabajo, antes del pago de impuestos, beneficios y deducciones que se restaron de su cheque de pago.
+        total_gross_description: 'Este es el ingreso total de su trabajo antes de deducción de impuestos, beneficios, y otras deducciones de su cheque de pago. '
         total_gross_income: 'Ingresos totales de los últimos %{report_data_range}, antes de impuestos: %{amount}'
         unknown: Desconocido
     submits:
@@ -269,10 +270,10 @@ es:
         consent_checkbox_label_html:
           az_des: Marque esta casilla para confirmar, bajo pena de perjurio, que la información proporcionada es, a su leal saber y entender, verdadera y está completa.<ul><li>Se compromete a informar %{agency_acronym} de cualquiera de lo siguiente:<ul><li>(i) cualquier otro ingreso que no esté incluido en este informe;</li><li>o (ii) cualquier error que haya detectado en la información recopilada con esta herramienta.</li></ul></li><li>Comprende que usted es el único responsable de proporcionar información precisa y completa.</li><li>Por este motivo, cualquier información falsa o que no conste en el informe puede acarrear las siguientes consecuencias:<ul><li>(i) un sobrepago, que debe reembolsar a %{agency_acronym};</li><li>o (ii) una inhabilitación para participar en el programa.</li></ul></li></ul>Al enviar este informe, autoriza su uso para fines de verificación de ingresos por parte de %{agency_acronym} y del personal autorizado de esta agencia.
           default: 'Marque esta casilla para confirmar lo siguiente: <ul><li>La información proporcionada es, a su leal saber y entender, verdadera y está completa.</li><li>Se compromete a informar a %{agency_full_name} de cualquier otro ingreso que no esté incluido en este informe o cualquier discrepancia que haya detectado en la información recopilada con esta herramienta.</li><li>Comprende que usted es el único responsable de proporcionar información precisa y completa. Por este motivo, cualquier información falsa o que no conste en el informe puede acarrear consecuencias legales.</li></ul> Al enviar este informe, autoriza su uso para fines de verificación de ingresos por parte del personal autorizado de %{agency_acronym}.'
-        legal_header: Consentimiento legal
+        legal_header: Acuerdo Legal
         none_found: No encontramos ningún pago de este empleador.
         none_found_confirmed: Hemos confirmado que no se registra ningún pago reciente de este empleador. Esta situación se presenta cuando el cliente no ha percibido ingresos de este trabajo.
-        page_header: Envíe un informe de ingresos
+        page_header: Envíe su reporte de ingresos
         pdf:
           agency_header_name:
             az_des: Department of Economic Security
@@ -295,10 +296,10 @@ es:
             employment_information: Información del empleo
             pay_date: 'Fecha de pago: %{pay_date}'
             report_details: Detalles del reporte
-        share_report_button: Autorizo que se comparta mi informe con %{agency_acronym}
+        share_report_button: Comparta mi reporte con %{agency_acronym}
         table_caption_no_name: Employer %{number}
         warning_1: Su informe de ingresos se adjuntará a su %{benefit}, con el estado %{reporting_purpose}.
-        warning_2: A fin de compartir este informe, debe marcar la casilla de consentimiento legal.
+        warning_2: Usted debe marcar la casilla del acuerdo legal para compartir su reporte.
       update:
         consent_to_authorize_warning: A fin de compartir su informe, marque la casilla de consentimiento legal.
     successes:
@@ -307,7 +308,7 @@ es:
         copy_link: Copiar enlace
         download: Descargue una copia del informe
         follow_up: Para comprobar el estado de su %{benefit} por %{reporting_purpose}, visite el sitio web de <a href="%{agency_url}" target="_blank" rel="noopener noreferrer">%{agency_acronym}</a>.
-        header: Su informe de ingresos ha sido compartido de forma exitosa con %{agency_acronym}
+        header: Su reporte de ingresos se ha compartido con %{agency_acronym} exitosamente
         if_it_didnt_work: Si no pudo encontrar a un empleador, o uno de sus empleadores no tiene un proveedor de nómina en línea, proporcione, de manera directa, esta información a %{agency_acronym}.
         invitation_link_label: Enlace de invitación
         share_invitation_link_content: Comparta este enlace con todos los integrantes del grupo familiar que haya incluido en su solicitud, a fin de que puedan declarar sus ingresos.
@@ -430,9 +431,9 @@ es:
       heading: "¿Necesita ayuda para ponerse en contacto con su proveedor de nómina?"
       help_options: Obtenga ayuda aquí.
     index:
-      company_id: No sé la identificación de mi empresa
-      credentials: No me siento cómodo para ingresar mis credenciales de inicio de sesión
-      employer: No logro encontrar el empleador correcto
+      company_id: No sé el ID de mi empresa
+      credentials: 'No me siento cómodo ingresando mis credenciales de inicio de sesión '
+      employer: No puedo encontrar el empleador correcto
       feedback: Informe de comentarios o errores
       password: No sé mi contraseña
       provider: No sé quién es mi proveedor de nómina
@@ -448,32 +449,30 @@ es:
           - Busque en su correo electrónico palabras clave, por ejemplo, "nómina", "[Nombre del proveedor de nómina]" o "identificación de la empresa".
           title: Revise todos los materiales de bienvenida que haya recibido
         step2:
-          content:
-          - Es posible que encuentre la identificación de su empresa en recibos de pago antiguos, formularios de impuestos, así como en cualquier otro documento relacionado con la nómina. Compruebe primero en estos recursos si encuentra la información.
-          title: Revise los recibos de pago o los resúmenes de cuenta.
+          content: '["El ID de su empresa podría estar en recibos de pago, formularios de impuestos, u otros documentos de nómina antiguos. Busque allí primero si los tiene."]'
+          title: Busque en los recibos de pago o estados de cuenta
         step3:
           content:
           - Póngase en contacto con el encargado de Recursos Humanos o de Nómina de la empresa. Cualquiera de estas personas pueden ayudarlo a conseguir la identificación de la empresa.
           title: Póngase en contacto con el representante de departamento Recursos Humanos de su empleador.
         title: No sé la identificación de mi empresa
       credentials:
-        intro: Entendemos todas las inquietudes que pueda tener para compartir su información de inicio de sesión.
-        security_message: 'Sin embargo, debe saber que su seguridad es importante para nosotros y queremos que se sienta seguro. A continuación, detallamos cómo protegemos su información:'
+        intro: 'Entendemos su preocupación por compartir su información de inicio de sesión. '
+        security_message: 'Su seguridad es importante para nosotros y queremos que se sienta seguro. A continuación le explicamos cómo mantenemos su información protegida. '
         step1:
-          content:
-          - Aplicamos en método de cifrado fuerte, similar al que usan los bancos, para proteger su información. Sus credenciales se transmiten de forma segura y jamás las almacenamos.
+          content: '["Usamos métodos de encriptación fuertes, similares a los que usan los bancos, para proteger su información. Sus credenciales se transmiten de forma segura y no las almacenamos."]'
           title: Su información de inicio de sesión se encuentra cifrada y protegida.
         step2:
           content:
           - Solo usamos su información de inicio de sesión para verificar los detalles de su nómina una vez. No se volverá a usar ni se usará para ningún otro fin.
-          title: Su información solo se emplea a los fines de verificar sus ingresos.
+          title: 'Su información solo se usa para verificar sus ingresos. '
         step3:
           content:
           - El servicio que hemos contratado para comprobar los datos de nómina es de confianza para muchas empresas. Además, gestiona los datos de nómina de forma segura.
           title: Contratamos servicios de confianza.
         title: No me siento cómodo para ingresar mis credenciales de inicio de sesión
       employer:
-        intro: 'Ahora, pruebe los siguientes pasos:'
+        intro: 'Intente los pasos siguientes:'
         step1:
           content:
           - Si hay una empresa matriz, use ese nombre primero.
@@ -484,11 +483,11 @@ es:
           content:
           - Si aún así su empleador no aparece en los resultados de búsqueda, busque, en su lugar, el proveedor de nómina que utiliza su empresa.
           - Si no conoce el nombre de su proveedor de nómina, revise el recibo de pago en busca de nombres, por ejemplo, ADP, Paylocity o Workday.
-          title: En su lugar, busque por proveedor de nómina.
+          title: Busque por proveedor de nómina en vez de por empleador.
         step3:
           content:
           - Si su empleador o proveedor de nómina no figuran en la lista, deberá proporcionar la información de ingresos a la agencia de otra manera.
-          title: Si aún así no puede encontrar a su empleador o proveedor de nómina, siga los pasos a continuación.
+          title: Si aún no puede encontrar a su empleador o proveedor de nómina
         title: No logro encontrar el empleador correcto
       go_back: Atrás
       password:
@@ -511,7 +510,7 @@ es:
         step2:
           content:
           - En su bandeja de entrada, busque términos clave, como "nómina", "recibo de pago" o "depósito directo".
-          title: Busque en la bandeja de entrada de su correo electrónico.
+          title: Busque en el buzón de su correo electrónico.
         step3:
           content:
           - Para obtener el nombre de su proveedor de nómina, póngase en contacto con el representante de RR. HH. o con el administrador de nómina.
@@ -524,9 +523,8 @@ es:
           - Siga las indicaciones en pantalla para recuperar su nombre de usuario.
           title: Vaya a la página de inicio de sesión de su proveedor de nómina.
         step2:
-          content:
-          - Busque palabras clave, por ejemplo, "[Nombre del proveedor de nómina]", "inicio de sesión" o "credenciales".
-          title: Revise la bandeja de entrada de su correo electrónico.
+          content: '["Busque correos electrónicos de su proveedor de nómina o empleador que tengan su nombre de usuario.", "Busque palabras clave, por ejemplo, \"[Nombre del proveedor de nómina]\", \"inicio de sesión\" o \"credenciales\"."]'
+          title: Revise su buzón de correo electrónico
         step3:
           content:
           - Pídele al equipo de Recursos Humanos de su empleador que le ayude a obtener los datos de inicio de sesión en relación con su nómina.
