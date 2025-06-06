@@ -255,7 +255,7 @@ es:
         payment_hours: "%{amount} horas"
         payments_and_deductions_table_header: Pagos y deducciones
         subheader: Hemos recopilado sus registros de ingresos de los últimos %{report_data_range}, conforme a la solicitud de %{agency_acronym}. Estos registros se extienden desde el %{start_date} hasta el %{end_date}. Si hay información faltante o si algunos datos no son exactos, escriba un comentario para %{agency_acronym}. Esta nota se incluirá en su informe de ingresos y se vinculará a su %{benefit} %{reporting_purpose}.
-        total_gross_description: 'Este es el ingreso total de su trabajo antes de deducción de impuestos, beneficios, y otras deducciones de su cheque de pago. '
+        total_gross_description: Este es el ingreso total de su trabajo antes de deducción de impuestos, beneficios, y otras deducciones de su cheque de pago.
         total_gross_income: 'Ingresos totales de los últimos %{report_data_range}, antes de impuestos: %{amount}'
         unknown: Desconocido
     submits:
@@ -427,7 +427,7 @@ es:
       help_options: Obtenga ayuda aquí.
     index:
       company_id: No sé el ID de mi empresa
-      credentials: 'No me siento cómodo ingresando mis credenciales de inicio de sesión '
+      credentials: No me siento cómodo ingresando mis credenciales de inicio de sesión
       employer: No puedo encontrar el empleador correcto
       feedback: Informe de comentarios o errores
       password: No sé mi contraseña
@@ -451,14 +451,14 @@ es:
           title: Póngase en contacto con el representante de departamento Recursos Humanos de su empleador.
         title: No sé la identificación de mi empresa
       credentials:
-        intro: 'Entendemos su preocupación por compartir su información de inicio de sesión. '
-        security_message: 'Su seguridad es importante para nosotros y queremos que se sienta seguro. A continuación le explicamos cómo mantenemos su información protegida. '
+        intro: Entendemos su preocupación por compartir su información de inicio de sesión.
+        security_message: Su seguridad es importante para nosotros y queremos que se sienta seguro. A continuación le explicamos cómo mantenemos su información protegida.
         step1:
           content: '["Usamos métodos de encriptación fuertes, similares a los que usan los bancos, para proteger su información. Sus credenciales se transmiten de forma segura y no las almacenamos."]'
           title: Su información de inicio de sesión se encuentra cifrada y protegida.
         step2:
           content: Solo usamos su información de inicio de sesión para verificar los detalles de su nómina una vez. No se volverá a usar ni se usará para ningún otro fin.
-          title: 'Su información solo se usa para verificar sus ingresos. '
+          title: Su información solo se usa para verificar sus ingresos.
         step3:
           content: El servicio que hemos contratado para comprobar los datos de nómina es de confianza para muchas empresas. Además, gestiona los datos de nómina de forma segura.
           title: Contratamos servicios de confianza.
