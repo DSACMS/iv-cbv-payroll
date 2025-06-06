@@ -31,48 +31,47 @@ class WeeklyReportMailer < ApplicationMailer
 
   def weekly_report_data(current_agency, report_range)
     client_agency_id = current_agency.id
+    report_variant = current_agency.weekly_report["report_variant"] || "flows"
 
-    flows = CbvFlow.where(client_agency_id: client_agency_id)
-                   .completed
-                   .includes(:cbv_applicant, :cbv_flow_invitation)
-
-    results = flows.map do |flow|
-      applicant = flow.cbv_applicant
-      invitation = flow.cbv_flow_invitation
-
-      next if invitation && !report_range.cover?(invitation.created_at)
-
-      base_fields = {
-        started_at: flow.created_at,
-        transmitted_at: flow.transmitted_at,
-        completed_at: flow.consented_to_authorized_use_at
-      }
-
-      case client_agency_id
-      when "nyc"
-        base_fields.merge(
-          client_id_number: applicant.client_id_number,
-          case_number: applicant.case_number,
-          email_address: invitation&.email_address,
-          invited_at: invitation&.created_at,
-          snap_application_date: applicant.snap_application_date
-        )
-      when "ma"
-        base_fields.merge(
-          agency_id_number: applicant.agency_id_number,
-          beacon_id: applicant.beacon_id,
-          email_address: invitation&.email_address,
-          invited_at: invitation&.created_at,
-          snap_application_date: applicant.snap_application_date
-        )
-      when "la_ldh"
-        base_fields.merge(
-          case_number: applicant.case_number
-        )
+    if report_variant == "invitations"
+      CbvFlowInvitation.where(client_agency_id: client_agency_id, created_at: report_range)
+                       .includes(:cbv_flows, :cbv_applicant)
+                       .flat_map do |invitation|
+        if invitation.cbv_flows.any?
+          invitation.cbv_flows.map { |flow| build_record(flow, invitation.cbv_applicant, invitation, client_agency_id) }
+        else
+          [ build_record(nil, invitation.cbv_applicant, invitation, client_agency_id) ]
+        end
       end
-    end.compact
+    else
+      CbvFlow.where(client_agency_id: client_agency_id, created_at: report_range)
+             .completed
+             .includes(:cbv_applicant, :cbv_flow_invitation)
+             .map do |flow|
+        build_record(flow, flow.cbv_applicant, flow.cbv_flow_invitation, client_agency_id)
+      end
+    end
+  end
 
-    results
+  def build_record(flow, applicant, invitation, client_agency_id)
+    base_fields = {
+      started_at: flow&.created_at,
+      transmitted_at: flow&.transmitted_at,
+      completed_at: flow&.consented_to_authorized_use_at
+    }
+
+    case client_agency_id
+    when "la_ldh"
+      base_fields.merge(case_number: applicant.case_number)
+    when "az_des"
+      base_fields.merge(
+        case_number: applicant.case_number,
+        email_address: invitation&.email_address,
+        invited_at: invitation&.created_at
+      )
+    else
+      base_fields
+    end
   end
 
   def generate_csv(rows)
@@ -80,9 +79,7 @@ class WeeklyReportMailer < ApplicationMailer
 
     CSV.generate(headers: rows.first.keys) do |csv|
       csv << rows.first.keys
-      rows.each do |row|
-        csv << row
-      end
+      rows.each { |row| csv << row.values }
     end
   end
 end
