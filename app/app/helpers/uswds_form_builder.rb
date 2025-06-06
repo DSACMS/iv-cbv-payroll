@@ -197,6 +197,94 @@ class UswdsFormBuilder < ActionView::Helpers::FormBuilder
     end
   end
 
+  # Custom button with icon (https://designsystem.digital.gov/components/button/)
+  def button_with_icon(value = "Button", options = {})
+    if value.is_a?(Hash) && options.empty?
+      options = value
+      value = "Button"
+    end
+
+    local_options = options.dup
+
+    button_classes = [ "usa-button" ]
+
+    icon_name = local_options.delete(:icon)
+    variant = local_options.delete(:variant)
+    button_type = local_options.delete(:type) || "button"
+    custom_class = local_options.delete(:class)
+
+    if variant
+      variant = Array(variant)
+      variant.each do |v|
+        button_classes << "usa-button--#{v.to_s.dasherize}"
+      end
+    end
+
+    all_classes = button_classes.join(" ")
+    all_classes += " #{custom_class}" if custom_class
+    local_options[:class] = all_classes
+    local_options[:type] = button_type
+
+    content_parts = []
+
+    if icon_name
+      icon_sprite_path = @template.asset_path("@uswds/uswds/dist/img/sprite.svg")
+      icon_path = "#{icon_sprite_path}##{icon_name}"
+
+      icon_svg_tag = @template.content_tag(:svg, class: "usa-icon", "aria-hidden": true, focusable: false, role: "img") do
+        @template.tag.use("", href: icon_path)
+      end
+
+      content_parts << icon_svg_tag
+      content_parts << value
+    else
+      content_parts << value
+    end
+
+    @template.button_tag(content_parts.join.html_safe, local_options)
+  end
+
+  def link_with_icon(value_text, options = {})
+    local_options = options.dup
+
+    actual_url = local_options.delete(:url)
+    raise ArgumentError, "options hash must include :url for link_with_icon" if actual_url.nil?
+
+    button_classes = [ "usa-link" ]
+
+    icon_name = local_options.delete(:icon)
+    variant = local_options.delete(:variant)
+    custom_class = local_options.delete(:class)
+
+    if variant
+      variant = Array(variant)
+      variant.each do |v|
+        button_classes << "usa-link--#{v.to_s.dasherize}"
+      end
+    end
+
+    all_classes = button_classes.join(" ")
+    all_classes += " #{custom_class}" if custom_class
+    local_options[:class] = all_classes
+
+    content_parts = []
+
+    if icon_name
+      icon_sprite_path = @template.asset_path("@uswds/uswds/dist/img/sprite.svg")
+      icon_path = "#{icon_sprite_path}##{icon_name}"
+
+      icon_svg_tag = @template.content_tag(:svg, class: "usa-icon", "aria-hidden": true, focusable: false, role: "img") do
+        @template.tag.use("", href: icon_path)
+      end
+
+      content_parts << icon_svg_tag
+    end
+
+    content_parts << value_text
+
+    @template.link_to(content_parts.join.html_safe, actual_url, local_options)
+  end
+
   private
   def append_to_option(options, key, value)
     current_value = options[key] || ""

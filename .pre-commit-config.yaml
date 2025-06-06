@@ -36,6 +36,13 @@ repos:
     files: '^app/config/locales/.*\.yml$'
     pass_filenames: false
 
+  - id: i18n-interpolations
+    name: i18n-interpolations
+    entry: bin/run-linter --cd app -- bundle exec i18n-tasks check-consistent-interpolations
+    language: ruby
+    files: '^app/config/locales/.*\.yml$'
+    pass_filenames: false
+
   - id: shellcheck
     name: shellcheck
     entry: shellcheck

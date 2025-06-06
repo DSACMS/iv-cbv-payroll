@@ -326,9 +326,7 @@ en:
         select_button_aria_label: Open an authentication modal for the employer or payroll provider to import your payment history.
         to_continue: 'If you still don’t see your employer or payroll provider listed:'
         to_continue_li_1: You’ll need to submit that income information separately.
-        to_continue_li_1_html:
-          la_ldh: <a href="%{agency_url}" target="_blank" rel="noopener noreferrer">Go to LDH's website</a> to learn about other ways to report your income.
-          sandbox: <a href="https://example.com/contact" target="_blank" rel="noopener noreferrer">Go to CBV's website</a> to learn about other ways to report your income.
+        to_continue_li_1_html: <a href="%{agency_contact_website}" target="_blank" rel="noopener noreferrer">Go to %{agency_short_name}'s website</a> to learn about other ways to report your income.
         to_continue_li_2: If you have other jobs to add, search for them.
         to_continue_li_3: If you have no other jobs to add here, you can exit this site.
         to_continue_li_3_continue: If you have no other jobs to add here, continue to review your income report.
@@ -370,9 +368,7 @@ en:
         back_button: Go back to employer search
         continue_button: Continue to review my report
         continue_to_review: Continue to review the income information you were able to find before you submit it to %{agency_acronym}.
-        exit_button_html:
-          la_ldh: <a href="%{agency_url}" class="usa-button" target="_blank" rel="noopener noreferrer">Exit and go to Louisiana Department of Health</a>
-          sandbox: <a href="https://www.mass.gov/guides/how-to-contact-dta" class="usa-button" target="_blank" rel="noopener noreferrer">Exit and go to CBV Test Agency</a>
+        exit_button_html: <a href="%{agency_contact_website}" class="usa-button" target="_blank" rel="noopener noreferrer">Exit and go to %{agency_full_name}</a>
         header: How to report income if your employer or payroll provider isn’t listed
         more_jobs: If you have more jobs to report
         no_more_jobs: If you don't have more jobs to report
@@ -471,15 +467,11 @@ en:
         consent_to_authorize_warning: Please check the legal agreement box to share your report.
     successes:
       show:
-        back_to_agency: Go to %{agency_short_name}'s website
-        caseworker_received: We have delivered your payment information to %{agency_acronym}. They will contact you if any additional information is needed.
         confirmation_code_html: "<strong>Your confirmation code</strong>: %{confirmation_code}"
         copied_link: Copied link
         copy_link: Copy link
         download: Download a copy of the report
-        follow_up: To check the status of your %{benefit} %{reporting_purpose} you can visit <a href="%{agency_url}" target="_blank" rel="noopener noreferrer">%{agency_acronym}'s website</a>.
         header: Your income report has been successfully shared with %{agency_acronym}
-        if_it_didnt_work: If you weren't able to find an employer, or one of your employers doesn't have an online payroll provider, please provide this information directly to %{agency_acronym}.
         invitation_link_label: Invitation link
         share_invitation_link_content: Share this link with all household members named on your application so they can report their income.
         share_invitation_link_title: Does anyone else in your household earn income?
@@ -487,6 +479,8 @@ en:
         whats_next_1_li_1: If you weren't able to find an employer, or if one of your employers doesn't have an online payroll provider, please provide this information directly to %{agency_acronym}.
         whats_next_1_li_2: Visit <a href="%{agency_website}" target="_blank" rel="noopener noreferrer">%{agency_acronym}'s website</a> for more information.
         whats_next_1_title: 'If you need to report other income:'
+        whats_next_2_li_1: If you have a few minutes, please share your experience with this tool using <a href="%{agency_feedback_form}" target="_blank" rel="noopener noreferrer">our short feedback form</a>.
+        whats_next_2_title: Tell us about your experience
     summaries:
       show:
         additional_comments: Additional comments

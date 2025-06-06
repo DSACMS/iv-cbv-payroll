@@ -61,7 +61,7 @@
     recipient: <%= ENV['MA_WEEKLY_REPORT_RECIPIENTS'] %>
 
 - id: az_des
-  agency_name: Department of Economic Security/Family Assistance Administration 
+  agency_name: Department of Economic Security/Family Assistance Administration
   agency_short_name: DES/FAA
   agency_contact_website: https://myfamilybenefits.azdes.gov/
   # No caseworker feedback form since they will only be interacting with the PDFs
@@ -90,9 +90,7 @@
     gig: 182
   invitation_valid_days: 10
   allow_invitation_reuse: true
-  # TODO[FFS-2629]: Get permission to use the AZ DES logo.
-  # logo_path: dta_logo.png
-  # logo_square_path: dta_logo_square.png
+  logo_path: des_logo.png
   # TODO[FFS-2649]: Enable the weekly report after pilot launch.
   # weekly_report:
   #   recipient: <%= ENV['AZ_DES_WEEKLY_REPORT_RECIPIENTS'] %>
@@ -156,6 +154,7 @@
     w2: 90
     gig: 90
   invitation_valid_days: 14
+  allow_invitation_reuse: true
   weekly_report:
     recipient: ffs-eng@navapbc.com
   applicant_attributes:

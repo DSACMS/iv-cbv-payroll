@@ -138,9 +138,7 @@ es:
         select_button_aria_label: Abra una ventana de autenticación para que el empleador o proveedor de nómina importe su historial de pago.
         to_continue: 'Si aún no ve enumerado a su empleador ni a su proveedor de nómina:'
         to_continue_li_1: Tendrá que enviar esa información de ingresos por separado.
-        to_continue_li_1_html:
-          la_ldh: <a href="%{agency_url}" target="_blank" rel="noopener noreferrer">Vaya al sitio web del LDH</a> para informarse de otras formas de notificar sus ingresos.
-          sandbox: <a href="https://example.com/contact" target="_blank" rel="noopener noreferrer">Vaya al sitio web del CBV</a> para informarse de otras formas de notificar sus ingresos.
+        to_continue_li_1_html: <a href="%{agency_contact_website}" target="_blank" rel="noopener noreferrer">Vaya al sitio web del %{agency_short_name}</a> para informarse de otras formas de notificar sus ingresos.
         to_continue_li_2: Si tiene otros trabajos que añadir, búsquelos.
         to_continue_li_3: Si no tiene otros trabajos que añadir aquí, puede salir de este sitio.
     entries:
@@ -171,8 +169,7 @@ es:
         back_button: Regrese a la búsqueda del empleador
         continue_button: Continúe a «revisar mi informe»
         continue_to_review: Continúe a revisar la información de ingresos que logró encontrar antes de enviarla a %{agency_acronym}.
-        exit_button_html:
-          sandbox: <a href="https://www.mass.gov/guides/how-to-contact-dta" class="usa-button" target="_blank" rel="noopener noreferrer">Salga y vaya a la Agencia de prueba CBV</a>
+        exit_button_html: <a href="%{agency_contact_website}" class="usa-button" target="_blank" rel="noopener noreferrer">Salga y vaya a la %{agency_full_name}</a>
         header: Cómo informar sus ingresos si su empleador o proveedor de nómina no están listados
         more_jobs: Si tiene más trabajos que reportar
         no_more_jobs: Si no tiene más trabajos que reportar
@@ -241,9 +238,6 @@ es:
         consent_to_authorize_warning: A fin de compartir su informe, marque la casilla de consentimiento legal.
     successes:
       show:
-        back_to_agency: Vaya al sitio web de %{agency_short_name}
-        caseworker_received: Hemos enviado su información de pago a %{agency_acronym}. Ellos lo contactarán si se necesita alguna información adicional.
-        confirmation_code_html: "<strong>Código de confirmación </strong>: %{confirmation_code}"
         download: Descargue una copia del informe
         header: Su informe de ingresos ha sido compartido de forma exitosa con %{agency_acronym}
     summaries:

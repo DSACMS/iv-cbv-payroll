@@ -57,8 +57,12 @@ class CbvFlowInvitation < ApplicationRecord
     cbv_flows.any?(&:complete?)
   end
 
-  def to_url
-    Rails.application.routes.url_helpers.cbv_flow_entry_url(token: auth_token, locale: language)
+  def to_url(**options)
+    client_agency = Rails.application.config.client_agencies[client_agency_id]
+    raise ArgumentError.new("Client Agency #{client_agency_id} not found") unless client_agency
+
+    host = Rails.env.production? ? client_agency.agency_production_domain : client_agency.agency_demo_domain
+    Rails.application.routes.url_helpers.cbv_flow_entry_url({ token: auth_token, locale: language, host: host, **options }.compact)
   end
 
   def normalize_language
