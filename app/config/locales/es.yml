@@ -174,8 +174,7 @@ es:
         select_button_aria_label: Abra una ventana de autenticación para que el empleador o proveedor de nómina importe su historial de pago.
         to_continue: 'Si aún no ve enumerado a su empleador ni a su proveedor de nómina:'
         to_continue_li_1: Deberá enviar esa información de ingresos por separado.
-        to_continue_li_1_html:
-          la_ldh: <a href="%{agency_url}" target="_blank" rel="noopener noreferrer">Visite el sitio web del DES </a> para informarse de otras formas de notificar sus ingresos.
+        to_continue_li_1_html: <a href="%{agency_url}" target="_blank" rel="noopener noreferrer">Visite el sitio web del %{agency_short_name}</a> para informarse de otras formas de notificar sus ingresos.
         to_continue_li_2: Si tiene otros trabajos que añadir, búsquelos.
         to_continue_li_3: Si no tiene otros trabajos que añadir aquí, puede salir de este sitio.
         to_continue_li_3_continue: Si no tiene otros trabajos para agregar aquí, siga revisando su informe de ingresos.
@@ -223,9 +222,7 @@ es:
         no_more_jobs: Si no tiene más trabajos que reportar
         not_listed_p1: Si su empleador o proveedor de nómina no están listados en este sitio, tendrá que compartir su información de ingresos por este trabajo directamente con %{agency_acronym}.
         not_listed_p2: Para obtener más información sobre cómo enviar los documentos requeridos, visite el sitio web de %{agency_short_name}.
-        not_listed_p2_link_html:
-          la_ldh: Visite <a href="%{agency_url}" target="_blank" rel="noopener noreferrer">el sitio web del %{agency_short_name}</a> para obtener más información sobre cómo enviar documentos.
-          sandbox: Para obtener más información sobre cómo enviar documentos, visite el sitio web de <a href="https://www.mass.gov/guides/how-to-contact-dta" target="_blank" rel="noopener noreferrer">%{agency_short_name}</a>.
+        not_listed_p2_link_html: Visite <a href="%{agency_url}" target="_blank" rel="noopener noreferrer">el sitio web del %{agency_short_name}</a> para obtener más información sobre cómo enviar documentos.
         you_can_search: Puede buscar otro empleador o proveedor de nómina. Este sitio apoya a los empleadores con proveedores de nómina en línea o servicios basados en aplicaciones. Algunos ejemplos son Amazon, Walmart, McDonald’s, Uber, DoorDash, Lyft e Instacart.
     payment_details:
       show:
