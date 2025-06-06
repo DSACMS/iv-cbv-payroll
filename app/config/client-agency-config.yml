@@ -91,9 +91,9 @@
   invitation_valid_days: 10
   allow_invitation_reuse: true
   logo_path: des_logo.png
-  # TODO[FFS-2649]: Enable the weekly report after pilot launch.
-  # weekly_report:
-  #   recipient: <%= ENV['AZ_DES_WEEKLY_REPORT_RECIPIENTS'] %>
+  weekly_report:
+    recipient: <%= ENV['AZ_DES_WEEKLY_REPORT_RECIPIENTS'] %>
+    report_variant: invitations
 
 - id: la_ldh
   agency_name: Department of Health
@@ -123,6 +123,7 @@
   invitation_valid_days: 14
   weekly_report:
     recipient: <%= ENV['LA_LDH_WEEKLY_REPORT_RECIPIENTS'] %>
+    report_variant: flows
   applicant_attributes:
     case_number:
       required: false
