@@ -31,7 +31,10 @@
         <% end %>
       <% end %>
     <% end %>
-  <div class="usa-prose font-body-xs"><p><%= I18n.t("components.report.monthly_summary_table.footnote") %></p></div>
+  <div class="usa-prose font-body-xs">
+    <p><%= I18n.t("components.report.monthly_summary_table.compact.footnote.definition_accrued_gross_earnings") %></p>
+    <p><%= I18n.t("components.report.monthly_summary_table.compact.footnote.definition_total_hours_worked") %></p>
+  </div>
 
   <div>
     <h2><%= I18n.t("components.report.monthly_summary_table.payments_from_header", employer_name: @employer_name) %></h2>
