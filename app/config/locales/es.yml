@@ -306,7 +306,7 @@ es:
         copied_link: Enlace copiado
         copy_link: Copiar enlace
         download: Descargue una copia del informe
-        follow_up: Para comprobar el estado de su %{benefit} por %{reporting_purpose}, visite el sitio web de <a href="%{agency_url}" target="_blank" rel="noopener noreferrer">% {agency_acronym}</a>.
+        follow_up: Para comprobar el estado de su %{benefit} por %{reporting_purpose}, visite el sitio web de <a href="%{agency_url}" target="_blank" rel="noopener noreferrer">%{agency_acronym}</a>.
         header: Su informe de ingresos ha sido compartido de forma exitosa con %{agency_acronym}
         if_it_didnt_work: Si no pudo encontrar a un empleador, o uno de sus empleadores no tiene un proveedor de nómina en línea, proporcione, de manera directa, esta información a %{agency_acronym}.
         invitation_link_label: Enlace de invitación
