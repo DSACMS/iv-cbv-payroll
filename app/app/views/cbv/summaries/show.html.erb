@@ -10,40 +10,45 @@
 </div>
 
 <% @aggregator_report.summarize_by_employer.each_with_index do |(account_id, summary), index| %>
-<table class="usa-table usa-table--borderless width-full" data-testid="paystub-table">
+  <% is_w2_worker = summary[:has_employment_data] && summary[:employment].employment_type == :w2 %>
   <h3 data-testid="paystub-table-caption">
-      <% employer_name = summary[:has_employment_data] ? summary[:employment].employer_name : nil %>
-      <% if employer_name %>
+    <% employer_name = summary[:has_employment_data] ? summary[:employment].employer_name : nil %>
+    <% if employer_name %>
       <%= t(".table_caption", number: index + 1, employer_name: employer_name) %>
-      <% else %>
+    <% else %>
       <%= t(".table_caption_no_name", number: index + 1) %>
-      <% end %>
-  </h3>
-  <thead class="border-top-05">
-      <tr>
-        <th class="padding-3" style="background-color: #d9e8f6;" colspan="2">
-          <h4 class="margin-0" data-testid="paystub-total-income">
-            <% if summary[:total] > 0 %>
-            <% if employer_name %>
-            <%= t(".total_income_from", employer_name: employer_name, amount: format_money(summary[:total])) %>
-            <% else %>
-            <%= t(".total_income_from_no_employer_name", amount: format_money(summary[:total])) %>
-            <% end %>
-            <% else %>
-            <%= t(".none_found") %>
-            <% end %>
-          </h4>
-        </th>
-      </tr>
-  </thead>
-  <tbody>
-    <% summary[:paystubs].each do |paystub| %>
-    <tr data-testid="paystub-row">
-      <td><%= t(".payment", amount: format_money(paystub.gross_pay_amount), date: format_date(paystub.pay_date)) %></td>
-    </tr>
     <% end %>
-  </tbody>
-</table>
+  </h3>
+  <% if is_w2_worker %>
+    <table class="usa-table usa-table--borderless width-full" data-testid="paystub-table">
+      <thead class="border-top-05">
+          <tr>
+            <th class="padding-3" style="background-color: #d9e8f6;" colspan="2">
+              <h4 class="margin-0" data-testid="paystub-total-income">
+                <% if summary[:total] > 0 %>
+                <% if employer_name %>
+                <%= t(".total_income_from", employer_name: employer_name, amount: format_money(summary[:total])) %>
+                <% else %>
+                <%= t(".total_income_from_no_employer_name", amount: format_money(summary[:total])) %>
+                <% end %>
+                <% else %>
+                <%= t(".none_found") %>
+                <% end %>
+              </h4>
+            </th>
+          </tr>
+      </thead>
+      <tbody>
+        <% summary[:paystubs].each do |paystub| %>
+        <tr data-testid="paystub-row">
+          <td><%= t(".payment", amount: format_money(paystub.gross_pay_amount), date: format_date(paystub.pay_date)) %></td>
+        </tr>
+        <% end %>
+      </tbody>
+    </table>
+    <% else %>
+      <%= render(Report::MonthlySummaryCompactComponent.new(@aggregator_report, account_id)) %>
+    <% end %>
 <h4><%= t(".additional_comments") %></h4>
 <%= get_comment_by_account_id(account_id).dig("comment") != "" ? get_comment_by_account_id(account_id).dig("comment") : t("shared.not_applicable") %>
 <% end %>

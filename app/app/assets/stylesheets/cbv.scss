@@ -212,10 +212,10 @@ html {
 input#invitation_link{
   border-right: none;
   height: 3rem;
-  
+
   // hide on smaller screens
   display: none;
-  
+
   @include at-media('tablet') {
     display: block;
   }
@@ -232,8 +232,14 @@ input#invitation_link{
 
 .usa-button--success {
     background-color: color("green-cool-40v");
-  
+
   &:hover {
     background-color: color("green-cool-40v");
+  }
+}
+.subheader-row {
+  > th {
+    font-weight: bold;
+    background-color: color('base-lightest');
   }
 }
