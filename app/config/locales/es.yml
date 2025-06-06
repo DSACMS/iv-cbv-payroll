@@ -447,8 +447,7 @@ es:
           content: '["El ID de su empresa podría estar en recibos de pago, formularios de impuestos, u otros documentos de nómina antiguos. Busque allí primero si los tiene."]'
           title: Busque en los recibos de pago o estados de cuenta
         step3:
-          content:
-          - Póngase en contacto con el encargado de Recursos Humanos o de Nómina de la empresa. Cualquiera de estas personas pueden ayudarlo a conseguir la identificación de la empresa.
+          content: Póngase en contacto con el encargado de Recursos Humanos o de Nómina de la empresa. Cualquiera de estas personas pueden ayudarlo a conseguir la identificación de la empresa.
           title: Póngase en contacto con el representante de departamento Recursos Humanos de su empleador.
         title: No sé la identificación de mi empresa
       credentials:
@@ -458,12 +457,10 @@ es:
           content: '["Usamos métodos de encriptación fuertes, similares a los que usan los bancos, para proteger su información. Sus credenciales se transmiten de forma segura y no las almacenamos."]'
           title: Su información de inicio de sesión se encuentra cifrada y protegida.
         step2:
-          content:
-          - Solo usamos su información de inicio de sesión para verificar los detalles de su nómina una vez. No se volverá a usar ni se usará para ningún otro fin.
+          content: Solo usamos su información de inicio de sesión para verificar los detalles de su nómina una vez. No se volverá a usar ni se usará para ningún otro fin.
           title: 'Su información solo se usa para verificar sus ingresos. '
         step3:
-          content:
-          - El servicio que hemos contratado para comprobar los datos de nómina es de confianza para muchas empresas. Además, gestiona los datos de nómina de forma segura.
+          content: El servicio que hemos contratado para comprobar los datos de nómina es de confianza para muchas empresas. Además, gestiona los datos de nómina de forma segura.
           title: Contratamos servicios de confianza.
         title: No me siento cómodo para ingresar mis credenciales de inicio de sesión
       employer:
@@ -480,49 +477,41 @@ es:
           - Si no conoce el nombre de su proveedor de nómina, revise el recibo de pago en busca de nombres, por ejemplo, ADP, Paylocity o Workday.
           title: Busque por proveedor de nómina en vez de por empleador.
         step3:
-          content:
-          - Si su empleador o proveedor de nómina no figuran en la lista, deberá proporcionar la información de ingresos a la agencia de otra manera.
+          content: Si su empleador o proveedor de nómina no figuran en la lista, deberá proporcionar la información de ingresos a la agencia de otra manera.
           title: Si aún no puede encontrar a su empleador o proveedor de nómina
         title: No logro encontrar el empleador correcto
       go_back: Atrás
       password:
         intro: 'Ahora, pruebe los siguientes pasos:'
         step1:
-          content:
-          - Siga las indicaciones en pantalla para recuperar su contraseña.
+          content: Siga las indicaciones en pantalla para recuperar su contraseña.
           title: Vaya a la página de inicio de sesión de su proveedor de nómina.
         step2:
-          content:
-          - Pídele al equipo de Recursos Humanos de su empleador que le ayude a obtener los datos de inicio de sesión en relación con su nómina.
+          content: Pídele al equipo de Recursos Humanos de su empleador que le ayude a obtener los datos de inicio de sesión en relación con su nómina.
           title: Póngase en contacto con el equipo de Recursos Humanos de su empleador.
         title: No sé mi contraseña
       provider:
         intro: 'Pruebe estas opciones:'
         step1:
-          content:
-          - Busque nombres como ADP, Paylocity o Workday en sus recibos de pago.
+          content: Busque nombres como ADP, Paylocity o Workday en sus recibos de pago.
           title: Revise sus recibos de pago o los documentos fiscales.
         step2:
-          content:
-          - En su bandeja de entrada, busque términos clave, como "nómina", "recibo de pago" o "depósito directo".
+          content: En su bandeja de entrada, busque términos clave, como "nómina", "recibo de pago" o "depósito directo".
           title: Busque en el buzón de su correo electrónico.
         step3:
-          content:
-          - Para obtener el nombre de su proveedor de nómina, póngase en contacto con el representante de RR. HH. o con el administrador de nómina.
+          content: Para obtener el nombre de su proveedor de nómina, póngase en contacto con el representante de RR. HH. o con el administrador de nómina.
           title: Póngase en contacto con el representante de departamento Recursos Humanos de su empleador.
         title: No sé quién es mi proveedor de nómina
       username:
         intro: 'Ahora, pruebe los siguientes pasos:'
         step1:
-          content:
-          - Siga las indicaciones en pantalla para recuperar su nombre de usuario.
+          content: Siga las indicaciones en pantalla para recuperar su nombre de usuario.
           title: Vaya a la página de inicio de sesión de su proveedor de nómina.
         step2:
           content: '["Busque correos electrónicos de su proveedor de nómina o empleador que tengan su nombre de usuario.", "Busque palabras clave, por ejemplo, \"[Nombre del proveedor de nómina]\", \"inicio de sesión\" o \"credenciales\"."]'
           title: Revise su buzón de correo electrónico
         step3:
-          content:
-          - Pídele al equipo de Recursos Humanos de su empleador que le ayude a obtener los datos de inicio de sesión en relación con su nómina.
+          content: Pídele al equipo de Recursos Humanos de su empleador que le ayude a obtener los datos de inicio de sesión en relación con su nómina.
           title: Póngase en contacto con el equipo de Recursos Humanos de su empleador.
         title: No sé mi nombre de usuario
   maintenance:
