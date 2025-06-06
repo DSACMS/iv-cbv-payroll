@@ -137,7 +137,10 @@ ignore_missing:
 
     # Currently awaiting translation:
     # - "example.strings.*"   # Tag with ticket number that created or modified the string
-
+    ## Stragglers from 14.1, required for AZ go-live:
+    - "cbv.successes.show.confirmation_code_html"
+    - "cbv.successes.show.whats_next_2_li_1"
+    - "cbv.successes.show.whats_next_2_title"
 ## Consider these keys used:
 ignore_unused:
   all:

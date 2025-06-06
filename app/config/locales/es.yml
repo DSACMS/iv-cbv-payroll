@@ -304,9 +304,7 @@ es:
         copied_link: Enlace copiado
         copy_link: Copiar enlace
         download: Descargue una copia del informe
-        follow_up: Para comprobar el estado de su %{benefit} por %{reporting_purpose}, visite el sitio web de <a href="%{agency_url}" target="_blank" rel="noopener noreferrer">%{agency_acronym}</a>.
         header: Su reporte de ingresos se ha compartido con %{agency_acronym} exitosamente
-        if_it_didnt_work: Si no pudo encontrar a un empleador, o uno de sus empleadores no tiene un proveedor de nómina en línea, proporcione, de manera directa, esta información a %{agency_acronym}.
         invitation_link_label: Enlace de invitación
         share_invitation_link_content: Comparta este enlace con todos los integrantes del grupo familiar que haya incluido en su solicitud, a fin de que puedan declarar sus ingresos.
         share_invitation_link_title: "¿Recibe algún otro integrante del grupo familiar ingresos?"
