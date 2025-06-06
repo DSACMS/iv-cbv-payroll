@@ -282,6 +282,20 @@ ignore_missing:
     - "shared.agency_acronym.*" # duplicative of Daphne's branch
     - "shared.benefit.*" # duplicative of Daphne's branch
     - "shared.reporting_purpose.*" # duplicative of Daphne's branch
+
+      # multi-earner link
+    - "cbv.successes.show.copy_link"
+    - "cbv.successes.show.copied_link"
+    - "cbv.successes.show.confirmation_code_html"
+    - "cbv.successes.show.share_invitation_link_content"
+    - "cbv.successes.show.share_invitation_link_title"
+    - "cbv.successes.show.invitation_link_label"
+    - "cbv.successes.show.whats_next"
+    - "cbv.successes.show.whats_next_1_title"
+    - "cbv.successes.show.whats_next_1_li_1"
+    - "cbv.successes.show.whats_next_1_li_2"
+    - "cbv.successes.show.whats_next_2_title"
+    - "cbv.successes.show.whats_next_2_li_1"
 ## Consider these keys used:
 ignore_unused:
   all:

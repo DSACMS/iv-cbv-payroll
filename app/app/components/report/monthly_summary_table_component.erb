@@ -16,6 +16,7 @@
         <%= row.with_data_cell(is_header: true)
                .with_content(I18n.t("components.report.monthly_summary_table.total_gig_hours")) %>
       <% end %>
+
       <% @monthly_summary_data.each_with_index do |(month_string, summary), index| %>
         <%= table.with_row do |row| %>
           <% row.with_data_cell do |cell| %>
