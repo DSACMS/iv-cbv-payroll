@@ -471,7 +471,9 @@ en:
         copied_link: Copied link
         copy_link: Copy link
         download: Download a copy of the report
+        follow_up: To check the status of your %{benefit} %{reporting_purpose} you can visit <a href="%{agency_url}" target="_blank" rel="noopener noreferrer">%{agency_acronym}'s website</a>.
         header: Your income report has been successfully shared with %{agency_acronym}
+        if_it_didnt_work: If you weren't able to find an employer, or one of your employers doesn't have an online payroll provider, please provide this information directly to %{agency_acronym}.
         invitation_link_label: Invitation link
         share_invitation_link_content: Share this link with all household members named on your application so they can report their income.
         share_invitation_link_title: Does anyone else in your household earn income?
