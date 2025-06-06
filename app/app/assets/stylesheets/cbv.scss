@@ -53,6 +53,11 @@ html {
   align-items: center;
   color: color("primary-darker");
   display: flex;
+
+  @include at-media-max($theme-header-min-width) {
+    flex-wrap: wrap;
+    align-items: flex-start;
+  }
 }
 .cbv-header__pilot-name {
   color: color("primary");
@@ -60,6 +65,7 @@ html {
 
   @include at-media-max($theme-header-min-width) {
     @include u-margin-y(0.5);
+    width: 100%;
   }
 }
 .cbv-header__nav {
@@ -99,6 +105,16 @@ html {
     height: 30px;
     width: 200px;
     min-width: 125px;
+    margin-top: 0.25rem;
+  }
+}
+.cbv-header__agency-logo--az_des {
+  height: 45px;
+
+  @include at-media-max($theme-header-min-width) {
+    height: 30px;
+    max-width: 200px;
+    margin-top: 0.25rem;
   }
 }
 
@@ -188,4 +204,42 @@ html {
   width: 125px;
   height: 10px;
   background-color: #D9E8F6
+}
+
+/*
+* Copy link button
+*/
+input#invitation_link{
+  border-right: none;
+  height: 3rem;
+
+  // hide on smaller screens
+  display: none;
+
+  @include at-media('tablet') {
+    display: block;
+  }
+}
+.copy-link-button {
+  height: 3rem;
+  margin-top: 0 !important;
+
+  @include at-media('tablet') {
+    border-radius: 0 0.25rem 0.25rem 0;
+    border-left: none;
+  }
+}
+
+.usa-button--success {
+    background-color: color("green-cool-40v");
+
+  &:hover {
+    background-color: color("green-cool-40v");
+  }
+}
+.subheader-row {
+  > th {
+    font-weight: bold;
+    background-color: color('base-lightest');
+  }
 }

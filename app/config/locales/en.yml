@@ -251,13 +251,13 @@ en:
         answer_yes_bullet_3: Your job is app-based (Uber, DoorDash, Lyft, Instacart, etc.)
         answer_yes_header_html: 'Answer YES if <em>any</em> of these are true about your current or recent job:'
         continue: Continue
-        criteria_disclaimer: 'Note: If you''ve had other jobs in the past %{pay_income_days} days that don''t meet these criteria, you may need to submit that income information separately.'
+        criteria_disclaimer: 'Note: If you''ve had other jobs in the past 90 days that don''t meet these criteria, you may need to submit that income information separately.'
         header: Do you have another job to report?
         learn_more_link_html:
           la_ldh: Learn more on <a href="%{agency_url}" target="_blank" rel="noopener noreferrer">LDH's website</a>.
           sandbox: Learn more on <a href="https://www.mass.gov/guides/how-to-contact-dta" target="_blank" rel="noopener noreferrer">CBV Test Agency's website</a>.
         no_radio: No, I don’t have another job that meets the criteria
-        subheader: Please add other jobs you’ve had in the past %{pay_income_days} days, even if you're no longer at that job.
+        subheader: Please add other jobs you’ve had in the past 90 days, even if you're no longer at that job.
         yes_radio: Yes, I have another job that meets the criteria
     applicant_informations:
       la_ldh:
@@ -326,9 +326,7 @@ en:
         select_button_aria_label: Open an authentication modal for the employer or payroll provider to import your payment history.
         to_continue: 'If you still don’t see your employer or payroll provider listed:'
         to_continue_li_1: You’ll need to submit that income information separately.
-        to_continue_li_1_html:
-          la_ldh: <a href="%{agency_url}" target="_blank" rel="noopener noreferrer">Go to LDH's website</a> to learn about other ways to report your income.
-          sandbox: <a href="https://example.com/contact" target="_blank" rel="noopener noreferrer">Go to CBV's website</a> to learn about other ways to report your income.
+        to_continue_li_1_html: <a href="%{agency_contact_website}" target="_blank" rel="noopener noreferrer">Go to %{agency_short_name}'s website</a> to learn about other ways to report your income.
         to_continue_li_2: If you have other jobs to add, search for them.
         to_continue_li_3: If you have no other jobs to add here, you can exit this site.
         to_continue_li_3_continue: If you have no other jobs to add here, continue to review your income report.
@@ -370,9 +368,7 @@ en:
         back_button: Go back to employer search
         continue_button: Continue to review my report
         continue_to_review: Continue to review the income information you were able to find before you submit it to %{agency_acronym}.
-        exit_button_html:
-          la_ldh: <a href="%{agency_url}" class="usa-button" target="_blank" rel="noopener noreferrer">Exit and go to Louisiana Department of Health</a>
-          sandbox: <a href="https://www.mass.gov/guides/how-to-contact-dta" class="usa-button" target="_blank" rel="noopener noreferrer">Exit and go to CBV Test Agency</a>
+        exit_button_html: <a href="%{agency_contact_website}" class="usa-button" target="_blank" rel="noopener noreferrer">Exit and go to %{agency_full_name}</a>
         header: How to report income if your employer or payroll provider isn’t listed
         more_jobs: If you have more jobs to report
         no_more_jobs: If you don't have more jobs to report
@@ -393,15 +389,15 @@ en:
         employment_start_date: Employment start date
         employment_status: Employment status
         frequency_unknown: Frequency Unknown
-        header: Your income information from %{employer_name}
-        header_no_employer_name: Your income information from your employer
+        header: Your payment information from %{employer_name}
+        header_no_employer_name: Your payment information from your employer
         hourly_rate: Compensation amount
         hours:
           one: "%{count} hour"
           other: "%{count} hours"
         hours_paid: "%{category}: Hours paid"
-        none_found: We didn't find any payments from this employer in the past 90 days.
-        none_found_description: This typically happens when you haven't received income from this job in the past 90 days. If you believe this is an error, please add a comment in the additional comments box. Otherwise, continue to the next page.
+        none_found: We didn't find any payments from this employer in the past %{report_data_range}.
+        none_found_description: This typically happens when you haven't received income from this job in the past %{report_data_range}. If you believe this is an error, please add a comment in the additional comments box. Otherwise, continue to the next page.
         number_of_hours_worked: Number of hours worked
         pay_date: 'Pay Date: %{pay_date}'
         pay_frequency: Pay frequency
@@ -412,11 +408,9 @@ en:
         pay_period_value: "%{start_date} to %{end_date}"
         payment_hours: "%{amount} hours"
         payments_and_deductions_table_header: Payments and deductions
-        subheader:
-          la_ldh: We have gathered your income records from the past 90 days, from %{start_date} to %{end_date}. If the information is missing or inaccurate, add a comment for %{agency_acronym}. This will be included in your income report and linked to your Medicaid benefits.
-          sandbox: We have gathered your income records from the past 90 days, from %{start_date} to %{end_date}. If the information is missing or inaccurate, add a comment for %{agency_acronym}. This will be included in your income report and linked to your SNAP application.
+        subheader: We have gathered your income records from the past %{report_data_range} as requested by %{agency_acronym} from %{start_date} to %{end_date}. If the information is missing or inaccurate, add a comment for %{agency_acronym}. This will be included in your income report and linked to your %{benefit} %{reporting_purpose}.
         total_gross_description: This is the total gross income from your job before taxes, benefits and deductions were taken out of your paycheck.
-        total_gross_income: 'Total income from the past 90 days, before taxes: %{amount}'
+        total_gross_income: 'Total income from the past %{report_data_range}, before taxes: %{amount}'
         unknown: Unknown
     submits:
       show:
@@ -428,8 +422,8 @@ en:
           az_des: Check this box to affirm under penalty of perjury that the information provided by you is true and complete to the best of your knowledge.<ul><li>You agree to tell %{agency_acronym} about:<ul><li>any other income not included in this report,</li><li>or any errors found in the information gathered with this tool.</li></ul></li><li>You understand that providing accurate and complete information is your responsibility.</li><li>Any false or missing information may result in:<ul><li>an overpayment, which you must repay to %{agency_acronym},</li><li>or program disqualification.</li></ul></li></ul>By sending this report, you authorize its use for income verification by %{agency_acronym} and authorized personnel.
           default: 'Check this box to confirm: <ul><li>The information provided by you is true and complete to the best of your knowledge.</li><li>You agree to inform the %{agency_full_name} of any income not reflected in this report or any discrepancies found in the information gathered with this tool.</li><li>You understand that providing accurate and complete information is your responsibility, and any false or omitted information may have legal consequences.</li></ul> By sending this report, you authorize its use for income verification by authorized %{agency_acronym} personnel.'
         legal_header: Legal agreement
-        none_found: No payments from this employer in the past 90 days
-        none_found_confirmed: We've confirmed that there are no payments from this employer in the past 90 days. This happens when the client hasn't received income from this job during that time.
+        none_found: We didn't find any payments from this employer.
+        none_found_confirmed: We've confirmed that there are no recent payments from this employer. This happens when the client hasn't received income from this job.
         page_header: Submit your income report
         pdf:
           agency_header_name:
@@ -473,31 +467,36 @@ en:
         consent_to_authorize_warning: Please check the legal agreement box to share your report.
     successes:
       show:
-        back_to_agency: Go to %{agency_short_name}'s website
-        caseworker_received: We have delivered your payment information to %{agency_acronym}. They will contact you if any additional information is needed.
-        confirmation_code_html: "<strong>Confirmation code</strong>: %{confirmation_code}"
+        confirmation_code_html: "<strong>Your confirmation code</strong>: %{confirmation_code}"
+        copied_link: Copied link
+        copy_link: Copy link
         download: Download a copy of the report
-        follow_up: To check the status of your %{benefit} %{reporting_purpose} you can visit <a href="%{agency_url}" target="_blank" rel="noopener noreferrer">%{agency_acronym}'s website</a>.
         header: Your income report has been successfully shared with %{agency_acronym}
-        if_it_didnt_work: If you weren't able to find an employer, or one of your employers doesn't have an online payroll provider, please provide this information directly to %{agency_acronym}.
+        invitation_link_label: Invitation link
+        share_invitation_link_content: Share this link with all household members named on your application so they can report their income.
+        share_invitation_link_title: Does anyone else in your household earn income?
+        whats_next: What's next?
+        whats_next_1_li_1: If you weren't able to find an employer, or if one of your employers doesn't have an online payroll provider, please provide this information directly to %{agency_acronym}.
+        whats_next_1_li_2: Visit <a href="%{agency_website}" target="_blank" rel="noopener noreferrer">%{agency_acronym}'s website</a> for more information.
+        whats_next_1_title: 'If you need to report other income:'
+        whats_next_2_li_1: If you have a few minutes, please share your experience with this tool using <a href="%{agency_feedback_form}" target="_blank" rel="noopener noreferrer">our short feedback form</a>.
+        whats_next_2_title: Tell us about your experience
     summaries:
       show:
         additional_comments: Additional comments
         application_information: Applicant information
-        description: The report below has your income from the past 90 days, from %{start_date} to %{end_date}. Please review it before sending.
+        description: The report below shows your recent income. Please review it before sending.
         header: Review your income report
         must_match:
           default: This must match what is shown on your %{agency_acronym} application.
           la_ldh: This must match what is shown on your Medicaid benefits.
-        none_found: We didn't find any payments from this employer in the past 90 days.
+        none_found: We didn't find any payments from this employer.
         payment: Payment of %{amount} before taxes on %{date}
         phone_number: Employer phone
         table_caption: 'Employer %{number}: %{employer_name}'
         table_caption_no_name: Employer %{number}
         total_income_from: 'Total income before taxes from %{employer_name}: %{amount}'
         total_income_from_no_employer_name: 'Total income before taxes: %{amount}'
-        total_payments: 'Total income from past 90 days, before taxes: %{amount}'
-        total_payments_desc: This is the total gross income from your job(s) before taxes, benefits and deductions were taken out of your paycheck.
         your_information: Your information
     synchronization_failures:
       show:
@@ -519,11 +518,33 @@ en:
       status:
         fetching_payroll_description: This may take a few minutes. Please keep this window open while we work on this.
         header: We’re gathering your payment details from your employer
+  components:
+    report:
+      monthly_summary_table:
+        accrued_gross_earnings: Accrued gross earnings
+        compact:
+          footnote:
+            definition_accrued_gross_earnings: '"Accrued gross earnings" sums the payments made in that month.'
+            definition_total_hours_worked: '"Total hours worked" sums the time it took to complete every gig worked in that month. There may be gigs worked in a month that were paid in the following month.'
+            definition_verified_mileage_expenses: '"Verified mileage expenses" uses mileage from the Platform/App. We multiply this by the federal mileage rate ($.70 for 2025), which covers all costs related to a car. These can be costs like gas, car payments or leasing fees, car insurance, repairs, and maintenance.'
+            what_does_this_mean: What does this information mean?
+          month_income: "%{month} gross earnings: %{accrued_gross_earnings}"
+          total_income_header: 'Total income from %{employer_name} before taxes: %{accrued_gross_earnings}'
+        dollars_times_miles: "(%{dollar_amount} x %{ number_of_miles } miles)"
+        month: Month
+        monthly_summary: Monthly Summary
+        partial_month_text: "(Partial month: from %{start_date}-%{end_date})"
+        payments_from_header: Payments from %{employer_name}
+        payments_from_text: These were the dates that the client was paid for their work at %{employer_name} and the gross pay amount.
+        total_gig_hours: Total hours worked
+        verified_mileage_expenses: Verified mileage expenses
   continue: Continue
   date:
     formats:
+      day_of_month: "%-m/%-d"
       default: "%Y-%m-%d"
       long: "%B %-d, %Y"
+      month_year: "%B %Y"
   help:
     alert:
       heading: Need help connecting to your payroll provider?
@@ -713,6 +734,9 @@ en:
       zh: 中文
     not_applicable: N/A
     pilot_name: Report My Income
+    report_data_range:
+      ninety_days: 90 days
+      six_months: 6 months
     reporting_purpose:
       az_des: Mid Approval Contact form
       la_ldh: benefits

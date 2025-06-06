@@ -2,7 +2,7 @@
 
 <h1><%= t(".header") %></h1>
 <div class="usa-prose">
-  <%= agency_translation(".description_html", pay_income_days: current_agency.pay_income_days) %>
+  <%= agency_translation(".description_html", pay_income_days: current_agency.pay_income_days[:w2]) %>
 </div>
 <%= uswds_form_with(model: @cbv_flow_invitation, url: invitations_path) do |f| %>
   <%= render partial: "caseworker/cbv_flow_invitations/#{@cbv_flow_invitation.client_agency_id}", locals: { f: f } %>

@@ -1,0 +1,7 @@
+    <%= render(TableComponent.new) do |table| %>
+      <%= table.with_header
+               .with_content(self.total_income_header) %>
+    <% @monthly_summary_data.each_with_index do |(month_string, summary), index| %>
+        <%= table.with_row(self.month_income(month_string, summary)) %>
+    <% end %>
+  <% end %>

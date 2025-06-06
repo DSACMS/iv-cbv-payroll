@@ -254,6 +254,7 @@ RSpec.describe Cbv::PaymentDetailsController do
     context "when using argyle" do
       context "for Bob (a gig worker)" do
         let(:account_id) { "019571bc-2f60-3955-d972-dbadfe0913a8" }
+        let(:cbv_applicant) { create(:cbv_applicant, created_at: Date.parse("2025-03-15"), snap_application_date: Date.parse("2025-03-15"), case_number: "ABC1234") }
         let(:cbv_flow) do
           create(:cbv_flow,
                  :invited,
@@ -290,12 +291,21 @@ RSpec.describe Cbv::PaymentDetailsController do
           expect(response).to be_successful
         end
 
-        it { is_expected.to include("Pay Date") }
-        it { is_expected.to include("Gross pay YTD") }
-        it { is_expected.not_to include("Pay period") }
-        it { is_expected.not_to include("Payments after taxes and deductions(net)") }
-        it { is_expected.not_to include("Deduction") }
-        it { is_expected.not_to include("Base Pay") }
+        context "does not include w2 summary table" do
+          it { is_expected.not_to include("Pay Date") }
+          it { is_expected.not_to include("Gross pay YTD") }
+          it { is_expected.not_to include("Pay period") }
+          it { is_expected.not_to include("Payments after taxes and deductions(net)") }
+          it { is_expected.not_to include("Deduction") }
+          it { is_expected.not_to include("Base Pay") }
+        end
+
+        context "includes monthly gig summary table" do
+          it { is_expected.to include("Monthly Summary") }
+          it { is_expected.to include("Accrued gross earnings") }
+          it { is_expected.to include("Total hours worked") }
+          it { is_expected.not_to include("Partial month") }
+        end
       end
 
       context "for Sarah (a w2 worker)" do
@@ -336,11 +346,20 @@ RSpec.describe Cbv::PaymentDetailsController do
           expect(response).to be_successful
         end
 
-        it { is_expected.to include("Pay Date") }
-        it { is_expected.to include("Gross pay YTD") }
-        it { is_expected.to include("Pay period") }
-        it { is_expected.to include("Payment after taxes and deductions (net)") }
-        it { is_expected.to include("Deduction") }
+        context "includes w2 summary table" do
+          it { is_expected.to include("Pay Date") }
+          it { is_expected.to include("Gross pay YTD") }
+          it { is_expected.to include("Pay period") }
+          it { is_expected.to include("Payment after taxes and deductions (net)") }
+          it { is_expected.to include("Deduction") }
+        end
+
+        context "does not include monthly gig summary table" do
+          it { is_expected.not_to include("Monthly Summary") }
+          it { is_expected.not_to include("Accrued gross earnings") }
+          it { is_expected.not_to include("Total hours worked") }
+          it { is_expected.not_to include("Partial month") }
+        end
 
         it "should properly display pay frequency and compensation amount" do
           doc = Nokogiri::HTML(response.body)

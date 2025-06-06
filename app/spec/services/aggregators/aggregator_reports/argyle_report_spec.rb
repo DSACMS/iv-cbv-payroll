@@ -9,8 +9,9 @@ RSpec.describe Aggregators::AggregatorReports::ArgyleReport, type: :service do
   let!(:payroll_account) do
     create(:payroll_account, :argyle_fully_synced, pinwheel_account_id: account)
   end
-  let(:from_date) { "2021-01-01" }
-  let(:to_date) { "2021-03-31" }
+  let(:days_ago_to_fetch) { 90 }
+  let(:days_ago_to_fetch_for_gig) { 90 }
+  let(:today) { Date.today }
   let(:argyle_service) { Aggregators::Sdk::ArgyleService.new(:sandbox) }
 
   let(:identities_json) { argyle_load_relative_json_file('bob', 'request_identity.json') }
@@ -25,9 +26,21 @@ RSpec.describe Aggregators::AggregatorReports::ArgyleReport, type: :service do
     allow(argyle_service).to receive(:fetch_account_api).and_return(account_json)
   end
 
+  around do |ex|
+    Timecop.freeze(today, &ex)
+  end
+
   describe '#fetch_report_data' do
-    context "bob, a W-2 employee" do
-      let(:argyle_report) { Aggregators::AggregatorReports::ArgyleReport.new(payroll_accounts: [ payroll_account ], argyle_service: argyle_service, from_date: from_date, to_date: to_date) }
+    let(:argyle_report) do
+      Aggregators::AggregatorReports::ArgyleReport.new(
+        payroll_accounts: [ payroll_account ],
+        argyle_service: argyle_service,
+        days_to_fetch_for_w2: days_ago_to_fetch,
+        days_to_fetch_for_gig: days_ago_to_fetch_for_gig
+      )
+    end
+
+    context "bob, a gig employee" do
       before do
         allow(argyle_service).to receive(:fetch_account_api).and_return(argyle_load_relative_json_file("bob", "request_account.json"))
         allow(argyle_service).to receive(:fetch_identities_api).and_return(argyle_load_relative_json_file("bob", "request_identity.json"))
@@ -37,7 +50,7 @@ RSpec.describe Aggregators::AggregatorReports::ArgyleReport, type: :service do
 
       it 'calls the right APIs' do
         expect(argyle_service).to have_received(:fetch_identities_api).with(account: account)
-        expect(argyle_service).to have_received(:fetch_paystubs_api).with(account: account, from_start_date: from_date, to_start_date: to_date)
+        expect(argyle_service).to have_received(:fetch_paystubs_api).with(account: account, from_start_date: days_ago_to_fetch.days.ago, to_start_date: today)
       end
 
       it 'transforms response object correctly' do
@@ -60,6 +73,18 @@ RSpec.describe Aggregators::AggregatorReports::ArgyleReport, type: :service do
         expect(argyle_report.employments.first.account_source).to match(/argyle_sandbox/)
       end
 
+      context "when in an agency configured to grab 182 days of gig data" do
+        let(:days_ago_to_fetch_for_gig) { 182 }
+
+        it "fetches 182 days" do
+          expect(argyle_service).to have_received(:fetch_paystubs_api)
+            .with(account: anything, from_start_date: 182.days.ago, to_start_date: Date.current)
+
+          expect(argyle_report.from_date).to eq(182.days.ago)
+          expect(argyle_report.to_date).to eq(Date.current)
+        end
+      end
+
       context 'when an error occurs' do
         before do
           allow(argyle_service).to receive(:fetch_identities_api).and_raise(StandardError.new('API error'))
@@ -76,10 +101,8 @@ RSpec.describe Aggregators::AggregatorReports::ArgyleReport, type: :service do
         end
       end
     end
+
     context "joe, a W-2 employee" do
-      let(:argyle_report) { Aggregators::AggregatorReports::ArgyleReport.new(payroll_accounts: [ payroll_account ],
-                                                                             argyle_service: argyle_service,
-                                                                             from_date: from_date, to_date: to_date) }
       before do
         allow(argyle_service).to receive(:fetch_identities_api).and_return(argyle_load_relative_json_file("joe", "request_identity.json"))
         allow(argyle_service).to receive(:fetch_paystubs_api).and_return(argyle_load_relative_json_file("joe", "request_paystubs.json"))
@@ -88,7 +111,7 @@ RSpec.describe Aggregators::AggregatorReports::ArgyleReport, type: :service do
 
       it 'calls the right APIs' do
         expect(argyle_service).to have_received(:fetch_identities_api).with(account: account)
-        expect(argyle_service).to have_received(:fetch_paystubs_api).with(account: account, from_start_date: from_date, to_start_date: to_date)
+        expect(argyle_service).to have_received(:fetch_paystubs_api).with(account: account, from_start_date: days_ago_to_fetch.days.ago, to_start_date: today)
       end
 
       it 'transforms response objects correctly' do
@@ -104,6 +127,18 @@ RSpec.describe Aggregators::AggregatorReports::ArgyleReport, type: :service do
 
       it 'sets @has_fetched to true on success' do
         expect(argyle_report.has_fetched).to be true
+      end
+
+      context "when in an agency configured to grab 182 days of gig data" do
+        let(:days_ago_to_fetch_for_gig) { 182 }
+
+        it "fetches only 90 days (because Joe is not a gig employee)" do
+          expect(argyle_service).to have_received(:fetch_paystubs_api)
+            .with(account: anything, from_start_date: 90.days.ago, to_start_date: Date.current)
+
+          expect(argyle_report.from_date).to eq(90.days.ago)
+          expect(argyle_report.to_date).to eq(Date.current)
+        end
       end
 
       context 'when an error occurs' do
@@ -125,8 +160,6 @@ RSpec.describe Aggregators::AggregatorReports::ArgyleReport, type: :service do
 
     describe '#fetch_gigs' do
       context "for Bob, a Uber driver" do
-        let(:argyle_report) { Aggregators::AggregatorReports::ArgyleReport.new(payroll_accounts: [ payroll_account ], argyle_service: argyle_service, from_date: from_date, to_date: to_date) }
-
         before do
           allow(argyle_service).to receive(:fetch_identities_api).and_return(argyle_load_relative_json_file("bob", "request_identity.json"))
           allow(argyle_service).to receive(:fetch_paystubs_api).and_return(argyle_load_relative_json_file("bob", "request_paystubs.json"))
@@ -178,22 +211,40 @@ RSpec.describe Aggregators::AggregatorReports::ArgyleReport, type: :service do
   end
 
   describe "#days_since_last_paydate" do
+    let(:argyle_report) do
+      described_class.new(
+        payroll_accounts: [ payroll_account ],
+        argyle_service: argyle_service,
+        days_to_fetch_for_w2: days_ago_to_fetch,
+        days_to_fetch_for_gig: days_ago_to_fetch
+      )
+    end
+
     before do
       travel_to Time.new(2021, 4, 1, 0, 0, 0, "-04:00")
+      allow(argyle_report)
+        .to receive(:paystubs)
+        .and_return(paystubs)
     end
 
-    it "returns nil if no paystub date information available" do
-      paystubs = [ OpenStruct.new(pay_date: nil) ]
-      report = described_class.new
-      report.paystubs = paystubs
-      expect(report.days_since_last_paydate).to be_nil
+    context "when no paystub date information is available" do
+      let(:paystubs) do
+        [ OpenStruct.new(pay_date: nil) ]
+      end
+
+      it "returns nil if no paystub date information available" do
+        expect(argyle_report.days_since_last_paydate).to be_nil
+      end
     end
 
-    it "returns the latest date when dates available, compared to current time" do
-      paystubs = [ OpenStruct.new(pay_date: "2021-02-01"), OpenStruct.new(pay_date: "2021-03-02") ]
-      report = described_class.new
-      report.paystubs = paystubs
-      expect(report.days_since_last_paydate).to eq(30)
+    context "when the latest date is available" do
+      let(:paystubs) do
+        [ OpenStruct.new(pay_date: "2021-02-01"), OpenStruct.new(pay_date: "2021-03-02") ]
+      end
+
+      it "returns the latest date when dates available, compared to current time" do
+        expect(argyle_report.days_since_last_paydate).to eq(30)
+      end
     end
   end
 
@@ -242,6 +293,69 @@ RSpec.describe Aggregators::AggregatorReports::ArgyleReport, type: :service do
       }
       result = Aggregators::AggregatorReports::ArgyleReport.most_recent_paystub_with_address(paystubs)
       expect(result["employer_address"]["line1"]).to eq("456 Elm St")
+    end
+  end
+
+  describe '#summarize_by_month' do
+    context "bob, a gig employee" do
+      let(:argyle_report) { Aggregators::AggregatorReports::ArgyleReport.new(
+        payroll_accounts: [ payroll_account ],
+        argyle_service: argyle_service,
+        days_to_fetch_for_w2: days_ago_to_fetch,
+        days_to_fetch_for_gig: days_ago_to_fetch) }
+
+      let(:account) { "019571bc-2f60-3955-d972-dbadfe0913a8" }
+
+      before do
+        allow(argyle_service).to receive(:fetch_account_api).and_return(argyle_load_relative_json_file("bob", "request_account.json"))
+        allow(argyle_service).to receive(:fetch_identities_api).and_return(argyle_load_relative_json_file("bob", "request_identity.json"))
+        allow(argyle_service).to receive(:fetch_paystubs_api).and_return(argyle_load_relative_json_file("bob", "request_paystubs.json"))
+        argyle_report.send(:fetch_report_data)
+      end
+
+      it "returns a hash of monthly totals" do
+        monthly_summary_all_accounts = argyle_report.summarize_by_month(from_date: Date.parse("2025-01-08"), to_date: Date.parse("2025-03-31"))
+        expect(monthly_summary_all_accounts.keys).to match_array([ account ])
+
+        monthly_summary = monthly_summary_all_accounts[account]
+        expect(monthly_summary.keys).to match_array([ "2025-03", "2025-02", "2025-01" ])
+
+        march = monthly_summary["2025-03"]
+        expect(march[:gigs].length).to eq(9)
+        expect(march[:paystubs].length).to eq(1)
+        expect(march[:accrued_gross_earnings]).to eq(3456) # in cents
+        expect(march[:total_gig_hours]).to eq(3.61)
+        expect(march[:partial_month_range]).to an_object_eq_to({
+                                                                 is_partial_month: true,
+                                                                 description: "(Partial month: from 3/1-3/6)",
+                                                                 included_range_start: Date.parse("2025-03-01"),
+                                                                 included_range_end: Date.parse("2025-03-06")
+                                                               })
+
+        feb = monthly_summary["2025-02"]
+        expect(feb[:gigs].length).to eq(31)
+        expect(feb[:paystubs].length).to eq(4)
+        expect(feb[:accrued_gross_earnings]).to eq(23075) # in cents
+        expect(feb[:total_gig_hours]).to eq(14.0)
+        expect(feb[:partial_month_range]).to an_object_eq_to({
+                                                               is_partial_month: false,
+                                                               description: nil,
+                                                               included_range_start: Date.parse("2025-02-01"),
+                                                               included_range_end: Date.parse("2025-02-28")
+                                                             })
+
+        jan = monthly_summary["2025-01"]
+        expect(jan[:gigs].length).to eq(0)
+        expect(jan[:paystubs].length).to eq(5)
+        expect(jan[:accrued_gross_earnings]).to eq(28237) # in cents
+        expect(jan[:total_gig_hours]).to eq(0)
+        expect(jan[:partial_month_range]).to an_object_eq_to({
+                                                               is_partial_month: true,
+                                                               description: "(Partial month: from 1/2-1/31)",
+                                                               included_range_start: Date.parse("2025-01-02"),
+                                                               included_range_end: Date.parse("2025-01-31")
+                                                             })
+      end
     end
   end
 end

@@ -71,7 +71,7 @@
   <% end %>
   <%= table.with_row(agency_translation(".application_or_recertification_date"), format_parsed_date(@cbv_flow.cbv_applicant.snap_application_date)) %>
   <%= table.with_row(t(".pdf.client.date_created"), format_parsed_date(@cbv_flow.consented_to_authorized_use_at)) %>
-  <%= table.with_row(t(".pdf.client.date_range"), "#{format_parsed_date(@cbv_flow.cbv_applicant.paystubs_query_begins_at)} to #{format_parsed_date(@cbv_flow.cbv_applicant.snap_application_date)}") %>
+  <%= table.with_row(t(".pdf.client.date_range"), "#{format_parsed_date(aggregator_report.from_date)} to #{format_parsed_date(aggregator_report.to_date)}") %>
   <% if is_caseworker %>
     <%= table.with_row(t(".pdf.caseworker.agreement_consent_timestamp"), @cbv_flow.consented_to_authorized_use_at) %>
     <% if current_agency?(:ma) %>
@@ -114,54 +114,48 @@
     <% end %>
   <% end %>
 
-  <% summary[:paystubs].each do |paystub| %>
-    <%= render(TableComponent.new) do |table| %>
-      <%= table.with_header do %>
-        <h4 class="margin-0">
-          <% if employer_name %>
-            <%= employer_name %> &mdash;
-          <% end %>
-          <%= t(".pdf.shared.pay_date", pay_date: format_date(paystub.pay_date)) %></h4>
-      <% end %>
-      <% if is_w2_worker %>
+  <% if is_w2_worker %>
+    <% summary[:paystubs].each do |paystub| %>
+      <%= render(TableComponent.new) do |table| %>
+        <%= table.with_header do %>
+          <h4 class="margin-0">
+            <% if employer_name %>
+              <%= employer_name %> &mdash;
+            <% end %>
+            <%= t(".pdf.shared.pay_date", pay_date: format_date(paystub.pay_date)) %></h4>
+        <% end %>
         <% if summary[:has_income_data] %>
           <%= table.with_data_point(:pay_period_with_frequency, paystub.start, paystub.end, summary[:income].pay_frequency&.humanize, highlight: is_caseworker) %>
         <% else %>
           <%= table.with_data_point(:pay_period_with_frequency, paystub.start, paystub.end, t("cbv.payment_details.show.frequency_unknown"), highlight: is_caseworker) %>
         <% end %>
-      <% end %>
-      <%= table.with_data_point(:pay_gross, paystub.gross_pay_amount, highlight: is_caseworker) %>
-      <% if is_w2_worker %>
+        <%= table.with_data_point(:pay_gross, paystub.gross_pay_amount, highlight: is_caseworker) %>
         <%= table.with_data_point(:number_of_hours_worked, paystub.hours, highlight: is_caseworker) %>
-      <% end %>
-      <% paystub.hours_by_earning_category.each do |category, total_hours| %>
-        <%= table.with_data_point(:earnings_entry, category, total_hours) %>
-      <% end %>
-      <% if is_w2_worker || paystub.net_pay_amount.to_f > 0 %>
+        <% paystub.hours_by_earning_category.each do |category, total_hours| %>
+          <%= table.with_data_point(:earnings_entry, category, total_hours) %>
+        <% end %>
         <%= table.with_data_point(:net_pay_amount, paystub.net_pay_amount) %>
-      <% end %>
-      <% if is_w2_worker %>
         <% paystub.deductions.filter { |deduction| deduction.amount.to_f > 0 }.each do |deduction| %>
           <%= table.with_data_point(:deduction, deduction.category, deduction.amount) %>
         <% end %>
-      <% end %>
-      <% if is_w2_worker || paystub.gross_pay_ytd.to_f > 0 %>
         <%= table.with_data_point(:pay_gross_ytd, paystub.gross_pay_ytd) %>
       <% end %>
     <% end %>
-  <% end %>
-  <% if summary[:paystubs].empty? %>
-    <%= render(TableComponent.new) do |table| %>
-      <%= table.with_header do %>
-        <h4 class="margin-0">
-          <% if employer_name %>
-            <%= employer_name %> &mdash;
-          <% end %>
-          <%= t(".none_found") %>
-        </h4>
+    <% if summary[:paystubs].empty? %>
+      <%= render(TableComponent.new) do |table| %>
+        <%= table.with_header do %>
+          <h4 class="margin-0">
+            <% if employer_name %>
+              <%= employer_name %> &mdash;
+            <% end %>
+            <%= t(".none_found") %>
+          </h4>
+        <% end %>
+        <%= table.with_row(t(".none_found_confirmed")) %>
       <% end %>
-      <%= table.with_row(t(".none_found_confirmed")) %>
     <% end %>
+  <% else %>
+    <%= render(Report::MonthlySummaryTableComponent.new(@aggregator_report, account_id)) %>
   <% end %>
 
   <% if @cbv_flow.additional_information.dig(account_id, "comment").present? %>

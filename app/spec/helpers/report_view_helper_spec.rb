@@ -223,4 +223,37 @@ RSpec.describe ReportViewHelper, type: :helper do
       end
     end
   end
+
+  describe "#report_data_range" do
+    let(:report) { build(:argyle_report) }
+    let(:fetched_days) { 90 }
+
+    before do
+      allow(report)
+        .to receive(:fetched_days)
+        .and_return(fetched_days)
+    end
+
+    subject { helper.report_data_range(report) }
+
+    it "renders when 90 days of data were fetched" do
+      expect(subject).to eq(I18n.t("shared.report_data_range.ninety_days"))
+    end
+
+    context "when 182 days of data were fetched" do
+      let(:fetched_days) { 182 }
+
+      it "returns the string for six months" do
+        expect(subject).to eq(I18n.t("shared.report_data_range.six_months"))
+      end
+    end
+
+    context "when an invalid number of days were fetched" do
+      let(:fetched_days) { 0 }
+
+      it "raises an error" do
+        expect { subject }.to raise_error(/Missing i18n key/)
+      end
+    end
+  end
 end

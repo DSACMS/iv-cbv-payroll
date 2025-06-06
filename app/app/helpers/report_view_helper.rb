@@ -6,7 +6,6 @@ module ReportViewHelper
 
   # Default format is Month Day, Year (e.g. January 1, 2020)
   def format_parsed_date(date, format = :long)
-    return unless date
     I18n.l(date.to_date, format: format)
   end
 
@@ -21,6 +20,17 @@ module ReportViewHelper
 
   def format_money(dollars_in_cents)
     number_to_currency(dollars_in_cents.to_f / 100)
+  end
+
+  def report_data_range(report)
+    case report.fetched_days
+    when 90
+      t("shared.report_data_range.ninety_days")
+    when 182
+      t("shared.report_data_range.six_months")
+    else
+      raise "Missing i18n key in `shared.report_data_range` for report.fetched_days = #{report.fetched_days}"
+    end
   end
 
   def translate_aggregator_value(namespace, value)
