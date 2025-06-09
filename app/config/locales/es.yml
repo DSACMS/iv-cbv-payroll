@@ -295,7 +295,6 @@ es:
             report_details: Detalles del reporte
         share_report_button: Comparta mi reporte con %{agency_acronym}
         table_caption_no_name: Employer %{number}
-        warning_1: Su reporte de ingresos se adjuntará a su %{benefit} %{reporting_purpose} con el estado.
         warning_2: Usted debe marcar la casilla del acuerdo legal para compartir su reporte.
       update:
         consent_to_authorize_warning: A fin de compartir su informe, marque la casilla de consentimiento legal.
@@ -308,7 +307,8 @@ es:
         header: Su reporte de ingresos se ha compartido con %{agency_acronym} exitosamente
         invitation_link_label: Enlace de invitación
         share_invitation_link_content: Comparta este enlace con todos los miembros del hogar nombrados en su solicitud para que puedan reportar sus ingresos.
-        share_invitation_link_title: "¿Alguien más en su hogar tiene ingresos?"
+        share_invitation_link_title:
+          default: "¿Alguien más en su hogar tiene ingresos?"
         whats_next: "¿Qué sigue?"
         whats_next_1_li_1: Si no pudo encontrar a un empleador, o si uno de sus empleadores no tiene un proveedor de nómina en línea, proporcione, de manera directa, esta información a %{agency_acronym}.
         whats_next_1_li_2: Para obtener más información, visite el sitio web de <a href="%{agency_website}" target="_blank" rel="noopener noreferrer">%{agency_acronym}</a>.

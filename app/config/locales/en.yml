@@ -459,7 +459,7 @@ en:
             report_details: Report details
         share_report_button: Share my report with %{agency_acronym}
         table_caption_no_name: Employer %{number}
-        warning_1: Your income report will be attached to your %{benefit} %{reporting_purpose} with the state.
+        warning_1: Your income report will be sent to %{agency_acronym}.
         warning_2: You must check the legal agreement box to share your report.
       update:
         consent_to_authorize_warning: Please check the legal agreement box to share your report.
@@ -472,7 +472,9 @@ en:
         header: Your income report has been successfully shared with %{agency_acronym}
         invitation_link_label: Invitation link
         share_invitation_link_content: Share this link with all household members named on your application so they can report their income.
-        share_invitation_link_title: Does anyone else in your household earn income?
+        share_invitation_link_title:
+          az_des: Does anyone else in your household need to report a change of income in your Mid Approval Contact form?
+          default: Does anyone else in your household earn income?
         whats_next: What's next?
         whats_next_1_li_1: If you weren't able to find an employer, or if one of your employers doesn't have an online payroll provider, please provide this information directly to %{agency_acronym}.
         whats_next_1_li_2: Visit <a href="%{agency_website}" target="_blank" rel="noopener noreferrer">%{agency_acronym}'s website</a> for more information.
