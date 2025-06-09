@@ -144,9 +144,9 @@ class Cbv::BaseController < ApplicationController
       cbv_applicant_id: cbv_flow.cbv_applicant_id,
       client_agency_id: current_agency&.id,
       seconds_since_invitation: (Time.now - invitation.created_at).to_i,
-      number_household_members:  count_unique_members(invitation),
-      number_reports_completed: invitation.cbv_flows.where.not(consented_to_authorized_use_at: nil).count,
-      number_links_started: invitation.cbv_flows.count
+      household_member_count:  count_unique_members(invitation),
+      completed_reports_count: invitation.cbv_flows.completed.count,
+      flows_started_count: invitation.cbv_flows.count
     })
     rescue => ex
       Rails.logger.error "Unable to track event (ApplicantClickedCBVInvitationLink): #{ex}"

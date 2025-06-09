@@ -36,7 +36,7 @@ RSpec.describe Cbv::BaseController, type: :controller do
         )
       expect(EventTrackingJob).to receive(:perform_later).with("CbvPageView", anything, anything)
       expect(EventTrackingJob).to receive(:perform_later).with("ApplicantClickedCBVInvitationLink", anything, hash_including(
-          number_household_members: 3
+          household_member_count: 3
           ))
       get :show, params: { token: cbv_flow.cbv_flow_invitation.auth_token }
       expect(response).to be_successful
@@ -47,7 +47,7 @@ RSpec.describe Cbv::BaseController, type: :controller do
       create(:cbv_flow, cbv_flow_invitation: cbv_flow.cbv_flow_invitation)
       expect(EventTrackingJob).to receive(:perform_later).with("CbvPageView", anything, anything)
       expect(EventTrackingJob).to receive(:perform_later).with("ApplicantClickedCBVInvitationLink", anything, hash_including(
-          number_household_members: 1
+          household_member_count: 1
           ))
       get :show, params: { token: cbv_flow.cbv_flow_invitation.auth_token }
       expect(response).to be_successful
@@ -58,7 +58,7 @@ RSpec.describe Cbv::BaseController, type: :controller do
       create(:cbv_flow, cbv_flow_invitation: cbv_flow.cbv_flow_invitation)
       expect(EventTrackingJob).to receive(:perform_later).with("CbvPageView", anything, anything)
       expect(EventTrackingJob).to receive(:perform_later).with("ApplicantClickedCBVInvitationLink", anything, hash_including(
-          number_links_started: 3
+          flows_started_count: 3
           ))
       get :show, params: { token: cbv_flow.cbv_flow_invitation.auth_token }
       expect(response).to be_successful

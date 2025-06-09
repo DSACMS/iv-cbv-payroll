@@ -46,7 +46,7 @@ RSpec.describe Cbv::EntriesController do
       end
 
       context "with multiple cbv flows" do
-        it "does the thing" do
+        it "sends multiple related tracking events" do
           expect(EventTrackingJob).to receive(:perform_later).with("ApplicantClickedCBVInvitationLink", anything, hash_including(
             cbv_flow_id: be_a(Integer),
             timestamp: be_a(Integer),
