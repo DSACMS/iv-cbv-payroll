@@ -510,6 +510,7 @@ en:
     synchronizations:
       indicators:
         employment: Employment
+        employment_mobile: Jobs
         identity: Personal details
         income: Income
         paystubs: Paystubs

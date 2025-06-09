@@ -261,6 +261,7 @@ es:
     synchronizations:
       indicators:
         employment: Empleo
+        employment_mobile: Empleo
         identity: Detalles personales
         income: Ingresos
         paystubs: Talones de pago

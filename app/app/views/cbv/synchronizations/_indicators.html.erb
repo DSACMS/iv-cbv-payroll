@@ -1,22 +1,19 @@
 <div class="grid-row" id="<%= dom_id payroll_account %>">
-  <div
-    class="tablet:grid-col-2 grid-col-fill"
-  >
+  <div class="desktop:grid-col-2 grid-col-fill">
     <%= render partial: "cbv/synchronizations/indicator", locals: { label: t(".income"), status: coalesce_to_completed(payroll_account.job_status("income")) } %>
   </div>
-  <div
-    class="tablet:grid-col-2 grid-col-fill"
-  >
-    <%= render partial: "cbv/synchronizations/indicator", locals: { label: t(".employment"), status: coalesce_to_completed(payroll_account.job_status("employment")) } %>
+  <div class="desktop:grid-col-2 grid-col-fill">
+    <div class="display-none tablet:display-block">
+      <%= render partial: "cbv/synchronizations/indicator", locals: { label: t(".employment"), status: coalesce_to_completed(payroll_account.job_status("employment")) } %>
+    </div>
+    <div class="display-block tablet:display-none">
+      <%= render partial: "cbv/synchronizations/indicator", locals: { label: t(".employment_mobile"), status: coalesce_to_completed(payroll_account.job_status("employment")) } %>
+    </div>
   </div>
-  <div
-    class="tablet:grid-col-2 grid-col-fill"
-  >
+  <div class="desktop:grid-col-2 grid-col-fill">
     <%= render partial: "cbv/synchronizations/indicator", locals: { label: t(".paystubs"), status: payroll_account.job_status("paystubs") } %>
   </div>
-  <div
-    class="tablet:grid-col-2 grid-col-fill"
-  >
+  <div class="desktop:grid-col-2 grid-col-fill">
     <%= render partial: "cbv/synchronizations/indicator", locals: { label: t(".identity"), status: coalesce_to_completed(payroll_account.job_status("identity")) } %>
   </div>
 </div>

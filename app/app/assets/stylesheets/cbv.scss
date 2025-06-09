@@ -207,6 +207,17 @@ html {
 }
 
 /*
+ * Synchronizations Page
+ */
+.synchronizations-indicator {
+  align-items: center;
+  display: flex;
+  flex-direction: column;
+  word-break: break-word;
+  text-align: center;
+}
+
+/*
 * Copy link button
 */
 input#invitation_link{

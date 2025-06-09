@@ -1,38 +1,25 @@
-<% if status == :in_progress %>
-  <div class="grid-row">
+<div class="synchronizations-indicator">
+  <% case status %>
+  <% when :in_progress %>
     <svg class="usa-icon border-05 rotate border-base-light radius-pill padding-1 usa-icon--size-5" aria-hidden="true" focusable="false" role="img">
       <use
         xlink:href="<%= asset_path("@uswds/uswds/dist/img/sprite.svg#autorenew") %>"
       ></use>
     </svg>
-  </div>
-  <div class="grid-row">
     <span class="margin-top-05 text-thin"><%= label %></span>
-  </div>
-<% end %>
-
-<% if status == :succeeded || status == :completed %>
-  <div class="grid-row">
+  <% when :succeeded, :completed %>
     <svg class="usa-icon border-05 bg-primary text-white border-primary radius-pill padding-1 usa-icon--size-5" aria-hidden="true" focusable="false" role="img">
       <use
         xlink:href="<%= asset_path("@uswds/uswds/dist/img/sprite.svg#check") %>"
       ></use>
     </svg>
-  </div>
-  <div class="grid-row">
     <span class="margin-top-05 text-bold text-primary"><%= label %></span>
-  </div>
-<% end %>
-
-<% if status == :failed %>
-  <div class="grid-row">
+  <% when :failed %>
     <svg class="usa-icon border-05 bg-base-darker text-white border-base-darker radius-pill padding-1 usa-icon--size-5" aria-hidden="true" focusable="false" role="img">
       <use
         xlink:href="<%= asset_path("@uswds/uswds/dist/img/sprite.svg#priority_high") %>"
       ></use>
     </svg>
-  </div>
-  <div class="grid-row">
     <span class="margin-top-05 text-bold"><%= label %></span>
-  </div>
-<% end %>
+  <% end %>
+</div>
