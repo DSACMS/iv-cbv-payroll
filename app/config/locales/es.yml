@@ -447,7 +447,7 @@ es:
           - Busque en su correo electrónico palabras clave, por ejemplo, "nómina", "[Nombre del proveedor de nómina]" o "identificación de la empresa".
           title: Revise todos los materiales de bienvenida que haya recibido
         step2:
-          content: '["El ID de su empresa podría estar en recibos de pago, formularios de impuestos, u otros documentos de nómina antiguos. Busque allí primero si los tiene."]'
+          content: El ID de su empresa podría estar en recibos de pago, formularios de impuestos, u otros documentos de nómina antiguos. Busque allí primero si los tiene.
           title: Busque en los recibos de pago o estados de cuenta
         step3:
           content: Póngase en contacto con el encargado de Recursos Humanos o de Nómina de la empresa. Cualquiera de estas personas pueden ayudarlo a conseguir la identificación de la empresa.
@@ -457,7 +457,7 @@ es:
         intro: Entendemos su preocupación por compartir su información de inicio de sesión.
         security_message: Su seguridad es importante para nosotros y queremos que se sienta seguro. A continuación le explicamos cómo mantenemos su información protegida.
         step1:
-          content: '["Usamos métodos de encriptación fuertes, similares a los que usan los bancos, para proteger su información. Sus credenciales se transmiten de forma segura y no las almacenamos."]'
+          content: Usamos métodos de encriptación fuertes, similares a los que usan los bancos, para proteger su información. Sus credenciales se transmiten de forma segura y no las almacenamos.
           title: Su información de inicio de sesión se encuentra cifrada y protegida.
         step2:
           content: Solo usamos su información de inicio de sesión para verificar los detalles de su nómina una vez. No se volverá a usar ni se usará para ningún otro fin.
@@ -511,7 +511,9 @@ es:
           content: Siga las indicaciones en pantalla para recuperar su nombre de usuario.
           title: Vaya a la página de inicio de sesión de su proveedor de nómina.
         step2:
-          content: '["Busque correos electrónicos de su proveedor de nómina o empleador que tengan su nombre de usuario.", "Busque palabras clave, por ejemplo, \"[Nombre del proveedor de nómina]\", \"inicio de sesión\" o \"credenciales\"."]'
+          content:
+          - Busque correos electrónicos de su proveedor de nómina o empleador que tengan su nombre de usuario.
+          - Busque palabras clave, por ejemplo, "[Nombre del proveedor de nómina]", "inicio de sesión" o "credenciales".
           title: Revise su buzón de correo electrónico
         step3:
           content: Pídele al equipo de Recursos Humanos de su empleador que le ayude a obtener los datos de inicio de sesión en relación con su nómina.
