@@ -28,7 +28,7 @@
           <%= row.with_data_cell
                  .with_content(format_money(summary[:accrued_gross_earnings])) %>
           <%= row.with_data_cell
-                 .with_content(summary[:total_gig_hours]) %>
+                 .with_content(format_hours(summary[:total_gig_hours])) %>
         <% end %>
       <% end %>
     <% end %>
