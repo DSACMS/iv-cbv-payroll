@@ -152,11 +152,11 @@ RSpec.describe Report::MonthlySummaryTableComponent, type: :component do
         subject = render_inline(described_class.new(argyle_report, payroll_account))
 
         expect(subject.css("thead tr.subheader-row th:nth-child(3)").to_html).to include "Verified mileage expenses"
-        expect(subject.css("tbody tr:nth-child(1) td:nth-child(3)").to_html).to include "$58.40"
+        expect(subject.css("tbody tr:nth-child(1) td:nth-child(3)").to_html).to include "$58.10"
         expect(subject.css("tbody tr:nth-child(1) td:nth-child(3)").to_html).to include "($0.70 x 83 miles)"
-        expect(subject.css("tbody tr:nth-child(2) td:nth-child(3)").to_html).to include "$431.73"
+        expect(subject.css("tbody tr:nth-child(2) td:nth-child(3)").to_html).to include "$431.90"
         expect(subject.css("tbody tr:nth-child(2) td:nth-child(3)").to_html).to include "($0.70 x 617 miles)"
-        expect(subject.css("tbody tr:nth-child(3) td:nth-child(3)").to_html).to include "$91.99"
+        expect(subject.css("tbody tr:nth-child(3) td:nth-child(3)").to_html).to include "$91.70"
         expect(subject.css("tbody tr:nth-child(3) td:nth-child(3)").to_html).to include "($0.70 x 131 miles)"
       end
 
@@ -171,8 +171,8 @@ RSpec.describe Report::MonthlySummaryTableComponent, type: :component do
 
       it "renders table caption" do
         subject = render_inline(described_class.new(argyle_report, payroll_account))
-        expect(subject.css(".usa-prose").to_html).to include('"Accrued gross earnings" sums the payments')
-        expect(subject.css(".usa-prose").to_html).to include '"Total hours worked" sums the time'
+        expect(subject.to_html).to include('"Accrued gross earnings" sums the payments')
+        expect(subject.to_html).to include '"Total hours worked" sums the time'
       end
 
       describe "#find_employer_name" do
@@ -240,8 +240,8 @@ RSpec.describe Report::MonthlySummaryTableComponent, type: :component do
 
       it "does not render the table caption" do
         subject = render_inline(described_class.new(argyle_report, payroll_account))
-        expect(subject.css(".usa-prose").to_html).not_to include('"Accrued gross earnings" sums the payments')
-        expect(subject.css(".usa-prose").to_html).not_to include '"Total hours worked" sums the time'
+        expect(subject.to_html).not_to include('"Accrued gross earnings" sums the payments')
+        expect(subject.to_html).not_to include '"Total hours worked" sums the time'
       end
     end
 
@@ -296,8 +296,8 @@ RSpec.describe Report::MonthlySummaryTableComponent, type: :component do
 
       it "renders table caption" do
         subject = render_inline(described_class.new(argyle_report, payroll_account))
-        expect(subject.css(".usa-prose").to_html).to include('"Accrued gross earnings" sums the payments')
-        expect(subject.css(".usa-prose").to_html).to include '"Total hours worked" sums the time'
+        expect(subject.to_html).to include('"Accrued gross earnings" sums the payments')
+        expect(subject.to_html).to include '"Total hours worked" sums the time'
       end
     end
 
@@ -352,8 +352,8 @@ RSpec.describe Report::MonthlySummaryTableComponent, type: :component do
 
       it "renders table caption" do
         subject = render_inline(described_class.new(argyle_report, payroll_account))
-        expect(subject.css(".usa-prose").to_html).to include('"Accrued gross earnings" sums the payments')
-        expect(subject.css(".usa-prose").to_html).to include '"Total hours worked" sums the time'
+        expect(subject.to_html).to include('"Accrued gross earnings" sums the payments')
+        expect(subject.to_html).to include '"Total hours worked" sums the time'
       end
     end
   end

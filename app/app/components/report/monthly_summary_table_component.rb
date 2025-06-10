@@ -60,7 +60,8 @@ class Report::MonthlySummaryTableComponent < ViewComponent::Base
     year = parse_month_safely(month_string).year
     cents_per_mile = self.get_federal_cents_per_mile(year)
 
-    format_money(month_summary[:total_mileage].to_f * cents_per_mile)
+    # Note: we need to round miles to dollars x miles rate displayed
+    format_money(month_summary[:total_mileage].to_f.round(0) * cents_per_mile)
   end
 
   def format_verified_mileage_expense_rate(month_summary, month_string)

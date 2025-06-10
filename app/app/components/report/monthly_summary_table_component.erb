@@ -46,8 +46,8 @@
 
   <% if has_monthly_summary_results? %>
     <% if show_footnote? %>
-      <div class="usa-prose font-body-xs">
-        <h5><%= I18n.t("components.report.monthly_summary_table.compact.footnote.what_does_this_mean") %></h5>
+      <div>
+        <h4><%= I18n.t("components.report.monthly_summary_table.compact.footnote.what_does_this_mean") %></h4>
         <ul class="usa-list">
           <li><%= I18n.t("components.report.monthly_summary_table.compact.footnote.definition_accrued_gross_earnings") %></li>
           <% if has_mileage_data? %>
