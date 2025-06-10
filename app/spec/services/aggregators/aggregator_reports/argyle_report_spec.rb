@@ -182,6 +182,7 @@ RSpec.describe Aggregators::AggregatorReports::ArgyleReport, type: :service do
           hours: nil,
           start_date: "2025-03-06",
           end_date: nil,
+          distance_miles: 0.0,
           compensation_category: "work",
           compensation_amount: 0.0
           )
@@ -192,6 +193,7 @@ RSpec.describe Aggregators::AggregatorReports::ArgyleReport, type: :service do
             hours: 0.09,
             start_date: "2025-03-05",
             end_date: "2025-03-05",
+            distance_miles: 8.29,
             compensation_category: "work",
             compensation_amount: 1024
           )
@@ -202,6 +204,7 @@ RSpec.describe Aggregators::AggregatorReports::ArgyleReport, type: :service do
             hours: 0.56,
             start_date: "2025-03-05",
             end_date: "2025-03-05",
+            distance_miles: 12.31,
             compensation_category: "work",
             compensation_amount: 1945
           )

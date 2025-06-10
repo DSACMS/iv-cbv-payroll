@@ -12,6 +12,15 @@ module Aggregators::FormatMethods::Argyle
     end
   end
 
+  def self.format_distance_miles(distance_string, distance_unit = "miles")
+    return nil if distance_string.blank?
+    distance = distance_string.to_f
+    if distance_unit == "km"
+      distance = distance * 0.62
+    end
+    distance.round(2)
+  end
+
   def self.format_date(date)
     return unless date
 

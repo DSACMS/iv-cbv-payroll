@@ -40,6 +40,7 @@ RSpec.describe Aggregators::ResponseObjects::Gig do
         end_date: ArgyleFormatter.format_date(gig_data["end_datetime"]),
         hours: ArgyleFormatter.seconds_to_hours(gig_data["duration"]),
         compensation_amount: ArgyleFormatter.format_currency(gig_data["income"]["pay"]),
+        distance_miles: 8.29,
         gig_status: gig_data["status"]
       )
     end

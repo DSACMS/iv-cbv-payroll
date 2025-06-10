@@ -7,6 +7,7 @@ GIG_FIELDS = %i[
   end_date
   compensation_category
   compensation_amount
+  distance_miles
 ]
 
 module Aggregators::ResponseObjects
@@ -16,6 +17,7 @@ module Aggregators::ResponseObjects
         account_id: response_body["account"],
         gig_type: response_body["type"],
         gig_status: response_body["status"],
+        distance_miles: Aggregators::FormatMethods::Argyle.format_distance_miles(response_body["distance"], response_body["duration_unit"]),
         hours: Aggregators::FormatMethods::Argyle.seconds_to_hours(response_body["duration"]),
         start_date: Aggregators::FormatMethods::Argyle.format_date(response_body["start_datetime"]),
         end_date: Aggregators::FormatMethods::Argyle.format_date(response_body["end_datetime"]),
