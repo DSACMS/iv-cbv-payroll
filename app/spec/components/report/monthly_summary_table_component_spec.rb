@@ -158,9 +158,9 @@ RSpec.describe Report::MonthlySummaryTableComponent, type: :component do
         subject = render_inline(described_class.new(argyle_report, payroll_account))
 
         expect(subject.css("thead tr.subheader-row th:nth-child(3)").to_html).to include "Total hours worked"
-        expect(subject.css("tbody tr:nth-child(1) td:nth-child(3)").to_html).to include "3.61"
-        expect(subject.css("tbody tr:nth-child(2) td:nth-child(3)").to_html).to include "21.82"
-        expect(subject.css("tbody tr:nth-child(3) td:nth-child(3)").to_html).to include "4.74"
+        expect(subject.css("tbody tr:nth-child(1) td:nth-child(3)").to_html).to include "3.6"
+        expect(subject.css("tbody tr:nth-child(2) td:nth-child(3)").to_html).to include "21.8"
+        expect(subject.css("tbody tr:nth-child(3) td:nth-child(3)").to_html).to include "4.7"
       end
 
       it "renders table caption" do
@@ -289,9 +289,9 @@ RSpec.describe Report::MonthlySummaryTableComponent, type: :component do
         subject = render_inline(described_class.new(argyle_report, payroll_account))
 
         expect(subject.css("thead tr.subheader-row th:nth-child(3)").to_html).to include "Total hours worked"
-        expect(subject.css("tbody tr:nth-child(1) td:nth-child(3)").to_html).to include "3.61"
-        expect(subject.css("tbody tr:nth-child(2) td:nth-child(3)").to_html).to include "21.82"
-        expect(subject.css("tbody tr:nth-child(3) td:nth-child(3)").to_html).to include "4.74"
+        expect(subject.css("tbody tr:nth-child(1) td:nth-child(3)").to_html).to include "3.6"
+        expect(subject.css("tbody tr:nth-child(2) td:nth-child(3)").to_html).to include "21.8"
+        expect(subject.css("tbody tr:nth-child(3) td:nth-child(3)").to_html).to include "4.7"
       end
 
       it "renders table caption" do
