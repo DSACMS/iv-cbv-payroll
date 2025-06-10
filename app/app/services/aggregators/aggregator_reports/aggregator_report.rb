@@ -114,10 +114,7 @@ module Aggregators::AggregatorReports
     end
 
     def total_miles(gigs)
-      mileages = gigs.map { |g| g.mileage }.compact
-      # if there are no gigs with miles, return nil
-      return nil if mileages.empty?
-      mileages.sum.round(2)
+      gigs.sum { |g| g.mileage || 0 }
     end
 
     def total_gross_income
