@@ -74,6 +74,18 @@ RSpec.describe WeeklyReportMailer, type: :mailer do
     expect(parsed_csv.length).to eq(1)
   end
 
+  it "raises error for unknown report variant" do
+    fake_agency = double(
+      id: "fake_agency",
+      weekly_report: { "report_variant" => "unknown_variant" }
+    )
+    report_range = now.prev_week.all_week
+
+    expect {
+      described_class.new.send(:weekly_report_data, fake_agency, report_range)
+    }.to raise_error("Unknown report variant: unknown_variant")
+  end
+
   context "for generic flows" do
     it "excludes incomplete flows from the CSV data" do
       create(:cbv_flow, :invited,

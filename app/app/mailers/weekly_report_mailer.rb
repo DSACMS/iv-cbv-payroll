@@ -33,7 +33,8 @@ class WeeklyReportMailer < ApplicationMailer
     client_agency_id = current_agency.id
     report_variant = current_agency.weekly_report["report_variant"] || "flows"
 
-    if report_variant == "invitations"
+    case report_variant
+    when "invitations"
       CbvFlowInvitation.where(client_agency_id: client_agency_id, created_at: report_range)
                        .includes(:cbv_flows, :cbv_applicant)
                        .flat_map do |invitation|
@@ -43,13 +44,15 @@ class WeeklyReportMailer < ApplicationMailer
           [ build_record(nil, invitation.cbv_applicant, invitation, client_agency_id) ]
         end
       end
-    else
+    when "flows"
       CbvFlow.where(client_agency_id: client_agency_id, created_at: report_range)
              .completed
              .includes(:cbv_applicant, :cbv_flow_invitation)
              .map do |flow|
         build_record(flow, flow.cbv_applicant, flow.cbv_flow_invitation, client_agency_id)
       end
+    else
+      raise "Unknown report variant: #{report_variant}"
     end
   end
 
