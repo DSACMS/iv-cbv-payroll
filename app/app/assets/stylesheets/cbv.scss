@@ -207,6 +207,32 @@ html {
 }
 
 /*
+ * Synchronizations Page
+ */
+.synchronizations-indicator {
+  align-items: center;
+  display: flex;
+  margin-bottom: 1rem;
+  text-align: center;
+  word-break: break-word;
+
+  @include at-media('tablet') {
+    flex-direction: column;
+  }
+}
+
+.synchronizations-indicator__spinner {
+  margin-right: 1rem;
+
+  @include u-padding(1);
+  @include u-border(0.5);
+  @include u-radius("pill");
+  @include at-media('tablet') {
+    margin-right: 0;
+  }
+}
+
+/*
 * Copy link button
 */
 input#invitation_link{
