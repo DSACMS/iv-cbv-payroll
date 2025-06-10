@@ -95,6 +95,7 @@ RSpec.describe Aggregators::AggregatorReports::PinwheelReport, type: :service do
         expect(dec[:paystubs].length).to eq(1)
         expect(dec[:accrued_gross_earnings]).to eq(480720) # in cents
         expect(dec[:total_gig_hours]).to eq(45.0)
+        expect(dec[:total_mileage]).to be_nil # mileage data missing from pinwheel
         expect(dec[:partial_month_range]).to an_object_eq_to({
                                                                is_partial_month: true,
                                                                description: "(Partial month: from 12/5-12/31)",

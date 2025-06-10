@@ -176,37 +176,37 @@ RSpec.describe Aggregators::AggregatorReports::ArgyleReport, type: :service do
         it 'returns with expected attributes' do
           argyle_report.send(:fetch_report_data)
           expect(argyle_report.gigs[0]).to have_attributes(
-          account_id: "019571bc-2f60-3955-d972-dbadfe0913a8",
-          gig_type: "rideshare",
-          gig_status: "cancelled",
-          hours: nil,
-          start_date: "2025-03-06",
-          end_date: nil,
-          distance_miles: 0.0,
-          compensation_category: "work",
-          compensation_amount: 0.0
+                                             account_id: "019571bc-2f60-3955-d972-dbadfe0913a8",
+                                             gig_type: "rideshare",
+                                             gig_status: "cancelled",
+                                             hours: nil,
+                                             start_date: "2025-03-06",
+                                             end_date: nil,
+                                             mileage: 0.0,
+                                             compensation_category: "work",
+                                             compensation_amount: 0.0
           )
           expect(argyle_report.gigs[1]).to have_attributes(
-            account_id: "019571bc-2f60-3955-d972-dbadfe0913a8",
-            gig_type: "rideshare",
-            gig_status: "completed",
-            hours: 0.09,
-            start_date: "2025-03-05",
-            end_date: "2025-03-05",
-            distance_miles: 8.29,
-            compensation_category: "work",
-            compensation_amount: 1024
+                                             account_id: "019571bc-2f60-3955-d972-dbadfe0913a8",
+                                             gig_type: "rideshare",
+                                             gig_status: "completed",
+                                             hours: 0.09,
+                                             start_date: "2025-03-05",
+                                             end_date: "2025-03-05",
+                                             mileage: 8.29,
+                                             compensation_category: "work",
+                                             compensation_amount: 1024
           )
           expect(argyle_report.gigs[3]).to have_attributes(
-            account_id: "019571bc-2f60-3955-d972-dbadfe0913a8",
-            gig_type: "rideshare",
-            gig_status: "completed",
-            hours: 0.56,
-            start_date: "2025-03-05",
-            end_date: "2025-03-05",
-            distance_miles: 12.31,
-            compensation_category: "work",
-            compensation_amount: 1945
+                                             account_id: "019571bc-2f60-3955-d972-dbadfe0913a8",
+                                             gig_type: "rideshare",
+                                             gig_status: "completed",
+                                             hours: 0.56,
+                                             start_date: "2025-03-05",
+                                             end_date: "2025-03-05",
+                                             mileage: 12.31,
+                                             compensation_category: "work",
+                                             compensation_amount: 1945
           )
         end
       end
@@ -328,6 +328,7 @@ RSpec.describe Aggregators::AggregatorReports::ArgyleReport, type: :service do
         expect(march[:paystubs].length).to eq(1)
         expect(march[:accrued_gross_earnings]).to eq(3456) # in cents
         expect(march[:total_gig_hours]).to eq(3.61)
+        expect(march[:total_mileage]).to eq(83.43)
         expect(march[:partial_month_range]).to an_object_eq_to({
                                                                  is_partial_month: true,
                                                                  description: "(Partial month: from 3/1-3/6)",
@@ -340,6 +341,7 @@ RSpec.describe Aggregators::AggregatorReports::ArgyleReport, type: :service do
         expect(feb[:paystubs].length).to eq(4)
         expect(feb[:accrued_gross_earnings]).to eq(23075) # in cents
         expect(feb[:total_gig_hours]).to eq(14.0)
+        expect(feb[:total_mileage]).to eq(379.18)
         expect(feb[:partial_month_range]).to an_object_eq_to({
                                                                is_partial_month: false,
                                                                description: nil,
@@ -352,6 +354,7 @@ RSpec.describe Aggregators::AggregatorReports::ArgyleReport, type: :service do
         expect(jan[:paystubs].length).to eq(5)
         expect(jan[:accrued_gross_earnings]).to eq(28237) # in cents
         expect(jan[:total_gig_hours]).to eq(0)
+        expect(jan[:total_mileage]).to be_nil
         expect(jan[:partial_month_range]).to an_object_eq_to({
                                                                is_partial_month: true,
                                                                description: "(Partial month: from 1/2-1/31)",

@@ -13,6 +13,21 @@ RSpec.describe ReportViewHelper, type: :helper do
     end
   end
 
+  describe '#format_miles' do
+    it "rounds to the nearest tenth" do
+      expect(helper.format_miles(57.3611)).to eq(57.4)
+      expect(helper.format_miles(57.3411)).to eq(57.3)
+    end
+
+    it "ignores non numbers" do
+      expect(helper.format_miles("miles")).to eq("miles")
+      expect(helper.format_miles("30h")).to eq("30h")
+      expect(helper.format_miles(nil)).to be_nil
+      expect(helper.format_miles("")).to eq("")
+    end
+  end
+
+
   describe '#translate_aggregator_value' do
     around do |ex|
       I18n.with_locale(locale, &ex)

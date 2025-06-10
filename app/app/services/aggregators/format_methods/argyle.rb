@@ -12,7 +12,7 @@ module Aggregators::FormatMethods::Argyle
     end
   end
 
-  def self.format_distance_miles(distance_string, distance_unit = "miles")
+  def self.format_mileage(distance_string, distance_unit = "miles")
     return nil if distance_string.blank?
     distance = distance_string.to_f
     if distance_unit == "km"

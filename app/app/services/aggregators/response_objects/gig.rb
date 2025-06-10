@@ -7,7 +7,7 @@ GIG_FIELDS = %i[
   end_date
   compensation_category
   compensation_amount
-  distance_miles
+  mileage
 ]
 
 module Aggregators::ResponseObjects
@@ -17,7 +17,7 @@ module Aggregators::ResponseObjects
         account_id: response_body["account"],
         gig_type: response_body["type"],
         gig_status: response_body["status"],
-        distance_miles: Aggregators::FormatMethods::Argyle.format_distance_miles(response_body["distance"], response_body["duration_unit"]),
+        mileage: Aggregators::FormatMethods::Argyle.format_mileage(response_body["distance"], response_body["distance_unit"]),
         hours: Aggregators::FormatMethods::Argyle.seconds_to_hours(response_body["duration"]),
         start_date: Aggregators::FormatMethods::Argyle.format_date(response_body["start_datetime"]),
         end_date: Aggregators::FormatMethods::Argyle.format_date(response_body["end_datetime"]),
@@ -31,6 +31,7 @@ module Aggregators::ResponseObjects
         account_id: response_body["account_id"],
         gig_type: response_body["type"],
         gig_status: nil, # pinwheel shifts don't have status
+        mileage: nil, # pinwheel shifts does not have miles
         hours: Aggregators::FormatMethods::Pinwheel.hours(response_body["earnings"]),
         start_date: response_body["start_date"],
         end_date: response_body["end_date"],

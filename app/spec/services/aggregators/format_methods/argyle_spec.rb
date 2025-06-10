@@ -98,24 +98,24 @@ RSpec.describe Aggregators::FormatMethods::Argyle, type: :service do
     end
   end
 
-  describe ".format_distance_miles" do
+  describe ".format_mileage" do
     it "nil distance is nil" do
-      subject = described_class.format_distance_miles(nil)
+      subject = described_class.format_mileage(nil)
       expect(subject).to be_nil
 
 
-      subject = described_class.format_distance_miles("")
+      subject = described_class.format_mileage("")
       expect(subject).to be_nil
     end
 
     it "'3.4' miles is 3.40 miles" do
-      subject = described_class.format_distance_miles("3.4", "miles")
+      subject = described_class.format_mileage("3.4", "miles")
       expect(subject.class).to eq(Float)
       expect(subject).to eq(3.4)
     end
 
     it "'3.4' km is 5.47 miles" do
-      subject = described_class.format_distance_miles("3.4", "km")
+      subject = described_class.format_mileage("3.4", "km")
       expect(subject.class).to eq(Float)
       expect(subject).to eq(2.11)
     end
