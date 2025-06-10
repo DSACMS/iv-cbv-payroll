@@ -192,7 +192,7 @@ es:
         step2_description: Podrá hacer una vista previa y aprobar todo lo que se comparta con %{agency_acronym}.
         step3: Envíe su información de pago.
         step3_description: La enviaremos automáticamente a %{agency_acronym}. Esto lo ayudará a demostrar y comprobar sus ingresos y puede ayudar a %{agency_acronym} a tomar una decisión más rápida.
-        subheader_html: 'Enviaremos los registros de pago de su(s) empleador(es) a %{agency_acronym} para verificar sus ingresos. <strong>La mayoría de las personas completan este proceso en aproximadamente 5 minutos. </strong> Solo siga estos pasos:'
+        subheader_html: 'Enviaremos los registros de pago de su(s) empleador(es) a %{agency_acronym} para verificar sus ingresos.<strong> La mayoría de las personas completan este proceso en aproximadamente 5 minutos.</strong> Solo siga estos pasos:'
         what_if_i_cant_use_this_body_1: Si necesita declarar sus ingresos y no puede usar esta herramienta, deberá compartir, de manera directa, la información de sus ingresos para este trabajo con %{agency_short_name}.
         what_if_i_cant_use_this_body_2_html:
           default: Para obtener más información sobre cómo enviar documentos, visite el sitio web de <a href="%{agency_url}" target="_blank" rel="noopener noreferrer">%{agency_acronym}</a>.
@@ -366,7 +366,7 @@ es:
             what_does_this_mean: "¿Qué significa esta información?"
           month_income: 'Ganancias brutas de %{month}: %{accrued_gross_earnings}'
           total_income_header: 'Ingreso total de %{employer_name} antes de impuestos: %{accrued_gross_earnings}'
-        dollars_times_miles: "(%{dollar_amount} x %{ number_of_miles } kilómetros)"
+        dollars_times_miles: "(%{dollar_amount} x %{ number_of_miles } millas)"
         month: Mes
         monthly_summary: Resumen mensual
         partial_month_text: "(Mes parcial: desde el %{start_date} y hasta el %{end_date})"
