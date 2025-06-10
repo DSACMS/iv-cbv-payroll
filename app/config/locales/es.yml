@@ -355,7 +355,7 @@ es:
   components:
     report:
       monthly_summary_table:
-        accrued_gross_earnings: Ganancias brutas acumuladas
+        accrued_gross_earnings: Ganancias brutas
         compact:
           footnote:
             definition_accrued_gross_earnings: Las ganancias brutas acumuladas suman los pagos realizados en ese mes.
@@ -370,8 +370,8 @@ es:
         partial_month_text: "(Mes parcial: desde el %{start_date} y hasta el %{end_date})"
         payments_from_header: Pagos de %{employer_name}
         payments_from_text: Estas fueron las fechas en las que se le pagó al cliente por su trabajo en %{employer_name} y el importe del pago bruto.
-        total_gig_hours: Total de horas trabajadas
-        verified_mileage_expenses: Gastos de millaje verificado
+        total_gig_hours: Total de horas
+        verified_mileage_expenses: Total de millaje
   continue: Continuar
   date:
     abbr_day_names:

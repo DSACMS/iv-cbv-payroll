@@ -4,16 +4,17 @@ class Report::MonthlySummaryTableComponent < ViewComponent::Base
 
   attr_reader :employer_name
 
-  def initialize(report, payroll_account)
+  def initialize(report, payroll_account, show_payments: true, show_footnote: true)
     @report = report
+    @show_payments = show_payments
+    @show_footnote = show_footnote
+
     # Note: payroll_account may either be the ID or the payroll_account object
     @account_id = payroll_account.class == String ? payroll_account : payroll_account.pinwheel_account_id
     account_report = report.find_account_report(@account_id)
     @paystubs = account_report&.paystubs
     @employer_name = account_report&.dig(:employment, :employer_name)
     @monthly_summary_data = report.summarize_by_month[@account_id]
-
-    @has_monthly_summary_results = @monthly_summary_data.present?
   end
 
   def before_render
@@ -24,9 +25,38 @@ class Report::MonthlySummaryTableComponent < ViewComponent::Base
 
   private
 
+  def has_monthly_summary_results?
+    @monthly_summary_data.present?
+  end
+
+  def has_mileage_data?
+    @monthly_summary_data.map { |month_string, month_summary| month_summary[:total_mileage] }.any?
+  end
+
+  def show_payments?
+    @show_payments
+  end
+
+  def show_footnote?
+    @show_footnote
+  end
+
+  def table_colspan
+    if has_mileage_data?
+      4
+    else
+      3
+    end
+  end
+
   def format_accrued_gross_earnings(month_summary)
     return I18n.t("shared.not_applicable") if month_summary[:paystubs].empty?
     format_money(month_summary[:accrued_gross_earnings])
+  end
+
+  def format_verified_mileage_expenses(month_summary)
+    return I18n.t("shared.not_applicable") if month_summary[:gigs].empty?
+    format_miles(month_summary[:total_mileage])
   end
 
   def format_total_gig_hours(month_summary)
