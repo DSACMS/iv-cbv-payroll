@@ -15,7 +15,7 @@ class Report::MonthlySummaryCompactComponent < ViewComponent::Base
     @monthly_summary_data = report.summarize_by_month[@account_id]
 
 
-    @has_monthly_summary_results = @monthly_summary_data&.length > 0
+    @has_monthly_summary_results = @monthly_summary_data.present?
   end
 
   private
