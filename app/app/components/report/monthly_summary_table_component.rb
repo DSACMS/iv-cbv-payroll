@@ -13,7 +13,7 @@ class Report::MonthlySummaryTableComponent < ViewComponent::Base
     @employer_name = account_report&.dig(:employment, :employer_name)
     @monthly_summary_data = report.summarize_by_month[@account_id]
 
-    @has_monthly_summary_results = @monthly_summary_data&.length == 0
+    @has_monthly_summary_results = @monthly_summary_data.present?
   end
 
   def before_render
