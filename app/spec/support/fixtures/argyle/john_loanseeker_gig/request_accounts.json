@@ -1,0 +1,78 @@
+{
+  "next": null,
+  "previous": null,
+  "results": [
+    {
+      "id": "019755d1-6727-1f48-c35f-41bce3a6263c",
+      "user": "019755d1-3e3f-0024-ba23-90fb85ce7780",
+      "employers": [
+        "Uber Driver"
+      ],
+      "item": "item_000041078",
+      "source": "argyle_sandbox",
+      "created_at": "2025-06-09T17:51:16.325050Z",
+      "updated_at": "2025-06-09T17:52:09.866843Z",
+      "scanned_at": "2025-06-09T17:52:09.276394Z",
+      "connection": {
+        "status": "connected",
+        "error_code": null,
+        "error_message": null,
+        "updated_at": "2025-06-09T17:52:04.265072Z"
+      },
+      "direct_deposit_switch": {
+        "status": "idle",
+        "error_code": null,
+        "error_message": null,
+        "updated_at": "2025-06-09T17:51:16.753005Z"
+      },
+      "availability": {
+        "gigs": {
+          "status": "synced",
+          "updated_at": "2025-06-09T17:52:07.631133Z",
+          "available_count": 0,
+          "available_from": null,
+          "available_to": null
+        },
+        "shifts": {
+          "status": "synced",
+          "updated_at": "2025-06-09T17:52:07.626014Z",
+          "available_count": 0,
+          "available_from": null,
+          "available_to": null
+        },
+        "paystubs": {
+          "status": "synced",
+          "updated_at": "2025-06-09T17:52:07.622459Z",
+          "available_count": 0,
+          "available_from": null,
+          "available_to": null
+        },
+        "payroll_documents": {
+          "status": "synced",
+          "updated_at": "2025-06-09T17:52:07.485568Z"
+        },
+        "identities": {
+          "status": "synced",
+          "updated_at": "2025-06-09T17:52:07.883921Z"
+        },
+        "ratings": {
+          "status": "synced",
+          "updated_at": "2025-06-09T17:52:09.001023Z"
+        },
+        "vehicles": {
+          "status": "synced",
+          "updated_at": "2025-06-09T17:52:07.503974Z"
+        },
+        "deposit_destinations": {
+          "status": "synced",
+          "updated_at": "2025-06-09T17:52:05.523717Z"
+        },
+        "user_forms": null,
+        "user_uploads": null
+      },
+      "ongoing_refresh": {
+        "status": "disabled"
+      }
+    }
+  ]
+}

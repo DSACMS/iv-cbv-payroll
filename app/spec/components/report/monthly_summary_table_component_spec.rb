@@ -51,6 +51,7 @@ RSpec.describe Report::MonthlySummaryTableComponent, type: :component do
 
       it "pinwheel_report is properly fetched" do
         expect(pinwheel_report.gigs.length).to eq(3)
+        expect(pinwheel_report.paystubs.length).to eq(1)
       end
 
       it "includes table header" do
@@ -128,6 +129,7 @@ RSpec.describe Report::MonthlySummaryTableComponent, type: :component do
 
       it "argyle_report is properly fetched" do
         expect(argyle_report.gigs.length).to be(100)
+        expect(argyle_report.paystubs.length).to be(10)
       end
 
       it "includes table header" do
@@ -161,6 +163,12 @@ RSpec.describe Report::MonthlySummaryTableComponent, type: :component do
         expect(subject.css("tbody tr:nth-child(3) td:nth-child(3)").to_html).to include "4.7"
       end
 
+      it "renders table caption" do
+        subject = render_inline(described_class.new(argyle_report, payroll_account))
+        expect(subject.css(".usa-prose").to_html).to include('"Accrued gross earnings" sums the payments')
+        expect(subject.css(".usa-prose").to_html).to include '"Total hours worked" sums the time'
+      end
+
       describe "#find_employer_name" do
         it "returns the correct employer name for the specified account id" do
           # Initializing the component under test
@@ -183,6 +191,172 @@ RSpec.describe Report::MonthlySummaryTableComponent, type: :component do
           # Verifying the method returns the correct employer name
           expect(employer_name).to be_nil
         end
+      end
+    end
+    context "with John LoanSeeker, a gig-worker with no paystubs nor gigs" do
+      let(:account_id) { "019755d1-6727-1f48-c35f-41bce3a6263c" }
+      let(:argyle_report) { Aggregators::AggregatorReports::ArgyleReport.new(payroll_accounts: [ payroll_account ], argyle_service: argyle_service, days_to_fetch_for_w2: 90, days_to_fetch_for_gig: 182) }
+      before do
+        user_folder_name = "john_loanseeker_gig"
+        argyle_stub_request_identities_response(user_folder_name)
+        argyle_stub_request_paystubs_response(user_folder_name)
+        argyle_stub_request_gigs_response(user_folder_name)
+        argyle_stub_request_accounts_response(user_folder_name)
+        argyle_report.fetch
+      end
+
+      around do |ex|
+        Timecop.freeze(Time.local(2025, 06, 9, 0, 0), &ex)
+      end
+
+      subject { render_inline(described_class.new(argyle_report, payroll_account)) }
+
+      it "has no gigs nor paystubs for john loanseeker account" do
+        expect(argyle_report.gigs.length).to be(0)
+        expect(argyle_report.paystubs.length).to be(0)
+      end
+
+      it "includes table headers" do
+        output = render_inline(described_class.new(argyle_report, payroll_account))
+        expect(output.css("thead h4").to_html).to include "Uber Driver"
+        expect(output.css("thead h4").to_html).to include "Monthly Summary"
+
+        # assert that there are 3 column headers in table
+        expect(subject.css("thead tr.subheader-row th").length).to eq(3)
+      end
+
+      it "includes table subheaders" do
+        expect(subject.css("thead tr.subheader-row th:nth-child(1)").to_html).to include "Month"
+        expect(subject.css("thead tr.subheader-row th:nth-child(2)").to_html).to include "Accrued gross earnings"
+      end
+
+      it "renders the none_found message for missing payments" do
+        subject = render_inline(described_class.new(argyle_report, payroll_account))
+        expect(subject.css("tbody tr:nth-child(1)").to_html).to include "We didn't find any payments from this employer in the past 6 months"
+      end
+
+      it "does not render the table caption" do
+        subject = render_inline(described_class.new(argyle_report, payroll_account))
+        expect(subject.css(".usa-prose").to_html).not_to include('"Accrued gross earnings" sums the payments')
+        expect(subject.css(".usa-prose").to_html).not_to include '"Total hours worked" sums the time'
+      end
+    end
+
+    context "with bob, a gig-worker without paystubs" do
+      let(:argyle_report) { Aggregators::AggregatorReports::ArgyleReport.new(payroll_accounts: [ payroll_account ], argyle_service: argyle_service, days_to_fetch_for_w2: 90, days_to_fetch_for_gig: 182) }
+      before do
+        argyle_stub_request_identities_response("bob")
+        argyle_stub_request_paystubs_response("empty")
+        argyle_stub_request_gigs_response("bob")
+        argyle_stub_request_account_response("bob")
+        argyle_report.fetch
+      end
+
+      around do |ex|
+        Timecop.freeze(Time.local(2025, 04, 1, 0, 0), &ex)
+      end
+
+      subject { render_inline(described_class.new(argyle_report, payroll_account)) }
+
+      it "argyle_report is properly fetched" do
+        expect(argyle_report.gigs.length).to be(100)
+        expect(argyle_report.paystubs.length).to be(0)
+      end
+
+      it "includes table header" do
+        expect(subject.css("thead h4").to_html).to include "Lyft Driver"
+        expect(subject.css("thead h4").to_html).to include "Monthly Summary"
+
+        # assert that there are 3 column headers in table
+        expect(subject.css("thead tr.subheader-row th").length).to eq(3)
+      end
+
+      it "renders the Month column with the correct date format" do
+        expect(subject.css("thead tr.subheader-row th:nth-child(1)").to_html).to include "Month"
+        expect(subject.css("tbody tr:nth-child(1) td:nth-child(1)").to_html).to include "March 2025"
+        expect(subject.css("tbody tr:nth-child(2) td:nth-child(1)").to_html).to include "February 2025"
+        expect(subject.css("tbody tr:nth-child(3) td:nth-child(1)").to_html).to include "January 2025"
+      end
+
+      it "renders the Accrued gross earnings column with the correct currency format" do
+        expect(subject.css("thead tr.subheader-row th:nth-child(2)").to_html).to include "Accrued gross earnings"
+        expect(subject.css("tbody tr:nth-child(1) td:nth-child(2)").to_html).to include "N/A"
+        expect(subject.css("tbody tr:nth-child(2) td:nth-child(2)").to_html).to include "N/A"
+        expect(subject.css("tbody tr:nth-child(3) td:nth-child(2)").to_html).to include "N/A"
+      end
+
+      it "renders the Total hours worked column with correct summation" do
+        subject = render_inline(described_class.new(argyle_report, payroll_account))
+
+        expect(subject.css("thead tr.subheader-row th:nth-child(3)").to_html).to include "Total hours worked"
+        expect(subject.css("tbody tr:nth-child(1) td:nth-child(3)").to_html).to include "3.61"
+        expect(subject.css("tbody tr:nth-child(2) td:nth-child(3)").to_html).to include "21.82"
+        expect(subject.css("tbody tr:nth-child(3) td:nth-child(3)").to_html).to include "4.74"
+      end
+
+      it "renders table caption" do
+        subject = render_inline(described_class.new(argyle_report, payroll_account))
+        expect(subject.css(".usa-prose").to_html).to include('"Accrued gross earnings" sums the payments')
+        expect(subject.css(".usa-prose").to_html).to include '"Total hours worked" sums the time'
+      end
+    end
+
+    context "with bob, a gig-worker without gigs" do
+      let(:argyle_report) { Aggregators::AggregatorReports::ArgyleReport.new(payroll_accounts: [ payroll_account ], argyle_service: argyle_service, days_to_fetch_for_w2: 90, days_to_fetch_for_gig: 182) }
+      before do
+        argyle_stub_request_identities_response("bob")
+        argyle_stub_request_paystubs_response("bob")
+        argyle_stub_request_gigs_response("empty")
+        argyle_stub_request_account_response("bob")
+        argyle_report.fetch
+      end
+
+      around do |ex|
+        Timecop.freeze(Time.local(2025, 04, 1, 0, 0), &ex)
+      end
+
+      subject { render_inline(described_class.new(argyle_report, payroll_account)) }
+
+      it "argyle_report is properly fetched" do
+        expect(argyle_report.gigs.length).to be(0)
+        expect(argyle_report.paystubs.length).to be(10)
+      end
+
+      it "includes table header" do
+        expect(subject.css("thead h4").to_html).to include "Lyft Driver"
+        expect(subject.css("thead h4").to_html).to include "Monthly Summary"
+
+        # assert that there are 3 column headers in table
+        expect(subject.css("thead tr.subheader-row th").length).to eq(3)
+      end
+
+      it "renders the Month column with the correct date format" do
+        expect(subject.css("thead tr.subheader-row th:nth-child(1)").to_html).to include "Month"
+        expect(subject.css("tbody tr:nth-child(1) td:nth-child(1)").to_html).to include "March 2025"
+        expect(subject.css("tbody tr:nth-child(2) td:nth-child(1)").to_html).to include "February 2025"
+        expect(subject.css("tbody tr:nth-child(3) td:nth-child(1)").to_html).to include "January 2025"
+      end
+
+      it "renders the Accrued gross earnings column with the correct currency format" do
+        expect(subject.css("thead tr.subheader-row th:nth-child(2)").to_html).to include "Accrued gross earnings"
+        expect(subject.css("tbody tr:nth-child(1) td:nth-child(2)").to_html).to include "$34.56"
+        expect(subject.css("tbody tr:nth-child(2) td:nth-child(2)").to_html).to include "$230.75"
+        expect(subject.css("tbody tr:nth-child(3) td:nth-child(2)").to_html).to include "$282.37"
+      end
+
+      it "renders the Total hours worked column with correct summation" do
+        subject = render_inline(described_class.new(argyle_report, payroll_account))
+
+        expect(subject.css("thead tr.subheader-row th:nth-child(3)").to_html).to include "Total hours worked"
+        expect(subject.css("tbody tr:nth-child(1) td:nth-child(3)").to_html).to include "N/A"
+        expect(subject.css("tbody tr:nth-child(2) td:nth-child(3)").to_html).to include "N/A"
+        expect(subject.css("tbody tr:nth-child(3) td:nth-child(3)").to_html).to include "N/A"
+      end
+
+      it "renders table caption" do
+        subject = render_inline(described_class.new(argyle_report, payroll_account))
+        expect(subject.css(".usa-prose").to_html).to include('"Accrued gross earnings" sums the payments')
+        expect(subject.css(".usa-prose").to_html).to include '"Total hours worked" sums the time'
       end
     end
   end
