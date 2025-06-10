@@ -535,7 +535,7 @@ es:
       refresh: Actualizar página
     home:
       description_1: Reportar Mis Ingresos es una nueva herramienta diseñada para ayudarle a conectar los detalles de sus ingresos de su empleador o proveedor de nómina directamente con su agencia de beneficios. En este momento, estamos probando esta herramienta para garantizar una operación efectiva.
-      description_2: Tenga en cuenta que, en este momento, este programa piloto solo está disponible para participantes que residan en Arizona, Illinois y Louisiana.
+      description_2: Tenga en cuenta que, en este momento, este programa piloto solo está disponible para participantes que residan en Arizona y Louisiana.
       description_3: Para obtener más información sobre cómo presentar comprobantes de ingresos para sus beneficios, visite el sitio web de su agencia.
       header: Bienvenido a Reportar Mis Ingresos
   session_timeout:

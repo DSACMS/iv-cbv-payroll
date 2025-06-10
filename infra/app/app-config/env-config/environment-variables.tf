@@ -233,6 +233,7 @@ locals {
       manage_method     = "manual"
       secret_store_name = "/service/${var.app_name}-${var.environment}/az-des-sftp-directory"
     },
+
     # Other site-specific Configuration:
     MA_DTA_ALLOWED_CASEWORKER_EMAILS = {
       manage_method     = "manual"
@@ -254,6 +255,10 @@ locals {
       manage_method     = "manual"
       secret_store_name = "/service/${var.app_name}-${var.environment}/la-ldh-weekly-report-recipients"
     },
+    AZ_DES_WEEKLY_REPORT_RECIPIENTS = {
+      manage_method     = "manual"
+      secret_store_name = "/service/${var.app_name}-${var.environment}/az-des-weekly-report-recipients"
+    }
     # Domain names
     AZ_DES_DOMAIN_NAME = {
       manage_method     = "manual"
