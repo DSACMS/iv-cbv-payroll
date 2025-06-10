@@ -10,7 +10,7 @@
     <li>
       <strong><%= t("help.show.#{topic}.#{step}.title") %></strong>
       <ul class="main-bullets">
-        <% t("help.show.#{topic}.#{step}.content", default: []).each do |content| %>
+        <% Array(t("help.show.#{topic}.#{step}.content", default: [])).each do |content| %>
           <% if content.is_a?(Array) %>
             <li>
               <%= content.first %>
