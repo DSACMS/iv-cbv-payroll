@@ -120,5 +120,39 @@ RSpec.describe Report::MonthlySummaryCompactComponent, type: :component do
         expect(subject.css("tbody tr:nth-child(3)").to_html).to include "January 2025 gross earnings: $282.37"
       end
     end
+    context "with bob, a gig-worker without paystubs or gigs" do
+      let(:argyle_report) {
+        Aggregators::AggregatorReports::ArgyleReport.new(
+          payroll_accounts: [ payroll_account ],
+          argyle_service: argyle_service,
+          days_to_fetch_for_w2: 90,
+          days_to_fetch_for_gig: 182)
+      }
+
+      before do
+        argyle_stub_request_identities_response("bob")
+        argyle_stub_request_paystubs_response("empty")
+        argyle_stub_request_gigs_response("empty")
+        argyle_stub_request_account_response("bob")
+        argyle_report.fetch
+      end
+
+
+      around do |ex|
+        Timecop.freeze(Time.local(2025, 04, 1, 0, 0), &ex)
+      end
+
+      subject { render_inline(described_class.new(argyle_report, payroll_account)) }
+
+      it "argyle_report is properly fetched" do
+        expect(argyle_report.gigs.length).to be(0)
+        expect(argyle_report.paystubs.length).to be(0)
+      end
+
+      it "includes expected table data" do
+        expect(subject.css("thead").to_html).to include "Total income from Lyft Driver before taxes: N/A"
+        expect(subject.css("tbody tr:nth-child(1)").to_html).to include "We didn't find any payments from this employer in the past 6 months."
+      end
+    end
   end
 end
