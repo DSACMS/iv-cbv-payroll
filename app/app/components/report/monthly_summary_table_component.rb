@@ -17,8 +17,9 @@ class Report::MonthlySummaryTableComponent < ViewComponent::Base
   end
 
   def before_render
+    # Note: since ViewComponents do not know about what view they are rendered in until render time,
+    # the translation keys are not available until the before_render method.
     @report_data_range = report_data_range(@report)
-    @no_payments_found_content = I18n.t("cbv.payment_details.show.none_found", report_data_range: @report_data_range)
   end
 
   private
@@ -30,6 +31,10 @@ class Report::MonthlySummaryTableComponent < ViewComponent::Base
 
   def format_total_gig_hours(month_summary)
     return I18n.t("shared.not_applicable") if month_summary[:gigs].empty?
-    month_summary[:total_gig_hours]
+    format_hours(month_summary[:total_gig_hours])
+  end
+
+  def format_no_payments_found
+    I18n.t("cbv.payment_details.show.none_found", report_data_range: @report_data_range)
   end
 end
