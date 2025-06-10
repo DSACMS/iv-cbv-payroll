@@ -1,0 +1,51 @@
+{
+  "results": [
+    {
+      "id": "3ef12064-6181-3a5f-a755-a4bb7f437876",
+      "account": "019755d1-6727-1f48-c35f-41bce3a6263c",
+      "address": {
+        "city": "New York",
+        "line1": "759 Victoria Plaza",
+        "line2": null,
+        "state": "NY",
+        "country": "US",
+        "postal_code": "10014"
+      },
+      "first_name": "John",
+      "last_name": "Loanseeker",
+      "full_name": "John Loanseeker",
+      "birth_date": "1970-08-01",
+      "email": "john_loanseeker@argyle.com",
+      "phone_number": "+18009000118",
+      "picture_url": "https://api-sandbox.argyle.com/v2/payroll-documents/019755d2-2cc9-75a6-3062-7ce3d0d81fa7/file",
+      "employment_status": "inactive",
+      "employment_type": "contractor",
+      "job_title": null,
+      "ssn": "999-60-1112",
+      "marital_status": "Married filing jointly",
+      "gender": "Male",
+      "hire_date": null,
+      "original_hire_date": null,
+      "termination_date": null,
+      "termination_reason": null,
+      "employer": "Uber Driver",
+      "base_pay": {
+        "amount": null,
+        "period": null,
+        "currency": null
+      },
+      "pay_cycle": null,
+      "platform_ids": {
+        "employee_id": null,
+        "position_id": null,
+        "platform_user_id": "F5UXBFHNJE35D1TP"
+      },
+      "created_at": "2025-06-09T17:52:06.665Z",
+      "updated_at": "2025-06-09T17:52:07.871Z",
+      "metadata": {},
+      "employment": "cb0af8d4-7a32-31d3-8a5d-4e7dbde01e03"
+    }
+  ],
+  "next": null,
+  "previous": null
+}
