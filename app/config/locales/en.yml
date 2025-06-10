@@ -477,9 +477,9 @@ en:
           default: Does anyone else in your household earn income?
         whats_next: What's next?
         whats_next_1_li_1: If you weren't able to find an employer, or if one of your employers doesn't have an online payroll provider, please provide this information directly to %{agency_acronym}.
-        whats_next_1_li_2: Visit <a href="%{agency_website}" target="_blank" rel="noopener noreferrer">%{agency_acronym}'s website</a> for more information.
+        whats_next_1_li_2_html: Visit <a href="%{agency_website}" target="_blank" rel="noopener noreferrer">%{agency_acronym}'s website</a> for more information.
         whats_next_1_title: 'If you need to report other income:'
-        whats_next_2_li_1: If you have a few minutes, please share your experience with this tool using <a href="%{agency_feedback_form}" target="_blank" rel="noopener noreferrer">our short feedback form</a>.
+        whats_next_2_li_1_html: If you have a few minutes, please share your experience with this tool using <a href="%{agency_feedback_form}" target="_blank" rel="noopener noreferrer">our short feedback form</a>.
         whats_next_2_title: Tell us about your experience
     summaries:
       show:
