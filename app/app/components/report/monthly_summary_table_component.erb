@@ -20,7 +20,7 @@
     <% if @has_monthly_summary_results %>
       <%= table.with_row do |row| %>
         <%= table.with_row() %>
-        <%= row.with_data_cell(colspan: 3).with_content(@no_payments_found_content) %>
+        <%= row.with_data_cell(colspan: 3).with_content(format_no_payments_found) %>
       <% end %>
     <% else %>
       <% @monthly_summary_data.each_with_index do |(month_string, summary), index| %>
