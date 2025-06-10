@@ -4,9 +4,13 @@ module ReportViewHelper
     hour.to_f.round(1)
   end
 
-  def format_miles(miles)
-    return miles unless Float(miles, exception: false).present?
-    miles.to_f.round(1)
+  def get_federal_cents_per_mile(year)
+    case year
+    when 2024
+      67
+    else
+      70
+    end
   end
 
   # Default format is Month Day, Year (e.g. January 1, 2020)

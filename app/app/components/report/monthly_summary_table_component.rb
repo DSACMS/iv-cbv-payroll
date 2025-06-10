@@ -4,7 +4,7 @@ class Report::MonthlySummaryTableComponent < ViewComponent::Base
 
   attr_reader :employer_name
 
-  def initialize(report, payroll_account, show_payments: true, show_footnote: true)
+  def initialize(report, payroll_account, is_responsive: true, show_payments: true, show_footnote: true)
     @report = report
     @show_payments = show_payments
     @show_footnote = show_footnote
@@ -15,6 +15,7 @@ class Report::MonthlySummaryTableComponent < ViewComponent::Base
     @paystubs = account_report&.paystubs
     @employer_name = account_report&.dig(:employment, :employer_name)
     @monthly_summary_data = report.summarize_by_month[@account_id]
+    @is_responsive = is_responsive
   end
 
   def before_render
@@ -54,9 +55,19 @@ class Report::MonthlySummaryTableComponent < ViewComponent::Base
     format_money(month_summary[:accrued_gross_earnings])
   end
 
-  def format_verified_mileage_expenses(month_summary)
+  def format_verified_mileage_expenses(month_summary, month_string)
     return I18n.t("shared.not_applicable") if month_summary[:gigs].empty?
-    format_miles(month_summary[:total_mileage])
+    year = parse_month_safely(month_string).year
+    cents_per_mile = self.get_federal_cents_per_mile(year)
+
+    format_money(month_summary[:total_mileage].to_f * cents_per_mile)
+  end
+
+  def format_verified_mileage_expense_rate(month_summary, month_string)
+    year = parse_month_safely(month_string).year
+    cents_per_mile = self.get_federal_cents_per_mile(year)
+    t("components.report.monthly_summary_table.dollars_times_miles",
+      dollar_amount: format_money(cents_per_mile), number_of_miles: month_summary[:total_mileage].to_f.round(0))
   end
 
   def format_total_gig_hours(month_summary)

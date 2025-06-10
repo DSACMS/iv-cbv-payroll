@@ -519,7 +519,7 @@ en:
   components:
     report:
       monthly_summary_table:
-        accrued_gross_earnings: Gross earnings
+        accrued_gross_earnings: Accrued gross earnings
         compact:
           footnote:
             definition_accrued_gross_earnings: '"Accrued gross earnings" sums the payments made in that month.'
@@ -528,14 +528,14 @@ en:
             what_does_this_mean: What does this information mean?
           month_income: "%{month} gross earnings: %{accrued_gross_earnings}"
           total_income_header: 'Total income from %{employer_name} before taxes: %{accrued_gross_earnings}'
-        dollars_times_miles: "(%{dollar_amount} x %{ number_of_miles } miles)"
+        dollars_times_miles: "(%{dollar_amount} x %{number_of_miles} miles)"
         month: Month
         monthly_summary: Monthly Summary
         partial_month_text: "(Partial month: from %{start_date}-%{end_date})"
         payments_from_header: Payments from %{employer_name}
         payments_from_text: These were the dates that the client was paid for their work at %{employer_name} and the gross pay amount.
-        total_gig_hours: Total hours
-        verified_mileage_expenses: Total mileage
+        total_gig_hours: Total hours worked
+        verified_mileage_expenses: Verified mileage expenses
   continue: Continue
   date:
     formats:

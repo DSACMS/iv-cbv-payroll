@@ -13,17 +13,11 @@ RSpec.describe ReportViewHelper, type: :helper do
     end
   end
 
-  describe '#format_miles' do
-    it "rounds to the nearest tenth" do
-      expect(helper.format_miles(57.3611)).to eq(57.4)
-      expect(helper.format_miles(57.3411)).to eq(57.3)
-    end
-
-    it "ignores non numbers" do
-      expect(helper.format_miles("miles")).to eq("miles")
-      expect(helper.format_miles("30h")).to eq("30h")
-      expect(helper.format_miles(nil)).to be_nil
-      expect(helper.format_miles("")).to eq("")
+  describe '#get_federal_cents_per_mile' do
+    it "test different years" do
+      expect(helper.get_federal_cents_per_mile(2025)).to eq(70)
+      expect(helper.get_federal_cents_per_mile(2024)).to eq(67)
+      expect(helper.get_federal_cents_per_mile(2027)).to eq(70)
     end
   end
 

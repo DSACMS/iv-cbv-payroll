@@ -55,10 +55,7 @@ RSpec.describe Report::MonthlySummaryTableComponent, type: :component do
       end
 
       it "includes table header" do
-        expect(subject.css("thead h4").to_html).to include "Acme Corporation"
-        expect(subject.css("thead h4").to_html).to include "Monthly Summary"
-
-        # assert that there are 3 column headers in table
+        expect(subject.css("h3").to_html).to include "Monthly Summary"
         expect(subject.css("thead tr.subheader-row th").length).to eq(3)
       end
 
@@ -133,11 +130,8 @@ RSpec.describe Report::MonthlySummaryTableComponent, type: :component do
       end
 
       it "includes table header" do
-        expect(subject.css("thead h4").to_html).to include "Lyft Driver"
-        expect(subject.css("thead h4").to_html).to include "Monthly Summary"
-
-        # assert that there are 3 column headers in table
-        expect(subject.css("thead tr.subheader-row th").length).to eq(3)
+        expect(subject.css("h3").to_html).to include "Monthly Summary"
+        expect(subject.css("thead tr.subheader-row th").length).to eq(4)
       end
 
       it "renders the Month column with the correct date format" do
@@ -154,13 +148,25 @@ RSpec.describe Report::MonthlySummaryTableComponent, type: :component do
         expect(subject.css("tbody tr:nth-child(3) td:nth-child(2)").to_html).to include "$282.37"
       end
 
+      it "renders the Verified Mileage Expenses column with correct summation" do
+        subject = render_inline(described_class.new(argyle_report, payroll_account))
+
+        expect(subject.css("thead tr.subheader-row th:nth-child(3)").to_html).to include "Verified mileage expenses"
+        expect(subject.css("tbody tr:nth-child(1) td:nth-child(3)").to_html).to include "$58.40"
+        expect(subject.css("tbody tr:nth-child(1) td:nth-child(3)").to_html).to include "($0.70 x 83 miles)"
+        expect(subject.css("tbody tr:nth-child(2) td:nth-child(3)").to_html).to include "$431.73"
+        expect(subject.css("tbody tr:nth-child(2) td:nth-child(3)").to_html).to include "($0.70 x 617 miles)"
+        expect(subject.css("tbody tr:nth-child(3) td:nth-child(3)").to_html).to include "$91.99"
+        expect(subject.css("tbody tr:nth-child(3) td:nth-child(3)").to_html).to include "($0.70 x 131 miles)"
+      end
+
       it "renders the Total hours worked column with correct summation" do
         subject = render_inline(described_class.new(argyle_report, payroll_account))
 
-        expect(subject.css("thead tr.subheader-row th:nth-child(3)").to_html).to include "Total hours worked"
-        expect(subject.css("tbody tr:nth-child(1) td:nth-child(3)").to_html).to include "3.6"
-        expect(subject.css("tbody tr:nth-child(2) td:nth-child(3)").to_html).to include "21.8"
-        expect(subject.css("tbody tr:nth-child(3) td:nth-child(3)").to_html).to include "4.7"
+        expect(subject.css("thead tr.subheader-row th:nth-child(4)").to_html).to include "Total hours worked"
+        expect(subject.css("tbody tr:nth-child(1) td:nth-child(4)").to_html).to include "3.6"
+        expect(subject.css("tbody tr:nth-child(2) td:nth-child(4)").to_html).to include "21.8"
+        expect(subject.css("tbody tr:nth-child(3) td:nth-child(4)").to_html).to include "4.7"
       end
 
       it "renders table caption" do
@@ -218,10 +224,7 @@ RSpec.describe Report::MonthlySummaryTableComponent, type: :component do
 
       it "includes table headers" do
         output = render_inline(described_class.new(argyle_report, payroll_account))
-        expect(output.css("thead h4").to_html).to include "Uber Driver"
-        expect(output.css("thead h4").to_html).to include "Monthly Summary"
-
-        # assert that there are 3 column headers in table
+        expect(output.css("h3").to_html).to include "Monthly Summary"
         expect(subject.css("thead tr.subheader-row th").length).to eq(3)
       end
 
@@ -264,11 +267,8 @@ RSpec.describe Report::MonthlySummaryTableComponent, type: :component do
       end
 
       it "includes table header" do
-        expect(subject.css("thead h4").to_html).to include "Lyft Driver"
-        expect(subject.css("thead h4").to_html).to include "Monthly Summary"
-
-        # assert that there are 3 column headers in table
-        expect(subject.css("thead tr.subheader-row th").length).to eq(3)
+        expect(subject.css("h3").to_html).to include "Monthly Summary"
+        expect(subject.css("thead tr.subheader-row th").length).to eq(4)
       end
 
       it "renders the Month column with the correct date format" do
@@ -288,10 +288,10 @@ RSpec.describe Report::MonthlySummaryTableComponent, type: :component do
       it "renders the Total hours worked column with correct summation" do
         subject = render_inline(described_class.new(argyle_report, payroll_account))
 
-        expect(subject.css("thead tr.subheader-row th:nth-child(3)").to_html).to include "Total hours worked"
-        expect(subject.css("tbody tr:nth-child(1) td:nth-child(3)").to_html).to include "3.6"
-        expect(subject.css("tbody tr:nth-child(2) td:nth-child(3)").to_html).to include "21.8"
-        expect(subject.css("tbody tr:nth-child(3) td:nth-child(3)").to_html).to include "4.7"
+        expect(subject.css("thead tr.subheader-row th:nth-child(4)").to_html).to include "Total hours worked"
+        expect(subject.css("tbody tr:nth-child(1) td:nth-child(4)").to_html).to include "3.6"
+        expect(subject.css("tbody tr:nth-child(2) td:nth-child(4)").to_html).to include "21.8"
+        expect(subject.css("tbody tr:nth-child(3) td:nth-child(4)").to_html).to include "4.7"
       end
 
       it "renders table caption" do
@@ -323,10 +323,7 @@ RSpec.describe Report::MonthlySummaryTableComponent, type: :component do
       end
 
       it "includes table header" do
-        expect(subject.css("thead h4").to_html).to include "Lyft Driver"
-        expect(subject.css("thead h4").to_html).to include "Monthly Summary"
-
-        # assert that there are 3 column headers in table
+        expect(subject.css("h3").to_html).to include "Monthly Summary"
         expect(subject.css("thead tr.subheader-row th").length).to eq(3)
       end
 
