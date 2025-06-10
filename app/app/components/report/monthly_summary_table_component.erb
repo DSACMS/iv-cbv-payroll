@@ -1,50 +1,59 @@
 <div class="margin-top-5">
-    <%= render(TableComponent.new) do |table| %>
-      <%= table.with_header(colspan: 3) do %>
-        <h4 class="margin-0">
-          <% if @employer_name.present? %>
-            <%= @employer_name %> &mdash;
-          <% end %>
-          <%= I18n.t("components.report.monthly_summary_table.monthly_summary") %>
-        </h4>
-      <% end %>
-      <%= table.with_subheader_row(class_names: "subheader-row base-lightest") do |row| %>
-        <%= row.with_data_cell(is_header: true)
-               .with_content(I18n.t("components.report.monthly_summary_table.month")) %>
-        <%= row.with_data_cell(is_header: true)
-               .with_content(I18n.t("components.report.monthly_summary_table.accrued_gross_earnings")) %>
-        <%= row.with_data_cell(is_header: true)
-               .with_content(I18n.t("components.report.monthly_summary_table.total_gig_hours")) %>
-      <% end %>
+  <%= render(TableComponent.new) do |table| %>
+    <%= table.with_header(colspan: 3) do %>
+      <h4 class="margin-0">
+        <% if @employer_name.present? %>
+          <%= @employer_name %> &mdash;
+        <% end %>
+        <%= I18n.t("components.report.monthly_summary_table.monthly_summary") %>
+      </h4>
+    <% end %>
+    <%= table.with_subheader_row(class_names: "subheader-row base-lightest") do |row| %>
+      <%= row.with_data_cell(is_header: true)
+             .with_content(I18n.t("components.report.monthly_summary_table.month")) %>
+      <%= row.with_data_cell(is_header: true)
+             .with_content(I18n.t("components.report.monthly_summary_table.accrued_gross_earnings")) %>
+      <%= row.with_data_cell(is_header: true)
+             .with_content(I18n.t("components.report.monthly_summary_table.total_gig_hours")) %>
+    <% end %>
 
+    <% unless @has_monthly_summary_results %>
+      <%= table.with_row do |row| %>
+        <%= row.with_data_cell(colspan: 3).with_content(format_no_payments_found) %>
+      <% end %>
+    <% else %>
       <% @monthly_summary_data.each_with_index do |(month_string, summary), index| %>
         <%= table.with_row do |row| %>
           <% row.with_data_cell do |cell| %>
             <%= format_parsed_date(parse_month_safely(month_string), :month_year) %>
-              <% if summary[:partial_month_range][:is_partial_month] %>
-                <br ><span class="text-gray-70 partial-month-description"><%= summary[:partial_month_range][:description] %></span>
-              <% end %>
+            <% if summary[:partial_month_range][:is_partial_month] %>
+              <br ><span class="text-gray-70 partial-month-description"><%= summary[:partial_month_range][:description] %></span>
+            <% end %>
           <% end %>
           <%= row.with_data_cell
-                 .with_content(format_money(summary[:accrued_gross_earnings])) %>
+                 .with_content(format_accrued_gross_earnings(summary)) %>
           <%= row.with_data_cell
-                 .with_content(format_hours(summary[:total_gig_hours])) %>
+                 .with_content(format_total_gig_hours(summary)) %>
         <% end %>
       <% end %>
     <% end %>
-  <div class="usa-prose font-body-xs">
-    <p><%= I18n.t("components.report.monthly_summary_table.compact.footnote.definition_accrued_gross_earnings") %></p>
-    <p><%= I18n.t("components.report.monthly_summary_table.compact.footnote.definition_total_hours_worked") %></p>
-  </div>
+  <% end %>
 
-  <div>
-    <h2><%= I18n.t("components.report.monthly_summary_table.payments_from_header", employer_name: @employer_name) %></h2>
-    <div class="usa-prose"><p><%= I18n.t("components.report.monthly_summary_table.payments_from_text", employer_name: @employer_name) %></p></div>
+  <% if @has_monthly_summary_results %>
+    <div class="usa-prose font-body-xs">
+      <p><%= I18n.t("components.report.monthly_summary_table.compact.footnote.definition_accrued_gross_earnings") %></p>
+      <p><%= I18n.t("components.report.monthly_summary_table.compact.footnote.definition_total_hours_worked") %></p>
+    </div>
 
-    <ul class="usa-list">
-      <% @paystubs.each do |paystub| %>
-        <li><%= format_date(paystub.pay_date, :long) %> - <%= format_money(paystub.gross_pay_amount) %></li>
-      <% end %>
-    </ul>
-  </div>
+    <div>
+      <h2><%= I18n.t("components.report.monthly_summary_table.payments_from_header", employer_name: @employer_name) %></h2>
+      <div class="usa-prose"><p><%= I18n.t("components.report.monthly_summary_table.payments_from_text", employer_name: @employer_name) %></p></div>
+
+      <ul class="usa-list">
+        <% @paystubs.each do |paystub| %>
+          <li><%= format_date(paystub.pay_date, :long) %> - <%= format_money(paystub.gross_pay_amount) %></li>
+        <% end %>
+      </ul>
+    </div>
+  <% end %>
 </div>
