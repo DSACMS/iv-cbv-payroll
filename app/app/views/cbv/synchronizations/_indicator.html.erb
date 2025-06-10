@@ -1,21 +1,21 @@
 <div class="synchronizations-indicator">
   <% case status %>
   <% when :in_progress %>
-    <svg class="usa-icon border-05 rotate border-base-light radius-pill padding-1 usa-icon--size-5" aria-hidden="true" focusable="false" role="img">
+    <svg class="synchronizations-indicator__spinner rotate usa-icon usa-icon--size-5 border-base-light" aria-hidden="true" focusable="false" role="img">
       <use
         xlink:href="<%= asset_path("@uswds/uswds/dist/img/sprite.svg#autorenew") %>"
       ></use>
     </svg>
     <span class="margin-top-05 text-thin"><%= label %></span>
   <% when :succeeded, :completed %>
-    <svg class="usa-icon border-05 bg-primary text-white border-primary radius-pill padding-1 usa-icon--size-5" aria-hidden="true" focusable="false" role="img">
+    <svg class="synchronizations-indicator__spinner usa-icon usa-icon--size-5 text-white bg-primary border-primary" aria-hidden="true" focusable="false" role="img">
       <use
         xlink:href="<%= asset_path("@uswds/uswds/dist/img/sprite.svg#check") %>"
       ></use>
     </svg>
     <span class="margin-top-05 text-bold text-primary"><%= label %></span>
   <% when :failed %>
-    <svg class="usa-icon border-05 bg-base-darker text-white border-base-darker radius-pill padding-1 usa-icon--size-5" aria-hidden="true" focusable="false" role="img">
+    <svg class="synchronizations-indicator__spinner usa-icon usa-icon--size-5 bg-base-darker text-white border-base-darker" aria-hidden="true" focusable="false" role="img">
       <use
         xlink:href="<%= asset_path("@uswds/uswds/dist/img/sprite.svg#priority_high") %>"
       ></use>
