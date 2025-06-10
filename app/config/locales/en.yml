@@ -539,10 +539,10 @@ en:
   continue: Continue
   date:
     formats:
-      day_of_month: "%-m/%-d"
       default: "%Y-%m-%d"
       long: "%B %-d, %Y"
       month_year: "%B %Y"
+      short: "%b %-d"
   help:
     alert:
       heading: Need help connecting to your payroll provider?
