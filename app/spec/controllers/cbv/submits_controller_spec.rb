@@ -134,6 +134,7 @@ RSpec.describe Cbv::SubmitsController do
 
             expect(pdf_text).to include("Case number")
             expect(pdf_text).to include("00012345")
+            expect(pdf_text).not_to include(I18n.t("cbv.submits.show.application_or_recertification_date.default"))
           end
         end
 
@@ -155,6 +156,7 @@ RSpec.describe Cbv::SubmitsController do
               expect(pdf_text).to include(I18n.t("cbv.applicant_informations.sandbox.fields.last_name.prompt"))
               expect(pdf_text).to include(I18n.t("cbv.applicant_informations.sandbox.fields.case_number.prompt"))
               expect(pdf_text).to include(I18n.t("cbv.submits.show.pdf.caseworker.ssn"))
+              expect(pdf_text).to include(I18n.t("cbv.submits.show.application_or_recertification_date.default"))
             end
           end
 
