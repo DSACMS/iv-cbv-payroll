@@ -141,6 +141,10 @@ ignore_missing:
     - "cbv.successes.show.confirmation_code_html"
     - "cbv.successes.show.whats_next_2_li_1"
     - "cbv.successes.show.whats_next_2_title"
+    
+    # AZ DES (FFS-2990)
+    - "cbv.submits.show.warning_1"
+    - "cbv.successes.show.share_invitation_link_title.az_des"
 ## Consider these keys used:
 ignore_unused:
   all:
