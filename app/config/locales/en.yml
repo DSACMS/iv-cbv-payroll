@@ -528,7 +528,7 @@ en:
             what_does_this_mean: What does this information mean?
           month_income: "%{month} gross earnings: %{accrued_gross_earnings}"
           total_income_header: 'Total income from %{employer_name} before taxes: %{accrued_gross_earnings}'
-        dollars_times_miles: "(%{dollar_amount} x %{ number_of_miles } miles)"
+        dollars_times_miles: "(%{dollar_amount} x %{number_of_miles} miles)"
         month: Month
         monthly_summary: Monthly Summary
         partial_month_text: "(Partial month: from %{start_date}-%{end_date})"
