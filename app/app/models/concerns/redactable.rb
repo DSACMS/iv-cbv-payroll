@@ -65,9 +65,9 @@ module Redactable
     json_array.map do |income_change|
       next income_change unless income_change.is_a?(Hash)
 
-      income_change_copy = income_change.with_indifferent_access
-      income_change_copy["member_name"] = REDACTION_REPLACEMENTS[:string] if income_change_copy.key?("member_name")
-      income_change_copy
+      income_change.with_indifferent_access.tap do |record|
+        record["member_name"] = REDACTION_REPLACEMENTS[:string] if record.key?("member_name")
+      end
     end
   end
 end
