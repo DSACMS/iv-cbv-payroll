@@ -586,7 +586,7 @@ es:
       help: Ayuda
       log_out: Cerrar sesión
       preheader:
-        az_des: Un sitio web en colaboración el Departamento de Seguridad Económica de Arizona.
+        az_des: Un sitio web en colaboración con el Departamento de Seguridad Económica de Arizona.
         default: Un sitio web en colaboración con la Agencia de pruebas CBV.
         la_ldh: Un sitio web en colaboración con el Departamento de Salud de Luisiana
         ma: Un sitio web en colaboración con el Estado de Massachusetts.
