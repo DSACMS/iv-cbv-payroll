@@ -106,4 +106,9 @@ RSpec.describe AggregateDataPointComponent, type: :component do
       "742 Evergreen Terrace"
     )
   end
+
+  it "highlights text" do
+    expect(render_inline(described_class.new(:employer_address, "742 Evergreen Terrace")).to_html).not_to include("cbv-row-highlight")
+    expect(render_inline(described_class.new(:employer_address, "742 Evergreen Terrace", highlight: true)).to_html).to include("cbv-row-highlight")
+  end
 end
