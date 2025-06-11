@@ -18,10 +18,8 @@ class CbvApplicant::AzDes < CbvApplicant
   validates :case_number, presence: true
 
   def redact!
-    super
-    
     self[:income_changes] = redact_member_names_in_json(self[:income_changes])
-    save(validate: false)
+    super
   end
 
   private
