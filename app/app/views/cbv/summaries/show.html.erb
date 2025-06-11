@@ -10,9 +10,10 @@
 </div>
 
 <% @aggregator_report.summarize_by_employer.each_with_index do |(account_id, summary), index| %>
-  <% is_w2_worker = summary[:has_employment_data] && summary[:employment].employment_type == :w2 %>
+  <% employment = summary[:employment] %>
+  <% is_w2_worker = employment&.employment_type == :w2 %>
   <h3 data-testid="paystub-table-caption">
-    <% employer_name = summary[:has_employment_data] ? summary[:employment].employer_name : nil %>
+    <% employer_name = employment&.employer_name %>
     <% if employer_name %>
       <%= t(".table_caption", number: index + 1, employer_name: employer_name) %>
     <% else %>
