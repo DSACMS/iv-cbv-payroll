@@ -22,7 +22,7 @@ RSpec.describe CbvFlow, type: :model do
 
       context "in production environment" do
         before do
-          allow(Rails.env).to receive(:production?).and_return(true)
+          stub_client_agency_config_value("sandbox", "agency_domain", "sandbox.reportmyincome.org")
         end
 
         it "returns URL with production domain" do
@@ -33,7 +33,7 @@ RSpec.describe CbvFlow, type: :model do
 
       context "in non-production environment" do
         before do
-          allow(Rails.env).to receive(:production?).and_return(false)
+          stub_client_agency_config_value("sandbox", "agency_domain", "sandbox-verify-demo.navapbc.cloud")
         end
 
         it "returns URL with demo domain" do

@@ -72,6 +72,7 @@ RSpec.describe ApplicationController, type: :controller do
       routes.draw do
         get 'show', to: 'anonymous#show'
       end
+      stub_client_agency_config_value("sandbox", "agency_domain", "sandbox.reportmyincome.org")
     end
 
     it "identifies the correct agency config based on the domain name" do
