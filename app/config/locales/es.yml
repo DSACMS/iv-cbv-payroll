@@ -364,7 +364,7 @@ es:
             what_does_this_mean: "¿Qué significa esta información?"
           month_income: 'Ganancias brutas de %{month}: %{accrued_gross_earnings}'
           total_income_header: 'Ingreso total de %{employer_name} antes de impuestos: %{accrued_gross_earnings}'
-        dollars_times_miles: "(%{dollar_amount} x %{ number_of_miles } millas)"
+        dollars_times_miles: "(%{dollar_amount} x %{number_of_miles} millas)"
         month: Mes
         monthly_summary: Resumen mensual
         partial_month_text: "(Mes parcial: desde el %{start_date} y hasta el %{end_date})"

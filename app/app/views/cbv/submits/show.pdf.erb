@@ -157,7 +157,7 @@
       <% end %>
     <% end %>
   <% else %>
-    <%= render(Report::MonthlySummaryTableComponent.new(@aggregator_report, account_id)) %>
+    <%= render(Report::MonthlySummaryTableComponent.new(@aggregator_report, account_id, is_responsive: false)) %>
   <% end %>
 
   <% if @cbv_flow.additional_information.dig(account_id, "comment").present? %>
