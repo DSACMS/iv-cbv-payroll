@@ -22,7 +22,14 @@ RSpec.describe CbvApplicant::AzDes, type: :model do
       middle_name: "REDACTED",
       last_name: "REDACTED",
       case_number: /[0-9]+/, # Not redacted as it's not sensitive PII
-      # TODO[FFS-2669]: Test the redaction of income_changes
     )
+
+    expect(applicant.income_changes).to be_present
+    applicant.income_changes.each do |income_change|
+      expect(income_change["member_name"]).to eq("REDACTED")
+      # sanity check - verify other fields are not redacted
+      expect(income_change["employer_name"]).not_to eq("REDACTED")
+      expect(income_change["change_type"]).not_to eq("REDACTED")
+    end
   end
 end
