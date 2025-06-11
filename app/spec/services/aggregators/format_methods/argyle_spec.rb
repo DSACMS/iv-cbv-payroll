@@ -114,10 +114,10 @@ RSpec.describe Aggregators::FormatMethods::Argyle, type: :service do
       expect(subject).to eq(3.4)
     end
 
-    it "'3.4' km is 5.47 miles" do
+    it "'3.4' km is 2.11 miles" do
       subject = described_class.format_mileage("3.4", "km")
       expect(subject.class).to eq(Float)
-      expect(subject).to eq(2.11)
+      expect(subject.round(2)).to eq(2.11)
     end
   end
 

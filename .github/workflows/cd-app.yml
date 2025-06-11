@@ -34,3 +34,4 @@ jobs:
     with:
       app_name: "app"
       environment: ${{ inputs.environment || 'dev' }}
+    secrets: inherit

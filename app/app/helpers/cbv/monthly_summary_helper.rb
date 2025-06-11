@@ -48,8 +48,8 @@ module Cbv::MonthlySummaryHelper
 
   def partial_month_description(range_start, range_end)
     I18n.t("components.report.monthly_summary_table.partial_month_text",
-           start_date: format_parsed_date(range_start, :day_of_month),
-           end_date: format_parsed_date(range_end, :day_of_month))
+           start_date: format_parsed_date(range_start, :short),
+           end_date: format_parsed_date(range_end, :short))
   end
 
   # Given a list of dates, returns a deduplicated list of months in reverse chronological order (newest first).

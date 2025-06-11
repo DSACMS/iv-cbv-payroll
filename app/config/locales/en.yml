@@ -414,8 +414,8 @@ en:
       show:
         additional_information_title: Is there anything else you'd like your caseworker to know about your income?
         application_or_recertification_date:
+          default: SNAP application or recertification interview date
           la_ldh: Medicaid application date
-          sandbox: SNAP application or recertification interview date
         consent_checkbox_label_html:
           az_des: Check this box to affirm under penalty of perjury that the information provided by you is true and complete to the best of your knowledge.<ul><li>You agree to tell %{agency_acronym} about:<ul><li>any other income not included in this report,</li><li>or any errors found in the information gathered with this tool.</li></ul></li><li>You understand that providing accurate and complete information is your responsibility.</li><li>Any false or missing information may result in:<ul><li>an overpayment, which you must repay to %{agency_acronym},</li><li>or program disqualification.</li></ul></li></ul>By sending this report, you authorize its use for income verification by %{agency_acronym} and authorized personnel.
           default: 'Check this box to confirm: <ul><li>The information provided by you is true and complete to the best of your knowledge.</li><li>You agree to inform the %{agency_full_name} of any income not reflected in this report or any discrepancies found in the information gathered with this tool.</li><li>You understand that providing accurate and complete information is your responsibility, and any false or omitted information may have legal consequences.</li></ul> By sending this report, you authorize its use for income verification by authorized %{agency_acronym} personnel.'
@@ -459,7 +459,7 @@ en:
             report_details: Report details
         share_report_button: Share my report with %{agency_acronym}
         table_caption_no_name: Employer %{number}
-        warning_1: Your income report will be attached to your %{benefit} %{reporting_purpose} with the state.
+        warning_1: Your income report will be sent to %{agency_acronym}.
         warning_2: You must check the legal agreement box to share your report.
       update:
         consent_to_authorize_warning: Please check the legal agreement box to share your report.
@@ -472,12 +472,14 @@ en:
         header: Your income report has been successfully shared with %{agency_acronym}
         invitation_link_label: Invitation link
         share_invitation_link_content: Share this link with all household members named on your application so they can report their income.
-        share_invitation_link_title: Does anyone else in your household earn income?
+        share_invitation_link_title:
+          az_des: Does anyone else in your household need to report a change of income in your Mid Approval Contact form?
+          default: Does anyone else in your household earn income?
         whats_next: What's next?
         whats_next_1_li_1: If you weren't able to find an employer, or if one of your employers doesn't have an online payroll provider, please provide this information directly to %{agency_acronym}.
-        whats_next_1_li_2: Visit <a href="%{agency_website}" target="_blank" rel="noopener noreferrer">%{agency_acronym}'s website</a> for more information.
+        whats_next_1_li_2_html: Visit <a href="%{agency_website}" target="_blank" rel="noopener noreferrer">%{agency_acronym}'s website</a> for more information.
         whats_next_1_title: 'If you need to report other income:'
-        whats_next_2_li_1: If you have a few minutes, please share your experience with this tool using <a href="%{agency_feedback_form}" target="_blank" rel="noopener noreferrer">our short feedback form</a>.
+        whats_next_2_li_1_html: If you have a few minutes, please share your experience with this tool using <a href="%{agency_feedback_form}" target="_blank" rel="noopener noreferrer">our short feedback form</a>.
         whats_next_2_title: Tell us about your experience
     summaries:
       show:
@@ -539,10 +541,10 @@ en:
   continue: Continue
   date:
     formats:
-      day_of_month: "%-m/%-d"
       default: "%Y-%m-%d"
       long: "%B %-d, %Y"
       month_year: "%B %Y"
+      short: "%b %-d"
   help:
     alert:
       heading: Need help connecting to your payroll provider?
@@ -655,7 +657,7 @@ en:
       refresh: Refresh page
     home:
       description_1: Report My Income is a new tool designed to help you connect your income details from your employer or payroll provider directly to your benefits agency. We’re currently testing this tool to ensure it works effectively.
-      description_2: Please note this pilot is currently available only to participants in Arizona, Illinois, and Louisiana.
+      description_2: Please note this pilot is currently available only to participants in Arizona and Louisiana.
       description_3: Visit your agency's website for more information on how to submit proof of income for your benefits.
       header: Welcome to Report My Income
   session_timeout:

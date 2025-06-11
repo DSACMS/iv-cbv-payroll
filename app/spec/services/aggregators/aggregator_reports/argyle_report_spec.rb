@@ -328,10 +328,10 @@ RSpec.describe Aggregators::AggregatorReports::ArgyleReport, type: :service do
         expect(march[:paystubs].length).to eq(1)
         expect(march[:accrued_gross_earnings]).to eq(3456) # in cents
         expect(march[:total_gig_hours]).to eq(3.61)
-        expect(march[:total_mileage]).to eq(83.43)
+        expect(march[:total_mileage].round(2)).to eq(83.43)
         expect(march[:partial_month_range]).to an_object_eq_to({
                                                                  is_partial_month: true,
-                                                                 description: "(Partial month: from 3/1-3/6)",
+                                                                 description: "(Partial month: from Mar 1-Mar 6)",
                                                                  included_range_start: Date.parse("2025-03-01"),
                                                                  included_range_end: Date.parse("2025-03-06")
                                                                })
@@ -341,7 +341,7 @@ RSpec.describe Aggregators::AggregatorReports::ArgyleReport, type: :service do
         expect(feb[:paystubs].length).to eq(4)
         expect(feb[:accrued_gross_earnings]).to eq(23075) # in cents
         expect(feb[:total_gig_hours]).to eq(14.0)
-        expect(feb[:total_mileage]).to eq(379.18)
+        expect(feb[:total_mileage].round(2)).to eq(379.18)
         expect(feb[:partial_month_range]).to an_object_eq_to({
                                                                is_partial_month: false,
                                                                description: nil,
@@ -354,10 +354,10 @@ RSpec.describe Aggregators::AggregatorReports::ArgyleReport, type: :service do
         expect(jan[:paystubs].length).to eq(5)
         expect(jan[:accrued_gross_earnings]).to eq(28237) # in cents
         expect(jan[:total_gig_hours]).to eq(0)
-        expect(jan[:total_mileage]).to be_nil
+        expect(jan[:total_mileage]).to eq(0)
         expect(jan[:partial_month_range]).to an_object_eq_to({
                                                                is_partial_month: true,
-                                                               description: "(Partial month: from 1/2-1/31)",
+                                                               description: "(Partial month: from Jan 2-Jan 31)",
                                                                included_range_start: Date.parse("2025-01-02"),
                                                                included_range_end: Date.parse("2025-01-31")
                                                              })

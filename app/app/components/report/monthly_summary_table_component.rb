@@ -31,7 +31,7 @@ class Report::MonthlySummaryTableComponent < ViewComponent::Base
   end
 
   def has_mileage_data?
-    @monthly_summary_data.map { |month_string, month_summary| month_summary[:total_mileage] }.any?
+    @monthly_summary_data.sum { |month_string, month_summary| month_summary[:total_mileage] } > 0
   end
 
   def show_payments?
