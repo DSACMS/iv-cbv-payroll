@@ -58,7 +58,7 @@ class Report::MonthlySummaryTableComponent < ViewComponent::Base
   def format_verified_mileage_expenses(month_summary, month_string)
     return I18n.t("shared.not_applicable") if month_summary[:gigs].empty?
     year = parse_month_safely(month_string).year
-    cents_per_mile = self.get_federal_cents_per_mile(year)
+    cents_per_mile = self.federal_cents_per_mile(year)
 
     # Note: we need to round miles to dollars x miles rate displayed
     format_money(month_summary[:total_mileage].to_f.round(0) * cents_per_mile)
@@ -66,7 +66,7 @@ class Report::MonthlySummaryTableComponent < ViewComponent::Base
 
   def format_verified_mileage_expense_rate(month_summary, month_string)
     year = parse_month_safely(month_string).year
-    cents_per_mile = self.get_federal_cents_per_mile(year)
+    cents_per_mile = self.federal_cents_per_mile(year)
     t("components.report.monthly_summary_table.dollars_times_miles",
       dollar_amount: format_money(cents_per_mile), number_of_miles: month_summary[:total_mileage].to_f.round(0))
   end

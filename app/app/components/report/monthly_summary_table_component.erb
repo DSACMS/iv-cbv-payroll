@@ -16,11 +16,7 @@
              .with_content(I18n.t("components.report.monthly_summary_table.total_gig_hours")) %>
     <% end %>
 
-    <% if not has_monthly_summary_results? %>
-      <%= table.with_row do |row| %>
-        <%= row.with_data_cell(colspan: table_colspan).with_content(format_no_payments_found) %>
-      <% end %>
-    <% else %>
+    <% if has_monthly_summary_results? %>
       <% @monthly_summary_data.each_with_index do |(month_string, summary), index| %>
         <%= table.with_row do |row| %>
           <% row.with_data_cell(data_label: t("components.report.monthly_summary_table.month")) do |cell| %>
@@ -33,13 +29,17 @@
                  .with_content(format_accrued_gross_earnings(summary)) %>
           <% if has_mileage_data? %>
             <%= row.with_data_cell(data_label: t("components.report.monthly_summary_table.verified_mileage_expenses")) do |cell| %>
-               <%= format_verified_mileage_expenses(summary, month_string) %> <br >
-               <%= format_verified_mileage_expense_rate(summary, month_string) %>
+              <%= format_verified_mileage_expenses(summary, month_string) %> <br >
+              <%= format_verified_mileage_expense_rate(summary, month_string) %>
             <% end %>
           <% end %>
           <%= row.with_data_cell(data_label: t("components.report.monthly_summary_table.total_gig_hours"))
                  .with_content(format_total_gig_hours(summary)) %>
         <% end %>
+      <% end %>
+    <% else %>
+      <%= table.with_row do |row| %>
+        <%= row.with_data_cell(colspan: table_colspan).with_content(format_no_payments_found) %>
       <% end %>
     <% end %>
   <% end %>

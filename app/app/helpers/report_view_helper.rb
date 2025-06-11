@@ -4,7 +4,7 @@ module ReportViewHelper
     hour.to_f.round(1)
   end
 
-  def get_federal_cents_per_mile(year)
+  def federal_cents_per_mile(year)
     case year
     when 2024
       67
