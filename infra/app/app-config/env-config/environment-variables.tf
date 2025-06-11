@@ -260,6 +260,14 @@ locals {
       secret_store_name = "/service/${var.app_name}-${var.environment}/az-des-weekly-report-recipients"
     }
     # Domain names
+    NYC_DOMAIN_NAME = {
+      manage_method     = "manual"
+      secret_store_name = "/service/${var.app_name}-${var.environment}/nyc-domain-name"
+    },
+    MA_DTA_DOMAIN_NAME = {
+      manage_method     = "manual"
+      secret_store_name = "/service/${var.app_name}-${var.environment}/ma-dta-domain-name"
+    },
     AZ_DES_DOMAIN_NAME = {
       manage_method     = "manual"
       secret_store_name = "/service/${var.app_name}-${var.environment}/az-des-domain-name"

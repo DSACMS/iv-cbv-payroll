@@ -62,7 +62,7 @@
   agency_name: Department of Economic Security/Family Assistance Administration
   agency_short_name: DES/FAA
   agency_contact_website: https://myfamilybenefits.azdes.gov/
-  agency_domain_name: <%= ENV["AZ_DES_DOMAIN_NAME"] %>
+  agency_domain: <%= ENV["AZ_DES_DOMAIN_NAME"] %>
   # No caseworker feedback form since they will only be interacting with the PDFs
   # caseworker_feedback_form: null
   pinwheel:
