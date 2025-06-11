@@ -3,11 +3,11 @@ es:
   aggregator_strings:
     deductions:
       401k: 401k
-      dental: Dental
-      garnishment: Embargo
+      dental: Plan de seguro dental
+      garnishment: Derecho de retención
       other: Otro
       roth: Cuenta Roth
-      vision: Cuidado de la vista
+      vision: Plan de seguro de la vista
     earnings_category:
       base: Salario Base
       benefits: Beneficios
@@ -40,9 +40,9 @@ es:
     employment_statuses:
       employed: empleado
       inactive: inactivo
-      terminated: terminado
+      terminated: Desactivado
     payment_frequencies:
-      annual: Anualmente
+      annual: Anual
       annually: Anualmente
       bi_weekly: Cada dos semanas
       biweekly: Cada dos semanas
@@ -50,7 +50,7 @@ es:
       hourly: Por hora
       monthly: Mensual
       per_mile: Por milla
-      quarterly: Trimestral
+      quarterly: Trimestralmente
       semi_monthly: Dos veces al mes
       semimonthly: Dos veces al mes
       variable: Variable
@@ -145,7 +145,7 @@ es:
             super_one_html: Segundo nombre<sup>1</sup>
       show:
         continue: Continuar
-        explanation: Esta información se utilizará para conectar su información de ingresos con sus beneficios de %{agency_short_name}. Por favor asegúrese de que la información que ingrese sea la misma que se muestra en su solicitud.
+        explanation: Esta información se utilizará para conectar su información de ingresos con sus beneficios de %{agency_short_name}. Por favor, asegúrese de que la información que ingrese sea la misma que se muestra en su solicitud.
         your_information: Su información
       update:
         error_header:
@@ -192,14 +192,14 @@ es:
         step2_description: Podrá hacer una vista previa y aprobar todo lo que se comparta con %{agency_acronym}.
         step3: Envíe su información de pago.
         step3_description: La enviaremos automáticamente a %{agency_acronym}. Esto lo ayudará a demostrar y comprobar sus ingresos y puede ayudar a %{agency_acronym} a tomar una decisión más rápida.
-        subheader_html: 'Enviaremos sus registros de pago de su(s) empleador(es) a %{agency_acronym} para verificar sus ingresos. <strong>La mayoría de las personas completan este proceso en aproximadamente 5 minutos.</strong> Solo siga estos pasos:'
+        subheader_html: 'Enviaremos los registros de pago de su(s) empleador(es) a %{agency_acronym} para verificar sus ingresos.<strong> La mayoría de las personas completan este proceso en aproximadamente 5 minutos.</strong> Solo siga estos pasos:'
         what_if_i_cant_use_this_body_1: Si necesita declarar sus ingresos y no puede usar esta herramienta, deberá compartir, de manera directa, la información de sus ingresos para este trabajo con %{agency_short_name}.
         what_if_i_cant_use_this_body_2_html:
           default: Para obtener más información sobre cómo enviar documentos, visite el sitio web de <a href="%{agency_url}" target="_blank" rel="noopener noreferrer">%{agency_acronym}</a>.
           la_ldh: 'Usted puede: <ul><li>Subir documentos a través del Portal de Autoservicio en línea en <a href="https://mymedicaid.la.gov/" target="_blank" rel="noopener noreferrer">https://mymedicaid.la.gov/</a></li><li>Enviar documentos por correo postal: Louisiana Medicaid/LaCHIP, P.O. Box 91283, Baton Rouge, LA 70821-9278</li><li>Enviar documentos por correo electrónico: <a href="mailto:MyMedicaid@la.gov">MyMedicaid@la.gov</a></li><li>Llevar sus documentos a la oficina de Medicaid de su elección.</li></ul>'
-        what_if_i_cant_use_this_title: "¿Qué puedo hacer si no puedo usar esta herramienta?"
-        who_is_this_for_body: Puede usar esta herramienta si ha registrado ingresos en los últimos 90 días (incluso si ya no está trabajando). Además, le recordamos que puede acceder sus recibos de pago en línea o si provee servicios a través de plataformes digitales, como Uber, Lyft o Amazon Flex.
-        who_is_this_for_title: "¿Quien puede usar este herramienta?"
+        what_if_i_cant_use_this_title: "¿Qué debo hacer si no puedo usar esta herramienta?"
+        who_is_this_for_body: Puede usar esta herramienta si ha recibido ingresos en los últimos 90 días (incluso si ya no está trabajando). Además, le recordamos que puede acceder a sus recibos de pago en línea si brinda servicios a través de plataformas digitales, como Uber, Lyft o Amazon Flex.
+        who_is_this_for_title: "¿Quién puede usar este herramienta?"
     error_invalid_link: Se utilizó un enlace no válido para iniciar CBV. Vuelva a hacer clic en el enlace, o bien directamente póngase en contacto con su asistente de caso para obtener ayuda.
     error_invalid_token: El enlace de invitación no es válido. Vuelva a comprobar el enlace e inténtelo de nuevo. Si sigue teniendo problemas, póngase en contacto con su trabajador social.
     error_missing_token_html: "<strong>Su sesión a finalizado debido a inactividad.</strong> Para continuar donde la dejó, haga clic en el enlace que recibió de su agencia del SNAP por correo electrónico. Si encuentra algún problema, póngase en contacto con su agencia del SNAP para pedir ayuda."
@@ -262,8 +262,8 @@ es:
       show:
         additional_information_title: "¿Existe algún otro detalle que le gustaría que su asistente de caso conozca en relación con sus ingresos?"
         application_or_recertification_date:
+          default: SNAP application or recertification interview date
           la_ldh: Fecha de solicitud de Medicaid
-          sandbox: SNAP application or recertification interview date
         consent_checkbox_label_html:
           az_des: Marque esta casilla para confirmar, bajo pena de perjurio, que la información proporcionada es, a su leal saber y entender, verdadera y está completa.<ul><li>Se compromete a informar %{agency_acronym} de cualquiera de lo siguiente:<ul><li>cualquier otro ingreso que no esté incluido en este informe;</li><li>o cualquier error que haya detectado en la información recopilada con esta herramienta.</li></ul></li><li>Comprende que usted es el único responsable de proporcionar información precisa y completa.</li><li>Por este motivo, cualquier información falsa o que no conste en el informe puede acarrear las siguientes consecuencias:<ul><li>un sobrepago, que debe reembolsar a %{agency_acronym};</li><li>o una inhabilitación para participar en el programa.</li></ul></li></ul>Al enviar este informe, autoriza su uso para fines de verificación de ingresos por parte de %{agency_acronym} y del personal autorizado de esta agencia.
           default: 'Marque esta casilla para confirmar lo siguiente: <ul><li>La información proporcionada es, a su leal saber y entender, verdadera y está completa.</li><li>Se compromete a informar a %{agency_full_name} de cualquier otro ingreso que no esté incluido en este informe o cualquier discrepancia que haya detectado en la información recopilada con esta herramienta.</li><li>Comprende que usted es el único responsable de proporcionar información precisa y completa. Por este motivo, cualquier información falsa o que no conste en el informe puede acarrear consecuencias legales.</li></ul> Al enviar este informe, autoriza su uso para fines de verificación de ingresos por parte del personal autorizado de %{agency_acronym}.'
@@ -295,7 +295,7 @@ es:
             report_details: Detalles del reporte
         share_report_button: Comparta mi reporte con %{agency_acronym}
         table_caption_no_name: Employer %{number}
-        warning_1: Su reporte de ingresos se adjuntará a su %{benefit} %{reporting_purpose} con el estado.
+        warning_1: Su reporte de ingresos se enviará a %{agency_acronym}.
         warning_2: Usted debe marcar la casilla del acuerdo legal para compartir su reporte.
       update:
         consent_to_authorize_warning: A fin de compartir su informe, marque la casilla de consentimiento legal.
@@ -308,12 +308,14 @@ es:
         header: Su reporte de ingresos se ha compartido con %{agency_acronym} exitosamente
         invitation_link_label: Enlace de invitación
         share_invitation_link_content: Comparta este enlace con todos los miembros del hogar nombrados en su solicitud para que puedan reportar sus ingresos.
-        share_invitation_link_title: "¿Alguien más en su hogar tiene ingresos?"
+        share_invitation_link_title:
+          az_des: "¿Alguien más en su hogar necesita reportar cambios en sus ingresos usando el Formulario de contacto para aprobaciones intermedias?"
+          default: "¿Algún otro integrante del grupo familiar recibe ingresos?"
         whats_next: "¿Qué sigue?"
         whats_next_1_li_1: Si no pudo encontrar a un empleador, o si uno de sus empleadores no tiene un proveedor de nómina en línea, proporcione, de manera directa, esta información a %{agency_acronym}.
-        whats_next_1_li_2: Para obtener más información, visite el sitio web de <a href="%{agency_website}" target="_blank" rel="noopener noreferrer">%{agency_acronym}</a>.
-        whats_next_1_title: 'Si necesita declarar otros ingresos, siga estos pasos:'
-        whats_next_2_li_1: Si tiene unos minutos, por favor comparta su experiencia con esta herramienta usando <a href="%{agency_feedback_form}" target="_blank" rel="noopener noreferrer">nuestro breve formulario de comentarios</a>.
+        whats_next_1_li_2_html: Para obtener más información, visite el sitio web de <a href="%{agency_website}" target="_blank" rel="noopener noreferrer">%{agency_acronym}</a>.
+        whats_next_1_title: 'Si necesita declarar otros ingresos:'
+        whats_next_2_li_1_html: Si tiene unos minutos, por favor, complete este <a href="%{agency_feedback_form}" target="_blank" rel="noopener noreferrer"> breve formulario para compartirnos su experiencia usando esta herramienta.</a>
         whats_next_2_title: Cuéntenos sobre su experiencia
     summaries:
       show:
@@ -358,9 +360,9 @@ es:
         accrued_gross_earnings: Ganancias brutas acumuladas
         compact:
           footnote:
-            definition_accrued_gross_earnings: Las ganancias brutas acumuladas suman los pagos realizados en ese mes.
-            definition_total_hours_worked: El total de horas trabajadas suma el tiempo que tomó completar cada trabajo realizado en ese mes. Puede haber trabajos realizados en un mes que fueron pagados en el mes siguiente.
-            definition_verified_mileage_expenses: Los gastos de millaje verificado usa el millaje de la Plataforma/Aplicación. Multiplicamos esto por la tarifa federal de millaje ($0.70 para 2025), que cubre todos los costos relacionados con un automóvil. Estos pueden ser costos como gasolina, pagos de automóvil o tarifas de arrendamiento, seguro de automóvil, reparaciones y mantenimiento.
+            definition_accrued_gross_earnings: Las ganancias brutas acumuladas se calculan sumando todos los pagos efectuados en ese mes.
+            definition_total_hours_worked: El total de horas trabajadas se calculan sumando el tiempo que demoró en finalizar cada trabajo completado durante ese mes. Es posible que algunos trabajos realizados en un mes que se le hayan pagado en el mes siguiente.
+            definition_verified_mileage_expenses: Los gastos de millaje verificados se calculan utilizando el millaje de la plataforma o aplicación. Multiplicamos el millaje total por la tarifa federal de millaje ($0.70 para 2025), que cubre todos los costos relacionados con un automóvil. Estos pueden ser costos como gasolina, pagos de automóvil o tarifas de arrendamiento, seguro de automóvil, reparaciones y mantenimiento.
             what_does_this_mean: "¿Qué significa esta información?"
           month_income: 'Ganancias brutas de %{month}: %{accrued_gross_earnings}'
           total_income_header: 'Ingreso total de %{employer_name} antes de impuestos: %{accrued_gross_earnings}'
@@ -369,7 +371,7 @@ es:
         monthly_summary: Resumen mensual
         partial_month_text: "(Mes parcial: desde el %{start_date} y hasta el %{end_date})"
         payments_from_header: Pagos de %{employer_name}
-        payments_from_text: Estas fueron las fechas en las que se le pagó al cliente por su trabajo en %{employer_name} y el importe del pago bruto.
+        payments_from_text: Estas son las fechas en las que se le pagó al cliente por su trabajo en %{employer_name} y el monto total del pago, antes de impuestos.
         total_gig_hours: Total de horas trabajadas
         verified_mileage_expenses: Gastos de millaje verificado
   continue: Continuar
@@ -459,7 +461,7 @@ es:
           content: Usamos métodos de encriptación fuertes, similares a los que usan los bancos, para proteger su información. Sus credenciales se transmiten de forma segura y no las almacenamos.
           title: Su información de inicio de sesión se encuentra cifrada y protegida.
         step2:
-          content: Solo usamos su información de inicio de sesión para verificar los detalles de su nómina una vez. No se volverá a usar ni se usará para ningún otro fin.
+          content: Solo usaremos su información de inicio de sesión para verificar los detalles de su nómina una vez. No se volverá a usar para ningún otro fin.
           title: Su información solo se usa para verificar sus ingresos.
         step3:
           content: El servicio que hemos contratado para comprobar los datos de nómina es de confianza para muchas empresas. Además, gestiona los datos de nómina de forma segura.
@@ -479,7 +481,7 @@ es:
           - Si no conoce el nombre de su proveedor de nómina, revise el recibo de pago en busca de nombres, por ejemplo, ADP, Paylocity o Workday.
           title: Busque por proveedor de nómina en vez de por empleador.
         step3:
-          content: Si su empleador o proveedor de nómina no está en la lista, necesitará proporcionar su información de ingresos a su agencia de una manera diferente.
+          content: Si su empleador o proveedor de nómina no está en la lista, necesitará proporcionarle a su agencia información sobre sus ingresos de una manera diferente.
           title: Si aún no puede encontrar a su empleador o proveedor de nómina
         title: No logro encontrar el empleador correcto
       go_back: Atrás
@@ -520,7 +522,7 @@ es:
         title: No sé mi nombre de usuario
   maintenance:
     body_1: El sitio no está disponible en este momento. Cualquier información que haya ingresado no se guardará.
-    body_2: Visite el sitio web de su agencia para más información sobre cómo enviar comprobante de ingresos para sus beneficios.
+    body_2: Visite el sitio web de su agencia para obtener más información sobre cómo enviar comprobantes de ingresos para optar por beneficios.
     header: Se están realizando algunas tareas de mantenimiento
   pages:
     error_404:
@@ -534,7 +536,7 @@ es:
       header: "¡Parece que algo salió mal!"
       refresh: Actualizar página
     home:
-      description_1: Reportar Mis Ingresos es una nueva herramienta diseñada para ayudarle a conectar los detalles de sus ingresos de su empleador o proveedor de nómina directamente con su agencia de beneficios. En este momento, estamos probando esta herramienta para garantizar una operación efectiva.
+      description_1: Reportar Mis Ingresos es una nueva herramienta diseñada para ayudarte a conectar la información de ingresos de tu empleador o proveedor de nóminas, directamente con tu agencia de beneficios. En este momento estamos probando esta herramienta para garantizar que funcione correctamente.
       description_2: Tenga en cuenta que, en este momento, este programa piloto solo está disponible para participantes que residan en Arizona y Louisiana.
       description_3: Para obtener más información sobre cómo presentar comprobantes de ingresos para sus beneficios, visite el sitio web de su agencia.
       header: Bienvenido a Reportar Mis Ingresos
@@ -546,8 +548,8 @@ es:
       heading: "¿Necesita más tiempo en la sesión?"
   shared:
     agency_acronym:
-      az_des: DES/FAA
-      la_ldh: LDH
+      az_des: DES/FAA (por sus siglas en inglés)
+      la_ldh: LDH (por sus siglas en inglés)
       ma: DTA
       nyc: HRA
       sandbox: CBV

@@ -27,7 +27,7 @@
       <strong><%= t(".whats_next_1_title") %></strong>
       <ul style="list-style-type: disc;">
         <li><%= t(".whats_next_1_li_1", agency_acronym: current_agency.agency_short_name) %></li>
-        <li><%= t(".whats_next_1_li_2", agency_acronym: current_agency.agency_short_name, agency_website: current_agency.agency_contact_website).html_safe %></li>
+        <li><%= t(".whats_next_1_li_2_html", agency_acronym: current_agency.agency_short_name, agency_website: current_agency.agency_contact_website) %></li>
       </ul>
     </li>
   </ul>
@@ -36,13 +36,13 @@
     <li>
       <strong><%= t(".whats_next_2_title") %></strong>
       <ul style="list-style-type: disc;">
-        <li><%= t(".whats_next_2_li_1", agency_feedback_form: feedback_form_url).html_safe %></li>
+        <li><%= t(".whats_next_2_li_1_html", agency_feedback_form: feedback_form_url) %></li>
       </ul>
     </li>
   </ul>
 
   <div class="border border-info-light bg-info-lighter padding-2 margin-top-3 radius-md">
-    <h3 class="margin-top-0"><%= t(".share_invitation_link_title") %></h3>
+    <h3 class="margin-top-0"><%= agency_translation(".share_invitation_link_title") %></h3>
     <p><%= t(".share_invitation_link_content") %></p>
 
     <div class="display-flex flex-align-center" data-controller="copy-link">
