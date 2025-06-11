@@ -70,9 +70,9 @@ module Aggregators::AggregatorReports
           has_employment_data: has_employment_data,
           has_identity_data: has_identity_data,
           # TODO: what happens if more than one income/employment/identity on an account?
-          income: has_income_data && @incomes.find { |income| income.account_id == account_id },
-          employment: has_employment_data && @employments.find { |employment| employment.account_id == account_id },
-          identity: has_identity_data && @identities.find { |identity| identity.account_id == account_id },
+          income: has_income_data ? @incomes.find { |income| income.account_id == account_id } : nil,
+          employment: has_employment_data ? @employments.find { |employment| employment.account_id == account_id } : nil,
+          identity: has_identity_data ? @identities.find { |identity| identity.account_id == account_id } : nil,
           paystubs: account_paystubs,
           gigs: @gigs.filter { |gig| gig.account_id == account_id }
         }
