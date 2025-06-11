@@ -33,9 +33,9 @@ module Redactable
     attr_accessor :fields_to_redact
 
     def has_redactable_fields(fields)
-      unknown_type = fields.find { |_field, type| type != :jsonb_attributes && REDACTION_REPLACEMENTS.exclude?(type) }
+      unknown_type = fields.find { |_field, type| REDACTION_REPLACEMENTS.exclude?(type) }
       raise "Unknown redaction type for field #{unknown_type[0]}: #{unknown_type[1]}. "\
-        "Valid types: #{REDACTION_REPLACEMENTS.keys + [ :jsonb_attributes ]}" if unknown_type
+        "Valid types: #{REDACTION_REPLACEMENTS.keys}" if unknown_type
 
       @fields_to_redact = fields
     end
@@ -46,28 +46,10 @@ module Redactable
     raise "No fields to redact in #{self.class} (or its superclass)" unless fields_to_redact.present?
 
     fields_to_redact.each do |field, type|
-      if type == :jsonb_attributes
-        self[field] = redact_member_names_in_json(self[field])
-      else
-        self[field] = REDACTION_REPLACEMENTS[type]
-      end
+      self[field] = REDACTION_REPLACEMENTS[type]
     end
     self[REDACTED_TIMESTAMP_COLUMN] = Time.now
 
     save(validate: false)
-  end
-
-  private
-
-  def redact_member_names_in_json(json_array)
-    return json_array unless json_array.is_a?(Array)
-
-    json_array.map do |income_change|
-      next income_change unless income_change.is_a?(Hash)
-
-      income_change.with_indifferent_access.tap do |record|
-        record["member_name"] = REDACTION_REPLACEMENTS[:string] if record.key?("member_name")
-      end
-    end
   end
 end
