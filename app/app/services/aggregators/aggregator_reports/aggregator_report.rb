@@ -106,10 +106,15 @@ module Aggregators::AggregatorReports
               gigs: gigs_in_month,
               accrued_gross_earnings: paystubs_in_month.sum { |paystub| paystub.gross_pay_amount || 0 },
               total_gig_hours: gigs_in_month.sum { |gig| gig.hours },
+              total_mileage: total_miles(gigs_in_month),
               partial_month_range: partial_month_details(month, extracted_dates_in_month, from_date, to_date)
             }
           end
         end
+    end
+
+    def total_miles(gigs)
+      gigs.sum { |g| g.mileage || 0 }
     end
 
     def total_gross_income

@@ -277,6 +277,7 @@ class Webhooks::Argyle::EventsController < ApplicationController
         gigs_earning_type_other_count: report.gigs.count { |g| g.compensation_category == "other" },
         gigs_earning_type_work_count: report.gigs.count { |g| g.compensation_category == "work" },
         gigs_pay_present_count: report.gigs.count { |g| g.compensation_amount.present? },
+        gigs_mileage_present_count: report.gigs.count { |g| g.mileage.present? },
         gigs_status_cancelled_count: report.gigs.count { |g| g.gig_status == "cancelled" },
         gigs_status_completed_count: report.gigs.count { |g| g.gig_status == "completed" },
         gigs_status_scheduled_count: report.gigs.count { |g| g.gig_status == "scheduled" },
