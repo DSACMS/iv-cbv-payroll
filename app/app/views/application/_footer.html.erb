@@ -7,7 +7,7 @@
       <%= form_with(builder: UswdsFormBuilder, html: { style: "display: contents;", class: "" }) do |f| %>
         <%= f.link_with_icon(
               t("shared.footer.feedback"),
-              url: feedbacks_path(referer: request.fullpath),
+              url: feedbacks_path,
               icon: "forum",
               class: "usa-button usa-button--outline usa-button--inverse maxw-mobile",
               target: "_blank"
