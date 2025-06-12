@@ -4,7 +4,7 @@ class Report::MonthlySummaryTableComponent < ViewComponent::Base
 
   attr_reader :employer_name
 
-  def initialize(report, payroll_account, is_responsive: true, show_payments: true, show_footnote: true)
+  def initialize(report, payroll_account, is_responsive: true, is_caseworker: false, show_payments: true, show_footnote: true)
     @report = report
     @show_payments = show_payments
     @show_footnote = show_footnote
@@ -16,6 +16,7 @@ class Report::MonthlySummaryTableComponent < ViewComponent::Base
     @employer_name = account_report&.dig(:employment, :employer_name)
     @monthly_summary_data = report.summarize_by_month[@account_id]
     @is_responsive = is_responsive
+    @is_caseworker = is_caseworker
   end
 
   def before_render
@@ -40,6 +41,14 @@ class Report::MonthlySummaryTableComponent < ViewComponent::Base
 
   def show_footnote?
     @show_footnote
+  end
+
+  def payments_from_text
+    if @is_caseworker
+      I18n.t("components.report.monthly_summary_table.payments_from_text_caseworker", employer_name: @employer_name)
+    else
+      I18n.t("components.report.monthly_summary_table.payments_from_text", employer_name: @employer_name)
+    end
   end
 
   def table_colspan

@@ -60,7 +60,7 @@
     <% if show_payments? %>
       <div>
         <h2><%= I18n.t("components.report.monthly_summary_table.payments_from_header", employer_name: @employer_name) %></h2>
-        <div class="usa-prose"><p><%= I18n.t("components.report.monthly_summary_table.payments_from_text", employer_name: @employer_name) %></p></div>
+        <div class="usa-prose"><p><%= payments_from_text %></p></div>
 
         <ul class="usa-list">
           <% @paystubs.each do |paystub| %>
