@@ -1,3 +1,5 @@
+<% content_for :title, t(".pdf.client.header") %>
+
 <strong>
   <% if current_agency?(:ma) || current_agency?(:nyc) %>
     <%= image_tag wicked_pdf_asset_base64(current_agency.logo_square_path), class: "text-middle cbv-header__agency-logo cbv-header__agency-logo--#{current_agency.id}" %>
