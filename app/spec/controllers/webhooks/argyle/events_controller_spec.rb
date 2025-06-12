@@ -254,6 +254,7 @@ RSpec.describe Webhooks::Argyle::EventsController, type: :controller do
           gigs_earning_type_other_count: 0,
           gigs_earning_type_work_count: 50,
           gigs_pay_present_count: 50,
+          gigs_mileage_present_count: 50,
           gigs_status_cancelled_count: 10,
           gigs_status_completed_count: 40,
           gigs_status_scheduled_count: 0,

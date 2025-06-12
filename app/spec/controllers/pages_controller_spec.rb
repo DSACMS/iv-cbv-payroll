@@ -11,6 +11,10 @@ RSpec.describe PagesController do
     end
 
     context "when on an agency subdomain" do
+      before do
+        stub_client_agency_config_value("la_ldh", "agency_domain", "la.reportmyincome.org")
+      end
+
       it "redirects to the client agency entries page when the hostname matches a client agency domain" do
         request.host = "la.reportmyincome.org"
         get :home

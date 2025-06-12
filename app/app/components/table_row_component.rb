@@ -5,7 +5,7 @@ class TableRowComponent < ViewComponent::Base
 
   def initialize(*cells, highlight: false, class_names: "")
     @cells = cells
-    highlight_class = @highlight ? "cbv-row-highlight" : ""
+    highlight_class = highlight ? "cbv-row-highlight" : ""
     @class_names = [ highlight_class, class_names ].join(" ").strip
   end
 end

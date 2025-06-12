@@ -26,6 +26,7 @@ jobs:
     with:
       app_name: ${{ inputs.app_name }}
       environment: ${{ inputs.environment }}
+    secrets: inherit
   deploy:
     name: Deploy
     runs-on: ubuntu-latest
