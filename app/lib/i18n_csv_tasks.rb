@@ -116,9 +116,9 @@ module I18nCsvTasks
         next
       end
 
-      yaml_data = YAML.load_file(yml_file) || {}
-
       puts "Processing CSV file: #{file}"
+
+      yaml_data = YAML.load_file(yml_file) || {}
 
       csv_enum.each do |row|
         begin
@@ -173,20 +173,7 @@ module I18nCsvTasks
 
       puts "  Processed: #{processed_count}" if VERBOSE
       puts "  Skipped:   #{skipped_count}" if VERBOSE
-      puts "  Done!"
-
-      # Write problematic entries to a separate file for review
-      if skipped_count > 0 and VERBOSE
-        error_file = "#{File.basename(file, '.*')}_errors.csv"
-        CSV.open(error_file, "w:UTF-8") do |csv|
-          problematic_entries.each do |row|
-            csv << row
-          end
-        end
-        puts "  Problematic entries saved to #{error_file} for review."
-      end
-
-      puts "  YAML file '#{yml_file}' has been updated with translations from '#{file}'."
+      puts "  Done! YAML file '#{yml_file}' has been updated with translations from '#{file}'."
     end
   end
 end
