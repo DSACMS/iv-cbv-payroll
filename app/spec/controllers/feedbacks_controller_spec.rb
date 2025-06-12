@@ -20,7 +20,7 @@ RSpec.describe FeedbacksController, type: :controller do
       get :show
 
       expect(event_logger).to have_received(:track).with(
-        "FeedbackCtaClicked",
+        "ApplicantClickedFeedbackLink",
         kind_of(ActionDispatch::Request),
         hash_including(
           referer: cbv_flow_entry_path(locale: :en),

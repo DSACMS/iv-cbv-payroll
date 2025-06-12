@@ -4,7 +4,7 @@ class FeedbacksController < ApplicationController
   def show
     cbv_flow = session[:cbv_flow_id] ? CbvFlow.find_by(id: session[:cbv_flow_id]) : nil
     begin
-      event_logger.track("FeedbackCtaClicked", request, {
+      event_logger.track("ApplicantClickedFeedbackLink", request, {
         timestamp: Time.now.to_i,
         referer: request.referer,
         cbv_flow_id: cbv_flow&.id,
