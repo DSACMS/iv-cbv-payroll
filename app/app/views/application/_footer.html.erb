@@ -1,7 +1,9 @@
 <footer class="cbv-footer">
   <div class="cbv-footer__content grid-row">
     <div class="cbv-footer__item grid-col-12 tablet:grid-col-8">
-      <strong><%= t("shared.pilot_name") %></strong>
+      <div class="display-table-cell text-middle height-5">
+        <strong><%= t("shared.pilot_name") %></strong>
+      </div>
     </div>
     <div class="cbv-footer__item grid-col-12 tablet:grid-col-4">
       <%= form_with(builder: UswdsFormBuilder, html: { style: "display: contents;", class: "" }) do |f| %>
