@@ -11,9 +11,9 @@ class FeedbacksController < ApplicationController
         client_agency_id: cbv_flow&.client_agency_id
       })
     rescue => ex
-      Rails.logger.error "Unable to track FeedbackCtaClicked event: #{ex}"
+      raise unless Rails.env.production?
+      Rails.logger.error "Unable to track ApplicantClickedFeedbackLink event: #{ex}"
     end
-
     redirect_to feedback_form_url, allow_other_host: true
   end
 end
