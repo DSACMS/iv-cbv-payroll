@@ -52,5 +52,18 @@ RSpec.describe CbvFlow, type: :model do
         )
       end
     end
+
+    context "with missing host configuration" do
+      let(:client_agency_id) { "sandbox" }
+
+      before do
+        stub_client_agency_config_value("sandbox", "agency_domain", nil)
+      end
+
+      it "returns uses the Rails runtime host" do
+        expected_url = "http://localhost/en/cbv/links/sandbox"
+        expect(cbv_flow.to_generic_url).to eq(expected_url)
+      end
+    end
   end
 end
