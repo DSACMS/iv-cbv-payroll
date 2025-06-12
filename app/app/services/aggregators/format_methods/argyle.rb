@@ -1,4 +1,6 @@
 module Aggregators::FormatMethods::Argyle
+  MILES_PER_KM = 0.62137
+
   # Note: this method is to map Argyle's employment status with Pinwheel's for consistency
   # between the two providers.
   def self.format_employment_status(employment_status)
@@ -10,6 +12,15 @@ module Aggregators::FormatMethods::Argyle
     else
       employment_status
     end
+  end
+
+  def self.format_mileage(distance_string, distance_unit = "miles")
+    return nil if distance_string.blank?
+    distance = distance_string.to_f
+    if distance_unit == "km"
+      distance = distance * MILES_PER_KM
+    end
+    distance
   end
 
   def self.format_date(date)

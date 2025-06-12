@@ -34,13 +34,14 @@ RSpec.describe Aggregators::ResponseObjects::Gig do
       gig = described_class.from_argyle(gig_data)
 
       expect(gig).to have_attributes(
-        account_id: gig_data["account"],
-        gig_type: gig_data["type"],
-        start_date: ArgyleFormatter.format_date(gig_data["start_datetime"]),
-        end_date: ArgyleFormatter.format_date(gig_data["end_datetime"]),
-        hours: ArgyleFormatter.seconds_to_hours(gig_data["duration"]),
-        compensation_amount: ArgyleFormatter.format_currency(gig_data["income"]["pay"]),
-        gig_status: gig_data["status"]
+                       account_id: gig_data["account"],
+                       gig_type: gig_data["type"],
+                       start_date: ArgyleFormatter.format_date(gig_data["start_datetime"]),
+                       end_date: ArgyleFormatter.format_date(gig_data["end_datetime"]),
+                       hours: ArgyleFormatter.seconds_to_hours(gig_data["duration"]),
+                       compensation_amount: ArgyleFormatter.format_currency(gig_data["income"]["pay"]),
+                       mileage: 8.29,
+                       gig_status: gig_data["status"]
       )
     end
   end

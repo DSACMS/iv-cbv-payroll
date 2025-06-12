@@ -4,6 +4,15 @@ module ReportViewHelper
     hour.to_f.round(1)
   end
 
+  def federal_cents_per_mile(year)
+    case year
+    when 2024
+      67
+    else
+      70
+    end
+  end
+
   # Default format is Month Day, Year (e.g. January 1, 2020)
   def format_parsed_date(date, format = :long)
     I18n.l(date.to_date, format: format)

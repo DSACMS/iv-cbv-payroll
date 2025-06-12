@@ -35,8 +35,11 @@ RSpec.describe Cbv::SuccessesController do
 
       describe "#invitation_link" do
         context "in production environment" do
+          before do
+            stub_client_agency_config_value("sandbox", "agency_domain", "sandbox.reportmyincome.org")
+          end
+
           it "uses agency production domain" do
-            allow(Rails.env).to receive(:production?).and_return(true)
             get :show
 
             expected_url = "https://sandbox.reportmyincome.org/en/cbv/entry?token=#{cbv_flow.cbv_flow_invitation.auth_token}"
@@ -45,10 +48,12 @@ RSpec.describe Cbv::SuccessesController do
         end
 
         context "in non-production environment" do
-          it "uses agency demo domain" do
-            allow(Rails.env).to receive(:production?).and_return(false)
-            get :show
+          before do
+            stub_client_agency_config_value("sandbox", "agency_domain", "sandbox-verify-demo.navapbc.cloud")
+          end
 
+          it "uses agency demo domain" do
+            get :show
             expected_url = "https://sandbox-verify-demo.navapbc.cloud/en/cbv/entry?token=#{cbv_flow.cbv_flow_invitation.auth_token}"
             expect(response.body).to include(expected_url)
           end
@@ -57,10 +62,10 @@ RSpec.describe Cbv::SuccessesController do
         context "when the cbv_flow originates from a generic link" do
           before do
             session[:cbv_flow_id] = cbv_flow_without_invitation.id
+            stub_client_agency_config_value("sandbox", "agency_domain", "sandbox-verify-demo.navapbc.cloud")
           end
 
           it "generates a generic link" do
-            allow(Rails.env).to receive(:production?).and_return(false)
             get :show
 
             expected_url = "https://sandbox-verify-demo.navapbc.cloud/en/cbv/links/sandbox"
