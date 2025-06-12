@@ -4,7 +4,15 @@
       <strong><%= t("shared.pilot_name") %></strong>
     </div>
     <div class="cbv-footer__item grid-col-12 tablet:grid-col-4">
-      <%= link_to t("shared.footer.feedback"), feedback_form_url, target: "_blank", rel: "noopener noreferrer" %>
+      <%= form_with(builder: UswdsFormBuilder, html: { style: "display: contents;", class: "" }) do |f| %>
+        <%= f.link_with_icon(
+              t("shared.footer.feedback"),
+              url: feedbacks_path(referer: request.fullpath),
+              icon: "forum",
+              class: "usa-button usa-button--outline usa-button--inverse maxw-mobile",
+              target: "_blank"
+            ) %>
+      <% end %>
     </div>
   </div>
 </footer>
