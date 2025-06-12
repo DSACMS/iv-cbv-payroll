@@ -85,7 +85,7 @@ module ApplicationHelper
   end
 
   def date_string_to_date(date_string)
-    date_string.is_a?(Date) ? date_string : Date.parse(date_string)
+    date_string.is_a?(Date) ? date_string : Date.strptime(date_string, "%Y-%m-%d")
   rescue
     nil
   end
@@ -113,7 +113,7 @@ module ApplicationHelper
     when 70..74 then "70-74"
     when 75..79 then "75-79"
     when 80..89 then "80-89"
-    else "90+"
+    when 90.. then "90+"
     end
   end
 end

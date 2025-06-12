@@ -137,6 +137,14 @@ RSpec.describe ApplicationHelper do
       expect(helper.get_age_range("invalid-date")).to be_nil
     end
 
+    it "returns nil for invalid date input (from paylocity) before the current day of year" do
+      expect(helper.get_age_range("--01-02", now: now)).to be_nil
+    end
+
+    it "returns nil for invalid date input (from paylocity)" do
+      expect(helper.get_age_range("--12-30", now: now)).to be_nil
+    end
+
     it "returns age range when the date of birth is a string" do
       expect(helper.get_age_range("1990-01-01", now: now)).to eq("30-39")
     end
