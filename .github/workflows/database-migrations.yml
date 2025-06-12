@@ -21,6 +21,7 @@ jobs:
     with:
       app_name: ${{ inputs.app_name }}
       ref: ${{ github.ref }}
+    secrets: inherit
   run-migrations:
     name: Run migrations
     runs-on: ubuntu-latest

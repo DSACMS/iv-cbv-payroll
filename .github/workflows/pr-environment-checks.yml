@@ -22,6 +22,7 @@ jobs:
     with:
       app_name: ${{ inputs.app_name }}
       ref: ${{ inputs.commit_hash }}
+    secrets: inherit
 
   update:
     name: Update environment

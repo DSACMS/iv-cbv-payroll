@@ -1,6 +1,9 @@
+## How to run:
+# ARGYLE_SANDBOX=true bundle exec rake "argyle_sandbox_data:fetch[name_of_folder, argyle_user_id]"
 namespace :argyle_sandbox_data do
   desc "Fetch and store argyle fixture data."
   task :fetch, [ :mock_folder_name, :argyle_user_id ] => :environment do |t, args|
+    puts "Running task: #{t} with args: #{args.inspect}"
     if not (args.key?(:mock_folder_name) and args.key?(:argyle_user_id))
       puts "Must pass [:mock_folder_name, :arglye_user_id] as args to rake task"
     elsif not (ENV.key?("ARGYLE_SANDBOX") and ENV["ARGYLE_SANDBOX"])
@@ -54,6 +57,11 @@ namespace :argyle_sandbox_data do
         folder_name: mock_folder_name,
         file_name: "request_paystubs",
         response_payload: @argyle.fetch_paystubs_api(user: argyle_user_id))
+
+      store_mock_response(
+        folder_name: mock_folder_name,
+        file_name: "request_gigs",
+        response_payload: @argyle.fetch_gigs_api(user: argyle_user_id))
     end
   end
 end
