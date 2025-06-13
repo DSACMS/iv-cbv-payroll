@@ -1,15 +1,13 @@
 <% content_for :title, t(".header") %>
-<h1><%= t(".header") %></h1>
+<h1><%= t(".header_html") %></h1>
 <p><%= t(".header_sub_text") %></p>
-
-<div data-controller="cbv-add-job">
-  <h2><%= t(".header_2") %></h2>
 
 <div class="usa-prose">
   <ul>
-    <li><%= t(".header_2_bullet_1") %></li>
-    <li><%= t(".header_2_bullet_2") %></li>
-    <li><%= t(".header_2_bullet_3") %></li>
+    <li><%= t(".bullet_1") %></li>
+    <li><%= t(".bullet_2") %></li>
+    <li><%= t(".bullet_3") %></li>
+    <li><%= t(".bullet_4") %></li>
   </ul>
   </div>
 
@@ -22,4 +20,3 @@
       <%= f.submit t(".continue") %>
       </div>
 <% end %>
-</div>
