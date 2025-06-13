@@ -175,6 +175,10 @@ RSpec.describe Report::MonthlySummaryTableComponent, type: :component do
         expect(subject.to_html).to include '"Total hours worked" sums the time'
       end
 
+      it "renders the client-facing payments from text" do
+        expect(subject.to_html).to include(I18n.t("components.report.monthly_summary_table.payments_from_text", employer_name: "Lyft Driver"))
+      end
+
       describe "#find_employer_name" do
         it "returns the correct employer name for the specified account id" do
           # Initializing the component under test
@@ -198,7 +202,23 @@ RSpec.describe Report::MonthlySummaryTableComponent, type: :component do
           expect(employer_name).to be_nil
         end
       end
+
+      context "when rendering in a caseworker report" do
+        subject do
+          render_inline(described_class.new(
+            argyle_report,
+            payroll_account,
+            is_responsive: false,
+            is_caseworker: true
+          ))
+        end
+
+        it "renders the caseworker-facing payments from text" do
+          expect(subject.to_html).to include(I18n.t("components.report.monthly_summary_table.payments_from_text_caseworker", employer_name: "Lyft Driver"))
+        end
+      end
     end
+
     context "with John LoanSeeker, a gig-worker with no paystubs nor gigs" do
       let(:account_id) { "019755d1-6727-1f48-c35f-41bce3a6263c" }
       let(:argyle_report) { Aggregators::AggregatorReports::ArgyleReport.new(payroll_accounts: [ payroll_account ], argyle_service: argyle_service, days_to_fetch_for_w2: 90, days_to_fetch_for_gig: 182) }
