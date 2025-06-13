@@ -10,7 +10,7 @@ class Cbv::SuccessesController < Cbv::BaseController
 
   def invitation_link
     if @cbv_flow.cbv_flow_invitation.present?
-      @cbv_flow.cbv_flow_invitation.to_url(protocol: "https")
+      @cbv_flow.cbv_flow_invitation.to_url
     else
       @cbv_flow.to_generic_url
     end

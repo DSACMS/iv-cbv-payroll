@@ -78,7 +78,7 @@ class ApplicationController < ActionController::Base
 
     agency_config.client_agency_ids.find do |agency_id|
       agency = agency_config[agency_id]
-      [ agency.agency_demo_domain, agency.agency_production_domain ].compact.include?(request.host)
+      agency.agency_domain == request.host
     end
   end
 

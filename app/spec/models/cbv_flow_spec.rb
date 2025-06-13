@@ -22,7 +22,7 @@ RSpec.describe CbvFlow, type: :model do
 
       context "in production environment" do
         before do
-          allow(Rails.env).to receive(:production?).and_return(true)
+          stub_client_agency_config_value("sandbox", "agency_domain", "sandbox.reportmyincome.org")
         end
 
         it "returns URL with production domain" do
@@ -33,7 +33,7 @@ RSpec.describe CbvFlow, type: :model do
 
       context "in non-production environment" do
         before do
-          allow(Rails.env).to receive(:production?).and_return(false)
+          stub_client_agency_config_value("sandbox", "agency_domain", "sandbox-verify-demo.navapbc.cloud")
         end
 
         it "returns URL with demo domain" do
@@ -50,6 +50,19 @@ RSpec.describe CbvFlow, type: :model do
         expect { cbv_flow.to_generic_url }.to raise_error(
           ArgumentError, "Client Agency invalid_agency not found"
         )
+      end
+    end
+
+    context "with missing host configuration" do
+      let(:client_agency_id) { "sandbox" }
+
+      before do
+        stub_client_agency_config_value("sandbox", "agency_domain", nil)
+      end
+
+      it "returns uses the Rails runtime host" do
+        expected_url = "http://localhost/en/cbv/links/sandbox"
+        expect(cbv_flow.to_generic_url).to eq(expected_url)
       end
     end
   end

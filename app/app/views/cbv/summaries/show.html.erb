@@ -47,7 +47,7 @@
       </tbody>
     </table>
     <% else %>
-      <%= render(Report::MonthlySummaryCompactComponent.new(@aggregator_report, account_id)) %>
+      <%= render(Report::MonthlySummaryTableComponent.new(@aggregator_report, account_id, show_footnote: false, show_payments: false)) %>
     <% end %>
 <h4><%= t(".additional_comments") %></h4>
 <%= get_comment_by_account_id(account_id).dig("comment") != "" ? get_comment_by_account_id(account_id).dig("comment") : t("shared.not_applicable") %>

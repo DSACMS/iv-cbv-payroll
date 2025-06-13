@@ -51,8 +51,7 @@ module IvCbvPayroll
     # Configure allowed hosts inferred from the client-agency-config.yml file
     config.client_agencies.client_agency_ids.each do |agency_id|
       agency = config.client_agencies[agency_id]
-      config.hosts << agency.agency_demo_domain
-      config.hosts << agency.agency_production_domain
+      config.hosts << agency.agency_domain
     end
 
     # Health check endpoints should be accessible from any host
