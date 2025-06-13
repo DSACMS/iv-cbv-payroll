@@ -7,7 +7,7 @@ module I18nCsvTasks
 
   IMPORT_FOLDER = File.join(File.dirname(__FILE__), "..", "tmp", "import")
   LOCALES_FOLDER = File.join(File.dirname(__FILE__), "..", "config", "locales")
-  VERBOSE = true
+  VERBOSE = false
 
   cmd :csv_export, desc: "export translations to CSV"
   def csv_export(opts = {})
