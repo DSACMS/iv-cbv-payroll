@@ -132,3 +132,6 @@ gem "wkhtmltopdf-binary"
 
 gem "net-sftp"
 gem "net-ssh"
+
+gem 'flipper'
+gem 'flipper-active_record'
