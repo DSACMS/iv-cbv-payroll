@@ -6,6 +6,14 @@
   <p><%= t(".subheader_html", agency_acronym: current_agency.agency_short_name) %></p>
 </div>
 
+<% if Flipper.enabled?(:flipper_demo_feature_name) %>
+  <div class="usa-alert usa-alert--info">
+    <div class="usa-alert__body">
+      <p class="usa-alert__text"><%= "Whoa! Don't let something like this show up in production!" %></p>
+    </div>
+  </div>
+<% end %>
+
 <ol class="usa-process-list">
   <li class="usa-process-list__item">
     <h2 class="margin-bottom-1"><%= t(".step1") %></h2>
