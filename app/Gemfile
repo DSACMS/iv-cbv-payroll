@@ -132,3 +132,5 @@ gem "wkhtmltopdf-binary"
 
 gem "net-sftp"
 gem "net-ssh"
+
+gem "flipper", "~> 1.3"

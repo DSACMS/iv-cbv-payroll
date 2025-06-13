@@ -6,6 +6,15 @@
   <p><%= t(".subheader_html", agency_acronym: current_agency.agency_short_name) %></p>
 </div>
 
+<% if Flipper.enabled? :demo_feature_flag %>
+<div class="usa-alert usa-alert--info margin-top-2">
+  <div class="usa-alert__body">
+    <h3 class="usa-alert__heading"><%= "Wow! Don't let this show up in production!" %></h3>
+    <p class="usa-alert__text"><%= "That'd be really bad because these strings aren't tokenized." %></p>
+  </div>
+</div>
+<% end %>
+
 <ol class="usa-process-list">
   <li class="usa-process-list__item">
     <h2 class="margin-bottom-1"><%= t(".step1") %></h2>
