@@ -693,7 +693,7 @@ en:
       sandbox: SNAP
     error_unauthorized: The URL you're accessing is forbidden for the current user. Please verify you are logged in as the correct user and try accessing the URL again.
     footer:
-      feedback: Report feedback or bugs
+      feedback: Share feedback
     header:
       aria_label: Main navigation
       cbv_flow_title:

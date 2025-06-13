@@ -1,10 +1,18 @@
 <footer class="cbv-footer">
   <div class="cbv-footer__content grid-row">
     <div class="cbv-footer__item grid-col-12 tablet:grid-col-8">
-      <strong><%= t("shared.pilot_name") %></strong>
+      <div class="display-table-cell text-middle height-5">
+        <strong><%= t("shared.pilot_name") %></strong>
+      </div>
     </div>
     <div class="cbv-footer__item grid-col-12 tablet:grid-col-4">
-      <%= link_to t("shared.footer.feedback"), feedback_form_url, target: "_blank", rel: "noopener noreferrer" %>
+      <%= render LinkWithIconComponent.new(
+            t("shared.footer.feedback"),
+            url: feedbacks_path,
+            icon: "forum",
+            class: "usa-button usa-button--outline usa-button--inverse maxw-mobile",
+            target: "_blank"
+          ) %>
     </div>
   </div>
 </footer>
