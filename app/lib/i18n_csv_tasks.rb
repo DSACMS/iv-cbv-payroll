@@ -2,13 +2,12 @@
 require "i18n/tasks/commands"
 require "csv"
 require "yaml"
-
 module I18nCsvTasks
   include ::I18n::Tasks::Command::Collection
 
-  IMPORT_FOLDER = File.join(File.dirname(__FILE__), "import")
+  IMPORT_FOLDER = File.join(File.dirname(__FILE__), "..", "tmp", "import")
   LOCALES_FOLDER = File.join(File.dirname(__FILE__), "..", "config", "locales")
-  VERBOSE = false
+  VERBOSE = true
 
   cmd :csv_export, desc: "export translations to CSV"
   def csv_export(opts = {})
@@ -88,10 +87,11 @@ module I18nCsvTasks
   def set_nested_value(hash, path_array, value)
     return if path_array.empty?
     key = path_array.shift
+
     if path_array.empty?
       hash[key] = value
     else
-      hash[key] ||= {}
+      hash[key] = {} unless hash[key].is_a?(Hash)
       set_nested_value(hash[key], path_array, value)
     end
   end
@@ -125,7 +125,7 @@ module I18nCsvTasks
       set_nested_value(yaml_data, path_segments.map(&:to_s), translation)
       merged_count += 1
     rescue => e
-      puts "  ERROR processing row: #{row.inspect}\nException: #{e.message}\n#{e.backtrace.join("\n")}"
+      puts "  ERROR processing row: #{row.inspect}\n    Exception: #{e.message}\n#{e.backtrace.join("\n")}"
       problematic_entries << row
       skipped_count += 1
     end
