@@ -71,7 +71,7 @@ class AggregateDataPointComponent < ViewComponent::Base
   def employment_start_date(start_date)
     {
       label: I18n.t("cbv.payment_details.show.employment_start_date"),
-      value: format_date(start_date)
+      value: start_date ? format_date(start_date) : I18n.t("shared.not_applicable")
     }
   end
 
@@ -86,7 +86,7 @@ class AggregateDataPointComponent < ViewComponent::Base
     translated_status = translate_aggregator_value("employment_statuses", status)
     {
       label: I18n.t("cbv.payment_details.show.employment_status"),
-      value: translated_status&.humanize
+      value: translated_status ? translated_status.humanize : I18n.t("shared.not_applicable")
     }
   end
 
@@ -94,7 +94,7 @@ class AggregateDataPointComponent < ViewComponent::Base
     translated_pay_frequency = translate_aggregator_value("payment_frequencies", frequency)
     {
       label: I18n.t("cbv.payment_details.show.pay_frequency"),
-      value: translated_pay_frequency
+      value: translated_pay_frequency || I18n.t("shared.not_applicable")
     }
   end
 
@@ -109,14 +109,14 @@ class AggregateDataPointComponent < ViewComponent::Base
   def employer_phone(phone_number)
     {
       label: I18n.t("cbv.summaries.show.phone_number"),
-      value: number_to_phone(phone_number)
+      value: phone_number ? number_to_phone(phone_number) : I18n.t("shared.not_applicable")
     }
   end
 
   def employer_address(address)
     {
       label: I18n.t("cbv.submits.show.pdf.client.address"),
-      value: address
+      value: address || I18n.t("shared.not_applicable")
     }
   end
 
