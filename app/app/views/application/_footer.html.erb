@@ -6,15 +6,13 @@
       </div>
     </div>
     <div class="cbv-footer__item grid-col-12 tablet:grid-col-4">
-      <%= form_with(builder: UswdsFormBuilder, html: { style: "display: contents;", class: "" }) do |f| %>
-        <%= f.link_with_icon(
-              t("shared.footer.feedback"),
-              url: feedbacks_path,
-              icon: "forum",
-              class: "usa-button usa-button--outline usa-button--inverse maxw-mobile",
-              target: "_blank"
-            ) %>
-      <% end %>
+      <%= render LinkWithIconComponent.new(
+            t("shared.footer.feedback"),
+            url: feedbacks_path,
+            icon: "forum",
+            class: "usa-button usa-button--outline usa-button--inverse maxw-mobile",
+            target: "_blank"
+          ) %>
     </div>
   </div>
 </footer>
