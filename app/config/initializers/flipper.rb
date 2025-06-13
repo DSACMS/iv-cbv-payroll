@@ -45,4 +45,9 @@ end
 # end
 
 # Features yet to be released in production
-Flipper.enable :flipper_demo_feature_name if Rails.env.production?
+Flipper.add :flipper_demo_feature_name
+if Rails.env.development? || Rails.env.test?
+  Flipper.enable :flipper_demo_feature_name
+else
+  Flipper.disable :flipper_demo_feature_name
+end
