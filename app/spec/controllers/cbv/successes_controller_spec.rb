@@ -71,6 +71,20 @@ RSpec.describe Cbv::SuccessesController do
             expected_url = "https://sandbox-verify-demo.navapbc.cloud/en/cbv/links/sandbox"
             expect(response.body).to include(expected_url)
           end
+
+          context "with missing host configuration" do
+            before do
+              session[:cbv_flow_id] = cbv_flow_without_invitation.id
+              stub_client_agency_config_value("sandbox", "agency_domain", nil)
+            end
+
+            it "generates a generic link" do
+              get :show
+
+              expected_url = "http://localhost/en/cbv/links/sandbox"
+              expect(response.body).to include(expected_url)
+            end
+          end
         end
       end
     end
