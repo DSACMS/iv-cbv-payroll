@@ -22,6 +22,9 @@ Rails.application.routes.draw do
     get "/maintenance", to: "maintenance#show"
     # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
 
+    # Feedback CTA
+    get "/feedback", to: "feedbacks#show", as: :feedbacks
+
     scope "/cbv", as: :cbv_flow, module: :cbv do
       resource :entry, only: %i[show create]
       resource :employer_search, only: %i[show]

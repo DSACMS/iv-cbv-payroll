@@ -5,19 +5,16 @@
 
   <div class="usa-prose">
     <p><%= t(".confirmation_code_html", confirmation_code: @cbv_flow.confirmation_code) %></p>
-    <%= form_with(builder: UswdsFormBuilder, html: { style: "display: contents;", class: "" }) do |f| %>
-      <%= f.link_with_icon(t(".download"),
-                             icon: "file_download",
-                             class: "usa-button",
-                             icon_position: :leading,
-                             variant: :primary,
-                             type: "link",
-                             url: cbv_flow_submit_path(format: "pdf"),
-                             target: "_blank",
-                             rel: "noopener noreferrer"
-                             ) %>
-    <% end %>
-
+    <%= render LinkWithIconComponent.new(
+          t(".download"),
+          icon: "file_download",
+          class: "usa-button",
+          icon_position: :leading,
+          variant: :primary,
+          url: cbv_flow_submit_path(format: "pdf"),
+          target: "_blank",
+          rel: "noopener noreferrer"
+        ) %>
   </div>
 
   <h2><%= t(".whats_next") %></h2>
