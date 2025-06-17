@@ -558,7 +558,6 @@ en:
       select_prompt: 'Select an option below:'
       title: Need help connecting to your payroll provider?
       username: I don't know my username
-      timo2: testtimo wow
     show:
       company_id:
         intro: 'Try the following steps:'
@@ -669,7 +668,7 @@ en:
   shared:
     agency_acronym:
       az_des: DES/FAA
-      la_ldh: LDH TIMOTEST TMIOTEST
+      la_ldh: LDH
       ma: DTA
       nyc: HRA
       sandbox: CBV
@@ -683,7 +682,7 @@ en:
       az_des: MyFamilyBenefits
       ma: DTA Connect
       nyc: ACCESS HRA
-      sandbox: CBVApp WHOAAAAA
+      sandbox: CBVApp
     banner:
       lock: Lock
       locked_padlock: A locked padlock
@@ -731,9 +730,6 @@ en:
       nyc: benefits
       sandbox: benefits
     skip_link: Skip to main content
-    timotest:
-      one: asdf
-      two: qwer
   time:
     formats:
       default: "%Y-%m-%d"
