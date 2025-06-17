@@ -4,7 +4,6 @@
 
 require "yaml"
 require "csv"
-require "open3"
 require "rainbow"
 # require 'google/cloud/translate/v2'
 
@@ -14,7 +13,6 @@ require_relative "../../services/locale_diff_service"
 
 # The branch to compare against (e.g., main, develop).
 # The script will find what has changed in `en.yml` since this branch.
-BASE_BRANCH = "main"
 EN_LOCALE_PATH = "app/config/locales/en.yml"
 ES_LOCALE_PATH = "app/config/locales/es.yml"
 TARGET_LANGUAGE_CODE = "es"
@@ -22,7 +20,7 @@ OUTPUT_CSV_PATH = "translation_update.csv"
 
 class TranslationDiffGenerator
   def initialize
-    @locale_diff_service = LocaleDiffService.new(BASE_BRANCH)
+    @locale_diff_service = LocaleDiffService.new
     @project_root = @locale_diff_service.project_root
 
     # @translator = Google::Cloud::Translate::V2.new
@@ -37,7 +35,7 @@ class TranslationDiffGenerator
 
   def generate_csv
     puts "1. Fetching old `en.yml` from `#{BASE_BRANCH}` branch..."
-    old_en_yaml_content = @locale_diff_service.get_file_content_from_git(BASE_BRANCH, EN_LOCALE_PATH)
+    old_en_yaml_content = @locale_diff_service.get_en_content_from_main
     return unless old_en_yaml_content
 
     old_en_hash = YAML.safe_load(old_en_yaml_content) || {}

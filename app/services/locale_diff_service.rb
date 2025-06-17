@@ -1,17 +1,17 @@
 require 'yaml'
 require 'open3'
 
+BASE_BRANCH = "main"
 class LocaleDiffService
   attr_reader :project_root
 
-  def initialize(base_branch = 'main')
-    @base_branch = base_branch
+  def initialize
     @project_root = find_project_root
   end
 
   # Get all changed keys for a given locale file
   def get_changed_keys(locale_path)
-    old_yaml_content = get_file_content_from_git(@base_branch, locale_path)
+    old_yaml_content = get_en_content_from_main
     return [] unless old_yaml_content
 
     old_hash = YAML.safe_load(old_yaml_content) || {}
@@ -26,7 +26,7 @@ class LocaleDiffService
 
   # Get changed keys with their current English values (for translation CSV)
   def get_changed_keys_with_values(locale_path)
-    old_yaml_content = get_file_content_from_git(@base_branch, locale_path)
+    old_yaml_content = get_en_content_from_main
     return {} unless old_yaml_content
 
     old_hash = YAML.safe_load(old_yaml_content) || {}
@@ -51,9 +51,8 @@ class LocaleDiffService
   end
 
   # Uses `git show` to get the raw content of a file from a specific branch
-  def get_file_content_from_git(branch, file_path)
-    git_path = "#{branch}:#{file_path}"
-    content, stderr, status = Open3.capture3("git", "show", git_path, chdir: @project_root)
+  def get_en_content_from_main
+    content, stderr, status = Open3.capture3("git", "show", "#{BASE_BRANCH}:#{EN_LOCALE_PATH}", chdir: @project_root)
     unless status.success?
       puts "Warning: Could not find `#{file_path}` on branch `#{branch}`."
       puts "Assuming all keys are new."
