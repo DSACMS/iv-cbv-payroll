@@ -110,7 +110,7 @@ en:
       bi_weekly: Bi-weekly
       biweekly: Bi-weekly
       daily: Daily
-      hourly: Hourly
+      hourly: Hourly TIMOTIMO
       monthly: Monthly
       per_mile: Per mile
       quarterly: Quarterly
@@ -147,6 +147,7 @@ en:
           case_number: Case number
           email_address: Client's email address
           language_label: In what language should we send the invitation?
+          timotest: TIMOTEST
       create:
         invite_failed: 'Error sending invitation to %{email_address}: %{error_message}.'
         invite_success: Successfully delivered invitation to %{email_address}.
@@ -335,6 +336,7 @@ en:
         error: You must check the agreement checkbox to proceed.
       show:
         checkbox:
+          timotest_2: TIMOTEST
           default: Check this box to agree to let us access your payment information and share it with %{agency_full_name}. We will not use the information for any other purpose nor redisclose it to any other party.
         continue: Get started
         header: Let's verify your income
