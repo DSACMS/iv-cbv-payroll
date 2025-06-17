@@ -5,31 +5,22 @@
 require "yaml"
 require "csv"
 require "open3"
-# require 'google/cloud/translate/v2'
 require "rainbow"
+# require 'google/cloud/translate/v2'
 
 # --- CONFIGURATION ---
 
 # The branch to compare against (e.g., main, develop).
 # The script will find what has changed in `en.yml` since this branch.
 BASE_BRANCH = "main"
-
-# The path to your locale files, relative to the Rails root directory.
-EN_LOCALE_PATH = "app/config/locales/en.yml"
-ES_LOCALE_PATH = "app/config/locales/es.yml"
-
-# The target language for translation (e.g., 'es' for Spanish, 'fr' for French).
+EN_LOCALE_PATH = "config/locales/en.yml"
+ES_LOCALE_PATH = "config/locales/es.yml"
 TARGET_LANGUAGE_CODE = "es"
-
-# The name of the output CSV file.
 OUTPUT_CSV_PATH = "translation_update.csv"
 
-# --- SCRIPT LOGIC ---
-
-# A helper class to encapsulate the logic for finding and translating diffs.
 class TranslationDiffGenerator
   def initialize
-    @project_root = find_project_root
+    @project_root = Rails.root.to_s
 
     # @translator = Google::Cloud::Translate::V2.new
 
@@ -41,26 +32,22 @@ class TranslationDiffGenerator
     puts "--------------------------------------------------"
   end
 
-  # Main method to execute the script's logic.
   def generate_csv
-    # 1. Get the content of the en.yml file from the base branch.
     puts "1. Fetching old `en.yml` from `#{BASE_BRANCH}` branch..."
     old_en_yaml_content = get_file_content_from_git(BASE_BRANCH, EN_LOCALE_PATH)
     return unless old_en_yaml_content
 
     old_en_hash = YAML.safe_load(old_en_yaml_content) || {}
 
-    # 2. Load the current locale files.
     puts "2. Loading current locale files from your branch..."
     current_en_hash = load_yaml_file(File.join(@project_root, EN_LOCALE_PATH))
     current_es_hash = load_yaml_file(File.join(@project_root, ES_LOCALE_PATH))
 
-    # 3. Flatten the hashes to make them easy to compare (e.g., { "en.users.show.title" => "User Profile" }).
+    # Flatten the hashes to make them easy to compare (e.g., { "en.users.show.title" => "User Profile" }).
     flat_old_en = flatten_hash(old_en_hash)
     flat_current_en = flatten_hash(current_en_hash)
-    flat_current_es = flatten_hash(current_es_hash)
+    # flat_current_es = flatten_hash(current_es_hash)
 
-    # 4. Find all keys that are new or have a different value in the current en.yml.
     puts "3. Comparing versions to find new or modified strings..."
     keys_to_translate = find_changed_keys(flat_old_en, flat_current_en)
 
@@ -71,7 +58,6 @@ class TranslationDiffGenerator
 
     puts Rainbow("Found #{keys_to_translate.count} keys that are new or modified.").yellow
 
-    # 5. Generate the CSV file with translations.
     puts "4. Translating strings to `#{TARGET_LANGUAGE_CODE}` and generating CSV..."
     create_csv(keys_to_translate, flat_current_en)
 
@@ -90,13 +76,6 @@ class TranslationDiffGenerator
 
   private
 
-  # Finds the git project root directory.
-  def find_project_root
-    stdout, stderr, status = Open3.capture3("git rev-parse --show-toplevel")
-    raise "Not a git repository or git not found" unless status.success?
-    stdout.strip
-  end
-
   # Uses `git show` to get the raw content of a file from a specific branch.
   def get_file_content_from_git(branch, file_path)
     git_path = "#{branch}:#{file_path}"
@@ -109,7 +88,6 @@ class TranslationDiffGenerator
     content
   end
 
-  # Loads and parses a YAML file from the filesystem.
   def load_yaml_file(path)
     return {} unless File.exist?(path)
     YAML.load_file(path) || {}
@@ -136,7 +114,6 @@ class TranslationDiffGenerator
     end
   end
 
-  # Creates the final CSV file.
   def create_csv(keys, english_strings)
     # Using a progress bar for user feedback during translation
     progress_bar_length = 50
@@ -166,7 +143,6 @@ class TranslationDiffGenerator
 
         csv << [ key_for_csv, english_text ]
 
-        # Update and print the progress bar
         progress = (index + 1).to_f / total_keys
         filled_length = (progress * progress_bar_length).to_i
         bar = "█" * filled_length + "-" * (progress_bar_length - filled_length)
@@ -176,9 +152,9 @@ class TranslationDiffGenerator
   end
 end
 
-# --- EXECUTION ---
-
-# This block runs only when the script is executed directly from the command line.
-if __FILE__ == $0
-  TranslationDiffGenerator.new.generate_csv
+namespace :translations do
+  desc "Generate CSV file with translation differences from main branch"
+  task generate: :environment do
+    TranslationDiffGenerator.new.generate_csv
+  end
 end
