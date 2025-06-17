@@ -137,8 +137,6 @@ ignore_missing:
 
     # Currently awaiting translation:
     # - "example.strings.*"   # Tag with ticket number that created or modified the string
-    - "shared.footer.feedback" # [FFS-2922]
-    - "components.report.monthly_summary_table.payments_from_text"  # FFS-2983
 
 ## Consider these keys used:
 ignore_unused:
