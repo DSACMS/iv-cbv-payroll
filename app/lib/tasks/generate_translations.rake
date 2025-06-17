@@ -13,14 +13,14 @@ require "rainbow"
 # The branch to compare against (e.g., main, develop).
 # The script will find what has changed in `en.yml` since this branch.
 BASE_BRANCH = "main"
-EN_LOCALE_PATH = "config/locales/en.yml"
-ES_LOCALE_PATH = "config/locales/es.yml"
+EN_LOCALE_PATH = "app/config/locales/en.yml"
+ES_LOCALE_PATH = "app/config/locales/es.yml"
 TARGET_LANGUAGE_CODE = "es"
 OUTPUT_CSV_PATH = "translation_update.csv"
 
 class TranslationDiffGenerator
   def initialize
-    @project_root = Rails.root.to_s
+    @project_root = find_project_root
 
     # @translator = Google::Cloud::Translate::V2.new
 
@@ -41,7 +41,7 @@ class TranslationDiffGenerator
 
     puts "2. Loading current locale files from your branch..."
     current_en_hash = load_yaml_file(File.join(@project_root, EN_LOCALE_PATH))
-    current_es_hash = load_yaml_file(File.join(@project_root, ES_LOCALE_PATH))
+    # current_es_hash = load_yaml_file(File.join(@project_root, ES_LOCALE_PATH))
 
     # Flatten the hashes to make them easy to compare (e.g., { "en.users.show.title" => "User Profile" }).
     flat_old_en = flatten_hash(old_en_hash)
@@ -75,6 +75,12 @@ class TranslationDiffGenerator
   end
 
   private
+
+  def find_project_root
+    stdout, stderr, status = Open3.capture3("git rev-parse --show-toplevel")
+    raise "Not a git repository or git not found" unless status.success?
+    stdout.strip
+  end
 
   # Uses `git show` to get the raw content of a file from a specific branch.
   def get_file_content_from_git(branch, file_path)
