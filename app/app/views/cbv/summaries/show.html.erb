@@ -55,45 +55,48 @@
 <% end %>
 
 <% if @cbv_flow.cbv_flow_invitation.blank? %>
-<table class="usa-table usa-table--borderless width-full margin-top-2">
-  <h3><%= t(".your_information") %></h3>
-  <div class="usa-prose">
-    <p><%= agency_translation(".must_match", agency_acronym: current_agency.agency_short_name) %></p>
-  </div>
-  <thead class="border-top-05">
-    <tr>
-      <th class="padding-3" style="background-color: #d9e8f6;">
-        <h4 class="margin-0">
-          <%= t(".application_information") %>
-        </h4>
-      </th>
-      <th class="padding-3" style="background-color: #d9e8f6; text-align: right;">
-        <h4 class="margin-0">
-          <%= link_to cbv_flow_applicant_information_path(force_show: true), class: "usa-link" do %>
-            <%= image_tag "@uswds/uswds/dist/img/usa-icons/edit.svg", role: "img", alt: "" %>
-            Edit
-          <% end %>
-        </h4>
-      </th>
-    </tr>
-  </thead>
-  <tbody>
-    <% @cbv_flow.cbv_applicant.applicant_attributes.each do |item| %>
-      <% if @cbv_flow.cbv_applicant[item].present? %>
-        <tr>
-          <td><%= t("cbv.applicant_informations.#{@cbv_flow.client_agency_id}.fields.#{item}.prompt") %></td>
-          <td>
-            <% if item == :date_of_birth %>
-              <%= format_date(@cbv_flow.cbv_applicant[item]) %>
-            <% else %>
-              <%= @cbv_flow.cbv_applicant[item] %>
+  <table class="usa-table usa-table--borderless width-full margin-top-2 margin-bottom-0">
+    <h3><%= t(".your_information") %></h3>
+    <div class="usa-prose">
+      <p><%= agency_translation(".must_match", agency_acronym: current_agency.agency_short_name) %></p>
+    </div>
+    <thead class="border-top-05">
+      <tr>
+        <th class="padding-3" style="background-color: #d9e8f6;">
+          <h4 class="margin-0">
+            <%= t(".application_information") %>
+          </h4>
+        </th>
+        <th class="padding-3" style="background-color: #d9e8f6; text-align: right;">
+          <h4 class="margin-0">
+            <%= link_to cbv_flow_applicant_information_path(force_show: true), class: "usa-link" do %>
+              <%= image_tag "@uswds/uswds/dist/img/usa-icons/edit.svg", role: "img", alt: "" %>
+              Edit
             <% end %>
-          </td>
-        </tr>
+          </h4>
+        </th>
+      </tr>
+    </thead>
+    <tbody>
+      <% @cbv_flow.cbv_applicant.applicant_attributes.each do |item| %>
+        <% if @cbv_flow.cbv_applicant[item].present? %>
+          <tr>
+            <td><%= t("cbv.applicant_informations.#{@cbv_flow.client_agency_id}.fields.#{item}.prompt") %></td>
+            <td>
+              <% if item == :date_of_birth %>
+                <%= format_date(@cbv_flow.cbv_applicant[item]) %>
+              <% else %>
+                <%= @cbv_flow.cbv_applicant[item] %>
+              <% end %>
+            </td>
+          </tr>
+        <% end %>
       <% end %>
-    <% end %>
-  </tbody>
+    </tbody>
   </table>
+  <%= render "other_jobs_table", table_class: "margin-top-0" %>
+<% else %>
+  <%= render "other_jobs_table", wrapper_class: "margin-top-5", header: t(".your_information") %>
 <% end %>
 
 <%= button_to t("continue"), cbv_flow_submit_path, class: "btn btn-primary usa-button margin-y-5", method: :get %>

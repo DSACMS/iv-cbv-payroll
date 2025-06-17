@@ -244,11 +244,11 @@ en:
         bullet_2: Pays you in cash
         bullet_3: Pays you with a paper check and you can’t view your paycheck online
         bullet_4: Issues you a 1099
+        radio_no: No, I don’t have another job to report separately
+        radio_yes: Yes, I have another job I’ll report separately
         continue: Continue
-        note_html: 'Note: If you’ve had other jobs in the past 90 days that you won’t report using Report My Income, you will need to submit that income information separately. Learn more on %{agency_site}.'
+        note_html: 'Note: If you’ve had other jobs in the past 90 days that you won’t report using Report My Income, you will need to submit that income information separately. <a href="%{agency_site}" target="_blank" rel="noopener noreferrer">Learn more on %{agency_short_name}.</a>'
     add_jobs:
-      next_path:
-        notice_no_answer: You must select an answer to continue.
       show:
         continue: Continue
         header: Do you have another job to report?
@@ -497,6 +497,7 @@ en:
         total_income_from: 'Total income before taxes from %{employer_name}: %{amount}'
         total_income_from_no_employer_name: 'Total income before taxes: %{amount}'
         your_information: Your information
+        other_jobs: Other jobs
     synchronization_failures:
       show:
         back_to_search: Back to employer search
@@ -666,6 +667,8 @@ en:
       extend_button: Yes, extend my session
       heading: Do you need more time?
   shared:
+    next_path:
+      notice_no_answer: You must select an answer to continue.
     agency_acronym:
       az_des: DES/FAA
       la_ldh: LDH
