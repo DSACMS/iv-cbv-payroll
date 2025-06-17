@@ -20,6 +20,7 @@ class CbvFlowInvitation < ApplicationRecord
 
   accepts_nested_attributes_for :cbv_applicant
 
+  before_create :set_expires_at, if: :new_record?
   before_validation :normalize_language
 
   validates :client_agency_id, inclusion: Rails.application.config.client_agencies.client_agency_ids
@@ -40,13 +41,8 @@ class CbvFlowInvitation < ApplicationRecord
 
   scope :unstarted, -> { left_outer_joins(:cbv_flows).where(cbv_flows: { id: nil }) }
 
-  # Invitations are valid until 11:59pm Eastern Time on the (e.g.) 14th day
-  # after sending the invitation.
-  def expires_at
-    end_of_day_sent = created_at.in_time_zone(INVITATION_VALIDITY_TIME_ZONE).end_of_day
-    days_valid_for = Rails.application.config.client_agencies[client_agency_id].invitation_valid_days
-
-    end_of_day_sent + days_valid_for.days
+  def expires_at_local
+    expires_at&.in_time_zone(INVITATION_VALIDITY_TIME_ZONE)
   end
 
   def expired?
@@ -79,5 +75,20 @@ class CbvFlowInvitation < ApplicationRecord
     errors.add(:'cbv_applicant.first_name', I18n.t("activerecord.errors.models.cbv_applicant.attributes.first_name.blank")) if cbv_applicant.first_name.blank?
     errors.add(:'cbv_applicant.last_name', I18n.t("activerecord.errors.models.cbv_applicant.attributes.last_name.blank")) if cbv_applicant.last_name.blank?
     errors.add(:'cbv_applicant.snap_application_date', I18n.t("activerecord.errors.models.cbv_applicant.attributes.snap_application_date.invalid_date")) if cbv_applicant.snap_application_date.blank?
+  end
+
+  private
+
+  def set_expires_at
+    self.expires_at ||= calculate_expires_at
+  end
+
+  # Invitations are valid until 11:59pm Eastern Time on the (e.g.) 14th day
+  # after sending the invitation.
+  def calculate_expires_at
+    end_of_day_sent = created_at.in_time_zone(INVITATION_VALIDITY_TIME_ZONE).end_of_day
+    days_valid_for = Rails.application.config.client_agencies[client_agency_id].invitation_valid_days
+
+    end_of_day_sent + days_valid_for.days
   end
 end

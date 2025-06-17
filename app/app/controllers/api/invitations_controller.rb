@@ -14,7 +14,7 @@ class Api::InvitationsController < ApplicationController
 
     render json: {
       tokenized_url: @cbv_flow_invitation.to_url,
-      expiration_date: @cbv_flow_invitation.expires_at,
+      expiration_date: @cbv_flow_invitation.expires_at_local,
       language: @cbv_flow_invitation.language
     }, status: :created
   end

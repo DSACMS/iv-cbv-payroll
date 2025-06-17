@@ -109,7 +109,7 @@ RSpec.describe CbvFlowInvitation, type: :model do
     end
   end
 
-  describe "#expires_at" do
+  describe "#expires_at_local" do
     let(:client_agency_id) { "sandbox" }
     let(:invitation_valid_days) { 14 }
     let(:invitation) do
@@ -126,7 +126,7 @@ RSpec.describe CbvFlowInvitation, type: :model do
     end
 
     it "returns the end of the day the 14th day after the invitation was sent" do
-      expect(invitation.expires_at).to have_attributes(
+      expect(invitation.expires_at_local).to have_attributes(
         hour: 23,
         min: 59,
         sec: 59,
