@@ -8,6 +8,8 @@ require "open3"
 require "rainbow"
 # require 'google/cloud/translate/v2'
 
+require_relative "../../services/locale_diff_service"
+
 # --- CONFIGURATION ---
 
 # The branch to compare against (e.g., main, develop).
@@ -20,7 +22,8 @@ OUTPUT_CSV_PATH = "translation_update.csv"
 
 class TranslationDiffGenerator
   def initialize
-    @project_root = find_project_root
+    @locale_diff_service = LocaleDiffService.new(BASE_BRANCH)
+    @project_root = @locale_diff_service.project_root
 
     # @translator = Google::Cloud::Translate::V2.new
 
@@ -34,22 +37,22 @@ class TranslationDiffGenerator
 
   def generate_csv
     puts "1. Fetching old `en.yml` from `#{BASE_BRANCH}` branch..."
-    old_en_yaml_content = get_file_content_from_git(BASE_BRANCH, EN_LOCALE_PATH)
+    old_en_yaml_content = @locale_diff_service.get_file_content_from_git(BASE_BRANCH, EN_LOCALE_PATH)
     return unless old_en_yaml_content
 
     old_en_hash = YAML.safe_load(old_en_yaml_content) || {}
 
     puts "2. Loading current locale files from your branch..."
-    current_en_hash = load_yaml_file(File.join(@project_root, EN_LOCALE_PATH))
-    # current_es_hash = load_yaml_file(File.join(@project_root, ES_LOCALE_PATH))
+    current_en_hash = @locale_diff_service.load_yaml_file(File.join(@project_root, EN_LOCALE_PATH))
+    # current_es_hash = @locale_diff_service.load_yaml_file(File.join(@project_root, ES_LOCALE_PATH))
 
     # Flatten the hashes to make them easy to compare (e.g., { "en.users.show.title" => "User Profile" }).
-    flat_old_en = flatten_hash(old_en_hash)
-    flat_current_en = flatten_hash(current_en_hash)
-    # flat_current_es = flatten_hash(current_es_hash)
+    flat_old_en = @locale_diff_service.flatten_hash(old_en_hash)
+    flat_current_en = @locale_diff_service.flatten_hash(current_en_hash)
+    # flat_current_es = @locale_diff_service.flatten_hash(current_es_hash)
 
     puts "3. Comparing versions to find new or modified strings..."
-    keys_to_translate = find_changed_keys(flat_old_en, flat_current_en)
+    keys_to_translate = @locale_diff_service.find_changed_keys(flat_old_en, flat_current_en)
 
     if keys_to_translate.empty?
       puts Rainbow("✅ No new or modified English keys found. You're all set!").green
@@ -75,50 +78,6 @@ class TranslationDiffGenerator
   end
 
   private
-
-  def find_project_root
-    stdout, stderr, status = Open3.capture3("git rev-parse --show-toplevel")
-    raise "Not a git repository or git not found" unless status.success?
-    stdout.strip
-  end
-
-  # Uses `git show` to get the raw content of a file from a specific branch.
-  def get_file_content_from_git(branch, file_path)
-    git_path = "#{branch}:#{file_path}"
-    content, stderr, status = Open3.capture3("git", "show", git_path, chdir: @project_root)
-    unless status.success?
-      puts Rainbow("Warning: Could not find `#{file_path}` on branch `#{branch}`.").yellow
-      puts "Assuming all keys are new."
-      return "{}" # Return empty YAML if the file doesn't exist on the base branch
-    end
-    content
-  end
-
-  def load_yaml_file(path)
-    return {} unless File.exist?(path)
-    YAML.load_file(path) || {}
-  end
-
-  # Recursively flattens a nested hash into a single-level hash with dot-separated keys.
-  # Example: { "en" => { "hello" => "Hello" } } becomes { "en.hello" => "Hello" }
-  def flatten_hash(hash, prefix = [])
-    hash.each_with_object({}) do |(key, value), result|
-      current_prefix = prefix + [ key ]
-      if value.is_a?(Hash)
-        result.merge!(flatten_hash(value, current_prefix))
-      else
-        result[current_prefix.join(".")] = value
-      end
-    end
-  end
-
-  # Compares the old and new flattened English hashes to find what changed.
-  def find_changed_keys(old_en, new_en)
-    new_en.keys.select do |key|
-      # A key needs translation if it's new OR its value has changed.
-      !old_en.key?(key) || old_en[key] != new_en[key]
-    end
-  end
 
   def create_csv(keys, english_strings)
     # Using a progress bar for user feedback during translation
