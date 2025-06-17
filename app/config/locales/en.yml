@@ -558,6 +558,7 @@ en:
       select_prompt: 'Select an option below:'
       title: Need help connecting to your payroll provider?
       username: I don't know my username
+      timo2: testtimo wow
     show:
       company_id:
         intro: 'Try the following steps:'
