@@ -69,7 +69,7 @@ ActiveRecord::Schema[7.1].define(version: 2025_06_17_183425) do
     t.datetime "redacted_at"
     t.bigint "cbv_applicant_id"
     t.string "argyle_user_id"
-    t.boolean "has_other_jobs", default: false
+    t.boolean "has_other_jobs"
     t.index ["cbv_applicant_id"], name: "index_cbv_flows_on_cbv_applicant_id"
     t.index ["cbv_flow_invitation_id"], name: "index_cbv_flows_on_cbv_flow_invitation_id"
   end

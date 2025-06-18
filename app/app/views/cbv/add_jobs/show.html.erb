@@ -2,7 +2,6 @@
 <h1><%= t(".header") %></h1>
 <p><%= t(".header_sub_text") %></p>
 
-<div data-controller="cbv-add-job">
   <h2><%= t(".header_2") %></h2>
 
 <div class="usa-prose">
@@ -11,13 +10,12 @@
     <li><%= t(".header_2_bullet_2") %></li>
     <li><%= t(".header_2_bullet_3") %></li>
   </ul>
-  </div>
+</div>
 
-  <%= form_with(url: cbv_flow_add_job_path, builder: UswdsFormBuilder, data: { "add-job-target": "addJobForm", turbo: "false" }, id: "add_job_form") do |f| %>
+  <%= form_with(url: cbv_flow_add_job_path, builder: UswdsFormBuilder, id: "add_job_form") do |f| %>
     <%= f.radio_button(:additional_jobs, true, { label: t(".radio_yes") }) %>
     <%= f.radio_button(:additional_jobs, false, { label: t(".radio_no") }) %>
     <div class="margin-top-5">
       <%= f.submit t(".continue") %>
-      </div>
+    </div>
 <% end %>
-</div>
