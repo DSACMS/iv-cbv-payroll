@@ -3,6 +3,17 @@ class Cbv::AddJobsController < Cbv::BaseController
   end
 
   def create
+    begin
+      event_logger.track("ApplicantContinuedFromAddJobsPage", request, {
+        timestamp: Time.now.to_i,
+        cbv_flow_id: @cbv_flow&.id,
+        client_agency_id: @cbv_flow&.client_agency_id,
+        has_additional_jobs: params[:additional_jobs] == "true"
+      })
+    rescue => ex
+      raise unless Rails.env.production?
+      Rails.logger.error "Unable to track ApplicantContinuedFromAddJobsPage event: #{ex}"
+    end
     redirect_to next_path
   end
 
