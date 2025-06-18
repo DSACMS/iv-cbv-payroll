@@ -31,6 +31,10 @@ module ReportViewHelper
     number_to_currency(dollars_in_cents.to_f / 100)
   end
 
+  def format_boolean(boolean_value)
+    boolean_value ? I18n.t("us_form_with.boolean_true") : I18n.t("us_form_with.boolean_false")
+  end
+
   def report_data_range(report)
     case report.fetched_days
     when 90

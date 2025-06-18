@@ -60,7 +60,8 @@ class WeeklyReportMailer < ApplicationMailer
     base_fields = {
       started_at: flow&.created_at,
       transmitted_at: flow&.transmitted_at,
-      completed_at: flow&.consented_to_authorized_use_at
+      completed_at: flow&.consented_to_authorized_use_at,
+      has_other_jobs: flow&.has_other_jobs
     }
 
     case client_agency_id

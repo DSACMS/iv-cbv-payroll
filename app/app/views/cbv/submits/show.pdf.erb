@@ -60,6 +60,7 @@
       <%= table.with_row(t(field_name), field_value) %>
     <% end %>
   <% end %>
+    <%= table.with_row(t(".pdf.shared.other_jobs_html"), format_boolean(@cbv_flow.has_other_jobs)) %>
 <% end %>
 
 <%= render(TableComponent.new) do |table| %>
