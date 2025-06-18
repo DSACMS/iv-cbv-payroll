@@ -5,7 +5,6 @@
 require "yaml"
 require "csv"
 require "rainbow"
-# require 'google/cloud/translate/v2'
 
 require_relative "../../services/locale_diff_service"
 
@@ -22,8 +21,6 @@ class TranslationDiffGenerator
   def initialize
     @locale_diff_service = LocaleDiffService.new
     @project_root = @locale_diff_service.project_root
-
-    # @translator = Google::Cloud::Translate::V2.new
 
     puts Rainbow("Configuration:").bright
     puts " - Comparing against branch: #{Rainbow(BASE_BRANCH).cyan}"
@@ -42,12 +39,10 @@ class TranslationDiffGenerator
 
     puts "2. Loading current locale files from your branch..."
     current_en_hash = @locale_diff_service.load_yaml_file(File.join(@project_root, EN_LOCALE_PATH))
-    # current_es_hash = @locale_diff_service.load_yaml_file(File.join(@project_root, ES_LOCALE_PATH))
 
     # Flatten the hashes to make them easy to compare (e.g., { "en.users.show.title" => "User Profile" }).
     flat_old_en = @locale_diff_service.flatten_hash(old_en_hash)
     flat_current_en = @locale_diff_service.flatten_hash(current_en_hash)
-    # flat_current_es = @locale_diff_service.flatten_hash(current_es_hash)
 
     puts "3. Comparing versions to find new or modified strings..."
     keys_to_translate = @locale_diff_service.find_changed_keys(flat_old_en, flat_current_en)
@@ -64,11 +59,6 @@ class TranslationDiffGenerator
 
     puts Rainbow("\n🎉 Success! CSV file created at: #{OUTPUT_CSV_PATH}").green
     puts "Please review the file and send it to your translation service."
-  # rescue Google::Cloud::Error => e
-  #   puts Rainbow("\n💥 Google Cloud Error:").red
-  #   puts Rainbow("   Could not authenticate or communicate with the Translation API.").red
-  #   puts Rainbow("   Please ensure you have run `export GOOGLE_APPLICATION_CREDENTIALS=/path/to/key.json`").red
-  #   puts "   Error details: #{e.message}"
   rescue StandardError => e
     puts Rainbow("\n💥 An unexpected error occurred:").red
     puts e.message
@@ -96,13 +86,6 @@ class TranslationDiffGenerator
 
         # We remove the top-level language key (e.g., 'en.') for the final CSV.
         key_for_csv = key.split(".", 2).last
-
-        # begin
-        #   translated_text = @translator.translate(english_text, to: TARGET_LANGUAGE_CODE).text
-        # rescue => e
-        #   puts Rainbow("Warning: Could not translate '#{english_text}'. Error: #{e.message}").yellow
-        #   translated_text = "TRANSLATION_FAILED"
-        # end
 
         csv << [ key_for_csv, english_text ]
 
