@@ -84,26 +84,10 @@ es:
         invite_success: La invitación ha sido enviada con éxito a %{email_address}.
       incorrect_client_agency_id: No se ha podido enviar la invitación porque falta la configuración del sitio.
   cbv:
-    show:
-      answer_no_bullet_1: Usted no tiene otro trabajo (actual o reciente)
-      answer_no_bullet_2: Usted tiene un trabajo que le paga por PayPal, Venmo, Cash App, etc.
-      answer_no_bullet_3: Usted tiene un trabajo que le paga en efectivo
-      answer_no_bullet_4: Usted tiene un trabajo que le paga con un cheque impreso y no puede ver su cheque de pago en línea
-      answer_no_bullet_5: Usted tiene un trabajo que emite un 1099
-      answer_no_header: 'Responda que NO si:'
-      answer_yes_bullet_1: Su trabajo tiene un proveedor de nómina en línea
-      answer_yes_bullet_2: Su trabajo le permite ver sus recibos de pago en línea
-      answer_yes_bullet_3: Su trabajo se basa en aplicaciones (Uber, DoorDash, Lyft, Instacart, etc.)
-      answer_yes_header_html: Responda SÍ si <em>alguna</em> de estas afirmaciones son verdaderas sobre su trabajo actual o reciente.
-      continue: Continuar
-      criteria_disclaimer: 'Nota: Si ha tenido otros trabajos en los últimos 90 días que no cumplen estos criterios, es posible que tenga que presentar información de ese ingreso por separado.'
-      header: "¿Tiene otro trabajo que declarar?"
-      learn_more_link_html:
-        la_ldh: Obtenga más información en <a href="%{agency_url}" target="_blank" rel="noopener noreferer">el sitio web de LDH</a>.
-        sandbox: Obtenga más información en <a href="https://www.mass.gov/guides/how-to-contact-dta" target="_blank" rel="noopener noreferrer">el sitio web de CBV Test Agency</a>.
-      no_radio: No, no tengo otro trabajo que cumpla con los criterios
-      subheader: Por favor añada los otros trabajos que haya tenido en los últimos 90 días, incluso si ya no está en ese trabajo.
-      yes_radio: Sí, tengo otro trabajo que cumpla con los criterios
+    add_jobs:
+      show:
+        continue: Continuar
+        header: "¿Tiene otro trabajo que declarar?"
     applicant_informations:
       la_ldh:
         fields:
@@ -316,7 +300,7 @@ es:
       show:
         additional_comments: Comentarios adicionales
         application_information: Información del solicitante
-        description: En el siguiente reporte, se muestran sus ingresos recientes.  Por favor revíselo antes de enviarlo.
+        description: En el siguiente reporte, se muestran sus ingresos recientes. Por favor revíselo antes de enviarlo.
         header: Revise su reporte de ingresos
         must_match:
           default: Esto debe coincidir con lo que se muestra en su solicitud de %{agency_acronym}.

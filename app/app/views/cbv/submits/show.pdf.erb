@@ -43,9 +43,6 @@
   <%= table.with_header do %>
     <h3 class="margin-0"><%= t(".pdf.shared.client_information") %></h3>
   <% end %>
-  <% ClientAgency::CaseworkerReportSpecificFieldDecider.applicant_specific_fields(@cbv_flow).each do |field, value| %>
-    <%= table.with_row(t(field), value) %>
-  <% end %>
   <% @cbv_flow.cbv_applicant.applicant_attributes.each do |item| %>
     <% if @cbv_flow.cbv_applicant[item].present? %>
       <% if item == :date_of_birth %>
@@ -55,13 +52,14 @@
       <% end %>
     <% end %>
   <% end %>
+  
   <% if is_caseworker %>
     <% ClientAgency::CaseworkerReportSpecificFieldDecider.caseworker_specific_fields(@cbv_flow).each do |field_name, field_value| %>
-      <% formatted_value = [true, false].include?(field_value) ? format_boolean(field_value) : field_value %>
-      <%= table.with_row(t(field_name), formatted_value) %>
+      <%= table.with_row(t(field_name), field_value) %>
     <% end %>
-  <% else %>
-    <%= table.with_row(t(".pdf.shared.other_jobs_html"), format_boolean(@cbv_flow.has_other_jobs)) %>
+  <% end %>
+  <% ClientAgency::CaseworkerReportSpecificFieldDecider.applicant_specific_fields(@cbv_flow).each do |field, value| %>
+    <%= table.with_row(t(field), value) %>
   <% end %>
 <% end %>
 
