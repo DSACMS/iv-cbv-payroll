@@ -452,6 +452,7 @@ en:
             employment_payment_details: Employment and Payment details
             header: Income Verification Report
           shared:
+            other_jobs: Does the client have additional jobs they will report separately?
             other_jobs_html: Does the client have additional jobs they will report separately?<sup>1</sup>
             client_information: Client information
             confirmation_code: Confirmation code

@@ -57,10 +57,12 @@
   <% end %>
   <% if is_caseworker %>
     <% ClientAgency::CaseworkerReportSpecificFieldDecider.caseworker_specific_fields(@cbv_flow).each do |field_name, field_value| %>
-      <%= table.with_row(t(field_name), field_value) %>
+      <% formatted_value = [true, false].include?(field_value) ? format_boolean(field_value) : field_value %>
+      <%= table.with_row(t(field_name), formatted_value) %>
     <% end %>
-  <% end %>
+  <% else %>
     <%= table.with_row(t(".pdf.shared.other_jobs_html"), format_boolean(@cbv_flow.has_other_jobs)) %>
+  <% end %>
 <% end %>
 
 <%= render(TableComponent.new) do |table| %>
