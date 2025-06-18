@@ -20,8 +20,8 @@ class TranslationDiffGenerator
   end
 
   def generate_csv
-    puts "1. Fetching old `en.yml` from `#{LocaleDiffService::BASE_BRANCH}` branch..."
-    old_en_yaml_content = @locale_diff_service.get_en_content_from_main
+    puts "1. Fetching old `en.yml` from common ancestor..."
+    old_en_yaml_content = @locale_diff_service.get_en_content_from_common_ancestor
     return unless old_en_yaml_content
 
     old_en_hash = YAML.safe_load(old_en_yaml_content) || {}
