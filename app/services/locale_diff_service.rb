@@ -1,8 +1,10 @@
-require 'yaml'
-require 'open3'
-
-BASE_BRANCH = "main"
 class LocaleDiffService
+  require 'yaml'
+  require 'open3'
+
+  BASE_BRANCH = "main"
+  EN_LOCALE_PATH = "app/config/locales/en.yml"
+
   attr_reader :project_root
 
   def initialize
@@ -22,26 +24,6 @@ class LocaleDiffService
     flat_current = flatten_hash(current_hash)
 
     find_changed_keys(flat_old, flat_current)
-  end
-
-  # Get changed keys with their current English values (for translation CSV)
-  def get_changed_keys_with_values(locale_path)
-    old_yaml_content = get_en_content_from_main
-    return {} unless old_yaml_content
-
-    old_hash = YAML.safe_load(old_yaml_content) || {}
-    current_hash = load_yaml_file(File.join(@project_root, locale_path))
-    return {} if current_hash.empty?
-
-    flat_old = flatten_hash(old_hash)
-    flat_current = flatten_hash(current_hash)
-
-    changed_keys = find_changed_keys(flat_old, flat_current)
-
-    # Return hash with key => value pairs
-    changed_keys.each_with_object({}) do |key, result|
-      result[key] = flat_current[key]
-    end
   end
 
   def find_project_root

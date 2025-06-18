@@ -1,36 +1,33 @@
-require "yaml"
-require "csv"
-require "rainbow"
-
-require_relative "../services/locale_diff_service"
-
-EN_LOCALE_PATH = "app/config/locales/en.yml"
-ES_LOCALE_PATH = "app/config/locales/es.yml"
-TARGET_LANGUAGE_CODE = "es"
-OUTPUT_CSV_PATH = "translation_update.csv"
-
 class TranslationDiffGenerator
+  require "yaml"
+  require "csv"
+  require "rainbow"
+
+  require_relative "../services/locale_diff_service"
+
+  TARGET_LANGUAGE_CODE = "es"
+  OUTPUT_CSV_PATH = "translation_update.csv"
+
   def initialize
     @locale_diff_service = LocaleDiffService.new
     @project_root = @locale_diff_service.project_root
 
     puts Rainbow("Configuration:").bright
-    puts " - Comparing against branch: #{Rainbow(BASE_BRANCH).cyan}"
-    puts " - English locale: #{Rainbow(EN_LOCALE_PATH).cyan}"
-    puts " - Spanish locale: #{Rainbow(ES_LOCALE_PATH).cyan}"
+    puts " - Comparing against branch: #{Rainbow(LocaleDiffService::BASE_BRANCH).cyan}"
+    puts " - English locale: #{Rainbow(LocaleDiffService::EN_LOCALE_PATH).cyan}"
     puts " - Output file: #{Rainbow(OUTPUT_CSV_PATH).cyan}"
     puts "--------------------------------------------------"
   end
 
   def generate_csv
-    puts "1. Fetching old `en.yml` from `#{BASE_BRANCH}` branch..."
+    puts "1. Fetching old `en.yml` from `#{LocaleDiffService::BASE_BRANCH}` branch..."
     old_en_yaml_content = @locale_diff_service.get_en_content_from_main
     return unless old_en_yaml_content
 
     old_en_hash = YAML.safe_load(old_en_yaml_content) || {}
 
     puts "2. Loading current locale files from your branch..."
-    current_en_hash = @locale_diff_service.load_yaml_file(File.join(@project_root, EN_LOCALE_PATH))
+    current_en_hash = @locale_diff_service.load_yaml_file(File.join(@project_root, LocaleDiffService::EN_LOCALE_PATH))
 
     # Flatten the hashes to make them easy to compare (e.g., { "en.users.show.title" => "User Profile" }).
     flat_old_en = @locale_diff_service.flatten_hash(old_en_hash)
