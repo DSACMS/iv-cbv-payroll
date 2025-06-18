@@ -238,6 +238,7 @@ en:
   cbv:
     other_jobs:
       show:
+        header: Do you need to report any jobs outside Report My Income?
         header_html: Do you need to report any jobs <em>outside</em> Report My Income?
         header_sub_text: 'Tell us about any other jobs you’ve had in the past 90 days, even if you’re no longer at that job. This includes current or recent jobs you’ve had in the past 90 days that may:'
         bullet_1: Pays you via PayPal, Venmo, Cash App, etc
