@@ -1,6 +1,5 @@
 class Cbv::OtherJobsController < Cbv::BaseController
   def show
-    @cbv_flow.has_other_jobs = nil if @cbv_flow.has_other_jobs == false
   end
 
   def update
