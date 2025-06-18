@@ -20,4 +20,4 @@ class ClientAgency::ReportFields
       ".pdf.shared.additional_jobs_to_report"
     end
   end
-end 
+end

@@ -527,8 +527,6 @@ es:
       extend_button: Sí, extender el tiempo de mi sesión.
       heading: "¿Necesita más tiempo en la sesión?"
   shared:
-    next_path:
-      notice_no_answer: Debe seleccionar una respuesta para continuar.
     agency_acronym:
       az_des: DES/FAA (por sus siglas en inglés)
       la_ldh: LDH (por sus siglas en inglés)
@@ -581,6 +579,8 @@ es:
       es: Español
       fr: Francés
       zh: Chino
+    next_path:
+      notice_no_answer: Debe seleccionar una respuesta para continuar.
     not_applicable: N/C
     pilot_name: Reportar Mis Ingresos
     report_data_range:

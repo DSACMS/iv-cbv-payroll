@@ -236,19 +236,6 @@ en:
         default: Income Verification Report %{case_number} has been received
         la_ldh: CBV Report %{confirmation_code}
   cbv:
-    other_jobs:
-      show:
-        header: Do you need to report any jobs outside Report My Income?
-        header_html: Do you need to report any jobs <em>outside</em> Report My Income?
-        header_sub_text: 'Tell us about any other jobs you’ve had in the past 90 days, even if you’re no longer at that job. This includes current or recent jobs you’ve had in the past 90 days that may:'
-        bullet_1: Pays you via PayPal, Venmo, Cash App, etc
-        bullet_2: Pays you in cash
-        bullet_3: Pays you with a paper check and you can’t view your paycheck online
-        bullet_4: Issues you a 1099
-        radio_no: No, I don’t have another job to report separately
-        radio_yes: Yes, I have another job I’ll report separately
-        continue: Continue
-        note_html: 'Note: If you’ve had other jobs in the past 90 days that you won’t report using Report My Income, you will need to submit that income information separately. <a href="%{agency_site}" target="_blank" rel="noopener noreferrer">Learn more on %{agency_short_name}.</a>'
     add_jobs:
       show:
         continue: Continue
@@ -378,6 +365,19 @@ en:
         not_listed_p2: Visit %{agency_short_name}'s website for more information on how to submit documents.
         not_listed_p2_link_html: Visit <a href="%{agency_url}" target="_blank" rel="noopener noreferrer">%{agency_short_name}'s website</a> for more information on how to submit documents.
         you_can_search: You can search for another employer or payroll provider. This site supports employers with online payroll providers or app-based services. Examples include Amazon, Walmart, McDonald’s, Uber, DoorDash, Lyft, and Instacart.
+    other_jobs:
+      show:
+        bullet_1: Pays you via PayPal, Venmo, Cash App, etc
+        bullet_2: Pays you in cash
+        bullet_3: Pays you with a paper check and you can’t view your paycheck online
+        bullet_4: Issues you a 1099
+        continue: Continue
+        header: Do you need to report any jobs outside Report My Income?
+        header_html: Do you need to report any jobs <em>outside</em> Report My Income?
+        header_sub_text: 'Tell us about any other jobs you’ve had in the past 90 days, even if you’re no longer at that job. This includes current or recent jobs you’ve had in the past 90 days that may:'
+        note_html: 'Note: If you’ve had other jobs in the past 90 days that you won’t report using Report My Income, you will need to submit that income information separately. <a href="%{agency_site}" target="_blank" rel="noopener noreferrer">Learn more on %{agency_short_name}.</a>'
+        radio_no: No, I don’t have another job to report separately
+        radio_yes: Yes, I have another job I’ll report separately
     payment_details:
       show:
         additional_information_header: Additional comments (Optional)
@@ -493,6 +493,7 @@ en:
           default: This must match what is shown on your %{agency_acronym} application.
           la_ldh: This must match what is shown on your Medicaid benefits.
         none_found: We didn't find any payments from this employer.
+        other_jobs: Other jobs
         payment: Payment of %{amount} before taxes on %{date}
         phone_number: Employer phone
         table_caption: 'Employer %{number}: %{employer_name}'
@@ -500,7 +501,6 @@ en:
         total_income_from: 'Total income before taxes from %{employer_name}: %{amount}'
         total_income_from_no_employer_name: 'Total income before taxes: %{amount}'
         your_information: Your information
-        other_jobs: Other jobs
     synchronization_failures:
       show:
         back_to_search: Back to employer search
@@ -671,8 +671,6 @@ en:
       extend_button: Yes, extend my session
       heading: Do you need more time?
   shared:
-    next_path:
-      notice_no_answer: You must select an answer to continue.
     agency_acronym:
       az_des: DES/FAA
       la_ldh: LDH
@@ -725,6 +723,8 @@ en:
       es: Español
       fr: Français
       zh: 中文
+    next_path:
+      notice_no_answer: You must select an answer to continue.
     not_applicable: N/A
     pilot_name: Report My Income
     report_data_range:
