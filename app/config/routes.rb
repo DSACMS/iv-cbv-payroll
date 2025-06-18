@@ -35,7 +35,7 @@ Rails.application.routes.draw do
       resource :missing_results, only: %i[show]
       resource :success, only: %i[show]
       resource :add_job, only: %i[show create]
-      resource :other_job, only: %i[show create]
+      resource :other_job, only: %i[show update]
       resource :payment_details, only: %i[show update]
       resource :expired_invitation, only: %i[show]
       resource :applicant_information, only: %i[show update]
