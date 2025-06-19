@@ -84,8 +84,8 @@ class LocaleSyncChecker
   def run
     puts "Checking locale synchronization against #{@base_branch}"
 
-    en_changed_keys = @locale_diff_service.get_changed_keys(@en_locale_path)
-    es_changed_keys = @locale_diff_service.get_changed_keys(@es_locale_path)
+    en_changed_keys = @locale_diff_service.get_keys_needing_translation(@en_locale_path)
+    es_changed_keys = @locale_diff_service.get_keys_needing_translation(@es_locale_path)
 
     puts "\n=== English Changed Keys ==="
     puts en_changed_keys.empty? ? "No changes" : en_changed_keys.join(", ")
