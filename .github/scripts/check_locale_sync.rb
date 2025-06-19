@@ -1,88 +1,17 @@
-require 'yaml'
-require 'open3'
-
-# For GitHub Actions, we need to load the service differently since it's not in a Rails app
-# Try to load from the Rails app structure first, fall back to inline definition
-begin
-  require_relative '../../app/services/locale_diff_service'
-rescue LoadError
-  # Inline service definition for GitHub Actions
+class LocaleSyncChecker
   require 'yaml'
   require 'open3'
 
-  class LocaleDiffService
-    def initialize(base_branch = 'main')
-      @base_branch = base_branch
-      @project_root = find_project_root
-    end
+  require_relative '../../app/services/locale_diff_service'
 
-    def get_changed_keys(locale_path)
-      old_yaml_content = get_file_content_from_git(@base_branch, locale_path)
-      return [] unless old_yaml_content
-
-      old_hash = YAML.safe_load(old_yaml_content) || {}
-      current_hash = load_yaml_file(File.join(@project_root, locale_path))
-      return [] if current_hash.empty?
-
-      flat_old = flatten_hash(old_hash)
-      flat_current = flatten_hash(current_hash)
-
-      find_changed_keys(flat_old, flat_current)
-    end
-
-    private
-
-    def find_project_root
-      stdout, stderr, status = Open3.capture3("git rev-parse --show-toplevel")
-      raise "Not a git repository or git not found" unless status.success?
-      stdout.strip
-    end
-
-    def get_file_content_from_git(branch, file_path)
-      git_path = "#{branch}:#{file_path}"
-      content, stderr, status = Open3.capture3("git", "show", git_path, chdir: @project_root)
-      unless status.success?
-        puts "Warning: Could not find `#{file_path}` on branch `#{branch}`."
-        puts "Assuming all keys are new."
-        return "{}"
-      end
-      content
-    end
-
-    def load_yaml_file(path)
-      return {} unless File.exist?(path)
-      YAML.load_file(path) || {}
-    end
-
-    def flatten_hash(hash, prefix = [])
-      hash.each_with_object({}) do |(key, value), result|
-        current_prefix = prefix + [key]
-        if value.is_a?(Hash)
-          result.merge!(flatten_hash(value, current_prefix))
-        else
-          result[current_prefix.join(".")] = value
-        end
-      end
-    end
-
-    def find_changed_keys(old_hash, new_hash)
-      new_hash.keys.select do |key|
-        !old_hash.key?(key) || old_hash[key] != new_hash[key]
-      end
-    end
-  end
-end
-
-class LocaleSyncChecker
   def initialize
-    @base_branch = ENV['GITHUB_BASE_REF'] || 'main'
     @en_locale_path = 'app/config/locales/en.yml'
     @es_locale_path = 'app/config/locales/es.yml'
-    @locale_diff_service = LocaleDiffService.new(@base_branch)
+    @locale_diff_service = LocaleDiffService.new
   end
 
   def run
-    puts "Checking locale synchronization against #{@base_branch}"
+    puts "Checking locale synchronization against branch creation point..."
 
     en_changed_keys = @locale_diff_service.get_keys_needing_translation(@en_locale_path)
     es_changed_keys = @locale_diff_service.get_keys_needing_translation(@es_locale_path)
