@@ -13,8 +13,8 @@ class LocaleSyncChecker
   def run
     puts "Checking locale synchronization against branch creation point..."
 
-    en_changed_keys = @locale_diff_service.get_keys_needing_translation(@en_locale_path)
-    es_changed_keys = @locale_diff_service.get_keys_needing_translation(@es_locale_path)
+    en_changed_keys, _ = @locale_diff_service.get_changed_keys_in_this_branch("en")
+    es_changed_keys, _ = @locale_diff_service.get_changed_keys_in_this_branch("es")
 
     puts "\n=== English Changed Keys ==="
     puts en_changed_keys.empty? ? "No changes" : en_changed_keys.join(", ")
@@ -22,8 +22,10 @@ class LocaleSyncChecker
     puts "\n=== Spanish Changed Keys ==="
     puts es_changed_keys.empty? ? "No changes" : es_changed_keys.join(", ")
 
-    # Check if changes are synchronized
-    if locales_synchronized?(en_changed_keys, es_changed_keys)
+    en_changed_keys = en_changed_keys.map { |key| remove_language_prefix(key) }
+    es_changed_keys = es_changed_keys.map { |key| remove_language_prefix(key) }
+
+    if en_changed_keys == es_changed_keys
       puts "\n✅ SUCCESS: English and Spanish locales are synchronized!"
       exit 0
     else
@@ -35,25 +37,16 @@ class LocaleSyncChecker
 
   private
 
-  def locales_synchronized?(en_changed_keys, es_changed_keys)
-    en_keys_normalized = en_changed_keys.map { |key| remove_language_prefix(key) }.sort
-    es_keys_normalized = es_changed_keys.map { |key| remove_language_prefix(key) }.sort
-    en_keys_normalized == es_keys_normalized
-  end
-
   def remove_language_prefix(key)
-    # Remove 'en.' or 'es.' prefix from keys
+    puts "Normalizing key: #{key}"
     key.sub(/^(en|es)\./, '')
   end
 
   def print_synchronization_issues(en_changed_keys, es_changed_keys)
     puts "\n=== Synchronization Issues ==="
 
-    en_keys_normalized = en_changed_keys.map { |key| remove_language_prefix(key) }
-    es_keys_normalized = es_changed_keys.map { |key| remove_language_prefix(key) }
-
-    missing_in_spanish = en_keys_normalized - es_keys_normalized
-    missing_in_english = es_keys_normalized - en_keys_normalized
+    missing_in_spanish = en_changed_keys - es_changed_keys
+    missing_in_english = es_changed_keys - en_changed_keys
 
     unless missing_in_spanish.empty?
       puts "\n🔸 Keys changed in English but not in Spanish:"
