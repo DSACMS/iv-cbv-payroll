@@ -1,6 +1,5 @@
 require "yaml"
 require "csv"
-require "rainbow"
 
 require_relative "../services/locale_diff_service"
 
@@ -12,29 +11,43 @@ class TranslationDiffGenerator
     @locale_diff_service = LocaleDiffService.new
     @project_root = @locale_diff_service.project_root
 
-    puts Rainbow("Configuration:").bright
-    puts " - English locale: #{Rainbow(LocaleDiffService::EN_LOCALE_PATH).cyan}"
-    puts " - Output file: #{Rainbow(OUTPUT_CSV_PATH).cyan}"
+    puts "Configuration:"
+    puts " - English locale: #{LocaleDiffService::EN_LOCALE_PATH}"
+    puts " - Output file: #{OUTPUT_CSV_PATH}"
     puts "--------------------------------------------------"
   end
 
   def generate_csv
-    changed_keys, flat_current = @locale_diff_service.get_changed_keys_in_this_branch("en")
+    puts "1. Fetching old `en.yml` from common ancestor..."
+    old_en_yaml_content = @locale_diff_service.get_en_content_from_common_ancestor
+    return unless old_en_yaml_content
 
-    if changed_keys.empty?
-      puts Rainbow("✅ No new or modified English keys found. You're all set!").green
+    old_en_hash = YAML.safe_load(old_en_yaml_content) || {}
+
+    puts "2. Loading current locale files from your branch..."
+    current_en_hash = @locale_diff_service.load_yaml_file(File.join(@project_root, LocaleDiffService::EN_LOCALE_PATH))
+
+    # Flatten the hashes to make them easy to compare (e.g., { "en.users.show.title" => "User Profile" }).
+    flat_old_en = @locale_diff_service.flatten_hash(old_en_hash)
+    flat_current_en = @locale_diff_service.flatten_hash(current_en_hash)
+
+    puts "3. Comparing versions to find new or modified strings..."
+    keys_to_translate = @locale_diff_service.find_changed_keys(flat_old_en, flat_current_en)
+
+    if keys_to_translate.empty?
+      puts "✅ No new or modified English keys found. You're all set!"
       return
     end
 
-    puts Rainbow("Found #{changed_keys.count} keys that are new or modified.").yellow
+    puts "Found #{keys_to_translate.count} keys that are new or modified."
 
     puts "Generating CSV..."
     write_csv(changed_keys, flat_current)
 
-    puts Rainbow("\n🎉 Success! CSV file created at: #{OUTPUT_CSV_PATH}").green
+    puts "\n🎉 Success! CSV file created at: #{OUTPUT_CSV_PATH}"
     puts "Please review the file and send it to your translation service."
   rescue StandardError => e
-    puts Rainbow("\n💥 An unexpected error occurred:").red
+    puts "\n💥 An unexpected error occurred:"
     puts e.message
     puts e.backtrace
   end
@@ -53,7 +66,7 @@ class TranslationDiffGenerator
 
         # Skip non-string values (e.g., YAML aliases, booleans)
         unless english_text.is_a?(String) && !english_text.empty?
-          puts Rainbow("Skipping non-string or empty key: #{key}").magenta
+          puts "Skipping non-string or empty key: #{key}"
           next
         end
 
@@ -65,7 +78,7 @@ class TranslationDiffGenerator
         progress = (index + 1).to_f / total_keys
         filled_length = (progress * progress_bar_length).to_i
         bar = "█" * filled_length + "-" * (progress_bar_length - filled_length)
-        print "\rProgress: [#{Rainbow(bar).green}] #{(progress * 100).to_i}%"
+        print "\rProgress: [#{bar}] #{(progress * 100).to_i}%"
       end
     end
   end
