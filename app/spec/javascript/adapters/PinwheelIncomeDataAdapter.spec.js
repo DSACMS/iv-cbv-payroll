@@ -49,7 +49,7 @@ describe("PinwheelModalAdapter", () => {
     it("calls track user action", async () => {
       await triggers.triggerSuccessEvent()
       expect(trackUserAction).toHaveBeenCalledTimes(2)
-      expect(trackUserAction.mock.calls[1][0]).toBe("PinwheelSuccess")
+      expect(trackUserAction.mock.calls[1][0]).toBe("ApplicantSucceededWithPinwheelLogin")
     })
     it("triggers the provided onSuccess callback", async () => {
       await triggers.triggerSuccessEvent()
@@ -70,27 +70,27 @@ describe("PinwheelModalAdapter", () => {
         selectedPlatformName: "ADP",
       })
       expect(trackUserAction).toHaveBeenCalledTimes(2)
-      expect(trackUserAction.mock.calls[1][0]).toBe("PinwheelShowLoginPage")
+      expect(trackUserAction.mock.calls[1][0]).toBe("ApplicantViewedPinwheelLoginPage")
     })
     it("logs screen_transition.PROVIDER_CONFIRMATION event", async () => {
       await triggers.triggerEvent("screen_transition", { screenName: "PROVIDER_CONFIRMATION" })
       expect(trackUserAction).toHaveBeenCalledTimes(2)
-      expect(trackUserAction.mock.calls[1][0]).toBe("PinwheelShowProviderConfirmationPage")
+      expect(trackUserAction.mock.calls[1][0]).toBe("ApplicantViewedPinwheelProviderConfirmation")
     })
     it("logs screen_transition.SEARCH_DEFAULT event", async () => {
       await triggers.triggerEvent("screen_transition", { screenName: "SEARCH_DEFAULT" })
       expect(trackUserAction).toHaveBeenCalledTimes(2)
-      expect(trackUserAction.mock.calls[1][0]).toBe("PinwheelShowDefaultProviderSearch")
+      expect(trackUserAction.mock.calls[1][0]).toBe("ApplicantViewedPinwheelDefaultProviderSearch")
     })
     it("logs screen_transition.EXIT_CONFIRMATION event", async () => {
       await triggers.triggerEvent("screen_transition", { screenName: "EXIT_CONFIRMATION" })
       expect(trackUserAction).toHaveBeenCalledTimes(2)
-      expect(trackUserAction.mock.calls[1][0]).toBe("PinwheelAttemptClose")
+      expect(trackUserAction.mock.calls[1][0]).toBe("ApplicantAttemptedClosingPinwheelModal")
     })
     it("logs login_attempt event", async () => {
       await triggers.triggerEvent("login_attempt")
       expect(trackUserAction).toHaveBeenCalledTimes(2)
-      expect(trackUserAction.mock.calls[1][0]).toBe("PinwheelAttemptLogin")
+      expect(trackUserAction.mock.calls[1][0]).toBe("ApplicantAttemptedPinwheelLogin")
     })
     it("logs error event", async () => {
       await triggers.triggerEvent("error", {
@@ -99,13 +99,13 @@ describe("PinwheelModalAdapter", () => {
         message: "default message",
       })
       expect(trackUserAction).toHaveBeenCalledTimes(2)
-      expect(trackUserAction.mock.calls[1][0]).toBe("PinwheelError")
+      expect(trackUserAction.mock.calls[1][0]).toBe("ApplicantEncounteredPinwheelError")
       expect(trackUserAction.mock.calls[1][1]["type"]).toBe("error-type")
     })
     it("logs exit event", async () => {
       await triggers.triggerEvent("exit")
       expect(trackUserAction).toHaveBeenCalledTimes(2)
-      expect(trackUserAction.mock.calls[1][0]).toBe("PinwheelCloseModal")
+      expect(trackUserAction.mock.calls[1][0]).toBe("ApplicantClosedPinwheelModal")
     })
   })
 })
