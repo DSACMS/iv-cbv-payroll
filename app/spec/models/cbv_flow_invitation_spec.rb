@@ -9,7 +9,7 @@ RSpec.describe CbvFlowInvitation, type: :model do
 
   describe "callbacks" do
     context "before_create" do
-      let(:current_time) { Time.local(2025, 6, 17, 1, 5, 0) }
+      let(:current_time) { Time.utc(2025, 6, 17, 1, 0, 0) }
 
       around do |ex|
         Timecop.freeze(current_time, &ex)
@@ -25,7 +25,7 @@ RSpec.describe CbvFlowInvitation, type: :model do
           min: 59,
           sec: 59,
           month: 7,
-          day: 2,
+          day: 1,
         )
       end
     end
