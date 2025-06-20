@@ -1,10 +1,10 @@
+require "yaml"
+require "csv"
+require "rainbow"
+
+require_relative "../services/locale_diff_service"
+
 class TranslationDiffGenerator
-  require "yaml"
-  require "csv"
-  require "rainbow"
-
-  require_relative "../services/locale_diff_service"
-
   TARGET_LANGUAGE_CODE = "es"
   OUTPUT_CSV_PATH = "translation_update.csv"
 
@@ -57,7 +57,6 @@ class TranslationDiffGenerator
   private
 
   def create_csv(keys, english_strings)
-    # Using a progress bar for user feedback during translation
     progress_bar_length = 50
     total_keys = keys.count
 
