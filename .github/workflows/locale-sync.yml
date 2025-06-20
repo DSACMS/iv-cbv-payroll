@@ -19,6 +19,10 @@ jobs:
       with:
         fetch-depth: 0  # Fetch full history for git diff
 
+    - name: Fetch main branch
+      run: |
+        git fetch origin main:main
+
     - name: Set up Ruby
       uses: ruby/setup-ruby@v1
       with:
