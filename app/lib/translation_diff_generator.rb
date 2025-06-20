@@ -57,7 +57,6 @@ class TranslationDiffGenerator
   private
 
   def create_csv(keys, english_strings)
-    # Using a progress bar for user feedback during translation
     progress_bar_length = 50
     total_keys = keys.count
 
