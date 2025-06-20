@@ -11,21 +11,6 @@ class LocaleDiffService
     @project_root = find_project_root
   end
 
-  # Get all changed keys for a given locale file
-  def get_changed_keys(locale_path)
-    old_yaml_content = get_en_content_from_main
-    return [] unless old_yaml_content
-
-    old_hash = YAML.safe_load(old_yaml_content) || {}
-    current_hash = load_yaml_file(File.join(@project_root, locale_path))
-    return [] if current_hash.empty?
-
-    flat_old = flatten_hash(old_hash)
-    flat_current = flatten_hash(current_hash)
-
-    find_changed_keys(flat_old, flat_current)
-  end
-
   def find_project_root
     stdout, stderr, status = Open3.capture3("git rev-parse --show-toplevel")
     raise "Not a git repository or git not found" unless status.success?
