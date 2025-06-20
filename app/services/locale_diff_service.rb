@@ -1,7 +1,7 @@
-class LocaleDiffService
-  require 'yaml'
-  require 'open3'
+require 'yaml'
+require 'open3'
 
+class LocaleDiffService
   BASE_BRANCH = "main"
   EN_LOCALE_PATH = "app/config/locales/en.yml"
 
