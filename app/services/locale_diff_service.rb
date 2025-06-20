@@ -52,7 +52,7 @@ class LocaleDiffService
       puts "Assuming all keys are new (or 'main' is the common ancestor)."
       # Fallback to main if no common ancestor is found, or if it's the very first commit
       # This can happen if the branch was created directly off of an empty main, or if there's no shared history yet.
-      return get_en_content_from_main
+      return get_content_from_main
     end
 
     # Use `git show` with the common ancestor commit to get the file's content
