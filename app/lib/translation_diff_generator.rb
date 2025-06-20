@@ -1,6 +1,5 @@
 require "yaml"
 require "csv"
-require "rainbow"
 
 require_relative "../services/locale_diff_service"
 
@@ -12,10 +11,10 @@ class TranslationDiffGenerator
     @locale_diff_service = LocaleDiffService.new
     @project_root = @locale_diff_service.project_root
 
-    puts Rainbow("Configuration:").bright
-    puts " - Comparing against branch: #{Rainbow(LocaleDiffService::BASE_BRANCH).cyan}"
-    puts " - English locale: #{Rainbow(LocaleDiffService::EN_LOCALE_PATH).cyan}"
-    puts " - Output file: #{Rainbow(OUTPUT_CSV_PATH).cyan}"
+    puts "Configuration:"
+    puts " - Comparing against branch: #{LocaleDiffService::BASE_BRANCH}"
+    puts " - English locale: #{LocaleDiffService::EN_LOCALE_PATH}"
+    puts " - Output file: #{OUTPUT_CSV_PATH}"
     puts "--------------------------------------------------"
   end
 
@@ -37,19 +36,19 @@ class TranslationDiffGenerator
     keys_to_translate = @locale_diff_service.find_changed_keys(flat_old_en, flat_current_en)
 
     if keys_to_translate.empty?
-      puts Rainbow("✅ No new or modified English keys found. You're all set!").green
+      puts "✅ No new or modified English keys found. You're all set!"
       return
     end
 
-    puts Rainbow("Found #{keys_to_translate.count} keys that are new or modified.").yellow
+    puts "Found #{keys_to_translate.count} keys that are new or modified."
 
     puts "4. Translating strings to `#{TARGET_LANGUAGE_CODE}` and generating CSV..."
     create_csv(keys_to_translate, flat_current_en)
 
-    puts Rainbow("\n🎉 Success! CSV file created at: #{OUTPUT_CSV_PATH}").green
+    puts "\n🎉 Success! CSV file created at: #{OUTPUT_CSV_PATH}"
     puts "Please review the file and send it to your translation service."
   rescue StandardError => e
-    puts Rainbow("\n💥 An unexpected error occurred:").red
+    puts "\n💥 An unexpected error occurred:"
     puts e.message
     puts e.backtrace
   end
@@ -68,7 +67,7 @@ class TranslationDiffGenerator
 
         # Skip non-string values (e.g., YAML aliases, booleans)
         unless english_text.is_a?(String) && !english_text.empty?
-          puts Rainbow("Skipping non-string or empty key: #{key}").magenta
+          puts "Skipping non-string or empty key: #{key}"
           next
         end
 
@@ -80,7 +79,7 @@ class TranslationDiffGenerator
         progress = (index + 1).to_f / total_keys
         filled_length = (progress * progress_bar_length).to_i
         bar = "█" * filled_length + "-" * (progress_bar_length - filled_length)
-        print "\rProgress: [#{Rainbow(bar).green}] #{(progress * 100).to_i}%"
+        print "\rProgress: [#{bar}] #{(progress * 100).to_i}%"
       end
     end
   end
