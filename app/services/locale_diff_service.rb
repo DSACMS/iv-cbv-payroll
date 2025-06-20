@@ -47,12 +47,16 @@ class LocaleDiffService
     merge_base_commit, stderr, status = Open3.capture3("git", "merge-base", current_branch, BASE_BRANCH, chdir: @project_root)
     merge_base_commit.strip!
 
+    puts "merge_base_commit: #{merge_base_commit}"
+    puts "merge_base stderr: #{stderr}"
+    puts "merge_base status: #{status}"
+
     unless status.success?
       puts "Warning: Could not find common ancestor between `#{current_branch}` and `main`."
       puts "Assuming all keys are new (or 'main' is the common ancestor)."
       # Fallback to main if no common ancestor is found, or if it's the very first commit
       # This can happen if the branch was created directly off of an empty main, or if there's no shared history yet.
-      return get_content_from_main
+      return get_content_from_main(path)
     end
 
     # Use `git show` with the common ancestor commit to get the file's content
