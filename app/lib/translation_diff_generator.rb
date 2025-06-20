@@ -1,5 +1,6 @@
 require "yaml"
 require "csv"
+require "rainbow"
 
 require_relative "../services/locale_diff_service"
 
@@ -18,28 +19,14 @@ class TranslationDiffGenerator
   end
 
   def generate_csv
-    puts "1. Fetching old `en.yml` from common ancestor..."
-    old_en_yaml_content = @locale_diff_service.get_en_content_from_common_ancestor
-    return unless old_en_yaml_content
+    changed_keys, flat_current = @locale_diff_service.get_changed_keys_in_this_branch("en")
 
-    old_en_hash = YAML.safe_load(old_en_yaml_content) || {}
-
-    puts "2. Loading current locale files from your branch..."
-    current_en_hash = @locale_diff_service.load_yaml_file(File.join(@project_root, LocaleDiffService::EN_LOCALE_PATH))
-
-    # Flatten the hashes to make them easy to compare (e.g., { "en.users.show.title" => "User Profile" }).
-    flat_old_en = @locale_diff_service.flatten_hash(old_en_hash)
-    flat_current_en = @locale_diff_service.flatten_hash(current_en_hash)
-
-    puts "3. Comparing versions to find new or modified strings..."
-    keys_to_translate = @locale_diff_service.find_changed_keys(flat_old_en, flat_current_en)
-
-    if keys_to_translate.empty?
+    if changed_keys.empty?
       puts "✅ No new or modified English keys found. You're all set!"
       return
     end
 
-    puts "Found #{keys_to_translate.count} keys that are new or modified."
+    puts "Found #{changed_keys.count} keys that are new or modified."
 
     puts "Generating CSV..."
     write_csv(changed_keys, flat_current)
