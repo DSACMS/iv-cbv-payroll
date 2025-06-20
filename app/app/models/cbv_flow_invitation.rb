@@ -46,7 +46,7 @@ class CbvFlowInvitation < ApplicationRecord
   end
 
   def expired?
-    Time.now.after?(expires_at) || redacted_at?
+    Time.current.after?(expires_at) || redacted_at?
   end
 
   def complete?
