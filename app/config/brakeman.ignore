@@ -14,7 +14,7 @@
       "location": {
         "type": "method",
         "class": "LocaleDiffService",
-        "method": "get_en_content_from_common_ancestor"
+        "method": "get_content_from_common_ancestor"
       },
       "user_input": "merge_base_commit",
       "confidence": "Medium",
