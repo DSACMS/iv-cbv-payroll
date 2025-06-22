@@ -1,20 +1,20 @@
-require "open3"
-
-# This shared context handles the lifecycle of an ngrok subprocess.
+# This class handles interacting with Ngrok in E2E tests, similar to how
+# foreman runs `ngrok` when running the dev server with `bin/dev`.
 #
 # To use it in your specs:
 #
-#   include_context "with_ngrok_tunnel"
-#
-# and then in your before/after blocks:
-#
 #   before(:all) do
+#     @ngrok = E2e::NgrokManager.new
 #     @ngrok.start_tunnel(3000)       # Create tunnel to port 3000
 #
 #     # Do something with the Ngrok tunnel
 #     puts "Ngrok is running at #{@ngrok.tunnel_url}"
 #   end
-RSpec.shared_context "with_ngrok_tunnel" do
+#
+#   after(:all) do
+#     @ngrok.kill
+#   end
+module E2e
   class NgrokManager
     def initialize
       @thread = nil
@@ -51,13 +51,5 @@ RSpec.shared_context "with_ngrok_tunnel" do
     def kill
       @thread.kill if @thread
     end
-  end
-
-  before(:all) do
-    @ngrok = NgrokManager.new
-  end
-
-  after(:all) do
-    @ngrok.kill if @ngrok
   end
 end

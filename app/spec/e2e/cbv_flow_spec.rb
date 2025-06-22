@@ -2,7 +2,6 @@ require "rails_helper"
 
 RSpec.describe "e2e CBV flow test", type: :feature, js: true do
   include E2eTestHelpers
-  include_context "with_ngrok_tunnel"
 
   let(:cbv_flow_invitation) { create(:cbv_flow_invitation) }
 
