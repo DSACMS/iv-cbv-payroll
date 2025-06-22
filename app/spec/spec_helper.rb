@@ -58,7 +58,7 @@ RSpec.configure do |config|
   config.filter_run_when_matching :focus
 
   # Don't run E2E tests with JS for now
-  if ENV["RUN_E2E_TESTS"].nil?
+  if ENV["E2E_RUN_TESTS"].nil?
     config.filter_run_excluding js: true
   end
 

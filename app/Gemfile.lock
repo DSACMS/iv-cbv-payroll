@@ -508,6 +508,8 @@ GEM
       concurrent-ruby (~> 1.0)
     unicode-display_width (2.6.0)
     uri (1.0.3)
+    vcr (6.3.1)
+      base64
     version_gem (1.1.4)
     view_component (3.22.0)
       activesupport (>= 5.2.0, < 8.1)
@@ -603,6 +605,7 @@ DEPENDENCIES
   timecop
   turbo-rails
   tzinfo-data
+  vcr
   view_component
   web-console
   webmock

@@ -117,6 +117,7 @@ group :test do
   gem "webmock"
   gem "factory_bot", "~> 6.4"
   gem "rails-controller-testing"
+  gem "vcr"
 end
 
 group :production do

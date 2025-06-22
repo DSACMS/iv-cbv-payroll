@@ -40,7 +40,31 @@ rescue ActiveRecord::PendingMigrationError => e
   puts e.to_s.strip
   exit 1
 end
+
+VCR.configure do |config|
+  if ENV["E2E_RECORD_MODE"]
+    # Necessary to set up webhook subscriptions to Argyle/Pinwheel.
+    config.allow_http_connections_when_no_cassette = true
+  end
+  config.cassette_library_dir = "spec/fixtures/vcr_cassettes" # Overwritten in E2E tests
+  config.hook_into :webmock
+  config.ignore_localhost = true
+  config.ignore_hosts %w[
+    logs.browser-intake-datadoghq.com
+    firefox-settings-attachments.cdn.mozilla.net
+    firefox.settings.services.mozilla.com plugin.argyle.com
+    switchboard.pwhq.net passwordsleakcheck-pa.googleapis.com
+    optimizationguide-pa.googleapis.com cdn.getpinwheel.com featuregates.org
+    datadog events.statsigapi.net content-signature-2.cdn.mozilla.net
+    content-autofill.googleapis.com
+  ]
+  config.default_cassette_options = { record: :once }
+end
+
 RSpec.configure do |config|
+  # Remove this line if you're not using ActiveRecord or ActiveRecord fixtures
+  config.fixture_path = "#{::Rails.root}/spec/fixtures"
+
   # Include a handful of useful helpers we've written
   config.include TestHelpers
 

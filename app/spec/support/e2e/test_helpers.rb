@@ -13,5 +13,19 @@ module E2e
         ERROR
       end
     end
+
+    # This method needs to be included in E2E tests using Pinwheel to make sure
+    # that the `end_user_id` value matches between when the cassette was
+    # recorded and when the test is run later. The `cassette_name` is hashed to
+    # deterministically generate a UUID.
+    #
+    # Call this method in your E2E test after the /entry page, like so:
+    #
+    #   update_cbv_flow_with_deterministic_end_user_id_for_pinwheel(@e2e.cassette_name)
+    #
+    def update_cbv_flow_with_deterministic_end_user_id_for_pinwheel(cassette_name)
+      cassette_name_as_integer = Digest::MD5.hexdigest(cassette_name).to_i(16)
+      CbvFlow.last.update(end_user_id: Random.new(cassette_name_as_integer).uuid)
+    end
   end
 end
