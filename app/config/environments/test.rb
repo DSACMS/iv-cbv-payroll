@@ -29,8 +29,10 @@ Rails.application.configure do
   config.cache_store = :null_store
   routes.default_url_options[:host] = ENV.fetch("DOMAIN_NAME", "localhost")
 
-  # Allow the various hosts that tests are using
+  # Allow E2E tests to make requests of the Rails server
   config.hosts << "www.example.com"
+  config.hosts << IPAddr.new("127.0.0.1")
+  config.hosts << ".ngrok-free.app"
 
   # Raise exceptions instead of rendering exception templates.
   config.action_dispatch.show_exceptions = false
