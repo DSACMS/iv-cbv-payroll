@@ -43,7 +43,10 @@ module IvCbvPayroll
     config.autoload_paths += %W[#{config.root}/lib]
     config.autoload_paths += %W[#{config.root}/app/helpers]
     config.autoload_paths += %W[#{config.root}/app/controllers/concerns]
+
+    # CBV configuration
     config.client_agencies = ClientAgencyConfig.new(Rails.root.join("config", "client-agency-config.yml"))
+    config.supported_providers = (ENV["SUPPORTED_PROVIDERS"] || "pinwheel")&.split(",")&.map(&:to_sym)
 
     # Configure allowed hosts
     config.hosts << ENV["DOMAIN_NAME"]
