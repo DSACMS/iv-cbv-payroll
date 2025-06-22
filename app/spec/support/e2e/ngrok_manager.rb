@@ -16,12 +16,16 @@
 #   end
 module E2e
   class NgrokManager
+    NgrokSessionLimitExceededError = Class.new(StandardError)
+
     def initialize
       @thread = nil
       @tunnel_url = nil
     end
 
     def start_tunnel(destination_port)
+      retries = 0
+
       @thread = Thread.new do |t|
         begin
           _stdin, stdout, _stderr, wait_thr = Open3.popen3("ngrok http #{destination_port} --log stdout")
@@ -29,15 +33,27 @@ module E2e
           stdout.each_line do |log|
             if log.include?('msg="started tunnel"')
               @tunnel_url ||= log.match(/url=([^ ]+)/)[1].strip
+            elsif log.include?("limited to 1 simultaneous ngrok agent sessions")
+              raise NgrokSessionLimitExceededError
             end
           end
+        rescue NgrokSessionLimitExceededError
+          puts "[NGROK] Session limit exceeded"
+          raise if retries == 1
+
+          puts "[NGROK] Retrying after a short delay"
+          retries += 1
+          sleep 2
+          retry
         rescue => e
           puts "[NGROK] Fatal error: #{e}"
         ensure
           puts "[NGROK] Killing pid #{wait_thr.pid}"
-          Process.kill("TERM", wait_thr.pid) if wait_thr.alive?
+          Process.kill("TERM", wait_thr.pid) if wait_thr.alive? rescue nil
         end
       end
+
+      @thread.abort_on_exception = true
     end
 
     def tunnel_url
