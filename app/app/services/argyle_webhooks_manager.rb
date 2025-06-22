@@ -36,10 +36,12 @@ class ArgyleWebhooksManager
 
     # Note: These partial webhooks currently must be kept in-sync with every
     # value of `pay_income_days` in client_agency_config.yml.
-    create_subscription(receiver_url, name, :non_partial)
-    create_subscription(receiver_url, "#{name}-partial", :partial, { days_synced: 90 })
-    create_subscription(receiver_url, "#{name}-partial-six-months", :partial, { days_synced: 182 })
-    create_subscription(receiver_url, "#{name}-include-resource", :include_resource)
+    [
+      create_subscription(receiver_url, name, :non_partial),
+      create_subscription(receiver_url, "#{name}-partial", :partial, { days_synced: 90 }),
+      create_subscription(receiver_url, "#{name}-partial-six-months", :partial, { days_synced: 182 }),
+      create_subscription(receiver_url, "#{name}-include-resource", :include_resource)
+    ]
   end
 
   private

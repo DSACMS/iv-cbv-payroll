@@ -118,7 +118,7 @@ RSpec.describe ArgyleWebhooksManager, type: :service do
 
 
         result = argyle_webhooks_manager.create_subscriptions_if_necessary(ngrok_url, webhook_name)
-        expect(result).to eq(create_webhook_subscription_response["id"])
+        expect(result).to include(create_webhook_subscription_response["id"])
       end
 
       it 'reuses an existing subscription and removes others with same name' do
