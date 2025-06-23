@@ -11,14 +11,12 @@
   </ul>
 </section>
 
-<div class="margin-top-3">
-  <%= form_with(model: @cbv_flow, url: cbv_flow_other_job_path, method: :patch, builder: UswdsFormBuilder, id: "other_jobs_form") do |f| %>
-    <%= f.radio_button(:has_other_jobs, true, { label: t(".radio_yes") }) %>
-    <%= f.radio_button(:has_other_jobs, false, { label: t(".radio_no") }) %>
+<%= form_with(model: @cbv_flow, url: cbv_flow_other_job_path, method: :patch, class: "maxw-none", builder: UswdsFormBuilder, id: "other_jobs_form") do |f| %>
+  <%= f.radio_button(:has_other_jobs, true, { label: t(".radio_yes") }) %>
+  <%= f.radio_button(:has_other_jobs, false, { label: t(".radio_no") }) %>
 
-    <div class="margin-top-5 usa-prose">
-      <p><%= t(".note_html", agency_site: current_agency.agency_contact_website, agency_short_name: current_agency.agency_short_name) %></p>
-    </div>
-      <%= f.submit t(".continue") %>
-    <% end %>
-</div>
+  <div class="margin-top-5 usa-prose">
+    <p><%= t(".note_html", agency_site: current_agency.agency_contact_website, agency_short_name: current_agency.agency_short_name) %></p>
+  </div>
+  <%= f.submit t(".continue") %>
+<% end %>
