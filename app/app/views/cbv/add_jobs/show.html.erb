@@ -1,21 +1,27 @@
 <% content_for :title, t(".header") %>
 <h1><%= t(".header") %></h1>
-<p><%= t(".header_sub_text") %></p>
 
-  <h2><%= t(".header_2") %></h2>
+<section class="usa-prose">
+  <p><%= t(".header_sub_text") %></p>
+</section>
 
-<div class="usa-prose">
+<h2><%= t(".header_2") %></h2>
+
+<section class="usa-prose">
+  <p>
+    <%= t(".header_2_lead") %>
+  </p>
   <ul>
     <li><%= t(".header_2_bullet_1") %></li>
     <li><%= t(".header_2_bullet_2") %></li>
     <li><%= t(".header_2_bullet_3") %></li>
   </ul>
-</div>
+</section>
 
-  <%= form_with(url: cbv_flow_add_job_path, builder: UswdsFormBuilder, id: "add_job_form") do |f| %>
-    <%= f.radio_button(:additional_jobs, true, { label: t(".radio_yes") }) %>
-    <%= f.radio_button(:additional_jobs, false, { label: t(".radio_no") }) %>
-    <div class="margin-top-5">
-      <%= f.submit t(".continue") %>
-    </div>
+<%= form_with(url: cbv_flow_add_job_path, builder: UswdsFormBuilder, id: "add_job_form") do |f| %>
+  <%= f.radio_button(:additional_jobs, true, { label: t(".radio_yes") }) %>
+  <%= f.radio_button(:additional_jobs, false, { label: t(".radio_no") }) %>
+  <div class="margin-top-5">
+    <%= f.submit t(".continue") %>
+  </div>
 <% end %>
