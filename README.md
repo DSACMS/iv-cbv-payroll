@@ -246,12 +246,12 @@ RSpec.describe "Test name here", type: :feature, js: true do
     # Uncomment for pinwheel only:
     # update_cbv_flow_with_deterministic_end_user_id_for_pinwheel(@e2e.cassette_name)
 
-    @e2e.replay_modal_callbacks do
+    @e2e.replay_modal_callbacks(page.driver.browser) do
       click_button "Uber"               # The click event that opens the modal must be within this block.
       # In replay mode, the callbacks will be sent to the ModalAdapter instead of the aggregator modal opening.
     end
 
-    @e2e.record_modal_callbacks do
+    @e2e.record_modal_callbacks(page.driver.browser) do
       # In record mode, this is where to interact with the aggregator modal.
       # In replay mode, this will be skipped.
     end

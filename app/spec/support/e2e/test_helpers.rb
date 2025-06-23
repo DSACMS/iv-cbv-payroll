@@ -1,5 +1,11 @@
 module E2e
   module TestHelpers
+    # Verify that the page is correct: having the expected title, no missing
+    # translations, and everything else.
+    #
+    # You can also use this method after clicking a "Submit" button to wait for
+    # the next page to load. If the default wait time (2 seconds) isn't enough,
+    # pass in a higher value (in seconds) in for `wait`.
     def verify_page(page, title:, wait: Capybara.default_max_wait_time)
       expect(page).to have_content(title, wait: wait)
 
