@@ -1,73 +1,72 @@
 # End-to-End (E2E) Tests
 
 ## Overview
+How to run E2E tests:
+* **Run in *replay* mode:** `E2E_RUN_TESTS=1 bin/rspec spec/e2e`
+  * Note: Soon, we will enable these to run by default, so the environment variable prefix won't be necessary.
+* **Run in *record* mode:** `E2E_RECORD_MODE=1 bin/rspec [spec/e2e/your_spec.rb:123]`
+  * You will need environment variables set for Argyle and Pinwheel. Add these to `.env.local` or `.env.test.local`.
 
-This repository uses [Playwright](https://playwright.dev/) to perform end-to-end (E2E) tests. The tests can be run locally, but also run on [Pull Request preview environments](../infra/pull-request-environments.md). This ensures that any new code changes are validated through E2E tests before being merged.
+Example boilerplate for a new test:
 
-## Folder Structure
-In order to support e2e for multiple apps, the folder structure will include a base playwright config (`./e2e/playwright.config.js`), and app-specific derived playwright config that override the base config. See the example folder structure below:
-```
-- e2e
-  - playwright.config.js
-  - app/
-    - playwright.config.js
-    - tests/
-      - index.spec.js
-  - app2/
-    - playwright.config.js
-    - tests/
-      - index.spec.js
-```
+```ruby
+RSpec.describe "Test name here", type: :feature, js: true do
+  around do |ex|
+    @e2e = E2e::MockingService.new(server_url: URI(page.server_url))
+    @e2e.use_recording("your_test_name_here", &ex)
+  end
 
-Some highlights:
-- By default, the base config is defined to run on a minimal browser-set (desktop and mobile chrome). Browsers can be added in the app-specific playwright config.
-- Snapshots will be output locally or in the artifacts of the CI job
-- HTML reports are output to the `playwright-report` folder
-- Parallelism limited on CI to ensure stable execution
-- Accessibility testing can be performed using the `@axe-core/playwright` package (https://playwright.dev/docs/accessibility-testing)
+  it "proceeds through the CBV flow" do
+    # ... Initial page navigation through the flow ...
 
+    # Uncomment for pinwheel only:
+    # update_cbv_flow_with_deterministic_end_user_id_for_pinwheel(@e2e.cassette_name)
 
-## Running Locally
+    @e2e.replay_modal_callbacks(page.driver.browser) do
+      click_button "Uber"               # The click event that opens the modal must be within this block.
+      # In replay mode, the callbacks will be sent to the ModalAdapter instead of the aggregator modal opening.
+    end
 
-### Running Locally From the Root Directory
+    @e2e.record_modal_callbacks(page.driver.browser) do
+      # In record mode, this is where to interact with the aggregator modal.
+      # In replay mode, this will be skipped.
+    end
 
-Make targets are setup to easily pass in a particular app name and URL to run tests against
+    @e2e.replay_webhooks # Only invoked in "replay" mode.
 
-```bash
-make e2e-setup # install playwright deps
-make e2e-test APP_NAME=app BASE_URL=http://localhost:3000 # run tests on a particular app
-```
-
-### Running Locally From the `./e2e` Directory
-
-If you prefer to run package.json run scripts, you can do so from the e2e folder:
-
-```
-cd e2e
-
-npm install
-
-APP_NAME=app npm run e2e-test
+    # ...
+  end
+end
 ```
 
-### PR Environments
+## "Record mode" vs "Replay mode"
+Tests run by default in "replay mode", which replays E2E recordings so we don't make requests to third-party systems (like Argyle/Pinwheel). When adding or changing a test, we first need to use "record mode" to save the aggregator data recordings, and commit the `spec/support/fixtures/e2e/` folder for that recording.
 
-The E2E tests are triggered in PR preview environments on each PR update. For more information on how PR environments work, please refer to [PR Environments Documentation](../infra/pull-request-environments.md).
+The recording has three different types of mocks for our three main external integrations. Each has different record/replay semantics:
+1. **Modal Callbacks:** To record/replay the aggregator modals themselves, we have `E2eCallbackRecorder.ts` to record/replay the callbacks.
+  * **Record mode:** The `E2eCallbackRecorder` intercepts all callbacks between the ModalAdapter and the actual modal SDK. They are stored in `aggregator_modal_callbacks.yml`.
+  * **Replay mode:** No aggregator modal is instantiated. Instead, `E2eCallbackRecorder` invokes the ModalAdapter callbacks in the original order (and with the same arguments) as in the recording.
+2. **Aggregator API Requests:** We also fetch data from the Aggregator APIs when rendering the report pages. We record these using the `vcr` gem.
+  * **Record mode:** VCR will record all HTTP requests and save them into `vcr_http_requests.yml`
+  * **Replay mode:** VCR is configured to use the given API responses from that file whenever a matching HTTP request is seen.
+3. **Aggregator Webhooks:** We also receive webhooks from the aggregators during the sync process.
+  * **Record mode:** Using ngrok, we record all incoming webhooks. They are store in `ngrok_requests.yml`
+  * **Replay mode:** We re-send all saved webhooks in order.
 
-### Workflows
+To record the data for these methods, you must include the following method calls in your test:
+* **`@e2e.replay_modal_callbacks`**
+* **`@e2e.record_modal_callbacks`**
+* **`@e2e.replay_webhooks`**
 
-The following workflows trigger E2E tests:
-- [PR Environment Update](../../.github/workflows/pr-environment-checks.yml)
-- [E2E Tests Workflow](../../.github/workflows/e2e-tests.yml)
+## Developing on E2E classes
+The E2E test framework lives in `spec/support/e2e`. If you need to update a file in there, here are some tips:
+* To reproduce the CI environment, unset your PINWHEEL_API_TOKEN_SANDBOX, ARGYLE_API_TOKEN_SANDBOX_ID, and ARGYLE_API_TOKEN_SANDBOX_SECRET. Unset these, then run your test in "replay mode" to see how it will fare in CI.
+* The tests need to freeze time. To test this locally, try changing your computer's date into the future.
+* The E2e::MockService and a couple other classes log their status to the test log. I recommend having `tail -f log/test.log` running in a terminal tab when recording examples.
 
-The [E2E Tests Workflow](../../.github/workflows/e2e-tests.yml) takes a `service_endpoint` URL and an `app_name` to run the tests against specific configurations for your app.
+When editing the `E2eCallbackRecorder.js` file:
+* Make sure you're running the esbuild command in another terminal (or `bin/dev`).
 
-## Configuration
-
-The E2E tests are configured using the following files:
-- [Base Configuration](../../e2e/playwright.config.js)
-- [App-specific Configuration](../../e2e/app/playwright.config.js)
-
-The app-specific configuration files extend the common base configuration.
-
-By default when running `make e2e-test APP_NAME=app BASE_URL=http://localhost:3000 ` - you don't necessarily need to pass an `BASE_URL` since the default is defined in the app-specific playwright config (`./e2e/app/playwright.config.js`).
+## Currently unsupported E2E test conditions
+* Multiple openings of the aggregator modals (either multiple Pinwheel, or Pinwheel then Argyle)
+* Anything regarding session expiration (as we currently remove session expiration during E2E testing)
