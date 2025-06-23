@@ -37,6 +37,12 @@ export default class E2ECallbackRecorder {
   }
 
   static enabled() {
+    if (window.origin === "null") {
+      // sessionStorage is not available as we are within an "opaque" origin
+      // such as a file:// URL.
+      return false
+    }
+
     return (
       !!window.sessionStorage.getItem(SESSION_STORAGE_CALLBACKS_KEY) ||
       !!window.sessionStorage.getItem(SESSION_STORAGE_REPLAY_KEY)
