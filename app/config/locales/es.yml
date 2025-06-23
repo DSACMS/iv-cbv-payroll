@@ -86,7 +86,6 @@ es:
   cbv:
     add_jobs:
       show:
-        continue: Continuar
         header: "¿Tiene otro trabajo que declarar?"
     applicant_informations:
       la_ldh:
@@ -205,6 +204,9 @@ es:
         not_listed_p2: Para obtener más información sobre cómo enviar los documentos requeridos, visite el sitio web de %{agency_short_name}.
         not_listed_p2_link_html: Visite <a href="%{agency_url}" target="_blank" rel="noopener noreferrer">el sitio web del %{agency_short_name}</a> para obtener más información sobre cómo enviar documentos.
         you_can_search: Puede buscar otro empleador o proveedor de nómina. Este sitio apoya a los empleadores con proveedores de nómina en línea o servicios basados en aplicaciones. Algunos ejemplos son Amazon, Walmart, McDonald’s, Uber, DoorDash, Lyft e Instacart.
+    other_jobs:
+      show:
+        continue: Continuar
     payment_details:
       show:
         additional_information_header: Comentarios adicionales (Opcional)

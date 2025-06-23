@@ -238,7 +238,6 @@ en:
   cbv:
     add_jobs:
       show:
-        continue: Continue
         header: Do you have another job to report?
         header_2: Do you have another job to report using Report My Income?
         header_2_bullet_1: Has an online payroll provider, or
@@ -372,7 +371,6 @@ en:
         bullet_2: Pays you in cash
         bullet_3: Pays you with a paper check and you can’t view your paycheck online
         bullet_4: Issues you a 1099
-        continue: Continue
         header: Do you need to report any jobs outside Report My Income?
         header_html: Do you need to report any jobs <em>outside</em> Report My Income?
         header_sub_text: 'Tell us about any other jobs you’ve had in the past 90 days, even if you’re no longer at that job. This includes current or recent jobs you’ve had in the past 90 days that may:'
