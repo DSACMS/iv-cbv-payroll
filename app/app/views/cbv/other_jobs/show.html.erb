@@ -10,7 +10,7 @@
     <li><%= t(".bullet_4") %></li>
   </ul>
 </div>
-  
+
 <div class="margin-top-3">
   <%= form_with(model: @cbv_flow, url: cbv_flow_other_job_path, method: :patch, builder: UswdsFormBuilder, id: "other_jobs_form") do |f| %>
     <%= f.radio_button(:has_other_jobs, true, { label: t(".radio_yes") }) %>

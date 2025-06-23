@@ -54,7 +54,7 @@
       <% end %>
     <% end %>
   <% end %>
-  
+
   <% if is_caseworker %>
     <% ClientAgency::CaseworkerReportSpecificFieldDecider.caseworker_specific_fields(@cbv_flow).each do |field_name, field_value| %>
       <%= table.with_row(t(field_name), field_value) %>
