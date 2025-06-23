@@ -36,7 +36,7 @@ RSpec.describe Users::OmniauthCallbacksController do
       end
 
       it "tracks events" do
-        expect(EventTrackingJob).to receive(:perform_later).with("CaseworkerLogin", anything, hash_including(
+        expect(EventTrackingJob).to receive(:perform_later).with("CaseworkerLoggedIn", anything, hash_including(
           client_agency_id: "ma",
           user_id: be_a(Integer)
         ))

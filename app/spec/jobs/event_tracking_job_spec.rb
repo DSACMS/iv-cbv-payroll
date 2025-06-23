@@ -2,7 +2,7 @@ require 'rails_helper'
 
 RSpec.describe EventTrackingJob, type: :job do
   context "when a request exists" do
-    it "passes the right data to mixpanel and newrelic" do
+    it "passes the right data to mixpanel" do
       request_data = {
         remote_ip: "0.0.0.0",
         headers: {
@@ -11,15 +11,13 @@ RSpec.describe EventTrackingJob, type: :job do
       }
 
       expect_any_instance_of(MixpanelEventTracker).to receive(:track).with("MyAwesomeClick", anything, { browser: "Chrome", device_name: nil, device_type: "desktop" })
-      expect_any_instance_of(NewRelicEventTracker).to receive(:track).with("MyAwesomeClick", anything, { browser: "Chrome", device_name: nil, device_type: "desktop" })
       described_class.perform_now("MyAwesomeClick", request_data, {})
     end
   end
 
   context "when a request is missing" do
-    it "passes the right data to mixpanel and newrelic" do
+    it "passes the right data to mixpanel" do
       expect_any_instance_of(MixpanelEventTracker).to receive(:track).with("MyAwesomeClick", anything, { my: "attribute" })
-      expect_any_instance_of(NewRelicEventTracker).to receive(:track).with("MyAwesomeClick", anything, { my: "attribute" })
       described_class.perform_now("MyAwesomeClick", nil, { my: "attribute" })
     end
   end

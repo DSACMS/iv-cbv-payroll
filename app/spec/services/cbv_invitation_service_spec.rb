@@ -55,7 +55,7 @@ RSpec.describe CbvInvitationService, type: :service do
 
         invitation = CbvFlowInvitation.last
         expect(event_logger).to have_received(:track).with(
-          'ApplicantInvitedToFlow',
+          'CaseworkerInvitedApplicantToFlow',
           nil,
           hash_including(invitation_id: invitation.id)
         )
@@ -103,7 +103,7 @@ RSpec.describe CbvInvitationService, type: :service do
 
         invitation = CbvFlowInvitation.last
         expect(event_logger).to have_received(:track).with(
-          'ApplicantInvitedToFlow',
+          'CaseworkerInvitedApplicantToFlow',
           nil,
           hash_including(invitation_id: invitation.id)
         )

@@ -170,7 +170,7 @@ class Webhooks::Pinwheel::EventsController < ApplicationController
   rescue => ex
     raise ex unless Rails.env.production?
 
-    Rails.logger.error "Unable to track NewRelic event (in #{self.class.name}): #{ex}"
+    Rails.logger.error "Unable to track event (in #{self.class.name}): #{ex}"
   end
 
   def validate_useful_report_requirements(report)
