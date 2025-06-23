@@ -72,7 +72,7 @@ describe("ArgyleModalAdapter", () => {
     it("calls track user action", async () => {
       await triggers.triggerAccountConnected()
       expect(trackUserAction).toHaveBeenCalledTimes(2)
-      expect(trackUserAction.mock.calls[1][0]).toBe("ArgyleSuccess")
+      expect(trackUserAction.mock.calls[1][0]).toBe("ApplicantSucceededWithArgyleLogin")
     })
     it("triggers the modal adapter onSuccess callback", async () => {
       await triggers.triggerAccountConnected()
@@ -84,13 +84,13 @@ describe("ArgyleModalAdapter", () => {
       await triggers.triggerClose()
       expect(modalAdapterArgs.onExit).toHaveBeenCalled()
       expect(trackUserAction).toHaveBeenCalledTimes(2)
-      expect(trackUserAction.mock.calls[1][0]).toBe("ArgyleCloseModal")
+      expect(trackUserAction.mock.calls[1][0]).toBe("ApplicantClosedArgyleModal")
     })
     it("triggers the provided onExit callback when modal throws error", async () => {
       await triggers.triggerError()
       expect(modalAdapterArgs.onExit).toHaveBeenCalled()
       expect(trackUserAction).toHaveBeenCalledTimes(2)
-      expect(trackUserAction.mock.calls[1][0]).toBe("ArgyleError")
+      expect(trackUserAction.mock.calls[1][0]).toBe("ApplicantEncounteredArgyleError")
     })
   })
 
@@ -98,19 +98,19 @@ describe("ArgyleModalAdapter", () => {
     it("logs onAccountCreated Event", async () => {
       await triggers.triggerAccountCreated()
       expect(trackUserAction).toHaveBeenCalledTimes(2)
-      expect(trackUserAction.mock.calls[1][0]).toBe("ArgyleAccountCreated")
+      expect(trackUserAction.mock.calls[1][0]).toBe("ApplicantCreatedArgyleAccount")
       expect(trackUserAction.mock.calls[1][1]).toMatchSnapshot()
     })
     it("logs onAccountRemoved Event", async () => {
       await triggers.triggerAccountRemoved()
       expect(trackUserAction).toHaveBeenCalledTimes(2)
-      expect(trackUserAction.mock.calls[1][0]).toBe("ArgyleAccountRemoved")
+      expect(trackUserAction.mock.calls[1][0]).toBe("ApplicantRemovedArgyleAccount")
       expect(trackUserAction.mock.calls[1][1]).toMatchSnapshot()
     })
     it("logs onAccountError Event", async () => {
       await triggers.triggerAccountError()
       expect(trackUserAction).toHaveBeenCalledTimes(2)
-      expect(trackUserAction.mock.calls[1][0]).toBe("ArgyleAccountError")
+      expect(trackUserAction.mock.calls[1][0]).toBe("ApplicantEncounteredArgyleAccountError")
       expect(trackUserAction.mock.calls[1][1]).toMatchSnapshot()
     })
     it("refreshes token onTokenExpired", async () => {
@@ -118,7 +118,7 @@ describe("ArgyleModalAdapter", () => {
       await triggers.triggerTokenExpired(updateTokenMock)
       expect(updateTokenMock).toHaveBeenCalledTimes(1)
       expect(trackUserAction).toHaveBeenCalledTimes(2)
-      expect(trackUserAction.mock.calls[1][0]).toBe("ArgyleTokenExpired")
+      expect(trackUserAction.mock.calls[1][0]).toBe("ApplicantEncounteredArgyleTokenExpired")
     })
     it("logs ApplicantViewedArgyleDefaultProviderSearch Event", async () => {
       await triggers.triggerUIEvent(mockArgyleSearchOpenedEvent)

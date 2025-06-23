@@ -33,7 +33,7 @@ export default class PinwheelModalAdapter extends ModalAdapter {
   }
 
   async onSuccess(eventPayload: LinkResult) {
-    await trackUserAction("PinwheelSuccess", {
+    await trackUserAction("ApplicantSucceededWithPinwheelLogin", {
       account_id: eventPayload.accountId,
       platform_id: eventPayload.platformId,
     })
@@ -48,34 +48,34 @@ export default class PinwheelModalAdapter extends ModalAdapter {
         onScreenTransitionEvent(eventPayload.screenName)
         break
       case "login_attempt":
-        trackUserAction("PinwheelAttemptLogin", {})
+        trackUserAction("ApplicantAttemptedPinwheelLogin", {})
         break
       case "error":
         const { type, code, message } = eventPayload
-        trackUserAction("PinwheelError", { type, code, message })
+        trackUserAction("ApplicantEncounteredPinwheelError", { type, code, message })
         break
       case "exit":
-        trackUserAction("PinwheelCloseModal", {})
+        trackUserAction("ApplicantClosedPinwheelModal", {})
         break
     }
 
     function onScreenTransitionEvent(screenName: string) {
       switch (screenName) {
         case "LOGIN":
-          trackUserAction("PinwheelShowLoginPage", {
+          trackUserAction("ApplicantViewedPinwheelLoginPage", {
             screen_name: screenName,
             employer_name: eventPayload.selectedEmployerName,
             platform_name: eventPayload.selectedPlatformName,
           })
           break
         case "PROVIDER_CONFIRMATION":
-          trackUserAction("PinwheelShowProviderConfirmationPage", {})
+          trackUserAction("ApplicantViewedPinwheelProviderConfirmation", {})
           break
         case "SEARCH_DEFAULT":
-          trackUserAction("PinwheelShowDefaultProviderSearch", {})
+          trackUserAction("ApplicantViewedPinwheelDefaultProviderSearch", {})
           break
         case "EXIT_CONFIRMATION":
-          trackUserAction("PinwheelAttemptClose", {})
+          trackUserAction("ApplicantAttemptedClosingPinwheelModal", {})
           break
       }
     }

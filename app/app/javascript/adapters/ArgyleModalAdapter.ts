@@ -25,13 +25,13 @@ export default class ArgyleModalAdapter extends ModalAdapter {
           onAccountConnected: this.onSuccess.bind(this),
           onTokenExpired: this.onTokenExpired.bind(this),
           onAccountCreated: async (payload) => {
-            await trackUserAction("ArgyleAccountCreated", payload)
+            await trackUserAction("ApplicantCreatedArgyleAccount", payload)
           },
           onAccountError: async (payload) => {
-            await trackUserAction("ArgyleAccountError", payload)
+            await trackUserAction("ApplicantEncounteredArgyleAccountError", payload)
           },
           onAccountRemoved: async (payload) => {
-            await trackUserAction("ArgyleAccountRemoved", payload)
+            await trackUserAction("ApplicantRemovedArgyleAccount", payload)
           },
           onUIEvent: async (payload) => {
             await this.onUIEvent(payload)
@@ -43,7 +43,7 @@ export default class ArgyleModalAdapter extends ModalAdapter {
         .open()
     } else {
       // TODO this should throw an error, which should be caught by a document.onerror handler to show the user a crash message.
-      await trackUserAction("ModalAdapterError", {
+      await trackUserAction("ApplicantEncounteredModalAdapterError", {
         message: "Missing requestData from init() function",
       })
       this.onExit()
@@ -51,12 +51,12 @@ export default class ArgyleModalAdapter extends ModalAdapter {
   }
 
   async onError(err: LinkError) {
-    await trackUserAction("ArgyleError", err)
+    await trackUserAction("ApplicantEncounteredArgyleError", err)
     this.onExit()
   }
 
   async onClose() {
-    await trackUserAction("ArgyleCloseModal")
+    await trackUserAction("ApplicantClosedArgyleModal")
     await this.onExit()
   }
 
@@ -115,7 +115,7 @@ export default class ArgyleModalAdapter extends ModalAdapter {
   }
 
   async onSuccess(eventPayload: ArgyleAccountData) {
-    await trackUserAction("ArgyleSuccess", {
+    await trackUserAction("ApplicantSucceededWithArgyleLogin", {
       account_id: eventPayload.accountId,
       argyle_user_id: eventPayload.userId,
       item_id: eventPayload.itemId,
@@ -128,7 +128,7 @@ export default class ArgyleModalAdapter extends ModalAdapter {
   }
 
   async onTokenExpired(updateToken: Function) {
-    await trackUserAction("ArgyleTokenExpired")
+    await trackUserAction("ApplicantEncounteredArgyleTokenExpired")
     const { user } = await fetchArgyleToken()
     updateToken(user.user_token)
   }

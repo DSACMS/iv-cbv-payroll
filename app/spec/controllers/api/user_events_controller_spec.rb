@@ -136,7 +136,7 @@ RSpec.describe Api::UserEventsController, type: :controller do
     end
 
     context "when tracking a PinwheelShowLoginPage event" do
-      let(:event_name) { "PinwheelShowLoginPage" }
+      let(:event_name) { "ApplicantViewedPinwheelLoginPage" }
       let(:event_attributes) do
         {
           screen_name: "LOGIN",
@@ -169,7 +169,7 @@ RSpec.describe Api::UserEventsController, type: :controller do
       end
 
       it "tracks an event with Mixpanel" do
-        expect(EventTrackingJob).to receive(:perform_later).with("UserManuallySwitchedLanguage", anything, hash_including(
+        expect(EventTrackingJob).to receive(:perform_later).with("ApplicantManuallySwitchedLanguage", anything, hash_including(
           timestamp: be_a(Integer),
           cbv_flow_id: cbv_flow.id,
           invitation_id: cbv_flow.cbv_flow_invitation_id,
