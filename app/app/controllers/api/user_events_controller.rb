@@ -3,22 +3,22 @@ class Api::UserEventsController < ApplicationController
     ApplicantOpenedHelpModal
     ApplicantCopiedInvitationLink
     ApplicantSelectedEmployerOrPlatformItem
-    PinwheelAttemptClose
-    PinwheelAttemptLogin
-    PinwheelCloseModal
-    PinwheelError
-    PinwheelShowDefaultProviderSearch
-    PinwheelShowLoginPage
-    PinwheelShowProviderConfirmationPage
-    PinwheelSuccess
-    ArgyleSuccess
-    ArgyleAccountCreated
-    ArgyleAccountError
-    ArgyleAccountRemoved
-    ArgyleCloseModal
-    ArgyleError
-    ArgyleTokenExpired
-    ModalAdapterError
+    ApplicantAttemptedClosingPinwheelModal
+    ApplicantAttemptedPinwheelLogin
+    ApplicantClosedPinwheelModal
+    ApplicantEncounteredPinwheelError
+    ApplicantViewedPinwheelDefaultProviderSearch
+    ApplicantViewedPinwheelLoginPage
+    ApplicantViewedPinwheelProviderConfirmation
+    ApplicantSucceededWithPinwheelLogin
+    ApplicantSucceededWithArgyleLogin
+    ApplicantCreatedArgyleAccount
+    ApplicantEncounteredArgyleAccountError
+    ApplicantRemovedArgyleAccount
+    ApplicantClosedArgyleModal
+    ApplicantEncounteredArgyleError
+    ApplicantEncounteredArgyleTokenExpired
+    ApplicantEncounteredModalAdapterError
     ApplicantViewedArgyleProviderConfirmation
     ApplicantViewedArgyleLoginPage
     ApplicantAttemptedArgyleLogin
@@ -33,29 +33,6 @@ class Api::UserEventsController < ApplicationController
     ApplicantUpdatedArgyleSearchTerm
     ApplicantManuallySwitchedLanguage
   ]
-
-  # Maps aggregator event names (keys) to new Mixpanel event names (values) we're using
-  MIXPANEL_EVENT_MAP = {
-    "PinwheelAccountCreated" => "ApplicantCreatedPinwheelAccount",
-    "PinwheelShowProviderConfirmationPage" => "ApplicantViewedPinwheelProviderConfirmation",
-    "PinwheelShowLoginPage" => "ApplicantViewedPinwheelLoginPage",
-    "PinwheelAttemptLogin" => "ApplicantAttemptedPinwheelLogin",
-    "PinwheelSuccess" => "ApplicantSucceededWithPinwheelLogin",
-    "PinwheelError" => "ApplicantEncounteredPinwheelError",
-    "PinwheelShowDefaultProviderSearch" => "ApplicantViewedPinwheelDefaultProviderSearch",
-    "PinwheelAttemptClose" => "ApplicantAttemptedClosingPinwheelModal",
-    "PinwheelCloseModal" => "ApplicantClosedPinwheelModal",
-    "PinwheelAccountSyncFinished" => "ApplicantFinishedPinwheelSync",
-    "ArgyleSuccess" => "ApplicantSucceededWithArgyleLogin",
-    "ArgyleAccountCreated" => "ApplicantCreatedArgyleAccount",
-    "ArgyleAccountError" => "ApplicantEncounteredArgyleAccountError",
-    "ArgyleAccountRemoved" => "ApplicantRemovedArgyleAccount",
-    "ArgyleCloseModal" => "ApplicantClosedArgyleModal",
-    "ArgyleError" => "ApplicantEncounteredArgyleError",
-    "ArgyleTokenExpired" => "ApplicantEncounteredArgyleTokenExpired",
-    "ModalAdapterError" => "ApplicantEncounteredModalAdapterError",
-    "ApplicantManuallySwitchedLanguage" => "UserManuallySwitchedLanguage"
-  }
 
   def user_action
     base_attributes = {
@@ -77,11 +54,8 @@ class Api::UserEventsController < ApplicationController
     event_name = user_action_params[:event_name]
 
     if EVENT_NAMES.include?(event_name)
-      # Map to the new Mixpanel event name if present, otherwise just send NewRelic the Pinwheel name
-      mixpanel_event_type = MIXPANEL_EVENT_MAP[event_name] || event_name
-
       event_logger.track(
-        mixpanel_event_type,
+        event_name,
         request,
         event_attributes.to_h
       )
