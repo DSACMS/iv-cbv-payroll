@@ -64,7 +64,7 @@ class Users::OmniauthCallbacksController < Devise::OmniauthCallbacksController
   def track_event
     return unless @user&.persisted?
 
-    event_logger.track("CaseworkerLogin", request, {
+    event_logger.track("CaseworkerLoggedIn", request, {
       client_agency_id: @user.client_agency_id,
       user_id: @user.id
     })

@@ -25,6 +25,6 @@ class Cbv::SuccessesController < Cbv::BaseController
       invitation_id: @cbv_flow.cbv_flow_invitation_id
     })
   rescue => ex
-    Rails.logger.error "Failed to track NewRelic event: #{ex.message}"
+    Rails.logger.error "Failed to track event: #{ex.message}"
   end
 end

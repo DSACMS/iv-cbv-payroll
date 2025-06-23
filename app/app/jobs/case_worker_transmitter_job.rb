@@ -151,7 +151,7 @@ class CaseWorkerTransmitterJob < ApplicationJob
   rescue => ex
     raise ex unless Rails.env.production?
 
-    Rails.logger.error "Failed to track NewRelic event: #{ex.message}"
+    Rails.logger.error "Failed to track event: #{ex.message}"
   end
 
   def gzip_file(input_tempfile)
