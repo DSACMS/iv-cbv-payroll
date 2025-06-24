@@ -5,7 +5,7 @@ RSpec.describe ArgyleWebhooksManager, type: :service do
 
   let(:ngrok_url) { 'https://ngrok-url.com' }
   let(:webhook_name) { 'test_webhook' }
-  let(:test_logger) { StringIO.new }
+  let(:test_logger) { Logger.new(StringIO.new) }
   let(:all_webhook_subscriptions) do
     argyle_load_relative_json_file('', 'response_get_webhook_subscriptions.json')['results']
   end
@@ -90,10 +90,10 @@ RSpec.describe ArgyleWebhooksManager, type: :service do
           existing_sub["id"]
         )
 
-        expect(test_logger).to receive(:puts).with("  Removing existing Argyle webhook subscription (url = https://different-url.ngrok.io/webhooks/argyle/events)")
-        expect(test_logger).to receive(:puts).with("  Registering Argyle webhooks for Ngrok tunnel in Argyle sandbox...").exactly(4).times
-        expect(test_logger).to receive(:puts).with("  ✅ Set up Argyle webhook: #{create_webhook_subscription_response["id"]}").exactly(4).times
-        expect(test_logger).to receive(:puts).with(" Argyle webhook url: #{receiver_url}").exactly(4).times
+        expect(test_logger).to receive(:info).with("  Removing existing Argyle webhook subscription (url = https://different-url.ngrok.io/webhooks/argyle/events)")
+        expect(test_logger).to receive(:info).with("  Registering Argyle webhooks for Ngrok tunnel in Argyle sandbox...").exactly(4).times
+        expect(test_logger).to receive(:info).with("  ✅ Set up Argyle webhook: #{create_webhook_subscription_response["id"]}").exactly(4).times
+        expect(test_logger).to receive(:info).with(" Argyle webhook url: #{receiver_url}").exactly(4).times
 
         expect(argyle_service).to receive(:create_webhook_subscription).with(
           non_partial_webhook_events,
@@ -144,13 +144,13 @@ RSpec.describe ArgyleWebhooksManager, type: :service do
           .with(webhook_name)
           .and_return([ matching_sub, other_sub ])
 
-        expect(test_logger).to receive(:puts).with("  Existing Argyle webhook subscription found in Argyle sandbox: #{receiver_url}")
+        expect(test_logger).to receive(:info).with("  Existing Argyle webhook subscription found in Argyle sandbox: #{receiver_url}")
         expect(argyle_webhooks_manager).to receive(:remove_subscriptions).with([ other_sub ]).and_call_original # non-partial
         expect(argyle_webhooks_manager).to receive(:remove_subscriptions).with([]).and_call_original.exactly(3).times # no subscriptions for partial and include-resource webhooks
-        expect(test_logger).to receive(:puts).with("  Registering Argyle webhooks for Ngrok tunnel in Argyle sandbox...").exactly(3).times
-        expect(test_logger).to receive(:puts).with("  Removing existing Argyle webhook subscription (url = #{other_sub["url"]})")
-        expect(test_logger).to receive(:puts).with("  ✅ Set up Argyle webhook: #{create_webhook_subscription_response["id"]}").exactly(3).times
-        expect(test_logger).to receive(:puts).with(" Argyle webhook url: #{receiver_url}").exactly(3).times
+        expect(test_logger).to receive(:info).with("  Registering Argyle webhooks for Ngrok tunnel in Argyle sandbox...").exactly(3).times
+        expect(test_logger).to receive(:info).with("  Removing existing Argyle webhook subscription (url = #{other_sub["url"]})")
+        expect(test_logger).to receive(:info).with("  ✅ Set up Argyle webhook: #{create_webhook_subscription_response["id"]}").exactly(3).times
+        expect(test_logger).to receive(:info).with(" Argyle webhook url: #{receiver_url}").exactly(3).times
         expect(argyle_service).to receive(:delete_webhook_subscription).with(other_sub["id"])
         # Should NOT create a new subscription since we're reusing existing
         expect(argyle_service).not_to receive(:create_webhook_subscription).with(array_including("paystubs.fully_synced"), anything, anything, anything)
