@@ -1,9 +1,9 @@
+require 'yaml'
+require 'open3'
+
+require_relative '../../app/services/locale_diff_service'
+
 class LocaleSyncChecker
-  require 'yaml'
-  require 'open3'
-
-  require_relative '../../app/services/locale_diff_service'
-
   def initialize
     @en_locale_path = 'app/config/locales/en.yml'
     @es_locale_path = 'app/config/locales/es.yml'
