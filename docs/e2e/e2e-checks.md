@@ -4,6 +4,7 @@
 How to run E2E tests:
 * **Run in *replay* mode:** `E2E_RUN_TESTS=1 bin/rspec spec/e2e`
   * Note: Soon, we will enable these to run by default, so the environment variable prefix won't be necessary.
+  * By default, tests run in a *headless browser*. To instead run the tests in an interactable browser, run them with `E2E_SHOW_BROWSER=1` as well.
 * **Run in *record* mode:** `E2E_RECORD_MODE=1 bin/rspec [spec/e2e/your_spec.rb:123]`
   * You will need environment variables set for Argyle and Pinwheel. Add these to `.env.local` or `.env.test.local`.
 
