@@ -12,13 +12,13 @@ Rails.application.config.to_prepare do
       subscription_name = ENV["USER"]
       raise "USER environment variable not specified" unless subscription_name.present?
 
-      if ProviderSearchService::SUPPORTED_PROVIDERS.include?(:pinwheel)
+      if Rails.application.config.supported_providers.include?(:pinwheel)
         # Pinwheel webhooks setup
         pinwheel_webhooks = PinwheelWebhookManager.new
         pinwheel_webhooks.create_subscription_if_necessary(tunnel_url, subscription_name)
       end
 
-      if ProviderSearchService::SUPPORTED_PROVIDERS.include?(:argyle)
+      if Rails.application.config.supported_providers.include?(:argyle)
         # Argyle webhooks setup
         argyle_webhooks = ArgyleWebhooksManager.new(logger: ActiveSupport::Logger.new(STDOUT))
         argyle_webhooks.create_subscriptions_if_necessary(tunnel_url, subscription_name)
