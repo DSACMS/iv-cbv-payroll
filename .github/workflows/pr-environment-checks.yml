@@ -61,11 +61,3 @@ jobs:
             echo "service_endpoint=${service_endpoint}" >> "$GITHUB_OUTPUT"
         env:
           GH_TOKEN: ${{ github.token }}
-
-  e2e-tests:
-    name: Run E2E Tests
-    needs: [update]
-    uses: ./.github/workflows/e2e-tests.yml
-    with:
-      service_endpoint: ${{ needs.update.outputs.service_endpoint }}
-      app_name: ${{ inputs.app_name }}

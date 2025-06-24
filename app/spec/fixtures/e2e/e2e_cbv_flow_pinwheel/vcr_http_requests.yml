@@ -1,0 +1,2006 @@
+---
+http_interactions:
+- request:
+    method: get
+    uri: https://sandbox.getpinwheel.com/v1/search?q=foo&supported_jobs=paystubs
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Content-Type:
+      - application/json
+      Pinwheel-Version:
+      - '2023-11-22'
+      X-Api-Secret:
+      - "<PINWHEEL_API_TOKEN>"
+      User-Agent:
+      - Faraday v2.9.2
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Accept:
+      - "*/*"
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Date:
+      - Tue, 24 Jun 2025 22:04:27 GMT
+      Content-Type:
+      - application/json
+      Content-Length:
+      - '13399'
+      Connection:
+      - keep-alive
+      Server:
+      - uvicorn
+      Pinwheel-Version:
+      - '2023-11-22'
+      Content-Security-Policy:
+      - frame-ancestors 'none'
+      Strict-Transport-Security:
+      - max-age=31536000; includeSubDomains;
+      X-Pinwheel-Request-Id:
+      - aa906a2f-cd8f-45cd-864a-c4b547a4e2b4
+    body:
+      encoding: UTF-8
+      string: '{"meta":{"count":25},"data":[{"id":"5a8cfb92-3373-4e65-b41b-54e821e79671","name":"McKee
+        Foods","platform_type":"payroll","last_updated":"2025-05-13T18:41:08.886885+00:00","logo_url":"https://cdn.getpinwheel.com/assets/employers/logos/McKee%20Foods.png","supported_jobs":["company_incomes","company_employments","shifts","income","tax_forms","identity","direct_deposit_allocations","company_census","employment","paystubs","direct_deposit_switch"],"fractional_amount_supported":true,"amount_supported":true,"min_amount":null,"max_amount":null,"response_type":"employer","min_percentage":1,"max_percentage":99,"percentage_supported":true},{"id":"bc507614-8b07-41b6-a00c-daa0d2890350","name":"Tyson
+        Foods","platform_type":"payroll","last_updated":"2023-08-22T20:06:41.070099+00:00","logo_url":"https://cdn.getpinwheel.com/assets/employers/logos/Tyson%20Foods.png","supported_jobs":["company_incomes","company_employments","shifts","income","tax_forms","direct_deposit_allocations","identity","company_census","employment","paystubs","direct_deposit_switch"],"fractional_amount_supported":true,"amount_supported":true,"min_amount":null,"max_amount":null,"response_type":"employer","min_percentage":1,"max_percentage":99,"percentage_supported":false},{"id":"bf323346-3eb2-4aff-8db4-aba727f88768","name":"Wakefern
+        Food Corporation","platform_type":"payroll","last_updated":"2022-10-07T17:28:52.736273+00:00","logo_url":"https://cdn.getpinwheel.com/assets/employers/logos/Wakefern%20Food%20Corporation.jpeg","supported_jobs":["company_incomes","shifts","income","tax_forms","direct_deposit_allocations","identity","employment","paystubs","direct_deposit_switch"],"fractional_amount_supported":false,"amount_supported":false,"min_amount":null,"max_amount":null,"response_type":"employer","min_percentage":1,"max_percentage":99,"percentage_supported":false},{"id":"ccfe6b12-f4ab-449d-af38-78e88bdc432c","name":"Food
+        4 Less","platform_type":"payroll","last_updated":"2023-06-13T16:05:06.555758+00:00","logo_url":null,"supported_jobs":["company_incomes","shifts","income","tax_forms","direct_deposit_allocations","identity","employment","paystubs","direct_deposit_switch"],"fractional_amount_supported":true,"amount_supported":true,"min_amount":null,"max_amount":null,"response_type":"employer","min_percentage":1,"max_percentage":99,"percentage_supported":true},{"id":"ed8e8c70-9650-43dd-bba4-bec9b23b0f32","name":"Food
+        Depot","platform_type":"payroll","last_updated":"2024-11-21T20:24:05.298129+00:00","logo_url":null,"supported_jobs":["company_incomes","shifts","income","tax_forms","direct_deposit_allocations","identity","employment","paystubs","direct_deposit_switch"],"fractional_amount_supported":true,"amount_supported":true,"min_amount":null,"max_amount":null,"response_type":"employer","min_percentage":1,"max_percentage":99,"percentage_supported":true},{"id":"41e23a45-bdf9-47ea-ab94-303c19de7ff2","name":"Foods
+        Co.","platform_type":"payroll","last_updated":"2023-06-13T16:05:06.555758+00:00","logo_url":null,"supported_jobs":["company_incomes","shifts","income","tax_forms","direct_deposit_allocations","identity","employment","paystubs","direct_deposit_switch"],"fractional_amount_supported":true,"amount_supported":true,"min_amount":null,"max_amount":null,"response_type":"employer","min_percentage":1,"max_percentage":99,"percentage_supported":true},{"id":"73fb1dae-7e5f-4e5b-86a0-ace234351439","name":"76
+        Gas Station & Food Mart","platform_type":"payroll","last_updated":"2024-01-16T17:19:29.270713+00:00","logo_url":null,"supported_jobs":["company_incomes","shifts","income","tax_forms","identity","direct_deposit_allocations","employment","paystubs","direct_deposit_switch"],"fractional_amount_supported":true,"amount_supported":true,"min_amount":null,"max_amount":null,"response_type":"employer","min_percentage":1,"max_percentage":99,"percentage_supported":true},{"id":"715486cb-54a4-4f17-a4a8-5466245b7605","name":"AVI
+        Foodsystems","platform_type":"payroll","last_updated":"2024-01-16T17:19:29.270713+00:00","logo_url":null,"supported_jobs":["company_incomes","shifts","income","tax_forms","direct_deposit_allocations","identity","employment","paystubs","direct_deposit_switch"],"fractional_amount_supported":true,"amount_supported":true,"min_amount":null,"max_amount":null,"response_type":"employer","min_percentage":1,"max_percentage":99,"percentage_supported":true},{"id":"8655f036-9b70-4faa-a415-32377fc5cef7","name":"American
+        Dehydrated Foods, LLC","platform_type":"payroll","last_updated":"2024-11-01T15:26:32.374781+00:00","logo_url":null,"supported_jobs":["company_incomes","shifts","income","tax_forms","identity","company_census","direct_deposit_allocations","direct_deposit_switch","employment","company_paystubs","paystubs","company_employments"],"fractional_amount_supported":false,"amount_supported":true,"min_amount":null,"max_amount":null,"response_type":"employer","min_percentage":1,"max_percentage":99,"percentage_supported":true},{"id":"260143e7-0866-44cd-a795-0bf9c15ca175","name":"Be
+        Worthy Foods","platform_type":"payroll","last_updated":"2024-01-16T17:19:29.270713+00:00","logo_url":null,"supported_jobs":["company_employments","shifts","income","tax_forms","identity","direct_deposit_allocations","company_census","employment","paystubs","direct_deposit_switch"],"fractional_amount_supported":true,"amount_supported":true,"min_amount":null,"max_amount":null,"response_type":"employer","min_percentage":1,"max_percentage":99,"percentage_supported":false},{"id":"4ae15949-d1f4-40c9-96d2-e12a0996f7ed","name":"Blue
+        Line Foodservice Distribution","platform_type":"payroll","last_updated":"2025-05-13T18:41:08.886885+00:00","logo_url":null,"supported_jobs":["company_incomes","company_employments","shifts","income","tax_forms","direct_deposit_allocations","identity","company_census","employment","paystubs","direct_deposit_switch"],"fractional_amount_supported":true,"amount_supported":true,"min_amount":null,"max_amount":null,"response_type":"employer","min_percentage":1,"max_percentage":99,"percentage_supported":true},{"id":"c1c25cc0-6f0c-428a-8243-d7e28287125f","name":"Border
+        Foods","platform_type":"payroll","last_updated":"2025-03-19T23:19:22.707781+00:00","logo_url":null,"supported_jobs":["company_incomes","shifts","income","tax_forms","direct_deposit_allocations","identity","employment","paystubs","direct_deposit_switch"],"fractional_amount_supported":true,"amount_supported":true,"min_amount":null,"max_amount":null,"response_type":"employer","min_percentage":1,"max_percentage":99,"percentage_supported":true},{"id":"4943e082-dbe7-4732-8c42-9ac16a1e210a","name":"Bottom
+        Dollar Food","platform_type":"payroll","last_updated":"2023-02-16T15:47:02.914404+00:00","logo_url":null,"supported_jobs":["company_incomes","shifts","income","tax_forms","identity","direct_deposit_allocations","employment","paystubs","direct_deposit_switch"],"fractional_amount_supported":false,"amount_supported":true,"min_amount":null,"max_amount":null,"response_type":"employer","min_percentage":1,"max_percentage":99,"percentage_supported":false},{"id":"abba5280-bdbf-47a5-bb2b-a05779641e39","name":"Charter
+        Foods Inc","platform_type":"payroll","last_updated":"2024-11-21T21:21:03.780802+00:00","logo_url":null,"supported_jobs":["company_incomes","company_employments","shifts","income","tax_forms","direct_deposit_allocations","identity","company_census","employment","paystubs","direct_deposit_switch"],"fractional_amount_supported":true,"amount_supported":true,"min_amount":null,"max_amount":null,"response_type":"employer","min_percentage":1,"max_percentage":99,"percentage_supported":false},{"id":"3449a450-a3b5-4d56-80c1-c05d447c5e53","name":"ConAgra
+        Foods Packaged Foods","platform_type":"payroll","last_updated":"2025-05-13T18:41:08.886885+00:00","logo_url":null,"supported_jobs":["company_incomes","company_employments","shifts","income","tax_forms","direct_deposit_allocations","identity","company_census","employment","paystubs","direct_deposit_switch"],"fractional_amount_supported":true,"amount_supported":true,"min_amount":null,"max_amount":null,"response_type":"employer","min_percentage":1,"max_percentage":99,"percentage_supported":true},{"id":"35883773-5d90-4d35-8444-f46683231d80","name":"Cotti
+        Foods Corporation","platform_type":"payroll","last_updated":"2024-01-16T17:19:29.270713+00:00","logo_url":null,"supported_jobs":["company_incomes","shifts","income","tax_forms","direct_deposit_allocations","identity","employment","paystubs","direct_deposit_switch"],"fractional_amount_supported":true,"amount_supported":true,"min_amount":null,"max_amount":null,"response_type":"employer","min_percentage":1,"max_percentage":99,"percentage_supported":true},{"id":"014fafe8-03b0-44ca-982e-4b76e9dc0c93","name":"Crocs
+        Footwear","platform_type":"payroll","last_updated":"2024-01-16T17:19:29.270713+00:00","logo_url":null,"supported_jobs":["company_incomes","shifts","income","tax_forms","identity","direct_deposit_allocations","employment","paystubs","direct_deposit_switch"],"fractional_amount_supported":true,"amount_supported":true,"min_amount":null,"max_amount":null,"response_type":"employer","min_percentage":1,"max_percentage":99,"percentage_supported":true},{"id":"cfe01d72-eca9-4fa4-b407-1e00620158ca","name":"DN-Angel
+        Food-Hells Kitchen","platform_type":"payroll","last_updated":"2025-05-13T18:41:08.886885+00:00","logo_url":null,"supported_jobs":["company_incomes","company_employments","shifts","income","tax_forms","direct_deposit_allocations","identity","company_census","employment","paystubs","direct_deposit_switch"],"fractional_amount_supported":true,"amount_supported":true,"min_amount":null,"max_amount":null,"response_type":"employer","min_percentage":1,"max_percentage":99,"percentage_supported":true},{"id":"c2aa7627-5250-43b4-aaf0-361c9f4e162c","name":"FPL
+        Food LLC","platform_type":"payroll","last_updated":"2024-01-16T17:19:29.270713+00:00","logo_url":null,"supported_jobs":["company_incomes","shifts","income","tax_forms","identity","direct_deposit_allocations","employment","paystubs","direct_deposit_switch"],"fractional_amount_supported":true,"amount_supported":true,"min_amount":null,"max_amount":null,"response_type":"employer","min_percentage":1,"max_percentage":99,"percentage_supported":true},{"id":"c2d92f7d-3c5b-4ba2-b669-650c1f283d86","name":"Fourteen
+        Foods","platform_type":"payroll","last_updated":"2025-03-19T23:19:22.707781+00:00","logo_url":null,"supported_jobs":["company_incomes","shifts","income","tax_forms","direct_deposit_allocations","identity","employment","paystubs","direct_deposit_switch"],"fractional_amount_supported":true,"amount_supported":true,"min_amount":null,"max_amount":null,"response_type":"employer","min_percentage":1,"max_percentage":99,"percentage_supported":true},{"id":"c6159d2f-1fba-4566-b04d-667769776104","name":"Georgia
+        Foods Llc","platform_type":"payroll","last_updated":"2023-10-27T15:06:31.448680+00:00","logo_url":null,"supported_jobs":["company_incomes","shifts","income","tax_forms","identity","direct_deposit_allocations","employment","paystubs","direct_deposit_switch"],"fractional_amount_supported":true,"amount_supported":true,"min_amount":null,"max_amount":null,"response_type":"employer","min_percentage":1,"max_percentage":99,"percentage_supported":true},{"id":"c572567f-7fa4-4210-b32b-87a213765b11","name":"Giant
+        Food Stores Supermarket & Pharmacy","platform_type":"payroll","last_updated":"2023-09-25T19:42:01.220598+00:00","logo_url":null,"supported_jobs":["company_incomes","shifts","income","tax_forms","identity","direct_deposit_allocations","employment","paystubs","direct_deposit_switch"],"fractional_amount_supported":false,"amount_supported":true,"min_amount":null,"max_amount":null,"response_type":"employer","min_percentage":1,"max_percentage":99,"percentage_supported":false},{"id":"92767427-8613-46ff-843e-c64d925916e8","name":"Gordon
+        Food Service","platform_type":"payroll","last_updated":"2025-05-13T18:41:08.886885+00:00","logo_url":null,"supported_jobs":["company_incomes","shifts","income","tax_forms","identity","direct_deposit_allocations","employment","paystubs","direct_deposit_switch"],"fractional_amount_supported":true,"amount_supported":true,"min_amount":null,"max_amount":null,"response_type":"employer","min_percentage":1,"max_percentage":99,"percentage_supported":true},{"id":"615b482b-fad8-466e-9bb6-0a6817b3d047","name":"Gordon
+        Food Service Store","platform_type":"payroll","last_updated":"2025-05-13T18:41:08.886885+00:00","logo_url":null,"supported_jobs":["company_incomes","shifts","income","tax_forms","identity","direct_deposit_allocations","employment","paystubs","direct_deposit_switch"],"fractional_amount_supported":true,"amount_supported":true,"min_amount":null,"max_amount":null,"response_type":"employer","min_percentage":1,"max_percentage":99,"percentage_supported":true},{"id":"dda6a6ef-2985-4148-9d44-bf39b41da86b","name":"Haza
+        Foods Of Northeast, Llc","platform_type":"payroll","last_updated":"2024-11-07T22:07:02.678082+00:00","logo_url":null,"supported_jobs":["company_incomes","company_employments","shifts","income","tax_forms","identity","direct_deposit_allocations","company_census","employment","paystubs","direct_deposit_switch"],"fractional_amount_supported":true,"amount_supported":true,"min_amount":null,"max_amount":null,"response_type":"employer","min_percentage":1,"max_percentage":99,"percentage_supported":true}]}'
+  recorded_at: Tue, 24 Jun 2025 22:04:21 GMT
+- request:
+    method: post
+    uri: https://sandbox.getpinwheel.com/v1/link_tokens
+    body:
+      encoding: UTF-8
+      string: '{"org_name":"Report My Income","required_jobs":["paystubs"],"end_user_id":"6a927ef1-6c91-43c9-abbe-6728dc8ef877","skip_intro_screen":true,"language":"en","employer_id":"5a8cfb92-3373-4e65-b41b-54e821e79671"}'
+    headers:
+      Content-Type:
+      - application/json
+      Pinwheel-Version:
+      - '2023-11-22'
+      X-Api-Secret:
+      - "<PINWHEEL_API_TOKEN>"
+      User-Agent:
+      - Faraday v2.9.2
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Accept:
+      - "*/*"
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Date:
+      - Tue, 24 Jun 2025 22:04:28 GMT
+      Content-Type:
+      - application/json
+      Content-Length:
+      - '1762'
+      Connection:
+      - keep-alive
+      Server:
+      - uvicorn
+      Pinwheel-Version:
+      - '2023-11-22'
+      Content-Security-Policy:
+      - frame-ancestors 'none'
+      Strict-Transport-Security:
+      - max-age=31536000; includeSubDomains;
+      X-Pinwheel-Request-Id:
+      - 16e3ba5f-0631-4ed1-b9fd-b7866b8f5554
+    body:
+      encoding: UTF-8
+      string: '{"data":{"mode":"sandbox","id":"a63c75ef-3e91-4fff-8147-78cf7efeddd2","token":"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJkYXRhIjp7InJlcXVpcmVkX2pvYnMiOlsicGF5c3R1YnMiXSwib3JnX25hbWUiOiJSZXBvcnQgTXkgSW5jb21lIiwiYWxsb2NhdGlvbiI6bnVsbCwicGxhdGZvcm1fa2V5IjpudWxsLCJza2lwX2ludHJvX3NjcmVlbiI6dHJ1ZSwic2tpcF9leGl0X3N1cnZleSI6ZmFsc2UsImVtcGxveWVyX2lkIjoiNWE4Y2ZiOTItMzM3My00ZTY1LWI0MWItNTRlODIxZTc5NjcxIiwiZGlzYWJsZV9kaXJlY3RfZGVwb3NpdF9zcGxpdHRpbmciOmZhbHNlLCJwbGF0Zm9ybV9pZCI6bnVsbCwic2tpcF9kZXBvc2l0X2NvbmZpcm1hdGlvbiI6bnVsbCwicGxhdGZvcm1fdHlwZSI6bnVsbCwibGFuZ3VhZ2UiOiJlbiIsImVuZF91c2VyX2lkIjoiNmE5MjdlZjEtNmM5MS00M2M5LWFiYmUtNjcyOGRjOGVmODc3IiwiYWNjb3VudF9pZCI6bnVsbCwiZG9jdW1lbnRfdXBsb2FkcyI6bnVsbCwiZW5hYmxlX2NhcmRfc3dpdGNoIjpmYWxzZSwic21hcnRfYnJhbmNoIjpudWxsLCJlbmFibGVfdXNlcl9pbnB1dF9iYW5rX2luZm8iOmZhbHNlLCJ0YWdzIjpudWxsLCJjb21wYW55X2Nvbm5lY3QiOm51bGwsImRlcG9zaXRfZm9ybXMiOiJkaXNhYmxlZCIsImVuZF91c2VyIjpudWxsLCJoYXNfdXNlcl9hdXRoZW50aWNhdGlvbl9kYXRhIjpmYWxzZSwiaGFzX2Vucl9waWkiOmZhbHNlLCJlbmNyeXB0ZWRfanNvbiI6bnVsbCwiZW5jcnlwdGlvbl9lbnZlbG9wZSI6bnVsbCwiZW5hYmxlX2JpbGxfbmF2aWdhdG9yIjpmYWxzZSwiY2FyZHMiOm51bGwsIm1pc3NpbmdfdXNlcl9hdXRoZW50aWNhdGlvbl9maWVsZHMiOm51bGwsImVuYWJsZV9zZWxmX2lkIjpmYWxzZSwibW9kZSI6InNhbmRib3giLCJhcGlfa2V5IjoiYjg3ZDk0NWEzM2I5MzY3MWY4YjlkOTAyNTJkZWI5NmE5ZDc3YzllYjBlYjdhYTVkN2Y1N2QyYzRmMGM3YzRjMyIsInRva2VuX2lkIjoiYTYzYzc1ZWYtM2U5MS00ZmZmLTgxNDctNzhjZjdlZmVkZGQyIiwiam9iIjoicGF5c3R1YnMiLCJfdWlkIjoiY2RlNjA1YzUtNDQ5YS00ZmNhLTgzNmQtYzM5YTQ2ZDY2MTMxIiwid29ya3NwYWNlX25hbWUiOiJOYXZhIFBCQyIsIndvcmtzcGFjZV90eXBlIjoiY2xpZW50IiwiaG9tZXJfdXJsIjpudWxsLCJiaWxsX3N3aXRjaF90eXBlcyI6bnVsbH0sImlhdCI6MTc1MDgwMjY2OCwiZXhwIjoxNzUwODA2MjY4fQ.m9w3osOJ-kpCKTcl4SCg3CEl2kLTdr8v7WQF_PG11bU","smart_branch_url":null,"expires":"2025-06-24T23:04:28.391042+00:00"}}'
+  recorded_at: Tue, 24 Jun 2025 22:04:21 GMT
+- request:
+    method: get
+    uri: https://sandbox.getpinwheel.com/v1/platforms/5965580e-380f-4b86-8a8a-7278c77f73cb
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Content-Type:
+      - application/json
+      Pinwheel-Version:
+      - '2023-11-22'
+      X-Api-Secret:
+      - "<PINWHEEL_API_TOKEN>"
+      User-Agent:
+      - Faraday v2.9.2
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Accept:
+      - "*/*"
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Date:
+      - Tue, 24 Jun 2025 22:04:34 GMT
+      Content-Type:
+      - application/json
+      Content-Length:
+      - '575'
+      Connection:
+      - keep-alive
+      Server:
+      - uvicorn
+      Pinwheel-Version:
+      - '2023-11-22'
+      Content-Security-Policy:
+      - frame-ancestors 'none'
+      Strict-Transport-Security:
+      - max-age=31536000; includeSubDomains;
+      X-Pinwheel-Request-Id:
+      - a4fccf9e-1162-410b-a019-0f725acfd45b
+    body:
+      encoding: UTF-8
+      string: '{"data":{"id":"5965580e-380f-4b86-8a8a-7278c77f73cb","name":"Workday","type":"payroll","fractional_amount_supported":true,"min_amount":null,"max_amount":null,"last_updated":"2025-05-13T18:41:08.804385+00:00","logo_url":"https://cdn.getpinwheel.com/assets/platforms/logos/search/cfmpw.png","percentage_supported":true,"min_percentage":1,"max_percentage":99,"supported_jobs":["paystubs","employment","tax_forms","shifts","company_census","company_employments","direct_deposit_allocations","identity","company_incomes","income","direct_deposit_switch"],"amount_supported":true}}'
+  recorded_at: Tue, 24 Jun 2025 22:04:21 GMT
+- request:
+    method: get
+    uri: https://sandbox.getpinwheel.com/v1/accounts/934f6406-c332-4c05-a3e8-6a90765c842d/identity
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Content-Type:
+      - application/json
+      Pinwheel-Version:
+      - '2023-11-22'
+      X-Api-Secret:
+      - "<PINWHEEL_API_TOKEN>"
+      User-Agent:
+      - Faraday v2.9.2
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Accept:
+      - "*/*"
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Date:
+      - Tue, 24 Jun 2025 22:04:45 GMT
+      Content-Type:
+      - application/json
+      Content-Length:
+      - '612'
+      Connection:
+      - keep-alive
+      Server:
+      - uvicorn
+      Pinwheel-Version:
+      - '2023-11-22'
+      Content-Security-Policy:
+      - frame-ancestors 'none'
+      Strict-Transport-Security:
+      - max-age=31536000; includeSubDomains;
+      X-Pinwheel-Request-Id:
+      - 03555d7c-4e0c-4772-a6a7-2845b2eb06b4
+    body:
+      encoding: UTF-8
+      string: '{"data":{"id":"75b85ffa-1057-45a3-a9fb-77de821747b6","created_at":"2025-06-24T22:04:34.456512+00:00","updated_at":"2025-06-24T22:04:34.456512+00:00","account_id":"934f6406-c332-4c05-a3e8-6a90765c842d","full_name":"Ash
+        Userton","emails":["user_good@example.com"],"date_of_birth":"1993-08-28","last_four_ssn":"1234","address":{"raw":"20429
+        Pinwheel Drive, New York City, NY 99999","line1":"20429 Pinwheel Drive","line2":null,"city":"New
+        York City","state":"NY","postal_code":"99999","country":"US"},"phone_numbers":[{"value":"+12345556789","type":null}]},"meta":{"refreshed_at":"2025-06-24T22:04:34.548440+00:00"}}'
+  recorded_at: Tue, 24 Jun 2025 22:04:21 GMT
+- request:
+    method: get
+    uri: https://sandbox.getpinwheel.com/v1/accounts/934f6406-c332-4c05-a3e8-6a90765c842d
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Content-Type:
+      - application/json
+      Pinwheel-Version:
+      - '2023-11-22'
+      X-Api-Secret:
+      - "<PINWHEEL_API_TOKEN>"
+      User-Agent:
+      - Faraday v2.9.2
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Accept:
+      - "*/*"
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Date:
+      - Tue, 24 Jun 2025 22:04:45 GMT
+      Content-Type:
+      - application/json
+      Content-Length:
+      - '935'
+      Connection:
+      - keep-alive
+      Server:
+      - uvicorn
+      Pinwheel-Version:
+      - '2023-11-22'
+      Content-Security-Policy:
+      - frame-ancestors 'none'
+      Strict-Transport-Security:
+      - max-age=31536000; includeSubDomains;
+      X-Pinwheel-Request-Id:
+      - 4c094f3f-bda8-4762-ae41-0b732c8b1e66
+    body:
+      encoding: UTF-8
+      string: '{"data":{"created_at":"2025-06-24T22:04:33.547314+00:00","link_token_id":"a63c75ef-3e91-4fff-8147-78cf7efeddd2","platform_id":"5965580e-380f-4b86-8a8a-7278c77f73cb","connected":true,"monitoring_status":"active","end_user_id":"6a927ef1-6c91-43c9-abbe-6728dc8ef877","id":"934f6406-c332-4c05-a3e8-6a90765c842d","data_updated_at":{"direct_deposit_allocations":"2025-06-24T22:04:34.948037+00:00","income":"2025-06-24T22:04:34.629192+00:00","employment":"2025-06-24T22:04:41.075640+00:00","identity":"2025-06-24T22:04:34.548440+00:00","shifts":"2025-06-24T22:04:39.588394+00:00","paystubs":"2025-06-24T22:04:38.805798+00:00"},"data_refreshed_at":{"direct_deposit_allocations":"2025-06-24T22:04:34.948037+00:00","income":"2025-06-24T22:04:34.629192+00:00","employment":"2025-06-24T22:04:41.075640+00:00","identity":"2025-06-24T22:04:34.548440+00:00","shifts":"2025-06-24T22:04:39.588394+00:00","paystubs":"2025-06-24T22:04:38.805798+00:00"}}}'
+  recorded_at: Tue, 24 Jun 2025 22:04:21 GMT
+- request:
+    method: get
+    uri: https://sandbox.getpinwheel.com/v1/platforms/5965580e-380f-4b86-8a8a-7278c77f73cb
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Content-Type:
+      - application/json
+      Pinwheel-Version:
+      - '2023-11-22'
+      X-Api-Secret:
+      - "<PINWHEEL_API_TOKEN>"
+      User-Agent:
+      - Faraday v2.9.2
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Accept:
+      - "*/*"
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Date:
+      - Tue, 24 Jun 2025 22:04:46 GMT
+      Content-Type:
+      - application/json
+      Content-Length:
+      - '575'
+      Connection:
+      - keep-alive
+      Server:
+      - uvicorn
+      Pinwheel-Version:
+      - '2023-11-22'
+      Content-Security-Policy:
+      - frame-ancestors 'none'
+      Strict-Transport-Security:
+      - max-age=31536000; includeSubDomains;
+      X-Pinwheel-Request-Id:
+      - 19b5a4d5-a6c4-45b4-94e3-5b9e8312c99f
+    body:
+      encoding: UTF-8
+      string: '{"data":{"id":"5965580e-380f-4b86-8a8a-7278c77f73cb","name":"Workday","type":"payroll","fractional_amount_supported":true,"min_amount":null,"max_amount":null,"last_updated":"2025-05-13T18:41:08.804385+00:00","logo_url":"https://cdn.getpinwheel.com/assets/platforms/logos/search/cfmpw.png","percentage_supported":true,"min_percentage":1,"max_percentage":99,"supported_jobs":["company_incomes","company_employments","shifts","income","tax_forms","direct_deposit_allocations","identity","company_census","employment","paystubs","direct_deposit_switch"],"amount_supported":true}}'
+  recorded_at: Tue, 24 Jun 2025 22:04:21 GMT
+- request:
+    method: get
+    uri: https://sandbox.getpinwheel.com/v1/accounts/934f6406-c332-4c05-a3e8-6a90765c842d/employment
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Content-Type:
+      - application/json
+      Pinwheel-Version:
+      - '2023-11-22'
+      X-Api-Secret:
+      - "<PINWHEEL_API_TOKEN>"
+      User-Agent:
+      - Faraday v2.9.2
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Accept:
+      - "*/*"
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Date:
+      - Tue, 24 Jun 2025 22:04:46 GMT
+      Content-Type:
+      - application/json
+      Content-Length:
+      - '634'
+      Connection:
+      - keep-alive
+      Server:
+      - uvicorn
+      Pinwheel-Version:
+      - '2023-11-22'
+      Content-Security-Policy:
+      - frame-ancestors 'none'
+      Strict-Transport-Security:
+      - max-age=31536000; includeSubDomains;
+      X-Pinwheel-Request-Id:
+      - eb8b47cf-64a1-4210-8ecf-ac751d87702e
+    body:
+      encoding: UTF-8
+      string: '{"data":{"id":"c9d3fc3b-3e2e-4a3e-855a-1eb77396a85c","created_at":"2025-06-24T22:04:40.979175+00:00","updated_at":"2025-06-24T22:04:40.979175+00:00","account_id":"934f6406-c332-4c05-a3e8-6a90765c842d","status":"employed","start_date":"2010-01-01","termination_date":null,"employer_name":"Acme
+        Corporation","employer_address":{"raw":"20429 Pinwheel Drive, New York City,
+        NY 99999","line1":"20429 Pinwheel Drive","line2":null,"city":"New York City","state":"NY","postal_code":"99999","country":"US"},"employer_phone_number":{"value":"+16126597057","type":"work"},"title":null},"meta":{"refreshed_at":"2025-06-24T22:04:41.075640+00:00"}}'
+  recorded_at: Tue, 24 Jun 2025 22:04:21 GMT
+- request:
+    method: get
+    uri: https://sandbox.getpinwheel.com/v1/accounts/934f6406-c332-4c05-a3e8-6a90765c842d/income
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Content-Type:
+      - application/json
+      Pinwheel-Version:
+      - '2023-11-22'
+      X-Api-Secret:
+      - "<PINWHEEL_API_TOKEN>"
+      User-Agent:
+      - Faraday v2.9.2
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Accept:
+      - "*/*"
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Date:
+      - Tue, 24 Jun 2025 22:04:46 GMT
+      Content-Type:
+      - application/json
+      Content-Length:
+      - '362'
+      Connection:
+      - keep-alive
+      Server:
+      - uvicorn
+      Pinwheel-Version:
+      - '2023-11-22'
+      Content-Security-Policy:
+      - frame-ancestors 'none'
+      Strict-Transport-Security:
+      - max-age=31536000; includeSubDomains;
+      X-Pinwheel-Request-Id:
+      - 5792253d-cc93-4153-8a78-abbfa3d27084
+    body:
+      encoding: UTF-8
+      string: '{"data":{"id":"c8dae54d-915c-4573-975a-f5ba54f57aa0","created_at":"2025-06-24T22:04:34.558075+00:00","updated_at":"2025-06-24T22:04:38.686874+00:00","account_id":"934f6406-c332-4c05-a3e8-6a90765c842d","compensation_amount":1000,"compensation_unit":"hourly","currency":"USD","pay_frequency":"bi-weekly"},"meta":{"refreshed_at":"2025-06-24T22:04:34.629192+00:00"}}'
+  recorded_at: Tue, 24 Jun 2025 22:04:21 GMT
+- request:
+    method: get
+    uri: https://sandbox.getpinwheel.com/v1/accounts/934f6406-c332-4c05-a3e8-6a90765c842d/paystubs?from_pay_date=2025-03-26&to_pay_date=2025-06-24
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Content-Type:
+      - application/json
+      Pinwheel-Version:
+      - '2023-11-22'
+      X-Api-Secret:
+      - "<PINWHEEL_API_TOKEN>"
+      User-Agent:
+      - Faraday v2.9.2
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Accept:
+      - "*/*"
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Date:
+      - Tue, 24 Jun 2025 22:04:47 GMT
+      Content-Type:
+      - application/json
+      Content-Length:
+      - '12175'
+      Connection:
+      - keep-alive
+      Server:
+      - uvicorn
+      Pinwheel-Version:
+      - '2023-11-22'
+      Content-Security-Policy:
+      - frame-ancestors 'none'
+      Strict-Transport-Security:
+      - max-age=31536000; includeSubDomains;
+      X-Pinwheel-Request-Id:
+      - 8288a1af-125d-42e9-9967-f9bbdb04c822
+    body:
+      encoding: UTF-8
+      string: '{"meta":{"refreshed_at":"2025-06-24T22:04:38.805798+00:00","count":4,"next_cursor":null},"data":[{"id":"c80ed2d6-a0fe-4b63-8c92-92414cea9b37","created_at":"2025-06-24T22:04:35.119310+00:00","account_id":"934f6406-c332-4c05-a3e8-6a90765c842d","pay_date":"2025-06-24","pay_period_start":"2025-06-11","pay_period_end":"2025-06-24","currency":"USD","gross_pay_amount":50000,"net_pay_amount":46000,"check_amount":46000,"gross_pay_ytd":50000,"net_pay_ytd":46000,"total_taxes":3825,"total_deductions":175,"total_reimbursements":0,"external_paystub_id":null,"employer_name":null,"taxes":[{"name":"Pinwheel
+        Tax","category":"state_income","amount":0},{"name":"Employee Medicare Tax","category":"medicare","amount":725},{"name":"Employee
+        Social Security Tax","category":"social_security","amount":3100},{"name":"Federal
+        Income Tax","category":"federal_income","amount":0}],"deductions":[{"name":"Deduction","category":"other","amount":175,"type":"unknown"}],"earnings":[{"name":"Regular","category":"hourly","amount":50000,"rate":5000,"hours":10.0}],"time_off":[{"name":"PTO","category":"pto","available_hours":25.0,"earned_hours":0.75,"used_hours":0.0},{"name":"Sick
+        Leave","category":"sick","available_hours":8.0,"earned_hours":0.1,"used_hours":2.0}],"document":{"id":"00000000-0000-0000-0000-000000000000","download_url":"https://production-newton-paystubs.s3.amazonaws.com/00000000-0000-0000-0000-000000000000/paystub/00000000-0000-0000-0000-000000000000.pdf?response-content-type=application%2Fpdf&X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=<PINWHEEL_AWS_KEY_ID>&X-Amz-Date=20250624T220447Z&X-Amz-Expires=900&X-Amz-SignedHeaders=host&X-Amz-Security-Token=IQoJb3JpZ2luX2VjED4aCXVzLWVhc3QtMSJHMEUCIBnGfqaBFxl5mjn5KKEzgOqyx5YqBDr3sJgndckyoE%2BXAiEApdMPK%2FIR4Dza8RMNA%2F72CSIscyYOy9FZsifMpRGAnsYq%2BQQINxAEGgw4ODU5MjQzMDc0NDkiDKf3q%2Fk37GWCkm%2FL4irWBKP2NVOzCX4%2FdbwFI6fPrDiB8NhzFrN4kwaVC3tilVQug8VhAwSvxAhVPKqwOgQaZYq4eZ2D%2BOp2Zcy6gyPZXB096o1917v45%2FT1oEMxIhdVRxxfbdGIeS9otM4FYUnFIVFHmGywnFG17p8fIyz%2Fgld%2Fw8DdowLQsnG67K%2Fx%2B5FhDGzuq%2BYY61nZuI%2FFoFsVsTb8OJof8um1lAtoysphkLkb2UvM8jUzjFB6QqCpYD16ffJsG2yw4uGT7Q9fJhYRZeqnfZkwr015CQf3caO7FJPV9WV%2BoPIdTvegNRqZ0UvT1XXHfes1uYsNb4BxTgGGlJiwNMlCZkdp9y5c%2FuZCOUzCmBRN%2BXDjuOdbjeWWO0Uikg9yHTOxObm9uioH9ybALwP9oF0h6cFMdtMdgEUzHvxTmu%2B30%2Bjqd3mE3tsQ7Wm1ExRrfau694jelf4cGQnrEILuqvk2uiW0o1sN5Zl4a%2B0jQ5GzqvgxAlJ3616xAfOmcHZVdHCccGUb7zEzx2g4CNWyWuR7Oc9E8DU8G7%2B%2FCYsDbUhojK4JvmfWKpKbhynzGwb9FxjmiFGZHTpSTwNLh%2BBt5PzA%2BEF1kqklD3Jo1HSFVvzQjmee1UD01fnujthjjhTAhKfv1Bnn5a%2FxZu6k56SH3xzhFZDbLE7ZfAZqzdxC6khL8yZhBZk%2B9x3ddTUD2PX89ba80pVv4nAJwhi6noRB3PtMrDD8cB1m4RvkYIykECaQYCV0fyW3gQBwqfSOuAP9H9CR1nYe7IvsnVaxjTpv%2BtTEEr0K0vXJTUET%2BrTsC2goVjQw9bnswgY6mgHToLRCjYn3G%2FB2xnTGPVRBeGi7iOIaQV71zu4jqsdBCFIZRyIlO2PPlUBsCQRZu0IkKJx%2F8q2slvN%2FqrxgJkH%2FbFj0GclvbklVwoYGd0LH%2FBHv3sobPI6hZIsVK%2BACHTDRppbWHpT1vdg5NTEeSOkuVUyWWEqBBx6AQsdAfWqgt5kI%2FaYYi%2BAgStpm%2B8n2IHBW2t0pqadmhQbG&X-Amz-Signature=7b537bd7609513ec50cb5e04a942da611d408ade25503180c68013acf8c93a19","download_url_expiration":"2025-06-24T22:19:47.034800+00:00"}},{"id":"6e65691e-6391-4789-abf8-7fe8cae27335","created_at":"2025-06-24T22:04:35.843721+00:00","account_id":"934f6406-c332-4c05-a3e8-6a90765c842d","pay_date":"2025-06-10","pay_period_start":"2025-05-28","pay_period_end":"2025-06-10","currency":"USD","gross_pay_amount":50000,"net_pay_amount":46000,"check_amount":46000,"gross_pay_ytd":50000,"net_pay_ytd":46000,"total_taxes":3825,"total_deductions":175,"total_reimbursements":0,"external_paystub_id":null,"employer_name":null,"taxes":[{"name":"Pinwheel
+        Tax","category":"state_income","amount":0},{"name":"Employee Medicare Tax","category":"medicare","amount":725},{"name":"Employee
+        Social Security Tax","category":"social_security","amount":3100},{"name":"Federal
+        Income Tax","category":"federal_income","amount":0}],"deductions":[{"name":"Deduction","category":"other","amount":175,"type":"unknown"}],"earnings":[{"name":"Regular","category":"hourly","amount":50000,"rate":5000,"hours":10.0}],"time_off":[{"name":"PTO","category":"pto","available_hours":25.0,"earned_hours":0.75,"used_hours":0.0},{"name":"Sick
+        Leave","category":"sick","available_hours":8.0,"earned_hours":0.1,"used_hours":2.0}],"document":{"id":"00000000-0000-0000-0000-000000000000","download_url":"https://production-newton-paystubs.s3.amazonaws.com/00000000-0000-0000-0000-000000000000/paystub/00000000-0000-0000-0000-000000000000.pdf?response-content-type=application%2Fpdf&X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=<PINWHEEL_AWS_KEY_ID>&X-Amz-Date=20250624T220447Z&X-Amz-Expires=900&X-Amz-SignedHeaders=host&X-Amz-Security-Token=IQoJb3JpZ2luX2VjED4aCXVzLWVhc3QtMSJHMEUCIBnGfqaBFxl5mjn5KKEzgOqyx5YqBDr3sJgndckyoE%2BXAiEApdMPK%2FIR4Dza8RMNA%2F72CSIscyYOy9FZsifMpRGAnsYq%2BQQINxAEGgw4ODU5MjQzMDc0NDkiDKf3q%2Fk37GWCkm%2FL4irWBKP2NVOzCX4%2FdbwFI6fPrDiB8NhzFrN4kwaVC3tilVQug8VhAwSvxAhVPKqwOgQaZYq4eZ2D%2BOp2Zcy6gyPZXB096o1917v45%2FT1oEMxIhdVRxxfbdGIeS9otM4FYUnFIVFHmGywnFG17p8fIyz%2Fgld%2Fw8DdowLQsnG67K%2Fx%2B5FhDGzuq%2BYY61nZuI%2FFoFsVsTb8OJof8um1lAtoysphkLkb2UvM8jUzjFB6QqCpYD16ffJsG2yw4uGT7Q9fJhYRZeqnfZkwr015CQf3caO7FJPV9WV%2BoPIdTvegNRqZ0UvT1XXHfes1uYsNb4BxTgGGlJiwNMlCZkdp9y5c%2FuZCOUzCmBRN%2BXDjuOdbjeWWO0Uikg9yHTOxObm9uioH9ybALwP9oF0h6cFMdtMdgEUzHvxTmu%2B30%2Bjqd3mE3tsQ7Wm1ExRrfau694jelf4cGQnrEILuqvk2uiW0o1sN5Zl4a%2B0jQ5GzqvgxAlJ3616xAfOmcHZVdHCccGUb7zEzx2g4CNWyWuR7Oc9E8DU8G7%2B%2FCYsDbUhojK4JvmfWKpKbhynzGwb9FxjmiFGZHTpSTwNLh%2BBt5PzA%2BEF1kqklD3Jo1HSFVvzQjmee1UD01fnujthjjhTAhKfv1Bnn5a%2FxZu6k56SH3xzhFZDbLE7ZfAZqzdxC6khL8yZhBZk%2B9x3ddTUD2PX89ba80pVv4nAJwhi6noRB3PtMrDD8cB1m4RvkYIykECaQYCV0fyW3gQBwqfSOuAP9H9CR1nYe7IvsnVaxjTpv%2BtTEEr0K0vXJTUET%2BrTsC2goVjQw9bnswgY6mgHToLRCjYn3G%2FB2xnTGPVRBeGi7iOIaQV71zu4jqsdBCFIZRyIlO2PPlUBsCQRZu0IkKJx%2F8q2slvN%2FqrxgJkH%2FbFj0GclvbklVwoYGd0LH%2FBHv3sobPI6hZIsVK%2BACHTDRppbWHpT1vdg5NTEeSOkuVUyWWEqBBx6AQsdAfWqgt5kI%2FaYYi%2BAgStpm%2B8n2IHBW2t0pqadmhQbG&X-Amz-Signature=7b537bd7609513ec50cb5e04a942da611d408ade25503180c68013acf8c93a19","download_url_expiration":"2025-06-24T22:19:47.037801+00:00"}},{"id":"0c5be6bf-53ca-4597-b277-de311bf69682","created_at":"2025-06-24T22:04:36.842538+00:00","account_id":"934f6406-c332-4c05-a3e8-6a90765c842d","pay_date":"2025-05-13","pay_period_start":"2025-04-30","pay_period_end":"2025-05-13","currency":"USD","gross_pay_amount":50000,"net_pay_amount":46000,"check_amount":46000,"gross_pay_ytd":50000,"net_pay_ytd":46000,"total_taxes":3825,"total_deductions":175,"total_reimbursements":0,"external_paystub_id":null,"employer_name":null,"taxes":[{"name":"Pinwheel
+        Tax","category":"state_income","amount":0},{"name":"Employee Medicare Tax","category":"medicare","amount":725},{"name":"Employee
+        Social Security Tax","category":"social_security","amount":3100},{"name":"Federal
+        Income Tax","category":"federal_income","amount":0}],"deductions":[{"name":"Deduction","category":"other","amount":175,"type":"unknown"}],"earnings":[{"name":"Regular","category":"hourly","amount":50000,"rate":5000,"hours":10.0}],"time_off":[{"name":"PTO","category":"pto","available_hours":25.0,"earned_hours":0.75,"used_hours":0.0},{"name":"Sick
+        Leave","category":"sick","available_hours":8.0,"earned_hours":0.1,"used_hours":2.0}],"document":{"id":"00000000-0000-0000-0000-000000000000","download_url":"https://production-newton-paystubs.s3.amazonaws.com/00000000-0000-0000-0000-000000000000/paystub/00000000-0000-0000-0000-000000000000.pdf?response-content-type=application%2Fpdf&X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=<PINWHEEL_AWS_KEY_ID>&X-Amz-Date=20250624T220447Z&X-Amz-Expires=900&X-Amz-SignedHeaders=host&X-Amz-Security-Token=IQoJb3JpZ2luX2VjED4aCXVzLWVhc3QtMSJHMEUCIBnGfqaBFxl5mjn5KKEzgOqyx5YqBDr3sJgndckyoE%2BXAiEApdMPK%2FIR4Dza8RMNA%2F72CSIscyYOy9FZsifMpRGAnsYq%2BQQINxAEGgw4ODU5MjQzMDc0NDkiDKf3q%2Fk37GWCkm%2FL4irWBKP2NVOzCX4%2FdbwFI6fPrDiB8NhzFrN4kwaVC3tilVQug8VhAwSvxAhVPKqwOgQaZYq4eZ2D%2BOp2Zcy6gyPZXB096o1917v45%2FT1oEMxIhdVRxxfbdGIeS9otM4FYUnFIVFHmGywnFG17p8fIyz%2Fgld%2Fw8DdowLQsnG67K%2Fx%2B5FhDGzuq%2BYY61nZuI%2FFoFsVsTb8OJof8um1lAtoysphkLkb2UvM8jUzjFB6QqCpYD16ffJsG2yw4uGT7Q9fJhYRZeqnfZkwr015CQf3caO7FJPV9WV%2BoPIdTvegNRqZ0UvT1XXHfes1uYsNb4BxTgGGlJiwNMlCZkdp9y5c%2FuZCOUzCmBRN%2BXDjuOdbjeWWO0Uikg9yHTOxObm9uioH9ybALwP9oF0h6cFMdtMdgEUzHvxTmu%2B30%2Bjqd3mE3tsQ7Wm1ExRrfau694jelf4cGQnrEILuqvk2uiW0o1sN5Zl4a%2B0jQ5GzqvgxAlJ3616xAfOmcHZVdHCccGUb7zEzx2g4CNWyWuR7Oc9E8DU8G7%2B%2FCYsDbUhojK4JvmfWKpKbhynzGwb9FxjmiFGZHTpSTwNLh%2BBt5PzA%2BEF1kqklD3Jo1HSFVvzQjmee1UD01fnujthjjhTAhKfv1Bnn5a%2FxZu6k56SH3xzhFZDbLE7ZfAZqzdxC6khL8yZhBZk%2B9x3ddTUD2PX89ba80pVv4nAJwhi6noRB3PtMrDD8cB1m4RvkYIykECaQYCV0fyW3gQBwqfSOuAP9H9CR1nYe7IvsnVaxjTpv%2BtTEEr0K0vXJTUET%2BrTsC2goVjQw9bnswgY6mgHToLRCjYn3G%2FB2xnTGPVRBeGi7iOIaQV71zu4jqsdBCFIZRyIlO2PPlUBsCQRZu0IkKJx%2F8q2slvN%2FqrxgJkH%2FbFj0GclvbklVwoYGd0LH%2FBHv3sobPI6hZIsVK%2BACHTDRppbWHpT1vdg5NTEeSOkuVUyWWEqBBx6AQsdAfWqgt5kI%2FaYYi%2BAgStpm%2B8n2IHBW2t0pqadmhQbG&X-Amz-Signature=7b537bd7609513ec50cb5e04a942da611d408ade25503180c68013acf8c93a19","download_url_expiration":"2025-06-24T22:19:47.040327+00:00"}},{"id":"9bb0d63d-58b9-4202-ba95-5f1117502c00","created_at":"2025-06-24T22:04:36.842538+00:00","account_id":"934f6406-c332-4c05-a3e8-6a90765c842d","pay_date":"2025-04-29","pay_period_start":"2025-04-16","pay_period_end":"2025-04-29","currency":"USD","gross_pay_amount":52000,"net_pay_amount":48000,"check_amount":48000,"gross_pay_ytd":102000,"net_pay_ytd":94000,"total_taxes":3825,"total_deductions":175,"total_reimbursements":0,"external_paystub_id":null,"employer_name":null,"taxes":[{"name":"Pinwheel
+        Tax","category":"state_income","amount":0},{"name":"Employee Medicare Tax","category":"medicare","amount":725},{"name":"Employee
+        Social Security Tax","category":"social_security","amount":3100},{"name":"Federal
+        Income Tax","category":"federal_income","amount":0}],"deductions":[{"name":"Deduction","category":"other","amount":175,"type":"unknown"}],"earnings":[{"name":"Regular","category":"hourly","amount":52000,"rate":5000,"hours":10.4}],"time_off":[{"name":"PTO","category":"pto","available_hours":25.0,"earned_hours":0.75,"used_hours":0.0},{"name":"Sick
+        Leave","category":"sick","available_hours":8.0,"earned_hours":0.1,"used_hours":2.0}],"document":{"id":"00000000-0000-0000-0000-000000000000","download_url":"https://production-newton-paystubs.s3.amazonaws.com/00000000-0000-0000-0000-000000000000/paystub/00000000-0000-0000-0000-000000000000.pdf?response-content-type=application%2Fpdf&X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=<PINWHEEL_AWS_KEY_ID>&X-Amz-Date=20250624T220447Z&X-Amz-Expires=900&X-Amz-SignedHeaders=host&X-Amz-Security-Token=IQoJb3JpZ2luX2VjED4aCXVzLWVhc3QtMSJHMEUCIBnGfqaBFxl5mjn5KKEzgOqyx5YqBDr3sJgndckyoE%2BXAiEApdMPK%2FIR4Dza8RMNA%2F72CSIscyYOy9FZsifMpRGAnsYq%2BQQINxAEGgw4ODU5MjQzMDc0NDkiDKf3q%2Fk37GWCkm%2FL4irWBKP2NVOzCX4%2FdbwFI6fPrDiB8NhzFrN4kwaVC3tilVQug8VhAwSvxAhVPKqwOgQaZYq4eZ2D%2BOp2Zcy6gyPZXB096o1917v45%2FT1oEMxIhdVRxxfbdGIeS9otM4FYUnFIVFHmGywnFG17p8fIyz%2Fgld%2Fw8DdowLQsnG67K%2Fx%2B5FhDGzuq%2BYY61nZuI%2FFoFsVsTb8OJof8um1lAtoysphkLkb2UvM8jUzjFB6QqCpYD16ffJsG2yw4uGT7Q9fJhYRZeqnfZkwr015CQf3caO7FJPV9WV%2BoPIdTvegNRqZ0UvT1XXHfes1uYsNb4BxTgGGlJiwNMlCZkdp9y5c%2FuZCOUzCmBRN%2BXDjuOdbjeWWO0Uikg9yHTOxObm9uioH9ybALwP9oF0h6cFMdtMdgEUzHvxTmu%2B30%2Bjqd3mE3tsQ7Wm1ExRrfau694jelf4cGQnrEILuqvk2uiW0o1sN5Zl4a%2B0jQ5GzqvgxAlJ3616xAfOmcHZVdHCccGUb7zEzx2g4CNWyWuR7Oc9E8DU8G7%2B%2FCYsDbUhojK4JvmfWKpKbhynzGwb9FxjmiFGZHTpSTwNLh%2BBt5PzA%2BEF1kqklD3Jo1HSFVvzQjmee1UD01fnujthjjhTAhKfv1Bnn5a%2FxZu6k56SH3xzhFZDbLE7ZfAZqzdxC6khL8yZhBZk%2B9x3ddTUD2PX89ba80pVv4nAJwhi6noRB3PtMrDD8cB1m4RvkYIykECaQYCV0fyW3gQBwqfSOuAP9H9CR1nYe7IvsnVaxjTpv%2BtTEEr0K0vXJTUET%2BrTsC2goVjQw9bnswgY6mgHToLRCjYn3G%2FB2xnTGPVRBeGi7iOIaQV71zu4jqsdBCFIZRyIlO2PPlUBsCQRZu0IkKJx%2F8q2slvN%2FqrxgJkH%2FbFj0GclvbklVwoYGd0LH%2FBHv3sobPI6hZIsVK%2BACHTDRppbWHpT1vdg5NTEeSOkuVUyWWEqBBx6AQsdAfWqgt5kI%2FaYYi%2BAgStpm%2B8n2IHBW2t0pqadmhQbG&X-Amz-Signature=7b537bd7609513ec50cb5e04a942da611d408ade25503180c68013acf8c93a19","download_url_expiration":"2025-06-24T22:19:47.043168+00:00"}}]}'
+  recorded_at: Tue, 24 Jun 2025 22:04:21 GMT
+- request:
+    method: get
+    uri: https://sandbox.getpinwheel.com/v1/accounts/934f6406-c332-4c05-a3e8-6a90765c842d/identity
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Content-Type:
+      - application/json
+      Pinwheel-Version:
+      - '2023-11-22'
+      X-Api-Secret:
+      - "<PINWHEEL_API_TOKEN>"
+      User-Agent:
+      - Faraday v2.9.2
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Accept:
+      - "*/*"
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Date:
+      - Tue, 24 Jun 2025 22:04:47 GMT
+      Content-Type:
+      - application/json
+      Content-Length:
+      - '612'
+      Connection:
+      - keep-alive
+      Server:
+      - uvicorn
+      Pinwheel-Version:
+      - '2023-11-22'
+      Content-Security-Policy:
+      - frame-ancestors 'none'
+      Strict-Transport-Security:
+      - max-age=31536000; includeSubDomains;
+      X-Pinwheel-Request-Id:
+      - 60af32f8-a99a-47c4-b6c3-c24115df4e6d
+    body:
+      encoding: UTF-8
+      string: '{"data":{"id":"75b85ffa-1057-45a3-a9fb-77de821747b6","created_at":"2025-06-24T22:04:34.456512+00:00","updated_at":"2025-06-24T22:04:34.456512+00:00","account_id":"934f6406-c332-4c05-a3e8-6a90765c842d","full_name":"Ash
+        Userton","emails":["user_good@example.com"],"date_of_birth":"1993-08-28","last_four_ssn":"1234","address":{"raw":"20429
+        Pinwheel Drive, New York City, NY 99999","line1":"20429 Pinwheel Drive","line2":null,"city":"New
+        York City","state":"NY","postal_code":"99999","country":"US"},"phone_numbers":[{"value":"+12345556789","type":null}]},"meta":{"refreshed_at":"2025-06-24T22:04:34.548440+00:00"}}'
+  recorded_at: Tue, 24 Jun 2025 22:04:21 GMT
+- request:
+    method: get
+    uri: https://sandbox.getpinwheel.com/v1/accounts/934f6406-c332-4c05-a3e8-6a90765c842d
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Content-Type:
+      - application/json
+      Pinwheel-Version:
+      - '2023-11-22'
+      X-Api-Secret:
+      - "<PINWHEEL_API_TOKEN>"
+      User-Agent:
+      - Faraday v2.9.2
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Accept:
+      - "*/*"
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Date:
+      - Tue, 24 Jun 2025 22:04:47 GMT
+      Content-Type:
+      - application/json
+      Content-Length:
+      - '935'
+      Connection:
+      - keep-alive
+      Server:
+      - uvicorn
+      Pinwheel-Version:
+      - '2023-11-22'
+      Content-Security-Policy:
+      - frame-ancestors 'none'
+      Strict-Transport-Security:
+      - max-age=31536000; includeSubDomains;
+      X-Pinwheel-Request-Id:
+      - bf8803c0-609d-4695-9817-e0ce58516ae7
+    body:
+      encoding: UTF-8
+      string: '{"data":{"created_at":"2025-06-24T22:04:33.547314+00:00","link_token_id":"a63c75ef-3e91-4fff-8147-78cf7efeddd2","platform_id":"5965580e-380f-4b86-8a8a-7278c77f73cb","connected":true,"monitoring_status":"active","end_user_id":"6a927ef1-6c91-43c9-abbe-6728dc8ef877","id":"934f6406-c332-4c05-a3e8-6a90765c842d","data_updated_at":{"direct_deposit_allocations":"2025-06-24T22:04:34.948037+00:00","income":"2025-06-24T22:04:34.629192+00:00","employment":"2025-06-24T22:04:41.075640+00:00","identity":"2025-06-24T22:04:34.548440+00:00","shifts":"2025-06-24T22:04:39.588394+00:00","paystubs":"2025-06-24T22:04:38.805798+00:00"},"data_refreshed_at":{"direct_deposit_allocations":"2025-06-24T22:04:34.948037+00:00","income":"2025-06-24T22:04:34.629192+00:00","employment":"2025-06-24T22:04:41.075640+00:00","identity":"2025-06-24T22:04:34.548440+00:00","shifts":"2025-06-24T22:04:39.588394+00:00","paystubs":"2025-06-24T22:04:38.805798+00:00"}}}'
+  recorded_at: Tue, 24 Jun 2025 22:04:21 GMT
+- request:
+    method: get
+    uri: https://sandbox.getpinwheel.com/v1/accounts/934f6406-c332-4c05-a3e8-6a90765c842d/shifts
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Content-Type:
+      - application/json
+      Pinwheel-Version:
+      - '2023-11-22'
+      X-Api-Secret:
+      - "<PINWHEEL_API_TOKEN>"
+      User-Agent:
+      - Faraday v2.9.2
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Accept:
+      - "*/*"
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Date:
+      - Tue, 24 Jun 2025 22:04:47 GMT
+      Content-Type:
+      - application/json
+      Content-Length:
+      - '11481'
+      Connection:
+      - keep-alive
+      Server:
+      - uvicorn
+      Pinwheel-Version:
+      - '2023-11-22'
+      Content-Security-Policy:
+      - frame-ancestors 'none'
+      Strict-Transport-Security:
+      - max-age=31536000; includeSubDomains;
+      X-Pinwheel-Request-Id:
+      - 1923ff71-9286-4306-b796-36ce08659f84
+    body:
+      encoding: UTF-8
+      string: '{"meta":{"refreshed_at":"2025-06-24T22:04:39.588394+00:00","count":25,"next_cursor":"gAAAAABoWyD_bOMKEGcNeQJg2gwYdmVCy-LDUeRPdnwkfq0bdtUZSeFi4zWVLE_3tcXG2HgMGpPPzk3x_RLdiJSdAObHVKGgHy8BUGT084H4hyVCUAxWIe_WupLx75LfnnqmTSZxWubO4AhNrYlUuQrZU9NSbNtTxkQTKlzGmOBwtxyolYx4__A="},"data":[{"id":"35841865-b1f1-4d96-b8c5-c49824fa8bfc","created_at":"2025-06-24T22:04:35.276087+00:00","account_id":"934f6406-c332-4c05-a3e8-6a90765c842d","start_date":"2025-06-24","end_date":"2025-06-24","type":"shift","timezone":"America/New_York","timestamps":[{"from":"2025-06-24T09:00:00-04:00","to":"2025-06-24T17:00:00-04:00"}],"currency":"USD","earnings":[{"name":"Sandbox
+        Test Earning","category":"hourly","amount":15000,"rate":1000,"hours":15.0}]},{"id":"299e5d25-0920-4b5f-9025-0857f446673b","created_at":"2025-06-24T22:04:35.276087+00:00","account_id":"934f6406-c332-4c05-a3e8-6a90765c842d","start_date":"2025-06-23","end_date":"2025-06-23","type":"shift","timezone":"America/New_York","timestamps":[{"from":"2025-06-23T09:00:00-04:00","to":"2025-06-23T17:00:00-04:00"}],"currency":"USD","earnings":[{"name":"Sandbox
+        Test Earning","category":"hourly","amount":15000,"rate":1000,"hours":15.0}]},{"id":"5de4eb01-f975-40c9-bc9a-1057f493095b","created_at":"2025-06-24T22:04:35.276087+00:00","account_id":"934f6406-c332-4c05-a3e8-6a90765c842d","start_date":"2025-06-22","end_date":"2025-06-22","type":"shift","timezone":"America/New_York","timestamps":[{"from":"2025-06-22T09:00:00-04:00","to":"2025-06-22T17:00:00-04:00"}],"currency":"USD","earnings":[{"name":"Sandbox
+        Test Earning","category":"hourly","amount":15000,"rate":1000,"hours":15.0}]},{"id":"3af126eb-7bc2-4b21-9a0d-461fb05d04c7","created_at":"2025-06-24T22:04:35.276087+00:00","account_id":"934f6406-c332-4c05-a3e8-6a90765c842d","start_date":"2025-06-21","end_date":"2025-06-21","type":"shift","timezone":"America/New_York","timestamps":[{"from":"2025-06-21T09:00:00-04:00","to":"2025-06-21T17:00:00-04:00"}],"currency":"USD","earnings":[{"name":"Sandbox
+        Test Earning","category":"hourly","amount":15000,"rate":1000,"hours":15.0}]},{"id":"23a1d0cf-aafe-4624-90ef-b25c2c3067b8","created_at":"2025-06-24T22:04:35.276087+00:00","account_id":"934f6406-c332-4c05-a3e8-6a90765c842d","start_date":"2025-06-20","end_date":"2025-06-20","type":"shift","timezone":"America/New_York","timestamps":[{"from":"2025-06-20T09:00:00-04:00","to":"2025-06-20T17:00:00-04:00"}],"currency":"USD","earnings":[{"name":"Sandbox
+        Test Earning","category":"hourly","amount":15000,"rate":1000,"hours":15.0}]},{"id":"eacf520b-3ea7-4ea8-9602-3a47394639f2","created_at":"2025-06-24T22:04:35.276087+00:00","account_id":"934f6406-c332-4c05-a3e8-6a90765c842d","start_date":"2025-06-19","end_date":"2025-06-19","type":"shift","timezone":"America/New_York","timestamps":[{"from":"2025-06-19T09:00:00-04:00","to":"2025-06-19T17:00:00-04:00"}],"currency":"USD","earnings":[{"name":"Sandbox
+        Test Earning","category":"hourly","amount":15000,"rate":1000,"hours":15.0}]},{"id":"40c83a70-e50e-4d2a-a9a1-f680fce15088","created_at":"2025-06-24T22:04:35.276087+00:00","account_id":"934f6406-c332-4c05-a3e8-6a90765c842d","start_date":"2025-06-18","end_date":"2025-06-18","type":"shift","timezone":"America/New_York","timestamps":[{"from":"2025-06-18T09:00:00-04:00","to":"2025-06-18T17:00:00-04:00"}],"currency":"USD","earnings":[{"name":"Sandbox
+        Test Earning","category":"hourly","amount":15000,"rate":1000,"hours":15.0}]},{"id":"194a6dce-a515-4833-9987-e42a04ed09ad","created_at":"2025-06-24T22:04:37.856529+00:00","account_id":"934f6406-c332-4c05-a3e8-6a90765c842d","start_date":"2025-06-17","end_date":"2025-06-17","type":"shift","timezone":"America/New_York","timestamps":[{"from":"2025-06-17T09:00:00-04:00","to":"2025-06-17T17:00:00-04:00"}],"currency":"USD","earnings":[{"name":"Sandbox
+        Test Earning","category":"hourly","amount":15000,"rate":1000,"hours":15.0}]},{"id":"00519e4a-075e-466d-bff8-8d8cbcdc6862","created_at":"2025-06-24T22:04:37.856529+00:00","account_id":"934f6406-c332-4c05-a3e8-6a90765c842d","start_date":"2025-06-16","end_date":"2025-06-16","type":"shift","timezone":"America/New_York","timestamps":[{"from":"2025-06-16T09:00:00-04:00","to":"2025-06-16T17:00:00-04:00"}],"currency":"USD","earnings":[{"name":"Sandbox
+        Test Earning","category":"hourly","amount":15000,"rate":1000,"hours":15.0}]},{"id":"2089ead3-5120-4117-aad3-be832c51d7b7","created_at":"2025-06-24T22:04:37.856529+00:00","account_id":"934f6406-c332-4c05-a3e8-6a90765c842d","start_date":"2025-06-15","end_date":"2025-06-15","type":"shift","timezone":"America/New_York","timestamps":[{"from":"2025-06-15T09:00:00-04:00","to":"2025-06-15T17:00:00-04:00"}],"currency":"USD","earnings":[{"name":"Sandbox
+        Test Earning","category":"hourly","amount":15000,"rate":1000,"hours":15.0}]},{"id":"73c008a4-d28b-4d5a-871d-b10f41d4a2d5","created_at":"2025-06-24T22:04:37.856529+00:00","account_id":"934f6406-c332-4c05-a3e8-6a90765c842d","start_date":"2025-06-14","end_date":"2025-06-14","type":"shift","timezone":"America/New_York","timestamps":[{"from":"2025-06-14T09:00:00-04:00","to":"2025-06-14T17:00:00-04:00"}],"currency":"USD","earnings":[{"name":"Sandbox
+        Test Earning","category":"hourly","amount":15000,"rate":1000,"hours":15.0}]},{"id":"79083e66-7235-4d65-858c-c760ae9e4fea","created_at":"2025-06-24T22:04:37.856529+00:00","account_id":"934f6406-c332-4c05-a3e8-6a90765c842d","start_date":"2025-06-13","end_date":"2025-06-13","type":"shift","timezone":"America/New_York","timestamps":[{"from":"2025-06-13T09:00:00-04:00","to":"2025-06-13T17:00:00-04:00"}],"currency":"USD","earnings":[{"name":"Sandbox
+        Test Earning","category":"hourly","amount":15000,"rate":1000,"hours":15.0}]},{"id":"32cc8cec-99a5-453a-90ee-891e7fc7556c","created_at":"2025-06-24T22:04:37.856529+00:00","account_id":"934f6406-c332-4c05-a3e8-6a90765c842d","start_date":"2025-06-12","end_date":"2025-06-12","type":"shift","timezone":"America/New_York","timestamps":[{"from":"2025-06-12T09:00:00-04:00","to":"2025-06-12T17:00:00-04:00"}],"currency":"USD","earnings":[{"name":"Sandbox
+        Test Earning","category":"hourly","amount":15000,"rate":1000,"hours":15.0}]},{"id":"24f526af-04ca-4ac0-a6b4-b1b4f809ca85","created_at":"2025-06-24T22:04:37.856529+00:00","account_id":"934f6406-c332-4c05-a3e8-6a90765c842d","start_date":"2025-06-11","end_date":"2025-06-11","type":"shift","timezone":"America/New_York","timestamps":[{"from":"2025-06-11T09:00:00-04:00","to":"2025-06-11T17:00:00-04:00"}],"currency":"USD","earnings":[{"name":"Sandbox
+        Test Earning","category":"hourly","amount":15000,"rate":1000,"hours":15.0}]},{"id":"eca82309-fc82-4533-b754-a8fa96b7b1a5","created_at":"2025-06-24T22:04:37.856529+00:00","account_id":"934f6406-c332-4c05-a3e8-6a90765c842d","start_date":"2025-06-10","end_date":"2025-06-10","type":"shift","timezone":"America/New_York","timestamps":[{"from":"2025-06-10T09:00:00-04:00","to":"2025-06-10T17:00:00-04:00"}],"currency":"USD","earnings":[{"name":"Sandbox
+        Test Earning","category":"hourly","amount":15000,"rate":1000,"hours":15.0}]},{"id":"636aad47-9fa9-498c-b101-6fb7e4f3ff94","created_at":"2025-06-24T22:04:37.856529+00:00","account_id":"934f6406-c332-4c05-a3e8-6a90765c842d","start_date":"2025-06-09","end_date":"2025-06-09","type":"shift","timezone":"America/New_York","timestamps":[{"from":"2025-06-09T09:00:00-04:00","to":"2025-06-09T17:00:00-04:00"}],"currency":"USD","earnings":[{"name":"Sandbox
+        Test Earning","category":"hourly","amount":15000,"rate":1000,"hours":15.0}]},{"id":"bcf0caec-36c1-49bc-8396-66acd3e66ba1","created_at":"2025-06-24T22:04:37.856529+00:00","account_id":"934f6406-c332-4c05-a3e8-6a90765c842d","start_date":"2025-06-08","end_date":"2025-06-08","type":"shift","timezone":"America/New_York","timestamps":[{"from":"2025-06-08T09:00:00-04:00","to":"2025-06-08T17:00:00-04:00"}],"currency":"USD","earnings":[{"name":"Sandbox
+        Test Earning","category":"hourly","amount":15000,"rate":1000,"hours":15.0}]},{"id":"01903627-464c-480c-8f7a-f498385f153c","created_at":"2025-06-24T22:04:37.856529+00:00","account_id":"934f6406-c332-4c05-a3e8-6a90765c842d","start_date":"2025-06-07","end_date":"2025-06-07","type":"shift","timezone":"America/New_York","timestamps":[{"from":"2025-06-07T09:00:00-04:00","to":"2025-06-07T17:00:00-04:00"}],"currency":"USD","earnings":[{"name":"Sandbox
+        Test Earning","category":"hourly","amount":15000,"rate":1000,"hours":15.0}]},{"id":"01700a29-91e1-4463-b34b-2acca2fe147b","created_at":"2025-06-24T22:04:37.856529+00:00","account_id":"934f6406-c332-4c05-a3e8-6a90765c842d","start_date":"2025-06-06","end_date":"2025-06-06","type":"shift","timezone":"America/New_York","timestamps":[{"from":"2025-06-06T09:00:00-04:00","to":"2025-06-06T17:00:00-04:00"}],"currency":"USD","earnings":[{"name":"Sandbox
+        Test Earning","category":"hourly","amount":15000,"rate":1000,"hours":15.0}]},{"id":"8e2a1258-a627-4641-abfb-44a6aac6d107","created_at":"2025-06-24T22:04:37.856529+00:00","account_id":"934f6406-c332-4c05-a3e8-6a90765c842d","start_date":"2025-06-05","end_date":"2025-06-05","type":"shift","timezone":"America/New_York","timestamps":[{"from":"2025-06-05T09:00:00-04:00","to":"2025-06-05T17:00:00-04:00"}],"currency":"USD","earnings":[{"name":"Sandbox
+        Test Earning","category":"hourly","amount":15000,"rate":1000,"hours":15.0}]},{"id":"1954f1e9-db0e-4acf-ba30-8d9c9cf86a37","created_at":"2025-06-24T22:04:37.856529+00:00","account_id":"934f6406-c332-4c05-a3e8-6a90765c842d","start_date":"2025-06-04","end_date":"2025-06-04","type":"shift","timezone":"America/New_York","timestamps":[{"from":"2025-06-04T09:00:00-04:00","to":"2025-06-04T17:00:00-04:00"}],"currency":"USD","earnings":[{"name":"Sandbox
+        Test Earning","category":"hourly","amount":15000,"rate":1000,"hours":15.0}]},{"id":"40a43fe3-09da-4367-a3ba-2d608bb2033b","created_at":"2025-06-24T22:04:37.856529+00:00","account_id":"934f6406-c332-4c05-a3e8-6a90765c842d","start_date":"2025-06-03","end_date":"2025-06-03","type":"shift","timezone":"America/New_York","timestamps":[{"from":"2025-06-03T09:00:00-04:00","to":"2025-06-03T17:00:00-04:00"}],"currency":"USD","earnings":[{"name":"Sandbox
+        Test Earning","category":"hourly","amount":15000,"rate":1000,"hours":15.0}]},{"id":"6fdde1c4-e8b9-49e2-8af3-0350b0029122","created_at":"2025-06-24T22:04:37.856529+00:00","account_id":"934f6406-c332-4c05-a3e8-6a90765c842d","start_date":"2025-06-02","end_date":"2025-06-02","type":"shift","timezone":"America/New_York","timestamps":[{"from":"2025-06-02T09:00:00-04:00","to":"2025-06-02T17:00:00-04:00"}],"currency":"USD","earnings":[{"name":"Sandbox
+        Test Earning","category":"hourly","amount":15000,"rate":1000,"hours":15.0}]},{"id":"0a2be905-e3e8-4144-9c80-586e31528215","created_at":"2025-06-24T22:04:37.856529+00:00","account_id":"934f6406-c332-4c05-a3e8-6a90765c842d","start_date":"2025-06-01","end_date":"2025-06-01","type":"shift","timezone":"America/New_York","timestamps":[{"from":"2025-06-01T09:00:00-04:00","to":"2025-06-01T17:00:00-04:00"}],"currency":"USD","earnings":[{"name":"Sandbox
+        Test Earning","category":"hourly","amount":15000,"rate":1000,"hours":15.0}]},{"id":"3be72048-b9c8-492d-aa87-c295bbb05e8c","created_at":"2025-06-24T22:04:37.856529+00:00","account_id":"934f6406-c332-4c05-a3e8-6a90765c842d","start_date":"2025-05-31","end_date":"2025-05-31","type":"shift","timezone":"America/New_York","timestamps":[{"from":"2025-05-31T09:00:00-04:00","to":"2025-05-31T17:00:00-04:00"}],"currency":"USD","earnings":[{"name":"Sandbox
+        Test Earning","category":"hourly","amount":15000,"rate":1000,"hours":15.0}]}]}'
+  recorded_at: Tue, 24 Jun 2025 22:04:21 GMT
+- request:
+    method: get
+    uri: https://sandbox.getpinwheel.com/v1/platforms/5965580e-380f-4b86-8a8a-7278c77f73cb
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Content-Type:
+      - application/json
+      Pinwheel-Version:
+      - '2023-11-22'
+      X-Api-Secret:
+      - "<PINWHEEL_API_TOKEN>"
+      User-Agent:
+      - Faraday v2.9.2
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Accept:
+      - "*/*"
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Date:
+      - Tue, 24 Jun 2025 22:04:47 GMT
+      Content-Type:
+      - application/json
+      Content-Length:
+      - '575'
+      Connection:
+      - keep-alive
+      Server:
+      - uvicorn
+      Pinwheel-Version:
+      - '2023-11-22'
+      Content-Security-Policy:
+      - frame-ancestors 'none'
+      Strict-Transport-Security:
+      - max-age=31536000; includeSubDomains;
+      X-Pinwheel-Request-Id:
+      - 48be59f0-4344-4b31-8de4-7e7636b48efb
+    body:
+      encoding: UTF-8
+      string: '{"data":{"id":"5965580e-380f-4b86-8a8a-7278c77f73cb","name":"Workday","type":"payroll","fractional_amount_supported":true,"min_amount":null,"max_amount":null,"last_updated":"2025-05-13T18:41:08.804385+00:00","logo_url":"https://cdn.getpinwheel.com/assets/platforms/logos/search/cfmpw.png","percentage_supported":true,"min_percentage":1,"max_percentage":99,"supported_jobs":["company_incomes","company_employments","direct_deposit_allocations","shifts","income","direct_deposit_switch","tax_forms","company_census","employment","identity","paystubs"],"amount_supported":true}}'
+  recorded_at: Tue, 24 Jun 2025 22:04:21 GMT
+- request:
+    method: get
+    uri: https://sandbox.getpinwheel.com/v1/accounts/934f6406-c332-4c05-a3e8-6a90765c842d/employment
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Content-Type:
+      - application/json
+      Pinwheel-Version:
+      - '2023-11-22'
+      X-Api-Secret:
+      - "<PINWHEEL_API_TOKEN>"
+      User-Agent:
+      - Faraday v2.9.2
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Accept:
+      - "*/*"
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Date:
+      - Tue, 24 Jun 2025 22:04:47 GMT
+      Content-Type:
+      - application/json
+      Content-Length:
+      - '634'
+      Connection:
+      - keep-alive
+      Server:
+      - uvicorn
+      Pinwheel-Version:
+      - '2023-11-22'
+      Content-Security-Policy:
+      - frame-ancestors 'none'
+      Strict-Transport-Security:
+      - max-age=31536000; includeSubDomains;
+      X-Pinwheel-Request-Id:
+      - b1b6e6b7-9e01-4a97-929d-72b499990c5f
+    body:
+      encoding: UTF-8
+      string: '{"data":{"id":"c9d3fc3b-3e2e-4a3e-855a-1eb77396a85c","created_at":"2025-06-24T22:04:40.979175+00:00","updated_at":"2025-06-24T22:04:40.979175+00:00","account_id":"934f6406-c332-4c05-a3e8-6a90765c842d","status":"employed","start_date":"2010-01-01","termination_date":null,"employer_name":"Acme
+        Corporation","employer_address":{"raw":"20429 Pinwheel Drive, New York City,
+        NY 99999","line1":"20429 Pinwheel Drive","line2":null,"city":"New York City","state":"NY","postal_code":"99999","country":"US"},"employer_phone_number":{"value":"+16126597057","type":"work"},"title":null},"meta":{"refreshed_at":"2025-06-24T22:04:41.075640+00:00"}}'
+  recorded_at: Tue, 24 Jun 2025 22:04:21 GMT
+- request:
+    method: get
+    uri: https://sandbox.getpinwheel.com/v1/accounts/934f6406-c332-4c05-a3e8-6a90765c842d/income
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Content-Type:
+      - application/json
+      Pinwheel-Version:
+      - '2023-11-22'
+      X-Api-Secret:
+      - "<PINWHEEL_API_TOKEN>"
+      User-Agent:
+      - Faraday v2.9.2
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Accept:
+      - "*/*"
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Date:
+      - Tue, 24 Jun 2025 22:04:48 GMT
+      Content-Type:
+      - application/json
+      Content-Length:
+      - '362'
+      Connection:
+      - keep-alive
+      Server:
+      - uvicorn
+      Pinwheel-Version:
+      - '2023-11-22'
+      Content-Security-Policy:
+      - frame-ancestors 'none'
+      Strict-Transport-Security:
+      - max-age=31536000; includeSubDomains;
+      X-Pinwheel-Request-Id:
+      - 3e683ba9-a2e4-4415-bf7d-a0a6377ba5cc
+    body:
+      encoding: UTF-8
+      string: '{"data":{"id":"c8dae54d-915c-4573-975a-f5ba54f57aa0","created_at":"2025-06-24T22:04:34.558075+00:00","updated_at":"2025-06-24T22:04:38.686874+00:00","account_id":"934f6406-c332-4c05-a3e8-6a90765c842d","compensation_amount":1000,"compensation_unit":"hourly","currency":"USD","pay_frequency":"bi-weekly"},"meta":{"refreshed_at":"2025-06-24T22:04:34.629192+00:00"}}'
+  recorded_at: Tue, 24 Jun 2025 22:04:21 GMT
+- request:
+    method: get
+    uri: https://sandbox.getpinwheel.com/v1/accounts/934f6406-c332-4c05-a3e8-6a90765c842d/paystubs?from_pay_date=2025-03-26&to_pay_date=2025-06-24
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Content-Type:
+      - application/json
+      Pinwheel-Version:
+      - '2023-11-22'
+      X-Api-Secret:
+      - "<PINWHEEL_API_TOKEN>"
+      User-Agent:
+      - Faraday v2.9.2
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Accept:
+      - "*/*"
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Date:
+      - Tue, 24 Jun 2025 22:04:48 GMT
+      Content-Type:
+      - application/json
+      Content-Length:
+      - '12175'
+      Connection:
+      - keep-alive
+      Server:
+      - uvicorn
+      Pinwheel-Version:
+      - '2023-11-22'
+      Content-Security-Policy:
+      - frame-ancestors 'none'
+      Strict-Transport-Security:
+      - max-age=31536000; includeSubDomains;
+      X-Pinwheel-Request-Id:
+      - 8a7bcc72-cb4b-43dd-8b5a-237a01d969e6
+    body:
+      encoding: UTF-8
+      string: '{"meta":{"refreshed_at":"2025-06-24T22:04:38.805798+00:00","count":4,"next_cursor":null},"data":[{"id":"c80ed2d6-a0fe-4b63-8c92-92414cea9b37","created_at":"2025-06-24T22:04:35.119310+00:00","account_id":"934f6406-c332-4c05-a3e8-6a90765c842d","pay_date":"2025-06-24","pay_period_start":"2025-06-11","pay_period_end":"2025-06-24","currency":"USD","gross_pay_amount":50000,"net_pay_amount":46000,"check_amount":46000,"gross_pay_ytd":50000,"net_pay_ytd":46000,"total_taxes":3825,"total_deductions":175,"total_reimbursements":0,"external_paystub_id":null,"employer_name":null,"taxes":[{"name":"Pinwheel
+        Tax","category":"state_income","amount":0},{"name":"Employee Medicare Tax","category":"medicare","amount":725},{"name":"Employee
+        Social Security Tax","category":"social_security","amount":3100},{"name":"Federal
+        Income Tax","category":"federal_income","amount":0}],"deductions":[{"name":"Deduction","category":"other","amount":175,"type":"unknown"}],"earnings":[{"name":"Regular","category":"hourly","amount":50000,"rate":5000,"hours":10.0}],"time_off":[{"name":"PTO","category":"pto","available_hours":25.0,"earned_hours":0.75,"used_hours":0.0},{"name":"Sick
+        Leave","category":"sick","available_hours":8.0,"earned_hours":0.1,"used_hours":2.0}],"document":{"id":"00000000-0000-0000-0000-000000000000","download_url":"https://production-newton-paystubs.s3.amazonaws.com/00000000-0000-0000-0000-000000000000/paystub/00000000-0000-0000-0000-000000000000.pdf?response-content-type=application%2Fpdf&X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=<PINWHEEL_AWS_KEY_ID>&X-Amz-Date=20250624T220448Z&X-Amz-Expires=900&X-Amz-SignedHeaders=host&X-Amz-Security-Token=IQoJb3JpZ2luX2VjED4aCXVzLWVhc3QtMSJHMEUCIBnGfqaBFxl5mjn5KKEzgOqyx5YqBDr3sJgndckyoE%2BXAiEApdMPK%2FIR4Dza8RMNA%2F72CSIscyYOy9FZsifMpRGAnsYq%2BQQINxAEGgw4ODU5MjQzMDc0NDkiDKf3q%2Fk37GWCkm%2FL4irWBKP2NVOzCX4%2FdbwFI6fPrDiB8NhzFrN4kwaVC3tilVQug8VhAwSvxAhVPKqwOgQaZYq4eZ2D%2BOp2Zcy6gyPZXB096o1917v45%2FT1oEMxIhdVRxxfbdGIeS9otM4FYUnFIVFHmGywnFG17p8fIyz%2Fgld%2Fw8DdowLQsnG67K%2Fx%2B5FhDGzuq%2BYY61nZuI%2FFoFsVsTb8OJof8um1lAtoysphkLkb2UvM8jUzjFB6QqCpYD16ffJsG2yw4uGT7Q9fJhYRZeqnfZkwr015CQf3caO7FJPV9WV%2BoPIdTvegNRqZ0UvT1XXHfes1uYsNb4BxTgGGlJiwNMlCZkdp9y5c%2FuZCOUzCmBRN%2BXDjuOdbjeWWO0Uikg9yHTOxObm9uioH9ybALwP9oF0h6cFMdtMdgEUzHvxTmu%2B30%2Bjqd3mE3tsQ7Wm1ExRrfau694jelf4cGQnrEILuqvk2uiW0o1sN5Zl4a%2B0jQ5GzqvgxAlJ3616xAfOmcHZVdHCccGUb7zEzx2g4CNWyWuR7Oc9E8DU8G7%2B%2FCYsDbUhojK4JvmfWKpKbhynzGwb9FxjmiFGZHTpSTwNLh%2BBt5PzA%2BEF1kqklD3Jo1HSFVvzQjmee1UD01fnujthjjhTAhKfv1Bnn5a%2FxZu6k56SH3xzhFZDbLE7ZfAZqzdxC6khL8yZhBZk%2B9x3ddTUD2PX89ba80pVv4nAJwhi6noRB3PtMrDD8cB1m4RvkYIykECaQYCV0fyW3gQBwqfSOuAP9H9CR1nYe7IvsnVaxjTpv%2BtTEEr0K0vXJTUET%2BrTsC2goVjQw9bnswgY6mgHToLRCjYn3G%2FB2xnTGPVRBeGi7iOIaQV71zu4jqsdBCFIZRyIlO2PPlUBsCQRZu0IkKJx%2F8q2slvN%2FqrxgJkH%2FbFj0GclvbklVwoYGd0LH%2FBHv3sobPI6hZIsVK%2BACHTDRppbWHpT1vdg5NTEeSOkuVUyWWEqBBx6AQsdAfWqgt5kI%2FaYYi%2BAgStpm%2B8n2IHBW2t0pqadmhQbG&X-Amz-Signature=b48d8b2853b068f80c04873773fa790410185f666c5ad0bad9f4906aabaefbbf","download_url_expiration":"2025-06-24T22:19:48.539788+00:00"}},{"id":"6e65691e-6391-4789-abf8-7fe8cae27335","created_at":"2025-06-24T22:04:35.843721+00:00","account_id":"934f6406-c332-4c05-a3e8-6a90765c842d","pay_date":"2025-06-10","pay_period_start":"2025-05-28","pay_period_end":"2025-06-10","currency":"USD","gross_pay_amount":50000,"net_pay_amount":46000,"check_amount":46000,"gross_pay_ytd":50000,"net_pay_ytd":46000,"total_taxes":3825,"total_deductions":175,"total_reimbursements":0,"external_paystub_id":null,"employer_name":null,"taxes":[{"name":"Pinwheel
+        Tax","category":"state_income","amount":0},{"name":"Employee Medicare Tax","category":"medicare","amount":725},{"name":"Employee
+        Social Security Tax","category":"social_security","amount":3100},{"name":"Federal
+        Income Tax","category":"federal_income","amount":0}],"deductions":[{"name":"Deduction","category":"other","amount":175,"type":"unknown"}],"earnings":[{"name":"Regular","category":"hourly","amount":50000,"rate":5000,"hours":10.0}],"time_off":[{"name":"PTO","category":"pto","available_hours":25.0,"earned_hours":0.75,"used_hours":0.0},{"name":"Sick
+        Leave","category":"sick","available_hours":8.0,"earned_hours":0.1,"used_hours":2.0}],"document":{"id":"00000000-0000-0000-0000-000000000000","download_url":"https://production-newton-paystubs.s3.amazonaws.com/00000000-0000-0000-0000-000000000000/paystub/00000000-0000-0000-0000-000000000000.pdf?response-content-type=application%2Fpdf&X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=<PINWHEEL_AWS_KEY_ID>&X-Amz-Date=20250624T220448Z&X-Amz-Expires=900&X-Amz-SignedHeaders=host&X-Amz-Security-Token=IQoJb3JpZ2luX2VjED4aCXVzLWVhc3QtMSJHMEUCIBnGfqaBFxl5mjn5KKEzgOqyx5YqBDr3sJgndckyoE%2BXAiEApdMPK%2FIR4Dza8RMNA%2F72CSIscyYOy9FZsifMpRGAnsYq%2BQQINxAEGgw4ODU5MjQzMDc0NDkiDKf3q%2Fk37GWCkm%2FL4irWBKP2NVOzCX4%2FdbwFI6fPrDiB8NhzFrN4kwaVC3tilVQug8VhAwSvxAhVPKqwOgQaZYq4eZ2D%2BOp2Zcy6gyPZXB096o1917v45%2FT1oEMxIhdVRxxfbdGIeS9otM4FYUnFIVFHmGywnFG17p8fIyz%2Fgld%2Fw8DdowLQsnG67K%2Fx%2B5FhDGzuq%2BYY61nZuI%2FFoFsVsTb8OJof8um1lAtoysphkLkb2UvM8jUzjFB6QqCpYD16ffJsG2yw4uGT7Q9fJhYRZeqnfZkwr015CQf3caO7FJPV9WV%2BoPIdTvegNRqZ0UvT1XXHfes1uYsNb4BxTgGGlJiwNMlCZkdp9y5c%2FuZCOUzCmBRN%2BXDjuOdbjeWWO0Uikg9yHTOxObm9uioH9ybALwP9oF0h6cFMdtMdgEUzHvxTmu%2B30%2Bjqd3mE3tsQ7Wm1ExRrfau694jelf4cGQnrEILuqvk2uiW0o1sN5Zl4a%2B0jQ5GzqvgxAlJ3616xAfOmcHZVdHCccGUb7zEzx2g4CNWyWuR7Oc9E8DU8G7%2B%2FCYsDbUhojK4JvmfWKpKbhynzGwb9FxjmiFGZHTpSTwNLh%2BBt5PzA%2BEF1kqklD3Jo1HSFVvzQjmee1UD01fnujthjjhTAhKfv1Bnn5a%2FxZu6k56SH3xzhFZDbLE7ZfAZqzdxC6khL8yZhBZk%2B9x3ddTUD2PX89ba80pVv4nAJwhi6noRB3PtMrDD8cB1m4RvkYIykECaQYCV0fyW3gQBwqfSOuAP9H9CR1nYe7IvsnVaxjTpv%2BtTEEr0K0vXJTUET%2BrTsC2goVjQw9bnswgY6mgHToLRCjYn3G%2FB2xnTGPVRBeGi7iOIaQV71zu4jqsdBCFIZRyIlO2PPlUBsCQRZu0IkKJx%2F8q2slvN%2FqrxgJkH%2FbFj0GclvbklVwoYGd0LH%2FBHv3sobPI6hZIsVK%2BACHTDRppbWHpT1vdg5NTEeSOkuVUyWWEqBBx6AQsdAfWqgt5kI%2FaYYi%2BAgStpm%2B8n2IHBW2t0pqadmhQbG&X-Amz-Signature=b48d8b2853b068f80c04873773fa790410185f666c5ad0bad9f4906aabaefbbf","download_url_expiration":"2025-06-24T22:19:48.542570+00:00"}},{"id":"0c5be6bf-53ca-4597-b277-de311bf69682","created_at":"2025-06-24T22:04:36.842538+00:00","account_id":"934f6406-c332-4c05-a3e8-6a90765c842d","pay_date":"2025-05-13","pay_period_start":"2025-04-30","pay_period_end":"2025-05-13","currency":"USD","gross_pay_amount":50000,"net_pay_amount":46000,"check_amount":46000,"gross_pay_ytd":50000,"net_pay_ytd":46000,"total_taxes":3825,"total_deductions":175,"total_reimbursements":0,"external_paystub_id":null,"employer_name":null,"taxes":[{"name":"Pinwheel
+        Tax","category":"state_income","amount":0},{"name":"Employee Medicare Tax","category":"medicare","amount":725},{"name":"Employee
+        Social Security Tax","category":"social_security","amount":3100},{"name":"Federal
+        Income Tax","category":"federal_income","amount":0}],"deductions":[{"name":"Deduction","category":"other","amount":175,"type":"unknown"}],"earnings":[{"name":"Regular","category":"hourly","amount":50000,"rate":5000,"hours":10.0}],"time_off":[{"name":"PTO","category":"pto","available_hours":25.0,"earned_hours":0.75,"used_hours":0.0},{"name":"Sick
+        Leave","category":"sick","available_hours":8.0,"earned_hours":0.1,"used_hours":2.0}],"document":{"id":"00000000-0000-0000-0000-000000000000","download_url":"https://production-newton-paystubs.s3.amazonaws.com/00000000-0000-0000-0000-000000000000/paystub/00000000-0000-0000-0000-000000000000.pdf?response-content-type=application%2Fpdf&X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=<PINWHEEL_AWS_KEY_ID>&X-Amz-Date=20250624T220448Z&X-Amz-Expires=900&X-Amz-SignedHeaders=host&X-Amz-Security-Token=IQoJb3JpZ2luX2VjED4aCXVzLWVhc3QtMSJHMEUCIBnGfqaBFxl5mjn5KKEzgOqyx5YqBDr3sJgndckyoE%2BXAiEApdMPK%2FIR4Dza8RMNA%2F72CSIscyYOy9FZsifMpRGAnsYq%2BQQINxAEGgw4ODU5MjQzMDc0NDkiDKf3q%2Fk37GWCkm%2FL4irWBKP2NVOzCX4%2FdbwFI6fPrDiB8NhzFrN4kwaVC3tilVQug8VhAwSvxAhVPKqwOgQaZYq4eZ2D%2BOp2Zcy6gyPZXB096o1917v45%2FT1oEMxIhdVRxxfbdGIeS9otM4FYUnFIVFHmGywnFG17p8fIyz%2Fgld%2Fw8DdowLQsnG67K%2Fx%2B5FhDGzuq%2BYY61nZuI%2FFoFsVsTb8OJof8um1lAtoysphkLkb2UvM8jUzjFB6QqCpYD16ffJsG2yw4uGT7Q9fJhYRZeqnfZkwr015CQf3caO7FJPV9WV%2BoPIdTvegNRqZ0UvT1XXHfes1uYsNb4BxTgGGlJiwNMlCZkdp9y5c%2FuZCOUzCmBRN%2BXDjuOdbjeWWO0Uikg9yHTOxObm9uioH9ybALwP9oF0h6cFMdtMdgEUzHvxTmu%2B30%2Bjqd3mE3tsQ7Wm1ExRrfau694jelf4cGQnrEILuqvk2uiW0o1sN5Zl4a%2B0jQ5GzqvgxAlJ3616xAfOmcHZVdHCccGUb7zEzx2g4CNWyWuR7Oc9E8DU8G7%2B%2FCYsDbUhojK4JvmfWKpKbhynzGwb9FxjmiFGZHTpSTwNLh%2BBt5PzA%2BEF1kqklD3Jo1HSFVvzQjmee1UD01fnujthjjhTAhKfv1Bnn5a%2FxZu6k56SH3xzhFZDbLE7ZfAZqzdxC6khL8yZhBZk%2B9x3ddTUD2PX89ba80pVv4nAJwhi6noRB3PtMrDD8cB1m4RvkYIykECaQYCV0fyW3gQBwqfSOuAP9H9CR1nYe7IvsnVaxjTpv%2BtTEEr0K0vXJTUET%2BrTsC2goVjQw9bnswgY6mgHToLRCjYn3G%2FB2xnTGPVRBeGi7iOIaQV71zu4jqsdBCFIZRyIlO2PPlUBsCQRZu0IkKJx%2F8q2slvN%2FqrxgJkH%2FbFj0GclvbklVwoYGd0LH%2FBHv3sobPI6hZIsVK%2BACHTDRppbWHpT1vdg5NTEeSOkuVUyWWEqBBx6AQsdAfWqgt5kI%2FaYYi%2BAgStpm%2B8n2IHBW2t0pqadmhQbG&X-Amz-Signature=b48d8b2853b068f80c04873773fa790410185f666c5ad0bad9f4906aabaefbbf","download_url_expiration":"2025-06-24T22:19:48.545108+00:00"}},{"id":"9bb0d63d-58b9-4202-ba95-5f1117502c00","created_at":"2025-06-24T22:04:36.842538+00:00","account_id":"934f6406-c332-4c05-a3e8-6a90765c842d","pay_date":"2025-04-29","pay_period_start":"2025-04-16","pay_period_end":"2025-04-29","currency":"USD","gross_pay_amount":52000,"net_pay_amount":48000,"check_amount":48000,"gross_pay_ytd":102000,"net_pay_ytd":94000,"total_taxes":3825,"total_deductions":175,"total_reimbursements":0,"external_paystub_id":null,"employer_name":null,"taxes":[{"name":"Pinwheel
+        Tax","category":"state_income","amount":0},{"name":"Employee Medicare Tax","category":"medicare","amount":725},{"name":"Employee
+        Social Security Tax","category":"social_security","amount":3100},{"name":"Federal
+        Income Tax","category":"federal_income","amount":0}],"deductions":[{"name":"Deduction","category":"other","amount":175,"type":"unknown"}],"earnings":[{"name":"Regular","category":"hourly","amount":52000,"rate":5000,"hours":10.4}],"time_off":[{"name":"PTO","category":"pto","available_hours":25.0,"earned_hours":0.75,"used_hours":0.0},{"name":"Sick
+        Leave","category":"sick","available_hours":8.0,"earned_hours":0.1,"used_hours":2.0}],"document":{"id":"00000000-0000-0000-0000-000000000000","download_url":"https://production-newton-paystubs.s3.amazonaws.com/00000000-0000-0000-0000-000000000000/paystub/00000000-0000-0000-0000-000000000000.pdf?response-content-type=application%2Fpdf&X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=<PINWHEEL_AWS_KEY_ID>&X-Amz-Date=20250624T220448Z&X-Amz-Expires=900&X-Amz-SignedHeaders=host&X-Amz-Security-Token=IQoJb3JpZ2luX2VjED4aCXVzLWVhc3QtMSJHMEUCIBnGfqaBFxl5mjn5KKEzgOqyx5YqBDr3sJgndckyoE%2BXAiEApdMPK%2FIR4Dza8RMNA%2F72CSIscyYOy9FZsifMpRGAnsYq%2BQQINxAEGgw4ODU5MjQzMDc0NDkiDKf3q%2Fk37GWCkm%2FL4irWBKP2NVOzCX4%2FdbwFI6fPrDiB8NhzFrN4kwaVC3tilVQug8VhAwSvxAhVPKqwOgQaZYq4eZ2D%2BOp2Zcy6gyPZXB096o1917v45%2FT1oEMxIhdVRxxfbdGIeS9otM4FYUnFIVFHmGywnFG17p8fIyz%2Fgld%2Fw8DdowLQsnG67K%2Fx%2B5FhDGzuq%2BYY61nZuI%2FFoFsVsTb8OJof8um1lAtoysphkLkb2UvM8jUzjFB6QqCpYD16ffJsG2yw4uGT7Q9fJhYRZeqnfZkwr015CQf3caO7FJPV9WV%2BoPIdTvegNRqZ0UvT1XXHfes1uYsNb4BxTgGGlJiwNMlCZkdp9y5c%2FuZCOUzCmBRN%2BXDjuOdbjeWWO0Uikg9yHTOxObm9uioH9ybALwP9oF0h6cFMdtMdgEUzHvxTmu%2B30%2Bjqd3mE3tsQ7Wm1ExRrfau694jelf4cGQnrEILuqvk2uiW0o1sN5Zl4a%2B0jQ5GzqvgxAlJ3616xAfOmcHZVdHCccGUb7zEzx2g4CNWyWuR7Oc9E8DU8G7%2B%2FCYsDbUhojK4JvmfWKpKbhynzGwb9FxjmiFGZHTpSTwNLh%2BBt5PzA%2BEF1kqklD3Jo1HSFVvzQjmee1UD01fnujthjjhTAhKfv1Bnn5a%2FxZu6k56SH3xzhFZDbLE7ZfAZqzdxC6khL8yZhBZk%2B9x3ddTUD2PX89ba80pVv4nAJwhi6noRB3PtMrDD8cB1m4RvkYIykECaQYCV0fyW3gQBwqfSOuAP9H9CR1nYe7IvsnVaxjTpv%2BtTEEr0K0vXJTUET%2BrTsC2goVjQw9bnswgY6mgHToLRCjYn3G%2FB2xnTGPVRBeGi7iOIaQV71zu4jqsdBCFIZRyIlO2PPlUBsCQRZu0IkKJx%2F8q2slvN%2FqrxgJkH%2FbFj0GclvbklVwoYGd0LH%2FBHv3sobPI6hZIsVK%2BACHTDRppbWHpT1vdg5NTEeSOkuVUyWWEqBBx6AQsdAfWqgt5kI%2FaYYi%2BAgStpm%2B8n2IHBW2t0pqadmhQbG&X-Amz-Signature=b48d8b2853b068f80c04873773fa790410185f666c5ad0bad9f4906aabaefbbf","download_url_expiration":"2025-06-24T22:19:48.547549+00:00"}}]}'
+  recorded_at: Tue, 24 Jun 2025 22:04:21 GMT
+- request:
+    method: get
+    uri: https://sandbox.getpinwheel.com/v1/accounts/934f6406-c332-4c05-a3e8-6a90765c842d/shifts
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Content-Type:
+      - application/json
+      Pinwheel-Version:
+      - '2023-11-22'
+      X-Api-Secret:
+      - "<PINWHEEL_API_TOKEN>"
+      User-Agent:
+      - Faraday v2.9.2
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Accept:
+      - "*/*"
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Date:
+      - Tue, 24 Jun 2025 22:04:48 GMT
+      Content-Type:
+      - application/json
+      Content-Length:
+      - '11481'
+      Connection:
+      - keep-alive
+      Server:
+      - uvicorn
+      Pinwheel-Version:
+      - '2023-11-22'
+      Content-Security-Policy:
+      - frame-ancestors 'none'
+      Strict-Transport-Security:
+      - max-age=31536000; includeSubDomains;
+      X-Pinwheel-Request-Id:
+      - cfba101d-5ed4-4394-9c0f-0cd2ec42a1c6
+    body:
+      encoding: UTF-8
+      string: '{"meta":{"refreshed_at":"2025-06-24T22:04:39.588394+00:00","count":25,"next_cursor":"gAAAAABoWyEALyAUpoAOI_iv1SImfPIRg-MeAk-6RA6b57nkjaT3RCGlEmNR144YOg6WlO1zA6TuRS74Ck1MxRSYuEIf522b3VuFXrFFw6vFRb8afphsQ8gqwjM7pdoCmK_rzdlqALvuEw_y6kyR765p-tvA8uts8IpjFMpT_YAvbtlny29Qfqs="},"data":[{"id":"35841865-b1f1-4d96-b8c5-c49824fa8bfc","created_at":"2025-06-24T22:04:35.276087+00:00","account_id":"934f6406-c332-4c05-a3e8-6a90765c842d","start_date":"2025-06-24","end_date":"2025-06-24","type":"shift","timezone":"America/New_York","timestamps":[{"from":"2025-06-24T09:00:00-04:00","to":"2025-06-24T17:00:00-04:00"}],"currency":"USD","earnings":[{"name":"Sandbox
+        Test Earning","category":"hourly","amount":15000,"rate":1000,"hours":15.0}]},{"id":"299e5d25-0920-4b5f-9025-0857f446673b","created_at":"2025-06-24T22:04:35.276087+00:00","account_id":"934f6406-c332-4c05-a3e8-6a90765c842d","start_date":"2025-06-23","end_date":"2025-06-23","type":"shift","timezone":"America/New_York","timestamps":[{"from":"2025-06-23T09:00:00-04:00","to":"2025-06-23T17:00:00-04:00"}],"currency":"USD","earnings":[{"name":"Sandbox
+        Test Earning","category":"hourly","amount":15000,"rate":1000,"hours":15.0}]},{"id":"5de4eb01-f975-40c9-bc9a-1057f493095b","created_at":"2025-06-24T22:04:35.276087+00:00","account_id":"934f6406-c332-4c05-a3e8-6a90765c842d","start_date":"2025-06-22","end_date":"2025-06-22","type":"shift","timezone":"America/New_York","timestamps":[{"from":"2025-06-22T09:00:00-04:00","to":"2025-06-22T17:00:00-04:00"}],"currency":"USD","earnings":[{"name":"Sandbox
+        Test Earning","category":"hourly","amount":15000,"rate":1000,"hours":15.0}]},{"id":"3af126eb-7bc2-4b21-9a0d-461fb05d04c7","created_at":"2025-06-24T22:04:35.276087+00:00","account_id":"934f6406-c332-4c05-a3e8-6a90765c842d","start_date":"2025-06-21","end_date":"2025-06-21","type":"shift","timezone":"America/New_York","timestamps":[{"from":"2025-06-21T09:00:00-04:00","to":"2025-06-21T17:00:00-04:00"}],"currency":"USD","earnings":[{"name":"Sandbox
+        Test Earning","category":"hourly","amount":15000,"rate":1000,"hours":15.0}]},{"id":"23a1d0cf-aafe-4624-90ef-b25c2c3067b8","created_at":"2025-06-24T22:04:35.276087+00:00","account_id":"934f6406-c332-4c05-a3e8-6a90765c842d","start_date":"2025-06-20","end_date":"2025-06-20","type":"shift","timezone":"America/New_York","timestamps":[{"from":"2025-06-20T09:00:00-04:00","to":"2025-06-20T17:00:00-04:00"}],"currency":"USD","earnings":[{"name":"Sandbox
+        Test Earning","category":"hourly","amount":15000,"rate":1000,"hours":15.0}]},{"id":"eacf520b-3ea7-4ea8-9602-3a47394639f2","created_at":"2025-06-24T22:04:35.276087+00:00","account_id":"934f6406-c332-4c05-a3e8-6a90765c842d","start_date":"2025-06-19","end_date":"2025-06-19","type":"shift","timezone":"America/New_York","timestamps":[{"from":"2025-06-19T09:00:00-04:00","to":"2025-06-19T17:00:00-04:00"}],"currency":"USD","earnings":[{"name":"Sandbox
+        Test Earning","category":"hourly","amount":15000,"rate":1000,"hours":15.0}]},{"id":"40c83a70-e50e-4d2a-a9a1-f680fce15088","created_at":"2025-06-24T22:04:35.276087+00:00","account_id":"934f6406-c332-4c05-a3e8-6a90765c842d","start_date":"2025-06-18","end_date":"2025-06-18","type":"shift","timezone":"America/New_York","timestamps":[{"from":"2025-06-18T09:00:00-04:00","to":"2025-06-18T17:00:00-04:00"}],"currency":"USD","earnings":[{"name":"Sandbox
+        Test Earning","category":"hourly","amount":15000,"rate":1000,"hours":15.0}]},{"id":"194a6dce-a515-4833-9987-e42a04ed09ad","created_at":"2025-06-24T22:04:37.856529+00:00","account_id":"934f6406-c332-4c05-a3e8-6a90765c842d","start_date":"2025-06-17","end_date":"2025-06-17","type":"shift","timezone":"America/New_York","timestamps":[{"from":"2025-06-17T09:00:00-04:00","to":"2025-06-17T17:00:00-04:00"}],"currency":"USD","earnings":[{"name":"Sandbox
+        Test Earning","category":"hourly","amount":15000,"rate":1000,"hours":15.0}]},{"id":"00519e4a-075e-466d-bff8-8d8cbcdc6862","created_at":"2025-06-24T22:04:37.856529+00:00","account_id":"934f6406-c332-4c05-a3e8-6a90765c842d","start_date":"2025-06-16","end_date":"2025-06-16","type":"shift","timezone":"America/New_York","timestamps":[{"from":"2025-06-16T09:00:00-04:00","to":"2025-06-16T17:00:00-04:00"}],"currency":"USD","earnings":[{"name":"Sandbox
+        Test Earning","category":"hourly","amount":15000,"rate":1000,"hours":15.0}]},{"id":"2089ead3-5120-4117-aad3-be832c51d7b7","created_at":"2025-06-24T22:04:37.856529+00:00","account_id":"934f6406-c332-4c05-a3e8-6a90765c842d","start_date":"2025-06-15","end_date":"2025-06-15","type":"shift","timezone":"America/New_York","timestamps":[{"from":"2025-06-15T09:00:00-04:00","to":"2025-06-15T17:00:00-04:00"}],"currency":"USD","earnings":[{"name":"Sandbox
+        Test Earning","category":"hourly","amount":15000,"rate":1000,"hours":15.0}]},{"id":"73c008a4-d28b-4d5a-871d-b10f41d4a2d5","created_at":"2025-06-24T22:04:37.856529+00:00","account_id":"934f6406-c332-4c05-a3e8-6a90765c842d","start_date":"2025-06-14","end_date":"2025-06-14","type":"shift","timezone":"America/New_York","timestamps":[{"from":"2025-06-14T09:00:00-04:00","to":"2025-06-14T17:00:00-04:00"}],"currency":"USD","earnings":[{"name":"Sandbox
+        Test Earning","category":"hourly","amount":15000,"rate":1000,"hours":15.0}]},{"id":"79083e66-7235-4d65-858c-c760ae9e4fea","created_at":"2025-06-24T22:04:37.856529+00:00","account_id":"934f6406-c332-4c05-a3e8-6a90765c842d","start_date":"2025-06-13","end_date":"2025-06-13","type":"shift","timezone":"America/New_York","timestamps":[{"from":"2025-06-13T09:00:00-04:00","to":"2025-06-13T17:00:00-04:00"}],"currency":"USD","earnings":[{"name":"Sandbox
+        Test Earning","category":"hourly","amount":15000,"rate":1000,"hours":15.0}]},{"id":"32cc8cec-99a5-453a-90ee-891e7fc7556c","created_at":"2025-06-24T22:04:37.856529+00:00","account_id":"934f6406-c332-4c05-a3e8-6a90765c842d","start_date":"2025-06-12","end_date":"2025-06-12","type":"shift","timezone":"America/New_York","timestamps":[{"from":"2025-06-12T09:00:00-04:00","to":"2025-06-12T17:00:00-04:00"}],"currency":"USD","earnings":[{"name":"Sandbox
+        Test Earning","category":"hourly","amount":15000,"rate":1000,"hours":15.0}]},{"id":"24f526af-04ca-4ac0-a6b4-b1b4f809ca85","created_at":"2025-06-24T22:04:37.856529+00:00","account_id":"934f6406-c332-4c05-a3e8-6a90765c842d","start_date":"2025-06-11","end_date":"2025-06-11","type":"shift","timezone":"America/New_York","timestamps":[{"from":"2025-06-11T09:00:00-04:00","to":"2025-06-11T17:00:00-04:00"}],"currency":"USD","earnings":[{"name":"Sandbox
+        Test Earning","category":"hourly","amount":15000,"rate":1000,"hours":15.0}]},{"id":"eca82309-fc82-4533-b754-a8fa96b7b1a5","created_at":"2025-06-24T22:04:37.856529+00:00","account_id":"934f6406-c332-4c05-a3e8-6a90765c842d","start_date":"2025-06-10","end_date":"2025-06-10","type":"shift","timezone":"America/New_York","timestamps":[{"from":"2025-06-10T09:00:00-04:00","to":"2025-06-10T17:00:00-04:00"}],"currency":"USD","earnings":[{"name":"Sandbox
+        Test Earning","category":"hourly","amount":15000,"rate":1000,"hours":15.0}]},{"id":"636aad47-9fa9-498c-b101-6fb7e4f3ff94","created_at":"2025-06-24T22:04:37.856529+00:00","account_id":"934f6406-c332-4c05-a3e8-6a90765c842d","start_date":"2025-06-09","end_date":"2025-06-09","type":"shift","timezone":"America/New_York","timestamps":[{"from":"2025-06-09T09:00:00-04:00","to":"2025-06-09T17:00:00-04:00"}],"currency":"USD","earnings":[{"name":"Sandbox
+        Test Earning","category":"hourly","amount":15000,"rate":1000,"hours":15.0}]},{"id":"bcf0caec-36c1-49bc-8396-66acd3e66ba1","created_at":"2025-06-24T22:04:37.856529+00:00","account_id":"934f6406-c332-4c05-a3e8-6a90765c842d","start_date":"2025-06-08","end_date":"2025-06-08","type":"shift","timezone":"America/New_York","timestamps":[{"from":"2025-06-08T09:00:00-04:00","to":"2025-06-08T17:00:00-04:00"}],"currency":"USD","earnings":[{"name":"Sandbox
+        Test Earning","category":"hourly","amount":15000,"rate":1000,"hours":15.0}]},{"id":"01903627-464c-480c-8f7a-f498385f153c","created_at":"2025-06-24T22:04:37.856529+00:00","account_id":"934f6406-c332-4c05-a3e8-6a90765c842d","start_date":"2025-06-07","end_date":"2025-06-07","type":"shift","timezone":"America/New_York","timestamps":[{"from":"2025-06-07T09:00:00-04:00","to":"2025-06-07T17:00:00-04:00"}],"currency":"USD","earnings":[{"name":"Sandbox
+        Test Earning","category":"hourly","amount":15000,"rate":1000,"hours":15.0}]},{"id":"01700a29-91e1-4463-b34b-2acca2fe147b","created_at":"2025-06-24T22:04:37.856529+00:00","account_id":"934f6406-c332-4c05-a3e8-6a90765c842d","start_date":"2025-06-06","end_date":"2025-06-06","type":"shift","timezone":"America/New_York","timestamps":[{"from":"2025-06-06T09:00:00-04:00","to":"2025-06-06T17:00:00-04:00"}],"currency":"USD","earnings":[{"name":"Sandbox
+        Test Earning","category":"hourly","amount":15000,"rate":1000,"hours":15.0}]},{"id":"8e2a1258-a627-4641-abfb-44a6aac6d107","created_at":"2025-06-24T22:04:37.856529+00:00","account_id":"934f6406-c332-4c05-a3e8-6a90765c842d","start_date":"2025-06-05","end_date":"2025-06-05","type":"shift","timezone":"America/New_York","timestamps":[{"from":"2025-06-05T09:00:00-04:00","to":"2025-06-05T17:00:00-04:00"}],"currency":"USD","earnings":[{"name":"Sandbox
+        Test Earning","category":"hourly","amount":15000,"rate":1000,"hours":15.0}]},{"id":"1954f1e9-db0e-4acf-ba30-8d9c9cf86a37","created_at":"2025-06-24T22:04:37.856529+00:00","account_id":"934f6406-c332-4c05-a3e8-6a90765c842d","start_date":"2025-06-04","end_date":"2025-06-04","type":"shift","timezone":"America/New_York","timestamps":[{"from":"2025-06-04T09:00:00-04:00","to":"2025-06-04T17:00:00-04:00"}],"currency":"USD","earnings":[{"name":"Sandbox
+        Test Earning","category":"hourly","amount":15000,"rate":1000,"hours":15.0}]},{"id":"40a43fe3-09da-4367-a3ba-2d608bb2033b","created_at":"2025-06-24T22:04:37.856529+00:00","account_id":"934f6406-c332-4c05-a3e8-6a90765c842d","start_date":"2025-06-03","end_date":"2025-06-03","type":"shift","timezone":"America/New_York","timestamps":[{"from":"2025-06-03T09:00:00-04:00","to":"2025-06-03T17:00:00-04:00"}],"currency":"USD","earnings":[{"name":"Sandbox
+        Test Earning","category":"hourly","amount":15000,"rate":1000,"hours":15.0}]},{"id":"6fdde1c4-e8b9-49e2-8af3-0350b0029122","created_at":"2025-06-24T22:04:37.856529+00:00","account_id":"934f6406-c332-4c05-a3e8-6a90765c842d","start_date":"2025-06-02","end_date":"2025-06-02","type":"shift","timezone":"America/New_York","timestamps":[{"from":"2025-06-02T09:00:00-04:00","to":"2025-06-02T17:00:00-04:00"}],"currency":"USD","earnings":[{"name":"Sandbox
+        Test Earning","category":"hourly","amount":15000,"rate":1000,"hours":15.0}]},{"id":"0a2be905-e3e8-4144-9c80-586e31528215","created_at":"2025-06-24T22:04:37.856529+00:00","account_id":"934f6406-c332-4c05-a3e8-6a90765c842d","start_date":"2025-06-01","end_date":"2025-06-01","type":"shift","timezone":"America/New_York","timestamps":[{"from":"2025-06-01T09:00:00-04:00","to":"2025-06-01T17:00:00-04:00"}],"currency":"USD","earnings":[{"name":"Sandbox
+        Test Earning","category":"hourly","amount":15000,"rate":1000,"hours":15.0}]},{"id":"3be72048-b9c8-492d-aa87-c295bbb05e8c","created_at":"2025-06-24T22:04:37.856529+00:00","account_id":"934f6406-c332-4c05-a3e8-6a90765c842d","start_date":"2025-05-31","end_date":"2025-05-31","type":"shift","timezone":"America/New_York","timestamps":[{"from":"2025-05-31T09:00:00-04:00","to":"2025-05-31T17:00:00-04:00"}],"currency":"USD","earnings":[{"name":"Sandbox
+        Test Earning","category":"hourly","amount":15000,"rate":1000,"hours":15.0}]}]}'
+  recorded_at: Tue, 24 Jun 2025 22:04:21 GMT
+- request:
+    method: get
+    uri: https://sandbox.getpinwheel.com/v1/accounts/934f6406-c332-4c05-a3e8-6a90765c842d/identity
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Content-Type:
+      - application/json
+      Pinwheel-Version:
+      - '2023-11-22'
+      X-Api-Secret:
+      - "<PINWHEEL_API_TOKEN>"
+      User-Agent:
+      - Faraday v2.9.2
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Accept:
+      - "*/*"
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Date:
+      - Tue, 24 Jun 2025 22:04:49 GMT
+      Content-Type:
+      - application/json
+      Content-Length:
+      - '612'
+      Connection:
+      - keep-alive
+      Server:
+      - uvicorn
+      Pinwheel-Version:
+      - '2023-11-22'
+      Content-Security-Policy:
+      - frame-ancestors 'none'
+      Strict-Transport-Security:
+      - max-age=31536000; includeSubDomains;
+      X-Pinwheel-Request-Id:
+      - 229a90df-4f66-4468-a34d-66ec716c24a5
+    body:
+      encoding: UTF-8
+      string: '{"data":{"id":"75b85ffa-1057-45a3-a9fb-77de821747b6","created_at":"2025-06-24T22:04:34.456512+00:00","updated_at":"2025-06-24T22:04:34.456512+00:00","account_id":"934f6406-c332-4c05-a3e8-6a90765c842d","full_name":"Ash
+        Userton","emails":["user_good@example.com"],"date_of_birth":"1993-08-28","last_four_ssn":"1234","address":{"raw":"20429
+        Pinwheel Drive, New York City, NY 99999","line1":"20429 Pinwheel Drive","line2":null,"city":"New
+        York City","state":"NY","postal_code":"99999","country":"US"},"phone_numbers":[{"value":"+12345556789","type":null}]},"meta":{"refreshed_at":"2025-06-24T22:04:34.548440+00:00"}}'
+  recorded_at: Tue, 24 Jun 2025 22:04:21 GMT
+- request:
+    method: get
+    uri: https://sandbox.getpinwheel.com/v1/accounts/934f6406-c332-4c05-a3e8-6a90765c842d
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Content-Type:
+      - application/json
+      Pinwheel-Version:
+      - '2023-11-22'
+      X-Api-Secret:
+      - "<PINWHEEL_API_TOKEN>"
+      User-Agent:
+      - Faraday v2.9.2
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Accept:
+      - "*/*"
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Date:
+      - Tue, 24 Jun 2025 22:04:49 GMT
+      Content-Type:
+      - application/json
+      Content-Length:
+      - '935'
+      Connection:
+      - keep-alive
+      Server:
+      - uvicorn
+      Pinwheel-Version:
+      - '2023-11-22'
+      Content-Security-Policy:
+      - frame-ancestors 'none'
+      Strict-Transport-Security:
+      - max-age=31536000; includeSubDomains;
+      X-Pinwheel-Request-Id:
+      - d1f98a16-3177-4bf9-824f-47eddbe66b70
+    body:
+      encoding: UTF-8
+      string: '{"data":{"created_at":"2025-06-24T22:04:33.547314+00:00","link_token_id":"a63c75ef-3e91-4fff-8147-78cf7efeddd2","platform_id":"5965580e-380f-4b86-8a8a-7278c77f73cb","connected":true,"monitoring_status":"active","end_user_id":"6a927ef1-6c91-43c9-abbe-6728dc8ef877","id":"934f6406-c332-4c05-a3e8-6a90765c842d","data_updated_at":{"direct_deposit_allocations":"2025-06-24T22:04:34.948037+00:00","income":"2025-06-24T22:04:34.629192+00:00","employment":"2025-06-24T22:04:41.075640+00:00","identity":"2025-06-24T22:04:34.548440+00:00","shifts":"2025-06-24T22:04:39.588394+00:00","paystubs":"2025-06-24T22:04:38.805798+00:00"},"data_refreshed_at":{"direct_deposit_allocations":"2025-06-24T22:04:34.948037+00:00","income":"2025-06-24T22:04:34.629192+00:00","employment":"2025-06-24T22:04:41.075640+00:00","identity":"2025-06-24T22:04:34.548440+00:00","shifts":"2025-06-24T22:04:39.588394+00:00","paystubs":"2025-06-24T22:04:38.805798+00:00"}}}'
+  recorded_at: Tue, 24 Jun 2025 22:04:21 GMT
+- request:
+    method: get
+    uri: https://sandbox.getpinwheel.com/v1/platforms/5965580e-380f-4b86-8a8a-7278c77f73cb
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Content-Type:
+      - application/json
+      Pinwheel-Version:
+      - '2023-11-22'
+      X-Api-Secret:
+      - "<PINWHEEL_API_TOKEN>"
+      User-Agent:
+      - Faraday v2.9.2
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Accept:
+      - "*/*"
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Date:
+      - Tue, 24 Jun 2025 22:04:50 GMT
+      Content-Type:
+      - application/json
+      Content-Length:
+      - '575'
+      Connection:
+      - keep-alive
+      Server:
+      - uvicorn
+      Pinwheel-Version:
+      - '2023-11-22'
+      Content-Security-Policy:
+      - frame-ancestors 'none'
+      Strict-Transport-Security:
+      - max-age=31536000; includeSubDomains;
+      X-Pinwheel-Request-Id:
+      - d082ca1d-f170-42a3-b37a-e4acd9878c13
+    body:
+      encoding: UTF-8
+      string: '{"data":{"id":"5965580e-380f-4b86-8a8a-7278c77f73cb","name":"Workday","type":"payroll","fractional_amount_supported":true,"min_amount":null,"max_amount":null,"last_updated":"2025-05-13T18:41:08.804385+00:00","logo_url":"https://cdn.getpinwheel.com/assets/platforms/logos/search/cfmpw.png","percentage_supported":true,"min_percentage":1,"max_percentage":99,"supported_jobs":["company_employments","tax_forms","shifts","income","paystubs","company_incomes","company_census","identity","direct_deposit_switch","employment","direct_deposit_allocations"],"amount_supported":true}}'
+  recorded_at: Tue, 24 Jun 2025 22:04:21 GMT
+- request:
+    method: get
+    uri: https://sandbox.getpinwheel.com/v1/accounts/934f6406-c332-4c05-a3e8-6a90765c842d/employment
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Content-Type:
+      - application/json
+      Pinwheel-Version:
+      - '2023-11-22'
+      X-Api-Secret:
+      - "<PINWHEEL_API_TOKEN>"
+      User-Agent:
+      - Faraday v2.9.2
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Accept:
+      - "*/*"
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Date:
+      - Tue, 24 Jun 2025 22:04:50 GMT
+      Content-Type:
+      - application/json
+      Content-Length:
+      - '634'
+      Connection:
+      - keep-alive
+      Server:
+      - uvicorn
+      Pinwheel-Version:
+      - '2023-11-22'
+      Content-Security-Policy:
+      - frame-ancestors 'none'
+      Strict-Transport-Security:
+      - max-age=31536000; includeSubDomains;
+      X-Pinwheel-Request-Id:
+      - c5e9aaa9-218b-4420-ac7e-aa12a882bda2
+    body:
+      encoding: UTF-8
+      string: '{"data":{"id":"c9d3fc3b-3e2e-4a3e-855a-1eb77396a85c","created_at":"2025-06-24T22:04:40.979175+00:00","updated_at":"2025-06-24T22:04:40.979175+00:00","account_id":"934f6406-c332-4c05-a3e8-6a90765c842d","status":"employed","start_date":"2010-01-01","termination_date":null,"employer_name":"Acme
+        Corporation","employer_address":{"raw":"20429 Pinwheel Drive, New York City,
+        NY 99999","line1":"20429 Pinwheel Drive","line2":null,"city":"New York City","state":"NY","postal_code":"99999","country":"US"},"employer_phone_number":{"value":"+16126597057","type":"work"},"title":null},"meta":{"refreshed_at":"2025-06-24T22:04:41.075640+00:00"}}'
+  recorded_at: Tue, 24 Jun 2025 22:04:21 GMT
+- request:
+    method: get
+    uri: https://sandbox.getpinwheel.com/v1/accounts/934f6406-c332-4c05-a3e8-6a90765c842d/income
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Content-Type:
+      - application/json
+      Pinwheel-Version:
+      - '2023-11-22'
+      X-Api-Secret:
+      - "<PINWHEEL_API_TOKEN>"
+      User-Agent:
+      - Faraday v2.9.2
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Accept:
+      - "*/*"
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Date:
+      - Tue, 24 Jun 2025 22:04:50 GMT
+      Content-Type:
+      - application/json
+      Content-Length:
+      - '362'
+      Connection:
+      - keep-alive
+      Server:
+      - uvicorn
+      Pinwheel-Version:
+      - '2023-11-22'
+      Content-Security-Policy:
+      - frame-ancestors 'none'
+      Strict-Transport-Security:
+      - max-age=31536000; includeSubDomains;
+      X-Pinwheel-Request-Id:
+      - 3b37e910-203a-4857-83da-2db1d37d115f
+    body:
+      encoding: UTF-8
+      string: '{"data":{"id":"c8dae54d-915c-4573-975a-f5ba54f57aa0","created_at":"2025-06-24T22:04:34.558075+00:00","updated_at":"2025-06-24T22:04:38.686874+00:00","account_id":"934f6406-c332-4c05-a3e8-6a90765c842d","compensation_amount":1000,"compensation_unit":"hourly","currency":"USD","pay_frequency":"bi-weekly"},"meta":{"refreshed_at":"2025-06-24T22:04:34.629192+00:00"}}'
+  recorded_at: Tue, 24 Jun 2025 22:04:21 GMT
+- request:
+    method: get
+    uri: https://sandbox.getpinwheel.com/v1/accounts/934f6406-c332-4c05-a3e8-6a90765c842d/paystubs?from_pay_date=2025-03-26&to_pay_date=2025-06-24
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Content-Type:
+      - application/json
+      Pinwheel-Version:
+      - '2023-11-22'
+      X-Api-Secret:
+      - "<PINWHEEL_API_TOKEN>"
+      User-Agent:
+      - Faraday v2.9.2
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Accept:
+      - "*/*"
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Date:
+      - Tue, 24 Jun 2025 22:04:51 GMT
+      Content-Type:
+      - application/json
+      Content-Length:
+      - '12207'
+      Connection:
+      - keep-alive
+      Server:
+      - uvicorn
+      Pinwheel-Version:
+      - '2023-11-22'
+      Content-Security-Policy:
+      - frame-ancestors 'none'
+      Strict-Transport-Security:
+      - max-age=31536000; includeSubDomains;
+      X-Pinwheel-Request-Id:
+      - 5556e132-377e-4d9e-be38-8ed19b07d59c
+    body:
+      encoding: UTF-8
+      string: '{"meta":{"refreshed_at":"2025-06-24T22:04:38.805798+00:00","count":4,"next_cursor":null},"data":[{"id":"c80ed2d6-a0fe-4b63-8c92-92414cea9b37","created_at":"2025-06-24T22:04:35.119310+00:00","account_id":"934f6406-c332-4c05-a3e8-6a90765c842d","pay_date":"2025-06-24","pay_period_start":"2025-06-11","pay_period_end":"2025-06-24","currency":"USD","gross_pay_amount":50000,"net_pay_amount":46000,"check_amount":46000,"gross_pay_ytd":50000,"net_pay_ytd":46000,"total_taxes":3825,"total_deductions":175,"total_reimbursements":0,"external_paystub_id":null,"employer_name":null,"taxes":[{"name":"Pinwheel
+        Tax","category":"state_income","amount":0},{"name":"Employee Medicare Tax","category":"medicare","amount":725},{"name":"Employee
+        Social Security Tax","category":"social_security","amount":3100},{"name":"Federal
+        Income Tax","category":"federal_income","amount":0}],"deductions":[{"name":"Deduction","category":"other","amount":175,"type":"unknown"}],"earnings":[{"name":"Regular","category":"hourly","amount":50000,"rate":5000,"hours":10.0}],"time_off":[{"name":"PTO","category":"pto","available_hours":25.0,"earned_hours":0.75,"used_hours":0.0},{"name":"Sick
+        Leave","category":"sick","available_hours":8.0,"earned_hours":0.1,"used_hours":2.0}],"document":{"id":"00000000-0000-0000-0000-000000000000","download_url":"https://production-newton-paystubs.s3.amazonaws.com/00000000-0000-0000-0000-000000000000/paystub/00000000-0000-0000-0000-000000000000.pdf?response-content-type=application%2Fpdf&X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=<PINWHEEL_AWS_KEY_ID>&X-Amz-Date=20250624T220451Z&X-Amz-Expires=900&X-Amz-SignedHeaders=host&X-Amz-Security-Token=IQoJb3JpZ2luX2VjED4aCXVzLWVhc3QtMSJHMEUCIEi0Iu3x%2FMAiuHrp5HkSSFL75yrSqqSir58UKeKWeQ4lAiEA0IBkWai0GOUBAJ%2FG%2FG41WJ8%2FlqPwFWhDFZFj1vaO8F8q%2BQQINxAEGgw4ODU5MjQzMDc0NDkiDL2U4UGrbf5BuP3tdirWBMIDrP9eB0ExhgaM4F1soBy915kqm8JPYi8n56nXEhFFpZcnBI8v%2FHVVfS4uCCdR640NRsUIenusr4NWpC9zjyA2dKYEbbBv%2Ft1CdtiRFJ8GPF08Hgp11R5Wfvlwqbc7vAEWyjQPoNd3PpjpUojGkrzVeMyBGR9L4y933HmkbBdcMXC1CjdiGmHTZZlLDJaa81TI%2Bj627mbeAXlJjuO%2BnRmbtU5%2B%2BOvrC%2B5fsBZ3EnWSHqCBcE28g6UGhkcMSjlRX1kyxifihc9vNJkzICWPsYEDmZpbEowgQWFb3diIZ%2BtlOr4Jdkr5%2FdDJQ1ob3kJAAuHMihykA0jZIAxJv991EKVSsY4%2BrZFDet%2FxJmVMNWtnCWr9r1Td8IIsdKeeVYsq4%2BDOlUTBf5jKb6aRW4WvBZ9rMAULC5q%2Bor%2FHeOlicmVr18SN5HZut%2FMLHEtR3D%2FCx4i1CrWM2KMVvKIf9lWL5NccvNV6hms9SCbRFP97a%2F2SQtP9c8hButdInJbQu1EIxYdt2mdH%2FTmckecK0jdrf9Rxn7V9fmBLOR8jCzLZGJ8M6BJ8YU0A2DLxQKC51ukWwzk1pjC4wDUePwmagUY0AbmAJ5wyTUG4tc2rwbN3y4%2BClxhiu%2BxG6%2B%2BDIQQeuxs1fQrlnTrjvrnwN%2F2LsQcMfx4e0%2BUZ7wUfzf6%2BKw6K3NujP0ODtuEvw2NZsxg8Q8GoAcAg2inmmc1VHzJpTq%2BBrTQdK5iMdHy3jcRDBYi8Sn9yWEytoxPiq5n4KBY46cyL8%2Fniql%2Fy81XjuPVPIY5JyBQxg%2BymUscworXswgY6mgGnz1Wr5N4qeaeQ6KMR%2BkYsxztdI5wdYmpgEbQCc1mvESM43AeFAI0Jk3EbUxtPFJNFEmwdvGYVPBK1x4R%2Fm8D9M5gTSIbPsdoNE7QF5wLWRyyJLFEMfX%2F%2BmSN38GDWdPQXzz0ZGKIBgi3%2BgkrjULWEJ%2Bo%2BylNdaNG80iVmmMzo8YtywJWRlovEDqteKlNIO0f%2BKrIlNLKxzZD9&X-Amz-Signature=ac9a78acd7fc5f5fb6626abb0a8db61eececc53e89c7c3babdbcd49d329c48a4","download_url_expiration":"2025-06-24T22:19:51.121039+00:00"}},{"id":"6e65691e-6391-4789-abf8-7fe8cae27335","created_at":"2025-06-24T22:04:35.843721+00:00","account_id":"934f6406-c332-4c05-a3e8-6a90765c842d","pay_date":"2025-06-10","pay_period_start":"2025-05-28","pay_period_end":"2025-06-10","currency":"USD","gross_pay_amount":50000,"net_pay_amount":46000,"check_amount":46000,"gross_pay_ytd":50000,"net_pay_ytd":46000,"total_taxes":3825,"total_deductions":175,"total_reimbursements":0,"external_paystub_id":null,"employer_name":null,"taxes":[{"name":"Pinwheel
+        Tax","category":"state_income","amount":0},{"name":"Employee Medicare Tax","category":"medicare","amount":725},{"name":"Employee
+        Social Security Tax","category":"social_security","amount":3100},{"name":"Federal
+        Income Tax","category":"federal_income","amount":0}],"deductions":[{"name":"Deduction","category":"other","amount":175,"type":"unknown"}],"earnings":[{"name":"Regular","category":"hourly","amount":50000,"rate":5000,"hours":10.0}],"time_off":[{"name":"PTO","category":"pto","available_hours":25.0,"earned_hours":0.75,"used_hours":0.0},{"name":"Sick
+        Leave","category":"sick","available_hours":8.0,"earned_hours":0.1,"used_hours":2.0}],"document":{"id":"00000000-0000-0000-0000-000000000000","download_url":"https://production-newton-paystubs.s3.amazonaws.com/00000000-0000-0000-0000-000000000000/paystub/00000000-0000-0000-0000-000000000000.pdf?response-content-type=application%2Fpdf&X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=<PINWHEEL_AWS_KEY_ID>&X-Amz-Date=20250624T220451Z&X-Amz-Expires=900&X-Amz-SignedHeaders=host&X-Amz-Security-Token=IQoJb3JpZ2luX2VjED4aCXVzLWVhc3QtMSJHMEUCIEi0Iu3x%2FMAiuHrp5HkSSFL75yrSqqSir58UKeKWeQ4lAiEA0IBkWai0GOUBAJ%2FG%2FG41WJ8%2FlqPwFWhDFZFj1vaO8F8q%2BQQINxAEGgw4ODU5MjQzMDc0NDkiDL2U4UGrbf5BuP3tdirWBMIDrP9eB0ExhgaM4F1soBy915kqm8JPYi8n56nXEhFFpZcnBI8v%2FHVVfS4uCCdR640NRsUIenusr4NWpC9zjyA2dKYEbbBv%2Ft1CdtiRFJ8GPF08Hgp11R5Wfvlwqbc7vAEWyjQPoNd3PpjpUojGkrzVeMyBGR9L4y933HmkbBdcMXC1CjdiGmHTZZlLDJaa81TI%2Bj627mbeAXlJjuO%2BnRmbtU5%2B%2BOvrC%2B5fsBZ3EnWSHqCBcE28g6UGhkcMSjlRX1kyxifihc9vNJkzICWPsYEDmZpbEowgQWFb3diIZ%2BtlOr4Jdkr5%2FdDJQ1ob3kJAAuHMihykA0jZIAxJv991EKVSsY4%2BrZFDet%2FxJmVMNWtnCWr9r1Td8IIsdKeeVYsq4%2BDOlUTBf5jKb6aRW4WvBZ9rMAULC5q%2Bor%2FHeOlicmVr18SN5HZut%2FMLHEtR3D%2FCx4i1CrWM2KMVvKIf9lWL5NccvNV6hms9SCbRFP97a%2F2SQtP9c8hButdInJbQu1EIxYdt2mdH%2FTmckecK0jdrf9Rxn7V9fmBLOR8jCzLZGJ8M6BJ8YU0A2DLxQKC51ukWwzk1pjC4wDUePwmagUY0AbmAJ5wyTUG4tc2rwbN3y4%2BClxhiu%2BxG6%2B%2BDIQQeuxs1fQrlnTrjvrnwN%2F2LsQcMfx4e0%2BUZ7wUfzf6%2BKw6K3NujP0ODtuEvw2NZsxg8Q8GoAcAg2inmmc1VHzJpTq%2BBrTQdK5iMdHy3jcRDBYi8Sn9yWEytoxPiq5n4KBY46cyL8%2Fniql%2Fy81XjuPVPIY5JyBQxg%2BymUscworXswgY6mgGnz1Wr5N4qeaeQ6KMR%2BkYsxztdI5wdYmpgEbQCc1mvESM43AeFAI0Jk3EbUxtPFJNFEmwdvGYVPBK1x4R%2Fm8D9M5gTSIbPsdoNE7QF5wLWRyyJLFEMfX%2F%2BmSN38GDWdPQXzz0ZGKIBgi3%2BgkrjULWEJ%2Bo%2BylNdaNG80iVmmMzo8YtywJWRlovEDqteKlNIO0f%2BKrIlNLKxzZD9&X-Amz-Signature=ac9a78acd7fc5f5fb6626abb0a8db61eececc53e89c7c3babdbcd49d329c48a4","download_url_expiration":"2025-06-24T22:19:51.123886+00:00"}},{"id":"0c5be6bf-53ca-4597-b277-de311bf69682","created_at":"2025-06-24T22:04:36.842538+00:00","account_id":"934f6406-c332-4c05-a3e8-6a90765c842d","pay_date":"2025-05-13","pay_period_start":"2025-04-30","pay_period_end":"2025-05-13","currency":"USD","gross_pay_amount":50000,"net_pay_amount":46000,"check_amount":46000,"gross_pay_ytd":50000,"net_pay_ytd":46000,"total_taxes":3825,"total_deductions":175,"total_reimbursements":0,"external_paystub_id":null,"employer_name":null,"taxes":[{"name":"Pinwheel
+        Tax","category":"state_income","amount":0},{"name":"Employee Medicare Tax","category":"medicare","amount":725},{"name":"Employee
+        Social Security Tax","category":"social_security","amount":3100},{"name":"Federal
+        Income Tax","category":"federal_income","amount":0}],"deductions":[{"name":"Deduction","category":"other","amount":175,"type":"unknown"}],"earnings":[{"name":"Regular","category":"hourly","amount":50000,"rate":5000,"hours":10.0}],"time_off":[{"name":"PTO","category":"pto","available_hours":25.0,"earned_hours":0.75,"used_hours":0.0},{"name":"Sick
+        Leave","category":"sick","available_hours":8.0,"earned_hours":0.1,"used_hours":2.0}],"document":{"id":"00000000-0000-0000-0000-000000000000","download_url":"https://production-newton-paystubs.s3.amazonaws.com/00000000-0000-0000-0000-000000000000/paystub/00000000-0000-0000-0000-000000000000.pdf?response-content-type=application%2Fpdf&X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=<PINWHEEL_AWS_KEY_ID>&X-Amz-Date=20250624T220451Z&X-Amz-Expires=900&X-Amz-SignedHeaders=host&X-Amz-Security-Token=IQoJb3JpZ2luX2VjED4aCXVzLWVhc3QtMSJHMEUCIEi0Iu3x%2FMAiuHrp5HkSSFL75yrSqqSir58UKeKWeQ4lAiEA0IBkWai0GOUBAJ%2FG%2FG41WJ8%2FlqPwFWhDFZFj1vaO8F8q%2BQQINxAEGgw4ODU5MjQzMDc0NDkiDL2U4UGrbf5BuP3tdirWBMIDrP9eB0ExhgaM4F1soBy915kqm8JPYi8n56nXEhFFpZcnBI8v%2FHVVfS4uCCdR640NRsUIenusr4NWpC9zjyA2dKYEbbBv%2Ft1CdtiRFJ8GPF08Hgp11R5Wfvlwqbc7vAEWyjQPoNd3PpjpUojGkrzVeMyBGR9L4y933HmkbBdcMXC1CjdiGmHTZZlLDJaa81TI%2Bj627mbeAXlJjuO%2BnRmbtU5%2B%2BOvrC%2B5fsBZ3EnWSHqCBcE28g6UGhkcMSjlRX1kyxifihc9vNJkzICWPsYEDmZpbEowgQWFb3diIZ%2BtlOr4Jdkr5%2FdDJQ1ob3kJAAuHMihykA0jZIAxJv991EKVSsY4%2BrZFDet%2FxJmVMNWtnCWr9r1Td8IIsdKeeVYsq4%2BDOlUTBf5jKb6aRW4WvBZ9rMAULC5q%2Bor%2FHeOlicmVr18SN5HZut%2FMLHEtR3D%2FCx4i1CrWM2KMVvKIf9lWL5NccvNV6hms9SCbRFP97a%2F2SQtP9c8hButdInJbQu1EIxYdt2mdH%2FTmckecK0jdrf9Rxn7V9fmBLOR8jCzLZGJ8M6BJ8YU0A2DLxQKC51ukWwzk1pjC4wDUePwmagUY0AbmAJ5wyTUG4tc2rwbN3y4%2BClxhiu%2BxG6%2B%2BDIQQeuxs1fQrlnTrjvrnwN%2F2LsQcMfx4e0%2BUZ7wUfzf6%2BKw6K3NujP0ODtuEvw2NZsxg8Q8GoAcAg2inmmc1VHzJpTq%2BBrTQdK5iMdHy3jcRDBYi8Sn9yWEytoxPiq5n4KBY46cyL8%2Fniql%2Fy81XjuPVPIY5JyBQxg%2BymUscworXswgY6mgGnz1Wr5N4qeaeQ6KMR%2BkYsxztdI5wdYmpgEbQCc1mvESM43AeFAI0Jk3EbUxtPFJNFEmwdvGYVPBK1x4R%2Fm8D9M5gTSIbPsdoNE7QF5wLWRyyJLFEMfX%2F%2BmSN38GDWdPQXzz0ZGKIBgi3%2BgkrjULWEJ%2Bo%2BylNdaNG80iVmmMzo8YtywJWRlovEDqteKlNIO0f%2BKrIlNLKxzZD9&X-Amz-Signature=ac9a78acd7fc5f5fb6626abb0a8db61eececc53e89c7c3babdbcd49d329c48a4","download_url_expiration":"2025-06-24T22:19:51.126550+00:00"}},{"id":"9bb0d63d-58b9-4202-ba95-5f1117502c00","created_at":"2025-06-24T22:04:36.842538+00:00","account_id":"934f6406-c332-4c05-a3e8-6a90765c842d","pay_date":"2025-04-29","pay_period_start":"2025-04-16","pay_period_end":"2025-04-29","currency":"USD","gross_pay_amount":52000,"net_pay_amount":48000,"check_amount":48000,"gross_pay_ytd":102000,"net_pay_ytd":94000,"total_taxes":3825,"total_deductions":175,"total_reimbursements":0,"external_paystub_id":null,"employer_name":null,"taxes":[{"name":"Pinwheel
+        Tax","category":"state_income","amount":0},{"name":"Employee Medicare Tax","category":"medicare","amount":725},{"name":"Employee
+        Social Security Tax","category":"social_security","amount":3100},{"name":"Federal
+        Income Tax","category":"federal_income","amount":0}],"deductions":[{"name":"Deduction","category":"other","amount":175,"type":"unknown"}],"earnings":[{"name":"Regular","category":"hourly","amount":52000,"rate":5000,"hours":10.4}],"time_off":[{"name":"PTO","category":"pto","available_hours":25.0,"earned_hours":0.75,"used_hours":0.0},{"name":"Sick
+        Leave","category":"sick","available_hours":8.0,"earned_hours":0.1,"used_hours":2.0}],"document":{"id":"00000000-0000-0000-0000-000000000000","download_url":"https://production-newton-paystubs.s3.amazonaws.com/00000000-0000-0000-0000-000000000000/paystub/00000000-0000-0000-0000-000000000000.pdf?response-content-type=application%2Fpdf&X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=<PINWHEEL_AWS_KEY_ID>&X-Amz-Date=20250624T220451Z&X-Amz-Expires=900&X-Amz-SignedHeaders=host&X-Amz-Security-Token=IQoJb3JpZ2luX2VjED4aCXVzLWVhc3QtMSJHMEUCIEi0Iu3x%2FMAiuHrp5HkSSFL75yrSqqSir58UKeKWeQ4lAiEA0IBkWai0GOUBAJ%2FG%2FG41WJ8%2FlqPwFWhDFZFj1vaO8F8q%2BQQINxAEGgw4ODU5MjQzMDc0NDkiDL2U4UGrbf5BuP3tdirWBMIDrP9eB0ExhgaM4F1soBy915kqm8JPYi8n56nXEhFFpZcnBI8v%2FHVVfS4uCCdR640NRsUIenusr4NWpC9zjyA2dKYEbbBv%2Ft1CdtiRFJ8GPF08Hgp11R5Wfvlwqbc7vAEWyjQPoNd3PpjpUojGkrzVeMyBGR9L4y933HmkbBdcMXC1CjdiGmHTZZlLDJaa81TI%2Bj627mbeAXlJjuO%2BnRmbtU5%2B%2BOvrC%2B5fsBZ3EnWSHqCBcE28g6UGhkcMSjlRX1kyxifihc9vNJkzICWPsYEDmZpbEowgQWFb3diIZ%2BtlOr4Jdkr5%2FdDJQ1ob3kJAAuHMihykA0jZIAxJv991EKVSsY4%2BrZFDet%2FxJmVMNWtnCWr9r1Td8IIsdKeeVYsq4%2BDOlUTBf5jKb6aRW4WvBZ9rMAULC5q%2Bor%2FHeOlicmVr18SN5HZut%2FMLHEtR3D%2FCx4i1CrWM2KMVvKIf9lWL5NccvNV6hms9SCbRFP97a%2F2SQtP9c8hButdInJbQu1EIxYdt2mdH%2FTmckecK0jdrf9Rxn7V9fmBLOR8jCzLZGJ8M6BJ8YU0A2DLxQKC51ukWwzk1pjC4wDUePwmagUY0AbmAJ5wyTUG4tc2rwbN3y4%2BClxhiu%2BxG6%2B%2BDIQQeuxs1fQrlnTrjvrnwN%2F2LsQcMfx4e0%2BUZ7wUfzf6%2BKw6K3NujP0ODtuEvw2NZsxg8Q8GoAcAg2inmmc1VHzJpTq%2BBrTQdK5iMdHy3jcRDBYi8Sn9yWEytoxPiq5n4KBY46cyL8%2Fniql%2Fy81XjuPVPIY5JyBQxg%2BymUscworXswgY6mgGnz1Wr5N4qeaeQ6KMR%2BkYsxztdI5wdYmpgEbQCc1mvESM43AeFAI0Jk3EbUxtPFJNFEmwdvGYVPBK1x4R%2Fm8D9M5gTSIbPsdoNE7QF5wLWRyyJLFEMfX%2F%2BmSN38GDWdPQXzz0ZGKIBgi3%2BgkrjULWEJ%2Bo%2BylNdaNG80iVmmMzo8YtywJWRlovEDqteKlNIO0f%2BKrIlNLKxzZD9&X-Amz-Signature=ac9a78acd7fc5f5fb6626abb0a8db61eececc53e89c7c3babdbcd49d329c48a4","download_url_expiration":"2025-06-24T22:19:51.129091+00:00"}}]}'
+  recorded_at: Tue, 24 Jun 2025 22:04:21 GMT
+- request:
+    method: get
+    uri: https://sandbox.getpinwheel.com/v1/accounts/934f6406-c332-4c05-a3e8-6a90765c842d/shifts
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Content-Type:
+      - application/json
+      Pinwheel-Version:
+      - '2023-11-22'
+      X-Api-Secret:
+      - "<PINWHEEL_API_TOKEN>"
+      User-Agent:
+      - Faraday v2.9.2
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Accept:
+      - "*/*"
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Date:
+      - Tue, 24 Jun 2025 22:04:51 GMT
+      Content-Type:
+      - application/json
+      Content-Length:
+      - '11481'
+      Connection:
+      - keep-alive
+      Server:
+      - uvicorn
+      Pinwheel-Version:
+      - '2023-11-22'
+      Content-Security-Policy:
+      - frame-ancestors 'none'
+      Strict-Transport-Security:
+      - max-age=31536000; includeSubDomains;
+      X-Pinwheel-Request-Id:
+      - 8030387d-8685-458a-b7d9-ff2890d7a326
+    body:
+      encoding: UTF-8
+      string: '{"meta":{"refreshed_at":"2025-06-24T22:04:39.588394+00:00","count":25,"next_cursor":"gAAAAABoWyED7k49m3NjfFvZp2T8qwROXVnofLwOiVtza31JPgmyUwBhw4aTYgJkvn584lwcO0EXgpxyXXrvCjdWS8ZMkNyiIaaK-r7jSvgJyV1auaRS1sNfeK7QqUXsG_ZAHtVRy5SDGSKiQhZQQTbfR2ivyJqtcotzHOLx9FRjRDQFyWRpTzI="},"data":[{"id":"35841865-b1f1-4d96-b8c5-c49824fa8bfc","created_at":"2025-06-24T22:04:35.276087+00:00","account_id":"934f6406-c332-4c05-a3e8-6a90765c842d","start_date":"2025-06-24","end_date":"2025-06-24","type":"shift","timezone":"America/New_York","timestamps":[{"from":"2025-06-24T09:00:00-04:00","to":"2025-06-24T17:00:00-04:00"}],"currency":"USD","earnings":[{"name":"Sandbox
+        Test Earning","category":"hourly","amount":15000,"rate":1000,"hours":15.0}]},{"id":"299e5d25-0920-4b5f-9025-0857f446673b","created_at":"2025-06-24T22:04:35.276087+00:00","account_id":"934f6406-c332-4c05-a3e8-6a90765c842d","start_date":"2025-06-23","end_date":"2025-06-23","type":"shift","timezone":"America/New_York","timestamps":[{"from":"2025-06-23T09:00:00-04:00","to":"2025-06-23T17:00:00-04:00"}],"currency":"USD","earnings":[{"name":"Sandbox
+        Test Earning","category":"hourly","amount":15000,"rate":1000,"hours":15.0}]},{"id":"5de4eb01-f975-40c9-bc9a-1057f493095b","created_at":"2025-06-24T22:04:35.276087+00:00","account_id":"934f6406-c332-4c05-a3e8-6a90765c842d","start_date":"2025-06-22","end_date":"2025-06-22","type":"shift","timezone":"America/New_York","timestamps":[{"from":"2025-06-22T09:00:00-04:00","to":"2025-06-22T17:00:00-04:00"}],"currency":"USD","earnings":[{"name":"Sandbox
+        Test Earning","category":"hourly","amount":15000,"rate":1000,"hours":15.0}]},{"id":"3af126eb-7bc2-4b21-9a0d-461fb05d04c7","created_at":"2025-06-24T22:04:35.276087+00:00","account_id":"934f6406-c332-4c05-a3e8-6a90765c842d","start_date":"2025-06-21","end_date":"2025-06-21","type":"shift","timezone":"America/New_York","timestamps":[{"from":"2025-06-21T09:00:00-04:00","to":"2025-06-21T17:00:00-04:00"}],"currency":"USD","earnings":[{"name":"Sandbox
+        Test Earning","category":"hourly","amount":15000,"rate":1000,"hours":15.0}]},{"id":"23a1d0cf-aafe-4624-90ef-b25c2c3067b8","created_at":"2025-06-24T22:04:35.276087+00:00","account_id":"934f6406-c332-4c05-a3e8-6a90765c842d","start_date":"2025-06-20","end_date":"2025-06-20","type":"shift","timezone":"America/New_York","timestamps":[{"from":"2025-06-20T09:00:00-04:00","to":"2025-06-20T17:00:00-04:00"}],"currency":"USD","earnings":[{"name":"Sandbox
+        Test Earning","category":"hourly","amount":15000,"rate":1000,"hours":15.0}]},{"id":"eacf520b-3ea7-4ea8-9602-3a47394639f2","created_at":"2025-06-24T22:04:35.276087+00:00","account_id":"934f6406-c332-4c05-a3e8-6a90765c842d","start_date":"2025-06-19","end_date":"2025-06-19","type":"shift","timezone":"America/New_York","timestamps":[{"from":"2025-06-19T09:00:00-04:00","to":"2025-06-19T17:00:00-04:00"}],"currency":"USD","earnings":[{"name":"Sandbox
+        Test Earning","category":"hourly","amount":15000,"rate":1000,"hours":15.0}]},{"id":"40c83a70-e50e-4d2a-a9a1-f680fce15088","created_at":"2025-06-24T22:04:35.276087+00:00","account_id":"934f6406-c332-4c05-a3e8-6a90765c842d","start_date":"2025-06-18","end_date":"2025-06-18","type":"shift","timezone":"America/New_York","timestamps":[{"from":"2025-06-18T09:00:00-04:00","to":"2025-06-18T17:00:00-04:00"}],"currency":"USD","earnings":[{"name":"Sandbox
+        Test Earning","category":"hourly","amount":15000,"rate":1000,"hours":15.0}]},{"id":"194a6dce-a515-4833-9987-e42a04ed09ad","created_at":"2025-06-24T22:04:37.856529+00:00","account_id":"934f6406-c332-4c05-a3e8-6a90765c842d","start_date":"2025-06-17","end_date":"2025-06-17","type":"shift","timezone":"America/New_York","timestamps":[{"from":"2025-06-17T09:00:00-04:00","to":"2025-06-17T17:00:00-04:00"}],"currency":"USD","earnings":[{"name":"Sandbox
+        Test Earning","category":"hourly","amount":15000,"rate":1000,"hours":15.0}]},{"id":"00519e4a-075e-466d-bff8-8d8cbcdc6862","created_at":"2025-06-24T22:04:37.856529+00:00","account_id":"934f6406-c332-4c05-a3e8-6a90765c842d","start_date":"2025-06-16","end_date":"2025-06-16","type":"shift","timezone":"America/New_York","timestamps":[{"from":"2025-06-16T09:00:00-04:00","to":"2025-06-16T17:00:00-04:00"}],"currency":"USD","earnings":[{"name":"Sandbox
+        Test Earning","category":"hourly","amount":15000,"rate":1000,"hours":15.0}]},{"id":"2089ead3-5120-4117-aad3-be832c51d7b7","created_at":"2025-06-24T22:04:37.856529+00:00","account_id":"934f6406-c332-4c05-a3e8-6a90765c842d","start_date":"2025-06-15","end_date":"2025-06-15","type":"shift","timezone":"America/New_York","timestamps":[{"from":"2025-06-15T09:00:00-04:00","to":"2025-06-15T17:00:00-04:00"}],"currency":"USD","earnings":[{"name":"Sandbox
+        Test Earning","category":"hourly","amount":15000,"rate":1000,"hours":15.0}]},{"id":"73c008a4-d28b-4d5a-871d-b10f41d4a2d5","created_at":"2025-06-24T22:04:37.856529+00:00","account_id":"934f6406-c332-4c05-a3e8-6a90765c842d","start_date":"2025-06-14","end_date":"2025-06-14","type":"shift","timezone":"America/New_York","timestamps":[{"from":"2025-06-14T09:00:00-04:00","to":"2025-06-14T17:00:00-04:00"}],"currency":"USD","earnings":[{"name":"Sandbox
+        Test Earning","category":"hourly","amount":15000,"rate":1000,"hours":15.0}]},{"id":"79083e66-7235-4d65-858c-c760ae9e4fea","created_at":"2025-06-24T22:04:37.856529+00:00","account_id":"934f6406-c332-4c05-a3e8-6a90765c842d","start_date":"2025-06-13","end_date":"2025-06-13","type":"shift","timezone":"America/New_York","timestamps":[{"from":"2025-06-13T09:00:00-04:00","to":"2025-06-13T17:00:00-04:00"}],"currency":"USD","earnings":[{"name":"Sandbox
+        Test Earning","category":"hourly","amount":15000,"rate":1000,"hours":15.0}]},{"id":"32cc8cec-99a5-453a-90ee-891e7fc7556c","created_at":"2025-06-24T22:04:37.856529+00:00","account_id":"934f6406-c332-4c05-a3e8-6a90765c842d","start_date":"2025-06-12","end_date":"2025-06-12","type":"shift","timezone":"America/New_York","timestamps":[{"from":"2025-06-12T09:00:00-04:00","to":"2025-06-12T17:00:00-04:00"}],"currency":"USD","earnings":[{"name":"Sandbox
+        Test Earning","category":"hourly","amount":15000,"rate":1000,"hours":15.0}]},{"id":"24f526af-04ca-4ac0-a6b4-b1b4f809ca85","created_at":"2025-06-24T22:04:37.856529+00:00","account_id":"934f6406-c332-4c05-a3e8-6a90765c842d","start_date":"2025-06-11","end_date":"2025-06-11","type":"shift","timezone":"America/New_York","timestamps":[{"from":"2025-06-11T09:00:00-04:00","to":"2025-06-11T17:00:00-04:00"}],"currency":"USD","earnings":[{"name":"Sandbox
+        Test Earning","category":"hourly","amount":15000,"rate":1000,"hours":15.0}]},{"id":"eca82309-fc82-4533-b754-a8fa96b7b1a5","created_at":"2025-06-24T22:04:37.856529+00:00","account_id":"934f6406-c332-4c05-a3e8-6a90765c842d","start_date":"2025-06-10","end_date":"2025-06-10","type":"shift","timezone":"America/New_York","timestamps":[{"from":"2025-06-10T09:00:00-04:00","to":"2025-06-10T17:00:00-04:00"}],"currency":"USD","earnings":[{"name":"Sandbox
+        Test Earning","category":"hourly","amount":15000,"rate":1000,"hours":15.0}]},{"id":"636aad47-9fa9-498c-b101-6fb7e4f3ff94","created_at":"2025-06-24T22:04:37.856529+00:00","account_id":"934f6406-c332-4c05-a3e8-6a90765c842d","start_date":"2025-06-09","end_date":"2025-06-09","type":"shift","timezone":"America/New_York","timestamps":[{"from":"2025-06-09T09:00:00-04:00","to":"2025-06-09T17:00:00-04:00"}],"currency":"USD","earnings":[{"name":"Sandbox
+        Test Earning","category":"hourly","amount":15000,"rate":1000,"hours":15.0}]},{"id":"bcf0caec-36c1-49bc-8396-66acd3e66ba1","created_at":"2025-06-24T22:04:37.856529+00:00","account_id":"934f6406-c332-4c05-a3e8-6a90765c842d","start_date":"2025-06-08","end_date":"2025-06-08","type":"shift","timezone":"America/New_York","timestamps":[{"from":"2025-06-08T09:00:00-04:00","to":"2025-06-08T17:00:00-04:00"}],"currency":"USD","earnings":[{"name":"Sandbox
+        Test Earning","category":"hourly","amount":15000,"rate":1000,"hours":15.0}]},{"id":"01903627-464c-480c-8f7a-f498385f153c","created_at":"2025-06-24T22:04:37.856529+00:00","account_id":"934f6406-c332-4c05-a3e8-6a90765c842d","start_date":"2025-06-07","end_date":"2025-06-07","type":"shift","timezone":"America/New_York","timestamps":[{"from":"2025-06-07T09:00:00-04:00","to":"2025-06-07T17:00:00-04:00"}],"currency":"USD","earnings":[{"name":"Sandbox
+        Test Earning","category":"hourly","amount":15000,"rate":1000,"hours":15.0}]},{"id":"01700a29-91e1-4463-b34b-2acca2fe147b","created_at":"2025-06-24T22:04:37.856529+00:00","account_id":"934f6406-c332-4c05-a3e8-6a90765c842d","start_date":"2025-06-06","end_date":"2025-06-06","type":"shift","timezone":"America/New_York","timestamps":[{"from":"2025-06-06T09:00:00-04:00","to":"2025-06-06T17:00:00-04:00"}],"currency":"USD","earnings":[{"name":"Sandbox
+        Test Earning","category":"hourly","amount":15000,"rate":1000,"hours":15.0}]},{"id":"8e2a1258-a627-4641-abfb-44a6aac6d107","created_at":"2025-06-24T22:04:37.856529+00:00","account_id":"934f6406-c332-4c05-a3e8-6a90765c842d","start_date":"2025-06-05","end_date":"2025-06-05","type":"shift","timezone":"America/New_York","timestamps":[{"from":"2025-06-05T09:00:00-04:00","to":"2025-06-05T17:00:00-04:00"}],"currency":"USD","earnings":[{"name":"Sandbox
+        Test Earning","category":"hourly","amount":15000,"rate":1000,"hours":15.0}]},{"id":"1954f1e9-db0e-4acf-ba30-8d9c9cf86a37","created_at":"2025-06-24T22:04:37.856529+00:00","account_id":"934f6406-c332-4c05-a3e8-6a90765c842d","start_date":"2025-06-04","end_date":"2025-06-04","type":"shift","timezone":"America/New_York","timestamps":[{"from":"2025-06-04T09:00:00-04:00","to":"2025-06-04T17:00:00-04:00"}],"currency":"USD","earnings":[{"name":"Sandbox
+        Test Earning","category":"hourly","amount":15000,"rate":1000,"hours":15.0}]},{"id":"40a43fe3-09da-4367-a3ba-2d608bb2033b","created_at":"2025-06-24T22:04:37.856529+00:00","account_id":"934f6406-c332-4c05-a3e8-6a90765c842d","start_date":"2025-06-03","end_date":"2025-06-03","type":"shift","timezone":"America/New_York","timestamps":[{"from":"2025-06-03T09:00:00-04:00","to":"2025-06-03T17:00:00-04:00"}],"currency":"USD","earnings":[{"name":"Sandbox
+        Test Earning","category":"hourly","amount":15000,"rate":1000,"hours":15.0}]},{"id":"6fdde1c4-e8b9-49e2-8af3-0350b0029122","created_at":"2025-06-24T22:04:37.856529+00:00","account_id":"934f6406-c332-4c05-a3e8-6a90765c842d","start_date":"2025-06-02","end_date":"2025-06-02","type":"shift","timezone":"America/New_York","timestamps":[{"from":"2025-06-02T09:00:00-04:00","to":"2025-06-02T17:00:00-04:00"}],"currency":"USD","earnings":[{"name":"Sandbox
+        Test Earning","category":"hourly","amount":15000,"rate":1000,"hours":15.0}]},{"id":"0a2be905-e3e8-4144-9c80-586e31528215","created_at":"2025-06-24T22:04:37.856529+00:00","account_id":"934f6406-c332-4c05-a3e8-6a90765c842d","start_date":"2025-06-01","end_date":"2025-06-01","type":"shift","timezone":"America/New_York","timestamps":[{"from":"2025-06-01T09:00:00-04:00","to":"2025-06-01T17:00:00-04:00"}],"currency":"USD","earnings":[{"name":"Sandbox
+        Test Earning","category":"hourly","amount":15000,"rate":1000,"hours":15.0}]},{"id":"3be72048-b9c8-492d-aa87-c295bbb05e8c","created_at":"2025-06-24T22:04:37.856529+00:00","account_id":"934f6406-c332-4c05-a3e8-6a90765c842d","start_date":"2025-05-31","end_date":"2025-05-31","type":"shift","timezone":"America/New_York","timestamps":[{"from":"2025-05-31T09:00:00-04:00","to":"2025-05-31T17:00:00-04:00"}],"currency":"USD","earnings":[{"name":"Sandbox
+        Test Earning","category":"hourly","amount":15000,"rate":1000,"hours":15.0}]}]}'
+  recorded_at: Tue, 24 Jun 2025 22:04:21 GMT
+- request:
+    method: get
+    uri: https://sandbox.getpinwheel.com/v1/accounts/934f6406-c332-4c05-a3e8-6a90765c842d/identity
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Content-Type:
+      - application/json
+      Pinwheel-Version:
+      - '2023-11-22'
+      X-Api-Secret:
+      - "<PINWHEEL_API_TOKEN>"
+      User-Agent:
+      - Faraday v2.9.2
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Accept:
+      - "*/*"
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Date:
+      - Tue, 24 Jun 2025 22:04:52 GMT
+      Content-Type:
+      - application/json
+      Content-Length:
+      - '612'
+      Connection:
+      - keep-alive
+      Server:
+      - uvicorn
+      Pinwheel-Version:
+      - '2023-11-22'
+      Content-Security-Policy:
+      - frame-ancestors 'none'
+      Strict-Transport-Security:
+      - max-age=31536000; includeSubDomains;
+      X-Pinwheel-Request-Id:
+      - 8a410835-e6e3-4089-9bd8-0ac284249448
+    body:
+      encoding: UTF-8
+      string: '{"data":{"id":"75b85ffa-1057-45a3-a9fb-77de821747b6","created_at":"2025-06-24T22:04:34.456512+00:00","updated_at":"2025-06-24T22:04:34.456512+00:00","account_id":"934f6406-c332-4c05-a3e8-6a90765c842d","full_name":"Ash
+        Userton","emails":["user_good@example.com"],"date_of_birth":"1993-08-28","last_four_ssn":"1234","address":{"raw":"20429
+        Pinwheel Drive, New York City, NY 99999","line1":"20429 Pinwheel Drive","line2":null,"city":"New
+        York City","state":"NY","postal_code":"99999","country":"US"},"phone_numbers":[{"value":"+12345556789","type":null}]},"meta":{"refreshed_at":"2025-06-24T22:04:34.548440+00:00"}}'
+  recorded_at: Tue, 24 Jun 2025 22:04:21 GMT
+- request:
+    method: get
+    uri: https://sandbox.getpinwheel.com/v1/accounts/934f6406-c332-4c05-a3e8-6a90765c842d
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Content-Type:
+      - application/json
+      Pinwheel-Version:
+      - '2023-11-22'
+      X-Api-Secret:
+      - "<PINWHEEL_API_TOKEN>"
+      User-Agent:
+      - Faraday v2.9.2
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Accept:
+      - "*/*"
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Date:
+      - Tue, 24 Jun 2025 22:04:52 GMT
+      Content-Type:
+      - application/json
+      Content-Length:
+      - '935'
+      Connection:
+      - keep-alive
+      Server:
+      - uvicorn
+      Pinwheel-Version:
+      - '2023-11-22'
+      Content-Security-Policy:
+      - frame-ancestors 'none'
+      Strict-Transport-Security:
+      - max-age=31536000; includeSubDomains;
+      X-Pinwheel-Request-Id:
+      - c2403ddb-c873-410b-ae43-028b174e7732
+    body:
+      encoding: UTF-8
+      string: '{"data":{"created_at":"2025-06-24T22:04:33.547314+00:00","link_token_id":"a63c75ef-3e91-4fff-8147-78cf7efeddd2","platform_id":"5965580e-380f-4b86-8a8a-7278c77f73cb","connected":true,"monitoring_status":"active","end_user_id":"6a927ef1-6c91-43c9-abbe-6728dc8ef877","id":"934f6406-c332-4c05-a3e8-6a90765c842d","data_updated_at":{"direct_deposit_allocations":"2025-06-24T22:04:34.948037+00:00","income":"2025-06-24T22:04:34.629192+00:00","employment":"2025-06-24T22:04:41.075640+00:00","identity":"2025-06-24T22:04:34.548440+00:00","shifts":"2025-06-24T22:04:39.588394+00:00","paystubs":"2025-06-24T22:04:38.805798+00:00"},"data_refreshed_at":{"direct_deposit_allocations":"2025-06-24T22:04:34.948037+00:00","income":"2025-06-24T22:04:34.629192+00:00","employment":"2025-06-24T22:04:41.075640+00:00","identity":"2025-06-24T22:04:34.548440+00:00","shifts":"2025-06-24T22:04:39.588394+00:00","paystubs":"2025-06-24T22:04:38.805798+00:00"}}}'
+  recorded_at: Tue, 24 Jun 2025 22:04:21 GMT
+- request:
+    method: get
+    uri: https://sandbox.getpinwheel.com/v1/platforms/5965580e-380f-4b86-8a8a-7278c77f73cb
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Content-Type:
+      - application/json
+      Pinwheel-Version:
+      - '2023-11-22'
+      X-Api-Secret:
+      - "<PINWHEEL_API_TOKEN>"
+      User-Agent:
+      - Faraday v2.9.2
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Accept:
+      - "*/*"
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Date:
+      - Tue, 24 Jun 2025 22:04:52 GMT
+      Content-Type:
+      - application/json
+      Content-Length:
+      - '575'
+      Connection:
+      - keep-alive
+      Server:
+      - uvicorn
+      Pinwheel-Version:
+      - '2023-11-22'
+      Content-Security-Policy:
+      - frame-ancestors 'none'
+      Strict-Transport-Security:
+      - max-age=31536000; includeSubDomains;
+      X-Pinwheel-Request-Id:
+      - 04a720d8-7a04-472a-8770-8e15637fa8ca
+    body:
+      encoding: UTF-8
+      string: '{"data":{"id":"5965580e-380f-4b86-8a8a-7278c77f73cb","name":"Workday","type":"payroll","fractional_amount_supported":true,"min_amount":null,"max_amount":null,"last_updated":"2025-05-13T18:41:08.804385+00:00","logo_url":"https://cdn.getpinwheel.com/assets/platforms/logos/search/cfmpw.png","percentage_supported":true,"min_percentage":1,"max_percentage":99,"supported_jobs":["company_incomes","company_employments","direct_deposit_allocations","shifts","income","direct_deposit_switch","tax_forms","company_census","employment","identity","paystubs"],"amount_supported":true}}'
+  recorded_at: Tue, 24 Jun 2025 22:04:21 GMT
+- request:
+    method: get
+    uri: https://sandbox.getpinwheel.com/v1/accounts/934f6406-c332-4c05-a3e8-6a90765c842d/employment
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Content-Type:
+      - application/json
+      Pinwheel-Version:
+      - '2023-11-22'
+      X-Api-Secret:
+      - "<PINWHEEL_API_TOKEN>"
+      User-Agent:
+      - Faraday v2.9.2
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Accept:
+      - "*/*"
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Date:
+      - Tue, 24 Jun 2025 22:04:52 GMT
+      Content-Type:
+      - application/json
+      Content-Length:
+      - '634'
+      Connection:
+      - keep-alive
+      Server:
+      - uvicorn
+      Pinwheel-Version:
+      - '2023-11-22'
+      Content-Security-Policy:
+      - frame-ancestors 'none'
+      Strict-Transport-Security:
+      - max-age=31536000; includeSubDomains;
+      X-Pinwheel-Request-Id:
+      - c7a59d7d-75d2-4333-b814-7858493919fd
+    body:
+      encoding: UTF-8
+      string: '{"data":{"id":"c9d3fc3b-3e2e-4a3e-855a-1eb77396a85c","created_at":"2025-06-24T22:04:40.979175+00:00","updated_at":"2025-06-24T22:04:40.979175+00:00","account_id":"934f6406-c332-4c05-a3e8-6a90765c842d","status":"employed","start_date":"2010-01-01","termination_date":null,"employer_name":"Acme
+        Corporation","employer_address":{"raw":"20429 Pinwheel Drive, New York City,
+        NY 99999","line1":"20429 Pinwheel Drive","line2":null,"city":"New York City","state":"NY","postal_code":"99999","country":"US"},"employer_phone_number":{"value":"+16126597057","type":"work"},"title":null},"meta":{"refreshed_at":"2025-06-24T22:04:41.075640+00:00"}}'
+  recorded_at: Tue, 24 Jun 2025 22:04:21 GMT
+- request:
+    method: get
+    uri: https://sandbox.getpinwheel.com/v1/accounts/934f6406-c332-4c05-a3e8-6a90765c842d/income
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Content-Type:
+      - application/json
+      Pinwheel-Version:
+      - '2023-11-22'
+      X-Api-Secret:
+      - "<PINWHEEL_API_TOKEN>"
+      User-Agent:
+      - Faraday v2.9.2
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Accept:
+      - "*/*"
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Date:
+      - Tue, 24 Jun 2025 22:04:53 GMT
+      Content-Type:
+      - application/json
+      Content-Length:
+      - '362'
+      Connection:
+      - keep-alive
+      Server:
+      - uvicorn
+      Pinwheel-Version:
+      - '2023-11-22'
+      Content-Security-Policy:
+      - frame-ancestors 'none'
+      Strict-Transport-Security:
+      - max-age=31536000; includeSubDomains;
+      X-Pinwheel-Request-Id:
+      - 76617ea6-a857-4bba-8564-5bd18e2e6f66
+    body:
+      encoding: UTF-8
+      string: '{"data":{"id":"c8dae54d-915c-4573-975a-f5ba54f57aa0","created_at":"2025-06-24T22:04:34.558075+00:00","updated_at":"2025-06-24T22:04:38.686874+00:00","account_id":"934f6406-c332-4c05-a3e8-6a90765c842d","compensation_amount":1000,"compensation_unit":"hourly","currency":"USD","pay_frequency":"bi-weekly"},"meta":{"refreshed_at":"2025-06-24T22:04:34.629192+00:00"}}'
+  recorded_at: Tue, 24 Jun 2025 22:04:21 GMT
+- request:
+    method: get
+    uri: https://sandbox.getpinwheel.com/v1/accounts/934f6406-c332-4c05-a3e8-6a90765c842d/paystubs?from_pay_date=2025-03-26&to_pay_date=2025-06-24
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Content-Type:
+      - application/json
+      Pinwheel-Version:
+      - '2023-11-22'
+      X-Api-Secret:
+      - "<PINWHEEL_API_TOKEN>"
+      User-Agent:
+      - Faraday v2.9.2
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Accept:
+      - "*/*"
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Date:
+      - Tue, 24 Jun 2025 22:04:53 GMT
+      Content-Type:
+      - application/json
+      Content-Length:
+      - '12023'
+      Connection:
+      - keep-alive
+      Server:
+      - uvicorn
+      Pinwheel-Version:
+      - '2023-11-22'
+      Content-Security-Policy:
+      - frame-ancestors 'none'
+      Strict-Transport-Security:
+      - max-age=31536000; includeSubDomains;
+      X-Pinwheel-Request-Id:
+      - f64f7f87-f61f-4440-9faa-6eb852063521
+    body:
+      encoding: UTF-8
+      string: '{"meta":{"refreshed_at":"2025-06-24T22:04:38.805798+00:00","count":4,"next_cursor":null},"data":[{"id":"c80ed2d6-a0fe-4b63-8c92-92414cea9b37","created_at":"2025-06-24T22:04:35.119310+00:00","account_id":"934f6406-c332-4c05-a3e8-6a90765c842d","pay_date":"2025-06-24","pay_period_start":"2025-06-11","pay_period_end":"2025-06-24","currency":"USD","gross_pay_amount":50000,"net_pay_amount":46000,"check_amount":46000,"gross_pay_ytd":50000,"net_pay_ytd":46000,"total_taxes":3825,"total_deductions":175,"total_reimbursements":0,"external_paystub_id":null,"employer_name":null,"taxes":[{"name":"Pinwheel
+        Tax","category":"state_income","amount":0},{"name":"Employee Medicare Tax","category":"medicare","amount":725},{"name":"Employee
+        Social Security Tax","category":"social_security","amount":3100},{"name":"Federal
+        Income Tax","category":"federal_income","amount":0}],"deductions":[{"name":"Deduction","category":"other","amount":175,"type":"unknown"}],"earnings":[{"name":"Regular","category":"hourly","amount":50000,"rate":5000,"hours":10.0}],"time_off":[{"name":"PTO","category":"pto","available_hours":25.0,"earned_hours":0.75,"used_hours":0.0},{"name":"Sick
+        Leave","category":"sick","available_hours":8.0,"earned_hours":0.1,"used_hours":2.0}],"document":{"id":"00000000-0000-0000-0000-000000000000","download_url":"https://production-newton-paystubs.s3.amazonaws.com/00000000-0000-0000-0000-000000000000/paystub/00000000-0000-0000-0000-000000000000.pdf?response-content-type=application%2Fpdf&X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=<PINWHEEL_AWS_KEY_ID>&X-Amz-Date=20250624T220453Z&X-Amz-Expires=900&X-Amz-SignedHeaders=host&X-Amz-Security-Token=IQoJb3JpZ2luX2VjED4aCXVzLWVhc3QtMSJIMEYCIQDMo7BY5kE8Fta972d5TNjs4e%2FrwLDW3abJDG3uFZ2KUgIhAIONZZ9cTU%2B7JOR6xWnbQJOt91x6beB63LaqluVsokSpKvkECDcQBBoMODg1OTI0MzA3NDQ5IgwPWa13EoSvE5sirKkq1gSvcSgJk7iteDARIwfKfQ0XnLbSd8KpTsKfu0NGnwm9OcdlcixOJc7uivjkbX1W8Fkz1gC1IkFkvM92AvkaPCqfYwPQpRGWeJGsD%2BhB%2BEV6CY%2BG1yNJK3Q5bakmlolaS%2Bg52EYT%2F8xAoK4DVqpvcNOr2RqzpPmijgfr3smwmqHh23b9HYznaQQbcG5u16YyWNC3Lf845G70ZhHmIMOM1ncUC0GnFgdb1VAOJDLfMLlWpgoLLRp96%2BxJwePLyCpCD6aOnFXh90YlRqbizeWyhUBLRzrb9AnfufmlfIrUoObyHSTkoJP6xB4Mv0OVos70oTlkbnHnBWquBX5NyhEtOCywHPocQBqt%2Bxz5OlIizsZY6tl8m2W9tkbmdJ%2FOQ0CsJ1jreo0sNwCzXub8CCCG7Lop7flWr3fKvrQA6QMwGUtOSeTZTlOI6rDxOW1zCNki2RscechKd3DCKD2eJN5VOo261pd1wj9JMhPPwoFxd7kJGfx38ruQ4nwQbY69neZGJGtO2Rbd%2BGQMyYy6ZuSWkp7N0YHRDMWZBLsYRDDBNErB64PwZLPbuDlgJX772P2BZet2hp8R406m7XF6tdU8VNRAYb%2FhxOwKrDpnIv1NZY7xbImfC%2BN9EJrLREZmlsHj3%2Byc43eizYhSjNzsTc55cBhVAnveWWdnCLEydZZ4giGljwJ8nSItDUjD9t089G4MjQYyftfX21odBvCN%2FPsKm9SkDuxfmvWqjjmmWL7NjiB0mgOnMVszrglxwJsZ7pkOKrIcmWBDLW82RWSViWFBykyeuPpRUlDDMK%2B67MIGOpkBeuIgyJNBCEVDE3526MihhhsU9fWEGwxvRVhHRC4ZQvI4lc4Hk5UZgVQhkcicH1Au%2FYXCW2UaVEcwHVa2HJ2us4ECcnTrlqPpgqAtQmK0BgmGHpUKxN6rWkt0YOxOmhCXwG4rYZr9IMw6x1kl4WD34nsf%2FnsJrra5qHgARS5Dls1z5A6Ctvzdu97H22JLTHDpfmpTfncqGy%2Bz&X-Amz-Signature=8c683f0197732fb5a9046a7d18ffbb079e04d57de5bd571ca3bd918e683c261e","download_url_expiration":"2025-06-24T22:19:53.493346+00:00"}},{"id":"6e65691e-6391-4789-abf8-7fe8cae27335","created_at":"2025-06-24T22:04:35.843721+00:00","account_id":"934f6406-c332-4c05-a3e8-6a90765c842d","pay_date":"2025-06-10","pay_period_start":"2025-05-28","pay_period_end":"2025-06-10","currency":"USD","gross_pay_amount":50000,"net_pay_amount":46000,"check_amount":46000,"gross_pay_ytd":50000,"net_pay_ytd":46000,"total_taxes":3825,"total_deductions":175,"total_reimbursements":0,"external_paystub_id":null,"employer_name":null,"taxes":[{"name":"Pinwheel
+        Tax","category":"state_income","amount":0},{"name":"Employee Medicare Tax","category":"medicare","amount":725},{"name":"Employee
+        Social Security Tax","category":"social_security","amount":3100},{"name":"Federal
+        Income Tax","category":"federal_income","amount":0}],"deductions":[{"name":"Deduction","category":"other","amount":175,"type":"unknown"}],"earnings":[{"name":"Regular","category":"hourly","amount":50000,"rate":5000,"hours":10.0}],"time_off":[{"name":"PTO","category":"pto","available_hours":25.0,"earned_hours":0.75,"used_hours":0.0},{"name":"Sick
+        Leave","category":"sick","available_hours":8.0,"earned_hours":0.1,"used_hours":2.0}],"document":{"id":"00000000-0000-0000-0000-000000000000","download_url":"https://production-newton-paystubs.s3.amazonaws.com/00000000-0000-0000-0000-000000000000/paystub/00000000-0000-0000-0000-000000000000.pdf?response-content-type=application%2Fpdf&X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=<PINWHEEL_AWS_KEY_ID>&X-Amz-Date=20250624T220453Z&X-Amz-Expires=900&X-Amz-SignedHeaders=host&X-Amz-Security-Token=IQoJb3JpZ2luX2VjED4aCXVzLWVhc3QtMSJIMEYCIQDMo7BY5kE8Fta972d5TNjs4e%2FrwLDW3abJDG3uFZ2KUgIhAIONZZ9cTU%2B7JOR6xWnbQJOt91x6beB63LaqluVsokSpKvkECDcQBBoMODg1OTI0MzA3NDQ5IgwPWa13EoSvE5sirKkq1gSvcSgJk7iteDARIwfKfQ0XnLbSd8KpTsKfu0NGnwm9OcdlcixOJc7uivjkbX1W8Fkz1gC1IkFkvM92AvkaPCqfYwPQpRGWeJGsD%2BhB%2BEV6CY%2BG1yNJK3Q5bakmlolaS%2Bg52EYT%2F8xAoK4DVqpvcNOr2RqzpPmijgfr3smwmqHh23b9HYznaQQbcG5u16YyWNC3Lf845G70ZhHmIMOM1ncUC0GnFgdb1VAOJDLfMLlWpgoLLRp96%2BxJwePLyCpCD6aOnFXh90YlRqbizeWyhUBLRzrb9AnfufmlfIrUoObyHSTkoJP6xB4Mv0OVos70oTlkbnHnBWquBX5NyhEtOCywHPocQBqt%2Bxz5OlIizsZY6tl8m2W9tkbmdJ%2FOQ0CsJ1jreo0sNwCzXub8CCCG7Lop7flWr3fKvrQA6QMwGUtOSeTZTlOI6rDxOW1zCNki2RscechKd3DCKD2eJN5VOo261pd1wj9JMhPPwoFxd7kJGfx38ruQ4nwQbY69neZGJGtO2Rbd%2BGQMyYy6ZuSWkp7N0YHRDMWZBLsYRDDBNErB64PwZLPbuDlgJX772P2BZet2hp8R406m7XF6tdU8VNRAYb%2FhxOwKrDpnIv1NZY7xbImfC%2BN9EJrLREZmlsHj3%2Byc43eizYhSjNzsTc55cBhVAnveWWdnCLEydZZ4giGljwJ8nSItDUjD9t089G4MjQYyftfX21odBvCN%2FPsKm9SkDuxfmvWqjjmmWL7NjiB0mgOnMVszrglxwJsZ7pkOKrIcmWBDLW82RWSViWFBykyeuPpRUlDDMK%2B67MIGOpkBeuIgyJNBCEVDE3526MihhhsU9fWEGwxvRVhHRC4ZQvI4lc4Hk5UZgVQhkcicH1Au%2FYXCW2UaVEcwHVa2HJ2us4ECcnTrlqPpgqAtQmK0BgmGHpUKxN6rWkt0YOxOmhCXwG4rYZr9IMw6x1kl4WD34nsf%2FnsJrra5qHgARS5Dls1z5A6Ctvzdu97H22JLTHDpfmpTfncqGy%2Bz&X-Amz-Signature=8c683f0197732fb5a9046a7d18ffbb079e04d57de5bd571ca3bd918e683c261e","download_url_expiration":"2025-06-24T22:19:53.496340+00:00"}},{"id":"0c5be6bf-53ca-4597-b277-de311bf69682","created_at":"2025-06-24T22:04:36.842538+00:00","account_id":"934f6406-c332-4c05-a3e8-6a90765c842d","pay_date":"2025-05-13","pay_period_start":"2025-04-30","pay_period_end":"2025-05-13","currency":"USD","gross_pay_amount":50000,"net_pay_amount":46000,"check_amount":46000,"gross_pay_ytd":50000,"net_pay_ytd":46000,"total_taxes":3825,"total_deductions":175,"total_reimbursements":0,"external_paystub_id":null,"employer_name":null,"taxes":[{"name":"Pinwheel
+        Tax","category":"state_income","amount":0},{"name":"Employee Medicare Tax","category":"medicare","amount":725},{"name":"Employee
+        Social Security Tax","category":"social_security","amount":3100},{"name":"Federal
+        Income Tax","category":"federal_income","amount":0}],"deductions":[{"name":"Deduction","category":"other","amount":175,"type":"unknown"}],"earnings":[{"name":"Regular","category":"hourly","amount":50000,"rate":5000,"hours":10.0}],"time_off":[{"name":"PTO","category":"pto","available_hours":25.0,"earned_hours":0.75,"used_hours":0.0},{"name":"Sick
+        Leave","category":"sick","available_hours":8.0,"earned_hours":0.1,"used_hours":2.0}],"document":{"id":"00000000-0000-0000-0000-000000000000","download_url":"https://production-newton-paystubs.s3.amazonaws.com/00000000-0000-0000-0000-000000000000/paystub/00000000-0000-0000-0000-000000000000.pdf?response-content-type=application%2Fpdf&X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=<PINWHEEL_AWS_KEY_ID>&X-Amz-Date=20250624T220453Z&X-Amz-Expires=900&X-Amz-SignedHeaders=host&X-Amz-Security-Token=IQoJb3JpZ2luX2VjED4aCXVzLWVhc3QtMSJIMEYCIQDMo7BY5kE8Fta972d5TNjs4e%2FrwLDW3abJDG3uFZ2KUgIhAIONZZ9cTU%2B7JOR6xWnbQJOt91x6beB63LaqluVsokSpKvkECDcQBBoMODg1OTI0MzA3NDQ5IgwPWa13EoSvE5sirKkq1gSvcSgJk7iteDARIwfKfQ0XnLbSd8KpTsKfu0NGnwm9OcdlcixOJc7uivjkbX1W8Fkz1gC1IkFkvM92AvkaPCqfYwPQpRGWeJGsD%2BhB%2BEV6CY%2BG1yNJK3Q5bakmlolaS%2Bg52EYT%2F8xAoK4DVqpvcNOr2RqzpPmijgfr3smwmqHh23b9HYznaQQbcG5u16YyWNC3Lf845G70ZhHmIMOM1ncUC0GnFgdb1VAOJDLfMLlWpgoLLRp96%2BxJwePLyCpCD6aOnFXh90YlRqbizeWyhUBLRzrb9AnfufmlfIrUoObyHSTkoJP6xB4Mv0OVos70oTlkbnHnBWquBX5NyhEtOCywHPocQBqt%2Bxz5OlIizsZY6tl8m2W9tkbmdJ%2FOQ0CsJ1jreo0sNwCzXub8CCCG7Lop7flWr3fKvrQA6QMwGUtOSeTZTlOI6rDxOW1zCNki2RscechKd3DCKD2eJN5VOo261pd1wj9JMhPPwoFxd7kJGfx38ruQ4nwQbY69neZGJGtO2Rbd%2BGQMyYy6ZuSWkp7N0YHRDMWZBLsYRDDBNErB64PwZLPbuDlgJX772P2BZet2hp8R406m7XF6tdU8VNRAYb%2FhxOwKrDpnIv1NZY7xbImfC%2BN9EJrLREZmlsHj3%2Byc43eizYhSjNzsTc55cBhVAnveWWdnCLEydZZ4giGljwJ8nSItDUjD9t089G4MjQYyftfX21odBvCN%2FPsKm9SkDuxfmvWqjjmmWL7NjiB0mgOnMVszrglxwJsZ7pkOKrIcmWBDLW82RWSViWFBykyeuPpRUlDDMK%2B67MIGOpkBeuIgyJNBCEVDE3526MihhhsU9fWEGwxvRVhHRC4ZQvI4lc4Hk5UZgVQhkcicH1Au%2FYXCW2UaVEcwHVa2HJ2us4ECcnTrlqPpgqAtQmK0BgmGHpUKxN6rWkt0YOxOmhCXwG4rYZr9IMw6x1kl4WD34nsf%2FnsJrra5qHgARS5Dls1z5A6Ctvzdu97H22JLTHDpfmpTfncqGy%2Bz&X-Amz-Signature=8c683f0197732fb5a9046a7d18ffbb079e04d57de5bd571ca3bd918e683c261e","download_url_expiration":"2025-06-24T22:19:53.498922+00:00"}},{"id":"9bb0d63d-58b9-4202-ba95-5f1117502c00","created_at":"2025-06-24T22:04:36.842538+00:00","account_id":"934f6406-c332-4c05-a3e8-6a90765c842d","pay_date":"2025-04-29","pay_period_start":"2025-04-16","pay_period_end":"2025-04-29","currency":"USD","gross_pay_amount":52000,"net_pay_amount":48000,"check_amount":48000,"gross_pay_ytd":102000,"net_pay_ytd":94000,"total_taxes":3825,"total_deductions":175,"total_reimbursements":0,"external_paystub_id":null,"employer_name":null,"taxes":[{"name":"Pinwheel
+        Tax","category":"state_income","amount":0},{"name":"Employee Medicare Tax","category":"medicare","amount":725},{"name":"Employee
+        Social Security Tax","category":"social_security","amount":3100},{"name":"Federal
+        Income Tax","category":"federal_income","amount":0}],"deductions":[{"name":"Deduction","category":"other","amount":175,"type":"unknown"}],"earnings":[{"name":"Regular","category":"hourly","amount":52000,"rate":5000,"hours":10.4}],"time_off":[{"name":"PTO","category":"pto","available_hours":25.0,"earned_hours":0.75,"used_hours":0.0},{"name":"Sick
+        Leave","category":"sick","available_hours":8.0,"earned_hours":0.1,"used_hours":2.0}],"document":{"id":"00000000-0000-0000-0000-000000000000","download_url":"https://production-newton-paystubs.s3.amazonaws.com/00000000-0000-0000-0000-000000000000/paystub/00000000-0000-0000-0000-000000000000.pdf?response-content-type=application%2Fpdf&X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=<PINWHEEL_AWS_KEY_ID>&X-Amz-Date=20250624T220453Z&X-Amz-Expires=900&X-Amz-SignedHeaders=host&X-Amz-Security-Token=IQoJb3JpZ2luX2VjED4aCXVzLWVhc3QtMSJIMEYCIQDMo7BY5kE8Fta972d5TNjs4e%2FrwLDW3abJDG3uFZ2KUgIhAIONZZ9cTU%2B7JOR6xWnbQJOt91x6beB63LaqluVsokSpKvkECDcQBBoMODg1OTI0MzA3NDQ5IgwPWa13EoSvE5sirKkq1gSvcSgJk7iteDARIwfKfQ0XnLbSd8KpTsKfu0NGnwm9OcdlcixOJc7uivjkbX1W8Fkz1gC1IkFkvM92AvkaPCqfYwPQpRGWeJGsD%2BhB%2BEV6CY%2BG1yNJK3Q5bakmlolaS%2Bg52EYT%2F8xAoK4DVqpvcNOr2RqzpPmijgfr3smwmqHh23b9HYznaQQbcG5u16YyWNC3Lf845G70ZhHmIMOM1ncUC0GnFgdb1VAOJDLfMLlWpgoLLRp96%2BxJwePLyCpCD6aOnFXh90YlRqbizeWyhUBLRzrb9AnfufmlfIrUoObyHSTkoJP6xB4Mv0OVos70oTlkbnHnBWquBX5NyhEtOCywHPocQBqt%2Bxz5OlIizsZY6tl8m2W9tkbmdJ%2FOQ0CsJ1jreo0sNwCzXub8CCCG7Lop7flWr3fKvrQA6QMwGUtOSeTZTlOI6rDxOW1zCNki2RscechKd3DCKD2eJN5VOo261pd1wj9JMhPPwoFxd7kJGfx38ruQ4nwQbY69neZGJGtO2Rbd%2BGQMyYy6ZuSWkp7N0YHRDMWZBLsYRDDBNErB64PwZLPbuDlgJX772P2BZet2hp8R406m7XF6tdU8VNRAYb%2FhxOwKrDpnIv1NZY7xbImfC%2BN9EJrLREZmlsHj3%2Byc43eizYhSjNzsTc55cBhVAnveWWdnCLEydZZ4giGljwJ8nSItDUjD9t089G4MjQYyftfX21odBvCN%2FPsKm9SkDuxfmvWqjjmmWL7NjiB0mgOnMVszrglxwJsZ7pkOKrIcmWBDLW82RWSViWFBykyeuPpRUlDDMK%2B67MIGOpkBeuIgyJNBCEVDE3526MihhhsU9fWEGwxvRVhHRC4ZQvI4lc4Hk5UZgVQhkcicH1Au%2FYXCW2UaVEcwHVa2HJ2us4ECcnTrlqPpgqAtQmK0BgmGHpUKxN6rWkt0YOxOmhCXwG4rYZr9IMw6x1kl4WD34nsf%2FnsJrra5qHgARS5Dls1z5A6Ctvzdu97H22JLTHDpfmpTfncqGy%2Bz&X-Amz-Signature=8c683f0197732fb5a9046a7d18ffbb079e04d57de5bd571ca3bd918e683c261e","download_url_expiration":"2025-06-24T22:19:53.501411+00:00"}}]}'
+  recorded_at: Tue, 24 Jun 2025 22:04:21 GMT
+- request:
+    method: get
+    uri: https://sandbox.getpinwheel.com/v1/accounts/934f6406-c332-4c05-a3e8-6a90765c842d/shifts
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Content-Type:
+      - application/json
+      Pinwheel-Version:
+      - '2023-11-22'
+      X-Api-Secret:
+      - "<PINWHEEL_API_TOKEN>"
+      User-Agent:
+      - Faraday v2.9.2
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Accept:
+      - "*/*"
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Date:
+      - Tue, 24 Jun 2025 22:04:53 GMT
+      Content-Type:
+      - application/json
+      Content-Length:
+      - '11481'
+      Connection:
+      - keep-alive
+      Server:
+      - uvicorn
+      Pinwheel-Version:
+      - '2023-11-22'
+      Content-Security-Policy:
+      - frame-ancestors 'none'
+      Strict-Transport-Security:
+      - max-age=31536000; includeSubDomains;
+      X-Pinwheel-Request-Id:
+      - cbe206a3-537c-4d44-9518-0bb1c09238b1
+    body:
+      encoding: UTF-8
+      string: '{"meta":{"refreshed_at":"2025-06-24T22:04:39.588394+00:00","count":25,"next_cursor":"gAAAAABoWyEFigWR8sOxJrkY3rsZPxHSnEflKIaoe-ClKjB_uRqNvMJvrw8RKPVdDURQxt2DJmRRI-GqghEFNtYQA3yyzpeYfWO0YRiS-UZAEfktSGe82yCC9lU9zNft55W_MUPdT3rDWvesIZshJCLGJXXtWf2WghzaK82SC0W-gNpqTta385U="},"data":[{"id":"35841865-b1f1-4d96-b8c5-c49824fa8bfc","created_at":"2025-06-24T22:04:35.276087+00:00","account_id":"934f6406-c332-4c05-a3e8-6a90765c842d","start_date":"2025-06-24","end_date":"2025-06-24","type":"shift","timezone":"America/New_York","timestamps":[{"from":"2025-06-24T09:00:00-04:00","to":"2025-06-24T17:00:00-04:00"}],"currency":"USD","earnings":[{"name":"Sandbox
+        Test Earning","category":"hourly","amount":15000,"rate":1000,"hours":15.0}]},{"id":"299e5d25-0920-4b5f-9025-0857f446673b","created_at":"2025-06-24T22:04:35.276087+00:00","account_id":"934f6406-c332-4c05-a3e8-6a90765c842d","start_date":"2025-06-23","end_date":"2025-06-23","type":"shift","timezone":"America/New_York","timestamps":[{"from":"2025-06-23T09:00:00-04:00","to":"2025-06-23T17:00:00-04:00"}],"currency":"USD","earnings":[{"name":"Sandbox
+        Test Earning","category":"hourly","amount":15000,"rate":1000,"hours":15.0}]},{"id":"5de4eb01-f975-40c9-bc9a-1057f493095b","created_at":"2025-06-24T22:04:35.276087+00:00","account_id":"934f6406-c332-4c05-a3e8-6a90765c842d","start_date":"2025-06-22","end_date":"2025-06-22","type":"shift","timezone":"America/New_York","timestamps":[{"from":"2025-06-22T09:00:00-04:00","to":"2025-06-22T17:00:00-04:00"}],"currency":"USD","earnings":[{"name":"Sandbox
+        Test Earning","category":"hourly","amount":15000,"rate":1000,"hours":15.0}]},{"id":"3af126eb-7bc2-4b21-9a0d-461fb05d04c7","created_at":"2025-06-24T22:04:35.276087+00:00","account_id":"934f6406-c332-4c05-a3e8-6a90765c842d","start_date":"2025-06-21","end_date":"2025-06-21","type":"shift","timezone":"America/New_York","timestamps":[{"from":"2025-06-21T09:00:00-04:00","to":"2025-06-21T17:00:00-04:00"}],"currency":"USD","earnings":[{"name":"Sandbox
+        Test Earning","category":"hourly","amount":15000,"rate":1000,"hours":15.0}]},{"id":"23a1d0cf-aafe-4624-90ef-b25c2c3067b8","created_at":"2025-06-24T22:04:35.276087+00:00","account_id":"934f6406-c332-4c05-a3e8-6a90765c842d","start_date":"2025-06-20","end_date":"2025-06-20","type":"shift","timezone":"America/New_York","timestamps":[{"from":"2025-06-20T09:00:00-04:00","to":"2025-06-20T17:00:00-04:00"}],"currency":"USD","earnings":[{"name":"Sandbox
+        Test Earning","category":"hourly","amount":15000,"rate":1000,"hours":15.0}]},{"id":"eacf520b-3ea7-4ea8-9602-3a47394639f2","created_at":"2025-06-24T22:04:35.276087+00:00","account_id":"934f6406-c332-4c05-a3e8-6a90765c842d","start_date":"2025-06-19","end_date":"2025-06-19","type":"shift","timezone":"America/New_York","timestamps":[{"from":"2025-06-19T09:00:00-04:00","to":"2025-06-19T17:00:00-04:00"}],"currency":"USD","earnings":[{"name":"Sandbox
+        Test Earning","category":"hourly","amount":15000,"rate":1000,"hours":15.0}]},{"id":"40c83a70-e50e-4d2a-a9a1-f680fce15088","created_at":"2025-06-24T22:04:35.276087+00:00","account_id":"934f6406-c332-4c05-a3e8-6a90765c842d","start_date":"2025-06-18","end_date":"2025-06-18","type":"shift","timezone":"America/New_York","timestamps":[{"from":"2025-06-18T09:00:00-04:00","to":"2025-06-18T17:00:00-04:00"}],"currency":"USD","earnings":[{"name":"Sandbox
+        Test Earning","category":"hourly","amount":15000,"rate":1000,"hours":15.0}]},{"id":"194a6dce-a515-4833-9987-e42a04ed09ad","created_at":"2025-06-24T22:04:37.856529+00:00","account_id":"934f6406-c332-4c05-a3e8-6a90765c842d","start_date":"2025-06-17","end_date":"2025-06-17","type":"shift","timezone":"America/New_York","timestamps":[{"from":"2025-06-17T09:00:00-04:00","to":"2025-06-17T17:00:00-04:00"}],"currency":"USD","earnings":[{"name":"Sandbox
+        Test Earning","category":"hourly","amount":15000,"rate":1000,"hours":15.0}]},{"id":"00519e4a-075e-466d-bff8-8d8cbcdc6862","created_at":"2025-06-24T22:04:37.856529+00:00","account_id":"934f6406-c332-4c05-a3e8-6a90765c842d","start_date":"2025-06-16","end_date":"2025-06-16","type":"shift","timezone":"America/New_York","timestamps":[{"from":"2025-06-16T09:00:00-04:00","to":"2025-06-16T17:00:00-04:00"}],"currency":"USD","earnings":[{"name":"Sandbox
+        Test Earning","category":"hourly","amount":15000,"rate":1000,"hours":15.0}]},{"id":"2089ead3-5120-4117-aad3-be832c51d7b7","created_at":"2025-06-24T22:04:37.856529+00:00","account_id":"934f6406-c332-4c05-a3e8-6a90765c842d","start_date":"2025-06-15","end_date":"2025-06-15","type":"shift","timezone":"America/New_York","timestamps":[{"from":"2025-06-15T09:00:00-04:00","to":"2025-06-15T17:00:00-04:00"}],"currency":"USD","earnings":[{"name":"Sandbox
+        Test Earning","category":"hourly","amount":15000,"rate":1000,"hours":15.0}]},{"id":"73c008a4-d28b-4d5a-871d-b10f41d4a2d5","created_at":"2025-06-24T22:04:37.856529+00:00","account_id":"934f6406-c332-4c05-a3e8-6a90765c842d","start_date":"2025-06-14","end_date":"2025-06-14","type":"shift","timezone":"America/New_York","timestamps":[{"from":"2025-06-14T09:00:00-04:00","to":"2025-06-14T17:00:00-04:00"}],"currency":"USD","earnings":[{"name":"Sandbox
+        Test Earning","category":"hourly","amount":15000,"rate":1000,"hours":15.0}]},{"id":"79083e66-7235-4d65-858c-c760ae9e4fea","created_at":"2025-06-24T22:04:37.856529+00:00","account_id":"934f6406-c332-4c05-a3e8-6a90765c842d","start_date":"2025-06-13","end_date":"2025-06-13","type":"shift","timezone":"America/New_York","timestamps":[{"from":"2025-06-13T09:00:00-04:00","to":"2025-06-13T17:00:00-04:00"}],"currency":"USD","earnings":[{"name":"Sandbox
+        Test Earning","category":"hourly","amount":15000,"rate":1000,"hours":15.0}]},{"id":"32cc8cec-99a5-453a-90ee-891e7fc7556c","created_at":"2025-06-24T22:04:37.856529+00:00","account_id":"934f6406-c332-4c05-a3e8-6a90765c842d","start_date":"2025-06-12","end_date":"2025-06-12","type":"shift","timezone":"America/New_York","timestamps":[{"from":"2025-06-12T09:00:00-04:00","to":"2025-06-12T17:00:00-04:00"}],"currency":"USD","earnings":[{"name":"Sandbox
+        Test Earning","category":"hourly","amount":15000,"rate":1000,"hours":15.0}]},{"id":"24f526af-04ca-4ac0-a6b4-b1b4f809ca85","created_at":"2025-06-24T22:04:37.856529+00:00","account_id":"934f6406-c332-4c05-a3e8-6a90765c842d","start_date":"2025-06-11","end_date":"2025-06-11","type":"shift","timezone":"America/New_York","timestamps":[{"from":"2025-06-11T09:00:00-04:00","to":"2025-06-11T17:00:00-04:00"}],"currency":"USD","earnings":[{"name":"Sandbox
+        Test Earning","category":"hourly","amount":15000,"rate":1000,"hours":15.0}]},{"id":"eca82309-fc82-4533-b754-a8fa96b7b1a5","created_at":"2025-06-24T22:04:37.856529+00:00","account_id":"934f6406-c332-4c05-a3e8-6a90765c842d","start_date":"2025-06-10","end_date":"2025-06-10","type":"shift","timezone":"America/New_York","timestamps":[{"from":"2025-06-10T09:00:00-04:00","to":"2025-06-10T17:00:00-04:00"}],"currency":"USD","earnings":[{"name":"Sandbox
+        Test Earning","category":"hourly","amount":15000,"rate":1000,"hours":15.0}]},{"id":"636aad47-9fa9-498c-b101-6fb7e4f3ff94","created_at":"2025-06-24T22:04:37.856529+00:00","account_id":"934f6406-c332-4c05-a3e8-6a90765c842d","start_date":"2025-06-09","end_date":"2025-06-09","type":"shift","timezone":"America/New_York","timestamps":[{"from":"2025-06-09T09:00:00-04:00","to":"2025-06-09T17:00:00-04:00"}],"currency":"USD","earnings":[{"name":"Sandbox
+        Test Earning","category":"hourly","amount":15000,"rate":1000,"hours":15.0}]},{"id":"bcf0caec-36c1-49bc-8396-66acd3e66ba1","created_at":"2025-06-24T22:04:37.856529+00:00","account_id":"934f6406-c332-4c05-a3e8-6a90765c842d","start_date":"2025-06-08","end_date":"2025-06-08","type":"shift","timezone":"America/New_York","timestamps":[{"from":"2025-06-08T09:00:00-04:00","to":"2025-06-08T17:00:00-04:00"}],"currency":"USD","earnings":[{"name":"Sandbox
+        Test Earning","category":"hourly","amount":15000,"rate":1000,"hours":15.0}]},{"id":"01903627-464c-480c-8f7a-f498385f153c","created_at":"2025-06-24T22:04:37.856529+00:00","account_id":"934f6406-c332-4c05-a3e8-6a90765c842d","start_date":"2025-06-07","end_date":"2025-06-07","type":"shift","timezone":"America/New_York","timestamps":[{"from":"2025-06-07T09:00:00-04:00","to":"2025-06-07T17:00:00-04:00"}],"currency":"USD","earnings":[{"name":"Sandbox
+        Test Earning","category":"hourly","amount":15000,"rate":1000,"hours":15.0}]},{"id":"01700a29-91e1-4463-b34b-2acca2fe147b","created_at":"2025-06-24T22:04:37.856529+00:00","account_id":"934f6406-c332-4c05-a3e8-6a90765c842d","start_date":"2025-06-06","end_date":"2025-06-06","type":"shift","timezone":"America/New_York","timestamps":[{"from":"2025-06-06T09:00:00-04:00","to":"2025-06-06T17:00:00-04:00"}],"currency":"USD","earnings":[{"name":"Sandbox
+        Test Earning","category":"hourly","amount":15000,"rate":1000,"hours":15.0}]},{"id":"8e2a1258-a627-4641-abfb-44a6aac6d107","created_at":"2025-06-24T22:04:37.856529+00:00","account_id":"934f6406-c332-4c05-a3e8-6a90765c842d","start_date":"2025-06-05","end_date":"2025-06-05","type":"shift","timezone":"America/New_York","timestamps":[{"from":"2025-06-05T09:00:00-04:00","to":"2025-06-05T17:00:00-04:00"}],"currency":"USD","earnings":[{"name":"Sandbox
+        Test Earning","category":"hourly","amount":15000,"rate":1000,"hours":15.0}]},{"id":"1954f1e9-db0e-4acf-ba30-8d9c9cf86a37","created_at":"2025-06-24T22:04:37.856529+00:00","account_id":"934f6406-c332-4c05-a3e8-6a90765c842d","start_date":"2025-06-04","end_date":"2025-06-04","type":"shift","timezone":"America/New_York","timestamps":[{"from":"2025-06-04T09:00:00-04:00","to":"2025-06-04T17:00:00-04:00"}],"currency":"USD","earnings":[{"name":"Sandbox
+        Test Earning","category":"hourly","amount":15000,"rate":1000,"hours":15.0}]},{"id":"40a43fe3-09da-4367-a3ba-2d608bb2033b","created_at":"2025-06-24T22:04:37.856529+00:00","account_id":"934f6406-c332-4c05-a3e8-6a90765c842d","start_date":"2025-06-03","end_date":"2025-06-03","type":"shift","timezone":"America/New_York","timestamps":[{"from":"2025-06-03T09:00:00-04:00","to":"2025-06-03T17:00:00-04:00"}],"currency":"USD","earnings":[{"name":"Sandbox
+        Test Earning","category":"hourly","amount":15000,"rate":1000,"hours":15.0}]},{"id":"6fdde1c4-e8b9-49e2-8af3-0350b0029122","created_at":"2025-06-24T22:04:37.856529+00:00","account_id":"934f6406-c332-4c05-a3e8-6a90765c842d","start_date":"2025-06-02","end_date":"2025-06-02","type":"shift","timezone":"America/New_York","timestamps":[{"from":"2025-06-02T09:00:00-04:00","to":"2025-06-02T17:00:00-04:00"}],"currency":"USD","earnings":[{"name":"Sandbox
+        Test Earning","category":"hourly","amount":15000,"rate":1000,"hours":15.0}]},{"id":"0a2be905-e3e8-4144-9c80-586e31528215","created_at":"2025-06-24T22:04:37.856529+00:00","account_id":"934f6406-c332-4c05-a3e8-6a90765c842d","start_date":"2025-06-01","end_date":"2025-06-01","type":"shift","timezone":"America/New_York","timestamps":[{"from":"2025-06-01T09:00:00-04:00","to":"2025-06-01T17:00:00-04:00"}],"currency":"USD","earnings":[{"name":"Sandbox
+        Test Earning","category":"hourly","amount":15000,"rate":1000,"hours":15.0}]},{"id":"3be72048-b9c8-492d-aa87-c295bbb05e8c","created_at":"2025-06-24T22:04:37.856529+00:00","account_id":"934f6406-c332-4c05-a3e8-6a90765c842d","start_date":"2025-05-31","end_date":"2025-05-31","type":"shift","timezone":"America/New_York","timestamps":[{"from":"2025-05-31T09:00:00-04:00","to":"2025-05-31T17:00:00-04:00"}],"currency":"USD","earnings":[{"name":"Sandbox
+        Test Earning","category":"hourly","amount":15000,"rate":1000,"hours":15.0}]}]}'
+  recorded_at: Tue, 24 Jun 2025 22:04:21 GMT
+- request:
+    method: get
+    uri: https://sandbox.getpinwheel.com/v1/accounts/934f6406-c332-4c05-a3e8-6a90765c842d/identity
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Content-Type:
+      - application/json
+      Pinwheel-Version:
+      - '2023-11-22'
+      X-Api-Secret:
+      - "<PINWHEEL_API_TOKEN>"
+      User-Agent:
+      - Faraday v2.9.2
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Accept:
+      - "*/*"
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Date:
+      - Tue, 24 Jun 2025 22:04:54 GMT
+      Content-Type:
+      - application/json
+      Content-Length:
+      - '612'
+      Connection:
+      - keep-alive
+      Server:
+      - uvicorn
+      Pinwheel-Version:
+      - '2023-11-22'
+      Content-Security-Policy:
+      - frame-ancestors 'none'
+      Strict-Transport-Security:
+      - max-age=31536000; includeSubDomains;
+      X-Pinwheel-Request-Id:
+      - b2dfaf51-19a6-4cf9-a1e6-a3573b600d33
+    body:
+      encoding: UTF-8
+      string: '{"data":{"id":"75b85ffa-1057-45a3-a9fb-77de821747b6","created_at":"2025-06-24T22:04:34.456512+00:00","updated_at":"2025-06-24T22:04:34.456512+00:00","account_id":"934f6406-c332-4c05-a3e8-6a90765c842d","full_name":"Ash
+        Userton","emails":["user_good@example.com"],"date_of_birth":"1993-08-28","last_four_ssn":"1234","address":{"raw":"20429
+        Pinwheel Drive, New York City, NY 99999","line1":"20429 Pinwheel Drive","line2":null,"city":"New
+        York City","state":"NY","postal_code":"99999","country":"US"},"phone_numbers":[{"value":"+12345556789","type":null}]},"meta":{"refreshed_at":"2025-06-24T22:04:34.548440+00:00"}}'
+  recorded_at: Tue, 24 Jun 2025 22:04:21 GMT
+- request:
+    method: get
+    uri: https://sandbox.getpinwheel.com/v1/accounts/934f6406-c332-4c05-a3e8-6a90765c842d
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Content-Type:
+      - application/json
+      Pinwheel-Version:
+      - '2023-11-22'
+      X-Api-Secret:
+      - "<PINWHEEL_API_TOKEN>"
+      User-Agent:
+      - Faraday v2.9.2
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Accept:
+      - "*/*"
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Date:
+      - Tue, 24 Jun 2025 22:04:54 GMT
+      Content-Type:
+      - application/json
+      Content-Length:
+      - '935'
+      Connection:
+      - keep-alive
+      Server:
+      - uvicorn
+      Pinwheel-Version:
+      - '2023-11-22'
+      Content-Security-Policy:
+      - frame-ancestors 'none'
+      Strict-Transport-Security:
+      - max-age=31536000; includeSubDomains;
+      X-Pinwheel-Request-Id:
+      - 3b011e7d-b683-4ceb-9cc5-615b1d107d2a
+    body:
+      encoding: UTF-8
+      string: '{"data":{"created_at":"2025-06-24T22:04:33.547314+00:00","link_token_id":"a63c75ef-3e91-4fff-8147-78cf7efeddd2","platform_id":"5965580e-380f-4b86-8a8a-7278c77f73cb","connected":true,"monitoring_status":"active","end_user_id":"6a927ef1-6c91-43c9-abbe-6728dc8ef877","id":"934f6406-c332-4c05-a3e8-6a90765c842d","data_updated_at":{"direct_deposit_allocations":"2025-06-24T22:04:34.948037+00:00","income":"2025-06-24T22:04:34.629192+00:00","employment":"2025-06-24T22:04:41.075640+00:00","identity":"2025-06-24T22:04:34.548440+00:00","shifts":"2025-06-24T22:04:39.588394+00:00","paystubs":"2025-06-24T22:04:38.805798+00:00"},"data_refreshed_at":{"direct_deposit_allocations":"2025-06-24T22:04:34.948037+00:00","income":"2025-06-24T22:04:34.629192+00:00","employment":"2025-06-24T22:04:41.075640+00:00","identity":"2025-06-24T22:04:34.548440+00:00","shifts":"2025-06-24T22:04:39.588394+00:00","paystubs":"2025-06-24T22:04:38.805798+00:00"}}}'
+  recorded_at: Tue, 24 Jun 2025 22:04:21 GMT
+- request:
+    method: get
+    uri: https://sandbox.getpinwheel.com/v1/platforms/5965580e-380f-4b86-8a8a-7278c77f73cb
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Content-Type:
+      - application/json
+      Pinwheel-Version:
+      - '2023-11-22'
+      X-Api-Secret:
+      - "<PINWHEEL_API_TOKEN>"
+      User-Agent:
+      - Faraday v2.9.2
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Accept:
+      - "*/*"
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Date:
+      - Tue, 24 Jun 2025 22:04:54 GMT
+      Content-Type:
+      - application/json
+      Content-Length:
+      - '575'
+      Connection:
+      - keep-alive
+      Server:
+      - uvicorn
+      Pinwheel-Version:
+      - '2023-11-22'
+      Content-Security-Policy:
+      - frame-ancestors 'none'
+      Strict-Transport-Security:
+      - max-age=31536000; includeSubDomains;
+      X-Pinwheel-Request-Id:
+      - 17571d4e-c122-4821-b969-ede1a2fe794c
+    body:
+      encoding: UTF-8
+      string: '{"data":{"id":"5965580e-380f-4b86-8a8a-7278c77f73cb","name":"Workday","type":"payroll","fractional_amount_supported":true,"min_amount":null,"max_amount":null,"last_updated":"2025-05-13T18:41:08.804385+00:00","logo_url":"https://cdn.getpinwheel.com/assets/platforms/logos/search/cfmpw.png","percentage_supported":true,"min_percentage":1,"max_percentage":99,"supported_jobs":["company_employments","tax_forms","shifts","income","paystubs","company_incomes","company_census","identity","direct_deposit_switch","employment","direct_deposit_allocations"],"amount_supported":true}}'
+  recorded_at: Tue, 24 Jun 2025 22:04:21 GMT
+- request:
+    method: get
+    uri: https://sandbox.getpinwheel.com/v1/accounts/934f6406-c332-4c05-a3e8-6a90765c842d/employment
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Content-Type:
+      - application/json
+      Pinwheel-Version:
+      - '2023-11-22'
+      X-Api-Secret:
+      - "<PINWHEEL_API_TOKEN>"
+      User-Agent:
+      - Faraday v2.9.2
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Accept:
+      - "*/*"
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Date:
+      - Tue, 24 Jun 2025 22:04:55 GMT
+      Content-Type:
+      - application/json
+      Content-Length:
+      - '634'
+      Connection:
+      - keep-alive
+      Server:
+      - uvicorn
+      Pinwheel-Version:
+      - '2023-11-22'
+      Content-Security-Policy:
+      - frame-ancestors 'none'
+      Strict-Transport-Security:
+      - max-age=31536000; includeSubDomains;
+      X-Pinwheel-Request-Id:
+      - 1a2553fc-426e-41be-9a44-dc29abbd0d7f
+    body:
+      encoding: UTF-8
+      string: '{"data":{"id":"c9d3fc3b-3e2e-4a3e-855a-1eb77396a85c","created_at":"2025-06-24T22:04:40.979175+00:00","updated_at":"2025-06-24T22:04:40.979175+00:00","account_id":"934f6406-c332-4c05-a3e8-6a90765c842d","status":"employed","start_date":"2010-01-01","termination_date":null,"employer_name":"Acme
+        Corporation","employer_address":{"raw":"20429 Pinwheel Drive, New York City,
+        NY 99999","line1":"20429 Pinwheel Drive","line2":null,"city":"New York City","state":"NY","postal_code":"99999","country":"US"},"employer_phone_number":{"value":"+16126597057","type":"work"},"title":null},"meta":{"refreshed_at":"2025-06-24T22:04:41.075640+00:00"}}'
+  recorded_at: Tue, 24 Jun 2025 22:04:21 GMT
+- request:
+    method: get
+    uri: https://sandbox.getpinwheel.com/v1/accounts/934f6406-c332-4c05-a3e8-6a90765c842d/income
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Content-Type:
+      - application/json
+      Pinwheel-Version:
+      - '2023-11-22'
+      X-Api-Secret:
+      - "<PINWHEEL_API_TOKEN>"
+      User-Agent:
+      - Faraday v2.9.2
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Accept:
+      - "*/*"
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Date:
+      - Tue, 24 Jun 2025 22:04:55 GMT
+      Content-Type:
+      - application/json
+      Content-Length:
+      - '362'
+      Connection:
+      - keep-alive
+      Server:
+      - uvicorn
+      Pinwheel-Version:
+      - '2023-11-22'
+      Content-Security-Policy:
+      - frame-ancestors 'none'
+      Strict-Transport-Security:
+      - max-age=31536000; includeSubDomains;
+      X-Pinwheel-Request-Id:
+      - 59c381ed-7200-4d83-8586-14a7f1b6fc1f
+    body:
+      encoding: UTF-8
+      string: '{"data":{"id":"c8dae54d-915c-4573-975a-f5ba54f57aa0","created_at":"2025-06-24T22:04:34.558075+00:00","updated_at":"2025-06-24T22:04:38.686874+00:00","account_id":"934f6406-c332-4c05-a3e8-6a90765c842d","compensation_amount":1000,"compensation_unit":"hourly","currency":"USD","pay_frequency":"bi-weekly"},"meta":{"refreshed_at":"2025-06-24T22:04:34.629192+00:00"}}'
+  recorded_at: Tue, 24 Jun 2025 22:04:21 GMT
+- request:
+    method: get
+    uri: https://sandbox.getpinwheel.com/v1/accounts/934f6406-c332-4c05-a3e8-6a90765c842d/paystubs?from_pay_date=2025-03-26&to_pay_date=2025-06-24
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Content-Type:
+      - application/json
+      Pinwheel-Version:
+      - '2023-11-22'
+      X-Api-Secret:
+      - "<PINWHEEL_API_TOKEN>"
+      User-Agent:
+      - Faraday v2.9.2
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Accept:
+      - "*/*"
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Date:
+      - Tue, 24 Jun 2025 22:04:55 GMT
+      Content-Type:
+      - application/json
+      Content-Length:
+      - '12111'
+      Connection:
+      - keep-alive
+      Server:
+      - uvicorn
+      Pinwheel-Version:
+      - '2023-11-22'
+      Content-Security-Policy:
+      - frame-ancestors 'none'
+      Strict-Transport-Security:
+      - max-age=31536000; includeSubDomains;
+      X-Pinwheel-Request-Id:
+      - da3816e5-ac95-45f0-bc79-875fbb5a0f3b
+    body:
+      encoding: UTF-8
+      string: '{"meta":{"refreshed_at":"2025-06-24T22:04:38.805798+00:00","count":4,"next_cursor":null},"data":[{"id":"c80ed2d6-a0fe-4b63-8c92-92414cea9b37","created_at":"2025-06-24T22:04:35.119310+00:00","account_id":"934f6406-c332-4c05-a3e8-6a90765c842d","pay_date":"2025-06-24","pay_period_start":"2025-06-11","pay_period_end":"2025-06-24","currency":"USD","gross_pay_amount":50000,"net_pay_amount":46000,"check_amount":46000,"gross_pay_ytd":50000,"net_pay_ytd":46000,"total_taxes":3825,"total_deductions":175,"total_reimbursements":0,"external_paystub_id":null,"employer_name":null,"taxes":[{"name":"Pinwheel
+        Tax","category":"state_income","amount":0},{"name":"Employee Medicare Tax","category":"medicare","amount":725},{"name":"Employee
+        Social Security Tax","category":"social_security","amount":3100},{"name":"Federal
+        Income Tax","category":"federal_income","amount":0}],"deductions":[{"name":"Deduction","category":"other","amount":175,"type":"unknown"}],"earnings":[{"name":"Regular","category":"hourly","amount":50000,"rate":5000,"hours":10.0}],"time_off":[{"name":"PTO","category":"pto","available_hours":25.0,"earned_hours":0.75,"used_hours":0.0},{"name":"Sick
+        Leave","category":"sick","available_hours":8.0,"earned_hours":0.1,"used_hours":2.0}],"document":{"id":"00000000-0000-0000-0000-000000000000","download_url":"https://production-newton-paystubs.s3.amazonaws.com/00000000-0000-0000-0000-000000000000/paystub/00000000-0000-0000-0000-000000000000.pdf?response-content-type=application%2Fpdf&X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=<PINWHEEL_AWS_KEY_ID>&X-Amz-Date=20250624T220455Z&X-Amz-Expires=900&X-Amz-SignedHeaders=host&X-Amz-Security-Token=IQoJb3JpZ2luX2VjED4aCXVzLWVhc3QtMSJIMEYCIQCyLLAYDDvswFFkMUuXClJiK6kv%2Bvbv5XfRS%2FucZAcuvwIhAKj6QxHRHGyc%2FurRwzabiSXGyAcAmVSslNihLY51e5jGKvkECDYQBBoMODg1OTI0MzA3NDQ5IgwzfJly4rNArLjWckEq1gQfNm%2B8mcYso1amKZuBj7Svzjp2%2FwSjV%2BMKAcDf1l4RjkvPYUHsRdoyP0lBTFiiTT5T7iaVlJhoZkFnsn2jdztK7l2xdocwsxo0DYSilsYOTb4pu4Nyohy14Ywxy2pZ7LC8HqBuPiLVKsA9HtLnG37gUsdXbecKuElrrI5QDO7NJfxqtqs2dFRPCalXmzvxXY2Jl41ZOdpg6fgom9qd%2BnyaWhA6w1gVRE26P51SeFN6L815cN7rmiANuwsqbt2aPHtwxIEi5QAavSnOkUfsz87l47h1Txx%2B4lceHsdXedtg%2FddQo4GYBfMR6Xj%2FTmPKWwmXx8%2FHlKrSC9wET8a9JWQPnUyqpom2IrHjE4yHoBSWq8JKLByOThKZSs2rZWa%2BhzVvjXEoqFUiSVsCUicWANr3Z%2FHXRCkg%2BZebSBM%2B8ocTBScWsD5yvtv6e%2Bpmx3nPM1Cgm4IekUrhHZYrNY073Uw6HHOPvunOnQr65MiddzoKKCC9AJNTpZCv4gWe5NpDw269dE%2FL7tvCMkmaKLz1NWgIoxrIdlTT6LG8q6YWPq7eijEHa%2FirwzUSYU4EO0lKdSirmjySV25Rj4m4Pe0xotTjQCk3eJkDp9AXsWGhqo81sLJgTTS0A%2FMc7YGuYkMwHJMaI9S2wvcbF9TY3doBUlGfH4WCkZI%2BkNNzIrs9%2BknSQIqQedLD3d2yjRrarBhVFvkybab8wxuc%2FT7M6RJuE%2B%2FyF9y1gvQBtyWii%2BmDqXJ5rlySBWGAEGYf9zhcsMTMqRoXTKZwc2H7urzl1iUl09ItbqYmXWFuMNmt7MIGOpkBHZcqNcBqRosaP0JYe9VYLFyzBF8u8lQ2OJhEjK9WM143c4EyMuyDw6dRZtvUpRrIe80t1MiERy%2BwIQkq2aBXZQs1ILyXP628uxguBRlDkxrmFmAF3MenvRCpcDHqWZXM13juZtCpvNau%2F9ACZURjDn%2BDSaThbrz866QkEXVbHmedeMI9%2BtGi4tM3k%2FMci4MhyYaIqJ0tgi8m&X-Amz-Signature=bcdc6d6a721b3875d064d2ce747650acc96109d8bed54f68e113e213ad63754c","download_url_expiration":"2025-06-24T22:19:55.823683+00:00"}},{"id":"6e65691e-6391-4789-abf8-7fe8cae27335","created_at":"2025-06-24T22:04:35.843721+00:00","account_id":"934f6406-c332-4c05-a3e8-6a90765c842d","pay_date":"2025-06-10","pay_period_start":"2025-05-28","pay_period_end":"2025-06-10","currency":"USD","gross_pay_amount":50000,"net_pay_amount":46000,"check_amount":46000,"gross_pay_ytd":50000,"net_pay_ytd":46000,"total_taxes":3825,"total_deductions":175,"total_reimbursements":0,"external_paystub_id":null,"employer_name":null,"taxes":[{"name":"Pinwheel
+        Tax","category":"state_income","amount":0},{"name":"Employee Medicare Tax","category":"medicare","amount":725},{"name":"Employee
+        Social Security Tax","category":"social_security","amount":3100},{"name":"Federal
+        Income Tax","category":"federal_income","amount":0}],"deductions":[{"name":"Deduction","category":"other","amount":175,"type":"unknown"}],"earnings":[{"name":"Regular","category":"hourly","amount":50000,"rate":5000,"hours":10.0}],"time_off":[{"name":"PTO","category":"pto","available_hours":25.0,"earned_hours":0.75,"used_hours":0.0},{"name":"Sick
+        Leave","category":"sick","available_hours":8.0,"earned_hours":0.1,"used_hours":2.0}],"document":{"id":"00000000-0000-0000-0000-000000000000","download_url":"https://production-newton-paystubs.s3.amazonaws.com/00000000-0000-0000-0000-000000000000/paystub/00000000-0000-0000-0000-000000000000.pdf?response-content-type=application%2Fpdf&X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=<PINWHEEL_AWS_KEY_ID>&X-Amz-Date=20250624T220455Z&X-Amz-Expires=900&X-Amz-SignedHeaders=host&X-Amz-Security-Token=IQoJb3JpZ2luX2VjED4aCXVzLWVhc3QtMSJIMEYCIQCyLLAYDDvswFFkMUuXClJiK6kv%2Bvbv5XfRS%2FucZAcuvwIhAKj6QxHRHGyc%2FurRwzabiSXGyAcAmVSslNihLY51e5jGKvkECDYQBBoMODg1OTI0MzA3NDQ5IgwzfJly4rNArLjWckEq1gQfNm%2B8mcYso1amKZuBj7Svzjp2%2FwSjV%2BMKAcDf1l4RjkvPYUHsRdoyP0lBTFiiTT5T7iaVlJhoZkFnsn2jdztK7l2xdocwsxo0DYSilsYOTb4pu4Nyohy14Ywxy2pZ7LC8HqBuPiLVKsA9HtLnG37gUsdXbecKuElrrI5QDO7NJfxqtqs2dFRPCalXmzvxXY2Jl41ZOdpg6fgom9qd%2BnyaWhA6w1gVRE26P51SeFN6L815cN7rmiANuwsqbt2aPHtwxIEi5QAavSnOkUfsz87l47h1Txx%2B4lceHsdXedtg%2FddQo4GYBfMR6Xj%2FTmPKWwmXx8%2FHlKrSC9wET8a9JWQPnUyqpom2IrHjE4yHoBSWq8JKLByOThKZSs2rZWa%2BhzVvjXEoqFUiSVsCUicWANr3Z%2FHXRCkg%2BZebSBM%2B8ocTBScWsD5yvtv6e%2Bpmx3nPM1Cgm4IekUrhHZYrNY073Uw6HHOPvunOnQr65MiddzoKKCC9AJNTpZCv4gWe5NpDw269dE%2FL7tvCMkmaKLz1NWgIoxrIdlTT6LG8q6YWPq7eijEHa%2FirwzUSYU4EO0lKdSirmjySV25Rj4m4Pe0xotTjQCk3eJkDp9AXsWGhqo81sLJgTTS0A%2FMc7YGuYkMwHJMaI9S2wvcbF9TY3doBUlGfH4WCkZI%2BkNNzIrs9%2BknSQIqQedLD3d2yjRrarBhVFvkybab8wxuc%2FT7M6RJuE%2B%2FyF9y1gvQBtyWii%2BmDqXJ5rlySBWGAEGYf9zhcsMTMqRoXTKZwc2H7urzl1iUl09ItbqYmXWFuMNmt7MIGOpkBHZcqNcBqRosaP0JYe9VYLFyzBF8u8lQ2OJhEjK9WM143c4EyMuyDw6dRZtvUpRrIe80t1MiERy%2BwIQkq2aBXZQs1ILyXP628uxguBRlDkxrmFmAF3MenvRCpcDHqWZXM13juZtCpvNau%2F9ACZURjDn%2BDSaThbrz866QkEXVbHmedeMI9%2BtGi4tM3k%2FMci4MhyYaIqJ0tgi8m&X-Amz-Signature=bcdc6d6a721b3875d064d2ce747650acc96109d8bed54f68e113e213ad63754c","download_url_expiration":"2025-06-24T22:19:55.828618+00:00"}},{"id":"0c5be6bf-53ca-4597-b277-de311bf69682","created_at":"2025-06-24T22:04:36.842538+00:00","account_id":"934f6406-c332-4c05-a3e8-6a90765c842d","pay_date":"2025-05-13","pay_period_start":"2025-04-30","pay_period_end":"2025-05-13","currency":"USD","gross_pay_amount":50000,"net_pay_amount":46000,"check_amount":46000,"gross_pay_ytd":50000,"net_pay_ytd":46000,"total_taxes":3825,"total_deductions":175,"total_reimbursements":0,"external_paystub_id":null,"employer_name":null,"taxes":[{"name":"Pinwheel
+        Tax","category":"state_income","amount":0},{"name":"Employee Medicare Tax","category":"medicare","amount":725},{"name":"Employee
+        Social Security Tax","category":"social_security","amount":3100},{"name":"Federal
+        Income Tax","category":"federal_income","amount":0}],"deductions":[{"name":"Deduction","category":"other","amount":175,"type":"unknown"}],"earnings":[{"name":"Regular","category":"hourly","amount":50000,"rate":5000,"hours":10.0}],"time_off":[{"name":"PTO","category":"pto","available_hours":25.0,"earned_hours":0.75,"used_hours":0.0},{"name":"Sick
+        Leave","category":"sick","available_hours":8.0,"earned_hours":0.1,"used_hours":2.0}],"document":{"id":"00000000-0000-0000-0000-000000000000","download_url":"https://production-newton-paystubs.s3.amazonaws.com/00000000-0000-0000-0000-000000000000/paystub/00000000-0000-0000-0000-000000000000.pdf?response-content-type=application%2Fpdf&X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=<PINWHEEL_AWS_KEY_ID>&X-Amz-Date=20250624T220455Z&X-Amz-Expires=900&X-Amz-SignedHeaders=host&X-Amz-Security-Token=IQoJb3JpZ2luX2VjED4aCXVzLWVhc3QtMSJIMEYCIQCyLLAYDDvswFFkMUuXClJiK6kv%2Bvbv5XfRS%2FucZAcuvwIhAKj6QxHRHGyc%2FurRwzabiSXGyAcAmVSslNihLY51e5jGKvkECDYQBBoMODg1OTI0MzA3NDQ5IgwzfJly4rNArLjWckEq1gQfNm%2B8mcYso1amKZuBj7Svzjp2%2FwSjV%2BMKAcDf1l4RjkvPYUHsRdoyP0lBTFiiTT5T7iaVlJhoZkFnsn2jdztK7l2xdocwsxo0DYSilsYOTb4pu4Nyohy14Ywxy2pZ7LC8HqBuPiLVKsA9HtLnG37gUsdXbecKuElrrI5QDO7NJfxqtqs2dFRPCalXmzvxXY2Jl41ZOdpg6fgom9qd%2BnyaWhA6w1gVRE26P51SeFN6L815cN7rmiANuwsqbt2aPHtwxIEi5QAavSnOkUfsz87l47h1Txx%2B4lceHsdXedtg%2FddQo4GYBfMR6Xj%2FTmPKWwmXx8%2FHlKrSC9wET8a9JWQPnUyqpom2IrHjE4yHoBSWq8JKLByOThKZSs2rZWa%2BhzVvjXEoqFUiSVsCUicWANr3Z%2FHXRCkg%2BZebSBM%2B8ocTBScWsD5yvtv6e%2Bpmx3nPM1Cgm4IekUrhHZYrNY073Uw6HHOPvunOnQr65MiddzoKKCC9AJNTpZCv4gWe5NpDw269dE%2FL7tvCMkmaKLz1NWgIoxrIdlTT6LG8q6YWPq7eijEHa%2FirwzUSYU4EO0lKdSirmjySV25Rj4m4Pe0xotTjQCk3eJkDp9AXsWGhqo81sLJgTTS0A%2FMc7YGuYkMwHJMaI9S2wvcbF9TY3doBUlGfH4WCkZI%2BkNNzIrs9%2BknSQIqQedLD3d2yjRrarBhVFvkybab8wxuc%2FT7M6RJuE%2B%2FyF9y1gvQBtyWii%2BmDqXJ5rlySBWGAEGYf9zhcsMTMqRoXTKZwc2H7urzl1iUl09ItbqYmXWFuMNmt7MIGOpkBHZcqNcBqRosaP0JYe9VYLFyzBF8u8lQ2OJhEjK9WM143c4EyMuyDw6dRZtvUpRrIe80t1MiERy%2BwIQkq2aBXZQs1ILyXP628uxguBRlDkxrmFmAF3MenvRCpcDHqWZXM13juZtCpvNau%2F9ACZURjDn%2BDSaThbrz866QkEXVbHmedeMI9%2BtGi4tM3k%2FMci4MhyYaIqJ0tgi8m&X-Amz-Signature=bcdc6d6a721b3875d064d2ce747650acc96109d8bed54f68e113e213ad63754c","download_url_expiration":"2025-06-24T22:19:55.831910+00:00"}},{"id":"9bb0d63d-58b9-4202-ba95-5f1117502c00","created_at":"2025-06-24T22:04:36.842538+00:00","account_id":"934f6406-c332-4c05-a3e8-6a90765c842d","pay_date":"2025-04-29","pay_period_start":"2025-04-16","pay_period_end":"2025-04-29","currency":"USD","gross_pay_amount":52000,"net_pay_amount":48000,"check_amount":48000,"gross_pay_ytd":102000,"net_pay_ytd":94000,"total_taxes":3825,"total_deductions":175,"total_reimbursements":0,"external_paystub_id":null,"employer_name":null,"taxes":[{"name":"Pinwheel
+        Tax","category":"state_income","amount":0},{"name":"Employee Medicare Tax","category":"medicare","amount":725},{"name":"Employee
+        Social Security Tax","category":"social_security","amount":3100},{"name":"Federal
+        Income Tax","category":"federal_income","amount":0}],"deductions":[{"name":"Deduction","category":"other","amount":175,"type":"unknown"}],"earnings":[{"name":"Regular","category":"hourly","amount":52000,"rate":5000,"hours":10.4}],"time_off":[{"name":"PTO","category":"pto","available_hours":25.0,"earned_hours":0.75,"used_hours":0.0},{"name":"Sick
+        Leave","category":"sick","available_hours":8.0,"earned_hours":0.1,"used_hours":2.0}],"document":{"id":"00000000-0000-0000-0000-000000000000","download_url":"https://production-newton-paystubs.s3.amazonaws.com/00000000-0000-0000-0000-000000000000/paystub/00000000-0000-0000-0000-000000000000.pdf?response-content-type=application%2Fpdf&X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=<PINWHEEL_AWS_KEY_ID>&X-Amz-Date=20250624T220455Z&X-Amz-Expires=900&X-Amz-SignedHeaders=host&X-Amz-Security-Token=IQoJb3JpZ2luX2VjED4aCXVzLWVhc3QtMSJIMEYCIQCyLLAYDDvswFFkMUuXClJiK6kv%2Bvbv5XfRS%2FucZAcuvwIhAKj6QxHRHGyc%2FurRwzabiSXGyAcAmVSslNihLY51e5jGKvkECDYQBBoMODg1OTI0MzA3NDQ5IgwzfJly4rNArLjWckEq1gQfNm%2B8mcYso1amKZuBj7Svzjp2%2FwSjV%2BMKAcDf1l4RjkvPYUHsRdoyP0lBTFiiTT5T7iaVlJhoZkFnsn2jdztK7l2xdocwsxo0DYSilsYOTb4pu4Nyohy14Ywxy2pZ7LC8HqBuPiLVKsA9HtLnG37gUsdXbecKuElrrI5QDO7NJfxqtqs2dFRPCalXmzvxXY2Jl41ZOdpg6fgom9qd%2BnyaWhA6w1gVRE26P51SeFN6L815cN7rmiANuwsqbt2aPHtwxIEi5QAavSnOkUfsz87l47h1Txx%2B4lceHsdXedtg%2FddQo4GYBfMR6Xj%2FTmPKWwmXx8%2FHlKrSC9wET8a9JWQPnUyqpom2IrHjE4yHoBSWq8JKLByOThKZSs2rZWa%2BhzVvjXEoqFUiSVsCUicWANr3Z%2FHXRCkg%2BZebSBM%2B8ocTBScWsD5yvtv6e%2Bpmx3nPM1Cgm4IekUrhHZYrNY073Uw6HHOPvunOnQr65MiddzoKKCC9AJNTpZCv4gWe5NpDw269dE%2FL7tvCMkmaKLz1NWgIoxrIdlTT6LG8q6YWPq7eijEHa%2FirwzUSYU4EO0lKdSirmjySV25Rj4m4Pe0xotTjQCk3eJkDp9AXsWGhqo81sLJgTTS0A%2FMc7YGuYkMwHJMaI9S2wvcbF9TY3doBUlGfH4WCkZI%2BkNNzIrs9%2BknSQIqQedLD3d2yjRrarBhVFvkybab8wxuc%2FT7M6RJuE%2B%2FyF9y1gvQBtyWii%2BmDqXJ5rlySBWGAEGYf9zhcsMTMqRoXTKZwc2H7urzl1iUl09ItbqYmXWFuMNmt7MIGOpkBHZcqNcBqRosaP0JYe9VYLFyzBF8u8lQ2OJhEjK9WM143c4EyMuyDw6dRZtvUpRrIe80t1MiERy%2BwIQkq2aBXZQs1ILyXP628uxguBRlDkxrmFmAF3MenvRCpcDHqWZXM13juZtCpvNau%2F9ACZURjDn%2BDSaThbrz866QkEXVbHmedeMI9%2BtGi4tM3k%2FMci4MhyYaIqJ0tgi8m&X-Amz-Signature=bcdc6d6a721b3875d064d2ce747650acc96109d8bed54f68e113e213ad63754c","download_url_expiration":"2025-06-24T22:19:55.834768+00:00"}}]}'
+  recorded_at: Tue, 24 Jun 2025 22:04:21 GMT
+- request:
+    method: get
+    uri: https://sandbox.getpinwheel.com/v1/accounts/934f6406-c332-4c05-a3e8-6a90765c842d/shifts
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Content-Type:
+      - application/json
+      Pinwheel-Version:
+      - '2023-11-22'
+      X-Api-Secret:
+      - "<PINWHEEL_API_TOKEN>"
+      User-Agent:
+      - Faraday v2.9.2
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Accept:
+      - "*/*"
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Date:
+      - Tue, 24 Jun 2025 22:04:56 GMT
+      Content-Type:
+      - application/json
+      Content-Length:
+      - '11481'
+      Connection:
+      - keep-alive
+      Server:
+      - uvicorn
+      Pinwheel-Version:
+      - '2023-11-22'
+      Content-Security-Policy:
+      - frame-ancestors 'none'
+      Strict-Transport-Security:
+      - max-age=31536000; includeSubDomains;
+      X-Pinwheel-Request-Id:
+      - a29e1e04-083d-4fb9-a844-d0248b1741b5
+    body:
+      encoding: UTF-8
+      string: '{"meta":{"refreshed_at":"2025-06-24T22:04:39.588394+00:00","count":25,"next_cursor":"gAAAAABoWyEIZs4MRZlgQtVhHMkis8FIhYGabdHKx2QbQa5ggV_ZvUEt_PMmq_v-_3pw67lOtW6aNH-Vo4f3lNPRznaTUPXsrsqjjBM0tn_uLM7lrFz4XLJApvEmy8AFQ5OCfqHMUV7X8rzBiajgXn3tuMB8XgKdALVf9__bCGnZcinXKadbpcs="},"data":[{"id":"35841865-b1f1-4d96-b8c5-c49824fa8bfc","created_at":"2025-06-24T22:04:35.276087+00:00","account_id":"934f6406-c332-4c05-a3e8-6a90765c842d","start_date":"2025-06-24","end_date":"2025-06-24","type":"shift","timezone":"America/New_York","timestamps":[{"from":"2025-06-24T09:00:00-04:00","to":"2025-06-24T17:00:00-04:00"}],"currency":"USD","earnings":[{"name":"Sandbox
+        Test Earning","category":"hourly","amount":15000,"rate":1000,"hours":15.0}]},{"id":"299e5d25-0920-4b5f-9025-0857f446673b","created_at":"2025-06-24T22:04:35.276087+00:00","account_id":"934f6406-c332-4c05-a3e8-6a90765c842d","start_date":"2025-06-23","end_date":"2025-06-23","type":"shift","timezone":"America/New_York","timestamps":[{"from":"2025-06-23T09:00:00-04:00","to":"2025-06-23T17:00:00-04:00"}],"currency":"USD","earnings":[{"name":"Sandbox
+        Test Earning","category":"hourly","amount":15000,"rate":1000,"hours":15.0}]},{"id":"5de4eb01-f975-40c9-bc9a-1057f493095b","created_at":"2025-06-24T22:04:35.276087+00:00","account_id":"934f6406-c332-4c05-a3e8-6a90765c842d","start_date":"2025-06-22","end_date":"2025-06-22","type":"shift","timezone":"America/New_York","timestamps":[{"from":"2025-06-22T09:00:00-04:00","to":"2025-06-22T17:00:00-04:00"}],"currency":"USD","earnings":[{"name":"Sandbox
+        Test Earning","category":"hourly","amount":15000,"rate":1000,"hours":15.0}]},{"id":"3af126eb-7bc2-4b21-9a0d-461fb05d04c7","created_at":"2025-06-24T22:04:35.276087+00:00","account_id":"934f6406-c332-4c05-a3e8-6a90765c842d","start_date":"2025-06-21","end_date":"2025-06-21","type":"shift","timezone":"America/New_York","timestamps":[{"from":"2025-06-21T09:00:00-04:00","to":"2025-06-21T17:00:00-04:00"}],"currency":"USD","earnings":[{"name":"Sandbox
+        Test Earning","category":"hourly","amount":15000,"rate":1000,"hours":15.0}]},{"id":"23a1d0cf-aafe-4624-90ef-b25c2c3067b8","created_at":"2025-06-24T22:04:35.276087+00:00","account_id":"934f6406-c332-4c05-a3e8-6a90765c842d","start_date":"2025-06-20","end_date":"2025-06-20","type":"shift","timezone":"America/New_York","timestamps":[{"from":"2025-06-20T09:00:00-04:00","to":"2025-06-20T17:00:00-04:00"}],"currency":"USD","earnings":[{"name":"Sandbox
+        Test Earning","category":"hourly","amount":15000,"rate":1000,"hours":15.0}]},{"id":"eacf520b-3ea7-4ea8-9602-3a47394639f2","created_at":"2025-06-24T22:04:35.276087+00:00","account_id":"934f6406-c332-4c05-a3e8-6a90765c842d","start_date":"2025-06-19","end_date":"2025-06-19","type":"shift","timezone":"America/New_York","timestamps":[{"from":"2025-06-19T09:00:00-04:00","to":"2025-06-19T17:00:00-04:00"}],"currency":"USD","earnings":[{"name":"Sandbox
+        Test Earning","category":"hourly","amount":15000,"rate":1000,"hours":15.0}]},{"id":"40c83a70-e50e-4d2a-a9a1-f680fce15088","created_at":"2025-06-24T22:04:35.276087+00:00","account_id":"934f6406-c332-4c05-a3e8-6a90765c842d","start_date":"2025-06-18","end_date":"2025-06-18","type":"shift","timezone":"America/New_York","timestamps":[{"from":"2025-06-18T09:00:00-04:00","to":"2025-06-18T17:00:00-04:00"}],"currency":"USD","earnings":[{"name":"Sandbox
+        Test Earning","category":"hourly","amount":15000,"rate":1000,"hours":15.0}]},{"id":"194a6dce-a515-4833-9987-e42a04ed09ad","created_at":"2025-06-24T22:04:37.856529+00:00","account_id":"934f6406-c332-4c05-a3e8-6a90765c842d","start_date":"2025-06-17","end_date":"2025-06-17","type":"shift","timezone":"America/New_York","timestamps":[{"from":"2025-06-17T09:00:00-04:00","to":"2025-06-17T17:00:00-04:00"}],"currency":"USD","earnings":[{"name":"Sandbox
+        Test Earning","category":"hourly","amount":15000,"rate":1000,"hours":15.0}]},{"id":"00519e4a-075e-466d-bff8-8d8cbcdc6862","created_at":"2025-06-24T22:04:37.856529+00:00","account_id":"934f6406-c332-4c05-a3e8-6a90765c842d","start_date":"2025-06-16","end_date":"2025-06-16","type":"shift","timezone":"America/New_York","timestamps":[{"from":"2025-06-16T09:00:00-04:00","to":"2025-06-16T17:00:00-04:00"}],"currency":"USD","earnings":[{"name":"Sandbox
+        Test Earning","category":"hourly","amount":15000,"rate":1000,"hours":15.0}]},{"id":"2089ead3-5120-4117-aad3-be832c51d7b7","created_at":"2025-06-24T22:04:37.856529+00:00","account_id":"934f6406-c332-4c05-a3e8-6a90765c842d","start_date":"2025-06-15","end_date":"2025-06-15","type":"shift","timezone":"America/New_York","timestamps":[{"from":"2025-06-15T09:00:00-04:00","to":"2025-06-15T17:00:00-04:00"}],"currency":"USD","earnings":[{"name":"Sandbox
+        Test Earning","category":"hourly","amount":15000,"rate":1000,"hours":15.0}]},{"id":"73c008a4-d28b-4d5a-871d-b10f41d4a2d5","created_at":"2025-06-24T22:04:37.856529+00:00","account_id":"934f6406-c332-4c05-a3e8-6a90765c842d","start_date":"2025-06-14","end_date":"2025-06-14","type":"shift","timezone":"America/New_York","timestamps":[{"from":"2025-06-14T09:00:00-04:00","to":"2025-06-14T17:00:00-04:00"}],"currency":"USD","earnings":[{"name":"Sandbox
+        Test Earning","category":"hourly","amount":15000,"rate":1000,"hours":15.0}]},{"id":"79083e66-7235-4d65-858c-c760ae9e4fea","created_at":"2025-06-24T22:04:37.856529+00:00","account_id":"934f6406-c332-4c05-a3e8-6a90765c842d","start_date":"2025-06-13","end_date":"2025-06-13","type":"shift","timezone":"America/New_York","timestamps":[{"from":"2025-06-13T09:00:00-04:00","to":"2025-06-13T17:00:00-04:00"}],"currency":"USD","earnings":[{"name":"Sandbox
+        Test Earning","category":"hourly","amount":15000,"rate":1000,"hours":15.0}]},{"id":"32cc8cec-99a5-453a-90ee-891e7fc7556c","created_at":"2025-06-24T22:04:37.856529+00:00","account_id":"934f6406-c332-4c05-a3e8-6a90765c842d","start_date":"2025-06-12","end_date":"2025-06-12","type":"shift","timezone":"America/New_York","timestamps":[{"from":"2025-06-12T09:00:00-04:00","to":"2025-06-12T17:00:00-04:00"}],"currency":"USD","earnings":[{"name":"Sandbox
+        Test Earning","category":"hourly","amount":15000,"rate":1000,"hours":15.0}]},{"id":"24f526af-04ca-4ac0-a6b4-b1b4f809ca85","created_at":"2025-06-24T22:04:37.856529+00:00","account_id":"934f6406-c332-4c05-a3e8-6a90765c842d","start_date":"2025-06-11","end_date":"2025-06-11","type":"shift","timezone":"America/New_York","timestamps":[{"from":"2025-06-11T09:00:00-04:00","to":"2025-06-11T17:00:00-04:00"}],"currency":"USD","earnings":[{"name":"Sandbox
+        Test Earning","category":"hourly","amount":15000,"rate":1000,"hours":15.0}]},{"id":"eca82309-fc82-4533-b754-a8fa96b7b1a5","created_at":"2025-06-24T22:04:37.856529+00:00","account_id":"934f6406-c332-4c05-a3e8-6a90765c842d","start_date":"2025-06-10","end_date":"2025-06-10","type":"shift","timezone":"America/New_York","timestamps":[{"from":"2025-06-10T09:00:00-04:00","to":"2025-06-10T17:00:00-04:00"}],"currency":"USD","earnings":[{"name":"Sandbox
+        Test Earning","category":"hourly","amount":15000,"rate":1000,"hours":15.0}]},{"id":"636aad47-9fa9-498c-b101-6fb7e4f3ff94","created_at":"2025-06-24T22:04:37.856529+00:00","account_id":"934f6406-c332-4c05-a3e8-6a90765c842d","start_date":"2025-06-09","end_date":"2025-06-09","type":"shift","timezone":"America/New_York","timestamps":[{"from":"2025-06-09T09:00:00-04:00","to":"2025-06-09T17:00:00-04:00"}],"currency":"USD","earnings":[{"name":"Sandbox
+        Test Earning","category":"hourly","amount":15000,"rate":1000,"hours":15.0}]},{"id":"bcf0caec-36c1-49bc-8396-66acd3e66ba1","created_at":"2025-06-24T22:04:37.856529+00:00","account_id":"934f6406-c332-4c05-a3e8-6a90765c842d","start_date":"2025-06-08","end_date":"2025-06-08","type":"shift","timezone":"America/New_York","timestamps":[{"from":"2025-06-08T09:00:00-04:00","to":"2025-06-08T17:00:00-04:00"}],"currency":"USD","earnings":[{"name":"Sandbox
+        Test Earning","category":"hourly","amount":15000,"rate":1000,"hours":15.0}]},{"id":"01903627-464c-480c-8f7a-f498385f153c","created_at":"2025-06-24T22:04:37.856529+00:00","account_id":"934f6406-c332-4c05-a3e8-6a90765c842d","start_date":"2025-06-07","end_date":"2025-06-07","type":"shift","timezone":"America/New_York","timestamps":[{"from":"2025-06-07T09:00:00-04:00","to":"2025-06-07T17:00:00-04:00"}],"currency":"USD","earnings":[{"name":"Sandbox
+        Test Earning","category":"hourly","amount":15000,"rate":1000,"hours":15.0}]},{"id":"01700a29-91e1-4463-b34b-2acca2fe147b","created_at":"2025-06-24T22:04:37.856529+00:00","account_id":"934f6406-c332-4c05-a3e8-6a90765c842d","start_date":"2025-06-06","end_date":"2025-06-06","type":"shift","timezone":"America/New_York","timestamps":[{"from":"2025-06-06T09:00:00-04:00","to":"2025-06-06T17:00:00-04:00"}],"currency":"USD","earnings":[{"name":"Sandbox
+        Test Earning","category":"hourly","amount":15000,"rate":1000,"hours":15.0}]},{"id":"8e2a1258-a627-4641-abfb-44a6aac6d107","created_at":"2025-06-24T22:04:37.856529+00:00","account_id":"934f6406-c332-4c05-a3e8-6a90765c842d","start_date":"2025-06-05","end_date":"2025-06-05","type":"shift","timezone":"America/New_York","timestamps":[{"from":"2025-06-05T09:00:00-04:00","to":"2025-06-05T17:00:00-04:00"}],"currency":"USD","earnings":[{"name":"Sandbox
+        Test Earning","category":"hourly","amount":15000,"rate":1000,"hours":15.0}]},{"id":"1954f1e9-db0e-4acf-ba30-8d9c9cf86a37","created_at":"2025-06-24T22:04:37.856529+00:00","account_id":"934f6406-c332-4c05-a3e8-6a90765c842d","start_date":"2025-06-04","end_date":"2025-06-04","type":"shift","timezone":"America/New_York","timestamps":[{"from":"2025-06-04T09:00:00-04:00","to":"2025-06-04T17:00:00-04:00"}],"currency":"USD","earnings":[{"name":"Sandbox
+        Test Earning","category":"hourly","amount":15000,"rate":1000,"hours":15.0}]},{"id":"40a43fe3-09da-4367-a3ba-2d608bb2033b","created_at":"2025-06-24T22:04:37.856529+00:00","account_id":"934f6406-c332-4c05-a3e8-6a90765c842d","start_date":"2025-06-03","end_date":"2025-06-03","type":"shift","timezone":"America/New_York","timestamps":[{"from":"2025-06-03T09:00:00-04:00","to":"2025-06-03T17:00:00-04:00"}],"currency":"USD","earnings":[{"name":"Sandbox
+        Test Earning","category":"hourly","amount":15000,"rate":1000,"hours":15.0}]},{"id":"6fdde1c4-e8b9-49e2-8af3-0350b0029122","created_at":"2025-06-24T22:04:37.856529+00:00","account_id":"934f6406-c332-4c05-a3e8-6a90765c842d","start_date":"2025-06-02","end_date":"2025-06-02","type":"shift","timezone":"America/New_York","timestamps":[{"from":"2025-06-02T09:00:00-04:00","to":"2025-06-02T17:00:00-04:00"}],"currency":"USD","earnings":[{"name":"Sandbox
+        Test Earning","category":"hourly","amount":15000,"rate":1000,"hours":15.0}]},{"id":"0a2be905-e3e8-4144-9c80-586e31528215","created_at":"2025-06-24T22:04:37.856529+00:00","account_id":"934f6406-c332-4c05-a3e8-6a90765c842d","start_date":"2025-06-01","end_date":"2025-06-01","type":"shift","timezone":"America/New_York","timestamps":[{"from":"2025-06-01T09:00:00-04:00","to":"2025-06-01T17:00:00-04:00"}],"currency":"USD","earnings":[{"name":"Sandbox
+        Test Earning","category":"hourly","amount":15000,"rate":1000,"hours":15.0}]},{"id":"3be72048-b9c8-492d-aa87-c295bbb05e8c","created_at":"2025-06-24T22:04:37.856529+00:00","account_id":"934f6406-c332-4c05-a3e8-6a90765c842d","start_date":"2025-05-31","end_date":"2025-05-31","type":"shift","timezone":"America/New_York","timestamps":[{"from":"2025-05-31T09:00:00-04:00","to":"2025-05-31T17:00:00-04:00"}],"currency":"USD","earnings":[{"name":"Sandbox
+        Test Earning","category":"hourly","amount":15000,"rate":1000,"hours":15.0}]}]}'
+  recorded_at: Tue, 24 Jun 2025 22:04:21 GMT
+recorded_with: VCR 6.3.1
