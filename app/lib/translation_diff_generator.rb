@@ -1,6 +1,5 @@
 require "yaml"
 require "csv"
-require "rainbow"
 
 require_relative "../services/locale_diff_service"
 
