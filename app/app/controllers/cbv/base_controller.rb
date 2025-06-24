@@ -148,8 +148,8 @@ class Cbv::BaseController < ApplicationController
       completed_reports_count: invitation.cbv_flows.completed.count,
       flows_started_count: invitation.cbv_flows.count
     })
-    rescue => ex
-      Rails.logger.error "Unable to track event (ApplicantClickedCBVInvitationLink): #{ex}"
+  rescue => ex
+    Rails.logger.error "Unable to track event (ApplicantClickedCBVInvitationLink): #{ex}"
   end
 
   def count_unique_members(invitation)
