@@ -53,6 +53,7 @@ module IvCbvPayroll
       agency = config.client_agencies[agency_id]
       config.hosts << agency.agency_domain
     end
+    config.cbv_session_expires_after = 30.minutes
 
     # Health check endpoints should be accessible from any host
     config.host_authorization = {

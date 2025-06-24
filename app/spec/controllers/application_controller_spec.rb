@@ -1,21 +1,17 @@
 require 'rails_helper'
 
 RSpec.describe ApplicationController, type: :controller do
-  controller do
-    skip_around_action :switch_locale
-    def test_action
-      switch_locale do
-        render plain: I18n.locale.to_s
+  describe '#switch_locale' do
+    controller do
+      skip_around_action :switch_locale
+
+      def test_action
+        switch_locale do
+          render plain: I18n.locale.to_s
+        end
       end
     end
 
-    def show
-      @agency = current_agency
-      render plain: @agency.id
-    end
-  end
-
-  describe '#switch_locale' do
     before do
       I18n.default_locale = :en
       routes.draw do
@@ -40,12 +36,17 @@ RSpec.describe ApplicationController, type: :controller do
   end
 
   describe '#enable_mini_profiler_in_demo' do
+    controller do
+      def show
+        render plain: "ok"
+      end
+    end
+
     before do
       allow(ENV).to receive(:[]).and_call_original
       allow(ENV).to receive(:[]).with("DOMAIN_NAME").and_return(domain_name)
-      routes.draw do
-        get 'test_action', to: 'anonymous#test_action'
-      end
+
+      routes.draw { get 'show', to: 'anonymous#show' }
     end
 
     context 'when in demo environment' do
@@ -53,7 +54,7 @@ RSpec.describe ApplicationController, type: :controller do
 
       it 'authorizes mini profiler' do
         expect(Rack::MiniProfiler).to receive(:authorize_request)
-        get :test_action
+        get :show
       end
     end
 
@@ -62,17 +63,22 @@ RSpec.describe ApplicationController, type: :controller do
 
       it 'does not authorize mini profiler' do
         expect(Rack::MiniProfiler).not_to receive(:authorize_request)
-        get :test_action
+        get :show
       end
     end
   end
 
   describe '#detect_client_agency_from_domain' do
-    before do
-      routes.draw do
-        get 'show', to: 'anonymous#show'
+    controller do
+      def show
+        @agency = current_agency
+        render plain: @agency.id
       end
+    end
+
+    before do
       stub_client_agency_config_value("sandbox", "agency_domain", "sandbox.reportmyincome.org")
+      routes.draw { get 'show', to: 'anonymous#show' }
     end
 
     it "identifies the correct agency config based on the domain name" do
@@ -85,6 +91,78 @@ RSpec.describe ApplicationController, type: :controller do
       request.host = "unknown.example.org"
       result = controller.send(:detect_client_agency_from_domain)
       expect(result).to be_nil
+    end
+  end
+
+  describe "#validate_session_expiration" do
+    controller do
+      SECRET_VALUE = "I have friends everywhere"
+
+      def start_session
+        session[:secret_value] = SECRET_VALUE
+
+        render plain: "ok"
+      end
+
+      def check_session
+        if session[:secret_value] == SECRET_VALUE
+          render plain: "session is still valid!"
+        else
+          render plain: "secret value missing!"
+        end
+      end
+    end
+
+    before do
+      routes.draw do
+        get "start_session" => "anonymous#start_session"
+        get "check_session" => "anonymous#check_session"
+      end
+    end
+
+    context "for a blank session" do
+      it "sets the session value along with an expiry" do
+        get :start_session
+
+        expect(session[:secret_value]).to be_present
+        expect(session[:expires_at]).to be_present
+      end
+    end
+
+    context "for a subsequent request within the expiration interval" do
+      it "allows the request" do
+        get :start_session, session: {}
+        expect(session[:secret_value]).to be_present
+        expect(session[:expires_at]).to be_present
+
+        get :check_session
+        expect(response.body).to include("session is still valid!")
+      end
+
+      it "bumps the value of expires_at" do
+        get :start_session, session: {}
+        expect(session[:expires_at]).to eq(30.minutes.from_now.to_i)
+
+        future_request_at = 10.minutes.from_now
+        Timecop.freeze(future_request_at) do
+          get :check_session
+          expect(response.body).to include("session is still valid!")
+          expect(session[:expires_at]).to eq((future_request_at + 30.minutes).to_i)
+        end
+      end
+    end
+
+    context "for a subsequent request after the expiration interval" do
+      it "resets the session" do
+        get :start_session, session: {}
+        expect(session[:secret_value]).to be_present
+        expect(session[:expires_at]).to be_present
+
+        Timecop.freeze(31.minutes.from_now) do
+          get :check_session
+          expect(response.body).to include("secret value missing!")
+        end
+      end
     end
   end
 end

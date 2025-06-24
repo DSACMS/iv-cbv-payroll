@@ -6,6 +6,7 @@ class ApplicationController < ActionController::Base
   before_action :redirect_if_maintenance_mode
   before_action :enable_mini_profiler_in_demo
   before_action :check_help_param
+  before_action :validate_session_expiration
 
   rescue_from ActionController::InvalidAuthenticityToken do
     redirect_to root_url, flash: { slim_alert: { type: "info", message_html:  t("cbv.error_missing_token_html") } }
@@ -124,5 +125,15 @@ class ApplicationController < ActionController::Base
       flash.now[:alert_heading] = t("help.alert.heading")
       flash.now[:alert_type] = "warning"
     end
+  end
+
+  def validate_session_expiration
+    if session[:expires_at].present? && Time.at(session[:expires_at]).past?
+      reset_session
+    end
+
+    expires_at = Rails.application.config.cbv_session_expires_after.from_now
+
+    session[:expires_at] = expires_at.to_i
   end
 end
