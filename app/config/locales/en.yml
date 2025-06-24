@@ -189,7 +189,6 @@ en:
           last_name: Client's last name
           middle_name: Client's middle name
           snap_application_date: SNAP application or recertification interview date
-      timotest: TIMOTEST 1
     dashboards:
       show:
         create_invitation: Create a new invitation
