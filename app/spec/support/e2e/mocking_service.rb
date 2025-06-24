@@ -16,6 +16,12 @@ module E2e
         pinwheel = Aggregators::Sdk::PinwheelService.new("sandbox")
         timestamp = request_hash[:headers].fetch("X-Timestamp", [ "dummy-default-value" ]).first
         pinwheel.generate_signature_digest(timestamp, request_hash[:body])
+      end,
+
+      # Replaces Pinwheel's own AWS key in the (currently unused) paystub image
+      # URLs to avoid Github vulnerability scan alerts.
+      pinwheel_aws_credential: ->(vcr_interaction) do
+        vcr_interaction.response.body.match(/X-Amz-Credential=([A-Za-z0-9\-\_\%]+)/) ? $LAST_MATCH_INFO[1] : "<PINWHEEL_AWS_KEY_ID_VALUE>"
       end
     }
 
@@ -33,8 +39,9 @@ module E2e
 
       VCR.configure do |c|
         # API Requests: Configure VCR to store placeholders instead of our actual sensitive keys.
-        c.filter_sensitive_data("<ARGYLE_BASIC_AUTH>", PLACEHOLDER_VALUES[:argyle_auth_token])
+        c.filter_sensitive_data("<ARGYLE_BASIC_AUTH>", &PLACEHOLDER_VALUES[:argyle_auth_token])
         c.filter_sensitive_data("<PINWHEEL_API_TOKEN>") { ENV["PINWHEEL_API_TOKEN_SANDBOX"] }
+        c.filter_sensitive_data("<PINWHEEL_AWS_KEY_ID>", &PLACEHOLDER_VALUES[:pinwheel_aws_credential])
         c.cassette_library_dir = fixture_directory
       end
 
