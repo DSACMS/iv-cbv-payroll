@@ -14,9 +14,10 @@ module E2e
     #   end
     # })
     #
-    def initialize(replacements: {}, ngrok_url: "http://localhost:4040")
+    def initialize(replacements: {}, ngrok_url: "http://localhost:4040", logger: Rails.logger)
       @replacements = replacements
       @url = URI(ngrok_url)
+      @logger = logger.tagged("WEBHOOKS")
     end
 
     # Pull a list of webhooks from Ngrok's local API, and return an object
@@ -47,7 +48,7 @@ module E2e
     def replay_requests(recorded_requests, server_url)
       Net::HTTP.start(server_url.host, server_url.port) do |http|
         recorded_requests.each do |recorded_request|
-          puts "[WEBHOOKS] Replaying request for #{recorded_request[:method]} #{recorded_request[:uri]}"
+          @logger.info "Replaying request for #{recorded_request[:method]} #{recorded_request[:uri]}"
           recorded_request = reverse_replacements(recorded_request)
 
           replay_request = Net::HTTP.const_get(recorded_request[:method].capitalize).new(recorded_request[:uri])
@@ -57,7 +58,7 @@ module E2e
 
           replay_response = http.request(replay_request, recorded_request[:body])
           if replay_response.code.to_i >= 400
-            puts "[WEBHOOKS] Warning: Got status #{replay_response.code} from webhook. Body: #{replay_response.body}"
+            @logger.warn "Warning: Got status #{replay_response.code} from webhook. Body: #{replay_response.body}"
           end
         end
       end

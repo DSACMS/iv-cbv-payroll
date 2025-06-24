@@ -285,6 +285,7 @@ To record the data for these methods, you must include the following method call
 ### Developing on E2E classes
 The E2E test framework lives in `spec/support/e2e`. If you need to update a file in there, here are some tips:
 * To reproduce the CI environment, unset your PINWHEEL_API_TOKEN_SANDBOX, ARGYLE_API_TOKEN_SANDBOX_ID, and ARGYLE_API_TOKEN_SANDBOX_SECRET. Unset these, then run your test in "replay mode" to see how it will fare in CI.
+* The E2e::MockService and a couple other classes log their status to the test log. I recommend having `tail -f log/test.log` running in a terminal tab when recording examples.
 
 When editing the `E2eCallbackRecorder.js` file:
 * Make sure you're running the esbuild command in another terminal (or `bin/dev`).

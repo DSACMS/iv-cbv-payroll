@@ -20,7 +20,7 @@ Rails.application.config.to_prepare do
 
       if ProviderSearchService::SUPPORTED_PROVIDERS.include?(:argyle)
         # Argyle webhooks setup
-        argyle_webhooks = ArgyleWebhooksManager.new
+        argyle_webhooks = ArgyleWebhooksManager.new(logger: ActiveSupport::Logger.new(STDOUT))
         argyle_webhooks.create_subscriptions_if_necessary(tunnel_url, subscription_name)
       end
     rescue => ex

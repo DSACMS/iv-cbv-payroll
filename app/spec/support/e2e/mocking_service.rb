@@ -30,10 +30,20 @@ module E2e
     def initialize(server_url:, record_mode: ENV["E2E_RECORD_MODE"].present?)
       @server_url = server_url
       @record_mode = record_mode
+
+      if @record_mode
+        @logger = ActiveSupport::TaggedLogging.new(Logger.new(STDOUT)).tagged("E2E")
+      else
+        @logger = Rails.logger.tagged("E2E")
+      end
     end
 
     def use_recording(cassette_name, &block)
       @cassette_name = cassette_name
+      @webhook_replayer = E2e::NgrokRequestReplayer.new(
+        logger: @logger,
+        replacements: { "<PINWHEEL_WEBHOOK_SIGNATURE>" => PLACEHOLDER_VALUES[:pinwheel_webhook_signature] }
+      )
 
       set_up_recording_mode if @record_mode
 
@@ -53,11 +63,7 @@ module E2e
       if @record_mode
         File.write(
           File.join(fixture_directory, "ngrok_requests.yml"),
-          YAML.dump(
-            E2e::NgrokRequestReplayer
-              .new(replacements: { "<PINWHEEL_WEBHOOK_SIGNATURE>" => PLACEHOLDER_VALUES[:pinwheel_webhook_signature] })
-              .list_requests
-          )
+          YAML.dump(@webhook_replayer.list_requests)
         )
       end
 
@@ -105,9 +111,7 @@ module E2e
       return if @record_mode
 
       recorded_requests = YAML.load_file(File.join(fixture_directory, "ngrok_requests.yml"))
-      E2e::NgrokRequestReplayer
-        .new(replacements: { "<PINWHEEL_WEBHOOK_SIGNATURE>" => PLACEHOLDER_VALUES[:pinwheel_webhook_signature] })
-        .replay_requests(recorded_requests, @server_url)
+      @webhook_replayer.replay_requests(recorded_requests, @server_url)
     end
 
     private
@@ -122,9 +126,9 @@ module E2e
       # (We will have to allow access to the capybara server URL.)
       WebMock.allow_net_connect!
       # Register Ngrok with Pinwheel
-      @ngrok = E2e::NgrokManager.new
+      @ngrok = E2e::NgrokManager.new(logger: @logger)
       @ngrok.start_tunnel(@server_url.port)
-      puts "Found ngrok tunnel at #{@ngrok.tunnel_url}!"
+      @logger.info "Found ngrok tunnel at #{@ngrok.tunnel_url}!"
 
       if Rails.application.config.supported_providers.include?(:pinwheel)
         @pinwheel_subscription_id = PinwheelWebhookManager.new.create_subscription_if_necessary(
@@ -134,7 +138,7 @@ module E2e
       end
 
       if Rails.application.config.supported_providers.include?(:argyle)
-        @argyle_subscriptions = ArgyleWebhooksManager.new.create_subscriptions_if_necessary(
+        @argyle_subscriptions = ArgyleWebhooksManager.new(logger: @logger).create_subscriptions_if_necessary(
           @ngrok.tunnel_url,
           "#{ENV["USER"]}-e2e"
         )
@@ -143,13 +147,13 @@ module E2e
 
     def clean_up_recording_mode
       if @pinwheel_subscription_id
-        puts "[PINWHEEL] Deleting webhook subscription id: #{@pinwheel_subscription_id}"
+        @logger.tagged("PINWHEEL").info "Deleting webhook subscription id: #{@pinwheel_subscription_id}"
         Aggregators::Sdk::PinwheelService.new("sandbox").delete_webhook_subscription(@pinwheel_subscription_id)
       end
 
       if @argyle_subscriptions
         @argyle_subscriptions.each do |id|
-          puts "[ARGYLE] Deleting webhook subscription id: #{id}"
+          @logger.tagged("ARGYLE").info "Deleting webhook subscription id: #{id}"
           Aggregators::Sdk::ArgyleService.new("sandbox").delete_webhook_subscription(id)
         end
       end

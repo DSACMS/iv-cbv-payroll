@@ -18,9 +18,10 @@ module E2e
   class NgrokManager
     NgrokSessionLimitExceededError = Class.new(StandardError)
 
-    def initialize
+    def initialize(logger: Rails.logger)
       @thread = nil
       @tunnel_url = nil
+      @logger = logger.tagged("NGROK")
     end
 
     def start_tunnel(destination_port)
@@ -29,7 +30,7 @@ module E2e
       @thread = Thread.new do |t|
         begin
           _stdin, stdout, _stderr, wait_thr = Open3.popen3("ngrok http #{destination_port} --log stdout")
-          puts "[NGROK] Started with pid #{wait_thr.pid} to local port #{destination_port}"
+          @logger.info "Started with pid #{wait_thr.pid} to local port #{destination_port}"
           stdout.each_line do |log|
             if log.include?('msg="started tunnel"')
               @tunnel_url ||= log.match(/url=([^ ]+)/)[1].strip
@@ -38,17 +39,17 @@ module E2e
             end
           end
         rescue NgrokSessionLimitExceededError
-          puts "[NGROK] Session limit exceeded"
+          @logger.warn "Session limit exceeded"
           raise if retries == 1
 
-          puts "[NGROK] Retrying after a short delay"
+          @logger.info "Retrying after a short delay"
           retries += 1
           sleep 2
           retry
         rescue => e
-          puts "[NGROK] Fatal error: #{e}"
+          @logger.error "Fatal error: #{e}"
         ensure
-          puts "[NGROK] Killing pid #{wait_thr.pid}"
+          @logger.info "Killing pid #{wait_thr.pid}"
           Process.kill("TERM", wait_thr.pid) if wait_thr.alive? rescue nil
         end
       end
