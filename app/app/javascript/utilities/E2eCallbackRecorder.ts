@@ -65,14 +65,13 @@ export default class E2ECallbackRecorder {
     // Assume that all functions in the params object's values are callback
     // methods we should be proxying. This assumes that `params` is flat (i.e.
     // contains no callbacks nested under another key).
-    for (const [key, value] of Object.entries(params)) {
+    Object.entries(params).forEach(([key, value]: [keyof typeof params, any]) => {
       if (typeof value === "function") {
         console.log("Intercepting callbacks for params key", key)
-        this.originalCallbacks[key] = (params as any)[key]
-        // TODO: Try to figure out how to remove the `as any` here with a better type definition.
-        ;(params as any)[key] = this.createCallbackRecorder(key)
+        this.originalCallbacks[key] = params[key]
+        params[key] = this.createCallbackRecorder(key)
       }
-    }
+    })
   }
 
   isReplayingCallbacks(): boolean {
@@ -85,14 +84,21 @@ export default class E2ECallbackRecorder {
     }
 
     const callbacksToInvoke = JSON.parse(window.sessionStorage.getItem(SESSION_STORAGE_REPLAY_KEY))
-    for (const { callbackName, callbackArguments } of callbacksToInvoke) {
-      console.log("Replaying callback", callbackName, "with arguments", callbackArguments)
-      // TODO: Try to figure out how to remove the `as any` here with a better type definition.
-      ;(params as any)[callbackName].apply(this, callbackArguments)
-    }
+    callbacksToInvoke.forEach(
+      ({
+        callbackName,
+        callbackArguments,
+      }: {
+        callbackName: keyof typeof params
+        callbackArguments: any[]
+      }) => {
+        console.log("Replaying callback", callbackName, "with arguments", callbackArguments)
+        params[callbackName].apply(this, callbackArguments)
+      }
+    )
   }
 
-  createCallbackRecorder(callbackName: string): Function {
+  createCallbackRecorder(callbackName: string) {
     return (...callbackArguments: any[]) => {
       console.log("Recording invocation of ", callbackName, "with arguments:", ...callbackArguments)
 
