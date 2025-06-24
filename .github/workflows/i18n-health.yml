@@ -24,7 +24,9 @@ jobs:
       with:
         ruby-version: '3.1'
         bundler-cache: true
+      working-directory: ./app
 
     - name: Run i18n-tasks health check
       run: |
         i18n-tasks health
+      working-directory: ./app
