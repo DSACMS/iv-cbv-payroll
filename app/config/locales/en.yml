@@ -38,6 +38,7 @@ en:
           attributes:
             case_number:
               invalid_format: Enter the case number in the ANGIE/sPOS format, i.e. 00012345678A.
+              timotest: TIMOTEST!!!
             client_id_number:
               invalid_format: Enter the client's CIN in the correct format, XX00000X.
             snap_application_date:
