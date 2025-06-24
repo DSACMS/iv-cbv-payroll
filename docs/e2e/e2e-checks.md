@@ -71,3 +71,4 @@ When editing the `E2eCallbackRecorder.js` file:
 ## Currently unsupported E2E test conditions
 * Multiple openings of the aggregator modals (either multiple Pinwheel, or Pinwheel then Argyle)
 * Anything regarding session expiration (as we currently remove session expiration during E2E testing)
+* Pinwheel only supports linking 25 accounts to a given `end_user_id`. So, after re-recording a Pinwheel cassette 25 times, we will have to change its name in order to generate a new `end_user_id`.

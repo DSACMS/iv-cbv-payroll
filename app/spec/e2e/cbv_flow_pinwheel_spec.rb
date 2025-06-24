@@ -8,7 +8,7 @@ RSpec.describe "e2e CBV flow pinwheel test", type: :feature, js: true do
   around do |ex|
     override_supported_providers([ :pinwheel ]) do
       @e2e = E2e::MockingService.new(server_url: URI(page.server_url))
-      @e2e.use_recording("e2e_cbv_flow_english_pinwheel_only", &ex)
+      @e2e.use_recording("e2e_cbv_flow_pinwheel", &ex)
     end
   end
 

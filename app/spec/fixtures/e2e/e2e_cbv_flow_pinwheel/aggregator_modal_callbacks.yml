@@ -53,16 +53,16 @@
   callbackArguments:
   - login
   - platformId: 5965580e-380f-4b86-8a8a-7278c77f73cb
-    accountId: 3e495d44-ecce-45e0-930e-35a63c88ce1c
+    accountId: 934f6406-c332-4c05-a3e8-6a90765c842d
 - callbackName: onEvent
   callbackArguments:
   - success
-  - accountId: 3e495d44-ecce-45e0-930e-35a63c88ce1c
+  - accountId: 934f6406-c332-4c05-a3e8-6a90765c842d
     platformId: 5965580e-380f-4b86-8a8a-7278c77f73cb
     job: login
 - callbackName: onSuccess
   callbackArguments:
-  - accountId: 3e495d44-ecce-45e0-930e-35a63c88ce1c
+  - accountId: 934f6406-c332-4c05-a3e8-6a90765c842d
     platformId: 5965580e-380f-4b86-8a8a-7278c77f73cb
     job: login
 - callbackName: onEvent
