@@ -55,8 +55,10 @@ module E2e
         c.cassette_library_dir = fixture_directory
       end
 
-      VCR.use_cassette("vcr_http_requests", record: @record_mode ? :once : :none) do
-        block.call
+      VCR.use_cassette("vcr_http_requests", record: @record_mode ? :once : :none) do |vcr_cassette|
+        freeze_time_and_remove_session_expiration(vcr_cassette.originally_recorded_at || Time.now) do
+          block.call
+        end
       end
 
       # Webhooks: Save all webhooks at the end of the run.
@@ -159,6 +161,22 @@ module E2e
       end
 
       @ngrok.kill if @ngrok
+    end
+
+    # Freeze time so that the time-based API queries (e.g. requesting 90
+    # days of aggregator data) will always use the same dates.
+    #
+    # This also requires removing session expiration, since Rails sets the
+    # cookies to expire 30 minutes after the request.
+    def freeze_time_and_remove_session_expiration(time, &block)
+      old_session_store = Rails.application.config.session_store
+      Rails.application.config.session_store :cookie_store, key: "_iv_cbv_payroll_session"
+
+      Timecop.freeze(time) do
+        block.call
+      end
+    ensure
+      Rails.application.config.session_store(old_session_store)
     end
 
     def fixture_directory

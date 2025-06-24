@@ -285,6 +285,7 @@ To record the data for these methods, you must include the following method call
 ### Developing on E2E classes
 The E2E test framework lives in `spec/support/e2e`. If you need to update a file in there, here are some tips:
 * To reproduce the CI environment, unset your PINWHEEL_API_TOKEN_SANDBOX, ARGYLE_API_TOKEN_SANDBOX_ID, and ARGYLE_API_TOKEN_SANDBOX_SECRET. Unset these, then run your test in "replay mode" to see how it will fare in CI.
+* The tests need to freeze time. To test this locally, try changing your computer's date into the future.
 * The E2e::MockService and a couple other classes log their status to the test log. I recommend having `tail -f log/test.log` running in a terminal tab when recording examples.
 
 When editing the `E2eCallbackRecorder.js` file:
@@ -292,6 +293,7 @@ When editing the `E2eCallbackRecorder.js` file:
 
 ### Currently unsupported E2E test conditions
 * Multiple openings of the aggregator modals (either multiple Pinwheel, or Pinwheel then Argyle)
+* Anything regarding session expiration (as we currently remove session expiration during E2E testing)
 
 ## Pa11y Scan
 

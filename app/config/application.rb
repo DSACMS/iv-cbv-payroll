@@ -47,6 +47,7 @@ module IvCbvPayroll
     # CBV configuration
     config.client_agencies = ClientAgencyConfig.new(Rails.root.join("config", "client-agency-config.yml"))
     config.supported_providers = (ENV["SUPPORTED_PROVIDERS"] || "pinwheel")&.split(",")&.map(&:to_sym)
+    config.cbv_session_expires_after = 30.minutes
 
     # Configure allowed hosts
     config.hosts << ENV["DOMAIN_NAME"]
