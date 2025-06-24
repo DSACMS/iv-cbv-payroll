@@ -19,13 +19,12 @@ class EventTrackingJob < ApplicationJob
       attributes[:browser] = device_detector.name
     end
 
-    [ MixpanelEventTracker.new, NewRelicEventTracker.new ].each do |service|
-      begin
-        service.track(event_type, request, attributes)
-      rescue StandardError => e
-        Rails.logger.error "  Failed to track #{event_type} in #{service}: #{e.message}"
-        raise e
-      end
+    event_tracker = MixpanelEventTracker.new
+    begin
+      event_tracker.track(event_type, request, attributes)
+    rescue StandardError => e
+      Rails.logger.error "  Failed to track #{event_type} in #{service}: #{e.message}"
+      raise e
     end
   end
 end

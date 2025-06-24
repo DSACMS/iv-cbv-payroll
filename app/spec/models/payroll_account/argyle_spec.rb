@@ -118,12 +118,12 @@ RSpec.describe PayrollAccount::Argyle, type: :model do
         allow(Rails.env).to receive(:production?).and_return(true)
         allow(Rails.logger).to receive(:error)
 
-        allow_any_instance_of(NewRelicEventTracker)
+        allow_any_instance_of(GenericEventTracker)
           .to receive(:track)
       end
 
-      it "logs to the Rails logger and to NewRelic" do
-        expect_any_instance_of(NewRelicEventTracker)
+      it "logs to the Rails logger and to Mixpanel" do
+        expect_any_instance_of(GenericEventTracker)
           .to receive(:track)
           .with("DataRedactionFailure", nil, include(
             account_id: payroll_account.pinwheel_account_id

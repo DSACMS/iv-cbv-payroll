@@ -7,6 +7,30 @@ RSpec.describe CbvFlowInvitation, type: :model do
   let(:invalid_email_no_tld) { "johndoe@gmail" }
   let(:valid_email) { "johndoe@gmail.com" }
 
+  describe "callbacks" do
+    context "before_create" do
+      let(:current_time) { Time.utc(2025, 6, 17, 1, 0, 0) }
+
+      around do |ex|
+        Timecop.freeze(current_time, &ex)
+      end
+
+      it "sets expires_at based on created_at" do
+        invitation = CbvFlowInvitation.new(valid_attributes)
+        invitation.save!
+        expect(invitation.created_at).to eq(current_time)
+        # Saved in the database as UTC, so this will show as 4 hours later than we expect
+        expect(invitation.expires_at).to have_attributes(
+          hour: 3,
+          min: 59,
+          sec: 59,
+          month: 7,
+          day: 1,
+        )
+      end
+    end
+  end
+
   describe "validations" do
     context "for all invitations" do
       context "validates email addresses" do
@@ -109,7 +133,7 @@ RSpec.describe CbvFlowInvitation, type: :model do
     end
   end
 
-  describe "#expires_at" do
+  describe "#expires_at_local" do
     let(:client_agency_id) { "sandbox" }
     let(:invitation_valid_days) { 14 }
     let(:invitation) do
@@ -126,7 +150,7 @@ RSpec.describe CbvFlowInvitation, type: :model do
     end
 
     it "returns the end of the day the 14th day after the invitation was sent" do
-      expect(invitation.expires_at).to have_attributes(
+      expect(invitation.expires_at_local).to have_attributes(
         hour: 23,
         min: 59,
         sec: 59,
