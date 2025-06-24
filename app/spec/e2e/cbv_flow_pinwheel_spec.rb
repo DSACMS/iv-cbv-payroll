@@ -44,7 +44,7 @@ RSpec.describe "e2e CBV flow pinwheel test", type: :feature, js: true do
       end
 
       # Wait for Pinwheel modal to disappear
-      find_all("iframe.pinwheel-modal-show", visible: true, maximum: 0, minimum: nil, wait: 10)
+      find_all("iframe.pinwheel-modal-show", visible: true, maximum: 0, minimum: nil, wait: 30)
     end
 
     # /cbv/synchronizations
@@ -53,7 +53,7 @@ RSpec.describe "e2e CBV flow pinwheel test", type: :feature, js: true do
     @e2e.replay_webhooks
 
     # /cbv/payment_details
-    verify_page(page, title: I18n.t("cbv.payment_details.show.header", employer_name: ""), wait: 60)
+    verify_page(page, title: I18n.t("cbv.payment_details.show.header", employer_name: ""), wait: 120)
     fill_in "cbv_flow[additional_information]", with: "Some kind of additional information"
     click_button I18n.t("cbv.payment_details.show.continue")
 
@@ -63,9 +63,12 @@ RSpec.describe "e2e CBV flow pinwheel test", type: :feature, js: true do
     click_button I18n.t("cbv.add_jobs.show.continue")
 
     # /cbv/summary
-    verify_page(page, title: I18n.t("cbv.summaries.show.header"))
+    verify_page(page, title: I18n.t("cbv.summaries.show.header"), wait: 10)
     click_on "Continue"
-    find(:css, "label[for=cbv_flow_consent_to_authorized_use]", wait: 10).click
+
+    # /cbv/submits
+    verify_page(page, title: I18n.t("cbv.submits.show.page_header"), wait: 10)
+    find(:css, "label[for=cbv_flow_consent_to_authorized_use]").click
     click_on "Share my report with CBV"
 
     # /cbv/success

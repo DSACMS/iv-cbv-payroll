@@ -36,7 +36,7 @@ RSpec.describe "e2e CBV flow test", type: :feature, js: true do
         fill_in "password", with: "passgood"
         click_button "Connect"
         fill_in "legacy_mfa_token", with: "8081", wait: 30
-        click_button "Continue"
+        click_button "Continue", wait: 30
       end
 
       # Wait for Argyle modal to disappear
@@ -61,6 +61,9 @@ RSpec.describe "e2e CBV flow test", type: :feature, js: true do
     # /cbv/summary
     verify_page(page, title: I18n.t("cbv.summaries.show.header"))
     click_on "Continue"
+
+    # /cbv/submits
+    verify_page(page, title: I18n.t("cbv.submits.show.page_header"), wait: 10)
     find(:css, "label[for=cbv_flow_consent_to_authorized_use]").click
     click_on "Share my report with CBV"
 
