@@ -19,10 +19,8 @@ jobs:
     - name: Checkout repository
       uses: actions/checkout@v4
 
-    - id: setup
-      uses: ./.github/actions/setup-project
-      with:
-        rails_env: test
+    - name: Set up Ruby & Javascript
+      uses: ./.github/actions/setup-languages
 
     - name: Run i18n-tasks health check
       run: |
