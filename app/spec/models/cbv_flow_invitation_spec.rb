@@ -2,7 +2,7 @@ require 'rails_helper'
 
 RSpec.describe CbvFlowInvitation, type: :model do
   let(:valid_attributes) do
-    attributes_for(:cbv_flow_invitation, :nyc).merge(user: create(:user, client_agency_id: "nyc"), cbv_applicant: create(:cbv_applicant, :nyc))
+    attributes_for(:cbv_flow_invitation, :sandbox).merge(user: create(:user, client_agency_id: "sandbox"), cbv_applicant: create(:cbv_applicant, :sandbox))
   end
   let(:invalid_email_no_tld) { "johndoe@gmail" }
   let(:valid_email) { "johndoe@gmail.com" }

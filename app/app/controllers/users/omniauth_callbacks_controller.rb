@@ -1,27 +1,6 @@
 class Users::OmniauthCallbacksController < Devise::OmniauthCallbacksController
   after_action :track_event
 
-  def nyc_dss
-    response_params = request.env["omniauth.auth"]["info"]
-    Rails.logger.info "Login successful from #{response_params["email"]} (name: #{response_params["name"]}, nickname: #{response_params["nickname"]})"
-    email = response_params["email"]
-
-    login_with_oauth(email, "nyc")
-  end
-
-  def ma_dta
-    response_params = request.env["omniauth.auth"]["info"]
-    Rails.logger.info "Login successful from #{response_params["email"]} (name: #{response_params["name"]}, nickname: #{response_params["nickname"]})"
-    email = response_params["email"]
-
-    if authorized?(email, "ma")
-      login_with_oauth(email, "ma")
-    else
-      flash[:alert] = "You are not authorized to access this site. Please contact your administrator."
-      redirect_to root_path
-    end
-  end
-
   def az_des
     response_params = request.env["omniauth.auth"]["info"]
     Rails.logger.info "Login successful from #{response_params["email"]} (name: #{response_params["name"]}, nickname: #{response_params["nickname"]})"
@@ -53,14 +32,6 @@ class Users::OmniauthCallbacksController < Devise::OmniauthCallbacksController
     end
   end
 
-  def authorized?(email, client_agency)
-    authorized_emails = Rails.application.config.client_agencies["ma"].authorized_emails&.split(",").map(&:downcase)
-
-    unless authorized_emails.blank?
-      authorized_emails.include?(email.downcase)
-    end
-  end
-
   def track_event
     return unless @user&.persisted?
 
@@ -74,10 +45,8 @@ class Users::OmniauthCallbacksController < Devise::OmniauthCallbacksController
     case failed_strategy.name
     when "sandbox"
       new_user_session_path(client_agency_id: "sandbox")
-    when "nyc_dss"
-      new_user_session_path(client_agency_id: "nyc")
-    when "ma_dta"
-      new_user_session_path(client_agency_id: "ma")
+    when "az_des"
+      new_user_session_path(client_agency_id: "az_des")
     end
   end
 end

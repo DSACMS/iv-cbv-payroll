@@ -25,23 +25,6 @@ en:
             date_of_birth:
               future_date: Date of birth must be today or in the past
               invalid_date: Enter a valid date of birth
-        cbv_applicant/ma:
-          attributes:
-            agency_id_number:
-              blank: Enter a valid agency ID number.
-              invalid_format: Agency ID number must be 7 digits.
-            beacon_id:
-              invalid_format: Your WELID must be 6 characters. It can only include letters and numbers.
-            snap_application_date:
-              invalid_date: Enter today's date or the date you contacted the client. This date must be today or in the past year.
-        cbv_applicant/nyc:
-          attributes:
-            case_number:
-              invalid_format: Enter the case number in the ANGIE/sPOS format, i.e. 00012345678A.
-            client_id_number:
-              invalid_format: Enter the client's CIN in the correct format, XX00000X.
-            snap_application_date:
-              invalid_date: SNAP interview date must be today or in the past 30 days.
         cbv_applicant/sandbox:
           attributes:
             agency_id_number:
@@ -122,24 +105,18 @@ en:
     invitation_email:
       body_1:
         default: "%{agency_acronym} wants you to verify your income as part of your SNAP application or recertification. The SNAP Income Pilot is a new tool designed to help you share your income data directly with %{agency_acronym} by logging into your payroll provider."
-        ma: "%{agency_acronym} wants you to verify your income as part of your SNAP recertification. The SNAP Income Pilot is a new tool designed to help you share your income data directly with %{agency_acronym} by logging into your payroll provider."
       body_2_html:
         default: This process is unique to you. Please don't share this invitation with anyone else. <strong>You have until %{deadline}, to complete your verification.</strong> Otherwise, you can request a new invitation.
-        ma: This process is unique to you. Please don't share this invitation with anyone else. <strong>You have until %{deadline}, to complete your verification.</strong>
       body_3:
         default: This is an optional tool. If you decide that you don't want to use it, you can provide income documents via the %{app_name} app, fax, mail, or in-person.
-        ma: This is an optional tool. If you decide that you don't want to use it, you can provide proof of your gross income and hours using %{app_name}, by fax, by mail, or in-person.
       button: Verify your income
       button_caption: 'To verify your income with the SNAP Income Pilot, click the button below:'
       footer: This is an automatically generated message from your SNAP agency. Please don’t reply to this email.
       greeting: Hello,
       header:
-        ma: DTA has sent you an invitation to verify your income
-        nyc: HRA has sent you an invitation to verify your income
         sandbox: CBV Test Agency has sent you an invitation to verify your income
       subject:
         default: Verify your income for your SNAP application or renewal
-        ma: Verify your income to renew your SNAP benefits
   caseworker:
     cbv_flow_invitations:
       az_des:
@@ -151,33 +128,12 @@ en:
         invite_failed: 'Error sending invitation to %{email_address}: %{error_message}.'
         invite_success: Successfully delivered invitation to %{email_address}.
       incorrect_client_agency_id: Unable to send invitation due to missing client agency configuration.
-      ma:
-        invite:
-          agency_id_number: Client's agency ID number
-          beacon_id: Your WELID
-          email_address: Client's email address
-          first_name: Client's first name
-          language_label: In what language should we send the invitation?
-          last_name: Client's last name
-          middle_name: Client's middle name
-          todays_date: Today's date
       new:
         description_html:
           default: "<p>Provide some details about the client so we can send them a link to verify their pay information. We'll request the past %{pay_income_days} days of income, based on the client's application/recertification date.</p><p>If multiple members of the household earn income, send an invite link to each household member.</p>"
-          ma: "<p>Provide some details about the client so we can send them a link to verify their pay information. We'll request the past %{pay_income_days} days of income, based on today's date.</p><p>If multiple members of the household earn income, send an invite link to each household member.</p>"
         form:
           submit: Send Invitation
         header: Send an invite link
-      nyc:
-        invite:
-          case_number: Case number
-          client_id_number: CIN
-          email_address: Client's email address
-          first_name: Client's first name
-          language_label: In what language should we send the invitation?
-          last_name: Client's last name
-          middle_name: Client's middle name
-          snap_application_date: SNAP application or recertification interview date
       sandbox:
         invite:
           agency_id_number: Client's agency ID number
@@ -207,22 +163,15 @@ en:
       index:
         continue_to_login:
           default: Continue to log in page
-          ma: Continue to DTA log in page
-          nyc: Log in with your LAN ID
           sandbox: Continue to CBV Test Agency log in page
         description:
-          ma: This site allows staff at participating agencies to send clients a link to verify their income, so they can easily send pay information to the agency.
-          nyc: This site allows staff at participating agencies to send clients a link to verify their income, so they can easily send pay information to the agency.
           sandbox: This site allows staff at participating agencies to send clients a link to verify their income, so they can easily send pay information to the agency.
         header:
-          ma: DTA is piloting a new way to quickly verify clients' income
-          nyc: HRA is piloting a new way to quickly verify clients' income
           sandbox: CBV Test Agency is piloting a new way to quickly verify clients' income
         how_it_works: How it works
         step_1_description: For security, you will be automatically logged out after 30 minutes of inactivity.
         step_1_title:
           default: Log in using your existing agency account.
-          nyc: Log in using your existing agency account (LAN ID).
         step_2_description: Invitations are for individual clients. If you need to verify income for multiple people in a household, you will need to create a new invitation for each person.
         step_2_title: Click the "Create a new invitation" button.
         step_3_description: When you submit their name, ID number, email address, and application date, we'll email them an invitation link to verify their income.
@@ -669,19 +618,13 @@ en:
     agency_acronym:
       az_des: DES/FAA
       la_ldh: LDH
-      ma: DTA
-      nyc: HRA
       sandbox: CBV
     agency_full_name:
       az_des: Department of Economic Security/Family Assistance Administration
       la_ldh: Louisiana Department of Health
-      ma: Massachusetts Department of Transitional Assistance
-      nyc: New York City Human Resources Administration
       sandbox: CBV Test Agency
     app_name:
       az_des: MyFamilyBenefits
-      ma: DTA Connect
-      nyc: ACCESS HRA
       sandbox: CBVApp
     banner:
       lock: Lock
@@ -689,8 +632,6 @@ en:
     benefit:
       az_des: Nutrition Assistance
       la_ldh: Medicaid
-      ma: SNAP
-      nyc: SNAP
       sandbox: SNAP
     error_unauthorized: The URL you're accessing is forbidden for the current user. Please verify you are logged in as the correct user and try accessing the URL again.
     footer:
@@ -700,8 +641,6 @@ en:
       cbv_flow_title:
         az_des: Department of Economic Security
         la_ldh: Department of Health
-        ma: Department of Transitional Assistance
-        nyc: Human Resources Administration
         sandbox: CBV Test Agency
       close: Close
       help: Help
@@ -710,8 +649,6 @@ en:
         az_des: A website in partnership with the Arizona Department of Economic Security.
         default: A website in partnership with CBV Test Agency.
         la_ldh: A website in partnership with the Louisiana Department of Health
-        ma: A website in partnership with the Commonwealth of Massachusetts.
-        nyc: A website in partnership with the City of New York.
       primary: Primary navigation
     languages:
       en: English
@@ -726,8 +663,6 @@ en:
     reporting_purpose:
       az_des: Mid Approval Contact form
       la_ldh: benefits
-      ma: benefits
-      nyc: benefits
       sandbox: benefits
     skip_link: Skip to main content
   time:
