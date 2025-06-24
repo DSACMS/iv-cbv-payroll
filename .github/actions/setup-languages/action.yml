@@ -3,18 +3,11 @@ description: Set up ruby, javascript, and dependencies
 runs:
   using: composite
   steps:
-    - name: Cleanup gemfile
-      uses: ./.github/actions/cleanup-gemfile
-
     - name: Set up Ruby
       uses: ruby/setup-ruby@v1
       with:
         working-directory: app
-
-    - name: Install Dependencies
-      shell: bash
-      working-directory: app
-      run: bundle install
+        bundler-cache: true
 
     - name: Set up node
       uses: actions/setup-node@v4
