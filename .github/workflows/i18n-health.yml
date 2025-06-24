@@ -27,4 +27,4 @@ jobs:
 
     - name: Run i18n-tasks health check
       run: |
-        bundle exec i18n-tasks health
+        i18n-tasks health
