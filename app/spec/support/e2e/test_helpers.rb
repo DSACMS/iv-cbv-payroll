@@ -18,6 +18,14 @@ module E2e
           #{missing_translations.map { |el| el["title"] }}
         ERROR
       end
+
+      # Check accessibility of every page with Axe matchers.
+      #
+      # This verifies against Axe's default ruleset, which is WCAG 2.1 Level A
+      # & AA as well as an additional handful of best practices:
+      #
+      # https://github.com/dequelabs/axe-core/blob/master/doc/rule-descriptions.md
+      expect(page).to be_axe_clean
     end
 
     # This method needs to be included in E2E tests using Pinwheel to make sure
