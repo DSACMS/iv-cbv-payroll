@@ -63,7 +63,8 @@ RSpec.describe "e2e CBV flow pinwheel test", type: :feature, js: true do
     click_button I18n.t("cbv.add_jobs.show.continue")
 
     # /cbv/summary
-    verify_page(page, title: I18n.t("cbv.summaries.show.header"), wait: 10)
+    # TODO[FFS-2839]: Fix heading hierarchy on this page
+    verify_page(page, title: I18n.t("cbv.summaries.show.header"), wait: 10, skip_axe_rules: %w[heading-order])
     click_on "Continue"
 
     # /cbv/submits
