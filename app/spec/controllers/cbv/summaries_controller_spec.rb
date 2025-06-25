@@ -23,12 +23,9 @@ RSpec.describe Cbv::SummariesController do
 
 
   let(:mixpanel_event_stub) { instance_double(MixpanelEventTracker) }
-  let(:newrelic_event_stub) { instance_double(NewRelicEventTracker) }
 
   before do
     allow(MixpanelEventTracker).to receive(:new).and_return(mixpanel_event_stub)
-    allow(NewRelicEventTracker).to receive(:new).and_return(newrelic_event_stub)
-    allow(newrelic_event_stub).to receive(:track)
     allow(mixpanel_event_stub).to receive(:track)
     allow(mock_client_agency).to receive(:transmission_method_configuration).and_return({
       "bucket"            => "test-bucket",

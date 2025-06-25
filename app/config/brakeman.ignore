@@ -3,25 +3,48 @@
     {
       "warning_type": "Command Injection",
       "warning_code": 14,
-      "fingerprint": "dcb95cade68d325bd4d7dac195ff2331f455c7ee1b4bfc8ecb9379107de4e0ba",
+      "fingerprint": "a114e4102237985d8d3c47b932561e60dd9e8a46464aa2f8e28d2a83afd31c8e",
       "check_name": "Execute",
       "message": "Possible command injection",
       "file": "services/locale_diff_service.rb",
-      "line": 57,
+      "line": 70,
       "link": "https://brakemanscanner.org/docs/warning_types/command_injection/",
-      "code": "Open3.capture3(\"git\", \"show\", \"#{merge_base_commit}:#{\"app/config/locales/en.yml\"}\", :chdir => find_project_root)",
+      "code": "Open3.capture3(\"git\", \"show\", \"#{\"main\"}:#{path}\", :chdir => find_project_root)",
       "render_path": null,
       "location": {
         "type": "method",
         "class": "LocaleDiffService",
-        "method": "get_en_content_from_common_ancestor"
+        "method": "get_content_from_main"
+      },
+      "user_input": "path",
+      "confidence": "Medium",
+      "cwe_id": [
+        77
+      ],
+      "note": ""
+    },
+    {
+      "warning_type": "Command Injection",
+      "warning_code": 14,
+      "fingerprint": "c71078f13cb4e9fa2c95e028c5e24f10c329a8250a5810bd81266ab6df7a2d6d",
+      "check_name": "Execute",
+      "message": "Possible command injection",
+      "file": "services/locale_diff_service.rb",
+      "line": 59,
+      "link": "https://brakemanscanner.org/docs/warning_types/command_injection/",
+      "code": "Open3.capture3(\"git\", \"show\", \"#{merge_base_commit}:#{get_locale_file_path(locale)}\", :chdir => find_project_root)",
+      "render_path": null,
+      "location": {
+        "type": "method",
+        "class": "LocaleDiffService",
+        "method": "get_content_from_common_ancestor"
       },
       "user_input": "merge_base_commit",
       "confidence": "Medium",
       "cwe_id": [
         77
       ],
-      "note": "Since input here is the output of another git call, we can safely ignore this."
+      "note": ""
     }
   ],
   "brakeman_version": "7.0.2"

@@ -14,6 +14,6 @@ class Cbv::MissingResultsController < Cbv::BaseController
       invitation_id: @cbv_flow.cbv_flow_invitation_id
     })
   rescue => ex
-    Rails.logger.error "Unable to track NewRelic event (ApplicantAccessedMissingResultsPage): #{ex}"
+    Rails.logger.error "Unable to track event (ApplicantAccessedMissingResultsPage): #{ex}"
   end
 end

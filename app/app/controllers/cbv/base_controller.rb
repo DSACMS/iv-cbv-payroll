@@ -122,18 +122,18 @@ class Cbv::BaseController < ApplicationController
       client_agency_id: current_agency&.id
     })
   rescue => ex
-    Rails.logger.error "Unable to track NewRelic event (ApplicantTimedOut): #{ex}"
+    Rails.logger.error "Unable to track event (ApplicantTimedOut): #{ex}"
   end
 
   def track_expired_event(invitation)
-    event_logger.track("ApplicantLinkExpired", request, {
+    event_logger.track("ApplicantAccessedExpiredLinkPage", request, {
       invitation_id: invitation.id,
       cbv_applicant_id: invitation.cbv_applicant_id,
       client_agency_id: current_agency&.id,
       timestamp: Time.now.to_i
     })
   rescue => ex
-    Rails.logger.error "Unable to track NewRelic event (ApplicantLinkExpired): #{ex}"
+    Rails.logger.error "Unable to track event (ApplicantAccessedExpiredLinkPage): #{ex}"
   end
 
   def track_invitation_clicked_event(invitation, cbv_flow)
@@ -148,8 +148,8 @@ class Cbv::BaseController < ApplicationController
       completed_reports_count: invitation.cbv_flows.completed.count,
       flows_started_count: invitation.cbv_flows.count
     })
-    rescue => ex
-      Rails.logger.error "Unable to track event (ApplicantClickedCBVInvitationLink): #{ex}"
+  rescue => ex
+    Rails.logger.error "Unable to track event (ApplicantClickedCBVInvitationLink): #{ex}"
   end
 
   def count_unique_members(invitation)

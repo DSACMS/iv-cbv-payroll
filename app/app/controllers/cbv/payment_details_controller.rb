@@ -134,7 +134,7 @@ class Cbv::PaymentDetailsController < Cbv::BaseController
       has_income_data: has_income_data?
     })
   rescue => ex
-    Rails.logger.error "Unable to track NewRelic event (ApplicantViewedPaymentDetails): #{ex}"
+    Rails.logger.error "Unable to track event (ApplicantViewedPaymentDetails): #{ex}"
   end
 
   def track_saved_event
@@ -148,6 +148,6 @@ class Cbv::PaymentDetailsController < Cbv::BaseController
       additional_information_length: comment_data ? comment_data["comment"].length : 0
     })
   rescue => ex
-    Rails.logger.error "Unable to track NewRelic event (ApplicantSavedPaymentDetails): #{ex}"
+    Rails.logger.error "Unable to track event (ApplicantSavedPaymentDetails): #{ex}"
   end
 end

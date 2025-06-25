@@ -1,0 +1,28 @@
+name: Check i18n-tasks health
+
+on:
+  pull_request:
+    paths:
+      - 'app/config/locales/**'
+    branches:
+      - main
+  push:
+    branches:
+      - main
+      - develop
+
+jobs:
+  i18n_check:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+
+    - name: Set up Ruby & Javascript
+      uses: ./.github/actions/setup-languages
+
+    - name: Run i18n-tasks health check
+      run: |
+        i18n-tasks health
+      working-directory: ./app

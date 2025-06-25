@@ -18,7 +18,7 @@ class DataRetentionService
       .unstarted
       .unredacted
       .find_each do |cbv_flow_invitation|
-        next unless Time.now.after?(cbv_flow_invitation.expires_at + REDACT_UNUSED_INVITATIONS_AFTER)
+        next unless Time.current.after?(cbv_flow_invitation.expires_at + REDACT_UNUSED_INVITATIONS_AFTER)
 
         cbv_flow_invitation.redact!
         cbv_flow_invitation.cbv_applicant&.redact!
@@ -35,7 +35,7 @@ class DataRetentionService
           # Redact CbvFlow records (together with their invitations) some period
           # after the invitation expires.
           invitation_redact_at = cbv_flow.cbv_flow_invitation.expires_at + REDACT_UNUSED_INVITATIONS_AFTER
-          next unless Time.now.after?(invitation_redact_at)
+          next unless Time.current.after?(invitation_redact_at)
 
           cbv_flow.redact!
           cbv_flow.cbv_flow_invitation.redact!

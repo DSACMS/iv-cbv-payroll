@@ -68,6 +68,6 @@ class PayrollAccount::Argyle < PayrollAccount
     raise ex unless Rails.env.production?
 
     Rails.logger.error "Unable to redact PayrollAccount::Argyle Account ID #{pinwheel_account_id} - #{ex.message}"
-    NewRelicEventTracker.new.track("DataRedactionFailure", nil, { account_id: pinwheel_account_id })
+    GenericEventTracker.new.track("DataRedactionFailure", nil, { account_id: pinwheel_account_id })
   end
 end
