@@ -6,15 +6,6 @@ output "application_log_stream_prefix" {
   value = module.service.application_log_stream_prefix
 }
 
-output "ma_moveit_access_key_id" {
-  value = aws_iam_access_key.ma_moveit.id
-}
-
-output "ma_moveit_secret_access_key" {
-  value     = aws_iam_access_key.ma_moveit.secret
-  sensitive = true
-}
-
 output "migrator_role_arn" {
   value = module.service.migrator_role_arn
 }

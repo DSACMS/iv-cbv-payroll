@@ -121,7 +121,7 @@ For more information on usage and helpful rake tasks to manage locale files, see
 
 The CBV pilot project is architected to be multi-tenant across jurisdictions we
 are actively piloting with. Each jurisdiction's agency is configured as a
-"client agency" in app/config/client-agency-config.yml and has a short "id", e.g. "nyc", "ma",
+"client agency" in app/config/client-agency-config.yml and has a short "id", e.g. "az_des", "la_ldh",
 and "sandbox".
 
 We often need to adjust copy specific to each client agency. The preferred way to do it
@@ -139,8 +139,8 @@ And the corresponding locale file:
 
 ```yaml
 learn_more_html:
-  nyc: Learn more about <strong>NYC Human Resources Administration</strong>
-  ma: Learn more about <strong>Massachusetts Department of Transitional Assistance</strong>
+  az_des: Learn more about <strong>Arizona Department of Economic Security</strong>
+  la_ldh: Learn more about <strong>Louisiana Department of Health</strong>
   sandbox: Learn more about <strong>CBV Test Agency</strong>
   default: Learn more about <strong>Default Agency</strong>
 ```
@@ -220,7 +220,7 @@ If you're new to CBV, here's a summary of how to get started navigating the app.
 1. Search for your employer. When you select one, the local page will show you some fake credentials at the very bottom of the screen. Use these to sign in.
 1. Finally, you should be able to complete the applicant flow, including looking at the PDF.
 1. To complete the caseworker flow, add `?is_caseworker=true` to the /cbv/summary.pdf path to see the PDF that gets sent (it's different from the one we send the applicant!)
-1. Note: You can switch to a different pilot partner (state) by going to the irb prompt and running `CbvFlow.last.update(client_agency_id: 'ma')`. Right now you can only pass it `ma` or `nyc`.
+1. Note: You can switch to a different pilot partner (state) by going to the irb prompt and running `CbvFlow.last.update(client_agency_id: 'az_des')`. Right now you can only pass it `az_des`, `la_ldh`, or `sandbox`.
 
 ## Pa11y Scan
 
