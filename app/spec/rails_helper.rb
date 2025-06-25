@@ -9,8 +9,8 @@ require "view_component/test_helpers"
 require "support/context/gpg_setup"
 require "view_component/system_test_helpers"
 
-
 # Capybara configuration for E2E tests
+require "axe-rspec"
 require "capybara/rspec"
 if ENV["E2E_SHOW_BROWSER"]
   Capybara.default_driver = :selenium_chrome
