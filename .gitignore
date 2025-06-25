@@ -62,3 +62,6 @@ results.sarif
 .vscode
 /config/credentials/development.key
 /app/config/credentials/master.key
+
+# Translation files
+translation_update.csv
