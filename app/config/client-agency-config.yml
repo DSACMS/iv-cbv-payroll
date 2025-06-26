@@ -1,6 +1,5 @@
 - id: nyc
   agency_name: NYC Human Resources Administration
-  agency_short_name: HRA
   agency_contact_website: https://www.nyc.gov/site/hra/help/snap-application-frequently-asked-questions.page
   agency_domain: <%= ENV["NYC_DOMAIN_NAME"] %>
   caseworker_feedback_form: https://forms.office.com/r/B66WeqsBFE
@@ -29,7 +28,6 @@
 
 - id: ma
   agency_name: Department of Transitional Assistance
-  agency_short_name: DTA
   agency_contact_website: https://www.mass.gov/guides/how-to-contact-dta
   agency_domain: <%= ENV["MA_DTA_DOMAIN_NAME"] %>
   caseworker_feedback_form: https://forms.office.com/r/rfV04qjG9A
@@ -60,7 +58,6 @@
 
 - id: az_des
   agency_name: Department of Economic Security/Family Assistance Administration
-  agency_short_name: DES/FAA
   agency_contact_website: https://myfamilybenefits.azdes.gov/
   agency_domain: <%= ENV["AZ_DES_DOMAIN_NAME"] %>
   # No caseworker feedback form since they will only be interacting with the PDFs
@@ -94,7 +91,6 @@
 
 - id: la_ldh
   agency_name: Department of Health
-  agency_short_name: LDH
   agency_contact_website: https://ldh.la.gov/renew-medicaid
   agency_domain: <%= ENV["LA_LDH_DOMAIN_NAME"] %>
   # caseworker_feedback_form: n/a
@@ -128,7 +124,6 @@
 
 - id: sandbox
   agency_name: CBV Test Agency
-  agency_short_name: CBV
   agency_contact_website: https://www.example.com/contact
   agency_domain: <%= ENV["SANDBOX_DOMAIN_NAME"] %>
   caseworker_feedback_form: https://docs.google.com/forms/d/e/1FAIpQLSfrUiz0oWE5jbXjPfl-idQQGPgxKplqFtcKq08UOhTaEa2k6A/viewform
