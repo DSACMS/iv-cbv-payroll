@@ -1,9 +1,0 @@
-{
-    "event": "identities.added",
-    "name": "georgebyers",
-    "data": {
-        "account": "0195d371-659e-f035-c179-fc33b45d32a2",
-        "user": "0195d370-e353-43bb-51b7-b7b2dae5767e",
-        "identity": "7b16090c-39fc-3041-a397-5420d057ca0d"
-    }
-}
