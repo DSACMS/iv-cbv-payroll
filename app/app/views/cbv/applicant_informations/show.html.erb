@@ -2,7 +2,7 @@
 
 <h1><%= t(".your_information") %></h1>
 <div class="usa-prose">
-  <%= t(".explanation", agency_short_name: current_agency.agency_short_name) %>
+  <%= t(".explanation", agency_short_name: agency_translation("shared.agency_acronym")) %>
 </div>
 <%= uswds_form_with(model: @cbv_applicant, url: cbv_flow_applicant_information_path, method: "patch") do |f| %>
   <%= render partial: "cbv/applicant_informations/#{@cbv_flow.client_agency_id}", locals: { f: f } %>

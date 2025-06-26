@@ -3,7 +3,7 @@
 <h1><%= title %></h1>
 
 <div class="usa-prose">
-  <p><%= t(".subheader_html", agency_acronym: current_agency.agency_short_name) %></p>
+  <p><%= t(".subheader_html", agency_acronym: agency_translation("shared.agency_acronym")) %></p>
 </div>
 
 <ol class="usa-process-list">
@@ -13,11 +13,11 @@
   </li>
   <li class="usa-process-list__item">
     <h2 class="margin-bottom-1"><%= t(".step2") %></h2>
-    <p class="margin-top-0"><%= t(".step2_description", agency_acronym: current_agency.agency_short_name) %></p>
+    <p class="margin-top-0"><%= t(".step2_description", agency_acronym: agency_translation("shared.agency_acronym")) %></p>
   </li>
   <li class="usa-process-list__item">
     <h2 class="margin-bottom-1"><%= t(".step3") %></h2>
-    <p class="margin-top-0"><%= t(".step3_description", agency_acronym: current_agency.agency_short_name) %></p>
+    <p class="margin-top-0"><%= t(".step3_description", agency_acronym: agency_translation("shared.agency_acronym")) %></p>
   </li>
 </ol>
 
@@ -54,7 +54,7 @@
   </h4>
   <div id="what_if_i_cant_use_this_accordion" class="usa-accordion__content usa-prose">
     <p>
-      <%= t(".what_if_i_cant_use_this_body_1", agency_short_name: current_agency.agency_short_name) %>
+      <%= t(".what_if_i_cant_use_this_body_1", agency_short_name: agency_translation("shared.agency_acronym")) %>
       <%= agency_translation(".what_if_i_cant_use_this_body_2_html", agency_url: current_agency.agency_contact_website, agency_acronym: agency_translation("shared.agency_acronym")) %>
     </p>
   </div>
