@@ -4,9 +4,9 @@
 <div class="usa-prose">
   <p class="line-height-sans-5"><%= t(".not_listed_p1", agency_acronym: agency_translation("shared.agency_acronym")) %></p>
   <% if @has_payroll_account %>
-    <p class="line-height-sans-5"><%= t(".not_listed_p2_link_html", agency_url: agency_url, agency_short_name: agency_translation("shared.agency_acronym")) %></p>
+    <p class="line-height-sans-5"><%= t(".not_listed_p2_link_html", agency_url: agency_url, agency_acronym: agency_translation("shared.agency_acronym")) %></p>
   <% else %>
-    <p class="line-height-sans-5"><%= t(".not_listed_p2", agency_short_name: agency_translation("shared.agency_acronym")) %></p>
+    <p class="line-height-sans-5"><%= t(".not_listed_p2", agency_acronym: agency_translation("shared.agency_acronym")) %></p>
     <%= t(".exit_button_html",
       agency_contact_website: current_agency.agency_contact_website,
       agency_full_name: agency_translation("shared.agency_full_name")
