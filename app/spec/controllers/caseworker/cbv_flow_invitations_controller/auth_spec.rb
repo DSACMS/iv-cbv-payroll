@@ -1,20 +1,18 @@
 require "rails_helper"
 
 RSpec.describe Caseworker::CbvFlowInvitationsController, type: :controller do
-  let(:nyc_user) { create(:user, email: "test@test.com", client_agency_id: 'nyc') }
-  let(:ma_user) { create(:user, email: "test@test.com", client_agency_id: 'ma') }
-  let(:ma_params) { { client_agency_id: "ma" } }
+  let(:sandbox_user) { create(:user, email: "test@test.com", client_agency_id: 'sandbox') }
   let(:valid_params) do
-    attributes_for(:cbv_flow_invitation, :nyc).merge(
-      cbv_applicant_attributes: attributes_for(:cbv_applicant, :nyc)
+    attributes_for(:cbv_flow_invitation, :sandbox).merge(
+      cbv_applicant_attributes: attributes_for(:cbv_applicant, :sandbox)
     )
   end
 
   describe "#new" do
     context "without authentication" do
-      it "redirects to the sso login page" do
+      it "redirects to the login page" do
         get :new, params: valid_params
-        expect(response).to redirect_to(root_url)
+        expect(response).to redirect_to(new_user_session_path(client_agency_id: 'sandbox'))
       end
     end
 
@@ -28,43 +26,22 @@ RSpec.describe Caseworker::CbvFlowInvitationsController, type: :controller do
     end
 
     context "with authentication" do
-      context "when client_agency_id is nyc" do
+      context "when client_agency_id is sandbox" do
         before do
-          stub_client_agency_config_value("nyc", "staff_portal_enabled", true)
-          sign_in nyc_user
+          stub_client_agency_config_value("sandbox", "staff_portal_enabled", true)
+          sign_in sandbox_user
         end
 
         render_views
 
-        it "renders the nyc fields" do
+        it "renders the sandbox fields" do
           get :new, params: valid_params
           expect(response).to be_successful
         end
 
-        it "does not permit access to the ma page" do
-          get :new, params: ma_params
+        it "does not permit access to other agency pages" do
+          get :new, params: { client_agency_id: "az_des" }
 
-          expect(response).to redirect_to(root_url)
-        end
-      end
-
-      context "when client_agency_id is ma" do
-        let(:client_agency_id) { "ma" }
-
-        before do
-          stub_client_agency_config_value("ma", "staff_portal_enabled", true)
-          sign_in ma_user
-        end
-
-        render_views
-
-        it "renders the ma fields" do
-          get :new, params: ma_params
-          expect(response).to be_successful
-        end
-
-        it "does not permit access to the nyc page" do
-          get :new, params: { client_agency_id: "nyc" }
           expect(response).to redirect_to(root_url)
         end
       end
@@ -72,27 +49,27 @@ RSpec.describe Caseworker::CbvFlowInvitationsController, type: :controller do
   end
 
   describe "#create" do
-    let(:client_agency_id) { "nyc" }
+    let(:client_agency_id) { "sandbox" }
 
     context "without authentication" do
-      it "redirects to the homepage without creating any invitation" do
+      it "redirects to the login page without creating any invitation" do
         expect_any_instance_of(CbvInvitationService).not_to receive(:invite)
 
         post :create, params: valid_params
 
-        expect(response).to redirect_to(root_url)
+        expect(response).to redirect_to(new_user_session_path(client_agency_id: 'sandbox'))
       end
     end
 
     context "with authentication" do
       before do
-        stub_client_agency_config_value("nyc", "staff_portal_enabled", true)
-        sign_in nyc_user
+        stub_client_agency_config_value("sandbox", "staff_portal_enabled", true)
+        sign_in sandbox_user
       end
 
       it "sends an invitation" do
         post :create, params: {
-            client_agency_id: 'nyc',
+            client_agency_id: 'sandbox',
           cbv_flow_invitation: valid_params
         }
 

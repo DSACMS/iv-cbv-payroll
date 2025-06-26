@@ -3,7 +3,7 @@ require "rails_helper"
 RSpec.describe DataRetentionService do
   describe "#redact_invitations" do
     let!(:cbv_flow_invitation) do
-      create(:cbv_flow_invitation, :nyc)
+      create(:cbv_flow_invitation, :sandbox)
     end
     let(:service) { DataRetentionService.new }
     let(:now) { Time.now }
