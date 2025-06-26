@@ -1,0 +1,78 @@
+{
+    "next": null,
+    "previous": null,
+    "results": [
+        {
+            "id": "01956d62-18a0-090f-bc09-2ac44b7edf99",
+            "user": "01956d61-d33a-6789-290e-621bed0a098f",
+            "employers": [
+                "Conagra Brands"
+            ],
+            "item": "item_000009878",
+            "source": "argyle_sandbox",
+            "created_at": "2025-03-06T21:35:00.312659Z",
+            "updated_at": "2025-03-06T21:35:56.915098Z",
+            "scanned_at": "2025-03-06T21:35:56.540748Z",
+            "connection": {
+                "status": "connected",
+                "error_code": null,
+                "error_message": null,
+                "updated_at": "2025-03-06T21:35:10.943066Z"
+            },
+            "direct_deposit_switch": {
+                "status": "idle",
+                "error_code": null,
+                "error_message": null,
+                "updated_at": "2025-03-06T21:35:00.790132Z"
+            },
+            "availability": {
+                "gigs": {
+                    "status": "synced",
+                    "updated_at": "2025-03-06T21:35:54.894913Z",
+                    "available_count": 0,
+                    "available_from": null,
+                    "available_to": null
+                },
+                "shifts": {
+                    "status": "synced",
+                    "updated_at": "2025-03-06T21:35:56.427010Z",
+                    "available_count": 226,
+                    "available_from": "2022-06-06T21:35:10Z",
+                    "available_to": "2025-02-28T00:00:00Z"
+                },
+                "paystubs": {
+                    "status": "synced",
+                    "updated_at": "2025-03-06T21:35:56.450910Z",
+                    "available_count": 33,
+                    "available_from": "2022-07-01T21:35:10Z",
+                    "available_to": "2025-03-03T00:00:00Z"
+                },
+                "payroll_documents": {
+                    "status": "synced",
+                    "updated_at": "2025-03-06T21:35:13.915462Z"
+                },
+                "identities": {
+                    "status": "synced",
+                    "updated_at": "2025-03-06T21:35:16.819311Z"
+                },
+                "ratings": {
+                    "status": "synced",
+                    "updated_at": "2025-03-06T21:35:13.925812Z"
+                },
+                "vehicles": {
+                    "status": "synced",
+                    "updated_at": "2025-03-06T21:35:13.929850Z"
+                },
+                "deposit_destinations": {
+                    "status": "synced",
+                    "updated_at": "2025-03-06T21:35:12.299340Z"
+                },
+                "user_forms": null,
+                "user_uploads": null
+            },
+            "ongoing_refresh": {
+                "status": "enabled"
+            }
+        }
+    ]
+}

@@ -1,0 +1,29 @@
+{
+  "data": {
+    "id": "a3e3a4ff-ff5f-4b7c-b347-3e497a729aac",
+    "created_at": "2024-07-08T15:02:34.231974+00:00",
+    "updated_at": "2024-07-08T15:02:34.231974+00:00",
+    "account_id": "03e29160-f7e7-4a28-b2d8-813640e030d3",
+    "status": null,
+    "start_date": "2010-01-01",
+    "termination_date": null,
+    "employer_name": "Acme Corporation",
+    "employer_address": {
+      "raw": "20429 Pinwheel Drive, New York City, NY 99999",
+      "line1": "20429 Pinwheel Drive",
+      "line2": null,
+      "city": "New York City",
+      "state": "NY",
+      "postal_code": "99999",
+      "country": "US"
+    },
+    "employer_phone_number": {
+      "value": "+16126597057",
+      "type": "work"
+    },
+    "title": null
+  },
+  "meta": {
+    "refreshed_at": "2024-07-08T15:02:34.305823+00:00"
+  }
+}

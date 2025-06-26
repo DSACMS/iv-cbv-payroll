@@ -1,0 +1,87 @@
+{
+  "data": [
+    {
+      "account_id": "03e29160-f7e7-4a28-b2d8-813640e030d3",
+      "check_amount": 328609,
+      "created_at": "2021-01-10T19:54:45.745660+00:00",
+      "currency": "USD",
+      "deductions": [],
+      "document": {
+        "download_url": "https://s3.us-east-1.amazonaws.com/paystub_document",
+        "download_url_expiration": "2022-04-04T18:13:55.123450+00:00",
+        "id": "aea8cc55-93fa-452d-8eac-b83c80b19a41"
+      },
+      "earnings": [
+        {
+          "name": "Ride Earnings",
+          "category": "fare",
+          "amount": 64095,
+          "rate": null,
+          "hours": null
+        },
+        {
+          "name": "Tips",
+          "category": "tips",
+          "amount": 1797,
+          "rate": null,
+          "hours": null
+        },
+        {
+          "name": "Bonuses",
+          "category": "bonus",
+          "amount": 2525,
+          "rate": null,
+          "hours": null
+        },
+        {
+          "name": "Tolls",
+          "category": "other",
+          "amount": 1388,
+          "rate": null,
+          "hours": null
+        },
+        {
+          "name": "TLC Rate Adjustments",
+          "category": "other",
+          "amount": 86,
+          "rate": null,
+          "hours": null
+        }
+      ],
+      "employer_name": "Acme Corp",
+      "status": "employed",
+      "gross_pay_amount": 69891,
+      "gross_pay_ytd": null,
+      "id": "497f6eca-6276-4993-bfeb-53cbbbba6f08",
+      "net_pay_amount": 69891,
+      "net_pay_ytd": null,
+      "pay_period_end": "2020-12-24",
+      "pay_period_start": "2020-12-10",
+      "taxes": [],
+      "time_off": [
+        {
+          "available_hours": 41.5,
+          "category": "pto",
+          "earned_hours": 0,
+          "name": "Vacation",
+          "used_hours": 38.5
+        },
+        {
+          "available_hours": 41.5,
+          "category": "sick",
+          "earned_hours": 0,
+          "name": "Sick Leave",
+          "used_hours": 38.5
+        }
+      ],
+      "total_deductions": 64704,
+      "total_reimbursements": 7000,
+      "total_taxes": 94407
+    }
+  ],
+  "meta": {
+    "count": 1,
+    "next_cursor": "eyJlbXBsb3llciI6ICJVbml0ZWQgUGFyY2VsIFNlcnZpY2UifQ==",
+    "refreshed_at": "2021-01-10T19:54:45.745660+00:00"
+  }
+}

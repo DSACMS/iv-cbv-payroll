@@ -1,0 +1,68 @@
+{
+  "results": [
+    {
+      "id": "item_000042724",
+      "name": "Walgreens",
+      "logo_url": "https://res.cloudinary.com/argyle-media/image/upload/v1593079462/partner-logos/walgreens.png",
+      "kind": "employer",
+      "mapping_status": "verified",
+      "status": "healthy"
+    },
+    {
+      "id": "item_000001689",
+      "name": "AllianceRx Walgreens Prime",
+      "logo_url": "https://res.cloudinary.com/argyle-media/image/upload/partner-logos/alliancerx_walgreens_prime.png",
+      "kind": "employer",
+      "mapping_status": "verified",
+      "status": "healthy"
+    },
+    {
+      "id": "item_000017502",
+      "name": "Greens Group",
+      "logo_url": "https://res.cloudinary.com/argyle-media/image/upload/partner-logos/greens_group.png",
+      "kind": "employer",
+      "mapping_status": "verified",
+      "status": "healthy"
+    },
+    {
+      "id": "item_000134768",
+      "name": "Mr Greens",
+      "logo_url": "http://res.cloudinary.com/argyle-media/image/upload/v1688763696/partner-logos/Mr%20Greens.png",
+      "kind": "employer",
+      "mapping_status": "verified",
+      "status": "healthy"
+    },
+    {
+      "id": "item_000212718",
+      "name": "Evergreens",
+      "logo_url": "https://res.cloudinary.com/argyle-media/image/upload/v1688558020/partner-logos/letter_e.png",
+      "kind": "employer",
+      "mapping_status": "verified",
+      "status": "healthy"
+    },
+    {
+      "id": "item_000075995",
+      "name": "Walgreey",
+      "logo_url": "https://res.cloudinary.com/argyle-media/image/upload/v1688558020/partner-logos/letter_w.png",
+      "kind": "employer",
+      "mapping_status": "unmapped",
+      "status": "healthy"
+    },
+    {
+      "id": "item_000075996",
+      "name": "Walgrems",
+      "logo_url": "https://res.cloudinary.com/argyle-media/image/upload/v1688558020/partner-logos/letter_w.png",
+      "kind": "employer",
+      "mapping_status": "unmapped",
+      "status": "healthy"
+    },
+    {
+      "id": "item_000108798",
+      "name": "Walg",
+      "logo_url": "https://res.cloudinary.com/argyle-media/image/upload/v1688558020/partner-logos/letter_w.png",
+      "kind": "employer",
+      "mapping_status": "unmapped",
+      "status": "healthy"
+    }
+  ]
+}

@@ -10,15 +10,29 @@ RSpec.describe PagesController do
       expect(response.body).to include("Welcome")
     end
 
-    context "when on an agency subdomain" do
+    context "when on an agency subdomain with an active pilot" do
       before do
         stub_client_agency_config_value("la_ldh", "agency_domain", "la.reportmyincome.org")
+        stub_client_agency_config_value("la_ldh", "pilot_ended", false)
       end
 
       it "redirects to the client agency entries page when the hostname matches a client agency domain" do
         request.host = "la.reportmyincome.org"
         get :home
         expect(response).to redirect_to(cbv_flow_new_path(client_agency_id: "la_ldh"))
+      end
+    end
+
+    context "when on an agency subdomain with an ended pilot" do
+      before do
+        stub_client_agency_config_value("la_ldh", "agency_domain", "la.reportmyincome.org")
+        stub_client_agency_config_value("la_ldh", "pilot_ended", true)
+      end
+
+      it "renders the pilot end page" do
+        request.host = "la.reportmyincome.org"
+        get :home
+        expect(response).to render_template("pages/_la_ldh_pilot_end")
       end
     end
   end
