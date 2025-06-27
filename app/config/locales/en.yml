@@ -7,7 +7,7 @@ en:
           attributes:
             date_of_birth:
               future_date: Date of birth must be today or in the past
-              invalid_date: Enter a valid date of birth TIMOTEST
+              invalid_date: Enter a valid date of birth
             first_name:
               blank: Enter the client's first name.
             last_name:
@@ -207,6 +207,7 @@ en:
           sandbox: Learn more on <a href="https://www.mass.gov/guides/how-to-contact-dta" target="_blank" rel="noopener noreferrer">CBV Test Agency's website</a>.
         no_radio: No, I don’t have another job that meets the criteria
         subheader: Please add other jobs you’ve had in the past 90 days, even if you're no longer at that job.
+        timotest: TIMOTEST
         yes_radio: Yes, I have another job that meets the criteria
     applicant_informations:
       la_ldh:
