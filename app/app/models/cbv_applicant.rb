@@ -10,18 +10,18 @@ class CbvApplicant < ApplicationRecord
   # partner agency.
   #
   # The subclass is automatically instantiated by setting `client_agency_id`.
-  # For example, `client_agency_id = "ma"` will result in instantiating an
-  # instance of the CbvApplicant::Ma subclass, which contains all of its
+  # For example, `client_agency_id = "sandbox"` will result in instantiating an
+  # instance of the CbvApplicant::Sandbox subclass, which contains all of its
   # indexing data validations.
   self.inheritance_column = "client_agency_id"
 
   def self.sti_name
-    # "CbvApplicant::Ma" => "ma"
+    # "CbvApplicant::Sandbox" => "sandbox"
     name.demodulize.downcase
   end
 
   def self.sti_class_for(type_name)
-    # "az_des" => CbvApplicant::AzDes
+    # "sandbox" => CbvApplicant::Sandbox
     CbvApplicant.const_get(type_name.camelize)
   end
 

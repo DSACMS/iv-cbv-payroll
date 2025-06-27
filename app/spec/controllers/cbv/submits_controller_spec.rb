@@ -8,8 +8,7 @@ RSpec.describe Cbv::SubmitsController do
 
   let(:current_time) { Date.parse('2024-06-18') }
   let(:mock_client_agency) { instance_double(ClientAgencyConfig::ClientAgency) }
-  let(:nyc_user) { create(:user, email: "test@test.com", client_agency_id: 'nyc') }
-  let(:ma_user) { create(:user, email: "test@example.com", client_agency_id: 'ma') }
+  let(:sandbox_user) { create(:user, email: "test@test.com", client_agency_id: 'sandbox') }
 
   before do
     allow(mock_client_agency).to receive(:transmission_method_configuration).and_return({
@@ -406,7 +405,7 @@ RSpec.describe Cbv::SubmitsController do
       cbv_flow.payroll_accounts.first.update(pinwheel_account_id: "03e29160-f7e7-4a28-b2d8-813640e030d3")
 
       session[:cbv_flow_id] = cbv_flow.id
-      sign_in nyc_user
+      sign_in sandbox_user
       pinwheel_stub_request_end_user_accounts_response
       pinwheel_stub_request_end_user_paystubs_response
       pinwheel_stub_request_employment_info_response

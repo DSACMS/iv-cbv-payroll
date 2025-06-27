@@ -7,16 +7,10 @@ FactoryBot.define do
 
     cbv_applicant
 
-    trait :nyc do
-      client_agency_id { "nyc" }
+    trait :sandbox do
+      client_agency_id { "sandbox" }
 
-      cbv_applicant { create(:cbv_applicant, :nyc) }
-    end
-
-    trait :ma do
-      client_agency_id { "ma" }
-
-      cbv_applicant { create(:cbv_applicant, :ma) }
+      cbv_applicant { create(:cbv_applicant, :sandbox) }
     end
 
     trait :az_des do

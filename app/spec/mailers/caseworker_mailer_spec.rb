@@ -9,7 +9,7 @@ RSpec.describe CaseworkerMailer, type: :mailer do
     :invited,
     :with_pinwheel_account,
     confirmation_code: "00001",
-    client_agency_id: "nyc",
+    client_agency_id: "sandbox",
     consented_to_authorized_use_at: Time.now,
     cbv_applicant_attributes: {
       case_number: "ABC1234"
