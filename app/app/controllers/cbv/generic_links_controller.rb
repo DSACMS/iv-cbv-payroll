@@ -21,7 +21,7 @@ class Cbv::GenericLinksController < Cbv::BaseController
   def check_if_pilot_ended_for_agency
     agency = agency_config[params[:client_agency_id]]
     if agency&.pilot_ended
-      redirect_to root_path
+      redirect_to root_url
     end
   end
 end
