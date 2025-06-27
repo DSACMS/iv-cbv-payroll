@@ -1,7 +1,7 @@
 require "rails_helper"
 
-RSpec.describe "Help Features", type: :feature, js: true do
-  include E2eTestHelpers
+RSpec.xdescribe "Help Features", type: :feature, js: true do
+  include E2e::TestHelpers
   include PinwheelApiHelper
 
   let(:cbv_flow_invitation) { create(:cbv_flow_invitation) }

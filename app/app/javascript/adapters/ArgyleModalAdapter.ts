@@ -3,8 +3,6 @@ import { getDocumentLocale } from "@js/utilities/getDocumentLocale.js"
 import { ModalAdapter } from "./ModalAdapter.js"
 
 export default class ArgyleModalAdapter extends ModalAdapter {
-  Argyle: Argyle
-
   async open() {
     const locale = getDocumentLocale()
 
@@ -19,28 +17,30 @@ export default class ArgyleModalAdapter extends ModalAdapter {
       })
 
       const { user, isSandbox, flowId } = await fetchArgyleToken(this.requestData.id)
-      return Argyle.create({
-        userToken: user.user_token,
-        flowId: flowId,
-        items: [this.requestData.id],
-        onAccountConnected: this.onSuccess.bind(this),
-        onTokenExpired: this.onTokenExpired.bind(this),
-        onAccountCreated: async (payload) => {
-          await trackUserAction("ApplicantCreatedArgyleAccount", payload)
-        },
-        onAccountError: async (payload) => {
-          await trackUserAction("ApplicantEncounteredArgyleAccountError", payload)
-        },
-        onAccountRemoved: async (payload) => {
-          await trackUserAction("ApplicantRemovedArgyleAccount", payload)
-        },
-        onUIEvent: async (payload) => {
-          await this.onUIEvent(payload)
-        },
-        onClose: this.onClose.bind(this),
-        onError: this.onError.bind(this),
-        sandbox: isSandbox,
-      }).open()
+      return (this.modalSdk as Argyle)
+        .create({
+          userToken: user.user_token,
+          flowId: flowId,
+          items: [this.requestData.id],
+          onAccountConnected: this.onSuccess.bind(this),
+          onTokenExpired: this.onTokenExpired.bind(this),
+          onAccountCreated: async (payload) => {
+            await trackUserAction("ApplicantCreatedArgyleAccount", payload)
+          },
+          onAccountError: async (payload) => {
+            await trackUserAction("ApplicantEncounteredArgyleAccountError", payload)
+          },
+          onAccountRemoved: async (payload) => {
+            await trackUserAction("ApplicantRemovedArgyleAccount", payload)
+          },
+          onUIEvent: async (payload) => {
+            await this.onUIEvent(payload)
+          },
+          onClose: this.onClose.bind(this),
+          onError: this.onError.bind(this),
+          sandbox: isSandbox,
+        })
+        .open()
     } else {
       // TODO this should throw an error, which should be caught by a document.onerror handler to show the user a crash message.
       await trackUserAction("ApplicantEncounteredModalAdapterError", {

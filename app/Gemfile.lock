@@ -287,7 +287,7 @@ GEM
       net-protocol
     net-ssh (7.3.0)
     newrelic_rpm (9.12.0)
-    nio4r (2.7.3)
+    nio4r (2.7.4)
     nokogiri (1.18.8-aarch64-linux-gnu)
       racc (~> 1.4)
     nokogiri (1.18.8-arm64-darwin)
@@ -342,7 +342,7 @@ GEM
       date
       stringio
     public_suffix (6.0.1)
-    puma (6.4.3)
+    puma (6.6.0)
       nio4r (~> 2.0)
     raabro (1.4.0)
     racc (1.8.1)
@@ -508,6 +508,8 @@ GEM
       concurrent-ruby (~> 1.0)
     unicode-display_width (2.6.0)
     uri (1.0.3)
+    vcr (6.3.1)
+      base64
     version_gem (1.1.4)
     view_component (3.22.0)
       activesupport (>= 5.2.0, < 8.1)
@@ -584,7 +586,7 @@ DEPENDENCIES
   pg (~> 1.1)
   pg-aws_rds_iam (~> 0.5.0)
   premailer-rails
-  puma (~> 6.4.3)
+  puma (~> 6.6.0)
   rack-mini-profiler
   rails (~> 7.1.5, >= 7.1.5.1)
   rails-controller-testing
@@ -603,6 +605,7 @@ DEPENDENCIES
   timecop
   turbo-rails
   tzinfo-data
+  vcr
   view_component
   web-console
   webmock

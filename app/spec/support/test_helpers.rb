@@ -102,4 +102,12 @@ module TestHelpers
     client_agency_config = Rails.application.config.client_agencies[client_agency_id]
     allow(client_agency_config).to receive(key.to_sym).and_return(value)
   end
+
+  def override_supported_providers(new_value)
+    old_value = Rails.application.config.supported_providers
+    Rails.application.config.supported_providers = new_value
+    yield
+  ensure
+    Rails.application.config.supported_providers = old_value
+  end
 end

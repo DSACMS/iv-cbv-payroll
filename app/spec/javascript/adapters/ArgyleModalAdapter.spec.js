@@ -39,7 +39,7 @@ describe("ArgyleModalAdapter", () => {
     vi.useFakeTimers()
     mockArgyle()
     await loadArgyleResource()
-    adapter = new ArgyleModalAdapter()
+    adapter = new ArgyleModalAdapter(Argyle)
     adapter.init(modalAdapterArgs)
     triggers = await adapter.open()
   })

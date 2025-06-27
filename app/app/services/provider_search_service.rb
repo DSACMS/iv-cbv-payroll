@@ -1,6 +1,4 @@
 class ProviderSearchService
-  SUPPORTED_PROVIDERS = (ENV["SUPPORTED_PROVIDERS"] || "pinwheel")&.split(",")&.map(&:to_sym)
-
   # We are blocking these employers because they constitute unearned
   # income, which our current state partner (LA) does not want us to report.
   # They're also returning data in a format that we don't expect, and since our
@@ -19,7 +17,7 @@ class ProviderSearchService
   # 3f7b6ce9-6371-4bb8-8c2f-051c446dc55c - Veterans Affairs benefits
   BLOCKED_PINWHEEL_EMPLOYERS = %w[0bab321e-64ea-4047-8d8a-44ba283f6cd8 3f7b6ce9-6371-4bb8-8c2f-051c446dc55c]
 
-  def initialize(client_agency_id, providers: SUPPORTED_PROVIDERS)
+  def initialize(client_agency_id, providers: Rails.application.config.supported_providers)
     @client_agency_config = site_config[client_agency_id]
     @providers = providers
   end

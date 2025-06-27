@@ -4,8 +4,6 @@ import { getDocumentLocale } from "@js/utilities/getDocumentLocale.js"
 import { ModalAdapter } from "./ModalAdapter.js"
 
 export default class PinwheelModalAdapter extends ModalAdapter {
-  Pinwheel: Pinwheel
-
   async open() {
     const locale = getDocumentLocale()
 
@@ -25,7 +23,7 @@ export default class PinwheelModalAdapter extends ModalAdapter {
         locale
       )
 
-      return Pinwheel.open({
+      return (this.modalSdk as Pinwheel).open({
         linkToken: token,
         onSuccess: this.onSuccess.bind(this),
         onExit: this.onExit.bind(this),

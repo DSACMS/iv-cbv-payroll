@@ -4,8 +4,13 @@ export abstract class ModalAdapter {
   requestData?: RequestData
   successCallback?: Function
   exitCallback?: Function
+  modalSdk: Argyle | Pinwheel
 
   abstract open(): void
+
+  constructor(modalSdk: Argyle | Pinwheel) {
+    this.modalSdk = modalSdk
+  }
 
   init(args: ModalAdapterArgs) {
     if (args.onSuccess) {

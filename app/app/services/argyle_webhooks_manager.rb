@@ -12,7 +12,7 @@
 # The webhooks will be registered based on the Argyle environment specified in the
 # "az_des" configuration in client-agency-config.yml.
 class ArgyleWebhooksManager
-  def initialize(agency_id: "sandbox", logger: STDOUT)
+  def initialize(agency_id: "sandbox", logger: Rails.logger)
     @agency_config = Rails.application.config.client_agencies[agency_id]
     @argyle = Aggregators::Sdk::ArgyleService.new(@agency_config.argyle_environment)
     @logger = logger
@@ -24,7 +24,7 @@ class ArgyleWebhooksManager
 
   def remove_subscriptions(subscriptions)
     subscriptions.each do |subscription|
-      @logger.puts "  Removing existing Argyle webhook subscription (url = #{subscription["url"]})"
+      @logger.info "  Removing existing Argyle webhook subscription (url = #{subscription["url"]})"
       @argyle.delete_webhook_subscription(subscription["id"])
     end
   end
@@ -36,10 +36,12 @@ class ArgyleWebhooksManager
 
     # Note: These partial webhooks currently must be kept in-sync with every
     # value of `pay_income_days` in client_agency_config.yml.
-    create_subscription(receiver_url, name, :non_partial)
-    create_subscription(receiver_url, "#{name}-partial", :partial, { days_synced: 90 })
-    create_subscription(receiver_url, "#{name}-partial-six-months", :partial, { days_synced: 182 })
-    create_subscription(receiver_url, "#{name}-include-resource", :include_resource)
+    [
+      create_subscription(receiver_url, name, :non_partial),
+      create_subscription(receiver_url, "#{name}-partial", :partial, { days_synced: 90 }),
+      create_subscription(receiver_url, "#{name}-partial-six-months", :partial, { days_synced: 182 }),
+      create_subscription(receiver_url, "#{name}-include-resource", :include_resource)
+    ]
   end
 
   private
@@ -56,14 +58,14 @@ class ArgyleWebhooksManager
     end
 
     if existing_subscription
-      @logger.puts "  Existing Argyle webhook subscription found in Argyle #{@agency_config.argyle_environment}: #{existing_subscription["url"]}"
+      @logger.info "  Existing Argyle webhook subscription found in Argyle #{@agency_config.argyle_environment}: #{existing_subscription["url"]}"
       remove_subscriptions(subscriptions.excluding(existing_subscription))
 
       existing_subscription["id"]
     else
       remove_subscriptions(subscriptions)
 
-      @logger.puts "  Registering Argyle webhooks for Ngrok tunnel in Argyle #{@agency_config.argyle_environment}..."
+      @logger.info "  Registering Argyle webhooks for Ngrok tunnel in Argyle #{@agency_config.argyle_environment}..."
       response = @argyle.create_webhook_subscription(
         Aggregators::Webhooks::Argyle.get_webhook_events(type: webhooks_type),
         receiver_url,
@@ -71,8 +73,8 @@ class ArgyleWebhooksManager
         webhook_subscription_config(webhooks_type, webhooks_config)
       )
       new_webhook_subscription_id = response["id"]
-      @logger.puts "  ✅ Set up Argyle webhook: #{new_webhook_subscription_id}"
-      @logger.puts " Argyle webhook url: #{receiver_url}"
+      @logger.info "  ✅ Set up Argyle webhook: #{new_webhook_subscription_id}"
+      @logger.info " Argyle webhook url: #{receiver_url}"
 
       new_webhook_subscription_id
     end
