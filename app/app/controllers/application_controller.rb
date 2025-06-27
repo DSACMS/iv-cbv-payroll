@@ -1,11 +1,12 @@
 class ApplicationController < ActionController::Base
   helper :view
-  helper_method :current_agency, :show_translate_button?, :show_menu?
+  helper_method :current_agency, :show_translate_button?, :show_menu?, :pilot_ended?
   around_action :switch_locale
   before_action :add_newrelic_metadata
   before_action :redirect_if_maintenance_mode
   before_action :enable_mini_profiler_in_demo
   before_action :check_help_param
+  before_action :check_if_pilot_ended
 
   rescue_from ActionController::InvalidAuthenticityToken do
     redirect_to root_url, flash: { slim_alert: { type: "info", message_html:  t("cbv.error_missing_token_html") } }
@@ -39,6 +40,11 @@ class ApplicationController < ActionController::Base
     # show the menu if we're in the cbv flow
     return true if controller_path.start_with?("cbv/")
     user_signed_in? && !home_page?
+  end
+
+  def check_if_pilot_ended
+    @pilot_ended = current_agency&.pilot_ended
+    redirect_to root_path if @pilot_ended && !home_page?
   end
 
   def home_page?
@@ -80,6 +86,10 @@ class ApplicationController < ActionController::Base
       agency = agency_config[agency_id]
       agency.agency_domain == request.host
     end
+  end
+
+  def pilot_ended?
+    @pilot_ended.nil? ? current_agency&.pilot_ended : @pilot_ended
   end
 
   protected

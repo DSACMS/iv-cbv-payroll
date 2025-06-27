@@ -26,6 +26,9 @@ class PagesController < ApplicationController
   private
 
   def redirect_to_client_agency_entries
+    # Don't redirect to CBV flow if the pilot has ended - let the home page render the pilot end message
+    return if pilot_ended?
+
     client_agency_id = detect_client_agency_from_domain
     if client_agency_id.present?
       redirect_to cbv_flow_new_path(client_agency_id: client_agency_id)

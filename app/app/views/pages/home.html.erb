@@ -1,9 +1,13 @@
-<% welcome = t(".header") %>
-<% content_for :title, welcome %>
-<h1><%= welcome %></h1>
+<% if pilot_ended? %>
+  <%= render "#{current_agency&.id}_pilot_end" %>
+<% else %>
+  <% welcome = t(".header") %>
+  <% content_for :title, welcome %>
+  <h1><%= welcome %></h1>
 
-<div class="usa-prose">
-  <p><%= t(".description_1") %></p>
-  <p><%= t(".description_2") %></p>
-  <p><%= t(".description_3") %></p>
-</div>
+  <div class="usa-prose">
+    <p><%= t(".description_1") %></p>
+    <p><%= t(".description_2") %></p>
+    <p><%= t(".description_3") %></p>
+  </div>
+<% end %>

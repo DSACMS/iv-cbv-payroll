@@ -15,6 +15,7 @@
     url: <%= ENV['AZ_DES_SFTP_URL'] %>
     sftp_directory: <%= ENV['AZ_DES_SFTP_DIRECTORY'] %>
   staff_portal_enabled: false
+  pilot_ended: false
   sso:
     client_id:     <%= ENV["AZURE_SANDBOX_CLIENT_ID"] %>
     client_secret: <%= ENV["AZURE_SANDBOX_CLIENT_SECRET"] %>
@@ -45,6 +46,7 @@
   transmission_method_configuration:
     email: <%= ENV['LA_LDH_EMAIL'] %>
   staff_portal_enabled: false
+  pilot_ended: true
   # sso:
   #   client_id:     <%= ENV["AZURE_LA_LDH_CLIENT_ID"] %>
   #   client_secret: <%= ENV["AZURE_LA_LDH_CLIENT_SECRET"] %>
@@ -77,6 +79,7 @@
   transmission_method_configuration:
     email: <%= ENV['SLACK_TEST_EMAIL'] %>
   staff_portal_enabled: true
+  pilot_ended: false
   sso:
     client_id:     <%= ENV["AZURE_SANDBOX_CLIENT_ID"] %>
     client_secret: <%= ENV["AZURE_SANDBOX_CLIENT_SECRET"] %>
