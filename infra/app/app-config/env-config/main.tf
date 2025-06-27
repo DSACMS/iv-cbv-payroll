@@ -7,6 +7,4 @@ locals {
   prefix = terraform.workspace == "default" ? "" : "${terraform.workspace}-"
 
   bucket_name = "${local.prefix}${var.project_name}-${var.app_name}-${var.environment}"
-
-  massachusetts_moveit_bucket_name = "${local.prefix}${var.project_name}-${var.app_name}-ma-moveit-${var.environment}"
 }

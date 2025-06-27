@@ -201,7 +201,6 @@ module "service" {
     {
       FEATURE_FLAGS_PROJECT = module.feature_flags.evidently_project_name
       BUCKET_NAME           = local.storage_config.bucket_name
-      MA_MOVEIT_BUCKET_NAME = local.storage_config.massachusetts_moveit_bucket_name
     },
     local.identity_provider_environment_variables,
     local.service_config.extra_environment_variables
@@ -222,7 +221,6 @@ module "service" {
     {
       feature_flags_access = module.feature_flags.access_policy_arn,
       storage_access       = module.storage.access_policy_arn,
-      ma_moveit_access     = module.storage_ma_moveit.access_policy_arn,
       email_access         = aws_iam_policy.email_access_policy.arn,
     },
     module.app_config.enable_identity_provider ? {
