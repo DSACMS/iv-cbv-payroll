@@ -44,7 +44,6 @@ class ApplicationController < ActionController::Base
 
   def check_if_pilot_ended
     @pilot_ended = current_agency&.pilot_ended
-    # Don't redirect if we're already on the home page - let it render the pilot end partial
     redirect_to root_path if @pilot_ended && !home_page?
   end
 
@@ -90,7 +89,7 @@ class ApplicationController < ActionController::Base
   end
 
   def pilot_ended?
-    current_agency&.pilot_ended
+    @pilot_ended.nil? ? current_agency&.pilot_ended : @pilot_ended
   end
 
   protected
