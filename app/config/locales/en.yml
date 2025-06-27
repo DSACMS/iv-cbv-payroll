@@ -8,6 +8,7 @@ en:
             date_of_birth:
               future_date: Date of birth must be today or in the past
               invalid_date: Enter a valid date of birth
+              timotest: TIMOTEST
             first_name:
               blank: Enter the client's first name.
             last_name:
