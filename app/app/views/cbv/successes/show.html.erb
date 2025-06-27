@@ -1,4 +1,4 @@
-<% title = t(".header", agency_acronym: current_agency.agency_short_name) %>
+<% title = t(".header", agency_acronym: agency_translation("shared.agency_acronym")) %>
 <% content_for :title, title %>
 <div class="grid-col tablet:grid-col-10">
   <h1><%= title %></h1>
@@ -23,8 +23,8 @@
     <li>
       <strong><%= t(".whats_next_1_title") %></strong>
       <ul style="list-style-type: disc;">
-        <li><%= t(".whats_next_1_li_1", agency_acronym: current_agency.agency_short_name) %></li>
-        <li><%= t(".whats_next_1_li_2_html", agency_acronym: current_agency.agency_short_name, agency_website: current_agency.agency_contact_website) %></li>
+        <li><%= t(".whats_next_1_li_1", agency_acronym: agency_translation("shared.agency_acronym")) %></li>
+        <li><%= t(".whats_next_1_li_2_html", agency_acronym: agency_translation("shared.agency_acronym"), agency_website: current_agency.agency_contact_website) %></li>
       </ul>
     </li>
   </ul>

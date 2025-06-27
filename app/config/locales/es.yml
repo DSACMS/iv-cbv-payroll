@@ -139,7 +139,7 @@ es:
             super_one_html: Segundo nombre<sup>1</sup>
       show:
         continue: Continuar
-        explanation: Esta información se utilizará para conectar su información de ingresos con sus beneficios de %{agency_short_name}. Por favor, asegúrese de que la información que ingrese sea la misma que se muestra en su solicitud.
+        explanation: Esta información se utilizará para conectar su información de ingresos con sus beneficios de %{agency_acronym}. Por favor, asegúrese de que la información que ingrese sea la misma que se muestra en su solicitud.
         your_information: Su información
       update:
         error_header:
@@ -151,7 +151,7 @@ es:
         app_based_providers: Empleadores basados
         can_not_find_employer: No puedo encontrar a mi empleador o proveedor de nómina
         employer_not_listed: "¿Su empleador no está en la lista?"
-        exit_button_text: Salir y acceder al sitio web de %{agency_short_name}
+        exit_button_text: Salir y acceder al sitio web de %{agency_acronym}
         header: Busque su empleador o proveedor de nómina
         no_results_steps1: Verifique si su empleador usa otro nombre empresarial o busque a su proveedor de nómina.
         no_results_steps2: Asegúrese de haber escrito correctamente los nombres, y busque de nuevo.
@@ -168,7 +168,7 @@ es:
         select_button_aria_label: Abra una ventana de autenticación para que el empleador o proveedor de nómina importe su historial de pago.
         to_continue: 'Si aún no ve enumerado a su empleador ni a su proveedor de nómina:'
         to_continue_li_1: Deberá enviar esa información de ingresos por separado.
-        to_continue_li_1_html: <a href="%{agency_contact_website}" target="_blank" rel="noopener noreferrer">Visite el sitio web del %{agency_short_name}</a> para informarse de otras formas de notificar sus ingresos.
+        to_continue_li_1_html: <a href="%{agency_contact_website}" target="_blank" rel="noopener noreferrer">Visite el sitio web del %{agency_acronym}</a> para informarse de otras formas de notificar sus ingresos.
         to_continue_li_2: Si tiene otros trabajos que añadir, búsquelos.
         to_continue_li_3: Si no tiene otros trabajos que añadir aquí, puede salir de este sitio.
         to_continue_li_3_continue: Si no tiene otros trabajos que agregar aquí, continúe para revisar su reporte de ingresos.
@@ -187,7 +187,7 @@ es:
         step3: Envíe su información de pago.
         step3_description: La enviaremos automáticamente a %{agency_acronym}. Esto lo ayudará a demostrar y comprobar sus ingresos y puede ayudar a %{agency_acronym} a tomar una decisión más rápida.
         subheader_html: 'Enviaremos los registros de pago de su(s) empleador(es) a %{agency_acronym} para verificar sus ingresos.<strong> La mayoría de las personas completan este proceso en aproximadamente 5 minutos.</strong> Solo siga estos pasos:'
-        what_if_i_cant_use_this_body_1: Si necesita declarar sus ingresos y no puede usar esta herramienta, deberá compartir, de manera directa, la información de sus ingresos para este trabajo con %{agency_short_name}.
+        what_if_i_cant_use_this_body_1: Si necesita declarar sus ingresos y no puede usar esta herramienta, deberá compartir, de manera directa, la información de sus ingresos para este trabajo con %{agency_acronym}.
         what_if_i_cant_use_this_body_2_html:
           default: Para obtener más información sobre cómo enviar documentos, visite el sitio web de <a href="%{agency_url}" target="_blank" rel="noopener noreferrer">%{agency_acronym}</a>.
           la_ldh: 'Usted puede: <ul><li>Subir documentos a través del Portal de Autoservicio en línea en <a href="https://mymedicaid.la.gov/" target="_blank" rel="noopener noreferrer">https://mymedicaid.la.gov/</a></li><li>Enviar documentos por correo postal: Louisiana Medicaid/LaCHIP, P.O. Box 91283, Baton Rouge, LA 70821-9278</li><li>Enviar documentos por correo electrónico: <a href="mailto:MyMedicaid@la.gov">MyMedicaid@la.gov</a></li><li>Llevar sus documentos a la oficina de Medicaid de su elección.</li></ul>'
@@ -200,7 +200,7 @@ es:
     error_no_access: No logramos cargar los datos de nómina para esta cuenta. Haga clic en el enlace que recibió de su agencia del SNAP para intentarlo de nuevo.
     expired_invitations:
       show:
-        body_1: Si todavía no termina de verificar sus ingresos, envíe su información de ingresos desde el mismo sitio web de %{agency_short_name}.
+        body_1: Si todavía no termina de verificar sus ingresos, envíe su información de ingresos desde el mismo sitio web de %{agency_acronym}.
         cta_button_html:
           la_ldh: <a href="%{agency_url}" class="usa-button" target="_blank" rel="noopener noreferrer">Visite el sitio web del LDH</a>
           sandbox: <a href="https://www.mass.gov/guides/how-to-contact-dta" class="usa-button" target="_blank" rel="noopener noreferrer">Obtenga más información en la Agencia de pruebas CBV</a>
@@ -215,8 +215,8 @@ es:
         more_jobs: Si tiene más trabajos que reportar
         no_more_jobs: Si no tiene más trabajos que reportar
         not_listed_p1: Si su empleador o proveedor de nómina no están listados en este sitio, tendrá que compartir su información de ingresos por este trabajo directamente con %{agency_acronym}.
-        not_listed_p2: Para obtener más información sobre cómo enviar los documentos requeridos, visite el sitio web de %{agency_short_name}.
-        not_listed_p2_link_html: Visite <a href="%{agency_url}" target="_blank" rel="noopener noreferrer">el sitio web del %{agency_short_name}</a> para obtener más información sobre cómo enviar documentos.
+        not_listed_p2: Para obtener más información sobre cómo enviar los documentos requeridos, visite el sitio web de %{agency_acronym}.
+        not_listed_p2_link_html: Visite <a href="%{agency_url}" target="_blank" rel="noopener noreferrer">el sitio web del %{agency_acronym}</a> para obtener más información sobre cómo enviar documentos.
         you_can_search: Puede buscar otro empleador o proveedor de nómina. Este sitio apoya a los empleadores con proveedores de nómina en línea o servicios basados en aplicaciones. Algunos ejemplos son Amazon, Walmart, McDonald’s, Uber, DoorDash, Lyft e Instacart.
     payment_details:
       show:
