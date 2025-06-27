@@ -12,11 +12,10 @@ RSpec.describe Caseworker::EntriesController do
       end
 
       it "should show sandbox specific copy with a link to /sso/sandbox" do
-        agency_short_name = client_agency_config["sandbox"].agency_short_name
         get :index, params: { client_agency_id: "sandbox" }
         expect(response).to be_successful
         unescaped_body = CGI.unescapeHTML(response.body)
-        expect(unescaped_body).to include(I18n.t("caseworker.entries.index.header.sandbox", agency_short_name: agency_short_name))
+        expect(unescaped_body).to include(I18n.t("caseworker.entries.index.header.sandbox"))
       end
     end
 
