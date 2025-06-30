@@ -9,8 +9,15 @@ require "view_component/test_helpers"
 require "support/context/gpg_setup"
 require "view_component/system_test_helpers"
 
+
+# Capybara configuration for E2E tests
 require "capybara/rspec"
-Capybara.default_driver = Capybara.javascript_driver
+if ENV["E2E_SHOW_BROWSER"]
+  Capybara.default_driver = :selenium_chrome
+else
+  Capybara.default_driver = :selenium_chrome_headless
+end
+Capybara.javascript_driver = Capybara.default_driver
 
 
 Rails.application.load_tasks

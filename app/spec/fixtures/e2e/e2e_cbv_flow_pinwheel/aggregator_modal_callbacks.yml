@@ -1,0 +1,82 @@
+---
+- callbackName: onEvent
+  callbackArguments:
+  - open
+  - {}
+- callbackName: onEvent
+  callbackArguments:
+  - other_event
+  - name: screen_transition_expanded
+    payload:
+    - key: screenName
+      value: LOGIN
+      type: string
+    - key: selectedEmployerId
+      value: 5a8cfb92-3373-4e65-b41b-54e821e79671
+      type: string
+    - key: selectedEmployerName
+      value: McKee Foods
+      type: string
+    - key: selectedPlatformId
+      value: 5965580e-380f-4b86-8a8a-7278c77f73cb
+      type: string
+    - key: selectedPlatformName
+      value: Workday
+      type: string
+    - key: previousScreenName
+      value: 'null'
+      type: string
+- callbackName: onEvent
+  callbackArguments:
+  - screen_transition
+  - screenName: LOGIN
+    selectedEmployerId: 5a8cfb92-3373-4e65-b41b-54e821e79671
+    selectedEmployerName: McKee Foods
+    selectedPlatformId: 5965580e-380f-4b86-8a8a-7278c77f73cb
+    selectedPlatformName: Workday
+- callbackName: onEvent
+  callbackArguments:
+  - login_attempt
+  - platformId: 5965580e-380f-4b86-8a8a-7278c77f73cb
+- callbackName: onEvent
+  callbackArguments:
+  - other_event
+  - name: input_submit
+    payload:
+    - key: input_type
+      type: string
+      value: username
+    - key: input_type
+      type: string
+      value: password
+- callbackName: onEvent
+  callbackArguments:
+  - login
+  - platformId: 5965580e-380f-4b86-8a8a-7278c77f73cb
+    accountId: 934f6406-c332-4c05-a3e8-6a90765c842d
+- callbackName: onEvent
+  callbackArguments:
+  - success
+  - accountId: 934f6406-c332-4c05-a3e8-6a90765c842d
+    platformId: 5965580e-380f-4b86-8a8a-7278c77f73cb
+    job: login
+- callbackName: onSuccess
+  callbackArguments:
+  - accountId: 934f6406-c332-4c05-a3e8-6a90765c842d
+    platformId: 5965580e-380f-4b86-8a8a-7278c77f73cb
+    job: login
+- callbackName: onEvent
+  callbackArguments:
+  - other_event
+  - name: screen_transition_expanded
+    payload:
+    - key: screenName
+      value: JOB_SUCCESS
+      type: string
+    - key: previousScreenName
+      value: LOGIN
+      type: string
+- callbackName: onEvent
+  callbackArguments:
+  - screen_transition
+  - screenName: JOB_SUCCESS

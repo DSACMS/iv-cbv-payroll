@@ -295,6 +295,11 @@ When editing the `E2eCallbackRecorder.js` file:
 * Multiple openings of the aggregator modals (either multiple Pinwheel, or Pinwheel then Argyle)
 * Anything regarding session expiration (as we currently remove session expiration during E2E testing)
 
+## Automated E2E Testing
+We achieve End-to-End (E2E) testing by using `capybara` (which in turn uses `selenium`) to simulate a real user completing the CBV flow.
+
+See the [E2E testing documentation](/docs/e2e/e2e-checks.md) for more information.
+
 ## Pa11y Scan
 
 When new pages are added to the application, ensure they are added to `./.pa11yci` so that they can be scanned.

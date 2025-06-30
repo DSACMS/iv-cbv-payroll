@@ -1,0 +1,331 @@
+---
+- :uri: "/webhooks/argyle/events"
+  :method: POST
+  :headers:
+    Accept:
+    - "*/*"
+    Accept-Encoding:
+    - gzip
+    Content-Length:
+    - '183'
+    Content-Type:
+    - application/json
+    Host:
+    - 9a7f-24-6-157-50.ngrok-free.app
+    User-Agent:
+    - ReactorNetty/1.1.28
+    X-Argyle-Signature:
+    - c8bb004db307304a6d1db6b09ab9580aa3b2353b9305744222bf49aa4fa3f3f79db9beacb0e035980a78f78bf6f0421a1f421af0f2f997d9210e0f6c7683c9c4
+    X-Forwarded-For:
+    - 35.188.163.115
+    X-Forwarded-Host:
+    - 9a7f-24-6-157-50.ngrok-free.app
+    X-Forwarded-Proto:
+    - https
+  :body: |-
+    {
+      "event": "accounts.connected",
+      "name": "tdooner-e2e",
+      "data": {
+        "account": "0197a3f9-59dc-f823-fa70-ed689729324b",
+        "user": "0197a3f9-4f43-dbd5-e5bd-3941dc245d1b"
+      }
+    }
+- :uri: "/webhooks/argyle/events"
+  :method: POST
+  :headers:
+    Accept:
+    - "*/*"
+    Accept-Encoding:
+    - gzip
+    Content-Length:
+    - '237'
+    Content-Type:
+    - application/json
+    Host:
+    - 9a7f-24-6-157-50.ngrok-free.app
+    User-Agent:
+    - ReactorNetty/1.1.28
+    X-Argyle-Signature:
+    - 696f4155bee0c5261190e5490a1f07d9b24a8d7af4ed30878925674f4a052f4543e513d894cafc8172c37f8b118ac5b64ad7e3e66defb0491e87ca5e37a96ce1
+    X-Forwarded-For:
+    - 35.188.163.115
+    X-Forwarded-Host:
+    - 9a7f-24-6-157-50.ngrok-free.app
+    X-Forwarded-Proto:
+    - https
+  :body: |-
+    {
+      "event": "identities.added",
+      "name": "tdooner-e2e",
+      "data": {
+        "account": "0197a3f9-59dc-f823-fa70-ed689729324b",
+        "user": "0197a3f9-4f43-dbd5-e5bd-3941dc245d1b",
+        "identity": "2f68bebb-bb9b-3169-a277-e1012aecdf71"
+      }
+    }
+- :uri: "/webhooks/argyle/events"
+  :method: POST
+  :headers:
+    Accept:
+    - "*/*"
+    Accept-Encoding:
+    - gzip
+    Content-Length:
+    - '331'
+    Content-Type:
+    - application/json
+    Host:
+    - 9a7f-24-6-157-50.ngrok-free.app
+    User-Agent:
+    - ReactorNetty/1.1.28
+    X-Argyle-Signature:
+    - 5ce7ae1a78f8a10ed384749e59ada3c6f3b228b15e3ea4c429eab77a8a79374bbcc1cce5b2c83215394858e67f2946b3ef8f4af764629182a87a141c830df836
+    X-Forwarded-For:
+    - 35.188.163.115
+    X-Forwarded-Host:
+    - 9a7f-24-6-157-50.ngrok-free.app
+    X-Forwarded-Proto:
+    - https
+  :body: |-
+    {
+      "event": "gigs.partially_synced",
+      "name": "tdooner-e2e-partial",
+      "data": {
+        "account": "0197a3f9-59dc-f823-fa70-ed689729324b",
+        "user": "0197a3f9-4f43-dbd5-e5bd-3941dc245d1b",
+        "item_id": "item_000029932",
+        "available_from": null,
+        "available_to": null,
+        "available_count": 0,
+        "days_synced": 111
+      }
+    }
+- :uri: "/webhooks/argyle/events"
+  :method: POST
+  :headers:
+    Accept:
+    - "*/*"
+    Accept-Encoding:
+    - gzip
+    Content-Length:
+    - '2151'
+    Content-Type:
+    - application/json
+    Host:
+    - 9a7f-24-6-157-50.ngrok-free.app
+    User-Agent:
+    - ReactorNetty/1.1.28
+    X-Argyle-Signature:
+    - 2a9bcc9079c9cd4aabb1c33e9db769973da79afeb7b0c5ffcf3cc9087b53b89cc5d5f287d91daf08bb6addb041695446c9edd488fc9cb1b1d4c4548c994ff931
+    X-Forwarded-For:
+    - 34.27.251.226
+    X-Forwarded-Host:
+    - 9a7f-24-6-157-50.ngrok-free.app
+    X-Forwarded-Proto:
+    - https
+  :body: |-
+    {
+      "event": "accounts.updated",
+      "name": "tdooner-e2e-include-resource",
+      "data": {
+        "account": "0197a3f9-59dc-f823-fa70-ed689729324b",
+        "user": "0197a3f9-4f43-dbd5-e5bd-3941dc245d1b",
+        "resource": {
+          "id": "0197a3f9-59dc-f823-fa70-ed689729324b",
+          "user": "0197a3f9-4f43-dbd5-e5bd-3941dc245d1b",
+          "employers": [
+            "Aramark"
+          ],
+          "item": "item_000029932",
+          "source": "argyle_sandbox",
+          "created_at": "2025-06-24T22:05:17.265289Z",
+          "updated_at": "2025-06-24T22:05:28.091245Z",
+          "scanned_at": "2025-06-24T22:05:27.712222Z",
+          "connection": {
+            "status": "connected",
+            "error_code": null,
+            "error_message": null,
+            "updated_at": "2025-06-24T22:05:22.012767Z"
+          },
+          "direct_deposit_switch": {
+            "status": "idle",
+            "error_code": null,
+            "error_message": null,
+            "updated_at": "2025-06-24T22:05:17.555639Z"
+          },
+          "availability": {
+            "gigs": {
+              "status": "in_progress",
+              "updated_at": "2025-06-24T22:05:27.712222Z",
+              "available_count": 0,
+              "available_from": null,
+              "available_to": null
+            },
+            "paystubs": {
+              "status": "in_progress",
+              "updated_at": "2025-06-24T22:05:27.712222Z",
+              "available_count": 4,
+              "available_from": "2025-05-08T00:00:00Z",
+              "available_to": "2025-06-19T00:00:00Z"
+            },
+            "payroll_documents": {
+              "status": "synced",
+              "updated_at": "2025-06-24T22:05:25.014923Z"
+            },
+            "identities": {
+              "status": "synced",
+              "updated_at": "2025-06-24T22:05:27.872580Z"
+            },
+            "ratings": {
+              "status": "synced",
+              "updated_at": "2025-06-24T22:05:25.028105Z"
+            },
+            "vehicles": {
+              "status": "synced",
+              "updated_at": "2025-06-24T22:05:25.030685Z"
+            },
+            "deposit_destinations": {
+              "status": "synced",
+              "updated_at": "2025-06-24T22:05:23.404217Z"
+            },
+            "user_forms": null
+          },
+          "ongoing_refresh": {
+            "status": "disabled"
+          }
+        }
+      }
+    }
+- :uri: "/webhooks/argyle/events"
+  :method: POST
+  :headers:
+    Accept:
+    - "*/*"
+    Accept-Encoding:
+    - gzip
+    Content-Length:
+    - '338'
+    Content-Type:
+    - application/json
+    Host:
+    - 9a7f-24-6-157-50.ngrok-free.app
+    User-Agent:
+    - ReactorNetty/1.1.28
+    X-Argyle-Signature:
+    - a39628751f1dfb2f41c8ddc81f3ca6438a2d3b9b5cc4fd23449609b94cf6868138318516fe0d2bc5bfc2779ee3c90dc91b4922b1822ce64b4f5e9ef46c1599a0
+    X-Forwarded-For:
+    - 35.188.163.115
+    X-Forwarded-Host:
+    - 9a7f-24-6-157-50.ngrok-free.app
+    X-Forwarded-Proto:
+    - https
+  :body: |-
+    {
+      "event": "paystubs.partially_synced",
+      "name": "tdooner-e2e-partial",
+      "data": {
+        "account": "0197a3f9-59dc-f823-fa70-ed689729324b",
+        "user": "0197a3f9-4f43-dbd5-e5bd-3941dc245d1b",
+        "available_from": "2025-03-13T00:00:00Z",
+        "available_to": "2025-06-19T00:00:00Z",
+        "available_count": 8,
+        "days_synced": 111
+      }
+    }
+- :uri: "/webhooks/argyle/events"
+  :method: POST
+  :headers:
+    Accept:
+    - "*/*"
+    Accept-Encoding:
+    - gzip
+    Content-Length:
+    - '2151'
+    Content-Type:
+    - application/json
+    Host:
+    - 9a7f-24-6-157-50.ngrok-free.app
+    User-Agent:
+    - ReactorNetty/1.1.28
+    X-Argyle-Signature:
+    - 5e5a27b76954c15f4b0a1e7f26e4fdc7d9158c8e55fff9bb30e2e6d205f342d72a9b8025a70222cf6c251cc865a834a7ce60088048a80e7e885b9fbd9bb19d39
+    X-Forwarded-For:
+    - 34.27.251.226
+    X-Forwarded-Host:
+    - 9a7f-24-6-157-50.ngrok-free.app
+    X-Forwarded-Proto:
+    - https
+  :body: |-
+    {
+      "event": "accounts.updated",
+      "name": "tdooner-e2e-include-resource",
+      "data": {
+        "account": "0197a3f9-59dc-f823-fa70-ed689729324b",
+        "user": "0197a3f9-4f43-dbd5-e5bd-3941dc245d1b",
+        "resource": {
+          "id": "0197a3f9-59dc-f823-fa70-ed689729324b",
+          "user": "0197a3f9-4f43-dbd5-e5bd-3941dc245d1b",
+          "employers": [
+            "Aramark"
+          ],
+          "item": "item_000029932",
+          "source": "argyle_sandbox",
+          "created_at": "2025-06-24T22:05:17.265289Z",
+          "updated_at": "2025-06-24T22:05:31.600317Z",
+          "scanned_at": "2025-06-24T22:05:31.403471Z",
+          "connection": {
+            "status": "connected",
+            "error_code": null,
+            "error_message": null,
+            "updated_at": "2025-06-24T22:05:22.012767Z"
+          },
+          "direct_deposit_switch": {
+            "status": "idle",
+            "error_code": null,
+            "error_message": null,
+            "updated_at": "2025-06-24T22:05:17.555639Z"
+          },
+          "availability": {
+            "gigs": {
+              "status": "in_progress",
+              "updated_at": "2025-06-24T22:05:31.403471Z",
+              "available_count": 0,
+              "available_from": null,
+              "available_to": null
+            },
+            "paystubs": {
+              "status": "in_progress",
+              "updated_at": "2025-06-24T22:05:31.403471Z",
+              "available_count": 8,
+              "available_from": "2025-03-13T00:00:00Z",
+              "available_to": "2025-06-19T00:00:00Z"
+            },
+            "payroll_documents": {
+              "status": "synced",
+              "updated_at": "2025-06-24T22:05:25.014923Z"
+            },
+            "identities": {
+              "status": "synced",
+              "updated_at": "2025-06-24T22:05:27.872580Z"
+            },
+            "ratings": {
+              "status": "synced",
+              "updated_at": "2025-06-24T22:05:25.028105Z"
+            },
+            "vehicles": {
+              "status": "synced",
+              "updated_at": "2025-06-24T22:05:25.030685Z"
+            },
+            "deposit_destinations": {
+              "status": "synced",
+              "updated_at": "2025-06-24T22:05:23.404217Z"
+            },
+            "user_forms": null
+          },
+          "ongoing_refresh": {
+            "status": "disabled"
+          }
+        }
+      }
+    }
