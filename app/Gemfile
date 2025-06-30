@@ -18,7 +18,7 @@ gem "csv"
 gem "pg", "~> 1.1"
 
 # Use the Puma web server [https://github.com/puma/puma]
-gem "puma", "~> 6.4.3"
+gem "puma", "~> 6.6.0"
 
 # Bundle and transpile JavaScript [https://github.com/rails/jsbundling-rails]
 gem "jsbundling-rails"
@@ -117,6 +117,7 @@ group :test do
   gem "webmock"
   gem "factory_bot", "~> 6.4"
   gem "rails-controller-testing"
+  gem "vcr"
 end
 
 group :production do
