@@ -1,0 +1,715 @@
+---
+- :uri: "/webhooks/pinwheel/events"
+  :method: POST
+  :headers:
+    Accept:
+    - "*/*"
+    Accept-Encoding:
+    - gzip, deflate
+    Baggage:
+    - sentry-trace_id=5f3cf9d218de46139b370f5975feef6c,sentry-environment=production,sentry-public_key=297602bff8d64da0a826a4d6d3734437
+    Content-Length:
+    - '440'
+    Content-Type:
+    - application/json
+    Host:
+    - cad4-24-6-157-50.ngrok-free.app
+    Pinwheel-Version:
+    - '2023-11-22'
+    Sentry-Trace:
+    - 5f3cf9d218de46139b370f5975feef6c-a33afd3f2169d6b0
+    Traceparent:
+    - 00-00000000000000006ea752bb19cd4324-422eed5728c757a2-00
+    Tracestate:
+    - dd=s:-1
+    User-Agent:
+    - python-requests/2.31.0
+    X-Datadog-Parent-Id:
+    - '4769010014034024354'
+    X-Datadog-Sampling-Priority:
+    - "-1"
+    X-Datadog-Trace-Id:
+    - '7973432628827996964'
+    X-Forwarded-For:
+    - 54.235.190.63
+    X-Forwarded-Host:
+    - cad4-24-6-157-50.ngrok-free.app
+    X-Forwarded-Proto:
+    - https
+    X-Pinwheel-Signature:
+    - "<PINWHEEL_WEBHOOK_SIGNATURE>"
+    X-Pinwheel-Webhook-Id:
+    - 420900d5-2ffb-4ad9-b2a6-38ef975f9b21
+    X-Timestamp:
+    - '1750802674'
+  :body: '{"event_id": "ec61a8b1-af27-4904-87e8-e5e2dbe25197", "event": "account.added",
+    "payload": {"created_at": "2025-06-24T22:04:33.547314+00:00", "link_token_id":
+    "a63c75ef-3e91-4fff-8147-78cf7efeddd2", "platform_id": "5965580e-380f-4b86-8a8a-7278c77f73cb",
+    "connected": true, "monitoring_status": "active", "end_user_id": "6a927ef1-6c91-43c9-abbe-6728dc8ef877",
+    "account_id": "934f6406-c332-4c05-a3e8-6a90765c842d", "platform_name": "Workday"}}'
+- :uri: "/webhooks/pinwheel/events"
+  :method: POST
+  :headers:
+    Accept:
+    - "*/*"
+    Accept-Encoding:
+    - gzip, deflate
+    Baggage:
+    - sentry-trace_id=b32b5a09aa264864b85a31a216770ca3,sentry-environment=production,sentry-public_key=297602bff8d64da0a826a4d6d3734437
+    Content-Length:
+    - '449'
+    Content-Type:
+    - application/json
+    Host:
+    - cad4-24-6-157-50.ngrok-free.app
+    Pinwheel-Version:
+    - '2023-11-22'
+    Sentry-Trace:
+    - b32b5a09aa264864b85a31a216770ca3-80a6ae49c36e3f18
+    Traceparent:
+    - 00-0000000000000000cacd6c88f22a244c-137515651a24f776-00
+    Tracestate:
+    - dd=s:-1
+    User-Agent:
+    - python-requests/2.31.0
+    X-Datadog-Parent-Id:
+    - '1402050382970287990'
+    X-Datadog-Sampling-Priority:
+    - "-1"
+    X-Datadog-Trace-Id:
+    - '14613455701321327692'
+    X-Forwarded-For:
+    - 35.168.171.219
+    X-Forwarded-Host:
+    - cad4-24-6-157-50.ngrok-free.app
+    X-Forwarded-Proto:
+    - https
+    X-Pinwheel-Signature:
+    - "<PINWHEEL_WEBHOOK_SIGNATURE>"
+    X-Pinwheel-Webhook-Id:
+    - 420900d5-2ffb-4ad9-b2a6-38ef975f9b21
+    X-Timestamp:
+    - '1750802674'
+  :body: '{"event_id": "b331e9ed-a273-48fa-8f5f-ec476870f8f4", "event": "identity.added",
+    "payload": {"id": "5fd6446d-1739-4686-a454-f60a6ad65864", "name": "identity",
+    "timestamp": "2025-06-24T22:04:34.383896+00:00", "outcome": "success", "error_code":
+    null, "error_type": null, "link_token_id": "a63c75ef-3e91-4fff-8147-78cf7efeddd2",
+    "params": {}, "account_id": "934f6406-c332-4c05-a3e8-6a90765c842d", "end_user_id":
+    "6a927ef1-6c91-43c9-abbe-6728dc8ef877"}}'
+- :uri: "/webhooks/pinwheel/events"
+  :method: POST
+  :headers:
+    Accept:
+    - "*/*"
+    Accept-Encoding:
+    - gzip, deflate
+    Baggage:
+    - sentry-trace_id=9e36a823e7c941bdaed1d2e957dacdd1,sentry-environment=production,sentry-public_key=297602bff8d64da0a826a4d6d3734437
+    Content-Length:
+    - '445'
+    Content-Type:
+    - application/json
+    Host:
+    - cad4-24-6-157-50.ngrok-free.app
+    Pinwheel-Version:
+    - '2023-11-22'
+    Sentry-Trace:
+    - 9e36a823e7c941bdaed1d2e957dacdd1-9d8ba500a9209bb7
+    Traceparent:
+    - 00-0000000000000000941287581c79607b-3f443e44c9e58820-00
+    Tracestate:
+    - dd=s:-1
+    User-Agent:
+    - python-requests/2.31.0
+    X-Datadog-Parent-Id:
+    - '4558837187971745824'
+    X-Datadog-Sampling-Priority:
+    - "-1"
+    X-Datadog-Trace-Id:
+    - '10669739279698714747'
+    X-Forwarded-For:
+    - 35.168.171.219
+    X-Forwarded-Host:
+    - cad4-24-6-157-50.ngrok-free.app
+    X-Forwarded-Proto:
+    - https
+    X-Pinwheel-Signature:
+    - "<PINWHEEL_WEBHOOK_SIGNATURE>"
+    X-Pinwheel-Webhook-Id:
+    - 420900d5-2ffb-4ad9-b2a6-38ef975f9b21
+    X-Timestamp:
+    - '1750802675'
+  :body: '{"event_id": "06ab1f9c-f726-4f48-8e10-5e9a3e682c34", "event": "income.added",
+    "payload": {"id": "5316310b-86d3-48bf-b8f7-0d488a313969", "name": "income", "timestamp":
+    "2025-06-24T22:04:34.458089+00:00", "outcome": "success", "error_code": null,
+    "error_type": null, "link_token_id": "a63c75ef-3e91-4fff-8147-78cf7efeddd2", "params":
+    {}, "account_id": "934f6406-c332-4c05-a3e8-6a90765c842d", "end_user_id": "6a927ef1-6c91-43c9-abbe-6728dc8ef877"}}'
+- :uri: "/webhooks/pinwheel/events"
+  :method: POST
+  :headers:
+    Accept:
+    - "*/*"
+    Accept-Encoding:
+    - gzip, deflate
+    Baggage:
+    - sentry-trace_id=b32b5a09aa264864b85a31a216770ca3,sentry-environment=production,sentry-public_key=297602bff8d64da0a826a4d6d3734437
+    Content-Length:
+    - '678'
+    Content-Type:
+    - application/json
+    Host:
+    - cad4-24-6-157-50.ngrok-free.app
+    Pinwheel-Version:
+    - '2023-11-22'
+    Sentry-Trace:
+    - b32b5a09aa264864b85a31a216770ca3-80a6ae49c36e3f18
+    Traceparent:
+    - 00-00000000000000000be277934157b4f2-c4d834d1f323dbec-01
+    Tracestate:
+    - dd=s:2
+    User-Agent:
+    - python-requests/2.31.0
+    X-Datadog-Parent-Id:
+    - '14184145102735399916'
+    X-Datadog-Sampling-Priority:
+    - '2'
+    X-Datadog-Trace-Id:
+    - '856378353493980402'
+    X-Forwarded-For:
+    - 35.168.171.219
+    X-Forwarded-Host:
+    - cad4-24-6-157-50.ngrok-free.app
+    X-Forwarded-Proto:
+    - https
+    X-Pinwheel-Signature:
+    - "<PINWHEEL_WEBHOOK_SIGNATURE>"
+    X-Pinwheel-Webhook-Id:
+    - 420900d5-2ffb-4ad9-b2a6-38ef975f9b21
+    X-Timestamp:
+    - '1750802675'
+  :body: '{"event_id": "3cfe63ad-c0fd-4b87-8dcb-3ab178cbc9c4", "event": "paystubs.added",
+    "payload": {"added": [{"id": "c80ed2d6-a0fe-4b63-8c92-92414cea9b37", "document_type":
+    null, "year": null, "pay_date": null}], "deleted": [], "id": "ff3a851d-ccf6-442d-b144-e55545280e2a",
+    "name": "paystubs", "timestamp": "2025-06-24T22:04:35.048975+00:00", "outcome":
+    "success", "error_code": null, "error_type": null, "link_token_id": "a63c75ef-3e91-4fff-8147-78cf7efeddd2",
+    "params": {"count": 1, "from_pay_date": "2025-06-24", "to_pay_date": "2025-06-24",
+    "sync_status": "in_progress"}, "account_id": "934f6406-c332-4c05-a3e8-6a90765c842d",
+    "end_user_id": "6a927ef1-6c91-43c9-abbe-6728dc8ef877"}}'
+- :uri: "/webhooks/pinwheel/events"
+  :method: POST
+  :headers:
+    Accept:
+    - "*/*"
+    Accept-Encoding:
+    - gzip, deflate
+    Baggage:
+    - sentry-trace_id=49d7029197ef4e8e9fc5500d1f6e2726,sentry-environment=production,sentry-public_key=297602bff8d64da0a826a4d6d3734437
+    Content-Length:
+    - '1232'
+    Content-Type:
+    - application/json
+    Host:
+    - cad4-24-6-157-50.ngrok-free.app
+    Pinwheel-Version:
+    - '2023-11-22'
+    Sentry-Trace:
+    - 49d7029197ef4e8e9fc5500d1f6e2726-8a4b7fa12fb1b95b
+    Traceparent:
+    - 00-000000000000000035aba9dc8dadeb85-5025109be5e94f3a-00
+    Tracestate:
+    - dd=s:-1
+    User-Agent:
+    - python-requests/2.31.0
+    X-Datadog-Parent-Id:
+    - '5775040358935777082'
+    X-Datadog-Sampling-Priority:
+    - "-1"
+    X-Datadog-Trace-Id:
+    - '3867371469762587525'
+    X-Forwarded-For:
+    - 18.214.233.159
+    X-Forwarded-Host:
+    - cad4-24-6-157-50.ngrok-free.app
+    X-Forwarded-Proto:
+    - https
+    X-Pinwheel-Signature:
+    - "<PINWHEEL_WEBHOOK_SIGNATURE>"
+    X-Pinwheel-Webhook-Id:
+    - 420900d5-2ffb-4ad9-b2a6-38ef975f9b21
+    X-Timestamp:
+    - '1750802676'
+  :body: '{"event_id": "19dd2b2a-5931-4fd4-b9ab-30aff33497ea", "event": "shifts.added",
+    "payload": {"added": [{"id": "35841865-b1f1-4d96-b8c5-c49824fa8bfc", "document_type":
+    null, "year": null, "pay_date": null}, {"id": "299e5d25-0920-4b5f-9025-0857f446673b",
+    "document_type": null, "year": null, "pay_date": null}, {"id": "5de4eb01-f975-40c9-bc9a-1057f493095b",
+    "document_type": null, "year": null, "pay_date": null}, {"id": "3af126eb-7bc2-4b21-9a0d-461fb05d04c7",
+    "document_type": null, "year": null, "pay_date": null}, {"id": "23a1d0cf-aafe-4624-90ef-b25c2c3067b8",
+    "document_type": null, "year": null, "pay_date": null}, {"id": "eacf520b-3ea7-4ea8-9602-3a47394639f2",
+    "document_type": null, "year": null, "pay_date": null}, {"id": "40c83a70-e50e-4d2a-a9a1-f680fce15088",
+    "document_type": null, "year": null, "pay_date": null}], "deleted": [], "id":
+    "0400aa6b-ecf4-48dd-b002-da971a347b50", "name": "shifts", "timestamp": "2025-06-24T22:04:35.101626+00:00",
+    "outcome": "success", "error_code": null, "error_type": null, "link_token_id":
+    "a63c75ef-3e91-4fff-8147-78cf7efeddd2", "params": {"count": 7, "sync_status":
+    "in_progress"}, "account_id": "934f6406-c332-4c05-a3e8-6a90765c842d", "end_user_id":
+    "6a927ef1-6c91-43c9-abbe-6728dc8ef877"}}'
+- :uri: "/webhooks/pinwheel/events"
+  :method: POST
+  :headers:
+    Accept:
+    - "*/*"
+    Accept-Encoding:
+    - gzip, deflate
+    Baggage:
+    - sentry-trace_id=384605783506473ba392035097767119,sentry-environment=production,sentry-public_key=297602bff8d64da0a826a4d6d3734437
+    Content-Length:
+    - '678'
+    Content-Type:
+    - application/json
+    Host:
+    - cad4-24-6-157-50.ngrok-free.app
+    Pinwheel-Version:
+    - '2023-11-22'
+    Sentry-Trace:
+    - 384605783506473ba392035097767119-90caf5e8e902ef46
+    Traceparent:
+    - 00-00000000000000000bed08eef563d4df-6d96b9814d79d5bd-00
+    Tracestate:
+    - dd=s:-1
+    User-Agent:
+    - python-requests/2.31.0
+    X-Datadog-Parent-Id:
+    - '7896702961642493373'
+    X-Datadog-Sampling-Priority:
+    - "-1"
+    X-Datadog-Trace-Id:
+    - '859352926309831903'
+    X-Forwarded-For:
+    - 3.227.93.147
+    X-Forwarded-Host:
+    - cad4-24-6-157-50.ngrok-free.app
+    X-Forwarded-Proto:
+    - https
+    X-Pinwheel-Signature:
+    - "<PINWHEEL_WEBHOOK_SIGNATURE>"
+    X-Pinwheel-Webhook-Id:
+    - 420900d5-2ffb-4ad9-b2a6-38ef975f9b21
+    X-Timestamp:
+    - '1750802676'
+  :body: '{"event_id": "53b6dbee-35c3-4332-8236-065b91c2cbe3", "event": "paystubs.added",
+    "payload": {"added": [{"id": "6e65691e-6391-4789-abf8-7fe8cae27335", "document_type":
+    null, "year": null, "pay_date": null}], "deleted": [], "id": "7facb71b-8a24-4a5d-95a0-2c9489f99946",
+    "name": "paystubs", "timestamp": "2025-06-24T22:04:35.762912+00:00", "outcome":
+    "success", "error_code": null, "error_type": null, "link_token_id": "a63c75ef-3e91-4fff-8147-78cf7efeddd2",
+    "params": {"count": 1, "from_pay_date": "2025-06-10", "to_pay_date": "2025-06-10",
+    "sync_status": "in_progress"}, "account_id": "934f6406-c332-4c05-a3e8-6a90765c842d",
+    "end_user_id": "6a927ef1-6c91-43c9-abbe-6728dc8ef877"}}'
+- :uri: "/webhooks/pinwheel/events"
+  :method: POST
+  :headers:
+    Accept:
+    - "*/*"
+    Accept-Encoding:
+    - gzip, deflate
+    Baggage:
+    - sentry-trace_id=49d7029197ef4e8e9fc5500d1f6e2726,sentry-environment=production,sentry-public_key=297602bff8d64da0a826a4d6d3734437
+    Content-Length:
+    - '781'
+    Content-Type:
+    - application/json
+    Host:
+    - cad4-24-6-157-50.ngrok-free.app
+    Pinwheel-Version:
+    - '2023-11-22'
+    Sentry-Trace:
+    - 49d7029197ef4e8e9fc5500d1f6e2726-8a4b7fa12fb1b95b
+    Traceparent:
+    - 00-000000000000000047936f58f07fcc33-eee3befd64fede3e-00
+    Tracestate:
+    - dd=s:-1
+    User-Agent:
+    - python-requests/2.31.0
+    X-Datadog-Parent-Id:
+    - '17213812196270595646'
+    X-Datadog-Sampling-Priority:
+    - "-1"
+    X-Datadog-Trace-Id:
+    - '5157588426052062259'
+    X-Forwarded-For:
+    - 18.214.233.159
+    X-Forwarded-Host:
+    - cad4-24-6-157-50.ngrok-free.app
+    X-Forwarded-Proto:
+    - https
+    X-Pinwheel-Signature:
+    - "<PINWHEEL_WEBHOOK_SIGNATURE>"
+    X-Pinwheel-Webhook-Id:
+    - 420900d5-2ffb-4ad9-b2a6-38ef975f9b21
+    X-Timestamp:
+    - '1750802677'
+  :body: '{"event_id": "d92f21ee-87ac-4feb-90be-daf9e960a8b4", "event": "paystubs.added",
+    "payload": {"added": [{"id": "0c5be6bf-53ca-4597-b277-de311bf69682", "document_type":
+    null, "year": null, "pay_date": null}, {"id": "9bb0d63d-58b9-4202-ba95-5f1117502c00",
+    "document_type": null, "year": null, "pay_date": null}], "deleted": [], "id":
+    "0822da13-2251-4c2f-b0e5-1a73a6692b81", "name": "paystubs", "timestamp": "2025-06-24T22:04:36.776385+00:00",
+    "outcome": "success", "error_code": null, "error_type": null, "link_token_id":
+    "a63c75ef-3e91-4fff-8147-78cf7efeddd2", "params": {"count": 2, "from_pay_date":
+    "2025-04-29", "to_pay_date": "2025-05-13", "sync_status": "in_progress"}, "account_id":
+    "934f6406-c332-4c05-a3e8-6a90765c842d", "end_user_id": "6a927ef1-6c91-43c9-abbe-6728dc8ef877"}}'
+- :uri: "/webhooks/pinwheel/events"
+  :method: POST
+  :headers:
+    Accept:
+    - "*/*"
+    Accept-Encoding:
+    - gzip, deflate
+    Baggage:
+    - sentry-trace_id=8611f2a9efe74c859a7ed651739983bd,sentry-environment=production,sentry-public_key=297602bff8d64da0a826a4d6d3734437
+    Content-Length:
+    - '2881'
+    Content-Type:
+    - application/json
+    Host:
+    - cad4-24-6-157-50.ngrok-free.app
+    Pinwheel-Version:
+    - '2023-11-22'
+    Sentry-Trace:
+    - 8611f2a9efe74c859a7ed651739983bd-acfe4bfe1ba61830
+    Traceparent:
+    - 00-0000000000000000a0699955556994e0-d62136a18e216b2f-00
+    Tracestate:
+    - dd=s:-1
+    User-Agent:
+    - python-requests/2.31.0
+    X-Datadog-Parent-Id:
+    - '15429673865850219311'
+    X-Datadog-Sampling-Priority:
+    - "-1"
+    X-Datadog-Trace-Id:
+    - '11558938510407341280'
+    X-Forwarded-For:
+    - 54.235.190.63
+    X-Forwarded-Host:
+    - cad4-24-6-157-50.ngrok-free.app
+    X-Forwarded-Proto:
+    - https
+    X-Pinwheel-Signature:
+    - "<PINWHEEL_WEBHOOK_SIGNATURE>"
+    X-Pinwheel-Webhook-Id:
+    - 420900d5-2ffb-4ad9-b2a6-38ef975f9b21
+    X-Timestamp:
+    - '1750802678'
+  :body: '{"event_id": "694ea431-327b-4540-bbbb-3591602ded3e", "event": "shifts.added",
+    "payload": {"added": [{"id": "194a6dce-a515-4833-9987-e42a04ed09ad", "document_type":
+    null, "year": null, "pay_date": null}, {"id": "00519e4a-075e-466d-bff8-8d8cbcdc6862",
+    "document_type": null, "year": null, "pay_date": null}, {"id": "2089ead3-5120-4117-aad3-be832c51d7b7",
+    "document_type": null, "year": null, "pay_date": null}, {"id": "73c008a4-d28b-4d5a-871d-b10f41d4a2d5",
+    "document_type": null, "year": null, "pay_date": null}, {"id": "79083e66-7235-4d65-858c-c760ae9e4fea",
+    "document_type": null, "year": null, "pay_date": null}, {"id": "32cc8cec-99a5-453a-90ee-891e7fc7556c",
+    "document_type": null, "year": null, "pay_date": null}, {"id": "24f526af-04ca-4ac0-a6b4-b1b4f809ca85",
+    "document_type": null, "year": null, "pay_date": null}, {"id": "eca82309-fc82-4533-b754-a8fa96b7b1a5",
+    "document_type": null, "year": null, "pay_date": null}, {"id": "636aad47-9fa9-498c-b101-6fb7e4f3ff94",
+    "document_type": null, "year": null, "pay_date": null}, {"id": "bcf0caec-36c1-49bc-8396-66acd3e66ba1",
+    "document_type": null, "year": null, "pay_date": null}, {"id": "01903627-464c-480c-8f7a-f498385f153c",
+    "document_type": null, "year": null, "pay_date": null}, {"id": "01700a29-91e1-4463-b34b-2acca2fe147b",
+    "document_type": null, "year": null, "pay_date": null}, {"id": "8e2a1258-a627-4641-abfb-44a6aac6d107",
+    "document_type": null, "year": null, "pay_date": null}, {"id": "1954f1e9-db0e-4acf-ba30-8d9c9cf86a37",
+    "document_type": null, "year": null, "pay_date": null}, {"id": "40a43fe3-09da-4367-a3ba-2d608bb2033b",
+    "document_type": null, "year": null, "pay_date": null}, {"id": "6fdde1c4-e8b9-49e2-8af3-0350b0029122",
+    "document_type": null, "year": null, "pay_date": null}, {"id": "0a2be905-e3e8-4144-9c80-586e31528215",
+    "document_type": null, "year": null, "pay_date": null}, {"id": "3be72048-b9c8-492d-aa87-c295bbb05e8c",
+    "document_type": null, "year": null, "pay_date": null}, {"id": "e6422d5a-9800-47fd-8836-f677fc9dc062",
+    "document_type": null, "year": null, "pay_date": null}, {"id": "febf399f-a272-41cc-b620-42ca04e8532f",
+    "document_type": null, "year": null, "pay_date": null}, {"id": "59201f17-8899-4381-a953-ac94d2f24ec6",
+    "document_type": null, "year": null, "pay_date": null}, {"id": "bf70d858-d9a6-49b3-bbbd-4270773f9c37",
+    "document_type": null, "year": null, "pay_date": null}, {"id": "b7f621c0-af00-464b-9006-6049d76c18b0",
+    "document_type": null, "year": null, "pay_date": null}], "deleted": [], "id":
+    "74af5564-fa0b-4ee4-a458-0595a15772b5", "name": "shifts", "timestamp": "2025-06-24T22:04:37.758804+00:00",
+    "outcome": "success", "error_code": null, "error_type": null, "link_token_id":
+    "a63c75ef-3e91-4fff-8147-78cf7efeddd2", "params": {"count": 23, "sync_status":
+    "in_progress"}, "account_id": "934f6406-c332-4c05-a3e8-6a90765c842d", "end_user_id":
+    "6a927ef1-6c91-43c9-abbe-6728dc8ef877"}}'
+- :uri: "/webhooks/pinwheel/events"
+  :method: POST
+  :headers:
+    Accept:
+    - "*/*"
+    Accept-Encoding:
+    - gzip, deflate
+    Baggage:
+    - sentry-trace_id=b32b5a09aa264864b85a31a216770ca3,sentry-environment=production,sentry-public_key=297602bff8d64da0a826a4d6d3734437
+    Content-Length:
+    - '3354'
+    Content-Type:
+    - application/json
+    Host:
+    - cad4-24-6-157-50.ngrok-free.app
+    Pinwheel-Version:
+    - '2023-11-22'
+    Sentry-Trace:
+    - b32b5a09aa264864b85a31a216770ca3-80a6ae49c36e3f18
+    Traceparent:
+    - 00-00000000000000007c12890dae0d611d-26b5819015e03d34-00
+    Tracestate:
+    - dd=s:-1
+    User-Agent:
+    - python-requests/2.31.0
+    X-Datadog-Parent-Id:
+    - '2789278000068181300'
+    X-Datadog-Sampling-Priority:
+    - "-1"
+    X-Datadog-Trace-Id:
+    - '8940358902131548445'
+    X-Forwarded-For:
+    - 35.168.171.219
+    X-Forwarded-Host:
+    - cad4-24-6-157-50.ngrok-free.app
+    X-Forwarded-Proto:
+    - https
+    X-Pinwheel-Signature:
+    - "<PINWHEEL_WEBHOOK_SIGNATURE>"
+    X-Pinwheel-Webhook-Id:
+    - 420900d5-2ffb-4ad9-b2a6-38ef975f9b21
+    X-Timestamp:
+    - '1750802680'
+  :body: '{"event_id": "b9a6bb8b-8e28-4521-9538-208e21b7ad8d", "event": "paystubs.added",
+    "payload": {"added": [{"id": "5f2b3da9-e177-4cb7-ba8e-bd8f98398cbc", "document_type":
+    null, "year": null, "pay_date": null}, {"id": "a6038a6a-cb58-4714-8f67-aaab37b422fe",
+    "document_type": null, "year": null, "pay_date": null}, {"id": "6ea0bbf9-14fd-484c-97fb-54ac355af87b",
+    "document_type": null, "year": null, "pay_date": null}, {"id": "434f621d-f8f8-46e5-865c-643b2b708505",
+    "document_type": null, "year": null, "pay_date": null}, {"id": "a30114fd-a979-4694-888f-f7f316a22db0",
+    "document_type": null, "year": null, "pay_date": null}, {"id": "7d3485b7-29e0-439d-812b-e7ffc9dbdce9",
+    "document_type": null, "year": null, "pay_date": null}, {"id": "4d2b2ae8-3db9-474d-8c4a-222059e88cc1",
+    "document_type": null, "year": null, "pay_date": null}, {"id": "7026e543-bd13-41f5-bfa8-cfe0d854eb97",
+    "document_type": null, "year": null, "pay_date": null}, {"id": "eb9c7c84-0cbf-4164-8097-01fffcc6e7b9",
+    "document_type": null, "year": null, "pay_date": null}, {"id": "b7936cc9-ba16-43e4-89f5-4c60c71de6ab",
+    "document_type": null, "year": null, "pay_date": null}, {"id": "fa2d463e-1003-465d-add3-2c9f79da6af6",
+    "document_type": null, "year": null, "pay_date": null}, {"id": "bd53a871-67aa-488d-a4e6-e1e13463d67a",
+    "document_type": null, "year": null, "pay_date": null}, {"id": "2899128d-5c86-427a-81a0-103a4c41e1da",
+    "document_type": null, "year": null, "pay_date": null}, {"id": "4f851bd5-cb73-42b9-8d57-b3836e418e62",
+    "document_type": null, "year": null, "pay_date": null}, {"id": "3ffe2f02-df4b-433a-8f3d-668542b65ec7",
+    "document_type": null, "year": null, "pay_date": null}, {"id": "80d58a30-b9ce-4201-8b89-afee18d77f2c",
+    "document_type": null, "year": null, "pay_date": null}, {"id": "9a28141c-9cb2-4f2a-98e5-3f7f580439a7",
+    "document_type": null, "year": null, "pay_date": null}, {"id": "38dd4302-58d3-44de-b661-4e9106c91f4a",
+    "document_type": null, "year": null, "pay_date": null}, {"id": "3ea243e7-94c0-4716-a11e-6d14d9ce8609",
+    "document_type": null, "year": null, "pay_date": null}, {"id": "9d4e1a2b-1604-44c2-a488-3c7891ea3913",
+    "document_type": null, "year": null, "pay_date": null}, {"id": "c3ae1293-4aaf-4622-95de-eb81cc10eadd",
+    "document_type": null, "year": null, "pay_date": null}, {"id": "133dc05d-058e-4370-aba5-a636912de5d7",
+    "document_type": null, "year": null, "pay_date": null}, {"id": "1ba8e029-94e5-4872-9d9d-b6852541854f",
+    "document_type": null, "year": null, "pay_date": null}, {"id": "a4e2cda4-1985-415e-92c8-fb2a7c9d92da",
+    "document_type": null, "year": null, "pay_date": null}, {"id": "f4b747d5-a895-4738-86ee-1970e4e2fdfe",
+    "document_type": null, "year": null, "pay_date": null}, {"id": "41562113-c644-412c-b8e3-7f5c2f73e073",
+    "document_type": null, "year": null, "pay_date": null}, {"id": "11000cfa-829f-4013-8077-95b7bbf7e4e4",
+    "document_type": null, "year": null, "pay_date": null}], "deleted": [], "id":
+    "2f76dfac-128d-491c-9f20-4ba4afbfdd6d", "name": "paystubs", "timestamp": "2025-06-24T22:04:38.613905+00:00",
+    "outcome": "success", "error_code": null, "error_type": null, "link_token_id":
+    "a63c75ef-3e91-4fff-8147-78cf7efeddd2", "params": {"count": 27, "from_pay_date":
+    "2024-03-19", "to_pay_date": "2025-03-18", "sync_status": "complete"}, "account_id":
+    "934f6406-c332-4c05-a3e8-6a90765c842d", "end_user_id": "6a927ef1-6c91-43c9-abbe-6728dc8ef877"}}'
+- :uri: "/webhooks/pinwheel/events"
+  :method: POST
+  :headers:
+    Accept:
+    - "*/*"
+    Accept-Encoding:
+    - gzip, deflate
+    Baggage:
+    - sentry-trace_id=bf0a6f19052d478482faf6b9608d92d5,sentry-environment=production,sentry-public_key=297602bff8d64da0a826a4d6d3734437
+    Content-Length:
+    - '527'
+    Content-Type:
+    - application/json
+    Host:
+    - cad4-24-6-157-50.ngrok-free.app
+    Pinwheel-Version:
+    - '2023-11-22'
+    Sentry-Trace:
+    - bf0a6f19052d478482faf6b9608d92d5-a5b48f6655415203
+    Traceparent:
+    - 00-00000000000000007c12890dae0d611d-83bcf435b17888e7-00
+    Tracestate:
+    - dd=s:-1
+    User-Agent:
+    - python-requests/2.31.0
+    X-Datadog-Parent-Id:
+    - '9492730626038073575'
+    X-Datadog-Sampling-Priority:
+    - "-1"
+    X-Datadog-Trace-Id:
+    - '8940358902131548445'
+    X-Forwarded-For:
+    - 18.214.233.159
+    X-Forwarded-Host:
+    - cad4-24-6-157-50.ngrok-free.app
+    X-Forwarded-Proto:
+    - https
+    X-Pinwheel-Signature:
+    - "<PINWHEEL_WEBHOOK_SIGNATURE>"
+    X-Pinwheel-Webhook-Id:
+    - 420900d5-2ffb-4ad9-b2a6-38ef975f9b21
+    X-Timestamp:
+    - '1750802680'
+  :body: '{"event_id": "d0aa03a9-a013-4ed2-960a-1c44a99ed34c", "event": "paystubs.fully_synced",
+    "payload": {"id": "2f76dfac-128d-491c-9f20-4ba4afbfdd6d", "name": "paystubs",
+    "timestamp": "2025-06-24T22:04:38.613905+00:00", "outcome": "success", "error_code":
+    null, "error_type": null, "link_token_id": "a63c75ef-3e91-4fff-8147-78cf7efeddd2",
+    "params": {"count": 27, "from_pay_date": "2024-03-19", "to_pay_date": "2025-03-18"},
+    "account_id": "934f6406-c332-4c05-a3e8-6a90765c842d", "end_user_id": "6a927ef1-6c91-43c9-abbe-6728dc8ef877"}}'
+- :uri: "/webhooks/pinwheel/events"
+  :method: POST
+  :headers:
+    Accept:
+    - "*/*"
+    Accept-Encoding:
+    - gzip, deflate
+    Baggage:
+    - sentry-trace_id=d816d617b9ca4f9cbbbfbaf9df5a255d,sentry-environment=production,sentry-public_key=297602bff8d64da0a826a4d6d3734437
+    Content-Length:
+    - '6689'
+    Content-Type:
+    - application/json
+    Host:
+    - cad4-24-6-157-50.ngrok-free.app
+    Pinwheel-Version:
+    - '2023-11-22'
+    Sentry-Trace:
+    - d816d617b9ca4f9cbbbfbaf9df5a255d-8b0b3ebf73635786
+    Traceparent:
+    - 00-00000000000000004dffbfbcb950fca0-7bc777572bd60fb3-00
+    Tracestate:
+    - dd=s:-1
+    User-Agent:
+    - python-requests/2.31.0
+    X-Datadog-Parent-Id:
+    - '8919228803311865779'
+    X-Datadog-Sampling-Priority:
+    - "-1"
+    X-Datadog-Trace-Id:
+    - '5620421677265517728'
+    X-Forwarded-For:
+    - 18.214.233.159
+    X-Forwarded-Host:
+    - cad4-24-6-157-50.ngrok-free.app
+    X-Forwarded-Proto:
+    - https
+    X-Pinwheel-Signature:
+    - "<PINWHEEL_WEBHOOK_SIGNATURE>"
+    X-Pinwheel-Webhook-Id:
+    - 420900d5-2ffb-4ad9-b2a6-38ef975f9b21
+    X-Timestamp:
+    - '1750802680'
+  :body: '{"event_id": "00239345-dca1-4a93-872a-6031ba6db58c", "event": "shifts.added",
+    "payload": {"added": [{"id": "f2f91bd3-0866-4628-8d24-c866a142f424", "document_type":
+    null, "year": null, "pay_date": null}, {"id": "f952537d-2cf4-4752-808f-a9466c31e496",
+    "document_type": null, "year": null, "pay_date": null}, {"id": "1b0e0638-ae07-4058-96d1-28b93a477c1b",
+    "document_type": null, "year": null, "pay_date": null}, {"id": "6e7cc97a-903f-46e7-8d68-292fc1036d03",
+    "document_type": null, "year": null, "pay_date": null}, {"id": "51381e29-a8d0-45ae-b9ae-7ec176488bc6",
+    "document_type": null, "year": null, "pay_date": null}, {"id": "c3cc2868-abcf-45d8-b458-d16b4edc0755",
+    "document_type": null, "year": null, "pay_date": null}, {"id": "b7720621-7e5a-4c47-ae77-99520d242fc7",
+    "document_type": null, "year": null, "pay_date": null}, {"id": "018a393e-dc1d-4893-90ad-c6a7ca0a0fb4",
+    "document_type": null, "year": null, "pay_date": null}, {"id": "4daaf545-e662-4836-b2eb-01d76ef5db87",
+    "document_type": null, "year": null, "pay_date": null}, {"id": "de39d57a-67b8-433d-be09-caf40cc703f8",
+    "document_type": null, "year": null, "pay_date": null}, {"id": "4ee95fdc-542c-4d2a-a97c-6d7a35b9176a",
+    "document_type": null, "year": null, "pay_date": null}, {"id": "8e849bd2-86ad-458d-881f-5a8c989e32d6",
+    "document_type": null, "year": null, "pay_date": null}, {"id": "10d086ba-0feb-4328-952d-ffc79d1579e3",
+    "document_type": null, "year": null, "pay_date": null}, {"id": "2b75896f-d439-43d9-901c-44491ee49d59",
+    "document_type": null, "year": null, "pay_date": null}, {"id": "f98a70ef-d5e1-4809-b5e4-fa723e9c1581",
+    "document_type": null, "year": null, "pay_date": null}, {"id": "3cc078f8-6c44-4261-bd12-31b4e01c1f92",
+    "document_type": null, "year": null, "pay_date": null}, {"id": "17a7240f-d976-452b-acda-8b8fe70a3cee",
+    "document_type": null, "year": null, "pay_date": null}, {"id": "8e33867c-80d6-433c-b4a4-1f67374f5ee9",
+    "document_type": null, "year": null, "pay_date": null}, {"id": "1658a2ec-3286-4b04-b56f-2a1602a1b0dc",
+    "document_type": null, "year": null, "pay_date": null}, {"id": "7cb8cb37-b188-475d-aa0a-67647c7a75f6",
+    "document_type": null, "year": null, "pay_date": null}, {"id": "23bbc400-45bd-4be8-a48c-b225e778cdeb",
+    "document_type": null, "year": null, "pay_date": null}, {"id": "9c17163c-39a6-412b-a33a-60acdddbeda0",
+    "document_type": null, "year": null, "pay_date": null}, {"id": "4fdfdd2d-d88e-49aa-8072-eafbb6a4a479",
+    "document_type": null, "year": null, "pay_date": null}, {"id": "8059b095-15a3-4426-8bf9-ce1c6ec74dd6",
+    "document_type": null, "year": null, "pay_date": null}, {"id": "b3cd37c5-f8cd-4b24-914d-2bcb56448280",
+    "document_type": null, "year": null, "pay_date": null}, {"id": "b772245e-6fd0-4b33-be0f-8c246a1d77b5",
+    "document_type": null, "year": null, "pay_date": null}, {"id": "35c6e211-6730-4aa6-8aa6-543794608ea8",
+    "document_type": null, "year": null, "pay_date": null}, {"id": "66c5faf1-2f9c-4779-a48c-3336d8919347",
+    "document_type": null, "year": null, "pay_date": null}, {"id": "59af6371-322d-48eb-b5a3-47b65f83f01b",
+    "document_type": null, "year": null, "pay_date": null}, {"id": "70926496-9837-4d10-9b70-198562424850",
+    "document_type": null, "year": null, "pay_date": null}, {"id": "2dc42780-8d78-43e7-a2e0-0e7f381626de",
+    "document_type": null, "year": null, "pay_date": null}, {"id": "70efacf1-863f-46d2-a136-79df9f0a60af",
+    "document_type": null, "year": null, "pay_date": null}, {"id": "cf0291b1-7ebd-4a1f-ad69-1474b0626993",
+    "document_type": null, "year": null, "pay_date": null}, {"id": "fe0d1084-1155-4dfe-9ddf-05b0a85149f3",
+    "document_type": null, "year": null, "pay_date": null}, {"id": "87baa1af-e106-465f-a914-167d0710bdbe",
+    "document_type": null, "year": null, "pay_date": null}, {"id": "080d8fbe-c6d3-4092-b763-993be62061f9",
+    "document_type": null, "year": null, "pay_date": null}, {"id": "57c2d2e5-cd86-405b-afbe-693aaf2b2008",
+    "document_type": null, "year": null, "pay_date": null}, {"id": "5d8ed571-d349-4c8a-8ea5-811677b2add8",
+    "document_type": null, "year": null, "pay_date": null}, {"id": "ab609902-5b4b-4024-8498-a65d49b3b4d6",
+    "document_type": null, "year": null, "pay_date": null}, {"id": "ce4a9660-f57b-45f6-9146-c5a5490bb141",
+    "document_type": null, "year": null, "pay_date": null}, {"id": "b2818df5-afc2-4a02-be3a-1f473b20456b",
+    "document_type": null, "year": null, "pay_date": null}, {"id": "191d50e8-5c20-421a-a97a-0907638b83bb",
+    "document_type": null, "year": null, "pay_date": null}, {"id": "09311181-6ac2-4eec-8da9-9b0e1e773e80",
+    "document_type": null, "year": null, "pay_date": null}, {"id": "7cbad244-0b96-438a-8e4d-aa66127edcf8",
+    "document_type": null, "year": null, "pay_date": null}, {"id": "04bdb079-f9dd-4772-bef6-3b91851aae05",
+    "document_type": null, "year": null, "pay_date": null}, {"id": "ed2ec28a-3f99-4bf0-9d8e-3098a713ce35",
+    "document_type": null, "year": null, "pay_date": null}, {"id": "76ea897f-113d-46ff-bc08-bfa12415d324",
+    "document_type": null, "year": null, "pay_date": null}, {"id": "a3f7ac85-5387-468f-8d39-750661dfff7f",
+    "document_type": null, "year": null, "pay_date": null}, {"id": "ab15b0d2-5d99-442e-9a37-ab0baa992b02",
+    "document_type": null, "year": null, "pay_date": null}, {"id": "304bfe36-cc66-47f2-8bf1-100f0c55b6ba",
+    "document_type": null, "year": null, "pay_date": null}, {"id": "21597525-94bd-49fc-859b-5a4be5e6871f",
+    "document_type": null, "year": null, "pay_date": null}, {"id": "d09305b9-5874-4056-bcca-f6915692ab05",
+    "document_type": null, "year": null, "pay_date": null}, {"id": "0afcc9da-8c5e-43b3-94ab-6a81fcfcbc6d",
+    "document_type": null, "year": null, "pay_date": null}, {"id": "81db863d-776a-41ce-8396-f4bb7b9ca87b",
+    "document_type": null, "year": null, "pay_date": null}, {"id": "ac8b63b4-3f24-48f9-a931-f54bfbe1b317",
+    "document_type": null, "year": null, "pay_date": null}, {"id": "3b93aa55-2c8f-4deb-9289-2685afcba202",
+    "document_type": null, "year": null, "pay_date": null}, {"id": "9212a7b3-2240-46c8-a068-80c25682b692",
+    "document_type": null, "year": null, "pay_date": null}, {"id": "a26ba98c-375c-46a6-8ec5-1d3b684aa291",
+    "document_type": null, "year": null, "pay_date": null}, {"id": "b37234e7-0c8b-42a6-a23e-636e788de5c1",
+    "document_type": null, "year": null, "pay_date": null}, {"id": "1771c219-b0c0-4cce-9e8b-d12f8d3a847c",
+    "document_type": null, "year": null, "pay_date": null}], "deleted": [], "id":
+    "8e08880c-45dd-4dcd-a0fe-84f74ff7321a", "name": "shifts", "timestamp": "2025-06-24T22:04:39.343100+00:00",
+    "outcome": "success", "error_code": null, "error_type": null, "link_token_id":
+    "a63c75ef-3e91-4fff-8147-78cf7efeddd2", "params": {"count": 60, "sync_status":
+    "complete"}, "account_id": "934f6406-c332-4c05-a3e8-6a90765c842d", "end_user_id":
+    "6a927ef1-6c91-43c9-abbe-6728dc8ef877"}}'
+- :uri: "/webhooks/pinwheel/events"
+  :method: POST
+  :headers:
+    Accept:
+    - "*/*"
+    Accept-Encoding:
+    - gzip, deflate
+    Baggage:
+    - sentry-trace_id=c673ca71ef654f62b38c6ccb9a511f1f,sentry-environment=production,sentry-public_key=297602bff8d64da0a826a4d6d3734437
+    Content-Length:
+    - '453'
+    Content-Type:
+    - application/json
+    Host:
+    - cad4-24-6-157-50.ngrok-free.app
+    Pinwheel-Version:
+    - '2023-11-22'
+    Sentry-Trace:
+    - c673ca71ef654f62b38c6ccb9a511f1f-a8509c26299615bf
+    Traceparent:
+    - 00-0000000000000000e09d14df8cbf8885-5e2ec0c3f514369d-00
+    Tracestate:
+    - dd=s:-1
+    User-Agent:
+    - python-requests/2.31.0
+    X-Datadog-Parent-Id:
+    - '6786573636356814493'
+    X-Datadog-Sampling-Priority:
+    - "-1"
+    X-Datadog-Trace-Id:
+    - '16185115586211055749'
+    X-Forwarded-For:
+    - 54.235.190.63
+    X-Forwarded-Host:
+    - cad4-24-6-157-50.ngrok-free.app
+    X-Forwarded-Proto:
+    - https
+    X-Pinwheel-Signature:
+    - "<PINWHEEL_WEBHOOK_SIGNATURE>"
+    X-Pinwheel-Webhook-Id:
+    - 420900d5-2ffb-4ad9-b2a6-38ef975f9b21
+    X-Timestamp:
+    - '1750802684'
+  :body: '{"event_id": "b74dbaa5-0634-4df6-8769-c2e38bb144b5", "event": "employment.added",
+    "payload": {"id": "a73f8b70-b408-4d08-b1c2-af0d94d533f3", "name": "employment",
+    "timestamp": "2025-06-24T22:04:40.932386+00:00", "outcome": "success", "error_code":
+    null, "error_type": null, "link_token_id": "a63c75ef-3e91-4fff-8147-78cf7efeddd2",
+    "params": {}, "account_id": "934f6406-c332-4c05-a3e8-6a90765c842d", "end_user_id":
+    "6a927ef1-6c91-43c9-abbe-6728dc8ef877"}}'

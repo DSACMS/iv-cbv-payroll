@@ -9,8 +9,15 @@ require "view_component/test_helpers"
 require "support/context/gpg_setup"
 require "view_component/system_test_helpers"
 
+
+# Capybara configuration for E2E tests
 require "capybara/rspec"
-Capybara.default_driver = Capybara.javascript_driver
+if ENV["E2E_SHOW_BROWSER"]
+  Capybara.default_driver = :selenium_chrome
+else
+  Capybara.default_driver = :selenium_chrome_headless
+end
+Capybara.javascript_driver = Capybara.default_driver
 
 
 Rails.application.load_tasks
@@ -40,7 +47,31 @@ rescue ActiveRecord::PendingMigrationError => e
   puts e.to_s.strip
   exit 1
 end
+
+VCR.configure do |config|
+  if ENV["E2E_RECORD_MODE"]
+    # Necessary to set up webhook subscriptions to Argyle/Pinwheel.
+    config.allow_http_connections_when_no_cassette = true
+  end
+  config.cassette_library_dir = "spec/fixtures/vcr_cassettes" # Overwritten in E2E tests
+  config.hook_into :webmock
+  config.ignore_localhost = true
+  config.ignore_hosts %w[
+    logs.browser-intake-datadoghq.com
+    firefox-settings-attachments.cdn.mozilla.net
+    firefox.settings.services.mozilla.com plugin.argyle.com
+    switchboard.pwhq.net passwordsleakcheck-pa.googleapis.com
+    optimizationguide-pa.googleapis.com cdn.getpinwheel.com featuregates.org
+    datadog events.statsigapi.net content-signature-2.cdn.mozilla.net
+    content-autofill.googleapis.com
+  ]
+  config.default_cassette_options = { record: :once }
+end
+
 RSpec.configure do |config|
+  # Remove this line if you're not using ActiveRecord or ActiveRecord fixtures
+  config.fixture_path = "#{::Rails.root}/spec/fixtures"
+
   # Include a handful of useful helpers we've written
   config.include TestHelpers
 

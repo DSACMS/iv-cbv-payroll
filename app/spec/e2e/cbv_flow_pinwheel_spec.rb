@@ -1,20 +1,18 @@
 require "rails_helper"
 
-RSpec.describe "e2e CBV flow test", type: :feature, js: true do
+RSpec.describe "e2e CBV flow pinwheel test", type: :feature, js: true do
   include E2e::TestHelpers
 
   let(:cbv_flow_invitation) { create(:cbv_flow_invitation) }
 
   around do |ex|
-    override_supported_providers([ :argyle ]) do
+    override_supported_providers([ :pinwheel ]) do
       @e2e = E2e::MockingService.new(server_url: URI(page.server_url))
-      @e2e.use_recording("e2e_cbv_flow_english_argyle_only", &ex)
+      @e2e.use_recording("e2e_cbv_flow_pinwheel", &ex)
     end
   end
 
-  it "completes the flow for an Argyle employer" do
-    raise "Argyle not in supported_providers!" unless Rails.application.config.supported_providers.include?(:argyle)
-
+  it "completes the flow for an Pinwheel employer" do
     # /cbv/entry
     visit URI(root_url).request_uri
     visit URI(cbv_flow_invitation.to_url).request_uri
@@ -22,25 +20,31 @@ RSpec.describe "e2e CBV flow test", type: :feature, js: true do
     find("label", text: I18n.t("cbv.entries.show.checkbox.default", agency_full_name: I18n.t("shared.agency_full_name.sandbox"))).click
     click_button I18n.t("cbv.entries.show.continue")
 
+    # Set `end_user_id` to a known value so the pinwheel webhooks later will match.
+    update_cbv_flow_with_deterministic_end_user_id_for_pinwheel(@e2e.cassette_name)
+
     # /cbv/employer_search
     verify_page(page, title: I18n.t("cbv.employer_searches.show.header"), wait: 10)
+    fill_in name: "query", with: "foo"
+    click_button I18n.t("cbv.employer_searches.show.search")
+    expect(page).to have_content("McKee Foods")
 
     @e2e.replay_modal_callbacks(page.driver.browser) do
-      click_button "Paychex"
+      find("div.usa-card__container", text: "McKee Foods").click_button(I18n.t("cbv.employer_searches.show.select"))
     end
 
     @e2e.record_modal_callbacks(page.driver.browser) do
-      argyle_container = find("div[id*=\"argyle-link-root\"]")
-      page.within(argyle_container) do
-        fill_in "username", with: "test_1", wait: 10
-        fill_in "password", with: "passgood"
-        click_button "Connect"
-        fill_in "legacy_mfa_token", with: "8081", wait: 30
-        click_button "Continue", wait: 30
+      pinwheel_modal = page.find("iframe.pinwheel-modal-show")
+      page.within_frame(pinwheel_modal) do
+        fill_in "Workday Organization ID", with: "company_good", wait: 20
+        click_button "Continue"
+        fill_in "Username", with: "user_good", wait: 20
+        fill_in "Password", with: "pass_good"
+        click_button "Continue"
       end
 
-      # Wait for Argyle modal to disappear
-      find_all("div[id*=\"argyle-link-root\"]", maximum: 0, minimum: nil, wait: 30)
+      # Wait for Pinwheel modal to disappear
+      find_all("iframe.pinwheel-modal-show", visible: true, maximum: 0, minimum: nil, wait: 30)
     end
 
     # /cbv/synchronizations
@@ -49,7 +53,7 @@ RSpec.describe "e2e CBV flow test", type: :feature, js: true do
     @e2e.replay_webhooks
 
     # /cbv/payment_details
-    verify_page(page, title: I18n.t("cbv.payment_details.show.header", employer_name: ""), wait: 60)
+    verify_page(page, title: I18n.t("cbv.payment_details.show.header", employer_name: ""), wait: 120)
     fill_in "cbv_flow[additional_information]", with: "Some kind of additional information"
     click_button I18n.t("cbv.payment_details.show.continue")
 
@@ -59,7 +63,7 @@ RSpec.describe "e2e CBV flow test", type: :feature, js: true do
     click_button I18n.t("cbv.add_jobs.show.continue")
 
     # /cbv/summary
-    verify_page(page, title: I18n.t("cbv.summaries.show.header"))
+    verify_page(page, title: I18n.t("cbv.summaries.show.header"), wait: 10)
     click_on "Continue"
 
     # /cbv/submits
@@ -68,7 +72,7 @@ RSpec.describe "e2e CBV flow test", type: :feature, js: true do
     click_on "Share my report with CBV"
 
     # /cbv/success
-    verify_page(page, title: I18n.t("cbv.successes.show.header", agency_acronym: ""))
+    verify_page(page, title: I18n.t("cbv.successes.show.header", agency_acronym: ""), wait: 20)
     # TODO: Test PDF rendering by writing it to a file
   end
 end
