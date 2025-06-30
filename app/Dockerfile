@@ -23,8 +23,8 @@ RUN apt-get update -qq && \
       liblzma5 \
       # CVE-2025-37990 \
       linux-libc-dev \
-      # CVE-2025-32415 \
-      libxml2 libxml2-dev \
+      # CVE-2025-32415 CVE-2025-5222 \
+      libxml2 libxml2-dev icu-devtools libicu-dev libicu72 \
       && \
     rm -rf /var/lib/apt/lists /var/cache/apt/archives
 
