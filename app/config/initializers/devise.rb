@@ -279,24 +279,6 @@ Devise.setup do |config|
   # Add a new OmniAuth provider. Check the wiki for more information on setting
   # up on your models and hooks.
   config.omniauth(
-    :ma_dta,
-    {
-      **Rails.application.config.client_agencies["ma"].sso,
-      strategy_class: OmniAuth::Strategies::AzureActivedirectoryV2,
-      pkce: true
-    }
-  )
-
-  config.omniauth(
-    :nyc_dss,
-    {
-      **Rails.application.config.client_agencies["nyc"].sso,
-      strategy_class: OmniAuth::Strategies::AzureActivedirectoryV2,
-      pkce: true
-    }
-  )
-
-  config.omniauth(
     :sandbox,
     {
       **Rails.application.config.client_agencies["sandbox"].sso,

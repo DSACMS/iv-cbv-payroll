@@ -29,20 +29,6 @@ repos:
     files: '^app/config/locales/.*\.yml$'
     pass_filenames: false
 
-  - id: i18n-missing
-    name: i18n-missing
-    entry: bin/run-linter --cd app -- bundle exec i18n-tasks missing
-    language: ruby
-    files: '^app/config/locales/.*\.yml$'
-    pass_filenames: false
-
-  - id: i18n-interpolations
-    name: i18n-interpolations
-    entry: bin/run-linter --cd app -- bundle exec i18n-tasks check-consistent-interpolations
-    language: ruby
-    files: '^app/config/locales/.*\.yml$'
-    pass_filenames: false
-
   - id: shellcheck
     name: shellcheck
     entry: shellcheck

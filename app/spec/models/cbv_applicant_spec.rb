@@ -72,7 +72,7 @@ RSpec.describe CbvApplicant, type: :model do
     end
 
     describe "ActiveRecord::Base validations" do
-      let(:valid_attributes) { attributes_for(:cbv_applicant, :nyc) }
+      let(:valid_attributes) { attributes_for(:cbv_applicant, :sandbox) }
 
       describe "middle_name" do
         it "allows middle_name to be optional" do
@@ -94,19 +94,16 @@ RSpec.describe CbvApplicant, type: :model do
           expect(applicant).not_to be_valid
         end
 
-        it "validates snap_application_date is not in the future" do
+        it "allows snap_application_date in the future for sandbox agency" do
           applicant = CbvApplicant.new(valid_attributes)
           applicant.snap_application_date = Date.tomorrow
-          expect(applicant).not_to be_valid
-          expect(applicant.errors[:snap_application_date]).to include(
-            I18n.t('activerecord.errors.models.cbv_applicant/nyc.attributes.snap_application_date.invalid_date')
-          )
+          expect(applicant).to be_valid
         end
 
         it "parses snap_application_date strings correctly" do
           applicant = CbvApplicant.new(valid_attributes)
           applicant.snap_application_date = "08/15/2023"
-          expect(applicant).not_to be_valid
+          expect(applicant).to be_valid
           expect(applicant.snap_application_date).to eq(Date.new(2023, 8, 15))
         end
 
@@ -115,7 +112,7 @@ RSpec.describe CbvApplicant, type: :model do
           applicant.snap_application_date = "invalid"
           expect(applicant).not_to be_valid
           expect(applicant.errors[:snap_application_date]).to include(
-            I18n.t('activerecord.errors.models.cbv_applicant/nyc.attributes.snap_application_date.invalid_date')
+            I18n.t('activerecord.errors.models.cbv_applicant.attributes.snap_application_date.invalid_date')
           )
         end
       end

@@ -1,9 +1,6 @@
 <% content_for :title, t(".pdf.client.header") %>
 
 <strong>
-  <% if current_agency?(:ma) || current_agency?(:nyc) %>
-    <%= image_tag wicked_pdf_asset_base64(current_agency.logo_square_path), class: "text-middle cbv-header__agency-logo cbv-header__agency-logo--#{current_agency.id}" %>
-  <% end %>
   <span class="cbv-header__pilot-name font-sans-md text-middle">
     <%= t("shared.pilot_name") %>
   </span>
@@ -33,7 +30,7 @@
     </div>
   </div>
 <% else %>
-  <p><%= t(".pdf.client.description", agency_acronym: current_agency.agency_short_name) %></p>
+  <p><%= t(".pdf.client.description", agency_acronym: agency_translation("shared.agency_acronym")) %></p>
 <% end %>
 
 <h2><%= t(".pdf.client.client_report_information") %></h2>
@@ -78,9 +75,6 @@
   <%= table.with_row(t(".pdf.client.date_range"), "#{format_parsed_date(aggregator_report.from_date)} to #{format_parsed_date(aggregator_report.to_date)}") %>
   <% if is_caseworker %>
     <%= table.with_row(t(".pdf.caseworker.agreement_consent_timestamp"), @cbv_flow.consented_to_authorized_use_at) %>
-    <% if current_agency?(:ma) %>
-      <%= table.with_row(t(".pdf.caseworker.staff_beacon_id_wel_id"), @cbv_flow.cbv_applicant.beacon_id) %>
-    <% end %>
   <% end %>
 <% end %>
 

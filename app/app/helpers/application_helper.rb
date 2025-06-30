@@ -9,8 +9,8 @@ module ApplicationHelper
   # client agency-specific translations as:
   #
   # foo:
-  #   nyc: Some String
-  #   ma: Other String
+  #   az_des: Some String
+  #   la_ldh: Other String
   #   default: Default String
   #
   # Then call this method with, `agency_translation("foo")` and it will attempt

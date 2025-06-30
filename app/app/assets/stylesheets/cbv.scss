@@ -83,20 +83,7 @@ html {
     max-width: 200px;
   }
 }
-.cbv-header__agency-logo--ma {
-  height: 45px;
 
-  @include at-media-max($theme-header-min-width) {
-    height: 30px;
-  }
-}
-.cbv-header__agency-logo--nyc {
-  height: 30px;
-
-  @include at-media($theme-header-min-width) {
-    height: 25px;
-  }
-}
 .cbv-header__agency-logo--la_ldh {
   height: 45px;
   width: 320px;

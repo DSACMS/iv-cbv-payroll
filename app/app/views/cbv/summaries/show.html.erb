@@ -5,7 +5,7 @@
 
 <div class="margin-bottom-6 usa-prose" data-testid="summary-description">
   <p>
-    <%= t(".description", start_date: format_date(@aggregator_report.from_date), end_date: format_date(@aggregator_report.to_date), agency_acronym: current_agency.agency_short_name) %>
+    <%= t(".description", start_date: format_date(@aggregator_report.from_date), end_date: format_date(@aggregator_report.to_date), agency_acronym: agency_translation("shared.agency_acronym")) %>
   </p>
 </div>
 
@@ -27,13 +27,13 @@
             <th class="padding-3" style="background-color: #d9e8f6;" colspan="2">
               <h4 class="margin-0" data-testid="paystub-total-income">
                 <% if summary[:total] > 0 %>
-                <% if employer_name %>
-                <%= t(".total_income_from", employer_name: employer_name, amount: format_money(summary[:total])) %>
+                  <% if employer_name %>
+                    <%= t(".total_income_from", employer_name: employer_name, amount: format_money(summary[:total])) %>
+                  <% else %>
+                    <%= t(".total_income_from_no_employer_name", amount: format_money(summary[:total])) %>
+                  <% end %>
                 <% else %>
-                <%= t(".total_income_from_no_employer_name", amount: format_money(summary[:total])) %>
-                <% end %>
-                <% else %>
-                <%= t(".none_found") %>
+                  <%= t(".none_found") %>
                 <% end %>
               </h4>
             </th>
@@ -58,7 +58,7 @@
 <table class="usa-table usa-table--borderless width-full margin-top-2">
   <h3><%= t(".your_information") %></h3>
   <div class="usa-prose">
-    <p><%= agency_translation(".must_match", agency_acronym: current_agency.agency_short_name) %></p>
+    <p><%= agency_translation(".must_match", agency_acronym: agency_translation("shared.agency_acronym")) %></p>
   </div>
   <thead class="border-top-05">
     <tr>

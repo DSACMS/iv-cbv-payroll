@@ -10,7 +10,7 @@ RSpec.shared_context "gpg_setup" do
         Key-Length: 2048
         Subkey-Type: RSA
         Subkey-Length: 2048
-        Name-Real: MA MOVEit
+        Name-Real: Test MOVEit
         Name-Email: test@example.com
         Expire-Date: 0
         %no-protection

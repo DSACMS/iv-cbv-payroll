@@ -79,18 +79,6 @@ locals {
 
 
     # Transmission Configuration:
-    NYC_HRA_EMAIL = {
-      manage_method     = "manual"
-      secret_store_name = "/service/${var.app_name}-${var.environment}/nyc-hra-email"
-    },
-    MA_DTA_S3_BUCKET = {
-      manage_method     = "manual"
-      secret_store_name = "/service/${var.app_name}-${var.environment}/ma-dta-s3-bucket"
-    },
-    MA_DTA_S3_PUBLIC_KEY = {
-      manage_method     = "manual"
-      secret_store_name = "/service/${var.app_name}-${var.environment}/ma-dta-s3-public-key"
-    },
     LA_LDH_EMAIL = {
       manage_method     = "manual"
       secret_store_name = "/service/${var.app_name}-${var.environment}/la-ldh-email"
@@ -123,14 +111,6 @@ locals {
     AZ_DES_PINWHEEL_ENVIRONMENT = {
       manage_method     = "manual"
       secret_store_name = "/service/${var.app_name}-${var.environment}/az-des-pinwheel-environment"
-    },
-    NYC_PINWHEEL_ENVIRONMENT = {
-      manage_method     = "manual"
-      secret_store_name = "/service/${var.app_name}-${var.environment}/nyc-pinwheel-environment"
-    },
-    MA_PINWHEEL_ENVIRONMENT = {
-      manage_method     = "manual"
-      secret_store_name = "/service/${var.app_name}-${var.environment}/ma-pinwheel-environment"
     },
     LA_LDH_PINWHEEL_ENVIRONMENT = {
       manage_method     = "manual"
@@ -181,30 +161,6 @@ locals {
     },
 
     # SSO Configuration:
-    AZURE_NYC_DSS_CLIENT_ID = {
-      manage_method     = "manual"
-      secret_store_name = "/service/${var.app_name}-${var.environment}/azure-nyc-dss-client-id"
-    },
-    AZURE_NYC_DSS_CLIENT_SECRET = {
-      manage_method     = "manual"
-      secret_store_name = "/service/${var.app_name}-${var.environment}/azure-nyc-dss-client-secret"
-    },
-    AZURE_NYC_DSS_TENANT_ID = {
-      manage_method     = "manual"
-      secret_store_name = "/service/${var.app_name}-${var.environment}/azure-nyc-dss-tenant-id"
-    },
-    AZURE_MA_DTA_CLIENT_ID = {
-      manage_method     = "manual"
-      secret_store_name = "/service/${var.app_name}-${var.environment}/azure-ma-dta-client-id"
-    },
-    AZURE_MA_DTA_CLIENT_SECRET = {
-      manage_method     = "manual"
-      secret_store_name = "/service/${var.app_name}-${var.environment}/azure-ma-dta-client-secret"
-    },
-    AZURE_MA_DTA_TENANT_ID = {
-      manage_method     = "manual"
-      secret_store_name = "/service/${var.app_name}-${var.environment}/azure-ma-dta-tenant-id"
-    },
     AZURE_SANDBOX_CLIENT_ID = {
       manage_method     = "manual"
       secret_store_name = "/service/${var.app_name}-${var.environment}/azure-sandbox-client-id"
@@ -235,22 +191,6 @@ locals {
     },
 
     # Other site-specific Configuration:
-    MA_DTA_ALLOWED_CASEWORKER_EMAILS = {
-      manage_method     = "manual"
-      secret_store_name = "/service/${var.app_name}-${var.environment}/ma-dta-allowed-caseworker-emails"
-    },
-    MA_DTA_S3_BUCKET = {
-      manage_method     = "manual"
-      secret_store_name = "/service/${var.app_name}-${var.environment}/ma-dta-s3-bucket"
-    },
-    MA_DTA_S3_PUBLIC_KEY = {
-      manage_method     = "manual"
-      secret_store_name = "/service/${var.app_name}-${var.environment}/ma-dta-s3-public-key"
-    },
-    MA_WEEKLY_REPORT_RECIPIENTS = {
-      manage_method     = "manual"
-      secret_store_name = "/service/${var.app_name}-${var.environment}/ma-weekly-report-recipients"
-    },
     LA_LDH_WEEKLY_REPORT_RECIPIENTS = {
       manage_method     = "manual"
       secret_store_name = "/service/${var.app_name}-${var.environment}/la-ldh-weekly-report-recipients"
@@ -260,14 +200,6 @@ locals {
       secret_store_name = "/service/${var.app_name}-${var.environment}/az-des-weekly-report-recipients"
     }
     # Domain names
-    NYC_DOMAIN_NAME = {
-      manage_method     = "manual"
-      secret_store_name = "/service/${var.app_name}-${var.environment}/nyc-domain-name"
-    },
-    MA_DTA_DOMAIN_NAME = {
-      manage_method     = "manual"
-      secret_store_name = "/service/${var.app_name}-${var.environment}/ma-dta-domain-name"
-    },
     AZ_DES_DOMAIN_NAME = {
       manage_method     = "manual"
       secret_store_name = "/service/${var.app_name}-${var.environment}/az-des-domain-name"

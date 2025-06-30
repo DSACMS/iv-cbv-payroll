@@ -2,7 +2,7 @@ require "rails_helper"
 
 RSpec.describe Api::InvitationsController do
   describe "#create" do
-    let(:client_agency_id) { "ma".to_sym }
+    let(:client_agency_id) { "sandbox".to_sym }
     let(:api_access_token_instance) do
       user = create(:user, :with_access_token, email: "test@test.com", client_agency_id: client_agency_id, is_service_account: true)
       user.api_access_tokens.first
@@ -83,7 +83,7 @@ RSpec.describe Api::InvitationsController do
 
     context "params not included in the agency's valid attributes" do
       let(:params_with_invalid_attributes) do
-        # client_id_number is only valid for NYC (not MA)
+        # client_id_number is only valid for certain agencies
         valid_params[:agency_partner_metadata][:client_id_number] = "1234567"
         valid_params
       end

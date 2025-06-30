@@ -8,9 +8,9 @@
   <ol>
     <li><%= t(".option_1") %></li>
     <li><%= t(".option_2") %></li>
-    <li><%= t(".option_3", agency_acronym: current_agency.agency_short_name) %></li>
+    <li><%= t(".option_3", agency_acronym: agency_translation("shared.agency_acronym")) %></li>
     <% if @cbv_flow.has_account_with_required_data? %>
-      <li><%= t("cbv.missing_results.show.continue_to_review", agency_acronym: current_agency.agency_short_name) %></li>
+      <li><%= t("cbv.missing_results.show.continue_to_review", agency_acronym: agency_translation("shared.agency_acronym")) %></li>
     <% end %>
   </ol>
 </div>

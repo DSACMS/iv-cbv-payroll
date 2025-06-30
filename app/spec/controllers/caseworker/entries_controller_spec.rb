@@ -6,26 +6,16 @@ RSpec.describe Caseworker::EntriesController do
   describe "#index" do
     render_views
 
-    context "when state is ma" do
-      it "should show ma specific copy with a link to /sso/ma" do
-        agency_short_name = client_agency_config["ma"].agency_short_name
-        get :index, params: { client_agency_id: "ma" }
-        expect(response).to redirect_to(root_url)
-      end
-    end
-
-    context "when state is nyc" do
+    context "when state is sandbox" do
       before do
-        stub_client_agency_config_value("nyc", "staff_portal_enabled", true)
+        stub_client_agency_config_value("sandbox", "staff_portal_enabled", true)
       end
 
-      it "should show nyc specific copy with a link to /sso/nyc" do
-        agency_short_name = client_agency_config["nyc"].agency_short_name
-        get :index, params: { client_agency_id: "nyc" }
+      it "should show sandbox specific copy with a link to /sso/sandbox" do
+        get :index, params: { client_agency_id: "sandbox" }
         expect(response).to be_successful
         unescaped_body = CGI.unescapeHTML(response.body)
-        expect(unescaped_body).to include(I18n.t("caseworker.entries.index.header.nyc", agency_short_name: agency_short_name))
-        expect(unescaped_body).to include("Log in with your LAN ID")
+        expect(unescaped_body).to include(I18n.t("caseworker.entries.index.header.sandbox"))
       end
     end
 
@@ -35,7 +25,6 @@ RSpec.describe Caseworker::EntriesController do
       end
 
       it "redirect to the root page" do
-        agency_short_name = client_agency_config["sandbox"].agency_short_name
         get :index, params: { client_agency_id: "sandbox" }
         expect(response).to redirect_to(root_url)
       end
