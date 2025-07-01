@@ -16,8 +16,8 @@ class CbvApplicant < ApplicationRecord
   self.inheritance_column = "client_agency_id"
 
   def self.sti_name
-    # "CbvApplicant::Sandbox" => "sandbox"
-    name.demodulize.downcase
+    # "CbvApplicant::AzDes" => "az_des"
+    name.demodulize.underscore
   end
 
   def self.sti_class_for(type_name)
