@@ -96,6 +96,14 @@ class CbvApplicant < ApplicationRecord
     .include?(attribute)
   end
 
+  # Override this in a subclass based on the indexing data.
+  #
+  # This returns an array of names the agency gave us expecting to need
+  # income verification.
+  def agency_expected_names
+    []
+  end
+
   private
 
   def parse_date(value)

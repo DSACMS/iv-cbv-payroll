@@ -65,4 +65,14 @@ RSpec.describe CbvApplicant::AzDes, type: :model do
       end
     end
   end
+
+  describe "#agency_expected_names" do
+    let(:applicant) { create(:cbv_applicant, :az_des) }
+
+    it "returns an array of names" do
+      expect(applicant.agency_expected_names).to eq([
+        "Mark Scout"
+      ])
+    end
+  end
 end
