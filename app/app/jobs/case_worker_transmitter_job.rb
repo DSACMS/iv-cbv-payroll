@@ -36,11 +36,9 @@ class CaseWorkerTransmitterJob < ApplicationJob
       cbv_flow.touch(:transmitted_at)
       track_transmitted_event(cbv_flow, aggregator_report.paystubs)
     when "shared_email"
-      CaseworkerMailer.with(
-        email_address: current_agency.transmission_method_configuration.dig("email"),
-        cbv_flow: cbv_flow,
-        aggregator_report: aggregator_report,
-        ).summary_email.deliver_now
+      Transmitters::SharedEmailTransmitter
+        .new(cbv_flow, current_agency, aggregator_report)
+        .deliver_email!
       cbv_flow.touch(:transmitted_at)
       track_transmitted_event(cbv_flow, aggregator_report.paystubs)
     when "s3"
