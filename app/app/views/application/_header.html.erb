@@ -1,12 +1,12 @@
 <div class="usa-overlay"></div>
-<% if current_agency.present? %>
-  <header class="cbv-header__preheader">
-    <div class="cbv-header__preheader__text">
-      <%= agency_translation("shared.header.preheader") %>
-    </div>
-  </header>
-<% end %>
 <header class="usa-header usa-header--basic" aria-label="<%= t("shared.header.aria_label") %>" data-controller="language">
+  <% if current_agency.present? %>
+    <div class="cbv-header__preheader">
+      <div class="cbv-header__preheader__text">
+        <%= agency_translation("shared.header.preheader") %>
+      </div>
+    </div>
+  <% end %>
   <div class="usa-nav-container">
     <div class="usa-navbar">
       <div class="usa-logo">
