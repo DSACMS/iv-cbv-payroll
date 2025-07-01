@@ -9,7 +9,7 @@ resource "aws_backup_plan" "backup_plan" {
   rule {
     rule_name         = "${var.name}-db-backup-rule"
     target_vault_name = aws_backup_vault.backup_vault.name
-    schedule          = "cron(30 0 * * ? *)" # Run daily at 12:30am (UTC)
+    schedule          = "cron(0 7 * * ? *)" # Run daily at 7am UTC (2am EST)
 
     lifecycle {
       delete_after = 21
