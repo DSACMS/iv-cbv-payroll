@@ -46,6 +46,7 @@ class ClientAgencyConfig
       pay_income_days
       pinwheel_api_token
       pinwheel_environment
+      pilot_ended
       argyle_environment
       staff_portal_enabled
       sso
@@ -68,6 +69,7 @@ class ClientAgencyConfig
       @logo_square_path = yaml["logo_square_path"]
       @pay_income_days = yaml.fetch("pay_income_days", { w2: 90, gig: 90 }).symbolize_keys
       @pinwheel_environment = yaml["pinwheel"]["environment"] || "sandbox"
+      @pilot_ended = yaml["pilot_ended"] || false
       @argyle_environment = yaml["argyle"]["environment"] || "sandbox"
       @transmission_method = yaml["transmission_method"]
       @transmission_method_configuration = yaml["transmission_method_configuration"]

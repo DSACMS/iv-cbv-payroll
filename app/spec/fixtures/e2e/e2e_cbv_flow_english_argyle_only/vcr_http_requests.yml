@@ -1,0 +1,1581 @@
+---
+http_interactions:
+- request:
+    method: post
+    uri: https://api-sandbox.argyle.com/v2/users
+    body:
+      encoding: UTF-8
+      string: '{"external_id":"111c05c8-9233-4f39-9e58-7228539fdc71"}'
+    headers:
+      Content-Type:
+      - application/json
+      Authorization:
+      - Basic <ARGYLE_BASIC_AUTH>
+      User-Agent:
+      - Faraday v2.9.2
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Accept:
+      - "*/*"
+  response:
+    status:
+      code: 201
+      message: Created
+    headers:
+      Date:
+      - Tue, 24 Jun 2025 22:05:14 GMT
+      Content-Type:
+      - application/json
+      Content-Length:
+      - '542'
+      Connection:
+      - keep-alive
+      Access-Control-Allow-Origin:
+      - "*"
+      Allow:
+      - GET, POST, HEAD, OPTIONS
+      Cache-Control:
+      - no-cache, no-store
+      Cross-Origin-Opener-Policy:
+      - same-origin
+      Referrer-Policy:
+      - same-origin
+      Strict-Transport-Security:
+      - max-age=31536000; includeSubDomains
+      Vary:
+      - Accept-Encoding,Origin
+      X-Client-Id:
+      - '018f0834-d69a-879b-05cb-ddde033024f0'
+      X-Content-Type-Options:
+      - nosniff
+      X-Frame-Options:
+      - DENY
+      X-Trace-Id:
+      - ced91f02-b5e9-4ae9-8f1d-7897d408a7a0
+      Via:
+      - 1.1 google
+      Cf-Cache-Status:
+      - DYNAMIC
+      Set-Cookie:
+      - __cf_bm=vCmfY0NiBsM2TIwoCKM55Hw4WZn3jCoreonbPqw7sfg-1750802714-1.0.1.1-QLhRMj8QNG75Ia8hv0TQvS93n937lJIQMtA.E.Q_pQ3MRV4NAail7d20Ai5QruClRsWOEaDKbJfh0tUS0cGU8YfTrxk_LKRQ5k2RL4Ctks8;
+        path=/; expires=Tue, 24-Jun-25 22:35:14 GMT; domain=.argyle.com; HttpOnly;
+        Secure; SameSite=None
+      Server:
+      - cloudflare
+      Cf-Ray:
+      - 954f86842c78cb7a-LAX
+    body:
+      encoding: UTF-8
+      string: '{"user_token":"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJjbGllbnRfaWQiOiIwMThmMDgzNC1kNjlhLTg3OWItMDVjYi1kZGRlMDMzMDI0ZjAiLCJleHAiOjE3NTA4MDYzMTQsImZpZCI6IjE2MjlhYWI1LTY2NjUtNDAwYi05ZGNmLTllMGQ0NDcyM2M5ZiIsImlhdCI6MTc1MDgwMjcxNCwiaXNzIjoiYXJneWxlLWNvcmUtYXV0aC1wcm9kIiwianRpIjoiMTFhYjY2MGMtYmQyNy00ODhmLWIxZWQtZWZhZGMwZTU1NmM5Iiwic3ViIjoiMDE5N2EzZjktNGY0My1kYmQ1LWU1YmQtMzk0MWRjMjQ1ZDFiIiwidXNlcl9pZCI6IjAxOTdhM2Y5LTRmNDMtZGJkNS1lNWJkLTM5NDFkYzI0NWQxYiJ9._EUWwQsNu06gzU1K76yXTWcRmgGXWXsoMehiRvkfj5s","id":"0197a3f9-4f43-dbd5-e5bd-3941dc245d1b"}'
+  recorded_at: Tue, 24 Jun 2025 22:05:11 GMT
+- request:
+    method: get
+    uri: https://api-sandbox.argyle.com/v2/identities?account=0197a3f9-59dc-f823-fa70-ed689729324b&limit=10
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Content-Type:
+      - application/json
+      Authorization:
+      - Basic <ARGYLE_BASIC_AUTH>
+      User-Agent:
+      - Faraday v2.9.2
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Accept:
+      - "*/*"
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Date:
+      - Tue, 24 Jun 2025 22:05:32 GMT
+      Content-Type:
+      - application/json
+      Transfer-Encoding:
+      - chunked
+      Connection:
+      - keep-alive
+      Access-Control-Allow-Origin:
+      - "*"
+      Cache-Control:
+      - no-cache, no-store, max-age=0, must-revalidate
+      Expires:
+      - '0'
+      Pragma:
+      - no-cache
+      Strict-Transport-Security:
+      - max-age=31536000; includeSubDomains
+      Vary:
+      - Accept-Encoding,Origin
+      X-Client-Id:
+      - '018f0834-d69a-879b-05cb-ddde033024f0'
+      X-Content-Type-Options:
+      - nosniff
+      X-Frame-Options:
+      - DENY
+      X-Trace-Id:
+      - d5aa51d0-1d9c-4b94-8367-0673051a2bf5
+      X-Xss-Protection:
+      - '0'
+      Via:
+      - 1.1 google
+      Cf-Cache-Status:
+      - DYNAMIC
+      Set-Cookie:
+      - __cf_bm=nB1tcZjGEZtVejKpSeO80u4kXYqk0TpD4sxDm1CQGbA-1750802732-1.0.1.1-k.3KjEpICy9k.FDjHWDc56S8RTVCHKwiouv.RbaseLmQfrNrt.jv8U3a8pufrdrqlw.WzjmhaDnX7CIxp9TJsiLSoemhF.a6Zq0MTI5dyEg;
+        path=/; expires=Tue, 24-Jun-25 22:35:32 GMT; domain=.argyle.com; HttpOnly;
+        Secure; SameSite=None
+      Server:
+      - cloudflare
+      Cf-Ray:
+      - 954f86f3bb7c23b2-LAX
+    body:
+      encoding: ASCII-8BIT
+      string: '{"results":[{"id":"2f68bebb-bb9b-3169-a277-e1012aecdf71","account":"0197a3f9-59dc-f823-fa70-ed689729324b","address":{"city":"New
+        York","line1":"759 Victoria Plaza","line2":null,"state":"NY","country":"US","postal_code":"10014"},"first_name":"Bob","last_name":"Jones","full_name":"Bob
+        Jones","birth_date":"1980-10-10","email":"test1@argyle.com","phone_number":"+18009000010","picture_url":"https://api-sandbox.argyle.com/v2/payroll-documents/0197a3f9-779c-ba94-29cb-7e3f59046e69/file","employment_status":"active","employment_type":"part-time","job_title":"1635
+        - Helpline Agent","ssn":"522-09-1191","marital_status":"Married filing jointly","gender":"Male","hire_date":"2022-11-24","original_hire_date":"2022-11-24","termination_date":null,"termination_reason":null,"employer":"Aramark","base_pay":{"amount":"28028.72","period":"annual","currency":"USD"},"pay_cycle":"biweekly","platform_ids":{"employee_id":"G91S3J1HE","position_id":"XYAT7V73G","platform_user_id":"AHZK0N4FALZ3KI3H"},"created_at":"2025-06-24T22:05:24.541Z","updated_at":"2025-06-24T22:05:27.856Z","metadata":{},"employment":"d4c6e035-b258-30e6-9add-8ed7987551be"}],"next":null,"previous":null}'
+  recorded_at: Tue, 24 Jun 2025 22:05:11 GMT
+- request:
+    method: get
+    uri: https://api-sandbox.argyle.com/v2/accounts/0197a3f9-59dc-f823-fa70-ed689729324b
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Content-Type:
+      - application/json
+      Authorization:
+      - Basic <ARGYLE_BASIC_AUTH>
+      User-Agent:
+      - Faraday v2.9.2
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Accept:
+      - "*/*"
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Date:
+      - Tue, 24 Jun 2025 22:05:32 GMT
+      Content-Type:
+      - application/json
+      Transfer-Encoding:
+      - chunked
+      Connection:
+      - keep-alive
+      Access-Control-Allow-Origin:
+      - "*"
+      Cache-Control:
+      - no-cache, no-store, max-age=0, must-revalidate
+      Expires:
+      - '0'
+      Pragma:
+      - no-cache
+      Strict-Transport-Security:
+      - max-age=31536000; includeSubDomains
+      Vary:
+      - Accept-Encoding,Origin
+      X-Client-Id:
+      - '018f0834-d69a-879b-05cb-ddde033024f0'
+      X-Content-Type-Options:
+      - nosniff
+      X-Frame-Options:
+      - DENY
+      X-Trace-Id:
+      - c6c8db39-db40-45af-bfd9-04ae8bce18f1
+      X-Xss-Protection:
+      - '0'
+      Via:
+      - 1.1 google
+      Cf-Cache-Status:
+      - DYNAMIC
+      Set-Cookie:
+      - __cf_bm=jyyu72S2v2YYKWOsEPuZhqMxXdxO2wnuVPGqEduiJdU-1750802732-1.0.1.1-R9uCZkGhuTN7aAXV1fDJcDELdJUc0EoWd1E5BiQw.QfIPVKlb7aP6GQHAcOIvZJg2EGnBIj8uAfzhIMOWSfIvCknMjWfua6SBM_RI91rS5o;
+        path=/; expires=Tue, 24-Jun-25 22:35:32 GMT; domain=.argyle.com; HttpOnly;
+        Secure; SameSite=None
+      Server:
+      - cloudflare
+      Cf-Ray:
+      - 954f86f51a0b28f4-LAX
+    body:
+      encoding: ASCII-8BIT
+      string: '{"id":"0197a3f9-59dc-f823-fa70-ed689729324b","user":"0197a3f9-4f43-dbd5-e5bd-3941dc245d1b","employers":["Aramark"],"item":"item_000029932","source":"argyle_sandbox","created_at":"2025-06-24T22:05:17.265289Z","updated_at":"2025-06-24T22:05:31.600317Z","scanned_at":"2025-06-24T22:05:31.403471Z","connection":{"status":"connected","error_code":null,"error_message":null,"updated_at":"2025-06-24T22:05:22.012767Z"},"direct_deposit_switch":{"status":"idle","error_code":null,"error_message":null,"updated_at":"2025-06-24T22:05:17.555639Z"},"availability":{"gigs":{"status":"in_progress","updated_at":"2025-06-24T22:05:31.403471Z","available_count":0,"available_from":null,"available_to":null},"shifts":{"status":"in_progress","updated_at":"2025-06-24T22:05:31.403471Z","available_count":22,"available_from":"2025-03-09T00:00:00Z","available_to":"2025-06-21T00:00:00Z"},"paystubs":{"status":"in_progress","updated_at":"2025-06-24T22:05:31.403471Z","available_count":8,"available_from":"2025-03-13T00:00:00Z","available_to":"2025-06-19T00:00:00Z"},"payroll_documents":{"status":"synced","updated_at":"2025-06-24T22:05:25.014923Z"},"identities":{"status":"synced","updated_at":"2025-06-24T22:05:27.872580Z"},"ratings":{"status":"synced","updated_at":"2025-06-24T22:05:25.028105Z"},"vehicles":{"status":"synced","updated_at":"2025-06-24T22:05:25.030685Z"},"deposit_destinations":{"status":"synced","updated_at":"2025-06-24T22:05:23.404217Z"},"user_forms":null,"user_uploads":null},"ongoing_refresh":{"status":"disabled"}}'
+  recorded_at: Tue, 24 Jun 2025 22:05:11 GMT
+- request:
+    method: get
+    uri: https://api-sandbox.argyle.com/v2/paystubs?account=0197a3f9-59dc-f823-fa70-ed689729324b&from_start_date=2025-03-26&limit=200&to_start_date=2025-06-24
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Content-Type:
+      - application/json
+      Authorization:
+      - Basic <ARGYLE_BASIC_AUTH>
+      User-Agent:
+      - Faraday v2.9.2
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Accept:
+      - "*/*"
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Date:
+      - Tue, 24 Jun 2025 22:05:32 GMT
+      Content-Type:
+      - application/json
+      Transfer-Encoding:
+      - chunked
+      Connection:
+      - keep-alive
+      Access-Control-Allow-Origin:
+      - "*"
+      Cache-Control:
+      - no-cache, no-store, max-age=0, must-revalidate
+      Expires:
+      - '0'
+      Pragma:
+      - no-cache
+      Strict-Transport-Security:
+      - max-age=31536000; includeSubDomains
+      Vary:
+      - Accept-Encoding,Origin
+      X-Client-Id:
+      - '018f0834-d69a-879b-05cb-ddde033024f0'
+      X-Content-Type-Options:
+      - nosniff
+      X-Frame-Options:
+      - DENY
+      X-Trace-Id:
+      - 4a898d0c-61de-48ea-ad2e-ef4de4a9d9d5
+      X-Xss-Protection:
+      - '0'
+      Via:
+      - 1.1 google
+      Cf-Cache-Status:
+      - DYNAMIC
+      Set-Cookie:
+      - __cf_bm=K1zJNF2yVBt9lWQfdGwg4EaOjbTmwnMe3x0hZhhgq6U-1750802732-1.0.1.1-1.A2ZnEYt1_XcH1DsghBLEpOOq6CpydxhQ57jyq1blbwV7EOhluGTka7317eoRGnddQpA43U1SUTdDoc.dOYNBcsKQP1r.0Vnq1rDX2MAao;
+        path=/; expires=Tue, 24-Jun-25 22:35:32 GMT; domain=.argyle.com; HttpOnly;
+        Secure; SameSite=None
+      Server:
+      - cloudflare
+      Cf-Ray:
+      - 954f86f67f42e9dd-LAX
+    body:
+      encoding: ASCII-8BIT
+      string: '{"results":[{"id":"9f09eb3a-69f3-3772-bcc9-ddfb663e5e5a","account":"0197a3f9-59dc-f823-fa70-ed689729324b","payroll_document":"0197a3f9-81c7-1362-5db6-b1a857aa5be0","deduction_list":[{"amount":"32.34","name":"401K","tax_classification":"pre_tax","amount_ytd":"107.80"}],"filing_status":[{"type":"federal","location":null,"status":"single"}],"tax_list":[{"amount":"129.36","name":"CA
+        State Income Tax","type":"state","amount_ytd":"204.82"},{"amount":"140.14","name":"Federal
+        Income Tax","type":"federal","amount_ytd":"463.54"}],"status":"completed","paystub_date":"2025-06-19T00:00:00Z","paystub_period":{"start_date":"2025-06-01T00:00:00Z","end_date":"2025-06-15T00:00:00Z"},"currency":"USD","gross_pay":"1078.03","deductions":"32.34","taxes":"269.50","net_pay":"776.19","reimbursements":"0.00","hours":"80.98","fees":null,"net_pay_ytd":"12719.59","gross_pay_ytd":"16644.04","metadata":{},"employer":"Aramark","employer_address":{"city":"Seattle","state":"WA","country":"US","postal_code":"98109","line1":"202
+        Westlake Ave N","line2":null},"created_at":"2025-06-24T22:05:27.488Z","updated_at":"2025-06-24T22:05:27.488Z","destinations":[],"hours_ytd":"793.90","deductions_ytd":"700.70","taxes_ytd":"3266.34","gross_pay_list":[{"name":"Regular","type":"base","start_date":"2025-06-01","end_date":"2025-06-15","rate":"13.3119","hours":"80.9825","amount":"1078.03","hours_ytd":"790.6500","amount_ytd":"14014.39"},{"name":"Overtime","type":"overtime","start_date":null,"end_date":null,"rate":null,"hours":null,"amount":null,"hours_ytd":"1.3900","amount_ytd":"52.16"},{"name":"Holiday
+        Overtime","type":"overtime","start_date":null,"end_date":null,"rate":null,"hours":null,"amount":null,"hours_ytd":"1.8600","amount_ytd":"92.73"},{"name":"Bonus","type":"bonus","start_date":null,"end_date":null,"rate":null,"hours":null,"amount":null,"hours_ytd":null,"amount_ytd":"1797.23"},{"name":"Incentive","type":"bonus","start_date":null,"end_date":null,"rate":null,"hours":null,"amount":null,"hours_ytd":null,"amount_ytd":"7.44"},{"name":"Commission","type":"commission","start_date":null,"end_date":null,"rate":null,"hours":null,"amount":null,"hours_ytd":null,"amount_ytd":"680.09"}],"gross_pay_list_totals":{"base":{"amount":"1078.03","amount_ytd":"14014.39","hours":"80.9825","hours_ytd":"790.6500","rate_implied":"13.3100","rate_implied_ytd":"17.7300"},"overtime":{"amount":null,"amount_ytd":"144.89","hours":null,"hours_ytd":"3.2500","rate_implied":null,"rate_implied_ytd":"44.5800"},"commission":{"amount":null,"amount_ytd":"680.09","hours":null,"hours_ytd":null,"rate_implied":null,"rate_implied_ytd":null},"bonus":{"amount":null,"amount_ytd":"1804.67","hours":null,"hours_ytd":null,"rate_implied":null,"rate_implied_ytd":null},"other":null},"employment":"d4c6e035-b258-30e6-9add-8ed7987551be"},{"id":"3ecd4cc4-3a21-396d-a373-980864f85c07","account":"0197a3f9-59dc-f823-fa70-ed689729324b","payroll_document":"0197a3f9-81a3-6abc-4ad2-8123e2d5e735","deduction_list":[{"amount":"10.78","name":"Roth","tax_classification":"post_tax","amount_ytd":"118.58"},{"amount":"32.34","name":"Roth","tax_classification":"post_tax","amount_ytd":"150.92"}],"filing_status":[{"type":"federal","location":null,"status":"married
+        filing separately"},{"type":"state","location":"NY","status":"single"}],"tax_list":[{"amount":"140.14","name":"Social
+        Security Tax","type":"fica","amount_ytd":"452.76"},{"amount":"129.36","name":"Federal
+        Withholding","type":"federal","amount_ytd":"625.24"}],"status":"completed","paystub_date":"2025-06-05T00:00:00Z","paystub_period":{"start_date":"2025-05-18T00:00:00Z","end_date":"2025-06-01T00:00:00Z"},"currency":"USD","gross_pay":"2023.73","deductions":"43.12","taxes":"269.50","net_pay":"1716.11","reimbursements":"5.00","hours":"40.17","fees":null,"net_pay_ytd":"11943.40","gross_pay_ytd":"15566.01","metadata":{},"employer":"Aramark","employer_address":{"city":"Seattle","state":"WA","country":"US","postal_code":"98109","line1":"202
+        Westlake Ave N","line2":null},"created_at":"2025-06-24T22:05:27.530Z","updated_at":"2025-06-24T22:05:27.530Z","destinations":[],"hours_ytd":"712.91","deductions_ytd":"668.36","taxes_ytd":"2996.84","gross_pay_list":[{"name":"Regular","type":"base","start_date":"2025-05-18","end_date":"2025-06-01","rate":"26.8359","hours":"40.1712","amount":"1078.03","hours_ytd":"709.6700","amount_ytd":"12936.36"},{"name":"Overtime","type":"overtime","start_date":null,"end_date":null,"rate":null,"hours":null,"amount":null,"hours_ytd":"1.3900","amount_ytd":"52.16"},{"name":"Holiday
+        Overtime","type":"overtime","start_date":null,"end_date":null,"rate":null,"hours":null,"amount":null,"hours_ytd":"1.8600","amount_ytd":"92.73"},{"name":"Bonus","type":"bonus","start_date":"2025-05-28","end_date":"2025-05-31","rate":null,"hours":null,"amount":"945.70","hours_ytd":null,"amount_ytd":"1797.23"},{"name":"Incentive","type":"bonus","start_date":null,"end_date":null,"rate":null,"hours":null,"amount":null,"hours_ytd":null,"amount_ytd":"7.44"},{"name":"Commission","type":"commission","start_date":null,"end_date":null,"rate":null,"hours":null,"amount":null,"hours_ytd":null,"amount_ytd":"680.09"}],"gross_pay_list_totals":{"base":{"amount":"1078.03","amount_ytd":"12936.36","hours":"40.1712","hours_ytd":"709.6700","rate_implied":"26.8400","rate_implied_ytd":"18.2300"},"overtime":{"amount":null,"amount_ytd":"144.89","hours":null,"hours_ytd":"3.2500","rate_implied":null,"rate_implied_ytd":"44.5800"},"commission":{"amount":null,"amount_ytd":"680.09","hours":null,"hours_ytd":null,"rate_implied":null,"rate_implied_ytd":null},"bonus":{"amount":"945.70","amount_ytd":"1804.67","hours":null,"hours_ytd":null,"rate_implied":null,"rate_implied_ytd":null},"other":null},"employment":"d4c6e035-b258-30e6-9add-8ed7987551be"},{"id":"52ff4b97-ebd2-34ce-84c0-ab762fc0bad5","account":"0197a3f9-59dc-f823-fa70-ed689729324b","payroll_document":"0197a3f9-817c-cece-deab-a1b61284fbd6","deduction_list":[{"amount":"10.78","name":"Vision","tax_classification":"pre_tax","amount_ytd":"97.02"},{"amount":"32.34","name":"Garnishment","tax_classification":"post_tax","amount_ytd":"172.48"}],"filing_status":[{"type":"federal","location":null,"status":"single"}],"tax_list":[{"amount":"107.80","name":"Federal
+        Income Tax","type":"federal","amount_ytd":"323.40"},{"amount":"86.24","name":"Social
+        Security Tax","type":"fica","amount_ytd":"312.62"}],"status":"completed","paystub_date":"2025-05-22T00:00:00Z","paystub_period":{"start_date":"2025-05-04T00:00:00Z","end_date":"2025-05-18T00:00:00Z"},"currency":"USD","gross_pay":"1078.03","deductions":"43.12","taxes":"194.04","net_pay":"844.05","reimbursements":"3.18","hours":"68.55","fees":null,"net_pay_ytd":"10227.29","gross_pay_ytd":"13542.28","metadata":{},"employer":"Aramark","employer_address":{"city":"Seattle","state":"WA","country":"US","postal_code":"98109","line1":"202
+        Westlake Ave N","line2":null},"created_at":"2025-06-24T22:05:27.469Z","updated_at":"2025-06-24T22:05:27.469Z","destinations":[],"hours_ytd":"672.74","deductions_ytd":"625.24","taxes_ytd":"2727.34","gross_pay_list":[{"name":"Regular","type":"base","start_date":"2025-05-04","end_date":"2025-05-18","rate":"15.7263","hours":"68.5497","amount":"1078.03","hours_ytd":"669.5000","amount_ytd":"11858.33"},{"name":"Overtime","type":"overtime","start_date":null,"end_date":null,"rate":null,"hours":null,"amount":null,"hours_ytd":"1.3900","amount_ytd":"52.16"},{"name":"Holiday
+        Overtime","type":"overtime","start_date":null,"end_date":null,"rate":null,"hours":null,"amount":null,"hours_ytd":"1.8600","amount_ytd":"92.73"},{"name":"Bonus","type":"bonus","start_date":null,"end_date":null,"rate":null,"hours":null,"amount":null,"hours_ytd":null,"amount_ytd":"851.53"},{"name":"Incentive","type":"bonus","start_date":null,"end_date":null,"rate":null,"hours":null,"amount":null,"hours_ytd":null,"amount_ytd":"7.44"},{"name":"Commission","type":"commission","start_date":null,"end_date":null,"rate":null,"hours":null,"amount":null,"hours_ytd":null,"amount_ytd":"680.09"}],"gross_pay_list_totals":{"base":{"amount":"1078.03","amount_ytd":"11858.33","hours":"68.5497","hours_ytd":"669.5000","rate_implied":"15.7300","rate_implied_ytd":"17.7100"},"overtime":{"amount":null,"amount_ytd":"144.89","hours":null,"hours_ytd":"3.2500","rate_implied":null,"rate_implied_ytd":"44.5800"},"commission":{"amount":null,"amount_ytd":"680.09","hours":null,"hours_ytd":null,"rate_implied":null,"rate_implied_ytd":null},"bonus":{"amount":null,"amount_ytd":"858.97","hours":null,"hours_ytd":null,"rate_implied":null,"rate_implied_ytd":null},"other":null},"employment":"d4c6e035-b258-30e6-9add-8ed7987551be"},{"id":"0d9e98f4-8317-3755-8e8f-dc8c978cf160","account":"0197a3f9-59dc-f823-fa70-ed689729324b","payroll_document":"0197a3f9-8158-4e05-d562-73fc5a3f3b04","deduction_list":[{"amount":"32.34","name":"Vision","tax_classification":"pre_tax","amount_ytd":"86.24"}],"filing_status":[{"type":"federal","location":null,"status":"single"}],"tax_list":[{"amount":"75.46","name":"MEDICARE","type":"fica","amount_ytd":"776.16"},{"amount":"129.36","name":"OASDI","type":"fica","amount_ytd":"657.58"},{"amount":"86.24","name":"MEDICARE","type":"fica","amount_ytd":"862.40"}],"status":"completed","paystub_date":"2025-05-08T00:00:00Z","paystub_period":{"start_date":"2025-04-20T00:00:00Z","end_date":"2025-05-04T00:00:00Z"},"currency":"USD","gross_pay":"1078.03","deductions":"32.34","taxes":"291.06","net_pay":"757.71","reimbursements":"3.08","hours":"60.05","fees":null,"net_pay_ytd":"9383.24","gross_pay_ytd":"12464.25","metadata":{},"employer":"Aramark","employer_address":{"city":"Seattle","state":"WA","country":"US","postal_code":"98109","line1":"202
+        Westlake Ave N","line2":null},"created_at":"2025-06-24T22:05:27.509Z","updated_at":"2025-06-24T22:05:27.509Z","destinations":[],"hours_ytd":"604.19","deductions_ytd":"582.12","taxes_ytd":"2533.30","gross_pay_list":[{"name":"Regular","type":"base","start_date":"2025-04-20","end_date":"2025-05-04","rate":"17.9526","hours":"60.0488","amount":"1078.03","hours_ytd":"600.9500","amount_ytd":"10780.30"},{"name":"Overtime","type":"overtime","start_date":null,"end_date":null,"rate":null,"hours":null,"amount":null,"hours_ytd":"1.3900","amount_ytd":"52.16"},{"name":"Holiday
+        Overtime","type":"overtime","start_date":null,"end_date":null,"rate":null,"hours":null,"amount":null,"hours_ytd":"1.8600","amount_ytd":"92.73"},{"name":"Bonus","type":"bonus","start_date":null,"end_date":null,"rate":null,"hours":null,"amount":null,"hours_ytd":null,"amount_ytd":"851.53"},{"name":"Incentive","type":"bonus","start_date":null,"end_date":null,"rate":null,"hours":null,"amount":null,"hours_ytd":null,"amount_ytd":"7.44"},{"name":"Commission","type":"commission","start_date":null,"end_date":null,"rate":null,"hours":null,"amount":null,"hours_ytd":null,"amount_ytd":"680.09"}],"gross_pay_list_totals":{"base":{"amount":"1078.03","amount_ytd":"10780.30","hours":"60.0488","hours_ytd":"600.9500","rate_implied":"17.9500","rate_implied_ytd":"17.9400"},"overtime":{"amount":null,"amount_ytd":"144.89","hours":null,"hours_ytd":"3.2500","rate_implied":null,"rate_implied_ytd":"44.5800"},"commission":{"amount":null,"amount_ytd":"680.09","hours":null,"hours_ytd":null,"rate_implied":null,"rate_implied_ytd":null},"bonus":{"amount":null,"amount_ytd":"858.97","hours":null,"hours_ytd":null,"rate_implied":null,"rate_implied_ytd":null},"other":null},"employment":"d4c6e035-b258-30e6-9add-8ed7987551be"},{"id":"81f60a96-af5d-3b1c-a65f-996f8105a032","account":"0197a3f9-59dc-f823-fa70-ed689729324b","payroll_document":"0197a3f9-9017-222e-5613-6a73eccd1415","deduction_list":[{"amount":"43.12","name":"Dental","tax_classification":null,"amount_ytd":"172.48"},{"amount":"21.56","name":"Roth","tax_classification":"post_tax","amount_ytd":"107.80"},{"amount":"32.34","name":"401K","tax_classification":"pre_tax","amount_ytd":"75.46"}],"filing_status":[{"type":"federal","location":null,"status":"married
+        filing separately"},{"type":"state","location":"NY","status":"married filing
+        separately"}],"tax_list":[{"amount":"86.24","name":"Social Security Tax","type":"fica","amount_ytd":"226.38"},{"amount":"140.14","name":"MEDICARE","type":"fica","amount_ytd":"700.70"},{"amount":"75.46","name":"OASDI","type":"fica","amount_ytd":"528.22"}],"status":"completed","paystub_date":"2025-04-24T00:00:00Z","paystub_period":{"start_date":"2025-04-06T00:00:00Z","end_date":"2025-04-20T00:00:00Z"},"currency":"USD","gross_pay":"1232.64","deductions":"97.02","taxes":"301.84","net_pay":"838.44","reimbursements":"4.66","hours":"58.55","fees":null,"net_pay_ytd":"8625.53","gross_pay_ytd":"11386.22","metadata":{},"employer":"Aramark","employer_address":{"city":"Seattle","state":"WA","country":"US","postal_code":"98109","line1":"202
+        Westlake Ave N","line2":null},"created_at":"2025-06-24T22:05:31.137Z","updated_at":"2025-06-24T22:05:31.137Z","destinations":[],"hours_ytd":"544.14","deductions_ytd":"549.78","taxes_ytd":"2242.24","gross_pay_list":[{"name":"Regular","type":"base","start_date":"2025-04-06","end_date":"2025-04-20","rate":"18.4125","hours":"58.5487","amount":"1078.03","hours_ytd":"540.9000","amount_ytd":"9702.27"},{"name":"Overtime","type":"overtime","start_date":null,"end_date":null,"rate":null,"hours":null,"amount":null,"hours_ytd":"1.3900","amount_ytd":"52.16"},{"name":"Holiday
+        Overtime","type":"overtime","start_date":null,"end_date":null,"rate":null,"hours":null,"amount":null,"hours_ytd":"1.8600","amount_ytd":"92.73"},{"name":"Bonus","type":"bonus","start_date":null,"end_date":null,"rate":null,"hours":null,"amount":null,"hours_ytd":null,"amount_ytd":"851.53"},{"name":"Incentive","type":"bonus","start_date":null,"end_date":null,"rate":null,"hours":null,"amount":null,"hours_ytd":null,"amount_ytd":"7.44"},{"name":"Commission","type":"commission","start_date":"2025-04-19","end_date":"2025-04-19","rate":null,"hours":null,"amount":"154.61","hours_ytd":null,"amount_ytd":"680.09"}],"gross_pay_list_totals":{"base":{"amount":"1078.03","amount_ytd":"9702.27","hours":"58.5487","hours_ytd":"540.9000","rate_implied":"18.4100","rate_implied_ytd":"17.9400"},"overtime":{"amount":null,"amount_ytd":"144.89","hours":null,"hours_ytd":"3.2500","rate_implied":null,"rate_implied_ytd":"44.5800"},"commission":{"amount":"154.61","amount_ytd":"680.09","hours":null,"hours_ytd":null,"rate_implied":null,"rate_implied_ytd":null},"bonus":{"amount":null,"amount_ytd":"858.97","hours":null,"hours_ytd":null,"rate_implied":null,"rate_implied_ytd":null},"other":null},"employment":"d4c6e035-b258-30e6-9add-8ed7987551be"},{"id":"70834463-81b6-3d5d-9147-accc661095c9","account":"0197a3f9-59dc-f823-fa70-ed689729324b","payroll_document":"0197a3f9-8ff4-8ad8-bd46-7e940dcf52e6","deduction_list":[{"amount":"10.78","name":"Vision","tax_classification":"pre_tax","amount_ytd":"53.90"},{"amount":"43.12","name":"Garnishment","tax_classification":"post_tax","amount_ytd":"140.14"}],"filing_status":[{"type":"federal","location":null,"status":"married
+        filing separately"},{"type":"state","location":"NY","status":"married filing
+        separately"}],"tax_list":[{"amount":"86.24","name":"Federal Withholding","type":"federal","amount_ytd":"495.88"},{"amount":"75.46","name":"CA
+        State Income Tax","type":"state","amount_ytd":"75.46"}],"status":"completed","paystub_date":"2025-04-10T00:00:00Z","paystub_period":{"start_date":"2025-03-23T00:00:00Z","end_date":"2025-04-06T00:00:00Z"},"currency":"USD","gross_pay":"1078.03","deductions":"53.90","taxes":"161.70","net_pay":"866.79","reimbursements":"4.36","hours":"73.82","fees":null,"net_pay_ytd":"7787.09","gross_pay_ytd":"10153.58","metadata":{},"employer":"Aramark","employer_address":{"city":"Seattle","state":"WA","country":"US","postal_code":"98109","line1":"202
+        Westlake Ave N","line2":null},"created_at":"2025-06-24T22:05:31.117Z","updated_at":"2025-06-24T22:05:31.117Z","destinations":[],"hours_ytd":"485.60","deductions_ytd":"452.76","taxes_ytd":"1940.40","gross_pay_list":[{"name":"Regular","type":"base","start_date":"2025-03-23","end_date":"2025-04-06","rate":"14.6041","hours":"73.8170","amount":"1078.03","hours_ytd":"482.3500","amount_ytd":"8624.24"},{"name":"Overtime","type":"overtime","start_date":null,"end_date":null,"rate":null,"hours":null,"amount":null,"hours_ytd":"1.3900","amount_ytd":"52.16"},{"name":"Holiday
+        Overtime","type":"overtime","start_date":null,"end_date":null,"rate":null,"hours":null,"amount":null,"hours_ytd":"1.8600","amount_ytd":"92.73"},{"name":"Bonus","type":"bonus","start_date":null,"end_date":null,"rate":null,"hours":null,"amount":null,"hours_ytd":null,"amount_ytd":"851.53"},{"name":"Incentive","type":"bonus","start_date":null,"end_date":null,"rate":null,"hours":null,"amount":null,"hours_ytd":null,"amount_ytd":"7.44"},{"name":"Commission","type":"commission","start_date":null,"end_date":null,"rate":null,"hours":null,"amount":null,"hours_ytd":null,"amount_ytd":"525.48"}],"gross_pay_list_totals":{"base":{"amount":"1078.03","amount_ytd":"8624.24","hours":"73.8170","hours_ytd":"482.3500","rate_implied":"14.6000","rate_implied_ytd":"17.8800"},"overtime":{"amount":null,"amount_ytd":"144.89","hours":null,"hours_ytd":"3.2500","rate_implied":null,"rate_implied_ytd":"44.5800"},"commission":{"amount":null,"amount_ytd":"525.48","hours":null,"hours_ytd":null,"rate_implied":null,"rate_implied_ytd":null},"bonus":{"amount":null,"amount_ytd":"858.97","hours":null,"hours_ytd":null,"rate_implied":null,"rate_implied_ytd":null},"other":null},"employment":"d4c6e035-b258-30e6-9add-8ed7987551be"},{"id":"a10c9331-9a68-3ab4-8dea-e33d8a639fd4","account":"0197a3f9-59dc-f823-fa70-ed689729324b","payroll_document":"0197a3f9-8fce-cb43-58f6-a7d98591ffdb","deduction_list":[{"amount":"43.12","name":"Roth","tax_classification":"post_tax","amount_ytd":"86.24"},{"amount":"21.56","name":"Vision","tax_classification":"pre_tax","amount_ytd":"43.12"},{"amount":"32.34","name":"Garnishment","tax_classification":"post_tax","amount_ytd":"97.02"}],"filing_status":[{"type":"federal","location":null,"status":"married
+        filing separately"}],"tax_list":[{"amount":"107.80","name":"MEDICARE","type":"fica","amount_ytd":"560.56"},{"amount":"129.36","name":"OASDI","type":"fica","amount_ytd":"452.76"}],"status":"completed","paystub_date":"2025-03-27T00:00:00Z","paystub_period":{"start_date":"2025-03-09T00:00:00Z","end_date":"2025-03-23T00:00:00Z"},"currency":"USD","gross_pay":"1078.03","deductions":"97.02","taxes":"237.16","net_pay":"747.42","reimbursements":"3.57","hours":"54.82","fees":null,"net_pay_ytd":"6920.30","gross_pay_ytd":"9075.55","metadata":{},"employer":"Aramark","employer_address":{"city":"Seattle","state":"WA","country":"US","postal_code":"98109","line1":"202
+        Westlake Ave N","line2":null},"created_at":"2025-06-24T22:05:31.177Z","updated_at":"2025-06-24T22:05:31.177Z","destinations":[],"hours_ytd":"411.78","deductions_ytd":"398.86","taxes_ytd":"1778.70","gross_pay_list":[{"name":"Regular","type":"base","start_date":"2025-03-09","end_date":"2025-03-23","rate":"19.6647","hours":"54.8206","amount":"1078.03","hours_ytd":"408.5300","amount_ytd":"7546.21"},{"name":"Overtime","type":"overtime","start_date":null,"end_date":null,"rate":null,"hours":null,"amount":null,"hours_ytd":"1.3900","amount_ytd":"52.16"},{"name":"Holiday
+        Overtime","type":"overtime","start_date":null,"end_date":null,"rate":null,"hours":null,"amount":null,"hours_ytd":"1.8600","amount_ytd":"92.73"},{"name":"Bonus","type":"bonus","start_date":null,"end_date":null,"rate":null,"hours":null,"amount":null,"hours_ytd":null,"amount_ytd":"851.53"},{"name":"Incentive","type":"bonus","start_date":null,"end_date":null,"rate":null,"hours":null,"amount":null,"hours_ytd":null,"amount_ytd":"7.44"},{"name":"Commission","type":"commission","start_date":null,"end_date":null,"rate":null,"hours":null,"amount":null,"hours_ytd":null,"amount_ytd":"525.48"}],"gross_pay_list_totals":{"base":{"amount":"1078.03","amount_ytd":"7546.21","hours":"54.8206","hours_ytd":"408.5300","rate_implied":"19.6600","rate_implied_ytd":"18.4700"},"overtime":{"amount":null,"amount_ytd":"144.89","hours":null,"hours_ytd":"3.2500","rate_implied":null,"rate_implied_ytd":"44.5800"},"commission":{"amount":null,"amount_ytd":"525.48","hours":null,"hours_ytd":null,"rate_implied":null,"rate_implied_ytd":null},"bonus":{"amount":null,"amount_ytd":"858.97","hours":null,"hours_ytd":null,"rate_implied":null,"rate_implied_ytd":null},"other":null},"employment":"d4c6e035-b258-30e6-9add-8ed7987551be"}],"next":null,"previous":null}'
+  recorded_at: Tue, 24 Jun 2025 22:05:11 GMT
+- request:
+    method: get
+    uri: https://api-sandbox.argyle.com/v2/identities?account=0197a3f9-59dc-f823-fa70-ed689729324b&limit=10
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Content-Type:
+      - application/json
+      Authorization:
+      - Basic <ARGYLE_BASIC_AUTH>
+      User-Agent:
+      - Faraday v2.9.2
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Accept:
+      - "*/*"
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Date:
+      - Tue, 24 Jun 2025 22:05:32 GMT
+      Content-Type:
+      - application/json
+      Transfer-Encoding:
+      - chunked
+      Connection:
+      - keep-alive
+      Access-Control-Allow-Origin:
+      - "*"
+      Cache-Control:
+      - no-cache, no-store, max-age=0, must-revalidate
+      Expires:
+      - '0'
+      Pragma:
+      - no-cache
+      Strict-Transport-Security:
+      - max-age=31536000; includeSubDomains
+      Vary:
+      - Accept-Encoding,Origin
+      X-Client-Id:
+      - '018f0834-d69a-879b-05cb-ddde033024f0'
+      X-Content-Type-Options:
+      - nosniff
+      X-Frame-Options:
+      - DENY
+      X-Trace-Id:
+      - 48078bba-a7a2-48a3-ba6e-f3e24d1d0382
+      X-Xss-Protection:
+      - '0'
+      Via:
+      - 1.1 google
+      Cf-Cache-Status:
+      - DYNAMIC
+      Set-Cookie:
+      - __cf_bm=xXXqKib3mLz72GMU5ClqduvWCU2Z8uwQ.bNjykbzJbc-1750802732-1.0.1.1-e9.BV3sy1lrjwT9C4fVTV4RRHhxMrqXvtdIv.yeKDf.RiwatSQQqcp9Sd5I9rO3UH9vUmWMgzmnwPesdLqokOlVKcQdAlQX1wp7UnLp56yI;
+        path=/; expires=Tue, 24-Jun-25 22:35:32 GMT; domain=.argyle.com; HttpOnly;
+        Secure; SameSite=None
+      Server:
+      - cloudflare
+      Cf-Ray:
+      - 954f86f7990d2aaf-LAX
+    body:
+      encoding: ASCII-8BIT
+      string: '{"results":[{"id":"2f68bebb-bb9b-3169-a277-e1012aecdf71","account":"0197a3f9-59dc-f823-fa70-ed689729324b","address":{"city":"New
+        York","line1":"759 Victoria Plaza","line2":null,"state":"NY","country":"US","postal_code":"10014"},"first_name":"Bob","last_name":"Jones","full_name":"Bob
+        Jones","birth_date":"1980-10-10","email":"test1@argyle.com","phone_number":"+18009000010","picture_url":"https://api-sandbox.argyle.com/v2/payroll-documents/0197a3f9-779c-ba94-29cb-7e3f59046e69/file","employment_status":"active","employment_type":"part-time","job_title":"1635
+        - Helpline Agent","ssn":"522-09-1191","marital_status":"Married filing jointly","gender":"Male","hire_date":"2022-11-24","original_hire_date":"2022-11-24","termination_date":null,"termination_reason":null,"employer":"Aramark","base_pay":{"amount":"28028.72","period":"annual","currency":"USD"},"pay_cycle":"biweekly","platform_ids":{"employee_id":"G91S3J1HE","position_id":"XYAT7V73G","platform_user_id":"AHZK0N4FALZ3KI3H"},"created_at":"2025-06-24T22:05:24.541Z","updated_at":"2025-06-24T22:05:27.856Z","metadata":{},"employment":"d4c6e035-b258-30e6-9add-8ed7987551be"}],"next":null,"previous":null}'
+  recorded_at: Tue, 24 Jun 2025 22:05:11 GMT
+- request:
+    method: get
+    uri: https://api-sandbox.argyle.com/v2/accounts/0197a3f9-59dc-f823-fa70-ed689729324b
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Content-Type:
+      - application/json
+      Authorization:
+      - Basic <ARGYLE_BASIC_AUTH>
+      User-Agent:
+      - Faraday v2.9.2
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Accept:
+      - "*/*"
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Date:
+      - Tue, 24 Jun 2025 22:05:33 GMT
+      Content-Type:
+      - application/json
+      Transfer-Encoding:
+      - chunked
+      Connection:
+      - keep-alive
+      Access-Control-Allow-Origin:
+      - "*"
+      Cache-Control:
+      - no-cache, no-store, max-age=0, must-revalidate
+      Expires:
+      - '0'
+      Pragma:
+      - no-cache
+      Strict-Transport-Security:
+      - max-age=31536000; includeSubDomains
+      Vary:
+      - Accept-Encoding,Origin
+      X-Client-Id:
+      - '018f0834-d69a-879b-05cb-ddde033024f0'
+      X-Content-Type-Options:
+      - nosniff
+      X-Frame-Options:
+      - DENY
+      X-Trace-Id:
+      - c11e12c3-b709-4a52-85c9-11282720f596
+      X-Xss-Protection:
+      - '0'
+      Via:
+      - 1.1 google
+      Cf-Cache-Status:
+      - DYNAMIC
+      Set-Cookie:
+      - __cf_bm=kCPVF1Zo1xCEDFuxNgMqe_lql4Ph41iwO6WrxNrelAI-1750802733-1.0.1.1-2LiQavdzmOqR4ZmNHof48LWWg4CuR.OKXWDEkUaVzQS8MTd7hVJLMRFsAVzgJopfi_PUYduNW.e9aeVABEO3.dqpaSO6pi02Sbod0inkN.8;
+        path=/; expires=Tue, 24-Jun-25 22:35:33 GMT; domain=.argyle.com; HttpOnly;
+        Secure; SameSite=None
+      Server:
+      - cloudflare
+      Cf-Ray:
+      - 954f86f8ed7cf79d-LAX
+    body:
+      encoding: ASCII-8BIT
+      string: '{"id":"0197a3f9-59dc-f823-fa70-ed689729324b","user":"0197a3f9-4f43-dbd5-e5bd-3941dc245d1b","employers":["Aramark"],"item":"item_000029932","source":"argyle_sandbox","created_at":"2025-06-24T22:05:17.265289Z","updated_at":"2025-06-24T22:05:31.600317Z","scanned_at":"2025-06-24T22:05:31.403471Z","connection":{"status":"connected","error_code":null,"error_message":null,"updated_at":"2025-06-24T22:05:22.012767Z"},"direct_deposit_switch":{"status":"idle","error_code":null,"error_message":null,"updated_at":"2025-06-24T22:05:17.555639Z"},"availability":{"gigs":{"status":"in_progress","updated_at":"2025-06-24T22:05:31.403471Z","available_count":0,"available_from":null,"available_to":null},"shifts":{"status":"in_progress","updated_at":"2025-06-24T22:05:31.403471Z","available_count":22,"available_from":"2025-03-09T00:00:00Z","available_to":"2025-06-21T00:00:00Z"},"paystubs":{"status":"in_progress","updated_at":"2025-06-24T22:05:31.403471Z","available_count":8,"available_from":"2025-03-13T00:00:00Z","available_to":"2025-06-19T00:00:00Z"},"payroll_documents":{"status":"synced","updated_at":"2025-06-24T22:05:25.014923Z"},"identities":{"status":"synced","updated_at":"2025-06-24T22:05:27.872580Z"},"ratings":{"status":"synced","updated_at":"2025-06-24T22:05:25.028105Z"},"vehicles":{"status":"synced","updated_at":"2025-06-24T22:05:25.030685Z"},"deposit_destinations":{"status":"synced","updated_at":"2025-06-24T22:05:23.404217Z"},"user_forms":null,"user_uploads":null},"ongoing_refresh":{"status":"disabled"}}'
+  recorded_at: Tue, 24 Jun 2025 22:05:11 GMT
+- request:
+    method: get
+    uri: https://api-sandbox.argyle.com/v2/gigs?account=0197a3f9-59dc-f823-fa70-ed689729324b&from_start_datetime=2025-03-26&limit=200&to_start_datetime=2025-06-24
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Content-Type:
+      - application/json
+      Authorization:
+      - Basic <ARGYLE_BASIC_AUTH>
+      User-Agent:
+      - Faraday v2.9.2
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Accept:
+      - "*/*"
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Date:
+      - Tue, 24 Jun 2025 22:05:33 GMT
+      Content-Type:
+      - application/json
+      Content-Length:
+      - '42'
+      Connection:
+      - keep-alive
+      Access-Control-Allow-Origin:
+      - "*"
+      Cache-Control:
+      - no-cache, no-store, max-age=0, must-revalidate
+      Expires:
+      - '0'
+      Pragma:
+      - no-cache
+      Strict-Transport-Security:
+      - max-age=31536000; includeSubDomains
+      Vary:
+      - Accept-Encoding,Origin
+      X-Client-Id:
+      - '018f0834-d69a-879b-05cb-ddde033024f0'
+      X-Content-Type-Options:
+      - nosniff
+      X-Frame-Options:
+      - DENY
+      X-Trace-Id:
+      - 74d680a0-a1d9-49aa-93a2-91ffbe39b1a1
+      X-Xss-Protection:
+      - '0'
+      Via:
+      - 1.1 google
+      Cf-Cache-Status:
+      - DYNAMIC
+      Set-Cookie:
+      - __cf_bm=fKOc48b7VpH.74bliwss.tuqDUn6gF02K_cwsSjt.OM-1750802733-1.0.1.1-e6sl0_dFcVbYOwVS_Z_aoikl8bmtsy5UbWhrDZrrX7FKX9QrsEcB.hud1DINyLKAyHpz8l2jbXio5g9i7GUHmtknVWFucVqKa5OSNy8321o;
+        path=/; expires=Tue, 24-Jun-25 22:35:33 GMT; domain=.argyle.com; HttpOnly;
+        Secure; SameSite=None
+      Server:
+      - cloudflare
+      Cf-Ray:
+      - 954f86f8aad15245-LAX
+    body:
+      encoding: UTF-8
+      string: '{"results":[],"next":null,"previous":null}'
+  recorded_at: Tue, 24 Jun 2025 22:05:11 GMT
+- request:
+    method: get
+    uri: https://api-sandbox.argyle.com/v2/paystubs?account=0197a3f9-59dc-f823-fa70-ed689729324b&from_start_date=2025-03-26&limit=200&to_start_date=2025-06-24
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Content-Type:
+      - application/json
+      Authorization:
+      - Basic <ARGYLE_BASIC_AUTH>
+      User-Agent:
+      - Faraday v2.9.2
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Accept:
+      - "*/*"
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Date:
+      - Tue, 24 Jun 2025 22:05:33 GMT
+      Content-Type:
+      - application/json
+      Transfer-Encoding:
+      - chunked
+      Connection:
+      - keep-alive
+      Access-Control-Allow-Origin:
+      - "*"
+      Cache-Control:
+      - no-cache, no-store, max-age=0, must-revalidate
+      Expires:
+      - '0'
+      Pragma:
+      - no-cache
+      Strict-Transport-Security:
+      - max-age=31536000; includeSubDomains
+      Vary:
+      - Accept-Encoding,Origin
+      X-Client-Id:
+      - '018f0834-d69a-879b-05cb-ddde033024f0'
+      X-Content-Type-Options:
+      - nosniff
+      X-Frame-Options:
+      - DENY
+      X-Trace-Id:
+      - 6c3daae4-2cf4-48e9-a085-a88408930c60
+      X-Xss-Protection:
+      - '0'
+      Via:
+      - 1.1 google
+      Cf-Cache-Status:
+      - DYNAMIC
+      Set-Cookie:
+      - __cf_bm=0TBimSymWmegCYP8ij81ykKZqeFtrzmcoXHJVy4GkpQ-1750802733-1.0.1.1-IHyFWw_azJWVLHGeORdU.eXdglYUumm0XSemO08ncHCQx0QhJYvFrroYxJwDEAXPCAj_sbvPnAWsc2xM1j5BsVT4sZIb1KHMI9UHPJKGcDU;
+        path=/; expires=Tue, 24-Jun-25 22:35:33 GMT; domain=.argyle.com; HttpOnly;
+        Secure; SameSite=None
+      Server:
+      - cloudflare
+      Cf-Ray:
+      - 954f86fa0d64f8cf-LAX
+    body:
+      encoding: ASCII-8BIT
+      string: '{"results":[{"id":"9f09eb3a-69f3-3772-bcc9-ddfb663e5e5a","account":"0197a3f9-59dc-f823-fa70-ed689729324b","payroll_document":"0197a3f9-81c7-1362-5db6-b1a857aa5be0","deduction_list":[{"amount":"32.34","name":"401K","tax_classification":"pre_tax","amount_ytd":"107.80"}],"filing_status":[{"type":"federal","location":null,"status":"single"}],"tax_list":[{"amount":"129.36","name":"CA
+        State Income Tax","type":"state","amount_ytd":"204.82"},{"amount":"140.14","name":"Federal
+        Income Tax","type":"federal","amount_ytd":"463.54"}],"status":"completed","paystub_date":"2025-06-19T00:00:00Z","paystub_period":{"start_date":"2025-06-01T00:00:00Z","end_date":"2025-06-15T00:00:00Z"},"currency":"USD","gross_pay":"1078.03","deductions":"32.34","taxes":"269.50","net_pay":"776.19","reimbursements":"0.00","hours":"80.98","fees":null,"net_pay_ytd":"12719.59","gross_pay_ytd":"16644.04","metadata":{},"employer":"Aramark","employer_address":{"city":"Seattle","state":"WA","country":"US","postal_code":"98109","line1":"202
+        Westlake Ave N","line2":null},"created_at":"2025-06-24T22:05:27.488Z","updated_at":"2025-06-24T22:05:27.488Z","destinations":[],"hours_ytd":"793.90","deductions_ytd":"700.70","taxes_ytd":"3266.34","gross_pay_list":[{"name":"Regular","type":"base","start_date":"2025-06-01","end_date":"2025-06-15","rate":"13.3119","hours":"80.9825","amount":"1078.03","hours_ytd":"790.6500","amount_ytd":"14014.39"},{"name":"Overtime","type":"overtime","start_date":null,"end_date":null,"rate":null,"hours":null,"amount":null,"hours_ytd":"1.3900","amount_ytd":"52.16"},{"name":"Holiday
+        Overtime","type":"overtime","start_date":null,"end_date":null,"rate":null,"hours":null,"amount":null,"hours_ytd":"1.8600","amount_ytd":"92.73"},{"name":"Bonus","type":"bonus","start_date":null,"end_date":null,"rate":null,"hours":null,"amount":null,"hours_ytd":null,"amount_ytd":"1797.23"},{"name":"Incentive","type":"bonus","start_date":null,"end_date":null,"rate":null,"hours":null,"amount":null,"hours_ytd":null,"amount_ytd":"7.44"},{"name":"Commission","type":"commission","start_date":null,"end_date":null,"rate":null,"hours":null,"amount":null,"hours_ytd":null,"amount_ytd":"680.09"}],"gross_pay_list_totals":{"base":{"amount":"1078.03","amount_ytd":"14014.39","hours":"80.9825","hours_ytd":"790.6500","rate_implied":"13.3100","rate_implied_ytd":"17.7300"},"overtime":{"amount":null,"amount_ytd":"144.89","hours":null,"hours_ytd":"3.2500","rate_implied":null,"rate_implied_ytd":"44.5800"},"commission":{"amount":null,"amount_ytd":"680.09","hours":null,"hours_ytd":null,"rate_implied":null,"rate_implied_ytd":null},"bonus":{"amount":null,"amount_ytd":"1804.67","hours":null,"hours_ytd":null,"rate_implied":null,"rate_implied_ytd":null},"other":null},"employment":"d4c6e035-b258-30e6-9add-8ed7987551be"},{"id":"3ecd4cc4-3a21-396d-a373-980864f85c07","account":"0197a3f9-59dc-f823-fa70-ed689729324b","payroll_document":"0197a3f9-81a3-6abc-4ad2-8123e2d5e735","deduction_list":[{"amount":"10.78","name":"Roth","tax_classification":"post_tax","amount_ytd":"118.58"},{"amount":"32.34","name":"Roth","tax_classification":"post_tax","amount_ytd":"150.92"}],"filing_status":[{"type":"federal","location":null,"status":"married
+        filing separately"},{"type":"state","location":"NY","status":"single"}],"tax_list":[{"amount":"140.14","name":"Social
+        Security Tax","type":"fica","amount_ytd":"452.76"},{"amount":"129.36","name":"Federal
+        Withholding","type":"federal","amount_ytd":"625.24"}],"status":"completed","paystub_date":"2025-06-05T00:00:00Z","paystub_period":{"start_date":"2025-05-18T00:00:00Z","end_date":"2025-06-01T00:00:00Z"},"currency":"USD","gross_pay":"2023.73","deductions":"43.12","taxes":"269.50","net_pay":"1716.11","reimbursements":"5.00","hours":"40.17","fees":null,"net_pay_ytd":"11943.40","gross_pay_ytd":"15566.01","metadata":{},"employer":"Aramark","employer_address":{"city":"Seattle","state":"WA","country":"US","postal_code":"98109","line1":"202
+        Westlake Ave N","line2":null},"created_at":"2025-06-24T22:05:27.530Z","updated_at":"2025-06-24T22:05:27.530Z","destinations":[],"hours_ytd":"712.91","deductions_ytd":"668.36","taxes_ytd":"2996.84","gross_pay_list":[{"name":"Regular","type":"base","start_date":"2025-05-18","end_date":"2025-06-01","rate":"26.8359","hours":"40.1712","amount":"1078.03","hours_ytd":"709.6700","amount_ytd":"12936.36"},{"name":"Overtime","type":"overtime","start_date":null,"end_date":null,"rate":null,"hours":null,"amount":null,"hours_ytd":"1.3900","amount_ytd":"52.16"},{"name":"Holiday
+        Overtime","type":"overtime","start_date":null,"end_date":null,"rate":null,"hours":null,"amount":null,"hours_ytd":"1.8600","amount_ytd":"92.73"},{"name":"Bonus","type":"bonus","start_date":"2025-05-28","end_date":"2025-05-31","rate":null,"hours":null,"amount":"945.70","hours_ytd":null,"amount_ytd":"1797.23"},{"name":"Incentive","type":"bonus","start_date":null,"end_date":null,"rate":null,"hours":null,"amount":null,"hours_ytd":null,"amount_ytd":"7.44"},{"name":"Commission","type":"commission","start_date":null,"end_date":null,"rate":null,"hours":null,"amount":null,"hours_ytd":null,"amount_ytd":"680.09"}],"gross_pay_list_totals":{"base":{"amount":"1078.03","amount_ytd":"12936.36","hours":"40.1712","hours_ytd":"709.6700","rate_implied":"26.8400","rate_implied_ytd":"18.2300"},"overtime":{"amount":null,"amount_ytd":"144.89","hours":null,"hours_ytd":"3.2500","rate_implied":null,"rate_implied_ytd":"44.5800"},"commission":{"amount":null,"amount_ytd":"680.09","hours":null,"hours_ytd":null,"rate_implied":null,"rate_implied_ytd":null},"bonus":{"amount":"945.70","amount_ytd":"1804.67","hours":null,"hours_ytd":null,"rate_implied":null,"rate_implied_ytd":null},"other":null},"employment":"d4c6e035-b258-30e6-9add-8ed7987551be"},{"id":"52ff4b97-ebd2-34ce-84c0-ab762fc0bad5","account":"0197a3f9-59dc-f823-fa70-ed689729324b","payroll_document":"0197a3f9-817c-cece-deab-a1b61284fbd6","deduction_list":[{"amount":"10.78","name":"Vision","tax_classification":"pre_tax","amount_ytd":"97.02"},{"amount":"32.34","name":"Garnishment","tax_classification":"post_tax","amount_ytd":"172.48"}],"filing_status":[{"type":"federal","location":null,"status":"single"}],"tax_list":[{"amount":"107.80","name":"Federal
+        Income Tax","type":"federal","amount_ytd":"323.40"},{"amount":"86.24","name":"Social
+        Security Tax","type":"fica","amount_ytd":"312.62"}],"status":"completed","paystub_date":"2025-05-22T00:00:00Z","paystub_period":{"start_date":"2025-05-04T00:00:00Z","end_date":"2025-05-18T00:00:00Z"},"currency":"USD","gross_pay":"1078.03","deductions":"43.12","taxes":"194.04","net_pay":"844.05","reimbursements":"3.18","hours":"68.55","fees":null,"net_pay_ytd":"10227.29","gross_pay_ytd":"13542.28","metadata":{},"employer":"Aramark","employer_address":{"city":"Seattle","state":"WA","country":"US","postal_code":"98109","line1":"202
+        Westlake Ave N","line2":null},"created_at":"2025-06-24T22:05:27.469Z","updated_at":"2025-06-24T22:05:27.469Z","destinations":[],"hours_ytd":"672.74","deductions_ytd":"625.24","taxes_ytd":"2727.34","gross_pay_list":[{"name":"Regular","type":"base","start_date":"2025-05-04","end_date":"2025-05-18","rate":"15.7263","hours":"68.5497","amount":"1078.03","hours_ytd":"669.5000","amount_ytd":"11858.33"},{"name":"Overtime","type":"overtime","start_date":null,"end_date":null,"rate":null,"hours":null,"amount":null,"hours_ytd":"1.3900","amount_ytd":"52.16"},{"name":"Holiday
+        Overtime","type":"overtime","start_date":null,"end_date":null,"rate":null,"hours":null,"amount":null,"hours_ytd":"1.8600","amount_ytd":"92.73"},{"name":"Bonus","type":"bonus","start_date":null,"end_date":null,"rate":null,"hours":null,"amount":null,"hours_ytd":null,"amount_ytd":"851.53"},{"name":"Incentive","type":"bonus","start_date":null,"end_date":null,"rate":null,"hours":null,"amount":null,"hours_ytd":null,"amount_ytd":"7.44"},{"name":"Commission","type":"commission","start_date":null,"end_date":null,"rate":null,"hours":null,"amount":null,"hours_ytd":null,"amount_ytd":"680.09"}],"gross_pay_list_totals":{"base":{"amount":"1078.03","amount_ytd":"11858.33","hours":"68.5497","hours_ytd":"669.5000","rate_implied":"15.7300","rate_implied_ytd":"17.7100"},"overtime":{"amount":null,"amount_ytd":"144.89","hours":null,"hours_ytd":"3.2500","rate_implied":null,"rate_implied_ytd":"44.5800"},"commission":{"amount":null,"amount_ytd":"680.09","hours":null,"hours_ytd":null,"rate_implied":null,"rate_implied_ytd":null},"bonus":{"amount":null,"amount_ytd":"858.97","hours":null,"hours_ytd":null,"rate_implied":null,"rate_implied_ytd":null},"other":null},"employment":"d4c6e035-b258-30e6-9add-8ed7987551be"},{"id":"0d9e98f4-8317-3755-8e8f-dc8c978cf160","account":"0197a3f9-59dc-f823-fa70-ed689729324b","payroll_document":"0197a3f9-8158-4e05-d562-73fc5a3f3b04","deduction_list":[{"amount":"32.34","name":"Vision","tax_classification":"pre_tax","amount_ytd":"86.24"}],"filing_status":[{"type":"federal","location":null,"status":"single"}],"tax_list":[{"amount":"75.46","name":"MEDICARE","type":"fica","amount_ytd":"776.16"},{"amount":"129.36","name":"OASDI","type":"fica","amount_ytd":"657.58"},{"amount":"86.24","name":"MEDICARE","type":"fica","amount_ytd":"862.40"}],"status":"completed","paystub_date":"2025-05-08T00:00:00Z","paystub_period":{"start_date":"2025-04-20T00:00:00Z","end_date":"2025-05-04T00:00:00Z"},"currency":"USD","gross_pay":"1078.03","deductions":"32.34","taxes":"291.06","net_pay":"757.71","reimbursements":"3.08","hours":"60.05","fees":null,"net_pay_ytd":"9383.24","gross_pay_ytd":"12464.25","metadata":{},"employer":"Aramark","employer_address":{"city":"Seattle","state":"WA","country":"US","postal_code":"98109","line1":"202
+        Westlake Ave N","line2":null},"created_at":"2025-06-24T22:05:27.509Z","updated_at":"2025-06-24T22:05:27.509Z","destinations":[],"hours_ytd":"604.19","deductions_ytd":"582.12","taxes_ytd":"2533.30","gross_pay_list":[{"name":"Regular","type":"base","start_date":"2025-04-20","end_date":"2025-05-04","rate":"17.9526","hours":"60.0488","amount":"1078.03","hours_ytd":"600.9500","amount_ytd":"10780.30"},{"name":"Overtime","type":"overtime","start_date":null,"end_date":null,"rate":null,"hours":null,"amount":null,"hours_ytd":"1.3900","amount_ytd":"52.16"},{"name":"Holiday
+        Overtime","type":"overtime","start_date":null,"end_date":null,"rate":null,"hours":null,"amount":null,"hours_ytd":"1.8600","amount_ytd":"92.73"},{"name":"Bonus","type":"bonus","start_date":null,"end_date":null,"rate":null,"hours":null,"amount":null,"hours_ytd":null,"amount_ytd":"851.53"},{"name":"Incentive","type":"bonus","start_date":null,"end_date":null,"rate":null,"hours":null,"amount":null,"hours_ytd":null,"amount_ytd":"7.44"},{"name":"Commission","type":"commission","start_date":null,"end_date":null,"rate":null,"hours":null,"amount":null,"hours_ytd":null,"amount_ytd":"680.09"}],"gross_pay_list_totals":{"base":{"amount":"1078.03","amount_ytd":"10780.30","hours":"60.0488","hours_ytd":"600.9500","rate_implied":"17.9500","rate_implied_ytd":"17.9400"},"overtime":{"amount":null,"amount_ytd":"144.89","hours":null,"hours_ytd":"3.2500","rate_implied":null,"rate_implied_ytd":"44.5800"},"commission":{"amount":null,"amount_ytd":"680.09","hours":null,"hours_ytd":null,"rate_implied":null,"rate_implied_ytd":null},"bonus":{"amount":null,"amount_ytd":"858.97","hours":null,"hours_ytd":null,"rate_implied":null,"rate_implied_ytd":null},"other":null},"employment":"d4c6e035-b258-30e6-9add-8ed7987551be"},{"id":"81f60a96-af5d-3b1c-a65f-996f8105a032","account":"0197a3f9-59dc-f823-fa70-ed689729324b","payroll_document":"0197a3f9-9017-222e-5613-6a73eccd1415","deduction_list":[{"amount":"43.12","name":"Dental","tax_classification":null,"amount_ytd":"172.48"},{"amount":"21.56","name":"Roth","tax_classification":"post_tax","amount_ytd":"107.80"},{"amount":"32.34","name":"401K","tax_classification":"pre_tax","amount_ytd":"75.46"}],"filing_status":[{"type":"federal","location":null,"status":"married
+        filing separately"},{"type":"state","location":"NY","status":"married filing
+        separately"}],"tax_list":[{"amount":"86.24","name":"Social Security Tax","type":"fica","amount_ytd":"226.38"},{"amount":"140.14","name":"MEDICARE","type":"fica","amount_ytd":"700.70"},{"amount":"75.46","name":"OASDI","type":"fica","amount_ytd":"528.22"}],"status":"completed","paystub_date":"2025-04-24T00:00:00Z","paystub_period":{"start_date":"2025-04-06T00:00:00Z","end_date":"2025-04-20T00:00:00Z"},"currency":"USD","gross_pay":"1232.64","deductions":"97.02","taxes":"301.84","net_pay":"838.44","reimbursements":"4.66","hours":"58.55","fees":null,"net_pay_ytd":"8625.53","gross_pay_ytd":"11386.22","metadata":{},"employer":"Aramark","employer_address":{"city":"Seattle","state":"WA","country":"US","postal_code":"98109","line1":"202
+        Westlake Ave N","line2":null},"created_at":"2025-06-24T22:05:31.137Z","updated_at":"2025-06-24T22:05:31.137Z","destinations":[],"hours_ytd":"544.14","deductions_ytd":"549.78","taxes_ytd":"2242.24","gross_pay_list":[{"name":"Regular","type":"base","start_date":"2025-04-06","end_date":"2025-04-20","rate":"18.4125","hours":"58.5487","amount":"1078.03","hours_ytd":"540.9000","amount_ytd":"9702.27"},{"name":"Overtime","type":"overtime","start_date":null,"end_date":null,"rate":null,"hours":null,"amount":null,"hours_ytd":"1.3900","amount_ytd":"52.16"},{"name":"Holiday
+        Overtime","type":"overtime","start_date":null,"end_date":null,"rate":null,"hours":null,"amount":null,"hours_ytd":"1.8600","amount_ytd":"92.73"},{"name":"Bonus","type":"bonus","start_date":null,"end_date":null,"rate":null,"hours":null,"amount":null,"hours_ytd":null,"amount_ytd":"851.53"},{"name":"Incentive","type":"bonus","start_date":null,"end_date":null,"rate":null,"hours":null,"amount":null,"hours_ytd":null,"amount_ytd":"7.44"},{"name":"Commission","type":"commission","start_date":"2025-04-19","end_date":"2025-04-19","rate":null,"hours":null,"amount":"154.61","hours_ytd":null,"amount_ytd":"680.09"}],"gross_pay_list_totals":{"base":{"amount":"1078.03","amount_ytd":"9702.27","hours":"58.5487","hours_ytd":"540.9000","rate_implied":"18.4100","rate_implied_ytd":"17.9400"},"overtime":{"amount":null,"amount_ytd":"144.89","hours":null,"hours_ytd":"3.2500","rate_implied":null,"rate_implied_ytd":"44.5800"},"commission":{"amount":"154.61","amount_ytd":"680.09","hours":null,"hours_ytd":null,"rate_implied":null,"rate_implied_ytd":null},"bonus":{"amount":null,"amount_ytd":"858.97","hours":null,"hours_ytd":null,"rate_implied":null,"rate_implied_ytd":null},"other":null},"employment":"d4c6e035-b258-30e6-9add-8ed7987551be"},{"id":"70834463-81b6-3d5d-9147-accc661095c9","account":"0197a3f9-59dc-f823-fa70-ed689729324b","payroll_document":"0197a3f9-8ff4-8ad8-bd46-7e940dcf52e6","deduction_list":[{"amount":"10.78","name":"Vision","tax_classification":"pre_tax","amount_ytd":"53.90"},{"amount":"43.12","name":"Garnishment","tax_classification":"post_tax","amount_ytd":"140.14"}],"filing_status":[{"type":"federal","location":null,"status":"married
+        filing separately"},{"type":"state","location":"NY","status":"married filing
+        separately"}],"tax_list":[{"amount":"86.24","name":"Federal Withholding","type":"federal","amount_ytd":"495.88"},{"amount":"75.46","name":"CA
+        State Income Tax","type":"state","amount_ytd":"75.46"}],"status":"completed","paystub_date":"2025-04-10T00:00:00Z","paystub_period":{"start_date":"2025-03-23T00:00:00Z","end_date":"2025-04-06T00:00:00Z"},"currency":"USD","gross_pay":"1078.03","deductions":"53.90","taxes":"161.70","net_pay":"866.79","reimbursements":"4.36","hours":"73.82","fees":null,"net_pay_ytd":"7787.09","gross_pay_ytd":"10153.58","metadata":{},"employer":"Aramark","employer_address":{"city":"Seattle","state":"WA","country":"US","postal_code":"98109","line1":"202
+        Westlake Ave N","line2":null},"created_at":"2025-06-24T22:05:31.117Z","updated_at":"2025-06-24T22:05:31.117Z","destinations":[],"hours_ytd":"485.60","deductions_ytd":"452.76","taxes_ytd":"1940.40","gross_pay_list":[{"name":"Regular","type":"base","start_date":"2025-03-23","end_date":"2025-04-06","rate":"14.6041","hours":"73.8170","amount":"1078.03","hours_ytd":"482.3500","amount_ytd":"8624.24"},{"name":"Overtime","type":"overtime","start_date":null,"end_date":null,"rate":null,"hours":null,"amount":null,"hours_ytd":"1.3900","amount_ytd":"52.16"},{"name":"Holiday
+        Overtime","type":"overtime","start_date":null,"end_date":null,"rate":null,"hours":null,"amount":null,"hours_ytd":"1.8600","amount_ytd":"92.73"},{"name":"Bonus","type":"bonus","start_date":null,"end_date":null,"rate":null,"hours":null,"amount":null,"hours_ytd":null,"amount_ytd":"851.53"},{"name":"Incentive","type":"bonus","start_date":null,"end_date":null,"rate":null,"hours":null,"amount":null,"hours_ytd":null,"amount_ytd":"7.44"},{"name":"Commission","type":"commission","start_date":null,"end_date":null,"rate":null,"hours":null,"amount":null,"hours_ytd":null,"amount_ytd":"525.48"}],"gross_pay_list_totals":{"base":{"amount":"1078.03","amount_ytd":"8624.24","hours":"73.8170","hours_ytd":"482.3500","rate_implied":"14.6000","rate_implied_ytd":"17.8800"},"overtime":{"amount":null,"amount_ytd":"144.89","hours":null,"hours_ytd":"3.2500","rate_implied":null,"rate_implied_ytd":"44.5800"},"commission":{"amount":null,"amount_ytd":"525.48","hours":null,"hours_ytd":null,"rate_implied":null,"rate_implied_ytd":null},"bonus":{"amount":null,"amount_ytd":"858.97","hours":null,"hours_ytd":null,"rate_implied":null,"rate_implied_ytd":null},"other":null},"employment":"d4c6e035-b258-30e6-9add-8ed7987551be"},{"id":"a10c9331-9a68-3ab4-8dea-e33d8a639fd4","account":"0197a3f9-59dc-f823-fa70-ed689729324b","payroll_document":"0197a3f9-8fce-cb43-58f6-a7d98591ffdb","deduction_list":[{"amount":"43.12","name":"Roth","tax_classification":"post_tax","amount_ytd":"86.24"},{"amount":"21.56","name":"Vision","tax_classification":"pre_tax","amount_ytd":"43.12"},{"amount":"32.34","name":"Garnishment","tax_classification":"post_tax","amount_ytd":"97.02"}],"filing_status":[{"type":"federal","location":null,"status":"married
+        filing separately"}],"tax_list":[{"amount":"107.80","name":"MEDICARE","type":"fica","amount_ytd":"560.56"},{"amount":"129.36","name":"OASDI","type":"fica","amount_ytd":"452.76"}],"status":"completed","paystub_date":"2025-03-27T00:00:00Z","paystub_period":{"start_date":"2025-03-09T00:00:00Z","end_date":"2025-03-23T00:00:00Z"},"currency":"USD","gross_pay":"1078.03","deductions":"97.02","taxes":"237.16","net_pay":"747.42","reimbursements":"3.57","hours":"54.82","fees":null,"net_pay_ytd":"6920.30","gross_pay_ytd":"9075.55","metadata":{},"employer":"Aramark","employer_address":{"city":"Seattle","state":"WA","country":"US","postal_code":"98109","line1":"202
+        Westlake Ave N","line2":null},"created_at":"2025-06-24T22:05:31.177Z","updated_at":"2025-06-24T22:05:31.177Z","destinations":[],"hours_ytd":"411.78","deductions_ytd":"398.86","taxes_ytd":"1778.70","gross_pay_list":[{"name":"Regular","type":"base","start_date":"2025-03-09","end_date":"2025-03-23","rate":"19.6647","hours":"54.8206","amount":"1078.03","hours_ytd":"408.5300","amount_ytd":"7546.21"},{"name":"Overtime","type":"overtime","start_date":null,"end_date":null,"rate":null,"hours":null,"amount":null,"hours_ytd":"1.3900","amount_ytd":"52.16"},{"name":"Holiday
+        Overtime","type":"overtime","start_date":null,"end_date":null,"rate":null,"hours":null,"amount":null,"hours_ytd":"1.8600","amount_ytd":"92.73"},{"name":"Bonus","type":"bonus","start_date":null,"end_date":null,"rate":null,"hours":null,"amount":null,"hours_ytd":null,"amount_ytd":"851.53"},{"name":"Incentive","type":"bonus","start_date":null,"end_date":null,"rate":null,"hours":null,"amount":null,"hours_ytd":null,"amount_ytd":"7.44"},{"name":"Commission","type":"commission","start_date":null,"end_date":null,"rate":null,"hours":null,"amount":null,"hours_ytd":null,"amount_ytd":"525.48"}],"gross_pay_list_totals":{"base":{"amount":"1078.03","amount_ytd":"7546.21","hours":"54.8206","hours_ytd":"408.5300","rate_implied":"19.6600","rate_implied_ytd":"18.4700"},"overtime":{"amount":null,"amount_ytd":"144.89","hours":null,"hours_ytd":"3.2500","rate_implied":null,"rate_implied_ytd":"44.5800"},"commission":{"amount":null,"amount_ytd":"525.48","hours":null,"hours_ytd":null,"rate_implied":null,"rate_implied_ytd":null},"bonus":{"amount":null,"amount_ytd":"858.97","hours":null,"hours_ytd":null,"rate_implied":null,"rate_implied_ytd":null},"other":null},"employment":"d4c6e035-b258-30e6-9add-8ed7987551be"}],"next":null,"previous":null}'
+  recorded_at: Tue, 24 Jun 2025 22:05:11 GMT
+- request:
+    method: get
+    uri: https://api-sandbox.argyle.com/v2/gigs?account=0197a3f9-59dc-f823-fa70-ed689729324b&from_start_datetime=2025-03-26&limit=200&to_start_datetime=2025-06-24
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Content-Type:
+      - application/json
+      Authorization:
+      - Basic <ARGYLE_BASIC_AUTH>
+      User-Agent:
+      - Faraday v2.9.2
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Accept:
+      - "*/*"
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Date:
+      - Tue, 24 Jun 2025 22:05:33 GMT
+      Content-Type:
+      - application/json
+      Content-Length:
+      - '42'
+      Connection:
+      - keep-alive
+      Access-Control-Allow-Origin:
+      - "*"
+      Cache-Control:
+      - no-cache, no-store, max-age=0, must-revalidate
+      Expires:
+      - '0'
+      Pragma:
+      - no-cache
+      Strict-Transport-Security:
+      - max-age=31536000; includeSubDomains
+      Vary:
+      - Accept-Encoding,Origin
+      X-Client-Id:
+      - '018f0834-d69a-879b-05cb-ddde033024f0'
+      X-Content-Type-Options:
+      - nosniff
+      X-Frame-Options:
+      - DENY
+      X-Trace-Id:
+      - f12868c1-2edf-4b90-9d35-ea924d5b6ff1
+      X-Xss-Protection:
+      - '0'
+      Via:
+      - 1.1 google
+      Cf-Cache-Status:
+      - DYNAMIC
+      Set-Cookie:
+      - __cf_bm=Bbuvjyg1ALQ2cuaVzVcjNm3YvFX.W63NqqnxurdLDDk-1750802733-1.0.1.1-S4sxKY4AJyZ6FaqPAlM5txyBtiZPX_Sw.IUxo47vhaEqng8X5i2W1W7bbfxMBOmuRB.Q97x3mKRA4n8lsA7Ohb.aVzQ0Y3Q_ufRc7ihjgno;
+        path=/; expires=Tue, 24-Jun-25 22:35:33 GMT; domain=.argyle.com; HttpOnly;
+        Secure; SameSite=None
+      Server:
+      - cloudflare
+      Cf-Ray:
+      - 954f86fb6b61d12a-LAX
+    body:
+      encoding: UTF-8
+      string: '{"results":[],"next":null,"previous":null}'
+  recorded_at: Tue, 24 Jun 2025 22:05:11 GMT
+- request:
+    method: get
+    uri: https://api-sandbox.argyle.com/v2/identities?account=0197a3f9-59dc-f823-fa70-ed689729324b&limit=10
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Content-Type:
+      - application/json
+      Authorization:
+      - Basic <ARGYLE_BASIC_AUTH>
+      User-Agent:
+      - Faraday v2.9.2
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Accept:
+      - "*/*"
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Date:
+      - Tue, 24 Jun 2025 22:05:33 GMT
+      Content-Type:
+      - application/json
+      Transfer-Encoding:
+      - chunked
+      Connection:
+      - keep-alive
+      Access-Control-Allow-Origin:
+      - "*"
+      Cache-Control:
+      - no-cache, no-store, max-age=0, must-revalidate
+      Expires:
+      - '0'
+      Pragma:
+      - no-cache
+      Strict-Transport-Security:
+      - max-age=31536000; includeSubDomains
+      Vary:
+      - Accept-Encoding,Origin
+      X-Client-Id:
+      - '018f0834-d69a-879b-05cb-ddde033024f0'
+      X-Content-Type-Options:
+      - nosniff
+      X-Frame-Options:
+      - DENY
+      X-Trace-Id:
+      - c454e193-1a01-471b-bd66-d0c19d025455
+      X-Xss-Protection:
+      - '0'
+      Via:
+      - 1.1 google
+      Cf-Cache-Status:
+      - DYNAMIC
+      Set-Cookie:
+      - __cf_bm=YTys42C7l8m8g5etJN9u.CpZoI35fv4djYwOY51veZE-1750802733-1.0.1.1-.2OhVNe6Pb.z3ywIc0AgGUxuLu89VHeI9TvVPsnDzEaTyYpKJJjA4j3X1_.oOGRzufxBeHAHPVxxPicx0CXM3QmcG7LUa9rF1JSgmmx8Vow;
+        path=/; expires=Tue, 24-Jun-25 22:35:33 GMT; domain=.argyle.com; HttpOnly;
+        Secure; SameSite=None
+      Server:
+      - cloudflare
+      Cf-Ray:
+      - 954f86febcdf0922-LAX
+    body:
+      encoding: ASCII-8BIT
+      string: '{"results":[{"id":"2f68bebb-bb9b-3169-a277-e1012aecdf71","account":"0197a3f9-59dc-f823-fa70-ed689729324b","address":{"city":"New
+        York","line1":"759 Victoria Plaza","line2":null,"state":"NY","country":"US","postal_code":"10014"},"first_name":"Bob","last_name":"Jones","full_name":"Bob
+        Jones","birth_date":"1980-10-10","email":"test1@argyle.com","phone_number":"+18009000010","picture_url":"https://api-sandbox.argyle.com/v2/payroll-documents/0197a3f9-779c-ba94-29cb-7e3f59046e69/file","employment_status":"active","employment_type":"part-time","job_title":"1635
+        - Helpline Agent","ssn":"522-09-1191","marital_status":"Married filing jointly","gender":"Male","hire_date":"2022-11-24","original_hire_date":"2022-11-24","termination_date":null,"termination_reason":null,"employer":"Aramark","base_pay":{"amount":"28028.72","period":"annual","currency":"USD"},"pay_cycle":"biweekly","platform_ids":{"employee_id":"G91S3J1HE","position_id":"XYAT7V73G","platform_user_id":"AHZK0N4FALZ3KI3H"},"created_at":"2025-06-24T22:05:24.541Z","updated_at":"2025-06-24T22:05:27.856Z","metadata":{},"employment":"d4c6e035-b258-30e6-9add-8ed7987551be"}],"next":null,"previous":null}'
+  recorded_at: Tue, 24 Jun 2025 22:05:11 GMT
+- request:
+    method: get
+    uri: https://api-sandbox.argyle.com/v2/accounts/0197a3f9-59dc-f823-fa70-ed689729324b
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Content-Type:
+      - application/json
+      Authorization:
+      - Basic <ARGYLE_BASIC_AUTH>
+      User-Agent:
+      - Faraday v2.9.2
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Accept:
+      - "*/*"
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Date:
+      - Tue, 24 Jun 2025 22:05:34 GMT
+      Content-Type:
+      - application/json
+      Transfer-Encoding:
+      - chunked
+      Connection:
+      - keep-alive
+      Access-Control-Allow-Origin:
+      - "*"
+      Cache-Control:
+      - no-cache, no-store, max-age=0, must-revalidate
+      Expires:
+      - '0'
+      Pragma:
+      - no-cache
+      Strict-Transport-Security:
+      - max-age=31536000; includeSubDomains
+      Vary:
+      - Accept-Encoding,Origin
+      X-Client-Id:
+      - '018f0834-d69a-879b-05cb-ddde033024f0'
+      X-Content-Type-Options:
+      - nosniff
+      X-Frame-Options:
+      - DENY
+      X-Trace-Id:
+      - f75d4d91-e4b0-4f4c-9cfd-3f96c8bb066a
+      X-Xss-Protection:
+      - '0'
+      Via:
+      - 1.1 google
+      Cf-Cache-Status:
+      - DYNAMIC
+      Set-Cookie:
+      - __cf_bm=fS94lallCQQkQEn9RHaB8SPsjPJYVv6XEQnze3ZHf7A-1750802734-1.0.1.1-8bQwupn1l3qn.4hKW6j14d0HxDQkiYMjNYAeAZmnRsnIHPLN6vyqbIlgxMGm8OkYJzMDnLHMizTnZiLT1qtAmTiEfLA4YFDLKth0ISeamnA;
+        path=/; expires=Tue, 24-Jun-25 22:35:34 GMT; domain=.argyle.com; HttpOnly;
+        Secure; SameSite=None
+      Server:
+      - cloudflare
+      Cf-Ray:
+      - 954f86ffec4f2efc-LAX
+    body:
+      encoding: ASCII-8BIT
+      string: '{"id":"0197a3f9-59dc-f823-fa70-ed689729324b","user":"0197a3f9-4f43-dbd5-e5bd-3941dc245d1b","employers":["Aramark"],"item":"item_000029932","source":"argyle_sandbox","created_at":"2025-06-24T22:05:17.265289Z","updated_at":"2025-06-24T22:05:31.600317Z","scanned_at":"2025-06-24T22:05:31.403471Z","connection":{"status":"connected","error_code":null,"error_message":null,"updated_at":"2025-06-24T22:05:22.012767Z"},"direct_deposit_switch":{"status":"idle","error_code":null,"error_message":null,"updated_at":"2025-06-24T22:05:17.555639Z"},"availability":{"gigs":{"status":"in_progress","updated_at":"2025-06-24T22:05:31.403471Z","available_count":0,"available_from":null,"available_to":null},"shifts":{"status":"in_progress","updated_at":"2025-06-24T22:05:31.403471Z","available_count":22,"available_from":"2025-03-09T00:00:00Z","available_to":"2025-06-21T00:00:00Z"},"paystubs":{"status":"in_progress","updated_at":"2025-06-24T22:05:31.403471Z","available_count":8,"available_from":"2025-03-13T00:00:00Z","available_to":"2025-06-19T00:00:00Z"},"payroll_documents":{"status":"synced","updated_at":"2025-06-24T22:05:25.014923Z"},"identities":{"status":"synced","updated_at":"2025-06-24T22:05:27.872580Z"},"ratings":{"status":"synced","updated_at":"2025-06-24T22:05:25.028105Z"},"vehicles":{"status":"synced","updated_at":"2025-06-24T22:05:25.030685Z"},"deposit_destinations":{"status":"synced","updated_at":"2025-06-24T22:05:23.404217Z"},"user_forms":null,"user_uploads":null},"ongoing_refresh":{"status":"disabled"}}'
+  recorded_at: Tue, 24 Jun 2025 22:05:11 GMT
+- request:
+    method: get
+    uri: https://api-sandbox.argyle.com/v2/paystubs?account=0197a3f9-59dc-f823-fa70-ed689729324b&from_start_date=2025-03-26&limit=200&to_start_date=2025-06-24
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Content-Type:
+      - application/json
+      Authorization:
+      - Basic <ARGYLE_BASIC_AUTH>
+      User-Agent:
+      - Faraday v2.9.2
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Accept:
+      - "*/*"
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Date:
+      - Tue, 24 Jun 2025 22:05:34 GMT
+      Content-Type:
+      - application/json
+      Transfer-Encoding:
+      - chunked
+      Connection:
+      - keep-alive
+      Access-Control-Allow-Origin:
+      - "*"
+      Cache-Control:
+      - no-cache, no-store, max-age=0, must-revalidate
+      Expires:
+      - '0'
+      Pragma:
+      - no-cache
+      Strict-Transport-Security:
+      - max-age=31536000; includeSubDomains
+      Vary:
+      - Accept-Encoding,Origin
+      X-Client-Id:
+      - '018f0834-d69a-879b-05cb-ddde033024f0'
+      X-Content-Type-Options:
+      - nosniff
+      X-Frame-Options:
+      - DENY
+      X-Trace-Id:
+      - dce87db8-7fb9-4ab5-906f-cf801ebcd461
+      X-Xss-Protection:
+      - '0'
+      Via:
+      - 1.1 google
+      Cf-Cache-Status:
+      - DYNAMIC
+      Set-Cookie:
+      - __cf_bm=lYCgiODX5IM8BJXRL5I6Kd1zjapK6GSpaPVJKp5THwo-1750802734-1.0.1.1-QwcwcykQDr9loLaHCD060sB2HxVjO1cRVkv_CI6KUjU1br9iww6cz8SbFozNNl0L0Mrt.bgFKL3WEkbP_qF4UDRloObJfs9jO0GTi9wsjnY;
+        path=/; expires=Tue, 24-Jun-25 22:35:34 GMT; domain=.argyle.com; HttpOnly;
+        Secure; SameSite=None
+      Server:
+      - cloudflare
+      Cf-Ray:
+      - 954f87012d5c2f4c-LAX
+    body:
+      encoding: ASCII-8BIT
+      string: '{"results":[{"id":"9f09eb3a-69f3-3772-bcc9-ddfb663e5e5a","account":"0197a3f9-59dc-f823-fa70-ed689729324b","payroll_document":"0197a3f9-81c7-1362-5db6-b1a857aa5be0","deduction_list":[{"amount":"32.34","name":"401K","tax_classification":"pre_tax","amount_ytd":"107.80"}],"filing_status":[{"type":"federal","location":null,"status":"single"}],"tax_list":[{"amount":"129.36","name":"CA
+        State Income Tax","type":"state","amount_ytd":"204.82"},{"amount":"140.14","name":"Federal
+        Income Tax","type":"federal","amount_ytd":"463.54"}],"status":"completed","paystub_date":"2025-06-19T00:00:00Z","paystub_period":{"start_date":"2025-06-01T00:00:00Z","end_date":"2025-06-15T00:00:00Z"},"currency":"USD","gross_pay":"1078.03","deductions":"32.34","taxes":"269.50","net_pay":"776.19","reimbursements":"0.00","hours":"80.98","fees":null,"net_pay_ytd":"12719.59","gross_pay_ytd":"16644.04","metadata":{},"employer":"Aramark","employer_address":{"city":"Seattle","state":"WA","country":"US","postal_code":"98109","line1":"202
+        Westlake Ave N","line2":null},"created_at":"2025-06-24T22:05:27.488Z","updated_at":"2025-06-24T22:05:27.488Z","destinations":[],"hours_ytd":"793.90","deductions_ytd":"700.70","taxes_ytd":"3266.34","gross_pay_list":[{"name":"Regular","type":"base","start_date":"2025-06-01","end_date":"2025-06-15","rate":"13.3119","hours":"80.9825","amount":"1078.03","hours_ytd":"790.6500","amount_ytd":"14014.39"},{"name":"Overtime","type":"overtime","start_date":null,"end_date":null,"rate":null,"hours":null,"amount":null,"hours_ytd":"1.3900","amount_ytd":"52.16"},{"name":"Holiday
+        Overtime","type":"overtime","start_date":null,"end_date":null,"rate":null,"hours":null,"amount":null,"hours_ytd":"1.8600","amount_ytd":"92.73"},{"name":"Bonus","type":"bonus","start_date":null,"end_date":null,"rate":null,"hours":null,"amount":null,"hours_ytd":null,"amount_ytd":"1797.23"},{"name":"Incentive","type":"bonus","start_date":null,"end_date":null,"rate":null,"hours":null,"amount":null,"hours_ytd":null,"amount_ytd":"7.44"},{"name":"Commission","type":"commission","start_date":null,"end_date":null,"rate":null,"hours":null,"amount":null,"hours_ytd":null,"amount_ytd":"680.09"}],"gross_pay_list_totals":{"base":{"amount":"1078.03","amount_ytd":"14014.39","hours":"80.9825","hours_ytd":"790.6500","rate_implied":"13.3100","rate_implied_ytd":"17.7300"},"overtime":{"amount":null,"amount_ytd":"144.89","hours":null,"hours_ytd":"3.2500","rate_implied":null,"rate_implied_ytd":"44.5800"},"commission":{"amount":null,"amount_ytd":"680.09","hours":null,"hours_ytd":null,"rate_implied":null,"rate_implied_ytd":null},"bonus":{"amount":null,"amount_ytd":"1804.67","hours":null,"hours_ytd":null,"rate_implied":null,"rate_implied_ytd":null},"other":null},"employment":"d4c6e035-b258-30e6-9add-8ed7987551be"},{"id":"3ecd4cc4-3a21-396d-a373-980864f85c07","account":"0197a3f9-59dc-f823-fa70-ed689729324b","payroll_document":"0197a3f9-81a3-6abc-4ad2-8123e2d5e735","deduction_list":[{"amount":"10.78","name":"Roth","tax_classification":"post_tax","amount_ytd":"118.58"},{"amount":"32.34","name":"Roth","tax_classification":"post_tax","amount_ytd":"150.92"}],"filing_status":[{"type":"federal","location":null,"status":"married
+        filing separately"},{"type":"state","location":"NY","status":"single"}],"tax_list":[{"amount":"140.14","name":"Social
+        Security Tax","type":"fica","amount_ytd":"452.76"},{"amount":"129.36","name":"Federal
+        Withholding","type":"federal","amount_ytd":"625.24"}],"status":"completed","paystub_date":"2025-06-05T00:00:00Z","paystub_period":{"start_date":"2025-05-18T00:00:00Z","end_date":"2025-06-01T00:00:00Z"},"currency":"USD","gross_pay":"2023.73","deductions":"43.12","taxes":"269.50","net_pay":"1716.11","reimbursements":"5.00","hours":"40.17","fees":null,"net_pay_ytd":"11943.40","gross_pay_ytd":"15566.01","metadata":{},"employer":"Aramark","employer_address":{"city":"Seattle","state":"WA","country":"US","postal_code":"98109","line1":"202
+        Westlake Ave N","line2":null},"created_at":"2025-06-24T22:05:27.530Z","updated_at":"2025-06-24T22:05:27.530Z","destinations":[],"hours_ytd":"712.91","deductions_ytd":"668.36","taxes_ytd":"2996.84","gross_pay_list":[{"name":"Regular","type":"base","start_date":"2025-05-18","end_date":"2025-06-01","rate":"26.8359","hours":"40.1712","amount":"1078.03","hours_ytd":"709.6700","amount_ytd":"12936.36"},{"name":"Overtime","type":"overtime","start_date":null,"end_date":null,"rate":null,"hours":null,"amount":null,"hours_ytd":"1.3900","amount_ytd":"52.16"},{"name":"Holiday
+        Overtime","type":"overtime","start_date":null,"end_date":null,"rate":null,"hours":null,"amount":null,"hours_ytd":"1.8600","amount_ytd":"92.73"},{"name":"Bonus","type":"bonus","start_date":"2025-05-28","end_date":"2025-05-31","rate":null,"hours":null,"amount":"945.70","hours_ytd":null,"amount_ytd":"1797.23"},{"name":"Incentive","type":"bonus","start_date":null,"end_date":null,"rate":null,"hours":null,"amount":null,"hours_ytd":null,"amount_ytd":"7.44"},{"name":"Commission","type":"commission","start_date":null,"end_date":null,"rate":null,"hours":null,"amount":null,"hours_ytd":null,"amount_ytd":"680.09"}],"gross_pay_list_totals":{"base":{"amount":"1078.03","amount_ytd":"12936.36","hours":"40.1712","hours_ytd":"709.6700","rate_implied":"26.8400","rate_implied_ytd":"18.2300"},"overtime":{"amount":null,"amount_ytd":"144.89","hours":null,"hours_ytd":"3.2500","rate_implied":null,"rate_implied_ytd":"44.5800"},"commission":{"amount":null,"amount_ytd":"680.09","hours":null,"hours_ytd":null,"rate_implied":null,"rate_implied_ytd":null},"bonus":{"amount":"945.70","amount_ytd":"1804.67","hours":null,"hours_ytd":null,"rate_implied":null,"rate_implied_ytd":null},"other":null},"employment":"d4c6e035-b258-30e6-9add-8ed7987551be"},{"id":"52ff4b97-ebd2-34ce-84c0-ab762fc0bad5","account":"0197a3f9-59dc-f823-fa70-ed689729324b","payroll_document":"0197a3f9-817c-cece-deab-a1b61284fbd6","deduction_list":[{"amount":"10.78","name":"Vision","tax_classification":"pre_tax","amount_ytd":"97.02"},{"amount":"32.34","name":"Garnishment","tax_classification":"post_tax","amount_ytd":"172.48"}],"filing_status":[{"type":"federal","location":null,"status":"single"}],"tax_list":[{"amount":"107.80","name":"Federal
+        Income Tax","type":"federal","amount_ytd":"323.40"},{"amount":"86.24","name":"Social
+        Security Tax","type":"fica","amount_ytd":"312.62"}],"status":"completed","paystub_date":"2025-05-22T00:00:00Z","paystub_period":{"start_date":"2025-05-04T00:00:00Z","end_date":"2025-05-18T00:00:00Z"},"currency":"USD","gross_pay":"1078.03","deductions":"43.12","taxes":"194.04","net_pay":"844.05","reimbursements":"3.18","hours":"68.55","fees":null,"net_pay_ytd":"10227.29","gross_pay_ytd":"13542.28","metadata":{},"employer":"Aramark","employer_address":{"city":"Seattle","state":"WA","country":"US","postal_code":"98109","line1":"202
+        Westlake Ave N","line2":null},"created_at":"2025-06-24T22:05:27.469Z","updated_at":"2025-06-24T22:05:27.469Z","destinations":[],"hours_ytd":"672.74","deductions_ytd":"625.24","taxes_ytd":"2727.34","gross_pay_list":[{"name":"Regular","type":"base","start_date":"2025-05-04","end_date":"2025-05-18","rate":"15.7263","hours":"68.5497","amount":"1078.03","hours_ytd":"669.5000","amount_ytd":"11858.33"},{"name":"Overtime","type":"overtime","start_date":null,"end_date":null,"rate":null,"hours":null,"amount":null,"hours_ytd":"1.3900","amount_ytd":"52.16"},{"name":"Holiday
+        Overtime","type":"overtime","start_date":null,"end_date":null,"rate":null,"hours":null,"amount":null,"hours_ytd":"1.8600","amount_ytd":"92.73"},{"name":"Bonus","type":"bonus","start_date":null,"end_date":null,"rate":null,"hours":null,"amount":null,"hours_ytd":null,"amount_ytd":"851.53"},{"name":"Incentive","type":"bonus","start_date":null,"end_date":null,"rate":null,"hours":null,"amount":null,"hours_ytd":null,"amount_ytd":"7.44"},{"name":"Commission","type":"commission","start_date":null,"end_date":null,"rate":null,"hours":null,"amount":null,"hours_ytd":null,"amount_ytd":"680.09"}],"gross_pay_list_totals":{"base":{"amount":"1078.03","amount_ytd":"11858.33","hours":"68.5497","hours_ytd":"669.5000","rate_implied":"15.7300","rate_implied_ytd":"17.7100"},"overtime":{"amount":null,"amount_ytd":"144.89","hours":null,"hours_ytd":"3.2500","rate_implied":null,"rate_implied_ytd":"44.5800"},"commission":{"amount":null,"amount_ytd":"680.09","hours":null,"hours_ytd":null,"rate_implied":null,"rate_implied_ytd":null},"bonus":{"amount":null,"amount_ytd":"858.97","hours":null,"hours_ytd":null,"rate_implied":null,"rate_implied_ytd":null},"other":null},"employment":"d4c6e035-b258-30e6-9add-8ed7987551be"},{"id":"0d9e98f4-8317-3755-8e8f-dc8c978cf160","account":"0197a3f9-59dc-f823-fa70-ed689729324b","payroll_document":"0197a3f9-8158-4e05-d562-73fc5a3f3b04","deduction_list":[{"amount":"32.34","name":"Vision","tax_classification":"pre_tax","amount_ytd":"86.24"}],"filing_status":[{"type":"federal","location":null,"status":"single"}],"tax_list":[{"amount":"75.46","name":"MEDICARE","type":"fica","amount_ytd":"776.16"},{"amount":"129.36","name":"OASDI","type":"fica","amount_ytd":"657.58"},{"amount":"86.24","name":"MEDICARE","type":"fica","amount_ytd":"862.40"}],"status":"completed","paystub_date":"2025-05-08T00:00:00Z","paystub_period":{"start_date":"2025-04-20T00:00:00Z","end_date":"2025-05-04T00:00:00Z"},"currency":"USD","gross_pay":"1078.03","deductions":"32.34","taxes":"291.06","net_pay":"757.71","reimbursements":"3.08","hours":"60.05","fees":null,"net_pay_ytd":"9383.24","gross_pay_ytd":"12464.25","metadata":{},"employer":"Aramark","employer_address":{"city":"Seattle","state":"WA","country":"US","postal_code":"98109","line1":"202
+        Westlake Ave N","line2":null},"created_at":"2025-06-24T22:05:27.509Z","updated_at":"2025-06-24T22:05:27.509Z","destinations":[],"hours_ytd":"604.19","deductions_ytd":"582.12","taxes_ytd":"2533.30","gross_pay_list":[{"name":"Regular","type":"base","start_date":"2025-04-20","end_date":"2025-05-04","rate":"17.9526","hours":"60.0488","amount":"1078.03","hours_ytd":"600.9500","amount_ytd":"10780.30"},{"name":"Overtime","type":"overtime","start_date":null,"end_date":null,"rate":null,"hours":null,"amount":null,"hours_ytd":"1.3900","amount_ytd":"52.16"},{"name":"Holiday
+        Overtime","type":"overtime","start_date":null,"end_date":null,"rate":null,"hours":null,"amount":null,"hours_ytd":"1.8600","amount_ytd":"92.73"},{"name":"Bonus","type":"bonus","start_date":null,"end_date":null,"rate":null,"hours":null,"amount":null,"hours_ytd":null,"amount_ytd":"851.53"},{"name":"Incentive","type":"bonus","start_date":null,"end_date":null,"rate":null,"hours":null,"amount":null,"hours_ytd":null,"amount_ytd":"7.44"},{"name":"Commission","type":"commission","start_date":null,"end_date":null,"rate":null,"hours":null,"amount":null,"hours_ytd":null,"amount_ytd":"680.09"}],"gross_pay_list_totals":{"base":{"amount":"1078.03","amount_ytd":"10780.30","hours":"60.0488","hours_ytd":"600.9500","rate_implied":"17.9500","rate_implied_ytd":"17.9400"},"overtime":{"amount":null,"amount_ytd":"144.89","hours":null,"hours_ytd":"3.2500","rate_implied":null,"rate_implied_ytd":"44.5800"},"commission":{"amount":null,"amount_ytd":"680.09","hours":null,"hours_ytd":null,"rate_implied":null,"rate_implied_ytd":null},"bonus":{"amount":null,"amount_ytd":"858.97","hours":null,"hours_ytd":null,"rate_implied":null,"rate_implied_ytd":null},"other":null},"employment":"d4c6e035-b258-30e6-9add-8ed7987551be"},{"id":"81f60a96-af5d-3b1c-a65f-996f8105a032","account":"0197a3f9-59dc-f823-fa70-ed689729324b","payroll_document":"0197a3f9-9017-222e-5613-6a73eccd1415","deduction_list":[{"amount":"43.12","name":"Dental","tax_classification":null,"amount_ytd":"172.48"},{"amount":"21.56","name":"Roth","tax_classification":"post_tax","amount_ytd":"107.80"},{"amount":"32.34","name":"401K","tax_classification":"pre_tax","amount_ytd":"75.46"}],"filing_status":[{"type":"federal","location":null,"status":"married
+        filing separately"},{"type":"state","location":"NY","status":"married filing
+        separately"}],"tax_list":[{"amount":"86.24","name":"Social Security Tax","type":"fica","amount_ytd":"226.38"},{"amount":"140.14","name":"MEDICARE","type":"fica","amount_ytd":"700.70"},{"amount":"75.46","name":"OASDI","type":"fica","amount_ytd":"528.22"}],"status":"completed","paystub_date":"2025-04-24T00:00:00Z","paystub_period":{"start_date":"2025-04-06T00:00:00Z","end_date":"2025-04-20T00:00:00Z"},"currency":"USD","gross_pay":"1232.64","deductions":"97.02","taxes":"301.84","net_pay":"838.44","reimbursements":"4.66","hours":"58.55","fees":null,"net_pay_ytd":"8625.53","gross_pay_ytd":"11386.22","metadata":{},"employer":"Aramark","employer_address":{"city":"Seattle","state":"WA","country":"US","postal_code":"98109","line1":"202
+        Westlake Ave N","line2":null},"created_at":"2025-06-24T22:05:31.137Z","updated_at":"2025-06-24T22:05:31.137Z","destinations":[],"hours_ytd":"544.14","deductions_ytd":"549.78","taxes_ytd":"2242.24","gross_pay_list":[{"name":"Regular","type":"base","start_date":"2025-04-06","end_date":"2025-04-20","rate":"18.4125","hours":"58.5487","amount":"1078.03","hours_ytd":"540.9000","amount_ytd":"9702.27"},{"name":"Overtime","type":"overtime","start_date":null,"end_date":null,"rate":null,"hours":null,"amount":null,"hours_ytd":"1.3900","amount_ytd":"52.16"},{"name":"Holiday
+        Overtime","type":"overtime","start_date":null,"end_date":null,"rate":null,"hours":null,"amount":null,"hours_ytd":"1.8600","amount_ytd":"92.73"},{"name":"Bonus","type":"bonus","start_date":null,"end_date":null,"rate":null,"hours":null,"amount":null,"hours_ytd":null,"amount_ytd":"851.53"},{"name":"Incentive","type":"bonus","start_date":null,"end_date":null,"rate":null,"hours":null,"amount":null,"hours_ytd":null,"amount_ytd":"7.44"},{"name":"Commission","type":"commission","start_date":"2025-04-19","end_date":"2025-04-19","rate":null,"hours":null,"amount":"154.61","hours_ytd":null,"amount_ytd":"680.09"}],"gross_pay_list_totals":{"base":{"amount":"1078.03","amount_ytd":"9702.27","hours":"58.5487","hours_ytd":"540.9000","rate_implied":"18.4100","rate_implied_ytd":"17.9400"},"overtime":{"amount":null,"amount_ytd":"144.89","hours":null,"hours_ytd":"3.2500","rate_implied":null,"rate_implied_ytd":"44.5800"},"commission":{"amount":"154.61","amount_ytd":"680.09","hours":null,"hours_ytd":null,"rate_implied":null,"rate_implied_ytd":null},"bonus":{"amount":null,"amount_ytd":"858.97","hours":null,"hours_ytd":null,"rate_implied":null,"rate_implied_ytd":null},"other":null},"employment":"d4c6e035-b258-30e6-9add-8ed7987551be"},{"id":"70834463-81b6-3d5d-9147-accc661095c9","account":"0197a3f9-59dc-f823-fa70-ed689729324b","payroll_document":"0197a3f9-8ff4-8ad8-bd46-7e940dcf52e6","deduction_list":[{"amount":"10.78","name":"Vision","tax_classification":"pre_tax","amount_ytd":"53.90"},{"amount":"43.12","name":"Garnishment","tax_classification":"post_tax","amount_ytd":"140.14"}],"filing_status":[{"type":"federal","location":null,"status":"married
+        filing separately"},{"type":"state","location":"NY","status":"married filing
+        separately"}],"tax_list":[{"amount":"86.24","name":"Federal Withholding","type":"federal","amount_ytd":"495.88"},{"amount":"75.46","name":"CA
+        State Income Tax","type":"state","amount_ytd":"75.46"}],"status":"completed","paystub_date":"2025-04-10T00:00:00Z","paystub_period":{"start_date":"2025-03-23T00:00:00Z","end_date":"2025-04-06T00:00:00Z"},"currency":"USD","gross_pay":"1078.03","deductions":"53.90","taxes":"161.70","net_pay":"866.79","reimbursements":"4.36","hours":"73.82","fees":null,"net_pay_ytd":"7787.09","gross_pay_ytd":"10153.58","metadata":{},"employer":"Aramark","employer_address":{"city":"Seattle","state":"WA","country":"US","postal_code":"98109","line1":"202
+        Westlake Ave N","line2":null},"created_at":"2025-06-24T22:05:31.117Z","updated_at":"2025-06-24T22:05:31.117Z","destinations":[],"hours_ytd":"485.60","deductions_ytd":"452.76","taxes_ytd":"1940.40","gross_pay_list":[{"name":"Regular","type":"base","start_date":"2025-03-23","end_date":"2025-04-06","rate":"14.6041","hours":"73.8170","amount":"1078.03","hours_ytd":"482.3500","amount_ytd":"8624.24"},{"name":"Overtime","type":"overtime","start_date":null,"end_date":null,"rate":null,"hours":null,"amount":null,"hours_ytd":"1.3900","amount_ytd":"52.16"},{"name":"Holiday
+        Overtime","type":"overtime","start_date":null,"end_date":null,"rate":null,"hours":null,"amount":null,"hours_ytd":"1.8600","amount_ytd":"92.73"},{"name":"Bonus","type":"bonus","start_date":null,"end_date":null,"rate":null,"hours":null,"amount":null,"hours_ytd":null,"amount_ytd":"851.53"},{"name":"Incentive","type":"bonus","start_date":null,"end_date":null,"rate":null,"hours":null,"amount":null,"hours_ytd":null,"amount_ytd":"7.44"},{"name":"Commission","type":"commission","start_date":null,"end_date":null,"rate":null,"hours":null,"amount":null,"hours_ytd":null,"amount_ytd":"525.48"}],"gross_pay_list_totals":{"base":{"amount":"1078.03","amount_ytd":"8624.24","hours":"73.8170","hours_ytd":"482.3500","rate_implied":"14.6000","rate_implied_ytd":"17.8800"},"overtime":{"amount":null,"amount_ytd":"144.89","hours":null,"hours_ytd":"3.2500","rate_implied":null,"rate_implied_ytd":"44.5800"},"commission":{"amount":null,"amount_ytd":"525.48","hours":null,"hours_ytd":null,"rate_implied":null,"rate_implied_ytd":null},"bonus":{"amount":null,"amount_ytd":"858.97","hours":null,"hours_ytd":null,"rate_implied":null,"rate_implied_ytd":null},"other":null},"employment":"d4c6e035-b258-30e6-9add-8ed7987551be"},{"id":"a10c9331-9a68-3ab4-8dea-e33d8a639fd4","account":"0197a3f9-59dc-f823-fa70-ed689729324b","payroll_document":"0197a3f9-8fce-cb43-58f6-a7d98591ffdb","deduction_list":[{"amount":"43.12","name":"Roth","tax_classification":"post_tax","amount_ytd":"86.24"},{"amount":"21.56","name":"Vision","tax_classification":"pre_tax","amount_ytd":"43.12"},{"amount":"32.34","name":"Garnishment","tax_classification":"post_tax","amount_ytd":"97.02"}],"filing_status":[{"type":"federal","location":null,"status":"married
+        filing separately"}],"tax_list":[{"amount":"107.80","name":"MEDICARE","type":"fica","amount_ytd":"560.56"},{"amount":"129.36","name":"OASDI","type":"fica","amount_ytd":"452.76"}],"status":"completed","paystub_date":"2025-03-27T00:00:00Z","paystub_period":{"start_date":"2025-03-09T00:00:00Z","end_date":"2025-03-23T00:00:00Z"},"currency":"USD","gross_pay":"1078.03","deductions":"97.02","taxes":"237.16","net_pay":"747.42","reimbursements":"3.57","hours":"54.82","fees":null,"net_pay_ytd":"6920.30","gross_pay_ytd":"9075.55","metadata":{},"employer":"Aramark","employer_address":{"city":"Seattle","state":"WA","country":"US","postal_code":"98109","line1":"202
+        Westlake Ave N","line2":null},"created_at":"2025-06-24T22:05:31.177Z","updated_at":"2025-06-24T22:05:31.177Z","destinations":[],"hours_ytd":"411.78","deductions_ytd":"398.86","taxes_ytd":"1778.70","gross_pay_list":[{"name":"Regular","type":"base","start_date":"2025-03-09","end_date":"2025-03-23","rate":"19.6647","hours":"54.8206","amount":"1078.03","hours_ytd":"408.5300","amount_ytd":"7546.21"},{"name":"Overtime","type":"overtime","start_date":null,"end_date":null,"rate":null,"hours":null,"amount":null,"hours_ytd":"1.3900","amount_ytd":"52.16"},{"name":"Holiday
+        Overtime","type":"overtime","start_date":null,"end_date":null,"rate":null,"hours":null,"amount":null,"hours_ytd":"1.8600","amount_ytd":"92.73"},{"name":"Bonus","type":"bonus","start_date":null,"end_date":null,"rate":null,"hours":null,"amount":null,"hours_ytd":null,"amount_ytd":"851.53"},{"name":"Incentive","type":"bonus","start_date":null,"end_date":null,"rate":null,"hours":null,"amount":null,"hours_ytd":null,"amount_ytd":"7.44"},{"name":"Commission","type":"commission","start_date":null,"end_date":null,"rate":null,"hours":null,"amount":null,"hours_ytd":null,"amount_ytd":"525.48"}],"gross_pay_list_totals":{"base":{"amount":"1078.03","amount_ytd":"7546.21","hours":"54.8206","hours_ytd":"408.5300","rate_implied":"19.6600","rate_implied_ytd":"18.4700"},"overtime":{"amount":null,"amount_ytd":"144.89","hours":null,"hours_ytd":"3.2500","rate_implied":null,"rate_implied_ytd":"44.5800"},"commission":{"amount":null,"amount_ytd":"525.48","hours":null,"hours_ytd":null,"rate_implied":null,"rate_implied_ytd":null},"bonus":{"amount":null,"amount_ytd":"858.97","hours":null,"hours_ytd":null,"rate_implied":null,"rate_implied_ytd":null},"other":null},"employment":"d4c6e035-b258-30e6-9add-8ed7987551be"}],"next":null,"previous":null}'
+  recorded_at: Tue, 24 Jun 2025 22:05:11 GMT
+- request:
+    method: get
+    uri: https://api-sandbox.argyle.com/v2/gigs?account=0197a3f9-59dc-f823-fa70-ed689729324b&from_start_datetime=2025-03-26&limit=200&to_start_datetime=2025-06-24
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Content-Type:
+      - application/json
+      Authorization:
+      - Basic <ARGYLE_BASIC_AUTH>
+      User-Agent:
+      - Faraday v2.9.2
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Accept:
+      - "*/*"
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Date:
+      - Tue, 24 Jun 2025 22:05:34 GMT
+      Content-Type:
+      - application/json
+      Content-Length:
+      - '42'
+      Connection:
+      - keep-alive
+      Access-Control-Allow-Origin:
+      - "*"
+      Cache-Control:
+      - no-cache, no-store, max-age=0, must-revalidate
+      Expires:
+      - '0'
+      Pragma:
+      - no-cache
+      Strict-Transport-Security:
+      - max-age=31536000; includeSubDomains
+      Vary:
+      - Accept-Encoding,Origin
+      X-Client-Id:
+      - '018f0834-d69a-879b-05cb-ddde033024f0'
+      X-Content-Type-Options:
+      - nosniff
+      X-Frame-Options:
+      - DENY
+      X-Trace-Id:
+      - 5ad79f89-82ca-4c0c-8a00-335aafb42023
+      X-Xss-Protection:
+      - '0'
+      Via:
+      - 1.1 google
+      Cf-Cache-Status:
+      - DYNAMIC
+      Set-Cookie:
+      - __cf_bm=bbLu71Yf70FGnqb.q3qBHutacXN2w4ev7D8Q2wKERB8-1750802734-1.0.1.1-Z9lRrMX1Dvp1H6qYO.CVr7D7g1iSoxnR_Wz7HBt6Agb6Yl62gzRZEdobBA_FJlhH8OZo_abR7TdRxggJUBjJnAeL77t.kR05vsqUYMzgpY0;
+        path=/; expires=Tue, 24-Jun-25 22:35:34 GMT; domain=.argyle.com; HttpOnly;
+        Secure; SameSite=None
+      Server:
+      - cloudflare
+      Cf-Ray:
+      - 954f87027dd72ed5-LAX
+    body:
+      encoding: UTF-8
+      string: '{"results":[],"next":null,"previous":null}'
+  recorded_at: Tue, 24 Jun 2025 22:05:11 GMT
+- request:
+    method: get
+    uri: https://api-sandbox.argyle.com/v2/identities?account=0197a3f9-59dc-f823-fa70-ed689729324b&limit=10
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Content-Type:
+      - application/json
+      Authorization:
+      - Basic <ARGYLE_BASIC_AUTH>
+      User-Agent:
+      - Faraday v2.9.2
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Accept:
+      - "*/*"
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Date:
+      - Tue, 24 Jun 2025 22:05:35 GMT
+      Content-Type:
+      - application/json
+      Transfer-Encoding:
+      - chunked
+      Connection:
+      - keep-alive
+      Access-Control-Allow-Origin:
+      - "*"
+      Cache-Control:
+      - no-cache, no-store, max-age=0, must-revalidate
+      Expires:
+      - '0'
+      Pragma:
+      - no-cache
+      Strict-Transport-Security:
+      - max-age=31536000; includeSubDomains
+      Vary:
+      - Accept-Encoding,Origin
+      X-Client-Id:
+      - '018f0834-d69a-879b-05cb-ddde033024f0'
+      X-Content-Type-Options:
+      - nosniff
+      X-Frame-Options:
+      - DENY
+      X-Trace-Id:
+      - 2fd6dded-7954-4dbd-9703-6bc2ce32cc0c
+      X-Xss-Protection:
+      - '0'
+      Via:
+      - 1.1 google
+      Cf-Cache-Status:
+      - DYNAMIC
+      Set-Cookie:
+      - __cf_bm=seIkD71qgoXWc4wKulTb69fz_pVA8pm3KX7jGHEu1LQ-1750802735-1.0.1.1-7ADNl7VtTjM_jT8SJzB.9VjmBgZtkn8BJDuVOAcFR.lwXEBmNr6rp3ccBytRF3Baw41VjgZuxwhzs7T2zk17wVvOMoTPk3IQNFd07N2n__Y;
+        path=/; expires=Tue, 24-Jun-25 22:35:35 GMT; domain=.argyle.com; HttpOnly;
+        Secure; SameSite=None
+      Server:
+      - cloudflare
+      Cf-Ray:
+      - 954f87057afc7edd-LAX
+    body:
+      encoding: ASCII-8BIT
+      string: '{"results":[{"id":"2f68bebb-bb9b-3169-a277-e1012aecdf71","account":"0197a3f9-59dc-f823-fa70-ed689729324b","address":{"city":"New
+        York","line1":"759 Victoria Plaza","line2":null,"state":"NY","country":"US","postal_code":"10014"},"first_name":"Bob","last_name":"Jones","full_name":"Bob
+        Jones","birth_date":"1980-10-10","email":"test1@argyle.com","phone_number":"+18009000010","picture_url":"https://api-sandbox.argyle.com/v2/payroll-documents/0197a3f9-779c-ba94-29cb-7e3f59046e69/file","employment_status":"active","employment_type":"part-time","job_title":"1635
+        - Helpline Agent","ssn":"522-09-1191","marital_status":"Married filing jointly","gender":"Male","hire_date":"2022-11-24","original_hire_date":"2022-11-24","termination_date":null,"termination_reason":null,"employer":"Aramark","base_pay":{"amount":"28028.72","period":"annual","currency":"USD"},"pay_cycle":"biweekly","platform_ids":{"employee_id":"G91S3J1HE","position_id":"XYAT7V73G","platform_user_id":"AHZK0N4FALZ3KI3H"},"created_at":"2025-06-24T22:05:24.541Z","updated_at":"2025-06-24T22:05:27.856Z","metadata":{},"employment":"d4c6e035-b258-30e6-9add-8ed7987551be"}],"next":null,"previous":null}'
+  recorded_at: Tue, 24 Jun 2025 22:05:11 GMT
+- request:
+    method: get
+    uri: https://api-sandbox.argyle.com/v2/accounts/0197a3f9-59dc-f823-fa70-ed689729324b
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Content-Type:
+      - application/json
+      Authorization:
+      - Basic <ARGYLE_BASIC_AUTH>
+      User-Agent:
+      - Faraday v2.9.2
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Accept:
+      - "*/*"
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Date:
+      - Tue, 24 Jun 2025 22:05:35 GMT
+      Content-Type:
+      - application/json
+      Transfer-Encoding:
+      - chunked
+      Connection:
+      - keep-alive
+      Access-Control-Allow-Origin:
+      - "*"
+      Cache-Control:
+      - no-cache, no-store, max-age=0, must-revalidate
+      Expires:
+      - '0'
+      Pragma:
+      - no-cache
+      Strict-Transport-Security:
+      - max-age=31536000; includeSubDomains
+      Vary:
+      - Accept-Encoding,Origin
+      X-Client-Id:
+      - '018f0834-d69a-879b-05cb-ddde033024f0'
+      X-Content-Type-Options:
+      - nosniff
+      X-Frame-Options:
+      - DENY
+      X-Trace-Id:
+      - e48e7db1-d551-45a4-8380-dc38c5b2ec0a
+      X-Xss-Protection:
+      - '0'
+      Via:
+      - 1.1 google
+      Cf-Cache-Status:
+      - DYNAMIC
+      Set-Cookie:
+      - __cf_bm=3i_x5k.hokTYtULndkFMgKRYfo2DZkZZRA5nNF29Nn8-1750802735-1.0.1.1-8mOtTpsDPKSZ.A5G1.fVc.nuU7lBxy1QPe0mJpMa7Dz9Y3Ny94_9y0yDYx6AGwnISynVrNavWzPw4ukRo.5Zz_Xn1GIxhyk9vrsw9hiGtVI;
+        path=/; expires=Tue, 24-Jun-25 22:35:35 GMT; domain=.argyle.com; HttpOnly;
+        Secure; SameSite=None
+      Server:
+      - cloudflare
+      Cf-Ray:
+      - 954f87069ef20feb-LAX
+    body:
+      encoding: ASCII-8BIT
+      string: '{"id":"0197a3f9-59dc-f823-fa70-ed689729324b","user":"0197a3f9-4f43-dbd5-e5bd-3941dc245d1b","employers":["Aramark"],"item":"item_000029932","source":"argyle_sandbox","created_at":"2025-06-24T22:05:17.265289Z","updated_at":"2025-06-24T22:05:35.097264Z","scanned_at":"2025-06-24T22:05:34.693240Z","connection":{"status":"connected","error_code":null,"error_message":null,"updated_at":"2025-06-24T22:05:22.012767Z"},"direct_deposit_switch":{"status":"idle","error_code":null,"error_message":null,"updated_at":"2025-06-24T22:05:17.555639Z"},"availability":{"gigs":{"status":"in_progress","updated_at":"2025-06-24T22:05:34.693240Z","available_count":0,"available_from":null,"available_to":null},"shifts":{"status":"in_progress","updated_at":"2025-06-24T22:05:34.693240Z","available_count":34,"available_from":"2025-01-10T00:00:00Z","available_to":"2025-06-21T00:00:00Z"},"paystubs":{"status":"in_progress","updated_at":"2025-06-24T22:05:34.693240Z","available_count":12,"available_from":"2025-01-16T00:00:00Z","available_to":"2025-06-19T00:00:00Z"},"payroll_documents":{"status":"synced","updated_at":"2025-06-24T22:05:25.014923Z"},"identities":{"status":"synced","updated_at":"2025-06-24T22:05:27.872580Z"},"ratings":{"status":"synced","updated_at":"2025-06-24T22:05:25.028105Z"},"vehicles":{"status":"synced","updated_at":"2025-06-24T22:05:25.030685Z"},"deposit_destinations":{"status":"synced","updated_at":"2025-06-24T22:05:23.404217Z"},"user_forms":null,"user_uploads":null},"ongoing_refresh":{"status":"disabled"}}'
+  recorded_at: Tue, 24 Jun 2025 22:05:11 GMT
+- request:
+    method: get
+    uri: https://api-sandbox.argyle.com/v2/paystubs?account=0197a3f9-59dc-f823-fa70-ed689729324b&from_start_date=2025-03-26&limit=200&to_start_date=2025-06-24
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Content-Type:
+      - application/json
+      Authorization:
+      - Basic <ARGYLE_BASIC_AUTH>
+      User-Agent:
+      - Faraday v2.9.2
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Accept:
+      - "*/*"
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Date:
+      - Tue, 24 Jun 2025 22:05:35 GMT
+      Content-Type:
+      - application/json
+      Transfer-Encoding:
+      - chunked
+      Connection:
+      - keep-alive
+      Access-Control-Allow-Origin:
+      - "*"
+      Cache-Control:
+      - no-cache, no-store, max-age=0, must-revalidate
+      Expires:
+      - '0'
+      Pragma:
+      - no-cache
+      Strict-Transport-Security:
+      - max-age=31536000; includeSubDomains
+      Vary:
+      - Accept-Encoding,Origin
+      X-Client-Id:
+      - '018f0834-d69a-879b-05cb-ddde033024f0'
+      X-Content-Type-Options:
+      - nosniff
+      X-Frame-Options:
+      - DENY
+      X-Trace-Id:
+      - 1bdef7d2-1941-4c17-906d-97abad0f08cc
+      X-Xss-Protection:
+      - '0'
+      Via:
+      - 1.1 google
+      Cf-Cache-Status:
+      - DYNAMIC
+      Set-Cookie:
+      - __cf_bm=470jsPoMo2dowu0PhQ3AFj6aDql15DaUy.d8crvL75U-1750802735-1.0.1.1-2s624WpdSIlH7bEioqPVk6dAhOxJ697ZCt7rWDm4HI.R.1VecrvT5ahGXYtBcRxFo9YRUSwKj9HimQAN1LEXZ8_.XctpW.T7sSlYx.HId2I;
+        path=/; expires=Tue, 24-Jun-25 22:35:35 GMT; domain=.argyle.com; HttpOnly;
+        Secure; SameSite=None
+      Server:
+      - cloudflare
+      Cf-Ray:
+      - 954f8707fc80cb91-LAX
+    body:
+      encoding: ASCII-8BIT
+      string: '{"results":[{"id":"9f09eb3a-69f3-3772-bcc9-ddfb663e5e5a","account":"0197a3f9-59dc-f823-fa70-ed689729324b","payroll_document":"0197a3f9-81c7-1362-5db6-b1a857aa5be0","deduction_list":[{"amount":"32.34","name":"401K","tax_classification":"pre_tax","amount_ytd":"107.80"}],"filing_status":[{"type":"federal","location":null,"status":"single"}],"tax_list":[{"amount":"129.36","name":"CA
+        State Income Tax","type":"state","amount_ytd":"204.82"},{"amount":"140.14","name":"Federal
+        Income Tax","type":"federal","amount_ytd":"463.54"}],"status":"completed","paystub_date":"2025-06-19T00:00:00Z","paystub_period":{"start_date":"2025-06-01T00:00:00Z","end_date":"2025-06-15T00:00:00Z"},"currency":"USD","gross_pay":"1078.03","deductions":"32.34","taxes":"269.50","net_pay":"776.19","reimbursements":"0.00","hours":"80.98","fees":null,"net_pay_ytd":"12719.59","gross_pay_ytd":"16644.04","metadata":{},"employer":"Aramark","employer_address":{"city":"Seattle","state":"WA","country":"US","postal_code":"98109","line1":"202
+        Westlake Ave N","line2":null},"created_at":"2025-06-24T22:05:27.488Z","updated_at":"2025-06-24T22:05:27.488Z","destinations":[],"hours_ytd":"793.90","deductions_ytd":"700.70","taxes_ytd":"3266.34","gross_pay_list":[{"name":"Regular","type":"base","start_date":"2025-06-01","end_date":"2025-06-15","rate":"13.3119","hours":"80.9825","amount":"1078.03","hours_ytd":"790.6500","amount_ytd":"14014.39"},{"name":"Overtime","type":"overtime","start_date":null,"end_date":null,"rate":null,"hours":null,"amount":null,"hours_ytd":"1.3900","amount_ytd":"52.16"},{"name":"Holiday
+        Overtime","type":"overtime","start_date":null,"end_date":null,"rate":null,"hours":null,"amount":null,"hours_ytd":"1.8600","amount_ytd":"92.73"},{"name":"Bonus","type":"bonus","start_date":null,"end_date":null,"rate":null,"hours":null,"amount":null,"hours_ytd":null,"amount_ytd":"1797.23"},{"name":"Incentive","type":"bonus","start_date":null,"end_date":null,"rate":null,"hours":null,"amount":null,"hours_ytd":null,"amount_ytd":"7.44"},{"name":"Commission","type":"commission","start_date":null,"end_date":null,"rate":null,"hours":null,"amount":null,"hours_ytd":null,"amount_ytd":"680.09"}],"gross_pay_list_totals":{"base":{"amount":"1078.03","amount_ytd":"14014.39","hours":"80.9825","hours_ytd":"790.6500","rate_implied":"13.3100","rate_implied_ytd":"17.7300"},"overtime":{"amount":null,"amount_ytd":"144.89","hours":null,"hours_ytd":"3.2500","rate_implied":null,"rate_implied_ytd":"44.5800"},"commission":{"amount":null,"amount_ytd":"680.09","hours":null,"hours_ytd":null,"rate_implied":null,"rate_implied_ytd":null},"bonus":{"amount":null,"amount_ytd":"1804.67","hours":null,"hours_ytd":null,"rate_implied":null,"rate_implied_ytd":null},"other":null},"employment":"d4c6e035-b258-30e6-9add-8ed7987551be"},{"id":"3ecd4cc4-3a21-396d-a373-980864f85c07","account":"0197a3f9-59dc-f823-fa70-ed689729324b","payroll_document":"0197a3f9-81a3-6abc-4ad2-8123e2d5e735","deduction_list":[{"amount":"10.78","name":"Roth","tax_classification":"post_tax","amount_ytd":"118.58"},{"amount":"32.34","name":"Roth","tax_classification":"post_tax","amount_ytd":"150.92"}],"filing_status":[{"type":"federal","location":null,"status":"married
+        filing separately"},{"type":"state","location":"NY","status":"single"}],"tax_list":[{"amount":"140.14","name":"Social
+        Security Tax","type":"fica","amount_ytd":"452.76"},{"amount":"129.36","name":"Federal
+        Withholding","type":"federal","amount_ytd":"625.24"}],"status":"completed","paystub_date":"2025-06-05T00:00:00Z","paystub_period":{"start_date":"2025-05-18T00:00:00Z","end_date":"2025-06-01T00:00:00Z"},"currency":"USD","gross_pay":"2023.73","deductions":"43.12","taxes":"269.50","net_pay":"1716.11","reimbursements":"5.00","hours":"40.17","fees":null,"net_pay_ytd":"11943.40","gross_pay_ytd":"15566.01","metadata":{},"employer":"Aramark","employer_address":{"city":"Seattle","state":"WA","country":"US","postal_code":"98109","line1":"202
+        Westlake Ave N","line2":null},"created_at":"2025-06-24T22:05:27.530Z","updated_at":"2025-06-24T22:05:27.530Z","destinations":[],"hours_ytd":"712.91","deductions_ytd":"668.36","taxes_ytd":"2996.84","gross_pay_list":[{"name":"Regular","type":"base","start_date":"2025-05-18","end_date":"2025-06-01","rate":"26.8359","hours":"40.1712","amount":"1078.03","hours_ytd":"709.6700","amount_ytd":"12936.36"},{"name":"Overtime","type":"overtime","start_date":null,"end_date":null,"rate":null,"hours":null,"amount":null,"hours_ytd":"1.3900","amount_ytd":"52.16"},{"name":"Holiday
+        Overtime","type":"overtime","start_date":null,"end_date":null,"rate":null,"hours":null,"amount":null,"hours_ytd":"1.8600","amount_ytd":"92.73"},{"name":"Bonus","type":"bonus","start_date":"2025-05-28","end_date":"2025-05-31","rate":null,"hours":null,"amount":"945.70","hours_ytd":null,"amount_ytd":"1797.23"},{"name":"Incentive","type":"bonus","start_date":null,"end_date":null,"rate":null,"hours":null,"amount":null,"hours_ytd":null,"amount_ytd":"7.44"},{"name":"Commission","type":"commission","start_date":null,"end_date":null,"rate":null,"hours":null,"amount":null,"hours_ytd":null,"amount_ytd":"680.09"}],"gross_pay_list_totals":{"base":{"amount":"1078.03","amount_ytd":"12936.36","hours":"40.1712","hours_ytd":"709.6700","rate_implied":"26.8400","rate_implied_ytd":"18.2300"},"overtime":{"amount":null,"amount_ytd":"144.89","hours":null,"hours_ytd":"3.2500","rate_implied":null,"rate_implied_ytd":"44.5800"},"commission":{"amount":null,"amount_ytd":"680.09","hours":null,"hours_ytd":null,"rate_implied":null,"rate_implied_ytd":null},"bonus":{"amount":"945.70","amount_ytd":"1804.67","hours":null,"hours_ytd":null,"rate_implied":null,"rate_implied_ytd":null},"other":null},"employment":"d4c6e035-b258-30e6-9add-8ed7987551be"},{"id":"52ff4b97-ebd2-34ce-84c0-ab762fc0bad5","account":"0197a3f9-59dc-f823-fa70-ed689729324b","payroll_document":"0197a3f9-817c-cece-deab-a1b61284fbd6","deduction_list":[{"amount":"10.78","name":"Vision","tax_classification":"pre_tax","amount_ytd":"97.02"},{"amount":"32.34","name":"Garnishment","tax_classification":"post_tax","amount_ytd":"172.48"}],"filing_status":[{"type":"federal","location":null,"status":"single"}],"tax_list":[{"amount":"107.80","name":"Federal
+        Income Tax","type":"federal","amount_ytd":"323.40"},{"amount":"86.24","name":"Social
+        Security Tax","type":"fica","amount_ytd":"312.62"}],"status":"completed","paystub_date":"2025-05-22T00:00:00Z","paystub_period":{"start_date":"2025-05-04T00:00:00Z","end_date":"2025-05-18T00:00:00Z"},"currency":"USD","gross_pay":"1078.03","deductions":"43.12","taxes":"194.04","net_pay":"844.05","reimbursements":"3.18","hours":"68.55","fees":null,"net_pay_ytd":"10227.29","gross_pay_ytd":"13542.28","metadata":{},"employer":"Aramark","employer_address":{"city":"Seattle","state":"WA","country":"US","postal_code":"98109","line1":"202
+        Westlake Ave N","line2":null},"created_at":"2025-06-24T22:05:27.469Z","updated_at":"2025-06-24T22:05:27.469Z","destinations":[],"hours_ytd":"672.74","deductions_ytd":"625.24","taxes_ytd":"2727.34","gross_pay_list":[{"name":"Regular","type":"base","start_date":"2025-05-04","end_date":"2025-05-18","rate":"15.7263","hours":"68.5497","amount":"1078.03","hours_ytd":"669.5000","amount_ytd":"11858.33"},{"name":"Overtime","type":"overtime","start_date":null,"end_date":null,"rate":null,"hours":null,"amount":null,"hours_ytd":"1.3900","amount_ytd":"52.16"},{"name":"Holiday
+        Overtime","type":"overtime","start_date":null,"end_date":null,"rate":null,"hours":null,"amount":null,"hours_ytd":"1.8600","amount_ytd":"92.73"},{"name":"Bonus","type":"bonus","start_date":null,"end_date":null,"rate":null,"hours":null,"amount":null,"hours_ytd":null,"amount_ytd":"851.53"},{"name":"Incentive","type":"bonus","start_date":null,"end_date":null,"rate":null,"hours":null,"amount":null,"hours_ytd":null,"amount_ytd":"7.44"},{"name":"Commission","type":"commission","start_date":null,"end_date":null,"rate":null,"hours":null,"amount":null,"hours_ytd":null,"amount_ytd":"680.09"}],"gross_pay_list_totals":{"base":{"amount":"1078.03","amount_ytd":"11858.33","hours":"68.5497","hours_ytd":"669.5000","rate_implied":"15.7300","rate_implied_ytd":"17.7100"},"overtime":{"amount":null,"amount_ytd":"144.89","hours":null,"hours_ytd":"3.2500","rate_implied":null,"rate_implied_ytd":"44.5800"},"commission":{"amount":null,"amount_ytd":"680.09","hours":null,"hours_ytd":null,"rate_implied":null,"rate_implied_ytd":null},"bonus":{"amount":null,"amount_ytd":"858.97","hours":null,"hours_ytd":null,"rate_implied":null,"rate_implied_ytd":null},"other":null},"employment":"d4c6e035-b258-30e6-9add-8ed7987551be"},{"id":"0d9e98f4-8317-3755-8e8f-dc8c978cf160","account":"0197a3f9-59dc-f823-fa70-ed689729324b","payroll_document":"0197a3f9-8158-4e05-d562-73fc5a3f3b04","deduction_list":[{"amount":"32.34","name":"Vision","tax_classification":"pre_tax","amount_ytd":"86.24"}],"filing_status":[{"type":"federal","location":null,"status":"single"}],"tax_list":[{"amount":"75.46","name":"MEDICARE","type":"fica","amount_ytd":"776.16"},{"amount":"129.36","name":"OASDI","type":"fica","amount_ytd":"657.58"},{"amount":"86.24","name":"MEDICARE","type":"fica","amount_ytd":"862.40"}],"status":"completed","paystub_date":"2025-05-08T00:00:00Z","paystub_period":{"start_date":"2025-04-20T00:00:00Z","end_date":"2025-05-04T00:00:00Z"},"currency":"USD","gross_pay":"1078.03","deductions":"32.34","taxes":"291.06","net_pay":"757.71","reimbursements":"3.08","hours":"60.05","fees":null,"net_pay_ytd":"9383.24","gross_pay_ytd":"12464.25","metadata":{},"employer":"Aramark","employer_address":{"city":"Seattle","state":"WA","country":"US","postal_code":"98109","line1":"202
+        Westlake Ave N","line2":null},"created_at":"2025-06-24T22:05:27.509Z","updated_at":"2025-06-24T22:05:27.509Z","destinations":[],"hours_ytd":"604.19","deductions_ytd":"582.12","taxes_ytd":"2533.30","gross_pay_list":[{"name":"Regular","type":"base","start_date":"2025-04-20","end_date":"2025-05-04","rate":"17.9526","hours":"60.0488","amount":"1078.03","hours_ytd":"600.9500","amount_ytd":"10780.30"},{"name":"Overtime","type":"overtime","start_date":null,"end_date":null,"rate":null,"hours":null,"amount":null,"hours_ytd":"1.3900","amount_ytd":"52.16"},{"name":"Holiday
+        Overtime","type":"overtime","start_date":null,"end_date":null,"rate":null,"hours":null,"amount":null,"hours_ytd":"1.8600","amount_ytd":"92.73"},{"name":"Bonus","type":"bonus","start_date":null,"end_date":null,"rate":null,"hours":null,"amount":null,"hours_ytd":null,"amount_ytd":"851.53"},{"name":"Incentive","type":"bonus","start_date":null,"end_date":null,"rate":null,"hours":null,"amount":null,"hours_ytd":null,"amount_ytd":"7.44"},{"name":"Commission","type":"commission","start_date":null,"end_date":null,"rate":null,"hours":null,"amount":null,"hours_ytd":null,"amount_ytd":"680.09"}],"gross_pay_list_totals":{"base":{"amount":"1078.03","amount_ytd":"10780.30","hours":"60.0488","hours_ytd":"600.9500","rate_implied":"17.9500","rate_implied_ytd":"17.9400"},"overtime":{"amount":null,"amount_ytd":"144.89","hours":null,"hours_ytd":"3.2500","rate_implied":null,"rate_implied_ytd":"44.5800"},"commission":{"amount":null,"amount_ytd":"680.09","hours":null,"hours_ytd":null,"rate_implied":null,"rate_implied_ytd":null},"bonus":{"amount":null,"amount_ytd":"858.97","hours":null,"hours_ytd":null,"rate_implied":null,"rate_implied_ytd":null},"other":null},"employment":"d4c6e035-b258-30e6-9add-8ed7987551be"},{"id":"81f60a96-af5d-3b1c-a65f-996f8105a032","account":"0197a3f9-59dc-f823-fa70-ed689729324b","payroll_document":"0197a3f9-9017-222e-5613-6a73eccd1415","deduction_list":[{"amount":"43.12","name":"Dental","tax_classification":null,"amount_ytd":"172.48"},{"amount":"21.56","name":"Roth","tax_classification":"post_tax","amount_ytd":"107.80"},{"amount":"32.34","name":"401K","tax_classification":"pre_tax","amount_ytd":"75.46"}],"filing_status":[{"type":"federal","location":null,"status":"married
+        filing separately"},{"type":"state","location":"NY","status":"married filing
+        separately"}],"tax_list":[{"amount":"86.24","name":"Social Security Tax","type":"fica","amount_ytd":"226.38"},{"amount":"140.14","name":"MEDICARE","type":"fica","amount_ytd":"700.70"},{"amount":"75.46","name":"OASDI","type":"fica","amount_ytd":"528.22"}],"status":"completed","paystub_date":"2025-04-24T00:00:00Z","paystub_period":{"start_date":"2025-04-06T00:00:00Z","end_date":"2025-04-20T00:00:00Z"},"currency":"USD","gross_pay":"1232.64","deductions":"97.02","taxes":"301.84","net_pay":"838.44","reimbursements":"4.66","hours":"58.55","fees":null,"net_pay_ytd":"8625.53","gross_pay_ytd":"11386.22","metadata":{},"employer":"Aramark","employer_address":{"city":"Seattle","state":"WA","country":"US","postal_code":"98109","line1":"202
+        Westlake Ave N","line2":null},"created_at":"2025-06-24T22:05:31.137Z","updated_at":"2025-06-24T22:05:31.137Z","destinations":[],"hours_ytd":"544.14","deductions_ytd":"549.78","taxes_ytd":"2242.24","gross_pay_list":[{"name":"Regular","type":"base","start_date":"2025-04-06","end_date":"2025-04-20","rate":"18.4125","hours":"58.5487","amount":"1078.03","hours_ytd":"540.9000","amount_ytd":"9702.27"},{"name":"Overtime","type":"overtime","start_date":null,"end_date":null,"rate":null,"hours":null,"amount":null,"hours_ytd":"1.3900","amount_ytd":"52.16"},{"name":"Holiday
+        Overtime","type":"overtime","start_date":null,"end_date":null,"rate":null,"hours":null,"amount":null,"hours_ytd":"1.8600","amount_ytd":"92.73"},{"name":"Bonus","type":"bonus","start_date":null,"end_date":null,"rate":null,"hours":null,"amount":null,"hours_ytd":null,"amount_ytd":"851.53"},{"name":"Incentive","type":"bonus","start_date":null,"end_date":null,"rate":null,"hours":null,"amount":null,"hours_ytd":null,"amount_ytd":"7.44"},{"name":"Commission","type":"commission","start_date":"2025-04-19","end_date":"2025-04-19","rate":null,"hours":null,"amount":"154.61","hours_ytd":null,"amount_ytd":"680.09"}],"gross_pay_list_totals":{"base":{"amount":"1078.03","amount_ytd":"9702.27","hours":"58.5487","hours_ytd":"540.9000","rate_implied":"18.4100","rate_implied_ytd":"17.9400"},"overtime":{"amount":null,"amount_ytd":"144.89","hours":null,"hours_ytd":"3.2500","rate_implied":null,"rate_implied_ytd":"44.5800"},"commission":{"amount":"154.61","amount_ytd":"680.09","hours":null,"hours_ytd":null,"rate_implied":null,"rate_implied_ytd":null},"bonus":{"amount":null,"amount_ytd":"858.97","hours":null,"hours_ytd":null,"rate_implied":null,"rate_implied_ytd":null},"other":null},"employment":"d4c6e035-b258-30e6-9add-8ed7987551be"},{"id":"70834463-81b6-3d5d-9147-accc661095c9","account":"0197a3f9-59dc-f823-fa70-ed689729324b","payroll_document":"0197a3f9-8ff4-8ad8-bd46-7e940dcf52e6","deduction_list":[{"amount":"10.78","name":"Vision","tax_classification":"pre_tax","amount_ytd":"53.90"},{"amount":"43.12","name":"Garnishment","tax_classification":"post_tax","amount_ytd":"140.14"}],"filing_status":[{"type":"federal","location":null,"status":"married
+        filing separately"},{"type":"state","location":"NY","status":"married filing
+        separately"}],"tax_list":[{"amount":"86.24","name":"Federal Withholding","type":"federal","amount_ytd":"495.88"},{"amount":"75.46","name":"CA
+        State Income Tax","type":"state","amount_ytd":"75.46"}],"status":"completed","paystub_date":"2025-04-10T00:00:00Z","paystub_period":{"start_date":"2025-03-23T00:00:00Z","end_date":"2025-04-06T00:00:00Z"},"currency":"USD","gross_pay":"1078.03","deductions":"53.90","taxes":"161.70","net_pay":"866.79","reimbursements":"4.36","hours":"73.82","fees":null,"net_pay_ytd":"7787.09","gross_pay_ytd":"10153.58","metadata":{},"employer":"Aramark","employer_address":{"city":"Seattle","state":"WA","country":"US","postal_code":"98109","line1":"202
+        Westlake Ave N","line2":null},"created_at":"2025-06-24T22:05:31.117Z","updated_at":"2025-06-24T22:05:31.117Z","destinations":[],"hours_ytd":"485.60","deductions_ytd":"452.76","taxes_ytd":"1940.40","gross_pay_list":[{"name":"Regular","type":"base","start_date":"2025-03-23","end_date":"2025-04-06","rate":"14.6041","hours":"73.8170","amount":"1078.03","hours_ytd":"482.3500","amount_ytd":"8624.24"},{"name":"Overtime","type":"overtime","start_date":null,"end_date":null,"rate":null,"hours":null,"amount":null,"hours_ytd":"1.3900","amount_ytd":"52.16"},{"name":"Holiday
+        Overtime","type":"overtime","start_date":null,"end_date":null,"rate":null,"hours":null,"amount":null,"hours_ytd":"1.8600","amount_ytd":"92.73"},{"name":"Bonus","type":"bonus","start_date":null,"end_date":null,"rate":null,"hours":null,"amount":null,"hours_ytd":null,"amount_ytd":"851.53"},{"name":"Incentive","type":"bonus","start_date":null,"end_date":null,"rate":null,"hours":null,"amount":null,"hours_ytd":null,"amount_ytd":"7.44"},{"name":"Commission","type":"commission","start_date":null,"end_date":null,"rate":null,"hours":null,"amount":null,"hours_ytd":null,"amount_ytd":"525.48"}],"gross_pay_list_totals":{"base":{"amount":"1078.03","amount_ytd":"8624.24","hours":"73.8170","hours_ytd":"482.3500","rate_implied":"14.6000","rate_implied_ytd":"17.8800"},"overtime":{"amount":null,"amount_ytd":"144.89","hours":null,"hours_ytd":"3.2500","rate_implied":null,"rate_implied_ytd":"44.5800"},"commission":{"amount":null,"amount_ytd":"525.48","hours":null,"hours_ytd":null,"rate_implied":null,"rate_implied_ytd":null},"bonus":{"amount":null,"amount_ytd":"858.97","hours":null,"hours_ytd":null,"rate_implied":null,"rate_implied_ytd":null},"other":null},"employment":"d4c6e035-b258-30e6-9add-8ed7987551be"},{"id":"a10c9331-9a68-3ab4-8dea-e33d8a639fd4","account":"0197a3f9-59dc-f823-fa70-ed689729324b","payroll_document":"0197a3f9-8fce-cb43-58f6-a7d98591ffdb","deduction_list":[{"amount":"43.12","name":"Roth","tax_classification":"post_tax","amount_ytd":"86.24"},{"amount":"21.56","name":"Vision","tax_classification":"pre_tax","amount_ytd":"43.12"},{"amount":"32.34","name":"Garnishment","tax_classification":"post_tax","amount_ytd":"97.02"}],"filing_status":[{"type":"federal","location":null,"status":"married
+        filing separately"}],"tax_list":[{"amount":"107.80","name":"MEDICARE","type":"fica","amount_ytd":"560.56"},{"amount":"129.36","name":"OASDI","type":"fica","amount_ytd":"452.76"}],"status":"completed","paystub_date":"2025-03-27T00:00:00Z","paystub_period":{"start_date":"2025-03-09T00:00:00Z","end_date":"2025-03-23T00:00:00Z"},"currency":"USD","gross_pay":"1078.03","deductions":"97.02","taxes":"237.16","net_pay":"747.42","reimbursements":"3.57","hours":"54.82","fees":null,"net_pay_ytd":"6920.30","gross_pay_ytd":"9075.55","metadata":{},"employer":"Aramark","employer_address":{"city":"Seattle","state":"WA","country":"US","postal_code":"98109","line1":"202
+        Westlake Ave N","line2":null},"created_at":"2025-06-24T22:05:31.177Z","updated_at":"2025-06-24T22:05:31.177Z","destinations":[],"hours_ytd":"411.78","deductions_ytd":"398.86","taxes_ytd":"1778.70","gross_pay_list":[{"name":"Regular","type":"base","start_date":"2025-03-09","end_date":"2025-03-23","rate":"19.6647","hours":"54.8206","amount":"1078.03","hours_ytd":"408.5300","amount_ytd":"7546.21"},{"name":"Overtime","type":"overtime","start_date":null,"end_date":null,"rate":null,"hours":null,"amount":null,"hours_ytd":"1.3900","amount_ytd":"52.16"},{"name":"Holiday
+        Overtime","type":"overtime","start_date":null,"end_date":null,"rate":null,"hours":null,"amount":null,"hours_ytd":"1.8600","amount_ytd":"92.73"},{"name":"Bonus","type":"bonus","start_date":null,"end_date":null,"rate":null,"hours":null,"amount":null,"hours_ytd":null,"amount_ytd":"851.53"},{"name":"Incentive","type":"bonus","start_date":null,"end_date":null,"rate":null,"hours":null,"amount":null,"hours_ytd":null,"amount_ytd":"7.44"},{"name":"Commission","type":"commission","start_date":null,"end_date":null,"rate":null,"hours":null,"amount":null,"hours_ytd":null,"amount_ytd":"525.48"}],"gross_pay_list_totals":{"base":{"amount":"1078.03","amount_ytd":"7546.21","hours":"54.8206","hours_ytd":"408.5300","rate_implied":"19.6600","rate_implied_ytd":"18.4700"},"overtime":{"amount":null,"amount_ytd":"144.89","hours":null,"hours_ytd":"3.2500","rate_implied":null,"rate_implied_ytd":"44.5800"},"commission":{"amount":null,"amount_ytd":"525.48","hours":null,"hours_ytd":null,"rate_implied":null,"rate_implied_ytd":null},"bonus":{"amount":null,"amount_ytd":"858.97","hours":null,"hours_ytd":null,"rate_implied":null,"rate_implied_ytd":null},"other":null},"employment":"d4c6e035-b258-30e6-9add-8ed7987551be"}],"next":null,"previous":null}'
+  recorded_at: Tue, 24 Jun 2025 22:05:11 GMT
+- request:
+    method: get
+    uri: https://api-sandbox.argyle.com/v2/gigs?account=0197a3f9-59dc-f823-fa70-ed689729324b&from_start_datetime=2025-03-26&limit=200&to_start_datetime=2025-06-24
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Content-Type:
+      - application/json
+      Authorization:
+      - Basic <ARGYLE_BASIC_AUTH>
+      User-Agent:
+      - Faraday v2.9.2
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Accept:
+      - "*/*"
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Date:
+      - Tue, 24 Jun 2025 22:05:35 GMT
+      Content-Type:
+      - application/json
+      Content-Length:
+      - '42'
+      Connection:
+      - keep-alive
+      Access-Control-Allow-Origin:
+      - "*"
+      Cache-Control:
+      - no-cache, no-store, max-age=0, must-revalidate
+      Expires:
+      - '0'
+      Pragma:
+      - no-cache
+      Strict-Transport-Security:
+      - max-age=31536000; includeSubDomains
+      Vary:
+      - Accept-Encoding,Origin
+      X-Client-Id:
+      - '018f0834-d69a-879b-05cb-ddde033024f0'
+      X-Content-Type-Options:
+      - nosniff
+      X-Frame-Options:
+      - DENY
+      X-Trace-Id:
+      - 61185efa-fac9-4b08-9146-48addfe4e2d1
+      X-Xss-Protection:
+      - '0'
+      Via:
+      - 1.1 google
+      Cf-Cache-Status:
+      - DYNAMIC
+      Set-Cookie:
+      - __cf_bm=vVHt24lE9TQ2V1epSYI2RMTQfDhEePdxFR_FW5Pn0_s-1750802735-1.0.1.1-_eAJPsLk02ZI9n01werzv3J8Q9BmP5nA2QmsSn9qH5z3Ei7qbVn4epLEYxEb4yS11do.OgzYUDnxWzV0ywUQgQaiNs15N0hWfMAGn9VM9QM;
+        path=/; expires=Tue, 24-Jun-25 22:35:35 GMT; domain=.argyle.com; HttpOnly;
+        Secure; SameSite=None
+      Server:
+      - cloudflare
+      Cf-Ray:
+      - 954f87091ae0cba2-LAX
+    body:
+      encoding: UTF-8
+      string: '{"results":[],"next":null,"previous":null}'
+  recorded_at: Tue, 24 Jun 2025 22:05:11 GMT
+- request:
+    method: get
+    uri: https://api-sandbox.argyle.com/v2/identities?account=0197a3f9-59dc-f823-fa70-ed689729324b&limit=10
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Content-Type:
+      - application/json
+      Authorization:
+      - Basic <ARGYLE_BASIC_AUTH>
+      User-Agent:
+      - Faraday v2.9.2
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Accept:
+      - "*/*"
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Date:
+      - Tue, 24 Jun 2025 22:05:36 GMT
+      Content-Type:
+      - application/json
+      Transfer-Encoding:
+      - chunked
+      Connection:
+      - keep-alive
+      Access-Control-Allow-Origin:
+      - "*"
+      Cache-Control:
+      - no-cache, no-store, max-age=0, must-revalidate
+      Expires:
+      - '0'
+      Pragma:
+      - no-cache
+      Strict-Transport-Security:
+      - max-age=31536000; includeSubDomains
+      Vary:
+      - Accept-Encoding,Origin
+      X-Client-Id:
+      - '018f0834-d69a-879b-05cb-ddde033024f0'
+      X-Content-Type-Options:
+      - nosniff
+      X-Frame-Options:
+      - DENY
+      X-Trace-Id:
+      - d06050d5-73ed-4466-bc49-7e339fbd0907
+      X-Xss-Protection:
+      - '0'
+      Via:
+      - 1.1 google
+      Cf-Cache-Status:
+      - DYNAMIC
+      Set-Cookie:
+      - __cf_bm=5w9nHOw_eheVmeqZAEO_j8wnLupsMVmwerbiN4TqPPs-1750802736-1.0.1.1-pfU5AxvUMmnGIF2Jdl.RxmHQiLzcEBi5o3otOuibOvvLdajHpwzbxKm9ux7vVZ2NrR8DwtmhnDsoMg5UdQAqIqXaYvcpv1demePnHkwcJR4;
+        path=/; expires=Tue, 24-Jun-25 22:35:36 GMT; domain=.argyle.com; HttpOnly;
+        Secure; SameSite=None
+      Server:
+      - cloudflare
+      Cf-Ray:
+      - 954f870b1935cb9a-LAX
+    body:
+      encoding: ASCII-8BIT
+      string: '{"results":[{"id":"2f68bebb-bb9b-3169-a277-e1012aecdf71","account":"0197a3f9-59dc-f823-fa70-ed689729324b","address":{"city":"New
+        York","line1":"759 Victoria Plaza","line2":null,"state":"NY","country":"US","postal_code":"10014"},"first_name":"Bob","last_name":"Jones","full_name":"Bob
+        Jones","birth_date":"1980-10-10","email":"test1@argyle.com","phone_number":"+18009000010","picture_url":"https://api-sandbox.argyle.com/v2/payroll-documents/0197a3f9-779c-ba94-29cb-7e3f59046e69/file","employment_status":"active","employment_type":"part-time","job_title":"1635
+        - Helpline Agent","ssn":"522-09-1191","marital_status":"Married filing jointly","gender":"Male","hire_date":"2022-11-24","original_hire_date":"2022-11-24","termination_date":null,"termination_reason":null,"employer":"Aramark","base_pay":{"amount":"28028.72","period":"annual","currency":"USD"},"pay_cycle":"biweekly","platform_ids":{"employee_id":"G91S3J1HE","position_id":"XYAT7V73G","platform_user_id":"AHZK0N4FALZ3KI3H"},"created_at":"2025-06-24T22:05:24.541Z","updated_at":"2025-06-24T22:05:27.856Z","metadata":{},"employment":"d4c6e035-b258-30e6-9add-8ed7987551be"}],"next":null,"previous":null}'
+  recorded_at: Tue, 24 Jun 2025 22:05:11 GMT
+- request:
+    method: get
+    uri: https://api-sandbox.argyle.com/v2/accounts/0197a3f9-59dc-f823-fa70-ed689729324b
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Content-Type:
+      - application/json
+      Authorization:
+      - Basic <ARGYLE_BASIC_AUTH>
+      User-Agent:
+      - Faraday v2.9.2
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Accept:
+      - "*/*"
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Date:
+      - Tue, 24 Jun 2025 22:05:36 GMT
+      Content-Type:
+      - application/json
+      Transfer-Encoding:
+      - chunked
+      Connection:
+      - keep-alive
+      Access-Control-Allow-Origin:
+      - "*"
+      Cache-Control:
+      - no-cache, no-store, max-age=0, must-revalidate
+      Expires:
+      - '0'
+      Pragma:
+      - no-cache
+      Strict-Transport-Security:
+      - max-age=31536000; includeSubDomains
+      Vary:
+      - Accept-Encoding,Origin
+      X-Client-Id:
+      - '018f0834-d69a-879b-05cb-ddde033024f0'
+      X-Content-Type-Options:
+      - nosniff
+      X-Frame-Options:
+      - DENY
+      X-Trace-Id:
+      - 8233da5e-3586-4cb3-b5ca-77f75fe7349f
+      X-Xss-Protection:
+      - '0'
+      Via:
+      - 1.1 google
+      Cf-Cache-Status:
+      - DYNAMIC
+      Set-Cookie:
+      - __cf_bm=V0mL7b5rKiK2WyjxFUztAfA1ROVzxyAe3SJ7zxIRWLo-1750802736-1.0.1.1-r.L6ESKCBDddGjAT3aEMD3yyijwTZahtWXTYYzjarbZnavfoDGjIEDtJcJAET2m9.5wev9sBqSi91V9tQUKeVjVfAFUOLao2Ukn0eyBwhBI;
+        path=/; expires=Tue, 24-Jun-25 22:35:36 GMT; domain=.argyle.com; HttpOnly;
+        Secure; SameSite=None
+      Server:
+      - cloudflare
+      Cf-Ray:
+      - 954f870d2cca0fff-LAX
+    body:
+      encoding: ASCII-8BIT
+      string: '{"id":"0197a3f9-59dc-f823-fa70-ed689729324b","user":"0197a3f9-4f43-dbd5-e5bd-3941dc245d1b","employers":["Aramark"],"item":"item_000029932","source":"argyle_sandbox","created_at":"2025-06-24T22:05:17.265289Z","updated_at":"2025-06-24T22:05:35.097264Z","scanned_at":"2025-06-24T22:05:34.693240Z","connection":{"status":"connected","error_code":null,"error_message":null,"updated_at":"2025-06-24T22:05:22.012767Z"},"direct_deposit_switch":{"status":"idle","error_code":null,"error_message":null,"updated_at":"2025-06-24T22:05:17.555639Z"},"availability":{"gigs":{"status":"in_progress","updated_at":"2025-06-24T22:05:34.693240Z","available_count":0,"available_from":null,"available_to":null},"shifts":{"status":"in_progress","updated_at":"2025-06-24T22:05:34.693240Z","available_count":34,"available_from":"2025-01-10T00:00:00Z","available_to":"2025-06-21T00:00:00Z"},"paystubs":{"status":"in_progress","updated_at":"2025-06-24T22:05:34.693240Z","available_count":12,"available_from":"2025-01-16T00:00:00Z","available_to":"2025-06-19T00:00:00Z"},"payroll_documents":{"status":"synced","updated_at":"2025-06-24T22:05:25.014923Z"},"identities":{"status":"synced","updated_at":"2025-06-24T22:05:27.872580Z"},"ratings":{"status":"synced","updated_at":"2025-06-24T22:05:25.028105Z"},"vehicles":{"status":"synced","updated_at":"2025-06-24T22:05:25.030685Z"},"deposit_destinations":{"status":"synced","updated_at":"2025-06-24T22:05:23.404217Z"},"user_forms":null,"user_uploads":null},"ongoing_refresh":{"status":"disabled"}}'
+  recorded_at: Tue, 24 Jun 2025 22:05:11 GMT
+- request:
+    method: get
+    uri: https://api-sandbox.argyle.com/v2/paystubs?account=0197a3f9-59dc-f823-fa70-ed689729324b&from_start_date=2025-03-26&limit=200&to_start_date=2025-06-24
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Content-Type:
+      - application/json
+      Authorization:
+      - Basic <ARGYLE_BASIC_AUTH>
+      User-Agent:
+      - Faraday v2.9.2
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Accept:
+      - "*/*"
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Date:
+      - Tue, 24 Jun 2025 22:05:36 GMT
+      Content-Type:
+      - application/json
+      Transfer-Encoding:
+      - chunked
+      Connection:
+      - keep-alive
+      Access-Control-Allow-Origin:
+      - "*"
+      Cache-Control:
+      - no-cache, no-store, max-age=0, must-revalidate
+      Expires:
+      - '0'
+      Pragma:
+      - no-cache
+      Strict-Transport-Security:
+      - max-age=31536000; includeSubDomains
+      Vary:
+      - Accept-Encoding,Origin
+      X-Client-Id:
+      - '018f0834-d69a-879b-05cb-ddde033024f0'
+      X-Content-Type-Options:
+      - nosniff
+      X-Frame-Options:
+      - DENY
+      X-Trace-Id:
+      - 6c81af29-e85b-4253-bd86-39f9fa6d1b21
+      X-Xss-Protection:
+      - '0'
+      Via:
+      - 1.1 google
+      Cf-Cache-Status:
+      - DYNAMIC
+      Set-Cookie:
+      - __cf_bm=Mp92Ou4Nkoj8rWsB6Ay7kecPqbhVEm.gpFi_9rMbLmY-1750802736-1.0.1.1-_3FPtyQzqDxYara_q3P9twlAcc8Bmdw8JTN6AwBA316Rjwp77QU4zy9kTWuXooPfPY_nbk43akfUKsV_lpJwJ9oV0R9Pd0VJz0h3xS7MSCc;
+        path=/; expires=Tue, 24-Jun-25 22:35:36 GMT; domain=.argyle.com; HttpOnly;
+        Secure; SameSite=None
+      Server:
+      - cloudflare
+      Cf-Ray:
+      - 954f870e5d83e9e4-LAX
+    body:
+      encoding: ASCII-8BIT
+      string: '{"results":[{"id":"9f09eb3a-69f3-3772-bcc9-ddfb663e5e5a","account":"0197a3f9-59dc-f823-fa70-ed689729324b","payroll_document":"0197a3f9-81c7-1362-5db6-b1a857aa5be0","deduction_list":[{"amount":"32.34","name":"401K","tax_classification":"pre_tax","amount_ytd":"107.80"}],"filing_status":[{"type":"federal","location":null,"status":"single"}],"tax_list":[{"amount":"129.36","name":"CA
+        State Income Tax","type":"state","amount_ytd":"204.82"},{"amount":"140.14","name":"Federal
+        Income Tax","type":"federal","amount_ytd":"463.54"}],"status":"completed","paystub_date":"2025-06-19T00:00:00Z","paystub_period":{"start_date":"2025-06-01T00:00:00Z","end_date":"2025-06-15T00:00:00Z"},"currency":"USD","gross_pay":"1078.03","deductions":"32.34","taxes":"269.50","net_pay":"776.19","reimbursements":"0.00","hours":"80.98","fees":null,"net_pay_ytd":"12719.59","gross_pay_ytd":"16644.04","metadata":{},"employer":"Aramark","employer_address":{"city":"Seattle","state":"WA","country":"US","postal_code":"98109","line1":"202
+        Westlake Ave N","line2":null},"created_at":"2025-06-24T22:05:27.488Z","updated_at":"2025-06-24T22:05:27.488Z","destinations":[],"hours_ytd":"793.90","deductions_ytd":"700.70","taxes_ytd":"3266.34","gross_pay_list":[{"name":"Regular","type":"base","start_date":"2025-06-01","end_date":"2025-06-15","rate":"13.3119","hours":"80.9825","amount":"1078.03","hours_ytd":"790.6500","amount_ytd":"14014.39"},{"name":"Overtime","type":"overtime","start_date":null,"end_date":null,"rate":null,"hours":null,"amount":null,"hours_ytd":"1.3900","amount_ytd":"52.16"},{"name":"Holiday
+        Overtime","type":"overtime","start_date":null,"end_date":null,"rate":null,"hours":null,"amount":null,"hours_ytd":"1.8600","amount_ytd":"92.73"},{"name":"Bonus","type":"bonus","start_date":null,"end_date":null,"rate":null,"hours":null,"amount":null,"hours_ytd":null,"amount_ytd":"1797.23"},{"name":"Incentive","type":"bonus","start_date":null,"end_date":null,"rate":null,"hours":null,"amount":null,"hours_ytd":null,"amount_ytd":"7.44"},{"name":"Commission","type":"commission","start_date":null,"end_date":null,"rate":null,"hours":null,"amount":null,"hours_ytd":null,"amount_ytd":"680.09"}],"gross_pay_list_totals":{"base":{"amount":"1078.03","amount_ytd":"14014.39","hours":"80.9825","hours_ytd":"790.6500","rate_implied":"13.3100","rate_implied_ytd":"17.7300"},"overtime":{"amount":null,"amount_ytd":"144.89","hours":null,"hours_ytd":"3.2500","rate_implied":null,"rate_implied_ytd":"44.5800"},"commission":{"amount":null,"amount_ytd":"680.09","hours":null,"hours_ytd":null,"rate_implied":null,"rate_implied_ytd":null},"bonus":{"amount":null,"amount_ytd":"1804.67","hours":null,"hours_ytd":null,"rate_implied":null,"rate_implied_ytd":null},"other":null},"employment":"d4c6e035-b258-30e6-9add-8ed7987551be"},{"id":"3ecd4cc4-3a21-396d-a373-980864f85c07","account":"0197a3f9-59dc-f823-fa70-ed689729324b","payroll_document":"0197a3f9-81a3-6abc-4ad2-8123e2d5e735","deduction_list":[{"amount":"10.78","name":"Roth","tax_classification":"post_tax","amount_ytd":"118.58"},{"amount":"32.34","name":"Roth","tax_classification":"post_tax","amount_ytd":"150.92"}],"filing_status":[{"type":"federal","location":null,"status":"married
+        filing separately"},{"type":"state","location":"NY","status":"single"}],"tax_list":[{"amount":"140.14","name":"Social
+        Security Tax","type":"fica","amount_ytd":"452.76"},{"amount":"129.36","name":"Federal
+        Withholding","type":"federal","amount_ytd":"625.24"}],"status":"completed","paystub_date":"2025-06-05T00:00:00Z","paystub_period":{"start_date":"2025-05-18T00:00:00Z","end_date":"2025-06-01T00:00:00Z"},"currency":"USD","gross_pay":"2023.73","deductions":"43.12","taxes":"269.50","net_pay":"1716.11","reimbursements":"5.00","hours":"40.17","fees":null,"net_pay_ytd":"11943.40","gross_pay_ytd":"15566.01","metadata":{},"employer":"Aramark","employer_address":{"city":"Seattle","state":"WA","country":"US","postal_code":"98109","line1":"202
+        Westlake Ave N","line2":null},"created_at":"2025-06-24T22:05:27.530Z","updated_at":"2025-06-24T22:05:27.530Z","destinations":[],"hours_ytd":"712.91","deductions_ytd":"668.36","taxes_ytd":"2996.84","gross_pay_list":[{"name":"Regular","type":"base","start_date":"2025-05-18","end_date":"2025-06-01","rate":"26.8359","hours":"40.1712","amount":"1078.03","hours_ytd":"709.6700","amount_ytd":"12936.36"},{"name":"Overtime","type":"overtime","start_date":null,"end_date":null,"rate":null,"hours":null,"amount":null,"hours_ytd":"1.3900","amount_ytd":"52.16"},{"name":"Holiday
+        Overtime","type":"overtime","start_date":null,"end_date":null,"rate":null,"hours":null,"amount":null,"hours_ytd":"1.8600","amount_ytd":"92.73"},{"name":"Bonus","type":"bonus","start_date":"2025-05-28","end_date":"2025-05-31","rate":null,"hours":null,"amount":"945.70","hours_ytd":null,"amount_ytd":"1797.23"},{"name":"Incentive","type":"bonus","start_date":null,"end_date":null,"rate":null,"hours":null,"amount":null,"hours_ytd":null,"amount_ytd":"7.44"},{"name":"Commission","type":"commission","start_date":null,"end_date":null,"rate":null,"hours":null,"amount":null,"hours_ytd":null,"amount_ytd":"680.09"}],"gross_pay_list_totals":{"base":{"amount":"1078.03","amount_ytd":"12936.36","hours":"40.1712","hours_ytd":"709.6700","rate_implied":"26.8400","rate_implied_ytd":"18.2300"},"overtime":{"amount":null,"amount_ytd":"144.89","hours":null,"hours_ytd":"3.2500","rate_implied":null,"rate_implied_ytd":"44.5800"},"commission":{"amount":null,"amount_ytd":"680.09","hours":null,"hours_ytd":null,"rate_implied":null,"rate_implied_ytd":null},"bonus":{"amount":"945.70","amount_ytd":"1804.67","hours":null,"hours_ytd":null,"rate_implied":null,"rate_implied_ytd":null},"other":null},"employment":"d4c6e035-b258-30e6-9add-8ed7987551be"},{"id":"52ff4b97-ebd2-34ce-84c0-ab762fc0bad5","account":"0197a3f9-59dc-f823-fa70-ed689729324b","payroll_document":"0197a3f9-817c-cece-deab-a1b61284fbd6","deduction_list":[{"amount":"10.78","name":"Vision","tax_classification":"pre_tax","amount_ytd":"97.02"},{"amount":"32.34","name":"Garnishment","tax_classification":"post_tax","amount_ytd":"172.48"}],"filing_status":[{"type":"federal","location":null,"status":"single"}],"tax_list":[{"amount":"107.80","name":"Federal
+        Income Tax","type":"federal","amount_ytd":"323.40"},{"amount":"86.24","name":"Social
+        Security Tax","type":"fica","amount_ytd":"312.62"}],"status":"completed","paystub_date":"2025-05-22T00:00:00Z","paystub_period":{"start_date":"2025-05-04T00:00:00Z","end_date":"2025-05-18T00:00:00Z"},"currency":"USD","gross_pay":"1078.03","deductions":"43.12","taxes":"194.04","net_pay":"844.05","reimbursements":"3.18","hours":"68.55","fees":null,"net_pay_ytd":"10227.29","gross_pay_ytd":"13542.28","metadata":{},"employer":"Aramark","employer_address":{"city":"Seattle","state":"WA","country":"US","postal_code":"98109","line1":"202
+        Westlake Ave N","line2":null},"created_at":"2025-06-24T22:05:27.469Z","updated_at":"2025-06-24T22:05:27.469Z","destinations":[],"hours_ytd":"672.74","deductions_ytd":"625.24","taxes_ytd":"2727.34","gross_pay_list":[{"name":"Regular","type":"base","start_date":"2025-05-04","end_date":"2025-05-18","rate":"15.7263","hours":"68.5497","amount":"1078.03","hours_ytd":"669.5000","amount_ytd":"11858.33"},{"name":"Overtime","type":"overtime","start_date":null,"end_date":null,"rate":null,"hours":null,"amount":null,"hours_ytd":"1.3900","amount_ytd":"52.16"},{"name":"Holiday
+        Overtime","type":"overtime","start_date":null,"end_date":null,"rate":null,"hours":null,"amount":null,"hours_ytd":"1.8600","amount_ytd":"92.73"},{"name":"Bonus","type":"bonus","start_date":null,"end_date":null,"rate":null,"hours":null,"amount":null,"hours_ytd":null,"amount_ytd":"851.53"},{"name":"Incentive","type":"bonus","start_date":null,"end_date":null,"rate":null,"hours":null,"amount":null,"hours_ytd":null,"amount_ytd":"7.44"},{"name":"Commission","type":"commission","start_date":null,"end_date":null,"rate":null,"hours":null,"amount":null,"hours_ytd":null,"amount_ytd":"680.09"}],"gross_pay_list_totals":{"base":{"amount":"1078.03","amount_ytd":"11858.33","hours":"68.5497","hours_ytd":"669.5000","rate_implied":"15.7300","rate_implied_ytd":"17.7100"},"overtime":{"amount":null,"amount_ytd":"144.89","hours":null,"hours_ytd":"3.2500","rate_implied":null,"rate_implied_ytd":"44.5800"},"commission":{"amount":null,"amount_ytd":"680.09","hours":null,"hours_ytd":null,"rate_implied":null,"rate_implied_ytd":null},"bonus":{"amount":null,"amount_ytd":"858.97","hours":null,"hours_ytd":null,"rate_implied":null,"rate_implied_ytd":null},"other":null},"employment":"d4c6e035-b258-30e6-9add-8ed7987551be"},{"id":"0d9e98f4-8317-3755-8e8f-dc8c978cf160","account":"0197a3f9-59dc-f823-fa70-ed689729324b","payroll_document":"0197a3f9-8158-4e05-d562-73fc5a3f3b04","deduction_list":[{"amount":"32.34","name":"Vision","tax_classification":"pre_tax","amount_ytd":"86.24"}],"filing_status":[{"type":"federal","location":null,"status":"single"}],"tax_list":[{"amount":"75.46","name":"MEDICARE","type":"fica","amount_ytd":"776.16"},{"amount":"129.36","name":"OASDI","type":"fica","amount_ytd":"657.58"},{"amount":"86.24","name":"MEDICARE","type":"fica","amount_ytd":"862.40"}],"status":"completed","paystub_date":"2025-05-08T00:00:00Z","paystub_period":{"start_date":"2025-04-20T00:00:00Z","end_date":"2025-05-04T00:00:00Z"},"currency":"USD","gross_pay":"1078.03","deductions":"32.34","taxes":"291.06","net_pay":"757.71","reimbursements":"3.08","hours":"60.05","fees":null,"net_pay_ytd":"9383.24","gross_pay_ytd":"12464.25","metadata":{},"employer":"Aramark","employer_address":{"city":"Seattle","state":"WA","country":"US","postal_code":"98109","line1":"202
+        Westlake Ave N","line2":null},"created_at":"2025-06-24T22:05:27.509Z","updated_at":"2025-06-24T22:05:27.509Z","destinations":[],"hours_ytd":"604.19","deductions_ytd":"582.12","taxes_ytd":"2533.30","gross_pay_list":[{"name":"Regular","type":"base","start_date":"2025-04-20","end_date":"2025-05-04","rate":"17.9526","hours":"60.0488","amount":"1078.03","hours_ytd":"600.9500","amount_ytd":"10780.30"},{"name":"Overtime","type":"overtime","start_date":null,"end_date":null,"rate":null,"hours":null,"amount":null,"hours_ytd":"1.3900","amount_ytd":"52.16"},{"name":"Holiday
+        Overtime","type":"overtime","start_date":null,"end_date":null,"rate":null,"hours":null,"amount":null,"hours_ytd":"1.8600","amount_ytd":"92.73"},{"name":"Bonus","type":"bonus","start_date":null,"end_date":null,"rate":null,"hours":null,"amount":null,"hours_ytd":null,"amount_ytd":"851.53"},{"name":"Incentive","type":"bonus","start_date":null,"end_date":null,"rate":null,"hours":null,"amount":null,"hours_ytd":null,"amount_ytd":"7.44"},{"name":"Commission","type":"commission","start_date":null,"end_date":null,"rate":null,"hours":null,"amount":null,"hours_ytd":null,"amount_ytd":"680.09"}],"gross_pay_list_totals":{"base":{"amount":"1078.03","amount_ytd":"10780.30","hours":"60.0488","hours_ytd":"600.9500","rate_implied":"17.9500","rate_implied_ytd":"17.9400"},"overtime":{"amount":null,"amount_ytd":"144.89","hours":null,"hours_ytd":"3.2500","rate_implied":null,"rate_implied_ytd":"44.5800"},"commission":{"amount":null,"amount_ytd":"680.09","hours":null,"hours_ytd":null,"rate_implied":null,"rate_implied_ytd":null},"bonus":{"amount":null,"amount_ytd":"858.97","hours":null,"hours_ytd":null,"rate_implied":null,"rate_implied_ytd":null},"other":null},"employment":"d4c6e035-b258-30e6-9add-8ed7987551be"},{"id":"81f60a96-af5d-3b1c-a65f-996f8105a032","account":"0197a3f9-59dc-f823-fa70-ed689729324b","payroll_document":"0197a3f9-9017-222e-5613-6a73eccd1415","deduction_list":[{"amount":"43.12","name":"Dental","tax_classification":null,"amount_ytd":"172.48"},{"amount":"21.56","name":"Roth","tax_classification":"post_tax","amount_ytd":"107.80"},{"amount":"32.34","name":"401K","tax_classification":"pre_tax","amount_ytd":"75.46"}],"filing_status":[{"type":"federal","location":null,"status":"married
+        filing separately"},{"type":"state","location":"NY","status":"married filing
+        separately"}],"tax_list":[{"amount":"86.24","name":"Social Security Tax","type":"fica","amount_ytd":"226.38"},{"amount":"140.14","name":"MEDICARE","type":"fica","amount_ytd":"700.70"},{"amount":"75.46","name":"OASDI","type":"fica","amount_ytd":"528.22"}],"status":"completed","paystub_date":"2025-04-24T00:00:00Z","paystub_period":{"start_date":"2025-04-06T00:00:00Z","end_date":"2025-04-20T00:00:00Z"},"currency":"USD","gross_pay":"1232.64","deductions":"97.02","taxes":"301.84","net_pay":"838.44","reimbursements":"4.66","hours":"58.55","fees":null,"net_pay_ytd":"8625.53","gross_pay_ytd":"11386.22","metadata":{},"employer":"Aramark","employer_address":{"city":"Seattle","state":"WA","country":"US","postal_code":"98109","line1":"202
+        Westlake Ave N","line2":null},"created_at":"2025-06-24T22:05:31.137Z","updated_at":"2025-06-24T22:05:31.137Z","destinations":[],"hours_ytd":"544.14","deductions_ytd":"549.78","taxes_ytd":"2242.24","gross_pay_list":[{"name":"Regular","type":"base","start_date":"2025-04-06","end_date":"2025-04-20","rate":"18.4125","hours":"58.5487","amount":"1078.03","hours_ytd":"540.9000","amount_ytd":"9702.27"},{"name":"Overtime","type":"overtime","start_date":null,"end_date":null,"rate":null,"hours":null,"amount":null,"hours_ytd":"1.3900","amount_ytd":"52.16"},{"name":"Holiday
+        Overtime","type":"overtime","start_date":null,"end_date":null,"rate":null,"hours":null,"amount":null,"hours_ytd":"1.8600","amount_ytd":"92.73"},{"name":"Bonus","type":"bonus","start_date":null,"end_date":null,"rate":null,"hours":null,"amount":null,"hours_ytd":null,"amount_ytd":"851.53"},{"name":"Incentive","type":"bonus","start_date":null,"end_date":null,"rate":null,"hours":null,"amount":null,"hours_ytd":null,"amount_ytd":"7.44"},{"name":"Commission","type":"commission","start_date":"2025-04-19","end_date":"2025-04-19","rate":null,"hours":null,"amount":"154.61","hours_ytd":null,"amount_ytd":"680.09"}],"gross_pay_list_totals":{"base":{"amount":"1078.03","amount_ytd":"9702.27","hours":"58.5487","hours_ytd":"540.9000","rate_implied":"18.4100","rate_implied_ytd":"17.9400"},"overtime":{"amount":null,"amount_ytd":"144.89","hours":null,"hours_ytd":"3.2500","rate_implied":null,"rate_implied_ytd":"44.5800"},"commission":{"amount":"154.61","amount_ytd":"680.09","hours":null,"hours_ytd":null,"rate_implied":null,"rate_implied_ytd":null},"bonus":{"amount":null,"amount_ytd":"858.97","hours":null,"hours_ytd":null,"rate_implied":null,"rate_implied_ytd":null},"other":null},"employment":"d4c6e035-b258-30e6-9add-8ed7987551be"},{"id":"70834463-81b6-3d5d-9147-accc661095c9","account":"0197a3f9-59dc-f823-fa70-ed689729324b","payroll_document":"0197a3f9-8ff4-8ad8-bd46-7e940dcf52e6","deduction_list":[{"amount":"10.78","name":"Vision","tax_classification":"pre_tax","amount_ytd":"53.90"},{"amount":"43.12","name":"Garnishment","tax_classification":"post_tax","amount_ytd":"140.14"}],"filing_status":[{"type":"federal","location":null,"status":"married
+        filing separately"},{"type":"state","location":"NY","status":"married filing
+        separately"}],"tax_list":[{"amount":"86.24","name":"Federal Withholding","type":"federal","amount_ytd":"495.88"},{"amount":"75.46","name":"CA
+        State Income Tax","type":"state","amount_ytd":"75.46"}],"status":"completed","paystub_date":"2025-04-10T00:00:00Z","paystub_period":{"start_date":"2025-03-23T00:00:00Z","end_date":"2025-04-06T00:00:00Z"},"currency":"USD","gross_pay":"1078.03","deductions":"53.90","taxes":"161.70","net_pay":"866.79","reimbursements":"4.36","hours":"73.82","fees":null,"net_pay_ytd":"7787.09","gross_pay_ytd":"10153.58","metadata":{},"employer":"Aramark","employer_address":{"city":"Seattle","state":"WA","country":"US","postal_code":"98109","line1":"202
+        Westlake Ave N","line2":null},"created_at":"2025-06-24T22:05:31.117Z","updated_at":"2025-06-24T22:05:31.117Z","destinations":[],"hours_ytd":"485.60","deductions_ytd":"452.76","taxes_ytd":"1940.40","gross_pay_list":[{"name":"Regular","type":"base","start_date":"2025-03-23","end_date":"2025-04-06","rate":"14.6041","hours":"73.8170","amount":"1078.03","hours_ytd":"482.3500","amount_ytd":"8624.24"},{"name":"Overtime","type":"overtime","start_date":null,"end_date":null,"rate":null,"hours":null,"amount":null,"hours_ytd":"1.3900","amount_ytd":"52.16"},{"name":"Holiday
+        Overtime","type":"overtime","start_date":null,"end_date":null,"rate":null,"hours":null,"amount":null,"hours_ytd":"1.8600","amount_ytd":"92.73"},{"name":"Bonus","type":"bonus","start_date":null,"end_date":null,"rate":null,"hours":null,"amount":null,"hours_ytd":null,"amount_ytd":"851.53"},{"name":"Incentive","type":"bonus","start_date":null,"end_date":null,"rate":null,"hours":null,"amount":null,"hours_ytd":null,"amount_ytd":"7.44"},{"name":"Commission","type":"commission","start_date":null,"end_date":null,"rate":null,"hours":null,"amount":null,"hours_ytd":null,"amount_ytd":"525.48"}],"gross_pay_list_totals":{"base":{"amount":"1078.03","amount_ytd":"8624.24","hours":"73.8170","hours_ytd":"482.3500","rate_implied":"14.6000","rate_implied_ytd":"17.8800"},"overtime":{"amount":null,"amount_ytd":"144.89","hours":null,"hours_ytd":"3.2500","rate_implied":null,"rate_implied_ytd":"44.5800"},"commission":{"amount":null,"amount_ytd":"525.48","hours":null,"hours_ytd":null,"rate_implied":null,"rate_implied_ytd":null},"bonus":{"amount":null,"amount_ytd":"858.97","hours":null,"hours_ytd":null,"rate_implied":null,"rate_implied_ytd":null},"other":null},"employment":"d4c6e035-b258-30e6-9add-8ed7987551be"},{"id":"a10c9331-9a68-3ab4-8dea-e33d8a639fd4","account":"0197a3f9-59dc-f823-fa70-ed689729324b","payroll_document":"0197a3f9-8fce-cb43-58f6-a7d98591ffdb","deduction_list":[{"amount":"43.12","name":"Roth","tax_classification":"post_tax","amount_ytd":"86.24"},{"amount":"21.56","name":"Vision","tax_classification":"pre_tax","amount_ytd":"43.12"},{"amount":"32.34","name":"Garnishment","tax_classification":"post_tax","amount_ytd":"97.02"}],"filing_status":[{"type":"federal","location":null,"status":"married
+        filing separately"}],"tax_list":[{"amount":"107.80","name":"MEDICARE","type":"fica","amount_ytd":"560.56"},{"amount":"129.36","name":"OASDI","type":"fica","amount_ytd":"452.76"}],"status":"completed","paystub_date":"2025-03-27T00:00:00Z","paystub_period":{"start_date":"2025-03-09T00:00:00Z","end_date":"2025-03-23T00:00:00Z"},"currency":"USD","gross_pay":"1078.03","deductions":"97.02","taxes":"237.16","net_pay":"747.42","reimbursements":"3.57","hours":"54.82","fees":null,"net_pay_ytd":"6920.30","gross_pay_ytd":"9075.55","metadata":{},"employer":"Aramark","employer_address":{"city":"Seattle","state":"WA","country":"US","postal_code":"98109","line1":"202
+        Westlake Ave N","line2":null},"created_at":"2025-06-24T22:05:31.177Z","updated_at":"2025-06-24T22:05:31.177Z","destinations":[],"hours_ytd":"411.78","deductions_ytd":"398.86","taxes_ytd":"1778.70","gross_pay_list":[{"name":"Regular","type":"base","start_date":"2025-03-09","end_date":"2025-03-23","rate":"19.6647","hours":"54.8206","amount":"1078.03","hours_ytd":"408.5300","amount_ytd":"7546.21"},{"name":"Overtime","type":"overtime","start_date":null,"end_date":null,"rate":null,"hours":null,"amount":null,"hours_ytd":"1.3900","amount_ytd":"52.16"},{"name":"Holiday
+        Overtime","type":"overtime","start_date":null,"end_date":null,"rate":null,"hours":null,"amount":null,"hours_ytd":"1.8600","amount_ytd":"92.73"},{"name":"Bonus","type":"bonus","start_date":null,"end_date":null,"rate":null,"hours":null,"amount":null,"hours_ytd":null,"amount_ytd":"851.53"},{"name":"Incentive","type":"bonus","start_date":null,"end_date":null,"rate":null,"hours":null,"amount":null,"hours_ytd":null,"amount_ytd":"7.44"},{"name":"Commission","type":"commission","start_date":null,"end_date":null,"rate":null,"hours":null,"amount":null,"hours_ytd":null,"amount_ytd":"525.48"}],"gross_pay_list_totals":{"base":{"amount":"1078.03","amount_ytd":"7546.21","hours":"54.8206","hours_ytd":"408.5300","rate_implied":"19.6600","rate_implied_ytd":"18.4700"},"overtime":{"amount":null,"amount_ytd":"144.89","hours":null,"hours_ytd":"3.2500","rate_implied":null,"rate_implied_ytd":"44.5800"},"commission":{"amount":null,"amount_ytd":"525.48","hours":null,"hours_ytd":null,"rate_implied":null,"rate_implied_ytd":null},"bonus":{"amount":null,"amount_ytd":"858.97","hours":null,"hours_ytd":null,"rate_implied":null,"rate_implied_ytd":null},"other":null},"employment":"d4c6e035-b258-30e6-9add-8ed7987551be"}],"next":null,"previous":null}'
+  recorded_at: Tue, 24 Jun 2025 22:05:11 GMT
+- request:
+    method: get
+    uri: https://api-sandbox.argyle.com/v2/gigs?account=0197a3f9-59dc-f823-fa70-ed689729324b&from_start_datetime=2025-03-26&limit=200&to_start_datetime=2025-06-24
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Content-Type:
+      - application/json
+      Authorization:
+      - Basic <ARGYLE_BASIC_AUTH>
+      User-Agent:
+      - Faraday v2.9.2
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Accept:
+      - "*/*"
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Date:
+      - Tue, 24 Jun 2025 22:05:36 GMT
+      Content-Type:
+      - application/json
+      Content-Length:
+      - '42'
+      Connection:
+      - keep-alive
+      Access-Control-Allow-Origin:
+      - "*"
+      Cache-Control:
+      - no-cache, no-store, max-age=0, must-revalidate
+      Expires:
+      - '0'
+      Pragma:
+      - no-cache
+      Strict-Transport-Security:
+      - max-age=31536000; includeSubDomains
+      Vary:
+      - Accept-Encoding,Origin
+      X-Client-Id:
+      - '018f0834-d69a-879b-05cb-ddde033024f0'
+      X-Content-Type-Options:
+      - nosniff
+      X-Frame-Options:
+      - DENY
+      X-Trace-Id:
+      - 85e7a2c7-8e43-457d-b49a-0f4d56c8388c
+      X-Xss-Protection:
+      - '0'
+      Via:
+      - 1.1 google
+      Cf-Cache-Status:
+      - DYNAMIC
+      Set-Cookie:
+      - __cf_bm=pBTAj29Cg9ODwU7qQbXwkyxX2laxYMW3aqFCX7kWssU-1750802736-1.0.1.1-Nowcg583363Ti6DyE.a8ML1gO1pvWf1YmHOCcmUsml53xfJpe2DiYoDlk4EJTOJvha7laCM0C3Z_yFrAWnzHmkHANqcp8NRnawIFAJ2kkvA;
+        path=/; expires=Tue, 24-Jun-25 22:35:36 GMT; domain=.argyle.com; HttpOnly;
+        Secure; SameSite=None
+      Server:
+      - cloudflare
+      Cf-Ray:
+      - 954f870f9c0e0fca-LAX
+    body:
+      encoding: UTF-8
+      string: '{"results":[],"next":null,"previous":null}'
+  recorded_at: Tue, 24 Jun 2025 22:05:11 GMT
+recorded_with: VCR 6.3.1
