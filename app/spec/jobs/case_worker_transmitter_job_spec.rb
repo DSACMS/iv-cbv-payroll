@@ -177,7 +177,7 @@ RSpec.describe CaseWorkerTransmitterJob, type: :job do
     context "when transmission method is s3" do
       let(:user) { create(:user, email: "test@test.com") }
       let(:s3_service_double) { instance_double(S3Service) }
-      let(:transmission_method) { "s3" }
+      let(:transmission_method) { "encrypted_s3" }
       let(:mocked_client_id) { "sandbox" }
       let(:transmission_method_configuration) { {
         "bucket" => "test-bucket",
