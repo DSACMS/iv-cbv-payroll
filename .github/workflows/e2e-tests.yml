@@ -42,3 +42,18 @@ jobs:
           E2E_RUN_TESTS: 1
 
         run: bin/rspec ./spec/e2e
+
+      - name: Add failure info to GH Actions step summary
+        working-directory: app
+        if: failure()
+        run: |
+          shopt -s nullglob
+
+          {
+            echo "## Last 100 lines of log/test.log";
+            echo "<details><summary>Expand to see logs</summary>";
+            echo '<pre>';
+            tail -n100 log/test.log;
+            echo '</pre>';
+            echo '</details>'
+          } >> "$GITHUB_STEP_SUMMARY"
