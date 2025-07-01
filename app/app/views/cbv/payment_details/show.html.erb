@@ -22,15 +22,6 @@
   <div class="usa-prose">
     <p><%= t(".total_gross_description") %></p>
   </div>
-<% else %>
-  <h2 class="site-preview-heading">
-    <%= t(".none_found", report_data_range: report_data_range(@aggregator_report)) %>
-  </h2>
-  <div class="usa-prose">
-    <p>
-      <%= t(".none_found_description", report_data_range: report_data_range(@aggregator_report)) %>
-    </p>
-  </div>
 <% end %>
 
 <%= render(TableComponent.new) do |table| %>
@@ -47,12 +38,12 @@
 <% end %>
 
 <% if @is_w2_worker %>
-  <%= render(TableComponent.new) do |table| %>
-    <%= table.with_header do %>
-    <h3 class="margin-0"><%= t("cbv.payment_details.show.payments_and_deductions_table_header") %></h3>
-    <% end %>
+  <% if @payroll_account_report.paystubs.any? %>
+    <%= render(TableComponent.new) do |table| %>
+      <%= table.with_header do %>
+      <h3 class="margin-0"><%= t("cbv.payment_details.show.payments_and_deductions_table_header") %></h3>
+      <% end %>
 
-    <% if @payroll_account_report.paystubs.any? %>
       <% @payroll_account_report.paystubs.each do |payment| %>
         <%= table.with_row_section do |row| %>
           <h4 class="margin-0"><%= t("cbv.payment_details.show.pay_date", pay_date: format_date(payment.pay_date)) %></h4>
@@ -68,8 +59,10 @@
           <%= table.with_data_point(:pay_gross_ytd, payment.gross_pay_ytd) %>
         <% end %>
       <% end %>
-    <% else %>
-      <%= table.with_row(t(".none_found", report_data_range: report_data_range(@aggregator_report))) %>
+    <% end %>
+  <% else %>
+    <%= render AlertComponent.new(type: :info, heading: t(".none_found", report_data_range: report_data_range(@aggregator_report)), class: "margin-top-5") do %>
+      <%= t(".none_found_description", report_data_range: report_data_range(@aggregator_report)) %>
     <% end %>
   <% end %>
 <% else %>
