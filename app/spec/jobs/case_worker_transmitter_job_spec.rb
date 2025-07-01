@@ -6,7 +6,6 @@ RSpec.describe CaseWorkerTransmitterJob, type: :job do
   include PinwheelApiHelper
   include ActiveSupport::Testing::TimeHelpers
 
-  include_context "gpg_setup"
   let(:mock_client_agency) { instance_double(ClientAgencyConfig::ClientAgency) }
 
   let(:cbv_applicant) { create(:cbv_applicant, created_at: current_time, case_number: "ABC1234") }
@@ -174,7 +173,9 @@ RSpec.describe CaseWorkerTransmitterJob, type: :job do
       end
     end
 
-    context "when transmission method is s3" do
+    context "when transmission method is encrypted_s3" do
+      include_context "gpg_setup"
+
       let(:user) { create(:user, email: "test@test.com") }
       let(:s3_service_double) { instance_double(S3Service) }
       let(:transmission_method) { "encrypted_s3" }
