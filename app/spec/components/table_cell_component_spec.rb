@@ -11,7 +11,7 @@ RSpec.describe TableCellComponent, type: :component do
   end
 
   context "with class_names" do
-    let(:options) { { class_names: "test" }}
+    let(:options) { { class_names: "test" } }
 
     it "adds class_names to the element" do
       expect(result).to have_css("td.test")

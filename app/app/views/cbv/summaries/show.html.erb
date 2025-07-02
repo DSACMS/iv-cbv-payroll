@@ -21,9 +21,9 @@
     <% end %>
   </h3>
   <% if is_w2_worker %>
-    <%= render(TableComponent.new(is_responsive: true, class_names: "cbv-attributes-table__stacked")) do |table| %>
+    <%= render(TableComponent.new(is_responsive: true, class_names: "cbv-attributes-table__stacked", attributes: { "data-testid" => "paystub-table" })) do |table| %>
       <%= table.with_subheader_row(class_names: "subheader-row base-lightest") do |row| %>
-        <% row.with_data_cell(is_header: true, attributes: {"data-testid" => "paystub-total-income"}) do %>
+        <% row.with_data_cell(is_header: true, attributes: { "data-testid" => "paystub-total-income" }) do %>
           <% if summary[:total] > 0 %>
             <% if employer_name %>
               <%= t(".total_income_from", employer_name: employer_name, amount: format_money(summary[:total])) %>
@@ -37,7 +37,7 @@
       <% end %>
       <% summary[:paystubs].each do |paystub| %>
         <%= table.with_row do |row| %>
-          <%= row.with_data_cell(attributes: {"data-testid" => "paystub-row"})
+          <%= row.with_data_cell(attributes: { "data-testid" => "paystub-row" })
                  .with_content(t(".payment", amount: format_money(paystub.gross_pay_amount), date: format_date(paystub.pay_date))) %>
         <% end %>
       <% end %>
@@ -54,7 +54,7 @@
   <div class="usa-prose">
     <p><%= agency_translation(".must_match", agency_acronym: agency_translation("shared.agency_acronym")) %></p>
   </div>
-  <%= render(TableComponent.new(is_responsive: true, class_names: "cbv-attributes-table__stacked margin-top-2")) do |table| %>
+  <%= render(TableComponent.new(is_responsive: true, class_names: "cbv-attributes-table__stacked margin-top-2", attributes: { "data-testid" => "paystub-table" })) do |table| %>
     <%= table.with_subheader_row(class_names: "subheader-row base-lightest") do |row| %>
         <% row.with_data_cell(is_header: true).with_content(t(".application_information")) %>
         <% row.with_data_cell(is_header: true, class_names: "text-right") do %>
