@@ -49,4 +49,9 @@ class MatchAgencyNamesJob < ApplicationJob
     environment = agency_config[@cbv_flow.client_agency_id].argyle_environment
     Aggregators::Sdk::ArgyleService.new(environment)
   end
+
+  def pinwheel
+    environment = agency_config[@cbv_flow.client_agency_id].pinwheel_environment
+    Aggregators::Sdk::PinwheelService.new(environment)
+  end
 end
