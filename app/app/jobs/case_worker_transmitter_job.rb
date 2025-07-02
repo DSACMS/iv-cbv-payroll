@@ -18,6 +18,7 @@ class CaseWorkerTransmitterJob < ApplicationJob
     aggregator_report = set_aggregator_report
 
     transmit_to_caseworker(current_agency, aggregator_report, cbv_flow)
+    enqueue_agency_name_matching_job(cbv_flow)
   end
 
   def agency_config
@@ -47,6 +48,12 @@ class CaseWorkerTransmitterJob < ApplicationJob
     else
       raise "Unsupported transmission method: #{current_agency.transmission_method}"
     end
+  end
+
+  def enqueue_agency_name_matching_job(cbv_flow)
+    return unless cbv_flow.cbv_applicant.agency_expected_names.any?
+
+    MatchAgencyNamesJob.perform_later(cbv_flow.id)
   end
 
   def track_transmitted_event(cbv_flow, payments)

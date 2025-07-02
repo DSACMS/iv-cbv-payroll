@@ -22,6 +22,12 @@ class CbvApplicant::AzDes < CbvApplicant
     super
   end
 
+  def agency_expected_names
+    return [] if redacted_at?
+
+    Array(income_changes).map { |c| c["member_name"] }.uniq
+  end
+
   private
 
   def redact_member_names_in_json(json_array)

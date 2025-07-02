@@ -137,6 +137,19 @@ RSpec.describe CaseWorkerTransmitterJob, type: :job do
             flow_started_seconds_ago: 10.minutes.to_i,
           ))
       end
+
+      context "when the CbvApplicant has agency_expected_names" do
+        let(:cbv_applicant) { create(:cbv_applicant, :az_des, created_at: current_time, case_number: "ABC1234") }
+
+        before do
+          ActiveJob::Base.queue_adapter = :test
+        end
+
+        it "enqueues a MatchAgencyNamesJob" do
+          expect { described_class.new.perform(cbv_flow.id) }
+            .to have_enqueued_job(MatchAgencyNamesJob)
+        end
+      end
     end
 
     context "when transmission method is sftp" do
