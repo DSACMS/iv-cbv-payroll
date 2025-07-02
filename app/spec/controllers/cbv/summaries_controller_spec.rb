@@ -78,8 +78,8 @@ end
           expect(doc.css("title").text).to include("Review your income report")
           expect(doc.at_xpath("//*[@data-testid=\"paystub-table-caption\"]").content).to include("Employer 1: Acme Corporation")
           expect(doc.at_xpath("//*[@data-testid=\"paystub-total-income\"]").content).to include("$4,807.20")
-          expect(doc.at_xpath("//tr[@data-testid=\"paystub-row\"]").count).to eq(1)
-          expect(doc.at_xpath("//tr[@data-testid=\"paystub-row\"]/td[1]").content).to include("Payment of $4,807.20")
+          expect(doc.at_xpath("//td[@data-testid=\"paystub-row\"]").count).to eq(1)
+          expect(doc.at_xpath("//td[@data-testid=\"paystub-row\"]").content).to include("Payment of $4,807.20")
           #
           expect(response).to be_successful
         end
