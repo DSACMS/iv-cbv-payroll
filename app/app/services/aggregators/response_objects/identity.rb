@@ -1,6 +1,8 @@
 module Aggregators::ResponseObjects
   IDENTITY_FIELDS = %i[
     account_id
+    first_name
+    last_name
     full_name
     date_of_birth
     emails
@@ -13,6 +15,8 @@ module Aggregators::ResponseObjects
     def self.from_pinwheel(response_body)
       new(
         account_id: response_body["account_id"],
+        first_name: (response_body["full_name"].split(" ", 2).first if response_body["full_name"].present?),
+        last_name: (response_body["full_name"].split(" ", 2).last if response_body["full_name"].present?),
         full_name: response_body["full_name"],
         date_of_birth: response_body["date_of_birth"],
         emails: response_body["emails"],
@@ -25,6 +29,8 @@ module Aggregators::ResponseObjects
     def self.from_argyle(identity_response_body)
       new(
         account_id: identity_response_body["account"],
+        first_name: identity_response_body["first_name"],
+        last_name: identity_response_body["last_name"],
         full_name: identity_response_body["full_name"],
         date_of_birth: identity_response_body["birth_date"],
         emails: [ identity_response_body["email"] ],

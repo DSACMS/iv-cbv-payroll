@@ -1,7 +1,7 @@
 class PayrollAccount < ApplicationRecord
   def self.sti_name
     # "PayrollAccount::Pinwheel" => "pinwheel"
-    name.demodulize.downcase
+    name.demodulize.underscore
   end
 
   def self.sti_class_for(type_name)
