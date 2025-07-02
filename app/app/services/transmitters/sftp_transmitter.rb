@@ -1,4 +1,4 @@
-class SftpCaseTransmitter
+class Transmitters::SftpTransmitter
   attr_reader :current_agency, :cbv_flow, :aggregator_report
 
   def initialize(cbv_flow, current_agency, aggregator_report)
