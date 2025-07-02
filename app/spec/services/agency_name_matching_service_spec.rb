@@ -37,6 +37,19 @@ RSpec.describe AgencyNameMatchingService do
       end
     end
 
+    context "when there are exact name matches differing by capitalization" do
+      let(:second_name_list) { [ "cassian andor" ] }
+
+      it "returns them as exact matches" do
+        expect(subject).to eq(
+          exact_match_count: 1,
+          close_match_count: 0,
+          approximate_match_count: 0,
+          none_match_count: 0
+        )
+      end
+    end
+
     context "when there are hyphenated surnames" do
       let(:second_name_list) { [ "Cassian Andor-Erso" ] }
 
@@ -116,7 +129,7 @@ RSpec.describe AgencyNameMatchingService do
           "Cassian Andor",       # exact match to "Cassian Caleen-Andor"
           "Kleya R. Marki",      # exact match to "Kleya Marki"
           "Senator Bail Organa", # close match to "Senator Leia Organa"
-          "Galen Erso",          # approx match to "Jyn Erso"
+          "Galen Erso",          # approx match to "jyn erso"
           "Vel Kaz-Sartha",      # approx match to "Cinta Kaz"
           "Saw Gerrera"          # no match
         ]
@@ -126,7 +139,7 @@ RSpec.describe AgencyNameMatchingService do
           "Cassian Caleen-Andor",
           "Kleya Marki",
           "Senator Leia Organa",
-          "Jyn Erso",
+          "jyn erso",
           "Cinta Kaz"
         ]
       end

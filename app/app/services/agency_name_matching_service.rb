@@ -60,6 +60,7 @@ class AgencyNameMatchingService
   def normalize_name_list(name_list)
     name_list.uniq.map do |name|
       name
+        .downcase
         .split(/[^a-z]+/i)
         .keep_if { |s| s.length > 1 }
     end
