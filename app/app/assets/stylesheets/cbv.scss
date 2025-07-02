@@ -138,6 +138,38 @@ html {
   @include u-bg('yellow-5v');
 }
 
+.cbv-attributes-table__stacked {
+  thead {
+    display: table-header-group;
+  }
+
+  // Addressing USWDS utilities specificity
+  td.display-none {
+    display: none;
+  }
+}
+
+@include at-media-max("mobile-lg") {
+  .cbv-attributes-table__stacked {
+    thead .subheader-row {
+      display: flex;
+    }
+
+    .cbv-attributes-table__label-cell {
+      padding-bottom: units(0.5);
+
+      & + td {
+        padding-top: 0;
+        border-top-width: 0;
+      }
+    }
+
+    td.text-bold {
+      font-weight: bold;
+    }
+  }
+}
+
 .rotate {
   animation: 1s linear infinite rotate-con;
 }
@@ -253,6 +285,6 @@ input#invitation_link{
 .subheader-row {
   > th {
     font-weight: bold;
-    background-color: color('base-lightest');
+    background-color: color('blue-cool-10v');
   }
 }

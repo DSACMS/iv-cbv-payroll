@@ -22,28 +22,27 @@
   </h3>
   <% if is_w2_worker %>
     <% if summary[:total] > 0 %>
-      <table class="usa-table usa-table--borderless width-full" data-testid="paystub-table">
-        <thead class="border-top-05">
-            <tr>
-              <th class="padding-3" style="background-color: #d9e8f6;" colspan="2">
-                <h4 class="margin-0" data-testid="paystub-total-income">
-                  <% if employer_name %>
-                    <%= t(".total_income_from", employer_name: employer_name, amount: format_money(summary[:total])) %>
-                  <% else %>
-                    <%= t(".total_income_from_no_employer_name", amount: format_money(summary[:total])) %>
-                  <% end %>
-                </h4>
-              </th>
-            </tr>
-        </thead>
-        <tbody>
-          <% summary[:paystubs].each do |paystub| %>
-          <tr data-testid="paystub-row">
-            <td><%= t(".payment", amount: format_money(paystub.gross_pay_amount), date: format_date(paystub.pay_date)) %></td>
-          </tr>
+      <%= render(TableComponent.new(is_responsive: true, class_names: "cbv-attributes-table__stacked")) do |table| %>
+        <%= table.with_subheader_row(class_names: "subheader-row base-lightest") do |row| %>
+          <% row.with_data_cell(is_header: true, attributes: {"data-testid" => "paystub-total-income"}) do %>
+            <% if summary[:total] > 0 %>
+              <% if employer_name %>
+                <%= t(".total_income_from", employer_name: employer_name, amount: format_money(summary[:total])) %>
+              <% else %>
+                <%= t(".total_income_from_no_employer_name", amount: format_money(summary[:total])) %>
+              <% end %>
+            <% else %>
+              <%= t(".none_found") %>
+            <% end %>
           <% end %>
-        </tbody>
-      </table>
+        <% end %>
+        <% summary[:paystubs].each do |paystub| %>
+          <%= table.with_row do |row| %>
+            <%= row.with_data_cell(attributes: {"data-testid" => "paystub-row"})
+                  .with_content(t(".payment", amount: format_money(paystub.gross_pay_amount), date: format_date(paystub.pay_date))) %>
+          <% end %>
+        <% end %>
+      <% end %>
     <% else %>
       <% employment_type = summary[:employment]&.employment_type || :w2 %>
         <%= render AlertComponent.new(type: :info, heading: t("cbv.payment_details.show.none_found", report_data_range: report_data_range(@aggregator_report, account_id)), class: "margin-top-5") do %>
@@ -58,45 +57,33 @@
 <% end %>
 
 <% if @cbv_flow.cbv_flow_invitation.blank? %>
-<table class="usa-table usa-table--borderless width-full margin-top-2">
   <h3><%= t(".your_information") %></h3>
   <div class="usa-prose">
     <p><%= agency_translation(".must_match", agency_acronym: agency_translation("shared.agency_acronym")) %></p>
   </div>
-  <thead class="border-top-05">
-    <tr>
-      <th class="padding-3" style="background-color: #d9e8f6;">
-        <h4 class="margin-0">
-          <%= t(".application_information") %>
-        </h4>
-      </th>
-      <th class="padding-3" style="background-color: #d9e8f6; text-align: right;">
-        <h4 class="margin-0">
+  <%= render(TableComponent.new(is_responsive: true, class_names: "cbv-attributes-table__stacked margin-top-2")) do |table| %>
+    <%= table.with_subheader_row(class_names: "subheader-row base-lightest") do |row| %>
+        <% row.with_data_cell(is_header: true).with_content(t(".application_information")) %>
+        <% row.with_data_cell(is_header: true, class_names: "text-right") do %>
           <%= link_to cbv_flow_applicant_information_path(force_show: true), class: "usa-link" do %>
             <%= image_tag "@uswds/uswds/dist/img/usa-icons/edit.svg", role: "img", alt: "" %>
             Edit
           <% end %>
-        </h4>
-      </th>
-    </tr>
-  </thead>
-  <tbody>
+        <% end %>
+    <% end %>
     <% @cbv_flow.cbv_applicant.applicant_attributes.each do |item| %>
-      <% if @cbv_flow.cbv_applicant[item].present? %>
-        <tr>
-          <td><%= t("cbv.applicant_informations.#{@cbv_flow.client_agency_id}.fields.#{item}.prompt") %></td>
-          <td>
-            <% if item == :date_of_birth %>
-              <%= format_date(@cbv_flow.cbv_applicant[item]) %>
-            <% else %>
-              <%= @cbv_flow.cbv_applicant[item] %>
-            <% end %>
-          </td>
-        </tr>
+      <% table.with_row do |row| %>
+        <% row.with_data_cell(class_names: "cbv-attributes-table__label-cell text-bold tablet:text-normal").with_content(t("cbv.applicant_informations.#{@cbv_flow.client_agency_id}.fields.#{item}.prompt")) %>
+        <% row.with_data_cell do %>
+          <% if item == :date_of_birth %>
+            <%= format_date(@cbv_flow.cbv_applicant[item]) %>
+          <% else %>
+            <%= @cbv_flow.cbv_applicant[item] %>
+          <% end %>
+        <% end %>
       <% end %>
     <% end %>
-  </tbody>
-  </table>
+  <% end %>
 <% end %>
 
 <%= button_to t("continue"), cbv_flow_submit_path, class: "btn btn-primary usa-button margin-y-5", method: :get %>
