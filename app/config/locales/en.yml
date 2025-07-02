@@ -444,6 +444,9 @@ en:
         total_income_from: 'Total income before taxes from %{employer_name}: %{amount}'
         total_income_from_no_employer_name: 'Total income before taxes: %{amount}'
         your_information: Your information
+        question: Question
+        your_answer: Your answer
+        edit: Edit
     synchronization_failures:
       show:
         back_to_search: Back to employer search

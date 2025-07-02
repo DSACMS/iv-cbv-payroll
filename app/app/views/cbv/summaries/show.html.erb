@@ -66,20 +66,19 @@
   <div class="usa-prose">
     <p><%= agency_translation(".must_match", agency_acronym: agency_translation("shared.agency_acronym")) %></p>
   </div>
-  <%= render(TableComponent.new(is_responsive: true, class_names: "cbv-attributes-table__stacked margin-top-2", attributes: { "data-testid" => "paystub-table" })) do |table| %>
-    <%= table.with_subheader_row(class_names: "subheader-row base-lightest") do |row| %>
-        <% row.with_data_cell(is_header: true).with_content(t(".application_information")) %>
-        <% row.with_data_cell(is_header: true, class_names: "text-right") do %>
-          <%= link_to cbv_flow_applicant_information_path(force_show: true), class: "usa-link" do %>
-            <%= image_tag "@uswds/uswds/dist/img/usa-icons/edit.svg", role: "img", alt: "" %>
-            Edit
-          <% end %>
-        <% end %>
+  <div class="display-flex flex-justify font-body-md">
+    <h4 class="margin-0"><%= t(".application_information") %></h4>
+    <%= link_to t(".edit"), cbv_flow_applicant_information_path(force_show: true), class: "usa-link text-bold" %>
+  </div>
+  <%= render(TableComponent.new(is_responsive: true, class_names: "margin-top-2", thead_class_names: "", attributes: { "data-testid" => "paystub-table" })) do |table| %>
+    <%= table.with_subheader_row(class_names: "subheader-row base-lightest border-top-1px") do |row| %>
+      <% row.with_data_cell(is_header: true).with_content(t(".question")) %>
+      <% row.with_data_cell(is_header: true).with_content(t(".your_answer")) %>
     <% end %>
     <% @cbv_flow.cbv_applicant.applicant_attributes.each do |item| %>
       <% table.with_row do |row| %>
-        <% row.with_data_cell(class_names: "cbv-attributes-table__label-cell text-bold tablet:text-normal").with_content(t("cbv.applicant_informations.#{@cbv_flow.client_agency_id}.fields.#{item}.prompt")) %>
-        <% row.with_data_cell do %>
+        <% row.with_data_cell(data_label: t(".question"), class_names: "text-bold").with_content(t("cbv.applicant_informations.#{@cbv_flow.client_agency_id}.fields.#{item}.prompt")) %>
+        <% row.with_data_cell(data_label: t(".your_answer")) do %>
           <% if item == :date_of_birth %>
             <%= format_date(@cbv_flow.cbv_applicant[item]) %>
           <% else %>
