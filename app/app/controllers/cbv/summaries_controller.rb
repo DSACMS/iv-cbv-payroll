@@ -2,9 +2,19 @@ class Cbv::SummariesController < Cbv::BaseController
   include Cbv::AggregatorDataHelper
 
   before_action :set_aggregator_report, only: %i[show]
+  before_action :check_aggregator_report, only: %i[show]
 
   def show
     track_accessed_income_summary_event(@cbv_flow, @aggregator_report.paystubs)
+  end
+
+  private
+
+  def check_aggregator_report
+    if @aggregator_report.nil?
+      Rails.logger.error "Aggregator report nil for #{@cbv_flow.id}. User reached summary page without successfully synced payroll accounts."
+      redirect_to cbv_flow_synchronization_failures_path
+    end
   end
 
   def track_accessed_income_summary_event(cbv_flow, payments)

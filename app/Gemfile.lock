@@ -178,9 +178,9 @@ GEM
       railties (>= 6.0.0)
     csv (3.3.4)
     date (3.4.1)
-    debase (0.2.5.beta2)
-      debase-ruby_core_source (>= 0.10.12)
-    debase-ruby_core_source (3.3.1)
+    debase (0.2.9)
+      debase-ruby_core_source (>= 3.4.1)
+    debase-ruby_core_source (3.4.1)
     debug (1.9.2)
       irb (~> 1.10)
       reline (>= 0.3.8)
@@ -305,7 +305,7 @@ GEM
     net-smtp (0.5.0)
       net-protocol
     net-ssh (7.3.0)
-    newrelic_rpm (9.12.0)
+    newrelic_rpm (9.19.0)
     nio4r (2.7.4)
     nokogiri (1.18.8-aarch64-linux-gnu)
       racc (~> 1.4)
@@ -587,7 +587,7 @@ DEPENDENCIES
   climate_control (~> 1.0)
   cssbundling-rails
   csv
-  debase (~> 0.2.5.beta2)
+  debase (~> 0.2.9)
   debase-ruby_core_source (~> 3.3, >= 3.3.1)
   debug
   device_detector
