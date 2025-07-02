@@ -50,6 +50,19 @@ RSpec.describe AgencyNameMatchingService do
       end
     end
 
+    context "when there are exact name matches based on whitespace" do
+      let(:second_name_list) { [ "Cassian And Or" ] }
+
+      it "returns them as exact matches" do
+        expect(subject).to eq(
+          exact_match_count: 1,
+          close_match_count: 0,
+          approximate_match_count: 0,
+          none_match_count: 0
+        )
+      end
+    end
+
     context "when there are hyphenated surnames" do
       let(:second_name_list) { [ "Cassian Andor-Erso" ] }
 

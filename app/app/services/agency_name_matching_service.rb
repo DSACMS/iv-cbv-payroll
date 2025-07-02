@@ -46,8 +46,15 @@ class AgencyNameMatchingService
   private
 
   def match_names(name_one, name_two)
+    # If either name includes all parts of the other name, it's an exact match.
     if (name_one & name_two) == name_one || (name_two & name_one) == name_two
       :exact
+    # If the names are equal after removing whitespace/special characters, it's
+    # also an exact match.
+    elsif name_one.join == name_two.join
+      :exact
+    # Otherwise, it's a close/approximate/no match depending on how many name
+    # segments overlap.
     elsif (name_one & name_two).length >= 2
       :close
     elsif (name_one & name_two).length == 1
