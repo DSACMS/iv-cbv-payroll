@@ -10,7 +10,7 @@
         start_date: format_date(@aggregator_report.from_date),
         end_date: format_date(@aggregator_report.to_date),
         agency_acronym: agency_translation("shared.agency_acronym"),
-        report_data_range: report_data_range(@aggregator_report),
+        report_data_range: report_data_range(@payroll_account_report.employment.employment_type),
         benefit: agency_translation("shared.benefit"),
         reporting_purpose: agency_translation("shared.reporting_purpose")
       ) %>
@@ -18,7 +18,7 @@
 </div>
 
 <% if @payroll_account_report.paystubs.any? %>
-  <h2><%= t(".total_gross_income", amount: format_money(gross_pay), report_data_range: report_data_range(@aggregator_report)) %></h2>
+  <h2><%= t(".total_gross_income", amount: format_money(gross_pay), report_data_range: report_data_range(@payroll_account_report.employment.employment_type)) %></h2>
   <div class="usa-prose">
     <p><%= t(".total_gross_description") %></p>
   </div>
@@ -61,8 +61,9 @@
       <% end %>
     <% end %>
   <% else %>
-    <%= render AlertComponent.new(type: :info, heading: t(".none_found", report_data_range: report_data_range(@aggregator_report)), class: "margin-top-5") do %>
-      <%= t(".none_found_description", report_data_range: report_data_range(@aggregator_report)) %>
+    <% employment_type = @payroll_account_report.employment.employment_type %>
+    <%= render AlertComponent.new(type: :info, heading: t(".none_found", report_data_range: report_data_range(employment_type)), class: "margin-top-5") do %>
+      <%= t(".none_found_description", report_data_range: report_data_range(employment_type)) %>
     <% end %>
   <% end %>
 <% else %>

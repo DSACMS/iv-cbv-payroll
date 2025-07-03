@@ -31,14 +31,17 @@ module ReportViewHelper
     number_to_currency(dollars_in_cents.to_f / 100)
   end
 
-  def report_data_range(report)
-    case report.fetched_days
-    when 90
+  def report_data_range(employment_type_or_report)
+    # Extract the value to switch on
+    value = employment_type_or_report.respond_to?(:fetched_days) ? employment_type_or_report.fetched_days : employment_type_or_report
+
+    case value
+    when :w2, 90
       t("shared.report_data_range.ninety_days")
-    when 182
+    when :gig, 182
       t("shared.report_data_range.six_months")
     else
-      raise "Missing i18n key in `shared.report_data_range` for report.fetched_days = #{report.fetched_days}"
+      raise "Missing i18n key in `shared.report_data_range` for value = #{value}"
     end
   end
 
