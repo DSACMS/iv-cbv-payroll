@@ -242,20 +242,23 @@ RSpec.describe Report::MonthlySummaryTableComponent, type: :component do
         expect(argyle_report.paystubs.length).to be(0)
       end
 
-      it "includes table headers" do
+      it "renders info alert when no data found" do
         output = render_inline(described_class.new(argyle_report, payroll_account))
-        expect(output.css("h3").to_html).to include "Monthly Summary"
-        expect(subject.css("thead tr.subheader-row th").length).to eq(3)
+        expect(output.css("div.usa-alert.usa-alert--info")).to be_present
+        expect(output.css("h2.usa-alert__heading").to_html).to include "We didn't find any payments from this employer in the past 6 months"
       end
 
-      it "includes table subheaders" do
-        expect(subject.css("thead tr.subheader-row th:nth-child(1)").to_html).to include "Month"
-        expect(subject.css("thead tr.subheader-row th:nth-child(2)").to_html).to include "Accrued gross earnings"
+      it "renders alert heading with none found message" do
+        expect(subject.css("h2.usa-alert__heading").to_html).to include "We didn't find any payments from this employer in the past 6 months"
       end
 
-      it "renders the none_found message for missing payments" do
-        subject = render_inline(described_class.new(argyle_report, payroll_account))
-        expect(subject.css("tbody tr:nth-child(1)").to_html).to include "We didn't find any payments from this employer in the past 6 months"
+      it "renders alert content with explanation" do
+        expect(subject.css("div.usa-alert__text").to_html).to include "This typically happens when you haven't received income"
+      end
+
+      it "does not render table when no data found" do
+        expect(subject.css("h3").to_html).not_to include "Monthly Summary"
+        expect(subject.css("thead tr.subheader-row th").length).to eq(0)
       end
 
       it "does not render the table caption" do
