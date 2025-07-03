@@ -10,10 +10,10 @@ export default class extends Controller {
     }
   }
 
-  viewHelperText(event) {
+  viewHelpText(event) {
     const section = event.currentTarget.dataset.sectionIdentifier
     if (event.currentTarget.getAttribute("aria-expanded") === "false") {
-      trackUserAction("ApplicantViewedHelperText", { section })
+      trackUserAction("ApplicantViewedHelpText", { section })
     }
   }
 } 

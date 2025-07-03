@@ -33,7 +33,7 @@ class Api::UserEventsController < ApplicationController
     ApplicantUpdatedArgyleSearchTerm
     ApplicantManuallySwitchedLanguage
     ApplicantConsentedToTerms
-    ApplicantViewedHelperText
+    ApplicantViewedHelpText
   ]
 
   def user_action

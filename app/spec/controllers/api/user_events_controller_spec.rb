@@ -193,22 +193,22 @@ RSpec.describe Api::UserEventsController, type: :controller do
       end
     end
 
-    context "when tracking a ApplicantViewedHelperText event" do
-      let(:event_name) { "ApplicantViewedHelperText" }
+    context "when tracking a ApplicantViewedHelpText event" do
+      let(:event_name) { "ApplicantViewedHelpText" }
 
       context "for 'who is this for' section" do
         let(:event_attributes) do
           {
-            section: "who_is_this_for"
+            section: "who_is_this_tool_for"
           }
         end
 
         it "tracks an event with Mixpanel" do
-          expect(EventTrackingJob).to receive(:perform_later).with("ApplicantViewedHelperText", anything, hash_including(
+          expect(EventTrackingJob).to receive(:perform_later).with("ApplicantViewedHelpText", anything, hash_including(
             timestamp: be_a(Integer),
             cbv_flow_id: cbv_flow.id,
             invitation_id: cbv_flow.cbv_flow_invitation_id,
-            section: "who_is_this_for"
+            section: "who_is_this_tool_for"
           ))
           post :user_action, params: valid_params
         end
@@ -217,16 +217,16 @@ RSpec.describe Api::UserEventsController, type: :controller do
       context "for 'what if I cant use this' section" do
         let(:event_attributes) do
           {
-            section: "what_if_i_cant_use_this"
+            section: "what_if_i_cant_use_this_tool"
           }
         end
 
         it "tracks an event with Mixpanel" do
-          expect(EventTrackingJob).to receive(:perform_later).with("ApplicantViewedHelperText", anything, hash_including(
+          expect(EventTrackingJob).to receive(:perform_later).with("ApplicantViewedHelpText", anything, hash_including(
             timestamp: be_a(Integer),
             cbv_flow_id: cbv_flow.id,
             invitation_id: cbv_flow.cbv_flow_invitation_id,
-            section: "what_if_i_cant_use_this"
+            section: "what_if_i_cant_use_this_tool"
           ))
           post :user_action, params: valid_params
         end
