@@ -19,6 +19,11 @@ resource "aws_iam_role" "migrator_task" {
   assume_role_policy = data.aws_iam_policy_document.ecs_tasks_assume_role_policy.json
 }
 
+resource "aws_iam_role" "webhook_registrar" {
+  name               = "${var.service_name}-webhook-registrar"
+  assume_role_policy = data.aws_iam_policy_document.ecs_tasks_assume_role_policy.json
+}
+
 data "aws_iam_policy_document" "ecs_tasks_assume_role_policy" {
   statement {
     sid = "ECSTasksAssumeRole"
