@@ -24,4 +24,4 @@ namespace :webhooks do
 
     puts "✅ Done."
   end
-end 
+end
