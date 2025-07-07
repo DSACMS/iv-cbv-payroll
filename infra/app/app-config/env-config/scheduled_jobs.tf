@@ -25,7 +25,7 @@ locals {
     }
 
     clear_old_background_jobs = {
-      task_command = ["bin/rails", "data_deletion:clear_old_background_jobs"]
+      task_command        = ["bin/rails", "data_deletion:clear_old_background_jobs"]
       schedule_expression = "cron(*/12 * * * * *)" # once every 12 minutes
     }
   }
