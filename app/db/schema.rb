@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2025_06_17_171928) do
+ActiveRecord::Schema[7.1].define(version: 2025_07_07_143214) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pgcrypto"
   enable_extension "plpgsql"
@@ -77,20 +77,14 @@ ActiveRecord::Schema[7.1].define(version: 2025_06_17_171928) do
   create_table "payroll_accounts", force: :cascade do |t|
     t.bigint "cbv_flow_id", null: false
     t.string "pinwheel_account_id"
-    t.datetime "paystubs_synced_at", precision: nil
-    t.datetime "employment_synced_at", precision: nil
     t.datetime "income_synced_at", precision: nil
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.string "supported_jobs", default: [], array: true
-    t.datetime "employment_errored_at", precision: nil
-    t.datetime "income_errored_at", precision: nil
-    t.datetime "paystubs_errored_at", precision: nil
-    t.datetime "identity_errored_at", precision: nil
-    t.datetime "identity_synced_at", precision: nil
     t.string "type", default: "pinwheel", null: false
     t.string "synchronization_status", default: "unknown"
     t.datetime "redacted_at"
+    t.string "remote_account_id"
     t.index ["cbv_flow_id"], name: "index_payroll_accounts_on_cbv_flow_id"
   end
 

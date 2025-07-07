@@ -1,4 +1,6 @@
 class PayrollAccount < ApplicationRecord
+  before_save :update_remote_account_id
+
   def self.sti_name
     # "PayrollAccount::Pinwheel" => "pinwheel"
     name.demodulize.underscore
@@ -57,6 +59,10 @@ class PayrollAccount < ApplicationRecord
   end
 
   private
+
+  def update_remote_account_id
+    self.remote_account_id = pinwheel_account_id
+  end
 
   def find_webhook_event(event_name, event_outcome = nil)
     webhook_events.find do |webhook_event|
