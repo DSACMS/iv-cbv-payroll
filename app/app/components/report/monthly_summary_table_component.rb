@@ -4,10 +4,11 @@ class Report::MonthlySummaryTableComponent < ViewComponent::Base
 
   attr_reader :employer_name
 
-  def initialize(report, payroll_account, is_responsive: true, is_caseworker: false, show_payments: true, show_footnote: true)
+  def initialize(report, payroll_account, is_responsive: true, is_caseworker: false, show_payments: true, show_footnote: true, is_pdf: false)
     @report = report
     @show_payments = show_payments
     @show_footnote = show_footnote
+    @is_pdf = is_pdf
 
     # Note: payroll_account may either be the ID or the payroll_account object
     @account_id = payroll_account.class == String ? payroll_account : payroll_account.pinwheel_account_id
