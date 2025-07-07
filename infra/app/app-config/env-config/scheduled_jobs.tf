@@ -23,5 +23,10 @@ locals {
       task_command        = ["bin/rails", "data_deletion:redact_all"]
       schedule_expression = "cron(0 14 ? * * *)" # Every day at 2pm UTC (9am EST / 10am EDT)
     }
+
+    clear_old_background_jobs = {
+      task_command = ["bin/rails", "data_deletion:clear_old_background_jobs"]
+      schedule_expression = "cron(*/12 * * * * *)" # once every 12 minutes
+    }
   }
 }
