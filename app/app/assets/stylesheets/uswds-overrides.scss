@@ -1,6 +1,10 @@
 @forward "uswds";
 @use "uswds" as *;
 
+.usa-alert__heading {
+  line-height: 1.2 !important;
+}
+
 .usa-date-picker__calendar {
   top: 48px !important;
   max-width: none;
