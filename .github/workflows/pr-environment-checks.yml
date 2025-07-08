@@ -1,5 +1,12 @@
 name: PR Environment Update
 run-name: Update PR Environment ${{ inputs.pr_number }}
+
+permissions:
+  contents: read
+  id-token: write
+  pull-requests: write
+  repository-projects: read
+
 on:
   workflow_call:
     inputs:
