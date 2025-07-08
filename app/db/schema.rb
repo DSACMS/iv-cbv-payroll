@@ -84,7 +84,7 @@ ActiveRecord::Schema[7.1].define(version: 2025_07_07_143214) do
     t.string "type", default: "pinwheel", null: false
     t.string "synchronization_status", default: "unknown"
     t.datetime "redacted_at"
-    t.string "remote_account_id"
+    t.string "aggregator_account_id"
     t.index ["cbv_flow_id"], name: "index_payroll_accounts_on_cbv_flow_id"
   end
 

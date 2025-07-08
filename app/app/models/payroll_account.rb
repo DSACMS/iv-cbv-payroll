@@ -1,5 +1,5 @@
 class PayrollAccount < ApplicationRecord
-  before_save :update_remote_account_id
+  before_save :update_aggregator_account_id
 
   def self.sti_name
     # "PayrollAccount::Pinwheel" => "pinwheel"
@@ -60,8 +60,8 @@ class PayrollAccount < ApplicationRecord
 
   private
 
-  def update_remote_account_id
-    self.remote_account_id = pinwheel_account_id
+  def update_aggregator_account_id
+    self.aggregator_account_id = pinwheel_account_id
   end
 
   def find_webhook_event(event_name, event_outcome = nil)
