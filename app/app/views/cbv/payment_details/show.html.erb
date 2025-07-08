@@ -46,7 +46,7 @@
 
       <% @payroll_account_report.paystubs.each do |payment| %>
         <%= table.with_row_section do |row| %>
-          <h4 class="margin-0"><%= t("cbv.payment_details.show.pay_date", pay_date: format_date(payment.pay_date)) %></h4>
+          <%= t("cbv.payment_details.show.pay_date", pay_date: format_date(payment.pay_date)) %>
         <% end %>
         <%= table.with_data_point(:pay_period_with_frequency, payment.start, payment.end, pay_frequency) if @is_w2_worker %>
         <%= table.with_data_point(:pay_gross, payment.gross_pay_amount) %>

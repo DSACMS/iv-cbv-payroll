@@ -57,6 +57,16 @@ RSpec.describe Cbv::SummariesController do
       pinwheel_stub_request_shifts_response
     end
 
+    context "when user has no successfully synced accounts" do
+  it "redirects to synchronization failures page" do
+    cbv_flow.payroll_accounts.update_all(synchronization_status: :failed)
+
+    get :show
+
+    expect(response).to redirect_to(cbv_flow_synchronization_failures_path)
+  end
+end
+
     context "when rendering views" do
       render_views
 

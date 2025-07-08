@@ -43,8 +43,6 @@ Most developers on the team code using macOS, so we recommend that platform if p
 1. Install Ruby: `rbenv install`
 1. Install NodeJS `nodenv install`
 1. Install Ruby dependencies: `bundle install`
-   * If you get an error from debase, run this command: ```gem install debase -v0.2.5.beta2 -- --with-cflags="-Wno-incompatible-function-pointer-types"```
-   * Also we should probably fix this (TODO)
 1. Install JS dependencies
    * `nodenv rehash`
    * `npm install`
@@ -201,7 +199,6 @@ This translation import system allows for efficient management of translations a
 
 * Tests: `bundle exec rspec`
 * E2E tests (see section below): `E2E_RUN_TESTS=1 bundle exec rspec spec/e2e/`
-* Accessibility scan: `./bin/pa11y-scan`
 * Dynamic security scan: `./bin/owasp-scan`
 * Ruby style linter: `bundle exec rubocop`
 * Ruby static security scan: `bundle exec rake brakeman`
@@ -300,9 +297,7 @@ We achieve End-to-End (E2E) testing by using `capybara` (which in turn uses `sel
 
 See the [E2E testing documentation](/docs/e2e/e2e-checks.md) for more information.
 
-## Pa11y Scan
-
-When new pages are added to the application, ensure they are added to `./.pa11yci` so that they can be scanned.
+When writing E2E tests, use the `verify_page` helper when possible to ensure that the page meets our sitewide requirements: it has no missing translations and it passes accessibility checks (per WCAG 2.1 A & AA).
 
 ## Coding style and linters
 

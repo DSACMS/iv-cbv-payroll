@@ -9,8 +9,8 @@ require "view_component/test_helpers"
 require "support/context/gpg_setup"
 require "view_component/system_test_helpers"
 
-
 # Capybara configuration for E2E tests
+require "axe-rspec"
 require "capybara/rspec"
 if ENV["E2E_SHOW_BROWSER"]
   Capybara.default_driver = :selenium_chrome
@@ -69,9 +69,6 @@ VCR.configure do |config|
 end
 
 RSpec.configure do |config|
-  # Remove this line if you're not using ActiveRecord or ActiveRecord fixtures
-  config.fixture_path = "#{::Rails.root}/spec/fixtures"
-
   # Include a handful of useful helpers we've written
   config.include TestHelpers
 

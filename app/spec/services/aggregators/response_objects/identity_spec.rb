@@ -12,6 +12,8 @@ RSpec.describe Aggregators::ResponseObjects::Identity do
     it 'creates an Identity object from pinwheel response' do
       identity = described_class.from_pinwheel(pinwheel_response)
       expect(identity.account_id).to eq("03e29160-f7e7-4a28-b2d8-813640e030d3")
+      expect(identity.first_name).to eq("Ash")
+      expect(identity.last_name).to eq("Userton")
       expect(identity.full_name).to eq("Ash Userton")
       expect(identity.emails).to eq([ "user_good@example.com" ])
       expect(identity.phone_numbers).to eq([ { "type" => nil, "value" => "+12345556789" } ])
@@ -28,6 +30,8 @@ RSpec.describe Aggregators::ResponseObjects::Identity do
     it 'creates an Identity object from argyle response' do
       identity = described_class.from_argyle(argyle_response)
       expect(identity.account_id).to eq("019571bc-2f60-3955-d972-dbadfe0913a8")
+      expect(identity.first_name).to eq("Bob")
+      expect(identity.last_name).to eq("Jones")
       expect(identity.full_name).to eq("Bob Jones")
       expect(identity.emails).to eq([ "test1@argyle.com" ])
       expect(identity.phone_numbers).to eq([ "+18009000010" ])

@@ -52,8 +52,11 @@ RSpec.describe Api::InvitationsController do
 
         invitation = CbvFlowInvitation.last
         expect(invitation.client_agency_id).to eq(client_agency_id.to_s)
-        expect(invitation.cbv_applicant.income_changes.length).to eq(2)
-        expect(invitation.cbv_applicant.income_changes[0]["member_name"]).to eq("Mark Scout")
+
+        applicant = invitation.cbv_applicant
+        expect(applicant.client_agency_id).to eq("az_des")
+        expect(applicant.income_changes.length).to eq(2)
+        expect(applicant.income_changes[0]["member_name"]).to eq("Mark Scout")
       end
     end
 
