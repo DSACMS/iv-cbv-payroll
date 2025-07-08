@@ -23,7 +23,7 @@ class Report::MonthlySummaryTableComponent < ViewComponent::Base
   def before_render
     # Note: since ViewComponents do not know about what view they are rendered in until render time,
     # the translation keys are not available until the before_render method.
-    @report_data_range = report_data_range(@report)
+    @report_data_range = report_data_range(@report, @account_id)
   end
 
   private
