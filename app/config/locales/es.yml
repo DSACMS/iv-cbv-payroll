@@ -318,7 +318,6 @@ es:
         must_match:
           default: Esto debe coincidir con lo que se muestra en su solicitud de %{agency_acronym}.
           la_ldh: Esto debe coincidir con lo que se muestra en sus beneficios de Medicaid.
-        none_found: No encontramos ningún pago de este empleador.
         payment: Pago de %{amount} antes de pago impuestos en %{date}
         phone_number: Teléfono del empleador
         table_caption: 'Empleador %{number}: %{employer_name}'
@@ -356,8 +355,6 @@ es:
             definition_total_hours_worked: El total de horas trabajadas se calculan sumando el tiempo que demoró en finalizar cada trabajo completado durante ese mes. Es posible que algunos trabajos realizados en un mes que se le hayan pagado en el mes siguiente.
             definition_verified_mileage_expenses: Los gastos de millaje verificados se calculan utilizando el millaje de la plataforma o aplicación. Multiplicamos el millaje total por la tarifa federal de millaje ($0.70 para 2025), que cubre todos los costos relacionados con un automóvil. Estos pueden ser costos como gasolina, pagos de automóvil o tarifas de arrendamiento, seguro de automóvil, reparaciones y mantenimiento.
             what_does_this_mean: "¿Qué significa esta información?"
-          month_income: 'Ganancias brutas de %{month}: %{accrued_gross_earnings}'
-          total_income_header: 'Ingreso total de %{employer_name} antes de impuestos: %{accrued_gross_earnings}'
         dollars_times_miles: "(%{dollar_amount} x %{number_of_miles} millas)"
         month: Mes
         monthly_summary: Resumen mensual
