@@ -65,7 +65,7 @@ RSpec.describe Webhooks::Argyle::EventsController, type: :controller do
           :payroll_account,
           :argyle,
           cbv_flow: cbv_flow,
-          pinwheel_account_id: webhook_request.argyle_account_id,
+          aggregator_account_id: webhook_request.argyle_account_id,
         )
       end
 
@@ -100,7 +100,7 @@ RSpec.describe Webhooks::Argyle::EventsController, type: :controller do
       webhook_event = payroll_account.webhook_events.last
 
       expect(webhook_event.event_name).to eq(event_type)
-      expect(webhook_event.payroll_account.pinwheel_account_id).to eq(payroll_account.pinwheel_account_id)
+      expect(webhook_event.payroll_account.aggregator_account_id).to eq(payroll_account.aggregator_account_id)
     end
 
     around do |ex|

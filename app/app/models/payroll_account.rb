@@ -61,7 +61,7 @@ class PayrollAccount < ApplicationRecord
   private
 
   def update_aggregator_account_id
-    self.aggregator_account_id = pinwheel_account_id
+    self.aggregator_account_id ||= pinwheel_account_id
   end
 
   def find_webhook_event(event_name, event_outcome = nil)

@@ -1,7 +1,7 @@
 FactoryBot.define do
   factory :payroll_account, class: "PayrollAccount" do
     cbv_flow
-    pinwheel_account_id { SecureRandom.uuid }
+    aggregator_account_id { SecureRandom.uuid }
     supported_jobs { %w[income paystubs employment identity] }
     type { "pinwheel" }
     synchronization_status { :in_progress }
@@ -48,7 +48,7 @@ FactoryBot.define do
     trait :argyle_bob do
       argyle_fully_synced
 
-      pinwheel_account_id { "019571bc-2f60-3955-d972-dbadfe0913a8" }
+      aggregator_account_id { "019571bc-2f60-3955-d972-dbadfe0913a8" }
     end
 
     trait :argyle_sync_in_progress do
