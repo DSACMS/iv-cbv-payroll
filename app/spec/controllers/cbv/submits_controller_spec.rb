@@ -111,7 +111,7 @@ RSpec.describe Cbv::SubmitsController do
           let(:errored_jobs) { [ "employment" ] }
 
           it "renders a pdf" do
-            create(:payroll_account, :pinwheel_fully_synced, cbv_flow: cbv_flow, pinwheel_account_id: "account1")
+            create(:payroll_account, :pinwheel_fully_synced, cbv_flow: cbv_flow, aggregator_account_id: "account1")
             expect(response).to be_successful
           end
         end
@@ -288,7 +288,7 @@ RSpec.describe Cbv::SubmitsController do
             :argyle_fully_synced,
             with_errored_jobs: errored_jobs,
             cbv_flow: cbv_flow,
-            pinwheel_account_id: account_id,
+            aggregator_account_id: account_id,
             supported_jobs: supported_jobs,
             )
         end
@@ -341,7 +341,7 @@ RSpec.describe Cbv::SubmitsController do
             :argyle_fully_synced,
             with_errored_jobs: errored_jobs,
             cbv_flow: cbv_flow,
-            pinwheel_account_id: account_id,
+            aggregator_account_id: account_id,
             supported_jobs: supported_jobs,
             )
         end
@@ -400,7 +400,7 @@ RSpec.describe Cbv::SubmitsController do
     end
     before do
       cbv_applicant.update(snap_application_date: current_time)
-      cbv_flow.payroll_accounts.first.update(pinwheel_account_id: "03e29160-f7e7-4a28-b2d8-813640e030d3")
+      cbv_flow.payroll_accounts.first.update(aggregator_account_id: "03e29160-f7e7-4a28-b2d8-813640e030d3")
 
       session[:cbv_flow_id] = cbv_flow.id
       sign_in sandbox_user

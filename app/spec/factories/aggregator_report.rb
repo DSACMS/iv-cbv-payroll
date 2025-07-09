@@ -86,7 +86,7 @@ FactoryBot.define do
 
     trait :with_pinwheel_account do
       payroll_accounts { [
-        create(:payroll_account, :pinwheel_fully_synced, pinwheel_account_id: "account1")
+        create(:payroll_account, :pinwheel_fully_synced, aggregator_account_id: "account1")
       ] }
     end
   end
@@ -174,7 +174,7 @@ FactoryBot.define do
 
     trait :with_argyle_account do
       payroll_accounts { [
-        create(:payroll_account, :argyle_fully_synced, pinwheel_account_id: "argyle_report1", type: "argyle")
+        create(:payroll_account, :argyle_fully_synced, aggregator_account_id: "argyle_report1", type: "argyle")
       ] }
     end
   end

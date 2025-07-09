@@ -10,7 +10,7 @@ class Report::MonthlySummaryTableComponent < ViewComponent::Base
     @show_footnote = show_footnote
 
     # Note: payroll_account may either be the ID or the payroll_account object
-    @account_id = payroll_account.class == String ? payroll_account : payroll_account.pinwheel_account_id
+    @account_id = payroll_account.is_a?(String) ? payroll_account : payroll_account.aggregator_account_id
     account_report = report.find_account_report(@account_id)
     @paystubs = account_report&.paystubs
     @employer_name = account_report&.dig(:employment, :employer_name)

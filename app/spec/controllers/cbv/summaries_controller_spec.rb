@@ -37,7 +37,7 @@ RSpec.describe Cbv::SummariesController do
 
     cbv_applicant.update(snap_application_date: current_time)
 
-    cbv_flow.payroll_accounts.first.update(pinwheel_account_id: "03e29160-f7e7-4a28-b2d8-813640e030d3")
+    cbv_flow.payroll_accounts.first.update(aggregator_account_id: "03e29160-f7e7-4a28-b2d8-813640e030d3")
   end
 
   around do |ex|
@@ -141,7 +141,7 @@ end
     context "with mismatched employment data" do
       it "should handle when employment job succeeds but employment data is nil" do
         allow_any_instance_of(Aggregators::AggregatorReports::AggregatorReport).to receive(:summarize_by_employer) do
-          { cbv_flow.payroll_accounts.first.pinwheel_account_id =>
+          { cbv_flow.payroll_accounts.first.aggregator_account_id =>
             { has_employment_data: true, employment: nil }
           }
         end

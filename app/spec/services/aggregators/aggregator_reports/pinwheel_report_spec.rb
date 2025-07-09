@@ -10,7 +10,7 @@ RSpec.describe Aggregators::AggregatorReports::PinwheelReport, type: :service do
   let(:days_ago_to_fetch_for_gig) { 90 }
 
   let!(:payroll_account) do
-    create(:payroll_account, :pinwheel_fully_synced, pinwheel_account_id: account)
+    create(:payroll_account, :pinwheel_fully_synced, aggregator_account_id: account)
   end
 
   let(:pinwheel_service) { Aggregators::Sdk::PinwheelService.new(:sandbox) }

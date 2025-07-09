@@ -55,17 +55,17 @@ class Api::ArgyleController < ApplicationController
 
     # Find the PayrollAccount object (if we have received an accounts.connected webhook)
     argyle_account = connected_argyle_accounts.first
-    payroll_account = @cbv_flow.payroll_accounts.find_by(pinwheel_account_id: argyle_account["id"])
+    payroll_account = @cbv_flow.payroll_accounts.find_by(aggregator_account_id: argyle_account["id"])
     return unless payroll_account.present?
 
     # If we've made it here, there is a previous connection to that item.
     #
     # Redirect to the proper place based on the status of the connection.
     if payroll_account.sync_succeeded? || payroll_account.sync_failed?
-      redirect_to cbv_flow_payment_details_path(user: { account_id: payroll_account.pinwheel_account_id })
+      redirect_to cbv_flow_payment_details_path(user: { account_id: payroll_account.aggregator_account_id })
     elsif payroll_account.job_succeeded?("accounts")
       # Sync is in progress, and the user has successfully connected their account.
-      redirect_to cbv_flow_synchronizations_path(user: { account_id: payroll_account.pinwheel_account_id })
+      redirect_to cbv_flow_synchronizations_path(user: { account_id: payroll_account.aggregator_account_id })
     end
   end
 
