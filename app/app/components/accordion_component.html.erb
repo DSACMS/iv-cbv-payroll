@@ -1,0 +1,20 @@
+<div class="usa-accordion usa-accordion--bordered usa-accordion--multiselectable margin-top-5" id="<%= @base_id %>" data-allow-multiple>
+  <% button_id = "#{@base_id}-button" %>
+  <% content_id = "#{@base_id}-content" %>
+
+  <h4 class="usa-accordion__heading usa-prose">
+    <button type="button" class="usa-accordion__button"
+            id="<%= button_id %>"
+            aria-expanded="<%= @expanded ? "true" : "false" %>"
+            aria-controls="<%= content_id %>">
+      <%= title %>
+    </button>
+  </h4>
+  <div id="<%= content_id %>" class="usa-accordion__content usa-prose">
+    <% accordion_items.each do |item| %>
+      <p>
+        <%= item %>
+      </p>
+    <% end %>
+  </div>
+</div>
