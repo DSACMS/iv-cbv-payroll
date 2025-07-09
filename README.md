@@ -430,5 +430,3 @@ All contributions to this project will be released under the CC0 dedication. By 
 # Core Team
 
 See [CODEOWNERS.md](./CODEOWNERS.md)
-
-Testing, testing, 123.
