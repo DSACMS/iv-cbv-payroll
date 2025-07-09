@@ -1,4 +1,5 @@
 resource "aws_iam_role" "newrelic_metrics" {
+  count = !local.is_temporary ? 1 : 0
   # checkov:skip=CKV_AWS_61:This policy principal needs to be broad to allow for monitoring all services.
 
   name = "newrelic-metrics-collector"
@@ -24,6 +25,7 @@ resource "aws_iam_role" "newrelic_metrics" {
 }
 
 resource "aws_iam_role_policy_attachment" "newrelic_metrics" {
-  role       = aws_iam_role.newrelic_metrics.id
+  count      = !local.is_temporary ? 1 : 0
+  role       = aws_iam_role.newrelic_metrics[0].id
   policy_arn = "arn:aws:iam::aws:policy/ReadOnlyAccess"
 }

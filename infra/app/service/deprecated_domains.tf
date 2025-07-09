@@ -36,6 +36,7 @@ data "aws_lb" "production_load_balancer" {
 }
 
 data "aws_lb_listener" "alb_listener_https" {
+  count             = var.environment_name == "prod" ? 1 : 0
   load_balancer_arn = data.aws_lb.production_load_balancer.arn
   port              = 443
 }
@@ -48,6 +49,6 @@ data "aws_acm_certificate" "deprecated_certificate" {
 resource "aws_lb_listener_certificate" "deprecated_snapincomepilot" {
   count = var.environment_name == "prod" ? 1 : 0
 
-  listener_arn    = data.aws_lb_listener.alb_listener_https.arn
+  listener_arn    = data.aws_lb_listener.alb_listener_https[0].arn
   certificate_arn = data.aws_acm_certificate.deprecated_certificate[count.index].arn
 }
