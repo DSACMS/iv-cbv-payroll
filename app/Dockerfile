@@ -144,6 +144,7 @@ RUN apt-get update -qq && \
         libvips42=8.14.1-3+deb12u2 \
         openssl=3.0.16-1~deb12u1 \
         postgresql-client=15+248 \
+        libdjvulibre21=3.5.28-2.1~deb12u1 \
         python-is-python3=3.11.2-1+deb12u1 \
         python3-venv=3.11.2-1+b1 \
         python3-pip=23.0.1+dfsg-1 \
