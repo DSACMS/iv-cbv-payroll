@@ -1,4 +1,6 @@
 class PayrollAccount < ApplicationRecord
+  self.ignored_columns = %w[pinwheel_account_id]
+
   def self.sti_name
     # "PayrollAccount::Pinwheel" => "pinwheel"
     name.demodulize.underscore

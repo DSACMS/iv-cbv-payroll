@@ -59,7 +59,7 @@ module Aggregators::AggregatorReports
 
     def summarize_by_employer
       @payroll_accounts.each_with_object({}) do |payroll_account, hash|
-        account_id = payroll_account.pinwheel_account_id
+        account_id = payroll_account.aggregator_account_id
         has_income_data = payroll_account.job_succeeded?("income")
         has_employment_data = payroll_account.job_succeeded?("employment")
         has_identity_data = payroll_account.job_succeeded?("identity")
@@ -85,7 +85,7 @@ module Aggregators::AggregatorReports
 
       @payroll_accounts
         .each_with_object({}) do |payroll_account, hash|
-          account_id = payroll_account.pinwheel_account_id
+          account_id = payroll_account.aggregator_account_id
           paystubs = @paystubs.filter { |paystub| paystub.account_id == account_id }
           gigs = @gigs.filter { |gig| gig.account_id == account_id }
           extracted_dates = extract_dates(paystubs, gigs)
