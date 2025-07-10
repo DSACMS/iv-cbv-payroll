@@ -103,4 +103,19 @@ RSpec.configure do |config|
   config.include ViewComponent::TestHelpers, type: :component
   config.include ViewComponent::SystemTestHelpers, type: :component
   config.include Capybara::RSpecMatchers, type: :component
+
+  # Print some helpful debugging info about the last test failure, since
+  # sometimes it's a bit hard to tell which page the error is coming from.
+  config.after(js: true) do |test|
+    if test.exception.present?
+      begin
+        $stderr.puts "[E2E] Last page accessed: #{URI(page.current_url).path}"
+        screenshot_path = Rails.root.join("tmp", "failure_#{test.full_description.gsub(/[^a-z0-9]+/i, "_")}.png")
+        page.save_screenshot(screenshot_path)
+        $stderr.puts "[E2E] Screenshot saved to: #{screenshot_path}"
+      rescue => ex
+        $stderr.puts "[E2E] Failed to print debug info: #{ex}"
+      end
+    end
+  end
 end
