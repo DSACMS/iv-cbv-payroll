@@ -1,61 +1,67 @@
 <% title = t(".header") %>
 <% content_for :title, title %>
-<h1><%= title %></h1>
+<div data-controller="cbv-entry-page">
+  <h1><%= title %></h1>
 
-<div class="usa-prose">
-  <p><%= t(".subheader_html", agency_acronym: agency_translation("shared.agency_acronym")) %></p>
-</div>
-
-<ol class="usa-process-list">
-  <li class="usa-process-list__item">
-    <h2 class="margin-bottom-1"><%= t(".step1") %></h2>
-    <p class="margin-top-0"><%= t(".step1_description") %></p>
-  </li>
-  <li class="usa-process-list__item">
-    <h2 class="margin-bottom-1"><%= t(".step2") %></h2>
-    <p class="margin-top-0"><%= t(".step2_description", agency_acronym: agency_translation("shared.agency_acronym")) %></p>
-  </li>
-  <li class="usa-process-list__item">
-    <h2 class="margin-bottom-1"><%= t(".step3") %></h2>
-    <p class="margin-top-0"><%= t(".step3_description", agency_acronym: agency_translation("shared.agency_acronym")) %></p>
-  </li>
-</ol>
-
-<%= form_with(url: cbv_flow_entry_path, builder: UswdsFormBuilder, data: { turbo: "false" }) do |f| %>
-  <%= f.check_box(:agreement, label: agency_translation(".checkbox", agency_full_name: agency_translation("shared.agency_full_name"))) %>
-  <%= f.submit t(".continue") %>
-<% end %>
-
-<div class="divider margin-top-5"></div>
-
-<div class="usa-accordion usa-accordion--bordered usa-accordion--multiselectable margin-top-5" data-allow-multiple>
-  <h2 class="usa-accordion__heading usa-prose">
-    <button
-      type="button"
-      class="usa-accordion__button"
-      aria-controls="who_is_this_for_accordion"
-    >
-      <%= t(".who_is_this_for_title") %>
-    </button>
-  </h2>
-  <div id="who_is_this_for_accordion" class="usa-accordion__content usa-prose">
-    <p>
-      <%= t(".who_is_this_for_body") %>
-    </p>
+  <div class="usa-prose">
+    <p><%= t(".subheader_html", agency_acronym: agency_translation("shared.agency_acronym")) %></p>
   </div>
-  <h2 class="usa-accordion__heading usa-prose">
-    <button
-      type="button"
-      class="usa-accordion__button"
-      aria-controls="what_if_i_cant_use_this_accordion"
-    >
-      <%= t(".what_if_i_cant_use_this_title") %>
-    </button>
-  </h2>
-  <div id="what_if_i_cant_use_this_accordion" class="usa-accordion__content usa-prose">
-    <p>
-      <%= t(".what_if_i_cant_use_this_body_1", agency_acronym: agency_translation("shared.agency_acronym")) %>
-      <%= agency_translation(".what_if_i_cant_use_this_body_2_html", agency_url: current_agency.agency_contact_website, agency_acronym: agency_translation("shared.agency_acronym")) %>
-    </p>
+
+  <ol class="usa-process-list">
+    <li class="usa-process-list__item">
+      <h2 class="margin-bottom-1"><%= t(".step1") %></h2>
+      <p class="margin-top-0"><%= t(".step1_description") %></p>
+    </li>
+    <li class="usa-process-list__item">
+      <h2 class="margin-bottom-1"><%= t(".step2") %></h2>
+      <p class="margin-top-0"><%= t(".step2_description", agency_acronym: agency_translation("shared.agency_acronym")) %></p>
+    </li>
+    <li class="usa-process-list__item">
+      <h2 class="margin-bottom-1"><%= t(".step3") %></h2>
+      <p class="margin-top-0"><%= t(".step3_description", agency_acronym: agency_translation("shared.agency_acronym")) %></p>
+    </li>
+  </ol>
+
+  <%= form_with(url: cbv_flow_entry_path, builder: UswdsFormBuilder, data: { turbo: "false" }) do |f| %>
+    <%= f.check_box(:agreement, { label: agency_translation(".checkbox", agency_full_name: agency_translation("shared.agency_full_name")), "data-action": "cbv-entry-page#consent", "data-cbv-entry-page-target": "consentCheckbox" }) %>
+    <%= f.submit t(".continue") %>
+  <% end %>
+
+  <div class="divider margin-top-5"></div>
+
+  <div class="usa-accordion usa-accordion--bordered usa-accordion--multiselectable margin-top-5" data-allow-multiple>
+    <h2 class="usa-accordion__heading usa-prose">
+      <button
+        type="button"
+        class="usa-accordion__button"
+        aria-controls="who_is_this_for_accordion"
+        data-action="click->cbv-entry-page#viewHelpText"
+        data-section-identifier="who_is_this_tool_for"
+      >
+        <%= t(".who_is_this_for_title") %>
+      </button>
+    </h2>
+    <div id="who_is_this_for_accordion" class="usa-accordion__content usa-prose">
+      <p>
+        <%= t(".who_is_this_for_body") %>
+      </p>
+    </div>
+    <h2 class="usa-accordion__heading usa-prose">
+      <button
+        type="button"
+        class="usa-accordion__button"
+        aria-controls="what_if_i_cant_use_this_accordion"
+        data-action="click->cbv-entry-page#viewHelpText"
+        data-section-identifier="what_if_i_cant_use_this_tool"
+      >
+        <%= t(".what_if_i_cant_use_this_title") %>
+      </button>
+    </h2>
+    <div id="what_if_i_cant_use_this_accordion" class="usa-accordion__content usa-prose">
+      <p>
+        <%= t(".what_if_i_cant_use_this_body_1", agency_acronym: agency_translation("shared.agency_acronym")) %>
+        <%= agency_translation(".what_if_i_cant_use_this_body_2_html", agency_url: current_agency.agency_contact_website, agency_acronym: agency_translation("shared.agency_acronym")) %>
+      </p>
+    </div>
   </div>
 </div>
