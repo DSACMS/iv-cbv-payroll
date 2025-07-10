@@ -3,13 +3,22 @@ on:
   workflow_dispatch:
     inputs:
       pr_number:
+        description: "Pull request number"
         required: true
         type: string
       commit_hash:
+        description: "Commit hash to deploy"
         required: true
         type: string
   # !! Uncomment the following lines once you've set up the dev environment and are ready to enable PR environments
-  # pull_request:
+  pull_request:
+
+permissions:
+  contents: read
+  id-token: write
+  pull-requests: write
+  repository-projects: read
+
 jobs:
   update:
     name: " " # GitHub UI is noisy when calling reusable workflows, so use whitespace for name to reduce noise
@@ -19,3 +28,4 @@ jobs:
       environment: "dev"
       pr_number: ${{ inputs.pr_number || github.event.number }}
       commit_hash: ${{ inputs.commit_hash || github.event.pull_request.head.sha }}
+    secrets: inherit

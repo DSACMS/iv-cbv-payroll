@@ -255,6 +255,7 @@ module "storage" {
 }
 
 module "email" {
+  count                       = !local.is_temporary ? 1 : 0
   source                      = "../../modules/email"
   hosted_zone_domain          = local.network_config.domain_config.hosted_zone
   domain                      = local.service_config.domain_name

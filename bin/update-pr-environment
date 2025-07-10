@@ -27,7 +27,7 @@ echo "Select or create Terraform workspace: ${workspace}"
 terraform -chdir="infra/${app_name}/service" workspace select -or-create "${workspace}"
 
 echo "::group::Apply changes to environment using image tag: ${image_tag}"
-terraform -chdir="infra/${app_name}/service" apply -input=false -auto-approve -var="environment_name=${environment}" -var="image_tag=${image_tag}"
+terraform -chdir="infra/${app_name}/service" apply -input=false -auto-approve -var="environment_name=${environment}" -var="image_tag=${image_tag}" 2>&1 || exit $?
 echo "::endgroup::"
 
 cluster_name="$(terraform -chdir="infra/$app_name/service" output -raw service_cluster_name)"

@@ -15,7 +15,7 @@ resource "aws_route53_record" "app" {
 # Register additional domains as aliases as well. These must be provided as
 # subject_alternative_names to the load balancer certificate as well.
 resource "aws_route53_record" "additional_domains" {
-  for_each = toset(var.additional_domains)
+  for_each = !var.is_temporary ? toset(var.additional_domains) : toset([])
 
   name    = each.value
   zone_id = var.hosted_zone_id
