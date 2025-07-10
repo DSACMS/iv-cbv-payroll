@@ -6,7 +6,9 @@
     <button type="button" class="usa-accordion__button"
             id="<%= button_id %>"
             aria-expanded="<%= @expanded ? "true" : "false" %>"
-            aria-controls="<%= content_id %>">
+            aria-controls="<%= content_id %>"
+            data-action="<%= data_action %>"
+            data-section-identifier="<%= data_section_identifier %>">
       <%= title %>
     </button>
   </h4>

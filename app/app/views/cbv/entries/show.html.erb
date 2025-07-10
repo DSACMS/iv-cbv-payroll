@@ -28,7 +28,7 @@
 
 <div class="divider margin-top-5"></div>
 
-  <%= render AccordionComponent.new(id: "who_is_this_for-accordion") do |accordion| %>
+  <%= render AccordionComponent.new(id: "who_is_this_for-accordion", data_action: "click->cbv-entry-page#viewHelpText", data_section_identifier: "who_is_this_tool_for") do |accordion| %>
     <% accordion.with_title do %>
       <%= t(".who_is_this_for_title") %>
     <% end %>
@@ -37,7 +37,7 @@
     <% end %>
   <% end %>
 
-  <%= render AccordionComponent.new(id: "what_if_I_cant_use_this-accordion") do |accordion| %>
+  <%= render AccordionComponent.new(id: "what_if_I_cant_use_this-accordion", data_action: "click->cbv-entry-page#viewHelpText", data_section_identifier: "what_if_i_cant_use_this_tool") do |accordion| %>
     <% accordion.with_title do %>
       <%= t(".what_if_i_cant_use_this_title") %>
     <% end %>
