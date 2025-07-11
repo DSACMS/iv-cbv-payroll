@@ -16,7 +16,6 @@ assignees: @maintainers
 ## What is their github username?
 -  cdigg
 -  jeffcatania
-
 ## What list would you like to add the Outside Collaborator to in MAINTAINERS.md?
 -  [X] Maintainers - Can triage and make other non-destructive changes to the project
 -  [X] Approvers - Can approve and merge pull-requests into the main branch
