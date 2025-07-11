@@ -21,32 +21,35 @@
     <% end %>
   </h3>
   <% if is_w2_worker %>
-    <table class="usa-table usa-table--borderless width-full" data-testid="paystub-table">
-      <thead class="border-top-05">
-          <tr>
-            <th class="padding-3" style="background-color: #d9e8f6;" colspan="2">
-              <h4 class="margin-0" data-testid="paystub-total-income">
-                <% if summary[:total] > 0 %>
+    <% if summary[:total] > 0 %>
+      <table class="usa-table usa-table--borderless width-full" data-testid="paystub-table">
+        <thead class="border-top-05">
+            <tr>
+              <th class="padding-3" style="background-color: #d9e8f6;" colspan="2">
+                <h4 class="margin-0" data-testid="paystub-total-income">
                   <% if employer_name %>
                     <%= t(".total_income_from", employer_name: employer_name, amount: format_money(summary[:total])) %>
                   <% else %>
                     <%= t(".total_income_from_no_employer_name", amount: format_money(summary[:total])) %>
                   <% end %>
-                <% else %>
-                  <%= t(".none_found") %>
-                <% end %>
-              </h4>
-            </th>
+                </h4>
+              </th>
+            </tr>
+        </thead>
+        <tbody>
+          <% summary[:paystubs].each do |paystub| %>
+          <tr data-testid="paystub-row">
+            <td><%= t(".payment", amount: format_money(paystub.gross_pay_amount), date: format_date(paystub.pay_date)) %></td>
           </tr>
-      </thead>
-      <tbody>
-        <% summary[:paystubs].each do |paystub| %>
-        <tr data-testid="paystub-row">
-          <td><%= t(".payment", amount: format_money(paystub.gross_pay_amount), date: format_date(paystub.pay_date)) %></td>
-        </tr>
-        <% end %>
-      </tbody>
-    </table>
+          <% end %>
+        </tbody>
+      </table>
+    <% else %>
+      <% employment_type = summary[:employment]&.employment_type || :w2 %>
+        <%= render AlertComponent.new(type: :info, heading: t("cbv.payment_details.show.none_found", report_data_range: report_data_range(@aggregator_report, account_id)), class: "margin-top-5") do %>
+        <%= t("cbv.payment_details.show.none_found_description", report_data_range: report_data_range(@aggregator_report, account_id)) %>
+      <% end %>
+    <% end %>
     <% else %>
       <%= render(Report::MonthlySummaryTableComponent.new(@aggregator_report, account_id, show_footnote: false, show_payments: false)) %>
     <% end %>

@@ -28,7 +28,6 @@ RSpec.describe Cbv::SubmitsController do
     context "when using pinwheel" do
       let(:supported_jobs) { %w[income paystubs employment identity] }
       let(:errored_jobs) { [] }
-      let(:employment_errored_at) { nil }
       let(:cbv_applicant) { create(:cbv_applicant, created_at: current_time, case_number: "ABC1234") }
       let(:pinwheel_report) { build(:pinwheel_report, :with_pinwheel_account) }
 
@@ -386,7 +385,6 @@ RSpec.describe Cbv::SubmitsController do
     let(:supported_jobs) { %w[income paystubs employment identity] }
     let(:errored_jobs) { [] }
     let(:current_time) { Date.parse('2024-06-18') }
-    let(:employment_errored_at) { nil }
     let(:cbv_applicant) { create(:cbv_applicant, created_at: current_time, case_number: "ABC1234") }
     let(:pinwheel_report) { build(:pinwheel_report, :with_pinwheel_account) }
 

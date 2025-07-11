@@ -1,51 +1,53 @@
-<div class="margin-top-5">
-  <h3 class="margin-0">
-    <%= I18n.t("components.report.monthly_summary_table.monthly_summary") %>
-  </h3>
-  <%= render(TableComponent.new(is_responsive: @is_responsive)) do |table| %>
-    <%= table.with_subheader_row(class_names: "subheader-row base-lightest") do |row| %>
-      <%= row.with_data_cell(is_header: true)
-             .with_content(I18n.t("components.report.monthly_summary_table.month")) %>
-      <%= row.with_data_cell(is_header: true)
-             .with_content(I18n.t("components.report.monthly_summary_table.accrued_gross_earnings")) %>
-      <% if has_mileage_data? %>
-        <%= row.with_data_cell(is_header: true)
-               .with_content(I18n.t("components.report.monthly_summary_table.verified_mileage_expenses")) %>
-      <% end %>
-      <%= row.with_data_cell(is_header: true)
-             .with_content(I18n.t("components.report.monthly_summary_table.total_gig_hours")) %>
-    <% end %>
+<% show_table = has_monthly_summary_results? || @is_pdf %>
 
-    <% if has_monthly_summary_results? %>
-      <% @monthly_summary_data.each_with_index do |(month_string, summary), index| %>
+<% if show_table %>
+  <div class="margin-top-5">
+    <h3 class="margin-0">
+      <%= I18n.t("components.report.monthly_summary_table.monthly_summary") %>
+    </h3>
+    <%= render(TableComponent.new(is_responsive: @is_responsive)) do |table| %>
+      <%= table.with_subheader_row(class_names: "subheader-row base-lightest") do |row| %>
+        <%= row.with_data_cell(is_header: true, class_names: "text-nowrap")
+               .with_content(I18n.t("components.report.monthly_summary_table.month")) %>
+        <%= row.with_data_cell(is_header: true, class_names: "text-nowrap")
+               .with_content(I18n.t("components.report.monthly_summary_table.accrued_gross_earnings")) %>
+        <% if has_mileage_data? %>
+          <%= row.with_data_cell(is_header: true)
+               .with_content(I18n.t("components.report.monthly_summary_table.verified_mileage_expenses")) %>
+        <% end %>
+        <%= row.with_data_cell(is_header: true)
+               .with_content(I18n.t("components.report.monthly_summary_table.total_gig_hours")) %>
+      <% end %>
+
+      <% if has_monthly_summary_results? %>
+        <% @monthly_summary_data.each_with_index do |(month_string, summary), index| %>
+          <%= table.with_row do |row| %>
+            <% row.with_data_cell(data_label: t("components.report.monthly_summary_table.month")) do |cell| %>
+              <%= format_parsed_date(parse_month_safely(month_string), :month_year) %>
+              <% if summary[:partial_month_range][:is_partial_month] %>
+                <br ><span class="text-gray-70 partial-month-description"><%= summary[:partial_month_range][:description] %></span>
+              <% end %>
+            <% end %>
+            <%= row.with_data_cell(data_label: t("components.report.monthly_summary_table.accrued_gross_earnings"))
+                   .with_content(format_accrued_gross_earnings(summary)) %>
+            <% if has_mileage_data? %>
+              <%= row.with_data_cell(data_label: t("components.report.monthly_summary_table.verified_mileage_expenses")) do |cell| %>
+                <%= format_verified_mileage_expenses(summary, month_string) %> <br >
+                <%= format_verified_mileage_expense_rate(summary, month_string) %>
+              <% end %>
+            <% end %>
+            <%= row.with_data_cell(data_label: t("components.report.monthly_summary_table.total_gig_hours"))
+                   .with_content(format_total_gig_hours(summary)) %>
+          <% end %>
+        <% end %>
+      <% else %>
         <%= table.with_row do |row| %>
-          <% row.with_data_cell(data_label: t("components.report.monthly_summary_table.month")) do |cell| %>
-            <%= format_parsed_date(parse_month_safely(month_string), :month_year) %>
-            <% if summary[:partial_month_range][:is_partial_month] %>
-              <br ><span class="text-gray-70 partial-month-description"><%= summary[:partial_month_range][:description] %></span>
-            <% end %>
-          <% end %>
-          <%= row.with_data_cell(data_label: t("components.report.monthly_summary_table.accrued_gross_earnings"))
-                 .with_content(format_accrued_gross_earnings(summary)) %>
-          <% if has_mileage_data? %>
-            <%= row.with_data_cell(data_label: t("components.report.monthly_summary_table.verified_mileage_expenses")) do |cell| %>
-              <%= format_verified_mileage_expenses(summary, month_string) %> <br >
-              <%= format_verified_mileage_expense_rate(summary, month_string) %>
-            <% end %>
-          <% end %>
-          <%= row.with_data_cell(data_label: t("components.report.monthly_summary_table.total_gig_hours"))
-                 .with_content(format_total_gig_hours(summary)) %>
+          <%= row.with_data_cell(colspan: table_colspan).with_content(format_no_payments_found) %>
         <% end %>
       <% end %>
-    <% else %>
-      <%= table.with_row do |row| %>
-        <%= row.with_data_cell(colspan: table_colspan).with_content(format_no_payments_found) %>
-      <% end %>
     <% end %>
-  <% end %>
 
-  <% if has_monthly_summary_results? %>
-    <% if show_footnote? %>
+    <% if has_monthly_summary_results? && show_footnote? %>
       <div>
         <h4><%= I18n.t("components.report.monthly_summary_table.compact.footnote.what_does_this_mean") %></h4>
         <ul class="usa-list">
@@ -57,7 +59,8 @@
         </ul>
       </div>
     <% end %>
-    <% if show_payments? %>
+
+    <% if has_monthly_summary_results? && show_payments? %>
       <div>
         <h2><%= I18n.t("components.report.monthly_summary_table.payments_from_header", employer_name: @employer_name) %></h2>
         <div class="usa-prose"><p><%= payments_from_text %></p></div>
@@ -69,5 +72,9 @@
         </ul>
       </div>
     <% end %>
+  </div>
+<% else %>
+  <%= render AlertComponent.new(type: :info, heading: format_no_payments_found, class: "margin-top-5") do %>
+    <%= I18n.t("cbv.payment_details.show.none_found_description", report_data_range: @report_data_range) %>
   <% end %>
-</div>
+<% end %>

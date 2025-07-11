@@ -6,7 +6,6 @@ on:
       - 'app/config/locales/**'
   push:
     branches:
-      - main
       - develop
 
 jobs:

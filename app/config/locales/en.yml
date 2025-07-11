@@ -437,7 +437,6 @@ en:
         must_match:
           default: This must match what is shown on your %{agency_acronym} application.
           la_ldh: This must match what is shown on your Medicaid benefits.
-        none_found: We didn't find any payments from this employer.
         payment: Payment of %{amount} before taxes on %{date}
         phone_number: Employer phone
         table_caption: 'Employer %{number}: %{employer_name}'
@@ -475,8 +474,6 @@ en:
             definition_total_hours_worked: '"Total hours worked" sums the time it took to complete every gig worked in that month. There may be gigs worked in a month that were paid in the following month.'
             definition_verified_mileage_expenses: '"Verified mileage expenses" uses mileage from the Platform/App. We multiply this by the federal mileage rate ($.70 for 2025), which covers all costs related to a car. These can be costs like gas, car payments or leasing fees, car insurance, repairs, and maintenance.'
             what_does_this_mean: What does this information mean?
-          month_income: "%{month} gross earnings: %{accrued_gross_earnings}"
-          total_income_header: 'Total income from %{employer_name} before taxes: %{accrued_gross_earnings}'
         dollars_times_miles: "(%{dollar_amount} x %{number_of_miles} miles)"
         month: Month
         monthly_summary: Monthly Summary

@@ -138,5 +138,19 @@ module Aggregators::AggregatorReports
       # many days.)
       @payroll_accounts.first.cbv_flow.created_at.to_date
     end
+
+    def fetched_days_for_account(account_id)
+      employment = @employments.find { |emp| emp.account_id == account_id }
+      return @fetched_days unless employment
+
+      case employment.employment_type
+      when :gig
+        @days_to_fetch_for_gig
+      when :w2
+        @days_to_fetch_for_w2
+      else
+        @fetched_days
+      end
+    end
   end
 end
