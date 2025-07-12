@@ -58,9 +58,9 @@ gem "device_detector"
 gem "mixpanel-ruby"
 gem "newrelic_rpm"
 
-gem "solid_queue", ">= 0.3.0"
+gem "solid_queue", ">= 1.2.0"
 # dashboard to manage solid queue
-gem "mission_control-jobs"
+gem "mission_control-jobs", ">= 1.1.0"
 
 
 gem "faraday", "~> 2.9.0"
