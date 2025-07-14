@@ -6,9 +6,9 @@ class AccordionComponent < ViewComponent::Base
   renders_one :title
   renders_many :accordion_items
 
-  def initialize(id:, data_action: "", data_section_identifier: "", expanded: false)
+  def initialize(id:, heading_level: 4, data_action: "", data_section_identifier: "", expanded: false)
     @base_id = id
-    @data_action = data_action
+    @heading_level = heading_level.to_i.clamp(1, 6)
     @data_section_identifier = data_section_identifier
     @expanded = expanded
   end
