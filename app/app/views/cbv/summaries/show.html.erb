@@ -27,14 +27,10 @@
             <tr>
               <th class="padding-3" style="background-color: #d9e8f6;" colspan="2">
                 <h4 class="margin-0" data-testid="paystub-total-income">
-                  <% if summary[:total] > 0 %>
-                    <% if employer_name %>
-                      <%= t(".total_income_from", employer_name: employer_name, amount: format_money(summary[:total])) %>
-                    <% else %>
-                      <%= t(".total_income_from_no_employer_name", amount: format_money(summary[:total])) %>
-                    <% end %>
+                  <% if employer_name %>
+                    <%= t(".total_income_from", employer_name: employer_name, amount: format_money(summary[:total])) %>
                   <% else %>
-                    <%= t(".none_found") %>
+                    <%= t(".total_income_from_no_employer_name", amount: format_money(summary[:total])) %>
                   <% end %>
                 </h4>
               </th>
