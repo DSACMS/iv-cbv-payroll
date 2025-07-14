@@ -9,6 +9,7 @@ class AccordionComponent < ViewComponent::Base
   def initialize(id:, heading_level: 4, data_action: "", data_section_identifier: "", expanded: false)
     @base_id = id
     @heading_level = heading_level.to_i.clamp(1, 6)
+    @data_action = data_action
     @data_section_identifier = data_section_identifier
     @expanded = expanded
   end
