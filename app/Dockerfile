@@ -168,6 +168,7 @@ COPY bin/db-migrate /usr/bin/
 
 # Install custom webhook registration script
 COPY bin/register-webhooks /usr/bin/
+RUN chmod +x /usr/bin/register-webhooks
 
 # Copy built artifacts: gems, application, binary dependencies
 COPY --from=release-build /usr/local/bundle /usr/local/bundle
