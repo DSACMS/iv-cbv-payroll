@@ -29,39 +29,22 @@
 
   <div class="divider margin-top-5"></div>
 
-  <div class="usa-accordion usa-accordion--bordered usa-accordion--multiselectable margin-top-5" data-allow-multiple>
-    <h2 class="usa-accordion__heading usa-prose">
-      <button
-        type="button"
-        class="usa-accordion__button"
-        aria-controls="who_is_this_for_accordion"
-        data-action="click->cbv-entry-page#viewHelpText"
-        data-section-identifier="who_is_this_tool_for"
-      >
-        <%= t(".who_is_this_for_title") %>
-      </button>
-    </h2>
-    <div id="who_is_this_for_accordion" class="usa-accordion__content usa-prose">
-      <p>
-        <%= t(".who_is_this_for_body") %>
-      </p>
-    </div>
-    <h2 class="usa-accordion__heading usa-prose">
-      <button
-        type="button"
-        class="usa-accordion__button"
-        aria-controls="what_if_i_cant_use_this_accordion"
-        data-action="click->cbv-entry-page#viewHelpText"
-        data-section-identifier="what_if_i_cant_use_this_tool"
-      >
-        <%= t(".what_if_i_cant_use_this_title") %>
-      </button>
-    </h2>
-    <div id="what_if_i_cant_use_this_accordion" class="usa-accordion__content usa-prose">
-      <p>
-        <%= t(".what_if_i_cant_use_this_body_1", agency_acronym: agency_translation("shared.agency_acronym")) %>
-        <%= agency_translation(".what_if_i_cant_use_this_body_2_html", agency_url: current_agency.agency_contact_website, agency_acronym: agency_translation("shared.agency_acronym")) %>
-      </p>
-    </div>
-  </div>
+  <%= render AccordionComponent.new(id: "who_is_this_for-accordion", data_action: "click->cbv-entry-page#viewHelpText", data_section_identifier: "who_is_this_tool_for") do |accordion| %>
+    <% accordion.with_title do %>
+      <%= t(".who_is_this_for_title") %>
+    <% end %>
+    <% accordion.with_accordion_item do %>
+      <%= t(".who_is_this_for_body") %>
+    <% end %>
+  <% end %>
+
+  <%= render AccordionComponent.new(id: "what_if_I_cant_use_this-accordion", data_action: "click->cbv-entry-page#viewHelpText", data_section_identifier: "what_if_i_cant_use_this_tool") do |accordion| %>
+    <% accordion.with_title do %>
+      <%= t(".what_if_i_cant_use_this_title") %>
+    <% end %>
+    <% accordion.with_accordion_item do %>
+      <%= t(".what_if_i_cant_use_this_body_1", agency_acronym: agency_translation("shared.agency_acronym")) %>
+      <%= agency_translation(".what_if_i_cant_use_this_body_2_html", agency_url: current_agency.agency_contact_website, agency_acronym: agency_translation("shared.agency_acronym")) %>
+    <% end %>
+  <% end %>
 </div>
