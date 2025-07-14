@@ -28,7 +28,9 @@ class Api::PinwheelController < ApplicationController
       cbv_applicant_id: @cbv_flow.cbv_applicant_id,
       client_agency_id: @cbv_flow.client_agency_id,
       invitation_id: @cbv_flow.cbv_flow_invitation_id,
-      response_type: token_params[:response_type]
+      response_type: token_params[:response_type],
+      item_id: token_params[:id],
+      aggregator_name: "pinwheel"
     })
   rescue => ex
     Rails.logger.error "Unable to track event (ApplicantBeganLinkingEmployer): #{ex}"
