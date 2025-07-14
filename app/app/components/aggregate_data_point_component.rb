@@ -8,6 +8,13 @@ class AggregateDataPointComponent < ViewComponent::Base
     @highlight = highlight
   end
 
+  def pay_date(date)
+    {
+      label: I18n.t("cbv.payment_details.show.pay_date_prompt"),
+      value: format_date(date)
+    }
+  end
+
   def pay_period(start_date, end_date)
     {
       label: I18n.t("cbv.payment_details.show.pay_period"),

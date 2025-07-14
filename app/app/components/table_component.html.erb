@@ -1,7 +1,11 @@
 <table class="<%= @class_names %>">
   <thead class="<%= @thead_class_names %>">
     <tr>
+      <% if header.present? %>
         <%= header %>
+      <% elsif header_two_column.present? %>
+        <%= header_two_column %>
+      <% end %>
     </tr>
     <% if subheader_row.present? %>
       <%= subheader_row %>

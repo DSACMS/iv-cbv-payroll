@@ -347,9 +347,11 @@ en:
         none_found_description: This typically happens when you haven't received income from this job in the past %{report_data_range}. If you believe this is an error, please add a comment in the additional comments box. Otherwise, continue to the next page.
         number_of_hours_worked: Number of hours worked
         pay_date: 'Pay Date: %{pay_date}'
+        pay_date_prompt: Pay date
         pay_frequency: Pay frequency
         pay_gross: Payment before taxes (gross)
         pay_gross_ytd: Gross pay YTD
+        pay_information: Pay information
         pay_net: Payment after taxes and deductions (net)
         pay_period: Pay period
         pay_period_value: "%{start_date} to %{end_date}"
@@ -359,6 +361,7 @@ en:
         total_gross_description: This is the total gross income from your job before taxes, benefits and deductions were taken out of your paycheck.
         total_gross_income: 'Total income from the past %{report_data_range}, before taxes: %{amount}'
         unknown: Unknown
+        your_details: Your details
     submits:
       show:
         additional_information_title: Is there anything else you'd like your caseworker to know about your income?
