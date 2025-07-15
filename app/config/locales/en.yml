@@ -323,7 +323,7 @@ en:
         header: Do you need to report any jobs outside Report My Income?
         header_html: Do you need to report any jobs <em>outside</em> Report My Income?
         header_sub_text: 'Tell us about any other jobs you’ve had in the past 90 days, even if you’re no longer at that job. This includes current or recent jobs you’ve had in the past 90 days that may:'
-        note_html: 'Note: If you’ve had other jobs in the past 90 days that you won’t report using Report My Income, you will need to submit that income information separately. <a href="%{agency_site}" target="_blank" rel="noopener noreferrer">Learn more on %{agency_short_name}.</a>'
+        note_html: 'Note: If you’ve had other jobs in the past 90 days that you won’t report using Report My Income, you will need to submit that income information separately. <a href="%{agency_site}" target="_blank" rel="noopener noreferrer">Learn more on %{agency_acronym}.</a>'
         radio_no: No, I don’t have another job to report separately
         radio_yes: Yes, I have another job I’ll report separately
     payment_details:

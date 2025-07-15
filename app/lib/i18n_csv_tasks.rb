@@ -70,7 +70,7 @@ module I18nCsvTasks
   private
 
   def open_csv_with_encoding(file_path)
-    encodings = [ "Windows-1252:UTF-8", "UTF-8" ]
+    encodings = [ "UTF-8", "Windows-1252:UTF-8" ]
     encodings.each do |enc|
       begin
         File.open(file_path, "r:#{enc}") do |file|
