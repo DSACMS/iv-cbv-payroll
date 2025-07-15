@@ -65,8 +65,11 @@
         <% end %>
       <% end %>
     <% end %>
+  <% else %>
+    <%= render AlertComponent.new(type: :info, heading: t(".none_found", report_data_range: report_data_range(@aggregator_report, params[:user][:account_id])), class: "margin-top-5") do %>
+      <%= t(".none_found_description", report_data_range: report_data_range(@aggregator_report, params[:user][:account_id])) %>
+    <% end %>
   <% end %>
-
 <% else %>
   <%= render(Report::MonthlySummaryTableComponent.new(@aggregator_report, @pinwheel_account)) %>
 <% end %>
