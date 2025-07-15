@@ -1,4 +1,4 @@
-<table class="<%= @class_names %>">
+<%= tag.table(**@attributes.merge(class: @class_names)) do %>
   <thead class="<%= @thead_class_names %>">
     <tr>
         <%= header %>
@@ -12,4 +12,4 @@
       <%= row %>
     <% end %>
   </tbody>
-</table>
+<% end %>
