@@ -315,16 +315,19 @@ es:
         additional_comments: Comentarios adicionales
         application_information: Información del solicitante
         description: En el siguiente reporte, se muestran sus ingresos recientes.  Por favor revíselo antes de enviarlo.
+        edit: Editar
         header: Revise su reporte de ingresos
         must_match:
           default: Esto debe coincidir con lo que se muestra en su solicitud de %{agency_acronym}.
           la_ldh: Esto debe coincidir con lo que se muestra en sus beneficios de Medicaid.
         payment: Pago de %{amount} antes de pago impuestos en %{date}
         phone_number: Teléfono del empleador
+        question: Pregunta
         table_caption: 'Empleador %{number}: %{employer_name}'
         table_caption_no_name: Empleador %{number}
         total_income_from: 'Ingresos totales antes de impuestos de %{employer_name}: %{amount}'
         total_income_from_no_employer_name: 'Ingresos totales antes del pago de impuestos: %{amount}'
+        your_answer: Tu respuesta
         your_information: Su información
     synchronization_failures:
       show:
