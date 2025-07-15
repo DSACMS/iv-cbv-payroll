@@ -1,4 +1,4 @@
-class Report::MonthlySummaryTableComponent < ViewComponent::Base
+class Report::GigMonthlySummaryTableComponent < ViewComponent::Base
   include ReportViewHelper
   include Cbv::MonthlySummaryHelper
 

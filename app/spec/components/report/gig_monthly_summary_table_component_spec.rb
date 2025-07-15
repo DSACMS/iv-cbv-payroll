@@ -1,7 +1,7 @@
 require "rails_helper"
 
 
-RSpec.describe Report::MonthlySummaryTableComponent, type: :component do
+RSpec.describe Report::GigMonthlySummaryTableComponent, type: :component do
   context "with pinwheel stubs" do
     include PinwheelApiHelper
 
