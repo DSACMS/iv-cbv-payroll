@@ -1,0 +1,12 @@
+<% content_for :title, t("pages.home.pilot_ended.la_ldh.browser_title") %>
+<h1><%= t("pages.home.pilot_ended.la_ldh.header") %></h1>
+
+<div class="usa-prose">
+  <p><%= t("pages.home.pilot_ended.la_ldh.body").html_safe %></p>
+  <ul>
+    <li><%= t("pages.home.pilot_ended.la_ldh.body_bullet_1").html_safe %></li>
+    <li><%= t("pages.home.pilot_ended.la_ldh.body_bullet_2").html_safe %></li>
+    <li><%= t("pages.home.pilot_ended.la_ldh.body_bullet_3", agency_email: current_agency.transmission_method_configuration.dig("email")).html_safe %></li>
+    <li><%= t("pages.home.pilot_ended.la_ldh.body_bullet_4").html_safe %></li>
+  </ul>
+</div>

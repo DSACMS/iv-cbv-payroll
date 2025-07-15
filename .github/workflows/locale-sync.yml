@@ -1,0 +1,33 @@
+name: Check Locale Synchronization
+
+on:
+  pull_request:
+    paths:
+      - 'app/config/locales/**'
+  push:
+    branches:
+      - develop
+
+jobs:
+  check-locale-sync:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      with:
+        fetch-depth: 0  # Fetch full history for git diff
+
+    - name: Fetch main branch
+      run: |
+        git fetch origin main:main
+
+    - name: Set up Ruby
+      uses: ruby/setup-ruby@v1
+      with:
+        ruby-version: '3.1'
+        bundler-cache: true
+
+    - name: Check locale synchronization
+      run: |
+        ruby .github/scripts/check_locale_sync.rb

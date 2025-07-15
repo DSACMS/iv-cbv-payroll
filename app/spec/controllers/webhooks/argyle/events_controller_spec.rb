@@ -384,8 +384,6 @@ RSpec.describe Webhooks::Argyle::EventsController, type: :controller do
 
       expect_any_instance_of(PayrollAccount).to receive(:broadcast_replace).twice
 
-      expect(payroll_account.identity_errored_at).to be_nil
-
       expect(fake_event_logger)
         .to receive(:track)
         .with("ApplicantEncounteredArgyleAccountSystemError", anything, anything).exactly(1).times

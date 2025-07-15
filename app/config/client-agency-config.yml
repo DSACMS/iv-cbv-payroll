@@ -1,66 +1,5 @@
-- id: nyc
-  agency_name: NYC Human Resources Administration
-  agency_short_name: HRA
-  agency_contact_website: https://www.nyc.gov/site/hra/help/snap-application-frequently-asked-questions.page
-  agency_domain: <%= ENV["NYC_DOMAIN_NAME"] %>
-  caseworker_feedback_form: https://forms.office.com/r/B66WeqsBFE
-  logo_path: hra_logo.png
-  logo_square_path: hra_logo_square.png
-  pinwheel:
-    environment: <%= ENV["NYC_PINWHEEL_ENVIRONMENT"] %>
-  argyle:
-    environment: <%= ENV["SANDBOX_ARGYLE_ENVIRONMENT"] %>
-  transmission_method: shared_email
-  transmission_method_configuration:
-    email: <%= ENV['NYC_HRA_EMAIL'] %>
-  staff_portal_enabled: false
-  sso:
-    client_id:     <%= ENV["AZURE_NYC_DSS_CLIENT_ID"] %>
-    client_secret: <%= ENV["AZURE_NYC_DSS_CLIENT_SECRET"] %>
-    tenant_id:     <%= ENV["AZURE_NYC_DSS_TENANT_ID"] %>
-    scope: "openid"
-    name: "nyc_dss"
-  pay_income_days:
-    w2: 90
-    gig: 90
-  invitation_valid_days: 14
-  weekly_report:
-    recipient: <%= ENV['NYC_HRA_EMAIL'] %>
-
-- id: ma
-  agency_name: Department of Transitional Assistance
-  agency_short_name: DTA
-  agency_contact_website: https://www.mass.gov/guides/how-to-contact-dta
-  agency_domain: <%= ENV["MA_DTA_DOMAIN_NAME"] %>
-  caseworker_feedback_form: https://forms.office.com/r/rfV04qjG9A
-  pinwheel:
-    environment: <%= ENV["MA_PINWHEEL_ENVIRONMENT"] %>
-  argyle:
-    environment: <%= ENV["SANDBOX_ARGYLE_ENVIRONMENT"] %>
-  transmission_method: s3
-  transmission_method_configuration:
-    bucket: <%= ENV['MA_DTA_S3_BUCKET'] %>
-    public_key: <%= ENV['MA_DTA_S3_PUBLIC_KEY'].inspect %>
-  staff_portal_enabled: false
-  sso:
-    client_id:     <%= ENV["AZURE_MA_DTA_CLIENT_ID"] %>
-    client_secret: <%= ENV["AZURE_MA_DTA_CLIENT_SECRET"] %>
-    tenant_id:     <%= ENV["AZURE_MA_DTA_TENANT_ID"] %>
-    scope: "openid"
-    name: "ma_dta"
-  authorized_emails: <%= ENV["MA_DTA_ALLOWED_CASEWORKER_EMAILS"] %>
-  pay_income_days:
-    w2: 90
-    gig: 90
-  invitation_valid_days: 14
-  logo_path: dta_logo.png
-  logo_square_path: dta_logo_square.png
-  weekly_report:
-    recipient: <%= ENV['MA_WEEKLY_REPORT_RECIPIENTS'] %>
-
 - id: az_des
   agency_name: Department of Economic Security/Family Assistance Administration
-  agency_short_name: DES/FAA
   agency_contact_website: https://myfamilybenefits.azdes.gov/
   agency_domain: <%= ENV["AZ_DES_DOMAIN_NAME"] %>
   # No caseworker feedback form since they will only be interacting with the PDFs
@@ -76,6 +15,7 @@
     url: <%= ENV['AZ_DES_SFTP_URL'] %>
     sftp_directory: <%= ENV['AZ_DES_SFTP_DIRECTORY'] %>
   staff_portal_enabled: false
+  pilot_ended: false
   sso:
     client_id:     <%= ENV["AZURE_SANDBOX_CLIENT_ID"] %>
     client_secret: <%= ENV["AZURE_SANDBOX_CLIENT_SECRET"] %>
@@ -94,7 +34,6 @@
 
 - id: la_ldh
   agency_name: Department of Health
-  agency_short_name: LDH
   agency_contact_website: https://ldh.la.gov/renew-medicaid
   agency_domain: <%= ENV["LA_LDH_DOMAIN_NAME"] %>
   # caseworker_feedback_form: n/a
@@ -107,6 +46,7 @@
   transmission_method_configuration:
     email: <%= ENV['LA_LDH_EMAIL'] %>
   staff_portal_enabled: false
+  pilot_ended: true
   # sso:
   #   client_id:     <%= ENV["AZURE_LA_LDH_CLIENT_ID"] %>
   #   client_secret: <%= ENV["AZURE_LA_LDH_CLIENT_SECRET"] %>
@@ -128,7 +68,6 @@
 
 - id: sandbox
   agency_name: CBV Test Agency
-  agency_short_name: CBV
   agency_contact_website: https://www.example.com/contact
   agency_domain: <%= ENV["SANDBOX_DOMAIN_NAME"] %>
   caseworker_feedback_form: https://docs.google.com/forms/d/e/1FAIpQLSfrUiz0oWE5jbXjPfl-idQQGPgxKplqFtcKq08UOhTaEa2k6A/viewform
@@ -140,6 +79,7 @@
   transmission_method_configuration:
     email: <%= ENV['SLACK_TEST_EMAIL'] %>
   staff_portal_enabled: true
+  pilot_ended: false
   sso:
     client_id:     <%= ENV["AZURE_SANDBOX_CLIENT_ID"] %>
     client_secret: <%= ENV["AZURE_SANDBOX_CLIENT_SECRET"] %>

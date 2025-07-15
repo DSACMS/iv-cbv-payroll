@@ -55,10 +55,10 @@ terraform.tfstate
 terraform.tfstate.backup
 results.sarif
 
-#IDE Specific (RubyMine)
+# IDE Specific (RubyMine)
 .idea
 
-#IDE Specific (VS Code)
+# IDE Specific (VS Code)
 .vscode
 /config/credentials/development.key
 /app/config/credentials/master.key

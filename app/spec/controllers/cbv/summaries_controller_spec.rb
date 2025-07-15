@@ -20,17 +20,12 @@ RSpec.describe Cbv::SummariesController do
     )
   end
   let(:mock_client_agency) { instance_double(ClientAgencyConfig::ClientAgency) }
-  let(:nyc_user) { create(:user, email: "test@test.com", client_agency_id: 'nyc') }
-  let(:ma_user) { create(:user, email: "test@example.com", client_agency_id: 'ma') }
 
 
   let(:mixpanel_event_stub) { instance_double(MixpanelEventTracker) }
-  let(:newrelic_event_stub) { instance_double(NewRelicEventTracker) }
 
   before do
     allow(MixpanelEventTracker).to receive(:new).and_return(mixpanel_event_stub)
-    allow(NewRelicEventTracker).to receive(:new).and_return(newrelic_event_stub)
-    allow(newrelic_event_stub).to receive(:track)
     allow(mixpanel_event_stub).to receive(:track)
     allow(mock_client_agency).to receive(:transmission_method_configuration).and_return({
       "bucket"            => "test-bucket",
@@ -61,6 +56,16 @@ RSpec.describe Cbv::SummariesController do
       pinwheel_stub_request_identity_response
       pinwheel_stub_request_shifts_response
     end
+
+    context "when user has no successfully synced accounts" do
+  it "redirects to synchronization failures page" do
+    cbv_flow.payroll_accounts.update_all(synchronization_status: :failed)
+
+    get :show
+
+    expect(response).to redirect_to(cbv_flow_synchronization_failures_path)
+  end
+end
 
     context "when rendering views" do
       render_views

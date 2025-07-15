@@ -257,6 +257,22 @@ RSpec.describe ReportViewHelper, type: :helper do
       end
     end
 
+    context "when account_id is provided" do
+      let(:account_id) { "test-account-123" }
+
+      before do
+        allow(report)
+          .to receive(:fetched_days_for_account)
+          .with(account_id)
+          .and_return(182)
+      end
+
+      it "uses account-specific days" do
+        result = helper.report_data_range(report, account_id)
+        expect(result).to eq(I18n.t("shared.report_data_range.six_months"))
+      end
+    end
+
     context "when an invalid number of days were fetched" do
       let(:fetched_days) { 0 }
 

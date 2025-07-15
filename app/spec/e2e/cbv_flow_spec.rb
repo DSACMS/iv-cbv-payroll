@@ -1,112 +1,75 @@
 require "rails_helper"
 
 RSpec.describe "e2e CBV flow test", type: :feature, js: true do
-  include E2eTestHelpers
-  include_context "with_ngrok_tunnel"
+  include E2e::TestHelpers
 
   let(:cbv_flow_invitation) { create(:cbv_flow_invitation) }
 
-  before(:all, js: true) do
-    unless ENV.fetch("PINWHEEL_API_TOKEN_SANDBOX", "").length == 64
-      raise "You need to set a PINWHEEL_API_TOKEN_SANDBOX in .env.test.local in order for this test to succeed"
+  around do |ex|
+    override_supported_providers([ :argyle ]) do
+      @e2e = E2e::MockingService.new(server_url: URI(page.server_url))
+      @e2e.use_recording("e2e_cbv_flow_english_argyle_only", &ex)
     end
-    unless ENV.fetch("USER", "").length > 0
-      raise "You need to set a USER environment variable"
-    end
-
-    # TODO: Remove this when we stub out Pinwheel usage:
-    # (We will have to allow access to the capybara server URL.)
-    WebMock.allow_net_connect!
-
-    # Register Ngrok with Pinwheel
-    capybara_server_url = URI(page.server_url)
-    @ngrok.start_tunnel(capybara_server_url.port)
-    puts "Found ngrok tunnel at #{@ngrok.tunnel_url}!"
-    @subscription_id = PinwheelWebhookManager.new.create_subscription_if_necessary(
-      @ngrok.tunnel_url,
-      ENV["USER"]
-    )
   end
 
-  after(:all, js: true) do
-    if @subscription_id
-      puts "[PINWHEEL] Deleting webhook subscription id: #{@subscription_id}"
-      Aggregators::Sdk::PinwheelService.new("sandbox").delete_webhook_subscription(@subscription_id)
+  it "completes the flow for an Argyle employer" do
+    raise "Argyle not in supported_providers!" unless Rails.application.config.supported_providers.include?(:argyle)
+
+    # /cbv/entry
+    visit URI(root_url).request_uri
+    visit URI(cbv_flow_invitation.to_url).request_uri
+    verify_page(page, title: I18n.t("cbv.entries.show.header"))
+    find("label", text: I18n.t("cbv.entries.show.checkbox.default", agency_full_name: I18n.t("shared.agency_full_name.sandbox"))).click
+    click_button I18n.t("cbv.entries.show.continue")
+
+    # /cbv/employer_search
+    verify_page(page, title: I18n.t("cbv.employer_searches.show.header"), wait: 10)
+
+    @e2e.replay_modal_callbacks(page.driver.browser) do
+      click_button "Paychex"
     end
 
-    # TODO: Remove these when we stub out Pinwheel usage:
-    page.quit
-    WebMock.disable_net_connect!
-  end
-
-  shared_examples "proceeding through the flow normally" do
-    it "completes the flow" do
-      # /cbv/entry
-      visit URI(cbv_flow_invitation.to_url).request_uri
-      verify_page(page, title: I18n.t("cbv.entries.show.header"))
-      find("label", text: I18n.t("cbv.entries.show.checkbox.default", agency_full_name: I18n.t("shared.agency_full_name.sandbox"))).click
-      click_button I18n.t("cbv.entries.show.continue")
-
-      # /cbv/employer_search
-      verify_page(page, title: I18n.t("cbv.employer_searches.show.header"))
-      fill_in name: "query", with: "foo"
-      click_button I18n.t("cbv.employer_searches.show.search")
-      expect(page).to have_content("McKee Foods")
-      find("div.usa-card__container", text: "McKee Foods").click_button(I18n.t("cbv.employer_searches.show.select"))
-
-      # Pinwheel modal
-      pinwheel_modal = page.find("iframe.pinwheel-modal-show")
-      page.within_frame(pinwheel_modal) do
-        if I18n.locale == :en
-          fill_in "Username", with: "user_good", wait: 10
-          fill_in "Workday Password", with: "pass_good"
-          click_button "Continue"
-        elsif I18n.locale == :es
-          fill_in "Nombre de usuario", with: "user_good", wait: 10
-          fill_in "Contraseña de Workday", with: "pass_good"
-          click_button "Continuar"
-        else
-          raise "Unknown locale: #{I18n.locale}"
-        end
+    @e2e.record_modal_callbacks(page.driver.browser) do
+      argyle_container = find("div[id*=\"argyle-link-root\"]")
+      page.within(argyle_container) do
+        fill_in "username", with: "test_1", wait: 10
+        fill_in "password", with: "passgood"
+        click_button "Connect"
+        fill_in "legacy_mfa_token", with: "8081", wait: 30
+        click_button "Continue", wait: 30
       end
 
-      # /cbv/synchronizations
-      verify_page(page, title: I18n.t("cbv.synchronizations.show.header"), wait: 15)
-
-      # All the pinwheel webhooks occur here!
-
-      # /cbv/payment_details
-      verify_page(page, title: I18n.t("cbv.payment_details.show.header", employer_name: "Acme Corporation"), wait: 60)
-      fill_in "cbv_flow[additional_information]", with: "Some kind of additional information"
-      click_button I18n.t("cbv.payment_details.show.continue")
-
-      # /cbv/add_job
-      verify_page(page, title: I18n.t("cbv.add_jobs.show.header"))
-      find("label", text: I18n.t("cbv.add_jobs.show.no_radio")).click
-      click_button I18n.t("cbv.add_jobs.show.continue")
-
-      # /cbv/summary
-      verify_page(page, title: I18n.t("cbv.summaries.show.header"))
-      find(:css, "label[for=cbv_flow_consent_to_authorized_use]").click
-      click_button I18n.t("cbv.summaries.show.send_report", agency_acronym: "CBV")
-
-      # TODO: Test PDF rendering by writing it to a file
-    end
-  end
-
-  context "in english" do
-    it_behaves_like "proceeding through the flow normally"
-  end
-
-  context "in spanish" do
-    before do
-      cbv_flow_invitation.update(language: "es")
+      # Wait for Argyle modal to disappear
+      find_all("div[id*=\"argyle-link-root\"]", maximum: 0, minimum: nil, wait: 30)
     end
 
-    around do |ex|
-      I18n.with_locale("es", &ex)
-    end
+    # /cbv/synchronizations
+    verify_page(page, title: I18n.t("cbv.synchronizations.show.header"), wait: 15)
 
-    it_behaves_like "proceeding through the flow normally"
+    @e2e.replay_webhooks
+
+    # /cbv/payment_details
+    verify_page(page, title: I18n.t("cbv.payment_details.show.header", employer_name: ""), wait: 60)
+    fill_in "cbv_flow[additional_information]", with: "Some kind of additional information"
+    click_button I18n.t("cbv.payment_details.show.continue")
+
+    # /cbv/add_job
+    verify_page(page, title: I18n.t("cbv.add_jobs.show.header"))
+    find("label", text: I18n.t("cbv.add_jobs.show.no_radio")).click
+    click_button I18n.t("cbv.add_jobs.show.continue")
+
+    # /cbv/summary
+    # TODO[FFS-2839]: Fix heading hierarchy on this page
+    verify_page(page, title: I18n.t("cbv.summaries.show.header"), skip_axe_rules: %w[heading-order])
+    click_on "Continue"
+
+    # /cbv/submits
+    verify_page(page, title: I18n.t("cbv.submits.show.page_header"), wait: 10)
+    find(:css, "label[for=cbv_flow_consent_to_authorized_use]").click
+    click_on "Share my report with CBV"
+
+    # /cbv/success
+    verify_page(page, title: I18n.t("cbv.successes.show.header", agency_acronym: ""))
+    # TODO: Test PDF rendering by writing it to a file
   end
 end

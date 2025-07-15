@@ -32,6 +32,8 @@ class Api::UserEventsController < ApplicationController
     ApplicantEncounteredArgyleMfaCanceledLoginError
     ApplicantUpdatedArgyleSearchTerm
     ApplicantManuallySwitchedLanguage
+    ApplicantConsentedToTerms
+    ApplicantViewedHelpText
   ]
 
   def user_action
@@ -50,7 +52,7 @@ class Api::UserEventsController < ApplicationController
       })
     end
 
-    event_attributes = user_action_params[:attributes].merge(base_attributes)
+    event_attributes = (user_action_params[:attributes] || {}).merge(base_attributes)
     event_name = user_action_params[:event_name]
 
     if EVENT_NAMES.include?(event_name)

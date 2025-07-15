@@ -20,4 +20,17 @@ namespace :az_des do
     end_time = now.change(hour: 8)
     ClientAgency::AzDes::ReportDelivererJob.perform_later(start_time, end_time)
   end
+
+  desc "backfill agency name matches"
+  task backfill_agency_name_matches: :environment do
+    puts "Backfilling agency name matches:"
+    CbvFlow
+      .completed
+      .unredacted
+      .where(client_agency_id: "az_des")
+      .find_each do |cbv_flow|
+      puts "  CbvFlow id = #{cbv_flow.id}"
+      MatchAgencyNamesJob.perform_now(cbv_flow.id)
+    end
+  end
 end

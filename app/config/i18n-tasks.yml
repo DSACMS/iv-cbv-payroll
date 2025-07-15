@@ -134,6 +134,8 @@ ignore_missing:
     - "caseworker_mailer.summary_email.*"
     # Caseworker PDF strings that are only supported in English:
     - "cbv.submits.show.pdf.caseworker.*"
+    # LA wind down content
+    - "pages.home.pilot_ended.la_ldh.*"
 
     # Currently awaiting translation:
     # - "example.strings.*"   # Tag with ticket number that created or modified the string
@@ -141,7 +143,7 @@ ignore_missing:
 ## Consider these keys used:
 ignore_unused:
   all:
-    - "*.{nyc,ma,sandbox,az_des,la_ldh,default}"       # site-specific translations
+    - "*.{sandbox,az_des,la_ldh,default}"       # site-specific translations
     - "activerecord.errors.*"                   # model errors are not always explicitly used
     - "date.*"                                  # date formats are not always explicitly used
     - "time.*"                                  # time formats are not always explicitly used

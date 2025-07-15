@@ -31,6 +31,6 @@ class Api::PinwheelController < ApplicationController
       response_type: token_params[:response_type]
     })
   rescue => ex
-    Rails.logger.error "Unable to track NewRelic event (ApplicantBeganLinkingEmployer): #{ex}"
+    Rails.logger.error "Unable to track event (ApplicantBeganLinkingEmployer): #{ex}"
   end
 end

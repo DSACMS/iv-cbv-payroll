@@ -6,7 +6,6 @@ RSpec.describe CaseWorkerTransmitterJob, type: :job do
   include PinwheelApiHelper
   include ActiveSupport::Testing::TimeHelpers
 
-  include_context "gpg_setup"
   let(:mock_client_agency) { instance_double(ClientAgencyConfig::ClientAgency) }
 
   let(:cbv_applicant) { create(:cbv_applicant, created_at: current_time, case_number: "ABC1234") }
@@ -138,6 +137,19 @@ RSpec.describe CaseWorkerTransmitterJob, type: :job do
             flow_started_seconds_ago: 10.minutes.to_i,
           ))
       end
+
+      context "when the CbvApplicant has agency_expected_names" do
+        let(:cbv_applicant) { create(:cbv_applicant, :az_des, created_at: current_time, case_number: "ABC1234") }
+
+        before do
+          ActiveJob::Base.queue_adapter = :test
+        end
+
+        it "enqueues a MatchAgencyNamesJob" do
+          expect { described_class.new.perform(cbv_flow.id) }
+            .to have_enqueued_job(MatchAgencyNamesJob)
+        end
+      end
     end
 
     context "when transmission method is sftp" do
@@ -164,8 +176,8 @@ RSpec.describe CaseWorkerTransmitterJob, type: :job do
         agency_id_number = cbv_applicant.agency_id_number
         beacon_id = cbv_applicant.beacon_id
 
-        cbv_flow.update!(confirmation_code: "AZDES001", consented_to_authorized_use_at: now, client_agency_id: "ma")
-        cbv_flow.cbv_applicant.update!(case_number: "01000", client_agency_id: "ma", beacon_id: beacon_id, agency_id_number: agency_id_number)
+        cbv_flow.update!(confirmation_code: "AZDES001", consented_to_authorized_use_at: now, client_agency_id: "az_des")
+        cbv_flow.cbv_applicant.update!(case_number: "01000", client_agency_id: "az_des", beacon_id: beacon_id, agency_id_number: agency_id_number)
 
         expect(sftp_double).to receive(:upload_data).with(anything, /test\/CBVPilot_00001000_20250101_ConfAZDES001.pdf/)
 
@@ -174,11 +186,13 @@ RSpec.describe CaseWorkerTransmitterJob, type: :job do
       end
     end
 
-    context "when transmission method is s3" do
+    context "when transmission method is encrypted_s3" do
+      include_context "gpg_setup"
+
       let(:user) { create(:user, email: "test@test.com") }
       let(:s3_service_double) { instance_double(S3Service) }
-      let(:transmission_method) { "s3" }
-      let(:mocked_client_id) { "ma" }
+      let(:transmission_method) { "encrypted_s3" }
+      let(:mocked_client_id) { "sandbox" }
       let(:transmission_method_configuration) { {
         "bucket" => "test-bucket",
         "public_key" => @public_key
@@ -207,8 +221,8 @@ RSpec.describe CaseWorkerTransmitterJob, type: :job do
           csv_content
         end
 
-        cbv_flow.update(client_agency_id: "ma")
-        cbv_applicant.update(client_agency_id: "ma")
+        cbv_flow.update(client_agency_id: "sandbox")
+        cbv_applicant.update(client_agency_id: "sandbox")
         cbv_applicant.update(beacon_id: beacon_id)
         cbv_applicant.update(agency_id_number: agency_id_number)
 
@@ -216,7 +230,7 @@ RSpec.describe CaseWorkerTransmitterJob, type: :job do
       end
 
       it "handles errors during file processing and upload" do
-        cbv_flow.update(client_agency_id: 'ma')
+        cbv_flow.update(client_agency_id: 'sandbox')
         allow_any_instance_of(GpgEncryptable).to receive(:gpg_encrypt_file).and_raise(StandardError, "Encryption failed")
 
         expect {

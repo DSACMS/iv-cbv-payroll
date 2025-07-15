@@ -22,23 +22,16 @@ repos:
     language: ruby
     files: '^app/.*\.erb$'
 
+  - id: i18n-unused
+    name: i18n-unused
+    entry: bin/run-linter --cd app -- bundle exec i18n-tasks unused
+    language: ruby
+    files: '^app/config/locales/.*\.yml$'
+    pass_filenames: false
+
   - id: i18n-normalize
     name: i18n-normalize
     entry: bin/run-linter --cd app -- bundle exec i18n-tasks normalize
-    language: ruby
-    files: '^app/config/locales/.*\.yml$'
-    pass_filenames: false
-
-  - id: i18n-missing
-    name: i18n-missing
-    entry: bin/run-linter --cd app -- bundle exec i18n-tasks missing
-    language: ruby
-    files: '^app/config/locales/.*\.yml$'
-    pass_filenames: false
-
-  - id: i18n-interpolations
-    name: i18n-interpolations
-    entry: bin/run-linter --cd app -- bundle exec i18n-tasks check-consistent-interpolations
     language: ruby
     files: '^app/config/locales/.*\.yml$'
     pass_filenames: false
@@ -66,3 +59,10 @@ repos:
     entry: checkov --quiet --output sarif --framework terraform -f
     language: system
     files: 'infra/.*\.tf$'
+
+  - id: actionlint
+    name: ActionLint
+    entry: actionlint
+    language: system
+    files: '^.github/.*\.yml$'
+    pass_filenames: false

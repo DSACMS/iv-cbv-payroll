@@ -2,12 +2,12 @@ require "rails_helper"
 
 RSpec.describe ApplicationHelper do
   describe "#agency_translation" do
-    let(:current_agency) { Rails.application.config.client_agencies["nyc"] }
+    let(:current_agency) { Rails.application.config.client_agencies["sandbox"] }
     let(:available_translations) { <<~YAML }
-      some_prefix:
-        nyc: some string
-        default: default string
-    YAML
+        some_prefix:
+          sandbox: some string
+          default: default string
+      YAML
 
     before do
       without_partial_double_verification do
@@ -31,7 +31,7 @@ RSpec.describe ApplicationHelper do
       end
 
       context "when there is not a translation for that client agency" do
-        let(:current_agency) { Rails.application.config.client_agencies["ma"] }
+        let(:current_agency) { Rails.application.config.client_agencies["applesauce"] }
 
         it "uses the translation for the default key" do
           expect(helper.agency_translation("some_prefix")).to eq("default string")
@@ -50,7 +50,7 @@ RSpec.describe ApplicationHelper do
     context "when there are variables to interpolate" do
       let(:available_translations) { <<~YAML }
         some_prefix:
-          nyc: some %{variable}
+          sandbox: some %{variable}
           default: default string
       YAML
 
@@ -62,18 +62,20 @@ RSpec.describe ApplicationHelper do
     context "when the key ends with _html" do
       let(:available_translations) { <<~YAML }
         some_prefix_html:
-          nyc: some <strong>bold</strong> text
-          ma: some %{variable} text
-          default: default string
+          sandbox: some %{variable} text
+          default: some <strong>bold</strong> text
       YAML
 
       it "marks the string as HTML safe" do
+        without_partial_double_verification do
+          allow(helper).to receive(:current_agency).and_return(nil)
+        end
         expect(helper.agency_translation("some_prefix_html")).to eq("some <strong>bold</strong> text")
         expect(helper.agency_translation("some_prefix_html")).to be_html_safe
       end
 
       context "when interpolating a variable" do
-        let(:current_agency) { Rails.application.config.client_agencies["ma"] }
+        let(:current_agency) { Rails.application.config.client_agencies["sandbox"] }
 
         it "sanitizes input parameters" do
           expect(helper.agency_translation("some_prefix_html", variable: "<strong>bold</strong>"))
@@ -103,19 +105,19 @@ RSpec.describe ApplicationHelper do
 
     context "on a CBV flow application page" do
       let(:params) { { controller: "cbv/summaries" } }
-      let(:current_agency) { Rails.application.config.client_agencies["nyc"] }
+      let(:current_agency) { Rails.application.config.client_agencies["sandbox"] }
 
       it "shows the applicant-facing Google Form" do
         expect(helper.feedback_form_url).to eq(ApplicationHelper::APPLICANT_FEEDBACK_FORM)
       end
     end
 
-    context "on a NYC caseworker-facing page" do
+    context "on a sandbox caseworker-facing page" do
       let(:params) { { controller: "caseworker/cbv_flow_invitations" } }
-      let(:current_agency) { Rails.application.config.client_agencies["nyc"] }
+      let(:current_agency) { Rails.application.config.client_agencies["sandbox"] }
 
-      it "shows the NYC feedback form" do
-        expect(helper.feedback_form_url).to eq(current_agency.caseworker_feedback_form)
+      it "shows the default feedback form when no caseworker feedback form is configured" do
+        expect(helper.feedback_form_url).to eq(ApplicationHelper::APPLICANT_FEEDBACK_FORM)
       end
     end
   end

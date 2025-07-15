@@ -5,13 +5,7 @@
   <div class="bg-white padding-y-7 padding-x-7 border border-base-lighter measure-5 line-height-sans-4 margin-x-auto font-body-xs">
     <h3>
       <span class="text-primary"><%= t("shared.pilot_name") %> | </span>
-      <% if current_agency.id == "ma" %>
-        <%= image_tag "dta_logo.png", class: "text-middle", style: "width: 140px" %>
-      <% elsif current_agency.id == "nyc" %>
-        <%= image_tag "hra_logo.png", class: "text-middle", style: "width: 170px" %>
-      <% else %>
-        <%= agency_translation("shared.header.cbv_flow_title") %>
-      <% end %>
+      <%= agency_translation("shared.header.cbv_flow_title") %>
     </h3>
     <h1>
       <%= agency_translation(".header") %>
@@ -21,7 +15,7 @@
         <%= t(".greeting") %>
       </p>
 
-      <p><%= agency_translation(".body_1", agency_acronym: current_agency.agency_short_name) %></p>
+      <p><%= agency_translation(".body_1", agency_acronym: agency_translation("shared.agency_acronym")) %></p>
       <p><%= agency_translation(".body_2_html", deadline: format_date(@cbv_flow_invitation.expires_at_local.to_s)) %></p>
       <p><%= agency_translation(".body_3", app_name: agency_translation("shared.app_name")) %></p>
 

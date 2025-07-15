@@ -1,0 +1,10 @@
+<div class="<%= alert_classes %>">
+  <div class="usa-alert__body">
+    <% if @heading %>
+      <h2 class="usa-alert__heading"><%= @heading %></h2>
+    <% end %>
+    <div class="usa-alert__text">
+      <%= content %>
+    </div>
+  </div>
+</div>

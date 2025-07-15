@@ -58,7 +58,7 @@ RSpec.configure do |config|
   config.filter_run_when_matching :focus
 
   # Don't run E2E tests with JS for now
-  if ENV["RUN_E2E_TESTS"].nil?
+  if ENV["E2E_RUN_TESTS"].nil?
     config.filter_run_excluding js: true
   end
 
@@ -99,9 +99,8 @@ RSpec.configure do |config|
   # as the one that triggered the failure.
   Kernel.srand config.seed
 
-  # Stub out NewRelicEventTracker so it doesn't make calls in test
+  # Stub out MixpanelEventTracker so it doesn't make calls in test
   config.before(:each) do
-    allow_any_instance_of(NewRelicEventTracker).to receive(:track)
     allow_any_instance_of(MixpanelEventTracker).to receive(:track)
   end
 

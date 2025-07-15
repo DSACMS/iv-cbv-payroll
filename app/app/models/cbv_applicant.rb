@@ -10,18 +10,18 @@ class CbvApplicant < ApplicationRecord
   # partner agency.
   #
   # The subclass is automatically instantiated by setting `client_agency_id`.
-  # For example, `client_agency_id = "ma"` will result in instantiating an
-  # instance of the CbvApplicant::Ma subclass, which contains all of its
+  # For example, `client_agency_id = "sandbox"` will result in instantiating an
+  # instance of the CbvApplicant::Sandbox subclass, which contains all of its
   # indexing data validations.
   self.inheritance_column = "client_agency_id"
 
   def self.sti_name
-    # "CbvApplicant::Ma" => "ma"
-    name.demodulize.downcase
+    # "CbvApplicant::AzDes" => "az_des"
+    name.demodulize.underscore
   end
 
   def self.sti_class_for(type_name)
-    # "az_des" => CbvApplicant::AzDes
+    # "sandbox" => CbvApplicant::Sandbox
     CbvApplicant.const_get(type_name.camelize)
   end
 
@@ -94,6 +94,14 @@ class CbvApplicant < ApplicationRecord
   def is_applicant_attribute_required?(attribute)
     get_required_applicant_attributes
     .include?(attribute)
+  end
+
+  # Override this in a subclass based on the indexing data.
+  #
+  # This returns an array of names the agency gave us expecting to need
+  # income verification.
+  def agency_expected_names
+    []
   end
 
   private

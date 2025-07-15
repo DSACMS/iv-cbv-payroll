@@ -8,37 +8,12 @@ FactoryBot.define do
     created_at { Date.current.strftime("%m/%d/%Y") }
     snap_application_date { Date.current.strftime("%m/%d/%Y") }
 
-    trait :nyc do
-      client_agency_id { "nyc" }
-
-      case_number do
-        number = 11.times.map { rand(10) }.join
-        letter = ('A'..'Z').to_a.sample
-        "#{number}#{letter}"
-      end
-
-      client_id_number do
-        letters = 2.times.map { ('A'..'Z').to_a.sample }.join
-        numbers = 5.times.map { rand(10) }.join
-        last_letter = ('A'..'Z').to_a.sample
-        "#{letters}#{numbers}#{last_letter}"
-      end
-    end
+    # Instantiate the proper subclass:
+    # @see https://stackoverflow.com/questions/57504422/how-to-make-factorybot-return-the-right-sti-sub-class
+    initialize_with { CbvApplicant.sti_class_for(client_agency_id).new }
 
     trait :sandbox do
       client_agency_id { "sandbox" }
-    end
-
-    trait :ma do
-      client_agency_id { "ma" }
-
-      agency_id_number do
-        7.times.map { rand(10) }.join
-      end
-
-      beacon_id do
-        6.times.map { ('A'..'Z').to_a.sample }.join
-      end
     end
 
     trait :az_des do

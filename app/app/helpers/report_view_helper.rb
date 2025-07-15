@@ -44,14 +44,20 @@ module ReportViewHelper
     end
   end
 
-  def report_data_range(report)
-    case report.fetched_days
+  def report_data_range(report, account_id = nil)
+    if account_id
+      days = report.fetched_days_for_account(account_id)
+    else
+      days = report.fetched_days
+    end
+
+    case days
     when 90
       t("shared.report_data_range.ninety_days")
     when 182
       t("shared.report_data_range.six_months")
     else
-      raise "Missing i18n key in `shared.report_data_range` for report.fetched_days = #{report.fetched_days}"
+      raise "Missing i18n key in `shared.report_data_range` for value = #{days}"
     end
   end
 

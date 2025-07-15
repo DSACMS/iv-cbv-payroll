@@ -10,7 +10,7 @@
         start_date: format_date(@aggregator_report.from_date),
         end_date: format_date(@aggregator_report.to_date),
         agency_acronym: agency_translation("shared.agency_acronym"),
-        report_data_range: report_data_range(@aggregator_report),
+        report_data_range: report_data_range(@aggregator_report, params[:user][:account_id]),
         benefit: agency_translation("shared.benefit"),
         reporting_purpose: agency_translation("shared.reporting_purpose")
       ) %>
@@ -18,18 +18,9 @@
 </div>
 
 <% if @payroll_account_report.paystubs.any? %>
-  <h2><%= t(".total_gross_income", amount: format_money(gross_pay), report_data_range: report_data_range(@aggregator_report)) %></h2>
+  <h2><%= t(".total_gross_income", amount: format_money(gross_pay), report_data_range: report_data_range(@aggregator_report, params[:user][:account_id])) %></h2>
   <div class="usa-prose">
     <p><%= t(".total_gross_description") %></p>
-  </div>
-<% else %>
-  <h2 class="site-preview-heading">
-    <%= t(".none_found", report_data_range: report_data_range(@aggregator_report)) %>
-  </h2>
-  <div class="usa-prose">
-    <p>
-      <%= t(".none_found_description", report_data_range: report_data_range(@aggregator_report)) %>
-    </p>
   </div>
 <% end %>
 
@@ -47,15 +38,15 @@
 <% end %>
 
 <% if @is_w2_worker %>
-  <%= render(TableComponent.new) do |table| %>
-    <%= table.with_header do %>
-    <h3 class="margin-0"><%= t("cbv.payment_details.show.payments_and_deductions_table_header") %></h3>
-    <% end %>
+  <% if @payroll_account_report.paystubs.any? %>
+    <%= render(TableComponent.new) do |table| %>
+      <%= table.with_header do %>
+      <h3 class="margin-0"><%= t("cbv.payment_details.show.payments_and_deductions_table_header") %></h3>
+      <% end %>
 
-    <% if @payroll_account_report.paystubs.any? %>
       <% @payroll_account_report.paystubs.each do |payment| %>
         <%= table.with_row_section do |row| %>
-          <h4 class="margin-0"><%= t("cbv.payment_details.show.pay_date", pay_date: format_date(payment.pay_date)) %></h4>
+          <%= t("cbv.payment_details.show.pay_date", pay_date: format_date(payment.pay_date)) %>
         <% end %>
         <%= table.with_data_point(:pay_period_with_frequency, payment.start, payment.end, pay_frequency) if @is_w2_worker %>
         <%= table.with_data_point(:pay_gross, payment.gross_pay_amount) %>
@@ -68,8 +59,10 @@
           <%= table.with_data_point(:pay_gross_ytd, payment.gross_pay_ytd) %>
         <% end %>
       <% end %>
-    <% else %>
-      <%= table.with_row(t(".none_found", report_data_range: report_data_range(@aggregator_report))) %>
+    <% end %>
+  <% else %>
+    <%= render AlertComponent.new(type: :info, heading: t(".none_found", report_data_range: report_data_range(@aggregator_report, params[:user][:account_id])), class: "margin-top-5") do %>
+      <%= t(".none_found_description", report_data_range: report_data_range(@aggregator_report, params[:user][:account_id])) %>
     <% end %>
   <% end %>
 <% else %>
@@ -79,7 +72,7 @@
   <h2><%= t(".additional_information_header") %></h2>
     <%= form_with(model: @cbv_flow, url: cbv_flow_payment_details_path, method: :patch) do |form| %>
     <%= hidden_field_tag "user[account_id]", params[:user][:account_id] %>
-    <%= form.label :additional_information, t(".additional_information_label", agency_acronym: current_agency.agency_short_name), class: "usa-label" %>
+    <%= form.label :additional_information, t(".additional_information_label", agency_acronym: agency_translation("shared.agency_acronym")), class: "usa-label" %>
     <%= form.text_area :additional_information, class: "usa-textarea", rows: 5, value: @account_comment %>
     <%= form.submit t(".continue"), class: "usa-button usa-button--primary margin-top-3" %>
   <% end %>
