@@ -436,6 +436,7 @@ en:
         additional_comments: Additional comments
         application_information: Applicant information
         description: The report below shows your recent income. Please review it before sending.
+        edit: Edit
         header: Review your income report
         must_match:
           default: This must match what is shown on your %{agency_acronym} application.
@@ -443,10 +444,12 @@ en:
         other_jobs: Other jobs
         payment: Payment of %{amount} before taxes on %{date}
         phone_number: Employer phone
+        question: Question
         table_caption: 'Employer %{number}: %{employer_name}'
         table_caption_no_name: Employer %{number}
         total_income_from: 'Total income before taxes from %{employer_name}: %{amount}'
         total_income_from_no_employer_name: 'Total income before taxes: %{amount}'
+        your_answer: Your answer
         your_information: Your information
     synchronization_failures:
       show:
