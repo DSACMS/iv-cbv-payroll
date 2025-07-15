@@ -7,6 +7,9 @@ linters:
   # ErbSafety:
   #   enabled: true
   #   better_html_config: .better-html.yml
+  RequireScriptNonce:
+    # Required to comply with CSP.
+    enabled: true
   SpaceInHtmlTag:
     # Allow for closing tags to be on the following line
     enabled: false

@@ -1,8 +1,10 @@
-# Be sure to restart your server when you modify this file.
-
 # Define an application-wide content security policy.
 # See the Securing Rails Applications Guide for more information:
 # https://guides.rubyonrails.org/security.html#content-security-policy-header
+#
+# -----------------------------------------------------------------------------
+# Be sure to restart your server when you modify this file!
+# -----------------------------------------------------------------------------
 
 Rails.application.configure do
   config.content_security_policy do |policy|
@@ -12,8 +14,8 @@ Rails.application.configure do
     policy.frame_ancestors :self
     policy.img_src :self, :data, "https://*.cloudinary.com", "https://cdn.getpinwheel.com"
     policy.object_src :none
-    policy.script_src :self, "https://js-agent.newrelic.com", "https://*.nr-data.net", "https://cdn.getpinwheel.com"
-    policy.connect_src :self, "https://*.nr-data.net"
+    policy.script_src :self, "https://js-agent.newrelic.com", "https://*.nr-data.net", "https://cdn.getpinwheel.com", "http://cdn.mxpnl.com"
+    policy.connect_src :self, "https://*.nr-data.net", "https://api-js.mixpanel.com"
     policy.worker_src :self, "blob:"
     policy.frame_src :self, "https://cdn.getpinwheel.com"
     policy.style_src_elem :self

@@ -8,6 +8,13 @@ class Cbv::BaseController < ApplicationController
     true
   end
 
+  def record_session_with_mixpanel?
+    # The mixpanel recording JS requires `@cbv_flow` to be defined when this
+    # method returns true.
+
+    ENV["MIXPANEL_TOKEN"].present?
+  end
+
   def set_cbv_flow
     if params[:token].present?
       invitation = CbvFlowInvitation.find_by(auth_token: params[:token])

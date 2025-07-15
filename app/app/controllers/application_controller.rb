@@ -1,6 +1,6 @@
 class ApplicationController < ActionController::Base
   helper :view
-  helper_method :current_agency, :show_translate_button?, :show_menu?, :pilot_ended?
+  helper_method :current_agency, :show_translate_button?, :show_menu?, :pilot_ended?, :record_session_with_mixpanel?
   around_action :switch_locale
   before_action :add_newrelic_metadata
   before_action :redirect_if_maintenance_mode
@@ -134,5 +134,9 @@ class ApplicationController < ActionController::Base
       flash.now[:alert_heading] = t("help.alert.heading")
       flash.now[:alert_type] = "warning"
     end
+  end
+
+  def record_session_with_mixpanel?
+    false
   end
 end
