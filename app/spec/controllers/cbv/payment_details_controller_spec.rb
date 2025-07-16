@@ -354,11 +354,10 @@ RSpec.describe Cbv::PaymentDetailsController do
           it { is_expected.to include("Deduction") }
         end
 
-        context "does not include monthly gig summary table" do
-          it { is_expected.not_to include("Monthly Summary") }
-          it { is_expected.not_to include("Accrued gross earnings") }
-          it { is_expected.not_to include("Total hours worked") }
-          it { is_expected.not_to include("Partial month") }
+        context "includes monthly w2 summary table" do
+          it { is_expected.to include("Monthly Summary") }
+          it { is_expected.to include("Gross income") }
+          it { is_expected.to include("Total hours worked") }
         end
 
         it "should properly display pay frequency and compensation amount" do

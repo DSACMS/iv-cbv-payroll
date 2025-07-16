@@ -39,6 +39,8 @@
 
 <% if @is_w2_worker %>
   <% if @payroll_account_report.paystubs.any? %>
+    <%= render(Report::W2MonthlySummaryTableComponent.new(@aggregator_report, @pinwheel_account)) %>
+
     <%= render(TableComponent.new) do |table| %>
       <%= table.with_header do %>
       <h3 class="margin-0"><%= t("cbv.payment_details.show.payments_and_deductions_table_header") %></h3>
