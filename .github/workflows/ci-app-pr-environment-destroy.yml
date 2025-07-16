@@ -9,6 +9,13 @@ on:
   # !! Uncomment the following lines once you've set up the dev environment and are ready to enable PR environments
   pull_request:
     types: [closed]
+
+permissions:
+  contents: read
+  id-token: write
+  pull-requests: write
+  repository-projects: read
+
 jobs:
   destroy:
     name: " " # GitHub UI is noisy when calling reusable workflows, so use whitespace for name to reduce noise
