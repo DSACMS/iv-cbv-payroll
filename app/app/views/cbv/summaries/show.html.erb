@@ -25,7 +25,7 @@
       <table class="usa-table usa-table--borderless width-full" data-testid="paystub-table">
         <thead class="border-top-05">
             <tr>
-              <th class="padding-3" style="background-color: #d9e8f6;" colspan="2">
+              <th class="padding-3 bg-primary-lighter" colspan="2">
                 <h4 class="margin-0" data-testid="paystub-total-income">
                   <% if employer_name %>
                     <%= t(".total_income_from", employer_name: employer_name, amount: format_money(summary[:total])) %>
