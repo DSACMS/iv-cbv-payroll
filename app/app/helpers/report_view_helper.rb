@@ -31,19 +31,6 @@ module ReportViewHelper
     number_to_currency(dollars_in_cents.to_f / 100)
   end
 
-  def format_boolean(boolean_value)
-    case boolean_value
-    when true, "true"
-      I18n.t("us_form_with.boolean_true")
-    when false, "false"
-      I18n.t("us_form_with.boolean_false")
-    when nil
-      I18n.t("shared.not_applicable")
-    else
-      raise ArgumentError, "format_boolean only accepts true, false, 'true', 'false', or nil. Got: #{boolean_value.inspect}"
-    end
-  end
-
   def report_data_range(report, account_id = nil)
     if account_id
       days = report.fetched_days_for_account(account_id)

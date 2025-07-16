@@ -70,8 +70,6 @@ class Cbv::BaseController < ApplicationController
       cbv_flow_applicant_information_path
     when "cbv/payment_details"
       cbv_flow_add_job_path
-    when "cbv/other_jobs"
-      cbv_flow_applicant_information_path
     when "cbv/applicant_informations"
       cbv_flow_summary_path
     when "cbv/summaries"
