@@ -1,0 +1,51 @@
+<div class="margin-top-5">
+  <h3 class="margin-0">
+    <%= I18n.t("components.report.monthly_summary_table.monthly_summary") %>
+  </h3>
+  <%= render(TableComponent.new(is_responsive: @is_responsive)) do |table| %>
+    <%= table.with_subheader_row(class_names: "subheader-row base-lightest") do |row| %>
+      <%= row.with_data_cell(is_header: true, class_names: "text-nowrap")
+             .with_content(I18n.t("components.report.monthly_summary_table.month")) %>
+      <%= row.with_data_cell(is_header: true, class_names: "text-nowrap")
+             .with_content(I18n.t("components.report.monthly_summary_table.w2.title_gross_income")) %>
+      <%= row.with_data_cell(is_header: true)
+             .with_content(I18n.t("components.report.monthly_summary_table.w2.title_number_of_paychecks")) %>
+      <%= row.with_data_cell(is_header: true)
+             .with_content(I18n.t("components.report.monthly_summary_table.w2.title_total_hours_worked")) %>
+    <% end %>
+
+    <% if has_monthly_summary_results? %>
+      <% @monthly_summary_data.each_with_index do |(month_string, summary), index| %>
+        <%= table.with_row do |row| %>
+          <% row.with_data_cell(data_label: t("components.report.monthly_summary_table.month")) do |cell| %>
+            <%= format_parsed_date(parse_month_safely(month_string), :month_year) %>
+            <% if summary[:partial_month_range][:is_partial_month] %>
+              <br ><span class="text-gray-70 partial-month-description"><%= summary[:partial_month_range][:description] %></span>
+            <% end %>
+          <% end %>
+          <%= row.with_data_cell(data_label: t("components.report.monthly_summary_table.w2.title_gross_income"))
+                 .with_content(format_accrued_gross_earnings(summary)) %>
+          <%= row.with_data_cell(data_label: t("components.report.monthly_summary_table.w2.title_number_of_paychecks"))
+                 .with_content(format_paychecks_count(summary)) %>
+          <%= row.with_data_cell(data_label: t("components.report.monthly_summary_table.w2.title_total_hours_worked"))
+                 .with_content(format_hours_worked(summary)) %>
+        <% end %>
+      <% end %>
+    <% else %>
+      <%= table.with_row do |row| %>
+        <%= row.with_data_cell(colspan: table_colspan).with_content(format_no_payments_found) %>
+      <% end %>
+    <% end %>
+  <% end %>
+
+  <% if has_monthly_summary_results? && show_footnote? %>
+    <div>
+      <h4><%= I18n.t("components.report.monthly_summary_table.compact.footnote.what_does_this_mean") %></h4>
+      <ul class="usa-list">
+        <li><%= I18n.t("components.report.monthly_summary_table.w2.definition_gross_income") %></li>
+        <li><%= I18n.t("components.report.monthly_summary_table.w2.definition_number_of_paychecks") %></li>
+        <li><%= I18n.t("components.report.monthly_summary_table.w2.definition_total_hours_worked") %></li>
+      </ul>
+    </div>
+  <% end %>
+</div>
