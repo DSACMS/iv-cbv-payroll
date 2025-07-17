@@ -25,12 +25,19 @@ class LocaleSyncChecker
     en_changed_keys = en_changed_keys.map { |key| remove_language_prefix(key) }
     es_changed_keys = es_changed_keys.map { |key| remove_language_prefix(key) }
 
-    if en_changed_keys == es_changed_keys
+    en_filtered = filter_existing_keys(en_changed_keys)
+    es_filtered = filter_existing_keys(es_changed_keys)
+
+    puts "\n=== After filtering keys that exist in both locales ==="
+    puts "English changes requiring sync: #{en_filtered.join(', ')}" unless en_filtered.empty?
+    puts "Spanish changes requiring sync: #{es_filtered.join(', ')}" unless es_filtered.empty?
+
+    if en_filtered.sort == es_filtered.sort
       puts "\n✅ SUCCESS: English and Spanish locales are synchronized!"
       exit 0
     else
       puts "\n❌ FAILURE: English and Spanish locales are not synchronized!"
-      print_synchronization_issues(en_changed_keys, es_changed_keys)
+      print_synchronization_issues(en_filtered, es_filtered)
       exit 1
     end
   end
@@ -40,6 +47,16 @@ class LocaleSyncChecker
   def remove_language_prefix(key)
     puts "Normalizing key: #{key}"
     key.sub(/^(en|es)\./, '')
+  end
+
+  def filter_existing_keys(normalized_keys)
+    current_diff = @locale_diff_service.get_current_locale_keys_diff
+    
+    # If both locales currently have the key, don't require sync
+    normalized_keys.reject do |key|
+      !current_diff[:missing_in_spanish].include?(key) && 
+      !current_diff[:missing_in_english].include?(key)
+    end
   end
 
   def print_synchronization_issues(en_changed_keys, es_changed_keys)

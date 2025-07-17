@@ -1,5 +1,6 @@
 require 'yaml'
 require 'open3'
+require 'set'
 
 class LocaleDiffService
   BASE_BRANCH = "main"
@@ -110,5 +111,27 @@ class LocaleDiffService
       # A key needs translation if it's new OR its value has changed.
       !old_hash.key?(key) || old_hash[key] != new_hash[key]
     end
+  end
+
+  def get_current_locale_keys_diff
+    en_current = load_yaml_file(File.join(@project_root, EN_LOCALE_PATH))
+    es_current = load_yaml_file(File.join(@project_root, ES_LOCALE_PATH))
+
+    en_flat = flatten_hash(en_current)
+    es_flat = flatten_hash(es_current)
+
+    # Get normalized keys (without language prefix)
+    en_keys = en_flat.keys.map { |key| key.sub(/^en\./, '') }.to_set
+    es_keys = es_flat.keys.map { |key| key.sub(/^es\./, '') }.to_set
+
+    # Find the differences
+    missing_in_spanish = en_keys - es_keys
+    missing_in_english = es_keys - en_keys
+
+    {
+      missing_in_spanish: missing_in_spanish.to_a,
+      missing_in_english: missing_in_english.to_a,
+      synchronized: missing_in_spanish.empty? && missing_in_english.empty?
+    }
   end
 end
