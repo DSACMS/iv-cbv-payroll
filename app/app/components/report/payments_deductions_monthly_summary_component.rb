@@ -76,4 +76,8 @@ class Report::PaymentsDeductionsMonthlySummaryComponent < ViewComponent::Base
   def format_no_payments_found
     I18n.t("cbv.payment_details.show.none_found", report_data_range: @report_data_range)
   end
+
+  def format_month_string(month_string)
+    Date.strptime(month_string, "%Y-%m").strftime("%B %Y")
+  end
 end

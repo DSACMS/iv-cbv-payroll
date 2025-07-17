@@ -3,7 +3,10 @@
   <% @monthly_summary_data.each_with_index do |(month_string, summary), index| %>
     <%= render AccordionComponent.new(id: "#{month_string}-accordion") do |accordion| %>
       <% accordion.with_title do %>
-        <%= month_string %>
+        <%= format_month_string(month_string) %>
+        <% if summary[:partial_month_range][:is_partial_month] %>
+          <span class="text-gray-70 partial-month-description"><%= summary[:partial_month_range][:description] %></span>
+        <% end %>
       <% end %>
       <% accordion.with_accordion_item do %>
         <% summary[:paystubs].each do |payment| %>
