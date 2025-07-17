@@ -11,7 +11,7 @@ locals {
   image_url               = "${var.image_repository_url}:${var.image_tag}"
 
   base_environment_variables = [
-    { name : "DOMAIN_NAME", value : tostring(var.domain_name) },
+    { name : "DOMAIN_NAME", value : var.is_temporary ? aws_lb.alb.dns_name : tostring(var.domain_name) },
     { name : "PORT", value : tostring(var.container_port) },
     { name : "AWS_DEFAULT_REGION", value : data.aws_region.current.name },
     { name : "AWS_REGION", value : data.aws_region.current.name },

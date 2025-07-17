@@ -175,7 +175,7 @@ module "service" {
 
   cpu                               = local.service_config.cpu
   memory                            = local.service_config.memory
-  desired_instance_count            = local.service_config.desired_instance_count
+  desired_instance_count            = local.is_temporary ? 1 : local.service_config.desired_instance_count
   solidqueue_desired_instance_count = local.service_config.solidqueue_desired_instance_count
   enable_command_execution          = local.service_config.enable_command_execution
 
@@ -255,6 +255,7 @@ module "storage" {
 }
 
 module "email" {
+  count                       = !local.is_temporary ? 1 : 0
   source                      = "../../modules/email"
   hosted_zone_domain          = local.network_config.domain_config.hosted_zone
   domain                      = local.service_config.domain_name
