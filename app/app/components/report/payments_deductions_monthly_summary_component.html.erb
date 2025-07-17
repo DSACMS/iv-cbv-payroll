@@ -3,14 +3,11 @@
   <% @monthly_summary_data.each_with_index do |(month_string, summary), index| %>
     <%= render AccordionComponent.new(id: "#{month_string}-accordion") do |accordion| %>
       <% accordion.with_title do %>
-        <%= format_month_string(month_string) %>
-        <% if summary[:partial_month_range][:is_partial_month] %>
-          <span class="text-gray-70 partial-month-description"><%= summary[:partial_month_range][:description] %></span>
-        <% end %>
+        <%= format_month_string(month_string, summary) %>
       <% end %>
       <% accordion.with_accordion_item do %>
         <% summary[:paystubs].each do |payment| %>
-          <%= render(TableComponent.new) do |table| %>
+          <%= render(TableComponent.new(is_responsive: @is_responsive)) do |table| %>
             <%= table.with_header_two_column(column1_title: t("cbv.payment_details.show.pay_information"), column2_title: t("cbv.payment_details.show.your_details")) %>
             <%= table.with_data_point(:pay_date, payment.pay_date) %>
             <%= table.with_data_point(:pay_period_with_frequency, payment.start, payment.end, pay_frequency) if @is_w2_worker %>
