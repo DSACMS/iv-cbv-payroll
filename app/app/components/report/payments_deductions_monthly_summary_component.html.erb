@@ -1,0 +1,32 @@
+<h3 class="margin-0"><%= t("cbv.payment_details.show.payments_and_deductions_table_header") %></h3>
+<% if has_monthly_summary_results? %>
+  <% @monthly_summary_data.each_with_index do |(month_string, summary), index| %>
+    <%= render AccordionComponent.new(id: "#{month_string}-accordion") do |accordion| %>
+      <% accordion.with_title do %>
+        <%= month_string %>
+      <% end %>
+      <% accordion.with_accordion_item do %>
+        <% summary[:paystubs].each do |payment| %>
+          <%= render(TableComponent.new) do |table| %>
+            <%= table.with_header_two_column(column1_title: t("cbv.payment_details.show.pay_information"), column2_title: t("cbv.payment_details.show.your_details")) %>
+            <%= table.with_data_point(:pay_date, payment.pay_date) %>
+            <%= table.with_data_point(:pay_period_with_frequency, payment.start, payment.end, pay_frequency) if @is_w2_worker %>
+            <%= table.with_data_point(:pay_gross, payment.gross_pay_amount) %>
+            <%= table.with_data_point(:number_of_hours_worked, payment.hours) %>
+            <%= table.with_data_point(:net_pay_amount, payment.net_pay_amount) %>
+            <% payment.deductions.filter { |deduction| deduction.amount.to_f > 0 }.each do |deduction| %>
+              <%= table.with_data_point(:deduction, deduction.category, deduction.amount) %>
+            <% end %>
+            <% if payment.gross_pay_ytd.to_f > 0 %>
+              <%= table.with_data_point(:pay_gross_ytd, payment.gross_pay_ytd) %>
+            <% end %>
+          <% end %>
+        <% end %>
+      <% end %>
+    <% end %>
+  <% end %>
+<% else %>
+  <%= render AlertComponent.new(type: :info, heading: t(".none_found", report_data_range: report_data_range(@aggregator_report, params[:user][:account_id])), class: "margin-top-5") do %>
+    <%= t(".none_found_description", report_data_range: report_data_range(@aggregator_report, params[:user][:account_id])) %>
+  <% end %>
+<% end %>
