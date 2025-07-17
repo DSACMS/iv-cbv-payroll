@@ -28,7 +28,6 @@ class Cbv::AddJobsController < Cbv::BaseController
     if params[:additional_jobs] == "true"
       cbv_flow_employer_search_path
     elsif params[:additional_jobs] == "false"
-      # TODO: FFS-2932 - implement feature flag until language translations are complete
       cbv_flow_other_job_path
     end
   end
