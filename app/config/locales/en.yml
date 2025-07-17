@@ -443,12 +443,10 @@ en:
         other_jobs: Other jobs
         payment: Payment of %{amount} before taxes on %{date}
         phone_number: Employer phone
-        question: Question
         table_caption: 'Employer %{number}: %{employer_name}'
         table_caption_no_name: Employer %{number}
         total_income_from: 'Total income before taxes from %{employer_name}: %{amount}'
         total_income_from_no_employer_name: 'Total income before taxes: %{amount}'
-        your_answer: Your answer
         your_information: Your information
     synchronization_failures:
       show:
