@@ -2,6 +2,7 @@
 
 class TableComponent < ViewComponent::Base
   renders_one :header, TableHeaderComponent
+  renders_one :header_two_column, TableHeaderTwoColumnComponent
   renders_one :subheader_row, TableRowComponent
   renders_many :rows, types: {
     content: {
