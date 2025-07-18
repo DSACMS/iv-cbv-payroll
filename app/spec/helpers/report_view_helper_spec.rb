@@ -281,4 +281,34 @@ RSpec.describe ReportViewHelper, type: :helper do
       end
     end
   end
+
+  describe "#format_boolean" do
+    it 'returns "Yes" for true boolean' do
+      expect(helper.format_boolean(true)).to eq('Yes')
+    end
+
+    it 'returns "No" for false boolean' do
+      expect(helper.format_boolean(false)).to eq('No')
+    end
+
+    it 'returns "Yes" for "true" string' do
+      expect(helper.format_boolean("true")).to eq('Yes')
+    end
+
+    it 'returns "No" for "false" string' do
+      expect(helper.format_boolean("false")).to eq('No')
+    end
+
+    it 'returns "N/A" for nil values' do
+      expect(helper.format_boolean(nil)).to eq('N/A')
+    end
+
+    it 'raises an error for invalid values' do
+      expect { helper.format_boolean(0) }.to raise_error(ArgumentError, /format_boolean only accepts/)
+      expect { helper.format_boolean('') }.to raise_error(ArgumentError, /format_boolean only accepts/)
+      expect { helper.format_boolean('any string') }.to raise_error(ArgumentError, /format_boolean only accepts/)
+      expect { helper.format_boolean(1) }.to raise_error(ArgumentError, /format_boolean only accepts/)
+      expect { helper.format_boolean([]) }.to raise_error(ArgumentError, /format_boolean only accepts/)
+    end
+  end
 end

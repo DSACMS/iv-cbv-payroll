@@ -4,7 +4,8 @@ module AutoTitleTestHelper
   INTERPOLATION_REGEX = /%\{.*?}/
 
   def assert_title_contains_h1(response_body)
-    h1_content = decode_html_entities(extract_content(response_body, H1_REGEX))
+    # There are instances where the top-level h1 can vary from the title. For example- if the page's leading header contains html markup
+    h1_content = ActionController::Base.helpers.strip_tags(decode_html_entities(extract_content(response_body, H1_REGEX)))
     expect(h1_content).to be_present, "H1 is missing"
 
     title_content = decode_html_entities(extract_content(response_body, TITLE_REGEX))
