@@ -72,4 +72,12 @@ module ReportViewHelper
       value
     end
   end
+
+  def format_month_string(month_string, summary)
+    formatted_month = Date.strptime(month_string, "%Y-%m").strftime("%B %Y")
+    if summary[:partial_month_range][:is_partial_month]
+      formatted_month = "#{formatted_month} #{summary[:partial_month_range][:description]}"
+    end
+    formatted_month
+  end
 end
