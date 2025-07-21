@@ -19,7 +19,7 @@ RSpec.describe PagesController do
       it "redirects to the client agency entries page when the hostname matches a client agency domain" do
         request.host = "la.reportmyincome.org"
         get :home
-        expect(response).to redirect_to(cbv_flow_new_path(client_agency_id: "la_ldh"))
+        expect(response).to redirect_to(cbv_flow_new_path(client_agency_id: "la_ldh", source: "sms"))
       end
     end
 
