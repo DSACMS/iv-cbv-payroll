@@ -3,13 +3,10 @@
 require "rails_helper"
 
 RSpec.describe TableHeaderTwoColumnComponent, type: :component do
-  pending "add some examples to (or delete) #{__FILE__}"
+  it "renders content as expected" do
+    render_inline(described_class.new(column1_title: "column 1", column2_title: "column 2"))
 
-  # it "renders something useful" do
-  #   expect(
-  #     render_inline(described_class.new(attr: "value")) { "Hello, components!" }.css("p").to_html
-  #   ).to include(
-  #     "Hello, components!"
-  #   )
-  # end
+    expect(page).to have_content("column 1")
+    expect(page).to have_content("column 2")
+  end
 end
