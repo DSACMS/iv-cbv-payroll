@@ -24,18 +24,7 @@
   </div>
 <% end %>
 
-<%= render(TableComponent.new) do |table| %>
-  <%= table.with_header do %>
-    <h3 class="margin-0"><%= t("cbv.payment_details.show.employment_information_table_header") %></h3>
-  <% end %>
-  <%= table.with_data_point(:employment_start_date, employment_start_date) %>
-  <%= table.with_data_point(:employment_end_date, employment_end_date) %>
-  <%= table.with_data_point(:employment_status, employment_status) %>
-  <% if has_income_data? && @is_w2_worker %>
-    <%= table.with_data_point(:pay_frequency, pay_frequency) %>
-    <%= table.with_data_point(:hourly_rate, compensation_amount, compensation_unit) %>
-  <% end %>
-<% end %>
+<%= render(Report::EmploymentDetailsTableComponent.new(@aggregator_report, @pinwheel_account, show_income: @is_w2_worker)) %>
 
 <% if @is_w2_worker %>
   <% if @payroll_account_report.paystubs.any? %>

@@ -8,9 +8,9 @@ class Report::EmploymentDetailsTableComponent< ViewComponent::Base
     @show_identity = show_identity
     @show_income = show_income
     @is_responsive = is_responsive
+    @payroll_account = payroll_account
 
-    account_report = find_account_report(report, payroll_account)
-    # Note: payroll_account may either be the ID or the payroll_account object
+    account_report = find_account_report(report)
     @employment = account_report&.employment
     @income = account_report&.income
     @identity = account_report&.identity
@@ -18,8 +18,13 @@ class Report::EmploymentDetailsTableComponent< ViewComponent::Base
 
   private
 
-  def find_account_report(report, payroll_account)
-    account_id = payroll_account.class == String ? payroll_account : payroll_account.pinwheel_account_id
+  def has_income_data?
+    @payroll_account.job_succeeded?("income")
+  end
+
+  def find_account_report(report)
+    # Note: payroll_account may either be the ID or the payroll_account object
+    account_id = @payroll_account.class == String ? @payroll_account : @payroll_account.pinwheel_account_id
     report.find_account_report(account_id)
   end
 end

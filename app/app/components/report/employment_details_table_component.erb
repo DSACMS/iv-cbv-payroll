@@ -18,7 +18,7 @@
       <%= table.with_data_point(:employment_status, @employment.status) %>
       <%= table.with_data_point(:employment_start_date, @employment.start_date) %>
       <%= table.with_data_point(:employment_end_date, @employment.termination_date) %>
-    <% if @show_income %>
+    <% if @show_income && has_income_data? %>
       <%= table.with_data_point(:pay_frequency, @income.pay_frequency&.humanize) %>
       <%= table.with_data_point(:hourly_rate, @income.compensation_amount, @income.compensation_unit) %>
     <% end %>
