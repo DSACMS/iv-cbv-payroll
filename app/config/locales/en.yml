@@ -469,6 +469,17 @@ en:
         header: We’re gathering your payment details from your employer
   components:
     report:
+      employment_details_table:
+        employment_information: Employment information
+        header:
+          paystub_information: Paystub information
+          your_details: Your details
+        employment_start_date: Employment start date
+        employment_end_date: Employment end date
+        employment_status: Employment status
+        pay_period_frequency: Pay period frequency
+        compensation_amount: Compensation amount
+
       monthly_summary_table:
         accrued_gross_earnings: Accrued gross earnings
         compact:
