@@ -17,7 +17,7 @@
     <% if has_monthly_summary_results? %>
       <% @monthly_summary_data.each_with_index do |(month_string, summary), index| %>
         <%= table.with_row do |row| %>
-          <% row.with_data_cell(data_label: t("components.report.monthly_summary_table.month")) do |cell| %>
+          <% row.with_data_cell(data_label: t("components.report.monthly_summary_table.month"), scope: "row", is_header: true) do |cell| %>
             <%= format_parsed_date(parse_month_safely(month_string), :month_year) %>
             <% if summary[:partial_month_range][:is_partial_month] %>
               <br ><span class="text-gray-70 partial-month-description"><%= summary[:partial_month_range][:description] %></span>
