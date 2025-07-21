@@ -73,7 +73,10 @@ class Api::ArgyleController < ApplicationController
     event_logger.track("ApplicantBeganLinkingEmployer", request, {
       cbv_flow_id: @cbv_flow.id,
       cbv_applicant_id: @cbv_flow.cbv_applicant_id,
-      invitation_id: @cbv_flow.cbv_flow_invitation_id
+      client_agency_id: @cbv_flow.client_agency_id,
+      invitation_id: @cbv_flow.cbv_flow_invitation_id,
+      item_id: params[:item_id],
+      aggregator_name: "argyle"
     })
   rescue => ex
     Rails.logger.error "Unable to track event (ApplicantBeganLinkingEmployer): #{ex}"

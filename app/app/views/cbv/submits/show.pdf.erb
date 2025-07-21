@@ -13,7 +13,7 @@
         <%= image_tag wicked_pdf_asset_base64(current_agency.logo_path) %>
       </div>
     <% else %>
-      <span class="text-middle font-sans-md" style="white-space: nowrap;"><%= agency_translation(".pdf.agency_header_name") %></span>
+      <span class="text-middle font-sans-md text-no-wrap"><%= agency_translation(".pdf.agency_header_name") %></span>
     <% end %>
   <% end %>
 </strong>
