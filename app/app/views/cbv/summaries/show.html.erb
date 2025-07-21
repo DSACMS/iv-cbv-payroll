@@ -25,7 +25,7 @@
       <table class="usa-table usa-table--borderless width-full" data-testid="paystub-table">
         <thead class="border-top-05">
             <tr>
-              <th class="padding-3" style="background-color: #d9e8f6;" colspan="2">
+              <th class="padding-3 bg-primary-lighter" colspan="2">
                 <h4 class="margin-0" data-testid="paystub-total-income">
                   <% if employer_name %>
                     <%= t(".total_income_from", employer_name: employer_name, amount: format_money(summary[:total])) %>
@@ -46,13 +46,13 @@
       </table>
     <% else %>
       <% employment_type = summary[:employment]&.employment_type || :w2 %>
-        <%= render AlertComponent.new(type: :info, heading: t("cbv.payment_details.show.none_found", report_data_range: report_data_range(@aggregator_report, account_id)), class: "margin-top-5") do %>
+      <%= render AlertComponent.new(type: :info, heading: t("cbv.payment_details.show.none_found", report_data_range: report_data_range(@aggregator_report, account_id)), class: "margin-top-5") do %>
         <%= t("cbv.payment_details.show.none_found_description", report_data_range: report_data_range(@aggregator_report, account_id)) %>
       <% end %>
     <% end %>
-    <% else %>
-      <%= render(Report::MonthlySummaryTableComponent.new(@aggregator_report, account_id, show_footnote: false, show_payments: false)) %>
-    <% end %>
+  <% else %>
+    <%= render(Report::MonthlySummaryTableComponent.new(@aggregator_report, account_id, show_footnote: false, show_payments: false)) %>
+  <% end %>
 <h4><%= t(".additional_comments") %></h4>
 <%= get_comment_by_account_id(account_id).dig("comment") != "" ? get_comment_by_account_id(account_id).dig("comment") : t("shared.not_applicable") %>
 <% end %>
@@ -65,12 +65,12 @@
   <table class="usa-table usa-table--borderless width-full margin-top-2 margin-bottom-0">
     <tbody>
       <tr>
-        <th class="padding-3" style="background-color: #d9e8f6;">
+        <th class="padding-3 bg-primary-lighter">
           <h4 class="margin-0">
             <%= t(".application_information") %>
           </h4>
         </th>
-        <th class="padding-3" style="background-color: #d9e8f6; text-align: right;">
+        <th class="padding-3 bg-primary-lighter text-align-right">
           <h4 class="margin-0">
             <%= link_to cbv_flow_applicant_information_path(force_show: true), class: "usa-link" do %>
               <%= image_tag "@uswds/uswds/dist/img/usa-icons/edit.svg", role: "img", alt: "" %>
@@ -96,7 +96,7 @@
     </tbody>
     <tbody>
       <tr>
-        <th class="padding-3" style="background-color: #d9e8f6;" colspan="2">
+        <th class="padding-3 bg-primary-lighter" colspan="2">
           <h4 class="margin-0"><%= t("cbv.summaries.show.other_jobs") %></h4>
         </th>
       </tr>
@@ -111,7 +111,7 @@
   <table class="usa-table usa-table--borderless width-full margin-top-5">
     <tbody>
       <tr>
-        <th class="padding-3" style="background-color: #d9e8f6;" colspan="2">
+        <th class="padding-3 bg-primary-lighter" colspan="2">
           <h4 class="margin-0"><%= t("cbv.summaries.show.other_jobs") %></h4>
         </th>
       </tr>
