@@ -8,6 +8,16 @@ RSpec.describe Cbv::GenericLinksController do
         expect(response).to redirect_to(cbv_flow_entry_path)
         expect(assigns(:cbv_flow).client_agency_id).to eq("sandbox")
       end
+
+      it "sets source to SMS when provided" do
+        get :show, params: { client_agency_id: "sandbox", source: "sms" }
+        expect(session[:cbv_source]).to eq("sms")
+      end
+
+      it "sets source to mail when provided" do
+        get :show, params: { client_agency_id: "sandbox", source: "mail" }
+        expect(session[:cbv_source]).to eq("mail")
+      end
     end
 
     context 'when the hostname matches a client agency domain and the pilot is ended' do

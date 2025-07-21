@@ -6,6 +6,7 @@ class Cbv::GenericLinksController < Cbv::BaseController
   def show
     @cbv_flow = CbvFlow.create_without_invitation(params[:client_agency_id])
     session[:cbv_flow_id] = @cbv_flow.id
+    session[:cbv_source] = params[:source]
 
     redirect_to next_path
   end

@@ -119,6 +119,19 @@ RSpec.describe Cbv::EntriesController do
         get :show, params: { token: invitation.auth_token }
       end
 
+      it "includes source information in ApplicantViewedAgreement event when set" do
+        session[:cbv_source] = "mail"
+
+        expect(EventTrackingJob).to receive(:perform_later).with("ApplicantViewedAgreement", anything, hash_including(
+          source: "mail"
+        ))
+
+        allow(EventTrackingJob).to receive(:perform_later).with("CbvPageView", anything, anything)
+        allow(EventTrackingJob).to receive(:perform_later).with("ApplicantClickedCBVInvitationLink", anything, anything)
+
+        get :show, params: { token: invitation.auth_token }
+      end
+
       context "when returning to an already-visited flow invitation" do
         let!(:existing_cbv_flow) { create(:cbv_flow, :invited, cbv_flow_invitation: invitation) }
 
