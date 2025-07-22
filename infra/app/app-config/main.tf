@@ -38,7 +38,7 @@ locals {
   environment_configs = {
     demo = module.dev_config
     # staging = module.staging_config
-    prod = module.prod_config
+    # prod = module.prod_config
   }
 
   # The name of the network that contains the resources shared across all

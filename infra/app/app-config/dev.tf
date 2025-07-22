@@ -3,8 +3,8 @@ module "dev_config" {
   project_name                    = local.project_name
   app_name                        = local.app_name
   default_region                  = module.project_config.default_region
-  environment                     = "dev"
-  network_name                    = "dev"
+  environment                     = "demo"
+  network_name                    = "demo"
   domain_name                     = "verify-demo.navapbc.cloud"
   enable_https                    = true
   has_database                    = local.has_database
