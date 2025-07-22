@@ -38,6 +38,7 @@
   agency_domain: <%= ENV["LA_LDH_DOMAIN_NAME"] %>
   # caseworker_feedback_form: n/a
   logo_path: ldh_logo.svg
+  default_source: sms
   pinwheel:
     environment: <%= ENV["LA_LDH_PINWHEEL_ENVIRONMENT"] %>
   argyle:
