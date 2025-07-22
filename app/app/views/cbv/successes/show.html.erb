@@ -22,7 +22,7 @@
   <ul class="line-height-sans-5">
     <li>
       <strong><%= t(".whats_next_1_title") %></strong>
-      <ul style="list-style-type: disc;">
+      <ul class="list-style-disc">
         <li><%= t(".whats_next_1_li_1", agency_acronym: agency_translation("shared.agency_acronym")) %></li>
         <li><%= t(".whats_next_1_li_2_html", agency_acronym: agency_translation("shared.agency_acronym"), agency_website: current_agency.agency_contact_website) %></li>
       </ul>
@@ -32,7 +32,7 @@
   <ul class="line-height-sans-5">
     <li>
       <strong><%= t(".whats_next_2_title") %></strong>
-      <ul style="list-style-type: disc;">
+      <ul class="list-style-disc">
         <li><%= t(".whats_next_2_li_1_html", agency_feedback_form: feedback_form_url) %></li>
       </ul>
     </li>
@@ -43,9 +43,9 @@
     <p><%= t(".share_invitation_link_content") %></p>
 
     <div class="display-flex flex-align-center" data-controller="copy-link">
-      <%= form_with(builder: UswdsFormBuilder, html: { style: "display: contents;", class: "" }) do |f| %>
+      <%= form_with(builder: UswdsFormBuilder, html: { class: "display-contents" }) do |f| %>
         <%= f.label :invitation_link, t(".invitation_link_label"), class: "usa-sr-only" %>
-        <input value="<%= @invitation_link %>" autocomplete="off" readonly class="usa-input margin-top-0" style="flex: 1;" data-copy-link-target="input" type="text" name="invitation_link" id="invitation_link">
+        <input value="<%= @invitation_link %>" autocomplete="off" readonly class="usa-input margin-top-0 flex-1" data-copy-link-target="input" type="text" name="invitation_link" id="invitation_link">
         <%# default button variant %>
         <%= f.button_with_icon(t(".copy_link"),
               class: "copy-link-button",

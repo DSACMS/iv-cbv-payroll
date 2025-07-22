@@ -138,13 +138,6 @@ html {
   @include u-bg('yellow-5v');
 }
 
-// Addressing USWDS utilities specificity
-.usa-table {
-  td.text-bold {
-    font-weight: bold;
-  }
-}
-
 .rotate {
   animation: 1s linear infinite rotate-con;
 }
@@ -262,4 +255,21 @@ input#invitation_link{
     font-weight: bold;
     background-color: color('gray-cool-10');
   }
+}
+
+#session-timeout-modal.is-visible {
+  // This is one additional 9 beyond Argyle's modal z-index to make sure
+  // the timeout modal is always visible if displayed
+  z-index: 9999999999;
+}
+
+/*
+ * Utilities
+ */
+.list-style-disc {
+  list-style-type: disc !important;
+}
+
+.display-contents {
+  display: contents !important;
 }
