@@ -47,7 +47,7 @@ RSpec.describe Report::PaymentsDeductionsMonthlySummaryComponent, type: :compone
           pinwheel_report.fetch
         end
 
-        subject { render_inline(described_class.new(pinwheel_report, payroll_account, is_responsive: true, is_pdf: false, is_w2_worker: false, pay_frequency_text: "monthly")) }
+        subject { render_inline(described_class.new(pinwheel_report, payroll_account, is_responsive: true, is_w2_worker: false, pay_frequency_text: "monthly")) }
 
         it "pinwheel_report is properly fetched" do
           expect(pinwheel_report.gigs.length).to eq(3)
@@ -81,7 +81,7 @@ RSpec.describe Report::PaymentsDeductionsMonthlySummaryComponent, type: :compone
           pinwheel_report.fetch
         end
 
-        subject { render_inline(described_class.new(pinwheel_report, payroll_account, is_responsive: true, is_pdf: false, is_w2_worker: false, pay_frequency_text: "monthly")) }
+        subject { render_inline(described_class.new(pinwheel_report, payroll_account, is_responsive: true, is_w2_worker: false, pay_frequency_text: "monthly")) }
 
         it "renders properly without the paystubs data" do
           heading = subject.at_css('h2.usa-alert__heading')
@@ -124,7 +124,7 @@ RSpec.describe Report::PaymentsDeductionsMonthlySummaryComponent, type: :compone
         argyle_report.fetch
       end
 
-      subject { render_inline(described_class.new(argyle_report, payroll_account, is_responsive: true, is_pdf: false, is_w2_worker: false, pay_frequency_text: "monthly")) }
+      subject { render_inline(described_class.new(argyle_report, payroll_account, is_responsive: true, is_w2_worker: false, pay_frequency_text: "monthly")) }
 
       it "argyle_report is properly fetched" do
         expect(argyle_report.gigs.length).to be(100)
@@ -151,7 +151,7 @@ RSpec.describe Report::PaymentsDeductionsMonthlySummaryComponent, type: :compone
         argyle_report.fetch
       end
 
-      subject { render_inline(described_class.new(argyle_report, payroll_account, is_responsive: true, is_pdf: false, is_w2_worker: false, pay_frequency_text: "monthly")) }
+      subject { render_inline(described_class.new(argyle_report, payroll_account, is_responsive: true, is_w2_worker: false, pay_frequency_text: "monthly")) }
 
       it "renders properly without the paystubs data" do
         heading = subject.at_css('h2.usa-alert__heading')
