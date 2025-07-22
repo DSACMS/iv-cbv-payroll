@@ -56,70 +56,51 @@
 <%= get_comment_by_account_id(account_id).dig("comment") != "" ? get_comment_by_account_id(account_id).dig("comment") : t("shared.not_applicable") %>
 <% end %>
 
+<!-- Generic link flow, no invitation -->
 <% if @cbv_flow.cbv_flow_invitation.blank? %>
   <h3><%= t(".your_information") %></h3>
   <div class="usa-prose">
     <p><%= agency_translation(".must_match", agency_acronym: agency_translation("shared.agency_acronym")) %></p>
   </div>
-  <table class="usa-table usa-table--borderless width-full margin-top-2 margin-bottom-0">
-    <tbody>
-      <tr>
-        <th class="padding-3 bg-primary-lighter">
-          <h4 class="margin-0">
-            <%= t(".application_information") %>
-          </h4>
-        </th>
-        <th class="padding-3 bg-primary-lighter text-align-right">
-          <h4 class="margin-0">
-            <%= link_to cbv_flow_applicant_information_path(force_show: true), class: "usa-link" do %>
-              <%= image_tag "@uswds/uswds/dist/img/usa-icons/edit.svg", role: "img", alt: "" %>
-              <%= t(".edit") %>
+  <div class="display-flex flex-justify font-body-md">
+    <h4 class="margin-0"><%= t(".application_information") %></h4>
+    <%= link_to t(".edit"), cbv_flow_applicant_information_path(force_show: true), class: "usa-link text-bold" %>
+  </div>
+  <%= render(TableComponent.new(is_responsive: true, class_names: "margin-top-2", thead_class_names: "", attributes: { "data-testid" => "paystub-table" })) do |table| %>
+    <%= table.with_subheader_row(class_names: "subheader-row base-lightest border-top-1px") do |row| %>
+      <% row.with_data_cell(is_header: true).with_content(t(".question")) %>
+      <% row.with_data_cell(is_header: true).with_content(t(".your_answer")) %>
+    <% end %>
+    <% @cbv_flow.cbv_applicant.applicant_attributes.each do |item| %>
+      <% if @cbv_flow.cbv_applicant[item].present? %>
+        <% table.with_row do |row| %>
+          <% row.with_data_cell(data_label: t(".question"), class_names: "text-bold").with_content(t("cbv.applicant_informations.#{@cbv_flow.client_agency_id}.fields.#{item}.prompt")) %>
+          <% row.with_data_cell(data_label: t(".your_answer")) do %>
+            <% if item == :date_of_birth %>
+              <%= format_date(@cbv_flow.cbv_applicant[item]) %>
+            <% else %>
+              <%= @cbv_flow.cbv_applicant[item] %>
             <% end %>
-          </h4>
-        </th>
-      </tr>
-      <% @cbv_flow.cbv_applicant.applicant_attributes.each do |item| %>
-        <% if @cbv_flow.cbv_applicant[item].present? %>
-          <tr>
-            <td><%= t("cbv.applicant_informations.#{@cbv_flow.client_agency_id}.fields.#{item}.prompt") %></td>
-            <td>
-              <% if item == :date_of_birth %>
-                <%= format_date(@cbv_flow.cbv_applicant[item]) %>
-              <% else %>
-                <%= @cbv_flow.cbv_applicant[item] %>
-              <% end %>
-            </td>
-          </tr>
+          <% end %>
         <% end %>
       <% end %>
-    </tbody>
-    <tbody>
-      <tr>
-        <th class="padding-3 bg-primary-lighter" colspan="2">
-          <h4 class="margin-0"><%= t("cbv.summaries.show.other_jobs") %></h4>
-        </th>
-      </tr>
-      <tr>
-        <td><%= t("cbv.other_jobs.show.header") %></td>
-        <td><%= format_boolean(@cbv_flow.has_other_jobs) %></td>
-      </tr>
-    </tbody>
-  </table>
-  <% else %>
-  <h3><%= t(".your_information") %></h3>
-  <table class="usa-table usa-table--borderless width-full margin-top-5">
-    <tbody>
-      <tr>
-        <th class="padding-3 bg-primary-lighter" colspan="2">
-          <h4 class="margin-0"><%= t("cbv.summaries.show.other_jobs") %></h4>
-        </th>
-      </tr>
-      <tr>
-        <td><%= t("cbv.other_jobs.show.header") %></td>
-        <td><%= format_boolean(@cbv_flow.has_other_jobs) %></td>
-      </tr>
-    </tbody>
-  </table>
+    <% end %>
+  <% end %>
+  <!-- Other jobs -->
+  <div class="display-flex flex-justify font-body-md margin-top-5">
+    <h4 class="margin-0"><%= t("cbv.summaries.show.other_jobs") %></h4>
+    <%= link_to t("cbv.summaries.show.edit"), cbv_flow_other_job_path, class: "usa-link text-bold" %>
+  </div>
+  <%= render(TableComponent.new(is_responsive: true, class_names: "margin-top-2", thead_class_names: "", attributes: { "data-testid" => "other-jobs-table" })) do |table| %>
+    <%= table.with_subheader_row(class_names: "subheader-row base-lightest border-top-1px") do |row| %>
+      <% row.with_data_cell(is_header: true).with_content(t(".question")) %>
+      <% row.with_data_cell(is_header: true).with_content(t(".your_answer")) %>
+    <% end %>
+    <% table.with_row do |row| %>
+      <% row.with_data_cell(data_label: t(".question"), class_names: "text-bold").with_content(t("cbv.other_jobs.show.header")) %>
+      <% row.with_data_cell(data_label: t(".your_answer")).with_content(format_boolean(@cbv_flow.has_other_jobs)) %>
+    <% end %>
+  <% end %>
 <% end %>
 
 <%= button_to t("continue"), cbv_flow_submit_path, class: "btn btn-primary usa-button margin-y-5", method: :get %>
