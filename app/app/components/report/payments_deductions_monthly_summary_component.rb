@@ -6,9 +6,8 @@ class Report::PaymentsDeductionsMonthlySummaryComponent < ViewComponent::Base
 
   attr_reader :employer_name
 
-  def initialize(report, payroll_account, is_responsive: true, is_pdf: false, is_w2_worker:, pay_frequency_text:)
+  def initialize(report, payroll_account, is_responsive: true, is_w2_worker:, pay_frequency_text:)
     @aggregator_report = report
-    @is_pdf = is_pdf
 
     # Note: payroll_account may either be the ID or the payroll_account object
     @account_id = payroll_account.class == String ? payroll_account : payroll_account.pinwheel_account_id
