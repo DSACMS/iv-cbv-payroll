@@ -10,50 +10,50 @@
 </div>
 
 <% @aggregator_report.summarize_by_employer.each_with_index do |(account_id, summary), index| %>
-  <% employment = summary[:employment] %>
-  <% is_w2_worker = employment&.employment_type == :w2 %>
-  <h3 data-testid="paystub-table-caption">
-    <% employer_name = employment&.employer_name %>
-    <% if employer_name %>
-      <%= t(".table_caption", number: index + 1, employer_name: employer_name) %>
-    <% else %>
-      <%= t(".table_caption_no_name", number: index + 1) %>
-    <% end %>
-  </h3>
-  <% if is_w2_worker %>
-    <% if summary[:total] > 0 %>
-      <table class="usa-table usa-table--borderless width-full" data-testid="paystub-table">
-        <thead class="border-top-05">
-          <tr>
-            <th class="padding-3 bg-primary-lighter" colspan="2">
-              <h4 class="margin-0" data-testid="paystub-total-income">
-                <% if employer_name %>
-                  <%= t(".total_income_from", employer_name: employer_name, amount: format_money(summary[:total])) %>
-                <% else %>
-                  <%= t(".total_income_from_no_employer_name", amount: format_money(summary[:total])) %>
-                <% end %>
-              </h4>
-            </th>
-          </tr>
-        </thead>
-        <tbody>
-          <% summary[:paystubs].each do |paystub| %>
-            <tr data-testid="paystub-row">
-              <td><%= t(".payment", amount: format_money(paystub.gross_pay_amount), date: format_date(paystub.pay_date)) %></td>
-            </tr>
-          <% end %>
-        </tbody>
-      </table>
-    <% else %>
-      <%= render AlertComponent.new(type: :info, heading: t("cbv.payment_details.show.none_found", report_data_range: report_data_range(@aggregator_report, account_id)), class: "margin-top-5") do %>
-        <%= t("cbv.payment_details.show.none_found_description", report_data_range: report_data_range(@aggregator_report, account_id)) %>
-      <% end %>
-    <% end %>
+<% employment = summary[:employment] %>
+<% is_w2_worker = employment&.employment_type == :w2 %>
+<h3 data-testid="paystub-table-caption">
+  <% employer_name = employment&.employer_name %>
+  <% if employer_name %>
+    <%= t(".table_caption", number: index + 1, employer_name: employer_name) %>
   <% else %>
-    <%= render(Report::MonthlySummaryTableComponent.new(@aggregator_report, account_id, show_footnote: false, show_payments: false)) %>
+    <%= t(".table_caption_no_name", number: index + 1) %>
   <% end %>
-  <h4><%= t(".additional_comments") %></h4>
-  <%= get_comment_by_account_id(account_id).dig("comment") != "" ? get_comment_by_account_id(account_id).dig("comment") : t("shared.not_applicable") %>
+</h3>
+<% if is_w2_worker %>
+<% if summary[:total] > 0 %>
+  <table class="usa-table usa-table--borderless width-full" data-testid="paystub-table">
+    <thead class="border-top-05">
+      <tr>
+        <th class="padding-3 bg-primary-lighter" colspan="2">
+          <h4 class="margin-0" data-testid="paystub-total-income">
+            <% if employer_name %>
+              <%= t(".total_income_from", employer_name: employer_name, amount: format_money(summary[:total])) %>
+            <% else %>
+              <%= t(".total_income_from_no_employer_name", amount: format_money(summary[:total])) %>
+            <% end %>
+          </h4>
+        </th>
+      </tr>
+    </thead>
+    <tbody>
+      <% summary[:paystubs].each do |paystub| %>
+        <tr data-testid="paystub-row">
+          <td><%= t(".payment", amount: format_money(paystub.gross_pay_amount), date: format_date(paystub.pay_date)) %></td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+<% else %>
+  <%= render AlertComponent.new(type: :info, heading: t("cbv.payment_details.show.none_found", report_data_range: report_data_range(@aggregator_report, account_id)), class: "margin-top-5") do %>
+    <%= t("cbv.payment_details.show.none_found_description", report_data_range: report_data_range(@aggregator_report, account_id)) %>
+  <% end %>
+<% end %>
+<% else %>
+<%= render(Report::MonthlySummaryTableComponent.new(@aggregator_report, account_id, show_footnote: false, show_payments: false)) %>
+<% end %>
+<h4><%= t(".additional_comments") %></h4>
+<%= get_comment_by_account_id(account_id).dig("comment") != "" ? get_comment_by_account_id(account_id).dig("comment") : t("shared.not_applicable") %>
 <% end %>
 
 <!-- Generic link flow, no invitation -->
