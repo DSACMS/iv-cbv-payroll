@@ -4,10 +4,10 @@ locals {
   project_name = "iv-cbv-payroll"
 
   # Project owner (e.g. navapbc). Used for tagging infra resources.
-  owner = "DSACMS"
+  owner = "Digital-Public-Works"
 
   # URL of project source code repository
-  code_repository_url = "https://github.com/DSACMS/iv-cbv-payroll"
+  code_repository_url = "https://github.com/Digital-Public-Works/iv-cbv-payroll"
 
   # Default AWS region for project (e.g. us-east-1, us-east-2, us-west-1).
   # This is dependent on where your project is located (if regional)
