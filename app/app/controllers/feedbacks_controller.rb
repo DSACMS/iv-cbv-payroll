@@ -8,6 +8,7 @@ class FeedbacksController < ApplicationController
         timestamp: Time.now.to_i,
         referer: params[:referer],
         cbv_flow_id: cbv_flow&.id,
+        cbv_applicant_id: cbv_flow&.cbv_applicant_id,
         client_agency_id: cbv_flow&.client_agency_id
       })
     rescue => ex
