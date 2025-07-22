@@ -31,7 +31,8 @@ class PagesController < ApplicationController
 
     client_agency_id = detect_client_agency_from_domain
     if client_agency_id.present?
-      source = params[:source] || ("sms" if client_agency_id == "la_ldh")
+      agency = agency_config[client_agency_id]
+      source = params[:source] || agency&.default_source
       redirect_to cbv_flow_new_path(client_agency_id: client_agency_id, source: source)
     end
   end
