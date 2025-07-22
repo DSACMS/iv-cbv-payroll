@@ -91,4 +91,73 @@ RSpec.describe Report::PaymentsDeductionsMonthlySummaryComponent, type: :compone
       end
     end
   end
+
+  context "with argyle stubs" do
+    include ArgyleApiHelper
+    let(:current_time) { Date.parse('2024-06-18') }
+    let(:cbv_applicant) { create(:cbv_applicant, created_at: current_time, case_number: "ABC1234") }
+    let(:account_id) { "019571bc-2f60-3955-d972-dbadfe0913a8" }
+    let(:cbv_flow) do
+      create(:cbv_flow,
+             :invited,
+             created_at: current_time,
+             cbv_applicant: cbv_applicant
+      )
+    end
+    let(:argyle_service) { Aggregators::Sdk::ArgyleService.new("sandbox") }
+    let!(:payroll_account) do
+      create(
+        :payroll_account,
+        :argyle_fully_synced,
+        cbv_flow: cbv_flow,
+        pinwheel_account_id: account_id
+      )
+    end
+
+    context "with bob, a gig-worker whose paystubs synced" do
+      let(:argyle_report) { Aggregators::AggregatorReports::ArgyleReport.new(payroll_accounts: [ payroll_account ], argyle_service: argyle_service, days_to_fetch_for_w2: 90, days_to_fetch_for_gig: 182) }
+      before do
+        argyle_stub_request_identities_response("bob")
+        argyle_stub_request_paystubs_response("bob")
+        argyle_stub_request_gigs_response("bob")
+        argyle_stub_request_account_response("bob")
+        argyle_report.fetch
+      end
+
+      subject { render_inline(described_class.new(argyle_report, payroll_account, is_responsive: true, is_pdf: false, is_w2_worker: false, pay_frequency_text: "monthly")) }
+
+      it "argyle_report is properly fetched" do
+        expect(argyle_report.gigs.length).to be(100)
+        expect(argyle_report.paystubs.length).to be(10)
+      end
+
+      it "includes the payments and deductions section with accordion and content" do
+        expect(subject.css("h3").to_html).to include "Payments and deductions"
+
+        accordion = subject.at_css('button.usa-accordion__button')
+        expect(accordion).not_to be_nil
+        expect(accordion.text).to include("March 2025")
+
+        expect(subject.at_css('div.usa-accordion__content').at_css('table')).not_to be_nil
+      end
+    end
+
+    context "with bob, a gig-worker whose paystubs failed to sync" do
+      let(:argyle_report) { Aggregators::AggregatorReports::ArgyleReport.new(payroll_accounts: [ payroll_account ], argyle_service: argyle_service, days_to_fetch_for_w2: 90, days_to_fetch_for_gig: 182) }
+      before do
+        argyle_stub_request_identities_response("bob")
+        argyle_stub_request_gigs_response("bob")
+        argyle_stub_request_account_response("bob")
+        argyle_report.fetch
+      end
+
+      subject { render_inline(described_class.new(argyle_report, payroll_account, is_responsive: true, is_pdf: false, is_w2_worker: false, pay_frequency_text: "monthly")) }
+
+      it "renders properly without the paystubs data" do
+        heading = subject.at_css('h2.usa-alert__heading')
+        expect(heading).not_to be_nil
+        expect(heading.text).to include("find any payments from this employer in the past 6 months")
+      end
+    end
+  end
 end
