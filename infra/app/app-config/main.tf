@@ -3,7 +3,7 @@ locals {
   # the folder under /infra that corresponds to the application
   app_name = regex("/infra/([^/]+)/app-config$", abspath(path.module))[0]
 
-  environments = ["dev", "prod"]
+  environments = ["demo"]
   project_name = module.project_config.project_name
 
   # Whether or not the application has a database
@@ -36,7 +36,7 @@ locals {
   enable_notifications = false
 
   environment_configs = {
-    dev = module.dev_config
+    demo = module.dev_config
     # staging = module.staging_config
     prod = module.prod_config
   }
@@ -46,7 +46,7 @@ locals {
   # The list of networks can be found in /infra/networks
   # by looking for the backend config files of the form:
   #   <NETWORK_NAME>.s3.tfbackend
-  shared_network_name = "prod"
+  shared_network_name = "demo"
 }
 
 module "project_config" {

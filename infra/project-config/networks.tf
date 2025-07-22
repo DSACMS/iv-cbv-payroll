@@ -1,18 +1,14 @@
 locals {
   network_configs = {
-    dev = {
-      account_name               = "nava-ffs"
-      database_subnet_group_name = "dev"
+    demo = {
+      account_name               = "demo"
+      database_subnet_group_name = "demo"
 
       domain_config = {
-        manage_dns  = true
-        hosted_zone = "navapbc.cloud"
+        manage_dns  = false
+        hosted_zone = "example.com"
 
         certificate_configs = {
-          "verify-demo.navapbc.cloud" = {
-            source                    = "issued"
-            subject_alternative_names = ["*.navapbc.cloud"]
-          }
           # Example certificate configuration for a certificate that is managed by the project
           # "sub.domain.com" = {
           #   source = "issued"
@@ -42,24 +38,5 @@ locals {
     #     certificate_configs = {}
     #   }
     # }
-
-    prod = {
-      account_name               = "nava-ffs-prod"
-      database_subnet_group_name = "prod"
-
-      domain_config = {
-        manage_dns  = true
-        hosted_zone = "reportmyincome.org"
-
-        certificate_configs = {
-          "reportmyincome.org" = {
-            source                    = "issued"
-            subject_alternative_names = ["*.reportmyincome.org"]
-          }
-        }
-      }
-
-      single_nat_gateway = true
-    }
   }
 }

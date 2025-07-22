@@ -1,4 +1,4 @@
 bucket         = "iv-cbv-payroll-929368846564-us-east-1-tf"
-key            = "infra/app/build-repository/shared.tfstate"
+key            = "infra/networks/demo.tfstate"
 dynamodb_table = "iv-cbv-payroll-929368846564-us-east-1-tf-state-locks"
 region         = "us-east-1"
