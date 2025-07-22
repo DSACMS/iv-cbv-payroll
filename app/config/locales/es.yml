@@ -239,7 +239,6 @@ es:
         none_found: No encontramos ningún pago de este empleador en los últimos %{report_data_range}.
         none_found_description: Esto usualmente ocurre cuando usted no ha recibido ingresos por este trabajo en los últimos %{report_data_range}. Si cree que esto es un error, agregue un comentario en la casilla de comentarios adicionales. De lo contrario, continúe en la página siguiente.
         number_of_hours_worked: Número de horas trabajadas
-        pay_date: 'Fecha de pago: %{pay_date}'
         pay_date_prompt: Fecha de pago
         pay_frequency: Frecuencia de pago
         pay_gross: Pago antes de impuestos (bruto)

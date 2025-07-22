@@ -346,7 +346,6 @@ en:
         none_found: We didn't find any payments from this employer in the past %{report_data_range}.
         none_found_description: This typically happens when you haven't received income from this job in the past %{report_data_range}. If you believe this is an error, please add a comment in the additional comments box. Otherwise, continue to the next page.
         number_of_hours_worked: Number of hours worked
-        pay_date: 'Pay Date: %{pay_date}'
         pay_date_prompt: Pay date
         pay_frequency: Pay frequency
         pay_gross: Payment before taxes (gross)
