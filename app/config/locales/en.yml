@@ -101,6 +101,10 @@ en:
       semimonthly: Semi-monthly
       variable: Variable
       weekly: Weekly
+    tax_category:
+      post_tax: post-tax
+      pre_tax: pre-tax
+      unknown: tax status unknown
   applicant_mailer:
     invitation_email:
       body_1:
@@ -330,7 +334,8 @@ en:
         additional_information_header: Additional comments (Optional)
         additional_information_label: Share any comments or additional information about the income details above that you’d like %{agency_acronym} to know. For example, you can share if the information is inaccurate or if you’re no longer working at that job.
         continue: Continue
-        deductions: 'Deduction: %{category}'
+        deductions: 'Deduction: %{category} (%{tax})'
+        deductions_missing_tax: 'Deduction: %{category}'
         employment_end_date: Employment end date
         employment_information_table_header: Employment information
         employment_start_date: Employment start date

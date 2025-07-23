@@ -223,7 +223,8 @@ es:
         additional_information_header: Comentarios adicionales (Opcional)
         additional_information_label: Comparta cualquier comentario o información adicional sobre los detalles de pago anteriores que desea que %{agency_acronym} conozca. Por ejemplo, puede compartir si la información es inexacta o si ya no trabaja en ese empleo.
         continue: Continuar
-        deductions: 'Deducción: %{category}'
+        deductions: 'Deducción: %{category} (%{tax})'
+        deductions_missing_tax: 'Deducción: %{category}'
         employment_end_date: Fecha de finalización de la relación laboral
         employment_information_table_header: Información sobre el empleo
         employment_start_date: Fecha de inicio del empleo
