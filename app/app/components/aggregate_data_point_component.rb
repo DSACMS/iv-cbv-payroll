@@ -63,18 +63,11 @@ class AggregateDataPointComponent < ViewComponent::Base
   def deduction(category, tax, amount)
     translated_deduction_category = translate_aggregator_value("deductions", category)
 
-    if tax.blank?
-      {
-        label: I18n.t("cbv.payment_details.show.deductions_missing_tax", category: translated_deduction_category&.humanize),
-        value: format_money(amount)
-      }
-    else
-      translated_tax_category = translate_aggregator_value("tax_category", tax)
-      {
-        label: I18n.t("cbv.payment_details.show.deductions", category: translated_deduction_category&.humanize, tax: translated_tax_category),
-        value: format_money(amount)
-      }
-    end
+    translated_tax_category = translate_aggregator_value("tax_category", tax)
+    {
+      label: I18n.t("cbv.payment_details.show.deductions", category: translated_deduction_category&.humanize, tax: translated_tax_category),
+      value: format_money(amount)
+    }
   end
 
   def pay_gross_ytd(gross_pay_ytd)
