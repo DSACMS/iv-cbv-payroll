@@ -2,7 +2,7 @@ locals {
   network_configs = {
     demo = {
       account_name               = "demo"
-      database_subnet_group_name = "demo"
+      database_subnet_group_name = "dev"
 
       domain_config = {
         manage_dns  = false
