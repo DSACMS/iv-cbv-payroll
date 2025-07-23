@@ -186,28 +186,16 @@ en:
         la_ldh: CBV Report %{confirmation_code}
   cbv:
     add_jobs:
-      next_path:
-        notice_no_answer: You must select an answer to continue.
       show:
-        answer_no_bullet_1: You don't have another job (current or recent)
-        answer_no_bullet_2: You have a job that pays you via PayPal, Venmo, Cash App, etc.
-        answer_no_bullet_3: You have a job that pays you in cash
-        answer_no_bullet_4: You have a job that pays you with a paper check and you can't view your paycheck online
-        answer_no_bullet_5: You have a job that issues a 1099
-        answer_no_header: 'Answer NO if:'
-        answer_yes_bullet_1: Your job has an online payroll provider
-        answer_yes_bullet_2: Your job lets you view pay stubs online
-        answer_yes_bullet_3: Your job is app-based (Uber, DoorDash, Lyft, Instacart, etc.)
-        answer_yes_header_html: 'Answer YES if <em>any</em> of these are true about your current or recent job:'
-        continue: Continue
-        criteria_disclaimer: 'Note: If you''ve had other jobs in the past 90 days that don''t meet these criteria, you may need to submit that income information separately.'
         header: Do you have another job to report?
-        learn_more_link_html:
-          la_ldh: Learn more on <a href="%{agency_url}" target="_blank" rel="noopener noreferrer">LDH's website</a>.
-          sandbox: Learn more on <a href="https://www.mass.gov/guides/how-to-contact-dta" target="_blank" rel="noopener noreferrer">CBV Test Agency's website</a>.
-        no_radio: No, I don’t have another job that meets the criteria
-        subheader: Please add other jobs you’ve had in the past 90 days, even if you're no longer at that job.
-        yes_radio: Yes, I have another job that meets the criteria
+        header_2: Do you have another job to report using Report My Income?
+        header_2_bullet_1: Has an online payroll provider, or
+        header_2_bullet_2: Lets you view pay stubs online, or
+        header_2_bullet_3: Is app-based (Uber, DoorDash, Lyft, Instacart, etc.)
+        header_2_lead: 'This includes a current job or recent job you’ve had in the past 90 days that:'
+        header_sub_text: Tell us about any other jobs you've had in the past 90 days, even if you're no longer at that job.
+        radio_no: No, I don’t have another job that meets one of these criteria
+        radio_yes: Yes, I have another job that meets one of these criteria
     applicant_informations:
       la_ldh:
         fields:
@@ -325,6 +313,18 @@ en:
         not_listed_p2: Visit %{agency_acronym}'s website for more information on how to submit documents.
         not_listed_p2_link_html: Visit <a href="%{agency_url}" target="_blank" rel="noopener noreferrer">%{agency_acronym}'s website</a> for more information on how to submit documents.
         you_can_search: You can search for another employer or payroll provider. This site supports employers with online payroll providers or app-based services. Examples include Amazon, Walmart, McDonald’s, Uber, DoorDash, Lyft, and Instacart.
+    other_jobs:
+      show:
+        bullet_1: Pays you via PayPal, Venmo, Cash App, etc
+        bullet_2: Pays you in cash
+        bullet_3: Pays you with a paper check and you can’t view your paycheck online
+        bullet_4: Issues you a 1099
+        header: Do you need to report any jobs outside Report My Income?
+        header_html: Do you need to report any jobs <em>outside</em> Report My Income?
+        header_sub_text: 'Tell us about any other jobs you’ve had in the past 90 days, even if you’re no longer at that job. This includes current or recent jobs you’ve had in the past 90 days that may:'
+        note_html: 'Note: If you’ve had other jobs in the past 90 days that you won’t report using Report My Income, you will need to submit that income information separately. <a href="%{agency_site}" target="_blank" rel="noopener noreferrer">Learn more on %{agency_acronym}.</a>'
+        radio_no: No, I don’t have another job to report separately
+        radio_yes: Yes, I have another job I’ll report separately
     payment_details:
       show:
         additional_information_header: Additional comments (Optional)
@@ -399,6 +399,8 @@ en:
             employment_payment_details: Employment and Payment details
             header: Income Verification Report
           shared:
+            additional_jobs_to_report: Does the client have additional jobs they will report separately?
+            additional_jobs_to_report_html: Does the client have additional jobs they will report separately?<sup>1</sup>
             client_information: Client information
             confirmation_code: Confirmation code
             employment_information: Employment information
@@ -438,6 +440,7 @@ en:
         must_match:
           default: This must match what is shown on your %{agency_acronym} application.
           la_ldh: This must match what is shown on your Medicaid benefits.
+        other_jobs: Other jobs
         payment: Payment of %{amount} before taxes on %{date}
         phone_number: Employer phone
         question: Question
@@ -664,6 +667,8 @@ en:
       es: Español
       fr: Français
       zh: 中文
+    next_path:
+      notice_no_answer: You must select an answer to continue.
     not_applicable: N/A
     pilot_name: Report My Income
     report_data_range:

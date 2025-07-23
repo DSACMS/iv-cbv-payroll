@@ -1,77 +1,77 @@
 <% content_for :title, t(".header") %>
 <h1>
-  <%= t(".header") %>
+<%= t(".header") %>
 </h1>
 
 <div class="margin-bottom-6 usa-prose" data-testid="summary-description">
-  <p>
-    <%= t(".description", start_date: format_date(@aggregator_report.from_date), end_date: format_date(@aggregator_report.to_date), agency_acronym: agency_translation("shared.agency_acronym")) %>
-  </p>
+<p>
+  <%= t(".description", start_date: format_date(@aggregator_report.from_date), end_date: format_date(@aggregator_report.to_date), agency_acronym: agency_translation("shared.agency_acronym")) %>
+</p>
 </div>
 
 <% @aggregator_report.summarize_by_employer.each_with_index do |(account_id, summary), index| %>
-  <% employment = summary[:employment] %>
-  <% is_w2_worker = employment&.employment_type == :w2 %>
-  <h3 data-testid="paystub-table-caption">
-    <% employer_name = employment&.employer_name %>
-    <% if employer_name %>
-      <%= t(".table_caption", number: index + 1, employer_name: employer_name) %>
-    <% else %>
-      <%= t(".table_caption_no_name", number: index + 1) %>
+<% employment = summary[:employment] %>
+<% is_w2_worker = employment&.employment_type == :w2 %>
+<h3 data-testid="paystub-table-caption">
+<% employer_name = employment&.employer_name %>
+<% if employer_name %>
+  <%= t(".table_caption", number: index + 1, employer_name: employer_name) %>
+<% else %>
+  <%= t(".table_caption_no_name", number: index + 1) %>
+<% end %>
+</h3>
+<% if is_w2_worker %>
+<% if summary[:total] > 0 %>
+<table class="usa-table usa-table--borderless width-full" data-testid="paystub-table">
+  <thead class="border-top-05">
+    <tr>
+      <th class="padding-3 bg-primary-lighter" colspan="2">
+        <h4 class="margin-0" data-testid="paystub-total-income">
+          <% if employer_name %>
+            <%= t(".total_income_from", employer_name: employer_name, amount: format_money(summary[:total])) %>
+          <% else %>
+            <%= t(".total_income_from_no_employer_name", amount: format_money(summary[:total])) %>
+          <% end %>
+        </h4>
+      </th>
+    </tr>
+  </thead>
+  <tbody>
+    <% summary[:paystubs].each do |paystub| %>
+      <tr data-testid="paystub-row">
+        <td><%= t(".payment", amount: format_money(paystub.gross_pay_amount), date: format_date(paystub.pay_date)) %></td>
+      </tr>
     <% end %>
-  </h3>
-  <% if is_w2_worker %>
-    <% if summary[:total] > 0 %>
-      <table class="usa-table usa-table--borderless width-full" data-testid="paystub-table">
-        <thead class="border-top-05">
-        <tr>
-          <th class="padding-3 bg-primary-lighter" colspan="2">
-            <h4 class="margin-0" data-testid="paystub-total-income">
-              <% if employer_name %>
-                <%= t(".total_income_from", employer_name: employer_name, amount: format_money(summary[:total])) %>
-              <% else %>
-                <%= t(".total_income_from_no_employer_name", amount: format_money(summary[:total])) %>
-              <% end %>
-            </h4>
-          </th>
-        </tr>
-        </thead>
-        <tbody>
-        <% summary[:paystubs].each do |paystub| %>
-          <tr data-testid="paystub-row">
-            <td><%= t(".payment", amount: format_money(paystub.gross_pay_amount), date: format_date(paystub.pay_date)) %></td>
-          </tr>
-        <% end %>
-        </tbody>
-      </table>
-    <% else %>
-      <% employment_type = summary[:employment]&.employment_type || :w2 %>
-        <%= render AlertComponent.new(type: :info, heading: t("cbv.payment_details.show.none_found", report_data_range: report_data_range(@aggregator_report, account_id)), class: "margin-top-5") do %>
-        <%= t("cbv.payment_details.show.none_found_description", report_data_range: report_data_range(@aggregator_report, account_id)) %>
-      <% end %>
-    <% end %>
-  <% else %>
-    <%= render(Report::MonthlySummaryTableComponent.new(@aggregator_report, account_id, show_footnote: false, show_payments: false)) %>
-  <% end %>
-  <h4><%= t(".additional_comments") %></h4>
-  <%= get_comment_by_account_id(account_id).dig("comment") != "" ? get_comment_by_account_id(account_id).dig("comment") : t("shared.not_applicable") %>
+  </tbody>
+</table>
+<% else %>
+<%= render AlertComponent.new(type: :info, heading: t("cbv.payment_details.show.none_found", report_data_range: report_data_range(@aggregator_report, account_id)), class: "margin-top-5") do %>
+  <%= t("cbv.payment_details.show.none_found_description", report_data_range: report_data_range(@aggregator_report, account_id)) %>
+<% end %>
+<% end %>
+<% else %>
+<%= render(Report::MonthlySummaryTableComponent.new(@aggregator_report, account_id, show_footnote: false, show_payments: false)) %>
+<% end %>
+<h4><%= t(".additional_comments") %></h4>
+<%= get_comment_by_account_id(account_id).dig("comment") != "" ? get_comment_by_account_id(account_id).dig("comment") : t("shared.not_applicable") %>
 <% end %>
 
+<!-- Generic link flow, no invitation -->
 <% if @cbv_flow.cbv_flow_invitation.blank? %>
-  <h3><%= t(".your_information") %></h3>
-  <div class="usa-prose">
-    <p><%= agency_translation(".must_match", agency_acronym: agency_translation("shared.agency_acronym")) %></p>
-  </div>
-  <div class="display-flex flex-justify font-body-md">
-    <h4 class="margin-0"><%= t(".application_information") %></h4>
-    <%= link_to t(".edit"), cbv_flow_applicant_information_path(force_show: true), class: "usa-link text-bold" %>
-  </div>
-  <%= render(TableComponent.new(is_responsive: true, class_names: "margin-top-2", thead_class_names: "", attributes: { "data-testid" => "paystub-table" })) do |table| %>
-    <%= table.with_subheader_row(class_names: "subheader-row base-lightest border-top-1px") do |row| %>
-      <% row.with_data_cell(is_header: true).with_content(t(".question")) %>
-      <% row.with_data_cell(is_header: true).with_content(t(".your_answer")) %>
-    <% end %>
-    <% @cbv_flow.cbv_applicant.applicant_attributes.each do |item| %>
+<h3><%= t(".your_information") %></h3>
+<div class="usa-prose">
+  <p><%= agency_translation(".must_match", agency_acronym: agency_translation("shared.agency_acronym")) %></p>
+</div>
+<div class="display-flex flex-justify font-body-md">
+  <h4 class="margin-0"><%= t(".application_information") %></h4>
+  <%= link_to t(".edit"), cbv_flow_applicant_information_path(force_show: true), class: "usa-link text-bold" %>
+</div>
+<%= render(TableComponent.new(is_responsive: true, class_names: "margin-top-2", thead_class_names: "", attributes: { "data-testid" => "paystub-table" })) do |table| %>
+  <%= table.with_subheader_row(class_names: "subheader-row base-lightest border-top-1px") do |row| %>
+    <% row.with_data_cell(is_header: true).with_content(t(".question")) %>
+    <% row.with_data_cell(is_header: true).with_content(t(".your_answer")) %>
+  <% end %>
+  <% @cbv_flow.cbv_applicant.applicant_attributes.each do |item| %>
       <% table.with_row do |row| %>
         <% row.with_data_cell(data_label: t(".question"), class_names: "text-bold").with_content(t("cbv.applicant_informations.#{@cbv_flow.client_agency_id}.fields.#{item}.prompt")) %>
         <% row.with_data_cell(data_label: t(".your_answer")) do %>
@@ -81,9 +81,24 @@
             <%= @cbv_flow.cbv_applicant[item] %>
           <% end %>
         <% end %>
-      <% end %>
     <% end %>
   <% end %>
+<% end %>
+<!-- Other jobs -->
+<div class="display-flex flex-justify font-body-md">
+  <h4 class="margin-0"><%= t("cbv.summaries.show.other_jobs") %></h4>
+  <%= link_to t("cbv.summaries.show.edit"), cbv_flow_other_job_path, class: "usa-link text-bold" %>
+</div>
+<%= render(TableComponent.new(is_responsive: true, class_names: "margin-top-2", thead_class_names: "", attributes: { "data-testid" => "other-jobs-table" })) do |table| %>
+  <%= table.with_subheader_row(class_names: "subheader-row base-lightest border-top-1px") do |row| %>
+    <% row.with_data_cell(is_header: true).with_content(t(".question")) %>
+    <% row.with_data_cell(is_header: true).with_content(t(".your_answer")) %>
+  <% end %>
+  <% table.with_row do |row| %>
+    <% row.with_data_cell(data_label: t(".question"), class_names: "text-bold").with_content(t("cbv.other_jobs.show.header")) %>
+    <% row.with_data_cell(data_label: t(".your_answer")).with_content(format_boolean(@cbv_flow.has_other_jobs)) %>
+  <% end %>
+<% end %>
 <% end %>
 
 <%= button_to t("continue"), cbv_flow_submit_path, class: "btn btn-primary usa-button margin-y-5", method: :get %>
