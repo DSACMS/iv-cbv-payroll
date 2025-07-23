@@ -138,13 +138,6 @@ html {
   @include u-bg('yellow-5v');
 }
 
-// Addressing USWDS utilities specificity
-.usa-table {
-  td.text-bold {
-    font-weight: bold;
-  }
-}
-
 .rotate {
   animation: 1s linear infinite rotate-con;
 }
