@@ -192,9 +192,9 @@ RSpec.describe Aggregators::AggregatorReports::PinwheelReport, type: :service do
                                                     hours: 80,
                                                     )
 
-        expect(summary[account][:paystubs][0][:deductions][0]).to have_attributes(category: "retirement", amount: 7012)
-        expect(summary[account][:paystubs][0][:deductions][1]).to have_attributes(category: "commuter", amount: 57692)
-        expect(summary[account][:paystubs][0][:deductions][2]).to have_attributes(category: "empty_deduction", amount: 0)
+        expect(summary[account][:paystubs][0][:deductions][0]).to have_attributes(category: "retirement", tax: "pre_tax", amount: 7012)
+        expect(summary[account][:paystubs][0][:deductions][1]).to have_attributes(category: "commuter", tax: "post_tax", amount: 57692)
+        expect(summary[account][:paystubs][0][:deductions][2]).to have_attributes(category: "empty_deduction", tax: "post_tax", amount: 0)
 
         expect(summary[account][:paystubs][0][:earnings][0]).to have_attributes(category: "salary", amount: 380720, hours: 80, name: "Regular", rate: 4759)
         expect(summary[account][:paystubs][0][:earnings][1]).to have_attributes(category: "bonus", amount: 100000, hours: nil, name: "Bonus", rate: nil)
