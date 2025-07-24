@@ -47,25 +47,6 @@ RSpec.describe PagesController do
         expect(response).to render_template("pages/_la_ldh_pilot_end")
       end
     end
-
-    context "when LA LDH pilot configuration is environment-based" do
-      before do
-        stub_client_agency_config_value("la_ldh", "agency_domain", "la.reportmyincome.org")
-        request.host = "la.reportmyincome.org"
-      end
-
-      it "enables pilot in test & development environments" do
-        stub_client_agency_config_value("la_ldh", "pilot_ended", false)
-        get :home
-        expect(response).to redirect_to(cbv_flow_new_path(client_agency_id: "la_ldh"))
-      end
-
-      it "disables pilot in production environment" do
-        stub_client_agency_config_value("la_ldh", "pilot_ended", true)
-        get :home
-        expect(response).to render_template("pages/_la_ldh_pilot_end")
-      end
-    end
   end
 
   describe "#error_404" do
