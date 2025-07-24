@@ -47,7 +47,7 @@
   transmission_method_configuration:
     email: <%= ENV['LA_LDH_EMAIL'] %>
   staff_portal_enabled: false
-  pilot_ended: true
+  pilot_ended: <%= Rails.env.production? %>
   # sso:
   #   client_id:     <%= ENV["AZURE_LA_LDH_CLIENT_ID"] %>
   #   client_secret: <%= ENV["AZURE_LA_LDH_CLIENT_SECRET"] %>
