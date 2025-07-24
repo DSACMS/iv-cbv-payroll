@@ -1,73 +1,90 @@
 <% title = t(".header", agency_acronym: agency_translation("shared.agency_acronym")) %>
 <% content_for :title, title %>
-<div class="grid-col tablet:grid-col-10">
-  <h1><%= title %></h1>
-
-  <div class="usa-prose">
-    <p><%= t(".confirmation_code_html", confirmation_code: @cbv_flow.confirmation_code) %></p>
-    <%= render LinkWithIconComponent.new(
-          t(".download"),
-          icon: "file_download",
-          class: "usa-button",
-          icon_position: :leading,
-          variant: :primary,
-          url: cbv_flow_submit_path(format: "pdf"),
-          target: "_blank",
-          rel: "noopener noreferrer"
-        ) %>
+<div class="grid-col tablet:grid-col-8">
+  <div class="margin-bottom-4">
+    <h1><%= title %></h1>
+    <div class="usa-prose">
+      <p><%= t(".confirmation_code_html", confirmation_code: @cbv_flow.confirmation_code) %></p>
+      <%= render(LinkWithIconComponent.new(
+        t(".download"),
+        icon: "file_download",
+        class: "usa-button",
+        icon_position: :leading,
+        variant: :primary,
+        url: cbv_flow_submit_path(format: "pdf"),
+        target: "_blank",
+        rel: "noopener noreferrer"
+      )) %>
+    </div>
   </div>
 
-  <h2><%= t(".whats_next") %></h2>
+  <div class="margin-bottom-5">
+    <h2><%= t(".whats_next") %></h2>
+    <ul class="usa-list usa-list--unstyled">
+      <li class="grid-row grid-gap-2 margin-bottom-205">
+        <div class="grid-col-auto">
+          <svg class="usa-icon usa-icon--size-3" aria-hidden="true" focusable="false" role="img">
+            <use xlink:href="<%= asset_path("@uswds/uswds/dist/img/sprite.svg#attach_money") %>"></use>
+          </svg>
+        </div>
+        <div class="grid-col flex-1">
+          <strong><%= t(".whats_next_1_title") %></strong>
+          <p class="margin-y-1"><%= t(".whats_next_1_li_1", agency_acronym: agency_translation("shared.agency_acronym")) %></p>
+          <%= t(".whats_next_1_li_2_html", agency_acronym: agency_translation("shared.agency_acronym"), agency_website: current_agency.agency_contact_website) %>
+        </div>
+      </li>
+      <li class="grid-row grid-gap-2">
+        <div class="grid-col-auto">
+          <svg class="usa-icon usa-icon--size-3" aria-hidden="true" focusable="false" role="img">
+            <use xlink:href="<%= asset_path("@uswds/uswds/dist/img/sprite.svg#groups") %>"></use>
+          </svg>
+        </div>
+        <div class="grid-col flex-1">
+          <strong><%= agency_translation(".share_invitation_link_title") %></strong>
+          <p class="margin-y-1"><%= t(".share_invitation_link_content") %></p>
+          <div data-controller="copy-link">
+            <%= form_with(builder: UswdsFormBuilder, html: { class: "display-contents" }) do |f| %>
+              <%= f.label :invitation_link, t(".invitation_link_label"), class: "usa-sr-only" %>
+              <input value="<%= @invitation_link %>" autocomplete="off" readonly class="usa-input margin-top-0 maxw-none" data-copy-link-target="input" type="text" name="invitation_link" id="invitation_link">
+              <%= f.button_with_icon(t(".copy_link"),
+                    class: "copy-link-button",
+                    icon: "content_copy",
+                    icon_position: :leading,
+                    variant: :primary,
+                    type: "button",
+                    data: {
+                      copy_link_target: "copyLinkButton",
+                      action: "click->copy-link#copy"
+                    }) %>
+              <%= f.button_with_icon(t(".copied_link"),
+                    class: "copy-link-button invisible",
+                    icon: "check_circle",
+                    icon_position: :leading,
+                    variant: :success,
+                    type: "button",
+                    data: {
+                      copy_link_target: "successButton"
+                    }) %>
+            <% end %>
+          </div>
+        </div>
+      </li>
+    </ul>
+  </div>
 
-  <ul class="line-height-sans-5">
-    <li>
-      <strong><%= t(".whats_next_1_title") %></strong>
-      <ul class="list-style-disc">
-        <li><%= t(".whats_next_1_li_1", agency_acronym: agency_translation("shared.agency_acronym")) %></li>
-        <li><%= t(".whats_next_1_li_2_html", agency_acronym: agency_translation("shared.agency_acronym"), agency_website: current_agency.agency_contact_website) %></li>
-      </ul>
-    </li>
-  </ul>
-
-  <ul class="line-height-sans-5">
-    <li>
-      <strong><%= t(".whats_next_2_title") %></strong>
-      <ul class="list-style-disc">
-        <li><%= t(".whats_next_2_li_1_html", agency_feedback_form: feedback_form_url) %></li>
-      </ul>
-    </li>
-  </ul>
-
-  <div class="border border-info-light bg-info-lighter padding-2 margin-top-3 radius-md">
-    <h3 class="margin-top-0"><%= agency_translation(".share_invitation_link_title") %></h3>
-    <p><%= t(".share_invitation_link_content") %></p>
-
-    <div class="display-flex flex-align-center" data-controller="copy-link">
-      <%= form_with(builder: UswdsFormBuilder, html: { class: "display-contents" }) do |f| %>
-        <%= f.label :invitation_link, t(".invitation_link_label"), class: "usa-sr-only" %>
-        <input value="<%= @invitation_link %>" autocomplete="off" readonly class="usa-input margin-top-0 flex-1" data-copy-link-target="input" type="text" name="invitation_link" id="invitation_link">
-        <%# default button variant %>
-        <%= f.button_with_icon(t(".copy_link"),
-              class: "copy-link-button",
-              icon: "content_copy",
-              icon_position: :leading,
-              variant: :primary,
-              type: "button",
-              data: {
-                copy_link_target: "copyLinkButton",
-                action: "click->copy-link#copy"
-              }) %>
-        <%# success button variant %>
-        <%= f.button_with_icon(t(".copied_link"),
-              class: "copy-link-button invisible",
-              icon: "check_circle",
-              icon_position: :leading,
-              variant: :success,
-              type: "button",
-              data: {
-                copy_link_target: "successButton"
-              }) %>
-      <% end %>
+  <div class="border-top border-base-lighter padding-top-1">
+    <h2><%= t(".whats_next_2_title") %></h2>
+    <div class="usa-prose">
+      <p class="margin-bottom-1"><%= t(".whats_next_2_li_1_html") %></p>
+      <%= render(LinkWithIconComponent.new(
+        t(".survey"),
+        icon: "open_in_new",
+        class: "usa-button usa-button--outline",
+        icon_position: :trailing,
+        url: feedbacks_path(source: "success_page"),
+        target: "_blank",
+        rel: "noopener noreferrer"
+      )) %>
     </div>
   </div>
 </div>

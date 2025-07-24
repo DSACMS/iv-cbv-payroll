@@ -33,6 +33,12 @@ RSpec.describe Cbv::SuccessesController do
         expect(response.body).to have_selector('button[data-copy-link-target="copyLinkButton"]')
       end
 
+      it "shows a link to the CBV survey" do
+        get :show
+        expect(response.body).to include(I18n.t("cbv.successes.show.survey"))
+        expect(response.body).to include(survey_cbv_success_path)
+      end
+
       describe "#invitation_link" do
         context "in production environment" do
           before do
@@ -87,6 +93,28 @@ RSpec.describe Cbv::SuccessesController do
           end
         end
       end
+    end
+  end
+
+  describe "#survey" do
+    let(:cbv_flow) { create(:cbv_flow, :invited) }
+    let(:cbv_survey_url) { "https://some.survey.url" }
+
+    before do
+      session[:cbv_flow_id] = cbv_flow.id
+      stub_env("CBV_SURVEY_URL", cbv_survey_url)
+    end
+
+    it "tracks an event and redirects to survey URL" do
+      expect_any_instance_of(GenericEventTracker).to receive(:track).with(
+        "ApplicantClickedCbvSurveyLink",
+        instance_of(ActionDispatch::Request),
+        hash_including(
+          cbv_flow_id: cbv_flow.id
+        )
+      )
+      get :survey
+      expect(response).to redirect_to(cbv_survey_url)
     end
   end
 end

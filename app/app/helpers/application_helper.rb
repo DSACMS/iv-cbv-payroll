@@ -56,6 +56,10 @@ module ApplicationHelper
   end
 
   APPLICANT_FEEDBACK_FORM = "https://docs.google.com/forms/d/e/1FAIpQLSfrUiz0oWE5jbXjPfl-idQQGPgxKplqFtcKq08UOhTaEa2k6A/viewform"
+  # TODO: update this to the actual survey form URL
+  # @see https://jiraent.cms.gov/browse/FFS-3137
+  APPLICANT_SURVEY_FORM = "https://docs.google.com/forms/d/e/1FAIpQLSf0-_00000000000000000000000000000000000000000/viewform"
+
   def feedback_form_url
     case params[:controller]
     when %r{^caseworker/}
@@ -67,6 +71,10 @@ module ApplicationHelper
     else
       APPLICANT_FEEDBACK_FORM
     end
+  end
+
+  def survey_form_url
+    APPLICANT_SURVEY_FORM
   end
 
   # some job statuses we consider completed even if they failed
