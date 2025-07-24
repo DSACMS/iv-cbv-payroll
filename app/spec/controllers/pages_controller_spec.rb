@@ -22,16 +22,16 @@ RSpec.describe PagesController do
         expect(response).to redirect_to(cbv_flow_new_path(client_agency_id: "la_ldh"))
       end
 
-      it "defaults to sms source for LA when no source provided" do
+      it "defaults to sms origin for LA when no origin provided" do
         request.host = "la.reportmyincome.org"
         get :home
-        expect(session[:cbv_source]).to eq("sms")
+        expect(session[:cbv_origin]).to eq("sms")
       end
 
-      it "uses provided source parameter when given" do
+      it "uses provided origin parameter when given" do
         request.host = "la.reportmyincome.org"
-        get :home, params: { source: "mail" }
-        expect(session[:cbv_source]).to eq("mail")
+        get :home, params: { origin: "mail" }
+        expect(session[:cbv_origin]).to eq("mail")
       end
     end
 

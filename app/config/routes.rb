@@ -25,8 +25,8 @@ Rails.application.routes.draw do
     # Feedback CTA
     get "/feedback", to: "feedbacks#show", as: :feedbacks
 
-    # RFI (mail) source tracking route for LA
-    get "/start", to: "pages#home", defaults: { source: "mail" }
+    # RFI (mail) origin tracking route for LA
+    get "/start", to: "pages#home", defaults: { origin: "mail" }
 
     scope "/cbv", as: :cbv_flow, module: :cbv do
       resource :entry, only: %i[show create]
