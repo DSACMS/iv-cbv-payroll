@@ -1,6 +1,6 @@
 <h3 class="margin-0"><%= t("cbv.payment_details.show.payments_and_deductions_table_header") %></h3>
 <% if has_monthly_summary_results? %>
-  <% @monthly_summary_data.each_with_index do |(month_string, summary), index| %>
+  <% @monthly_summary_data.each do |(month_string, summary)| %>
     <%= render AccordionComponent.new(id: "#{month_string}-accordion") do |accordion| %>
       <% accordion.with_title do %>
         <%= format_month_string(month_string, summary) %>

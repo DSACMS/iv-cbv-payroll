@@ -31,19 +31,23 @@ RSpec.describe Report::PaymentsDeductionsMonthlySummaryComponent, type: :compone
     end
 
     context "with a gig-worker" do
+      let(:pinwheel_report) { Aggregators::AggregatorReports::PinwheelReport.new(payroll_accounts: [ payroll_account ], pinwheel_service: pinwheel_service, days_to_fetch_for_w2: 90, days_to_fetch_for_gig: 182) }
+
+      before do
+        pinwheel_stub_request_identity_response
+        pinwheel_stub_request_end_user_accounts_response
+        pinwheel_stub_request_end_user_account_response
+        pinwheel_stub_request_platform_response
+        pinwheel_stub_request_income_metadata_response if supported_jobs.include?("income")
+        pinwheel_stub_request_employment_info_response
+        pinwheel_stub_request_shifts_response if supported_jobs.include?("shifts")
+      end
+
       context "whose paystubs synced" do
-        let(:pinwheel_report) { Aggregators::AggregatorReports::PinwheelReport.new(payroll_accounts: [ payroll_account ], pinwheel_service: pinwheel_service, days_to_fetch_for_w2: 90, days_to_fetch_for_gig: 182) }
         let(:supported_jobs) { %w[paystubs employment income shifts] }
         let(:errored_jobs) { [] }
         before do
-          pinwheel_stub_request_identity_response
-          pinwheel_stub_request_end_user_accounts_response
-          pinwheel_stub_request_end_user_account_response
-          pinwheel_stub_request_platform_response
           pinwheel_stub_request_end_user_paystubs_response
-          pinwheel_stub_request_income_metadata_response if supported_jobs.include?("income")
-          pinwheel_stub_request_employment_info_response
-          pinwheel_stub_request_shifts_response if supported_jobs.include?("shifts")
           pinwheel_report.fetch
         end
 
@@ -66,18 +70,10 @@ RSpec.describe Report::PaymentsDeductionsMonthlySummaryComponent, type: :compone
       end
 
       context "whose paystubs failed to sync" do
-        let(:pinwheel_report) { Aggregators::AggregatorReports::PinwheelReport.new(payroll_accounts: [ payroll_account ], pinwheel_service: pinwheel_service, days_to_fetch_for_w2: 90, days_to_fetch_for_gig: 182) }
         let(:supported_jobs) { %w[paystubs employment income] }
         let(:errored_jobs) { [ "paystubs" ] }
         before do
-          pinwheel_stub_request_identity_response
-          pinwheel_stub_request_end_user_accounts_response
-          pinwheel_stub_request_end_user_account_response
-          pinwheel_stub_request_platform_response
           pinwheel_stub_request_end_user_no_paystubs_response
-          pinwheel_stub_request_income_metadata_response if supported_jobs.include?("income")
-          pinwheel_stub_request_employment_info_response
-          pinwheel_stub_request_shifts_response if supported_jobs.include?("shifts")
           pinwheel_report.fetch
         end
 
@@ -114,13 +110,17 @@ RSpec.describe Report::PaymentsDeductionsMonthlySummaryComponent, type: :compone
       )
     end
 
+
+    let(:argyle_report) { Aggregators::AggregatorReports::ArgyleReport.new(payroll_accounts: [ payroll_account ], argyle_service: argyle_service, days_to_fetch_for_w2: 90, days_to_fetch_for_gig: 182) }
+    before do
+      argyle_stub_request_identities_response("bob")
+      argyle_stub_request_gigs_response("bob")
+      argyle_stub_request_account_response("bob")
+    end
+
     context "with bob, a gig-worker whose paystubs synced" do
-      let(:argyle_report) { Aggregators::AggregatorReports::ArgyleReport.new(payroll_accounts: [ payroll_account ], argyle_service: argyle_service, days_to_fetch_for_w2: 90, days_to_fetch_for_gig: 182) }
       before do
-        argyle_stub_request_identities_response("bob")
         argyle_stub_request_paystubs_response("bob")
-        argyle_stub_request_gigs_response("bob")
-        argyle_stub_request_account_response("bob")
         argyle_report.fetch
       end
 
@@ -145,9 +145,6 @@ RSpec.describe Report::PaymentsDeductionsMonthlySummaryComponent, type: :compone
     context "with bob, a gig-worker whose paystubs failed to sync" do
       let(:argyle_report) { Aggregators::AggregatorReports::ArgyleReport.new(payroll_accounts: [ payroll_account ], argyle_service: argyle_service, days_to_fetch_for_w2: 90, days_to_fetch_for_gig: 182) }
       before do
-        argyle_stub_request_identities_response("bob")
-        argyle_stub_request_gigs_response("bob")
-        argyle_stub_request_account_response("bob")
         argyle_report.fetch
       end
 
