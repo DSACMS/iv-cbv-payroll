@@ -28,7 +28,7 @@
           </svg>
         </div>
         <div class="grid-col flex-1">
-          <strong><%= t(".whats_next_1_title") %></strong>
+          <h3><%= t(".whats_next_1_title") %></h3>
           <p class="margin-y-1"><%= t(".whats_next_1_li_1", agency_acronym: agency_translation("shared.agency_acronym")) %></p>
           <%= t(".whats_next_1_li_2_html", agency_acronym: agency_translation("shared.agency_acronym"), agency_website: current_agency.agency_contact_website) %>
         </div>
@@ -40,7 +40,7 @@
           </svg>
         </div>
         <div class="grid-col flex-1">
-          <strong><%= agency_translation(".share_invitation_link_title") %></strong>
+          <h3><%= t(".share_invitation_link_title") %></h3>
           <p class="margin-y-1"><%= t(".share_invitation_link_content") %></p>
           <div data-controller="copy-link">
             <%= form_with(builder: UswdsFormBuilder, html: { class: "display-contents" }) do |f| %>
@@ -72,13 +72,15 @@
     </ul>
   </div>
 
-  <div class="border-top border-base-lighter padding-top-1">
+  <div class="divider margin-top-5"></div>
+
+  <div>
     <h2><%= t(".whats_next_2_title") %></h2>
     <div class="usa-prose">
       <p class="margin-bottom-1"><%= t(".whats_next_2_li_1_html") %></p>
       <%= render(LinkWithIconComponent.new(
         t(".survey"),
-        icon: "open_in_new",
+        icon: "launch",
         class: "usa-button usa-button--outline",
         icon_position: :trailing,
         url: feedbacks_path(source: "success_page"),
