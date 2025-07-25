@@ -483,6 +483,7 @@ en:
         month: Month
         monthly_summary: Monthly Summary
         partial_month_text: "(Partial month: from %{start_date}-%{end_date})"
+        partial_month_text_simple: "(Partial month)"
         payments_from_header: Payments from %{employer_name}
         payments_from_text: These were the dates that you were paid for your work at %{employer_name} and the gross pay amount.
         payments_from_text_caseworker: These were the dates that the client was paid for their work at %{employer_name} and the gross pay amount.

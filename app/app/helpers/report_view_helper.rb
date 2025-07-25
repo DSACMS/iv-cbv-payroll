@@ -74,9 +74,9 @@ module ReportViewHelper
   end
 
   def format_month_string(month_string, summary)
-    formatted_month = Date.strptime(month_string, "%Y-%m").strftime("%B %Y")
+    formatted_month = I18n.l(Date.strptime(month_string, "%Y-%m"), format: "%B %Y")&.humanize
     if summary[:partial_month_range][:is_partial_month]
-      formatted_month = "#{formatted_month} #{summary[:partial_month_range][:description]}"
+      formatted_month = "#{formatted_month} #{t("components.report.monthly_summary_table.partial_month_text_simple")}"
     end
     formatted_month
   end

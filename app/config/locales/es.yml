@@ -362,6 +362,7 @@ es:
         month: Mes
         monthly_summary: Resumen mensual
         partial_month_text: "(Mes parcial: desde el %{start_date} y hasta el %{end_date})"
+        partial_month_text_simple: "(Mes parcial)"
         payments_from_header: Pagos de %{employer_name}
         payments_from_text: Estas fueron las fechas en las que le pagaron por su trabajo en %{employer_name} y el monto del salario bruto.
         payments_from_text_caseworker: Estas son las fechas en las que se le pagó al cliente por su trabajo en %{employer_name} y el monto total del pago, antes de impuestos.
