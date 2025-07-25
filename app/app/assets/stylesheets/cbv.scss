@@ -250,6 +250,16 @@ input#invitation_link{
     background-color: color("green-cool-40v");
   }
 }
+
+#session-timeout-modal.is-visible {
+  // This is one additional 9 beyond Argyle's modal z-index to make sure
+  // the timeout modal is always visible if displayed
+  z-index: 9999999999;
+}
+
+/*
+* Tables
+*/
 .subheader-row {
   > th {
     font-weight: bold;
@@ -257,10 +267,8 @@ input#invitation_link{
   }
 }
 
-#session-timeout-modal.is-visible {
-  // This is one additional 9 beyond Argyle's modal z-index to make sure
-  // the timeout modal is always visible if displayed
-  z-index: 9999999999;
+.usa-prose > .usa-table--borderless thead th.subheader-row {
+  background-color: #dfe1e2;
 }
 
 /*
