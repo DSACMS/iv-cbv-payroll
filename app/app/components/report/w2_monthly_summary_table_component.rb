@@ -1,12 +1,11 @@
-class Report::MonthlySummaryTableComponent < ViewComponent::Base
+class Report::W2MonthlySummaryTableComponent < ViewComponent::Base
   include ReportViewHelper
   include Cbv::MonthlySummaryHelper
 
   attr_reader :employer_name
 
-  def initialize(report, payroll_account, is_responsive: true, is_caseworker: false, show_payments: true, show_footnote: true, is_pdf: false)
+  def initialize(report, payroll_account, is_responsive: true, is_caseworker: false, show_footnote: true, is_pdf: false)
     @report = report
-    @show_payments = show_payments
     @show_footnote = show_footnote
     @is_pdf = is_pdf
 
@@ -32,18 +31,6 @@ class Report::MonthlySummaryTableComponent < ViewComponent::Base
     @monthly_summary_data.present?
   end
 
-  def has_mileage_data?
-    @monthly_summary_data.sum { |month_string, month_summary| month_summary[:total_mileage] } > 0
-  end
-
-  def show_payments?
-    @show_payments
-  end
-
-  def show_footnote?
-    @show_footnote
-  end
-
   def payments_from_text
     if @is_caseworker
       I18n.t("components.report.monthly_summary_table.payments_from_text_caseworker", employer_name: @employer_name)
@@ -53,11 +40,11 @@ class Report::MonthlySummaryTableComponent < ViewComponent::Base
   end
 
   def table_colspan
-    if has_mileage_data?
-      4
-    else
-      3
-    end
+    3
+  end
+
+  def show_footnote?
+    true
   end
 
   def format_accrued_gross_earnings(month_summary)
@@ -65,25 +52,13 @@ class Report::MonthlySummaryTableComponent < ViewComponent::Base
     format_money(month_summary[:accrued_gross_earnings])
   end
 
-  def format_verified_mileage_expenses(month_summary, month_string)
-    return I18n.t("shared.not_applicable") if month_summary[:gigs].empty?
-    year = parse_month_safely(month_string).year
-    cents_per_mile = self.federal_cents_per_mile(year)
-
-    # Note: we need to round miles to dollars x miles rate displayed
-    format_money(month_summary[:total_mileage].to_f.round(0) * cents_per_mile)
+  def format_paychecks_count(month_summary)
+    month_summary[:paystubs].count
   end
 
-  def format_verified_mileage_expense_rate(month_summary, month_string)
-    year = parse_month_safely(month_string).year
-    cents_per_mile = self.federal_cents_per_mile(year)
-    t("components.report.monthly_summary_table.dollars_times_miles",
-      dollar_amount: format_money(cents_per_mile), number_of_miles: month_summary[:total_mileage].to_f.round(0))
-  end
-
-  def format_total_gig_hours(month_summary)
-    return I18n.t("shared.not_applicable") if month_summary[:gigs].empty?
-    format_hours(month_summary[:total_gig_hours])
+  def format_hours_worked(month_summary)
+    return I18n.t("shared.not_applicable") if month_summary[:paystubs].empty?
+    format_hours(month_summary[:total_w2_hours])
   end
 
   def format_no_payments_found
