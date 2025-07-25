@@ -51,7 +51,7 @@ class Cbv::BaseController < ApplicationController
     agency = agency_config[detect_client_agency_from_domain]
     origin = params.fetch(:origin, agency&.default_origin)
     if origin.present?
-      session[:cbv_origin] = origin.strip.downcase.gsub(/\s+/, "_")
+      session[:cbv_origin] = origin.strip.downcase.gsub(/\s+/, "_").first(64)
     end
   end
 
