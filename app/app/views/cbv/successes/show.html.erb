@@ -21,33 +21,27 @@
   </div>
 
   <div class="margin-bottom-5">
-    <h2><%= t(".whats_next") %></h2>
-    <ul class="usa-list usa-list--unstyled">
-      <li class="grid-row grid-gap-2 margin-bottom-205">
-        <div class="grid-col-auto margin-top-205">
-          <%# attach_money icon %>
-          <div class="display-flex flex-justify-center flex-align-center width-6 height-6 bg-primary-lighter radius-top-pill radius-bottom-pill">
-            <svg class="usa-icon usa-icon--size-3 bg-primary-lighter" aria-hidden="true" focusable="false" role="img">
-              <use xlink:href="<%= asset_path("@uswds/uswds/dist/img/sprite.svg#attach_money") %>"></use>
-            </svg>
-          </div>
+    <h2 class="margin-left-1em"><%= t(".whats_next") %></h2>
+    <ul class="usa-icon-list">
+      <li class="usa-icon-list__item">
+        <div class="usa-icon-list__icon display-flex flex-justify-center flex-align-center width-6 minw-6 height-6 bg-primary-lighter radius-top-pill radius-bottom-pill">
+          <svg class="usa-icon" aria-hidden="true" role="img">
+            <use href="<%= asset_path("@uswds/uswds/dist/img/sprite.svg#attach_money") %>"></use>
+          </svg>
         </div>
-        <div class="grid-col flex-1">
+        <div class="usa-icon-list__content">
           <h3><%= t(".whats_next_1_title") %></h3>
           <p class="margin-y-1"><%= t(".whats_next_1_li_1", agency_acronym: agency_translation("shared.agency_acronym")) %></p>
           <%= t(".whats_next_1_li_2_html", agency_acronym: agency_translation("shared.agency_acronym"), agency_website: current_agency.agency_contact_website) %>
         </div>
       </li>
-      <li class="grid-row grid-gap-2">
-        <%# groups icon %>
-        <div class="grid-col-auto margin-top-205">
-          <div class="display-flex flex-justify-center flex-align-center width-6 height-6 bg-primary-lighter radius-top-pill radius-bottom-pill">
-            <svg class="usa-icon usa-icon--size-3 bg-primary-lighter" aria-hidden="true" focusable="false" role="img">
-              <use xlink:href="<%= asset_path("@uswds/uswds/dist/img/sprite.svg#groups") %>"></use>
-            </svg>
-          </div>
+      <li class="usa-icon-list__item">
+        <div class="usa-icon-list__icon display-flex flex-justify-center flex-align-center width-6 minw-6 height-6 bg-primary-lighter radius-top-pill radius-bottom-pill">
+          <svg class="usa-icon" aria-hidden="true" role="img">
+            <use href="<%= asset_path("@uswds/uswds/dist/img/sprite.svg#groups") %>"></use>
+          </svg>
         </div>
-        <div class="grid-col flex-1">
+        <div class="usa-icon-list__content">
           <h3><%= t(".share_invitation_link_title") %></h3>
           <p class="margin-y-1"><%= t(".share_invitation_link_content") %></p>
         </div>

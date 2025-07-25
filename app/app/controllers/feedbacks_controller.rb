@@ -8,7 +8,7 @@ class FeedbacksController < ApplicationController
       referer: params[:referer],
       cbv_flow_id: cbv_flow&.id,
       cbv_applicant_id: cbv_flow&.cbv_applicant_id,
-      client_agency_id: cbv_flow&.client_agency_id,
+      client_agency_id: cbv_flow&.client_agency_id
     }.compact || {}
 
     track_feedback_event(event_name, attributes)
