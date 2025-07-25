@@ -6,8 +6,9 @@ class FeedbacksController < ApplicationController
     begin
       event_logger.track("ApplicantClickedFeedbackLink", request, {
         timestamp: Time.now.to_i,
-        referer: request.referer,
+        referer: params[:referer],
         cbv_flow_id: cbv_flow&.id,
+        cbv_applicant_id: cbv_flow&.cbv_applicant_id,
         client_agency_id: cbv_flow&.client_agency_id
       })
     rescue => ex

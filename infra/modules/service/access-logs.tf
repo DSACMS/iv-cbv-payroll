@@ -63,6 +63,9 @@ resource "aws_s3_bucket_lifecycle_configuration" "access_logs" {
   rule {
     id     = "AbortIncompleteUpload"
     status = "Enabled"
+
+    filter {}
+
     abort_incomplete_multipart_upload {
       days_after_initiation = 7
     }
@@ -71,6 +74,9 @@ resource "aws_s3_bucket_lifecycle_configuration" "access_logs" {
   rule {
     id     = "StorageClass"
     status = "Enabled"
+
+    filter {}
+
     dynamic "transition" {
       for_each = local.log_file_transition
       content {
@@ -83,6 +89,9 @@ resource "aws_s3_bucket_lifecycle_configuration" "access_logs" {
   rule {
     id     = "Expiration"
     status = "Enabled"
+
+    filter {}
+
     expiration {
       days = 2555
     }

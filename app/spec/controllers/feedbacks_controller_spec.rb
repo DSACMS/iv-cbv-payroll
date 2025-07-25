@@ -14,16 +14,14 @@ RSpec.describe FeedbacksController, type: :controller do
     end
 
     it "redirects to the feedback form and tracks the event with source" do
-      # see https://github.com/rspec/rspec-rails/issues/1655#issuecomment-250418438
-      request.headers.merge!('HTTP_REFERER' => cbv_flow_entry_path(locale: :en))
-
-      get :show
+      referer_url = cbv_flow_employer_search_path(locale: :en)
+      get :show, params: { referer: referer_url }
 
       expect(event_logger).to have_received(:track).with(
         "ApplicantClickedFeedbackLink",
         kind_of(ActionDispatch::Request),
         hash_including(
-          referer: cbv_flow_entry_path(locale: :en),
+          referer: referer_url,
           client_agency_id: cbv_flow.client_agency_id,
           cbv_flow_id: cbv_flow.id
         )
