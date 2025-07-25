@@ -53,7 +53,7 @@ locals {
       secret_store_name = "/service/${var.app_name}-${var.environment}/mixpanel-token"
     },
     NEWRELIC_KEY = {
-      manage_method     = "generated"
+      manage_method     = "manual"
       secret_store_name = "/service/${var.app_name}-${var.environment}/newrelic-key"
     },
     NEW_RELIC_ENV = {

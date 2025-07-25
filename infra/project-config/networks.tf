@@ -6,13 +6,13 @@ locals {
 
       domain_config = {
         manage_dns  = false
-        hosted_zone = "example.com"
+        hosted_zone = "divt.app"
 
         certificate_configs = {
           # Example certificate configuration for a certificate that is managed by the project
-          # "sub.domain.com" = {
-          #   source = "issued"
-          # }
+          "demo.divt.app" = {
+            source = "issued"
+          }
 
           # Example certificate configuration for a certificate that is issued elsewhere and imported into the project
           # (currently not supported, will be supported via https://github.com/navapbc/template-infra/issues/559)

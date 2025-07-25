@@ -199,7 +199,6 @@ module "service" {
 
   extra_environment_variables = merge(
     {
-      FEATURE_FLAGS_PROJECT = module.feature_flags.evidently_project_name
       BUCKET_NAME           = local.storage_config.bucket_name
     },
     local.identity_provider_environment_variables,
@@ -219,7 +218,6 @@ module "service" {
 
   extra_policies = merge(
     {
-      feature_flags_access = module.feature_flags.access_policy_arn,
       storage_access       = module.storage.access_policy_arn,
       email_access         = aws_iam_policy.email_access_policy.arn,
     },
@@ -240,12 +238,6 @@ module "monitoring" {
   service_name                                = local.service_config.service_name
   load_balancer_arn_suffix                    = module.service.load_balancer_arn_suffix
   incident_management_service_integration_url = module.app_config.has_incident_management_service && !local.is_temporary ? data.aws_ssm_parameter.incident_management_service_integration_url[0].value : null
-}
-
-module "feature_flags" {
-  source        = "../../modules/feature-flags"
-  service_name  = local.service_config.service_name
-  feature_flags = module.app_config.feature_flags
 }
 
 module "storage" {
