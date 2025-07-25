@@ -56,8 +56,6 @@ module ApplicationHelper
   end
 
   APPLICANT_FEEDBACK_FORM = "https://docs.google.com/forms/d/e/1FAIpQLSfrUiz0oWE5jbXjPfl-idQQGPgxKplqFtcKq08UOhTaEa2k6A/viewform"
-  # TODO: update this to the actual survey form URL
-  # @see https://jiraent.cms.gov/browse/FFS-3137
   APPLICANT_SURVEY_FORM = "https://forms.gle/M9jVQNue96rjQTbD9"
 
   def feedback_form_url
