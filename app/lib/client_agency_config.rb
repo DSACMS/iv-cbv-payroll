@@ -40,6 +40,7 @@ class ClientAgencyConfig
       agency_domain
       authorized_emails
       caseworker_feedback_form
+      default_source
       invitation_valid_days
       logo_path
       logo_square_path
@@ -64,6 +65,7 @@ class ClientAgencyConfig
       @agency_domain = yaml["agency_domain"]
       @authorized_emails = yaml["authorized_emails"] || ""
       @caseworker_feedback_form = yaml["caseworker_feedback_form"]
+      @default_source = yaml["default_source"]
       @invitation_valid_days = yaml["invitation_valid_days"]
       @logo_path = yaml["logo_path"]
       @logo_square_path = yaml["logo_square_path"]
