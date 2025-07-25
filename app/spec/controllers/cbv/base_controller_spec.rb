@@ -9,13 +9,24 @@ RSpec.describe Cbv::BaseController, type: :controller do
 
   let(:cbv_flow) { create(:cbv_flow, :invited, client_agency_id: "az_des") }
 
-  describe '#track_invitation_clicked_event' do
-    before do
-      routes.draw do
-        get 'show', controller: "cbv/base"
-      end
+  before do
+    routes.draw do
+      get 'show', controller: "cbv/base"
     end
+  end
 
+  describe '#set_cbv_flow' do
+    it "sets an encrypted permanent cookie with cbv_applicant_id for invitation-based flows" do
+      get :show, params: { token: cbv_flow.cbv_flow_invitation.auth_token }
+
+      expect(cookies.encrypted[:cbv_applicant_id]).to eq(cbv_flow.cbv_applicant_id)
+
+      cookie_jar = response.cookies["cbv_applicant_id"]
+      expect(cookie_jar).to be_present
+    end
+  end
+
+  describe '#track_invitation_clicked_event' do
     let(:cbv_flow_2) { create(:cbv_flow, cbv_flow_invitation: cbv_flow.cbv_flow_invitation) }
 
     it "identifies multiple household members if income changes relevant" do
