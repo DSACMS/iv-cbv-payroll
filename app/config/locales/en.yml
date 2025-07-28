@@ -473,16 +473,9 @@ en:
   components:
     report:
       employment_details_table:
-        employment_information: Employment information
         header:
           paystub_information: Paystub information
           your_details: Your details
-        employment_start_date: Employment start date
-        employment_end_date: Employment end date
-        employment_status: Employment status
-        pay_period_frequency: Pay period frequency
-        compensation_amount: Compensation amount
-
       monthly_summary_table:
         accrued_gross_earnings: Accrued gross earnings
         compact:
@@ -491,13 +484,6 @@ en:
             definition_total_hours_worked: '"Total hours worked" sums the time it took to complete every gig worked in that month. There may be gigs worked in a month that were paid in the following month.'
             definition_verified_mileage_expenses: '"Verified mileage expenses" uses mileage from the Platform/App. We multiply this by the federal mileage rate ($.70 for 2025), which covers all costs related to a car. These can be costs like gas, car payments or leasing fees, car insurance, repairs, and maintenance.'
             what_does_this_mean: What does this information mean?
-        w2:
-          title_gross_income: Gross income
-          title_number_of_paychecks: Number of paychecks
-          title_total_hours_worked: Total hours worked
-          definition_gross_income: '"Gross income" is the pay from your job before taxes, benefits, and deductions were taken out of your paychecks. In the table above, your total gross income is summed for the month within the 90 day window'
-          definition_number_of_paychecks: '"Number of paychecks" is how many times you were paid in a month within the 90-day window.'
-          definition_total_hours_worked: '"Total hours worked" are the total number of hours you worked for every paycheck you received in a month.'
         dollars_times_miles: "(%{dollar_amount} x %{number_of_miles} miles)"
         month: Month
         monthly_summary: Monthly Summary
@@ -507,6 +493,13 @@ en:
         payments_from_text_caseworker: These were the dates that the client was paid for their work at %{employer_name} and the gross pay amount.
         total_gig_hours: Total hours worked
         verified_mileage_expenses: Verified mileage expenses
+        w2:
+          definition_gross_income: '"Gross income" is the pay from your job before taxes, benefits, and deductions were taken out of your paychecks. In the table above, your total gross income is summed for the month within the 90 day window'
+          definition_number_of_paychecks: '"Number of paychecks" is how many times you were paid in a month within the 90-day window.'
+          definition_total_hours_worked: '"Total hours worked" are the total number of hours you worked for every paycheck you received in a month.'
+          title_gross_income: Gross income
+          title_number_of_paychecks: Number of paychecks
+          title_total_hours_worked: Total hours worked
   continue: Continue
   date:
     formats:
