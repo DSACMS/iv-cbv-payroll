@@ -1,5 +1,5 @@
 class Cbv::BaseController < ApplicationController
-  before_action :set_cbv_flow, :ensure_cbv_flow_not_yet_complete, :prevent_back_after_complete, :capture_page_view
+  before_action :set_cbv_origin, :set_cbv_flow, :ensure_cbv_flow_not_yet_complete, :prevent_back_after_complete, :capture_page_view
   helper_method :agency_url, :next_path, :get_comment_by_account_id, :current_agency
 
   private
@@ -44,6 +44,17 @@ class Cbv::BaseController < ApplicationController
     end
   end
 
+  def set_cbv_origin
+    return if session[:cbv_origin].present?
+
+    # Running before set_cbv_flow so we need to use the domain
+    agency = agency_config[detect_client_agency_from_domain]
+    origin = params.fetch(:origin, agency&.default_origin)
+    if origin.present?
+      session[:cbv_origin] = origin.strip.downcase.gsub(/\s+/, "_").first(64)
+    end
+  end
+
   def ensure_cbv_flow_not_yet_complete
     return unless @cbv_flow && @cbv_flow.complete?
 
@@ -70,6 +81,8 @@ class Cbv::BaseController < ApplicationController
       cbv_flow_applicant_information_path
     when "cbv/payment_details"
       cbv_flow_add_job_path
+    when "cbv/other_jobs"
+      cbv_flow_applicant_information_path
     when "cbv/applicant_informations"
       cbv_flow_summary_path
     when "cbv/summaries"
@@ -146,7 +159,8 @@ class Cbv::BaseController < ApplicationController
       seconds_since_invitation: (Time.now - invitation.created_at).to_i,
       household_member_count:  count_unique_members(invitation),
       completed_reports_count: invitation.cbv_flows.completed.count,
-      flows_started_count: invitation.cbv_flows.count
+      flows_started_count: invitation.cbv_flows.count,
+      origin: session[:cbv_origin]
     })
   rescue => ex
     Rails.logger.error "Unable to track event (ApplicantClickedCBVInvitationLink): #{ex}"
