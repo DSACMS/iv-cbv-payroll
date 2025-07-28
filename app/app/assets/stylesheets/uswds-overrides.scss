@@ -42,3 +42,10 @@ $mobile-navbar-height: 4rem;
 .pointer-events-none {
   pointer-events: none;
 }
+
+// Make the first (left/top) row bold on mobile tables
+@media screen and (max-width: 29.99em) {
+  tr td:first-child {
+    font-weight: bold;
+  }
+}

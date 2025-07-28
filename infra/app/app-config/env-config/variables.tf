@@ -129,3 +129,9 @@ variable "database_serverless_max_capacity" {
   type        = number
   default     = 1.0
 }
+
+variable "la_ldh_pilot_enabled" {
+  description = "Whether the LA LDH pilot is enabled"
+  type        = bool
+  default     = false
+}

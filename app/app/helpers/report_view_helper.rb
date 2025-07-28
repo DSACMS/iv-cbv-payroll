@@ -31,6 +31,19 @@ module ReportViewHelper
     number_to_currency(dollars_in_cents.to_f / 100)
   end
 
+  def format_boolean(boolean_value)
+    case boolean_value
+    when true, "true"
+      I18n.t("us_form_with.boolean_true")
+    when false, "false"
+      I18n.t("us_form_with.boolean_false")
+    when nil
+      I18n.t("shared.not_applicable")
+    else
+      raise ArgumentError, "format_boolean only accepts true, false, 'true', 'false', or nil. Got: #{boolean_value.inspect}"
+    end
+  end
+
   def report_data_range(report, account_id = nil)
     if account_id
       days = report.fetched_days_for_account(account_id)
@@ -74,9 +87,9 @@ module ReportViewHelper
   end
 
   def format_month_string(month_string, summary)
-    formatted_month = Date.strptime(month_string, "%Y-%m").strftime("%B %Y")
+    formatted_month = I18n.l(Date.strptime(month_string, "%Y-%m"), format: "%B %Y")&.humanize
     if summary[:partial_month_range][:is_partial_month]
-      formatted_month = "#{formatted_month} #{summary[:partial_month_range][:description]}"
+      formatted_month = "#{formatted_month} #{t("components.report.monthly_summary_table.partial_month_text_simple")}"
     end
     formatted_month
   end
