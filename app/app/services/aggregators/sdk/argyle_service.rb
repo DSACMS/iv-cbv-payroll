@@ -6,6 +6,10 @@ require "json"
 
 module Aggregators::Sdk
   class ArgyleService
+    include CacheableExternalRequests
+
+    # cache_method(:fetch_paystubs_api)
+    # cache_method(:fetch_gigs_api)
     ENVIRONMENTS = {
       sandbox: {
         base_url: "https://api-sandbox.argyle.com/v2",

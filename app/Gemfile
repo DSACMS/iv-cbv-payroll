@@ -135,3 +135,5 @@ gem "wkhtmltopdf-binary"
 
 gem "net-sftp"
 gem "net-ssh"
+
+gem "solid_cache", "~> 0.7.0"
