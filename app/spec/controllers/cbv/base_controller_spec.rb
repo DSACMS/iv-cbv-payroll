@@ -64,5 +64,58 @@ RSpec.describe Cbv::BaseController, type: :controller do
       expect(response).to be_successful
       expect(response.body).to eq("hello world")
     end
+
+    context "when handling origin parameters" do
+      before do
+        stub_client_agency_config_value("la_ldh", "agency_domain", "la.reportmyincome.org")
+        request.host = "la.reportmyincome.org"
+      end
+
+      it "sets the origin in the clicked invitation event" do
+        expect(EventTrackingJob).to receive(:perform_later).with("CbvPageView", anything, anything)
+        expect(EventTrackingJob).to receive(:perform_later).with("ApplicantClickedCBVInvitationLink", anything, hash_including(
+          origin: "email"
+        ))
+        get :show, params: { token: cbv_flow.cbv_flow_invitation.auth_token, origin: "email" }
+        expect(response).to be_successful
+        expect(session[:cbv_flow_id]).to be_a(Integer)
+        expect(session[:cbv_origin]).to eq "email"
+      end
+
+      it "cleans the supplied origin parameter if set" do
+        expect(EventTrackingJob).to receive(:perform_later).with("CbvPageView", anything, anything)
+        expect(EventTrackingJob).to receive(:perform_later).with("ApplicantClickedCBVInvitationLink", anything, hash_including(
+          origin: "mfb_dashboard"
+        ))
+        get :show, params: { token: cbv_flow.cbv_flow_invitation.auth_token, origin: " MFB dashboard" }
+        expect(response).to be_successful
+        expect(session[:cbv_flow_id]).to be_a(Integer)
+        expect(session[:cbv_origin]).to eq "mfb_dashboard"
+      end
+
+      it "does not reset the origin if it is already present" do
+        session[:cbv_origin] = "test"
+        expect(EventTrackingJob).to receive(:perform_later).with("CbvPageView", anything, anything)
+        expect(EventTrackingJob).to receive(:perform_later).with("ApplicantClickedCBVInvitationLink", anything, hash_including(
+          origin: "test"
+        ))
+        get :show, params: { token: cbv_flow.cbv_flow_invitation.auth_token, origin: "email" }
+        expect(response).to be_successful
+        expect(session[:cbv_flow_id]).to be_a(Integer)
+        expect(session[:cbv_origin]).to eq "test"
+      end
+
+      it "does not set an origin if no parameter or agency default are supplied" do
+        request.host = nil
+        expect(EventTrackingJob).to receive(:perform_later).with("CbvPageView", anything, anything)
+        expect(EventTrackingJob).to receive(:perform_later).with("ApplicantClickedCBVInvitationLink", anything, hash_including(
+          origin: nil
+        ))
+        get :show, params: { token: cbv_flow.cbv_flow_invitation.auth_token }
+        expect(response).to be_successful
+        expect(session[:cbv_flow_id]).to be_a(Integer)
+        expect(session[:cbv_origin]).to be_nil
+      end
+    end
   end
 end
