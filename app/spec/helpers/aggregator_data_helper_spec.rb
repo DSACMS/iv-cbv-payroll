@@ -17,7 +17,7 @@ RSpec.describe Cbv::AggregatorDataHelper do
 
   describe "#filter_payroll_accounts" do
     it "does not include payroll accounts that are not fully synced" do
-      _errored_account = create(:payroll_account, :pinwheel_fully_synced, cbv_flow: cbv_flow, pinwheel_account_id: "account2", with_errored_jobs: %w[income paystubs])
+      _errored_account = create(:payroll_account, :pinwheel_fully_synced, cbv_flow: cbv_flow, pinwheel_account_id: "account2", with_errored_jobs: %w[income paystubs identity])
       fully_synced_account = create(:payroll_account, :pinwheel_fully_synced, cbv_flow: cbv_flow, pinwheel_account_id: "account1")
       expect(report.filter_payroll_accounts("pinwheel")).to match_array([ fully_synced_account ])
     end
