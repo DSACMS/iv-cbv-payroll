@@ -14,6 +14,7 @@ en:
               blank: Enter the client's last name.
             snap_application_date:
               invalid_date: Enter today's date or the date you contacted the client.
+              fake_item: TEST
         cbv_applicant/az_des:
           attributes:
             case_number:
