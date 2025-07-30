@@ -242,6 +242,7 @@ es:
         pay_frequency: Frecuencia de pago
         pay_gross: Pago antes de impuestos (bruto)
         pay_gross_ytd: Salario Bruto Acumulado del Año
+        pay_information: Información de pago
         pay_net: Pago después de impuestos y deducciones (neto)
         pay_period: Período de pago
         pay_period_value: "%{start_date} al %{end_date}"
@@ -251,6 +252,7 @@ es:
         total_gross_description: Este es el ingreso total de su trabajo antes de deducción de impuestos, beneficios, y otras deducciones de su cheque de pago.
         total_gross_income: 'Ingresos totales de los últimos %{report_data_range}, antes de impuestos: %{amount}'
         unknown: Desconocido
+        your_details: Tus datos
     submits:
       show:
         additional_information_title: "¿Existe algún otro detalle que le gustaría que su asistente de caso conozca en relación con sus ingresos?"
