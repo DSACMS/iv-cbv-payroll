@@ -8,7 +8,12 @@
       <% accordion.with_accordion_item do %>
         <% summary[:paystubs].each do |paystub| %>
           <%= render(TableComponent.new(is_responsive: @is_responsive)) do |table| %>
-            <%= table.with_header_two_column(column1_title: t("cbv.payment_details.show.pay_information"), column2_title: t("cbv.payment_details.show.your_details"), class_names: "subheader-row base-lightest") %>
+            <%= table.with_subheader_row(class_names: "subheader-row base-lightest") do |row| %>
+              <%= row.with_data_cell(is_header: true, class_names: "text-nowrap")
+                    .with_content(t("cbv.payment_details.show.pay_information")) %>
+              <%= row.with_data_cell(is_header: true, class_names: "text-nowrap")
+                    .with_content(t("cbv.payment_details.show.your_details")) %>
+            <% end %>
             <%= table.with_data_point(:pay_date, paystub.pay_date) %>
             <% if @is_w2_worker %>
               <%= table.with_data_point(:pay_period_with_frequency, paystub.start, paystub.end, @pay_frequency_text) %>

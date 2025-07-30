@@ -267,8 +267,8 @@ input#invitation_link{
   }
 }
 
-.usa-prose > .usa-table--borderless thead th.subheader-row {
-  background-color: #dfe1e2;
+.usa-prose > .usa-table--borderless .subheader-row th {
+  background-color: color('gray-cool-10');
 }
 
 /*
