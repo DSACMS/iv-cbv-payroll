@@ -29,26 +29,38 @@ class Cbv::GenericLinksController < Cbv::BaseController
   end
 
   def find_or_create_cbv_flow
-    existing_applicant_id = cookies.encrypted[:cbv_applicant_id]
-    existing_applicant = find_existing_applicant(existing_applicant_id) if existing_applicant_id.present?
+    existing_applicant = find_existing_applicant_from_cookie
 
     if existing_applicant
-      clear_applicant_information(existing_applicant)
-      cbv_flow = CbvFlow.create(cbv_applicant: existing_applicant, client_agency_id: params[:client_agency_id])
-      is_new_session = false
+      create_flow_with_existing_applicant(existing_applicant)
     else
-      cbv_flow = CbvFlow.create_without_invitation(params[:client_agency_id])
-      is_new_session = true
+      create_flow_with_new_applicant
     end
+  end
 
-    [ cbv_flow, is_new_session ]
+  def find_existing_applicant_from_cookie
+    applicant_id = cookies.encrypted[:cbv_applicant_id]
+    return nil unless applicant_id.present?
+
+    find_existing_applicant(applicant_id)
+  end
+
+  def create_flow_with_existing_applicant(applicant)
+    reset_applicant_information(applicant)
+    cbv_flow = CbvFlow.create(cbv_applicant: applicant, client_agency_id: params[:client_agency_id])
+    [ cbv_flow, false ]
+  end
+
+  def create_flow_with_new_applicant
+    cbv_flow = CbvFlow.create_without_invitation(params[:client_agency_id])
+    [ cbv_flow, true ]
   end
 
   def find_existing_applicant(applicant_id)
     CbvApplicant.find_by(id: applicant_id, client_agency_id: params[:client_agency_id])
   end
 
-  def clear_applicant_information(applicant)
+  def reset_applicant_information(applicant)
     clear_attributes = applicant.applicant_attributes.index_with(nil)
     applicant.update!(clear_attributes)
   end
