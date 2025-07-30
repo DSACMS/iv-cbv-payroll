@@ -5,7 +5,7 @@
   <%= render(TableComponent.new(is_responsive: @is_responsive)) do |table| %>
     <%= table.with_subheader_row(class_names: "subheader-row base-lightest") do |row| %>
       <%= row.with_data_cell(is_header: true, class_names: "text-nowrap")
-             .with_content(I18n.t("components.report.employment_details_table.header.paystub_information")) %>
+             .with_content(I18n.t("cbv.payment_details.show.employment_information_table_header")) %>
       <%= row.with_data_cell(is_header: true, class_names: "text-nowrap")
              .with_content(I18n.t("components.report.employment_details_table.header.your_details")) %>
     <% end %>

@@ -352,6 +352,9 @@ es:
         header: Estamos recopilando los detalles de pago de su empleador.
   components:
     report:
+      employment_details_table:
+        header:
+          your_details: Sus datos
       monthly_summary_table:
         accrued_gross_earnings: Ganancias brutas acumuladas
         compact:
@@ -370,16 +373,12 @@ es:
         total_gig_hours: Total de horas trabajadas
         verified_mileage_expenses: Gastos de millaje verificado
         w2:
-          title_gross_income: Ingreso bruto
-          title_number_of_paychecks: Cantidad de cheques de pago
-          title_total_hours_worked: Total de horas trabajadas
           definition_gross_income: El "ingreso bruto" corresponde al pago recibido por su trabajo, antes de que descuenten de su cheque de pago los impuestos, beneficios y deducciones. En la tabla anterior, se calcula el total de su ingreso bruto mensual, en un período de 90 días.
           definition_number_of_paychecks: '"Cantidad de cheques de pago" es la cantidad de veces le pagaron en un mes, en un período de 90 días.'
           definition_total_hours_worked: Las "horas totales trabajadas" son el número total de horas que usted trabajó en cada cheque de pago recibido en un mes.
-      employment_details_table:
-        header:
-          paystub_information: Información del recibo de pago
-          your_details: Sus datos
+          title_gross_income: Ingreso bruto
+          title_number_of_paychecks: Cantidad de cheques de pago
+          title_total_hours_worked: Total de horas trabajadas
   continue: Continuar
   date:
     abbr_day_names:

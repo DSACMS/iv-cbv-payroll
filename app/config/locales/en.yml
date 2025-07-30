@@ -473,7 +473,6 @@ en:
     report:
       employment_details_table:
         header:
-          paystub_information: Paystub information
           your_details: Your details
       monthly_summary_table:
         accrued_gross_earnings: Accrued gross earnings
