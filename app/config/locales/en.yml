@@ -101,6 +101,10 @@ en:
       semimonthly: Semi-monthly
       variable: Variable
       weekly: Weekly
+    tax_category:
+      post_tax: post-tax
+      pre_tax: pre-tax
+      unknown: tax status unknown
   applicant_mailer:
     invitation_email:
       body_1:
@@ -329,7 +333,7 @@ en:
         additional_information_header: Additional comments (Optional)
         additional_information_label: Share any comments or additional information about the income details above that you’d like %{agency_acronym} to know. For example, you can share if the information is inaccurate or if you’re no longer working at that job.
         continue: Continue
-        deductions: 'Deduction: %{category}'
+        deductions: 'Deduction: %{category} (%{tax})'
         employment_end_date: Employment end date
         employment_information_table_header: Employment information
         employment_start_date: Employment start date
@@ -345,10 +349,11 @@ en:
         none_found: We didn't find any payments from this employer in the past %{report_data_range}.
         none_found_description: This typically happens when you haven't received income from this job in the past %{report_data_range}. If you believe this is an error, please add a comment in the additional comments box. Otherwise, continue to the next page.
         number_of_hours_worked: Number of hours worked
-        pay_date: 'Pay Date: %{pay_date}'
+        pay_date_prompt: Pay date
         pay_frequency: Pay frequency
         pay_gross: Payment before taxes (gross)
         pay_gross_ytd: Gross pay YTD
+        pay_information: Pay information
         pay_net: Payment after taxes and deductions (net)
         pay_period: Pay period
         pay_period_value: "%{start_date} to %{end_date}"
@@ -358,6 +363,7 @@ en:
         total_gross_description: This is the total gross income from your job before taxes, benefits and deductions were taken out of your paycheck.
         total_gross_income: 'Total income from the past %{report_data_range}, before taxes: %{amount}'
         unknown: Unknown
+        your_details: Your details
     submits:
       show:
         additional_information_title: Is there anything else you'd like your caseworker to know about your income?
@@ -486,6 +492,7 @@ en:
         month: Month
         monthly_summary: Monthly Summary
         partial_month_text: "(Partial month: from %{start_date}-%{end_date})"
+        partial_month_text_simple: "(Partial month)"
         payments_from_header: Payments from %{employer_name}
         payments_from_text: These were the dates that you were paid for your work at %{employer_name} and the gross pay amount.
         payments_from_text_caseworker: These were the dates that the client was paid for their work at %{employer_name} and the gross pay amount.

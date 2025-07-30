@@ -8,6 +8,13 @@ class AggregateDataPointComponent < ViewComponent::Base
     @highlight = highlight
   end
 
+  def pay_date(date)
+    {
+      label: I18n.t("cbv.payment_details.show.pay_date_prompt"),
+      value: format_date(date)
+    }
+  end
+
   def pay_period(start_date, end_date)
     {
       label: I18n.t("cbv.payment_details.show.pay_period"),
@@ -53,10 +60,12 @@ class AggregateDataPointComponent < ViewComponent::Base
     }
   end
 
-  def deduction(category, amount)
+  def deduction(category, tax, amount)
     translated_deduction_category = translate_aggregator_value("deductions", category)
+
+    translated_tax_category = translate_aggregator_value("tax_category", tax)
     {
-      label: I18n.t("cbv.payment_details.show.deductions", category: translated_deduction_category&.humanize),
+      label: I18n.t("cbv.payment_details.show.deductions", category: translated_deduction_category&.humanize, tax: translated_tax_category),
       value: format_money(amount)
     }
   end
