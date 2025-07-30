@@ -61,24 +61,24 @@ RSpec.describe Report::EmploymentDetailsTableComponent, type: :component do
 
       it "renders the correct column headers" do
         x = render_inline(described_class.new(pinwheel_report, payroll_account))
-        expect(subject.css("thead tr.subheader-row th:nth-child(1)").to_html).to include "Paystub information"
+        expect(subject.css("thead tr.subheader-row th:nth-child(1)").to_html).to include "Employment information"
         expect(subject.css("thead tr.subheader-row th:nth-child(2)").to_html).to include "Your details"
       end
 
       it "renders employment details" do
-        expect(subject.css("tbody tr:nth-child(1) td:nth-child(1)").to_html).to include "Employer phone"
+        expect(subject.css("tbody tr:nth-child(1) th:nth-child(1)").to_html).to include "Employer phone"
         expect(subject.css("tbody tr:nth-child(1) td:nth-child(2)").to_html).to include "+1612-659-7057"
 
-        expect(subject.css("tbody tr:nth-child(2) td:nth-child(1)").to_html).to include "Employer address"
+        expect(subject.css("tbody tr:nth-child(2) th:nth-child(1)").to_html).to include "Employer address"
         expect(subject.css("tbody tr:nth-child(2) td:nth-child(2)").to_html).to include "20429 Pinwheel Drive, New York City, NY 99999"
 
-        expect(subject.css("tbody tr:nth-child(3) td:nth-child(1)").to_html).to include "Employment status"
+        expect(subject.css("tbody tr:nth-child(3) th:nth-child(1)").to_html).to include "Employment status"
         expect(subject.css("tbody tr:nth-child(3) td:nth-child(2)").to_html).to include "Employed"
 
-        expect(subject.css("tbody tr:nth-child(4) td:nth-child(1)").to_html).to include "Employment start date"
+        expect(subject.css("tbody tr:nth-child(4) th:nth-child(1)").to_html).to include "Employment start date"
         expect(subject.css("tbody tr:nth-child(4) td:nth-child(2)").to_html).to include "January 1, 2010"
 
-        expect(subject.css("tbody tr:nth-child(5) td:nth-child(1)").to_html).to include "Employment end date"
+        expect(subject.css("tbody tr:nth-child(5) th:nth-child(1)").to_html).to include "Employment end date"
         expect(subject.css("tbody tr:nth-child(5) td:nth-child(2)").to_html).to include "N/A"
       end
     end
@@ -134,24 +134,24 @@ RSpec.describe Report::EmploymentDetailsTableComponent, type: :component do
 
       it "renders the correct column headers" do
         x = render_inline(described_class.new(argyle_report, payroll_account))
-        expect(subject.css("thead tr.subheader-row th:nth-child(1)").to_html).to include "Paystub information"
+        expect(subject.css("thead tr.subheader-row th:nth-child(1)").to_html).to include "Employment information"
         expect(subject.css("thead tr.subheader-row th:nth-child(2)").to_html).to include "Your details"
       end
 
       it "renders employment details" do
-        expect(subject.css("tbody tr:nth-child(1) td:nth-child(1)").to_html).to include "Employer phone"
+        expect(subject.css("tbody tr:nth-child(1) th:nth-child(1)").to_html).to include "Employer phone"
         expect(subject.css("tbody tr:nth-child(1) td:nth-child(2)").to_html).to include "N/A"
 
-        expect(subject.css("tbody tr:nth-child(2) td:nth-child(1)").to_html).to include "Employer address"
+        expect(subject.css("tbody tr:nth-child(2) th:nth-child(1)").to_html).to include "Employer address"
         expect(subject.css("tbody tr:nth-child(2) td:nth-child(2)").to_html).to include "N/A"
 
-        expect(subject.css("tbody tr:nth-child(3) td:nth-child(1)").to_html).to include "Employment status"
+        expect(subject.css("tbody tr:nth-child(3) th:nth-child(1)").to_html).to include "Employment status"
         expect(subject.css("tbody tr:nth-child(3) td:nth-child(2)").to_html).to include "Employed"
 
-        expect(subject.css("tbody tr:nth-child(4) td:nth-child(1)").to_html).to include "Employment start date"
+        expect(subject.css("tbody tr:nth-child(4) th:nth-child(1)").to_html).to include "Employment start date"
         expect(subject.css("tbody tr:nth-child(4) td:nth-child(2)").to_html).to include "April 7, 2022"
 
-        expect(subject.css("tbody tr:nth-child(5) td:nth-child(1)").to_html).to include "Employment end date"
+        expect(subject.css("tbody tr:nth-child(5) th:nth-child(1)").to_html).to include "Employment end date"
         expect(subject.css("tbody tr:nth-child(5) td:nth-child(2)").to_html).to include "N/A"
       end
     end
@@ -185,32 +185,32 @@ RSpec.describe Report::EmploymentDetailsTableComponent, type: :component do
 
       it "renders the correct column headers" do
         x = render_inline(described_class.new(argyle_report, payroll_account))
-        expect(subject.css("thead tr.subheader-row th:nth-child(1)").to_html).to include "Paystub information"
+        expect(subject.css("thead tr.subheader-row th:nth-child(1)").to_html).to include "Employment information"
         expect(subject.css("thead tr.subheader-row th:nth-child(2)").to_html).to include "Your details"
       end
 
       it "renders employment details" do
-        expect(subject.css("tbody tr:nth-child(1) td:nth-child(1)").to_html).to include "Employer phone"
+        expect(subject.css("tbody tr:nth-child(1) th:nth-child(1)").to_html).to include "Employer phone"
         expect(subject.css("tbody tr:nth-child(1) td:nth-child(2)").to_html).to include "N/A"
 
-        expect(subject.css("tbody tr:nth-child(2) td:nth-child(1)").to_html).to include "Employer address"
+        expect(subject.css("tbody tr:nth-child(2) th:nth-child(1)").to_html).to include "Employer address"
         expect(subject.css("tbody tr:nth-child(2) td:nth-child(2)").to_html).to include "202 Westlake Ave N, Seattle, WA 98109"
 
-        expect(subject.css("tbody tr:nth-child(3) td:nth-child(1)").to_html).to include "Employment status"
+        expect(subject.css("tbody tr:nth-child(3) th:nth-child(1)").to_html).to include "Employment status"
         expect(subject.css("tbody tr:nth-child(3) td:nth-child(2)").to_html).to include "Employed"
 
-        expect(subject.css("tbody tr:nth-child(4) td:nth-child(1)").to_html).to include "Employment start date"
+        expect(subject.css("tbody tr:nth-child(4) th:nth-child(1)").to_html).to include "Employment start date"
         expect(subject.css("tbody tr:nth-child(4) td:nth-child(2)").to_html).to include "August 8, 2022"
 
-        expect(subject.css("tbody tr:nth-child(5) td:nth-child(1)").to_html).to include "Employment end date"
+        expect(subject.css("tbody tr:nth-child(5) th:nth-child(1)").to_html).to include "Employment end date"
         expect(subject.css("tbody tr:nth-child(5) td:nth-child(2)").to_html).to include "N/A"
       end
 
       it "renders income details" do
-        expect(subject.css("tbody tr:nth-child(6) td:nth-child(1)").to_html).to include "Pay frequency"
+        expect(subject.css("tbody tr:nth-child(6) th:nth-child(1)").to_html).to include "Pay frequency"
         expect(subject.css("tbody tr:nth-child(6) td:nth-child(2)").to_html).to include "Bi-weekly"
 
-        expect(subject.css("tbody tr:nth-child(7) td:nth-child(1)").to_html).to include "Compensation amount"
+        expect(subject.css("tbody tr:nth-child(7) th:nth-child(1)").to_html).to include "Compensation amount"
         expect(subject.css("tbody tr:nth-child(7) td:nth-child(2)").to_html).to include "$23.16"
       end
 
@@ -218,15 +218,15 @@ RSpec.describe Report::EmploymentDetailsTableComponent, type: :component do
         subject { render_inline(described_class.new(argyle_report, payroll_account, show_income: true, show_identity: true)) }
 
         it "renders identity details" do
-          expect(subject.css("tbody tr:nth-child(1) td:nth-child(1)").to_html).to include "Client full name"
+          expect(subject.css("tbody tr:nth-child(1) th:nth-child(1)").to_html).to include "Client full name"
           expect(subject.css("tbody tr:nth-child(1) td:nth-child(2)").to_html).to include "Sarah Longfield"
 
-          expect(subject.css("tbody tr:nth-child(2) td:nth-child(1)").to_html).to include "SSN"
+          expect(subject.css("tbody tr:nth-child(2) th:nth-child(1)").to_html).to include "SSN"
           expect(subject.css("tbody tr:nth-child(2) td:nth-child(2)").to_html).to include "XXX-XX-7066"
         end
 
         it "renders employment details" do
-          expect(subject.css("tbody tr:nth-child(3) td:nth-child(1)").to_html).to include "Employer phone"
+          expect(subject.css("tbody tr:nth-child(3) th:nth-child(1)").to_html).to include "Employer phone"
         end
       end
     end
