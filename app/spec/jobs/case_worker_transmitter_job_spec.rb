@@ -49,6 +49,7 @@ RSpec.describe CaseWorkerTransmitterJob, type: :job do
 
     allow_any_instance_of(described_class).to receive(:current_agency).and_return(mock_client_agency)
     allow(mock_client_agency).to receive(:id).and_return(mocked_client_id)
+    allow(mock_client_agency).to receive(:logo_path).and_return(mocked_client_logo_path)
     allow(mock_client_agency).to receive(:transmission_method).and_return(transmission_method)
     allow(mock_client_agency).to receive(:transmission_method_configuration).and_return(transmission_method_configuration)
 
@@ -157,6 +158,7 @@ RSpec.describe CaseWorkerTransmitterJob, type: :job do
       let(:sftp_double) { instance_double(SftpGateway) }
       let(:transmission_method) { "sftp" }
       let(:mocked_client_id) { "az_des" }
+      let(:mocked_client_logo_path) { "des_logo.png" }
       let(:transmission_method_configuration) { {
         "user" => "user",
         "password" => "password",
