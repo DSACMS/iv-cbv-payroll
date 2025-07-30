@@ -55,6 +55,10 @@ es:
       semimonthly: Dos veces al mes
       variable: Variable
       weekly: Semanal
+    tax_category:
+      post_tax: después de impuestos
+      pre_tax: antes de impuestos
+      unknown: estatus fiscal desconocido
   applicant_mailer:
     invitation_email:
       body_1:
