@@ -260,7 +260,6 @@ en:
         search: Search
         search_label: 'Enter the name of your current or recent employer or payroll provider:'
         select: Select
-        select_button_aria_label: Open an authentication modal for the employer or payroll provider to import your payment history.
         to_continue: 'If you still don’t see your employer or payroll provider listed:'
         to_continue_li_1: You’ll need to submit that income information separately.
         to_continue_li_1_html: <a href="%{agency_contact_website}" target="_blank" rel="noopener noreferrer">Go to %{agency_acronym}'s website</a> to learn about other ways to report your income.
