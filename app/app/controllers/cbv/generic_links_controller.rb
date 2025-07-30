@@ -63,5 +63,6 @@ class Cbv::GenericLinksController < Cbv::BaseController
     })
   rescue => ex
     Rails.logger.error "Unable to track event (ApplicantClickedGenericLink): #{ex}"
+    raise unless Rails.env.production?
   end
 end
