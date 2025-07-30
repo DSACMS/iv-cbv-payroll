@@ -1,4 +1,4 @@
 <%= render(TableRowComponent.new(highlight: @highlight)) do |row| %>A
-  <%=  row.with_data_cell(is_header: true, class_names:"text-nowrap").with_content(@field[:label]) %>
-  <%=  row.with_data_cell(class_names:"text-nowrap").with_content(@field[:value]) %>
+  <%= row.with_data_cell(is_header: true, class_names: "text-nowrap").with_content(@field[:label]) %>
+  <%= row.with_data_cell(class_names: "text-nowrap").with_content(@field[:value]) %>
 <% end %>
