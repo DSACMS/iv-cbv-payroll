@@ -35,4 +35,7 @@ module "dev_config" {
 
   # NewRelic configuration for metrics
   newrelic_account_id = "4619676"
+
+  # Enable LA LDH pilot in dev environment
+  la_ldh_pilot_enabled = true
 }

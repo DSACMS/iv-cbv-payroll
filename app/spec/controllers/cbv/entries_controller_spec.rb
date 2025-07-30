@@ -119,23 +119,23 @@ RSpec.describe Cbv::EntriesController do
         get :show, params: { token: invitation.auth_token }
       end
 
-      it "includes source information in ApplicantViewedAgreement event when set" do
-        session[:cbv_source] = "mail"
+      it "includes origin information in ApplicantViewedAgreement event when set" do
+        session[:cbv_origin] = "mail"
 
         allow(EventTrackingJob).to receive(:perform_later)
         expect(EventTrackingJob).to receive(:perform_later).with("ApplicantViewedAgreement", anything, hash_including(
-          source: "mail"
+          origin: "mail"
         ))
 
         get :show, params: { token: invitation.auth_token }
       end
 
-      it "includes source information in ApplicantAgreed event when agreeing" do
-        session[:cbv_source] = "sms"
+      it "includes origin information in ApplicantAgreed event when agreeing" do
+        session[:cbv_origin] = "sms"
 
         allow(EventTrackingJob).to receive(:perform_later)
         expect(EventTrackingJob).to receive(:perform_later).with("ApplicantAgreed", anything, hash_including(
-          source: "sms"
+          origin: "sms"
         ))
 
         post :create, params: { token: invitation.auth_token, agreement: "1" }
