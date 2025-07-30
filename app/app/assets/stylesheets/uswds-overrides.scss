@@ -10,6 +10,10 @@
   max-width: none;
 }
 
+.usa-accordion .usa-accordion__button {
+  line-height: 1 !important;
+}
+
 .usa-hint p {
   margin: 3px 0;
 }
@@ -37,4 +41,8 @@ $mobile-navbar-height: 4rem;
 }
 .pointer-events-none {
   pointer-events: none;
+}
+
+tr td:first-child {
+  font-weight: bold;
 }
