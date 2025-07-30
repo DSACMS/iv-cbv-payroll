@@ -1,5 +1,5 @@
 class PayrollAccount < ApplicationRecord
-  before_save :update_aggregator_account_id
+  self.ignored_columns = %w[pinwheel_account_id]
 
   def self.sti_name
     # "PayrollAccount::Pinwheel" => "pinwheel"
@@ -59,10 +59,6 @@ class PayrollAccount < ApplicationRecord
   end
 
   private
-
-  def update_aggregator_account_id
-    self.aggregator_account_id = pinwheel_account_id
-  end
 
   def find_webhook_event(event_name, event_outcome = nil)
     webhook_events.find do |webhook_event|
