@@ -13,6 +13,7 @@ RSpec.describe CaseWorkerTransmitterJob, type: :job do
   let(:current_time) { DateTime.parse('2024-06-18 00:00:00') }
   let(:pinwheel_report) { build(:pinwheel_report, :with_pinwheel_account) }
   let(:fake_event_logger) { instance_double(GenericEventTracker, track: nil) }
+  let(:mocked_client_logo_path) { "des_logo.png" }
 
   let(:cbv_flow) do
     create(:cbv_flow,
@@ -158,7 +159,6 @@ RSpec.describe CaseWorkerTransmitterJob, type: :job do
       let(:sftp_double) { instance_double(SftpGateway) }
       let(:transmission_method) { "sftp" }
       let(:mocked_client_id) { "az_des" }
-      let(:mocked_client_logo_path) { "des_logo.png" }
       let(:transmission_method_configuration) { {
         "user" => "user",
         "password" => "password",
