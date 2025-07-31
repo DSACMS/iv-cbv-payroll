@@ -16,7 +16,6 @@ jobs:
       APP_NAME: app
       ENVIRONMENT: dev
     strategy:
-      max-parallel: 1
       matrix:
         include:
           - terraform-cmd: |
