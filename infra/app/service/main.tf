@@ -199,7 +199,7 @@ module "service" {
 
   extra_environment_variables = merge(
     {
-      BUCKET_NAME           = local.storage_config.bucket_name
+      BUCKET_NAME = local.storage_config.bucket_name
     },
     local.identity_provider_environment_variables,
     local.service_config.extra_environment_variables
@@ -218,8 +218,8 @@ module "service" {
 
   extra_policies = merge(
     {
-      storage_access       = module.storage.access_policy_arn,
-      email_access         = aws_iam_policy.email_access_policy.arn,
+      storage_access = module.storage.access_policy_arn,
+      email_access   = aws_iam_policy.email_access_policy.arn,
     },
     module.app_config.enable_identity_provider ? {
       identity_provider_access = module.identity_provider_client[0].access_policy_arn,
