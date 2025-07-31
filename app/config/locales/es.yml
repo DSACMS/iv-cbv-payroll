@@ -538,10 +538,19 @@ es:
       header: "¡Parece que algo salió mal!"
       refresh: Actualizar página
     home:
-      description_1: Reportar Mis Ingresos es una nueva herramienta diseñada para ayudarte a conectar la información de ingresos de tu empleador o proveedor de nóminas, directamente con tu agencia de beneficios. En este momento estamos probando esta herramienta para garantizar que funcione correctamente.
+      description_1: Reportar Mis Ingresos es una herramienta nueva que se diseñó para ayudarlo a vincular directamente los datos relacionados con sus ingresos con su agencia de beneficios. En este momento estamos probando esta herramienta para garantizar que funcione efectivamente.
       description_2: Tenga en cuenta que, en este momento, este programa piloto solo está disponible para participantes que residan en Arizona y Louisiana.
       description_3: Para obtener más información sobre cómo presentar comprobantes de ingresos para sus beneficios, visite el sitio web de su agencia.
       header: Bienvenido a Reportar Mis Ingresos
+      pilot_ended:
+        la_ldh:
+          body: "<strong>El período piloto para Luisiana ha terminado.</strong> Si aún necesita declarar sus ingresos, puede hacer lo siguiente:"
+          body_bullet_1: Subir los documentos a través del Portal de autoservicio en línea en <a href="http://MyMedicaid.LA.GOV" target="_blank" rel="noopener noreferrer">http://MyMedicaid.LA.GOV</a>
+          body_bullet_2: 'Enviar los documentos por correo postal a: Louisiana Medicaid/LaCHIP, P.O. Box 91283, Baton Rouge, LA 70821-9278'
+          body_bullet_3: 'Enviar los documentos por correo electrónico a: <a href="mailto:%{agency_email}">%{agency_email}</a>'
+          body_bullet_4: Llevar los documentos a la oficina de Medicaid de su elección.
+          browser_title: Reportar Mis Ingresos | Departmento de Salud de Louisiana
+          header: Reportar Mis Ingresos
   session_timeout:
     modal:
       description: Parece no está realizando ninguna acción. Por motivos de seguridad, su sesión se cerrará, salvo que elija extender el tiempo de esta sesión.
