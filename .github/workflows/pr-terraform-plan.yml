@@ -21,17 +21,17 @@ jobs:
         include:
           - terraform-cmd: |
               terraform -chdir="infra/app/service" init -input=false -reconfigure -backend-config="dev.s3.tfbackend"
-              terraform -chdir="infra/app/service" plan -var="environment_name=dev" -out .planfile
+              terraform -chdir="infra/app/service" plan -lock=false -var="environment_name=dev" -out .planfile
             working-directory: infra/app/service
             header: "📝 Terraform Plan: Service"
           - terraform-cmd: |
               terraform -chdir="infra/networks" init -input=false -reconfigure -backend-config="dev.s3.tfbackend"
-              terraform -chdir="infra/networks" plan -var="network_name=dev" -out .planfile
+              terraform -chdir="infra/networks" plan -lock=false -var="network_name=dev" -out .planfile
             working-directory: infra/networks
             header: "📝 Terraform Plan: Network"
           - terraform-cmd: |
               terraform -chdir="infra/app/database" init -input=false -reconfigure -backend-config="dev.s3.tfbackend"
-              terraform -chdir="infra/app/database" plan -var="environment_name=dev" -out .planfile
+              terraform -chdir="infra/app/database" plan -lock=false -var="environment_name=dev" -out .planfile
             working-directory: infra/app/database
             header: "📝 Terraform Plan: Database"
 
