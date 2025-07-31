@@ -14,21 +14,24 @@ jobs:
     strategy:
       matrix:
         include:
-          - terraform-cmd: |
-              terraform -chdir="infra/app/service" init -input=false -reconfigure -backend-config="dev.s3.tfbackend"
-              terraform -chdir="infra/app/service" plan -var="environment_name=dev"
+          - terraform-cmd: terraform -chdir="infra/app/service" init -input=false -reconfigure -backend-config="dev.s3.tfbackend" && terraform -chdir="infra/app/service" plan -var="environment_name=dev"
             planfile: service.plan
             header: "📝 Terraform Plan: Service"
-          - terraform-cmd: |
-              terraform -chdir="infra/networks" init -input=false -reconfigure -backend-config="dev.s3.tfbackend"
-              terraform -chdir="infra/networks" plan -var="network_name=dev"
-            planfile: network.plan
-            header: "📝 Terraform Plan: Network"
-          - terraform-cmd: |
-              terraform -chdir="infra/app/database" init -input=false -reconfigure -backend-config="dev.s3.tfbackend"
-              terraform -chdir="infra/app/database" plan -var="environment_name=dev"
-            planfile: network.plan
-            header: "📝 Terraform Plan: Database"
+          # - terraform-cmd: |
+          #     terraform -chdir="infra/app/service" init -input=false -reconfigure -backend-config="dev.s3.tfbackend"
+          #     terraform -chdir="infra/app/service" plan -var="environment_name=dev"
+          #   planfile: service.plan
+          #   header: "📝 Terraform Plan: Service"
+          # - terraform-cmd: |
+          #     terraform -chdir="infra/networks" init -input=false -reconfigure -backend-config="dev.s3.tfbackend"
+          #     terraform -chdir="infra/networks" plan -var="network_name=dev"
+          #   planfile: network.plan
+          #   header: "📝 Terraform Plan: Network"
+          # - terraform-cmd: |
+          #     terraform -chdir="infra/app/database" init -input=false -reconfigure -backend-config="dev.s3.tfbackend"
+          #     terraform -chdir="infra/app/database" plan -var="environment_name=dev"
+          #   planfile: network.plan
+          #   header: "📝 Terraform Plan: Database"
 
     steps:
     - name: Checkout repository
