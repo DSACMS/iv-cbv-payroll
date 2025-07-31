@@ -14,7 +14,7 @@ jobs:
     strategy:
       matrix:
         include:
-          - terraform-cmd: terraform -chdir="infra/app/service" init -input=false -reconfigure -backend-config="dev.s3.tfbackend" && terraform -chdir="infra/app/service" plan -var="environment_name=dev"
+          - terraform-cmd: terraform -chdir="infra/app/service" init -input=false -reconfigure -backend-config="dev.s3.tfbackend" && terraform -chdir="infra/app/service" plan -var="environment_name=dev" -out service.plan
             planfile: service.plan
             header: "📝 Terraform Plan: Service"
           # - terraform-cmd: |
@@ -46,7 +46,10 @@ jobs:
         app_name: app
         environment: dev
 
-    - name: Run Terraform plan and comment if changed
+    - name: Run Terraform plan
+      run: ${{ matrix.terraform-cmd }}
+
+    - name: Comment Terraform plan if changed
       uses: borchero/terraform-plan-comment@v2
       env:
         APP_NAME: app
@@ -54,6 +57,5 @@ jobs:
       with:
         token: ${{ github.token }}
         planfile: ${{ matrix.planfile }}
-        terraform-cmd: ${{ matrix.terraform-cmd }}
         header: ${{ matrix.header }}
         skip-empty: true
