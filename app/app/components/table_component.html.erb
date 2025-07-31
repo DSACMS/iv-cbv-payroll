@@ -1,7 +1,9 @@
 <%= tag.table(**@attributes.merge(class: @class_names)) do %>
   <thead class="<%= @thead_class_names %>">
     <tr>
+      <% if header.present? %>
         <%= header %>
+      <% end %>
     </tr>
     <% if subheader_row.present? %>
       <%= subheader_row %>

@@ -42,9 +42,6 @@
   <%= table.with_header do %>
     <h3 class="margin-0"><%= t(".pdf.shared.client_information") %></h3>
   <% end %>
-  <% ClientAgency::CaseworkerReportSpecificFieldDecider.applicant_specific_fields(@cbv_flow).each do |field, value| %>
-    <%= table.with_row(t(field), value) %>
-  <% end %>
   <% @cbv_flow.cbv_applicant.applicant_attributes.each do |item| %>
     <% if @cbv_flow.cbv_applicant[item].present? %>
       <% if item == :date_of_birth %>
@@ -54,10 +51,14 @@
       <% end %>
     <% end %>
   <% end %>
+
   <% if is_caseworker %>
     <% ClientAgency::CaseworkerReportSpecificFieldDecider.caseworker_specific_fields(@cbv_flow).each do |field_name, field_value| %>
       <%= table.with_row(t(field_name), field_value) %>
     <% end %>
+  <% end %>
+  <% ClientAgency::CaseworkerReportSpecificFieldDecider.applicant_specific_fields(@cbv_flow).each do |field, value| %>
+    <%= table.with_row(t(field), value) %>
   <% end %>
 <% end %>
 
@@ -134,7 +135,7 @@
         <% end %>
         <%= table.with_data_point(:net_pay_amount, paystub.net_pay_amount) %>
         <% paystub.deductions.filter { |deduction| deduction.amount.to_f > 0 }.each do |deduction| %>
-          <%= table.with_data_point(:deduction, deduction.category, deduction.amount) %>
+          <%= table.with_data_point(:deduction, deduction.category, deduction.tax, deduction.amount) %>
         <% end %>
         <%= table.with_data_point(:pay_gross_ytd, paystub.gross_pay_ytd) %>
       <% end %>
@@ -153,7 +154,7 @@
       <% end %>
     <% end %>
   <% else %>
-    <%= render(Report::MonthlySummaryTableComponent.new(@aggregator_report, account_id, is_caseworker: is_caseworker, is_responsive: false, is_pdf: true)) %>
+    <%= render(Report::GigMonthlySummaryTableComponent.new(@aggregator_report, account_id, is_caseworker: is_caseworker, is_responsive: false, is_pdf: true)) %>
   <% end %>
 
   <% if @cbv_flow.additional_information.dig(account_id, "comment").present? %>

@@ -55,6 +55,10 @@ es:
       semimonthly: Dos veces al mes
       variable: Variable
       weekly: Semanal
+    tax_category:
+      post_tax: después de impuestos
+      pre_tax: antes de impuestos
+      unknown: estatus fiscal desconocido
   applicant_mailer:
     invitation_email:
       body_1:
@@ -79,28 +83,16 @@ es:
       incorrect_client_agency_id: No se ha podido enviar la invitación porque falta la configuración del sitio.
   cbv:
     add_jobs:
-      next_path:
-        notice_no_answer: Debe seleccionar una respuesta para continuar.
       show:
-        answer_no_bullet_1: Usted no tiene otro trabajo (actual o reciente)
-        answer_no_bullet_2: Usted tiene un trabajo que le paga por PayPal, Venmo, Cash App, etc.
-        answer_no_bullet_3: Usted tiene un trabajo que le paga en efectivo
-        answer_no_bullet_4: Usted tiene un trabajo que le paga con un cheque impreso y no puede ver su cheque de pago en línea
-        answer_no_bullet_5: Usted tiene un trabajo que emite un 1099
-        answer_no_header: 'Responda que NO si:'
-        answer_yes_bullet_1: Su trabajo tiene un proveedor de nómina en línea
-        answer_yes_bullet_2: Su trabajo le permite ver sus recibos de pago en línea
-        answer_yes_bullet_3: Su trabajo se basa en aplicaciones (Uber, DoorDash, Lyft, Instacart, etc.)
-        answer_yes_header_html: Responda SÍ si <em>alguna</em> de estas afirmaciones son verdaderas sobre su trabajo actual o reciente.
-        continue: Continuar
-        criteria_disclaimer: 'Nota: Si ha tenido otros trabajos en los últimos 90 días que no cumplen estos criterios, es posible que tenga que presentar información de ese ingreso por separado.'
         header: "¿Tiene otro trabajo que declarar?"
-        learn_more_link_html:
-          la_ldh: Obtenga más información en <a href="%{agency_url}" target="_blank" rel="noopener noreferer">el sitio web de LDH</a>.
-          sandbox: Obtenga más información en <a href="https://www.mass.gov/guides/how-to-contact-dta" target="_blank" rel="noopener noreferrer">el sitio web de CBV Test Agency</a>.
-        no_radio: No, no tengo otro trabajo que cumpla con los criterios
-        subheader: Por favor añada los otros trabajos que haya tenido en los últimos 90 días, incluso si ya no está en ese trabajo.
-        yes_radio: Sí, tengo otro trabajo que cumpla con los criterios
+        header_2: "¿Tiene otro trabajo que reportar usando Reportar Mis Ingresos?"
+        header_2_bullet_1: Tiene un proveedor de nómina en línea, o
+        header_2_bullet_2: Le permite ver talones de pago en línea, o
+        header_2_bullet_3: Está basado en aplicaciones (Uber, DoorDash, Lyft, Instacart, etc.)
+        header_2_lead: 'Esto incluye su trabajo actual, o trabajos anteriores que haya tenido en los últimos 90 días, que:'
+        header_sub_text: Cuéntenos sobre cualquier otro trabajo que haya tenido en los últimos 90 días, incluso si ya no está en ese trabajo.
+        radio_no: No, no tengo otro trabajo que cumpla con uno de estos criterios
+        radio_yes: Sí, tengo otro trabajo que cumple con uno de estos criterios
     applicant_informations:
       la_ldh:
         fields:
@@ -165,7 +157,6 @@ es:
         search: Buscar
         search_label: 'Ingrese el nombre de su empleador actual o reciente o su proveedor de nómina:'
         select: Seleccione
-        select_button_aria_label: Abra una ventana de autenticación para que el empleador o proveedor de nómina importe su historial de pago.
         to_continue: 'Si aún no ve enumerado a su empleador ni a su proveedor de nómina:'
         to_continue_li_1: Deberá enviar esa información de ingresos por separado.
         to_continue_li_1_html: <a href="%{agency_contact_website}" target="_blank" rel="noopener noreferrer">Visite el sitio web del %{agency_acronym}</a> para informarse de otras formas de notificar sus ingresos.
@@ -218,12 +209,24 @@ es:
         not_listed_p2: Para obtener más información sobre cómo enviar los documentos requeridos, visite el sitio web de %{agency_acronym}.
         not_listed_p2_link_html: Visite <a href="%{agency_url}" target="_blank" rel="noopener noreferrer">el sitio web del %{agency_acronym}</a> para obtener más información sobre cómo enviar documentos.
         you_can_search: Puede buscar otro empleador o proveedor de nómina. Este sitio apoya a los empleadores con proveedores de nómina en línea o servicios basados en aplicaciones. Algunos ejemplos son Amazon, Walmart, McDonald’s, Uber, DoorDash, Lyft e Instacart.
+    other_jobs:
+      show:
+        bullet_1: Le paga a través de PayPal, Venmo, Cash App, etc.
+        bullet_2: Le paga en efectivo
+        bullet_3: Le paga con un cheque en papel y no puede ver su cheque de pago en línea
+        bullet_4: Le emite un 1099
+        header: "¿Tiene que informar de algún trabajo sin usar la herramienta Reportar Mis Ingresos?"
+        header_html: "¿Tiene que informar de algún trabajo <em>sin usar</em> la herramienta Reportar Mis Ingresos?"
+        header_sub_text: 'Cuéntenos sobre cualquier otro trabajo que haya tenido en los últimos 90 días, incluso si ya no está en ese trabajo. Al hacerlo, incluya cualquier trabajo, actual o reciente, que haya tenido en los últimos 90 días que reúna estos requisitos:'
+        note_html: 'Importante: Si tuvo otros trabajos en los últimos 90 días que no va a reportar usando la herramienta Report My Income, debe enviar esa información de ingresos por separado. <a href="%{agency_site}" target="_blank" rel="noopener noreferrer">Más información en %{agency_acronym}.</a>'
+        radio_no: No, no tengo otro trabajo que reportar por separado
+        radio_yes: Sí, tengo otro trabajo que reportaré por separado
     payment_details:
       show:
         additional_information_header: Comentarios adicionales (Opcional)
         additional_information_label: Comparta cualquier comentario o información adicional sobre los detalles de pago anteriores que desea que %{agency_acronym} conozca. Por ejemplo, puede compartir si la información es inexacta o si ya no trabaja en ese empleo.
         continue: Continuar
-        deductions: 'Deducción: %{category}'
+        deductions: 'Deducción: %{category} (%{tax})'
         employment_end_date: Fecha de finalización de la relación laboral
         employment_information_table_header: Información sobre el empleo
         employment_start_date: Fecha de inicio del empleo
@@ -239,10 +242,11 @@ es:
         none_found: No encontramos ningún pago de este empleador en los últimos %{report_data_range}.
         none_found_description: Esto usualmente ocurre cuando usted no ha recibido ingresos por este trabajo en los últimos %{report_data_range}. Si cree que esto es un error, agregue un comentario en la casilla de comentarios adicionales. De lo contrario, continúe en la página siguiente.
         number_of_hours_worked: Número de horas trabajadas
-        pay_date: 'Fecha de pago: %{pay_date}'
+        pay_date_prompt: Fecha de pago
         pay_frequency: Frecuencia de pago
         pay_gross: Pago antes de impuestos (bruto)
         pay_gross_ytd: Salario Bruto Acumulado del Año
+        pay_information: Información de pago
         pay_net: Pago después de impuestos y deducciones (neto)
         pay_period: Período de pago
         pay_period_value: "%{start_date} al %{end_date}"
@@ -252,6 +256,7 @@ es:
         total_gross_description: Este es el ingreso total de su trabajo antes de deducción de impuestos, beneficios, y otras deducciones de su cheque de pago.
         total_gross_income: 'Ingresos totales de los últimos %{report_data_range}, antes de impuestos: %{amount}'
         unknown: Desconocido
+        your_details: Tus datos
     submits:
       show:
         additional_information_title: "¿Existe algún otro detalle que le gustaría que su asistente de caso conozca en relación con sus ingresos?"
@@ -280,6 +285,8 @@ es:
             employment_payment_details: Detalles de empleo y pago
             header: Informe de verificación de ingresos
           shared:
+            additional_jobs_to_report: "¿El cliente tiene trabajos adicionales que informará por separado?"
+            additional_jobs_to_report_html: "¿El cliente tiene trabajos adicionales que informará por separado? <sup>1</sup>"
             client_information: Información del cliente
             confirmation_code: Código de confirmación
             employment_information: Información del empleo
@@ -319,6 +326,7 @@ es:
         must_match:
           default: Esto debe coincidir con lo que se muestra en su solicitud de %{agency_acronym}.
           la_ldh: Esto debe coincidir con lo que se muestra en sus beneficios de Medicaid.
+        other_jobs: Otros trabajos
         payment: Pago de %{amount} antes de pago impuestos en %{date}
         phone_number: Teléfono del empleador
         question: Pregunta
@@ -350,6 +358,9 @@ es:
         header: Estamos recopilando los detalles de pago de su empleador.
   components:
     report:
+      employment_details_table:
+        header:
+          your_details: Sus datos
       monthly_summary_table:
         accrued_gross_earnings: Ganancias brutas acumuladas
         compact:
@@ -362,11 +373,19 @@ es:
         month: Mes
         monthly_summary: Resumen mensual
         partial_month_text: "(Mes parcial: desde el %{start_date} y hasta el %{end_date})"
+        partial_month_text_simple: "(Mes parcial)"
         payments_from_header: Pagos de %{employer_name}
-        payments_from_text: Estas fueron las fechas en las que le pagaron por su trabajo en %{employer_name} y el monto del salario bruto.
+        payments_from_text: Estas fueron las fechas en las que se le pagó por su trabajo en %{employer_name} y el monto del pago bruto.
         payments_from_text_caseworker: Estas son las fechas en las que se le pagó al cliente por su trabajo en %{employer_name} y el monto total del pago, antes de impuestos.
         total_gig_hours: Total de horas trabajadas
         verified_mileage_expenses: Gastos de millaje verificado
+        w2:
+          definition_gross_income: El "ingreso bruto" corresponde al pago recibido por su trabajo, antes de que descuenten de su cheque de pago los impuestos, beneficios y deducciones. En la tabla anterior, se calcula el total de su ingreso bruto mensual, en un período de 90 días.
+          definition_number_of_paychecks: '"Cantidad de cheques de pago" es la cantidad de veces le pagaron en un mes, en un período de 90 días.'
+          definition_total_hours_worked: Las "horas totales trabajadas" son el número total de horas que usted trabajó en cada cheque de pago recibido en un mes.
+          title_gross_income: Ingreso bruto
+          title_number_of_paychecks: Cantidad de cheques de pago
+          title_total_hours_worked: Total de horas trabajadas
   continue: Continuar
   date:
     abbr_day_names:
@@ -529,10 +548,19 @@ es:
       header: "¡Parece que algo salió mal!"
       refresh: Actualizar página
     home:
-      description_1: Reportar Mis Ingresos es una nueva herramienta diseñada para ayudarte a conectar la información de ingresos de tu empleador o proveedor de nóminas, directamente con tu agencia de beneficios. En este momento estamos probando esta herramienta para garantizar que funcione correctamente.
+      description_1: Reportar Mis Ingresos es una herramienta nueva que se diseñó para ayudarlo a vincular directamente los datos relacionados con sus ingresos con su agencia de beneficios. En este momento estamos probando esta herramienta para garantizar que funcione efectivamente.
       description_2: Tenga en cuenta que, en este momento, este programa piloto solo está disponible para participantes que residan en Arizona y Louisiana.
       description_3: Para obtener más información sobre cómo presentar comprobantes de ingresos para sus beneficios, visite el sitio web de su agencia.
       header: Bienvenido a Reportar Mis Ingresos
+      pilot_ended:
+        la_ldh:
+          body: "<strong>El período piloto para Luisiana ha terminado.</strong> Si aún necesita declarar sus ingresos, puede hacer lo siguiente:"
+          body_bullet_1: Subir los documentos a través del Portal de autoservicio en línea en <a href="http://MyMedicaid.LA.GOV" target="_blank" rel="noopener noreferrer">http://MyMedicaid.LA.GOV</a>
+          body_bullet_2: 'Enviar los documentos por correo postal a: Louisiana Medicaid/LaCHIP, P.O. Box 91283, Baton Rouge, LA 70821-9278'
+          body_bullet_3: 'Enviar los documentos por correo electrónico a: <a href="mailto:%{agency_email}">%{agency_email}</a>'
+          body_bullet_4: Llevar los documentos a la oficina de Medicaid de su elección.
+          browser_title: Reportar Mis Ingresos | Departmento de Salud de Louisiana
+          header: Reportar Mis Ingresos
   session_timeout:
     modal:
       description: Parece no está realizando ninguna acción. Por motivos de seguridad, su sesión se cerrará, salvo que elija extender el tiempo de esta sesión.
@@ -580,6 +608,8 @@ es:
       es: Español
       fr: Francés
       zh: Chino
+    next_path:
+      notice_no_answer: Debe seleccionar una respuesta para continuar.
     not_applicable: N/C
     pilot_name: Reportar Mis Ingresos
     report_data_range:

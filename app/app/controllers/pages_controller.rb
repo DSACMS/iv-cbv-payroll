@@ -31,6 +31,8 @@ class PagesController < ApplicationController
 
     client_agency_id = detect_client_agency_from_domain
     if client_agency_id.present?
+      agency = agency_config[client_agency_id]
+      session[:cbv_origin] = params[:origin] || agency&.default_origin
       redirect_to cbv_flow_new_path(client_agency_id: client_agency_id)
     end
   end

@@ -152,6 +152,15 @@ RSpec.describe PayrollAccount::Pinwheel, type: :model do
     end
   end
 
+  describe "#necessary_jobs_succeeded?" do
+    let!(:payroll_account) do
+       create(:payroll_account, :pinwheel_fully_synced, with_errored_jobs: %w[income])
+     end
+    it "supports a case where they have no reported income so long as we can scan their identities for unemployment" do
+         expect(payroll_account.necessary_jobs_succeeded?).to eq(true)
+       end
+  end
+
   describe "#redact!" do
     it "updates the redacted_at timestamp" do
       expect { payroll_account.redact! }
