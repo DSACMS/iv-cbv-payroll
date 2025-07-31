@@ -1,0 +1,26 @@
+<div class="margin-top-5">
+  <h3 class="margin-0">
+    <%= I18n.t("cbv.payment_details.show.employment_information_table_header") %>
+  </h3>
+  <%= render(TableComponent.new(is_responsive: @is_responsive)) do |table| %>
+    <%= table.with_subheader_row(class_names: "subheader-row base-lightest") do |row| %>
+      <%= row.with_data_cell(is_header: true, class_names: "text-nowrap")
+             .with_content(I18n.t("cbv.payment_details.show.employment_information_table_header")) %>
+      <%= row.with_data_cell(is_header: true, class_names: "text-nowrap")
+             .with_content(I18n.t("components.report.employment_details_table.header.your_details")) %>
+    <% end %>
+    <% if @show_identity %>
+      <%= table.with_data_point(:client_full_name, @identity.full_name) %>
+      <%= table.with_data_point(:ssn, @identity.ssn) %>
+    <% end %>
+      <%= table.with_data_point(:employer_phone, @employment.employer_phone_number) %>
+      <%= table.with_data_point(:employer_address, @employment.employer_address) %>
+      <%= table.with_data_point(:employment_status, @employment.status) %>
+      <%= table.with_data_point(:employment_start_date, @employment.start_date) %>
+      <%= table.with_data_point(:employment_end_date, @employment.termination_date) %>
+    <% if @show_income && has_income_data? %>
+      <%= table.with_data_point(:pay_frequency, @income.pay_frequency&.humanize) %>
+      <%= table.with_data_point(:hourly_rate, @income.compensation_amount, @income.compensation_unit) %>
+    <% end %>
+<% end %>
+</div>
