@@ -36,7 +36,7 @@
   <% end %>
   <%= render(Report::PaymentsDeductionsMonthlySummaryComponent.new(@aggregator_report, @pinwheel_account, is_w2_worker: @is_w2_worker, pay_frequency_text: pay_frequency)) %>
 <% else %>
-  <%= render(Report::GigMonthlySummaryTableComponent.new(@aggregator_report, @pinwheel_account)) %>
+  <%= render(Report::GigMonthlySummaryTableComponent.new(@aggregator_report, @payroll_account)) %>
 <% end %>
 <div class="usa-form-group margin-top-5">
   <h2><%= t(".additional_information_header") %></h2>
