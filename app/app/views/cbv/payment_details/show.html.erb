@@ -38,7 +38,7 @@
 <% end %>
 
 <% if @is_w2_worker %>
-  <%= render(Report::PaymentsDeductionsMonthlySummaryComponent.new(@aggregator_report, @pinwheel_account, is_w2_worker: @is_w2_worker, pay_frequency_text: pay_frequency)) %>
+  <%= render(Report::PaymentsDeductionsMonthlySummaryComponent.new(@aggregator_report, @payroll_account, is_w2_worker: @is_w2_worker, pay_frequency_text: pay_frequency)) %>
 <% else %>
   <%= render(Report::MonthlySummaryTableComponent.new(@aggregator_report, @payroll_account)) %>
 <% end %>
