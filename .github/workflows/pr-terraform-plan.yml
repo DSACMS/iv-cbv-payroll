@@ -5,17 +5,24 @@ on:
     paths:
       - 'infra/**'
 
+permissions:
+  contents: read
+  pull-requests: write
+
 jobs:
   plan_comment:
     runs-on: ubuntu-latest
     permissions:
       contents: write
       id-token: write
+    env:
+      APP_NAME: app
+      ENVIRONMENT: dev
     strategy:
       matrix:
         include:
-          - terraform-cmd: terraform -chdir="infra/app/service" init -input=false -reconfigure -backend-config="dev.s3.tfbackend" && terraform -chdir="infra/app/service" plan -var="environment_name=dev" -out service.plan
-            planfile: service.plan
+          - terraform-cmd: terraform -chdir="infra/app/service" init -input=false -reconfigure -backend-config="dev.s3.tfbackend" && terraform -chdir="infra/app/service" plan -var="environment_name=dev" -out .planfile
+            working-directory: infra/app/service
             header: "📝 Terraform Plan: Service"
           # - terraform-cmd: |
           #     terraform -chdir="infra/app/service" init -input=false -reconfigure -backend-config="dev.s3.tfbackend"
@@ -51,11 +58,9 @@ jobs:
 
     - name: Comment Terraform plan if changed
       uses: borchero/terraform-plan-comment@v2
-      env:
-        APP_NAME: app
-        ENVIRONMENT: dev
       with:
         token: ${{ github.token }}
-        planfile: ${{ matrix.planfile }}
+        working-directory: ${{ matrix.working-directory }}
+        planfile: .planfile
         header: ${{ matrix.header }}
         skip-empty: true
