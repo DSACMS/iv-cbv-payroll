@@ -1,0 +1,53 @@
+name: Comment Terraform plans
+
+on:
+  pull_request:
+    paths:
+      - 'infra/**'
+
+jobs:
+  plan_comment:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        include:
+          - terraform-cmd: |
+              terraform -chdir="infra/app/service" init -input=false -reconfigure -backend-config="dev.s3.tfbackend"
+              terraform -chdir="infra/app/service" plan -var="environment_name=dev"
+            planfile: service.plan
+            header: "📝 Terraform Plan: Service"
+          - terraform-cmd: |
+              terraform -chdir="infra/networks" init -input=false -reconfigure -backend-config="dev.s3.tfbackend"
+              terraform -chdir="infra/networks" plan -var="network_name=dev"
+            planfile: network.plan
+            header: "📝 Terraform Plan: Network"
+          - terraform-cmd: |
+              terraform -chdir="infra/app/database" init -input=false -reconfigure -backend-config="dev.s3.tfbackend"
+              terraform -chdir="infra/app/database" plan -var="environment_name=dev"
+            planfile: network.plan
+            header: "📝 Terraform Plan: Database"
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+
+    - name: Set up Terraform
+      uses: ./.github/actions/setup-terraform
+
+    - name: Configure AWS credentials
+      uses: ./.github/actions/configure-aws-credentials
+      with:
+        app_name: app
+        environment: dev
+
+    - name: Run Terraform plan and comment if changed
+      uses: borchero/terraform-plan-comment@v2
+      env:
+        APP_NAME: app
+        ENVIRONMENT: dev
+      with:
+        token: ${{ github.token }}
+        planfile: ${{ matrix.planfile }}
+        terraform-cmd: ${{ matrix.terraform-cmd }}
+        header: ${{ matrix.header }}
+        skip-empty: true
