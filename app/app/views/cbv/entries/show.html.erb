@@ -27,7 +27,7 @@
     <%= f.submit t(".continue") %>
   <% end %>
 
-  <div class="divider margin-top-5"></div>
+  <div class="divider margin-top-5 margin-bottom-5"></div>
 
   <%= render AccordionComponent.new(id: "who_is_this_for-accordion", heading_level: 2, data_action: "click->cbv-entry-page#viewHelpText", data_section_identifier: "who_is_this_tool_for") do |accordion| %>
     <% accordion.with_title do %>

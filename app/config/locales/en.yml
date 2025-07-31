@@ -101,6 +101,10 @@ en:
       semimonthly: Semi-monthly
       variable: Variable
       weekly: Weekly
+    tax_category:
+      post_tax: post-tax
+      pre_tax: pre-tax
+      unknown: tax status unknown
   applicant_mailer:
     invitation_email:
       body_1:
@@ -260,7 +264,6 @@ en:
         search: Search
         search_label: 'Enter the name of your current or recent employer or payroll provider:'
         select: Select
-        select_button_aria_label: Open an authentication modal for the employer or payroll provider to import your payment history.
         to_continue: 'If you still don’t see your employer or payroll provider listed:'
         to_continue_li_1: You’ll need to submit that income information separately.
         to_continue_li_1_html: <a href="%{agency_contact_website}" target="_blank" rel="noopener noreferrer">Go to %{agency_acronym}'s website</a> to learn about other ways to report your income.
@@ -330,7 +333,7 @@ en:
         additional_information_header: Additional comments (Optional)
         additional_information_label: Share any comments or additional information about the income details above that you’d like %{agency_acronym} to know. For example, you can share if the information is inaccurate or if you’re no longer working at that job.
         continue: Continue
-        deductions: 'Deduction: %{category}'
+        deductions: 'Deduction: %{category} (%{tax})'
         employment_end_date: Employment end date
         employment_information_table_header: Employment information
         employment_start_date: Employment start date
@@ -346,10 +349,11 @@ en:
         none_found: We didn't find any payments from this employer in the past %{report_data_range}.
         none_found_description: This typically happens when you haven't received income from this job in the past %{report_data_range}. If you believe this is an error, please add a comment in the additional comments box. Otherwise, continue to the next page.
         number_of_hours_worked: Number of hours worked
-        pay_date: 'Pay Date: %{pay_date}'
+        pay_date_prompt: Pay date
         pay_frequency: Pay frequency
         pay_gross: Payment before taxes (gross)
         pay_gross_ytd: Gross pay YTD
+        pay_information: Pay information
         pay_net: Payment after taxes and deductions (net)
         pay_period: Pay period
         pay_period_value: "%{start_date} to %{end_date}"
@@ -359,6 +363,7 @@ en:
         total_gross_description: This is the total gross income from your job before taxes, benefits and deductions were taken out of your paycheck.
         total_gross_income: 'Total income from the past %{report_data_range}, before taxes: %{amount}'
         unknown: Unknown
+        your_details: Your details
     submits:
       show:
         additional_information_title: Is there anything else you'd like your caseworker to know about your income?
@@ -472,6 +477,9 @@ en:
         header: We’re gathering your payment details from your employer
   components:
     report:
+      employment_details_table:
+        header:
+          your_details: Your details
       monthly_summary_table:
         accrued_gross_earnings: Accrued gross earnings
         compact:
@@ -484,11 +492,19 @@ en:
         month: Month
         monthly_summary: Monthly Summary
         partial_month_text: "(Partial month: from %{start_date}-%{end_date})"
+        partial_month_text_simple: "(Partial month)"
         payments_from_header: Payments from %{employer_name}
         payments_from_text: These were the dates that you were paid for your work at %{employer_name} and the gross pay amount.
         payments_from_text_caseworker: These were the dates that the client was paid for their work at %{employer_name} and the gross pay amount.
         total_gig_hours: Total hours worked
         verified_mileage_expenses: Verified mileage expenses
+        w2:
+          definition_gross_income: '"Gross income" is the pay from your job before taxes, benefits, and deductions were taken out of your paychecks. In the table above, your total gross income is summed for the month within the 90 day window'
+          definition_number_of_paychecks: '"Number of paychecks" is how many times you were paid in a month within the 90-day window.'
+          definition_total_hours_worked: '"Total hours worked" are the total number of hours you worked for every paycheck you received in a month.'
+          title_gross_income: Gross income
+          title_number_of_paychecks: Number of paychecks
+          title_total_hours_worked: Total hours worked
   continue: Continue
   date:
     formats:

@@ -17,14 +17,14 @@ class Cbv::PaymentDetailsController < Cbv::BaseController
 
   def show
     account_id = params[:user][:account_id]
-    @pinwheel_account = @cbv_flow.payroll_accounts.find_by(pinwheel_account_id: account_id)
+    @payroll_account = @cbv_flow.payroll_accounts.find_by(pinwheel_account_id: account_id)
 
     # security check - make sure the account_id is associated with the current cbv_flow_id
-    if @pinwheel_account.nil?
+    if @payroll_account.nil?
       return redirect_to(cbv_flow_entry_url, flash: { slim_alert: { message: t("cbv.error_no_access"), type: "error" } })
     end
 
-    set_aggregator_report_for_account(@pinwheel_account)
+    set_aggregator_report_for_account(@payroll_account)
     unless @aggregator_report.valid?(:useful_report)
       return redirect_to cbv_flow_synchronization_failures_path
     end
@@ -55,15 +55,15 @@ class Cbv::PaymentDetailsController < Cbv::BaseController
   private
 
   def has_income_data?
-    @pinwheel_account.job_succeeded?("income")
+    @payroll_account.job_succeeded?("income")
   end
 
   def has_employment_data?
-    @pinwheel_account.job_succeeded?("employment")
+    @payroll_account.job_succeeded?("employment")
   end
 
   def has_paystubs_data?
-    @pinwheel_account.job_succeeded?("paystubs")
+    @payroll_account.job_succeeded?("paystubs")
   end
 
   def employer_name
@@ -121,13 +121,13 @@ class Cbv::PaymentDetailsController < Cbv::BaseController
   end
 
   def track_viewed_event
-    return if @pinwheel_account.nil?
+    return if @payroll_account.nil?
     event_logger.track("ApplicantViewedPaymentDetails", request, {
       cbv_applicant_id: @cbv_flow.cbv_applicant_id,
       cbv_flow_id: @cbv_flow.id,
       client_agency_id: current_agency&.id,
       invitation_id: @cbv_flow.cbv_flow_invitation_id,
-      pinwheel_account_id: @pinwheel_account.id,
+      pinwheel_account_id: @payroll_account.id,
       payments_length: @payroll_account_report.paystubs.length,
       has_employment_data: has_employment_data?,
       has_paystubs_data: has_paystubs_data?,

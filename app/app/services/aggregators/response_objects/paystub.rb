@@ -29,6 +29,7 @@ module Aggregators::ResponseObjects
         deductions: response_body["deductions"].map do |deduction|
           OpenStruct.new(
             category: deduction["category"],
+            tax: deduction["type"] || "unknown",
             amount: deduction["amount"],
           )
         end,
@@ -50,6 +51,7 @@ module Aggregators::ResponseObjects
         deductions: response_body["deduction_list"].map do |deduction|
           OpenStruct.new(
             category: deduction["name"],
+            tax: deduction["tax_classification"] || "unknown",
             amount: Aggregators::FormatMethods::Argyle.format_currency(deduction["amount"]),
           )
         end,

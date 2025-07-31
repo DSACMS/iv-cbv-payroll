@@ -55,6 +55,10 @@ es:
       semimonthly: Dos veces al mes
       variable: Variable
       weekly: Semanal
+    tax_category:
+      post_tax: después de impuestos
+      pre_tax: antes de impuestos
+      unknown: estatus fiscal desconocido
   applicant_mailer:
     invitation_email:
       body_1:
@@ -153,7 +157,6 @@ es:
         search: Buscar
         search_label: 'Ingrese el nombre de su empleador actual o reciente o su proveedor de nómina:'
         select: Seleccione
-        select_button_aria_label: Abra una ventana de autenticación para que el empleador o proveedor de nómina importe su historial de pago.
         to_continue: 'Si aún no ve enumerado a su empleador ni a su proveedor de nómina:'
         to_continue_li_1: Deberá enviar esa información de ingresos por separado.
         to_continue_li_1_html: <a href="%{agency_contact_website}" target="_blank" rel="noopener noreferrer">Visite el sitio web del %{agency_acronym}</a> para informarse de otras formas de notificar sus ingresos.
@@ -223,7 +226,7 @@ es:
         additional_information_header: Comentarios adicionales (Opcional)
         additional_information_label: Comparta cualquier comentario o información adicional sobre los detalles de pago anteriores que desea que %{agency_acronym} conozca. Por ejemplo, puede compartir si la información es inexacta o si ya no trabaja en ese empleo.
         continue: Continuar
-        deductions: 'Deducción: %{category}'
+        deductions: 'Deducción: %{category} (%{tax})'
         employment_end_date: Fecha de finalización de la relación laboral
         employment_information_table_header: Información sobre el empleo
         employment_start_date: Fecha de inicio del empleo
@@ -239,10 +242,11 @@ es:
         none_found: No encontramos ningún pago de este empleador en los últimos %{report_data_range}.
         none_found_description: Esto usualmente ocurre cuando usted no ha recibido ingresos por este trabajo en los últimos %{report_data_range}. Si cree que esto es un error, agregue un comentario en la casilla de comentarios adicionales. De lo contrario, continúe en la página siguiente.
         number_of_hours_worked: Número de horas trabajadas
-        pay_date: 'Fecha de pago: %{pay_date}'
+        pay_date_prompt: Fecha de pago
         pay_frequency: Frecuencia de pago
         pay_gross: Pago antes de impuestos (bruto)
         pay_gross_ytd: Salario Bruto Acumulado del Año
+        pay_information: Información de pago
         pay_net: Pago después de impuestos y deducciones (neto)
         pay_period: Período de pago
         pay_period_value: "%{start_date} al %{end_date}"
@@ -252,6 +256,7 @@ es:
         total_gross_description: Este es el ingreso total de su trabajo antes de deducción de impuestos, beneficios, y otras deducciones de su cheque de pago.
         total_gross_income: 'Ingresos totales de los últimos %{report_data_range}, antes de impuestos: %{amount}'
         unknown: Desconocido
+        your_details: Tus datos
     submits:
       show:
         additional_information_title: "¿Existe algún otro detalle que le gustaría que su asistente de caso conozca en relación con sus ingresos?"
@@ -353,6 +358,9 @@ es:
         header: Estamos recopilando los detalles de pago de su empleador.
   components:
     report:
+      employment_details_table:
+        header:
+          your_details: Sus datos
       monthly_summary_table:
         accrued_gross_earnings: Ganancias brutas acumuladas
         compact:
@@ -365,11 +373,19 @@ es:
         month: Mes
         monthly_summary: Resumen mensual
         partial_month_text: "(Mes parcial: desde el %{start_date} y hasta el %{end_date})"
+        partial_month_text_simple: "(Mes parcial)"
         payments_from_header: Pagos de %{employer_name}
         payments_from_text: Estas fueron las fechas en las que se le pagó por su trabajo en %{employer_name} y el monto del pago bruto.
         payments_from_text_caseworker: Estas son las fechas en las que se le pagó al cliente por su trabajo en %{employer_name} y el monto total del pago, antes de impuestos.
         total_gig_hours: Total de horas trabajadas
         verified_mileage_expenses: Gastos de millaje verificado
+        w2:
+          definition_gross_income: El "ingreso bruto" corresponde al pago recibido por su trabajo, antes de que descuenten de su cheque de pago los impuestos, beneficios y deducciones. En la tabla anterior, se calcula el total de su ingreso bruto mensual, en un período de 90 días.
+          definition_number_of_paychecks: '"Cantidad de cheques de pago" es la cantidad de veces le pagaron en un mes, en un período de 90 días.'
+          definition_total_hours_worked: Las "horas totales trabajadas" son el número total de horas que usted trabajó en cada cheque de pago recibido en un mes.
+          title_gross_income: Ingreso bruto
+          title_number_of_paychecks: Cantidad de cheques de pago
+          title_total_hours_worked: Total de horas trabajadas
   continue: Continuar
   date:
     abbr_day_names:
@@ -532,10 +548,19 @@ es:
       header: "¡Parece que algo salió mal!"
       refresh: Actualizar página
     home:
-      description_1: Reportar Mis Ingresos es una nueva herramienta diseñada para ayudarte a conectar la información de ingresos de tu empleador o proveedor de nóminas, directamente con tu agencia de beneficios. En este momento estamos probando esta herramienta para garantizar que funcione correctamente.
+      description_1: Reportar Mis Ingresos es una herramienta nueva que se diseñó para ayudarlo a vincular directamente los datos relacionados con sus ingresos con su agencia de beneficios. En este momento estamos probando esta herramienta para garantizar que funcione efectivamente.
       description_2: Tenga en cuenta que, en este momento, este programa piloto solo está disponible para participantes que residan en Arizona y Louisiana.
       description_3: Para obtener más información sobre cómo presentar comprobantes de ingresos para sus beneficios, visite el sitio web de su agencia.
       header: Bienvenido a Reportar Mis Ingresos
+      pilot_ended:
+        la_ldh:
+          body: "<strong>El período piloto para Luisiana ha terminado.</strong> Si aún necesita declarar sus ingresos, puede hacer lo siguiente:"
+          body_bullet_1: Subir los documentos a través del Portal de autoservicio en línea en <a href="http://MyMedicaid.LA.GOV" target="_blank" rel="noopener noreferrer">http://MyMedicaid.LA.GOV</a>
+          body_bullet_2: 'Enviar los documentos por correo postal a: Louisiana Medicaid/LaCHIP, P.O. Box 91283, Baton Rouge, LA 70821-9278'
+          body_bullet_3: 'Enviar los documentos por correo electrónico a: <a href="mailto:%{agency_email}">%{agency_email}</a>'
+          body_bullet_4: Llevar los documentos a la oficina de Medicaid de su elección.
+          browser_title: Reportar Mis Ingresos | Departmento de Salud de Louisiana
+          header: Reportar Mis Ingresos
   session_timeout:
     modal:
       description: Parece no está realizando ninguna acción. Por motivos de seguridad, su sesión se cerrará, salvo que elija extender el tiempo de esta sesión.
