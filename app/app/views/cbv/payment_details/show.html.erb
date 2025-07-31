@@ -24,17 +24,17 @@
   </div>
 <% end %>
 
-<%= render(Report::EmploymentDetailsTableComponent.new(@aggregator_report, @pinwheel_account, show_income: @is_w2_worker)) %>
+<%= render(Report::EmploymentDetailsTableComponent.new(@aggregator_report, @payroll_account, show_income: @is_w2_worker)) %>
 
 <% if @is_w2_worker %>
   <% if @payroll_account_report.paystubs.any? %>
-    <%= render(Report::W2MonthlySummaryTableComponent.new(@aggregator_report, @pinwheel_account)) %>
+    <%= render(Report::W2MonthlySummaryTableComponent.new(@aggregator_report, @payroll_account)) %>
   <% else %>
     <%= render AlertComponent.new(type: :info, heading: t(".none_found", report_data_range: report_data_range(@aggregator_report, params[:user][:account_id])), class: "margin-top-5") do %>
       <%= t(".none_found_description", report_data_range: report_data_range(@aggregator_report, params[:user][:account_id])) %>
     <% end %>
   <% end %>
-  <%= render(Report::PaymentsDeductionsMonthlySummaryComponent.new(@aggregator_report, @pinwheel_account, is_w2_worker: @is_w2_worker, pay_frequency_text: pay_frequency)) %>
+  <%= render(Report::PaymentsDeductionsMonthlySummaryComponent.new(@aggregator_report, @payroll_account, is_w2_worker: @is_w2_worker, pay_frequency_text: pay_frequency)) %>
 <% else %>
   <%= render(Report::GigMonthlySummaryTableComponent.new(@aggregator_report, @payroll_account)) %>
 <% end %>
