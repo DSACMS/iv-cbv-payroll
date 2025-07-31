@@ -8,6 +8,9 @@ on:
 jobs:
   plan_comment:
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      id-token: write
     strategy:
       matrix:
         include:
