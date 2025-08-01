@@ -21,7 +21,7 @@ jobs:
           - terraform-cmd: |
               terraform -chdir="infra/$APP_NAME/service" init -input=false -reconfigure -backend-config="$ENVIRONMENT.s3.tfbackend"
               terraform -chdir="infra/$APP_NAME/service" plan -lock=false -var="environment_name=$ENVIRONMENT" -out .planfile
-            working-directory: infra/${{ env.APP_NAME }}/service
+            working-directory: infra/app/service
             header: "📝 Terraform Plan: Service"
           - terraform-cmd: |
               terraform -chdir="infra/networks" init -input=false -reconfigure -backend-config="$ENVIRONMENT.s3.tfbackend"
@@ -31,7 +31,7 @@ jobs:
           - terraform-cmd: |
               terraform -chdir="infra/$APP_NAME/database" init -input=false -reconfigure -backend-config="$ENVIRONMENT.s3.tfbackend"
               terraform -chdir="infra/$APP_NAME/database" plan -lock=false -var="environment_name=$ENVIRONMENT" -out .planfile
-            working-directory: infra/${{ env.APP_NAME }}/database
+            working-directory: infra/app/database
             header: "📝 Terraform Plan: Database"
 
     steps:
