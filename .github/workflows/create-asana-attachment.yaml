@@ -4,6 +4,8 @@ on:
 
 jobs:
   create-asana-attachment-job:
+    permissions:
+      contents: read
     runs-on: ubuntu-latest
     name: Create pull request attachments on Asana tasks
     steps:
