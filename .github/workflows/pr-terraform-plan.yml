@@ -12,25 +12,26 @@ jobs:
       contents: read
       pull-requests: write
       id-token: write
+    env:
+      APP_NAME: app
+      ENVIRONMENT: dev
     strategy:
       matrix:
-        app-name: [app]
-        environment: [dev]
         include:
           - terraform-cmd: |
-              terraform -chdir="infra/${{ matrix.app-name }}/service" init -input=false -reconfigure -backend-config="${{ matrix.environment }}.s3.tfbackend"
-              terraform -chdir="infra/${{ matrix.app-name }}/service" plan -lock=false -var="environment_name=${{ matrix.environment }}" -out .planfile
-            working-directory: infra/${{ matrix.app-name }}/service
+              terraform -chdir="infra/$APP_NAME/service" init -input=false -reconfigure -backend-config="$ENVIRONMENT.s3.tfbackend"
+              terraform -chdir="infra/$APP_NAME/service" plan -lock=false -var="environment_name=$ENVIRONMENT" -out .planfile
+            working-directory: infra/${{ env.APP_NAME }}/service
             header: "📝 Terraform Plan: Service"
           - terraform-cmd: |
-              terraform -chdir="infra/networks" init -input=false -reconfigure -backend-config="${{ matrix.environment }}.s3.tfbackend"
-              terraform -chdir="infra/networks" plan -lock=false -var="network_name=${{ matrix.environment }}" -out .planfile
+              terraform -chdir="infra/networks" init -input=false -reconfigure -backend-config="$ENVIRONMENT.s3.tfbackend"
+              terraform -chdir="infra/networks" plan -lock=false -var="network_name=$ENVIRONMENT" -out .planfile
             working-directory: infra/networks
             header: "📝 Terraform Plan: Network"
           - terraform-cmd: |
-              terraform -chdir="infra/${{ matrix.app-name }}/database" init -input=false -reconfigure -backend-config="${{ matrix.environment }}.s3.tfbackend"
-              terraform -chdir="infra/${{ matrix.app-name }}/database" plan -lock=false -var="environment_name=${{ matrix.environment }}" -out .planfile
-            working-directory: infra/${{ matrix.app-name }}/database
+              terraform -chdir="infra/$APP_NAME/database" init -input=false -reconfigure -backend-config="$ENVIRONMENT.s3.tfbackend"
+              terraform -chdir="infra/$APP_NAME/database" plan -lock=false -var="environment_name=$ENVIRONMENT" -out .planfile
+            working-directory: infra/${{ env.APP_NAME }}/database
             header: "📝 Terraform Plan: Database"
 
     steps:
@@ -43,8 +44,8 @@ jobs:
     - name: Configure AWS credentials
       uses: ./.github/actions/configure-aws-credentials
       with:
-        app_name: ${{ matrix.app-name }}
-        environment: ${{ matrix.environment }}
+        app_name: app
+        environment: dev
 
     - name: Run Terraform plan
       run: ${{ matrix.terraform-cmd }}
