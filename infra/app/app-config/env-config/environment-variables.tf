@@ -15,6 +15,8 @@ locals {
 
     # LA LDH pilot configuration
     LA_LDH_PILOT_ENABLED = tostring(var.la_ldh_pilot_enabled)
+
+    TEST_VAR = "true"
   }
 
   # Configuration for secrets
