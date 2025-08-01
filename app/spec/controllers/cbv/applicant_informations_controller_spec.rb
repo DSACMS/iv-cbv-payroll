@@ -1,6 +1,7 @@
 require "rails_helper"
 
 RSpec.describe Cbv::ApplicantInformationsController, type: :controller do
+  include ActiveSupport::Testing::TimeHelpers
   describe "#show" do
     let(:cbv_flow) do
       create(:cbv_flow)
@@ -144,26 +145,28 @@ RSpec.describe Cbv::ApplicantInformationsController, type: :controller do
     end
 
     it "tracks ApplicantSubmittedInformationPage event with identity_age_range_applicant for LA LDH DOB submission" do
-      allow(EventTrackingJob).to receive(:perform_later).with("CbvPageView", anything, anything)
+      travel_to Date.new(2025, 1, 1) do
+        allow(EventTrackingJob).to receive(:perform_later).with("CbvPageView", anything, anything)
 
-      expect(EventTrackingJob).to receive(:perform_later).with("ApplicantSubmittedInformationPage", anything, hash_including(
-        cbv_flow_id: cbv_flow.id,
-        cbv_applicant_id: cbv_flow.cbv_applicant_id,
-        client_agency_id: "la_ldh",
-        invitation_id: cbv_flow.cbv_flow_invitation_id,
-        identity_age_range_applicant: "26-29"
-      ))
+        expect(EventTrackingJob).to receive(:perform_later).with("ApplicantSubmittedInformationPage", anything, hash_including(
+          cbv_flow_id: cbv_flow.id,
+          cbv_applicant_id: cbv_flow.cbv_applicant_id,
+          client_agency_id: "la_ldh",
+          invitation_id: cbv_flow.cbv_flow_invitation_id,
+          identity_age_range_applicant: "26-29"
+        ))
 
-      post :update, params: {
-        cbv_applicant_la_ldh: {
-          cbv_applicant: {
-            date_of_birth: "06/15/1998", # 26-27 years old in 2024-2025
-            case_number: "1234567890123"
+        post :update, params: {
+          cbv_applicant_la_ldh: {
+            cbv_applicant: {
+              date_of_birth: "06/15/1998",
+              case_number: "1234567890123"
+            }
           }
         }
-      }
 
-      expect(response).to redirect_to(cbv_flow_summary_path)
+        expect(response).to redirect_to(cbv_flow_summary_path)
+      end
     end
   end
 end
