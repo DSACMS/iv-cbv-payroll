@@ -1,0 +1,60 @@
+name: Comment Terraform plans
+
+on:
+  pull_request:
+    paths:
+      - 'infra/**'
+
+jobs:
+  plan_comment:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pull-requests: write
+      id-token: write
+    env:
+      APP_NAME: app
+      ENVIRONMENT: dev
+    strategy:
+      matrix:
+        include:
+          - terraform-cmd: |
+              terraform -chdir="infra/$APP_NAME/service" init -input=false -reconfigure -backend-config="$ENVIRONMENT.s3.tfbackend"
+              terraform -chdir="infra/$APP_NAME/service" plan -lock=false -var="environment_name=$ENVIRONMENT" -out .planfile
+            working-directory: infra/app/service
+            header: "📝 Terraform Plan: Service"
+          - terraform-cmd: |
+              terraform -chdir="infra/networks" init -input=false -reconfigure -backend-config="$ENVIRONMENT.s3.tfbackend"
+              terraform -chdir="infra/networks" plan -lock=false -var="network_name=$ENVIRONMENT" -out .planfile
+            working-directory: infra/networks
+            header: "📝 Terraform Plan: Network"
+          - terraform-cmd: |
+              terraform -chdir="infra/$APP_NAME/database" init -input=false -reconfigure -backend-config="$ENVIRONMENT.s3.tfbackend"
+              terraform -chdir="infra/$APP_NAME/database" plan -lock=false -var="environment_name=$ENVIRONMENT" -out .planfile
+            working-directory: infra/app/database
+            header: "📝 Terraform Plan: Database"
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+
+    - name: Set up Terraform
+      uses: ./.github/actions/setup-terraform
+
+    - name: Configure AWS credentials
+      uses: ./.github/actions/configure-aws-credentials
+      with:
+        app_name: app
+        environment: dev
+
+    - name: Run Terraform plan
+      run: ${{ matrix.terraform-cmd }}
+
+    - name: Comment Terraform plan if changed
+      uses: borchero/terraform-plan-comment@v2
+      with:
+        token: ${{ github.token }}
+        working-directory: ${{ matrix.working-directory }}
+        planfile: .planfile
+        header: ${{ matrix.header }}
+        skip-empty: true

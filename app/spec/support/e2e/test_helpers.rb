@@ -47,7 +47,7 @@ module E2e
     def wait_for_idle(page)
       page.driver.browser.execute_async_script(<<~JS)
         const callback = arguments[arguments.length - 1];
-        window.requestIdleCallback(callback);
+        window.requestIdleCallback(callback, { timeout: 2000 });
       JS
     end
   end

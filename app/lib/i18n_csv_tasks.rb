@@ -63,14 +63,17 @@ module I18nCsvTasks
       yaml_data = YAML.load_file(yml_file) || {}
       parse_csv_into_yaml(yaml_data, csv_enum, yml_file, file_path)
 
-      File.write(yml_file, yaml_data.to_yaml, mode: "w:UTF-8")
+      File.write(yml_file, YAML.dump(yaml_data, line_width: -1), mode: "w:UTF-8")
     end
   end
 
   private
 
   def open_csv_with_encoding(file_path)
-    encodings = [ "Windows-1252:UTF-8", "UTF-8" ]
+    # note: sometimes this line needs to detect windows UTF-8 encodings depending on
+    # how the csv file was saved.
+    # encodings = [ "Windows-1252:UTF-8", "UTF-8" ]
+    encodings = [ "UTF-8" ]
     encodings.each do |enc|
       begin
         File.open(file_path, "r:#{enc}") do |file|

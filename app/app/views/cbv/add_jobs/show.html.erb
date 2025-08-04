@@ -18,7 +18,7 @@
   </ul>
 </section>
 
-<%= form_with(url: cbv_flow_add_job_path, builder: UswdsFormBuilder, id: "add_job_form") do |f| %>
+<%= form_with(url: cbv_flow_add_job_path, builder: UswdsFormBuilder, id: "add_job_form", data: { turbo: "false" }) do |f| %>
   <%= f.radio_button(:additional_jobs, true, { label: t(".radio_yes") }) %>
   <%= f.radio_button(:additional_jobs, false, { label: t(".radio_no") }) %>
   <div class="margin-top-5">

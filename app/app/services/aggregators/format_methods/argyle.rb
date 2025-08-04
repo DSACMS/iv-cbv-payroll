@@ -38,9 +38,9 @@ module Aggregators::FormatMethods::Argyle
 
   def self.hours_computed(response_hours, response_gross_pay_list)
     if response_hours.present? && response_hours.to_f > 0
-      response_hours
+      response_hours.to_f
     else
-      hours_by_earning_category(response_gross_pay_list).map { |_category, hours| hours }.max
+      hours_by_earning_category(response_gross_pay_list).map { |_category, hours| hours.to_f }.max
     end
   end
 

@@ -47,9 +47,7 @@ RSpec.describe AggregateDataPointComponent, type: :component do
     it "renders with valid data" do
       expect(
         render_inline(described_class.new(:deduction, "health_insurance", "post_tax", 10000))
-      ).to have_text(
-        "Health insurance (post-tax)\n    $100.00\n\n\n"
-      )
+      ).to have_text(/Deduction: Health insurance \(post-tax\)\s+\$100\.00/)
     end
   end
 

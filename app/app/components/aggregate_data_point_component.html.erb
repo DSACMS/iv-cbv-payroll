@@ -1,1 +1,8 @@
-<%= render(TableRowComponent.new(@field[:label], @field[:value], highlight: @highlight)) %>
+<%= render(TableRowComponent.new(highlight: @highlight)) do |row| -%>
+  <%= row.with_data_cell(is_header: true, class_names: "text-nowrap") do -%>
+    <%= @field[:label] || "" -%>
+  <%- end -%>
+  <%= row.with_data_cell(class_names: "text-nowrap") do -%>
+    <%= @field[:value] || "" %>
+  <%- end -%>
+<%- end -%>

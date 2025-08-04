@@ -134,7 +134,8 @@ html {
   @include u-margin-y(2);
 }
 
-.cbv-row-highlight td {
+.cbv-row-highlight td,
+.cbv-row-highlight th {
   @include u-bg('yellow-5v');
 }
 

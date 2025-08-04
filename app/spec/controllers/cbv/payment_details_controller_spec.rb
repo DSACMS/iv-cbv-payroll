@@ -291,6 +291,16 @@ RSpec.describe Cbv::PaymentDetailsController do
           expect(response).to be_successful
         end
 
+        context "includes employment details data for gig" do
+          it { is_expected.to include("Employment information") }
+          it { is_expected.to include("Employer phone") }
+          it { is_expected.to include("Employment status") }
+          it { is_expected.to include("Employment start date") }
+          it { is_expected.to include("Employment end date") }
+          it { is_expected.not_to include("Pay frequency") }
+          it { is_expected.not_to include("Compensation amount") }
+        end
+
         context "does not include w2 summary table" do
           it { is_expected.not_to include("Pay date") }
           it { is_expected.not_to include("Gross pay YTD") }
@@ -346,6 +356,16 @@ RSpec.describe Cbv::PaymentDetailsController do
           expect(response).to be_successful
         end
 
+        context "includes employment details data for gig" do
+          it { is_expected.to include("Employment information") }
+          it { is_expected.to include("Employer phone") }
+          it { is_expected.to include("Employment status") }
+          it { is_expected.to include("Employment start date") }
+          it { is_expected.to include("Employment end date") }
+          it { is_expected.to include("Pay frequency") }
+          it { is_expected.to include("Compensation amount") }
+        end
+
         context "includes w2 summary table" do
           it { is_expected.to include("Pay date") }
           it { is_expected.to include("Gross pay YTD") }
@@ -354,11 +374,10 @@ RSpec.describe Cbv::PaymentDetailsController do
           it { is_expected.to include("Deduction") }
         end
 
-        context "does not include monthly gig summary table" do
-          it { is_expected.not_to include("Monthly Summary") }
-          it { is_expected.not_to include("Accrued gross earnings") }
-          it { is_expected.not_to include("Total hours worked") }
-          it { is_expected.not_to include("Partial month") }
+        context "includes monthly w2 summary table" do
+          it { is_expected.to include("Monthly Summary") }
+          it { is_expected.to include("Gross income") }
+          it { is_expected.to include("Total hours worked") }
         end
 
         it "should properly display pay frequency and compensation amount" do
