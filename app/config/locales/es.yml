@@ -444,10 +444,10 @@ es:
           correo
         whats_next_1_li_2_html: Visite el <a href="%{agency_website}" target="_blank"
           rel="noopener noreferrer">sitio web de %{agency_acronym}</a>
-        whats_next_1_title: Reporte otros ingresos, si es necesario
+        whats_next_1_title: Reporte otros ingresos, si es necesario.
         whats_next_2_li_1_html: Nos gustaría saber más sobre su experiencia al usar
           este sitio.
-        whats_next_2_title: Ayude a mejorar esta experiencia
+        whats_next_2_title: Ayude a mejorar esta experiencia.
         survey: Responda esta encuesta de 3 preguntas
     summaries:
       show:

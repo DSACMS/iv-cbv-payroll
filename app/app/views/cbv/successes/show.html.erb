@@ -21,16 +21,16 @@
   </div>
 
   <div class="margin-bottom-5">
-    <h2 class="margin-left-1em"><%= t(".whats_next") %></h2>
+    <h2><%= t(".whats_next") %></h2>
     <ul class="usa-icon-list">
-      <li class="usa-icon-list__item">
+      <li class="usa-icon-list__item margin-bottom-3">
         <div class="usa-icon-list__icon display-flex flex-justify-center flex-align-center width-6 minw-6 height-6 bg-primary-lighter radius-top-pill radius-bottom-pill">
           <svg class="usa-icon" aria-hidden="true" role="img">
             <use href="<%= asset_path("@uswds/uswds/dist/img/sprite.svg#attach_money") %>"></use>
           </svg>
         </div>
         <div class="usa-icon-list__content">
-          <h3><%= t(".whats_next_1_title") %></h3>
+          <h3 class="margin-bottom-1"><%= t(".whats_next_1_title") %></h3>
           <p class="margin-y-1"><%= t(".whats_next_1_li_1", agency_acronym: agency_translation("shared.agency_acronym")) %></p>
           <%= t(".whats_next_1_li_2_html", agency_acronym: agency_translation("shared.agency_acronym"), agency_website: current_agency.agency_contact_website) %>
         </div>
@@ -42,12 +42,12 @@
           </svg>
         </div>
         <div class="usa-icon-list__content">
-          <h3><%= t(".share_invitation_link_title") %></h3>
+          <h3 class="margin-bottom-1"><%= t(".share_invitation_link_title") %></h3>
           <p class="margin-y-1"><%= t(".share_invitation_link_content") %></p>
         </div>
       </li>
     </ul>
-  <div data-controller="copy-link" class="margin-left-6 display-flex">
+  <div data-controller="copy-link" class="margin-left-7 display-flex">
     <%= form_with(builder: UswdsFormBuilder, html: { class: "display-contents" }) do |f| %>
       <%= f.label :invitation_link, t(".invitation_link_label"), class: "usa-sr-only" %>
       <input value="<%= @invitation_link %>" autocomplete="off" readonly class="usa-input margin-top-0 maxw-card-lg" data-copy-link-target="input" type="text" name="invitation_link" id="invitation_link">
@@ -78,8 +78,7 @@
   <div class="divider margin-top-5"></div>
 
   <div>
-    <h2><%= t(".whats_next_2_title") %></h2>
-    <div class="usa-prose">
+    <h1 class="margin-top-5"><%= t(".whats_next_2_title") %></h1>
       <p class="margin-bottom-1"><%= t(".whats_next_2_li_1_html") %></p>
       <%= render(LinkWithIconComponent.new(
         t(".survey"),
@@ -90,6 +89,5 @@
         target: "_blank",
         rel: "noopener noreferrer"
       )) %>
-    </div>
   </div>
 </div>
