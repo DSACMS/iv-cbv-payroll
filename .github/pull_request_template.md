@@ -35,11 +35,8 @@ Resolves [FFS-XXXX](https://jiraent.cms.gov/browse/FFS-XXXX).
 <!-- If this PR includes Terraform changes, please provide relevant info -->
 
 - [ ] Includes Terraform changes
-
   - [ ] Plan reviewed
-
   - [ ] Applied in demo (if needed)
-
   - [ ] Applied in production (if needed)
 
 **Risk / Downtime:**
