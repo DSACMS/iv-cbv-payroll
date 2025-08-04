@@ -32,12 +32,11 @@ Resolves [FFS-XXXX](https://jiraent.cms.gov/browse/FFS-XXXX).
   * Make sure to notify the team once this PR is merged so we don't inadvertently deploy the unaccepted change to production. (e.g. `:alert: Deploy block! @ffs-eng I just merged PR [#123] and will be doing acceptance testing in demo - please don't deploy until I'm finished!`)
 
 ## Infrastructure Changes
-<!-- If this PR includes Terraform changes, please provide relevant info -->
+<!-- If this PR includes Terraform changes, please provide relevant info. -->
 
-- [ ] Includes Terraform changes
   - [ ] Plan reviewed
-  - [ ] Applied in demo (if needed)
-  - [ ] Applied in production (if needed)
+  - [ ] Applied in dev before merge
+  - [ ] Applied in prod after merge (note any exceptions or special coordination below)
 
 **Risk / Downtime:**
-<!-- Note any potential downtime, service interruption, or rollback needs -->
+<!-- Note exceptions, potential downtime, or required coordination -->
