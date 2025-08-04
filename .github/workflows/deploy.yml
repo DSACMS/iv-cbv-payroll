@@ -11,6 +11,9 @@ on:
         description: "the name of the application environment (e.g. dev, staging, prod)"
         required: true
         type: string
+      commit_sha:
+        required: false
+        type: string
 defaults:
   run:
     working-directory: ./app
@@ -36,6 +39,8 @@ jobs:
       id-token: write
     steps:
       - uses: actions/checkout@v4
+        with:
+          ref: ${{ inputs.commit_sha || github.ref }}
 
       - name: Set up Terraform
         uses: ./.github/actions/setup-terraform
