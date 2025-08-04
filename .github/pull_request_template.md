@@ -32,7 +32,8 @@ Resolves [FFS-XXXX](https://jiraent.cms.gov/browse/FFS-XXXX).
   * Make sure to notify the team once this PR is merged so we don't inadvertently deploy the unaccepted change to production. (e.g. `:alert: Deploy block! @ffs-eng I just merged PR [#123] and will be doing acceptance testing in demo - please don't deploy until I'm finished!`)
 
 ## Infrastructure Changes
-<!-- If this PR includes Terraform changes, please provide relevant info -->
+<!-- If this PR includes Terraform changes, please provide relevant info.
+     All items below should be completed before merging unless otherwise discussed. -->
 
 - [ ] Includes Terraform changes
   - [ ] Plan reviewed
