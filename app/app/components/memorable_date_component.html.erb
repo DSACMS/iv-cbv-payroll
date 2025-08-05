@@ -1,5 +1,5 @@
-<div class="usa-form-group <%= 'usa-form-group--error' if form.has_error?(attribute) %>">
-  <fieldset class="usa-fieldset" aria-describedby="<%= form.field_error(attribute) ? "#{attribute}_error" : '' %> <%= hint.present? ? "#{attribute}_hint" : '' %>">
+<div class="usa-form-group <%= "usa-form-group--error" if form.has_error?(attribute) %>">
+  <fieldset class="usa-fieldset" aria-describedby="<%= form.field_error(attribute) ? "#{attribute}_error" : "" %> <%= hint.present? ? "#{attribute}_hint" : "" %>">
     <legend class="usa-legend"><%= legend %></legend>
     <%= form.field_error(attribute) %>
     <% if hint.present? %>
@@ -13,7 +13,7 @@
               {
                 field_name: "month",
                 id: "#{field_name}_#{attribute}_month",
-                prefix: "#{field_name}[#{attribute}]",
+                prefix: "#{field_name}[#{attribute}]"
               },
               { class: "usa-select" },
             ) %>
