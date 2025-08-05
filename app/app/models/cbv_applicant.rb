@@ -51,7 +51,14 @@ class CbvApplicant < ApplicationRecord
   }
 
   def date_of_birth=(value)
-    self[:date_of_birth] = parse_date(value)
+    if value.is_a?(Hash)
+      day = value["day"].to_i
+      month = value["month"].to_i
+      year = value["year"].to_i
+      self[:date_of_birth] = Date.new(year, month, day) rescue nil
+    else
+      self[:date_of_birth] = parse_date(value)
+    end
   end
 
   def snap_application_date=(value)
