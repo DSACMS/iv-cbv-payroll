@@ -1,4 +1,6 @@
 class Cbv::ApplicantInformationsController < Cbv::BaseController
+  include ApplicationHelper
+
   before_action :set_cbv_applicant, only: %i[show update]
   before_action :redirect_when_in_invitation_flow, :redirect_when_info_present, only: :show
 
@@ -10,6 +12,7 @@ class Cbv::ApplicantInformationsController < Cbv::BaseController
     @cbv_applicant.assign_attributes(applicant_params[:cbv_applicant])
 
     if  @cbv_applicant.validate_base_and_applicant_attributes? && @cbv_applicant.save
+      track_applicant_submitted_information_page_event
       return redirect_to next_path
     end
 
@@ -91,5 +94,19 @@ class Cbv::ApplicantInformationsController < Cbv::BaseController
     })
   rescue => ex
     Rails.logger.error "Unable to track event (ApplicantEncounteredInformationPageError): #{ex}"
+  end
+
+  def track_applicant_submitted_information_page_event
+    event_logger.track("ApplicantSubmittedInformationPage", request, {
+      timestamp: Time.now.to_i,
+      cbv_applicant_id: @cbv_flow.cbv_applicant_id,
+      cbv_flow_id: @cbv_flow.id,
+      client_agency_id: current_agency&.id,
+      invitation_id: @cbv_flow.cbv_flow_invitation_id,
+      identity_age_range_applicant: get_age_range(@cbv_applicant.date_of_birth)
+    })
+  rescue => ex
+    Rails.logger.error "Unable to track event (ApplicantSubmittedInformationPage): #{ex}"
+    raise unless Rails.env.production?
   end
 end
