@@ -1,5 +1,5 @@
-<h3 class="margin-top-5"><%= t("cbv.payment_details.show.payments_and_deductions_table_header") %></h3>
 <% if has_monthly_summary_results? %>
+  <h3 class="margin-top-5"><%= t("cbv.payment_details.show.payments_and_deductions_table_header") %></h3>
   <% @monthly_summary_data.each do |(month_string, summary)| %>
     <%= render AccordionComponent.new(id: "#{month_string}-accordion") do |accordion| %>
       <% accordion.with_title do %>
@@ -31,9 +31,5 @@
         <% end %>
       <% end %>
     <% end %>
-  <% end %>
-<% else %>
-  <%= render AlertComponent.new(type: :info, heading: t("cbv.payment_details.show.none_found", report_data_range: report_data_range(@aggregator_report, @account_id)), class: "margin-top-5") do %>
-    <%= t("cbv.payment_details.show.none_found_description", report_data_range: report_data_range(@aggregator_report, @account_id)) %>
   <% end %>
 <% end %>
