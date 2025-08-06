@@ -47,16 +47,8 @@ class Cbv::ApplicantInformationsController < Cbv::BaseController
   end
 
   def applicant_params
-    permitted_attrs = @cbv_applicant.applicant_attributes.map do |attr|
-      if attr == :date_of_birth
-        { date_of_birth: [ :day, :month, :year ] }
-      else
-        attr
-      end
-    end
-
     params.fetch("cbv_applicant_#{@cbv_flow.client_agency_id}", {}).permit(
-      cbv_applicant: permitted_attrs
+      cbv_applicant: @cbv_applicant.applicant_attributes
     )
   end
 

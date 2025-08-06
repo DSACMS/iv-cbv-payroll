@@ -110,4 +110,14 @@ module TestHelpers
   ensure
     Rails.application.config.supported_providers = old_value
   end
+
+  def extract_pdf_text(response)
+    require 'pdf-reader'
+    pdf = PDF::Reader.new(StringIO.new(response.body))
+    pdf_text = ""
+    pdf.pages.each do |page|
+      pdf_text += page.text.gsub(/\s+/, ' ')
+    end
+    pdf_text
+  end
 end
