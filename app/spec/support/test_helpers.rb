@@ -1,3 +1,5 @@
+require 'pdf-reader'
+
 module TestHelpers
   def stub_environment_variable(variable, value, &block)
     previous_value = ENV[variable]
@@ -112,7 +114,6 @@ module TestHelpers
   end
 
   def extract_pdf_text(response)
-    require 'pdf-reader'
     pdf = PDF::Reader.new(StringIO.new(response.body))
     pdf_text = ""
     pdf.pages.each do |page|
