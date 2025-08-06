@@ -46,7 +46,7 @@ class Cbv::GenericLinksController < Cbv::BaseController
   end
 
   def create_flow_with_existing_applicant(applicant)
-    reset_applicant_information(applicant)
+    applicant.reset_applicant_attributes
     cbv_flow = CbvFlow.create(cbv_applicant: applicant, client_agency_id: params[:client_agency_id])
     [ cbv_flow, false ]
   end
@@ -58,11 +58,6 @@ class Cbv::GenericLinksController < Cbv::BaseController
 
   def find_existing_applicant(applicant_id)
     CbvApplicant.find_by(id: applicant_id, client_agency_id: params[:client_agency_id])
-  end
-
-  def reset_applicant_information(applicant)
-    clear_attributes = applicant.applicant_attributes.index_with(nil)
-    applicant.update!(clear_attributes)
   end
 
   def track_generic_link_clicked_event(cbv_flow, is_new_session)

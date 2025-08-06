@@ -159,7 +159,11 @@ RSpec.describe Cbv::ApplicantInformationsController, type: :controller do
         post :update, params: {
           cbv_applicant_la_ldh: {
             cbv_applicant: {
-              date_of_birth: "06/15/1998",
+              date_of_birth: {
+                day: "06",
+                month: "05",
+                year: "1998"
+              },
               case_number: "1234567890123"
             }
           }

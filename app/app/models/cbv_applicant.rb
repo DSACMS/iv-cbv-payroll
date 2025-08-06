@@ -95,7 +95,16 @@ class CbvApplicant < ApplicationRecord
 
   def set_applicant_attributes
     @applicant_attributes = agency_config&.applicant_attributes&.compact&.keys&.map(&:to_sym) || []
+    @applicant_attributes << { date_of_birth: [ :day, :month, :year ] } if @applicant_attributes.include?(:date_of_birth)
+
     @required_applicant_attributes = get_required_applicant_attributes
+  end
+
+  # Reset the applicant attributes to nil by removing any non-symbol keys i.e. { date_of_birth: [ :day, :month, :year ] }
+  # and then setting the attributes to nil.
+  def reset_applicant_attributes
+    clear_attributes = applicant_attributes.reject { |key| !key.is_a?(Symbol) }.index_with(nil)
+    update!(clear_attributes)
   end
 
   def is_applicant_attribute_required?(attribute)

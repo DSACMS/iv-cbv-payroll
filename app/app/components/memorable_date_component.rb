@@ -12,16 +12,12 @@ class MemorableDateComponent < ViewComponent::Base
 
   attr_reader :form, :attribute, :legend, :hint
 
-  def field
-    form.object
-  end
-
   def field_name
     form.object_name
   end
 
   def date_values
-    raw_value = field.send(attribute)
+    raw_value = form.object.send(attribute)
     return {} unless raw_value.is_a?(Date)
 
     {

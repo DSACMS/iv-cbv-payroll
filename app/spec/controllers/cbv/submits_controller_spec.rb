@@ -11,12 +11,12 @@ RSpec.describe Cbv::SubmitsController do
 
   before do
     allow(mock_client_agency).to receive(:transmission_method_configuration).and_return({
-                                                                                          "bucket" => "test-bucket",
-                                                                                          "region" => "us-west-2",
-                                                                                          "access_key_id" => "SOME_ACCESS_KEY",
-                                                                                          "secret_access_key" => "SOME_SECRET_ACCESS_KEY",
-                                                                                          "public_key" => @public_key
-                                                                                        })
+      "bucket" => "test-bucket",
+      "region" => "us-west-2",
+      "access_key_id" => "SOME_ACCESS_KEY",
+      "secret_access_key" => "SOME_SECRET_ACCESS_KEY",
+      "public_key" => @public_key
+    })
   end
 
   around do |ex|
