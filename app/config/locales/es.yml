@@ -103,7 +103,7 @@ es:
             super_one_html: Número de caso de Medicaid<sup>1</sup>
           date_of_birth:
             blank: Escriba su fecha de nacimiento.
-            help_text: "Por ejemplo: 19 de enero de 2000"
+            help_text: 'Por ejemplo: 19 de enero de 2000'
             prompt: Su fecha de nacimiento
             super_one_html: Fecha de nacimiento<sup>1</sup>
       sandbox:
@@ -114,7 +114,7 @@ es:
             super_one_html: Número de caso<sup>1</sup>
           date_of_birth:
             blank: Escriba su fecha de nacimiento.
-            help_text: "Por ejemplo: 19 de enero de 2000"
+            help_text: 'Por ejemplo: 19 de enero de 2000'
             prompt: Fecha de nacimiento
             super_one_html: Fecha de nacimiento<sup>1</sup>
           first_name:
