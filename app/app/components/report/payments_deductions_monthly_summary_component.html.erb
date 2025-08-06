@@ -7,7 +7,7 @@
       <% end %>
       <% accordion.with_accordion_item do %>
         <% summary[:paystubs].each do |paystub| %>
-          <%= render(TableComponent.new(is_responsive: @is_responsive)) do |table| %>
+          <%= render(TableComponent.new(is_responsive: @is_responsive, class_names: "payment-details-table")) do |table| %>
             <%= table.with_subheader_row(class_names: "subheader-row base-lightest") do |row| %>
               <%= row.with_data_cell(is_header: true, class_names: "text-nowrap")
                     .with_content(t("cbv.payment_details.show.pay_information")) %>

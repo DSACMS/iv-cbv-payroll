@@ -273,6 +273,17 @@ input#invitation_link{
 }
 
 /*
+* Payment details table column adjustments for consistent display with different content
+*/
+.payment-details-table {
+  table-layout: fixed;
+}
+
+.payment-details-table .subheader-row th {
+  width: 50%;
+}
+
+/*
  * Utilities
  */
 .list-style-disc {
