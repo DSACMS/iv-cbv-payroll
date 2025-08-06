@@ -251,7 +251,7 @@ RSpec.describe UswdsFormBuilder do
   end
 
   describe '#memorable_date' do
-    let(:result) { builder.memorable_date(:start_date, label: 'Start date', hint: 'Please enter the start date') }
+    let(:result) { builder.memorable_date(:start_date, legend: 'Start date', hint: 'Please enter the start date') }
 
     it 'outputs a fieldset with a legend' do
       expect(result).to have_element(:fieldset, class: 'usa-fieldset')

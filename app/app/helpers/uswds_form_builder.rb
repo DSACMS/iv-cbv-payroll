@@ -126,7 +126,7 @@ class UswdsFormBuilder < ActionView::Helpers::FormBuilder
   end
 
   def memorable_date(attribute, options = {})
-    legend = options.delete(:label)
+    legend = options.delete(:legend)
     hint = options.delete(:hint)
 
     @template.render(MemorableDateComponent.new(form: self, attribute: attribute, legend: legend, hint: hint))
