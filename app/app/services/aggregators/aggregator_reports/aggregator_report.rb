@@ -106,7 +106,7 @@ module Aggregators::AggregatorReports
               gigs: gigs_in_month,
               accrued_gross_earnings: paystubs_in_month.sum { |paystub| paystub.gross_pay_amount || 0 },
               total_gig_hours: gigs_in_month.sum { |gig| gig.hours || 0 },
-              total_w2_hours: paystubs_in_month.sum { | paystub | paystub.hours.to_f || 0.0 },
+              total_w2_hours: paystubs_in_month.sum { | paystub | paystub.hours.to_f },
               total_mileage: total_miles(gigs_in_month),
               partial_month_range: partial_month_details(month, extracted_dates_in_month, from_date, to_date)
             }
