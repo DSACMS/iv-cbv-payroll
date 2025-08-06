@@ -65,7 +65,7 @@ module Aggregators::AggregatorReports
         has_identity_data = payroll_account.job_succeeded?("identity")
         account_paystubs = @paystubs.filter { |paystub| paystub.account_id == account_id }
         hash[account_id] ||= {
-          total: account_paystubs.sum { |paystub| paystub.gross_pay_amount },
+          total: account_paystubs.sum { |paystub| paystub.gross_pay_amount || 0 },
           has_income_data: has_income_data,
           has_employment_data: has_employment_data,
           has_identity_data: has_identity_data,
@@ -105,8 +105,8 @@ module Aggregators::AggregatorReports
               paystubs: paystubs_in_month,
               gigs: gigs_in_month,
               accrued_gross_earnings: paystubs_in_month.sum { |paystub| paystub.gross_pay_amount || 0 },
-              total_gig_hours: gigs_in_month.sum { |gig| gig.hours },
-              total_w2_hours: paystubs_in_month.sum { | paystub | paystub.hours.to_f },
+              total_gig_hours: gigs_in_month.sum { |gig| gig.hours || 0 },
+              total_w2_hours: paystubs_in_month.sum { | paystub | paystub.hours.to_f || 0.0 },
               total_mileage: total_miles(gigs_in_month),
               partial_month_range: partial_month_details(month, extracted_dates_in_month, from_date, to_date)
             }
