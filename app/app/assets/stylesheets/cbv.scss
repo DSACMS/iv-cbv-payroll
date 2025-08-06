@@ -273,9 +273,13 @@ input#invitation_link{
 }
 
 /*
-* Payment details accordion table column adjustments for consistent display with different content
+* Payment details table column adjustments for consistent display with different content
 */
-.payment-details-accordion-table .subheader-row th {
+.payment-details-table {
+  table-layout: fixed;
+}
+
+.payment-details-table .subheader-row th {
   width: 50%;
 }
 

@@ -115,7 +115,7 @@
 
   <% if is_w2_worker %>
     <% summary[:paystubs].each do |paystub| %>
-      <%= render(TableComponent.new) do |table| %>
+      <%= render(TableComponent.new(class_names: "payment-details-table")) do |table| %>
         <%= table.with_header do %>
           <h4 class="margin-0">
             <% if employer_name %>
