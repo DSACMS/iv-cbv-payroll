@@ -6,12 +6,12 @@
   <% end %>
   <div class="usa-card-group">
     <% @employers.each do |employer| %>
-      <div class="usa-card usa-card--flag usa-card--media-right flex-1">
+      <div class="usa-card usa-card--flag usa-card--media-right desktop:grid-col-6">
         <div class="usa-card__container">
           <div class="usa-card__header">
             <h3 class="usa-card__heading"><%= employer.name %></h3>
           </div>
-          <div class="display-none usa-card__media usa-card__media--inset">
+          <div class="usa-card__media usa-card__media--inset">
             <% if employer.logo_url %>
               <div class="usa-card__img">
                 <img

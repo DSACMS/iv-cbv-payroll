@@ -134,7 +134,8 @@ html {
   @include u-margin-y(2);
 }
 
-.cbv-row-highlight td {
+.cbv-row-highlight td,
+.cbv-row-highlight th {
   @include u-bg('yellow-5v');
 }
 
@@ -269,6 +270,17 @@ input#invitation_link{
 
 .usa-prose > .usa-table--borderless .subheader-row th {
   background-color: color('gray-cool-10');
+}
+
+/*
+* Payment details table column adjustments for consistent display with different content
+*/
+.payment-details-table {
+  table-layout: fixed;
+}
+
+.payment-details-table .subheader-row th {
+  width: 50%;
 }
 
 /*

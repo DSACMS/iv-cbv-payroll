@@ -129,6 +129,7 @@ RSpec.describe Cbv::SubmitsController do
             pdf.pages.each do |page|
               pdf_text += page.text
             end
+            pdf_text = pdf_text.gsub(/\s+/, " ")
 
             expect(pdf_text).to include("Case number")
             expect(pdf_text).to include("00012345")
@@ -148,6 +149,7 @@ RSpec.describe Cbv::SubmitsController do
               pdf.pages.each do |page|
                 pdf_text += page.text
               end
+              pdf_text = pdf_text.gsub(/\s+/, " ")
 
               expect(pdf_text).to include(I18n.t("cbv.applicant_informations.sandbox.fields.first_name.prompt"))
               expect(pdf_text).to include(I18n.t("cbv.applicant_informations.sandbox.fields.middle_name.prompt"))
@@ -167,6 +169,7 @@ RSpec.describe Cbv::SubmitsController do
               pdf.pages.each do |page|
                 pdf_text += page.text
               end
+              pdf_text = pdf_text.gsub(/\s+/, " ")
 
               expect(pdf_text).to include(I18n.t("cbv.applicant_informations.sandbox.fields.first_name.prompt"))
               expect(pdf_text).to include(I18n.t("cbv.applicant_informations.sandbox.fields.middle_name.prompt"))
@@ -192,6 +195,7 @@ RSpec.describe Cbv::SubmitsController do
               pdf.pages.each do |page|
                 pdf_text += page.text
               end
+              pdf_text = pdf_text.gsub(/\s+/, " ")
 
               expect(pdf_text).to include("Client-provided information")
               expect(pdf_text).to include("Medicaid case number")
@@ -210,6 +214,7 @@ RSpec.describe Cbv::SubmitsController do
               pdf.pages.each do |page|
                 pdf_text += page.text
               end
+              pdf_text = pdf_text.gsub(/\s+/, " ")
 
               expect(pdf_text).to include("Client-provided information")
               expect(pdf_text).to include("Medicaid case number")

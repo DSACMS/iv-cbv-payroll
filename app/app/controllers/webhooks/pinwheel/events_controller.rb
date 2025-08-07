@@ -107,7 +107,6 @@ class Webhooks::Pinwheel::EventsController < ApplicationController
         identity_phone_numbers_count: report.identities.sum { |i| i.phone_numbers.length },
         identity_zip_code: report.identities.first&.zip_code,
         identity_age_range: get_age_range(report.identities.first&.date_of_birth),
-        identity_age_range_applicant: get_age_range(@cbv_flow.cbv_applicant.date_of_birth),
         identity_account_id: report.identities.first&.account_id,
 
         # Income fields
