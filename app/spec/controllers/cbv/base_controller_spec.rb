@@ -127,6 +127,18 @@ RSpec.describe Cbv::BaseController, type: :controller do
         expect(session[:cbv_flow_id]).to be_a(Integer)
         expect(session[:cbv_origin]).to be_nil
       end
+
+      it "does set an origin if no parameter is supplied but agency default exists" do
+        stub_client_agency_config_value("la_ldh", "default_origin", "sms")
+        expect(EventTrackingJob).to receive(:perform_later).with("CbvPageView", anything, anything)
+        expect(EventTrackingJob).to receive(:perform_later).with("ApplicantClickedCBVInvitationLink", anything, hash_including(
+          origin: "sms"
+        ))
+        get :show, params: { token: cbv_flow.cbv_flow_invitation.auth_token }
+        expect(response).to be_successful
+        expect(session[:cbv_flow_id]).to be_a(Integer)
+        expect(session[:cbv_origin]).to eq "sms"
+      end
     end
   end
 end
