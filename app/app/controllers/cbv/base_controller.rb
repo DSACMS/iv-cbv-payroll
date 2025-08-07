@@ -46,8 +46,6 @@ class Cbv::BaseController < ApplicationController
   end
 
   def set_cbv_origin
-    return if session[:cbv_origin].present?
-
     # Running before set_cbv_flow so we need to use the domain
     agency = agency_config[detect_client_agency_from_domain]
     origin = params.fetch(:origin, agency&.default_origin)
