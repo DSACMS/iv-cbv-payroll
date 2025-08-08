@@ -21,6 +21,18 @@ RSpec.describe PagesController do
         get :home
         expect(response).to redirect_to(cbv_flow_new_path(client_agency_id: "la_ldh"))
       end
+
+      it "defaults to sms origin for LA when no origin provided" do
+        request.host = "la.reportmyincome.org"
+        get :home
+        expect(session[:cbv_origin]).to eq("sms")
+      end
+
+      it "uses provided origin parameter when given" do
+        request.host = "la.reportmyincome.org"
+        get :home, params: { origin: "mail" }
+        expect(session[:cbv_origin]).to eq("mail")
+      end
     end
 
     context "when on an agency subdomain with an ended pilot" do

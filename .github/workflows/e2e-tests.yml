@@ -33,12 +33,41 @@ jobs:
       - name: Install chromedriver
         uses: nanasess/setup-chromedriver@v2
 
-      - name: Run e2e tests via rspec
+      - id: e2e_tests
+        name: Run e2e tests via rspec
         working-directory: app
+        continue-on-error: true
         env:
+          # Keep these in-sync with the retry step below.
           RAILS_ENV: test
           DATABASE_URL: ${{ steps.setup.outputs.database_url }}
           RAILS_MASTER_KEY: 0f5db7adba61669d4cc45dfa6b2464d7
           E2E_RUN_TESTS: 1
-
         run: bin/rspec ./spec/e2e
+
+      - id: e2e_tests_retry
+        name: Retry E2E tests that fail
+        working-directory: app
+        if: steps.e2e_tests.outcome != 'success'
+        env:
+          # Keep these in-sync with the step above.
+          RAILS_ENV: test
+          DATABASE_URL: ${{ steps.setup.outputs.database_url }}
+          RAILS_MASTER_KEY: 0f5db7adba61669d4cc45dfa6b2464d7
+          E2E_RUN_TESTS: 1
+        run: bin/rspec ./spec/e2e --only-failures
+
+      - name: Add failure info to GH Actions step summary
+        working-directory: app
+        if: failure()
+        run: |
+          shopt -s nullglob
+
+          {
+            echo "## Last 100 lines of log/test.log";
+            echo "<details><summary>Expand to see logs</summary>";
+            echo '<pre>';
+            tail -n100 log/test.log;
+            echo '</pre>';
+            echo '</details>'
+          } >> "$GITHUB_STEP_SUMMARY"

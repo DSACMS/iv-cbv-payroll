@@ -7,6 +7,8 @@ module E2e
     # the next page to load. If the default wait time (2 seconds) isn't enough,
     # pass in a higher value (in seconds) in for `wait`.
     def verify_page(page, title:, wait: Capybara.default_max_wait_time, skip_axe_rules: [])
+      wait_for_idle(page)
+
       expect(page).to have_content(title, wait: wait)
 
       # Verify page has no missing translations
@@ -40,6 +42,13 @@ module E2e
     def update_cbv_flow_with_deterministic_end_user_id_for_pinwheel(cassette_name)
       cassette_name_as_integer = Digest::MD5.hexdigest(cassette_name).to_i(16)
       CbvFlow.last.update(end_user_id: Random.new(cassette_name_as_integer).uuid)
+    end
+
+    def wait_for_idle(page)
+      page.driver.browser.execute_async_script(<<~JS)
+        const callback = arguments[arguments.length - 1];
+        window.requestIdleCallback(callback, { timeout: 2000 });
+      JS
     end
   end
 end

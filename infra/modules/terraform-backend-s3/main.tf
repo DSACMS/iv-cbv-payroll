@@ -11,7 +11,7 @@ locals {
 # Create the dynamodb table required for state locking.
 
 # Options for encryption are an AWS owned key, which is not unique to your account; AWS managed; or customer managed. The latter two options are more secure, and customer managed gives
-# control over the key. This allows for ability to restrict access by key as well as policies attached to roles or users. 
+# control over the key. This allows for ability to restrict access by key as well as policies attached to roles or users.
 # https://docs.aws.amazon.com/kms/latest/developerguide/concepts.html
 resource "aws_kms_key" "tf_backend" {
   description = "KMS key for DynamoDB table ${local.tf_locks_table_name}"
@@ -128,7 +128,7 @@ resource "aws_s3_bucket_policy" "tf_state" {
 
 # Create the S3 bucket to provide server access logging.
 #
-# Ignore bucket logging complaince check for this bucket since 
+# Ignore bucket logging complaince check for this bucket since
 # the bucket is used for logging only and doesn't need server access logging itself
 # (see https://docs.aws.amazon.com/AmazonS3/latest/userguide/ServerLogs.html)
 # tfsec:ignore:aws-s3-enable-bucket-logging
@@ -182,6 +182,8 @@ resource "aws_s3_bucket_lifecycle_configuration" "tf_log" {
   rule {
     id     = "move-s3-to-ia"
     status = "Enabled"
+
+    filter {}
 
     abort_incomplete_multipart_upload {
       days_after_initiation = 15

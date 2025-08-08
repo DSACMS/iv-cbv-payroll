@@ -34,7 +34,7 @@ class PayrollAccount::Pinwheel < PayrollAccount
   end
 
   def necessary_jobs_succeeded?
-    job_succeeded?("paystubs")
+    job_succeeded?("paystubs") || (job_succeeded?("employment") && job_succeeded?("identity"))
   end
 
   def redact!

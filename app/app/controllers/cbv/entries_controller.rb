@@ -5,7 +5,8 @@ class Cbv::EntriesController < Cbv::BaseController
       client_agency_id: current_agency&.id,
       cbv_applicant_id: @cbv_flow.cbv_applicant_id,
       cbv_flow_id: @cbv_flow.id,
-      invitation_id: @cbv_flow.cbv_flow_invitation_id
+      invitation_id: @cbv_flow.cbv_flow_invitation_id,
+      origin: session[:cbv_origin]
     })
   end
 
@@ -16,7 +17,8 @@ class Cbv::EntriesController < Cbv::BaseController
         client_agency_id: current_agency&.id,
         cbv_applicant_id: @cbv_flow.cbv_applicant_id,
         cbv_flow_id: @cbv_flow.id,
-        invitation_id: @cbv_flow.cbv_flow_invitation_id
+        invitation_id: @cbv_flow.cbv_flow_invitation_id,
+        origin: session[:cbv_origin]
       })
       redirect_to next_path
     else

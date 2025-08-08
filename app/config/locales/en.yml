@@ -101,6 +101,10 @@ en:
       semimonthly: Semi-monthly
       variable: Variable
       weekly: Weekly
+    tax_category:
+      post_tax: post-tax
+      pre_tax: pre-tax
+      unknown: tax status unknown
   applicant_mailer:
     invitation_email:
       body_1:
@@ -186,28 +190,16 @@ en:
         la_ldh: CBV Report %{confirmation_code}
   cbv:
     add_jobs:
-      next_path:
-        notice_no_answer: You must select an answer to continue.
       show:
-        answer_no_bullet_1: You don't have another job (current or recent)
-        answer_no_bullet_2: You have a job that pays you via PayPal, Venmo, Cash App, etc.
-        answer_no_bullet_3: You have a job that pays you in cash
-        answer_no_bullet_4: You have a job that pays you with a paper check and you can't view your paycheck online
-        answer_no_bullet_5: You have a job that issues a 1099
-        answer_no_header: 'Answer NO if:'
-        answer_yes_bullet_1: Your job has an online payroll provider
-        answer_yes_bullet_2: Your job lets you view pay stubs online
-        answer_yes_bullet_3: Your job is app-based (Uber, DoorDash, Lyft, Instacart, etc.)
-        answer_yes_header_html: 'Answer YES if <em>any</em> of these are true about your current or recent job:'
-        continue: Continue
-        criteria_disclaimer: 'Note: If you''ve had other jobs in the past 90 days that don''t meet these criteria, you may need to submit that income information separately.'
         header: Do you have another job to report?
-        learn_more_link_html:
-          la_ldh: Learn more on <a href="%{agency_url}" target="_blank" rel="noopener noreferrer">LDH's website</a>.
-          sandbox: Learn more on <a href="https://www.mass.gov/guides/how-to-contact-dta" target="_blank" rel="noopener noreferrer">CBV Test Agency's website</a>.
-        no_radio: No, I don’t have another job that meets the criteria
-        subheader: Please add other jobs you’ve had in the past 90 days, even if you're no longer at that job.
-        yes_radio: Yes, I have another job that meets the criteria
+        header_2: Do you have another job to report using Report My Income?
+        header_2_bullet_1: Has an online payroll provider, or
+        header_2_bullet_2: Lets you view pay stubs online, or
+        header_2_bullet_3: Is app-based (Uber, DoorDash, Lyft, Instacart, etc.)
+        header_2_lead: 'This includes a current job or recent job you’ve had in the past 90 days that:'
+        header_sub_text: Tell us about any other jobs you've had in the past 90 days, even if you're no longer at that job.
+        radio_no: No, I don’t have another job that meets one of these criteria
+        radio_yes: Yes, I have another job that meets one of these criteria
     applicant_informations:
       la_ldh:
         fields:
@@ -272,7 +264,6 @@ en:
         search: Search
         search_label: 'Enter the name of your current or recent employer or payroll provider:'
         select: Select
-        select_button_aria_label: Open an authentication modal for the employer or payroll provider to import your payment history.
         to_continue: 'If you still don’t see your employer or payroll provider listed:'
         to_continue_li_1: You’ll need to submit that income information separately.
         to_continue_li_1_html: <a href="%{agency_contact_website}" target="_blank" rel="noopener noreferrer">Go to %{agency_acronym}'s website</a> to learn about other ways to report your income.
@@ -325,12 +316,24 @@ en:
         not_listed_p2: Visit %{agency_acronym}'s website for more information on how to submit documents.
         not_listed_p2_link_html: Visit <a href="%{agency_url}" target="_blank" rel="noopener noreferrer">%{agency_acronym}'s website</a> for more information on how to submit documents.
         you_can_search: You can search for another employer or payroll provider. This site supports employers with online payroll providers or app-based services. Examples include Amazon, Walmart, McDonald’s, Uber, DoorDash, Lyft, and Instacart.
+    other_jobs:
+      show:
+        bullet_1: Pays you via PayPal, Venmo, Cash App, etc
+        bullet_2: Pays you in cash
+        bullet_3: Pays you with a paper check and you can’t view your paycheck online
+        bullet_4: Issues you a 1099
+        header: Do you need to report any jobs outside Report My Income?
+        header_html: Do you need to report any jobs <em>outside</em> Report My Income?
+        header_sub_text: 'Tell us about any other jobs you’ve had in the past 90 days, even if you’re no longer at that job. This includes current or recent jobs you’ve had in the past 90 days that may:'
+        note_html: 'Note: If you’ve had other jobs in the past 90 days that you won’t report using Report My Income, you will need to submit that income information separately. <a href="%{agency_site}" target="_blank" rel="noopener noreferrer">Learn more on %{agency_acronym}.</a>'
+        radio_no: No, I don’t have another job to report separately
+        radio_yes: Yes, I have another job I’ll report separately
     payment_details:
       show:
         additional_information_header: Additional comments (Optional)
         additional_information_label: Share any comments or additional information about the income details above that you’d like %{agency_acronym} to know. For example, you can share if the information is inaccurate or if you’re no longer working at that job.
         continue: Continue
-        deductions: 'Deduction: %{category}'
+        deductions: 'Deduction: %{category} (%{tax})'
         employment_end_date: Employment end date
         employment_information_table_header: Employment information
         employment_start_date: Employment start date
@@ -346,10 +349,11 @@ en:
         none_found: We didn't find any payments from this employer in the past %{report_data_range}.
         none_found_description: This typically happens when you haven't received income from this job in the past %{report_data_range}. If you believe this is an error, please add a comment in the additional comments box. Otherwise, continue to the next page.
         number_of_hours_worked: Number of hours worked
-        pay_date: 'Pay Date: %{pay_date}'
+        pay_date_prompt: Pay date
         pay_frequency: Pay frequency
         pay_gross: Payment before taxes (gross)
         pay_gross_ytd: Gross pay YTD
+        pay_information: Pay information
         pay_net: Payment after taxes and deductions (net)
         pay_period: Pay period
         pay_period_value: "%{start_date} to %{end_date}"
@@ -359,6 +363,7 @@ en:
         total_gross_description: This is the total gross income from your job before taxes, benefits and deductions were taken out of your paycheck.
         total_gross_income: 'Total income from the past %{report_data_range}, before taxes: %{amount}'
         unknown: Unknown
+        your_details: Your details
     submits:
       show:
         additional_information_title: Is there anything else you'd like your caseworker to know about your income?
@@ -399,6 +404,8 @@ en:
             employment_payment_details: Employment and Payment details
             header: Income Verification Report
           shared:
+            additional_jobs_to_report: Does the client have additional jobs they will report separately?
+            additional_jobs_to_report_html: Does the client have additional jobs they will report separately?<sup>1</sup>
             client_information: Client information
             confirmation_code: Confirmation code
             employment_information: Employment information
@@ -433,16 +440,20 @@ en:
         additional_comments: Additional comments
         application_information: Applicant information
         description: The report below shows your recent income. Please review it before sending.
+        edit: Edit
         header: Review your income report
         must_match:
           default: This must match what is shown on your %{agency_acronym} application.
           la_ldh: This must match what is shown on your Medicaid benefits.
+        other_jobs: Other jobs
         payment: Payment of %{amount} before taxes on %{date}
         phone_number: Employer phone
+        question: Question
         table_caption: 'Employer %{number}: %{employer_name}'
         table_caption_no_name: Employer %{number}
         total_income_from: 'Total income before taxes from %{employer_name}: %{amount}'
         total_income_from_no_employer_name: 'Total income before taxes: %{amount}'
+        your_answer: Your answer
         your_information: Your information
     synchronization_failures:
       show:
@@ -466,6 +477,9 @@ en:
         header: We’re gathering your payment details from your employer
   components:
     report:
+      employment_details_table:
+        header:
+          your_details: Your details
       monthly_summary_table:
         accrued_gross_earnings: Accrued gross earnings
         compact:
@@ -478,11 +492,19 @@ en:
         month: Month
         monthly_summary: Monthly Summary
         partial_month_text: "(Partial month: from %{start_date}-%{end_date})"
+        partial_month_text_simple: "(Partial month)"
         payments_from_header: Payments from %{employer_name}
         payments_from_text: These were the dates that you were paid for your work at %{employer_name} and the gross pay amount.
         payments_from_text_caseworker: These were the dates that the client was paid for their work at %{employer_name} and the gross pay amount.
         total_gig_hours: Total hours worked
         verified_mileage_expenses: Verified mileage expenses
+        w2:
+          definition_gross_income: '"Gross income" is the pay from your job before taxes, benefits, and deductions were taken out of your paychecks. In the table above, your total gross income is summed for the month within the 90 day window'
+          definition_number_of_paychecks: '"Number of paychecks" is how many times you were paid in a month within the 90-day window.'
+          definition_total_hours_worked: '"Total hours worked" are the total number of hours you worked for every paycheck you received in a month.'
+          title_gross_income: Gross income
+          title_number_of_paychecks: Number of paychecks
+          title_total_hours_worked: Total hours worked
   continue: Continue
   date:
     formats:
@@ -661,6 +683,8 @@ en:
       es: Español
       fr: Français
       zh: 中文
+    next_path:
+      notice_no_answer: You must select an answer to continue.
     not_applicable: N/A
     pilot_name: Report My Income
     report_data_range:

@@ -1,7 +1,7 @@
 require "rails_helper"
 
 
-RSpec.describe Report::MonthlySummaryTableComponent, type: :component do
+RSpec.describe Report::GigMonthlySummaryTableComponent, type: :component do
   context "with pinwheel stubs" do
     include PinwheelApiHelper
 
@@ -62,7 +62,7 @@ RSpec.describe Report::MonthlySummaryTableComponent, type: :component do
       it "renders the Month column with the correct date format" do
         x = render_inline(described_class.new(pinwheel_report, payroll_account))
         expect(subject.css("thead tr.subheader-row th:nth-child(1)").to_html).to include "Month"
-        expect(subject.css("tbody tr:nth-child(1) td:nth-child(1)").to_html).to include "December 2020"
+        expect(subject.css("tbody tr:nth-child(1) th:nth-child(1)").to_html).to include "December 2020"
       end
 
       it "renders the Accrued gross earnings column with the correct currency format" do
@@ -136,9 +136,9 @@ RSpec.describe Report::MonthlySummaryTableComponent, type: :component do
 
       it "renders the Month column with the correct date format" do
         expect(subject.css("thead tr.subheader-row th:nth-child(1)").to_html).to include "Month"
-        expect(subject.css("tbody tr:nth-child(1) td:nth-child(1)").to_html).to include "March 2025"
-        expect(subject.css("tbody tr:nth-child(2) td:nth-child(1)").to_html).to include "February 2025"
-        expect(subject.css("tbody tr:nth-child(3) td:nth-child(1)").to_html).to include "January 2025"
+        expect(subject.css("tbody tr:nth-child(1) th:nth-child(1)").to_html).to include "March 2025"
+        expect(subject.css("tbody tr:nth-child(2) th:nth-child(1)").to_html).to include "February 2025"
+        expect(subject.css("tbody tr:nth-child(3) th:nth-child(1)").to_html).to include "January 2025"
       end
 
       it "renders the Accrued gross earnings column with the correct currency format" do
@@ -296,9 +296,9 @@ RSpec.describe Report::MonthlySummaryTableComponent, type: :component do
 
       it "renders the Month column with the correct date format" do
         expect(subject.css("thead tr.subheader-row th:nth-child(1)").to_html).to include "Month"
-        expect(subject.css("tbody tr:nth-child(1) td:nth-child(1)").to_html).to include "March 2025"
-        expect(subject.css("tbody tr:nth-child(2) td:nth-child(1)").to_html).to include "February 2025"
-        expect(subject.css("tbody tr:nth-child(3) td:nth-child(1)").to_html).to include "January 2025"
+        expect(subject.css("tbody tr:nth-child(1) th:nth-child(1)").to_html).to include "March 2025"
+        expect(subject.css("tbody tr:nth-child(2) th:nth-child(1)").to_html).to include "February 2025"
+        expect(subject.css("tbody tr:nth-child(3) th:nth-child(1)").to_html).to include "January 2025"
       end
 
       it "renders the Accrued gross earnings column with the correct currency format" do
@@ -352,9 +352,9 @@ RSpec.describe Report::MonthlySummaryTableComponent, type: :component do
 
       it "renders the Month column with the correct date format" do
         expect(subject.css("thead tr.subheader-row th:nth-child(1)").to_html).to include "Month"
-        expect(subject.css("tbody tr:nth-child(1) td:nth-child(1)").to_html).to include "March 2025"
-        expect(subject.css("tbody tr:nth-child(2) td:nth-child(1)").to_html).to include "February 2025"
-        expect(subject.css("tbody tr:nth-child(3) td:nth-child(1)").to_html).to include "January 2025"
+        expect(subject.css("tbody tr:nth-child(1) th:nth-child(1)").to_html).to include "March 2025"
+        expect(subject.css("tbody tr:nth-child(2) th:nth-child(1)").to_html).to include "February 2025"
+        expect(subject.css("tbody tr:nth-child(3) th:nth-child(1)").to_html).to include "January 2025"
       end
 
       it "renders the Accrued gross earnings column with the correct currency format" do

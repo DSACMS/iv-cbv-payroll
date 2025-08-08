@@ -1,6 +1,7 @@
 require "rails_helper"
 
 RSpec.describe Cbv::ApplicantInformationsController, type: :controller do
+  include ActiveSupport::Testing::TimeHelpers
   describe "#show" do
     let(:cbv_flow) do
       create(:cbv_flow)
@@ -28,7 +29,7 @@ RSpec.describe Cbv::ApplicantInformationsController, type: :controller do
         post :update, params: {
           cbv_applicant_sandbox: {
             cbv_applicant: {
-              first_name: "Tim", # required
+              first_name: "Daph", # required
               middle_name: "",
               last_name: "", # required
               date_of_birth: "", # required
@@ -49,9 +50,9 @@ RSpec.describe Cbv::ApplicantInformationsController, type: :controller do
         post :update, params: {
           cbv_applicant_sandbox: {
             cbv_applicant: {
-              first_name: "Tim", # required
+              first_name: "Daph", # required
               middle_name: "",
-              last_name: "Miller", # required
+              last_name: "Gold", # required
               date_of_birth: "03/19/1992", # required
               case_number: "9971" # required
             }
@@ -61,13 +62,55 @@ RSpec.describe Cbv::ApplicantInformationsController, type: :controller do
         expect(response).to redirect_to(cbv_flow_summary_path)
       end
 
+      it "tracks ApplicantSubmittedInformationPage event with identity_age_range_applicant when form is successfully submitted" do
+        allow(EventTrackingJob).to receive(:perform_later).with("CbvPageView", anything, anything)
+
+        expect(EventTrackingJob).to receive(:perform_later).with("ApplicantSubmittedInformationPage", anything, hash_including(
+          cbv_flow_id: cbv_flow.id,
+          cbv_applicant_id: cbv_flow.cbv_applicant_id,
+          client_agency_id: cbv_flow.client_agency_id,
+          invitation_id: cbv_flow.cbv_flow_invitation_id,
+          identity_age_range_applicant: "30-39"
+        ))
+
+        post :update, params: {
+          cbv_applicant_sandbox: {
+            cbv_applicant: {
+              first_name: "Daph",
+              middle_name: "",
+              last_name: "Gold",
+              date_of_birth: "03/19/1992",
+              case_number: "9971"
+            }
+          }
+        }
+      end
+
+      it "does not track ApplicantSubmittedInformationPage event when form submission fails" do
+        allow(EventTrackingJob).to receive(:perform_later).with("CbvPageView", anything, anything)
+
+        expect(EventTrackingJob).not_to receive(:perform_later).with("ApplicantSubmittedInformationPage", anything, anything)
+
+        post :update, params: {
+          cbv_applicant_sandbox: {
+            cbv_applicant: {
+              first_name: "Daph",
+              middle_name: "",
+              last_name: "", # required but missing
+              date_of_birth: "03/19/1992",
+              case_number: "9971"
+            }
+          }
+        }
+      end
+
       it "stays on the page if fields are satisfied and the force_show parameter is present" do
         get :show, params: {
           cbv_applicant_sandbox: {
             cbv_applicant: {
-              first_name: "Tim", # required
+              first_name: "Daph", # required
               middle_name: "",
-              last_name: "Miller", # required
+              last_name: "Gold", # required
               date_of_birth: "01/01/1980", # required
               case_number: "9971" # required
             }
@@ -88,6 +131,39 @@ RSpec.describe Cbv::ApplicantInformationsController, type: :controller do
 
       it "redirects to the summary" do
         get :show
+
+        expect(response).to redirect_to(cbv_flow_summary_path)
+      end
+    end
+  end
+
+  describe "#update for LA LDH flow" do
+    let(:cbv_flow) { create(:cbv_flow, client_agency_id: "la_ldh") }
+
+    before do
+      session[:cbv_flow_id] = cbv_flow.id
+    end
+
+    it "tracks ApplicantSubmittedInformationPage event with identity_age_range_applicant for LA LDH DOB submission" do
+      travel_to Date.new(2025, 1, 1) do
+        allow(EventTrackingJob).to receive(:perform_later).with("CbvPageView", anything, anything)
+
+        expect(EventTrackingJob).to receive(:perform_later).with("ApplicantSubmittedInformationPage", anything, hash_including(
+          cbv_flow_id: cbv_flow.id,
+          cbv_applicant_id: cbv_flow.cbv_applicant_id,
+          client_agency_id: "la_ldh",
+          invitation_id: cbv_flow.cbv_flow_invitation_id,
+          identity_age_range_applicant: "26-29"
+        ))
+
+        post :update, params: {
+          cbv_applicant_la_ldh: {
+            cbv_applicant: {
+              date_of_birth: "06/15/1998",
+              case_number: "1234567890123"
+            }
+          }
+        }
 
         expect(response).to redirect_to(cbv_flow_summary_path)
       end

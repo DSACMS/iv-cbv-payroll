@@ -5,7 +5,7 @@ git_source(:github) { |repo| "https://github.com/#{repo}.git" }
 ruby "3.4.4"
 
 # Bundle edge Rails instead: gem "rails", github: "rails/rails", branch: "main"
-gem "rails", "~> 7.1.5", ">= 7.1.5.1"
+gem "rails", "~> 7.2.2"
 
 # The original asset pipeline for Rails [https://github.com/rails/sprockets-rails]
 gem "sprockets-rails"
@@ -81,6 +81,7 @@ gem "gpgme", "~> 2.0", ">= 2.0.12"
 gem "pdf-reader", "~> 2.12.0"
 gem "net-imap", "0.4.20"  # Fixing GHSA-j3g3-5qv5-52m
 gem "cgi", ">= 0.4.2"     # Fixing GHSA-mhwm-jh88-3gjf
+gem "thor", ">= 1.4.0"    # Fixing GHSA-mqcp-p2hv-vw6x
 
 group :development, :test do
   gem "brakeman"

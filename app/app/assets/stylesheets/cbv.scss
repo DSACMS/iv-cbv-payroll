@@ -134,7 +134,8 @@ html {
   @include u-margin-y(2);
 }
 
-.cbv-row-highlight td {
+.cbv-row-highlight td,
+.cbv-row-highlight th {
   @include u-bg('yellow-5v');
 }
 
@@ -250,9 +251,45 @@ input#invitation_link{
     background-color: color("green-cool-40v");
   }
 }
+
+#session-timeout-modal.is-visible {
+  // This is one additional 9 beyond Argyle's modal z-index to make sure
+  // the timeout modal is always visible if displayed
+  z-index: 9999999999;
+}
+
+/*
+* Tables
+*/
 .subheader-row {
   > th {
     font-weight: bold;
-    background-color: color('base-lightest');
+    background-color: color('gray-cool-10');
   }
+}
+
+.usa-prose > .usa-table--borderless .subheader-row th {
+  background-color: color('gray-cool-10');
+}
+
+/*
+* Payment details table column adjustments for consistent display with different content
+*/
+.payment-details-table {
+  table-layout: fixed;
+}
+
+.payment-details-table .subheader-row th {
+  width: 50%;
+}
+
+/*
+ * Utilities
+ */
+.list-style-disc {
+  list-style-type: disc !important;
+}
+
+.display-contents {
+  display: contents !important;
 }

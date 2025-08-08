@@ -24,7 +24,8 @@ class Transmitters::SftpTransmitter
                            is_caseworker: true,
                            cbv_flow: cbv_flow,
                            aggregator_report: aggregator_report,
-                           has_consent: true
+                           has_consent: true,
+                           current_agency: current_agency
                          }
                        )
                      end
