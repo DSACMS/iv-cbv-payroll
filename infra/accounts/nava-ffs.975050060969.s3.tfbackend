@@ -1,4 +1,0 @@
-bucket         = "iv-cbv-payroll-975050060969-us-east-1-tf"
-key            = "infra/account.tfstate"
-dynamodb_table = "iv-cbv-payroll-975050060969-us-east-1-tf-state-locks"
-region         = "us-east-1"
