@@ -46,11 +46,22 @@ class Cbv::BaseController < ApplicationController
   end
 
   def set_cbv_origin
-    return if session[:cbv_origin].present?
+    origin_param = params.fetch(:origin, "")
+    if origin_param.present?
+      # If we get a param, use it to overwrite the origin.
+      # This helps us meet the state expectation that somebody who clicks a second link should switch to that origin in our tracking.
+      origin = origin_param
+    elsif origin_param.blank? and session[:cbv_origin].blank?
+      # If we don't get a param, and if we don't already have an origin, regress to the default.
+      # This preserves defaulting behavior.
+      agency = agency_config[detect_client_agency_from_domain]
+      origin = agency&.default_origin
+    else
+      # Otherwise, do not change the origin.
+      # This allows LA /start to preserve the initial 'email' origin specified in our routes
+      return
+    end
 
-    # Running before set_cbv_flow so we need to use the domain
-    agency = agency_config[detect_client_agency_from_domain]
-    origin = params.fetch(:origin, agency&.default_origin)
     if origin.present?
       session[:cbv_origin] = origin.strip.downcase.gsub(/\s+/, "_").first(64)
     end
