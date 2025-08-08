@@ -23,7 +23,7 @@ locals {
   #
   # {
   #   ENV_VAR_NAME = {
-  #     manage_method     = "generated" # or "generated" for a secret that was created and stored in SSM generatedly
+  #     manage_method     = "generated" # or "manual" for a secret that was created and stored in SSM manually
   #     secret_store_name = "/ssm/param/name"
   #   }
   # }

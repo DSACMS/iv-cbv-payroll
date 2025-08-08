@@ -68,6 +68,21 @@ of the test.
 
 To run locally, use `bin/dev`
 
+### Running Docker Containers Locally
+
+When running built Docker containers locally, it's important to properly mount the `/rails/tmp` directory as a volume. 
+We've created a script to simplify this process:
+
+```bash
+# Build the container
+APP_NAME=app make release-build
+
+# Run the container with proper volume mounting
+./bin/run-local-container.sh iv-cbv-payroll-app:latest
+```
+
+For more details, see the [Running Local Container](docs/app/runbooks/running-local-container.md) documentation.
+
 To run database migrations on the test environment that is used by rpec tests, run `RAILS_ENV=test bin/rails db:schema:load`
 
 ## Branching model

@@ -31,8 +31,7 @@ terraform {
 }
 
 provider "aws" {
-  region  = local.region
-  profile = "demo"
+  region = local.region
   default_tags {
     tags = local.tags
   }
