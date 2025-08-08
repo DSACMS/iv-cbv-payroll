@@ -68,7 +68,8 @@ class CaseWorkerTransmitterJob < ApplicationJob
       account_count_with_additional_information:
         cbv_flow.additional_information.values.count { |info| info["comment"].present? },
       flow_started_seconds_ago: (cbv_flow.consented_to_authorized_use_at - cbv_flow.created_at).to_i,
-      locale: I18n.locale
+      locale: I18n.locale,
+      origin: session[:cbv_origin]
     })
   rescue => ex
     raise ex unless Rails.env.production?

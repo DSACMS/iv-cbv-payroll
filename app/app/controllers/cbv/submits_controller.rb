@@ -26,7 +26,8 @@ class Cbv::SubmitsController < Cbv::BaseController
           cbv_applicant_id: @cbv_flow.cbv_applicant_id,
           cbv_flow_id: @cbv_flow.id,
           invitation_id: @cbv_flow.cbv_flow_invitation_id,
-          locale: I18n.locale
+          locale: I18n.locale,
+          origin: session[:cbv_origin]
         })
 
         render pdf: "#{@cbv_flow.id}",
