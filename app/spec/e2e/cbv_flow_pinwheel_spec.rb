@@ -78,7 +78,7 @@ RSpec.describe "e2e CBV flow pinwheel test", type: :feature, js: true do
     click_on "Share my report with CBV"
 
     # /cbv/success
-    verify_page(page, title: I18n.t("cbv.successes.show.header", agency_acronym: ""), wait: 20)
+    verify_page(page, title: I18n.t("cbv.successes.show.header", agency_acronym: "CBV"), wait: 20)
     # TODO: Test PDF rendering by writing it to a file
   end
 end
