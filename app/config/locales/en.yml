@@ -429,7 +429,7 @@ en:
         share_invitation_link_title: Share a link if others in your household need to report their income.
         survey: Take the 3 question survey
         whats_next: What's next?
-        whats_next_1_li_1: If you couldn’t find a job or don’t get paystubs, report your income to %{agency_acronym} online, in person, or by mail
+        whats_next_1_li_1: If you couldn’t find a job or don’t get paystubs, report your income to %{agency_acronym} online, in person, or by mail.
         whats_next_1_li_2_html: Go to <a href="%{agency_website}" target="_blank" rel="noopener noreferrer">%{agency_acronym}'s website</a>
         whats_next_1_title: Report other income, if needed.
         whats_next_2_li_1_html: We’d like to hear more about your experience using this site.
