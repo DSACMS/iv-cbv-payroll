@@ -1,0 +1,47 @@
+<div class="usa-form-group <%= "usa-form-group--error" if form.has_error?(attribute) %>">
+  <fieldset class="usa-fieldset" aria-describedby="<%= form.field_error(attribute) ? "#{attribute}_error" : "" %> <%= hint.present? ? "#{attribute}_hint" : "" %>">
+    <legend class="usa-legend"><%= legend %></legend>
+    <%= form.field_error(attribute) %>
+    <% if hint.present? %>
+      <div id="<%= "#{attribute}_hint" %>" class="usa-hint"><%= hint %></div>
+    <% end %>
+    <div class="usa-memorable-date">
+      <div class="usa-form-group usa-form-group--month usa-form-group--select">
+        <label class="usa-label" for="<%= "#{field_name}_#{attribute}_month" %>">Month</label>
+        <%= select_month(
+              date_values[:month],
+              {
+                field_name: "month",
+                id: "#{field_name}_#{attribute}_month",
+                prefix: "#{field_name}[#{attribute}]"
+              },
+              { class: "usa-select" },
+            ) %>
+      </div>
+      <div class="usa-form-group usa-form-group--day">
+        <label class="usa-label" for="<%= "#{field_name}_#{attribute}_day" %>">Day</label>
+        <%= number_field_tag(
+              "#{field_name}[#{attribute}][day]",
+              date_values[:day],
+              class: "usa-input",
+              maxlength: 2,
+              minlength: 1,
+              id: "#{field_name}_#{attribute}_day",
+              autocomplete: "off"
+            ) %>
+      </div>
+      <div class="usa-form-group usa-form-group--year">
+        <label class="usa-label" for="<%= "#{field_name}_#{attribute}_year" %>">Year</label>
+        <%= number_field_tag(
+              "#{field_name}[#{attribute}][year]",
+              date_values[:year],
+              class: "usa-input",
+              maxlength: 4,
+              minlength: 4,
+              id: "#{field_name}_#{attribute}_year",
+              autocomplete: "off"
+            ) %>
+      </div>
+    </div>
+  </fieldset>
+</div>

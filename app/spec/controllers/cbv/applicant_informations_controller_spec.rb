@@ -53,7 +53,11 @@ RSpec.describe Cbv::ApplicantInformationsController, type: :controller do
               first_name: "Daph", # required
               middle_name: "",
               last_name: "Gold", # required
-              date_of_birth: "03/19/1992", # required
+              date_of_birth: {
+                month: "03",
+                day: "19",
+                year: "1992"
+              }, # required
               case_number: "9971" # required
             }
           }
@@ -79,7 +83,11 @@ RSpec.describe Cbv::ApplicantInformationsController, type: :controller do
               first_name: "Daph",
               middle_name: "",
               last_name: "Gold",
-              date_of_birth: "03/19/1992",
+              date_of_birth: {
+                month: "03",
+                day: "19",
+                year: "1992"
+              },
               case_number: "9971"
             }
           }
@@ -97,7 +105,11 @@ RSpec.describe Cbv::ApplicantInformationsController, type: :controller do
               first_name: "Daph",
               middle_name: "",
               last_name: "", # required but missing
-              date_of_birth: "03/19/1992",
+              date_of_birth: {
+                month: "03",
+                day: "19",
+                year: "1992"
+              },
               case_number: "9971"
             }
           }
@@ -111,7 +123,11 @@ RSpec.describe Cbv::ApplicantInformationsController, type: :controller do
               first_name: "Daph", # required
               middle_name: "",
               last_name: "Gold", # required
-              date_of_birth: "01/01/1980", # required
+              date_of_birth: {
+                month: "01",
+                day: "01",
+                year: "1980"
+              }, # required
               case_number: "9971" # required
             }
           },
@@ -159,7 +175,11 @@ RSpec.describe Cbv::ApplicantInformationsController, type: :controller do
         post :update, params: {
           cbv_applicant_la_ldh: {
             cbv_applicant: {
-              date_of_birth: "06/15/1998",
+              date_of_birth: {
+                month: "06",
+                day: "15",
+                year: "1998"
+              },
               case_number: "1234567890123"
             }
           }

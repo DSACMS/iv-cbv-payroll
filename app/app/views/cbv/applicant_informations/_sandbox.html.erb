@@ -3,6 +3,6 @@
   <%= f2.text_field :first_name, label: t(".fields.first_name.prompt") %>
   <%= f2.text_field :middle_name, label: t(".fields.middle_name.prompt") %>
   <%= f2.text_field :last_name, label: t(".fields.last_name.prompt") %>
-  <%= f2.date_picker :date_of_birth, label: t(".fields.date_of_birth.prompt"), hint: t(".fields.date_of_birth.help_text") %>
+  <%= f2.memorable_date :date_of_birth, legend: t(".fields.date_of_birth.prompt"), hint: t(".fields.date_of_birth.help_text") %>
   <%= f2.text_field :case_number, label: t(".fields.case_number.prompt") %>
 <% end %>
