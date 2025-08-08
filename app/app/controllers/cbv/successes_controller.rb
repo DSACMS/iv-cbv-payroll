@@ -26,7 +26,8 @@ class Cbv::SuccessesController < Cbv::BaseController
       cbv_applicant_id: @cbv_flow.cbv_applicant_id,
       cbv_flow_id: @cbv_flow.id,
       client_agency_id: current_agency&.id,
-      invitation_id: @cbv_flow.cbv_flow_invitation_id
+      invitation_id: @cbv_flow.cbv_flow_invitation_id,
+      origin: session[:cbv_origin]
     })
   rescue => ex
     Rails.logger.error "Failed to track event: #{ex.message}"
