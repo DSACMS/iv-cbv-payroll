@@ -14,6 +14,9 @@ class ClientAgencyConfig
 
   def initialize(config_path)
     template = ERB.new File.read(config_path)
+    print(template)
+    print("LA_LDH_WEEKLY #{ENV["LA_LDH_WEEKLY_REPORT_RECIPIENTS"]}")
+    
     @client_agencies = YAML
       .safe_load(template.result(binding))
       .map { |s| [ s["id"], ClientAgency.new(s) ] }
