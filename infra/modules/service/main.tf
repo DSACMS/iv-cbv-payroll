@@ -46,6 +46,13 @@ resource "aws_ecs_service" "app" {
   desired_count          = var.desired_instance_count
   enable_execute_command = var.enable_command_execution ? true : null
 
+  ## TODO: please control this / make it a variable
+  # This allows deployments to not retry over and over again if they fail.
+  deployment_circuit_breaker {
+    enable   = true
+    rollback = false
+  }
+
   network_configuration {
     assign_public_ip = false
     subnets          = var.private_subnet_ids
