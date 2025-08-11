@@ -191,4 +191,5 @@ USER rails:rails
 
 # Invoke the entrypoint script, passing it the rails server command
 ENTRYPOINT ["rails.sh"]
-CMD ["bin/rails", "server", "-b", "0.0.0.0"]
+#CMD ["bin/rails", "server", "-b", "0.0.0.0"]
+CMD ["bin/sh"]
