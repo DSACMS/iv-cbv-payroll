@@ -12,6 +12,12 @@ resource "aws_ecs_service" "solid_queue" {
     security_groups  = [aws_security_group.app.id] # Or another SG if needed
   }
 
+  # TODO: you should enable rollback when ready to go to prod.
+  deployment_circuit_breaker {
+    enable   = true
+    rollback = false
+  }
+
 }
 
 

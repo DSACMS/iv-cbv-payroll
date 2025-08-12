@@ -23,7 +23,7 @@ locals {
   #
   # {
   #   ENV_VAR_NAME = {
-  #     manage_method     = "generated" # or "manual" for a secret that was created and stored in SSM manually
+  #     manage_method     = "manual" # or "generated" for a secret that was created and stored in SSM manually
   #     secret_store_name = "/ssm/param/name"
   #   }
   # }
@@ -32,27 +32,27 @@ locals {
   # https://us-east-1.console.aws.amazon.com/systems-manager/parameters/
   secrets = {
     SECRET_KEY_BASE = {
-      manage_method     = "generated"
+      manage_method     = "manual"
       secret_store_name = "/service/${var.app_name}-${var.environment}/rails-secret-key-base"
     },
     RAILS_MASTER_KEY = {
-      manage_method     = "generated"
+      manage_method     = "manual"
       secret_store_name = "/service/${var.app_name}-${var.environment}/rails-master-key"
     },
     MISSION_CONTROL_USER = {
-      manage_method     = "generated"
+      manage_method     = "manual"
       secret_store_name = "/service/${var.app_name}-${var.environment}/mission-control-user"
     },
     MISSION_CONTROL_PASSWORD = {
-      manage_method     = "generated"
+      manage_method     = "manual"
       secret_store_name = "/service/${var.app_name}-${var.environment}/mission-control-password"
     },
     SLACK_TEST_EMAIL = {
-      manage_method     = "generated"
+      manage_method     = "manual"
       secret_store_name = "/service/${var.app_name}-${var.environment}/slack-test-email"
     },
     MIXPANEL_TOKEN = {
-      manage_method     = "generated"
+      manage_method     = "manual"
       secret_store_name = "/service/${var.app_name}-${var.environment}/mixpanel-token"
     },
     NEWRELIC_KEY = {
@@ -60,158 +60,158 @@ locals {
       secret_store_name = "/service/${var.app_name}-${var.environment}/newrelic-key"
     },
     NEW_RELIC_ENV = {
-      manage_method     = "generated"
+      manage_method     = "manual"
       secret_store_name = "/service/${var.app_name}-${var.environment}/new-relic-env"
     },
     MAINTENANCE_MODE = {
-      manage_method     = "generated"
+      manage_method     = "manual"
       secret_store_name = "/service/${var.app_name}-${var.environment}/maintenance-mode"
     },
     ACTIVE_RECORD_ENCRYPTION_PRIMARY_KEY = {
-      manage_method     = "generated"
+      manage_method     = "manual"
       secret_store_name = "/service/${var.app_name}-${var.environment}/active-record-encryption-primary-key"
     },
     ACTIVE_RECORD_ENCRYPTION_DETERMINISTIC_KEY = {
-      manage_method     = "generated"
+      manage_method     = "manual"
       secret_store_name = "/service/${var.app_name}-${var.environment}/active-record-encryption-deterministic-key"
     },
     ACTIVE_RECORD_ENCRYPTION_KEY_DERIVATION_SALT = {
-      manage_method     = "generated"
+      manage_method     = "manual"
       secret_store_name = "/service/${var.app_name}-${var.environment}/active-record-encryption-key-derivation-salt"
     },
 
     # Transmission Configuration:
     LA_LDH_EMAIL = {
-      manage_method     = "generated"
+      manage_method     = "manual"
       secret_store_name = "/service/${var.app_name}-${var.environment}/la-ldh-email"
     },
 
     # Feature Flags:
     SUPPORTED_PROVIDERS = {
-      manage_method     = "generated"
+      manage_method     = "manual"
       secret_store_name = "/service/${var.app_name}-${var.environment}/supported-providers"
     },
 
     ACTIVEJOB_ENABLED = {
-      manage_method     = "generated"
+      manage_method     = "manual"
       secret_store_name = "/service/${var.app_name}-${var.environment}/activejob-enabled"
     },
 
     # Pinwheel Configuration:
     PINWHEEL_API_TOKEN_PRODUCTION = {
-      manage_method     = "generated"
+      manage_method     = "manual"
       secret_store_name = "/service/${var.app_name}-${var.environment}/pinwheel-api-token-production"
     },
     PINWHEEL_API_TOKEN_DEVELOPMENT = {
-      manage_method     = "generated"
+      manage_method     = "manual"
       secret_store_name = "/service/${var.app_name}-${var.environment}/pinwheel-api-token-development"
     },
     PINWHEEL_API_TOKEN_SANDBOX = {
-      manage_method     = "generated"
+      manage_method     = "manual"
       secret_store_name = "/service/${var.app_name}-${var.environment}/pinwheel-api-token-sandbox"
     },
     AZ_DES_PINWHEEL_ENVIRONMENT = {
-      manage_method     = "generated"
+      manage_method     = "manual"
       secret_store_name = "/service/${var.app_name}-${var.environment}/az-des-pinwheel-environment"
     },
     LA_LDH_PINWHEEL_ENVIRONMENT = {
-      manage_method     = "generated"
+      manage_method     = "manual"
       secret_store_name = "/service/${var.app_name}-${var.environment}/la-ldh-pinwheel-environment"
     },
     SANDBOX_PINWHEEL_ENVIRONMENT = {
-      manage_method     = "generated"
+      manage_method     = "manual"
       secret_store_name = "/service/${var.app_name}-${var.environment}/sandbox-pinwheel-environment"
     },
 
 
     # Argyle Configuration:
     AZ_DES_ARGYLE_ENVIRONMENT = {
-      manage_method     = "generated"
+      manage_method     = "manual"
       secret_store_name = "/service/${var.app_name}-${var.environment}/az-des-argyle-environment"
     },
     LA_LDH_ARGYLE_ENVIRONMENT = {
-      manage_method     = "generated"
+      manage_method     = "manual"
       secret_store_name = "/service/${var.app_name}-${var.environment}/la-ldh-argyle-environment"
     },
     SANDBOX_ARGYLE_ENVIRONMENT = {
-      manage_method     = "generated"
+      manage_method     = "manual"
       secret_store_name = "/service/${var.app_name}-${var.environment}/sandbox-argyle-environment"
     },
     ARGYLE_API_TOKEN_SANDBOX_ID = {
-      manage_method     = "generated"
+      manage_method     = "manual"
       secret_store_name = "/service/${var.app_name}-${var.environment}/argyle-api-token-sandbox-id"
     },
     ARGYLE_API_TOKEN_SANDBOX_SECRET = {
-      manage_method     = "generated"
+      manage_method     = "manual"
       secret_store_name = "/service/${var.app_name}-${var.environment}/argyle-api-token-sandbox-secret"
     },
     ARGYLE_SANDBOX_WEBHOOK_SECRET = {
-      manage_method     = "generated"
+      manage_method     = "manual"
       secret_store_name = "/service/${var.app_name}-${var.environment}/argyle-sandbox-webhook-secret"
     },
     ARGYLE_API_TOKEN_ID = {
-      manage_method     = "generated"
+      manage_method     = "manual"
       secret_store_name = "/service/${var.app_name}-${var.environment}/argyle-api-token-id"
     },
     ARGYLE_API_TOKEN_SECRET = {
-      manage_method     = "generated"
+      manage_method     = "manual"
       secret_store_name = "/service/${var.app_name}-${var.environment}/argyle-api-token-secret"
     },
     ARGYLE_WEBHOOK_SECRET = {
-      manage_method     = "generated"
+      manage_method     = "manual"
       secret_store_name = "/service/${var.app_name}-${var.environment}/argyle-webhook-secret"
     },
 
     # SSO Configuration:
     AZURE_SANDBOX_CLIENT_ID = {
-      manage_method     = "generated"
+      manage_method     = "manual"
       secret_store_name = "/service/${var.app_name}-${var.environment}/azure-sandbox-client-id"
     },
     AZURE_SANDBOX_CLIENT_SECRET = {
-      manage_method     = "generated"
+      manage_method     = "manual"
       secret_store_name = "/service/${var.app_name}-${var.environment}/azure-sandbox-client-secret"
     },
     AZURE_SANDBOX_TENANT_ID = {
-      manage_method     = "generated"
+      manage_method     = "manual"
       secret_store_name = "/service/${var.app_name}-${var.environment}/azure-sandbox-tenant-id"
     },
     AZ_DES_SFTP_USER = {
-      manage_method     = "generated"
+      manage_method     = "manual"
       secret_store_name = "/service/${var.app_name}-${var.environment}/az-des-sftp-user"
     },
     AZ_DES_SFTP_PASSWORD = {
-      manage_method     = "generated"
+      manage_method     = "manual"
       secret_store_name = "/service/${var.app_name}-${var.environment}/az-des-sftp-password"
     },
     AZ_DES_SFTP_URL = {
-      manage_method     = "generated"
+      manage_method     = "manual"
       secret_store_name = "/service/${var.app_name}-${var.environment}/az-des-sftp-url"
     },
     AZ_DES_SFTP_DIRECTORY = {
-      manage_method     = "generated"
+      manage_method     = "manual"
       secret_store_name = "/service/${var.app_name}-${var.environment}/az-des-sftp-directory"
     },
 
     # Other site-specific Configuration:
     LA_LDH_WEEKLY_REPORT_RECIPIENTS = {
-      manage_method     = "generated"
+      manage_method     = "manual"
       secret_store_name = "/service/${var.app_name}-${var.environment}/la-ldh-weekly-report-recipients"
     },
     AZ_DES_WEEKLY_REPORT_RECIPIENTS = {
-      manage_method     = "generated"
+      manage_method     = "manual"
       secret_store_name = "/service/${var.app_name}-${var.environment}/az-des-weekly-report-recipients"
     }
     # Domain names
     AZ_DES_DOMAIN_NAME = {
-      manage_method     = "generated"
+      manage_method     = "manual"
       secret_store_name = "/service/${var.app_name}-${var.environment}/az-des-domain-name"
     },
     LA_LDH_DOMAIN_NAME = {
-      manage_method     = "generated"
+      manage_method     = "manual"
       secret_store_name = "/service/${var.app_name}-${var.environment}/la-ldh-domain-name"
     },
     SANDBOX_DOMAIN_NAME = {
-      manage_method     = "generated"
+      manage_method     = "manual"
       secret_store_name = "/service/${var.app_name}-${var.environment}/sandbox-domain-name"
     }
   }
