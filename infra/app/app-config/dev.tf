@@ -35,12 +35,4 @@ module "dev_config" {
 
   # NewRelic configuration for metrics
   newrelic_account_id = "4619676"
-
-  service_override_extra_environment_variables = {
-    LA_LDH_PILOT_ENABLED = data.aws_ssm_parameter.la_ldh_pilot_enabled_dev.value
-  }
-}
-
-data "aws_ssm_parameter" "la_ldh_pilot_enabled_dev" {
-  name = "/service/${local.app_name}-dev/la-ldh-pilot-enabled"
 }

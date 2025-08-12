@@ -14,6 +14,10 @@ locals {
     # DB_CONNECTION_POOL_SIZE = 5
   }
 
+  ssm_environment_variables = {
+    LA_LDH_PILOT_ENABLED = "/service/${var.app_name}-${var.environment}/la-ldh-pilot-enabled"
+  }
+
   # Configuration for secrets
   # Map of configurations for defining environment variables that pull from SSM parameter
   # store. Configurations are of the format

@@ -34,6 +34,8 @@ output "service_config" {
       var.service_override_extra_environment_variables
     )
 
+    ssm_environment_parameters = local.ssm_environment_variables
+
     secrets = local.secrets
 
     file_upload_jobs = {
