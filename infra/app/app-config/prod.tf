@@ -35,10 +35,10 @@ module "prod_config" {
   newrelic_account_id = "4619676"
 
   service_override_extra_environment_variables = {
-    LA_LDH_PILOT_ENABLED = data.aws_ssm_parameter.la_ldh_pilot_enabled.value
+    LA_LDH_PILOT_ENABLED = data.aws_ssm_parameter.la_ldh_pilot_enabled_prod.value
   }
 }
 
-data "aws_ssm_parameter" "la_ldh_pilot_enabled" {
+data "aws_ssm_parameter" "la_ldh_pilot_enabled_prod" {
   name = "/service/${local.app_name}-prod/la-ldh-pilot-enabled"
 }
