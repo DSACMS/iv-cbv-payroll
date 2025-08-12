@@ -19,7 +19,7 @@ on:
         default: "dev"
         type: choice
         options:
-          - dev
+          - demo
           - prod
 permissions:
     id-token: write
