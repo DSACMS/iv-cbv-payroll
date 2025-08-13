@@ -280,6 +280,18 @@ RSpec.describe UswdsFormBuilder do
       end
     end
 
+    context 'when no date is set' do
+      let(:object) { TestModel.new(start_date: nil) }
+
+      it 'renders placeholder option with empty value for month' do
+        expect(result).to have_element(:option, value: '', text: I18n.t('shared.select_placeholder'))
+      end
+
+      it 'does not preselect any month' do
+        expect(result).not_to have_element(:option, selected: 'selected')
+      end
+    end
+
     context 'with errors' do
       before do
         object.errors.add(:start_date, 'is invalid')
@@ -291,11 +303,16 @@ RSpec.describe UswdsFormBuilder do
       end
     end
 
-    context 'with existing date value' do
+    context 'when a date is set' do
       let(:object) { TestModel.new(start_date: Date.new(2024, 2, 28)) }
 
-      it 'sets the month value' do
+      it 'selects the existing month value' do
         expect(result).to have_element(:option, value: '2', selected: 'selected')
+      end
+
+      it 'keeps placeholder present but unselected when month is set' do
+        expect(result).to have_element(:option, value: '', text: I18n.t('shared.select_placeholder'))
+        expect(result).not_to have_element(:option, value: '', selected: 'selected')
       end
 
       it 'sets the day value' do
