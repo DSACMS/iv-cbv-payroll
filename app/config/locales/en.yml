@@ -693,6 +693,7 @@ en:
       az_des: Mid Approval Contact form
       la_ldh: benefits
       sandbox: benefits
+    select_placeholder: "- Select -"
     skip_link: Skip to main content
   time:
     formats:
