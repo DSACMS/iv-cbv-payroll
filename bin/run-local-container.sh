@@ -22,6 +22,8 @@ docker run \
   --mount type=bind,source="$(pwd)/tmp",target=/rails/tmp \
   --mount type=bind,source="$(pwd)/log",target=/rails/log \
   --publish 3000:3000 \
+  -e RAILS_ENV=staging \
+  -e ENVIRONMENT=development \
   -e SECRET_KEY_BASE="$(openssl rand -hex 64)" \
   -e RAILS_SERVE_STATIC_FILES=true \
   "$@" \
