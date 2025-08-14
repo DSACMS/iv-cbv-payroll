@@ -8,6 +8,12 @@ html {
   min-width: 320px;
 }
 
+#root {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
 .usa-button--outline-email {
   // Because css rendering in email is fraught, we must replace the default
   // USWDS strategy of using a box-shadow (it doesn't appear at all in gmail).
@@ -21,7 +27,7 @@ html {
   // at the bottom of the screen by default.
   $header-height: 4.5rem;
   $footer-height: 5rem;
-  min-height: calc(100vh - $header-height - $footer-height);
+  flex-grow: 1;
 }
 
 /*
