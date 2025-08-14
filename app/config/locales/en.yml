@@ -403,6 +403,8 @@ en:
             description: We have collected your income information with your consent and sent it to %{agency_acronym}. Any additional income that you weren't able to add to this report should be shared separately with %{agency_acronym}.
             employment_payment_details: Employment and Payment details
             header: Income Verification Report
+          footer:
+            page_footer: Income Verification Report | Page [page] of [topage]
           shared:
             additional_jobs_to_report: Does the client have additional jobs they will report separately?
             additional_jobs_to_report_html: Does the client have additional jobs they will report separately?<sup>1</sup>
