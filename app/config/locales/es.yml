@@ -620,6 +620,7 @@ es:
       az_des: Formulario de contacto para aprobaciones intermedias
       la_ldh: beneficios
       sandbox: beneficios
+    select_placeholder: "- Seleccione -"
     skip_link: Saltar al contenido principal
   time:
     formats:
