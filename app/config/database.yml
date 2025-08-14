@@ -150,3 +150,12 @@ staging:
   <<: *default
   # db will be configured by DATABASE_URL in a "real" staging env. Use dev db here for ease of local use
   database: iv_cbv_payroll_development
+
+demo:
+  <<: *default
+  database: <%= ENV.fetch("DB_NAME") { nil } %>
+  username: <%= ENV.fetch("DB_USER") { nil } %>
+  password: <%= ENV.fetch("DB_PASS") { nil } %>
+  port: <%= ENV.fetch("DB_PORT") { 5432 } %>
+  host: <%= ENV.fetch("DB_HOST") { "localhost" } %>
+  aws_rds_iam_auth_token_generator: default
