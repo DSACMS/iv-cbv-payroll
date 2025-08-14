@@ -8,10 +8,18 @@ html {
   min-width: 320px;
 }
 
+/*
+ * These comprise our strategy for making sure the footer stays put
+ * at the foot of the site.
+ */
 #root {
   display: flex;
   flex-direction: column;
   min-height: 100vh;
+}
+
+#main-content {
+  flex-grow: 1;
 }
 
 .usa-button--outline-email {
@@ -20,14 +28,6 @@ html {
   background-color: transparent;
   border: 2px solid #005ea2;
   color: #005ea2;
-}
-
-#main-content {
-  // These are rough approximations just to roughly get the footer to show up
-  // at the bottom of the screen by default.
-  $header-height: 4.5rem;
-  $footer-height: 5rem;
-  flex-grow: 1;
 }
 
 /*
