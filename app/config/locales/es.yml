@@ -284,6 +284,8 @@ es:
             description: Hemos recopilado información de sus ingresos con su consentimiento y la hemos enviado a %{agency_acronym}. Cualquier ingreso adicional que no pudo añadir a este informe debe compartirse por separado con %{agency_acronym}.
             employment_payment_details: Detalles de empleo y pago
             header: Informe de verificación de ingresos
+          footer:
+            page_footer: Informe de verificación de ingresos | Página [page] de [topage]
           shared:
             additional_jobs_to_report: "¿El cliente tiene trabajos adicionales que informará por separado?"
             additional_jobs_to_report_html: "¿El cliente tiene trabajos adicionales que informará por separado? <sup>1</sup>"
