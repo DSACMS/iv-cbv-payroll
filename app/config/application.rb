@@ -70,7 +70,11 @@ module IvCbvPayroll
 
     print("jeffffff")
     print(Rails.env)
-    db_config = ActiveRecord::Base.connection_db_config
-    print db_config.database
+    begin
+      db_config = ActiveRecord::Base.connection_db_config
+      print db_config.database
+    rescue
+      print "should have failed"
+    end
   end
 end
