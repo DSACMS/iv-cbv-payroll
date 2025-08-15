@@ -70,5 +70,7 @@ module IvCbvPayroll
 
     print("jeffffff")
     print(Rails.env)
+    db_config = ActiveRecord::Base.connection_db_config
+    print db_config.database
   end
 end
