@@ -54,6 +54,24 @@ Most developers on the team code using macOS, so we recommend that platform if p
 1. Run the development server: `bin/dev`
 1. Visit the site: http://localhost:3000
 
+### For analytics development
+1. Navigate to the `analytics` directory: `cd app/analytics`
+1. Create the virtual environment: `python3 -m venv venv`
+1. Activate the environment: `source venv/bin/activate`
+1. Install dependencies: `pip install -r requirements.txt`
+1. Add the following to your .env.local; you can find the credentials in the FFS Engineering 1Password under Mixpanel Production Service Account.
+```
+# Jupyter / Mixpanel analytics
+MIXPANEL_PROJECT_ID=3511732
+MIXPANEL_SERVICE_ACCOUNT_USERNAME=
+MIXPANEL_SERVICE_ACCOUNT_SECRET=
+```
+1. Run 'jupyter lab'
+1. Modify the date parameters to define the range of the data you'd like to download.
+1. Execute the first section with shift + enter. It will take a while to download all the events!
+
+### How to Run
+
 ## Local Development
 
 Environment variables can be set in development using the [dotenv](https://github.com/bkeepers/dotenv) gem.

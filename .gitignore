@@ -65,3 +65,8 @@ results.sarif
 
 # Translation files
 translation_update.csv
+
+# Python / Jupyter
+/app/analytics/venv
+/app/analytics/.ipynb_checkpoints
+/app/analytics/__pycache__/
