@@ -16,7 +16,7 @@ on:
       environment:
         description: "target environment"
         required: true
-        default: "dev"
+        default: "demo"
         type: choice
         options:
           - demo
