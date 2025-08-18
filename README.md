@@ -66,9 +66,13 @@ MIXPANEL_PROJECT_ID=3511732
 MIXPANEL_SERVICE_ACCOUNT_USERNAME=
 MIXPANEL_SERVICE_ACCOUNT_SECRET=
 ```
-1. Run 'jupyter lab'
-1. Modify the date parameters to define the range of the data you'd like to download.
-1. Execute the first section with shift + enter. It will take a while to download all the events!
+6. Run 'jupyter lab'
+6. Modify the date parameters to define the range of the data you'd like to download. These can be found in the first block of executable code marked with the comment "date range". They're parameters we feed to the Mixpanel API.
+6. Execute the first section with shift + enter. It will take a while to download all the events!
+
+#### Analytics development tips
+* Jupyter Notebooks are Python files that allow you to re-run cells of code easily. This first cell of code I wrote to pull a new dataset from our Mixpanel analytics platform. When developing analyses to run on that data set, we should start writing new cells below it. That way, when you want to get started, you can run the first cell just once to pull the data, and then you could run and re-run later cells as many times as you want to analyze that data.
+* Before committing changes to the ipynb file, it's a good idea to go to the Kernel menu and select "Restart Kernel and Clear Outputs of All Cells...". This deletes the results from running the cells as well as various pieces of metadata, which will allow us to commit just the code changes added in a cell.
 
 ### How to Run
 
