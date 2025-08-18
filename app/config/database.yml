@@ -135,7 +135,6 @@ queue:
 
 production:
   <<: *default
-  schema_search_path: app,public
   database: <%= ENV.fetch("DB_NAME") { nil } %>
   username: <%= ENV.fetch("DB_USER") { nil } %>
   password: <%= ENV.fetch("DB_PASS") { nil } %>

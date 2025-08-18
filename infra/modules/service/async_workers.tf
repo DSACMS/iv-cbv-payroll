@@ -12,10 +12,11 @@ resource "aws_ecs_service" "solid_queue" {
     security_groups  = [aws_security_group.app.id] # Or another SG if needed
   }
 
-  # TODO: you should enable rollback when ready to go to prod.
+  # Deployment Circuit Breaker puts a limit on the number of retries that ECS will attempt
+  # when launching a task before it gives up.  Without this, ECS could be in an infinite loop on a bad deploy
   deployment_circuit_breaker {
     enable   = true
-    rollback = false
+    rollback = true
   }
 
 }

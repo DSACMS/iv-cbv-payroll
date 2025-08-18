@@ -46,11 +46,11 @@ resource "aws_ecs_service" "app" {
   desired_count          = var.desired_instance_count
   enable_execute_command = var.enable_command_execution ? true : null
 
-  ## TODO: please control this / make it a variable
-  # This allows deployments to not retry over and over again if they fail.
+  # Deployment Circuit Breaker puts a limit on the number of retries that ECS will attempt
+  # when launching a task before it gives up.  Without this, ECS could be in an infinite loop on a bad deploy
   deployment_circuit_breaker {
     enable   = true
-    rollback = false
+    rollback = true
   }
 
   network_configuration {
