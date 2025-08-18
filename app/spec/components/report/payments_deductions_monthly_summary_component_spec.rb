@@ -83,6 +83,14 @@ RSpec.describe Report::PaymentsDeductionsMonthlySummaryComponent, type: :compone
           heading = subject.at_css('h2.usa-alert__heading')
           expect(heading).to be_nil
         end
+
+        it "does not render empty accordions when there are no paystubs" do
+          accordion_buttons = subject.css('button.usa-accordion__button')
+          expect(accordion_buttons).to be_empty
+
+          payments_header = subject.at_css('h3')
+          expect(payments_header).to be_nil
+        end
       end
     end
   end
@@ -152,6 +160,14 @@ RSpec.describe Report::PaymentsDeductionsMonthlySummaryComponent, type: :compone
       it "renders nothing without the paystubs data" do
         heading = subject.at_css('h2.usa-alert__heading')
         expect(heading).to be_nil
+      end
+
+      it "does not render empty accordions when there are no paystubs" do
+        accordion_buttons = subject.css('button.usa-accordion__button')
+        expect(accordion_buttons).to be_empty
+
+        payments_header = subject.at_css('h3')
+        expect(payments_header).to be_nil
       end
     end
   end

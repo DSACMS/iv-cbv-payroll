@@ -25,6 +25,30 @@ RSpec.describe LinkWithIconComponent, type: :component do
         expect(result).to have_element(:svg, class: 'usa-icon')
         expect(result).to have_element(:use, href: /.svg#file_download/)
       end
+
+      it 'defaults to leading icon position' do
+        expect(result).to have_element(:svg, class: 'usa-icon')
+        # The icon should appear before the text in the DOM
+        expect(result.to_html).to match(/<svg.*usa-icon.*>.*<\/svg>.*View Details/m)
+      end
+    end
+
+    context 'with leading icon position' do
+      let(:result) { render_inline(described_class.new('Download', url: '/download', icon: 'file_download', icon_position: :leading)) }
+
+      it 'renders icon before text' do
+        expect(result).to have_element(:svg, class: 'usa-icon')
+        expect(result.to_html).to match(/<svg.*usa-icon.*>.*<\/svg>.*Download/m)
+      end
+    end
+
+    context 'with trailing icon position' do
+      let(:result) { render_inline(described_class.new('Download', url: '/download', icon: 'file_download', icon_position: :trailing)) }
+
+      it 'renders icon after text' do
+        expect(result).to have_element(:svg, class: 'usa-icon')
+        expect(result.to_html).to match(/Download.*<svg.*usa-icon.*>.*<\/svg>/m)
+      end
     end
 
     context 'with variant' do
@@ -60,11 +84,30 @@ RSpec.describe LinkWithIconComponent, type: :component do
       end
     end
 
+    context 'with icon, variant, and trailing position' do
+      let(:result) { render_inline(described_class.new('Download', url: '/download', icon: 'file_download', variant: 'accent_cool', icon_position: :trailing)) }
+
+      it 'outputs link with trailing icon and variant styling' do
+        expect(result).to have_element(:a, href: '/download', class: 'usa-link usa-link--accent-cool')
+        expect(result).to have_element(:use, href: /.svg#file_download/)
+        expect(result.to_html).to match(/Download.*<svg.*usa-icon.*>.*<\/svg>/m)
+      end
+    end
+
     context 'with underscored variant name' do
       let(:result) { render_inline(described_class.new('Test', url: '/test', variant: 'accent_warm')) }
 
       it 'converts underscores to dashes in CSS class' do
         expect(result).to have_element(:a, class: 'usa-link usa-link--accent-warm')
+      end
+    end
+
+    context 'without icon but with icon_position' do
+      let(:result) { render_inline(described_class.new('Text Only', url: '/text', icon_position: :trailing)) }
+
+      it 'renders only text without icon' do
+        expect(result).to have_text('Text Only')
+        expect(result).not_to have_element(:svg, class: 'usa-icon')
       end
     end
   end

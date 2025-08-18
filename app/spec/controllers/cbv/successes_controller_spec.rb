@@ -33,6 +33,12 @@ RSpec.describe Cbv::SuccessesController do
         expect(response.body).to have_selector('button[data-copy-link-target="copyLinkButton"]')
       end
 
+      it "shows a link to the CBV survey" do
+        get :show
+        expect(response.body).to include(I18n.t("cbv.successes.show.survey"))
+        expect(response.body).to include(feedbacks_path(form: "survey"))
+      end
+
       describe "#invitation_link" do
         context "in production environment" do
           before do

@@ -97,6 +97,7 @@ group :development, :test do
   gem "rubocop-rails-omakase"
   gem "selenium-webdriver"
   gem "timecop"
+  gem "mutex_m"
 end
 
 group :development do

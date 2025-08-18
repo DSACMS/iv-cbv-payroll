@@ -74,7 +74,7 @@ RSpec.describe "e2e CBV flow test", type: :feature, js: true do
     click_on "Share my report with CBV"
 
     # /cbv/success
-    verify_page(page, title: I18n.t("cbv.successes.show.header", agency_acronym: ""))
+    verify_page(page, title: I18n.t("cbv.successes.show.header", agency_acronym: "CBV"))
     # TODO: Test PDF rendering by writing it to a file
   end
 end
