@@ -35,7 +35,7 @@ class Cbv::SubmitsController < Cbv::BaseController
             is_caseworker: allow_caseworker_override_param? && params[:is_caseworker],
             aggregator_report: @aggregator_report
           },
-          footer: { right: "Income Verification Report | Page [page] of [topage]", font_size: 10 },
+          footer: { right: t(".pdf.footer.page_footer"), font_size: 10 },
           margin:  {
             top:               10,
             bottom:            10,

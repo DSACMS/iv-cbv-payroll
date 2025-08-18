@@ -79,10 +79,17 @@ RSpec.describe Report::PaymentsDeductionsMonthlySummaryComponent, type: :compone
 
         subject { render_inline(described_class.new(pinwheel_report, payroll_account, is_responsive: true, is_w2_worker: false, pay_frequency_text: "monthly")) }
 
-        it "renders properly without the paystubs data" do
+        it "renders nothing without the paystubs data" do
           heading = subject.at_css('h2.usa-alert__heading')
-          expect(heading).not_to be_nil
-          expect(heading.text).to include("find any payments from this employer in the past 90 days")
+          expect(heading).to be_nil
+        end
+
+        it "does not render empty accordions when there are no paystubs" do
+          accordion_buttons = subject.css('button.usa-accordion__button')
+          expect(accordion_buttons).to be_empty
+
+          payments_header = subject.at_css('h3')
+          expect(payments_header).to be_nil
         end
       end
     end
@@ -150,10 +157,17 @@ RSpec.describe Report::PaymentsDeductionsMonthlySummaryComponent, type: :compone
 
       subject { render_inline(described_class.new(argyle_report, payroll_account, is_responsive: true, is_w2_worker: false, pay_frequency_text: "monthly")) }
 
-      it "renders properly without the paystubs data" do
+      it "renders nothing without the paystubs data" do
         heading = subject.at_css('h2.usa-alert__heading')
-        expect(heading).not_to be_nil
-        expect(heading.text).to include("find any payments from this employer in the past 6 months")
+        expect(heading).to be_nil
+      end
+
+      it "does not render empty accordions when there are no paystubs" do
+        accordion_buttons = subject.css('button.usa-accordion__button')
+        expect(accordion_buttons).to be_empty
+
+        payments_header = subject.at_css('h3')
+        expect(payments_header).to be_nil
       end
     end
   end

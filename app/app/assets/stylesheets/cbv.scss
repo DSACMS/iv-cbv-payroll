@@ -8,20 +8,26 @@ html {
   min-width: 320px;
 }
 
+/*
+ * These comprise our strategy for making sure the footer stays put
+ * at the foot of the site.
+ */
+#root {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+#main-content {
+  flex-grow: 1;
+}
+
 .usa-button--outline-email {
   // Because css rendering in email is fraught, we must replace the default
   // USWDS strategy of using a box-shadow (it doesn't appear at all in gmail).
   background-color: transparent;
   border: 2px solid #005ea2;
   color: #005ea2;
-}
-
-#main-content {
-  // These are rough approximations just to roughly get the footer to show up
-  // at the bottom of the screen by default.
-  $header-height: 4.5rem;
-  $footer-height: 5rem;
-  min-height: calc(100vh - $header-height - $footer-height);
 }
 
 /*
@@ -134,7 +140,8 @@ html {
   @include u-margin-y(2);
 }
 
-.cbv-row-highlight td {
+.cbv-row-highlight td,
+.cbv-row-highlight th {
   @include u-bg('yellow-5v');
 }
 
@@ -269,6 +276,17 @@ input#invitation_link{
 
 .usa-prose > .usa-table--borderless .subheader-row th {
   background-color: color('gray-cool-10');
+}
+
+/*
+* Payment details table column adjustments for consistent display with different content
+*/
+.payment-details-table {
+  table-layout: fixed;
+}
+
+.payment-details-table .subheader-row th {
+  width: 50%;
 }
 
 /*

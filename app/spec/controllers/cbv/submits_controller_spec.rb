@@ -5,19 +5,18 @@ RSpec.describe Cbv::SubmitsController do
   include ArgyleApiHelper
   include_context "gpg_setup"
 
-
   let(:current_time) { Date.parse('2024-06-18') }
   let(:mock_client_agency) { instance_double(ClientAgencyConfig::ClientAgency) }
   let(:sandbox_user) { create(:user, email: "test@test.com", client_agency_id: 'sandbox') }
 
   before do
     allow(mock_client_agency).to receive(:transmission_method_configuration).and_return({
-                                                                                          "bucket" => "test-bucket",
-                                                                                          "region" => "us-west-2",
-                                                                                          "access_key_id" => "SOME_ACCESS_KEY",
-                                                                                          "secret_access_key" => "SOME_SECRET_ACCESS_KEY",
-                                                                                          "public_key" => @public_key
-                                                                                        })
+      "bucket" => "test-bucket",
+      "region" => "us-west-2",
+      "access_key_id" => "SOME_ACCESS_KEY",
+      "secret_access_key" => "SOME_SECRET_ACCESS_KEY",
+      "public_key" => @public_key
+    })
   end
 
   around do |ex|
@@ -124,11 +123,7 @@ RSpec.describe Cbv::SubmitsController do
              is_caseworker: "true"
            }
 
-            pdf = PDF::Reader.new(StringIO.new(response.body))
-            pdf_text = ""
-            pdf.pages.each do |page|
-              pdf_text += page.text
-            end
+            pdf_text = extract_pdf_text(response)
 
             expect(pdf_text).to include("Case number")
             expect(pdf_text).to include("00012345")
@@ -143,11 +138,7 @@ RSpec.describe Cbv::SubmitsController do
                   is_caseworker: "true"
                 }
 
-              pdf = PDF::Reader.new(StringIO.new(response.body))
-              pdf_text = ""
-              pdf.pages.each do |page|
-                pdf_text += page.text
-              end
+              pdf_text = extract_pdf_text(response)
 
               expect(pdf_text).to include(I18n.t("cbv.applicant_informations.sandbox.fields.first_name.prompt"))
               expect(pdf_text).to include(I18n.t("cbv.applicant_informations.sandbox.fields.middle_name.prompt"))
@@ -162,11 +153,7 @@ RSpec.describe Cbv::SubmitsController do
             it "does not show the client information fields" do
               get :show, format: :pdf
 
-              pdf = PDF::Reader.new(StringIO.new(response.body))
-              pdf_text = ""
-              pdf.pages.each do |page|
-                pdf_text += page.text
-              end
+              pdf_text = extract_pdf_text(response)
 
               expect(pdf_text).to include(I18n.t("cbv.applicant_informations.sandbox.fields.first_name.prompt"))
               expect(pdf_text).to include(I18n.t("cbv.applicant_informations.sandbox.fields.middle_name.prompt"))
@@ -187,11 +174,7 @@ RSpec.describe Cbv::SubmitsController do
                 is_caseworker: "true"
               }
 
-              pdf = PDF::Reader.new(StringIO.new(response.body))
-              pdf_text = ""
-              pdf.pages.each do |page|
-                pdf_text += page.text
-              end
+              pdf_text = extract_pdf_text(response)
 
               expect(pdf_text).to include("Client-provided information")
               expect(pdf_text).to include("Medicaid case number")
@@ -205,11 +188,7 @@ RSpec.describe Cbv::SubmitsController do
             it "does not show the client information fields" do
               get :show, format: :pdf
 
-              pdf = PDF::Reader.new(StringIO.new(response.body))
-              pdf_text = ""
-              pdf.pages.each do |page|
-                pdf_text += page.text
-              end
+              pdf_text = extract_pdf_text(response)
 
               expect(pdf_text).to include("Client-provided information")
               expect(pdf_text).to include("Medicaid case number")
@@ -305,12 +284,7 @@ RSpec.describe Cbv::SubmitsController do
 
         it "renders properly" do
           get :show, format: :pdf
-          pdf = PDF::Reader.new(StringIO.new(response.body))
-          pdf_text = ""
-          pdf.pages.each do |page|
-            pdf_text += page.text
-          end
-          pdf_text.gsub! "\n", " "
+          pdf_text = extract_pdf_text(response)
 
           expect(response).to be_successful
           expect(pdf_text).not_to include("Pay Date")
@@ -359,12 +333,7 @@ RSpec.describe Cbv::SubmitsController do
 
         it "renders properly" do
           get :show, format: :pdf
-          pdf = PDF::Reader.new(StringIO.new(response.body))
-          pdf_text = ""
-          pdf.pages.each do |page|
-            pdf_text += page.text
-          end
-          pdf_text.gsub! "\n", " "
+          pdf_text = extract_pdf_text(response)
 
           expect(response).to be_successful
           expect(pdf_text).to include("Pay Date")

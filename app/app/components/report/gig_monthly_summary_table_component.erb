@@ -72,16 +72,18 @@
           </ul>
         <% else %>
           <% @monthly_summary_data.each_with_index do |(month_string, summary), index| %>
-            <%= render AccordionComponent.new(id: "#{month_string}-accordion") do |accordion| %>
-              <% accordion.with_title do %>
-                <%= format_month_string(month_string, summary) %>
-              <% end %>
-              <% accordion.with_accordion_item do %>
-                <ul class="usa-list">
-                  <% summary[:paystubs].each do |paystub| %>
-                    <li><%= format_date(paystub.pay_date, :long) %> - <%= format_money(paystub.gross_pay_amount) %></li>
-                  <% end %>
-                </ul>
+            <% if summary[:paystubs].any? %>
+              <%= render AccordionComponent.new(id: "#{month_string}-accordion") do |accordion| %>
+                <% accordion.with_title do %>
+                  <%= format_month_string(month_string, summary) %>
+                <% end %>
+                <% accordion.with_accordion_item do %>
+                  <ul class="usa-list">
+                    <% summary[:paystubs].each do |paystub| %>
+                      <li><%= format_date(paystub.pay_date, :long) %> - <%= format_money(paystub.gross_pay_amount) %></li>
+                    <% end %>
+                  </ul>
+                <% end %>
               <% end %>
             <% end %>
           <% end %>

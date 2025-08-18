@@ -210,7 +210,7 @@ en:
             super_one_html: Medicaid case number<sup>1</sup>
           date_of_birth:
             blank: Enter your date of birth.
-            help_text: Use the format mm/dd/yyyy
+            help_text: 'For example: January 19 2000'
             prompt: Your date of birth
             super_one_html: Date of birth<sup>1</sup>
       sandbox:
@@ -221,7 +221,7 @@ en:
             super_one_html: Case number<sup>1</sup>
           date_of_birth:
             blank: Enter your date of birth.
-            help_text: Use the format mm/dd/yyyy
+            help_text: 'For example: January 19 2000'
             prompt: Date of birth
             super_one_html: Date of birth<sup>1</sup>
           first_name:
@@ -403,6 +403,8 @@ en:
             description: We have collected your income information with your consent and sent it to %{agency_acronym}. Any additional income that you weren't able to add to this report should be shared separately with %{agency_acronym}.
             employment_payment_details: Employment and Payment details
             header: Income Verification Report
+          footer:
+            page_footer: Income Verification Report | Page [page] of [topage]
           shared:
             additional_jobs_to_report: Does the client have additional jobs they will report separately?
             additional_jobs_to_report_html: Does the client have additional jobs they will report separately?<sup>1</sup>
@@ -422,19 +424,18 @@ en:
         confirmation_code_html: "<strong>Your confirmation code</strong>: %{confirmation_code}"
         copied_link: Copied link
         copy_link: Copy link
-        download: Download a copy of the report
-        header: Your income report has been successfully shared with %{agency_acronym}
+        download: Download my report
+        header: Your income report was successfully sent to %{agency_acronym}.
         invitation_link_label: Invitation link
-        share_invitation_link_content: Share this link with all household members named on your application so they can report their income.
-        share_invitation_link_title:
-          az_des: Does anyone else in your household need to report a change of income in your Mid Approval Contact form?
-          default: Does anyone else in your household earn income?
+        share_invitation_link_content: Share this link to anyone in your household who needs to report their income.
+        share_invitation_link_title: Share a link if others in your household need to report their income.
+        survey: Take the 3 question survey
         whats_next: What's next?
-        whats_next_1_li_1: If you weren't able to find an employer, or if one of your employers doesn't have an online payroll provider, please provide this information directly to %{agency_acronym}.
-        whats_next_1_li_2_html: Visit <a href="%{agency_website}" target="_blank" rel="noopener noreferrer">%{agency_acronym}'s website</a> for more information.
-        whats_next_1_title: 'If you need to report other income:'
-        whats_next_2_li_1_html: If you have a few minutes, please share your experience with this tool using <a href="%{agency_feedback_form}" target="_blank" rel="noopener noreferrer">our short feedback form</a>.
-        whats_next_2_title: Tell us about your experience
+        whats_next_1_li_1: If you couldn’t find a job or don’t get paystubs, report your income to %{agency_acronym} online, in person, or by mail.
+        whats_next_1_li_2_html: Go to <a href="%{agency_website}" target="_blank" rel="noopener noreferrer">%{agency_acronym}'s website</a>
+        whats_next_1_title: Report other income, if needed.
+        whats_next_2_li_1_html: We’d like to hear more about your experience using this site.
+        whats_next_2_title: Help make this experience better.
     summaries:
       show:
         additional_comments: Additional comments
@@ -694,6 +695,7 @@ en:
       az_des: Mid Approval Contact form
       la_ldh: benefits
       sandbox: benefits
+    select_placeholder: "- Select -"
     skip_link: Skip to main content
   time:
     formats:

@@ -103,7 +103,7 @@ es:
             super_one_html: Número de caso de Medicaid<sup>1</sup>
           date_of_birth:
             blank: Escriba su fecha de nacimiento.
-            help_text: Use el formato mm/dd/aaaa
+            help_text: 'Por ejemplo: 19 de enero de 2000'
             prompt: Su fecha de nacimiento
             super_one_html: Fecha de nacimiento<sup>1</sup>
       sandbox:
@@ -114,7 +114,7 @@ es:
             super_one_html: Número de caso<sup>1</sup>
           date_of_birth:
             blank: Escriba su fecha de nacimiento.
-            help_text: Use el formato mm/dd/aaaa
+            help_text: 'Por ejemplo: 19 de enero de 2000'
             prompt: Fecha de nacimiento
             super_one_html: Fecha de nacimiento<sup>1</sup>
           first_name:
@@ -284,6 +284,8 @@ es:
             description: Hemos recopilado información de sus ingresos con su consentimiento y la hemos enviado a %{agency_acronym}. Cualquier ingreso adicional que no pudo añadir a este informe debe compartirse por separado con %{agency_acronym}.
             employment_payment_details: Detalles de empleo y pago
             header: Informe de verificación de ingresos
+          footer:
+            page_footer: Informe de verificación de ingresos | Página [page] de [topage]
           shared:
             additional_jobs_to_report: "¿El cliente tiene trabajos adicionales que informará por separado?"
             additional_jobs_to_report_html: "¿El cliente tiene trabajos adicionales que informará por separado? <sup>1</sup>"
@@ -303,19 +305,18 @@ es:
         confirmation_code_html: "<strong>Su código de confirmación</strong>: %{confirmation_code}"
         copied_link: Enlace copiado
         copy_link: Copiar enlace
-        download: Descargue una copia del informe
-        header: Su reporte de ingresos se ha compartido con %{agency_acronym} exitosamente
+        download: Descargar mi informe
+        header: Su informe de ingresos se envió correctamente a %{agency_acronym}.
         invitation_link_label: Enlace de invitación
-        share_invitation_link_content: Comparta este enlace con todos los miembros del hogar nombrados en su solicitud para que puedan reportar sus ingresos.
-        share_invitation_link_title:
-          az_des: "¿Alguien más en su hogar necesita reportar cambios en sus ingresos usando el Formulario de contacto para aprobaciones intermedias?"
-          default: "¿Algún otro integrante del grupo familiar recibe ingresos?"
+        share_invitation_link_content: Comparta este enlace con todos los miembros de su hogar que necesiten reportar sus ingresos.
+        share_invitation_link_title: Comparta el enlace si otras personas en su hogar necesitan reportar sus ingresos.
+        survey: Responda esta encuesta de 3 preguntas
         whats_next: "¿Qué sigue?"
-        whats_next_1_li_1: Si no pudo encontrar a un empleador, o si uno de sus empleadores no tiene un proveedor de nómina en línea, proporcione, de manera directa, esta información a %{agency_acronym}.
-        whats_next_1_li_2_html: Para obtener más información, visite el sitio web de <a href="%{agency_website}" target="_blank" rel="noopener noreferrer">%{agency_acronym}</a>.
-        whats_next_1_title: 'Si necesita declarar otros ingresos:'
-        whats_next_2_li_1_html: Si tiene unos minutos, por favor, complete este <a href="%{agency_feedback_form}" target="_blank" rel="noopener noreferrer"> breve formulario para compartirnos su experiencia usando esta herramienta.</a>
-        whats_next_2_title: Cuéntenos sobre su experiencia
+        whats_next_1_li_1: Si no pudo encontrar empleo o no dispone de talones de pago, reporte sus ingresos a %{agency_acronym} en línea, en persona o por correo.
+        whats_next_1_li_2_html: Visite el <a href="%{agency_website}" target="_blank" rel="noopener noreferrer">sitio web de %{agency_acronym}</a>
+        whats_next_1_title: Reporte otros ingresos, si es necesario.
+        whats_next_2_li_1_html: Nos gustaría saber más sobre su experiencia al usar este sitio.
+        whats_next_2_title: Ayude a mejorar esta experiencia.
     summaries:
       show:
         additional_comments: Comentarios adicionales
@@ -619,6 +620,7 @@ es:
       az_des: Formulario de contacto para aprobaciones intermedias
       la_ldh: beneficios
       sandbox: beneficios
+    select_placeholder: "- Seleccione -"
     skip_link: Saltar al contenido principal
   time:
     formats:

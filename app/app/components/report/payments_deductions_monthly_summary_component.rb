@@ -29,4 +29,8 @@ class Report::PaymentsDeductionsMonthlySummaryComponent < ViewComponent::Base
   def has_monthly_summary_results?
     @monthly_summary_data.present?
   end
+
+  def has_any_paystubs?
+    @monthly_summary_data.any? { |month_string, summary| summary[:paystubs].any? }
+  end
 end

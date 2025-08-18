@@ -1,13 +1,14 @@
-<h3 class="margin-top-5"><%= t("cbv.payment_details.show.payments_and_deductions_table_header") %></h3>
-<% if has_monthly_summary_results? %>
+<% if has_monthly_summary_results? && has_any_paystubs? %>
+  <h3 class="margin-top-5"><%= t("cbv.payment_details.show.payments_and_deductions_table_header") %></h3>
   <% @monthly_summary_data.each do |(month_string, summary)| %>
-    <%= render AccordionComponent.new(id: "#{month_string}-accordion") do |accordion| %>
-      <% accordion.with_title do %>
-        <%= format_month_string(month_string, summary) %>
-      <% end %>
-      <% accordion.with_accordion_item do %>
-        <% summary[:paystubs].each do |paystub| %>
-          <%= render(TableComponent.new(is_responsive: @is_responsive)) do |table| %>
+    <% if summary[:paystubs].any? %>
+      <%= render AccordionComponent.new(id: "#{month_string}-accordion") do |accordion| %>
+        <% accordion.with_title do %>
+          <%= format_month_string(month_string, summary) %>
+        <% end %>
+        <% accordion.with_accordion_item do %>
+          <% summary[:paystubs].each do |paystub| %>
+          <%= render(TableComponent.new(is_responsive: @is_responsive, class_names: "payment-details-table")) do |table| %>
             <%= table.with_subheader_row(class_names: "subheader-row base-lightest") do |row| %>
               <%= row.with_data_cell(is_header: true, class_names: "text-nowrap")
                     .with_content(t("cbv.payment_details.show.pay_information")) %>
@@ -28,12 +29,9 @@
               <%= table.with_data_point(:pay_gross_ytd, paystub.gross_pay_ytd) %>
             <% end %>
           <% end %>
+          <% end %>
         <% end %>
       <% end %>
     <% end %>
-  <% end %>
-<% else %>
-  <%= render AlertComponent.new(type: :info, heading: t("cbv.payment_details.show.none_found", report_data_range: report_data_range(@aggregator_report, @account_id)), class: "margin-top-5") do %>
-    <%= t("cbv.payment_details.show.none_found_description", report_data_range: report_data_range(@aggregator_report, @account_id)) %>
   <% end %>
 <% end %>

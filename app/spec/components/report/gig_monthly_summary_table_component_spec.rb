@@ -379,5 +379,30 @@ RSpec.describe Report::GigMonthlySummaryTableComponent, type: :component do
         expect(subject.to_html).to include '"Total hours worked" sums the time'
       end
     end
+
+    context "with gig hours but no paystubs" do
+  let(:argyle_report) { Aggregators::AggregatorReports::ArgyleReport.new(payroll_accounts: [ payroll_account ], argyle_service: argyle_service, days_to_fetch_for_w2: 90, days_to_fetch_for_gig: 182) }
+
+  before do
+    argyle_stub_request_identities_response("bob")
+    argyle_stub_request_gigs_response("bob")
+    argyle_stub_request_account_response("bob")
+    argyle_stub_request_paystubs_response("empty")
+    argyle_report.fetch
+  end
+
+  around do |ex|
+    Timecop.freeze(Time.local(2025, 04, 1, 0, 0), &ex)
+  end
+
+  subject { render_inline(described_class.new(argyle_report, payroll_account)) }
+
+  it "shows hours in monthly summary but no payment accordion" do
+    expect(subject.css('h3').text).to include("Monthly Summary")
+    expect(subject.css('tbody tr').length).to be > 0
+
+    expect(subject.css('button.usa-accordion__button')).to be_empty
+  end
+end
   end
 end
