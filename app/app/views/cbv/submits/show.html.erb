@@ -13,5 +13,5 @@
 <h2><%= t(".legal_header") %></h2>
 <%= form_with model: @cbv_flow, url: cbv_flow_submit_path, html: { class: "usa-form maxw-full" }, builder: UswdsFormBuilder, method: "patch" do |f| %>
 <%= f.check_box :consent_to_authorized_use, { 'label': agency_translation(".consent_checkbox_label_html", agency_full_name: agency_translation("shared.agency_full_name"), agency_acronym: agency_translation("shared.agency_acronym")) } %>
-<%= f.submit t(".share_report_button", agency_acronym: agency_translation("shared.agency_acronym")), class: "display-block" %>
+<%= f.submit t(".share_report_button", agency_acronym: agency_translation("shared.agency_acronym")) %>
 <% end %>

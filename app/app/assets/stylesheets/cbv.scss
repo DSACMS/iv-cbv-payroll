@@ -164,25 +164,6 @@ html {
   list-style-type: circle;
 }
 
-// Button display handling based on device orientation and screen size
-.usa-button {
-  &.display-block {
-    height: auto;
-    min-height: 40px;
-    line-height: 1.3;
-    white-space: normal;
-    padding: 0.75rem 1.25rem;
-
-    // Default to block display
-    display: block;
-
-    // Switch to inline-block for larger screens
-    @include at-media('mobile-lg') {
-      display: inline-block;
-    }
-  }
-}
-
 /*
 * Session timeout modal
 */
