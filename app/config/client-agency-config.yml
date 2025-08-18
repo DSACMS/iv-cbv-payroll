@@ -16,6 +16,7 @@
     sftp_directory: <%= ENV['AZ_DES_SFTP_DIRECTORY'] %>
   staff_portal_enabled: false
   pilot_ended: false
+  generic_links_disabled: true
   sso:
     client_id:     <%= ENV["AZURE_SANDBOX_CLIENT_ID"] %>
     client_secret: <%= ENV["AZURE_SANDBOX_CLIENT_SECRET"] %>
