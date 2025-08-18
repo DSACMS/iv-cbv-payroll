@@ -4,7 +4,7 @@
 resource "aws_sns_topic" "this" {
   name = "${var.service_name}-monitoring"
 
-  # checkov:skip=CKV_AWS_26:SNS encryption for alerts is unnecessary 
+  # checkov:skip=CKV_AWS_26:SNS encryption for alerts is unnecessary
 }
 
 # Create CloudWatch alarms for the service
@@ -57,6 +57,42 @@ resource "aws_cloudwatch_metric_alarm" "high_app_response_time" {
   statistic           = "Average"
   threshold           = 0.2
   alarm_description   = "High target latency alert"
+  alarm_actions       = [aws_sns_topic.this.arn]
+  ok_actions          = [aws_sns_topic.this.arn]
+
+  dimensions = {
+    LoadBalancer = var.load_balancer_arn_suffix
+  }
+}
+
+resource "aws_cloudwatch_metric_alarm" "high_alb_response_time" {
+  alarm_name          = "${var.service_name}-high-alb-response-time"
+  comparison_operator = "GreaterThanOrEqualToThreshold"
+  evaluation_periods  = 5
+  metric_name         = "TargetResponseTime"
+  namespace           = "AWS/ApplicationELB"
+  period              = 60
+  statistic           = "Average"
+  threshold           = 0.2
+  alarm_description   = "High target latency alert"
+  alarm_actions       = [aws_sns_topic.this.arn]
+  ok_actions          = [aws_sns_topic.this.arn]
+
+  dimensions = {
+    LoadBalancer = var.load_balancer_arn_suffix
+  }
+}
+
+resource "aws_cloudwatch_metric_alarm" "high_alb_p95_response_time" {
+  alarm_name          = "${var.service_name}-high-alb-p95-response-time"
+  comparison_operator = "GreaterThanOrEqualToThreshold"
+  evaluation_periods  = 2
+  metric_name         = "TargetResponseTime"
+  namespace           = "AWS/ApplicationELB"
+  period              = 60
+  statistic           = "p95"
+  threshold           = 4
+  alarm_description   = "High latency for p95 alert"
   alarm_actions       = [aws_sns_topic.this.arn]
   ok_actions          = [aws_sns_topic.this.arn]
 
