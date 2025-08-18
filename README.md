@@ -66,7 +66,7 @@ MIXPANEL_PROJECT_ID=3511732
 MIXPANEL_SERVICE_ACCOUNT_USERNAME=
 MIXPANEL_SERVICE_ACCOUNT_SECRET=
 ```
-6. Run 'jupyter lab'
+6. Run 'jupyter lab' and open the analytics.ipynb file.
 6. Modify the date parameters to define the range of the data you'd like to download. These can be found in the first block of executable code marked with the comment "date range". They're parameters we feed to the Mixpanel API.
 6. Execute the first section with shift + enter. It will take a while to download all the events!
 
