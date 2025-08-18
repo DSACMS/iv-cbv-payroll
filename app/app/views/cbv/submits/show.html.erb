@@ -4,15 +4,14 @@
 <h1><%= title %></h1>
 </div>
 
-<div class="usa-prose">
-  <p class="margin-bottom-0"><%= t(".warning_1", agency_acronym: agency_translation("shared.agency_acronym")) %></p>
-  <p class="margin-top-0"><%= t(".warning_2") %></p>
-</div>
+<p>
+  <%= t(".warning_1", agency_acronym: agency_translation("shared.agency_acronym")) %></p>
+  <br>
+  <%= t(".warning_2") %>
+</p>
 
 <h2><%= t(".legal_header") %></h2>
-<div class="usa-prose">
-  <%= form_with model: @cbv_flow, url: cbv_flow_submit_path, html: { class: "usa-form maxw-full" }, builder: UswdsFormBuilder, method: "patch" do |f| %>
-  <%= f.check_box :consent_to_authorized_use, { 'label': agency_translation(".consent_checkbox_label_html", agency_full_name: agency_translation("shared.agency_full_name"), agency_acronym: agency_translation("shared.agency_acronym")) } %>
-  <%= f.submit t(".share_report_button", agency_acronym: agency_translation("shared.agency_acronym")), class: "margin-top-5 display-block" %>
-  <% end %>
-</div>
+<%= form_with model: @cbv_flow, url: cbv_flow_submit_path, html: { class: "usa-form maxw-full" }, builder: UswdsFormBuilder, method: "patch" do |f| %>
+<%= f.check_box :consent_to_authorized_use, { 'label': agency_translation(".consent_checkbox_label_html", agency_full_name: agency_translation("shared.agency_full_name"), agency_acronym: agency_translation("shared.agency_acronym")) } %>
+<%= f.submit t(".share_report_button", agency_acronym: agency_translation("shared.agency_acronym")), class: "display-block" %>
+<% end %>

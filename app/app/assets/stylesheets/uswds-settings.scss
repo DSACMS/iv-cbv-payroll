@@ -4,6 +4,20 @@
   $theme-image-path: "@uswds/uswds/dist/img",
 
   /*
+   * Typography Settings
+   */
+  $theme-font-type-sans: "public-sans",
+  $theme-global-content-styles: true,     // Outputs line height and measure for <p>, <a>, <li>, and more.
+
+  // These font sizes should match our designers' Figma template:
+  $theme-font-role-heading: "sans",
+  $theme-h1-font-size: "xl",
+  $theme-h2-font-size: 10,
+  $theme-h3-font-size: 8,
+  $theme-h4-font-size: 7,
+  $theme-h5-font-size: "sm",
+
+  /*
    * Custom USWDS Theme Settings.
    *
    * See: https://github.com/uswds/uswds/blob/v3.8.0/packages/uswds-core/src/styles/settings/_settings-components.scss

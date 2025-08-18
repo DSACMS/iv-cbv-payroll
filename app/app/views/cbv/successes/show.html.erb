@@ -3,21 +3,19 @@
 <div class="grid-col tablet:grid-col-8">
   <div class="margin-bottom-4">
     <h1><%= title %></h1>
-    <div class="usa-prose">
-      <p><%= t(".confirmation_code_html", confirmation_code: @cbv_flow.confirmation_code) %></p>
+    <p><%= t(".confirmation_code_html", confirmation_code: @cbv_flow.confirmation_code) %></p>
+    <div class="maxw-card-lg">
+      <%= render(LinkWithIconComponent.new(
+        t(".download"),
+        icon: "file_download",
+        class: "usa-button",
+        icon_position: :leading,
+        variant: :primary,
+        url: cbv_flow_submit_path(format: "pdf"),
+        target: "_blank",
+        rel: "noopener noreferrer"
+      )) %>
     </div>
-   <div class="maxw-card-lg">
-     <%= render(LinkWithIconComponent.new(
-       t(".download"),
-       icon: "file_download",
-       class: "usa-button",
-       icon_position: :leading,
-       variant: :primary,
-       url: cbv_flow_submit_path(format: "pdf"),
-       target: "_blank",
-       rel: "noopener noreferrer"
-     )) %>
-   </div>
   </div>
 
   <div class="margin-bottom-5">

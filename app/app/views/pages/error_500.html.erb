@@ -2,12 +2,10 @@
 <% content_for :title, header %>
 <h1><%= header %></h1>
 
-<div class="usa-prose">
-  <p><%= t(".error_code_html") %></p>
+<p><%= t(".error_code_html") %></p>
 
-  <p><%= t(".description") %></p>
+<p><%= t(".description") %></p>
 
-  <p>
-    <%= link_to t(".refresh"), "javascript:window.location.reload()" %>
-  </p>
-</div>
+<p>
+  <%= link_to t(".refresh"), "javascript:window.location.reload()" %>
+</p>

@@ -4,9 +4,7 @@
 </h1>
 
 <div data-controller="cbv-employer-search" data-cbv-employer-search-cbv-flow-id-value="<%= @cbv_flow.id %>">
-  <div class="usa-prose">
-    <p><%= t(".search_label") %></p>
-  </div>
+  <p><%= t(".search_label") %></p>
 
   <%= form_with url: cbv_flow_employer_search_path, method: :get, class: "usa-search usa-search--big margin-y-4", html: { role: "search" }, data: { turbo_frame: "employers", turbo_action: "advance" } do |f| %>
     <%= f.label :query, "Search for your employer", class: "usa-sr-only" %>

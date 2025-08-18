@@ -1,33 +1,27 @@
 <% content_for :title, t(".header") %>
 
 <h1><%= t(".header") %></h1>
-<div class="usa-prose">
-  <p class="line-height-sans-5"><%= t(".not_listed_p1", agency_acronym: agency_translation("shared.agency_acronym")) %></p>
-  <% if @has_payroll_account %>
-    <p class="line-height-sans-5"><%= t(".not_listed_p2_link_html", agency_url: agency_url, agency_acronym: agency_translation("shared.agency_acronym")) %></p>
-  <% else %>
-    <p class="line-height-sans-5"><%= t(".not_listed_p2", agency_acronym: agency_translation("shared.agency_acronym")) %></p>
-    <%= t(".exit_button_html",
-      agency_contact_website: current_agency.agency_contact_website,
-      agency_full_name: agency_translation("shared.agency_full_name")
-    ) %>
-  <% end %>
-</div>
+<p><%= t(".not_listed_p1", agency_acronym: agency_translation("shared.agency_acronym")) %></p>
+<% if @has_payroll_account %>
+  <p><%= t(".not_listed_p2_link_html", agency_url: agency_url, agency_acronym: agency_translation("shared.agency_acronym")) %></p>
+<% else %>
+  <p><%= t(".not_listed_p2", agency_acronym: agency_translation("shared.agency_acronym")) %></p>
+  <%= t(".exit_button_html",
+    agency_contact_website: current_agency.agency_contact_website,
+    agency_full_name: agency_translation("shared.agency_full_name")
+  ) %>
+<% end %>
 
 <% if @cbv_flow.has_account_with_required_data? %>
   <hr class="margin-top-5 margin-bottom-5 border-base-light border-top-0">
   <h2><%= t(".no_more_jobs") %></h2>
-  <div class="usa-prose">
-    <p><%= t(".continue_to_review", agency_acronym: agency_translation("shared.agency_acronym")) %></p>
-    <%= link_to t(".continue_button"), next_path, class: "usa-button" %>
-  </div>
+  <p><%= t(".continue_to_review", agency_acronym: agency_translation("shared.agency_acronym")) %></p>
+  <%= link_to t(".continue_button"), next_path, class: "usa-button" %>
 <% end %>
 
 <hr class="margin-top-5 margin-bottom-5 border-base-light border-top-0">
 <h2><%= t(".more_jobs") %></h2>
-<div class="usa-prose">
-  <p class="line-height-sans-5"><%= t(".you_can_search") %></p>
-  <%= link_to cbv_flow_employer_search_path, class: "usa-button usa-button--outline", data: { turbo: "false" } do %>
-    <%= t(".back_button") %>
-  <% end %>
-</div>
+<p><%= t(".you_can_search") %></p>
+<%= link_to cbv_flow_employer_search_path, class: "usa-button usa-button--outline", data: { turbo: "false" } do %>
+  <%= t(".back_button") %>
+<% end %>

@@ -2,7 +2,7 @@
   <% button_id = "#{@base_id}-button" %>
   <% content_id = "#{@base_id}-content" %>
 
-  <%= content_tag("h#{@heading_level}", class: "usa-accordion__heading usa-prose") do %>
+  <%= content_tag("h#{@heading_level}", class: "usa-accordion__heading") do %>
     <button type="button" class="usa-accordion__button"
             id="<%= button_id %>"
             aria-expanded="<%= @expanded ? "true" : "false" %>"
@@ -12,7 +12,7 @@
       <%= title %>
     </button>
   <% end %>
-  <div id="<%= content_id %>" class="usa-accordion__content usa-prose">
+  <div id="<%= content_id %>" class="usa-accordion__content">
     <% accordion_items.each do |item| %>
       <p>
         <%= item %>
