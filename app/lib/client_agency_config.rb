@@ -14,7 +14,6 @@ class ClientAgencyConfig
 
   def initialize(config_path)
     template = ERB.new File.read(config_path)
-
     @client_agencies = YAML
       .safe_load(template.result(binding))
       .map { |s| [ s["id"], ClientAgency.new(s) ] }
