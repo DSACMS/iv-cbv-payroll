@@ -1,5 +1,5 @@
 <% if has_monthly_summary_results? && has_any_paystubs? %>
-  <h3 class="margin-top-5"><%= t("cbv.payment_details.show.payments_and_deductions_table_header") %></h3>
+  <h2 class="margin-top-5"><%= t("cbv.payment_details.show.payments_and_deductions_table_header") %></h2>
   <% @monthly_summary_data.each do |(month_string, summary)| %>
     <% if summary[:paystubs].any? %>
       <%= render AccordionComponent.new(id: "#{month_string}-accordion") do |accordion| %>

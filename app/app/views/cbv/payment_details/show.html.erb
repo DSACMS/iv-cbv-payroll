@@ -17,13 +17,6 @@
   </p>
 </div>
 
-<% if @payroll_account_report.paystubs.any? %>
-  <h2><%= t(".total_gross_income", amount: format_money(gross_pay), report_data_range: report_data_range(@aggregator_report, params[:user][:account_id])) %></h2>
-  <div class="usa-prose">
-    <p><%= t(".total_gross_description") %></p>
-  </div>
-<% end %>
-
 <%= render(Report::EmploymentDetailsTableComponent.new(@aggregator_report, @payroll_account, show_income: @is_w2_worker)) %>
 
 <% if @is_w2_worker %>
