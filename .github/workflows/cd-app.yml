@@ -6,7 +6,7 @@ run-name: Deploy ${{ github.ref_name }} to App ${{ inputs.environment || 'dev' }
 on:
   push:
     branches:
-      - "main"
+      - "release-demo"
     paths:
       - "app/**"
       - "bin/**"
@@ -33,5 +33,5 @@ jobs:
     uses: ./.github/workflows/deploy.yml
     with:
       app_name: "app"
-      environment: ${{ inputs.environment || 'dev' }}
+      environment: ${{ inputs.environment || 'demo' }}
     secrets: inherit
