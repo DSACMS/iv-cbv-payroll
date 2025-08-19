@@ -26,7 +26,24 @@ locals {
 
       single_nat_gateway = true
     }
+    prod = {
+      account_name               = "prod"
+      database_subnet_group_name = "prod"
 
+      domain_config = {
+        manage_dns  = false
+        hosted_zone = "verifymyincome.org"
+
+        certificate_configs = {
+          "verifymyincome.org" = {
+            source                    = "issued"
+            subject_alternative_names = ["*.verifymyincome.org"]
+          }
+        }
+      }
+
+      single_nat_gateway = true
+    }
     # staging = {
     #   account_name               = "staging"
     #   database_subnet_group_name = "staging"
