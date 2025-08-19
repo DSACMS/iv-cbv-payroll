@@ -157,11 +157,14 @@ html {
 /**
  * Help Modal
  */
-.main-bullets {
+.help-modal__main-bullets {
   list-style-type: disc;
 }
-.sub-bullets {
-  list-style-type: circle;
+.help-modal__button {
+  @include u-line-height("body", 2);
+  @include u-text("left");
+  @include u-margin-bottom(1);
+  @include u-display("block");
 }
 
 /*
