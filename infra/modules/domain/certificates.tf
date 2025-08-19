@@ -27,7 +27,7 @@ locals {
 }
 data "aws_route53_zone" "zone" {
   name         = var.name # Replace with your domain name
-  private_zone = false          # Use `true` for private zones
+  private_zone = false    # Use `true` for private zones
 }
 
 
