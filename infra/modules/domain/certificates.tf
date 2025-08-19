@@ -25,6 +25,11 @@ locals {
     }
   ]...)
 }
+data "aws_route53_zone" "zone" {
+  name         = var.name # Replace with your domain name
+  private_zone = false          # Use `true` for private zones
+}
+
 
 # ACM certificate that will be used by the load balancer.
 resource "aws_acm_certificate" "issued" {
@@ -44,7 +49,7 @@ resource "aws_route53_record" "validation" {
   for_each = local.domain_validation_options
 
   allow_overwrite = true
-  zone_id         = aws_route53_zone.zone[0].zone_id
+  zone_id         = data.aws_route53_zone.zone.zone_id
   name            = each.value.name
   type            = each.value.type
   ttl             = 60
