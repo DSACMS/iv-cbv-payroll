@@ -12,14 +12,14 @@
 <% @aggregator_report.summarize_by_employer.each_with_index do |(account_id, summary), index| %>
   <% employment = summary[:employment] %>
   <% is_w2_worker = employment&.employment_type == :w2 %>
-  <h3 data-testid="paystub-table-caption">
+  <h2 data-testid="paystub-table-caption">
     <% employer_name = employment&.employer_name %>
     <% if employer_name %>
       <%= t(".table_caption", number: index + 1, employer_name: employer_name) %>
     <% else %>
       <%= t(".table_caption_no_name", number: index + 1) %>
     <% end %>
-  </h3>
+  </h2>
   <% if is_w2_worker %>
     <% if @aggregator_report.find_account_report(account_id).paystubs.any? %>
       <%= render(Report::W2MonthlySummaryTableComponent.new(@aggregator_report, @cbv_flow.payroll_accounts.find_by(pinwheel_account_id: account_id))) %>
@@ -37,12 +37,13 @@
 
 <!-- Generic link flow, no invitation -->
 <% if @cbv_flow.cbv_flow_invitation.blank? %>
-<h3><%= t(".your_information") %></h3>
+<h2><%= t(".your_information") %></h2>
 <div class="usa-prose">
   <p><%= agency_translation(".must_match", agency_acronym: agency_translation("shared.agency_acronym")) %></p>
 </div>
+<!-- Applicant information -->
 <div class="display-flex flex-justify font-body-md">
-  <h4 class="margin-0"><%= t(".application_information") %></h4>
+  <h3 class="margin-0"><%= t(".application_information") %></h3>
   <%= link_to t(".edit"), cbv_flow_applicant_information_path(force_show: true), class: "usa-link text-bold" %>
 </div>
 <%= render(TableComponent.new(is_responsive: true, class_names: "margin-top-2", thead_class_names: "", attributes: { "data-testid" => "paystub-table" })) do |table| %>
@@ -65,7 +66,7 @@
 <% end %>
 <!-- Other jobs -->
 <div class="display-flex flex-justify font-body-md">
-  <h4 class="margin-0"><%= t("cbv.summaries.show.other_jobs") %></h4>
+  <h3 class="margin-0"><%= t("cbv.summaries.show.other_jobs") %></h3>
   <%= link_to t("cbv.summaries.show.edit"), cbv_flow_other_job_path, class: "usa-link text-bold" %>
 </div>
 <%= render(TableComponent.new(is_responsive: true, class_names: "margin-top-2", thead_class_names: "", attributes: { "data-testid" => "other-jobs-table" })) do |table| %>
