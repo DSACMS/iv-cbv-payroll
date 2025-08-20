@@ -81,6 +81,7 @@
 
 <h2><%= t(".pdf.client.employment_payment_details") %></h2>
 
+<% w2_count = 0 %>
 <% aggregator_report.summarize_by_employer.each_with_index do |(account_id, summary), index| %>
   <% employment = summary[:employment] %>
   <% employer_name = employment&.employer_name %>
@@ -114,7 +115,8 @@
   <% end %>
 
   <% if is_w2_worker %>
-    <%= render(Report::W2MonthlySummaryTableComponent.new(@aggregator_report, account_id, is_caseworker: is_caseworker, is_responsive: false, is_pdf: true)) %>
+    <% w2_count += 1 %>
+    <%= render(Report::W2MonthlySummaryTableComponent.new(@aggregator_report, account_id, is_caseworker: is_caseworker, is_responsive: false, is_pdf: true, show_footnote: (w2_count == 1))) %>
     <h3><%= t(".pdf.shared.payments_and_deductions_header", employer_name: employer_name) %></h3>
     <% summary[:paystubs].each do |paystub| %>
       <%= render(TableComponent.new(class_names: "payment-details-table")) do |table| %>
