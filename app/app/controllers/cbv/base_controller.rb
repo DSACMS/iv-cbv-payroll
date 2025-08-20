@@ -129,6 +129,7 @@ class Cbv::BaseController < ApplicationController
   def capture_page_view
     begin
       event_logger.track("CbvPageView", request, {
+        time: Time.now.to_i,
         cbv_flow_id: @cbv_flow.id,
         invitation_id: @cbv_flow.cbv_flow_invitation_id,
         cbv_applicant_id: @cbv_flow.cbv_applicant_id,
