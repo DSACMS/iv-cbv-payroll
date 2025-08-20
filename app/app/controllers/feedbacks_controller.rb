@@ -28,7 +28,7 @@ class FeedbacksController < ApplicationController
 
   def track_feedback_event(event_name, attributes = {})
     event_logger.track(event_name, request, {
-      timestamp: Time.now.to_i,
+      time: Time.now.to_i,
         **attributes
     })
   rescue => ex
