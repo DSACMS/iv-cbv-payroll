@@ -500,7 +500,7 @@ en:
         total_gig_hours: Total hours worked
         verified_mileage_expenses: Verified mileage expenses
         w2:
-          definition_gross_income: '"Gross income" is the pay from your job before taxes, benefits, and deductions were taken out of your paychecks. In the table above, your total gross income is summed for the month within the 90 day window'
+          definition_gross_income: '"Gross income" is the pay from your job before taxes, benefits, and deductions were taken out of your paychecks. In the table above, your total gross income is summed for the month within the 90 day window.'
           definition_number_of_paychecks: '"Number of paychecks" is how many times you were paid in a month within the 90-day window.'
           definition_total_hours_worked: '"Total hours worked" are the total number of hours you worked for every paycheck you received in a month.'
           title_gross_income: Gross income
