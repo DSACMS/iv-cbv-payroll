@@ -47,6 +47,21 @@ RSpec.describe PagesController do
         expect(response).to render_template("pages/_la_ldh_pilot_end")
       end
     end
+
+    context "when agency has generic links disabled" do
+      before do
+        stub_client_agency_config_value("sandbox", "agency_domain", "sandbox.reportmyincome.org")
+        stub_client_agency_config_value("sandbox", "pilot_ended", false)
+        stub_client_agency_config_value("sandbox", "generic_links_disabled", true)
+      end
+
+      it "does not redirect to generic links" do
+        request.host = "sandbox.reportmyincome.org"
+        get :home
+        expect(response).not_to redirect_to(cbv_flow_new_path(client_agency_id: "sandbox"))
+        expect(response).to have_http_status(:ok)
+      end
+    end
   end
 
   describe "#error_404" do
