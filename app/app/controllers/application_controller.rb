@@ -76,7 +76,7 @@ class ApplicationController < ActionController::Base
   end
 
   def demo_mode?
-    ENV["DOMAIN_NAME"] == "verify-demo.navapbc.cloud"
+    ENV["DOMAIN_NAME"] == "demo.divt.app"
   end
 
   def detect_client_agency_from_domain

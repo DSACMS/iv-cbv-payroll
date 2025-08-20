@@ -81,7 +81,6 @@ locals {
       secret_store_name = "/service/${var.app_name}-${var.environment}/active-record-encryption-key-derivation-salt"
     },
 
-
     # Transmission Configuration:
     LA_LDH_EMAIL = {
       manage_method     = "manual"
