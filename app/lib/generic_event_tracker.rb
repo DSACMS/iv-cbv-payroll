@@ -13,7 +13,7 @@ class GenericEventTracker
 
   private
   def prep_request_attributes(request)
-    defaults = { timestamp: Time.now.to_i }
+    defaults = { time: Time.now.to_i }
     if request.present?
       url_params = request.params.slice("client_agency_id", "locale")
 

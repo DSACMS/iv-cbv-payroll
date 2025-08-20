@@ -31,7 +31,7 @@ class CbvInvitationService
 
   def track_event(cbv_flow_invitation, current_user)
     @event_logger.track("CaseworkerInvitedApplicantToFlow", nil, {
-      timestamp: Time.now.to_i,
+      time: Time.now.to_i,
       user_id: current_user.id,
       caseworker_email_address: current_user.email,
       client_agency_id: current_user.client_agency_id,

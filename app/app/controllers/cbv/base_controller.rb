@@ -143,7 +143,7 @@ class Cbv::BaseController < ApplicationController
 
   def track_timeout_event
     event_logger.track("ApplicantTimedOut", request, {
-      timestamp: Time.now.to_i,
+      time: Time.now.to_i,
       client_agency_id: current_agency&.id
     })
   rescue => ex
@@ -155,7 +155,7 @@ class Cbv::BaseController < ApplicationController
       invitation_id: invitation.id,
       cbv_applicant_id: invitation.cbv_applicant_id,
       client_agency_id: current_agency&.id,
-      timestamp: Time.now.to_i
+      time: Time.now.to_i
     })
   rescue => ex
     Rails.logger.error "Unable to track event (ApplicantAccessedExpiredLinkPage): #{ex}"
@@ -163,7 +163,7 @@ class Cbv::BaseController < ApplicationController
 
   def track_invitation_clicked_event(invitation, cbv_flow)
     event_logger.track("ApplicantClickedCBVInvitationLink", request, {
-      timestamp: Time.now.to_i,
+      time: Time.now.to_i,
       invitation_id: invitation.id,
       cbv_flow_id: cbv_flow.id,
       cbv_applicant_id: cbv_flow.cbv_applicant_id,
