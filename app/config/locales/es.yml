@@ -232,7 +232,6 @@ es:
         employment_start_date: Fecha de inicio del empleo
         employment_status: Estatus del empleo
         frequency_unknown: Frecuencia desconocida
-        header: Su información de pago de %{employer_name}
         header_no_employer_name: Su información de pago de su empleador
         hourly_rate: Monto de compensación
         hours:

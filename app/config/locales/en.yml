@@ -339,7 +339,7 @@ en:
         employment_start_date: Employment start date
         employment_status: Employment status
         frequency_unknown: Frequency Unknown
-        header: Your payment information from %{employer_name}
+        header: Review your payment information from %{employer_name}
         header_no_employer_name: Your payment information from your employer
         hourly_rate: Compensation amount
         hours:
