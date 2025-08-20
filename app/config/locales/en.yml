@@ -491,7 +491,7 @@ en:
             what_does_this_mean: What does this information mean?
         dollars_times_miles: "(%{dollar_amount} x %{number_of_miles} miles)"
         month: Month
-        monthly_summary: Monthly Summary
+        monthly_summary: Monthly summary
         partial_month_text: "(Partial month: from %{start_date}-%{end_date})"
         partial_month_text_simple: "(Partial month)"
         payments_from_header: Payments from %{employer_name}
