@@ -410,8 +410,10 @@ en:
             additional_jobs_to_report_html: Does the client have additional jobs they will report separately?<sup>1</sup>
             client_information: Client information
             confirmation_code: Confirmation code
+            details: Details
             employment_information: Employment information
-            pay_date: 'Pay Date: %{pay_date}'
+            pay_information: Pay information
+            payments_and_deductions_header: Payments and deductions from %{employer_name}
             report_details: Report details
         share_report_button: Share my report with %{agency_acronym}
         table_caption_no_name: Employer %{number}

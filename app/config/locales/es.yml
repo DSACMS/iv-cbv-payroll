@@ -291,8 +291,10 @@ es:
             additional_jobs_to_report_html: "¿El cliente tiene trabajos adicionales que informará por separado? <sup>1</sup>"
             client_information: Información del cliente
             confirmation_code: Código de confirmación
+            details: Datos
             employment_information: Información del empleo
-            pay_date: 'Fecha de pago: %{pay_date}'
+            pay_information: Información de pago
+            payments_and_deductions_header: Pagos y deducciones de %{employer_name}
             report_details: Detalles del reporte
         share_report_button: Comparta mi reporte con %{agency_acronym}
         table_caption_no_name: Employer %{number}
