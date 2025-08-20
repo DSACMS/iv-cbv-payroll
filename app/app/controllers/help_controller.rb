@@ -15,6 +15,7 @@ class HelpController < ApplicationController
 
     begin
       event_logger.track("ApplicantViewedHelpTopic", request, {
+        time: Time.now.to_i,
         topic: @help_topic,
         cbv_applicant_id: cbv_flow&.cbv_applicant_id,
         cbv_flow_id: session[:cbv_flow_id],

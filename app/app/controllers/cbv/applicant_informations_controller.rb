@@ -59,14 +59,14 @@ class Cbv::ApplicantInformationsController < Cbv::BaseController
   def track_applicant_information_access_event
     if params[:force_show] == "true"
       event_logger.track("ApplicantClickedEditInformationLink", request, {
-        timestamp: Time.now.to_i,
+        time: Time.now.to_i,
         cbv_applicant_id: @cbv_flow.cbv_applicant_id,
         client_agency_id: current_agency&.id,
         cbv_flow_id: @cbv_flow.id
       })
     else
       event_logger.track("ApplicantAccessedInformationPage", request, {
-        timestamp: Time.now.to_i,
+        time: Time.now.to_i,
         cbv_applicant_id: @cbv_flow.cbv_applicant_id,
         client_agency_id: current_agency&.id,
         cbv_flow_id: @cbv_flow.id
@@ -78,7 +78,7 @@ class Cbv::ApplicantInformationsController < Cbv::BaseController
 
   def track_applicant_information_error_event(error_string)
     event_logger.track("ApplicantEncounteredInformationPageError", request, {
-      timestamp: Time.now.to_i,
+      time: Time.now.to_i,
       cbv_applicant_id: @cbv_flow.cbv_applicant_id,
       cbv_flow_id: @cbv_flow.id,
       client_agency_id: current_agency&.id,
@@ -90,7 +90,7 @@ class Cbv::ApplicantInformationsController < Cbv::BaseController
 
   def track_applicant_submitted_information_page_event
     event_logger.track("ApplicantSubmittedInformationPage", request, {
-      timestamp: Time.now.to_i,
+      time: Time.now.to_i,
       cbv_applicant_id: @cbv_flow.cbv_applicant_id,
       cbv_flow_id: @cbv_flow.id,
       client_agency_id: current_agency&.id,

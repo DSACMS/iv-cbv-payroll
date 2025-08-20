@@ -62,6 +62,7 @@ class Cbv::GenericLinksController < Cbv::BaseController
 
   def track_generic_link_clicked_event(cbv_flow, is_new_session)
     event_logger.track("ApplicantClickedGenericLink", request, {
+      time: Time.now.to_i,
       cbv_applicant_id: cbv_flow.cbv_applicant_id,
       cbv_flow_id: cbv_flow.id,
       client_agency_id: cbv_flow.client_agency_id,
