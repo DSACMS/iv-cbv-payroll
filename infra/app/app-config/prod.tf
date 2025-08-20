@@ -11,8 +11,8 @@ module "prod_config" {
   has_incident_management_service = local.has_incident_management_service
   enable_identity_provider        = local.enable_identity_provider
 
-  database_serverless_min_capacity = 1.0
-  database_serverless_max_capacity = 5.0
+  database_serverless_min_capacity = 10.0
+  database_serverless_max_capacity = 10.0
 
   # These numbers are a starting point based on this article
   # Update the desired instance size and counts based on the project's specific needs
