@@ -65,4 +65,3 @@ terraform.tfstate.backup
 
 # Vitest
 .vitest
-/config/credentials.yml.enc

@@ -49,7 +49,7 @@ RSpec.describe ApplicationController, type: :controller do
     end
 
     context 'when in demo environment' do
-      let(:domain_name) { "demo.divt.app" }
+      let(:domain_name) { "verify-demo.navapbc.cloud" }
 
       it 'authorizes mini profiler' do
         expect(Rack::MiniProfiler).to receive(:authorize_request)

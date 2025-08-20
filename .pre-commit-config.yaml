@@ -54,11 +54,11 @@ repos:
     language: system
     files: 'infra/.*\.tf$'
 
-#  - id: checkov
-#    name: Checkov
-#    entry: checkov --quiet --output sarif --framework terraform -f
-#    language: system
-#    files: 'infra/.*\.tf$'
+  - id: checkov
+    name: Checkov
+    entry: checkov --quiet --output sarif --framework terraform -f
+    language: system
+    files: 'infra/.*\.tf$'
 
   - id: actionlint
     name: ActionLint

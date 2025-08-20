@@ -14,7 +14,7 @@ jobs:
       id-token: write
     env:
       APP_NAME: app
-      ENVIRONMENT: demo
+      ENVIRONMENT: dev
     strategy:
       matrix:
         include:
@@ -45,7 +45,7 @@ jobs:
       uses: ./.github/actions/configure-aws-credentials
       with:
         app_name: app
-        environment: demo
+        environment: dev
 
     - name: Run Terraform plan
       run: ${{ matrix.terraform-cmd }}
