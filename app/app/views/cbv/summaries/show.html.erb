@@ -9,6 +9,8 @@
   </p>
 </div>
 
+<% w2_count = 0 %>
+
 <% @aggregator_report.summarize_by_employer.each_with_index do |(account_id, summary), index| %>
   <% employment = summary[:employment] %>
   <% is_w2_worker = employment&.employment_type == :w2 %>
@@ -21,8 +23,9 @@
     <% end %>
   </h2>
   <% if is_w2_worker %>
+    <% w2_count += 1 %>
     <% if @aggregator_report.find_account_report(account_id).paystubs.any? %>
-      <%= render(Report::W2MonthlySummaryTableComponent.new(@aggregator_report, @cbv_flow.payroll_accounts.find_by(pinwheel_account_id: account_id))) %>
+      <%= render(Report::W2MonthlySummaryTableComponent.new(@aggregator_report, @cbv_flow.payroll_accounts.find_by(pinwheel_account_id: account_id), show_footnote: (w2_count == 1))) %>
     <% else %>
       <%= render AlertComponent.new(type: :info, heading: t(".none_found", report_data_range: report_data_range(@aggregator_report, account_id)), class: "margin-top-5") do %>
         <%= t(".none_found_description", report_data_range: report_data_range(@aggregator_report, account_id)) %>
