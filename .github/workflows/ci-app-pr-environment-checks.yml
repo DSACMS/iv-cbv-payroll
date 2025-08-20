@@ -25,7 +25,7 @@ jobs:
     uses: ./.github/workflows/pr-environment-checks.yml
     with:
       app_name: "app"
-      environment: "dev"
+      environment: "demo"
       pr_number: ${{ inputs.pr_number || github.event.number }}
       commit_hash: ${{ inputs.commit_hash || github.event.pull_request.head.sha }}
     secrets: inherit

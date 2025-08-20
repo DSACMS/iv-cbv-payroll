@@ -10,7 +10,6 @@ This diagram shows the system architecture. [🔒 Make a copy of this Lucid temp
 * **Aurora PostgreSQL Database** — Amazon Aurora Serverless PostgreSQL database used by the application.
 * **Build Repository ECR Registry** — Amazon ECR registry that acts as the build repository of application container images.
 * **CloudWatch Alarms** — Amazon CloudWatch Alarms that trigger on errors and latency.
-* **CloudWatch Evidently Feature Flags** — Amazon CloudWatch Evidently service that manages feature flags used by the application to manage feature launches.
 * **Database Role Manager** — AWS Lambda serverless function that provisions the database roles needed by the application.
 * **GitHub** — Source code repository. Also responsible for Continuous Integration (CI) and Continuous Delivery (CD) workflows. GitHub Actions builds and deploys releases to an Amazon ECR registry that stores Docker container images for the application service.
 * **Incident Management Service** — Incident management service (e.g. PagerDuty or Splunk On-Call) for managing on-call schedules and paging engineers for urgent production issues.
