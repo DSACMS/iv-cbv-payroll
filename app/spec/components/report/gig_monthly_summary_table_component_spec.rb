@@ -55,7 +55,7 @@ RSpec.describe Report::GigMonthlySummaryTableComponent, type: :component do
       end
 
       it "includes table header" do
-        expect(subject.css("h2").to_html).to include "Monthly Summary"
+        expect(subject.css("h2").to_html).to include "Monthly summary"
         expect(subject.css("thead tr.subheader-row th").length).to eq(3)
       end
 
@@ -130,7 +130,7 @@ RSpec.describe Report::GigMonthlySummaryTableComponent, type: :component do
       end
 
       it "includes table header" do
-        expect(subject.css("h2").to_html).to include "Monthly Summary"
+        expect(subject.css("h2").to_html).to include "Monthly summary"
         expect(subject.css("thead tr.subheader-row th").length).to eq(4)
       end
 
@@ -257,7 +257,7 @@ RSpec.describe Report::GigMonthlySummaryTableComponent, type: :component do
       end
 
       it "does not render table when no data found" do
-        expect(subject.css("h2").to_html).not_to include "Monthly Summary"
+        expect(subject.css("h2").to_html).not_to include "Monthly summary"
         expect(subject.css("thead tr.subheader-row th").length).to eq(0)
       end
 
@@ -290,7 +290,7 @@ RSpec.describe Report::GigMonthlySummaryTableComponent, type: :component do
       end
 
       it "includes table header" do
-        expect(subject.css("h2").to_html).to include "Monthly Summary"
+        expect(subject.css("h2").to_html).to include "Monthly summary"
         expect(subject.css("thead tr.subheader-row th").length).to eq(4)
       end
 
@@ -346,7 +346,7 @@ RSpec.describe Report::GigMonthlySummaryTableComponent, type: :component do
       end
 
       it "includes table header" do
-        expect(subject.css("h2").to_html).to include "Monthly Summary"
+        expect(subject.css("h2").to_html).to include "Monthly summary"
         expect(subject.css("thead tr.subheader-row th").length).to eq(3)
       end
 
@@ -398,7 +398,7 @@ RSpec.describe Report::GigMonthlySummaryTableComponent, type: :component do
   subject { render_inline(described_class.new(argyle_report, payroll_account)) }
 
   it "shows hours in monthly summary but no payment accordion" do
-    expect(subject.css('h2').text).to include("Monthly Summary")
+    expect(subject.css('h2').text).to include("Monthly summary")
     expect(subject.css('tbody tr').length).to be > 0
 
     expect(subject.css('button.usa-accordion__button')).to be_empty
