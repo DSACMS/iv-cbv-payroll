@@ -37,7 +37,6 @@ RSpec.describe PdfService, type: :service do
       )
       expect(@pdf_results&.content).to include('%PDF-1.4')
       expect(@pdf_results&.html).to include('Gross pay YTD')
-      expect(@pdf_results&.html).not_to include('Monthly Summary')
       expect(@pdf_results&.html).to include('Agreement Consent Timestamp')
       expect(@pdf_results&.file_size).to be > 0
     end

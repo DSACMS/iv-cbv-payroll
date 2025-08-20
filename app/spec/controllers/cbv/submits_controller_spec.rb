@@ -336,7 +336,7 @@ RSpec.describe Cbv::SubmitsController do
           pdf_text = extract_pdf_text(response)
 
           expect(response).to be_successful
-          expect(pdf_text).to include("Pay Date")
+          expect(pdf_text).to include("Pay date")
           expect(pdf_text).to include("Gross pay YTD")
           expect(pdf_text).to include("Pay period")
           expect(pdf_text).to include("Payment after taxes and deductions (net)")
