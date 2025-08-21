@@ -15,10 +15,10 @@
 
 // Form styles
 .usa-form .usa-button {
-  margin-top: units(4);
+  margin: units(4) 0;
 
   @include at-media("mobile-lg") {
-    margin-top: units(5);
+    margin: units(5) 0;
   }
 }
 
