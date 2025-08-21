@@ -123,6 +123,7 @@ class Cbv::PaymentDetailsController < Cbv::BaseController
   def track_viewed_event
     return if @payroll_account.nil?
     event_logger.track("ApplicantViewedPaymentDetails", request, {
+      time: Time.now.to_i,
       cbv_applicant_id: @cbv_flow.cbv_applicant_id,
       cbv_flow_id: @cbv_flow.id,
       client_agency_id: current_agency&.id,
@@ -141,6 +142,7 @@ class Cbv::PaymentDetailsController < Cbv::BaseController
     comment_data = @cbv_flow.additional_information[params[:user][:account_id]]
 
     event_logger.track("ApplicantSavedPaymentDetails", request, {
+      time: Time.now.to_i,
       cbv_applicant_id: @cbv_flow.cbv_applicant_id,
       cbv_flow_id: @cbv_flow.id,
       client_agency_id: current_agency&.id,

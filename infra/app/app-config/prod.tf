@@ -32,5 +32,5 @@ module "prod_config" {
   # enable_command_execution = true
 
   # NewRelic configuration for metrics
-  newrelic_account_id = "4619676"
+  newrelic_account_id = "7001719"
 }
