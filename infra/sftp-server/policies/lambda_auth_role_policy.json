@@ -1,0 +1,48 @@
+{
+    "Version" : "2012-10-17",
+    "Statement" : [
+        {
+            "Effect": "Allow",
+            "Action": [
+                "secretsmanager:GetSecretValue"
+            ],
+            "Resource": [
+                "arn:aws:secretsmanager:${region}:${account_id}:secret:aws/transfer/${transfer_server_id}/*"
+            ]
+        },            
+        {
+            "Effect": "Allow",
+            "Action": [
+                "logs:CreateLogGroup",
+                "logs:CreateLogStream",
+                "logs:PutLogEvents"
+            ],
+            "Resource": [
+                "arn:aws:logs:${region}:${account_id}:log-group:/aws/lambda/${lambda_auth_function_name}*:log-stream:*",
+                "arn:aws:logs:${region}:${account_id}:log-group:/aws/lambda/${lambda_auth_function_name}/*",
+                "arn:aws:logs:${region}:${account_id}:log-group:/aws/lambda-insights",
+                "arn:aws:logs:${region}:${account_id}:log-group:/aws/lambda-insights/*:*"
+            ]          
+        },
+        {
+            "Effect": "Allow",
+            "Action": [
+                "xray:PutTraceSegments",
+                "xray:PutTelemetryRecords",
+                "xray:GetSamplingRules",
+                "xray:GetSamplingTargets",
+                "xray:GetSamplingStatisticSummaries"
+            ],
+            "Resource": [
+                "*"
+            ]
+        },
+        {
+            "Action": [
+                "cloudwatch:PutMetricData"
+            ],
+            "Resource": "*",
+            "Effect": "Allow"
+        }
+    ]      
+}

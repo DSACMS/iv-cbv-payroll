@@ -3,7 +3,7 @@ locals {
   # the folder under /infra that corresponds to the application
   app_name = regex("/infra/([^/]+)/app-config$", abspath(path.module))[0]
 
-  environments = ["demo"]
+  environments = ["demo", "prod"]
   project_name = module.project_config.project_name
 
   # Whether or not the application has a database
@@ -38,7 +38,7 @@ locals {
   environment_configs = {
     demo = module.dev_config
     # staging = module.staging_config
-    # prod = module.prod_config
+    prod = module.prod_config
   }
 
   # The name of the network that contains the resources shared across all
