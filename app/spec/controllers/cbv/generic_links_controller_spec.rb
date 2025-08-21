@@ -7,7 +7,9 @@ RSpec.describe Cbv::GenericLinksController do
   describe '#show' do
     context 'when the hostname matches a client agency domain and the pilot is active' do
       context 'when no existing CBV applicant cookie exists' do
+        let(:headers) { {} }
         before do
+          request.headers.merge!(headers)
           get :show, params: { client_agency_id: "sandbox" }
         end
 
@@ -36,6 +38,16 @@ RSpec.describe Cbv::GenericLinksController do
               is_new_session: true
             )
           )
+        end
+
+        context "when the User Agent is Go-Http-Client" do
+          let(:headers) { { "User-Agent" => "Go-http-client/1.1" } }
+
+          it "does not track the ApplicantClickedGenericLink event" do
+            expect(EventTrackingJob)
+              .not_to have_received(:perform_later)
+              .with("ApplicantClickedGenericLink", anything, anything)
+          end
         end
       end
 
