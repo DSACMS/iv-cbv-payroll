@@ -6,6 +6,6 @@
 </p>
 <%= uswds_form_with(model: @cbv_applicant, url: cbv_flow_applicant_information_path, method: "patch") do |f| %>
   <%= render partial: "cbv/applicant_informations/#{@cbv_flow.client_agency_id}", locals: { f: f } %>
-  <br>
+
   <%= f.submit t(".continue") %>
 <% end %>
