@@ -46,6 +46,15 @@ resource "aws_ecs_service" "app" {
   desired_count          = var.desired_instance_count
   enable_execute_command = var.enable_command_execution ? true : null
 
+  # Deployment Circuit Breaker puts a limit on the number of retries that ECS will attempt
+  # when launching a task before it gives up.  Without this, ECS could be in an infinite loop on a bad deploy
+  # Circuit breaker attempts 3 times by default for a single deployment instance, otherwise it uses formula found at
+  # https://docs.aws.amazon.com/AmazonECS/latest/developerguide/deployment-circuit-breaker.html
+  deployment_circuit_breaker {
+    enable   = true
+    rollback = true
+  }
+
   network_configuration {
     assign_public_ip = false
     subnets          = var.private_subnet_ids
