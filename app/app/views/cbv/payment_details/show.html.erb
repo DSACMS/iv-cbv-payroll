@@ -4,24 +4,20 @@
   <%= header %>
 </h1>
 
-<div class="usa-prose">
-  <p>
-    <%= t(".subheader",
-        start_date: format_date(@aggregator_report.from_date),
-        end_date: format_date(@aggregator_report.to_date),
-        agency_acronym: agency_translation("shared.agency_acronym"),
-        report_data_range: report_data_range(@aggregator_report, params[:user][:account_id]),
-        benefit: agency_translation("shared.benefit"),
-        reporting_purpose: agency_translation("shared.reporting_purpose")
-      ) %>
-  </p>
-</div>
+<p>
+  <%= t(".subheader",
+      start_date: format_date(@aggregator_report.from_date),
+      end_date: format_date(@aggregator_report.to_date),
+      agency_acronym: agency_translation("shared.agency_acronym"),
+      report_data_range: report_data_range(@aggregator_report, params[:user][:account_id]),
+      benefit: agency_translation("shared.benefit"),
+      reporting_purpose: agency_translation("shared.reporting_purpose")
+    ) %>
+</p>
 
 <% if @payroll_account_report.paystubs.any? %>
   <h2><%= t(".total_gross_income", amount: format_money(gross_pay), report_data_range: report_data_range(@aggregator_report, params[:user][:account_id])) %></h2>
-  <div class="usa-prose">
-    <p><%= t(".total_gross_description") %></p>
-  </div>
+  <p><%= t(".total_gross_description") %></p>
 <% end %>
 
 <%= render(Report::EmploymentDetailsTableComponent.new(@aggregator_report, @payroll_account, show_income: @is_w2_worker)) %>
