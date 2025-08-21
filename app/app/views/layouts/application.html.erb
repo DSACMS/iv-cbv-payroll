@@ -20,7 +20,7 @@
         <section class="grid-container usa-section">
 
           <% if flash[:notice] %>
-            <div class="usa-alert usa-alert--info">
+            <div class="usa-alert usa-alert--info margin-bottom-4">
               <div class="usa-alert__body">
                 <div class="usa-alert__heading">Information</div>
                 <div class="usa-alert__text"><%= flash[:notice].html_safe %></div>
@@ -29,7 +29,7 @@
           <% end %>
 
           <% if flash[:alert] %>
-            <div class="usa-alert usa-alert--<%= flash[:alert_type] || "error" %>">
+            <div class="usa-alert usa-alert--<%= flash[:alert_type] || "error" %> margin-bottom-4">
               <div class="usa-alert__body">
                 <div class="usa-alert__heading"><%= flash[:alert_heading] || "Error" %></div>
                 <div class="usa-alert__text"><%= flash[:alert].html_safe %></div>
@@ -38,7 +38,7 @@
           <% end %>
 
           <% if flash[:slim_alert] %>
-            <div class="usa-alert usa-alert--<%= flash[:slim_alert]["type"] %> usa-alert--slim">
+            <div class="usa-alert usa-alert--<%= flash[:slim_alert]["type"] %> usa-alert--slim margin-bottom-4">
               <div class="usa-alert__body">
                 <div class="usa-alert__text">
                   <% if flash[:slim_alert]["message_html"] %>
