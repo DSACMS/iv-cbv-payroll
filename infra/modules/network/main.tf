@@ -27,7 +27,7 @@ module "aws_vpc" {
   # `database_subnet_group_name` is only used if `create_database_subnet_group` is true
   database_subnets             = ["10.0.5.0/24", "10.0.6.0/24", "10.0.7.0/24"]
   database_subnet_tags         = { subnet_type = "database" }
-  create_database_subnet_group = true # var.has_database
+  create_database_subnet_group = true
   database_subnet_group_name   = var.database_subnet_group_name
 
   # If application needs external services, then create one NAT gateway per availability zone

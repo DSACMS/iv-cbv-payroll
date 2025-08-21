@@ -46,7 +46,7 @@ locals {
   # The list of networks can be found in /infra/networks
   # by looking for the backend config files of the form:
   #   <NETWORK_NAME>.s3.tfbackend
-  shared_network_name = "prod"
+  shared_network_name = "demo"
 }
 
 module "project_config" {
