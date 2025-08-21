@@ -26,25 +26,27 @@ class ProviderSearchService
     results = []
 
     if @providers.include?(:argyle)
-      argyle_service = Aggregators::Sdk::ArgyleService.new(@client_agency_config.argyle_environment)
 
-      results = argyle_service.employer_search(query)["results"].map do |result|
-        Aggregators::ResponseObjects::SearchResult.from_argyle(result)
-      end
+      results = fetch_argyle_results(query)
 
       results = filter_results(results, BLOCKED_ARGYLE_EMPLOYERS)
+
+      if any_exact_matches?(results, query)
+        return results
+      end
     end
 
     if @providers.include?(:pinwheel) && (results.length == 0 || !any_exact_matches?(results, query))
-      pinwheel_service = Aggregators::Sdk::PinwheelService.new(@client_agency_config.pinwheel_environment)
+      pinwheel_results = fetch_pinwheel_results(query)
+      puts "reached here? #{pinwheel_results}"
 
-      pinwheel_results = pinwheel_service.fetch_items(q: query, supported_jobs: %w[paystubs])["data"].map do |result|
-        Aggregators::ResponseObjects::SearchResult.from_pinwheel(result)
+      # Prioritize argyle's results if we have exact matches, otherwise fold results in with pinwheel's below
+      if results.length == 0 || any_exact_matches?(pinwheel_results, query)
+        results = pinwheel_results
+      else
+        results = (results + pinwheel_results).uniq { |result| result.name }
       end
 
-      # Use Pinwheel's results if there aren't any results from Argyle, or
-      # there is an exact match from Pinwheel.
-      results = pinwheel_results if results.length == 0 || any_exact_matches?(pinwheel_results, query)
 
       results = filter_results(results, BLOCKED_PINWHEEL_EMPLOYERS)
     end
@@ -54,6 +56,21 @@ class ProviderSearchService
 
   def filter_results(results, blocked_employers)
     results.select { |result| blocked_employers.exclude?(result.provider_options.provider_id) }
+  end
+
+  def fetch_argyle_results(query)
+    argyle_service = Aggregators::Sdk::ArgyleService.new(@client_agency_config.argyle_environment)
+
+    argyle_service.employer_search(query)["results"].map do |result|
+         Aggregators::ResponseObjects::SearchResult.from_argyle(result)
+       end
+  end
+
+  def fetch_pinwheel_results(query)
+    pinwheel_service = Aggregators::Sdk::PinwheelService.new(@client_agency_config.pinwheel_environment)
+    pinwheel_service.fetch_items(q: query, supported_jobs: %w[paystubs])["data"].map do |result|
+        Aggregators::ResponseObjects::SearchResult.from_pinwheel(result)
+      end
   end
 
   # TODO: this data should be loading from a config file instead of from hardcoded arrays within this file - see FFS-2661

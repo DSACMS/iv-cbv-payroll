@@ -31,12 +31,6 @@ RSpec.describe ProviderSearchService, type: :service do
         "Some Other Company, LLC"
       end
 
-      it "defaults to Argyle results if there are no Pinwheel exact matches" do
-        results = service.search(query)
-        expect(results.count { |r| r.provider_name == :pinwheel }).to eq(0)
-        expect(results.count { |r| r.provider_name == :argyle }).to eq(8)
-      end
-
       context "when there *is* an exact match in Pinwheel" do
         let(:query) do
           # This value *is* exactly present in the Pinwheel request stub, but
@@ -52,31 +46,61 @@ RSpec.describe ProviderSearchService, type: :service do
       end
     end
 
+    context "when argyle and pinwheel lack exact matches" do
+    end
+
     context "when there is an exact match in Argyle" do
-      let(:query) do
-        # This value is exactly present *Argyle's* request stub, but not
-        # Pinwheel's.
-        "Walgreens"
-      end
+       let(:query) do
+         # This value is exactly present *Argyle's* request stub, but not
+         # Pinwheel's.
+         "Waffle"
+       end
 
-      it "does not try to query Pinwheel" do
-        expect_any_instance_of(Aggregators::Sdk::PinwheelService)
-          .not_to receive(:fetch_items)
+       let(:argyle_data) {
+         [
+                   Aggregators::ResponseObjects::SearchResult.new(provider_name: :pinwheel,
+                 provider_options: Aggregators::ResponseObjects::ProviderOptions.new(
+                   response_type: "type",
+                   provider_id: "id"
+                 ),
+                 name: "Waffl3 House",
+                 logo_url: "url") ]
+       }
 
-        results = service.search(query)
-        expect(results.count { |r| r.provider_name == :pinwheel }).to eq(0)
-        expect(results.count { |r| r.provider_name == :argyle }).to eq(8)
-      end
-    end
+       before do
+         expect(service).to receive(:fetch_pinwheel_results).and_return([
+           Aggregators::ResponseObjects::SearchResult.new(provider_name: :pinwheel,
+         provider_options: Aggregators::ResponseObjects::ProviderOptions.new(
+           response_type: "type",
+           provider_id: "id"
+         ),
+         name: "Waffle House",
+         logo_url: "url") ])
+         expect(service).to receive(:fetch_argyle_results).and_return(argyle_data)
+       end
 
-    it 'prefers argyle results when both are present' do
-      results = service.search("test")
+       it "uses results from both" do
+         results = service.search(query)
+         expect(results.map { |r| r.name }).to match_array([ "Waffle House", "Waffl3 House" ])
+       end
 
-      pinwheel_results = results.count { |item| item.provider_name == :pinwheel }
-      argyle_results = results.count { |item| item.provider_name == :argyle }
-      expect(pinwheel_results).to eq(0)
-      expect(argyle_results).to eq(8)
-    end
+       context "exact name" do
+         let(:argyle_data) {
+           [
+                     Aggregators::ResponseObjects::SearchResult.new(provider_name: :pinwheel,
+                   provider_options: Aggregators::ResponseObjects::ProviderOptions.new(
+                     response_type: "type",
+                     provider_id: "id"
+                   ),
+                   name: "Waffle House",
+                   logo_url: "url") ]
+         }
+         it "only returns one" do
+           results = service.search(query)
+           expect(results.map { |r| r.name }).to match_array([ "Waffle House" ])
+         end
+       end
+     end
 
     context "when only pinwheel is enabled" do
       let(:providers) { %i[pinwheel] }
