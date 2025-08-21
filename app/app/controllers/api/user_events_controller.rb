@@ -38,7 +38,7 @@ class Api::UserEventsController < ApplicationController
 
   def user_action
     base_attributes = {
-      timestamp: Time.now.to_i
+      time: Time.now.to_i
     }
 
     if session[:cbv_flow_id].present?

@@ -27,7 +27,7 @@ class MatchAgencyNamesJob < ApplicationJob
       end
 
     event_logger.track("IncomeSummaryMatchedAgencyNames", nil, {
-      timestamp: Time.now.to_i,
+      time: Time.now.to_i,
       client_agency_id: @cbv_flow.client_agency_id,
       cbv_applicant_id: @cbv_flow.cbv_applicant_id,
       cbv_flow_id: @cbv_flow.id,
