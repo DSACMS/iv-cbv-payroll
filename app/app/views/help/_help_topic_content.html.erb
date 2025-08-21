@@ -9,20 +9,9 @@
   <% steps.each do |step, _| %>
     <li>
       <strong><%= t("help.show.#{topic}.#{step}.title") %></strong>
-      <ul class="main-bullets">
+      <ul class="help-modal__main-bullets">
         <% Array(t("help.show.#{topic}.#{step}.content", default: [])).each do |content| %>
-          <% if content.is_a?(Array) %>
-            <li>
-              <%= content.first %>
-              <ul class="sub-bullets">
-                <% content[1..].each do |subcontent| %>
-                  <li><%= subcontent %></li>
-                <% end %>
-              </ul>
-            </li>
-          <% else %>
-            <li><%= content %></li>
-          <% end %>
+          <li><%= content %></li>
         <% end %>
       </ul>
     </li>

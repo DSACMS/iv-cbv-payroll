@@ -97,6 +97,7 @@ class Webhooks::Argyle::EventsController < ApplicationController
     return unless connection_status == "error" && error_code == "system_error"
 
     event_logger.track("ApplicantEncounteredArgyleAccountSystemError", request, {
+      time: Time.now.to_i,
       cbv_applicant_id: @cbv_flow.cbv_applicant_id,
       cbv_flow_id: @cbv_flow.id,
       invitation_id: @cbv_flow.cbv_flow_invitation_id,
@@ -164,6 +165,7 @@ class Webhooks::Argyle::EventsController < ApplicationController
                   end
 
       event_logger.track("ApplicantReceivedArgyleData", request, {
+        time: Time.now.to_i,
         cbv_applicant_id: @cbv_flow.cbv_applicant_id,
         cbv_flow_id: @cbv_flow.id,
         invitation_id: @cbv_flow.cbv_flow_invitation_id,
@@ -173,6 +175,7 @@ class Webhooks::Argyle::EventsController < ApplicationController
       })
     elsif params["event"] == "users.fully_synced"
       event_logger.track("ApplicantReceivedArgyleData", request, {
+        time: Time.now.to_i,
         cbv_applicant_id: @cbv_flow.cbv_applicant_id,
         cbv_flow_id: @cbv_flow.id,
         invitation_id: @cbv_flow.cbv_flow_invitation_id,
@@ -189,6 +192,7 @@ class Webhooks::Argyle::EventsController < ApplicationController
       paystub_gross_pay_amounts = report.paystubs.filter_map(&:gross_pay_amount)
 
       event_logger.track("ApplicantFinishedArgyleSync", request, {
+        time: Time.now.to_i,
         cbv_applicant_id: @cbv_flow.cbv_applicant_id,
         cbv_flow_id: @cbv_flow.id,
         client_agency_id: @cbv_flow.client_agency_id,
@@ -296,12 +300,14 @@ class Webhooks::Argyle::EventsController < ApplicationController
     report_is_valid = report.valid?(:useful_report)
     if report_is_valid
       event_logger.track("ApplicantReportMetUsefulRequirements", request,
+        time: Time.now.to_i,
         cbv_applicant_id: @cbv_flow.cbv_applicant_id,
         cbv_flow_id: @cbv_flow.id,
         invitation_id: @cbv_flow.cbv_flow_invitation_id
       )
     else
       event_logger.track("ApplicantReportFailedUsefulRequirements", request, {
+        time: Time.now.to_i,
         cbv_applicant_id: @cbv_flow.cbv_applicant_id,
         cbv_flow_id: @cbv_flow.id,
         invitation_id: @cbv_flow.cbv_flow_invitation_id,

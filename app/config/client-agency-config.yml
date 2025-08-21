@@ -14,6 +14,7 @@
     password: <%= ENV['AZ_DES_SFTP_PASSWORD'] %>
     url: <%= ENV['AZ_DES_SFTP_URL'] %>
     sftp_directory: <%= ENV['AZ_DES_SFTP_DIRECTORY'] %>
+    csv_summary_reports_enabled: false
   staff_portal_enabled: false
   pilot_ended: false
   generic_links_disabled: true
