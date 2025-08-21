@@ -20,57 +20,58 @@
 
   <div class="margin-bottom-5">
     <h2><%= t(".whats_next") %></h2>
-    <ul class="usa-icon-list">
+    <ul class="usa-icon-list margin-top-3">
       <li class="usa-icon-list__item margin-bottom-3">
-        <div class="usa-icon-list__icon display-flex flex-justify-center flex-align-center width-6 minw-6 height-6 bg-primary-lighter radius-top-pill radius-bottom-pill">
+        <div class="usa-icon-list__icon display-flex flex-justify-center flex-align-center width-6 minw-6 height-6 bg-primary-lighter radius-top-pill radius-bottom-pill margin-right-1">
           <svg class="usa-icon" aria-hidden="true" role="img">
             <use href="<%= asset_path("@uswds/uswds/dist/img/sprite.svg#attach_money") %>"></use>
           </svg>
         </div>
         <div class="usa-icon-list__content">
           <h3 class="margin-bottom-1"><%= t(".whats_next_1_title") %></h3>
-          <p class="margin-y-1"><%= t(".whats_next_1_li_1", agency_acronym: agency_translation("shared.agency_acronym")) %></p>
-          <%= t(".whats_next_1_li_2_html", agency_acronym: agency_translation("shared.agency_acronym"), agency_website: current_agency.agency_contact_website) %>
+          <p><%= t(".whats_next_1_li_1", agency_acronym: agency_translation("shared.agency_acronym")) %></p>
+          <p><%= t(".whats_next_1_li_2_html", agency_acronym: agency_translation("shared.agency_acronym"), agency_website: current_agency.agency_contact_website) %></p>
         </div>
       </li>
       <li class="usa-icon-list__item">
-        <div class="usa-icon-list__icon display-flex flex-justify-center flex-align-center width-6 minw-6 height-6 bg-primary-lighter radius-top-pill radius-bottom-pill">
+        <div class="usa-icon-list__icon display-flex flex-justify-center flex-align-center width-6 minw-6 height-6 bg-primary-lighter radius-top-pill radius-bottom-pill margin-right-1">
           <svg class="usa-icon" aria-hidden="true" role="img">
             <use href="<%= asset_path("@uswds/uswds/dist/img/sprite.svg#groups") %>"></use>
           </svg>
         </div>
         <div class="usa-icon-list__content">
           <h3 class="margin-bottom-1"><%= t(".share_invitation_link_title") %></h3>
-          <p class="margin-y-1"><%= t(".share_invitation_link_content") %></p>
+          <p><%= t(".share_invitation_link_content") %></p>
+
+          <div data-controller="copy-link" class="display-flex">
+            <%= form_with(builder: UswdsFormBuilder, html: { class: "display-contents" }) do |f| %>
+              <%= f.label :invitation_link, t(".invitation_link_label"), class: "usa-sr-only" %>
+              <input value="<%= @invitation_link %>" autocomplete="off" readonly class="usa-input margin-top-0 maxw-card-lg" data-copy-link-target="input" type="text" name="invitation_link" id="invitation_link">
+              <%= f.button_with_icon(t(".copy_link"),
+                class: "copy-link-button usa-button--outline maxw-card",
+                icon: "content_copy",
+                icon_position: :leading,
+                variant: :primary,
+                type: "button",
+                data: {
+                  copy_link_target: "copyLinkButton",
+                  action: "click->copy-link#copy"
+                }) %>
+
+              <%= f.button_with_icon(t(".copied_link"),
+                class: "copy-link-button invisible maxw-card",
+                icon: "check_circle",
+                icon_position: :leading,
+                variant: :success,
+                type: "button",
+                data: {
+                  copy_link_target: "successButton"
+                }) %>
+            <% end %>
+          </div>
         </div>
       </li>
     </ul>
-  <div data-controller="copy-link" class="margin-left-7 display-flex">
-    <%= form_with(builder: UswdsFormBuilder, html: { class: "display-contents" }) do |f| %>
-      <%= f.label :invitation_link, t(".invitation_link_label"), class: "usa-sr-only" %>
-      <input value="<%= @invitation_link %>" autocomplete="off" readonly class="usa-input margin-top-0 maxw-card-lg" data-copy-link-target="input" type="text" name="invitation_link" id="invitation_link">
-      <%= f.button_with_icon(t(".copy_link"),
-         class: "copy-link-button usa-button--outline maxw-card",
-         icon: "content_copy",
-         icon_position: :leading,
-         variant: :primary,
-         type: "button",
-         data: {
-           copy_link_target: "copyLinkButton",
-           action: "click->copy-link#copy"
-         }) %>
-      <%= f.button_with_icon(t(".copied_link"),
-         class: "copy-link-button invisible maxw-card",
-         icon: "check_circle",
-         icon_position: :leading,
-         variant: :success,
-         type: "button",
-         data: {
-           copy_link_target: "successButton"
-         }) %>
-    <% end %>
-  </div>
-
   </div>
 
   <div class="divider margin-top-5"></div>
