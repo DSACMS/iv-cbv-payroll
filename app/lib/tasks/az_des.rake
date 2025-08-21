@@ -14,6 +14,12 @@ namespace :az_des do
 
   desc "deliver csv summary of cases sent to az_des"
   task deliver_csv_reports: :environment do
+    config = ClientAgency::AzDes::Configuration.sftp_transmission_configuration
+    unless config.fetch("csv_summary_reports_enabled", true)
+      puts "AZ DES CSV summary delivery disabled, not enqueuing job"
+      next
+    end
+
     time_zone = "America/Phoenix"
     now = Time.find_zone(time_zone).now
     start_time = now.yesterday.change(hour: 8)
