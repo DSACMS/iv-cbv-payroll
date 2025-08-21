@@ -19,8 +19,8 @@ module "dev_config" {
 
   # Create DNS records for these `additional_domains` in the default hosted
   # zone (this is necessary to support CBV agency subdomains).
-  additional_domains = ["*.divt.app", "*.*.divt.app"]
-
+  additional_domains = ["*.divt.app", "*.demo.divt.app"]
+  
   # Enable and configure identity provider.
   enable_identity_provider = local.enable_identity_provider
 
