@@ -12,7 +12,7 @@ locals {
           # Example certificate configuration for a certificate that is managed by the project
           "demo.divt.app" = {
             source                    = "issued"
-            subject_alternative_names = ["*.divt.app"]
+            subject_alternative_names = ["*.divt.app", "*.demo.divt.app"]
           }
 
           # Example certificate configuration for a certificate that is issued elsewhere and imported into the project
