@@ -72,15 +72,15 @@
     <% row.with_data_cell(is_header: true).with_content(t(".your_answer")) %>
   <% end %>
   <% @cbv_flow.cbv_applicant.applicant_attributes.each do |item| %>
-      <% table.with_row do |row| %>
-        <% row.with_data_cell(data_label: t(".question"), class_names: "text-bold").with_content(t("cbv.applicant_informations.#{@cbv_flow.client_agency_id}.fields.#{item}.prompt")) %>
-        <% row.with_data_cell(data_label: t(".your_answer")) do %>
-          <% if item == :date_of_birth %>
-            <%= format_date(@cbv_flow.cbv_applicant[item]) %>
-          <% else %>
-            <%= @cbv_flow.cbv_applicant[item] %>
-          <% end %>
+    <% table.with_row do |row| %>
+      <% row.with_data_cell(data_label: t(".question"), class_names: "text-bold").with_content(t("cbv.applicant_informations.#{@cbv_flow.client_agency_id}.fields.#{item}.prompt")) %>
+      <% row.with_data_cell(data_label: t(".your_answer")) do %>
+        <% if item == :date_of_birth %>
+          <%= format_date(@cbv_flow.cbv_applicant[item]) %>
+        <% else %>
+          <%= @cbv_flow.cbv_applicant[item] %>
         <% end %>
+      <% end %>
     <% end %>
   <% end %>
 <% end %>
