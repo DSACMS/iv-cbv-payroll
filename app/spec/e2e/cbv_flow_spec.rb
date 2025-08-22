@@ -64,8 +64,7 @@ RSpec.describe "e2e CBV flow test", type: :feature, js: true do
     click_on "Continue"
 
     # /cbv/summary
-    # TODO[FFS-2839]: Fix heading hierarchy on this page
-    verify_page(page, title: I18n.t("cbv.summaries.show.header"), skip_axe_rules: %w[heading-order])
+    verify_page(page, title: I18n.t("cbv.summaries.show.header"))
     click_on "Continue"
 
     # /cbv/submits
