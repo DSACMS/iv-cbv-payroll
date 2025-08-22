@@ -38,7 +38,6 @@ class ProviderSearchService
 
     if @providers.include?(:pinwheel) && (results.length == 0 || !any_exact_matches?(results, query))
       pinwheel_results = fetch_pinwheel_results(query)
-      puts "reached here? #{pinwheel_results}"
 
       # Prioritize argyle's results if we have exact matches, otherwise fold results in with pinwheel's below
       if results.length == 0 || any_exact_matches?(pinwheel_results, query)
