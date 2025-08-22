@@ -62,7 +62,7 @@
 
     <% if has_monthly_summary_results? && show_payments? %>
       <div class="margin-top-5">
-        <h2><%= I18n.t("components.report.monthly_summary_table.payments_from_header", employer_name: @employer_name) %></h2>
+        <h3><%= I18n.t("components.report.monthly_summary_table.payments_from_header", employer_name: @employer_name) %></h3>
         <p><%= payments_from_text %></p>
         <% if @is_pdf %>
           <ul class="usa-list">
