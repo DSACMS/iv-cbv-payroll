@@ -12,6 +12,7 @@ class ApplicationMailer < ActionMailer::Base
 
   def track_delivery
     event_logger.track("EmailSent", nil, {
+      time: Time.now.to_i,
       mailer: self.class.name,
       action: action_name,
       message_id: mail.message_id,

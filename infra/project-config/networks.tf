@@ -1,22 +1,19 @@
 locals {
   network_configs = {
-    dev = {
-      account_name               = "nava-ffs"
+    demo = {
+      account_name               = "demo"
       database_subnet_group_name = "dev"
 
       domain_config = {
-        manage_dns  = true
-        hosted_zone = "navapbc.cloud"
+        manage_dns  = false
+        hosted_zone = "divt.app"
 
         certificate_configs = {
-          "verify-demo.navapbc.cloud" = {
-            source                    = "issued"
-            subject_alternative_names = ["*.navapbc.cloud"]
-          }
           # Example certificate configuration for a certificate that is managed by the project
-          # "sub.domain.com" = {
-          #   source = "issued"
-          # }
+          "demo.divt.app" = {
+            source                    = "issued"
+            subject_alternative_names = ["*.divt.app", "*.demo.divt.app"]
+          }
 
           # Example certificate configuration for a certificate that is issued elsewhere and imported into the project
           # (currently not supported, will be supported via https://github.com/navapbc/template-infra/issues/559)
@@ -30,7 +27,24 @@ locals {
 
       single_nat_gateway = true
     }
+    prod = {
+      account_name               = "prod"
+      database_subnet_group_name = "prod"
 
+      domain_config = {
+        manage_dns  = false
+        hosted_zone = "verifymyincome.org"
+
+        certificate_configs = {
+          "verifymyincome.org" = {
+            source                    = "issued"
+            subject_alternative_names = ["*.verifymyincome.org"]
+          }
+        }
+      }
+
+      single_nat_gateway = true
+    }
     # staging = {
     #   account_name               = "staging"
     #   database_subnet_group_name = "staging"
@@ -42,24 +56,5 @@ locals {
     #     certificate_configs = {}
     #   }
     # }
-
-    prod = {
-      account_name               = "nava-ffs-prod"
-      database_subnet_group_name = "prod"
-
-      domain_config = {
-        manage_dns  = true
-        hosted_zone = "reportmyincome.org"
-
-        certificate_configs = {
-          "reportmyincome.org" = {
-            source                    = "issued"
-            subject_alternative_names = ["*.reportmyincome.org"]
-          }
-        }
-      }
-
-      single_nat_gateway = true
-    }
   }
 }

@@ -5,7 +5,7 @@ module "prod_config" {
   default_region                  = module.project_config.default_region
   environment                     = "prod"
   network_name                    = "prod"
-  domain_name                     = "reportmyincome.org"
+  domain_name                     = "verifymyincome.org"
   enable_https                    = true
   has_database                    = local.has_database
   has_incident_management_service = local.has_incident_management_service
@@ -19,12 +19,12 @@ module "prod_config" {
   # https://conchchow.medium.com/aws-ecs-fargate-compute-capacity-planning-a5025cb40bd0
   service_cpu                       = 1024
   service_memory                    = 4096
-  service_desired_instance_count    = 20
-  solidqueue_desired_instance_count = 2
+  service_desired_instance_count    = 1
+  solidqueue_desired_instance_count = 1
 
   # Create DNS records for these `additional_domains` in the default hosted
   # zone (this is necessary to support CBV agency subdomains).
-  additional_domains = ["*.reportmyincome.org"]
+  additional_domains = ["*.verifymyincome.org"]
 
   # Enables ECS Exec access for debugging or jump access.
   # Defaults to `false`. Uncomment the next line to enable.
@@ -32,5 +32,5 @@ module "prod_config" {
   # enable_command_execution = true
 
   # NewRelic configuration for metrics
-  newrelic_account_id = "4619676"
+  newrelic_account_id = "7001719"
 }

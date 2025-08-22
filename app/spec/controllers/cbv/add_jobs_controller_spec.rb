@@ -37,7 +37,7 @@ RSpec.describe Cbv::AddJobsController do
       allow(EventTrackingJob).to receive(:perform_later).with("CbvPageView", anything, anything)
 
       expect(EventTrackingJob).to receive(:perform_later).with("ApplicantContinuedFromAddJobsPage", anything, hash_including(
-        timestamp: be_a(Integer),
+        time: be_a(Integer),
         cbv_flow_id: cbv_flow.id,
         client_agency_id: cbv_flow.client_agency_id,
         has_additional_jobs: true
@@ -49,7 +49,7 @@ RSpec.describe Cbv::AddJobsController do
       allow(EventTrackingJob).to receive(:perform_later).with("CbvPageView", anything, anything)
 
       expect(EventTrackingJob).to receive(:perform_later).with("ApplicantContinuedFromAddJobsPage", anything, hash_including(
-        timestamp: be_a(Integer),
+        time: be_a(Integer),
         cbv_flow_id: cbv_flow.id,
         client_agency_id: cbv_flow.client_agency_id,
         has_additional_jobs: false

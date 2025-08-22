@@ -24,6 +24,7 @@ class Api::PinwheelController < ApplicationController
 
   def track_event
     event_logger.track("ApplicantBeganLinkingEmployer", request, {
+      time: Time.now.to_i,
       cbv_flow_id: @cbv_flow.id,
       cbv_applicant_id: @cbv_flow.cbv_applicant_id,
       client_agency_id: @cbv_flow.client_agency_id,

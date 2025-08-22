@@ -4,6 +4,7 @@ locals {
   # overridden per environment using terraform's `merge` function
   default_extra_environment_variables = {
     # Environment variables for all terraform-deployed environments
+    RAILS_ENV                = "production"
     RAILS_LOG_TO_STDOUT      = "true"
     RAILS_SERVE_STATIC_FILES = "true"
     RAILS_MAX_THREADS        = 10
@@ -80,7 +81,6 @@ locals {
       manage_method     = "manual"
       secret_store_name = "/service/${var.app_name}-${var.environment}/active-record-encryption-key-derivation-salt"
     },
-
 
     # Transmission Configuration:
     LA_LDH_EMAIL = {

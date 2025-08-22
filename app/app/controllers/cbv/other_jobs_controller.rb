@@ -12,7 +12,7 @@ class Cbv::OtherJobsController < Cbv::BaseController
 
     begin
       event_logger.track("ApplicantContinuedFromOtherJobsPage", request, {
-        timestamp: Time.now.to_i,
+        time: Time.now.to_i,
         cbv_flow_id: @cbv_flow&.id,
         client_agency_id: @cbv_flow&.client_agency_id,
         cbv_applicant_id: @cbv_flow.cbv_applicant_id,

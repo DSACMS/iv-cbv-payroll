@@ -33,7 +33,7 @@ RSpec.describe Api::UserEventsController, type: :controller do
 
       it "tracks an event with Mixpanel" do
         expect(EventTrackingJob).to receive(:perform_later).with("ApplicantOpenedHelpModal", anything, hash_including(
-          timestamp: be_a(Integer),
+          time: be_a(Integer),
           source: "banner",
           cbv_flow_id: cbv_flow.id
         ))
@@ -95,7 +95,7 @@ RSpec.describe Api::UserEventsController, type: :controller do
 
         it "tracks an event with Mixpanel (with selected_tab = platform)" do
           expect(EventTrackingJob).to receive(:perform_later).with("ApplicantSelectedEmployerOrPlatformItem", anything, hash_including(
-            timestamp: be_a(Integer),
+            time: be_a(Integer),
             cbv_flow_id: cbv_flow.id,
             invitation_id: cbv_flow.cbv_flow_invitation_id,
             item_type: "platform",
@@ -121,7 +121,7 @@ RSpec.describe Api::UserEventsController, type: :controller do
 
         it "tracks an event with Mixpanel (with selected_tab = employer)" do
           expect(EventTrackingJob).to receive(:perform_later).with("ApplicantSelectedEmployerOrPlatformItem", anything, hash_including(
-            timestamp: be_a(Integer),
+            time: be_a(Integer),
             cbv_flow_id: cbv_flow.id,
             invitation_id: cbv_flow.cbv_flow_invitation_id,
             item_type: "employer",
@@ -148,7 +148,7 @@ RSpec.describe Api::UserEventsController, type: :controller do
 
       it "tracks an event with Mixpanel" do
         expect(EventTrackingJob).to receive(:perform_later).with("ApplicantViewedPinwheelLoginPage", anything, hash_including(
-          timestamp: be_a(Integer),
+          time: be_a(Integer),
           cbv_flow_id: cbv_flow.id,
           invitation_id: cbv_flow.cbv_flow_invitation_id,
           locale: "en",
@@ -170,7 +170,7 @@ RSpec.describe Api::UserEventsController, type: :controller do
 
       it "tracks an event with Mixpanel" do
         expect(EventTrackingJob).to receive(:perform_later).with("ApplicantManuallySwitchedLanguage", anything, hash_including(
-          timestamp: be_a(Integer),
+          time: be_a(Integer),
           cbv_flow_id: cbv_flow.id,
           invitation_id: cbv_flow.cbv_flow_invitation_id,
           locale: "es"
@@ -185,7 +185,7 @@ RSpec.describe Api::UserEventsController, type: :controller do
 
       it "tracks an event with Mixpanel" do
         expect(EventTrackingJob).to receive(:perform_later).with("ApplicantConsentedToTerms", anything, hash_including(
-          timestamp: be_a(Integer),
+          time: be_a(Integer),
           cbv_flow_id: cbv_flow.id,
           invitation_id: cbv_flow.cbv_flow_invitation_id
         ))
@@ -205,7 +205,7 @@ RSpec.describe Api::UserEventsController, type: :controller do
 
         it "tracks an event with Mixpanel" do
           expect(EventTrackingJob).to receive(:perform_later).with("ApplicantViewedHelpText", anything, hash_including(
-            timestamp: be_a(Integer),
+            time: be_a(Integer),
             cbv_flow_id: cbv_flow.id,
             invitation_id: cbv_flow.cbv_flow_invitation_id,
             section: "who_is_this_tool_for"
@@ -223,7 +223,7 @@ RSpec.describe Api::UserEventsController, type: :controller do
 
         it "tracks an event with Mixpanel" do
           expect(EventTrackingJob).to receive(:perform_later).with("ApplicantViewedHelpText", anything, hash_including(
-            timestamp: be_a(Integer),
+            time: be_a(Integer),
             cbv_flow_id: cbv_flow.id,
             invitation_id: cbv_flow.cbv_flow_invitation_id,
             section: "what_if_i_cant_use_this_tool"
