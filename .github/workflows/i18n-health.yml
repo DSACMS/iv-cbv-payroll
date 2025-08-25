@@ -3,7 +3,7 @@ name: Check i18n-tasks health
 on:
   pull_request:
     paths:
-      - 'app/config/locales/**'
+      - 'app/**'
   push:
     branches:
       - main
