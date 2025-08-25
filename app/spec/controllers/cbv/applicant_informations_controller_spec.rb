@@ -32,7 +32,7 @@ RSpec.describe Cbv::ApplicantInformationsController, type: :controller do
               first_name: "Daph", # required
               middle_name: "",
               last_name: "", # required
-              date_of_birth: "", # required
+              date_of_birth: { month: "", day: "", year: "" }, # required
               case_number: "" # required
             }
           }
