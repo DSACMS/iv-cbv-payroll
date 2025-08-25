@@ -81,10 +81,16 @@
 
 <h2><%= t(".pdf.client.employment_payment_details") %></h2>
 
+<%# These variables must be initialized outside the loop for the logic to work %>
+<% first_w2_job_index = false %>
+<% first_gig_job_index = false %>
 <% aggregator_report.summarize_by_employer.each_with_index do |(account_id, summary), index| %>
   <% employment = summary[:employment] %>
   <% employer_name = employment&.employer_name %>
   <% is_w2_worker = employment&.employment_type == :w2 %>
+  <% is_gig_worker = employment&.employment_type == :gig %>
+  <% is_first_w2_job = is_w2_worker && ((first_w2_job_index ||= index) == index) %>
+  <% is_first_gig_job = is_gig_worker && ((first_gig_job_index ||= index) == index) %>
   <h3><%= t(".table_caption_no_name", number: index + 1) %>: <%= employer_name %></h3>
 
   <%= render(TableComponent.new) do |table| %>
@@ -114,15 +120,17 @@
   <% end %>
 
   <% if is_w2_worker %>
+    <%= render(Report::W2MonthlySummaryTableComponent.new(@aggregator_report, account_id, is_caseworker: is_caseworker, is_responsive: false, is_pdf: true, show_footnote: is_first_w2_job)) %>
+    <h3><%= t(".pdf.shared.payments_and_deductions_header", employer_name: employer_name) %></h3>
     <% summary[:paystubs].each do |paystub| %>
       <%= render(TableComponent.new(class_names: "payment-details-table")) do |table| %>
-        <%= table.with_header do %>
-          <h4 class="margin-0">
-            <% if employer_name %>
-              <%= employer_name %> &mdash;
-            <% end %>
-            <%= t(".pdf.shared.pay_date", pay_date: format_date(paystub.pay_date)) %></h4>
+        <%= table.with_subheader_row(class_names: "subheader-row base-lightest") do |row| %>
+          <%= row.with_data_cell(is_header: true, class_names: "text-nowrap")
+                .with_content(t(".pdf.shared.pay_information")) %>
+          <%= row.with_data_cell(is_header: true, class_names: "text-nowrap")
+                .with_content(t(".pdf.shared.details")) %>
         <% end %>
+        <%= table.with_data_point(:pay_date, paystub.pay_date) %>
         <% if summary[:income]&.pay_frequency %>
           <%= table.with_data_point(:pay_period_with_frequency, paystub.start, paystub.end, summary[:income].pay_frequency&.humanize, highlight: is_caseworker) %>
         <% else %>
@@ -154,7 +162,7 @@
       <% end %>
     <% end %>
   <% else %>
-    <%= render(Report::GigMonthlySummaryTableComponent.new(@aggregator_report, account_id, is_caseworker: is_caseworker, is_responsive: false, is_pdf: true)) %>
+    <%= render(Report::GigMonthlySummaryTableComponent.new(@aggregator_report, account_id, is_caseworker: is_caseworker, is_responsive: false, is_pdf: true, show_footnote: is_first_gig_job)) %>
   <% end %>
 
   <% if @cbv_flow.additional_information.dig(account_id, "comment").present? %>
