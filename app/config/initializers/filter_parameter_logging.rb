@@ -8,6 +8,8 @@ Rails.application.config.filter_parameters += [
   # CBV flow invitation
   :email_address, :case_number, :first_name, :middle_name, :last_name,
   :snap_application_date, :agency_id_number, :client_id_number, :beacon_id,
+  # income_changes subfields (used for AZ DES)
+  :member_name, :employer_name,
   # CBV flow
   :additional_information
 ]
