@@ -327,14 +327,13 @@ es:
         must_match:
           default: Esto debe coincidir con lo que se muestra en su solicitud de %{agency_acronym}.
           la_ldh: Esto debe coincidir con lo que se muestra en sus beneficios de Medicaid.
+        none_found: No encontramos ningún pago de este empleador en los últimos %{report_data_range}.
+        none_found_description: Esto usualmente ocurre cuando usted no ha recibido ingresos por este trabajo en los últimos %{report_data_range}. Si cree que esto es un error, agregue un comentario en la casilla de comentarios adicionales. De lo contrario, continúe en la página siguiente.
         other_jobs: Otros trabajos
-        payment: Pago de %{amount} antes de pago impuestos en %{date}
         phone_number: Teléfono del empleador
         question: Pregunta
         table_caption: 'Empleador %{number}: %{employer_name}'
         table_caption_no_name: Empleador %{number}
-        total_income_from: 'Ingresos totales antes de impuestos de %{employer_name}: %{amount}'
-        total_income_from_no_employer_name: 'Ingresos totales antes del pago de impuestos: %{amount}'
         your_answer: Tu respuesta
         your_information: Su información
     synchronization_failures:
