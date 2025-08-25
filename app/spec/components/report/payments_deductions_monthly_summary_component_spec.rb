@@ -59,7 +59,7 @@ RSpec.describe Report::PaymentsDeductionsMonthlySummaryComponent, type: :compone
         end
 
         it "includes the payments and deductions section with accordion and content" do
-          expect(subject.css("h3").to_html).to include "Payments and deductions"
+          expect(subject.css("h2").to_html).to include "Payments and deductions"
 
           accordion = subject.at_css('button.usa-accordion__button')
           expect(accordion).not_to be_nil
@@ -88,7 +88,7 @@ RSpec.describe Report::PaymentsDeductionsMonthlySummaryComponent, type: :compone
           accordion_buttons = subject.css('button.usa-accordion__button')
           expect(accordion_buttons).to be_empty
 
-          payments_header = subject.at_css('h3')
+          payments_header = subject.at_css('h2')
           expect(payments_header).to be_nil
         end
       end
@@ -139,7 +139,7 @@ RSpec.describe Report::PaymentsDeductionsMonthlySummaryComponent, type: :compone
       end
 
       it "includes the payments and deductions section with accordion and content" do
-        expect(subject.css("h3").to_html).to include "Payments and deductions"
+        expect(subject.css("h2").to_html).to include "Payments and deductions"
 
         accordion = subject.at_css('button.usa-accordion__button')
         expect(accordion).not_to be_nil
@@ -166,7 +166,7 @@ RSpec.describe Report::PaymentsDeductionsMonthlySummaryComponent, type: :compone
         accordion_buttons = subject.css('button.usa-accordion__button')
         expect(accordion_buttons).to be_empty
 
-        payments_header = subject.at_css('h3')
+        payments_header = subject.at_css('h2')
         expect(payments_header).to be_nil
       end
     end

@@ -1,7 +1,7 @@
 <div class="margin-top-5">
-  <h3 class="margin-0">
+  <h2 class="margin-0">
     <%= I18n.t("components.report.monthly_summary_table.monthly_summary") %>
-  </h3>
+  </h2>
   <%= render(TableComponent.new(is_responsive: @is_responsive)) do |table| %>
     <%= table.with_subheader_row(class_names: "subheader-row base-lightest") do |row| %>
       <%= row.with_data_cell(is_header: true, class_names: "text-nowrap")
@@ -40,7 +40,7 @@
 
   <% if has_monthly_summary_results? && show_footnote? %>
     <div>
-      <h4><%= I18n.t("components.report.monthly_summary_table.compact.footnote.what_does_this_mean") %></h4>
+      <h3><%= I18n.t("components.report.monthly_summary_table.compact.footnote.what_does_this_mean") %></h3>
       <ul class="usa-list">
         <li><%= I18n.t("components.report.monthly_summary_table.w2.definition_gross_income") %></li>
         <li><%= I18n.t("components.report.monthly_summary_table.w2.definition_number_of_paychecks") %></li>
