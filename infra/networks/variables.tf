@@ -1,4 +1,56 @@
-variable "network_name" {
+variable "aws_services_security_group_name_prefix" {
   type        = string
-  description = "Human readable identifier for the VPC"
+  description = "Prefix for the name of the security group attached to VPC endpoints"
+}
+
+variable "database_subnet_group_name" {
+  type        = string
+  description = "Name of the database subnet group"
+}
+
+variable "enable_command_execution" {
+  type        = bool
+  description = "Whether the application(s) in this network need ECS Exec access. Determines whether to create VPC endpoints needed by ECS Exec."
+  default     = false
+}
+
+variable "has_database" {
+  type        = bool
+  description = "Whether the application(s) in this network have a database. Determines whether to create VPC endpoints needed by the database layer."
+  default     = false
+}
+
+variable "has_external_non_aws_service" {
+  type        = bool
+  description = "Whether the application(s) in this network need to call external non-AWS services. Determines whether or not to create NAT gateways."
+  default     = false
+}
+
+variable "single_nat_gateway" {
+  type        = bool
+  description = "Whether to provision only a single NAT gateway, rather than one per AZ. Good for saving costs in non-production environments."
+  default     = false
+}
+
+variable "name" {
+  type        = string
+  description = "Name to give the VPC. Will be added to the VPC under the 'network_name' tag."
+}
+
+variable "az_count" {
+  type        = number
+  description = "How many AZs to use for this network (dev=1, prod=2+)"
+  default     = 2
+}
+
+variable "enable_private_ecr" {
+  type        = bool
+  description = "Whether to create ECR interface endpoints (ecr.api/ecr.dkr). In dev, set false and use NAT."
+  default     = false
+}
+
+variable "enable_db_endpoints" {
+  type        = bool
+  description = "Whether to create KMS/SSM/Secrets interface endpoints for DB lambda. In dev, set false and use NAT."
+  default     = false
 }

@@ -1,9 +1,13 @@
 data "aws_availability_zones" "available" {}
 
 locals {
-  vpc_cidr               = "10.0.0.0/20"
-  num_availability_zones = 3
-  availability_zones     = slice(data.aws_availability_zones.available.names, 0, local.num_availability_zones)
+  vpc_cidr = "10.0.0.0/20"
+  azs      = slice(data.aws_availability_zones.available.names, 0, var.az_count)
+
+  # slice fixed CIDRs to requested AZ count
+  public_subnets   = slice(["10.0.10.0/24", "10.0.11.0/24", "10.0.12.0/24"], 0, var.az_count)
+  private_subnets  = slice(["10.0.0.0/24", "10.0.1.0/24", "10.0.2.0/24"], 0, var.az_count)
+  database_subnets = slice(["10.0.5.0/24", "10.0.6.0/24", "10.0.7.0/24"], 0, var.az_count)
 }
 
 module "aws_vpc" {
@@ -11,29 +15,24 @@ module "aws_vpc" {
   version = "5.2.0"
 
   name = var.name
-  azs  = local.availability_zones
+  azs  = local.azs
   cidr = local.vpc_cidr
 
-  # Public subnets
-  public_subnets     = ["10.0.10.0/24", "10.0.11.0/24", "10.0.12.0/24"]
+  public_subnets     = local.public_subnets
   public_subnet_tags = { subnet_type = "public" }
 
-  # Private subnets
-  private_subnets     = ["10.0.0.0/24", "10.0.1.0/24", "10.0.2.0/24"]
+  private_subnets     = local.private_subnets
   private_subnet_tags = { subnet_type = "private" }
 
-  # Database subnets
-  # `database_subnet_tags` is only used if `database_subnets` is not empty
-  # `database_subnet_group_name` is only used if `create_database_subnet_group` is true
-  database_subnets             = ["10.0.5.0/24", "10.0.6.0/24", "10.0.7.0/24"]
+  database_subnets             = local.database_subnets
   database_subnet_tags         = { subnet_type = "database" }
   create_database_subnet_group = true
   database_subnet_group_name   = var.database_subnet_group_name
 
-  # If application needs external services, then create one NAT gateway per availability zone
-  enable_nat_gateway     = var.has_external_non_aws_service
+  # NAT must exist if single_nat_gateway=true (dev) OR has_external_non_aws_service=true
+  enable_nat_gateway     = var.has_external_non_aws_service || var.single_nat_gateway
   single_nat_gateway     = var.single_nat_gateway
-  one_nat_gateway_per_az = var.has_external_non_aws_service
+  one_nat_gateway_per_az = !(var.single_nat_gateway)
 
   enable_dns_hostnames = true
   enable_dns_support   = true

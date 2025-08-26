@@ -4,32 +4,34 @@ locals {
       account_name               = "demo"
       database_subnet_group_name = "dev"
 
+      # single-AZ dev & endpoint toggles
+      az_count            = 1     # one AZ in dev
+      single_nat_gateway  = true  # one NAT in dev
+      enable_private_ecr  = false # use NAT for ECR in dev
+      enable_db_endpoints = false # use NAT for KMS/SSM/Secrets in dev
+
       domain_config = {
         manage_dns  = false
         hosted_zone = "divt.app"
 
         certificate_configs = {
-          # Example certificate configuration for a certificate that is managed by the project
           "demo.divt.app" = {
             source                    = "issued"
             subject_alternative_names = ["*.divt.app", "*.demo.divt.app"]
           }
-
-          # Example certificate configuration for a certificate that is issued elsewhere and imported into the project
-          # (currently not supported, will be supported via https://github.com/navapbc/template-infra/issues/559)
-          # "platform-test-dev.navateam.com" = {
-          #   source = "imported"
-          #   private_key_ssm_name = "/certificates/sub.domain.com/private-key"
-          #   certificate_body_ssm_name = "/certificates/sub.domain.com/certificate-body"
-          # }
         }
       }
-
-      single_nat_gateway = true
     }
+
     prod = {
       account_name               = "prod"
       database_subnet_group_name = "prod"
+
+      # prod defaults (tune as needed)
+      az_count            = 2
+      single_nat_gateway  = false
+      enable_private_ecr  = true
+      enable_db_endpoints = true
 
       domain_config = {
         manage_dns  = false
@@ -42,19 +44,8 @@ locals {
           }
         }
       }
-
-      single_nat_gateway = true
     }
-    # staging = {
-    #   account_name               = "staging"
-    #   database_subnet_group_name = "staging"
 
-    #   domain_config = {
-    #     manage_dns  = true
-    #     hosted_zone = "hosted.zone.for.staging.network.com"
-
-    #     certificate_configs = {}
-    #   }
-    # }
+    # staging can be added later if needed
   }
 }

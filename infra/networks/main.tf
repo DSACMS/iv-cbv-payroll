@@ -8,13 +8,8 @@ locals {
   network_config = module.project_config.network_configs[var.network_name]
   domain_config  = local.network_config.domain_config
 
-  # List of configuration for all applications, even ones that are not in the current network
-  # If project has multiple applications, add other app configs to this list
   app_configs = [module.app_config]
 
-  # List of configuration for applications that are in the current network
-  # An application is in the current network if at least one of its environments
-  # is mapped to the network
   apps_in_network = [
     for app in local.app_configs :
     app
@@ -23,13 +18,9 @@ locals {
     ])
   ]
 
-  # Whether any of the applications in the network have a database
-  has_database = anytrue([for app in local.apps_in_network : app.has_database])
-
-  # Whether any of the applications in the network have dependencies on an external non-AWS service
+  has_database                 = anytrue([for app in local.apps_in_network : app.has_database])
   has_external_non_aws_service = anytrue([for app in local.apps_in_network : app.has_external_non_aws_service])
 
-  # Whether any of the applications in the network has an environment that needs container execution access
   enable_command_execution = anytrue([
     for app in local.apps_in_network :
     anytrue([
@@ -77,6 +68,11 @@ module "network" {
   has_external_non_aws_service            = local.has_external_non_aws_service
   single_nat_gateway                      = local.network_config.single_nat_gateway
   enable_command_execution                = local.enable_command_execution
+
+  # NEW: pass per-network flags
+  az_count            = local.network_config.az_count
+  enable_private_ecr  = local.network_config.enable_private_ecr
+  enable_db_endpoints = local.network_config.enable_db_endpoints
 }
 
 module "domain" {
