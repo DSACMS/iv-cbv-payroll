@@ -44,7 +44,7 @@ class Report::W2MonthlySummaryTableComponent < ViewComponent::Base
   end
 
   def show_footnote?
-    true
+    @show_footnote
   end
 
   def format_accrued_gross_earnings(month_summary)
