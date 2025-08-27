@@ -86,7 +86,7 @@ class Cbv::EmployerSearchesController < Cbv::BaseController
       has_payroll_account: @has_payroll_account,
       pinwheel_result_count: @employers.count { |item| item.provider_name == :pinwheel },
       argyle_result_count: @employers.count { |item| item.provider_name == :argyle },
-      query: search_params[:query]
+      query: search_params[:query].to_s.downcase
     })
   rescue => ex
     Rails.logger.error "Unable to track event (ApplicantSearchedForEmployer): #{ex}"

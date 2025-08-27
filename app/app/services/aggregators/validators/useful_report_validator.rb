@@ -54,13 +54,6 @@ module Aggregators::Validators
       report.errors.add(:paystubs, "No paystub has pay_date") unless report.paystubs.any? { |paystub| paystub.pay_date.present? }
       report.errors.add(:paystubs, "No paystub has gross_pay_amount") unless report.paystubs.any? { |paystub| paystub.gross_pay_amount.present? }
       report.errors.add(:paystubs, "No paystub has valid gross_pay_amount") unless report.paystubs.any? { |paystub| paystub.gross_pay_amount.to_f > 0 }
-
-      # Removing hours check for LA launch - FFS-2866 ticket to add back logic for SNAP only pilots
-      # if is_w2_worker
-      #   hours_total = 0
-      #   paystubs.each { |p| hours_total += p.hours.to_f if p.hours.present? }
-      #   report.errors.add(:paystubs, "Report has invalid hours total") unless hours_total > 0
-      # end
     end
   end
 end
