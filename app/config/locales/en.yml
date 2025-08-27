@@ -360,8 +360,6 @@ en:
         payment_hours: "%{amount} hours"
         payments_and_deductions_table_header: Payments and deductions
         subheader_html: We have gathered your payment records from the past %{report_data_range} from %{start_date} to %{end_date}.<br>Please review your information. If something is missing or inaccurate, add a comment for %{agency_acronym}. This will be included in your income report.
-        total_gross_description: This is the total gross income from your job before taxes, benefits and deductions were taken out of your paycheck.
-        total_gross_income: 'Total income from the past %{report_data_range}, before taxes: %{amount}'
         unknown: Unknown
         your_details: Your details
     submits:
