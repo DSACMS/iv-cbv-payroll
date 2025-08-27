@@ -36,6 +36,16 @@ class Cbv::ApplicantInformationsController < Cbv::BaseController
     redirect_to cbv_flow_applicant_information_path
   end
 
+  private
+
+  def applicant_params
+    permitted = @cbv_applicant.applicant_attributes.map { |attr|
+      attr == :date_of_birth ? { date_of_birth: [ :day, :month, :year ] } : attr
+    }
+
+    params.fetch("cbv_applicant_#{@cbv_flow.client_agency_id}", {}).permit(cbv_applicant: permitted)
+  end
+
   def redirect_when_info_present
     return if params[:force_show] == "true"
 
@@ -44,12 +54,6 @@ class Cbv::ApplicantInformationsController < Cbv::BaseController
 
   def redirect_when_in_invitation_flow
     redirect_to next_path if @cbv_flow.cbv_flow_invitation.present?
-  end
-
-  def applicant_params
-    params.fetch("cbv_applicant_#{@cbv_flow.client_agency_id}", {}).permit(
-      cbv_applicant: @cbv_applicant.applicant_attributes
-    )
   end
 
   def set_cbv_applicant

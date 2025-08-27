@@ -296,6 +296,64 @@ RSpec.describe Cbv::SubmitsController do
         end
       end
 
+      context "for Tim (a gig worker with two gigs)" do
+        let(:cbv_applicant) { create(:cbv_applicant, created_at: current_time, case_number: "ABC1234") }
+        let(:account_id) { "019571bc-2f60-3955-d972-dbadfe0913a8" }
+        let(:account_id_2) { "2" }
+        let(:supported_jobs) { %w[accounts identity paystubs employment] }
+        let(:errored_jobs) { [] }
+        let(:cbv_flow) do
+          create(:cbv_flow,
+                 :completed,
+                 :invited,
+                 :with_argyle_account,
+                 with_errored_jobs: errored_jobs,
+                 created_at: current_time,
+                 supported_jobs: supported_jobs,
+                 cbv_applicant: cbv_applicant
+          )
+        end
+        let!(:payroll_account_1) do
+          create(
+            :payroll_account,
+            :argyle_fully_synced,
+            with_errored_jobs: errored_jobs,
+            cbv_flow: cbv_flow,
+            pinwheel_account_id: account_id,
+            supported_jobs: supported_jobs,
+            )
+        end
+        let!(:payroll_account_2) do
+          create(
+            :payroll_account,
+            :argyle_fully_synced,
+            with_errored_jobs: errored_jobs,
+            cbv_flow: cbv_flow,
+            pinwheel_account_id: account_id_2,
+            supported_jobs: supported_jobs,
+            )
+        end
+
+        before do
+          session[:cbv_flow_id] = cbv_flow.id
+          argyle_stub_request_identities_response("tim")
+          argyle_stub_request_paystubs_response("tim")
+          argyle_stub_request_gigs_response("tim")
+          argyle_stub_request_account_response("tim")
+        end
+
+        render_views
+
+        it "renders both employers but only renders the footnote once" do
+          get :show, format: :pdf
+          pdf_text = extract_pdf_text(response)
+          expect(response).to be_successful
+          expect(pdf_text).to include("Employer 1")
+          expect(pdf_text).to include("Employer 2")
+          expect(pdf_text.scan("What does this information mean?").size).to eq(1)
+        end
+      end
+
       context "for Sarah (a w2 worker)" do
         let(:cbv_applicant) { create(:cbv_applicant, created_at: current_time, case_number: "ABC1234") }
         let(:account_id) { "01956d5f-cb8d-af2f-9232-38bce8531f58" }
@@ -336,7 +394,7 @@ RSpec.describe Cbv::SubmitsController do
           pdf_text = extract_pdf_text(response)
 
           expect(response).to be_successful
-          expect(pdf_text).to include("Pay Date")
+          expect(pdf_text).to include("Pay date")
           expect(pdf_text).to include("Gross pay YTD")
           expect(pdf_text).to include("Pay period")
           expect(pdf_text).to include("Payment after taxes and deductions (net)")
@@ -345,6 +403,62 @@ RSpec.describe Cbv::SubmitsController do
 
           expect(pdf_text).to include("$23.16 Hourly")
           expect(pdf_text).not_to include("Nil")
+        end
+      end
+
+      context "for Kim (a w2 worker with two w2s)" do
+        let(:cbv_applicant) { create(:cbv_applicant, created_at: current_time, case_number: "ABC1234") }
+        let(:account_id) { "01956d5f-cb8d-af2f-9232-38bce8531f58" }
+        let(:account_id_2) { "2" }
+        let(:supported_jobs) { %w[accounts identity paystubs employment income] }
+        let(:errored_jobs) { [] }
+        let(:cbv_flow) do
+          create(:cbv_flow,
+                 :completed,
+                 :invited,
+                 created_at: current_time,
+                 cbv_applicant: cbv_applicant
+          )
+        end
+        let!(:payroll_account) do
+          create(
+            :payroll_account,
+            :argyle_fully_synced,
+            with_errored_jobs: errored_jobs,
+            cbv_flow: cbv_flow,
+            pinwheel_account_id: account_id,
+            supported_jobs: supported_jobs,
+            )
+        end
+        let!(:payroll_account_2) do
+          create(
+            :payroll_account,
+            :argyle_fully_synced,
+            with_errored_jobs: errored_jobs,
+            cbv_flow: cbv_flow,
+            pinwheel_account_id: account_id_2,
+            supported_jobs: supported_jobs,
+            )
+        end
+
+        before do
+          session[:cbv_flow_id] = cbv_flow.id
+          argyle_stub_request_identities_response("kim")
+          argyle_stub_request_paystubs_response("kim")
+          argyle_stub_request_gigs_response("kim")
+          argyle_stub_request_account_response("kim")
+          Timecop.freeze(Time.local(2025, 04, 1, 0, 0))
+        end
+
+        render_views
+
+        it "renders both employers but only renders the footnote once" do
+          get :show, format: :pdf
+          pdf_text = extract_pdf_text(response)
+          expect(response).to be_successful
+          expect(pdf_text).to include("Employer 1")
+          expect(pdf_text).to include("Employer 2")
+          expect(pdf_text.scan("What does this information mean?").size).to eq(1)
         end
       end
     end
