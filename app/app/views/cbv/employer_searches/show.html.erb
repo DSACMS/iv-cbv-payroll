@@ -1,9 +1,16 @@
 <% content_for :title, t(".header") %>
-<h1>
-  <%= t(".header") %>
-</h1>
 
 <div data-controller="cbv-employer-search" data-cbv-employer-search-cbv-flow-id-value="<%= @cbv_flow.id %>">
+  <div data-cbv-employer-search-target="helpAlert" class="display-none margin-bottom-4">
+    <%= render Uswds::Alert.new(type: :warning, heading: t(".alert.heading")) do %>
+      <%= render("help/help_link", text: t(".alert.help_options"), source: "banner") %>
+    <% end %>
+  </div>
+
+  <h1 class="margin-top-0">
+    <%= t(".header") %>
+  </h1>
+
   <p><%= t(".search_label") %></p>
 
   <%= form_with url: cbv_flow_employer_search_path, method: :get, class: "usa-search usa-search--big margin-y-4", html: { role: "search" }, data: { turbo_frame: "employers", turbo_action: "advance" } do |f| %>
