@@ -43,13 +43,17 @@ class CbvFlow < ApplicationRecord
     raise ArgumentError.new("Client Agency #{client_agency_id} not found") unless client_agency
 
     url_params = {
-      client_agency_id: client_agency_id,
       host: client_agency.agency_domain,
       protocol: (client_agency.agency_domain.nil? || client_agency.agency_domain == "localhost") ? "http" : "https",
       locale: I18n.locale
     }
     url_params[:origin] = origin if origin.present?
 
-    Rails.application.routes.url_helpers.cbv_flow_new_url(url_params.compact)
+    if client_agency.agency_domain.present?
+      Rails.application.routes.url_helpers.root_url(url_params.compact)
+    else
+      url_params[:client_agency_id] = client_agency_id
+      Rails.application.routes.url_helpers.cbv_flow_new_url(url_params.compact)
+    end
   end
 end
