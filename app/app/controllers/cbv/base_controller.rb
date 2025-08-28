@@ -1,6 +1,12 @@
 class Cbv::BaseController < ApplicationController
-  before_action :set_cbv_origin, :set_cbv_flow, :ensure_cbv_flow_not_yet_complete, :prevent_back_after_complete, :capture_page_view
+  before_action :set_cbv_origin, :set_cbv_flow, :ensure_cbv_flow_not_yet_complete, :prevent_back_after_complete
   helper_method :agency_url, :next_path, :get_comment_by_account_id, :current_agency
+  # capture the page view in mixpanel if it properly responded and rendered, and is actually a page view (not turbo)
+  after_action :capture_page_view, if: -> {
+    response.successful? &&
+      request.format.html? &&
+      !(defined?(turbo_frame_request?) && turbo_frame_request?)
+  }
 
   private
 
@@ -129,6 +135,7 @@ class Cbv::BaseController < ApplicationController
   def capture_page_view
     begin
       event_logger.track("CbvPageView", request, {
+        time: Time.now.to_i,
         cbv_flow_id: @cbv_flow.id,
         invitation_id: @cbv_flow.cbv_flow_invitation_id,
         cbv_applicant_id: @cbv_flow.cbv_applicant_id,
@@ -143,7 +150,7 @@ class Cbv::BaseController < ApplicationController
 
   def track_timeout_event
     event_logger.track("ApplicantTimedOut", request, {
-      timestamp: Time.now.to_i,
+      time: Time.now.to_i,
       client_agency_id: current_agency&.id
     })
   rescue => ex
@@ -155,7 +162,7 @@ class Cbv::BaseController < ApplicationController
       invitation_id: invitation.id,
       cbv_applicant_id: invitation.cbv_applicant_id,
       client_agency_id: current_agency&.id,
-      timestamp: Time.now.to_i
+      time: Time.now.to_i
     })
   rescue => ex
     Rails.logger.error "Unable to track event (ApplicantAccessedExpiredLinkPage): #{ex}"
@@ -163,7 +170,7 @@ class Cbv::BaseController < ApplicationController
 
   def track_invitation_clicked_event(invitation, cbv_flow)
     event_logger.track("ApplicantClickedCBVInvitationLink", request, {
-      timestamp: Time.now.to_i,
+      time: Time.now.to_i,
       invitation_id: invitation.id,
       cbv_flow_id: cbv_flow.id,
       cbv_applicant_id: cbv_flow.cbv_applicant_id,

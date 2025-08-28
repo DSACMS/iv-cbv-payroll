@@ -39,7 +39,7 @@ class Cbv::EmployerSearchesController < Cbv::BaseController
 
   def track_clicked_popular_payroll_providers_event
     event_logger.track("ApplicantClickedPopularPayrollProviders", request, {
-      timestamp: Time.now.to_i,
+      time: Time.now.to_i,
       cbv_applicant_id: @cbv_flow.cbv_applicant_id,
       cbv_flow_id: @cbv_flow.id,
       client_agency_id: current_agency&.id,
@@ -49,7 +49,7 @@ class Cbv::EmployerSearchesController < Cbv::BaseController
 
   def track_clicked_popular_app_employers_event
     event_logger.track("ApplicantClickedPopularAppEmployers", request, {
-      timestamp: Time.now.to_i,
+      time: Time.now.to_i,
       cbv_applicant_id: @cbv_flow.cbv_applicant_id,
       cbv_flow_id: @cbv_flow.id,
       client_agency_id: current_agency&.id,
@@ -63,7 +63,7 @@ class Cbv::EmployerSearchesController < Cbv::BaseController
     return if @query.present?
 
     event_logger.track("ApplicantAccessedSearchPage", request, {
-      timestamp: Time.now.to_i,
+      time: Time.now.to_i,
       cbv_applicant_id: @cbv_flow.cbv_applicant_id,
       cbv_flow_id: @cbv_flow.id,
       client_agency_id: current_agency&.id,
@@ -77,7 +77,7 @@ class Cbv::EmployerSearchesController < Cbv::BaseController
     return if @query.blank?
 
     event_logger.track("ApplicantSearchedForEmployer", request, {
-      timestamp: Time.now.to_i,
+      time: Time.now.to_i,
       cbv_applicant_id: @cbv_flow.cbv_applicant_id,
       cbv_flow_id: @cbv_flow.id,
       client_agency_id: current_agency&.id,
@@ -86,7 +86,7 @@ class Cbv::EmployerSearchesController < Cbv::BaseController
       has_payroll_account: @has_payroll_account,
       pinwheel_result_count: @employers.count { |item| item.provider_name == :pinwheel },
       argyle_result_count: @employers.count { |item| item.provider_name == :argyle },
-      query: search_params[:query]
+      query: search_params[:query].to_s.downcase
     })
   rescue => ex
     Rails.logger.error "Unable to track event (ApplicantSearchedForEmployer): #{ex}"

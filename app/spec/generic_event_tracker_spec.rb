@@ -9,9 +9,10 @@ RSpec.describe GenericEventTracker do
         example.run
       end
     end
+
     it 'populates default attributes' do
       expect(EventTrackingJob).to receive(:perform_later).with("myEvent", anything, hash_including(
-        timestamp: an_instance_of(Integer),
+        time: an_instance_of(Integer),
         cbv_flow_id: "cbv_flow_id",
         locale: an_instance_of(String),
         user_agent: "user_agent",

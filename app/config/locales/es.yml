@@ -262,8 +262,8 @@ es:
         additional_information_title: "¿Existe algún otro detalle que le gustaría que su asistente de caso conozca en relación con sus ingresos?"
         application_or_recertification_date: SNAP application or recertification interview date
         consent_checkbox_label_html:
-          az_des: Marque esta casilla para confirmar, bajo pena de perjurio, que la información proporcionada es, a su leal saber y entender, verdadera y está completa.<ul><li>Se compromete a informar %{agency_acronym} de cualquiera de lo siguiente:<ul><li>cualquier otro ingreso que no esté incluido en este informe;</li><li>o cualquier error que haya detectado en la información recopilada con esta herramienta.</li></ul></li><li>Comprende que usted es el único responsable de proporcionar información precisa y completa.</li><li>Por este motivo, cualquier información falsa o que no conste en el informe puede acarrear las siguientes consecuencias:<ul><li>un sobrepago, que debe reembolsar a %{agency_acronym};</li><li>o una inhabilitación para participar en el programa.</li></ul></li></ul>Al enviar este informe, autoriza su uso para fines de verificación de ingresos por parte de %{agency_acronym} y del personal autorizado de esta agencia.
-          default: 'Marque esta casilla para confirmar lo siguiente: <ul><li>La información proporcionada es, a su leal saber y entender, verdadera y está completa.</li><li>Se compromete a informar a %{agency_full_name} de cualquier otro ingreso que no esté incluido en este informe o cualquier discrepancia que haya detectado en la información recopilada con esta herramienta.</li><li>Comprende que usted es el único responsable de proporcionar información precisa y completa. Por este motivo, cualquier información falsa o que no conste en el informe puede acarrear consecuencias legales.</li></ul> Al enviar este informe, autoriza su uso para fines de verificación de ingresos por parte del personal autorizado de %{agency_acronym}.'
+          az_des: Marque esta casilla para confirmar, bajo pena de perjurio, que la información proporcionada es, a su leal saber y entender, verdadera y está completa.<ul class="margin-y-2"><li>Se compromete a informar %{agency_acronym} de cualquiera de lo siguiente:<ul><li>cualquier otro ingreso que no esté incluido en este informe;</li><li>o cualquier error que haya detectado en la información recopilada con esta herramienta.</li></ul></li><li>Comprende que usted es el único responsable de proporcionar información precisa y completa.</li><li>Por este motivo, cualquier información falsa o que no conste en el informe puede acarrear las siguientes consecuencias:<ul><li>un sobrepago, que debe reembolsar a %{agency_acronym};</li><li>o una inhabilitación para participar en el programa.</li></ul></li></ul>Al enviar este informe, autoriza su uso para fines de verificación de ingresos por parte de %{agency_acronym} y del personal autorizado de esta agencia.
+          default: 'Marque esta casilla para confirmar lo siguiente: <ul class="margin-y-2"><li>La información proporcionada es, a su leal saber y entender, verdadera y está completa.</li><li>Se compromete a informar a %{agency_full_name} de cualquier otro ingreso que no esté incluido en este informe o cualquier discrepancia que haya detectado en la información recopilada con esta herramienta.</li><li>Comprende que usted es el único responsable de proporcionar información precisa y completa. Por este motivo, cualquier información falsa o que no conste en el informe puede acarrear consecuencias legales.</li></ul> Al enviar este informe, autoriza su uso para fines de verificación de ingresos por parte del personal autorizado de %{agency_acronym}.'
         legal_header: Acuerdo Legal
         none_found: No encontramos ningún pago de este empleador.
         none_found_confirmed: Hemos confirmado que no hay pagos recientes de este empleador. Esto sucede cuando el cliente no ha recibido ingresos de este trabajo.
@@ -291,8 +291,10 @@ es:
             additional_jobs_to_report_html: "¿El cliente tiene trabajos adicionales que informará por separado? <sup>1</sup>"
             client_information: Información del cliente
             confirmation_code: Código de confirmación
+            details: Datos
             employment_information: Información del empleo
-            pay_date: 'Fecha de pago: %{pay_date}'
+            pay_information: Información de pago
+            payments_and_deductions_header: Pagos y deducciones de %{employer_name}
             report_details: Detalles del reporte
         share_report_button: Comparta mi reporte con %{agency_acronym}
         table_caption_no_name: Employer %{number}
@@ -327,14 +329,13 @@ es:
         must_match:
           default: Esto debe coincidir con lo que se muestra en su solicitud de %{agency_acronym}.
           la_ldh: Esto debe coincidir con lo que se muestra en sus beneficios de Medicaid.
+        none_found: No encontramos ningún pago de este empleador en los últimos %{report_data_range}.
+        none_found_description: Esto usualmente ocurre cuando usted no ha recibido ingresos por este trabajo en los últimos %{report_data_range}. Si cree que esto es un error, agregue un comentario en la casilla de comentarios adicionales. De lo contrario, continúe en la página siguiente.
         other_jobs: Otros trabajos
-        payment: Pago de %{amount} antes de pago impuestos en %{date}
         phone_number: Teléfono del empleador
         question: Pregunta
         table_caption: 'Empleador %{number}: %{employer_name}'
         table_caption_no_name: Empleador %{number}
-        total_income_from: 'Ingresos totales antes de impuestos de %{employer_name}: %{amount}'
-        total_income_from_no_employer_name: 'Ingresos totales antes del pago de impuestos: %{amount}'
         your_answer: Tu respuesta
         your_information: Su información
     synchronization_failures:

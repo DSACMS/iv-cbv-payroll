@@ -12,7 +12,7 @@ locals {
           # Example certificate configuration for a certificate that is managed by the project
           "demo.divt.app" = {
             source                    = "issued"
-            subject_alternative_names = ["*.divt.app"]
+            subject_alternative_names = ["*.divt.app", "*.demo.divt.app"]
           }
 
           # Example certificate configuration for a certificate that is issued elsewhere and imported into the project
@@ -27,7 +27,24 @@ locals {
 
       single_nat_gateway = true
     }
+    prod = {
+      account_name               = "prod"
+      database_subnet_group_name = "prod"
 
+      domain_config = {
+        manage_dns  = false
+        hosted_zone = "verifymyincome.org"
+
+        certificate_configs = {
+          "verifymyincome.org" = {
+            source                    = "issued"
+            subject_alternative_names = ["*.verifymyincome.org"]
+          }
+        }
+      }
+
+      single_nat_gateway = true
+    }
     # staging = {
     #   account_name               = "staging"
     #   database_subnet_group_name = "staging"

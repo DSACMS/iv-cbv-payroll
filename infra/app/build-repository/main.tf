@@ -36,7 +36,10 @@ terraform {
 }
 
 provider "aws" {
-  region = local.build_repository_config.region
+  region = "us-east-1"
+  #access_key = "<access-key-here>"
+  #secret_key = "<secret-key-here"
+
   default_tags {
     tags = local.tags
   }

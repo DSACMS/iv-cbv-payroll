@@ -1,5 +1,6 @@
 class Cbv::GenericLinksController < Cbv::BaseController
-  skip_before_action :set_cbv_flow, :capture_page_view
+  skip_before_action :set_cbv_flow
+  skip_after_action :capture_page_view
   before_action :ensure_valid_client_agency_id
   before_action :check_if_pilot_ended_for_agency
 
@@ -61,7 +62,12 @@ class Cbv::GenericLinksController < Cbv::BaseController
   end
 
   def track_generic_link_clicked_event(cbv_flow, is_new_session)
+    # Skip tracking this event for a specific user agent, since we tend
+    # to get a ton of traffic from it during LA SMS sends
+    return if request.user_agent.match?(/go-http-client/i)
+
     event_logger.track("ApplicantClickedGenericLink", request, {
+      time: Time.now.to_i,
       cbv_applicant_id: cbv_flow.cbv_applicant_id,
       cbv_flow_id: cbv_flow.id,
       client_agency_id: cbv_flow.client_agency_id,

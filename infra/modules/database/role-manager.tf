@@ -51,7 +51,6 @@ resource "aws_lambda_function" "role_manager" {
   }
   timeout = 30
   # checkov:skip=CKV_AWS_272:TODO(https://github.com/navapbc/template-infra/issues/283)
-
   # checkov:skip=CKV_AWS_116:Dead letter queue (DLQ) configuration is only relevant for asynchronous invocations
 }
 
