@@ -32,18 +32,15 @@
           <% end %>
 
           <% if flash[:slim_alert] %>
-            <div class="usa-alert usa-alert--<%= flash[:slim_alert]["type"] %> usa-alert--slim margin-bottom-4">
-              <div class="usa-alert__body">
-                <div class="usa-alert__text">
-                  <% if flash[:slim_alert]["message_html"] %>
-                    <%= flash[:slim_alert]["message_html"].html_safe %>
-                  <% elsif flash[:slim_alert]["message"] %>
-                    <%= flash[:slim_alert]["message"] %>
-                  <% end %>
-                </div>
-              </div>
-            </div>
+            <%= render Uswds::Alert.new(type: flash[:slim_alert]["type"], slim: true, class: "margin-bottom-4") do %>
+              <% if flash[:slim_alert]["message_html"] %>
+                <%= flash[:slim_alert]["message_html"].html_safe %>
+              <% elsif flash[:slim_alert]["message"] %>
+                <%= flash[:slim_alert]["message"] %>
+              <% end %>
+            <% end %>
           <% end %>
+
           <%= yield %>
         </section>
       </main>
