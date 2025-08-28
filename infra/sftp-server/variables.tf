@@ -5,7 +5,7 @@ variable "aws_region" {
 
 variable "az_list" {
   description = "AWS availability zones"
-  default     = ["us-east-1a", "us-east-1b"]
+  default     = ["us-east-1a"]
 }
 
 variable "storage_bucket_name_prefix" {
