@@ -2,7 +2,7 @@
 
 require "rails_helper"
 
-RSpec.describe AlertComponent, type: :component do
+RSpec.describe Uswds::Alert, type: :component do
   let(:result) { render_inline(described_class.new) { 'Alert message' } }
 
   it 'outputs an alert with default info styling' do

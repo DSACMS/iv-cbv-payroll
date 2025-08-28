@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class AlertComponent < ViewComponent::Base
+class Uswds::Alert < ViewComponent::Base
   def initialize(type: :info, heading: nil, **options)
     @type = type
     @heading = heading
