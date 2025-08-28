@@ -73,7 +73,7 @@
   agency_name: CBV Test Agency
   agency_contact_website: https://www.example.com/contact
   agency_domain: <%= ENV["SANDBOX_DOMAIN_NAME"] %>
-  caseworker_feedback_form: https://docs.google.com/forms/d/e/1FAIpQLSfrUiz0oWE5jbXjPfl-idQQGPgxKplqFtcKq08UOhTaEa2k6A/viewform
+  caseworker_feedback_form: https://forms.gle/Qb7D12kHZymur5jKA
   pinwheel:
     environment: <%= ENV["SANDBOX_PINWHEEL_ENVIRONMENT"] %>
   argyle:
