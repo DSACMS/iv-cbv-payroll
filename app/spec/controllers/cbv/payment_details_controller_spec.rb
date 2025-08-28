@@ -311,7 +311,7 @@ RSpec.describe Cbv::PaymentDetailsController do
         end
 
         context "includes monthly gig summary table" do
-          it { is_expected.to include("Monthly Summary") }
+          it { is_expected.to include("Monthly summary") }
           it { is_expected.to include("Accrued gross earnings") }
           it { is_expected.to include("Total hours worked") }
           it { is_expected.not_to include("Partial month") }
@@ -375,7 +375,7 @@ RSpec.describe Cbv::PaymentDetailsController do
         end
 
         context "includes monthly w2 summary table" do
-          it { is_expected.to include("Monthly Summary") }
+          it { is_expected.to include("Monthly summary") }
           it { is_expected.to include("Gross income") }
           it { is_expected.to include("Total hours worked") }
         end

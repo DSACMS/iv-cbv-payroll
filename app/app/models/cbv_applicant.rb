@@ -95,7 +95,6 @@ class CbvApplicant < ApplicationRecord
 
   def set_applicant_attributes
     @applicant_attributes = agency_config&.applicant_attributes&.compact&.keys&.map(&:to_sym) || []
-    @applicant_attributes << { date_of_birth: [ :day, :month, :year ] } if @applicant_attributes.include?(:date_of_birth)
 
     @required_applicant_attributes = get_required_applicant_attributes
   end
