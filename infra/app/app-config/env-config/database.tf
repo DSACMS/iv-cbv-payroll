@@ -10,6 +10,8 @@ locals {
 
     serverless_min_capacity = var.database_serverless_min_capacity
     serverless_max_capacity = var.database_serverless_max_capacity
+    backup_retention_period = var.backup_retention_period
+    enable_aws_backup       = var.enable_aws_backup
 
     # Enable extensions that require the rds_superuser role to be created here
     # See docs/infra/set-up-database.md for more information

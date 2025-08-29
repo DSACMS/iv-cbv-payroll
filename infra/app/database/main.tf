@@ -95,4 +95,6 @@ module "database" {
 
   serverless_min_capacity = local.database_config.serverless_min_capacity
   serverless_max_capacity = local.database_config.serverless_max_capacity
+  backup_retention_period = local.database_config.backup_retention_period
+  enable_aws_backup       = local.database_config.enable_aws_backup
 }

@@ -35,6 +35,7 @@ resource "aws_rds_cluster" "db" {
   kms_key_id                  = aws_kms_key.db.arn
   allow_major_version_upgrade = false
   enable_http_endpoint        = true
+  backup_retention_period     = var.backup_retention_period
 
   db_cluster_parameter_group_name = aws_rds_cluster_parameter_group.rds_query_logging.name
 
