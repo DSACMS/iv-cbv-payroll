@@ -13,6 +13,8 @@ module "prod_config" {
 
   database_serverless_min_capacity = 1.0
   database_serverless_max_capacity = 5.0
+  backup_retention_period          = 7
+  enable_aws_backup                = true
 
   # These numbers are a starting point based on this article
   # Update the desired instance size and counts based on the project's specific needs
