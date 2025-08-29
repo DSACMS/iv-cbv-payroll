@@ -1,36 +1,15 @@
 module AutoTitleTestHelper
-  H1_REGEX = /<h1>(.*?)<\/h1>/im
-  TITLE_REGEX = /<title>(.*?)<\/title>/im
-  INTERPOLATION_REGEX = /%\{.*?}/
-
   def assert_title_contains_h1(response_body)
-    # There are instances where the top-level h1 can vary from the title. For example- if the page's leading header contains html markup
-    h1_content = ActionController::Base.helpers.strip_tags(decode_html_entities(extract_content(response_body, H1_REGEX)))
-    expect(h1_content).to be_present, "H1 is missing"
+    parsed_body = Nokogiri::HTML(response_body)
+    h1_elements = parsed_body.xpath("//body//h1")
+    expect(h1_elements.length).to eq(1)
 
-    title_content = decode_html_entities(extract_content(response_body, TITLE_REGEX))
-    expect(title_content).to be_present, "Title is missing"
+    title_elements = parsed_body.xpath("//head//title")
+    expect(title_elements.length).to eq(1)
 
-    cleaned_title = remove_interpolation_placeholders(title_content)
-    main_title = cleaned_title.split('|').first.strip
-
-    expect(h1_content).to include(main_title), "H1 and title content differ: `#{h1_content}` vs `#{main_title}`"
-  end
-
-  private
-
-  def extract_content(html, regex)
-    match = html.match(regex)
-    match ? match[1].strip : nil
-  end
-
-  def remove_interpolation_placeholders(text)
-    text.gsub(INTERPOLATION_REGEX, '').squeeze(' ').strip
-  end
-
-  def decode_html_entities(text)
-    return unless text
-    CGI.unescapeHTML(text)
+    title_contents = title_elements.first.text.split('|').first.strip
+    h1_contents = h1_elements.first.text.strip
+    expect(h1_contents).to include(title_contents), "H1 and title content differ: `#{h1_contents}` vs `#{title_contents}`"
   end
 end
 
