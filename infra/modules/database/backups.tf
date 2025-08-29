@@ -12,7 +12,7 @@ resource "aws_backup_plan" "backup_plan" {
     schedule          = "cron(0 7 * * ? *)" # Run daily at 7am UTC (2am EST)
 
     lifecycle {
-      delete_after = 21
+      delete_after = 14
     }
   }
 }
