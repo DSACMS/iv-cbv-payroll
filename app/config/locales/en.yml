@@ -247,6 +247,9 @@ en:
         error_updating_applicant: An error occurred while updating the applicant information. Please try again.
     employer_searches:
       show:
+        alert:
+          heading: Need help connecting to your payroll provider?
+          help_options: Get help here.
         app_based_providers: App-based employers
         can_not_find_employer: I can’t find my employer or payroll provider
         employer_not_listed: Employer not listed?
@@ -513,9 +516,6 @@ en:
       month_year: "%B %Y"
       short: "%b %-d"
   help:
-    alert:
-      heading: Need help connecting to your payroll provider?
-      help_options: Get help here.
     index:
       company_id: I don't know my company ID
       credentials: I don't feel comfortable entering my login credentials

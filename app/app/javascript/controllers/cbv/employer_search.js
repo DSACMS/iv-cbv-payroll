@@ -3,7 +3,7 @@ import { createModalAdapter } from "@js/utilities/createModalAdapter"
 import { loadProviderResources } from "@js/utilities/loadProviderResources.ts"
 
 export default class extends Controller {
-  static targets = ["form", "userAccountId", "employerButton"]
+  static targets = ["form", "userAccountId", "employerButton", "helpAlert"]
 
   static values = {
     cbvFlowId: Number,
@@ -64,8 +64,6 @@ export default class extends Controller {
   }
 
   showHelpBanner() {
-    const url = new URL(window.location.href)
-    url.searchParams.set("help", "true")
-    window.location.href = url.toString()
+    this.helpAlertTargets.forEach((el) => el.classList.remove("display-none"))
   }
 }
