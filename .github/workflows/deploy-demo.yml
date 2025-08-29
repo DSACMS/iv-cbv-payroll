@@ -1,7 +1,7 @@
-name: Deploy App
+name: Deploy to Demo Environment
 # Need to set a default value for when the workflow is triggered from a git push
 # which bypasses the default configuration for inputs
-run-name: Deploy ${{ github.ref_name }} to App ${{ inputs.environment || 'demo' }}
+run-name: Deploy ${{ github.ref_name }} to Demo Environment
 
 on:
   push:
@@ -11,16 +11,6 @@ on:
       - "app/**"
       - "bin/**"
       - "infra/**"
-  workflow_dispatch:
-    inputs:
-      environment:
-        description: "target environment"
-        required: true
-        default: "demo"
-        type: choice
-        options:
-          - demo
-          - prod
 permissions:
     id-token: write
 
@@ -33,5 +23,5 @@ jobs:
     uses: ./.github/workflows/deploy.yml
     with:
       app_name: "app"
-      environment: ${{ inputs.environment || 'demo' }}
+      environment: "demo"
     secrets: inherit
