@@ -129,15 +129,14 @@ variable "database_serverless_max_capacity" {
   type        = number
   default     = 1.0
 }
-
 variable "backup_retention_period" {
-  description = "The number of days to retain backups for. Set to 0 to disable automated backups."
+  description = "Number of days to retain automated backups (RDS minimum is 1)."
   type        = number
-  default     = 0
+  default     = 1
 }
 
 variable "enable_aws_backup" {
-  description = "Whether to enable AWS Backup for the database. Set to false for demo/dev environments to reduce costs."
+  description = "Whether to enable AWS Backup for the database."
   type        = bool
   default     = false
 }
