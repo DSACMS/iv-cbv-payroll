@@ -1,6 +1,4 @@
 class Cbv::EmployerSearchesController < Cbv::BaseController
-  # Disable CSP since Pinwheel relies on inline styles
-  content_security_policy false, only: :show
   before_action :check_webhooks_initialization_in_development
   after_action :track_accessed_search_event, only: :show
   after_action :track_applicant_searched_event, only: :show
