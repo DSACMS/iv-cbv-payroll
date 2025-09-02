@@ -332,6 +332,7 @@ en:
       show:
         additional_information_header: Additional comments (Optional)
         additional_information_label: Share any comments or additional information about the income details above that you’d like %{agency_acronym} to know. For example, you can share if the information is inaccurate or if you’re no longer working at that job.
+        additional_information_placeholder: Enter up to 1000 characters
         continue: Continue
         deductions: 'Deduction: %{category} (%{tax})'
         employment_end_date: Employment end date
