@@ -140,12 +140,12 @@ class ProviderSearchService
   ]
   TOP_EMPLOYERS = [
     {
-      name: "Amazon",
+      name: "Amazon Flex",
       response_type: "employer",
-      logo_url: "https://cdn.getpinwheel.com/assets/employers/logos/Amazon.svg",
+      logo_url: "https://cdn.getpinwheel.com/assets/employers/logos/Amazon%20Flex.png",
       provider_ids: {
-        pinwheel: "d66e65b2-536d-4b2d-b73c-f6addd66c0f4",
-        argyle: "item_000248659"
+        pinwheel: "eec356b5-9338-4c7c-ac95-b5fdb2213633",
+        argyle: "item_000002104"
       }
     },
     {
