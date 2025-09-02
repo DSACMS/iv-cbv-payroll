@@ -39,7 +39,7 @@
   <%= form_with(model: @cbv_flow, url: cbv_flow_payment_details_path, method: :patch, class: "usa-form usa-form--large") do |form| %>
     <%= hidden_field_tag "user[account_id]", params[:user][:account_id] %>
     <%= form.label :additional_information, t(".additional_information_label", agency_acronym: agency_translation("shared.agency_acronym")), class: "usa-label" %>
-    <%= form.text_area :additional_information, class: "usa-textarea", rows: 5, value: @account_comment %>
+    <%= form.text_area :additional_information, class: "usa-textarea", rows: 5, value: @account_comment, maxlength: 1000, placeholder: t(".additional_information_placeholder") %>
     <%= form.submit t(".continue"), class: "usa-button usa-button--primary" %>
   <% end %>
 </div>
