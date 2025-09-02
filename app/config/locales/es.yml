@@ -225,6 +225,7 @@ es:
       show:
         additional_information_header: Comentarios adicionales (Opcional)
         additional_information_label: Comparta cualquier comentario o información adicional sobre los detalles de pago anteriores que desea que %{agency_acronym} conozca. Por ejemplo, puede compartir si la información es inexacta o si ya no trabaja en ese empleo.
+        additional_information_placeholder: Introduzca hasta 1000 caracteres
         continue: Continuar
         deductions: 'Deducción: %{category} (%{tax})'
         employment_end_date: Fecha de finalización de la relación laboral
