@@ -13,26 +13,35 @@ repos:
   - id: rubocop
     name: rubocop
     entry: bin/run-linter --cd app -- bundle exec rubocop --autocorrect --force-exclusion
-    language: ruby
+    language: system
     files: '^app/.*\.rb$'
+
+  # this rubocop hook works on windows/wsl, and is being left here as of 8/27/2025 to figure it out at some point
+  #- id: rubocop
+  #  name: rubocop
+  #  language: system
+  #  entry: bash -lc 'BUNDLE_GEMFILE=app/Gemfile cd app && bundle exec rubocop -a --force-exclusion'
+  #  types: [ ruby ]
+  #  files: '^app/.*\.rb$'
+  #  pass_filenames: false
 
   - id: erblint
     name: erblint
     entry: bin/run-linter --cd app -- bundle exec erb_lint --autocorrect
-    language: ruby
+    language: system
     files: '^app/.*\.erb$'
 
   - id: i18n-unused
     name: i18n-unused
     entry: bin/run-linter --cd app -- bundle exec i18n-tasks unused
-    language: ruby
+    language: system
     files: '^app/config/locales/.*\.yml$'
     pass_filenames: false
 
   - id: i18n-normalize
     name: i18n-normalize
     entry: bin/run-linter --cd app -- bundle exec i18n-tasks normalize
-    language: ruby
+    language: system
     files: '^app/config/locales/.*\.yml$'
     pass_filenames: false
 

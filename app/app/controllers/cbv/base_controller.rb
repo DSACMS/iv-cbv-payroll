@@ -1,6 +1,12 @@
 class Cbv::BaseController < ApplicationController
-  before_action :set_cbv_origin, :set_cbv_flow, :ensure_cbv_flow_not_yet_complete, :prevent_back_after_complete, :capture_page_view
+  before_action :set_cbv_origin, :set_cbv_flow, :ensure_cbv_flow_not_yet_complete, :prevent_back_after_complete
   helper_method :agency_url, :next_path, :get_comment_by_account_id, :current_agency
+  # capture the page view in mixpanel if it properly responded and rendered, and is actually a page view (not turbo)
+  after_action :capture_page_view, if: -> {
+    response.successful? &&
+      request.format.html? &&
+      !(defined?(turbo_frame_request?) && turbo_frame_request?)
+  }
 
   private
 

@@ -1,5 +1,6 @@
 class Cbv::GenericLinksController < Cbv::BaseController
-  skip_before_action :set_cbv_flow, :capture_page_view
+  skip_before_action :set_cbv_flow
+  skip_after_action :capture_page_view
   before_action :ensure_valid_client_agency_id
   before_action :check_if_pilot_ended_for_agency
 

@@ -353,11 +353,14 @@ To debug locally an image built for deployment, see [the Running Built Images Lo
 
 ## Demo
 
-This repo's `main` branch automatically deploys to our demo environment via [a GitHub action](/.github/workflows/cd-app.yml).
+This repo's `release-demo` branch automatically deploys to our demo environment via [a GitHub action](/.github/workflows/deploy-demo.yml).
 
 ## Production
 
-To deploy to production, go to the repo's "Actions" tab on Github, [click "Deploy App"](https://github.com/DSACMS/iv-cbv-payroll/actions/workflows/cd-app.yml), and "Run Workflow".
+This repo's `release-prod` branch automatically deploys to our prod environment via [a GitHub action](/.github/workflows/deploy-prod.yml).
+
+## Manual Deployment
+To manually deploy, go to the repo's "Actions" tab on Github, [click "Deploy App"](https://github.com/DSACMS/iv-cbv-payroll/actions/workflows/cd-app.yml), and "Run Workflow", selecting the correct deployment workflow for the environment you would like to deploy to.
 
 # Credentials and other Secrets
 

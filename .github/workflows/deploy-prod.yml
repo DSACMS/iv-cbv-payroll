@@ -1,0 +1,27 @@
+name: Deploy to Prod Environment
+# Need to set a default value for when the workflow is triggered from a git push
+# which bypasses the default configuration for inputs
+run-name: Deploy ${{ github.ref_name }} to Production Environment
+
+on:
+  push:
+    branches:
+      - "release-prod"
+    paths:
+      - "app/**"
+      - "bin/**"
+      - "infra/**"
+permissions:
+    id-token: write
+
+jobs:
+  deploy:
+    permissions:
+      contents: write
+      id-token: write
+    name: Deploy
+    uses: ./.github/workflows/deploy.yml
+    with:
+      app_name: "app"
+      environment: "prod"
+    secrets: inherit

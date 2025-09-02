@@ -128,6 +128,22 @@ RSpec.describe Cbv::EmployerSearchesController do
           expect(response.body).to include("Lumon")
         end
       end
+
+      context "when the user enters a mixed-case query" do
+        it "sends the query content to mixpanel as lowercase" do
+          allow(EventTrackingJob).to receive(:perform_later).with("CbvPageView", anything, anything)
+
+          expect(EventTrackingJob).to receive(:perform_later).with(
+            "ApplicantSearchedForEmployer",
+            anything,
+            hash_including(
+              query: "results"
+            )
+          )
+
+          get :show, params: { query: "ReSuLtS" }
+        end
+      end
     end
   end
 end

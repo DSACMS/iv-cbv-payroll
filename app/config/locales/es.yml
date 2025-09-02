@@ -225,6 +225,7 @@ es:
       show:
         additional_information_header: Comentarios adicionales (Opcional)
         additional_information_label: Comparta cualquier comentario o información adicional sobre los detalles de pago anteriores que desea que %{agency_acronym} conozca. Por ejemplo, puede compartir si la información es inexacta o si ya no trabaja en ese empleo.
+        additional_information_placeholder: Introduzca hasta 1000 caracteres
         continue: Continuar
         deductions: 'Deducción: %{category} (%{tax})'
         employment_end_date: Fecha de finalización de la relación laboral
@@ -291,8 +292,10 @@ es:
             additional_jobs_to_report_html: "¿El cliente tiene trabajos adicionales que informará por separado? <sup>1</sup>"
             client_information: Información del cliente
             confirmation_code: Código de confirmación
+            details: Datos
             employment_information: Información del empleo
-            pay_date: 'Fecha de pago: %{pay_date}'
+            pay_information: Información de pago
+            payments_and_deductions_header: Pagos y deducciones de %{employer_name}
             report_details: Detalles del reporte
         share_report_button: Comparta mi reporte con %{agency_acronym}
         table_caption_no_name: Employer %{number}
@@ -327,14 +330,13 @@ es:
         must_match:
           default: Esto debe coincidir con lo que se muestra en su solicitud de %{agency_acronym}.
           la_ldh: Esto debe coincidir con lo que se muestra en sus beneficios de Medicaid.
+        none_found: No encontramos ningún pago de este empleador en los últimos %{report_data_range}.
+        none_found_description: Esto usualmente ocurre cuando usted no ha recibido ingresos por este trabajo en los últimos %{report_data_range}. Si cree que esto es un error, agregue un comentario en la casilla de comentarios adicionales. De lo contrario, continúe en la página siguiente.
         other_jobs: Otros trabajos
-        payment: Pago de %{amount} antes de pago impuestos en %{date}
         phone_number: Teléfono del empleador
         question: Pregunta
         table_caption: 'Empleador %{number}: %{employer_name}'
         table_caption_no_name: Empleador %{number}
-        total_income_from: 'Ingresos totales antes de impuestos de %{employer_name}: %{amount}'
-        total_income_from_no_employer_name: 'Ingresos totales antes del pago de impuestos: %{amount}'
         your_answer: Tu respuesta
         your_information: Su información
     synchronization_failures:
