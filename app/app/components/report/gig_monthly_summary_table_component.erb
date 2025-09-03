@@ -92,7 +92,7 @@
     <% end %>
   </div>
 <% else %>
-  <%= render AlertComponent.new(type: :info, heading: format_no_payments_found, class: "margin-top-5") do %>
+  <%= render Uswds::Alert.new(type: :info, heading: format_no_payments_found, class: "margin-top-5") do %>
     <%= I18n.t("cbv.payment_details.show.none_found_description", report_data_range: @report_data_range) %>
   <% end %>
 <% end %>
