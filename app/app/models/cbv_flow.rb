@@ -38,15 +38,22 @@ class CbvFlow < ApplicationRecord
     payroll_accounts.any?(&:sync_succeeded?)
   end
 
-  def to_generic_url
+  def to_generic_url(origin: nil)
     client_agency = Rails.application.config.client_agencies[client_agency_id]
     raise ArgumentError.new("Client Agency #{client_agency_id} not found") unless client_agency
 
-    Rails.application.routes.url_helpers.cbv_flow_new_url({
-      client_agency_id: client_agency_id,
+    url_params = {
       host: client_agency.agency_domain,
       protocol: (client_agency.agency_domain.nil? || client_agency.agency_domain == "localhost") ? "http" : "https",
       locale: I18n.locale
-    }.compact)
+    }
+    url_params[:origin] = origin if origin.present?
+
+    if client_agency.agency_domain.present?
+      Rails.application.routes.url_helpers.root_url(url_params.compact)
+    else
+      url_params[:client_agency_id] = client_agency_id
+      Rails.application.routes.url_helpers.cbv_flow_new_url(url_params.compact)
+    end
   end
 end
