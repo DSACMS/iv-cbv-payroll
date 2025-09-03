@@ -140,6 +140,9 @@ es:
         error_updating_applicant: Se produjo un error al actualizar la información del solicitante. Vuelva a intentarlo.
     employer_searches:
       show:
+        alert:
+          heading: "¿Necesita ayuda para conectarse a su proveedor de nómina?"
+          help_options: Obtenga ayuda aquí.
         app_based_providers: Empleadores basados
         can_not_find_employer: No puedo encontrar a mi empleador o proveedor de nómina
         employer_not_listed: "¿Su empleador no está en la lista?"
@@ -438,9 +441,6 @@ es:
     - noviembre
     - diciembre
   help:
-    alert:
-      heading: "¿Necesita ayuda para conectarse a su proveedor de nómina?"
-      help_options: Obtenga ayuda aquí.
     index:
       company_id: No sé el ID de mi empresa
       credentials: No me siento cómodo ingresando mis credenciales de inicio de sesión
