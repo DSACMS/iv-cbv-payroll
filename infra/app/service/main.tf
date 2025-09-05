@@ -212,7 +212,9 @@ module "service" {
     },
     local.ssm_env_vars,
     local.identity_provider_environment_variables,
-    local.service_config.extra_environment_variables
+    local.service_config.extra_environment_variables,
+    # Explicitly disable email delivery in temporary (PR) environments.
+    (local.is_temporary ? { DISABLE_EMAIL_DELIVERY = "true" } : {})
   )
 
   secrets = concat(
