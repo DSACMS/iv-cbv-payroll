@@ -33,6 +33,15 @@ updates:
     commit-message:
       prefix: "deps"
       include: "scope"
+    allow:
+      - dependency-type: "direct"   # only update direct dependencies
+    ignore:
+      - dependency-name: "rails"
+        update-types: [ "version-update:semver-major" ]
+      - dependency-name: "puma"
+        update-types: [ "version-update:semver-major" ]
+      - dependency-name: "ruby"
+        update-types: [ "version-update:semver-major" ]
 
   - package-ecosystem: "terraform"
     directory: "/infra" # path to your Terraform configs (adjust if needed)
