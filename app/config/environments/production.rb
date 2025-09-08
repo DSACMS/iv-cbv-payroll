@@ -73,12 +73,6 @@ Rails.application.configure do
   # Use a real queuing backend for Active Job (and separate queues per environment).
   # config.active_job.queue_name_prefix = "iv_cbv_payroll_production"
 
-  # Disable outbound emails when explicitly flagged by our infra for
-  # temporary PR environments to avoid SES verification errors.
-  if ENV["DISABLE_EMAIL_DELIVERY"] == "true"
-    config.action_mailer.perform_deliveries = false
-  end
-
   config.action_mailer.perform_caching = false
   config.action_mailer.delivery_method = :ses_v2
 
