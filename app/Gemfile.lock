@@ -289,7 +289,7 @@ GEM
     mutex_m (0.3.0)
     net-http (0.4.1)
       uri
-    net-imap (0.4.20)
+    net-imap (0.5.10)
       date
       net-protocol
     net-pop (0.1.2)
@@ -605,7 +605,7 @@ DEPENDENCIES
   mission_control-jobs
   mixpanel-ruby
   mutex_m
-  net-imap (= 0.4.20)
+  net-imap (= 0.5.10)
   net-sftp
   net-ssh
   newrelic_rpm
