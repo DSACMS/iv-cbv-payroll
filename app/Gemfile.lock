@@ -216,7 +216,7 @@ GEM
       raabro (~> 1.4)
     globalid (1.2.1)
       activesupport (>= 6.1)
-    gpgme (2.0.24)
+    gpgme (2.0.25)
       mini_portile2 (~> 2.7)
     hashdiff (1.1.1)
     hashery (2.1.2)
@@ -270,7 +270,7 @@ GEM
     matrix (0.4.2)
     method_source (1.1.0)
     mini_mime (1.1.5)
-    mini_portile2 (2.8.7)
+    mini_portile2 (2.8.9)
     minitest (5.25.5)
     mission_control-jobs (1.0.2)
       actioncable (>= 7.1)
@@ -598,7 +598,7 @@ DEPENDENCIES
   erb_lint
   factory_bot (~> 6.4)
   faraday (~> 2.9.0)
-  gpgme (~> 2.0, >= 2.0.12)
+  gpgme (~> 2.0)
   i18n-tasks (~> 1.0)
   jbuilder
   jsbundling-rails
