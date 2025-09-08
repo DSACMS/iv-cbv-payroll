@@ -74,7 +74,7 @@ Rails.application.configure do
   # config.active_job.queue_name_prefix = "iv_cbv_payroll_production"
 
   # Disable outbound emails when explicitly flagged by our infra for
-  # ephemeral PR environments in order to avoid SES verification errors.
+  # temporary PR environments to avoid SES verification errors.
   if ENV["DISABLE_EMAIL_DELIVERY"] == "true"
     config.action_mailer.perform_deliveries = false
   end

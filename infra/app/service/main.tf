@@ -181,10 +181,11 @@ module "service" {
   certificate_arn    = local.service_config.enable_https ? data.aws_acm_certificate.certificate[0].arn : null
   additional_domains = local.service_config.additional_domains
 
-  cpu                               = local.service_config.cpu
-  memory                            = local.service_config.memory
-  desired_instance_count            = local.is_temporary ? 1 : local.service_config.desired_instance_count
-  solidqueue_desired_instance_count = local.service_config.solidqueue_desired_instance_count
+  cpu                    = local.service_config.cpu
+  memory                 = local.service_config.memory
+  desired_instance_count = local.is_temporary ? 1 : local.service_config.desired_instance_count
+  # Do not run background workers for temporary PR environments
+  solidqueue_desired_instance_count = local.is_temporary ? 0 : local.service_config.solidqueue_desired_instance_count
   enable_command_execution          = local.service_config.enable_command_execution
 
   aws_services_security_group_id = data.aws_security_groups.aws_services.ids[0]
@@ -213,7 +214,7 @@ module "service" {
     local.ssm_env_vars,
     local.identity_provider_environment_variables,
     local.service_config.extra_environment_variables,
-    # Explicitly disable email delivery in temporary (PR) environments.
+    # Explicitly disable email delivery for temporary PR environments.
     (local.is_temporary ? { DISABLE_EMAIL_DELIVERY = "true" } : {})
   )
 
