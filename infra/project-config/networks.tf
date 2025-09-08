@@ -25,7 +25,8 @@ locals {
         }
       }
 
-      single_nat_gateway = true
+      num_availability_zones = 3
+      single_nat_gateway     = true
     }
     prod = {
       account_name               = "prod"
@@ -43,7 +44,8 @@ locals {
         }
       }
 
-      single_nat_gateway = true
+      num_availability_zones = 3
+      single_nat_gateway     = true
     }
     # staging = {
     #   account_name               = "staging"
