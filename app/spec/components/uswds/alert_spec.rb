@@ -2,7 +2,7 @@
 
 require "rails_helper"
 
-RSpec.describe AlertComponent, type: :component do
+RSpec.describe Uswds::Alert, type: :component do
   let(:result) { render_inline(described_class.new) { 'Alert message' } }
 
   it 'outputs an alert with default info styling' do
@@ -36,6 +36,14 @@ RSpec.describe AlertComponent, type: :component do
 
     it 'adds custom class to alert' do
       expect(result).to have_element(:div, class: 'usa-alert usa-alert--info custom-alert')
+    end
+  end
+
+  context 'slim variant' do
+    let(:result) { render_inline(described_class.new(slim: true)) { 'Custom alert' } }
+
+    it 'adds slim class to alert' do
+      expect(result).to have_element(:div, class: 'usa-alert usa-alert--info usa-alert--slim')
     end
   end
 end

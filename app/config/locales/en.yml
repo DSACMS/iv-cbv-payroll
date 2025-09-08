@@ -247,6 +247,9 @@ en:
         error_updating_applicant: An error occurred while updating the applicant information. Please try again.
     employer_searches:
       show:
+        alert:
+          heading: Need help connecting to your payroll provider?
+          help_options: Get help here.
         app_based_providers: App-based employers
         can_not_find_employer: I can’t find my employer or payroll provider
         employer_not_listed: Employer not listed?
@@ -340,7 +343,7 @@ en:
         employment_start_date: Employment start date
         employment_status: Employment status
         frequency_unknown: Frequency Unknown
-        header: Your payment information from %{employer_name}
+        header: Review your payment information from %{employer_name}
         header_no_employer_name: Your payment information from your employer
         hourly_rate: Compensation amount
         hours:
@@ -360,9 +363,7 @@ en:
         pay_period_value: "%{start_date} to %{end_date}"
         payment_hours: "%{amount} hours"
         payments_and_deductions_table_header: Payments and deductions
-        subheader: We have gathered your income records from the past %{report_data_range} as requested by %{agency_acronym} from %{start_date} to %{end_date}. If the information is missing or inaccurate, add a comment for %{agency_acronym}. This will be included in your income report and linked to your %{benefit} %{reporting_purpose}.
-        total_gross_description: This is the total gross income from your job before taxes, benefits and deductions were taken out of your paycheck.
-        total_gross_income: 'Total income from the past %{report_data_range}, before taxes: %{amount}'
+        subheader_html: We have gathered your payment records from the past %{report_data_range} from %{start_date} to %{end_date}.<br>Please review your information. If something is missing or inaccurate, add a comment for %{agency_acronym}. This will be included in your income report.
         unknown: Unknown
         your_details: Your details
     submits:
@@ -493,7 +494,7 @@ en:
             what_does_this_mean: What does this information mean?
         dollars_times_miles: "(%{dollar_amount} x %{number_of_miles} miles)"
         month: Month
-        monthly_summary: Monthly Summary
+        monthly_summary: Monthly summary
         partial_month_text: "(Partial month: from %{start_date}-%{end_date})"
         partial_month_text_simple: "(Partial month)"
         payments_from_header: Payments from %{employer_name}
@@ -502,7 +503,7 @@ en:
         total_gig_hours: Total hours worked
         verified_mileage_expenses: Verified mileage expenses
         w2:
-          definition_gross_income: '"Gross income" is the pay from your job before taxes, benefits, and deductions were taken out of your paychecks. In the table above, your total gross income is summed for the month within the 90 day window'
+          definition_gross_income: '"Gross income" is the pay from your job before taxes, benefits, and deductions were taken out of your paychecks. In the table above, your total gross income is summed for the month within the 90 day window.'
           definition_number_of_paychecks: '"Number of paychecks" is how many times you were paid in a month within the 90-day window.'
           definition_total_hours_worked: '"Total hours worked" are the total number of hours you worked for every paycheck you received in a month.'
           title_gross_income: Gross income
@@ -516,9 +517,6 @@ en:
       month_year: "%B %Y"
       short: "%b %-d"
   help:
-    alert:
-      heading: Need help connecting to your payroll provider?
-      help_options: Get help here.
     index:
       company_id: I don't know my company ID
       credentials: I don't feel comfortable entering my login credentials

@@ -81,11 +81,19 @@ variable "vpc_id" {
 variable "serverless_min_capacity" {
   description = "The minimum capacity for the Aurora Serverless cluster. Value should be in Aurora capacity units (ACU)"
   type        = number
-  default     = 0.5
 }
 
 variable "serverless_max_capacity" {
   description = "The maximum capacity for the Aurora Serverless cluster. Value should be in Aurora capacity units (ACU)"
   type        = number
-  default     = 1.0
+}
+
+variable "backup_retention_period" {
+  description = "Number of days to retain automated backups (RDS minimum is 1)."
+  type        = number
+}
+
+variable "enable_aws_backup" {
+  description = "Whether to enable AWS Backup for the database."
+  type        = bool
 }

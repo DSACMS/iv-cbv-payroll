@@ -75,3 +75,9 @@ repos:
     language: system
     files: '^.github/.*\.yml$'
     pass_filenames: false
+
+  - id: markdown_link_check
+    name: MarkdownLinkCheck
+    entry: npx markdown-link-check --config .github/workflows/markdownlint-config.json
+    language: system
+    files: '.*\.md$'

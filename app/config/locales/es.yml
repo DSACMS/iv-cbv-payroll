@@ -140,6 +140,9 @@ es:
         error_updating_applicant: Se produjo un error al actualizar la información del solicitante. Vuelva a intentarlo.
     employer_searches:
       show:
+        alert:
+          heading: "¿Necesita ayuda para conectarse a su proveedor de nómina?"
+          help_options: Obtenga ayuda aquí.
         app_based_providers: Empleadores basados
         can_not_find_employer: No puedo encontrar a mi empleador o proveedor de nómina
         employer_not_listed: "¿Su empleador no está en la lista?"
@@ -233,7 +236,7 @@ es:
         employment_start_date: Fecha de inicio del empleo
         employment_status: Estatus del empleo
         frequency_unknown: Frecuencia desconocida
-        header: Su información de pago de %{employer_name}
+        header: Revise la información de pago de %{employer_name}
         header_no_employer_name: Su información de pago de su empleador
         hourly_rate: Monto de compensación
         hours:
@@ -253,9 +256,7 @@ es:
         pay_period_value: "%{start_date} al %{end_date}"
         payment_hours: "%{amount} horas"
         payments_and_deductions_table_header: Pagos y deducciones
-        subheader: Hemos recopilado sus registros de ingresos de los últimos %{report_data_range}, conforme a la solicitud de %{agency_acronym}. Estos registros se extienden desde el %{start_date} hasta el %{end_date}. Si la información está incompleta o es incorrecta, agregue un comentario para %{agency_acronym}. Esto se incluirá en su reporte de ingresos y se vinculará a su %{benefit} %{reporting_purpose}.
-        total_gross_description: Este es el ingreso total de su trabajo antes de deducción de impuestos, beneficios, y otras deducciones de su cheque de pago.
-        total_gross_income: 'Ingresos totales de los últimos %{report_data_range}, antes de impuestos: %{amount}'
+        subheader_html: Hemos recopilado sus registros de pago del último %{report_data_range}, desde el %{start_date} hasta el %{end_date}.<br>Por favor, revise su información. Si falta información o si es incorrecta, deja un comentario para %{agency_acronym}. Su comentario se incluirá en su reporte de ingresos.
         unknown: Desconocido
         your_details: Tus datos
     submits:
@@ -441,9 +442,6 @@ es:
     - noviembre
     - diciembre
   help:
-    alert:
-      heading: "¿Necesita ayuda para conectarse a su proveedor de nómina?"
-      help_options: Obtenga ayuda aquí.
     index:
       company_id: No sé el ID de mi empresa
       credentials: No me siento cómodo ingresando mis credenciales de inicio de sesión
