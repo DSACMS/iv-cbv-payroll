@@ -218,7 +218,7 @@ GEM
       activesupport (>= 6.1)
     gpgme (2.0.25)
       mini_portile2 (~> 2.7)
-    hashdiff (1.1.1)
+    hashdiff (1.2.1)
     hashery (2.1.2)
     hashie (5.0.0)
     highline (3.1.0)
@@ -360,7 +360,7 @@ GEM
     psych (5.2.6)
       date
       stringio
-    public_suffix (6.0.1)
+    public_suffix (6.0.2)
     puma (6.6.0)
       nio4r (~> 2.0)
     raabro (1.4.0)
@@ -549,7 +549,7 @@ GEM
       activemodel (>= 6.0.0)
       bindex (>= 0.4.0)
       railties (>= 6.0.0)
-    webmock (3.23.1)
+    webmock (3.25.1)
       addressable (>= 2.8.0)
       crack (>= 0.3.2)
       hashdiff (>= 0.4.0, < 2.0.0)
