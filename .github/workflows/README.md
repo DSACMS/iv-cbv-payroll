@@ -18,8 +18,6 @@ Each app should have:
 
 ### App-agnostic workflows
 
-- [`ci-docs`](./ci-docs.yml): runs markdown linting on all markdown files in the file
-  - Configure in [markdownlint-config.json](./markdownlint-config.json)
 - [`ci-infra`](./ci-infra.yml): run infrastructure CI checks
 
 ## 🚢 CD
