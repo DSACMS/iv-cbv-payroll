@@ -69,7 +69,7 @@ MIXPANEL_SERVICE_ACCOUNT_SECRET=
 ```
 
 #### To start writing new analytics or running analyses
-6. Run 'jupyter lab' and open the analytics.ipynb file.
+6. Run `jupyter lab --NotebookApp.iopub_data_rate_limit=1.0e10` and open the analytics.ipynb file.
 6. Modify the date parameters to define the range of the data you'd like to download. These can be found in the first block of executable code marked with the comment "date range". They're parameters we feed to the Mixpanel API.
 6. Execute the first section with shift + enter. It will take a while to download all the events! Once you've run this once, you can proceed to run the other cells or write your own.
 
