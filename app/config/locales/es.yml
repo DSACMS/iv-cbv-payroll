@@ -274,6 +274,7 @@ es:
           agency_header_name:
             az_des: Department of Economic Security
             la_ldh: Department of Health
+            pa_dhs: Department of Human Services
             sandbox: CBV Test Agency
           caseworker:
             pay_period: Período de pago (%{pay_frequency})
@@ -572,13 +573,16 @@ es:
     agency_acronym:
       az_des: DES/FAA (por sus siglas en inglés)
       la_ldh: LDH (por sus siglas en inglés)
+      pa_dhs: DHS (por sus siglas en inglés)
       sandbox: CBV
     agency_full_name:
       az_des: Departamento de Seguridad Económica de Arizona/Administración de Asistencia Familiar
       la_ldh: Departamento de Salud de Luisiana
+      pa_dhs: Departamento de Servicios Humanos
       sandbox: Agencia de pruebas CBV
     app_name:
       az_des: MyFamilyBenefits
+      pa_dhs: VerifyMyIncome
       sandbox: CBVApp
     banner:
       lock: Candado
@@ -586,6 +590,7 @@ es:
     benefit:
       az_des: Asistencia Nutricional
       la_ldh: Medicaid
+      pa_dhs: Asistencia Nutricional
       sandbox: SNAP
     error_unauthorized: La URL a la que estás accediendo está prohibida para el usuario actual. Verifique que está conectado como el usuario correcto e intente acceder de nuevo a la URL.
     footer:
@@ -595,6 +600,7 @@ es:
       cbv_flow_title:
         az_des: Departamento de Seguridad Económica
         la_ldh: Departamento de Salud
+        pa_dhs: Departamento de Servicios Humanos
         sandbox: Agencia de pruebas CBV
       close: Cerrar
       help: Ayuda
@@ -603,6 +609,7 @@ es:
         az_des: Un sitio web en colaboración con el Departamento de Seguridad Económica de Arizona.
         default: Un sitio web en colaboración con la Agencia de pruebas CBV.
         la_ldh: Un sitio web en colaboración con el Departamento de Salud de Luisiana
+        pa_dhs: Un sitio web en colaboración con el Departamento de Salud de Pensilvania
       primary: Menú principal
     languages:
       en: English
@@ -619,6 +626,7 @@ es:
     reporting_purpose:
       az_des: Formulario de contacto para aprobaciones intermedias
       la_ldh: beneficios
+      pa_dhs: Revisión de SNAP
       sandbox: beneficios
     select_placeholder: "- Seleccione -"
     skip_link: Saltar al contenido principal

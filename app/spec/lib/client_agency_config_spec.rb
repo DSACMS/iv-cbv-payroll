@@ -1,46 +1,47 @@
 require "rails_helper"
 
 RSpec.describe ClientAgencyConfig do
-  let(:sample_config_path) { "/fake/path.yml" }
+  let(:config_dir) { "/fake/client-agency-config" }
+  let(:foo_path)   { File.join(config_dir, "foo.yml") }
   let(:sample_config) { <<~YAML }
-    - id: foo
-      agency_name: Foo Agency Name
-      pinwheel:
-        environment: foo
-      argyle:
-        environment: foo
-    - id: bar
-      agency_name: Bar Agency Name
-      pinwheel:
-        environment: bar
-      argyle:
-        environment: foo
+    id: foo
+    agency_name: Foo Agency Name
+    pinwheel:
+      environment: foo
+    argyle:
+      environment: foo
   YAML
 
   before do
+    allow(Dir).to receive(:glob).and_call_original
+    allow(Dir).to receive(:glob)
+                    .with(File.join(config_dir, "*.yml"))
+                    .and_return([ foo_path ])
+
+    allow(File).to receive(:read).and_call_original
     allow(File).to receive(:read)
-      .with(sample_config_path)
-      .and_return(sample_config)
+                     .with(foo_path)
+                     .and_return(sample_config)
   end
 
   describe "#initialize" do
     it "loads the client agency config" do
       expect do
-        ClientAgencyConfig.new(sample_config_path)
+        ClientAgencyConfig.new(config_dir, true)
       end.not_to raise_error
     end
   end
 
   describe "#client_agency_ids" do
     it "returns the IDs" do
-      config = ClientAgencyConfig.new(sample_config_path)
-      expect(config.client_agency_ids).to match_array([ "foo", "bar" ])
+      config = ClientAgencyConfig.new(config_dir, true)
+      expect(config.client_agency_ids).to match_array([ "foo" ])
     end
   end
 
   describe "for a particular client agency" do
-    it "returns a key for that agency" do
-      config = ClientAgencyConfig.new(sample_config_path)
+    it "returns the config for that agency" do
+      config = ClientAgencyConfig.new(config_dir, true)
       expect(config["foo"].agency_name).to eq("Foo Agency Name")
     end
   end

@@ -141,8 +141,8 @@ For more information on usage and helpful rake tasks to manage locale files, see
 
 The CBV pilot project is architected to be multi-tenant across jurisdictions we
 are actively piloting with. Each jurisdiction's agency is configured as a
-"client agency" in app/config/client-agency-config.yml and has a short "id", e.g. "az_des", "la_ldh",
-and "sandbox".
+"client agency" in a yml file in app/config/client-agency-config folder. There is a "default"
+configuration that represents the sandbox environment.
 
 We often need to adjust copy specific to each client agency. The preferred way to do it
 is by using the `client_agency_translation` helper, which wraps Rails's `t` view helper
@@ -160,6 +160,7 @@ And the corresponding locale file:
 ```yaml
 learn_more_html:
   az_des: Learn more about <strong>Arizona Department of Economic Security</strong>
+  pa_dhs: Learn more about <strong>PA Department of Human Services</strong>
   la_ldh: Learn more about <strong>Louisiana Department of Health</strong>
   sandbox: Learn more about <strong>CBV Test Agency</strong>
   default: Learn more about <strong>Default Agency</strong>
@@ -436,13 +437,11 @@ questions, just [shoot us an email](mailto:opensource@cms.hhs.gov).
 
 ### Security and Responsible Disclosure Policy
 
-<!-- markdown-link-check-disable -->
 *Submit a vulnerability:* Unfortunately, we cannot accept secure submissions via
 email or via GitHub Issues. Please use our website to submit vulnerabilities at
 [https://hhs.responsibledisclosure.com](https://hhs.responsibledisclosure.com/).
 HHS maintains an acknowledgements page to recognize your efforts on behalf of
 the American public, but you are also welcome to submit anonymously.
-<!-- markdown-link-check-enable -->
 
 For more information about our Security, Vulnerability, and Responsible Disclosure Policies, see [SECURITY.md](SECURITY.md).
 
