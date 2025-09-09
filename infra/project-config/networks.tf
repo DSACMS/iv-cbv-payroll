@@ -25,7 +25,7 @@ locals {
         }
       }
 
-      num_availability_zones = 1
+      num_availability_zones = 3
       single_nat_gateway     = true
     }
     prod = {
