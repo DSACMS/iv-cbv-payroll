@@ -26,7 +26,7 @@ def connect_as_master_user() -> Connection:
 def get_master_password() -> str:
     ssm = boto3.client("ssm", region_name=os.environ["AWS_REGION"])
     param_name = os.environ["DB_PASSWORD_PARAM_NAME"]
-    print(f"Fetching password from parameter store:\n{param_name}")
+    print(f"Fetching password from parameter store.")
     result = json.loads(
         ssm.get_parameter(Name=param_name, WithDecryption=True)["Parameter"]["Value"]
     )
