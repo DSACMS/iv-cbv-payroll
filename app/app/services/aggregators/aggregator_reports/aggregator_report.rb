@@ -48,25 +48,25 @@ module Aggregators::AggregatorReports
 
     AccountReportStruct = Struct.new(:identity, :income, :employment, :paystubs, :gigs)
     def find_account_report(account_id)
-      Rails.logger.info("TIMOTEST paystubs: #{@paystubs}")
+      account_employment = pick_employment(@employments, @paystubs, account_id)
+      account_paystubs = @paystubs.filter { |paystub| paystub.employment_id == account_employment.paystub_matching_id }
       AccountReportStruct.new(
         @identities.find { |identity| identity.account_id == account_id },
         @incomes.find { |income| income.account_id == account_id },
-        pick_employment(@employments, account_id),
-        @paystubs.find_all { |paystub| paystub.account_id == account_id },
+        account_employment,
+        account_paystubs,
         @gigs.find_all { |gig| gig.account_id == account_id }
       )
     end
 
     def summarize_by_employer
-      Rails.logger.info("TIMOTEST employments: #{@employments}")
-      Rails.logger.info("TIMOTEST identities: #{@identities}")
       @payroll_accounts.each_with_object({}) do |payroll_account, hash|
         account_id = payroll_account.pinwheel_account_id
         has_income_data = payroll_account.job_succeeded?("income")
         has_employment_data = payroll_account.job_succeeded?("employment")
         has_identity_data = payroll_account.job_succeeded?("identity")
-        account_paystubs = @paystubs.filter { |paystub| paystub.account_id == account_id }
+        account_employment = has_employment_data ? pick_employment(@employments, @paystubs, account_id) : nil
+        account_paystubs = @paystubs.filter { |paystub| paystub.employment_id == account_employment.paystub_matching_id }
         hash[account_id] ||= {
           total: account_paystubs.sum { |paystub| paystub.gross_pay_amount || 0 },
           has_income_data: has_income_data,
@@ -74,7 +74,7 @@ module Aggregators::AggregatorReports
           has_identity_data: has_identity_data,
           # TODO: what happens if more than one income/employment/identity on an account?
           income: has_income_data ? @incomes.find { |income| income.account_id == account_id } : nil,
-          employment: has_employment_data ? pick_employment(@employments, account_id) : nil,
+          employment: account_employment,
           identity: has_identity_data ? @identities.find { |identity| identity.account_id == account_id } : nil,
           paystubs: account_paystubs,
           gigs: @gigs.filter { |gig| gig.account_id == account_id }
@@ -82,28 +82,29 @@ module Aggregators::AggregatorReports
       end
     end
 
-    def pick_employment(employments, account_id)
+    def pick_employment(employments, paystubs, account_id)
+      Rails.logger.info("TIMOTEST originally would have picked #{@employments.find { |employment| employment.account_id == account_id }}")
+
       relevant_employments = employments.select { |e| e[:account_id] == account_id }
       return nil if relevant_employments.empty?
 
-      active_employments, terminated_employments = relevant_employments.partition do |e|
-        e[:termination_date].nil?
+      # Pick the employment with the latest update when considering the start_date,
+      # terminated_at, and any related paystub's pay_date properties.
+      to_return = relevant_employments.max_by do |emp|
+        relevant_paystubs = paystubs.select { |p| p[:employment_id] == emp.paystub_matching_id }
+
+        latest_pay_date = relevant_paystubs.map { |p| p[:pay_date] }.max
+
+        dates = [
+          emp[:start_date],
+          emp[:termination_date],
+          latest_pay_date
+        ]
+
+        dates.compact.max
       end
 
-      to_return = nil
-
-      # Prefer non-terminated employments with the earliest start date
-      unless active_employments.empty?
-        to_return = active_employments.min_by { |e| e[:start_date] }
-      end
-
-      # If all employments have terminated, prefer the latest-terminated with the earliest start_date
-      unless terminated_employments.empty?
-        # This sorts by termination date descending, then start date ascending
-        to_return = terminated_employments.sort_by { |e| [ -e[:termination_date].to_time.to_i, e[:start_date].to_time.to_i ] }.first
-      end
-
-      Rails.logger.info("TIMOTEST picked employment: #{to_return}")
+      Rails.logger.info("TIMOTEST now picked #{to_return}")
       to_return
     end
 
@@ -169,7 +170,7 @@ module Aggregators::AggregatorReports
     end
 
     def fetched_days_for_account(account_id)
-      employment = pick_employment(@employments, account_id)
+      employment = pick_employment(@employments, @paystubs, account_id)
       return @fetched_days unless employment
 
       case employment.employment_type
