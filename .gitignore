@@ -70,3 +70,4 @@ translation_update.csv
 /app/analytics/venv
 /app/analytics/.ipynb_checkpoints
 /app/analytics/__pycache__/
+/app/analytics/*.json
