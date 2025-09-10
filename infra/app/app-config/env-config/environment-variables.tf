@@ -224,7 +224,7 @@ locals {
     },
     AGENCY_PA_DHS_ACTIVE = {
       manage_method     = "manual"
-      secret_store_name = "/service/${var.app_name}-${var.environment}/agency-pa_dhs-active"
+      secret_store_name = "/service/${var.app_name}-${var.environment}/agency-pa-dhs-active"
     },
     AGENCY_DEFAULT_ACTIVE = {
       manage_method     = "manual"
