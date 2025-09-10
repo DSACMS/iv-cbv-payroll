@@ -19,7 +19,7 @@ class ClientAgencyConfig
      .each_with_object({}) do |path, h|
       data = load_yaml(path)
       # load all in dev, otherwise load only if the 'active' property is true for the env (see agency config file)
-      next unless load_all_agency_configs || ActiveModel::Type::Boolean.new.cast(data["active"])
+      # next unless load_all_agency_configs || ActiveModel::Type::Boolean.new.cast(data["active"])
 
       puts "LOADED AGENCY #{data["id"]}"
       id = data["id"]
