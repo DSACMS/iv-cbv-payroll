@@ -40,27 +40,14 @@ RSpec.describe Cbv::SuccessesController do
       end
 
       describe "#invitation_link" do
-        context "in production environment" do
+        context "in any environment" do
           before do
-            stub_client_agency_config_value("sandbox", "agency_domain", "sandbox.reportmyincome.org")
-          end
-
-          it "uses agency production domain with shared origin" do
-            get :show
-
-            expected_url = "https://sandbox.reportmyincome.org/en/cbv/entry?origin=shared&amp;token=#{cbv_flow.cbv_flow_invitation.auth_token}"
-            expect(response.body).to include(expected_url)
-          end
-        end
-
-        context "in non-production environment" do
-          before do
-            stub_client_agency_config_value("sandbox", "agency_domain", "sandbox-verify-demo.navapbc.cloud")
+            stub_client_agency_config_value("sandbox", "agency_domain", "sandbox")
           end
 
           it "uses agency demo domain with shared origin" do
             get :show
-            expected_url = "https://sandbox-verify-demo.navapbc.cloud/en/cbv/entry?origin=shared&amp;token=#{cbv_flow.cbv_flow_invitation.auth_token}"
+            expected_url = "https://sandbox.#{ENV["DOMAIN_NAME"]}/en/cbv/entry?origin=shared&amp;token=#{cbv_flow.cbv_flow_invitation.auth_token}"
             expect(response.body).to include(expected_url)
           end
         end

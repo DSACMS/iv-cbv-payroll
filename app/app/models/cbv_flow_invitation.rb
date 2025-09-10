@@ -60,8 +60,8 @@ class CbvFlowInvitation < ApplicationRecord
     url_params = {
       token: auth_token,
       locale: language,
-      host: client_agency.agency_domain,
-      protocol: (client_agency.agency_domain.nil? || client_agency.agency_domain == "localhost") ? "http" : "https"
+      host: client_agency.agency_domain + "." + ENV["DOMAIN_NAME"],
+      protocol: (client_agency.agency_domain.nil? || Rails.env == "development") ? "http" : "https"
     }
     url_params[:origin] = origin if origin.present?
 
