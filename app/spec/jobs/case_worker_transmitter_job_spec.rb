@@ -155,36 +155,71 @@ RSpec.describe CaseWorkerTransmitterJob, type: :job do
     end
 
     context "when transmission method is sftp" do
-      let(:user) { create(:user, email: "test@test.com") }
-      let(:sftp_double) { instance_double(SftpGateway) }
-      let(:transmission_method) { "sftp" }
-      let(:mocked_client_id) { "az_des" }
-      let(:transmission_method_configuration) { {
-        "user" => "user",
-        "password" => "password",
-        "url" => "sftp.com",
-        "sftp_directory" => "test"
-      } }
-      let(:now) { Time.zone.parse('2025-01-01 08:00:30') }
+      context "when client is az_des" do
+        let(:user) { create(:user, email: "test@test.com") }
+        let(:sftp_double) { instance_double(SftpGateway) }
+        let(:transmission_method) { "sftp" }
+        let(:mocked_client_id) { "az_des" }
+        let(:transmission_method_configuration) { {
+          "user" => "user",
+          "password" => "password",
+          "url" => "sftp.com",
+          "sftp_directory" => "test"
+        } }
+        let(:now) { Time.zone.parse('2025-01-01 08:00:30') }
 
-      before do
-        allow(SftpGateway).to receive(:new).and_return(sftp_double)
-        allow(sftp_double).to receive(:upload_data)
+        before do
+          allow(SftpGateway).to receive(:new).and_return(sftp_double)
+          allow(sftp_double).to receive(:upload_data)
 
-        travel_to now
+          travel_to now
+        end
+
+        it "generates and sends data to SFTP and updates transmitted_at" do
+          agency_id_number = cbv_applicant.agency_id_number
+          beacon_id = cbv_applicant.beacon_id
+
+          cbv_flow.update!(confirmation_code: "AZDES001", consented_to_authorized_use_at: now, client_agency_id: "az_des")
+          cbv_flow.cbv_applicant.update!(case_number: "01000", client_agency_id: "az_des", beacon_id: beacon_id, agency_id_number: agency_id_number)
+
+          expect(sftp_double).to receive(:upload_data).with(anything, /test\/CBVPilot_00001000_20250101_ConfAZDES001.pdf/)
+
+
+          expect { described_class.new.perform(cbv_flow.id) }.to change { cbv_flow.reload.transmitted_at }
+        end
       end
 
-      it "generates and sends data to SFTP and updates transmitted_at" do
-        agency_id_number = cbv_applicant.agency_id_number
-        beacon_id = cbv_applicant.beacon_id
+      context "when client is pa_dhs" do
+        let(:user) { create(:user, email: "test@test.com") }
+        let(:sftp_double) { instance_double(SftpGateway) }
+        let(:transmission_method) { "sftp" }
+        let(:mocked_client_id) { "pa_dhs" }
+        let(:transmission_method_configuration) { {
+          "user" => "user",
+          "password" => "password",
+          "url" => "sftp.com",
+          "sftp_directory" => "test"
+        } }
+        let(:now) { Time.zone.parse('2025-01-01 08:00:30') }
 
-        cbv_flow.update!(confirmation_code: "AZDES001", consented_to_authorized_use_at: now, client_agency_id: "az_des")
-        cbv_flow.cbv_applicant.update!(case_number: "01000", client_agency_id: "az_des", beacon_id: beacon_id, agency_id_number: agency_id_number)
+        before do
+          allow(SftpGateway).to receive(:new).and_return(sftp_double)
+          allow(sftp_double).to receive(:upload_data)
 
-        expect(sftp_double).to receive(:upload_data).with(anything, /test\/CBVPilot_00001000_20250101_ConfAZDES001.pdf/)
+          travel_to now
+        end
 
+        it "generates and sends data to SFTP and updates transmitted_at" do
+          agency_id_number = cbv_applicant.agency_id_number
+          beacon_id = cbv_applicant.beacon_id
 
-        expect { described_class.new.perform(cbv_flow.id) }.to change { cbv_flow.reload.transmitted_at }
+          cbv_flow.update!(confirmation_code: "PADHS001", consented_to_authorized_use_at: now, client_agency_id: "pa_dhs")
+          cbv_flow.cbv_applicant.update!(case_number: "01000", client_agency_id: "pa_dhs", beacon_id: beacon_id, agency_id_number: agency_id_number)
+
+          expect(sftp_double).to receive(:upload_data).with(anything, /test\/CBVPilot_00001000_20250101_ConfPADHS001.pdf/)
+
+          expect { described_class.new.perform(cbv_flow.id) }.to change { cbv_flow.reload.transmitted_at }
+        end
       end
     end
 

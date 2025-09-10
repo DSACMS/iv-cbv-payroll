@@ -69,7 +69,7 @@
   <% if @cbv_flow.confirmation_code.present? %>
     <%= table.with_row(t(".pdf.shared.confirmation_code"), @cbv_flow.confirmation_code) %>
   <% end %>
-  <% unless current_agency?(:az_des) || current_agency?(:la_ldh) %>
+  <% unless current_agency?(:az_des) || current_agency?(:la_ldh) || current_agency?(:pa_dhs) %>
     <%= table.with_row(t(".application_or_recertification_date"), format_parsed_date(@cbv_flow.cbv_applicant.snap_application_date)) %>
   <% end %>
   <%= table.with_row(t(".pdf.client.date_created"), format_parsed_date(@cbv_flow.consented_to_authorized_use_at)) %>

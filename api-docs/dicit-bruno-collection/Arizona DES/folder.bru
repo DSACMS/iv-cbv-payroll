@@ -1,0 +1,16 @@
+meta {
+  name: Arizona DES
+  seq: 2
+}
+
+auth {
+  mode: bearer
+}
+
+auth:bearer {
+  token: {{AZ_DES_KEY}}
+}
+
+vars:pre-request {
+  DOMAIN: {{AZ_DES_DOMAIN}}
+}

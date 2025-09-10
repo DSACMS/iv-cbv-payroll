@@ -18,7 +18,7 @@ argyle_stub_request_account_response("bob")
 sending_at = Date.yesterday.in_time_zone("America/Phoenix").change(hour: 8)
 flows_created_at = sending_at - 12.hours
 
-# Create some flows
+# Create some flows - replace 'az_des' with the partner being tested
 Timecop.freeze(flows_created_at)
 cbv_flows = 5.times.map { |i| invitation = FactoryBot.create(:cbv_flow_invitation, :az_des); FactoryBot.create(:cbv_flow, :completed, :with_argyle_account, client_agency_id: "az_des", cbv_flow_invitation: invitation, cbv_applicant: invitation.cbv_applicant) }
 

@@ -29,8 +29,8 @@ RUN apt-get update -qq && \
       libdjvulibre21 \
       # CVE-2025-7424 \
       libxslt1-dev \
-      && \
-    rm -rf /var/lib/apt/lists /var/cache/apt/archives
+    ; \
+    rm -rf /var/lib/apt/lists/* /var/cache/apt/archives/*
 
 # Rails app lives here
 WORKDIR /rails
@@ -51,13 +51,24 @@ EXPOSE 3000
 FROM base AS build
 
 # Install packages needed to build gems
-RUN apt-get update -qq && \
+RUN set -eux; \
+    apt-get update -qq && \
+    apt-get install -y --no-install-recommends \
+      libexpat1=2.5.0-1+deb12u2 \
+      libsqlite3-0=3.40.1-2+deb12u2 \
+      libperl5.36=5.36.0-7+deb12u3 \
+      perl=5.36.0-7+deb12u3 \
+      perl-base=5.36.0-7+deb12u3 \
+      perl-modules-5.36=5.36.0-7+deb12u3 \
+    ; \
     apt-get install --no-install-recommends -y \
       build-essential=12.9 \
       git=1:2.39.5-0+deb12u2 \
       libpq-dev=15.13-0+deb12u1 \
       npm=9.2.0~ds1-1 \
-      pkg-config=1.8.1-1
+      pkg-config=1.8.1-1 \
+    ; \
+    rm -rf /var/lib/apt/lists/* /var/cache/apt/archives/*
 
 # Copy application code
 COPY . .
@@ -86,12 +97,13 @@ ENV RAILS_ENV="development"
 ENV TMPDIR="/rails/tmp"
 
 # Install packages needed for development
-RUN apt-get update -qq && \
+RUN set -eux; \
+    apt-get update -qq && \
     apt-get install --no-install-recommends -y \
-      postgresql-client=15+248 \
+      postgresql-client-15=15.14-0+deb12u1 \
       graphviz=2.42.2-7+b3 \
-      && \
-    rm -rf /var/lib/apt/lists /var/cache/apt/archives
+    ; \
+    rm -rf /var/lib/apt/lists/* /var/cache/apt/archives/*
 
 RUN gem install bundler --no-document -v ${BUNDLER_VERSION} && \
     bundle config set --local without production && \
@@ -142,28 +154,56 @@ ENV PIDFILE="/rails/tmp/pids/server.pid"
 #   apt-get install [package]
 #
 # and notice the version that was installed.
-RUN apt-get update -qq && \
+RUN set -eux; \
+    apt-get update -qq; \
     apt-get install -y --no-install-recommends \
-        libgpgme11=1.18.0-3+b1 \
-        libvips42=8.14.1-3+deb12u2 \
-        openssl=3.0.16-1~deb12u1 \
-        postgresql-client=15+248 \
-        python-is-python3=3.11.2-1+deb12u1 \
-        python3-venv=3.11.2-1+b1 \
-        python3-pip=23.0.1+dfsg-1 \
-        && \
-    rm -rf /var/lib/apt/lists /var/cache/apt/archives && \
+    libgpgme11=1.18.0-3+b1 \
+    libvips42=8.14.1-3+deb12u2 \
+    openssl=3.0.16-1~deb12u1 \
+    postgresql-client-15=15.14-0+deb12u1 \
+    python-is-python3=3.11.2-1+deb12u1 \
+    python3-venv=3.11.2-1+b1 \
+    python3-pip=23.0.1+dfsg-1 \
+    ; \
+    # Bring vulnerable libs up to the Fixed-In versions that the vulnerability scans require
+    apt-get install -y --no-install-recommends --only-upgrade \
+    libexpat1=2.5.0-1+deb12u2 \
+    libglib2.0-0=2.74.6-2+deb12u7 \
+    libglib2.0-bin=2.74.6-2+deb12u7 \
+    libglib2.0-data=2.74.6-2+deb12u7 \
+    libglib2.0-dev=2.74.6-2+deb12u7 \
+    libglib2.0-dev-bin=2.74.6-2+deb12u7 \
+    libgssapi-krb5-2=1.20.1-2+deb12u4 \
+    libkrb5-3=1.20.1-2+deb12u4 \
+    libkrb5support0=1.20.1-2+deb12u4 \
+    libk5crypto3=1.20.1-2+deb12u4 \
+    libkadm5clnt-mit12=1.20.1-2+deb12u4 \
+    libkadm5srv-mit12=1.20.1-2+deb12u4 \
+    libkdb5-10=1.20.1-2+deb12u4 \
+    libgssrpc4=1.20.1-2+deb12u4 \
+    libsqlite3-0=3.40.1-2+deb12u2 \
+    libopenjp2-7=2.5.0-2+deb12u2 \
+    libperl5.36=5.36.0-7+deb12u3 \
+    perl=5.36.0-7+deb12u3 \
+    perl-base=5.36.0-7+deb12u3 \
+    perl-modules-5.36=5.36.0-7+deb12u3 \
+    mariadb-common=1:10.11.14-0+deb12u2 \
+    libmariadb3=1:10.11.14-0+deb12u2 \
+    libmariadb-dev=1:10.11.14-0+deb12u2 \
+    libmariadb-dev-compat=1:10.11.14-0+deb12u2 \
+    ; \
+    rm -rf /var/lib/apt/lists/* /var/cache/apt/archives/*; \
     python3 -m venv /opt/aws-cli-venv && \
     /opt/aws-cli-venv/bin/pip install --no-cache-dir --upgrade pip && \
     /opt/aws-cli-venv/bin/pip install --no-cache-dir "setuptools>=78.1.1" && \
     /opt/aws-cli-venv/bin/pip install --no-cache-dir awscli && \
     ln -s /opt/aws-cli-venv/bin/aws /usr/local/bin/aws
 
-# Remove base rexml for GHSA-4xqq-m2hx-25v8
-RUN gem uninstall -i /usr/local/lib/ruby/gems/3.3.0 debug && \
-    gem uninstall -i /usr/local/lib/ruby/gems/3.3.0 rss && \
-    gem uninstall -i /usr/local/lib/ruby/gems/3.3.0 rexml && \
-    gem uninstall -i /usr/local/lib/ruby/gems/3.3.0 net-imap || true
+# Remove unneeded stdlib gems if present. Uninstall executibles, all versions, ignore if not installed
+RUN gem uninstall -x -aIx debug || true && \
+    gem uninstall -x -aIx rss || true && \
+    gem uninstall -x -aIx rexml || true && \
+    gem uninstall -x -aIx net-imap || true
 
 # Install custom db migrate script
 COPY bin/db-migrate /usr/bin/

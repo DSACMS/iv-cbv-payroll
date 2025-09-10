@@ -2,8 +2,11 @@ data "aws_availability_zones" "available" {}
 
 locals {
   vpc_cidr               = "10.0.0.0/20"
-  num_availability_zones = 3
-  availability_zones     = slice(data.aws_availability_zones.available.names, 0, local.num_availability_zones)
+  public_subnet_offset   = 10 # "10.0.10.0"
+  private_subnet_offset  = 0  # "10.0.0.0"
+  database_subnet_offset = 5  # "10.0.5.0"
+
+  availability_zones = slice(data.aws_availability_zones.available.names, 0, var.num_availability_zones)
 }
 
 module "aws_vpc" {
@@ -15,17 +18,17 @@ module "aws_vpc" {
   cidr = local.vpc_cidr
 
   # Public subnets
-  public_subnets     = ["10.0.10.0/24", "10.0.11.0/24", "10.0.12.0/24"]
+  public_subnets     = [for i in range(var.num_availability_zones) : cidrsubnet(local.vpc_cidr, 4, local.public_subnet_offset + i)]
   public_subnet_tags = { subnet_type = "public" }
 
   # Private subnets
-  private_subnets     = ["10.0.0.0/24", "10.0.1.0/24", "10.0.2.0/24"]
+  private_subnets     = [for i in range(var.num_availability_zones) : cidrsubnet(local.vpc_cidr, 4, local.private_subnet_offset + i)]
   private_subnet_tags = { subnet_type = "private" }
 
   # Database subnets
   # `database_subnet_tags` is only used if `database_subnets` is not empty
   # `database_subnet_group_name` is only used if `create_database_subnet_group` is true
-  database_subnets             = ["10.0.5.0/24", "10.0.6.0/24", "10.0.7.0/24"]
+  database_subnets             = [for i in range(var.num_availability_zones) : cidrsubnet(local.vpc_cidr, 4, local.database_subnet_offset + i)]
   database_subnet_tags         = { subnet_type = "database" }
   create_database_subnet_group = true
   database_subnet_group_name   = var.database_subnet_group_name

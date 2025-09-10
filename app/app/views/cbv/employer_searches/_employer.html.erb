@@ -13,9 +13,9 @@
           </div>
           <div class="usa-card__media usa-card__media--inset">
             <% if employer.logo_url %>
-              <div class="usa-card__img" style="max-width: 8rem">
+              <div class="usa-card__img maxw-15">
                 <img
-                  src="<%= employer.logo_url %>"
+                  src="<%= employer.logo_url.sub(/^http:/, "https:") %>"
                   alt="A placeholder image"
                 >
               </div>

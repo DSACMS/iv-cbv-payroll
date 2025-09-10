@@ -278,23 +278,38 @@ Devise.setup do |config|
   # ==> OmniAuth
   # Add a new OmniAuth provider. Check the wiki for more information on setting
   # up on your models and hooks.
-  config.omniauth(
-    :sandbox,
-    {
-      **Rails.application.config.client_agencies["sandbox"].sso,
-      strategy_class: OmniAuth::Strategies::AzureActivedirectoryV2,
-      pkce: true
-    }
-  )
+  if Rails.application.config.client_agencies["sandbox"].present?
+    config.omniauth(
+      :sandbox,
+      {
+        **Rails.application.config.client_agencies["sandbox"].sso,
+        strategy_class: OmniAuth::Strategies::AzureActivedirectoryV2,
+        pkce: true
+      }
+    )
+  end
 
-  config.omniauth(
-    :az_des,
-    {
-      **Rails.application.config.client_agencies["az_des"].sso,
-      strategy_class: OmniAuth::Strategies::AzureActivedirectoryV2,
-      pkce: true
-    }
-  )
+  if Rails.application.config.client_agencies["az_des"].present?
+    config.omniauth(
+      :az_des,
+      {
+        **Rails.application.config.client_agencies["az_des"].sso,
+        strategy_class: OmniAuth::Strategies::AzureActivedirectoryV2,
+        pkce: true
+      }
+    )
+  end
+
+  if Rails.application.config.client_agencies["pa_dhs"].present?
+    config.omniauth(
+      :pa_dhs,
+      {
+        **Rails.application.config.client_agencies["pa_dhs"].sso,
+        strategy_class: OmniAuth::Strategies::AzureActivedirectoryV2,
+        pkce: true
+      }
+    )
+  end
 
   # ==> Warden configuration
   # If you want to use other strategies, that are not supported by Devise, or

@@ -25,6 +25,9 @@
 
 /public/assets
 
+# Ignore environment files in Bruno configs
+/api-docs/**/.env
+
 # Ignore master key for decrypting credentials and more.
 /config/master.key
 /config/credentials/*.key
