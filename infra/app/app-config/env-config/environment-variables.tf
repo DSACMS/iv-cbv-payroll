@@ -215,6 +215,24 @@ locals {
     SANDBOX_DOMAIN_NAME = {
       manage_method     = "manual"
       secret_store_name = "/service/${var.app_name}-${var.environment}/sandbox-domain-name"
+    },
+
+    # This is what drives if a configuration is loaded
+    AGENCY_AZ_DES_ACTIVE = {
+      manage_method     = "manual"
+      secret_store_name = "/service/${var.app_name}-${var.environment}/agency-az-des-active"
+    },
+    AGENCY_PA_DHS_ACTIVE = {
+      manage_method     = "manual"
+      secret_store_name = "/service/${var.app_name}-${var.environment}/agency-pa_dhs-active"
+    },
+    AGENCY_DEFAULT_ACTIVE = {
+      manage_method     = "manual"
+      secret_store_name = "/service/${var.app_name}-${var.environment}/agency-default-active"
+    },
+    AGENCY_LA_LDH_ACTIVE = {
+      manage_method     = "manual"
+      secret_store_name = "/service/${var.app_name}-${var.environment}/agency-la-ldh-active"
     }
   }
 }
