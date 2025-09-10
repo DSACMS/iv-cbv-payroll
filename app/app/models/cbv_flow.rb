@@ -44,7 +44,7 @@ class CbvFlow < ApplicationRecord
 
     url_params = {
       host: client_agency.agency_domain,
-      protocol: (client_agency.agency_domain.nil? || client_agency.agency_domain == "localhost") ? "http" : "https",
+      protocol: (client_agency.agency_domain.nil? || Rails.env == "development") ? "http" : "https",
       locale: I18n.locale
     }
     url_params[:origin] = origin if origin.present?

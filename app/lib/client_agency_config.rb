@@ -21,6 +21,7 @@ class ClientAgencyConfig
       # load all in dev, otherwise load only if the 'active' property is true for the env (see agency config file)
       next unless load_all_agency_configs || ActiveModel::Type::Boolean.new.cast(data["active"])
 
+      puts "LOADED AGENCY #{data["id"]}"
       id = data["id"]
       h[id] = ClientAgency.new(data)
     end
