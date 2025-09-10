@@ -10,7 +10,7 @@ module Aggregators::ResponseObjects
     employment_type
     account_source
     employer_id
-    paystub_matching_id
+    employment_matching_id
   ]
 
   Employment = Struct.new(*EMPLOYMENT_FIELDS, keyword_init: true) do
@@ -26,7 +26,7 @@ module Aggregators::ResponseObjects
         employment_type: Aggregators::FormatMethods::Pinwheel.employment_type(response_body["employer_name"]),
         account_source: platform_body&.dig("name"),
         employer_id: response_body["id"],
-        paystub_matching_id: response_body["id"]
+        employment_matching_id: response_body["id"]
       )
     end
 
@@ -41,7 +41,7 @@ module Aggregators::ResponseObjects
         employment_type: Aggregators::FormatMethods::Argyle.employment_type(identity_response_body["employment_type"]),
         account_source: account_json&.dig("source"),
         employer_id: account_json&.dig("item"),
-        paystub_matching_id: identity_response_body["employment"]
+        employment_matching_id: identity_response_body["employment"]
       )
     end
   end

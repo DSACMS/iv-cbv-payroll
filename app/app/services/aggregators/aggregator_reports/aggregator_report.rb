@@ -49,9 +49,16 @@ module Aggregators::AggregatorReports
     AccountReportStruct = Struct.new(:identity, :income, :employment, :paystubs, :gigs)
     def find_account_report(account_id)
       account_employment = pick_employment(@employments, @paystubs, account_id)
-      account_paystubs = @paystubs.filter { |paystub| paystub.employment_id == account_employment.paystub_matching_id }
+      account_paystubs = @paystubs.filter { |paystub| paystub.employment_id == account_employment.employment_matching_id }
+      account_identities = @identities.filter { |identity| identity.employment_id == account_employment.employment_matching_id }
+      # TIMOTEST TODO: also filter income, since that comes from identity (see Tom's note in gh)
+      Rails.logger.info("TIMOTEST paystub employment_id: #{@paystubs[0].employment_id}")
+      Rails.logger.info("TIMOTEST employment matching id: #{account_employment.employment_matching_id}")
+      Rails.logger.info("TIMOTEST Paystubs count: old: #{@paystubs.count} new: #{account_paystubs.count}")
+      Rails.logger.info("TIMOTEST Identity count: old: #{@identities.count} new: #{account_identities.count}")
+
       AccountReportStruct.new(
-        @identities.find { |identity| identity.account_id == account_id },
+        account_identities,
         @incomes.find { |income| income.account_id == account_id },
         account_employment,
         account_paystubs,
@@ -65,17 +72,23 @@ module Aggregators::AggregatorReports
         has_income_data = payroll_account.job_succeeded?("income")
         has_employment_data = payroll_account.job_succeeded?("employment")
         has_identity_data = payroll_account.job_succeeded?("identity")
+        has_paystubs_data = payroll_account.job_succeeded?("paystubs")
         account_employment = has_employment_data ? pick_employment(@employments, @paystubs, account_id) : nil
-        account_paystubs = @paystubs.filter { |paystub| paystub.employment_id == account_employment.paystub_matching_id }
+        account_paystubs = has_paystubs_data ? @paystubs.filter { |paystub| paystub.employment_id == account_employment.employment_matching_id } : nil
+        account_identities = has_identity_data ? @identities.filter { |identity| identity.employment_id == account_employment.employment_matching_id } : nil
+
+        Rails.logger.info("TIMOTEST Paystubs count: old: #{@paystubs.count} new: #{account_paystubs.count}")
+        Rails.logger.info("TIMOTEST Identity count: old: #{@identities.count} new: #{account_identities.count}")
+
         hash[account_id] ||= {
           total: account_paystubs.sum { |paystub| paystub.gross_pay_amount || 0 },
           has_income_data: has_income_data,
           has_employment_data: has_employment_data,
           has_identity_data: has_identity_data,
-          # TODO: what happens if more than one income/employment/identity on an account?
+          # TODO: what happens if more than one income on an account?
           income: has_income_data ? @incomes.find { |income| income.account_id == account_id } : nil,
           employment: account_employment,
-          identity: has_identity_data ? @identities.find { |identity| identity.account_id == account_id } : nil,
+          identity: account_identities,
           paystubs: account_paystubs,
           gigs: @gigs.filter { |gig| gig.account_id == account_id }
         }
@@ -83,15 +96,22 @@ module Aggregators::AggregatorReports
     end
 
     def pick_employment(employments, paystubs, account_id)
+      # In Argyle, the employments endpoint can return more than one employment.
+      # This method returns the employment we want to use. Later, we must filter related
+      # data sets to make sure we're only using ones that match the employment ID we chose here.
+
       Rails.logger.info("TIMOTEST originally would have picked #{@employments.find { |employment| employment.account_id == account_id }}")
 
       relevant_employments = employments.select { |e| e[:account_id] == account_id }
-      return nil if relevant_employments.empty?
+      if relevant_employments.empty?
+        Rails.logger.error("No employments found that match account_id #{account_id}")
+        raise "No employments found that match account_id #{account_id}"
+      end
 
       # Pick the employment with the latest update when considering the start_date,
       # terminated_at, and any related paystub's pay_date properties.
       to_return = relevant_employments.max_by do |emp|
-        relevant_paystubs = paystubs.select { |p| p[:employment_id] == emp.paystub_matching_id }
+        relevant_paystubs = paystubs.select { |p| p[:employment_id] == emp.employment_matching_id }
 
         latest_pay_date = relevant_paystubs.map { |p| p[:pay_date] }.max
 
