@@ -203,18 +203,11 @@ locals {
       manage_method     = "manual"
       secret_store_name = "/service/${var.app_name}-${var.environment}/az-des-weekly-report-recipients"
     }
-    # Domain names
-    AZ_DES_DOMAIN_NAME = {
+
+    # Domain name
+    ROOT_DOMAIN_NAME = {
       manage_method     = "manual"
-      secret_store_name = "/service/${var.app_name}-${var.environment}/az-des-domain-name"
-    },
-    LA_LDH_DOMAIN_NAME = {
-      manage_method     = "manual"
-      secret_store_name = "/service/${var.app_name}-${var.environment}/la-ldh-domain-name"
-    },
-    SANDBOX_DOMAIN_NAME = {
-      manage_method     = "manual"
-      secret_store_name = "/service/${var.app_name}-${var.environment}/sandbox-domain-name"
+      secret_store_name = "/service/${var.app_name}-${var.environment}/root-domain-name"
     },
 
     # This is what drives if a configuration is loaded
