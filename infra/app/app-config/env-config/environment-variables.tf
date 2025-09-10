@@ -204,12 +204,6 @@ locals {
       secret_store_name = "/service/${var.app_name}-${var.environment}/az-des-weekly-report-recipients"
     }
 
-    # Domain name
-    ROOT_DOMAIN_NAME = {
-      manage_method     = "manual"
-      secret_store_name = "/service/${var.app_name}-${var.environment}/root-domain-name"
-    },
-
     # This is what drives if a configuration is loaded
     AGENCY_AZ_DES_ACTIVE = {
       manage_method     = "manual"
