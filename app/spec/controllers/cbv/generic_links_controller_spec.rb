@@ -46,7 +46,7 @@ RSpec.describe Cbv::GenericLinksController do
           it "does not track the ApplicantClickedGenericLink event" do
             expect(EventTrackingJob)
               .not_to have_received(:perform_later)
-              .with("ApplicantClickedGenericLink", anything, anything)
+                        .with("ApplicantClickedGenericLink", anything, anything)
           end
         end
       end
@@ -112,6 +112,18 @@ RSpec.describe Cbv::GenericLinksController do
             anything,
             hash_including(origin: "mail")
           )
+        end
+      end
+
+      context 'when error tracking fails' do
+        let(:event_logger) { instance_double(GenericEventTracker) }
+        before do
+          allow(event_logger).to receive(:track).and_raise(Exception)
+          allow(controller).to receive(:event_logger).and_return(event_logger)
+        end
+
+        it 'raises an error' do
+          expect { get :show, params: { client_agency_id: "sandbox", origin: "mail" } }.to raise_error(an_instance_of(Exception).and having_attributes(message: "Unable to track event (ApplicantClickedGenericLink): ??"))
         end
       end
     end
