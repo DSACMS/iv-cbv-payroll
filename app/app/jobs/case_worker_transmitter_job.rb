@@ -70,10 +70,6 @@ class CaseWorkerTransmitterJob < ApplicationJob
       flow_started_seconds_ago: (cbv_flow.consented_to_authorized_use_at - cbv_flow.created_at).to_i,
       locale: I18n.locale
     })
-  rescue => ex
-    raise ex unless Rails.env.production?
-
-    Rails.logger.error "Failed to track event: #{ex.message}"
   end
 
   def pinwheel

@@ -168,10 +168,6 @@ class Webhooks::Pinwheel::EventsController < ApplicationController
         gigs_type_shift_count: report.gigs.count { |g| g.gig_type == "shift" }
       })
     end
-  rescue => ex
-    raise ex unless Rails.env.production?
-
-    Rails.logger.error "Unable to track event (in #{self.class.name}): #{ex}"
   end
 
   def validate_useful_report_requirements(report)
@@ -192,11 +188,6 @@ class Webhooks::Pinwheel::EventsController < ApplicationController
         errors: report.errors.full_messages.join(", ")
       )
     end
-  rescue => ex
-    raise ex unless Rails.env.production?
-
-    Rails.logger.error "Unable to track event (in #{self.class.name}): #{ex}"
-  ensure
-    return report_is_valid
+    report_is_valid
   end
 end

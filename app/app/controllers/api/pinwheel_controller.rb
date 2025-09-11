@@ -33,7 +33,5 @@ class Api::PinwheelController < ApplicationController
       item_id: token_params[:id],
       aggregator_name: "pinwheel"
     })
-  rescue => ex
-    Rails.logger.error "Unable to track event (ApplicantBeganLinkingEmployer): #{ex}"
   end
 end

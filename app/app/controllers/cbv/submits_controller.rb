@@ -36,11 +36,11 @@ class Cbv::SubmitsController < Cbv::BaseController
             aggregator_report: @aggregator_report
           },
           footer: { right: t(".pdf.footer.page_footer"), font_size: 10 },
-          margin:  {
-            top:               10,
-            bottom:            10,
-            left:              10,
-            right:             10
+          margin: {
+            top: 10,
+            bottom: 10,
+            left: 10,
+            right: 10
           }
       end
     end
@@ -92,8 +92,6 @@ class Cbv::SubmitsController < Cbv::BaseController
       flow_started_seconds_ago: (Time.now - cbv_flow.created_at).to_i,
       locale: I18n.locale
     })
-  rescue => ex
-    Rails.logger.error "Unable to track event (ApplicantAccessedIncomeSummary): #{ex}"
   end
 
   def generate_confirmation_code(cbv_flow)

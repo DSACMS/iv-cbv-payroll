@@ -5,7 +5,7 @@ class Cbv::SummariesController < Cbv::BaseController
   before_action :check_aggregator_report, only: %i[show]
 
   def show
-    track_accessed_income_summary_event(@cbv_flow, @aggregator_report.paystubs)
+    track_accessed_income_summary_event(@cbv_flow)
   end
 
   private
@@ -17,7 +17,7 @@ class Cbv::SummariesController < Cbv::BaseController
     end
   end
 
-  def track_accessed_income_summary_event(cbv_flow, payments)
+  def track_accessed_income_summary_event(cbv_flow)
     event_logger.track("ApplicantAccessedIncomeSummary", request, {
       time: Time.now.to_i,
       client_agency_id: current_agency&.id,
@@ -31,7 +31,5 @@ class Cbv::SummariesController < Cbv::BaseController
       flow_started_seconds_ago: (Time.now - cbv_flow.created_at).to_i,
       language: I18n.locale
     })
-  rescue => ex
-    Rails.logger.error "Unable to track event (ApplicantAccessedIncomeSummary): #{ex}"
   end
 end

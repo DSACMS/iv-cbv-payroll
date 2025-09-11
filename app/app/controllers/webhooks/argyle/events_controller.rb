@@ -45,8 +45,8 @@ class Webhooks::Argyle::EventsController < ApplicationController
     # In the event that a user adds multiple payroll accounts we do not want to
     # record duplicate webhook events
     syncing_payroll_accounts = PayrollAccount::Argyle
-      .awaiting_fully_synced_webhook
-      .where(cbv_flow: @cbv_flow)
+                                 .awaiting_fully_synced_webhook
+                                 .where(cbv_flow: @cbv_flow)
 
     # Handle each connected account separately
     syncing_payroll_accounts.map do |payroll_account|
@@ -187,113 +187,107 @@ class Webhooks::Argyle::EventsController < ApplicationController
   end
 
   def log_sync_finish(payroll_account, report)
-    begin
-      paystub_hours = report.paystubs.filter_map(&:hours).map(&:to_f)
-      paystub_gross_pay_amounts = report.paystubs.filter_map(&:gross_pay_amount)
+    paystub_hours = report.paystubs.filter_map(&:hours).map(&:to_f)
+    paystub_gross_pay_amounts = report.paystubs.filter_map(&:gross_pay_amount)
 
-      event_logger.track("ApplicantFinishedArgyleSync", request, {
-        time: Time.now.to_i,
-        cbv_applicant_id: @cbv_flow.cbv_applicant_id,
-        cbv_flow_id: @cbv_flow.id,
-        client_agency_id: @cbv_flow.client_agency_id,
-        invitation_id: @cbv_flow.cbv_flow_invitation_id,
-        argyle_environment: agency_config[@cbv_flow.client_agency_id].argyle_environment,
-        sync_duration_seconds: Time.now - payroll_account.sync_started_at,
+    event_logger.track("ApplicantFinishedArgyleSync", request, {
+      time: Time.now.to_i,
+      cbv_applicant_id: @cbv_flow.cbv_applicant_id,
+      cbv_flow_id: @cbv_flow.id,
+      client_agency_id: @cbv_flow.client_agency_id,
+      invitation_id: @cbv_flow.cbv_flow_invitation_id,
+      argyle_environment: agency_config[@cbv_flow.client_agency_id].argyle_environment,
+      sync_duration_seconds: Time.now - payroll_account.sync_started_at,
 
-        # #####################################################################
-        # Add attributes to track provider data quality.
-        #
-        # **Important Note**: We do not send PII to our analytics platforms!
-        # As such, any field here that deals with PII should coerce it into a
-        # boolean (with `#present?`) or perform a function to anonymize the
-        # value (like `length`) before sending it to the event logger.
-        # #####################################################################
+      # #####################################################################
+      # Add attributes to track provider data quality.
+      #
+      # **Important Note**: We do not send PII to our analytics platforms!
+      # As such, any field here that deals with PII should coerce it into a
+      # boolean (with `#present?`) or perform a function to anonymize the
+      # value (like `length`) before sending it to the event logger.
+      # #####################################################################
 
-        # Identity fields (originally from "identities" endpoint)
-        identity_success: payroll_account.job_succeeded?("identity"),
-        identity_supported: payroll_account.supported_jobs.include?("identity"),
-        identity_count: report.identities.length,
-        identity_full_name_present: report.identities.first&.full_name&.present?,
-        identity_full_name_length: report.identities.first&.full_name&.length,
-        identity_date_of_birth_present: report.identities.first&.date_of_birth.present?,
-        identity_ssn_present: report.identities.first&.ssn.present?,
-        identity_emails_count: report.identities.sum { |i| i.emails.length },
-        identity_phone_numbers_count: report.identities.sum { |i| i.phone_numbers.length },
-        identity_zip_code: report.identities.first&.zip_code,
-        identity_age_range: get_age_range(report.identities.first&.date_of_birth),
-        identity_account_id: report.identities.first&.account_id,
+      # Identity fields (originally from "identities" endpoint)
+      identity_success: payroll_account.job_succeeded?("identity"),
+      identity_supported: payroll_account.supported_jobs.include?("identity"),
+      identity_count: report.identities.length,
+      identity_full_name_present: report.identities.first&.full_name&.present?,
+      identity_full_name_length: report.identities.first&.full_name&.length,
+      identity_date_of_birth_present: report.identities.first&.date_of_birth.present?,
+      identity_ssn_present: report.identities.first&.ssn.present?,
+      identity_emails_count: report.identities.sum { |i| i.emails.length },
+      identity_phone_numbers_count: report.identities.sum { |i| i.phone_numbers.length },
+      identity_zip_code: report.identities.first&.zip_code,
+      identity_age_range: get_age_range(report.identities.first&.date_of_birth),
+      identity_account_id: report.identities.first&.account_id,
 
-        # Income fields (originally from "identities" endpoint)
-        income_success: payroll_account.job_succeeded?("income"),
-        income_supported: payroll_account.supported_jobs.include?("income"),
-        income_compensation_amount_present: report.incomes.first&.compensation_amount.present?,
-        income_compensation_unit_present: report.incomes.first&.compensation_unit.present?,
-        income_pay_frequency_present: report.incomes.first&.pay_frequency.present?,
-        income_pay_frequency: report.incomes.first&.pay_frequency,
+      # Income fields (originally from "identities" endpoint)
+      income_success: payroll_account.job_succeeded?("income"),
+      income_supported: payroll_account.supported_jobs.include?("income"),
+      income_compensation_amount_present: report.incomes.first&.compensation_amount.present?,
+      income_compensation_unit_present: report.incomes.first&.compensation_unit.present?,
+      income_pay_frequency_present: report.incomes.first&.pay_frequency.present?,
+      income_pay_frequency: report.incomes.first&.pay_frequency,
 
-        # Paystubs fields
-        paystubs_success: payroll_account.job_succeeded?("paystubs"),
-        paystubs_supported: payroll_account.supported_jobs.include?("paystubs"),
-        paystubs_count: report.paystubs.length,
-        paystubs_deductions_count: report.paystubs.sum { |p| p.deductions.length },
-        paystubs_hours_average: paystub_hours.sum.to_f / paystub_hours.length,
-        paystubs_hours_by_earning_category_count: report.paystubs.sum { |p| p.hours_by_earning_category.length },
-        paystubs_hours_max: paystub_hours.max,
-        paystubs_hours_median: paystub_hours.sort[paystub_hours.length / 2],
-        paystubs_hours_min: paystub_hours.min,
-        paystubs_hours_present: report.paystubs.first&.hours.present?,
-        paystubs_earnings_count: report.paystubs.sum { |p| p.earnings.length },
-        paystubs_earnings_with_hours_count: report.paystubs.sum { |p| p.earnings.count { |e| e.hours.present? } },
-        paystubs_earnings_type_base_count: report.paystubs.sum { |p| p.earnings.count { |e| e.category == "base" } },
-        paystubs_earnings_type_bonus_count: report.paystubs.sum { |p| p.earnings.count { |e| e.category == "bonus" } },
-        paystubs_earnings_type_overtime_count: report.paystubs.sum { |p| p.earnings.count { |e| e.category == "overtime" } },
-        paystubs_earnings_type_commission_count: report.paystubs.sum { |p| p.earnings.count { |e| e.category == "commission" } },
-        paystubs_gross_pay_amounts_max: paystub_gross_pay_amounts.max,
-        paystubs_gross_pay_amounts_median: paystub_gross_pay_amounts.sort[paystub_gross_pay_amounts.length / 2],
-        paystubs_gross_pay_amounts_average: paystub_gross_pay_amounts.sum.to_f / paystub_gross_pay_amounts.length,
-        paystubs_gross_pay_amounts_min: paystub_gross_pay_amounts.min,
-        paystubs_days_since_last_pay_date: report.paystubs.map { |p| Date.parse(p.pay_date) }.compact.max&.then { |last_pay_date| (Date.current - last_pay_date).to_i },
+      # Paystubs fields
+      paystubs_success: payroll_account.job_succeeded?("paystubs"),
+      paystubs_supported: payroll_account.supported_jobs.include?("paystubs"),
+      paystubs_count: report.paystubs.length,
+      paystubs_deductions_count: report.paystubs.sum { |p| p.deductions.length },
+      paystubs_hours_average: paystub_hours.sum.to_f / paystub_hours.length,
+      paystubs_hours_by_earning_category_count: report.paystubs.sum { |p| p.hours_by_earning_category.length },
+      paystubs_hours_max: paystub_hours.max,
+      paystubs_hours_median: paystub_hours.sort[paystub_hours.length / 2],
+      paystubs_hours_min: paystub_hours.min,
+      paystubs_hours_present: report.paystubs.first&.hours.present?,
+      paystubs_earnings_count: report.paystubs.sum { |p| p.earnings.length },
+      paystubs_earnings_with_hours_count: report.paystubs.sum { |p| p.earnings.count { |e| e.hours.present? } },
+      paystubs_earnings_type_base_count: report.paystubs.sum { |p| p.earnings.count { |e| e.category == "base" } },
+      paystubs_earnings_type_bonus_count: report.paystubs.sum { |p| p.earnings.count { |e| e.category == "bonus" } },
+      paystubs_earnings_type_overtime_count: report.paystubs.sum { |p| p.earnings.count { |e| e.category == "overtime" } },
+      paystubs_earnings_type_commission_count: report.paystubs.sum { |p| p.earnings.count { |e| e.category == "commission" } },
+      paystubs_gross_pay_amounts_max: paystub_gross_pay_amounts.max,
+      paystubs_gross_pay_amounts_median: paystub_gross_pay_amounts.sort[paystub_gross_pay_amounts.length / 2],
+      paystubs_gross_pay_amounts_average: paystub_gross_pay_amounts.sum.to_f / paystub_gross_pay_amounts.length,
+      paystubs_gross_pay_amounts_min: paystub_gross_pay_amounts.min,
+      paystubs_days_since_last_pay_date: report.paystubs.map { |p| Date.parse(p.pay_date) }.compact.max&.then { |last_pay_date| (Date.current - last_pay_date).to_i },
 
-        # Employment fields (originally from "identities" endpoint)
-        employment_success: payroll_account.job_succeeded?("employment"),
-        employment_supported: payroll_account.supported_jobs.include?("employment"),
-        employment_status: report.employments.first&.status,
-        employment_employer_name: report.employments.first&.employer_name,
-        employment_account_source: report.employments.first&.account_source,
-        employment_employer_id: report.employments.first&.employer_id,
-        employment_employer_address_present: report.employments.first&.employer_address&.present?,
-        employment_employer_phone_number_present: report.employments.first&.employer_name&.present?,
-        employment_start_date: report.employments.first&.start_date,
-        employment_termination_date: report.employments.first&.termination_date,
-        employment_type: report.employments.first&.employment_type&.to_s,
-        employment_type_w2_count: report.employments.count { |e| e.employment_type == :w2 },
-        employment_type_gig_count: report.employments.count { |e| e.employment_type == :gig },
+      # Employment fields (originally from "identities" endpoint)
+      employment_success: payroll_account.job_succeeded?("employment"),
+      employment_supported: payroll_account.supported_jobs.include?("employment"),
+      employment_status: report.employments.first&.status,
+      employment_employer_name: report.employments.first&.employer_name,
+      employment_account_source: report.employments.first&.account_source,
+      employment_employer_id: report.employments.first&.employer_id,
+      employment_employer_address_present: report.employments.first&.employer_address&.present?,
+      employment_employer_phone_number_present: report.employments.first&.employer_name&.present?,
+      employment_start_date: report.employments.first&.start_date,
+      employment_termination_date: report.employments.first&.termination_date,
+      employment_type: report.employments.first&.employment_type&.to_s,
+      employment_type_w2_count: report.employments.count { |e| e.employment_type == :w2 },
+      employment_type_gig_count: report.employments.count { |e| e.employment_type == :gig },
 
-        # Gigs fields
-        gigs_success: payroll_account.job_succeeded?("gigs"),
-        gigs_supported: payroll_account.supported_jobs.include?("gigs"),
-        gigs_count: report.gigs.length,
-        gigs_duration_present_count: report.gigs.count { |g| g.hours.present? },
-        gigs_earning_type_adjustment_count: report.gigs.count { |g| g.compensation_category == "adjustment" },
-        gigs_earning_type_incentive_count: report.gigs.count { |g| g.compensation_category == "incentive" },
-        gigs_earning_type_offer_count: report.gigs.count { |g| g.compensation_category == "offer" },
-        gigs_earning_type_other_count: report.gigs.count { |g| g.compensation_category == "other" },
-        gigs_earning_type_work_count: report.gigs.count { |g| g.compensation_category == "work" },
-        gigs_pay_present_count: report.gigs.count { |g| g.compensation_amount.present? },
-        gigs_mileage_present_count: report.gigs.count { |g| g.mileage.present? },
-        gigs_status_cancelled_count: report.gigs.count { |g| g.gig_status == "cancelled" },
-        gigs_status_completed_count: report.gigs.count { |g| g.gig_status == "completed" },
-        gigs_status_scheduled_count: report.gigs.count { |g| g.gig_status == "scheduled" },
-        gigs_type_delivery_count: report.gigs.count { |g| g.gig_type == "delivery" },
-        gigs_type_hourly_count: report.gigs.count { |g| g.gig_type == "hourly" },
-        gigs_type_rideshare_count: report.gigs.count { |g| g.gig_type == "rideshare" },
-        gigs_type_services_count: report.gigs.count { |g| g.gig_type == "services" }
-      })
-    rescue => ex
-      raise ex unless Rails.env.production?
-
-      Rails.logger.error "Unable to track event (in #{self.class.name}): #{ex}"
-    end
+      # Gigs fields
+      gigs_success: payroll_account.job_succeeded?("gigs"),
+      gigs_supported: payroll_account.supported_jobs.include?("gigs"),
+      gigs_count: report.gigs.length,
+      gigs_duration_present_count: report.gigs.count { |g| g.hours.present? },
+      gigs_earning_type_adjustment_count: report.gigs.count { |g| g.compensation_category == "adjustment" },
+      gigs_earning_type_incentive_count: report.gigs.count { |g| g.compensation_category == "incentive" },
+      gigs_earning_type_offer_count: report.gigs.count { |g| g.compensation_category == "offer" },
+      gigs_earning_type_other_count: report.gigs.count { |g| g.compensation_category == "other" },
+      gigs_earning_type_work_count: report.gigs.count { |g| g.compensation_category == "work" },
+      gigs_pay_present_count: report.gigs.count { |g| g.compensation_amount.present? },
+      gigs_mileage_present_count: report.gigs.count { |g| g.mileage.present? },
+      gigs_status_cancelled_count: report.gigs.count { |g| g.gig_status == "cancelled" },
+      gigs_status_completed_count: report.gigs.count { |g| g.gig_status == "completed" },
+      gigs_status_scheduled_count: report.gigs.count { |g| g.gig_status == "scheduled" },
+      gigs_type_delivery_count: report.gigs.count { |g| g.gig_type == "delivery" },
+      gigs_type_hourly_count: report.gigs.count { |g| g.gig_type == "hourly" },
+      gigs_type_rideshare_count: report.gigs.count { |g| g.gig_type == "rideshare" },
+      gigs_type_services_count: report.gigs.count { |g| g.gig_type == "services" }
+    })
   end
 
   def validate_useful_report_requirements(report)
@@ -314,12 +308,7 @@ class Webhooks::Argyle::EventsController < ApplicationController
         errors: report.errors.full_messages.join(", ")
       })
     end
-  rescue => ex
-    raise ex unless Rails.env.production?
-
-    Rails.logger.error "Unable to track event (in #{self.class.name}): #{ex}"
-  ensure
-    return report_is_valid
+    report_is_valid
   end
 
   def update_synchronization_page(payroll_account)

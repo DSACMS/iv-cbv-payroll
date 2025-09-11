@@ -79,8 +79,6 @@ class Api::ArgyleController < ApplicationController
       item_id: params[:item_id],
       aggregator_name: "argyle"
     })
-  rescue => ex
-    Rails.logger.error "Unable to track event (ApplicantBeganLinkingEmployer): #{ex}"
   end
 
   def argyle

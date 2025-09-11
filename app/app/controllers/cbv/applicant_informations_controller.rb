@@ -11,7 +11,7 @@ class Cbv::ApplicantInformationsController < Cbv::BaseController
   def update
     @cbv_applicant.assign_attributes(applicant_params[:cbv_applicant])
 
-    if  @cbv_applicant.validate_base_and_applicant_attributes? && @cbv_applicant.save
+    if @cbv_applicant.validate_base_and_applicant_attributes? && @cbv_applicant.save
       track_applicant_submitted_information_page_event
       return redirect_to next_path
     end
@@ -76,8 +76,6 @@ class Cbv::ApplicantInformationsController < Cbv::BaseController
         cbv_flow_id: @cbv_flow.id
       })
     end
-  rescue => ex
-    Rails.logger.error "Unable to track event on ApplicantInformation page #{ex}"
   end
 
   def track_applicant_information_error_event(error_string)
@@ -88,8 +86,6 @@ class Cbv::ApplicantInformationsController < Cbv::BaseController
       client_agency_id: current_agency&.id,
       error_string: error_string
     })
-  rescue => ex
-    Rails.logger.error "Unable to track event (ApplicantEncounteredInformationPageError): #{ex}"
   end
 
   def track_applicant_submitted_information_page_event
@@ -101,8 +97,5 @@ class Cbv::ApplicantInformationsController < Cbv::BaseController
       invitation_id: @cbv_flow.cbv_flow_invitation_id,
       identity_age_range_applicant: get_age_range(@cbv_applicant.date_of_birth)
     })
-  rescue => ex
-    Rails.logger.error "Unable to track event (ApplicantSubmittedInformationPage): #{ex}"
-    raise unless Rails.env.production?
   end
 end

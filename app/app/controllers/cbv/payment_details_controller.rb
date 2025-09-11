@@ -112,8 +112,8 @@ class Cbv::PaymentDetailsController < Cbv::BaseController
     return I18n.t("cbv.payment_details.show.unknown") unless has_paystubs_data?
 
     @payroll_account_report.paystubs
-      .map { |paystub| paystub.gross_pay_amount.to_i }
-      .reduce(:+)
+                           .map { |paystub| paystub.gross_pay_amount.to_i }
+                           .reduce(:+)
   end
 
   def sanitize_comment(comment)
@@ -134,8 +134,6 @@ class Cbv::PaymentDetailsController < Cbv::BaseController
       has_paystubs_data: has_paystubs_data?,
       has_income_data: has_income_data?
     })
-  rescue => ex
-    Rails.logger.error "Unable to track event (ApplicantViewedPaymentDetails): #{ex}"
   end
 
   def track_saved_event
@@ -149,7 +147,5 @@ class Cbv::PaymentDetailsController < Cbv::BaseController
       invitation_id: @cbv_flow.cbv_flow_invitation_id,
       additional_information_length: comment_data ? comment_data["comment"].length : 0
     })
-  rescue => ex
-    Rails.logger.error "Unable to track event (ApplicantSavedPaymentDetails): #{ex}"
   end
 end
