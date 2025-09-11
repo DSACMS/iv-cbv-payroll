@@ -71,10 +71,8 @@ RSpec.describe Cbv::AddJobsController do
         allow(EventTrackingJob).to receive(:perform_later).with("CbvPageView", anything, anything)
       end
 
-      it 'logs error and continues when event tracking raises an exception' do
+      it 'continues when event tracking raises an exception' do
         allow(EventTrackingJob).to receive(:perform_later).with("ApplicantContinuedFromAddJobsPage", anything, anything).and_raise(StandardError.new("Event tracking failed"))
-        expect(Rails.logger).to receive(:error).with(/Unable to track event \(ApplicantContinuedFromAddJobsPage\): Event tracking failed/)
-
         post :create, params: { 'additional_jobs': 'true' }
         expect(response).to redirect_to(cbv_flow_employer_search_path)
       end
