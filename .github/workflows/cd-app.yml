@@ -24,6 +24,7 @@ on:
       commit_sha:
         required: false
         type: string
+        description: "Override commit SHA to deploy"
 permissions:
     id-token: write
 
