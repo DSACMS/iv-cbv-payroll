@@ -1,6 +1,18 @@
 # syntax = docker/dockerfile:1
 
-# Make sure RUBY_VERSION matches the Ruby version in .ruby-version and Gemfile
+# Steps for upgrading Ruby version / base image:
+# 1. Update the version number in three places:
+#      1. Here
+#      2. .ruby-version
+#      3. Gemfile
+# 2. Run `bin/update` and commit changes.
+# 3. Update Dockerfile to address any upgrades from the base ruby image.
+#      * Update versions of pinned debian packages
+#      * Remove manual security upgrades (if any)
+# 4. Ensure that docker build pasess:
+#      > make release-build OPTS="--tag iv-cbv-payroll:latest"
+# 5. Ensure that `wkhtmltopdf` runs:
+#      > docker run iv-cbv-payroll:latest bundle exec wkhtmltopdf --version
 ARG RUBY_VERSION=3.4.5
 
 
