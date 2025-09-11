@@ -21,8 +21,7 @@ Follow these steps to perform a load test:
     ```
     k6 run loadtest.js --env "COOKIE=$COOKIE" --env URL=https://demo.divt.app/cbv/employer_search
     ```
-5. Record the metrics by copying them into Confluence.
-    * Louisiana - https://confluenceent.cms.gov/display/SFIV/Louisiana+%7C+Pre-launch+Load+Testing+Benchmarks+and+SLOs
+5. Record the metrics.
 
 ### Cleanup
 6. Delete all jobs enqueued within the "default" job queue:

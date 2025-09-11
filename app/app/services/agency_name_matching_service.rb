@@ -1,6 +1,3 @@
-# This class compares two sets of names as outlined in:
-#   https://confluenceent.cms.gov/x/iDy8PQ
-#
 # A match result will be computed for each name in `source_names_list`
 # against all the names in the `target_names_list`.
 class AgencyNameMatchingService
