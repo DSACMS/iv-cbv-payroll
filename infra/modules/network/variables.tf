@@ -1,3 +1,8 @@
+variable "vpc_cidr" {
+  type        = string
+  description = "The IPv4 CIDR block for the VPC"
+}
+
 variable "num_availability_zones" {
   type        = number
   description = "Number of availability zones (AZs) to provision across"
