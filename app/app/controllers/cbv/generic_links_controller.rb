@@ -73,8 +73,5 @@ class Cbv::GenericLinksController < Cbv::BaseController
       origin: params[:origin],
       is_new_session: is_new_session
     })
-  rescue => ex
-    Rails.logger.error "Unable to track event (ApplicantClickedGenericLink): #{ex}"
-    raise # unless Rails.env.production?
   end
 end
