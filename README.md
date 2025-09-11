@@ -425,7 +425,7 @@ See [GOVERNANCE.md](./GOVERNANCE.md)
 
 ## Feedback
 
-If you have ideas for how we can improve or add to our capacity building efforts and methods for welcoming people into our community, please let us know by sending an email to: TODO[FILL THIS OUT WITH GENERIC] at digitalpublicworks dot org. If you would like to comment on the tool itself, please let us know by filing an **issue on our GitHub repository.**
+If you have ideas for how we can improve or add to our capacity building efforts and methods for welcoming people into our community, please let us know by sending an email to: info at digitalpublicworks dot org. If you would like to comment on the tool itself, please let us know by filing an **issue on our GitHub repository.**
 
 ## Policies
 
