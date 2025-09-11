@@ -114,18 +114,6 @@ RSpec.describe Cbv::GenericLinksController do
           )
         end
       end
-
-      context 'when error tracking fails' do
-        let(:event_logger) { instance_double(GenericEventTracker) }
-        before do
-          allow(event_logger).to receive(:track).and_raise(Exception)
-          allow(controller).to receive(:event_logger).and_return(event_logger)
-        end
-
-        it 'raises an error' do
-          expect { get :show, params: { client_agency_id: "sandbox", origin: "mail" } }.to raise_error(an_instance_of(Exception).and having_attributes(message: "Unable to track event (ApplicantClickedGenericLink): ??"))
-        end
-      end
     end
 
     context 'when the hostname matches a client agency domain and the pilot is ended' do

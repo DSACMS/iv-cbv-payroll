@@ -9,6 +9,9 @@ class GenericEventTracker
       request_data = nil
     end
     EventTrackingJob.perform_later(event_type, request_data, merged_attributes)
+  rescue => ex
+    Rails.logger.error "Unable to track event (#{event_type}): #{ex}"
+    raise unless Rails.env.production?
   end
 
   private
