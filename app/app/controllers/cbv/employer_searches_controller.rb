@@ -36,7 +36,7 @@ class Cbv::EmployerSearchesController < Cbv::BaseController
   end
 
   def track_clicked_popular_payroll_providers_event
-    event_logger.track("ApplicantClickedPopularPayrollProviders", request, {
+    event_logger.track(TrackEvent::ApplicantClickedPopularPayrollProviders, request, {
       time: Time.now.to_i,
       cbv_applicant_id: @cbv_flow.cbv_applicant_id,
       cbv_flow_id: @cbv_flow.id,
@@ -46,7 +46,7 @@ class Cbv::EmployerSearchesController < Cbv::BaseController
   end
 
   def track_clicked_popular_app_employers_event
-    event_logger.track("ApplicantClickedPopularAppEmployers", request, {
+    event_logger.track(TrackEvent::ApplicantClickedPopularAppEmployers, request, {
       time: Time.now.to_i,
       cbv_applicant_id: @cbv_flow.cbv_applicant_id,
       cbv_flow_id: @cbv_flow.id,
@@ -58,7 +58,7 @@ class Cbv::EmployerSearchesController < Cbv::BaseController
   def track_accessed_search_event
     return if @query.present?
 
-    event_logger.track("ApplicantAccessedSearchPage", request, {
+    event_logger.track(TrackEvent::ApplicantAccessedSearchPage, request, {
       time: Time.now.to_i,
       cbv_applicant_id: @cbv_flow.cbv_applicant_id,
       cbv_flow_id: @cbv_flow.id,
@@ -70,7 +70,7 @@ class Cbv::EmployerSearchesController < Cbv::BaseController
   def track_applicant_searched_event
     return if @query.blank?
 
-    event_logger.track("ApplicantSearchedForEmployer", request, {
+    event_logger.track(TrackEvent::ApplicantSearchedForEmployer, request, {
       time: Time.now.to_i,
       cbv_applicant_id: @cbv_flow.cbv_applicant_id,
       cbv_flow_id: @cbv_flow.id,

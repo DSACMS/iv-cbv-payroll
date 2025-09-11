@@ -13,7 +13,7 @@ class HelpController < ApplicationController
 
     cbv_flow = session[:cbv_flow_id] ? CbvFlow.find_by(id: session[:cbv_flow_id]) : nil
 
-    event_logger.track("ApplicantViewedHelpTopic", request, {
+    event_logger.track(TrackEvent::ApplicantViewedHelpTopic, request, {
       time: Time.now.to_i,
       topic: @help_topic,
       cbv_applicant_id: cbv_flow&.cbv_applicant_id,

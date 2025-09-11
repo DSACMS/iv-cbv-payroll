@@ -70,7 +70,7 @@ class Api::ArgyleController < ApplicationController
   end
 
   def track_event
-    event_logger.track("ApplicantBeganLinkingEmployer", request, {
+    event_logger.track(TrackEvent::ApplicantBeganLinkingEmployer, request, {
       time: Time.now.to_i,
       cbv_flow_id: @cbv_flow.id,
       cbv_applicant_id: @cbv_flow.cbv_applicant_id,

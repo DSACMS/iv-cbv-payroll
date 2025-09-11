@@ -65,7 +65,7 @@ class Cbv::GenericLinksController < Cbv::BaseController
     # to get a ton of traffic from it during LA SMS sends
     return if request.user_agent.match?(/go-http-client/i)
 
-    event_logger.track("ApplicantClickedGenericLink", request, {
+    event_logger.track(TrackEvent::ApplicantClickedGenericLink, request, {
       time: Time.now.to_i,
       cbv_applicant_id: cbv_flow.cbv_applicant_id,
       cbv_flow_id: cbv_flow.id,

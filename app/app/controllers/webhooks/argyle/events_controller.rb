@@ -96,7 +96,7 @@ class Webhooks::Argyle::EventsController < ApplicationController
     error_code = params.dig("data", "resource", "connection", "error_code")
     return unless connection_status == "error" && error_code == "system_error"
 
-    event_logger.track("ApplicantEncounteredArgyleAccountSystemError", request, {
+    event_logger.track(TrackEvent::ApplicantEncounteredArgyleAccountSystemError, request, {
       time: Time.now.to_i,
       cbv_applicant_id: @cbv_flow.cbv_applicant_id,
       cbv_flow_id: @cbv_flow.id,
@@ -164,7 +164,7 @@ class Webhooks::Argyle::EventsController < ApplicationController
                     :six_months
                   end
 
-      event_logger.track("ApplicantReceivedArgyleData", request, {
+      event_logger.track(TrackEvent::ApplicantReceivedArgyleData, request, {
         time: Time.now.to_i,
         cbv_applicant_id: @cbv_flow.cbv_applicant_id,
         cbv_flow_id: @cbv_flow.id,
@@ -174,7 +174,7 @@ class Webhooks::Argyle::EventsController < ApplicationController
         sync_event: params["event"]
       })
     elsif params["event"] == "users.fully_synced"
-      event_logger.track("ApplicantReceivedArgyleData", request, {
+      event_logger.track(TrackEvent::ApplicantReceivedArgyleData, request, {
         time: Time.now.to_i,
         cbv_applicant_id: @cbv_flow.cbv_applicant_id,
         cbv_flow_id: @cbv_flow.id,
@@ -190,7 +190,7 @@ class Webhooks::Argyle::EventsController < ApplicationController
     paystub_hours = report.paystubs.filter_map(&:hours).map(&:to_f)
     paystub_gross_pay_amounts = report.paystubs.filter_map(&:gross_pay_amount)
 
-    event_logger.track("ApplicantFinishedArgyleSync", request, {
+    event_logger.track(TrackEvent::ApplicantFinishedArgyleSync, request, {
       time: Time.now.to_i,
       cbv_applicant_id: @cbv_flow.cbv_applicant_id,
       cbv_flow_id: @cbv_flow.id,
@@ -293,14 +293,14 @@ class Webhooks::Argyle::EventsController < ApplicationController
   def validate_useful_report_requirements(report)
     report_is_valid = report.valid?(:useful_report)
     if report_is_valid
-      event_logger.track("ApplicantReportMetUsefulRequirements", request,
+      event_logger.track(TrackEvent::ApplicantReportMetUsefulRequirements, request,
         time: Time.now.to_i,
         cbv_applicant_id: @cbv_flow.cbv_applicant_id,
         cbv_flow_id: @cbv_flow.id,
         invitation_id: @cbv_flow.cbv_flow_invitation_id
       )
     else
-      event_logger.track("ApplicantReportFailedUsefulRequirements", request, {
+      event_logger.track(TrackEvent::ApplicantReportFailedUsefulRequirements, request, {
         time: Time.now.to_i,
         cbv_applicant_id: @cbv_flow.cbv_applicant_id,
         cbv_flow_id: @cbv_flow.id,

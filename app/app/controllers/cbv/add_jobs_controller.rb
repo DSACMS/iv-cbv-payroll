@@ -8,7 +8,7 @@ class Cbv::AddJobsController < Cbv::BaseController
       return redirect_to cbv_flow_add_job_path
     end
 
-    event_logger.track("ApplicantContinuedFromAddJobsPage", request, {
+    event_logger.track(TrackEvent::ApplicantContinuedFromAddJobsPage, request, {
       time: Time.now.to_i,
       cbv_flow_id: @cbv_flow&.id,
       client_agency_id: @cbv_flow&.client_agency_id,

@@ -57,7 +57,7 @@ class CaseWorkerTransmitterJob < ApplicationJob
   end
 
   def track_transmitted_event(cbv_flow, payments)
-    event_logger.track("ApplicantSharedIncomeSummary", nil, {
+    event_logger.track(TrackEvent::ApplicantSharedIncomeSummary, nil, {
       time: Time.now.to_i,
       client_agency_id: cbv_flow.client_agency_id,
       cbv_applicant_id: cbv_flow.cbv_applicant_id,

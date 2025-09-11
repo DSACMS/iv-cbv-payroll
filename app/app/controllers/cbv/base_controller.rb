@@ -127,7 +127,7 @@ class Cbv::BaseController < ApplicationController
   end
 
   def capture_page_view
-    event_logger.track("CbvPageView", request, {
+    event_logger.track(TrackEvent::CbvPageView, request, {
       time: Time.now.to_i,
       cbv_flow_id: @cbv_flow.id,
       invitation_id: @cbv_flow.cbv_flow_invitation_id,
@@ -138,14 +138,14 @@ class Cbv::BaseController < ApplicationController
   end
 
   def track_timeout_event
-    event_logger.track("ApplicantTimedOut", request, {
+    event_logger.track(TrackEvent::ApplicantTimedOut, request, {
       time: Time.now.to_i,
       client_agency_id: current_agency&.id
     })
   end
 
   def track_expired_event(invitation)
-    event_logger.track("ApplicantAccessedExpiredLinkPage", request, {
+    event_logger.track(TrackEvent::ApplicantAccessedExpiredLinkPage, request, {
       invitation_id: invitation.id,
       cbv_applicant_id: invitation.cbv_applicant_id,
       client_agency_id: current_agency&.id,
@@ -154,7 +154,7 @@ class Cbv::BaseController < ApplicationController
   end
 
   def track_invitation_clicked_event(invitation, cbv_flow)
-    event_logger.track("ApplicantClickedCBVInvitationLink", request, {
+    event_logger.track(TrackEvent::ApplicantClickedCBVInvitationLink, request, {
       time: Time.now.to_i,
       invitation_id: invitation.id,
       cbv_flow_id: cbv_flow.id,

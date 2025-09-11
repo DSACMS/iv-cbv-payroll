@@ -20,7 +20,7 @@ class Cbv::SubmitsController < Cbv::BaseController
     respond_to do |format|
       format.html
       format.pdf do
-        event_logger.track("ApplicantDownloadedIncomePDF", request, {
+        event_logger.track(TrackEvent::ApplicantDownloadedIncomePDF, request, {
           time: Time.now.to_i,
           client_agency_id: current_agency&.id,
           cbv_applicant_id: @cbv_flow.cbv_applicant_id,
@@ -83,7 +83,7 @@ class Cbv::SubmitsController < Cbv::BaseController
   end
 
   def track_accessed_submit_event(cbv_flow)
-    event_logger.track("ApplicantAccessedSubmitPage", request, {
+    event_logger.track(TrackEvent::ApplicantAccessedSubmitPage, request, {
       time: Time.now.to_i,
       client_agency_id: current_agency&.id,
       cbv_flow_id: cbv_flow.id,
