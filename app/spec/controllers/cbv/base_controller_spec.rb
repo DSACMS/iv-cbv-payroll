@@ -78,8 +78,8 @@ RSpec.describe Cbv::BaseController, type: :controller do
 
     context "when handling origin parameters" do
       before do
-        stub_client_agency_config_value("la_ldh", "agency_domain", "la.reportmyincome.org")
-        request.host = "la.reportmyincome.org"
+        stub_client_agency_config_value("la_ldh", "agency_domain", "la.verifymyincome.org")
+        request.host = "la.verifymyincome.org"
       end
 
       it "sets the origin in the clicked invitation event" do

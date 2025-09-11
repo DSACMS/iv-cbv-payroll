@@ -55,13 +55,13 @@ RSpec.describe Cbv::SuccessesController do
         context "when the cbv_flow originates from a generic link" do
           before do
             session[:cbv_flow_id] = cbv_flow_without_invitation.id
-            stub_client_agency_config_value("sandbox", "agency_domain", "sandbox-verify-demo.navapbc.cloud")
+            stub_client_agency_config_value("sandbox", "agency_domain", "demo.divt.app")
           end
 
           it "generates a simplified generic link with shared origin" do
             get :show
 
-            expected_url = "https://sandbox-verify-demo.navapbc.cloud/en?origin=shared"
+            expected_url = "https://demo.divt.app/en?origin=shared"
             expect(response.body).to include(expected_url)
           end
 

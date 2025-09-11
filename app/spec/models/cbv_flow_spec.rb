@@ -22,27 +22,27 @@ RSpec.describe CbvFlow, type: :model do
 
       context "in production environment" do
         before do
-          stub_client_agency_config_value("sandbox", "agency_domain", "sandbox.reportmyincome.org")
+          stub_client_agency_config_value("sandbox", "agency_domain", "sandbox.verifymyincome.org")
         end
 
         it "returns simplified URL with production domain" do
-          expected_url = "https://sandbox.reportmyincome.org/en"
+          expected_url = "https://sandbox.verifymyincome.org/en"
           expect(cbv_flow.to_generic_url).to eq(expected_url)
         end
 
         it "includes origin parameter when provided" do
-          expected_url = "https://sandbox.reportmyincome.org/en?origin=shared"
+          expected_url = "https://sandbox.verifymyincome.org/en?origin=shared"
           expect(cbv_flow.to_generic_url(origin: "shared")).to eq(expected_url)
         end
       end
 
       context "in non-production environment" do
         before do
-          stub_client_agency_config_value("sandbox", "agency_domain", "sandbox-verify-demo.navapbc.cloud")
+          stub_client_agency_config_value("sandbox", "agency_domain", "demo.divt.app")
         end
 
         it "returns simplified URL with demo domain" do
-          expected_url = "https://sandbox-verify-demo.navapbc.cloud/en"
+          expected_url = "https://demo.divt.app/en"
           expect(cbv_flow.to_generic_url).to eq(expected_url)
         end
       end

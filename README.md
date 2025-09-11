@@ -232,7 +232,7 @@ This translation import system allows for efficient management of translations a
 If you're new to CBV, here's a summary of how to get started navigating the app.
 1. First, contact someone on the team to get you set up to log in.
 1. Follow the instructions in the Setup section to run locally, then go to `localhost:3000/sandbox/sso`
-1. The beginning of the workflow is to act as a caseworker to create an invitation. Start by signing in with your Nava credentials.
+1. The beginning of the workflow is to act as a caseworker to create an invitation.
 1. Create an invitation for an applicant to start using the app (use any email, and don't worry -- it won't really send!)
 1. In your terminal session, navigate to the /app directory and run `rails c` to enter the irb prompt.
 1. At the irb prompt, run `CbvFlowInvitation.last.to_url`.
@@ -425,7 +425,7 @@ See [GOVERNANCE.md](./GOVERNANCE.md)
 
 ## Feedback
 
-If you have ideas for how we can improve or add to our capacity building efforts and methods for welcoming people into our community, please let us know by sending an email to: ffs at nava pbc dot com. If you would like to comment on the tool itself, please let us know by filing an **issue on our GitHub repository.**
+If you have ideas for how we can improve or add to our capacity building efforts and methods for welcoming people into our community, please let us know by sending an email to: TODO[FILL THIS OUT WITH GENERIC] at digitalpublicworks dot org. If you would like to comment on the tool itself, please let us know by filing an **issue on our GitHub repository.**
 
 ## Policies
 
