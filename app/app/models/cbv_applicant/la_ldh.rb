@@ -7,7 +7,6 @@ class CbvApplicant::LaLdh < CbvApplicant
   ]
 
   has_redactable_fields(
-    date_of_birth: :date,
-    doc_id: :string
+    date_of_birth: :date
   )
 end

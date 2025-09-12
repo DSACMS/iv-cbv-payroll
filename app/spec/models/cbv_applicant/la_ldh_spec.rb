@@ -18,6 +18,7 @@ RSpec.describe CbvApplicant::LaLdh, type: :model do
     expect(applicant).to have_attributes(
       date_of_birth: Date.new(1990, 1, 1),
       case_number: /[0-9]+/, # Not redacted as it's not sensitive PII
+      doc_id: /[0-9]+/, # Not redacted as it's not sensitive PII
     )
   end
 end
