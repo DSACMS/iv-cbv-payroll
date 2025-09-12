@@ -1,6 +1,7 @@
 # Compliance artifacts
 
-To meet future compliance requirements, we maintain a PDF representation of our data model. We formerly had an infrastructure diagram too, which could be resurrected from git if needed.
+To meet future compliance requirements, we maintain a PDF representation of our data model. We formerly had an
+infrastructure diagram too, which could be resurrected from git if needed.
 
 ## Documents
 

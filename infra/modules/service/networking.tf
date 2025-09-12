@@ -19,7 +19,6 @@ resource "aws_security_group" "alb" {
 
   vpc_id = var.vpc_id
 
-  # TODO(https://github.com/navapbc/template-infra/issues/163) Disallow incoming traffic to port 80
   # checkov:skip=CKV_AWS_260:Disallow ingress from 0.0.0.0:0 to port 80 when implementing HTTPS support in issue #163
   ingress {
     description = "Allow HTTP traffic from public internet"

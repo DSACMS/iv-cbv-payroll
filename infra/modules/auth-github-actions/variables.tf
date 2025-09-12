@@ -10,5 +10,5 @@ variable "github_actions_role_name" {
 
 variable "github_repository" {
   type        = string
-  description = "The GitHub repository in 'org/repo' format to provide access to AWS account resources. Example: navapbc/template-infra"
+  description = "The GitHub repository in 'org/repo' format to provide access to AWS account resources."
 }

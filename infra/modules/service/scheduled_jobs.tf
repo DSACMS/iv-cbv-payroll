@@ -1,7 +1,6 @@
 resource "aws_scheduler_schedule" "scheduled_jobs" {
   for_each = var.scheduled_jobs
 
-  # TODO(https://github.com/navapbc/template-infra/issues/164) Encrypt with customer managed KMS key
   # checkov:skip=CKV_AWS_297:Encrypt with customer key in future work
 
   name                         = "${var.service_name}-${each.key}"
@@ -81,6 +80,5 @@ resource "aws_cloudwatch_log_group" "scheduled_jobs" {
   # Looser requirements may allow shorter retention periods
   retention_in_days = 1827
 
-  # TODO(https://github.com/navapbc/template-infra/issues/164) Encrypt with customer managed KMS key
   # checkov:skip=CKV_AWS_158:Encrypt service logs with customer key in future work
 }
