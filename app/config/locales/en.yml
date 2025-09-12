@@ -434,7 +434,7 @@ en:
         invitation_link_label: Invitation link
         share_invitation_link_content: Share this link to anyone in your household who needs to report their income.
         share_invitation_link_title: Share a link if others in your household need to report their income.
-        survey: Take the 3 question survey
+        survey: Take the 5 question survey
         whats_next: What's next?
         whats_next_1_li_1: If you couldn’t find a job or don’t get paystubs, report your income to %{agency_acronym} online, in person, or by mail.
         whats_next_1_li_2_html: Go to <a href="%{agency_website}" target="_blank" rel="noopener noreferrer">%{agency_acronym}'s website</a>
@@ -653,7 +653,7 @@ en:
     agency_full_name:
       az_des: Department of Economic Security/Family Assistance Administration
       la_ldh: Louisiana Department of Health
-      pa_dhs: PA Department of HUman Services
+      pa_dhs: PA Department of Human Services
       sandbox: CBV Test Agency
     app_name:
       az_des: MyFamilyBenefits

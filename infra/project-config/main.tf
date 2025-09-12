@@ -3,7 +3,7 @@ locals {
   # This will be used in names of AWS resources
   project_name = "iv-cbv-payroll"
 
-  # Project owner (e.g. navapbc). Used for tagging infra resources.
+  # Project owner. Used for tagging infra resources.
   owner = "Digital-Public-Works"
 
   # URL of project source code repository

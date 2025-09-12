@@ -31,7 +31,7 @@ This action sometimes fails when the Docker rate limit has been reached:
 
 > ERROR: failed to solve: registry.docker.com/library/ruby:3.3.0-slim: failed to copy: httpReadSeeker: failed open: unexpected status code https://registry.docker.com/v2/library/ruby/manifests/sha256:{commit sha}: 429 Too Many Requests - Server message: toomanyrequests: You have reached your pull rate limit. You may increase the limit by authenticating and upgrading: https://www.docker.com/increase-rate-limit
 
-Docker is likely rate limiting pulling of the Ruby image. This limit resets every 6 hours. Still, Github uses multiple IPs to make egress calls. **Simply redeploying the workflow usually works.** [Further discussion](https://nava.slack.com/archives/C06FC5TPAR3/p1719865408255839?thread_ts=1719862944.272089&cid=C06FC5TPAR3).
+Docker is likely rate limiting pulling of the Ruby image. This limit resets every 6 hours. Still, Github uses multiple IPs to make egress calls. **Simply redeploying the workflow usually works.**
 
 
 ## How to change environment variables

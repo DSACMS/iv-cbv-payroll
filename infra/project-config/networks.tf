@@ -14,14 +14,6 @@ locals {
             source                    = "issued"
             subject_alternative_names = ["*.divt.app", "*.demo.divt.app"]
           }
-
-          # Example certificate configuration for a certificate that is issued elsewhere and imported into the project
-          # (currently not supported, will be supported via https://github.com/navapbc/template-infra/issues/559)
-          # "platform-test-dev.navateam.com" = {
-          #   source = "imported"
-          #   private_key_ssm_name = "/certificates/sub.domain.com/private-key"
-          #   certificate_body_ssm_name = "/certificates/sub.domain.com/certificate-body"
-          # }
         }
       }
 
