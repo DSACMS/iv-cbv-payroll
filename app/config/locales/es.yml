@@ -315,7 +315,7 @@ es:
         invitation_link_label: Enlace de invitación
         share_invitation_link_content: Comparta este enlace con todos los miembros de su hogar que necesiten reportar sus ingresos.
         share_invitation_link_title: Comparta el enlace si otras personas en su hogar necesitan reportar sus ingresos.
-        survey: Responda esta encuesta de 3 preguntas
+        survey: Responda esta encuesta de 5 preguntas
         whats_next: "¿Qué sigue?"
         whats_next_1_li_1: Si no pudo encontrar empleo o no dispone de talones de pago, reporte sus ingresos a %{agency_acronym} en línea, en persona o por correo.
         whats_next_1_li_2_html: Visite el <a href="%{agency_website}" target="_blank" rel="noopener noreferrer">sitio web de %{agency_acronym}</a>
