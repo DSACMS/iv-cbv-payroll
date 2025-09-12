@@ -13,7 +13,6 @@ class CbvApplicant::LaLdh < CbvApplicant
     first_name: :string,
     middle_name: :string,
     last_name: :string,
-    date_of_birth: :date,
-    doc_id: :string
+    date_of_birth: :date
   )
 end
