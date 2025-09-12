@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2025_07_07_143214) do
+ActiveRecord::Schema[7.2].define(version: 2025_09_12_000910) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pgcrypto"
   enable_extension "plpgsql"
@@ -38,6 +38,8 @@ ActiveRecord::Schema[7.1].define(version: 2025_07_07_143214) do
     t.string "client_agency_id"
     t.jsonb "income_changes"
     t.date "date_of_birth"
+    t.bigint "cbv_flow_invitation_id"
+    t.index ["cbv_flow_invitation_id"], name: "index_cbv_applicants_on_cbv_flow_invitation_id"
   end
 
   create_table "cbv_flow_invitations", force: :cascade do |t|
@@ -239,6 +241,7 @@ ActiveRecord::Schema[7.1].define(version: 2025_07_07_143214) do
     t.index ["payroll_account_id"], name: "index_webhook_events_on_payroll_account_id"
   end
 
+  add_foreign_key "cbv_applicants", "cbv_flow_invitations"
   add_foreign_key "cbv_flow_invitations", "users"
   add_foreign_key "cbv_flows", "cbv_flow_invitations"
   add_foreign_key "payroll_accounts", "cbv_flows"

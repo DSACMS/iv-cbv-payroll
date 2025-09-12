@@ -4,6 +4,7 @@ class CbvApplicant < ApplicationRecord
   after_initialize :set_snap_application_date, if: :new_record?
   after_initialize :set_applicant_attributes
   attr_reader :applicant_attributes, :required_applicant_attributes
+  after_commit :set_cbv_flow_invitation_id
 
   # We use Single-Table Inheritance (STI) to create subclasses of this table
   # logic to process subsets of the columns of this model relevant to each
@@ -139,5 +140,12 @@ class CbvApplicant < ApplicationRecord
 
   def agency_config
     Rails.application.config.client_agencies[client_agency_id]
+  end
+
+  def set_cbv_flow_invitation_id
+    return unless cbv_flow_invitations.first.present?
+    return if self[:cbv_flow_invitation_id] == cbv_flow_invitations.first.id
+
+    update(cbv_flow_invitation_id: cbv_flow_invitations.first.id)
   end
 end
