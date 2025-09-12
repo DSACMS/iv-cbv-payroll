@@ -16,7 +16,8 @@ class Api::InvitationsController < ApplicationController
     render json: {
       tokenized_url: @cbv_flow_invitation.to_url,
       expiration_date: @cbv_flow_invitation.expires_at_local,
-      language: @cbv_flow_invitation.language
+      language: @cbv_flow_invitation.language,
+      agency_partner_metadata: allowed_metadata_params
     }, status: :created
   end
 
@@ -25,17 +26,9 @@ class Api::InvitationsController < ApplicationController
   def cbv_flow_invitation_params
     client_agency_id = @current_user.client_agency_id
 
-    # Allow params in the VALID_ATTRIBUTES array for the relevant agency
-    # CbvApplicant subclass.
-    metadata_params = params.delete(:agency_partner_metadata)
-    allowed_metadata_params = metadata_params.slice(*CbvApplicant.valid_attributes_for_agency(client_agency_id))
-
-    # Delete client_agency_id param since we base it off the API key instead
-    params.delete(:client_agency_id)
-
     # Permit top-level params of the invitation itself, while merging back in
     # the allowed applicant attributes.
-    permitted = params.permit(:language, :email_address, :user_id)
+    permitted = params.without(:client_agency_id, :agency_partner_metadata).permit(:language, :email_address, :user_id)
     permitted.deep_merge!(
       client_agency_id: client_agency_id,
       email_address: @current_user.email,
@@ -43,6 +36,16 @@ class Api::InvitationsController < ApplicationController
         client_agency_id: client_agency_id,
         **allowed_metadata_params.permit!
       }
+    )
+  end
+
+  def allowed_metadata_params
+    # Allow params in the VALID_ATTRIBUTES array for the relevant agency
+    # CbvApplicant subclass.
+    ActionController::Parameters.new(
+      CbvApplicant.valid_attributes_for_agency(@current_user.client_agency_id).each_with_object({}) do |attribute, hash|
+        hash[attribute.to_s] = params[:agency_partner_metadata][attribute]
+      end
     )
   end
 

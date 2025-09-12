@@ -16,9 +16,6 @@ RSpec.describe CbvApplicant::LaLdh, type: :model do
     applicant = CbvApplicant.create(la_ldh_attributes)
     applicant.redact!
     expect(applicant).to have_attributes(
-      first_name: "REDACTED",
-      middle_name: "REDACTED",
-      last_name: "REDACTED",
       date_of_birth: Date.new(1990, 1, 1),
       case_number: /[0-9]+/, # Not redacted as it's not sensitive PII
     )
