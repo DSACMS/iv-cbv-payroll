@@ -21,6 +21,6 @@ available at [http://contributor-covenant.org/version/1/0/0/](http://contributor
 
 ## Acknowledgements
 
-This CODE_OF_CONDUCT.md was originally forked from the [United States Digital Service](https://usds.gov) [Justice40](https://thejustice40.com)
+This CODE_OF_CONDUCT.md was originally forked from the United States Digital Service [Justice40](https://thejustice40.com)
 open source [repository](https://github.com/usds/justice40-tool), and we would like to acknowledge and thank the
 community for their contributions.

@@ -30,7 +30,8 @@ resource "aws_lambda_function" "sftp_auth_lambda_function" {
   tracing_config {
     mode = "Active"
   }
-  #checkov:skip=CKV_AWS_117:Ensure that AWS Lambda function is configured inside a VPC
+  # checkov:skip=CKV_AWS_117:Ensure that AWS Lambda function is configured inside a VPC
+  # checkov:skip=CKV_AWS_272:T TODO: code signer
 
   dead_letter_config {
     target_arn = aws_sns_topic.sftp_auth_lambda_dlq.arn
