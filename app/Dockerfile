@@ -27,18 +27,6 @@ FROM registry.docker.com/library/ruby:$RUBY_VERSION AS base
 # hadolint ignore=DL3008
 RUN apt-get update -qq && \
     apt-get install -y --no-install-recommends \
-      libtasn1-6 \
-      libgnutls30 \
-      # CVE-2025-0395 \
-      libc-dev-bin \
-      # CVE-2025-31115 \
-      liblzma5 \
-      # CVE-2025-37990 \
-      linux-libc-dev \
-      # CVE-2025-32415 CVE-2025-5222 \
-      libxml2 libxml2-dev icu-devtools libicu-dev libicu76 \
-      # CVE-2025-53367 \
-      libdjvulibre21 \
       # CVE-2025-7424 \
       libxslt1-dev \
       # CVE-2025-55154 CVE-2025-55298 \
