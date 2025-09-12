@@ -27,8 +27,6 @@ FROM registry.docker.com/library/ruby:$RUBY_VERSION AS base
 # hadolint ignore=DL3008
 RUN apt-get update -qq && \
     apt-get install -y --no-install-recommends \
-      # CVE-2025-7424 \
-      libxslt1-dev \
       # CVE-2025-55154 CVE-2025-55298 \
       imagemagick \
       && \
