@@ -6,12 +6,14 @@ class CbvApplicant::LaLdh < CbvApplicant
     last_name
     case_number
     date_of_birth
+    doc_id
   ]
 
   has_redactable_fields(
     first_name: :string,
     middle_name: :string,
     last_name: :string,
-    date_of_birth: :date
+    date_of_birth: :date,
+    doc_id: :string
   )
 end

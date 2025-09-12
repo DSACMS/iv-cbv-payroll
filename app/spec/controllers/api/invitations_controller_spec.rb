@@ -21,10 +21,13 @@ RSpec.describe Api::InvitationsController do
       request.headers["Authorization"] = "Bearer #{api_access_token_instance.access_token}"
     end
 
+    subject do
+      post :create, params: valid_params
+    end
+
     it "creates an invitation with an associated cbv_applicant" do
-      expect do
-        post :create, params: valid_params
-      end.to change(CbvFlowInvitation, :count).by(1)
+      expect { subject }
+        .to change(CbvFlowInvitation, :count).by(1)
         .and change(CbvApplicant, :count).by(1)
 
       expect(response).to have_http_status(:created)
@@ -32,9 +35,8 @@ RSpec.describe Api::InvitationsController do
     end
 
     it "creates an invitation using the client_agency_id in the access_token" do
-      expect do
-        post :create, params: valid_params
-      end.to change(CbvFlowInvitation, :count).by(1)
+      expect { subject }
+        .to change(CbvFlowInvitation, :count).by(1)
         .and change(CbvApplicant, :count).by(1)
 
       invitation = CbvFlowInvitation.last
@@ -45,9 +47,8 @@ RSpec.describe Api::InvitationsController do
       let(:client_agency_id) { "az_des".to_sym }
 
       it "creates an invitation" do
-        expect do
-          post :create, params: valid_params
-        end.to change(CbvFlowInvitation, :count).by(1)
+        expect { subject }
+          .to change(CbvFlowInvitation, :count).by(1)
           .and change(CbvApplicant, :count).by(1)
 
         invitation = CbvFlowInvitation.last
@@ -57,6 +58,30 @@ RSpec.describe Api::InvitationsController do
         expect(applicant.client_agency_id).to eq("az_des")
         expect(applicant.income_changes.length).to eq(2)
         expect(applicant.income_changes[0]["member_name"]).to eq("Mark Scout")
+      end
+    end
+
+    context "when inviting a user in LA LDH" do
+      let(:client_agency_id) { "la_ldh".to_sym }
+      let(:valid_params) do
+        attributes_for(:cbv_flow_invitation, client_agency_id).tap do |params|
+          params[:agency_partner_metadata] = {
+            doc_id: "ABC1234"
+          }
+        end
+      end
+
+      it "creates an invitation" do
+        expect { subject }
+          .to change(CbvFlowInvitation, :count).by(1)
+          .and change(CbvApplicant, :count).by(1)
+
+        invitation = CbvFlowInvitation.last
+        expect(invitation.client_agency_id).to eq(client_agency_id.to_s)
+
+        applicant = invitation.cbv_applicant
+        expect(applicant.client_agency_id).to eq("la_ldh")
+        expect(applicant.doc_id).to eq("ABC1234")
       end
     end
 
