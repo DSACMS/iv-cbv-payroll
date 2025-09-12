@@ -6,6 +6,7 @@ class CbvApplicant::LaLdh < CbvApplicant
     last_name
     case_number
     date_of_birth
+    doc_id
   ]
 
   has_redactable_fields(

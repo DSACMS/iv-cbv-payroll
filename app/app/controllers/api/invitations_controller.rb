@@ -19,6 +19,8 @@ class Api::InvitationsController < ApplicationController
     }, status: :created
   end
 
+  private
+
   def cbv_flow_invitation_params
     client_agency_id = @current_user.client_agency_id
 
@@ -39,8 +41,6 @@ class Api::InvitationsController < ApplicationController
       }
     )
   end
-
-  private
 
   def authenticate
     authenticate_or_request_with_http_token do |token, options|
