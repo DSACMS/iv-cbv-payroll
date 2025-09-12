@@ -57,7 +57,7 @@ class CaseWorkerTransmitterJob < ApplicationJob
   end
 
   def track_transmitted_event(cbv_flow, payments)
-    event_logger.track("ApplicantSharedIncomeSummary", nil, {
+    event_logger.track(TrackEvent::ApplicantSharedIncomeSummary, nil, {
       time: Time.now.to_i,
       client_agency_id: cbv_flow.client_agency_id,
       cbv_applicant_id: cbv_flow.cbv_applicant_id,
@@ -70,10 +70,6 @@ class CaseWorkerTransmitterJob < ApplicationJob
       flow_started_seconds_ago: (cbv_flow.consented_to_authorized_use_at - cbv_flow.created_at).to_i,
       locale: I18n.locale
     })
-  rescue => ex
-    raise ex unless Rails.env.production?
-
-    Rails.logger.error "Failed to track event: #{ex.message}"
   end
 
   def pinwheel

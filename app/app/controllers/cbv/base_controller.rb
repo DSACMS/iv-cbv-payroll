@@ -127,56 +127,45 @@ class Cbv::BaseController < ApplicationController
   end
 
   def capture_page_view
-    begin
-      event_logger.track("CbvPageView", request, {
-        time: Time.now.to_i,
-        cbv_flow_id: @cbv_flow.id,
-        invitation_id: @cbv_flow.cbv_flow_invitation_id,
-        cbv_applicant_id: @cbv_flow.cbv_applicant_id,
-        client_agency_id: @cbv_flow.client_agency_id,
-        path: request.path
-      })
-    rescue => ex
-      raise unless Rails.env.production?
-      Rails.logger.error "Unable to track event (CbvPageView): #{ex}"
-    end
+    event_logger.track(TrackEvent::CbvPageView, request, {
+      time: Time.now.to_i,
+      cbv_flow_id: @cbv_flow.id,
+      invitation_id: @cbv_flow.cbv_flow_invitation_id,
+      cbv_applicant_id: @cbv_flow.cbv_applicant_id,
+      client_agency_id: @cbv_flow.client_agency_id,
+      path: request.path
+    })
   end
 
   def track_timeout_event
-    event_logger.track("ApplicantTimedOut", request, {
+    event_logger.track(TrackEvent::ApplicantTimedOut, request, {
       time: Time.now.to_i,
       client_agency_id: current_agency&.id
     })
-  rescue => ex
-    Rails.logger.error "Unable to track event (ApplicantTimedOut): #{ex}"
   end
 
   def track_expired_event(invitation)
-    event_logger.track("ApplicantAccessedExpiredLinkPage", request, {
+    event_logger.track(TrackEvent::ApplicantAccessedExpiredLinkPage, request, {
       invitation_id: invitation.id,
       cbv_applicant_id: invitation.cbv_applicant_id,
       client_agency_id: current_agency&.id,
       time: Time.now.to_i
     })
-  rescue => ex
-    Rails.logger.error "Unable to track event (ApplicantAccessedExpiredLinkPage): #{ex}"
   end
 
   def track_invitation_clicked_event(invitation, cbv_flow)
-    event_logger.track("ApplicantClickedCBVInvitationLink", request, {
+    event_logger.track(TrackEvent::ApplicantClickedCBVInvitationLink, request, {
       time: Time.now.to_i,
       invitation_id: invitation.id,
       cbv_flow_id: cbv_flow.id,
       cbv_applicant_id: cbv_flow.cbv_applicant_id,
       client_agency_id: current_agency&.id,
       seconds_since_invitation: (Time.now - invitation.created_at).to_i,
-      household_member_count:  count_unique_members(invitation),
+      household_member_count: count_unique_members(invitation),
       completed_reports_count: invitation.cbv_flows.completed.count,
       flows_started_count: invitation.cbv_flows.count,
       origin: session[:cbv_origin]
     })
-  rescue => ex
-    Rails.logger.error "Unable to track event (ApplicantClickedCBVInvitationLink): #{ex}"
   end
 
   def count_unique_members(invitation)
