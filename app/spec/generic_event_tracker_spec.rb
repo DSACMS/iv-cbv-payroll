@@ -36,7 +36,10 @@ RSpec.describe GenericEventTracker do
       it 'logs to error with that event and reraises an error in non prod environments' do
         expect { described_class.new.track(@event_type, request_mock, {}) }
           .to raise_error(RuntimeError)
-        expect(Rails.logger).to have_received(:error).with(/Unable to track event \(#{@event_type}\): RuntimeError/)
+        expect(Rails.logger).to have_received(:error)
+          .with(/Unable to track event \(#{@event_type}\): RuntimeError, line: /)
+          .with(/line: /)
+          .with(/.rb:/)
       end
 
       it 'logs an error but does not raise in prod' do

@@ -168,6 +168,10 @@ class Webhooks::Pinwheel::EventsController < ApplicationController
         gigs_type_shift_count: report.gigs.count { |g| g.gig_type == "shift" }
       })
     end
+  rescue => ex
+    raise ex unless Rails.env.production?
+
+    Rails.logger.error "Unable to process webhook event (in #{self.class.name}): #{ex}"
   end
 
   def validate_useful_report_requirements(report)
