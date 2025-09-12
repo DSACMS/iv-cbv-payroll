@@ -21,6 +21,10 @@ on:
         options:
           - dev
           - prod
+      commit_sha:
+        required: false
+        type: string
+        description: "Override commit SHA to deploy"
 permissions:
     id-token: write
 
@@ -34,4 +38,5 @@ jobs:
     with:
       app_name: "app"
       environment: ${{ inputs.environment || 'dev' }}
+      commit_sha: ${{ inputs.commit_sha || github.ref }}
     secrets: inherit
