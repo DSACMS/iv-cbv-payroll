@@ -1,5 +1,6 @@
 class Api::InvitationsController < ApplicationController
   skip_forgery_protection
+  wrap_parameters false
 
   before_action :authenticate
 
@@ -28,6 +29,9 @@ class Api::InvitationsController < ApplicationController
     # CbvApplicant subclass.
     metadata_params = params.delete(:agency_partner_metadata)
     allowed_metadata_params = metadata_params.slice(*CbvApplicant.valid_attributes_for_agency(client_agency_id))
+
+    # Delete client_agency_id param since we base it off the API key instead
+    params.delete(:client_agency_id)
 
     # Permit top-level params of the invitation itself, while merging back in
     # the allowed applicant attributes.
