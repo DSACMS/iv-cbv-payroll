@@ -19,6 +19,12 @@ FactoryBot.define do
       cbv_applicant { create(:cbv_applicant, :az_des) }
     end
 
+    trait :pa_dhs do
+      client_agency_id { "pa_dhs" }
+
+      cbv_applicant { create(:cbv_applicant, :pa_dhs) }
+    end
+
     trait :la_ldh do
       client_agency_id { "la_ldh" }
 

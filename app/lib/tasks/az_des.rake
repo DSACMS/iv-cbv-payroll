@@ -2,7 +2,7 @@ namespace :az_des do
   desc "create API production user"
   task create_api_access_token: :environment do
     user = User.find_or_create_by(
-      email: "ffs-eng+az_des@navapbc.com",
+      email: "ffs-eng+az_des@digitalpublicworks.org",
       client_agency_id: "az_des"
     )
 

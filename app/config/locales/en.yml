@@ -247,6 +247,9 @@ en:
         error_updating_applicant: An error occurred while updating the applicant information. Please try again.
     employer_searches:
       show:
+        alert:
+          heading: Need help connecting to your payroll provider?
+          help_options: Get help here.
         app_based_providers: App-based employers
         can_not_find_employer: I can’t find my employer or payroll provider
         employer_not_listed: Employer not listed?
@@ -340,7 +343,7 @@ en:
         employment_start_date: Employment start date
         employment_status: Employment status
         frequency_unknown: Frequency Unknown
-        header: Your payment information from %{employer_name}
+        header: Review your payment information from %{employer_name}
         header_no_employer_name: Your payment information from your employer
         hourly_rate: Compensation amount
         hours:
@@ -360,9 +363,7 @@ en:
         pay_period_value: "%{start_date} to %{end_date}"
         payment_hours: "%{amount} hours"
         payments_and_deductions_table_header: Payments and deductions
-        subheader: We have gathered your income records from the past %{report_data_range} as requested by %{agency_acronym} from %{start_date} to %{end_date}. If the information is missing or inaccurate, add a comment for %{agency_acronym}. This will be included in your income report and linked to your %{benefit} %{reporting_purpose}.
-        total_gross_description: This is the total gross income from your job before taxes, benefits and deductions were taken out of your paycheck.
-        total_gross_income: 'Total income from the past %{report_data_range}, before taxes: %{amount}'
+        subheader_html: We have gathered your payment records from the past %{report_data_range} from %{start_date} to %{end_date}.<br>Please review your information. If something is missing or inaccurate, add a comment for %{agency_acronym}. This will be included in your income report.
         unknown: Unknown
         your_details: Your details
     submits:
@@ -380,6 +381,7 @@ en:
           agency_header_name:
             az_des: Department of Economic Security
             la_ldh: Department of Health
+            pa_dhs: Department of Human Services
             sandbox: CBV Test Agency
           caseworker:
             agreement_consent_timestamp: Agreement Consent Timestamp
@@ -432,7 +434,7 @@ en:
         invitation_link_label: Invitation link
         share_invitation_link_content: Share this link to anyone in your household who needs to report their income.
         share_invitation_link_title: Share a link if others in your household need to report their income.
-        survey: Take the 3 question survey
+        survey: Take the 5 question survey
         whats_next: What's next?
         whats_next_1_li_1: If you couldn’t find a job or don’t get paystubs, report your income to %{agency_acronym} online, in person, or by mail.
         whats_next_1_li_2_html: Go to <a href="%{agency_website}" target="_blank" rel="noopener noreferrer">%{agency_acronym}'s website</a>
@@ -493,7 +495,7 @@ en:
             what_does_this_mean: What does this information mean?
         dollars_times_miles: "(%{dollar_amount} x %{number_of_miles} miles)"
         month: Month
-        monthly_summary: Monthly Summary
+        monthly_summary: Monthly summary
         partial_month_text: "(Partial month: from %{start_date}-%{end_date})"
         partial_month_text_simple: "(Partial month)"
         payments_from_header: Payments from %{employer_name}
@@ -502,7 +504,7 @@ en:
         total_gig_hours: Total hours worked
         verified_mileage_expenses: Verified mileage expenses
         w2:
-          definition_gross_income: '"Gross income" is the pay from your job before taxes, benefits, and deductions were taken out of your paychecks. In the table above, your total gross income is summed for the month within the 90 day window'
+          definition_gross_income: '"Gross income" is the pay from your job before taxes, benefits, and deductions were taken out of your paychecks. In the table above, your total gross income is summed for the month within the 90 day window.'
           definition_number_of_paychecks: '"Number of paychecks" is how many times you were paid in a month within the 90-day window.'
           definition_total_hours_worked: '"Total hours worked" are the total number of hours you worked for every paycheck you received in a month.'
           title_gross_income: Gross income
@@ -516,9 +518,6 @@ en:
       month_year: "%B %Y"
       short: "%b %-d"
   help:
-    alert:
-      heading: Need help connecting to your payroll provider?
-      help_options: Get help here.
     index:
       company_id: I don't know my company ID
       credentials: I don't feel comfortable entering my login credentials
@@ -649,13 +648,16 @@ en:
     agency_acronym:
       az_des: DES/FAA
       la_ldh: LDH
+      pa_dhs: DHS
       sandbox: CBV
     agency_full_name:
       az_des: Department of Economic Security/Family Assistance Administration
       la_ldh: Louisiana Department of Health
+      pa_dhs: PA Department of Human Services
       sandbox: CBV Test Agency
     app_name:
       az_des: MyFamilyBenefits
+      pa_dhs: VerifyMyIncome
       sandbox: CBVApp
     banner:
       lock: Lock
@@ -663,6 +665,7 @@ en:
     benefit:
       az_des: Nutrition Assistance
       la_ldh: Medicaid
+      pa_dhs: Nutrition Assistance
       sandbox: SNAP
     error_unauthorized: The URL you're accessing is forbidden for the current user. Please verify you are logged in as the correct user and try accessing the URL again.
     footer:
@@ -672,6 +675,7 @@ en:
       cbv_flow_title:
         az_des: Department of Economic Security
         la_ldh: Department of Health
+        pa_dhs: Department of Human Services
         sandbox: CBV Test Agency
       close: Close
       help: Help
@@ -680,6 +684,7 @@ en:
         az_des: A website in partnership with the Arizona Department of Economic Security.
         default: A website in partnership with CBV Test Agency.
         la_ldh: A website in partnership with the Louisiana Department of Health
+        pa_dhs: A website in partnership with the Pennsylvania Department of Human Services
       primary: Primary navigation
     languages:
       en: English
@@ -696,6 +701,7 @@ en:
     reporting_purpose:
       az_des: Mid Approval Contact form
       la_ldh: benefits
+      pa_dhs: SNAP Renewal
       sandbox: benefits
     select_placeholder: "- Select -"
     skip_link: Skip to main content

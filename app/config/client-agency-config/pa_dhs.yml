@@ -1,0 +1,36 @@
+id: pa_dhs
+active: <%= ENV["AGENCY_PA_DHS_ACTIVE"] %>
+agency_name: Department of Human Services
+agency_contact_website: https://www.pa.gov/agencies/dhs/programs-services/apply-for-benefits
+agency_domain: "pa"
+# No caseworker feedback form since they will only be interacting with the PDFs
+# caseworker_feedback_form: null
+pinwheel:
+  environment: <%= ENV["PA_DHS_PINWHEEL_ENVIRONMENT"] %>
+argyle:
+  environment: <%= ENV["PA_DHS_ARGYLE_ENVIRONMENT"] %>
+transmission_method: sftp
+transmission_method_configuration:
+  user: <%= ENV['PA_DHS_SFTP_USER'] %>
+  password: <%= ENV['PA_DHS_SFTP_PASSWORD'] %>
+  url: <%= ENV['PA_DHS_SFTP_URL'] %>
+  sftp_directory: <%= ENV['PA_DHS_SFTP_DIRECTORY'] %>
+  csv_summary_reports_enabled: false
+staff_portal_enabled: false
+pilot_ended: false
+generic_links_disabled: true
+sso:
+  client_id: <%= ENV["AZURE_SANDBOX_CLIENT_ID"] %>
+  client_secret: <%= ENV["AZURE_SANDBOX_CLIENT_SECRET"] %>
+  tenant_id: <%= ENV["AZURE_SANDBOX_TENANT_ID"] %>
+  scope: "openid"
+  name: "pa_dhs"
+pay_income_days:
+  w2: 90
+  gig: 90
+invitation_valid_days: 10
+allow_invitation_reuse: true
+logo_path: pa_logo.png
+weekly_report:
+  recipient: <%= ENV['PA_DHS_WEEKLY_REPORT_RECIPIENTS'] %>
+  report_variant: invitations

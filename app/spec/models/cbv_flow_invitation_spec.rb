@@ -161,6 +161,26 @@ RSpec.describe CbvFlowInvitation, type: :model do
     end
   end
 
+  describe "#to_url" do
+    let(:invitation) { create(:cbv_flow_invitation, client_agency_id: "sandbox", language: "en") }
+
+    before do
+      stub_client_agency_config_value("sandbox", "agency_domain", "sandbox")
+    end
+
+    it "returns URL with token and locale" do
+      expected_url = "https://sandbox.#{ENV["DOMAIN_NAME"]}/en/cbv/entry?token=#{invitation.auth_token}"
+      expect(invitation.to_url).to eq(expected_url)
+    end
+
+    it "includes origin parameter when provided" do
+      expected_url = "https://sandbox.#{ENV["DOMAIN_NAME"]}/en/cbv/entry?origin=shared&token=#{invitation.auth_token}"
+      expect(invitation.to_url(origin: "shared")).to eq(expected_url)
+    end
+  end
+
+
+
   describe "foreign key constraints" do
     context "has an associated user" do
       it "has an associated user email" do

@@ -9,8 +9,8 @@
 #   a = ArgyleWebhooksManager.new("az_des")
 #   a.create_subscriptions_if_necessary(ENV["DOMAIN_NAME"], "production")
 #
-# The webhooks will be registered based on the Argyle environment specified in the
-# "az_des" configuration in client-agency-config.yml.
+# The webhooks will be registered based on the Argyle environment specified in
+# each partner's configuration in the client-agency-config folder
 class ArgyleWebhooksManager
   def initialize(agency_id: "sandbox", logger: Rails.logger)
     @agency_config = Rails.application.config.client_agencies[agency_id]

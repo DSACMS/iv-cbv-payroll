@@ -31,7 +31,7 @@ check_config() {
     echo "Enabling this will make your life substantially easier because any"
     echo "merge conflicts you resolve will be reused if you need to start from the"
     echo "beginning again."
-    echo 
+    echo
     echo "We highly recommend adding to your ~/.gitconfig:"
     echo
     echo "  [rerere]"
@@ -66,17 +66,12 @@ upgrade_version() {
   local target_version=$2
   local template_directory=$3
   local tmpdir=$4
-  
+
   echo "Upgrading from $(red "$current_version") to $(green "$target_version"):"
-  echo "  View release notes on Github for $target_version:"
-  echo "  https://github.com/navapbc/template-infra/releases/tag/$target_version"
   echo
 
   # #######################################################################
   # Generate the patch that represents the upgrade diff
-  #
-  # Approach is modeled after:
-  # https://github.com/navapbc/template-infra/blob/main/template-only-bin/update-template
   # #######################################################################
   pushd "$template_directory" >/dev/null
   git format-patch --binary -o "$tmpdir" "${current_version}..${target_version}" \
@@ -117,7 +112,7 @@ trap 'rm -rf $tmpdir' EXIT
 template_directory=$(cd ../template-infra; pwd)
 current_sha=$(cat .template-version)
 # This may be blank if we don't start on a SHA for a released version
-current_version="$(git tag --points-at "${current_sha}")" 
+current_version="$(git tag --points-at "${current_sha}")"
 
 create_upgrade_version_list "$current_sha" "$template_directory" "$tmpdir"
 while read -r -u 10 target_version; do

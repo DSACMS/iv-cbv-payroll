@@ -10,19 +10,18 @@ Follow these steps to perform a load test:
     * ECS service (app-dev) = 10 containers (tasks)
     * DB cluster (app-dev) = 10 ACUs
 3. Pause the "default" queue so we don't track a ton of useless Mixpanel events during the test.
-    * https://verify-demo.navapbc.cloud/jobs      (un/pw in 1Password) <!-- markdown-link-check-disable-line -->
+    * https://demo.divt.app/jobs      (un/pw in 1Password)
 
 ### Running the test
 3. Get a fresh COOKIE by starting the CBV session and copying out the value of the cookie
     ```
-    export COOKIE=$(curl -L --cookie-jar - https://verify-demo.navapbc.cloud/cbv/links/sandbox | grep _iv_cbv_payroll_session | cut -f 7)
+    export COOKIE=$(curl -L --cookie-jar - https://demo.divt.app/cbv/links/sandbox | grep _iv_cbv_payroll_session | cut -f 7)
     ```
 4. Then run this script like:
     ```
-    k6 run loadtest.js --env "COOKIE=$COOKIE" --env URL=https://verify-demo.navapbc.cloud/cbv/employer_search
+    k6 run loadtest.js --env "COOKIE=$COOKIE" --env URL=https://demo.divt.app/cbv/employer_search
     ```
-5. Record the metrics by copying them into Confluence.
-    * Louisiana - https://confluenceent.cms.gov/display/SFIV/Louisiana+%7C+Pre-launch+Load+Testing+Benchmarks+and+SLOs
+5. Record the metrics.
 
 ### Cleanup
 6. Delete all jobs enqueued within the "default" job queue:
@@ -34,7 +33,7 @@ Follow these steps to perform a load test:
     > SolidQueue::Queue.new("default").clear
     ```
 7. Resume the "default" queue execution.
-    * https://verify-demo.navapbc.cloud/jobs      (un/pw in 1Password) <!-- markdown-link-check-disable-line -->
+    * https://demo.divt.app/jobs      (un/pw in 1Password)
 
 
 ## Developing Locally with K6
@@ -56,7 +55,7 @@ Default password: admin
 
 In Grafana, add a data source: choose InfluxDB
 
-URL: http://influxdb:8086 <!-- markdown-link-check-disable-line -->
+URL: http://influxdb:8086
 
 
 Database: k6
@@ -76,7 +75,7 @@ If you'd like to import this dashboard, select "import dashboard" and copy-paste
 
 Set up a user in the environment you'd like to load test. While logged in as the user, in the browser console, grab the cookie `_iv_cbv_payroll_session`. Put the **NON** url decoded value, supply that into USER_TOKENS below.
 
-K6_OUT=influxdb k6 run loadtest.js --env USER_TOKENS=<COMMA_SEPERATED_TOKENS> --env URL=<example: https://verify-demo.navapbc.cloud/cbv/employer_search> <!-- markdown-link-check-disable-line -->
+K6_OUT=influxdb k6 run loadtest.js --env USER_TOKENS=<COMMA_SEPERATED_TOKENS> --env URL=<example: https://demo.divt.app/cbv/employer_search>
 
 
 ####
@@ -105,4 +104,4 @@ sudo dnf install k6
 
 # running without dumping into influxdb
 
-k6 run loadtest.js --env COOKIE=<YOUR_COOKIE> --env URL=https://verify-demo.navapbc.cloud
+k6 run loadtest.js --env COOKIE=<YOUR_COOKIE> --env URL=https://demo.divt.app

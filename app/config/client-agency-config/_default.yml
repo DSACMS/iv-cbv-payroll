@@ -1,0 +1,44 @@
+# This is the default environment configuration that will be loaded if no subdomain is provided
+id: sandbox
+active: <%= ENV["AGENCY_DEFAULT_ACTIVE"] %>
+agency_name: CBV Test Agency
+agency_contact_website: https://www.example.com/contact
+agency_domain: "sandbox"
+caseworker_feedback_form: https://forms.gle/Qb7D12kHZymur5jKA
+pinwheel:
+  environment: <%= ENV["SANDBOX_PINWHEEL_ENVIRONMENT"] %>
+argyle:
+  environment: <%= ENV["SANDBOX_ARGYLE_ENVIRONMENT"] %>
+transmission_method: shared_email
+transmission_method_configuration:
+  email: <%= ENV['SLACK_TEST_EMAIL'] %>
+staff_portal_enabled: true
+pilot_ended: false
+sso:
+  client_id:     <%= ENV["AZURE_SANDBOX_CLIENT_ID"] %>
+  client_secret: <%= ENV["AZURE_SANDBOX_CLIENT_SECRET"] %>
+  tenant_id:     <%= ENV["AZURE_SANDBOX_TENANT_ID"] %>
+  scope: "openid"
+  name: "sandbox"
+pay_income_days:
+  # How many days back should we look for w2 data
+  w2: 90
+  # How many days back should we look for gig data
+  gig: 90
+# How many days from date of generation is the link valid for
+invitation_valid_days: 14
+# Set to false if an invitation can only be used once. A 'use' is counted as a completed invitation
+allow_invitation_reuse: true
+weekly_report:
+  recipient: andre@digitalpublicworks.org,jeff@digitalpublicworks.org
+applicant_attributes:
+  first_name:
+    required: true
+  middle_name:
+    required: false
+  last_name:
+    required: true
+  case_number:
+    required: true
+  date_of_birth:
+    required: true

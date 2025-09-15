@@ -32,7 +32,6 @@ locals {
 
   # Whether or not the application should deploy a notification service
   # Note: This is not yet ready for use.
-  # TODO(https://github.com/navapbc/template-infra/issues/567)
   enable_notifications = false
 
   environment_configs = {

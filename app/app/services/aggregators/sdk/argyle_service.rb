@@ -208,12 +208,14 @@ module Aggregators::Sdk
 
     # Surround any request with this method as long as the request returns an
     # array of `results` and a `next` cursor to traverse to future pages.
+    # Combine all results into a single object to return
     def with_pagination(&block)
       initial_response = block.call
       results = initial_response["results"]
       next_cursor = initial_response["next"]
 
-      while next_cursor.present?
+      # add basic url checking to ensure we are not subject to an injection attack / redirect
+      while next_cursor.present? && next_cursor.include?("argyle")
         response = @http.get(next_cursor).body
 
         results.concat(response["results"])

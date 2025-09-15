@@ -55,7 +55,7 @@ RSpec.describe Report::EmploymentDetailsTableComponent, type: :component do
       end
 
       it "includes table header" do
-        expect(subject.css("h3").to_html).to include "Employment information"
+        expect(subject.css("h2").to_html).to include "Employment information"
         expect(subject.css("thead tr.subheader-row th").length).to eq(2)
       end
 
@@ -128,7 +128,7 @@ RSpec.describe Report::EmploymentDetailsTableComponent, type: :component do
       end
 
       it "includes table header" do
-        expect(subject.css("h3").to_html).to include "Employment information"
+        expect(subject.css("h2").to_html).to include "Employment information"
         expect(subject.css("thead tr.subheader-row th").length).to eq(2)
       end
 
@@ -179,7 +179,7 @@ RSpec.describe Report::EmploymentDetailsTableComponent, type: :component do
       end
 
       it "includes table header" do
-        expect(subject.css("h3").to_html).to include "Employment information"
+        expect(subject.css("h2").to_html).to include "Employment information"
         expect(subject.css("thead tr.subheader-row th").length).to eq(2)
       end
 

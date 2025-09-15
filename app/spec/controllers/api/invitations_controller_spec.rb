@@ -60,6 +60,25 @@ RSpec.describe Api::InvitationsController do
       end
     end
 
+    context "when inviting a user in PA DHS" do
+      let(:client_agency_id) { "pa_dhs".to_sym }
+
+      it "creates an invitation" do
+        expect do
+          post :create, params: valid_params
+        end.to change(CbvFlowInvitation, :count).by(1)
+                                                .and change(CbvApplicant, :count).by(1)
+
+        invitation = CbvFlowInvitation.last
+        expect(invitation.client_agency_id).to eq(client_agency_id.to_s)
+
+        applicant = invitation.cbv_applicant
+        expect(applicant.client_agency_id).to eq("pa_dhs")
+        expect(applicant.income_changes.length).to eq(2)
+        expect(applicant.income_changes[0]["member_name"]).to eq("Mark Scout_PA")
+      end
+    end
+
     context "invalid params" do
       let(:invalid_params) do
         valid_params[:agency_partner_metadata].delete(:first_name)

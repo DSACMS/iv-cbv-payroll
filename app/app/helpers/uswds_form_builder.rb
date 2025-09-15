@@ -4,7 +4,6 @@
 # additional helpers like fieldset and hint.
 # https://api.rubyonrails.org/classes/ActionView/Helpers/FormBuilder.html
 #
-# Copied from https://github.com/navapbc/pfml-starter-kit-app/blob/main/pfml/app/helpers/uswds_form_builder.rb @ 28a569a
 class UswdsFormBuilder < ActionView::Helpers::FormBuilder
   standard_helpers = %i[email_field file_field password_field text_area text_field]
 
