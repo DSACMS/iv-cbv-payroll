@@ -11,7 +11,10 @@ class FeedbacksController < ApplicationController
       client_agency_id: cbv_flow&.client_agency_id
     }
 
-    track_feedback_event(event_name, attributes)
+    event_logger.track(event_name, request, {
+      time: Time.now.to_i,
+      **attributes
+    })
 
     redirect_to redirect_path, allow_other_host: true
   end
@@ -24,15 +27,5 @@ class FeedbacksController < ApplicationController
     else
       feedback_form_url
     end
-  end
-
-  def track_feedback_event(event_name, attributes = {})
-    event_logger.track(event_name, request, {
-      time: Time.now.to_i,
-        **attributes
-    })
-  rescue => ex
-    raise unless Rails.env.production?
-    Rails.logger.error "Unable to track feedback event: #{ex}"
   end
 end
