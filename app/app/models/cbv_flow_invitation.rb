@@ -73,7 +73,7 @@ class CbvFlowInvitation < ApplicationRecord
   end
 
   def applicant_information
-    return if client_agency_id == "az_des"
+    return if client_agency_id == "az_des" || client_agency_id == "la_ldh"
 
     errors.add(:'cbv_applicant.first_name', I18n.t("activerecord.errors.models.cbv_applicant.attributes.first_name.blank")) if cbv_applicant.first_name.blank?
     errors.add(:'cbv_applicant.last_name', I18n.t("activerecord.errors.models.cbv_applicant.attributes.last_name.blank")) if cbv_applicant.last_name.blank?

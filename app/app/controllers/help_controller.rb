@@ -13,20 +13,16 @@ class HelpController < ApplicationController
 
     cbv_flow = session[:cbv_flow_id] ? CbvFlow.find_by(id: session[:cbv_flow_id]) : nil
 
-    begin
-      event_logger.track("ApplicantViewedHelpTopic", request, {
-        time: Time.now.to_i,
-        topic: @help_topic,
-        cbv_applicant_id: cbv_flow&.cbv_applicant_id,
-        cbv_flow_id: session[:cbv_flow_id],
-        invitation_id: cbv_flow&.cbv_flow_invitation_id,
-        client_agency_id: current_agency&.id,
-        flow_started_seconds_ago: cbv_flow ? (Time.now - cbv_flow.created_at).to_i : nil,
-        locale: I18n.locale
-      })
-    rescue => ex
-      Rails.logger.error "Unable to track event (ApplicantViewedHelpTopic): #{ex}"
-    end
+    event_logger.track(TrackEvent::ApplicantViewedHelpTopic, request, {
+      time: Time.now.to_i,
+      topic: @help_topic,
+      cbv_applicant_id: cbv_flow&.cbv_applicant_id,
+      cbv_flow_id: session[:cbv_flow_id],
+      invitation_id: cbv_flow&.cbv_flow_invitation_id,
+      client_agency_id: current_agency&.id,
+      flow_started_seconds_ago: cbv_flow ? (Time.now - cbv_flow.created_at).to_i : nil,
+      locale: I18n.locale
+    })
 
     render layout: false if turbo_frame_request?
   end

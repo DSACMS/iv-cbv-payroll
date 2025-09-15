@@ -60,6 +60,12 @@ repos:
     language: system
     files: 'infra/.*\.tf$'
 
+  - id: hadolint
+    name: Hadolint
+    entry: hadolint
+    language: system
+    files: '.*/Dockerfile'
+
   - id: actionlint
     name: ActionLint
     entry: actionlint

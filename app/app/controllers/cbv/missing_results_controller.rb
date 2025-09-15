@@ -6,14 +6,12 @@ class Cbv::MissingResultsController < Cbv::BaseController
   end
 
   def track_missing_results_event
-    event_logger.track("ApplicantAccessedMissingResultsPage", request, {
+    event_logger.track(TrackEvent::ApplicantAccessedMissingResultsPage, request, {
       time: Time.now.to_i,
       cbv_applicant_id: @cbv_flow.cbv_applicant_id,
       client_agency_id: current_agency&.id,
       cbv_flow_id: @cbv_flow.id,
       invitation_id: @cbv_flow.cbv_flow_invitation_id
     })
-  rescue => ex
-    Rails.logger.error "Unable to track event (ApplicantAccessedMissingResultsPage): #{ex}"
   end
 end
