@@ -275,6 +275,7 @@ es:
             la_ldh: Department of Health
             sandbox: CBV Test Agency
           caseworker:
+            doc_id: Doc ID
             pay_period: Período de pago (%{pay_frequency})
           client:
             address: Dirección del empleador
