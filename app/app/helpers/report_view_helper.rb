@@ -44,6 +44,12 @@ module ReportViewHelper
     end
   end
 
+  def format_string(string)
+    return I18n.t("shared.not_applicable") if string.blank?
+
+    string
+  end
+
   def report_data_range(report, account_id = nil)
     if account_id
       days = report.fetched_days_for_account(account_id)

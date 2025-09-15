@@ -95,7 +95,7 @@ class AggregateDataPointComponent < ViewComponent::Base
     translated_status = translate_aggregator_value("employment_statuses", status)
     {
       label: I18n.t("cbv.payment_details.show.employment_status"),
-      value: translated_status ? translated_status.humanize : I18n.t("shared.not_applicable")
+      value: format_string(translated_status&.humanize)
     }
   end
 
@@ -103,7 +103,7 @@ class AggregateDataPointComponent < ViewComponent::Base
     translated_pay_frequency = translate_aggregator_value("payment_frequencies", frequency)
     {
       label: I18n.t("cbv.payment_details.show.pay_frequency"),
-      value: translated_pay_frequency || I18n.t("shared.not_applicable")
+      value: format_string(translated_pay_frequency)
     }
   end
 
@@ -125,7 +125,7 @@ class AggregateDataPointComponent < ViewComponent::Base
   def employer_address(address)
     {
       label: I18n.t("cbv.submits.show.pdf.client.address"),
-      value: address || I18n.t("shared.not_applicable")
+      value: format_string(address)
     }
   end
 
