@@ -52,7 +52,6 @@ module Aggregators::AggregatorReports
       account_paystubs = @paystubs.filter { |paystub| paystub.employment_id == account_employment.employment_matching_id }
       account_identities = @identities.filter { |identity| identity.employment_id == account_employment.employment_matching_id }
       # TIMOTEST TODO: also filter income, since that comes from identity (see Tom's note in gh)
-      Rails.logger.info("TIMOTEST paystub employment_id: #{@paystubs[0].employment_id}")
       Rails.logger.info("TIMOTEST employment matching id: #{account_employment.employment_matching_id}")
       Rails.logger.info("TIMOTEST Paystubs count: old: #{@paystubs.count} new: #{account_paystubs.count}")
       Rails.logger.info("TIMOTEST Identity count: old: #{@identities.count} new: #{account_identities.count}")
