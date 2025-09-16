@@ -1,0 +1,126 @@
+meta {
+  name: Create DiCIT Tokenized Session Link
+  type: http
+  seq: 1
+}
+
+post {
+  url: https://{{DOMAIN}}/api/v1/invitations/
+  body: json
+  auth: inherit
+}
+
+body:json {
+  {
+    "client_agency_id": "pa_dhs",
+    "language": "en",
+    "agency_partner_metadata": {
+      "case_number": "923a261d-8303-4e46-b2a8-526874c0eb91"
+    }
+  }
+}
+
+tests {
+  test("should be able to login", function () {
+    expect(res.getStatus()).to.equal(200);
+  });
+
+  test("should return json", function () {
+    expect(res.getBody()).to.eql({
+      hello: "Bruno",
+    });
+  });
+}
+
+settings {
+  encodeUrl: true
+}
+
+docs {
+  # Create a DiCIT Tokenized Session Link
+
+  This API endpoint creates a new "invitation" to use DiCIT, which associates an applicant's indexing metadata with a tokenized link for that user and anyone that user chooses to share the link with, such as household members, to initiate the session. Invitation links may be sent by the agency to the applicant by any method defined as part of the pilot, including when:
+  * The SNAP applicant clicks a button to go to DiCIT,
+  * A request for verifications is processed by the agency's systems, or
+  * Sending a notice to a user by SMS/Email
+
+  After the applicant follows the link, the payroll data they link during the session will be transmitted back to the partner agency with the indexing information provided to this endpoint.
+  Note
+  This documentation uses the word "applicant" to refer to a potential user of DiCIT. The term "applicant" here is intended to generally apply to any potential DiCIT user, including those renewing, or providing any other verification as part of the benefits lifecycle.
+
+  ## API Fields
+  ### Request Fields
+  * *client_agency_id* - Required - Unique string identifying the requesting agency.
+  * *language* - Not Required - Customer's preferred written language, if known. When provided, the DiCIT session will automatically begin in this language if we support this language. When omitted, will default to `en`.
+    * English = `en`
+    * Spanish = `es`
+  * *agency_partner_metadata* - Required - Agency-specific metadata fields that will be used for indexing this session back after it is sent back to the state agency. A previous state example is represented below:
+      - *case_guid* - required - String - anonymized identifier to represent an applicant's case number
+
+  ### Response Fields
+  * *url* - Required - A unique URL containing a token that represents the session corresponding to the metadata submitted in the request.
+  The URL is valid until 11:59:59 p.m. ET of the 10th day after its creation.
+  * *expiration_date* - Required - Expiration date of the URL, formatted as an ISO8601 datetime. After this date, the user would need to use a new tokenized URL to access DiCIT.
+  * *language* - Required - Language code that the user will begin DiCIT in. This will match the requested language if DiCIT supports the language. Otherwise, it will fall back to "en" (English).
+
+  ### Sample Request Payload:
+
+  This sample request demonstrates an agency request to the API for a SNAP recipient reporting a loss of their job at Target and starting a new job at Walmart.
+
+  ```
+  {
+      "client_agency_id": “agency_id",       // required
+      "language": "en",                   // optional - Valid values: "en" or "es". Default: "en" (english)
+      "agency_partner_metadata": {
+          "case_guid": "b2646716-1652-4c38-9579-08a86d4bbdbe"         // required
+
+      }
+  }
+  ```
+  Sample Response:
+  201 Created
+  ```
+  {
+      "url": “https://pa.demo.divt.app/DiCIT/entry?token=ABC123456",
+      "expiration_date": "2025-01-01T23:59:59.999-05:00",
+      "language": "en"
+  }
+  ```
+
+  After receiving the response, a state system should direct the applicant to the url value in the response to begin the DiCIT session. If the URL is stored by the agency system, it should not be given to an applicant after the expiration_date (10 days by default) – rather, a new Tokenized Session Link should be requested for that applicant.
+
+  Sample curl command:
+
+  ```
+  curl \
+    -H "Content-Type: application/json" \
+    -H "Authorization: Bearer $API_TOKEN" \
+    -d '{
+      "language": "en",
+      "client_agency_id": "pa_dhs",
+      "agency_partner_metadata": {
+          "case_guid": "b2646716-1652-4c38-9579-08a86d4bbdbe",
+      }
+    }' \
+    https://pa.demo.divt.app/api/v1/invitations
+  ```
+
+  ## Error Handling
+  * 401 Unauthorized - An incorrect API token was given.
+  * 422 Unprocessable Entity - Some required fields were missing, or had an incorrect format. Check the response body's values for attribute-specific error messages.
+
+  ## Tokenized Link Origin Tracking
+  In general, DiCIT Tokenized Links should not be modified, except for the purposes of origin tracking. DiCIT supports an additional query parameter, origin, that allows the DiCIT team to calculate click-through-rate for a specific place that the link will appear.
+  When adding an origin tracking parameter, the string "&origin=[value]" should be concatenated onto the end of the Tokenized URL, with "[value]" replaced with a valid value as listed below.
+  For example, a DiCIT link may be modified like this before directing the user to it:
+
+  Example of adding an origin tracking parameter:
+  Unmodified Link: `https://pa.demo.divt.app/en/DiCIT/entry?token=abc123`
+  Link with Origin Tracking: `https://pa.demo.divt.app/en/DiCIT/entry?token=abc123&origin=email`
+
+
+  Example Origins - this is not an exhaustive list, a partner agency could add whatever is useful for reporting as the value of the ‘origin’ query string parameter.
+  * `email` - Added to the DiCIT link that gets sent via email.
+  * `portal_documents` - Added to the DiCIT link when the user clicks on a State Portal’s "View Documents" page.
+  * `portal_dashboard` - Added to the DiCIT link when the user clicks on the DiCIT link on a State Portal’s homepage/dashboard.
+}
