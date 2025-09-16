@@ -55,6 +55,7 @@ Most developers on the team code using macOS, so we recommend that platform if p
 1. Visit the site: http://localhost:3000
 
 ### For analytics development
+#### First-time setup
 1. Navigate to the `analytics` directory: `cd app/analytics`
 1. Create the virtual environment: `python3 -m venv venv`
 1. Activate the environment: `source venv/bin/activate`
@@ -66,9 +67,11 @@ MIXPANEL_PROJECT_ID=3511732
 MIXPANEL_SERVICE_ACCOUNT_USERNAME=
 MIXPANEL_SERVICE_ACCOUNT_SECRET=
 ```
-6. Run 'jupyter lab' and open the analytics.ipynb file.
+
+#### To start writing new analytics or running analyses
+6. Run `jupyter lab --NotebookApp.iopub_data_rate_limit=1.0e10` and open the analytics.ipynb file.
 6. Modify the date parameters to define the range of the data you'd like to download. These can be found in the first block of executable code marked with the comment "date range". They're parameters we feed to the Mixpanel API.
-6. Execute the first section with shift + enter. It will take a while to download all the events!
+6. Execute the first section with shift + enter. It will take a while to download all the events! Once you've run this once, you can proceed to run the other cells or write your own.
 
 #### Analytics development tips
 * Jupyter Notebooks are Python files that allow you to re-run cells of code easily. This first cell of code I wrote to pull a new dataset from our Mixpanel analytics platform. When developing analyses to run on that data set, we should start writing new cells below it. That way, when you want to get started, you can run the first cell just once to pull the data, and then you could run and re-run later cells as many times as you want to analyze that data.

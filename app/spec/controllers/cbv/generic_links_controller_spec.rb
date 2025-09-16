@@ -44,8 +44,7 @@ RSpec.describe Cbv::GenericLinksController do
           let(:headers) { { "User-Agent" => "Go-http-client/1.1" } }
 
           it "does not track the ApplicantClickedGenericLink event" do
-            expect(EventTrackingJob)
-              .not_to have_received(:perform_later)
+            expect(EventTrackingJob).not_to have_received(:perform_later)
               .with("ApplicantClickedGenericLink", anything, anything)
           end
         end

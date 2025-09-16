@@ -26,7 +26,7 @@ class MatchAgencyNamesJob < ApplicationJob
         {}
       end
 
-    event_logger.track("IncomeSummaryMatchedAgencyNames", nil, {
+    event_logger.track(TrackEvent::IncomeSummaryMatchedAgencyNames, nil, {
       time: Time.now.to_i,
       client_agency_id: @cbv_flow.client_agency_id,
       cbv_applicant_id: @cbv_flow.cbv_applicant_id,
