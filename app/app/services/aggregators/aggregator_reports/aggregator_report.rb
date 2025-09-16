@@ -49,16 +49,22 @@ module Aggregators::AggregatorReports
     AccountReportStruct = Struct.new(:identity, :income, :employment, :paystubs, :gigs)
     def find_account_report(account_id)
       account_employment = pick_employment(@employments, @paystubs, account_id)
-      account_paystubs = @paystubs.filter { |paystub| paystub.employment_id == account_employment.employment_matching_id }
-      account_identities = @identities.filter { |identity| identity.employment_id == account_employment.employment_matching_id }
-      # TIMOTEST TODO: also filter income, since that comes from identity (see Tom's note in gh)
+
+      # Filter any entities that don't match the employment id. If the entity doesn't have an employment id, allow it in (eg Pinwheel)
+      employment_filter = ->(item) { item.employment_id.nil? || item.employment_id == account_employment.employment_matching_id }
+
+      # TIMOTEST TODO move these into constructor call below when testing is done
+      # Note that, once we filter by employment match, we do not yet have a good solution for displaying multiple
+      # incomes or identities at this time. We just take the first.
+      account_incomes = @incomes.filter(&employment_filter).first
+      account_identities = @identities.filter(&employment_filter).first
+      account_paystubs = @paystubs.filter(&employment_filter)
+
       Rails.logger.info("TIMOTEST employment matching id: #{account_employment.employment_matching_id}")
-      Rails.logger.info("TIMOTEST Paystubs count: old: #{@paystubs.count} new: #{account_paystubs.count}")
-      Rails.logger.info("TIMOTEST Identity count: old: #{@identities.count} new: #{account_identities.count}")
 
       AccountReportStruct.new(
         account_identities,
-        @incomes.find { |income| income.account_id == account_id },
+        account_incomes,
         account_employment,
         account_paystubs,
         @gigs.find_all { |gig| gig.account_id == account_id }
@@ -73,22 +79,17 @@ module Aggregators::AggregatorReports
         has_identity_data = payroll_account.job_succeeded?("identity")
         has_paystubs_data = payroll_account.job_succeeded?("paystubs")
         account_employment = has_employment_data ? pick_employment(@employments, @paystubs, account_id) : nil
-        account_paystubs = has_paystubs_data ? @paystubs.filter { |paystub| paystub.employment_id == account_employment.employment_matching_id } : nil
-        account_identities = has_identity_data ? @identities.filter { |identity| identity.employment_id == account_employment.employment_matching_id } : nil
-
-        Rails.logger.info("TIMOTEST Paystubs count: old: #{@paystubs.count} new: #{account_paystubs.count}")
-        Rails.logger.info("TIMOTEST Identity count: old: #{@identities.count} new: #{account_identities.count}")
-
+        employment_filter = ->(item) { item.employment_id.nil? || item.employment_id == account_employment.employment_matching_id }
+        account_paystubs = @paystubs.filter(&employment_filter)
         hash[account_id] ||= {
           total: account_paystubs.sum { |paystub| paystub.gross_pay_amount || 0 },
           has_income_data: has_income_data,
           has_employment_data: has_employment_data,
           has_identity_data: has_identity_data,
-          # TODO: what happens if more than one income on an account?
-          income: has_income_data ? @incomes.find { |income| income.account_id == account_id } : nil,
-          employment: account_employment,
-          identity: account_identities,
-          paystubs: account_paystubs,
+          employment: has_employment_data ? pick_employment(@employments, @paystubs, account_id) : nil,
+          income: has_income_data ? @incomes.filter(&employment_filter).first : nil,
+          identity: has_identity_data ? @identities.filter(&employment_filter).first : nil,
+          paystubs: has_paystubs_data ? @paystubs.filter(&employment_filter) : nil,
           gigs: @gigs.filter { |gig| gig.account_id == account_id }
         }
       end
@@ -96,7 +97,7 @@ module Aggregators::AggregatorReports
 
     def pick_employment(employments, paystubs, account_id)
       # In Argyle, the employments endpoint can return more than one employment.
-      # This method returns the employment we want to use. Later, we must filter related
+      # This method chooses the employment we want to use. Later, we must filter related
       # data sets to make sure we're only using ones that match the employment ID we chose here.
 
       Rails.logger.info("TIMOTEST originally would have picked #{@employments.find { |employment| employment.account_id == account_id }}")
@@ -123,6 +124,7 @@ module Aggregators::AggregatorReports
         dates.compact.max
       end
 
+      # TIMOTEST TODO remove to_return
       Rails.logger.info("TIMOTEST now picked #{to_return}")
       to_return
     end
