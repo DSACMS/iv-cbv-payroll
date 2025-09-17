@@ -72,6 +72,8 @@ module Aggregators::AggregatorReports
     end
 
     def summarize_by_employer
+      puts ("TIMOTEST summarize_by_employer payroll_accounts: #{@payroll_accounts.inspect}")
+
       @payroll_accounts.each_with_object({}) do |payroll_account, hash|
         account_id = payroll_account.pinwheel_account_id
         has_income_data = payroll_account.job_succeeded?("income")
@@ -102,11 +104,16 @@ module Aggregators::AggregatorReports
 
       Rails.logger.info("TIMOTEST originally would have picked #{@employments.find { |employment| employment.account_id == account_id }}")
 
+      puts("TIMOTEST account_id #{account_id}")
+      puts("TIMOTEST employments #{employments}")
+
       relevant_employments = employments.select { |e| e[:account_id] == account_id }
       if relevant_employments.empty?
         Rails.logger.error("No employments found that match account_id #{account_id}")
         raise "No employments found that match account_id #{account_id}"
       end
+
+      puts ("TIMOTEST relevant employments #{relevant_employments}")
 
       # Pick the employment with the latest update when considering the start_date,
       # terminated_at, and any related paystub's pay_date properties.
