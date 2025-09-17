@@ -254,10 +254,7 @@ RSpec.describe Cbv::SubmitsController do
           create(:cbv_flow,
                  :completed,
                  :invited,
-                 :with_argyle_account,
-                 with_errored_jobs: errored_jobs,
                  created_at: current_time,
-                 supported_jobs: supported_jobs,
                  cbv_applicant: cbv_applicant
           )
         end
@@ -283,8 +280,6 @@ RSpec.describe Cbv::SubmitsController do
         render_views
 
         it "renders properly" do
-          puts("TIMOTEST rspec payroll_account #{payroll_account.inspect}")
-
           get :show, format: :pdf
           pdf_text = extract_pdf_text(response)
 
@@ -308,10 +303,7 @@ RSpec.describe Cbv::SubmitsController do
           create(:cbv_flow,
                  :completed,
                  :invited,
-                 :with_argyle_account,
-                 with_errored_jobs: errored_jobs,
                  created_at: current_time,
-                 supported_jobs: supported_jobs,
                  cbv_applicant: cbv_applicant
           )
         end
