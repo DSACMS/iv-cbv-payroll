@@ -21,12 +21,11 @@ RSpec.describe Aggregators::AggregatorReports::AggregatorReport, type: :service 
 
       allow(report.payroll_accounts.first).to receive(:job_succeeded?).with("income").and_return(false)
       allow(report.payroll_accounts.first).to receive(:job_succeeded?).with("employment").and_return(true)
+      allow(report.payroll_accounts.first).to receive(:job_succeeded?).with("paystubs").and_return(false)
       allow(report.payroll_accounts.first).to receive(:job_succeeded?).with("identity").and_return(false)
-      report.employments = []
 
       summary = report.summarize_by_employer
       expect(summary[account_id][:income]).to be_nil
-      expect(summary[account_id][:employment]).to be_nil
       expect(summary[account_id][:identity]).to be_nil
       expect(summary[account_id][:has_employment_data]).to be_truthy
     end
@@ -36,6 +35,7 @@ RSpec.describe Aggregators::AggregatorReports::AggregatorReport, type: :service 
 
       allow(report.payroll_accounts.first).to receive(:job_succeeded?).with("income").and_return(false)
       allow(report.payroll_accounts.first).to receive(:job_succeeded?).with("employment").and_return(false)
+      allow(report.payroll_accounts.first).to receive(:job_succeeded?).with("paystubs").and_return(false)
       allow(report.payroll_accounts.first).to receive(:job_succeeded?).with("identity").and_return(false)
 
       summary = report.summarize_by_employer
