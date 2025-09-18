@@ -72,8 +72,6 @@ module Aggregators::AggregatorReports
     end
 
     def summarize_by_employer
-      puts ("TIMOTEST summarize_by_employer payroll_accounts: #{@payroll_accounts.inspect}")
-
       @payroll_accounts.each_with_object({}) do |payroll_account, hash|
         account_id = payroll_account.pinwheel_account_id
         has_income_data = payroll_account.job_succeeded?("income")
