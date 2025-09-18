@@ -4,10 +4,10 @@ RSpec.describe Cbv::EntriesController do
   describe "#show" do
     render_views
 
-    it "redirects the user back to the homepage" do
+    it "redirects the user back to the homepage with timeout parameter" do
       expect { get :show }
         .not_to change { session[:cbv_flow_id] }
-      expect(response).to redirect_to(root_url)
+      expect(response).to redirect_to(root_url(cbv_flow_timeout: true))
     end
 
     context "when following a link from a flow invitation" do
@@ -244,10 +244,10 @@ RSpec.describe Cbv::EntriesController do
         session[:cbv_flow_id] = -1
       end
 
-      it "redirects to the homepage" do
+      it "redirects to the homepage with timeout parameter" do
         get :show
 
-        expect(response).to redirect_to(root_url)
+        expect(response).to redirect_to(root_url(cbv_flow_timeout: true))
       end
     end
   end

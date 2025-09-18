@@ -37,11 +37,11 @@ class Cbv::BaseController < ApplicationController
       begin
         @cbv_flow = CbvFlow.find(session[:cbv_flow_id])
       rescue ActiveRecord::RecordNotFound
-        redirect_to root_url
+        redirect_to root_url(cbv_flow_timeout: true)
       end
     else
       track_timeout_event
-      redirect_to root_url, flash: { slim_alert: { type: "info", message_html: t("cbv.error_missing_token_html") } }
+      redirect_to root_url(cbv_flow_timeout: true), flash: { slim_alert: { type: "info", message_html: t("cbv.error_missing_token_html") } }
     end
   end
 
