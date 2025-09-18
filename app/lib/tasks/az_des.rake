@@ -39,4 +39,11 @@ namespace :az_des do
       MatchAgencyNamesJob.perform_now(cbv_flow.id)
     end
   end
+
+  desc "redact case numbers"
+  task redact_case_numbers: :environment do
+    puts "Redacting case-numbers..."
+    DataRetentionService.redact_case_numbers_by_agency("az_des")
+    puts "Done!"
+  end
 end

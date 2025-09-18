@@ -80,4 +80,11 @@ class DataRetentionService
     applicant.cbv_flows.map(&:redact!)
     applicant.cbv_flows.each { |cbv_flow| cbv_flow.payroll_accounts.each(&:redact!) }
   end
+
+  def self.redact_case_numbers_by_agency(agency_id)
+    applicants = CbvApplicant.where(client_agency_id: agency_id)
+    applicants.find_each do |applicant|
+      applicant.redact!({ case_number: :string })
+    end
+  end
 end
