@@ -313,7 +313,7 @@ RSpec.describe DataRetentionService do
     end
   end
 
-  describe ".redact_case_numbers!" do
+  describe ".redact_case_numbers_by_agency" do
     let(:agency_to_redact) { "sandbox" }
     let!(:cbv_flow_invitation) { create(:cbv_flow_invitation, cbv_applicant_attributes: { case_number: "DELETEME001", client_agency_id: agency_to_redact }) }
     let!(:cbv_flow_invitation2) { create(:cbv_flow_invitation, cbv_applicant_attributes: { case_number: "DELETEME002", client_agency_id: agency_to_redact }) }
