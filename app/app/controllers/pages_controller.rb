@@ -2,6 +2,7 @@ class PagesController < ApplicationController
   before_action :redirect_to_client_agency_entries, only: %i[home]
 
   def home
+    flash.now[:slim_alert] = { "type" => "info", "message_html" => t("cbv.error_missing_token_html") } if params[:cbv_flow_timeout].present?
   end
 
   def error_404
