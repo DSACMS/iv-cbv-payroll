@@ -8,6 +8,8 @@ locals {
     app_access_policy_name      = "${var.app_name}-${var.environment}-app-access"
     migrator_access_policy_name = "${var.app_name}-${var.environment}-migrator-access"
 
+    snapshot_identifier = var.database_snapshot_identifier
+
     serverless_min_capacity = var.database_serverless_min_capacity
     serverless_max_capacity = var.database_serverless_max_capacity
     backup_retention_period = var.backup_retention_period

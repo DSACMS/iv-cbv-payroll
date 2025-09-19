@@ -93,6 +93,8 @@ module "database" {
   aws_services_security_group_id = data.aws_security_groups.aws_services.ids[0]
   is_temporary                   = local.is_temporary
 
+  snapshot_identifier = local.database_config.snapshot_identifier
+
   serverless_min_capacity = local.database_config.serverless_min_capacity
   serverless_max_capacity = local.database_config.serverless_max_capacity
   backup_retention_period = local.database_config.backup_retention_period
