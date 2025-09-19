@@ -188,18 +188,17 @@ RSpec.describe Report::GigMonthlySummaryTableComponent, type: :component do
           expect(employer_name).to eq("Lyft Driver")
         end
 
-        it "returns the correct employer name for the specified account id" do
+        it "raises an error when the wrong id is used and no employments match" do
           invalid_payroll_account = create(
             :payroll_account,
             :argyle_fully_synced,
             cbv_flow: cbv_flow,
             pinwheel_account_id: "wrong-id"
           )
-          # Initializing the component under test
-          employer_name = described_class.new(argyle_report, invalid_payroll_account).employer_name
-
-          # Verifying the method returns the correct employer name
-          expect(employer_name).to be_nil
+          expect {
+            # Initializing the component under test
+            described_class.new(argyle_report, invalid_payroll_account).employer_name
+          }.to raise_error(RuntimeError, "No employments found that match account_id wrong-id")
         end
       end
 
