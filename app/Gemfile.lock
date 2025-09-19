@@ -136,7 +136,7 @@ GEM
       erubi (~> 1.4)
       parser (>= 2.4)
       smart_properties
-    bigdecimal (3.2.2)
+    bigdecimal (3.2.3)
     bindex (0.8.1)
     bootsnap (1.18.4)
       msgpack (~> 1.2)
@@ -218,7 +218,7 @@ GEM
       activesupport (>= 6.1)
     gpgme (2.0.24)
       mini_portile2 (~> 2.7)
-    hashdiff (1.1.1)
+    hashdiff (1.2.1)
     hashery (2.1.2)
     hashie (5.0.0)
     highline (3.1.0)
@@ -360,7 +360,7 @@ GEM
     psych (5.2.6)
       date
       stringio
-    public_suffix (6.0.1)
+    public_suffix (6.0.2)
     puma (6.6.0)
       nio4r (~> 2.0)
     raabro (1.4.0)
@@ -431,7 +431,7 @@ GEM
     responders (3.1.1)
       actionpack (>= 5.2)
       railties (>= 5.2)
-    rexml (3.3.9)
+    rexml (3.4.4)
     rspec-core (3.13.0)
       rspec-support (~> 3.13.0)
     rspec-expectations (3.13.1)
@@ -484,13 +484,13 @@ GEM
       rexml
     ruby-progressbar (1.13.0)
     ruby-rc4 (0.1.5)
-    rubyzip (2.3.2)
+    rubyzip (3.1.0)
     securerandom (0.4.1)
-    selenium-webdriver (4.25.0)
+    selenium-webdriver (4.35.0)
       base64 (~> 0.2)
       logger (~> 1.4)
       rexml (~> 3.2, >= 3.2.5)
-      rubyzip (>= 1.2.2, < 3.0)
+      rubyzip (>= 1.2.2, < 4.0)
       websocket (~> 1.0)
     smart_properties (1.17.0)
     snaky_hash (2.0.1)
@@ -548,7 +548,7 @@ GEM
       activemodel (>= 6.0.0)
       bindex (>= 0.4.0)
       railties (>= 6.0.0)
-    webmock (3.23.1)
+    webmock (3.25.1)
       addressable (>= 2.8.0)
       crack (>= 0.3.2)
       hashdiff (>= 0.4.0, < 2.0.0)
@@ -621,12 +621,12 @@ DEPENDENCIES
   rails-controller-testing
   rails-erd (~> 1.7)
   redis (~> 4.0)
-  rexml (~> 3.3.9)
+  rexml (~> 3.4.2)
   rspec-rails (~> 6.1)
   rubocop
   rubocop-rails-omakase
   rubocop-rspec
-  selenium-webdriver
+  selenium-webdriver (>= 4.26.0)
   solid_queue (>= 0.3.0)
   sprockets-rails
   stackprof
@@ -638,7 +638,7 @@ DEPENDENCIES
   vcr
   view_component
   web-console
-  webmock
+  webmock (>= 3.24.0)
   wicked_pdf
   wkhtmltopdf-binary
 
@@ -646,4 +646,4 @@ RUBY VERSION
    ruby 3.4.5p51
 
 BUNDLED WITH
-   2.4.0
+   2.6.9
