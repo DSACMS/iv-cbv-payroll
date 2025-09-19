@@ -15,6 +15,16 @@ RSpec.describe Api::ArgyleController do
       session[:cbv_flow_id] = cbv_flow.id
     end
 
+    context "when the cbv_flow session is missing" do
+      it "redirects to root with timeout parameter" do
+        session[:cbv_flow_id] = nil
+
+        post :create, params: { item_id: argyle_item_id }
+
+        expect(response).to redirect_to(root_url(cbv_flow_timeout: true))
+      end
+    end
+
     context "when the CbvFlow does not have an argyle_user_id" do
       before do
         stub_create_user_response

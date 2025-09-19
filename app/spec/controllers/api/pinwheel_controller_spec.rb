@@ -47,4 +47,20 @@ RSpec.describe Api::PinwheelController do
       end
     end
   end
+
+  context "when the session is missing" do
+    let(:valid_params) do
+      {
+        pinwheel: { response_type: "employer", id: "123" }
+      }
+    end
+
+    it "redirects to root with timeout parameter" do
+      session[:cbv_flow_id] = nil
+
+      post :create_token, params: valid_params
+
+      expect(response).to redirect_to(root_url(cbv_flow_timeout: true))
+    end
+  end
 end

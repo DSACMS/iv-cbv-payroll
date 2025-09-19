@@ -36,7 +36,8 @@ class Api::ArgyleController < ApplicationController
   private
 
   def set_cbv_flow
-    @cbv_flow = CbvFlow.find(session[:cbv_flow_id])
+    @cbv_flow = CbvFlow.find_by(id: session[:cbv_flow_id])
+    redirect_to(root_url(cbv_flow_timeout: true)) unless @cbv_flow
   end
 
   # Redirect if the user is attempting connect a previously connected account
@@ -70,6 +71,8 @@ class Api::ArgyleController < ApplicationController
   end
 
   def track_event
+    return unless @cbv_flow.present?
+
     event_logger.track(TrackEvent::ApplicantBeganLinkingEmployer, request, {
       time: Time.now.to_i,
       cbv_flow_id: @cbv_flow.id,
