@@ -83,8 +83,9 @@ class DataRetentionService
 
   def self.redact_case_numbers_by_agency(agency_id)
     applicants = CbvApplicant.where(client_agency_id: agency_id)
-    applicants.find_each do |applicant|
+    applicants.find_each(batch_size: 200) do |applicant|
       applicant.redact!({ case_number: :string })
     end
+    puts "Redacted #{applicants.length} applicants"
   end
 end

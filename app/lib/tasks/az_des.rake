@@ -44,6 +44,5 @@ namespace :az_des do
   task redact_case_numbers: :environment do
     puts "Redacting case-numbers..."
     DataRetentionService.redact_case_numbers_by_agency("az_des")
-    puts "Done!"
   end
 end
