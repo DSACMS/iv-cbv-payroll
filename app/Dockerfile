@@ -191,18 +191,6 @@ RUN set -eux; \
     libmariadb3=1:10.11.14-0+deb12u2 \
     libmariadb-dev=1:10.11.14-0+deb12u2 \
     libmariadb-dev-compat=1:10.11.14-0+deb12u2 \
-    imagemagick=8:6.9.11.60+dfsg-1.6+deb12u4 \
-    imagemagick-6-common=8:6.9.11.60+dfsg-1.6+deb12u4 \
-    imagemagick-6.q16=8:6.9.11.60+dfsg-1.6+deb12u4 \
-    libmagickcore-6-arch-config=8:6.9.11.60+dfsg-1.6+deb12u4 \
-    libmagickcore-6-headers=8:6.9.11.60+dfsg-1.6+deb12u4 \
-    libmagickcore-6.q16-6=8:6.9.11.60+dfsg-1.6+deb12u4 \
-    libmagickcore-6.q16-6-extra=8:6.9.11.60+dfsg-1.6+deb12u4 \
-    libmagickcore-dev=8:6.9.11.60+dfsg-1.6+deb12u4 \
-    libmagickwand-6-headers=8:6.9.11.60+dfsg-1.6+deb12u4 \
-    libmagickwand-6.q16-6=8:6.9.11.60+dfsg-1.6+deb12u4 \
-    libmagickwand-6.q16-dev=8:6.9.11.60+dfsg-1.6+deb12u4 \
-    libmagickwand-dev=8:6.9.11.60+dfsg-1.6+deb12u4; \
     ; \
     rm -rf /var/lib/apt/lists/* /var/cache/apt/archives/*; \
     python3 -m venv /opt/aws-cli-venv && \
