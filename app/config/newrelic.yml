@@ -1,11 +1,5 @@
 #
-# This file configures the New Relic Agent.  New Relic monitors Ruby, Java,
-# .NET, PHP, Python, Node, and Go applications with deep visibility and low
-# overhead.  For more information, visit www.newrelic.com.
-#
-# Generated January 12, 2022
-#
-# This configuration file is custom generated for NewRelic Administration
+# This file configures the New Relic Agent.
 #
 
 common: &default_settings
@@ -17,7 +11,7 @@ common: &default_settings
 
   # Your application name. Renaming here affects where data displays in New
   # Relic.  For more details, see https://docs.newrelic.com/docs/apm/new-relic-apm/maintenance/renaming-applications
-  app_name: Iv Cbv Payroll
+  app_name: DiCIT VMI
 
   # Forward these custom attributes to NewRelic for better filtering of transactions/events.
   attributes:
@@ -26,7 +20,8 @@ common: &default_settings
       - user_id
       - session_id
 
-  monitor_mode: true
+  # default to 'don't send stuff to newrelic', allow explicit override
+  monitor_mode: false
 
   distributed_tracing:
     enabled: true
@@ -35,15 +30,12 @@ common: &default_settings
     # include js code via partial to comply with CSP settings
     auto_instrument: true
 
-  # This line disables agent regardless of other settings.
-  # To enable the New Relic agent:
-  # 1) add the New Relic license keys to the appropriate encrypted credentials file(s)
-  # 2) Optionally, update app_name entries in this file with the application name you want to show in New Relic
-  # 3) Comment out the line below
+  # This line disables agent regardless of other settings if set to false
   agent_enabled: true
 
-  # Logging level for log/newrelic_agent.log
-  log_level: info
+  # Default log level for the newrelic agent.
+  # Note: this does not impact the rails logger agent, which may still send data
+  log_level: warn
 
   # Instrument CBV custom rake tasks:
   rake:
@@ -68,22 +60,55 @@ common: &default_settings
 # If your application has other named environments, configure them here.
 development:
   <<: *default_settings
-  app_name: Iv Cbv Payroll (Development)
+  app_name: DiCIT VMI (Development)
+  # this is the newrelic logger log level, not application log level
+  log_level: info
+  monitor_mode: true
+  application_logging:
+    enabled: true
+    # 'forwarding' determines if application logging goes through to newrelic
+    forwarding:
+      enabled: true
+      log_level: info
+    metrics:
+      enabled: true
+    local_decorating:
+      enabled: true
 
 test:
   <<: *default_settings
-  # It doesn't make sense to report to New Relic from automated test runs.
-  monitor_mode: false
 
 ci:
   <<: *default_settings
-  # It doesn't make sense to report to New Relic from automated test runs.
-  monitor_mode: false
 
 demo:
   <<: *default_settings
-  app_name: Iv Cbv Payroll (Demo)
+  app_name: DiCIT VMI (Demo)
+  log_level: info
+  monitor_mode: true
+  application_logging:
+    enabled: true
+    # 'forwarding' determines if application logging goes through to newrelic
+    forwarding:
+      enabled: true
+      log_level: info
+    metrics:
+      enabled: true
+    local_decorating:
+      enabled: true
 
 production:
   <<: *default_settings
-  app_name: Iv Cbv Payroll (Production)
+  app_name: DiCIT VMI (Production)
+  log_level: info
+  monitor_mode: true
+  application_logging:
+    enabled: true
+    # 'forwarding' determines if application logging goes through to newrelic
+    forwarding:
+      enabled: true
+      log_level: warn
+    metrics:
+      enabled: true
+    local_decorating:
+      enabled: true
