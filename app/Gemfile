@@ -76,7 +76,7 @@ gem "rack-mini-profiler"
 gem "stackprof"
 
 # https://www.ruby-lang.org/en/news/2024/08/01/dos-rexml-cve-2024-41123/
-gem "rexml", "~> 3.3.9"
+gem "rexml", "~> 3.4.2"
 gem "gpgme", "~> 2.0"
 gem "pdf-reader", "~> 2.12.0"
 gem "net-imap", "0.5.10"  # Fixing GHSA-j3g3-5qv5-52m
