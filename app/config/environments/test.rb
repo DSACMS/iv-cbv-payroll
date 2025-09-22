@@ -30,6 +30,7 @@ Rails.application.configure do
   routes.default_url_options[:host] = ENV.fetch("DOMAIN_NAME", "localhost")
 
   # Allow E2E tests to make requests of the Rails server
+  config.hosts << "www.example.com"
   config.hosts << IPAddr.new("127.0.0.1")
   config.hosts << ".ngrok-free.app"
 
