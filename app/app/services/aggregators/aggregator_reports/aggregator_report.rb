@@ -1,3 +1,5 @@
+require "pp"
+
 # This is an abstract class that should be inherited by all aggregator report classes.
 module Aggregators::AggregatorReports
   class AggregatorReport
@@ -49,9 +51,7 @@ module Aggregators::AggregatorReports
     AccountReportStruct = Struct.new(:identity, :income, :employment, :paystubs, :gigs)
     def find_account_report(account_id)
       account_employment = pick_employment(@employments, @paystubs, account_id)
-
-      # Filter any entities that don't match the employment id. If the entity doesn't have an employment id, allow it in (eg Pinwheel)
-      employment_filter = ->(item) { item.employment_id.nil? || item.employment_id == account_employment.employment_matching_id }
+      employment_filter = employment_filter_for(account_id, account_employment&.employment_matching_id)
 
       # TIMOTEST TODO move these into constructor call below when testing is done
       # Note that, once we filter by employment match, we do not yet have a good solution for displaying multiple
@@ -71,7 +71,19 @@ module Aggregators::AggregatorReports
       )
     end
 
+    def employment_filter_for(account_id, employment_matching_id)
+      # Create a filter that filters any entities that don't match the account id and the employment id.
+      # If the entity doesn't have an employment id, allow it (eg for Pinwheel)
+      lambda do |item|
+        item.account_id == account_id &&
+          (item.employment_id.nil? || item.employment_id == employment_matching_id)
+      end
+    end
+
     def summarize_by_employer
+      # puts("TIMOTEST payroll_accounts:")
+      # pp @payroll_accounts
+
       @payroll_accounts.each_with_object({}) do |payroll_account, hash|
         account_id = payroll_account.pinwheel_account_id
         has_income_data = payroll_account.job_succeeded?("income")
@@ -79,8 +91,13 @@ module Aggregators::AggregatorReports
         has_identity_data = payroll_account.job_succeeded?("identity")
         has_paystubs_data = payroll_account.job_succeeded?("paystubs")
         account_employment = has_employment_data ? pick_employment(@employments, @paystubs, account_id) : nil
-        employment_filter = ->(item) { item.employment_id.nil? || item.employment_id == account_employment.employment_matching_id }
+        employment_filter = employment_filter_for(account_id, account_employment&.employment_matching_id)
+
         account_paystubs = @paystubs.filter(&employment_filter)
+
+        # puts("TIMOTEST account_paystubs:")
+        # pp account_paystubs
+
         hash[account_id] ||= {
           total: account_paystubs.sum { |paystub| paystub.gross_pay_amount || 0 },
           has_income_data: has_income_data,
@@ -102,8 +119,8 @@ module Aggregators::AggregatorReports
 
       Rails.logger.info("TIMOTEST originally would have picked #{@employments.find { |employment| employment.account_id == account_id }}")
 
-      puts("TIMOTEST account_id #{account_id}")
-      puts("TIMOTEST employments #{employments}")
+      # puts("TIMOTEST account_id #{account_id}")
+      # puts("TIMOTEST employments #{employments}")
 
       relevant_employments = employments.select { |e| e[:account_id] == account_id }
       if relevant_employments.empty?
@@ -111,7 +128,7 @@ module Aggregators::AggregatorReports
         raise "No employments found that match account_id #{account_id}"
       end
 
-      puts ("TIMOTEST relevant employments #{relevant_employments}")
+      # puts ("TIMOTEST relevant employments #{relevant_employments}")
 
       # Pick the employment with the latest update when considering the start_date,
       # terminated_at, and any related paystub's pay_date properties.
