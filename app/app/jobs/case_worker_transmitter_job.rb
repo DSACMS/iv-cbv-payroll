@@ -27,6 +27,8 @@ class CaseWorkerTransmitterJob < ApplicationJob
       Transmitters::SftpTransmitter
     when "encrypted_s3"
       Transmitters::EncryptedS3Transmitter
+    when "json"
+      Transmitters::JsonTransmitter
     else
       raise "Unsupported transmission method: #{@current_agency.transmission_method}"
     end

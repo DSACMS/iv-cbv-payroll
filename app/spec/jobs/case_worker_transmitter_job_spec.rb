@@ -17,11 +17,11 @@ RSpec.describe CaseWorkerTransmitterJob, type: :job do
 
   let(:cbv_flow) do
     create(:cbv_flow,
-           :invited,
-           :with_pinwheel_account,
-           with_errored_jobs: errored_jobs,
-           created_at: current_time - 10.minutes,
-           cbv_applicant: cbv_applicant
+      :invited,
+      :with_pinwheel_account,
+      with_errored_jobs: errored_jobs,
+      created_at: current_time - 10.minutes,
+      cbv_applicant: cbv_applicant
     )
   end
 
@@ -56,7 +56,7 @@ RSpec.describe CaseWorkerTransmitterJob, type: :job do
 
     allow_any_instance_of(described_class)
       .to receive(:event_logger)
-      .and_return(fake_event_logger)
+        .and_return(fake_event_logger)
   end
 
   context "#transmit_to_caseworker" do
@@ -162,7 +162,6 @@ RSpec.describe CaseWorkerTransmitterJob, type: :job do
 
         expect(sftp_double).to receive(:upload_data).with(anything, /test\/CBVPilot_00001000_20250101_ConfAZDES001.pdf/)
 
-
         expect { described_class.new.perform(cbv_flow.id) }.to change { cbv_flow.reload.transmitted_at }
       end
     end
@@ -229,6 +228,18 @@ RSpec.describe CaseWorkerTransmitterJob, type: :job do
           .with("ApplicantSharedIncomeSummary", anything, include(
             cbv_flow_id: cbv_flow.id
           ))
+      end
+    end
+
+    context "when transmission method is json" do
+      let(:transmission_method) { "json" }
+      let(:agency_api_url) { "http://fake-state.api.gov/api/v1/income-report" }
+      let(:transmission_method_configuration) { { "url" => agency_api_url } }
+
+      it "sends an empty post body" do
+        VCR.use_cassette("json_transmitter_empty_post") do
+          described_class.new.perform(cbv_flow.id)
+        end
       end
     end
   end
