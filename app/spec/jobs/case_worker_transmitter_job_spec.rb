@@ -235,12 +235,35 @@ RSpec.describe CaseWorkerTransmitterJob, type: :job do
       let(:transmission_method) { "json" }
       let(:agency_api_url) { "http://fake-state.api.gov/api/v1/income-report" }
       let(:transmission_method_configuration) { { "url" => agency_api_url } }
+      before do
+        expect_any_instance_of(Transmitters::JsonTransmitter).to receive(:deliver).and_return("ok")
+      end
 
-      it "sends an empty post body" do
-        VCR.use_cassette("json_transmitter_empty_post") do
-          described_class.new.perform(cbv_flow.id)
+      it "is handled by the job" do
+        expect { described_class.new.perform(cbv_flow.id) }.to_not raise_error
+      end
+
+      it "tracks an ApplicantSharedIncomeSummary event" do
+        described_class.new.perform(cbv_flow.id)
+        expect(fake_event_logger).to have_received(:track)
+          .with("ApplicantSharedIncomeSummary", anything, include(
+            cbv_flow_id: cbv_flow.id
+          ))
+      end
+
+      context "when the CbvApplicant has agency_expected_names" do
+        let(:cbv_applicant) { create(:cbv_applicant, :az_des, created_at: current_time, case_number: "ABC1234") }
+
+        before do
+          ActiveJob::Base.queue_adapter = :test
+        end
+
+        it "enqueues a MatchAgencyNamesJob" do
+          expect { described_class.new.perform(cbv_flow.id) }
+            .to have_enqueued_job(MatchAgencyNamesJob)
         end
       end
+      # TODO: Refactor so we don't have to duplicate the MatchAgencyNamesJob or ApplicantSharedIncomeSummary test in every context
     end
   end
 end

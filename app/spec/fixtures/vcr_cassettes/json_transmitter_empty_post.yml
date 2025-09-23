@@ -5,7 +5,7 @@ http_interactions:
     uri: http://fake-state.api.gov/api/v1/income-report
     body:
       encoding: US-ASCII
-      string: ''
+      string: 'confirmation_code=ABC123&completed_at=2025-05-01T01%3A00%3A00Z&agency_partner_metadata[case_number]=ABC1234&agency_partner_metadata[date_of_birth]=&agency_partner_metadata[doc_id]='
     headers:
       Content-Type:
       - application/x-www-form-urlencoded
