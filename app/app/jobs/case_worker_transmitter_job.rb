@@ -6,41 +6,29 @@ class CaseWorkerTransmitterJob < ApplicationJob
   queue_as :default
 
   def perform(cbv_flow_id)
-    cbv_flow = CbvFlow.find(cbv_flow_id)
-    @cbv_flow = cbv_flow
-    current_agency = current_agency(@cbv_flow)
-    aggregator_report = set_aggregator_report
+    @cbv_flow = CbvFlow.find(cbv_flow_id)
+    @current_agency = current_agency(@cbv_flow)
 
-    transmit_to_caseworker(current_agency, aggregator_report, cbv_flow)
-    enqueue_agency_name_matching_job(cbv_flow)
+    transmitter_class.new(@cbv_flow, @current_agency, set_aggregator_report).deliver
+    @cbv_flow.touch(:transmitted_at)
+    track_transmitted_event(CbvFlow.find(cbv_flow_id), set_aggregator_report.paystubs)
+    enqueue_agency_name_matching_job(CbvFlow.find(cbv_flow_id))
   end
 
   def agency_config
     Rails.application.config.client_agencies
   end
 
-  def transmit_to_caseworker(current_agency, aggregator_report, cbv_flow)
-    case current_agency.transmission_method
-    when "sftp"
-      Transmitters::SftpTransmitter
-        .new(cbv_flow, current_agency, aggregator_report)
-        .deliver_sftp!
-      cbv_flow.touch(:transmitted_at)
-      track_transmitted_event(cbv_flow, aggregator_report.paystubs)
+  def transmitter_class
+    case @current_agency.transmission_method
     when "shared_email"
       Transmitters::SharedEmailTransmitter
-        .new(cbv_flow, current_agency, aggregator_report)
-        .deliver_email!
-      cbv_flow.touch(:transmitted_at)
-      track_transmitted_event(cbv_flow, aggregator_report.paystubs)
+    when "sftp"
+      Transmitters::SftpTransmitter
     when "encrypted_s3"
       Transmitters::EncryptedS3Transmitter
-        .new(cbv_flow, current_agency, aggregator_report)
-        .deliver_to_s3!
-      cbv_flow.touch(:transmitted_at)
-      track_transmitted_event(cbv_flow, aggregator_report.paystubs)
     else
-      raise "Unsupported transmission method: #{current_agency.transmission_method}"
+      raise "Unsupported transmission method: #{@current_agency.transmission_method}"
     end
   end
 

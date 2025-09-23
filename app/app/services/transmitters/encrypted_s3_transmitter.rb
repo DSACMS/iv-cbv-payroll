@@ -1,15 +1,10 @@
 class Transmitters::EncryptedS3Transmitter
+  include Transmitter
   include GpgEncryptable
   include TarFileCreatable
   include CsvHelper
 
-  def initialize(cbv_flow, current_agency, aggregator_report)
-    @cbv_flow = cbv_flow
-    @current_agency = current_agency
-    @aggregator_report = aggregator_report
-  end
-
-  def deliver_to_s3!
+  def deliver
     config = @current_agency.transmission_method_configuration
     public_key = config["public_key"]
 
