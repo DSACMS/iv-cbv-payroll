@@ -29,6 +29,8 @@ RUN apt-get update -qq && \
     apt-get install -y --no-install-recommends \
       # CVE-2025-55154 CVE-2025-55298 \
       imagemagick \
+      # CVE-2025-22113 \
+      linux-libc-dev \
       && \
     rm -rf /var/lib/apt/lists /var/cache/apt/archives
 
