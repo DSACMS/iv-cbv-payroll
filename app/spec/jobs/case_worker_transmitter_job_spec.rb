@@ -66,27 +66,6 @@ RSpec.describe CaseWorkerTransmitterJob, type: :job do
       cbv_flow.update(consented_to_authorized_use_at: Time.now)
     end
 
-    context "argyle report" do
-      let(:transmission_method) { "shared_email" }
-      let(:transmission_method_configuration) { {
-        "email" => 'test@example.com'
-      } }
-      let(:cbv_flow) do
-        create(:cbv_flow,
-               :invited,
-               :with_argyle_account,
-               with_errored_jobs: errored_jobs,
-               created_at: current_time,
-               cbv_applicant: cbv_applicant
-        )
-      end
-
-      before do
-        allow(Aggregators::AggregatorReports::ArgyleReport).to receive(:new).and_return(argyle_report)
-        cbv_flow.update(confirmation_code: "SANDBOX456")
-      end
-    end
-
     context "when transmission method is shared_email" do
       let(:transmission_method) { "shared_email" }
       let(:transmission_method_configuration) { {
