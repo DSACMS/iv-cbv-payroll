@@ -17,12 +17,14 @@ RSpec.describe ClientAgencyConfig do
           environment: foo
         argyle:
           environment: foo
+        transmission_method: foo
       - id: bar
         agency_name: Bar Agency Name
         pinwheel:
           environment: bar
         argyle:
           environment: foo
+        transmission_method: foo
     YAML
 
     describe "#initialize" do
@@ -115,12 +117,31 @@ RSpec.describe ClientAgencyConfig do
             pay_income_days:
               w2: 90
               gig: 0
+            transmission_method: shared_email
         YAML
 
         it "raises an error" do
           expect do
             ClientAgencyConfig.new(sample_config_path)
           end.to raise_error(ArgumentError, "Client Agency foo invalid value for pay_income_days.gig")
+        end
+      end
+
+      context "missing transmission method" do
+        let(:sample_config) { <<~YAML }
+          - id: foo
+            agency_name: foo
+            pinwheel:
+              environment: foo
+            argyle:
+              environment: foo
+            transmission_method:
+        YAML
+
+        it "raises an error" do
+          expect do
+            ClientAgencyConfig.new(sample_config_path)
+          end.to raise_error(ArgumentError, "Client Agency foo missing required attribute `transmission_method`")
         end
       end
     end

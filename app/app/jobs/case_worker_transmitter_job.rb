@@ -9,12 +9,6 @@ class CaseWorkerTransmitterJob < ApplicationJob
     cbv_flow = CbvFlow.find(cbv_flow_id)
     @cbv_flow = cbv_flow
     current_agency = current_agency(@cbv_flow)
-
-    if current_agency.transmission_method.empty?
-      Rails.logger.info("No transmission method found for client agency #{current_agency.id}")
-      return
-    end
-
     aggregator_report = set_aggregator_report
 
     transmit_to_caseworker(current_agency, aggregator_report, cbv_flow)
