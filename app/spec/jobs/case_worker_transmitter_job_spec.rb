@@ -7,7 +7,6 @@ RSpec.describe CaseWorkerTransmitterJob, type: :job do
   include ActiveSupport::Testing::TimeHelpers
 
   let(:mock_client_agency) { instance_double(ClientAgencyConfig::ClientAgency) }
-
   let(:cbv_applicant) { create(:cbv_applicant, created_at: current_time, case_number: "ABC1234") }
   let(:errored_jobs) { [] }
   let(:current_time) { DateTime.parse('2024-06-18 00:00:00') }
@@ -59,7 +58,34 @@ RSpec.describe CaseWorkerTransmitterJob, type: :job do
         .and_return(fake_event_logger)
   end
 
-  context "#transmit_to_caseworker" do
+  shared_examples "tracks an ApplicantSharedIncomeSummary event" do
+    it "tracks an ApplicantSharedIncomeSummary event" do
+      described_class.new.perform(cbv_flow.id)
+
+      expect(fake_event_logger).to have_received(:track)
+        .with("ApplicantSharedIncomeSummary", anything, include(
+          cbv_flow_id: cbv_flow.id,
+          flow_started_seconds_ago: 10.minutes.to_i,
+        ))
+    end
+  end
+
+  shared_examples "enqueues match agency names job for agency with expected names" do
+    context "when the CbvApplicant has agency_expected_names" do
+      let(:cbv_applicant) { create(:cbv_applicant, :az_des, created_at: current_time, case_number: "ABC1234") }
+
+      before do
+        ActiveJob::Base.queue_adapter = :test
+      end
+
+      it "enqueues a MatchAgencyNamesJob" do
+        expect { described_class.new.perform(cbv_flow.id) }
+          .to have_enqueued_job(MatchAgencyNamesJob)
+      end
+    end
+  end
+
+  context "#perform" do
     let(:argyle_report) { build(:argyle_report, :with_argyle_account) }
 
     before do
@@ -109,28 +135,8 @@ RSpec.describe CaseWorkerTransmitterJob, type: :job do
         expect(email.body.encoded).to include(cbv_flow.cbv_applicant.case_number)
       end
 
-      it "tracks an ApplicantSharedIncomeSummary event" do
-        described_class.new.perform(cbv_flow.id)
-
-        expect(fake_event_logger).to have_received(:track)
-          .with("ApplicantSharedIncomeSummary", anything, include(
-            cbv_flow_id: cbv_flow.id,
-            flow_started_seconds_ago: 10.minutes.to_i,
-          ))
-      end
-
-      context "when the CbvApplicant has agency_expected_names" do
-        let(:cbv_applicant) { create(:cbv_applicant, :az_des, created_at: current_time, case_number: "ABC1234") }
-
-        before do
-          ActiveJob::Base.queue_adapter = :test
-        end
-
-        it "enqueues a MatchAgencyNamesJob" do
-          expect { described_class.new.perform(cbv_flow.id) }
-            .to have_enqueued_job(MatchAgencyNamesJob)
-        end
-      end
+      it_behaves_like "tracks an ApplicantSharedIncomeSummary event"
+      it_behaves_like "enqueues match agency names job for agency with expected names"
     end
 
     context "when transmission method is sftp" do
@@ -164,6 +170,9 @@ RSpec.describe CaseWorkerTransmitterJob, type: :job do
 
         expect { described_class.new.perform(cbv_flow.id) }.to change { cbv_flow.reload.transmitted_at }
       end
+
+      it_behaves_like "tracks an ApplicantSharedIncomeSummary event"
+      it_behaves_like "enqueues match agency names job for agency with expected names"
     end
 
     context "when transmission method is encrypted_s3" do
@@ -221,20 +230,15 @@ RSpec.describe CaseWorkerTransmitterJob, type: :job do
         expect(cbv_flow.reload.transmitted_at).to be_nil
       end
 
-      it "tracks an ApplicantSharedIncomeSummary event" do
-        described_class.new.perform(cbv_flow.id)
-
-        expect(fake_event_logger).to have_received(:track)
-          .with("ApplicantSharedIncomeSummary", anything, include(
-            cbv_flow_id: cbv_flow.id
-          ))
-      end
+      it_behaves_like "tracks an ApplicantSharedIncomeSummary event"
+      it_behaves_like "enqueues match agency names job for agency with expected names"
     end
 
     context "when transmission method is json" do
       let(:transmission_method) { "json" }
       let(:agency_api_url) { "http://fake-state.api.gov/api/v1/income-report" }
       let(:transmission_method_configuration) { { "url" => agency_api_url } }
+
       before do
         expect_any_instance_of(Transmitters::JsonTransmitter).to receive(:deliver).and_return("ok")
       end
@@ -243,27 +247,8 @@ RSpec.describe CaseWorkerTransmitterJob, type: :job do
         expect { described_class.new.perform(cbv_flow.id) }.to_not raise_error
       end
 
-      it "tracks an ApplicantSharedIncomeSummary event" do
-        described_class.new.perform(cbv_flow.id)
-        expect(fake_event_logger).to have_received(:track)
-          .with("ApplicantSharedIncomeSummary", anything, include(
-            cbv_flow_id: cbv_flow.id
-          ))
-      end
-
-      context "when the CbvApplicant has agency_expected_names" do
-        let(:cbv_applicant) { create(:cbv_applicant, :az_des, created_at: current_time, case_number: "ABC1234") }
-
-        before do
-          ActiveJob::Base.queue_adapter = :test
-        end
-
-        it "enqueues a MatchAgencyNamesJob" do
-          expect { described_class.new.perform(cbv_flow.id) }
-            .to have_enqueued_job(MatchAgencyNamesJob)
-        end
-      end
-      # TODO: Refactor so we don't have to duplicate the MatchAgencyNamesJob or ApplicantSharedIncomeSummary test in every context
+      it_behaves_like "tracks an ApplicantSharedIncomeSummary event"
+      it_behaves_like "enqueues match agency names job for agency with expected names"
     end
   end
 end
