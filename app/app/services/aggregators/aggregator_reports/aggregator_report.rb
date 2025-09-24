@@ -1,5 +1,3 @@
-require "pp"
-
 # This is an abstract class that should be inherited by all aggregator report classes.
 module Aggregators::AggregatorReports
   class AggregatorReport
