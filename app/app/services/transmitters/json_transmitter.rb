@@ -14,13 +14,15 @@ class Transmitters::JsonTransmitter
       }
     })
 
-    res = Net::HTTP.start(api_url.hostname, api_url.port) do |http|
+    res = Net::HTTP.start(api_url.hostname, api_url.port, use_ssl: api_url.scheme == "https") do |http|
       http.request(req)
     end
 
     case res
     when Net::HTTPSuccess, Net::HTTPRedirection
       "ok"
+    when Net::HTTPInternalServerError
+      raise "Received 500 from agency"
     else
       res.value
     end

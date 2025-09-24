@@ -28,10 +28,18 @@ RSpec.describe Transmitters::JsonTransmitter do
     allow(mock_client_agency).to receive(:transmission_method_configuration).and_return(transmission_method_configuration)
   end
 
-  context '#deliver' do
+  context 'agency responds with 200' do
     it 'posts to the endpoint with the expected data' do
-      VCR.use_cassette("json_transmitter_empty_post") do
+      VCR.use_cassette("json_transmitter_200") do
         described_class.new(cbv_flow, mock_client_agency, aggregator_report).deliver
+      end
+    end
+  end
+
+  context 'agency responds with 500' do
+    it 'logs an error' do
+      VCR.use_cassette("json_transmitter_500") do
+        expect { described_class.new(cbv_flow, mock_client_agency, aggregator_report).deliver }.to raise_error("Received 500 from agency")
       end
     end
   end
