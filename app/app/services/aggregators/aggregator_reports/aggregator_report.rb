@@ -53,20 +53,13 @@ module Aggregators::AggregatorReports
       account_employment = pick_employment(@employments, @paystubs, account_id)
       employment_filter = employment_filter_for(account_id, account_employment&.employment_matching_id)
 
-      # TIMOTEST TODO move these into constructor call below when testing is done
       # Note that, once we filter by employment match, we do not yet have a good solution for displaying multiple
       # incomes or identities at this time. We just take the first.
-      account_incomes = @incomes.filter(&employment_filter).first
-      account_identities = @identities.filter(&employment_filter).first
-      account_paystubs = @paystubs.filter(&employment_filter)
-
-      Rails.logger.info("TIMOTEST employment matching id: #{account_employment.employment_matching_id}")
-
       AccountReportStruct.new(
-        account_identities,
-        account_incomes,
+        @identities.filter(&employment_filter).first,
+        @incomes.filter(&employment_filter).first,
         account_employment,
-        account_paystubs,
+        @paystubs.filter(&employment_filter),
         @gigs.find_all { |gig| gig.account_id == account_id }
       )
     end
@@ -81,9 +74,6 @@ module Aggregators::AggregatorReports
     end
 
     def summarize_by_employer
-      # puts("TIMOTEST payroll_accounts:")
-      # pp @payroll_accounts
-
       @payroll_accounts.each_with_object({}) do |payroll_account, hash|
         account_id = payroll_account.pinwheel_account_id
         has_income_data = payroll_account.job_succeeded?("income")
@@ -92,12 +82,7 @@ module Aggregators::AggregatorReports
         has_paystubs_data = payroll_account.job_succeeded?("paystubs")
         account_employment = has_employment_data ? pick_employment(@employments, @paystubs, account_id) : nil
         employment_filter = employment_filter_for(account_id, account_employment&.employment_matching_id)
-
         account_paystubs = @paystubs.filter(&employment_filter)
-
-        # puts("TIMOTEST account_paystubs:")
-        # pp account_paystubs
-
         hash[account_id] ||= {
           total: account_paystubs.sum { |paystub| paystub.gross_pay_amount || 0 },
           has_income_data: has_income_data,
@@ -116,23 +101,15 @@ module Aggregators::AggregatorReports
       # In Argyle, the employments endpoint can return more than one employment.
       # This method chooses the employment we want to use. Later, we must filter related
       # data sets to make sure we're only using ones that match the employment ID we chose here.
-
-      Rails.logger.info("TIMOTEST originally would have picked #{@employments.find { |employment| employment.account_id == account_id }}")
-
-      # puts("TIMOTEST account_id #{account_id}")
-      # puts("TIMOTEST employments #{employments}")
-
       relevant_employments = employments.select { |e| e[:account_id] == account_id }
       if relevant_employments.empty?
         Rails.logger.error("No employments found that match account_id #{account_id}")
         raise "No employments found that match account_id #{account_id}"
       end
 
-      # puts ("TIMOTEST relevant employments #{relevant_employments}")
-
       # Pick the employment with the latest update when considering the start_date,
       # terminated_at, and any related paystub's pay_date properties.
-      to_return = relevant_employments.max_by do |emp|
+      relevant_employments.max_by do |emp|
         relevant_paystubs = paystubs.select { |p| p[:employment_id] == emp.employment_matching_id }
 
         latest_pay_date = relevant_paystubs.map { |p| p[:pay_date] }.max
@@ -145,10 +122,6 @@ module Aggregators::AggregatorReports
 
         dates.compact.max
       end
-
-      # TIMOTEST TODO remove to_return
-      Rails.logger.info("TIMOTEST now picked #{to_return}")
-      to_return
     end
 
     def summarize_by_month(from_date: nil, to_date: nil)
