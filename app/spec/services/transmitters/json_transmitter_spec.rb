@@ -9,7 +9,8 @@ RSpec.describe Transmitters::JsonTransmitter do
       :invited,
       :with_pinwheel_account,
       cbv_applicant: cbv_applicant,
-      consented_to_authorized_use_at: completed_at
+      consented_to_authorized_use_at: completed_at,
+      confirmation_code: "ABC123"
     )
   end
   let(:transmission_method_configuration) { {
@@ -26,6 +27,8 @@ RSpec.describe Transmitters::JsonTransmitter do
 
   before do
     allow(mock_client_agency).to receive(:transmission_method_configuration).and_return(transmission_method_configuration)
+    allow(mock_client_agency).to receive(:id).and_return("sandbox")
+    allow(CbvApplicant).to receive(:valid_attributes_for_agency).with("sandbox").and_return([ "case_number" ])
   end
 
   context 'agency responds with 200' do

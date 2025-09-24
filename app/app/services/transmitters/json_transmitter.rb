@@ -4,15 +4,14 @@ class Transmitters::JsonTransmitter
   def deliver
     api_url = URI(@current_agency.transmission_method_configuration["url"])
     req = Net::HTTP::Post.new(api_url)
-    req.set_form_data({
+    agency_partner_metadata = CbvApplicant.build_agency_partner_metadata(@current_agency.id) { |attr| @cbv_flow.cbv_applicant.public_send(attr) }
+
+    req.content_type = "application/json"
+    req.body = {
       confirmation_code: @cbv_flow.confirmation_code,
       completed_at: @cbv_flow.consented_to_authorized_use_at.iso8601,
-      agency_partner_metadata: {
-        case_number: @cbv_flow.cbv_applicant.case_number,
-        date_of_birth: @cbv_flow.cbv_applicant.date_of_birth,
-        doc_id: @cbv_flow.cbv_applicant.doc_id
-      }
-    })
+      agency_partner_metadata: agency_partner_metadata
+    }.to_json
 
     res = Net::HTTP.start(api_url.hostname, api_url.port, use_ssl: api_url.scheme == "https") do |http|
       http.request(req)
