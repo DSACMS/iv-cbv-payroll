@@ -89,7 +89,7 @@ module Aggregators::AggregatorReports
           employment: has_employment_data ? pick_employment(@employments, @paystubs, account_id) : nil,
           income: has_income_data ? @incomes.filter(&employment_filter).first : nil,
           identity: has_identity_data ? @identities.filter(&employment_filter).first : nil,
-          paystubs: has_paystubs_data ? @paystubs.filter(&employment_filter) : nil,
+          paystubs: has_paystubs_data ? account_paystubs : nil,
           gigs: @gigs.filter { |gig| gig.account_id == account_id }
         }
       end
@@ -129,7 +129,10 @@ module Aggregators::AggregatorReports
       @payroll_accounts
         .each_with_object({}) do |payroll_account, hash|
           account_id = payroll_account.pinwheel_account_id
-          paystubs = @paystubs.filter { |paystub| paystub.account_id == account_id }
+          has_employment_data = payroll_account.job_succeeded?("employment")
+          account_employment = has_employment_data ? pick_employment(@employments, @paystubs, account_id) : nil
+          employment_filter = employment_filter_for(account_id, account_employment&.employment_matching_id)
+          paystubs = @paystubs.filter(&employment_filter)
           gigs = @gigs.filter { |gig| gig.account_id == account_id }
           extracted_dates = extract_dates(paystubs, gigs)
           months = unique_months(extracted_dates)
@@ -184,10 +187,10 @@ module Aggregators::AggregatorReports
     end
 
     def fetched_days_for_account(account_id)
-      employment = pick_employment(@employments, @paystubs, account_id)
-      return @fetched_days unless employment
+      account_employment = pick_employment(@employments, @paystubs, account_id)
+      return @fetched_days unless account_employment
 
-      case employment.employment_type
+      case account_employment.employment_type
       when :gig
         @days_to_fetch_for_gig
       when :w2
