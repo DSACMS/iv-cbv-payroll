@@ -71,15 +71,15 @@ module Aggregators::AggregatorReports
         has_identity_data = payroll_account.job_succeeded?("identity")
         has_paystubs_data = payroll_account.job_succeeded?("paystubs")
         hash[account_id] ||= {
-          total: account_report[:paystubs].sum { |paystub| paystub.gross_pay_amount || 0 },
+          total: account_report.paystubs.sum { |paystub| paystub.gross_pay_amount || 0 },
           has_income_data: has_income_data,
           has_employment_data: has_employment_data,
           has_identity_data: has_identity_data,
-          employment: has_employment_data ? account_report[:employment] : nil,
-          income: has_income_data ? account_report[:income] : nil,
-          identity: has_identity_data ? account_report[:identity] : nil,
-          paystubs: has_paystubs_data ? account_report[:paystubs] : nil,
-          gigs: account_report[:gigs]
+          employment: has_employment_data ? account_report.employment : nil,
+          income: has_income_data ? account_report.income : nil,
+          identity: has_identity_data ? account_report.identity : nil,
+          paystubs: has_paystubs_data ? account_report.paystubs : nil,
+          gigs: account_report.gigs
         }
       end
     end
@@ -92,8 +92,8 @@ module Aggregators::AggregatorReports
         .each_with_object({}) do |payroll_account, hash|
           account_id = payroll_account.pinwheel_account_id
           account_report = find_account_report(account_id)
-          paystubs = account_report[:paystubs]
-          gigs = account_report[:gigs]
+          paystubs = account_report.paystubs
+          gigs = account_report.gigs
           extracted_dates = extract_dates(paystubs, gigs)
           months = unique_months(extracted_dates)
 
