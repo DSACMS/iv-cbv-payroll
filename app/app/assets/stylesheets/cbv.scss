@@ -119,7 +119,6 @@ html {
 
   @include at-media-max($theme-header-min-width) {
     height: 30px;
-    width: 200px;
     min-width: 125px;
     margin-top: 0.25rem;
   }
