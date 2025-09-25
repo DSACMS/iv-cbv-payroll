@@ -23,7 +23,7 @@ class Transmitters::JsonTransmitter
     when Net::HTTPInternalServerError
       raise "Received 500 from agency"
     else
-      res.value
+      raise "Unexpected response from agency: #{res.code} #{res.message}"
     end
   end
 end

@@ -46,4 +46,12 @@ RSpec.describe Transmitters::JsonTransmitter do
       end
     end
   end
+
+  context 'any other non-200 response' do
+    it 'raises an HTTP error' do
+      VCR.use_cassette("json_transmitter_418") do
+        expect { described_class.new(cbv_flow, mock_client_agency, aggregator_report).deliver }.to raise_error("Unexpected response from agency: 418 I'm a teapot")
+      end
+    end
+  end
 end
