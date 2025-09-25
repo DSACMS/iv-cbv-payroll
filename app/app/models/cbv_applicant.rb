@@ -29,6 +29,12 @@ class CbvApplicant < ApplicationRecord
     sti_class_for(client_agency_id).const_get(:VALID_ATTRIBUTES)
   end
 
+  def self.build_agency_partner_metadata(client_agency_id, &value_provider)
+    valid_attributes_for_agency(client_agency_id).each_with_object({}) do |attr, hash|
+      hash[attr.to_s] = value_provider.call(attr)
+    end
+  end
+
   has_many :cbv_flows
   has_many :cbv_flow_invitations
 

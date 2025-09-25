@@ -43,9 +43,7 @@ class Api::InvitationsController < ApplicationController
     # Allow params in the VALID_ATTRIBUTES array for the relevant agency
     # CbvApplicant subclass.
     ActionController::Parameters.new(
-      CbvApplicant.valid_attributes_for_agency(@current_user.client_agency_id).each_with_object({}) do |attribute, hash|
-        hash[attribute.to_s] = params[:agency_partner_metadata][attribute]
-      end
+      CbvApplicant.build_agency_partner_metadata(@current_user.client_agency_id) { |attr| params[:agency_partner_metadata][attr] }
     )
   end
 
