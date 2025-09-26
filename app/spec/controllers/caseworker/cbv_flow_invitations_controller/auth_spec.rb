@@ -44,6 +44,12 @@ RSpec.describe Caseworker::CbvFlowInvitationsController, type: :controller do
 
           expect(response).to redirect_to(root_url)
         end
+
+        it "does not permit access to other agency pages" do
+          get :new, params: { client_agency_id: "pa_dhs" }
+
+          expect(response).to redirect_to(root_url)
+        end
       end
     end
   end

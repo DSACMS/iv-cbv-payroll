@@ -13,4 +13,11 @@ class WeeklyReportMailerPreview < ActionMailer::Preview
       report_date: Date.today
     ).report_email
   end
+
+  def report_email_pa_dhs
+    WeeklyReportMailer.with(
+      client_agency_id: "pa_dhs",
+      report_date: Date.today
+    ).report_email
+  end
 end

@@ -172,6 +172,7 @@ es:
       show:
         checkbox:
           default: Marque esta casilla para permitirnos acceder a su información de pago y compartirla con %{agency_full_name}. No usaremos la información para ningún otro propósito ni la volveremos a divulgar a ninguna otra parte.
+          pa_dhs: Marque esta casilla para permitirnos acceder a su información de pago y compartirla con %{agency_full_name}. No usaremos la información para ningún otro propósito ni la volveremos a divulgar a ninguna otra parte.
         continue: Comenzar
         header: Verifiquemos sus ingresos
         step1: Busque e inicie sesión en su empleador o proveedor de nómina en línea.
@@ -266,6 +267,7 @@ es:
         consent_checkbox_label_html:
           az_des: Marque esta casilla para confirmar, bajo pena de perjurio, que la información proporcionada es, a su leal saber y entender, verdadera y está completa.<ul class="margin-y-2"><li>Se compromete a informar %{agency_acronym} de cualquiera de lo siguiente:<ul><li>cualquier otro ingreso que no esté incluido en este informe;</li><li>o cualquier error que haya detectado en la información recopilada con esta herramienta.</li></ul></li><li>Comprende que usted es el único responsable de proporcionar información precisa y completa.</li><li>Por este motivo, cualquier información falsa o que no conste en el informe puede acarrear las siguientes consecuencias:<ul><li>un sobrepago, que debe reembolsar a %{agency_acronym};</li><li>o una inhabilitación para participar en el programa.</li></ul></li></ul>Al enviar este informe, autoriza su uso para fines de verificación de ingresos por parte de %{agency_acronym} y del personal autorizado de esta agencia.
           default: 'Marque esta casilla para confirmar lo siguiente: <ul class="margin-y-2"><li>La información proporcionada es, a su leal saber y entender, verdadera y está completa.</li><li>Se compromete a informar a %{agency_full_name} de cualquier otro ingreso que no esté incluido en este informe o cualquier discrepancia que haya detectado en la información recopilada con esta herramienta.</li><li>Comprende que usted es el único responsable de proporcionar información precisa y completa. Por este motivo, cualquier información falsa o que no conste en el informe puede acarrear consecuencias legales.</li></ul> Al enviar este informe, autoriza su uso para fines de verificación de ingresos por parte del personal autorizado de %{agency_acronym}.'
+          pa_dhs: Marque esta casilla para confirmar, bajo pena de perjurio, que la información proporcionada es, a su leal saber y entender, verdadera y está completa.<ul class="margin-y-2"><li>Se compromete a informar %{agency_acronym} de cualquiera de lo siguiente:<ul><li>cualquier otro ingreso que no esté incluido en este informe;</li><li>o cualquier error que haya detectado en la información recopilada con esta herramienta.</li></ul></li><li>Comprende que usted es el único responsable de proporcionar información precisa y completa.</li><li>Por este motivo, cualquier información falsa o que no conste en el informe puede acarrear las siguientes consecuencias:<ul><li>un sobrepago, que debe reembolsar a %{agency_acronym};</li><li>o una inhabilitación para participar en el programa.</li></ul></li></ul>Al enviar este informe, autoriza su uso para fines de verificación de ingresos por parte de %{agency_acronym} y del personal autorizado de esta agencia.
         legal_header: Acuerdo Legal
         none_found: No encontramos ningún pago de este empleador.
         none_found_confirmed: Hemos confirmado que no hay pagos recientes de este empleador. Esto sucede cuando el cliente no ha recibido ingresos de este trabajo.
@@ -274,6 +276,7 @@ es:
           agency_header_name:
             az_des: Department of Economic Security
             la_ldh: Department of Health
+            pa_dhs: Department of Human Services
             sandbox: CBV Test Agency
           caseworker:
             pay_period: Período de pago (%{pay_frequency})
@@ -314,7 +317,7 @@ es:
         invitation_link_label: Enlace de invitación
         share_invitation_link_content: Comparta este enlace con todos los miembros de su hogar que necesiten reportar sus ingresos.
         share_invitation_link_title: Comparta el enlace si otras personas en su hogar necesitan reportar sus ingresos.
-        survey: Responda esta encuesta de 3 preguntas
+        survey: Responda esta encuesta de 5 preguntas
         whats_next: "¿Qué sigue?"
         whats_next_1_li_1: Si no pudo encontrar empleo o no dispone de talones de pago, reporte sus ingresos a %{agency_acronym} en línea, en persona o por correo.
         whats_next_1_li_2_html: Visite el <a href="%{agency_website}" target="_blank" rel="noopener noreferrer">sitio web de %{agency_acronym}</a>
@@ -572,13 +575,16 @@ es:
     agency_acronym:
       az_des: DES/FAA (por sus siglas en inglés)
       la_ldh: LDH (por sus siglas en inglés)
+      pa_dhs: DHS (por sus siglas en inglés)
       sandbox: CBV
     agency_full_name:
       az_des: Departamento de Seguridad Económica de Arizona/Administración de Asistencia Familiar
       la_ldh: Departamento de Salud de Luisiana
+      pa_dhs: Departamento de Servicios Humanos
       sandbox: Agencia de pruebas CBV
     app_name:
       az_des: MyFamilyBenefits
+      pa_dhs: VerifyMyIncome
       sandbox: CBVApp
     banner:
       lock: Candado
@@ -586,6 +592,7 @@ es:
     benefit:
       az_des: Asistencia Nutricional
       la_ldh: Medicaid
+      pa_dhs: Asistencia Nutricional
       sandbox: SNAP
     error_unauthorized: La URL a la que estás accediendo está prohibida para el usuario actual. Verifique que está conectado como el usuario correcto e intente acceder de nuevo a la URL.
     footer:
@@ -595,6 +602,7 @@ es:
       cbv_flow_title:
         az_des: Departamento de Seguridad Económica
         la_ldh: Departamento de Salud
+        pa_dhs: Departamento de Servicios Humanos
         sandbox: Agencia de pruebas CBV
       close: Cerrar
       help: Ayuda
@@ -603,6 +611,7 @@ es:
         az_des: Un sitio web en colaboración con el Departamento de Seguridad Económica de Arizona.
         default: Un sitio web en colaboración con la Agencia de pruebas CBV.
         la_ldh: Un sitio web en colaboración con el Departamento de Salud de Luisiana
+        pa_dhs: Un sitio web en colaboración con el Departamento de Salud de Pensilvania
       primary: Menú principal
     languages:
       en: English
@@ -619,6 +628,7 @@ es:
     reporting_purpose:
       az_des: Formulario de contacto para aprobaciones intermedias
       la_ldh: beneficios
+      pa_dhs: Revisión de SNAP
       sandbox: beneficios
     select_placeholder: "- Seleccione -"
     skip_link: Saltar al contenido principal

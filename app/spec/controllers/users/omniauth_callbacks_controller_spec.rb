@@ -126,4 +126,57 @@ RSpec.describe Users::OmniauthCallbacksController do
       end
     end
   end
+
+  describe "#pa_dhs" do
+    it "creates a User in the correct client agency and logs them in" do
+      expect { post :pa_dhs }
+        .to change(User, :count)
+              .by(1)
+
+      new_user = User.last
+      expect(new_user).to have_attributes(
+                            email: test_email,
+                            client_agency_id: "pa_dhs"
+                          )
+      expect(controller.current_user).to eq(new_user)
+    end
+
+    it "tracks events" do
+      expect(EventTrackingJob).to receive(:perform_later).with("CaseworkerLoggedIn", anything, hash_including(
+        client_agency_id: "pa_dhs",
+        user_id: be_a(Integer)
+      ))
+
+      post :pa_dhs
+    end
+
+    context "when the user already has authenticated before" do
+      let!(:existing_user) { create(:user, email: test_email, client_agency_id: "pa_dhs") }
+
+      it "logs the user into the existing User" do
+        expect { post :pa_dhs }
+          .not_to change(User, :count)
+        expect(controller.current_user).to eq(existing_user)
+      end
+    end
+
+    # Re-using the same email across multiple client agencies should be only
+    # useful to us in development/demo.
+    context "when the user already has a sandbox account" do
+      let!(:existing_user) { create(:user, email: test_email, client_agency_id: "sandbox") }
+
+      it "creates a new User for the pa_dhs client agency" do
+        expect { post :pa_dhs }
+          .to change(User, :count)
+                .by(1)
+
+        new_user = User.last
+        expect(new_user).to have_attributes(
+                              email: test_email,
+                              client_agency_id: "pa_dhs"
+                            )
+        expect(controller.current_user).to eq(new_user)
+      end
+    end
+  end
 end

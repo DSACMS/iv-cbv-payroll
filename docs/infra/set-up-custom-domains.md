@@ -11,7 +11,7 @@ Before setting up custom domains you'll need to have [set up the AWS account](./
 
 ## 1. Set hosted zone in domain configuration
 
-Update the value for the `hosted_zone` in the domain configuration. The custom domain configuration is defined as a `domain_config` object in the [network section of the project config module](/infra/project-config/networks.tf). A [hosted zone](https://docs.aws.amazon.com/Route53/latest/DeveloperGuide/hosted-zones-working-with.html) represents a domain and all of its subdomains. For example, a hosted zone of `platform-test.navateam.com` includes `platform-test.navateam.com`, `cdn.platform-test.navateam.com`, `notifications.platform-test.navateam.com`, `foo.bar.platform-test.navateam.com`, etc.
+Update the value for the `hosted_zone` in the domain configuration. The custom domain configuration is defined as a `domain_config` object in the [network section of the project config module](/infra/project-config/networks.tf). A [hosted zone](https://docs.aws.amazon.com/Route53/latest/DeveloperGuide/hosted-zones-working-with.html) represents a domain and all of its subdomains. For example, a hosted zone of `platform-test.verifymyincome.org` includes `platform-test.verifymyincome.org`, `cdn.platform-test.verifymyincome.org`, `notifications.platform-test.verifymyincome.org`, `foo.bar.platform-test.verifymyincome.org`, etc.
 
 ## 2. Update the network layer to create the hosted zone
 
@@ -34,7 +34,7 @@ Your NS record might look something like this:
 **Name**:
 
 ```text
-platform-test.navateam.com
+platform-test.verifymyincome.org
 ```
 
 **Value**: (Note the periods after each of the server addresses)
@@ -54,7 +54,7 @@ nslookup -type=NS <HOSTED_ZONE>
 
 ## 4. Configure custom domain for your application
 
-Define the `domain_name` for each of the application environments in the `app-config` module. The `domain_name` must be either the same as the `hosted_zone` or a subdomain of the `hosted_zone`. For example, if your hosted zone is `platform-test.navateam.com`, then `platform-test.navateam.com` and `cdn.platform-test.navateam.com` are both valid values for `domain_name`.
+Define the `domain_name` for each of the application environments in the `app-config` module. The `domain_name` must be either the same as the `hosted_zone` or a subdomain of the `hosted_zone`. For example, if your hosted zone is `platform-test.verifymyincome.org`, then `platform-test.verifymyincome.org` and `cdn.platform-test.verifymyincome.org` are both valid values for `domain_name`.
 
 ## 5. Create A (address) records to route traffice from the custom domain to your application's load balancer
 

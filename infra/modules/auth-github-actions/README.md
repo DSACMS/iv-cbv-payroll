@@ -8,7 +8,7 @@ This module sets up a way for GitHub Actions to access AWS resources using short
 
 ## Related Implementations
 
-Similar functionality is also implemented in the [oidc-github module in the Terraform Registry](https://registry.terraform.io/modules/unfunco/oidc-github/aws/latest) (see also [Nava's fork of that repo](https://github.com/navapbc/terraform-aws-oidc-github)), but since IAM is sensitive we chose to implement it ourselves to keep the module simple, easy to understand, and in a place that's within our scope of control.
+Similar functionality is also implemented in the [oidc-github module in the Terraform Registry](https://registry.terraform.io/modules/unfunco/oidc-github/aws/latest), but since IAM is sensitive we chose to implement it ourselves to keep the module simple, easy to understand, and in a place that's within our scope of control.
 
 ## Reference
 

@@ -72,6 +72,12 @@ class WeeklyReportMailer < ApplicationMailer
         email_address: invitation&.email_address,
         invited_at: invitation&.created_at
       )
+    when "pa_dhs"
+      base_fields.merge(
+        case_number: applicant.case_number,
+        email_address: invitation&.email_address,
+        invited_at: invitation&.created_at
+      )
     else
       base_fields
     end

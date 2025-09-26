@@ -5,6 +5,5 @@
 resource "aws_route53_zone" "zone" {
   count = var.manage_dns ? 1 : 0
   name  = var.name
-
-  # checkov:skip=CKV2_AWS_38:TODO(https://github.com/navapbc/template-infra/issues/560) enable DNSSEC
+  # checkov:skip=CKV2_AWS_38: TODO: dnssec signing
 }

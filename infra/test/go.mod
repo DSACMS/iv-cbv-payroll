@@ -1,4 +1,4 @@
-module navapbc/template-infra
+module digitalpublicworks/template-infra
 
 go 1.23.0
 

@@ -1,0 +1,16 @@
+meta {
+  name: PA DHS
+  seq: 3
+}
+
+auth {
+  mode: bearer
+}
+
+auth:bearer {
+  token: {{PA_DHS_KEY}}
+}
+
+vars:pre-request {
+  DOMAIN: {{PA_DHS_DOMAIN}}
+}

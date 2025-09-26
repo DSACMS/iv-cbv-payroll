@@ -16,7 +16,7 @@ There are a few notable differences with resources created in a non-default work
 
 1. When using terraform, you cannot deploy the same resource with the same name. The `terraform apply` will fail with an error like "A resource with the ID already exists". Therefore, to avoid naming conflicts, we prefix the resource names with the workspace name.
 2. Some resources, such as database and storage buckets, enable deletion protection to prevent accidental deletion. However, non-default workspaces are intended to be temporary, so deletion protection is disabled in non-default workspaces.
-3. Resources that are difficult to create in isolation, such as [DNS records](https://github.com/navapbc/template-infra/blob/2cda6da18c84aa5a3dfb038ab32be4fac363af21/infra/modules/service/dns.tf#L3), are not created at all.
+3. Resources that are difficult to create in isolation, such as DNS records, are not created at all.
 
 ## Development workflow
 

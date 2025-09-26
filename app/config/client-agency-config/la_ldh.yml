@@ -1,0 +1,35 @@
+id: la_ldh
+active: <%= ENV["AGENCY_LA_LDH_ACTIVE"] %>
+agency_name: Department of Health
+agency_contact_website: https://ldh.la.gov/renew-medicaid
+agency_domain: "la"
+# caseworker_feedback_form: n/a
+logo_path: ldh_logo.svg
+default_origin: sms
+pinwheel:
+  environment: <%= ENV["LA_LDH_PINWHEEL_ENVIRONMENT"] %>
+argyle:
+  environment: <%= ENV["LA_LDH_ARGYLE_ENVIRONMENT"] %>
+transmission_method: shared_email
+transmission_method_configuration:
+  email: <%= ENV['LA_LDH_EMAIL'] %>
+staff_portal_enabled: false
+pilot_ended: <%= ENV["LA_LDH_PILOT_ENABLED"] != "true" %>
+# sso:
+#   client_id:     <%= ENV["AZURE_LA_LDH_CLIENT_ID"] %>
+#   client_secret: <%= ENV["AZURE_LA_LDH_CLIENT_SECRET"] %>
+#   tenant_id:     <%= ENV["AZURE_LA_LDH_TENANT_ID"] %>
+#   scope: "openid"
+#   name: "la_ldh"
+pay_income_days:
+  w2: 90
+  gig: 90
+invitation_valid_days: 14
+weekly_report:
+  recipient: <%= ENV['LA_LDH_WEEKLY_REPORT_RECIPIENTS'] %>
+  report_variant: flows
+applicant_attributes:
+  case_number:
+    required: false
+  date_of_birth:
+    required: true

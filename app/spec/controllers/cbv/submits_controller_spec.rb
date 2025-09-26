@@ -131,6 +131,23 @@ RSpec.describe Cbv::SubmitsController do
           end
         end
 
+        context "when rendering for a pa dhs caseworker" do
+          it "shows the right client information fields" do
+            cbv_flow.update!(client_agency_id: "pa_dhs")
+            cbv_flow.cbv_applicant.update!(case_number: "12345")
+            get :show, format: :pdf, params: {
+              is_caseworker: "true"
+            }
+
+            pdf_text = extract_pdf_text(response)
+
+            expect(pdf_text).to include("Case number")
+            expect(pdf_text).to include("00012345")
+            expect(pdf_text).not_to include(I18n.t("cbv.submits.show.application_or_recertification_date"))
+          end
+        end
+
+
         context "with sandbox client agency" do
           context "when rendering for a caseworker" do
             it "shows the right client information fields" do
@@ -529,6 +546,16 @@ RSpec.describe Cbv::SubmitsController do
       patch :update, params: { cbv_flow: { consent_to_authorized_use: "1" } }
 
       expect(cbv_flow.reload.confirmation_code).to start_with("AZDES")
+    end
+
+
+    it "removes underscores from the agency name in the confirmation code" do
+      cbv_flow.update!(client_agency_id: "pa_dhs")
+      expect(cbv_flow.confirmation_code).to be_nil
+
+      patch :update, params: { cbv_flow: { consent_to_authorized_use: "1" } }
+
+      expect(cbv_flow.reload.confirmation_code).to start_with("PADHS")
     end
 
     it "does not overwrite an existing confirmation code" do

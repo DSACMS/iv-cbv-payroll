@@ -8,7 +8,7 @@ The application environment setup process will:
 
 Before setting up the application's environments you'll need to have:
 
-1. [A compatible application in the app folder](https://github.com/navapbc/template-infra/blob/main/template-only-docs/application-requirements.md)
+1. A compatible application in the app folder
 2. [Set up the AWS account that this environment is going to use](/docs/infra/set-up-aws-account.md).
 3. [Configure the app](/infra/app/app-config/main.tf).
    1. Make sure you update `has_database` to `true` or `false` (defaults to `true`) depending on whether or not your application has a database to integrate with.

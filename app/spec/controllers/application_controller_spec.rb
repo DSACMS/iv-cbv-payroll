@@ -72,11 +72,11 @@ RSpec.describe ApplicationController, type: :controller do
       routes.draw do
         get 'show', to: 'anonymous#show'
       end
-      stub_client_agency_config_value("sandbox", "agency_domain", "sandbox.reportmyincome.org")
+      stub_client_agency_config_value("sandbox", "agency_domain", "sandbox.verifymyincome.org")
     end
 
     it "identifies the correct agency config based on the domain name" do
-      request.host = "sandbox.reportmyincome.org"
+      request.host = "sandbox.verifymyincome.org"
       get :show
       expect(response.body).to eq("sandbox")
     end

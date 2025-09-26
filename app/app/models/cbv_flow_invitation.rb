@@ -60,8 +60,8 @@ class CbvFlowInvitation < ApplicationRecord
     url_params = {
       token: auth_token,
       locale: language,
-      host: client_agency.agency_domain,
-      protocol: (client_agency.agency_domain.nil? || client_agency.agency_domain == "localhost") ? "http" : "https"
+      host: client_agency.agency_domain + "." + ENV["DOMAIN_NAME"],
+      protocol: (client_agency.agency_domain.nil? || Rails.env == "development") ? "http" : "https"
     }
     url_params[:origin] = origin if origin.present?
 
@@ -73,7 +73,8 @@ class CbvFlowInvitation < ApplicationRecord
   end
 
   def applicant_information
-    return if client_agency_id == "az_des"
+    # TODO: this configuration needs to be in the agency config file, not a hardcoded exception case here
+    return if client_agency_id == "az_des" || client_agency_id == "pa_dhs"
 
     errors.add(:'cbv_applicant.first_name', I18n.t("activerecord.errors.models.cbv_applicant.attributes.first_name.blank")) if cbv_applicant.first_name.blank?
     errors.add(:'cbv_applicant.last_name', I18n.t("activerecord.errors.models.cbv_applicant.attributes.last_name.blank")) if cbv_applicant.last_name.blank?

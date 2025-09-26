@@ -45,17 +45,19 @@ module IvCbvPayroll
     config.autoload_paths += %W[#{config.root}/app/controllers/concerns]
 
     # CBV configuration
-    config.client_agencies = ClientAgencyConfig.new(Rails.root.join("config", "client-agency-config.yml"))
+    config.client_agencies = ClientAgencyConfig.new(Rails.root.join("config", "client-agency-config"),
+                                                    (Rails.env == "development" || Rails.env == "test"))
     config.supported_providers = (ENV["SUPPORTED_PROVIDERS"] || "pinwheel")&.split(",")&.map(&:to_sym)
     config.cbv_session_expires_after = 30.minutes
 
     # Configure allowed hosts
     config.hosts << ENV["DOMAIN_NAME"]
+    config.hosts << ".ec2-rdns.amazonaws.com"
 
-    # Configure allowed hosts inferred from the client-agency-config.yml file
+    # Configure allowed hosts from the files in client-agency-config
     config.client_agencies.client_agency_ids.each do |agency_id|
       agency = config.client_agencies[agency_id]
-      config.hosts << agency.agency_domain
+      config.hosts << "#{agency.agency_domain}.#{ENV["DOMAIN_NAME"]}"
     end
 
     # Health check endpoints should be accessible from any host
