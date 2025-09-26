@@ -40,7 +40,6 @@
     "nanoid": "^5.0.9"
   },
   "overrides": {
-    "esbuild": "^0.25.0",
     "semver": ">= 7.5.2"
   }
 }
