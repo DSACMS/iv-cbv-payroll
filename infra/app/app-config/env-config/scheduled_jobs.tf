@@ -10,7 +10,7 @@ locals {
       schedule_expression = "cron(0 12 ? * MON *)" # Every Monday at 12pm UTC (7am EST / 8am EDT)
     }
 
-    # AS daily summary report
+    # AZ daily summary report
     send_az_reports = {
       task_command        = ["bin/rails", "az_des:deliver_csv_reports"]
       schedule_expression = "cron(0 15 ? * * *)" # Every day at 3pm UTC (8am MST / 10am EST / 9am EDT)

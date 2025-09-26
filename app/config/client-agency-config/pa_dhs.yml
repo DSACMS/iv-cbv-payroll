@@ -15,7 +15,8 @@ transmission_method_configuration:
   password: <%= ENV['PA_DHS_SFTP_PASSWORD'] %>
   url: <%= ENV['PA_DHS_SFTP_URL'] %>
   sftp_directory: <%= ENV['PA_DHS_SFTP_DIRECTORY'] %>
-  csv_summary_reports_enabled: false
+  # this controls if daily csv summaries are sent to configured SFTP
+  csv_summary_reports_enabled: true
 staff_portal_enabled: false
 pilot_ended: false
 generic_links_disabled: true
