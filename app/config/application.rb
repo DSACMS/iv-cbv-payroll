@@ -52,6 +52,7 @@ module IvCbvPayroll
 
     # Configure allowed hosts
     config.hosts << ENV["DOMAIN_NAME"]
+    config.hosts << ".ec2-rdns.amazonaws.com"
 
     # Configure allowed hosts from the files in client-agency-config
     config.client_agencies.client_agency_ids.each do |agency_id|

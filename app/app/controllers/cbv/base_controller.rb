@@ -14,6 +14,8 @@ class Cbv::BaseController < ApplicationController
     true
   end
 
+  # sets the CBV for a user. This is called as a before_action for any function using BaseController unless
+  # explicitly skipped (such as in SessionController).
   def set_cbv_flow
     if params[:token].present?
       invitation = CbvFlowInvitation.find_by(auth_token: params[:token])
