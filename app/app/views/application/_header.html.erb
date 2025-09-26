@@ -26,7 +26,9 @@
           <div class="<%= has_logo ?
             "display-none tablet:display-flex" : "display-flex" %> flex-align-center">
             <% if logo_path %>
-              <%= image_tag logo_path, class: "cbv-header__agency-logo cbv-header__agency-logo--#{current_agency.id}" %>
+              <%= image_tag logo_path, class: "cbv-header__agency-logo cbv-header__agency-logo--#{current_agency.id}",
+                            alt: "#{agency_translation("shared.agency_acronym")} Logo",
+                            title: "#{agency_translation("shared.agency_acronym")} Logo" %>
             <% end %>
 
             <% if show_agency_text %>

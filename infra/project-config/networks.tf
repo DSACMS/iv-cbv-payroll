@@ -17,9 +17,11 @@ locals {
         }
       }
 
+      vpc_cidr               = "10.0.0.0/20"
       num_availability_zones = 3
       single_nat_gateway     = true
     }
+
     prod = {
       account_name               = "prod"
       database_subnet_group_name = "prod"
@@ -36,6 +38,7 @@ locals {
         }
       }
 
+      vpc_cidr               = "10.0.0.0/20"
       num_availability_zones = 3
       single_nat_gateway     = true
     }

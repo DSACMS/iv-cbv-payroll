@@ -116,6 +116,10 @@ locals {
       manage_method     = "manual"
       secret_store_name = "/service/${var.app_name}-${var.environment}/az-des-pinwheel-environment"
     },
+    PA_DHS_PINWHEEL_ENVIRONMENT = {
+      manage_method     = "manual"
+      secret_store_name = "/service/${var.app_name}-${var.environment}/pa-dhs-pinwheel-environment"
+    },
     LA_LDH_PINWHEEL_ENVIRONMENT = {
       manage_method     = "manual"
       secret_store_name = "/service/${var.app_name}-${var.environment}/la-ldh-pinwheel-environment"
@@ -134,6 +138,10 @@ locals {
     LA_LDH_ARGYLE_ENVIRONMENT = {
       manage_method     = "manual"
       secret_store_name = "/service/${var.app_name}-${var.environment}/la-ldh-argyle-environment"
+    },
+    PA_DHS_ARGYLE_ENVIRONMENT = {
+      manage_method     = "manual"
+      secret_store_name = "/service/${var.app_name}-${var.environment}/pa-dhs-argyle-environment"
     },
     SANDBOX_ARGYLE_ENVIRONMENT = {
       manage_method     = "manual"
@@ -193,6 +201,23 @@ locals {
       manage_method     = "manual"
       secret_store_name = "/service/${var.app_name}-${var.environment}/az-des-sftp-directory"
     },
+    PA_DHS_SFTP_USER = {
+      manage_method     = "manual"
+      secret_store_name = "/service/${var.app_name}-${var.environment}/pa-dhs-sftp-user"
+    },
+    PA_DHS_SFTP_PASSWORD = {
+      manage_method     = "manual"
+      secret_store_name = "/service/${var.app_name}-${var.environment}/pa-dhs-sftp-password"
+    },
+    PA_DHS_SFTP_URL = {
+      manage_method     = "manual"
+      secret_store_name = "/service/${var.app_name}-${var.environment}/pa-dhs-sftp-url"
+    },
+    PA_DHS_SFTP_DIRECTORY = {
+      manage_method     = "manual"
+      secret_store_name = "/service/${var.app_name}-${var.environment}/pa-dhs-sftp-directory"
+    },
+
 
     # Other site-specific Configuration:
     LA_LDH_WEEKLY_REPORT_RECIPIENTS = {
@@ -202,7 +227,11 @@ locals {
     AZ_DES_WEEKLY_REPORT_RECIPIENTS = {
       manage_method     = "manual"
       secret_store_name = "/service/${var.app_name}-${var.environment}/az-des-weekly-report-recipients"
-    }
+    },
+    PA_DHS_WEEKLY_REPORT_RECIPIENTS = {
+      manage_method     = "manual"
+      secret_store_name = "/service/${var.app_name}-${var.environment}/pa-dhs-weekly-report-recipients"
+    },
 
     # This is what drives if a configuration is loaded
     AGENCY_AZ_DES_ACTIVE = {

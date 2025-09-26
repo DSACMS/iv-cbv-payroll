@@ -75,6 +75,7 @@ module "network" {
   database_subnet_group_name              = local.network_config.database_subnet_group_name
   has_database                            = local.has_database
   has_external_non_aws_service            = local.has_external_non_aws_service
+  vpc_cidr                                = local.network_config.vpc_cidr
   num_availability_zones                  = local.network_config.num_availability_zones
   single_nat_gateway                      = local.network_config.single_nat_gateway
   enable_command_execution                = local.enable_command_execution

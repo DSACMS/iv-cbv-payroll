@@ -15,7 +15,8 @@ transmission_method_configuration:
   password: <%= ENV['PA_DHS_SFTP_PASSWORD'] %>
   url: <%= ENV['PA_DHS_SFTP_URL'] %>
   sftp_directory: <%= ENV['PA_DHS_SFTP_DIRECTORY'] %>
-  csv_summary_reports_enabled: false
+  # this controls if daily csv summaries are sent to configured SFTP
+  csv_summary_reports_enabled: true
 staff_portal_enabled: false
 pilot_ended: false
 generic_links_disabled: true
@@ -30,7 +31,7 @@ pay_income_days:
   gig: 90
 invitation_valid_days: 10
 allow_invitation_reuse: true
-logo_path: pa_logo.png
+logo_path: pa_compass_logo.svg
 weekly_report:
   recipient: <%= ENV['PA_DHS_WEEKLY_REPORT_RECIPIENTS'] %>
   report_variant: invitations
