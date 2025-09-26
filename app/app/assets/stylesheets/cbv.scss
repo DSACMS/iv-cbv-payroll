@@ -111,6 +111,19 @@ html {
   }
 }
 
+.cbv-header__agency-logo--pa_dhs {
+  max-height: 45px;
+  width: auto;
+  height: auto;
+  object-fit: contain;
+
+  @include at-media-max($theme-header-min-width) {
+    height: 30px;
+    min-width: 125px;
+    margin-top: 0.25rem;
+  }
+}
+
 /*
  * Footer
  */
