@@ -1,4 +1,5 @@
 require "openssl"
+require "active_support/security_utils"
 
 class JsonApiSignature
   def self.generate(body, timestamp, api_key)
