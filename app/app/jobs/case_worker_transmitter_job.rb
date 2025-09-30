@@ -47,7 +47,7 @@ class CaseWorkerTransmitterJob < ApplicationJob
       cbv_applicant_id: cbv_flow.cbv_applicant_id,
       cbv_flow_id: cbv_flow.id,
       invitation_id: cbv_flow.cbv_flow_invitation_id,
-      account_count: cbv_flow.payroll_accounts.count,
+      account_count: cbv_flow.fully_synced_payroll_accounts.count,
       paystub_count: payments.count,
       account_count_with_additional_information:
         cbv_flow.additional_information.values.count { |info| info["comment"].present? },
