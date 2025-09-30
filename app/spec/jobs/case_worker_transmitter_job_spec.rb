@@ -66,6 +66,7 @@ RSpec.describe CaseWorkerTransmitterJob, type: :job do
         .with("ApplicantSharedIncomeSummary", anything, include(
           cbv_flow_id: cbv_flow.id,
           flow_started_seconds_ago: 10.minutes.to_i,
+          account_count: cbv_flow.fully_synced_payroll_accounts.count
         ))
     end
   end
