@@ -10,7 +10,8 @@ class Transmitters::JsonTransmitter
     req.body = {
       confirmation_code: @cbv_flow.confirmation_code,
       completed_at: @cbv_flow.consented_to_authorized_use_at.iso8601,
-      agency_partner_metadata: agency_partner_metadata
+      agency_partner_metadata: agency_partner_metadata,
+      income_report: @aggregator_report.income_report
     }.to_json
 
     res = Net::HTTP.start(api_url.hostname, api_url.port, use_ssl: api_url.scheme == "https") do |http|

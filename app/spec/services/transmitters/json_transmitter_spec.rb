@@ -33,6 +33,7 @@ RSpec.describe Transmitters::JsonTransmitter do
 
   context 'agency responds with 200' do
     it 'posts to the endpoint with the expected data' do
+      expect(aggregator_report).to receive(:income_report).and_return({ cool: "report" })
       VCR.use_cassette("json_transmitter_200") do
         described_class.new(cbv_flow, mock_client_agency, aggregator_report).deliver
       end
