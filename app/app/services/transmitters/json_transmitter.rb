@@ -27,7 +27,7 @@ class Transmitters::JsonTransmitter
         }
       )
 
-      payload[:report_pdf] = Base64.strict_encode64(pdf_output)
+      payload[:report_pdf] = Base64.strict_encode64(pdf_output&.content)
     end
 
     req.body = payload.to_json
