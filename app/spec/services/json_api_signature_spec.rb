@@ -11,6 +11,9 @@ RSpec.describe JsonApiSignature do
 
       # sha512 hex is always 128 characters...
       expect(signature.length).to eq(128)
+      expect(signature).to eq(<<~VALID.strip)
+        de6af505fb38013fa776708265d21b988e4df27a99f10534ec78301e8e280eb460cbdd2309a55c30c062493e13be8d037b065c9294fd3ab5a18d8c0d9cacd765
+      VALID
     end
 
     it 'generates the same signature from the same inputs' do
