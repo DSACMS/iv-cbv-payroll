@@ -13,6 +13,10 @@ class Transmitters::JsonTransmitter
       agency_partner_metadata: agency_partner_metadata
     }.to_json
 
+    timestamp = Time.now.to_i.to_s
+    req["X-IVAAS-Timestamp"] = timestamp
+    req["X-IVAAS-Signature"] = JsonApiSignature.generate(req.body, timestamp, api_key_for_agency)
+
     res = Net::HTTP.start(api_url.hostname, api_url.port, use_ssl: api_url.scheme == "https") do |http|
       http.request(req)
     end
@@ -25,5 +29,27 @@ class Transmitters::JsonTransmitter
     else
       raise "Unexpected response from agency: #{res.code} #{res.message}"
     end
+  end
+
+  private
+
+  def api_key_for_agency
+    user = User.find_by(client_agency_id: @current_agency.id, is_service_account: true)
+    unless user
+      Rails.logger.error "No service account found for agency #{@current_agency.id}"
+      raise "No service account found for agency #{@current_agency.id}"
+    end
+
+    oldest_token = user.api_access_tokens
+      .where(deleted_at: nil)
+      .order(:created_at)
+      .first
+
+    unless oldest_token
+      Rails.logger.error "No active API key found for agency #{@current_agency.id}"
+      raise "No active API key found for agency #{@current_agency.id}"
+    end
+
+    oldest_token.access_token
   end
 end

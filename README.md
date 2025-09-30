@@ -97,7 +97,7 @@ To run database migrations on the test environment that is used by rpec tests, r
 
 ### JSON API Receiver (for testing)
 
-To test the JSON Push API integration, you can run a simple receiver:
+To test the JSON Push API integration, you can run the receiver:
 
 ```bash
 cd app
@@ -105,6 +105,8 @@ bin/api-test
 ```
 
 This starts a test server on port 4567 that logs incoming JSON data.
+
+**For e2e testing:** Run `rails db:seed` to create the matching API key in your database for the transmitter.
 
 ## Branching model
 When beginning work on a feature, create a new branch based off of `main` and make the commits for that feature there.
