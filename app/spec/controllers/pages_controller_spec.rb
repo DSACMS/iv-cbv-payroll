@@ -62,6 +62,24 @@ RSpec.describe PagesController do
         expect(response).to have_http_status(:ok)
       end
     end
+
+    context "when cbv_flow_timeout param is present" do
+      before do
+        stub_client_agency_config_value("sandbox", "agency_domain", "sandbox.reportmyincome.org")
+        stub_client_agency_config_value("sandbox", "pilot_ended", false)
+        request.host = "sandbox.reportmyincome.org"
+        get :home, params: { cbv_flow_timeout: true }
+      end
+
+      it "does not redirect to new flow path" do
+        expect(response).not_to redirect_to(cbv_flow_new_path(client_agency_id: "sandbox"))
+        expect(response).to have_http_status(:ok)
+      end
+
+      it "renders the session timeout flash message" do
+        expect(response.body).to include(I18n.t("cbv.error_missing_token_html").gsub("\n", " "))
+      end
+    end
   end
 
   describe "#error_404" do

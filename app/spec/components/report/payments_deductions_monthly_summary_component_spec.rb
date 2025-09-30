@@ -151,6 +151,7 @@ RSpec.describe Report::PaymentsDeductionsMonthlySummaryComponent, type: :compone
 
     context "with bob, a gig-worker whose paystubs failed to sync" do
       let(:argyle_report) { Aggregators::AggregatorReports::ArgyleReport.new(payroll_accounts: [ payroll_account ], argyle_service: argyle_service, days_to_fetch_for_w2: 90, days_to_fetch_for_gig: 182) }
+
       before do
         argyle_report.fetch
       end
@@ -168,6 +169,12 @@ RSpec.describe Report::PaymentsDeductionsMonthlySummaryComponent, type: :compone
 
         payments_header = subject.at_css('h2')
         expect(payments_header).to be_nil
+      end
+
+      it "raises an error without the paystubs data" do
+        expect {
+          render_inline(described_class.new(argyle_report, payroll_account, is_responsive: true, is_w2_worker: false, pay_frequency_text: "monthly"))
+        }.to raise_error(RuntimeError, "No employments found that match account_id 019571bc-2f60-3955-d972-dbadfe0913a8")
       end
     end
   end

@@ -47,6 +47,19 @@ RSpec.describe Cbv::SuccessesController do
 
           it "uses agency demo domain with shared origin" do
             get :show
+
+            expected_url = "https://sandbox.#{ENV["DOMAIN_NAME"]}/en/cbv/entry?origin=shared&amp;token=#{cbv_flow.cbv_flow_invitation.auth_token}"
+            expect(response.body).to include(expected_url)
+          end
+        end
+
+        context "in non-production environment" do
+          before do
+            stub_client_agency_config_value("sandbox", "agency_domain", "demo.divt.app")
+          end
+
+          it "uses agency demo domain with shared origin" do
+            get :show
             expected_url = "https://sandbox.#{ENV["DOMAIN_NAME"]}/en/cbv/entry?origin=shared&amp;token=#{cbv_flow.cbv_flow_invitation.auth_token}"
             expect(response.body).to include(expected_url)
           end
@@ -74,7 +87,7 @@ RSpec.describe Cbv::SuccessesController do
             it "generates a generic link with shared origin" do
               get :show
 
-              expected_url = "http://localhost/en/cbv/links/sandbox?origin=shared"
+              expected_url = "http://localhost/en/cbv/links/sandbox"
               expect(response.body).to include(expected_url)
             end
           end

@@ -26,7 +26,7 @@ class MatchAgencyNamesJob < ApplicationJob
         {}
       end
 
-    event_logger.track("IncomeSummaryMatchedAgencyNames", nil, {
+    event_logger.track(TrackEvent::IncomeSummaryMatchedAgencyNames, nil, {
       time: Time.now.to_i,
       client_agency_id: @cbv_flow.client_agency_id,
       cbv_applicant_id: @cbv_flow.cbv_applicant_id,
@@ -43,15 +43,5 @@ class MatchAgencyNamesJob < ApplicationJob
   # Necessary for methods within Cbv::AggregatorDataHelper
   def agency_config
     Rails.application.config.client_agencies
-  end
-
-  def argyle
-    environment = agency_config[@cbv_flow.client_agency_id].argyle_environment
-    Aggregators::Sdk::ArgyleService.new(environment)
-  end
-
-  def pinwheel
-    environment = agency_config[@cbv_flow.client_agency_id].pinwheel_environment
-    Aggregators::Sdk::PinwheelService.new(environment)
   end
 end
