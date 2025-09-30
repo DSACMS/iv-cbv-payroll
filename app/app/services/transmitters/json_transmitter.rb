@@ -15,7 +15,7 @@ class Transmitters::JsonTransmitter
 
     timestamp = Time.now.to_i.to_s
     req["X-IVAAS-Timestamp"] = timestamp
-    req["X-IVAAS-Signature"] = JsonApiSignature.generate(req.body, timestamp, get_api_key_for_agency)
+    req["X-IVAAS-Signature"] = JsonApiSignature.generate(req.body, timestamp, api_key_for_agency)
 
     res = Net::HTTP.start(api_url.hostname, api_url.port, use_ssl: api_url.scheme == "https") do |http|
       http.request(req)
@@ -33,7 +33,7 @@ class Transmitters::JsonTransmitter
 
   private
 
-  def get_api_key_for_agency
+  def api_key_for_agency
     user = User.find_by(client_agency_id: @current_agency.id, is_service_account: true)
     unless user
       Rails.logger.error "No service account found for agency #{@current_agency.id}"
