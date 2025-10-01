@@ -95,18 +95,24 @@ To run locally, use `bin/dev`
 
 To run database migrations on the test environment that is used by rpec tests, run `RAILS_ENV=test bin/rails db:schema:load`
 
-### JSON API Receiver (for testing)
+### JSON API Testing
 
-To test the JSON Push API integration, you can run the receiver:
+1. **Create an API key for the agency you want to test:**
+   ```bash
+   cd app
+   rails 'users:create_api_token[agency_name]'
+   ```
 
-```bash
-cd app
-bin/api-test
-```
+2. **Run the test receiver:**
+   ```bash
+   # For sandbox (default)
+   bin/api-test
 
-This starts a test server on port 4567 that logs incoming JSON data.
+   # For a different agency
+   JSON_API_AGENCY=agency_name bin/api-test
+   ```
 
-**For e2e testing:** Run `rails db:seed` to create the matching API key in your database for the transmitter.
+This starts a test server on port 4567 that logs incoming JSON data and verifies signatures.
 
 ## Branching model
 When beginning work on a feature, create a new branch based off of `main` and make the commits for that feature there.
