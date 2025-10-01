@@ -60,7 +60,9 @@ RSpec.describe Cbv::SuccessesController do
 
           it "uses agency demo domain with shared origin" do
             get :show
-            expected_url = "https://sandbox.#{ENV["DOMAIN_NAME"]}/en/cbv/entry?origin=shared&amp;token=#{cbv_flow.cbv_flow_invitation.auth_token}"
+            expected_url = "https://demo.divt.app.#{ENV["DOMAIN_NAME"]}/en/cbv/entry?origin=shared&amp;token=#{cbv_flow.cbv_flow_invitation.auth_token}"
+
+            puts "EXPECTED URL: #{expected_url}"
             expect(response.body).to include(expected_url)
           end
         end

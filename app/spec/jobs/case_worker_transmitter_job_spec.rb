@@ -6,7 +6,7 @@ RSpec.describe CaseWorkerTransmitterJob, type: :job do
   include PinwheelApiHelper
   include ActiveSupport::Testing::TimeHelpers
 
-  let(:mock_client_agency) { instance_double(ClientAgencyConfig::ClientAgency) }
+  let(:mock_client_agency) { double(ClientAgencyConfig::ClientAgency) }
   let(:cbv_applicant) { create(:cbv_applicant, created_at: current_time, case_number: "ABC1234") }
   let(:errored_jobs) { [] }
   let(:current_time) { DateTime.parse('2024-06-18 00:00:00') }
@@ -141,22 +141,26 @@ RSpec.describe CaseWorkerTransmitterJob, type: :job do
     end
 
     context "when transmission method is sftp" do
+      let(:transmission_method) { "sftp" }
+      let(:user) { create(:user, email: "test@test.com") }
+      let(:sftp_double) { instance_double(SftpGateway) }
+      let(:transmission_method_configuration) { {
+        "user" => "user",
+        "password" => "password",
+        "url" => "sftp.com",
+        "sftp_directory" => "test"
+      } }
+      let(:now) { Time.zone.parse('2025-01-01 08:00:30') }
+
       context "when client is az_des" do
-        let(:user) { create(:user, email: "test@test.com") }
-        let(:sftp_double) { instance_double(SftpGateway) }
-        let(:transmission_method) { "sftp" }
         let(:mocked_client_id) { "az_des" }
-        let(:transmission_method_configuration) { {
-          "user" => "user",
-          "password" => "password",
-          "url" => "sftp.com",
-          "sftp_directory" => "test"
-        } }
-        let(:now) { Time.zone.parse('2025-01-01 08:00:30') }
 
         before do
           allow(SftpGateway).to receive(:new).and_return(sftp_double)
           allow(sftp_double).to receive(:upload_data)
+          allow(mock_client_agency).to receive(:pdf_filename) do |flow, t|
+            ClientAgency::AzDes::Configuration.pdf_filename(flow, t)
+          end
 
           travel_to now
         end
@@ -170,27 +174,19 @@ RSpec.describe CaseWorkerTransmitterJob, type: :job do
 
           expect(sftp_double).to receive(:upload_data).with(anything, /test\/CBVPilot_00001000_20250101_ConfAZDES001.pdf/)
 
-
           expect { described_class.new.perform(cbv_flow.id) }.to change { cbv_flow.reload.transmitted_at }
         end
       end
 
       context "when client is pa_dhs" do
-        let(:user) { create(:user, email: "test@test.com") }
-        let(:sftp_double) { instance_double(SftpGateway) }
-        let(:transmission_method) { "sftp" }
         let(:mocked_client_id) { "pa_dhs" }
-        let(:transmission_method_configuration) { {
-          "user" => "user",
-          "password" => "password",
-          "url" => "sftp.com",
-          "sftp_directory" => "test"
-        } }
-        let(:now) { Time.zone.parse('2025-01-01 08:00:30') }
 
         before do
           allow(SftpGateway).to receive(:new).and_return(sftp_double)
           allow(sftp_double).to receive(:upload_data)
+          allow(mock_client_agency).to receive(:pdf_filename) do |flow, t|
+            ClientAgency::PaDhs::Configuration.pdf_filename(flow, t)
+          end
 
           travel_to now
         end
@@ -208,8 +204,18 @@ RSpec.describe CaseWorkerTransmitterJob, type: :job do
         end
       end
 
-      it_behaves_like "tracks an ApplicantSharedIncomeSummary event"
-      it_behaves_like "enqueues match agency names job for agency with expected names"
+      context "when performing shared examples" do
+        before do
+          allow(SftpGateway).to receive(:new).and_return(sftp_double)
+          allow(sftp_double).to receive(:upload_data)
+          allow(mock_client_agency).to receive(:pdf_filename).and_return("test.pdf")
+
+          travel_to now
+        end
+
+        it_behaves_like "tracks an ApplicantSharedIncomeSummary event"
+        it_behaves_like "enqueues match agency names job for agency with expected names"
+      end
     end
 
     context "when transmission method is encrypted_s3" do

@@ -4,7 +4,7 @@ class Transmitters::SftpTransmitter
   def deliver
     config = current_agency.transmission_method_configuration.with_indifferent_access
     sftp_gateway = SftpGateway.new(config)
-    filename = ClientAgency::AzDes::Configuration.pdf_filename(cbv_flow, cbv_flow.consented_to_authorized_use_at)
+    filename = current_agency.pdf_filename(cbv_flow, cbv_flow.consented_to_authorized_use_at)
     sftp_gateway.upload_data(StringIO.new(pdf_output.content), "#{config["sftp_directory"]}/#{filename}.pdf")
   end
 

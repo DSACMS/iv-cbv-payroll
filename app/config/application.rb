@@ -46,7 +46,7 @@ module IvCbvPayroll
 
     # CBV configuration
     config.client_agencies = ClientAgencyConfig.new(Rails.root.join("config", "client-agency-config"),
-                                                    (Rails.env == "development"))
+                                                    (Rails.env == "development" || Rails.env == "test"))
     config.supported_providers = (ENV["SUPPORTED_PROVIDERS"] || "pinwheel")&.split(",")&.map(&:to_sym)
     config.cbv_session_expires_after = 30.minutes
 
