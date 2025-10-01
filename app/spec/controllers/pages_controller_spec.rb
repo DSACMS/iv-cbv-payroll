@@ -65,9 +65,9 @@ RSpec.describe PagesController do
 
     context "when cbv_flow_timeout param is present" do
       before do
-        stub_client_agency_config_value("sandbox", "agency_domain", "sandbox.reportmyincome.org")
+        stub_client_agency_config_value("sandbox", "agency_domain", "sandbox.verifymyincome.org")
         stub_client_agency_config_value("sandbox", "pilot_ended", false)
-        request.host = "sandbox.reportmyincome.org"
+        request.host = "sandbox.verifymyincome.org"
         get :home, params: { cbv_flow_timeout: true }
       end
 
