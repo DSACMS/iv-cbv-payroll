@@ -16,8 +16,10 @@ class Transmitters::JsonTransmitter
 
     if include_report_pdf
       pdf_service = PdfService.new(language: :en)
+      controller = Cbv::SubmitsController.new
+      controller.instance_variable_set(:@cbv_flow, @cbv_flow)
       pdf_output = pdf_service.generate(
-        renderer: Cbv::SubmitsController.new,
+        renderer: controller,
         template: "cbv/submits/show",
         variables: {
           is_caseworker: true,
@@ -28,6 +30,13 @@ class Transmitters::JsonTransmitter
       )
 
       payload[:report_pdf] = Base64.strict_encode64(pdf_output&.content)
+    end
+
+    # Test decoding the payload
+    decoded_pdf_data = Base64.strict_decode64(payload[:report_pdf])
+    output_path = Rails.root.join("tmp", "decoded_report.pdf")
+    File.open(output_path, "wb") do |file|
+      file.write(decoded_pdf_data)
     end
 
     req.body = payload.to_json
