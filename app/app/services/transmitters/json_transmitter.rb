@@ -32,13 +32,6 @@ class Transmitters::JsonTransmitter
       payload[:report_pdf] = Base64.strict_encode64(pdf_output&.content)
     end
 
-    # Test decoding the payload
-    decoded_pdf_data = Base64.strict_decode64(payload[:report_pdf])
-    output_path = Rails.root.join("tmp", "decoded_report.pdf")
-    File.open(output_path, "wb") do |file|
-      file.write(decoded_pdf_data)
-    end
-
     req.body = payload.to_json
 
     timestamp = Time.now.to_i.to_s
