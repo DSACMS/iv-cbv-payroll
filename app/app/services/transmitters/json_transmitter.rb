@@ -11,14 +11,14 @@ class Transmitters::JsonTransmitter
     timestamp = Time.now.to_i.to_s
     req["X-IVAAS-Timestamp"] = timestamp
     req["X-IVAAS-Signature"] = JsonApiSignature.generate(req.body, timestamp, api_key_for_agency)
-    
+
     custom_headers = @current_agency.transmission_method_configuration["custom_headers"]
     if custom_headers
       custom_headers.each do |header_name, header_value|
         req[header_name] = header_value
       end
     end
-    
+
     payload = {
       confirmation_code: @cbv_flow.confirmation_code,
       completed_at: @cbv_flow.consented_to_authorized_use_at.iso8601,
