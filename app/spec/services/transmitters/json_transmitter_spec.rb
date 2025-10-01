@@ -80,4 +80,25 @@ RSpec.describe Transmitters::JsonTransmitter do
       end
     end
   end
+
+  context 'custom headers' do
+    let(:transmission_method_configuration) do
+      {
+        "url" => "http://fake-state.api.gov/api/v1/income-report",
+        "custom_headers" => {
+          "X-Client-ID" => "test-client-id",
+          "X-Request-ID" => "test-request-id"
+        }
+      }
+    end
+
+    it 'sends configured custom headers' do
+      stub = stub_request(:post, "http://fake-state.api.gov/api/v1/income-report")
+        .with(headers: { 'X-Client-ID' => 'test-client-id', 'X-Request-ID' => 'test-request-id' })
+        .to_return(status: 200, body: '{"status": "success"}')
+
+      expect(described_class.new(cbv_flow, mock_client_agency, aggregator_report).deliver).to eq("ok")
+      expect(stub).to have_been_requested
+    end
+  end
 end
