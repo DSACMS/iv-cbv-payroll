@@ -36,8 +36,8 @@ locals {
   enable_notifications = false
 
   environment_configs = {
-    dev = module.dev_config
-    # staging = module.staging_config
+    dev  = module.dev_config
+    demo = module.demo_config
     prod = module.prod_config
   }
 
