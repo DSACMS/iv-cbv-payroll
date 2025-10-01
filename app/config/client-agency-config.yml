@@ -28,7 +28,6 @@
     w2: 90
     gig: 182
   invitation_valid_days: 10
-  allow_invitation_reuse: true
   logo_path: des_logo.png
   weekly_report:
     recipient: <%= ENV['AZ_DES_WEEKLY_REPORT_RECIPIENTS'] %>
@@ -48,6 +47,7 @@
   transmission_method: shared_email
   transmission_method_configuration:
     email: <%= ENV['LA_LDH_EMAIL'] %>
+    include_report_pdf: true
   staff_portal_enabled: false
   pilot_ended: <%= ENV["LA_LDH_PILOT_ENABLED"] != "true" %>
   # sso:
@@ -93,7 +93,6 @@
     w2: 90
     gig: 90
   invitation_valid_days: 14
-  allow_invitation_reuse: true
   weekly_report:
     recipient: ffs-eng@navapbc.com
   applicant_attributes:
