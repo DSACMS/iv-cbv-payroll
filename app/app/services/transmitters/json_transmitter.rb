@@ -8,6 +8,7 @@ class Transmitters::JsonTransmitter
     agency_partner_metadata = CbvApplicant.build_agency_partner_metadata(@current_agency.id) { |attr| @cbv_flow.cbv_applicant.public_send(attr) }
 
     req.content_type = "application/json"
+    timestamp = Time.now.to_i.to_s
     req["X-IVAAS-Timestamp"] = timestamp
     req["X-IVAAS-Signature"] = JsonApiSignature.generate(req.body, timestamp, api_key_for_agency)
     payload = {
