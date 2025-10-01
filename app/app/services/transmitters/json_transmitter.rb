@@ -8,10 +8,22 @@ class Transmitters::JsonTransmitter
     agency_partner_metadata = CbvApplicant.build_agency_partner_metadata(@current_agency.id) { |attr| @cbv_flow.cbv_applicant.public_send(attr) }
 
     req.content_type = "application/json"
+    timestamp = Time.now.to_i.to_s
+    req["X-IVAAS-Timestamp"] = timestamp
+    req["X-IVAAS-Signature"] = JsonApiSignature.generate(req.body, timestamp, api_key_for_agency)
+
+    custom_headers = @current_agency.transmission_method_configuration["custom_headers"]
+    if custom_headers
+      custom_headers.each do |header_name, header_value|
+        req[header_name] = header_value
+      end
+    end
+
     payload = {
       confirmation_code: @cbv_flow.confirmation_code,
       completed_at: @cbv_flow.consented_to_authorized_use_at.iso8601,
-      agency_partner_metadata: agency_partner_metadata
+      agency_partner_metadata: agency_partner_metadata,
+      income_report: @aggregator_report.income_report
     }
 
     if include_report_pdf
@@ -33,18 +45,6 @@ class Transmitters::JsonTransmitter
     end
 
     req.body = payload.to_json
-
-    custom_headers = @current_agency.transmission_method_configuration["custom_headers"]
-    if custom_headers
-      custom_headers.each do |header_name, header_value|
-        req[header_name] = header_value
-      end
-    end
-
-    timestamp = Time.now.to_i.to_s
-    req["X-IVAAS-Timestamp"] = timestamp
-    req["X-IVAAS-Signature"] = JsonApiSignature.generate(req.body, timestamp, api_key_for_agency)
-
     res = Net::HTTP.start(api_url.hostname, api_url.port, use_ssl: api_url.scheme == "https") do |http|
       http.request(req)
     end

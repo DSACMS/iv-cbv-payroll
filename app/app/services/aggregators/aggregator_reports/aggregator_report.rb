@@ -62,6 +62,41 @@ module Aggregators::AggregatorReports
       )
     end
 
+    def income_report
+      {}.tap do |report|
+        report[:has_other_jobs] = payroll_accounts.first.cbv_flow.has_other_jobs
+        report[:employments] = summarize_by_employer.map do |_, summary|
+          cbv_flow = payroll_accounts.first.cbv_flow
+          {
+            applicant_full_name: summary[:identity].full_name,
+            applicant_ssn: summary[:identity].ssn,
+            applicant_extra_comments: cbv_flow.additional_information["comment"],
+            employer_name: summary[:employment].employer_name,
+            employer_phone: summary[:employment].employer_phone_number,
+            employer_address: summary[:employment]&.employer_address,
+            employment_status: summary[:employment]&.status,
+            employment_type: summary[:employment]&.employment_type,
+            employment_start_date: summary[:employment]&.start_date,
+            employment_end_date: summary[:employment]&.termination_date,
+            pay_frequency: summary[:income]&.pay_frequency,
+            compensation_amount: summary[:income]&.compensation_amount,
+            compensation_unit: summary[:income]&.compensation_unit,
+            paystubs: summary[:paystubs].map do |paystub|
+              {
+                pay_date: paystub.pay_date,
+                pay_period_start: paystub.pay_period_start,
+                pay_period_end: paystub.pay_period_end,
+                pay_gross: paystub.gross_pay_amount,
+                pay_gross_ytd: paystub.gross_pay_ytd,
+                pay_net: paystub.net_pay_amount,
+                hours_paid: paystub.hours
+              }
+            end
+          }
+        end
+      end
+    end
+
     def summarize_by_employer
       @payroll_accounts.each_with_object({}) do |payroll_account, hash|
         account_id = payroll_account.pinwheel_account_id
