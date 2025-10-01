@@ -81,13 +81,15 @@ RSpec.describe Transmitters::JsonTransmitter do
   end
 
   context 'custom headers' do
-    let(:transmission_method_configuration) { {
-      "url" => "http://fake-state.api.gov/api/v1/income-report",
-      "custom_headers" => {
-        "X-Client-ID" => "test-client-id",
-        "X-Request-ID" => "test-request-id"
+    let(:transmission_method_configuration) do
+      {
+        "url" => "http://fake-state.api.gov/api/v1/income-report",
+        "custom_headers" => {
+          "X-Client-ID" => "test-client-id",
+          "X-Request-ID" => "test-request-id"
+        }
       }
-    } }
+    end
 
     it 'sends configured custom headers' do
       stub = stub_request(:post, "http://fake-state.api.gov/api/v1/income-report")
