@@ -83,9 +83,17 @@ locals {
 
 
     # Transmission Configuration:
-    LA_LDH_EMAIL = {
+    LA_LDH_INCOME_REPORT_URL = {
       manage_method     = "manual"
-      secret_store_name = "/service/${var.app_name}-${var.environment}/la-ldh-email"
+      secret_store_name = "/service/${var.app_name}-${var.environment}/la-ldh-income-report-url"
+    },
+    LA_LDH_INCOME_REPORT_APIKEY = {
+      manage_method     = "manual"
+      secret_store_name = "/service/${var.app_name}-${var.environment}/la-ldh-income-report-apikey"
+    },
+    LA_LDH_INCOME_REPORT_ACCOUNTCODE = {
+      manage_method     = "manual"
+      secret_store_name = "/service/${var.app_name}-${var.environment}/la-ldh-income-report-accountcode"
     },
 
     # Feature Flags:
