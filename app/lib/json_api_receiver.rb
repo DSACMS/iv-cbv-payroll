@@ -4,9 +4,6 @@ require_relative "../config/environment"
 require_relative "../app/services/json_api_signature"
 
 class JsonApiReceiver < Sinatra::Base
-  # For the reference implementation, we'll use a simple test key
-  API_KEY = "test-api-key"
-
   post "/" do
     content_type :json
 
@@ -17,8 +14,21 @@ class JsonApiReceiver < Sinatra::Base
 
     puts "Received JSON: #{body}"
 
+    puts "Headers:"
+    request.env.each do |key, value|
+      puts "  #{key}: #{value}" if key.start_with?("HTTP_")
+    end
+
     if signature && timestamp
-      unless JsonApiSignature.verify(body, timestamp, signature, API_KEY)
+      agency_id = ENV.fetch("JSON_API_AGENCY", "sandbox")
+      api_key = User.api_key_for_agency(agency_id)
+      unless api_key
+        puts "❌ No API key found in database"
+        status 500
+        return { error: "Server configuration error" }.to_json
+      end
+
+      unless JsonApiSignature.verify(body, timestamp, signature, api_key)
         puts "❌ Invalid signature"
         status 401
         return { error: "Unauthorized" }.to_json
