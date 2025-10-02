@@ -164,7 +164,7 @@ RSpec.describe Aggregators::AggregatorReports::PinwheelReport, type: :service do
                                                account_id: account,
                                                compensation_amount: 1000.0,
                                                compensation_unit: "hourly",
-                                               pay_frequency: "bi-weekly"
+                                               pay_frequency: "biweekly"
                                              )
 
         expect(summary[account][:employment]).to have_attributes(

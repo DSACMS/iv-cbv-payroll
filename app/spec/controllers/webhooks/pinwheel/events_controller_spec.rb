@@ -161,7 +161,7 @@ RSpec.describe Webhooks::Pinwheel::EventsController do
               income_compensation_amount_present: true,
               income_compensation_unit_present: true,
               income_pay_frequency_present: true,
-              income_pay_frequency: "bi-weekly",
+              income_pay_frequency: "biweekly",
 
               # Paystubs fields
               paystubs_success: true,
