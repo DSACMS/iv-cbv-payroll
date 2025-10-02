@@ -16,8 +16,9 @@ class Api::InvitationsController < ApplicationController
     render json: {
       tokenized_url: @cbv_flow_invitation.to_url,
       expiration_date: @cbv_flow_invitation.expires_at_local,
-      language: @cbv_flow_invitation.language,
-      agency_partner_metadata: allowed_metadata_params
+      language: @cbv_flow_invitation.language
+      # TODO: Determine if we actually want to echo this data back, maybe should be config param?
+      # agency_partner_metadata: allowed_metadata_params
     }, status: :created
   end
 
