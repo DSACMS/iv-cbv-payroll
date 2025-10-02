@@ -158,19 +158,6 @@ RSpec.describe Report::PaymentsDeductionsMonthlySummaryComponent, type: :compone
 
       subject { render_inline(described_class.new(argyle_report, payroll_account, is_responsive: true, is_w2_worker: false, pay_frequency_text: "monthly")) }
 
-      it "renders nothing without the paystubs data" do
-        heading = subject.at_css('h2.usa-alert__heading')
-        expect(heading).to be_nil
-      end
-
-      it "does not render empty accordions when there are no paystubs" do
-        accordion_buttons = subject.css('button.usa-accordion__button')
-        expect(accordion_buttons).to be_empty
-
-        payments_header = subject.at_css('h2')
-        expect(payments_header).to be_nil
-      end
-
       it "raises an error without the paystubs data" do
         expect {
           render_inline(described_class.new(argyle_report, payroll_account, is_responsive: true, is_w2_worker: false, pay_frequency_text: "monthly"))
