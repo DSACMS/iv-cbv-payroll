@@ -43,16 +43,14 @@ es:
       terminated: Desactivado
     payment_frequencies:
       annual: Anual
-      annually: Anualmente
-      bi_weekly: Cada dos semanas
       biweekly: Cada dos semanas
       daily: Diario
       hourly: Por hora
       monthly: Mensual
       per_mile: Por milla
       quarterly: Trimestralmente
-      semi_monthly: Dos veces al mes
       semimonthly: Dos veces al mes
+      semiweekly: Semi-semanal
       variable: Variable
       weekly: Semanal
     tax_category:

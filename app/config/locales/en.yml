@@ -89,16 +89,14 @@ en:
       terminated: terminated
     payment_frequencies:
       annual: Annually
-      annually: Annually
-      bi_weekly: Bi-weekly
       biweekly: Bi-weekly
       daily: Daily
       hourly: Hourly
       monthly: Monthly
       per_mile: Per mile
       quarterly: Quarterly
-      semi_monthly: Semi-monthly
       semimonthly: Semi-monthly
+      semiweekly: Semi-weekly
       variable: Variable
       weekly: Weekly
     tax_category:
