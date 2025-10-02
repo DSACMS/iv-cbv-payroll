@@ -31,6 +31,8 @@ RUN apt-get update -qq && \
       imagemagick \
       # CVE-2025-22113 \
       linux-libc-dev \
+      # CVE-2025-9230 CVE-2025-9231 CVE-2025-9232
+      openssl \
       && \
     rm -rf /var/lib/apt/lists /var/cache/apt/archives
 
@@ -152,7 +154,6 @@ RUN apt-get update -qq && \
     apt-get install -y --no-install-recommends \
         libgpgme11t64=1.24.2-3 \
         libvips42=8.16.1-1+b1 \
-        openssl=3.5.1-1 \
         postgresql-client-17 \
         python-is-python3=3.13.3-1 \
         python3-venv=3.13.5-1 \

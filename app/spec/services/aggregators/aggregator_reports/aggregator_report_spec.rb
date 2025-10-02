@@ -119,4 +119,48 @@ RSpec.describe Aggregators::AggregatorReports::AggregatorReport, type: :service 
       end
     end
   end
+
+  describe '#income_report' do
+    let(:comment) { "cool stuff" }
+    let(:cbv_flow) { create(:cbv_flow, has_other_jobs: false, additional_information: { comment: comment }) }
+    let(:report) { build(:pinwheel_report, :hydrated, :with_pinwheel_account) }
+
+    before do
+      report.payroll_accounts.first.cbv_flow = cbv_flow
+    end
+
+    it 'income information' do
+      expect(report.income_report).to eq(
+        has_other_jobs: false,
+        employments: [
+          {
+            applicant_full_name: "Cool Guy",
+            applicant_ssn: "XXX-XX-1234",
+            applicant_extra_comments: "cool stuff",
+            employer_name: "Cool Company",
+            employer_phone: "604-555-1234",
+            employer_address: "1234 Main St Vancouver BC V5K 0A1",
+            employment_status: "inactive",
+            employment_type: "gig",
+            employment_start_date: Date.new(2014, 1, 1).iso8601,
+            employment_end_date: Date.new(2014, 1, 2).iso8601,
+            pay_frequency: "variable",
+            compensation_amount: 100,
+            compensation_unit: "hour",
+            paystubs: [
+              {
+                pay_date: Date.new(2014, 1, 1).iso8601,
+                pay_period_start: Date.new(2014, 1, 1),
+                pay_period_end: Date.new(2014, 1, 2),
+                pay_gross: 12345,
+                pay_gross_ytd: 12345,
+                pay_net: 12345,
+                hours_paid: 12.0
+              }
+            ]
+          }
+        ]
+      )
+    end
+  end
 end

@@ -36,6 +36,7 @@ RSpec.describe Transmitters::JsonTransmitter do
 
   context 'agency responds with 200' do
     it 'posts to the endpoint with the expected data' do
+      expect(aggregator_report).to receive(:income_report).and_return({ cool: "report" })
       VCR.use_cassette("json_transmitter_200") do
         described_class.new(cbv_flow, mock_client_agency, aggregator_report).deliver
       end
@@ -65,8 +66,12 @@ RSpec.describe Transmitters::JsonTransmitter do
   end
 
   context 'signature generation' do
-    it 'generates and sends signature headers' do
-      expect(JsonApiSignature).to receive(:generate).and_return("mock-signature")
+    it 'generates signature with the request body' do
+      expect(JsonApiSignature).to receive(:generate).with(
+        a_string_including(cbv_flow.confirmation_code),
+        anything,
+        anything
+      ).and_return("mock-signature")
 
       VCR.use_cassette("json_transmitter_200") do
         described_class.new(cbv_flow, mock_client_agency, aggregator_report).deliver

@@ -1,9 +1,0 @@
-#!/usr/bin/env ruby
-
-require_relative "../lib/json_api_receiver"
-
-puts "Starting JSON API receiver on port #{ENV.fetch('JSON_API_PORT', 4567)}"
-puts "Ready to receive JSON Push API requests at /"
-puts ""
-
-JsonApiReceiver.run!
