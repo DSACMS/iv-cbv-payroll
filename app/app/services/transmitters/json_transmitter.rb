@@ -8,16 +8,6 @@ class Transmitters::JsonTransmitter
     agency_partner_metadata = CbvApplicant.build_agency_partner_metadata(@current_agency.id) { |attr| @cbv_flow.cbv_applicant.public_send(attr) }
 
     req.content_type = "application/json"
-    timestamp = Time.now.to_i.to_s
-    req["X-IVAAS-Timestamp"] = timestamp
-    req["X-IVAAS-Signature"] = JsonApiSignature.generate(req.body, timestamp, api_key_for_agency)
-
-    custom_headers = @current_agency.transmission_method_configuration["custom_headers"]
-    if custom_headers
-      custom_headers.each do |header_name, header_value|
-        req[header_name] = header_value
-      end
-    end
 
     payload = {
       confirmation_code: @cbv_flow.confirmation_code,
@@ -45,6 +35,17 @@ class Transmitters::JsonTransmitter
     end
 
     req.body = payload.to_json
+
+    timestamp = Time.now.to_i.to_s
+    req["X-IVAAS-Timestamp"] = timestamp
+    req["X-IVAAS-Signature"] = JsonApiSignature.generate(req.body, timestamp, api_key_for_agency)
+
+    custom_headers = @current_agency.transmission_method_configuration["custom_headers"]
+    if custom_headers
+      custom_headers.each do |header_name, header_value|
+        req[header_name] = header_value
+      end
+    end
     res = Net::HTTP.start(api_url.hostname, api_url.port, use_ssl: api_url.scheme == "https") do |http|
       http.request(req)
     end

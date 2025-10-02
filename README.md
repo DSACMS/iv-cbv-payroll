@@ -103,16 +103,12 @@ To run database migrations on the test environment that is used by rpec tests, r
    rails 'users:create_api_token[agency_name]'
    ```
 
-2. **Run the test receiver:**
+2. **Run the standalone test receiver:**
    ```bash
-   # For sandbox (default)
-   bin/api-test
-
-   # For a different agency
-   JSON_API_AGENCY=agency_name bin/api-test
+   JSON_API_KEY=$(rails runner "puts User.api_key_for_agency('agency_name')") ruby lib/json_api_receiver.rb
    ```
 
-This starts a test server on port 4567 that logs incoming JSON data and verifies signatures.
+This starts a standalone test server on port 4567 that logs incoming JSON data and verifies HMAC signatures. The receiver is completely independent and can be used as a reference implementation for agencies building their own JSON API endpoints.
 
 ## Branching model
 When beginning work on a feature, create a new branch based off of `main` and make the commits for that feature there.
