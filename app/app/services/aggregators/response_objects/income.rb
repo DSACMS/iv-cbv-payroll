@@ -28,11 +28,11 @@ module Aggregators::ResponseObjects
     def self.from_argyle(identities_response_body)
       new(
         account_id: identities_response_body["account"],
-        pay_frequency: normalize(identities_response_body["pay_cycle"]),
+        pay_frequency: identities_response_body["pay_cycle"],
         compensation_amount: Aggregators::FormatMethods::Argyle.format_currency(
           identities_response_body["base_pay"]["amount"]
         ),
-        compensation_unit: normalize(identities_response_body["base_pay"]["period"]),
+        compensation_unit: identities_response_body["base_pay"]["period"],
         employment_id: identities_response_body["employment"]
       )
     end
