@@ -63,7 +63,7 @@ resource "aws_route53_record" "dmarc_record" {
 }
 
 resource "aws_ses_configuration_set" "require_tls" {
-  name = "require-tls"
+  name = "require-tls-${var.domain}"
 
   delivery_options {
     tls_policy = "Require"
