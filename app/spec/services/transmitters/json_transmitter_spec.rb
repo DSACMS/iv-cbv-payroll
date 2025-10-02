@@ -31,6 +31,7 @@ RSpec.describe Transmitters::JsonTransmitter do
     allow(mock_client_agency).to receive(:transmission_method_configuration).and_return(transmission_method_configuration)
     allow(mock_client_agency).to receive(:id).and_return("sandbox")
     allow(CbvApplicant).to receive(:valid_attributes_for_agency).with("sandbox").and_return([ "case_number" ])
+    allow(Rails.logger).to receive(:error)
   end
 
   context 'agency responds with 200' do
@@ -42,18 +43,24 @@ RSpec.describe Transmitters::JsonTransmitter do
   end
 
   context 'agency responds with 500' do
-    it 'logs an error' do
+    it 'raises an HTTP error' do
       VCR.use_cassette("json_transmitter_500") do
-        expect { described_class.new(cbv_flow, mock_client_agency, aggregator_report).deliver }.to raise_error("Received 500 from agency")
+        expect { described_class.new(cbv_flow, mock_client_agency, aggregator_report).deliver }.to raise_error("Unexpected response from agency: 500 Internal Server Error")
       end
+
+      expect(Rails.logger).to have_received(:error).with(/Unexpected response: 500/)
     end
   end
 
   context 'any other non-200 response' do
     it 'raises an HTTP error' do
       VCR.use_cassette("json_transmitter_418") do
-        expect { described_class.new(cbv_flow, mock_client_agency, aggregator_report).deliver }.to raise_error("Unexpected response from agency: 418 I'm a teapot")
+        expect { described_class.new(cbv_flow, mock_client_agency, aggregator_report).deliver }
+          .to raise_error("Unexpected response from agency: 418 I'm a teapot")
       end
+
+      expect(Rails.logger).to have_received(:error).with(/Unexpected response: 418/)
+      expect(Rails.logger).to have_received(:error).with(/Here is my handle, here is my spout./)
     end
   end
 
