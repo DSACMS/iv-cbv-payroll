@@ -21,11 +21,8 @@
   </ol>
 
   <%= form_with(url: cbv_flow_entry_path, builder: UswdsFormBuilder) do |f| %>
-
-      label_content = content_tag(:span, agency_translation(".checkbox_large_text", agency_full_name: agency_translation("shared.agency_full_name")), class: "large-text") +
-                      tag.br +
-                      content_tag(:span, agency_translation(".checkbox_small_text"), class: "small-text")
-    %>
+    <% label_content = content_tag(:span, agency_translation(".checkbox_large_text", agency_full_name: agency_translation("shared.agency_full_name")), class: "large-text") + tag.br +
+      content_tag(:span, agency_translation(".checkbox_small_text"), class: "small-text") %>
     <%= f.check_box(:agreement, { label: label_content, "data-action": "cbv-entry-page#consent", "data-cbv-entry-page-target": "consentCheckbox" }) %>
     <%= f.submit t(".continue") %>
   <% end %>
