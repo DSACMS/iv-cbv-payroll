@@ -31,12 +31,30 @@
 
   <h2><%= t(".common_questions_header") %>
 
+  <%= render AccordionComponent.new(id: "what_is_this-accordion", heading_level: 2, data_action: "click->cbv-entry-page#viewHelpText", data_section_identifier: "what_is_this") do |accordion| %>
+    <% accordion.with_title do %>
+      <%= t(".what_is_this_title") %>
+    <% end %>
+    <% accordion.with_accordion_item do %>
+      <%= t(".what_is_this_body") %>
+    <% end %>
+  <% end %>
+
   <%= render AccordionComponent.new(id: "who_is_this_for-accordion", heading_level: 2, data_action: "click->cbv-entry-page#viewHelpText", data_section_identifier: "who_is_this_tool_for") do |accordion| %>
     <% accordion.with_title do %>
       <%= t(".who_is_this_for_title") %>
     <% end %>
     <% accordion.with_accordion_item do %>
       <%= t(".who_is_this_for_body") %>
+    <% end %>
+  <% end %>
+
+  <%= render AccordionComponent.new(id: "is_my_data_secure-accordion", heading_level: 2, data_action: "click->cbv-entry-page#viewHelpText", data_section_identifier: "is_my_data_secure") do |accordion| %>
+    <% accordion.with_title do %>
+      <%= t(".is_my_data_secure_title") %>
+    <% end %>
+    <% accordion.with_accordion_item do %>
+      <%= t(".is_my_data_secure_body_html") %>
     <% end %>
   <% end %>
 
