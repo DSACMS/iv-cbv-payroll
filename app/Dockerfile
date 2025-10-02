@@ -176,7 +176,6 @@ RUN set -eux; \
     libgpgme11t64=1.24.2-3 \
     libvips42=8.16.1-1+b1 \
     openssl=3.5.1-1 \
-    postgresql-client-15=15.14-0+deb12u1 \
     postgresql-client-17 \
     python-is-python3=3.13.3-1 \
     python3-venv=3.13.5-1 \
