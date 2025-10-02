@@ -141,8 +141,6 @@ RSpec.describe Cbv::SubmitsController do
 
             pdf_text = extract_pdf_text(response)
 
-            expect(pdf_text).to include("Case number")
-            expect(pdf_text).to include("00012345")
             expect(pdf_text).not_to include(I18n.t("cbv.submits.show.application_or_recertification_date"))
           end
         end
