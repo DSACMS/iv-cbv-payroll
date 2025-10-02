@@ -15,7 +15,7 @@
 #   app_name (required) - the name of subdirectory of /infra that holds the
 #     application's infrastructure code.
 #   environment (required) - the name of the application environment (e.g. dev,
-#     staging, prod)
+#     demo, prod)
 #   command (required) - a JSON list representing the command to run
 #     e.g. To run the command `db-migrate-up` with no arguments, set
 #     command='["db-migrate-up"]'
@@ -37,6 +37,14 @@ while :; do
       task_role_arn="$2"
       shift 2
       ;;
+    --help)
+      echo "Usage: $0 [app_name] [environment] [command]"
+      echo "  --environment_variables   - JSON list of environment variables"
+      echo "  --task_role_arn           - IAM role ARN that teh task should assume"
+      echo
+      echo "Example: $0 app prod '[\"echo\", \"Hello, world\"]'"
+      exit 0
+      ;;
     *)
       break
       ;;
@@ -57,6 +65,9 @@ echo "  command=${command}"
 echo "  environment_variables=${environment_variables:-}"
 echo "  task_role_arn=${task_role_arn:-}"
 echo
+
+# Initialize terraform and select workspace if specified
+./bin/terraform-init "infra/${app_name}/service" "${environment}"
 
 # Use the same cluster, task definition, and network configuration that the application service uses
 cluster_name=$(terraform -chdir="infra/${app_name}/service" output -raw service_cluster_name)
