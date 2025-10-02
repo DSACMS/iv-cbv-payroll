@@ -10,6 +10,9 @@ RSpec.describe ClientAgencyConfig do
       environment: foo
     argyle:
       environment: foo
+    transmission_method: shared_email
+    transmission_method_configuration:
+      email: foo
   YAML
 
   before do

@@ -1,11 +1,7 @@
 class CbvApplicant::PaDhs < CbvApplicant
   # Attributes usable in the invitation API and caseworker page.
   VALID_ATTRIBUTES = %i[
-    first_name
-    middle_name
-    last_name
     case_number
-    income_changes
   ]
 
   has_redactable_fields(
@@ -17,9 +13,9 @@ class CbvApplicant::PaDhs < CbvApplicant
 
   validates :case_number, presence: true
 
-  def redact!
+  def redact!(fields = nil)
     self[:income_changes] = redact_member_names_in_json(self[:income_changes])
-    super
+    super(fields)
   end
 
   def agency_expected_names

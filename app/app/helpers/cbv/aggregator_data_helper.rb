@@ -59,4 +59,14 @@ module Cbv::AggregatorDataHelper
     report.fetch
     report
   end
+
+  def pinwheel
+    environment = agency_config[@cbv_flow.client_agency_id].pinwheel_environment
+    Aggregators::Sdk::PinwheelService.new(environment)
+  end
+
+  def argyle
+    environment = agency_config[@cbv_flow.client_agency_id].argyle_environment
+    Aggregators::Sdk::ArgyleService.new(environment)
+  end
 end

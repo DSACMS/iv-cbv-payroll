@@ -48,11 +48,16 @@ module Aggregators::AggregatorReports
 
     AccountReportStruct = Struct.new(:identity, :income, :employment, :paystubs, :gigs)
     def find_account_report(account_id)
+      account_employment = pick_employment(@employments, @paystubs, account_id)
+      employment_filter = employment_filter_for(account_id, account_employment&.employment_matching_id)
+
+      # Note that, once we filter by employment match, we do not yet have a good solution for displaying multiple
+      # incomes or identities at this time. We just take the first.
       AccountReportStruct.new(
-        @identities.find { |identity| identity.account_id == account_id },
-        @incomes.find { |income| income.account_id == account_id },
-        @employments.find { |employment| employment.account_id == account_id },
-        @paystubs.find_all { |paystub| paystub.account_id == account_id },
+        @identities.filter(&employment_filter).first,
+        @incomes.filter(&employment_filter).first,
+        account_employment,
+        @paystubs.filter(&employment_filter),
         @gigs.find_all { |gig| gig.account_id == account_id }
       )
     end
@@ -60,21 +65,21 @@ module Aggregators::AggregatorReports
     def summarize_by_employer
       @payroll_accounts.each_with_object({}) do |payroll_account, hash|
         account_id = payroll_account.pinwheel_account_id
+        account_report = find_account_report(account_id)
         has_income_data = payroll_account.job_succeeded?("income")
         has_employment_data = payroll_account.job_succeeded?("employment")
         has_identity_data = payroll_account.job_succeeded?("identity")
-        account_paystubs = @paystubs.filter { |paystub| paystub.account_id == account_id }
+        has_paystubs_data = payroll_account.job_succeeded?("paystubs")
         hash[account_id] ||= {
-          total: account_paystubs.sum { |paystub| paystub.gross_pay_amount || 0 },
+          total: account_report.paystubs.sum { |paystub| paystub.gross_pay_amount || 0 },
           has_income_data: has_income_data,
           has_employment_data: has_employment_data,
           has_identity_data: has_identity_data,
-          # TODO: what happens if more than one income/employment/identity on an account?
-          income: has_income_data ? @incomes.find { |income| income.account_id == account_id } : nil,
-          employment: has_employment_data ? @employments.find { |employment| employment.account_id == account_id } : nil,
-          identity: has_identity_data ? @identities.find { |identity| identity.account_id == account_id } : nil,
-          paystubs: account_paystubs,
-          gigs: @gigs.filter { |gig| gig.account_id == account_id }
+          employment: has_employment_data ? account_report.employment : nil,
+          income: has_income_data ? account_report.income : nil,
+          identity: has_identity_data ? account_report.identity : nil,
+          paystubs: has_paystubs_data ? account_report.paystubs : nil,
+          gigs: account_report.gigs
         }
       end
     end
@@ -86,8 +91,9 @@ module Aggregators::AggregatorReports
       @payroll_accounts
         .each_with_object({}) do |payroll_account, hash|
           account_id = payroll_account.pinwheel_account_id
-          paystubs = @paystubs.filter { |paystub| paystub.account_id == account_id }
-          gigs = @gigs.filter { |gig| gig.account_id == account_id }
+          account_report = find_account_report(account_id)
+          paystubs = account_report.paystubs
+          gigs = account_report.gigs
           extracted_dates = extract_dates(paystubs, gigs)
           months = unique_months(extracted_dates)
 
@@ -141,16 +147,54 @@ module Aggregators::AggregatorReports
     end
 
     def fetched_days_for_account(account_id)
-      employment = @employments.find { |emp| emp.account_id == account_id }
-      return @fetched_days unless employment
+      account_employment = pick_employment(@employments, @paystubs, account_id)
+      return @fetched_days unless account_employment
 
-      case employment.employment_type
+      case account_employment.employment_type
       when :gig
         @days_to_fetch_for_gig
       when :w2
         @days_to_fetch_for_w2
       else
         @fetched_days
+      end
+    end
+
+    private
+
+    def employment_filter_for(account_id, employment_matching_id)
+      # Create a filter that filters any entities that don't match the account id and the employment id.
+      # If the entity doesn't have an employment id, allow it (eg for Pinwheel)
+      lambda do |item|
+        item.account_id == account_id &&
+          (item.employment_id.nil? || item.employment_id == employment_matching_id)
+      end
+    end
+
+    def pick_employment(employments, paystubs, account_id)
+      # In Argyle, the employments endpoint can return more than one employment.
+      # This method chooses the employment we want to use. Later, we must filter related
+      # data sets to make sure we're only using ones that match the employment ID we chose here.
+      relevant_employments = employments.select { |e| e[:account_id] == account_id }
+      if relevant_employments.empty?
+        Rails.logger.error("No employments found that match account_id #{account_id}")
+        raise "No employments found that match account_id #{account_id}"
+      end
+
+      # Pick the employment with the latest update when considering the start_date,
+      # terminated_at, and any related paystub's pay_date properties.
+      relevant_employments.max_by do |emp|
+        relevant_paystubs = paystubs.select { |p| p[:employment_id] == emp.employment_matching_id }
+
+        latest_pay_date = relevant_paystubs.map { |p| p[:pay_date] }.max
+
+        dates = [
+          emp[:start_date],
+          emp[:termination_date],
+          latest_pay_date
+        ]
+
+        dates.compact.max
       end
     end
   end

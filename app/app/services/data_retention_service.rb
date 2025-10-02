@@ -80,4 +80,14 @@ class DataRetentionService
     applicant.cbv_flows.map(&:redact!)
     applicant.cbv_flows.each { |cbv_flow| cbv_flow.payroll_accounts.each(&:redact!) }
   end
+
+  # retroactive redaction for case numbers by agency
+  # TODO: This is a one off. Should be updated to just be something like retroactive_redact(agency_id,field_name)
+  def self.redact_case_numbers_by_agency(agency_id)
+    applicants = CbvApplicant.where(client_agency_id: agency_id)
+    applicants.find_each(batch_size: 200) do |applicant|
+      applicant.redact!({ case_number: :string })
+    end
+    puts "Redacted #{applicants.length} applicants"
+  end
 end

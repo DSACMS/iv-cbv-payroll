@@ -38,6 +38,10 @@ class CbvFlow < ApplicationRecord
     payroll_accounts.any?(&:sync_succeeded?)
   end
 
+  def fully_synced_payroll_accounts
+    payroll_accounts.select { |account| account.has_fully_synced? }
+  end
+
   def to_generic_url(origin: nil)
     client_agency = Rails.application.config.client_agencies[client_agency_id]
     raise ArgumentError.new("Client Agency #{client_agency_id} not found") unless client_agency

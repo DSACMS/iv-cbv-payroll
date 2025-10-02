@@ -24,6 +24,25 @@ RSpec.describe Cbv::BaseController, type: :controller do
       cookie_jar = response.cookies["cbv_applicant_id"]
       expect(cookie_jar).to be_present
     end
+
+    context "when no token or session is present" do
+      it "redirects to root with cbv_flow_timeout parameter and flash message" do
+        get :show
+        expect(response).to redirect_to(root_url(cbv_flow_timeout: true))
+        expect(flash[:slim_alert]).to eq({
+          type: "info",
+          message_html: I18n.t("cbv.error_missing_token_html")
+        })
+      end
+    end
+
+    context "when cbv flow cannot be found for session" do
+      it "redirects to root with cbv_flow_timeout parameter" do
+        session[:cbv_flow_id] = 1337
+        get :show
+        expect(response).to redirect_to(root_url(cbv_flow_timeout: true))
+      end
+    end
   end
 
   describe '#track_invitation_clicked_event' do

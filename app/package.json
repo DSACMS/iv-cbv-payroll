@@ -9,7 +9,7 @@
     "@rails/actioncable": "^7.2.202",
     "@uswds/uswds": "^3.13.0",
     "autoprefixer": "^10.4.21",
-    "esbuild": "^0.25.0",
+    "esbuild": "^0.25.9",
     "load-script": "^2.0.0",
     "postcss": "^8.5.6",
     "postcss-cli": "^11.0.1",
@@ -33,7 +33,7 @@
   "devDependencies": {
     "jsdom": "^24.0.0",
     "prettier": "^3.6.2",
-    "vite": "~6.2.7",
+    "vite": "~6.3.6",
     "vitest": "^3.2.4"
   },
   "resolutions": {
@@ -42,7 +42,6 @@
     "nanoid": "^5.0.9"
   },
   "overrides": {
-    "esbuild": "^0.25.0",
     "semver": ">= 7.5.2"
   }
 }
