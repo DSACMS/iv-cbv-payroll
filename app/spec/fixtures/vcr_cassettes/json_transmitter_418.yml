@@ -1,0 +1,32 @@
+---
+http_interactions:
+- request:
+    method: post
+    uri: http://fake-state.api.gov/api/v1/income-report
+    body:
+      encoding: UTF-8
+      string: '{"confirmation_code":"ABC123","completed_at":"2025-05-01T01:00:00Z","agency_partner_metadata":{"case_number":"ABC1234"}}'
+    headers:
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Accept:
+      - "*/*"
+      User-Agent:
+      - Ruby
+      Content-Type:
+      - application/json
+  response:
+    status:
+      code: 418
+      message: I'm a teapot
+    headers:
+      Content-Type:
+      - text/plain
+      Content-Length:
+      - '21'
+      Connection:
+      - keep-alive
+    body:
+      encoding: UTF-8
+      string: "I'm a teapot"
+  recorded_at: Mon, 24 Sep 2025 20:00:00 GMT

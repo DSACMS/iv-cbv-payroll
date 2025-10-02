@@ -35,6 +35,15 @@ RSpec.describe CbvApplicant::AzDes, type: :model do
           expect(income_change["change_type"]).not_to eq("REDACTED")
         end
       end
+
+      it "redacts specific fields when given" do
+        applicant = CbvApplicant.create(az_attributes)
+        applicant.redact!({ case_number: :string })
+
+        expect(applicant).to have_attributes(
+          case_number: "REDACTED"
+        )
+      end
     end
 
     context 'when income_changes is not an array' do

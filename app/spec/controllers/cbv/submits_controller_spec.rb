@@ -265,16 +265,13 @@ RSpec.describe Cbv::SubmitsController do
       context "for Bob (a gig worker)" do
         let(:cbv_applicant) { create(:cbv_applicant, created_at: current_time, case_number: "ABC1234") }
         let(:account_id) { "019571bc-2f60-3955-d972-dbadfe0913a8" }
-        let(:supported_jobs) { %w[accounts identity paystubs] }
+        let(:supported_jobs) { %w[accounts identity paystubs employment] }
         let(:errored_jobs) { [] }
         let(:cbv_flow) do
           create(:cbv_flow,
                  :completed,
                  :invited,
-                 :with_argyle_account,
-                 with_errored_jobs: errored_jobs,
                  created_at: current_time,
-                 supported_jobs: supported_jobs,
                  cbv_applicant: cbv_applicant
           )
         end
@@ -323,10 +320,7 @@ RSpec.describe Cbv::SubmitsController do
           create(:cbv_flow,
                  :completed,
                  :invited,
-                 :with_argyle_account,
-                 with_errored_jobs: errored_jobs,
                  created_at: current_time,
-                 supported_jobs: supported_jobs,
                  cbv_applicant: cbv_applicant
           )
         end

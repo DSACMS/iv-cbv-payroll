@@ -1,4 +1,6 @@
 resource "aws_ecs_service" "solid_queue" {
+  # Do not create the worker service in temporary PR environments
+  count                  = var.is_temporary ? 0 : 1
   name                   = "${var.service_name}-solid_queue"
   cluster                = aws_ecs_cluster.cluster.arn
   launch_type            = "FARGATE"

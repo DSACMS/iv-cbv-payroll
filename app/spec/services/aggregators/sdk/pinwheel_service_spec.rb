@@ -60,21 +60,6 @@ RSpec.describe Aggregators::Sdk::PinwheelService, type: :service do
     end
   end
 
-  describe "#fetch_employment" do
-    let(:account_id) { SecureRandom.uuid }
-
-    before do
-      pinwheel_stub_request_employment_info_response
-    end
-
-    xit "returns an Employment object with expected attributes" do
-      employment = service.fetch_employment(account_id: account_id)
-
-      expect(employment).to be_a(Aggregators::ResponseObjects::Employment)
-      expect(employment).to have_attributes(status: "employed", start_date: "2010-01-01", employer_phone_number: "+16126597057")
-    end
-  end
-
   describe Aggregators::ResponseObjects::Paystub do
     let(:raw_paystubs_json) do
       pinwheel_load_relative_json_file('request_end_user_paystubs_response.json')['data']

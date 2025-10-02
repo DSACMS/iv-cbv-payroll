@@ -312,4 +312,24 @@ RSpec.describe DataRetentionService do
       )
     end
   end
+
+  describe ".redact_case_numbers_by_agency" do
+    let(:agency_to_redact) { "sandbox" }
+    let!(:cbv_flow_invitation) { create(:cbv_flow_invitation, cbv_applicant_attributes: { case_number: "DELETEME001", client_agency_id: agency_to_redact }) }
+    let!(:cbv_flow_invitation2) { create(:cbv_flow_invitation, cbv_applicant_attributes: { case_number: "DELETEME002", client_agency_id: agency_to_redact }) }
+    let!(:cbv_flow) { CbvFlow.create_from_invitation(cbv_flow_invitation) }
+    let!(:cbv_flow2) { CbvFlow.create_from_invitation(cbv_flow_invitation2) }
+
+    it "redacts all case numbers for a given agency" do
+      DataRetentionService.redact_case_numbers_by_agency(agency_to_redact)
+      expect(cbv_flow.cbv_applicant.reload).to have_attributes(
+        case_number: "REDACTED",
+        redacted_at: within(1.second).of(Time.now)
+      )
+      expect(cbv_flow2.cbv_applicant.reload).to have_attributes(
+        case_number: "REDACTED",
+        redacted_at: within(1.second).of(Time.now)
+      )
+    end
+  end
 end

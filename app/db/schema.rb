@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2025_07_07_143214) do
+ActiveRecord::Schema[7.2].define(version: 2025_09_15_183520) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pgcrypto"
   enable_extension "plpgsql"
@@ -38,6 +38,8 @@ ActiveRecord::Schema[7.1].define(version: 2025_07_07_143214) do
     t.string "client_agency_id"
     t.jsonb "income_changes"
     t.date "date_of_birth"
+    t.uuid "case_guid"
+    t.string "doc_id"
   end
 
   create_table "cbv_flow_invitations", force: :cascade do |t|

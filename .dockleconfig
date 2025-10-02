@@ -2,3 +2,10 @@
 # To allow multiple files, use a list of names, example below. Make sure to remove the leading #
 DOCKLE_ACCEPT_FILES=database.yml,omniauth.rb,rails/.env
 # https://github.com/goodwithtech/dockle#accept-suspicious-environment-variables--files--file-extensions
+
+# Ignore `Clear apt-get caches` lint as our base image uses `apt-get
+# dist-clean` to clear the apt-get cache, which is not yet recognized by dockle
+# as valid.
+#
+# See: https://github.com/goodwithtech/dockle/issues/282
+DOCKLE_IGNORES=DKL-DI-0005
