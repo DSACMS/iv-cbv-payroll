@@ -171,9 +171,14 @@ es:
         error: Debe marcar la casilla de «acuerdo» para proceder.
       show:
         checkbox_large_text:
-          default: Marque esta casilla para permitirnos acceder a su información de pago y compartirla con %{agency_full_name}.
+          default: Marque esta casilla para permitirnos acceder a información sobre sus ingresos y compartirla con %{agency_full_name}.
+        checkbox_small_text:
+          default: 'Usaremos esta información solamente para determinar sus beneficios. No la compartiremos externamente. '
+        common_questions_header: Preguntas más frecuentes
         continue: Comenzar
         header: Verifiquemos sus ingresos
+        is_my_data_secure_body_html: Sí, sus datos están seguros. Usamos un sistema de codificación robusto para proteger su información, similar a lo que los bancos usan. <br> <br>Sus credenciales para acceder a su cuenta y su información de ingresos son transferidos de manera segura. Nosotros no guardamos esta información.
+        is_my_data_secure_title: "¿Están seguros mis datos?"
         step1: Busque e inicie sesión en su empleador o proveedor de nómina en línea.
         step1_description: Use las credenciales de inicio de sesión que tiene para ver su recibo de pago en línea. No compartiremos ni guardamos su información de inicio de sesión. Si trabaja para una aplicación, como Uber, este sería el mismo inicio de sesión cuando inicie sesión en la aplicación Uber.
         step2: Revise su información de pago.
@@ -186,6 +191,8 @@ es:
           default: Para obtener más información sobre cómo enviar documentos, visite el sitio web de <a href="%{agency_url}" target="_blank" rel="noopener noreferrer">%{agency_acronym}</a>.
           la_ldh: 'Usted puede: <ul><li>Subir documentos a través del Portal de Autoservicio en línea en <a href="https://mymedicaid.la.gov/" target="_blank" rel="noopener noreferrer">https://mymedicaid.la.gov/</a></li><li>Enviar documentos por correo postal: Louisiana Medicaid/LaCHIP, P.O. Box 91283, Baton Rouge, LA 70821-9278</li><li>Enviar documentos por correo electrónico: <a href="mailto:MyMedicaid@la.gov">MyMedicaid@la.gov</a></li><li>Llevar sus documentos a la oficina de Medicaid de su elección.</li></ul>'
         what_if_i_cant_use_this_title: "¿Qué debo hacer si no puedo usar esta herramienta?"
+        what_is_this_body: '"Reportar mi ingreso" es una herramienta que ayuda a recopilar información de su(s) empleador(es) sobre sus ingresos y la envía a su oficina estatal que provee asistencia. '
+        what_is_this_title: ¿Qué es la herramienta "Reportar mi ingreso"?
         who_is_this_for_body: Puede usar esta herramienta si ha recibido ingresos en los últimos 90 días (incluso si ya no está trabajando). Además, le recordamos que puede acceder a sus recibos de pago en línea si brinda servicios a través de plataformas digitales, como Uber, Lyft o Amazon Flex.
         who_is_this_for_title: "¿Quién puede usar este herramienta?"
     error_invalid_link: Se utilizó un enlace no válido para iniciar CBV. Vuelva a hacer clic en el enlace, o bien directamente póngase en contacto con su asistente de caso para obtener ayuda.
