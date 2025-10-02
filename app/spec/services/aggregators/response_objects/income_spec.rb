@@ -19,6 +19,22 @@ RSpec.describe Aggregators::ResponseObjects::Income do
       expect(income.compensation_amount).to eq(1000)
       expect(income.compensation_unit).to eq("biweekly")
     end
+
+    it 'normalizes frequency values' do
+      pay_frequencies = {
+        "bi-weekly" => "biweekly",
+        "annually" => "annual",
+        "semi-weekly" => "semiweekly"
+      }
+
+      pay_frequencies.each do |input, expected|
+        response = pinwheel_response.merge("pay_frequency" => input)
+        expect(described_class.from_pinwheel(response).pay_frequency).to eq(expected)
+      end
+
+      response = pinwheel_response.merge("compensation_unit" => "semi-monthly")
+      expect(described_class.from_pinwheel(response).compensation_unit).to eq("semimonthly")
+    end
   end
 
   describe '.from_argyle' do
