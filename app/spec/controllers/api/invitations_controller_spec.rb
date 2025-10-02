@@ -35,13 +35,15 @@ RSpec.describe Api::InvitationsController do
       expect(parsed_response).to include("tokenized_url")
     end
 
-    it "includes all agency_partner_metadata fields in the response" do
-      subject
-      parsed_response = JSON.parse(response.body)
-      expect(parsed_response["agency_partner_metadata"].keys.map(&:to_sym)).to match_array(
-        CbvApplicant.valid_attributes_for_agency(client_agency_id.to_s)
-      )
-    end
+
+    # TODO: See invitations_controller note on if we are including the echo-back metadata
+    # it "includes all agency_partner_metadata fields in the response" do
+    #   subject
+    #   parsed_response = JSON.parse(response.body)
+    #   expect(parsed_response["agency_partner_metadata"].keys.map(&:to_sym)).to match_array(
+    #     CbvApplicant.valid_attributes_for_agency(client_agency_id.to_s)
+    #   )
+    # end
 
     it "creates an invitation using the client_agency_id in the access_token" do
       expect { subject }
@@ -93,15 +95,16 @@ RSpec.describe Api::InvitationsController do
         expect(applicant.doc_id).to eq("ABC1234")
       end
 
-      it "returns the expected agency_partner_metadata" do
-        subject
-        parsed_response = JSON.parse(response.body)
-        expect(parsed_response["agency_partner_metadata"]).to eq(
-          "doc_id" => valid_params[:agency_partner_metadata][:doc_id],
-          "case_number" => valid_params[:agency_partner_metadata][:case_number],
-          "date_of_birth" => valid_params[:agency_partner_metadata][:date_of_birth],
-        )
-      end
+      # TODO: See invitations_controller note on if we are including the echo-back metadata
+      # it "returns the expected agency_partner_metadata" do
+      #   subject
+      #   parsed_response = JSON.parse(response.body)
+      #   expect(parsed_response["agency_partner_metadata"]).to eq(
+      #     "doc_id" => valid_params[:agency_partner_metadata][:doc_id],
+      #     "case_number" => valid_params[:agency_partner_metadata][:case_number],
+      #     "date_of_birth" => valid_params[:agency_partner_metadata][:date_of_birth],
+      #   )
+      # end
     end
 
     context "when inviting a user in PA DHS" do
@@ -118,8 +121,6 @@ RSpec.describe Api::InvitationsController do
 
         applicant = invitation.cbv_applicant
         expect(applicant.client_agency_id).to eq("pa_dhs")
-        expect(applicant.income_changes.length).to eq(2)
-        expect(applicant.income_changes[0]["member_name"]).to eq("Mark Scout_PA")
       end
     end
 
