@@ -28,5 +28,5 @@ http_interactions:
       - keep-alive
     body:
       encoding: UTF-8
-      string: "I'm a teapot"
+      string: "Here is my handle, here is my spout."
   recorded_at: Mon, 24 Sep 2025 20:00:00 GMT

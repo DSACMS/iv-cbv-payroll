@@ -53,9 +53,9 @@ class Transmitters::JsonTransmitter
     case res
     when Net::HTTPSuccess, Net::HTTPRedirection
       "ok"
-    when Net::HTTPInternalServerError
-      raise "Received 500 from agency"
     else
+      Rails.logger.error "Unexpected response: #{res.code} #{res.message}"
+      Rails.logger.error "  Body: #{res.body}"
       raise "Unexpected response from agency: #{res.code} #{res.message}"
     end
   end
