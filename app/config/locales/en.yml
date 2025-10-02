@@ -277,8 +277,10 @@ en:
       create:
         error: You must check the agreement checkbox to proceed.
       show:
-        checkbox:
-          default: Check this box to agree to let us access your payment information and share it with %{agency_full_name}. We will not use the information for any other purpose nor redisclose it to any other party.
+        checkbox_large_text:
+          default: Check this box to agree to let us access your payment information and share it with %{agency_full_name}.
+        checkbox_small_text:
+          default: We will only use this information to help determine your benefits, it will never be shared externally.
         continue: Get started
         header: Let's verify your income
         step1: Search and sign into your employer or online payroll provider.

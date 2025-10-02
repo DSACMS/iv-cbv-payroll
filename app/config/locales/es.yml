@@ -170,8 +170,8 @@ es:
       create:
         error: Debe marcar la casilla de «acuerdo» para proceder.
       show:
-        checkbox:
-          default: Marque esta casilla para permitirnos acceder a su información de pago y compartirla con %{agency_full_name}. No usaremos la información para ningún otro propósito ni la volveremos a divulgar a ninguna otra parte.
+        checkbox_large_text:
+          default: Marque esta casilla para permitirnos acceder a su información de pago y compartirla con %{agency_full_name}.
         continue: Comenzar
         header: Verifiquemos sus ingresos
         step1: Busque e inicie sesión en su empleador o proveedor de nómina en línea.

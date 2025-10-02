@@ -184,6 +184,17 @@ html {
   background-color: #D9E8F6
 }
 
+.large-text {
+  font-size: 16px;
+}
+
+.small-text {
+  display: inline-block;
+  font-size: 14px;
+  line-height: 130%;
+  margin-top: 8px;
+}
+
 /*
  * Synchronizations Page
  */
