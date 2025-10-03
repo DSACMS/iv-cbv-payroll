@@ -25,24 +25,18 @@ FROM registry.docker.com/library/ruby:$RUBY_VERSION AS base
 # We should be able to remove these after upgrading the base image to a version
 # that has the upgraded versions by default.
 # hadolint ignore=DL3008
-RUN apt-get update -qq && \
+RUN set -eux; \
+    apt-get update -qq; \
     apt-get install -y --no-install-recommends \
       libtasn1-6 \
       libgnutls30 \
-      # CVE-2025-55154 CVE-2025-55298 \
       imagemagick \
-    # CVE-2025-0395 \
       libc-dev-bin \
-      # CVE-2025-31115 \
       liblzma5 \
-      # CVE-2025-37990 \
       linux-libc-dev \
-      # CVE-2025-32415 CVE-2025-5222 \
-      libxml2 libxml2-dev icu-devtools libicu-dev libicu72 \
-      # CVE-2025-53367 \
-      libdjvulibre21 \
-      # CVE-2025-7424 \
+      libxml2 libxml2-dev \
       libxslt1-dev \
+      icu-devtools libicu-dev \
     ; \
     rm -rf /var/lib/apt/lists/* /var/cache/apt/archives/*
 
@@ -68,19 +62,19 @@ FROM base AS build
 RUN set -eux; \
     apt-get update -qq && \
     apt-get install -y --no-install-recommends \
-      libexpat1=2.5.0-1+deb12u2 \
-      libsqlite3-0=3.40.1-2+deb12u2 \
-      libperl5.36=5.36.0-7+deb12u3 \
-      perl=5.36.0-7+deb12u3 \
-      perl-base=5.36.0-7+deb12u3 \
-      perl-modules-5.36=5.36.0-7+deb12u3 \
+      libexpat1 \
+      libsqlite3-0 \
+      libperl5.40 \
+      perl \
+      perl-base \
+      perl-modules-5.40 \
     ; \
-    apt-get install --no-install-recommends -y \
-      build-essential=12.12 \
-      git=1:2.47.3-0+deb13u1 \
-      libpq-dev=17.6-0+deb13u1 \
-      npm=9.2.0~ds1-3 \
-      pkg-config=1.8.1-4 \
+    apt-get install -y --no-install-recommends \
+      build-essential \
+      git \
+      libpq-dev \
+      npm \
+      pkg-config \
     ; \
     rm -rf /var/lib/apt/lists/* /var/cache/apt/archives/*
 
@@ -116,7 +110,7 @@ RUN set -eux; \
     apt-get update -qq && \
     apt-get install --no-install-recommends -y \
       postgresql-client-17 \
-      graphviz=2.42.4-3 \
+      graphviz \
     ; \
     rm -rf /var/lib/apt/lists/* /var/cache/apt/archives/*
 
@@ -147,7 +141,6 @@ RUN SECRET_KEY_BASE_DUMMY=1 ./bin/rails assets:precompile
 ##########################################################################################
 FROM base AS release
 
-# Set the working directory so when we attach a shell we're in the project's root directory
 WORKDIR /rails
 
 # Copy the entrypoint script
@@ -173,41 +166,13 @@ ENV PIDFILE="/rails/tmp/pids/server.pid"
 RUN set -eux; \
     apt-get update -qq; \
     apt-get install -y --no-install-recommends \
-    libgpgme11t64=1.24.2-3 \
-    libvips42=8.16.1-1+b1 \
-    openssl=3.5.1-1 \
-    postgresql-client-15=15.14-0+deb12u1 \
-    postgresql-client-17 \
-    python-is-python3=3.13.3-1 \
-    python3-venv=3.13.5-1 \
-    python3-pip=25.1.1+dfsg-1 \
-    ; \
-    # Bring vulnerable libs up to the Fixed-In versions that the vulnerability scans require
-    apt-get install -y --no-install-recommends --only-upgrade \
-    libexpat1=2.5.0-1+deb12u2 \
-    libglib2.0-0=2.74.6-2+deb12u7 \
-    libglib2.0-bin=2.74.6-2+deb12u7 \
-    libglib2.0-data=2.74.6-2+deb12u7 \
-    libglib2.0-dev=2.74.6-2+deb12u7 \
-    libglib2.0-dev-bin=2.74.6-2+deb12u7 \
-    libgssapi-krb5-2=1.20.1-2+deb12u4 \
-    libkrb5-3=1.20.1-2+deb12u4 \
-    libkrb5support0=1.20.1-2+deb12u4 \
-    libk5crypto3=1.20.1-2+deb12u4 \
-    libkadm5clnt-mit12=1.20.1-2+deb12u4 \
-    libkadm5srv-mit12=1.20.1-2+deb12u4 \
-    libkdb5-10=1.20.1-2+deb12u4 \
-    libgssrpc4=1.20.1-2+deb12u4 \
-    libsqlite3-0=3.40.1-2+deb12u2 \
-    libopenjp2-7=2.5.0-2+deb12u2 \
-    libperl5.36=5.36.0-7+deb12u3 \
-    perl=5.36.0-7+deb12u3 \
-    perl-base=5.36.0-7+deb12u3 \
-    perl-modules-5.36=5.36.0-7+deb12u3 \
-    mariadb-common=1:10.11.14-0+deb12u2 \
-    libmariadb3=1:10.11.14-0+deb12u2 \
-    libmariadb-dev=1:10.11.14-0+deb12u2 \
-    libmariadb-dev-compat=1:10.11.14-0+deb12u2 \
+      libgpgme11t64 \
+      libvips42 \
+      openssl \
+      postgresql-client-17 \
+      python-is-python3 \
+      python3-venv \
+      python3-pip \
     ; \
     rm -rf /var/lib/apt/lists/* /var/cache/apt/archives/*; \
     python3 -m venv /opt/aws-cli-venv && \
