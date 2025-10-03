@@ -19,7 +19,14 @@ Follow these steps to perform a load test:
     ```
 4. Then run this script like:
     ```
-    k6 run loadtest.js --env "COOKIE=$COOKIE" --env URL=https://verify-demo.navapbc.cloud/cbv/employer_search
+    export URL=https://verify-demo.navapbc.cloud/cbv/employer_search
+    k6 run loadtest.js
+    ```
+    Or to test the Tokenized Link API:
+    ```
+    export API_KEY=[foo]
+    export HOST=https://verify-demo.navapbc.cloud
+    k6 run loadtest-api.js
     ```
 5. Record the metrics by copying them into Confluence.
     * Louisiana - https://confluenceent.cms.gov/display/SFIV/Louisiana+%7C+Pre-launch+Load+Testing+Benchmarks+and+SLOs
@@ -34,6 +41,11 @@ Follow these steps to perform a load test:
     > SolidQueue::Queue.new("default").clear
     ```
 7. Resume the "default" queue execution.
+    * Optional: Delete analytics event tracking jobs to not jam up Mixpanel. In a `bin/ecs-console`:
+    ```ruby
+    testing_finished_at = DateTime.parse("2025-10-02 18:00:00-04:00")
+    SolidQueue::Job.where('scheduled_at < ?', testing_finished_at).where(finished_at: nil).where(class_name: %w[EventTrackingJob RecordBatchedNewrelicMetricsJob]).includes(:recurring_execution).in_batches { |batch| batch.destroy_all; puts "next batch" }
+    ```
     * https://verify-demo.navapbc.cloud/jobs      (un/pw in 1Password) <!-- markdown-link-check-disable-line -->
 
 
