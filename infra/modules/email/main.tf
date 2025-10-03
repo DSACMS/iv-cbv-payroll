@@ -4,6 +4,10 @@
 ## - Configures DKIM and SPF
 ## Note: This module assumes that the Route53 hosted zone has been created
 ############################################################################################
+locals {
+  normalized_domain = replace(var.domain, "/[^a-zA-Z0-9_-]+/", "-")
+}
+
 data "aws_region" "current" {}
 data "aws_route53_zone" "domain" {
   name         = var.hosted_zone_domain
@@ -63,7 +67,7 @@ resource "aws_route53_record" "dmarc_record" {
 }
 
 resource "aws_ses_configuration_set" "require_tls" {
-  name = "require-tls-${var.domain}"
+  name = "require-tls-${local.normalized_domain}"
 
   delivery_options {
     tls_policy = "Require"
