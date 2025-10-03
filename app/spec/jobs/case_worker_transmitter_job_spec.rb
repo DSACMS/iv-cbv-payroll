@@ -204,6 +204,30 @@ RSpec.describe CaseWorkerTransmitterJob, type: :job do
         end
       end
 
+      context "when client is pa_dhs without mocking pdf_filename" do
+        before do
+          # Remove the mock of current_agency to use the real Rails config
+          allow_any_instance_of(described_class).to receive(:current_agency).and_call_original
+
+          allow(SftpGateway).to receive(:new).and_return(sftp_double)
+          allow(sftp_double).to receive(:upload_data)
+          # Intentionally NOT mocking pdf_filename to demonstrate the real error
+          travel_to now
+        end
+
+        it "successfully transmits without NoMethodError on pdf_filename" do
+          cbv_flow.update!(confirmation_code: "PADHS001", consented_to_authorized_use_at: now, client_agency_id: "pa_dhs")
+          cbv_flow.cbv_applicant.update!(case_number: "01000", client_agency_id: "pa_dhs")
+
+          # This test will fail with: NoMethodError: undefined method 'pdf_filename'
+          # because SftpTransmitter tries to call current_agency.pdf_filename()
+          # but ClientAgencyConfig::ClientAgency doesn't have that instance method
+          expect(sftp_double).to receive(:upload_data).with(anything, /CBVPilot_00001000_20250101_ConfPADHS001.pdf/)
+
+          expect { described_class.new.perform(cbv_flow.id) }.not_to raise_error
+        end
+      end
+
       context "when performing shared examples" do
         before do
           allow(SftpGateway).to receive(:new).and_return(sftp_double)
