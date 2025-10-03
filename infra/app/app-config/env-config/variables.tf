@@ -118,6 +118,12 @@ variable "service_override_extra_environment_variables" {
   default     = {}
 }
 
+variable "database_snapshot_identifier" {
+  description = "Specifies whether or not to create this cluster from a snapshot. You can use either the name or ARN when specifying a DB cluster snapshot, or the ARN when specifying a DB snapshot."
+  default     = null
+  nullable    = true
+}
+
 variable "database_serverless_min_capacity" {
   description = "The minimum capacity for the Aurora Serverless cluster in ACUs (Aurora Capacity Units)"
   type        = number
