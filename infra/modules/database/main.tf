@@ -37,6 +37,8 @@ resource "aws_rds_cluster" "db" {
   enable_http_endpoint        = true
   backup_retention_period     = var.backup_retention_period
 
+  snapshot_identifier = var.snapshot_identifier
+
   db_cluster_parameter_group_name = aws_rds_cluster_parameter_group.rds_query_logging.name
 
   # checkov:skip=CKV_AWS_128:Auth decision needs to be ironed out
