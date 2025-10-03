@@ -574,9 +574,9 @@ es:
       heading: "¿Necesita más tiempo en la sesión?"
   shared:
     agency_acronym:
-      az_des: DES/FAA (por sus siglas en inglés)
-      la_ldh: LDH (por sus siglas en inglés)
-      pa_dhs: DHS (por sus siglas en inglés)
+      az_des: DES/FAA
+      la_ldh: LDH
+      pa_dhs: COMPASS
       sandbox: CBV
     agency_full_name:
       az_des: Departamento de Seguridad Económica de Arizona/Administración de Asistencia Familiar
