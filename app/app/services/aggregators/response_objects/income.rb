@@ -8,12 +8,19 @@ module Aggregators::ResponseObjects
   ]
 
   Income = Struct.new(*INCOME_FIELDS, keyword_init: true) do
+    FREQUENCY_NORMALIZATION = {
+      "bi-weekly" => "biweekly",
+      "semi-monthly" => "semimonthly",
+      "annually" => "annual",
+      "semi-weekly" => "semiweekly"
+    }.freeze
+
     def self.from_pinwheel(response_body)
       new(
         account_id: response_body["account_id"],
-        pay_frequency: response_body["pay_frequency"],
+        pay_frequency: normalize(response_body["pay_frequency"]),
         compensation_amount: response_body["compensation_amount"],
-        compensation_unit: response_body["compensation_unit"],
+        compensation_unit: normalize(response_body["compensation_unit"]),
         employment_id: nil
       )
     end
@@ -28,6 +35,14 @@ module Aggregators::ResponseObjects
         compensation_unit: identities_response_body["base_pay"]["period"],
         employment_id: identities_response_body["employment"]
       )
+    end
+
+    private
+
+    def self.normalize(value)
+      return nil if value.blank?
+
+      FREQUENCY_NORMALIZATION[value.downcase] || value
     end
   end
 end
