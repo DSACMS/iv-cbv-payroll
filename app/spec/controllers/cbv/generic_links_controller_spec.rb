@@ -40,6 +40,15 @@ RSpec.describe Cbv::GenericLinksController do
           )
         end
 
+        context "when the User Agent is nil" do
+          let(:headers) { { "User-Agent" => nil } }
+
+          it "tracks the ApplicantClickedGenericLink event" do
+            expect(EventTrackingJob).to have_received(:perform_later)
+              .with("ApplicantClickedGenericLink", anything, anything)
+          end
+        end
+
         context "when the User Agent is Go-Http-Client" do
           let(:headers) { { "User-Agent" => "Go-http-client/1.1" } }
 
