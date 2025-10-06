@@ -28,9 +28,12 @@ class ProviderSearchService
     if @providers.include?(:argyle)
       argyle_service = Aggregators::Sdk::ArgyleService.new(@client_agency_config.argyle_environment)
 
-      results = argyle_service.employer_search(query)["results"].map do |result|
-        Aggregators::ResponseObjects::SearchResult.from_argyle(result)
-      end
+      results =
+        argyle_service.employer_search(query)
+                      .fetch("results")
+                      # only include employers that are mapped by argyle.
+                      .select { |r| r["mapping_status"].to_s.casecmp?("verified") } # keep only verified
+                      .map    { |r| Aggregators::ResponseObjects::SearchResult.from_argyle(r) }
 
       results = filter_results(results, BLOCKED_ARGYLE_EMPLOYERS)
     end
