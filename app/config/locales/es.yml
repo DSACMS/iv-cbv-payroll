@@ -222,7 +222,7 @@ es:
         header: "¿Tiene que informar de algún trabajo sin usar la herramienta Reportar Mis Ingresos?"
         header_html: "¿Tiene que informar de algún trabajo <em>sin usar</em> la herramienta Reportar Mis Ingresos?"
         header_sub_text: 'Cuéntenos sobre cualquier otro trabajo que haya tenido en los últimos 90 días, incluso si ya no está en ese trabajo. Al hacerlo, incluya cualquier trabajo, actual o reciente, que haya tenido en los últimos 90 días que reúna estos requisitos:'
-        note_html: 'Importante: Si tuvo otros trabajos en los últimos 90 días que no va a reportar usando la herramienta Report My Income, debe enviar esa información de ingresos por separado. <a href="%{agency_site}" target="_blank" rel="noopener noreferrer">Más información en %{agency_acronym}.</a>'
+        note_html: 'Importante: Si tuvo otros trabajos en los últimos 90 días que no va a reportar usando la herramienta Verify My Income, debe enviar esa información de ingresos por separado. <a href="%{agency_site}" target="_blank" rel="noopener noreferrer">Más información en %{agency_acronym}.</a>'
         radio_no: No, no tengo otro trabajo que reportar por separado
         radio_yes: Sí, tengo otro trabajo que reportaré por separado
     payment_details:

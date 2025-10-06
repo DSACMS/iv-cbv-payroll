@@ -76,7 +76,7 @@ http_interactions:
     uri: https://sandbox.getpinwheel.com/v1/link_tokens
     body:
       encoding: UTF-8
-      string: '{"org_name":"Report My Income","required_jobs":["paystubs"],"end_user_id":"6a927ef1-6c91-43c9-abbe-6728dc8ef877","skip_intro_screen":true,"language":"en","employer_id":"5a8cfb92-3373-4e65-b41b-54e821e79671"}'
+      string: '{"org_name":"Verify My Income","required_jobs":["paystubs"],"end_user_id":"6a927ef1-6c91-43c9-abbe-6728dc8ef877","skip_intro_screen":true,"language":"en","employer_id":"5a8cfb92-3373-4e65-b41b-54e821e79671"}'
     headers:
       Content-Type:
       - application/json
