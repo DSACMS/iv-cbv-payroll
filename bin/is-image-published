@@ -18,4 +18,4 @@ terraform -chdir="infra/${app_name}/app-config" apply -auto-approve 1>&2
 image_repository_name="$(terraform -chdir="infra/${app_name}/app-config" output -json build_repository_config | jq -r ".name")"
 echo "image_repository_name=$image_repository_name"
 
-aws ecr describe-images --repository-name "${image_repository_name}" --image-ids "imageTag=${image_tag}" 1>&2 && echo -n "true" || echo -n "false"
+aws ecr describe-images --repository-name "${image_repository_name}" --image-ids "imageTag=${image_tag}" 1>&2 && echo "true" || echo "false"
