@@ -9,11 +9,16 @@ git_ref="$2"
 
 # Get commit hash
 image_tag=$(git rev-parse "${git_ref}")
+echo "image_tag=$image_tag"
 
 # Need to init module when running in CD since GitHub actions does a fresh checkout of repo
 terraform -chdir="infra/${app_name}/app-config" init 1>&2
 terraform -chdir="infra/${app_name}/app-config" apply -auto-approve 1>&2
+
 image_repository_name="$(terraform -chdir="infra/${app_name}/app-config" output -json build_repository_config | jq -r ".name")"
+echo "image_repository_name=$image_repository_name"
+
 region=$(./bin/current-region)
+echo "region=$region"
 
 aws ecr describe-images --repository-name "${image_repository_name}" --image-ids "imageTag=${image_tag}" --region "${region}" 1>&2 && echo -n "true" || echo -n "false"
