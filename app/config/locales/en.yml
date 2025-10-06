@@ -635,11 +635,11 @@ en:
       header: Welcome to Report My Income
       pilot_ended:
         la_ldh:
-          body: "<strong>The pilot period for Louisiana has ended.</strong> If you still need to report your income, you can:"
-          body_bullet_1: Upload documents through the Self Service Portal online at <a href="http://MyMedicaid.LA.GOV" target="_blank" rel="noopener noreferrer">http://MyMedicaid.LA.GOV</a>
-          body_bullet_2: 'Send documents through US Mail:  Louisiana Medicaid/LaCHIP, P.O. Box 91283, Baton Rouge, LA 70821-9278'
-          body_bullet_3: 'Email documents to: <a href="mailto:%{agency_email}">%{agency_email}</a>'
-          body_bullet_4: Bring documents to the Medicaid office of choice.
+          body_bullet_1_html: Upload documents through the Self Service Portal online at <a href="http://MyMedicaid.LA.GOV" target="_blank" rel="noopener noreferrer">http://MyMedicaid.LA.GOV</a>
+          body_bullet_2_html: 'Send documents through US Mail:  Louisiana Medicaid/LaCHIP, P.O. Box 91283, Baton Rouge, LA 70821-9278'
+          body_bullet_3_html: 'Email documents to: <a href="mailto:MyMedicaid@la.gov">MyMedicaid@la.gov</a>'
+          body_bullet_4_html: Bring documents to the Medicaid office of choice.
+          body_html: "<strong>The pilot period for Louisiana has ended.</strong> If you still need to report your income, you can:"
           browser_title: Report My Income | Louisiana Department of Health
           header: Report My Income
   session_timeout:
