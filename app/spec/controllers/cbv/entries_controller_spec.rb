@@ -45,6 +45,26 @@ RSpec.describe Cbv::EntriesController do
         )
       end
 
+      it "successfully starts the flow with a 10-character token" do
+        expect(invitation.auth_token.length).to eq(10)
+
+        get :show, params: { token: invitation.auth_token }
+        expect(response).to have_http_status(:ok)
+        expect(response.body).to include("Review your payment information.")
+      end
+
+      it "successfully starts the flow with a 36-character legacy token" do
+        legacy_uuid = SecureRandom.alphanumeric(36)
+        invitation.update_column(:auth_token, legacy_uuid)
+
+        expect(invitation.reload.auth_token).to eq(legacy_uuid)
+        expect(invitation.auth_token.length).to eq(36)
+
+        get :show, params: { token: invitation.auth_token }
+        expect(response).to have_http_status(:ok)
+        expect(response.body).to include("Review your payment information.")
+      end
+
       context "with multiple cbv flows" do
         it "sends multiple related tracking events" do
           expect(EventTrackingJob).to receive(:perform_later).with("ApplicantClickedCBVInvitationLink", anything, hash_including(
