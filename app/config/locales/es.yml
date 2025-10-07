@@ -560,11 +560,11 @@ es:
       header: Bienvenido a Reportar Mis Ingresos
       pilot_ended:
         la_ldh:
-          body: "<strong>El período piloto para Luisiana ha terminado.</strong> Si aún necesita declarar sus ingresos, puede hacer lo siguiente:"
-          body_bullet_1: Subir los documentos a través del Portal de autoservicio en línea en <a href="http://MyMedicaid.LA.GOV" target="_blank" rel="noopener noreferrer">http://MyMedicaid.LA.GOV</a>
-          body_bullet_2: 'Enviar los documentos por correo postal a: Louisiana Medicaid/LaCHIP, P.O. Box 91283, Baton Rouge, LA 70821-9278'
-          body_bullet_3: 'Enviar los documentos por correo electrónico a: <a href="mailto:%{agency_email}">%{agency_email}</a>'
-          body_bullet_4: Llevar los documentos a la oficina de Medicaid de su elección.
+          body_bullet_1_html: Subir los documentos a través del Portal de autoservicio en línea en <a href="http://MyMedicaid.LA.GOV" target="_blank" rel="noopener noreferrer">http://MyMedicaid.LA.GOV</a>
+          body_bullet_2_html: 'Enviar los documentos por correo postal a: Louisiana Medicaid/LaCHIP, P.O. Box 91283, Baton Rouge, LA 70821-9278'
+          body_bullet_3_html: 'Enviar los documentos por correo electrónico a: <a href="mailto:MyMedicaid@la.gov">MyMedicaid@la.gov</a>'
+          body_bullet_4_html: Llevar los documentos a la oficina de Medicaid de su elección.
+          body_html: "<strong>El período piloto para Luisiana ha terminado.</strong> Si aún necesita declarar sus ingresos, puede hacer lo siguiente:"
           browser_title: Reportar Mis Ingresos | Departmento de Salud de Louisiana
           header: Reportar Mis Ingresos
   session_timeout:
