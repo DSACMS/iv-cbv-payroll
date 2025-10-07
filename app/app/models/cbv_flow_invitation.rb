@@ -65,7 +65,7 @@ class CbvFlowInvitation < ApplicationRecord
     }
     url_params[:origin] = origin if origin.present?
 
-    Rails.application.routes.url_helpers.cbv_flow_entry_url(url_params.compact)
+    Rails.application.routes.url_helpers.start_flow_url(url_params.compact)
   end
 
   def normalize_language
