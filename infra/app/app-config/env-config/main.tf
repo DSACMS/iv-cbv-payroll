@@ -6,5 +6,5 @@ locals {
   # terraform workspaces, see: /docs/infra/develop-and-test-infrastructure-in-isolation-using-workspaces.md
   prefix = terraform.workspace == "default" ? "" : "${terraform.workspace}-"
 
-  bucket_name = "${local.prefix}${var.project_name}-${var.app_name}-${var.environment}"
+  bucket_name = var.bucket_name == null ? "${local.prefix}${var.project_name}-${var.app_name}-${var.environment}" : var.bucket_name
 }

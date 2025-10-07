@@ -2,7 +2,7 @@ resource "aws_iam_role" "newrelic_metrics" {
   count = !local.is_temporary ? 1 : 0
   # checkov:skip=CKV_AWS_61:This policy principal needs to be broad to allow for monitoring all services.
 
-  name = "newrelic-metrics-collector"
+  name = "newrelic-metrics-collector-${var.environment_name}"
 
   assume_role_policy = jsonencode({
     Version = "2012-10-17"

@@ -140,3 +140,10 @@ variable "enable_aws_backup" {
   type        = bool
   default     = false
 }
+
+variable "bucket_name" {
+  description = "If provided, this overrides the local bucket_name defined in main.tf"
+  type        = string
+  nullable    = true
+  default     = null
+}
