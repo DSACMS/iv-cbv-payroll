@@ -27,6 +27,7 @@ Rails.application.routes.draw do
 
     # RFI (mail) origin tracking route for LA
     get "/start", to: "pages#home", defaults: { origin: "mail" }
+    get "/start/:token", to: "cbv/entries#show", defaults: { origin: "mail" }
 
     scope "/cbv", as: :cbv_flow, module: :cbv do
       resource :entry, only: %i[show create]
