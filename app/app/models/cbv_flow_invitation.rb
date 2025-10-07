@@ -16,7 +16,7 @@ class CbvFlowInvitation < ApplicationRecord
   belongs_to :cbv_applicant, optional: true
   has_many :cbv_flows
 
-  has_secure_token :auth_token, length: 36
+  has_secure_token :auth_token, length: 10
 
   accepts_nested_attributes_for :cbv_applicant
 
