@@ -32,7 +32,7 @@ class ProviderSearchService
         argyle_service.employer_search(query)
                       .fetch("results")
                       # only include employers that are mapped by argyle.
-                      .select { |r| r["mapping_status"].to_s.casecmp?("verified") } # keep only verified
+                      .select { |r| r["mapping_status"]&.downcase == "verified" }
                       .map    { |r| Aggregators::ResponseObjects::SearchResult.from_argyle(r) }
 
       results = filter_results(results, BLOCKED_ARGYLE_EMPLOYERS)
