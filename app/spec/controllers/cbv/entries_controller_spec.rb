@@ -60,7 +60,7 @@ RSpec.describe Cbv::EntriesController do
             invitation_id: invitation.id,
             cbv_flow_id: be_a(Integer),
             client_agency_id: invitation.client_agency_id,
-            path: "/cbv/entry"
+            path: a_string_starting_with("/start/")
           ))
 
           expect(EventTrackingJob).to receive(:perform_later).with("ApplicantViewedAgreement", anything, hash_including(
@@ -91,7 +91,7 @@ RSpec.describe Cbv::EntriesController do
           invitation_id: invitation.id,
           cbv_flow_id: be_a(Integer),
           client_agency_id: invitation.client_agency_id,
-          path: "/cbv/entry"
+          path: a_string_starting_with("/start/")
         ))
 
         expect(EventTrackingJob).to receive(:perform_later).with("ApplicantViewedAgreement", anything, hash_including(
@@ -109,7 +109,7 @@ RSpec.describe Cbv::EntriesController do
           invitation_id: invitation.id,
           cbv_flow_id: be_a(Integer),
           client_agency_id: invitation.client_agency_id,
-          path: "/cbv/entry"
+          path: a_string_starting_with("/start/")
         ))
 
         allow(EventTrackingJob).to receive(:perform_later).with("ApplicantClickedCBVInvitationLink", anything, anything)
