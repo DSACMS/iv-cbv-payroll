@@ -13,7 +13,7 @@
   <%= f.radio_button(:has_other_jobs, true, { label: t(".radio_yes") }) %>
   <%= f.radio_button(:has_other_jobs, false, { label: t(".radio_no") }) %>
 
-  <p><%= t(".note_html", agency_site: current_agency.agency_contact_website, agency_acronym: agency_translation("shared.agency_acronym")) %></p>
+  <p><%= t(".note_html", agency_site: current_agency.agency_contact_website, agency_portal_name: agency_translation("shared.agency_portal_name")) %></p>
 
   <%= f.submit t("continue") %>
 <% end %>
