@@ -2,6 +2,7 @@ class Cbv::GenericLinksController < Cbv::BaseController
   skip_before_action :set_cbv_flow, :capture_page_view
   before_action :ensure_valid_client_agency_id
   before_action :check_if_pilot_ended_for_agency
+  before_action :redirect_if_generic_links_disabled
 
   def show
     @cbv_flow, is_new_session = find_or_create_cbv_flow
@@ -24,6 +25,13 @@ class Cbv::GenericLinksController < Cbv::BaseController
   def check_if_pilot_ended_for_agency
     agency = agency_config[params[:client_agency_id]]
     if agency&.pilot_ended
+      redirect_to root_url
+    end
+  end
+
+  def redirect_if_generic_links_disabled
+    agency = agency_config[params[:client_agency_id]]
+    if agency&.generic_links_disabled
       redirect_to root_url
     end
   end

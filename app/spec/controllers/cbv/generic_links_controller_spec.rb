@@ -6,6 +6,22 @@ RSpec.describe Cbv::GenericLinksController do
   end
   describe '#show' do
     context 'when the hostname matches a client agency domain and the pilot is active' do
+      before do
+        stub_client_agency_config_value("sandbox", "generic_links_disabled", false)
+        stub_client_agency_config_value("sandbox", "pilot_ended", false)
+      end
+
+      context 'when generic links are disabled for the agency' do
+        before do
+          stub_client_agency_config_value("sandbox", "generic_links_disabled", true)
+        end
+
+        it 'redirects to the root path' do
+          get :show, params: { client_agency_id: "sandbox" }
+          expect(response).to redirect_to(root_path)
+        end
+      end
+
       context 'when no existing CBV applicant cookie exists' do
         let(:headers) { {} }
         before do
