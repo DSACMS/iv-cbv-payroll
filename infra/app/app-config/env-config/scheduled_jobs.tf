@@ -25,7 +25,7 @@ locals {
     # Follow data retention policy to redact data every day
     redact_data = {
       task_command        = ["bin/rails", "data_deletion:redact_all"]
-      schedule_expression = "cron(0 2 ? * * *)" # Every day at 2am UTC (9am EST / 10am EDT)
+      schedule_expression = "cron(0 10 ? * * *)" # Every day at 10am UTC (5am EST / 6am EDT)
     }
   }
 }
