@@ -23,16 +23,7 @@ class Transmitters::EncryptedS3Transmitter
 
     # Generate PDF
     pdf_service = PdfService.new(language: :en)
-    @pdf_output = pdf_service.generate(
-      renderer: Cbv::SubmitsController.new,
-      template: "cbv/submits/show",
-      variables: {
-        is_caseworker: true,
-        cbv_flow: @cbv_flow,
-        aggregator_report: @aggregator_report,
-        has_consent: true
-      }
-    )
+    @pdf_output = pdf_service.generate(@cbv_flow, @aggregator_report, @current_agency)
 
     # Generate CSV in-memory
     csv_content = generate_csv
