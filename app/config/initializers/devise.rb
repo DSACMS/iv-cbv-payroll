@@ -282,7 +282,7 @@ Devise.setup do |config|
     :sandbox,
     {
       **Rails.application.config.client_agencies["sandbox"].sso,
-      strategy_class: OmniAuth::Strategies::AzureActivedirectoryV2,
+      strategy_class: OmniAuth::Strategies::EntraId,
       pkce: true
     }
   )
@@ -291,7 +291,7 @@ Devise.setup do |config|
     :az_des,
     {
       **Rails.application.config.client_agencies["az_des"].sso,
-      strategy_class: OmniAuth::Strategies::AzureActivedirectoryV2,
+      strategy_class: OmniAuth::Strategies::EntraId,
       pkce: true
     }
   )
