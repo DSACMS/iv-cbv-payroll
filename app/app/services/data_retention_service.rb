@@ -7,12 +7,18 @@ class DataRetentionService
   # Redact transmitted CbvFlows 7 days after they are sent to caseworker
   REDACT_TRANSMITTED_CBV_FLOWS_AFTER = 7.days
 
+  # Redact records that were created more than 30 days that are unredacted, regardless of other conditions
+  REDACT_OLD_RECORD_BACKSTOP = 30.days
+
   def redact_all!
     redact_invitations
     redact_incomplete_cbv_flows
-    redact_complete_cbv_flows
+    redact_transmitted_cbv_flows
+    redact_old_cbv_flows
   end
 
+  # redact invitations and their associated applicants if the invitation has not been started, has not been redacted,
+  # and it is 7 days after the invitation expires
   def redact_invitations
     CbvFlowInvitation
       .unstarted
@@ -25,6 +31,9 @@ class DataRetentionService
       end
   end
 
+  # redact cbv flows, invitations, applicants, and payroll accounts for cbv flows that have been started, are unredacted,
+  # and it is 7 days after the invitation expires (for those with an invitation) or it is 7 days after the most
+  # recent update for a generic cbv flow
   def redact_incomplete_cbv_flows
     CbvFlow
       .incomplete
@@ -58,7 +67,8 @@ class DataRetentionService
       end
   end
 
-  def redact_complete_cbv_flows
+  # redact flows that are unredacted and have been transmitted 7 days after they are transmitted
+  def redact_transmitted_cbv_flows
     CbvFlow
       .unredacted
       .where("transmitted_at < ?", REDACT_TRANSMITTED_CBV_FLOWS_AFTER.ago)
@@ -69,6 +79,20 @@ class DataRetentionService
         cbv_flow.cbv_applicant&.redact!
         cbv_flow.payroll_accounts.each(&:redact!)
       end
+  end
+
+  # redact flows that are unredacted and were created more than 30 days ago
+  def redact_old_cbv_flows
+    CbvFlow
+      .unredacted
+      .where("created_at < ?", REDACT_OLD_RECORD_BACKSTOP.ago)
+      .includes(:cbv_flow_invitation, :payroll_accounts)
+      .find_each do |cbv_flow|
+      cbv_flow.redact!
+      cbv_flow.cbv_flow_invitation.redact! if cbv_flow.cbv_flow_invitation.present?
+      cbv_flow.cbv_applicant&.redact!
+      cbv_flow.payroll_accounts.each(&:redact!)
+    end
   end
 
   # Use after conducting a user test or other time we want to manually redact a
