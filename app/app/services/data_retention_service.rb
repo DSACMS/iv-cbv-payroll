@@ -25,6 +25,7 @@ class DataRetentionService
       .unredacted
       .find_each do |cbv_flow_invitation|
         next unless Time.current.after?(cbv_flow_invitation.expires_at + REDACT_UNUSED_INVITATIONS_AFTER)
+
         cbv_flow_invitation.redact!
         cbv_flow_invitation.cbv_applicant&.redact!
       end
