@@ -57,7 +57,7 @@ class Transmitters::EncryptedS3Transmitter
   def pdf_output
     @_pdf_output ||= begin
       pdf_service = PdfService.new(language: :en)
-      @pdf_output = pdf_service.generate(@cbv_flow, @aggregator_report, @current_agency)
+      pdf_output = pdf_service.generate(@cbv_flow, @aggregator_report, @current_agency)
     end
   end
 
@@ -77,8 +77,8 @@ class Transmitters::EncryptedS3Transmitter
       consent_timestamp: @cbv_flow.consented_to_authorized_use_at.strftime("%m/%d/%Y %H:%M:%S"),
       pdf_filename: "#{@file_name}.pdf",
       pdf_filetype: "application/pdf",
-      pdf_filesize: @pdf_output.file_size,
-      pdf_number_of_pages: @pdf_output.page_count
+      pdf_filesize: pdf_output.file_size,
+      pdf_number_of_pages: pdf_output.page_count
     }
 
     create_csv(data)
