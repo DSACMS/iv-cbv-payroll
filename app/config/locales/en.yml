@@ -192,7 +192,7 @@ en:
     add_jobs:
       show:
         header: Do you have another job to report?
-        header_2: Do you have another job to report using Report My Income?
+        header_2: Do you have another job to report using Verify My Income?
         header_2_bullet_1: Has an online payroll provider, or
         header_2_bullet_2: Lets you view pay stubs online, or
         header_2_bullet_3: Is app-based (Uber, DoorDash, Lyft, Instacart, etc.)
@@ -326,10 +326,10 @@ en:
         bullet_2: Pays you in cash
         bullet_3: Pays you with a paper check and you can’t view your paycheck online
         bullet_4: Issues you a 1099
-        header: Do you need to report any jobs outside Report My Income?
-        header_html: Do you need to report any jobs <em>outside</em> Report My Income?
+        header: Do you need to report any jobs outside Verify My Income?
+        header_html: Do you need to report any jobs <em>outside</em> Verify My Income?
         header_sub_text: 'Tell us about any other jobs you’ve had in the past 90 days, even if you’re no longer at that job. This includes current or recent jobs you’ve had in the past 90 days that may:'
-        note_html: 'Note: If you’ve had other jobs in the past 90 days that you won’t report using Report My Income, you will need to submit that income information separately. <a href="%{agency_site}" target="_blank" rel="noopener noreferrer">Learn more on %{agency_portal_name}.</a>'
+        note_html: 'Note: If you’ve had other jobs in the past 90 days that you won’t report using Verify My Income, you will need to submit that income information separately. <a href="%{agency_site}" target="_blank" rel="noopener noreferrer">Learn more on %{agency_portal_name}.</a>'
         radio_no: No, I don’t have another job to report separately
         radio_yes: Yes, I have another job I’ll report separately
     payment_details:
@@ -628,10 +628,10 @@ en:
       header: It looks like something went wrong
       refresh: Refresh page
     home:
-      description_1: Report My Income is a new tool designed to help you connect your income details from your employer or payroll provider directly to your benefits agency. We're currently testing this tool to ensure it works effectively.
+      description_1: Verify My Income is a new tool designed to help you connect your income details from your employer or payroll provider directly to your benefits agency. We're currently testing this tool to ensure it works effectively.
       description_2: Please note this pilot is currently available only to participants in select states.
       description_3: Visit your agency's website for more information on how to submit proof of income for your benefits.
-      header: Welcome to Report My Income
+      header: Welcome to Verify My Income
       pilot_ended:
         la_ldh:
           body: "<strong>The pilot period for Louisiana has ended.</strong> If you still need to report your income, you can:"
@@ -639,8 +639,8 @@ en:
           body_bullet_2: 'Send documents through US Mail:  Louisiana Medicaid/LaCHIP, P.O. Box 91283, Baton Rouge, LA 70821-9278'
           body_bullet_3: 'Email documents to: <a href="mailto:%{agency_email}">%{agency_email}</a>'
           body_bullet_4: Bring documents to the Medicaid office of choice.
-          browser_title: Report My Income | Louisiana Department of Health
-          header: Report My Income
+          browser_title: Verify My Income | Louisiana Department of Health
+          header: Verify My Income
   session_timeout:
     modal:
       description: It looks like you're inactive. For your security, we will sign you out soon unless you choose to extend your session.
@@ -702,7 +702,7 @@ en:
     next_path:
       notice_no_answer: You must select an answer to continue.
     not_applicable: N/A
-    pilot_name: Report My Income
+    pilot_name: Verify My Income
     report_data_range:
       ninety_days: 90 days
       six_months: 6 months

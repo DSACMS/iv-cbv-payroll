@@ -85,7 +85,7 @@ es:
     add_jobs:
       show:
         header: "¿Tiene otro trabajo que declarar?"
-        header_2: "¿Tiene otro trabajo que reportar usando Reportar Mis Ingresos?"
+        header_2: "¿Tiene otro trabajo que reportar usando Verificar Mis Ingresos?"
         header_2_bullet_1: Tiene un proveedor de nómina en línea, o
         header_2_bullet_2: Le permite ver talones de pago en línea, o
         header_2_bullet_3: Está basado en aplicaciones (Uber, DoorDash, Lyft, Instacart, etc.)
@@ -219,10 +219,10 @@ es:
         bullet_2: Le paga en efectivo
         bullet_3: Le paga con un cheque en papel y no puede ver su cheque de pago en línea
         bullet_4: Le emite un 1099
-        header: "¿Tiene que informar de algún trabajo sin usar la herramienta Reportar Mis Ingresos?"
-        header_html: "¿Tiene que informar de algún trabajo <em>sin usar</em> la herramienta Reportar Mis Ingresos?"
+        header: "¿Tiene que informar de algún trabajo sin usar la herramienta Verificar Mis Ingresos?"
+        header_html: "¿Tiene que informar de algún trabajo <em>sin usar</em> la herramienta Verificar Mis Ingresos?"
         header_sub_text: 'Cuéntenos sobre cualquier otro trabajo que haya tenido en los últimos 90 días, incluso si ya no está en ese trabajo. Al hacerlo, incluya cualquier trabajo, actual o reciente, que haya tenido en los últimos 90 días que reúna estos requisitos:'
-        note_html: 'Importante: Si tuvo otros trabajos en los últimos 90 días que no va a reportar usando la herramienta Report My Income, debe enviar esa información de ingresos por separado. <a href="%{agency_site}" target="_blank" rel="noopener noreferrer">Más información en %{agency_portal_name}.</a>'
+        note_html: 'Importante: Si tuvo otros trabajos en los últimos 90 días que no va a reportar usando la herramienta Verify My Income, debe enviar esa información de ingresos por separado. <a href="%{agency_site}" target="_blank" rel="noopener noreferrer">Más información en %{agency_portal_name}.</a>'
         radio_no: No, no tengo otro trabajo que reportar por separado
         radio_yes: Sí, tengo otro trabajo que reportaré por separado
     payment_details:
@@ -553,10 +553,10 @@ es:
       header: "¡Parece que algo salió mal!"
       refresh: Actualizar página
     home:
-      description_1: Reportar Mis Ingresos es una herramienta nueva que se diseñó para ayudarlo a vincular directamente los datos relacionados con sus ingresos con su agencia de beneficios. En este momento estamos probando esta herramienta para garantizar que funcione efectivamente.
+      description_1: Verificar Mis Ingresos es una herramienta nueva que se diseñó para ayudarlo a vincular directamente los datos relacionados con sus ingresos con su agencia de beneficios. En este momento estamos probando esta herramienta para garantizar que funcione efectivamente.
       description_2: Tenga en cuenta que, en este momento, este programa piloto solo está disponible para participantes en ciertos estados.
       description_3: Para obtener más información sobre cómo presentar comprobantes de ingresos para sus beneficios, visite el sitio web de su agencia.
-      header: Bienvenido a Reportar Mis Ingresos
+      header: Bienvenido a Verificar Mis Ingresos
       pilot_ended:
         la_ldh:
           body: "<strong>El período piloto para Luisiana ha terminado.</strong> Si aún necesita declarar sus ingresos, puede hacer lo siguiente:"
@@ -564,8 +564,8 @@ es:
           body_bullet_2: 'Enviar los documentos por correo postal a: Louisiana Medicaid/LaCHIP, P.O. Box 91283, Baton Rouge, LA 70821-9278'
           body_bullet_3: 'Enviar los documentos por correo electrónico a: <a href="mailto:%{agency_email}">%{agency_email}</a>'
           body_bullet_4: Llevar los documentos a la oficina de Medicaid de su elección.
-          browser_title: Reportar Mis Ingresos | Departmento de Salud de Louisiana
-          header: Reportar Mis Ingresos
+          browser_title: Verificar Mis Ingresos | Departmento de Salud de Louisiana
+          header: Verificar Mis Ingresos
   session_timeout:
     modal:
       description: Parece no está realizando ninguna acción. Por motivos de seguridad, su sesión se cerrará, salvo que elija extender el tiempo de esta sesión.
@@ -627,7 +627,7 @@ es:
     next_path:
       notice_no_answer: Debe seleccionar una respuesta para continuar.
     not_applicable: N/C
-    pilot_name: Reportar Mis Ingresos
+    pilot_name: Verificar Mis Ingresos
     report_data_range:
       ninety_days: 90 días
       six_months: 6 meses
