@@ -6,16 +6,16 @@ RSpec.describe Api::UserEventsController, type: :controller do
     let(:valid_params) do
       {
         events: {
-            event_name: "ApplicantOpenedHelpModal",
-            attributes: event_attributes
+          event_name: "ApplicantOpenedHelpModal",
+          attributes: event_attributes
         }
       }
     end
     let(:invalid_params) do
       {
         events: {
-            event_name: "InvalidEvent",
-            attributes: event_attributes
+          event_name: "InvalidEvent",
+          attributes: event_attributes
         }
       }
     end
@@ -32,17 +32,22 @@ RSpec.describe Api::UserEventsController, type: :controller do
       end
 
       it "tracks an event with Mixpanel" do
-        expect(EventTrackingJob).to receive(:perform_later).with("ApplicantOpenedHelpModal", anything, hash_including(
+        allow(EventTrackingJob).to receive(:perform_later)
+        post :user_action, params: valid_params
+        expect(EventTrackingJob).to have_received(:perform_later).with("ApplicantOpenedHelpModal", anything, hash_including(
           time: be_a(Integer),
           source: "banner",
           cbv_flow_id: cbv_flow.id
         ))
-        post :user_action, params: valid_params
       end
 
-      it "returns a success response" do
+      it "returns a success status" do
         post :user_action, params: valid_params
         expect(response).to have_http_status(:ok)
+      end
+
+      it "returns success response body" do
+        post :user_action, params: valid_params
         expect(JSON.parse(response.body)).to eq({ "status" => "ok" })
       end
     end
@@ -54,10 +59,15 @@ RSpec.describe Api::UserEventsController, type: :controller do
         }
       end
 
-      it "returns an error response in production" do
+      it "returns unprocessable content status in production" do
         allow(Rails.env).to receive(:production?).and_return(true)
         post :user_action, params: invalid_params
-        expect(response).to have_http_status(:unprocessable_entity)
+        expect(response).to have_http_status(:unprocessable_content)
+      end
+
+      it "returns error response body in production" do
+        allow(Rails.env).to receive(:production?).and_return(true)
+        post :user_action, params: invalid_params
         expect(JSON.parse(response.body)).to eq({ "status" => "error" })
       end
 
@@ -69,6 +79,7 @@ RSpec.describe Api::UserEventsController, type: :controller do
       end
     end
   end
+
   describe "#user_action" do
     let(:cbv_flow) { create :cbv_flow }
     let(:valid_params) do
@@ -79,48 +90,57 @@ RSpec.describe Api::UserEventsController, type: :controller do
       session[:cbv_flow_id] = cbv_flow.id
     end
 
-    context "when tracking a ApplicantSelectedEmployerOrPlatformItem event" do
+    context "when tracking ApplicantSelectedEmployerOrPlatformItem with platform selection" do
       let(:event_name) { "ApplicantSelectedEmployerOrPlatformItem" }
-
-      context "when selecting the payroll providers tab" do
-        let(:event_attributes) do
-          {
-            item_type: "platform",
-            item_id: 123,
-            item_name: "Test Payroll Provider",
-            locale: "en",
-            is_default_option: "true"
-          }
-        end
-
-        it "tracks an event with Mixpanel (with selected_tab = platform)" do
-          expect(EventTrackingJob).to receive(:perform_later).with("ApplicantSelectedEmployerOrPlatformItem", anything, hash_including(
-            time: be_a(Integer),
-            cbv_flow_id: cbv_flow.id,
-            invitation_id: cbv_flow.cbv_flow_invitation_id,
-            item_type: "platform",
-            item_id: "123",
-            item_name: "Test Payroll Provider",
-            is_default_option: "true",
-            locale: "en"
-          ))
-          post :user_action, params: valid_params
-        end
+      let(:event_attributes) do
+        {
+          item_type: "platform",
+          item_id: 123,
+          item_name: "Test Payroll Provider",
+          locale: "en",
+          is_default_option: "true"
+        }
       end
 
-      context "when selecting the common employers tab" do
-        let(:event_attributes) do
-          {
-            item_type: "employer",
-            item_id: 123,
-            item_name: "Test Employer",
-            locale: "en",
-            is_default_option: "true"
-          }
-        end
+      it "tracks platform selection event" do
+        allow(EventTrackingJob).to receive(:perform_later)
+        post :user_action, params: valid_params
+        expect(EventTrackingJob).to have_received(:perform_later).with(
+          "ApplicantSelectedEmployerOrPlatformItem",
+          anything,
+          hash_including(
+            time: be_a(Integer),
+            cbv_flow_id: cbv_flow.id,
+            invitation_id: cbv_flow.cbv_flow_invitation_id,
+            item_type: "platform",
+            item_id: "123",
+            item_name: "Test Payroll Provider",
+            is_default_option: "true",
+            locale: "en"
+          )
+        )
+      end
+    end
 
-        it "tracks an event with Mixpanel (with selected_tab = employer)" do
-          expect(EventTrackingJob).to receive(:perform_later).with("ApplicantSelectedEmployerOrPlatformItem", anything, hash_including(
+    context "when tracking ApplicantSelectedEmployerOrPlatformItem" do
+      let(:event_name) { "ApplicantSelectedEmployerOrPlatformItem" }
+      let(:event_attributes) do
+        {
+          item_type: "employer",
+          item_id: 123,
+          item_name: "Test Employer",
+          locale: "en",
+          is_default_option: "true"
+        }
+      end
+
+      it "tracks employer selection event" do
+        allow(EventTrackingJob).to receive(:perform_later)
+        post :user_action, params: valid_params
+        expect(EventTrackingJob).to have_received(:perform_later).with(
+          "ApplicantSelectedEmployerOrPlatformItem",
+          anything,
+          hash_including(
             time: be_a(Integer),
             cbv_flow_id: cbv_flow.id,
             invitation_id: cbv_flow.cbv_flow_invitation_id,
@@ -129,9 +149,8 @@ RSpec.describe Api::UserEventsController, type: :controller do
             item_name: "Test Employer",
             is_default_option: "true",
             locale: "en"
-          ))
-          post :user_action, params: valid_params
-        end
+          )
+        )
       end
     end
 
@@ -146,8 +165,10 @@ RSpec.describe Api::UserEventsController, type: :controller do
         }
       end
 
-      it "tracks an event with Mixpanel" do
-        expect(EventTrackingJob).to receive(:perform_later).with("ApplicantViewedPinwheelLoginPage", anything, hash_including(
+      it "tracks Pinwheel login page view event" do
+        allow(EventTrackingJob).to receive(:perform_later)
+        post :user_action, params: valid_params
+        expect(EventTrackingJob).to have_received(:perform_later).with("ApplicantViewedPinwheelLoginPage", anything, hash_including(
           time: be_a(Integer),
           cbv_flow_id: cbv_flow.id,
           invitation_id: cbv_flow.cbv_flow_invitation_id,
@@ -156,7 +177,6 @@ RSpec.describe Api::UserEventsController, type: :controller do
           employer_name: "Bob's Burgers",
           platform_name: "Test Payroll Platform Name"
         ))
-        post :user_action, params: valid_params
       end
     end
 
@@ -168,14 +188,15 @@ RSpec.describe Api::UserEventsController, type: :controller do
         }
       end
 
-      it "tracks an event with Mixpanel" do
-        expect(EventTrackingJob).to receive(:perform_later).with("ApplicantManuallySwitchedLanguage", anything, hash_including(
+      it "tracks language switch event" do
+        allow(EventTrackingJob).to receive(:perform_later)
+        post :user_action, params: valid_params
+        expect(EventTrackingJob).to have_received(:perform_later).with("ApplicantManuallySwitchedLanguage", anything, hash_including(
           time: be_a(Integer),
           cbv_flow_id: cbv_flow.id,
           invitation_id: cbv_flow.cbv_flow_invitation_id,
           locale: "es"
         ))
-        post :user_action, params: valid_params
       end
     end
 
@@ -183,53 +204,62 @@ RSpec.describe Api::UserEventsController, type: :controller do
       let(:event_name) { "ApplicantConsentedToTerms" }
       let(:event_attributes) { {} }
 
-      it "tracks an event with Mixpanel" do
-        expect(EventTrackingJob).to receive(:perform_later).with("ApplicantConsentedToTerms", anything, hash_including(
+      it "tracks consent to terms event" do
+        allow(EventTrackingJob).to receive(:perform_later)
+        post :user_action, params: valid_params
+        expect(EventTrackingJob).to have_received(:perform_later).with("ApplicantConsentedToTerms", anything, hash_including(
           time: be_a(Integer),
           cbv_flow_id: cbv_flow.id,
           invitation_id: cbv_flow.cbv_flow_invitation_id
         ))
-        post :user_action, params: valid_params
       end
     end
 
-    context "when tracking a ApplicantViewedHelpText event" do
+    context "when tracking ApplicantViewedHelpText for 'who is this for' section" do
       let(:event_name) { "ApplicantViewedHelpText" }
-
-      context "for 'who is this for' section" do
-        let(:event_attributes) do
-          {
-            section: "who_is_this_tool_for"
-          }
-        end
-
-        it "tracks an event with Mixpanel" do
-          expect(EventTrackingJob).to receive(:perform_later).with("ApplicantViewedHelpText", anything, hash_including(
-            time: be_a(Integer),
-            cbv_flow_id: cbv_flow.id,
-            invitation_id: cbv_flow.cbv_flow_invitation_id,
-            section: "who_is_this_tool_for"
-          ))
-          post :user_action, params: valid_params
-        end
+      let(:event_attributes) do
+        {
+          section: "who_is_this_tool_for"
+        }
       end
 
-      context "for 'what if I cant use this' section" do
-        let(:event_attributes) do
-          {
-            section: "what_if_i_cant_use_this_tool"
-          }
-        end
+      it "tracks help text view event" do
+        allow(EventTrackingJob).to receive(:perform_later)
+        post :user_action, params: valid_params
+        expect(EventTrackingJob).to have_received(:perform_later).with(
+          "ApplicantViewedHelpText",
+          anything,
+          hash_including(
+            time: be_a(Integer),
+            cbv_flow_id: cbv_flow.id,
+            invitation_id: cbv_flow.cbv_flow_invitation_id,
+            section: "who_is_this_tool_for"
+          )
+        )
+      end
+    end
 
-        it "tracks an event with Mixpanel" do
-          expect(EventTrackingJob).to receive(:perform_later).with("ApplicantViewedHelpText", anything, hash_including(
+    context "when tracking ApplicantViewedHelpText for 'what if I cant use this' section" do
+      let(:event_name) { "ApplicantViewedHelpText" }
+      let(:event_attributes) do
+        {
+          section: "what_if_i_cant_use_this_tool"
+        }
+      end
+
+      it "tracks help text view event" do
+        allow(EventTrackingJob).to receive(:perform_later)
+        post :user_action, params: valid_params
+        expect(EventTrackingJob).to have_received(:perform_later).with(
+          "ApplicantViewedHelpText",
+          anything,
+          hash_including(
             time: be_a(Integer),
             cbv_flow_id: cbv_flow.id,
             invitation_id: cbv_flow.cbv_flow_invitation_id,
             section: "what_if_i_cant_use_this_tool"
-          ))
-          post :user_action, params: valid_params
-        end
+          )
+        )
       end
     end
   end

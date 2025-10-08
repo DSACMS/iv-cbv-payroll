@@ -30,3 +30,6 @@ Layout/ParameterAlignment:
   Enabled: true
 Naming/VariableName:
   Enabled: true
+RSpec/ExampleLength:
+  Enabled: true
+  Max: 25
