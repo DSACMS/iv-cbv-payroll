@@ -21,7 +21,7 @@ class PdfService
 
   def generate(cbv_flow, aggregator_report, current_agency)
     controller = Cbv::SubmitsController.new
-    controller.instance_variable_set(:@cbv_flow, @cbv_flow)
+    controller.instance_variable_set(:@cbv_flow, cbv_flow)
     variables = {
       is_caseworker: true,
       cbv_flow: cbv_flow,
