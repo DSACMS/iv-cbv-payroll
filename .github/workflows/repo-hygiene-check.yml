@@ -57,7 +57,7 @@ jobs:
       RAW_JSON: ${{ needs.resolve-repolinter-json.outputs.raw-json }}
     steps:
       - uses: actions/checkout@v4
-      - run: echo $RAW_JSON > repolinter.json
+      - run: echo "$RAW_JSON" > repolinter.json
       - uses: DSACMS/repolinter-action@main
         with:
           config_file: 'repolinter.json'
