@@ -7,6 +7,7 @@ class Cbv::SubmitsController < Cbv::BaseController
   include GpgEncryptable
   include TarFileCreatable
   include CsvHelper
+  include NonProductionAccessible
 
   before_action :set_aggregator_report, only: %i[show update]
   before_action :check_aggregator_report, only: %i[show update]
@@ -32,7 +33,7 @@ class Cbv::SubmitsController < Cbv::BaseController
         render pdf: "#{@cbv_flow.id}",
           layout: "pdf",
           locals: {
-            is_caseworker: allow_caseworker_override_param? && params[:is_caseworker],
+            is_caseworker: is_not_production? && params[:is_caseworker],
             aggregator_report: @aggregator_report
           },
           footer: { right: t(".pdf.footer.page_footer"), font_size: 10 },
@@ -101,9 +102,5 @@ class Cbv::SubmitsController < Cbv::BaseController
       (Time.now.to_i % 36 ** 3).to_s(36).tr("OISB", "0158").rjust(3, "0"),
       cbv_flow.id.to_s.rjust(4, "0")
     ].compact.join.upcase
-  end
-
-  def allow_caseworker_override_param?
-    Rails.env.development? || Rails.env.test? || demo_mode?
   end
 end

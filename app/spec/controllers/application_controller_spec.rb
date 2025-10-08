@@ -61,6 +61,10 @@ RSpec.describe ApplicationController, type: :controller do
       let(:domain_name) { "snap-income-pilot.com" }
 
       it 'does not authorize mini profiler' do
+        allow(Rails.env).to receive(:development?).and_return(false)
+        allow(Rails.env).to receive(:test?).and_return(false)
+        allow(Rails.env).to receive(:production?).and_return(true)
+
         expect(Rack::MiniProfiler).not_to receive(:authorize_request)
         get :test_action
       end
