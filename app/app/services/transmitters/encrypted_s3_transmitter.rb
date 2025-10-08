@@ -21,16 +21,12 @@ class Transmitters::EncryptedS3Transmitter
       "Conf#{@cbv_flow.confirmation_code}_" \
       "#{time_now.strftime('%Y%m%d%H%M%S')}"
 
-    # Generate PDF
-    pdf_service = PdfService.new(language: :en)
-    @pdf_output = pdf_service.generate(@cbv_flow, @aggregator_report, @current_agency)
-
     # Generate CSV in-memory
     csv_content = generate_csv
 
     # Create tar file
     file_data = [
-      { name: "#{@file_name}.pdf", content: @pdf_output&.content },
+      { name: "#{@file_name}.pdf", content: pdf_output&.content },
       { name: "#{@file_name}.csv", content: csv_content.string }
     ]
     tar_tempfile = create_tar_file(file_data)
@@ -55,6 +51,13 @@ class Transmitters::EncryptedS3Transmitter
       raise
     ensure
       tmp_encrypted_tar.close! if tmp_encrypted_tar
+    end
+  end
+
+  def pdf_output
+    @_pdf_output ||= begin
+      pdf_service = PdfService.new(language: :en)
+      @pdf_output = pdf_service.generate(@cbv_flow, @aggregator_report, @current_agency)
     end
   end
 
