@@ -19,9 +19,7 @@ jobs:
       - id: check
         run: |
           # If manually triggered, always run
-          {% raw %}
           if [[ "${{ github.event_name }}" == "workflow_dispatch" ]]; then
-          {% endraw %}
             echo "should_run=true" >> $GITHUB_OUTPUT
             exit 0
           fi
