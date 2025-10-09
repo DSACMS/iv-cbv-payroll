@@ -32,6 +32,17 @@ RSpec.describe Cbv::EntriesController do
         expect(response).to be_successful
       end
 
+      context 'when unreserved, non-alphanumeric characters are appended to a valid auth_token' do
+        # rfc3986 allows for any of these to be used in a URL "-" / "." / "_" / "~"
+        [ "-", ".", "_", "~", "._~" ].each do |char|
+          it 'redirects to a url that removes non-alphanumeric characters' do
+            get :show, params: { token: "#{invitation.auth_token}#{char}" }
+
+            expect(response).to redirect_to(start_flow_path(token: invitation.auth_token))
+          end
+        end
+      end
+
       it "sets a CbvFlow object based on the invitation" do
         expect { get :show, params: { token: invitation.auth_token } }
           .to change { session[:cbv_flow_id] }
