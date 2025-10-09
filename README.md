@@ -5,6 +5,15 @@ Income Verification: Consent-Based Verification (Payroll)
 
 Consent-Based Verification (CBV) is a prototype that allows benefit applicants to verify their income directly using payroll providers. It is currently being piloted for testing and validation purposes.
 
+ ## Project Vision 
+<!-- TODO: Provide the long-term goals and aspirations for this project. --> 
+ 
+ ## Project Mission 
+<!-- TODO: Provide the core mission and objectives driving this project. --> 
+
+## Core Team
+A list of core team members responsible for the code and documentation in this repository can be found in [COMMUNITY.md](COMMUNITY.md).
+
 # Development and Software Delivery Lifecycle
 
 If you're new to Rails, see the [Getting Started with Rails](https://guides.rubyonrails.org/getting_started.html)
@@ -110,7 +119,7 @@ To run database migrations on the test environment that is used by rpec tests, r
 
 This starts a standalone test server on port 4567 that logs incoming JSON data and verifies HMAC signatures. The receiver is completely independent and can be used as a reference implementation for agencies building their own JSON API endpoints.
 
-## Branching model
+## Branching Model
 When beginning work on a feature, create a new branch based off of `main` and make the commits for that feature there.
 
 We intend to use short-lived branches so as to minimize the cost of integrating each feature into the main branch.
@@ -339,7 +348,7 @@ See the [E2E testing documentation](/docs/e2e/e2e-checks.md) for more informatio
 
 When writing E2E tests, use the `verify_page` helper when possible to ensure that the page meets our sitewide requirements: it has no missing translations and it passes accessibility checks (per WCAG 2.1 A & AA).
 
-## Coding style and linters
+## Coding Style and Linters
 
 To enable automatic ruby linting and terraform formatting on every `git commit`, run the command `pre-commit install`.
 
@@ -420,7 +429,7 @@ https://confluenceent.cms.gov/display/SFIV/Consent-based+Verification+%28CBV%29+
 Our ADRs are stored in CMS Confluence: https://confluenceent.cms.gov/pages/viewpage.action?pageId=693666588
 
 # Contributing
-See [CONTRIBUTING.md](./CONTRIBUTING.md).
+Thank you for considering contributing to an Open Source project of the US Government! For more information about our contribution guidelines, see [CONTRIBUTING.md](CONTRIBUTING.md).
 
 ## Community
 
@@ -431,15 +440,19 @@ We know that we can learn from a wide variety of communities, including those wh
 We also recognize capacity building as a key part of involving a diverse open source community. We are doing our best to use accessible language, provide technical and process documents, and offer support to community members with a wide variety of backgrounds and skillsets.
 
 ## Community Guidelines
-See [COMMUNITY_GUIDELINES.md](./COMMUNITY_GUIDELINES.md).
+Principles and guidelines for participating in our open source community are can be found in [COMMUNITY.md](COMMUNITY). Please read them before joining or starting a conversation in this repo or one of the channels listed below. All community members and participants are expected to adhere to the community guidelines and code of conduct when participating in community spaces including: code repositories, communication channels and venues, and events.
 
 ## Governance
 
-See [GOVERNANCE.md](./GOVERNANCE.md)
+Information about how the iv-cbv-payroll community is governed may be found in [GOVERNANCE.md](GOVERNANCE.md).
 
 ## Feedback
 
 If you have ideas for how we can improve or add to our capacity building efforts and methods for welcoming people into our community, please let us know by sending an email to: ffs at nava pbc dot com. If you would like to comment on the tool itself, please let us know by filing an **issue on our GitHub repository.**
+
+## Glossary
+ <!--TODO: Point to glossary if exists  -->
+Information about terminology and acronyms used in this documentation may be found in [GLOSSARY.md](GLOSSARY.md). 
 
 ## Policies
 
@@ -461,26 +474,16 @@ the American public, but you are also welcome to submit anonymously.
 
 For more information about our Security, Vulnerability, and Responsible Disclosure Policies, see [SECURITY.md](SECURITY.md).
 
-### Public domain
+### Software Bill of Materials (SBOM)
+
+A Software Bill of Materials (SBOM) is a formal record containing the details and supply chain relationships of various components used in building software.
+
+In the spirit of [Executive Order 14028 - Improving the Nation’s Cyber Security](https://www.gsa.gov/technology/it-contract-vehicles-and-purchasing-programs/information-technology-category/it-security/executive-order-14028), a SBOM for this repository is provided here: https://github.com/DSACMS/iv-cbv-payroll/network/dependencies.
+
+For more information and resources about SBOMs, visit: https://www.cisa.gov/sbom.
+
+## Public domain
 
 This project is in the public domain within the United States, and copyright and related rights in the work worldwide are waived through the [CC0 1.0 Universal public domain dedication](https://creativecommons.org/publicdomain/zero/1.0/) as indicated in [LICENSE](LICENSE).
 
 All contributions to this project will be released under the CC0 dedication. By submitting a pull request or issue, you are agreeing to comply with this waiver of copyright interest.
-
-# Core Team
-
-See [CODEOWNERS.md](./CODEOWNERS.md)
- 
- ## Project Vision 
-<!-- Provide the long-term goals and aspirations for this project. --> 
- 
- ## Project Mission 
-<!-- Provide the core mission and objectives driving this project. --> 
- 
- ## Glossary 
-Information about terminology and acronyms used in this documentation may be found in [GLOSSARY.md](GLOSSARY.md). 
- 
- ### Software Bill of Materials (SBOM) 
-A Software Bill of Materials (SBOM) is a formal record containing the details and supply chain relationships of various components used in building software.
-In the spirit of [Executive Order 14028 - Improving the Nation's Cyber Security](https://www.gsa.gov/technology/it-contract-vehicles-and-purchasing-programs/information-technology-category/it-security/executive-order-14028), a SBOM for this repository is provided here: https://github.com/{repo_org}/{repo_name}/network/dependencies.
-For more information and resources about SBOMs, visit: https://www.cisa.gov/sbom.
