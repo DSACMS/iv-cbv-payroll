@@ -7,9 +7,19 @@ class Cbv::BaseController < ApplicationController
   def set_cbv_flow
     if params[:token].present?
       invitation = CbvFlowInvitation.find_by(auth_token: params[:token])
+
+      if invitation.blank?
+        token = /^([a-zA-Z0-9]+)[^a-zA-Z0-9]+$/.match(params[:token])
+        invitation = CbvFlowInvitation.find_by(auth_token: token[1]) if token
+        if ! invitation.blank?
+          return redirect_to(start_flow_url(token: invitation.auth_token))
+        end
+      end
+
       if invitation.blank?
         return redirect_to(root_url, flash: { alert: t("cbv.error_invalid_token") })
       end
+
       if invitation.expired?
         track_expired_event(invitation)
         return redirect_to(cbv_flow_expired_invitation_path(client_agency_id: invitation.client_agency_id))
