@@ -1,4 +1,18 @@
 #!/bin/bash
 # Print the current AWS region
 set -euo pipefail
-echo -n "$(aws configure list | grep region | awk '{print $2}')"
+
+# First try environment variables (set by GitHub Actions)
+region="${AWS_REGION:-${AWS_DEFAULT_REGION:-}}"
+
+# If not found in env vars, try AWS CLI config
+if [[ -z "$region" ]]; then
+  region=$(aws configure list | grep region | awk '{print $2}')
+fi
+
+# Remove ":" if that's all we got (means not configured)
+if [[ "$region" == ":" ]]; then
+  region=""
+fi
+
+echo -n "$region"
