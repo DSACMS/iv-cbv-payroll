@@ -28,6 +28,14 @@ class ClientAgencyConfig
     @client_agencies.keys
   end
 
+  def client_agency_id_regexp
+    Regexp.union (
+      self.client_agency_ids.map do |id|
+      /#{Regexp.quote(id)}.*/i
+    end
+    )
+  end
+
   def [](client_agency_id)
     @client_agencies[client_agency_id]
   end
