@@ -1,0 +1,77 @@
+{
+  "name": "iv-cbv-payroll",
+  "version": "",
+  "description": "",
+  "longDescription": "",
+  "status": "",
+  "permissions": {
+    "license": [
+      {
+        "name": "",
+        "URL": ""
+      }
+    ],
+    "usageType": [],
+    "exemptionText": ""
+  },
+  "organization": "",
+  "repositoryURL": "https://github.com/DSACMS/iv-cbv-payroll",
+  "repositoryHost": "github",
+  "repositoryVisibility": "public",
+  "homepageURL": "",
+  "downloadURL": "",
+  "disclaimerURL": "",
+  "disclaimerText": "",
+  "vcs": "git",
+  "laborHours": 13334,
+  "reuseFrequency": {
+    "forks": 8,
+    "clones": 0
+  },
+  "platforms": [],
+  "categories": [],
+  "softwareType": "",
+  "languages": [
+    "Ruby",
+    "HCL",
+    "HTML",
+    "Shell",
+    "JavaScript",
+    "Makefile",
+    "Jupyter Notebook",
+    "TypeScript",
+    "Python",
+    "Dockerfile",
+    "SCSS",
+    "Go",
+    "CSS"
+  ],
+  "maintenance": "",
+  "contractNumber": [],
+  "SBOM": "https://github.com/DSACMS/iv-cbv-payroll/network/dependencies",
+  "relatedCode": [],
+  "reusedCode": [],
+  "partners": [],
+  "date": {
+    "created": "2024-04-22T22:34:18Z",
+    "lastModified": "2025-10-09T14:15:20Z",
+    "metaDataLastUpdated": "2025-10-09T14:24:06.689Z"
+  },
+  "tags": [],
+  "contact": {
+    "email": "",
+    "name": ""
+  },
+  "feedbackMechanism": "https://github.com/DSACMS/iv-cbv-payroll/issues",
+  "AIUseCaseID": "0",
+  "localisation": false,
+  "repositoryType": "",
+  "userInput": false,
+  "fismaLevel": "",
+  "group": "",
+  "projects": [],
+  "systems": [],
+  "subsetInHealthcare": [],
+  "userType": [],
+  "maturityModelTier": 0
+}
