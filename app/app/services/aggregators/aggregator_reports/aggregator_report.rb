@@ -99,7 +99,7 @@ module Aggregators::AggregatorReports
 
     def summarize_by_employer
       @payroll_accounts.each_with_object({}) do |payroll_account, hash|
-        account_id = payroll_account.pinwheel_account_id
+        account_id = payroll_account.aggregator_account_id
         account_report = find_account_report(account_id)
         has_income_data = payroll_account.job_succeeded?("income")
         has_employment_data = payroll_account.job_succeeded?("employment")
@@ -125,7 +125,7 @@ module Aggregators::AggregatorReports
 
       @payroll_accounts
         .each_with_object({}) do |payroll_account, hash|
-          account_id = payroll_account.pinwheel_account_id
+          account_id = payroll_account.aggregator_account_id
           account_report = find_account_report(account_id)
           paystubs = account_report.paystubs
           gigs = account_report.gigs

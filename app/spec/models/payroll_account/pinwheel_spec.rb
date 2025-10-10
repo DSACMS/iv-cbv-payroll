@@ -5,7 +5,7 @@ RSpec.describe PayrollAccount::Pinwheel, type: :model do
   let(:supported_jobs) { %w[income paystubs employment] }
   let!(:cbv_flow) { create(:cbv_flow, :invited, pinwheel_token_id: "abc-def-ghi", client_agency_id: "sandbox") }
   let!(:payroll_account) do
-    create(:payroll_account, cbv_flow: cbv_flow, pinwheel_account_id: account_id, supported_jobs: supported_jobs)
+    create(:payroll_account, cbv_flow: cbv_flow, aggregator_account_id: account_id, supported_jobs: supported_jobs)
   end
 
   def create_webhook_events(income_success: true, employment_success: true, paystubs_success: true, income_errored: false, shifts_success: false)

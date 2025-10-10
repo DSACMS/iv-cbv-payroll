@@ -11,7 +11,7 @@ class Webhooks::Pinwheel::EventsController < ApplicationController
   DUMMY_API_KEY = "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
 
   def create
-    @payroll_account = @cbv_flow.payroll_accounts.find_or_create_by(type: :pinwheel, pinwheel_account_id: params["payload"]["account_id"]) do |new_payroll_account|
+    @payroll_account = @cbv_flow.payroll_accounts.find_or_create_by(type: :pinwheel, aggregator_account_id: params["payload"]["account_id"]) do |new_payroll_account|
       new_payroll_account.supported_jobs = get_supported_jobs(params["payload"]["platform_id"])
     end
 

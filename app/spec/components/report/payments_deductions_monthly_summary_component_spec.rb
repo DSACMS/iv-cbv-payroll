@@ -25,7 +25,7 @@ RSpec.describe Report::PaymentsDeductionsMonthlySummaryComponent, type: :compone
         :pinwheel_fully_synced,
         with_errored_jobs: errored_jobs,
         cbv_flow: cbv_flow,
-        pinwheel_account_id: account_id,
+        aggregator_account_id: account_id,
         supported_jobs: supported_jobs,
       )
     end
@@ -113,7 +113,7 @@ RSpec.describe Report::PaymentsDeductionsMonthlySummaryComponent, type: :compone
         :payroll_account,
         :argyle_fully_synced,
         cbv_flow: cbv_flow,
-        pinwheel_account_id: account_id
+        aggregator_account_id: account_id
       )
     end
 

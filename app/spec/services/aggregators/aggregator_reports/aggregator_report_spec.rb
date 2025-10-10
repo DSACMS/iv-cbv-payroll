@@ -18,7 +18,7 @@ RSpec.describe Aggregators::AggregatorReports::AggregatorReport, type: :service 
 
     describe '#summarize_by_employer' do
       it "returns nil for income, employment & identity when job succeeds but no data found" do
-        account_id = report.payroll_accounts.first.pinwheel_account_id
+        account_id = report.payroll_accounts.first.aggregator_account_id
 
         allow(report.payroll_accounts.first).to receive(:job_succeeded?).with("income").and_return(false)
         allow(report.payroll_accounts.first).to receive(:job_succeeded?).with("employment").and_return(true)
@@ -32,7 +32,7 @@ RSpec.describe Aggregators::AggregatorReports::AggregatorReport, type: :service 
       end
 
       it "returns nil for income, employment & identity when job fails" do
-        account_id = report.payroll_accounts.first.pinwheel_account_id
+        account_id = report.payroll_accounts.first.aggregator_account_id
 
         allow(report.payroll_accounts.first).to receive(:job_succeeded?).with("income").and_return(false)
         allow(report.payroll_accounts.first).to receive(:job_succeeded?).with("employment").and_return(false)
@@ -55,7 +55,7 @@ RSpec.describe Aggregators::AggregatorReports::AggregatorReport, type: :service 
 
     let(:account) { "01959b15-8b7f-5487-212d-2c0f50e3ec96" }
     let!(:payroll_account) do
-      create(:payroll_account, :argyle_fully_synced, pinwheel_account_id: account)
+      create(:payroll_account, :argyle_fully_synced, aggregator_account_id: account)
     end
     let(:days_ago_to_fetch) { 90 }
     let(:days_ago_to_fetch_for_gig) { 90 }

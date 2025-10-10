@@ -14,7 +14,7 @@ module Aggregators::AggregatorReports
 
     def fetch_report_data_for_account(payroll_account)
       identities_json = @argyle_service.fetch_identities_api(
-        account: payroll_account.pinwheel_account_id
+        account: payroll_account.aggregator_account_id
       )
 
       # Override the date range to fetch when fetching a gig job.
@@ -26,15 +26,15 @@ module Aggregators::AggregatorReports
       end
 
       account_json = @argyle_service.fetch_account_api(
-        account: payroll_account.pinwheel_account_id
+        account: payroll_account.aggregator_account_id
       )
       paystubs_json = @argyle_service.fetch_paystubs_api(
-        account: payroll_account.pinwheel_account_id,
+        account: payroll_account.aggregator_account_id,
         from_start_date: from_date,
         to_start_date: to_date
       )
       gigs_json = @argyle_service.fetch_gigs_api(
-        account: payroll_account.pinwheel_account_id,
+        account: payroll_account.aggregator_account_id,
         from_start_datetime: from_date,
         to_start_datetime: to_date
       )

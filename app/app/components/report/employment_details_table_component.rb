@@ -24,7 +24,7 @@ class Report::EmploymentDetailsTableComponent< ViewComponent::Base
 
   def find_account_report(report)
     # Note: payroll_account may either be the ID or the payroll_account object
-    account_id = @payroll_account.class == String ? @payroll_account : @payroll_account.pinwheel_account_id
+    account_id = @payroll_account.class == String ? @payroll_account : @payroll_account.aggregator_account_id
     report.find_account_report(account_id)
   end
 end
