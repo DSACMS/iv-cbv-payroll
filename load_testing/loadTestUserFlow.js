@@ -1,6 +1,17 @@
 import http from 'k6/http';
 import { sleep, check, group } from 'k6';
-import { SLA_IN_MILLISECONDS, URL, CLIENT_AGENCY_ID, failedSloCounter, checkSlo } from './common.js';
+import {
+    URL,
+    CLIENT_AGENCY_ID,
+    checkSlo,
+    SIMULATE_DELAY_SYNC_POLLING_S,
+    SIMULATE_DELAY_PAYMENT_DETAILS_S,
+    SIMULATE_DELAY_SUMMARY_S,
+    SIMULATE_DELAY_PDF_DOWNLOAD_S,
+    SIMULATE_DELAY_EMPLOYER_SEARCH_S,
+    SYNC_POLL_COUNT,
+    USER_FLOW_STEPS
+} from './common.js';
 
 export let options = {
     vus: 0, // start at 0 users, and ramp up linearly
@@ -114,15 +125,15 @@ function selectScenario() {
     const rand = Math.random();
 
     // Distribution based on typical user time per page:
-    // - 50% Synchronization (longest wait, most DB polling)
-    // - 20% Employer search
-    // - 15% Payment details review
-    // - 10% Summary page
+    // - 77% Synchronization (longest wait, most DB polling)
+    // - 10% Employer search
+    // - 5% Payment details review
+    // - 3% Summary page
     // - 5% PDF generation
 
-    if (rand < 0.50) return 'sync';
-    if (rand < 0.70) return 'employer_search';
-    if (rand < 0.85) return 'payment_details';
+    if (rand < 0.77) return 'sync';
+    if (rand < 0.87) return 'employer_search';
+    if (rand < 0.92) return 'payment_details';
     if (rand < 0.95) return 'summary';
     return 'pdf';
 }
@@ -155,7 +166,7 @@ function testSynchronization(session) {
     });
 
     // Realistic polling interval
-    sleep(3);
+    sleep(SIMULATE_DELAY_SYNC_POLLING_S);
 }
 
 function testPaymentDetails(session) {
@@ -175,7 +186,7 @@ function testPaymentDetails(session) {
     });
 
     // Time reviewing payment details
-    sleep(15);
+    sleep(SIMULATE_DELAY_PAYMENT_DETAILS_S);
 }
 
 function testSummary(session) {
@@ -195,7 +206,7 @@ function testSummary(session) {
     });
 
     // Time reviewing summary
-    sleep(10);
+    sleep(SIMULATE_DELAY_SUMMARY_S);
 }
 
 function testPdfGeneration(session) {
@@ -221,7 +232,7 @@ function testPdfGeneration(session) {
     });
 
     // PDFs are downloaded less frequently
-    sleep(30);
+    sleep(SIMULATE_DELAY_PDF_DOWNLOAD_S);
 }
 
 function testEmployerSearch(session) {
@@ -241,7 +252,7 @@ function testEmployerSearch(session) {
     });
 
     // Time searching for employer
-    sleep(20);
+    sleep(SIMULATE_DELAY_EMPLOYER_SEARCH_S);
 }
 
 // vim: expandtab sw=4 ts=4
