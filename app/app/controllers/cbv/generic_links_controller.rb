@@ -19,15 +19,7 @@ class Cbv::GenericLinksController < Cbv::BaseController
   def ensure_valid_client_agency_id
     return if agency_config.client_agency_ids.include?(params[:client_agency_id])
 
-    client_agency_id = agency_config.client_agency_ids.find do |id|
-      params[:client_agency_id].downcase.starts_with?(id.downcase)
-    end
-
-    if client_agency_id
-      redirect_to cbv_flow_new_url(client_agency_id: client_agency_id)
-    else
-      redirect_to root_url, flash: { info: t("cbv.error_invalid_link") }
-    end
+    redirect_to root_url, flash: { info: t("cbv.error_invalid_link") }
   end
 
   def check_if_pilot_ended_for_agency
