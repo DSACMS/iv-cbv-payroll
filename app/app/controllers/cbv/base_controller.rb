@@ -1,12 +1,13 @@
 class Cbv::BaseController < ApplicationController
+  ALPHPANUMERIC_PREFIX_REGEXP = /^([a-zA-Z0-9]+)[^a-zA-Z0-9]*$/
+
   before_action :set_cbv_origin, :set_cbv_flow, :ensure_cbv_flow_not_yet_complete, :prevent_back_after_complete, :capture_page_view
   helper_method :agency_url, :next_path, :get_comment_by_account_id, :current_agency
 
   private
 
   def normalize_token(token)
-    alphanumeric_prefix_regexp = /^([a-zA-Z0-9]+)[^a-zA-Z0-9]*$/
-    matches = alphanumeric_prefix_regexp.match(token)
+    matches = ALPHPANUMERIC_PREFIX_REGEXP.match(token)
     matches[1] if matches
   end
 
