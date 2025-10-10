@@ -1,3 +1,4 @@
+
 Rails.application.routes.draw do
   devise_for :users,
     controllers: {
@@ -46,9 +47,7 @@ Rails.application.routes.draw do
       resource :applicant_information, only: %i[show update]
 
       # Generic link
-      scope "links/:client_agency_id", constraints: {
-              client_agency_id: Rails.application.config.client_agencies.client_agency_id_regexp
-            } do
+      scope "links/:client_agency_id", constraints: { client_agency_id: Regexp.union(Rails.application.config.client_agencies.client_agency_ids) } do
         root to: "generic_links#show", as: :new
       end
 
