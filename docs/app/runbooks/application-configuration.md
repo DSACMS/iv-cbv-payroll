@@ -110,7 +110,7 @@ Configure access to the background job monitoring dashboard at `/jobs`:
 
 Configure for both sandbox (testing) and production modes:
 
-Argyel can be used in either "Production" or "Sandbox" mode.  "Production" provides live access to data, while "Sandbox"
+Argyle can be used in either "Production" or "Sandbox" mode.  "Production" provides live access to data, while "Sandbox"
 mode uses mock users and data to test Argyle's API's.  Sandbox requests are free, but production requests are charged.
 
 | Environment Variable              | Parameter Store Key                                  | Type         | Description               |
@@ -143,37 +143,20 @@ The CBV application serves multiple government agencies. Configure each tenant:
 | `SANDBOX_DOMAIN_NAME`          | `/service/app-{env}/sandbox-domain-name`          | String | Domain for sandbox testing   |
 | `SANDBOX_ARGYLE_ENVIRONMENT`   | `/service/app-{env}/sandbox-argyle-environment`   | String | `sandbox` or `production`    |
 | `SANDBOX_PINWHEEL_ENVIRONMENT` | `/service/app-{env}/sandbox-pinwheel-environment` | String | `sandbox` or `production`    |
-| `AGENCY_DEFAULT_ACTIVE`        | `/service/app-{env}/agency-default-active`        | String | `false` (disable by default) |
 
 ### Arizona DES Tenant
 
 
-| Environment Variable              | Parameter Store Key                                  | Type         | Description                         |
-| --------------------------------- | ---------------------------------------------------- | ------------ | ----------------------------------- |
-| `AZ_DES_DOMAIN_NAME`              | `/service/app-{env}/az-des-domain-name`              | String       | Agency-specific domain              |
-| `AZ_DES_SFTP_USER`                | `/service/app-{env}/az-des-sftp-user`                | SecureString | SFTP username for file transmission |
-| `AZ_DES_SFTP_PASSWORD`            | `/service/app-{env}/az-des-sftp-password`            | SecureString | SFTP password                       |
-| `AZ_DES_SFTP_URL`                 | `/service/app-{env}/az-des-sftp-url`                 | String       | SFTP server URL                     |
-| `AZ_DES_SFTP_DIRECTORY`           | `/service/app-{env}/az-des-sftp-directory`           | String       | Target directory path               |
-| `AZ_DES_ARGYLE_ENVIRONMENT`       | `/service/app-{env}/az-des-argyle-environment`       | String       | `sandbox` or `production`           |
-| `AZ_DES_PINWHEEL_ENVIRONMENT`     | `/service/app-{env}/az-des-pinwheel-environment`     | String       | `sandbox` or `production`           |
+| Environment Variable             | Parameter Store Key                                  | Type         | Description                         |
+|----------------------------------| ---------------------------------------------------- | ------------ | ----------------------------------- |
+| `AZ_DES_DOMAIN_NAME`             | `/service/app-{env}/az-des-domain-name`              | String       | Agency-specific domain              |
+| `AZ_DES_SFTP_USER`               | `/service/app-{env}/az-des-sftp-user`                | SecureString | SFTP username for file transmission |
+| `AZ_DES_SFTP_PASSWORD`           | `/service/app-{env}/az-des-sftp-password`            | SecureString | SFTP password                       |
+| `AZ_DES_SFTP_URL`                | `/service/app-{env}/az-des-sftp-url`                 | String       | SFTP server URL                     |
+| `AZ_DES_SFTP_DIRECTORY`          | `/service/app-{env}/az-des-sftp-directory`           | String       | Target directory path               |
+| `AZ_DES_ARGYLE_ENVIRONMENT`      | `/service/app-{env}/az-des-argyle-environment`       | String       | `sandbox` or `production`           |
+| `AZ_DES_PINWHEEL_ENVIRONMENT`    | `/service/app-{env}/az-des-pinwheel-environment`     | String       | `sandbox` or `production`           |
 | `AZ_DES_WEEKLY_REPORT_RECIPIENTS` | `/service/app-{env}/az-des-weekly-report-recipients` | String       | Comma-separated email list          |
-| `AGENCY_AZ_DES_ACTIVE`            | `/service/app-{env}/agency-az-des-active`            | String       | `true` to enable tenant             |
-
-### PA DHS Tenant
-
-| Environment Variable              | Parameter Store Key                                  | Type         | Description                         |
-|-----------------------------------| ---------------------------------------------------- | ------------ | ----------------------------------- |
-| `PA_DHS_DOMAIN_NAME`              | `/service/app-{env}/pa-dhs-domain-name`              | String       | Agency-specific domain              |
-| `PA_DHS_SFTP_USER`                | `/service/app-{env}/pa-dhs-sftp-user`                | SecureString | SFTP username for file transmission |
-| `PA_DHS_SFTP_PASSWORD`            | `/service/app-{env}/pa-dhs-sftp-password`            | SecureString | SFTP password                       |
-| `PA_DHS_SFTP_URL`                 | `/service/app-{env}/pa-dhs-sftp-url`                 | String       | SFTP server URL                     |
-| `PA_DHS_SFTP_DIRECTORY`           | `/service/app-{env}/pa-dhs-sftp-directory`           | String       | Target directory path               |
-| `PA_DHS_ARGYLE_ENVIRONMENT`       | `/service/app-{env}/pa-dhs-argyle-environment`       | String       | `sandbox` or `production`           |
-| `PA_DHS_PINWHEEL_ENVIRONMENT`     | `/service/app-{env}/pa-dhs-pinwheel-environment`     | String       | `sandbox` or `production`           |
-| `PA_DHS_WEEKLY_REPORT_RECIPIENTS` | `/service/app-{env}/pa-dhs-weekly-report-recipients` | String       | Comma-separated email list          |
-| `AGENCY_PA_DHS_ACTIVE`             | `/service/app-{env}/agency-pa-dhs-active`            | String       | `true` to enable tenant             |
-
 
 ### Louisiana LDH Tenant (Deprecated)
 

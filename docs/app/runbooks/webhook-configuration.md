@@ -32,12 +32,12 @@ Each deployed environment requires webhook registration for:
 
 ### Demo Environment
 
-**URL Pattern:** `https://demo.divt.app`
+**URL Pattern:** `https://verify-demo.navapbc.cloud`
 **Webhook Naming Prefix:** `demo-argyle-sandbox`, `demo-pinwheel`
 
 ### Production Environment
 
-**URL Pattern:** `https://verifymyincome.org`
+**URL Pattern:** `https://reportmyincome.org`
 **Webhook Naming Prefix:** `production-argyle`, `production-pinwheel`
 
 ## Argyle Webhook Configuration
@@ -81,7 +81,7 @@ ARGYLE_SANDBOX_WEBHOOK_SECRET=<sandbox-webhook-secret>
 # In local Rails console
 # Register webhooks for sandbox agency using Argyle sandbox environment
 m = ArgyleWebhooksManager.new(agency_id: "sandbox")
-m.create_subscriptions_if_necessary("https://demo.divt.app", "demo-argyle-sandbox")
+m.create_subscriptions_if_necessary("https://verify-demo.navapbc.cloud", "demo-argyle-sandbox")
 ```
 
 #### For Production Environment
@@ -92,12 +92,12 @@ m.create_subscriptions_if_necessary("https://demo.divt.app", "demo-argyle-sandbo
 # For agencies using Argyle production environment
 # Ensure SANDBOX_ARGYLE_ENVIRONMENT=production in Parameter Store first
 m = ArgyleWebhooksManager.new(agency_id: "sandbox")
-m.create_subscriptions_if_necessary("https://verifymyincome.org", "production-argyle")
+m.create_subscriptions_if_necessary("https://reportmyincome.org", "production-argyle")
 
 # For agencies using Argyle sandbox in production (if needed)
 # Ensure SANDBOX_ARGYLE_ENVIRONMENT=sandbox in Parameter Store first
 m = ArgyleWebhooksManager.new(agency_id: "sandbox")
-m.create_subscriptions_if_necessary("https://verifymyincome.org", "production-argyle-sandbox")
+m.create_subscriptions_if_necessary("https://reportmyincome.org", "production-argyle-sandbox")
 ```
 
 ### Step 4: Webhook Deletion (If Needed)
@@ -126,7 +126,7 @@ end
 ```ruby
 # In local Rails console
 m = PinwheelWebhookManager.new
-m.create_subscription_if_necessary("https://demo.divt.app", "DEMO")
+m.create_subscription_if_necessary("https://verify-demo.navapbc.cloud", "DEMO")
 ```
 
 #### For Production Environment
@@ -135,7 +135,7 @@ m.create_subscription_if_necessary("https://demo.divt.app", "DEMO")
 # In local Rails console
 # Ensure SANDBOX_PINWHEEL_ENVIRONMENT=production in Parameter Store for production webhooks
 m = PinwheelWebhookManager.new
-m.create_subscription_if_necessary("https://verifymyincome.org", "production-pinwheel")
+m.create_subscription_if_necessary("https://reportmyincome.org", "production-pinwheel")
 ```
 
 ### Step 2: Verify Pinwheel Configuration
@@ -164,8 +164,8 @@ Webhooks are delivered to standard endpoints:
 
 | Provider | Endpoint Path | Full URL Example                          |
 |----------|---------------|-------------------------------------------|
-| Argyle | `/webhooks/argyle` | `https://demo.divt.app/webhooks/argyle`   |
-| Pinwheel | `/webhooks/pinwheel` | `https://demo.divt.app/webhooks/pinwheel` |
+| Argyle | `/webhooks/argyle` | `https://verify-demo.navapbc.cloud/webhooks/argyle`   |
+| Pinwheel | `/webhooks/pinwheel` | `https://verify-demo.navapbc.cloud/webhooks/pinwheel` |
 
 ## Troubleshooting
 

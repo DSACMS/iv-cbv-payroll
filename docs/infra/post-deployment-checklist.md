@@ -103,11 +103,6 @@ Use this checklist after deploying infrastructure and application to ensure all 
   - `AGENCY_AZ_DES_ACTIVE=true` if enabled
   - Verify partner configuration at [az_des.yml](../../app/config/client-agency-config/az_des.yml)
 
-- [ ] **Pennsylvania DHS agency configured** (if applicable):
-    - Domain, SFTP, environment settings
-    - `AGENCY_PA_DHS_ACTIVE=true` if enabled
-    - Verify partner configuration at [pa_dhs.yml](../../app/config/client-agency-config/pa_dhs.yml)
-
 - [ ] **Louisiana LDH agency configured** (if applicable):
   - Domain, email, pilot status
   - Environment settings
