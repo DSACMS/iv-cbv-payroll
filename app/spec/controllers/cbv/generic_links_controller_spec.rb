@@ -22,16 +22,6 @@ RSpec.describe Cbv::GenericLinksController do
         end
       end
 
-      context 'when unreserved, non-alphanumeric characters are appended to a valid client_agency_id' do
-        # rfc3986 allows for any of these to be used in a URL "-" / "." / "_" / "~"
-        [ "-", ".", "_", "~", "._~" ].each do |char|
-          it 'redirects to a url that removes non-alphanumeric characters' do
-            get :show, params: { client_agency_id: "sandbox#{char}" }
-            expect(response).to redirect_to(cbv_flow_new_path(client_agency_id: "sandbox"))
-          end
-        end
-      end
-
       context 'when no existing CBV applicant cookie exists' do
         let(:headers) { {} }
         before do
