@@ -56,6 +56,8 @@ module ApplicationHelper
   end
 
   APPLICANT_FEEDBACK_FORM = "https://docs.google.com/forms/d/e/1FAIpQLSfrUiz0oWE5jbXjPfl-idQQGPgxKplqFtcKq08UOhTaEa2k6A/viewform"
+  APPLICANT_SURVEY_FORM = "https://forms.gle/M9jVQNue96rjQTbD9"
+
   def feedback_form_url
     case params[:controller]
     when %r{^caseworker/}
@@ -67,6 +69,10 @@ module ApplicationHelper
     else
       APPLICANT_FEEDBACK_FORM
     end
+  end
+
+  def survey_form_url
+    APPLICANT_SURVEY_FORM
   end
 
   # some job statuses we consider completed even if they failed

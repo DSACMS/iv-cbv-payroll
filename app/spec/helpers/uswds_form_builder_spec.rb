@@ -250,6 +250,81 @@ RSpec.describe UswdsFormBuilder do
     end
   end
 
+  describe '#memorable_date' do
+    let(:result) { builder.memorable_date(:start_date, legend: 'Start date', hint: 'Please enter the start date') }
+
+    it 'outputs a fieldset with a legend' do
+      expect(result).to have_element(:fieldset, class: 'usa-fieldset')
+      expect(result).to have_element(:legend, text: 'Start date', class: 'usa-legend')
+    end
+
+    it 'outputs a memorable date component' do
+      expect(result).to have_element(:div, class: 'usa-memorable-date')
+    end
+
+    it 'outputs a select for the month' do
+      expect(result).to have_element(:select, name: 'object[start_date][month]')
+    end
+
+    it 'outputs a text input for the day' do
+      expect(result).to have_element(:input, type: 'number', name: 'object[start_date][day]')
+    end
+
+    it 'outputs a text input for the year' do
+      expect(result).to have_element(:input, type: 'number', name: 'object[start_date][year]')
+    end
+
+    context 'with hint' do
+      it 'outputs a hint' do
+        expect(result).to have_element(:div, text: 'Please enter the start date', class: 'usa-hint')
+      end
+    end
+
+    context 'when no date is set' do
+      let(:object) { TestModel.new(start_date: nil) }
+
+      it 'renders placeholder option with empty value for month' do
+        expect(result).to have_element(:option, value: '', text: I18n.t('shared.select_placeholder'))
+      end
+
+      it 'does not preselect any month' do
+        expect(result).not_to have_element(:option, selected: 'selected')
+      end
+    end
+
+    context 'with errors' do
+      before do
+        object.errors.add(:start_date, 'is invalid')
+      end
+
+      it 'outputs an error message' do
+        expect(result).to have_element(:div, class: 'usa-form-group--error')
+        expect(result).to have_element(:span, text: 'is invalid', class: 'usa-error-message')
+      end
+    end
+
+    context 'when a date is set' do
+      let(:object) { TestModel.new(start_date: Date.new(2024, 2, 28)) }
+
+      it 'selects the existing month value' do
+        expect(result).to have_element(:option, value: '2', selected: 'selected')
+      end
+
+      it 'keeps placeholder present but unselected when month is set' do
+        expect(result).to have_element(:option, value: '', text: I18n.t('shared.select_placeholder'))
+        expect(result).not_to have_element(:option, value: '', selected: 'selected')
+      end
+
+      it 'sets the day value' do
+        expect(result).to have_element(:input, value: '28', name: 'object[start_date][day]')
+      end
+
+      it 'sets the year value' do
+        expect(result).to have_element(:input, value: '2024', name: 'object[start_date][year]')
+      end
+    end
+  end
+
   describe '#button_with_icon' do
     let(:result) { builder.button_with_icon('Save') }
 

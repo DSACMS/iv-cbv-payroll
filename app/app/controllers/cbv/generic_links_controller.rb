@@ -2,6 +2,7 @@ class Cbv::GenericLinksController < Cbv::BaseController
   skip_before_action :set_cbv_flow, :capture_page_view
   before_action :ensure_valid_client_agency_id
   before_action :check_if_pilot_ended_for_agency
+  before_action :redirect_if_generic_links_disabled
 
   def show
     @cbv_flow, is_new_session = find_or_create_cbv_flow
@@ -28,6 +29,13 @@ class Cbv::GenericLinksController < Cbv::BaseController
     end
   end
 
+  def redirect_if_generic_links_disabled
+    agency = agency_config[params[:client_agency_id]]
+    if agency&.generic_links_disabled
+      redirect_to root_url
+    end
+  end
+
   def find_or_create_cbv_flow
     existing_applicant = find_existing_applicant_from_cookie
 
@@ -46,7 +54,7 @@ class Cbv::GenericLinksController < Cbv::BaseController
   end
 
   def create_flow_with_existing_applicant(applicant)
-    reset_applicant_information(applicant)
+    applicant.reset_applicant_attributes
     cbv_flow = CbvFlow.create(cbv_applicant: applicant, client_agency_id: params[:client_agency_id])
     [ cbv_flow, false ]
   end
@@ -60,21 +68,18 @@ class Cbv::GenericLinksController < Cbv::BaseController
     CbvApplicant.find_by(id: applicant_id, client_agency_id: params[:client_agency_id])
   end
 
-  def reset_applicant_information(applicant)
-    clear_attributes = applicant.applicant_attributes.index_with(nil)
-    applicant.update!(clear_attributes)
-  end
-
   def track_generic_link_clicked_event(cbv_flow, is_new_session)
-    event_logger.track("ApplicantClickedGenericLink", request, {
+    # Skip tracking this event for a specific user agent, since we tend
+    # to get a ton of traffic from it during LA SMS sends
+    return if request.user_agent&.match?(/go-http-client/i)
+
+    event_logger.track(TrackEvent::ApplicantClickedGenericLink, request, {
+      time: Time.now.to_i,
       cbv_applicant_id: cbv_flow.cbv_applicant_id,
       cbv_flow_id: cbv_flow.id,
       client_agency_id: cbv_flow.client_agency_id,
       origin: params[:origin],
       is_new_session: is_new_session
     })
-  rescue => ex
-    Rails.logger.error "Unable to track event (ApplicantClickedGenericLink): #{ex}"
-    raise unless Rails.env.production?
   end
 end

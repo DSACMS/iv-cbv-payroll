@@ -4,16 +4,20 @@ class GenericEventTracker
   def track(event_type, request, attributes = {})
     merged_attributes = attributes.with_defaults(prep_request_attributes(request))
     if request.present?
-      request_data = { headers: { "User-Agent": request.headers["User-Agent"] }, remote_ip: request.remote_ip  }
+      request_data = { headers: { "User-Agent": request.headers["User-Agent"] }, remote_ip: request.remote_ip }
     else
       request_data = nil
     end
     EventTrackingJob.perform_later(event_type, request_data, merged_attributes)
+  rescue => ex
+    Rails.logger.error "Unable to track event (#{event_type}): #{ex}, line: #{ex.backtrace&.first}"
+    raise unless Rails.env.production?
   end
 
   private
+
   def prep_request_attributes(request)
-    defaults = { timestamp: Time.now.to_i }
+    defaults = { time: Time.now.to_i }
     if request.present?
       url_params = request.params.slice("client_agency_id", "locale")
 

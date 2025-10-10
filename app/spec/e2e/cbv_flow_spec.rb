@@ -19,7 +19,7 @@ RSpec.describe "e2e CBV flow test", type: :feature, js: true do
     visit URI(root_url).request_uri
     visit URI(cbv_flow_invitation.to_url).request_uri
     verify_page(page, title: I18n.t("cbv.entries.show.header"))
-    find("label", text: I18n.t("cbv.entries.show.checkbox.default", agency_full_name: I18n.t("shared.agency_full_name.sandbox"))).click
+    find('[data-cbv-entry-page-target="consentCheckbox"]').click
     click_button I18n.t("cbv.entries.show.continue")
 
     # /cbv/employer_search
@@ -64,8 +64,7 @@ RSpec.describe "e2e CBV flow test", type: :feature, js: true do
     click_on "Continue"
 
     # /cbv/summary
-    # TODO[FFS-2839]: Fix heading hierarchy on this page
-    verify_page(page, title: I18n.t("cbv.summaries.show.header"), skip_axe_rules: %w[heading-order])
+    verify_page(page, title: I18n.t("cbv.summaries.show.header"))
     click_on "Continue"
 
     # /cbv/submits
@@ -74,7 +73,7 @@ RSpec.describe "e2e CBV flow test", type: :feature, js: true do
     click_on "Share my report with CBV"
 
     # /cbv/success
-    verify_page(page, title: I18n.t("cbv.successes.show.header", agency_acronym: ""))
+    verify_page(page, title: I18n.t("cbv.successes.show.header", agency_acronym: "CBV"))
     # TODO: Test PDF rendering by writing it to a file
   end
 end

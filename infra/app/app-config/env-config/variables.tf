@@ -129,9 +129,21 @@ variable "database_serverless_max_capacity" {
   type        = number
   default     = 1.0
 }
+variable "backup_retention_period" {
+  description = "Number of days to retain automated backups (RDS minimum is 1)."
+  type        = number
+  default     = 1
+}
 
-variable "la_ldh_pilot_enabled" {
-  description = "Whether the LA LDH pilot is enabled"
+variable "enable_aws_backup" {
+  description = "Whether to enable AWS Backup for the database."
   type        = bool
   default     = false
+}
+
+variable "bucket_name" {
+  description = "If provided, this overrides the local bucket_name defined in main.tf"
+  type        = string
+  nullable    = true
+  default     = null
 }

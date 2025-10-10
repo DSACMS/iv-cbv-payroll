@@ -59,7 +59,7 @@ RSpec.describe Report::PaymentsDeductionsMonthlySummaryComponent, type: :compone
         end
 
         it "includes the payments and deductions section with accordion and content" do
-          expect(subject.css("h3").to_html).to include "Payments and deductions"
+          expect(subject.css("h2").to_html).to include "Payments and deductions"
 
           accordion = subject.at_css('button.usa-accordion__button')
           expect(accordion).not_to be_nil
@@ -82,6 +82,14 @@ RSpec.describe Report::PaymentsDeductionsMonthlySummaryComponent, type: :compone
         it "renders nothing without the paystubs data" do
           heading = subject.at_css('h2.usa-alert__heading')
           expect(heading).to be_nil
+        end
+
+        it "does not render empty accordions when there are no paystubs" do
+          accordion_buttons = subject.css('button.usa-accordion__button')
+          expect(accordion_buttons).to be_empty
+
+          payments_header = subject.at_css('h2')
+          expect(payments_header).to be_nil
         end
       end
     end
@@ -131,7 +139,7 @@ RSpec.describe Report::PaymentsDeductionsMonthlySummaryComponent, type: :compone
       end
 
       it "includes the payments and deductions section with accordion and content" do
-        expect(subject.css("h3").to_html).to include "Payments and deductions"
+        expect(subject.css("h2").to_html).to include "Payments and deductions"
 
         accordion = subject.at_css('button.usa-accordion__button')
         expect(accordion).not_to be_nil
@@ -147,11 +155,10 @@ RSpec.describe Report::PaymentsDeductionsMonthlySummaryComponent, type: :compone
         argyle_report.fetch
       end
 
-      subject { render_inline(described_class.new(argyle_report, payroll_account, is_responsive: true, is_w2_worker: false, pay_frequency_text: "monthly")) }
-
-      it "renders nothing without the paystubs data" do
-        heading = subject.at_css('h2.usa-alert__heading')
-        expect(heading).to be_nil
+      it "raises an error without the paystubs data" do
+        expect {
+          render_inline(described_class.new(argyle_report, payroll_account, is_responsive: true, is_w2_worker: false, pay_frequency_text: "monthly"))
+        }.to raise_error(RuntimeError, "No employments found that match account_id 019571bc-2f60-3955-d972-dbadfe0913a8")
       end
     end
   end

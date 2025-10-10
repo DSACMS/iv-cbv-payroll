@@ -53,7 +53,8 @@ class Webhooks::Pinwheel::EventsController < ApplicationController
 
   def process_webhook_event
     if @webhook_event.event_name == "account.added"
-      event_logger.track("ApplicantCreatedPinwheelAccount", request, {
+      event_logger.track(TrackEvent::ApplicantCreatedPinwheelAccount, request, {
+        time: Time.now.to_i,
         cbv_applicant_id: @cbv_flow.cbv_applicant_id,
         cbv_flow_id: @cbv_flow.id,
         client_agency_id: @cbv_flow.client_agency_id,
@@ -78,7 +79,8 @@ class Webhooks::Pinwheel::EventsController < ApplicationController
       paystub_hours = report.paystubs.filter_map(&:hours).map(&:to_f)
       paystub_gross_pay_amounts = report.paystubs.filter_map(&:gross_pay_amount)
 
-      event_logger.track("ApplicantFinishedPinwheelSync", request, {
+      event_logger.track(TrackEvent::ApplicantFinishedPinwheelSync, request, {
+        time: Time.now.to_i,
         cbv_applicant_id: @cbv_flow.cbv_applicant_id,
         cbv_flow_id: @cbv_flow.id,
         client_agency_id: @cbv_flow.client_agency_id,
@@ -169,30 +171,27 @@ class Webhooks::Pinwheel::EventsController < ApplicationController
   rescue => ex
     raise ex unless Rails.env.production?
 
-    Rails.logger.error "Unable to track event (in #{self.class.name}): #{ex}"
+    Rails.logger.error "Unable to process webhook event (in #{self.class.name}): #{ex}"
   end
 
   def validate_useful_report_requirements(report)
     report_is_valid = report.valid?(:useful_report)
     if report_is_valid
-      event_logger.track("ApplicantReportMetUsefulRequirements", request,
+      event_logger.track(TrackEvent::ApplicantReportMetUsefulRequirements, request,
+        time: Time.now.to_i,
         cbv_applicant_id: @cbv_flow.cbv_applicant_id,
         cbv_flow_id: @cbv_flow.id,
         invitation_id: @cbv_flow.cbv_flow_invitation_id
       )
     else
-      event_logger.track("ApplicantReportFailedUsefulRequirements", request,
+      event_logger.track(TrackEvent::ApplicantReportFailedUsefulRequirements, request,
+        time: Time.now.to_i,
         cbv_applicant_id: @cbv_flow.cbv_applicant_id,
         cbv_flow_id: @cbv_flow.id,
         invitation_id: @cbv_flow.cbv_flow_invitation_id,
         errors: report.errors.full_messages.join(", ")
       )
     end
-  rescue => ex
-    raise ex unless Rails.env.production?
-
-    Rails.logger.error "Unable to track event (in #{self.class.name}): #{ex}"
-  ensure
-    return report_is_valid
+    report_is_valid
   end
 end

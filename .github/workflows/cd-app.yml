@@ -20,6 +20,7 @@ on:
         type: choice
         options:
           - dev
+          - demo
           - prod
 permissions:
     id-token: write

@@ -1,11 +1,10 @@
 class ApplicationController < ActionController::Base
   helper :view
-  helper_method :current_agency, :show_translate_button?, :show_menu?, :pilot_ended?
+  helper_method :current_agency, :show_menu?, :pilot_ended?
   around_action :switch_locale
   before_action :add_newrelic_metadata
   before_action :redirect_if_maintenance_mode
   before_action :enable_mini_profiler_in_demo
-  before_action :check_help_param
   before_action :check_if_pilot_ended
 
   rescue_from ActionController::InvalidAuthenticityToken do
@@ -31,10 +30,6 @@ class ApplicationController < ActionController::Base
   end
 
   private
-
-  def show_translate_button?
-    false
-  end
 
   def show_menu?
     # show the menu if we're in the cbv flow
@@ -124,15 +119,6 @@ class ApplicationController < ActionController::Base
   def redirect_if_maintenance_mode
     if ENV["MAINTENANCE_MODE"] == "true"
       redirect_to maintenance_path
-    end
-  end
-
-  def check_help_param
-    if params[:help] == "true"
-      help_link = helpers.render(partial: "help/help_link", locals: { text: t("help.alert.help_options"), source: "banner" })
-      flash.now[:alert] = "#{help_link}"
-      flash.now[:alert_heading] = t("help.alert.heading")
-      flash.now[:alert_type] = "warning"
     end
   end
 end

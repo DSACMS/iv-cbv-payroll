@@ -54,6 +54,31 @@ Most developers on the team code using macOS, so we recommend that platform if p
 1. Run the development server: `bin/dev`
 1. Visit the site: http://localhost:3000
 
+### For analytics development
+#### First-time setup
+1. Navigate to the `analytics` directory: `cd app/analytics`
+1. Create the virtual environment: `python3 -m venv venv`
+1. Activate the environment: `source venv/bin/activate`
+1. Install dependencies: `pip install -r requirements.txt`
+1. Add the following to your .env.local; you can find the credentials in the FFS Engineering 1Password under Mixpanel Production Service Account.
+```
+# Jupyter / Mixpanel analytics
+MIXPANEL_PROJECT_ID=3511732
+MIXPANEL_SERVICE_ACCOUNT_USERNAME=
+MIXPANEL_SERVICE_ACCOUNT_SECRET=
+```
+
+#### To start writing new analytics or running analyses
+6. Run `jupyter lab --NotebookApp.iopub_data_rate_limit=1.0e10` and open the analytics.ipynb file.
+6. Modify the date parameters to define the range of the data you'd like to download. These can be found in the first block of executable code marked with the comment "date range". They're parameters we feed to the Mixpanel API.
+6. Execute the first section with shift + enter. It will take a while to download all the events! Once you've run this once, you can proceed to run the other cells or write your own.
+
+#### Analytics development tips
+* Jupyter Notebooks are Python files that allow you to re-run cells of code easily. This first cell of code I wrote to pull a new dataset from our Mixpanel analytics platform. When developing analyses to run on that data set, we should start writing new cells below it. That way, when you want to get started, you can run the first cell just once to pull the data, and then you could run and re-run later cells as many times as you want to analyze that data.
+* Before committing changes to the ipynb file, it's a good idea to go to the Kernel menu and select "Restart Kernel and Clear Outputs of All Cells...". This deletes the results from running the cells as well as various pieces of metadata, which will allow us to commit just the code changes added in a cell.
+
+### How to Run
+
 ## Local Development
 
 Environment variables can be set in development using the [dotenv](https://github.com/bkeepers/dotenv) gem.
@@ -69,6 +94,21 @@ of the test.
 To run locally, use `bin/dev`
 
 To run database migrations on the test environment that is used by rpec tests, run `RAILS_ENV=test bin/rails db:schema:load`
+
+### JSON API Testing
+
+1. **Create an API key for the agency you want to test:**
+   ```bash
+   cd app
+   rails 'users:create_api_token[agency_name]'
+   ```
+
+2. **Run the standalone test receiver:**
+   ```bash
+   JSON_API_KEY=$(rails runner "puts User.api_key_for_agency('agency_name')") ruby lib/json_api_receiver.rb
+   ```
+
+This starts a standalone test server on port 4567 that logs incoming JSON data and verifies HMAC signatures. The receiver is completely independent and can be used as a reference implementation for agencies building their own JSON API endpoints.
 
 ## Branching model
 When beginning work on a feature, create a new branch based off of `main` and make the commits for that feature there.

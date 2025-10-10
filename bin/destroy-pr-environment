@@ -21,7 +21,11 @@ terraform -chdir="infra/${app_name}/service" init -backend-config="${environment
 echo "::endgroup::"
 
 echo "Select Terraform workspace: ${workspace}"
-terraform -chdir="infra/${app_name}/service" workspace select "${workspace}"
+if ! terraform -chdir="infra/${app_name}/service" workspace select "${workspace}" ; then
+  echo "Could not find workspace ${workspace} to destroy."
+  echo "Assuming it has already been destroyed or never existed."
+  exit 0
+fi
 
 echo "::group::Destroy resources"
 terraform -chdir="infra/${app_name}/service" destroy -var="environment_name=${environment}" -input=false -auto-approve

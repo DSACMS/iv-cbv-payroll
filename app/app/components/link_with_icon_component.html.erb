@@ -1,4 +1,9 @@
 <%= link_to url, link_options do %>
-  <%= icon_svg if icon %>
+  <% if icon && leading_icon? %>
+    <%= icon_svg %>
+  <% end %>
   <%= text %>
+  <% if icon && trailing_icon? %>
+    <%= icon_svg %>
+  <% end %>
 <% end %>

@@ -33,16 +33,22 @@ RSpec.describe Cbv::SuccessesController do
         expect(response.body).to have_selector('button[data-copy-link-target="copyLinkButton"]')
       end
 
+      it "shows a link to the CBV survey" do
+        get :show
+        expect(response.body).to include(I18n.t("cbv.successes.show.survey"))
+        expect(response.body).to include(feedbacks_path(form: "survey"))
+      end
+
       describe "#invitation_link" do
         context "in production environment" do
           before do
             stub_client_agency_config_value("sandbox", "agency_domain", "sandbox.reportmyincome.org")
           end
 
-          it "uses agency production domain" do
+          it "uses agency production domain with shared origin" do
             get :show
 
-            expected_url = "https://sandbox.reportmyincome.org/en/cbv/entry?token=#{cbv_flow.cbv_flow_invitation.auth_token}"
+            expected_url = "https://sandbox.reportmyincome.org/en/start/#{cbv_flow.cbv_flow_invitation.auth_token}?origin=shared"
             expect(response.body).to include(expected_url)
           end
         end
@@ -52,9 +58,9 @@ RSpec.describe Cbv::SuccessesController do
             stub_client_agency_config_value("sandbox", "agency_domain", "sandbox-verify-demo.navapbc.cloud")
           end
 
-          it "uses agency demo domain" do
+          it "uses agency demo domain with shared origin" do
             get :show
-            expected_url = "https://sandbox-verify-demo.navapbc.cloud/en/cbv/entry?token=#{cbv_flow.cbv_flow_invitation.auth_token}"
+            expected_url = "https://sandbox-verify-demo.navapbc.cloud/en/start/#{cbv_flow.cbv_flow_invitation.auth_token}?origin=shared"
             expect(response.body).to include(expected_url)
           end
         end
@@ -65,10 +71,10 @@ RSpec.describe Cbv::SuccessesController do
             stub_client_agency_config_value("sandbox", "agency_domain", "sandbox-verify-demo.navapbc.cloud")
           end
 
-          it "generates a generic link" do
+          it "generates a simplified generic link with shared origin" do
             get :show
 
-            expected_url = "https://sandbox-verify-demo.navapbc.cloud/en/cbv/links/sandbox"
+            expected_url = "https://sandbox-verify-demo.navapbc.cloud/en?origin=shared"
             expect(response.body).to include(expected_url)
           end
 
@@ -78,10 +84,10 @@ RSpec.describe Cbv::SuccessesController do
               stub_client_agency_config_value("sandbox", "agency_domain", nil)
             end
 
-            it "generates a generic link" do
+            it "generates a generic link with shared origin" do
               get :show
 
-              expected_url = "http://localhost/en/cbv/links/sandbox"
+              expected_url = "http://localhost/en/cbv/links/sandbox?origin=shared"
               expect(response.body).to include(expected_url)
             end
           end

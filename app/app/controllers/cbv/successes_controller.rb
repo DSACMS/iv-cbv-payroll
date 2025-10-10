@@ -10,21 +10,24 @@ class Cbv::SuccessesController < Cbv::BaseController
 
   def invitation_link
     if @cbv_flow.cbv_flow_invitation.present?
-      @cbv_flow.cbv_flow_invitation.to_url
+      @cbv_flow.cbv_flow_invitation.to_url(origin: "shared")
     else
-      @cbv_flow.to_generic_url
+      @cbv_flow.to_generic_url(origin: "shared")
     end
   end
 
   def track_accessed_success_event
-    event_logger.track("ApplicantAccessedSuccessPage", request, {
-      timestamp: Time.now.to_i,
+    track_event("ApplicantAccessedSuccessPage")
+  end
+
+  def track_event(event_name)
+    event_logger.track(event_name, request, {
+      time: Time.now.to_i,
       cbv_applicant_id: @cbv_flow.cbv_applicant_id,
       cbv_flow_id: @cbv_flow.id,
       client_agency_id: current_agency&.id,
-      invitation_id: @cbv_flow.cbv_flow_invitation_id
+      invitation_id: @cbv_flow.cbv_flow_invitation_id,
+      origin: session[:cbv_origin]
     })
-  rescue => ex
-    Rails.logger.error "Failed to track event: #{ex.message}"
   end
 end

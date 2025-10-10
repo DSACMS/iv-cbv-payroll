@@ -11,7 +11,7 @@ class Cbv::ApplicantInformationsController < Cbv::BaseController
   def update
     @cbv_applicant.assign_attributes(applicant_params[:cbv_applicant])
 
-    if  @cbv_applicant.validate_base_and_applicant_attributes? && @cbv_applicant.save
+    if @cbv_applicant.validate_base_and_applicant_attributes? && @cbv_applicant.save
       track_applicant_submitted_information_page_event
       return redirect_to next_path
     end
@@ -36,6 +36,16 @@ class Cbv::ApplicantInformationsController < Cbv::BaseController
     redirect_to cbv_flow_applicant_information_path
   end
 
+  private
+
+  def applicant_params
+    permitted = @cbv_applicant.applicant_attributes.map { |attr|
+      attr == :date_of_birth ? { date_of_birth: [ :day, :month, :year ] } : attr
+    }
+
+    params.fetch("cbv_applicant_#{@cbv_flow.client_agency_id}", {}).permit(cbv_applicant: permitted)
+  end
+
   def redirect_when_info_present
     return if params[:force_show] == "true"
 
@@ -46,59 +56,46 @@ class Cbv::ApplicantInformationsController < Cbv::BaseController
     redirect_to next_path if @cbv_flow.cbv_flow_invitation.present?
   end
 
-  def applicant_params
-    params.fetch("cbv_applicant_#{@cbv_flow.client_agency_id}", {}).permit(
-      cbv_applicant: @cbv_applicant.applicant_attributes
-    )
-  end
-
   def set_cbv_applicant
     @cbv_applicant = @cbv_flow.cbv_applicant
   end
 
   def track_applicant_information_access_event
     if params[:force_show] == "true"
-      event_logger.track("ApplicantClickedEditInformationLink", request, {
-        timestamp: Time.now.to_i,
+      event_logger.track(TrackEvent::ApplicantClickedEditInformationLink, request, {
+        time: Time.now.to_i,
         cbv_applicant_id: @cbv_flow.cbv_applicant_id,
         client_agency_id: current_agency&.id,
         cbv_flow_id: @cbv_flow.id
       })
     else
-      event_logger.track("ApplicantAccessedInformationPage", request, {
-        timestamp: Time.now.to_i,
+      event_logger.track(TrackEvent::ApplicantAccessedInformationPage, request, {
+        time: Time.now.to_i,
         cbv_applicant_id: @cbv_flow.cbv_applicant_id,
         client_agency_id: current_agency&.id,
         cbv_flow_id: @cbv_flow.id
       })
     end
-  rescue => ex
-    Rails.logger.error "Unable to track event on ApplicantInformation page #{ex}"
   end
 
   def track_applicant_information_error_event(error_string)
-    event_logger.track("ApplicantEncounteredInformationPageError", request, {
-      timestamp: Time.now.to_i,
+    event_logger.track(TrackEvent::ApplicantEncounteredInformationPageError, request, {
+      time: Time.now.to_i,
       cbv_applicant_id: @cbv_flow.cbv_applicant_id,
       cbv_flow_id: @cbv_flow.id,
       client_agency_id: current_agency&.id,
       error_string: error_string
     })
-  rescue => ex
-    Rails.logger.error "Unable to track event (ApplicantEncounteredInformationPageError): #{ex}"
   end
 
   def track_applicant_submitted_information_page_event
-    event_logger.track("ApplicantSubmittedInformationPage", request, {
-      timestamp: Time.now.to_i,
+    event_logger.track(TrackEvent::ApplicantSubmittedInformationPage, request, {
+      time: Time.now.to_i,
       cbv_applicant_id: @cbv_flow.cbv_applicant_id,
       cbv_flow_id: @cbv_flow.id,
       client_agency_id: current_agency&.id,
       invitation_id: @cbv_flow.cbv_flow_invitation_id,
       identity_age_range_applicant: get_age_range(@cbv_applicant.date_of_birth)
     })
-  rescue => ex
-    Rails.logger.error "Unable to track event (ApplicantSubmittedInformationPage): #{ex}"
-    raise unless Rails.env.production?
   end
 end

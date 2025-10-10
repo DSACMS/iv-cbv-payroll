@@ -37,7 +37,7 @@ RSpec.describe Cbv::OtherJobsController do
       allow(EventTrackingJob).to receive(:perform_later).with("CbvPageView", anything, anything)
 
       expect(EventTrackingJob).to receive(:perform_later).with("ApplicantContinuedFromOtherJobsPage", anything, hash_including(
-        timestamp: be_a(Integer),
+        time: be_a(Integer),
         cbv_flow_id: cbv_flow.id,
         client_agency_id: cbv_flow.client_agency_id,
         has_other_jobs: true
@@ -49,7 +49,7 @@ RSpec.describe Cbv::OtherJobsController do
       allow(EventTrackingJob).to receive(:perform_later).with("CbvPageView", anything, anything)
 
       expect(EventTrackingJob).to receive(:perform_later).with("ApplicantContinuedFromOtherJobsPage", anything, hash_including(
-        timestamp: be_a(Integer),
+        time: be_a(Integer),
         cbv_flow_id: cbv_flow.id,
         client_agency_id: cbv_flow.client_agency_id,
         has_other_jobs: false
@@ -71,9 +71,8 @@ RSpec.describe Cbv::OtherJobsController do
         allow(EventTrackingJob).to receive(:perform_later).with("CbvPageView", anything, anything)
       end
 
-      it 'logs error and continues when event tracking raises an exception' do
+      it 'continues when event tracking raises an exception' do
         allow(EventTrackingJob).to receive(:perform_later).with("ApplicantContinuedFromOtherJobsPage", anything, anything).and_raise(StandardError)
-        expect(Rails.logger).to receive(:error).with(/Unable to track ApplicantContinuedFromOtherJobsPage event/)
 
         patch :update, params: { cbv_flow: { has_other_jobs: 'true' } }
         expect(response).to redirect_to(cbv_flow_applicant_information_path)

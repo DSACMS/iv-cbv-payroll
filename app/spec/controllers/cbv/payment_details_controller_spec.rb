@@ -199,12 +199,6 @@ RSpec.describe Cbv::PaymentDetailsController do
         pinwheel_stub_request_end_user_no_hours_response
       end
 
-      # Removing hours check for LA launch - FFS-2866 ticket to add back logic for SNAP only pilots
-      xit "redirects to the synchronization failure page" do
-        get :show, params: { user: { account_id: account_id } }
-        expect(response).to redirect_to(cbv_flow_synchronization_failures_path)
-      end
-
       context "but the user is a Gig worker" do
         before do
           pinwheel_stub_request_employment_info_gig_worker_response
@@ -311,7 +305,7 @@ RSpec.describe Cbv::PaymentDetailsController do
         end
 
         context "includes monthly gig summary table" do
-          it { is_expected.to include("Monthly Summary") }
+          it { is_expected.to include("Monthly summary") }
           it { is_expected.to include("Accrued gross earnings") }
           it { is_expected.to include("Total hours worked") }
           it { is_expected.not_to include("Partial month") }
@@ -375,7 +369,7 @@ RSpec.describe Cbv::PaymentDetailsController do
         end
 
         context "includes monthly w2 summary table" do
-          it { is_expected.to include("Monthly Summary") }
+          it { is_expected.to include("Monthly summary") }
           it { is_expected.to include("Gross income") }
           it { is_expected.to include("Total hours worked") }
         end

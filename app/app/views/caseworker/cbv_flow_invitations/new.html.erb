@@ -1,9 +1,9 @@
 <% content_for :title, t(".header") %>
 
 <h1><%= t(".header") %></h1>
-<div class="usa-prose">
+<p>
   <%= agency_translation(".description_html", pay_income_days: current_agency.pay_income_days[:w2]) %>
-</div>
+</p>
 <%= uswds_form_with(model: @cbv_flow_invitation, url: invitations_path) do |f| %>
   <%= render partial: "caseworker/cbv_flow_invitations/#{@cbv_flow_invitation.client_agency_id}", locals: { f: f } %>
   <%= f.submit t(".form.submit") %>

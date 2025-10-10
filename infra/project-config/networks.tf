@@ -31,17 +31,24 @@ locals {
       single_nat_gateway = true
     }
 
-    # staging = {
-    #   account_name               = "staging"
-    #   database_subnet_group_name = "staging"
+    demo = {
+      account_name               = "nava-ffs-prod"
+      database_subnet_group_name = "demo"
 
-    #   domain_config = {
-    #     manage_dns  = true
-    #     hosted_zone = "hosted.zone.for.staging.network.com"
+      domain_config = {
+        manage_dns  = true
+        hosted_zone = "demo.reportmyincome.org"
 
-    #     certificate_configs = {}
-    #   }
-    # }
+        certificate_configs = {
+          "demo.reportmyincome.org" = {
+            source                    = "issued"
+            subject_alternative_names = ["*.demo.reportmyincome.org"]
+          }
+        }
+      }
+
+      single_nat_gateway = true
+    }
 
     prod = {
       account_name               = "nava-ffs-prod"

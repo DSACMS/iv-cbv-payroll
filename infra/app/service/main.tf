@@ -63,6 +63,9 @@ locals {
     COGNITO_USER_POOL_ID = local.identity_provider_user_pool_id,
     COGNITO_CLIENT_ID    = module.identity_provider_client[0].client_id
   } : {}
+
+  # Convert SSM parameters to environment variables
+  ssm_env_vars = { for name, param in data.aws_ssm_parameter.env : name => param.value }
 }
 
 terraform {
@@ -85,6 +88,11 @@ provider "aws" {
   default_tags {
     tags = local.tags
   }
+}
+
+data "aws_ssm_parameter" "env" {
+  for_each = local.service_config.ssm_environment_parameters
+  name     = each.value
 }
 
 module "project_config" {
@@ -202,6 +210,7 @@ module "service" {
       FEATURE_FLAGS_PROJECT = module.feature_flags.evidently_project_name
       BUCKET_NAME           = local.storage_config.bucket_name
     },
+    local.ssm_env_vars,
     local.identity_provider_environment_variables,
     local.service_config.extra_environment_variables
   )

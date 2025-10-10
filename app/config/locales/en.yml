@@ -89,16 +89,14 @@ en:
       terminated: terminated
     payment_frequencies:
       annual: Annually
-      annually: Annually
-      bi_weekly: Bi-weekly
       biweekly: Bi-weekly
       daily: Daily
       hourly: Hourly
       monthly: Monthly
       per_mile: Per mile
       quarterly: Quarterly
-      semi_monthly: Semi-monthly
       semimonthly: Semi-monthly
+      semiweekly: Semi-weekly
       variable: Variable
       weekly: Weekly
     tax_category:
@@ -210,7 +208,7 @@ en:
             super_one_html: Medicaid case number<sup>1</sup>
           date_of_birth:
             blank: Enter your date of birth.
-            help_text: Use the format mm/dd/yyyy
+            help_text: 'For example: January 19 2000'
             prompt: Your date of birth
             super_one_html: Date of birth<sup>1</sup>
       sandbox:
@@ -221,7 +219,7 @@ en:
             super_one_html: Case number<sup>1</sup>
           date_of_birth:
             blank: Enter your date of birth.
-            help_text: Use the format mm/dd/yyyy
+            help_text: 'For example: January 19 2000'
             prompt: Date of birth
             super_one_html: Date of birth<sup>1</sup>
           first_name:
@@ -247,6 +245,9 @@ en:
         error_updating_applicant: An error occurred while updating the applicant information. Please try again.
     employer_searches:
       show:
+        alert:
+          heading: Need help connecting to your payroll provider?
+          help_options: Get help here.
         app_based_providers: App-based employers
         can_not_find_employer: I can’t find my employer or payroll provider
         employer_not_listed: Employer not listed?
@@ -274,10 +275,15 @@ en:
       create:
         error: You must check the agreement checkbox to proceed.
       show:
-        checkbox:
-          default: Check this box to agree to let us access your payment information and share it with %{agency_full_name}. We will not use the information for any other purpose nor redisclose it to any other party.
+        checkbox_large_text:
+          default: Check this box to agree to let us access your payment information and share it with %{agency_full_name}.
+        checkbox_small_text:
+          default: We will only use this information to help determine your benefits, it will never be shared externally.
+        common_questions_header: Common questions
         continue: Get started
         header: Let's verify your income
+        is_my_data_secure_body_html: Yes, your data is secure. We use strong encryption, like the kind banks use, to protect your information.<br><br>Your login credentials and payment information are securely transmitted and not stored by us.
+        is_my_data_secure_title: Is my data secure?
         step1: Search and sign into your employer or online payroll provider.
         step1_description: Use the login credentials you have for viewing your online pay stub. We won’t share or keep your login information. If you work for an app, like Uber, this would be the same login when you sign into the Uber app.
         step2: Review your payment information.
@@ -290,6 +296,8 @@ en:
           default: Visit <a href="%{agency_url}" target="_blank" rel="noopener noreferrer">%{agency_acronym}’s website</a> for more information on how to submit documents.
           la_ldh: 'You can: <ul><li>Upload documents through the Self Service Portal online at <a href="https://mymedicaid.la.gov/" target="_blank" rel="noopener noreferrer">https://mymedicaid.la.gov/</a></li><li>Send documents through US Mail: Louisiana Medicaid/LaCHIP, P.O. Box 91283, Baton Rouge, LA 70821-9278</li><li>Email documents: <a href="mailto:MyMedicaid@la.gov">MyMedicaid@la.gov</a></li><li>Bring your documents to the Medicaid office of choice.</li></ul>'
         what_if_i_cant_use_this_title: What if I can't use this tool?
+        what_is_this_body: Report My Income is a tool that helps collect income from your employer(s) and send it to your state benefits office.
+        what_is_this_title: What is “Report My Income”?
         who_is_this_for_body: You can use this tool if you have earned income in the last 90 days (even if you’re no longer working), and you can access your paystubs online or work for an app-based company like Uber, Lyft or Amazon Flex.
         who_is_this_for_title: Who is this tool for?
     error_invalid_link: Invalid link used to begin CBV. Try clicking the link again or contact your caseworker for help.
@@ -339,7 +347,7 @@ en:
         employment_start_date: Employment start date
         employment_status: Employment status
         frequency_unknown: Frequency Unknown
-        header: Your payment information from %{employer_name}
+        header: Review your payment information from %{employer_name}
         header_no_employer_name: Your payment information from your employer
         hourly_rate: Compensation amount
         hours:
@@ -359,9 +367,7 @@ en:
         pay_period_value: "%{start_date} to %{end_date}"
         payment_hours: "%{amount} hours"
         payments_and_deductions_table_header: Payments and deductions
-        subheader: We have gathered your income records from the past %{report_data_range} as requested by %{agency_acronym} from %{start_date} to %{end_date}. If the information is missing or inaccurate, add a comment for %{agency_acronym}. This will be included in your income report and linked to your %{benefit} %{reporting_purpose}.
-        total_gross_description: This is the total gross income from your job before taxes, benefits and deductions were taken out of your paycheck.
-        total_gross_income: 'Total income from the past %{report_data_range}, before taxes: %{amount}'
+        subheader_html: We have gathered your payment records from the past %{report_data_range} from %{start_date} to %{end_date}.<br>Please review your information. If something is missing or inaccurate, add a comment for %{agency_acronym}. This will be included in your income report.
         unknown: Unknown
         your_details: Your details
     submits:
@@ -369,8 +375,8 @@ en:
         additional_information_title: Is there anything else you'd like your caseworker to know about your income?
         application_or_recertification_date: SNAP application or recertification interview date
         consent_checkbox_label_html:
-          az_des: Check this box to affirm under penalty of perjury that the information provided by you is true and complete to the best of your knowledge.<ul><li>You agree to tell %{agency_acronym} about:<ul><li>any other income not included in this report,</li><li>or any errors found in the information gathered with this tool.</li></ul></li><li>You understand that providing accurate and complete information is your responsibility.</li><li>Any false or missing information may result in:<ul><li>an overpayment, which you must repay to %{agency_acronym},</li><li>or program disqualification.</li></ul></li></ul>By sending this report, you authorize its use for income verification by %{agency_acronym} and authorized personnel.
-          default: 'Check this box to confirm: <ul><li>The information provided by you is true and complete to the best of your knowledge.</li><li>You agree to inform the %{agency_full_name} of any income not reflected in this report or any discrepancies found in the information gathered with this tool.</li><li>You understand that providing accurate and complete information is your responsibility, and any false or omitted information may have legal consequences.</li></ul> By sending this report, you authorize its use for income verification by authorized %{agency_acronym} personnel.'
+          az_des: Check this box to affirm under penalty of perjury that the information provided by you is true and complete to the best of your knowledge.<ul class="margin-y-2"><li>You agree to tell %{agency_acronym} about:<ul><li>any other income not included in this report,</li><li>or any errors found in the information gathered with this tool.</li></ul></li><li>You understand that providing accurate and complete information is your responsibility.</li><li>Any false or missing information may result in:<ul><li>an overpayment, which you must repay to %{agency_acronym},</li><li>or program disqualification.</li></ul></li></ul>By sending this report, you authorize its use for income verification by %{agency_acronym} and authorized personnel.
+          default: 'Check this box to confirm: <ul class="margin-y-2"><li>The information provided by you is true and complete to the best of your knowledge.</li><li>You agree to inform the %{agency_full_name} of any income not reflected in this report or any discrepancies found in the information gathered with this tool.</li><li>You understand that providing accurate and complete information is your responsibility, and any false or omitted information may have legal consequences.</li></ul> By sending this report, you authorize its use for income verification by authorized %{agency_acronym} personnel.'
         legal_header: Legal agreement
         none_found: We didn't find any payments from this employer.
         none_found_confirmed: We've confirmed that there are no recent payments from this employer. This happens when the client hasn't received income from this job.
@@ -388,6 +394,7 @@ en:
             client_id_number: CIN
             client_provided_information: Client-provided information
             description: The following income information was retrieved with the client's consent and has been submitted by them to their benefits agency. The client is also able to download a client-facing copy of this report.
+            doc_id: Doc ID
             how_to: This report includes payment information from the past 90 days. In most cases, you only need to review income from the last 30 days for eligibility purposes. Use data beyond the 30-day period only if necessary. Key fields for income verification are highlighted in yellow.
             how_to_header: 'How to use this report:'
             pay_period: Pay period (%{pay_frequency})
@@ -403,13 +410,17 @@ en:
             description: We have collected your income information with your consent and sent it to %{agency_acronym}. Any additional income that you weren't able to add to this report should be shared separately with %{agency_acronym}.
             employment_payment_details: Employment and Payment details
             header: Income Verification Report
+          footer:
+            page_footer: Income Verification Report | Page [page] of [topage]
           shared:
             additional_jobs_to_report: Does the client have additional jobs they will report separately?
             additional_jobs_to_report_html: Does the client have additional jobs they will report separately?<sup>1</sup>
             client_information: Client information
             confirmation_code: Confirmation code
+            details: Details
             employment_information: Employment information
-            pay_date: 'Pay Date: %{pay_date}'
+            pay_information: Pay information
+            payments_and_deductions_header: Payments and deductions from %{employer_name}
             report_details: Report details
         share_report_button: Share my report with %{agency_acronym}
         table_caption_no_name: Employer %{number}
@@ -422,19 +433,18 @@ en:
         confirmation_code_html: "<strong>Your confirmation code</strong>: %{confirmation_code}"
         copied_link: Copied link
         copy_link: Copy link
-        download: Download a copy of the report
-        header: Your income report has been successfully shared with %{agency_acronym}
+        download: Download my report
+        header: Your income report was successfully sent to %{agency_acronym}.
         invitation_link_label: Invitation link
-        share_invitation_link_content: Share this link with all household members named on your application so they can report their income.
-        share_invitation_link_title:
-          az_des: Does anyone else in your household need to report a change of income in your Mid Approval Contact form?
-          default: Does anyone else in your household earn income?
+        share_invitation_link_content: Share this link to anyone in your household who needs to report their income.
+        share_invitation_link_title: Share a link if others in your household need to report their income.
+        survey: Take the 3 question survey
         whats_next: What's next?
-        whats_next_1_li_1: If you weren't able to find an employer, or if one of your employers doesn't have an online payroll provider, please provide this information directly to %{agency_acronym}.
-        whats_next_1_li_2_html: Visit <a href="%{agency_website}" target="_blank" rel="noopener noreferrer">%{agency_acronym}'s website</a> for more information.
-        whats_next_1_title: 'If you need to report other income:'
-        whats_next_2_li_1_html: If you have a few minutes, please share your experience with this tool using <a href="%{agency_feedback_form}" target="_blank" rel="noopener noreferrer">our short feedback form</a>.
-        whats_next_2_title: Tell us about your experience
+        whats_next_1_li_1: If you couldn’t find a job or don’t get paystubs, report your income to %{agency_acronym} online, in person, or by mail.
+        whats_next_1_li_2_html: Go to <a href="%{agency_website}" target="_blank" rel="noopener noreferrer">%{agency_acronym}'s website</a>
+        whats_next_1_title: Report other income, if needed.
+        whats_next_2_li_1_html: We’d like to hear more about your experience using this site.
+        whats_next_2_title: Help make this experience better.
     summaries:
       show:
         additional_comments: Additional comments
@@ -445,14 +455,13 @@ en:
         must_match:
           default: This must match what is shown on your %{agency_acronym} application.
           la_ldh: This must match what is shown on your Medicaid benefits.
+        none_found: We didn't find any payments from this employer in the past %{report_data_range}.
+        none_found_description: This typically happens when you haven't received income from this job in the past %{report_data_range}. If you believe this is an error, please add a comment in the additional comments box. Otherwise, continue to the next page.
         other_jobs: Other jobs
-        payment: Payment of %{amount} before taxes on %{date}
         phone_number: Employer phone
         question: Question
         table_caption: 'Employer %{number}: %{employer_name}'
         table_caption_no_name: Employer %{number}
-        total_income_from: 'Total income before taxes from %{employer_name}: %{amount}'
-        total_income_from_no_employer_name: 'Total income before taxes: %{amount}'
         your_answer: Your answer
         your_information: Your information
     synchronization_failures:
@@ -490,7 +499,7 @@ en:
             what_does_this_mean: What does this information mean?
         dollars_times_miles: "(%{dollar_amount} x %{number_of_miles} miles)"
         month: Month
-        monthly_summary: Monthly Summary
+        monthly_summary: Monthly summary
         partial_month_text: "(Partial month: from %{start_date}-%{end_date})"
         partial_month_text_simple: "(Partial month)"
         payments_from_header: Payments from %{employer_name}
@@ -499,7 +508,7 @@ en:
         total_gig_hours: Total hours worked
         verified_mileage_expenses: Verified mileage expenses
         w2:
-          definition_gross_income: '"Gross income" is the pay from your job before taxes, benefits, and deductions were taken out of your paychecks. In the table above, your total gross income is summed for the month within the 90 day window'
+          definition_gross_income: '"Gross income" is the pay from your job before taxes, benefits, and deductions were taken out of your paychecks. In the table above, your total gross income is summed for the month within the 90 day window.'
           definition_number_of_paychecks: '"Number of paychecks" is how many times you were paid in a month within the 90-day window.'
           definition_total_hours_worked: '"Total hours worked" are the total number of hours you worked for every paycheck you received in a month.'
           title_gross_income: Gross income
@@ -513,9 +522,6 @@ en:
       month_year: "%B %Y"
       short: "%b %-d"
   help:
-    alert:
-      heading: Need help connecting to your payroll provider?
-      help_options: Get help here.
     index:
       company_id: I don't know my company ID
       credentials: I don't feel comfortable entering my login credentials
@@ -629,11 +635,11 @@ en:
       header: Welcome to Report My Income
       pilot_ended:
         la_ldh:
-          body: "<strong>The pilot period for Louisiana has ended.</strong> If you still need to report your income, you can:"
-          body_bullet_1: Upload documents through the Self Service Portal online at <a href="http://MyMedicaid.LA.GOV" target="_blank" rel="noopener noreferrer">http://MyMedicaid.LA.GOV</a>
-          body_bullet_2: 'Send documents through US Mail:  Louisiana Medicaid/LaCHIP, P.O. Box 91283, Baton Rouge, LA 70821-9278'
-          body_bullet_3: 'Email documents to: <a href="mailto:%{agency_email}">%{agency_email}</a>'
-          body_bullet_4: Bring documents to the Medicaid office of choice.
+          body_bullet_1_html: Upload documents through the Self Service Portal online at <a href="http://MyMedicaid.LA.GOV" target="_blank" rel="noopener noreferrer">http://MyMedicaid.LA.GOV</a>
+          body_bullet_2_html: 'Send documents through US Mail:  Louisiana Medicaid/LaCHIP, P.O. Box 91283, Baton Rouge, LA 70821-9278'
+          body_bullet_3_html: 'Email documents to: <a href="mailto:MyMedicaid@la.gov">MyMedicaid@la.gov</a>'
+          body_bullet_4_html: Bring documents to the Medicaid office of choice.
+          body_html: "<strong>The pilot period for Louisiana has ended.</strong> If you still need to report your income, you can:"
           browser_title: Report My Income | Louisiana Department of Health
           header: Report My Income
   session_timeout:
@@ -694,6 +700,7 @@ en:
       az_des: Mid Approval Contact form
       la_ldh: benefits
       sandbox: benefits
+    select_placeholder: "- Select -"
     skip_link: Skip to main content
   time:
     formats:

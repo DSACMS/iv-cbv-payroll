@@ -43,16 +43,14 @@ es:
       terminated: Desactivado
     payment_frequencies:
       annual: Anual
-      annually: Anualmente
-      bi_weekly: Cada dos semanas
       biweekly: Cada dos semanas
       daily: Diario
       hourly: Por hora
       monthly: Mensual
       per_mile: Por milla
       quarterly: Trimestralmente
-      semi_monthly: Dos veces al mes
       semimonthly: Dos veces al mes
+      semiweekly: Dos veces a la semana
       variable: Variable
       weekly: Semanal
     tax_category:
@@ -103,7 +101,7 @@ es:
             super_one_html: Número de caso de Medicaid<sup>1</sup>
           date_of_birth:
             blank: Escriba su fecha de nacimiento.
-            help_text: Use el formato mm/dd/aaaa
+            help_text: 'Por ejemplo: 19 de enero de 2000'
             prompt: Su fecha de nacimiento
             super_one_html: Fecha de nacimiento<sup>1</sup>
       sandbox:
@@ -114,7 +112,7 @@ es:
             super_one_html: Número de caso<sup>1</sup>
           date_of_birth:
             blank: Escriba su fecha de nacimiento.
-            help_text: Use el formato mm/dd/aaaa
+            help_text: 'Por ejemplo: 19 de enero de 2000'
             prompt: Fecha de nacimiento
             super_one_html: Fecha de nacimiento<sup>1</sup>
           first_name:
@@ -140,6 +138,9 @@ es:
         error_updating_applicant: Se produjo un error al actualizar la información del solicitante. Vuelva a intentarlo.
     employer_searches:
       show:
+        alert:
+          heading: "¿Necesita ayuda para conectarse a su proveedor de nómina?"
+          help_options: Obtenga ayuda aquí.
         app_based_providers: Empleadores basados
         can_not_find_employer: No puedo encontrar a mi empleador o proveedor de nómina
         employer_not_listed: "¿Su empleador no está en la lista?"
@@ -167,10 +168,15 @@ es:
       create:
         error: Debe marcar la casilla de «acuerdo» para proceder.
       show:
-        checkbox:
-          default: Marque esta casilla para permitirnos acceder a su información de pago y compartirla con %{agency_full_name}. No usaremos la información para ningún otro propósito ni la volveremos a divulgar a ninguna otra parte.
+        checkbox_large_text:
+          default: Marque esta casilla para permitirnos acceder a información sobre sus ingresos y compartirla con %{agency_full_name}.
+        checkbox_small_text:
+          default: 'Usaremos esta información solamente para determinar sus beneficios. No la compartiremos externamente. '
+        common_questions_header: Preguntas más frecuentes
         continue: Comenzar
         header: Verifiquemos sus ingresos
+        is_my_data_secure_body_html: Sí, sus datos están seguros. Usamos un sistema de codificación robusto para proteger su información, similar a lo que los bancos usan. <br> <br>Sus credenciales para acceder a su cuenta y su información de ingresos son transferidos de manera segura. Nosotros no guardamos esta información.
+        is_my_data_secure_title: "¿Están seguros mis datos?"
         step1: Busque e inicie sesión en su empleador o proveedor de nómina en línea.
         step1_description: Use las credenciales de inicio de sesión que tiene para ver su recibo de pago en línea. No compartiremos ni guardamos su información de inicio de sesión. Si trabaja para una aplicación, como Uber, este sería el mismo inicio de sesión cuando inicie sesión en la aplicación Uber.
         step2: Revise su información de pago.
@@ -183,6 +189,8 @@ es:
           default: Para obtener más información sobre cómo enviar documentos, visite el sitio web de <a href="%{agency_url}" target="_blank" rel="noopener noreferrer">%{agency_acronym}</a>.
           la_ldh: 'Usted puede: <ul><li>Subir documentos a través del Portal de Autoservicio en línea en <a href="https://mymedicaid.la.gov/" target="_blank" rel="noopener noreferrer">https://mymedicaid.la.gov/</a></li><li>Enviar documentos por correo postal: Louisiana Medicaid/LaCHIP, P.O. Box 91283, Baton Rouge, LA 70821-9278</li><li>Enviar documentos por correo electrónico: <a href="mailto:MyMedicaid@la.gov">MyMedicaid@la.gov</a></li><li>Llevar sus documentos a la oficina de Medicaid de su elección.</li></ul>'
         what_if_i_cant_use_this_title: "¿Qué debo hacer si no puedo usar esta herramienta?"
+        what_is_this_body: '"Reportar mi ingreso" es una herramienta que ayuda a recopilar información de su(s) empleador(es) sobre sus ingresos y la envía a su oficina estatal de beneficios.'
+        what_is_this_title: ¿Qué es la herramienta "Reportar mi ingreso"?
         who_is_this_for_body: Puede usar esta herramienta si ha recibido ingresos en los últimos 90 días (incluso si ya no está trabajando). Además, le recordamos que puede acceder a sus recibos de pago en línea si brinda servicios a través de plataformas digitales, como Uber, Lyft o Amazon Flex.
         who_is_this_for_title: "¿Quién puede usar este herramienta?"
     error_invalid_link: Se utilizó un enlace no válido para iniciar CBV. Vuelva a hacer clic en el enlace, o bien directamente póngase en contacto con su asistente de caso para obtener ayuda.
@@ -232,7 +240,7 @@ es:
         employment_start_date: Fecha de inicio del empleo
         employment_status: Estatus del empleo
         frequency_unknown: Frecuencia desconocida
-        header: Su información de pago de %{employer_name}
+        header: Revise la información de pago de %{employer_name}
         header_no_employer_name: Su información de pago de su empleador
         hourly_rate: Monto de compensación
         hours:
@@ -252,9 +260,7 @@ es:
         pay_period_value: "%{start_date} al %{end_date}"
         payment_hours: "%{amount} horas"
         payments_and_deductions_table_header: Pagos y deducciones
-        subheader: Hemos recopilado sus registros de ingresos de los últimos %{report_data_range}, conforme a la solicitud de %{agency_acronym}. Estos registros se extienden desde el %{start_date} hasta el %{end_date}. Si la información está incompleta o es incorrecta, agregue un comentario para %{agency_acronym}. Esto se incluirá en su reporte de ingresos y se vinculará a su %{benefit} %{reporting_purpose}.
-        total_gross_description: Este es el ingreso total de su trabajo antes de deducción de impuestos, beneficios, y otras deducciones de su cheque de pago.
-        total_gross_income: 'Ingresos totales de los últimos %{report_data_range}, antes de impuestos: %{amount}'
+        subheader_html: Hemos recopilado sus registros de pago del último %{report_data_range}, desde el %{start_date} hasta el %{end_date}.<br>Por favor, revise su información. Si falta información o si es incorrecta, deja un comentario para %{agency_acronym}. Su comentario se incluirá en su reporte de ingresos.
         unknown: Desconocido
         your_details: Tus datos
     submits:
@@ -262,8 +268,8 @@ es:
         additional_information_title: "¿Existe algún otro detalle que le gustaría que su asistente de caso conozca en relación con sus ingresos?"
         application_or_recertification_date: SNAP application or recertification interview date
         consent_checkbox_label_html:
-          az_des: Marque esta casilla para confirmar, bajo pena de perjurio, que la información proporcionada es, a su leal saber y entender, verdadera y está completa.<ul><li>Se compromete a informar %{agency_acronym} de cualquiera de lo siguiente:<ul><li>cualquier otro ingreso que no esté incluido en este informe;</li><li>o cualquier error que haya detectado en la información recopilada con esta herramienta.</li></ul></li><li>Comprende que usted es el único responsable de proporcionar información precisa y completa.</li><li>Por este motivo, cualquier información falsa o que no conste en el informe puede acarrear las siguientes consecuencias:<ul><li>un sobrepago, que debe reembolsar a %{agency_acronym};</li><li>o una inhabilitación para participar en el programa.</li></ul></li></ul>Al enviar este informe, autoriza su uso para fines de verificación de ingresos por parte de %{agency_acronym} y del personal autorizado de esta agencia.
-          default: 'Marque esta casilla para confirmar lo siguiente: <ul><li>La información proporcionada es, a su leal saber y entender, verdadera y está completa.</li><li>Se compromete a informar a %{agency_full_name} de cualquier otro ingreso que no esté incluido en este informe o cualquier discrepancia que haya detectado en la información recopilada con esta herramienta.</li><li>Comprende que usted es el único responsable de proporcionar información precisa y completa. Por este motivo, cualquier información falsa o que no conste en el informe puede acarrear consecuencias legales.</li></ul> Al enviar este informe, autoriza su uso para fines de verificación de ingresos por parte del personal autorizado de %{agency_acronym}.'
+          az_des: Marque esta casilla para confirmar, bajo pena de perjurio, que la información proporcionada es, a su leal saber y entender, verdadera y está completa.<ul class="margin-y-2"><li>Se compromete a informar %{agency_acronym} de cualquiera de lo siguiente:<ul><li>cualquier otro ingreso que no esté incluido en este informe;</li><li>o cualquier error que haya detectado en la información recopilada con esta herramienta.</li></ul></li><li>Comprende que usted es el único responsable de proporcionar información precisa y completa.</li><li>Por este motivo, cualquier información falsa o que no conste en el informe puede acarrear las siguientes consecuencias:<ul><li>un sobrepago, que debe reembolsar a %{agency_acronym};</li><li>o una inhabilitación para participar en el programa.</li></ul></li></ul>Al enviar este informe, autoriza su uso para fines de verificación de ingresos por parte de %{agency_acronym} y del personal autorizado de esta agencia.
+          default: 'Marque esta casilla para confirmar lo siguiente: <ul class="margin-y-2"><li>La información proporcionada es, a su leal saber y entender, verdadera y está completa.</li><li>Se compromete a informar a %{agency_full_name} de cualquier otro ingreso que no esté incluido en este informe o cualquier discrepancia que haya detectado en la información recopilada con esta herramienta.</li><li>Comprende que usted es el único responsable de proporcionar información precisa y completa. Por este motivo, cualquier información falsa o que no conste en el informe puede acarrear consecuencias legales.</li></ul> Al enviar este informe, autoriza su uso para fines de verificación de ingresos por parte del personal autorizado de %{agency_acronym}.'
         legal_header: Acuerdo Legal
         none_found: No encontramos ningún pago de este empleador.
         none_found_confirmed: Hemos confirmado que no hay pagos recientes de este empleador. Esto sucede cuando el cliente no ha recibido ingresos de este trabajo.
@@ -274,6 +280,7 @@ es:
             la_ldh: Department of Health
             sandbox: CBV Test Agency
           caseworker:
+            doc_id: Doc ID
             pay_period: Período de pago (%{pay_frequency})
           client:
             address: Dirección del empleador
@@ -284,13 +291,17 @@ es:
             description: Hemos recopilado información de sus ingresos con su consentimiento y la hemos enviado a %{agency_acronym}. Cualquier ingreso adicional que no pudo añadir a este informe debe compartirse por separado con %{agency_acronym}.
             employment_payment_details: Detalles de empleo y pago
             header: Informe de verificación de ingresos
+          footer:
+            page_footer: Informe de verificación de ingresos | Página [page] de [topage]
           shared:
             additional_jobs_to_report: "¿El cliente tiene trabajos adicionales que informará por separado?"
             additional_jobs_to_report_html: "¿El cliente tiene trabajos adicionales que informará por separado? <sup>1</sup>"
             client_information: Información del cliente
             confirmation_code: Código de confirmación
+            details: Datos
             employment_information: Información del empleo
-            pay_date: 'Fecha de pago: %{pay_date}'
+            pay_information: Información de pago
+            payments_and_deductions_header: Pagos y deducciones de %{employer_name}
             report_details: Detalles del reporte
         share_report_button: Comparta mi reporte con %{agency_acronym}
         table_caption_no_name: Employer %{number}
@@ -303,19 +314,18 @@ es:
         confirmation_code_html: "<strong>Su código de confirmación</strong>: %{confirmation_code}"
         copied_link: Enlace copiado
         copy_link: Copiar enlace
-        download: Descargue una copia del informe
-        header: Su reporte de ingresos se ha compartido con %{agency_acronym} exitosamente
+        download: Descargar mi informe
+        header: Su informe de ingresos se envió correctamente a %{agency_acronym}.
         invitation_link_label: Enlace de invitación
-        share_invitation_link_content: Comparta este enlace con todos los miembros del hogar nombrados en su solicitud para que puedan reportar sus ingresos.
-        share_invitation_link_title:
-          az_des: "¿Alguien más en su hogar necesita reportar cambios en sus ingresos usando el Formulario de contacto para aprobaciones intermedias?"
-          default: "¿Algún otro integrante del grupo familiar recibe ingresos?"
+        share_invitation_link_content: Comparta este enlace con todos los miembros de su hogar que necesiten reportar sus ingresos.
+        share_invitation_link_title: Comparta el enlace si otras personas en su hogar necesitan reportar sus ingresos.
+        survey: Responda esta encuesta de 3 preguntas
         whats_next: "¿Qué sigue?"
-        whats_next_1_li_1: Si no pudo encontrar a un empleador, o si uno de sus empleadores no tiene un proveedor de nómina en línea, proporcione, de manera directa, esta información a %{agency_acronym}.
-        whats_next_1_li_2_html: Para obtener más información, visite el sitio web de <a href="%{agency_website}" target="_blank" rel="noopener noreferrer">%{agency_acronym}</a>.
-        whats_next_1_title: 'Si necesita declarar otros ingresos:'
-        whats_next_2_li_1_html: Si tiene unos minutos, por favor, complete este <a href="%{agency_feedback_form}" target="_blank" rel="noopener noreferrer"> breve formulario para compartirnos su experiencia usando esta herramienta.</a>
-        whats_next_2_title: Cuéntenos sobre su experiencia
+        whats_next_1_li_1: Si no pudo encontrar empleo o no dispone de talones de pago, reporte sus ingresos a %{agency_acronym} en línea, en persona o por correo.
+        whats_next_1_li_2_html: Visite el <a href="%{agency_website}" target="_blank" rel="noopener noreferrer">sitio web de %{agency_acronym}</a>
+        whats_next_1_title: Reporte otros ingresos, si es necesario.
+        whats_next_2_li_1_html: Nos gustaría saber más sobre su experiencia al usar este sitio.
+        whats_next_2_title: Ayude a mejorar esta experiencia.
     summaries:
       show:
         additional_comments: Comentarios adicionales
@@ -326,14 +336,13 @@ es:
         must_match:
           default: Esto debe coincidir con lo que se muestra en su solicitud de %{agency_acronym}.
           la_ldh: Esto debe coincidir con lo que se muestra en sus beneficios de Medicaid.
+        none_found: No encontramos ningún pago de este empleador en los últimos %{report_data_range}.
+        none_found_description: Esto usualmente ocurre cuando usted no ha recibido ingresos por este trabajo en los últimos %{report_data_range}. Si cree que esto es un error, agregue un comentario en la casilla de comentarios adicionales. De lo contrario, continúe en la página siguiente.
         other_jobs: Otros trabajos
-        payment: Pago de %{amount} antes de pago impuestos en %{date}
         phone_number: Teléfono del empleador
         question: Pregunta
         table_caption: 'Empleador %{number}: %{employer_name}'
         table_caption_no_name: Empleador %{number}
-        total_income_from: 'Ingresos totales antes de impuestos de %{employer_name}: %{amount}'
-        total_income_from_no_employer_name: 'Ingresos totales antes del pago de impuestos: %{amount}'
         your_answer: Tu respuesta
         your_information: Su información
     synchronization_failures:
@@ -438,9 +447,6 @@ es:
     - noviembre
     - diciembre
   help:
-    alert:
-      heading: "¿Necesita ayuda para conectarse a su proveedor de nómina?"
-      help_options: Obtenga ayuda aquí.
     index:
       company_id: No sé el ID de mi empresa
       credentials: No me siento cómodo ingresando mis credenciales de inicio de sesión
@@ -554,11 +560,11 @@ es:
       header: Bienvenido a Reportar Mis Ingresos
       pilot_ended:
         la_ldh:
-          body: "<strong>El período piloto para Luisiana ha terminado.</strong> Si aún necesita declarar sus ingresos, puede hacer lo siguiente:"
-          body_bullet_1: Subir los documentos a través del Portal de autoservicio en línea en <a href="http://MyMedicaid.LA.GOV" target="_blank" rel="noopener noreferrer">http://MyMedicaid.LA.GOV</a>
-          body_bullet_2: 'Enviar los documentos por correo postal a: Louisiana Medicaid/LaCHIP, P.O. Box 91283, Baton Rouge, LA 70821-9278'
-          body_bullet_3: 'Enviar los documentos por correo electrónico a: <a href="mailto:%{agency_email}">%{agency_email}</a>'
-          body_bullet_4: Llevar los documentos a la oficina de Medicaid de su elección.
+          body_bullet_1_html: Subir los documentos a través del Portal de autoservicio en línea en <a href="http://MyMedicaid.LA.GOV" target="_blank" rel="noopener noreferrer">http://MyMedicaid.LA.GOV</a>
+          body_bullet_2_html: 'Enviar los documentos por correo postal a: Louisiana Medicaid/LaCHIP, P.O. Box 91283, Baton Rouge, LA 70821-9278'
+          body_bullet_3_html: 'Enviar los documentos por correo electrónico a: <a href="mailto:MyMedicaid@la.gov">MyMedicaid@la.gov</a>'
+          body_bullet_4_html: Llevar los documentos a la oficina de Medicaid de su elección.
+          body_html: "<strong>El período piloto para Luisiana ha terminado.</strong> Si aún necesita declarar sus ingresos, puede hacer lo siguiente:"
           browser_title: Reportar Mis Ingresos | Departmento de Salud de Louisiana
           header: Reportar Mis Ingresos
   session_timeout:
@@ -619,6 +625,7 @@ es:
       az_des: Formulario de contacto para aprobaciones intermedias
       la_ldh: beneficios
       sandbox: beneficios
+    select_placeholder: "- Seleccione -"
     skip_link: Saltar al contenido principal
   time:
     formats:

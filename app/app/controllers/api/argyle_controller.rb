@@ -36,7 +36,8 @@ class Api::ArgyleController < ApplicationController
   private
 
   def set_cbv_flow
-    @cbv_flow = CbvFlow.find(session[:cbv_flow_id])
+    @cbv_flow = CbvFlow.find_by(id: session[:cbv_flow_id])
+    redirect_to(root_url(cbv_flow_timeout: true)) unless @cbv_flow
   end
 
   # Redirect if the user is attempting connect a previously connected account
@@ -70,7 +71,10 @@ class Api::ArgyleController < ApplicationController
   end
 
   def track_event
-    event_logger.track("ApplicantBeganLinkingEmployer", request, {
+    return unless @cbv_flow.present?
+
+    event_logger.track(TrackEvent::ApplicantBeganLinkingEmployer, request, {
+      time: Time.now.to_i,
       cbv_flow_id: @cbv_flow.id,
       cbv_applicant_id: @cbv_flow.cbv_applicant_id,
       client_agency_id: @cbv_flow.client_agency_id,
@@ -78,8 +82,6 @@ class Api::ArgyleController < ApplicationController
       item_id: params[:item_id],
       aggregator_name: "argyle"
     })
-  rescue => ex
-    Rails.logger.error "Unable to track event (ApplicantBeganLinkingEmployer): #{ex}"
   end
 
   def argyle

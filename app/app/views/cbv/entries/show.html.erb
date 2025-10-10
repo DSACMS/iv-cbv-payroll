@@ -3,31 +3,42 @@
 <div data-controller="cbv-entry-page">
   <h1><%= title %></h1>
 
-  <div class="usa-prose">
-    <p><%= t(".subheader_html", agency_acronym: agency_translation("shared.agency_acronym")) %></p>
-  </div>
+  <p><%= t(".subheader_html", agency_acronym: agency_translation("shared.agency_acronym")) %></p>
 
   <ol class="usa-process-list">
     <li class="usa-process-list__item">
-      <h2 class="margin-bottom-1"><%= t(".step1") %></h2>
-      <p class="margin-top-0"><%= t(".step1_description") %></p>
+      <h2 class="usa-process-list__heading"><%= t(".step1") %></h2>
+      <p><%= t(".step1_description") %></p>
     </li>
     <li class="usa-process-list__item">
-      <h2 class="margin-bottom-1"><%= t(".step2") %></h2>
-      <p class="margin-top-0"><%= t(".step2_description", agency_acronym: agency_translation("shared.agency_acronym")) %></p>
+      <h2 class="usa-process-list__heading"><%= t(".step2") %></h2>
+      <p><%= t(".step2_description", agency_acronym: agency_translation("shared.agency_acronym")) %></p>
     </li>
     <li class="usa-process-list__item">
-      <h2 class="margin-bottom-1"><%= t(".step3") %></h2>
-      <p class="margin-top-0"><%= t(".step3_description", agency_acronym: agency_translation("shared.agency_acronym")) %></p>
+      <h2 class="usa-process-list__heading"><%= t(".step3") %></h2>
+      <p><%= t(".step3_description", agency_acronym: agency_translation("shared.agency_acronym")) %></p>
     </li>
   </ol>
 
-  <%= form_with(url: cbv_flow_entry_path, builder: UswdsFormBuilder, data: { turbo: "false" }) do |f| %>
-    <%= f.check_box(:agreement, { label: agency_translation(".checkbox", agency_full_name: agency_translation("shared.agency_full_name")), "data-action": "cbv-entry-page#consent", "data-cbv-entry-page-target": "consentCheckbox" }) %>
+  <%= form_with(url: cbv_flow_entry_path, builder: UswdsFormBuilder) do |f| %>
+    <% label_content = content_tag(:span, agency_translation(".checkbox_large_text", agency_full_name: agency_translation("shared.agency_full_name")), class: "large-text") + tag.br +
+      content_tag(:span, agency_translation(".checkbox_small_text"), class: "small-text") %>
+    <%= f.check_box(:agreement, { label: label_content, "data-action": "cbv-entry-page#consent", "data-cbv-entry-page-target": "consentCheckbox" }) %>
     <%= f.submit t(".continue") %>
   <% end %>
 
-  <div class="divider margin-top-5 margin-bottom-5"></div>
+  <div class="divider margin-bottom-5"></div>
+
+  <h2><%= t(".common_questions_header") %>
+
+  <%= render AccordionComponent.new(id: "what_is_this-accordion", heading_level: 2, data_action: "click->cbv-entry-page#viewHelpText", data_section_identifier: "what_is_this") do |accordion| %>
+    <% accordion.with_title do %>
+      <%= t(".what_is_this_title") %>
+    <% end %>
+    <% accordion.with_accordion_item do %>
+      <%= t(".what_is_this_body") %>
+    <% end %>
+  <% end %>
 
   <%= render AccordionComponent.new(id: "who_is_this_for-accordion", heading_level: 2, data_action: "click->cbv-entry-page#viewHelpText", data_section_identifier: "who_is_this_tool_for") do |accordion| %>
     <% accordion.with_title do %>
@@ -35,6 +46,15 @@
     <% end %>
     <% accordion.with_accordion_item do %>
       <%= t(".who_is_this_for_body") %>
+    <% end %>
+  <% end %>
+
+  <%= render AccordionComponent.new(id: "is_my_data_secure-accordion", heading_level: 2, data_action: "click->cbv-entry-page#viewHelpText", data_section_identifier: "is_my_data_secure") do |accordion| %>
+    <% accordion.with_title do %>
+      <%= t(".is_my_data_secure_title") %>
+    <% end %>
+    <% accordion.with_accordion_item do %>
+      <%= t(".is_my_data_secure_body_html") %>
     <% end %>
   <% end %>
 
