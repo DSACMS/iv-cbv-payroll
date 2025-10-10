@@ -17,20 +17,6 @@ class Transmitters::JsonTransmitter
     }
 
     if include_report_pdf
-      pdf_service = PdfService.new(language: :en)
-      controller = Cbv::SubmitsController.new
-      controller.instance_variable_set(:@cbv_flow, @cbv_flow)
-      pdf_output = pdf_service.generate(
-        renderer: controller,
-        template: "cbv/submits/show",
-        variables: {
-          is_caseworker: true,
-          cbv_flow: @cbv_flow,
-          aggregator_report: @aggregator_report,
-          has_consent: true
-        }
-      )
-
       payload[:report_pdf] = Base64.strict_encode64(pdf_output&.content)
     end
 
@@ -57,6 +43,13 @@ class Transmitters::JsonTransmitter
       Rails.logger.error "Unexpected response: #{res.code} #{res.message}"
       Rails.logger.error "  Body: #{res.body}"
       raise "Unexpected response from agency: #{res.code} #{res.message}"
+    end
+  end
+
+  def pdf_output
+    @_pdf_output ||= begin
+      pdf_service = PdfService.new(language: :en)
+      pdf_service.generate(cbv_flow, aggregator_report, current_agency)
     end
   end
 

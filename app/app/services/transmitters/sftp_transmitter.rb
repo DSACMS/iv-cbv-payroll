@@ -11,17 +11,7 @@ class Transmitters::SftpTransmitter
   def pdf_output
     @_pdf_output ||= begin
       pdf_service = PdfService.new(language: :en)
-      pdf_service.generate(
-        renderer: Cbv::SubmitsController.new,
-        template: "cbv/submits/show",
-        variables: {
-          is_caseworker: true,
-          cbv_flow: cbv_flow,
-          aggregator_report: aggregator_report,
-          has_consent: true,
-          current_agency: current_agency
-        }
-      )
+      pdf_service.generate(cbv_flow, aggregator_report, current_agency)
     end
   end
 end
