@@ -35,7 +35,7 @@ RSpec.describe Cbv::EntriesController do
       context 'when unreserved, non-alphanumeric characters are appended to a valid auth_token' do
         # rfc3986 allows for any of these to be used in a URL "-" / "." / "_" / "~"
         [ "-", ".", "_", "~", "._~" ].each do |char|
-          it 'redirects to a url that removes non-alphanumeric characters' do
+          it 'renders successfully' do
             get :show, params: { token: "#{invitation.auth_token}#{char}" }
 
             expect(response).to be_successful
