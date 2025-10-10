@@ -4,10 +4,6 @@ class Cbv::BaseController < ApplicationController
 
   private
 
-  def show_translate_button?
-    true
-  end
-
   def set_cbv_flow
     if params[:token].present?
       invitation = CbvFlowInvitation.find_by(auth_token: params[:token])
