@@ -4,19 +4,18 @@ class Cbv::BaseController < ApplicationController
 
   private
 
+  def normalize_token(token)
+    alphanumeric_prefix_regexp = /^([a-zA-Z0-9]+)[^a-zA-Z0-9]*$/
+    matches = alphanumeric_prefix_regexp.match(token)
+    matches[1] if matches
+  end
+
   def set_cbv_flow
     if params[:token].present?
-      invitation = CbvFlowInvitation.find_by(auth_token: params[:token])
+      token = normalize_token(params[:token])
+      invitation = CbvFlowInvitation.find_by(auth_token: token)
 
-      if invitation.blank?
-        token = /^([a-zA-Z0-9]+)[^a-zA-Z0-9]+$/.match(params[:token])
-        invitation = CbvFlowInvitation.find_by(auth_token: token[1]) if token
-        if ! invitation.blank?
-          return redirect_to(start_flow_url(token: invitation.auth_token))
-        end
-      end
-
-      if invitation.blank?
+      unless invitation
         return redirect_to(root_url, flash: { alert: t("cbv.error_invalid_token") })
       end
 
