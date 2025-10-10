@@ -370,7 +370,7 @@ GEM
     rack (3.1.17)
     rack-mini-profiler (3.3.1)
       rack (>= 1.2.0)
-    rack-protection (4.1.1)
+    rack-protection (4.2.0)
       base64 (>= 0.1.0)
       logger (>= 1.6.0)
       rack (>= 3.0.0, < 4)
@@ -496,11 +496,11 @@ GEM
       rexml (~> 3.2, >= 3.2.5)
       rubyzip (>= 1.2.2, < 4.0)
       websocket (~> 1.0)
-    sinatra (4.1.1)
+    sinatra (4.2.0)
       logger (>= 1.6.0)
       mustermann (~> 3.0)
       rack (>= 3.0.0, < 4)
-      rack-protection (= 4.1.1)
+      rack-protection (= 4.2.0)
       rack-session (>= 2.0.0, < 3)
       tilt (~> 2.0)
     smart_properties (1.17.0)
@@ -638,7 +638,7 @@ DEPENDENCIES
   rubocop-rails-omakase
   rubocop-rspec
   selenium-webdriver (>= 4.26.0)
-  sinatra (~> 4.0)
+  sinatra (~> 4.2, >= 4.2.0)
   solid_queue (>= 0.3.0)
   sprockets-rails
   stackprof
