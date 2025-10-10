@@ -1,6 +1,6 @@
 class ApplicationController < ActionController::Base
   helper :view
-  helper_method :current_agency, :show_translate_button?, :show_menu?, :pilot_ended?
+  helper_method :current_agency, :show_menu?, :pilot_ended?
   around_action :switch_locale
   before_action :add_newrelic_metadata
   before_action :redirect_if_maintenance_mode
@@ -30,10 +30,6 @@ class ApplicationController < ActionController::Base
   end
 
   private
-
-  def show_translate_button?
-    false
-  end
 
   def show_menu?
     # show the menu if we're in the cbv flow
