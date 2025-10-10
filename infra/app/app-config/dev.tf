@@ -10,6 +10,9 @@ module "dev_config" {
   has_database                    = local.has_database
   has_incident_management_service = local.has_incident_management_service
 
+  database_serverless_min_capacity = 0.5
+  database_serverless_max_capacity = 5.0
+
   # These numbers are a starting point based on this article
   # Update the desired instance size and counts based on the project's specific needs
   # https://conchchow.medium.com/aws-ecs-fargate-compute-capacity-planning-a5025cb40bd0
