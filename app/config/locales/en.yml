@@ -279,7 +279,7 @@ en:
       show:
         checkbox:
           default: Check this box to agree to let us access your payment information and share it with %{agency_full_name}. We will not use the information for any other purpose nor redisclose it to any other party.
-          pa_dhs: I agree that Verify My Income can access my income, including W-2 and/or gig work information. After reviewing my income details, I can choose to share my income with the PA Department of Human Services (DHS). If shared, DHS will use my income details to determine my benefits. I understand that Verify My Income will not have ongoing access to my income details..
+          pa_dhs: I agree that Verify My Income can access my income, including W-2 and/or gig work information. After reviewing my income details, I can choose to share my income with the PA Department of Human Services (DHS). If shared, DHS will use my income details to determine my benefits. I understand that Verify My Income will not have ongoing access to my income details.
         continue: Get started
         header: Let's verify your income
         step1: Search and sign into your employer or online payroll provider.
