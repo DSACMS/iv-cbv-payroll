@@ -3,6 +3,7 @@ require "rails_helper"
 RSpec.xdescribe "Help Features", type: :feature, js: true do
   include E2e::TestHelpers
   include PinwheelApiHelper
+  include ApplicationHelper
 
   let(:cbv_flow_invitation) { create(:cbv_flow_invitation) }
   let(:cbv_flow) { create(:cbv_flow, :invited, cbv_flow_invitation: cbv_flow_invitation) }
@@ -69,7 +70,7 @@ RSpec.xdescribe "Help Features", type: :feature, js: true do
 
         # Verify feedback link opens in new tab with correct URL
         feedback_link = find_link(I18n.t("help.index.feedback"))
-        expect(feedback_link[:href]).to eq(SiteConfig.current.caseworker_feedback_form)
+        expect(feedback_link[:href]).to eq(APPLICANT_SURVEY_FORM)
         expect(feedback_link[:target]).to eq("_blank")
       end
     end
