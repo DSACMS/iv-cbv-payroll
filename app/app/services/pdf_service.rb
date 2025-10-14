@@ -19,17 +19,26 @@ class PdfService
     @language = language
   end
 
-  def generate(renderer:, template:, variables: {})
+  def generate(cbv_flow, aggregator_report, current_agency)
+    controller = Cbv::SubmitsController.new
+    controller.instance_variable_set(:@cbv_flow, cbv_flow)
+    variables = {
+      is_caseworker: true,
+      cbv_flow: cbv_flow,
+      aggregator_report: aggregator_report,
+      has_consent: true,
+      current_agency: current_agency
+    }
+
     html_content = I18n.with_locale(language) do
-      renderer.render_to_string(
-        template: template,
+      controller.render_to_string(
+        template: "cbv/submits/show",
         formats: [ :pdf ],
         layout: "layouts/pdf",
         locals: variables,
         assigns: variables
       )
     end
-
 
     begin
       pdf_content = WickedPdf.new.pdf_from_string(html_content)
