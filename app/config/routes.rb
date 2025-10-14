@@ -1,4 +1,3 @@
-
 Rails.application.routes.draw do
   devise_for :users,
     controllers: {
@@ -29,7 +28,7 @@ Rails.application.routes.draw do
     get "/start", to: "pages#home", defaults: { origin: "mail" }
 
     # Tokenized links
-    get "/start/:token", to: "cbv/entries#show", as: :start_flow
+    get "/start/:token", to: "cbv/entries#show", as: :start_flow, token: /[^\/]+/
 
     scope "/cbv", as: :cbv_flow, module: :cbv do
       resource :entry, only: %i[show create]
