@@ -1,7 +1,7 @@
 <% content_for :title, t(".title") %>
 
 <h1><%= t(".title") %></h1>
-<p><%= t(".body_1", agency_acronym: agency_translation("shared.agency_acronym")) %></p>
+<p><%= t(".body_1_html", agency_url: current_agency.agency_contact_website, agency_portal_name: agency_translation("shared.agency_portal_name")) %></p>
 
 <div class="margin-top-3">
   <%= agency_translation(".cta_button_html", agency_url: agency_url) %>

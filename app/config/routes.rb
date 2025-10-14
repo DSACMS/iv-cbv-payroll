@@ -88,6 +88,11 @@ Rails.application.routes.draw do
     scope :events do
       post :user_action, to: "user_events#user_action"
     end
+
+    # DEV/TEST ONLY: Load testing session generation
+    scope :load_test do
+      post "/sessions", to: "load_test_sessions#create"
+    end
   end
 
   mount MissionControl::Jobs::Engine, at: "/jobs"

@@ -4,6 +4,7 @@ module Aggregators::ResponseObjects
     pay_frequency
     compensation_amount
     compensation_unit
+    employment_id
   ]
 
   Income = Struct.new(*INCOME_FIELDS, keyword_init: true) do
@@ -13,6 +14,7 @@ module Aggregators::ResponseObjects
         pay_frequency: response_body["pay_frequency"],
         compensation_amount: response_body["compensation_amount"],
         compensation_unit: response_body["compensation_unit"],
+        employment_id: nil
       )
     end
 
@@ -23,7 +25,8 @@ module Aggregators::ResponseObjects
         compensation_amount: Aggregators::FormatMethods::Argyle.format_currency(
           identities_response_body["base_pay"]["amount"]
         ),
-        compensation_unit: identities_response_body["base_pay"]["period"]
+        compensation_unit: identities_response_body["base_pay"]["period"],
+        employment_id: identities_response_body["employment"]
       )
     end
   end

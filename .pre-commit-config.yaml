@@ -69,9 +69,23 @@ repos:
 #    language: system
 #    files: 'infra/.*\.tf$'
 
+# NOTE: DETERMINE IF THIS IS A VALUABLE CHECK
+#  - id: hadolint
+#    name: Hadolint
+#    entry: hadolint
+#    language: system
+#    files: '.*/Dockerfile'
+
   - id: actionlint
     name: ActionLint
     entry: actionlint
     language: system
     files: '^.github/.*\.yml$'
     pass_filenames: false
+
+# NOTE: DETERMINE IF THIS IS A VALUABLE CHECK
+#  - id: markdown_link_check
+#    name: MarkdownLinkCheck
+#    entry: npx markdown-link-check --config .github/workflows/markdownlint-config.json
+#    language: system
+#    files: '.*\.md$'

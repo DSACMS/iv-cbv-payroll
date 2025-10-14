@@ -192,7 +192,7 @@ en:
     add_jobs:
       show:
         header: Do you have another job to report?
-        header_2: Do you have another job to report using Report My Income?
+        header_2: Do you have another job to report using Verify My Income?
         header_2_bullet_1: Has an online payroll provider, or
         header_2_bullet_2: Lets you view pay stubs online, or
         header_2_bullet_3: Is app-based (Uber, DoorDash, Lyft, Instacart, etc.)
@@ -253,7 +253,7 @@ en:
         app_based_providers: App-based employers
         can_not_find_employer: I can’t find my employer or payroll provider
         employer_not_listed: Employer not listed?
-        exit_button_text: Exit and go to %{agency_acronym}'s website
+        exit_button_text: Exit and go to the %{agency_portal_name} website
         header: Search for your employer or payroll provider
         no_results_steps1: Check if your employer uses another business name or search for their payroll provider.
         no_results_steps2: Make sure you have spelled names correctly, then search again.
@@ -269,7 +269,7 @@ en:
         select: Select
         to_continue: 'If you still don’t see your employer or payroll provider listed:'
         to_continue_li_1: You’ll need to submit that income information separately.
-        to_continue_li_1_html: <a href="%{agency_contact_website}" target="_blank" rel="noopener noreferrer">Go to %{agency_acronym}'s website</a> to learn about other ways to report your income.
+        to_continue_li_1_html: <a href="%{agency_contact_website}" target="_blank" rel="noopener noreferrer">Go to the %{agency_portal_name} website</a> to learn about other ways to report your income.
         to_continue_li_2: If you have other jobs to add, search for them.
         to_continue_li_3: If you have no other jobs to add here, you can exit this site.
         to_continue_li_3_continue: If you have no other jobs to add here, continue to review your income report.
@@ -279,7 +279,7 @@ en:
       show:
         checkbox:
           default: Check this box to agree to let us access your payment information and share it with %{agency_full_name}. We will not use the information for any other purpose nor redisclose it to any other party.
-          pa_dhs: Check this box to agree to let us access your payment information and share it with %{agency_full_name}. We will not use the information for any other purpose nor redisclose it to any other party.
+          pa_dhs: I agree that Verify My Income can access my income, including W-2 and/or gig work information. After reviewing my income details, I can choose to share my income with the PA Department of Human Services (DHS). If shared, DHS will use my income details to determine my benefits. I understand that Verify My Income will not have ongoing access to my income details.
         continue: Get started
         header: Let's verify your income
         step1: Search and sign into your employer or online payroll provider.
@@ -288,10 +288,10 @@ en:
         step2_description: You will be able to preview and approve everything that is shared with %{agency_acronym}.
         step3: Submit your payment information.
         step3_description: We’ll automatically send it to %{agency_acronym}. This will help you prove your income and can help %{agency_acronym} get to a decision faster.
-        subheader_html: 'We’ll send your payment records from your employer(s) to %{agency_acronym} to verify your income. <strong>Most people complete this process in about 5 minutes.</strong> Just follow these steps:'
-        what_if_i_cant_use_this_body_1: If you need to report your income and can’t use this tool, then you’ll need to share your income information for this job directly with %{agency_acronym}.
+        subheader_html: 'We’ll send your payment records from your employer(s) to %{agency_full_name} to verify your income. <strong>Most people complete this process in about 5 minutes.</strong> Just follow these steps:'
+        what_if_i_cant_use_this_body_1: If you need to report your income and can’t use this tool, then you’ll need to share your income information for this job directly with %{agency_portal_name}.
         what_if_i_cant_use_this_body_2_html:
-          default: Visit <a href="%{agency_url}" target="_blank" rel="noopener noreferrer">%{agency_acronym}’s website</a> for more information on how to submit documents.
+          default: Visit the <a href="%{agency_url}" target="_blank" rel="noopener noreferrer">%{agency_portal_name} website</a> for more information on how to submit documents.
           la_ldh: 'You can: <ul><li>Upload documents through the Self Service Portal online at <a href="https://mymedicaid.la.gov/" target="_blank" rel="noopener noreferrer">https://mymedicaid.la.gov/</a></li><li>Send documents through US Mail: Louisiana Medicaid/LaCHIP, P.O. Box 91283, Baton Rouge, LA 70821-9278</li><li>Email documents: <a href="mailto:MyMedicaid@la.gov">MyMedicaid@la.gov</a></li><li>Bring your documents to the Medicaid office of choice.</li></ul>'
         what_if_i_cant_use_this_title: What if I can't use this tool?
         who_is_this_for_body: You can use this tool if you have earned income in the last 90 days (even if you’re no longer working), and you can access your paystubs online or work for an app-based company like Uber, Lyft or Amazon Flex.
@@ -302,7 +302,7 @@ en:
     error_no_access: We weren't able to load payroll data for this account. Please click the link you received from your SNAP agency to try again.
     expired_invitations:
       show:
-        body_1: If you still need to verify your income, please submit your income information by visiting %{agency_acronym}'s website.
+        body_1_html: If you still need to verify your income, please submit your income information by visiting the <a href="%{agency_url}" target="_blank" rel="noopener noreferrer">%{agency_portal_name} website</a>.
         cta_button_html:
           la_ldh: <a href="%{agency_url}" class="usa-button" target="_blank" rel="noopener noreferrer">Visit LDH's website</a>
           sandbox: <a href="https://www.mass.gov/guides/how-to-contact-dta" class="usa-button" target="_blank" rel="noopener noreferrer">Learn more at CBV Test Agency</a>
@@ -312,13 +312,13 @@ en:
         back_button: Go back to employer search
         continue_button: Continue to review my report
         continue_to_review: Continue to review the income information you were able to find before you submit it to %{agency_acronym}.
-        exit_button_html: <a href="%{agency_contact_website}" class="usa-button" target="_blank" rel="noopener noreferrer">Exit and go to %{agency_full_name}</a>
+        exit_button_html: <a href="%{agency_contact_website}" class="usa-button" target="_blank" rel="noopener noreferrer">Exit and go to %{agency_portal_name}</a>
         header: How to report income if your employer or payroll provider isn’t listed
         more_jobs: If you have more jobs to report
         no_more_jobs: If you don't have more jobs to report
         not_listed_p1: If your employer or payroll provider isn’t listed on this site, you’ll need to share your income information for this job directly with %{agency_acronym}.
-        not_listed_p2: Visit %{agency_acronym}'s website for more information on how to submit documents.
-        not_listed_p2_link_html: Visit <a href="%{agency_url}" target="_blank" rel="noopener noreferrer">%{agency_acronym}'s website</a> for more information on how to submit documents.
+        not_listed_p2: Visit the %{agency_portal_name} website for more information on how to submit documents.
+        not_listed_p2_link_html: Visit the <a href="%{agency_url}" target="_blank" rel="noopener noreferrer">%{agency_portal_name} website</a> for more information on how to submit documents.
         you_can_search: You can search for another employer or payroll provider. This site supports employers with online payroll providers or app-based services. Examples include Amazon, Walmart, McDonald’s, Uber, DoorDash, Lyft, and Instacart.
     other_jobs:
       show:
@@ -326,10 +326,10 @@ en:
         bullet_2: Pays you in cash
         bullet_3: Pays you with a paper check and you can’t view your paycheck online
         bullet_4: Issues you a 1099
-        header: Do you need to report any jobs outside Report My Income?
-        header_html: Do you need to report any jobs <em>outside</em> Report My Income?
+        header: Do you need to report any jobs outside Verify My Income?
+        header_html: Do you need to report any jobs <em>outside</em> Verify My Income?
         header_sub_text: 'Tell us about any other jobs you’ve had in the past 90 days, even if you’re no longer at that job. This includes current or recent jobs you’ve had in the past 90 days that may:'
-        note_html: 'Note: If you’ve had other jobs in the past 90 days that you won’t report using Report My Income, you will need to submit that income information separately. <a href="%{agency_site}" target="_blank" rel="noopener noreferrer">Learn more on %{agency_acronym}.</a>'
+        note_html: 'Note: If you’ve had other jobs in the past 90 days that you won’t report using Verify My Income, you will need to submit that income information separately. <a href="%{agency_site}" target="_blank" rel="noopener noreferrer">Learn more on %{agency_portal_name}.</a>'
         radio_no: No, I don’t have another job to report separately
         radio_yes: Yes, I have another job I’ll report separately
     payment_details:
@@ -374,7 +374,7 @@ en:
         consent_checkbox_label_html:
           az_des: Check this box to affirm under penalty of perjury that the information provided by you is true and complete to the best of your knowledge.<ul class="margin-y-2"><li>You agree to tell %{agency_acronym} about:<ul><li>any other income not included in this report,</li><li>or any errors found in the information gathered with this tool.</li></ul></li><li>You understand that providing accurate and complete information is your responsibility.</li><li>Any false or missing information may result in:<ul><li>an overpayment, which you must repay to %{agency_acronym},</li><li>or program disqualification.</li></ul></li></ul>By sending this report, you authorize its use for income verification by %{agency_acronym} and authorized personnel.
           default: 'Check this box to confirm: <ul class="margin-y-2"><li>The information provided by you is true and complete to the best of your knowledge.</li><li>You agree to inform the %{agency_full_name} of any income not reflected in this report or any discrepancies found in the information gathered with this tool.</li><li>You understand that providing accurate and complete information is your responsibility, and any false or omitted information may have legal consequences.</li></ul> By sending this report, you authorize its use for income verification by authorized %{agency_acronym} personnel.'
-          pa_dhs: Check this box to affirm under penalty of perjury that the information provided by you is true and complete to the best of your knowledge.<ul class="margin-y-2"><li>You agree to tell %{agency_acronym} about:<ul><li>any other income not included in this report,</li><li>or any errors found in the information gathered with this tool.</li></ul></li><li>You understand that providing accurate and complete information is your responsibility.</li><li>Any false or missing information may result in:<ul><li>an overpayment, which you must repay to %{agency_acronym},</li><li>or program disqualification.</li></ul></li></ul>By sending this report, you authorize its use for income verification by %{agency_acronym} and authorized personnel.
+          pa_dhs: "<strong>I agree and confirm:</strong><p><strong>I am sharing accurate information.</strong><br>The information I provided is true and complete to the best of my knowledge. I will not share the report if anything in it is incorrect.<p><strong>I will share any missing information.</strong><br>I agree to inform the PA Department of Human Services about any income that is not in this report.<p><strong>I am not sharing false information.</strong><br>I understand that I must share honest information. I understand I could get in legal trouble if I leave out information.<p><strong>I will share my income information.</strong><br>I allow the income information this webpage showed me to be shared with the PA Department of Human Services."
         legal_header: Legal agreement
         none_found: We didn't find any payments from this employer.
         none_found_confirmed: We've confirmed that there are no recent payments from this employer. This happens when the client hasn't received income from this job.
@@ -393,6 +393,7 @@ en:
             client_id_number: CIN
             client_provided_information: Client-provided information
             description: The following income information was retrieved with the client's consent and has been submitted by them to their benefits agency. The client is also able to download a client-facing copy of this report.
+            doc_id: Doc ID
             how_to: This report includes payment information from the past 90 days. In most cases, you only need to review income from the last 30 days for eligibility purposes. Use data beyond the 30-day period only if necessary. Key fields for income verification are highlighted in yellow.
             how_to_header: 'How to use this report:'
             pay_period: Pay period (%{pay_frequency})
@@ -439,7 +440,7 @@ en:
         survey: Take the 5 question survey
         whats_next: What's next?
         whats_next_1_li_1: If you couldn’t find a job or don’t get paystubs, report your income to %{agency_acronym} online, in person, or by mail.
-        whats_next_1_li_2_html: Go to <a href="%{agency_website}" target="_blank" rel="noopener noreferrer">%{agency_acronym}'s website</a>
+        whats_next_1_li_2_html: Go to the <a href="%{agency_website}" target="_blank" rel="noopener noreferrer">%{agency_portal_name} website</a>
         whats_next_1_title: Report other income, if needed.
         whats_next_2_li_1_html: We’d like to hear more about your experience using this site.
         whats_next_2_title: Help make this experience better.
@@ -451,7 +452,7 @@ en:
         edit: Edit
         header: Review your income report
         must_match:
-          default: This must match what is shown on your %{agency_acronym} application.
+          default: This must match what is shown on your %{agency_portal_name} application.
           la_ldh: This must match what is shown on your Medicaid benefits.
         none_found: We didn't find any payments from this employer in the past %{report_data_range}.
         none_found_description: This typically happens when you haven't received income from this job in the past %{report_data_range}. If you believe this is an error, please add a comment in the additional comments box. Otherwise, continue to the next page.
@@ -469,7 +470,7 @@ en:
         description: 'We were unable to connect to your employer''s system due to an error. To continue, you can:'
         option_1: Go back to employer search to retry adding this employer.
         option_2: Go back to employer search to add another job.
-        option_3: Submit your income information for this employer by visiting %{agency_acronym}'s website.
+        option_3: Submit your income information for this employer by visiting the %{agency_portal_name} website.
         title: We couldn't access your employer information
     synchronizations:
       indicators:
@@ -627,10 +628,10 @@ en:
       header: It looks like something went wrong
       refresh: Refresh page
     home:
-      description_1: Report My Income is a new tool designed to help you connect your income details from your employer or payroll provider directly to your benefits agency. We're currently testing this tool to ensure it works effectively.
-      description_2: Please note this pilot is currently available only to participants in Arizona and Louisiana.
+      description_1: Verify My Income is a new tool designed to help you connect your income details from your employer or payroll provider directly to your benefits agency. We're currently testing this tool to ensure it works effectively.
+      description_2: Please note this pilot is currently available only to participants in select states.
       description_3: Visit your agency's website for more information on how to submit proof of income for your benefits.
-      header: Welcome to Report My Income
+      header: Welcome to Verify My Income
       pilot_ended:
         la_ldh:
           body: "<strong>The pilot period for Louisiana has ended.</strong> If you still need to report your income, you can:"
@@ -638,8 +639,8 @@ en:
           body_bullet_2: 'Send documents through US Mail:  Louisiana Medicaid/LaCHIP, P.O. Box 91283, Baton Rouge, LA 70821-9278'
           body_bullet_3: 'Email documents to: <a href="mailto:%{agency_email}">%{agency_email}</a>'
           body_bullet_4: Bring documents to the Medicaid office of choice.
-          browser_title: Report My Income | Louisiana Department of Health
-          header: Report My Income
+          browser_title: Verify My Income | Louisiana Department of Health
+          header: Verify My Income
   session_timeout:
     modal:
       description: It looks like you're inactive. For your security, we will sign you out soon unless you choose to extend your session.
@@ -657,6 +658,11 @@ en:
       la_ldh: Louisiana Department of Health
       pa_dhs: Pennsylvania Department of Human Services
       sandbox: CBV Test Agency
+    agency_portal_name:
+      az_des: DES/FAA
+      la_ldh: LDH
+      pa_dhs: COMPASS
+      sandbox: VMI
     app_name:
       az_des: MyFamilyBenefits
       pa_dhs: VerifyMyIncome
@@ -696,7 +702,7 @@ en:
     next_path:
       notice_no_answer: You must select an answer to continue.
     not_applicable: N/A
-    pilot_name: Report My Income
+    pilot_name: Verify My Income
     report_data_range:
       ninety_days: 90 days
       six_months: 6 months

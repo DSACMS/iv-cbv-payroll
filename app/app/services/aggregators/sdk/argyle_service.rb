@@ -18,6 +18,12 @@ module Aggregators::Sdk
         api_key_id: ENV["ARGYLE_API_TOKEN_ID"],
         api_key_secret: ENV["ARGYLE_API_TOKEN_SECRET"],
         webhook_secret: ENV["ARGYLE_WEBHOOK_SECRET"]
+      },
+      mock: {
+        base_url: "http://localhost:3000",
+        api_key_id: "mock",
+        api_key_secret: "mock",
+        webhook_secret: "mock"
       }
     }
 
@@ -36,6 +42,18 @@ module Aggregators::Sdk
     WEBHOOKS_ENDPOINT = "webhooks"
 
     attr_reader :webhook_secret
+
+    # Factory method to return MockArgyleService when environment is "mock"
+    def self.new(environment, api_key_id = nil, api_key_secret = nil, webhook_secret = nil)
+      if environment.to_s == "mock" || environment.to_sym == :mock
+        require_relative "mock_argyle_service"
+        MockArgyleService.allocate.tap do |instance|
+          instance.send(:initialize, environment, api_key_id, api_key_secret, webhook_secret)
+        end
+      else
+        super
+      end
+    end
 
     def initialize(environment, api_key_id = nil, api_key_secret = nil, webhook_secret = nil)
       @environment = ENVIRONMENTS.fetch(environment.to_sym) { |env| raise KeyError.new("ArgyleService unknown environment: #{env}") }

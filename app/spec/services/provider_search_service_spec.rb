@@ -31,10 +31,16 @@ RSpec.describe ProviderSearchService, type: :service do
         "Some Other Company, LLC"
       end
 
+      it "does not return unmapped employers" do
+        results = service.search(query)
+        # there are 8 records in the json source file, 3 of which are unmapped
+        expect(results.count { |r| r.provider_name == :argyle }).to eq(5)
+      end
+
       it "defaults to Argyle results if there are no Pinwheel exact matches" do
         results = service.search(query)
         expect(results.count { |r| r.provider_name == :pinwheel }).to eq(0)
-        expect(results.count { |r| r.provider_name == :argyle }).to eq(8)
+        expect(results.count { |r| r.provider_name == :argyle }).to eq(5)
       end
 
       context "when there *is* an exact match in Pinwheel" do
@@ -65,7 +71,7 @@ RSpec.describe ProviderSearchService, type: :service do
 
         results = service.search(query)
         expect(results.count { |r| r.provider_name == :pinwheel }).to eq(0)
-        expect(results.count { |r| r.provider_name == :argyle }).to eq(8)
+        expect(results.count { |r| r.provider_name == :argyle }).to eq(5)
       end
     end
 
@@ -75,7 +81,7 @@ RSpec.describe ProviderSearchService, type: :service do
       pinwheel_results = results.count { |item| item.provider_name == :pinwheel }
       argyle_results = results.count { |item| item.provider_name == :argyle }
       expect(pinwheel_results).to eq(0)
-      expect(argyle_results).to eq(8)
+      expect(argyle_results).to eq(5)
     end
 
     context "when only pinwheel is enabled" do
@@ -92,7 +98,7 @@ RSpec.describe ProviderSearchService, type: :service do
 
       it "returns results from argyle" do
         results = service.search("test")
-        expect(results.length).to eq(8)
+        expect(results.length).to eq(5)
       end
     end
   end

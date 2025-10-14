@@ -80,6 +80,22 @@ jobs:
         if: steps.check-image-published.outputs.is_image_published == 'false'
         run: make APP_NAME=${{ inputs.app_name }} release-build
 
+      # verify the settings
+      - name: Debug before publish
+        run: |
+          echo "Current working directory: $(pwd)"
+          echo "AWS_REGION: ${AWS_REGION:-NOT SET}"
+          echo "AWS_DEFAULT_REGION: ${AWS_DEFAULT_REGION:-NOT SET}"
+          echo "AWS_ROLE_TO_ASSUME: ${AWS_ROLE_TO_ASSUME:-NOT SET}"
+          echo ""
+          echo "AWS CLI config:"
+          aws configure list
+          echo ""
+          echo "Testing current-region script:"
+          ./bin/current-region
+          echo ""
+
+
       - name: Publish release
         if: steps.check-image-published.outputs.is_image_published == 'false'
         run: make APP_NAME=${{ inputs.app_name }} release-publish

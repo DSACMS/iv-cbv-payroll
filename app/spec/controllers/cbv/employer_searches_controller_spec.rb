@@ -81,7 +81,7 @@ RSpec.describe Cbv::EmployerSearchesController do
           get :show, params: { query: "no_results" }
           expect(response).to be_successful
           expect(response.body).to include("you can exit this site")
-          expect(response.body).to include("Exit and go to CBV")
+          expect(response.body).to include("Exit and go to the VMI website")
         end
       end
     end
