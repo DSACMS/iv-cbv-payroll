@@ -8,6 +8,8 @@ RSpec.describe "Help Features", type: :feature, js: true do
   let(:cbv_flow_invitation) { create(:cbv_flow_invitation) }
   let(:cbv_flow) { create(:cbv_flow, :invited, cbv_flow_invitation: cbv_flow_invitation) }
 
+  WAIT_TIME = 1
+
   before(:all) do
     WebMock.allow_net_connect!
   end
@@ -16,28 +18,36 @@ RSpec.describe "Help Features", type: :feature, js: true do
     WebMock.disable_net_connect!
   end
 
+  # Without this, tests that fail the axe assertion in verify_page can cause other
+  # tests to fail (even if those tests don't call verify_page!). It's very odd and hard to track down.
+  after(:each) do
+    page.driver.quit
+  end
+
   context "When in the applicant flow" do
     before do
       visit URI(cbv_flow_invitation.to_url).request_uri
+      verify_page(page, title: I18n.t("cbv.entries.show.header"))
       find("label", text: I18n.t("cbv.entries.show.checkbox_large_text.default", agency_full_name: I18n.t("shared.agency_full_name.sandbox"))).click
       click_button I18n.t("cbv.entries.show.continue")
     end
 
     it "opens help modal when clicking link in help banner" do
-      visit cbv_flow_employer_search_path(help: true)
+      visit cbv_flow_employer_search_path
       click_link "Help"
 
-      expect(page).to have_selector("#help-modal", visible: true, wait: 5)
-      expect(page).to have_selector(".usa-modal__content", visible: true, wait: 5)
+      expect(page).to have_selector(".usa-modal__content", visible: true, wait: WAIT_TIME)
     end
 
     it "displays correct content in the help modal" do
-      visit cbv_flow_employer_search_path(help: true)
+      visit cbv_flow_employer_search_path
       click_link "Help"
 
-      expect(page).to have_selector(".usa-modal__content", visible: true, wait: 5)
+      expect(page).to have_selector(".usa-modal__content", visible: true, wait: WAIT_TIME)
 
       within(".usa-modal__content") do
+        # skip_axe is true because this page does not yet pass accessibility tests
+        verify_page(page, title: I18n.t("help.index.title"), skip_axe: true)
         expect(page).to have_content(I18n.t("help.index.select_prompt"))
 
         # Verify all help topic buttons are present
@@ -57,21 +67,30 @@ RSpec.describe "Help Features", type: :feature, js: true do
 
 
     it "can navigate between help topics" do
-      visit cbv_flow_employer_search_path(help: true)
+      visit cbv_flow_employer_search_path
       click_link "Help"
 
-      expect(page).to have_selector(".usa-modal__content", visible: true, wait: 5)
+      expect(page).to have_selector(".usa-modal__content", visible: true, wait: WAIT_TIME)
+
+      within(".usa-modal__content") do
+        click_link I18n.t("help.index.username")
+        # skip_axe is true because this page does not yet pass accessibility tests
+        verify_page(page, title: I18n.t("help.show.username.title"), skip_axe: true)
+
+        click_link I18n.t("help.show.go_back")
+        verify_page(page, title: I18n.t("help.index.title"))
+      end
     end
 
     it "closes help modal when clicking close button" do
-      visit cbv_flow_employer_search_path(help: true)
+      visit cbv_flow_employer_search_path
       click_link "Help"
 
       # Wait for modal to be visible
-      expect(page).to have_selector("#help-modal", visible: true, wait: 5)
+      expect(page).to have_selector(".usa-modal__content", visible: true, wait: WAIT_TIME)
 
       find("button[aria-label='Close this window']").click
-      expect(page).not_to have_selector("#help-modal", visible: true)
+      expect(page).not_to have_selector(".usa-modal__content", visible: true)
     end
   end
 
@@ -80,7 +99,7 @@ RSpec.describe "Help Features", type: :feature, js: true do
       visit new_user_session_path(client_agency_id: "sandbox")
       click_link "Help"
 
-      expect(page).to have_selector(".usa-modal__content", visible: true, wait: 5)
+      expect(page).to have_selector(".usa-modal__content", visible: true, wait: WAIT_TIME)
 
       within(".usa-modal__content") do
         verify_page(page, title: I18n.t("help.index.title"))
