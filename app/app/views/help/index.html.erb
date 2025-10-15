@@ -9,7 +9,7 @@
   <%= render "help/help_topic_link", topic: "provider", text: t("help.index.provider") %>
   <%= render "help/help_topic_link", topic: "credentials", text: t("help.index.credentials") %>
 
-  <% if !params[:controller].include?("caseworker") || (current_agency && current_agency.caseworker_feedback_form.present?) %>
+  <% if params[:controller].exclude?("caseworker") || (current_agency && current_agency.caseworker_feedback_form.present?) %>
     <%= link_to feedback_form_url, class: "usa-button help-modal__button", target: "_blank" do %>
       <%= t("help.index.feedback") %>
     <% end %>
