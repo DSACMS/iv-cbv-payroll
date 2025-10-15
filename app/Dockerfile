@@ -31,8 +31,10 @@ RUN apt-get update -qq && \
       imagemagick \
       # CVE-2025-22113 \
       linux-libc-dev \
-      # CVE-2025-9230 CVE-2025-9231 CVE-2025-9232
+      # CVE-2025-9230 CVE-2025-9231 CVE-2025-9232 \
       openssl \
+      # CVE-2025-9900 \
+      libtiff-dev libtiff6 libtiffxx6 \
       && \
     rm -rf /var/lib/apt/lists /var/cache/apt/archives
 
