@@ -100,7 +100,7 @@ RSpec.describe PayrollAccount::Argyle, type: :model do
       payroll_account.redact!
 
       expect(fake_argyle).to have_received(:delete_account_api)
-        .with(account: payroll_account.pinwheel_account_id)
+        .with(account: payroll_account.aggregator_account_id)
     end
 
     it "updates the redacted_at timestamp" do
@@ -112,7 +112,7 @@ RSpec.describe PayrollAccount::Argyle, type: :model do
     context "when something goes wrong with the redaction process in production" do
       before do
         allow(fake_argyle).to receive(:delete_account_api)
-          .with(account: payroll_account.pinwheel_account_id)
+          .with(account: payroll_account.aggregator_account_id)
           .and_raise(StandardError.new("Random error occurred!"))
 
         allow(Rails.env).to receive(:production?).and_return(true)
@@ -126,7 +126,7 @@ RSpec.describe PayrollAccount::Argyle, type: :model do
         expect_any_instance_of(GenericEventTracker)
           .to receive(:track)
           .with("DataRedactionFailure", nil, include(
-            account_id: payroll_account.pinwheel_account_id
+            account_id: payroll_account.aggregator_account_id
           ))
         expect(Rails.logger).to receive(:error).with(/Unable to redact/)
 

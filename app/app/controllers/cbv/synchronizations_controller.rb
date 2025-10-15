@@ -14,7 +14,7 @@ class Cbv::SynchronizationsController < Cbv::BaseController
     elsif @payroll_account&.has_fully_synced?
       render turbo_stream: turbo_stream.action(
         :redirect,
-        cbv_flow_payment_details_path(user: { account_id: @payroll_account.pinwheel_account_id })
+        cbv_flow_payment_details_path(user: { account_id: @payroll_account.aggregator_account_id })
       )
     else
       render turbo_stream: turbo_stream.replace(:synchronization, partial: "status")
@@ -25,13 +25,13 @@ class Cbv::SynchronizationsController < Cbv::BaseController
 
   def redirect_if_sync_finished
     if @payroll_account&.has_fully_synced?
-      redirect_to cbv_flow_payment_details_path(user: { account_id: @payroll_account.pinwheel_account_id })
+      redirect_to cbv_flow_payment_details_path(user: { account_id: @payroll_account.aggregator_account_id })
     end
   end
 
   def set_payroll_account
     account_id = params[:user][:account_id]
 
-    @payroll_account = @cbv_flow.payroll_accounts.find_by(pinwheel_account_id: account_id)
+    @payroll_account = @cbv_flow.payroll_accounts.find_by(aggregator_account_id: account_id)
   end
 end
