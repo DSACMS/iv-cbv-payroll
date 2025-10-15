@@ -8,7 +8,6 @@ export default class extends Controller {
   originalPinwheelZIndex
 
   connect() {
-    console.log("Session controller connected")
     this.timeoutValue = parseInt(this.modalTarget.dataset.itemTimeoutParam)
     this.setupTimers()
 
@@ -86,7 +85,6 @@ export default class extends Controller {
   }
 
   disconnect() {
-    console.log("Session controller disconnected")
     if (this.warningTimer) clearTimeout(this.warningTimer)
     if (this.expirationTimer) clearTimeout(this.expirationTimer)
 
