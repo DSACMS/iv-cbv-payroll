@@ -77,12 +77,13 @@ RSpec.describe "Help Features", type: :feature, js: true do
 
   context "When in the caseworker flow" do
     it "displays correct content in the help modal" do
-      visit caseworker_dashboard_path(client_agency_id: "sandbox")
+      visit new_user_session_path(client_agency_id: "sandbox")
       click_link "Help"
 
       expect(page).to have_selector(".usa-modal__content", visible: true, wait: 5)
 
       within(".usa-modal__content") do
+        verify_page(page, title: I18n.t("help.index.title"))
         expect(page).to have_content(I18n.t("help.index.select_prompt"))
 
         # Verify all help topic buttons are present
