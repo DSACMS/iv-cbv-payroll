@@ -138,4 +138,4 @@ gem "net-sftp"
 gem "net-ssh"
 
 # Sinatra for JSON API reference implementation
-gem "sinatra", "~> 4.0"
+gem "sinatra", "~> 4.2", ">= 4.2.0"

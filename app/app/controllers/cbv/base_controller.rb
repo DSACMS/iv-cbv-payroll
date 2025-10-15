@@ -1,19 +1,25 @@
 class Cbv::BaseController < ApplicationController
+  ALPHPANUMERIC_PREFIX_REGEXP = /^([a-zA-Z0-9]+)[^a-zA-Z0-9]*$/
+
   before_action :set_cbv_origin, :set_cbv_flow, :ensure_cbv_flow_not_yet_complete, :prevent_back_after_complete, :capture_page_view
   helper_method :agency_url, :next_path, :get_comment_by_account_id, :current_agency
 
   private
 
-  def show_translate_button?
-    true
+  def normalize_token(token)
+    matches = ALPHPANUMERIC_PREFIX_REGEXP.match(token)
+    matches[1] if matches
   end
 
   def set_cbv_flow
     if params[:token].present?
-      invitation = CbvFlowInvitation.find_by(auth_token: params[:token])
-      if invitation.blank?
+      token = normalize_token(params[:token])
+      invitation = CbvFlowInvitation.find_by(auth_token: token)
+
+      unless invitation
         return redirect_to(root_url, flash: { alert: t("cbv.error_invalid_token") })
       end
+
       if invitation.expired?
         track_expired_event(invitation)
         return redirect_to(cbv_flow_expired_invitation_path(client_agency_id: invitation.client_agency_id))

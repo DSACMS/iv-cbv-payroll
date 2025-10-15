@@ -32,6 +32,17 @@ RSpec.describe Cbv::EntriesController do
         expect(response).to be_successful
       end
 
+      context 'when unreserved, non-alphanumeric characters are appended to a valid auth_token' do
+        # rfc3986 allows for any of these to be used in a URL "-" / "." / "_" / "~"
+        [ "-", ".", "_", "~", "._~" ].each do |char|
+          it 'renders successfully' do
+            get :show, params: { token: "#{invitation.auth_token}#{char}" }
+
+            expect(response).to be_successful
+          end
+        end
+      end
+
       it "sets a CbvFlow object based on the invitation" do
         expect { get :show, params: { token: invitation.auth_token } }
           .to change { session[:cbv_flow_id] }
@@ -43,6 +54,26 @@ RSpec.describe Cbv::EntriesController do
           cbv_applicant: have_attributes(client_agency_id: "sandbox", case_number: "ABC1234"),
           cbv_flow_invitation: invitation
         )
+      end
+
+      it "successfully starts the flow with a 10-character token" do
+        expect(invitation.auth_token.length).to eq(10)
+
+        get :show, params: { token: invitation.auth_token }
+        expect(response).to have_http_status(:ok)
+        expect(response.body).to include("Review your payment information.")
+      end
+
+      it "successfully starts the flow with a 36-character legacy token" do
+        legacy_uuid = SecureRandom.alphanumeric(36)
+        invitation.update_column(:auth_token, legacy_uuid)
+
+        expect(invitation.reload.auth_token).to eq(legacy_uuid)
+        expect(invitation.auth_token.length).to eq(36)
+
+        get :show, params: { token: invitation.auth_token }
+        expect(response).to have_http_status(:ok)
+        expect(response.body).to include("Review your payment information.")
       end
 
       context "with multiple cbv flows" do
@@ -60,7 +91,7 @@ RSpec.describe Cbv::EntriesController do
             invitation_id: invitation.id,
             cbv_flow_id: be_a(Integer),
             client_agency_id: invitation.client_agency_id,
-            path: "/cbv/entry"
+            path: a_string_starting_with("/start/")
           ))
 
           expect(EventTrackingJob).to receive(:perform_later).with("ApplicantViewedAgreement", anything, hash_including(
@@ -91,7 +122,7 @@ RSpec.describe Cbv::EntriesController do
           invitation_id: invitation.id,
           cbv_flow_id: be_a(Integer),
           client_agency_id: invitation.client_agency_id,
-          path: "/cbv/entry"
+          path: a_string_starting_with("/start/")
         ))
 
         expect(EventTrackingJob).to receive(:perform_later).with("ApplicantViewedAgreement", anything, hash_including(
@@ -109,7 +140,7 @@ RSpec.describe Cbv::EntriesController do
           invitation_id: invitation.id,
           cbv_flow_id: be_a(Integer),
           client_agency_id: invitation.client_agency_id,
-          path: "/cbv/entry"
+          path: a_string_starting_with("/start/")
         ))
 
         allow(EventTrackingJob).to receive(:perform_later).with("ApplicantClickedCBVInvitationLink", anything, anything)
@@ -157,7 +188,7 @@ RSpec.describe Cbv::EntriesController do
           let!(:connected_account) do
             create(:payroll_account,
               cbv_flow: existing_cbv_flow,
-              pinwheel_account_id: SecureRandom.uuid,
+              aggregator_account_id: SecureRandom.uuid,
               created_at: 4.minutes.ago
             )
           end
