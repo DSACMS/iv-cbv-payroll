@@ -34,6 +34,9 @@ class Api::UserEventsController < ApplicationController
     ApplicantManuallySwitchedLanguage
     ApplicantConsentedToTerms
     ApplicantViewedHelpText
+    ApplicantWarnedAboutTimeout
+    ApplicantExtendedSession
+    ApplicantTimedOut
   ]
 
   def user_action
