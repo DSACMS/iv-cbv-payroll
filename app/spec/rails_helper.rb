@@ -15,7 +15,26 @@ require "capybara/rspec"
 if ENV["E2E_SHOW_BROWSER"]
   Capybara.default_driver = :selenium_chrome
 else
-  Capybara.default_driver = :selenium_chrome_headless
+  Capybara.register_driver :selenium_chrome_custom do |app|
+    options = Selenium::WebDriver::Chrome::Options.new
+    # These are copied from `selenium_chrome_headless` upstream and can be
+    # removed after the next Capybara version is released.
+    # See: https://github.com/teamcapybara/capybara/blob/b3325b1/lib/capybara/registrations/drivers.rb#L31
+    options.add_argument("--headless=new")
+    options.add_argument("--disable-gpu")
+    options.add_argument('--disable-site-isolation-trials')
+    options.add_argument('disable-background-timer-throttling')
+    options.add_argument('disable-backgrounding-occluded-windows')
+    options.add_argument('disable-renderer-backgrounding')
+
+    # Set 'prefers-reduced-motion' CSS property, which will instruct USWDS to
+    # skip transitions. This prevents axe matchers (for accessibility/contrast
+    # checking) from running on partially-opened modals.
+    options.add_argument("--force-prefers-reduced-motion")
+
+    Capybara::Selenium::Driver.new(app, browser: :chrome, options: options)
+  end
+  Capybara.default_driver = :selenium_chrome_custom
 end
 Capybara.javascript_driver = Capybara.default_driver
 
