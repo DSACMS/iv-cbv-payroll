@@ -1,6 +1,6 @@
 <%= turbo_frame_tag "help_modal_content" do %>
-  <h2><%= t("help.index.title") %></h2>
-  <p><%= t("help.index.select_prompt") %></p>
+  <h2 id="help-modal-heading"><%= t("help.index.title") %></h2>
+  <p id="help-modal-description"><%= t("help.index.select_prompt") %></p>
 
   <%= render "help/help_topic_link", topic: "username", text: t("help.index.username") %>
   <%= render "help/help_topic_link", topic: "password", text: t("help.index.password") %>
@@ -9,7 +9,8 @@
   <%= render "help/help_topic_link", topic: "provider", text: t("help.index.provider") %>
   <%= render "help/help_topic_link", topic: "credentials", text: t("help.index.credentials") %>
 
-  <% if current_agency && current_agency.caseworker_feedback_form.present? %>
+  <%# Applicants should always see this button, but caseworkers only when the form is configured. %>
+  <% if params[:controller] !~ %r{^caseworker/} || (current_agency && current_agency.caseworker_feedback_form.present?) %>
     <%= link_to feedback_form_url, class: "usa-button help-modal__button", target: "_blank" do %>
       <%= t("help.index.feedback") %>
     <% end %>

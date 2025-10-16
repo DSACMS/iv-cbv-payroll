@@ -1,4 +1,4 @@
-<p><%= t("help.show.#{topic}.intro") if t("help.show.#{topic}.intro", default: "").present? %></p>
+<p id="help-modal-description"><%= t("help.show.#{topic}.intro") if t("help.show.#{topic}.intro", default: "").present? %></p>
 
 <% if t("help.show.#{topic}.security_message", default: '').present? %>
   <p><%= t("help.show.#{topic}.security_message") %></p>
