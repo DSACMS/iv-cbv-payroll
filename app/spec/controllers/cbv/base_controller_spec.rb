@@ -27,6 +27,9 @@ RSpec.describe Cbv::BaseController, type: :controller do
 
     context "when no token or session is present" do
       it "redirects to root with cbv_flow_timeout parameter and flash message" do
+        expect(EventTrackingJob).to receive(:perform_later).with("ApplicantAccessedFlowWithoutCookie", anything, hash_including(
+          time: kind_of(Integer)
+        ))
         get :show
         expect(response).to redirect_to(root_url(cbv_flow_timeout: true))
         expect(flash[:slim_alert]).to eq({
@@ -41,6 +44,7 @@ RSpec.describe Cbv::BaseController, type: :controller do
         session[:cbv_flow_id] = 1337
         get :show
         expect(response).to redirect_to(root_url(cbv_flow_timeout: true))
+        expect(session[:cbv_flow_id]).to be_nil
       end
     end
   end
