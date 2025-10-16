@@ -16,4 +16,4 @@ export default class extends Controller {
       trackUserAction("ApplicantViewedHelpText", { section })
     }
   }
-} 
+}

@@ -22,10 +22,11 @@ RSpec.describe Cbv::SessionsController, type: :controller do
     end
 
     context 'when timeout is true' do
-      it 'tracks timeout event and clears session' do
-        expect(controller).to receive(:track_timeout_event)
+      it 'clears session and sets a notice without tracking timeout event' do
+        expect(controller).not_to receive(:track_timeout_event)
         delete :end, params: { timeout: 'true' }
         expect(session[:cbv_flow_id]).to be_nil
+        expect(flash[:notice]).to be_present
       end
     end
 
