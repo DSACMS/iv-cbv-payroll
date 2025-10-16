@@ -189,15 +189,14 @@ en:
   cbv:
     add_jobs:
       show:
-        header: Do you have another job to report?
-        header_2: Do you have another job to report using Report My Income?
-        header_2_bullet_1: Has an online payroll provider, or
-        header_2_bullet_2: Lets you view pay stubs online, or
-        header_2_bullet_3: Is app-based (Uber, DoorDash, Lyft, Instacart, etc.)
-        header_2_lead: 'This includes a current job or recent job you’ve had in the past 90 days that:'
-        header_sub_text: Tell us about any other jobs you've had in the past 90 days, even if you're no longer at that job.
-        radio_no: No, I don’t have another job that meets one of these criteria
-        radio_yes: Yes, I have another job that meets one of these criteria
+        header: Do you have another job to add?
+        header_bullet_1: Has an online payroll provider
+        header_bullet_2: Lets you view your pay stubs online
+        header_bullet_3: Is app-based (Uber, DoorDash, Lyft, Instacart, etc.)
+        header_lead: You only need to report jobs you worked in the past 90 days.
+        header_sub_text_html: 'You can use this tool to report income from multiple jobs. Each job only has to meet <strong>one</strong> of these criteria:'
+        radio_no: No, I don’t have another job to add with this tool
+        radio_yes: Yes, I want to add another job with this tool
     applicant_informations:
       la_ldh:
         fields:
