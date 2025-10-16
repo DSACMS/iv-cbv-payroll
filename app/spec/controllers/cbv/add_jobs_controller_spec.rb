@@ -14,6 +14,18 @@ RSpec.describe Cbv::AddJobsController do
       get :show
       expect(response).to be_successful
     end
+
+    it "renders expected content and radio options" do
+      get :show
+      expect(response.body).to include(I18n.t("cbv.add_jobs.show.header"))
+      expect(response.body).to include(I18n.t("cbv.add_jobs.show.header_sub_text_html"))
+      expect(response.body).to include(I18n.t("cbv.add_jobs.show.header_bullet_1"))
+      expect(response.body).to include(I18n.t("cbv.add_jobs.show.header_bullet_2"))
+      expect(response.body).to include(I18n.t("cbv.add_jobs.show.header_bullet_3"))
+      expect(response.body).to include(I18n.t("cbv.add_jobs.show.header_lead"))
+      expect(response.body).to include(I18n.t("cbv.add_jobs.show.radio_yes"))
+      expect(response.body).to include(I18n.t("cbv.add_jobs.show.radio_no"))
+    end
   end
 
   describe "#create" do
