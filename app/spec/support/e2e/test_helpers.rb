@@ -6,7 +6,7 @@ module E2e
     # You can also use this method after clicking a "Submit" button to wait for
     # the next page to load. If the default wait time (2 seconds) isn't enough,
     # pass in a higher value (in seconds) in for `wait`.
-    def verify_page(page, title:, wait: Capybara.default_max_wait_time, skip_axe_rules: [], skip_axe: false)
+    def verify_page(page, title:, wait: Capybara.default_max_wait_time, skip_axe_rules: [])
       wait_for_idle(page)
 
       expect(page).to have_content(title, wait: wait)
@@ -27,7 +27,7 @@ module E2e
       # & AA as well as an additional handful of best practices:
       #
       # https://github.com/dequelabs/axe-core/blob/master/doc/rule-descriptions.md
-      expect(page).to be_axe_clean.skipping(skip_axe_rules) unless skip_axe
+      expect(page).to be_axe_clean.skipping(skip_axe_rules)
     end
 
     # This method needs to be included in E2E tests using Pinwheel to make sure
