@@ -8,8 +8,6 @@ RSpec.describe "Help Features", type: :feature, js: true do
   let(:cbv_flow_invitation) { create(:cbv_flow_invitation) }
   let(:cbv_flow) { create(:cbv_flow, :invited, cbv_flow_invitation: cbv_flow_invitation) }
 
-  WAIT_TIME = 1
-
   before(:all) do
     WebMock.allow_net_connect!
   end
@@ -30,14 +28,14 @@ RSpec.describe "Help Features", type: :feature, js: true do
       visit cbv_flow_employer_search_path
       click_link "Help"
 
-      expect(page).to have_selector(".usa-modal__content", visible: true, wait: WAIT_TIME)
+      expect(page).to have_selector(".usa-modal__content", visible: true)
     end
 
     it "displays correct content in the help modal" do
       visit cbv_flow_employer_search_path
       click_link "Help"
 
-      expect(page).to have_selector(".usa-modal__content", visible: true, wait: WAIT_TIME)
+      expect(page).to have_selector(".usa-modal__content", visible: true)
 
       within(".usa-modal__content") do
         verify_page(page, title: I18n.t("help.index.title"))
@@ -63,7 +61,7 @@ RSpec.describe "Help Features", type: :feature, js: true do
       visit cbv_flow_employer_search_path
       click_link "Help"
 
-      expect(page).to have_selector(".usa-modal__content", visible: true, wait: WAIT_TIME)
+      expect(page).to have_selector(".usa-modal__content", visible: true)
 
       within(".usa-modal__content") do
         click_link I18n.t("help.index.username")
@@ -79,7 +77,7 @@ RSpec.describe "Help Features", type: :feature, js: true do
       click_link "Help"
 
       # Wait for modal to be visible
-      expect(page).to have_selector(".usa-modal__content", visible: true, wait: WAIT_TIME)
+      expect(page).to have_selector(".usa-modal__content", visible: true)
 
       find("button[aria-label='Close this window']").click
       expect(page).not_to have_selector(".usa-modal__content", visible: true)
@@ -91,7 +89,7 @@ RSpec.describe "Help Features", type: :feature, js: true do
       visit new_user_session_path(client_agency_id: "sandbox")
       click_link "Help"
 
-      expect(page).to have_selector(".usa-modal__content", visible: true, wait: WAIT_TIME)
+      expect(page).to have_selector(".usa-modal__content", visible: true)
 
       within(".usa-modal__content") do
         verify_page(page, title: I18n.t("help.index.title"))
