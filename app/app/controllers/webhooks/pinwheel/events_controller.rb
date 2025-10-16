@@ -144,6 +144,7 @@ class Webhooks::Pinwheel::EventsController < ApplicationController
         # Employment fields
         employment_success: @payroll_account.job_succeeded?("employment"),
         employment_supported: @payroll_account.supported_jobs.include?("employment"),
+        employment_count: report.employments.length,
         employment_status: report.employments.first&.status,
         employment_employer_name: report.employments.first&.employer_name,
         employment_account_source: report.employments.first&.account_source,

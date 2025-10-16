@@ -188,6 +188,7 @@ RSpec.describe Webhooks::Pinwheel::EventsController do
               # Employment fields
               employment_success: true,
               employment_supported: true,
+              employment_count: 1,
               employment_type: "w2",
               employment_status: "employed",
               employment_account_source: "Testing Payroll Provider Inc.",

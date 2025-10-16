@@ -226,10 +226,12 @@ RSpec.describe Webhooks::Argyle::EventsController, type: :controller do
           paystubs_gross_pay_amounts_average: 152914.4,
           paystubs_gross_pay_amounts_median: 153103,
           paystubs_days_since_last_pay_date: 73,
+          paystubs_employment_id_unique_count: 1,
 
           # Employment fields
           employment_success: true,
           employment_supported: true,
+          employment_count: 1,
           employment_status: "employed",
           employment_type: "w2",
           employment_employer_name: "Whole Foods",
