@@ -34,10 +34,11 @@ class Cbv::BaseController < ApplicationController
       begin
         @cbv_flow = CbvFlow.find(session[:cbv_flow_id])
       rescue ActiveRecord::RecordNotFound
+        reset_cbv_session!
         redirect_to root_url(cbv_flow_timeout: true)
       end
     else
-      track_timeout_event
+      track_deeplink_without_cookie_event
       redirect_to root_url(cbv_flow_timeout: true), flash: { slim_alert: { type: "info", message_html: t("cbv.error_missing_token_html") } }
     end
   end
@@ -141,6 +142,13 @@ class Cbv::BaseController < ApplicationController
     })
   end
 
+  def track_deeplink_without_cookie_event
+    event_logger.track(TrackEvent::ApplicantAccessedFlowWithoutCookie, request, {
+      time: Time.now.to_i,
+      client_agency_id: current_agency&.id
+    })
+  end
+
   def track_expired_event(invitation)
     event_logger.track(TrackEvent::ApplicantAccessedExpiredLinkPage, request, {
       invitation_id: invitation.id,
@@ -169,5 +177,9 @@ class Cbv::BaseController < ApplicationController
     return 1 if invitation.cbv_applicant.income_changes.blank?
 
     invitation.cbv_applicant.income_changes.map { |income_change| income_change.with_indifferent_access[:member_name] }.uniq.count
+  end
+
+  def reset_cbv_session!
+    session[:cbv_flow_id] = nil
   end
 end

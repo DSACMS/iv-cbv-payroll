@@ -7,7 +7,7 @@ RSpec.describe Aggregators::AggregatorReports::ArgyleReport, type: :service do
 
   let(:account) { "abc123" }
   let!(:payroll_account) do
-    create(:payroll_account, :argyle_fully_synced, pinwheel_account_id: account)
+    create(:payroll_account, :argyle_fully_synced, aggregator_account_id: account)
   end
   let(:days_ago_to_fetch) { 90 }
   let(:days_ago_to_fetch_for_gig) { 90 }
@@ -367,7 +367,7 @@ RSpec.describe Aggregators::AggregatorReports::ArgyleReport, type: :service do
     context "busy_joe, an employee with multiple employments" do
       let(:account) { "01959b15-8b7f-5487-212d-2c0f50e3ec96" }
       let!(:payroll_account_2) do
-        create(:payroll_account, :argyle_fully_synced, pinwheel_account_id: account)
+        create(:payroll_account, :argyle_fully_synced, aggregator_account_id: account)
       end
 
       let(:argyle_report) { Aggregators::AggregatorReports::ArgyleReport.new(
