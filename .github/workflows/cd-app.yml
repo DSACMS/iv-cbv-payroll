@@ -22,6 +22,10 @@ on:
           - dev
           - demo
           - prod
+      commit_sha:
+        required: false
+        type: string
+        description: "SHA to deploy (defaults to most recent)"
 permissions:
     id-token: write
 
@@ -35,4 +39,5 @@ jobs:
     with:
       app_name: "app"
       environment: ${{ inputs.environment || 'dev' }}
+      commit_sha: ${{ inputs.commit_sha }}
     secrets: inherit
