@@ -412,8 +412,8 @@ en:
           footer:
             page_footer: Income Verification Report | Page [page] of [topage]
           shared:
-            additional_jobs_to_report: Does the client have other income they will report separately?
-            additional_jobs_to_report_html: Does the client have other income they will report separately?<sup>1</sup>
+            additional_jobs_to_report: Reporting any income from work separately?
+            additional_jobs_to_report_html: Reporting any income from work separately?<sup>1</sup>
             client_information: Client information
             confirmation_code: Confirmation code
             details: Details
@@ -457,6 +457,7 @@ en:
         none_found: We didn't find any payments from this employer in the past %{report_data_range}.
         none_found_description: This typically happens when you haven't received income from this job in the past %{report_data_range}. If you believe this is an error, please add a comment in the additional comments box. Otherwise, continue to the next page.
         other_jobs: Other income
+        other_jobs_question: Do you need to report other income from work separately?
         phone_number: Employer phone
         question: Question
         table_caption: 'Employer %{number}: %{employer_name}'
