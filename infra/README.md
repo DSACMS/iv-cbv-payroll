@@ -69,17 +69,20 @@ Generally, you should use the Make targets or the underlying bin scripts, but yo
 
 To set up this project for the first time (i.e., it has never been deployed to the target AWS account):
 
-1. [Install this template](/README.md#installation) into an application that meets the [Application Requirements](/README.md#application-requirements)
-2. [Configure the project](/infra/project-config/main.tf) (These values will be used in subsequent infra setup steps to namespace resources and add infrastructure tags.)
-3. [Set up infrastructure developer tools](/docs/infra/set-up-infrastructure-tools.md)
-4. [Set up AWS account](/docs/infra/set-up-aws-account.md)
-5. [Set up the virtual network (VPC)](/docs/infra/set-up-network.md)
-6. For each application:
+1. [Review external service prerequisites](/docs/infra/prerequisites.md) - Ensure you have access to all required external services (AWS, Argyle, Pinwheel, monitoring tools, etc.)
+2. [Install this template](/README.md#installation) into an application that meets the [Application Requirements](/README.md#application-requirements)
+3. [Configure the project](/infra/project-config/main.tf) (These values will be used in subsequent infra setup steps to namespace resources and add infrastructure tags.)
+4. [Set up infrastructure developer tools](/docs/infra/set-up-infrastructure-tools.md)
+5. [Set up AWS account](/docs/infra/set-up-aws-account.md)
+6. [Set up the virtual network (VPC)](/docs/infra/set-up-network.md)
+7. For each application:
     1. [Set up application build repository](/docs/infra/set-up-app-build-repository.md)
     2. [Set up application database](/docs/infra/set-up-database.md)
     3. [Set up application environment](/docs/infra/set-up-app-env.md)
-    4. [Configure environment variables and secrets](/docs/infra/environment-variables-and-secrets.md)
-    5. [Set up background jobs](/docs/infra/background-jobs.md)
+    4. [Configure application-specific environment variables](/docs/app/runbooks/application-configuration.md)
+    5. [Configure webhooks for payroll providers](/docs/app/runbooks/webhook-configuration.md)
+    6. [Complete post-deployment checklist](/docs/infra/post-deployment-checklist.md)
+    7. [Set up background jobs](/docs/infra/background-jobs.md)
 
 ### 🆕 New developer
 
@@ -93,3 +96,11 @@ To get set up as a new developer on a project that has already been deployed to 
 ## 📇 Additional reading
 
 Additional documentation can be found in the [documentation directory](/docs/infra).
+
+### 📋 Setup & Prerequisites
+
+- **[External Service Prerequisites](/docs/infra/prerequisites.md)** - Required external services and dependencies
+
+### 🔧 Troubleshooting & Operations
+
+- **[Deployment Failures](/docs/infra/deployment-failures.md)** - Common deployment issues and solutions
