@@ -39,5 +39,5 @@ jobs:
     with:
       app_name: "app"
       environment: ${{ inputs.environment || 'dev' }}
-      commit_sha: ${{ inputs.commit_sha || github.ref }}
+      commit_sha: ${{ inputs.commit_sha }}
     secrets: inherit
