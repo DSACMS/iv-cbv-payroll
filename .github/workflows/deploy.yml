@@ -28,6 +28,7 @@ jobs:
     uses: ./.github/workflows/database-migrations.yml
     with:
       app_name: ${{ inputs.app_name }}
+      commit_sha: ${{ inputs.commit_sha }}
       environment: ${{ inputs.environment }}
     secrets: inherit
   deploy:
@@ -40,7 +41,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with:
-          ref: ${{ inputs.commit_sha || github.ref }}
+          ref: ${{ inputs.commit_sha }}
 
       - name: Set up Terraform
         uses: ./.github/actions/setup-terraform
