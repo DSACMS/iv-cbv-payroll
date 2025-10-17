@@ -25,7 +25,7 @@ on:
       commit_sha:
         required: false
         type: string
-        description: "Override commit SHA to deploy"
+        description: "SHA to deploy (defaults to most recent)"
 permissions:
     id-token: write
 
