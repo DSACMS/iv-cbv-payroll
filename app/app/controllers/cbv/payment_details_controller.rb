@@ -17,7 +17,7 @@ class Cbv::PaymentDetailsController < Cbv::BaseController
 
   def show
     account_id = params[:user][:account_id]
-    @payroll_account = @cbv_flow.payroll_accounts.find_by(pinwheel_account_id: account_id)
+    @payroll_account = @cbv_flow.payroll_accounts.find_by(aggregator_account_id: account_id)
 
     # security check - make sure the account_id is associated with the current cbv_flow_id
     if @payroll_account.nil?
@@ -112,8 +112,8 @@ class Cbv::PaymentDetailsController < Cbv::BaseController
     return I18n.t("cbv.payment_details.show.unknown") unless has_paystubs_data?
 
     @payroll_account_report.paystubs
-      .map { |paystub| paystub.gross_pay_amount.to_i }
-      .reduce(:+)
+                           .map { |paystub| paystub.gross_pay_amount.to_i }
+                           .reduce(:+)
   end
 
   def sanitize_comment(comment)
@@ -122,32 +122,30 @@ class Cbv::PaymentDetailsController < Cbv::BaseController
 
   def track_viewed_event
     return if @payroll_account.nil?
-    event_logger.track("ApplicantViewedPaymentDetails", request, {
+    event_logger.track(TrackEvent::ApplicantViewedPaymentDetails, request, {
+      time: Time.now.to_i,
       cbv_applicant_id: @cbv_flow.cbv_applicant_id,
       cbv_flow_id: @cbv_flow.id,
       client_agency_id: current_agency&.id,
       invitation_id: @cbv_flow.cbv_flow_invitation_id,
-      pinwheel_account_id: @payroll_account.id,
+      aggregator_account_id: @payroll_account.id,
       payments_length: @payroll_account_report.paystubs.length,
       has_employment_data: has_employment_data?,
       has_paystubs_data: has_paystubs_data?,
       has_income_data: has_income_data?
     })
-  rescue => ex
-    Rails.logger.error "Unable to track event (ApplicantViewedPaymentDetails): #{ex}"
   end
 
   def track_saved_event
     comment_data = @cbv_flow.additional_information[params[:user][:account_id]]
 
-    event_logger.track("ApplicantSavedPaymentDetails", request, {
+    event_logger.track(TrackEvent::ApplicantSavedPaymentDetails, request, {
+      time: Time.now.to_i,
       cbv_applicant_id: @cbv_flow.cbv_applicant_id,
       cbv_flow_id: @cbv_flow.id,
       client_agency_id: current_agency&.id,
       invitation_id: @cbv_flow.cbv_flow_invitation_id,
       additional_information_length: comment_data ? comment_data["comment"].length : 0
     })
-  rescue => ex
-    Rails.logger.error "Unable to track event (ApplicantSavedPaymentDetails): #{ex}"
   end
 end

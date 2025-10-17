@@ -28,7 +28,7 @@ RSpec.describe Report::W2MonthlySummaryTableComponent, type: :component do
         :pinwheel_fully_synced,
         with_errored_jobs: errored_jobs,
         cbv_flow: cbv_flow,
-        pinwheel_account_id: account_id,
+        aggregator_account_id: account_id,
         supported_jobs: supported_jobs,
         )
     end
@@ -53,7 +53,7 @@ RSpec.describe Report::W2MonthlySummaryTableComponent, type: :component do
       end
 
       it "includes table header" do
-        expect(subject.css("h3").to_html).to include "Monthly Summary"
+        expect(subject.css("h2").to_html).to include "Monthly summary"
         expect(subject.css("thead tr.subheader-row th").length).to eq(4)
       end
 
@@ -98,7 +98,7 @@ RSpec.describe Report::W2MonthlySummaryTableComponent, type: :component do
         :payroll_account,
         :argyle_fully_synced,
         cbv_flow: cbv_flow,
-        pinwheel_account_id: account_id
+        aggregator_account_id: account_id
       )
     end
 
@@ -123,7 +123,7 @@ RSpec.describe Report::W2MonthlySummaryTableComponent, type: :component do
       end
 
       it "includes table header" do
-        expect(subject.css("h3").to_html).to include "Monthly Summary"
+        expect(subject.css("h2").to_html).to include "Monthly summary"
         expect(subject.css("thead tr.subheader-row th").length).to eq(4)
       end
 
@@ -188,7 +188,7 @@ RSpec.describe Report::W2MonthlySummaryTableComponent, type: :component do
       end
 
       it "includes table header" do
-        expect(subject.css("h3").to_html).to include "Monthly Summary"
+        expect(subject.css("h2").to_html).to include "Monthly summary"
         expect(subject.css("thead tr.subheader-row th").length).to eq(4)
       end
 

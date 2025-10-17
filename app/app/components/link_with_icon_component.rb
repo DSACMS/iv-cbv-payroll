@@ -1,17 +1,18 @@
 # frozen_string_literal: true
 
 class LinkWithIconComponent < ViewComponent::Base
-  def initialize(text, url:, icon: nil, variant: nil, **options)
+  def initialize(text, url:, icon: nil, variant: nil, icon_position: :leading, **options)
     @text = text
     @url = url
     @icon = icon
     @variant = variant
+    @icon_position = icon_position
     @options = options
   end
 
   private
 
-  attr_reader :text, :url, :icon, :variant, :options
+  attr_reader :text, :url, :icon, :variant, :icon_position, :options
 
   def link_classes
     classes = [ "usa-link" ]
@@ -36,5 +37,13 @@ class LinkWithIconComponent < ViewComponent::Base
     content_tag(:svg, class: "usa-icon", "aria-hidden": true, focusable: false, role: "img") do
       tag.use("", href: icon_path)
     end
+  end
+
+  def leading_icon?
+    icon_position == :leading
+  end
+
+  def trailing_icon?
+    icon_position == :trailing
   end
 end

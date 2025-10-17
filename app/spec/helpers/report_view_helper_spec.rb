@@ -311,4 +311,23 @@ RSpec.describe ReportViewHelper, type: :helper do
       expect { helper.format_boolean([]) }.to raise_error(ArgumentError, /format_boolean only accepts/)
     end
   end
+
+  describe "#format_string" do
+    subject { helper.format_string(string) }
+
+    context "when the field is nil" do
+      let(:string) { nil }
+      it { is_expected.to eq(I18n.t("shared.not_applicable")) }
+    end
+
+    context "when the field is empty string" do
+      let(:string) { "" }
+      it { is_expected.to eq(I18n.t("shared.not_applicable")) }
+    end
+
+    context "when the field is anything else" do
+      let(:string) { "foo bar" }
+      it { is_expected.to eq(string) }
+    end
+  end
 end

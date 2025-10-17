@@ -16,7 +16,7 @@ class CbvFlowInvitation < ApplicationRecord
   belongs_to :cbv_applicant, optional: true
   has_many :cbv_flows
 
-  has_secure_token :auth_token, length: 36
+  has_secure_token :auth_token, length: 10
 
   accepts_nested_attributes_for :cbv_applicant
 
@@ -53,16 +53,19 @@ class CbvFlowInvitation < ApplicationRecord
     cbv_flows.any?(&:complete?)
   end
 
-  def to_url
+  def to_url(origin: nil)
     client_agency = Rails.application.config.client_agencies[client_agency_id]
     raise ArgumentError.new("Client Agency #{client_agency_id} not found") unless client_agency
 
-    Rails.application.routes.url_helpers.cbv_flow_entry_url({
+    url_params = {
       token: auth_token,
       locale: language,
       host: client_agency.agency_domain,
       protocol: (client_agency.agency_domain.nil? || client_agency.agency_domain == "localhost") ? "http" : "https"
-    }.compact)
+    }
+    url_params[:origin] = origin if origin.present?
+
+    Rails.application.routes.url_helpers.start_flow_url(url_params.compact)
   end
 
   def normalize_language
@@ -70,7 +73,7 @@ class CbvFlowInvitation < ApplicationRecord
   end
 
   def applicant_information
-    return if client_agency_id == "az_des"
+    return if client_agency_id == "az_des" || client_agency_id == "la_ldh"
 
     errors.add(:'cbv_applicant.first_name', I18n.t("activerecord.errors.models.cbv_applicant.attributes.first_name.blank")) if cbv_applicant.first_name.blank?
     errors.add(:'cbv_applicant.last_name', I18n.t("activerecord.errors.models.cbv_applicant.attributes.last_name.blank")) if cbv_applicant.last_name.blank?

@@ -11,11 +11,9 @@
       <h2 class="usa-modal__heading" id="session-timeout-heading">
         <%= t("session_timeout.modal.heading") %>
       </h2>
-      <div class="usa-prose">
-        <p id="session-timeout-description">
-          <%= t("session_timeout.modal.description") %>
-        </p>
-      </div>
+      <p id="session-timeout-description">
+        <%= t("session_timeout.modal.description") %>
+      </p>
       <div class="usa-modal__footer">
         <ul class="usa-button-group">
           <li class="usa-button-group__item">
@@ -24,7 +22,7 @@
                     data: {
                       turbo_stream: true,
                       close_modal: true,
-                      action: "session#resetTimers"
+                      action: "session#trackExtend session#resetTimers"
                     },
                     id: "extend-session-button" do %>
               <%= t("session_timeout.modal.extend_button") %>

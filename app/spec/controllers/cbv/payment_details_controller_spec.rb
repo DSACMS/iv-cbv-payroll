@@ -29,7 +29,7 @@ RSpec.describe Cbv::PaymentDetailsController do
         :pinwheel_fully_synced,
         with_errored_jobs: errored_jobs,
         cbv_flow: cbv_flow,
-        pinwheel_account_id: account_id,
+        aggregator_account_id: account_id,
         supported_jobs: supported_jobs,
       )
     end
@@ -57,7 +57,7 @@ RSpec.describe Cbv::PaymentDetailsController do
         expect(EventTrackingJob).to receive(:perform_later).with("ApplicantViewedPaymentDetails", anything, hash_including(
             cbv_flow_id: cbv_flow.id,
             invitation_id: cbv_flow.cbv_flow_invitation_id,
-            pinwheel_account_id: payroll_account.id,
+            aggregator_account_id: payroll_account.id,
             payments_length: 1,
             has_employment_data: true,
             has_paystubs_data: true,
@@ -199,12 +199,6 @@ RSpec.describe Cbv::PaymentDetailsController do
         pinwheel_stub_request_end_user_no_hours_response
       end
 
-      # Removing hours check for LA launch - FFS-2866 ticket to add back logic for SNAP only pilots
-      xit "redirects to the synchronization failure page" do
-        get :show, params: { user: { account_id: account_id } }
-        expect(response).to redirect_to(cbv_flow_synchronization_failures_path)
-      end
-
       context "but the user is a Gig worker" do
         before do
           pinwheel_stub_request_employment_info_gig_worker_response
@@ -244,7 +238,7 @@ RSpec.describe Cbv::PaymentDetailsController do
 
       it "redirects to the entry page when the resolved pinwheel_account is present, but does not match the current session" do
         existing_payroll_account = create(:payroll_account)
-        get :show, params: { user: { account_id: existing_payroll_account.pinwheel_account_id } }
+        get :show, params: { user: { account_id: existing_payroll_account.aggregator_account_id } }
         expect(response).to redirect_to(cbv_flow_entry_url)
         expect(flash[:slim_alert]).to be_present
         expect(flash[:slim_alert][:message]).to eq(I18n.t("cbv.error_no_access"))
@@ -271,7 +265,7 @@ RSpec.describe Cbv::PaymentDetailsController do
             :argyle_fully_synced,
             with_errored_jobs: errored_jobs,
             cbv_flow: cbv_flow,
-            pinwheel_account_id: account_id,
+            aggregator_account_id: account_id,
             supported_jobs: supported_jobs,
             )
         end
@@ -311,7 +305,7 @@ RSpec.describe Cbv::PaymentDetailsController do
         end
 
         context "includes monthly gig summary table" do
-          it { is_expected.to include("Monthly Summary") }
+          it { is_expected.to include("Monthly summary") }
           it { is_expected.to include("Accrued gross earnings") }
           it { is_expected.to include("Total hours worked") }
           it { is_expected.not_to include("Partial month") }
@@ -336,7 +330,7 @@ RSpec.describe Cbv::PaymentDetailsController do
             :argyle_fully_synced,
             with_errored_jobs: errored_jobs,
             cbv_flow: cbv_flow,
-            pinwheel_account_id: account_id,
+            aggregator_account_id: account_id,
             supported_jobs: supported_jobs,
             )
         end
@@ -375,7 +369,7 @@ RSpec.describe Cbv::PaymentDetailsController do
         end
 
         context "includes monthly w2 summary table" do
-          it { is_expected.to include("Monthly Summary") }
+          it { is_expected.to include("Monthly summary") }
           it { is_expected.to include("Gross income") }
           it { is_expected.to include("Total hours worked") }
         end

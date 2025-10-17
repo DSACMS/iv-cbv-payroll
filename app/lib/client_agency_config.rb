@@ -55,7 +55,7 @@ class ClientAgencyConfig
       transmission_method_configuration
       weekly_report
       applicant_attributes
-      allow_invitation_reuse
+      generic_links_disabled
     ])
 
     def initialize(yaml)
@@ -79,15 +79,13 @@ class ClientAgencyConfig
       @sso = yaml["sso"]
       @weekly_report = yaml["weekly_report"]
       @applicant_attributes = yaml["applicant_attributes"] || {}
-      @allow_invitation_reuse = yaml["allow_invitation_reuse"] || false
+      @generic_links_disabled = yaml["generic_links_disabled"]
 
       raise ArgumentError.new("Client Agency missing id") if @id.blank?
       raise ArgumentError.new("Client Agency #{@id} missing required attribute `agency_name`") if @agency_name.blank?
-      raise ArgumentError.new("Client Agency #{@id} missing required attribute `pinwheel.environment`") if @pinwheel_environment.blank?
       raise ArgumentError.new("Client Agency #{@id} invalid value for pay_income_days.w2") unless VALID_PAY_INCOME_DAYS.include?(@pay_income_days[:w2])
       raise ArgumentError.new("Client Agency #{@id} invalid value for pay_income_days.gig") unless VALID_PAY_INCOME_DAYS.include?(@pay_income_days[:gig])
-
-      # TODO: Add a validation for the dependent attribute, transmission_method_configuration.email, if transmission_method is present
+      raise ArgumentError.new("Client Agency #{@id} missing required attribute `transmission_method`") if @transmission_method.blank?
     end
   end
 end

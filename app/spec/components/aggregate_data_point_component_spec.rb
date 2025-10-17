@@ -112,7 +112,7 @@ RSpec.describe AggregateDataPointComponent, type: :component do
   describe "#pay_frequency" do
     it "renders with valid frequency" do
       expect(
-        render_inline(described_class.new(:pay_frequency, "bi-weekly"))
+        render_inline(described_class.new(:pay_frequency, "biweekly"))
       ).to have_text(
         "Bi-weekly"
       )

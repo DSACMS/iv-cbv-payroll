@@ -24,6 +24,29 @@ RSpec.describe Cbv::BaseController, type: :controller do
       cookie_jar = response.cookies["cbv_applicant_id"]
       expect(cookie_jar).to be_present
     end
+
+    context "when no token or session is present" do
+      it "redirects to root with cbv_flow_timeout parameter and flash message" do
+        expect(EventTrackingJob).to receive(:perform_later).with("ApplicantAccessedFlowWithoutCookie", anything, hash_including(
+          time: kind_of(Integer)
+        ))
+        get :show
+        expect(response).to redirect_to(root_url(cbv_flow_timeout: true))
+        expect(flash[:slim_alert]).to eq({
+          type: "info",
+          message_html: I18n.t("cbv.error_missing_token_html")
+        })
+      end
+    end
+
+    context "when cbv flow cannot be found for session" do
+      it "redirects to root with cbv_flow_timeout parameter" do
+        session[:cbv_flow_id] = 1337
+        get :show
+        expect(response).to redirect_to(root_url(cbv_flow_timeout: true))
+        expect(session[:cbv_flow_id]).to be_nil
+      end
+    end
   end
 
   describe '#track_invitation_clicked_event' do
@@ -104,16 +127,16 @@ RSpec.describe Cbv::BaseController, type: :controller do
         expect(session[:cbv_origin]).to eq "mfb_dashboard"
       end
 
-      it "does not reset the origin if it is already present" do
+      it "resets the origin if it is already present" do
         session[:cbv_origin] = "test"
         expect(EventTrackingJob).to receive(:perform_later).with("CbvPageView", anything, anything)
         expect(EventTrackingJob).to receive(:perform_later).with("ApplicantClickedCBVInvitationLink", anything, hash_including(
-          origin: "test"
+          origin: "email"
         ))
         get :show, params: { token: cbv_flow.cbv_flow_invitation.auth_token, origin: "email" }
         expect(response).to be_successful
         expect(session[:cbv_flow_id]).to be_a(Integer)
-        expect(session[:cbv_origin]).to eq "test"
+        expect(session[:cbv_origin]).to eq "email"
       end
 
       it "does not set an origin if no parameter or agency default are supplied" do
@@ -126,6 +149,18 @@ RSpec.describe Cbv::BaseController, type: :controller do
         expect(response).to be_successful
         expect(session[:cbv_flow_id]).to be_a(Integer)
         expect(session[:cbv_origin]).to be_nil
+      end
+
+      it "does set an origin if no parameter is supplied but agency default exists" do
+        stub_client_agency_config_value("la_ldh", "default_origin", "sms")
+        expect(EventTrackingJob).to receive(:perform_later).with("CbvPageView", anything, anything)
+        expect(EventTrackingJob).to receive(:perform_later).with("ApplicantClickedCBVInvitationLink", anything, hash_including(
+          origin: "sms"
+        ))
+        get :show, params: { token: cbv_flow.cbv_flow_invitation.auth_token }
+        expect(response).to be_successful
+        expect(session[:cbv_flow_id]).to be_a(Integer)
+        expect(session[:cbv_origin]).to eq "sms"
       end
     end
   end

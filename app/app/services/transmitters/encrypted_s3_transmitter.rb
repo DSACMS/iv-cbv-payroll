@@ -1,15 +1,10 @@
 class Transmitters::EncryptedS3Transmitter
+  include Transmitter
   include GpgEncryptable
   include TarFileCreatable
   include CsvHelper
 
-  def initialize(cbv_flow, current_agency, aggregator_report)
-    @cbv_flow = cbv_flow
-    @current_agency = current_agency
-    @aggregator_report = aggregator_report
-  end
-
-  def deliver_to_s3!
+  def deliver
     config = @current_agency.transmission_method_configuration
     public_key = config["public_key"]
 
@@ -26,25 +21,12 @@ class Transmitters::EncryptedS3Transmitter
       "Conf#{@cbv_flow.confirmation_code}_" \
       "#{time_now.strftime('%Y%m%d%H%M%S')}"
 
-    # Generate PDF
-    pdf_service = PdfService.new(language: :en)
-    @pdf_output = pdf_service.generate(
-      renderer: Cbv::SubmitsController.new,
-      template: "cbv/submits/show",
-      variables: {
-        is_caseworker: true,
-        cbv_flow: @cbv_flow,
-        aggregator_report: @aggregator_report,
-        has_consent: true
-      }
-    )
-
     # Generate CSV in-memory
     csv_content = generate_csv
 
     # Create tar file
     file_data = [
-      { name: "#{@file_name}.pdf", content: @pdf_output&.content },
+      { name: "#{@file_name}.pdf", content: pdf_output&.content },
       { name: "#{@file_name}.csv", content: csv_content.string }
     ]
     tar_tempfile = create_tar_file(file_data)
@@ -72,6 +54,13 @@ class Transmitters::EncryptedS3Transmitter
     end
   end
 
+  def pdf_output
+    @_pdf_output ||= begin
+      pdf_service = PdfService.new(language: :en)
+      pdf_output = pdf_service.generate(@cbv_flow, @aggregator_report, @current_agency)
+    end
+  end
+
   def generate_csv
     payroll_account = PayrollAccount.find_by(cbv_flow_id: @cbv_flow.id)
 
@@ -88,8 +77,8 @@ class Transmitters::EncryptedS3Transmitter
       consent_timestamp: @cbv_flow.consented_to_authorized_use_at.strftime("%m/%d/%Y %H:%M:%S"),
       pdf_filename: "#{@file_name}.pdf",
       pdf_filetype: "application/pdf",
-      pdf_filesize: @pdf_output.file_size,
-      pdf_number_of_pages: @pdf_output.page_count
+      pdf_filesize: pdf_output.file_size,
+      pdf_number_of_pages: pdf_output.page_count
     }
 
     create_csv(data)

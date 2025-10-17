@@ -62,7 +62,7 @@ resource "aws_cloudwatch_event_rule" "ses_events" {
 }
 
 resource "aws_iam_role" "ses_events_to_newrelic" {
-  name               = "SESEventsToNewRelic"
+  name               = "SESEventsToNewRelic-${local.normalized_domain}"
   assume_role_policy = <<EOF
     {
       "Version": "2012-10-17",
@@ -119,7 +119,7 @@ resource "aws_cloudwatch_event_target" "ses_events" {
 }
 
 resource "aws_cloudwatch_event_api_destination" "newrelic" {
-  name                = "NewRelic"
+  name                = "NewRelic-${local.normalized_domain}"
   description         = "Send SES events to NewRelic"
   invocation_endpoint = "https://insights-collector.newrelic.com/v1/accounts/${var.newrelic_account_id}/events"
   http_method         = "POST"
@@ -127,7 +127,7 @@ resource "aws_cloudwatch_event_api_destination" "newrelic" {
 }
 
 resource "aws_cloudwatch_event_connection" "newrelic" {
-  name               = "NewRelic"
+  name               = "NewRelic-${local.normalized_domain}"
   authorization_type = "API_KEY"
 
   auth_parameters {

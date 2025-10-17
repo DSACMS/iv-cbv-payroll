@@ -11,7 +11,7 @@ class Webhooks::Pinwheel::EventsController < ApplicationController
   DUMMY_API_KEY = "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
 
   def create
-    @payroll_account = @cbv_flow.payroll_accounts.find_or_create_by(type: :pinwheel, pinwheel_account_id: params["payload"]["account_id"]) do |new_payroll_account|
+    @payroll_account = @cbv_flow.payroll_accounts.find_or_create_by(type: :pinwheel, aggregator_account_id: params["payload"]["account_id"]) do |new_payroll_account|
       new_payroll_account.supported_jobs = get_supported_jobs(params["payload"]["platform_id"])
     end
 
@@ -53,7 +53,8 @@ class Webhooks::Pinwheel::EventsController < ApplicationController
 
   def process_webhook_event
     if @webhook_event.event_name == "account.added"
-      event_logger.track("ApplicantCreatedPinwheelAccount", request, {
+      event_logger.track(TrackEvent::ApplicantCreatedPinwheelAccount, request, {
+        time: Time.now.to_i,
         cbv_applicant_id: @cbv_flow.cbv_applicant_id,
         cbv_flow_id: @cbv_flow.id,
         client_agency_id: @cbv_flow.client_agency_id,
@@ -78,7 +79,8 @@ class Webhooks::Pinwheel::EventsController < ApplicationController
       paystub_hours = report.paystubs.filter_map(&:hours).map(&:to_f)
       paystub_gross_pay_amounts = report.paystubs.filter_map(&:gross_pay_amount)
 
-      event_logger.track("ApplicantFinishedPinwheelSync", request, {
+      event_logger.track(TrackEvent::ApplicantFinishedPinwheelSync, request, {
+        time: Time.now.to_i,
         cbv_applicant_id: @cbv_flow.cbv_applicant_id,
         cbv_flow_id: @cbv_flow.id,
         client_agency_id: @cbv_flow.client_agency_id,
@@ -107,7 +109,6 @@ class Webhooks::Pinwheel::EventsController < ApplicationController
         identity_phone_numbers_count: report.identities.sum { |i| i.phone_numbers.length },
         identity_zip_code: report.identities.first&.zip_code,
         identity_age_range: get_age_range(report.identities.first&.date_of_birth),
-        identity_age_range_applicant: get_age_range(@cbv_flow.cbv_applicant.date_of_birth),
         identity_account_id: report.identities.first&.account_id,
 
         # Income fields
@@ -143,6 +144,7 @@ class Webhooks::Pinwheel::EventsController < ApplicationController
         # Employment fields
         employment_success: @payroll_account.job_succeeded?("employment"),
         employment_supported: @payroll_account.supported_jobs.include?("employment"),
+        employment_count: report.employments.length,
         employment_status: report.employments.first&.status,
         employment_employer_name: report.employments.first&.employer_name,
         employment_account_source: report.employments.first&.account_source,
@@ -170,30 +172,27 @@ class Webhooks::Pinwheel::EventsController < ApplicationController
   rescue => ex
     raise ex unless Rails.env.production?
 
-    Rails.logger.error "Unable to track event (in #{self.class.name}): #{ex}"
+    Rails.logger.error "Unable to process webhook event (in #{self.class.name}): #{ex}"
   end
 
   def validate_useful_report_requirements(report)
     report_is_valid = report.valid?(:useful_report)
     if report_is_valid
-      event_logger.track("ApplicantReportMetUsefulRequirements", request,
+      event_logger.track(TrackEvent::ApplicantReportMetUsefulRequirements, request,
+        time: Time.now.to_i,
         cbv_applicant_id: @cbv_flow.cbv_applicant_id,
         cbv_flow_id: @cbv_flow.id,
         invitation_id: @cbv_flow.cbv_flow_invitation_id
       )
     else
-      event_logger.track("ApplicantReportFailedUsefulRequirements", request,
+      event_logger.track(TrackEvent::ApplicantReportFailedUsefulRequirements, request,
+        time: Time.now.to_i,
         cbv_applicant_id: @cbv_flow.cbv_applicant_id,
         cbv_flow_id: @cbv_flow.id,
         invitation_id: @cbv_flow.cbv_flow_invitation_id,
         errors: report.errors.full_messages.join(", ")
       )
     end
-  rescue => ex
-    raise ex unless Rails.env.production?
-
-    Rails.logger.error "Unable to track event (in #{self.class.name}): #{ex}"
-  ensure
-    return report_is_valid
+    report_is_valid
   end
 end

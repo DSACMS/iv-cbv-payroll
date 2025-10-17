@@ -14,6 +14,12 @@ namespace :az_des do
 
   desc "deliver csv summary of cases sent to az_des"
   task deliver_csv_reports: :environment do
+    config = ClientAgency::AzDes::Configuration.sftp_transmission_configuration
+    unless config.fetch("csv_summary_reports_enabled", true)
+      puts "AZ DES CSV summary delivery disabled, not enqueuing job"
+      next
+    end
+
     time_zone = "America/Phoenix"
     now = Time.find_zone(time_zone).now
     start_time = now.yesterday.change(hour: 8)
@@ -32,5 +38,11 @@ namespace :az_des do
       puts "  CbvFlow id = #{cbv_flow.id}"
       MatchAgencyNamesJob.perform_now(cbv_flow.id)
     end
+  end
+
+  desc "redact case numbers"
+  task redact_case_numbers: :environment do
+    puts "Redacting case-numbers..."
+    DataRetentionService.redact_case_numbers_by_agency("az_des")
   end
 end

@@ -8,11 +8,10 @@ class Cbv::SessionsController < Cbv::BaseController
 
   def end
     if params[:timeout] == "true"
-      track_timeout_event
       flash[:notice] = t("cbv.error_missing_token_html")
     end
 
-    session[:cbv_flow_id] = nil
+    reset_cbv_session!
     redirect_to root_url
   end
 end

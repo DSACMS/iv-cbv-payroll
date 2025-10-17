@@ -125,6 +125,13 @@ class UswdsFormBuilder < ActionView::Helpers::FormBuilder
     text_field(attribute, options.merge(value: value, group_options: group_options))
   end
 
+  def memorable_date(attribute, options = {})
+    legend = options.delete(:legend)
+    hint = options.delete(:hint)
+
+    @template.render(MemorableDateComponent.new(form: self, attribute: attribute, legend: legend, hint: hint))
+  end
+
   def field_error(attribute)
     return unless has_error?(attribute)
     error_messages = object.errors.messages_for(attribute)

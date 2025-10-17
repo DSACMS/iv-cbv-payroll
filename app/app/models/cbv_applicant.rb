@@ -29,6 +29,12 @@ class CbvApplicant < ApplicationRecord
     sti_class_for(client_agency_id).const_get(:VALID_ATTRIBUTES)
   end
 
+  def self.build_agency_partner_metadata(client_agency_id, &value_provider)
+    valid_attributes_for_agency(client_agency_id).each_with_object({}) do |attr, hash|
+      hash[attr.to_s] = value_provider.call(attr)
+    end
+  end
+
   has_many :cbv_flows
   has_many :cbv_flow_invitations
 
@@ -51,7 +57,14 @@ class CbvApplicant < ApplicationRecord
   }
 
   def date_of_birth=(value)
-    self[:date_of_birth] = parse_date(value)
+    if value.is_a?(Hash)
+      day = value["day"].to_i
+      month = value["month"].to_i
+      year = value["year"].to_i
+      self[:date_of_birth] = Date.new(year, month, day) rescue nil
+    else
+      self[:date_of_birth] = parse_date(value)
+    end
   end
 
   def snap_application_date=(value)
@@ -88,7 +101,15 @@ class CbvApplicant < ApplicationRecord
 
   def set_applicant_attributes
     @applicant_attributes = agency_config&.applicant_attributes&.compact&.keys&.map(&:to_sym) || []
+
     @required_applicant_attributes = get_required_applicant_attributes
+  end
+
+  # Reset the applicant attributes to nil by removing any non-symbol keys i.e. { date_of_birth: [ :day, :month, :year ] }
+  # and then setting the attributes to nil.
+  def reset_applicant_attributes
+    clear_attributes = applicant_attributes.reject { |key| !key.is_a?(Symbol) }.index_with(nil)
+    update!(clear_attributes)
   end
 
   def is_applicant_attribute_required?(attribute)

@@ -12,11 +12,23 @@ export const trackUserAction = async (eventName, attributes = {}) => {
   })
 }
 
-export const fetchPinwheelToken = (response_type, id, locale) => {
-  return fetchInternal(PINWHEEL_TOKENS_GENERATE, {
+export const fetchPinwheelToken = async (response_type, id, locale) => {
+  const response = await fetch(PINWHEEL_TOKENS_GENERATE, {
     method: "post",
+    headers: {
+      "X-CSRF-Token": CSRF.token,
+      "Content-Type": "application/json",
+    },
+    // Keep payload shape consistent with existing backend handling
     body: JSON.stringify({ response_type, id, locale }),
   })
+
+  if (response.redirected) {
+    window.location.href = response.url
+    return
+  }
+
+  return response.json()
 }
 
 export const fetchArgyleToken = async (itemId) => {
@@ -26,13 +38,13 @@ export const fetchArgyleToken = async (itemId) => {
       "X-CSRF-Token": CSRF.token,
       "Content-Type": "application/json",
     },
-    body: JSON.stringify({item_id: itemId})
+    body: JSON.stringify({ item_id: itemId }),
   })
 
   if (response.redirected) {
     window.location.href = response.url
     return
   }
-  
+
   return response.json()
 }

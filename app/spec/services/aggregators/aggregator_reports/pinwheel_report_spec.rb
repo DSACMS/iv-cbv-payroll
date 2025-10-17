@@ -10,7 +10,7 @@ RSpec.describe Aggregators::AggregatorReports::PinwheelReport, type: :service do
   let(:days_ago_to_fetch_for_gig) { 90 }
 
   let!(:payroll_account) do
-    create(:payroll_account, :pinwheel_fully_synced, pinwheel_account_id: account)
+    create(:payroll_account, :pinwheel_fully_synced, aggregator_account_id: account)
   end
 
   let(:pinwheel_service) { Aggregators::Sdk::PinwheelService.new(:sandbox) }
@@ -164,7 +164,7 @@ RSpec.describe Aggregators::AggregatorReports::PinwheelReport, type: :service do
                                                account_id: account,
                                                compensation_amount: 1000.0,
                                                compensation_unit: "hourly",
-                                               pay_frequency: "bi-weekly"
+                                               pay_frequency: "biweekly"
                                              )
 
         expect(summary[account][:employment]).to have_attributes(

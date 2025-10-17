@@ -20,8 +20,8 @@ class Cbv::SubmitsController < Cbv::BaseController
     respond_to do |format|
       format.html
       format.pdf do
-        event_logger.track("ApplicantDownloadedIncomePDF", request, {
-          timestamp: Time.now.to_i,
+        event_logger.track(TrackEvent::ApplicantDownloadedIncomePDF, request, {
+          time: Time.now.to_i,
           client_agency_id: current_agency&.id,
           cbv_applicant_id: @cbv_flow.cbv_applicant_id,
           cbv_flow_id: @cbv_flow.id,
@@ -35,12 +35,12 @@ class Cbv::SubmitsController < Cbv::BaseController
             is_caseworker: allow_caseworker_override_param? && params[:is_caseworker],
             aggregator_report: @aggregator_report
           },
-          footer: { right: "Income Verification Report | Page [page] of [topage]", font_size: 10 },
-          margin:  {
-            top:               10,
-            bottom:            10,
-            left:              10,
-            right:             10
+          footer: { right: t(".pdf.footer.page_footer"), font_size: 10 },
+          margin: {
+            top: 10,
+            bottom: 10,
+            left: 10,
+            right: 10
           }
       end
     end
@@ -83,8 +83,8 @@ class Cbv::SubmitsController < Cbv::BaseController
   end
 
   def track_accessed_submit_event(cbv_flow)
-    event_logger.track("ApplicantAccessedSubmitPage", request, {
-      timestamp: Time.now.to_i,
+    event_logger.track(TrackEvent::ApplicantAccessedSubmitPage, request, {
+      time: Time.now.to_i,
       client_agency_id: current_agency&.id,
       cbv_flow_id: cbv_flow.id,
       cbv_applicant_id: cbv_flow.cbv_applicant_id,
@@ -92,8 +92,6 @@ class Cbv::SubmitsController < Cbv::BaseController
       flow_started_seconds_ago: (Time.now - cbv_flow.created_at).to_i,
       locale: I18n.locale
     })
-  rescue => ex
-    Rails.logger.error "Unable to track event (ApplicantAccessedIncomeSummary): #{ex}"
   end
 
   def generate_confirmation_code(cbv_flow)

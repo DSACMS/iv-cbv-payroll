@@ -12,9 +12,10 @@ locals {
     DOCKERIZED = "true"
     # LOG_LEVEL               = "info"
     # DB_CONNECTION_POOL_SIZE = 5
+  }
 
-    # LA LDH pilot configuration
-    LA_LDH_PILOT_ENABLED = tostring(var.la_ldh_pilot_enabled)
+  ssm_environment_variables = {
+    LA_LDH_PILOT_ENABLED = "/service/${var.app_name}-${var.environment}/la-ldh-pilot-enabled"
   }
 
   # Configuration for secrets
@@ -82,9 +83,17 @@ locals {
 
 
     # Transmission Configuration:
-    LA_LDH_EMAIL = {
+    LA_LDH_INCOME_REPORT_URL = {
       manage_method     = "manual"
-      secret_store_name = "/service/${var.app_name}-${var.environment}/la-ldh-email"
+      secret_store_name = "/service/${var.app_name}-${var.environment}/la-ldh-income-report-url"
+    },
+    LA_LDH_INCOME_REPORT_APIKEY = {
+      manage_method     = "manual"
+      secret_store_name = "/service/${var.app_name}-${var.environment}/la-ldh-income-report-apikey"
+    },
+    LA_LDH_INCOME_REPORT_ACCOUNTCODE = {
+      manage_method     = "manual"
+      secret_store_name = "/service/${var.app_name}-${var.environment}/la-ldh-income-report-accountcode"
     },
 
     # Feature Flags:

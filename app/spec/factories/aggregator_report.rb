@@ -33,7 +33,7 @@ FactoryBot.define do
         status: "employed",
         employment_type: :w2,
         account_source: "pinwheel_payroll_provider"
-    )
+      )
     ] }
     paystubs { [
       Aggregators::ResponseObjects::Paystub.new(
@@ -53,7 +53,7 @@ FactoryBot.define do
             category: "tax",
             amount: 111.11,
           )
-      ]),
+        ]),
       Aggregators::ResponseObjects::Paystub.new(
         account_id: "account1",
         gross_pay_amount: 1611.11,
@@ -76,7 +76,7 @@ FactoryBot.define do
             category: "Empty deduction",
             amount: 0.00,
           )
-      ])
+        ])
     ] }
     payroll_accounts { [] }
 
@@ -86,7 +86,61 @@ FactoryBot.define do
 
     trait :with_pinwheel_account do
       payroll_accounts { [
-        create(:payroll_account, :pinwheel_fully_synced, pinwheel_account_id: "account1")
+        create(:payroll_account, :pinwheel_fully_synced, aggregator_account_id: "account1")
+      ] }
+    end
+
+    trait :hydrated do
+      account_name = "account1"
+      full_name = "Cool Guy"
+      ssn = "XXX-XX-1234"
+      employer_name = "Cool Company"
+      employment_status = "inactive"
+      employer_phone_number = "604-555-1234"
+      pay_period_start = Date.new(2014, 1, 1)
+      pay_date = pay_period_start.iso8601
+      pay_period_end = Date.new(2014, 1, 2)
+      pay = 12345
+      hours_paid = 12.0
+      identities { [
+        Aggregators::ResponseObjects::Identity.new(
+          account_id: account_name,
+          full_name: full_name,
+          ssn: ssn,
+        )
+      ] }
+      employments { [
+        Aggregators::ResponseObjects::Employment.new(
+          account_id: account_name,
+          employer_name: employer_name,
+          start_date: Date.new(2014, 1, 1).iso8601,
+          termination_date: Date.new(2014, 1, 2).iso8601,
+          status: employment_status,
+          employment_type: "gig",
+          account_source: "pinwheel_payroll_provider",
+          employer_phone_number: employer_phone_number,
+          employer_address: "1234 Main St Vancouver BC V5K 0A1",
+        )
+      ] }
+      incomes { [
+        Aggregators::ResponseObjects::Income.new(
+          account_id: account_name,
+          pay_frequency: "variable",
+          compensation_amount: 100,
+          compensation_unit: "hour"
+        )
+      ] }
+      paystubs { [
+        Aggregators::ResponseObjects::Paystub.new(
+          account_id: account_name,
+          gross_pay_amount: pay,
+          net_pay_amount: pay,
+          gross_pay_ytd: pay,
+          pay_period_start: pay_period_start,
+          pay_period_end: pay_period_end,
+          pay_date: pay_date,
+          hours: hours_paid
+        )
       ] }
     end
   end
@@ -104,7 +158,7 @@ FactoryBot.define do
       Aggregators::ResponseObjects::Identity.new(
         account_id: "argyle_report1",
         full_name: "John Smith."
-    ) ]}
+      ) ] }
     incomes { [
       Aggregators::ResponseObjects::Income.new(
         account_id: "argyle_report1",
@@ -122,7 +176,7 @@ FactoryBot.define do
         status: "employed",
         employment_type: :w2,
         account_source: "argyle_sandbox"
-    )
+      )
     ] }
     paystubs { [
       Aggregators::ResponseObjects::Paystub.new(
@@ -142,7 +196,7 @@ FactoryBot.define do
             category: "tax",
             amount: 100.00,
           )
-      ]),
+        ]),
       Aggregators::ResponseObjects::Paystub.new(
         account_id: "argyle_report1",
         gross_pay_amount: 500.00,
@@ -164,7 +218,7 @@ FactoryBot.define do
             category: "Empty deduction",
             amount: 0.00,
           )
-      ])
+        ])
     ] }
     payroll_accounts { [] }
 
@@ -174,7 +228,7 @@ FactoryBot.define do
 
     trait :with_argyle_account do
       payroll_accounts { [
-        create(:payroll_account, :argyle_fully_synced, pinwheel_account_id: "argyle_report1", type: "argyle")
+        create(:payroll_account, :argyle_fully_synced, aggregator_account_id: "argyle_report1", type: "argyle")
       ] }
     end
   end

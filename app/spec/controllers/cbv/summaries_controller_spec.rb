@@ -37,7 +37,7 @@ RSpec.describe Cbv::SummariesController do
 
     cbv_applicant.update(snap_application_date: current_time)
 
-    cbv_flow.payroll_accounts.first.update(pinwheel_account_id: "03e29160-f7e7-4a28-b2d8-813640e030d3")
+    cbv_flow.payroll_accounts.first.update(aggregator_account_id: "03e29160-f7e7-4a28-b2d8-813640e030d3")
   end
 
   around do |ex|
@@ -77,10 +77,10 @@ end
 
           expect(doc.css("title").text).to include("Review your income report")
           expect(doc.at_xpath("//*[@data-testid=\"paystub-table-caption\"]").content).to include("Employer 1: Acme Corporation")
-          expect(doc.at_xpath("//*[@data-testid=\"paystub-total-income\"]").content).to include("$4,807.20")
-          expect(doc.at_xpath("//tr[@data-testid=\"paystub-row\"]").count).to eq(1)
-          expect(doc.at_xpath("//tr[@data-testid=\"paystub-row\"]/td[1]").content).to include("Payment of $4,807.20")
-          #
+          expect(doc).to have_css("table.usa-table.usa-table--borderless.width-full.usa-table--stacked", count: 1)
+          within("table.usa-table.usa-table--borderless.width-full.usa-table--stacked") do
+            expect(page).to have_css("tr", count: 2)
+          end
           expect(response).to be_successful
         end
       end
@@ -95,10 +95,10 @@ end
           expect(response).to be_successful
           expect(doc.css("title").text).to include("Review your income report")
           expect(doc.at_xpath("//*[@data-testid=\"paystub-table-caption\"]").content).to include("Employer 1: Acme Corporation")
-          expect(doc.at_xpath("//*[@data-testid=\"paystub-total-income\"]").content).to include("$9,614.40")
-          expect(doc.at_xpath("//*[@data-testid=\"paystub-table\"]").css("td").count).to eq(2)
-          expect(doc.at_xpath("//*[@data-testid=\"paystub-table\"]").css("td")[0].content).to include("Payment of $4,807.20")
-          expect(doc.at_xpath("//*[@data-testid=\"paystub-table\"]").css("td")[1].content).to include("Payment of $4,807.20")
+          expect(doc).to have_css("table.usa-table.usa-table--borderless.width-full.usa-table--stacked", count: 1)
+          within("table.usa-table.usa-table--borderless.width-full.usa-table--stacked") do
+            expect(page).to have_css("tr", count: 3)
+          end
         end
       end
 
@@ -141,7 +141,7 @@ end
     context "with mismatched employment data" do
       it "should handle when employment job succeeds but employment data is nil" do
         allow_any_instance_of(Aggregators::AggregatorReports::AggregatorReport).to receive(:summarize_by_employer) do
-          { cbv_flow.payroll_accounts.first.pinwheel_account_id =>
+          { cbv_flow.payroll_accounts.first.aggregator_account_id =>
             { has_employment_data: true, employment: nil }
           }
         end

@@ -1,23 +1,21 @@
 <h1><%= t(".title") %></h1>
 
-<div class="usa-prose">
-  <p>
-    <%= t(".description") %>
-  </p>
+<p>
+  <%= t(".description") %>
+</p>
 
-  <ol>
-    <li><%= t(".option_1") %></li>
-    <li><%= t(".option_2") %></li>
-    <li><%= t(".option_3", agency_acronym: agency_translation("shared.agency_acronym")) %></li>
-    <% if @cbv_flow.has_account_with_required_data? %>
-      <li><%= t("cbv.missing_results.show.continue_to_review", agency_acronym: agency_translation("shared.agency_acronym")) %></li>
-    <% end %>
-  </ol>
-</div>
+<ol>
+  <li><%= t(".option_1") %></li>
+  <li><%= t(".option_2") %></li>
+  <li><%= t(".option_3", agency_acronym: agency_translation("shared.agency_acronym")) %></li>
+  <% if @cbv_flow.has_account_with_required_data? %>
+    <li><%= t("cbv.missing_results.show.continue_to_review", agency_acronym: agency_translation("shared.agency_acronym")) %></li>
+  <% end %>
+</ol>
 
 <ul class="usa-button-group margin-top-5">
   <li class="usa-button-group__item">
-    <%= link_to t(".back_to_search"), cbv_flow_employer_search_path, class: "usa-button usa-button--outline", data: { turbo: "false" } %>
+    <%= link_to t(".back_to_search"), cbv_flow_employer_search_path, class: "usa-button usa-button--outline" %>
   </li>
   <li class="usa-button-group__item">
     <% if @cbv_flow.has_account_with_required_data? %>

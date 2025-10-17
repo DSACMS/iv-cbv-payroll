@@ -4,25 +4,16 @@
   <%= header %>
 </h1>
 
-<div class="usa-prose">
-  <p>
-    <%= t(".subheader",
-        start_date: format_date(@aggregator_report.from_date),
-        end_date: format_date(@aggregator_report.to_date),
-        agency_acronym: agency_translation("shared.agency_acronym"),
-        report_data_range: report_data_range(@aggregator_report, params[:user][:account_id]),
-        benefit: agency_translation("shared.benefit"),
-        reporting_purpose: agency_translation("shared.reporting_purpose")
-      ) %>
-  </p>
-</div>
-
-<% if @payroll_account_report.paystubs.any? %>
-  <h2><%= t(".total_gross_income", amount: format_money(gross_pay), report_data_range: report_data_range(@aggregator_report, params[:user][:account_id])) %></h2>
-  <div class="usa-prose">
-    <p><%= t(".total_gross_description") %></p>
-  </div>
-<% end %>
+<p>
+  <%= t(".subheader_html",
+      start_date: format_date(@aggregator_report.from_date),
+      end_date: format_date(@aggregator_report.to_date),
+      agency_acronym: agency_translation("shared.agency_acronym"),
+      report_data_range: report_data_range(@aggregator_report, params[:user][:account_id]),
+      benefit: agency_translation("shared.benefit"),
+      reporting_purpose: agency_translation("shared.reporting_purpose")
+    ) %>
+</p>
 
 <%= render(Report::EmploymentDetailsTableComponent.new(@aggregator_report, @payroll_account, show_income: @is_w2_worker)) %>
 
@@ -30,7 +21,7 @@
   <% if @payroll_account_report.paystubs.any? %>
     <%= render(Report::W2MonthlySummaryTableComponent.new(@aggregator_report, @payroll_account)) %>
   <% else %>
-    <%= render AlertComponent.new(type: :info, heading: t(".none_found", report_data_range: report_data_range(@aggregator_report, params[:user][:account_id])), class: "margin-top-5") do %>
+    <%= render Uswds::Alert.new(type: :info, heading: t(".none_found", report_data_range: report_data_range(@aggregator_report, params[:user][:account_id])), class: "margin-top-5") do %>
       <%= t(".none_found_description", report_data_range: report_data_range(@aggregator_report, params[:user][:account_id])) %>
     <% end %>
   <% end %>
@@ -40,10 +31,10 @@
 <% end %>
 <div class="usa-form-group margin-top-5">
   <h2><%= t(".additional_information_header") %></h2>
-    <%= form_with(model: @cbv_flow, url: cbv_flow_payment_details_path, method: :patch) do |form| %>
+  <%= form_with(model: @cbv_flow, url: cbv_flow_payment_details_path, method: :patch, class: "usa-form usa-form--large") do |form| %>
     <%= hidden_field_tag "user[account_id]", params[:user][:account_id] %>
     <%= form.label :additional_information, t(".additional_information_label", agency_acronym: agency_translation("shared.agency_acronym")), class: "usa-label" %>
     <%= form.text_area :additional_information, class: "usa-textarea", rows: 5, value: @account_comment %>
-    <%= form.submit t(".continue"), class: "usa-button usa-button--primary margin-top-3" %>
+    <%= form.submit t(".continue"), class: "usa-button usa-button--primary" %>
   <% end %>
 </div>

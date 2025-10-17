@@ -7,7 +7,7 @@ RSpec.describe Aggregators::AggregatorReports::ArgyleReport, type: :service do
 
   let(:account) { "abc123" }
   let!(:payroll_account) do
-    create(:payroll_account, :argyle_fully_synced, pinwheel_account_id: account)
+    create(:payroll_account, :argyle_fully_synced, aggregator_account_id: account)
   end
   let(:days_ago_to_fetch) { 90 }
   let(:days_ago_to_fetch_for_gig) { 90 }
@@ -361,6 +361,42 @@ RSpec.describe Aggregators::AggregatorReports::ArgyleReport, type: :service do
                                                                included_range_start: Date.parse("2025-01-02"),
                                                                included_range_end: Date.parse("2025-01-31")
                                                              })
+      end
+    end
+
+    context "busy_joe, an employee with multiple employments" do
+      let(:account) { "01959b15-8b7f-5487-212d-2c0f50e3ec96" }
+      let!(:payroll_account_2) do
+        create(:payroll_account, :argyle_fully_synced, aggregator_account_id: account)
+      end
+
+      let(:argyle_report) { Aggregators::AggregatorReports::ArgyleReport.new(
+        payroll_accounts: [ payroll_account_2 ],
+        argyle_service: argyle_service,
+        days_to_fetch_for_w2: days_ago_to_fetch,
+        days_to_fetch_for_gig: days_ago_to_fetch) }
+
+      let(:identities_json) { argyle_load_relative_json_file('busy_joe', 'request_identity.json') }
+      let(:employments_json) { argyle_load_relative_json_file('busy_joe', 'request_employment.json') }
+      let(:paystubs_json) { argyle_load_relative_json_file('busy_joe', 'request_paystubs.json') }
+      let(:account_json) { argyle_load_relative_json_file('busy_joe', 'request_accounts.json') }
+
+      before do
+        allow(argyle_service).to receive(:fetch_identities_api).and_return(identities_json)
+        allow(argyle_service).to receive(:fetch_employments_api).and_return(employments_json)
+        allow(argyle_service).to receive(:fetch_paystubs_api).and_return(paystubs_json)
+        allow(argyle_service).to receive(:fetch_account_api).and_return(account_json)
+        allow(argyle_service).to receive(:fetch_gigs_api).and_return(nil)
+        argyle_report.fetch
+      end
+
+      it "returns a hash of monthly totals" do
+        monthly_summary_all_accounts = argyle_report.summarize_by_month(from_date: Date.parse("2010-01-08"), to_date: Date.parse("2026-03-31"))
+
+        expect(monthly_summary_all_accounts.keys).to match_array([ account ])
+        monthly_summary = monthly_summary_all_accounts[account]
+        expect(monthly_summary.keys).to match_array([ "2025-03" ])
+        expect(monthly_summary["2025-03"][:paystubs].length).to eq(2)
       end
     end
   end

@@ -28,7 +28,7 @@ RSpec.describe Report::GigMonthlySummaryTableComponent, type: :component do
         :pinwheel_fully_synced,
         with_errored_jobs: errored_jobs,
         cbv_flow: cbv_flow,
-        pinwheel_account_id: account_id,
+        aggregator_account_id: account_id,
         supported_jobs: supported_jobs,
         )
     end
@@ -55,7 +55,7 @@ RSpec.describe Report::GigMonthlySummaryTableComponent, type: :component do
       end
 
       it "includes table header" do
-        expect(subject.css("h3").to_html).to include "Monthly Summary"
+        expect(subject.css("h2").to_html).to include "Monthly summary"
         expect(subject.css("thead tr.subheader-row th").length).to eq(3)
       end
 
@@ -104,7 +104,7 @@ RSpec.describe Report::GigMonthlySummaryTableComponent, type: :component do
         :payroll_account,
         :argyle_fully_synced,
         cbv_flow: cbv_flow,
-        pinwheel_account_id: account_id
+        aggregator_account_id: account_id
       )
     end
 
@@ -130,7 +130,7 @@ RSpec.describe Report::GigMonthlySummaryTableComponent, type: :component do
       end
 
       it "includes table header" do
-        expect(subject.css("h3").to_html).to include "Monthly Summary"
+        expect(subject.css("h2").to_html).to include "Monthly summary"
         expect(subject.css("thead tr.subheader-row th").length).to eq(4)
       end
 
@@ -188,18 +188,17 @@ RSpec.describe Report::GigMonthlySummaryTableComponent, type: :component do
           expect(employer_name).to eq("Lyft Driver")
         end
 
-        it "returns the correct employer name for the specified account id" do
+        it "raises an error when the wrong id is used and no employments match" do
           invalid_payroll_account = create(
             :payroll_account,
             :argyle_fully_synced,
             cbv_flow: cbv_flow,
-            pinwheel_account_id: "wrong-id"
+            aggregator_account_id: "wrong-id"
           )
-          # Initializing the component under test
-          employer_name = described_class.new(argyle_report, invalid_payroll_account).employer_name
-
-          # Verifying the method returns the correct employer name
-          expect(employer_name).to be_nil
+          expect {
+            # Initializing the component under test
+            described_class.new(argyle_report, invalid_payroll_account).employer_name
+          }.to raise_error(RuntimeError, "No employments found that match account_id wrong-id")
         end
       end
 
@@ -257,7 +256,7 @@ RSpec.describe Report::GigMonthlySummaryTableComponent, type: :component do
       end
 
       it "does not render table when no data found" do
-        expect(subject.css("h3").to_html).not_to include "Monthly Summary"
+        expect(subject.css("h2").to_html).not_to include "Monthly summary"
         expect(subject.css("thead tr.subheader-row th").length).to eq(0)
       end
 
@@ -290,7 +289,7 @@ RSpec.describe Report::GigMonthlySummaryTableComponent, type: :component do
       end
 
       it "includes table header" do
-        expect(subject.css("h3").to_html).to include "Monthly Summary"
+        expect(subject.css("h2").to_html).to include "Monthly summary"
         expect(subject.css("thead tr.subheader-row th").length).to eq(4)
       end
 
@@ -346,7 +345,7 @@ RSpec.describe Report::GigMonthlySummaryTableComponent, type: :component do
       end
 
       it "includes table header" do
-        expect(subject.css("h3").to_html).to include "Monthly Summary"
+        expect(subject.css("h2").to_html).to include "Monthly summary"
         expect(subject.css("thead tr.subheader-row th").length).to eq(3)
       end
 
@@ -379,5 +378,30 @@ RSpec.describe Report::GigMonthlySummaryTableComponent, type: :component do
         expect(subject.to_html).to include '"Total hours worked" sums the time'
       end
     end
+
+    context "with gig hours but no paystubs" do
+  let(:argyle_report) { Aggregators::AggregatorReports::ArgyleReport.new(payroll_accounts: [ payroll_account ], argyle_service: argyle_service, days_to_fetch_for_w2: 90, days_to_fetch_for_gig: 182) }
+
+  before do
+    argyle_stub_request_identities_response("bob")
+    argyle_stub_request_gigs_response("bob")
+    argyle_stub_request_account_response("bob")
+    argyle_stub_request_paystubs_response("empty")
+    argyle_report.fetch
+  end
+
+  around do |ex|
+    Timecop.freeze(Time.local(2025, 04, 1, 0, 0), &ex)
+  end
+
+  subject { render_inline(described_class.new(argyle_report, payroll_account)) }
+
+  it "shows hours in monthly summary but no payment accordion" do
+    expect(subject.css('h2').text).to include("Monthly summary")
+    expect(subject.css('tbody tr').length).to be > 0
+
+    expect(subject.css('button.usa-accordion__button')).to be_empty
+  end
+end
   end
 end
