@@ -33,6 +33,7 @@ RSpec.describe Cbv::PaymentDetailsController do
         supported_jobs: supported_jobs,
       )
     end
+    let!(:paystubs_response) { pinwheel_stub_request_end_user_paystubs_response }
 
     before do
       session[:cbv_flow_id] = cbv_flow.id
@@ -40,7 +41,6 @@ RSpec.describe Cbv::PaymentDetailsController do
       pinwheel_stub_request_end_user_accounts_response
       pinwheel_stub_request_end_user_account_response
       pinwheel_stub_request_platform_response
-      pinwheel_stub_request_end_user_paystubs_response
       pinwheel_stub_request_income_metadata_response if supported_jobs.include?("income")
       pinwheel_stub_request_employment_info_response
       pinwheel_stub_request_shifts_response if supported_jobs.include?("shifts")
@@ -53,8 +53,8 @@ RSpec.describe Cbv::PaymentDetailsController do
       end
 
       it "tracks events" do
-        allow(EventTrackingJob).to receive(:perform_later).with("CbvPageView", anything, anything)
-        expect(EventTrackingJob).to receive(:perform_later).with("ApplicantViewedPaymentDetails", anything, hash_including(
+        allow(EventTrackingJob).to receive(:perform_later).with(TrackEvent::CbvPageView, anything, anything)
+        expect(EventTrackingJob).to receive(:perform_later).with(TrackEvent::ApplicantViewedPaymentDetails, anything, hash_including(
             cbv_flow_id: cbv_flow.id,
             invitation_id: cbv_flow.cbv_flow_invitation_id,
             aggregator_account_id: payroll_account.id,
@@ -132,6 +132,18 @@ RSpec.describe Cbv::PaymentDetailsController do
           get :show, params: { user: { account_id: account_id } }
           expect(response.body).not_to include(comment)
         end
+      end
+    end
+
+    context "when report paystubs aren't present" do
+      it "tracks payments_length as 0" do
+        WebMock.remove_request_stub(paystubs_response)
+        allow(EventTrackingJob).to receive(:perform_later).with(TrackEvent::CbvPageView, anything, anything)
+        expect(EventTrackingJob).to receive(:perform_later).with(TrackEvent::ApplicantViewedPaymentDetails, anything, hash_including(
+          payments_length: 0,
+        ))
+
+        get :show, params: { user: { account_id: account_id } }
       end
     end
 
