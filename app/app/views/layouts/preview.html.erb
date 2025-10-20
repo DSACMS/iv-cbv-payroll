@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="<%= I18n.locale %>">
+  <head>
+    <title><%= content_for?(:title) ? yield(:title) : "" %> | Preview - SNAP Income Pilot</title>
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <%= csrf_meta_tags %>
+    <%= csp_meta_tag %>
+
+    <%= yield :head %>
+
+    <%= stylesheet_link_tag "application", "data-turbo-track": "reload" %>
+    <%= javascript_include_tag "application", "data-turbo-track": "reload", type: "module" %>
+
+    <style>
+      .preview-bar {
+        background: #fef0cd;
+        border-bottom: 2px solid #f9c642;
+        padding: 0.75rem 1rem;
+        position: sticky;
+        top: 0;
+        z-index: 1000;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+      }
+      .preview-bar__container {
+        max-width: 1200px;
+        margin: 0 auto;
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        flex-wrap: wrap;
+      }
+      .preview-bar__label {
+        font-weight: bold;
+        color: #1b1b1b;
+        font-size: 0.875rem;
+      }
+      .preview-bar__select {
+        padding: 0.5rem;
+        border: 1px solid #71767a;
+        border-radius: 4px;
+        font-size: 0.875rem;
+      }
+      .preview-bar__info {
+        margin-left: auto;
+        font-size: 0.75rem;
+        color: #71767a;
+      }
+    </style>
+  </head>
+
+  <body>
+    <!-- Preview Mode Top Bar -->
+    <div class="preview-bar">
+      <div class="preview-bar__container">
+        <span class="preview-bar__label">🔧 PREVIEW MODE</span>
+
+        <%= form_with url: request.path, method: :get, class: "display-flex", data: { controller: "preview-form" } do |f| %>
+          <label for="fixture_user" class="preview-bar__label margin-right-1">Mock User:</label>
+          <%= select_tag :fixture_user,
+              options_for_select(
+                [
+                  [ "Bob - Lyft Driver (default)", "bob" ],
+                  [ "Busy Joe", "busy_joe" ],
+                  [ "Empty - No Data", "empty" ],
+                  [ "Joe - Multiple Jobs", "joe" ],
+                  [ "John - Gig Worker", "john_loanseeker_gig" ],
+                  [ "Kim/Sarah", "kim" ],
+                  [ "Sarah", "sarah" ],
+                  [ "Tim", "tim" ]
+                ],
+                params[:fixture_user] || "bob"
+              ),
+              class: "preview-bar__select",
+              data: { action: "change->preview-form#submit" } %>
+
+          <label for="client_agency_id" class="preview-bar__label margin-left-2 margin-right-1">Agency:</label>
+          <%= select_tag :client_agency_id,
+              options_for_select(
+                [
+                  [ "Sandbox (default)", "sandbox" ],
+                  [ "Pennsylvania DHS", "pa_dhs" ],
+                  [ "Louisiana LDH", "la_ldh" ],
+                  [ "Arizona DES", "az_des" ]
+                ],
+                params[:client_agency_id] || "sandbox"
+              ),
+              class: "preview-bar__select",
+              data: { action: "change->preview-form#submit" } %>
+
+          <% if params[:is_caseworker] %>
+            <%= hidden_field_tag :is_caseworker, params[:is_caseworker] %>
+          <% end %>
+        <% end %>
+
+        <span class="preview-bar__info">
+          Agency: <%= params[:client_agency_id] || "sandbox" %> |
+          Flow ID: <%= @cbv_flow&.id || "N/A" %>
+        </span>
+      </div>
+    </div>
+
+    <div id="root">
+      <a class="usa-skipnav" href="#main-content"><%= t("shared.skip_link") %></a>
+      <%= render "application/header" %>
+      <main id="main-content">
+        <section class="grid-container usa-section">
+
+          <% if flash[:notice] %>
+            <%= render Uswds::Alert.new(heading: "Information", class: "margin-bottom-4") do %>
+              <%= flash[:notice].html_safe %>
+            <% end %>
+          <% end %>
+
+          <% if flash[:alert] %>
+            <%= render Uswds::Alert.new(type: :error, heading: flash[:alert_heading] || "Error", class: "margin-bottom-4") do %>
+              <%= flash[:alert].html_safe %>
+            <% end %>
+          <% end %>
+
+          <% if flash[:slim_alert].present? %>
+            <%= render Uswds::Alert.new(
+              heading: flash[:slim_alert][:heading],
+              type: flash[:slim_alert][:type]&.to_sym,
+              class: "margin-bottom-4"
+            ) do %>
+              <%= flash[:slim_alert][:message_html].html_safe %>
+            <% end %>
+          <% end %>
+
+          <%= yield %>
+        </section>
+      </main>
+      <%= render "application/footer" %>
+      <%= render "help/help_modal" if show_menu? %>
+    </div>
+  </body>
+</html>

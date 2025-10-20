@@ -51,6 +51,17 @@ Rails.application.routes.draw do
       # Session management
       post "session/refresh", to: "sessions#refresh", as: :session_refresh
       get "session/end", to: "sessions#end", as: :session_end
+
+      # Preview routes (non-production only)
+      scope "/preview", as: :preview do
+        get "employer_search", to: "preview#employer_search"
+        get "synchronizations", to: "preview#synchronizations"
+        get "payment_details", to: "preview#payment_details"
+        get "summary", to: "preview#summary"
+        get "submit", to: "preview#submit", defaults: { format: :html }
+        get "submit.pdf", to: "preview#submit", defaults: { format: :pdf }
+        get "submit_pdf_as_html", to: "preview#submit_pdf_as_html"
+      end
     end
 
     scope "/:client_agency_id", module: :caseworker, constraints: { client_agency_id: Regexp.union(Rails.application.config.client_agencies.client_agency_ids) } do
