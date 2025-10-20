@@ -166,5 +166,25 @@ RSpec.describe Api::ArgyleController do
         end
       end
     end
+
+    context "when the item is an ADP item" do
+      let(:cbv_flow) { create(:cbv_flow, argyle_user_id: argyle_user_id) }
+      let(:adp_item_id) { "item_000026933" }
+
+      before do
+        stub_create_user_token_response
+        argyle_stub_request_accounts_response('bob')
+      end
+
+      it "bypasses the resume_previous_argyle_account_connection check and returns a new token" do
+        # ADP items should be allowed to create a new connection even if the user
+        # has already connected an account
+        post :create, params: { item_id: adp_item_id }
+
+        expect(response).not_to be_redirect
+        expect(JSON.parse(response.body))
+          .to include("user" => { "user_token" => be_a(String) })
+      end
+    end
   end
 end
