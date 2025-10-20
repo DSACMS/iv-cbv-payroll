@@ -1,7 +1,7 @@
 {
   "name": "iv-cbv-payroll",
   "version": "",
-  "description": "",
+  "description": "Consent-Based Verification (CBV) is a prototype that allows benefit applicants to verify their income directly using payroll providers. It is currently being piloted for testing and validation purposes.",
   "longDescription": "",
   "status": "Production",
   "permissions": {
@@ -65,13 +65,13 @@
   "feedbackMechanism": "https://github.com/DSACMS/iv-cbv-payroll/issues",
   "AIUseCaseID": "0",
   "localisation": false,
-  "repositoryType": "",
-  "userInput": false,
+  "repositoryType": "application",
+  "userInput": true,
   "fismaLevel": "",
   "group": "CMS/OA/DSAC",
-  "projects": [],
+  "projects": ["income-verification-as-a-service"],
   "systems": [],
-  "subsetInHealthcare": [],
-  "userType": [],
-  "maturityModelTier": 0
+  "subsetInHealthcare": ["policy", "medicaid"],
+  "userType": ["patients", "government"],
+  "maturityModelTier": 4
 }
