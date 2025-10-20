@@ -88,7 +88,7 @@ es:
         header_bullet_3: Estar basado en una aplicación (Uber, Lyft, Instacart, etc)
         header_lead: Usted solo tiene que reportar los trabajos que tuvo en los últimos 90 días.
         header_sub_text_html: 'Usted puede usar esta herramienta para reportar ingresos de varios trabajos. Cada trabajo solo tiene que cumplir con <strong>uno</strong> de estos criterios:'
-        radio_no: false
+        radio_no: 'No'
         radio_yes: Sí
     applicant_informations:
       la_ldh:
