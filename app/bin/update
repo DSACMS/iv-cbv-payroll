@@ -1,7 +1,18 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
+upgrade_chromedriver() {
+  echo "Updating homebrew..."
+  brew update --quiet
+  echo "Upgrading chromedriver..."
+  HOMEBREW_NO_INSTALLED_DEPENDENTS_CHECK=1 brew upgrade chromedriver
+  xattr -dr com.apple.quarantine "$(which chromedriver)"
+}
+
+echo "==== npm install ============================================="
 npm install
+
+echo "==== ruby/bundle install ====================================="
 rbenv install --skip-existing || (
   echo "Failed to install ruby version. Updating ruby-build and retrying..."
   sleep 1
@@ -11,6 +22,23 @@ rbenv install --skip-existing || (
 )
 bundle install
 
+echo "==== database updates ========================================"
 bin/rails db:migrate
 
+echo "==== chromedriver ============================================"
+chrome_path='/Applications/Google Chrome.app/Contents/MacOS/Google Chrome'
+if [[ "$(uname)" == "Darwin" && -f "$chrome_path" ]]; then
+  chromedriver_version=$(chromedriver --version | sed -E 's/ChromeDriver ([0-9]+).*/\1/')
+  chrome_version=$("$chrome_path" --version | sed -E 's/Google Chrome ([0-9]+).*/\1/')
+  if [ "$chrome_version" != "$chromedriver_version" ]; then
+    echo "Chrome major version ($chrome_version) is different than chromedriver major version ($chromedriver_version). Upgrading..."
+    upgrade_chromedriver
+  else
+    echo "No upgrade necessary - chromedriver and Chrome are both version ${chrome_version}."
+  fi
+else
+  echo "Could not find Google Chrome in /Applications directory (or you're not on macOS). Skipping chromedriver updates."
+fi
+
+echo
 echo "Done. Run bin/dev to run the local development server."
