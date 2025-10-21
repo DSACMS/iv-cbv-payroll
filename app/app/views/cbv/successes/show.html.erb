@@ -84,7 +84,7 @@
         icon: "launch",
         class: "usa-button usa-button--outline",
         icon_position: :trailing,
-        url: feedbacks_path(form: "survey"),
+        url: feedbacks_path(form: "survey", referer: request.original_url),
         target: "_blank",
         rel: "noopener noreferrer"
       )) %>
