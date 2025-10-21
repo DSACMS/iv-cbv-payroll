@@ -1,0 +1,243 @@
+class WebhookEvent < ::ApplicationRecord
+  extend ::_ActiveRecord_Relation_ClassMethods[::WebhookEvent, ::WebhookEvent::ActiveRecord_Relation, ::Integer]
+
+  module GeneratedAttributeMethods
+    def id: () -> ::Integer
+
+    def id=: (::Integer) -> ::Integer
+
+    def id?: () -> bool
+
+    def id_changed?: () -> bool
+
+    def id_change: () -> [ ::Integer?, ::Integer? ]
+
+    def id_will_change!: () -> void
+
+    def id_was: () -> ::Integer?
+
+    def id_previously_changed?: () -> bool
+
+    def id_previous_change: () -> ::Array[::Integer?]?
+
+    def id_previously_was: () -> ::Integer?
+
+    def id_before_last_save: () -> ::Integer?
+
+    def id_change_to_be_saved: () -> ::Array[::Integer?]?
+
+    def id_in_database: () -> ::Integer?
+
+    def saved_change_to_id: () -> ::Array[::Integer?]?
+
+    def saved_change_to_id?: () -> bool
+
+    def will_save_change_to_id?: () -> bool
+
+    def restore_id!: () -> void
+
+    def clear_id_change: () -> void
+
+    def event_name: () -> ::String?
+
+    def event_name=: (::String?) -> ::String?
+
+    def event_name?: () -> bool
+
+    def event_name_changed?: () -> bool
+
+    def event_name_change: () -> [ ::String?, ::String? ]
+
+    def event_name_will_change!: () -> void
+
+    def event_name_was: () -> ::String?
+
+    def event_name_previously_changed?: () -> bool
+
+    def event_name_previous_change: () -> ::Array[::String?]?
+
+    def event_name_previously_was: () -> ::String?
+
+    def event_name_before_last_save: () -> ::String?
+
+    def event_name_change_to_be_saved: () -> ::Array[::String?]?
+
+    def event_name_in_database: () -> ::String?
+
+    def saved_change_to_event_name: () -> ::Array[::String?]?
+
+    def saved_change_to_event_name?: () -> bool
+
+    def will_save_change_to_event_name?: () -> bool
+
+    def restore_event_name!: () -> void
+
+    def clear_event_name_change: () -> void
+
+    def event_outcome: () -> ::String?
+
+    def event_outcome=: (::String?) -> ::String?
+
+    def event_outcome?: () -> bool
+
+    def event_outcome_changed?: () -> bool
+
+    def event_outcome_change: () -> [ ::String?, ::String? ]
+
+    def event_outcome_will_change!: () -> void
+
+    def event_outcome_was: () -> ::String?
+
+    def event_outcome_previously_changed?: () -> bool
+
+    def event_outcome_previous_change: () -> ::Array[::String?]?
+
+    def event_outcome_previously_was: () -> ::String?
+
+    def event_outcome_before_last_save: () -> ::String?
+
+    def event_outcome_change_to_be_saved: () -> ::Array[::String?]?
+
+    def event_outcome_in_database: () -> ::String?
+
+    def saved_change_to_event_outcome: () -> ::Array[::String?]?
+
+    def saved_change_to_event_outcome?: () -> bool
+
+    def will_save_change_to_event_outcome?: () -> bool
+
+    def restore_event_outcome!: () -> void
+
+    def clear_event_outcome_change: () -> void
+
+    def payroll_account_id: () -> ::Integer
+
+    def payroll_account_id=: (::Integer) -> ::Integer
+
+    def payroll_account_id?: () -> bool
+
+    def payroll_account_id_changed?: () -> bool
+
+    def payroll_account_id_change: () -> [ ::Integer?, ::Integer? ]
+
+    def payroll_account_id_will_change!: () -> void
+
+    def payroll_account_id_was: () -> ::Integer?
+
+    def payroll_account_id_previously_changed?: () -> bool
+
+    def payroll_account_id_previous_change: () -> ::Array[::Integer?]?
+
+    def payroll_account_id_previously_was: () -> ::Integer?
+
+    def payroll_account_id_before_last_save: () -> ::Integer?
+
+    def payroll_account_id_change_to_be_saved: () -> ::Array[::Integer?]?
+
+    def payroll_account_id_in_database: () -> ::Integer?
+
+    def saved_change_to_payroll_account_id: () -> ::Array[::Integer?]?
+
+    def saved_change_to_payroll_account_id?: () -> bool
+
+    def will_save_change_to_payroll_account_id?: () -> bool
+
+    def restore_payroll_account_id!: () -> void
+
+    def clear_payroll_account_id_change: () -> void
+
+    def created_at: () -> ::ActiveSupport::TimeWithZone
+
+    def created_at=: (::ActiveSupport::TimeWithZone) -> ::ActiveSupport::TimeWithZone
+
+    def created_at?: () -> bool
+
+    def created_at_changed?: () -> bool
+
+    def created_at_change: () -> [ ::ActiveSupport::TimeWithZone?, ::ActiveSupport::TimeWithZone? ]
+
+    def created_at_will_change!: () -> void
+
+    def created_at_was: () -> ::ActiveSupport::TimeWithZone?
+
+    def created_at_previously_changed?: () -> bool
+
+    def created_at_previous_change: () -> ::Array[::ActiveSupport::TimeWithZone?]?
+
+    def created_at_previously_was: () -> ::ActiveSupport::TimeWithZone?
+
+    def created_at_before_last_save: () -> ::ActiveSupport::TimeWithZone?
+
+    def created_at_change_to_be_saved: () -> ::Array[::ActiveSupport::TimeWithZone?]?
+
+    def created_at_in_database: () -> ::ActiveSupport::TimeWithZone?
+
+    def saved_change_to_created_at: () -> ::Array[::ActiveSupport::TimeWithZone?]?
+
+    def saved_change_to_created_at?: () -> bool
+
+    def will_save_change_to_created_at?: () -> bool
+
+    def restore_created_at!: () -> void
+
+    def clear_created_at_change: () -> void
+
+    def updated_at: () -> ::ActiveSupport::TimeWithZone
+
+    def updated_at=: (::ActiveSupport::TimeWithZone) -> ::ActiveSupport::TimeWithZone
+
+    def updated_at?: () -> bool
+
+    def updated_at_changed?: () -> bool
+
+    def updated_at_change: () -> [ ::ActiveSupport::TimeWithZone?, ::ActiveSupport::TimeWithZone? ]
+
+    def updated_at_will_change!: () -> void
+
+    def updated_at_was: () -> ::ActiveSupport::TimeWithZone?
+
+    def updated_at_previously_changed?: () -> bool
+
+    def updated_at_previous_change: () -> ::Array[::ActiveSupport::TimeWithZone?]?
+
+    def updated_at_previously_was: () -> ::ActiveSupport::TimeWithZone?
+
+    def updated_at_before_last_save: () -> ::ActiveSupport::TimeWithZone?
+
+    def updated_at_change_to_be_saved: () -> ::Array[::ActiveSupport::TimeWithZone?]?
+
+    def updated_at_in_database: () -> ::ActiveSupport::TimeWithZone?
+
+    def saved_change_to_updated_at: () -> ::Array[::ActiveSupport::TimeWithZone?]?
+
+    def saved_change_to_updated_at?: () -> bool
+
+    def will_save_change_to_updated_at?: () -> bool
+
+    def restore_updated_at!: () -> void
+
+    def clear_updated_at_change: () -> void
+  end
+  include GeneratedAttributeMethods
+
+  def payroll_account: () -> ::PayrollAccount
+  def payroll_account=: (::PayrollAccount?) -> ::PayrollAccount?
+  def reload_payroll_account: () -> ::PayrollAccount?
+  def build_payroll_account: (untyped) -> ::PayrollAccount
+  def create_payroll_account: (untyped) -> ::PayrollAccount
+  def create_payroll_account!: (untyped) -> ::PayrollAccount
+
+  module GeneratedRelationMethods
+  end
+
+  class ActiveRecord_Relation < ::ActiveRecord::Relation
+    include ::WebhookEvent::GeneratedRelationMethods
+    include ::_ActiveRecord_Relation[::WebhookEvent, ::Integer]
+    include ::Enumerable[::WebhookEvent]
+  end
+
+  class ActiveRecord_Associations_CollectionProxy < ::ActiveRecord::Associations::CollectionProxy
+    include ::WebhookEvent::GeneratedRelationMethods
+    include ::_ActiveRecord_Relation[::WebhookEvent, ::Integer]
+  end
+end

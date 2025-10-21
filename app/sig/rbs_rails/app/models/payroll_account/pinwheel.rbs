@@ -1,0 +1,393 @@
+class PayrollAccount < ::ApplicationRecord
+  class Pinwheel < ::PayrollAccount
+    extend ::_ActiveRecord_Relation_ClassMethods[::PayrollAccount::Pinwheel, ::PayrollAccount::Pinwheel::ActiveRecord_Relation, ::Integer]
+
+    module GeneratedAttributeMethods
+      def id: () -> ::Integer
+
+      def id=: (::Integer) -> ::Integer
+
+      def id?: () -> bool
+
+      def id_changed?: () -> bool
+
+      def id_change: () -> [ ::Integer?, ::Integer? ]
+
+      def id_will_change!: () -> void
+
+      def id_was: () -> ::Integer?
+
+      def id_previously_changed?: () -> bool
+
+      def id_previous_change: () -> ::Array[::Integer?]?
+
+      def id_previously_was: () -> ::Integer?
+
+      def id_before_last_save: () -> ::Integer?
+
+      def id_change_to_be_saved: () -> ::Array[::Integer?]?
+
+      def id_in_database: () -> ::Integer?
+
+      def saved_change_to_id: () -> ::Array[::Integer?]?
+
+      def saved_change_to_id?: () -> bool
+
+      def will_save_change_to_id?: () -> bool
+
+      def restore_id!: () -> void
+
+      def clear_id_change: () -> void
+
+      def cbv_flow_id: () -> ::Integer
+
+      def cbv_flow_id=: (::Integer) -> ::Integer
+
+      def cbv_flow_id?: () -> bool
+
+      def cbv_flow_id_changed?: () -> bool
+
+      def cbv_flow_id_change: () -> [ ::Integer?, ::Integer? ]
+
+      def cbv_flow_id_will_change!: () -> void
+
+      def cbv_flow_id_was: () -> ::Integer?
+
+      def cbv_flow_id_previously_changed?: () -> bool
+
+      def cbv_flow_id_previous_change: () -> ::Array[::Integer?]?
+
+      def cbv_flow_id_previously_was: () -> ::Integer?
+
+      def cbv_flow_id_before_last_save: () -> ::Integer?
+
+      def cbv_flow_id_change_to_be_saved: () -> ::Array[::Integer?]?
+
+      def cbv_flow_id_in_database: () -> ::Integer?
+
+      def saved_change_to_cbv_flow_id: () -> ::Array[::Integer?]?
+
+      def saved_change_to_cbv_flow_id?: () -> bool
+
+      def will_save_change_to_cbv_flow_id?: () -> bool
+
+      def restore_cbv_flow_id!: () -> void
+
+      def clear_cbv_flow_id_change: () -> void
+
+      def income_synced_at: () -> ::ActiveSupport::TimeWithZone?
+
+      def income_synced_at=: (::ActiveSupport::TimeWithZone?) -> ::ActiveSupport::TimeWithZone?
+
+      def income_synced_at?: () -> bool
+
+      def income_synced_at_changed?: () -> bool
+
+      def income_synced_at_change: () -> [ ::ActiveSupport::TimeWithZone?, ::ActiveSupport::TimeWithZone? ]
+
+      def income_synced_at_will_change!: () -> void
+
+      def income_synced_at_was: () -> ::ActiveSupport::TimeWithZone?
+
+      def income_synced_at_previously_changed?: () -> bool
+
+      def income_synced_at_previous_change: () -> ::Array[::ActiveSupport::TimeWithZone?]?
+
+      def income_synced_at_previously_was: () -> ::ActiveSupport::TimeWithZone?
+
+      def income_synced_at_before_last_save: () -> ::ActiveSupport::TimeWithZone?
+
+      def income_synced_at_change_to_be_saved: () -> ::Array[::ActiveSupport::TimeWithZone?]?
+
+      def income_synced_at_in_database: () -> ::ActiveSupport::TimeWithZone?
+
+      def saved_change_to_income_synced_at: () -> ::Array[::ActiveSupport::TimeWithZone?]?
+
+      def saved_change_to_income_synced_at?: () -> bool
+
+      def will_save_change_to_income_synced_at?: () -> bool
+
+      def restore_income_synced_at!: () -> void
+
+      def clear_income_synced_at_change: () -> void
+
+      def created_at: () -> ::ActiveSupport::TimeWithZone
+
+      def created_at=: (::ActiveSupport::TimeWithZone) -> ::ActiveSupport::TimeWithZone
+
+      def created_at?: () -> bool
+
+      def created_at_changed?: () -> bool
+
+      def created_at_change: () -> [ ::ActiveSupport::TimeWithZone?, ::ActiveSupport::TimeWithZone? ]
+
+      def created_at_will_change!: () -> void
+
+      def created_at_was: () -> ::ActiveSupport::TimeWithZone?
+
+      def created_at_previously_changed?: () -> bool
+
+      def created_at_previous_change: () -> ::Array[::ActiveSupport::TimeWithZone?]?
+
+      def created_at_previously_was: () -> ::ActiveSupport::TimeWithZone?
+
+      def created_at_before_last_save: () -> ::ActiveSupport::TimeWithZone?
+
+      def created_at_change_to_be_saved: () -> ::Array[::ActiveSupport::TimeWithZone?]?
+
+      def created_at_in_database: () -> ::ActiveSupport::TimeWithZone?
+
+      def saved_change_to_created_at: () -> ::Array[::ActiveSupport::TimeWithZone?]?
+
+      def saved_change_to_created_at?: () -> bool
+
+      def will_save_change_to_created_at?: () -> bool
+
+      def restore_created_at!: () -> void
+
+      def clear_created_at_change: () -> void
+
+      def updated_at: () -> ::ActiveSupport::TimeWithZone
+
+      def updated_at=: (::ActiveSupport::TimeWithZone) -> ::ActiveSupport::TimeWithZone
+
+      def updated_at?: () -> bool
+
+      def updated_at_changed?: () -> bool
+
+      def updated_at_change: () -> [ ::ActiveSupport::TimeWithZone?, ::ActiveSupport::TimeWithZone? ]
+
+      def updated_at_will_change!: () -> void
+
+      def updated_at_was: () -> ::ActiveSupport::TimeWithZone?
+
+      def updated_at_previously_changed?: () -> bool
+
+      def updated_at_previous_change: () -> ::Array[::ActiveSupport::TimeWithZone?]?
+
+      def updated_at_previously_was: () -> ::ActiveSupport::TimeWithZone?
+
+      def updated_at_before_last_save: () -> ::ActiveSupport::TimeWithZone?
+
+      def updated_at_change_to_be_saved: () -> ::Array[::ActiveSupport::TimeWithZone?]?
+
+      def updated_at_in_database: () -> ::ActiveSupport::TimeWithZone?
+
+      def saved_change_to_updated_at: () -> ::Array[::ActiveSupport::TimeWithZone?]?
+
+      def saved_change_to_updated_at?: () -> bool
+
+      def will_save_change_to_updated_at?: () -> bool
+
+      def restore_updated_at!: () -> void
+
+      def clear_updated_at_change: () -> void
+
+      def supported_jobs: () -> ::String?
+
+      def supported_jobs=: (::String?) -> ::String?
+
+      def supported_jobs?: () -> bool
+
+      def supported_jobs_changed?: () -> bool
+
+      def supported_jobs_change: () -> [ ::String?, ::String? ]
+
+      def supported_jobs_will_change!: () -> void
+
+      def supported_jobs_was: () -> ::String?
+
+      def supported_jobs_previously_changed?: () -> bool
+
+      def supported_jobs_previous_change: () -> ::Array[::String?]?
+
+      def supported_jobs_previously_was: () -> ::String?
+
+      def supported_jobs_before_last_save: () -> ::String?
+
+      def supported_jobs_change_to_be_saved: () -> ::Array[::String?]?
+
+      def supported_jobs_in_database: () -> ::String?
+
+      def saved_change_to_supported_jobs: () -> ::Array[::String?]?
+
+      def saved_change_to_supported_jobs?: () -> bool
+
+      def will_save_change_to_supported_jobs?: () -> bool
+
+      def restore_supported_jobs!: () -> void
+
+      def clear_supported_jobs_change: () -> void
+
+      def type: () -> ::String
+
+      def type=: (::String) -> ::String
+
+      def type?: () -> bool
+
+      def type_changed?: () -> bool
+
+      def type_change: () -> [ ::String?, ::String? ]
+
+      def type_will_change!: () -> void
+
+      def type_was: () -> ::String?
+
+      def type_previously_changed?: () -> bool
+
+      def type_previous_change: () -> ::Array[::String?]?
+
+      def type_previously_was: () -> ::String?
+
+      def type_before_last_save: () -> ::String?
+
+      def type_change_to_be_saved: () -> ::Array[::String?]?
+
+      def type_in_database: () -> ::String?
+
+      def saved_change_to_type: () -> ::Array[::String?]?
+
+      def saved_change_to_type?: () -> bool
+
+      def will_save_change_to_type?: () -> bool
+
+      def restore_type!: () -> void
+
+      def clear_type_change: () -> void
+
+      def synchronization_status: () -> ::String?
+
+      def synchronization_status=: (::String?) -> ::String?
+
+      def synchronization_status?: () -> bool
+
+      def synchronization_status_changed?: () -> bool
+
+      def synchronization_status_change: () -> [ ::String?, ::String? ]
+
+      def synchronization_status_will_change!: () -> void
+
+      def synchronization_status_was: () -> ::String?
+
+      def synchronization_status_previously_changed?: () -> bool
+
+      def synchronization_status_previous_change: () -> ::Array[::String?]?
+
+      def synchronization_status_previously_was: () -> ::String?
+
+      def synchronization_status_before_last_save: () -> ::String?
+
+      def synchronization_status_change_to_be_saved: () -> ::Array[::String?]?
+
+      def synchronization_status_in_database: () -> ::String?
+
+      def saved_change_to_synchronization_status: () -> ::Array[::String?]?
+
+      def saved_change_to_synchronization_status?: () -> bool
+
+      def will_save_change_to_synchronization_status?: () -> bool
+
+      def restore_synchronization_status!: () -> void
+
+      def clear_synchronization_status_change: () -> void
+
+      def redacted_at: () -> ::ActiveSupport::TimeWithZone?
+
+      def redacted_at=: (::ActiveSupport::TimeWithZone?) -> ::ActiveSupport::TimeWithZone?
+
+      def redacted_at?: () -> bool
+
+      def redacted_at_changed?: () -> bool
+
+      def redacted_at_change: () -> [ ::ActiveSupport::TimeWithZone?, ::ActiveSupport::TimeWithZone? ]
+
+      def redacted_at_will_change!: () -> void
+
+      def redacted_at_was: () -> ::ActiveSupport::TimeWithZone?
+
+      def redacted_at_previously_changed?: () -> bool
+
+      def redacted_at_previous_change: () -> ::Array[::ActiveSupport::TimeWithZone?]?
+
+      def redacted_at_previously_was: () -> ::ActiveSupport::TimeWithZone?
+
+      def redacted_at_before_last_save: () -> ::ActiveSupport::TimeWithZone?
+
+      def redacted_at_change_to_be_saved: () -> ::Array[::ActiveSupport::TimeWithZone?]?
+
+      def redacted_at_in_database: () -> ::ActiveSupport::TimeWithZone?
+
+      def saved_change_to_redacted_at: () -> ::Array[::ActiveSupport::TimeWithZone?]?
+
+      def saved_change_to_redacted_at?: () -> bool
+
+      def will_save_change_to_redacted_at?: () -> bool
+
+      def restore_redacted_at!: () -> void
+
+      def clear_redacted_at_change: () -> void
+
+      def aggregator_account_id: () -> ::String?
+
+      def aggregator_account_id=: (::String?) -> ::String?
+
+      def aggregator_account_id?: () -> bool
+
+      def aggregator_account_id_changed?: () -> bool
+
+      def aggregator_account_id_change: () -> [ ::String?, ::String? ]
+
+      def aggregator_account_id_will_change!: () -> void
+
+      def aggregator_account_id_was: () -> ::String?
+
+      def aggregator_account_id_previously_changed?: () -> bool
+
+      def aggregator_account_id_previous_change: () -> ::Array[::String?]?
+
+      def aggregator_account_id_previously_was: () -> ::String?
+
+      def aggregator_account_id_before_last_save: () -> ::String?
+
+      def aggregator_account_id_change_to_be_saved: () -> ::Array[::String?]?
+
+      def aggregator_account_id_in_database: () -> ::String?
+
+      def saved_change_to_aggregator_account_id: () -> ::Array[::String?]?
+
+      def saved_change_to_aggregator_account_id?: () -> bool
+
+      def will_save_change_to_aggregator_account_id?: () -> bool
+
+      def restore_aggregator_account_id!: () -> void
+
+      def clear_aggregator_account_id_change: () -> void
+    end
+    include GeneratedAttributeMethods
+    def webhook_events: () -> ::WebhookEvent::ActiveRecord_Associations_CollectionProxy
+    def webhook_events=: (::WebhookEvent::ActiveRecord_Associations_CollectionProxy | ::Array[::WebhookEvent]) -> (::WebhookEvent::ActiveRecord_Associations_CollectionProxy | ::Array[::WebhookEvent])
+    def webhook_event_ids: () -> ::Array[::Integer]
+    def webhook_event_ids=: (::Array[::Integer]) -> ::Array[::Integer]
+
+    def cbv_flow: () -> ::CbvFlow
+    def cbv_flow=: (::CbvFlow?) -> ::CbvFlow?
+    def reload_cbv_flow: () -> ::CbvFlow?
+    def build_cbv_flow: (untyped) -> ::CbvFlow
+    def create_cbv_flow: (untyped) -> ::CbvFlow
+    def create_cbv_flow!: (untyped) -> ::CbvFlow
+
+    module GeneratedRelationMethods
+    end
+
+    class ActiveRecord_Relation < ::ActiveRecord::Relation
+      include ::PayrollAccount::Pinwheel::GeneratedRelationMethods
+      include ::_ActiveRecord_Relation[::PayrollAccount::Pinwheel, ::Integer]
+      include ::Enumerable[::PayrollAccount::Pinwheel]
+    end
+
+    class ActiveRecord_Associations_CollectionProxy < ::ActiveRecord::Associations::CollectionProxy
+      include ::PayrollAccount::Pinwheel::GeneratedRelationMethods
+      include ::_ActiveRecord_Relation[::PayrollAccount::Pinwheel, ::Integer]
+    end
+  end
+end
