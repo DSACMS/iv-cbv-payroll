@@ -1,0 +1,12 @@
+<% content_for :title, t(".header") %>
+<div
+  data-controller="cbv-data-source"
+  data-cbv-data-source-data-source-url-value="<%= source.redirect_url %>"
+>
+  <h1>Continue in other window</h1>
+  <p>Keep this tab open</p>
+  <p>
+    if another window doesn't open, click
+    <a target="_blank" rel="noopener noreferrer" href="<%= source.redirect_url %>">here</a>.
+  </p>
+</div>

@@ -45,6 +45,9 @@ Rails.application.routes.draw do
       resource :expired_invitation, only: %i[show]
       resource :applicant_information, only: %i[show update]
 
+      get "/data_source/:source_id", to: "data_source#show"
+      post "/data_source/:source_id", to: "data_source#create"
+
       # Generic link
       scope "links/:client_agency_id", constraints: { client_agency_id: Regexp.union(Rails.application.config.client_agencies.client_agency_ids) } do
         root to: "generic_links#show", as: :new

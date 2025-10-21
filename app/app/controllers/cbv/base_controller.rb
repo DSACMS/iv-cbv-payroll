@@ -2,7 +2,11 @@ class Cbv::BaseController < ApplicationController
   ALPHPANUMERIC_PREFIX_REGEXP = /^([a-zA-Z0-9]+)[^a-zA-Z0-9]*$/
 
   before_action :set_cbv_origin, :set_cbv_flow, :ensure_cbv_flow_not_yet_complete, :prevent_back_after_complete, :capture_page_view
-  helper_method :agency_url, :next_path, :get_comment_by_account_id, :current_agency
+  helper_method :agency_url, :next_path, :get_comment_by_account_id, :current_agency, :data_sources
+
+  def data_sources
+    Rails.application.config.data_source_config.sources
+  end
 
   private
 
@@ -82,7 +86,8 @@ class Cbv::BaseController < ApplicationController
     when "cbv/generic_links"
       cbv_flow_entry_path
     when "cbv/entries"
-      cbv_flow_employer_search_path
+      "/cbv/data_source/#{data_sources[0].id}"
+      # cbv_flow_employer_search_path
     when "cbv/employer_searches"
       cbv_flow_synchronizations_path
     when "cbv/synchronizations"

@@ -7,6 +7,7 @@ import PollingController from "./polling_controller.js"
 import LanguageController from "./language_controller.js"
 import CopyLinkController from "./copy_link_controller.js"
 import CbvEntryPageController from "./cbv/entry_page_controller.js"
+import CbvDatasourceController from "./cbv/data_source_controller.js"
 
 application.register("cbv-employer-search", CbvEmployerSearch)
 application.register("polling", PollingController)
@@ -15,6 +16,7 @@ application.register("help", HelpController)
 application.register("language", LanguageController)
 application.register("copy-link", CopyLinkController)
 application.register("cbv-entry-page", CbvEntryPageController)
+application.register("cbv-data-source", CbvDatasourceController)
 
 Turbo.StreamActions.redirect = function () {
   Turbo.visit(this.target)

@@ -14,6 +14,7 @@ require "action_view/railtie"
 require "action_cable/engine"
 # require "rails/test_unit/railtie"
 require_relative "../lib/client_agency_config.rb"
+require_relative "../lib/data_source_config.rb"
 
 # Require the gems listed in Gemfile, including any gems
 # you've limited to :test, :development, or :production.
@@ -48,6 +49,7 @@ module IvCbvPayroll
     config.client_agencies = ClientAgencyConfig.new(Rails.root.join("config", "client-agency-config.yml"))
     config.supported_providers = (ENV["SUPPORTED_PROVIDERS"] || "pinwheel")&.split(",")&.map(&:to_sym)
     config.cbv_session_expires_after = 30.minutes
+    config.data_source_config = DataSourceConfig.new
 
     # Configure allowed hosts
     config.hosts << ENV["DOMAIN_NAME"]

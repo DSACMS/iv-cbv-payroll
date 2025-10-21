@@ -283,8 +283,8 @@ en:
         header: Let's verify your income
         is_my_data_secure_body_html: Yes, your data is secure. We use strong encryption, like the kind banks use, to protect your information.<br><br>Your login credentials and payment information are securely transmitted and not stored by us.
         is_my_data_secure_title: Is my data secure?
-        step1: Search and sign into your employer or online payroll provider.
-        step1_description: Use the login credentials you have for viewing your online pay stub. We won’t share or keep your login information. If you work for an app, like Uber, this would be the same login when you sign into the Uber app.
+        step1: Tells us about yourself.
+        step1_description: Give us a little information to help us connect you to other data sources.o
         step2: Review your payment information.
         step2_description: You will be able to preview and approve everything that is shared with %{agency_acronym}.
         step3: Submit your payment information.

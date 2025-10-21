@@ -9,6 +9,11 @@
     <li class="usa-process-list__item">
       <h2 class="usa-process-list__heading"><%= t(".step1") %></h2>
       <p><%= t(".step1_description") %></p>
+      <ul>
+        <% data_sources.each do |source| %>
+          <li><%= source.description(I18n.locale) %></li>
+        <% end %>
+      </ul>
     </li>
     <li class="usa-process-list__item">
       <h2 class="usa-process-list__heading"><%= t(".step2") %></h2>
