@@ -154,12 +154,12 @@ es:
         payroll_providers: Proveedores de nómina
         popular_providers: O elija entre los proveedores o aplicaciones de nómina más populares
         results:
-          one: ''
-          other: TODO %{count}
+          one: Encontramos un resultado
+          other: Encontramos %{count} resultados
         review_button_text: Continuar
         search: Buscar
         search_label: 'Ingrese el nombre de su empleador actual o reciente o su proveedor de nómina:'
-        search_subheader: ''
+        search_subheader: 'Seleccione su empleador de la lista. Luego, siga las instrucciones en las pantallas para iniciar la sesión y verificar su ingreso. '
         select: Seleccione
         to_continue: 'Si aún no ve enumerado a su empleador ni a su proveedor de nómina:'
         to_continue_li_1: Deberá enviar esa información de ingresos por separado.
