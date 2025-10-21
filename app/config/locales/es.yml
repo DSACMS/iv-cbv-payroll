@@ -153,10 +153,13 @@ es:
         no_results_title: No pudimos encontrar su empleador ni su proveedor de nómina.
         payroll_providers: Proveedores de nómina
         popular_providers: O elija entre los proveedores o aplicaciones de nómina más populares
-        results: Resultados
+        results:
+          one: ''
+          other: TODO %{count}
         review_button_text: Continuar
         search: Buscar
         search_label: 'Ingrese el nombre de su empleador actual o reciente o su proveedor de nómina:'
+        search_subheader: ''
         select: Seleccione
         to_continue: 'Si aún no ve enumerado a su empleador ni a su proveedor de nómina:'
         to_continue_li_1: Deberá enviar esa información de ingresos por separado.
