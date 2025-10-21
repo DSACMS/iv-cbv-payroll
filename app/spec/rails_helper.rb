@@ -63,7 +63,7 @@ Dir[Rails.root.join('spec', 'support', '**', '*.rb')].sort.each { |f| require f 
 begin
   ActiveRecord::Migration.maintain_test_schema!
 rescue ActiveRecord::PendingMigrationError => e
-  puts e.to_s.strip
+  Rails.logger.info e.to_s.strip
   exit 1
 end
 
@@ -128,12 +128,12 @@ RSpec.configure do |config|
   config.after(js: true) do |test|
     if test.exception.present?
       begin
-        $stderr.puts "[E2E] Last page accessed: #{URI(page.current_url).path}"
+        Rails.logger.error "[E2E] Last page accessed: #{URI(page.current_url).path}"
         screenshot_path = Rails.root.join("tmp", "failure_#{test.full_description.gsub(/[^a-z0-9]+/i, "_")}.png")
         page.save_screenshot(screenshot_path)
-        $stderr.puts "[E2E] Screenshot saved to: #{screenshot_path}"
+        Rails.logger.error "[E2E] Screenshot saved to: #{screenshot_path}"
       rescue => ex
-        $stderr.puts "[E2E] Failed to print debug info: #{ex}"
+        Rails.logger.error "[E2E] Failed to print debug info: #{ex}"
       end
     end
   end

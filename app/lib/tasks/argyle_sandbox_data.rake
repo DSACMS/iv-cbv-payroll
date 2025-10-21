@@ -3,14 +3,14 @@
 namespace :argyle_sandbox_data do
   desc "Fetch and store argyle fixture data."
   task :fetch, [ :mock_folder_name, :argyle_user_id ] => :environment do |t, args|
-    puts "Running task: #{t} with args: #{args.inspect}"
+    Rails.logger.info "Running task: #{t} with args: #{args.inspect}"
     if not (args.key?(:mock_folder_name) and args.key?(:argyle_user_id))
-      puts "Must pass [:mock_folder_name, :arglye_user_id] as args to rake task"
+      Rails.logger.info "Must pass [:mock_folder_name, :arglye_user_id] as args to rake task"
     elsif not (ENV.key?("ARGYLE_SANDBOX") and ENV["ARGYLE_SANDBOX"])
-      puts "ARGYLE_SANDBOX must be set to 'true' in .env"
+      Rails.logger.info "ARGYLE_SANDBOX must be set to 'true' in .env"
     else
-      puts ":mock_folder_name was: '#{args[:mock_folder_name]}'"
-      puts ":argyle_user_id was: '#{args[:argyle_user_id]}'"
+      Rails.logger.info ":mock_folder_name was: '#{args[:mock_folder_name]}'"
+      Rails.logger.info ":argyle_user_id was: '#{args[:argyle_user_id]}'"
       a = ArgyleMockDataFetcher.new
       a.fetch_and_store_mock_data_for_user(mock_folder_name: args[:mock_folder_name], argyle_user_id: args[:argyle_user_id])
     end
@@ -27,7 +27,7 @@ namespace :argyle_sandbox_data do
       out_file = "spec/support/fixtures/argyle/#{folder_name}/#{file_name}.json"
       File.open(out_file, "wb") do |f|
         f.puts(JSON.pretty_generate(response_payload))
-        puts("File written at #{out_file}")
+        Rails.logger.info "File written at #{out_file}"
       end
     end
 

@@ -29,7 +29,6 @@ RSpec.describe TranslationService do
 
       it 'generates a YAML file with Spanish translations and logs combined collision details' do
         result = service.generate(csv_path.to_s, output_path.to_s)
-        log_messages.each { |msg| puts msg }
 
         expect(File.exist?(output_path)).to be true
         yaml_content = YAML.load_file(output_path)

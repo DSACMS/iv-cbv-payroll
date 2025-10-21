@@ -9,14 +9,14 @@ namespace :az_des do
     user.update(is_service_account: true)
     access_token = user.api_access_tokens.first || user.api_access_tokens.create
 
-    puts "User #{user.id} (#{user.email}) created, with API access token: #{access_token.access_token}"
+    Rails.logger.info "User #{user.id} (#{user.email}) created, with API access token: #{access_token.access_token}"
   end
 
   desc "deliver csv summary of cases sent to az_des"
   task deliver_csv_reports: :environment do
     config = ClientAgency::AzDes::Configuration.sftp_transmission_configuration
     unless config.fetch("csv_summary_reports_enabled", true)
-      puts "AZ DES CSV summary delivery disabled, not enqueuing job"
+      Rails.logger.info "AZ DES CSV summary delivery disabled, not enqueuing job"
       next
     end
 
@@ -29,20 +29,20 @@ namespace :az_des do
 
   desc "backfill agency name matches"
   task backfill_agency_name_matches: :environment do
-    puts "Backfilling agency name matches:"
+    Rails.logger.info "Backfilling agency name matches:"
     CbvFlow
       .completed
       .unredacted
       .where(client_agency_id: "az_des")
       .find_each do |cbv_flow|
-      puts "  CbvFlow id = #{cbv_flow.id}"
+      Rails.logger.info "  CbvFlow id = #{cbv_flow.id}"
       MatchAgencyNamesJob.perform_now(cbv_flow.id)
     end
   end
 
   desc "redact case numbers"
   task redact_case_numbers: :environment do
-    puts "Redacting case-numbers..."
+    Rails.logger.info "Redacting case-numbers..."
     DataRetentionService.redact_case_numbers_by_agency("az_des")
   end
 end
