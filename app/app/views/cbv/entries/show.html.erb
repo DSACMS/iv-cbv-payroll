@@ -29,7 +29,7 @@
 
   <div class="divider margin-bottom-5"></div>
 
-  <h2><%= t(".common_questions_header") %>
+  <h2><%= t(".common_questions_header") %></h2>
 
   <%= render AccordionComponent.new(id: "what_is_this-accordion", heading_level: 2, data_action: "click->cbv-entry-page#viewHelpText", data_section_identifier: "what_is_this") do |accordion| %>
     <% accordion.with_title do %>
@@ -63,7 +63,7 @@
       <%= t(".what_if_i_cant_use_this_title") %>
     <% end %>
     <% accordion.with_accordion_item do %>
-      <%= t(".what_if_i_cant_use_this_body_1", agency_acronym: agency_translation("shared.agency_acronym")) %>
+      <%= t(".what_if_i_cant_use_this_body_1_html", agency_acronym: agency_translation("shared.agency_acronym")) %>
       <%= agency_translation(".what_if_i_cant_use_this_body_2_html", agency_url: current_agency.agency_contact_website, agency_acronym: agency_translation("shared.agency_acronym")) %>
     <% end %>
   <% end %>
