@@ -87,9 +87,17 @@
               class: "preview-bar__select",
               data: { action: "change->preview-form#submit" } %>
 
-          <% if params[:is_caseworker] %>
-            <%= hidden_field_tag :is_caseworker, params[:is_caseworker] %>
-          <% end %>
+          <label for="is_caseworker" class="preview-bar__label margin-left-2 margin-right-1">Is Caseworker?</label>
+          <%= select_tag :is_caseworker,
+                         options_for_select(
+                           [
+                             [ "False (default)", "false" ],
+                             [ "True", "true" ]
+                           ],
+                           params[:is_caseworker] || "false"
+                         ),
+                         class: "preview-bar__select",
+                         data: { action: "change->preview-form#submit" } %>
         <% end %>
 
         <span class="preview-bar__info">
