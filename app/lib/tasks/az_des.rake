@@ -16,7 +16,7 @@ namespace :az_des do
   task deliver_csv_reports: :environment do
     config = ClientAgency::AzDes::Configuration.sftp_transmission_configuration
     unless config.fetch("csv_summary_reports_enabled", true)
-      puts "AZ DES CSV summary delivery disabled, not enqueuing job"
+      Rails.logger.info "AZ DES CSV summary delivery disabled, not enqueuing job"
       next
     end
 

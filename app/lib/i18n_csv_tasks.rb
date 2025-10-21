@@ -44,19 +44,19 @@ module I18nCsvTasks
   cmd :csv_import, desc: "import translations from CSV"
   def csv_import(opts = {})
     Dir.glob(File.join(IMPORT_FOLDER, "*.csv")).each do |file_path|
-      puts "Processing: #{File.basename(file_path)}"
+      Rails.logger.info "Processing: #{File.basename(file_path)}"
 
       csv_enum = open_csv_with_encoding(file_path)
       first_line = csv_enum.first
 
       unless valid_csv_header?(first_line)
-        puts "  ERROR: CSV file '#{File.basename(file_path)}' does not have the expected header format. Expected 'key,en,*', got '#{first_line.join(", ")}'. Skipping import for this file."
+        Rails.logger.info "  ERROR: CSV file '#{File.basename(file_path)}' does not have the expected header format. Expected 'key,en,*', got '#{first_line.join(", ")}'. Skipping import for this file."
         next
       end
 
       yml_file = File.join(LOCALES_FOLDER, "#{first_line[2].strip}.yml")
       unless File.file?(yml_file)
-        puts "  ERROR: YAML output file '#{yml_file}' does not exist. Skipping import for this file."
+        Rails.logger.info "  ERROR: YAML output file '#{yml_file}' does not exist. Skipping import for this file."
         next
       end
 
@@ -81,7 +81,7 @@ module I18nCsvTasks
           return CSV.new(File.open(file_path, "r:#{enc}"), headers: false)
         end
       rescue
-        puts "  Failed to read CSV with encoding #{enc}. Trying next..." if VERBOSE
+        Rails.logger.info "  Failed to read CSV with encoding #{enc}. Trying next..." if VERBOSE
       end
     end
     raise "  ERROR: Could not read CSV file in a supported encoding."
@@ -110,31 +110,31 @@ module I18nCsvTasks
       translation = row[2]
 
       if path.nil? || path.empty?
-        puts "  WARNING: Skipping row: Invalid path. Path: '#{path}', Translation: '#{translation}'"
+        Rails.logger.info "  WARNING: Skipping row: Invalid path. Path: '#{path}', Translation: '#{translation}'"
         skipped_count += 1
         problematic_entries << row
         next
       end
 
       if translation.nil?
-        puts "  Skipping row: No translation provided. Path: '#{path}', Translation: '#{translation}'" if VERBOSE
+        Rails.logger.info "  Skipping row: No translation provided. Path: '#{path}', Translation: '#{translation}'" if VERBOSE
         skipped_count += 1
         next
       end
 
       path_segments = path.split(".")
       path_segments.unshift("es") unless path_segments.first == "es"
-      puts "  Modifying '#{path}' with translation '#{translation}'" if VERBOSE
+      Rails.logger.info "  Modifying '#{path}' with translation '#{translation}'" if VERBOSE
       set_nested_value(yaml_data, path_segments.map(&:to_s), translation)
       merged_count += 1
     rescue => e
-      puts "  ERROR processing row: #{row.inspect}\n    Exception: #{e.message}\n#{e.backtrace.join("\n")}"
+      Rails.logger.info "  ERROR processing row: #{row.inspect}\n    Exception: #{e.message}\n#{e.backtrace.join("\n")}"
       problematic_entries << row
       skipped_count += 1
     end
 
-    puts "  Merged #{merged_count} entries, skipped #{skipped_count}."
-    puts "  Done! YAML file '#{yml_file}' has been updated with translations from '#{file}'."
+    Rails.logger.info "  Merged #{merged_count} entries, skipped #{skipped_count}."
+    Rails.logger.info "  Done! YAML file '#{yml_file}' has been updated with translations from '#{file}'."
   end
 
   def valid_csv_header?(header)

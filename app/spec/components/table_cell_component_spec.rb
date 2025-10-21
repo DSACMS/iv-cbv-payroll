@@ -7,7 +7,7 @@ RSpec.describe TableCellComponent, type: :component do
   let(:options) { {} }
 
   it "renders a default <td> with text" do
-    expect(result).to have_css(:td, text: "Cell")
+    expect(result).to have_css("td", text: "Cell")
   end
 
   context "with class_names" do

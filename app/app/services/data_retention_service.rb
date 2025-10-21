@@ -86,6 +86,6 @@ class DataRetentionService
     applicants.find_each(batch_size: 200) do |applicant|
       applicant.redact!({ case_number: :string })
     end
-    puts "Redacted #{applicants.length} applicants"
+    Rails.logger.info "Redacted #{applicants.length} applicants"
   end
 end
