@@ -9,4 +9,8 @@
     if another window doesn't open, click
     <a target="_blank" rel="noopener noreferrer" href="<%= source.redirect_url %>">here</a>.
   </p>
+
+  <%= form_with url: "/data_source/#{source.id}" do %>
+  <button id="next-button" type="submit" disabled>next</button>
+  <% end %>
 </div>
