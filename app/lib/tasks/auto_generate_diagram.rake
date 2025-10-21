@@ -18,7 +18,7 @@ if Rails.env.development?
 
           File.open(version_file_path, "w") { |f| f.puts(current_schema_version) }
         else
-          puts "Not rendering the ERD as it is already up-to-date."
+          Rails.logger.info "Not rendering the ERD as it is already up-to-date."
         end
       end
     end
