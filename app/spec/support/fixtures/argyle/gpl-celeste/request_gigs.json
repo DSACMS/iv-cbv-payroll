@@ -1,0 +1,3126 @@
+{
+  "results": [
+    {
+      "id": "08d0033a-1dcd-359a-8ec5-d36ef51c5dfc",
+      "account": "019571bc-2f60-3955-d972-dbadfe0913a8",
+      "employer": "Lyft Driver",
+      "created_at": "2025-03-07T17:52:09.306Z",
+      "updated_at": "2025-03-07T17:52:09.306Z",
+      "status": "cancelled",
+      "type": "rideshare",
+      "task_count": 1,
+      "start_datetime": "2025-03-06T19:01:04Z",
+      "end_datetime": null,
+      "all_datetimes": {
+        "request_at": "2025-03-06T19:01:04Z",
+        "accept_at": null,
+        "pickup_at": null,
+        "dropoff_at": null,
+        "cancel_at": "2025-03-06T19:01:10Z",
+        "shift_start": null,
+        "shift_end": null,
+        "breaks": []
+      },
+      "duration": null,
+      "timezone": "America/New_York",
+      "earning_type": "work",
+      "start_location": null,
+      "end_location": null,
+      "distance": "0.00",
+      "distance_unit": "miles",
+      "metadata": {},
+      "circumstances": {
+        "is_pool": true,
+        "is_rush": true,
+        "is_surge": true,
+        "service_type": "Lyft driverXL",
+        "position": null
+      },
+      "income": {
+        "currency": "USD",
+        "total_charge": "0.00",
+        "fees": "0.00",
+        "total": "0.00",
+        "pay": "0.00",
+        "tips": "0.00",
+        "bonus": "0.00",
+        "other": "0.00",
+        "customer_price": null
+      },
+      "income_rates": {
+        "hour": null,
+        "mile": null
+      },
+      "task_details": {
+        "events": [],
+        "orders": []
+      }
+    },
+    {
+      "id": "0f017ed4-1cd1-33f0-a87d-dda5f46afb99",
+      "account": "019571bc-2f60-3955-d972-dbadfe0913a8",
+      "employer": "Lyft Driver",
+      "created_at": "2025-03-07T17:52:09.361Z",
+      "updated_at": "2025-03-07T17:52:09.361Z",
+      "status": "completed",
+      "type": "rideshare",
+      "task_count": 1,
+      "start_datetime": "2025-03-05T18:18:24Z",
+      "end_datetime": "2025-03-05T18:24:04Z",
+      "all_datetimes": {
+        "request_at": "2025-03-05T18:18:24Z",
+        "accept_at": "2025-03-05T18:18:31Z",
+        "pickup_at": "2025-03-05T18:19:21Z",
+        "dropoff_at": "2025-03-05T18:24:04Z",
+        "cancel_at": null,
+        "shift_start": null,
+        "shift_end": null,
+        "breaks": []
+      },
+      "duration": 340,
+      "timezone": "America/New_York",
+      "earning_type": "work",
+      "start_location": {
+        "lat": "40.68163491708842",
+        "lng": "-73.78307331678731",
+        "formatted_address": "105 Joel Fields, New York, NY 81762, US"
+      },
+      "end_location": {
+        "lat": "40.70311206823279",
+        "lng": "-73.86672529291789",
+        "formatted_address": "473 Espinoza Canyon, New York, NY 44051, US"
+      },
+      "distance": "8.29",
+      "distance_unit": "miles",
+      "metadata": {},
+      "circumstances": {
+        "is_pool": false,
+        "is_rush": false,
+        "is_surge": true,
+        "service_type": "Lyft driverXL",
+        "position": null
+      },
+      "income": {
+        "currency": "USD",
+        "total_charge": "21.55",
+        "fees": "0.00",
+        "total": "21.55",
+        "pay": "10.24",
+        "tips": "9.16",
+        "bonus": "2.15",
+        "other": "0.00",
+        "customer_price": null
+      },
+      "income_rates": {
+        "hour": "11.82",
+        "mile": "1.10"
+      },
+      "task_details": {
+        "events": [],
+        "orders": []
+      }
+    },
+    {
+      "id": "a49834ae-6435-34a2-ac82-9dd4b80d96e3",
+      "account": "019571bc-2f60-3955-d972-dbadfe0913a8",
+      "employer": "Lyft Driver",
+      "created_at": "2025-03-07T17:52:09.248Z",
+      "updated_at": "2025-03-07T17:52:09.248Z",
+      "status": "cancelled",
+      "type": "rideshare",
+      "task_count": 1,
+      "start_datetime": "2025-03-05T17:21:39Z",
+      "end_datetime": null,
+      "all_datetimes": {
+        "request_at": "2025-03-05T17:21:39Z",
+        "accept_at": null,
+        "pickup_at": null,
+        "dropoff_at": null,
+        "cancel_at": "2025-03-05T17:21:51Z",
+        "shift_start": null,
+        "shift_end": null,
+        "breaks": []
+      },
+      "duration": null,
+      "timezone": "America/New_York",
+      "earning_type": "work",
+      "start_location": null,
+      "end_location": null,
+      "distance": "0.00",
+      "distance_unit": "miles",
+      "metadata": {},
+      "circumstances": {
+        "is_pool": true,
+        "is_rush": false,
+        "is_surge": true,
+        "service_type": "Lyft driverXL",
+        "position": null
+      },
+      "income": {
+        "currency": "USD",
+        "total_charge": "0.00",
+        "fees": "0.00",
+        "total": "0.00",
+        "pay": "0.00",
+        "tips": "0.00",
+        "bonus": "0.00",
+        "other": "0.00",
+        "customer_price": null
+      },
+      "income_rates": {
+        "hour": null,
+        "mile": null
+      },
+      "task_details": {
+        "events": [],
+        "orders": []
+      }
+    },
+    {
+      "id": "9345a45e-a8c6-37c5-af10-81eeceae1657",
+      "account": "019571bc-2f60-3955-d972-dbadfe0913a8",
+      "employer": "Lyft Driver",
+      "created_at": "2025-03-07T17:52:09.266Z",
+      "updated_at": "2025-03-07T17:52:09.266Z",
+      "status": "completed",
+      "type": "rideshare",
+      "task_count": 1,
+      "start_datetime": "2025-03-05T16:48:37Z",
+      "end_datetime": "2025-03-05T17:22:15Z",
+      "all_datetimes": {
+        "request_at": "2025-03-05T16:48:37Z",
+        "accept_at": "2025-03-05T16:50:12Z",
+        "pickup_at": "2025-03-05T16:53:59Z",
+        "dropoff_at": "2025-03-05T17:22:15Z",
+        "cancel_at": null,
+        "shift_start": null,
+        "shift_end": null,
+        "breaks": []
+      },
+      "duration": 2018,
+      "timezone": "America/New_York",
+      "earning_type": "work",
+      "start_location": {
+        "lat": "40.67592971737485",
+        "lng": "-73.82694888169353",
+        "formatted_address": "641 Edwards Terrace, New York, NY 49206, US"
+      },
+      "end_location": {
+        "lat": "40.65968539791587",
+        "lng": "-73.66487088684572",
+        "formatted_address": "6314 David Fork Suite 013, New York, NY 15658, US"
+      },
+      "distance": "12.31",
+      "distance_unit": "miles",
+      "metadata": {},
+      "circumstances": {
+        "is_pool": false,
+        "is_rush": true,
+        "is_surge": false,
+        "service_type": "Lyft driverXL",
+        "position": null
+      },
+      "income": {
+        "currency": "USD",
+        "total_charge": "19.45",
+        "fees": "0.00",
+        "total": "19.45",
+        "pay": "19.45",
+        "tips": "0.00",
+        "bonus": "0.00",
+        "other": "0.00",
+        "customer_price": null
+      },
+      "income_rates": {
+        "hour": "6.15",
+        "mile": "1.30"
+      },
+      "task_details": {
+        "events": [],
+        "orders": []
+      }
+    },
+    {
+      "id": "99504025-d787-343b-bde4-6c477e6d952d",
+      "account": "019571bc-2f60-3955-d972-dbadfe0913a8",
+      "employer": "Lyft Driver",
+      "created_at": "2025-03-07T17:52:09.284Z",
+      "updated_at": "2025-03-07T17:52:09.284Z",
+      "status": "completed",
+      "type": "rideshare",
+      "task_count": 1,
+      "start_datetime": "2025-03-04T16:25:34Z",
+      "end_datetime": "2025-03-04T16:43:05Z",
+      "all_datetimes": {
+        "request_at": "2025-03-04T16:25:34Z",
+        "accept_at": "2025-03-04T16:25:39Z",
+        "pickup_at": "2025-03-04T16:27:25Z",
+        "dropoff_at": "2025-03-04T16:43:05Z",
+        "cancel_at": null,
+        "shift_start": null,
+        "shift_end": null,
+        "breaks": []
+      },
+      "duration": 1051,
+      "timezone": "America/New_York",
+      "earning_type": "work",
+      "start_location": {
+        "lat": "40.65983941057198",
+        "lng": "-73.90565684583284",
+        "formatted_address": "0101 Deborah Meadows Suite 619, New York, NY 71991, US"
+      },
+      "end_location": {
+        "lat": "40.6763041234578",
+        "lng": "-73.6731121655017",
+        "formatted_address": "3454 Jamie Summit, New York, NY 90840, US"
+      },
+      "distance": "2.13",
+      "distance_unit": "miles",
+      "metadata": {},
+      "circumstances": {
+        "is_pool": true,
+        "is_rush": false,
+        "is_surge": true,
+        "service_type": "Lyft driverXL",
+        "position": null
+      },
+      "income": {
+        "currency": "USD",
+        "total_charge": "7.61",
+        "fees": "4.12",
+        "total": "3.49",
+        "pay": "3.49",
+        "tips": "0.00",
+        "bonus": "0.00",
+        "other": "0.00",
+        "customer_price": null
+      },
+      "income_rates": {
+        "hour": "7.58",
+        "mile": "0.60"
+      },
+      "task_details": {
+        "events": [],
+        "orders": []
+      }
+    },
+    {
+      "id": "4db41cb8-aca1-3571-b06a-5f54e50b3838",
+      "account": "019571bc-2f60-3955-d972-dbadfe0913a8",
+      "employer": "Lyft Driver",
+      "created_at": "2025-03-07T17:52:09.324Z",
+      "updated_at": "2025-03-07T17:52:09.324Z",
+      "status": "completed",
+      "type": "rideshare",
+      "task_count": 1,
+      "start_datetime": "2025-03-04T16:14:25Z",
+      "end_datetime": "2025-03-04T16:51:55Z",
+      "all_datetimes": {
+        "request_at": "2025-03-04T16:14:25Z",
+        "accept_at": "2025-03-04T16:16:08Z",
+        "pickup_at": "2025-03-04T16:21:47Z",
+        "dropoff_at": "2025-03-04T16:51:55Z",
+        "cancel_at": null,
+        "shift_start": null,
+        "shift_end": null,
+        "breaks": []
+      },
+      "duration": 2250,
+      "timezone": "America/New_York",
+      "earning_type": "work",
+      "start_location": {
+        "lat": "40.68578124752489",
+        "lng": "-73.91364432954008",
+        "formatted_address": "92212 Carlos Terrace, New York, NY 92171, US"
+      },
+      "end_location": {
+        "lat": "40.671607470550995",
+        "lng": "-73.897125132961",
+        "formatted_address": "682 Garcia Parkway, New York, NY 10493, US"
+      },
+      "distance": "13.54",
+      "distance_unit": "miles",
+      "metadata": {},
+      "circumstances": {
+        "is_pool": true,
+        "is_rush": true,
+        "is_surge": false,
+        "service_type": "Lyft driverXL",
+        "position": null
+      },
+      "income": {
+        "currency": "USD",
+        "total_charge": "29.30",
+        "fees": "1.97",
+        "total": "27.34",
+        "pay": "19.22",
+        "tips": "0.00",
+        "bonus": "0.00",
+        "other": "8.12",
+        "customer_price": null
+      },
+      "income_rates": {
+        "hour": "9.08",
+        "mile": "1.00"
+      },
+      "task_details": {
+        "events": [],
+        "orders": []
+      }
+    },
+    {
+      "id": "aa590a98-eb75-386a-b98c-adeb8ea23855",
+      "account": "019571bc-2f60-3955-d972-dbadfe0913a8",
+      "employer": "Lyft Driver",
+      "created_at": "2025-03-07T17:52:09.525Z",
+      "updated_at": "2025-03-07T17:52:09.525Z",
+      "status": "completed",
+      "type": "rideshare",
+      "task_count": 1,
+      "start_datetime": "2025-03-04T15:32:59Z",
+      "end_datetime": "2025-03-04T15:38:07Z",
+      "all_datetimes": {
+        "request_at": "2025-03-04T15:32:59Z",
+        "accept_at": "2025-03-04T15:33:04Z",
+        "pickup_at": "2025-03-04T15:33:55Z",
+        "dropoff_at": "2025-03-04T15:38:07Z",
+        "cancel_at": null,
+        "shift_start": null,
+        "shift_end": null,
+        "breaks": []
+      },
+      "duration": 308,
+      "timezone": "America/New_York",
+      "earning_type": "work",
+      "start_location": {
+        "lat": "40.68547169271221",
+        "lng": "-73.70282797336807",
+        "formatted_address": "4037 William Keys Suite 295, New York, NY 55837, US"
+      },
+      "end_location": {
+        "lat": "40.70799704179321",
+        "lng": "-73.70539517627488",
+        "formatted_address": "739 Watson Isle Suite 580, New York, NY 41407, US"
+      },
+      "distance": "3.71",
+      "distance_unit": "miles",
+      "metadata": {},
+      "circumstances": {
+        "is_pool": true,
+        "is_rush": true,
+        "is_surge": true,
+        "service_type": "Lyft driverXL",
+        "position": null
+      },
+      "income": {
+        "currency": "USD",
+        "total_charge": "12.37",
+        "fees": "0.00",
+        "total": "12.37",
+        "pay": "4.87",
+        "tips": "0.00",
+        "bonus": "0.00",
+        "other": "7.50",
+        "customer_price": null
+      },
+      "income_rates": {
+        "hour": "9.20",
+        "mile": "1.10"
+      },
+      "task_details": {
+        "events": [],
+        "orders": []
+      }
+    },
+    {
+      "id": "9c5de800-730c-32b0-8284-007f3d9c5fe9",
+      "account": "019571bc-2f60-3955-d972-dbadfe0913a8",
+      "employer": "Lyft Driver",
+      "created_at": "2025-03-07T17:52:09.342Z",
+      "updated_at": "2025-03-07T17:52:09.342Z",
+      "status": "completed",
+      "type": "rideshare",
+      "task_count": 1,
+      "start_datetime": "2025-03-04T14:35:11Z",
+      "end_datetime": "2025-03-04T15:24:38Z",
+      "all_datetimes": {
+        "request_at": "2025-03-04T14:35:11Z",
+        "accept_at": "2025-03-04T14:37:08Z",
+        "pickup_at": "2025-03-04T14:43:46Z",
+        "dropoff_at": "2025-03-04T15:24:38Z",
+        "cancel_at": null,
+        "shift_start": null,
+        "shift_end": null,
+        "breaks": []
+      },
+      "duration": 2967,
+      "timezone": "America/New_York",
+      "earning_type": "work",
+      "start_location": {
+        "lat": "40.71443731348454",
+        "lng": "-73.73597517474124",
+        "formatted_address": "63129 Tony Ranch, New York, NY 19822, US"
+      },
+      "end_location": {
+        "lat": "40.71215341498594",
+        "lng": "-73.68888669200612",
+        "formatted_address": "4839 Gabrielle Haven Apt. 379, New York, NY 80696, US"
+      },
+      "distance": "21.40",
+      "distance_unit": "miles",
+      "metadata": {},
+      "circumstances": {
+        "is_pool": true,
+        "is_rush": true,
+        "is_surge": false,
+        "service_type": "Lyft driverXL",
+        "position": null
+      },
+      "income": {
+        "currency": "USD",
+        "total_charge": "38.04",
+        "fees": "0.00",
+        "total": "38.04",
+        "pay": "38.04",
+        "tips": "0.00",
+        "bonus": "0.00",
+        "other": "0.00",
+        "customer_price": null
+      },
+      "income_rates": {
+        "hour": "15.00",
+        "mile": "1.20"
+      },
+      "task_details": {
+        "events": [],
+        "orders": []
+      }
+    },
+    {
+      "id": "2239d89a-d490-365f-bac7-3836bbc0d760",
+      "account": "019571bc-2f60-3955-d972-dbadfe0913a8",
+      "employer": "Lyft Driver",
+      "created_at": "2025-03-07T17:52:09.407Z",
+      "updated_at": "2025-03-07T17:52:09.407Z",
+      "status": "cancelled",
+      "type": "rideshare",
+      "task_count": 1,
+      "start_datetime": "2025-03-03T13:56:41Z",
+      "end_datetime": null,
+      "all_datetimes": {
+        "request_at": "2025-03-03T13:56:41Z",
+        "accept_at": null,
+        "pickup_at": null,
+        "dropoff_at": null,
+        "cancel_at": "2025-03-03T13:57:16Z",
+        "shift_start": null,
+        "shift_end": null,
+        "breaks": []
+      },
+      "duration": null,
+      "timezone": "America/New_York",
+      "earning_type": "work",
+      "start_location": null,
+      "end_location": null,
+      "distance": "0.00",
+      "distance_unit": "miles",
+      "metadata": {},
+      "circumstances": {
+        "is_pool": false,
+        "is_rush": true,
+        "is_surge": false,
+        "service_type": "Lyft driverXL",
+        "position": null
+      },
+      "income": {
+        "currency": "USD",
+        "total_charge": "0.00",
+        "fees": "0.00",
+        "total": "0.00",
+        "pay": "0.00",
+        "tips": "0.00",
+        "bonus": "0.00",
+        "other": "0.00",
+        "customer_price": null
+      },
+      "income_rates": {
+        "hour": null,
+        "mile": null
+      },
+      "task_details": {
+        "events": [],
+        "orders": []
+      }
+    },
+    {
+      "id": "12b7a297-0b36-3963-b303-6b371ffb1f4c",
+      "account": "019571bc-2f60-3955-d972-dbadfe0913a8",
+      "employer": "Lyft Driver",
+      "created_at": "2025-03-07T17:52:09.541Z",
+      "updated_at": "2025-03-07T17:52:09.541Z",
+      "status": "completed",
+      "type": "rideshare",
+      "task_count": 1,
+      "start_datetime": "2025-03-02T13:17:06Z",
+      "end_datetime": "2025-03-02T13:25:10Z",
+      "all_datetimes": {
+        "request_at": "2025-03-02T13:17:06Z",
+        "accept_at": "2025-03-02T13:17:25Z",
+        "pickup_at": "2025-03-02T13:18:35Z",
+        "dropoff_at": "2025-03-02T13:25:10Z",
+        "cancel_at": null,
+        "shift_start": null,
+        "shift_end": null,
+        "breaks": []
+      },
+      "duration": 484,
+      "timezone": "America/New_York",
+      "earning_type": "work",
+      "start_location": {
+        "lat": "40.66855770852407",
+        "lng": "-73.84633395732169",
+        "formatted_address": "71117 Holmes Extension, New York, NY 64858, US"
+      },
+      "end_location": {
+        "lat": "40.65551693546312",
+        "lng": "-73.70224656457451",
+        "formatted_address": "387 Huffman Crossroad, New York, NY 12239, US"
+      },
+      "distance": "7.37",
+      "distance_unit": "miles",
+      "metadata": {},
+      "circumstances": {
+        "is_pool": false,
+        "is_rush": true,
+        "is_surge": false,
+        "service_type": "Lyft driverXL",
+        "position": null
+      },
+      "income": {
+        "currency": "USD",
+        "total_charge": "11.44",
+        "fees": "0.00",
+        "total": "11.44",
+        "pay": "11.44",
+        "tips": "0.00",
+        "bonus": "0.00",
+        "other": "0.00",
+        "customer_price": null
+      },
+      "income_rates": {
+        "hour": "8.36",
+        "mile": "1.40"
+      },
+      "task_details": {
+        "events": [],
+        "orders": []
+      }
+    },
+    {
+      "id": "19ccf6e2-d6f6-3a48-a96e-36d433b43b90",
+      "account": "019571bc-2f60-3955-d972-dbadfe0913a8",
+      "employer": "Lyft Driver",
+      "created_at": "2025-03-07T17:52:09.388Z",
+      "updated_at": "2025-03-07T17:52:09.388Z",
+      "status": "cancelled",
+      "type": "rideshare",
+      "task_count": 1,
+      "start_datetime": "2025-03-02T12:38:03Z",
+      "end_datetime": null,
+      "all_datetimes": {
+        "request_at": "2025-03-02T12:38:03Z",
+        "accept_at": null,
+        "pickup_at": null,
+        "dropoff_at": null,
+        "cancel_at": "2025-03-02T12:38:25Z",
+        "shift_start": null,
+        "shift_end": null,
+        "breaks": []
+      },
+      "duration": null,
+      "timezone": "America/New_York",
+      "earning_type": "work",
+      "start_location": null,
+      "end_location": null,
+      "distance": "0.00",
+      "distance_unit": "miles",
+      "metadata": {},
+      "circumstances": {
+        "is_pool": false,
+        "is_rush": false,
+        "is_surge": false,
+        "service_type": "Lyft driverXL",
+        "position": null
+      },
+      "income": {
+        "currency": "USD",
+        "total_charge": "0.00",
+        "fees": "0.00",
+        "total": "0.00",
+        "pay": "0.00",
+        "tips": "0.00",
+        "bonus": "0.00",
+        "other": "0.00",
+        "customer_price": null
+      },
+      "income_rates": {
+        "hour": null,
+        "mile": null
+      },
+      "task_details": {
+        "events": [],
+        "orders": []
+      }
+    },
+    {
+      "id": "039d3600-43d7-3a06-baec-8ab00593ce16",
+      "account": "019571bc-2f60-3955-d972-dbadfe0913a8",
+      "employer": "Lyft Driver",
+      "created_at": "2025-03-07T17:52:09.452Z",
+      "updated_at": "2025-03-07T17:52:09.452Z",
+      "status": "completed",
+      "type": "rideshare",
+      "task_count": 1,
+      "start_datetime": "2025-03-02T11:39:04Z",
+      "end_datetime": "2025-03-02T12:15:41Z",
+      "all_datetimes": {
+        "request_at": "2025-03-02T11:39:04Z",
+        "accept_at": "2025-03-02T11:39:06Z",
+        "pickup_at": "2025-03-02T11:43:49Z",
+        "dropoff_at": "2025-03-02T12:15:41Z",
+        "cancel_at": null,
+        "shift_start": null,
+        "shift_end": null,
+        "breaks": []
+      },
+      "duration": 2197,
+      "timezone": "America/New_York",
+      "earning_type": "work",
+      "start_location": {
+        "lat": "40.673389941269676",
+        "lng": "-73.69785528475356",
+        "formatted_address": "504 Jennifer Fort, New York, NY 66810, US"
+      },
+      "end_location": {
+        "lat": "40.68282907610048",
+        "lng": "-73.70224583207856",
+        "formatted_address": "80445 Steven Divide Suite 165, New York, NY 92563, US"
+      },
+      "distance": "10.60",
+      "distance_unit": "miles",
+      "metadata": {},
+      "circumstances": {
+        "is_pool": true,
+        "is_rush": true,
+        "is_surge": true,
+        "service_type": "Lyft driverXL",
+        "position": null
+      },
+      "income": {
+        "currency": "USD",
+        "total_charge": "21.93",
+        "fees": "4.30",
+        "total": "17.63",
+        "pay": "16.41",
+        "tips": "1.22",
+        "bonus": "0.00",
+        "other": "0.00",
+        "customer_price": null
+      },
+      "income_rates": {
+        "hour": "6.05",
+        "mile": "1.20"
+      },
+      "task_details": {
+        "events": [],
+        "orders": []
+      }
+    },
+    {
+      "id": "d178671a-135e-3048-9a9b-2a74b8686f0e",
+      "account": "019571bc-2f60-3955-d972-dbadfe0913a8",
+      "employer": "Lyft Driver",
+      "created_at": "2025-03-07T17:52:09.504Z",
+      "updated_at": "2025-03-07T17:52:09.504Z",
+      "status": "completed",
+      "type": "rideshare",
+      "task_count": 1,
+      "start_datetime": "2025-03-01T11:19:48Z",
+      "end_datetime": "2025-03-01T11:42:58Z",
+      "all_datetimes": {
+        "request_at": "2025-03-01T11:19:48Z",
+        "accept_at": "2025-03-01T11:20:04Z",
+        "pickup_at": "2025-03-01T11:23:46Z",
+        "dropoff_at": "2025-03-01T11:42:58Z",
+        "cancel_at": null,
+        "shift_start": null,
+        "shift_end": null,
+        "breaks": []
+      },
+      "duration": 1390,
+      "timezone": "America/New_York",
+      "earning_type": "work",
+      "start_location": {
+        "lat": "40.715568631129905",
+        "lng": "-73.79477329595453",
+        "formatted_address": "594 Chris Estate, New York, NY 18823, US"
+      },
+      "end_location": {
+        "lat": "40.65689598888024",
+        "lng": "-73.68509957543058",
+        "formatted_address": "252 Bailey Haven Apt. 749, New York, NY 69626, US"
+      },
+      "distance": "4.08",
+      "distance_unit": "miles",
+      "metadata": {},
+      "circumstances": {
+        "is_pool": false,
+        "is_rush": true,
+        "is_surge": true,
+        "service_type": "Lyft driverXL",
+        "position": null
+      },
+      "income": {
+        "currency": "USD",
+        "total_charge": "13.85",
+        "fees": "0.00",
+        "total": "13.85",
+        "pay": "10.28",
+        "tips": "0.00",
+        "bonus": "0.00",
+        "other": "3.57",
+        "customer_price": null
+      },
+      "income_rates": {
+        "hour": "15.00",
+        "mile": "1.10"
+      },
+      "task_details": {
+        "events": [],
+        "orders": []
+      }
+    },
+    {
+      "id": "7f306b5c-960c-3923-8cf9-46ca55b50e1c",
+      "account": "019571bc-2f60-3955-d972-dbadfe0913a8",
+      "employer": "Lyft Driver",
+      "created_at": "2025-03-07T17:52:09.431Z",
+      "updated_at": "2025-03-07T17:52:09.431Z",
+      "status": "cancelled",
+      "type": "rideshare",
+      "task_count": 1,
+      "start_datetime": "2025-02-28T10:50:30Z",
+      "end_datetime": null,
+      "all_datetimes": {
+        "request_at": "2025-02-28T10:50:30Z",
+        "accept_at": null,
+        "pickup_at": null,
+        "dropoff_at": null,
+        "cancel_at": "2025-02-28T10:51:06Z",
+        "shift_start": null,
+        "shift_end": null,
+        "breaks": []
+      },
+      "duration": null,
+      "timezone": "America/New_York",
+      "earning_type": "work",
+      "start_location": null,
+      "end_location": null,
+      "distance": "0.00",
+      "distance_unit": "miles",
+      "metadata": {},
+      "circumstances": {
+        "is_pool": true,
+        "is_rush": false,
+        "is_surge": true,
+        "service_type": "Lyft driverXL",
+        "position": null
+      },
+      "income": {
+        "currency": "USD",
+        "total_charge": "0.00",
+        "fees": "0.00",
+        "total": "0.00",
+        "pay": "0.00",
+        "tips": "0.00",
+        "bonus": "0.00",
+        "other": "0.00",
+        "customer_price": null
+      },
+      "income_rates": {
+        "hour": null,
+        "mile": null
+      },
+      "task_details": {
+        "events": [],
+        "orders": []
+      }
+    },
+    {
+      "id": "f2f00e07-90b4-3aa7-b275-1ab1d0f4c2b4",
+      "account": "019571bc-2f60-3955-d972-dbadfe0913a8",
+      "employer": "Lyft Driver",
+      "created_at": "2025-03-07T17:52:09.467Z",
+      "updated_at": "2025-03-07T17:52:09.467Z",
+      "status": "completed",
+      "type": "rideshare",
+      "task_count": 1,
+      "start_datetime": "2025-02-28T09:57:53Z",
+      "end_datetime": "2025-02-28T10:16:53Z",
+      "all_datetimes": {
+        "request_at": "2025-02-28T09:57:53Z",
+        "accept_at": "2025-02-28T09:58:28Z",
+        "pickup_at": "2025-02-28T10:00:07Z",
+        "dropoff_at": "2025-02-28T10:16:53Z",
+        "cancel_at": null,
+        "shift_start": null,
+        "shift_end": null,
+        "breaks": []
+      },
+      "duration": 1140,
+      "timezone": "America/New_York",
+      "earning_type": "work",
+      "start_location": {
+        "lat": "40.71382627220407",
+        "lng": "-73.82270135300982",
+        "formatted_address": "575 Johnson Mews, New York, NY 61310, US"
+      },
+      "end_location": {
+        "lat": "40.69103736604213",
+        "lng": "-73.73782604641578",
+        "formatted_address": "5391 Erin Plains, New York, NY 76358, US"
+      },
+      "distance": "5.73",
+      "distance_unit": "miles",
+      "metadata": {},
+      "circumstances": {
+        "is_pool": false,
+        "is_rush": false,
+        "is_surge": true,
+        "service_type": "Lyft driverXL",
+        "position": null
+      },
+      "income": {
+        "currency": "USD",
+        "total_charge": "15.33",
+        "fees": "8.05",
+        "total": "7.28",
+        "pay": "7.28",
+        "tips": "0.00",
+        "bonus": "0.00",
+        "other": "0.00",
+        "customer_price": null
+      },
+      "income_rates": {
+        "hour": "6.69",
+        "mile": "0.90"
+      },
+      "task_details": {
+        "events": [],
+        "orders": []
+      }
+    },
+    {
+      "id": "73760f87-bdf8-31e0-b276-4179eb01b4a3",
+      "account": "019571bc-2f60-3955-d972-dbadfe0913a8",
+      "employer": "Lyft Driver",
+      "created_at": "2025-03-07T17:52:09.011Z",
+      "updated_at": "2025-03-07T17:52:09.011Z",
+      "status": "cancelled",
+      "type": "rideshare",
+      "task_count": 1,
+      "start_datetime": "2025-02-28T09:37:41Z",
+      "end_datetime": null,
+      "all_datetimes": {
+        "request_at": "2025-02-28T09:37:41Z",
+        "accept_at": null,
+        "pickup_at": null,
+        "dropoff_at": null,
+        "cancel_at": "2025-02-28T09:38:28Z",
+        "shift_start": null,
+        "shift_end": null,
+        "breaks": []
+      },
+      "duration": null,
+      "timezone": "America/New_York",
+      "earning_type": "work",
+      "start_location": null,
+      "end_location": null,
+      "distance": "0.00",
+      "distance_unit": "miles",
+      "metadata": {},
+      "circumstances": {
+        "is_pool": false,
+        "is_rush": true,
+        "is_surge": false,
+        "service_type": "Lyft driverXL",
+        "position": null
+      },
+      "income": {
+        "currency": "USD",
+        "total_charge": "0.00",
+        "fees": "0.00",
+        "total": "0.00",
+        "pay": "0.00",
+        "tips": "0.00",
+        "bonus": "0.00",
+        "other": "0.00",
+        "customer_price": null
+      },
+      "income_rates": {
+        "hour": null,
+        "mile": null
+      },
+      "task_details": {
+        "events": [],
+        "orders": []
+      }
+    },
+    {
+      "id": "0e643bc1-7c00-35ff-b841-a9b749f5accf",
+      "account": "019571bc-2f60-3955-d972-dbadfe0913a8",
+      "employer": "Lyft Driver",
+      "created_at": "2025-03-07T17:52:09.486Z",
+      "updated_at": "2025-03-07T17:52:09.486Z",
+      "status": "completed",
+      "type": "rideshare",
+      "task_count": 1,
+      "start_datetime": "2025-02-28T08:58:10Z",
+      "end_datetime": "2025-02-28T09:15:26Z",
+      "all_datetimes": {
+        "request_at": "2025-02-28T08:58:10Z",
+        "accept_at": "2025-02-28T08:58:26Z",
+        "pickup_at": "2025-02-28T09:00:13Z",
+        "dropoff_at": "2025-02-28T09:15:26Z",
+        "cancel_at": null,
+        "shift_start": null,
+        "shift_end": null,
+        "breaks": []
+      },
+      "duration": 1036,
+      "timezone": "America/New_York",
+      "earning_type": "work",
+      "start_location": {
+        "lat": "40.690955672686535",
+        "lng": "-73.69458616165879",
+        "formatted_address": "55650 York Vista Apt. 508, New York, NY 69860, US"
+      },
+      "end_location": {
+        "lat": "40.69139922040861",
+        "lng": "-73.65167826001625",
+        "formatted_address": "87723 Lisa Path Suite 584, New York, NY 72212, US"
+      },
+      "distance": "10.00",
+      "distance_unit": "miles",
+      "metadata": {},
+      "circumstances": {
+        "is_pool": false,
+        "is_rush": false,
+        "is_surge": true,
+        "service_type": "Lyft driverXL",
+        "position": null
+      },
+      "income": {
+        "currency": "USD",
+        "total_charge": "17.57",
+        "fees": "3.75",
+        "total": "13.82",
+        "pay": "13.82",
+        "tips": "0.00",
+        "bonus": "0.00",
+        "other": "0.00",
+        "customer_price": null
+      },
+      "income_rates": {
+        "hour": "6.34",
+        "mile": "1.20"
+      },
+      "task_details": {
+        "events": [],
+        "orders": []
+      }
+    },
+    {
+      "id": "78bc5379-ab1f-3d5a-b83a-8ff61b60319c",
+      "account": "019571bc-2f60-3955-d972-dbadfe0913a8",
+      "employer": "Lyft Driver",
+      "created_at": "2025-03-07T17:52:09.564Z",
+      "updated_at": "2025-03-07T17:52:09.564Z",
+      "status": "completed",
+      "type": "rideshare",
+      "task_count": 1,
+      "start_datetime": "2025-02-28T08:21:59Z",
+      "end_datetime": "2025-02-28T09:04:37Z",
+      "all_datetimes": {
+        "request_at": "2025-02-28T08:21:59Z",
+        "accept_at": "2025-02-28T08:21:59Z",
+        "pickup_at": "2025-02-28T08:28:01Z",
+        "dropoff_at": "2025-02-28T09:04:37Z",
+        "cancel_at": null,
+        "shift_start": null,
+        "shift_end": null,
+        "breaks": []
+      },
+      "duration": 2558,
+      "timezone": "America/New_York",
+      "earning_type": "work",
+      "start_location": {
+        "lat": "40.716390636620304",
+        "lng": "-73.90413633389097",
+        "formatted_address": "6060 Stewart Stravenue, New York, NY 91836, US"
+      },
+      "end_location": {
+        "lat": "40.68158327591975",
+        "lng": "-73.67417675148425",
+        "formatted_address": "2905 Christopher Springs, New York, NY 34269, US"
+      },
+      "distance": "25.54",
+      "distance_unit": "miles",
+      "metadata": {},
+      "circumstances": {
+        "is_pool": false,
+        "is_rush": false,
+        "is_surge": false,
+        "service_type": "Lyft driverXL",
+        "position": null
+      },
+      "income": {
+        "currency": "USD",
+        "total_charge": "35.10",
+        "fees": "0.00",
+        "total": "35.10",
+        "pay": "31.13",
+        "tips": "0.00",
+        "bonus": "0.00",
+        "other": "3.97",
+        "customer_price": null
+      },
+      "income_rates": {
+        "hour": "7.87",
+        "mile": "1.00"
+      },
+      "task_details": {
+        "events": [],
+        "orders": []
+      }
+    },
+    {
+      "id": "e2ca4a13-f937-3300-855e-4637e58891cc",
+      "account": "019571bc-2f60-3955-d972-dbadfe0913a8",
+      "employer": "Lyft Driver",
+      "created_at": "2025-03-07T17:52:09.233Z",
+      "updated_at": "2025-03-07T17:52:09.233Z",
+      "status": "cancelled",
+      "type": "rideshare",
+      "task_count": 1,
+      "start_datetime": "2025-02-27T07:56:43Z",
+      "end_datetime": null,
+      "all_datetimes": {
+        "request_at": "2025-02-27T07:56:43Z",
+        "accept_at": null,
+        "pickup_at": null,
+        "dropoff_at": null,
+        "cancel_at": "2025-02-27T07:57:00Z",
+        "shift_start": null,
+        "shift_end": null,
+        "breaks": []
+      },
+      "duration": null,
+      "timezone": "America/New_York",
+      "earning_type": "work",
+      "start_location": null,
+      "end_location": null,
+      "distance": "0.00",
+      "distance_unit": "miles",
+      "metadata": {},
+      "circumstances": {
+        "is_pool": true,
+        "is_rush": false,
+        "is_surge": false,
+        "service_type": "Lyft driverXL",
+        "position": null
+      },
+      "income": {
+        "currency": "USD",
+        "total_charge": "0.00",
+        "fees": "0.00",
+        "total": "0.00",
+        "pay": "0.00",
+        "tips": "0.00",
+        "bonus": "0.00",
+        "other": "0.00",
+        "customer_price": null
+      },
+      "income_rates": {
+        "hour": null,
+        "mile": null
+      },
+      "task_details": {
+        "events": [],
+        "orders": []
+      }
+    },
+    {
+      "id": "78bfbc47-3f80-3a3e-acb3-7df152eac58e",
+      "account": "019571bc-2f60-3955-d972-dbadfe0913a8",
+      "employer": "Lyft Driver",
+      "created_at": "2025-03-07T17:52:09.026Z",
+      "updated_at": "2025-03-07T17:52:09.026Z",
+      "status": "completed",
+      "type": "rideshare",
+      "task_count": 1,
+      "start_datetime": "2025-02-27T07:30:15Z",
+      "end_datetime": "2025-02-27T08:03:16Z",
+      "all_datetimes": {
+        "request_at": "2025-02-27T07:30:15Z",
+        "accept_at": "2025-02-27T07:30:42Z",
+        "pickup_at": "2025-02-27T07:34:21Z",
+        "dropoff_at": "2025-02-27T08:03:16Z",
+        "cancel_at": null,
+        "shift_start": null,
+        "shift_end": null,
+        "breaks": []
+      },
+      "duration": 1981,
+      "timezone": "America/New_York",
+      "earning_type": "work",
+      "start_location": {
+        "lat": "40.68141582476415",
+        "lng": "-73.76680847074569",
+        "formatted_address": "61648 Ramos Lock Suite 068, New York, NY 72576, US"
+      },
+      "end_location": {
+        "lat": "40.6535427895831",
+        "lng": "-73.71577210906487",
+        "formatted_address": "816 Andrew Cove, New York, NY 48603, US"
+      },
+      "distance": "14.22",
+      "distance_unit": "miles",
+      "metadata": {},
+      "circumstances": {
+        "is_pool": false,
+        "is_rush": false,
+        "is_surge": true,
+        "service_type": "Lyft driverXL",
+        "position": null
+      },
+      "income": {
+        "currency": "USD",
+        "total_charge": "28.79",
+        "fees": "9.12",
+        "total": "19.67",
+        "pay": "19.67",
+        "tips": "0.00",
+        "bonus": "0.00",
+        "other": "0.00",
+        "customer_price": null
+      },
+      "income_rates": {
+        "hour": "9.90",
+        "mile": "1.00"
+      },
+      "task_details": {
+        "events": [],
+        "orders": []
+      }
+    },
+    {
+      "id": "242c440e-acba-37fc-bbc7-9e513c705e02",
+      "account": "019571bc-2f60-3955-d972-dbadfe0913a8",
+      "employer": "Lyft Driver",
+      "created_at": "2025-03-07T17:52:09.107Z",
+      "updated_at": "2025-03-07T17:52:09.107Z",
+      "status": "completed",
+      "type": "rideshare",
+      "task_count": 1,
+      "start_datetime": "2025-02-27T07:19:58Z",
+      "end_datetime": "2025-02-27T07:36:37Z",
+      "all_datetimes": {
+        "request_at": "2025-02-27T07:19:58Z",
+        "accept_at": "2025-02-27T07:20:45Z",
+        "pickup_at": "2025-02-27T07:21:51Z",
+        "dropoff_at": "2025-02-27T07:36:37Z",
+        "cancel_at": null,
+        "shift_start": null,
+        "shift_end": null,
+        "breaks": []
+      },
+      "duration": 999,
+      "timezone": "America/New_York",
+      "earning_type": "work",
+      "start_location": {
+        "lat": "40.705750925043525",
+        "lng": "-73.8027642553487",
+        "formatted_address": "1419 Ashley Crescent Apt. 458, New York, NY 81900, US"
+      },
+      "end_location": {
+        "lat": "40.683953647858324",
+        "lng": "-73.81173797487718",
+        "formatted_address": "47562 Catherine Springs Apt. 037, New York, NY 74111, US"
+      },
+      "distance": "8.42",
+      "distance_unit": "miles",
+      "metadata": {},
+      "circumstances": {
+        "is_pool": true,
+        "is_rush": false,
+        "is_surge": false,
+        "service_type": "Lyft driverXL",
+        "position": null
+      },
+      "income": {
+        "currency": "USD",
+        "total_charge": "13.27",
+        "fees": "0.00",
+        "total": "13.27",
+        "pay": "13.27",
+        "tips": "0.00",
+        "bonus": "0.00",
+        "other": "0.00",
+        "customer_price": null
+      },
+      "income_rates": {
+        "hour": "5.35",
+        "mile": "1.40"
+      },
+      "task_details": {
+        "events": [],
+        "orders": []
+      }
+    },
+    {
+      "id": "3bb8c2cf-fa22-392b-97c9-57485de3a41b",
+      "account": "019571bc-2f60-3955-d972-dbadfe0913a8",
+      "employer": "Lyft Driver",
+      "created_at": "2025-03-07T17:52:09.126Z",
+      "updated_at": "2025-03-07T17:52:09.126Z",
+      "status": "completed",
+      "type": "rideshare",
+      "task_count": 1,
+      "start_datetime": "2025-02-27T06:58:54Z",
+      "end_datetime": "2025-02-27T07:19:13Z",
+      "all_datetimes": {
+        "request_at": "2025-02-27T06:58:54Z",
+        "accept_at": "2025-02-27T06:59:04Z",
+        "pickup_at": "2025-02-27T07:02:06Z",
+        "dropoff_at": "2025-02-27T07:19:13Z",
+        "cancel_at": null,
+        "shift_start": null,
+        "shift_end": null,
+        "breaks": []
+      },
+      "duration": 1219,
+      "timezone": "America/New_York",
+      "earning_type": "work",
+      "start_location": {
+        "lat": "40.67121015929678",
+        "lng": "-73.75491352290702",
+        "formatted_address": "176 Michael Loop Apt. 432, New York, NY 47345, US"
+      },
+      "end_location": {
+        "lat": "40.689077421715346",
+        "lng": "-73.91809036642944",
+        "formatted_address": "98492 Robert Brooks, New York, NY 70858, US"
+      },
+      "distance": "10.00",
+      "distance_unit": "miles",
+      "metadata": {},
+      "circumstances": {
+        "is_pool": false,
+        "is_rush": true,
+        "is_surge": false,
+        "service_type": "Lyft driverXL",
+        "position": null
+      },
+      "income": {
+        "currency": "USD",
+        "total_charge": "18.92",
+        "fees": "0.00",
+        "total": "18.92",
+        "pay": "15.55",
+        "tips": "3.37",
+        "bonus": "0.00",
+        "other": "0.00",
+        "customer_price": null
+      },
+      "income_rates": {
+        "hour": "10.47",
+        "mile": "1.20"
+      },
+      "task_details": {
+        "events": [],
+        "orders": []
+      }
+    },
+    {
+      "id": "e5f78785-2e4a-3f12-ada3-ca4eddcccdf5",
+      "account": "019571bc-2f60-3955-d972-dbadfe0913a8",
+      "employer": "Lyft Driver",
+      "created_at": "2025-03-07T17:52:09.065Z",
+      "updated_at": "2025-03-07T17:52:09.065Z",
+      "status": "completed",
+      "type": "rideshare",
+      "task_count": 1,
+      "start_datetime": "2025-02-27T06:12:07Z",
+      "end_datetime": "2025-02-27T06:59:24Z",
+      "all_datetimes": {
+        "request_at": "2025-02-27T06:12:07Z",
+        "accept_at": "2025-02-27T06:13:34Z",
+        "pickup_at": "2025-02-27T06:21:02Z",
+        "dropoff_at": "2025-02-27T06:59:24Z",
+        "cancel_at": null,
+        "shift_start": null,
+        "shift_end": null,
+        "breaks": []
+      },
+      "duration": 2837,
+      "timezone": "America/New_York",
+      "earning_type": "work",
+      "start_location": {
+        "lat": "40.6890829699154",
+        "lng": "-73.64406672124046",
+        "formatted_address": "75238 Schultz Inlet Apt. 656, New York, NY 48139, US"
+      },
+      "end_location": {
+        "lat": "40.657321770431146",
+        "lng": "-73.89194820241664",
+        "formatted_address": "40528 Hansen Estates Apt. 801, New York, NY 87143, US"
+      },
+      "distance": "22.62",
+      "distance_unit": "miles",
+      "metadata": {},
+      "circumstances": {
+        "is_pool": false,
+        "is_rush": true,
+        "is_surge": true,
+        "service_type": "Lyft driverXL",
+        "position": null
+      },
+      "income": {
+        "currency": "USD",
+        "total_charge": "22.18",
+        "fees": "0.00",
+        "total": "22.18",
+        "pay": "22.18",
+        "tips": "0.00",
+        "bonus": "0.00",
+        "other": "0.00",
+        "customer_price": null
+      },
+      "income_rates": {
+        "hour": "8.05",
+        "mile": "0.70"
+      },
+      "task_details": {
+        "events": [],
+        "orders": []
+      }
+    },
+    {
+      "id": "adb2fff7-324f-3e9e-a4df-529189b466be",
+      "account": "019571bc-2f60-3955-d972-dbadfe0913a8",
+      "employer": "Lyft Driver",
+      "created_at": "2025-03-07T17:52:09.214Z",
+      "updated_at": "2025-03-07T17:52:09.214Z",
+      "status": "cancelled",
+      "type": "rideshare",
+      "task_count": 1,
+      "start_datetime": "2025-02-26T05:47:11Z",
+      "end_datetime": null,
+      "all_datetimes": {
+        "request_at": "2025-02-26T05:47:11Z",
+        "accept_at": null,
+        "pickup_at": null,
+        "dropoff_at": null,
+        "cancel_at": "2025-02-26T05:47:14Z",
+        "shift_start": null,
+        "shift_end": null,
+        "breaks": []
+      },
+      "duration": null,
+      "timezone": "America/New_York",
+      "earning_type": "work",
+      "start_location": null,
+      "end_location": null,
+      "distance": "0.00",
+      "distance_unit": "miles",
+      "metadata": {},
+      "circumstances": {
+        "is_pool": true,
+        "is_rush": true,
+        "is_surge": false,
+        "service_type": "Lyft driverXL",
+        "position": null
+      },
+      "income": {
+        "currency": "USD",
+        "total_charge": "0.00",
+        "fees": "0.00",
+        "total": "0.00",
+        "pay": "0.00",
+        "tips": "0.00",
+        "bonus": "0.00",
+        "other": "0.00",
+        "customer_price": null
+      },
+      "income_rates": {
+        "hour": null,
+        "mile": null
+      },
+      "task_details": {
+        "events": [],
+        "orders": []
+      }
+    },
+    {
+      "id": "0dab233e-bb16-38ee-b71f-554246c5862e",
+      "account": "019571bc-2f60-3955-d972-dbadfe0913a8",
+      "employer": "Lyft Driver",
+      "created_at": "2025-03-07T17:52:09.196Z",
+      "updated_at": "2025-03-07T17:52:09.196Z",
+      "status": "completed",
+      "type": "rideshare",
+      "task_count": 1,
+      "start_datetime": "2025-02-26T05:05:06Z",
+      "end_datetime": "2025-02-26T05:13:49Z",
+      "all_datetimes": {
+        "request_at": "2025-02-26T05:05:06Z",
+        "accept_at": "2025-02-26T05:05:25Z",
+        "pickup_at": "2025-02-26T05:06:08Z",
+        "dropoff_at": "2025-02-26T05:13:49Z",
+        "cancel_at": null,
+        "shift_start": null,
+        "shift_end": null,
+        "breaks": []
+      },
+      "duration": 523,
+      "timezone": "America/New_York",
+      "earning_type": "work",
+      "start_location": {
+        "lat": "40.67482366811441",
+        "lng": "-73.6494499904392",
+        "formatted_address": "177 Ramos Estate Suite 815, New York, NY 22748, US"
+      },
+      "end_location": {
+        "lat": "40.665439230744845",
+        "lng": "-73.67360335585161",
+        "formatted_address": "02748 Amy Underpass, New York, NY 17734, US"
+      },
+      "distance": "5.96",
+      "distance_unit": "miles",
+      "metadata": {},
+      "circumstances": {
+        "is_pool": true,
+        "is_rush": true,
+        "is_surge": false,
+        "service_type": "Lyft driverXL",
+        "position": null
+      },
+      "income": {
+        "currency": "USD",
+        "total_charge": "13.28",
+        "fees": "6.71",
+        "total": "6.57",
+        "pay": "6.57",
+        "tips": "0.00",
+        "bonus": "0.00",
+        "other": "0.00",
+        "customer_price": null
+      },
+      "income_rates": {
+        "hour": "12.39",
+        "mile": "0.80"
+      },
+      "task_details": {
+        "events": [],
+        "orders": []
+      }
+    },
+    {
+      "id": "f2f8d23b-ba1f-354a-8590-c24a2b45bcb0",
+      "account": "019571bc-2f60-3955-d972-dbadfe0913a8",
+      "employer": "Lyft Driver",
+      "created_at": "2025-03-07T17:52:08.994Z",
+      "updated_at": "2025-03-07T17:52:08.994Z",
+      "status": "completed",
+      "type": "rideshare",
+      "task_count": 1,
+      "start_datetime": "2025-02-25T04:17:06Z",
+      "end_datetime": "2025-02-25T04:55:44Z",
+      "all_datetimes": {
+        "request_at": "2025-02-25T04:17:06Z",
+        "accept_at": "2025-02-25T04:18:27Z",
+        "pickup_at": "2025-02-25T04:23:27Z",
+        "dropoff_at": "2025-02-25T04:55:44Z",
+        "cancel_at": null,
+        "shift_start": null,
+        "shift_end": null,
+        "breaks": []
+      },
+      "duration": 2318,
+      "timezone": "America/New_York",
+      "earning_type": "work",
+      "start_location": {
+        "lat": "40.69776474015337",
+        "lng": "-73.71840830350281",
+        "formatted_address": "967 Sean Square Apt. 250, New York, NY 07529, US"
+      },
+      "end_location": {
+        "lat": "40.704715231235305",
+        "lng": "-73.89153369625885",
+        "formatted_address": "40688 Joel Throughway, New York, NY 84323, US"
+      },
+      "distance": "11.44",
+      "distance_unit": "miles",
+      "metadata": {},
+      "circumstances": {
+        "is_pool": false,
+        "is_rush": false,
+        "is_surge": true,
+        "service_type": "Lyft driverXL",
+        "position": null
+      },
+      "income": {
+        "currency": "USD",
+        "total_charge": "18.98",
+        "fees": "5.15",
+        "total": "13.83",
+        "pay": "13.83",
+        "tips": "0.00",
+        "bonus": "0.00",
+        "other": "0.00",
+        "customer_price": null
+      },
+      "income_rates": {
+        "hour": "7.27",
+        "mile": "0.80"
+      },
+      "task_details": {
+        "events": [],
+        "orders": []
+      }
+    },
+    {
+      "id": "86a63907-9952-3f03-a2ff-bcf594151cec",
+      "account": "019571bc-2f60-3955-d972-dbadfe0913a8",
+      "employer": "Lyft Driver",
+      "created_at": "2025-03-07T17:52:09.090Z",
+      "updated_at": "2025-03-07T17:52:09.090Z",
+      "status": "completed",
+      "type": "rideshare",
+      "task_count": 1,
+      "start_datetime": "2025-02-25T03:19:29Z",
+      "end_datetime": "2025-02-25T03:26:05Z",
+      "all_datetimes": {
+        "request_at": "2025-02-25T03:19:29Z",
+        "accept_at": "2025-02-25T03:19:33Z",
+        "pickup_at": "2025-02-25T03:20:23Z",
+        "dropoff_at": "2025-02-25T03:26:05Z",
+        "cancel_at": null,
+        "shift_start": null,
+        "shift_end": null,
+        "breaks": []
+      },
+      "duration": 396,
+      "timezone": "America/New_York",
+      "earning_type": "work",
+      "start_location": {
+        "lat": "40.688511863994556",
+        "lng": "-73.7808156565204",
+        "formatted_address": "081 Benson Plaza, New York, NY 22483, US"
+      },
+      "end_location": {
+        "lat": "40.69341601217113",
+        "lng": "-73.7523380852277",
+        "formatted_address": "75497 Ronald Mission Suite 417, New York, NY 11673, US"
+      },
+      "distance": "5.66",
+      "distance_unit": "miles",
+      "metadata": {},
+      "circumstances": {
+        "is_pool": false,
+        "is_rush": true,
+        "is_surge": true,
+        "service_type": "Lyft driverXL",
+        "position": null
+      },
+      "income": {
+        "currency": "USD",
+        "total_charge": "16.30",
+        "fees": "0.00",
+        "total": "16.30",
+        "pay": "9.96",
+        "tips": "0.00",
+        "bonus": "0.00",
+        "other": "6.34",
+        "customer_price": null
+      },
+      "income_rates": {
+        "hour": "13.37",
+        "mile": "1.50"
+      },
+      "task_details": {
+        "events": [],
+        "orders": []
+      }
+    },
+    {
+      "id": "79cf845c-335d-3c88-9524-5970828c80db",
+      "account": "019571bc-2f60-3955-d972-dbadfe0913a8",
+      "employer": "Lyft Driver",
+      "created_at": "2025-03-07T17:52:09.176Z",
+      "updated_at": "2025-03-07T17:52:09.176Z",
+      "status": "completed",
+      "type": "rideshare",
+      "task_count": 1,
+      "start_datetime": "2025-02-24T02:41:38Z",
+      "end_datetime": "2025-02-24T03:19:12Z",
+      "all_datetimes": {
+        "request_at": "2025-02-24T02:41:38Z",
+        "accept_at": "2025-02-24T02:43:20Z",
+        "pickup_at": "2025-02-24T02:48:10Z",
+        "dropoff_at": "2025-02-24T03:19:12Z",
+        "cancel_at": null,
+        "shift_start": null,
+        "shift_end": null,
+        "breaks": []
+      },
+      "duration": 2254,
+      "timezone": "America/New_York",
+      "earning_type": "work",
+      "start_location": {
+        "lat": "40.683690974580706",
+        "lng": "-73.63917780688449",
+        "formatted_address": "71359 Carla Lane, New York, NY 51621, US"
+      },
+      "end_location": {
+        "lat": "40.676775647446235",
+        "lng": "-73.71178610895554",
+        "formatted_address": "942 Gregory Trail, New York, NY 62492, US"
+      },
+      "distance": "14.22",
+      "distance_unit": "miles",
+      "metadata": {},
+      "circumstances": {
+        "is_pool": false,
+        "is_rush": true,
+        "is_surge": true,
+        "service_type": "Lyft driverXL",
+        "position": null
+      },
+      "income": {
+        "currency": "USD",
+        "total_charge": "23.66",
+        "fees": "2.89",
+        "total": "20.77",
+        "pay": "20.77",
+        "tips": "0.00",
+        "bonus": "0.00",
+        "other": "0.00",
+        "customer_price": null
+      },
+      "income_rates": {
+        "hour": "15.00",
+        "mile": "0.80"
+      },
+      "task_details": {
+        "events": [],
+        "orders": []
+      }
+    },
+    {
+      "id": "2878348d-122a-3f09-b0ce-1a1652ec5368",
+      "account": "019571bc-2f60-3955-d972-dbadfe0913a8",
+      "employer": "Lyft Driver",
+      "created_at": "2025-03-07T17:52:08.910Z",
+      "updated_at": "2025-03-07T17:52:08.910Z",
+      "status": "completed",
+      "type": "rideshare",
+      "task_count": 1,
+      "start_datetime": "2025-02-24T02:11:25Z",
+      "end_datetime": "2025-02-24T02:49:06Z",
+      "all_datetimes": {
+        "request_at": "2025-02-24T02:11:25Z",
+        "accept_at": "2025-02-24T02:11:39Z",
+        "pickup_at": "2025-02-24T02:16:34Z",
+        "dropoff_at": "2025-02-24T02:49:06Z",
+        "cancel_at": null,
+        "shift_start": null,
+        "shift_end": null,
+        "breaks": []
+      },
+      "duration": 2261,
+      "timezone": "America/New_York",
+      "earning_type": "work",
+      "start_location": {
+        "lat": "40.694845405434855",
+        "lng": "-73.76090289772107",
+        "formatted_address": "081 Leonard Spurs, New York, NY 19308, US"
+      },
+      "end_location": {
+        "lat": "40.676755090018446",
+        "lng": "-73.84344520276515",
+        "formatted_address": "99606 Morris Station, New York, NY 20169, US"
+      },
+      "distance": "17.46",
+      "distance_unit": "miles",
+      "metadata": {},
+      "circumstances": {
+        "is_pool": true,
+        "is_rush": false,
+        "is_surge": false,
+        "service_type": "Lyft driverXL",
+        "position": null
+      },
+      "income": {
+        "currency": "USD",
+        "total_charge": "29.80",
+        "fees": "0.00",
+        "total": "29.80",
+        "pay": "29.80",
+        "tips": "0.00",
+        "bonus": "0.00",
+        "other": "0.00",
+        "customer_price": null
+      },
+      "income_rates": {
+        "hour": "5.75",
+        "mile": "1.50"
+      },
+      "task_details": {
+        "events": [],
+        "orders": []
+      }
+    },
+    {
+      "id": "d01c06fc-7ade-3f9e-9de1-8641259cfeb6",
+      "account": "019571bc-2f60-3955-d972-dbadfe0913a8",
+      "employer": "Lyft Driver",
+      "created_at": "2025-03-07T17:52:08.946Z",
+      "updated_at": "2025-03-07T17:52:08.946Z",
+      "status": "completed",
+      "type": "rideshare",
+      "task_count": 1,
+      "start_datetime": "2025-02-24T01:46:17Z",
+      "end_datetime": "2025-02-24T02:26:24Z",
+      "all_datetimes": {
+        "request_at": "2025-02-24T01:46:17Z",
+        "accept_at": "2025-02-24T01:46:30Z",
+        "pickup_at": "2025-02-24T01:50:25Z",
+        "dropoff_at": "2025-02-24T02:26:24Z",
+        "cancel_at": null,
+        "shift_start": null,
+        "shift_end": null,
+        "breaks": []
+      },
+      "duration": 2407,
+      "timezone": "America/New_York",
+      "earning_type": "work",
+      "start_location": {
+        "lat": "40.691823881998445",
+        "lng": "-73.7061391451429",
+        "formatted_address": "228 John Center, New York, NY 56881, US"
+      },
+      "end_location": {
+        "lat": "40.6890002044629",
+        "lng": "-73.62021953091438",
+        "formatted_address": "8440 Golden Pine, New York, NY 83390, US"
+      },
+      "distance": "10.10",
+      "distance_unit": "miles",
+      "metadata": {},
+      "circumstances": {
+        "is_pool": true,
+        "is_rush": false,
+        "is_surge": true,
+        "service_type": "Lyft driverXL",
+        "position": null
+      },
+      "income": {
+        "currency": "USD",
+        "total_charge": "26.00",
+        "fees": "0.00",
+        "total": "26.00",
+        "pay": "19.17",
+        "tips": "6.83",
+        "bonus": "0.00",
+        "other": "0.00",
+        "customer_price": null
+      },
+      "income_rates": {
+        "hour": "10.54",
+        "mile": "1.20"
+      },
+      "task_details": {
+        "events": [],
+        "orders": []
+      }
+    },
+    {
+      "id": "dfc07a6b-1db4-3cc1-a370-72f32d626ee5",
+      "account": "019571bc-2f60-3955-d972-dbadfe0913a8",
+      "employer": "Lyft Driver",
+      "created_at": "2025-03-07T17:52:09.143Z",
+      "updated_at": "2025-03-07T17:52:09.143Z",
+      "status": "completed",
+      "type": "rideshare",
+      "task_count": 1,
+      "start_datetime": "2025-02-24T00:52:35Z",
+      "end_datetime": "2025-02-24T01:23:31Z",
+      "all_datetimes": {
+        "request_at": "2025-02-24T00:52:35Z",
+        "accept_at": "2025-02-24T00:52:40Z",
+        "pickup_at": "2025-02-24T00:57:50Z",
+        "dropoff_at": "2025-02-24T01:23:31Z",
+        "cancel_at": null,
+        "shift_start": null,
+        "shift_end": null,
+        "breaks": []
+      },
+      "duration": 1856,
+      "timezone": "America/New_York",
+      "earning_type": "work",
+      "start_location": {
+        "lat": "40.695063760880025",
+        "lng": "-73.62453209831794",
+        "formatted_address": "2942 Simmons Landing Suite 336, New York, NY 90554, US"
+      },
+      "end_location": {
+        "lat": "40.663989471738276",
+        "lng": "-73.9126558308246",
+        "formatted_address": "9313 Jensen Turnpike, New York, NY 45287, US"
+      },
+      "distance": "18.84",
+      "distance_unit": "miles",
+      "metadata": {},
+      "circumstances": {
+        "is_pool": false,
+        "is_rush": false,
+        "is_surge": true,
+        "service_type": "Lyft driverXL",
+        "position": null
+      },
+      "income": {
+        "currency": "USD",
+        "total_charge": "32.83",
+        "fees": "0.00",
+        "total": "32.83",
+        "pay": "32.83",
+        "tips": "0.00",
+        "bonus": "0.00",
+        "other": "0.00",
+        "customer_price": null
+      },
+      "income_rates": {
+        "hour": "8.86",
+        "mile": "1.50"
+      },
+      "task_details": {
+        "events": [],
+        "orders": []
+      }
+    },
+    {
+      "id": "8fc2f7c4-d2ed-36a2-96ba-ab8fd206ba59",
+      "account": "019571bc-2f60-3955-d972-dbadfe0913a8",
+      "employer": "Lyft Driver",
+      "created_at": "2025-03-07T17:52:09.046Z",
+      "updated_at": "2025-03-07T17:52:09.046Z",
+      "status": "completed",
+      "type": "rideshare",
+      "task_count": 1,
+      "start_datetime": "2025-02-24T00:03:21Z",
+      "end_datetime": "2025-02-24T00:15:44Z",
+      "all_datetimes": {
+        "request_at": "2025-02-24T00:03:21Z",
+        "accept_at": "2025-02-24T00:03:30Z",
+        "pickup_at": "2025-02-24T00:05:42Z",
+        "dropoff_at": "2025-02-24T00:15:44Z",
+        "cancel_at": null,
+        "shift_start": null,
+        "shift_end": null,
+        "breaks": []
+      },
+      "duration": 743,
+      "timezone": "America/New_York",
+      "earning_type": "work",
+      "start_location": {
+        "lat": "40.70419805061039",
+        "lng": "-73.62969862956403",
+        "formatted_address": "9059 Jessica Skyway Apt. 451, New York, NY 76222, US"
+      },
+      "end_location": {
+        "lat": "40.68136907062339",
+        "lng": "-73.72387272698363",
+        "formatted_address": "716 Gregory Cove, New York, NY 31325, US"
+      },
+      "distance": "10.00",
+      "distance_unit": "miles",
+      "metadata": {},
+      "circumstances": {
+        "is_pool": false,
+        "is_rush": true,
+        "is_surge": false,
+        "service_type": "Lyft driverXL",
+        "position": null
+      },
+      "income": {
+        "currency": "USD",
+        "total_charge": "15.44",
+        "fees": "0.00",
+        "total": "15.44",
+        "pay": "15.44",
+        "tips": "0.00",
+        "bonus": "0.00",
+        "other": "0.00",
+        "customer_price": null
+      },
+      "income_rates": {
+        "hour": "6.98",
+        "mile": "1.40"
+      },
+      "task_details": {
+        "events": [],
+        "orders": []
+      }
+    },
+    {
+      "id": "bfed9577-a003-3c97-9541-aff064a3cd1d",
+      "account": "019571bc-2f60-3955-d972-dbadfe0913a8",
+      "employer": "Lyft Driver",
+      "created_at": "2025-03-07T17:52:08.873Z",
+      "updated_at": "2025-03-07T17:52:08.873Z",
+      "status": "completed",
+      "type": "rideshare",
+      "task_count": 1,
+      "start_datetime": "2025-02-22T23:47:21Z",
+      "end_datetime": "2025-02-23T00:21:46Z",
+      "all_datetimes": {
+        "request_at": "2025-02-22T23:47:21Z",
+        "accept_at": "2025-02-22T23:48:25Z",
+        "pickup_at": "2025-02-22T23:52:10Z",
+        "dropoff_at": "2025-02-23T00:21:46Z",
+        "cancel_at": null,
+        "shift_start": null,
+        "shift_end": null,
+        "breaks": []
+      },
+      "duration": 2065,
+      "timezone": "America/New_York",
+      "earning_type": "work",
+      "start_location": {
+        "lat": "40.70287408588068",
+        "lng": "-73.68635476913917",
+        "formatted_address": "86297 Mary Manors, New York, NY 17164, US"
+      },
+      "end_location": {
+        "lat": "40.69193604058308",
+        "lng": "-73.71903611949507",
+        "formatted_address": "320 Mitchell Station Suite 650, New York, NY 74404, US"
+      },
+      "distance": "10.59",
+      "distance_unit": "miles",
+      "metadata": {},
+      "circumstances": {
+        "is_pool": true,
+        "is_rush": true,
+        "is_surge": false,
+        "service_type": "Lyft driverXL",
+        "position": null
+      },
+      "income": {
+        "currency": "USD",
+        "total_charge": "17.43",
+        "fees": "1.41",
+        "total": "16.02",
+        "pay": "16.02",
+        "tips": "0.00",
+        "bonus": "0.00",
+        "other": "0.00",
+        "customer_price": null
+      },
+      "income_rates": {
+        "hour": "15.00",
+        "mile": "0.70"
+      },
+      "task_details": {
+        "events": [],
+        "orders": []
+      }
+    },
+    {
+      "id": "33226ce8-988e-3469-9e74-ceabde5a7093",
+      "account": "019571bc-2f60-3955-d972-dbadfe0913a8",
+      "employer": "Lyft Driver",
+      "created_at": "2025-03-07T17:52:08.965Z",
+      "updated_at": "2025-03-07T17:52:08.965Z",
+      "status": "completed",
+      "type": "rideshare",
+      "task_count": 1,
+      "start_datetime": "2025-02-22T23:14:20Z",
+      "end_datetime": "2025-02-22T23:50:01Z",
+      "all_datetimes": {
+        "request_at": "2025-02-22T23:14:20Z",
+        "accept_at": "2025-02-22T23:15:29Z",
+        "pickup_at": "2025-02-22T23:20:01Z",
+        "dropoff_at": "2025-02-22T23:50:01Z",
+        "cancel_at": null,
+        "shift_start": null,
+        "shift_end": null,
+        "breaks": []
+      },
+      "duration": 2141,
+      "timezone": "America/New_York",
+      "earning_type": "work",
+      "start_location": {
+        "lat": "40.694027631549226",
+        "lng": "-73.6776176413878",
+        "formatted_address": "69362 Roth Flats, New York, NY 49103, US"
+      },
+      "end_location": {
+        "lat": "40.668476781303916",
+        "lng": "-73.87580146293448",
+        "formatted_address": "6777 Catherine Green, New York, NY 38681, US"
+      },
+      "distance": "18.76",
+      "distance_unit": "miles",
+      "metadata": {},
+      "circumstances": {
+        "is_pool": false,
+        "is_rush": true,
+        "is_surge": false,
+        "service_type": "Lyft driverXL",
+        "position": null
+      },
+      "income": {
+        "currency": "USD",
+        "total_charge": "41.29",
+        "fees": "0.00",
+        "total": "41.29",
+        "pay": "31.29",
+        "tips": "0.00",
+        "bonus": "0.00",
+        "other": "10.00",
+        "customer_price": null
+      },
+      "income_rates": {
+        "hour": "14.76",
+        "mile": "1.20"
+      },
+      "task_details": {
+        "events": [],
+        "orders": []
+      }
+    },
+    {
+      "id": "76a9193e-db0b-32f7-b9ad-5d5af97c20e5",
+      "account": "019571bc-2f60-3955-d972-dbadfe0913a8",
+      "employer": "Lyft Driver",
+      "created_at": "2025-03-07T17:52:08.369Z",
+      "updated_at": "2025-03-07T17:52:08.369Z",
+      "status": "completed",
+      "type": "rideshare",
+      "task_count": 1,
+      "start_datetime": "2025-02-22T22:53:36Z",
+      "end_datetime": "2025-02-22T23:13:31Z",
+      "all_datetimes": {
+        "request_at": "2025-02-22T22:53:36Z",
+        "accept_at": "2025-02-22T22:54:27Z",
+        "pickup_at": "2025-02-22T22:56:27Z",
+        "dropoff_at": "2025-02-22T23:13:31Z",
+        "cancel_at": null,
+        "shift_start": null,
+        "shift_end": null,
+        "breaks": []
+      },
+      "duration": 1195,
+      "timezone": "America/New_York",
+      "earning_type": "work",
+      "start_location": {
+        "lat": "40.68526779372712",
+        "lng": "-73.6253462783163",
+        "formatted_address": "9057 Amy Harbor, New York, NY 62213, US"
+      },
+      "end_location": {
+        "lat": "40.6579385513664",
+        "lng": "-73.8111822757088",
+        "formatted_address": "06896 Barton Point Apt. 949, New York, NY 15005, US"
+      },
+      "distance": "8.10",
+      "distance_unit": "miles",
+      "metadata": {},
+      "circumstances": {
+        "is_pool": true,
+        "is_rush": false,
+        "is_surge": true,
+        "service_type": "Lyft driverXL",
+        "position": null
+      },
+      "income": {
+        "currency": "USD",
+        "total_charge": "18.84",
+        "fees": "8.44",
+        "total": "10.40",
+        "pay": "10.40",
+        "tips": "0.00",
+        "bonus": "0.00",
+        "other": "0.00",
+        "customer_price": null
+      },
+      "income_rates": {
+        "hour": "6.93",
+        "mile": "1.00"
+      },
+      "task_details": {
+        "events": [],
+        "orders": []
+      }
+    },
+    {
+      "id": "65ea4e86-e3f7-326e-b718-9e510a93a698",
+      "account": "019571bc-2f60-3955-d972-dbadfe0913a8",
+      "employer": "Lyft Driver",
+      "created_at": "2025-03-07T17:52:08.354Z",
+      "updated_at": "2025-03-07T17:52:08.354Z",
+      "status": "completed",
+      "type": "rideshare",
+      "task_count": 1,
+      "start_datetime": "2025-02-22T22:11:06Z",
+      "end_datetime": "2025-02-22T22:41:42Z",
+      "all_datetimes": {
+        "request_at": "2025-02-22T22:11:06Z",
+        "accept_at": "2025-02-22T22:11:40Z",
+        "pickup_at": "2025-02-22T22:16:32Z",
+        "dropoff_at": "2025-02-22T22:41:42Z",
+        "cancel_at": null,
+        "shift_start": null,
+        "shift_end": null,
+        "breaks": []
+      },
+      "duration": 1836,
+      "timezone": "America/New_York",
+      "earning_type": "work",
+      "start_location": {
+        "lat": "40.67201335862239",
+        "lng": "-73.91104988876518",
+        "formatted_address": "1883 Simpson Inlet, New York, NY 11070, US"
+      },
+      "end_location": {
+        "lat": "40.652052985280875",
+        "lng": "-73.63147194290924",
+        "formatted_address": "40653 Jessica Mount Suite 715, New York, NY 44150, US"
+      },
+      "distance": "15.88",
+      "distance_unit": "miles",
+      "metadata": {},
+      "circumstances": {
+        "is_pool": false,
+        "is_rush": true,
+        "is_surge": true,
+        "service_type": "Lyft driverXL",
+        "position": null
+      },
+      "income": {
+        "currency": "USD",
+        "total_charge": "33.58",
+        "fees": "8.03",
+        "total": "25.55",
+        "pay": "18.61",
+        "tips": "0.00",
+        "bonus": "0.00",
+        "other": "6.94",
+        "customer_price": null
+      },
+      "income_rates": {
+        "hour": "8.47",
+        "mile": "0.90"
+      },
+      "task_details": {
+        "events": [],
+        "orders": []
+      }
+    },
+    {
+      "id": "d91c8b0d-462a-388a-a7f9-745f684e4525",
+      "account": "019571bc-2f60-3955-d972-dbadfe0913a8",
+      "employer": "Lyft Driver",
+      "created_at": "2025-03-07T17:52:08.334Z",
+      "updated_at": "2025-03-07T17:52:08.334Z",
+      "status": "completed",
+      "type": "rideshare",
+      "task_count": 1,
+      "start_datetime": "2025-02-22T21:26:26Z",
+      "end_datetime": "2025-02-22T22:08:03Z",
+      "all_datetimes": {
+        "request_at": "2025-02-22T21:26:26Z",
+        "accept_at": "2025-02-22T21:28:22Z",
+        "pickup_at": "2025-02-22T21:31:36Z",
+        "dropoff_at": "2025-02-22T22:08:03Z",
+        "cancel_at": null,
+        "shift_start": null,
+        "shift_end": null,
+        "breaks": []
+      },
+      "duration": 2497,
+      "timezone": "America/New_York",
+      "earning_type": "work",
+      "start_location": {
+        "lat": "40.667546725569004",
+        "lng": "-73.74532480432643",
+        "formatted_address": "866 Montgomery Skyway Suite 467, New York, NY 34127, US"
+      },
+      "end_location": {
+        "lat": "40.65883518532195",
+        "lng": "-73.86730596579093",
+        "formatted_address": "68188 Perez Isle Suite 933, New York, NY 18362, US"
+      },
+      "distance": "17.84",
+      "distance_unit": "miles",
+      "metadata": {},
+      "circumstances": {
+        "is_pool": false,
+        "is_rush": true,
+        "is_surge": false,
+        "service_type": "Lyft driverXL",
+        "position": null
+      },
+      "income": {
+        "currency": "USD",
+        "total_charge": "26.25",
+        "fees": "4.59",
+        "total": "21.66",
+        "pay": "21.66",
+        "tips": "0.00",
+        "bonus": "0.00",
+        "other": "0.00",
+        "customer_price": null
+      },
+      "income_rates": {
+        "hour": "5.51",
+        "mile": "1.00"
+      },
+      "task_details": {
+        "events": [],
+        "orders": []
+      }
+    },
+    {
+      "id": "0500b213-5e85-3ef4-9902-78e8e91f6b7a",
+      "account": "019571bc-2f60-3955-d972-dbadfe0913a8",
+      "employer": "Lyft Driver",
+      "created_at": "2025-03-07T17:52:08.386Z",
+      "updated_at": "2025-03-07T17:52:08.386Z",
+      "status": "cancelled",
+      "type": "rideshare",
+      "task_count": 1,
+      "start_datetime": "2025-02-21T20:56:38Z",
+      "end_datetime": null,
+      "all_datetimes": {
+        "request_at": "2025-02-21T20:56:38Z",
+        "accept_at": null,
+        "pickup_at": null,
+        "dropoff_at": null,
+        "cancel_at": "2025-02-21T20:57:30Z",
+        "shift_start": null,
+        "shift_end": null,
+        "breaks": []
+      },
+      "duration": null,
+      "timezone": "America/New_York",
+      "earning_type": "work",
+      "start_location": null,
+      "end_location": null,
+      "distance": "0.00",
+      "distance_unit": "miles",
+      "metadata": {},
+      "circumstances": {
+        "is_pool": true,
+        "is_rush": false,
+        "is_surge": true,
+        "service_type": "Lyft driverXL",
+        "position": null
+      },
+      "income": {
+        "currency": "USD",
+        "total_charge": "0.00",
+        "fees": "0.00",
+        "total": "0.00",
+        "pay": "0.00",
+        "tips": "0.00",
+        "bonus": "0.00",
+        "other": "0.00",
+        "customer_price": null
+      },
+      "income_rates": {
+        "hour": null,
+        "mile": null
+      },
+      "task_details": {
+        "events": [],
+        "orders": []
+      }
+    },
+    {
+      "id": "bda3642d-4dd1-3918-93bc-086c22965c5b",
+      "account": "019571bc-2f60-3955-d972-dbadfe0913a8",
+      "employer": "Lyft Driver",
+      "created_at": "2025-03-07T17:52:08.480Z",
+      "updated_at": "2025-03-07T17:52:08.480Z",
+      "status": "completed",
+      "type": "rideshare",
+      "task_count": 1,
+      "start_datetime": "2025-02-21T20:12:55Z",
+      "end_datetime": "2025-02-21T20:27:49Z",
+      "all_datetimes": {
+        "request_at": "2025-02-21T20:12:55Z",
+        "accept_at": "2025-02-21T20:13:18Z",
+        "pickup_at": "2025-02-21T20:14:59Z",
+        "dropoff_at": "2025-02-21T20:27:49Z",
+        "cancel_at": null,
+        "shift_start": null,
+        "shift_end": null,
+        "breaks": []
+      },
+      "duration": 894,
+      "timezone": "America/New_York",
+      "earning_type": "work",
+      "start_location": {
+        "lat": "40.65386391777315",
+        "lng": "-73.63190081179998",
+        "formatted_address": "95859 Nichols Light Apt. 857, New York, NY 93478, US"
+      },
+      "end_location": {
+        "lat": "40.65390321010955",
+        "lng": "-73.82800075794378",
+        "formatted_address": "496 Ronald Ramp, New York, NY 97209, US"
+      },
+      "distance": "10.00",
+      "distance_unit": "miles",
+      "metadata": {},
+      "circumstances": {
+        "is_pool": true,
+        "is_rush": false,
+        "is_surge": false,
+        "service_type": "Lyft driverXL",
+        "position": null
+      },
+      "income": {
+        "currency": "USD",
+        "total_charge": "13.35",
+        "fees": "0.00",
+        "total": "13.35",
+        "pay": "13.35",
+        "tips": "0.00",
+        "bonus": "0.00",
+        "other": "0.00",
+        "customer_price": null
+      },
+      "income_rates": {
+        "hour": "5.45",
+        "mile": "1.20"
+      },
+      "task_details": {
+        "events": [],
+        "orders": []
+      }
+    },
+    {
+      "id": "e7201ec9-c17f-3c6d-b56f-fc42be3b2364",
+      "account": "019571bc-2f60-3955-d972-dbadfe0913a8",
+      "employer": "Lyft Driver",
+      "created_at": "2025-03-07T17:52:08.462Z",
+      "updated_at": "2025-03-07T17:52:08.462Z",
+      "status": "completed",
+      "type": "rideshare",
+      "task_count": 1,
+      "start_datetime": "2025-02-21T19:53:23Z",
+      "end_datetime": "2025-02-21T20:03:59Z",
+      "all_datetimes": {
+        "request_at": "2025-02-21T19:53:23Z",
+        "accept_at": "2025-02-21T19:53:32Z",
+        "pickup_at": "2025-02-21T19:55:21Z",
+        "dropoff_at": "2025-02-21T20:03:59Z",
+        "cancel_at": null,
+        "shift_start": null,
+        "shift_end": null,
+        "breaks": []
+      },
+      "duration": 636,
+      "timezone": "America/New_York",
+      "earning_type": "work",
+      "start_location": {
+        "lat": "40.67858695473228",
+        "lng": "-73.63505939747216",
+        "formatted_address": "686 Robert Village, New York, NY 01331, US"
+      },
+      "end_location": {
+        "lat": "40.71132798672838",
+        "lng": "-73.68675167915599",
+        "formatted_address": "7558 Carpenter Court, New York, NY 38005, US"
+      },
+      "distance": "9.45",
+      "distance_unit": "miles",
+      "metadata": {},
+      "circumstances": {
+        "is_pool": false,
+        "is_rush": false,
+        "is_surge": false,
+        "service_type": "Lyft driverXL",
+        "position": null
+      },
+      "income": {
+        "currency": "USD",
+        "total_charge": "15.30",
+        "fees": "0.00",
+        "total": "15.30",
+        "pay": "15.30",
+        "tips": "0.00",
+        "bonus": "0.00",
+        "other": "0.00",
+        "customer_price": null
+      },
+      "income_rates": {
+        "hour": "6.34",
+        "mile": "1.50"
+      },
+      "task_details": {
+        "events": [],
+        "orders": []
+      }
+    },
+    {
+      "id": "a142301e-9833-3faa-a9c4-d9fc59a0b2a6",
+      "account": "019571bc-2f60-3955-d972-dbadfe0913a8",
+      "employer": "Lyft Driver",
+      "created_at": "2025-03-07T17:52:08.405Z",
+      "updated_at": "2025-03-07T17:52:08.405Z",
+      "status": "completed",
+      "type": "rideshare",
+      "task_count": 1,
+      "start_datetime": "2025-02-21T19:01:09Z",
+      "end_datetime": "2025-02-21T19:42:03Z",
+      "all_datetimes": {
+        "request_at": "2025-02-21T19:01:09Z",
+        "accept_at": "2025-02-21T19:01:54Z",
+        "pickup_at": "2025-02-21T19:09:11Z",
+        "dropoff_at": "2025-02-21T19:42:03Z",
+        "cancel_at": null,
+        "shift_start": null,
+        "shift_end": null,
+        "breaks": []
+      },
+      "duration": 2454,
+      "timezone": "America/New_York",
+      "earning_type": "work",
+      "start_location": {
+        "lat": "40.664662376231256",
+        "lng": "-73.8158579170982",
+        "formatted_address": "40028 Michael Pines Apt. 502, New York, NY 67978, US"
+      },
+      "end_location": {
+        "lat": "40.664538171417156",
+        "lng": "-73.71243428590115",
+        "formatted_address": "805 Luis Way, New York, NY 58832, US"
+      },
+      "distance": "18.31",
+      "distance_unit": "miles",
+      "metadata": {},
+      "circumstances": {
+        "is_pool": true,
+        "is_rush": false,
+        "is_surge": false,
+        "service_type": "Lyft driverXL",
+        "position": null
+      },
+      "income": {
+        "currency": "USD",
+        "total_charge": "20.06",
+        "fees": "0.00",
+        "total": "20.06",
+        "pay": "20.06",
+        "tips": "0.00",
+        "bonus": "0.00",
+        "other": "0.00",
+        "customer_price": null
+      },
+      "income_rates": {
+        "hour": "7.94",
+        "mile": "0.80"
+      },
+      "task_details": {
+        "events": [],
+        "orders": []
+      }
+    },
+    {
+      "id": "6878d564-7696-3ce1-9d55-6c7579222f7f",
+      "account": "019571bc-2f60-3955-d972-dbadfe0913a8",
+      "employer": "Lyft Driver",
+      "created_at": "2025-03-07T17:52:08.499Z",
+      "updated_at": "2025-03-07T17:52:08.499Z",
+      "status": "completed",
+      "type": "rideshare",
+      "task_count": 1,
+      "start_datetime": "2025-02-21T18:40:38Z",
+      "end_datetime": "2025-02-21T19:06:00Z",
+      "all_datetimes": {
+        "request_at": "2025-02-21T18:40:38Z",
+        "accept_at": "2025-02-21T18:41:07Z",
+        "pickup_at": "2025-02-21T18:44:45Z",
+        "dropoff_at": "2025-02-21T19:06:00Z",
+        "cancel_at": null,
+        "shift_start": null,
+        "shift_end": null,
+        "breaks": []
+      },
+      "duration": 1522,
+      "timezone": "America/New_York",
+      "earning_type": "work",
+      "start_location": {
+        "lat": "40.69629418540469",
+        "lng": "-73.67891381492842",
+        "formatted_address": "69246 Hahn Plain Apt. 896, New York, NY 80110, US"
+      },
+      "end_location": {
+        "lat": "40.67392725788364",
+        "lng": "-73.68658311227173",
+        "formatted_address": "690 Kathryn Vista, New York, NY 68260, US"
+      },
+      "distance": "10.96",
+      "distance_unit": "miles",
+      "metadata": {},
+      "circumstances": {
+        "is_pool": true,
+        "is_rush": false,
+        "is_surge": true,
+        "service_type": "Lyft driverXL",
+        "position": null
+      },
+      "income": {
+        "currency": "USD",
+        "total_charge": "18.49",
+        "fees": "0.00",
+        "total": "18.49",
+        "pay": "18.49",
+        "tips": "0.00",
+        "bonus": "0.00",
+        "other": "0.00",
+        "customer_price": null
+      },
+      "income_rates": {
+        "hour": "7.44",
+        "mile": "1.40"
+      },
+      "task_details": {
+        "events": [],
+        "orders": []
+      }
+    },
+    {
+      "id": "6f303cce-4e1e-3990-af75-bf98caaf5b73",
+      "account": "019571bc-2f60-3955-d972-dbadfe0913a8",
+      "employer": "Lyft Driver",
+      "created_at": "2025-03-07T17:52:08.441Z",
+      "updated_at": "2025-03-07T17:52:08.441Z",
+      "status": "completed",
+      "type": "rideshare",
+      "task_count": 1,
+      "start_datetime": "2025-02-20T17:51:46Z",
+      "end_datetime": "2025-02-20T18:19:23Z",
+      "all_datetimes": {
+        "request_at": "2025-02-20T17:51:46Z",
+        "accept_at": "2025-02-20T17:51:57Z",
+        "pickup_at": "2025-02-20T17:55:39Z",
+        "dropoff_at": "2025-02-20T18:19:23Z",
+        "cancel_at": null,
+        "shift_start": null,
+        "shift_end": null,
+        "breaks": []
+      },
+      "duration": 1657,
+      "timezone": "America/New_York",
+      "earning_type": "work",
+      "start_location": {
+        "lat": "40.67302470017212",
+        "lng": "-73.66630683717051",
+        "formatted_address": "335 Matthew Islands, New York, NY 13017, US"
+      },
+      "end_location": {
+        "lat": "40.69545927004529",
+        "lng": "-73.83578512431717",
+        "formatted_address": "7817 Kelly Light Suite 269, New York, NY 05450, US"
+      },
+      "distance": "10.53",
+      "distance_unit": "miles",
+      "metadata": {},
+      "circumstances": {
+        "is_pool": true,
+        "is_rush": false,
+        "is_surge": true,
+        "service_type": "Lyft driverXL",
+        "position": null
+      },
+      "income": {
+        "currency": "USD",
+        "total_charge": "23.57",
+        "fees": "0.00",
+        "total": "23.57",
+        "pay": "20.62",
+        "tips": "0.00",
+        "bonus": "0.00",
+        "other": "2.95",
+        "customer_price": null
+      },
+      "income_rates": {
+        "hour": "10.49",
+        "mile": "1.50"
+      },
+      "task_details": {
+        "events": [],
+        "orders": []
+      }
+    },
+    {
+      "id": "1c5a93c9-d176-3956-8723-5d6687eb5904",
+      "account": "019571bc-2f60-3955-d972-dbadfe0913a8",
+      "employer": "Lyft Driver",
+      "created_at": "2025-03-07T17:52:08.423Z",
+      "updated_at": "2025-03-07T17:52:08.423Z",
+      "status": "completed",
+      "type": "rideshare",
+      "task_count": 1,
+      "start_datetime": "2025-02-20T16:52:31Z",
+      "end_datetime": "2025-02-20T17:24:52Z",
+      "all_datetimes": {
+        "request_at": "2025-02-20T16:52:31Z",
+        "accept_at": "2025-02-20T16:52:46Z",
+        "pickup_at": "2025-02-20T16:56:29Z",
+        "dropoff_at": "2025-02-20T17:24:52Z",
+        "cancel_at": null,
+        "shift_start": null,
+        "shift_end": null,
+        "breaks": []
+      },
+      "duration": 1941,
+      "timezone": "America/New_York",
+      "earning_type": "work",
+      "start_location": {
+        "lat": "40.673201031667425",
+        "lng": "-73.72336025604095",
+        "formatted_address": "789 Tyler Forge, New York, NY 20046, US"
+      },
+      "end_location": {
+        "lat": "40.66779382305929",
+        "lng": "-73.67160176714505",
+        "formatted_address": "9640 Laura Common Suite 294, New York, NY 38546, US"
+      },
+      "distance": "10.84",
+      "distance_unit": "miles",
+      "metadata": {},
+      "circumstances": {
+        "is_pool": false,
+        "is_rush": true,
+        "is_surge": false,
+        "service_type": "Lyft driverXL",
+        "position": null
+      },
+      "income": {
+        "currency": "USD",
+        "total_charge": "13.33",
+        "fees": "0.00",
+        "total": "13.33",
+        "pay": "13.33",
+        "tips": "0.00",
+        "bonus": "0.00",
+        "other": "0.00",
+        "customer_price": null
+      },
+      "income_rates": {
+        "hour": "6.63",
+        "mile": "0.90"
+      },
+      "task_details": {
+        "events": [],
+        "orders": []
+      }
+    },
+    {
+      "id": "7342bf8e-49f9-32b9-a3c3-d188158b6457",
+      "account": "019571bc-2f60-3955-d972-dbadfe0913a8",
+      "employer": "Lyft Driver",
+      "created_at": "2025-03-07T17:52:08.534Z",
+      "updated_at": "2025-03-07T17:52:08.534Z",
+      "status": "completed",
+      "type": "rideshare",
+      "task_count": 1,
+      "start_datetime": "2025-02-20T16:12:04Z",
+      "end_datetime": "2025-02-20T16:26:25Z",
+      "all_datetimes": {
+        "request_at": "2025-02-20T16:12:04Z",
+        "accept_at": "2025-02-20T16:12:31Z",
+        "pickup_at": "2025-02-20T16:13:34Z",
+        "dropoff_at": "2025-02-20T16:26:25Z",
+        "cancel_at": null,
+        "shift_start": null,
+        "shift_end": null,
+        "breaks": []
+      },
+      "duration": 861,
+      "timezone": "America/New_York",
+      "earning_type": "work",
+      "start_location": {
+        "lat": "40.656025167407556",
+        "lng": "-73.67677791652459",
+        "formatted_address": "7835 Clifford Points Apt. 540, New York, NY 42964, US"
+      },
+      "end_location": {
+        "lat": "40.69687940016776",
+        "lng": "-73.79769871799702",
+        "formatted_address": "83447 Christina Knoll, New York, NY 54034, US"
+      },
+      "distance": "2.99",
+      "distance_unit": "miles",
+      "metadata": {},
+      "circumstances": {
+        "is_pool": false,
+        "is_rush": true,
+        "is_surge": true,
+        "service_type": "Lyft driverXL",
+        "position": null
+      },
+      "income": {
+        "currency": "USD",
+        "total_charge": "5.16",
+        "fees": "0.00",
+        "total": "5.16",
+        "pay": "5.16",
+        "tips": "0.00",
+        "bonus": "0.00",
+        "other": "0.00",
+        "customer_price": null
+      },
+      "income_rates": {
+        "hour": "9.09",
+        "mile": "1.00"
+      },
+      "task_details": {
+        "events": [],
+        "orders": []
+      }
+    },
+    {
+      "id": "1c5a2a70-b5cd-3bca-bcc0-92fed2e4bda2",
+      "account": "019571bc-2f60-3955-d972-dbadfe0913a8",
+      "employer": "Lyft Driver",
+      "created_at": "2025-03-07T17:52:08.553Z",
+      "updated_at": "2025-03-07T17:52:08.553Z",
+      "status": "cancelled",
+      "type": "rideshare",
+      "task_count": 1,
+      "start_datetime": "2025-02-19T15:12:56Z",
+      "end_datetime": null,
+      "all_datetimes": {
+        "request_at": "2025-02-19T15:12:56Z",
+        "accept_at": null,
+        "pickup_at": null,
+        "dropoff_at": null,
+        "cancel_at": "2025-02-19T15:13:29Z",
+        "shift_start": null,
+        "shift_end": null,
+        "breaks": []
+      },
+      "duration": null,
+      "timezone": "America/New_York",
+      "earning_type": "work",
+      "start_location": null,
+      "end_location": null,
+      "distance": "0.00",
+      "distance_unit": "miles",
+      "metadata": {},
+      "circumstances": {
+        "is_pool": true,
+        "is_rush": true,
+        "is_surge": false,
+        "service_type": "Lyft driverXL",
+        "position": null
+      },
+      "income": {
+        "currency": "USD",
+        "total_charge": "0.00",
+        "fees": "0.00",
+        "total": "0.00",
+        "pay": "0.00",
+        "tips": "0.00",
+        "bonus": "0.00",
+        "other": "0.00",
+        "customer_price": null
+      },
+      "income_rates": {
+        "hour": null,
+        "mile": null
+      },
+      "task_details": {
+        "events": [],
+        "orders": []
+      }
+    },
+    {
+      "id": "65f9142f-7032-3182-94ec-ee8f31b7deb4",
+      "account": "019571bc-2f60-3955-d972-dbadfe0913a8",
+      "employer": "Lyft Driver",
+      "created_at": "2025-03-07T17:52:08.638Z",
+      "updated_at": "2025-03-07T17:52:08.638Z",
+      "status": "completed",
+      "type": "rideshare",
+      "task_count": 1,
+      "start_datetime": "2025-02-18T14:20:21Z",
+      "end_datetime": "2025-02-18T14:42:53Z",
+      "all_datetimes": {
+        "request_at": "2025-02-18T14:20:21Z",
+        "accept_at": "2025-02-18T14:20:50Z",
+        "pickup_at": "2025-02-18T14:23:42Z",
+        "dropoff_at": "2025-02-18T14:42:53Z",
+        "cancel_at": null,
+        "shift_start": null,
+        "shift_end": null,
+        "breaks": []
+      },
+      "duration": 1352,
+      "timezone": "America/New_York",
+      "earning_type": "work",
+      "start_location": {
+        "lat": "40.67163987865583",
+        "lng": "-73.71826011151681",
+        "formatted_address": "2227 Bianca Spur Apt. 165, New York, NY 20514, US"
+      },
+      "end_location": {
+        "lat": "40.71104800401939",
+        "lng": "-73.62496481478126",
+        "formatted_address": "13951 Mark Rapids Suite 552, New York, NY 57712, US"
+      },
+      "distance": "2.10",
+      "distance_unit": "miles",
+      "metadata": {},
+      "circumstances": {
+        "is_pool": true,
+        "is_rush": false,
+        "is_surge": true,
+        "service_type": "Lyft driverXL",
+        "position": null
+      },
+      "income": {
+        "currency": "USD",
+        "total_charge": "13.94",
+        "fees": "7.45",
+        "total": "6.49",
+        "pay": "6.49",
+        "tips": "0.00",
+        "bonus": "0.00",
+        "other": "0.00",
+        "customer_price": null
+      },
+      "income_rates": {
+        "hour": "11.14",
+        "mile": "1.10"
+      },
+      "task_details": {
+        "events": [],
+        "orders": []
+      }
+    },
+    {
+      "id": "d9e02838-a408-3895-bacd-e8ae3d3d5740",
+      "account": "019571bc-2f60-3955-d972-dbadfe0913a8",
+      "employer": "Lyft Driver",
+      "created_at": "2025-03-07T17:52:08.516Z",
+      "updated_at": "2025-03-07T17:52:08.516Z",
+      "status": "completed",
+      "type": "rideshare",
+      "task_count": 1,
+      "start_datetime": "2025-02-18T13:33:14Z",
+      "end_datetime": "2025-02-18T13:46:43Z",
+      "all_datetimes": {
+        "request_at": "2025-02-18T13:33:14Z",
+        "accept_at": "2025-02-18T13:33:29Z",
+        "pickup_at": "2025-02-18T13:35:44Z",
+        "dropoff_at": "2025-02-18T13:46:43Z",
+        "cancel_at": null,
+        "shift_start": null,
+        "shift_end": null,
+        "breaks": []
+      },
+      "duration": 809,
+      "timezone": "America/New_York",
+      "earning_type": "work",
+      "start_location": {
+        "lat": "40.65825785625919",
+        "lng": "-73.72924559272604",
+        "formatted_address": "877 Andrea Ports Suite 782, New York, NY 87170, US"
+      },
+      "end_location": {
+        "lat": "40.676437841793046",
+        "lng": "-73.90616054828784",
+        "formatted_address": "200 Santiago Walks, New York, NY 08957, US"
+      },
+      "distance": "8.26",
+      "distance_unit": "miles",
+      "metadata": {},
+      "circumstances": {
+        "is_pool": false,
+        "is_rush": true,
+        "is_surge": false,
+        "service_type": "Lyft driverXL",
+        "position": null
+      },
+      "income": {
+        "currency": "USD",
+        "total_charge": "8.93",
+        "fees": "1.22",
+        "total": "7.71",
+        "pay": "7.71",
+        "tips": "0.00",
+        "bonus": "0.00",
+        "other": "0.00",
+        "customer_price": null
+      },
+      "income_rates": {
+        "hour": "8.56",
+        "mile": "0.70"
+      },
+      "task_details": {
+        "events": [],
+        "orders": []
+      }
+    },
+    {
+      "id": "dd5e527c-a20d-3a31-b287-655321c80a6d",
+      "account": "019571bc-2f60-3955-d972-dbadfe0913a8",
+      "employer": "Lyft Driver",
+      "created_at": "2025-03-07T17:52:08.177Z",
+      "updated_at": "2025-03-07T17:52:08.177Z",
+      "status": "completed",
+      "type": "rideshare",
+      "task_count": 1,
+      "start_datetime": "2025-02-18T13:10:54Z",
+      "end_datetime": "2025-02-18T13:37:42Z",
+      "all_datetimes": {
+        "request_at": "2025-02-18T13:10:54Z",
+        "accept_at": "2025-02-18T13:11:39Z",
+        "pickup_at": "2025-02-18T13:14:31Z",
+        "dropoff_at": "2025-02-18T13:37:42Z",
+        "cancel_at": null,
+        "shift_start": null,
+        "shift_end": null,
+        "breaks": []
+      },
+      "duration": 1608,
+      "timezone": "America/New_York",
+      "earning_type": "work",
+      "start_location": {
+        "lat": "40.68675856355784",
+        "lng": "-73.85170285236806",
+        "formatted_address": "400 Shirley Way Apt. 191, New York, NY 39682, US"
+      },
+      "end_location": {
+        "lat": "40.68704937294929",
+        "lng": "-73.87541522392209",
+        "formatted_address": "304 Ashley Shores, New York, NY 13515, US"
+      },
+      "distance": "18.06",
+      "distance_unit": "miles",
+      "metadata": {},
+      "circumstances": {
+        "is_pool": false,
+        "is_rush": true,
+        "is_surge": false,
+        "service_type": "Lyft driverXL",
+        "position": null
+      },
+      "income": {
+        "currency": "USD",
+        "total_charge": "20.86",
+        "fees": "0.00",
+        "total": "20.86",
+        "pay": "20.86",
+        "tips": "0.00",
+        "bonus": "0.00",
+        "other": "0.00",
+        "customer_price": null
+      },
+      "income_rates": {
+        "hour": "6.26",
+        "mile": "1.00"
+      },
+      "task_details": {
+        "events": [],
+        "orders": []
+      }
+    },
+    {
+      "id": "9abf9d99-5e3d-3c00-a550-b8069d636cd5",
+      "account": "019571bc-2f60-3955-d972-dbadfe0913a8",
+      "employer": "Lyft Driver",
+      "created_at": "2025-03-07T17:52:08.620Z",
+      "updated_at": "2025-03-07T17:52:08.620Z",
+      "status": "completed",
+      "type": "rideshare",
+      "task_count": 1,
+      "start_datetime": "2025-02-18T12:24:13Z",
+      "end_datetime": "2025-02-18T13:03:08Z",
+      "all_datetimes": {
+        "request_at": "2025-02-18T12:24:13Z",
+        "accept_at": "2025-02-18T12:26:04Z",
+        "pickup_at": "2025-02-18T12:30:51Z",
+        "dropoff_at": "2025-02-18T13:03:08Z",
+        "cancel_at": null,
+        "shift_start": null,
+        "shift_end": null,
+        "breaks": []
+      },
+      "duration": 2335,
+      "timezone": "America/New_York",
+      "earning_type": "work",
+      "start_location": {
+        "lat": "40.696892123629624",
+        "lng": "-73.63745120284676",
+        "formatted_address": "3038 Denise Vista, New York, NY 66565, US"
+      },
+      "end_location": {
+        "lat": "40.68206812754609",
+        "lng": "-73.90178731379056",
+        "formatted_address": "3486 Phillip Trafficway, New York, NY 25457, US"
+      },
+      "distance": "16.30",
+      "distance_unit": "miles",
+      "metadata": {},
+      "circumstances": {
+        "is_pool": false,
+        "is_rush": false,
+        "is_surge": false,
+        "service_type": "Lyft driverXL",
+        "position": null
+      },
+      "income": {
+        "currency": "USD",
+        "total_charge": "19.82",
+        "fees": "0.00",
+        "total": "19.82",
+        "pay": "19.82",
+        "tips": "0.00",
+        "bonus": "0.00",
+        "other": "0.00",
+        "customer_price": null
+      },
+      "income_rates": {
+        "hour": "10.46",
+        "mile": "0.80"
+      },
+      "task_details": {
+        "events": [],
+        "orders": []
+      }
+    }
+  ],
+  "next": "https://api-sandbox.argyle.com/v2/gigs?cursor=Y2xpZW50SWQ9MDE4ZjA4MzQtZDY5YS04NzliLTA1Y2ItZGRkZTAzMzAyNGYwJmludmVyc2VTb3J0PWZhbHNlJmxpbWl0PTEwMCZ1c2VySWQ9MDE5NTcxYmItZTU3NC1hODhlLTdkN2ItMTVjODg2NDk5Njk2JnJvd0tleT1TJTIzVSUyMzAxOTU3MWJiLWU1NzQtYTg4ZS03ZDdiLTE1Yzg4NjQ5OTY5NiUyMzQ2MTE2ODQyODA1NTIxMzg5MDMlMjMzMTZhNzFhYS00ODdhLTM4NzYtODhjNC00N2E3YTAxODAzYTg%3D",
+  "previous": null
+}

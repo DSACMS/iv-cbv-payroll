@@ -1,0 +1,175 @@
+{
+    "results": [
+        {
+          "id": "c4a0595c-67c4-3f63-bb1e-3a8c4fde13cd",
+          "account": "019571bc-2f60-3955-d972-dbadfe0913a8",
+          "payroll_document": null,
+          "deduction_list": [],
+          "filing_status": [
+            {
+              "type": "federal",
+              "location": null,
+              "status": "head of household"
+            }
+          ],
+          "tax_list": [
+            {
+              "amount": "62.45",
+              "name": "Federal Income Tax",
+              "type": "federal",
+              "amount_ytd": "865.01"
+            },
+            {
+              "amount": "140.77",
+              "name": "Social Security Tax",
+              "type": "fica",
+              "amount_ytd": "1649.97"
+            },
+            {
+              "amount": "32.92",
+              "name": "Medicare Tax",
+              "type": "fica",
+              "amount_ytd": "385.88"
+            },
+            {
+              "amount": "45.41",
+              "name": "AZ State Income Tax",
+              "type": "state",
+              "amount_ytd": "532.25"
+            }
+          ],
+          "status": "completed",
+          "paystub_date": "2025-09-30T00:00:00Z",
+          "paystub_period": {
+            "start_date": "2025-09-16T00:00:00Z",
+            "end_date": "2025-09-30T00:00:00Z"
+          },
+          "currency": "USD",
+          "gross_pay": "2270.40",
+          "deductions": null,
+          "taxes": "281.55",
+          "net_pay": "1988.85",
+          "reimbursements": null,
+          "hours": "24.00",
+          "fees": null,
+          "net_pay_ytd": null,
+          "gross_pay_ytd": "26573.14",
+          "metadata": {
+            "raw_type": "checking",
+            "raw_filing_status_list": [
+              {
+                "type": "federal",
+                "location": null,
+                "status": "Head of household"
+              }
+            ],
+            "raw_tax_list": [
+              {
+                "amount": 62.45,
+                "amount_ytd": 865.01,
+                "name": "Federal Income Tax",
+                "type": null
+              },
+              {
+                "amount": 140.77,
+                "amount_ytd": 1649.97,
+                "name": "Social Security Tax",
+                "type": null
+              },
+              {
+                "amount": 32.92,
+                "amount_ytd": 385.88,
+                "name": "Medicare Tax",
+                "type": null
+              },
+              {
+                "amount": 45.41,
+                "amount_ytd": 532.25,
+                "name": "AZ State Income Tax",
+                "type": null
+              }
+            ],
+            "raw_employer_address_city": "MILWAUKEE",
+            "raw_employer_address_line1": "411 E. WISCONSIN AVE.",
+            "raw_employer_address_country": null,
+            "raw_employee_address_city": "TUCSON",
+            "raw_employee_address_line1": "4601 EAST SKYLINE DRIVE",
+            "raw_employee_address_line2": "APT. 1112",
+            "raw_employee_address_country": null,
+            "raw_gross_pay_list": [
+              {
+                "name": "BILLABLE HR",
+                "type": null,
+                "start_date": null,
+                "end_date": null,
+                "rate": 94.6,
+                "hours": 24,
+                "hours_ytd": null,
+                "amount": 2270.4,
+                "amount_ytd": 26573.14,
+                "excl_from_total": false
+              }
+            ],
+            "raw_status": null
+          },
+          "employer": "QUARLES & BRADY LLP",
+          "employer_address": {
+            "city": "Milwaukee",
+            "state": "WI",
+            "country": "US",
+            "postal_code": "53202",
+            "line1": "411 E. Wisconsin Ave.",
+            "line2": null
+          },
+          "created_at": "2025-10-14T21:11:51.394Z",
+          "updated_at": "2025-10-14T21:12:19.914Z",
+          "destinations": [
+            {
+              "reference": "Checking",
+              "amount": "1988.85",
+              "ach_deposit_account": {
+                "routing_number": "xxxx xxxx",
+                "account_number": "xxxxx4071",
+                "bank_name": null
+              },
+              "card": null,
+              "method": "Direct Deposit",
+              "metadata": {}
+            }
+          ],
+          "hours_ytd": null,
+          "deductions_ytd": null,
+          "taxes_ytd": "3433.11",
+          "gross_pay_list": [
+            {
+              "name": "BILLABLE HR",
+              "type": "base",
+              "start_date": null,
+              "end_date": null,
+              "rate": "94.6000",
+              "hours": "24.0000",
+              "amount": "2270.40",
+              "hours_ytd": null,
+              "amount_ytd": "26573.14"
+            }
+          ],
+          "gross_pay_list_totals": {
+            "base": {
+              "amount": "2270.40",
+              "amount_ytd": "26573.14",
+              "hours": "24.0000",
+              "hours_ytd": null,
+              "rate_implied": "94.6000",
+              "rate_implied_ytd": null
+            },
+            "overtime": null,
+            "commission": null,
+            "bonus": null,
+            "other": null
+          },
+          "employment": "ed98b483-04f3-374b-b6e0-700efadc9349"
+        }
+    ],
+    "next": "",
+    "previous": null
+}
