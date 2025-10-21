@@ -70,4 +70,16 @@
       <% end %>
     </div>
   <% end %>
+
+  <div class="divider margin-bottom-2 margin-top-5"></div>
+  <h2><%= t(".common_questions_header") %></h2>
+  <%= render AccordionComponent.new(id: "employer-search-lost-job", heading_level: 3, data_action: "click->common-questions#view", data_section_identifier: "what_if_i_lost_my_job", data_page: "employer_search") do |a| %>
+    <% a.with_title { t(".lost_job_title") } %>
+    <% a.with_accordion_item { t(".lost_job_body_html") } %>
+  <% end %>
+
+  <%= render AccordionComponent.new(id: "employer-search-no-income", heading_level: 3, data_action: "click->common-questions#view", data_section_identifier: "what_if_i_have_no_income_to_report", data_page: "employer_search") do |a| %>
+    <% a.with_title { t(".no_income_title") } %>
+    <% a.with_accordion_item { t(".no_income_body", agency_acronym: agency_translation("shared.agency_acronym")) } %>
+  <% end %>
 </div>

@@ -249,9 +249,14 @@ en:
           help_options: Get help here.
         app_based_providers: App-based employers
         can_not_find_employer: I can’t find my employer or payroll provider
+        common_questions_header: Common questions
         employer_not_listed: Employer not listed?
         exit_button_text: Exit and go to %{agency_acronym}'s website
         header: Search for your employer or payroll provider
+        lost_job_body_html: 'If you lost your job within the last 90 days, you can use this tool to report your job loss. You must be able to: <ul><li>Log in to your previous employer or payroll provider account, and</li><li>View your payment information online</li></ul>'
+        lost_job_title: What if I lost my job?
+        no_income_body: If you haven’t worked in the past 90 days, contact %{agency_acronym} for next steps.
+        no_income_title: What if I don’t have any income to report?
         no_results_steps1: Check if your employer uses another business name or search for their payroll provider.
         no_results_steps2: Make sure you have spelled names correctly, then search again.
         no_results_steps3: Choose from popular payroll providers or apps.
