@@ -259,10 +259,13 @@ en:
         no_results_title: We couldn’t find your employer or payroll provider.
         payroll_providers: Payroll providers
         popular_providers: Or choose from popular payroll providers or apps
-        results: Results
+        results:
+          one: We found 1 result
+          other: We found %{count} results
         review_button_text: Continue
         search: Search
         search_label: 'Enter the name of your current or recent employer or payroll provider:'
+        search_subheader: Select your employer from the list. Then, follow the screens to log in and verify your income.
         select: Select
         to_continue: 'If you still don’t see your employer or payroll provider listed:'
         to_continue_li_1: You’ll need to submit that income information separately.
