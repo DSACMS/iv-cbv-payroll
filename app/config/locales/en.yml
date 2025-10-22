@@ -298,15 +298,15 @@ en:
         step3: Submit your payment information.
         step3_description: We’ll automatically send it to %{agency_acronym}. This will help you prove your income and can help %{agency_acronym} get to a decision faster.
         subheader_html: 'We’ll send your payment records from your employer(s) to %{agency_acronym} to verify your income. <strong>Most people complete this process in about 5 minutes.</strong> Just follow these steps:'
-        what_if_i_cant_use_this_body_1_html: "<p>You'll need to share your income information directly with %{agency_acronym} if: <ul><li>you can't report your income with this tool, or</li><li>you haven't worked in the past 90 days</li></ul></p>"
+        what_if_i_cant_use_this_body_1_html: "<p>You'll need to share your income information directly with %{agency_acronym} if: <ul><li>You can't report your income with this tool, or</li><li>You haven't worked in the past 90 days</li></ul></p>"
         what_if_i_cant_use_this_body_2_html:
           default: Visit <a href="%{agency_url}" target="_blank" rel="noopener noreferrer">%{agency_acronym}’s website</a> for more information on how to submit documents.
           la_ldh: 'You can: <ul><li>Upload documents through the Self Service Portal online at <a href="https://mymedicaid.la.gov/" target="_blank" rel="noopener noreferrer">https://mymedicaid.la.gov/</a></li><li>Send documents through US Mail: Louisiana Medicaid/LaCHIP, P.O. Box 91283, Baton Rouge, LA 70821-9278</li><li>Email documents: <a href="mailto:MyMedicaid@la.gov">MyMedicaid@la.gov</a></li><li>Bring your documents to the Medicaid office of choice.</li></ul>'
         what_if_i_cant_use_this_title: What if I can't use this tool?
         what_is_this_body: Report My Income is a tool that helps collect income from your employer(s) and send it to your state benefits office.
         what_is_this_title: What is “Report My Income”?
-        who_is_this_for_body: You can use this tool if you have earned income in the last 90 days (even if you’re no longer working), and you can access your paystubs online or work for an app-based company like Uber, Lyft or Amazon Flex.
-        who_is_this_for_title: Who is this tool for?
+        who_is_this_for_body_html: 'You can use this tool if you have earned income in the last 90 days and you: <ul><li>Can access your paystubs online or,</li><li>Work for an app-based company like Uber or Lyft</li></ul>If you lost your job in the last 90 days, you can also use this tool to report your job loss. You must be able to log in to your previous employer or payroll provider account.'
+        who_is_this_for_title: Can I use this tool?
     error_invalid_link: Invalid link used to begin CBV. Try clicking the link again or contact your caseworker for help.
     error_invalid_token: The invitation link used is not valid. Double check the link and try again. If you continue experiencing issues, contact your caseworker.
     error_missing_token_html: "<strong>Your session has timed out due to inactivity.</strong> Please reuse the same link you used to begin your session. If you encounter any issues, contact your benefits agency for assistance."
