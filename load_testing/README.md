@@ -1,5 +1,6 @@
-# Load Testing
+# Performance Testing
 ## Running a Load Test
+Load testing is designed to explore the performance of a single AWS configuration a single time.
 Load tests must be performed from our loadtesting EC2 instance in order for accurate readings to be useful.
 
 Follow these steps to perform a load test:
@@ -48,6 +49,28 @@ Follow these steps to perform a load test:
     ```
     * https://verify-demo.navapbc.cloud/jobs      (un/pw in 1Password) <!-- markdown-link-check-disable-line -->
 
+## Running a Stress Test
+Stress testing is designed to analyze the performance of our system in different configurations.
+Each stress test will run a number of load tests and output statistics that can be compiled in a spreadsheet.
+Since results vary, it will test multiple times so we can get an average.
+
+### Preparation
+1. Ensure you're running k6 within EC2
+2. Ensure you've pre-scaled up the ECS service and database cluster to expected load levels.
+   We recommend holding one of these constant and varying the other. Eg holding DBs at 10 and changing the ECS tasks.
+   Standard levels are:
+    * ECS service (app-dev) = 10 containers (tasks)
+    * DB cluster (app-dev) = 10 ACUs
+
+### Running the test
+1. Run `./run_stress_test.sh`
+2. Copy the output into your spreadsheet. The standard data being reported include:
+ - VUs: The number of VUs when an SLA was violated or we started getting timeouts
+ - Total_Reqs: the number of http requests handled before the failure
+ - Reqs_Per_Sec: the requests per second before the failure
+
+ ### Cleanup
+ Follow the cleanup instructions for load testing above.
 
 ## Developing Locally with K6
 The instructions below are for local development/prototyping of the load testing script (not intended to produce calibrated metrics).
