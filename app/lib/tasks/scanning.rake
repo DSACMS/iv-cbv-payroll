@@ -26,15 +26,15 @@ namespace :npm do
     require "open3"
     stdout, stderr, status = Open3.capture3("npm audit --json")
     unless status.success?
-      puts stderr
+      Rails.logger.error stderr
       parsed = JSON.parse("[#{stdout}]")
-      puts JSON.pretty_generate(parsed)
+      Rails.logger.info JSON.pretty_generate(parsed)
       if /503 Service Unavailable/.match?(stderr)
-        puts "Ignoring unavailable server"
+        Rails.logger.info "Ignoring unavailable server"
       elsif all_issues_ignored?(parsed)
-        puts "Ignoring known and accepted npm audit results"
+        Rails.logger.info "Ignoring known and accepted npm audit results"
       else
-        puts "Failed with exit code #{status.exitstatus}"
+        Rails.logger.error "Failed with exit code #{status.exitstatus}"
         exit status.exitstatus
       end
     end

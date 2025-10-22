@@ -29,7 +29,7 @@ class PinwheelWebhookManager
 
   def remove_subscriptions(subscriptions)
     subscriptions.each do |subscription|
-      puts "  Removing existing Pinwheel webhook subscription (url = #{subscription["url"]})"
+      Rails.logger.info "  Removing existing Pinwheel webhook subscription (url = #{subscription["url"]})"
       @pinwheel.delete_webhook_subscription(subscription["id"])
     end
   end
@@ -42,17 +42,17 @@ class PinwheelWebhookManager
     end
 
     if existing_subscription
-      puts "  Existing Pinwheel webhook subscription found in Pinwheel #{@sandbox_config.pinwheel_environment}: #{existing_subscription["url"]}"
+      Rails.logger.info "  Existing Pinwheel webhook subscription found in Pinwheel #{@sandbox_config.pinwheel_environment}: #{existing_subscription["url"]}"
       remove_subscriptions(subscriptions.excluding(existing_subscription))
 
       existing_subscription["id"]
     else
       remove_subscriptions(subscriptions)
 
-      puts "  Registering Pinwheel webhooks for Ngrok tunnel in Pinwheel #{@sandbox_config.pinwheel_environment}..."
+      Rails.logger.info "  Registering Pinwheel webhooks for Ngrok tunnel in Pinwheel #{@sandbox_config.pinwheel_environment}..."
       response = @pinwheel.create_webhook_subscription(WEBHOOK_EVENTS, receiver_url)
       new_webhook_subscription_id = response["data"]["id"]
-      puts "  ✅ Set up Pinwheel webhook: #{new_webhook_subscription_id}"
+      Rails.logger.info "  ✅ Set up Pinwheel webhook: #{new_webhook_subscription_id}"
 
       new_webhook_subscription_id
     end

@@ -264,10 +264,13 @@ en:
         no_results_title: We couldn’t find your employer or payroll provider.
         payroll_providers: Payroll providers
         popular_providers: Or choose from popular payroll providers or apps
-        results: Results
+        results:
+          one: We found 1 result
+          other: We found %{count} results
         review_button_text: Continue
         search: Search
         search_label: This can be your current employer. This can also be any recent employer from the past 90 days if you’re no longer working.
+        search_subheader: Select your employer from the list. Then, follow the screens to log in and verify your income.
         select: Select
         to_continue: 'If you still don’t see your employer or payroll provider listed:'
         to_continue_li_1: You’ll need to submit that income information separately.
@@ -295,7 +298,7 @@ en:
         step3: Submit your payment information.
         step3_description: We’ll automatically send it to %{agency_acronym}. This will help you prove your income and can help %{agency_acronym} get to a decision faster.
         subheader_html: 'We’ll send your payment records from your employer(s) to %{agency_acronym} to verify your income. <strong>Most people complete this process in about 5 minutes.</strong> Just follow these steps:'
-        what_if_i_cant_use_this_body_1: If you need to report your income and can’t use this tool, then you’ll need to share your income information for this job directly with %{agency_acronym}.
+        what_if_i_cant_use_this_body_1_html: "<p>You'll need to share your income information directly with %{agency_acronym} if: <ul><li>you can't report your income with this tool, or</li><li>you haven't worked in the past 90 days</li></ul></p>"
         what_if_i_cant_use_this_body_2_html:
           default: Visit <a href="%{agency_url}" target="_blank" rel="noopener noreferrer">%{agency_acronym}’s website</a> for more information on how to submit documents.
           la_ldh: 'You can: <ul><li>Upload documents through the Self Service Portal online at <a href="https://mymedicaid.la.gov/" target="_blank" rel="noopener noreferrer">https://mymedicaid.la.gov/</a></li><li>Send documents through US Mail: Louisiana Medicaid/LaCHIP, P.O. Box 91283, Baton Rouge, LA 70821-9278</li><li>Email documents: <a href="mailto:MyMedicaid@la.gov">MyMedicaid@la.gov</a></li><li>Bring your documents to the Medicaid office of choice.</li></ul>'

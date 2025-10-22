@@ -152,10 +152,13 @@ es:
         no_results_title: No pudimos encontrar su empleador ni su proveedor de nómina.
         payroll_providers: Proveedores de nómina
         popular_providers: O elija entre los proveedores o aplicaciones de nómina más populares
-        results: Resultados
+        results:
+          one: Encontramos un resultado
+          other: Encontramos %{count} resultados
         review_button_text: Continuar
         search: Buscar
         search_label: 'Ingrese el nombre de su empleador actual o reciente o su proveedor de nómina:'
+        search_subheader: 'Seleccione su empleador de la lista. Luego, siga las instrucciones en las pantallas para iniciar la sesión y verificar su ingreso. '
         select: Seleccione
         to_continue: 'Si aún no ve enumerado a su empleador ni a su proveedor de nómina:'
         to_continue_li_1: Deberá enviar esa información de ingresos por separado.
@@ -183,7 +186,7 @@ es:
         step3: Envíe su información de pago.
         step3_description: La enviaremos automáticamente a %{agency_acronym}. Esto lo ayudará a demostrar y comprobar sus ingresos y puede ayudar a %{agency_acronym} a tomar una decisión más rápida.
         subheader_html: 'Enviaremos los registros de pago de su(s) empleador(es) a %{agency_acronym} para verificar sus ingresos.<strong> La mayoría de las personas completan este proceso en aproximadamente 5 minutos.</strong> Solo siga estos pasos:'
-        what_if_i_cant_use_this_body_1: Si necesita declarar sus ingresos y no puede usar esta herramienta, deberá compartir, de manera directa, la información de sus ingresos para este trabajo con %{agency_acronym}.
+        what_if_i_cant_use_this_body_1_html: "<p>Usted deberá compartir información de su ingreso directamente con %{agency_acronym} si: <ul><li>no puede reportar su ingreso con esta herramienta, o</li><li>no ha trabajado en los últimos 90 días</li></ul></p>"
         what_if_i_cant_use_this_body_2_html:
           default: Para obtener más información sobre cómo enviar documentos, visite el sitio web de <a href="%{agency_url}" target="_blank" rel="noopener noreferrer">%{agency_acronym}</a>.
           la_ldh: 'Usted puede: <ul><li>Subir documentos a través del Portal de Autoservicio en línea en <a href="https://mymedicaid.la.gov/" target="_blank" rel="noopener noreferrer">https://mymedicaid.la.gov/</a></li><li>Enviar documentos por correo postal: Louisiana Medicaid/LaCHIP, P.O. Box 91283, Baton Rouge, LA 70821-9278</li><li>Enviar documentos por correo electrónico: <a href="mailto:MyMedicaid@la.gov">MyMedicaid@la.gov</a></li><li>Llevar sus documentos a la oficina de Medicaid de su elección.</li></ul>'
