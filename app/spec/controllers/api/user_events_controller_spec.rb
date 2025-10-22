@@ -214,6 +214,25 @@ RSpec.describe Api::UserEventsController, type: :controller do
         end
       end
 
+      context "for employer search common questions" do
+        let(:event_attributes) do
+          {
+            section: "what_if_i_lost_my_job",
+            page: "employer_search"
+          }
+        end
+
+        it "tracks an event with Mixpanel including page and section" do
+          expect(EventTrackingJob).to receive(:perform_later).with("ApplicantViewedHelpText", anything, hash_including(
+            time: be_a(Integer),
+            cbv_flow_id: cbv_flow.id,
+            invitation_id: cbv_flow.cbv_flow_invitation_id,
+            section: "what_if_i_lost_my_job",
+            page: "employer_search"
+          ))
+          post :user_action, params: valid_params
+        end
+      end
       context "for 'what if I cant use this' section" do
         let(:event_attributes) do
           {
