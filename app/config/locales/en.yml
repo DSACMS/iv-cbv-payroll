@@ -267,7 +267,7 @@ en:
         results: Results
         review_button_text: Continue
         search: Search
-        search_label: 'Enter the name of your current or recent employer or payroll provider:'
+        search_label: This can be your current employer. This can also be any recent employer from the past 90 days if you’re no longer working.
         select: Select
         to_continue: 'If you still don’t see your employer or payroll provider listed:'
         to_continue_li_1: You’ll need to submit that income information separately.
