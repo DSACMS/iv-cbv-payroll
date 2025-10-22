@@ -300,7 +300,7 @@ en:
         subheader_html: 'We’ll send your payment records from your employer(s) to %{agency_acronym} to verify your income. <strong>Most people complete this process in about 5 minutes.</strong> Just follow these steps:'
         what_if_i_cant_use_this_body_1_html: "<p>You'll need to share your income information directly with %{agency_acronym} if: <ul><li>You can't report your income with this tool, or</li><li>You haven't worked in the past 90 days</li></ul></p>"
         what_if_i_cant_use_this_body_2_html:
-          default: Visit <a href="%{agency_url}" target="_blank" rel="noopener noreferrer">%{agency_acronym}’s website</a> for more information on how to submit documents.
+          default: Visit <a href="%{agency_url}" target="_blank" rel="noopener noreferrer">%{agency_acronym}’s website</a> for more information on how to submit your documents.
           la_ldh: 'You can: <ul><li>Upload documents through the Self Service Portal online at <a href="https://mymedicaid.la.gov/" target="_blank" rel="noopener noreferrer">https://mymedicaid.la.gov/</a></li><li>Send documents through US Mail: Louisiana Medicaid/LaCHIP, P.O. Box 91283, Baton Rouge, LA 70821-9278</li><li>Email documents: <a href="mailto:MyMedicaid@la.gov">MyMedicaid@la.gov</a></li><li>Bring your documents to the Medicaid office of choice.</li></ul>'
         what_if_i_cant_use_this_title: What if I can't use this tool?
         what_is_this_body: Report My Income is a tool that helps collect income from your employer(s) and send it to your state benefits office.
