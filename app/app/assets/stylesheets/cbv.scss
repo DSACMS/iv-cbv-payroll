@@ -303,7 +303,7 @@ input#invitation_link{
 }
 
 /*
- * Employer search result cards (smaller mobile images)
+ * Employer search result cards
  */
 @include at-media-max($theme-header-min-width) {
   .cbv-employer-card__img img {
