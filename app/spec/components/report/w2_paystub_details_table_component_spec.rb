@@ -68,7 +68,6 @@ RSpec.describe Report::W2PaystubDetailsTableComponent, type: :component do
           income: income,
           is_caseworker: false,
           is_responsive: true,
-          is_pdf: false
         )
       )
     end
@@ -127,7 +126,6 @@ RSpec.describe Report::W2PaystubDetailsTableComponent, type: :component do
           income: income,
           is_caseworker: false,
           is_responsive: true,
-          is_pdf: false
         )
       )
     end
@@ -158,7 +156,6 @@ RSpec.describe Report::W2PaystubDetailsTableComponent, type: :component do
           income: income,
           is_caseworker: true,
           is_responsive: true,
-          is_pdf: false
         )
       )
     end
@@ -180,15 +177,13 @@ RSpec.describe Report::W2PaystubDetailsTableComponent, type: :component do
           paystub,
           income: income,
           is_caseworker: false,
-          is_responsive: false,
-          is_pdf: true
+          is_responsive: false
         )
       )
     end
 
-    it "uses PDF translation scope for headers" do
-      # PDF uses .pdf.shared scope, web uses cbv.payment_details.show scope
-      # Both should render headers, but with different translation keys
+    it "renders headers correctly" do
+      # The component uses its own translation namespace
       expect(subject.css("thead tr.subheader-row th").length).to eq(2)
     end
 
@@ -209,7 +204,6 @@ RSpec.describe Report::W2PaystubDetailsTableComponent, type: :component do
           income: nil,
           is_caseworker: false,
           is_responsive: true,
-          is_pdf: false
         )
       )
     end
@@ -217,6 +211,153 @@ RSpec.describe Report::W2PaystubDetailsTableComponent, type: :component do
     it "renders 'Unknown' for pay frequency" do
       expect(subject.to_html).to include "Pay period"
       expect(subject.to_html).to include "Unknown"
+    end
+  end
+
+  context "with configuration options" do
+    let(:income) { build_income }
+
+    context "when show_hours_breakdown is false" do
+      let(:paystub) do
+        build_paystub(
+          hours_by_earning_category: {
+            "Regular" => "56.0",
+            "Commission" => "2.6"
+          }
+        )
+      end
+
+      subject do
+        render_inline(
+          described_class.new(
+            paystub,
+            income: income,
+            show_hours_breakdown: false
+          )
+        )
+      end
+
+      it "does not render earnings breakdown" do
+        expect(subject.to_html).not_to include "Regular"
+        expect(subject.to_html).not_to include "Commission"
+        expect(subject.to_html).not_to include "Hours paid"
+      end
+
+      it "still renders total hours" do
+        expect(subject.to_html).to include "65.6"
+      end
+    end
+
+    context "when show_gross_pay_ytd is :if_positive" do
+      context "with positive YTD" do
+        let(:paystub) { build_paystub(gross_pay_ytd: 819738) }
+
+        subject do
+          render_inline(
+            described_class.new(
+              paystub,
+              income: income,
+              show_gross_pay_ytd: :if_positive
+            )
+          )
+        end
+
+        it "renders gross pay YTD" do
+          expect(subject.to_html).to include "Gross pay YTD"
+          expect(subject.to_html).to include "$8,197.38"
+        end
+      end
+
+      context "with zero YTD" do
+        let(:paystub) { build_paystub(gross_pay_ytd: 0) }
+
+        subject do
+          render_inline(
+            described_class.new(
+              paystub,
+              income: income,
+              show_gross_pay_ytd: :if_positive
+            )
+          )
+        end
+
+        it "does not render gross pay YTD" do
+          expect(subject.to_html).not_to include "Gross pay YTD"
+        end
+      end
+    end
+
+    context "when show_gross_pay_ytd is false" do
+      let(:paystub) { build_paystub(gross_pay_ytd: 819738) }
+
+      subject do
+        render_inline(
+          described_class.new(
+            paystub,
+            income: income,
+            show_gross_pay_ytd: false
+          )
+        )
+      end
+
+      it "does not render gross pay YTD even with positive value" do
+        expect(subject.to_html).not_to include "Gross pay YTD"
+      end
+    end
+
+    context "when show_pay_frequency is false" do
+      let(:paystub) { build_paystub }
+
+      subject do
+        render_inline(
+          described_class.new(
+            paystub,
+            income: income,
+            show_pay_frequency: false
+          )
+        )
+      end
+
+      it "does not render pay frequency" do
+        expect(subject.to_html).not_to include "Pay period"
+        expect(subject.to_html).not_to include "Bi-weekly"
+      end
+    end
+
+    context "with custom details_translation_key" do
+      let(:paystub) { build_paystub }
+
+      subject do
+        render_inline(
+          described_class.new(
+            paystub,
+            income: income,
+            details_translation_key: "your_details"
+          )
+        )
+      end
+
+      it "uses the custom translation key for details header" do
+        expect(subject.css("thead tr.subheader-row th:nth-child(2)").to_html).to include "Your details"
+      end
+    end
+
+    context "with custom pay_frequency_text" do
+      let(:paystub) { build_paystub }
+
+      subject do
+        render_inline(
+          described_class.new(
+            paystub,
+            income: income,
+            pay_frequency_text: "Custom Frequency"
+          )
+        )
+      end
+
+      it "uses the custom pay frequency text" do
+        expect(subject.to_html).to include "Custom Frequency"
+      end
     end
   end
 end
