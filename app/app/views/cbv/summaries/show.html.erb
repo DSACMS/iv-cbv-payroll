@@ -70,7 +70,7 @@
     <% row.with_data_cell(is_header: true).with_content(t(".your_answer")) %>
   <% end %>
   <% table.with_row do |row| %>
-    <% row.with_data_cell(data_label: t(".question"), class_names: "text-bold").with_content(t("cbv.other_jobs.show.header")) %>
+    <% row.with_data_cell(data_label: t(".question"), class_names: "text-bold").with_content(t(".other_jobs_question")) %>
     <% row.with_data_cell(data_label: t(".your_answer")).with_content(format_boolean(@cbv_flow.has_other_jobs)) %>
   <% end %>
 <% end %>

@@ -221,16 +221,15 @@ es:
         you_can_search: Puede buscar otro empleador o proveedor de nómina. Este sitio apoya a los empleadores con proveedores de nómina en línea o servicios basados en aplicaciones. Algunos ejemplos son Amazon, Walmart, McDonald’s, Uber, DoorDash, Lyft e Instacart.
     other_jobs:
       show:
-        bullet_1: Le paga a través de PayPal, Venmo, Cash App, etc.
-        bullet_2: Le paga en efectivo
-        bullet_3: Le paga con un cheque en papel y no puede ver su cheque de pago en línea
-        bullet_4: Le emite un 1099
-        header: "¿Tiene que informar de algún trabajo sin usar la herramienta Reportar Mis Ingresos?"
-        header_html: "¿Tiene que informar de algún trabajo <em>sin usar</em> la herramienta Reportar Mis Ingresos?"
-        header_sub_text: 'Cuéntenos sobre cualquier otro trabajo que haya tenido en los últimos 90 días, incluso si ya no está en ese trabajo. Al hacerlo, incluya cualquier trabajo, actual o reciente, que haya tenido en los últimos 90 días que reúna estos requisitos:'
-        note_html: 'Importante: Si tuvo otros trabajos en los últimos 90 días que no va a reportar usando la herramienta Report My Income, debe enviar esa información de ingresos por separado. <a href="%{agency_site}" target="_blank" rel="noopener noreferrer">Más información en %{agency_acronym}.</a>'
-        radio_no: No, no tengo otro trabajo que reportar por separado
-        radio_yes: Sí, tengo otro trabajo que reportaré por separado
+        header: "¿Tiene que reportar otro ingreso de trabajo?"
+        header_bullet_1: No pudo encontrar con esta herramienta
+        header_bullet_2: No pudo acceder en línea con esta herramienta
+        header_bullet_3: Le entrega talones de pago en papel
+        header_bullet_4: Son por contrato o "freelance"
+        header_lead: 'Esto puede incluir trabajos que:'
+        header_sub_text_html: Si usted recibe pago por algún trabajo realizado y no puede usar esta herramienta para reportarlo, <strong>debe enviar esa información directamente a %{agency_acronym}</strong>. <a href="%{agency_site}" target="_blank" rel="noopener noreferrer">Más información en %{agency_acronym}</a>. Usted solo tiene que reportar los ingresos de trabajos que tuvo en los últimos 90 días.
+        radio_no: No, no tengo otro ingreso
+        radio_yes: Sí, reportaré otro ingreso directamente a %{agency_acronym}
     payment_details:
       show:
         additional_information_header: Comentarios adicionales (Opcional)
@@ -296,8 +295,8 @@ es:
           footer:
             page_footer: Informe de verificación de ingresos | Página [page] de [topage]
           shared:
-            additional_jobs_to_report: "¿El cliente tiene trabajos adicionales que informará por separado?"
-            additional_jobs_to_report_html: "¿El cliente tiene trabajos adicionales que informará por separado? <sup>1</sup>"
+            additional_jobs_to_report: "¿Está reportando otro ingreso de trabajo por separado?"
+            additional_jobs_to_report_html: "¿Está reportando otro ingreso de trabajo por separado?<sup>1</sup>"
             client_information: Información del cliente
             confirmation_code: Código de confirmación
             details: Datos
@@ -340,7 +339,8 @@ es:
           la_ldh: Esto debe coincidir con lo que se muestra en sus beneficios de Medicaid.
         none_found: No encontramos ningún pago de este empleador en los últimos %{report_data_range}.
         none_found_description: Esto usualmente ocurre cuando usted no ha recibido ingresos por este trabajo en los últimos %{report_data_range}. Si cree que esto es un error, agregue un comentario en la casilla de comentarios adicionales. De lo contrario, continúe en la página siguiente.
-        other_jobs: Otros trabajos
+        other_jobs: Otro ingreso
+        other_jobs_question: "¿Usted tiene que reportar otro ingreso de trabajo por separado?"
         phone_number: Teléfono del empleador
         question: Pregunta
         table_caption: 'Empleador %{number}: %{employer_name}'
