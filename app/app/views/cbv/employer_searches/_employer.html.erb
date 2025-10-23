@@ -13,16 +13,16 @@
           <div class="usa-card__header">
             <h3 class="usa-card__heading"><%= employer.name %></h3>
           </div>
-          <div class="usa-card__media usa-card__media--inset">
-            <% if employer.logo_url %>
-              <div class="usa-card__img">
+          <% if employer.logo_url.present? %>
+            <div class="usa-card__media usa-card__media--inset display-flex flex-justify-center">
+              <div class="usa-card__img cbv-employer-card__img">
                 <img
                   src="<%= employer.logo_url %>"
                   alt="A placeholder image"
                 >
               </div>
-            <% end %>
-          </div>
+            </div>
+          <% end %>
           <div class="usa-card__footer">
             <button
               data-action="click->cbv-employer-search#select"
