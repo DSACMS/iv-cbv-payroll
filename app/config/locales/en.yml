@@ -328,16 +328,15 @@ en:
         you_can_search: You can search for another employer or payroll provider. This site supports employers with online payroll providers or app-based services. Examples include Amazon, Walmart, McDonald’s, Uber, DoorDash, Lyft, and Instacart.
     other_jobs:
       show:
-        bullet_1: Pays you via PayPal, Venmo, Cash App, etc
-        bullet_2: Pays you in cash
-        bullet_3: Pays you with a paper check and you can’t view your paycheck online
-        bullet_4: Issues you a 1099
-        header: Do you need to report any jobs outside Report My Income?
-        header_html: Do you need to report any jobs <em>outside</em> Report My Income?
-        header_sub_text: 'Tell us about any other jobs you’ve had in the past 90 days, even if you’re no longer at that job. This includes current or recent jobs you’ve had in the past 90 days that may:'
-        note_html: 'Note: If you’ve had other jobs in the past 90 days that you won’t report using Report My Income, you will need to submit that income information separately. <a href="%{agency_site}" target="_blank" rel="noopener noreferrer">Learn more on %{agency_acronym}.</a>'
-        radio_no: No, I don’t have another job to report separately
-        radio_yes: Yes, I have another job I’ll report separately
+        header: Do you need to report other income from your work?
+        header_bullet_1: You couldn’t find with this tool
+        header_bullet_2: You couldn’t log into with this tool
+        header_bullet_3: Give you paper pay stubs
+        header_bullet_4: You do on the side — like contract jobs or freelance work
+        header_lead: 'This could include income from jobs or work that:'
+        header_sub_text_html: If you get income from a job or work that you can’t use this tool to report, <strong>you must submit that directly to %{agency_acronym}</strong>. <a href="%{agency_site}" target="_blank" rel="noopener noreferrer">Learn more on %{agency_acronym}</a>. You only need to report work from the past 90 days.
+        radio_no: No, I don’t have other income
+        radio_yes: Yes, I will report other income directly to %{agency_acronym}
     payment_details:
       show:
         additional_information_header: Additional comments (Optional)
@@ -415,8 +414,8 @@ en:
           footer:
             page_footer: Income Verification Report | Page [page] of [topage]
           shared:
-            additional_jobs_to_report: Does the client have additional jobs they will report separately?
-            additional_jobs_to_report_html: Does the client have additional jobs they will report separately?<sup>1</sup>
+            additional_jobs_to_report: Reporting any income from work separately?
+            additional_jobs_to_report_html: Reporting any income from work separately?<sup>1</sup>
             client_information: Client information
             confirmation_code: Confirmation code
             details: Details
@@ -459,7 +458,8 @@ en:
           la_ldh: This must match what is shown on your Medicaid benefits.
         none_found: We didn't find any payments from this employer in the past %{report_data_range}.
         none_found_description: This typically happens when you haven't received income from this job in the past %{report_data_range}. If you believe this is an error, please add a comment in the additional comments box. Otherwise, continue to the next page.
-        other_jobs: Other jobs
+        other_jobs: Other income
+        other_jobs_question: Do you need to report other income from work separately?
         phone_number: Employer phone
         question: Question
         table_caption: 'Employer %{number}: %{employer_name}'

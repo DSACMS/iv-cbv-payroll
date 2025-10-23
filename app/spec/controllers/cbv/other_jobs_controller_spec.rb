@@ -14,6 +14,19 @@ RSpec.describe Cbv::OtherJobsController do
       get :show
       expect(response).to be_successful
     end
+
+    it "renders expected content and radio options" do
+      get :show
+      expect(response.body).to include(I18n.t("cbv.other_jobs.show.header"))
+      agency_site = Rails.application.config.client_agencies["sandbox"].agency_contact_website
+      expect(response.body).to include(I18n.t("cbv.other_jobs.show.header_sub_text_html", agency_acronym: I18n.t("shared.agency_acronym.sandbox"), agency_site: agency_site))
+      expect(response.body).to include(I18n.t("cbv.other_jobs.show.header_bullet_1"))
+      expect(response.body).to include(I18n.t("cbv.other_jobs.show.header_bullet_2"))
+      expect(response.body).to include(I18n.t("cbv.other_jobs.show.header_bullet_3"))
+      expect(response.body).to include(I18n.t("cbv.other_jobs.show.header_bullet_4"))
+      expect(response.body).to include(I18n.t("cbv.other_jobs.show.radio_yes", agency_acronym: I18n.t("shared.agency_acronym.sandbox")))
+      expect(response.body).to include(I18n.t("cbv.other_jobs.show.radio_no"))
+    end
   end
 
   describe "#update" do

@@ -60,7 +60,7 @@ RSpec.describe "e2e CBV flow test", type: :feature, js: true do
 
     # /cbv/other_jobs
     verify_page(page, title: I18n.t("cbv.other_jobs.show.header"), wait: 10, skip_axe_rules: %w[heading-order])
-    find("label", text: I18n.t("cbv.other_jobs.show.radio_yes")).click
+    find("label", text: I18n.t("cbv.other_jobs.show.radio_yes", agency_acronym: I18n.t("shared.agency_acronym.sandbox"))).click
     click_on "Continue"
 
     # /cbv/summary
