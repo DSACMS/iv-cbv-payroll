@@ -69,6 +69,7 @@ class ClientAgencyConfig
       applicant_attributes
       allow_invitation_reuse
       generic_links_disabled
+      report_customizations
     ])
 
     def initialize(yaml)
@@ -94,6 +95,7 @@ class ClientAgencyConfig
       @applicant_attributes = yaml["applicant_attributes"] || {}
       @allow_invitation_reuse = yaml["allow_invitation_reuse"] || false
       @generic_links_disabled = yaml["generic_links_disabled"]
+      @report_customizations = yaml["report_customizations"] || {}
 
       raise ArgumentError.new("Client Agency missing id") if @id.blank?
       raise ArgumentError.new("Client Agency #{@id} missing required attribute `agency_name`") if @agency_name.blank?

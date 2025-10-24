@@ -35,3 +35,5 @@ logo_path: pa_compass_logo.svg
 weekly_report:
   recipient: <%= ENV['PA_DHS_WEEKLY_REPORT_RECIPIENTS'] %>
   report_variant: invitations
+report_customizations:
+  show_gross_pay_items: true

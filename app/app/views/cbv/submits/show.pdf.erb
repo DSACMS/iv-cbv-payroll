@@ -128,7 +128,7 @@
         income: summary[:income],
         is_caseworker: is_caseworker,
         is_responsive: false,
-        show_earnings_items: true
+        show_earnings_items: current_agency.report_customizations["show_gross_pay_items"] || false
       )) %>
     <% end %>
     <% if summary[:paystubs].empty? %>
