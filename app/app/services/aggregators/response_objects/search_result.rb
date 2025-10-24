@@ -21,7 +21,7 @@ module Aggregators::ResponseObjects
           provider_id: response_body["id"]
         ),
         name: response_body["name"],
-        logo_url: response_body["logo_url"]
+        logo_url: remove_argyle_letter_tile(response_body["logo_url"])
       )
     end
 
@@ -43,6 +43,10 @@ module Aggregators::ResponseObjects
     end
 
     private
+
+    def self.remove_argyle_letter_tile(url)
+      url unless url.nil? || url.match?(/letter_[a-z]\.png$/i)
+    end
 
     def self.determine_provider(provider_ids, aggregator_config)
       if provider_ids[:argyle] && aggregator_config.include?(:argyle)

@@ -40,4 +40,13 @@ RSpec.describe Aggregators::ResponseObjects::SearchResult, type: :model do
       expect(search_result.logo_url).to eq("http://example.com/logo.png")
     end
   end
+
+  describe 'placeholder logo normalization' do
+    it 'returns nil for Argyle letter tile logos' do
+      tile_url = 'https://res.cloudinary.com/argyle-media/image/upload/v1688558020/partner-logos/letter_a.png'
+      body = { "kind" => "success", "id" => "1", "name" => "Applesauce", "logo_url" => tile_url }
+      result = described_class.from_argyle(body)
+      expect(result.logo_url).to be_nil
+    end
+  end
 end
