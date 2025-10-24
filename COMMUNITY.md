@@ -26,8 +26,8 @@ The members of IV CBV Payroll community are responsible for guiding its developm
 
 | Roles      | Responsibilities                               | Requirements                                                                      | Access Privileges                                                |
 | ---------- | :--------------------------------------------- | :-------------------------------------------------------------------------------- | :-------------------------------------------------------- |
-| Contributor     | Active contributor in the community            | Multiple contributions to the project.                                            | • Assigned issues <br> • Granted access to running CI/CD commands <br>  • Added in repository domain teams <br>                      |
-| Maintainer | Set direction and priorities for a sub-project | • Experience as a reviewer for 3 months <br> •Demonstrated responsibility and excellent technical judgement for project <br> | • Approves PRs to all areas of project <br> • Official Project Representative <br> • Has a vote in decision-making meetings <br>     |
+| Contributor     | Active contributor in the community            | Multiple contributions to the project                                            | • Assigned issues <br> • Granted access to running CI/CD commands <br>  • Added in repository domain teams <br>                      |
+| Maintainer | Set direction and priorities for a sub-project | • Experience as a reviewer for 3 months <br> • Demonstrated responsibility and excellent technical judgement for project <br> | • Approves PRs to all areas of project <br> • Official Project Representative <br> • Has a vote in decision-making meetings <br>     |
 | Alumni   | None, IV CBV Payroll thank the alumni for their service | • Must have been an active contributor or maintainer <br>   | • Assigned issues <br> • Granted access to running CI/CD commands <br> • Added in repository domain teams <br>  |
 
 <!-- TODO: Review table -->
@@ -44,25 +44,25 @@ See [CONTRIBUTING.md](CONTRIBUTING.md) for more details on the release process.
 **Description:** A Contributor contributes directly to the project and adds value to it. Contributions need not be code. People at the Contributor level may be new contributors, or they may only contribute occasionally.
 
 #### Responsibilities include: 
-- Following the project CoC
-- Following the project contributing guidelines in CONTRIBUTING.md
+- Following the project CoC.
+- Following the project contributing guidelines in CONTRIBUTING.md.
 
 #### Requirements (one or several of the below): 
-- Report and resolve issues
-- Submit and review PRs
-- Contribute to the documentation
-- Participate in community discussions
-- Answer questions from other community members
-- Test releases and submit reviews
-- Run or help run events
-- Promote the project in public in line with the COMMUNICATIONS.md policy
-- Help maintain the project and community infrastructure
+- Report and resolve issues.
+- Submit and review PRs.
+- Contribute to the documentation.
+- Participate in community discussions.
+- Answer questions from other community members.
+- Test releases and submit reviews.
+- Run or help run events.
+- Promote the project in public in line with the COMMUNICATIONS.md policy.
+- Help maintain the project and community infrastructure.
 
 #### Privileges: 
-- Invitations to contributor events 
-- Access to community spaces and infrastructure
-- Eligible to advance along the project's CONTRIBUTOR_LADDER.md
-- Other privileges defined by the community in the future
+- Invitations to contributor events.
+- Access to community spaces and infrastructure.
+- Eligible to advance along the project's CONTRIBUTOR_LADDER.md.
+- Other privileges defined by the community in the future.
 
 <!--Total number of contributors: [TO DO]--> 
 <!--CONTRIBUTOR COUNT START--> 
@@ -71,22 +71,22 @@ See [CONTRIBUTING.md](CONTRIBUTING.md) for more details on the release process.
 <!-- readme: contributors -start -->
 <!-- readme: contributors -end -->
 
-### Maintainers:
+## Maintainers
 
 **Description:** Maintainers are established contributors who are responsible for entire areas of the project. As such, they have the ability to approve PRs against specific areas of the project, and are expected to participate in reviewing and approving contributions to the project. 
 
 A Maintainer must meet the responsibilities and requirements of a contributor, plus:
 
 #### Responsibilities include: 
-- Reviewing at least 2 PRs per 3 months, especially PRs that involve specific parts of the project
-- Mentoring new contributors
-- Writing and refactoring submitted PRs
-- Participating in IVaaS maintainer activities
-- Proposing contributions to strategy and policy of the project
-- Participating in, and leading, community discussions
-- Mentoring other Maintainers
+- Reviewing at least 2 PRs per 3 months, especially PRs that involve specific parts of the project.
+- Mentoring new contributors.
+- Writing and refactoring submitted PRs.
+- Participating in IVaaS maintainer activities.
+- Proposing contributions to strategy and policy of the project.
+- Participating in, and leading, community discussions.
+- Mentoring other Maintainers.
 - Exercising judgment for the good of the project, independent of their employer, friends, or team, in line with project GOVERNANCE.
-- Become responsible for a key project management area as indicated in CODEOWNERS.md
+- Become responsible for a key project management area as indicated in CODEOWNERS.md.
 
 #### Requirements:
 - Must be actively contributing for at least 3 months to at least one project area:
@@ -94,34 +94,32 @@ A Maintainer must meet the responsibilities and requirements of a contributor, p
   - Reviewed 2 PRs
   - Resolved 2 Issues
 - Can commit to reviewing a minimum of 4 PRs per 3 month cycle.
-- Can commit to contributing at least 2 PRs per 3 month cycle, as demonstrated by https://github.com/DSACMS/iv-cbv-payroll/graphs/contributors
+- Can commit to contributing at least 2 PRs per 3 month cycle, as demonstrated by https://github.com/DSACMS/iv-cbv-payroll/graphs/contributors.
 
 #### Additional privileges:
-- Approve PRs to their specific domain of the project
-- Represent the project in public as a Maintainer in line with the COMMUNICATIONS.md policy
-- Communicate with the IVaaS team on behalf of the project
-- Other privileges defined by the community in the future
+- Approve PRs to their specific domain of the project.
+- Represent the project in public as a Maintainer in line with the COMMUNICATIONS.md policy.
+- Communicate with the IVaaS team on behalf of the project.
+- Other privileges defined by the community in the future.
 
 #### Process of becoming a Maintainer
 1. Any current contributor may become a new Maintainer, by meeting the requirements, and opening a PR against the root of the iv-cbv-payroll adding the themselves as a maintainer in the COMMUNITY.md file and corresponding team in the CODEOWNERS.md file.
 2. At least 2 current Maintainers from the corresponding team must then approve the PR.
 
--
-
 <!-- TODO: List the individuals who are the maintainers. What groups/domains are maintainers a part of? Does your project have domains/areas that are maintained by specific people? List @USERNAMES directly, or any @ALIASES for groups/teams. -->
 
-### Alumni
+## Alumni
 
 **Description:** Alumni are established contributors or maintainers who have stepped away from the project for periods longer than 6 months. Contributors or maintainers may also wish to become alumni by voluntarily stepping down. Alumni have no further responsibilities to the project and we thank them for their contributions.
 
 #### Responsibilities:
-- None
+- None.
 
 #### Requirements:
-- Must have had contributor or maintainer status
+- Must have had contributor or maintainer status.
 
 #### Privileges:
-- Will be added to the alumni list in the COMMUNITY.md file
+- Will be added to the alumni list in the COMMUNITY.md file.
 
 #### Process of becoming an Alumni
 1. Any current maintainer may become an alumni, by meeting the requirements, and opening a PR against the root of the iv-cbv-payroll adding the themselves in the alumni list in the COMMUNITY.md file.
@@ -132,7 +130,7 @@ A Maintainer must meet the responsibilities and requirements of a contributor, p
 
 We'd like to acknowledge the following individuals for their past contributions of this project:
 
-## iv-cbv-payroll Open Source Community Guidelines
+## IV CBV Payroll Open Source Community Guidelines
 
 This document contains principles and guidelines for participating in the IV CBV Payroll open source community.
 
@@ -158,7 +156,6 @@ When participating in IV CBV Payroll open source community conversations and spa
 
 - When joining a conversation for the first time, please introduce yourself by providing a brief intro that includes:
   - your related organization (if applicable)
-  - your pronouns
   - your superpower, and how you hope to use it for IV CBV Payroll
 - Embrace a culture of learning, and educate each other. We are all entering this conversation from different starting points and with different backgrounds. There are no dumb questions.
 - Take space and give space. We strive to create an equitable environment in which all are welcome and able to participate. We hope individuals feel comfortable voicing their opinions and providing contributions and will do our best to recognize and make space for individuals who may be struggling to find space here. Likewise, we expect individuals to recognize when they are taking up significant space and take a step back to allow room for others.
@@ -169,8 +166,8 @@ When participating in IV CBV Payroll open source community conversations and spa
 ### Inactivity
 It is important for contributors to be and stay active to set an example and show commitment to the project. Inactivity may lead to unexpected delays, contributor attrition, and a lost of trust in the project.
 - Inactivity is measured by: 
-  - Periods of no contributions for longer than 6 months
-  - Periods of no communication for longer than 6 months
+  - Periods of no contributions for longer than 6 months.
+  - Periods of no communication for longer than 6 months.
 - Consequences of being inactive include: 
   - Transfer to Alumni status
 
