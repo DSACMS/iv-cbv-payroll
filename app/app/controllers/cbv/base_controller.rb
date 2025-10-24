@@ -1,7 +1,7 @@
 class Cbv::BaseController < ApplicationController
   ALPHPANUMERIC_PREFIX_REGEXP = /^([a-zA-Z0-9]+)[^a-zA-Z0-9]*$/
 
-  before_action :set_cbv_origin, :set_cbv_flow, :ensure_cbv_flow_not_yet_complete, :prevent_back_after_complete, :capture_page_view
+  before_action :set_cbv_origin, :set_cbv_flow, :ensure_cbv_flow_not_yet_complete, :prevent_back_after_complete, :capture_page_view, :set_span_attributes
   helper_method :agency_url, :next_path, :get_comment_by_account_id, :current_agency
 
   private
@@ -63,6 +63,12 @@ class Cbv::BaseController < ApplicationController
     if origin.present?
       session[:cbv_origin] = origin.strip.downcase.gsub(/\s+/, "_").first(64)
     end
+  end
+
+  def set_span_attributes
+    span = OpenTelemetry::Trace.current_span
+    span.set_attribute("cbv_flow.id", @cbv_flow&.id)
+    span.set_attribute("cbv_flow.client_agency_id", @cbv_flow&.client_agency_id)
   end
 
   def ensure_cbv_flow_not_yet_complete
