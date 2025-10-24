@@ -142,9 +142,14 @@ es:
           help_options: Obtenga ayuda aquí.
         app_based_providers: Empleadores basados
         can_not_find_employer: No puedo encontrar a mi empleador o proveedor de nómina
+        common_questions_header: Preguntas frecuentes
         employer_not_listed: "¿Su empleador no está en la lista?"
         exit_button_text: Salir y acceder al sitio web de %{agency_acronym}
         header: Busque su empleador o proveedor de nómina
+        lost_job_body_html: 'Si usted perdió su trabajo en los últimos 90 días, usted puede usar esta herramienta para reportar que lo perdió. Usted debe poder: <ul><li>conectarse a la cuenta de su empleador o proveedor de nómina anterior y</li><li>ver su información de pago en línea</li></ul>'
+        lost_job_title: "¿Qué tengo que hacer si perdí mi trabajo?"
+        no_income_body: Si usted no ha trabajado en los últimos 90 días, comuníquese con %{agency_acronym} para informarse sobre los próximos pasos.
+        no_income_title: "¿Qué tengo que hacer si no tengo ningún ingreso que reportar?"
         no_results_steps1: Verifique si su empleador usa otro nombre empresarial o busque a su proveedor de nómina.
         no_results_steps2: Asegúrese de haber escrito correctamente los nombres, y busque de nuevo.
         no_results_steps3: Elija entre proveedores o aplicaciones populares de nómina.
@@ -157,7 +162,7 @@ es:
           other: Encontramos %{count} resultados
         review_button_text: Continuar
         search: Buscar
-        search_label: 'Ingrese el nombre de su empleador actual o reciente o su proveedor de nómina:'
+        search_label: Este puede ser su empleador actual. Si no está trabajando, puede buscar cualquier empleador que haya tenido en los últimos 90 días.
         search_subheader: 'Seleccione su empleador de la lista. Luego, siga las instrucciones en las pantallas para iniciar la sesión y verificar su ingreso. '
         select: Seleccione
         to_continue: 'Si aún no ve enumerado a su empleador ni a su proveedor de nómina:'
