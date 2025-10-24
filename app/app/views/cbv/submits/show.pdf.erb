@@ -127,7 +127,8 @@
         paystub,
         income: summary[:income],
         is_caseworker: is_caseworker,
-        is_responsive: false
+        is_responsive: false,
+        show_earnings_items: true
       )) %>
     <% end %>
     <% if summary[:paystubs].empty? %>

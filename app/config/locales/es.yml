@@ -391,6 +391,7 @@ es:
           title_total_hours_worked: Total de horas trabajadas
       w2_paystub_details_table:
         details: Datos
+        earnings_items: Elementos de ganancias
         frequency_unknown: Frecuencia desconocida
         pay_information: Información de pago
         your_details: Sus datos

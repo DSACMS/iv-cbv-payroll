@@ -341,5 +341,216 @@ RSpec.describe Report::W2PaystubDetailsTableComponent, type: :component do
         expect(subject.css("thead tr.subheader-row th:nth-child(2)").to_html).to include "Your details"
       end
     end
+
+    context "when show_earnings_items is true" do
+      let(:earnings) do
+        [
+          Aggregators::ResponseObjects::Earning.new(name: "Regular Pay", amount: 100000),
+          Aggregators::ResponseObjects::Earning.new(name: "Overtime", amount: 25000),
+          Aggregators::ResponseObjects::Earning.new(name: "Bonus", amount: 50000)
+        ]
+      end
+      let(:paystub) { build_paystub(earnings: earnings) }
+
+      subject do
+        render_inline(
+          described_class.new(
+            paystub,
+            income: income,
+            show_earnings_items: true
+          )
+        )
+      end
+
+      it "renders earnings items heading" do
+        expect(subject.to_html).to include "Earnings Items"
+      end
+
+      it "renders all earnings items with names and amounts" do
+        expect(subject.to_html).to include "Regular Pay"
+        expect(subject.to_html).to include "$1,000.00"
+        expect(subject.to_html).to include "Overtime"
+        expect(subject.to_html).to include "$250.00"
+        expect(subject.to_html).to include "Bonus"
+        expect(subject.to_html).to include "$500.00"
+      end
+
+      context "with zero amount earnings" do
+        let(:earnings) do
+          [
+            Aggregators::ResponseObjects::Earning.new(name: "Regular Pay", amount: 100000),
+            Aggregators::ResponseObjects::Earning.new(name: "Zero Amount", amount: 0),
+            Aggregators::ResponseObjects::Earning.new(name: "Overtime", amount: 25000)
+          ]
+        end
+
+        it "does not render earnings with zero amount" do
+          expect(subject.to_html).to include "Regular Pay"
+          expect(subject.to_html).to include "Overtime"
+          expect(subject.to_html).not_to include "Zero Amount"
+        end
+      end
+
+      context "with unsorted earnings by category" do
+        let(:earnings) do
+          [
+            Aggregators::ResponseObjects::Earning.new(name: "Bonus Item", category: "bonus", amount: 50000),
+            Aggregators::ResponseObjects::Earning.new(name: "Tips Item", category: "tips", amount: 30000),
+            Aggregators::ResponseObjects::Earning.new(name: "Base Pay", category: "base", amount: 100000),
+            Aggregators::ResponseObjects::Earning.new(name: "Overtime Pay", category: "overtime", amount: 25000),
+            Aggregators::ResponseObjects::Earning.new(name: "Commission Item", category: "commission", amount: 40000)
+          ]
+        end
+
+        it "renders earnings in category order" do
+          # Extract earning names from the rendered HTML in order
+          rendered_names = subject.css("table").last.css("tr td:first-child").map(&:text).map(&:strip)
+
+          expected_order = [
+            "Base Pay",
+            "Overtime Pay",
+            "Commission Item",
+            "Tips Item",
+            "Bonus Item"
+          ]
+
+          expect(rendered_names).to eq(expected_order)
+        end
+      end
+
+      context "with all categories in reverse order" do
+        let(:earnings) do
+          [
+            Aggregators::ResponseObjects::Earning.new(name: "Stock Item", category: "stock", amount: 10000),
+            Aggregators::ResponseObjects::Earning.new(name: "Disability Item", category: "disability", amount: 9000),
+            Aggregators::ResponseObjects::Earning.new(name: "Other Item", category: "other", amount: 8000),
+            Aggregators::ResponseObjects::Earning.new(name: "Benefits Item", category: "benefits", amount: 7000),
+            Aggregators::ResponseObjects::Earning.new(name: "Bonus Item", category: "bonus", amount: 6000),
+            Aggregators::ResponseObjects::Earning.new(name: "Tips Item", category: "tips", amount: 5000),
+            Aggregators::ResponseObjects::Earning.new(name: "Commission Item", category: "commission", amount: 4000),
+            Aggregators::ResponseObjects::Earning.new(name: "PTO Item", category: "pto", amount: 3000),
+            Aggregators::ResponseObjects::Earning.new(name: "Overtime Item", category: "overtime", amount: 2000),
+            Aggregators::ResponseObjects::Earning.new(name: "Base Item", category: "base", amount: 1000)
+          ]
+        end
+
+        it "sorts all categories correctly" do
+          rendered_names = subject.css("table").last.css("tr td:first-child").map(&:text).map(&:strip)
+
+          expected_order = [
+            "Base Item",
+            "Overtime Item",
+            "PTO Item",
+            "Commission Item",
+            "Tips Item",
+            "Bonus Item",
+            "Benefits Item",
+            "Other Item",
+            "Disability Item",
+            "Stock Item"
+          ]
+
+          expect(rendered_names).to eq(expected_order)
+        end
+      end
+
+      context "with same category maintaining original order" do
+        let(:earnings) do
+          [
+            Aggregators::ResponseObjects::Earning.new(name: "Base Pay 1", category: "base", amount: 50000),
+            Aggregators::ResponseObjects::Earning.new(name: "Overtime Pay", category: "overtime", amount: 30000),
+            Aggregators::ResponseObjects::Earning.new(name: "Base Pay 2", category: "base", amount: 40000),
+            Aggregators::ResponseObjects::Earning.new(name: "Base Pay 3", category: "base", amount: 60000),
+            Aggregators::ResponseObjects::Earning.new(name: "Overtime Pay 2", category: "overtime", amount: 20000)
+          ]
+        end
+
+        it "maintains original order within the same category" do
+          rendered_names = subject.css("table").last.css("tr td:first-child").map(&:text).map(&:strip)
+
+          expected_order = [
+            "Base Pay 1",
+            "Base Pay 2",
+            "Base Pay 3",
+            "Overtime Pay",
+            "Overtime Pay 2"
+          ]
+
+          expect(rendered_names).to eq(expected_order)
+        end
+      end
+
+      context "with unknown categories" do
+        let(:earnings) do
+          [
+            Aggregators::ResponseObjects::Earning.new(name: "Unknown Category 1", category: "unknown_category", amount: 50000),
+            Aggregators::ResponseObjects::Earning.new(name: "Base Pay", category: "base", amount: 40000),
+            Aggregators::ResponseObjects::Earning.new(name: "Unknown Category 2", category: "another_unknown", amount: 30000),
+            Aggregators::ResponseObjects::Earning.new(name: "Overtime Pay", category: "overtime", amount: 20000)
+          ]
+        end
+
+        it "sorts unknown categories after known categories, maintaining original order" do
+          rendered_names = subject.css("table").last.css("tr td:first-child").map(&:text).map(&:strip)
+
+          expected_order = [
+            "Base Pay",
+            "Overtime Pay",
+            "Unknown Category 1",
+            "Unknown Category 2"
+          ]
+
+          expect(rendered_names).to eq(expected_order)
+        end
+      end
+
+      context "with nil categories" do
+        let(:earnings) do
+          [
+            Aggregators::ResponseObjects::Earning.new(name: "Nil Category 1", category: nil, amount: 50000),
+            Aggregators::ResponseObjects::Earning.new(name: "Base Pay", category: "base", amount: 40000),
+            Aggregators::ResponseObjects::Earning.new(name: "Nil Category 2", category: nil, amount: 30000),
+            Aggregators::ResponseObjects::Earning.new(name: "Tips", category: "tips", amount: 20000)
+          ]
+        end
+
+        it "sorts nil categories after known categories, maintaining original order" do
+          rendered_names = subject.css("table").last.css("tr td:first-child").map(&:text).map(&:strip)
+
+          expected_order = [
+            "Base Pay",
+            "Tips",
+            "Nil Category 1",
+            "Nil Category 2"
+          ]
+
+          expect(rendered_names).to eq(expected_order)
+        end
+      end
+    end
+
+    context "when show_earnings_items is false" do
+      let(:earnings) do
+        [
+          Aggregators::ResponseObjects::Earning.new(name: "Regular Pay", amount: 100000)
+        ]
+      end
+      let(:paystub) { build_paystub(earnings: earnings) }
+
+      subject do
+        render_inline(
+          described_class.new(
+            paystub,
+            income: income,
+            show_earnings_items: false
+          )
+        )
+      end
+
+      it "does not render earnings items section" do
+        expect(subject.to_html).not_to include "Earnings Items"
+        expect(subject.to_html).not_to include "Regular Pay"
+      end
+    end
   end
 end
