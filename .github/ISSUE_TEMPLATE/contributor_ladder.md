@@ -1,7 +1,7 @@
 ---
 name: Contributor Ladder Role Change Request
-about: Submit a request for promotion or demotion within the contributor ladder
-title: '[ROLE CHANGE]: [Promotion/Demotion] to [Target Role] - [Username]'
+about: Submit a request for change within the contributor ladder
+title: '[ROLE CHANGE]: Change to [Target Role] - [Username]'
 labels: ['contributor-ladder']
 assignees: ''
 ---
@@ -10,18 +10,17 @@ assignees: ''
 
 This issue is used to request role changes within the iv-cbv-payroll repository contributor ladder, including promotions from Contributor to Maintainer or transitions to Alumni status. Please fill out this issue to file the request AND make a pull request to the `COMMUNITY.md` file with the role update.
 
-### Requestee Information
+### Requester Information
 - **GitHub Username:** @username
 - **Current Role:** [Contributor/Maintainer/Alumni]
 - **Requested Role:** [Contributor/Maintainer/Alumni]
-- **Request Type:** [Promotion/Demotion]
 
 **PR updating the COMMUNITY.md file**
 <!-- TODO: Link the pull request updating your role in COMMUNITY.md -->
 
 ### Justification
 <!-- TODO: Provide a reason for the individual's change of role. Some examples include but are not limited to: 
-    - Interest in playing a larger role in the community 
+    - Playing a larger role in the community 
     - Change in commitment level 
     - Inactivity
 -->
@@ -41,45 +40,46 @@ This issue is used to request role changes within the iv-cbv-payroll repository 
 - [ ] Unable to fulfill current role responsibilities
 - [ ] Involuntary removal/demotion
 
-
-
 ### Role Responsibilities Acknowledgment
 
 #### Contributor Role:
-- [ ] Report and resolve issues
-- [ ] Submit and review PRs
-- [ ] Contribute to the documentation
-- [ ] Participate in community discussions
-- [ ] Answer questions from other community members
-- [ ] Test releases and submit reviews
-- [ ] Run or help run events
-- [ ] Promote the project in public in line with the COMMUNICATIONS.md policy
-- [ ] Help maintain the project and community infrastructure
+*As a contributor, I acknowledge that I am responsible for*:
+- [ ] Reporting and resolving issues
+- [ ] Submitting and reviewing PRs
+- [ ] Contributing to the documentation
+- [ ] Participating in community discussions
+- [ ] Answering questions from other community members
+- [ ] Testing releases and submit reviews
+- [ ] Running or help run events
+- [ ] Promoting the project in public in line with the COMMUNICATIONS.md policy
+- [ ] Maintaining the project and community infrastructure
 
 #### Maintainer Role:
-- [ ] Can commit to reviewing a minimum of 4 PRs per 3 month cycle
-- [ ] Can commit to contributing at least 2 PRs per 3 month cycle
-- [ ] Mentoring new contributors
+*As a maintainer, I acknowledge that I am responsible for*:
+- [ ] Reviewing a minimum of 4 PRs per 3 month cycle
+- [ ] Contributing at least 2 PRs per 3 month cycle
+- [ ] Exercising judgment for the good of the project, independent of their employer, friends, or team, in line with project GOVERNANCE.
+- [ ] Taking responsibility for a key project management area as indicated in CODEOWNERS.md
 - [ ] Writing and refactoring submitted PRs
 - [ ] Participating in IVaaS maintainer activities
 - [ ] Proposing contributions to strategy and policy of the project
 - [ ] Participating in, and leading, community discussions
+- [ ] Mentoring new contributors
 - [ ] Mentoring other Maintainers
-- [ ] Exercising judgment for the good of the project, independent of their employer, friends, or team, in line with project GOVERNANCE.
-- [ ] Become responsible for a key project management area as indicated in CODEOWNERS.md
 
 #### Alumni Role:
-- [ ] No longer actively contributing to the repository
+*As a maintainer, I acknowledge that I am*:
+- [ ] No longer responsible for actively contributing to the repository :)
 
 ---
 ### For Maintainers Only
+Please copy and paste the following as a comment on the issue:
 
 #### Review Checklist:
-- [ ] Requestee meets role requirements
+- [ ] Requester meets role requirements
 - [ ] Supporting evidence is adequate
-- [ ] Community feedback has been considered
 - [ ] Role change aligns with project needs
-- [ ] Proper permissions/access will be given
+- [ ] Proper permissions/access will be granted
 
 #### Decision:
 - [ ] Approved
