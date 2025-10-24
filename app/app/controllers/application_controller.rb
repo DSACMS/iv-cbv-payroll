@@ -2,7 +2,7 @@ class ApplicationController < ActionController::Base
   include NonProductionAccessible
 
   helper :view
-  helper_method :current_agency, :show_translate_button?, :show_menu?, :pilot_ended?
+  helper_method :current_agency, :show_translate_button?, :show_menu?, :pilot_ended?, :report_customization
   around_action :switch_locale
   before_action :add_newrelic_metadata
   before_action :redirect_if_maintenance_mode
@@ -68,6 +68,14 @@ class ApplicationController < ActionController::Base
     end
 
     @current_agency
+  end
+
+  # Safely retrieve a report customization setting for the current agency
+  # @param key [String] The customization key to retrieve
+  # @param default [Object] The default value if key is not found (defaults to false)
+  # @return [Object] The customization value or default
+  def report_customization(key, default: false)
+    current_agency&.report_customization(key, default: default)
   end
 
   def enable_mini_profiler_in_demo

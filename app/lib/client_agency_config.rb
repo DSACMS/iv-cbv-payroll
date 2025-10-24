@@ -69,7 +69,7 @@ class ClientAgencyConfig
       applicant_attributes
       allow_invitation_reuse
       generic_links_disabled
-      report_customizations
+      report_customization_show_earnings_list
     ])
 
     def initialize(yaml)
@@ -94,6 +94,7 @@ class ClientAgencyConfig
       @weekly_report = yaml["weekly_report"]
       @applicant_attributes = yaml["applicant_attributes"] || {}
       @allow_invitation_reuse = yaml["allow_invitation_reuse"] || false
+      @report_customization_show_earnings_list = yaml["report_customization_show_earnings_list"] || false
       @generic_links_disabled = yaml["generic_links_disabled"]
       @report_customizations = yaml["report_customizations"] || {}
 
