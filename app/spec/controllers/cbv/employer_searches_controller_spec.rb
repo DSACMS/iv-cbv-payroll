@@ -22,6 +22,15 @@ RSpec.describe Cbv::EmployerSearchesController do
         expect(response).to be_successful
       end
 
+      it "renders Common questions content" do
+        get :show
+        expect(response.body).to include(I18n.t("cbv.employer_searches.show.common_questions_header"))
+        expect(response.body).to include(I18n.t("cbv.employer_searches.show.lost_job_title"))
+        expect(response.body).to include(I18n.t("cbv.employer_searches.show.lost_job_body_html"))
+        expect(response.body).to include(I18n.t("cbv.employer_searches.show.no_income_title"))
+        expect(response.body).to include(I18n.t("cbv.employer_searches.show.no_income_body", agency_acronym: I18n.t("shared.agency_acronym.sandbox")))
+      end
+
       it "tracks an event" do
         allow(EventTrackingJob).to receive(:perform_later).with("CbvPageView", anything, anything)
         expect(EventTrackingJob).to receive(:perform_later).with("ApplicantAccessedSearchPage", anything, hash_including(
