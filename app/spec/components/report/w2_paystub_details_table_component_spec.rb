@@ -248,7 +248,7 @@ RSpec.describe Report::W2PaystubDetailsTableComponent, type: :component do
       end
     end
 
-    context "when show_gross_pay_ytd is :if_positive" do
+    context "when show_gross_pay_ytd is true" do
       context "with positive YTD" do
         let(:paystub) { build_paystub(gross_pay_ytd: 819738) }
 
@@ -257,7 +257,7 @@ RSpec.describe Report::W2PaystubDetailsTableComponent, type: :component do
             described_class.new(
               paystub,
               income: income,
-              show_gross_pay_ytd: :if_positive
+              show_gross_pay_ytd: true
             )
           )
         end
@@ -276,12 +276,12 @@ RSpec.describe Report::W2PaystubDetailsTableComponent, type: :component do
             described_class.new(
               paystub,
               income: income,
-              show_gross_pay_ytd: :if_positive
+              show_gross_pay_ytd: true
             )
           )
         end
 
-        it "does not render gross pay YTD" do
+        it "does not render gross pay YTD when value is zero" do
           expect(subject.to_html).not_to include "Gross pay YTD"
         end
       end
@@ -339,24 +339,6 @@ RSpec.describe Report::W2PaystubDetailsTableComponent, type: :component do
 
       it "uses the personalized translation for details header" do
         expect(subject.css("thead tr.subheader-row th:nth-child(2)").to_html).to include "Your details"
-      end
-    end
-
-    context "with custom pay_frequency_text" do
-      let(:paystub) { build_paystub }
-
-      subject do
-        render_inline(
-          described_class.new(
-            paystub,
-            income: income,
-            pay_frequency_text: "Custom Frequency"
-          )
-        )
-      end
-
-      it "uses the custom pay frequency text" do
-        expect(subject.to_html).to include "Custom Frequency"
       end
     end
   end
