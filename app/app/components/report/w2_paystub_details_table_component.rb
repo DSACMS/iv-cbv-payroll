@@ -12,7 +12,7 @@ class Report::W2PaystubDetailsTableComponent < ViewComponent::Base
     show_hours_breakdown: true,
     show_gross_pay_ytd: true,
     show_pay_frequency: true,
-    details_translation_key: "details",
+    is_personalized: false,
     pay_frequency_text: nil
   )
     @paystub = paystub
@@ -23,11 +23,19 @@ class Report::W2PaystubDetailsTableComponent < ViewComponent::Base
     @show_hours_breakdown = show_hours_breakdown
     @show_gross_pay_ytd = show_gross_pay_ytd
     @show_pay_frequency = show_pay_frequency
-    @details_translation_key = details_translation_key
+    @is_personalized = is_personalized
     @custom_pay_frequency_text = pay_frequency_text
   end
 
   private
+
+  def details_header
+    if @is_personalized
+      t("components.report.w2_paystub_details_table.your_details")
+    else
+      t("components.report.w2_paystub_details_table.details")
+    end
+  end
 
   def pay_frequency_text
     return @custom_pay_frequency_text if @custom_pay_frequency_text

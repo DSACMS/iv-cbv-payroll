@@ -324,7 +324,7 @@ RSpec.describe Report::W2PaystubDetailsTableComponent, type: :component do
       end
     end
 
-    context "with custom details_translation_key" do
+    context "when is_personalized is true" do
       let(:paystub) { build_paystub }
 
       subject do
@@ -332,12 +332,12 @@ RSpec.describe Report::W2PaystubDetailsTableComponent, type: :component do
           described_class.new(
             paystub,
             income: income,
-            details_translation_key: "your_details"
+            is_personalized: true
           )
         )
       end
 
-      it "uses the custom translation key for details header" do
+      it "uses the personalized translation for details header" do
         expect(subject.css("thead tr.subheader-row th:nth-child(2)").to_html).to include "Your details"
       end
     end

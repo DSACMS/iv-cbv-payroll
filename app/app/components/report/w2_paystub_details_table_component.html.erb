@@ -3,7 +3,7 @@
     <%= row.with_data_cell(is_header: true, class_names: "text-nowrap")
           .with_content(t("components.report.w2_paystub_details_table.pay_information")) %>
     <%= row.with_data_cell(is_header: true, class_names: "text-nowrap")
-          .with_content(t("components.report.w2_paystub_details_table.#{@details_translation_key}")) %>
+          .with_content(details_header) %>
   <% end %>
   <%= table.with_data_point(:pay_date, @paystub.pay_date) %>
   <% if show_pay_frequency? %>
