@@ -91,4 +91,8 @@ class Report::W2PaystubDetailsTableComponent < ViewComponent::Base
       [ category_index[earning.category&.downcase] || default_index, index ]
     end
   end
+
+  def earning_label(earning)
+    "#{t("components.report.w2_paystub_details_table.gross_pay_item_prefix")} #{earning.name}"
+  end
 end

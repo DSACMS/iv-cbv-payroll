@@ -513,6 +513,7 @@ en:
         earnings_items_description: The following items are categories listed on the paystub as part of the gross pay for this paycheck.
         earnings_items_title: Gross pay line items
         frequency_unknown: Frequency Unknown
+        gross_pay_item_prefix: 'Gross Pay Item:'
         pay_information: Pay information
         your_details: Your details
   continue: Continue
