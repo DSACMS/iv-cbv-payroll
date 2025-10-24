@@ -28,7 +28,7 @@ The members of IV CBV Payroll community are responsible for guiding its developm
 | ---------- | :--------------------------------------------- | :-------------------------------------------------------------------------------- | :-------------------------------------------------------- |
 | Contributor     | Active contributor in the community            | Multiple contributions to the project.                                            | • Assigned issues <br> • Granted access to running CI/CD commands <br>  • Added in repository domain teams <br>                      |
 | Maintainer | Set direction and priorities for a sub-project | • Experience as a reviewer for 3 months <br> •Demonstrated responsibility and excellent technical judgement for project <br> | • Approves PRs to all areas of project <br> • Official Project Representative <br> • Has a vote in decision-making meetings <br>     |
-| Alumni   | None, IV CVB Payroll thank the alumni for their service | • Must have been an active contributor or maintainer <br>   | • Assigned issues <br> • Granted access to running CI/CD commands <br> • Added in repository domain teams <br>  |
+| Alumni   | None, IV CBV Payroll thank the alumni for their service | • Must have been an active contributor or maintainer <br>   | • Assigned issues <br> • Granted access to running CI/CD commands <br> • Added in repository domain teams <br>  |
 
 <!-- TODO: Review table -->
 
