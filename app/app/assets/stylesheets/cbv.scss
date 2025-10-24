@@ -301,3 +301,12 @@ input#invitation_link{
 .display-contents {
   display: contents !important;
 }
+
+/*
+ * Employer search result cards
+ */
+@include at-media-max($theme-header-min-width) {
+  .cbv-employer-card__img img {
+    max-height: 100px;
+  }
+}
