@@ -1,0 +1,720 @@
+{
+    "results": [
+        {
+            "id": "6798b682-5ade-3ff3-8033-e0451132e3b1",
+            "account": "01956d5f-cb8d-af2f-9232-38bce8531f58",
+            "payroll_document": "01956d60-224b-39bb-1fdf-8a3cb5471749",
+          "deduction_list": [
+            {
+              "amount": "10.00",
+              "name": "Health Savings Account",
+              "tax_classification": "pre_tax",
+              "amount_ytd": "60.00"
+            },
+            {
+              "amount": "33.69",
+              "name": "Medical",
+              "tax_classification": "pre_tax",
+              "amount_ytd": "235.83"
+            },
+            {
+              "amount": "13.92",
+              "name": "Vision",
+              "tax_classification": "pre_tax",
+              "amount_ytd": "97.44"
+            },
+            {
+              "amount": null,
+              "name": "I31-G2 Offset",
+              "tax_classification": "post_tax",
+              "amount_ytd": "100.00"
+            }
+          ],
+          "filing_status": [
+            {
+              "type": "federal",
+              "location": null,
+              "status": "head of household"
+            }
+          ],
+          "tax_list": [
+            {
+              "amount": "109.54",
+              "name": "OASDI",
+              "type": "fica",
+              "amount_ytd": "678.41"
+            },
+            {
+              "amount": "25.62",
+              "name": "Medicare",
+              "type": "fica",
+              "amount_ytd": "158.66"
+            },
+            {
+              "amount": "103.31",
+              "name": "Federal Withholding",
+              "type": "federal",
+              "amount_ytd": "561.41"
+            },
+            {
+              "amount": "8.83",
+              "name": "State Tax - AZ",
+              "type": "state",
+              "amount_ytd": "54.71"
+            }
+          ],
+          "status": "completed",
+          "paystub_date": "2025-10-17T00:00:00Z",
+          "paystub_period": {
+            "start_date": "2025-09-29T00:00:00Z",
+            "end_date": "2025-10-12T00:00:00Z"
+          },
+          "currency": "USD",
+          "gross_pay": "1799.31",
+          "deductions": "57.61",
+          "taxes": "247.30",
+          "net_pay": "1494.40",
+          "reimbursements": null,
+          "hours": "66.87",
+          "fees": null,
+          "net_pay_ytd": "9363.91",
+          "gross_pay_ytd": "11310.37",
+          "metadata": {
+            "hours_breakdown": [
+              {
+                "description": "Imputed Income - Bravo Award",
+                "amount": 25,
+                "hours": 0
+              },
+              {
+                "description": "Remote Work Stipend",
+                "amount": 60,
+                "hours": 0
+              },
+              {
+                "description": "Lang Shift differential - 10%",
+                "amount": 131.16,
+                "hours": 72.87
+              },
+              {
+                "description": "Night Differential - 10 %",
+                "amount": 79.2,
+                "hours": 44
+              },
+              {
+                "description": "Night Differential - 15 %",
+                "amount": 22.96,
+                "hours": 8.5
+              },
+              {
+                "description": "Paid Time Off - Misc",
+                "amount": 144,
+                "hours": 8
+              },
+              {
+                "description": "Regular Pay (Hourly)",
+                "amount": 1203.6,
+                "hours": 66.87
+              },
+              {
+                "description": "Sick Time with 10% shift",
+                "amount": 99,
+                "hours": 5
+              },
+              {
+                "description": "Sick Time with 15% shift",
+                "amount": 20.7,
+                "hours": 1
+              },
+              {
+                "description": "Weekend - Premium",
+                "amount": 28.92,
+                "hours": 8.03
+              },
+              {
+                "description": "Weekend Prem Lang Shift diff - 10%",
+                "amount": 7.23,
+                "hours": 8.03
+              },
+              {
+                "description": "Weekend Prem Night Diff - 10%",
+                "amount": 1.98,
+                "hours": 5.5
+              },
+              {
+                "description": "Weekend Prem Night Diff - 15%",
+                "amount": 0.56,
+                "hours": 1.03
+              }
+            ],
+            "raw_filing_status_list": [
+              {
+                "type": "federal",
+                "location": null,
+                "status": "Head of Household"
+              }
+            ],
+            "raw_tax_list": [
+              {
+                "amount": 109.54,
+                "amount_ytd": 678.41,
+                "name": "OASDI",
+                "type": null
+              },
+              {
+                "amount": 25.62,
+                "amount_ytd": 158.66,
+                "name": "Medicare",
+                "type": null
+              },
+              {
+                "amount": 103.31,
+                "amount_ytd": 561.41,
+                "name": "Federal Withholding",
+                "type": null
+              },
+              {
+                "amount": 8.83,
+                "amount_ytd": 54.71,
+                "name": "State Tax - AZ",
+                "type": null
+              }
+            ],
+            "raw_employer_address_country": "United States of America",
+            "raw_gross_pay_list": [
+              {
+                "name": "Cash Awards",
+                "type": null,
+                "start_date": null,
+                "end_date": null,
+                "rate": null,
+                "hours": null,
+                "hours_ytd": null,
+                "amount": null,
+                "amount_ytd": 2.55,
+                "excl_from_total": false
+              },
+              {
+                "name": "Holiday OT (worked)",
+                "type": null,
+                "start_date": null,
+                "end_date": null,
+                "rate": null,
+                "hours": null,
+                "hours_ytd": null,
+                "amount": null,
+                "amount_ytd": 218.26,
+                "excl_from_total": false
+              },
+              {
+                "name": "Imputed Income - Bravo Award",
+                "type": null,
+                "start_date": "2025-09-29T00:00:00+00:00",
+                "end_date": "2025-10-12T00:00:00+00:00",
+                "rate": 0,
+                "hours": 0,
+                "hours_ytd": null,
+                "amount": 25,
+                "amount_ytd": 25,
+                "excl_from_total": true
+              },
+              {
+                "name": "Imputed Income on Awards-GrossUp",
+                "type": null,
+                "start_date": null,
+                "end_date": null,
+                "rate": null,
+                "hours": null,
+                "hours_ytd": null,
+                "amount": null,
+                "amount_ytd": 143.17,
+                "excl_from_total": false
+              },
+              {
+                "name": "Remote Work Stipend",
+                "type": null,
+                "start_date": "2025-09-29T00:00:00+00:00",
+                "end_date": "2025-10-12T00:00:00+00:00",
+                "rate": 0,
+                "hours": 0,
+                "hours_ytd": null,
+                "amount": 60,
+                "amount_ytd": 180,
+                "excl_from_total": false
+              },
+              {
+                "name": "Lang Shift differential - 10%",
+                "type": null,
+                "start_date": "2025-09-29T00:00:00+00:00",
+                "end_date": "2025-10-12T00:00:00+00:00",
+                "rate": 1.8,
+                "hours": 72.866666,
+                "hours_ytd": null,
+                "amount": 131.16,
+                "amount_ytd": 821.58,
+                "excl_from_total": false
+              },
+              {
+                "name": "Night Differential - 10 %",
+                "type": null,
+                "start_date": "2025-09-29T00:00:00+00:00",
+                "end_date": "2025-10-12T00:00:00+00:00",
+                "rate": 1.8,
+                "hours": 44,
+                "hours_ytd": null,
+                "amount": 79.2,
+                "amount_ytd": 472.75,
+                "excl_from_total": false
+              },
+              {
+                "name": "Night Differential - 15 %",
+                "type": null,
+                "start_date": "2025-09-29T00:00:00+00:00",
+                "end_date": "2025-10-12T00:00:00+00:00",
+                "rate": 2.7,
+                "hours": 8.499999,
+                "hours_ytd": null,
+                "amount": 22.96,
+                "amount_ytd": 72.3,
+                "excl_from_total": false
+              },
+              {
+                "name": "Overtime",
+                "type": null,
+                "start_date": null,
+                "end_date": null,
+                "rate": null,
+                "hours": null,
+                "hours_ytd": null,
+                "amount": null,
+                "amount_ytd": 25.17,
+                "excl_from_total": false
+              },
+              {
+                "name": "Paid Holiday",
+                "type": null,
+                "start_date": null,
+                "end_date": null,
+                "rate": null,
+                "hours": null,
+                "hours_ytd": null,
+                "amount": null,
+                "amount_ytd": 144,
+                "excl_from_total": false
+              },
+              {
+                "name": "Paid Time Off - Misc",
+                "type": null,
+                "start_date": "2025-09-29T00:00:00+00:00",
+                "end_date": "2025-10-12T00:00:00+00:00",
+                "rate": 18,
+                "hours": 8,
+                "hours_ytd": null,
+                "amount": 144,
+                "amount_ytd": 720,
+                "excl_from_total": false
+              },
+              {
+                "name": "Paid Time Off - Non Exempt",
+                "type": null,
+                "start_date": null,
+                "end_date": null,
+                "rate": null,
+                "hours": null,
+                "hours_ytd": null,
+                "amount": null,
+                "amount_ytd": 288,
+                "excl_from_total": false
+              },
+              {
+                "name": "Regular Pay (Hourly)",
+                "type": null,
+                "start_date": "2025-09-29T00:00:00+00:00",
+                "end_date": "2025-10-12T00:00:00+00:00",
+                "rate": 18,
+                "hours": 66.866666,
+                "hours_ytd": null,
+                "amount": 1203.6,
+                "amount_ytd": 7415.11,
+                "excl_from_total": false
+              },
+              {
+                "name": "Sick Time",
+                "type": null,
+                "start_date": null,
+                "end_date": null,
+                "rate": null,
+                "hours": null,
+                "hours_ytd": null,
+                "amount": null,
+                "amount_ytd": 180,
+                "excl_from_total": false
+              },
+              {
+                "name": "Sick Time with 10% shift",
+                "type": null,
+                "start_date": "2025-09-29T00:00:00+00:00",
+                "end_date": "2025-10-12T00:00:00+00:00",
+                "rate": 19.8,
+                "hours": 5,
+                "hours_ytd": null,
+                "amount": 99,
+                "amount_ytd": 386.1,
+                "excl_from_total": false
+              },
+              {
+                "name": "Sick Time with 15% shift",
+                "type": null,
+                "start_date": "2025-09-29T00:00:00+00:00",
+                "end_date": "2025-10-12T00:00:00+00:00",
+                "rate": 20.7,
+                "hours": 1,
+                "hours_ytd": null,
+                "amount": 20.7,
+                "amount_ytd": 124.2,
+                "excl_from_total": false
+              },
+              {
+                "name": "Weekend - Premium",
+                "type": null,
+                "start_date": "2025-09-29T00:00:00+00:00",
+                "end_date": "2025-10-05T00:00:00+00:00",
+                "rate": 3.6,
+                "hours": 8.033333,
+                "hours_ytd": null,
+                "amount": 28.92,
+                "amount_ytd": 87.55,
+                "excl_from_total": false
+              },
+              {
+                "name": "Weekend Prem Lang Shift diff - 10%",
+                "type": null,
+                "start_date": "2025-09-29T00:00:00+00:00",
+                "end_date": "2025-10-05T00:00:00+00:00",
+                "rate": 0.9,
+                "hours": 8.033333,
+                "hours_ytd": null,
+                "amount": 7.23,
+                "amount_ytd": 21.89,
+                "excl_from_total": false
+              },
+              {
+                "name": "Weekend Prem Night Diff - 10%",
+                "type": null,
+                "start_date": "2025-09-29T00:00:00+00:00",
+                "end_date": "2025-10-05T00:00:00+00:00",
+                "rate": 0.36,
+                "hours": 5.5,
+                "hours_ytd": null,
+                "amount": 1.98,
+                "amount_ytd": 5.94,
+                "excl_from_total": false
+              },
+              {
+                "name": "Weekend Prem Night Diff - 15%",
+                "type": null,
+                "start_date": "2025-09-29T00:00:00+00:00",
+                "end_date": "2025-10-05T00:00:00+00:00",
+                "rate": 0.54,
+                "hours": 1.033333,
+                "hours_ytd": null,
+                "amount": 0.56,
+                "amount_ytd": 1.8,
+                "excl_from_total": false
+              }
+            ],
+            "raw_status": null
+          },
+          "employer": "Discover Products Inc",
+          "employer_address": {
+            "city": "Riverwoods",
+            "state": "IL",
+            "country": "US",
+            "postal_code": "60015",
+            "line1": "2500 Lake Cook Road",
+            "line2": null
+          },
+          "created_at": "2025-10-17T20:24:36.210Z",
+          "updated_at": "2025-10-17T20:25:02.783Z",
+          "destinations": [
+            {
+              "reference": null,
+              "amount": "1494.40",
+              "ach_deposit_account": {
+                "routing_number": null,
+                "account_number": "******0248",
+                "bank_name": "cashapp"
+              },
+              "card": null,
+              "method": null,
+              "metadata": {
+                "account_name": "CashApp"
+              }
+            }
+          ],
+          "hours_ytd": "420.92",
+          "deductions_ytd": "493.27",
+          "taxes_ytd": "1453.19",
+          "gross_pay_list": [
+            {
+              "name": "Paid Time Off - Non Exempt",
+              "type": "pto",
+              "start_date": null,
+              "end_date": null,
+              "rate": null,
+              "hours": null,
+              "amount": null,
+              "hours_ytd": null,
+              "amount_ytd": "288.00"
+            },
+            {
+              "name": "Regular Pay (Hourly)",
+              "type": "base",
+              "start_date": "2025-09-29",
+              "end_date": "2025-10-12",
+              "rate": "18.0000",
+              "hours": "66.8667",
+              "amount": "1203.60",
+              "hours_ytd": null,
+              "amount_ytd": "7415.11"
+            },
+            {
+              "name": "Sick Time",
+              "type": "pto",
+              "start_date": null,
+              "end_date": null,
+              "rate": null,
+              "hours": null,
+              "amount": null,
+              "hours_ytd": null,
+              "amount_ytd": "180.00"
+            },
+            {
+              "name": "Sick Time with 10% shift",
+              "type": "pto",
+              "start_date": "2025-09-29",
+              "end_date": "2025-10-12",
+              "rate": "19.8000",
+              "hours": "5.0000",
+              "amount": "99.00",
+              "hours_ytd": null,
+              "amount_ytd": "386.10"
+            },
+            {
+              "name": "Sick Time with 15% shift",
+              "type": "overtime",
+              "start_date": "2025-09-29",
+              "end_date": "2025-10-12",
+              "rate": "20.7000",
+              "hours": "1.0000",
+              "amount": "20.70",
+              "hours_ytd": null,
+              "amount_ytd": "124.20"
+            },
+            {
+              "name": "Weekend - Premium",
+              "type": "overtime",
+              "start_date": "2025-09-29",
+              "end_date": "2025-10-05",
+              "rate": "3.6000",
+              "hours": "8.0333",
+              "amount": "28.92",
+              "hours_ytd": null,
+              "amount_ytd": "87.55"
+            },
+            {
+              "name": "Weekend Prem Lang Shift diff - 10%",
+              "type": "overtime",
+              "start_date": "2025-09-29",
+              "end_date": "2025-10-05",
+              "rate": "0.9000",
+              "hours": "8.0333",
+              "amount": "7.23",
+              "hours_ytd": null,
+              "amount_ytd": "21.89"
+            },
+            {
+              "name": "Weekend Prem Night Diff - 10%",
+              "type": "overtime",
+              "start_date": "2025-09-29",
+              "end_date": "2025-10-05",
+              "rate": "0.3600",
+              "hours": "5.5000",
+              "amount": "1.98",
+              "hours_ytd": null,
+              "amount_ytd": "5.94"
+            },
+            {
+              "name": "Weekend Prem Night Diff - 15%",
+              "type": "overtime",
+              "start_date": "2025-09-29",
+              "end_date": "2025-10-05",
+              "rate": "0.5400",
+              "hours": "1.0333",
+              "amount": "0.56",
+              "hours_ytd": null,
+              "amount_ytd": "1.80"
+            },
+            {
+              "name": "Cash Awards",
+              "type": "other",
+              "start_date": null,
+              "end_date": null,
+              "rate": null,
+              "hours": null,
+              "amount": null,
+              "hours_ytd": null,
+              "amount_ytd": "2.55"
+            },
+            {
+              "name": "Holiday OT (worked)",
+              "type": "overtime",
+              "start_date": null,
+              "end_date": null,
+              "rate": null,
+              "hours": null,
+              "amount": null,
+              "hours_ytd": null,
+              "amount_ytd": "218.26"
+            },
+            {
+              "name": "Imputed Income - Bravo Award",
+              "type": "bonus",
+              "start_date": "2025-09-29",
+              "end_date": "2025-10-12",
+              "rate": "0.0000",
+              "hours": "0.0000",
+              "amount": "25.00",
+              "hours_ytd": null,
+              "amount_ytd": "25.00"
+            },
+            {
+              "name": "Imputed Income on Awards-GrossUp",
+              "type": "bonus",
+              "start_date": null,
+              "end_date": null,
+              "rate": null,
+              "hours": null,
+              "amount": null,
+              "hours_ytd": null,
+              "amount_ytd": "143.17"
+            },
+            {
+              "name": "Remote Work Stipend",
+              "type": "other",
+              "start_date": "2025-09-29",
+              "end_date": "2025-10-12",
+              "rate": "0.0000",
+              "hours": "0.0000",
+              "amount": "60.00",
+              "hours_ytd": null,
+              "amount_ytd": "180.00"
+            },
+            {
+              "name": "Lang Shift differential - 10%",
+              "type": "overtime",
+              "start_date": "2025-09-29",
+              "end_date": "2025-10-12",
+              "rate": "1.8000",
+              "hours": "72.8667",
+              "amount": "131.16",
+              "hours_ytd": null,
+              "amount_ytd": "821.58"
+            },
+            {
+              "name": "Night Differential - 10 %",
+              "type": "overtime",
+              "start_date": "2025-09-29",
+              "end_date": "2025-10-12",
+              "rate": "1.8000",
+              "hours": "44.0000",
+              "amount": "79.20",
+              "hours_ytd": null,
+              "amount_ytd": "472.75"
+            },
+            {
+              "name": "Night Differential - 15 %",
+              "type": "overtime",
+              "start_date": "2025-09-29",
+              "end_date": "2025-10-12",
+              "rate": "2.7000",
+              "hours": "8.5000",
+              "amount": "22.96",
+              "hours_ytd": null,
+              "amount_ytd": "72.30"
+            },
+            {
+              "name": "Overtime",
+              "type": "overtime",
+              "start_date": null,
+              "end_date": null,
+              "rate": null,
+              "hours": null,
+              "amount": null,
+              "hours_ytd": null,
+              "amount_ytd": "25.17"
+            },
+            {
+              "name": "Paid Holiday",
+              "type": "pto",
+              "start_date": null,
+              "end_date": null,
+              "rate": null,
+              "hours": null,
+              "amount": null,
+              "hours_ytd": null,
+              "amount_ytd": "144.00"
+            },
+            {
+              "name": "Paid Time Off - Misc",
+              "type": "pto",
+              "start_date": "2025-09-29",
+              "end_date": "2025-10-12",
+              "rate": "18.0000",
+              "hours": "8.0000",
+              "amount": "144.00",
+              "hours_ytd": null,
+              "amount_ytd": "720.00"
+            }
+          ],
+          "gross_pay_list_totals": {
+            "base": {
+              "amount": "1446.60",
+              "amount_ytd": "9133.21",
+              "hours": "79.8667",
+              "hours_ytd": null,
+              "rate_implied": "18.1100",
+              "rate_implied_ytd": null
+            },
+            "overtime": {
+              "amount": "292.71",
+              "amount_ytd": "1851.44",
+              "hours": "148.9666",
+              "hours_ytd": null,
+              "rate_implied": "1.9600",
+              "rate_implied_ytd": null
+            },
+            "commission": null,
+            "bonus": {
+              "amount": null,
+              "amount_ytd": "143.17",
+              "hours": null,
+              "hours_ytd": null,
+              "rate_implied": null,
+              "rate_implied_ytd": null
+            },
+            "other": {
+              "amount": "60.00",
+              "amount_ytd": "182.55",
+              "hours": "0.0000",
+              "hours_ytd": null,
+              "rate_implied": null,
+              "rate_implied_ytd": null
+            }
+          },
+            "employment": "defea132-21cb-32bf-84d1-9aa11d4976fa"
+        }
+    ],
+    "next": null,
+    "previous": null
+}

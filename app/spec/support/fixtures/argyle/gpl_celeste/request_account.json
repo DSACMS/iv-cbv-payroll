@@ -1,0 +1,72 @@
+{
+    "id": "01956d5f-cb8d-af2f-9232-38bce8531f58",
+    "user": "01956d5f-9482-5a52-1f87-84c0a238e107",
+    "employers": [
+        "Whole Foods"
+    ],
+    "item": "item_000026933",
+    "source": "argyle_sandbox",
+    "created_at": "2025-03-06T21:32:29.501021Z",
+    "updated_at": "2025-03-06T21:33:38.230481Z",
+    "scanned_at": "2025-03-06T21:33:37.885124Z",
+    "connection": {
+        "status": "connected",
+        "error_code": null,
+        "error_message": null,
+        "updated_at": "2025-03-06T21:32:41.771112Z"
+    },
+    "direct_deposit_switch": {
+        "status": "idle",
+        "error_code": null,
+        "error_message": null,
+        "updated_at": "2025-03-06T21:32:29.947531Z"
+    },
+    "availability": {
+        "gigs": {
+            "status": "synced",
+            "updated_at": "2025-03-06T21:33:36.262090Z",
+            "available_count": 0,
+            "available_from": null,
+            "available_to": null
+        },
+        "shifts": {
+            "status": "synced",
+            "updated_at": "2025-03-06T21:33:37.904215Z",
+            "available_count": 209,
+            "available_from": "2022-08-08T21:32:41Z",
+            "available_to": "2025-03-04T00:00:00Z"
+        },
+        "paystubs": {
+            "status": "synced",
+            "updated_at": "2025-03-06T21:33:38.019051Z",
+            "available_count": 69,
+            "available_from": "2022-08-08T21:32:41Z",
+            "available_to": "2025-03-03T00:00:00Z"
+        },
+        "payroll_documents": {
+            "status": "synced",
+            "updated_at": "2025-03-06T21:32:44.461976Z"
+        },
+        "identities": {
+            "status": "synced",
+            "updated_at": "2025-03-06T21:32:52.299785Z"
+        },
+        "ratings": {
+            "status": "synced",
+            "updated_at": "2025-03-06T21:32:44.475444Z"
+        },
+        "vehicles": {
+            "status": "synced",
+            "updated_at": "2025-03-06T21:32:44.478235Z"
+        },
+        "deposit_destinations": {
+            "status": "synced",
+            "updated_at": "2025-03-06T21:32:42.928647Z"
+        },
+        "user_forms": null,
+        "user_uploads": null
+    },
+    "ongoing_refresh": {
+        "status": "enabled"
+    }
+}
