@@ -363,15 +363,19 @@ RSpec.describe Report::W2PaystubDetailsTableComponent, type: :component do
       end
 
       it "renders earnings items heading" do
-        expect(subject.to_html).to include "Earnings Items"
+        expect(subject.to_html).to include "Gross pay line items"
+      end
+
+      it "renders description paragraph" do
+        expect(subject.to_html).to include "The following items are categories listed on the paystub as part of the gross pay for this paycheck."
       end
 
       it "renders all earnings items with names and amounts" do
-        expect(subject.to_html).to include "Regular Pay"
+        expect(subject.to_html).to include "Gross Pay Item: Regular Pay"
         expect(subject.to_html).to include "$1,000.00"
-        expect(subject.to_html).to include "Overtime"
+        expect(subject.to_html).to include "Gross Pay Item: Overtime"
         expect(subject.to_html).to include "$250.00"
-        expect(subject.to_html).to include "Bonus"
+        expect(subject.to_html).to include "Gross Pay Item: Bonus"
         expect(subject.to_html).to include "$500.00"
       end
 
@@ -385,8 +389,8 @@ RSpec.describe Report::W2PaystubDetailsTableComponent, type: :component do
         end
 
         it "does not render earnings with zero amount" do
-          expect(subject.to_html).to include "Regular Pay"
-          expect(subject.to_html).to include "Overtime"
+          expect(subject.to_html).to include "Gross Pay Item: Regular Pay"
+          expect(subject.to_html).to include "Gross Pay Item: Overtime"
           expect(subject.to_html).not_to include "Zero Amount"
         end
       end
@@ -407,11 +411,11 @@ RSpec.describe Report::W2PaystubDetailsTableComponent, type: :component do
           rendered_names = subject.css("table").last.css("tr td:first-child").map(&:text).map(&:strip)
 
           expected_order = [
-            "Base Pay",
-            "Overtime Pay",
-            "Commission Item",
-            "Tips Item",
-            "Bonus Item"
+            "Gross Pay Item: Base Pay",
+            "Gross Pay Item: Overtime Pay",
+            "Gross Pay Item: Commission Item",
+            "Gross Pay Item: Tips Item",
+            "Gross Pay Item: Bonus Item"
           ]
 
           expect(rendered_names).to eq(expected_order)
@@ -438,16 +442,16 @@ RSpec.describe Report::W2PaystubDetailsTableComponent, type: :component do
           rendered_names = subject.css("table").last.css("tr td:first-child").map(&:text).map(&:strip)
 
           expected_order = [
-            "Base Item",
-            "Overtime Item",
-            "PTO Item",
-            "Commission Item",
-            "Tips Item",
-            "Bonus Item",
-            "Benefits Item",
-            "Other Item",
-            "Disability Item",
-            "Stock Item"
+            "Gross Pay Item: Base Item",
+            "Gross Pay Item: Overtime Item",
+            "Gross Pay Item: PTO Item",
+            "Gross Pay Item: Commission Item",
+            "Gross Pay Item: Tips Item",
+            "Gross Pay Item: Bonus Item",
+            "Gross Pay Item: Benefits Item",
+            "Gross Pay Item: Other Item",
+            "Gross Pay Item: Disability Item",
+            "Gross Pay Item: Stock Item"
           ]
 
           expect(rendered_names).to eq(expected_order)
@@ -469,11 +473,11 @@ RSpec.describe Report::W2PaystubDetailsTableComponent, type: :component do
           rendered_names = subject.css("table").last.css("tr td:first-child").map(&:text).map(&:strip)
 
           expected_order = [
-            "Base Pay 1",
-            "Base Pay 2",
-            "Base Pay 3",
-            "Overtime Pay",
-            "Overtime Pay 2"
+            "Gross Pay Item: Base Pay 1",
+            "Gross Pay Item: Base Pay 2",
+            "Gross Pay Item: Base Pay 3",
+            "Gross Pay Item: Overtime Pay",
+            "Gross Pay Item: Overtime Pay 2"
           ]
 
           expect(rendered_names).to eq(expected_order)
@@ -494,10 +498,10 @@ RSpec.describe Report::W2PaystubDetailsTableComponent, type: :component do
           rendered_names = subject.css("table").last.css("tr td:first-child").map(&:text).map(&:strip)
 
           expected_order = [
-            "Base Pay",
-            "Overtime Pay",
-            "Unknown Category 1",
-            "Unknown Category 2"
+            "Gross Pay Item: Base Pay",
+            "Gross Pay Item: Overtime Pay",
+            "Gross Pay Item: Unknown Category 1",
+            "Gross Pay Item: Unknown Category 2"
           ]
 
           expect(rendered_names).to eq(expected_order)
@@ -518,10 +522,10 @@ RSpec.describe Report::W2PaystubDetailsTableComponent, type: :component do
           rendered_names = subject.css("table").last.css("tr td:first-child").map(&:text).map(&:strip)
 
           expected_order = [
-            "Base Pay",
-            "Tips",
-            "Nil Category 1",
-            "Nil Category 2"
+            "Gross Pay Item: Base Pay",
+            "Gross Pay Item: Tips",
+            "Gross Pay Item: Nil Category 1",
+            "Gross Pay Item: Nil Category 2"
           ]
 
           expect(rendered_names).to eq(expected_order)
@@ -548,8 +552,8 @@ RSpec.describe Report::W2PaystubDetailsTableComponent, type: :component do
       end
 
       it "does not render earnings items section" do
-        expect(subject.to_html).not_to include "Earnings Items"
-        expect(subject.to_html).not_to include "Regular Pay"
+        expect(subject.to_html).not_to include "Gross pay line items"
+        expect(subject.to_html).not_to include "Gross Pay Item: Regular Pay"
       end
     end
   end

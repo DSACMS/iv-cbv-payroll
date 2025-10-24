@@ -510,7 +510,8 @@ en:
           title_total_hours_worked: Total hours worked
       w2_paystub_details_table:
         details: Details
-        earnings_items: Earnings Items
+        earnings_items_description: The following items are categories listed on the paystub as part of the gross pay for this paycheck.
+        earnings_items_title: Gross pay line items
         frequency_unknown: Frequency Unknown
         pay_information: Pay information
         your_details: Your details
