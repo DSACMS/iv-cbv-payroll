@@ -50,6 +50,7 @@ module TrackEvent
   ApplicantRemovedArgyleAccount = "ApplicantRemovedArgyleAccount"
   ApplicantReportFailedUsefulRequirements = "ApplicantReportFailedUsefulRequirements"
   ApplicantReportMetUsefulRequirements = "ApplicantReportMetUsefulRequirements"
+  ApplicantRestartedWithGenericLinkOnTimeout = "ApplicantRestartedWithGenericLinkOnTimeout"
   ApplicantSavedPaymentDetails = "ApplicantSavedPaymentDetails"
   ApplicantSearchedForEmployer = "ApplicantSearchedForEmployer"
   ApplicantSelectedEmployerOrPlatformItem = "ApplicantSelectedEmployerOrPlatformItem"
