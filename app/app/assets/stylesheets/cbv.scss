@@ -176,6 +176,18 @@ html {
 }
 
 /*
+* Session timeout page
+*/
+.timeout-notice {
+  background-color: #EFF6FB;
+  border-color: #005EA2;
+  svg {
+    color: #005ea2;
+    font-size: 25px;
+  }
+}
+
+/*
 * Entry
 */
 .divider {

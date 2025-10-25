@@ -26,7 +26,11 @@ RSpec.describe Cbv::SessionsController, type: :controller do
         expect(controller).not_to receive(:track_timeout_event)
         delete :end, params: { timeout: 'true' }
         expect(session[:cbv_flow_id]).to be_nil
-        expect(flash[:notice]).to be_present
+      end
+
+      it 'redirects to session timeout page with agency' do
+        delete :end, params: { timeout: 'true' }
+        expect(response).to redirect_to(cbv_flow_session_timeout_path(client_agency_id: "sandbox"))
       end
     end
 
@@ -34,6 +38,19 @@ RSpec.describe Cbv::SessionsController, type: :controller do
       it 'clears session without tracking timeout event' do
         expect(controller).not_to receive(:track_timeout_event)
         delete :end
+        expect(session[:cbv_flow_id]).to be_nil
+      end
+    end
+  end
+
+  describe 'GET #timeout' do
+    context 'you come to the timeout page with a session' do
+      before do
+        session[:cbv_flow_id] = create(:cbv_flow, :invited).id
+      end
+
+      it 'removes the session' do
+        get :timeout
         expect(session[:cbv_flow_id]).to be_nil
       end
     end

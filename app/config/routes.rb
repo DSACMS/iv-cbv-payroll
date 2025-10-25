@@ -53,6 +53,7 @@ Rails.application.routes.draw do
       # Session management
       post "session/refresh", to: "sessions#refresh", as: :session_refresh
       get "session/end", to: "sessions#end", as: :session_end
+      get "session/timeout", to: "sessions#timeout", as: :session_timeout
     end
 
     scope "/:client_agency_id", module: :caseworker, constraints: { client_agency_id: Regexp.union(Rails.application.config.client_agencies.client_agency_ids) } do
