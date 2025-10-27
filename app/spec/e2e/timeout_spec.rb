@@ -1,6 +1,7 @@
 require "rails_helper"
 
 RSpec.describe "timeout test", type: :feature, js: true do
+  include E2e::TestHelpers
   let(:cbv_flow_invitation) { create(:cbv_flow_invitation) }
 
   it 'times out the user and directs them to start again' do
@@ -14,8 +15,9 @@ RSpec.describe "timeout test", type: :feature, js: true do
       document.getElementById("open-session-modal-button").click()
     JS
     click_link I18n.t("session_timeout.modal.end_button")
-    expect(page).to have_content(I18n.t("session_timeout.page.title"))
-    click_link "Click here"
+    verify_page(page, title: I18n.t("session_timeout.page.title"))
+
+    click_link "click here"
     expect(page).to have_content(I18n.t("cbv.entries.show.header"))
     expect(page).to_not have_content(I18n.t("cbv.error_missing_token_html"))
   end
