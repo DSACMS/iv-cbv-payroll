@@ -515,6 +515,7 @@ en:
         frequency_unknown: Frequency Unknown
         gross_pay_item_prefix: 'Gross Pay Item:'
         pay_information: Pay information
+        paystub_heading_prefix: 'Payment:'
         your_details: Your details
   continue: Continue
   date:

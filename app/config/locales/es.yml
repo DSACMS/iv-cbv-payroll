@@ -396,6 +396,7 @@ es:
         frequency_unknown: Frecuencia desconocida
         gross_pay_item_prefix: 'Artículo de pago bruto:'
         pay_information: Información de pago
+        paystub_heading_prefix: 'Pago:'
         your_details: Sus datos
   continue: Continuar
   date:
