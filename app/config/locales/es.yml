@@ -195,9 +195,9 @@ es:
         what_if_i_cant_use_this_body_2_html: Visite el sitio web de <a href='%{agency_url}' target='_blank' rel='noopener noreferrer'>%{agency_acronym}</a> para más información sobre cómo enviar sus documentos.
         what_if_i_cant_use_this_title: "¿Qué debo hacer si no puedo usar esta herramienta?"
         what_is_this_body: '"Reportar mi ingreso" es una herramienta que ayuda a recopilar información de su(s) empleador(es) sobre sus ingresos y la envía a su oficina estatal de beneficios.'
-        what_is_this_title: "¿Puedo usar esta herramienta?"
+        what_is_this_title: ¿Qué es la herramienta "Reportar mi ingreso"?
         who_is_this_for_body_html: 'Usted puede usar esta herramienta si generó ingresos en los últimos 90 días y usted: <ul><li>puede acceder a sus talones de pago en línea, o</li><li>trabaja para una compañía que opera a través de una aplicación tales como Uber o Lyft </li></ul>Si usted perdió su trabajo en los últimos 90 días, usted también puede usar esta herramienta para reportar que lo perdió. Usted deberá poder acceder a la cuenta de su empleador o proveedor de nómina anterior.'
-        who_is_this_for_title: "¿Quién puede usar este herramienta?"
+        who_is_this_for_title: "¿Puedo usar esta herramienta?"
     error_invalid_link: Se utilizó un enlace no válido para iniciar CBV. Vuelva a hacer clic en el enlace, o bien directamente póngase en contacto con su asistente de caso para obtener ayuda.
     error_invalid_token: El enlace de invitación no es válido. Vuelva a comprobar el enlace e inténtelo de nuevo. Si sigue teniendo problemas, póngase en contacto con su trabajador social.
     error_missing_token_html: "<strong>Su sesión a finalizado debido a inactividad.</strong> Para continuar donde la dejó, haga clic en el enlace que recibió de su agencia del SNAP por correo electrónico. Si encuentra algún problema, póngase en contacto con su agencia del SNAP para pedir ayuda."
