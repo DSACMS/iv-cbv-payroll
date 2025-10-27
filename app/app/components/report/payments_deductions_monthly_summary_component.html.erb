@@ -8,27 +8,15 @@
         <% end %>
         <% accordion.with_accordion_item do %>
           <% summary[:paystubs].each do |paystub| %>
-          <%= render(TableComponent.new(is_responsive: @is_responsive, class_names: "payment-details-table")) do |table| %>
-            <%= table.with_subheader_row(class_names: "subheader-row base-lightest") do |row| %>
-              <%= row.with_data_cell(is_header: true, class_names: "text-nowrap")
-                    .with_content(t("cbv.payment_details.show.pay_information")) %>
-              <%= row.with_data_cell(is_header: true, class_names: "text-nowrap")
-                    .with_content(t("cbv.payment_details.show.your_details")) %>
-            <% end %>
-            <%= table.with_data_point(:pay_date, paystub.pay_date) %>
-            <% if @is_w2_worker %>
-              <%= table.with_data_point(:pay_period_with_frequency, paystub.start, paystub.end, @pay_frequency_text) %>
-            <% end %>
-            <%= table.with_data_point(:pay_gross, paystub.gross_pay_amount) %>
-            <%= table.with_data_point(:number_of_hours_worked, paystub.hours) %>
-            <%= table.with_data_point(:net_pay_amount, paystub.net_pay_amount) %>
-            <% paystub.deductions.filter { |deduction| deduction.amount.to_f > 0 }.each do |deduction| %>
-              <%= table.with_data_point(:deduction, deduction.category, deduction.tax, deduction.amount) %>
-            <% end %>
-            <% if paystub.gross_pay_ytd.to_f > 0 %>
-              <%= table.with_data_point(:pay_gross_ytd, paystub.gross_pay_ytd) %>
-            <% end %>
-          <% end %>
+            <%= render(Report::W2PaystubDetailsTableComponent.new(
+              paystub,
+              income: @income,
+              is_responsive: @is_responsive,
+              show_hours_breakdown: false,
+              show_gross_pay_ytd: true,
+              show_pay_frequency: @is_w2_worker,
+              is_personalized: true
+            )) %>
           <% end %>
         <% end %>
       <% end %>
