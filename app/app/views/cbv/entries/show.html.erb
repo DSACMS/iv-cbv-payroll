@@ -64,7 +64,7 @@
     <% end %>
     <% accordion.with_accordion_item do %>
       <%= t(".what_if_i_cant_use_this_body_1_html", agency_acronym: agency_translation("shared.agency_acronym")) %>
-      <%= t(".what_if_i_cant_use_this_body_2_html", agency_url: current_agency.agency_contact_website, agency_acronym: agency_translation("shared.agency_acronym")) %>
+      <%= agency_translation(".what_if_i_cant_use_this_body_2_html", agency_url: current_agency.agency_contact_website, agency_acronym: agency_translation("shared.agency_acronym")) %>
     <% end %>
   <% end %>
 </div>

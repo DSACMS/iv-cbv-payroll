@@ -192,7 +192,9 @@ es:
         step3_description: La enviaremos automáticamente a %{agency_acronym}. Esto lo ayudará a demostrar y comprobar sus ingresos y puede ayudar a %{agency_acronym} a tomar una decisión más rápida.
         subheader_html: 'Enviaremos los registros de pago de su(s) empleador(es) a %{agency_acronym} para verificar sus ingresos.<strong> La mayoría de las personas completan este proceso en aproximadamente 5 minutos.</strong> Solo siga estos pasos:'
         what_if_i_cant_use_this_body_1_html: "<p>Usted deberá enviar la información de su ingreso directamente a %{agency_acronym} si: <ul><li>no puede reportar su ingreso con esta herramienta, o</li><li>no ha trabajado en los últimos 90 días</li></ul></p>"
-        what_if_i_cant_use_this_body_2_html: Visite el sitio web de <a href='%{agency_url}' target='_blank' rel='noopener noreferrer'>%{agency_acronym}</a> para más información sobre cómo enviar sus documentos.
+        what_if_i_cant_use_this_body_2_html:
+          default: Visite el sitio web de <a href='%{agency_url}' target='_blank' rel='noopener noreferrer'>%{agency_acronym}</a> para más información sobre cómo enviar sus documentos.
+          la_ldh:
         what_if_i_cant_use_this_title: "¿Qué debo hacer si no puedo usar esta herramienta?"
         what_is_this_body: '"Reportar mi ingreso" es una herramienta que ayuda a recopilar información de su(s) empleador(es) sobre sus ingresos y la envía a su oficina estatal de beneficios.'
         what_is_this_title: ¿Qué es la herramienta "Reportar mi ingreso"?
