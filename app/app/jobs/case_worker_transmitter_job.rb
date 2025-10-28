@@ -3,7 +3,7 @@ class CaseWorkerTransmitterJob < ApplicationJob
 
   attr_reader :cbv_flow
 
-  queue_as :default
+  queue_as :report_sender
 
   def perform(cbv_flow_id)
     @cbv_flow = CbvFlow.find(cbv_flow_id)

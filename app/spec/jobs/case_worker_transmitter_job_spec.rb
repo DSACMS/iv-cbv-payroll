@@ -317,5 +317,13 @@ RSpec.describe CaseWorkerTransmitterJob, type: :job do
       it_behaves_like "tracks an ApplicantSharedIncomeSummary event"
       it_behaves_like "enqueues match agency names job for agency with expected names"
     end
+
+    context "when transmission method is unsupported" do
+      let(:transmission_method) { "smoke_signal" }
+
+      it "raises an error" do
+        expect { described_class.new.perform(cbv_flow.id) }.to raise_error(/Unsupported transmission method/)
+      end
+    end
   end
 end

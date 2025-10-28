@@ -9,6 +9,8 @@ require "view_component/test_helpers"
 require "support/context/gpg_setup"
 require "view_component/system_test_helpers"
 
+require "active_job/test_helper"
+
 # Capybara configuration for E2E tests
 require "axe-rspec"
 require "capybara/rspec"
@@ -103,6 +105,10 @@ RSpec.configure do |config|
   config.include ViewComponent::TestHelpers, type: :component
   config.include ViewComponent::SystemTestHelpers, type: :component
   config.include Capybara::RSpecMatchers, type: :component
+
+  # activejob helper
+  config.include ActiveJob::TestHelper
+  config.before(:each) { clear_enqueued_jobs && clear_performed_jobs }
 
   # Print some helpful debugging info about the last test failure, since
   # sometimes it's a bit hard to tell which page the error is coming from.

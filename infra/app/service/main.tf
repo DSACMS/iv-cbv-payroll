@@ -181,11 +181,11 @@ module "service" {
   certificate_arn    = local.service_config.enable_https ? data.aws_acm_certificate.certificate[0].arn : null
   additional_domains = local.service_config.additional_domains
 
-  cpu                               = local.service_config.cpu
-  memory                            = local.service_config.memory
-  desired_instance_count            = local.is_temporary ? 1 : local.service_config.desired_instance_count
-  solidqueue_desired_instance_count = local.service_config.solidqueue_desired_instance_count
-  enable_command_execution          = local.service_config.enable_command_execution
+  cpu                              = local.service_config.cpu
+  memory                           = local.service_config.memory
+  desired_instance_count           = local.is_temporary ? 1 : local.service_config.desired_instance_count
+  shoryuken_desired_instance_count = local.service_config.shoryuken_desired_instance_count
+  enable_command_execution         = local.service_config.enable_command_execution
 
   aws_services_security_group_id = data.aws_security_groups.aws_services.ids[0]
 
@@ -304,4 +304,15 @@ module "identity_provider_client" {
   name          = "${local.prefix}${local.identity_provider_config.identity_provider_name}"
 
   user_pool_id = local.identity_provider_user_pool_id
+}
+
+module "sqs_queues" {
+  source = "../../modules/sqs-queues"
+
+  queue_names                = ["report_sender", "mixpanel_events", "newrelic_events"]
+  dlq_name                   = "dead_letter_queue"
+  visibility_timeout_seconds = 75 # ~30s job → 2x+buffer
+  receive_wait_time_seconds  = 10
+  message_retention_seconds  = 345600 # 4 days
+  max_receive_count          = 5
 }
