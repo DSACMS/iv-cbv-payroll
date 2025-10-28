@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.2].define(version: 2025_10_10_195411) do
+ActiveRecord::Schema[7.2].define(version: 2025_10_23_174033) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pgcrypto"
   enable_extension "plpgsql"
@@ -52,6 +52,7 @@ ActiveRecord::Schema[7.2].define(version: 2025_10_10_195411) do
     t.string "language"
     t.bigint "cbv_applicant_id"
     t.datetime "expires_at", precision: nil
+    t.index ["auth_token"], name: "index_cbv_flow_invitations_on_auth_token", unique: true, where: "(redacted_at IS NULL)"
     t.index ["cbv_applicant_id"], name: "index_cbv_flow_invitations_on_cbv_applicant_id"
     t.index ["user_id"], name: "index_cbv_flow_invitations_on_user_id"
   end
