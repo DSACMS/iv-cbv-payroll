@@ -391,7 +391,10 @@ es:
           title_total_hours_worked: Total de horas trabajadas
       w2_paystub_details_table:
         details: Datos
+        earnings_items_description: Los siguientes elementos son categorías enumeradas en el talón de pago como parte del pago bruto de este cheque de pago.
+        earnings_items_title: Partidas de pago bruto
         frequency_unknown: Frecuencia desconocida
+        gross_pay_item_prefix: 'Artículo de pago bruto:'
         pay_information: Información de pago
         your_details: Sus datos
   continue: Continuar

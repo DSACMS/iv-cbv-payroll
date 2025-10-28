@@ -296,3 +296,8 @@ input#invitation_link{
 .display-contents {
   display: contents !important;
 }
+
+.paystub_earnings_items_table td {
+  border: none;
+  background-color: inherit;
+}

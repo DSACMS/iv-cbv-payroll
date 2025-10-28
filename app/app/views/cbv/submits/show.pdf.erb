@@ -1,4 +1,5 @@
 <% content_for :title, t(".pdf.client.header") %>
+<% current_agency ||= ClientAgencyConfig.client_agencies[@cbv_flow.client_agency_id] %>
 
 <strong>
   <span class="cbv-header__pilot-name font-sans-md text-middle">
@@ -127,7 +128,8 @@
         paystub,
         income: summary[:income],
         is_caseworker: is_caseworker,
-        is_responsive: false
+        is_responsive: false,
+        show_earnings_items: !!current_agency&.report_customization_show_earnings_list
       )) %>
     <% end %>
     <% if summary[:paystubs].empty? %>

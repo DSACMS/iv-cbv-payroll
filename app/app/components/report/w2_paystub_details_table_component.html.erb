@@ -24,3 +24,15 @@
     <%= table.with_data_point(:pay_gross_ytd, @paystub.gross_pay_ytd) %>
   <% end %>
 <% end %>
+
+<% if show_earnings_items? %>
+  <aside class="bg-base-lightest padding-x-4 padding-y-3">
+  <h4><%= t("components.report.w2_paystub_details_table.earnings_items_title") %></h4>
+  <p><%= t("components.report.w2_paystub_details_table.earnings_items_description") %></p>
+  <%= render(TableComponent.new(is_responsive: @is_responsive, thead_class_names: "", class_names: "paystub_earnings_items_table")) do |table| %>
+    <% earnings_sort_order(@paystub.earnings.filter { |earning| earning.amount.to_f > 0 }).each do |earning| %>
+      <%= table.with_row(earning_label(earning), number_to_currency(earning.amount / 100.0)) %>
+    <% end %>
+  <% end %>
+  </aside>
+<% end %>
