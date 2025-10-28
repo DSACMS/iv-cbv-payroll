@@ -7,8 +7,10 @@
             id="<%= button_id %>"
             aria-expanded="<%= @expanded ? "true" : "false" %>"
             aria-controls="<%= content_id %>"
+            data-controller="common-questions"
             data-action="<%= @data_action %>"
-            data-section-identifier="<%= @data_section_identifier %>">
+            data-section-identifier="<%= @data_section_identifier %>"
+            data-page="<%= @data_page %>">
       <%= title %>
     </button>
   <% end %>

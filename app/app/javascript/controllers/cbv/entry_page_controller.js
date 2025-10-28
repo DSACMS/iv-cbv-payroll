@@ -9,11 +9,4 @@ export default class extends Controller {
       trackUserAction("ApplicantConsentedToTerms")
     }
   }
-
-  viewHelpText(event) {
-    const section = event.currentTarget.dataset.sectionIdentifier
-    if (event.currentTarget.getAttribute("aria-expanded") === "false") {
-      trackUserAction("ApplicantViewedHelpText", { section })
-    }
-  }
 }
