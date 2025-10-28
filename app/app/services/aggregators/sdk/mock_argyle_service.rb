@@ -7,10 +7,11 @@ module Aggregators::Sdk
     # Use Bob's fixtures as the default mock data
     MOCK_FIXTURE_USER = "bob"
 
-    def initialize(environment, api_key_id = nil, api_key_secret = nil, webhook_secret = nil)
+    def initialize(environment, api_key_id = nil, api_key_secret = nil, webhook_secret = nil, fixture_user: nil)
       @environment = ArgyleService::ENVIRONMENTS.fetch(environment.to_sym)
       @webhook_secret = webhook_secret || @environment[:webhook_secret]
-      @fixture_path = Rails.root.join("spec", "support", "fixtures", "argyle", MOCK_FIXTURE_USER)
+      @fixture_user = fixture_user || MOCK_FIXTURE_USER
+      @fixture_path = Rails.root.join("spec", "support", "fixtures", "argyle", @fixture_user)
     end
 
     def fetch_identities_api(account: nil, user: nil, employment: nil, limit: 10)

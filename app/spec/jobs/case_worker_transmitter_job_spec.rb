@@ -52,6 +52,7 @@ RSpec.describe CaseWorkerTransmitterJob, type: :job do
     allow(mock_client_agency).to receive(:logo_path).and_return(mocked_client_logo_path)
     allow(mock_client_agency).to receive(:transmission_method).and_return(transmission_method)
     allow(mock_client_agency).to receive(:transmission_method_configuration).and_return(transmission_method_configuration)
+    allow(mock_client_agency).to receive(:report_customization_show_earnings_list).and_return(true)
 
     allow_any_instance_of(described_class)
       .to receive(:event_logger)

@@ -1,4 +1,5 @@
 <% content_for :title, t(".pdf.client.header") %>
+<% current_agency ||= ClientAgencyConfig.client_agencies[@cbv_flow.client_agency_id] %>
 
 <strong>
   <span class="cbv-header__pilot-name font-sans-md text-middle">
@@ -123,30 +124,13 @@
     <%= render(Report::W2MonthlySummaryTableComponent.new(@aggregator_report, account_id, is_caseworker: is_caseworker, is_responsive: false, is_pdf: true, show_footnote: is_first_w2_job)) %>
     <h3><%= t(".pdf.shared.payments_and_deductions_header", employer_name: employer_name) %></h3>
     <% summary[:paystubs].each do |paystub| %>
-      <%= render(TableComponent.new(class_names: "payment-details-table")) do |table| %>
-        <%= table.with_subheader_row(class_names: "subheader-row base-lightest") do |row| %>
-          <%= row.with_data_cell(is_header: true, class_names: "text-nowrap")
-                .with_content(t(".pdf.shared.pay_information")) %>
-          <%= row.with_data_cell(is_header: true, class_names: "text-nowrap")
-                .with_content(t(".pdf.shared.details")) %>
-        <% end %>
-        <%= table.with_data_point(:pay_date, paystub.pay_date) %>
-        <% if summary[:income]&.pay_frequency %>
-          <%= table.with_data_point(:pay_period_with_frequency, paystub.start, paystub.end, summary[:income].pay_frequency&.humanize, highlight: is_caseworker) %>
-        <% else %>
-          <%= table.with_data_point(:pay_period_with_frequency, paystub.start, paystub.end, t("cbv.payment_details.show.frequency_unknown"), highlight: is_caseworker) %>
-        <% end %>
-        <%= table.with_data_point(:pay_gross, paystub.gross_pay_amount, highlight: is_caseworker) %>
-        <%= table.with_data_point(:number_of_hours_worked, paystub.hours, highlight: is_caseworker) %>
-        <% paystub.hours_by_earning_category.each do |category, total_hours| %>
-          <%= table.with_data_point(:earnings_entry, category, total_hours) %>
-        <% end %>
-        <%= table.with_data_point(:net_pay_amount, paystub.net_pay_amount) %>
-        <% paystub.deductions.filter { |deduction| deduction.amount.to_f > 0 }.each do |deduction| %>
-          <%= table.with_data_point(:deduction, deduction.category, deduction.tax, deduction.amount) %>
-        <% end %>
-        <%= table.with_data_point(:pay_gross_ytd, paystub.gross_pay_ytd) %>
-      <% end %>
+      <%= render(Report::W2PaystubDetailsTableComponent.new(
+        paystub,
+        income: summary[:income],
+        is_caseworker: is_caseworker,
+        is_responsive: false,
+        show_earnings_items: !!current_agency&.report_customization_show_earnings_list
+      )) %>
     <% end %>
     <% if summary[:paystubs].empty? %>
       <%= render(TableComponent.new) do |table| %>

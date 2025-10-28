@@ -236,7 +236,6 @@ es:
         employment_information_table_header: Información sobre el empleo
         employment_start_date: Fecha de inicio del empleo
         employment_status: Estatus del empleo
-        frequency_unknown: Frecuencia desconocida
         header: Revise la información de pago de %{employer_name}
         header_no_employer_name: Su información de pago de su empleador
         hourly_rate: Monto de compensación
@@ -251,7 +250,6 @@ es:
         pay_frequency: Frecuencia de pago
         pay_gross: Pago antes de impuestos (bruto)
         pay_gross_ytd: Salario Bruto Acumulado del Año
-        pay_information: Información de pago
         pay_net: Pago después de impuestos y deducciones (neto)
         pay_period: Período de pago
         pay_period_value: "%{start_date} al %{end_date}"
@@ -259,7 +257,6 @@ es:
         payments_and_deductions_table_header: Pagos y deducciones
         subheader_html: Hemos recopilado sus registros de pago del último %{report_data_range}, desde el %{start_date} hasta el %{end_date}.<br>Por favor, revise su información. Si falta información o si es incorrecta, deja un comentario para %{agency_acronym}. Su comentario se incluirá en su reporte de ingresos.
         unknown: Desconocido
-        your_details: Tus datos
     submits:
       show:
         additional_information_title: "¿Existe algún otro detalle que le gustaría que su asistente de caso conozca en relación con sus ingresos?"
@@ -297,9 +294,7 @@ es:
             additional_jobs_to_report_html: "¿El cliente tiene trabajos adicionales que informará por separado? <sup>1</sup>"
             client_information: Información del cliente
             confirmation_code: Código de confirmación
-            details: Datos
             employment_information: Información del empleo
-            pay_information: Información de pago
             payments_and_deductions_header: Pagos y deducciones de %{employer_name}
             report_details: Detalles del reporte
         share_report_button: Comparta mi reporte con %{agency_acronym}
@@ -394,6 +389,15 @@ es:
           title_gross_income: Ingreso bruto
           title_number_of_paychecks: Cantidad de cheques de pago
           title_total_hours_worked: Total de horas trabajadas
+      w2_paystub_details_table:
+        details: Datos
+        earnings_items_description: Los siguientes elementos son categorías enumeradas en el talón de pago como parte del pago bruto de este cheque de pago.
+        earnings_items_title: Partidas de pago bruto
+        frequency_unknown: Frecuencia desconocida
+        gross_pay_item_prefix: 'Artículo de pago bruto:'
+        pay_information: Información de pago
+        paystub_heading_prefix: 'Detalles del pago:'
+        your_details: Sus datos
   continue: Continuar
   date:
     abbr_day_names:
