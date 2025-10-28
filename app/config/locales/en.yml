@@ -298,6 +298,7 @@ en:
         who_is_this_for_title: Who is this tool for?
     error_invalid_link: Invalid link used to begin CBV. Try clicking the link again or contact your caseworker for help.
     error_invalid_token: The invitation link used is not valid. Double check the link and try again. If you continue experiencing issues, contact your caseworker.
+    error_invitation_limit_reached: The invitation usage limit has been reached. Please contact your caseworker for help.
     error_missing_token_html: "<strong>Your session has timed out due to inactivity.</strong> Please reuse the same link you used to begin your session. If you encounter any issues, contact your benefits agency for assistance."
     error_no_access: We weren't able to load payroll data for this account. Please click the link you received from your SNAP agency to try again.
     expired_invitations:
