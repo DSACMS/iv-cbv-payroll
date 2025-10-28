@@ -95,4 +95,8 @@ class Report::W2PaystubDetailsTableComponent < ViewComponent::Base
   def earning_label(earning)
     "#{t("components.report.w2_paystub_details_table.gross_pay_item_prefix")} #{earning.name}"
   end
+
+  def paystub_heading
+    "#{t("components.report.w2_paystub_details_table.paystub_heading_prefix")} #{format_date(@paystub.pay_date)}"
+  end
 end
