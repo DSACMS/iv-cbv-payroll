@@ -37,6 +37,7 @@ class Api::UserEventsController < ApplicationController
     ApplicantWarnedAboutTimeout
     ApplicantExtendedSession
     ApplicantTimedOut
+    LearnHowItWorksClicked
   ]
 
   def user_action
