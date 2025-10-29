@@ -141,6 +141,6 @@ gem "net-ssh"
 gem "sinatra", "~> 4.0"
 
 # AWS SQS
-gem 'aws-sdk-sqs'
+gem "aws-sdk-sqs"
 # Shoryuken for SQS
 gem "shoryuken"
