@@ -33,6 +33,8 @@ Rails.application.configure do
   config.hosts << "www.example.com"
   config.hosts << IPAddr.new("127.0.0.1")
   config.hosts << ".ngrok-free.app"
+  config.hosts << "verifymyincome.org"
+  config.hosts << ".verifymyincome.org"
 
   # Raise exceptions instead of rendering exception templates.
   config.action_dispatch.show_exceptions = false
