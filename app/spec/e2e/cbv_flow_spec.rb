@@ -18,7 +18,7 @@ RSpec.describe "e2e CBV flow test", type: :feature, js: true do
     # /cbv/entry
     visit URI(root_url).request_uri
     visit URI(cbv_flow_invitation.to_url).request_uri
-    verify_page(page, title: I18n.t("cbv.entries.show.header"))
+    verify_page(page, title: I18n.t("cbv.entries.show.header", agency_full_name: I18n.t("shared.agency_full_name.sandbox")))
     find('[data-cbv-entry-page-target="consentCheckbox"]').click
     click_button I18n.t("cbv.entries.show.continue")
 
