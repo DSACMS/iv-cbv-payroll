@@ -655,6 +655,11 @@ en:
       end_button: End session
       extend_button: Yes, extend my session
       heading: Do you need more time?
+    page:
+      description: Sessions end after 30 minutes of being away from the page. This helps keep your information safe.
+      info_box: To report your income, start again. Use the link %{agency_full_name} sent you in a text message.
+      start_over_html: If you can't find your link, <a href='%{link}' data-action='%{action}'>click here</a> to start over.
+      title: Your session has timed out
   shared:
     agency_acronym:
       az_des: DES/FAA
