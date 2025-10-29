@@ -1,10 +1,10 @@
-resource "aws_ecs_service" "shoryuken" {
+resource "aws_ecs_service" "worker" {
   # Do not create the worker service in temporary PR environments
   count                  = var.is_temporary ? 0 : 1
-  name                   = "${var.service_name}-shoryuken"
+  name                   = "${var.service_name}-worker"
   cluster                = aws_ecs_cluster.cluster.arn
   launch_type            = "FARGATE"
-  task_definition        = aws_ecs_task_definition.shoryuken.arn
+  task_definition        = aws_ecs_task_definition.worker.arn
   desired_count          = var.shoryuken_desired_instance_count
   enable_execute_command = var.enable_command_execution ? true : null
 
@@ -22,13 +22,10 @@ resource "aws_ecs_service" "shoryuken" {
     enable   = true
     rollback = true
   }
-
 }
 
-
-
-resource "aws_ecs_task_definition" "shoryuken" {
-  family             = "${var.service_name}-shoryuken"
+resource "aws_ecs_task_definition" "worker" {
+  family             = "${var.service_name}-worker"
   execution_role_arn = aws_iam_role.task_executor.arn
   task_role_arn      = aws_iam_role.app_service.arn
 
