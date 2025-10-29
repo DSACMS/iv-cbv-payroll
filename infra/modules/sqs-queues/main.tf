@@ -6,6 +6,7 @@ locals {
 resource "aws_sqs_queue" "dlq" {
   name                      = local.dlq_resolved
   message_retention_seconds = 1209600
+  sqs_managed_sse_enabled   = true
   lifecycle { prevent_destroy = true }
 }
 
@@ -18,6 +19,7 @@ resource "aws_sqs_queue" "dicit_queues" {
   delay_seconds              = 0
   message_retention_seconds  = var.message_retention_seconds
   max_message_size           = 262144
+  sqs_managed_sse_enabled    = true
 
   redrive_policy = jsonencode({
     deadLetterTargetArn = aws_sqs_queue.dlq.arn
