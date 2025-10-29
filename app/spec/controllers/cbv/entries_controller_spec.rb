@@ -270,7 +270,7 @@ RSpec.describe Cbv::EntriesController do
 
     context 'when invitation has not reached limit' do
       before do
-        create_list(:cbv_flow, 49, cbv_flow_invitation: invitation, cbv_applicant: cbv_applicant)
+        create_list(:cbv_flow, 99, cbv_flow_invitation: invitation, cbv_applicant: cbv_applicant)
       end
 
       it 'allows access' do
@@ -286,7 +286,7 @@ RSpec.describe Cbv::EntriesController do
 
     context 'when invitation has reached limit' do
       before do
-        create_list(:cbv_flow, 50, cbv_flow_invitation: invitation, cbv_applicant: cbv_applicant)
+        create_list(:cbv_flow, 100, cbv_flow_invitation: invitation, cbv_applicant: cbv_applicant)
       end
 
       it 'redirects to root with alert' do
@@ -303,13 +303,13 @@ RSpec.describe Cbv::EntriesController do
           "InvitationLimitReached",
           {
             invitation_id: invitation.id,
-            cbv_flow_count: 50
+            cbv_flow_count: 100
           }
         )
       end
 
       it 'logs warning message' do
-        expect(Rails.logger).to receive(:warn).with("Invitation #{invitation.id} reached flow limit (50+)")
+        expect(Rails.logger).to receive(:warn).with("Invitation #{invitation.id} reached flow limit")
 
         get :show, params: { token: invitation.auth_token }
       end
@@ -317,7 +317,7 @@ RSpec.describe Cbv::EntriesController do
 
     context 'when invitation has exceeded limit' do
       before do
-        create_list(:cbv_flow, 55, cbv_flow_invitation: invitation, cbv_applicant: cbv_applicant)
+        create_list(:cbv_flow, 105, cbv_flow_invitation: invitation, cbv_applicant: cbv_applicant)
       end
 
       it 'redirects to root with alert' do
@@ -334,7 +334,7 @@ RSpec.describe Cbv::EntriesController do
           "InvitationLimitReached",
           {
             invitation_id: invitation.id,
-            cbv_flow_count: 55
+            cbv_flow_count: 105
           }
         )
       end
@@ -342,7 +342,7 @@ RSpec.describe Cbv::EntriesController do
 
     context 'when multiple requests hit the limit' do
       before do
-        create_list(:cbv_flow, 50, cbv_flow_invitation: invitation, cbv_applicant: cbv_applicant)
+        create_list(:cbv_flow, 100, cbv_flow_invitation: invitation, cbv_applicant: cbv_applicant)
       end
 
       it 'records NewRelic event for each request' do

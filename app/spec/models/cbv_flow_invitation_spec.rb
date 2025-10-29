@@ -209,7 +209,7 @@ RSpec.describe CbvFlowInvitation, type: :model do
 
     context 'when invitation has fewer than MAX_FLOWS_PER_INVITATION flows' do
       before do
-        create_list(:cbv_flow, 49, cbv_flow_invitation: invitation, cbv_applicant: cbv_applicant)
+        create_list(:cbv_flow, 99, cbv_flow_invitation: invitation, cbv_applicant: cbv_applicant)
       end
 
       it 'returns false' do
@@ -219,7 +219,7 @@ RSpec.describe CbvFlowInvitation, type: :model do
 
     context 'when invitation has exactly MAX_FLOWS_PER_INVITATION flows' do
       before do
-        create_list(:cbv_flow, 50, cbv_flow_invitation: invitation, cbv_applicant: cbv_applicant)
+        create_list(:cbv_flow, 100, cbv_flow_invitation: invitation, cbv_applicant: cbv_applicant)
       end
 
       it 'returns true' do
@@ -229,7 +229,7 @@ RSpec.describe CbvFlowInvitation, type: :model do
 
     context 'when invitation has more than MAX_FLOWS_PER_INVITATION flows' do
       before do
-        create_list(:cbv_flow, 51, cbv_flow_invitation: invitation, cbv_applicant: cbv_applicant)
+        create_list(:cbv_flow, 101, cbv_flow_invitation: invitation, cbv_applicant: cbv_applicant)
       end
 
       it 'returns true' do
