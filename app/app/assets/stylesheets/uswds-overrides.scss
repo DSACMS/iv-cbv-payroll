@@ -59,7 +59,13 @@ tr td:first-child {
 
 // Responsive heading adjustments for mobile
 @include at-media-max('tablet') {
-  h1 { @include u-font-size("sans", 11); }
-  h2 { @include u-font-size("sans", 9); }
-  h3 { @include u-font-size("sans", 8); }
+  h1 {
+    @include u-font-size("sans", 11);
+  }
+  h2 {
+    @include u-font-size("sans", 9);
+  }
+  h3 {
+    @include u-font-size("sans", 8);
+  }
 }
