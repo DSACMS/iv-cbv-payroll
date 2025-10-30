@@ -56,3 +56,10 @@ $mobile-navbar-height: 4rem;
 tr td:first-child {
   font-weight: bold;
 }
+
+// Responsive heading adjustments for mobile
+@include at-media-max($theme-header-min-width) {
+  h1 { font-size: size("sans", 11); }
+  h2 { font-size: size("sans", 9); }
+  h3 { font-size: size("sans", 8); }
+}
