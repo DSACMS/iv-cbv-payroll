@@ -25,19 +25,17 @@
                       action: "session#trackExtend session#resetTimers"
                     },
                     id: "extend-session-button" do %>
-               <%= t("session_timeout.modal.extend_button") %>
+              <%= t("session_timeout.modal.extend_button") %>
             <% end %>
           </li>
           <li class="usa-button-group__item">
-            <%= button_to cbv_flow_session_end_path,
-                method: :get,
+            <%= link_to t("session_timeout.modal.end_button"),
+                cbv_flow_session_end_path,
                 class: "usa-button usa-button--outline",
                 data: { close_modal: true,
                         turbo: false,
-                        action: "session#trackEnd session#resetTimers" },
-                id: "end-session-button" do %>
-                <%= t("session_timeout.modal.end_button") %>
-            <% end %>
+                action: "session#trackExtend session#resetTimers" },
+                id: "end-session-button" %>
           </li>
         </ul>
       </div>
