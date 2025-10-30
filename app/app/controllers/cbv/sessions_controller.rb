@@ -7,11 +7,17 @@ class Cbv::SessionsController < Cbv::BaseController
   end
 
   def end
-    if params[:timeout] == "true"
-      flash[:notice] = t("cbv.error_missing_token_html")
-    end
-
+    client_agency_id = CbvFlow.find(session[:cbv_flow_id]).client_agency_id
     reset_cbv_session!
-    redirect_to root_url
+    redirect_to cbv_flow_session_timeout_path(client_agency_id: client_agency_id)
+  end
+
+  def timeout
+    reset_cbv_session!
+    @current_agency = agency_config[params[:client_agency_id]]
+  end
+
+  def current_agency
+    @current_agency
   end
 end

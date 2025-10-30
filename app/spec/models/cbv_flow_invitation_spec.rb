@@ -179,14 +179,34 @@ RSpec.describe CbvFlowInvitation, type: :model do
     end
   end
 
-
-
   describe "foreign key constraints" do
     context "has an associated user" do
       it "has an associated user email" do
         invitation = create(:cbv_flow_invitation)
         expect(invitation.user.email).to be_a(String)
       end
+    end
+  end
+
+  describe "uniquness constraints" do
+    let(:invitation1) { create(:cbv_flow_invitation, client_agency_id: "sandbox", language: "en") }
+    let(:invitation2) { create(:cbv_flow_invitation, client_agency_id: "sandbox", language: "en") }
+
+    it "is able to create two invitations" do
+      expect {
+        invitation1
+        invitation2
+      }.to change(CbvFlowInvitation, :count).by(2)
+    end
+
+    it "does not raise a uniqueness error when both are redacted" do
+      invitation1
+      invitation2
+
+      expect {
+        invitation1.redact!
+        invitation2.redact!
+      }.not_to raise_error
     end
   end
 end

@@ -580,6 +580,11 @@ es:
       end_button: Finalizar esta sesión.
       extend_button: Sí, extender el tiempo de mi sesión.
       heading: "¿Necesita más tiempo en la sesión?"
+    page:
+      description: Las sesiones terminan después de 30 minutos de inactividad. Esto ayuda a que su información esté segura.
+      info_box: Para reportar su ingreso, comience de nuevo. Use el enlace que %{agency_full_name} le envió en un mensaje de texto.
+      start_over_html: Si no puede encontrar su enlace, <a href='%{link}' data-action='%{action}'>visite</a> para comenzar nuevamente.
+      title: Su sesión ha terminado.
   shared:
     agency_acronym:
       az_des: DES/FAA (por sus siglas en inglés)
