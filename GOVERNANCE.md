@@ -95,7 +95,7 @@ We will create an email address to accept feedback from users. Additionally, fee
 
 ### Communicating roadmap
 
-Active work can be tracked by the public through repository [issues](#) and GitHub project boards. The project page will communicate planned milestones and labels on GitHub issues.
+Active work can be tracked by the public through repository [issues](https://github.com/DSACMS/iv-cbv-payroll/issues) and GitHub project boards. The project page will communicate planned milestones and labels on GitHub issues.
 
 ### User-specific tech support
 
