@@ -1,0 +1,38 @@
+<h4><%= paystub_heading %></h4>
+<%= render(TableComponent.new(is_responsive: @is_responsive, class_names: "payment-details-table")) do |table| %>
+  <%= table.with_subheader_row(class_names: "subheader-row base-lightest") do |row| %>
+    <%= row.with_data_cell(is_header: true, class_names: "text-nowrap")
+          .with_content(t("components.report.w2_paystub_details_table.pay_information")) %>
+    <%= row.with_data_cell(is_header: true, class_names: "text-nowrap")
+          .with_content(details_header) %>
+  <% end %>
+  <%= table.with_data_point(:pay_date, @paystub.pay_date) %>
+  <% if show_pay_frequency? %>
+    <%= table.with_data_point(:pay_period_with_frequency, @paystub.start, @paystub.end, pay_frequency_text, highlight: @is_caseworker) %>
+  <% end %>
+  <%= table.with_data_point(:pay_gross, @paystub.gross_pay_amount, highlight: @is_caseworker) %>
+  <%= table.with_data_point(:number_of_hours_worked, @paystub.hours, highlight: @is_caseworker) %>
+  <% if show_hours_breakdown? %>
+    <% @paystub.hours_by_earning_category.each do |category, total_hours| %>
+      <%= table.with_data_point(:earnings_entry, category, total_hours) %>
+    <% end %>
+  <% end %>
+  <%= table.with_data_point(:net_pay_amount, @paystub.net_pay_amount) %>
+  <% @paystub.deductions.filter { |deduction| deduction.amount.to_f > 0 }.each do |deduction| %>
+    <%= table.with_data_point(:deduction, deduction.category, deduction.tax, deduction.amount) %>
+  <% end %>
+  <% if show_gross_pay_ytd? %>
+    <%= table.with_data_point(:pay_gross_ytd, @paystub.gross_pay_ytd) %>
+  <% end %>
+<% end %>
+<% if show_earnings_items? %>
+  <aside class="paystub_earnings_items bg-base-lightest padding-x-4 padding-y-3 margin-bottom-8">
+  <h4><%= t("components.report.w2_paystub_details_table.earnings_items_title") %></h4>
+  <p><%= t("components.report.w2_paystub_details_table.earnings_items_description") %></p>
+  <%= render(TableComponent.new(is_responsive: @is_responsive, thead_class_names: "", class_names: "paystub_earnings_items_table margin-bottom-0")) do |table| %>
+    <% earnings_sort_order(@paystub.earnings.filter { |earning| earning.amount.to_f > 0 }).each do |earning| %>
+      <%= table.with_row(earning_label(earning), number_to_currency(earning.amount / 100.0)) %>
+    <% end %>
+  <% end %>
+  </aside>
+<% end %>

@@ -47,6 +47,8 @@ class Api::ArgyleController < ApplicationController
       return render json: { status: :error, message: "Invalid item_id" }, status: :unprocessable_entity
     end
 
+    return if item_id == "item_000026933" # If it's an ADP item, allow user to create a new connection.
+
     # If the user ID is not yet set, there is no previous argyle session to resume
     return unless @cbv_flow.argyle_user_id.present?
 

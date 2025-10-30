@@ -28,7 +28,7 @@ module Aggregators::Sdk
     }
 
     # See: https://console.argyle.com/flows
-    FLOW_ID = "BXSHLUUJ"
+    FLOW_ID = "EV7MFL8Y"
 
     EMPLOYER_SEARCH_ENDPOINT = "employer-search"
     PAYSTUBS_ENDPOINT = "paystubs"
@@ -44,18 +44,20 @@ module Aggregators::Sdk
     attr_reader :webhook_secret
 
     # Factory method to return MockArgyleService when environment is "mock"
-    def self.new(environment, api_key_id = nil, api_key_secret = nil, webhook_secret = nil)
+    def self.new(environment, api_key_id = nil, api_key_secret = nil, webhook_secret = nil, fixture_user: nil)
       if environment.to_s == "mock" || environment.to_sym == :mock
         require_relative "mock_argyle_service"
         MockArgyleService.allocate.tap do |instance|
-          instance.send(:initialize, environment, api_key_id, api_key_secret, webhook_secret)
+          instance.send(:initialize, environment, api_key_id, api_key_secret, webhook_secret, fixture_user: fixture_user)
         end
       else
         super
       end
     end
 
-    def initialize(environment, api_key_id = nil, api_key_secret = nil, webhook_secret = nil)
+    def initialize(environment, api_key_id = nil, api_key_secret = nil, webhook_secret = nil, fixture_user: nil)
+      # Note: fixture_user is accepted but unused here. It's used by MockArgyleService
+      # and needs to be in this signature so the factory method's `super` call works.
       @environment = ENVIRONMENTS.fetch(environment.to_sym) { |env| raise KeyError.new("ArgyleService unknown environment: #{env}") }
       @api_key_id = api_key_id || @environment[:api_key_id]
       @api_key_secret = api_key_secret || @environment[:api_key_secret]
