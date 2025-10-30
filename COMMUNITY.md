@@ -123,7 +123,7 @@ A Maintainer must meet the responsibilities and requirements of a contributor, p
 
 #### Process of becoming an Alumni
 1. Any current maintainer may become an alumni, by meeting the requirements, and opening a PR against the root of the iv-cbv-payroll adding the themselves in the alumni list in the COMMUNITY.md file.
-    1. If and when commitment levels change, contributors can file an issue using the ISSUE_CONTRIBUTOR_LADDER.md template, and send a PR to the COMMUNITY.md file indicating their updated status.
+    1. If and when commitment levels change, contributors can file an issue using the contributor_ladder.md issue template, and send a PR to the COMMUNITY.md file indicating their updated status.
 2. At least 2 current Maintainers must then approve and merge the PR.
 
 <!-- TODO: Who are the past maintainers or contributors who previously played significant roles in this project who are no longer actively involved? Consider including their roles and dates for context. -->
