@@ -50,4 +50,10 @@ describe("cbv/sessions_controller", () => {
     extendButton.click()
     expect(trackUserAction).toHaveBeenCalledWith("ApplicantExtendedSession")
   })
+
+  it("tracks ApplicantEndedSession on extend button click", async () => {
+    const extendButton = document.getElementById("end-session-button")
+    extendButton.click()
+    expect(trackUserAction).toHaveBeenCalledWith("ApplicantEndedSession")
+  })
 })
