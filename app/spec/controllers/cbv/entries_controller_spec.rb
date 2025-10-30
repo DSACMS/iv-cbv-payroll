@@ -251,4 +251,109 @@ RSpec.describe Cbv::EntriesController do
       end
     end
   end
+
+  describe 'invitation flow limit' do
+    let(:user) { create(:user) }
+    let(:cbv_applicant) { create(:cbv_applicant, client_agency_id: 'sandbox') }
+    let(:invitation) do
+      create(:cbv_flow_invitation,
+             user: user,
+             cbv_applicant: cbv_applicant,
+             client_agency_id: 'sandbox'
+      )
+    end
+
+    before do
+      allow(CbvFlowInvitation).to receive(:find_by).with(auth_token: invitation.auth_token).and_return(invitation)
+      allow(NewRelic::Agent).to receive(:record_custom_event)
+    end
+
+    context 'when invitation has not reached limit' do
+      before do
+        create_list(:cbv_flow, 99, cbv_flow_invitation: invitation, cbv_applicant: cbv_applicant)
+      end
+
+      it 'allows access' do
+        get :show, params: { token: invitation.auth_token }
+        expect(response).not_to redirect_to(root_url)
+      end
+
+      it 'does not record NewRelic event' do
+        get :show, params: { token: invitation.auth_token }
+        expect(NewRelic::Agent).not_to have_received(:record_custom_event).with("InvitationLimitReached", anything)
+      end
+    end
+
+    context 'when invitation has reached limit' do
+      before do
+        create_list(:cbv_flow, 100, cbv_flow_invitation: invitation, cbv_applicant: cbv_applicant)
+      end
+
+      it 'redirects to root with alert' do
+        get :show, params: { token: invitation.auth_token }
+
+        expect(response).to redirect_to(root_url)
+        expect(flash[:alert]).to eq(I18n.t('cbv.error_invitation_limit_reached'))
+      end
+
+      it 'records NewRelic custom event with correct attributes' do
+        get :show, params: { token: invitation.auth_token }
+
+        expect(NewRelic::Agent).to have_received(:record_custom_event).with(
+          "InvitationLimitReached",
+          {
+            invitation_id: invitation.id,
+            cbv_flow_count: 100
+          }
+        )
+      end
+
+      it 'logs warning message' do
+        expect(Rails.logger).to receive(:warn).with("Invitation #{invitation.id} reached flow limit")
+
+        get :show, params: { token: invitation.auth_token }
+      end
+    end
+
+    context 'when invitation has exceeded limit' do
+      before do
+        create_list(:cbv_flow, 105, cbv_flow_invitation: invitation, cbv_applicant: cbv_applicant)
+      end
+
+      it 'redirects to root with alert' do
+        get :show, params: { token: invitation.auth_token }
+
+        expect(response).to redirect_to(root_url)
+        expect(flash[:alert]).to eq(I18n.t('cbv.error_invitation_limit_reached'))
+      end
+
+      it 'records NewRelic custom event with actual count' do
+        get :show, params: { token: invitation.auth_token }
+
+        expect(NewRelic::Agent).to have_received(:record_custom_event).with(
+          "InvitationLimitReached",
+          {
+            invitation_id: invitation.id,
+            cbv_flow_count: 105
+          }
+        )
+      end
+    end
+
+    context 'when multiple requests hit the limit' do
+      before do
+        create_list(:cbv_flow, 100, cbv_flow_invitation: invitation, cbv_applicant: cbv_applicant)
+      end
+
+      it 'records NewRelic event for each request' do
+        get :show, params: { token: invitation.auth_token }
+        get :show, params: { token: invitation.auth_token }
+
+        expect(NewRelic::Agent).to have_received(:record_custom_event).with(
+          "InvitationLimitReached",
+          anything
+        ).twice
+      end
+    end
+  end
 end
