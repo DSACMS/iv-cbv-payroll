@@ -1,5 +1,6 @@
 @forward "uswds";
 @use "uswds" as *;
+
 /*
  * Layout / body styles
  */
@@ -37,6 +38,7 @@ html {
   background-color: color("primary-darker");
   @include u-padding-y(0.5);
 }
+
 .cbv-header__preheader__text {
   @include u-padding-y(0);
   color: color("white");
@@ -65,6 +67,7 @@ html {
     align-items: flex-start;
   }
 }
+
 .cbv-header__pilot-name {
   color: color("primary");
   flex-shrink: 0;
@@ -74,12 +77,15 @@ html {
     width: 100%;
   }
 }
+
 .cbv-header__nav {
   flex-basis: content;
 }
+
 .cbv-header__separator {
   @include u-padding-x(1);
 }
+
 .cbv-header__agency-logo {
   @include u-margin-right(1);
   height: 45px;
@@ -101,6 +107,7 @@ html {
     margin-top: 0.25rem;
   }
 }
+
 .cbv-header__agency-logo--az_des {
   height: 45px;
 
@@ -117,6 +124,7 @@ html {
 .cbv-footer {
   background-color: color("primary-darker");
 }
+
 .cbv-footer__content {
   color: color("white");
 
@@ -136,6 +144,7 @@ html {
     color: color("white");
   }
 }
+
 .cbv-footer__item {
   @include u-margin-y(2);
 }
@@ -150,8 +159,12 @@ html {
 }
 
 @keyframes rotate-con {
-  from {transform: rotate(0deg);}
-  to {transform: rotate(360deg);}
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
 }
 
 /**
@@ -160,6 +173,7 @@ html {
 .help-modal__main-bullets {
   list-style-type: disc;
 }
+
 .help-modal__button {
   @include u-line-height("body", 2);
   @include u-text("left");
@@ -171,8 +185,23 @@ html {
 * Session timeout modal
 */
 .invisible {
-    visibility: hidden;
-    position: absolute;
+  visibility: hidden;
+  position: absolute;
+}
+
+/*
+* Session timeout page
+*/
+.timeout-notice {
+  background-color: #EFF6FB;
+  border-color: #005EA2;
+  margin-left: 0;
+  max-width: 72ex;
+
+  svg {
+    color: #005ea2;
+    font-size: 25px;
+  }
 }
 
 /*
@@ -224,7 +253,7 @@ html {
 /*
 * Copy link button
 */
-input#invitation_link{
+input#invitation_link {
   border-right: none;
   height: 3rem;
 
@@ -235,6 +264,7 @@ input#invitation_link{
     display: block;
   }
 }
+
 .copy-link-button {
   height: 3rem;
   margin-top: 0 !important;
@@ -246,7 +276,7 @@ input#invitation_link{
 }
 
 .usa-button--success {
-    background-color: color("green-cool-40v");
+  background-color: color("green-cool-40v");
 
   &:hover {
     background-color: color("green-cool-40v");
