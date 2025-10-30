@@ -51,7 +51,7 @@ module IvCbvPayroll
     config.cbv_session_expires_after = 30.minutes
 
     # Configure allowed hosts
-    base = ENV.fetch("DOMAIN_NAME")
+    base = ENV["DOMAIN_NAME"]
     config.hosts << base
     # allow any subdomain, will use rails routing to determine if it is valid or not
     config.hosts << ".#{base}"
