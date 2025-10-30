@@ -431,7 +431,7 @@ We know that we can learn from a wide variety of communities, including those wh
 We also recognize capacity building as a key part of involving a diverse open source community. We are doing our best to use accessible language, provide technical and process documents, and offer support to community members with a wide variety of backgrounds and skillsets.
 
 ## Community Guidelines
-See [COMMUNITY_GUIDELINES.md](./COMMUNITY_GUIDELINES.md).
+See [COMMUNITY.md](./COMMUNITY.md).
 
 ## Governance
 
