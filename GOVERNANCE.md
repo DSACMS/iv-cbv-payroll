@@ -56,7 +56,6 @@ Accessibility standards will follow the guidelines from USWDS: [https://designsy
 
 Section 508 Compliance
 21st Century IDEA Act Compliance
-Customer Experience EO Compliance
 
 ### Localization & Internalization Standards
 
