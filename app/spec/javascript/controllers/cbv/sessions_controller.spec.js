@@ -10,7 +10,10 @@ import { trackUserAction } from "@js/utilities/api"
 function setupDOM(timeoutSeconds = 600) {
   document.body.innerHTML = `
     <div id="session-timeout-modal" data-controller="session" data-session-target="modal" data-item-timeout-param="${timeoutSeconds}">
-      <form id="extend-session-form"><button id="extend-session-button" data-close-modal="true" type="submit" data-action="session#trackExtend"></button></form>
+      <form id="extend-session-form">
+        <button id="extend-session-button" data-close-modal="true" type="submit" data-action="session#trackExtend"></button>
+        <a class="usa-button usa-button--outline" data-close-modal="true" data-turbo="false" data-action="session#trackExtend session#resetTimers" id="end-session-button" href="/en/cbv/session/end">End session</a>
+      </form>
     </div>
     <button id="open-session-modal-button"></button>
   `
