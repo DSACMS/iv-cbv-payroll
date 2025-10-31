@@ -181,16 +181,21 @@ es:
           default: 'Usaremos esta información solamente para determinar sus beneficios. No la compartiremos externamente. '
         common_questions_header: Preguntas más frecuentes
         continue: Comenzar
-        header: Verifiquemos sus ingresos
+        header: "%{agency_full_name} necesita verificar su ingreso"
+        how_it_works_header: 'Cómo funciona:'
         is_my_data_secure_body_html: Sí, sus datos están seguros. Usamos un sistema de codificación robusto para proteger su información, similar a lo que los bancos usan. <br> <br>Sus credenciales para acceder a su cuenta y su información de ingresos son transferidos de manera segura. Nosotros no guardamos esta información.
         is_my_data_secure_title: "¿Están seguros mis datos?"
-        step1: Busque e inicie sesión en su empleador o proveedor de nómina en línea.
-        step1_description: Use las credenciales de inicio de sesión que tiene para ver su recibo de pago en línea. No compartiremos ni guardamos su información de inicio de sesión. Si trabaja para una aplicación, como Uber, este sería el mismo inicio de sesión cuando inicie sesión en la aplicación Uber.
-        step2: Revise su información de pago.
-        step2_description: Podrá hacer una vista previa y aprobar todo lo que se comparta con %{agency_acronym}.
-        step3: Envíe su información de pago.
-        step3_description: La enviaremos automáticamente a %{agency_acronym}. Esto lo ayudará a demostrar y comprobar sus ingresos y puede ayudar a %{agency_acronym} a tomar una decisión más rápida.
-        subheader_html: 'Enviaremos los registros de pago de su(s) empleador(es) a %{agency_acronym} para verificar sus ingresos.<strong> La mayoría de las personas completan este proceso en aproximadamente 5 minutos.</strong> Solo siga estos pasos:'
+        learn_how_it_works: Conozca cómo funciona la herramienta
+        step1: Inicie una sesión para acceder a la información de pago de su empleador
+        step1_description: Inicie la sesión de la misma manera que lo haría si quisiera ver sus talones de pago en línea.
+        step2: Revise su ingreso
+        step2_description: Usted podrá revisar y aprobar toda la información antes de que se comparta.
+        step3: Envíe la información a %{agency_full_name}
+        step3_description: Enviaremos la información de su(s) ingreso(s) a %{agency_acronym}. Esto lo ayudará a recibir una decisión más rápida.
+        subheader_html: '"Reportar Mi Ingreso" es una herramienta segura que le ayuda a enviar evidencia de los pagos que recibió de su(s) empleador(es) a %{agency_full_name} (%{agency_acronym}).'
+        value_prop_1: Toma aproximadamente de 5 a 7 minutos completar
+        value_prop_2: No necesita recopilar documentos de ingresos
+        value_prop_3: Un sistema de codificación robusto que mantiene sus datos seguros
         what_if_i_cant_use_this_body_1_html: "<p>Usted deberá enviar la información de su ingreso directamente a %{agency_acronym} si: <ul><li>No puede reportar su ingreso con esta herramienta, o</li><li>No ha trabajado en los últimos 90 días</li></ul></p>"
         what_if_i_cant_use_this_body_2_html:
           default: Visite el sitio web de <a href="%{agency_url}" target="_blank" rel="noopener noreferrer">%{agency_acronym}</a> para más información sobre cómo enviar sus documentos.
@@ -198,7 +203,7 @@ es:
         what_if_i_cant_use_this_title: "¿Qué debo hacer si no puedo usar esta herramienta?"
         what_is_this_body: '"Reportar mi ingreso" es una herramienta que ayuda a recopilar información de su(s) empleador(es) sobre sus ingresos y la envía a su oficina estatal de beneficios.'
         what_is_this_title: ¿Qué es la herramienta "Reportar mi ingreso"?
-        who_is_this_for_body_html: 'Usted puede usar esta herramienta si generó ingresos en los últimos 90 días y usted: <ul><li>puede acceder a sus talones de pago en línea, o</li><li>trabaja para una compañía que opera a través de una aplicación tales como Uber o Lyft </li></ul>Si usted perdió su trabajo en los últimos 90 días, usted también puede usar esta herramienta para reportar que lo perdió. Usted deberá poder acceder a la cuenta de su empleador o proveedor de nómina anterior.'
+        who_is_this_for_body_html: 'Usted puede usar esta herramienta si ha recibido ingresos en los últimos 90 días y usted: <ul><li>Puede acceder a sus talones de pago en línea, o</li><li>Trabaja para una compañía que opera a través de una aplicación tales como Uber o Lyft</li></ul>Si usted perdió su trabajo en los últimos 90 días, también puede usar esta herramienta para reportar su pérdida de empleo. Debe poder iniciar una sesión en la cuenta de su empleador o proveedor de nómina anterior.'
         who_is_this_for_title: "¿Puedo usar esta herramienta?"
     error_invalid_link: Se utilizó un enlace no válido para iniciar CBV. Vuelva a hacer clic en el enlace, o bien directamente póngase en contacto con su asistente de caso para obtener ayuda.
     error_invalid_token: El enlace de invitación no es válido. Vuelva a comprobar el enlace e inténtelo de nuevo. Si sigue teniendo problemas, póngase en contacto con su trabajador social.

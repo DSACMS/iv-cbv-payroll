@@ -9,4 +9,11 @@ export default class extends Controller {
       trackUserAction("ApplicantConsentedToTerms")
     }
   }
+
+  scrollToHowItWorks(event) {
+    event.preventDefault()
+    trackUserAction("ApplicantClickedLearnHowItWorks")
+
+    document.getElementById("how-it-works")?.scrollIntoView({ behavior: "smooth" })
+  }
 }
