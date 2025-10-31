@@ -228,6 +228,38 @@ RSpec.describe Cbv::PaymentDetailsController do
       end
     end
 
+    context "when client agency has report_customization_show_earnings_list enabled" do
+      before do
+        cbv_flow.update!(client_agency_id: "pa_dhs")
+      end
+
+      it "shows gross pay line items section in the rendered HTML" do
+        get :show, params: { user: { account_id: account_id } }
+        expect(response).to be_successful
+
+        doc = Nokogiri::HTML(response.body)
+        expect(doc.at_css('aside.paystub_earnings_items')).not_to be_nil
+        expect(response.body).to include("Gross pay line items")
+        expect(response.body).to include("The following items are categories listed on the paystub")
+      end
+    end
+
+    context "when client agency has report_customization_show_earnings_list disabled" do
+      before do
+        # Use default client agency (sandbox) which has report_customization_show_earnings_list: false
+        cbv_flow.update!(client_agency_id: "sandbox")
+      end
+
+      it "does not show gross pay line items section in the rendered HTML" do
+        get :show, params: { user: { account_id: account_id } }
+        expect(response).to be_successful
+
+        doc = Nokogiri::HTML(response.body)
+        expect(doc.at_css('aside.paystub_earnings_items')).to be_nil
+        expect(response.body).not_to include("Gross pay line items")
+      end
+    end
+
     context "when a user attempts to access pinwheel account information not in the current session" do
       it "redirects to the entry page when the resolved pinwheel_account is nil" do
         get :show, params: { user: { account_id: "1234" } }

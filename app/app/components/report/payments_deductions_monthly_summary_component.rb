@@ -6,7 +6,7 @@ class Report::PaymentsDeductionsMonthlySummaryComponent < ViewComponent::Base
 
   attr_reader :employer_name
 
-  def initialize(report, payroll_account, is_responsive: true, is_w2_worker:, income:)
+  def initialize(report, payroll_account, is_responsive: true, is_w2_worker:, income:, show_earnings_items: false)
     @aggregator_report = report
 
     # Note: payroll_account may either be the ID or the payroll_account object
@@ -16,6 +16,7 @@ class Report::PaymentsDeductionsMonthlySummaryComponent < ViewComponent::Base
     @is_responsive = is_responsive
     @is_w2_worker = is_w2_worker
     @income = income
+    @show_earnings_items = show_earnings_items
   end
 
   def before_render
