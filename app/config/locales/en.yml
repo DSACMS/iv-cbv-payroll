@@ -288,16 +288,21 @@ en:
           default: We will only use this information to help determine your benefits, it will never be shared externally.
         common_questions_header: Common questions
         continue: Get started
-        header: Let's verify your income
+        header: "%{agency_full_name} needs to verify your income"
+        how_it_works_header: 'How it works:'
         is_my_data_secure_body_html: Yes, your data is secure. We use strong encryption, like the kind banks use, to protect your information.<br><br>Your login credentials and payment information are securely transmitted and not stored by us.
         is_my_data_secure_title: Is my data secure?
-        step1: Search and sign into your employer or online payroll provider.
-        step1_description: Use the login credentials you have for viewing your online pay stub. We won’t share or keep your login information. If you work for an app, like Uber, this would be the same login when you sign into the Uber app.
-        step2: Review your payment information.
-        step2_description: You will be able to preview and approve everything that is shared with %{agency_acronym}.
-        step3: Submit your payment information.
-        step3_description: We’ll automatically send it to %{agency_acronym}. This will help you prove your income and can help %{agency_acronym} get to a decision faster.
-        subheader_html: 'We’ll send your payment records from your employer(s) to %{agency_acronym} to verify your income. <strong>Most people complete this process in about 5 minutes.</strong> Just follow these steps:'
+        learn_how_it_works: Learn how it works
+        step1: Log in to access payment information from your employer
+        step1_description: Log in the same way you would to view your pay stubs online.
+        step2: Review your income
+        step2_description: You will be able to preview and approve everything before it’s shared.
+        step3: Share with %{agency_full_name}
+        step3_description: We’ll send your payment information to %{agency_acronym}. This can help you get a benefits decision faster.
+        subheader_html: Report My Income is a secure tool that helps you send payment records from your employer(s) to %{agency_full_name} (%{agency_acronym}).
+        value_prop_1: Usually takes 5–7 minutes to complete
+        value_prop_2: No need to gather income documents
+        value_prop_3: Strong encryption keeps your data safe
         what_if_i_cant_use_this_body_1_html: "<p>You'll need to share your income information directly with %{agency_acronym} if: <ul><li>you can't report your income with this tool, or</li><li>you haven't worked in the past 90 days</li></ul></p>"
         what_if_i_cant_use_this_body_2_html:
           default: Visit <a href="%{agency_url}" target="_blank" rel="noopener noreferrer">%{agency_acronym}’s website</a> for more information on how to submit documents.
