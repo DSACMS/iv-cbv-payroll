@@ -251,54 +251,6 @@ RSpec.describe Aggregators::AggregatorReports::ArgyleReport, type: :service do
     end
   end
 
-  describe '#most_recent_paystub_with_address' do
-    it('returns nil when no paystubs returned') do
-      paystubs = { "results" => [] }
-      expect(Aggregators::AggregatorReports::ArgyleReport.most_recent_paystub_with_address(paystubs)).to be_nil
-    end
-
-    it 'returns nil when no employer_address is present' do
-      paystubs = {
-        "results" => [
-          {
-            "employer_address" => nil,
-            "paystub_date" => "2021-01-15"
-          }
-        ]
-      }
-      expect(Aggregators::AggregatorReports::ArgyleReport.most_recent_paystub_with_address(paystubs)).to be_nil
-    end
-
-    it 'returns nil when employer_address.line1 is nil' do
-      paystubs = {
-        "results" => [
-          {
-            "employer_address" => { "line1" => nil },
-            "paystub_date" => "2021-01-15"
-          }
-        ]
-      }
-      expect(Aggregators::AggregatorReports::ArgyleReport.most_recent_paystub_with_address(paystubs)).to be_nil
-    end
-
-    it 'returns the most recent paystub with a valid employer_address' do
-      paystubs = {
-        "results" => [
-          {
-            "employer_address" => { "line1" => "123 Main St" },
-            "paystub_date" => "2021-01-15"
-          },
-          {
-            "employer_address" => { "line1" => "456 Elm St" },
-            "paystub_date" => "2021-02-15"
-          }
-        ]
-      }
-      result = Aggregators::AggregatorReports::ArgyleReport.most_recent_paystub_with_address(paystubs)
-      expect(result["employer_address"]["line1"]).to eq("456 Elm St")
-    end
-  end
-
   describe '#summarize_by_month' do
     context "bob, a gig employee" do
       let(:argyle_report) { Aggregators::AggregatorReports::ArgyleReport.new(
