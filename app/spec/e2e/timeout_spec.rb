@@ -18,7 +18,12 @@ RSpec.describe "timeout test", type: :feature, js: true do
     verify_page(page, title: I18n.t("session_timeout.page.title"))
 
     click_link "click here"
-    expect(page).to have_content(I18n.t("cbv.entries.show.header"))
+    expect(page).to have_content(
+      I18n.t(
+        "cbv.entries.show.header",
+        agency_full_name: I18n.t("shared.agency_full_name.sandbox")
+      )
+    )
     expect(page).to_not have_content(I18n.t("cbv.error_missing_token_html"))
   end
 end
