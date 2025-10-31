@@ -31,6 +31,7 @@ module Aggregators::ResponseObjects
     end
 
     # mini helper method
+    # # this returns Date.new(0) if the date is invalid since it is being used in a max by
     def self.safe_parse_date(s)
       Date.parse(s)
     rescue
