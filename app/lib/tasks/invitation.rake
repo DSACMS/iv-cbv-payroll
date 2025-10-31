@@ -12,7 +12,6 @@ namespace :invitation do
       )
 
       user.update(is_service_account: true)
-      token = user.api_access_tokens.first || user.api_access_tokens.create
       invite = CbvFlowInvitation.new({
         user: user,
         client_agency_id: client_agency_id,
