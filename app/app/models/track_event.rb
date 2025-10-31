@@ -42,6 +42,7 @@ module TrackEvent
   ApplicantEncounteredInformationPageError = "ApplicantEncounteredInformationPageError"
   ApplicantEncounteredModalAdapterError = "ApplicantEncounteredModalAdapterError"
   ApplicantEncounteredPinwheelError = "ApplicantEncounteredPinwheelError"
+  ApplicantEndedSession = "ApplicantEndedSession"
   ApplicantExtendedSession = "ApplicantExtendedSession"
   ApplicantFinishedArgyleSync = "ApplicantFinishedArgyleSync"
   ApplicantFinishedPinwheelSync = "ApplicantFinishedPinwheelSync"

@@ -84,6 +84,10 @@ export default class extends Controller {
     trackUserAction("ApplicantExtendedSession")
   }
 
+  trackEnd() {
+    trackUserAction("ApplicantEndedSession")
+  }
+
   disconnect() {
     if (this.warningTimer) clearTimeout(this.warningTimer)
     if (this.expirationTimer) clearTimeout(this.expirationTimer)
