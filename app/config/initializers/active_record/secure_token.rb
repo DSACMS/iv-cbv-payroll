@@ -2,7 +2,9 @@
 
 module ActiveRecord
   module SecureToken
-    # Lowering this minimum to support our 10 character tokenized links
-    MINIMUM_TOKEN_LENGTH = 10
+    silence_warnings do
+      # Lowering this minimum to support our 10 character tokenized links
+      MINIMUM_TOKEN_LENGTH = 10
+    end
   end
 end
