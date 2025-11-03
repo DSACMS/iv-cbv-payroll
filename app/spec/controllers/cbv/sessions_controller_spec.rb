@@ -41,6 +41,16 @@ RSpec.describe Cbv::SessionsController, type: :controller do
         expect(session[:cbv_flow_id]).to be_nil
       end
     end
+
+    context 'when flow is missing' do
+      it 'redirects to root with timeout flag' do
+        session[:cbv_flow_id] = nil
+
+        delete :end
+
+        expect(response).to redirect_to(root_url(cbv_flow_timeout: true))
+      end
+    end
   end
 
   describe 'GET #timeout' do
