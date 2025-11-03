@@ -7,9 +7,15 @@ class Cbv::SessionsController < Cbv::BaseController
   end
 
   def end
-    client_agency_id = CbvFlow.find(session[:cbv_flow_id]).client_agency_id
+    redirect_target = begin
+      client_agency_id = CbvFlow.find(session[:cbv_flow_id]).client_agency_id
+      cbv_flow_session_timeout_path(client_agency_id: client_agency_id)
+    rescue ActiveRecord::RecordNotFound
+      root_url(cbv_flow_timeout: true)
+    end
+
     reset_cbv_session!
-    redirect_to cbv_flow_session_timeout_path(client_agency_id: client_agency_id)
+    redirect_to redirect_target
   end
 
   def timeout
