@@ -72,7 +72,7 @@ This issue is used to request role changes within the iv-cbv-payroll repository 
 - [ ] No longer responsible for actively contributing to the repository :)
 
 ---
-### For Maintainers Only
+### For Core Team Only
 Please copy and paste the following as a comment on the issue:
 
 #### Review Checklist:

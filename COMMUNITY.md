@@ -19,6 +19,31 @@ See [CODEOWNERS.md](.github/CODEOWNERS.md) for a list of those responsible for t
 
 See [Community Guidelines](#iv-cbv-payroll-open-source-community-guidelines) on principles and guidelines for participating in this open source project.
 
+### Core Team
+
+<!-- TODO: List the individuals who are members of the core team. What groups/domains are they a part of? Does your project have domains/areas that are maintained by specific people? List @USERNAMES directly, or any @ALIASES for groups/teams. -->
+
+### Maintainers
+
+<!-- TODO: List the individuals who are the maintainers. What groups/domains are maintainers a part of? Does your project have domains/areas that are maintained by specific people? List @USERNAMES directly, or any @ALIASES for groups/teams. -->
+
+### Contributors
+
+<!-- TODO: A list of CONTRIBUTORS is generated below using contributors.yml located in the workflows directory. In order to automatically update the COMMUNITY.md, you must enter a secret into your Secrets and Variables under Actions within your repository settings. The name of the secret must be PUSH_TO_PROTECTED_BRANCH and the value must be a Personal Access Token with specific permissions. Please follow [this link](https://github.com/CasperWA/push-protected?tab=readme-ov-file#notes-on-token-and-user-permissions) for more information. -->
+
+<!--Total number of contributors: [TO DO]--> 
+<!--CONTRIBUTOR COUNT START--> 
+<!--CONTRIBUTOR COUNT END-->
+
+<!-- readme: contributors -start -->
+<!-- readme: contributors -end -->
+
+### Alumni
+
+We'd like to acknowledge the following individuals for their past contributions of this project:
+
+<!-- TODO: Who are the past maintainers or contributors who previously played significant roles in this project who are no longer actively involved? Consider including their roles and dates for context. -->
+
 ## Roles & Responsibilities
 
 The members of IV CBV Payroll community are responsible for guiding its development, ensuring quality standards, and fostering a collaborative environment. They play a vital role in making decisions about code contributions, handling releases, and ensuring the project meets its goals and objectives. Below is a list of the key members and their specific roles and responsibilities. We are eagerly seeking individuals who are interested in joining the community and helping shape and support these roles.
@@ -38,8 +63,6 @@ See [CONTRIBUTING.md](CONTRIBUTING.md) for more details on the release process.
 -->
 
 ## Contributors
-
-<!-- TODO: A list of CONTRIBUTORS is generated below using contributors.yml located in the workflows directory. In order to automatically update the COMMUNITY.md, you must enter a secret into your Secrets and Variables under Actions within your repository settings. The name of the secret must be PUSH_TO_PROTECTED_BRANCH and the value must be a Personal Access Token with specific permissions. Please follow [this link](https://github.com/CasperWA/push-protected?tab=readme-ov-file#notes-on-token-and-user-permissions) for more information. -->
 
 **Description:** A Contributor contributes directly to the project and adds value to it. Contributions need not be code. People at the Contributor level may be new contributors, or they may only contribute occasionally.
 
@@ -63,13 +86,6 @@ See [CONTRIBUTING.md](CONTRIBUTING.md) for more details on the release process.
 - Access to community spaces and infrastructure.
 - Eligible to advance along the project's CONTRIBUTOR_LADDER.md.
 - Other privileges defined by the community in the future.
-
-<!--Total number of contributors: [TO DO]--> 
-<!--CONTRIBUTOR COUNT START--> 
-<!--CONTRIBUTOR COUNT END-->
-
-<!-- readme: contributors -start -->
-<!-- readme: contributors -end -->
 
 ## Maintainers
 
@@ -104,9 +120,11 @@ A Maintainer must meet the responsibilities and requirements of a contributor, p
 
 #### Process of becoming a Maintainer
 1. Any current contributor may become a new Maintainer, by meeting the requirements, and opening a PR against the root of the iv-cbv-payroll adding the themselves as a maintainer in the COMMUNITY.md file and corresponding team in the CODEOWNERS.md file.
-2. At least 2 current Maintainers from the corresponding team must then approve the PR.
+2. At least 2 current Maintainers from the Core Team must then approve the PR.
 
-<!-- TODO: List the individuals who are the maintainers. What groups/domains are maintainers a part of? Does your project have domains/areas that are maintained by specific people? List @USERNAMES directly, or any @ALIASES for groups/teams. -->
+## Core Team
+
+Members of the Core Team are federal employees or contractors who contribute to this project as part of their formal work duties. They serve as the main point of contact for development activity in the repository and have the same privileges and responsibilities as maintainers and codeowners.
 
 ## Alumni
 
@@ -126,9 +144,6 @@ A Maintainer must meet the responsibilities and requirements of a contributor, p
     1. If and when commitment levels change, contributors can file an issue using the contributor_ladder.md issue template, and send a PR to the COMMUNITY.md file indicating their updated status.
 2. At least 2 current Maintainers must then approve and merge the PR.
 
-<!-- TODO: Who are the past maintainers or contributors who previously played significant roles in this project who are no longer actively involved? Consider including their roles and dates for context. -->
-
-We'd like to acknowledge the following individuals for their past contributions of this project:
 
 ## IV CBV Payroll Open Source Community Guidelines
 
@@ -174,10 +189,10 @@ It is important for contributors to be and stay active to set an example and sho
 ### Involuntary Removal or Demotion
 Involuntary removal/demotion of a contributor happens when responsibilities and requirements aren't being met. This may include repeated patterns of inactivity, extended periods of inactivity, a period of failing to meet the requirements of your role, and/or a violation of the Code of Conduct. This process is important because it protects the community and its deliverables while also opening up opportunities for new contributors to step in. 
 
-Involuntary removal or demotion is handled through maintainers filing an issue using the ISSUE_CONTRIBUTOR_LADDER.md template, and sending a PR to the COMMUNITY.md file.
+Involuntary removal or demotion is handled through maintainers filing an issue using the contributor_ladder.md template, and sending a PR to the COMMUNITY.md file.
 
 ### Voluntary Stepping Down and Alumni Status
-If and when maintainers' and contributors' commitment levels change, contributors can file an issue using the ISSUE_CONTRIBUTOR_LADDER.md template, and send a PR to the COMMUNITY.md file indicating their updated status.
+If and when maintainers' and contributors' commitment levels change, contributors can file an issue using the contributor_ladder.md template, and send a PR to the COMMUNITY.md file indicating their updated status.
 
 ### Acknowledgements
 
