@@ -227,8 +227,9 @@ module "service" {
 
   extra_policies = merge(
     {
-      storage_access = module.storage.access_policy_arn,
-      email_access   = aws_iam_policy.email_access_policy.arn,
+      storage_access    = module.storage.access_policy_arn,
+      email_access      = aws_iam_policy.email_access_policy.arn,
+      sqs_queues_access = module.service.sqs_access_policy_arn
     },
     module.app_config.enable_identity_provider ? {
       identity_provider_access = module.identity_provider_client[0].access_policy_arn,

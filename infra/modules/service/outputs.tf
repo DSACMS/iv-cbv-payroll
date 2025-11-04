@@ -24,3 +24,7 @@ output "public_endpoint" {
   description = "The public endpoint for the service."
   value       = "http://${aws_lb.alb.dns_name}"
 }
+
+output "sqs_access_policy_arn" {
+  value = aws_iam_policy.sqs_access.arn
+}
