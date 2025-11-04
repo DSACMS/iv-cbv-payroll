@@ -46,12 +46,13 @@ RSpec.describe Report::PaymentsDeductionsMonthlySummaryComponent, type: :compone
       context "whose paystubs synced" do
         let(:supported_jobs) { %w[paystubs employment income shifts] }
         let(:errored_jobs) { [] }
+        let(:income) { Aggregators::ResponseObjects::Income.new(pay_frequency: "monthly") }
         before do
           pinwheel_stub_request_end_user_paystubs_response
           pinwheel_report.fetch
         end
 
-        subject { render_inline(described_class.new(pinwheel_report, payroll_account, is_responsive: true, is_w2_worker: false, pay_frequency_text: "monthly")) }
+        subject { render_inline(described_class.new(pinwheel_report, payroll_account, is_responsive: true, is_w2_worker: false, income: income)) }
 
         it "pinwheel_report is properly fetched" do
           expect(pinwheel_report.gigs.length).to eq(3)
@@ -67,17 +68,37 @@ RSpec.describe Report::PaymentsDeductionsMonthlySummaryComponent, type: :compone
 
           expect(subject.at_css('div.usa-accordion__content').at_css('table')).not_to be_nil
         end
+
+        context "when show_earnings_items is true" do
+          subject { render_inline(described_class.new(pinwheel_report, payroll_account, is_responsive: true, is_w2_worker: false, income: income, show_earnings_items: true)) }
+
+          it "shows gross pay line items section in the rendered HTML" do
+            expect(subject.at_css('aside.paystub_earnings_items')).not_to be_nil
+            expect(subject.text).to include("Gross pay line items")
+            expect(subject.text).to include("The following items are categories listed on the paystub")
+          end
+        end
+
+        context "when show_earnings_items is false" do
+          subject { render_inline(described_class.new(pinwheel_report, payroll_account, is_responsive: true, is_w2_worker: false, income: income, show_earnings_items: false)) }
+
+          it "does not show gross pay line items section in the rendered HTML" do
+            expect(subject.at_css('aside.paystub_earnings_items')).to be_nil
+            expect(subject.text).not_to include("Gross pay line items")
+          end
+        end
       end
 
       context "whose paystubs failed to sync" do
         let(:supported_jobs) { %w[paystubs employment income] }
         let(:errored_jobs) { [ "paystubs" ] }
+        let(:income) { Aggregators::ResponseObjects::Income.new(pay_frequency: "monthly") }
         before do
           pinwheel_stub_request_end_user_no_paystubs_response
           pinwheel_report.fetch
         end
 
-        subject { render_inline(described_class.new(pinwheel_report, payroll_account, is_responsive: true, is_w2_worker: false, pay_frequency_text: "monthly")) }
+        subject { render_inline(described_class.new(pinwheel_report, payroll_account, is_responsive: true, is_w2_worker: false, income: income)) }
 
         it "renders nothing without the paystubs data" do
           heading = subject.at_css('h2.usa-alert__heading')
@@ -126,12 +147,13 @@ RSpec.describe Report::PaymentsDeductionsMonthlySummaryComponent, type: :compone
     end
 
     context "with bob, a gig-worker whose paystubs synced" do
+      let(:income) { Aggregators::ResponseObjects::Income.new(pay_frequency: "monthly") }
       before do
         argyle_stub_request_paystubs_response("bob")
         argyle_report.fetch
       end
 
-      subject { render_inline(described_class.new(argyle_report, payroll_account, is_responsive: true, is_w2_worker: false, pay_frequency_text: "monthly")) }
+      subject { render_inline(described_class.new(argyle_report, payroll_account, is_responsive: true, is_w2_worker: false, income: income)) }
 
       it "argyle_report is properly fetched" do
         expect(argyle_report.gigs.length).to be(100)
@@ -151,16 +173,17 @@ RSpec.describe Report::PaymentsDeductionsMonthlySummaryComponent, type: :compone
 
     context "with bob, a gig-worker whose paystubs failed to sync" do
       let(:argyle_report) { Aggregators::AggregatorReports::ArgyleReport.new(payroll_accounts: [ payroll_account ], argyle_service: argyle_service, days_to_fetch_for_w2: 90, days_to_fetch_for_gig: 182) }
+      let(:income) { Aggregators::ResponseObjects::Income.new(pay_frequency: "monthly") }
 
       before do
         argyle_report.fetch
       end
 
-      subject { render_inline(described_class.new(argyle_report, payroll_account, is_responsive: true, is_w2_worker: false, pay_frequency_text: "monthly")) }
+      subject { render_inline(described_class.new(argyle_report, payroll_account, is_responsive: true, is_w2_worker: false, income: income)) }
 
       it "raises an error without the paystubs data" do
         expect {
-          render_inline(described_class.new(argyle_report, payroll_account, is_responsive: true, is_w2_worker: false, pay_frequency_text: "monthly"))
+          render_inline(described_class.new(argyle_report, payroll_account, is_responsive: true, is_w2_worker: false, income: income))
         }.to raise_error(RuntimeError, "No employments found that match account_id 019571bc-2f60-3955-d972-dbadfe0913a8")
       end
     end

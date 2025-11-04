@@ -296,3 +296,14 @@ input#invitation_link{
 .display-contents {
   display: contents !important;
 }
+
+.paystub_earnings_items {
+  page-break-inside: avoid;
+}
+
+.paystub_earnings_items_table td {
+  border: none;
+  background-color: inherit;
+  padding-left: 0;
+  vertical-align: top;
+}

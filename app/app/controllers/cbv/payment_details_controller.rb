@@ -129,7 +129,7 @@ class Cbv::PaymentDetailsController < Cbv::BaseController
       client_agency_id: current_agency&.id,
       invitation_id: @cbv_flow.cbv_flow_invitation_id,
       pinwheel_account_id: @payroll_account.id,
-      payments_length: @payroll_account_report.paystubs.length,
+      payments_length: @payroll_account_report&.paystubs&.length,
       has_employment_data: has_employment_data?,
       has_paystubs_data: has_paystubs_data?,
       has_income_data: has_income_data?

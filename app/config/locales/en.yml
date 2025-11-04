@@ -279,7 +279,7 @@ en:
       show:
         checkbox:
           default: Check this box to agree to let us access your payment information and share it with %{agency_full_name}. We will not use the information for any other purpose nor redisclose it to any other party.
-          pa_dhs: I agree that Verify My Income can access my income, including W-2 and/or gig work information. After reviewing my income details, I can choose to share my income with the PA Department of Human Services (DHS). If shared, DHS will use my income details to determine my benefits. I understand that Verify My Income will not have ongoing access to my income details..
+          pa_dhs: I agree that Verify My Income can access my income, including W-2 and/or gig work information. After reviewing my income details, I can choose to share my income with the PA Department of Human Services (DHS). If shared, DHS will use my income details to determine my benefits. I understand that Verify My Income will not have ongoing access to my income details.
         continue: Get started
         header: Let's verify your income
         step1: Search and sign into your employer or online payroll provider.
@@ -298,6 +298,7 @@ en:
         who_is_this_for_title: Who is this tool for?
     error_invalid_link: Invalid link used to begin CBV. Try clicking the link again or contact your caseworker for help.
     error_invalid_token: The invitation link used is not valid. Double check the link and try again. If you continue experiencing issues, contact your caseworker.
+    error_invitation_limit_reached: The invitation usage limit has been reached. Please contact your caseworker for help.
     error_missing_token_html: "<strong>Your session has timed out due to inactivity.</strong> Please reuse the same link you used to begin your session. If you encounter any issues, contact your benefits agency for assistance."
     error_no_access: We weren't able to load payroll data for this account. Please click the link you received from your SNAP agency to try again.
     expired_invitations:
@@ -343,7 +344,6 @@ en:
         employment_information_table_header: Employment information
         employment_start_date: Employment start date
         employment_status: Employment status
-        frequency_unknown: Frequency Unknown
         header: Review your payment information from %{employer_name}
         header_no_employer_name: Your payment information from your employer
         hourly_rate: Compensation amount
@@ -358,7 +358,6 @@ en:
         pay_frequency: Pay frequency
         pay_gross: Payment before taxes (gross)
         pay_gross_ytd: Gross pay YTD
-        pay_information: Pay information
         pay_net: Payment after taxes and deductions (net)
         pay_period: Pay period
         pay_period_value: "%{start_date} to %{end_date}"
@@ -366,7 +365,6 @@ en:
         payments_and_deductions_table_header: Payments and deductions
         subheader_html: We have gathered your payment records from the past %{report_data_range} from %{start_date} to %{end_date}.<br>Please review your information. If something is missing or inaccurate, add a comment for %{agency_acronym}. This will be included in your income report.
         unknown: Unknown
-        your_details: Your details
     submits:
       show:
         additional_information_title: Is there anything else you'd like your caseworker to know about your income?
@@ -416,9 +414,7 @@ en:
             additional_jobs_to_report_html: Does the client have additional jobs they will report separately?<sup>1</sup>
             client_information: Client information
             confirmation_code: Confirmation code
-            details: Details
             employment_information: Employment information
-            pay_information: Pay information
             payments_and_deductions_header: Payments and deductions from %{employer_name}
             report_details: Report details
         share_report_button: Share my report with %{agency_acronym}
@@ -513,6 +509,15 @@ en:
           title_gross_income: Gross income
           title_number_of_paychecks: Number of paychecks
           title_total_hours_worked: Total hours worked
+      w2_paystub_details_table:
+        details: Details
+        earnings_items_description: The following items are categories listed on the paystub as part of the gross pay for this paycheck.
+        earnings_items_title: Gross pay line items
+        frequency_unknown: Frequency Unknown
+        gross_pay_item_prefix: 'Gross Pay Item:'
+        pay_information: Pay information
+        paystub_heading_prefix: 'Payment details:'
+        your_details: Your details
   continue: Continue
   date:
     formats:

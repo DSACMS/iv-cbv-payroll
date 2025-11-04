@@ -52,6 +52,7 @@ RSpec.describe CaseWorkerTransmitterJob, type: :job do
     allow(mock_client_agency).to receive(:logo_path).and_return(mocked_client_logo_path)
     allow(mock_client_agency).to receive(:transmission_method).and_return(transmission_method)
     allow(mock_client_agency).to receive(:transmission_method_configuration).and_return(transmission_method_configuration)
+    allow(mock_client_agency).to receive(:report_customization_show_earnings_list).and_return(true)
 
     allow_any_instance_of(described_class)
       .to receive(:event_logger)
@@ -316,6 +317,43 @@ RSpec.describe CaseWorkerTransmitterJob, type: :job do
 
       it_behaves_like "tracks an ApplicantSharedIncomeSummary event"
       it_behaves_like "enqueues match agency names job for agency with expected names"
+
+      context "time_since_invite_seconds" do
+        it "sets time_since_invite_seconds to (now - invitation.created_at) when an invitation exists" do
+          invitation_time = current_time - 5.minutes
+          cbv_flow.cbv_flow_invitation.update!(created_at: invitation_time)
+
+          described_class.new.perform(cbv_flow.id)
+
+          expect(fake_event_logger).to have_received(:track) do |event_type, _req, attrs|
+            expect(event_type).to eq("ApplicantSharedIncomeSummary")
+            expect(attrs[:time_since_invite_seconds]).to be_within(0.5).of(5.minutes)
+          end
+        end
+
+        context "when there is NO invitation" do
+          let(:cbv_flow) do
+            create(
+              :cbv_flow,
+              :with_pinwheel_account,
+              with_errored_jobs: errored_jobs,
+              created_at: current_time - 10.minutes,
+              cbv_applicant: cbv_applicant
+            ).tap do |flow|
+              flow.update!(consented_to_authorized_use_at: Time.current)
+            end
+          end
+
+          it "sets time_since_invite_seconds to nil when no invitation exists" do
+            described_class.new.perform(cbv_flow.id)
+
+            expect(fake_event_logger).to have_received(:track) do |event_type, _req, attrs|
+              expect(event_type).to eq("ApplicantSharedIncomeSummary")
+              expect(attrs[:time_since_invite_seconds]).to be_nil
+            end
+          end
+        end
+      end
     end
 
     context "when transmission method is unsupported" do

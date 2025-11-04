@@ -35,3 +35,4 @@ logo_path: des_logo.png
 weekly_report:
   recipient: <%= ENV['AZ_DES_WEEKLY_REPORT_RECIPIENTS'] %>
   report_variant: invitations
+report_customization_show_earnings_list: true

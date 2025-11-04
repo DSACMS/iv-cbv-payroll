@@ -1,3 +1,4 @@
+require "constraints/configured_agency_constraint"
 
 Rails.application.routes.draw do
   devise_for :users,
@@ -8,6 +9,32 @@ Rails.application.routes.draw do
 
   devise_scope :user do
     delete "sign_out", to: "devise/sessions#destroy", as: :destroy_user_session
+  end
+
+  # redirect any subdomain that is not a configured agency to the base domain
+  constraints(lambda { |req|
+    base = ENV["DOMAIN_NAME"].to_s
+    host = req.host.to_s
+
+    # only consider hosts under the base domain
+    next false if base.blank?
+    next false unless host.end_with?(base)
+    # don't redirect apex
+    next false if host == base
+
+    # extract leftmost subdomain label before the base
+    sub = host.delete_suffix(".#{base}").split(".").reject(&:empty?).first
+
+    # redirect if it's www or not a configured agency
+    sub == "www" || !ConfiguredAgencyConstraint.new.matches?(req)
+  }) do
+    match "(*path)", to: redirect(status: 302) { |params, req|
+      base = ENV["DOMAIN_NAME"]
+      path = params[:path].to_s
+      qs   = req.query_string.present? ? "?#{req.query_string}" : ""
+      port = req.port && ![ 80, 443 ].include?(req.port) ? ":#{req.port}" : ""
+      "#{req.scheme}://#{base}#{port}/#{path}#{qs}"
+    }, via: :all
   end
 
   scope "(:locale)", locale: /#{I18n.available_locales.join("|")}/, format: "html"  do
@@ -51,6 +78,17 @@ Rails.application.routes.draw do
       # Session management
       post "session/refresh", to: "sessions#refresh", as: :session_refresh
       get "session/end", to: "sessions#end", as: :session_end
+
+      # Preview routes (non-production only)
+      scope "/preview", as: :preview do
+        get "employer_search", to: "preview#employer_search"
+        get "synchronizations", to: "preview#synchronizations"
+        get "payment_details", to: "preview#payment_details"
+        get "summary", to: "preview#summary"
+        get "submit", to: "preview#submit", defaults: { format: :html }
+        get "submit.pdf", to: "preview#submit", defaults: { format: :pdf }
+        get "submit_pdf_as_html", to: "preview#submit_pdf_as_html"
+      end
     end
 
     scope "/:client_agency_id", module: :caseworker, constraints: { client_agency_id: Regexp.union(Rails.application.config.client_agencies.client_agency_ids) } do

@@ -1,0 +1,51 @@
+{
+    "results": [
+        {
+            "id": "fabbdb07-7e6b-3cfd-b952-571ba55f083a",
+            "account": "01956d5f-cb8d-af2f-9232-38bce8531f58",
+            "address": {
+                "city": "New York",
+                "line1": "250 Vesey Street",
+                "line2": null,
+                "state": "NY",
+                "country": "US",
+                "postal_code": "10281"
+            },
+            "first_name": "Sarah",
+            "last_name": "Longfield",
+            "full_name": "Sarah Longfield",
+            "birth_date": "1985-04-17",
+            "email": "test2@argyle.com",
+            "phone_number": "+18009000020",
+            "picture_url": "https://api-sandbox.argyle.com/v2/payroll-documents/01956d60-051a-5af2-7788-1517025e4635/file",
+            "employment_status": "active",
+            "employment_type": "full-time",
+            "job_title": "1635 - Helpline Agent",
+            "ssn": "213-53-7066",
+            "marital_status": "Married filing jointly",
+            "gender": "Female",
+            "hire_date": "2022-08-08",
+            "original_hire_date": "2022-08-08",
+            "termination_date": null,
+            "termination_reason": null,
+            "employer": "Whole Foods",
+            "base_pay": {
+                "amount": "23.16",
+                "period": "hourly",
+                "currency": "USD"
+            },
+            "pay_cycle": "biweekly",
+            "platform_ids": {
+                "employee_id": "IQ2OXKN1W",
+                "position_id": "QTSV3TF8W",
+                "platform_user_id": "MQ6F803WI6G8JBYK"
+            },
+            "created_at": "2025-03-06T21:32:43.951Z",
+            "updated_at": "2025-03-06T21:32:52.285Z",
+            "metadata": {},
+            "employment": "defea132-21cb-32bf-84d1-9aa11d4976fa"
+        }
+    ],
+    "next": null,
+    "previous": null
+}

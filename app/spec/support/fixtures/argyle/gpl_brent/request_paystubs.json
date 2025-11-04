@@ -1,0 +1,264 @@
+{
+    "results": [
+        {
+            "id": "6798b682-5ade-3ff3-8033-e0451132e3b1",
+            "account": "01956d5f-cb8d-af2f-9232-38bce8531f58",
+            "payroll_document": "01956d60-224b-39bb-1fdf-8a3cb5471749",
+          "deduction_list": [],
+          "filing_status": [
+            {
+              "type": "federal",
+              "location": null,
+              "status": "married filing jointly"
+            }
+          ],
+          "tax_list": [
+            {
+              "amount": "39.09",
+              "name": "OASDI",
+              "type": "fica",
+              "amount_ytd": "457.08"
+            },
+            {
+              "amount": "9.15",
+              "name": "Medicare",
+              "type": "fica",
+              "amount_ytd": "106.90"
+            },
+            {
+              "amount": "16.76",
+              "name": "State Tax - AZ",
+              "type": "state",
+              "amount_ytd": "197.29"
+            }
+          ],
+          "status": "completed",
+          "paystub_date": "2025-10-09T00:00:00Z",
+          "paystub_period": {
+            "start_date": "2025-09-26T00:00:00Z",
+            "end_date": "2025-10-02T00:00:00Z"
+          },
+          "currency": "USD",
+          "gross_pay": "630.57",
+          "deductions": "0.00",
+          "taxes": "65.00",
+          "net_pay": "565.57",
+          "reimbursements": null,
+          "hours": "38.78",
+          "fees": null,
+          "net_pay_ytd": "6611.00",
+          "gross_pay_ytd": "7372.27",
+          "metadata": {
+            "hours_breakdown": [
+              {
+                "description": "Regular Hrly",
+                "amount": 630.57,
+                "hours": 38.78
+              }
+            ],
+            "raw_filing_status_list": [
+              {
+                "type": "federal",
+                "location": null,
+                "status": "Married filing jointly (or Qualifying widow(er))"
+              }
+            ],
+            "raw_tax_list": [
+              {
+                "amount": 39.09,
+                "amount_ytd": 457.08,
+                "name": "OASDI",
+                "type": null
+              },
+              {
+                "amount": 9.15,
+                "amount_ytd": 106.9,
+                "name": "Medicare",
+                "type": null
+              },
+              {
+                "amount": 16.76,
+                "amount_ytd": 197.29,
+                "name": "State Tax - AZ",
+                "type": null
+              }
+            ],
+            "raw_employer_address_country": "United States of America",
+            "raw_gross_pay_list": [
+              {
+                "name": "Hol Prem Hrly .5",
+                "type": null,
+                "start_date": null,
+                "end_date": null,
+                "rate": null,
+                "hours": null,
+                "hours_ytd": null,
+                "amount": null,
+                "amount_ytd": 49.34,
+                "excl_from_total": false
+              },
+              {
+                "name": "OT 1.5",
+                "type": null,
+                "start_date": null,
+                "end_date": null,
+                "rate": null,
+                "hours": null,
+                "hours_ytd": null,
+                "amount": null,
+                "amount_ytd": 286.83,
+                "excl_from_total": false
+              },
+              {
+                "name": "Regular Hrly",
+                "type": null,
+                "start_date": "2025-09-26T00:00:00+00:00",
+                "end_date": "2025-10-02T00:00:00+00:00",
+                "rate": 15.5,
+                "hours": 9.31,
+                "hours_ytd": null,
+                "amount": 144.31,
+                "amount_ytd": null,
+                "excl_from_total": false
+              },
+              {
+                "name": "Regular Hrly",
+                "type": null,
+                "start_date": "2025-09-26T00:00:00+00:00",
+                "end_date": "2025-10-02T00:00:00+00:00",
+                "rate": 16.5,
+                "hours": 29.47,
+                "hours_ytd": null,
+                "amount": 486.26,
+                "amount_ytd": 6416.65,
+                "excl_from_total": false
+              },
+              {
+                "name": "Training",
+                "type": null,
+                "start_date": null,
+                "end_date": null,
+                "rate": null,
+                "hours": null,
+                "hours_ytd": null,
+                "amount": null,
+                "amount_ytd": 619.45,
+                "excl_from_total": false
+              }
+            ],
+            "raw_status": null
+          },
+          "employer": "Circle K Stores Inc.",
+          "employer_address": {
+            "city": "Phoenix",
+            "state": "AZ",
+            "country": "US",
+            "postal_code": "85072",
+            "line1": "P.O. Box 52085",
+            "line2": null
+          },
+          "created_at": "2025-10-14T16:08:20.661Z",
+          "updated_at": "2025-10-14T16:08:20.661Z",
+          "destinations": [
+            {
+              "reference": null,
+              "amount": "565.57",
+              "ach_deposit_account": {
+                "routing_number": null,
+                "account_number": "******3740",
+                "bank_name": "DailyPay"
+              },
+              "card": null,
+              "method": null,
+              "metadata": {
+                "account_name": "DailyPay ******3740"
+              }
+            }
+          ],
+          "hours_ytd": "442.06",
+          "deductions_ytd": "0.00",
+          "taxes_ytd": "761.27",
+          "gross_pay_list": [
+            {
+              "name": "Hol Prem Hrly .5",
+              "type": "overtime",
+              "start_date": null,
+              "end_date": null,
+              "rate": null,
+              "hours": null,
+              "amount": null,
+              "hours_ytd": null,
+              "amount_ytd": "49.34"
+            },
+            {
+              "name": "OT 1.5",
+              "type": "overtime",
+              "start_date": null,
+              "end_date": null,
+              "rate": null,
+              "hours": null,
+              "amount": null,
+              "hours_ytd": null,
+              "amount_ytd": "286.83"
+            },
+            {
+              "name": "Regular Hrly",
+              "type": "base",
+              "start_date": "2025-09-26",
+              "end_date": "2025-10-02",
+              "rate": "15.5000",
+              "hours": "9.3100",
+              "amount": "144.31",
+              "hours_ytd": null,
+              "amount_ytd": null
+            },
+            {
+              "name": "Regular Hrly",
+              "type": "base",
+              "start_date": "2025-09-26",
+              "end_date": "2025-10-02",
+              "rate": "16.5000",
+              "hours": "29.4700",
+              "amount": "486.26",
+              "hours_ytd": null,
+              "amount_ytd": "6416.65"
+            },
+            {
+              "name": "Training",
+              "type": "base",
+              "start_date": null,
+              "end_date": null,
+              "rate": null,
+              "hours": null,
+              "amount": null,
+              "hours_ytd": null,
+              "amount_ytd": "619.45"
+            }
+          ],
+          "gross_pay_list_totals": {
+            "base": {
+              "amount": "630.57",
+              "amount_ytd": "7036.10",
+              "hours": "38.7800",
+              "hours_ytd": null,
+              "rate_implied": "16.2600",
+              "rate_implied_ytd": null
+            },
+            "overtime": {
+              "amount": null,
+              "amount_ytd": "336.17",
+              "hours": null,
+              "hours_ytd": null,
+              "rate_implied": null,
+              "rate_implied_ytd": null
+            },
+            "commission": null,
+            "bonus": null,
+            "other": null
+          },
+            "employment": "defea132-21cb-32bf-84d1-9aa11d4976fa"
+        }
+    ],
+    "next": null,
+    "previous": null
+}
