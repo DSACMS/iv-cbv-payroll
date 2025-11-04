@@ -3,7 +3,8 @@ name: rspec tests
 on:
   pull_request:
     paths: ['app/**']
-
+  push:
+    branches: [ 'main','release-demo','release-prod' ]
 jobs:
   rspec:
     name: Rspec

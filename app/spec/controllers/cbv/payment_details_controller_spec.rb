@@ -231,6 +231,7 @@ RSpec.describe Cbv::PaymentDetailsController do
     context "when client agency has report_customization_show_earnings_list enabled" do
       before do
         cbv_flow.update!(client_agency_id: "pa_dhs")
+        allow(ClientAgencyConfig.client_agencies["pa_dhs"]).to receive(:report_customization_show_earnings_list).and_return(true)
       end
 
       it "shows gross pay line items section in the rendered HTML" do
@@ -246,8 +247,8 @@ RSpec.describe Cbv::PaymentDetailsController do
 
     context "when client agency has report_customization_show_earnings_list disabled" do
       before do
-        # Use default client agency (sandbox) which has report_customization_show_earnings_list: false
         cbv_flow.update!(client_agency_id: "sandbox")
+        allow(ClientAgencyConfig.client_agencies["sandbox"]).to receive(:report_customization_show_earnings_list).and_return(false)
       end
 
       it "does not show gross pay line items section in the rendered HTML" do
