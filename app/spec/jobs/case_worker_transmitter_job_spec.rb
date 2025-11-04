@@ -355,5 +355,13 @@ RSpec.describe CaseWorkerTransmitterJob, type: :job do
         end
       end
     end
+
+    context "when transmission method is unsupported" do
+      let(:transmission_method) { "smoke_signal" }
+
+      it "raises an error" do
+        expect { described_class.new.perform(cbv_flow.id) }.to raise_error(/Unsupported transmission method/)
+      end
+    end
   end
 end

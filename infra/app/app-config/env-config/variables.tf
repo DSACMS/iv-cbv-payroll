@@ -98,9 +98,9 @@ variable "service_desired_instance_count" {
   default = 1
 }
 
-variable "solidqueue_desired_instance_count" {
+variable "shoryuken_desired_instance_count" {
   type        = number
-  description = "Number of SolidQueue worker instances to run"
+  description = "Number of Shoryuken worker instances to run"
   default     = 1
 }
 

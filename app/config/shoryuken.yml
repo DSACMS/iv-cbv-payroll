@@ -1,0 +1,9 @@
+# 10 concurrent workers to pop from queue and handle worker jobs
+concurrency: 10
+# if queue is empty, delay 15 seconds before trying again.
+delay: 15
+# check the report_sender queue twice as often as the events queues
+queues:
+  - [report_sender, 2]
+  - [mixpanel_events, 1]
+  - [newrelic_events, 1]

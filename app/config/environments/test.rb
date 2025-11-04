@@ -65,4 +65,7 @@ Rails.application.configure do
   # config.action_view.annotate_rendered_view_with_filenames = true
 
   config.x.show_demo_banner = false
+
+  # Use the in-memory test adapter in test
+  config.active_job.queue_adapter = :test
 end
