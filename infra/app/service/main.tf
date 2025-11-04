@@ -163,9 +163,21 @@ data "aws_route53_zone" "zone" {
   name  = local.network_config.domain_config.hosted_zone
 }
 
+module "sqs_queues" {
+  source = "../../modules/sqs-queues"
+
+  queue_names                = ["report_sender", "mixpanel_events", "newrelic_events"]
+  dlq_name                   = "dead_letter_queue"
+  visibility_timeout_seconds = 75 # ~30s job → 2x+buffer
+  receive_wait_time_seconds  = 10
+  message_retention_seconds  = 345600 # 4 days
+  max_receive_count          = 5
+}
+
 module "service" {
   source       = "../../modules/service"
   service_name = local.service_config.service_name
+  queue_arns   = module.sqs_queues.queue_arns
 
   image_repository_arn = local.build_repository_config.repository_arn
   image_repository_url = local.build_repository_config.repository_url
@@ -305,15 +317,4 @@ module "identity_provider_client" {
   name          = "${local.prefix}${local.identity_provider_config.identity_provider_name}"
 
   user_pool_id = local.identity_provider_user_pool_id
-}
-
-module "sqs_queues" {
-  source = "../../modules/sqs-queues"
-
-  queue_names                = ["report_sender", "mixpanel_events", "newrelic_events"]
-  dlq_name                   = "dead_letter_queue"
-  visibility_timeout_seconds = 75 # ~30s job → 2x+buffer
-  receive_wait_time_seconds  = 10
-  message_retention_seconds  = 345600 # 4 days
-  max_receive_count          = 5
 }

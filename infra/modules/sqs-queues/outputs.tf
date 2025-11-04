@@ -1,4 +1,13 @@
-output "queue_urls" { value = { for k, q in aws_sqs_queue.dicit_queues : k => q.url } }
-output "queue_arns" { value = { for k, q in aws_sqs_queue.dicit_queues : k => q.arn } }
-output "dlq_url" { value = aws_sqs_queue.dlq.url }
-output "dlq_arn" { value = aws_sqs_queue.dlq.arn }
+output "queue_urls" {
+  value = merge(
+    { for k, q in aws_sqs_queue.dicit_queues : k => q.url },
+    { "dlq" = aws_sqs_queue.dlq.url }
+  )
+}
+
+output "queue_arns" {
+  value = merge(
+    { for k, q in aws_sqs_queue.dicit_queues : k => q.arn },
+    { "dlq" = aws_sqs_queue.dlq.arn }
+  )
+}

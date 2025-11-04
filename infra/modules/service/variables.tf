@@ -181,3 +181,8 @@ variable "vpc_id" {
   type        = string
   description = "Uniquely identifies the VPC."
 }
+
+variable "queue_arns" {
+  description = "Map of SQS queue ARNs"
+  type        = map(string)
+}

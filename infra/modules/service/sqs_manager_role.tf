@@ -16,6 +16,6 @@ data "aws_iam_policy_document" "sqs_manager" {
       "sqs:GetQueueAttributes",
     ]
 
-    resources = ["*"]
+    resources = values(var.queue_arns)
   }
 }
