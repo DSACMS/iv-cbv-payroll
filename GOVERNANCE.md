@@ -12,12 +12,11 @@ This project seeks to provide agencies responsibility for benefit eligibility de
 ## Project Scope
 
 - The open source offering consists of all necessary assets to build a docker image along with the necessary documentation
--
 - Community scope will shift over time, and to begin, we will engage with the IVaaS community to define the initial scope, and an expanded short and medium term scope that we are working towards.
 
 ## Community Principles
 
-- Community principles and processes can be found in our [COMMUNITY.md](http://COMMUNITY.md) file in the project repository.
+- Community principles and processes can be found in our [COMMUNITY.md](./COMMUNITY.md) file in the project repository.
 
 ## Development Principles
 
@@ -25,16 +24,16 @@ This project seeks to provide agencies responsibility for benefit eligibility de
 
 ## Contributor Ladder / Role Definitions
 
-See CONTRIBUTER\_LADDER.md
+See [COMMUNITY.md](./COMMUNITY.md)
 
 ## Standards and Release
 
 ### Version Convention
 
-- We will follow semantic version: [https://semver.org/](https://semver.org/)
+<!-- - We will follow semantic version: [https://semver.org/](https://semver.org/)
   - If a change breaks backwards compatibility, then it will increment the major version
   - If a change introduces a new feature, or deprecates an old feature than it will update the minor version
-  - If a feature is tweaked or a very small one is added, or a bug fix is pushed, that will increment the page version
+  - If a feature is tweaked or a very small one is added, or a bug fix is pushed, that will increment the page version -->
 
 ### Release Lifecycle
 
@@ -65,9 +64,9 @@ We ensure that this platform supports switching between different locales, but o
 
 ### Changes to project scope
 
-As with other Tier4 Open Source Community Projects at HHS/CMS, IVaaS is taking a 'co-planning' approach to do community-informed roadmapping.
+As with other Tier3 Open Source Community Projects at HHS/CMS, IVaaS is taking a 'co-planning' approach to do community-informed roadmapping.
 
-The CONTRIBUTOR-LADDER.md file outlines how committer and maintainer privileges are distributed and managed.
+The COMMUNITY.md file outlines how committer and maintainer privileges are distributed and managed.
 
 DESIGN-PROPOSAL.md and ARCHITECTURE-PROPOSAL.md outline the process by which product and infrastructure suggestions are prioritized and decided.
 
@@ -83,7 +82,7 @@ Bug reports should be made through github issues using the Bug Report template.
 
 ### Feature Requests
 
-Feature requests should be made through GitHub issues using the [Feature Request template](#).
+Feature requests should be made through GitHub issues using the [feature_request.md issue template](./.github/ISSUE_TEMPLATE/feature_request.md).
 
 ## Tech Radar
 
@@ -91,7 +90,7 @@ Feature requests should be made through GitHub issues using the [Feature Request
 
 ### Accepting General Feedback
 
-We will create an email address to accept feedback from users. Additionally, feedback can be given through [GitHub discussions](#), and Issues. (Forking This [https://hhs.github.io/lodp-UX/](https://hhs.github.io/lodp-UX/))
+We will create an email address to accept feedback from users. Additionally, feedback can be given through [GitHub Issues](https://github.com/DSACMS/iv-cbv-payroll/issues).
 
 ### Communicating roadmap
 
