@@ -54,7 +54,7 @@ Most developers on the team code using macOS, so we recommend that platform if p
    * `pip install moto[server]`
    * `pip install --upgrade moto`
    * `bundle update aws-sdk-sqs`
-   * `chmod +x bin/moto_seed.sh`
+   * `chmod +x bin/moto_sqs_queues.sh`
    * `chmod +x bin/wait_for_queues.sh`
    * `chmod +x bin/moto_run.sh`
 1. Get development credentials from 1Password: search for "CBV .env.local secrets" and copy its ".env.local" section into a file called that in the app directory.
