@@ -106,7 +106,7 @@ A Maintainer must meet the responsibilities and requirements of a contributor, p
 
 #### Requirements:
 - Must be actively contributing for at least 3 months to at least one project area:
-  - Merged 2 PRs
+  - Authored 2 merged PRs
   - Reviewed 2 PRs
   - Resolved 2 Issues
 - Can commit to reviewing a minimum of 4 PRs per 3 month cycle.

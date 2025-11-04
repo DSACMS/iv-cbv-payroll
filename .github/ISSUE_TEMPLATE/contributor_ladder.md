@@ -27,7 +27,7 @@ This issue is used to request role changes within the iv-cbv-payroll repository 
 
 #### Requirements for Promotions to Maintainer:
 - [ ] Must be actively contributing for at least 3 months to at least one project area:
-    - [ ] Merged 2 PRs
+    - [ ] Authored 2 merged PRs
     - [ ] Reviewed 2 PRs
     - [ ] Resolved 2 Issues
 
