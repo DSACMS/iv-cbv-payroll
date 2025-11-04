@@ -68,6 +68,25 @@ RSpec.describe Report::PaymentsDeductionsMonthlySummaryComponent, type: :compone
 
           expect(subject.at_css('div.usa-accordion__content').at_css('table')).not_to be_nil
         end
+
+        context "when show_earnings_items is true" do
+          subject { render_inline(described_class.new(pinwheel_report, payroll_account, is_responsive: true, is_w2_worker: false, income: income, show_earnings_items: true)) }
+
+          it "shows gross pay line items section in the rendered HTML" do
+            expect(subject.at_css('aside.paystub_earnings_items')).not_to be_nil
+            expect(subject.text).to include("Gross pay line items")
+            expect(subject.text).to include("The following items are categories listed on the paystub")
+          end
+        end
+
+        context "when show_earnings_items is false" do
+          subject { render_inline(described_class.new(pinwheel_report, payroll_account, is_responsive: true, is_w2_worker: false, income: income, show_earnings_items: false)) }
+
+          it "does not show gross pay line items section in the rendered HTML" do
+            expect(subject.at_css('aside.paystub_earnings_items')).to be_nil
+            expect(subject.text).not_to include("Gross pay line items")
+          end
+        end
       end
 
       context "whose paystubs failed to sync" do

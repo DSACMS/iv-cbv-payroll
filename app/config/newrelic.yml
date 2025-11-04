@@ -13,6 +13,10 @@ common: &default_settings
   # Relic.  For more details, see https://docs.newrelic.com/docs/apm/new-relic-apm/maintenance/renaming-applications
   app_name: DiCIT VMI
 
+  # allow custom events to be sent to newrelic
+  custom_insights_events:
+    enabled: true
+
   # Forward these custom attributes to NewRelic for better filtering of transactions/events.
   attributes:
     include:

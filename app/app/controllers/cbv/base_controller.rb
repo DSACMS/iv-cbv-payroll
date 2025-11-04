@@ -19,12 +19,24 @@ class Cbv::BaseController < ApplicationController
   def set_cbv_flow
     if params[:token].present?
       invitation = CbvFlowInvitation.find_by(auth_token: params[:token])
+
+      # if the token used results in no invitation, it is an invalid token
       if invitation.blank?
         return redirect_to(root_url, flash: { alert: t("cbv.error_invalid_token") })
       end
+      # if invitation has expired redirect to expired page
       if invitation.expired?
         track_expired_event(invitation)
         return redirect_to(cbv_flow_expired_invitation_path(client_agency_id: invitation.client_agency_id))
+      end
+      # check backstop of how many times an invitation can be used to prevent runaway costs from a bot or something
+      if invitation.at_flow_limit?
+        Rails.logger.warn("Invitation #{invitation.id} reached flow limit")
+        NewRelic::Agent.record_custom_event("InvitationLimitReached", {
+          invitation_id: invitation.id,
+          cbv_flow_count: invitation.cbv_flows.count
+        })
+        return redirect_to(root_url, flash: { alert: t("cbv.error_invitation_limit_reached") })
       end
 
       # using invitation.client_agency_id directly instead of current_agency

@@ -139,3 +139,8 @@ gem "net-ssh"
 
 # Sinatra for JSON API reference implementation
 gem "sinatra", "~> 4.0"
+
+# AWS SQS
+gem "aws-sdk-sqs"
+# Shoryuken for SQS
+gem "shoryuken"

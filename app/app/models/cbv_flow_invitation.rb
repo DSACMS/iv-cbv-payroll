@@ -10,6 +10,8 @@ class CbvFlowInvitation < ApplicationRecord
 
   INVITATION_VALIDITY_TIME_ZONE = "America/New_York"
 
+  MAX_FLOWS_PER_INVITATION = 100
+
   VALID_LOCALES = Rails.application.config.i18n.available_locales.map(&:to_s).freeze
 
   belongs_to :user
@@ -51,6 +53,10 @@ class CbvFlowInvitation < ApplicationRecord
 
   def complete?
     cbv_flows.any?(&:complete?)
+  end
+
+  def at_flow_limit?
+    cbv_flows.count >= MAX_FLOWS_PER_INVITATION
   end
 
   def to_url(origin: nil)

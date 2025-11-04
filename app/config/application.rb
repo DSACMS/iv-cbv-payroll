@@ -21,7 +21,7 @@ Bundler.require(*Rails.groups)
 
 module IvCbvPayroll
   class Application < Rails::Application
-    config.active_job.queue_adapter = :solid_queue
+    config.active_job.queue_adapter = :shoryuken
     config.i18n.available_locales = [ :en, :es ]
     config.i18n.fallbacks = [ :en ]
     # Initialize configuration defaults for originally generated Rails version.
@@ -51,14 +51,11 @@ module IvCbvPayroll
     config.cbv_session_expires_after = 30.minutes
 
     # Configure allowed hosts
-    config.hosts << ENV["DOMAIN_NAME"]
+    base = ENV["DOMAIN_NAME"]
+    config.hosts << base
+    # allow any subdomain, will use rails routing to determine if it is valid or not
+    config.hosts << ".#{base}"
     config.hosts << ".ec2-rdns.amazonaws.com"
-
-    # Configure allowed hosts from the files in client-agency-config
-    config.client_agencies.client_agency_ids.each do |agency_id|
-      agency = config.client_agencies[agency_id]
-      config.hosts << "#{agency.agency_domain}.#{ENV["DOMAIN_NAME"]}"
-    end
 
     # Health check endpoints should be accessible from any host
     config.host_authorization = {

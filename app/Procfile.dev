@@ -2,4 +2,5 @@ web: env RUBY_DEBUG_PORT=1234 RUBY_DEBUG_STOP_AT_LOAD=true RUBY_DEBUG_OPEN=true 
 js: npm run build -- --watch
 css: npm run build:css -- --watch
 ngrok: ngrok http 3000 --log stdout
-worker: bin/rails solid_queue:start
+moto: ./bin/moto_run.sh
+worker: ./bin/moto_sqs_queues.sh && ./bin/wait_for_queues.sh && bundle exec shoryuken -R -C config/shoryuken.yml
