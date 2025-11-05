@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-ENDPOINT="${SQS_ENDPOINT:-http://localhost:5000}"
+ENDPOINT="${SQS_ENDPOINT:-http://localhost:3456}"
 REGION="${AWS_REGION:-us-east-1}"
 
 QUEUES=(report_sender mixpanel_events newrelic_events)

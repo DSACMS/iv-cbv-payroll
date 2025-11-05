@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-MOTO_ENDPOINT="${SQS_ENDPOINT:-http://localhost:5000}"
+MOTO_ENDPOINT="${SQS_ENDPOINT:-http://localhost:3456}"
 AWS_REGION="${AWS_REGION:-us-east-1}"
 
 export AWS_ACCESS_KEY_ID="${AWS_ACCESS_KEY_ID:-test}"
