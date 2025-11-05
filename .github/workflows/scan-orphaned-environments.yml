@@ -5,9 +5,6 @@ name: Scan orphaned environments
 
 on:
   workflow_dispatch:
-  push:
-    branches:
-      - daph/FFS-3215-orphan-env
   schedule:
     # Run every day at 07:30 UTC (3:30am ET, 12:30am PT) after engineers are likely done with work
     - cron: "30 7 * * *"
