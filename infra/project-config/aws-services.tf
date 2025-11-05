@@ -33,6 +33,6 @@ locals {
     "states",
     "waf-regional",
     "wafv2",
-    "sqs",
+    "sqs"
   ]
 }
