@@ -16,6 +16,8 @@ jobs:
   get-app-names:
     name: Get app names
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
 
     outputs:
       app_names: ${{ steps.get-app-names.outputs.app_names }}
