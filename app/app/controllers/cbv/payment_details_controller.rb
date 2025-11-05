@@ -17,7 +17,10 @@ class Cbv::PaymentDetailsController < Cbv::BaseController
 
   def show
     account_id = params[:user][:account_id]
-    @payroll_account = @cbv_flow.payroll_accounts.find_by(aggregator_account_id: account_id)
+    @payroll_account = Rails.cache.fetch("payroll_account_#{account_id}", expires_in: 12.hours) do
+      Rails.logger.info "RailsCache Block: Fetching payroll account #{account_id} for cbv_flow #{@cbv_flow.id} from DB"
+      @cbv_flow.payroll_accounts.find_by(aggregator_account_id: account_id)
+    end
 
     # security check - make sure the account_id is associated with the current cbv_flow_id
     if @payroll_account.nil?

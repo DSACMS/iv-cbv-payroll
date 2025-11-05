@@ -22,6 +22,10 @@ default: &default
   pool: <%= (ENV.fetch("RAILS_MAX_THREADS") { 5 }).to_i * 2 %>
 
 development:
+  cache:
+    <<: *default
+    database: iv_cbv_payroll_development_cache
+    migrations_paths: db/cache_migrate
   queue:
     <<: *default
     adapter: postgresql

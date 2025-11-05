@@ -4,15 +4,21 @@ module Cbv::AggregatorDataHelper
 
   def set_aggregator_report
     if has_payroll_accounts("pinwheel") && has_payroll_accounts("argyle")
-      @aggregator_report = CompositeReport.new(
-        [ make_pinwheel_report, make_argyle_report ],
-        days_to_fetch_for_w2: agency_config[@cbv_flow.client_agency_id].pay_income_days[:w2],
-        days_to_fetch_for_gig: agency_config[@cbv_flow.client_agency_id].pay_income_days[:gig]
-      )
+      @aggregator_report = Rails.cache.fetch("composite_aggregator_report_#{@cbv_flow.id}", expires_in: 12.hours) do
+        CompositeReport.new(
+          [ make_pinwheel_report, make_argyle_report ],
+          days_to_fetch_for_w2: agency_config[@cbv_flow.client_agency_id].pay_income_days[:w2],
+          days_to_fetch_for_gig: agency_config[@cbv_flow.client_agency_id].pay_income_days[:gig]
+        )
+      end
     elsif has_payroll_accounts("pinwheel")
-      @aggregator_report = make_pinwheel_report
+      @aggregator_report = Rails.cache.fetch("composite_aggregator_report_#{@cbv_flow.id}", expires_in: 12.hours) do
+        make_pinwheel_report
+      end
     elsif has_payroll_accounts("argyle")
-      @aggregator_report = make_argyle_report
+      @aggregator_report = Rails.cache.fetch("composite_aggregator_report_#{@cbv_flow.id}", expires_in: 12.hours) do
+        make_argyle_report
+      end
     else
       Rails.logger.error "no reports found for #{@cbv_flow.id}"
     end
@@ -40,7 +46,11 @@ module Cbv::AggregatorDataHelper
 
   def make_pinwheel_report(payroll_account: nil)
     report = PinwheelReport.new(
-      payroll_accounts: if payroll_account.present? then [ payroll_account ] else filter_payroll_accounts("pinwheel") end,
+      payroll_accounts: if payroll_account.present? then
+                          [ payroll_account ]
+                        else
+                          filter_payroll_accounts("pinwheel")
+                        end,
       pinwheel_service: pinwheel,
       days_to_fetch_for_w2: agency_config[@cbv_flow.client_agency_id].pay_income_days[:w2],
       days_to_fetch_for_gig: agency_config[@cbv_flow.client_agency_id].pay_income_days[:gig]
@@ -51,7 +61,11 @@ module Cbv::AggregatorDataHelper
 
   def make_argyle_report(payroll_account: nil)
     report = ArgyleReport.new(
-      payroll_accounts: if payroll_account.present? then [ payroll_account ] else filter_payroll_accounts("argyle") end,
+      payroll_accounts: if payroll_account.present? then
+                          [ payroll_account ]
+                        else
+                          filter_payroll_accounts("argyle")
+                        end,
       argyle_service: argyle,
       days_to_fetch_for_w2: agency_config[@cbv_flow.client_agency_id].pay_income_days[:w2],
       days_to_fetch_for_gig: agency_config[@cbv_flow.client_agency_id].pay_income_days[:gig]
