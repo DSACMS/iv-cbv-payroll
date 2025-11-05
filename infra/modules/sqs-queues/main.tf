@@ -3,13 +3,6 @@ locals {
   dlq_resolved   = var.dlq_name
 }
 
-resource "aws_sqs_queue" "dlq" {
-  name                      = local.dlq_resolved
-  message_retention_seconds = 1209600
-  sqs_managed_sse_enabled   = true
-  lifecycle { prevent_destroy = true }
-}
-
 resource "aws_sqs_queue" "dicit_queues" {
   for_each = toset(local.resolved_names)
 
@@ -25,4 +18,13 @@ resource "aws_sqs_queue" "dicit_queues" {
     deadLetterTargetArn = aws_sqs_queue.dlq.arn
     maxReceiveCount     = var.max_receive_count
   })
+}
+
+resource "aws_sqs_queue" "dlq" {
+  name                      = local.dlq_resolved
+  message_retention_seconds = 1209600
+  sqs_managed_sse_enabled   = true
+  lifecycle { prevent_destroy = true }
+
+  redrive_allow_policy = jsonencode({ redrivePermission = "allowAll" })
 }
