@@ -13,13 +13,7 @@ RSpec.describe "e2e CBV flow test", type: :feature, js: true do
   end
 
   it "completes the flow for a missing employer" do
-    employer = Aggregators::ResponseObjects::SearchResult.from_argyle(
-      {
-        "kind" => "",
-        "id" => "",
-        "name" => ""
-      }
-    )
+    employer = build(:search_result)
     # /cbv/entry
     visit URI(root_url).request_uri
     visit URI(cbv_flow_invitation.to_url).request_uri
