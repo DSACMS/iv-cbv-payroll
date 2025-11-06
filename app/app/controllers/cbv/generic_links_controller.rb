@@ -55,12 +55,12 @@ class Cbv::GenericLinksController < Cbv::BaseController
 
   def create_flow_with_existing_applicant(applicant)
     applicant.reset_applicant_attributes
-    cbv_flow = CbvFlow.create(cbv_applicant: applicant, client_agency_id: params[:client_agency_id])
+    cbv_flow = CbvFlow.create(cbv_applicant: applicant, client_agency_id: params[:client_agency_id], device_id: cookies.permanent.signed[:device_id])
     [ cbv_flow, false ]
   end
 
   def create_flow_with_new_applicant
-    cbv_flow = CbvFlow.create_without_invitation(params[:client_agency_id])
+    cbv_flow = CbvFlow.create_without_invitation(params[:client_agency_id], cookies.permanent.signed[:device_id])
     [ cbv_flow, true ]
   end
 

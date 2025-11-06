@@ -25,7 +25,7 @@ class Cbv::BaseController < ApplicationController
         return redirect_to(cbv_flow_expired_invitation_path(client_agency_id: invitation.client_agency_id))
       end
 
-      @cbv_flow = CbvFlow.create_from_invitation(invitation)
+      @cbv_flow = CbvFlow.create_from_invitation(invitation, cookies.permanent.signed[:device_id])
       session[:cbv_flow_id] = @cbv_flow.id
       cookies.permanent.encrypted[:cbv_applicant_id] = @cbv_flow.cbv_applicant_id
       track_invitation_clicked_event(invitation, @cbv_flow)

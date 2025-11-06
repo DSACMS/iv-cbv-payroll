@@ -57,7 +57,7 @@ RSpec.describe DataRetentionService do
     let!(:cbv_flow_invitation) do
       create(:cbv_flow_invitation)
     end
-    let!(:cbv_flow) { CbvFlow.create_from_invitation(cbv_flow_invitation) }
+    let!(:cbv_flow) { CbvFlow.create_from_invitation(cbv_flow_invitation, "test_device_id") }
     let(:service) { DataRetentionService.new }
     let(:deletion_threshold) { cbv_flow_invitation.expires_at + DataRetentionService::REDACT_UNUSED_INVITATIONS_AFTER }
     let(:now) { Time.now }
@@ -198,7 +198,7 @@ RSpec.describe DataRetentionService do
     end
     let!(:cbv_flow) do
       CbvFlow
-        .create_from_invitation(cbv_flow_invitation)
+        .create_from_invitation(cbv_flow_invitation, "test_device_id")
         .tap do |cbv_flow|
           cbv_flow.update(
             end_user_id: "11111111-1111-1111-1111-111111111111",
@@ -287,8 +287,8 @@ RSpec.describe DataRetentionService do
 
   describe ".manually_redact_by_case_number!" do
     let(:cbv_flow_invitation) { create(:cbv_flow_invitation, cbv_applicant_attributes: { case_number: "DELETEME001" }) }
-    let!(:cbv_flow) { CbvFlow.create_from_invitation(cbv_flow_invitation) }
-    let!(:second_cbv_flow) { CbvFlow.create_from_invitation(cbv_flow_invitation) }
+    let!(:cbv_flow) { CbvFlow.create_from_invitation(cbv_flow_invitation, "test_device_id") }
+    let!(:second_cbv_flow) { CbvFlow.create_from_invitation(cbv_flow_invitation, "test_device_id_2") }
     let!(:payroll_account) { create(:payroll_account, cbv_flow: second_cbv_flow) }
 
     it "redacts the invitation and all flow objects" do
@@ -317,8 +317,8 @@ RSpec.describe DataRetentionService do
     let(:agency_to_redact) { "sandbox" }
     let!(:cbv_flow_invitation) { create(:cbv_flow_invitation, cbv_applicant_attributes: { case_number: "DELETEME001", client_agency_id: agency_to_redact }) }
     let!(:cbv_flow_invitation2) { create(:cbv_flow_invitation, cbv_applicant_attributes: { case_number: "DELETEME002", client_agency_id: agency_to_redact }) }
-    let!(:cbv_flow) { CbvFlow.create_from_invitation(cbv_flow_invitation) }
-    let!(:cbv_flow2) { CbvFlow.create_from_invitation(cbv_flow_invitation2) }
+    let!(:cbv_flow) { CbvFlow.create_from_invitation(cbv_flow_invitation, "test_device_id") }
+    let!(:cbv_flow2) { CbvFlow.create_from_invitation(cbv_flow_invitation2, "test_device_id_2") }
 
     it "redacts all case numbers for a given agency" do
       DataRetentionService.redact_case_numbers_by_agency(agency_to_redact)

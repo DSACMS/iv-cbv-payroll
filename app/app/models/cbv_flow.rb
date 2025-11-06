@@ -19,18 +19,20 @@ class CbvFlow < ApplicationRecord
     confirmation_code.present?
   end
 
-  def self.create_from_invitation(cbv_flow_invitation)
+  def self.create_from_invitation(cbv_flow_invitation, device_id)
     create(
       cbv_flow_invitation: cbv_flow_invitation,
       cbv_applicant: cbv_flow_invitation.cbv_applicant,
       client_agency_id: cbv_flow_invitation.client_agency_id,
+      device_id: device_id
     )
   end
 
-  def self.create_without_invitation(client_agency_id)
+  def self.create_without_invitation(client_agency_id, device_id)
     create(
       cbv_applicant: CbvApplicant.create(client_agency_id: client_agency_id),
-      client_agency_id: client_agency_id
+      client_agency_id: client_agency_id,
+      device_id: device_id
     )
   end
 
