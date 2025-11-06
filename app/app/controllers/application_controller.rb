@@ -108,6 +108,7 @@ class ApplicationController < ActionController::Base
   def add_newrelic_metadata
     attributes = {
       cbv_flow_id: session[:cbv_flow_id],
+      device_id: cookies.permanent.signed[:device_id],
       session_id: session.id.to_s,
       client_agency_id: params[:client_agency_id],
       locale: params[:locale],
