@@ -189,4 +189,52 @@ RSpec.describe CbvFlowInvitation, type: :model do
       end
     end
   end
+
+  describe '#at_flow_limit?' do
+    let(:user) { create(:user) }
+    let(:cbv_applicant) { create(:cbv_applicant) }
+    let(:invitation) do
+      create(:cbv_flow_invitation,
+             user: user,
+             cbv_applicant: cbv_applicant,
+             client_agency_id: 'sandbox'
+      )
+    end
+
+    context 'when invitation has no flows' do
+      it 'returns false' do
+        expect(invitation.at_flow_limit?).to be false
+      end
+    end
+
+    context 'when invitation has fewer than MAX_FLOWS_PER_INVITATION flows' do
+      before do
+        create_list(:cbv_flow, 99, cbv_flow_invitation: invitation, cbv_applicant: cbv_applicant)
+      end
+
+      it 'returns false' do
+        expect(invitation.at_flow_limit?).to be false
+      end
+    end
+
+    context 'when invitation has exactly MAX_FLOWS_PER_INVITATION flows' do
+      before do
+        create_list(:cbv_flow, 100, cbv_flow_invitation: invitation, cbv_applicant: cbv_applicant)
+      end
+
+      it 'returns true' do
+        expect(invitation.at_flow_limit?).to be true
+      end
+    end
+
+    context 'when invitation has more than MAX_FLOWS_PER_INVITATION flows' do
+      before do
+        create_list(:cbv_flow, 101, cbv_flow_invitation: invitation, cbv_applicant: cbv_applicant)
+      end
+
+      it 'returns true' do
+        expect(invitation.at_flow_limit?).to be true
+      end
+    end
+  end
 end

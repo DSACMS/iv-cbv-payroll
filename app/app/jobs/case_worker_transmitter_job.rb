@@ -3,7 +3,7 @@ class CaseWorkerTransmitterJob < ApplicationJob
 
   attr_reader :cbv_flow
 
-  queue_as :default
+  queue_as :report_sender
 
   def perform(cbv_flow_id)
     @cbv_flow = CbvFlow.find(cbv_flow_id)
@@ -42,12 +42,14 @@ class CaseWorkerTransmitterJob < ApplicationJob
 
   def track_transmitted_event(cbv_flow, payments)
     event_logger.track(TrackEvent::ApplicantSharedIncomeSummary, nil, {
-      time: Time.now.to_i,
+      time: Time.current.to_i,
       client_agency_id: cbv_flow.client_agency_id,
       cbv_applicant_id: cbv_flow.cbv_applicant_id,
       cbv_flow_id: cbv_flow.id,
       invitation_id: cbv_flow.cbv_flow_invitation_id,
       account_count: cbv_flow.fully_synced_payroll_accounts.count,
+      time_since_invite_seconds: cbv_flow.cbv_flow_invitation&.created_at &&
+        Time.current - cbv_flow.cbv_flow_invitation.created_at,
       paystub_count: payments.count,
       account_count_with_additional_information:
         cbv_flow.additional_information.values.count { |info| info["comment"].present? },

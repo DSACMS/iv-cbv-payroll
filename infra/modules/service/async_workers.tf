@@ -1,11 +1,11 @@
-resource "aws_ecs_service" "solid_queue" {
+resource "aws_ecs_service" "worker" {
   # Do not create the worker service in temporary PR environments
   count                  = var.is_temporary ? 0 : 1
-  name                   = "${var.service_name}-solid_queue"
+  name                   = "${var.service_name}-worker"
   cluster                = aws_ecs_cluster.cluster.arn
   launch_type            = "FARGATE"
-  task_definition        = aws_ecs_task_definition.solid_queue.arn
-  desired_count          = var.solidqueue_desired_instance_count
+  task_definition        = aws_ecs_task_definition.worker.arn
+  desired_count          = var.shoryuken_desired_instance_count
   enable_execute_command = var.enable_command_execution ? true : null
 
   network_configuration {
@@ -22,41 +22,23 @@ resource "aws_ecs_service" "solid_queue" {
     enable   = true
     rollback = true
   }
-
 }
 
-
-
-resource "aws_ecs_task_definition" "solid_queue" {
-  family             = var.service_name
+resource "aws_ecs_task_definition" "worker" {
+  family             = "${var.service_name}-worker"
   execution_role_arn = aws_iam_role.task_executor.arn
   task_role_arn      = aws_iam_role.app_service.arn
 
   container_definitions = jsonencode([
     {
-      name        = local.container_name,
+      name        = "${local.container_name}-worker",
       image       = local.image_url,
       memory      = var.memory,
       cpu         = var.cpu,
       networkMode = "awsvpc",
       essential   = true,
-      command     = ["bin/rails", "solid_queue:start"],
-      # TODO: Reenable readonlyRootFilesystem when we can have it behave
-      # consistently in dev (demo) and production.
-      # readonlyRootFilesystem = !var.enable_command_execution,
-      readonlyRootFilesystem = false,
+      command     = ["bundle", "exec", "shoryuken", "-R", "-C", "config/shoryuken.yml"],
 
-      # Need to define all parameters in the healthCheck block even if we want
-      # to use AWS's defaults, otherwise the terraform plan will show a diff
-      # that will force a replacement of the task definition
-      healthCheck = {
-        interval = 30,
-        retries  = 3,
-        timeout  = 5,
-        command = ["CMD-SHELL",
-          "bin/solidqueue-health-check.sh"
-        ]
-      },
       environment = local.environment_variables,
       secrets     = var.secrets,
       portMappings = [

@@ -1,5 +1,5 @@
 class EventTrackingJob < ApplicationJob
-  queue_as :default
+  queue_as :mixpanel_events
 
   RequestAttributes = Struct.new(:remote_ip, :headers)
 

@@ -86,8 +86,8 @@ GEM
       aws-sdk-ses (~> 1, >= 1.50.0)
       aws-sdk-sesv2 (~> 1, >= 1.34.0)
     aws-eventstream (1.4.0)
-    aws-partitions (1.1156.0)
-    aws-sdk-core (3.232.0)
+    aws-partitions (1.1175.0)
+    aws-sdk-core (3.234.0)
       aws-eventstream (~> 1, >= 1.3.0)
       aws-partitions (~> 1, >= 1.992.0)
       aws-sigv4 (~> 1.9)
@@ -114,6 +114,9 @@ GEM
     aws-sdk-sesv2 (1.68.0)
       aws-sdk-core (~> 3, >= 3.210.0)
       aws-sigv4 (~> 1.5)
+    aws-sdk-sqs (1.105.0)
+      aws-sdk-core (~> 3, >= 3.234.0)
+      aws-sigv4 (~> 1.5)
     aws-sigv4 (1.12.1)
       aws-eventstream (~> 1, >= 1.0.2)
     axe-core-api (4.10.3)
@@ -139,7 +142,7 @@ GEM
       erubi (~> 1.4)
       parser (>= 2.4)
       smart_properties
-    bigdecimal (3.2.3)
+    bigdecimal (3.3.1)
     bindex (0.8.1)
     bootsnap (1.18.4)
       msgpack (~> 1.2)
@@ -501,6 +504,10 @@ GEM
       rexml (~> 3.2, >= 3.2.5)
       rubyzip (>= 1.2.2, < 4.0)
       websocket (~> 1.0)
+    shoryuken (6.2.1)
+      aws-sdk-core (>= 2)
+      concurrent-ruby
+      thor
     sinatra (4.1.1)
       logger (>= 1.6.0)
       mustermann (~> 3.0)
@@ -596,6 +603,7 @@ DEPENDENCIES
   aws-actionmailer-ses
   aws-sdk-rails
   aws-sdk-s3
+  aws-sdk-sqs
   axe-core-rspec (~> 4.10)
   bootsnap
   brakeman
@@ -643,6 +651,7 @@ DEPENDENCIES
   rubocop-rails-omakase
   rubocop-rspec
   selenium-webdriver (>= 4.26.0)
+  shoryuken
   sinatra (~> 4.0)
   solid_queue (>= 0.3.0)
   sprockets-rails

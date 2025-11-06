@@ -50,7 +50,7 @@ variable "desired_instance_count" {
   default     = 1
 }
 
-variable "solidqueue_desired_instance_count" {
+variable "shoryuken_desired_instance_count" {
   type        = number
   description = "Number of background instances of the task definition to place and keep running."
   default     = 1
@@ -180,4 +180,9 @@ variable "service_name" {
 variable "vpc_id" {
   type        = string
   description = "Uniquely identifies the VPC."
+}
+
+variable "queue_arns" {
+  description = "Map of SQS queue ARNs"
+  type        = map(string)
 }

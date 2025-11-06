@@ -191,6 +191,7 @@ es:
         who_is_this_for_title: "¿Quién puede usar este herramienta?"
     error_invalid_link: Se utilizó un enlace no válido para iniciar CBV. Vuelva a hacer clic en el enlace, o bien directamente póngase en contacto con su asistente de caso para obtener ayuda.
     error_invalid_token: El enlace de invitación no es válido. Vuelva a comprobar el enlace e inténtelo de nuevo. Si sigue teniendo problemas, póngase en contacto con su trabajador social.
+    error_invitation_limit_reached: Se alcanzó el límite de uso de invitaciones. Comuníquese con su administrador(a) del caso para recibir ayuda.
     error_missing_token_html: "<strong>Su sesión a finalizado debido a inactividad.</strong> Para continuar donde la dejó, haga clic en el enlace que recibió de su agencia del SNAP por correo electrónico. Si encuentra algún problema, póngase en contacto con su agencia del SNAP para pedir ayuda."
     error_no_access: No logramos cargar los datos de nómina para esta cuenta. Haga clic en el enlace que recibió de su agencia del SNAP para intentarlo de nuevo.
     expired_invitations:

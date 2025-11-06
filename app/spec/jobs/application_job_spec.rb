@@ -8,7 +8,7 @@ RSpec.describe ApplicationJob do
   end
 
   it "records to newrelic" do
-    expect(NewRelic::Agent).to receive(:record_custom_event).with("SolidQueueJobFailed", anything)
+    expect(NewRelic::Agent).to receive(:record_custom_event).with("QueueJobFailed", anything)
     expect { TestJob.perform_now }.to raise_error("failed")
   end
 end
