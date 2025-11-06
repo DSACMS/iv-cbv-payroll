@@ -6,6 +6,7 @@ class ApplicationController < ActionController::Base
   before_action :redirect_if_maintenance_mode
   before_action :enable_mini_profiler_in_demo
   before_action :check_if_pilot_ended
+  before_action :set_device_id_cookie
 
   rescue_from ActionController::InvalidAuthenticityToken do
     redirect_to root_url, flash: { slim_alert: { type: "info", message_html:  t("cbv.error_missing_token_html") } }
@@ -30,6 +31,10 @@ class ApplicationController < ActionController::Base
   end
 
   private
+
+  def set_device_id_cookie
+    cookies.permanent.signed[:device_id] ||= SecureRandom.uuid
+  end
 
   def show_menu?
     # show the menu if we're in the cbv flow
