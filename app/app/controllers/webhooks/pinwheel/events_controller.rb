@@ -58,6 +58,7 @@ class Webhooks::Pinwheel::EventsController < ApplicationController
         cbv_applicant_id: @cbv_flow.cbv_applicant_id,
         cbv_flow_id: @cbv_flow.id,
         client_agency_id: @cbv_flow.client_agency_id,
+        device_id: @cbv_flow.device_id,
         invitation_id: @cbv_flow.cbv_flow_invitation_id,
         platform_name: params["payload"]["platform_name"]
       })
@@ -84,6 +85,7 @@ class Webhooks::Pinwheel::EventsController < ApplicationController
         cbv_applicant_id: @cbv_flow.cbv_applicant_id,
         cbv_flow_id: @cbv_flow.id,
         client_agency_id: @cbv_flow.client_agency_id,
+        device_id: @cbv_flow.device_id,
         invitation_id: @cbv_flow.cbv_flow_invitation_id,
         pinwheel_environment: agency_config[@cbv_flow.client_agency_id].pinwheel_environment,
         sync_duration_seconds: Time.now - @payroll_account.created_at,
@@ -182,6 +184,7 @@ class Webhooks::Pinwheel::EventsController < ApplicationController
         time: Time.now.to_i,
         cbv_applicant_id: @cbv_flow.cbv_applicant_id,
         cbv_flow_id: @cbv_flow.id,
+        device_id: @cbv_flow.device_id,
         invitation_id: @cbv_flow.cbv_flow_invitation_id
       )
     else
@@ -189,6 +192,7 @@ class Webhooks::Pinwheel::EventsController < ApplicationController
         time: Time.now.to_i,
         cbv_applicant_id: @cbv_flow.cbv_applicant_id,
         cbv_flow_id: @cbv_flow.id,
+        device_id: @cbv_flow.device_id,
         invitation_id: @cbv_flow.cbv_flow_invitation_id,
         errors: report.errors.full_messages.join(", ")
       )

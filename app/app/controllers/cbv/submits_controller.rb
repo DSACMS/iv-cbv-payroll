@@ -25,6 +25,7 @@ class Cbv::SubmitsController < Cbv::BaseController
           client_agency_id: current_agency&.id,
           cbv_applicant_id: @cbv_flow.cbv_applicant_id,
           cbv_flow_id: @cbv_flow.id,
+          device_id: @cbv_flow.device_id,
           invitation_id: @cbv_flow.cbv_flow_invitation_id,
           locale: I18n.locale
         })
@@ -88,6 +89,7 @@ class Cbv::SubmitsController < Cbv::BaseController
       client_agency_id: current_agency&.id,
       cbv_flow_id: cbv_flow.id,
       cbv_applicant_id: cbv_flow.cbv_applicant_id,
+      device_id: @cbv_flow.device_id,
       invitation_id: cbv_flow.cbv_flow_invitation_id,
       flow_started_seconds_ago: (Time.now - cbv_flow.created_at).to_i,
       locale: I18n.locale

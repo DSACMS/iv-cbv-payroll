@@ -78,6 +78,7 @@ class Cbv::GenericLinksController < Cbv::BaseController
       cbv_applicant_id: cbv_flow.cbv_applicant_id,
       cbv_flow_id: cbv_flow.id,
       client_agency_id: cbv_flow.client_agency_id,
+      device_id: cbv_flow.device_id,
       origin: params[:origin],
       is_new_session: is_new_session
     })

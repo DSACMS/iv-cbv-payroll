@@ -78,6 +78,7 @@ class Api::ArgyleController < ApplicationController
       cbv_flow_id: @cbv_flow.id,
       cbv_applicant_id: @cbv_flow.cbv_applicant_id,
       client_agency_id: @cbv_flow.client_agency_id,
+      device_id: @cbv_flow.device_id,
       invitation_id: @cbv_flow.cbv_flow_invitation_id,
       item_id: params[:item_id],
       aggregator_name: "argyle"

@@ -23,6 +23,7 @@ class Cbv::SummariesController < Cbv::BaseController
       client_agency_id: current_agency&.id,
       cbv_flow_id: cbv_flow.id,
       cbv_applicant_id: cbv_flow.cbv_applicant_id,
+      device_id: cbv_flow.device_id,
       invitation_id: cbv_flow.cbv_flow_invitation_id,
       account_count: cbv_flow.payroll_accounts.count,
       paystub_count: @aggregator_report.paystubs.count,
