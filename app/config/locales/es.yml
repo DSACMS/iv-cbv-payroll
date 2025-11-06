@@ -192,7 +192,7 @@ es:
         step2_description: Usted podrá revisar y aprobar toda la información antes de que se comparta.
         step3: Envíe la información a %{agency_full_name}
         step3_description: Enviaremos la información de su(s) ingreso(s) a %{agency_acronym}. Esto lo ayudará a recibir una decisión más rápida.
-        subheader_html: '"Reportar Mi Ingreso" es una herramienta segura que le ayuda a enviar evidencia de los pagos que recibió de su(s) empleador(es) a %{agency_full_name} (%{agency_acronym}).'
+        subheader_html: '"Reportar Mi Ingreso" es una herramienta segura que le ayuda a enviar evidencia de los pagos que recibió de su(s) empleador(es) a %{agency_full_name} (%{agency_acronym} por sus siglas en inglés).'
         value_prop_1: Toma aproximadamente de 5 a 7 minutos completar
         value_prop_2: No necesita recopilar documentos de ingresos
         value_prop_3: Un sistema de codificación robusto que mantiene sus datos seguros
