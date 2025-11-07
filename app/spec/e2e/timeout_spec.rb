@@ -14,6 +14,10 @@ RSpec.describe "timeout test", type: :feature, js: true do
     page.driver.browser.execute_script(<<~JS)
       document.getElementById("open-session-modal-button").click()
     JS
+    expect(page).to have_selector(".usa-modal__content", visible: true)
+    within(".usa-modal__content") do
+      verify_page(page, title: I18n.t("session_timeout.modal.heading"))
+    end
     click_link I18n.t("session_timeout.modal.end_button")
     verify_page(page, title: I18n.t("session_timeout.page.title"))
 
