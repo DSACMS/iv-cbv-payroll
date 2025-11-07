@@ -1,5 +1,6 @@
 class MatchAgencyNamesJob < ApplicationJob
   include Cbv::AggregatorDataHelper
+  queue_as :mixpanel_events
 
   def perform(cbv_flow_id)
     @cbv_flow = CbvFlow.find(cbv_flow_id)
