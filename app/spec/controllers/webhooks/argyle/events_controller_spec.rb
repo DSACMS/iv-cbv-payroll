@@ -395,5 +395,116 @@ RSpec.describe Webhooks::Argyle::EventsController, type: :controller do
       expect(payroll_account.sync_failed?).to equal(true)
       expect(payroll_account.has_fully_synced?).to be_falsey
     end
+
+
+    context "when paystubs API returns an empty dataset" do
+      before do
+        # Override only the paystubs fixture to use the 'empty' variant
+        allow_any_instance_of(Aggregators::Sdk::ArgyleService)
+          .to receive(:fetch_paystubs_api)
+                .and_return(argyle_load_relative_json_file("empty", "request_paystubs.json"))
+      end
+
+      it 'tracks an ApplicantFinishedArgyleSync event' do
+        process_webhook("accounts.connected")
+        process_webhook("identities.added")
+        process_webhook("users.fully_synced")
+        process_webhook("gigs.partially_synced")
+
+        expect(fake_event_logger).to receive(:track).with("ApplicantReceivedArgyleData", anything, anything)
+        expect(fake_event_logger).to receive(:track) do |event_name, _request, attributes|
+          expect(event_name).to eq("ApplicantFinishedArgyleSync")
+          expect(attributes).to include(
+                                  cbv_flow_id: cbv_flow.id,
+                                  cbv_applicant_id: cbv_flow.cbv_applicant_id,
+                                  client_agency_id: cbv_flow.client_agency_id,
+                                  invitation_id: cbv_flow.cbv_flow_invitation_id,
+                                  argyle_environment: "sandbox",
+
+                                  # Identity fields
+                                  identity_success: true,
+                                  identity_supported: true,
+                                  identity_count: 1,
+                                  identity_full_name_present: true,
+                                  identity_full_name_length: 15,
+                                  identity_date_of_birth_present: true,
+                                  identity_ssn_present: true,
+                                  identity_emails_count: 1,
+                                  identity_phone_numbers_count: 1,
+                                  identity_age_range: "40-49",
+                                  identity_zip_code: "10281",
+                                  identity_account_id: "01956d5f-cb8d-af2f-9232-38bce8531f58",
+
+                                  # Income fields
+                                  income_success: true,
+                                  income_supported: true,
+                                  income_compensation_amount_present: true,
+                                  income_compensation_unit_present: true,
+                                  income_pay_frequency_present: true,
+                                  income_pay_frequency: "biweekly",
+
+                                  # Paystubs fields
+                                  paystubs_success: true,
+                                  paystubs_supported: true,
+                                  paystubs_count: 0,
+                                  paystubs_deductions_count: 0,
+                                  paystubs_hours_average: 0.0,
+                                  paystubs_hours_by_earning_category_count: 0,
+                                  paystubs_hours_max: 0,
+                                  paystubs_hours_median: 0,
+                                  paystubs_hours_min: 0,
+                                  paystubs_hours_present: false,
+                                  paystubs_earnings_count: 0,
+                                  paystubs_earnings_with_hours_count: 0,
+                                  paystubs_earnings_type_base_count: 0,
+                                  paystubs_earnings_type_bonus_count: 0,
+                                  paystubs_earnings_type_overtime_count: 0,
+                                  paystubs_earnings_type_commission_count: 0,
+                                  paystubs_gross_pay_amounts_max: 0,
+                                  paystubs_gross_pay_amounts_min: 0,
+                                  paystubs_gross_pay_amounts_average: 0.0,
+                                  paystubs_gross_pay_amounts_median: 0,
+                                  paystubs_days_since_last_pay_date: nil,
+
+                                  # Employment fields
+                                  employment_success: true,
+                                  employment_supported: true,
+                                  employment_status: "employed",
+                                  employment_type: "w2",
+                                  employment_employer_name: "Whole Foods",
+                                  employment_account_source: "argyle_sandbox",
+                                  employment_employer_id: "item_000024123",
+                                  employment_employer_address_present: false,
+                                  employment_employer_phone_number_present: true,
+                                  employment_start_date: "2022-08-08",
+                                  employment_termination_date: nil,
+                                  employment_type_w2_count: 1,
+                                  employment_type_gig_count: 0,
+
+                                  # Gigs fields
+                                  gigs_success: true,
+                                  gigs_supported: true,
+                                  gigs_count: 50,
+                                  gigs_duration_present_count: 40,
+                                  gigs_earning_type_adjustment_count: 0,
+                                  gigs_earning_type_incentive_count: 0,
+                                  gigs_earning_type_offer_count: 0,
+                                  gigs_earning_type_other_count: 0,
+                                  gigs_earning_type_work_count: 50,
+                                  gigs_pay_present_count: 50,
+                                  gigs_mileage_present_count: 50,
+                                  gigs_status_cancelled_count: 10,
+                                  gigs_status_completed_count: 40,
+                                  gigs_status_scheduled_count: 0,
+                                  gigs_type_delivery_count: 0,
+                                  gigs_type_hourly_count: 0,
+                                  gigs_type_rideshare_count: 50,
+                                  gigs_type_services_count: 0
+                                )
+        end
+
+        process_webhook("paystubs.partially_synced")
+      end
+    end
   end
 end
