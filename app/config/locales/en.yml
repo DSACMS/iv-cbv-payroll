@@ -106,13 +106,13 @@ en:
   applicant_mailer:
     invitation_email:
       body_1:
-        default: "%{agency_acronym} wants you to verify your income as part of your SNAP application or recertification. The SNAP Income Pilot is a new tool designed to help you share your income data directly with %{agency_acronym} by logging into your payroll provider."
+        default: "%{agency_acronym} wants you to verify your income as part of your SNAP application or recertification. Report My Income is a new tool designed to help you share your income data directly with %{agency_acronym} by logging into your payroll provider."
       body_2_html:
         default: This process is unique to you. Please don't share this invitation with anyone else. <strong>You have until %{deadline}, to complete your verification.</strong> Otherwise, you can request a new invitation.
       body_3:
         default: This is an optional tool. If you decide that you don't want to use it, you can provide income documents via the %{app_name} app, fax, mail, or in-person.
       button: Verify your income
-      button_caption: 'To verify your income with the SNAP Income Pilot, click the button below:'
+      button_caption: 'To verify your income with Report My Income, click the button below:'
       footer: This is an automatically generated message from your SNAP agency. Please don’t reply to this email.
       greeting: Hello,
       header:
@@ -153,7 +153,7 @@ en:
         expires_within:
           one: "%{count} day"
           other: "%{count} days"
-        header: Invite clients to the SNAP Income Pilot
+        header: Invite clients to Report My Income
         helpful_reminders: Helpful reminders
         invite_clients: You can invite clients to use this income verification tool by clicking the "Create a new invitation" button below.
         reminder_1: If multiple household members earn income, send an invite link to each member individually.
