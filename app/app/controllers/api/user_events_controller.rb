@@ -1,44 +1,4 @@
 class Api::UserEventsController < ApplicationController
-  EVENT_NAMES = %w[
-    ApplicantOpenedHelpModal
-    ApplicantCopiedInvitationLink
-    ApplicantSelectedEmployerOrPlatformItem
-    ApplicantAttemptedClosingPinwheelModal
-    ApplicantAttemptedPinwheelLogin
-    ApplicantClosedPinwheelModal
-    ApplicantEncounteredPinwheelError
-    ApplicantViewedPinwheelDefaultProviderSearch
-    ApplicantViewedPinwheelLoginPage
-    ApplicantViewedPinwheelProviderConfirmation
-    ApplicantSucceededWithPinwheelLogin
-    ApplicantSucceededWithArgyleLogin
-    ApplicantCreatedArgyleAccount
-    ApplicantEncounteredArgyleAccountError
-    ApplicantRemovedArgyleAccount
-    ApplicantClosedArgyleModal
-    ApplicantEncounteredArgyleError
-    ApplicantEncounteredArgyleTokenExpired
-    ApplicantEncounteredModalAdapterError
-    ApplicantViewedArgyleProviderConfirmation
-    ApplicantViewedArgyleLoginPage
-    ApplicantAttemptedArgyleLogin
-    ApplicantViewedArgyleDefaultProviderSearch
-    ApplicantAccessedArgyleModalMFAScreen
-    ApplicantEncounteredArgyleInvalidCredentialsLoginError
-    ApplicantEncounteredArgyleAuthRequiredLoginError
-    ApplicantEncounteredArgyleConnectionUnavailableLoginError
-    ApplicantEncounteredArgyleExpiredCredentialsLoginError
-    ApplicantEncounteredArgyleInvalidAuthLoginError
-    ApplicantEncounteredArgyleMfaCanceledLoginError
-    ApplicantUpdatedArgyleSearchTerm
-    ApplicantManuallySwitchedLanguage
-    ApplicantConsentedToTerms
-    ApplicantViewedHelpText
-    ApplicantWarnedAboutTimeout
-    ApplicantExtendedSession
-    ApplicantTimedOut
-  ]
-
   def user_action
     base_attributes = {
       time: Time.now.to_i
