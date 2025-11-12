@@ -23,4 +23,28 @@ if command -v ss >/dev/null 2>&1 && ss -ltn "( sport = :${PORT} )" | grep -q LIS
 fi
 
 echo "[moto] Starting Moto on ${MOTO_ENDPOINT} ..."
+
+# Check if moto_server is available, if not try to activate venv
+if ! command -v moto_server >/dev/null 2>&1; then
+  echo "[moto] moto_server not found in PATH, looking for virtual environment..."
+
+  # Try common venv locations (relative to app/ directory where script runs)
+  for venv_path in "../.venv" ".venv" "../venv" "venv"; do
+    if [ -f "${venv_path}/bin/activate" ]; then
+      echo "[moto] Found venv at ${venv_path}, activating..."
+      source "${venv_path}/bin/activate"
+      break
+    fi
+  done
+
+  # Check again after attempting activation
+  if ! command -v moto_server >/dev/null 2>&1; then
+    echo "[moto] ERROR: moto_server not found. Please install moto:"
+    echo "  python3 -m venv .venv"
+    echo "  source .venv/bin/activate"
+    echo "  pip install 'moto[server]'"
+    exit 1
+  fi
+fi
+
 exec moto_server -p "${PORT}"

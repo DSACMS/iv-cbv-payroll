@@ -7,6 +7,9 @@ brew "rbenv"
 # NodeJS version manager
 brew "nodenv"
 
+# Python (required for moto and other development tools)
+brew "python@3"
+
 # cloud.gov RDS is on postgres 12
 brew "postgresql@12", link: true
 

@@ -18,6 +18,7 @@ Most developers on the team code using macOS, so we recommend that platform if p
 1. Install homebrew dependencies: `brew bundle`
    * rbenv
    * nodenv
+   * python@3
    * [redis]()
    * [jq](https://stedolan.github.io/jq/)
    * [PostgreSQL](https://www.postgresql.org/)
@@ -48,15 +49,14 @@ Most developers on the team code using macOS, so we recommend that platform if p
    * `npm install`
 1. Start postgres:
    * `brew services start postgresql@12`
-1. Set up moto for local SQS
-   * `sudo apt-get update`
-   * `sudo apt-get install python3-pip`
-   * `pip install moto[server]`
-   * `pip install --upgrade moto`
-   * `bundle update aws-sdk-sqs`
-   * `chmod +x bin/moto_sqs_queues.sh`
-   * `chmod +x bin/wait_for_queues.sh`
-   * `chmod +x bin/moto_run.sh`
+1. Set up moto for local SQS (mock AWS services)
+   * **First, navigate to repo root**: `cd ..`
+   * Create Python virtual environment: `python3 -m venv .venv`
+   * Activate the virtual environment: `source .venv/bin/activate`
+   * Install moto with server support: `pip install 'moto[server]'`
+   * Navigate back to app directory: `cd app`
+   * Make the moto scripts executable: `chmod +x bin/moto_run.sh bin/moto_sqs_queues.sh bin/wait_for_queues.sh`
+   * **Note**: The `bin/moto_run.sh` script will automatically detect and activate this virtual environment when you run `bin/dev`. The `.env` file is pre-configured to use moto instead of real AWS services in local development.
 1. Get development credentials from 1Password: search for "CBV .env.local secrets" and copy its ".env.local" section into a file called that in the app directory.
 1. Create database: `bin/rails db:create`
 1. Run migrations: `bin/rails db:migrate`
