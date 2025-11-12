@@ -87,6 +87,7 @@ runs:
         echo "Setting env vars AWS_ROLE_TO_ASSUME and AWS_REGION..."
         echo "AWS_ROLE_TO_ASSUME=${aws_role_to_assume}" >> "$GITHUB_ENV"
         echo "AWS_REGION=${aws_region}" >> "$GITHUB_ENV"
+        aws configure set region "${aws_region}"
       shell: bash
     - name: Configure AWS credentials
       uses: aws-actions/configure-aws-credentials@v3
