@@ -43,6 +43,11 @@ describe("EmployerSearchController", () => {
     expect(stimulusElement.removeEventListener).toBeCalledTimes(1)
     expect(stimulusElement.removeEventListener.mock.calls[0][0]).toBe("turbo:frame-missing")
   })
+
+  it("should set focus back to button that opened the modal", () => {
+    stimulusElement.click()
+    expect(stimulusElement.addEventListener).toBeCalledWith("something")
+  })
 })
 
 describe("EmployerSearchController with pinwheel", () => {

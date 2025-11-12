@@ -47,6 +47,7 @@
       <% (ProviderSearchService.new(@cbv_flow.client_agency_id).top_aggregator_options(@selected_tab)).each do |provider| %>
         <div class="grid-col-4 tablet:grid-col-2 margin-top-2">
           <button
+            id="<%= provider.name %>"
             data-action="click->cbv-employer-search#select"
             data-id="<%= provider.provider_options.provider_id %>"
             data-name="<%= provider.name %>"
