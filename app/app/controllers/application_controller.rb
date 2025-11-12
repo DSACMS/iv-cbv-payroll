@@ -33,7 +33,10 @@ class ApplicationController < ActionController::Base
   private
 
   def set_device_id_cookie
-    cookies.permanent.signed[:device_id] ||= SecureRandom.uuid
+    cookies.permanent.signed[:device_id] ||= {
+      value: SecureRandom.uuid,
+      httponly: true
+    }
   end
 
   def show_menu?
