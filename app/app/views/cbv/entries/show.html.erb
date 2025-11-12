@@ -1,54 +1,9 @@
-<% title = t(".header", agency_full_name: agency_translation("shared.agency_full_name")) %>
+<% title = t(".header") %>
 <% content_for :title, title %>
 <div data-controller="cbv-entry-page">
   <h1><%= title %></h1>
 
-  <p><%= t(".subheader_html", agency_acronym: agency_translation("shared.agency_acronym"), agency_full_name: agency_translation("shared.agency_full_name")) %></p>
-  <p><a href="#how-it-works" data-action="click->cbv-entry-page#scrollToHowItWorks"><%= t(".learn_how_it_works") %></a></p>
-
-  <ul class="usa-icon-list margin-top-3 margin-bottom-4">
-    <li class="usa-icon-list__item margin-bottom-2 flex-align-center">
-      <div class="usa-icon-list__icon display-flex flex-justify-center flex-align-center width-6 minw-6 height-6 bg-primary-lighter radius-top-pill radius-bottom-pill margin-right-1">
-        <svg class="usa-icon" aria-hidden="true" role="img">
-          <use href="<%= asset_path("@uswds/uswds/dist/img/sprite.svg#schedule") %>"></use>
-        </svg>
-      </div>
-      <div class="usa-icon-list__content">
-        <p class="margin-0"><%= t(".value_prop_1") %></p>
-      </div>
-    </li>
-    <li class="usa-icon-list__item margin-bottom-2 flex-align-center">
-      <div class="usa-icon-list__icon display-flex flex-justify-center flex-align-center width-6 minw-6 height-6 bg-primary-lighter radius-top-pill radius-bottom-pill margin-right-1">
-        <svg class="usa-icon" aria-hidden="true" role="img">
-          <use href="<%= asset_path("@uswds/uswds/dist/img/sprite.svg#autorenew") %>"></use>
-        </svg>
-      </div>
-      <div class="usa-icon-list__content">
-        <p class="margin-0"><%= t(".value_prop_2") %></p>
-      </div>
-    </li>
-    <li class="usa-icon-list__item flex-align-center">
-      <div class="usa-icon-list__icon display-flex flex-justify-center flex-align-center width-6 minw-6 height-6 bg-primary-lighter radius-top-pill radius-bottom-pill margin-right-1">
-        <svg class="usa-icon" aria-hidden="true" role="img">
-          <use href="<%= asset_path("@uswds/uswds/dist/img/sprite.svg#security") %>"></use>
-        </svg>
-      </div>
-      <div class="usa-icon-list__content">
-        <p class="margin-0"><%= t(".value_prop_3") %></p>
-      </div>
-    </li>
-  </ul>
-
-  <%= form_with(url: cbv_flow_entry_path, builder: UswdsFormBuilder) do |f| %>
-    <% label_content = content_tag(:span, agency_translation(".checkbox_large_text", agency_full_name: agency_translation("shared.agency_full_name")), class: "large-text") + tag.br +
-      content_tag(:span, agency_translation(".checkbox_small_text"), class: "small-text") %>
-    <%= f.check_box(:agreement, { label: label_content, "data-action": "cbv-entry-page#consent", "data-cbv-entry-page-target": "consentCheckbox" }) %>
-    <%= f.submit t(".continue") %>
-  <% end %>
-
-  <div class="divider"></div>
-
-  <h2 id="how-it-works"><%= t(".how_it_works_header") %></h2>
+  <p><%= t(".subheader_html", agency_acronym: agency_translation("shared.agency_acronym")) %></p>
 
   <ol class="usa-process-list">
     <li class="usa-process-list__item">
@@ -60,12 +15,21 @@
       <p><%= t(".step2_description", agency_acronym: agency_translation("shared.agency_acronym")) %></p>
     </li>
     <li class="usa-process-list__item">
-      <h2 class="usa-process-list__heading"><%= t(".step3", agency_full_name: agency_translation("shared.agency_full_name")) %></h2>
+      <h2 class="usa-process-list__heading"><%= t(".step3") %></h2>
       <p><%= t(".step3_description", agency_acronym: agency_translation("shared.agency_acronym")) %></p>
     </li>
   </ol>
 
-  <h2 class="margin-top-0"><%= t(".common_questions_header") %></h2>
+  <%= form_with(url: cbv_flow_entry_path, builder: UswdsFormBuilder) do |f| %>
+    <% label_content = content_tag(:span, agency_translation(".checkbox_large_text", agency_full_name: agency_translation("shared.agency_full_name")), class: "large-text") + tag.br +
+      content_tag(:span, agency_translation(".checkbox_small_text"), class: "small-text") %>
+    <%= f.check_box(:agreement, { label: label_content, "data-action": "cbv-entry-page#consent", "data-cbv-entry-page-target": "consentCheckbox" }) %>
+    <%= f.submit t(".continue") %>
+  <% end %>
+
+  <div class="divider margin-bottom-5"></div>
+
+  <h2><%= t(".common_questions_header") %></h2>
 
   <%= render AccordionComponent.new(id: "what_is_this-accordion", heading_level: 2, data_action: "click->common-questions#view", data_section_identifier: "what_is_this", data_page: "entry") do |accordion| %>
     <% accordion.with_title do %>

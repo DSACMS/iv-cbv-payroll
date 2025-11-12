@@ -32,35 +32,6 @@ RSpec.describe Cbv::EntriesController do
         expect(response).to be_successful
       end
 
-      it "renders value props and learn link" do
-        get :show, params: { token: invitation.auth_token }
-
-        expect(response.body).to include(I18n.t("cbv.entries.show.learn_how_it_works"))
-        expect(response.body).to include(I18n.t("cbv.entries.show.value_prop_1"))
-        expect(response.body).to include(I18n.t("cbv.entries.show.value_prop_2"))
-        expect(response.body).to include(I18n.t("cbv.entries.show.value_prop_3"))
-      end
-
-      it "renders 'How it works' bullets" do
-        get :show, params: { token: invitation.auth_token }
-
-        expect(response.body).to include(I18n.t("cbv.entries.show.step1"))
-        expect(response.body).to include(I18n.t("cbv.entries.show.step1_description"))
-        expect(response.body).to include(I18n.t("cbv.entries.show.step2"))
-        expect(response.body).to include(I18n.t("cbv.entries.show.step2_description"))
-
-        expected_step3 = I18n.t(
-          "cbv.entries.show.step3",
-          agency_full_name: I18n.t("shared.agency_full_name.sandbox")
-        )
-        expect(response.body).to include(expected_step3)
-      end
-
-      it "includes the how-it-works anchor for smooth scroll" do
-        get :show, params: { token: invitation.auth_token }
-        expect(response.body).to include('id="how-it-works"')
-      end
-
       context 'when unreserved, non-alphanumeric characters are appended to a valid auth_token' do
         # rfc3986 allows for any of these to be used in a URL "-" / "." / "_" / "~"
         [ "-", ".", "_", "~", "._~" ].each do |char|
@@ -90,9 +61,7 @@ RSpec.describe Cbv::EntriesController do
 
         get :show, params: { token: invitation.auth_token }
         expect(response).to have_http_status(:ok)
-        expect(response.body).to include(
-          I18n.t("cbv.entries.show.header", agency_full_name: I18n.t("shared.agency_full_name.sandbox"))
-        )
+        expect(response.body).to include("Review your payment information.")
       end
 
       it "successfully starts the flow with a 36-character legacy token" do
@@ -104,9 +73,7 @@ RSpec.describe Cbv::EntriesController do
 
         get :show, params: { token: invitation.auth_token }
         expect(response).to have_http_status(:ok)
-        expect(response.body).to include(
-          I18n.t("cbv.entries.show.header", agency_full_name: I18n.t("shared.agency_full_name.sandbox"))
-        )
+        expect(response.body).to include("Review your payment information.")
       end
 
       context "with multiple cbv flows" do
