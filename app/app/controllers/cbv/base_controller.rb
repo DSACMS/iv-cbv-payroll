@@ -25,7 +25,7 @@ class Cbv::BaseController < ApplicationController
         return redirect_to(cbv_flow_expired_invitation_path(client_agency_id: invitation.client_agency_id))
       end
 
-      @cbv_flow = CbvFlow.create_from_invitation(invitation)
+      @cbv_flow = CbvFlow.create_from_invitation(invitation, cookies.permanent.signed[:device_id])
       session[:cbv_flow_id] = @cbv_flow.id
       cookies.permanent.encrypted[:cbv_applicant_id] = @cbv_flow.cbv_applicant_id
       track_invitation_clicked_event(invitation, @cbv_flow)
@@ -131,6 +131,7 @@ class Cbv::BaseController < ApplicationController
       invitation_id: @cbv_flow.cbv_flow_invitation_id,
       cbv_applicant_id: @cbv_flow.cbv_applicant_id,
       client_agency_id: @cbv_flow.client_agency_id,
+      device_id: @cbv_flow.device_id,
       path: request.path
     })
   end
@@ -165,6 +166,7 @@ class Cbv::BaseController < ApplicationController
       cbv_flow_id: cbv_flow.id,
       cbv_applicant_id: cbv_flow.cbv_applicant_id,
       client_agency_id: current_agency&.id,
+      device_id: cbv_flow.device_id,
       seconds_since_invitation: (Time.now - invitation.created_at).to_i,
       household_member_count: count_unique_members(invitation),
       completed_reports_count: invitation.cbv_flows.completed.count,

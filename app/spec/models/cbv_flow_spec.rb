@@ -8,7 +8,7 @@ RSpec.describe CbvFlow, type: :model do
     let(:cbv_flow_invitation) { create(:cbv_flow_invitation, cbv_applicant_attributes: { case_number: "ABC1234" }) }
 
     it "copies over relevant fields" do
-      cbv_flow = CbvFlow.create_from_invitation(cbv_flow_invitation)
+      cbv_flow = CbvFlow.create_from_invitation(cbv_flow_invitation, "test_device_id")
       expect(cbv_flow).to have_attributes(
         cbv_applicant: cbv_flow_invitation.cbv_applicant,
         client_agency_id: "sandbox"

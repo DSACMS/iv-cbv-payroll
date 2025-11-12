@@ -56,6 +56,7 @@ RSpec.describe Cbv::PaymentDetailsController do
         allow(EventTrackingJob).to receive(:perform_later).with(TrackEvent::CbvPageView, anything, anything)
         expect(EventTrackingJob).to receive(:perform_later).with(TrackEvent::ApplicantViewedPaymentDetails, anything, hash_including(
             cbv_flow_id: cbv_flow.id,
+            device_id: cbv_flow.device_id,
             invitation_id: cbv_flow.cbv_flow_invitation_id,
             aggregator_account_id: payroll_account.id,
             payments_length: 1,
