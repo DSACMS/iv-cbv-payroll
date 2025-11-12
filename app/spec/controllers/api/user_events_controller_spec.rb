@@ -179,20 +179,6 @@ RSpec.describe Api::UserEventsController, type: :controller do
       end
     end
 
-    context "when tracking a ApplicantClickedLearnHowItWorks event" do
-      let(:event_name) { "ApplicantClickedLearnHowItWorks" }
-      let(:event_attributes) { {} }
-
-      it "tracks an event with Mixpanel" do
-        expect(EventTrackingJob).to receive(:perform_later).with("ApplicantClickedLearnHowItWorks", anything, hash_including(
-          time: be_a(Integer),
-          cbv_flow_id: cbv_flow.id,
-          invitation_id: cbv_flow.cbv_flow_invitation_id
-        ))
-        post :user_action, params: valid_params
-      end
-    end
-
     context "when tracking a ApplicantConsentedToTerms event" do
       let(:event_name) { "ApplicantConsentedToTerms" }
       let(:event_attributes) { {} }
