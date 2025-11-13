@@ -149,15 +149,6 @@ html {
   @include u-margin-y(2);
 }
 // footer button realignment to match right-most text on header.
-.footer-button-wrapper-share-feedback {
-  display: flex;
-  justify-content: flex-end;
-  padding-right: 0 !important;
-
-  // .footer-button-share-feedback {
-  //   margin-right: 0 !important;
-  // }
-}
 
 .cbv-row-highlight td,
 .cbv-row-highlight th {
