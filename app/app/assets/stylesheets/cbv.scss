@@ -148,10 +148,20 @@ html {
 .cbv-footer__item {
   @include u-margin-y(2);
 }
+// footer button realignment to match right-most text on header.
+.footer-button-wrapper-share-feedback {
+  display: flex;
+  justify-content: flex-end;
+  padding-right: 0 !important;
+
+  // .footer-button-share-feedback {
+  //   margin-right: 0 !important;
+  // }
+}
 
 .cbv-row-highlight td,
 .cbv-row-highlight th {
-  @include u-bg('yellow-5v');
+  @include u-bg("yellow-5v");
 }
 
 .rotate {
@@ -210,7 +220,7 @@ html {
 .divider {
   width: 125px;
   height: 10px;
-  background-color: #D9E8F6
+  background-color: #d9e8f6;
 }
 
 .large-text {
@@ -234,7 +244,7 @@ html {
   text-align: center;
   word-break: break-word;
 
-  @include at-media('tablet') {
+  @include at-media("tablet") {
     flex-direction: column;
   }
 }
@@ -245,7 +255,7 @@ html {
   @include u-padding(1);
   @include u-border(0.5);
   @include u-radius("pill");
-  @include at-media('tablet') {
+  @include at-media("tablet") {
     margin-right: 0;
   }
 }
@@ -260,7 +270,7 @@ input#invitation_link {
   // hide on smaller screens
   display: none;
 
-  @include at-media('tablet') {
+  @include at-media("tablet") {
     display: block;
   }
 }
@@ -269,7 +279,7 @@ input#invitation_link {
   height: 3rem;
   margin-top: 0 !important;
 
-  @include at-media('tablet') {
+  @include at-media("tablet") {
     border-radius: 0 0.25rem 0.25rem 0;
     border-left: none;
   }
@@ -295,12 +305,12 @@ input#invitation_link {
 .subheader-row {
   > th {
     font-weight: bold;
-    background-color: color('gray-cool-10');
+    background-color: color("gray-cool-10");
   }
 }
 
 .usa-table--borderless .subheader-row th {
-  background-color: color('gray-cool-10');
+  background-color: color("gray-cool-10");
 }
 
 /*
