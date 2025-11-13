@@ -1,0 +1,77 @@
+---
+http_interactions:
+- request:
+    method: get
+    uri: https://api-sandbox.argyle.com/v2/employer-search?q=blahblahblah&status=issues
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Content-Type:
+      - application/json
+      Authorization:
+      - Basic <ARGYLE_BASIC_AUTH>
+      User-Agent:
+      - Faraday v2.9.2
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Accept:
+      - "*/*"
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Date:
+      - Thu, 13 Nov 2025 14:32:46 GMT
+      Content-Type:
+      - application/json
+      Transfer-Encoding:
+      - chunked
+      Connection:
+      - keep-alive
+      Access-Control-Allow-Origin:
+      - "*"
+      Cache-Control:
+      - no-cache, no-store, max-age=0, must-revalidate
+      Expires:
+      - '0'
+      Pragma:
+      - no-cache
+      Strict-Transport-Security:
+      - max-age=31536000; includeSubDomains
+      Vary:
+      - Accept-Encoding,Origin
+      X-Client-Id:
+      - '018f0834-d69a-879b-05cb-ddde033024f0'
+      X-Content-Type-Options:
+      - nosniff
+      X-Frame-Options:
+      - DENY
+      X-Trace-Id:
+      - bb084d56-99d0-43c4-8053-a9d359d6feb1
+      X-Xss-Protection:
+      - '0'
+      Via:
+      - 1.1 google
+      Cf-Cache-Status:
+      - DYNAMIC
+      Server:
+      - cloudflare
+      Set-Cookie:
+      - __cf_bm=3JGBEXQMlRyDs4YBqbkn171W7B1BWuWILdmk3qQhDSc-1763044366.0956345-1.0.1.1-utzYKzxpkv6j4UfWY_HR.LWEJ2_EBDfhT1314IoleB.wtKEyeyVN09Vu_kr2b7kMHD7eWjYvCztjWlquaL0f7pH.J9a4dbmlwTb5gSudTtDIN6HXjOwiDgCupby_KQUb;
+        HttpOnly; Secure; Path=/; Domain=argyle.com; Expires=Thu, 13 Nov 2025 15:02:46
+        GMT
+      Cf-Ray:
+      - 99defaf81b843b35-IAD
+    body:
+      encoding: ASCII-8BIT
+      string: '{"results":[{"id":"item_000109935","name":"Blac, Inc.","logo_url":"https://res.cloudinary.com/argyle-media/image/upload/v1688558020/partner-logos/letter_b.png","kind":"employer","mapping_status":"unmapped","status":"healthy"},{"id":"item_000129255","name":"Black
+        & Company","logo_url":"https://res.cloudinary.com/argyle-media/image/upload/v1688558020/partner-logos/letter_b.png","kind":"employer","mapping_status":"verified","status":"healthy"},{"id":"item_000005633","name":"Blair
+        & Company","logo_url":"https://res.cloudinary.com/argyle-media/image/upload/v1612210468/partner-logos/bluestembrands_blair.png","kind":"employer","mapping_status":"verified","status":"healthy"},{"id":"item_000056557","name":"Blake
+        Group Holdings","logo_url":"https://res.cloudinary.com/argyle-media/image/upload/v1688558020/partner-logos/letter_b.png","kind":"employer","mapping_status":"unmapped","status":"healthy"},{"id":"item_000245172","name":"Blank
+        & Co.","logo_url":"https://res.cloudinary.com/argyle-media/image/upload/v1688558020/partner-logos/letter_b.png","kind":"employer","mapping_status":"mapped","status":"healthy"},{"id":"item_000194037","name":"Blaze
+        Holdings LLC","logo_url":"https://res.cloudinary.com/argyle-media/image/upload/v1688558020/partner-logos/letter_b.png","kind":"employer","mapping_status":"unmapped","status":"healthy"},{"id":"item_000017650","name":"Group
+        Black","logo_url":"https://res.cloudinary.com/argyle-media/image/upload/v1590491285/partner-logos/group_black.png","kind":"employer","mapping_status":"verified","status":"healthy"}]}'
+  recorded_at: Thu, 13 Nov 2025 14:32:44 GMT
+recorded_with: VCR 6.3.1
