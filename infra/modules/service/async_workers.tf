@@ -19,7 +19,7 @@ resource "aws_ecs_service" "solid_queue" {
 
 
 resource "aws_ecs_task_definition" "solid_queue" {
-  family             = var.service_name
+  family             = "${var.service_name}-solid_queue"
   execution_role_arn = aws_iam_role.task_executor.arn
   task_role_arn      = aws_iam_role.app_service.arn
 
