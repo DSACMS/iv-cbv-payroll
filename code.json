@@ -1,0 +1,77 @@
+{
+  "name": "iv-cbv-payroll",
+  "version": "",
+  "description": "Consent-Based Verification (CBV) is a prototype that allows benefit applicants to verify their income directly using payroll providers. It is currently being piloted for testing and validation purposes.",
+  "longDescription": "",
+  "status": "Production",
+  "permissions": {
+    "licenses": [
+      {
+        "name": "CC0-1.0",
+        "URL": "https://github.com/DSACMS/iv-cbv-payroll/blob/main/LICENSE"
+      }
+    ],
+    "usageType": ["openSource"],
+    "exemptionText": ""
+  },
+  "organization": "Centers for Medicare & Medicaid Services",
+  "repositoryURL": "https://github.com/DSACMS/iv-cbv-payroll",
+  "repositoryHost": "github",
+  "repositoryVisibility": "public",
+  "homepageURL": "",
+  "downloadURL": "",
+  "disclaimerURL": "",
+  "disclaimerText": "",
+  "vcs": "git",
+  "laborHours": 13334,
+  "reuseFrequency": {
+    "forks": 8,
+    "clones": 0
+  },
+  "platforms": ["web"],
+  "categories": [],
+  "softwareType": "standalone/web",
+  "languages": [
+    "Ruby",
+    "HCL",
+    "HTML",
+    "Shell",
+    "JavaScript",
+    "Makefile",
+    "Jupyter Notebook",
+    "TypeScript",
+    "Python",
+    "Dockerfile",
+    "SCSS",
+    "Go",
+    "CSS"
+  ],
+  "maintenance": "contract",
+  "contractNumber": [],
+  "SBOM": "https://github.com/DSACMS/iv-cbv-payroll/network/dependencies",
+  "relatedCode": [],
+  "reusedCode": [],
+  "partners": [],
+  "date": {
+    "created": "2024-04-22T22:34:18Z",
+    "lastModified": "2025-10-09T14:15:20Z",
+    "metaDataLastUpdated": "2025-10-09T14:15:20Z"
+  },
+  "tags": [],
+  "contact": {
+    "email": "",
+    "name": ""
+  },
+  "feedbackMechanism": "https://github.com/DSACMS/iv-cbv-payroll/issues",
+  "AIUseCaseID": "0",
+  "localisation": false,
+  "repositoryType": "application",
+  "userInput": true,
+  "fismaLevel": "",
+  "group": "CMS/OA/DSAC",
+  "projects": ["income-verification-as-a-service"],
+  "systems": [],
+  "subsetInHealthcare": ["policy", "medicaid"],
+  "userType": ["patients", "government"],
+  "maturityModelTier": 3
+}
