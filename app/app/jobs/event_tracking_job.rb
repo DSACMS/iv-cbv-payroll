@@ -17,6 +17,7 @@ class EventTrackingJob < ApplicationJob
       attributes[:device_name] = device_detector.device_name
       attributes[:device_type] = device_detector.device_type
       attributes[:browser] = device_detector.name
+      attributes[:is_bot] = device_detector.bot?
     end
 
     event_tracker = MixpanelEventTracker.new
