@@ -1,3 +1,7 @@
+# Skip Shoryuken initialization in test environment
+# Tests don't need actual SQS connectivity
+return if Rails.env.test?
+
 require "shoryuken"
 require "aws-sdk-sqs"
 

@@ -2,9 +2,9 @@ require 'rails_helper'
 
 RSpec.describe ReportViewHelper, type: :helper do
   describe '#format_hours' do
-    it "rounds to the nearest tenth" do
-      expect(helper.format_hours(57.3611)).to eq(57.4)
-      expect(helper.format_hours(57.3411)).to eq(57.3)
+    it "rounds to the nearest hundredth" do
+      expect(helper.format_hours(57.3611)).to eq(57.36)
+      expect(helper.format_hours(57.3451)).to eq(57.35)
     end
 
     it "ignores non numbers" do

@@ -1,7 +1,7 @@
 module ReportViewHelper
   def format_hours(hour)
     return hour unless Float(hour, exception: false).present?
-    hour.to_f.round(1)
+    hour.to_f.round(2)
   end
 
   def federal_cents_per_mile(year)

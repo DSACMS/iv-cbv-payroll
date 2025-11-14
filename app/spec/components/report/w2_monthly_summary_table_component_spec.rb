@@ -154,9 +154,9 @@ RSpec.describe Report::W2MonthlySummaryTableComponent, type: :component do
         subject = render_inline(described_class.new(argyle_report, payroll_account))
 
         expect(subject.css("thead tr.subheader-row th:nth-child(4)").to_html).to include "Total hours worked"
-        expect(subject.css("tbody tr:nth-child(1) td:nth-child(4)").to_html).to include "65.6"
-        expect(subject.css("tbody tr:nth-child(2) td:nth-child(4)").to_html).to include "117.7"
-        expect(subject.css("tbody tr:nth-child(3) td:nth-child(4)").to_html).to include "158.9"
+        expect(subject.css("tbody tr:nth-child(1) td:nth-child(4)").to_html).to include "65.59"
+        expect(subject.css("tbody tr:nth-child(2) td:nth-child(4)").to_html).to include "117.69"
+        expect(subject.css("tbody tr:nth-child(3) td:nth-child(4)").to_html).to include "158.89"
       end
 
       it "renders table caption" do
