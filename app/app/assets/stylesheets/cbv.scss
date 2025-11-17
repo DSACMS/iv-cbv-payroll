@@ -118,6 +118,38 @@ html {
   }
 }
 
+// header nav behavior and animation
+.usa-nav {
+  .usa-nav__primary-item {
+    position: relative;
+
+    a {
+      position: relative;
+      color: #005ea2;
+
+      &::after {
+        content: "";
+        position: absolute;
+        left: 1rem;
+        right: 1rem;
+        bottom: -0.25rem;
+        height: 0.25rem;
+        background-color: transparent;
+        transition: all 0.2s ease-out;
+      }
+
+      &:hover::after,
+      &.usa-current::after {
+        background-color: #005ea2; // important for consistently showing bottom bar
+      }
+
+      &:hover {
+        color: #1a4480;
+      }
+    }
+  }
+}
+
 /*
  * Footer
  */
@@ -151,7 +183,7 @@ html {
 
 .cbv-row-highlight td,
 .cbv-row-highlight th {
-  @include u-bg('yellow-5v');
+  @include u-bg("yellow-5v");
 }
 
 .rotate {
@@ -210,7 +242,7 @@ html {
 .divider {
   width: 125px;
   height: 10px;
-  background-color: #D9E8F6
+  background-color: #d9e8f6;
 }
 
 .large-text {
@@ -234,7 +266,7 @@ html {
   text-align: center;
   word-break: break-word;
 
-  @include at-media('tablet') {
+  @include at-media("tablet") {
     flex-direction: column;
   }
 }
@@ -245,7 +277,7 @@ html {
   @include u-padding(1);
   @include u-border(0.5);
   @include u-radius("pill");
-  @include at-media('tablet') {
+  @include at-media("tablet") {
     margin-right: 0;
   }
 }
@@ -260,7 +292,7 @@ input#invitation_link {
   // hide on smaller screens
   display: none;
 
-  @include at-media('tablet') {
+  @include at-media("tablet") {
     display: block;
   }
 }
@@ -269,7 +301,7 @@ input#invitation_link {
   height: 3rem;
   margin-top: 0 !important;
 
-  @include at-media('tablet') {
+  @include at-media("tablet") {
     border-radius: 0 0.25rem 0.25rem 0;
     border-left: none;
   }
@@ -295,12 +327,12 @@ input#invitation_link {
 .subheader-row {
   > th {
     font-weight: bold;
-    background-color: color('gray-cool-10');
+    background-color: color("gray-cool-10");
   }
 }
 
 .usa-table--borderless .subheader-row th {
-  background-color: color('gray-cool-10');
+  background-color: color("gray-cool-10");
 }
 
 /*
