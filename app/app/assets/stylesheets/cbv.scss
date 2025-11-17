@@ -118,6 +118,40 @@ html {
   }
 }
 
+// header nav behavior and animation
+.usa-nav {
+  .usa-nav__primary-item {
+    position: relative;
+
+    a {
+      position: relative;
+      color: #005ea2;
+
+      &::after {
+        content: "";
+        position: absolute;
+        left: 1rem;
+        right: 1rem;
+        bottom: -0.25rem;
+        height: 0.25rem;
+        background-color: transparent;
+        transition: all 0.2s ease-out;
+      }
+
+      &:hover::after,
+      &.usa-current::after {
+        background-color: #005ea2; // important for consistently showing bottom bar
+        // height: 1rem;
+      }
+
+      &:hover {
+        color: #1a4480;
+      }
+
+    }
+  }
+}
+
 /*
  * Footer
  */
@@ -148,7 +182,6 @@ html {
 .cbv-footer__item {
   @include u-margin-y(2);
 }
-// footer button realignment to match right-most text on header.
 
 .cbv-row-highlight td,
 .cbv-row-highlight th {
