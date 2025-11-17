@@ -58,6 +58,7 @@ Rails.application.routes.draw do
 
     scope "/activities", as: :activities_flow, module: :activities do
       root to: "activities#show"
+      resource :volunteering, only: %i[new create], controller: "volunteering"
     end
 
     scope "/:client_agency_id", module: :caseworker, constraints: { client_agency_id: Regexp.union(Rails.application.config.client_agencies.client_agency_ids) } do

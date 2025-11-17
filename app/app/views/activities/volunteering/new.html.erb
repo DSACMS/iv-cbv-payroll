@@ -1,0 +1,7 @@
+<h1>Volunteering</h1>
+<%= uswds_form_with(model: @volunteering_activity, url: activities_flow_volunteering_path) do |f| %>
+  <%= f.text_field :organization_name %>
+  <%= f.text_field :hours, type: :number %>
+  <%= f.date_picker :date %>
+  <%= f.submit "Add Volunteering Activity" %>
+<% end %>
