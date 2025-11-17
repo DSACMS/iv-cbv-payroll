@@ -5,7 +5,7 @@
         <strong><%= t("shared.pilot_name") %></strong>
       </div>
     </div>
-    <div class="cbv-footer__item grid-col-12 tablet:grid-col-4 footer-button-wrapper-share-feedback  tablet:text-right">
+    <div class="cbv-footer__item grid-col-12 tablet:grid-col-4 tablet:text-right">
       <%= render LinkWithIconComponent.new(
             t("shared.footer.feedback"),
             url: feedbacks_path(referer: request.original_url),
@@ -13,6 +13,6 @@
             class: "usa-button usa-button--outline usa-button--inverse maxw-mobile",
             target: "_blank"
           ) %>
-    </div>
+  </div>
   </div>
 </footer>
