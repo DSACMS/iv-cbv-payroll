@@ -12,11 +12,13 @@
               date_values[:month],
               {
                 field_name: "month",
-                id: "#{field_name}_#{attribute}_month",
                 prefix: "#{field_name}[#{attribute}]",
                 prompt: t("shared.select_placeholder")
               },
-              { class: "usa-select" },
+              {
+                class: "usa-select",
+                id: "#{field_name}_#{attribute}_month"
+              },
             ) %>
       </div>
       <div class="usa-form-group usa-form-group--day">
