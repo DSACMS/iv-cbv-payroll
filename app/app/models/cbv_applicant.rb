@@ -57,18 +57,11 @@ class CbvApplicant < ApplicationRecord
   }
 
   def date_of_birth=(value)
-    if value.is_a?(Hash)
-      day = value["day"].to_i
-      month = value["month"].to_i
-      year = value["year"].to_i
-      self[:date_of_birth] = Date.new(year, month, day) rescue nil
-    else
-      self[:date_of_birth] = parse_date(value)
-    end
+    self[:date_of_birth] = DateFormatter.parse(value)
   end
 
   def snap_application_date=(value)
-    self[:snap_application_date] = parse_date(value)
+    self[:snap_application_date] = DateFormatter.parse(value)
   end
 
   def has_applicant_attribute_missing?
@@ -126,18 +119,6 @@ class CbvApplicant < ApplicationRecord
   end
 
   private
-
-  def parse_date(value)
-    return value if value.is_a?(Date)
-
-    if value.is_a?(String) && value.present?
-      begin
-        Date.strptime(value, "%m/%d/%Y")
-      rescue ArgumentError
-        nil
-      end
-    end
-  end
 
   def get_required_applicant_attributes
     agency_config&.applicant_attributes&.select { |key, attributes| attributes["required"] }&.keys&.map(&:to_sym) || []
