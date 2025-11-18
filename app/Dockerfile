@@ -35,6 +35,8 @@ RUN apt-get update -qq && \
       openssl \
       # CVE-2025-9900 \
       libtiff-dev libtiff6 libtiffxx6 \
+      # CVE-2025-9086
+      curl \
       && \
     rm -rf /var/lib/apt/lists /var/cache/apt/archives
 
