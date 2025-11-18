@@ -11,7 +11,7 @@ class TableCellComponent < ViewComponent::Base
   end
 
   def call
-    tag_type = @is_header? :th : :td
+    tag_type = @is_header ? :th : :td
     content_tag tag_type, content, scope: @scope, data: { label: @data_label }, class: @class_names, colspan: @colspan, **@attributes
   end
 end
