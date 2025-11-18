@@ -119,8 +119,12 @@ RSpec.configure do |config|
   # arbitrary gems may also be filtered via:
   # config.filter_gems_from_backtrace("gem name")
 
+  # ViewComponent helpers
   config.include ViewComponent::TestHelpers, type: :component
   config.include ViewComponent::SystemTestHelpers, type: :component
+  config.include ViewComponentOverrides, type: :component
+
+  # Capybara
   config.include Capybara::RSpecMatchers, type: :component
 
   # Print some helpful debugging info about the last test failure, since
