@@ -56,8 +56,9 @@
           <% end %>
 
           <li class="usa-nav__primary-item">
-            <%= render partial: "help/help_link", locals: { class_name: "usa-nav__link", text: t("shared.header.help"), source: "nav" } %>
+            <%= render partial: "help/help_link", locals: { class: "usa-nav__link", text: t("shared.header.help"), source: "nav" } %> 
           </li>
+          <%# Something wrong with render partial that is not properly adding usa-nav__link %>
 
           <% I18n.available_locales.each do |locale| %>
             <% next if locale == I18n.locale %>
