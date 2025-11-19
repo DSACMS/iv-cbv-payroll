@@ -387,7 +387,11 @@ RSpec.describe Webhooks::Argyle::EventsController, type: :controller do
 
       expect(fake_event_logger)
         .to receive(:track)
-        .with("ApplicantEncounteredArgyleAccountSystemError", anything, anything).exactly(1).times
+        .with("ApplicantEncounteredArgyleAccountSystemError", anything, include(
+          argyle_item_id: "item_000676767",
+          argyle_source: "argyle_sandbox"
+        ))
+        .exactly(1).times
 
       process_webhook("accounts.updated", variant: :system_error)
       payroll_account.reload.webhook_events.reload
