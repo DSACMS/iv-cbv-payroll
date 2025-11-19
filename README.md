@@ -41,7 +41,7 @@ Most developers on the team code using macOS, so we recommend that platform if p
    * Close & re-open your terminal
 
 **The following commands must be run in the app directory**
-1. Install Ruby: `rbenv install`
+1. Install Ruby: `rbenv install` and then `rbenv rehash`
 1. Install NodeJS `nodenv install`
 1. Install Ruby dependencies: `bundle install`
 1. Install JS dependencies
