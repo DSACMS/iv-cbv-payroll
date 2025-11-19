@@ -121,7 +121,7 @@ class Cbv::PaymentDetailsController < Cbv::BaseController
   end
 
   def track_viewed_event
-    return if @payroll_account.nil?
+    return if @payroll_account.nil? || @payroll_account_report.nil?
     event_logger.track(TrackEvent::ApplicantViewedPaymentDetails, request, {
       time: Time.now.to_i,
       cbv_applicant_id: @cbv_flow.cbv_applicant_id,
