@@ -118,6 +118,38 @@ html {
   }
 }
 
+// header nav behavior and animation
+.usa-nav {
+  .usa-nav__primary-item {
+    position: relative;
+
+    a {
+      position: relative;
+      color: #005ea2;
+
+      &::after {
+        content: "";
+        position: absolute;
+        left: 1rem;
+        right: 1rem;
+        bottom: -0.25rem;
+        height: 0.25rem;
+        background-color: transparent;
+        transition: all 0.2s ease-out;
+      }
+
+      &:hover::after,
+      &.usa-current::after {
+        background-color: #005ea2; // important for consistently showing bottom bar
+      }
+
+      &:hover {
+        color: #1a4480;
+      }
+    }
+  }
+}
+
 /*
  * Footer
  */
