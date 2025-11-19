@@ -1,4 +1,4 @@
-class Activities::VolunteeringController < ApplicationController
+class Activities::VolunteeringController < Activities::BaseController
   def new
     @volunteering_activity = VolunteeringActivity.new
   end

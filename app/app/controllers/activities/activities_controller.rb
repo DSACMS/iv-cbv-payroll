@@ -1,4 +1,4 @@
-class Activities::ActivitiesController < ApplicationController
+class Activities::ActivitiesController < Activities::BaseController
   def show
     @activities = VolunteeringActivity.all
   end
