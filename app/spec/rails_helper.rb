@@ -132,12 +132,12 @@ RSpec.configure do |config|
   config.after(js: true) do |test|
     if test.exception.present?
       begin
-        Rails.logger.error "[E2E] Last page accessed: #{URI(page.current_url).path}"
+        Selenium::WebDriver.logger.error "[E2E] Last page accessed: #{URI(page.current_url).path}"
         screenshot_path = Rails.root.join("tmp", "failure_#{test.full_description.gsub(/[^a-z0-9]+/i, "_")}.png")
         page.save_screenshot(screenshot_path)
-        Rails.logger.error "[E2E] Screenshot saved to: #{screenshot_path}"
+        Selenium::WebDriver.logger.error "[E2E] Screenshot saved to: #{screenshot_path}"
       rescue => ex
-        Rails.logger.error "[E2E] Failed to print debug info: #{ex}"
+        Selenium::WebDriver.logger.error "[E2E] Failed to print debug info: #{ex}"
       end
     end
   end
