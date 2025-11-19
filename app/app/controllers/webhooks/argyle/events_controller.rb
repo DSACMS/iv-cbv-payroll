@@ -105,7 +105,9 @@ class Webhooks::Argyle::EventsController < ApplicationController
       connection_status: connection_status,
       argyle_error_code: error_code,
       argyle_error_message: params.dig("data", "resource", "connection", "error_message"),
-      argyle_error_updated_at: params.dig("data", "resource", "connection", "updated_at")
+      argyle_error_updated_at: params.dig("data", "resource", "connection", "updated_at"),
+      argyle_item_id: params.dig("data", "resource", "item"),
+      argyle_source: params.dig("data", "resource", "source")
     })
 
     webhook_event.update(event_outcome: "error")
