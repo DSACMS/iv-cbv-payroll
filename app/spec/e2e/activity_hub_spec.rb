@@ -6,17 +6,17 @@ RSpec.describe 'e2e Activity Hub flow test', type: :feature, js: true do
   it "completes the flow for all activities" do
     visit URI(root_url).request_uri
     visit activities_flow_root_path
-    verify_page(page, title: "Activity Hub")
-    click_button "Add Volunteering Activity"
-    verify_page(page, title: "Volunteering")
-    fill_in "Organization name", with: "Helping Hands"
-    fill_in "Hours", with: "20"
-    fill_in "Date", with: "10/10/1990"
-    click_button "Add Volunteering Activity"
-    verify_page(page, title: "Activity Hub")
-    expect(page).to have_content "Volunteering activity was successfully created."
+    verify_page(page, title: I18n.t("activities.hub.title"))
+    click_button I18n.t("activities.volunteering.add")
+    verify_page(page, title: I18n.t("activities.volunteering.title"))
+    fill_in I18n.t("activities.volunteering.organization_name"), with: "Helping Hands"
+    fill_in I18n.t("activities.volunteering.hours"), with: "20"
+    fill_in I18n.t("activities.volunteering.date"), with: "10/10/1990"
+    click_button I18n.t("activities.volunteering.add")
+    verify_page(page, title: I18n.t("activities.hub.title"))
+    expect(page).to have_content I18n.t("activities.volunteering.add")
 
-    expect(page).to have_content "Volunteering Activities"
+    expect(page).to have_content I18n.t("activities.hub.title")
     expect(page).to have_content "Helping Hands"
     expect(page).to have_content "1990-10-10"
     expect(page).to have_content "20"

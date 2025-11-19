@@ -46,6 +46,17 @@ en:
               invalid_format: Enter an email address in the correct format, like name@example.com
             language:
               invalid_format: Language must be either English (en) or Spanish (es).
+  activities:
+    hub:
+      title: Activity Hub
+    volunteering:
+      add: Add Volunteering Activity
+      created: Volunteering activity was successfully created.
+      date: Date
+      header: Volunteer Activities
+      hours: Hours
+      organization_name: Organization name
+      title: Volunteering
   aggregator_strings:
     deductions:
       401k: 401k

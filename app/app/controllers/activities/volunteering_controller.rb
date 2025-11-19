@@ -6,7 +6,7 @@ class Activities::VolunteeringController < Activities::BaseController
   def create
     @volunteering_activity = VolunteeringActivity.new(volunteering_activity_params)
     if @volunteering_activity.save
-      redirect_to activities_flow_root_path, notice: "Volunteering activity was successfully created."
+      redirect_to activities_flow_root_path, notice: t("activities.volunteering.created")
     else
       render :new
     end
