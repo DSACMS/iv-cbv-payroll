@@ -1,6 +1,5 @@
 <h1><%= t("activities.hub.title") %></h1>
-<h2><%= t("activities.volunteering.header") %></h2>
-<h3><%= t("activities.volunteering.header") %></h3>
+<h3><%= t("activities.volunteering.title") %></h3>
 <%= render TableComponent.new do |t| %>
   <%= @activities.each do |a| %>
     <%= t.with_row a.organization_name, a.hours, a.date %>
