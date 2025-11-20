@@ -1,6 +1,6 @@
 # Code Owners
 * @tdooner (Tom Dooner)
-* @daphnegold  (Daphne Gold)
+* @daphnegold (Daphne Gold)
 * @millerti (Tim Miller)
 
 # Repo Domains
