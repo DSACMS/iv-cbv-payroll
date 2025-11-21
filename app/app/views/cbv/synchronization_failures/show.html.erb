@@ -1,3 +1,4 @@
+<% content_for :title, t(".title") %>
 <h1><%= t(".title") %></h1>
 
 <p>
@@ -14,12 +15,12 @@
 </ol>
 
 <ul class="usa-button-group margin-top-5">
-  <li class="usa-button-group__item">
+  <li class="usa-button-group__item margin-bottom-0">
     <%= link_to t(".back_to_search"), cbv_flow_employer_search_path, class: "usa-button usa-button--outline" %>
   </li>
-  <li class="usa-button-group__item">
+  <li class="usa-button-group__item margin-bottom-0">
     <% if @cbv_flow.has_account_with_required_data? %>
-      <%= link_to t(".continue_to_report"), cbv_flow_applicant_information_path, class: "usa-button" %>
+      <%= link_to t(".continue_to_report"), cbv_flow_other_job_path, class: "usa-button" %>
     <% else %>
       <%= agency_translation("cbv.expired_invitations.show.cta_button_html", agency_url: agency_url) %>
     <% end %>
