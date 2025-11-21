@@ -103,8 +103,8 @@
       </h4>
     <% end %>
     <% if is_caseworker && summary[:has_identity_data] %>
-      <%= table.with_data_point(:client_full_name, summary[:identity].full_name) %>
-      <%= table.with_data_point(:ssn, summary[:identity].ssn) %>
+      <%= table.with_data_point(:client_full_name, summary[:identity]&.full_name) %>
+      <%= table.with_data_point(:ssn, summary[:identity]&.ssn) %>
     <% end %>
     <% if employment&.employer_name %>
       <%= table.with_data_point(:employer_phone, employment.employer_phone_number) %>
@@ -114,15 +114,15 @@
       <%= table.with_data_point(:employment_end_date, employment.termination_date) %>
     <% end %>
     <% if summary[:income]&.pay_frequency && is_w2_worker %>
-      <%= table.with_data_point(:pay_frequency, summary[:income].pay_frequency&.humanize) %>
-      <%= table.with_data_point(:hourly_rate, summary[:income].compensation_amount, summary[:income].compensation_unit) %>
+      <%= table.with_data_point(:pay_frequency, summary[:income]&.pay_frequency&.humanize) %>
+      <%= table.with_data_point(:hourly_rate, summary[:income]&.compensation_amount, summary[:income]&.compensation_unit) %>
     <% end %>
   <% end %>
 
   <% if is_w2_worker %>
     <%= render(Report::W2MonthlySummaryTableComponent.new(@aggregator_report, account_id, is_caseworker: is_caseworker, is_responsive: false, is_pdf: true, show_footnote: is_first_w2_job)) %>
     <h3><%= t(".pdf.shared.payments_and_deductions_header", employer_name: employer_name) %></h3>
-    <% summary[:paystubs].each do |paystub| %>
+    <% summary[:paystubs]&.each do |paystub| %>
       <%= render(TableComponent.new(class_names: "payment-details-table")) do |table| %>
         <%= table.with_subheader_row(class_names: "subheader-row base-lightest") do |row| %>
           <%= row.with_data_cell(is_header: true, class_names: "text-nowrap")
@@ -132,7 +132,7 @@
         <% end %>
         <%= table.with_data_point(:pay_date, paystub.pay_date) %>
         <% if summary[:income]&.pay_frequency %>
-          <%= table.with_data_point(:pay_period_with_frequency, paystub.start, paystub.end, summary[:income].pay_frequency&.humanize, highlight: is_caseworker) %>
+          <%= table.with_data_point(:pay_period_with_frequency, paystub.start, paystub.end, summary[:income]&.pay_frequency&.humanize, highlight: is_caseworker) %>
         <% else %>
           <%= table.with_data_point(:pay_period_with_frequency, paystub.start, paystub.end, t("cbv.payment_details.show.frequency_unknown"), highlight: is_caseworker) %>
         <% end %>
