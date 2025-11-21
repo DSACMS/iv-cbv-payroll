@@ -183,7 +183,7 @@ RSpec.describe Aggregators::AggregatorReports::AggregatorReport, type: :service 
       result = report.income_report
       expect(result[:employments].first[:paystubs]).to be_nil
     end
-    
+
     context "when a paystub has null gross_pay_amount" do
       before do
         report.paystubs.first.gross_pay_amount = nil
