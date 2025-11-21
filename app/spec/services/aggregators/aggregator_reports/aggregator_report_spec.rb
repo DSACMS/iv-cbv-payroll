@@ -163,6 +163,27 @@ RSpec.describe Aggregators::AggregatorReports::AggregatorReport, type: :service 
       )
     end
 
+    it 'does not crash when summarize_by_employer returns nil for various keys' do
+      allow(report).to receive(:summarize_by_employer).and_return({
+        "some_account_id" => {
+          total: 0,
+          has_income_data: false,
+          has_employment_data: false,
+          has_identity_data: false,
+          employment: nil,
+          income: nil,
+          identity: nil,
+          paystubs: nil,
+          gigs: nil
+        }
+      })
+
+      # Expect no error when calling income_report
+      expect { report.income_report }.not_to raise_error
+      result = report.income_report
+      expect(result[:employments].first[:paystubs]).to be_nil
+    end
+    
     context "when a paystub has null gross_pay_amount" do
       before do
         report.paystubs.first.gross_pay_amount = nil

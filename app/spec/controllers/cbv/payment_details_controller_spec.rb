@@ -148,6 +148,25 @@ RSpec.describe Cbv::PaymentDetailsController do
       end
     end
 
+    context "when the aggregator report is invalid" do
+      let(:invalid_report) { instance_double(Aggregators::AggregatorReports::ArgyleReport, valid?: false) }
+
+      before do
+        allow(controller).to receive(:set_aggregator_report_for_account) do |_pa|
+          controller.instance_variable_set(:@aggregator_report, invalid_report)
+        end
+      end
+
+      it "redirects without tracking ApplicantViewedPaymentDetails event" do
+        allow(EventTrackingJob).to receive(:perform_later).with(TrackEvent::CbvPageView, anything, anything)
+        expect(EventTrackingJob).not_to receive(:perform_later).with(TrackEvent::ApplicantViewedPaymentDetails, anything, anything)
+
+        get :show, params: { user: { account_id: account_id } }
+
+        expect(response).to redirect_to(cbv_flow_synchronization_failures_path)
+      end
+    end
+
     context "for an account that doesn't support income data" do
       let(:supported_jobs) { %w[paystubs employment] }
 

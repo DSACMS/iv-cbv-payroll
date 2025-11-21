@@ -68,11 +68,11 @@ module Aggregators::AggregatorReports
         report[:employments] = summarize_by_employer.map do |_, summary|
           cbv_flow = payroll_accounts.first.cbv_flow
           {
-            applicant_full_name: summary[:identity].full_name,
-            applicant_ssn: summary[:identity].ssn,
+            applicant_full_name: summary[:identity]&.full_name,
+            applicant_ssn: summary[:identity]&.ssn,
             applicant_extra_comments: cbv_flow.additional_information["comment"],
-            employer_name: summary[:employment].employer_name,
-            employer_phone: summary[:employment].employer_phone_number,
+            employer_name: summary[:employment]&.employer_name,
+            employer_phone: summary[:employment]&.employer_phone_number,
             employer_address: summary[:employment]&.employer_address,
             employment_status: summary[:employment]&.status,
             employment_type: summary[:employment]&.employment_type,
@@ -81,7 +81,7 @@ module Aggregators::AggregatorReports
             pay_frequency: summary[:income]&.pay_frequency,
             compensation_amount: summary[:income]&.compensation_amount,
             compensation_unit: summary[:income]&.compensation_unit,
-            paystubs: summary[:paystubs].map do |paystub|
+            paystubs: summary[:paystubs]&.map do |paystub|
               {
                 pay_date: paystub.pay_date,
                 pay_period_start: paystub.pay_period_start,
