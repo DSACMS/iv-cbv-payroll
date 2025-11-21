@@ -10,7 +10,7 @@ class Api::InvitationsController < ApplicationController
 
     errors = @cbv_flow_invitation.errors
     if errors.any?
-      return render json: errors_to_json(errors), status: :unprocessable_entity
+      return render json: errors_to_json(errors), status: :unprocessable_content
     end
 
     render json: {

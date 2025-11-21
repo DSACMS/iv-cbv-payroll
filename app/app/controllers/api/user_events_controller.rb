@@ -35,7 +35,7 @@ class Api::UserEventsController < ApplicationController
     raise ex unless Rails.env.production?
 
     Rails.logger.error "Unable to process user action: #{ex}"
-    render json: { status: :error }, status: :unprocessable_entity
+    render json: { status: :error }, status: :unprocessable_content
   end
 
   private

@@ -57,7 +57,7 @@ RSpec.describe Api::UserEventsController, type: :controller do
       it "returns an error response in production" do
         allow(Rails.env).to receive(:production?).and_return(true)
         post :user_action, params: invalid_params
-        expect(response).to have_http_status(:unprocessable_entity)
+        expect(response).to have_http_status(:unprocessable_content)
         expect(JSON.parse(response.body)).to eq({ "status" => "error" })
       end
 
