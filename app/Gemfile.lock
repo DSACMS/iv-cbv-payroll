@@ -327,7 +327,8 @@ GEM
       logger
       rack (>= 2.2.3)
       rack-protection
-    omniauth-azure-activedirectory-v2 (2.4.0)
+    omniauth-entra-id (3.1.1)
+      jwt (>= 2.9.2)
       omniauth-oauth2 (~> 1.8)
     omniauth-oauth2 (1.8.0)
       oauth2 (>= 1.4, < 3)
@@ -626,7 +627,7 @@ DEPENDENCIES
   net-sftp
   net-ssh
   newrelic_rpm
-  omniauth-azure-activedirectory-v2
+  omniauth-entra-id
   omniauth-rails_csrf_protection (~> 1.0)
   pdf-reader (~> 2.12.0)
   pg (~> 1.1)
