@@ -56,6 +56,11 @@ Rails.application.routes.draw do
       get "session/timeout", to: "sessions#timeout", as: :session_timeout
     end
 
+    scope "/activities", as: :activities_flow, module: :activities do
+      root to: "activities#show"
+      resource :volunteering, only: %i[new create], controller: "volunteering"
+    end
+
     scope "/:client_agency_id", module: :caseworker, constraints: { client_agency_id: Regexp.union(Rails.application.config.client_agencies.client_agency_ids) } do
       get "/sso", to: redirect("/%{client_agency_id}") # Temporary: Remove once people get used to going to /:client_agency_id as the login destination.
       root to: "entries#index", as: :new_user_session

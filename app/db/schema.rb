@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.2].define(version: 2025_11_06_143433) do
+ActiveRecord::Schema[7.2].define(version: 2025_11_17_195859) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pgcrypto"
   enable_extension "plpgsql"
@@ -230,6 +230,14 @@ ActiveRecord::Schema[7.2].define(version: 2025_11_06_143433) do
     t.boolean "is_service_account", default: false
     t.index ["email", "client_agency_id"], name: "index_users_on_email_and_client_agency_id", unique: true
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
+  end
+
+  create_table "volunteering_activities", force: :cascade do |t|
+    t.string "organization_name"
+    t.date "date"
+    t.integer "hours"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
   end
 
   create_table "webhook_events", force: :cascade do |t|
