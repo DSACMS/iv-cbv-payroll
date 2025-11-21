@@ -44,7 +44,7 @@ class Api::ArgyleController < ApplicationController
   def resume_previous_argyle_account_connection
     item_id = params[:item_id]
     unless item_id.present?
-      return render json: { status: :error, message: "Invalid item_id" }, status: :unprocessable_entity
+      return render json: { status: :error, message: "Invalid item_id" }, status: :unprocessable_content
     end
 
     # If the user ID is not yet set, there is no previous argyle session to resume

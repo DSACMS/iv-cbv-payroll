@@ -113,7 +113,7 @@ RSpec.describe Api::InvitationsController do
       it "returns unprocessable entity with structured error response" do
         post :create, params: invalid_params
 
-        expect(response).to have_http_status(:unprocessable_entity)
+        expect(response).to have_http_status(:unprocessable_content)
         parsed_response = JSON.parse(response.body)
 
         # Check for structured error response
@@ -166,7 +166,7 @@ RSpec.describe Api::InvitationsController do
       it "returns unprocessable entity" do
         post :create, params: invalid_user_params
 
-        expect(response).to have_http_status(:unprocessable_entity)
+        expect(response).to have_http_status(:unprocessable_content)
         parsed_response = JSON.parse(response.body)
         expect(parsed_response).to have_key("errors")
         expect(parsed_response["errors"].map { |e| e["field"] }).to include("language")

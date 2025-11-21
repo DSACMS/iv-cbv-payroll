@@ -27,7 +27,7 @@ class Cbv::ApplicantInformationsController < Cbv::BaseController
 
     track_applicant_information_error_event(error_messages.html_safe)
 
-    render :show, status: :unprocessable_entity
+    render :show, status: :unprocessable_content
 
     # note: if we TRULY want that rescue behavior, keep it here. i still think this was a legacy of the save! hack, but it can go here
   rescue Exception => e

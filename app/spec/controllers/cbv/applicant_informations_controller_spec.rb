@@ -38,7 +38,7 @@ RSpec.describe Cbv::ApplicantInformationsController, type: :controller do
           }
         }
 
-        expect(response).to have_http_status(:unprocessable_entity)
+        expect(response).to have_http_status(:unprocessable_content)
         expect(response.body).not_to include(I18n.t("cbv.applicant_informations.sandbox.fields.first_name.blank"))
         expect(response.body).not_to include(I18n.t("cbv.applicant_informations.sandbox.fields.middle_name.blank"))
         expect(response.body).to include(I18n.t("cbv.applicant_informations.sandbox.fields.last_name.blank"))
