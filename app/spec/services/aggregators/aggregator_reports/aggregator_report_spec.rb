@@ -162,5 +162,15 @@ RSpec.describe Aggregators::AggregatorReports::AggregatorReport, type: :service 
         ]
       )
     end
+
+    context "when a paystub has null gross_pay_amount" do
+      before do
+        report.paystubs.first.gross_pay_amount = nil
+      end
+
+      it "coerces to zero (because this field is required for LA)" do
+        expect(report.income_report[:employments].first[:paystubs].first[:pay_gross]).to eq(0)
+      end
+    end
   end
 end
