@@ -107,11 +107,11 @@
       <%= table.with_data_point(:ssn, summary[:identity]&.ssn) %>
     <% end %>
     <% if employment&.employer_name %>
-      <%= table.with_data_point(:employer_phone, employment.employer_phone_number) %>
-      <%= table.with_data_point(:employer_address, employment.employer_address) %>
-      <%= table.with_data_point(:employment_status, employment.status) %>
-      <%= table.with_data_point(:employment_start_date, employment.start_date) %>
-      <%= table.with_data_point(:employment_end_date, employment.termination_date) %>
+      <%= table.with_data_point(:employer_phone, employment&.employer_phone_number) %>
+      <%= table.with_data_point(:employer_address, employment&.employer_address) %>
+      <%= table.with_data_point(:employment_status, employment&.status) %>
+      <%= table.with_data_point(:employment_start_date, employment&.start_date) %>
+      <%= table.with_data_point(:employment_end_date, employment&.termination_date) %>
     <% end %>
     <% if summary[:income]&.pay_frequency && is_w2_worker %>
       <%= table.with_data_point(:pay_frequency, summary[:income]&.pay_frequency&.humanize) %>
@@ -148,7 +148,7 @@
         <%= table.with_data_point(:pay_gross_ytd, paystub.gross_pay_ytd) %>
       <% end %>
     <% end %>
-    <% if summary[:paystubs].empty? %>
+    <% if summary[:paystubs]&.empty? %>
       <%= render(TableComponent.new) do |table| %>
         <%= table.with_header do %>
           <h4 class="margin-0">
