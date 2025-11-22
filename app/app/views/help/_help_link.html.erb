@@ -1,4 +1,5 @@
 <%= link_to text, "#help-modal", {
+  class: local_assigns[:class_name],
   aria: { controls: "help-modal" },
   data: {
     open_modal: true,
