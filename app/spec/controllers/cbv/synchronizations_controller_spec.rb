@@ -103,5 +103,17 @@ RSpec.describe Cbv::SynchronizationsController do
         expect(response.body).to include("turbo-stream action=\"redirect\"")
       end
     end
+
+    context "when the account belongs to a different cbv flow" do
+      let(:another_cbv_flow) { create(:cbv_flow, :invited) }
+      let!(:another_flow_payroll_account) { create(:payroll_account, :pinwheel_fully_synced, cbv_flow: another_cbv_flow) }
+
+      it "returns unauthorized and redirects to synchronization failures" do
+        patch :update, params: { user: { account_id: another_flow_payroll_account.aggregator_account_id } }, as: :turbo_stream
+
+        expect(response.body).to include("cbv/synchronization_failures")
+        expect(response.body).to include("turbo-stream action=\"redirect\"")
+      end
+    end
   end
 end
