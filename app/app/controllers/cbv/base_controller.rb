@@ -1,4 +1,4 @@
-class Cbv::BaseController < ApplicationController
+class Cbv::BaseController < FlowController
   ALPHANUMERIC_PREFIX_REGEXP = /^([a-zA-Z0-9]+)[^a-zA-Z0-9]*$/
 
   before_action :set_cbv_origin, :set_cbv_flow, :ensure_cbv_flow_not_yet_complete, :prevent_back_after_complete, :capture_page_view
