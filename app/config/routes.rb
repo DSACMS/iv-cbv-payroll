@@ -64,6 +64,7 @@ Rails.application.routes.draw do
       resource :summary, only: %i[show], controller: "summary"
       resource :submit, only: %i[show update], controller: "submit"
       resource :success, only: %i[show], controller: "success"
+      resource :education, controller: "education"
     end
 
     scope "/:client_agency_id", module: :caseworker, constraints: { client_agency_id: Regexp.union(Rails.application.config.client_agencies.client_agency_ids) } do

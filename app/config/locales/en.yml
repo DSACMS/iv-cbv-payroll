@@ -86,6 +86,11 @@ en:
       hours: Hours
       organization_name: Organization name
       title: Volunteering
+    education:
+      title: Education
+      add: Add Education Activities
+    identity:
+      title: Identity
   aggregator_strings:
     deductions:
       401k: 401k

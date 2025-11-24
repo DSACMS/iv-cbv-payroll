@@ -1,11 +1,23 @@
 <% content_for :title, t("activities.hub.title") %>
 
 <h1>
-  <%= t("activities.hub.title") %>
+    <%= t("activities.hub.title") %>
 </h1>
 <p>
-  <%= t("activities.hub.description") %>
+    <%= t("activities.hub.description") %>
 </p>
+
+<%= uswds_form_with action: "", method: "get" do |f| %>
+    <%= f.text_field :first_name %>
+    <%= f.text_field :last_name %>
+    <%= f.date_picker :date_of_birth %>
+
+    <section class="margin-bottom-5">
+        <h2><%= t("activities.education.title") %></h2>
+        <%= f.submit t("activities.education.add"), name: nil, formaction: new_activities_flow_education_path, class: "btn btn-primary usa-button margin-y-5" %>
+    </section>
+<% end %>
+
 
 <section class="margin-bottom-5">
   <h2>
