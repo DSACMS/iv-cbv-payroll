@@ -181,6 +181,12 @@ class Cbv::BaseController < ApplicationController
     invitation.cbv_applicant.income_changes.map { |income_change| income_change.with_indifferent_access[:member_name] }.uniq.count
   end
 
+  def ensure_payroll_account_linked
+    return if @cbv_flow&.has_account_with_required_data?
+
+    redirect_to cbv_flow_synchronization_failures_path
+  end
+
   def reset_cbv_session!
     session[:cbv_flow_id] = nil
   end
