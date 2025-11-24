@@ -39,6 +39,7 @@ See [Community Guidelines](#iv-cbv-payroll-open-source-community-guidelines) on 
 - @bencalegari (Ben Calegari)
 - @j-shilling (Jake Shilling)
 - @imhben (Imhotep Benjamin)
+- @dx-gov (Jan Vorisek)
 
 ### Maintainers
 
@@ -50,6 +51,7 @@ See [Community Guidelines](#iv-cbv-payroll-open-source-community-guidelines) on 
 - @bencalegari (Ben Calegari)
 - @j-shilling (Jake Shilling)
 - @imhben (Imhotep Benjamin)
+- @dx-gov (Jan Vorisek)
 
 ### Contributors
 
