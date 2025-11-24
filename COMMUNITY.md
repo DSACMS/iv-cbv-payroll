@@ -11,21 +11,21 @@ Roles to include, but not limited to: Project Owner, Technical Lead, Developers/
 | Role   | Name    | Affiliation    |
 | :----- | :------ | :------------- |
 | Product Manager | Ming Ligh | CMS |
-| Contracting Officer's Representative | Mark DeZalia | CMS |
+| Product Manager | Jacob Worrell | CMS |
+| Designer | Seth Owings | CMS |
 | Software Engineer | Jake Shilling | CMS |
 | Software Engineer | Imhotep Benjamin | CMS |
 | Software Engineer | Jan Vorisek | CMS |
+| Contracting Officer's Representative | Mark DeZalia | CMS |
+| Product Manager | Allyse Parekh | CMS |
+| Designer | Paul Gehrig | Nava |
 | Software Engineer | Tom Dooner | Nava |
 | Software Engineer | Daphne Gold | Nava |
 | Software Engineer | Tim Miller | Nava |
 | Software Engineer | Ben Calegari | Nava |
-| Designer | Paul Gehrig | Nava |
-| Designer | Makaela Stephens | Nava |
-
-<!-- TODO: A CODEOWNERS.md file is available in .github to define individuals responsible for specific parts of the codebase. Provide a reference to this file if used:
+| Open Source Lead | Nočnica (Nica) Mellifera | Nava |
 
 See [CODEOWNERS.md](.github/CODEOWNERS.md) for a list of those responsible for the code and documentation in this repository.
--->
 
 See [Community Guidelines](#iv-cbv-payroll-open-source-community-guidelines) on principles and guidelines for participating in this open source project.
 
