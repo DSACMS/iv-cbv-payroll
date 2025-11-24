@@ -1,7 +1,7 @@
 require "rails_helper"
 
 RSpec.describe Cbv::OtherJobsController do
-  let(:cbv_flow) { create(:cbv_flow, :invited) }
+  let(:cbv_flow) { create(:cbv_flow, :invited, :with_pinwheel_account) }
 
   before do
     session[:cbv_flow_id] = cbv_flow.id
@@ -26,6 +26,19 @@ RSpec.describe Cbv::OtherJobsController do
       expect(response.body).to include(I18n.t("cbv.other_jobs.show.header_bullet_4"))
       expect(response.body).to include(I18n.t("cbv.other_jobs.show.radio_yes", agency_acronym: I18n.t("shared.agency_acronym.sandbox")))
       expect(response.body).to include(I18n.t("cbv.other_jobs.show.radio_no"))
+    end
+
+    context "when payroll accounts are missing" do
+      let(:cbv_flow_without_accounts) { create(:cbv_flow, :invited) }
+
+      before do
+        session[:cbv_flow_id] = cbv_flow_without_accounts.id
+      end
+
+      it "redirects to synchronization failures" do
+        get :show
+        expect(response).to redirect_to(cbv_flow_synchronization_failures_path)
+      end
     end
   end
 
@@ -75,6 +88,19 @@ RSpec.describe Cbv::OtherJobsController do
 
       expect(EventTrackingJob).not_to receive(:perform_later).with("ApplicantContinuedFromOtherJobsPage", anything, anything)
       patch :update, params: { cbv_flow: { has_other_jobs: '' } }
+    end
+
+    context "when payroll accounts are missing" do
+      let(:cbv_flow_without_accounts) { create(:cbv_flow, :invited) }
+
+      before do
+        session[:cbv_flow_id] = cbv_flow_without_accounts.id
+      end
+
+      it "redirects to synchronization failures" do
+        patch :update, params: { cbv_flow: { has_other_jobs: 'true' } }
+        expect(response).to redirect_to(cbv_flow_synchronization_failures_path)
+      end
     end
 
     context "when event tracking fails in production" do
