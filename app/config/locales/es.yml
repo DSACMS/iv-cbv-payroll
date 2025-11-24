@@ -186,7 +186,7 @@ es:
         error: Debe marcar la casilla de «acuerdo» para proceder.
       show:
         checkbox_large_text:
-          default: Marque esta casilla para permitirnos acceder a información sobre sus ingresos y compartirla con %{agency_full_name}.
+          default: Marque esta casilla si nos da permiso para acceder a la información de pago de su empleador y compartirla con %{agency_full_name}.
         checkbox_small_text:
           default: 'Usaremos esta información solamente para determinar sus beneficios. No la compartiremos externamente. '
         common_questions_header: Preguntas más frecuentes
