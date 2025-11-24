@@ -1,4 +1,6 @@
 class Cbv::OtherJobsController < Cbv::BaseController
+  before_action :ensure_payroll_account_linked
+
   def show
   end
 
