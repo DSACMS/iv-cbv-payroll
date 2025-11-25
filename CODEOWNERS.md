@@ -1,7 +1,11 @@
 # Code Owners
 * @tdooner (Tom Dooner)
-* @daphnegold  (Daphne Gold)
+* @daphnegold (Daphne Gold)
 * @millerti (Tim Miller)
+* @bencalegari (Ben Calegari)
+* @j-shilling (Jake Shilling)
+* @imhben (Imhotep Benjamin)
+* @dx-gov (Jan Vorisek)
 
 # Repo Domains
 The top level of this repository contains subfolders for different projects with different ownership.

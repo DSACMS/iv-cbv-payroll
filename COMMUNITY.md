@@ -10,12 +10,22 @@ Roles to include, but not limited to: Project Owner, Technical Lead, Developers/
 
 | Role   | Name    | Affiliation    |
 | :----- | :------ | :------------- |
-| {role} | {names} | {affiliations} |
-
-<!-- TODO: A CODEOWNERS.md file is available in .github to define individuals responsible for specific parts of the codebase. Provide a reference to this file if used:
+| Product Manager | Ming Ligh | CMS |
+| Product Manager | Jacob Worrell | CMS |
+| Designer | Seth Owings | CMS |
+| Software Engineer | Jake Shilling | CMS |
+| Software Engineer | Imhotep Benjamin | CMS |
+| Software Engineer | Jan Vorisek | CMS |
+| Contracting Officer's Representative | Mark DeZalia | CMS |
+| Product Manager | Allyse Parekh | CMS |
+| Designer | Paul Gehrig | Nava |
+| Software Engineer | Tom Dooner | Nava |
+| Software Engineer | Daphne Gold | Nava |
+| Software Engineer | Tim Miller | Nava |
+| Software Engineer | Ben Calegari | Nava |
+| Open Source Lead | Nočnica (Nica) Mellifera | Nava |
 
 See [CODEOWNERS.md](.github/CODEOWNERS.md) for a list of those responsible for the code and documentation in this repository.
--->
 
 See [Community Guidelines](#iv-cbv-payroll-open-source-community-guidelines) on principles and guidelines for participating in this open source project.
 
@@ -23,9 +33,25 @@ See [Community Guidelines](#iv-cbv-payroll-open-source-community-guidelines) on 
 
 <!-- TODO: List the individuals who are members of the core team. What groups/domains are they a part of? Does your project have domains/areas that are maintained by specific people? List @USERNAMES directly, or any @ALIASES for groups/teams. -->
 
+- @tdooner (Tom Dooner)
+- @daphnegold (Daphne Gold)
+- @millerti (Tim Miller)
+- @bencalegari (Ben Calegari)
+- @j-shilling (Jake Shilling)
+- @imhben (Imhotep Benjamin)
+- @dx-gov (Jan Vorisek)
+
 ### Maintainers
 
 <!-- TODO: List the individuals who are the maintainers. What groups/domains are maintainers a part of? Does your project have domains/areas that are maintained by specific people? List @USERNAMES directly, or any @ALIASES for groups/teams. -->
+
+- @tdooner (Tom Dooner)
+- @daphnegold  (Daphne Gold)
+- @millerti (Tim Miller)
+- @bencalegari (Ben Calegari)
+- @j-shilling (Jake Shilling)
+- @imhben (Imhotep Benjamin)
+- @dx-gov (Jan Vorisek)
 
 ### Contributors
 
@@ -43,6 +69,17 @@ See [Community Guidelines](#iv-cbv-payroll-open-source-community-guidelines) on 
 We'd like to acknowledge the following individuals for their past contributions of this project:
 
 <!-- TODO: Who are the past maintainers or contributors who previously played significant roles in this project who are no longer actively involved? Consider including their roles and dates for context. -->
+
+- @pperozo (Patricia Perozo)
+- @YvetteWhiteUSDS (Yvette White)
+- @allthesignals (Matt Gardner)
+- @GeorgeCodes19 (George Byers)
+- @jeffcatania-usds (Jeff Catania)
+- @iannorriswork (Ian Norris)
+- @patsier-cms (Pat Sier)
+- @clediggins-usds (Cle' Diggins)
+- @acouch (Aaron Couch)
+- @JosephGasiorekUSDS (Joseph Gasiorek)
 
 ## Roles & Responsibilities
 
