@@ -81,7 +81,7 @@ module Aggregators::AggregatorReports
             pay_frequency: summary[:income]&.pay_frequency,
             compensation_amount: summary[:income]&.compensation_amount,
             compensation_unit: summary[:income]&.compensation_unit,
-            paystubs: (summary[:paystubs] || []).map do |paystub|
+            paystubs: summary[:paystubs]&.map do |paystub|
               {
                 pay_date: paystub.pay_date,
                 pay_period_start: paystub.pay_period_start,
