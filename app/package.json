@@ -9,7 +9,7 @@
     "@rails/actioncable": "^7.2.202",
     "@uswds/uswds": "^3.13.0",
     "autoprefixer": "^10.4.22",
-    "esbuild": "^0.25.10",
+    "esbuild": "^0.27.0",
     "load-script": "^2.0.0",
     "postcss": "^8.5.6",
     "postcss-cli": "^11.0.1",
@@ -37,10 +37,9 @@
   },
   "resolutions": {
     "@csstools/postcss-sass/@csstools/sass-import-resolve": "https://github.com/rahearn/sass-import-resolve",
-    "semver": ">= 7.5.2",
     "nanoid": "^5.0.9"
   },
   "overrides": {
-    "semver": ">= 7.5.2"
+    "esbuild": "^0.27.0"
   }
 }
