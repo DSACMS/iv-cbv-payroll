@@ -348,7 +348,10 @@ GEM
       hashery (~> 2.0)
       ruby-rc4
       ttfunk
-    pg (1.5.7)
+    pg (1.6.2-aarch64-linux)
+    pg (1.6.2-arm64-darwin)
+    pg (1.6.2-x86_64-darwin)
+    pg (1.6.2-x86_64-linux)
     pg-aws_rds_iam (0.5.0)
       aws-sdk-rds (~> 1.0)
       pg (~> 1.1)
@@ -636,7 +639,7 @@ DEPENDENCIES
   omniauth-entra-id
   omniauth-rails_csrf_protection (~> 1.0)
   pdf-reader (~> 2.12.0)
-  pg (~> 1.1)
+  pg (~> 1.6)
   pg-aws_rds_iam (~> 0.5.0)
   premailer-rails
   puma (~> 6.6.0)
