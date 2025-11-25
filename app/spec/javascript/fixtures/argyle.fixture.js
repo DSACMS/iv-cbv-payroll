@@ -30,7 +30,11 @@ export const mockApplicantEncounteredArgyleMfaCanceledLoginError = {
 }
 export const mockApplicantViewedArgyleLoginPage = {
   name: "login - opened",
-  properties: { errorCode: "other" },
+  properties: { errorCode: null },
+}
+export const mockApplicantViewedArgyleUnknownError = {
+  name: "login - opened",
+  properties: { errorCode: "something_else" },
 }
 export const mockApplicantViewedArgyleProviderConfirmation = { name: "search - link item selected" }
 export const mockApplicantUpdatedArgyleSearchTerm = {

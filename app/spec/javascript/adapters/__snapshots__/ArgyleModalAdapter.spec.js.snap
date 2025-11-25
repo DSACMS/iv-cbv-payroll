@@ -66,6 +66,15 @@ exports[`ArgyleModalAdapter > event:other > logs ApplicantEncounteredArgyleMfaCa
 }
 `;
 
+exports[`ArgyleModalAdapter > event:other > logs ApplicantEncounteredArgyleUnknownLoginError Event 1`] = `
+{
+  "name": "login - opened",
+  "properties": {
+    "errorCode": "something_else",
+  },
+}
+`;
+
 exports[`ArgyleModalAdapter > event:other > logs ApplicantUpdatedArgyleSearchTerm Event 1`] = `
 {
   "payload": {
@@ -92,7 +101,7 @@ exports[`ArgyleModalAdapter > event:other > logs ApplicantViewedArgyleLoginPage 
 {
   "name": "login - opened",
   "properties": {
-    "errorCode": "other",
+    "errorCode": null,
   },
 }
 `;

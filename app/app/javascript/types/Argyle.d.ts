@@ -34,7 +34,7 @@ type ArgyleAccountData = {
   itemId: string
 }
 
-type ArgyeUIEvent = {
+type ArgyleUIEvent = {
   name: string
   properties: {
     deepLink: boolean
@@ -48,6 +48,10 @@ type ArgyeUIEvent = {
       | "invalid_auth"
       | "invalid_credentials"
       | "mfa_cancelled_by_the_user"
+      | "account_not_found"
+      | "invalid_employer_identifier"
+      | "duplicate_account"
+      | "unrecognized_employer_email"
     errorMessage?: string
     term?: string
     tab?: string

@@ -60,13 +60,16 @@ export default class ArgyleModalAdapter extends ModalAdapter {
     await this.onExit()
   }
 
-  async onUIEvent(payload: ArgyeUIEvent) {
+  async onUIEvent(payload: ArgyleUIEvent) {
     switch (payload.name) {
       case "search - opened":
         await trackUserAction("ApplicantViewedArgyleDefaultProviderSearch", payload)
         break
       case "login - opened":
         switch (payload.properties.errorCode) {
+          case null:
+            await trackUserAction("ApplicantViewedArgyleLoginPage", payload)
+            break
           case "auth_required":
             await trackUserAction("ApplicantEncounteredArgyleAuthRequiredLoginError", payload)
             break
@@ -88,8 +91,26 @@ export default class ArgyleModalAdapter extends ModalAdapter {
           case "mfa_cancelled_by_the_user":
             await trackUserAction("ApplicantEncounteredArgyleMfaCanceledLoginError", payload)
             break
+          case "account_not_found":
+            await trackUserAction("ApplicantEncounteredArgyleAccountNotFoundError", payload)
+            break
+          case "invalid_employer_identifier":
+            await trackUserAction(
+              "ApplicantEncounteredArgyleInvalidEmployerIdentifierError",
+              payload
+            )
+            break
+          case "duplicate_account":
+            await trackUserAction("ApplicantEncounteredArgyleDuplicateAccountError", payload)
+            break
+          case "unrecognized_employer_email":
+            await trackUserAction(
+              "ApplicantEncounteredArgyleUnrecognizedEmployerEmailError",
+              payload
+            )
+            break
           default:
-            await trackUserAction("ApplicantViewedArgyleLoginPage", payload)
+            await trackUserAction("ApplicantEncounteredArgyleUnknownLoginError", payload)
             break
         }
         break
