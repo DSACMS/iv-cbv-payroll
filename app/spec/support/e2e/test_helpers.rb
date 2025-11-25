@@ -21,6 +21,10 @@ module E2e
         ERROR
       end
 
+      # Verify page has a <title> tag that isn't just the default
+      expect(page.title).to end_with("| Report My Income")
+      expect(page.title).not_to eq("| Report My Income")
+
       # Check accessibility of every page with Axe matchers.
       #
       # This verifies against Axe's default ruleset, which is WCAG 2.1 Level A
