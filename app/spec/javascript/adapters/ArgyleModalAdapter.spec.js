@@ -1,22 +1,22 @@
 import { vi, describe, beforeEach, afterEach, it, expect } from "vitest"
-import loadScript from "load-script"
 import ArgyleModalAdapter from "@js/adapters/ArgyleModalAdapter"
 import { fetchArgyleToken, trackUserAction } from "@js/utilities/api"
 import { mockArgyle, mockArgyleAuthToken } from "@test/fixtures/argyle.fixture"
 import { loadArgyleResource } from "@js/utilities/loadProviderResources.ts"
 import {
-  mockArgyleSearchOpenedEvent,
+  mockApplicantAccessedArgyleModalMFAScreen,
+  mockApplicantAttemptedArgyleLogin,
   mockApplicantEncounteredArgyleAuthRequiredLoginError,
   mockApplicantEncounteredArgyleConnectionUnavailableLoginError,
   mockApplicantEncounteredArgyleExpiredCredentialsLoginError,
   mockApplicantEncounteredArgyleInvalidAuthLoginError,
   mockApplicantEncounteredArgyleInvalidCredentialsLoginError,
   mockApplicantEncounteredArgyleMfaCanceledLoginError,
+  mockApplicantUpdatedArgyleSearchTerm,
   mockApplicantViewedArgyleLoginPage,
   mockApplicantViewedArgyleProviderConfirmation,
-  mockApplicantUpdatedArgyleSearchTerm,
-  mockApplicantAttemptedArgyleLogin,
-  mockApplicantAccessedArgyleModalMFAScreen,
+  mockApplicantViewedArgyleUnknownError,
+  mockArgyleSearchOpenedEvent,
 } from "@test/fixtures/argyle.fixture.js"
 
 const modalAdapterArgs = {
@@ -178,6 +178,12 @@ describe("ArgyleModalAdapter", () => {
       await triggers.triggerUIEvent(mockApplicantViewedArgyleLoginPage)
       expect(trackUserAction).toHaveBeenCalledTimes(2)
       expect(trackUserAction.mock.calls[1][0]).toBe("ApplicantViewedArgyleLoginPage")
+      expect(trackUserAction.mock.calls[1][1]).toMatchSnapshot()
+    })
+    it("logs ApplicantEncounteredArgyleUnknownLoginError Event", async () => {
+      await triggers.triggerUIEvent(mockApplicantViewedArgyleUnknownError)
+      expect(trackUserAction).toHaveBeenCalledTimes(2)
+      expect(trackUserAction.mock.calls[1][0]).toBe("ApplicantEncounteredArgyleUnknownLoginError")
       expect(trackUserAction.mock.calls[1][1]).toMatchSnapshot()
     })
     it("logs ApplicantViewedArgyleProviderConfirmation Event", async () => {
