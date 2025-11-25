@@ -1,6 +1,4 @@
 class CaseWorkerTransmitterJob < ApplicationJob
-  include Cbv::AggregatorDataHelper
-
   attr_reader :cbv_flow
 
   queue_as :default
@@ -9,14 +7,13 @@ class CaseWorkerTransmitterJob < ApplicationJob
     @cbv_flow = CbvFlow.find(cbv_flow_id)
     @current_agency = current_agency(@cbv_flow)
 
-    transmitter_class.new(@cbv_flow, @current_agency, set_aggregator_report).deliver
-    @cbv_flow.touch(:transmitted_at)
-    track_transmitted_event(CbvFlow.find(cbv_flow_id), set_aggregator_report.paystubs)
-    enqueue_agency_name_matching_job(CbvFlow.find(cbv_flow_id))
-  end
+    aggregator_report = AggregatorReportFetcher.new(@cbv_flow).report
 
-  def agency_config
-    Rails.application.config.client_agencies
+    transmitter_class.new(@cbv_flow, @current_agency, aggregator_report).deliver
+    @cbv_flow.touch(:transmitted_at)
+
+    track_transmitted_event(CbvFlow.find(cbv_flow_id), aggregator_report.paystubs)
+    enqueue_agency_name_matching_job(CbvFlow.find(cbv_flow_id))
   end
 
   def transmitter_class
@@ -58,6 +55,6 @@ class CaseWorkerTransmitterJob < ApplicationJob
   end
 
   def current_agency(cbv_flow)
-    agency_config[cbv_flow.client_agency_id]
+    Rails.application.config.client_agencies[cbv_flow.client_agency_id]
   end
 end

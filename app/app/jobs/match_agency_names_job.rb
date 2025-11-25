@@ -1,6 +1,4 @@
 class MatchAgencyNamesJob < ApplicationJob
-  include Cbv::AggregatorDataHelper
-
   def perform(cbv_flow_id)
     @cbv_flow = CbvFlow.find(cbv_flow_id)
 
@@ -11,9 +9,9 @@ class MatchAgencyNamesJob < ApplicationJob
     end
 
     # Fetch the report(s)
-    set_aggregator_report
+    aggregator_report = AggregatorReportFetcher.new(@cbv_flow).report
 
-    report_names = @aggregator_report.identities.map do |identity|
+    report_names = aggregator_report.identities.map do |identity|
       "#{identity["first_name"]} #{identity["last_name"]}"
     end
 
@@ -37,12 +35,5 @@ class MatchAgencyNamesJob < ApplicationJob
       total_agency_names_count: agency_expected_names.length,
       **name_match_results
     })
-  end
-
-  private
-
-  # Necessary for methods within Cbv::AggregatorDataHelper
-  def agency_config
-    Rails.application.config.client_agencies
   end
 end
