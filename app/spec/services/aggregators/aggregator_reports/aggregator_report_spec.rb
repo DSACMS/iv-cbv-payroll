@@ -181,7 +181,7 @@ RSpec.describe Aggregators::AggregatorReports::AggregatorReport, type: :service 
       # Expect no error when calling income_report
       expect { report.income_report }.not_to raise_error
       result = report.income_report
-      expect(result[:employments].first[:paystubs]).to eq([])
+      expect(result[:employments].first[:paystubs]).to be_nil
     end
 
     context "when a paystub has null gross_pay_amount" do
