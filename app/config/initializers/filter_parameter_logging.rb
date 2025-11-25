@@ -9,7 +9,9 @@ Rails.application.config.filter_parameters += [
   :email_address, :case_number, :first_name, :middle_name, :last_name,
   :snap_application_date, :agency_id_number, :client_id_number, :beacon_id,
   # income_changes subfields (used for AZ DES)
-  :member_name, :employer_name,
+  :member_name,
+  # income report subfields
+  :applicant_full_name, :date_of_birth,
   # CBV flow
   :additional_information
 ]
