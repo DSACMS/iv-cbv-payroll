@@ -3,23 +3,8 @@ class Transmitters::JsonTransmitter
 
   def deliver
     api_url = URI(@current_agency.transmission_method_configuration["url"])
-    include_report_pdf = @current_agency.transmission_method_configuration["include_report_pdf"]
     req = Net::HTTP::Post.new(api_url)
-    agency_partner_metadata = CbvApplicant.build_agency_partner_metadata(@current_agency.id) { |attr| @cbv_flow.cbv_applicant.public_send(attr) }
-
     req.content_type = "application/json"
-
-    payload = {
-      confirmation_code: @cbv_flow.confirmation_code,
-      completed_at: @cbv_flow.consented_to_authorized_use_at.iso8601,
-      agency_partner_metadata: agency_partner_metadata,
-      income_report: @aggregator_report.income_report
-    }
-
-    if include_report_pdf
-      payload[:report_pdf] = Base64.strict_encode64(pdf_output&.content)
-    end
-
     req.body = payload.to_json
 
     timestamp = Time.now.to_i.to_s
@@ -50,6 +35,24 @@ class Transmitters::JsonTransmitter
     @_pdf_output ||= begin
       pdf_service = PdfService.new(language: :en)
       pdf_service.generate(cbv_flow, aggregator_report, current_agency)
+    end
+  end
+
+  def payload
+    agency_partner_metadata = CbvApplicant.build_agency_partner_metadata(@current_agency.id) do |attr|
+      @cbv_flow.cbv_applicant.public_send(attr)
+    end
+    include_report_pdf = @current_agency.transmission_method_configuration["include_report_pdf"]
+
+    {
+      confirmation_code: @cbv_flow.confirmation_code,
+      completed_at: @cbv_flow.consented_to_authorized_use_at.iso8601,
+      agency_partner_metadata: agency_partner_metadata,
+      income_report: @aggregator_report.income_report
+    }.tap do |hash|
+      if include_report_pdf
+        hash[:report_pdf] = Base64.strict_encode64(pdf_output&.content)
+      end
     end
   end
 
