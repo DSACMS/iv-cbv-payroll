@@ -1,3 +1,5 @@
+<% content_for :title, t("activities.volunteering.title") %>
+
 <h1><%= t("activities.volunteering.title") %></h1>
 <%= uswds_form_with(model: @volunteering_activity, url: activities_flow_volunteering_path) do |f| %>
   <%= f.text_field :organization_name, label: t("activities.volunteering.organization_name") %>
