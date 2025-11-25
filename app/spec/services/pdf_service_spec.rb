@@ -2,7 +2,6 @@ require 'rails_helper'
 
 RSpec.describe PdfService, type: :service do
   include PinwheelApiHelper
-  include Cbv::AggregatorDataHelper
   include ApplicationHelper
 
   let(:current_time) { Date.parse('2024-06-18') }
