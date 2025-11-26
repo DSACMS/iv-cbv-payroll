@@ -51,6 +51,15 @@ en:
     entry:
       continue: Add Activities
       title: Welcome to the Activity Hub!
+    education:
+      add: Add Education Activities
+      new:
+        enrollment: Enrollment
+        fetching_education_description: This may take a few minutes. Please keep this window open while we work on this.
+        header: We're gathering your enrollment details from the <Our Data Source>
+        hours: Hours
+        school: School
+      title: Education
     hub:
       continue: Continue
       count:
@@ -86,11 +95,6 @@ en:
       hours: Hours
       organization_name: Organization name
       title: Volunteering
-    education:
-      title: Education
-      add: Add Education Activities
-    identity:
-      title: Identity
   aggregator_strings:
     deductions:
       401k: 401k
