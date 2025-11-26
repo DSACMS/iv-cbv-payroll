@@ -23,7 +23,7 @@ FAILED_ICON_CLASSES = [
 
 RSpec.shared_examples "common" do
   before do
-    render_inline(subject)
+    render_inline(subject.with_content(TEST_LABEL))
   end
 
   it "renders a synchronization indicator element" do
@@ -59,7 +59,7 @@ end
 
 RSpec.describe SynchronizationIndicatorComponent, type: :component do
   context "in progress" do
-    subject { described_class.new status: :in_progress, label: TEST_LABEL }
+    subject { described_class.new status: :in_progress }
 
     include_examples "common"
 
@@ -82,7 +82,7 @@ RSpec.describe SynchronizationIndicatorComponent, type: :component do
   end
 
   context "succeeded" do
-    subject { described_class.new status: :succeeded, label: TEST_LABEL }
+    subject { described_class.new status: :succeeded }
 
     include_examples "common"
 
@@ -105,7 +105,7 @@ RSpec.describe SynchronizationIndicatorComponent, type: :component do
   end
 
   context "failed" do
-    subject { described_class.new status: :failed, label: TEST_LABEL }
+    subject { described_class.new status: :failed }
 
     include_examples "common"
 

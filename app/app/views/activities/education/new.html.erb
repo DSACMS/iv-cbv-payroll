@@ -8,13 +8,19 @@
 
     <div class="grid-row" id="<%= 1 %>">
         <div class="desktop:grid-col-2 tablet:grid-col-fill">
-            <%= render(SynchronizationIndicatorComponent.new(status: :in_progress, label: t(".school"))) %>
+            <%= render(SynchronizationIndicatorComponent.new(status: :in_progress)) do %>
+                <%= t(".school") %>
+            <% end %>
         </div>
         <div class="desktop:grid-col-2 tablet:grid-col-fill">
-            <%= render(SynchronizationIndicatorComponent.new(status: :in_progress, label: t(".enrollment"))) %>
+            <%= render(SynchronizationIndicatorComponent.new(status: :in_progress)) do %>
+                <%= t(".enrollment") %>
+            <% end %>
         </div>
         <div class="desktop:grid-col-2 tablet:grid-col-fill">
-            <%= render(SynchronizationIndicatorComponent.new(status: :in_progress, label: t(".hours"))) %>
+            <%= render(SynchronizationIndicatorComponent.new(status: :in_progress)) do %>
+                <%= t(".hours") %>
+            <% end %>
         </div>
     </div>
 </div>
