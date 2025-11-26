@@ -11,8 +11,8 @@ module "prod_config" {
   has_incident_management_service = local.has_incident_management_service
   enable_identity_provider        = local.enable_identity_provider
 
-  database_serverless_min_capacity = 10.0 # TODO: Reset to 1.0 after LA launch subsides
-  database_serverless_max_capacity = 10.0 # TODO: Reset to 5.0 after LA launch subsides
+  database_serverless_min_capacity = 1.0
+  database_serverless_max_capacity = 5.0
   backup_retention_period          = 7
   enable_aws_backup                = true
 
@@ -21,7 +21,7 @@ module "prod_config" {
   # https://conchchow.medium.com/aws-ecs-fargate-compute-capacity-planning-a5025cb40bd0
   service_cpu                       = 1024
   service_memory                    = 4096
-  service_desired_instance_count    = 20 # TODO: Reset to 3 after LA launch subsides
+  service_desired_instance_count    = 3
   solidqueue_desired_instance_count = 2
 
   # Create DNS records for these `additional_domains` in the default hosted
