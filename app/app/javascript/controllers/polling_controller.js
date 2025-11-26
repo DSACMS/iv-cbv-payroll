@@ -13,7 +13,8 @@ export default class extends Controller {
       })
         .then((response) => response.text())
         .then((html) => {
-          // on redirect stop the interval to ensure that the target page page loads before the turboframe gets another command
+          // on redirect stop the interval to ensure that the target page page
+          // loads before the turboframe gets another command
           if (html.includes('turbo-stream action="redirect')) {
             clearInterval(this.interval)
           }
