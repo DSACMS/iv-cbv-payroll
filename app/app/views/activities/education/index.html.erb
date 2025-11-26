@@ -1,0 +1,30 @@
+<%= javascript_include_tag "activities_education_new" %>
+
+<div id="education-index-container" data-event-source-url="<%= activities_flow_education_stream_path %>">
+    <h1>
+        <%= t(".header") %>
+    </h1>
+    <p>
+        <%= t(".fetching_education_description") %>
+    </p>
+
+    <%= turbo_frame_tag "synchronization" do %>
+        <div class="grid-row" id="<%= 1 %>">
+            <div class="desktop:grid-col-2 tablet:grid-col-fill">
+                <%= render(SynchronizationIndicatorComponent.new(name: "school", status: @state.school)) do %>
+                    <%= t(".school") %>
+                <% end %>
+            </div>
+            <div class="desktop:grid-col-2 tablet:grid-col-fill">
+                <%= render(SynchronizationIndicatorComponent.new(name: "enrollment", status: @state.enrollment)) do %>
+                    <%= t(".enrollment") %>
+                <% end %>
+            </div>
+            <div class="desktop:grid-col-2 tablet:grid-col-fill">
+                <%= render(SynchronizationIndicatorComponent.new(name: "hours", status: @state.hours)) do %>
+                    <%= t(".hours") %>
+                <% end %>
+            </div>
+        </div>
+    <% end %>
+</div>

@@ -49,7 +49,7 @@ en:
   activities:
     education:
       add: Add Education Activities
-      new:
+      index:
         enrollment: Enrollment
         fetching_education_description: This may take a few minutes. Please keep this window open while we work on this.
         header: We're gathering your enrollment details from the <Our Data Source>
