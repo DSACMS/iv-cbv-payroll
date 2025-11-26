@@ -57,10 +57,6 @@ class SynchronizationIndicatorComponent < ViewComponent::Base
   SUCCEEDED_ICON_VARIANT = "check"
   FAILED_ICON_VARIANT = "priority_high"
 
-  # @!attribute [r] label
-  #   @return [String] the text label displayed below the icon
-  attr_reader :label
-
   # Initializes a new SynchronizationIndicatorComponent
   #
   # @param status [Symbol] the synchronization status - must be one of:
@@ -73,8 +69,7 @@ class SynchronizationIndicatorComponent < ViewComponent::Base
   # @raise [ArgumentError] if status is not one of the valid values
   #
   # @return [SynchronizationIndicatorComponent]
-  def initialize(status:, label:)
-    @label = label
+  def initialize(status:)
     case status
     when :in_progress
       @svg_classes = COMMON_ICON_CLASSES | IN_PROGRESS_ICON_CLASSES
