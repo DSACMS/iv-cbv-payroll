@@ -71,12 +71,6 @@ class Cbv::BaseController < FlowController
     redirect_to(cbv_flow_success_path)
   end
 
-  def current_agency
-    return unless @cbv_flow.present? && @cbv_flow.client_agency_id.present?
-
-    @current_agency ||= agency_config[@cbv_flow.client_agency_id]
-  end
-
   def next_path
     case params[:controller]
     when "cbv/generic_links"
