@@ -1,1 +1,20 @@
-<h1>Start Edu Workflow</h1>
+<div>
+    <h1>
+        <%= t(".header") %>
+    </h1>
+    <p>
+        <%= t(".fetching_education_description") %>
+    </p>
+
+    <div class="grid-row" id="<%= 1 %>">
+        <div class="desktop:grid-col-2 tablet:grid-col-fill">
+            <%= render(SynchronizationIndicatorComponent.new(status: :in_progress, label: t(".school"))) %>
+        </div>
+        <div class="desktop:grid-col-2 tablet:grid-col-fill">
+            <%= render(SynchronizationIndicatorComponent.new(status: :in_progress, label: t(".enrollment"))) %>
+        </div>
+        <div class="desktop:grid-col-2 tablet:grid-col-fill">
+            <%= render(SynchronizationIndicatorComponent.new(status: :in_progress, label: t(".hours"))) %>
+        </div>
+    </div>
+</div>
