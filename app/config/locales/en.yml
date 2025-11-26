@@ -48,7 +48,17 @@ en:
               invalid_format: Language must be either English (en) or Spanish (es).
   activities:
     hub:
+      count:
+        one: "%{count} activity added"
+        other: "%{count} activities added"
       title: Activity Hub
+    job_training:
+      add: Add Job Training Activity
+      created: Job training activity was successfully created.
+      hours: Hours attended
+      organization_address: Organization address
+      program_name: Program name
+      title: Job Training
     volunteering:
       add: Add Volunteering Activity
       created: Volunteering activity was successfully created.
