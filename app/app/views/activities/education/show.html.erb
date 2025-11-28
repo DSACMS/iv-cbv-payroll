@@ -39,57 +39,61 @@
     <% end %>
 <% end %>
 
-<h2>
-    <%= t(".school_information.header") %>
-</h2>
+<% @schools.each do |school| %>
 
-<%= render(TableComponent.new(is_responsive: true)) do |table| %>
-    <%= table.with_row do |row| %>
-        <%= row.with_data_cell(is_header: true) do %>
-            <%= t(".school_information.name") %>
+    <h2>
+        <%= t(".school_information.header") %>
+    </h2>
+
+    <%= render(TableComponent.new(is_responsive: true)) do |table| %>
+        <%= table.with_row do |row| %>
+            <%= row.with_data_cell(is_header: true) do %>
+                <%= t(".school_information.name") %>
+            <% end %>
+            <%= row.with_data_cell do %>
+                <%= school.name %>
+            <% end %>
         <% end %>
-        <%= row.with_data_cell do %>
-            <%= @school_information.name %>
+
+        <%= table.with_row do |row| %>
+            <%= row.with_data_cell(is_header: true) do %>
+                <%= t(".school_information.address") %>
+            <% end %>
+            <%= row.with_data_cell do %>
+                <%= school.address %>
+            <% end %>
         <% end %>
     <% end %>
 
-    <%= table.with_row do |row| %>
-        <%= row.with_data_cell(is_header: true) do %>
-            <%= t(".school_information.address") %>
+    <h2>
+        <%= t(".enrollment_information.header") %>
+    </h2>
+
+    <%= render(TableComponent.new(is_responsive: true)) do |table| %>
+        <%= table.with_row do |row| %>
+            <%= row.with_data_cell(is_header: true) do %>
+                <%= t(".enrollment_information.most_recent_semester") %>
+            <% end %>
+            <%= row.with_data_cell do %>
+                <%= school.most_recent_enrollment.semester_start %>
+            <% end %>
         <% end %>
-        <%= row.with_data_cell do %>
-            <%= @school_information.address %>
+
+        <%= table.with_row do |row| %>
+            <%= row.with_data_cell(is_header: true) do %>
+                <%= t(".enrollment_information.enrollment_status.header") %>
+            <% end %>
+            <%= row.with_data_cell do %>
+                <%= school.most_recent_enrollment.status %>
+            <% end %>
         <% end %>
     <% end %>
-<% end %>
 
-<h2>
-    <%= t(".enrollment_information.header") %>
-</h2>
-
-<%= render(TableComponent.new(is_responsive: true)) do |table| %>
-    <%= table.with_row do |row| %>
-        <%= row.with_data_cell(is_header: true) do %>
-            <%= t(".enrollment_information.most_recent_semester") %>
-        <% end %>
-        <%= row.with_data_cell do %>
-            <%= @enrollment_information.most_recent_semester %>
-        <% end %>
-    <% end %>
-
-    <%= table.with_row do |row| %>
-        <%= row.with_data_cell(is_header: true) do %>
-            <%= t(".enrollment_information.enrollment_status.header") %>
-        <% end %>
-        <%= row.with_data_cell do %>
-            <%= @enrollment_information.enrollment_status %>
-        <% end %>
-    <% end %>
 <% end %>
 
 <div class="usa-form-group margin-top-5">
     <%= form_with do |form| %>
-        <% if @enrollment_information.less_than_part_time? %>
+        <% if @less_than_part_time %>
         <h2><%= t(".semester_credit_hours.label") %></h2>
         <%= form.label :semester_credit_hours, t(".semester_credit_hours.description"), class: "usa-label" %>
         <%= form.number_field :semester_credit_hours, class: "usa-input" %>

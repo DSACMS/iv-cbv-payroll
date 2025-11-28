@@ -48,6 +48,7 @@ en:
               invalid_format: Language must be either English (en) or Spanish (es).
   activities:
     education:
+      error_no_data: No education information available
       add: Add Education Activities
       index:
         enrollment: Enrollment
