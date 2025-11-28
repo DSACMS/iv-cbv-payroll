@@ -16,5 +16,19 @@ FactoryBot.define do
     after(:build) do |enrollment|
       enrollment.school.enrollments = [enrollment]
     end
+
+    trait :current do
+      semester_start do
+        Faker::Date.between(from: Date.today.prev_month(6),
+                           to: Date.today.next_month(6))
+      end
+    end
+
+    trait :not_current do
+      semester_start do
+        Faker::Date.between(from: Date.today.prev_year,
+                           to: Date.today.prev_month(7))
+      end
+    end
   end
 end
