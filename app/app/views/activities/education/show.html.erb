@@ -1,0 +1,108 @@
+<h1>
+    <%= t(".header") %>
+</h1>
+
+<p>
+    <%= t(".description") %>
+</p>
+
+<h2>
+    <%= t(".student_information") %>
+</h2>
+
+<%= render(TableComponent.new(is_responsive: true)) do |table| %>
+    <%= table.with_row do |row| %>
+        <%= row.with_data_cell(is_header: true) do %>
+            <%= t(".first_name") %>
+        <% end %>
+        <%= row.with_data_cell do %>
+            <%= @student_information.first_name %>
+        <% end %>
+    <% end %>
+
+    <%= table.with_row do |row| %>
+        <%= row.with_data_cell(is_header: true) do %>
+            <%= t(".last_name") %>
+        <% end %>
+        <%= row.with_data_cell do %>
+            <%= @student_information.last_name %>
+        <% end %>
+    <% end %>
+
+    <%= table.with_row do |row| %>
+        <%= row.with_data_cell(is_header: true) do %>
+            <%= t(".date_of_birth") %>
+        <% end %>
+        <%= row.with_data_cell do %>
+            <%= @student_information.date_of_birth %>
+        <% end %>
+    <% end %>
+<% end %>
+
+<h2>
+    <%= t(".school_information.header") %>
+</h2>
+
+<%= render(TableComponent.new(is_responsive: true)) do |table| %>
+    <%= table.with_row do |row| %>
+        <%= row.with_data_cell(is_header: true) do %>
+            <%= t(".school_information.name") %>
+        <% end %>
+        <%= row.with_data_cell do %>
+            <%= @school_information.name %>
+        <% end %>
+    <% end %>
+
+    <%= table.with_row do |row| %>
+        <%= row.with_data_cell(is_header: true) do %>
+            <%= t(".school_information.address") %>
+        <% end %>
+        <%= row.with_data_cell do %>
+            <%= @school_information.address %>
+        <% end %>
+    <% end %>
+<% end %>
+
+<h2>
+    <%= t(".enrollment_information.header") %>
+</h2>
+
+<%= render(TableComponent.new(is_responsive: true)) do |table| %>
+    <%= table.with_row do |row| %>
+        <%= row.with_data_cell(is_header: true) do %>
+            <%= t(".enrollment_information.most_recent_semester") %>
+        <% end %>
+        <%= row.with_data_cell do %>
+            <%= @enrollment_information.most_recent_semester %>
+        <% end %>
+    <% end %>
+
+    <%= table.with_row do |row| %>
+        <%= row.with_data_cell(is_header: true) do %>
+            <%= t(".enrollment_information.enrollment_status.header") %>
+        <% end %>
+        <%= row.with_data_cell do %>
+            <%= @enrollment_information.enrollment_status %>
+        <% end %>
+    <% end %>
+<% end %>
+
+<div class="usa-form-group margin-top-5">
+    <%= form_with do |form| %>
+        <% if @enrollment_information.less_than_part_time? %>
+        <h2><%= t(".semester_credit_hours.label") %></h2>
+        <%= form.label :semester_credit_hours, t(".semester_credit_hours.description"), class: "usa-label" %>
+        <%= form.number_field :semester_credit_hours, class: "usa-input" %>
+
+        <h2><%= t(".upload_documents.label") %></h2>
+        <%= form.label :documents, t(".upload_documents.description"), class: "usa-label" %>
+        <%= form.file_field :documents, class: "usa-file-input" %>
+        <% end %>
+
+        <h2><%= t(".additional_information_header") %></h2>
+        <%= form.label :additional_information, t(".additional_information_label", agency_acronym: agency_translation("shared.agency_acronym")), class: "usa-label" %>
+        <%= form.text_area :additional_information, class: "usa-textarea", rows: 5, value: @account_comment %>
+
+        <%= form.submit t(".continue"), class: "usa-button usa-button--primary" %>
+    <% end %>
+</div>
