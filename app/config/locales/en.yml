@@ -59,6 +59,31 @@ en:
         header: We're gathering your enrollment details from the <Our Data Source>
         hours: Hours
         school: School
+      show:
+        additional_information_header: Additional comments (Optional)
+        additional_information_label: Share any comments or additional information about the income details above that you’d like %{agency_acronym} to know. For example, you can share if the information is inaccurate or if you’re no longer working at that job.
+        continue: Save and continue
+        description: Review the information below to make sure it's correct.
+        enrollment_information:
+          enrollment_status:
+            full_time: Full Time
+            header: Enrollment Status
+            less_than_part_time: Less Than Part Time
+            part_time: Part Time
+          header: Enrollment Information
+          most_recent_semester: Most Recent Semester
+        header: Confirm your education enrollment
+        school_information:
+          address: Address
+          header: School Information
+          name: Name
+        semester_credit_hours:
+          description: How many credit hours are you enrolled in this semester?
+          label: Semester Credit Hours
+        student_information: Student Information
+        upload_documents:
+          description: Please include any transcripts or class schedule from this semester
+          label: Upload Documents
       title: Education
     hub:
       continue: Continue

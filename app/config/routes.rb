@@ -68,6 +68,7 @@ Rails.application.routes.draw do
       scope "/education", as: :education do
         root to: "education#index"
         get "/start", to: "education#start", as: :stream
+        get "/confirm", to: "education#show", as: :success
       end
     end
 
