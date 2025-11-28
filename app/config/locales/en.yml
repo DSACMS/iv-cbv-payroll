@@ -52,6 +52,7 @@ en:
       continue: Add Activities
       title: Welcome to the Activity Hub!
     education:
+      error_no_data: No education information available
       add: Add Education Activities
       index:
         enrollment: Enrollment
