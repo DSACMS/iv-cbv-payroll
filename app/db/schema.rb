@@ -15,6 +15,11 @@ ActiveRecord::Schema[7.2].define(version: 2025_11_17_195859) do
   enable_extension "pgcrypto"
   enable_extension "plpgsql"
 
+  create_table "activity_flows", force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
   create_table "api_access_tokens", force: :cascade do |t|
     t.string "access_token"
     t.integer "user_id"
@@ -233,11 +238,13 @@ ActiveRecord::Schema[7.2].define(version: 2025_11_17_195859) do
   end
 
   create_table "volunteering_activities", force: :cascade do |t|
+    t.bigint "activity_flow_id", null: false
     t.string "organization_name"
     t.date "date"
     t.integer "hours"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.index ["activity_flow_id"], name: "index_volunteering_activities_on_activity_flow_id"
   end
 
   create_table "webhook_events", force: :cascade do |t|
@@ -258,5 +265,6 @@ ActiveRecord::Schema[7.2].define(version: 2025_11_17_195859) do
   add_foreign_key "solid_queue_ready_executions", "solid_queue_jobs", column: "job_id", on_delete: :cascade
   add_foreign_key "solid_queue_recurring_executions", "solid_queue_jobs", column: "job_id", on_delete: :cascade
   add_foreign_key "solid_queue_scheduled_executions", "solid_queue_jobs", column: "job_id", on_delete: :cascade
+  add_foreign_key "volunteering_activities", "activity_flows"
   add_foreign_key "webhook_events", "payroll_accounts"
 end
