@@ -52,8 +52,8 @@ en:
       continue: Add Activities
       title: Welcome to the Activity Hub!
     education:
-      error_no_data: No education information available
       add: Add Education Activities
+      error_no_data: No education information available
       index:
         enrollment: Enrollment
         fetching_education_description: This may take a few minutes. Please keep this window open while we work on this.
@@ -74,6 +74,7 @@ en:
           header: Enrollment Information
           most_recent_semester: Most Recent Semester
         header: Confirm your education enrollment
+        no_enrollments_found: We did not find any student information for you
         school_information:
           address: Address
           header: School Information

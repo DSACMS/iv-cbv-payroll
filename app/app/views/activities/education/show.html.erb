@@ -39,8 +39,11 @@
     <% end %>
 <% end %>
 
-<% @schools.each do |school| %>
+<% if @schools.nil? or @schools.empty? %>
+    <p><%= t(".no_enrollments_found") %></p>
+<% end %>
 
+<% @schools.each do |school| %>
     <h2>
         <%= t(".school_information.header") %>
     </h2>
@@ -99,6 +102,7 @@
         <%= form.number_field :semester_credit_hours, class: "usa-input" %>
 
         <h2><%= t(".upload_documents.label") %></h2>
+
         <%= form.label :documents, t(".upload_documents.description"), class: "usa-label" %>
         <%= form.file_field :documents, class: "usa-file-input" %>
         <% end %>

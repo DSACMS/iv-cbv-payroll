@@ -86,6 +86,24 @@ ActiveRecord::Schema[8.1].define(version: 2025_12_04_012521) do
     t.index ["cbv_flow_invitation_id"], name: "index_cbv_flows_on_cbv_flow_invitation_id"
   end
 
+  create_table "enrollments", force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.bigint "school_id", null: false
+    t.date "semester_start"
+    t.string "status"
+    t.datetime "updated_at", null: false
+    t.index ["school_id"], name: "index_enrollments_on_school_id"
+  end
+
+  create_table "identities", force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.date "date_of_birth", null: false
+    t.string "first_name", null: false
+    t.string "last_name", null: false
+    t.datetime "updated_at", null: false
+    t.index ["first_name", "last_name", "date_of_birth"], name: "index_identities_on_first_name_and_last_name_and_date_of_birth", unique: true
+  end
+
   create_table "job_training_activities", force: :cascade do |t|
     t.bigint "activity_flow_id", null: false
     t.datetime "created_at", null: false
@@ -107,6 +125,15 @@ ActiveRecord::Schema[8.1].define(version: 2025_12_04_012521) do
     t.string "type", default: "pinwheel", null: false
     t.datetime "updated_at", null: false
     t.index ["cbv_flow_id"], name: "index_payroll_accounts_on_cbv_flow_id"
+  end
+
+  create_table "schools", force: :cascade do |t|
+    t.string "address"
+    t.datetime "created_at", null: false
+    t.bigint "identity_id", null: false
+    t.string "name"
+    t.datetime "updated_at", null: false
+    t.index ["identity_id"], name: "index_schools_on_identity_id"
   end
 
   create_table "solid_queue_blocked_executions", force: :cascade do |t|
@@ -272,8 +299,10 @@ ActiveRecord::Schema[8.1].define(version: 2025_12_04_012521) do
   add_foreign_key "activity_flows", "cbv_applicants"
   add_foreign_key "cbv_flow_invitations", "users"
   add_foreign_key "cbv_flows", "cbv_flow_invitations"
+  add_foreign_key "enrollments", "schools"
   add_foreign_key "job_training_activities", "activity_flows"
   add_foreign_key "payroll_accounts", "cbv_flows"
+  add_foreign_key "schools", "identities"
   add_foreign_key "solid_queue_blocked_executions", "solid_queue_jobs", column: "job_id", on_delete: :cascade
   add_foreign_key "solid_queue_claimed_executions", "solid_queue_jobs", column: "job_id", on_delete: :cascade
   add_foreign_key "solid_queue_failed_executions", "solid_queue_jobs", column: "job_id", on_delete: :cascade

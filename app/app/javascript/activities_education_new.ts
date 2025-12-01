@@ -28,7 +28,7 @@ const addFailedStyles = (svg: SVGSVGElement, use: SVGUseElement, span: HTMLSpanE
 
   const href = use.getAttribute("xlink:href")
   if (href) {
-    use.setAttribute("xlink:href", `${href}#priority_hight`)
+    use.setAttribute("xlink:href", `${href}#priority_high`)
   }
 }
 
@@ -82,14 +82,18 @@ const setupListeners = (stream: EventSource, elements: HTMLCollection) => {
     stream.addEventListener(
       name,
       (e) => {
+        console.log(e)
         handler(e.data)
       },
       { once: true }
     )
+    stream.addEventListener("error", (_) => {
+      stream.dispatchEvent(new MessageEvent(name, { data: "failed" }))
+    })
   }
 }
 
-document.addEventListener("DOMContentLoaded", () => {
+const main = () => {
   const container = document.getElementById("education-index-container")
   if (!container) {
     console.error("Failed to find container")
@@ -104,5 +108,19 @@ document.addEventListener("DOMContentLoaded", () => {
 
   const indicators = getIndicatorElements()
   const stream = new EventSource(eventSourceUrl)
+  console.log("stream", stream)
+
+  stream.addEventListener("error", (_) => {
+    stream.close()
+  })
+  stream.addEventListener("finished", (e) => {
+    window.location.href = e.data
+  })
   setupListeners(stream, indicators)
-})
+}
+
+if (document.readyState !== "loading") {
+  main()
+} else {
+  document.addEventListener("DOMContentLoaded", main)
+}

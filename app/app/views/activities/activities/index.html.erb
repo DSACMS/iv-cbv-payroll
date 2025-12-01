@@ -7,7 +7,7 @@
     <%= t("activities.hub.description") %>
 </p>
 
-<%= uswds_form_with action: "", method: "get" do |f| %>
+<%= uswds_form_with model: @identity, action: "", url: "", method: "get" do |f| %>
     <%= f.text_field :first_name %>
     <%= f.text_field :last_name %>
     <%= f.date_picker :date_of_birth %>

@@ -2,6 +2,10 @@ class Activities::BaseController < FlowController
   before_action :redirect_on_prod, :set_flow
   helper_method :next_path
 
+  def current_identity
+    IdentityService.new(params).call
+  end
+
   private
 
   def redirect_on_prod
