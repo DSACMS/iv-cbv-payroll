@@ -2,18 +2,12 @@ class Activities::BaseController < ApplicationController
   before_action :redirect_on_prod
   before_action :set_activity_flow
 
-  helper_method :activity_flow
-
   private
 
   def redirect_on_prod
     if Rails.env.production?
       redirect_to root_url
     end
-  end
-
-  def activity_flow
-    @activity_flow
   end
 
   def set_activity_flow
