@@ -4,6 +4,10 @@ class Activities::BaseController < ApplicationController
 
   helper_method :next_path
 
+  def current_identity
+    IdentityService.new(params).call
+  end
+
   private
 
   def redirect_on_prod
