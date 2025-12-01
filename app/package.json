@@ -15,7 +15,7 @@
     "postcss-cli": "^11.0.1",
     "postcss-import": "^16.1.1",
     "postcss-minify": "^1.2.0",
-    "postcss-nesting": "^12.1.5",
+    "postcss-nesting": "^13.0.2",
     "postcss-scss": "^4.0.9",
     "sass": "^1.94.2",
     "webpack": "^5.103.0",
@@ -29,7 +29,7 @@
     "format:precommit": "prettier --write"
   },
   "devDependencies": {
-    "happy-dom": ">=20.0.10",
+    "happy-dom": ">=20.0.11",
     "jsdom": "^27.2.0",
     "prettier": "^3.6.2",
     "vite": "^7.2.4",
