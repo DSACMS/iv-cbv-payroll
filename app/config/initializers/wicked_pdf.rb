@@ -32,4 +32,5 @@ WickedPdf.configure do |config|
   # 'xvfb-run' command, in order to simulate an X server.
   #
   # config.use_xvfb = true,
+  config.raise_on_all_errors = true if Rails.env.test?
 end

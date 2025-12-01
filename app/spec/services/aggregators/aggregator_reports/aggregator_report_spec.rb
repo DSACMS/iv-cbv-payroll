@@ -26,8 +26,8 @@ RSpec.describe Aggregators::AggregatorReports::AggregatorReport, type: :service 
         allow(report.payroll_accounts.first).to receive(:job_succeeded?).with("identity").and_return(false)
 
         summary = report.summarize_by_employer
-        expect(summary[account_id][:income]).to be_nil
-        expect(summary[account_id][:identity]).to be_nil
+        expect(summary[account_id][:income]).to be_an_instance_of(OpenStruct)
+        expect(summary[account_id][:identity]).to be_an_instance_of(OpenStruct)
         expect(summary[account_id][:has_employment_data]).to be_truthy
       end
 
@@ -40,9 +40,9 @@ RSpec.describe Aggregators::AggregatorReports::AggregatorReport, type: :service 
         allow(report.payroll_accounts.first).to receive(:job_succeeded?).with("identity").and_return(false)
 
         summary = report.summarize_by_employer
-        expect(summary[account_id][:income]).to be_nil
-        expect(summary[account_id][:employment]).to be_nil
-        expect(summary[account_id][:identity]).to be_nil
+        expect(summary[account_id][:income]).to be_an_instance_of(OpenStruct)
+        expect(summary[account_id][:employment]).to be_an_instance_of(OpenStruct)
+        expect(summary[account_id][:identity]).to be_an_instance_of(OpenStruct)
         expect(summary[account_id][:has_employment_data]).to be_falsy
       end
     end
@@ -170,18 +170,18 @@ RSpec.describe Aggregators::AggregatorReports::AggregatorReport, type: :service 
           has_income_data: false,
           has_employment_data: false,
           has_identity_data: false,
-          employment: nil,
-          income: nil,
-          identity: nil,
-          paystubs: nil,
-          gigs: nil
+          employment: OpenStruct.new,
+          income: OpenStruct.new,
+          identity: OpenStruct.new,
+          paystubs: OpenStruct.new,
+          gigs: OpenStruct.new
         }
       })
 
       # Expect no error when calling income_report
       expect { report.income_report }.not_to raise_error
       result = report.income_report
-      expect(result[:employments].first[:paystubs]).to be_nil
+      expect(result[:employments].first[:paystubs]).to eq([])
     end
 
     context "when a paystub has null gross_pay_amount" do
