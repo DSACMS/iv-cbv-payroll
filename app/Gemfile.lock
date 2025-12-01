@@ -170,7 +170,7 @@ GEM
     crass (1.0.6)
     css_parser (1.17.1)
       addressable
-    cssbundling-rails (1.4.1)
+    cssbundling-rails (1.4.3)
       railties (>= 6.0.0)
     csv (3.3.5)
     date (3.5.0)
@@ -433,8 +433,8 @@ GEM
       tsort (>= 0.2)
       zeitwerk (~> 2.6)
     rainbow (3.1.1)
-    rake (13.3.0)
-    rdoc (6.15.1)
+    rake (13.3.1)
+    rdoc (6.16.1)
       erb
       psych (>= 4.0.0)
       tsort
