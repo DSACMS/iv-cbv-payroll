@@ -87,6 +87,14 @@
                 <%= t(".enrollment_information.enrollment_status.header") %>
             <% end %>
             <%= row.with_data_cell do %>
+                <% case school.most_recent_enrollment.status %>
+                <% when "full_time" %>
+                    <%= t(".enrollment_information.enrollment_status.full_time") %>
+                <% when "part_time" %>
+                    <%= t(".enrollment_information.enrollment_status.part_time") %>
+                <% else %>
+                    <%= t(".enrollment_information.enrollment_status.less_than_part_time") %>
+                <% end %>
                 <%= school.most_recent_enrollment.status %>
             <% end %>
         <% end %>
