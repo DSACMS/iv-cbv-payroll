@@ -40,6 +40,17 @@ class Activities::EducationController < Activities::BaseController
     logger.info @less_than_part_time
   end
 
+  def confirm
+    EducationActivity.create(
+      identity_id: params[:identity_id],
+      additional_comments: params[:additional_comments],
+      credit_hours: params[:credit_hours],
+      # TODO: remember how to do many to many
+      # enrollment_activities_ids: params[:enrollment_ids].map { |id| },
+    )
+    redirect_to activities_flow_root_path
+  end
+
   def start
     identity = current_identity
     service = EducationService.new
@@ -85,8 +96,6 @@ class Activities::EducationController < Activities::BaseController
         date_of_birth: identity.date_of_birth,
       )
     end
-
-
 
     sse.write(redirect_path, event: "finished")
   ensure

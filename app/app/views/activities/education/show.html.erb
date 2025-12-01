@@ -95,7 +95,6 @@
                 <% else %>
                     <%= t(".enrollment_information.enrollment_status.less_than_part_time") %>
                 <% end %>
-                <%= school.most_recent_enrollment.status %>
             <% end %>
         <% end %>
     <% end %>
@@ -103,11 +102,17 @@
 <% end %>
 
 <div class="usa-form-group margin-top-5">
-    <%= form_with do |form| %>
+    <%= form_with url: activities_flow_education_create_path do |form| %>
+        <%= form.hidden_field :identity_id, value: @student_information.id %>
+        <% @schools.map(&:enrollments).flatten.filter(&:current?).each do |enrollment| %>
+            <%= form.hidden_field :enrollment_ids, multiple: true, value: enrollment.id %>
+        <% end %>
+
         <% if @less_than_part_time %>
         <h2><%= t(".semester_credit_hours.label") %></h2>
+
         <%= form.label :semester_credit_hours, t(".semester_credit_hours.description"), class: "usa-label" %>
-        <%= form.number_field :semester_credit_hours, class: "usa-input" %>
+        <%= form.number_field :credit_hours, class: "usa-input" %>
 
         <h2><%= t(".upload_documents.label") %></h2>
 
@@ -116,8 +121,8 @@
         <% end %>
 
         <h2><%= t(".additional_information_header") %></h2>
-        <%= form.label :additional_information, t(".additional_information_label", agency_acronym: agency_translation("shared.agency_acronym")), class: "usa-label" %>
-        <%= form.text_area :additional_information, class: "usa-textarea", rows: 5, value: @account_comment %>
+        <%= form.label :additional_comments, t(".additional_information_label", agency_acronym: agency_translation("shared.agency_acronym")), class: "usa-label" %>
+        <%= form.text_area :additional_comments, class: "usa-textarea", rows: 5, value: @account_comment %>
 
         <%= form.submit t(".continue"), class: "usa-button usa-button--primary" %>
     <% end %>
