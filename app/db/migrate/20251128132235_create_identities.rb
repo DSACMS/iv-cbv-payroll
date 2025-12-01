@@ -7,7 +7,7 @@ class CreateIdentities < ActiveRecord::Migration[7.2]
 
       t.timestamps
 
-      t.index [:first_name, :last_name, :date_of_birth], unique: true
+      t.index [ :first_name, :last_name, :date_of_birth ], unique: true
     end
   end
 end

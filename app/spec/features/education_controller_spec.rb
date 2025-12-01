@@ -2,10 +2,10 @@ require "rails_helper"
 
 RSpec.feature "Education confirmation page", type: :feature do
   context "education data has been collected" do
-    let (:enrollment) {build(:enrollment, :current)}
-    let (:school) {build(:school, enrollments: [enrollment])}
+    let (:enrollment) { build(:enrollment, :current) }
+    let (:school) { build(:school, enrollments: [ enrollment ]) }
 
-    let(:identity) {create(:identity, schools: [school])}
+    let(:identity) { create(:identity, schools: [ school ]) }
 
     before do
       visit activities_flow_education_success_path(
