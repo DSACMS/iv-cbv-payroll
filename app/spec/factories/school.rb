@@ -15,7 +15,7 @@ FactoryBot.define do
     end
 
     after(:build) do |school|
-      school.identity.schools = [school]
+      school.identity.schools = [ school ]
     end
   end
 end

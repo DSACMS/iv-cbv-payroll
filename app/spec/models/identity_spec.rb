@@ -6,9 +6,9 @@ RSpec.describe Identity, type: :model do
 
     expect {
       Identity.create!(
-        :first_name => identity.first_name,
-        :last_name => identity.last_name,
-        :date_of_birth => identity.date_of_birth
+        first_name: identity.first_name,
+        last_name: identity.last_name,
+        date_of_birth: identity.date_of_birth
       )
     }.to raise_error ActiveRecord::RecordNotUnique
   end
