@@ -29,6 +29,8 @@ class Activities::BaseController < ApplicationController
     when "activities/activities"
       activities_flow_summary_path
     when "activities/summary"
+      activities_flow_submit_path
+    when "activities/submit"
       activities_flow_success_path
     end
   end

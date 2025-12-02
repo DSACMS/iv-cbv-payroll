@@ -44,6 +44,9 @@ RSpec.describe 'e2e Activity Hub flow test', type: :feature, js: true do
     expect(page).to have_content "Resume Workshop"
 
     click_button I18n.t("activities.summary.submit")
+    verify_page(page, title: I18n.t("activities.submit.title"))
+    find("label[for='activity_flow_consent_to_submit']").click
+    click_button I18n.t("activities.submit.confirm")
     verify_page(page, title: I18n.t("activities.success.title"))
     expect(page).to have_content I18n.t("activities.success.completed_at")
   end

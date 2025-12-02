@@ -60,13 +60,19 @@ en:
       organization_address: Organization address
       program_name: Program name
       title: Job Training
+    submit:
+      confirm: Submit
+      consent_label_html: 'Check this box to confirm: <ul class="margin-y-2"><li>The information provided by you is true and complete to the best of your knowledge.</li><li>You agree to inform the agency of any income not reflected in this report or any discrepancies found in the information gathered with this tool.</li><li>You understand that providing accurate and complete information is your responsibility, and any false or omitted information may have legal consequences.</li></ul> By sending this report, you authorize its use for income verification by authorized agency personnel.'
+      consent_required: Please check the legal agreement box to share your report.
+      description: Confirm to send your activities report to your benefits agency.
+      title: Submit activities
     success:
       completed_at: Completed at
-      description: Thank you for submitting your activities.
+      description: Thank you for submitting your report.
       title: Submission complete
     summary:
       description: Review the activities you added before submitting them.
-      submit: Submit activities
+      submit: Continue
       title: Summary
     volunteering:
       add: Add Volunteering Activity
