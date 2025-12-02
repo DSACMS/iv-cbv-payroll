@@ -5,7 +5,7 @@ class Activities::BaseController < ApplicationController
   helper_method :next_path, :current_identity
 
   def current_identity
-    IdentityService.new(params).call
+    IdentityService.new(request).call
   end
 
   private
