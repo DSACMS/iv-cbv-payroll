@@ -154,7 +154,8 @@ RSpec.describe Cbv::ApplicantInformationsController, type: :controller do
   end
 
   describe "#update for LA LDH flow" do
-    let(:cbv_flow) { create(:cbv_flow, client_agency_id: "la_ldh") }
+    let(:cbv_flow) { create(:cbv_flow, client_agency_id: "la_ldh", cbv_applicant: create(:cbv_applicant, :la_ldh)) }
+    render_views
 
     before do
       session[:cbv_flow_id] = cbv_flow.id
@@ -187,6 +188,43 @@ RSpec.describe Cbv::ApplicantInformationsController, type: :controller do
 
         expect(response).to redirect_to(cbv_flow_summary_path)
       end
+    end
+
+    it "allows an empty case number" do
+      post :update, params: {
+        cbv_applicant_la_ldh: {
+          cbv_applicant: {
+            date_of_birth: {
+              month: "06",
+              day: "15",
+              year: "1998"
+            },
+            case_number: ""
+          }
+        }
+      }
+
+      expect(response).to redirect_to(cbv_flow_summary_path)
+    end
+
+    it "case number is limited to 13 digits" do
+      post :update, params: {
+        cbv_applicant_la_ldh: {
+          cbv_applicant: {
+            date_of_birth: {
+              month: "06",
+              day: "15",
+              year: "1998"
+            },
+            case_number: "12345678901234"
+          }
+        }
+      }
+
+      expect(response).to have_http_status(:unprocessable_content)
+      expect(response.body).to include(
+        I18n.t("activerecord.errors.models.cbv_applicant/la_ldh.attributes.case_number.too_long")
+      )
     end
   end
 end
