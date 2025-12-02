@@ -4,12 +4,32 @@ class IdentityService
     # Looks up `Identity` by name and DOB.
     #
     # @return [Identity]
-    def self.call(params)
-      attrs = { first_name: params[:first_name],
-                last_name: params[:last_name],
-                date_of_birth: params[:date_of_birth]
-              }
-      Identity.find_by(**attrs) || Identity.build(**attrs)
+    def self.call(request)
+      params = request.params
+      session = request.session
+
+      attrs   = self.identity_attrs_from_session request.session
+      attrs ||= self.identity_attrs_from_params request.params
+
+      if attrs
+        Identity.find_by(**attrs) || Identity.build(**attrs)
+      else
+        Identity.new
+      end
+    end
+
+    private
+
+    def self.identity_attrs_from_session(session)
+      if session.has_key? :identity
+        session[:identity]
+      end
+    end
+
+    def self.identity_attrs_from_params(params)
+      if params.has_key? :identity
+        params[:identity]
+      end
     end
   end
 
@@ -18,9 +38,10 @@ class IdentityService
     # the Identity does not currently exist.
     #
     # @return [Identity]
-    def self.call(params)
-      id = DefaultIdentityService.call(params)
+    def self.call(request)
+      id = DefaultIdentityService.call(request)
       unless id.first_name
+        Rails.logger.info("Faking an identity")
         require "faker"
 
         id = Identity.build(
@@ -39,12 +60,12 @@ class IdentityService
   # This finds an appropriate implementation based on the current
   # `Rails.env`.
   #
-  # @param params [ActiveController::Parameters]
+  # @param request [ActiveDispatch::Request]
   #
   # @raise [NotImplementedError] When the current `Rails.env` does not
   #   have an appropriate implementation
-  def initialize(params)
-    @params = params
+  def initialize(request)
+    @request = request
     if Rails.env.local?
       @impl = LocalIdentityService
     elsif Rails.env.production?
@@ -59,6 +80,6 @@ class IdentityService
   # @return [Identity] An Identity instance that may or may not
   #   already exist in the database
   def call
-    @impl.call(@params)
+    @impl.call(@request)
   end
 end

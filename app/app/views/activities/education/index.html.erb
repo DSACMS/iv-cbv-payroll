@@ -7,7 +7,9 @@
         <%= t(".fetching_education_description") %>
     </p>
 
-    <turbo-stream-source src="<%= activities_flow_education_stream_path %>"></turbo-stream-source>
+    <turbo-stream-source src="<%= activities_flow_education_stream_path %>">
+
+    </turbo-stream-source>
 
     <div class="grid-row" dom_id="<%= dom_id current_identity %>">
         <div class="desktop:grid-col-2 tablet:grid-col-fill">
