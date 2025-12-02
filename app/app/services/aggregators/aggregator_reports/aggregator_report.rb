@@ -221,15 +221,13 @@ module Aggregators::AggregatorReports
       relevant_employments.max_by do |emp|
         relevant_paystubs = paystubs.select { |p| p[:employment_id] == emp.employment_matching_id }
 
-        latest_pay_date = relevant_paystubs.map { |p| p[:pay_date] }.max
-
-        dates = [
+        all_dates = [
           emp[:start_date],
-          emp[:termination_date],
-          latest_pay_date
-        ]
+          emp[:termination_date]
+        ] + relevant_paystubs.map { |p| p[:pay_date] }
 
-        dates.compact.max
+        # In case an employment has no non-nil dates, default to something really early.
+        all_dates.compact.max || "1900-01-01"
       end
     end
   end
