@@ -2,7 +2,7 @@ require 'rails_helper'
 
 RSpec.describe ActivityFlow, type: :model do
   it "cleans up related volunteering activities when destroyed" do
-    flow = described_class.create!
+    flow = create(:activity_flow)
     flow.volunteering_activities.create!(
       organization_name: "Daph's Fun House",
       hours: 2,
