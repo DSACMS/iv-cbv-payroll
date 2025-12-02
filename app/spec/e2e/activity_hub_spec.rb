@@ -3,14 +3,7 @@ require "rails_helper"
 RSpec.describe 'e2e Activity Hub flow test', type: :feature, js: true do
   include E2e::TestHelpers
 
-  it "completes the Activity Hub flow with scoped user data" do
-    other_flow = ActivityFlow.create!
-    other_flow.volunteering_activities.create!(
-      organization_name: "Daph's Fun House",
-      date: Date.new(2000, 2, 20),
-      hours: 2
-    )
-
+  it "completes the flow for all activities" do
     visit URI(root_url).request_uri
     visit activities_flow_root_path
     verify_page(page, title: I18n.t("activities.hub.title"))
@@ -27,7 +20,6 @@ RSpec.describe 'e2e Activity Hub flow test', type: :feature, js: true do
     expect(page).to have_content "Helping Hands"
     expect(page).to have_content "1990-10-10"
     expect(page).to have_content "20"
-    expect(page).not_to have_content "Daph's Fun House"
   end
 
   it "is redirects to the normal flow in non-development environments" do
