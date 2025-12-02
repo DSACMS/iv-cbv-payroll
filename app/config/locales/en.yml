@@ -48,6 +48,7 @@ en:
               invalid_format: Language must be either English (en) or Spanish (es).
   activities:
     hub:
+      continue: Continue
       count:
         one: "%{count} activity added"
         other: "%{count} activities added"
@@ -59,6 +60,14 @@ en:
       organization_address: Organization address
       program_name: Program name
       title: Job Training
+    success:
+      completed_at: Completed at
+      description: Thank you for submitting your activities.
+      title: Submission complete
+    summary:
+      description: Review the activities you added before submitting them.
+      submit: Submit activities
+      title: Summary
     volunteering:
       add: Add Volunteering Activity
       created: Volunteering activity was successfully created.

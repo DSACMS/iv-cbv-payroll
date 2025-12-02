@@ -37,6 +37,15 @@ RSpec.describe 'e2e Activity Hub flow test', type: :feature, js: true do
     expect(page).to have_content "Resume Workshop"
     expect(page).to have_content "123 Main St, Baton Rouge, LA"
     expect(page).to have_content "6"
+
+    click_button I18n.t("activities.hub.continue")
+    verify_page(page, title: I18n.t("activities.summary.title"))
+    expect(page).to have_content "Helping Hands"
+    expect(page).to have_content "Resume Workshop"
+
+    click_button I18n.t("activities.summary.submit")
+    verify_page(page, title: I18n.t("activities.success.title"))
+    expect(page).to have_content I18n.t("activities.success.completed_at")
   end
 
   it "is redirects to the normal flow in non-development environments" do
