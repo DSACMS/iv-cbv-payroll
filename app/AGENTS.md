@@ -22,13 +22,16 @@ When developing on the Rails app, ensure you are always in the `app` subdirector
 
 ## Coding Style & Naming Conventions
 - Ruby: RuboCop (rails-omakase + project overrides) enforces 2-space indents and Rails defaults. Run `make lint` or `./bin/rubocop` before pushing.
+- Controllers: Prefer using `before_action` callbacks for guard redirects instead of inline redirects inside actions.
 - JS/TS: Prettier (`tabWidth: 2`, double quotes, no semicolons, `printWidth: 100`) via `npm run format` or `npm run format:precommit`.
-- Tests follow `_spec.rb` / `.test.ts`; favor descriptive, imperative example names. Use snake_case for Ruby, camelCase for JS, kebab-case for Stimulus files.
+- Tests follow `_spec.rb` / `.test.ts`; favor descriptive, imperative example names. Use snake_case for Ruby, camelCase for JS, kebab-case for Stimulus files. Prefer `let` for object setup, `before` blocks for shared session/context setup, and `Timecop` for time freezing in controller specs (using `around` blocks).
+- ERB/HTML: Put each HTML tag on its own line (opening tag, contents, closing tag) for readability and avoid `usa-prose` classes unless required by design.
 
 ## Testing Guidelines
 - Add coverage for new endpoints, logic, and service objects; exercise eligibility and payroll edge cases.
 - Prefer writing controller tests over request specs.
 - Make sure to update our Capybara/Selenium end-to-end tests. They are in `spec/e2e`. When running these tests, you have to prefix the command with `E2E_RUN_TESTS=1`.
+- In end-to-end specs, use `verify_page` after each navigation to assert page headers/titles as you move through flows.
 
 ## Translations (i18n) Guidelines
 - We use standard Rails i18n with a few process customizations.
