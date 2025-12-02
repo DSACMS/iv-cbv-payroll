@@ -2,7 +2,7 @@
   "name": "iv-cbv-payroll",
   "version": "",
   "description": "Consent-Based Verification (CBV) is a prototype that allows benefit applicants to verify their income directly using payroll providers. It is currently being piloted for testing and validation purposes.",
-  "longDescription": "",
+  "longDescription": "Consent-Based Verification (CBV) is a prototype that allows benefit applicants to verify their income directly using payroll providers. It is currently being piloted for testing and validation purposes.",
   "status": "Production",
   "permissions": {
     "licenses": [
