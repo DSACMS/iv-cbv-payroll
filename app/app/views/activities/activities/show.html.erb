@@ -1,10 +1,25 @@
 <% content_for :title, t("activities.hub.title") %>
 
 <h1><%= t("activities.hub.title") %></h1>
-<h2><%= t("activities.volunteering.title") %></h2>
-<%= render TableComponent.new do |t| %>
-  <%= @activities.each do |a| %>
-    <%= t.with_row a.organization_name, a.hours, a.date %>
+
+<section class="margin-bottom-5">
+  <h2><%= t("activities.volunteering.title") %></h2>
+  <p><%= t("activities.hub.count", count: @volunteering_activities.size) %></p>
+  <%= render TableComponent.new do |t| %>
+    <% @volunteering_activities.each do |activity| %>
+      <%= t.with_row activity.organization_name, activity.hours, activity.date %>
+    <% end %>
   <% end %>
-<% end %>
-<%= button_to t("activities.volunteering.add"), new_activities_flow_volunteering_path, class: "btn btn-primary usa-button margin-y-5", method: :get %>
+  <%= button_to t("activities.volunteering.add"), new_activities_flow_volunteering_path, class: "btn btn-primary usa-button margin-y-5", method: :get %>
+</section>
+
+<section>
+  <h2><%= t("activities.job_training.title") %></h2>
+  <p><%= t("activities.hub.count", count: @job_training_activities.size) %></p>
+  <%= render TableComponent.new do |t| %>
+    <% @job_training_activities.each do |activity| %>
+      <%= t.with_row activity.program_name, activity.organization_address, activity.hours %>
+    <% end %>
+  <% end %>
+  <%= button_to t("activities.job_training.add"), new_activities_flow_job_training_path, class: "btn btn-primary usa-button margin-y-5", method: :get %>
+</section>

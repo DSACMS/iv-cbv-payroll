@@ -136,6 +136,8 @@ ignore_missing:
     - "cbv.submits.show.pdf.caseworker.*"
     # LA wind down content
     - "pages.home.pilot_ended.la_ldh.*"
+    # Activity Hub flow pages
+    - "activities.*"
 
     # Currently awaiting translation:
     # - "example.strings.*"   # Tag with ticket number that created or modified the string
