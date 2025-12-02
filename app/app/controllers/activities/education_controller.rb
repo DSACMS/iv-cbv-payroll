@@ -2,11 +2,14 @@ class Activities::EducationController < Activities::BaseController
   include ActionController::Live
 
   def index
-    @stream_path = activities_flow_education_stream_path(
-      first_name: params[:first_name],
-      last_name: params[:last_name],
-      date_of_birth: params[:date_of_birth]
-    )
+    session[:first_name] = params[:first_name],
+    session[:last_name] = params[:last_name],
+    session[:date_of_birth] = params[:date_of_birth]
+
+    @stream_path = activities_flow_education_stream_path
+
+    logger.info @stream_path
+    logger.info session
   end
 
   def show
@@ -62,25 +65,27 @@ class Activities::EducationController < Activities::BaseController
     sse = SSE.new(response.stream, event: "message")
     begin
       service.create_schools!(identity)
-      sse.write("succeeded", event: "school")
+      sse.write(
+        sync_indicator_update("school", :succeeded, I18n.t(".school")),
+      )
     rescue Exception => e
       failed = true
-      logger.error e.message
-      logger.error e.backtrace.join("\n")
-      sse.write("failed", event: "school")
+      sse.write(
+        sync_indicator_update("school", :failed, I18n.t(".school")),
+      )
     end
-    logger.info "after schools"
 
     begin
       service.create_enrollments!(identity)
-      sse.write("succeeded", event: "enrollments")
+      sse.write(
+        sync_indicator_update("enrollment", :succeeded, I18n.t(".enrollments")),
+      )
     rescue Exception => e
       failed = true
-      logger.error e.message
-      logger.error e.backtrace.join("\n")
-      sse.write("failed", event: "enrollments")
+      sse.write(
+        sync_indicator_update("enrollment", :failed, I18n.t(".enrollments")),
+      )
     end
-    logger.info "after enrollments"
 
     if failed
       redirect_path = activities_flow_root_path(
@@ -97,8 +102,23 @@ class Activities::EducationController < Activities::BaseController
       )
     end
 
-    sse.write(redirect_path, event: "finished")
+    sse.write(
+      turbo_stream.action(:redirect, redirect_path)
+    )
   ensure
     sse.close if sse
+  end
+
+  private
+
+  def sync_indicator_update(name, status, content)
+    turbo_stream.replace(
+        name,
+        html: view_context.render(
+          SynchronizationIndicatorComponent.new(name: name, status: status).with_content(
+            content
+          )
+        )
+      )
   end
 end

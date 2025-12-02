@@ -2,7 +2,7 @@ class Activities::BaseController < ApplicationController
   before_action :redirect_on_prod
   before_action :set_activity_flow
 
-  helper_method :next_path
+  helper_method :next_path, :current_identity
 
   def current_identity
     IdentityService.new(params).call
