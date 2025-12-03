@@ -12,7 +12,7 @@ class Enrollment < ApplicationRecord
 
   def less_than_part_time?
     self.quarter_time?
-  end
+    end
 
   def current?
     (Date.today.prev_month(6)..Date.today.next_month(6)).include?(self.semester_start)
