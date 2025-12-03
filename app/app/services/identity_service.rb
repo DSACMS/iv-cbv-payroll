@@ -14,7 +14,7 @@ class IdentityService
       attrs ||= self.identity_attrs_from_params request.params
 
       if attrs
-        Identity.find_or_create_by(attrs.slice([:first_name, :last_name, :date_of_birth]))
+        Identity.find_or_create_by(attrs.slice([ :first_name, :last_name, :date_of_birth ]))
       else
         nil
       end
