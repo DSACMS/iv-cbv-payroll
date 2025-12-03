@@ -56,7 +56,7 @@ class Activities::EducationController < Activities::BaseController
       logger.error e.backtrace.join("\n")
       sse.write(
         sync_indicator_update("school", :failed, I18n.t(".school")),
-pp      )
+pp)
     end
 
     begin
