@@ -1,0 +1,15 @@
+<% content_for :title, t("activities.success.title") %>
+
+<h1>
+  <%= t("activities.success.title") %>
+</h1>
+<p class="margin-bottom-3">
+  <%= t("activities.success.description") %>
+</p>
+
+<p>
+  <strong>
+    <%= t("activities.success.completed_at") %>
+  </strong>
+  <%= l(@activity_flow.completed_at, format: :long) %>
+</p>

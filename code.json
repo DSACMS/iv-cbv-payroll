@@ -1,0 +1,77 @@
+{
+  "name": "iv-cbv-payroll",
+  "version": "",
+  "description": "Consent-Based Verification (CBV) is a prototype that allows benefit applicants to verify their income directly using payroll providers. It is currently being piloted for testing and validation purposes.",
+  "longDescription": "Consent-Based Verification (CBV) is a prototype that allows benefit applicants to verify their income directly using payroll providers. It is currently being piloted for testing and validation purposes.",
+  "status": "Production",
+  "permissions": {
+    "licenses": [
+      {
+        "name": "CC0-1.0",
+        "URL": "https://github.com/DSACMS/iv-cbv-payroll/blob/main/LICENSE"
+      }
+    ],
+    "usageType": ["openSource"],
+    "exemptionText": ""
+  },
+  "organization": "Centers for Medicare & Medicaid Services",
+  "repositoryURL": "https://github.com/DSACMS/iv-cbv-payroll",
+  "repositoryHost": "github.com/DSACMS",
+  "repositoryVisibility": "public",
+  "homepageURL": "",
+  "downloadURL": "",
+  "disclaimerURL": "",
+  "disclaimerText": "",
+  "vcs": "git",
+  "laborHours": 13334,
+  "reuseFrequency": {
+    "forks": 8,
+    "clones": 0
+  },
+  "platforms": ["web"],
+  "categories": ["data-collection", "other"],
+  "softwareType": "standalone/web",
+  "languages": [
+    "Ruby",
+    "HCL",
+    "HTML",
+    "Shell",
+    "JavaScript",
+    "Makefile",
+    "Jupyter Notebook",
+    "TypeScript",
+    "Python",
+    "Dockerfile",
+    "SCSS",
+    "Go",
+    "CSS"
+  ],
+  "maintenance": "contract",
+  "contractNumber": ["47QTCA18D008M:75FCMC23F0124:"],
+  "SBOM": "https://github.com/DSACMS/iv-cbv-payroll/network/dependencies",
+  "relatedCode": [],
+  "reusedCode": [],
+  "partners": [],
+  "date": {
+    "created": "2024-04-22T22:34:18Z",
+    "lastModified": "2025-10-09T14:15:20Z",
+    "metadataLastUpdated": "2025-12-02T10:27:00Z"
+  },
+  "tags": ["Income Verification", "Medicaid", "Community Engagement", "Work Requirement", "HR 1", "One Big Beautiful Bill Act", "Medicaid Expansion", "Eligibility Determination", "Work Program", "Education", "Education Program", "Center for Medicaid and Children Services", "CMS", "Open Source"],
+  "contact": {
+    "email": "jake.shilling@cms.hhs.gov",
+    "name": "Jake Shilling"
+  },
+  "feedbackMechanism": "https://github.com/DSACMS/iv-cbv-payroll/issues",
+  "AIUseCaseID": "0",
+  "localisation": true,
+  "repositoryType": "application",
+  "userInput": true,
+  "fismaLevel": "moderate",
+  "group": "CMS/OA/DSAC",
+  "projects": ["income-verification-as-a-service"],
+  "systems": [],
+  "subsetInHealthcare": ["medicaid", "SNAP", "TANF", "human-benefit-services"],
+  "userType": ["government", "applicants", "beneficiaries", "enrollees"],
+  "maturityModelTier": 3
+}

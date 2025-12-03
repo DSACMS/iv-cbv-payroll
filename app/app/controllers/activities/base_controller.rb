@@ -2,6 +2,8 @@ class Activities::BaseController < ApplicationController
   before_action :redirect_on_prod
   before_action :set_activity_flow
 
+  helper_method :next_path
+
   private
 
   def redirect_on_prod
@@ -20,5 +22,16 @@ class Activities::BaseController < ApplicationController
     return unless flow_id
 
     ActivityFlow.find_by(id: flow_id)
+  end
+
+  def next_path
+    case params[:controller]
+    when "activities/activities"
+      activities_flow_summary_path
+    when "activities/summary"
+      activities_flow_submit_path
+    when "activities/submit"
+      activities_flow_success_path
+    end
   end
 end

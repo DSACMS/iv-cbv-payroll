@@ -48,7 +48,10 @@ Most developers on the team code using macOS, so we recommend that platform if p
    * `npm install`
 1. Start postgres:
    * `brew services start postgresql@12`
-1. Get development credentials from 1Password: search for "CBV .env.local secrets" and copy its ".env.local" section into a file called that in the app directory.
+1. Set up the environment variables you'll need.
+   * `cp .env.local.example .env.local`
+   * Follow directions in the .env.local file to set up your accounts and API keys for all necessary services.
+   * Ask another engineer for the shared credentials (they're in Nava's 1Password under "CBV .env.local Rails Secrets")
 1. Create database: `bin/rails db:create`
 1. Run migrations: `bin/rails db:migrate`
 1. Run the development server: `bin/dev`

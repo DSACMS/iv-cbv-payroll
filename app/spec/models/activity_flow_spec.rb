@@ -8,7 +8,13 @@ RSpec.describe ActivityFlow, type: :model do
       hours: 2,
       date: Date.today
     )
+    flow.job_training_activities.create!(
+      program_name: "Resume Workshop",
+      organization_address: "123 Main St, Baton Rouge, LA",
+      hours: 6
+    )
 
     expect { flow.destroy }.to change { VolunteeringActivity.count }.by(-1)
+    expect(JobTrainingActivity.count).to eq(0)
   end
 end

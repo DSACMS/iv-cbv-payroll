@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.2].define(version: 2025_11_30_120000) do
+ActiveRecord::Schema[7.2].define(version: 2025_12_01_110000) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pgcrypto"
   enable_extension "plpgsql"
@@ -18,6 +18,7 @@ ActiveRecord::Schema[7.2].define(version: 2025_11_30_120000) do
   create_table "activity_flows", force: :cascade do |t|
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.datetime "completed_at"
   end
 
   create_table "api_access_tokens", force: :cascade do |t|
@@ -81,6 +82,16 @@ ActiveRecord::Schema[7.2].define(version: 2025_11_30_120000) do
     t.string "device_id"
     t.index ["cbv_applicant_id"], name: "index_cbv_flows_on_cbv_applicant_id"
     t.index ["cbv_flow_invitation_id"], name: "index_cbv_flows_on_cbv_flow_invitation_id"
+  end
+
+  create_table "job_training_activities", force: :cascade do |t|
+    t.string "program_name"
+    t.string "organization_address"
+    t.integer "hours"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.bigint "activity_flow_id", null: false
+    t.index ["activity_flow_id"], name: "index_job_training_activities_on_activity_flow_id"
   end
 
   create_table "payroll_accounts", force: :cascade do |t|
@@ -258,6 +269,7 @@ ActiveRecord::Schema[7.2].define(version: 2025_11_30_120000) do
 
   add_foreign_key "cbv_flow_invitations", "users"
   add_foreign_key "cbv_flows", "cbv_flow_invitations"
+  add_foreign_key "job_training_activities", "activity_flows"
   add_foreign_key "payroll_accounts", "cbv_flows"
   add_foreign_key "solid_queue_blocked_executions", "solid_queue_jobs", column: "job_id", on_delete: :cascade
   add_foreign_key "solid_queue_claimed_executions", "solid_queue_jobs", column: "job_id", on_delete: :cascade
