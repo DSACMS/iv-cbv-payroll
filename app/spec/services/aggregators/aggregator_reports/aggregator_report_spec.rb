@@ -26,8 +26,8 @@ RSpec.describe Aggregators::AggregatorReports::AggregatorReport, type: :service 
         allow(report.payroll_accounts.first).to receive(:job_succeeded?).with("identity").and_return(false)
 
         summary = report.summarize_by_employer
-        expect(summary[account_id][:income]).to be_an_instance_of(OpenStruct)
-        expect(summary[account_id][:identity]).to be_an_instance_of(OpenStruct)
+        expect(summary[account_id][:income]).to eq([])
+        expect(summary[account_id][:identity]).to eq([])
         expect(summary[account_id][:has_employment_data]).to be_truthy
       end
 
@@ -40,9 +40,9 @@ RSpec.describe Aggregators::AggregatorReports::AggregatorReport, type: :service 
         allow(report.payroll_accounts.first).to receive(:job_succeeded?).with("identity").and_return(false)
 
         summary = report.summarize_by_employer
-        expect(summary[account_id][:income]).to be_an_instance_of(OpenStruct)
-        expect(summary[account_id][:employment]).to be_an_instance_of(OpenStruct)
-        expect(summary[account_id][:identity]).to be_an_instance_of(OpenStruct)
+        expect(summary[account_id][:income]).to eq([])
+        expect(summary[account_id][:employment]).to eq([])
+        expect(summary[account_id][:identity]).to eq([])
         expect(summary[account_id][:has_employment_data]).to be_falsy
       end
     end
@@ -191,11 +191,11 @@ RSpec.describe Aggregators::AggregatorReports::AggregatorReport, type: :service 
           has_income_data: false,
           has_employment_data: false,
           has_identity_data: false,
-          employment: OpenStruct.new,
-          income: OpenStruct.new,
-          identity: OpenStruct.new,
-          paystubs: OpenStruct.new,
-          gigs: OpenStruct.new
+          employment: [],
+          income: [],
+          identity: [],
+          paystubs: [],
+          gigs: []
         }
       })
 

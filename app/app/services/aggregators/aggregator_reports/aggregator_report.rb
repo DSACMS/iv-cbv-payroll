@@ -81,7 +81,7 @@ module Aggregators::AggregatorReports
             pay_frequency: summary[:income]&.pay_frequency,
             compensation_amount: summary[:income]&.compensation_amount,
             compensation_unit: summary[:income]&.compensation_unit,
-            paystubs: (summary[:paystubs].is_a?(OpenStruct) ? [] : summary[:paystubs]).map do |paystub|
+            paystubs: (summary[:paystubs] || []).map do |paystub|
               {
                 pay_date: paystub.pay_date,
                 pay_period_start: paystub.pay_period_start,
@@ -110,11 +110,11 @@ module Aggregators::AggregatorReports
           has_income_data: has_income_data,
           has_employment_data: has_employment_data,
           has_identity_data: has_identity_data,
-          employment: has_employment_data ? account_report.employment : OpenStruct.new,
-          income: has_income_data ? account_report.income : OpenStruct.new,
-          identity: has_identity_data ? account_report.identity : OpenStruct.new,
-          paystubs: has_paystubs_data ? account_report.paystubs : OpenStruct.new,
-          gigs: account_report.gigs || OpenStruct.new
+          employment: has_employment_data ? account_report.employment : [],
+          income: has_income_data ? account_report.income : [],
+          identity: has_identity_data ? account_report.identity : [],
+          paystubs: has_paystubs_data ? account_report.paystubs : [],
+          gigs: account_report.gigs || []
         }
       end
     end
