@@ -4,10 +4,9 @@ class EducationService
   class LocalEducationService
     def self.create_schools!(identity)
       Rails.logger.info "Pretending to look up school information"
-      school_count = [ 1, 2 ].sample
-      school_count.times do
-        school = self.create_school(identity)
-      end
+
+      School.where(identity: identity).destroy_all
+      self.create_school(identity)
 
       sleep 2
     end
@@ -27,24 +26,26 @@ class EducationService
     def self.create_school(identity)
       require "faker"
 
-      School.create(
-               name: Faker::University.name,
-               address: Faker::Address.full_address,
-               identity: identity,
-             )
+      identity.schools.create(
+        name: Faker::University.name,
+        address: Faker::Address.full_address,
+        identity_id: identity.id,
+      )
+      identity.save
     end
 
     def self.create_enrollment(school)
       require "faker"
 
-      Enrollment.create(
-               status: [ :full_time, :part_time, :quarter_time ].sample,
-               semester_start: Faker::Date.in_date_period(
-                 month: Date.today.month > 6 ? 8 : 2,
-                 year: Date.today.year
-               ),
-               school: school
-             )
+      school.enrollments.create!(
+        status: [ :full_time, :part_time, :quarter_time ].sample,
+        semester_start: Faker::Date.in_date_period(
+          month: Date.today.month > 6 ? 8 : 2,
+          year: Date.today.year
+        ),
+        school_id: school.id
+      )
+      school.save
     end
   end
 

@@ -95,11 +95,6 @@ ActiveRecord::Schema[8.1].define(version: 2025_12_04_012521) do
     t.index ["identity_id"], name: "index_education_activities_on_identity_id"
   end
 
-  create_table "education_activities_enrollments", id: false, force: :cascade do |t|
-    t.bigint "education_activity_id", null: false
-    t.bigint "enrollment_id", null: false
-  end
-
   create_table "enrollments", force: :cascade do |t|
     t.datetime "created_at", null: false
     t.bigint "school_id", null: false

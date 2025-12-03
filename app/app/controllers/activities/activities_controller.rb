@@ -19,6 +19,14 @@ class Activities::ActivitiesController < Activities::BaseController
     end
 
     @identity = current_identity
+
+    if @identity.id
+      education_activites = EducationActivity.where(
+        identity_id: current_identity.id
+      )
+      @schools = education_activites.map(&:enrollments).flatten.map(&:school)
+    end
+
     @activities = VolunteeringActivity.all
   end
 end

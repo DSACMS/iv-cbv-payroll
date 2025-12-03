@@ -2,12 +2,11 @@ class Activities::EducationController < Activities::BaseController
   include ActionController::Live
 
   def index
-    session[:identity] = current_identity.attributes
-    @stream_path = activities_flow_education_stream_path
+    save_identity!
   end
 
   def show
-    @student_information = current_identity
+    @student_information = current_identity!
 
     unless @student_information.id
       redirect_to(
@@ -16,9 +15,7 @@ class Activities::EducationController < Activities::BaseController
       )
     end
 
-    @schools = @student_information.schools.select do |school|
-      school.most_recent_enrollment.current?
-    end
+    @schools = @student_information.schools.select(&:current?)
 
     @less_than_part_time = @schools.all? do |school|
       school.most_recent_enrollment.less_than_part_time?
@@ -52,9 +49,11 @@ class Activities::EducationController < Activities::BaseController
       )
     rescue Exception => e
       failed = true
+      logger.error e.message
+      logger.error e.backtrace.join("\n")
       sse.write(
         sync_indicator_update("school", :failed, I18n.t(".school")),
-      )
+pp      )
     end
 
     begin
@@ -64,6 +63,8 @@ class Activities::EducationController < Activities::BaseController
       )
     rescue Exception => e
       failed = true
+      logger.error e.message
+      logger.error e.backtrace.join("\n")
       sse.write(
         sync_indicator_update("enrollment", :failed, I18n.t(".enrollments")),
       )
@@ -77,11 +78,7 @@ class Activities::EducationController < Activities::BaseController
         alert: "Failed to fetch education data"
       )
     else
-      redirect_path = activities_flow_education_success_path(
-        first_name: identity.first_name,
-        last_name: identity.last_name,
-        date_of_birth: identity.date_of_birth,
-      )
+      redirect_path = activities_flow_education_success_path
     end
 
     sse.write(

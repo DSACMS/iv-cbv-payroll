@@ -54,6 +54,7 @@ en:
     education:
       add: Add Education Activities
       error_no_data: No education information available
+      error_no_identity: Please provide your name and date of birth
       index:
         enrollment: Enrollment
         fetching_education_description: This may take a few minutes. Please keep this window open while we work on this.
