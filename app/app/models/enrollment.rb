@@ -1,5 +1,6 @@
 class Enrollment < ApplicationRecord
   belongs_to :school
+  belongs_to :education_activity, optional: true
 
   enum :status, { full_time: "full_time",
                   part_time: "part_time",

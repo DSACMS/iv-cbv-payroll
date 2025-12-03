@@ -3,8 +3,10 @@ class IdentityService
   class DefaultIdentityService
     # Looks up `Identity` by name and DOB.
     #
-    # @return [Identity]
-    def self.call(request)
+    # @param [ActionDispatch::Request] request The request to read from
+    #
+    # @return [Identity, nil]
+    def self.read_identity(request)
       params = request.params
       session = request.session
 
@@ -12,10 +14,21 @@ class IdentityService
       attrs ||= self.identity_attrs_from_params request.params
 
       if attrs
-        Identity.find_by(**attrs) || Identity.build(**attrs)
+        Identity.find_or_create_by(attrs.slice([:first_name, :last_name, :date_of_birth]))
       else
-        Identity.new
+        nil
       end
+    end
+
+    # Save an {Identity} into the current session
+    #
+    # @param [ActionDispatch::Request] request The current request
+    # @param [Identity] identity The current identity
+    #
+    # @return [Identity] the identity param
+    def self.save_identity(request, identity)
+      request.session[:identity] = identity.attributes
+      identity
     end
 
     private
@@ -34,23 +47,32 @@ class IdentityService
   end
 
   class LocalIdentityService
-    # Invokes {DefaultIdentityService.call} and inserts fake data if
-    # the Identity does not currently exist.
+    # Invokes {DefaultIdentityService.read_identity} and inserts fake
+    # data if the Identity does not currently exist.
     #
     # @return [Identity]
-    def self.call(request)
-      id = DefaultIdentityService.call(request)
-      unless id.first_name
-        Rails.logger.info("Faking an identity")
+    def self.read_identity(request)
+      id = DefaultIdentityService.read_identity(request)
+      unless id
         require "faker"
 
-        id = Identity.build(
+        id = Identity.find_or_create_by(
           first_name: Faker::Name.first_name,
           last_name:  Faker::Name.last_name,
           date_of_birth: Faker::Date.birthday(min_age: 18, max_age: 65)
         )
       end
       id
+    end
+
+    # Invokes {DefaultIdentityService.save_identity}
+    #
+    # @param [ActionDispatch::Request] request The current request
+    # @param [Identity] identity The current identity
+    #
+    # @return [Identity] the identity param
+    def self.save_identity(request, identity)
+      DefaultIdentityService.save_identity(request, identity)
     end
   end
 
@@ -66,20 +88,29 @@ class IdentityService
   #   have an appropriate implementation
   def initialize(request)
     @request = request
-    if Rails.env.local?
+    if Rails.env.development?
       @impl = LocalIdentityService
-    elsif Rails.env.production?
-      @impl = DefaultIdentityService
     else
-      raise NotImplementedError
+      @impl = DefaultIdentityService
     end
   end
 
   # Infer the `Identity` that is associated with the current request
   #
-  # @return [Identity] An Identity instance that may or may not
-  #   already exist in the database
-  def call
-    @impl.call(@request)
+  # @return [Identity, nil] An Identity instance that may or may not
+  #   already exist in the database. nil if no identity is associated
+  #   with this request
+  def read_identity
+    @impl.read_identity(@request)
+  end
+
+  # Save an {Identity} in a way that can be read back by
+  # {#read_identity}
+  #
+  # @param [Identity] identity The current identity
+  #
+  # @return [Identity] the identity param
+  def save_identity(identity)
+    @impl.save_identity(@request, identity)
   end
 end

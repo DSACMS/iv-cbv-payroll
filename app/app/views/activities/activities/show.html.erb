@@ -14,6 +14,15 @@
 
     <section class="margin-bottom-5">
         <h2><%= t("activities.education.title") %></h2>
+
+        <% if @schools %>
+            <%= render TableComponent.new do |t| %>
+                <%= @schools.each do |a| %>
+                    <%= t.with_row a.name %>
+                <% end %>
+            <% end %>
+        <% end %>
+
         <%= f.submit t("activities.education.add"), name: nil, formaction: activities_flow_education_root_path, class: "btn btn-primary usa-button margin-y-5" %>
     </section>
 <% end %>
