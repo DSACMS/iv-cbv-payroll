@@ -116,6 +116,27 @@ RSpec.describe Aggregators::AggregatorReports::AggregatorReport, type: :service 
           summary = argyle_report.summarize_by_employer
           expect(summary[account][:identity].employment_id).to eq(summary[account][:employment].employment_matching_id)
         end
+
+        context "when a paystub has a nil pay date" do
+          let(:paystubs_json) do
+            paystubs = argyle_load_relative_json_file('busy_joe', 'request_paystubs.json').deep_dup
+            paystubs["results"].find { |p| p["id"] == "9e854b0d-a57f-3074-8a1a-e7ebcc654358" }["paystub_date"] = nil
+            paystubs
+          end
+
+          before do
+            argyle_report.fetch
+          end
+
+          it "does not crash when summarizing by employer" do
+            expect { argyle_report.summarize_by_employer }.not_to raise_error
+          end
+
+          it 'selects the correct employer' do
+            summary = argyle_report.summarize_by_employer
+            expect(summary[account][:employment].employer_name).to eq("Aramark")
+          end
+        end
       end
     end
   end
@@ -181,7 +202,7 @@ RSpec.describe Aggregators::AggregatorReports::AggregatorReport, type: :service 
       # Expect no error when calling income_report
       expect { report.income_report }.not_to raise_error
       result = report.income_report
-      expect(result[:employments].first[:paystubs]).to be_nil
+      expect(result[:employments].first[:paystubs]).to eq([])
     end
 
     context "when a paystub has null gross_pay_amount" do
