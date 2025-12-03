@@ -23,13 +23,16 @@ class Activities::EducationController < Activities::BaseController
   end
 
   def confirm
-    EducationActivity.create(
+    a = EducationActivity.create(
       identity_id: current_identity.id,
       additional_comments: params[:additional_comments],
       credit_hours: params[:credit_hours],
-      # TODO: remember how to do many to many
-      # enrollment_activities_ids: params[:enrollment_ids].map { |id| },
     )
+    enrollments = params[:enrollment_ids].map { |id| Enrollment.find(id) }
+    enrollments.each do |e|
+      e.education_activity = a
+      e.save
+    end
     redirect_to activities_flow_root_path
   end
 
