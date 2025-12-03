@@ -110,11 +110,11 @@ module Aggregators::AggregatorReports
           has_income_data: has_income_data,
           has_employment_data: has_employment_data,
           has_identity_data: has_identity_data,
-          employment: has_employment_data ? account_report.employment : [],
-          income: has_income_data ? account_report.income : [],
-          identity: has_identity_data ? account_report.identity : [],
-          paystubs: has_paystubs_data ? account_report.paystubs : [],
-          gigs: account_report.gigs || []
+          employment: has_employment_data ? account_report.employment : nil,
+          income: has_income_data ? account_report.income : nil,
+          identity: has_identity_data ? account_report.identity : nil,
+          paystubs: has_paystubs_data ? account_report.paystubs : nil,
+          gigs: account_report.gigs
         }
       end
     end
