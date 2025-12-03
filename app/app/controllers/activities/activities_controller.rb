@@ -20,7 +20,7 @@ class Activities::ActivitiesController < Activities::BaseController
 
     @identity = current_identity
 
-    if @identity.id
+    if @identity
       education_activites = EducationActivity.where(
         identity_id: current_identity.id
       )
