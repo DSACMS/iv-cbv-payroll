@@ -117,7 +117,7 @@ RSpec.describe Cbv::SubmitsController do
 
         context "when rendering for a az des caseworker" do
           it "shows the right client information fields" do
-            cbv_flow.update!(client_agency_id: "az_des")
+            cbv_flow.cbv_applicant.update!(client_agency_id: "az_des")
             cbv_flow.cbv_applicant.update!(case_number: "12345")
             get :show, format: :pdf, params: {
              is_caseworker: "true"
@@ -166,7 +166,7 @@ RSpec.describe Cbv::SubmitsController do
 
         context "with la_ldh client agency" do
           before do
-            cbv_flow.update!(client_agency_id: "la_ldh")
+            cbv_flow.cbv_applicant.update!(client_agency_id: "la_ldh")
           end
           context "when rendering for a caseworker" do
             it "shows the right client information fields" do
@@ -513,11 +513,11 @@ RSpec.describe Cbv::SubmitsController do
       patch :update, params: { cbv_flow: { consent_to_authorized_use: "1" } }
 
       expect(cbv_flow.reload.confirmation_code).to be_present
-      expect(cbv_flow.confirmation_code).to start_with(cbv_flow.client_agency_id.gsub("_", "").upcase)
+      expect(cbv_flow.confirmation_code).to start_with(cbv_flow.cbv_applicant.client_agency_id.gsub("_", "").upcase)
     end
 
     it "removes underscores from the agency name in the confirmation code" do
-      cbv_flow.update!(client_agency_id: "az_des")
+      cbv_flow.cbv_applicant.update!(client_agency_id: "az_des")
       expect(cbv_flow.confirmation_code).to be_nil
 
       patch :update, params: { cbv_flow: { consent_to_authorized_use: "1" } }

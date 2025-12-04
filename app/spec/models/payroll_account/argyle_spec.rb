@@ -88,7 +88,7 @@ RSpec.describe PayrollAccount::Argyle, type: :model do
     let(:fake_argyle) { double(Aggregators::Sdk::ArgyleService, delete_account_api: nil) }
 
     before do
-      expected_environment = Rails.application.config.client_agencies[cbv_flow.client_agency_id].argyle_environment
+      expected_environment = Rails.application.config.client_agencies[cbv_flow.cbv_applicant.client_agency_id].argyle_environment
 
       allow(Aggregators::Sdk::ArgyleService)
         .to receive(:new)

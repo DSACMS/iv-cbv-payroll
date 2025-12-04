@@ -65,7 +65,7 @@ RSpec.describe Cbv::OtherJobsController do
       expect(EventTrackingJob).to receive(:perform_later).with("ApplicantContinuedFromOtherJobsPage", anything, hash_including(
         time: be_a(Integer),
         cbv_flow_id: cbv_flow.id,
-        client_agency_id: cbv_flow.client_agency_id,
+        client_agency_id: cbv_flow.cbv_applicant.client_agency_id,
         has_other_jobs: true
       ))
       patch :update, params: { cbv_flow: { has_other_jobs: 'true' } }
@@ -77,7 +77,7 @@ RSpec.describe Cbv::OtherJobsController do
       expect(EventTrackingJob).to receive(:perform_later).with("ApplicantContinuedFromOtherJobsPage", anything, hash_including(
         time: be_a(Integer),
         cbv_flow_id: cbv_flow.id,
-        client_agency_id: cbv_flow.client_agency_id,
+        client_agency_id: cbv_flow.cbv_applicant.client_agency_id,
         has_other_jobs: false
       ))
       patch :update, params: { cbv_flow: { has_other_jobs: 'false' } }

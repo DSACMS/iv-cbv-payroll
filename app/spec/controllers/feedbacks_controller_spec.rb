@@ -22,7 +22,7 @@ RSpec.describe FeedbacksController, type: :controller do
         kind_of(ActionDispatch::Request),
         hash_including(
           referer: referer_url,
-          client_agency_id: cbv_flow.client_agency_id,
+          client_agency_id: cbv_flow.cbv_applicant.client_agency_id,
           cbv_flow_id: cbv_flow.id
         )
       )
@@ -37,7 +37,7 @@ RSpec.describe FeedbacksController, type: :controller do
         "ApplicantClickedFeedbackSurveyLink",
         kind_of(ActionDispatch::Request),
         hash_including(
-          client_agency_id: cbv_flow.client_agency_id,
+          client_agency_id: cbv_flow.cbv_applicant.client_agency_id,
           cbv_flow_id: cbv_flow.id
         )
       )
