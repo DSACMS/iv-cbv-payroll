@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.2].define(version: 2025_12_03_160934) do
+ActiveRecord::Schema[7.2].define(version: 2025_12_04_141756) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pgcrypto"
   enable_extension "plpgsql"
@@ -19,6 +19,8 @@ ActiveRecord::Schema[7.2].define(version: 2025_12_03_160934) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.datetime "completed_at"
+    t.bigint "identity_id"
+    t.index ["identity_id"], name: "index_activity_flows_on_identity_id"
   end
 
   create_table "api_access_tokens", force: :cascade do |t|
@@ -91,6 +93,11 @@ ActiveRecord::Schema[7.2].define(version: 2025_12_03_160934) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["identity_id"], name: "index_education_activities_on_identity_id"
+  end
+
+  create_table "education_activities_enrollments", id: false, force: :cascade do |t|
+    t.bigint "education_activity_id", null: false
+    t.bigint "enrollment_id", null: false
   end
 
   create_table "enrollments", force: :cascade do |t|
@@ -305,6 +312,7 @@ ActiveRecord::Schema[7.2].define(version: 2025_12_03_160934) do
     t.index ["payroll_account_id"], name: "index_webhook_events_on_payroll_account_id"
   end
 
+  add_foreign_key "activity_flows", "identities"
   add_foreign_key "cbv_flow_invitations", "users"
   add_foreign_key "cbv_flows", "cbv_flow_invitations"
   add_foreign_key "education_activities", "identities"

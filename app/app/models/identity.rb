@@ -1,3 +1,4 @@
 class Identity < ApplicationRecord
-  has_many :schools
+  has_many :activity_flows, dependent: :destroy
+  has_many :schools, dependent: :destroy
 end
