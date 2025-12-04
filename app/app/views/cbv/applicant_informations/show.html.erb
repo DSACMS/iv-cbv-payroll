@@ -5,7 +5,7 @@
   <%= t(".explanation", agency_acronym: agency_translation("shared.agency_acronym")) %>
 </p>
 <%= uswds_form_with(model: @cbv_applicant, url: cbv_flow_applicant_information_path, method: "patch") do |f| %>
-  <%= render partial: "cbv/applicant_informations/#{@cbv_flow.client_agency_id}", locals: { f: f } %>
+  <%= render partial: "cbv/applicant_informations/#{@cbv_flow.cbv_applicant.client_agency_id}", locals: { f: f } %>
 
   <%= f.submit t(".continue") %>
 <% end %>

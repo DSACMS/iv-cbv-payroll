@@ -28,7 +28,7 @@ class Cbv::EmployerSearchesController < Cbv::BaseController
   end
 
   def provider_search(query = "")
-    ProviderSearchService.new(@cbv_flow.client_agency_id).search(query)
+    ProviderSearchService.new(@cbv_flow.cbv_applicant.client_agency_id).search(query)
   end
 
   def search_params

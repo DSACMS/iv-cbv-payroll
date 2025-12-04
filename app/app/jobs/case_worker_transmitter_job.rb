@@ -40,7 +40,7 @@ class CaseWorkerTransmitterJob < ApplicationJob
   def track_transmitted_event(cbv_flow, payments)
     event_logger.track(TrackEvent::ApplicantSharedIncomeSummary, nil, {
       time: Time.now.to_i,
-      client_agency_id: cbv_flow.client_agency_id,
+      client_agency_id: cbv_flow.cbv_applicant.client_agency_id,
       cbv_applicant_id: cbv_flow.cbv_applicant_id,
       cbv_flow_id: cbv_flow.id,
       device_id: cbv_flow.device_id,
@@ -55,6 +55,6 @@ class CaseWorkerTransmitterJob < ApplicationJob
   end
 
   def current_agency(cbv_flow)
-    Rails.application.config.client_agencies[cbv_flow.client_agency_id]
+    Rails.application.config.client_agencies[cbv_flow.cbv_applicant.client_agency_id]
   end
 end

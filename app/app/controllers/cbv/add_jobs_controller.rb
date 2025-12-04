@@ -13,7 +13,7 @@ class Cbv::AddJobsController < Cbv::BaseController
     event_logger.track(TrackEvent::ApplicantContinuedFromAddJobsPage, request, {
       time: Time.now.to_i,
       cbv_flow_id: @cbv_flow&.id,
-      client_agency_id: @cbv_flow&.client_agency_id,
+      client_agency_id: @cbv_flow.cbv_applicant.client_agency_id,
       cbv_applicant_id: @cbv_flow.cbv_applicant_id,
       device_id: @cbv_flow.device_id,
       has_additional_jobs: params[:additional_jobs] == "true"

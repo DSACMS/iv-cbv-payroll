@@ -177,7 +177,7 @@ RSpec.describe Webhooks::Argyle::EventsController, type: :controller do
         expect(attributes).to include(
           cbv_flow_id: cbv_flow.id,
           cbv_applicant_id: cbv_flow.cbv_applicant_id,
-          client_agency_id: cbv_flow.client_agency_id,
+          client_agency_id: cbv_flow.cbv_applicant.client_agency_id,
           invitation_id: cbv_flow.cbv_flow_invitation_id,
           argyle_environment: "sandbox",
           sync_duration_seconds: be_a(Numeric),
@@ -348,7 +348,7 @@ RSpec.describe Webhooks::Argyle::EventsController, type: :controller do
 
     context "for a client agency with pay_income_days > 90 days" do
       before do
-        allow(Rails.application.config.client_agencies[cbv_flow.client_agency_id])
+        allow(Rails.application.config.client_agencies[cbv_flow.cbv_applicant.client_agency_id])
           .to receive(:pay_income_days)
           .and_return({ w2: 182, gig: 182 })
 

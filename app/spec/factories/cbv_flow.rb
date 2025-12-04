@@ -6,8 +6,6 @@ FactoryBot.define do
 
     cbv_applicant
 
-    client_agency_id { "sandbox" }
-
     trait :completed do
       consented_to_authorized_use_at { 10.minutes.ago }
       confirmation_code { "SANDBOX0010002" }

@@ -44,7 +44,7 @@
     </div>
 
     <div class="grid-row grid-gap margin-top-2">
-      <% (ProviderSearchService.new(@cbv_flow.client_agency_id).top_aggregator_options(@selected_tab)).each do |provider| %>
+      <% (ProviderSearchService.new(@cbv_flow.cbv_applicant.client_agency_id).top_aggregator_options(@selected_tab)).each do |provider| %>
         <div class="grid-col-4 tablet:grid-col-2 margin-top-2">
           <button
             data-action="click->cbv-employer-search#select"
