@@ -56,6 +56,11 @@ class ClientAgencyConfig
       weekly_report
       applicant_attributes
       generic_links_disabled
+      site_alert_title_en
+      site_alert_body_en
+      site_alert_title_es
+      site_alert_body_es
+      site_alert_type
     ])
 
     def initialize(yaml)
@@ -80,6 +85,11 @@ class ClientAgencyConfig
       @weekly_report = yaml["weekly_report"]
       @applicant_attributes = yaml["applicant_attributes"] || {}
       @generic_links_disabled = yaml["generic_links_disabled"]
+      @site_alert_title_en = yaml["site_alert_title_en"]
+      @site_alert_body_en = yaml["site_alert_body_en"]
+      @site_alert_title_es = yaml["site_alert_title_es"]
+      @site_alert_body_es = yaml["site_alert_body_es"]
+      @site_alert_type = yaml["site_alert_type"]
 
       raise ArgumentError.new("Client Agency missing id") if @id.blank?
       raise ArgumentError.new("Client Agency #{@id} missing required attribute `agency_name`") if @agency_name.blank?

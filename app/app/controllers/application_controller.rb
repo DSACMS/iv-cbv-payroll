@@ -1,6 +1,6 @@
 class ApplicationController < ActionController::Base
   helper :view
-  helper_method :current_agency, :show_menu?, :pilot_ended?
+  helper_method :current_agency, :show_menu?, :pilot_ended?, :get_site_alert_title, :get_site_alert_body
   around_action :switch_locale
   before_action :add_newrelic_metadata
   before_action :redirect_if_maintenance_mode
@@ -130,6 +130,24 @@ class ApplicationController < ActionController::Base
   def redirect_if_maintenance_mode
     if ENV["MAINTENANCE_MODE"] == "true"
       redirect_to maintenance_path
+    end
+  end
+
+  def get_site_alert_title
+    case I18n.locale
+    when :en
+      ENV["SITE_ALERT_TITLE_EN"]
+    when :es
+      ENV["SITE_ALERT_TITLE_ES"]
+    end
+  end
+
+  def get_site_alert_body
+    case I18n.locale
+    when :en
+      ENV["SITE_ALERT_BODY_EN"]
+    when :es
+      ENV["SITE_ALERT_BODY_ES"]
     end
   end
 end
