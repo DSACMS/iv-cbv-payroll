@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.2].define(version: 2025_12_01_110000) do
+ActiveRecord::Schema[7.2].define(version: 2025_12_03_160934) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pgcrypto"
   enable_extension "plpgsql"
@@ -84,6 +84,35 @@ ActiveRecord::Schema[7.2].define(version: 2025_12_01_110000) do
     t.index ["cbv_flow_invitation_id"], name: "index_cbv_flows_on_cbv_flow_invitation_id"
   end
 
+  create_table "education_activities", force: :cascade do |t|
+    t.bigint "identity_id", null: false
+    t.text "additional_comments"
+    t.integer "credit_hours"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["identity_id"], name: "index_education_activities_on_identity_id"
+  end
+
+  create_table "enrollments", force: :cascade do |t|
+    t.bigint "school_id", null: false
+    t.date "semester_start"
+    t.string "status"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.bigint "education_activity_id"
+    t.index ["education_activity_id"], name: "index_enrollments_on_education_activity_id"
+    t.index ["school_id"], name: "index_enrollments_on_school_id"
+  end
+
+  create_table "identities", force: :cascade do |t|
+    t.string "first_name", null: false
+    t.string "last_name", null: false
+    t.date "date_of_birth", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["first_name", "last_name", "date_of_birth"], name: "index_identities_on_first_name_and_last_name_and_date_of_birth", unique: true
+  end
+
   create_table "job_training_activities", force: :cascade do |t|
     t.string "program_name"
     t.string "organization_address"
@@ -105,6 +134,15 @@ ActiveRecord::Schema[7.2].define(version: 2025_12_01_110000) do
     t.datetime "redacted_at"
     t.string "aggregator_account_id"
     t.index ["cbv_flow_id"], name: "index_payroll_accounts_on_cbv_flow_id"
+  end
+
+  create_table "schools", force: :cascade do |t|
+    t.bigint "identity_id", null: false
+    t.string "name"
+    t.string "address"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["identity_id"], name: "index_schools_on_identity_id"
   end
 
   create_table "solid_queue_blocked_executions", force: :cascade do |t|
@@ -269,8 +307,12 @@ ActiveRecord::Schema[7.2].define(version: 2025_12_01_110000) do
 
   add_foreign_key "cbv_flow_invitations", "users"
   add_foreign_key "cbv_flows", "cbv_flow_invitations"
+  add_foreign_key "education_activities", "identities"
+  add_foreign_key "enrollments", "education_activities"
+  add_foreign_key "enrollments", "schools"
   add_foreign_key "job_training_activities", "activity_flows"
   add_foreign_key "payroll_accounts", "cbv_flows"
+  add_foreign_key "schools", "identities"
   add_foreign_key "solid_queue_blocked_executions", "solid_queue_jobs", column: "job_id", on_delete: :cascade
   add_foreign_key "solid_queue_claimed_executions", "solid_queue_jobs", column: "job_id", on_delete: :cascade
   add_foreign_key "solid_queue_failed_executions", "solid_queue_jobs", column: "job_id", on_delete: :cascade
