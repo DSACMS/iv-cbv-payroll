@@ -1,6 +1,8 @@
 require 'rails_helper'
 
 RSpec.describe Cbv::SessionsController, type: :controller do
+  render_views
+
   describe 'POST #refresh' do
     it 'updates last_seen time and returns ok status' do
       initial_time = Time.current
@@ -62,6 +64,30 @@ RSpec.describe Cbv::SessionsController, type: :controller do
       it 'removes the session' do
         get :timeout
         expect(session[:cbv_flow_id]).to be_nil
+      end
+    end
+
+    context 'with a valid client_agency_id param' do
+      it 'renders the timeout page with start over link' do
+        get :timeout, params: { client_agency_id: 'sandbox' }
+        expect(response.body).to include('click here')
+      end
+    end
+
+    context 'with domain detection' do
+      it 'uses the detected agency' do
+        allow(controller).to receive(:detect_client_agency_from_domain).and_return('sandbox')
+
+        get :timeout
+        expect(response.body).to include('click here')
+      end
+    end
+
+    context 'without a client_agency_id param or domain match' do
+      it 'renders the timeout page without link to start over' do
+        get :timeout
+        expect(response).to have_http_status(:ok)
+        expect(response.body).not_to include('click here')
       end
     end
   end
