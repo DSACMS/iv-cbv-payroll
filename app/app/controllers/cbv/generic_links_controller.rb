@@ -36,6 +36,6 @@ class Cbv::GenericLinksController < Cbv::BaseController
     applicant_id = cookies.encrypted[:cbv_applicant_id]
     return nil unless applicant_id.present?
 
-    find_existing_applicant(applicant_id)
+    CbvApplicant.find_by(id: applicant_id)
   end
 end

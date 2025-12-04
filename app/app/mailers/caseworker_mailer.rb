@@ -39,6 +39,6 @@ class CaseworkerMailer < ApplicationMailer
   end
 
   def current_agency
-    client_agency_config[@cbv_flow.client_agency_id]
+    client_agency_config[@cbv_flow.cbv_applicant.client_agency_id]
   end
 end

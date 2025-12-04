@@ -15,7 +15,7 @@ class Cbv::OtherJobsController < Cbv::BaseController
     event_logger.track(TrackEvent::ApplicantContinuedFromOtherJobsPage, request, {
       time: Time.now.to_i,
       cbv_flow_id: @cbv_flow&.id,
-      client_agency_id: @cbv_flow&.client_agency_id,
+      client_agency_id: @cbv_flow.cbv_applicant.client_agency_id,
       cbv_applicant_id: @cbv_flow.cbv_applicant_id,
       device_id: @cbv_flow.device_id,
       has_other_jobs: @cbv_flow.has_other_jobs

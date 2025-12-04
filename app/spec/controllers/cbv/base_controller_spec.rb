@@ -7,7 +7,7 @@ RSpec.describe Cbv::BaseController, type: :controller do
     end
   end
 
-  let(:cbv_flow) { create(:cbv_flow, :invited, client_agency_id: "az_des") }
+  let(:cbv_flow) { create(:cbv_flow, :invited) }
 
   before do
     routes.draw do

@@ -97,7 +97,7 @@ class Cbv::SubmitsController < Cbv::BaseController
   end
 
   def generate_confirmation_code(cbv_flow)
-    prefix = cbv_flow.client_agency_id
+    prefix = cbv_flow.cbv_applicant.client_agency_id
     [
       prefix.gsub("_", ""),
       (Time.now.to_i % 36 ** 3).to_s(36).tr("OISB", "0158").rjust(3, "0"),

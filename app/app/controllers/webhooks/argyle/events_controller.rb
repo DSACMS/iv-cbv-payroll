@@ -45,8 +45,8 @@ class Webhooks::Argyle::EventsController < ApplicationController
     # In the event that a user adds multiple payroll accounts we do not want to
     # record duplicate webhook events
     syncing_payroll_accounts = PayrollAccount::Argyle
-                                 .awaiting_fully_synced_webhook
-                                 .where(cbv_flow: @cbv_flow)
+      .awaiting_fully_synced_webhook
+      .where(cbv_flow: @cbv_flow)
 
     # Handle each connected account separately
     syncing_payroll_accounts.map do |payroll_account|
@@ -119,9 +119,8 @@ class Webhooks::Argyle::EventsController < ApplicationController
     # Check if this webhook signifies a completed sync (i.e. that we have
     # fetched at least `pay_income_days` of data). If so, update the webhook to
     # have a "success" outcome.
-    client_agency_config = agency_config[@cbv_flow.client_agency_id]
     days_synced = params.dig("data", "days_synced")
-    if days_synced.to_i >= client_agency_config.pay_income_days.values.max
+    if days_synced.to_i >= agency_config[@cbv_flow&.cbv_applicant&.client_agency_id].pay_income_days.values.max
       webhook_event.update(event_outcome: "success")
       webhook_event.reload # force its payroll_account to reload webhook events
     end
@@ -141,8 +140,8 @@ class Webhooks::Argyle::EventsController < ApplicationController
       report = Aggregators::AggregatorReports::ArgyleReport.new(
         payroll_accounts: [ payroll_account ],
         argyle_service: argyle_for(@cbv_flow),
-        days_to_fetch_for_w2: agency_config[@cbv_flow.client_agency_id].pay_income_days[:w2],
-        days_to_fetch_for_gig: agency_config[@cbv_flow.client_agency_id].pay_income_days[:gig]
+        days_to_fetch_for_w2: agency_config[@cbv_flow.cbv_applicant.client_agency_id].pay_income_days[:w2],
+        days_to_fetch_for_gig: agency_config[@cbv_flow.cbv_applicant.client_agency_id].pay_income_days[:gig]
       )
       report.fetch
 
@@ -198,12 +197,12 @@ class Webhooks::Argyle::EventsController < ApplicationController
 
       event_logger.track(TrackEvent::ApplicantFinishedArgyleSync, request, {
         time: Time.now.to_i,
-        cbv_applicant_id: @cbv_flow.cbv_applicant_id,
-        cbv_flow_id: @cbv_flow.id,
-        client_agency_id: @cbv_flow.client_agency_id,
-        device_id: @cbv_flow.device_id,
-        invitation_id: @cbv_flow.cbv_flow_invitation_id,
-        argyle_environment: agency_config[@cbv_flow.client_agency_id].argyle_environment,
+        cbv_applicant_id: @cbv_flow&.cbv_applicant_id,
+        cbv_flow_id: @cbv_flow&.id,
+        client_agency_id: @cbv_flow&.cbv_applicant&.client_agency_id,
+        device_id: @cbv_flow&.device_id,
+        invitation_id: @cbv_flow&.cbv_flow_invitation_id,
+        argyle_environment: agency_config[@cbv_flow&.cbv_applicant&.client_agency_id].argyle_environment,
         sync_duration_seconds: Time.now - payroll_account.sync_started_at,
 
         # #####################################################################

@@ -9,7 +9,6 @@ RSpec.describe CaseworkerMailer, type: :mailer do
     :invited,
     :with_pinwheel_account,
     confirmation_code: "00001",
-    client_agency_id: "sandbox",
     consented_to_authorized_use_at: Time.now,
     cbv_applicant_attributes: {
       case_number: "ABC1234"
@@ -18,7 +17,7 @@ RSpec.describe CaseworkerMailer, type: :mailer do
   let(:caseworker_email) { cbv_flow.cbv_flow_invitation.user.email }
   let(:pinwheel_report) { build(:pinwheel_report, :with_pinwheel_account) }
   let(:email_address) { "test@example.com" }
-  let(:current_agency) { ClientAgencyConfig.new(File.join(Rails.root, 'config', 'client-agency-config.yml'))[cbv_flow.client_agency_id] }
+  let(:current_agency) { ClientAgencyConfig.new(File.join(Rails.root, 'config', 'client-agency-config.yml'))[cbv_flow.cbv_applicant.client_agency_id] }
 
   let(:mail) {
     CaseworkerMailer.with(
@@ -42,7 +41,7 @@ RSpec.describe CaseworkerMailer, type: :mailer do
 
       context 'with la_ldh agency' do
         before do
-          cbv_flow.update!(client_agency_id: "la_ldh")
+          cbv_flow.cbv_applicant.update!(client_agency_id: "la_ldh")
         end
 
         it 'uses the custom format with confirmation code' do

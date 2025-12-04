@@ -57,7 +57,7 @@ class Webhooks::Pinwheel::EventsController < ApplicationController
         time: Time.now.to_i,
         cbv_applicant_id: @cbv_flow.cbv_applicant_id,
         cbv_flow_id: @cbv_flow.id,
-        client_agency_id: @cbv_flow.client_agency_id,
+        client_agency_id: @cbv_flow.cbv_applicant.client_agency_id,
         device_id: @cbv_flow.device_id,
         invitation_id: @cbv_flow.cbv_flow_invitation_id,
         platform_name: params["payload"]["platform_name"]
@@ -66,8 +66,8 @@ class Webhooks::Pinwheel::EventsController < ApplicationController
       report = Aggregators::AggregatorReports::PinwheelReport.new(
         payroll_accounts: [ @payroll_account ],
         pinwheel_service: @pinwheel,
-        days_to_fetch_for_w2: agency_config[@cbv_flow.client_agency_id].pay_income_days[:w2],
-        days_to_fetch_for_gig: agency_config[@cbv_flow.client_agency_id].pay_income_days[:gig]
+        days_to_fetch_for_w2: agency_config[@cbv_flow.cbv_applicant.client_agency_id].pay_income_days[:w2],
+        days_to_fetch_for_gig: agency_config[@cbv_flow.cbv_applicant.client_agency_id].pay_income_days[:gig]
       )
       report.fetch
 
@@ -84,10 +84,10 @@ class Webhooks::Pinwheel::EventsController < ApplicationController
         time: Time.now.to_i,
         cbv_applicant_id: @cbv_flow.cbv_applicant_id,
         cbv_flow_id: @cbv_flow.id,
-        client_agency_id: @cbv_flow.client_agency_id,
+        client_agency_id: @cbv_flow.cbv_applicant.client_agency_id,
         device_id: @cbv_flow.device_id,
         invitation_id: @cbv_flow.cbv_flow_invitation_id,
-        pinwheel_environment: agency_config[@cbv_flow.client_agency_id].pinwheel_environment,
+        pinwheel_environment: agency_config[@cbv_flow.cbv_applicant.client_agency_id].pinwheel_environment,
         sync_duration_seconds: Time.now - @payroll_account.created_at,
 
         # #####################################################################

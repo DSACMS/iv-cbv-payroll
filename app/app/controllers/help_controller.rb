@@ -38,6 +38,6 @@ class HelpController < ApplicationController
     return unless session[:cbv_flow_id]
 
     cbv_flow = CbvFlow.find_by(id: session[:cbv_flow_id])
-    agency_config[cbv_flow.client_agency_id] if cbv_flow
+    agency_config[cbv_flow.cbv_applicant.client_agency_id] if cbv_flow
   end
 end

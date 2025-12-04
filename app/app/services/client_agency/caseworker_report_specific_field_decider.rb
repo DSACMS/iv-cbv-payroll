@@ -14,6 +14,6 @@ class ClientAgency::CaseworkerReportSpecificFieldDecider
   end
 
   def self.agency_class(cbv_flow)
-    "ClientAgency::#{cbv_flow.client_agency_id.camelize}::ReportFields".safe_constantize
+    "ClientAgency::#{cbv_flow.cbv_applicant.client_agency_id.camelize}::ReportFields".safe_constantize
   end
 end

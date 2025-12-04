@@ -70,7 +70,7 @@ RSpec.describe Api::UserEventsController, type: :controller do
     end
   end
   describe "#user_action" do
-    let(:cbv_flow) { create :cbv_flow }
+    let!(:cbv_flow) { create :cbv_flow }
     let(:valid_params) do
       { events: { event_name: event_name, attributes: event_attributes } }
     end

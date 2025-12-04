@@ -57,8 +57,8 @@ class ApplicationController < ActionController::Base
   def current_agency
     return @current_agency if @current_agency.present?
 
-    if @cbv_flow.present? && @cbv_flow.client_agency_id.present?
-      return @current_agency = agency_config[@cbv_flow.client_agency_id]
+    if @cbv_flow.present? && @cbv_flow.cbv_applicant.client_agency_id.present?
+      return @current_agency = agency_config[@cbv_flow.cbv_applicant.client_agency_id]
     end
 
     if params[:client_agency_id].present?
@@ -100,13 +100,13 @@ class ApplicationController < ActionController::Base
   protected
 
   def pinwheel_for(cbv_flow)
-    environment = agency_config[cbv_flow.client_agency_id].pinwheel_environment
+    environment = agency_config[cbv_flow.cbv_applicant.client_agency_id].pinwheel_environment
 
     Aggregators::Sdk::PinwheelService.new(environment)
   end
 
   def argyle_for(cbv_flow)
-    environment = agency_config[cbv_flow.client_agency_id].argyle_environment
+    environment = agency_config[cbv_flow.cbv_applicant.client_agency_id].argyle_environment
     Aggregators::Sdk::ArgyleService.new(environment)
   end
 

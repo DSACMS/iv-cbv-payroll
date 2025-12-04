@@ -13,7 +13,6 @@ RSpec.describe WeeklyReportMailer, type: :mailer do
       :cbv_flow, :with_pinwheel_account,
       confirmation_code: "00001",
       created_at: invitation_sent_at + 15.minutes,
-      client_agency_id: client_agency_id,
       transmitted_at: invitation_sent_at + 30.minutes,
       cbv_flow_invitation: cbv_flow_invitation,
       consented_to_authorized_use_at: invitation_sent_at + 30.minutes
@@ -47,10 +46,10 @@ RSpec.describe WeeklyReportMailer, type: :mailer do
 
   it "tracks events" do
     expect(EventTrackingJob).to receive(:perform_later).with("EmailSent", anything, hash_including(
-        mailer: "WeeklyReportMailer",
-        action: "report_email",
-        message_id: be_a(String)
-      ))
+      mailer: "WeeklyReportMailer",
+      action: "report_email",
+      message_id: be_a(String)
+    ))
 
     mail.deliver_now
   end
@@ -65,11 +64,10 @@ RSpec.describe WeeklyReportMailer, type: :mailer do
 
   it "excludes data from outside the report week" do
     create(:cbv_flow, :with_pinwheel_account,
-           confirmation_code: "00002",
-           created_at: now.prev_week.beginning_of_week - 1.minute,
-           transmitted_at: now.prev_week.beginning_of_week,
-           consented_to_authorized_use_at: now.prev_week.beginning_of_week,
-           client_agency_id: client_agency_id)
+      confirmation_code: "00002",
+      created_at: now.prev_week.beginning_of_week - 1.minute,
+      transmitted_at: now.prev_week.beginning_of_week,
+      consented_to_authorized_use_at: now.prev_week.beginning_of_week)
 
     expect(parsed_csv.length).to eq(1)
   end
@@ -88,9 +86,7 @@ RSpec.describe WeeklyReportMailer, type: :mailer do
 
   context "for generic flows" do
     it "excludes incomplete flows from the CSV data" do
-      create(:cbv_flow, :invited,
-             created_at: invitation_sent_at,
-             client_agency_id: client_agency_id)
+      create(:cbv_flow, :invited, created_at: invitation_sent_at)
 
       expect(parsed_csv.length).to eq(1)
     end
@@ -131,9 +127,8 @@ RSpec.describe WeeklyReportMailer, type: :mailer do
     it "includes incomplete flows" do
       incomplete_invitation = create(:cbv_flow_invitation, :az_des, created_at: invitation_sent_at)
       create(:cbv_flow, :invited, :with_pinwheel_account,
-             created_at: invitation_sent_at,
-             client_agency_id: client_agency_id,
-             cbv_flow_invitation: incomplete_invitation)
+        created_at: invitation_sent_at,
+        cbv_flow_invitation: incomplete_invitation)
 
       expect(parsed_csv.length).to eq(2)
       incomplete_record = parsed_csv.find { |row| row["completed_at"].blank? }
@@ -150,12 +145,11 @@ RSpec.describe WeeklyReportMailer, type: :mailer do
 
     it "includes multiple flows from the same invitation" do
       create(:cbv_flow, :with_pinwheel_account,
-             confirmation_code: "00003",
-             created_at: invitation_sent_at + 1.hour,
-             transmitted_at: invitation_sent_at + 1.hour + 15.minutes,
-             consented_to_authorized_use_at: invitation_sent_at + 1.hour + 15.minutes,
-             client_agency_id: client_agency_id,
-             cbv_flow_invitation: cbv_flow_invitation)
+        confirmation_code: "00003",
+        created_at: invitation_sent_at + 1.hour,
+        transmitted_at: invitation_sent_at + 1.hour + 15.minutes,
+        consented_to_authorized_use_at: invitation_sent_at + 1.hour + 15.minutes,
+        cbv_flow_invitation: cbv_flow_invitation)
 
       expect(parsed_csv.length).to eq(2)
 

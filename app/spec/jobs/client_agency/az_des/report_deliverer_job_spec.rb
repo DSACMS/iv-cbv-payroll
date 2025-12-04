@@ -11,9 +11,11 @@ RSpec.describe ClientAgency::AzDes::ReportDelivererJob, type: :job do
     it "generates csv when there is a case that has been submitted during time period specified" do
       authorized_timestamp = Time.find_zone("UTC").local(2025, 1, 1, 10)
       transmitted_at = Time.find_zone("UTC").local(2025, 5, 1, 1)
-      cbv_flow = create(:cbv_flow, :completed, :invited, client_agency_id: "az_des",
-                        consented_to_authorized_use_at: authorized_timestamp,
-                        transmitted_at: transmitted_at)
+      cbv_flow = create(:cbv_flow, :completed, :invited,
+        consented_to_authorized_use_at: authorized_timestamp,
+        transmitted_at: transmitted_at,
+        cbv_applicant_attributes: { client_agency_id: "az_des" }
+      )
       cbv_flow.cbv_applicant.update!(case_number: "12345")
 
       allow(ClientAgency::AzDes::Configuration).to receive(:sftp_transmission_configuration).and_return(
@@ -36,8 +38,8 @@ RSpec.describe ClientAgency::AzDes::ReportDelivererJob, type: :job do
     end
 
     it "does not generate csv when there is no case that has been submitted during time period specified" do
-      create(:cbv_flow, :completed, :invited, client_agency_id: "az_des", transmitted_at: 11.minutes.ago)
-      create(:cbv_flow, :completed, :invited, client_agency_id: "sandbox", transmitted_at: 4.minutes.ago)
+      create(:cbv_flow, :completed, :invited, transmitted_at: 11.minutes.ago, cbv_applicant_attributes: { client_agency_id: "az_des" })
+      create(:cbv_flow, :completed, :invited, transmitted_at: 4.minutes.ago, cbv_applicant_attributes: { client_agency_id: "sandbox" })
 
       expect(sftp_gateway).not_to receive(:upload_data)
 

@@ -124,7 +124,7 @@ class Cbv::BaseController < FlowController
       cbv_flow_id: @cbv_flow.id,
       invitation_id: @cbv_flow.cbv_flow_invitation_id,
       cbv_applicant_id: @cbv_flow.cbv_applicant_id,
-      client_agency_id: @cbv_flow.client_agency_id,
+      client_agency_id: current_agency.id,
       device_id: @cbv_flow.device_id,
       path: request.path
     })
