@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2025_12_04_012521) do
+ActiveRecord::Schema[8.1].define(version: 2025_12_04_141756) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
   enable_extension "pgcrypto"
@@ -20,8 +20,10 @@ ActiveRecord::Schema[8.1].define(version: 2025_12_04_012521) do
     t.datetime "completed_at"
     t.datetime "created_at", null: false
     t.string "device_id"
+    t.bigint "identity_id"
     t.datetime "updated_at", null: false
     t.index ["cbv_applicant_id"], name: "index_activity_flows_on_cbv_applicant_id"
+    t.index ["identity_id"], name: "index_activity_flows_on_identity_id"
   end
 
   create_table "api_access_tokens", force: :cascade do |t|
@@ -95,12 +97,19 @@ ActiveRecord::Schema[8.1].define(version: 2025_12_04_012521) do
     t.index ["identity_id"], name: "index_education_activities_on_identity_id"
   end
 
+  create_table "education_activities_enrollments", id: false, force: :cascade do |t|
+    t.bigint "education_activity_id", null: false
+    t.bigint "enrollment_id", null: false
+  end
+
   create_table "enrollments", force: :cascade do |t|
     t.datetime "created_at", null: false
+    t.bigint "education_activity_id"
     t.bigint "school_id", null: false
     t.date "semester_start"
     t.string "status"
     t.datetime "updated_at", null: false
+    t.index ["education_activity_id"], name: "index_enrollments_on_education_activity_id"
     t.index ["school_id"], name: "index_enrollments_on_school_id"
   end
 
@@ -306,9 +315,11 @@ ActiveRecord::Schema[8.1].define(version: 2025_12_04_012521) do
   end
 
   add_foreign_key "activity_flows", "cbv_applicants"
+  add_foreign_key "activity_flows", "identities"
   add_foreign_key "cbv_flow_invitations", "users"
   add_foreign_key "cbv_flows", "cbv_flow_invitations"
   add_foreign_key "education_activities", "identities"
+  add_foreign_key "enrollments", "education_activities"
   add_foreign_key "enrollments", "schools"
   add_foreign_key "job_training_activities", "activity_flows"
   add_foreign_key "payroll_accounts", "cbv_flows"
