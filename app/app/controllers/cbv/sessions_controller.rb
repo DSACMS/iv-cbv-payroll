@@ -21,7 +21,7 @@ class Cbv::SessionsController < Cbv::BaseController
 
   def timeout
     reset_cbv_session!
-    @current_agency = agency_config[params[:client_agency_id]]
+    @current_agency = agency_config[params[:client_agency_id]] || agency_config[detect_client_agency_from_domain]
   end
 
   def current_agency
