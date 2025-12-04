@@ -9,7 +9,7 @@ class ApplicationController < ActionController::Base
   before_action :set_device_id_cookie
 
   rescue_from ActionController::InvalidAuthenticityToken do
-    redirect_to root_url, flash: { slim_alert: { type: "info", message_html:  t("cbv.error_missing_token_html") } }
+    redirect_to root_url, flash: { slim_alert: { type: "info", message_html: t("cbv.error_missing_token_html") } }
   end
 
   def after_sign_in_path_for(user)
@@ -55,15 +55,17 @@ class ApplicationController < ActionController::Base
   end
 
   def current_agency
-    # First try to get the agency from the client_agency_id parameter
     return @current_agency if @current_agency.present?
+
+    if @cbv_flow.present? && @cbv_flow.client_agency_id.present?
+      return @current_agency = agency_config[@cbv_flow.client_agency_id]
+    end
 
     if params[:client_agency_id].present?
       @current_agency = agency_config[params[:client_agency_id]]
       return @current_agency if @current_agency.present?
     end
 
-    # If not found from params, try to detect from domain
     client_agency_id_from_domain = detect_client_agency_from_domain
     if client_agency_id_from_domain.present?
       @current_agency = agency_config[client_agency_id_from_domain]

@@ -1,4 +1,4 @@
-class Cbv::BaseController < ApplicationController
+class Cbv::BaseController < FlowController
   ALPHANUMERIC_PREFIX_REGEXP = /^([a-zA-Z0-9]+)[^a-zA-Z0-9]*$/
 
   before_action :set_cbv_origin, :set_cbv_flow, :ensure_cbv_flow_not_yet_complete, :prevent_back_after_complete, :capture_page_view
@@ -69,12 +69,6 @@ class Cbv::BaseController < ApplicationController
     return unless @cbv_flow && @cbv_flow.complete?
 
     redirect_to(cbv_flow_success_path)
-  end
-
-  def current_agency
-    return unless @cbv_flow.present? && @cbv_flow.client_agency_id.present?
-
-    @current_agency ||= agency_config[@cbv_flow.client_agency_id]
   end
 
   def next_path
