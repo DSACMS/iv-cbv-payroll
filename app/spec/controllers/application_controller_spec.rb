@@ -99,7 +99,7 @@ RSpec.describe ApplicationController, type: :controller do
       expect(controller.send(:cbv_flow_symbol)).to eq(:flow_id)
     end
   end
-      
+
   describe "#current_agency" do
     let(:sandbox_agency) { Rails.application.config.client_agencies["sandbox"] }
 
