@@ -26,7 +26,7 @@ class Cbv::BaseController < FlowController
       end
 
       @cbv_flow = CbvFlow.create_from_invitation(invitation, cookies.permanent.signed[:device_id])
-      session[:flow_id] = @cbv_flow.id
+      set_flow_session(@cbv_flow.id, :cbv)
       cookies.permanent.encrypted[:cbv_applicant_id] = @cbv_flow.cbv_applicant_id
       track_invitation_clicked_event(invitation, @cbv_flow)
 
@@ -182,6 +182,6 @@ class Cbv::BaseController < FlowController
   end
 
   def reset_cbv_session!
-    session[:flow_id] = nil
+    set_flow_session(nil, nil)
   end
 end

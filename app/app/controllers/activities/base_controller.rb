@@ -14,7 +14,7 @@ class Activities::BaseController < ApplicationController
 
   def set_activity_flow
     @activity_flow = find_activity_flow || ActivityFlow.create!
-    session[:flow_id] = @activity_flow.id
+    set_flow_session(@activity_flow.id, :activity)
   end
 
   def find_activity_flow

@@ -97,6 +97,11 @@ class ApplicationController < ActionController::Base
     @pilot_ended.nil? ? current_agency&.pilot_ended : @pilot_ended
   end
 
+  def set_flow_session(flow_id, type)
+    session[:flow_id] = flow_id
+    session[:flow_type] = type
+  end
+
   protected
 
   def pinwheel_for(cbv_flow)
