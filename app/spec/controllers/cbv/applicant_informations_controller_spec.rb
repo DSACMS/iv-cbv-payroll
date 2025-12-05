@@ -8,7 +8,7 @@ RSpec.describe Cbv::ApplicantInformationsController, type: :controller do
     end
 
     before do
-      session[:cbv_flow_id] = cbv_flow.id
+      session[:flow_id] = cbv_flow.id
     end
 
     context "when the user is uninvited" do
@@ -158,7 +158,7 @@ RSpec.describe Cbv::ApplicantInformationsController, type: :controller do
     render_views
 
     before do
-      session[:cbv_flow_id] = cbv_flow.id
+      session[:flow_id] = cbv_flow.id
     end
 
     it "tracks ApplicantSubmittedInformationPage event with identity_age_range_applicant for LA LDH DOB submission" do

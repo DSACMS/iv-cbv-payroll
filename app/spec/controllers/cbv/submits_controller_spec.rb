@@ -46,7 +46,7 @@ RSpec.describe Cbv::SubmitsController do
         cbv_applicant.update(snap_application_date: current_time)
         cbv_flow.payroll_accounts.first.update(aggregator_account_id: "03e29160-f7e7-4a28-b2d8-813640e030d3")
 
-        session[:cbv_flow_id] = cbv_flow.id
+        session[:flow_id] = cbv_flow.id
         pinwheel_stub_request_end_user_accounts_response
         pinwheel_stub_request_end_user_paystubs_response
         pinwheel_stub_request_employment_info_response unless errored_jobs.include?("employment")
@@ -270,7 +270,7 @@ RSpec.describe Cbv::SubmitsController do
         end
 
         before do
-          session[:cbv_flow_id] = cbv_flow.id
+          session[:flow_id] = cbv_flow.id
           argyle_stub_request_identities_response("bob")
           argyle_stub_request_paystubs_response("bob")
           argyle_stub_request_gigs_response("bob")
@@ -329,7 +329,7 @@ RSpec.describe Cbv::SubmitsController do
         end
 
         before do
-          session[:cbv_flow_id] = cbv_flow.id
+          session[:flow_id] = cbv_flow.id
           argyle_stub_request_identities_response("tim")
           argyle_stub_request_paystubs_response("tim")
           argyle_stub_request_gigs_response("tim")
@@ -373,7 +373,7 @@ RSpec.describe Cbv::SubmitsController do
         end
 
         before do
-          session[:cbv_flow_id] = cbv_flow.id
+          session[:flow_id] = cbv_flow.id
           argyle_stub_request_identities_response("sarah")
           argyle_stub_request_paystubs_response("sarah")
           argyle_stub_request_gigs_response("sarah")
@@ -436,7 +436,7 @@ RSpec.describe Cbv::SubmitsController do
         end
 
         before do
-          session[:cbv_flow_id] = cbv_flow.id
+          session[:flow_id] = cbv_flow.id
           argyle_stub_request_identities_response("kim")
           argyle_stub_request_paystubs_response("kim")
           argyle_stub_request_gigs_response("kim")
@@ -479,7 +479,7 @@ RSpec.describe Cbv::SubmitsController do
       cbv_applicant.update(snap_application_date: current_time)
       cbv_flow.payroll_accounts.first.update(aggregator_account_id: "03e29160-f7e7-4a28-b2d8-813640e030d3")
 
-      session[:cbv_flow_id] = cbv_flow.id
+      session[:flow_id] = cbv_flow.id
       sign_in sandbox_user
       pinwheel_stub_request_end_user_accounts_response
       pinwheel_stub_request_end_user_paystubs_response

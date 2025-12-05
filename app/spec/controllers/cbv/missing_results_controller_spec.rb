@@ -7,7 +7,7 @@ RSpec.describe Cbv::MissingResultsController do
     let(:cbv_flow) { create(:cbv_flow, :invited) }
 
     before do
-      session[:cbv_flow_id] = cbv_flow.id
+      session[:flow_id] = cbv_flow.id
     end
 
     it "renders successfully" do

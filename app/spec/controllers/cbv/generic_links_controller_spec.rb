@@ -11,6 +11,12 @@ RSpec.describe Cbv::GenericLinksController do
         stub_client_agency_config_value("sandbox", "pilot_ended", false)
       end
 
+      it 'assigns flow id and type in session' do
+        get :show, params: { client_agency_id: "sandbox" }
+        expect(session[:flow_type]).to eq(:cbv)
+        expect(session[:flow_id]).to eq(assigns(:cbv_flow).id)
+      end
+
       context 'when generic links are disabled for the agency' do
         before do
           stub_client_agency_config_value("sandbox", "generic_links_disabled", true)

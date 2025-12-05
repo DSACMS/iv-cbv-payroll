@@ -36,7 +36,7 @@ RSpec.describe Cbv::PaymentDetailsController do
     let!(:paystubs_response) { pinwheel_stub_request_end_user_paystubs_response }
 
     before do
-      session[:cbv_flow_id] = cbv_flow.id
+      session[:flow_id] = cbv_flow.id
       pinwheel_stub_request_identity_response
       pinwheel_stub_request_end_user_accounts_response
       pinwheel_stub_request_end_user_account_response
@@ -303,7 +303,7 @@ RSpec.describe Cbv::PaymentDetailsController do
         end
 
         before do
-          session[:cbv_flow_id] = cbv_flow.id
+          session[:flow_id] = cbv_flow.id
           argyle_stub_request_identities_response("bob")
           argyle_stub_request_paystubs_response("bob")
           argyle_stub_request_gigs_response("bob")
@@ -368,7 +368,7 @@ RSpec.describe Cbv::PaymentDetailsController do
         end
 
         before do
-          session[:cbv_flow_id] = cbv_flow.id
+          session[:flow_id] = cbv_flow.id
           argyle_stub_request_identities_response("sarah")
           argyle_stub_request_paystubs_response("sarah")
           argyle_stub_request_gigs_response("sarah")
@@ -422,7 +422,7 @@ RSpec.describe Cbv::PaymentDetailsController do
     let(:comment) { "This is a test comment" }
 
     before do
-      session[:cbv_flow_id] = cbv_flow.id
+      session[:flow_id] = cbv_flow.id
       # update the cbv_flow to have an account comment
       additional_information = { account_id => { comment: "Old comment", updated_at: Time.current.iso8601 } }
       cbv_flow.update!(additional_information: additional_information)

@@ -14,11 +14,11 @@ class Activities::BaseController < ApplicationController
 
   def set_activity_flow
     @activity_flow = find_activity_flow || ActivityFlow.create!
-    session[:activity_flow_id] = @activity_flow.id
+    set_flow_session(@activity_flow.id, :activity)
   end
 
   def find_activity_flow
-    flow_id = session[:activity_flow_id]
+    flow_id = session[cbv_flow_symbol]
     return unless flow_id
 
     ActivityFlow.find_by(id: flow_id)

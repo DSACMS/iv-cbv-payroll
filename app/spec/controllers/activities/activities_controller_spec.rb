@@ -27,7 +27,7 @@ RSpec.describe Activities::ActivitiesController, type: :controller do
         hours: 8
       )
 
-      session[:activity_flow_id] = flow.id
+      session[:flow_id] = flow.id
 
       get :show
 

@@ -7,7 +7,7 @@ RSpec.describe Cbv::SynchronizationFailuresController do
     let(:cbv_flow) { create(:cbv_flow, :invited) }
 
     before do
-      session[:cbv_flow_id] = cbv_flow.id
+      session[:flow_id] = cbv_flow.id
     end
 
     context "when the user has already linked a pinwheel account" do
