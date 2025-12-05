@@ -61,7 +61,7 @@ Rails.application.routes.draw do
       resource :volunteering, only: %i[new create], controller: "volunteering"
       resource :job_training, only: %i[new create], controller: "job_training"
       resource :summary, only: %i[show], controller: "summary"
-      resource :submit, only: %i[show update], controller: "submit"
+      resource :submit, only: %i[show update], controller: "submit", format: %i[html pdf]
       resource :success, only: %i[show], controller: "success"
     end
 

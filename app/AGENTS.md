@@ -26,6 +26,7 @@ When developing on the Rails app, ensure you are always in the `app` subdirector
 - JS/TS: Prettier (`tabWidth: 2`, double quotes, no semicolons, `printWidth: 100`) via `npm run format` or `npm run format:precommit`.
 - Tests follow `_spec.rb` / `.test.ts`; favor descriptive, imperative example names. Use snake_case for Ruby, camelCase for JS, kebab-case for Stimulus files. Prefer `let` for object setup, `before` blocks for shared session/context setup, and `Timecop` for time freezing in controller specs (using `around` blocks).
 - ERB/HTML: Put each HTML tag on its own line (opening tag, contents, closing tag) for readability and avoid `usa-prose` classes unless required by design.
+- Do not use margin or padding utility helpers (e.g., `margin-bottom-*`, `padding-*`) unless explicitly requested.
 
 ## Testing Guidelines
 - Add coverage for new endpoints, logic, and service objects; exercise eligibility and payroll edge cases.
