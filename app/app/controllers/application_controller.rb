@@ -55,13 +55,15 @@ class ApplicationController < ActionController::Base
   def current_agency
     return @current_agency if @current_agency.present?
 
-    if @cbv_flow.present? && @cbv_flow.cbv_applicant.client_agency_id.present?
-      return @current_agency = agency_config[@cbv_flow.cbv_applicant.client_agency_id]
+    @flow = @cbv_flow # Maintain for compatibility until all controllers are converted
+    if @flow.present? && @flow.cbv_applicant.client_agency_id.present?
+      @current_agency = agency_config[@flow.cbv_applicant.client_agency_id]
+      return @current_agency
     end
 
     if params[:client_agency_id].present?
       @current_agency = agency_config[params[:client_agency_id]]
-      return @current_agency if @current_agency.present?
+      return @current_agency
     end
 
     client_agency_id_from_domain = detect_client_agency_from_domain

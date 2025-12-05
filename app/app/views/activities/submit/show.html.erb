@@ -7,7 +7,7 @@
   <%= t("activities.submit.description") %>
 </p>
 
-<%= form_with model: @activity_flow, url: activities_flow_submit_path, method: :patch, builder: UswdsFormBuilder do |f| %>
+<%= form_with model: @flow, url: activities_flow_submit_path, method: :patch, builder: UswdsFormBuilder do |f| %>
   <%= f.check_box :consent_to_submit, {
     label: t("activities.submit.consent_label_html")
   } %>

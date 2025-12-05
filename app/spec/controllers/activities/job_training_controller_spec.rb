@@ -4,7 +4,9 @@ RSpec.describe Activities::JobTrainingController, type: :controller do
   render_views
 
   describe "GET #new" do
+    let(:activity_flow) { create(:activity_flow) }
     it "renders the form" do
+      session[:flow_id] = activity_flow.id
       get :new
 
       expect(response).to have_http_status(:ok)
@@ -20,7 +22,8 @@ RSpec.describe Activities::JobTrainingController, type: :controller do
           program_name: "Resume Workshop",
           organization_address: "123 Main St, Baton Rouge, LA",
           hours: 6
-        }
+        },
+        client_agency_id: 'sandbox'
       }
     end
 
