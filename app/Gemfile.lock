@@ -334,9 +334,6 @@ GEM
     omniauth-oauth2 (1.8.0)
       oauth2 (>= 1.4, < 3)
       omniauth (~> 2.0)
-    omniauth-rails_csrf_protection (1.0.2)
-      actionpack (>= 4.2)
-      omniauth (~> 2.0)
     orm_adapter (0.5.0)
     ostruct (0.6.2)
     parallel (1.27.0)
@@ -638,7 +635,6 @@ DEPENDENCIES
   net-ssh
   newrelic_rpm
   omniauth-entra-id
-  omniauth-rails_csrf_protection (~> 1.0)
   pdf-reader (~> 2.12.0)
   pg (~> 1.6)
   pg-aws_rds_iam (~> 0.5.0)
