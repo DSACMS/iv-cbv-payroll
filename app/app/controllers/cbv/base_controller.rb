@@ -1,7 +1,7 @@
 class Cbv::BaseController < FlowController
   ALPHANUMERIC_PREFIX_REGEXP = /^([a-zA-Z0-9]+)[^a-zA-Z0-9]*$/
 
-  before_action :set_cbv_origin, :set_cbv_flow, :ensure_cbv_flow_not_yet_complete, :prevent_back_after_complete, :capture_page_view
+  before_action :set_cbv_origin, :set_flow, :ensure_cbv_flow_not_yet_complete, :prevent_back_after_complete, :capture_page_view
   before_action :check_if_pilot_ended
   helper_method :agency_url, :next_path, :get_comment_by_account_id
 
@@ -10,39 +10,6 @@ class Cbv::BaseController < FlowController
   def normalize_token(token)
     matches = ALPHANUMERIC_PREFIX_REGEXP.match(token)
     matches[1] if matches
-  end
-
-  def set_cbv_flow
-    if params[:token].present?
-      token = normalize_token(params[:token])
-      invitation = CbvFlowInvitation.find_by(auth_token: token)
-
-      unless invitation
-        return redirect_to(root_url, flash: { alert: t("cbv.error_invalid_token") })
-      end
-
-      if invitation.expired?
-        track_expired_event(invitation)
-        return redirect_to(cbv_flow_expired_invitation_path(client_agency_id: invitation.client_agency_id))
-      end
-
-      @flow = flow_class.create_from_invitation(invitation, cookies.permanent.signed[:device_id])
-      @cbv_flow = @flow # Maintain for compatibility until all controllers are converted
-      set_flow_session(@flow.id, :cbv)
-      cookies.permanent.encrypted[:cbv_applicant_id] = @flow.cbv_applicant_id
-      track_invitation_clicked_event(invitation, @flow)
-    elsif session[cbv_flow_symbol]
-      begin
-        @flow = flow_class.find(session[cbv_flow_symbol])
-        @cbv_flow = @flow # Maintain for compatibility until all controllers are converted
-      rescue ActiveRecord::RecordNotFound
-        reset_cbv_session!
-        redirect_to root_url(cbv_flow_timeout: true)
-      end
-    else
-      track_deeplink_without_cookie_event
-      redirect_to root_url(cbv_flow_timeout: true), flash: { slim_alert: { type: "info", message_html: t("cbv.error_missing_token_html") } }
-    end
   end
 
   def set_cbv_origin

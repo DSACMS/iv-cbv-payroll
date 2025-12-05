@@ -1,24 +1,9 @@
 class Activities::BaseController < FlowController
-  before_action :redirect_on_prod, :get_flow
+  before_action :redirect_on_prod, :set_flow
 
   helper_method :next_path
 
   private
-
-  def get_flow
-    # Future tokenized link logic will go here? Below is copy-pasted from CBV::BaseController
-    if session[flow_param]
-      begin
-        @flow = flow_class.find(session[flow_param])
-      rescue ActiveRecord::RecordNotFound
-        reset_cbv_session!
-        redirect_to entry_path(cbv_flow_timeout: true)
-      end
-    else
-      track_deeplink_without_cookie_event
-      redirect_to entry_path(cbv_flow_timeout: true), flash: { slim_alert: { type: "info", message_html: t("cbv.error_missing_token_html") } }
-    end
-  end
 
   def redirect_on_prod
     if Rails.env.production?

@@ -3,10 +3,10 @@ require "rails_helper"
 RSpec.describe 'e2e Activity Hub flow test', type: :feature, js: true do
   include E2e::TestHelpers
 
-  it "completes the flow for all activities" do
+  it "completes the generic flow for all activities" do
     visit URI(root_url).request_uri
 
-    visit activities_flow_entry_path
+    visit activities_flow_entry_path(client_agency_id: "sandbox") # This would normally be inferred
     verify_page(page, title: I18n.t("activities.entry.title"))
     click_button I18n.t("activities.entry.continue")
 

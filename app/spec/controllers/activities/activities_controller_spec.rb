@@ -30,7 +30,7 @@ RSpec.describe Activities::ActivitiesController, type: :controller do
       session[:flow_id] = flow.id
       cookies.permanent.encrypted[:cbv_applicant_id] = flow.cbv_applicant_id
 
-      get :show
+      get :index
 
       expect(assigns(:volunteering_activities)).to match_array([ visible_volunteering ])
       expect(assigns(:job_training_activities)).to match_array([ visible_job_training ])
