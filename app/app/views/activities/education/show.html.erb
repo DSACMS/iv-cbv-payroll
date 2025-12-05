@@ -41,83 +41,80 @@
 
 <% if @schools.nil? or @schools.empty? %>
     <p><%= t(".no_enrollments_found") %></p>
-<% end %>
+<% else %>
 
-<% @schools.each do |school| %>
-    <h2>
-        <%= t(".school_information.header") %>
-    </h2>
+    <% @schools.each do |school| %>
+        <h2>
+            <%= t(".school_information.header") %>
+        </h2>
 
-    <%= render(TableComponent.new(is_responsive: true)) do |table| %>
-        <%= table.with_row do |row| %>
-            <%= row.with_data_cell(is_header: true) do %>
-                <%= t(".school_information.name") %>
+        <%= render(TableComponent.new(is_responsive: true)) do |table| %>
+            <%= table.with_row do |row| %>
+                <%= row.with_data_cell(is_header: true) do %>
+                    <%= t(".school_information.name") %>
+                <% end %>
+                <%= row.with_data_cell do %>
+                    <%= school.name %>
+                <% end %>
             <% end %>
-            <%= row.with_data_cell do %>
-                <%= school.name %>
+
+            <%= table.with_row do |row| %>
+                <%= row.with_data_cell(is_header: true) do %>
+                    <%= t(".school_information.address") %>
+                <% end %>
+                <%= row.with_data_cell do %>
+                    <%= school.address %>
+                <% end %>
             <% end %>
         <% end %>
 
-        <%= table.with_row do |row| %>
-            <%= row.with_data_cell(is_header: true) do %>
-                <%= t(".school_information.address") %>
-            <% end %>
-            <%= row.with_data_cell do %>
-                <%= school.address %>
-            <% end %>
-        <% end %>
-    <% end %>
+        <h2>
+            <%= t(".enrollment_information.header") %>
+        </h2>
 
-    <h2>
-        <%= t(".enrollment_information.header") %>
-    </h2>
+        <%= render(TableComponent.new(is_responsive: true)) do |table| %>
+            <%= table.with_row do |row| %>
+                <%= row.with_data_cell(is_header: true) do %>
+                    <%= t(".enrollment_information.most_recent_semester") %>
+                <% end %>
+                <%= row.with_data_cell do %>
+                    <%= school.most_recent_enrollment.semester_start %>
+                <% end %>
+            <% end %>
 
-    <%= render(TableComponent.new(is_responsive: true)) do |table| %>
-        <%= table.with_row do |row| %>
-            <%= row.with_data_cell(is_header: true) do %>
-                <%= t(".enrollment_information.most_recent_semester") %>
-            <% end %>
-            <%= row.with_data_cell do %>
-                <%= school.most_recent_enrollment.semester_start %>
-            <% end %>
-        <% end %>
-
-        <%= table.with_row do |row| %>
-            <%= row.with_data_cell(is_header: true) do %>
-                <%= t(".enrollment_information.enrollment_status.header") %>
-            <% end %>
-            <%= row.with_data_cell do %>
-                <% case school.most_recent_enrollment.status %>
-                <% when "full_time" %>
-                    <%= t(".enrollment_information.enrollment_status.full_time") %>
-                <% when "part_time" %>
-                    <%= t(".enrollment_information.enrollment_status.part_time") %>
-                <% else %>
-                    <%= t(".enrollment_information.enrollment_status.less_than_part_time") %>
+            <%= table.with_row do |row| %>
+                <%= row.with_data_cell(is_header: true) do %>
+                    <%= t(".enrollment_information.enrollment_status.header") %>
+                <% end %>
+                <%= row.with_data_cell do %>
+                    <% case school.most_recent_enrollment.status %>
+                    <% when "full_time" %>
+                        <%= t(".enrollment_information.enrollment_status.full_time") %>
+                    <% when "part_time" %>
+                        <%= t(".enrollment_information.enrollment_status.part_time") %>
+                    <% else %>
+                        <%= t(".enrollment_information.enrollment_status.less_than_part_time") %>
+                    <% end %>
                 <% end %>
             <% end %>
         <% end %>
     <% end %>
-
 <% end %>
 
 <div class="usa-form-group margin-top-5">
-    <%= form_with url: activities_flow_education_create_path do |form| %>
-        <%= form.hidden_field :identity_id, value: @student_information.id %>
-        <% @schools.map(&:enrollments).flatten.filter(&:current?).each do |enrollment| %>
-            <%= form.hidden_field :enrollment_ids, multiple: true, value: enrollment.id %>
-        <% end %>
+    <%= form_with model: @education_activity, url: activities_flow_education_path, method: :post do |form| %>
+        <%= form.hidden_field :id %>
 
         <% if @less_than_part_time %>
-        <h2><%= t(".semester_credit_hours.label") %></h2>
+            <h2><%= t(".semester_credit_hours.label") %></h2>
 
-        <%= form.label :semester_credit_hours, t(".semester_credit_hours.description"), class: "usa-label" %>
-        <%= form.number_field :credit_hours, class: "usa-input" %>
+            <%= form.label :credit_hours, t(".semester_credit_hours.description"), class: "usa-label" %>
+            <%= form.number_field :credit_hours, class: "usa-input" %>
 
-        <h2><%= t(".upload_documents.label") %></h2>
+            <h2><%= t(".upload_documents.label") %></h2>
 
-        <%= form.label :documents, t(".upload_documents.description"), class: "usa-label" %>
-        <%= form.file_field :documents, class: "usa-file-input" %>
+            <%= form.label :documents, t(".upload_documents.description"), class: "usa-label" %>
+            <%= form.file_field :documents, class: "usa-file-input" %>
         <% end %>
 
         <h2><%= t(".additional_information_header") %></h2>

@@ -7,25 +7,59 @@
     <%= t("activities.hub.description") %>
 </p>
 
-<%= uswds_form_with model: @identity, action: "", url: "", method: "get" do |f| %>
-    <%= f.text_field :first_name %>
-    <%= f.text_field :last_name %>
-    <%= f.date_picker :date_of_birth %>
-
-    <section class="margin-bottom-5">
-        <h2><%= t("activities.education.title") %></h2>
-
-        <% if @schools %>
-            <%= render TableComponent.new do |t| %>
-                <%= @schools.each do |a| %>
-                    <%= t.with_row a.name %>
+<%= render(AccordionComponent.new(id: "activity-hub-identity-accordion")) do |a| %>
+    <%= a.with_title { "Current Identity" } %>
+    <%= a.with_accordion_item do %>
+        <%= render(TableComponent.new) do |t| %>
+            <%= t.with_row do |r| %>
+                <%= r.with_data_cell(is_header: true) do %>
+                    First Name
+                <% end %>
+                <%= r.with_data_cell do %>
+                    <%= current_identity&.first_name %>
+                <% end %>
+            <% end %>
+            <%= t.with_row do |r| %>
+                <%= r.with_data_cell(is_header: true) do %>
+                    Last Name
+                <% end %>
+                <%= r.with_data_cell do %>
+                    <%= current_identity&.last_name %>
+                <% end %>
+            <% end %>
+            <%= t.with_row do |r| %>
+                <%= r.with_data_cell(is_header: true) do %>
+                    Date of Birth
+                <% end %>
+                <%= r.with_data_cell do %>
+                    <%= current_identity&.date_of_birth %>
                 <% end %>
             <% end %>
         <% end %>
-
-        <%= f.submit t("activities.education.add"), name: nil, formaction: activities_flow_education_root_path, class: "btn btn-primary usa-button margin-y-5" %>
-    </section>
+    <% end %>
 <% end %>
+
+<section class="margin-bottom-5">
+    <h2><%= t("activities.education.title") %></h2>
+    <p>
+        <%= t("activities.hub.count", count: @education_activities.size) %>
+    </p>
+
+    <%= render TableComponent.new do |t| %>
+        <%= @education_activities.each do |a| %>
+            <%= t.with_row do |r| %>
+                <%= r.with_data_cell do %>
+                    <%= a.school_name %>
+                <% end %>
+                <%= r.with_data_cell do %>
+                    <%= a.display_status %>
+                <% end %>
+            <% end %>
+        <% end %>
+    <% end %>
+
+    <%= button_to t("activities.education.add"), new_activities_flow_education_path, class: "btn btn-primary usa-button margin-y-5", method: :get %>
+</section>
 
 <section class="margin-bottom-5">
   <h2>

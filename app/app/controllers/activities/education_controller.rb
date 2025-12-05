@@ -1,91 +1,64 @@
 class Activities::EducationController < Activities::BaseController
   include ActionController::Live
 
-  def index
-    save_identity!
+  def new
   end
 
   def show
+    @education_activity = EducationActivity.find(params[:education_activity_id])
     @student_information = current_identity!
-
-    unless @student_information.id
+    unless @education_activity
       redirect_to(
         activities_flow_root_path,
         flash: { alert: t("activities.education.error_no_data") }
       )
     end
-
-    @schools = @student_information.schools.select(&:current?)
-
-    @less_than_part_time = @schools.all? do |school|
-      school.most_recent_enrollment.less_than_part_time?
-    end
   end
 
-  def confirm
-    a = EducationActivity.create(
-      identity_id: current_identity.id,
-      additional_comments: params[:additional_comments],
-      credit_hours: params[:credit_hours],
+  def create
+    education_params = params.require(:education_activity).permit([:id, :additional_comments])
+    logger.info education_params
+
+    id = education_params[:id]
+
+    activity = EducationActivity.find_by(
+      {
+        id: id,
+        activity_flow_id: @activity_flow.id
+      }
     )
-    enrollments = params[:enrollment_ids].map { |id| Enrollment.find(id) }
-    enrollments.each do |e|
-      e.education_activity = a
-      e.save
+
+    if activity
+      activity.update(
+        education_params.merge({ confirmed: true })
+      )
+      activity.save
+
+      redirect_to activities_flow_root_path, notice: t("activities.education.created")
+    else
+      render :new
     end
-    redirect_to activities_flow_root_path
   end
 
-  def start
-    identity = current_identity
-    service = EducationService.new
-    failed = false
-
+  def stream
     response.headers["Content-Type"] = "text/event-stream"
     response.headers["Last-Modified"] = Time.now.httpdate
 
     sse = SSE.new(response.stream, event: "message")
-    begin
-      service.create_schools!(identity)
-      sse.write(
-        sync_indicator_update("school", :succeeded, I18n.t(".school")),
-      )
-    rescue Exception => e
-      failed = true
-      logger.error e.message
-      logger.error e.backtrace.join("\n")
-      sse.write(
-        sync_indicator_update("school", :failed, I18n.t(".school")),
-pp)
-    end
 
-    begin
-      service.create_enrollments!(identity)
+    # This is just to show how we can send updates to change the indicators
+    call_count = 0
+    indicators = ["school", "enrollment", "hours"]
+    activity = EducationService.new(@activity_flow).call do
+      indicator = indicators[call_count % indicators.count]
       sse.write(
-        sync_indicator_update("enrollment", :succeeded, I18n.t(".enrollments")),
+        sync_indicator_update(indicator, :succeeded)
       )
-    rescue Exception => e
-      failed = true
-      logger.error e.message
-      logger.error e.backtrace.join("\n")
-      sse.write(
-        sync_indicator_update("enrollment", :failed, I18n.t(".enrollments")),
-      )
-    end
-
-    if failed
-      redirect_path = activities_flow_root_path(
-        first_name: identity.first_name,
-        last_name: identity.last_name,
-        date_of_birth: identity.date_of_birth,
-        alert: "Failed to fetch education data"
-      )
-    else
-      redirect_path = activities_flow_education_success_path
+      call_count += 1
     end
 
     sse.write(
-      turbo_stream.action(:redirect, redirect_path)
+      turbo_stream.action(:redirect, activities_flow_education_path(params: { education_activity_id: activity.id }))
     )
   ensure
     sse.close if sse
@@ -93,12 +66,12 @@ pp)
 
   private
 
-  def sync_indicator_update(name, status, content)
+  def sync_indicator_update(name, status)
     turbo_stream.replace(
         name,
         html: view_context.render(
           SynchronizationIndicatorComponent.new(name: name, status: status).with_content(
-            content
+            I18n.t("activities.education.new.#{name}")
           )
         )
       )

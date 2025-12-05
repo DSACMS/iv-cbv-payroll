@@ -10,14 +10,7 @@ class Activities::BaseController < ApplicationController
   #   already exist in the database. nil if no identity is associated
   #   with this request
   def current_identity
-    IdentityService.new(request).read_identity
-  end
-
-  # Save the current identity
-  #
-  # @return [Identity] the current identity
-  def save_identity!
-    IdentityService.new(request).save_identity(current_identity!)
+    @activity_flow&.identity
   end
 
   # Infer the current {Identity} from this request and redirect back
@@ -27,7 +20,7 @@ class Activities::BaseController < ApplicationController
   def current_identity!
     current_identity || redirect_to(
       activities_flow_root_path,
-      flash: { alert: t("activities.education.error_no_identity") }
+      flash: { alert: t("activities.error_no_identity") }
     )
   end
 

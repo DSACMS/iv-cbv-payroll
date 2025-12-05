@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.2].define(version: 2025_12_04_141756) do
+ActiveRecord::Schema[7.2].define(version: 2025_12_04_165356) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pgcrypto"
   enable_extension "plpgsql"
@@ -87,12 +87,16 @@ ActiveRecord::Schema[7.2].define(version: 2025_12_04_141756) do
   end
 
   create_table "education_activities", force: :cascade do |t|
-    t.bigint "identity_id", null: false
     t.text "additional_comments"
     t.integer "credit_hours"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index ["identity_id"], name: "index_education_activities_on_identity_id"
+    t.bigint "activity_flow_id", null: false
+    t.string "status"
+    t.string "school_name"
+    t.string "school_address"
+    t.boolean "confirmed", default: false
+    t.index ["activity_flow_id"], name: "index_education_activities_on_activity_flow_id"
   end
 
   create_table "education_activities_enrollments", id: false, force: :cascade do |t|
@@ -315,7 +319,7 @@ ActiveRecord::Schema[7.2].define(version: 2025_12_04_141756) do
   add_foreign_key "activity_flows", "identities"
   add_foreign_key "cbv_flow_invitations", "users"
   add_foreign_key "cbv_flows", "cbv_flow_invitations"
-  add_foreign_key "education_activities", "identities"
+  add_foreign_key "education_activities", "activity_flows"
   add_foreign_key "enrollments", "education_activities"
   add_foreign_key "enrollments", "schools"
   add_foreign_key "job_training_activities", "activity_flows"
