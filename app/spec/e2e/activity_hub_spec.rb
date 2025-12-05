@@ -5,7 +5,11 @@ RSpec.describe 'e2e Activity Hub flow test', type: :feature, js: true do
 
   it "completes the flow for all activities" do
     visit URI(root_url).request_uri
-    visit activities_flow_root_path
+
+    visit activities_flow_entry_path
+    verify_page(page, title: I18n.t("activities.entry.title"))
+    click_button I18n.t("activities.entry.continue")
+
     verify_page(page, title: I18n.t("activities.hub.title"))
 
     # Add a Volunteering activity

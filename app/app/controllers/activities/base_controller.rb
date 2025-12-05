@@ -1,27 +1,29 @@
 class Activities::BaseController < FlowController
-  before_action :redirect_on_prod
-  before_action :set_generic_flow
+  before_action :redirect_on_prod, :get_flow
 
   helper_method :next_path
 
   private
 
+  def get_flow
+    # Future tokenized link logic will go here? Below is copy-pasted from CBV::BaseController
+    if session[flow_param]
+      begin
+        @flow = flow_class.find(session[flow_param])
+      rescue ActiveRecord::RecordNotFound
+        reset_cbv_session!
+        redirect_to entry_path(cbv_flow_timeout: true)
+      end
+    else
+      track_deeplink_without_cookie_event
+      redirect_to entry_path(cbv_flow_timeout: true), flash: { slim_alert: { type: "info", message_html: t("cbv.error_missing_token_html") } }
+    end
+  end
+
   def redirect_on_prod
     if Rails.env.production?
       redirect_to root_url
     end
-  end
-
-  def set_activity_flow
-    @activity_flow = find_activity_flow || ActivityFlow.create!
-    set_flow_session(@activity_flow.id, flow_param)
-  end
-
-  def find_activity_flow
-    flow_id = session[cbv_flow_symbol]
-    return unless flow_id
-
-    ActivityFlow.find_by(id: flow_id)
   end
 
   def next_path
@@ -41,5 +43,9 @@ class Activities::BaseController < FlowController
 
   def flow_param
     :activity
+  end
+
+  def entry_path
+    activities_flow_root_path
   end
 end
