@@ -50,6 +50,25 @@ RSpec.describe Cbv::BaseController, type: :controller do
         expect(session[:flow_type]).to be_nil
       end
     end
+
+    describe "setting @cbv_flow and current_agency" do
+      let(:cbv_flow) { create(:cbv_flow, cbv_applicant_attributes: attributes_for(:cbv_applicant, :sandbox)) }
+      let(:domain) { "fake-domain-for-la-ldh.localhost" }
+
+      before do
+        session[:cbv_flow_id] = cbv_flow.id
+
+        request.host = domain
+        allow(Rails.application.config.client_agencies["la_ldh"])
+          .to receive(:agency_domain)
+          .and_return(domain)
+      end
+
+      it "sets the current_agency based on the @cbv_flow (not the domain)" do
+        get :show
+        expect(assigns[:current_agency]).to have_attributes(id: "sandbox")
+      end
+    end
   end
 
   describe '#track_invitation_clicked_event' do

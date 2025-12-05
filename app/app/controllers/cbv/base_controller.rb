@@ -2,7 +2,8 @@ class Cbv::BaseController < FlowController
   ALPHANUMERIC_PREFIX_REGEXP = /^([a-zA-Z0-9]+)[^a-zA-Z0-9]*$/
 
   before_action :set_cbv_origin, :set_cbv_flow, :ensure_cbv_flow_not_yet_complete, :prevent_back_after_complete, :capture_page_view
-  helper_method :agency_url, :next_path, :get_comment_by_account_id, :current_agency
+  before_action :check_if_pilot_ended
+  helper_method :agency_url, :next_path, :get_comment_by_account_id
 
   private
 
@@ -82,7 +83,7 @@ class Cbv::BaseController < FlowController
     when "cbv/synchronizations"
       cbv_flow_payment_details_path
     when "cbv/missing_results"
-      cbv_flow_applicant_information_path
+      cbv_flow_other_job_path
     when "cbv/payment_details"
       cbv_flow_add_job_path
     when "cbv/other_jobs"
@@ -116,6 +117,11 @@ class Cbv::BaseController < FlowController
     response.headers["Cache-Control"] = "no-cache, no-store, max-age=0, must-revalidate"
     response.headers["Pragma"] = "no-cache"
     response.headers["Expires"] = "#{1.year.ago}"
+  end
+
+  def check_if_pilot_ended
+    @pilot_ended = current_agency&.pilot_ended
+    redirect_to root_path if @pilot_ended && !home_page?
   end
 
   def capture_page_view
