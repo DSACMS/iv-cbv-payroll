@@ -1,0 +1,83 @@
+<% not_provided = t("activities.submit.pdf.not_provided") %>
+
+<% content_for :title, t("activities.submit.pdf.title") %>
+
+<h1>
+  <%= t("activities.submit.pdf.heading") %>
+</h1>
+<p>
+  <%= t("activities.submit.pdf.description") %>
+</p>
+
+<%= render TableComponent.new do |table| %>
+  <%= table.with_header do %>
+    <h2>
+      <%= t("activities.submit.pdf.report_overview") %>
+    </h2>
+  <% end %>
+  <%= table.with_row t("activities.submit.pdf.submitted_at"), l(@submission_timestamp, format: :long) %>
+<% end %>
+
+<%= render TableComponent.new do |table| %>
+  <%= table.with_header do %>
+    <h2>
+      <%= t("activities.submit.pdf.summary_heading") %>
+    </h2>
+  <% end %>
+  <%= table.with_row t("activities.submit.pdf.volunteering_count"), @volunteering_activities.size %>
+  <%= table.with_row t("activities.submit.pdf.job_training_count"), @job_training_activities.size %>
+  <%= table.with_row t("activities.submit.pdf.total_hours"), @total_hours %>
+<% end %>
+
+<h2>
+  <%= t("activities.submit.pdf.volunteering_section") %>
+</h2>
+<% if @volunteering_activities.any? %>
+  <%= render TableComponent.new do |table| %>
+    <%= table.with_subheader_row(class_names: "subheader-row base-lightest") do |row| %>
+      <%= row.with_data_cell(is_header: true, class_names: "text-nowrap")
+             .with_content(t("activities.submit.pdf.organization_name")) %>
+      <%= row.with_data_cell(is_header: true, class_names: "text-nowrap")
+             .with_content(t("activities.submit.pdf.hours")) %>
+      <%= row.with_data_cell(is_header: true, class_names: "text-nowrap")
+             .with_content(t("activities.submit.pdf.date")) %>
+    <% end %>
+    <% @volunteering_activities.each do |activity| %>
+      <% date_value = activity.date ? l(activity.date) : not_provided %>
+      <%= table.with_row activity.organization_name.presence || not_provided, activity.hours || 0, date_value %>
+    <% end %>
+  <% end %>
+<% else %>
+  <p>
+    <%= t("activities.submit.pdf.no_volunteering") %>
+  </p>
+<% end %>
+
+<h2>
+  <%= t("activities.submit.pdf.job_training_section") %>
+</h2>
+<% if @job_training_activities.any? %>
+  <%= render TableComponent.new do |table| %>
+    <%= table.with_subheader_row(class_names: "subheader-row base-lightest") do |row| %>
+      <%= row.with_data_cell(is_header: true, class_names: "text-nowrap")
+             .with_content(t("activities.submit.pdf.program_name")) %>
+      <%= row.with_data_cell(is_header: true, class_names: "text-nowrap")
+             .with_content(t("activities.submit.pdf.organization_address")) %>
+      <%= row.with_data_cell(is_header: true, class_names: "text-nowrap")
+             .with_content(t("activities.submit.pdf.hours")) %>
+    <% end %>
+    <% @job_training_activities.each do |activity| %>
+      <%= table.with_row activity.program_name.presence || not_provided,
+                         activity.organization_address.presence || not_provided,
+                         activity.hours || 0 %>
+    <% end %>
+  <% end %>
+<% else %>
+  <p>
+    <%= t("activities.submit.pdf.no_job_training") %>
+  </p>
+<% end %>
+
+<p>
+  <%= t("activities.submit.pdf.disclaimer") %>
+</p>

@@ -24,6 +24,8 @@ RSpec.describe Activities::SuccessController, type: :controller do
 
       expect(response).to have_http_status(:ok)
       expect(response.body).to include(I18n.l(completed_time, format: :long))
+      expect(response.body).to include(activities_flow_submit_path(format: :pdf))
+      expect(response.body).to include(I18n.t("activities.success.download_pdf"))
     end
   end
 end
