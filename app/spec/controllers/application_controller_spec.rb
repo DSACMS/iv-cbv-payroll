@@ -87,4 +87,16 @@ RSpec.describe ApplicationController, type: :controller do
       expect(result).to be_nil
     end
   end
+
+  describe '#cbv_flow_symbol' do
+    it 'returns the cbv_flow_id when its present on the session' do
+      controller.session[:cbv_flow_id] = 1
+      expect(controller.send(:cbv_flow_symbol)).to eq(:cbv_flow_id)
+    end
+
+    it 'returns the legacy cbv_flow_id when cbv_flow_id is not present on the session' do
+      controller.session.delete(:cbv_flow_id)
+      expect(controller.send(:cbv_flow_symbol)).to eq(:flow_id)
+    end
+  end
 end

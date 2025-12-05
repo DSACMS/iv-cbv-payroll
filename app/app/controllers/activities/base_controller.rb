@@ -18,7 +18,7 @@ class Activities::BaseController < ApplicationController
   end
 
   def find_activity_flow
-    flow_id = session[:flow_id]
+    flow_id = session[cbv_flow_symbol]
     return unless flow_id
 
     ActivityFlow.find_by(id: flow_id)

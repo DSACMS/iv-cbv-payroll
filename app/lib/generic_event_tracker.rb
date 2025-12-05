@@ -21,10 +21,11 @@ class GenericEventTracker
     if request.present?
       url_params = request.params.slice("client_agency_id", "locale")
 
+      cbv_flow_symbol = request.session[:cbv_flow_id].present? ? :cbv_flow_id : :flow_id
       defaults = defaults.merge({
         # Not setting device_id because Mixpanel fixates on that as the distinct_id, which we do not want
         ip: request.remote_ip,
-        cbv_flow_id: request.session[:flow_id],
+        cbv_flow_id: request.session[cbv_flow_symbol],
         client_agency_id: url_params["client_agency_id"],
         locale: url_params["locale"] || I18n.locale.to_s,
         user_agent: request.headers["User-Agent"]

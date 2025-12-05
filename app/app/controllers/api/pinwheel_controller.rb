@@ -3,7 +3,7 @@ class Api::PinwheelController < ApplicationController
 
   # run the token here with the included employer/payroll provider id
   def create_token
-    @cbv_flow = CbvFlow.find_by(id: session[:flow_id])
+    @cbv_flow = CbvFlow.find_by(id: session[cbv_flow_symbol])
     return redirect_to(root_url(cbv_flow_timeout: true)) unless @cbv_flow
 
     pinwheel = pinwheel_for(@cbv_flow)

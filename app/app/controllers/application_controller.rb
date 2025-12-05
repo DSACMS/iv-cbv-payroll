@@ -1,6 +1,6 @@
 class ApplicationController < ActionController::Base
   helper :view
-  helper_method :current_agency, :show_menu?, :pilot_ended?
+  helper_method :current_agency, :show_menu?, :pilot_ended?, :cbv_flow_symbol
   around_action :switch_locale
   before_action :add_newrelic_metadata
   before_action :redirect_if_maintenance_mode
@@ -28,6 +28,10 @@ class ApplicationController < ActionController::Base
 
   def agency_config
     Rails.application.config.client_agencies
+  end
+
+  def cbv_flow_symbol
+    session[:cbv_flow_id].present? ? :cbv_flow_id : :flow_id
   end
 
   private
@@ -98,7 +102,7 @@ class ApplicationController < ActionController::Base
   end
 
   def set_flow_session(flow_id, type)
-    session[:flow_id] = flow_id
+    session[cbv_flow_symbol] = flow_id
     session[:flow_type] = type
   end
 
@@ -117,7 +121,7 @@ class ApplicationController < ActionController::Base
 
   def add_newrelic_metadata
     attributes = {
-      cbv_flow_id: session[:flow_id],
+      cbv_flow_id: cbv_flow_symbol,
       device_id: cookies.permanent.signed[:device_id],
       session_id: session.id.to_s,
       client_agency_id: params[:client_agency_id],

@@ -30,9 +30,9 @@ class Cbv::BaseController < FlowController
       cookies.permanent.encrypted[:cbv_applicant_id] = @cbv_flow.cbv_applicant_id
       track_invitation_clicked_event(invitation, @cbv_flow)
 
-    elsif session[:flow_id]
+    elsif session[cbv_flow_symbol]
       begin
-        @cbv_flow = CbvFlow.find(session[:flow_id])
+        @cbv_flow = CbvFlow.find(session[cbv_flow_symbol])
       rescue ActiveRecord::RecordNotFound
         reset_cbv_session!
         redirect_to root_url(cbv_flow_timeout: true)
