@@ -29,7 +29,7 @@ class ApplicationController < ActionController::Base
     Rails.application.config.client_agencies
   end
 
-  def cbv_flow_symbol
+  def cbv_flow_symbol # TODO: Remove after next deploy when all flows use :flow_id (Written 12/5)
     session[:cbv_flow_id].present? ? :cbv_flow_id : :flow_id
   end
 
@@ -97,6 +97,7 @@ class ApplicationController < ActionController::Base
 
   def set_flow_session(flow_id, type)
     session[cbv_flow_symbol] = flow_id
+    session[:flow_id] = flow_id
     session[:flow_type] = type
   end
 
@@ -115,7 +116,7 @@ class ApplicationController < ActionController::Base
 
   def add_newrelic_metadata
     attributes = {
-      cbv_flow_id: cbv_flow_symbol,
+      cbv_flow_id: session[cbv_flow_symbol],
       device_id: cookies.permanent.signed[:device_id],
       session_id: session.id.to_s,
       client_agency_id: params[:client_agency_id],
