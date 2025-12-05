@@ -51,11 +51,18 @@ en:
     entry:
       continue: Add Activities
       title: Welcome to the Activity Hub!
+    error_no_identity: Please provide your name and date of birth
     education:
       add: Add Education Activities
       error_no_data: No education information available
-      error_no_identity: Please provide your name and date of birth
-      index:
+      enrollment_status:
+        full_time: Full Time
+        part_time: Part Time
+        hours:
+          zero: "not enrolled"
+          one: "1 credit hour"
+          other: "%{count} credit hours"
+      new:
         enrollment: Enrollment
         fetching_education_description: This may take a few minutes. Please keep this window open while we work on this.
         header: We're gathering your enrollment details from the <Our Data Source>
@@ -67,11 +74,7 @@ en:
         continue: Save and continue
         description: Review the information below to make sure it's correct.
         enrollment_information:
-          enrollment_status:
-            full_time: Full Time
-            header: Enrollment Status
-            less_than_part_time: Less Than Part Time
-            part_time: Part Time
+          
           header: Enrollment Information
           most_recent_semester: Most Recent Semester
         header: Confirm your education enrollment

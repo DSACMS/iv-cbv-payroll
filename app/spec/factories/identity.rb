@@ -4,10 +4,7 @@ FactoryBot.define do
   factory :identity do
     transient do
       school_count { 1 }
-    end
-
-    transient do
-      activity_flow_count { 1 }
+      activity_flows_count { 1 }
     end
 
     first_name { Faker::Name.first_name }
@@ -19,7 +16,7 @@ FactoryBot.define do
     end
 
     activity_flows do
-      Array.new(activity_flow_count) { association(:activity_flow) }
+      Array.new(activity_flows_count) { association(:activity_flow) }
     end
   end
 end

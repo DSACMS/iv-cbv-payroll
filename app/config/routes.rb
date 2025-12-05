@@ -64,13 +64,16 @@ Rails.application.routes.draw do
       resource :summary, only: %i[show], controller: "summary"
       resource :submit, only: %i[show update], controller: "submit"
       resource :success, only: %i[show], controller: "success"
+      resource :education, only: %i[new create show], controller: "education"
 
-      scope "/education", as: :education do
-        root to: "education#index"
-        get "/start", to: "education#start", as: :stream
-        get "/confirm", to: "education#show", as: :success
-        post "/confirm", to: "education#confirm", as: :create
-      end
+      get "/education/stream", to: "education#stream"
+
+      # scope "/education", as: :education do
+      #   root to: "education#index"
+      #   get "/start", to: "education#start", as: :stream
+      #   get "/confirm", to: "education#show", as: :success
+      #   post "/confirm", to: "education#confirm", as: :create
+      # end
     end
 
     scope "/:client_agency_id", module: :caseworker, constraints: { client_agency_id: Regexp.union(Rails.application.config.client_agencies.client_agency_ids) } do

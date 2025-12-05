@@ -2,59 +2,37 @@
 class EducationService
   # Mocks the education data retrieval process for local development
   class LocalEducationService
-    def self.create_schools!(identity)
-      Rails.logger.info "Pretending to look up school information"
 
-      School.where(identity: identity).destroy_all
-      self.create_school(identity)
+    def self.call(activity_flow)
+      # Add pretend flow
 
+
+      # send update messages (three progress updates)
       sleep 2
-    end
-
-    def self.create_enrollments!(identity)
-      Rails.logger.info "Pretending to look up enrollment information"
-
-      identity.schools.map do |school|
-        self.create_enrollment(school)
-      end
-
+      yield if block_given?
       sleep 2
-    end
+      yield if block_given?
+      sleep 2
+      yield if block_given?
 
-    private
-
-    def self.create_school(identity)
-      require "faker"
-
-      identity.schools.create(
-        name: Faker::University.name,
-        address: Faker::Address.full_address,
-        identity_id: identity.id,
-      )
-      identity.save
-    end
-
-    def self.create_enrollment(school)
-      require "faker"
-
-      school.enrollments.create!(
+      EducationActivity.create!(
         status: [ :full_time, :part_time, :quarter_time ].sample,
-        semester_start: Faker::Date.in_date_period(
-          month: Date.today.month > 6 ? 8 : 2,
-          year: Date.today.year
-        ),
-        school_id: school.id
+        school_name: Faker::University.name,
+        school_address: Faker::Address.full_address,
+        activity_flow: activity_flow
       )
-      school.save
     end
   end
 
   # Sets up the appropriate internal implementation based on the
   # current environment.
   #
+  # @param [ActivityFlow] activity_flow
+  #
   # @raise [NotImplementedError] When the current `Rails.env` does not
   #   have an appropriate implementation
-  def initialize
+  def initialize(activity_flow)
+    @activity_flow = activity_flow
     if Rails.env.local?
       @impl = LocalEducationService
     else
@@ -62,21 +40,7 @@ class EducationService
     end
   end
 
-  # Searches for schools by this {Identity} and saves them to the database
-  #
-  # @params identity [Identity] The identity to search for. This object will
-  #   be saved if it has not already been.
-  # @return [void]
-  def create_schools!(identity)
-    @impl.create_schools!(identity)
-  end
-
-  # Searches for enrollments by this {Identity} and saves them to the database
-  #
-  # @params identity [Identity] The identity to search for. This object will
-  #   be saved if it has not already been.
-  # @return [void]
-  def create_enrollments!(identity)
-    @impl.create_enrollments!(identity)
+  def call(&block)
+    @impl.call(@activity_flow, &block)
   end
 end
