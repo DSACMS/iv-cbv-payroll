@@ -19,7 +19,7 @@
       <main id="main-content">
         <section class="grid-container usa-section">
 
-          <% if get_site_alert_title.present? %>
+          <% if ENV["SITE_ALERT_ENABLED"] == "true" %>
             <%= render Uswds::Alert.new(type: ENV["SITE_ALERT_TYPE"] || :info, heading: get_site_alert_title, class: "margin-bottom-4") do %>
               <%= get_site_alert_body %>
             <% end %>

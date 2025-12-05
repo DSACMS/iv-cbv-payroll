@@ -224,5 +224,31 @@ locals {
       manage_method     = "manual"
       secret_store_name = "/service/${var.app_name}-${var.environment}/sandbox-domain-name"
     }
+
+    # Site alert configuration
+    SITE_ALERT_ENABLED = {
+      manage_method     = "manual"
+      secret_store_name = "/service/${var.app_name}-${var.environment}/site-alert-enabled"
+    },
+    SITE_ALERT_TITLE_EN = {
+      manage_method     = "manual"
+      secret_store_name = "/service/${var.app_name}-${var.environment}/site-alert-title-en"
+    },
+    SITE_ALERT_BODY_EN = {
+      manage_method     = "manual"
+      secret_store_name = "/service/${var.app_name}-${var.environment}/site-alert-body-en"
+    },
+    SITE_ALERT_TITLE_ES = {
+      manage_method     = "manual"
+      secret_store_name = "/service/${var.app_name}-${var.environment}/site-alert-title-es"
+    },
+    SITE_ALERT_BODY_ES = {
+      manage_method     = "manual"
+      secret_store_name = "/service/${var.app_name}-${var.environment}/site-alert-body-es"
+    },
+    SITE_ALERT_TYPE = {
+      manage_method     = "manual"
+      secret_store_name = "/service/${var.app_name}-${var.environment}/site-alert-type"
+    }
   }
 }
