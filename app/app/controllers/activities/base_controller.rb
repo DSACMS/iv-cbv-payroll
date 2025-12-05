@@ -1,6 +1,6 @@
-class Activities::BaseController < ApplicationController
+class Activities::BaseController < FlowController
   before_action :redirect_on_prod
-  before_action :set_activity_flow
+  before_action :set_generic_flow
 
   helper_method :next_path
 
@@ -14,7 +14,7 @@ class Activities::BaseController < ApplicationController
 
   def set_activity_flow
     @activity_flow = find_activity_flow || ActivityFlow.create!
-    set_flow_session(@activity_flow.id, :activity)
+    set_flow_session(@activity_flow.id, flow_param)
   end
 
   def find_activity_flow
@@ -33,5 +33,13 @@ class Activities::BaseController < ApplicationController
     when "activities/submit"
       activities_flow_success_path
     end
+  end
+
+  def flow_class
+    ActivityFlow
+  end
+
+  def flow_param
+    :activity
   end
 end

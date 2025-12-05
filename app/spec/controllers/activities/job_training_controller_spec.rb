@@ -20,7 +20,8 @@ RSpec.describe Activities::JobTrainingController, type: :controller do
           program_name: "Resume Workshop",
           organization_address: "123 Main St, Baton Rouge, LA",
           hours: 6
-        }
+        },
+        client_agency_id: 'sandbox'
       }
     end
 

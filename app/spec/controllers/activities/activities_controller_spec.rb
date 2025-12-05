@@ -28,6 +28,7 @@ RSpec.describe Activities::ActivitiesController, type: :controller do
       )
 
       session[:flow_id] = flow.id
+      cookies.permanent.encrypted[:cbv_applicant_id] = flow.cbv_applicant_id
 
       get :show
 

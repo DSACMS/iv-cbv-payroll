@@ -26,14 +26,15 @@ class Cbv::BaseController < FlowController
         return redirect_to(cbv_flow_expired_invitation_path(client_agency_id: invitation.client_agency_id))
       end
 
-      @cbv_flow = CbvFlow.create_from_invitation(invitation, cookies.permanent.signed[:device_id])
-      set_flow_session(@cbv_flow.id, :cbv)
-      cookies.permanent.encrypted[:cbv_applicant_id] = @cbv_flow.cbv_applicant_id
-      track_invitation_clicked_event(invitation, @cbv_flow)
-
+      @flow = flow_class.create_from_invitation(invitation, cookies.permanent.signed[:device_id])
+      @cbv_flow = @flow # Maintain for compatibility until all controllers are converted
+      set_flow_session(@flow.id, :cbv)
+      cookies.permanent.encrypted[:cbv_applicant_id] = @flow.cbv_applicant_id
+      track_invitation_clicked_event(invitation, @flow)
     elsif session[cbv_flow_symbol]
       begin
-        @cbv_flow = CbvFlow.find(session[cbv_flow_symbol])
+        @flow = flow_class.find(session[cbv_flow_symbol])
+        @cbv_flow = @flow # Maintain for compatibility until all controllers are converted
       rescue ActiveRecord::RecordNotFound
         reset_cbv_session!
         redirect_to root_url(cbv_flow_timeout: true)
@@ -67,7 +68,7 @@ class Cbv::BaseController < FlowController
   end
 
   def ensure_cbv_flow_not_yet_complete
-    return unless @cbv_flow && @cbv_flow.complete?
+    return unless @flow && @flow.complete?
 
     redirect_to(cbv_flow_success_path)
   end
@@ -98,11 +99,11 @@ class Cbv::BaseController < FlowController
   end
 
   def pinwheel
-    pinwheel_for(@cbv_flow)
+    pinwheel_for(@flow)
   end
 
   def argyle
-    argyle_for(@cbv_flow)
+    argyle_for(@flow)
   end
 
   def agency_url
@@ -110,7 +111,7 @@ class Cbv::BaseController < FlowController
   end
 
   def get_comment_by_account_id(account_id)
-    @cbv_flow.additional_information[account_id] || { comment: nil, updated_at: nil }
+    @flow.additional_information[account_id] || { comment: nil, updated_at: nil }
   end
 
   def prevent_back_after_complete
@@ -127,24 +128,17 @@ class Cbv::BaseController < FlowController
   def capture_page_view
     event_logger.track(TrackEvent::CbvPageView, request, {
       time: Time.now.to_i,
-      cbv_flow_id: @cbv_flow.id,
-      invitation_id: @cbv_flow.cbv_flow_invitation_id,
-      cbv_applicant_id: @cbv_flow.cbv_applicant_id,
-      client_agency_id: current_agency.id,
-      device_id: @cbv_flow.device_id,
+      cbv_flow_id: @flow.id,
+      invitation_id: @flow.cbv_flow_invitation_id,
+      cbv_applicant_id: @flow.cbv_applicant_id,
+      client_agency_id: @flow.cbv_applicant.client_agency_id,
+      device_id: @flow.device_id,
       path: request.path
     })
   end
 
   def track_timeout_event
     event_logger.track(TrackEvent::ApplicantTimedOut, request, {
-      time: Time.now.to_i,
-      client_agency_id: current_agency&.id
-    })
-  end
-
-  def track_deeplink_without_cookie_event
-    event_logger.track(TrackEvent::ApplicantAccessedFlowWithoutCookie, request, {
       time: Time.now.to_i,
       client_agency_id: current_agency&.id
     })
@@ -182,12 +176,24 @@ class Cbv::BaseController < FlowController
   end
 
   def ensure_payroll_account_linked
-    return if @cbv_flow&.has_account_with_required_data?
+    return if @flow&.has_account_with_required_data?
 
     redirect_to cbv_flow_synchronization_failures_path
   end
 
   def reset_cbv_session!
     set_flow_session(nil, nil)
+  end
+
+  def flow_class
+    CbvFlow
+  end
+
+  def flow_param
+    :cbv
+  end
+
+  def entry_path
+    root_url
   end
 end
