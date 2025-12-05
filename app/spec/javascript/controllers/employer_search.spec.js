@@ -51,17 +51,13 @@ describe("EmployerSearchController", () => {
       lastFocusedElement: { focus: vi.fn() },
     }
     const setTimeoutSpy = vi.spyOn(globalThis, "setTimeout")
-
     EmployerSearchController.prototype.onExit.call(fakeController)
 
     expect(setTimeoutSpy).toHaveBeenCalledTimes(1)
     const [callback, delay] = setTimeoutSpy.mock.calls[0]
-    expect(typeof callback).toBe("function")
     expect(delay).toBe(500)
-
     callback()
     expect(fakeController.lastFocusedElement.focus).toHaveBeenCalled()
-
     setTimeoutSpy.mockRestore()
   })
 })
