@@ -82,7 +82,7 @@ class Cbv::BaseController < FlowController
     when "cbv/synchronizations"
       cbv_flow_payment_details_path
     when "cbv/missing_results"
-      cbv_flow_applicant_information_path
+      cbv_flow_other_job_path
     when "cbv/payment_details"
       cbv_flow_add_job_path
     when "cbv/other_jobs"
