@@ -1,6 +1,5 @@
 class Activities::BaseController < FlowController
   before_action :redirect_on_prod, :set_flow
-
   helper_method :next_path
 
   private

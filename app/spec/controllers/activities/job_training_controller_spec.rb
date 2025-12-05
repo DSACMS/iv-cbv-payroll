@@ -6,7 +6,7 @@ RSpec.describe Activities::JobTrainingController, type: :controller do
   describe "GET #new" do
     let(:activity_flow) { create(:activity_flow) }
     it "renders the form" do
-      session[:activity_flow_id] = activity_flow.id
+      session[:flow_id] = activity_flow.id
       get :new
 
       expect(response).to have_http_status(:ok)

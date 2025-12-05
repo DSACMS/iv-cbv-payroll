@@ -3,7 +3,7 @@ class FlowController < ApplicationController
     @flow, is_new_session = find_or_create_flow
     @cbv_flow = @flow # Maintain for compatibility until all controllers are converted
 
-    set_flow_session(@flow.id, :cbv)
+    set_flow_session(@flow.id, flow_param)
     cookies.permanent.encrypted[:cbv_applicant_id] = @flow.cbv_applicant_id
 
     track_generic_link_clicked_event(@flow, is_new_session)
@@ -28,7 +28,7 @@ class FlowController < ApplicationController
 
   def create_flow_with_new_applicant
     flow = flow_class.create(
-      cbv_applicant: CbvApplicant.create(client_agency_id: current_agency.id),
+      cbv_applicant: CbvApplicant.create(client_agency_id: current_agency&.id),
       device_id: cookies.permanent.signed[:device_id]
     )
     [ flow, true ]
@@ -50,13 +50,12 @@ class FlowController < ApplicationController
 
       @flow = flow_class.create_from_invitation(invitation, cookies.permanent.signed[:device_id])
       @cbv_flow = @flow # Maintain for compatibility until all controllers are converted
-      session[flow_param] = @flow.id
+      set_flow_session(@flow.id, flow_param)
       cookies.permanent.encrypted[:cbv_applicant_id] = @flow.cbv_applicant_id
       track_invitation_clicked_event(invitation, @flow)
-
-    elsif session[flow_param]
+    elsif session[cbv_flow_symbol]
       begin
-        @flow = flow_class.find(session[flow_param])
+        @flow = flow_class.find(session[cbv_flow_symbol])
         @cbv_flow = @flow # Maintain for compatibility until all controllers are converted
       rescue ActiveRecord::RecordNotFound
         reset_cbv_session!
