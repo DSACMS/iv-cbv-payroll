@@ -2,7 +2,6 @@ require "rails_helper"
 
 RSpec.describe "az_des.rake" do
   before do
-    ActiveJob::Base.queue_adapter = :test
     Rake::Task["az_des:deliver_csv_reports"].reenable
   end
 
