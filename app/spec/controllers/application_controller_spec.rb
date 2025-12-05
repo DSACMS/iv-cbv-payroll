@@ -87,4 +87,52 @@ RSpec.describe ApplicationController, type: :controller do
       expect(result).to be_nil
     end
   end
+
+  describe "#current_agency" do
+    let(:sandbox_agency) { Rails.application.config.client_agencies["sandbox"] }
+
+    context "when @current_agency is set" do
+      before do
+        controller.instance_variable_set(:@current_agency, sandbox_agency)
+      end
+
+      it "returns the value for @current_agency" do
+        expect(controller.helpers.current_agency).to eq(sandbox_agency)
+      end
+    end
+
+    context "when a child controller sets a @cbv_flow" do
+      let(:cbv_flow) { create(:cbv_flow, cbv_applicant_attributes: attributes_for(:cbv_applicant, :sandbox)) }
+
+      before do
+        controller.instance_variable_set(:@cbv_flow, cbv_flow)
+      end
+
+      it "sets @current_agency based on that flow's applicant" do
+        expect(controller.helpers.current_agency).to eq(sandbox_agency)
+      end
+    end
+
+    context "when there is a client_agency_id param" do
+      before do
+        allow(controller).to receive(:params)
+          .and_return({ client_agency_id: sandbox_agency.id })
+      end
+
+      it "sets @current_agency based on the param" do
+        expect(controller.helpers.current_agency).to eq(sandbox_agency)
+      end
+    end
+
+    context "when there is no other way to determine the current agency" do
+      before do
+        allow(controller).to receive(:detect_client_agency_from_domain)
+          .and_return(sandbox_agency.id)
+      end
+
+      it "infers it based on the domain name" do
+        expect(controller.helpers.current_agency).to eq(sandbox_agency)
+      end
+    end
+  end
 end
