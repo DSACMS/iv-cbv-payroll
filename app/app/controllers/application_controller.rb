@@ -5,7 +5,6 @@ class ApplicationController < ActionController::Base
   before_action :add_newrelic_metadata
   before_action :redirect_if_maintenance_mode
   before_action :enable_mini_profiler_in_demo
-  before_action :check_if_pilot_ended
   before_action :set_device_id_cookie
 
   rescue_from ActionController::InvalidAuthenticityToken do
@@ -43,11 +42,6 @@ class ApplicationController < ActionController::Base
     # show the menu if we're in the cbv flow
     return true if controller_path.start_with?("cbv/")
     user_signed_in? && !home_page?
-  end
-
-  def check_if_pilot_ended
-    @pilot_ended = current_agency&.pilot_ended
-    redirect_to root_path if @pilot_ended && !home_page?
   end
 
   def home_page?
