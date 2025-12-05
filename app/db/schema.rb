@@ -16,12 +16,11 @@ ActiveRecord::Schema[8.1].define(version: 2025_12_04_012521) do
   enable_extension "pgcrypto"
 
   create_table "activity_flows", force: :cascade do |t|
+    t.bigint "cbv_applicant_id", null: false
     t.datetime "completed_at"
     t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.datetime "completed_at"
-    t.bigint "cbv_applicant_id", null: false
     t.string "device_id"
+    t.datetime "updated_at", null: false
     t.index ["cbv_applicant_id"], name: "index_activity_flows_on_cbv_applicant_id"
   end
 
