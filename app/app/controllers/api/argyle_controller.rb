@@ -36,7 +36,7 @@ class Api::ArgyleController < ApplicationController
   private
 
   def set_cbv_flow
-    @cbv_flow = CbvFlow.find_by(id: session[:cbv_flow_id])
+    @cbv_flow = CbvFlow.find_by(id: session[:flow_id])
     redirect_to(root_url(cbv_flow_timeout: true)) unless @cbv_flow
   end
 

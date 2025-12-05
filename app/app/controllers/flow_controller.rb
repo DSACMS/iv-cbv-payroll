@@ -2,7 +2,7 @@ class FlowController < ApplicationController
   def set_generic_flow
     @cbv_flow, is_new_session = find_or_create_cbv_flow
 
-    session[:cbv_flow_id] = @cbv_flow.id
+    session[:flow_id] = @cbv_flow.id
     cookies.permanent.encrypted[:cbv_applicant_id] = @cbv_flow.cbv_applicant_id
 
     track_generic_link_clicked_event(@cbv_flow, is_new_session)

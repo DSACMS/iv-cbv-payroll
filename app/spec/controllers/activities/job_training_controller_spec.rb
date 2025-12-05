@@ -26,7 +26,7 @@ RSpec.describe Activities::JobTrainingController, type: :controller do
 
     it "creates a job training activity and returns to the hub" do
       expect do
-        post :create, params: params, session: { activity_flow_id: activity_flow.id }
+        post :create, params: params, session: { flow_id: activity_flow.id }
       end.to change(activity_flow.job_training_activities, :count).by(1)
 
       expect(JobTrainingActivity.last.program_name).to eq("Resume Workshop")

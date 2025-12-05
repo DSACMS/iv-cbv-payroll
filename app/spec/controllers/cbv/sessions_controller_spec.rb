@@ -18,14 +18,14 @@ RSpec.describe Cbv::SessionsController, type: :controller do
 
   describe 'DELETE #end' do
     before do
-      session[:cbv_flow_id] = create(:cbv_flow, :invited).id
+      session[:flow_id] = create(:cbv_flow, :invited).id
     end
 
     context 'when timeout is true' do
       it 'clears session and sets a notice without tracking timeout event' do
         expect(controller).not_to receive(:track_timeout_event)
         delete :end, params: { timeout: 'true' }
-        expect(session[:cbv_flow_id]).to be_nil
+        expect(session[:flow_id]).to be_nil
       end
 
       it 'redirects to session timeout page with agency' do
@@ -38,13 +38,13 @@ RSpec.describe Cbv::SessionsController, type: :controller do
       it 'clears session without tracking timeout event' do
         expect(controller).not_to receive(:track_timeout_event)
         delete :end
-        expect(session[:cbv_flow_id]).to be_nil
+        expect(session[:flow_id]).to be_nil
       end
     end
 
     context 'when flow is missing' do
       it 'redirects to root with timeout flag' do
-        session[:cbv_flow_id] = nil
+        session[:flow_id] = nil
 
         delete :end
 
@@ -56,12 +56,12 @@ RSpec.describe Cbv::SessionsController, type: :controller do
   describe 'GET #timeout' do
     context 'you come to the timeout page with a session' do
       before do
-        session[:cbv_flow_id] = create(:cbv_flow, :invited).id
+        session[:flow_id] = create(:cbv_flow, :invited).id
       end
 
       it 'removes the session' do
         get :timeout
-        expect(session[:cbv_flow_id]).to be_nil
+        expect(session[:flow_id]).to be_nil
       end
     end
   end

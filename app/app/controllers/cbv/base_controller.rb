@@ -26,13 +26,13 @@ class Cbv::BaseController < FlowController
       end
 
       @cbv_flow = CbvFlow.create_from_invitation(invitation, cookies.permanent.signed[:device_id])
-      session[:cbv_flow_id] = @cbv_flow.id
+      session[:flow_id] = @cbv_flow.id
       cookies.permanent.encrypted[:cbv_applicant_id] = @cbv_flow.cbv_applicant_id
       track_invitation_clicked_event(invitation, @cbv_flow)
 
-    elsif session[:cbv_flow_id]
+    elsif session[:flow_id]
       begin
-        @cbv_flow = CbvFlow.find(session[:cbv_flow_id])
+        @cbv_flow = CbvFlow.find(session[:flow_id])
       rescue ActiveRecord::RecordNotFound
         reset_cbv_session!
         redirect_to root_url(cbv_flow_timeout: true)
@@ -182,6 +182,6 @@ class Cbv::BaseController < FlowController
   end
 
   def reset_cbv_session!
-    session[:cbv_flow_id] = nil
+    session[:flow_id] = nil
   end
 end

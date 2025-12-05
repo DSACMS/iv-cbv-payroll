@@ -12,7 +12,7 @@ RSpec.describe Api::PinwheelController do
     end
 
     before do
-      session[:cbv_flow_id] = cbv_flow.id
+      session[:flow_id] = cbv_flow.id
       pinwheel_stub_create_token_response
     end
 
@@ -56,7 +56,7 @@ RSpec.describe Api::PinwheelController do
     end
 
     it "redirects to root with timeout parameter" do
-      session[:cbv_flow_id] = nil
+      session[:flow_id] = nil
 
       post :create_token, params: valid_params
 

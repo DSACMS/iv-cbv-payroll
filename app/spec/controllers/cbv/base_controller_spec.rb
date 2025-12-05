@@ -41,10 +41,10 @@ RSpec.describe Cbv::BaseController, type: :controller do
 
     context "when cbv flow cannot be found for session" do
       it "redirects to root with cbv_flow_timeout parameter" do
-        session[:cbv_flow_id] = 1337
+        session[:flow_id] = 1337
         get :show
         expect(response).to redirect_to(root_url(cbv_flow_timeout: true))
-        expect(session[:cbv_flow_id]).to be_nil
+        expect(session[:flow_id]).to be_nil
       end
     end
   end
@@ -112,7 +112,7 @@ RSpec.describe Cbv::BaseController, type: :controller do
         ))
         get :show, params: { token: cbv_flow.cbv_flow_invitation.auth_token, origin: "email" }
         expect(response).to be_successful
-        expect(session[:cbv_flow_id]).to be_a(Integer)
+        expect(session[:flow_id]).to be_a(Integer)
         expect(session[:cbv_origin]).to eq "email"
       end
 
@@ -123,7 +123,7 @@ RSpec.describe Cbv::BaseController, type: :controller do
         ))
         get :show, params: { token: cbv_flow.cbv_flow_invitation.auth_token, origin: " MFB dashboard" }
         expect(response).to be_successful
-        expect(session[:cbv_flow_id]).to be_a(Integer)
+        expect(session[:flow_id]).to be_a(Integer)
         expect(session[:cbv_origin]).to eq "mfb_dashboard"
       end
 
@@ -135,7 +135,7 @@ RSpec.describe Cbv::BaseController, type: :controller do
         ))
         get :show, params: { token: cbv_flow.cbv_flow_invitation.auth_token, origin: "email" }
         expect(response).to be_successful
-        expect(session[:cbv_flow_id]).to be_a(Integer)
+        expect(session[:flow_id]).to be_a(Integer)
         expect(session[:cbv_origin]).to eq "email"
       end
 
@@ -147,7 +147,7 @@ RSpec.describe Cbv::BaseController, type: :controller do
         ))
         get :show, params: { token: cbv_flow.cbv_flow_invitation.auth_token }
         expect(response).to be_successful
-        expect(session[:cbv_flow_id]).to be_a(Integer)
+        expect(session[:flow_id]).to be_a(Integer)
         expect(session[:cbv_origin]).to be_nil
       end
 
@@ -159,7 +159,7 @@ RSpec.describe Cbv::BaseController, type: :controller do
         ))
         get :show, params: { token: cbv_flow.cbv_flow_invitation.auth_token }
         expect(response).to be_successful
-        expect(session[:cbv_flow_id]).to be_a(Integer)
+        expect(session[:flow_id]).to be_a(Integer)
         expect(session[:cbv_origin]).to eq "sms"
       end
     end
