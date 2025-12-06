@@ -57,6 +57,8 @@ Rails.application.routes.draw do
     end
 
     scope "/activities", as: :activities_flow, module: :activities do
+      get ":token", to: "activities#show", as: :start, token: /[^\/]+/
+
       root to: "activities#show"
       resource :volunteering, only: %i[new create], controller: "volunteering"
       resource :job_training, only: %i[new create], controller: "job_training"

@@ -13,8 +13,18 @@ class Activities::BaseController < ApplicationController
   end
 
   def set_activity_flow
-    @activity_flow = find_activity_flow || ActivityFlow.create!
+    if params[:token]
+      @activity_flow = find_activity_flow_by_token
+      return redirect_to(root_url, alert: t("activities.errors.invalid_token")) unless @activity_flow
+    else
+      @activity_flow = find_activity_flow || ActivityFlow.create!
+    end
+
     session[:activity_flow_id] = @activity_flow.id
+  end
+
+  def find_activity_flow_by_token
+    ActivityFlow.find_by(token: params[:token])
   end
 
   def find_activity_flow

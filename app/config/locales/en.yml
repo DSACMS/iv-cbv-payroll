@@ -48,6 +48,8 @@ en:
             language:
               invalid_format: Language must be either English (en) or Spanish (es).
   activities:
+    errors:
+      invalid_token: The link you used is invalid.
     hub:
       continue: Continue
       count:
