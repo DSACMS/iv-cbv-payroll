@@ -1,5 +1,9 @@
 class Activities::SubmitController < Activities::BaseController
   def show
+    respond_to do |format|
+      format.html
+      format.pdf { render_pdf }
+    end
   end
 
   def update
@@ -10,5 +14,38 @@ class Activities::SubmitController < Activities::BaseController
 
     @flow.touch(:completed_at)
     redirect_to next_path
+  end
+
+  private
+
+  def render_pdf
+    @volunteering_activities = @flow.volunteering_activities.order(date: :desc, created_at: :desc)
+    @job_training_activities = @flow.job_training_activities.order(created_at: :desc)
+    @submission_timestamp = submission_timestamp
+    progress = ActivityFlowProgressCalculator.progress(@flow)
+    @total_hours = progress.total_hours
+
+    render pdf: pdf_filename,
+      layout: "pdf",
+      template: "activities/submit/show",
+      margin: pdf_margins,
+      disposition: "inline"
+  end
+
+  def submission_timestamp
+    @flow.completed_at || Time.zone.now
+  end
+
+  def pdf_filename
+    "HR1_Report_#{Time.zone.today.strftime("%Y-%m-%d")}"
+  end
+
+  def pdf_margins
+    {
+      top: 10,
+      bottom: 10,
+      left: 10,
+      right: 10
+    }
   end
 end
