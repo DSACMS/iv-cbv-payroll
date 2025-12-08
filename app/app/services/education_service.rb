@@ -2,7 +2,6 @@
 class EducationService
   # Mocks the education data retrieval process for local development
   class LocalEducationService
-
     def self.call(activity_flow)
       # Add pretend flow
 

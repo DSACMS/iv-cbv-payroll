@@ -10,13 +10,5 @@ FactoryBot.define do
     first_name { Faker::Name.first_name }
     last_name { Faker::Name.last_name }
     date_of_birth { Faker::Date.birthday(min_age: 18, max_age: 65) }
-
-    schools do
-      Array.new(school_count) { association(:school) }
-    end
-
-    activity_flows do
-      Array.new(activity_flows_count) { association(:activity_flow) }
-    end
   end
 end

@@ -16,7 +16,10 @@ class Activities::EducationController < Activities::BaseController
   end
 
   def create
-    education_params = params.require(:education_activity).permit([:id, :additional_comments])
+    education_params = params.require(
+      :education_activity
+    ).permit(:id, :additional_comments, :credit_hours)
+
     logger.info education_params
 
     id = education_params[:id]
@@ -36,7 +39,7 @@ class Activities::EducationController < Activities::BaseController
 
       redirect_to activities_flow_root_path, notice: t("activities.education.created")
     else
-      render :new
+      render :new, alert: t("activities.education.error_no_data")
     end
   end
 
@@ -48,7 +51,7 @@ class Activities::EducationController < Activities::BaseController
 
     # This is just to show how we can send updates to change the indicators
     call_count = 0
-    indicators = ["school", "enrollment", "hours"]
+    indicators = [ "school", "enrollment", "hours" ]
     activity = EducationService.new(@activity_flow).call do
       indicator = indicators[call_count % indicators.count]
       sse.write(
