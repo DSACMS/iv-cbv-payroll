@@ -48,20 +48,16 @@ en:
             language:
               invalid_format: Language must be either English (en) or Spanish (es).
   activities:
-    entry:
-      continue: Add Activities
-      title: Welcome to the Activity Hub!
-    error_no_identity: Please provide your name and date of birth
     education:
       add: Add Education Activities
-      error_no_data: No education information available
       enrollment_status:
         full_time: Full Time
-        part_time: Part Time
         hours:
-          zero: "not enrolled"
-          one: "1 credit hour"
+          one: 1 credit hour
           other: "%{count} credit hours"
+          zero: not enrolled
+        part_time: Part Time
+      error_no_data: No education information available
       new:
         enrollment: Enrollment
         fetching_education_description: This may take a few minutes. Please keep this window open while we work on this.
@@ -74,7 +70,6 @@ en:
         continue: Save and continue
         description: Review the information below to make sure it's correct.
         enrollment_information:
-          
           header: Enrollment Information
           most_recent_semester: Most Recent Semester
         header: Confirm your education enrollment
@@ -91,6 +86,10 @@ en:
           description: Please include any transcripts or class schedule from this semester
           label: Upload Documents
       title: Education
+    entry:
+      continue: Add Activities
+      title: Welcome to the Activity Hub!
+    error_no_identity: Please provide your name and date of birth
     hub:
       continue: Continue
       count:
