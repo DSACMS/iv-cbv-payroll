@@ -7,7 +7,7 @@ class Activities::EducationController < Activities::BaseController
   def show
     @education_activity = EducationActivity.find_by(
       id: params[:education_activity_id],
-      activity_flow_id: @activity_flow.id
+      activity_flow_id: @flow.id
     )
 
     @student_information = current_identity!
@@ -31,7 +31,7 @@ class Activities::EducationController < Activities::BaseController
     activity = EducationActivity.find_by(
       {
         id: id,
-        activity_flow_id: @activity_flow.id
+        activity_flow_id: @flow.id
       }
     )
 
@@ -56,7 +56,7 @@ class Activities::EducationController < Activities::BaseController
     # This is just to show how we can send updates to change the indicators
     call_count = 0
     indicators = [ "school", "enrollment", "hours" ]
-    activity = EducationService.new(@activity_flow).call do
+    activity = EducationService.new(@flow).call do
       indicator = indicators[call_count % indicators.count]
       sse.write(
         sync_indicator_update(indicator, :succeeded)

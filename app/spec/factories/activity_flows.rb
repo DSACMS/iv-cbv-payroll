@@ -4,6 +4,7 @@ FactoryBot.define do
   factory :activity_flow do
     cbv_applicant { association :cbv_applicant }
     device_id { SecureRandom.uuid }
+
     transient do
       volunteering_activities_count { Faker::Number.within(range: 0..2).to_i }
       job_training_activities_count { Faker::Number.within(range: 0..2).to_i }

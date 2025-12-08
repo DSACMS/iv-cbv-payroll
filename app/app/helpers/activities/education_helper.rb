@@ -1,2 +1,0 @@
-module Activities::EducationHelper
-end

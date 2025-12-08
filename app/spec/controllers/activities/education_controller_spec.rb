@@ -48,7 +48,8 @@ RSpec.describe Activities::EducationController, type: :controller do
         :create,
         params: params,
         session: {
-          activity_flow_id: activity_flow.id
+          flow_id: activity_flow.id,
+          flow_type: :activity
         }
       )
 

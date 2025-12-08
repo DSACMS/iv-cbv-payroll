@@ -1,6 +1,5 @@
-class Activities::BaseController < ApplicationController
+class Activities::BaseController < FlowController
   before_action :redirect_on_prod, :set_flow
-  before_action :set_activity_flow
 
   helper_method :next_path, :current_identity
 
