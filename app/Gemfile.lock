@@ -1,7 +1,7 @@
 GEM
   remote: https://rubygems.org/
   specs:
-    Ascii85 (1.1.1)
+    Ascii85 (2.0.1)
     action_text-trix (2.1.15)
       railties
     actioncable (8.1.1)
@@ -82,7 +82,7 @@ GEM
       uri (>= 0.13.1)
     addressable (2.8.7)
       public_suffix (>= 2.0.2, < 7.0)
-    afm (0.2.2)
+    afm (1.0.0)
     ast (2.4.3)
     aws-actionmailer-ses (1.0.0)
       actionmailer (>= 7.1.0)
@@ -343,9 +343,9 @@ GEM
     parser (3.3.10.0)
       ast (~> 2.4.1)
       racc
-    pdf-reader (2.12.0)
-      Ascii85 (~> 1.0)
-      afm (~> 0.2.1)
+    pdf-reader (2.15.0)
+      Ascii85 (>= 1.0, < 3.0, != 2.0.0)
+      afm (>= 0.2.1, < 2)
       hashery (~> 2.0)
       ruby-rc4
       ttfunk
@@ -638,7 +638,7 @@ DEPENDENCIES
   net-ssh
   newrelic_rpm
   omniauth-entra-id
-  pdf-reader (~> 2.12.0)
+  pdf-reader (~> 2.15.0)
   pg (~> 1.6)
   pg-aws_rds_iam (~> 0.7.0)
   premailer-rails
