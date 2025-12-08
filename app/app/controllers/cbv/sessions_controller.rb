@@ -1,5 +1,5 @@
 class Cbv::SessionsController < Cbv::BaseController
-  skip_before_action :set_cbv_flow, :ensure_cbv_flow_not_yet_complete, :prevent_back_after_complete, :capture_page_view
+  skip_before_action :set_flow, :ensure_cbv_flow_not_yet_complete, :prevent_back_after_complete, :capture_page_view
 
   def refresh
     session[:last_seen] = Time.current
@@ -8,7 +8,7 @@ class Cbv::SessionsController < Cbv::BaseController
 
   def end
     redirect_target = begin
-      client_agency_id = CbvFlow.includes(:cbv_applicant).find(session[:cbv_flow_id]).cbv_applicant.client_agency_id
+      client_agency_id = CbvFlow.includes(:cbv_applicant).find(session[cbv_flow_symbol]).cbv_applicant.client_agency_id
       cbv_flow_session_timeout_path(client_agency_id: client_agency_id)
     rescue ActiveRecord::RecordNotFound
       Rails.logger.info "Unable to find CbvFlow in sessions#end. Redirecting to root with timeout"

@@ -11,7 +11,7 @@ RSpec.describe Activities::SubmitController, type: :controller do
   end
 
   before do
-    session[:activity_flow_id] = activity_flow.id
+    session[:flow_id] = activity_flow.id
   end
 
   describe "GET #show" do

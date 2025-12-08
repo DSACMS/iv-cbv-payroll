@@ -7,6 +7,6 @@ class Activities::SuccessController < Activities::BaseController
   private
 
   def ensure_completed
-    redirect_to(activities_flow_summary_path) unless @activity_flow.completed_at
+    redirect_to(activities_flow_summary_path) unless @flow.completed_at
   end
 end

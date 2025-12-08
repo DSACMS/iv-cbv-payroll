@@ -12,7 +12,7 @@ class Activities::SubmitController < Activities::BaseController
       return render :show, status: :unprocessable_content
     end
 
-    @activity_flow.touch(:completed_at)
+    @flow.touch(:completed_at)
     redirect_to next_path
   end
 

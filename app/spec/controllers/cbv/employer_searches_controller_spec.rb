@@ -10,7 +10,7 @@ RSpec.describe Cbv::EmployerSearchesController do
     let(:user_token) { "foobar" }
 
     before do
-      session[:cbv_flow_id] = cbv_flow.id
+      session[:flow_id] = cbv_flow.id
     end
 
     context "when rendering views" do

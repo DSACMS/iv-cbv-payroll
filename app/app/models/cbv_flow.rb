@@ -2,7 +2,6 @@ class CbvFlow < ApplicationRecord
   has_many :payroll_accounts, dependent: :destroy
   belongs_to :cbv_flow_invitation, optional: true
   belongs_to :cbv_applicant, optional: true
-  # validates :client_agency_id, inclusion: Rails.application.config.client_agencies.client_agency_ids
 
   accepts_nested_attributes_for :cbv_applicant
 
@@ -23,13 +22,6 @@ class CbvFlow < ApplicationRecord
     create(
       cbv_flow_invitation: cbv_flow_invitation,
       cbv_applicant: cbv_flow_invitation.cbv_applicant,
-      device_id: device_id
-    )
-  end
-
-  def self.create_without_invitation(client_agency_id, device_id)
-    create(
-      cbv_applicant: CbvApplicant.create(client_agency_id: client_agency_id),
       device_id: device_id
     )
   end

@@ -1,6 +1,6 @@
 class ApplicationController < ActionController::Base
   helper :view
-  helper_method :current_agency, :show_menu?, :pilot_ended?
+  helper_method :current_agency, :show_menu?, :pilot_ended?, :cbv_flow_symbol
   around_action :switch_locale
   before_action :add_newrelic_metadata
   before_action :redirect_if_maintenance_mode
@@ -29,6 +29,10 @@ class ApplicationController < ActionController::Base
     Rails.application.config.client_agencies
   end
 
+  def cbv_flow_symbol # TODO: Remove after next deploy when all flows use :flow_id (Written 12/5)
+    session[:cbv_flow_id].present? ? :cbv_flow_id : :flow_id
+  end
+
   private
 
   def set_device_id_cookie
@@ -51,13 +55,15 @@ class ApplicationController < ActionController::Base
   def current_agency
     return @current_agency if @current_agency.present?
 
-    if @cbv_flow.present? && @cbv_flow.cbv_applicant.client_agency_id.present?
-      return @current_agency = agency_config[@cbv_flow.cbv_applicant.client_agency_id]
+    @flow = @cbv_flow # Maintain for compatibility until all controllers are converted
+    if @flow.present? && @flow.cbv_applicant.client_agency_id.present?
+      @current_agency = agency_config[@flow.cbv_applicant.client_agency_id]
+      return @current_agency
     end
 
     if params[:client_agency_id].present?
       @current_agency = agency_config[params[:client_agency_id]]
-      return @current_agency if @current_agency.present?
+      return @current_agency
     end
 
     client_agency_id_from_domain = detect_client_agency_from_domain
@@ -91,6 +97,12 @@ class ApplicationController < ActionController::Base
     @pilot_ended.nil? ? current_agency&.pilot_ended : @pilot_ended
   end
 
+  def set_flow_session(flow_id, type)
+    session[cbv_flow_symbol] = flow_id
+    session[:flow_id] = flow_id
+    session[:flow_type] = type
+  end
+
   protected
 
   def pinwheel_for(cbv_flow)
@@ -106,7 +118,7 @@ class ApplicationController < ActionController::Base
 
   def add_newrelic_metadata
     attributes = {
-      cbv_flow_id: session[:cbv_flow_id],
+      cbv_flow_id: session[cbv_flow_symbol],
       device_id: cookies.permanent.signed[:device_id],
       session_id: session.id.to_s,
       client_agency_id: params[:client_agency_id],

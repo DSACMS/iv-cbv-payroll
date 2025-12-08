@@ -10,15 +10,18 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2025_12_03_204130) do
+ActiveRecord::Schema[8.1].define(version: 2025_12_04_012521) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
   enable_extension "pgcrypto"
 
   create_table "activity_flows", force: :cascade do |t|
+    t.bigint "cbv_applicant_id", null: false
     t.datetime "completed_at"
     t.datetime "created_at", null: false
+    t.string "device_id"
     t.datetime "updated_at", null: false
+    t.index ["cbv_applicant_id"], name: "index_activity_flows_on_cbv_applicant_id"
   end
 
   create_table "api_access_tokens", force: :cascade do |t|
@@ -266,6 +269,7 @@ ActiveRecord::Schema[8.1].define(version: 2025_12_03_204130) do
     t.index ["payroll_account_id"], name: "index_webhook_events_on_payroll_account_id"
   end
 
+  add_foreign_key "activity_flows", "cbv_applicants"
   add_foreign_key "cbv_flow_invitations", "users"
   add_foreign_key "cbv_flows", "cbv_flow_invitations"
   add_foreign_key "job_training_activities", "activity_flows"

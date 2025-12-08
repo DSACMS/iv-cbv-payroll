@@ -6,7 +6,7 @@ RSpec.describe Cbv::EntriesController do
 
     it "redirects the user back to the homepage with timeout parameter" do
       expect { get :show }
-        .not_to change { session[:cbv_flow_id] }
+        .not_to change { session[:flow_id] }
       expect(response).to redirect_to(root_url(cbv_flow_timeout: true))
     end
 
@@ -45,7 +45,7 @@ RSpec.describe Cbv::EntriesController do
 
       it "sets a CbvFlow object based on the invitation" do
         expect { get :show, params: { token: invitation.auth_token } }
-          .to change { session[:cbv_flow_id] }
+          .to change { session[:flow_id] }
                 .from(nil)
                 .to(be_an(Integer))
 
@@ -178,7 +178,7 @@ RSpec.describe Cbv::EntriesController do
         it "creates a new CbvFlow object" do
           get :show, params: { token: invitation.auth_token }
 
-          expect(session[:cbv_flow_id]).not_to eq(existing_cbv_flow.id)
+          expect(session[:flow_id]).not_to eq(existing_cbv_flow.id)
         end
 
         context "when the CbvFlow was already completed" do
@@ -195,7 +195,7 @@ RSpec.describe Cbv::EntriesController do
 
           it "creates a new CbvFlow object" do
             expect { get :show, params: { token: invitation.auth_token } }
-              .to change { session[:cbv_flow_id] }
+              .to change { session[:flow_id] }
                 .from(nil)
                 .to(be_an(Integer))
               .and change(CbvFlow, :count).by(1)
@@ -211,12 +211,12 @@ RSpec.describe Cbv::EntriesController do
         let(:other_cbv_flow) { create(:cbv_flow, :invited, cbv_flow_invitation: other_invitation) }
 
         before do
-          session[:cbv_flow_id] = other_cbv_flow.id
+          session[:flow_id] = other_cbv_flow.id
         end
 
         it "replaces the session's CbvFlow id with the one from the link token" do
           expect { get :show, params: { token: invitation.auth_token } }
-            .to change { session[:cbv_flow_id] }
+            .to change { session[:flow_id] }
                   .from(other_cbv_flow.id)
                   .to(be_an(Integer))
         end
@@ -225,7 +225,7 @@ RSpec.describe Cbv::EntriesController do
       context "when the token is invalid" do
         it "redirects to the homepage" do
           expect { get :show, params: { token: "some-invalid-token" } }
-            .not_to change { session[:cbv_flow_id] }
+            .not_to change { session[:flow_id] }
 
           expect(response).to redirect_to(root_url)
         end
@@ -240,7 +240,7 @@ RSpec.describe Cbv::EntriesController do
 
         it "redirects to the expired invitations page" do
           expect { get :show, params: { token: invitation.auth_token } }
-            .not_to change { session[:cbv_flow_id] }
+            .not_to change { session[:flow_id] }
 
           expect(response).to redirect_to(cbv_flow_expired_invitation_path(client_agency_id: invitation.client_agency_id))
         end
@@ -249,7 +249,7 @@ RSpec.describe Cbv::EntriesController do
 
     context "when the session points to a deleted cbv flow" do
       before do
-        session[:cbv_flow_id] = -1
+        session[:flow_id] = -1
       end
 
       it "redirects to the homepage with timeout parameter" do
