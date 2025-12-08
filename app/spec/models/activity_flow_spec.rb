@@ -7,7 +7,7 @@ RSpec.describe ActivityFlow, type: :model do
     expect { flow.destroy }
       .to change { VolunteeringActivity.count }.by(-flow.volunteering_activities.count)
       .and change { JobTrainingActivity.count }.by(-flow.job_training_activities.count)
-      .and change { EducationActivity.count }.by(-flow.education_activities.count)
+      .and change { EducationActivity.count }.by(-EducationActivity.where(activity_flow_id: flow.id).count)
   end
 
   describe "Education Activities" do

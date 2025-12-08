@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2025_12_08_160332) do
+ActiveRecord::Schema[8.1].define(version: 2025_12_08_170126) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
   enable_extension "pgcrypto"
@@ -106,17 +106,6 @@ ActiveRecord::Schema[8.1].define(version: 2025_12_08_160332) do
     t.bigint "enrollment_id", null: false
   end
 
-  create_table "enrollments", force: :cascade do |t|
-    t.datetime "created_at", null: false
-    t.bigint "education_activity_id"
-    t.bigint "school_id", null: false
-    t.date "semester_start"
-    t.string "status"
-    t.datetime "updated_at", null: false
-    t.index ["education_activity_id"], name: "index_enrollments_on_education_activity_id"
-    t.index ["school_id"], name: "index_enrollments_on_school_id"
-  end
-
   create_table "identities", force: :cascade do |t|
     t.datetime "created_at", null: false
     t.date "date_of_birth", null: false
@@ -147,15 +136,6 @@ ActiveRecord::Schema[8.1].define(version: 2025_12_08_160332) do
     t.string "type", default: "pinwheel", null: false
     t.datetime "updated_at", null: false
     t.index ["cbv_flow_id"], name: "index_payroll_accounts_on_cbv_flow_id"
-  end
-
-  create_table "schools", force: :cascade do |t|
-    t.string "address"
-    t.datetime "created_at", null: false
-    t.bigint "identity_id", null: false
-    t.string "name"
-    t.datetime "updated_at", null: false
-    t.index ["identity_id"], name: "index_schools_on_identity_id"
   end
 
   create_table "solid_queue_blocked_executions", force: :cascade do |t|
@@ -323,11 +303,8 @@ ActiveRecord::Schema[8.1].define(version: 2025_12_08_160332) do
   add_foreign_key "cbv_flow_invitations", "users"
   add_foreign_key "cbv_flows", "cbv_flow_invitations"
   add_foreign_key "education_activities", "activity_flows"
-  add_foreign_key "enrollments", "education_activities"
-  add_foreign_key "enrollments", "schools"
   add_foreign_key "job_training_activities", "activity_flows"
   add_foreign_key "payroll_accounts", "cbv_flows"
-  add_foreign_key "schools", "identities"
   add_foreign_key "solid_queue_blocked_executions", "solid_queue_jobs", column: "job_id", on_delete: :cascade
   add_foreign_key "solid_queue_claimed_executions", "solid_queue_jobs", column: "job_id", on_delete: :cascade
   add_foreign_key "solid_queue_failed_executions", "solid_queue_jobs", column: "job_id", on_delete: :cascade
