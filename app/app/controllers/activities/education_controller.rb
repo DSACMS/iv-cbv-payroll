@@ -5,7 +5,11 @@ class Activities::EducationController < Activities::BaseController
   end
 
   def show
-    @education_activity = EducationActivity.find(params[:education_activity_id])
+    @education_activity = EducationActivity.find_by(
+      id: params[:education_activity_id],
+      activity_flow_id: @activity_flow.id
+    )
+
     @student_information = current_identity!
     unless @education_activity
       redirect_to(
