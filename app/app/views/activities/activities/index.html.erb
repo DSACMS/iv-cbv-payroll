@@ -7,7 +7,7 @@
     <%= t("activities.hub.description") %>
 </p>
 
-<%= render(AccordionComponent.new(id: "activity-hub-identity-accordion")) do |a| %>
+<%= render(AccordionComponent.new(id: "activity-hub-identity-accordion", heading_level: 2)) do |a| %>
     <%= a.with_title { "Current Identity" } %>
     <%= a.with_accordion_item do %>
         <%= render(TableComponent.new) do |t| %>

@@ -9,7 +9,7 @@ class Activities::BaseController < FlowController
   #   already exist in the database. nil if no identity is associated
   #   with this request
   def current_identity
-    @activity_flow&.identity
+    @flow&.identity
   end
 
   # Infer the current {Identity} from this request and redirect back
