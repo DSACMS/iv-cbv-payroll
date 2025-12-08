@@ -1,6 +1,18 @@
 require 'rails_helper'
 
 RSpec.describe ActivityFlow, type: :model do
+  describe ".create_with_token" do
+    it "generates a token automatically" do
+      flow = ActivityFlow.create_with_token
+      expect(flow.token).to be_present
+    end
+
+    it "stores the reference_id when provided" do
+      flow = ActivityFlow.create_with_token(reference_id: "case_123")
+      expect(flow.reference_id).to eq("case_123")
+    end
+  end
+
   it "cleans up related volunteering activities when destroyed" do
     flow = create(:activity_flow)
     flow.volunteering_activities.create!(

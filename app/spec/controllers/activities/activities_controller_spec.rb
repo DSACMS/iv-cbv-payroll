@@ -2,6 +2,20 @@ require "rails_helper"
 
 RSpec.describe Activities::ActivitiesController, type: :controller do
   describe "#show" do
+    it "sets flow from token param when provided" do
+      flow = create(:activity_flow, token: "abc123")
+
+      get :show, params: { token: "abc123" }
+
+      expect(session[:activity_flow_id]).to eq(flow.id)
+    end
+
+    it "redirects to root with error for invalid token" do
+      get :show, params: { token: "invalid" }
+
+      expect(response).to redirect_to(root_url)
+    end
+
     it "only shows activities belonging to the current activity flow" do
       flow = create(:activity_flow)
       other_flow = create(:activity_flow)
