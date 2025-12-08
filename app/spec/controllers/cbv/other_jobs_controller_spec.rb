@@ -4,7 +4,7 @@ RSpec.describe Cbv::OtherJobsController do
   let(:cbv_flow) { create(:cbv_flow, :invited, :with_pinwheel_account) }
 
   before do
-    session[:cbv_flow_id] = cbv_flow.id
+    session[:flow_id] = cbv_flow.id
   end
 
   describe "#show" do
@@ -32,7 +32,7 @@ RSpec.describe Cbv::OtherJobsController do
       let(:cbv_flow_without_accounts) { create(:cbv_flow, :invited) }
 
       before do
-        session[:cbv_flow_id] = cbv_flow_without_accounts.id
+        session[:flow_id] = cbv_flow_without_accounts.id
       end
 
       it "redirects to synchronization failures" do
@@ -94,7 +94,7 @@ RSpec.describe Cbv::OtherJobsController do
       let(:cbv_flow_without_accounts) { create(:cbv_flow, :invited) }
 
       before do
-        session[:cbv_flow_id] = cbv_flow_without_accounts.id
+        session[:flow_id] = cbv_flow_without_accounts.id
       end
 
       it "redirects to synchronization failures" do

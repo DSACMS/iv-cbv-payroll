@@ -46,7 +46,7 @@ RSpec.describe Cbv::SummariesController do
 
   describe "#show" do
     before do
-      session[:cbv_flow_id] = cbv_flow.id
+      session[:flow_id] = cbv_flow.id
       pinwheel_stub_request_end_user_accounts_response
       pinwheel_stub_request_end_user_paystubs_response
       pinwheel_stub_request_end_user_account_response

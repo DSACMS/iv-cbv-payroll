@@ -1,13 +1,16 @@
 require "rails_helper"
 
 RSpec.describe Activities::ActivitiesController, type: :controller do
+  let(:flow) { create(:activity_flow) }
+
   describe "#show" do
     it "sets flow from token param when provided" do
       flow = create(:activity_flow, token: "abc123")
 
       get :show, params: { token: "abc123" }
 
-      expect(session[:activity_flow_id]).to eq(flow.id)
+      expect(session[:flow_id]).to eq(flow.id)
+      expect(response).to redirect_to(activities_flow_root_path)
     end
 
     it "redirects to root with error for invalid token" do
@@ -17,7 +20,6 @@ RSpec.describe Activities::ActivitiesController, type: :controller do
     end
 
     it "only shows activities belonging to the current activity flow" do
-      flow = create(:activity_flow)
       other_flow = create(:activity_flow)
 
       visible_volunteering = flow.volunteering_activities.create!(
@@ -41,12 +43,49 @@ RSpec.describe Activities::ActivitiesController, type: :controller do
         hours: 8
       )
 
-      session[:activity_flow_id] = flow.id
+      session[:flow_id] = flow.id
+      cookies.permanent.encrypted[:cbv_applicant_id] = flow.cbv_applicant_id
 
-      get :show
+      get :index
 
       expect(assigns(:volunteering_activities)).to match_array([ visible_volunteering ])
       expect(assigns(:job_training_activities)).to match_array([ visible_job_training ])
+    end
+  end
+
+  describe '#entry' do
+    it 'sets session flow type and id' do
+      get :entry, params: { client_agency_id: 'sandbox' }
+      expect(session[:flow_type]).to eq(:activity)
+      expect(session[:flow_id]).to be_present
+    end
+
+    context 'when applicant has been set' do
+      before do
+        cookies.permanent.encrypted[:cbv_applicant_id] = flow.cbv_applicant_id
+      end
+      it "sets the existing activity flow in the session" do
+        expect {
+          get :entry, params: { client_agency_id: 'sandbox' }
+        }.to change(CbvApplicant, :count).by(0)
+
+        expect(session[:flow_type]).to eq(:activity)
+        expect(session[:flow_id]).to be_truthy
+      end
+    end
+
+    context "when no applicant is set" do
+      before do
+        cookies.permanent.encrypted[:cbv_applicant_id] = nil
+      end
+
+      it "creates a new activity flow and sets it in the session" do
+        expect {
+          get :entry, params: { client_agency_id: 'sandbox' }
+        }.to change(CbvApplicant, :count).by(1)
+
+        expect(session[:flow_id]).to be_present
+      end
     end
   end
 end

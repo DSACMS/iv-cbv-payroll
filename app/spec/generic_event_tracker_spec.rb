@@ -19,12 +19,12 @@ RSpec.describe GenericEventTracker do
         client_agency_id: "client_agency_id",
         ip: "ip"
       ))
-      request_mock = instance_double(ActionDispatch::Request, params: { "client_agency_id" => "client_agency_id" }, session: { cbv_flow_id: "cbv_flow_id" }, remote_ip: "ip", headers: { "User-Agent" => "user_agent" })
+      request_mock = instance_double(ActionDispatch::Request, params: { "client_agency_id" => "client_agency_id" }, session: { flow_id: "cbv_flow_id" }, remote_ip: "ip", headers: { "User-Agent" => "user_agent" })
       described_class.new.track("myEvent", request_mock, {})
     end
 
     context 'raises an error' do
-      let(:request_mock) { instance_double(ActionDispatch::Request, params: { "client_agency_id" => "client_agency_id" }, session: { cbv_flow_id: "cbv_flow_id" }, remote_ip: "ip", headers: { "User-Agent" => "user_agent" }) }
+      let(:request_mock) { instance_double(ActionDispatch::Request, params: { "client_agency_id" => "client_agency_id" }, session: { flow_id: "cbv_flow_id" }, remote_ip: "ip", headers: { "User-Agent" => "user_agent" }) }
       let(:event_type) { "myEvent" }
 
       before do

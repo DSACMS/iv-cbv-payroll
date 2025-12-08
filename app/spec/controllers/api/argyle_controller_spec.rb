@@ -12,12 +12,12 @@ RSpec.describe Api::ArgyleController do
     let(:valid_params) { { item_id: argyle_item_id } }
 
     before do
-      session[:cbv_flow_id] = cbv_flow.id
+      session[:flow_id] = cbv_flow.id
     end
 
     context "when the cbv_flow session is missing" do
       it "redirects to root with timeout parameter" do
-        session[:cbv_flow_id] = nil
+        session[:flow_id] = nil
 
         post :create, params: { item_id: argyle_item_id }
 

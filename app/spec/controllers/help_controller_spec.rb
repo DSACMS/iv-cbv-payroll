@@ -13,7 +13,7 @@ RSpec.describe HelpController, type: :controller do
       let(:cbv_flow) { create(:cbv_flow, :invited) }
 
       before do
-        session[:cbv_flow_id] = cbv_flow.id
+        session[:flow_id] = cbv_flow.id
         valid_params[:client_agency_id] = cbv_flow.cbv_applicant.client_agency_id
       end
 

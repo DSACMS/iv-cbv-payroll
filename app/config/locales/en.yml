@@ -48,6 +48,9 @@ en:
             language:
               invalid_format: Language must be either English (en) or Spanish (es).
   activities:
+    entry:
+      continue: Add Activities
+      title: Welcome to the Activity Hub!
     errors:
       invalid_token: The link you used is invalid.
     hub:

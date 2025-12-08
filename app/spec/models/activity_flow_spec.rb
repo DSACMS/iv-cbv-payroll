@@ -29,4 +29,11 @@ RSpec.describe ActivityFlow, type: :model do
     expect { flow.destroy }.to change { VolunteeringActivity.count }.by(-1)
     expect(JobTrainingActivity.count).to eq(0)
   end
+
+  it "belongs to a CBV applicant" do
+    cbv_applicant = create(:cbv_applicant)
+    activity_flow = create(:activity_flow, cbv_applicant: cbv_applicant)
+
+    expect(activity_flow.cbv_applicant).to eq(cbv_applicant)
+  end
 end

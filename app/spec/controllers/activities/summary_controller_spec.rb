@@ -7,7 +7,7 @@ RSpec.describe Activities::SummaryController, type: :controller do
   let(:other_flow) { create(:activity_flow) }
 
   before do
-    session[:activity_flow_id] = activity_flow.id
+    session[:flow_id] = activity_flow.id
   end
 
   describe "GET #show" do

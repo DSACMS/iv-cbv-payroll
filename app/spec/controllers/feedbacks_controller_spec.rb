@@ -7,7 +7,7 @@ RSpec.describe FeedbacksController, type: :controller do
     let(:cbv_flow) { create(:cbv_flow, :invited) }
 
     before do
-      session[:cbv_flow_id] = cbv_flow.id
+      session[:flow_id] = cbv_flow.id
       allow(controller).to receive(:event_logger).and_return(event_logger)
       allow(event_logger).to receive(:track)
       allow(ApplicationController.helpers).to receive(:feedback_form_url).and_return(feedback_form_url)
