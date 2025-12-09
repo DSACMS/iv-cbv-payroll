@@ -57,7 +57,6 @@ Rails.application.routes.draw do
     end
 
     scope "/activities", as: :activities_flow, module: :activities do
-      get ":token", to: "activities#show", as: :start, token: /[^\/]+/
       root to: "activities#index"
       get "entry", to: "activities#entry", as: :entry
       resource :volunteering, only: %i[new create], controller: "volunteering"
@@ -65,6 +64,7 @@ Rails.application.routes.draw do
       resource :summary, only: %i[show], controller: "summary"
       resource :submit, only: %i[show update], controller: "submit", format: %i[html pdf]
       resource :success, only: %i[show], controller: "success"
+      get ":token", to: "activities#show", as: :start, token: /[^\/]+/
     end
 
     scope "/:client_agency_id", module: :caseworker, constraints: { client_agency_id: Regexp.union(Rails.application.config.client_agencies.client_agency_ids) } do
