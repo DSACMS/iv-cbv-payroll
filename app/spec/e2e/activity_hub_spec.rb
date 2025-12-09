@@ -8,6 +8,7 @@ RSpec.describe 'e2e Activity Hub flow test', type: :feature, js: true do
 
     visit activities_flow_entry_path(client_agency_id: "sandbox") # This would normally be inferred
     verify_page(page, title: I18n.t("activities.entry.title"))
+    find("label", text: I18n.t("activities.entry.consent")).click
     click_button I18n.t("activities.entry.continue")
 
     verify_page(page, title: I18n.t("activities.hub.title"))

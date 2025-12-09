@@ -1,0 +1,7 @@
+<% content_for :title, t("activities.entry.title") %>
+
+<h1><%= t("activities.entry.title") %></h1>
+<%= form_with(url: activities_flow_entry_path, builder: UswdsFormBuilder) do |f| %>
+  <%= f.check_box(:agreement, { label: t("activities.entry.consent") }) %>
+  <%= f.submit t("activities.entry.continue"), class: "btn btn-primary usa-button margin-y-5" %>
+<% end %>

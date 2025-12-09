@@ -82,6 +82,7 @@ en:
           label: Upload Documents
       title: Education
     entry:
+      consent: Check this box to agree to let us record your information and share it with your benefits agency.
       continue: Add Activities
       title: Welcome to the Activity Hub!
     error_no_identity: Please provide your name and date of birth
