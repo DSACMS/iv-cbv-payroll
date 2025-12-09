@@ -22,6 +22,7 @@ en:
           attributes:
             case_number:
               blank: Enter the client's case number.
+              too_long: Your case number can't be longer than 13 digits.
             date_of_birth:
               future_date: Date of birth must be today or in the past
               invalid_date: Enter a valid date of birth
