@@ -9,4 +9,8 @@ class CbvApplicant::LaLdh < CbvApplicant
   has_redactable_fields(
     date_of_birth: :date
   )
+
+  validates :case_number,
+            length: { maximum: 13 },
+            allow_blank: true
 end
