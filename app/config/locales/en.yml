@@ -69,11 +69,7 @@ en:
         additional_information_label: Share any comments or additional information about the income details above that you’d like %{agency_acronym} to know. For example, you can share if the information is inaccurate or if you’re no longer working at that job.
         continue: Save and continue
         description: Review the information below to make sure it's correct.
-        enrollment_information:
-          header: Enrollment Information
-          most_recent_semester: Most Recent Semester
         header: Confirm your education enrollment
-        no_enrollments_found: We did not find any student information for you
         school_information:
           address: Address
           header: School Information
