@@ -16,7 +16,7 @@ class EducationActivity < ApplicationRecord
     else
       I18n.t(
         "activities.education.enrollment_status.hours",
-        count: credit_hours
+        count: credit_hours || 0
       )
     end
   end

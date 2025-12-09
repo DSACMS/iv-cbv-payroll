@@ -24,8 +24,6 @@ class Activities::EducationController < Activities::BaseController
       :education_activity
     ).permit(:id, :additional_comments, :credit_hours)
 
-    logger.info education_params
-
     id = education_params[:id]
 
     activity = EducationActivity.find_by(
