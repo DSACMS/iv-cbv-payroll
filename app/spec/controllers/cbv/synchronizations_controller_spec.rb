@@ -9,7 +9,7 @@ RSpec.describe Cbv::SynchronizationsController do
   let(:nonexistent_id) { "nonexistent-id" }
 
   before do
-    session[:cbv_flow_id] = cbv_flow.id
+    session[:flow_id] = cbv_flow.id
   end
 
   describe "#show" do

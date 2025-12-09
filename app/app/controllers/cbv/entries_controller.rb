@@ -3,10 +3,10 @@ class Cbv::EntriesController < Cbv::BaseController
     event_logger.track(TrackEvent::ApplicantViewedAgreement, request, {
       time: Time.now.to_i,
       client_agency_id: current_agency&.id,
-      cbv_applicant_id: @cbv_flow.cbv_applicant_id,
-      cbv_flow_id: @cbv_flow.id,
-      device_id: @cbv_flow.device_id,
-      invitation_id: @cbv_flow.cbv_flow_invitation_id,
+      cbv_applicant_id: @flow.cbv_applicant_id,
+      cbv_flow_id: @flow.id,
+      device_id: @flow.device_id,
+      invitation_id: @flow.cbv_flow_invitation_id,
       origin: session[:cbv_origin]
     })
   end
@@ -16,10 +16,10 @@ class Cbv::EntriesController < Cbv::BaseController
       event_logger.track(TrackEvent::ApplicantAgreed, request, {
         time: Time.now.to_i,
         client_agency_id: current_agency&.id,
-        cbv_applicant_id: @cbv_flow.cbv_applicant_id,
-        cbv_flow_id: @cbv_flow.id,
-        device_id: @cbv_flow.device_id,
-        invitation_id: @cbv_flow.cbv_flow_invitation_id,
+        cbv_applicant_id: @flow.cbv_applicant_id,
+        cbv_flow_id: @flow.id,
+        device_id: @flow.device_id,
+        invitation_id: @flow.cbv_flow_invitation_id,
         origin: session[:cbv_origin]
       })
       redirect_to next_path

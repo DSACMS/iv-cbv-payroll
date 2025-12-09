@@ -1,5 +1,12 @@
 ---
 es:
+  activerecord:
+    errors:
+      models:
+        cbv_applicant/la_ldh:
+          attributes:
+            case_number:
+              too_long: Su número de caso no puede ser más largo de 13 digitos.
   aggregator_strings:
     deductions:
       401k: 401k

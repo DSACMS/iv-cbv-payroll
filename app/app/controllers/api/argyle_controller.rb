@@ -7,7 +7,7 @@ class Api::ArgyleController < ApplicationController
   #
   # @see https://docs.argyle.com/link/user-tokens
   def create
-    is_sandbox_environment = agency_config[@cbv_flow.client_agency_id].argyle_environment == "sandbox"
+    is_sandbox_environment = agency_config[@cbv_flow.cbv_applicant.client_agency_id].argyle_environment == "sandbox"
     user_token = if @cbv_flow.argyle_user_id.blank?
                    response = argyle.create_user(@cbv_flow.end_user_id)
 
@@ -36,7 +36,7 @@ class Api::ArgyleController < ApplicationController
   private
 
   def set_cbv_flow
-    @cbv_flow = CbvFlow.find_by(id: session[:cbv_flow_id])
+    @cbv_flow = CbvFlow.find_by(id: session[cbv_flow_symbol])
     redirect_to(root_url(cbv_flow_timeout: true)) unless @cbv_flow
   end
 
@@ -77,7 +77,7 @@ class Api::ArgyleController < ApplicationController
       time: Time.now.to_i,
       cbv_flow_id: @cbv_flow.id,
       cbv_applicant_id: @cbv_flow.cbv_applicant_id,
-      client_agency_id: @cbv_flow.client_agency_id,
+      client_agency_id: @cbv_flow.cbv_applicant.client_agency_id,
       device_id: @cbv_flow.device_id,
       invitation_id: @cbv_flow.cbv_flow_invitation_id,
       item_id: params[:item_id],

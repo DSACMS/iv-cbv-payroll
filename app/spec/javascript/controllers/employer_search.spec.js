@@ -43,6 +43,23 @@ describe("EmployerSearchController", () => {
     expect(stimulusElement.removeEventListener).toBeCalledTimes(1)
     expect(stimulusElement.removeEventListener.mock.calls[0][0]).toBe("turbo:frame-missing")
   })
+
+  it("calls focus on lastFocusedElement from the setTimeout callback in onExit()", () => {
+    const fakeController = {
+      showHelpBanner: vi.fn(),
+      employerButtonTargets: [{ removeAttribute: vi.fn() }],
+      lastFocusedElement: { focus: vi.fn() },
+    }
+    const setTimeoutSpy = vi.spyOn(globalThis, "setTimeout")
+    EmployerSearchController.prototype.onExit.call(fakeController)
+
+    expect(setTimeoutSpy).toHaveBeenCalledTimes(1)
+    const [callback, delay] = setTimeoutSpy.mock.calls[0]
+    expect(delay).toBe(500)
+    callback()
+    expect(fakeController.lastFocusedElement.focus).toHaveBeenCalled()
+    setTimeoutSpy.mockRestore()
+  })
 })
 
 describe("EmployerSearchController with pinwheel", () => {

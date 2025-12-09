@@ -5,7 +5,7 @@ git_source(:github) { |repo| "https://github.com/#{repo}.git" }
 ruby "3.4.5"
 
 # Bundle edge Rails instead: gem "rails", github: "rails/rails", branch: "main"
-gem "rails", "~> 7.2.2"
+gem "rails", "~> 8.1.1"
 
 # The original asset pipeline for Rails [https://github.com/rails/sprockets-rails]
 gem "sprockets-rails"
@@ -46,7 +46,7 @@ gem "redis", "~> 4.0"
 # gem "bcrypt", "~> 3.1.7"
 
 # Windows does not include zoneinfo files, so bundle the tzinfo-data gem
-gem "tzinfo-data", platforms: %i[mingw mswin x64_mingw jruby]
+gem "tzinfo-data", platforms: %i[windows jruby]
 
 # Reduces boot times through caching; required in config/boot.rb
 gem "bootsnap", require: false
@@ -77,8 +77,8 @@ gem "stackprof"
 
 # https://www.ruby-lang.org/en/news/2024/08/01/dos-rexml-cve-2024-41123/
 gem "rexml", "~> 3.4.2"
-gem "gpgme", "~> 2.0", ">= 2.0.12"
-gem "pdf-reader", "~> 2.12.0"
+gem "gpgme", "~> 2.0"
+gem "pdf-reader", "~> 2.15.0"
 gem "net-imap", "0.4.20"  # Fixing GHSA-j3g3-5qv5-52m
 gem "cgi", ">= 0.4.2"     # Fixing GHSA-mhwm-jh88-3gjf
 gem "thor", ">= 1.4.0"    # Fixing GHSA-mqcp-p2hv-vw6x
@@ -87,11 +87,11 @@ group :development, :test do
   gem "brakeman"
   gem "bundler-audit", "~> 0.9"
   gem "capybara"
-  gem "debug", platforms: %i[mri mingw x64_mingw]
+  gem "debug", platforms: %i[mri windows]
   gem "dotenv-rails", "~> 2.7"
   gem "erb_lint", require: false
   gem "i18n-tasks", "~> 1.0", require: false
-  gem "rspec-rails", "~> 6.1"
+  gem "rspec-rails", "~> 8.0"
   gem "rubocop"
   gem "rubocop-rspec"
   gem "rubocop-rails-omakase"
@@ -115,7 +115,7 @@ group :development do
 end
 
 group :test do
-  gem "axe-core-rspec", "~> 4.10"
+  gem "axe-core-rspec", "~> 4.11"
   gem "climate_control", "~> 1.0"
   gem "webmock", ">= 3.24.0"
   gem "factory_bot", "~> 6.4"
@@ -125,11 +125,10 @@ end
 
 group :production do
   # Add plugin for pg gem to support AWS RDS IAM
-  gem "pg-aws_rds_iam", "~> 0.5.0"
+  gem "pg-aws_rds_iam", "~> 0.7.0"
 end
 gem "devise", "~> 4.9"
 
-gem "omniauth-rails_csrf_protection", "~> 1.0"
 gem "omniauth-entra-id"
 gem "view_component"
 gem "wkhtmltopdf-binary"
@@ -139,3 +138,8 @@ gem "net-ssh"
 
 # Sinatra for JSON API reference implementation
 gem "sinatra", "~> 4.2"
+
+gem "pry", "~> 0.15.2", group: :development
+gem "pry-doc", "~> 1.6", group: :development
+
+gem "faker", "~> 3.5", group: :development

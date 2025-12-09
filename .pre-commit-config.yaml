@@ -46,7 +46,7 @@ repos:
     name: prettier
     entry: bin/run-linter --cd app -- npm run format:precommit
     language: node
-    files: '^app/.*\.(js|ts)$'
+    files: '^app/.*\.(js|ts|json)$'
 
   - id: terraform_fmt
     name: Terraform Fmt

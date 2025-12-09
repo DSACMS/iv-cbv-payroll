@@ -2,14 +2,14 @@ class FeedbacksController < ApplicationController
   include ApplicationHelper
 
   def show
-    cbv_flow = session[:cbv_flow_id] ? CbvFlow.find_by(id: session[:cbv_flow_id]) : nil
+    cbv_flow = session[cbv_flow_symbol] ? CbvFlow.find_by(id: session[cbv_flow_symbol]) : nil
     event_name = params[:form] == "survey" ? "ApplicantClickedFeedbackSurveyLink" : "ApplicantClickedFeedbackLink"
     attributes = {
       referer: params[:referer],
       cbv_flow_id: cbv_flow&.id,
       device_id: cbv_flow&.device_id,
       cbv_applicant_id: cbv_flow&.cbv_applicant_id,
-      client_agency_id: cbv_flow&.client_agency_id
+      client_agency_id: cbv_flow&.cbv_applicant&.client_agency_id
     }
 
     event_logger.track(event_name, request, {

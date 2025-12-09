@@ -6,7 +6,7 @@ class Cbv::EmployerSearchesController < Cbv::BaseController
   def show
     @query = search_params[:query]
     @employers = @query.blank? ? [] : provider_search(@query)
-    @has_payroll_account = @cbv_flow.payroll_accounts.any?
+    @has_payroll_account = @flow.payroll_accounts.any?
     @selected_tab = search_params[:type] || "payroll"
 
     case search_params[:type]
@@ -28,7 +28,7 @@ class Cbv::EmployerSearchesController < Cbv::BaseController
   end
 
   def provider_search(query = "")
-    ProviderSearchService.new(@cbv_flow.client_agency_id).search(query)
+    ProviderSearchService.new(@flow.cbv_applicant.client_agency_id).search(query)
   end
 
   def search_params
@@ -38,22 +38,22 @@ class Cbv::EmployerSearchesController < Cbv::BaseController
   def track_clicked_popular_payroll_providers_event
     event_logger.track(TrackEvent::ApplicantClickedPopularPayrollProviders, request, {
       time: Time.now.to_i,
-      cbv_applicant_id: @cbv_flow.cbv_applicant_id,
-      cbv_flow_id: @cbv_flow.id,
-      device_id: @cbv_flow.device_id,
+      cbv_applicant_id: @flow.cbv_applicant_id,
+      cbv_flow_id: @flow.id,
+      device_id: @flow.device_id,
       client_agency_id: current_agency&.id,
-      invitation_id: @cbv_flow.cbv_flow_invitation_id
+      invitation_id: @flow.cbv_flow_invitation_id
     })
   end
 
   def track_clicked_popular_app_employers_event
     event_logger.track(TrackEvent::ApplicantClickedPopularAppEmployers, request, {
       time: Time.now.to_i,
-      cbv_applicant_id: @cbv_flow.cbv_applicant_id,
-      cbv_flow_id: @cbv_flow.id,
+      cbv_applicant_id: @flow.cbv_applicant_id,
+      cbv_flow_id: @flow.id,
       client_agency_id: current_agency&.id,
-      device_id: @cbv_flow.device_id,
-      invitation_id: @cbv_flow.cbv_flow_invitation_id
+      device_id: @flow.device_id,
+      invitation_id: @flow.cbv_flow_invitation_id
     })
   end
 
@@ -62,11 +62,11 @@ class Cbv::EmployerSearchesController < Cbv::BaseController
 
     event_logger.track(TrackEvent::ApplicantAccessedSearchPage, request, {
       time: Time.now.to_i,
-      cbv_applicant_id: @cbv_flow.cbv_applicant_id,
-      cbv_flow_id: @cbv_flow.id,
+      cbv_applicant_id: @flow.cbv_applicant_id,
+      cbv_flow_id: @flow.id,
       client_agency_id: current_agency&.id,
-      device_id: @cbv_flow.device_id,
-      invitation_id: @cbv_flow.cbv_flow_invitation_id
+      device_id: @flow.device_id,
+      invitation_id: @flow.cbv_flow_invitation_id
     })
   end
 
@@ -75,11 +75,11 @@ class Cbv::EmployerSearchesController < Cbv::BaseController
 
     event_logger.track(TrackEvent::ApplicantSearchedForEmployer, request, {
       time: Time.now.to_i,
-      cbv_applicant_id: @cbv_flow.cbv_applicant_id,
-      cbv_flow_id: @cbv_flow.id,
+      cbv_applicant_id: @flow.cbv_applicant_id,
+      cbv_flow_id: @flow.id,
       client_agency_id: current_agency&.id,
-      device_id: @cbv_flow.device_id,
-      invitation_id: @cbv_flow.cbv_flow_invitation_id,
+      device_id: @flow.device_id,
+      invitation_id: @flow.cbv_flow_invitation_id,
       num_results: @employers.length,
       has_payroll_account: @has_payroll_account,
       pinwheel_result_count: @employers.count { |item| item.provider_name == :pinwheel },

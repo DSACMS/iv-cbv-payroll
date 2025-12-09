@@ -21,9 +21,15 @@ RSpec.describe 'Caseworker Login and Invitation', type: :system do
     )
   end
 
+  around do |ex|
+    ActionController::Base.allow_forgery_protection = true
+    ex.run
+    ActionController::Base.allow_forgery_protection = false
+  end
+
 
   it 'tries to sign up a new client through the flow' do
-    visit "sandbox/sso"
+    visit "/sandbox"
     click_on "Continue to CBV Test Agency log in page"
     click_on "Create a new invitation"
     fill_in "cbv_flow_invitation[cbv_applicant_attributes][first_name]", with: "Dean"

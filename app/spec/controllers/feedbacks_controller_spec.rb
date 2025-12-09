@@ -7,7 +7,7 @@ RSpec.describe FeedbacksController, type: :controller do
     let(:cbv_flow) { create(:cbv_flow, :invited) }
 
     before do
-      session[:cbv_flow_id] = cbv_flow.id
+      session[:flow_id] = cbv_flow.id
       allow(controller).to receive(:event_logger).and_return(event_logger)
       allow(event_logger).to receive(:track)
       allow(ApplicationController.helpers).to receive(:feedback_form_url).and_return(feedback_form_url)
@@ -22,7 +22,7 @@ RSpec.describe FeedbacksController, type: :controller do
         kind_of(ActionDispatch::Request),
         hash_including(
           referer: referer_url,
-          client_agency_id: cbv_flow.client_agency_id,
+          client_agency_id: cbv_flow.cbv_applicant.client_agency_id,
           cbv_flow_id: cbv_flow.id
         )
       )
@@ -37,7 +37,7 @@ RSpec.describe FeedbacksController, type: :controller do
         "ApplicantClickedFeedbackSurveyLink",
         kind_of(ActionDispatch::Request),
         hash_including(
-          client_agency_id: cbv_flow.client_agency_id,
+          client_agency_id: cbv_flow.cbv_applicant.client_agency_id,
           cbv_flow_id: cbv_flow.id
         )
       )

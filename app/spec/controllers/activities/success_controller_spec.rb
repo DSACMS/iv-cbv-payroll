@@ -6,7 +6,7 @@ RSpec.describe Activities::SuccessController, type: :controller do
   let(:activity_flow) { create(:activity_flow) }
 
   before do
-    session[:activity_flow_id] = activity_flow.id
+    session[:flow_id] = activity_flow.id
   end
 
   describe "GET #show" do
@@ -24,6 +24,8 @@ RSpec.describe Activities::SuccessController, type: :controller do
 
       expect(response).to have_http_status(:ok)
       expect(response.body).to include(I18n.l(completed_time, format: :long))
+      expect(response.body).to include(activities_flow_submit_path(format: :pdf))
+      expect(response.body).to include(I18n.t("activities.success.download_pdf"))
     end
   end
 end

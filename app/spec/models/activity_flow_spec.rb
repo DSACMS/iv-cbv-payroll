@@ -3,18 +3,45 @@ require 'rails_helper'
 RSpec.describe ActivityFlow, type: :model do
   it "cleans up related volunteering activities when destroyed" do
     flow = create(:activity_flow)
-    flow.volunteering_activities.create!(
-      organization_name: "Daph's Fun House",
-      hours: 2,
-      date: Date.today
-    )
-    flow.job_training_activities.create!(
-      program_name: "Resume Workshop",
-      organization_address: "123 Main St, Baton Rouge, LA",
-      hours: 6
-    )
 
-    expect { flow.destroy }.to change { VolunteeringActivity.count }.by(-1)
-    expect(JobTrainingActivity.count).to eq(0)
+    expect { flow.destroy }
+      .to change { VolunteeringActivity.count }.by(-flow.volunteering_activities.count)
+      .and change { JobTrainingActivity.count }.by(-flow.job_training_activities.count)
+      .and change { EducationActivity.count }.by(-EducationActivity.where(activity_flow_id: flow.id).count)
+  end
+
+  describe "Education Activities" do
+    let(:activity_flow) {
+      create(
+        :activity_flow,
+        education_activities_count: 0
+      )
+    }
+
+    let(:education_activities) {
+      activity_flow.education_activities.create!(
+        [
+          attributes_for(:education_activity, confirmed: true),
+          attributes_for(:education_activity, confirmed: false)
+        ]
+      )
+    }
+
+    describe "#education_activities" do
+      it 'returns confirmed education activities' do
+        expect(
+          activity_flow.education_activities
+        ).to match_array(
+               education_activities.select(&:confirmed)
+             )
+      end
+    end
+  end
+
+  it "belongs to a CBV applicant" do
+    cbv_applicant = create(:cbv_applicant)
+    activity_flow = create(:activity_flow, cbv_applicant: cbv_applicant)
+
+    expect(activity_flow.cbv_applicant).to eq(cbv_applicant)
   end
 end

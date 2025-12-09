@@ -1,6 +1,6 @@
 <% content_for :title, t(".header") %>
 
-<div data-controller="cbv-employer-search" data-cbv-employer-search-cbv-flow-id-value="<%= @cbv_flow.id %>">
+<div data-controller="cbv-employer-search" data-cbv-employer-search-cbv-flow-id-value="<%= @flow.id %>">
   <div data-cbv-employer-search-target="helpAlert" class="display-none margin-bottom-4">
     <%= render Uswds::Alert.new(type: :warning, heading: t(".alert.heading")) do %>
       <%= render("help/help_link", text: t(".alert.help_options"), source: "banner") %>
@@ -20,9 +20,9 @@
       class="usa-button"
       type="submit">
         <span class="usa-search__submit-text">
-            <%= t(".search") %>
+          <%= t(".search") %>
         </span>
-        <%= image_tag "@uswds/uswds/dist/img/usa-icons-bg/search--white.svg", class: "usa-search__submit-icon", alt: "Search" %>
+      <%= image_tag "@uswds/uswds/dist/img/usa-icons-bg/search--white.svg", class: "usa-search__submit-icon", alt: "Search" %>
     </button>
   <% end %>
 
@@ -44,7 +44,7 @@
     </div>
 
     <div class="grid-row grid-gap margin-top-2">
-      <% (ProviderSearchService.new(@cbv_flow.client_agency_id).top_aggregator_options(@selected_tab)).each do |provider| %>
+      <% (ProviderSearchService.new(@flow.cbv_applicant.client_agency_id).top_aggregator_options(@selected_tab)).each do |provider| %>
         <div class="grid-col-4 tablet:grid-col-2 margin-top-2">
           <button
             data-action="click->cbv-employer-search#select"

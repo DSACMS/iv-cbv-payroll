@@ -4,7 +4,9 @@ RSpec.describe Activities::JobTrainingController, type: :controller do
   render_views
 
   describe "GET #new" do
+    let(:activity_flow) { create(:activity_flow) }
     it "renders the form" do
+      session[:flow_id] = activity_flow.id
       get :new
 
       expect(response).to have_http_status(:ok)
@@ -20,13 +22,14 @@ RSpec.describe Activities::JobTrainingController, type: :controller do
           program_name: "Resume Workshop",
           organization_address: "123 Main St, Baton Rouge, LA",
           hours: 6
-        }
+        },
+        client_agency_id: 'sandbox'
       }
     end
 
     it "creates a job training activity and returns to the hub" do
       expect do
-        post :create, params: params, session: { activity_flow_id: activity_flow.id }
+        post :create, params: params, session: { flow_id: activity_flow.id }
       end.to change(activity_flow.job_training_activities, :count).by(1)
 
       expect(JobTrainingActivity.last.program_name).to eq("Resume Workshop")
