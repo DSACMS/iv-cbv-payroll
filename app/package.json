@@ -1,45 +1,45 @@
 {
-    "name": "app",
-    "private": true,
-    "type": "module",
-    "dependencies": {
-        "@csstools/postcss-sass": "^5.1.1",
-        "@hotwired/stimulus": "^3.2.2",
-        "@hotwired/turbo-rails": "^8.0.20",
-        "@rails/actioncable": "^8.1.100",
-        "@uswds/uswds": "^3.13.0",
-        "autoprefixer": "^10.4.22",
-        "esbuild": "^0.27.0",
-        "load-script": "^2.0.0",
-        "postcss": "^8.5.6",
-        "postcss-cli": "^11.0.1",
-        "postcss-import": "^16.1.1",
-        "postcss-minify": "^1.2.0",
-        "postcss-nesting": "^13.0.2",
-        "postcss-scss": "^4.0.9",
-        "sass": "^1.94.2",
-        "webpack": "^5.103.0",
-        "webpack-cli": "^6.0.1"
-    },
-    "scripts": {
-        "build": "esbuild app/javascript/*.* --bundle --sourcemap --outdir=app/assets/builds --public-path=assets",
-        "build:css": "postcss ./app/assets/stylesheets/application.postcss.css -o ./app/assets/builds/application.css",
-        "test": "vitest",
-        "format": "prettier --write \"app/javascript/**/*.{js,jsx,ts,tsx}\" \"spec/javascript/**/*.{js,jsx,ts,tsx}\"",
-        "format:precommit": "prettier --write"
-    },
-    "devDependencies": {
-        "happy-dom": ">=20.0.11",
-        "jsdom": "^27.3.0",
-        "prettier": "^3.7.4",
-        "vite": "^7.2.7",
-        "vitest": "^4.0.15"
-    },
-    "resolutions": {
-        "@csstools/postcss-sass/@csstools/sass-import-resolve": "https://github.com/rahearn/sass-import-resolve",
-        "nanoid": "^5.0.9"
-    },
-    "overrides": {
-        "esbuild": "^0.27.0"
-    }
+  "name": "app",
+  "private": true,
+  "type": "module",
+  "dependencies": {
+    "@csstools/postcss-sass": "^5.1.1",
+    "@hotwired/stimulus": "^3.2.2",
+    "@hotwired/turbo-rails": "^8.0.20",
+    "@rails/actioncable": "^8.1.100",
+    "@uswds/uswds": "^3.13.0",
+    "autoprefixer": "^10.4.22",
+    "esbuild": "^0.27.0",
+    "load-script": "^2.0.0",
+    "postcss": "^8.5.6",
+    "postcss-cli": "^11.0.1",
+    "postcss-import": "^16.1.1",
+    "postcss-minify": "^1.2.0",
+    "postcss-nesting": "^13.0.2",
+    "postcss-scss": "^4.0.9",
+    "sass": "^1.94.2",
+    "webpack": "^5.103.0",
+    "webpack-cli": "^6.0.1"
+  },
+  "scripts": {
+    "build": "esbuild app/javascript/*.* --bundle --sourcemap --outdir=app/assets/builds --public-path=assets",
+    "build:css": "postcss ./app/assets/stylesheets/application.postcss.css -o ./app/assets/builds/application.css",
+    "test": "vitest",
+    "format": "prettier --write \"app/javascript/**/*.{js,jsx,ts,tsx,json}\" \"spec/javascript/**/*.{js,jsx,ts,tsx,json}\"",
+    "format:precommit": "prettier --write"
+  },
+  "devDependencies": {
+    "happy-dom": ">=20.0.11",
+    "jsdom": "^27.3.0",
+    "prettier": "^3.7.4",
+    "vite": "^7.2.7",
+    "vitest": "^4.0.15"
+  },
+  "resolutions": {
+    "@csstools/postcss-sass/@csstools/sass-import-resolve": "https://github.com/rahearn/sass-import-resolve",
+    "nanoid": "^5.0.9"
+  },
+  "overrides": {
+    "esbuild": "^0.27.0"
+  }
 }
