@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2025_12_04_012521) do
+ActiveRecord::Schema[8.1].define(version: 2025_12_08_170126) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
   enable_extension "pgcrypto"
@@ -20,8 +20,10 @@ ActiveRecord::Schema[8.1].define(version: 2025_12_04_012521) do
     t.datetime "completed_at"
     t.datetime "created_at", null: false
     t.string "device_id"
+    t.bigint "identity_id"
     t.datetime "updated_at", null: false
     t.index ["cbv_applicant_id"], name: "index_activity_flows_on_cbv_applicant_id"
+    t.index ["identity_id"], name: "index_activity_flows_on_identity_id"
   end
 
   create_table "api_access_tokens", force: :cascade do |t|
@@ -84,6 +86,33 @@ ActiveRecord::Schema[8.1].define(version: 2025_12_04_012521) do
     t.datetime "updated_at", null: false
     t.index ["cbv_applicant_id"], name: "index_cbv_flows_on_cbv_applicant_id"
     t.index ["cbv_flow_invitation_id"], name: "index_cbv_flows_on_cbv_flow_invitation_id"
+  end
+
+  create_table "education_activities", force: :cascade do |t|
+    t.bigint "activity_flow_id", null: false
+    t.text "additional_comments"
+    t.boolean "confirmed", default: false
+    t.datetime "created_at", null: false
+    t.integer "credit_hours"
+    t.string "school_address"
+    t.string "school_name"
+    t.integer "status"
+    t.datetime "updated_at", null: false
+    t.index ["activity_flow_id"], name: "index_education_activities_on_activity_flow_id"
+  end
+
+  create_table "education_activities_enrollments", id: false, force: :cascade do |t|
+    t.bigint "education_activity_id", null: false
+    t.bigint "enrollment_id", null: false
+  end
+
+  create_table "identities", force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.date "date_of_birth", null: false
+    t.string "first_name", null: false
+    t.string "last_name", null: false
+    t.datetime "updated_at", null: false
+    t.index ["first_name", "last_name", "date_of_birth"], name: "index_identities_on_first_name_and_last_name_and_date_of_birth", unique: true
   end
 
   create_table "job_training_activities", force: :cascade do |t|
@@ -270,8 +299,10 @@ ActiveRecord::Schema[8.1].define(version: 2025_12_04_012521) do
   end
 
   add_foreign_key "activity_flows", "cbv_applicants"
+  add_foreign_key "activity_flows", "identities"
   add_foreign_key "cbv_flow_invitations", "users"
   add_foreign_key "cbv_flows", "cbv_flow_invitations"
+  add_foreign_key "education_activities", "activity_flows"
   add_foreign_key "job_training_activities", "activity_flows"
   add_foreign_key "payroll_accounts", "cbv_flows"
   add_foreign_key "solid_queue_blocked_executions", "solid_queue_jobs", column: "job_id", on_delete: :cascade

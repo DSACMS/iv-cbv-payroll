@@ -3,38 +3,38 @@ require "rails_helper"
 RSpec.describe Activities::ActivitiesController, type: :controller do
   let(:flow) { create(:activity_flow) }
 
-  describe "#show" do
-    it "only shows activities belonging to the current activity flow" do
-      other_flow = create(:activity_flow)
+  describe "#index" do
+    let(:current_flow) { create(:activity_flow) }
 
-      visible_volunteering = flow.volunteering_activities.create!(
-        organization_name: "Scoped",
-        hours: 1,
-        date: Date.new(2000, 1, 1)
-      )
-      other_flow.volunteering_activities.create!(
-        organization_name: "Ignored",
-        hours: 2,
-        date: Date.new(2000, 2, 2)
-      )
-      visible_job_training = flow.job_training_activities.create!(
-        program_name: "Resume Workshop",
-        organization_address: "123 Main St",
-        hours: 6
-      )
-      other_flow.job_training_activities.create!(
-        program_name: "Other Workshop",
-        organization_address: "456 Elm St",
-        hours: 8
-      )
-
-      session[:flow_id] = flow.id
-      cookies.permanent.encrypted[:cbv_applicant_id] = flow.cbv_applicant_id
-
+    before do
+      create(:activity_flow) # ensure there is a second flow that might get mixed up
+      session[:flow_id] = current_flow.id
+      session[:flow_type] = :activity
       get :index
+    end
 
-      expect(assigns(:volunteering_activities)).to match_array([ visible_volunteering ])
-      expect(assigns(:job_training_activities)).to match_array([ visible_job_training ])
+    it "shows current flow volunteering activities" do
+      expect(
+        assigns(:volunteering_activities)
+      ).to match_array(
+             current_flow.volunteering_activities
+           )
+    end
+
+    it "shows current flow job training activities" do
+      expect(
+        assigns(:job_training_activities)
+      ).to match_array(
+             current_flow.job_training_activities
+           )
+    end
+
+    it "shows current flow education activities" do
+      expect(
+        assigns(:education_activities)
+      ).to match_array(
+             current_flow.education_activities
+           )
     end
   end
 

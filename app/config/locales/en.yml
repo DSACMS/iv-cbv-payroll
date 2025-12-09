@@ -47,9 +47,44 @@ en:
             language:
               invalid_format: Language must be either English (en) or Spanish (es).
   activities:
+    education:
+      add: Add Education Activities
+      enrollment_status:
+        full_time: Full Time
+        hours:
+          one: 1 credit hour
+          other: "%{count} credit hours"
+          zero: not enrolled
+        part_time: Part Time
+      error_no_data: No education information available
+      new:
+        enrollment: Enrollment
+        fetching_education_description: This may take a few minutes. Please keep this window open while we work on this.
+        header: We're gathering your enrollment details from the <Our Data Source>
+        hours: Hours
+        school: School
+      show:
+        additional_information_header: Additional comments (Optional)
+        additional_information_label: Share any comments or additional information about the income details above that you’d like %{agency_acronym} to know. For example, you can share if the information is inaccurate or if you’re no longer working at that job.
+        continue: Save and continue
+        description: Review the information below to make sure it's correct.
+        header: Confirm your education enrollment
+        school_information:
+          address: Address
+          header: School Information
+          name: Name
+        semester_credit_hours:
+          description: How many credit hours are you enrolled in this semester?
+          label: Semester Credit Hours
+        student_information: Student Information
+        upload_documents:
+          description: Please include any transcripts or class schedule from this semester
+          label: Upload Documents
+      title: Education
     entry:
       continue: Add Activities
       title: Welcome to the Activity Hub!
+    error_no_identity: Please provide your name and date of birth
     hub:
       continue: Continue
       count:
