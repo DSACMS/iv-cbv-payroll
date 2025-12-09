@@ -33,6 +33,8 @@ class Activities::BaseController < FlowController
 
   def next_path
     case params[:controller]
+    when "activities/entries"
+      activities_flow_root_path
     when "activities/activities"
       activities_flow_summary_path
     when "activities/summary"
@@ -51,6 +53,6 @@ class Activities::BaseController < FlowController
   end
 
   def entry_path
-    activities_flow_root_path
+    activities_flow_entry_path
   end
 end
