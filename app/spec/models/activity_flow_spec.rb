@@ -44,4 +44,27 @@ RSpec.describe ActivityFlow, type: :model do
 
     expect(activity_flow.cbv_applicant).to eq(cbv_applicant)
   end
+
+  describe ".create_from_invitation" do
+    it "creates a flow from an invitation" do
+      invitation = create(:activity_flow_invitation)
+      device_id = "device123"
+
+      flow = ActivityFlow.create_from_invitation(invitation, device_id)
+
+      expect(flow).to be_persisted
+      expect(flow.activity_flow_invitation).to eq(invitation)
+      expect(flow.device_id).to eq(device_id)
+      expect(flow.cbv_applicant).to be_present
+    end
+
+    it "uses invitation's cbv_applicant if present" do
+      cbv_applicant = create(:cbv_applicant)
+      invitation = create(:activity_flow_invitation, cbv_applicant: cbv_applicant)
+
+      flow = ActivityFlow.create_from_invitation(invitation, "device123")
+
+      expect(flow.cbv_applicant).to eq(cbv_applicant)
+    end
+  end
 end
