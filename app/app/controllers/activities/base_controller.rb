@@ -63,4 +63,8 @@ class Activities::BaseController < FlowController
   def invalid_token_message
     t("activities.errors.invalid_token")
   end
+
+  def track_invitation_clicked_event(invitation, flow)
+    # No-op for activities currently
+  end
 end

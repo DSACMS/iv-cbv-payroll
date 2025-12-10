@@ -54,7 +54,7 @@ class FlowController < ApplicationController
       @cbv_flow = @flow # Maintain for compatibility until all controllers are converted
       set_flow_session(@flow.id, flow_param)
       cookies.permanent.encrypted[:cbv_applicant_id] = @flow.cbv_applicant_id
-      track_invitation_clicked_event(invitation, @flow) if respond_to?(:track_invitation_clicked_event, true)
+      track_invitation_clicked_event(invitation, @flow)
     elsif session[cbv_flow_symbol]
       begin
         @flow = flow_class.find(session[cbv_flow_symbol])
