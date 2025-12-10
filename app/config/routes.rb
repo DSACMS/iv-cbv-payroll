@@ -67,6 +67,9 @@ Rails.application.routes.draw do
       resource :education, only: %i[new create show], controller: "education"
 
       get "/education/stream", to: "education#stream"
+
+      # Tokenized links
+      get "start/:token", to: "entries#show", as: :start, token: /[^\/]+/
     end
 
     scope "/:client_agency_id", module: :caseworker, constraints: { client_agency_id: Regexp.union(Rails.application.config.client_agencies.client_agency_ids) } do

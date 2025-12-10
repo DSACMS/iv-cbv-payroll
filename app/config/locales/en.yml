@@ -87,6 +87,8 @@ en:
       continue: Add Activities
       title: Welcome to the Activity Hub!
     error_no_identity: Please provide your name and date of birth
+    errors:
+      invalid_token: The link you used is invalid.
     hub:
       continue: Continue
       count:
