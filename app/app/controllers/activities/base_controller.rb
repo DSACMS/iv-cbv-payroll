@@ -55,4 +55,16 @@ class Activities::BaseController < FlowController
   def entry_path
     activities_flow_entry_path
   end
+
+  def invitation_class
+    ActivityFlowInvitation
+  end
+
+  def invalid_token_message
+    t("activities.errors.invalid_token")
+  end
+
+  def track_invitation_clicked_event(invitation, flow)
+    # No-op for activities currently
+  end
 end

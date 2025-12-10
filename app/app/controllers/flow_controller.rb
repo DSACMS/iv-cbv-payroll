@@ -1,4 +1,6 @@
 class FlowController < ApplicationController
+  ALPHANUMERIC_PREFIX_REGEXP = /^([a-zA-Z0-9]+)[^a-zA-Z0-9]*$/
+
   def set_generic_flow
     @flow, is_new_session = find_or_create_flow
     @cbv_flow = @flow # Maintain for compatibility until all controllers are converted
@@ -37,10 +39,10 @@ class FlowController < ApplicationController
   def set_flow
     if params[:token].present?
       token = normalize_token(params[:token])
-      invitation = CbvFlowInvitation.find_by(auth_token: token)
+      invitation = invitation_class.find_by(auth_token: token)
 
       unless invitation
-        return redirect_to(root_url, flash: { alert: t("cbv.error_invalid_token") })
+        return redirect_to(root_url, flash: { alert: invalid_token_message })
       end
 
       if invitation.expired?
@@ -95,5 +97,10 @@ class FlowController < ApplicationController
       time: Time.now.to_i,
       client_agency_id: current_agency&.id
     })
+  end
+
+  def normalize_token(token)
+    matches = ALPHANUMERIC_PREFIX_REGEXP.match(token)
+    matches[1] if matches
   end
 end

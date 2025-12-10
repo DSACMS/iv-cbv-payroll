@@ -10,18 +10,31 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2025_12_08_170126) do
+ActiveRecord::Schema[8.1].define(version: 2025_12_09_230406) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
   enable_extension "pgcrypto"
 
+  create_table "activity_flow_invitations", force: :cascade do |t|
+    t.string "auth_token"
+    t.bigint "cbv_applicant_id"
+    t.string "client_agency_id"
+    t.datetime "created_at", null: false
+    t.string "reference_id"
+    t.datetime "updated_at", null: false
+    t.index ["auth_token"], name: "index_activity_flow_invitations_on_auth_token", unique: true
+    t.index ["cbv_applicant_id"], name: "index_activity_flow_invitations_on_cbv_applicant_id"
+  end
+
   create_table "activity_flows", force: :cascade do |t|
+    t.bigint "activity_flow_invitation_id"
     t.bigint "cbv_applicant_id", null: false
     t.datetime "completed_at"
     t.datetime "created_at", null: false
     t.string "device_id"
     t.bigint "identity_id"
     t.datetime "updated_at", null: false
+    t.index ["activity_flow_invitation_id"], name: "index_activity_flows_on_activity_flow_invitation_id"
     t.index ["cbv_applicant_id"], name: "index_activity_flows_on_cbv_applicant_id"
     t.index ["identity_id"], name: "index_activity_flows_on_identity_id"
   end
@@ -293,6 +306,8 @@ ActiveRecord::Schema[8.1].define(version: 2025_12_08_170126) do
     t.index ["payroll_account_id"], name: "index_webhook_events_on_payroll_account_id"
   end
 
+  add_foreign_key "activity_flow_invitations", "cbv_applicants"
+  add_foreign_key "activity_flows", "activity_flow_invitations"
   add_foreign_key "activity_flows", "cbv_applicants"
   add_foreign_key "activity_flows", "identities"
   add_foreign_key "cbv_flow_invitations", "users"
