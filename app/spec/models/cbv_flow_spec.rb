@@ -1,7 +1,7 @@
 require 'rails_helper'
 
 RSpec.describe CbvFlow, type: :model do
-  let(:cbv_flow) { create(:cbv_flow, client_agency_id: client_agency_id) }
+  let(:cbv_flow) { create(:cbv_flow) }
   let(:client_agency_id) { "sandbox" }
 
   describe ".create_from_invitation" do
@@ -9,10 +9,7 @@ RSpec.describe CbvFlow, type: :model do
 
     it "copies over relevant fields" do
       cbv_flow = CbvFlow.create_from_invitation(cbv_flow_invitation, "test_device_id")
-      expect(cbv_flow).to have_attributes(
-        cbv_applicant: cbv_flow_invitation.cbv_applicant,
-        client_agency_id: "sandbox"
-      )
+      expect(cbv_flow).to have_attributes(cbv_applicant: cbv_flow_invitation.cbv_applicant)
     end
   end
 
@@ -47,7 +44,7 @@ RSpec.describe CbvFlow, type: :model do
     end
 
     context "with invalid client agency ID" do
-      let(:cbv_flow) { build(:cbv_flow, client_agency_id: "invalid_agency") }
+      let(:cbv_flow) { build(:cbv_flow, cbv_applicant_attributes: { client_agency_id: "invalid_agency" }) }
 
       it "raises ArgumentError" do
         expect { cbv_flow.to_generic_url }.to raise_error(

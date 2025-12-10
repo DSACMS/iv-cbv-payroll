@@ -3,7 +3,7 @@
 <h1>
   <%= t("activities.success.title") %>
 </h1>
-<p class="margin-bottom-3">
+<p>
   <%= t("activities.success.description") %>
 </p>
 
@@ -11,5 +11,10 @@
   <strong>
     <%= t("activities.success.completed_at") %>
   </strong>
-  <%= l(@activity_flow.completed_at, format: :long) %>
+  <%= l(@flow.completed_at, format: :long) %>
 </p>
+
+<%= link_to t("activities.success.download_pdf"),
+            activities_flow_submit_path(format: :pdf),
+            class: "usa-button usa-button--primary",
+            target: "_blank" %>

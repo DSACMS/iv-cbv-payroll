@@ -3,11 +3,17 @@ require "rails_helper"
 RSpec.describe Activities::SummaryController, type: :controller do
   render_views
 
-  let(:activity_flow) { create(:activity_flow) }
+  let(:activity_flow) {
+    create(
+      :activity_flow,
+      job_training_activities_count: 0,
+      volunteering_activities_count: 0
+    )
+  }
   let(:other_flow) { create(:activity_flow) }
 
   before do
-    session[:activity_flow_id] = activity_flow.id
+    session[:flow_id] = activity_flow.id
   end
 
   describe "GET #show" do

@@ -57,12 +57,19 @@ Rails.application.routes.draw do
     end
 
     scope "/activities", as: :activities_flow, module: :activities do
-      root to: "activities#show"
+      root to: "activities#index"
+      resource :entry, only: %i[show create], controller: "entries"
       resource :volunteering, only: %i[new create], controller: "volunteering"
       resource :job_training, only: %i[new create], controller: "job_training"
       resource :summary, only: %i[show], controller: "summary"
-      resource :submit, only: %i[show update], controller: "submit"
+      resource :submit, only: %i[show update], controller: "submit", format: %i[html pdf]
       resource :success, only: %i[show], controller: "success"
+      resource :education, only: %i[new create show], controller: "education"
+
+      get "/education/stream", to: "education#stream"
+
+      # Tokenized links
+      get "start/:token", to: "entries#show", as: :start, token: /[^\/]+/
     end
 
     scope "/:client_agency_id", module: :caseworker, constraints: { client_agency_id: Regexp.union(Rails.application.config.client_agencies.client_agency_ids) } do

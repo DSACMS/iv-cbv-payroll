@@ -45,11 +45,11 @@ class WeeklyReportMailer < ApplicationMailer
         end
       end
     when "flows"
-      CbvFlow.where(client_agency_id: client_agency_id, created_at: report_range)
+      CbvFlow.where(created_at: report_range)
              .completed
              .includes(:cbv_applicant, :cbv_flow_invitation)
              .map do |flow|
-        build_record(flow, flow.cbv_applicant, flow.cbv_flow_invitation, client_agency_id)
+        build_record(flow, flow.cbv_applicant, flow.cbv_flow_invitation, current_agency.id)
       end
     else
       raise "Unknown report variant: #{report_variant}"

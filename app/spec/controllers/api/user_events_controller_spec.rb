@@ -21,7 +21,7 @@ RSpec.describe Api::UserEventsController, type: :controller do
     end
 
     before do
-      session[:cbv_flow_id] = cbv_flow.id
+      session[:flow_id] = cbv_flow.id
     end
 
     context "when tracking a valid event" do
@@ -70,13 +70,13 @@ RSpec.describe Api::UserEventsController, type: :controller do
     end
   end
   describe "#user_action" do
-    let(:cbv_flow) { create :cbv_flow }
+    let!(:cbv_flow) { create :cbv_flow }
     let(:valid_params) do
       { events: { event_name: event_name, attributes: event_attributes } }
     end
 
     before do
-      session[:cbv_flow_id] = cbv_flow.id
+      session[:flow_id] = cbv_flow.id
     end
 
     context "when tracking a ApplicantSelectedEmployerOrPlatformItem event" do

@@ -37,6 +37,7 @@ export default class extends Controller {
 
   async select(event) {
     this.disableButtons()
+    this.lastFocusedElement = event.currentTarget
     const { responseType, id, name, isDefaultOption, providerName } = event.target.dataset
 
     this.adapter = createModalAdapter(providerName)
@@ -59,8 +60,12 @@ export default class extends Controller {
   }
 
   onExit() {
+    const msToWaitForModalClose = 500
     this.showHelpBanner()
     this.employerButtonTargets.forEach((el) => el.removeAttribute("disabled"))
+    setTimeout(() => {
+      this.lastFocusedElement.focus()
+    }, msToWaitForModalClose)
   }
 
   showHelpBanner() {

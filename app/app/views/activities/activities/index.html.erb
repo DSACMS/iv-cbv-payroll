@@ -1,0 +1,94 @@
+<% content_for :title, t("activities.hub.title") %>
+
+<h1>
+    <%= t("activities.hub.title") %>
+</h1>
+<p>
+    <%= t("activities.hub.description") %>
+</p>
+
+<%= render(AccordionComponent.new(id: "activity-hub-identity-accordion", heading_level: 2)) do |a| %>
+    <%= a.with_title { "Current Identity" } %>
+    <%= a.with_accordion_item do %>
+        <%= render(TableComponent.new) do |t| %>
+            <%= t.with_row do |r| %>
+                <%= r.with_data_cell(is_header: true) do %>
+                    First Name
+                <% end %>
+                <%= r.with_data_cell do %>
+                    <%= current_identity&.first_name %>
+                <% end %>
+            <% end %>
+            <%= t.with_row do |r| %>
+                <%= r.with_data_cell(is_header: true) do %>
+                    Last Name
+                <% end %>
+                <%= r.with_data_cell do %>
+                    <%= current_identity&.last_name %>
+                <% end %>
+            <% end %>
+            <%= t.with_row do |r| %>
+                <%= r.with_data_cell(is_header: true) do %>
+                    Date of Birth
+                <% end %>
+                <%= r.with_data_cell do %>
+                    <%= current_identity&.date_of_birth %>
+                <% end %>
+            <% end %>
+        <% end %>
+    <% end %>
+<% end %>
+
+<section class="margin-bottom-5">
+    <h2><%= t("activities.education.title") %></h2>
+    <p>
+        <%= t("activities.hub.count", count: @education_activities.size) %>
+    </p>
+
+    <%= render TableComponent.new do |t| %>
+        <%= @education_activities.each do |a| %>
+            <%= t.with_row do |r| %>
+                <%= r.with_data_cell do %>
+                    <%= a.school_name %>
+                <% end %>
+                <%= r.with_data_cell do %>
+                    <%= a.display_status %>
+                <% end %>
+            <% end %>
+        <% end %>
+    <% end %>
+
+    <%= button_to t("activities.education.add"), new_activities_flow_education_path, class: "btn btn-primary usa-button margin-y-5", method: :get %>
+</section>
+
+<section class="margin-bottom-5">
+  <h2>
+    <%= t("activities.volunteering.title") %>
+  </h2>
+  <p>
+    <%= t("activities.hub.count", count: @volunteering_activities.size) %>
+  </p>
+  <%= render TableComponent.new do |t| %>
+    <% @volunteering_activities.each do |activity| %>
+      <%= t.with_row activity.organization_name, activity.hours, activity.date %>
+    <% end %>
+  <% end %>
+  <%= button_to t("activities.volunteering.add"), new_activities_flow_volunteering_path, class: "btn btn-primary usa-button margin-y-5", method: :get %>
+</section>
+
+<section>
+  <h2>
+    <%= t("activities.job_training.title") %>
+  </h2>
+  <p>
+    <%= t("activities.hub.count", count: @job_training_activities.size) %>
+  </p>
+  <%= render TableComponent.new do |t| %>
+    <% @job_training_activities.each do |activity| %>
+      <%= t.with_row activity.program_name, activity.organization_address, activity.hours %>
+    <% end %>
+  <% end %>
+  <%= button_to t("activities.job_training.add"), new_activities_flow_job_training_path, class: "btn btn-primary usa-button margin-y-5", method: :get %>
+</section>
+
+<%= button_to t("activities.hub.continue"), next_path, class: "btn btn-primary usa-button margin-top-4", method: :get %>

@@ -13,8 +13,8 @@ RSpec.describe HelpController, type: :controller do
       let(:cbv_flow) { create(:cbv_flow, :invited) }
 
       before do
-        session[:cbv_flow_id] = cbv_flow.id
-        valid_params[:client_agency_id] = cbv_flow.client_agency_id
+        session[:flow_id] = cbv_flow.id
+        valid_params[:client_agency_id] = cbv_flow.cbv_applicant.client_agency_id
       end
 
       it "tracks events for help topic" do
@@ -23,7 +23,7 @@ RSpec.describe HelpController, type: :controller do
             cbv_flow_id: cbv_flow.id,
             ip: "0.0.0.0",
             locale: I18n.locale,
-            client_agency_id: cbv_flow.client_agency_id,
+            client_agency_id: cbv_flow.cbv_applicant.client_agency_id,
             topic: "employer",
             user_agent: "Rails Testing"
           ))

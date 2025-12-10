@@ -9,8 +9,8 @@ class AggregatorReportFetcher
     if has_payroll_accounts("pinwheel") && has_payroll_accounts("argyle")
       Aggregators::AggregatorReports::CompositeReport.new(
         [ make_pinwheel_report, make_argyle_report ],
-        days_to_fetch_for_w2: @agency_config[@cbv_flow.client_agency_id].pay_income_days[:w2],
-        days_to_fetch_for_gig: @agency_config[@cbv_flow.client_agency_id].pay_income_days[:gig]
+        days_to_fetch_for_w2: @agency_config[@cbv_flow.cbv_applicant.client_agency_id].pay_income_days[:w2],
+        days_to_fetch_for_gig: @agency_config[@cbv_flow.cbv_applicant.client_agency_id].pay_income_days[:gig]
       )
     elsif has_payroll_accounts("pinwheel")
       make_pinwheel_report
@@ -42,8 +42,8 @@ class AggregatorReportFetcher
     report = Aggregators::AggregatorReports::PinwheelReport.new(
       payroll_accounts: if payroll_account.present? then [ payroll_account ] else filter_payroll_accounts("pinwheel") end,
       pinwheel_service: pinwheel,
-      days_to_fetch_for_w2: @agency_config[@cbv_flow.client_agency_id].pay_income_days[:w2],
-      days_to_fetch_for_gig: @agency_config[@cbv_flow.client_agency_id].pay_income_days[:gig]
+      days_to_fetch_for_w2: @agency_config[@cbv_flow.cbv_applicant.client_agency_id].pay_income_days[:w2],
+      days_to_fetch_for_gig: @agency_config[@cbv_flow.cbv_applicant.client_agency_id].pay_income_days[:gig]
     )
     report.fetch
     report
@@ -53,20 +53,20 @@ class AggregatorReportFetcher
     report = Aggregators::AggregatorReports::ArgyleReport.new(
       payroll_accounts: if payroll_account.present? then [ payroll_account ] else filter_payroll_accounts("argyle") end,
       argyle_service: argyle,
-      days_to_fetch_for_w2: @agency_config[@cbv_flow.client_agency_id].pay_income_days[:w2],
-      days_to_fetch_for_gig: @agency_config[@cbv_flow.client_agency_id].pay_income_days[:gig]
+      days_to_fetch_for_w2: @agency_config[@cbv_flow.cbv_applicant.client_agency_id].pay_income_days[:w2],
+      days_to_fetch_for_gig: @agency_config[@cbv_flow.cbv_applicant.client_agency_id].pay_income_days[:gig]
     )
     report.fetch
     report
   end
 
   def pinwheel
-    environment = @agency_config[@cbv_flow.client_agency_id].pinwheel_environment
+    environment = @agency_config[@cbv_flow.cbv_applicant.client_agency_id].pinwheel_environment
     Aggregators::Sdk::PinwheelService.new(environment)
   end
 
   def argyle
-    environment = @agency_config[@cbv_flow.client_agency_id].argyle_environment
+    environment = @agency_config[@cbv_flow.cbv_applicant.client_agency_id].argyle_environment
     Aggregators::Sdk::ArgyleService.new(environment)
   end
 

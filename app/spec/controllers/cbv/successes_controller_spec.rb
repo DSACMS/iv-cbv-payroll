@@ -11,7 +11,7 @@ RSpec.describe Cbv::SuccessesController do
     before do
       pinwheel_stub_request_end_user_paystubs_response
       pinwheel_stub_request_end_user_accounts_response
-      session[:cbv_flow_id] = cbv_flow.id
+      session[:flow_id] = cbv_flow.id
     end
 
     context "when rendering views" do
@@ -70,7 +70,7 @@ RSpec.describe Cbv::SuccessesController do
 
         context "when the cbv_flow originates from a generic link" do
           before do
-            session[:cbv_flow_id] = cbv_flow_without_invitation.id
+            session[:flow_id] = cbv_flow_without_invitation.id
             stub_client_agency_config_value("sandbox", "agency_domain", "sandbox-verify-demo.navapbc.cloud")
           end
 
@@ -83,7 +83,7 @@ RSpec.describe Cbv::SuccessesController do
 
           context "with missing host configuration" do
             before do
-              session[:cbv_flow_id] = cbv_flow_without_invitation.id
+              session[:flow_id] = cbv_flow_without_invitation.id
               stub_client_agency_config_value("sandbox", "agency_domain", nil)
             end
 

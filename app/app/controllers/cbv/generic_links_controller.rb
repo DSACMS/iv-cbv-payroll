@@ -1,5 +1,5 @@
 class Cbv::GenericLinksController < Cbv::BaseController
-  skip_before_action :set_cbv_flow, :capture_page_view
+  skip_before_action :set_flow, :capture_page_view
   prepend_before_action :set_cbv_origin
   before_action :ensure_valid_client_agency_id
   before_action :check_if_pilot_ended_for_agency
@@ -36,6 +36,6 @@ class Cbv::GenericLinksController < Cbv::BaseController
     applicant_id = cookies.encrypted[:cbv_applicant_id]
     return nil unless applicant_id.present?
 
-    find_existing_applicant(applicant_id)
+    CbvApplicant.find_by(id: applicant_id)
   end
 end

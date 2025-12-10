@@ -43,7 +43,7 @@ class Cbv::ApplicantInformationsController < Cbv::BaseController
       attr == :date_of_birth ? { date_of_birth: [ :day, :month, :year ] } : attr
     }
 
-    params.fetch("cbv_applicant_#{@cbv_flow.client_agency_id}", {}).permit(cbv_applicant: permitted)
+    params.fetch("cbv_applicant_#{@cbv_flow.cbv_applicant.client_agency_id}", {}).permit(cbv_applicant: permitted)
   end
 
   def redirect_when_info_present

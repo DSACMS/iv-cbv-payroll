@@ -8,7 +8,7 @@ RSpec.describe Cbv::ApplicantInformationsController, type: :controller do
     end
 
     before do
-      session[:cbv_flow_id] = cbv_flow.id
+      session[:flow_id] = cbv_flow.id
     end
 
     context "when the user is uninvited" do
@@ -72,7 +72,7 @@ RSpec.describe Cbv::ApplicantInformationsController, type: :controller do
         expect(EventTrackingJob).to receive(:perform_later).with("ApplicantSubmittedInformationPage", anything, hash_including(
           cbv_flow_id: cbv_flow.id,
           cbv_applicant_id: cbv_flow.cbv_applicant_id,
-          client_agency_id: cbv_flow.client_agency_id,
+          client_agency_id: cbv_flow.cbv_applicant.client_agency_id,
           invitation_id: cbv_flow.cbv_flow_invitation_id,
           identity_age_range_applicant: "30-39"
         ))
@@ -154,11 +154,11 @@ RSpec.describe Cbv::ApplicantInformationsController, type: :controller do
   end
 
   describe "#update for LA LDH flow" do
-    let(:cbv_flow) { create(:cbv_flow, client_agency_id: "la_ldh", cbv_applicant: create(:cbv_applicant, :la_ldh)) }
+    let(:cbv_flow) { create(:cbv_flow, cbv_applicant: create(:cbv_applicant, :la_ldh)) }
     render_views
 
     before do
-      session[:cbv_flow_id] = cbv_flow.id
+      session[:flow_id] = cbv_flow.id
     end
 
     it "tracks ApplicantSubmittedInformationPage event with identity_age_range_applicant for LA LDH DOB submission" do

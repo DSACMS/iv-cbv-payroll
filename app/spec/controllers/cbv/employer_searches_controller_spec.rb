@@ -10,7 +10,7 @@ RSpec.describe Cbv::EmployerSearchesController do
     let(:user_token) { "foobar" }
 
     before do
-      session[:cbv_flow_id] = cbv_flow.id
+      session[:flow_id] = cbv_flow.id
     end
 
     context "when rendering views" do
@@ -75,13 +75,13 @@ RSpec.describe Cbv::EmployerSearchesController do
       render_views
 
       context "when the user at least one payroll_account associated with their cbv_flow" do
-        it "renders the view with a link to the summary page" do
+        it "renders the view with a link to the /other_job page" do
           create(:payroll_account, cbv_flow_id: cbv_flow.id)
           get :show, params: { query: "no_results" }
           expect(response).to be_successful
           expect(response.body).to include("If you have no other jobs to add here, continue")
           expect(response.body).to include("Continue")
-          expect(response.body).to include(cbv_flow_applicant_information_path)
+          expect(response.body).to include(cbv_flow_other_job_path)
         end
       end
 

@@ -1,0 +1,32 @@
+<div
+    id="education-index-container">
+    <h1>
+        <%= t(".header") %>
+    </h1>
+    <p>
+        <%= t(".fetching_education_description") %>
+    </p>
+
+    <turbo-stream-source src="<%= activities_flow_education_stream_path %>">
+
+    </turbo-stream-source>
+
+    <div class="grid-row" dom_id="<%= dom_id current_identity %>">
+        <div class="desktop:grid-col-2 tablet:grid-col-fill">
+            <%= render(SynchronizationIndicatorComponent.new(name: "school", status: :in_progress)) do %>
+                <%= t(".school") %>
+            <% end %>
+        </div>
+        <div class="desktop:grid-col-2 tablet:grid-col-fill">
+            <%= render(SynchronizationIndicatorComponent.new(name: "enrollment", status: :in_progress)) do %>
+                <%= t(".enrollment") %>
+            <% end %>
+        </div>
+        <div class="desktop:grid-col-2 tablet:grid-col-fill">
+            <%= render(SynchronizationIndicatorComponent.new(name: "hours", status: :in_progress)) do %>
+                <%= t(".hours") %>
+            <% end %>
+        </div>
+    </div>
+
+</div>
