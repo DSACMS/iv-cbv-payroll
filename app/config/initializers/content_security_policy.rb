@@ -11,12 +11,6 @@ Rails.application.configure do
     policy.form_action :self, "https://login.microsoftonline.com"
     policy.frame_ancestors :self
     policy.img_src :self, :data, "https://*.cloudinary.com", "https://cdn.getpinwheel.com"
-
-    # Adds extra image sources only for development
-    if Rails.env.development?
-      policy.img_src(*policy.img_src, "http://*.cloudinary.com", "http://res.cloudinary.com")
-    end
-
     policy.object_src :none
     policy.script_src :self, *%w[
       https://js-agent.newrelic.com
@@ -45,11 +39,10 @@ Rails.application.configure do
   end
 
   #
-  # Generate session nonces for permitted importmap and inline scripts
-  # Using a random nonce per request for improved security
-  config.content_security_policy_nonce_generator = ->(request) { SecureRandom.base64(16) }
+  #   # Generate session nonces for permitted importmap and inline scripts
+  config.content_security_policy_nonce_generator = ->(request) { request.session.id.to_s }
   config.content_security_policy_nonce_directives = %w[script-src]
   #
-  # Report violations without enforcing the policy.
-  # config.content_security_policy_report_only = true
+  #   # Report violations without enforcing the policy.
+  #   # config.content_security_policy_report_only = true
 end
