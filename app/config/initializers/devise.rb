@@ -276,6 +276,10 @@ Devise.setup do |config|
   config.sign_out_via = :delete
 
   # ==> OmniAuth
+  # Configure OmniAuth to securely verify CSRF token with Rails verifier.
+  # See: https://github.com/cookpad/omniauth-rails_csrf_protection#omniauth---rails-csrf-protection
+  OmniAuth.config.request_validation_phase = OmniAuth::AuthenticityTokenProtection.new(key: :_csrf_token)
+
   # Add a new OmniAuth provider. Check the wiki for more information on setting
   # up on your models and hooks.
   config.omniauth(

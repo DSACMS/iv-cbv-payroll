@@ -11,6 +11,12 @@ RSpec.describe Cbv::GenericLinksController do
         stub_client_agency_config_value("sandbox", "pilot_ended", false)
       end
 
+      it 'assigns flow id and type in session' do
+        get :show, params: { client_agency_id: "sandbox" }
+        expect(session[:flow_type]).to eq(:cbv)
+        expect(session[:flow_id]).to eq(assigns(:cbv_flow).id)
+      end
+
       context 'when generic links are disabled for the agency' do
         before do
           stub_client_agency_config_value("sandbox", "generic_links_disabled", true)
@@ -31,7 +37,7 @@ RSpec.describe Cbv::GenericLinksController do
 
         it "starts a CBV flow with new applicant" do
           expect(response).to redirect_to(cbv_flow_entry_path)
-          expect(assigns(:cbv_flow).client_agency_id).to eq("sandbox")
+          expect(assigns(:cbv_flow).cbv_applicant.client_agency_id).to eq("sandbox")
         end
 
         it "sets an encrypted permanent cookie with cbv_applicant_id" do
@@ -113,7 +119,6 @@ RSpec.describe Cbv::GenericLinksController do
 
         it "creates new applicant instead of reusing" do
           expect(assigns(:cbv_flow).cbv_applicant_id).not_to eq(99999)
-          expect(assigns(:cbv_flow).client_agency_id).to eq("sandbox")
         end
 
         it "tracks event with is_new_session: true" do

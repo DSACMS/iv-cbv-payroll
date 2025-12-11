@@ -1,6 +1,6 @@
 class ClientAgency::AzDes::ReportDelivererJob < ApplicationJob
   def perform(date_start, date_end)
-    cbv_flows_delivered_recently = CbvFlow.where(transmitted_at: date_start..date_end).where(client_agency_id: ClientAgency::AzDes::Configuration.client_agency_id)
+    cbv_flows_delivered_recently = CbvFlow.includes(:cbv_applicant).where(transmitted_at: date_start..date_end).where(cbv_applicants: { client_agency_id: ClientAgency::AzDes::Configuration.client_agency_id })
     if cbv_flows_delivered_recently.empty?
       Rails.logger.info "delivered 0 applications for az_des in time range #{date_start}..#{date_end}"
       return

@@ -7,7 +7,7 @@ RSpec.describe Cbv::MissingResultsController do
     let(:cbv_flow) { create(:cbv_flow, :invited) }
 
     before do
-      session[:cbv_flow_id] = cbv_flow.id
+      session[:flow_id] = cbv_flow.id
     end
 
     it "renders successfully" do
@@ -29,7 +29,7 @@ RSpec.describe Cbv::MissingResultsController do
 
       it "renders the link in the view" do
         get :show
-        expect(response.body).to include(cbv_flow_applicant_information_path)
+        expect(response.body).to include(cbv_flow_other_job_path)
       end
     end
 
@@ -38,7 +38,7 @@ RSpec.describe Cbv::MissingResultsController do
 
       it "does not render the link in the view" do
         get :show
-        expect(response.body).not_to include(cbv_flow_applicant_information_path)
+        expect(response.body).not_to include(cbv_flow_other_job_path)
       end
     end
   end

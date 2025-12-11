@@ -94,7 +94,7 @@ RSpec.describe PagesController do
       let(:cbv_flow) { create(:cbv_flow, :invited) }
 
       it "renders with a link to restart that CBV flow" do
-        get :error_404, session: { cbv_flow_id: cbv_flow.id }
+        get :error_404, session: { flow_id: cbv_flow.id }
         expect(response.status).to eq(404)
         expect(response.body).to include("Return to entry page")
       end
@@ -105,7 +105,7 @@ RSpec.describe PagesController do
 
       it "renders" do
         request.host = "la.reportmyincome.org"
-        get :error_404, session: { cbv_flow_id: cbv_flow.id }
+        get :error_404, session: { flow_id: cbv_flow.id }
         expect(response.status).to eq(404)
         expect(response.body).to include("Return to entry page")
       end
@@ -124,7 +124,7 @@ RSpec.describe PagesController do
 
       it "renders" do
         request.host = "la.reportmyincome.org"
-        get :error_500, session: { cbv_flow_id: cbv_flow.id }
+        get :error_500, session: { flow_id: cbv_flow.id }
         expect(response.status).to eq(500)
         expect(response.body).to include("It looks like something went wrong")
       end

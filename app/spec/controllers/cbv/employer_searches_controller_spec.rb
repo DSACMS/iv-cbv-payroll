@@ -9,9 +9,8 @@ RSpec.describe Cbv::EmployerSearchesController do
     let(:pinwheel_token_id) { "abc-def-ghi" }
     let(:user_token) { "foobar" }
 
-
     before do
-      session[:cbv_flow_id] = cbv_flow.id
+      session[:flow_id] = cbv_flow.id
     end
 
     context "when rendering views" do
@@ -70,18 +69,19 @@ RSpec.describe Cbv::EmployerSearchesController do
     context "when there are no employer search results" do
       before do
         pinwheel_stub_request_items_no_items_response
+        argyle_stub_request_employer_search_response("empty")
       end
 
       render_views
 
       context "when the user at least one payroll_account associated with their cbv_flow" do
-        it "renders the view with a link to the summary page" do
+        it "renders the view with a link to the /other_job page" do
           create(:payroll_account, cbv_flow_id: cbv_flow.id)
           get :show, params: { query: "no_results" }
           expect(response).to be_successful
           expect(response.body).to include("If you have no other jobs to add here, continue")
           expect(response.body).to include("Continue")
-          expect(response.body).to include(cbv_flow_applicant_information_path)
+          expect(response.body).to include(cbv_flow_other_job_path)
         end
       end
 
@@ -98,6 +98,7 @@ RSpec.describe Cbv::EmployerSearchesController do
     context "when there are search results" do
       before do
         pinwheel_stub_request_items_response
+        argyle_stub_request_employer_search_response("bob")
       end
 
       render_views
@@ -114,10 +115,10 @@ RSpec.describe Cbv::EmployerSearchesController do
           cbv_applicant_id: cbv_flow.cbv_applicant_id,
           cbv_flow_id: cbv_flow.id,
           invitation_id: cbv_flow.cbv_flow_invitation_id,
-          num_results: 2,
+          num_results: 8,
           has_payroll_account: false,
-          pinwheel_result_count: 2,
-          argyle_result_count: 0
+          pinwheel_result_count: 0,
+          argyle_result_count: 8
         ))
         get :show, params: { query: "results" }
       end
@@ -125,6 +126,7 @@ RSpec.describe Cbv::EmployerSearchesController do
       context "when some results should be blocked" do
         before do
           pinwheel_stub_request_items_response
+          argyle_stub_request_employer_search_response("empty")
           stub_const("ProviderSearchService::BLOCKED_PINWHEEL_EMPLOYERS", [ "fce3eee0-285b-496f-9b36-30e976194736" ])
         end
 

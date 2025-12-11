@@ -1,15 +1,12 @@
 ---
 es:
-  activities:
-    hub:
-      title: Activity Hub
-    volunteering:
-      add: Add Volunteering Activity
-      created: Volunteering activity was successfully created.
-      date: Date
-      hours: Hours
-      organization_name: Organization name
-      title: Volunteering
+  activerecord:
+    errors:
+      models:
+        cbv_applicant/la_ldh:
+          attributes:
+            case_number:
+              too_long: Su número de caso no puede ser más largo de 13 digitos.
   aggregator_strings:
     deductions:
       401k: 401k

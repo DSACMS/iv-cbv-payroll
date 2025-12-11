@@ -1,0 +1,48 @@
+<% content_for :title, t("activities.summary.title") %>
+
+<h1>
+  <%= t("activities.summary.title") %>
+</h1>
+<p class="margin-bottom-4">
+  <%= t("activities.summary.description") %>
+</p>
+
+<section class="margin-bottom-5">
+  <h2>
+    <%= t("activities.volunteering.title") %>
+  </h2>
+  <p>
+    <%= t("activities.hub.count", count: @volunteering_activities.size) %>
+  </p>
+  <%= render TableComponent.new do |t| %>
+    <%= t.with_subheader_row(
+      t("activities.volunteering.organization_name"),
+      t("activities.volunteering.hours"),
+      t("activities.volunteering.date")
+    ) %>
+    <% @volunteering_activities.each do |activity| %>
+      <%= t.with_row activity.organization_name, activity.hours, activity.date %>
+    <% end %>
+  <% end %>
+</section>
+
+<section class="margin-bottom-5">
+  <h2>
+    <%= t("activities.job_training.title") %>
+  </h2>
+  <p>
+    <%= t("activities.hub.count", count: @job_training_activities.size) %>
+  </p>
+  <%= render TableComponent.new do |t| %>
+    <%= t.with_subheader_row(
+      t("activities.job_training.program_name"),
+      t("activities.job_training.organization_address"),
+      t("activities.job_training.hours")
+    ) %>
+    <% @job_training_activities.each do |activity| %>
+      <%= t.with_row activity.program_name, activity.organization_address, activity.hours %>
+    <% end %>
+  <% end %>
+</section>
+
+<%= button_to t("activities.summary.submit"), next_path, class: "btn btn-primary usa-button", method: :get %>

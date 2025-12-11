@@ -1,0 +1,20 @@
+<% content_for :title, t("activities.success.title") %>
+
+<h1>
+  <%= t("activities.success.title") %>
+</h1>
+<p>
+  <%= t("activities.success.description") %>
+</p>
+
+<p>
+  <strong>
+    <%= t("activities.success.completed_at") %>
+  </strong>
+  <%= l(@flow.completed_at, format: :long) %>
+</p>
+
+<%= link_to t("activities.success.download_pdf"),
+            activities_flow_submit_path(format: :pdf),
+            class: "usa-button usa-button--primary",
+            target: "_blank" %>

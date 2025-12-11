@@ -7,7 +7,7 @@ RSpec.describe Cbv::BaseController, type: :controller do
     end
   end
 
-  let(:cbv_flow) { create(:cbv_flow, :invited, client_agency_id: "az_des") }
+  let(:cbv_flow) { create(:cbv_flow, :invited) }
 
   before do
     routes.draw do
@@ -22,6 +22,7 @@ RSpec.describe Cbv::BaseController, type: :controller do
       expect(cookies.encrypted[:cbv_applicant_id]).to eq(cbv_flow.cbv_applicant_id)
 
       cookie_jar = response.cookies["cbv_applicant_id"]
+      expect(session[:flow_type]).to eq(:cbv)
       expect(cookie_jar).to be_present
     end
 
@@ -41,10 +42,31 @@ RSpec.describe Cbv::BaseController, type: :controller do
 
     context "when cbv flow cannot be found for session" do
       it "redirects to root with cbv_flow_timeout parameter" do
-        session[:cbv_flow_id] = 1337
+        session[:flow_id] = 1337
+        session[:flow_type] = :cbv
         get :show
         expect(response).to redirect_to(root_url(cbv_flow_timeout: true))
-        expect(session[:cbv_flow_id]).to be_nil
+        expect(session[:flow_id]).to be_nil
+        expect(session[:flow_type]).to be_nil
+      end
+    end
+
+    describe "setting @cbv_flow and current_agency" do
+      let(:cbv_flow) { create(:cbv_flow, cbv_applicant_attributes: attributes_for(:cbv_applicant, :sandbox)) }
+      let(:domain) { "fake-domain-for-la-ldh.localhost" }
+
+      before do
+        session[:cbv_flow_id] = cbv_flow.id
+
+        request.host = domain
+        allow(Rails.application.config.client_agencies["la_ldh"])
+          .to receive(:agency_domain)
+          .and_return(domain)
+      end
+
+      it "sets the current_agency based on the @cbv_flow (not the domain)" do
+        get :show
+        expect(assigns[:current_agency]).to have_attributes(id: "sandbox")
       end
     end
   end
@@ -55,23 +77,15 @@ RSpec.describe Cbv::BaseController, type: :controller do
     it "identifies multiple household members if income changes relevant" do
       cbv_flow.cbv_flow_invitation.cbv_applicant.update!(
         income_changes: [
-        {
-            member_name: "Dean Venture"
-          },
-        {
-            member_name: "Hank Venture"
-          },
-         {
-            member_name: "Hank Venture"
-          },
-         {
-            member_name: "Dr Venture"
-          } ]
-        )
+          { member_name: "Dean Venture" },
+          { member_name: "Hank Venture" },
+          { member_name: "Hank Venture" },
+          { member_name: "Dr Venture" } ]
+      )
       expect(EventTrackingJob).to receive(:perform_later).with("CbvPageView", anything, anything)
       expect(EventTrackingJob).to receive(:perform_later).with("ApplicantClickedCBVInvitationLink", anything, hash_including(
-          household_member_count: 3
-          ))
+        household_member_count: 3
+      ))
       get :show, params: { token: cbv_flow.cbv_flow_invitation.auth_token }
       expect(response).to be_successful
       expect(response.body).to eq("hello world")
@@ -81,8 +95,8 @@ RSpec.describe Cbv::BaseController, type: :controller do
       create(:cbv_flow, cbv_flow_invitation: cbv_flow.cbv_flow_invitation)
       expect(EventTrackingJob).to receive(:perform_later).with("CbvPageView", anything, anything)
       expect(EventTrackingJob).to receive(:perform_later).with("ApplicantClickedCBVInvitationLink", anything, hash_including(
-          household_member_count: 1
-          ))
+        household_member_count: 1
+      ))
       get :show, params: { token: cbv_flow.cbv_flow_invitation.auth_token }
       expect(response).to be_successful
       expect(response.body).to eq("hello world")
@@ -92,8 +106,8 @@ RSpec.describe Cbv::BaseController, type: :controller do
       create(:cbv_flow, cbv_flow_invitation: cbv_flow.cbv_flow_invitation)
       expect(EventTrackingJob).to receive(:perform_later).with("CbvPageView", anything, anything)
       expect(EventTrackingJob).to receive(:perform_later).with("ApplicantClickedCBVInvitationLink", anything, hash_including(
-          flows_started_count: 3
-          ))
+        flows_started_count: 3
+      ))
       get :show, params: { token: cbv_flow.cbv_flow_invitation.auth_token }
       expect(response).to be_successful
       expect(response.body).to eq("hello world")
@@ -112,7 +126,7 @@ RSpec.describe Cbv::BaseController, type: :controller do
         ))
         get :show, params: { token: cbv_flow.cbv_flow_invitation.auth_token, origin: "email" }
         expect(response).to be_successful
-        expect(session[:cbv_flow_id]).to be_a(Integer)
+        expect(session[:flow_id]).to be_a(Integer)
         expect(session[:cbv_origin]).to eq "email"
       end
 
@@ -123,7 +137,7 @@ RSpec.describe Cbv::BaseController, type: :controller do
         ))
         get :show, params: { token: cbv_flow.cbv_flow_invitation.auth_token, origin: " MFB dashboard" }
         expect(response).to be_successful
-        expect(session[:cbv_flow_id]).to be_a(Integer)
+        expect(session[:flow_id]).to be_a(Integer)
         expect(session[:cbv_origin]).to eq "mfb_dashboard"
       end
 
@@ -135,7 +149,7 @@ RSpec.describe Cbv::BaseController, type: :controller do
         ))
         get :show, params: { token: cbv_flow.cbv_flow_invitation.auth_token, origin: "email" }
         expect(response).to be_successful
-        expect(session[:cbv_flow_id]).to be_a(Integer)
+        expect(session[:flow_id]).to be_a(Integer)
         expect(session[:cbv_origin]).to eq "email"
       end
 
@@ -147,7 +161,7 @@ RSpec.describe Cbv::BaseController, type: :controller do
         ))
         get :show, params: { token: cbv_flow.cbv_flow_invitation.auth_token }
         expect(response).to be_successful
-        expect(session[:cbv_flow_id]).to be_a(Integer)
+        expect(session[:flow_id]).to be_a(Integer)
         expect(session[:cbv_origin]).to be_nil
       end
 
@@ -159,7 +173,7 @@ RSpec.describe Cbv::BaseController, type: :controller do
         ))
         get :show, params: { token: cbv_flow.cbv_flow_invitation.auth_token }
         expect(response).to be_successful
-        expect(session[:cbv_flow_id]).to be_a(Integer)
+        expect(session[:flow_id]).to be_a(Integer)
         expect(session[:cbv_origin]).to eq "sms"
       end
     end

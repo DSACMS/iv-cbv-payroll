@@ -16,7 +16,7 @@ namespace :debugging do
 
     transmitter = Transmitters::JsonTransmitter.new(
       @cbv_flow,
-      Rails.application.config.client_agencies[@cbv_flow.client_agency_id],
+      Rails.application.config.client_agencies[@cbv_flow.cbv_applicant.client_agency_id],
       aggregator_report
     )
     filtered_payload = ActiveSupport::ParameterFilter

@@ -1,0 +1,16 @@
+<% content_for :title, t("activities.submit.title") %>
+
+<h1>
+  <%= t("activities.submit.title") %>
+</h1>
+<p class="margin-bottom-3">
+  <%= t("activities.submit.description") %>
+</p>
+
+<%= form_with model: @flow, url: activities_flow_submit_path, method: :patch, builder: UswdsFormBuilder do |f| %>
+  <%= f.check_box :consent_to_submit, {
+    label: t("activities.submit.consent_label_html")
+  } %>
+
+  <%= f.submit t("activities.submit.confirm"), class: "btn btn-primary usa-button" %>
+<% end %>

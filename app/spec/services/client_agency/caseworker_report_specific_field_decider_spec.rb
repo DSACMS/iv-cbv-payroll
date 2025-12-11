@@ -2,14 +2,14 @@ require "rails_helper"
 
 RSpec.describe ClientAgency::CaseworkerReportSpecificFieldDecider, type: :service do
   context "with custom agency configuration" do
-    let(:cbv_flow) { build :cbv_flow, client_agency_id: "custom" }
+    let(:cbv_flow) { build :cbv_flow, cbv_applicant_attributes: { client_agency_id: "custom" } }
 
     module ClientAgency
       module Custom
         class ReportFields
           def self.caseworker_fields_for(cbv_flow)
             "custom_answer"
-      end
+          end
 
           def self.applicant_fields_for(cbv_flow)
             "custom_answer_applicant"
@@ -28,7 +28,7 @@ RSpec.describe ClientAgency::CaseworkerReportSpecificFieldDecider, type: :servic
   end
 
   context "with custom agency configuration for a different method" do
-    let(:cbv_flow) { build :cbv_flow, client_agency_id: "other_custom" }
+    let(:cbv_flow) { build :cbv_flow, cbv_applicant_attributes: { client_agency_id: "other_custom" } }
 
     module ClientAgency
       module OtherCustom
@@ -47,7 +47,7 @@ RSpec.describe ClientAgency::CaseworkerReportSpecificFieldDecider, type: :servic
   end
 
   context "with no custom agency configuration" do
-    let(:cbv_flow) { build :cbv_flow, client_agency_id: "random_new_client" }
+    let(:cbv_flow) { build :cbv_flow, cbv_applicant_attributes: { client_agency_id: "random_new_client" } }
 
     it "returns nothing if no custom class configured" do
       expect(described_class.caseworker_specific_fields(cbv_flow)).to eq([])
