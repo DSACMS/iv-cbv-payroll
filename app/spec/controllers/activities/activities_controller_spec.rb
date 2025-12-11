@@ -8,6 +8,8 @@ RSpec.describe Activities::ActivitiesController, type: :controller do
 
     before do
       create(:activity_flow) # ensure there is a second flow that might get mixed up
+      current_flow.reload
+
       session[:flow_id] = current_flow.id
       session[:flow_type] = :activity
       get :index
