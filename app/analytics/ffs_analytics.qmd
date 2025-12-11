@@ -1,0 +1,113 @@
+---
+title: "FFS Analytic review"
+format: html
+---
+
+The following Quarto doc analyzes the current FFS web analytics available from Mixpanel. At this point, it requires running the first cell of the `analytics` jupyter notebook for the API access to Mixpanel. The rest of the analytics are run using R.
+
+```{r}
+#| echo: false
+#| warning: false
+
+#dependencies to load
+library(tidyverse)
+library(jsonlite, warn.conflicts = FALSE)
+```
+
+```{r}
+#| echo: false
+#| warning: false
+path <- list.files("app/analytics", "mixpanel.*json", full.names = TRUE)
+
+data_pd <- path |> 
+    basename() |> 
+    str_extract('(?<=data_).*(?=\\.json)') |> 
+    str_replace_all("_", " ")
+
+```
+
+The the current dataset is located in the `app/analytics` folder, output from running the the API from the analytics Jupyter Notebook. The dataset covers the period from `{r} data_pd`.
+
+We need to start by reading in the json dataset and converting it to a dataframe that includes details relevant to our analysis.
+
+```{r}
+# Read the JSON file
+# Each line is a separate JSON object, so we use stream_in or read_lines
+json <- read_lines(path) |>
+  map(fromJSON)
+
+# Create the tibble with three columns, keeping properties as a nested list
+df_mp <- tibble(
+  event = map_chr(json, ~ .x$event),
+  properties = map(json, ~ .x$properties),
+  timestamp = map_chr(json, ~ .x$timestamp)
+  )
+
+#convert time to a time variable
+df_mp <- df_mp |>
+  mutate(timestamp = as_datetime(timestamp))
+```
+
+```{r}
+# Extract distinct_id from the nested properties list
+df_mp <- df_mp %>%
+  mutate(
+    distinct_id = map_chr(
+      properties,
+      ~ pluck(.x, "distinct_id", .default = NA_character_)
+    ),
+    browser = map_chr(
+      properties,
+      ~ pluck(.x, "browser", .default = NA_character_)
+    ),
+    device_type = map_chr(
+      properties,
+      ~ pluck(.x, "device_type", .default = NA_character_)
+    ),
+    city = map_chr(properties, ~ pluck(.x, "$city", .default = NA_character_)),
+    region = map_chr(
+      properties,
+      ~ pluck(.x, "$region", .default = NA_character_)
+    ),
+    language = map_chr(
+      properties,
+      ~ pluck(.x, "locale", .default = NA_character_)
+    )
+  )
+
+#reorder variables
+df_mp <- df_mp |>
+  relocate(distinct_id, timestamp, .before = everything()) |>
+  relocate(properties, .after = last_col())
+
+df_mp <- df_mp |>
+  arrange(distinct_id, desc(timestamp))
+
+glimpse(df_mp)
+```
+
+```{r}
+#extract type from event to make generic
+df_mp |> 
+  mutate(
+    provider = str_extract(event, "Pinwheel|Argyle"),
+    event = str_remove(event, "Pinwheel|Argyle")
+    ) |> 
+View()
+
+```
+```{r}
+df_mp |> 
+  filter(event == "ApplicantFinishedPinwheelSync") |> 
+  View()
+
+df_chck <- df_mp |> 
+  # filter(distinct_id == "applicant-529955") |> 
+  filter(distinct_id == "applicant-531544") |> 
+  arrange(timestamp) |> 
+  select(timestamp, event, properties)
+
+df_chck |> View()
+
+# df_chck[2,]$properties
+```
