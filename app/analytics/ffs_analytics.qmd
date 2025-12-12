@@ -12,12 +12,15 @@ The following Quarto doc analyzes the current FFS web analytics available from M
 #dependencies to load
 library(tidyverse)
 library(jsonlite, warn.conflicts = FALSE)
+library(glamr) ##install.packages('glamr', repos = c('https://usaid-oha-si.r-universe.dev', 'https://cloud.r-project.org'))
+library(glitr) #install.packages('glitr', repos = c('https://usaid-oha-si.r-universe.dev', 'https://cloud.r-project.org'))
 ```
 
 ```{r}
 #| echo: false
 #| warning: false
-path <- list.files("app/analytics", "mixpanel.*json", full.names = TRUE)
+
+path <- return_latest("app/analytics", "mixpanel.*json")
 
 data_pd <- path |> 
     basename() |> 
@@ -43,11 +46,22 @@ df_mp <- tibble(
   timestamp = map_chr(json, ~ .x$timestamp)
   )
 
-#convert time to a time variable
+#convert time to a time variable and make a week variable
 df_mp <- df_mp |>
-  mutate(timestamp = as_datetime(timestamp))
+  mutate(
+    timestamp = as_datetime(timestamp),
+    week = timestamp |> floor_date("weeks") |> as_date()
+    )
 ```
 
+We can drop all the page view events, which have no property data useful in our analysis.
+
+```{r}
+df_mp <- df_mp |> 
+  filter(event != "CbvPageView")
+```
+
+Let's extract the user id and their flow id to review in the analysis.
 ```{r}
 # Extract distinct_id from the nested properties list
 df_mp <- df_mp %>%
@@ -56,28 +70,32 @@ df_mp <- df_mp %>%
       properties,
       ~ pluck(.x, "distinct_id", .default = NA_character_)
     ),
-    browser = map_chr(
+    cbv_flow_id = map_int(
       properties,
-      ~ pluck(.x, "browser", .default = NA_character_)
-    ),
-    device_type = map_chr(
-      properties,
-      ~ pluck(.x, "device_type", .default = NA_character_)
-    ),
-    city = map_chr(properties, ~ pluck(.x, "$city", .default = NA_character_)),
-    region = map_chr(
-      properties,
-      ~ pluck(.x, "$region", .default = NA_character_)
-    ),
-    language = map_chr(
-      properties,
-      ~ pluck(.x, "locale", .default = NA_character_)
-    )
+      ~ pluck(.x, "cbv_flow_id", .default = NA_integer_)
+    ), 
+    # browser = map_chr(
+    #   properties,
+    #   ~ pluck(.x, "browser", .default = NA_character_)
+    # ),
+    # device_type = map_chr(
+    #   properties,
+    #   ~ pluck(.x, "device_type", .default = NA_character_)
+    # ),
+    # city = map_chr(properties, ~ pluck(.x, "$city", .default = NA_character_)),
+    # region = map_chr(
+    #   properties,
+    #   ~ pluck(.x, "$region", .default = NA_character_)
+    # ),
+    # language = map_chr(
+    #   properties,
+    #   ~ pluck(.x, "locale", .default = NA_character_)
+    # )
   )
 
 #reorder variables
 df_mp <- df_mp |>
-  relocate(distinct_id, timestamp, .before = everything()) |>
+  relocate(distinct_id, cbv_flow_id, timestamp, week, .before = everything()) |>
   relocate(properties, .after = last_col())
 
 df_mp <- df_mp |>
@@ -86,28 +104,114 @@ df_mp <- df_mp |>
 glimpse(df_mp)
 ```
 
+We can eliminate events that do not contain CBV Flow IDs, which are largely Caseworkers inviting the applicates to the flow. 
+
+```{r}
+#review events without cbv_flow id
+# df_mp |> 
+#   filter(is.na(cbv_flow_id)) |> 
+#   count(event, sort = TRUE) |> 
+#   prinf()
+
+df_mp <- df_mp |> 
+  filter(!is.na(cbv_flow_id))
+
+```
+
+We can make the platform specific events generic by removing the platform name from the event, but we'll keep the information in a new column for comparision in the analysis.
+
 ```{r}
 #extract type from event to make generic
-df_mp |> 
+df_mp <- df_mp |> 
   mutate(
     provider = str_extract(event, "Pinwheel|Argyle"),
     event = str_remove(event, "Pinwheel|Argyle")
-    ) |> 
-View()
-
+    ) 
 ```
+
+```{r}
+# df_mp |> 
+#   filter(event == "ApplicantFinishedPinwheelSync") |> 
+#   View()
+
+# df_chck <- df_mp |> 
+#   # filter(distinct_id == "applicant-529955") |> 
+#   filter(distinct_id == "applicant-531544") |> 
+#   arrange(timestamp) |> 
+#   select(timestamp, event, properties)
+
+# df_chck |> View()
+
+# # df_chck[2,]$properties
+```
+
+## First page
+
+From the get go, users are already dropping off. 
+
 ```{r}
 df_mp |> 
-  filter(event == "ApplicantFinishedPinwheelSync") |> 
-  View()
+  group_by(cbv_flow_id) |> 
+  filter(timestamp == min(timestamp)) |> 
+  ungroup() |> 
+  count(event, sort = TRUE)
+```
 
-df_chck <- df_mp |> 
-  # filter(distinct_id == "applicant-529955") |> 
-  filter(distinct_id == "applicant-531544") |> 
-  arrange(timestamp) |> 
-  select(timestamp, event, properties)
 
-df_chck |> View()
+```{r}
+df_mp |> 
+  group_by(distinct_id) |> 
+  summarise(
+    n_distinct = n_distinct(cbv_flow_id),
+    .groups = "drop"
+    ) |> 
+    count(n_distinct)
 
-# df_chck[2,]$properties
+df_mp |> 
+  filter(event == "ApplicantViewedAgreement") |> 
+  summarise(
+    n = n(),
+    n_distinct = n_distinct(distinct_id))
+
+df_pg1_visits <- df_mp |> 
+  filter(event == "ApplicantViewedAgreement") |> 
+  count(week, distinct_id, name = "visits")
+
+df_pg1_visits |> 
+  count(week, visits) |> 
+  # group_by(week) |> 
+  mutate(share = n / sum(n))
+
+df_pg1_visits |> 
+  count(week, visits > 3) |> 
+  mutate(share = n / sum(n)) |> 
+  filter(`visits > 3` == TRUE) 
+
+df_pg1_visits |> 
+  ggplot(aes(visits)) +
+  geom_histogram() +
+  facet_grid(~week) +
+  labs(
+    title = "REPEATED VISITS TO THE FIRST PAGE HAVE DECLINED EACH WEEK",
+    subtitle = "This looks at how many visits each user had to initiate FFS" 
+      ) +
+  si_style()
+```
+
+
+
+```{r}
+df_mp |> 
+  filter(event %in% c("ApplicantViewedAgreement", "ApplicantConsentedToTerms", "ApplicantAccessedSearchPage", "ApplicantAgreed")) |> 
+  count(event)
+
+
+
+
+
+```
+
+```{r}
+df_mp |> 
+  filter(event == "")
 ```
