@@ -233,4 +233,12 @@ If and when maintainers' and contributors' commitment levels change, contributor
 
 ### Acknowledgements
 
-The Community Guidelines sections were originally forked from the [United States Digital Service](https://usds.gov) [Justice40](https://thejustice40.com) open source [repository](https://github.com/usds/justice40-tool), and we would like to acknowledge and thank the community for their contributions.
+The Community Guidelines sections were originally forked from the [United States Digital Service](https://usds.gov) [Justice40](https://thejustice40.com) open source [repository](https://github.com/usds/justice40-tool), and we would like to acknowledge and thank the community for their contributions. 
+ ## Maintainers List 
+<!-- What groups/domains are maintainers a part of? Does your project have domains/areas that are maintained by specific people? List @USERNAMES directly, or any @ALIASES for groups/teams. -->
+ 
+ ## Approvers List 
+<!-- Who are the project approvers? List out @USERNAMES where possible so they can be tagged in issues/PRs directly. -->
+ 
+ ## Reviewers List 
+<!-- Who are the project reviewers? List out @USERNAMES where possible so they can be tagged in issues/PRs directly. -->
