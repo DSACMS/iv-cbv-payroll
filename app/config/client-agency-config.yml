@@ -109,3 +109,7 @@
       required: true
     date_of_birth:
       required: true
+  activity_types:
+    education: true
+    volunteering: true
+    job_training: true

@@ -83,7 +83,7 @@ en:
           label: Upload Documents
       title: Education
     entry:
-      consent: Check this box to agree to let us record your information and share it with your benefits agency.
+      consent: Check this box to agree to let us record your information and share it with %{agency_name}.
       continue: Add Activities
       title: Welcome to the Activity Hub!
     error_no_identity: Please provide your name and date of birth
@@ -107,7 +107,7 @@ en:
       confirm: Share my report
       consent_label_html: 'Check this box to confirm: <ul class="margin-y-2"><li>The information provided by you is true and complete to the best of your knowledge.</li><li>You agree to inform the agency of any income not reflected in this report or any discrepancies found in the information gathered with this tool.</li><li>You understand that providing accurate and complete information is your responsibility, and any false or omitted information may have legal consequences.</li></ul> By sending this report, you authorize its use for income verification by authorized agency personnel.'
       consent_required: Please check the legal agreement box to share your report.
-      description: Your report will be sent to your benefits agency. You must check the legal agreement box to share your report.
+      description: Your report will be sent to %{agency_name}. You must check the legal agreement box to share your report.
       pdf:
         date: Date
         description: The following information was provided by the Medicaid client for verification of the Community Engagement Requirements.
@@ -134,9 +134,9 @@ en:
       completed_at: Completed at
       description: Thank you for submitting your report.
       download_pdf: Download PDF report
-      title: Your Medicaid Community Engagement report was successfully sent to your benefits agency
+      title: Your Medicaid Community Engagement report was successfully sent to %{agency_name}
     summary:
-      description: The report below has your community engagement activities from your verification month. Please review it before sending to your benefits agency.
+      description: The report below has your community engagement activities from your verification month. Please review it before sending to %{agency_name}.
       submit: Continue
       title: Review your Medicaid Community Engagement report
     volunteering:
