@@ -56,6 +56,7 @@ class ClientAgencyConfig
       weekly_report
       applicant_attributes
       generic_links_disabled
+      activity_types
     ])
 
     def initialize(yaml)
@@ -80,6 +81,7 @@ class ClientAgencyConfig
       @weekly_report = yaml["weekly_report"]
       @applicant_attributes = yaml["applicant_attributes"] || {}
       @generic_links_disabled = yaml["generic_links_disabled"]
+      @activity_types = yaml["activity_types"]&.symbolize_keys || {}
 
       raise ArgumentError.new("Client Agency missing id") if @id.blank?
       raise ArgumentError.new("Client Agency #{@id} missing required attribute `agency_name`") if @agency_name.blank?
