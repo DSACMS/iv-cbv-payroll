@@ -70,6 +70,11 @@ Rails.application.routes.draw do
 
       # Tokenized links
       get "start/:token", to: "entries#show", as: :start, token: /[^\/]+/
+
+      # Generic links by agency
+      scope "links/:client_agency_id", constraints: { client_agency_id: Regexp.union(Rails.application.config.client_agencies.client_agency_ids) } do
+          root to: "entries#show", as: :new
+        end
     end
 
     scope "/:client_agency_id", module: :caseworker, constraints: { client_agency_id: Regexp.union(Rails.application.config.client_agencies.client_agency_ids) } do
