@@ -39,6 +39,7 @@
     <% end %>
 <% end %>
 
+<% if activity_type_enabled?(:education) %>
 <section class="margin-bottom-5">
     <h2><%= t("activities.education.title") %></h2>
     <p>
@@ -60,7 +61,9 @@
 
     <%= button_to t("activities.education.add"), new_activities_flow_education_path, class: "btn btn-primary usa-button margin-y-5", method: :get %>
 </section>
+<% end %>
 
+<% if activity_type_enabled?(:volunteering) %>
 <section class="margin-bottom-5">
   <h2>
     <%= t("activities.volunteering.title") %>
@@ -75,7 +78,9 @@
   <% end %>
   <%= button_to t("activities.volunteering.add"), new_activities_flow_volunteering_path, class: "btn btn-primary usa-button margin-y-5", method: :get %>
 </section>
+<% end %>
 
+<% if activity_type_enabled?(:job_training) %>
 <section>
   <h2>
     <%= t("activities.job_training.title") %>
@@ -90,5 +95,6 @@
   <% end %>
   <%= button_to t("activities.job_training.add"), new_activities_flow_job_training_path, class: "btn btn-primary usa-button margin-y-5", method: :get %>
 </section>
+<% end %>
 
 <%= button_to t("activities.hub.continue"), next_path, class: "btn btn-primary usa-button margin-top-4", method: :get %>

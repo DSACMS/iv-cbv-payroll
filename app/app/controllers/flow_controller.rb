@@ -15,7 +15,7 @@ class FlowController < ApplicationController
 
   def find_or_create_flow
     existing_applicant = find_existing_applicant_from_cookie
-    if existing_applicant
+    if existing_applicant && existing_applicant.client_agency_id == current_agency&.id
       create_flow_with_existing_applicant(existing_applicant)
     else
       create_flow_with_new_applicant

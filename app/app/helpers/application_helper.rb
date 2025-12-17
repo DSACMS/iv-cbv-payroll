@@ -5,6 +5,10 @@ module ApplicationHelper
     current_agency.id.to_sym == client_agency_id.to_sym
   end
 
+  def activity_type_enabled?(type)
+    current_agency&.activity_types&.[](type.to_sym)
+  end
+
   # Render a translation that is specific to the current client agency. Define
   # client agency-specific translations as:
   #

@@ -14,12 +14,19 @@
             <h3 class="usa-card__heading"><%= employer.name %></h3>
           </div>
           <% if employer.logo_url.present? %>
+            <% logo_url = employer.logo_url.to_s.sub(/\Ahttp:\/\//, "https://") %>
+
             <div class="usa-card__media usa-card__media--inset display-flex flex-justify-center">
               <div class="usa-card__img cbv-employer-card__img">
                 <img
-                  src="<%= employer.logo_url %>"
-                  alt="A placeholder image"
+                  src="<%= logo_url %>"
+                  alt="<%= employer.name %> logo"
                 >
+              </div>
+            </div>
+          <% else %>
+          <div class="usa-card__media usa-card__media--inset display-flex flex-justify-center">
+              <div class="usa-card__img cbv-employer-card__img">
               </div>
             </div>
           <% end %>
