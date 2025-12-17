@@ -1,7 +1,7 @@
-<% content_for :title, t("activities.success.title") %>
+<% content_for :title, t("activities.success.title", agency_name: agency_translation("shared.agency_full_name")) %>
 
 <h1>
-  <%= t("activities.success.title") %>
+  <%= t("activities.success.title", agency_name: agency_translation("shared.agency_full_name")) %>
 </h1>
 <p>
   <%= t("activities.success.description") %>
