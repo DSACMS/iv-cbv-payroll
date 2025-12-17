@@ -5,6 +5,26 @@ format: html
 
 The following Quarto doc analyzes the current FFS web analytics available from Mixpanel. At this point, it requires running the first cell of the `analytics` jupyter notebook for the API access to Mixpanel. The rest of the analytics are run using R.
 
+## Key Questions
+
+-   How many users are starting but not completing the process?
+-   Where in the process are users dropping off?
+-   Does time appear to be a factor in dropping off?
+    -   How long does the data syncing with Argyle/Pinwheel take?
+-   Are users accessing the documentation (help or FAQ) before dropping off?
+-   How many users are not finding their employer in the search?
+-   Are the popular app employers the right ones (i.e. do there appear to be employeers searched more frequently than any that appear in the popular links)
+-   What share of users are return users? (tokenized users)
+    -   How many sessions does it take a user to complete the process? 
+    -   How many users clicked on the link and then came back another time to complete the process? 
+-   Do we see a difference in completion rates if users are accessing from mobile vs desktop?
+-   How many times does a user "broswer back"?
+
+-   Comparision
+    - device types
+    - pilot periods/weeks
+
+
 ```{r}
 #| echo: false
 #| warning: false
@@ -12,6 +32,10 @@ The following Quarto doc analyzes the current FFS web analytics available from M
 #dependencies to load
 library(tidyverse)
 library(jsonlite, warn.conflicts = FALSE)
+library(patchwork)
+library(scales)
+library(gt)
+library(ggsankey) ## remotes::install_github("davidsjoberg/ggsankey")
 library(glamr) ##install.packages('glamr', repos = c('https://usaid-oha-si.r-universe.dev', 'https://cloud.r-project.org'))
 library(glitr) #install.packages('glitr', repos = c('https://usaid-oha-si.r-universe.dev', 'https://cloud.r-project.org'))
 ```
@@ -20,36 +44,52 @@ library(glitr) #install.packages('glitr', repos = c('https://usaid-oha-si.r-univ
 #| echo: false
 #| warning: false
 
-path <- return_latest("app/analytics", "mixpanel.*json")
+paths_prior <- list.files("app/analytics", "mixpanel_data_2025-0(5|8).*json", full.names = TRUE)
+path_curr <- return_latest("app/analytics", "mixpanel.*json")
 
-data_pd <- path |> 
+paths <- c(paths_prior, path_curr)
+
+data_pd <- paths |> 
     basename() |> 
     str_extract('(?<=data_).*(?=\\.json)') |> 
     str_replace_all("_", " ")
 
 ```
 
-The the current dataset is located in the `app/analytics` folder, output from running the the API from the analytics Jupyter Notebook. The dataset covers the period from `{r} data_pd`.
+The the current dataset is located in the `app/analytics` folder, output from running the the API from the analytics Jupyter Notebook. The dataset covers the period from `{r} data_pd` as well as the prior May and August pilots.
 
 We need to start by reading in the json dataset and converting it to a dataframe that includes details relevant to our analysis.
 
 ```{r}
-# Read the JSON file
+# Read the JSON file & convert to tibble, keeping properties as a nest list
 # Each line is a separate JSON object, so we use stream_in or read_lines
-json <- read_lines(path) |>
-  map(fromJSON)
 
-# Create the tibble with three columns, keeping properties as a nested list
-df_mp <- tibble(
-  event = map_chr(json, ~ .x$event),
-  properties = map(json, ~ .x$properties),
-  timestamp = map_chr(json, ~ .x$timestamp)
-  )
+read_mp <- function(path){
+ 
+ json <- read_lines(path) |> map(fromJSON) 
+
+  df <- tibble(event = map_chr(json, ~ .x$event),
+               properties = map(json, ~ .x$properties),
+               timestamp = map_chr(json, ~ .x$timestamp)
+              )
+  
+  return(df)
+
+}
+
+df_mp <- paths[3] |> map(read_mp) |> list_rbind()
 
 #convert time to a time variable and make a week variable
 df_mp <- df_mp |>
   mutate(
     timestamp = as_datetime(timestamp),
+    pilot = case_match(
+      month(timestamp),
+      c(5,6) ~ "May 2025",
+      c(8,9) ~ "Aug 2025",
+      c(11, 12) ~ "Nov 2025"
+      ),
+      pilot = factor(pilot, c("May 2025", "Aug 2025", "Nov 2025")),
     week = timestamp |> floor_date("weeks") |> as_date()
     )
 ```
@@ -118,6 +158,7 @@ df_mp <- df_mp |>
 
 ```
 
+
 We can make the platform specific events generic by removing the platform name from the event, but we'll keep the information in a new column for comparision in the analysis.
 
 ```{r}
@@ -143,6 +184,268 @@ df_mp <- df_mp |>
 # df_chck |> View()
 
 # # df_chck[2,]$properties
+```
+
+
+## How many people are completing the pilot?
+```{r}
+df_compl <- df_mp |> 
+  filter(event %in% c("ApplicantViewedAgreement","ApplicantAccessedSuccessPage")) |> 
+  group_by(pilot, week, event) |> 
+  summarise(
+    n_distinct = n_distinct(distinct_id),
+    .groups = "drop"
+    ) |> 
+  pivot_wider(
+    names_from = event,
+    values_from = n_distinct
+    ) |> 
+  mutate(completion_rate_wk = ApplicantAccessedSuccessPage / ApplicantViewedAgreement) |> 
+  group_by(pilot) |> 
+  mutate(plt_wk = str_glue("wk{isoweek(week) - min(isoweek(week)) + 1}"), .after = pilot) |> 
+  mutate(completion_rate_plt = sum(ApplicantAccessedSuccessPage) / sum(ApplicantViewedAgreement)) |> 
+  ungroup()
+```
+
+Comparing how many people are completing each pilot period, in the first pilot  many more applicants started the processed (i.e. viewed the agreement), but a smaller share completed it (i.e. shared their income summary). However, we do see roughly the same volume of recipients completing the process end to end. 
+
+```{r}
+df_compl |> 
+  group_by(pilot) |> 
+  summarise(
+    across(c(ApplicantViewedAgreement, ApplicantAccessedSuccessPage), 
+    \(x) sum(x, na.rm = TRUE)),
+   .groups = "drop"
+    ) |> 
+  mutate(completion_rate_plt = ApplicantAccessedSuccessPage / ApplicantViewedAgreement) |> 
+gt() |> 
+fmt_number(columns = starts_with("Applicant"), decimals = 0) |> 
+fmt_percent(columns = completion_rate_plt, decimals = 0)
+
+```
+
+If we compare weeks with in each pilot, we are seeing a similar trend of most people starting in the first week or two and then tailing off after that. While the first two pilot periods saw the second week as having the highest compeltion rate, the current pilot saw an increase in weeks 2 and then week 3 for completion rates. 
+
+```{r}
+v1 <- df_compl |> 
+  pivot_longer(
+    c(ApplicantViewedAgreement, ApplicantAccessedSuccessPage),
+    names_to = "event") |> 
+  ggplot(aes(plt_wk, value)) +
+  geom_col() +
+  facet_grid(pilot ~ fct_rev(event), scales = "free_x", switch = "y") +
+  scale_y_continuous(label = label_comma()) +
+  si_style_ygrid() +
+  labs(
+    x = NULL, y = NULL,
+    subtitle = "Weekly Completition Rate") +
+  theme(
+    strip.text = element_text(hjust = .5),
+    strip.placement = "outside"
+    )
+
+  v2 <- df_compl |> 
+  ggplot(aes(plt_wk, completion_rate_wk)) +
+  geom_col() +
+  geom_hline(aes(yintercept = completion_rate_plt)) +
+  facet_grid(pilot ~. , scales = "free_x", switch = "y") +
+  scale_y_continuous(label = label_percent()) +
+  labs(
+    x = NULL, y = NULL,
+    subtitle = "Weekly Completition Rate") +
+  si_style_ygrid() +
+  theme(
+    strip.text = element_text(hjust = .5),
+    strip.placement = "outside"
+    )
+
+    v1 + v2
+```
+
+## How long does it take to complete?
+
+```{r}
+df_mp |> 
+  mutate(completed = event == "ApplicantAccessedSuccessPage") |> 
+  group_by(distinct_id) |> 
+  mutate(completed = max(completed, na.rm = TRUE)) |> 
+  ungroup() |> 
+  filter(completed == TRUE) |> 
+  group_by(distinct_id) |> 
+  filter(timestamp == max(timestamp)) |> 
+  ungroup() |> 
+  count(event, sort = TRUE)
+```
+```{r}
+
+ df_mp |> 
+  filter(
+    pilot == "Nov 2025",
+    str_starts(distinct_id, "applicant")
+  ) |> 
+  mutate(completed = event == "ApplicantAccessedSuccessPage") |>
+  group_by(distinct_id) |> 
+  mutate(
+    completed = max(completed, na.rm = TRUE)
+    ) |>
+  ungroup() |> 
+  filter(completed == TRUE) |> 
+  group_by(distinct_id) |> 
+  filter(timestamp == max(timestamp)) |> 
+  ungroup() |> 
+  count(event, sort = TRUE)
+
+df_time <- df_mp |> 
+  filter(
+    pilot == "Nov 2025",
+    str_starts(distinct_id, "applicant")
+  ) |> 
+  mutate(completed = event == "ApplicantAccessedSuccessPage") |>
+  mutate(time_start = case_when(event == "ApplicantViewedAgreement" ~ timestamp)) |> 
+  group_by(distinct_id) |> 
+  mutate(
+    completed = max(completed, na.rm = TRUE),
+    time_end = ifelse(event == "ApplicantAccessedSuccessPage", timestamp, max(timestamp)),
+    time_end = as_datetime(time_end)
+    ) |>
+  ungroup()
+
+df_time <- df_time |> 
+  group_by(pilot, distinct_id) |> 
+  summarise(
+    attempts = n_distinct(cbv_flow_id),
+    completed = max(completed, na.rm = TRUE),
+    time_start = max(time_start, na.rm = TRUE),
+    time_end = max(time_end, na.rm = TRUE),
+    .groups = "drop"
+    ) |> 
+  filter(
+    time_start != -Inf,
+    time_start != time_end,
+    ) |> 
+  mutate(duration = time_end - time_start)
+```
+
+```{r}
+
+```
+
+## Where are people dropping off?
+
+```{r}
+v_steps <- c(
+  "ApplicantViewedAgreement",
+  "ApplicantAgreed",
+  "ApplicantSelectedEmployerOrPlatformItem",
+  "ApplicantAttemptedLogin",
+  "ApplicantSucceededWithLogin",
+  "ApplicantViewedPaymentDetails",
+  "ApplicantAccessedSuccessPage"
+  )
+
+df_ret <- df_mp |>
+  filter(event %in% v_steps) |> 
+  select(distinct_id, event) |> 
+  distinct(distinct_id, event) |> 
+  count(event, sort = TRUE, name = "views") |> 
+  mutate(
+    share_lag = views / lag(views),
+    share_cum = views / max(views),
+    share_cum = ifelse(event == "ApplicantViewedAgreement", NA, share_cum)
+      )
+
+df_ret |> 
+  gt() |> 
+  fmt_number(columns = views, decimals = 0) |> 
+  fmt_percent(columns = starts_with("share"), decimals = 0) |> 
+  sub_missing()
+
+```
+
+```{r}
+
+df_journey <- df_mp |> 
+  filter(event %in% v_steps) |> 
+  select(distinct_id, event) |> 
+  distinct(distinct_id, event) |> 
+  mutate(status = "reached") |> 
+  complete(distinct_id, event) |> 
+  mutate(event = factor(event, v_steps)) |> 
+  arrange(distinct_id, event) |> 
+  group_by(distinct_id) |> 
+  mutate(
+    step_order = row_number(),
+    step_event =  case_when(
+      status == "reached" ~ as.character(event), 
+      is.na(status) & lag(status) == "reached" ~ "dropped"
+      # TRUE ~ "dropped"
+    )) |>
+  ungroup() %>%
+  select(-event, -status) |> 
+  filter(!is.na(step_event)) |> 
+  mutate(step_event = factor(step_event, c("dropped", v_steps))) |> 
+  pivot_wider(
+    id_cols = distinct_id,
+    names_from = step_order,
+    values_from = step_event,
+    names_prefix = "step_"
+  )
+
+
+# Convert to long format for ggsankey
+
+sankey_long <- df_journey %>%
+  make_long(step_1, step_2, step_3, step_4, step_5, step_6, step_7) |> 
+  filter(!is.na(node)) |> 
+  mutate(
+    node = factor(node, c("dropped",v_steps)),
+    next_node = factor(next_node, c("dropped",v_steps))
+   )
+
+sankey_long |> 
+  ggplot(
+    aes(x = x, 
+        next_x = next_x, 
+        node = node, 
+        next_node = next_node,
+        fill = node)) +
+  geom_sankey(flow.alpha = 0.6, node.color = "gray30", width = 0.1, na.rm = TRUE) +
+  # geom_sankey_label(size = 3, color = "white", fill = NA) +
+  scale_fill_viridis_d(option = "turbo") +
+  theme_sankey(base_size = 14) +
+  theme(legend.position = "none") +
+  labs(title = "Application Funnel Analysis",
+       subtitle = "User progression through 7 steps")
+```
+
+## How long does the data syncing with Argyle/Pinwheel take?
+
+```{r}
+df_sync <- df_mp |> 
+  filter(
+    event %in% c("ApplicantSucceededWithLogin", "ApplicantFinishedSync"),
+    ) |>
+  distinct(distinct_id, cbv_flow_id, timestamp, event, provider) |> 
+  group_by(distinct_id, cbv_flow_id, event, provider) |> 
+  filter(timestamp == max(timestamp)) |> 
+  ungroup() |> 
+  pivot_wider(
+    names_from = event,
+    values_from = timestamp
+    ) |> 
+  mutate(sync_time = ApplicantFinishedSync - ApplicantSucceededWithLogin)
+
+df_sync |> 
+ ggplot(aes(sync_time, provider)) +
+ geom_boxplot(outliers = FALSE) +
+ si_style()
+  
+```
+
+```{r}
+df_mp |> 
+  filter(str_detect(event, "Error")) |> 
+  distinct(event)
 ```
 
 ## First page
@@ -211,7 +514,7 @@ df_mp |>
 
 ```
 
-```{r}
+```{r} |> 
 df_mp |> 
   filter(event == "")
 ```
