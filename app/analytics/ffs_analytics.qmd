@@ -158,7 +158,6 @@ df_mp <- df_mp |>
 
 ```
 
-
 We can make the platform specific events generic by removing the platform name from the event, but we'll keep the information in a new column for comparision in the analysis.
 
 ```{r}
@@ -278,23 +277,6 @@ df_mp |>
 ```
 ```{r}
 
- df_mp |> 
-  filter(
-    pilot == "Nov 2025",
-    str_starts(distinct_id, "applicant")
-  ) |> 
-  mutate(completed = event == "ApplicantAccessedSuccessPage") |>
-  group_by(distinct_id) |> 
-  mutate(
-    completed = max(completed, na.rm = TRUE)
-    ) |>
-  ungroup() |> 
-  filter(completed == TRUE) |> 
-  group_by(distinct_id) |> 
-  filter(timestamp == max(timestamp)) |> 
-  ungroup() |> 
-  count(event, sort = TRUE)
-
 df_time <- df_mp |> 
   filter(
     pilot == "Nov 2025",
@@ -310,7 +292,7 @@ df_time <- df_mp |>
     ) |>
   ungroup()
 
-df_time <- df_time |> 
+df_duration <- df_time |> 
   group_by(pilot, distinct_id) |> 
   summarise(
     attempts = n_distinct(cbv_flow_id),
@@ -327,6 +309,24 @@ df_time <- df_time |>
 ```
 
 ```{r}
+df_time |> 
+  mutate(help = event %in% c("ApplicantOpenedHelpModal","ApplicantViewedHelpText", "ApplicantViewedHelpTopic", "ApplicantManuallySwitchedLanguage")) |> 
+  group_by(pilot, distinct_id) |>
+  summarise(
+    attempts = n_distinct(cbv_flow_id),
+    completed = max(completed, na.rm = TRUE),
+    help_actions = sum(help, na.rm = TRUE),
+    .groups = "drop"
+    ) |> 
+  group_by(pilot, completed) |> 
+  summarise(
+    n_users = n_distinct(distinct_id),
+    mean_attempts = mean(attempts, na.rm = TRUE),
+    mean_help_actions = mean(help_actions, na.rm = TRUE),
+    .groups = "drop"
+  )
+     
+
 
 ```
 
@@ -418,6 +418,12 @@ sankey_long |>
        subtitle = "User progression through 7 steps")
 ```
 
+## Are users accessing the documentation (help or FAQ) before dropping off?
+
+```{r}
+
+```
+
 ## How long does the data syncing with Argyle/Pinwheel take?
 
 ```{r}
@@ -425,8 +431,8 @@ df_sync <- df_mp |>
   filter(
     event %in% c("ApplicantSucceededWithLogin", "ApplicantFinishedSync"),
     ) |>
-  distinct(distinct_id, cbv_flow_id, timestamp, event, provider) |> 
-  group_by(distinct_id, cbv_flow_id, event, provider) |> 
+  distinct(distinct_id, cbv_flow_id, timestamp, event, pilot, provider) |> 
+  group_by(distinct_id, cbv_flow_id, event, pilot, provider) |> 
   filter(timestamp == max(timestamp)) |> 
   ungroup() |> 
   pivot_wider(
@@ -436,17 +442,33 @@ df_sync <- df_mp |>
   mutate(sync_time = ApplicantFinishedSync - ApplicantSucceededWithLogin)
 
 df_sync |> 
+  group_by(pilot, provider) |> 
+  summarise(
+    min = min(sync_time, na.rm = TRUE), 
+    q25 = quantile(sync_time, 0.25, na.rm = TRUE),
+    median = median(sync_time, na.rm = TRUE),
+    mean = mean(sync_time, na.rm = TRUE),
+    # stdev = sd(sync_time, na.rm = TRUE),
+    q75 = quantile(sync_time, 0.75, na.rm = TRUE),
+    max = max(sync_time, na.rm = TRUE)) %>%
+  pivot_longer(
+    -c(pilot, provider),
+    names_to= "stat"
+    ) |> 
+  pivot_wider(
+    names_from = provider
+      )
+    
+
+
+df_sync |> 
  ggplot(aes(sync_time, provider)) +
  geom_boxplot(outliers = FALSE) +
  si_style()
   
 ```
 
-```{r}
-df_mp |> 
-  filter(str_detect(event, "Error")) |> 
-  distinct(event)
-```
+
 
 ## First page
 
