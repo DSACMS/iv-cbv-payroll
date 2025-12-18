@@ -67,4 +67,12 @@ RSpec.describe ActivityFlow, type: :model do
       expect(flow.cbv_applicant).to eq(cbv_applicant)
     end
   end
+
+  it 'marked as complete when completed_at timestamp is set' do
+    flow = create(:activity_flow, completed_at: nil)
+    expect(flow.complete?).to be_falsey
+
+    flow.update(completed_at: Time.current)
+    expect(flow.complete?).to be_truthy
+  end
 end
