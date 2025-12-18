@@ -106,7 +106,7 @@ class Cbv::BaseController < FlowController
     event_logger.track(TrackEvent::CbvPageView, request, {
       time: Time.now.to_i,
       cbv_flow_id: @flow.id,
-      invitation_id: @flow.cbv_flow_invitation_id,
+      invitation_id: @flow.invitation_id,
       cbv_applicant_id: @flow.cbv_applicant_id,
       client_agency_id: @flow.cbv_applicant.client_agency_id,
       device_id: @flow.device_id,

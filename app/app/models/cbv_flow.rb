@@ -17,6 +17,10 @@ class CbvFlow < Flow
     confirmation_code.present?
   end
 
+  def invitation_id
+    cbv_flow_invitation_id
+  end
+
   def self.create_from_invitation(cbv_flow_invitation, device_id)
     create(
       cbv_flow_invitation: cbv_flow_invitation,

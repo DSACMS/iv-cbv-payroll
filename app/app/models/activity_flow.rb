@@ -6,6 +6,7 @@ class ActivityFlow < Flow
   has_many :volunteering_activities, dependent: :destroy
   has_many :job_training_activities, dependent: :destroy
   has_many :education_activities, -> { where(confirmed: true) }, dependent: :destroy
+  has_many :payroll_accounts, dependent: :destroy
 
   before_create :set_default_reporting_month
 
@@ -32,5 +33,13 @@ class ActivityFlow < Flow
 
   def set_default_reporting_month
     self.reporting_month ||= Date.current.beginning_of_month
+  end
+
+  def complete?
+    completed_at.present?
+  end
+
+  def invitation_id
+    activity_flow_invitation_id
   end
 end

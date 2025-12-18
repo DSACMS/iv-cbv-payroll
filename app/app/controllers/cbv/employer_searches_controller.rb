@@ -42,7 +42,7 @@ class Cbv::EmployerSearchesController < Cbv::BaseController
       cbv_flow_id: @flow.id,
       device_id: @flow.device_id,
       client_agency_id: current_agency&.id,
-      invitation_id: @flow.cbv_flow_invitation_id
+      invitation_id: @flow.invitation_id
     })
   end
 
@@ -53,7 +53,7 @@ class Cbv::EmployerSearchesController < Cbv::BaseController
       cbv_flow_id: @flow.id,
       client_agency_id: current_agency&.id,
       device_id: @flow.device_id,
-      invitation_id: @flow.cbv_flow_invitation_id
+      invitation_id: @flow.invitation_id
     })
   end
 
@@ -66,7 +66,7 @@ class Cbv::EmployerSearchesController < Cbv::BaseController
       cbv_flow_id: @flow.id,
       client_agency_id: current_agency&.id,
       device_id: @flow.device_id,
-      invitation_id: @flow.cbv_flow_invitation_id
+      invitation_id: @flow.invitation_id
     })
   end
 
@@ -79,7 +79,7 @@ class Cbv::EmployerSearchesController < Cbv::BaseController
       cbv_flow_id: @flow.id,
       client_agency_id: current_agency&.id,
       device_id: @flow.device_id,
-      invitation_id: @flow.cbv_flow_invitation_id,
+      invitation_id: @flow.invitation_id,
       num_results: @employers.length,
       has_payroll_account: @has_payroll_account,
       pinwheel_result_count: @employers.count { |item| item.provider_name == :pinwheel },

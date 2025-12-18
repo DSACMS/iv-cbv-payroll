@@ -14,6 +14,10 @@ RSpec.describe 'e2e Activity Hub flow test', type: :feature, js: true do
 
     verify_page(page, title: I18n.t("activities.hub.title"))
 
+    # Add an Income activity
+    click_button I18n.t("activities.income.add")
+    verify_page(page, title: I18n.t("cbv.entries.show.header"))
+
     # Add a Volunteering activity
     click_button I18n.t("activities.volunteering.add")
     verify_page(page, title: I18n.t("activities.volunteering.title"))
