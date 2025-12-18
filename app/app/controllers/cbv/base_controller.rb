@@ -145,10 +145,6 @@ class Cbv::BaseController < FlowController
     set_flow_session(nil, nil)
   end
 
-  def flow_class
-    CbvFlow
-  end
-
   def flow_param
     :cbv
   end
