@@ -69,6 +69,17 @@ class FlowController < ApplicationController
     end
   end
 
+  def flow_class
+    case request.path
+    when /\/cbv/
+      CbvFlow
+    when /\/activities/
+      ActivityFlow
+    else
+      CbvFlow
+    end
+  end
+
   def find_existing_applicant_from_cookie
     applicant_id = cookies.encrypted[:cbv_applicant_id]
     return nil unless applicant_id.present?
