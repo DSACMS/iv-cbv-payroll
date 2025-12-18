@@ -67,7 +67,7 @@ export default class extends Controller {
   }
 
   announceTab(event) {
-    const name = event?.currentTarget?.dataset?.tabName || event?.target?.dataset?.tabName
+    const name = event?.currentTarget?.dataset?.tabName ?? event?.target?.dataset?.tabName
     if (!name) return
 
     this.tabAnnouncementTarget.textContent = name
