@@ -43,6 +43,17 @@ library(glitr) #install.packages('glitr', repos = c('https://usaid-oha-si.r-univ
 ```{r}
 #| echo: false
 #| warning: false
+#| 
+#set DSAC colors
+dsac_color <- c("#103D68", "#136A5D", "#6A1344", "#EFAC2F", "#63789D", "#C1C9D7", "#5A9088", "#842F66", "#123054")
+dsac_color_name <- c("navy", "teal", "cranberry", "gold", "light_navy", "pale_navy", "light_teal", "light_cranberry", "dark_navy")
+dsac_color <- setNames(dsac_color, dsac_color_name)
+rm(dsac_color_name)
+```
+
+```{r}
+#| echo: false
+#| warning: false
 
 paths_prior <- list.files("app/analytics", "mixpanel_data_2025-0(5|8).*json", full.names = TRUE)
 path_curr <- return_latest("app/analytics", "mixpanel.*json")
@@ -113,24 +124,7 @@ df_mp <- df_mp %>%
     cbv_flow_id = map_int(
       properties,
       ~ pluck(.x, "cbv_flow_id", .default = NA_integer_)
-    ), 
-    # browser = map_chr(
-    #   properties,
-    #   ~ pluck(.x, "browser", .default = NA_character_)
-    # ),
-    # device_type = map_chr(
-    #   properties,
-    #   ~ pluck(.x, "device_type", .default = NA_character_)
-    # ),
-    # city = map_chr(properties, ~ pluck(.x, "$city", .default = NA_character_)),
-    # region = map_chr(
-    #   properties,
-    #   ~ pluck(.x, "$region", .default = NA_character_)
-    # ),
-    # language = map_chr(
-    #   properties,
-    #   ~ pluck(.x, "locale", .default = NA_character_)
-    # )
+    )
   )
 
 #reorder variables
@@ -147,15 +141,19 @@ glimpse(df_mp)
 We can eliminate events that do not contain CBV Flow IDs, which are largely Caseworkers inviting the applicates to the flow. 
 
 ```{r}
+#| echo: false
+#| warning: false
+
 #review events without cbv_flow id
 # df_mp |> 
 #   filter(is.na(cbv_flow_id)) |> 
 #   count(event, sort = TRUE) |> 
 #   prinf()
-
+```
+```{r}
 df_mp <- df_mp |> 
+  # filter(str_detect(distinct_id, "applicant-"))
   filter(!is.na(cbv_flow_id))
-
 ```
 
 We can make the platform specific events generic by removing the platform name from the event, but we'll keep the information in a new column for comparision in the analysis.
@@ -167,22 +165,6 @@ df_mp <- df_mp |>
     provider = str_extract(event, "Pinwheel|Argyle"),
     event = str_remove(event, "Pinwheel|Argyle")
     ) 
-```
-
-```{r}
-# df_mp |> 
-#   filter(event == "ApplicantFinishedPinwheelSync") |> 
-#   View()
-
-# df_chck <- df_mp |> 
-#   # filter(distinct_id == "applicant-529955") |> 
-#   filter(distinct_id == "applicant-531544") |> 
-#   arrange(timestamp) |> 
-#   select(timestamp, event, properties)
-
-# df_chck |> View()
-
-# # df_chck[2,]$properties
 ```
 
 
@@ -231,7 +213,7 @@ v1 <- df_compl |>
     c(ApplicantViewedAgreement, ApplicantAccessedSuccessPage),
     names_to = "event") |> 
   ggplot(aes(plt_wk, value)) +
-  geom_col() +
+  geom_col(fill = dsac_color[['teal']]) +
   facet_grid(pilot ~ fct_rev(event), scales = "free_x", switch = "y") +
   scale_y_continuous(label = label_comma()) +
   si_style_ygrid() +
@@ -245,8 +227,8 @@ v1 <- df_compl |>
 
   v2 <- df_compl |> 
   ggplot(aes(plt_wk, completion_rate_wk)) +
-  geom_col() +
-  geom_hline(aes(yintercept = completion_rate_plt)) +
+  geom_col(fill = dsac_color[['teal']]) +
+  geom_hline(aes(yintercept = completion_rate_plt), color = dsac_color[['gold']]) +
   facet_grid(pilot ~. , scales = "free_x", switch = "y") +
   scale_y_continuous(label = label_percent()) +
   labs(
@@ -263,18 +245,6 @@ v1 <- df_compl |>
 
 ## How long does it take to complete?
 
-```{r}
-df_mp |> 
-  mutate(completed = event == "ApplicantAccessedSuccessPage") |> 
-  group_by(distinct_id) |> 
-  mutate(completed = max(completed, na.rm = TRUE)) |> 
-  ungroup() |> 
-  filter(completed == TRUE) |> 
-  group_by(distinct_id) |> 
-  filter(timestamp == max(timestamp)) |> 
-  ungroup() |> 
-  count(event, sort = TRUE)
-```
 ```{r}
 
 df_time <- df_mp |> 
@@ -308,27 +278,6 @@ df_duration <- df_time |>
   mutate(duration = time_end - time_start)
 ```
 
-```{r}
-df_time |> 
-  mutate(help = event %in% c("ApplicantOpenedHelpModal","ApplicantViewedHelpText", "ApplicantViewedHelpTopic", "ApplicantManuallySwitchedLanguage")) |> 
-  group_by(pilot, distinct_id) |>
-  summarise(
-    attempts = n_distinct(cbv_flow_id),
-    completed = max(completed, na.rm = TRUE),
-    help_actions = sum(help, na.rm = TRUE),
-    .groups = "drop"
-    ) |> 
-  group_by(pilot, completed) |> 
-  summarise(
-    n_users = n_distinct(distinct_id),
-    mean_attempts = mean(attempts, na.rm = TRUE),
-    mean_help_actions = mean(help_actions, na.rm = TRUE),
-    .groups = "drop"
-  )
-     
-
-
-```
 
 ## Where are people dropping off?
 
@@ -399,7 +348,8 @@ sankey_long <- df_journey %>%
   filter(!is.na(node)) |> 
   mutate(
     node = factor(node, c("dropped",v_steps)),
-    next_node = factor(next_node, c("dropped",v_steps))
+    next_node = factor(next_node, c("dropped",v_steps)),
+    fill_color = ifelse(node == "dropped", dsac_color[['gold']], dsac_color[['teal']])
    )
 
 sankey_long |> 
@@ -408,19 +358,87 @@ sankey_long |>
         next_x = next_x, 
         node = node, 
         next_node = next_node,
-        fill = node)) +
+        fill = fill_color)) +
   geom_sankey(flow.alpha = 0.6, node.color = "gray30", width = 0.1, na.rm = TRUE) +
   # geom_sankey_label(size = 3, color = "white", fill = NA) +
-  scale_fill_viridis_d(option = "turbo") +
-  theme_sankey(base_size = 14) +
-  theme(legend.position = "none") +
-  labs(title = "Application Funnel Analysis",
-       subtitle = "User progression through 7 steps")
+  scale_x_discrete(labels = v_steps) +
+  scale_fill_identity() + 
+  labs(x = NULL, y = NULL) +
+  si_style_nolines() + 
+  theme(axis.text.y = element_blank()) 
 ```
 
 ## Are users accessing the documentation (help or FAQ) before dropping off?
 
 ```{r}
+v_help_events <- c("ApplicantOpenedHelpModal","ApplicantViewedHelpText", "ApplicantViewedHelpTopic", "ApplicantManuallySwitchedLanguage")
+
+df_time |> 
+  mutate(help = event %in% v_help_events) |> 
+  group_by(pilot, distinct_id) |>
+  summarise(
+    attempts = n_distinct(cbv_flow_id),
+    completed = max(completed, na.rm = TRUE),
+    help_actions = sum(help, na.rm = TRUE),
+    .groups = "drop"
+    ) |> 
+  group_by(pilot, completed) |> 
+  summarise(
+    n_users = n_distinct(distinct_id),
+    mean_attempts = mean(attempts, na.rm = TRUE),
+    mean_help_actions = mean(help_actions, na.rm = TRUE),
+    .groups = "drop"
+  ) |> 
+  mutate(completed = as.logical(completed))
+```
+
+
+```{r}  
+df_help <- df_time |> 
+  left_join(
+    tibble(
+      event_order = 1:length(v_steps), 
+      event = v_steps,
+      page = event,
+      # page = factor(event, c("ApplicantClickedLink", v_steps)
+      ),
+    by = "event"
+  )|>
+  group_by(distinct_id, cbv_flow_id) |> 
+  fill(page, .direction = "up") |> 
+  fill(event_order, .direction = "up") |> 
+  mutate(
+    event_order = ifelse(is.na(event_order), 0, event_order),
+    page = ifelse(is.na(page), "ApplicantClickedLink", page)
+    ) |> 
+  mutate(
+    page = factor(page, c("ApplicantClickedLink", v_steps)),
+    last_page = event_order == max(event_order, na.rm = TRUE),
+    accessed_help = event %in% v_help_events
+      ) |> 
+  ungroup()
+
+df_help <- df_help |> 
+  group_by(distinct_id, cbv_flow_id, page, last_page) |> 
+  mutate(accessed_help = max(accessed_help, na.rm = TRUE)) |> 
+  ungroup() |> 
+  group_by(page, last_page) |> 
+  summarise(
+    n_users = n_distinct(distinct_id),
+    attempts = n_distinct(distinct_id, cbv_flow_id),
+    accessed_help = sum(accessed_help, na.rm = TRUE),
+    .groups = "drop"
+  ) |> 
+  mutate(fill_color = ifelse(last_page == TRUE, dsac_color['teal'], dsac_color['light_navy']))
+
+df_help |> 
+  ggplot(aes(accessed_help, fct_rev(page), fill = fill_color)) +
+  geom_col() +
+  facet_wrap(~last_page) +
+  labs(x = NULL, y = NULL) +
+  scale_fill_identity() + 
+  scale_x_continuous(label = comma_format()) +
+  si_style_xgrid()
 
 ```
 
@@ -469,6 +487,42 @@ df_sync |>
 ```
 
 
+## How many users are not finding their employer in the search?
+
+```{r}
+df_mp |> 
+  mutate(
+    picked = event == "ApplicantClickedPopularAppEmployers",
+    searches = event == "ApplicantSearchedForEmployer",
+    missingresults = event == "ApplicantAccessedMissingResultsPage"
+    ) |> 
+  group_by(pilot) |> 
+  summarise(
+    n_users = n_distinct(distinct_id),
+    attempts = n_distinct(distinct_id, cbv_flow_id),
+    picked = sum(picked, na.rm = TRUE),
+    searches = sum(searches, na.rm = TRUE),
+    missingresults = sum(missingresults, na.rm = TRUE),
+    .groups = "drop"
+    )
+```
+
+## Are the popular app employers the right ones (i.e. do there appear to be employeers searched more frequently than any that appear in the popular links)
+
+```{r}
+df_employers <- df_mp |> 
+  filter(event== "ApplicantFinishedSync") |> 
+  mutate(
+        employer = map_chr(
+          properties,
+          ~ pluck(.x, "employment_employer_name", .default = NA_character_)
+          )
+        )
+
+df_employers |> 
+  filter(!is.na(employer)) |> 
+  count(employer, sort = TRUE)
+```
 
 ## First page
 
