@@ -57,6 +57,15 @@ RSpec.describe Cbv::SynchronizationsController do
 
         expect(response.body).to include("turbo-frame id=\"synchronization\"")
       end
+
+      it "sends sync wait time to New Relic" do
+        expect(NewRelic::Agent).to receive(:record_custom_event).with(
+          "SyncWaitTime",
+          hash_including(provider: "pinwheel", wait_time_seconds: a_kind_of(Numeric))
+        )
+
+        patch :update, params: { user: { account_id: payroll_account.aggregator_account_id } }
+      end
     end
 
     context "when account exists but paystubs synchronization fails" do
@@ -89,6 +98,12 @@ RSpec.describe Cbv::SynchronizationsController do
         expect(response.body).to include("turbo-frame id=\"synchronization\"")
         expect(response.body).not_to include("synchronization_failures")
         expect(response).to render_template(partial: "_status")
+      end
+
+      it "does not send sync wait time to New Relic" do
+        expect(NewRelic::Agent).not_to receive(:record_custom_event)
+
+        patch :update, params: { user: { account_id: nonexistent_id } }
       end
     end
 
