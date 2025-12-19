@@ -73,5 +73,6 @@ translation_update.csv
 /app/analytics/*.json
 
 #Quarto output
-/app/analytics/ffs_analytics_files
-ffs_analytics.html
+/app/analytics/*_files/
+/app/analytics/*_cache/
+/app/analytics/*.html
