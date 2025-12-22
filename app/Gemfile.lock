@@ -302,7 +302,7 @@ GEM
     mutex_m (0.3.0)
     net-http (0.8.0)
       uri (>= 0.11.1)
-    net-imap (0.4.20)
+    net-imap (0.6.2)
       date
       net-protocol
     net-pop (0.1.2)
@@ -556,7 +556,7 @@ GEM
     thread_safe (0.3.6)
     tilt (2.6.1)
     timecop (0.9.10)
-    timeout (0.4.4)
+    timeout (0.6.0)
     tsort (0.2.0)
     ttfunk (1.8.0)
       bigdecimal (~> 3.1)
@@ -647,7 +647,7 @@ DEPENDENCIES
   mission_control-jobs
   mixpanel-ruby
   mutex_m
-  net-imap (= 0.4.20)
+  net-imap (= 0.6.2)
   net-sftp
   net-ssh
   newrelic_rpm
