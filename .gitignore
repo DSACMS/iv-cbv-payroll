@@ -76,3 +76,4 @@ translation_update.csv
 /app/analytics/*_files/
 /app/analytics/*_cache/
 /app/analytics/*.html
+.Rproj.user
