@@ -33,7 +33,7 @@
     "jsdom": "^27.3.0",
     "prettier": "^3.7.4",
     "vite": "^7.2.7",
-    "vitest": "^4.0.15"
+    "vitest": "^4.0.16"
   },
   "resolutions": {
     "@csstools/postcss-sass/@csstools/sass-import-resolve": "https://github.com/rahearn/sass-import-resolve",
