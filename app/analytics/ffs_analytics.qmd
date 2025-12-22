@@ -1,36 +1,54 @@
 ---
 title: "FFS Analytic review"
-format: html
+execute:
+  echo: false
+  output: false
+  warning: false
+  cache: true
+format:
+  html:
+    toc: true
+    number-sections: true
+    css: dsac-theme.css
 ---
 
-The following Quarto doc analyzes the current FFS web analytics available from Mixpanel. At this point, it requires running the first cell of the `analytics` jupyter notebook for the API access to Mixpanel. The rest of the analytics are run using R.
+# Purpose
+
+Over the past year, the Centers for Medicare and Medicaid Services (CMS) in conjunction with partner states have piloted an online income verification application. With each phase, analysts have explore the web analytics data, looking into applicant uptake and utilization of the tool. This specific report aims identify areas of the tool where retention drops in an effort to improve the product design, making it easier for applicants to complete the full form.
 
 ## Key Questions
 
--   How many users are starting but not completing the process?
--   Where in the process are users dropping off?
--   Does time appear to be a factor in dropping off?
-    -   How long does the data syncing with Argyle/Pinwheel take?
--   Are users accessing the documentation (help or FAQ) before dropping off?
--   How many users are not finding their employer in the search?
--   Are the popular app employers the right ones (i.e. do there appear to be employeers searched more frequently than any that appear in the popular links)
--   What share of users are return users? (tokenized users)
-    -   How many sessions does it take a user to complete the process? 
-    -   How many users clicked on the link and then came back another time to complete the process? 
--   Do we see a difference in completion rates if users are accessing from mobile vs desktop?
--   How many times does a user "broswer back"?
+Below are the areas the report seeks to explore to help improve the product design.
 
--   Comparision
-    - device types
-    - pilot periods/weeks
+1.  How many users are starting but not completing the process?
+2.  Where in the process are users dropping off?
+3.  Does time appear to be a factor in dropping off?
+    1.  How long does the data syncing with Argyle/Pinwheel take?
+4.  Are users accessing the documentation (help or FAQ) before dropping off?
+5.  How many users are not finding their employer in the search?
+6.  Are the popular app employers the right ones (i.e. do there appear to be employeers searched more frequently than any that appear in the popular links)
+7.  What share of users are return users? (tokenized users)
+    1.  How many sessions does it take a user to complete the process?
+    2.  How many users clicked on the link and then came back another time to complete the process?
+8.  Do we see a difference in completion rates if users are accessing from mobile vs desktop?
+9.  How many times does a user "browser back"?
 
+-   Possible Comparisions
+    -   device types
+    -   pilot periods/weeks
+
+## Method
+
+This report was generated using a Quarto notebook and leverage R for all analysis and visualizations. The analysis focuses on the 2025 Lousiana pilot, which had three, 6-week session starting May, August, and November. The web analytics data come from Mixpanel, accessed using python for the API call with a [Jupyter Notebook](https://github.com/DSACMS/iv-cbv-payroll/blob/main/app/analytics/analytics.ipynb)). All of the underlying code can be found on [GitHub](https://github.com/DSACMS/iv-cbv-payroll/tree/main/app/analytics).
+
+# Analysis
 
 ```{r}
-#| echo: false
-#| warning: false
+#| label: dependencies
 
 #dependencies to load
 library(tidyverse)
+library(here)
 library(jsonlite, warn.conflicts = FALSE)
 library(patchwork)
 library(scales)
@@ -38,12 +56,14 @@ library(gt)
 library(ggsankey) ## remotes::install_github("davidsjoberg/ggsankey")
 library(glamr) ##install.packages('glamr', repos = c('https://usaid-oha-si.r-universe.dev', 'https://cloud.r-project.org'))
 library(glitr) #install.packages('glitr', repos = c('https://usaid-oha-si.r-universe.dev', 'https://cloud.r-project.org'))
+library(gtayblr) ## remotes::install_github("USAID-OHA-SI/gtayblr")
 ```
 
 ```{r}
+#| label: dsac_colors
 #| echo: false
 #| warning: false
-#| 
+
 #set DSAC colors
 dsac_color <- c("#103D68", "#136A5D", "#6A1344", "#EFAC2F", "#63789D", "#C1C9D7", "#5A9088", "#842F66", "#123054")
 dsac_color_name <- c("navy", "teal", "cranberry", "gold", "light_navy", "pale_navy", "light_teal", "light_cranberry", "dark_navy")
@@ -52,43 +72,48 @@ rm(dsac_color_name)
 ```
 
 ```{r}
-#| echo: false
-#| warning: false
+#| label: data_paths
 
-paths_prior <- list.files("app/analytics", "mixpanel_data_2025-0(5|8).*json", full.names = TRUE)
-path_curr <- return_latest("app/analytics", "mixpanel.*json")
+#identify paths for json data for each of the three periods
+paths <- list.files(here("app/analytics"), "mixpanel.*json", full.names = TRUE)
 
-paths <- c(paths_prior, path_curr)
-
-data_pd <- paths |> 
-    basename() |> 
-    str_extract('(?<=data_).*(?=\\.json)') |> 
-    str_replace_all("_", " ")
+# paths |> 
+#     basename() |> 
+#     str_extract('(?<=data_).*(?=\\.json)') |> 
+#     str_replace_all("_", " ")
 
 ```
 
-The the current dataset is located in the `app/analytics` folder, output from running the the API from the analytics Jupyter Notebook. The dataset covers the period from `{r} data_pd` as well as the prior May and August pilots.
-
-We need to start by reading in the json dataset and converting it to a dataframe that includes details relevant to our analysis.
-
 ```{r}
-# Read the JSON file & convert to tibble, keeping properties as a nest list
-# Each line is a separate JSON object, so we use stream_in or read_lines
+#| label: fcn_import
 
+# function to read the JSON file & convert to tibble, keeping properties as a nest list
 read_mp <- function(path){
  
- json <- read_lines(path) |> map(fromJSON) 
+ json <- readr::read_lines(path) |> purrr::map(jsonlite::fromJSON) 
 
-  df <- tibble(event = map_chr(json, ~ .x$event),
-               properties = map(json, ~ .x$properties),
-               timestamp = map_chr(json, ~ .x$timestamp)
-              )
+ df <- 
+  tibble::tibble(
+    event = purrr::map_chr(json, ~ .x$event),
+    properties = purrr::map(json, ~ .x$properties),
+    timestamp = purrr::map_chr(json, ~ .x$timestamp)
+    )
   
   return(df)
 
 }
+```
 
-df_mp <- paths[3] |> map(read_mp) |> list_rbind()
+```{r}
+#| label: data_import
+
+#read in the json data
+df_mp <- read_mp(paths[3]) 
+# df_mp <- paths |> map(read_mp) |> list_rbind()
+```
+
+```{r}
+#| label: munging
 
 #convert time to a time variable and make a week variable
 df_mp <- df_mp |>
@@ -103,17 +128,11 @@ df_mp <- df_mp |>
       pilot = factor(pilot, c("May 2025", "Aug 2025", "Nov 2025")),
     week = timestamp |> floor_date("weeks") |> as_date()
     )
-```
 
-We can drop all the page view events, which have no property data useful in our analysis.
-
-```{r}
+#drop page view events - no property data useful in analysis
 df_mp <- df_mp |> 
   filter(event != "CbvPageView")
-```
 
-Let's extract the user id and their flow id to review in the analysis.
-```{r}
 # Extract distinct_id from the nested properties list
 df_mp <- df_mp %>%
   mutate(
@@ -132,34 +151,15 @@ df_mp <- df_mp |>
   relocate(distinct_id, cbv_flow_id, timestamp, week, .before = everything()) |>
   relocate(properties, .after = last_col())
 
+#remove events without CBV flow id (case workers + timeouts)
+df_mp <- df_mp |> 
+  filter(!is.na(cbv_flow_id))
+
+#arrange time descending (most recent events on top by user)
 df_mp <- df_mp |>
   arrange(distinct_id, desc(timestamp))
 
-glimpse(df_mp)
-```
-
-We can eliminate events that do not contain CBV Flow IDs, which are largely Caseworkers inviting the applicates to the flow. 
-
-```{r}
-#| echo: false
-#| warning: false
-
-#review events without cbv_flow id
-# df_mp |> 
-#   filter(is.na(cbv_flow_id)) |> 
-#   count(event, sort = TRUE) |> 
-#   prinf()
-```
-```{r}
-df_mp <- df_mp |> 
-  # filter(str_detect(distinct_id, "applicant-"))
-  filter(!is.na(cbv_flow_id))
-```
-
-We can make the platform specific events generic by removing the platform name from the event, but we'll keep the information in a new column for comparision in the analysis.
-
-```{r}
-#extract type from event to make generic
+#extract type from event to make events generic
 df_mp <- df_mp |> 
   mutate(
     provider = str_extract(event, "Pinwheel|Argyle"),
@@ -167,50 +167,81 @@ df_mp <- df_mp |>
     ) 
 ```
 
+## How many users are starting but not completing the process?
 
-## How many people are completing the pilot?
+To start off with, we need to understand how many applicants are starting out this process. 
+
 ```{r}
+#| label: fcn_clean_events
+
+#clean event names for viz to add space and remove repetitive "applicant" text
+clean_events <- function(df){
+
+  df |> 
+    mutate(
+      event_clean = event |> 
+        str_replace_all("(?<!^)([A-Z])", " \\1") |> 
+        str_remove("Applicant ") |> 
+        str_remove(" Or Platform Item"),
+        .after = event
+        )
+}
+```
+```{r}
+#| label: retention_rate
+
 df_compl <- df_mp |> 
   filter(event %in% c("ApplicantViewedAgreement","ApplicantAccessedSuccessPage")) |> 
-  group_by(pilot, week, event) |> 
+  clean_events() |> 
+  group_by(pilot, week, event_clean) |> 
   summarise(
     n_distinct = n_distinct(distinct_id),
     .groups = "drop"
     ) |> 
   pivot_wider(
-    names_from = event,
+    names_from = event_clean,
     values_from = n_distinct
     ) |> 
-  mutate(completion_rate_wk = ApplicantAccessedSuccessPage / ApplicantViewedAgreement) |> 
+  mutate(completion_rate_wk = `Accessed Success Page` / `Viewed Agreement`) |> 
   group_by(pilot) |> 
   mutate(plt_wk = str_glue("wk{isoweek(week) - min(isoweek(week)) + 1}"), .after = pilot) |> 
-  mutate(completion_rate_plt = sum(ApplicantAccessedSuccessPage) / sum(ApplicantViewedAgreement)) |> 
+  mutate(completion_rate_plt = sum(`Accessed Success Page`) / sum(`Viewed Agreement`)) |> 
   ungroup()
 ```
 
-Comparing how many people are completing each pilot period, in the first pilot  many more applicants started the processed (i.e. viewed the agreement), but a smaller share completed it (i.e. shared their income summary). However, we do see roughly the same volume of recipients completing the process end to end. 
+Comparing how many people are completing each pilot period, in the first pilot many more applicants started the processed (i.e. viewed the agreement), but a smaller share completed it (i.e. shared their income summary). However, we do see roughly the same volume of recipients completing the process end to end.
 
 ```{r}
+#| label: retention_tbl
+#| output: true
+
 df_compl |> 
   group_by(pilot) |> 
   summarise(
-    across(c(ApplicantViewedAgreement, ApplicantAccessedSuccessPage), 
+    across(c(`Viewed Agreement`, `Accessed Success Page`), 
     \(x) sum(x, na.rm = TRUE)),
    .groups = "drop"
     ) |> 
-  mutate(completion_rate_plt = ApplicantAccessedSuccessPage / ApplicantViewedAgreement) |> 
-gt() |> 
-fmt_number(columns = starts_with("Applicant"), decimals = 0) |> 
-fmt_percent(columns = completion_rate_plt, decimals = 0)
+  mutate(`Completion` = `Accessed Success Page` / `Viewed Agreement`) |> 
+  gt() |> 
+  format_numeric_columns() |> 
+  si_gt_base(header_fill = dsac_color['teal']) |> 
+  adjust_row_padding() |> 
+  add_labs(
+    title = "Completion Rates by Pilot"
+  )
 
 ```
 
-If we compare weeks with in each pilot, we are seeing a similar trend of most people starting in the first week or two and then tailing off after that. While the first two pilot periods saw the second week as having the highest compeltion rate, the current pilot saw an increase in weeks 2 and then week 3 for completion rates. 
+If we compare weeks with in each pilot, we are seeing a similar trend of most people starting in the first week or two and then tailing off after that. While the first two pilot periods saw the second week as having the highest compeltion rate, the current pilot saw an increase in weeks 2 and then week 3 for completion rates.
 
 ```{r}
+#| label: retention_viz
+#| output: true
+
 v1 <- df_compl |> 
   pivot_longer(
-    c(ApplicantViewedAgreement, ApplicantAccessedSuccessPage),
+    c(`Accessed Success Page`, `Viewed Agreement`),
     names_to = "event") |> 
   ggplot(aes(plt_wk, value)) +
   geom_col(fill = dsac_color[['teal']]) +
@@ -219,7 +250,7 @@ v1 <- df_compl |>
   si_style_ygrid() +
   labs(
     x = NULL, y = NULL,
-    subtitle = "Weekly Completition Rate") +
+    subtitle = "Views by Applicant") +
   theme(
     strip.text = element_text(hjust = .5),
     strip.placement = "outside"
@@ -228,7 +259,11 @@ v1 <- df_compl |>
   v2 <- df_compl |> 
   ggplot(aes(plt_wk, completion_rate_wk)) +
   geom_col(fill = dsac_color[['teal']]) +
-  geom_hline(aes(yintercept = completion_rate_plt), color = dsac_color[['gold']]) +
+  geom_hline(
+    aes(yintercept = completion_rate_plt), 
+    color = dsac_color[['cranberry']],
+    linetype = "dashed"
+    ) +
   facet_grid(pilot ~. , scales = "free_x", switch = "y") +
   scale_y_continuous(label = label_percent()) +
   labs(
@@ -245,7 +280,10 @@ v1 <- df_compl |>
 
 ## How long does it take to complete?
 
+On the client side, the goal of the app is to creating something easy to complete. Ideally, applicants can complete the process in a matter of minutes. We can look at time it takes to submit to understand if it places an undue burden on applicants. 
+
 ```{r}
+#| label: duration_calc
 
 df_time <- df_mp |> 
   filter(
@@ -254,7 +292,7 @@ df_time <- df_mp |>
   ) |> 
   mutate(completed = event == "ApplicantAccessedSuccessPage") |>
   mutate(time_start = case_when(event == "ApplicantViewedAgreement" ~ timestamp)) |> 
-  group_by(distinct_id) |> 
+  group_by(pilot, distinct_id, cbv_flow_id) |> 
   mutate(
     completed = max(completed, na.rm = TRUE),
     time_end = ifelse(event == "ApplicantAccessedSuccessPage", timestamp, max(timestamp)),
@@ -263,6 +301,7 @@ df_time <- df_mp |>
   ungroup()
 
 df_duration <- df_time |> 
+  filter(!is.na(time_start)) |> 
   group_by(pilot, distinct_id) |> 
   summarise(
     attempts = n_distinct(cbv_flow_id),
@@ -271,17 +310,148 @@ df_duration <- df_time |>
     time_end = max(time_end, na.rm = TRUE),
     .groups = "drop"
     ) |> 
-  filter(
-    time_start != -Inf,
-    time_start != time_end,
-    ) |> 
+  # tidylog::filter(time_start != time_end) |> 
   mutate(duration = time_end - time_start)
 ```
+
+```{r}
+#| label: duration_stats
+
+df_duration_stats <- df_duration |> 
+  mutate(
+    completed_type = case_when(
+      completed == 1 ~ 'completed',
+      time_start == time_end ~ 'just clicked',
+      TRUE ~ 'incomplete'
+      ) 
+      ) |> 
+  group_by(completed_type) |> 
+  mutate(minutes = as.numeric(duration) / 60 ) |> 
+  summarise(
+    n = n(),
+    q25 = quantile(minutes, 0.25, na.rm = TRUE),
+    median = median(minutes, na.rm = TRUE),
+    mean = mean(minutes, na.rm = TRUE),
+    q75 = quantile(minutes, 0.75, na.rm = TRUE),
+    q90 = quantile(minutes, .9, na.rm = TRUE)
+    )
+```
+Of the `{r} scales::label_comma()(df_duration_stats[df_duration_stats$completed_type == 'completed',]$n)` applicants who completed the application, the median time was `{r} scales::label_number(.1)(df_duration_stats[df_duration_stats$completed_type == 'completed',]$median)` minutes, with 75% completing it within `{r} scales::label_number(.1)(df_duration_stats[df_duration_stats$completed_type == 'completed',]$q75)` minutes. The timing looks pretty good from that vantage point. However, most applicants are not completing the application, `{r} scales::label_comma()(df_duration_stats[df_duration_stats$completed_type != 'completed',]$n |> sum())` distinct ids.^[Its important to note the switch here from applicants to distinct ids. Since most many applicants are sent generic links, we cannot track multiple sessions over time. So a user may start the process multiple times and complete and each one of those sessions would have its own distinct id] Of those distinct ids, `{r} scales::label_percent()(df_duration_stats[df_duration_stats$completed_type == 'just clicked',]$n / df_duration_stats[df_duration_stats$completed_type != 'completed',]$n |> sum())` are clicking the link and not proceeding beyond that. When looking at incomplete applications excluding those that just clicked, the median applicant spends `{r} scales::label_number(.1)(df_duration_stats[df_duration_stats$completed_type == 'incomplete',]$median)` minutes on the applicantion before they stop, with 75% aborting after only `{r} scales::label_number(.1)(df_duration_stats[df_duration_stats$completed_type == 'incomplete',]$q75)` minutes. 
+
+```{r}
+#| label: viz_duration
+#| output: true
+df_duration_stats |> 
+  mutate(
+    fill_color = 
+    case_match(completed_type,
+      'completed' ~ dsac_color['navy'],
+      'incomplete' ~ dsac_color['cranberry'],
+      'just clicked' ~ dsac_color['cranberry']
+      ),
+    completed_type = str_glue('{completed_type} (n = {label_comma()(n)})')) |> 
+  ggplot(aes(y = fct_rev(completed_type), group = completed_type, color = fill_color)) +
+  geom_linerange(aes(xmin = q25, xmax = q75)) +
+  geom_point(aes(median), size = 4) +
+  scale_x_continuous(position = "top") +
+  scale_color_identity() +
+  labs(
+    x = NULL, y = NULL,
+    title = str_glue("USERS NOT COMPLETING THE APPLICATION END AFTER ABOUT {label_number(.1)(df_duration_stats[df_duration_stats$completed_type == 'incomplete',]$median)} MINUTES"),
+    subtitle = 
+      "displaying the median session minutes against the range from the 25-75 percentile" 
+      ) +
+  si_style()
+
+```
+
+### How long does the data syncing with Argyle/Pinwheel take?
+
+Syncing the data once the employer is chosen can take a bit of time to occur. The longer it takes, we may be more likely to see applicants drop off.  
+
+```{r}
+#| label: data_sync
+
+df_sync <- df_mp |> 
+  filter(
+    event %in% c("ApplicantSucceededWithLogin", "ApplicantFinishedSync"),
+    ) |>
+  distinct(distinct_id, cbv_flow_id, timestamp, event, pilot, provider) |> 
+  group_by(distinct_id, cbv_flow_id, event, pilot, provider) |> 
+  filter(timestamp == max(timestamp)) |> 
+  ungroup() |> 
+  pivot_wider(
+    names_from = event,
+    values_from = timestamp
+    ) |> 
+  mutate(sync_time = ApplicantFinishedSync - ApplicantSucceededWithLogin)
+
+df_sync <- df_sync |> 
+  tidylog::filter(
+    !is.na(sync_time), 
+    sync_time > 0
+    )
+
+df_sync_viz <- df_sync |> 
+  group_by(pilot, provider) |> 
+  summarise(
+    n = n(),
+    min = min(sync_time, na.rm = TRUE), 
+    q25 = quantile(sync_time, 0.25, na.rm = TRUE),
+    median = median(sync_time, na.rm = TRUE),
+    mean = mean(sync_time, na.rm = TRUE),
+    q75 = quantile(sync_time, 0.75, na.rm = TRUE),
+    max = max(sync_time, na.rm = TRUE),
+    .groups = "drop"
+    ) 
+  # pivot_longer(
+  #   -c(pilot, provider),
+  #   names_to= "stat"
+  #   ) |> 
+  # pivot_wider(
+  #   names_from = provider
+  #     )
+```
+
+```{r}
+#| label: long_sync
+
+lng_run <- 180
+
+v_lng_run_shr <- df_sync |> 
+  count(sync_time > lng_run) |> 
+  mutate(share = n / sum(n)) |> 
+  filter(`sync_time > lng_run` == TRUE) |> 
+  mutate(label = label_percent(1)(share)) |> 
+  pull()
+
+```
+Overall, we are looking at a median sync time of `{r} median(df_sync$sync_time, na.rm = TRUE)` seconds, with 75% of users seeing it take under `{r} quantile(df_sync$sync_time, .75, na.rm = TRUE)` seconds. Of the `scales::label_comma()(nrow(df_sync))` successful data syncs, `{r} v_lng_run_shr` take longer than `{r} lng_run` seconds to sync. 
+
+We can see how this places our when comparing different payroll aggregators used, Argyle and Pinwheel. Each pilot we can see there is a signficant gap between the time it takes to sync with Pinwheel versus Argyle. 
+
+```{r}
+#| label: data_sync_tbl
+
+df_sync_viz |> 
+  mutate(across(where(is.duration), as.numeric)) |> 
+  glimpse()
+  gt(groupname_col = "pilot") |> 
+  fmt_number(columns = everything(), decimals = 1) |> 
+  adjust_row_padding() |> 
+  si_gt_base(header_fill = dsac_color['teal'])
+```
+
+
 
 
 ## Where are people dropping off?
 
+To get a sense of where applicants are dropping off, we can look at some key points/pages to see whether they reached that step. 
+
 ```{r}
+#| label: event_steps
+
 v_steps <- c(
   "ApplicantViewedAgreement",
   "ApplicantAgreed",
@@ -291,27 +461,38 @@ v_steps <- c(
   "ApplicantViewedPaymentDetails",
   "ApplicantAccessedSuccessPage"
   )
+```
+
+```{r}
+#| label: event_table
+#| output: true
 
 df_ret <- df_mp |>
   filter(event %in% v_steps) |> 
-  select(distinct_id, event) |> 
-  distinct(distinct_id, event) |> 
-  count(event, sort = TRUE, name = "views") |> 
+  clean_events() |> 
+  select(distinct_id, event_clean) |> 
+  distinct(distinct_id, event_clean) |> 
+  count(event_clean, sort = TRUE, name = "views") |> 
   mutate(
     share_lag = views / lag(views),
     share_cum = views / max(views),
-    share_cum = ifelse(event == "ApplicantViewedAgreement", NA, share_cum)
+    share_cum = ifelse(event_clean == "Viewed Agreement", NA, share_cum)
       )
 
-df_ret |> 
+df_ret |>
   gt() |> 
-  fmt_number(columns = views, decimals = 0) |> 
-  fmt_percent(columns = starts_with("share"), decimals = 0) |> 
+  si_gt_base(header_fill = dsac_color['teal']) |> 
+  adjust_row_padding() |> 
+  format_numeric_columns() |> 
   sub_missing()
 
 ```
 
+Right off the bat, we can see that off the `{r} scales::label_comma()(df_ret[df_ret$event_clean == "Viewed Agreement",]$views)` distinct users who started the application, only `{r} scales::label_percent(1)(df_ret[df_ret$event_clean == "Agreed",]$share_cum)` agreed to terms to move on, and only `{r} scales::label_percent(1)(df_ret[df_ret$event_clean == "Accessed Success Page",]$share_cum)` actually made it to completion, submitting their pay information. 
+
 ```{r}
+#| label: event_journey
+#| output: true
 
 df_journey <- df_mp |> 
   filter(event %in% v_steps) |> 
@@ -365,15 +546,27 @@ sankey_long |>
   scale_fill_identity() + 
   labs(x = NULL, y = NULL) +
   si_style_nolines() + 
-  theme(axis.text.y = element_blank()) 
+  theme(axis.text = element_blank()) 
 ```
 
 ## Are users accessing the documentation (help or FAQ) before dropping off?
 
-```{r}
-v_help_events <- c("ApplicantOpenedHelpModal","ApplicantViewedHelpText", "ApplicantViewedHelpTopic", "ApplicantManuallySwitchedLanguage")
+The prior section gave use a sense of where users were dropping off. It may be useful to see if users are accessing the documentation before they abort the application. Looking at the data, we can see that on average, those who completed the application had slight more "help actions" than those who did not. This of course is affected by the fact that those who continued saw more pages than those who did not or that using the help more they were more likely to find what they needed to continue onward. 
 
-df_time |> 
+```{r}
+#| label: help_events
+v_help_events <- c(
+  "ApplicantOpenedHelpModal",
+  "ApplicantViewedHelpText", 
+  "ApplicantViewedHelpTopic", 
+  "ApplicantManuallySwitchedLanguage")
+```
+
+```{r}
+#| label: help_summary
+#| output: true
+
+df_attempts <- df_time |> 
   mutate(help = event %in% v_help_events) |> 
   group_by(pilot, distinct_id) |>
   summarise(
@@ -390,18 +583,35 @@ df_time |>
     .groups = "drop"
   ) |> 
   mutate(completed = as.logical(completed))
+
+df_attempts |> 
+  gt() |> 
+  fmt_number(columns = n_users, decimals = 0) |> 
+  fmt_number(columns = starts_with('mean'), decimals = 1) |> 
+  si_gt_base(header_fill = dsac_color['teal']) |> 
+  adjust_row_padding() 
+  # add_labs(
+  #   title = "Completion Rates by Pilot"
+  # )
+
 ```
 
+We can investigate this further, looking at the total help views by page, comparing whether the user continued on past that page or ended there. We can see that most of the agreement page are on the agreement. There is significantly more usage of the help^1[In this particular case, we are looking at the number of times the help or FAQ was access, so we can have multiple help access points by user on the same page] than those who used help on that page but continued on to the next page. 
 
-```{r}  
+```{r}
+#| label: help_viz
+#| output: true
+
+v_page_order <- tibble(event = c("LandingPage", v_steps)) |> clean_events() |> pull()
+
 df_help <- df_time |> 
   left_join(
     tibble(
       event_order = 1:length(v_steps), 
-      event = v_steps,
-      page = event,
-      # page = factor(event, c("ApplicantClickedLink", v_steps)
-      ),
+      event = v_steps
+      ) |> 
+    clean_events() |> 
+    rename(page = event_clean),
     by = "event"
   )|>
   group_by(distinct_id, cbv_flow_id) |> 
@@ -409,19 +619,20 @@ df_help <- df_time |>
   fill(event_order, .direction = "up") |> 
   mutate(
     event_order = ifelse(is.na(event_order), 0, event_order),
-    page = ifelse(is.na(page), "ApplicantClickedLink", page)
+    page = ifelse(is.na(page), "Landing Page", page)
     ) |> 
   mutate(
-    page = factor(page, c("ApplicantClickedLink", v_steps)),
+    page = factor(page, v_page_order),
     last_page = event_order == max(event_order, na.rm = TRUE),
     accessed_help = event %in% v_help_events
       ) |> 
-  ungroup()
-
-df_help <- df_help |> 
+  ungroup() |> 
   group_by(distinct_id, cbv_flow_id, page, last_page) |> 
   mutate(accessed_help = max(accessed_help, na.rm = TRUE)) |> 
-  ungroup() |> 
+  ungroup()
+
+
+df_help_viz <- df_help  |> 
   group_by(page, last_page) |> 
   summarise(
     n_users = n_distinct(distinct_id),
@@ -429,61 +640,20 @@ df_help <- df_help |>
     accessed_help = sum(accessed_help, na.rm = TRUE),
     .groups = "drop"
   ) |> 
-  mutate(fill_color = ifelse(last_page == TRUE, dsac_color['teal'], dsac_color['light_navy']))
+  mutate(
+    fill_color = ifelse(last_page == TRUE, dsac_color['teal'], dsac_color['light_navy']),
+    last_page_lab = ifelse(last_page == TRUE, "Last Page", "Continued On")
+    )
 
-df_help |> 
+df_help_viz |> 
   ggplot(aes(accessed_help, fct_rev(page), fill = fill_color)) +
   geom_col() +
-  facet_wrap(~last_page) +
+  facet_wrap(~fct_rev(last_page_lab)) +
   labs(x = NULL, y = NULL) +
   scale_fill_identity() + 
   scale_x_continuous(label = comma_format()) +
   si_style_xgrid()
 
-```
-
-## How long does the data syncing with Argyle/Pinwheel take?
-
-```{r}
-df_sync <- df_mp |> 
-  filter(
-    event %in% c("ApplicantSucceededWithLogin", "ApplicantFinishedSync"),
-    ) |>
-  distinct(distinct_id, cbv_flow_id, timestamp, event, pilot, provider) |> 
-  group_by(distinct_id, cbv_flow_id, event, pilot, provider) |> 
-  filter(timestamp == max(timestamp)) |> 
-  ungroup() |> 
-  pivot_wider(
-    names_from = event,
-    values_from = timestamp
-    ) |> 
-  mutate(sync_time = ApplicantFinishedSync - ApplicantSucceededWithLogin)
-
-df_sync |> 
-  group_by(pilot, provider) |> 
-  summarise(
-    min = min(sync_time, na.rm = TRUE), 
-    q25 = quantile(sync_time, 0.25, na.rm = TRUE),
-    median = median(sync_time, na.rm = TRUE),
-    mean = mean(sync_time, na.rm = TRUE),
-    # stdev = sd(sync_time, na.rm = TRUE),
-    q75 = quantile(sync_time, 0.75, na.rm = TRUE),
-    max = max(sync_time, na.rm = TRUE)) %>%
-  pivot_longer(
-    -c(pilot, provider),
-    names_to= "stat"
-    ) |> 
-  pivot_wider(
-    names_from = provider
-      )
-    
-
-
-df_sync |> 
- ggplot(aes(sync_time, provider)) +
- geom_boxplot(outliers = FALSE) +
- si_style()
-  
 ```
 
 
@@ -526,7 +696,7 @@ df_employers |>
 
 ## First page
 
-From the get go, users are already dropping off. 
+From the get go, users are already dropping off.
 
 ```{r}
 df_mp |> 
@@ -535,7 +705,6 @@ df_mp |>
   ungroup() |> 
   count(event, sort = TRUE)
 ```
-
 
 ```{r}
 df_mp |> 
@@ -575,22 +744,4 @@ df_pg1_visits |>
     subtitle = "This looks at how many visits each user had to initiate FFS" 
       ) +
   si_style()
-```
-
-
-
-```{r}
-df_mp |> 
-  filter(event %in% c("ApplicantViewedAgreement", "ApplicantConsentedToTerms", "ApplicantAccessedSearchPage", "ApplicantAgreed")) |> 
-  count(event)
-
-
-
-
-
-```
-
-```{r} |> 
-df_mp |> 
-  filter(event == "")
 ```
