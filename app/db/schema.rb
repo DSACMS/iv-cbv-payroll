@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2025_12_09_230406) do
+ActiveRecord::Schema[8.1].define(version: 2025_12_23_032643) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
   enable_extension "pgcrypto"
@@ -134,16 +134,20 @@ ActiveRecord::Schema[8.1].define(version: 2025_12_09_230406) do
   end
 
   create_table "payroll_accounts", force: :cascade do |t|
+    t.bigint "activity_flow_id"
     t.string "aggregator_account_id"
-    t.bigint "cbv_flow_id", null: false
     t.datetime "created_at", null: false
+    t.bigint "flow_id", null: false
+    t.string "flow_type"
     t.datetime "income_synced_at", precision: nil
     t.datetime "redacted_at"
     t.string "supported_jobs", default: [], array: true
     t.string "synchronization_status", default: "unknown"
     t.string "type", default: "pinwheel", null: false
     t.datetime "updated_at", null: false
-    t.index ["cbv_flow_id"], name: "index_payroll_accounts_on_cbv_flow_id"
+    t.index ["activity_flow_id"], name: "index_payroll_accounts_on_activity_flow_id"
+    t.index ["flow_id"], name: "index_payroll_accounts_on_flow_id"
+    t.index ["flow_type", "flow_id"], name: "index_payroll_accounts_on_flow_type_and_flow_id"
   end
 
   create_table "solid_queue_blocked_executions", force: :cascade do |t|
@@ -314,7 +318,7 @@ ActiveRecord::Schema[8.1].define(version: 2025_12_09_230406) do
   add_foreign_key "cbv_flows", "cbv_flow_invitations"
   add_foreign_key "education_activities", "activity_flows"
   add_foreign_key "job_training_activities", "activity_flows"
-  add_foreign_key "payroll_accounts", "cbv_flows"
+  add_foreign_key "payroll_accounts", "cbv_flows", column: "flow_id"
   add_foreign_key "solid_queue_blocked_executions", "solid_queue_jobs", column: "job_id", on_delete: :cascade
   add_foreign_key "solid_queue_claimed_executions", "solid_queue_jobs", column: "job_id", on_delete: :cascade
   add_foreign_key "solid_queue_failed_executions", "solid_queue_jobs", column: "job_id", on_delete: :cascade

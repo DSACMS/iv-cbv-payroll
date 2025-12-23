@@ -60,7 +60,7 @@ class PayrollAccount::Argyle < PayrollAccount
   end
 
   def redact!
-    argyle_environment = Rails.application.config.client_agencies[cbv_flow.cbv_applicant.client_agency_id].argyle_environment
+    argyle_environment = Rails.application.config.client_agencies[flow.cbv_applicant.client_agency_id].argyle_environment
     argyle = Aggregators::Sdk::ArgyleService.new(argyle_environment)
     argyle.delete_account_api(account: aggregator_account_id)
     touch(:redacted_at)

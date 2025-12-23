@@ -62,7 +62,7 @@ class Transmitters::EncryptedS3Transmitter
   end
 
   def generate_csv
-    payroll_account = PayrollAccount.find_by(cbv_flow_id: @cbv_flow.id)
+    payroll_account = PayrollAccount.find_by(flow_id: @cbv_flow.id)
 
     data = {
       client_id: @cbv_flow.cbv_applicant.agency_id_number,

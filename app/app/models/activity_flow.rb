@@ -1,4 +1,4 @@
-class ActivityFlow < ApplicationRecord
+class ActivityFlow < Flow
   belongs_to :cbv_applicant
   belongs_to :identity, optional: true
   belongs_to :activity_flow_invitation, optional: true

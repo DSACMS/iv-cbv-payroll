@@ -1,6 +1,6 @@
 FactoryBot.define do
   factory :payroll_account, class: "PayrollAccount" do
-    cbv_flow
+    association :flow, factory: :cbv_flow
     aggregator_account_id { SecureRandom.uuid }
     supported_jobs { %w[income paystubs employment identity] }
     type { "pinwheel" }
@@ -87,7 +87,7 @@ FactoryBot.define do
         payroll_account.webhook_events << build(
           :webhook_event,
           event_name: "accounts.updated",
-          event_outcome:  "error"
+          event_outcome: "error"
         )
       end
     end

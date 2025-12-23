@@ -16,7 +16,7 @@ RSpec.describe Cbv::MissingResultsController do
     end
 
     context "when the user has already linked a pinwheel account" do
-      let!(:payroll_account) { create(:payroll_account, cbv_flow: cbv_flow) }
+      let!(:payroll_account) { create(:payroll_account, flow: cbv_flow) }
 
       it "renders successfully" do
         get :show
@@ -25,7 +25,7 @@ RSpec.describe Cbv::MissingResultsController do
     end
 
     context "when the cbv_flow has a fully_synced payroll account" do
-      let!(:payroll_account) { create(:payroll_account, :argyle_fully_synced, cbv_flow: cbv_flow) }
+      let!(:payroll_account) { create(:payroll_account, :argyle_fully_synced, flow: cbv_flow) }
 
       it "renders the link in the view" do
         get :show
@@ -34,7 +34,7 @@ RSpec.describe Cbv::MissingResultsController do
     end
 
     context "when the cbv_flow does not have a fully_synced payroll account" do
-      let!(:payroll_account) { create(:payroll_account, :argyle_sync_in_progress, cbv_flow: cbv_flow) }
+      let!(:payroll_account) { create(:payroll_account, :argyle_sync_in_progress, flow: cbv_flow) }
 
       it "does not render the link in the view" do
         get :show

@@ -46,7 +46,7 @@ class Webhooks::Argyle::EventsController < ApplicationController
     # record duplicate webhook events
     syncing_payroll_accounts = PayrollAccount::Argyle
       .awaiting_fully_synced_webhook
-      .where(cbv_flow: @cbv_flow)
+      .where(flow_type: @cbv_flow.class.name, flow_id: @cbv_flow.id)
 
     # Handle each connected account separately
     syncing_payroll_accounts.map do |payroll_account|

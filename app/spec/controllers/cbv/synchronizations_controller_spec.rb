@@ -5,7 +5,7 @@ RSpec.describe Cbv::SynchronizationsController do
 
   let(:cbv_flow) { create(:cbv_flow, :invited) }
   let(:errored_jobs) { [] }
-  let(:payroll_account) { create(:payroll_account, :pinwheel_fully_synced, with_errored_jobs: errored_jobs, cbv_flow: cbv_flow) }
+  let(:payroll_account) { create(:payroll_account, :pinwheel_fully_synced, with_errored_jobs: errored_jobs, flow: cbv_flow) }
   let(:nonexistent_id) { "nonexistent-id" }
 
   before do
@@ -109,7 +109,7 @@ RSpec.describe Cbv::SynchronizationsController do
 
     context "when argyle encounters 'accounts.update' system_error webhook" do
       let(:errored_jobs) { [ "accounts" ] }
-      let(:payroll_account) { create(:payroll_account, :argyle_fully_synced, :argyle_system_error_encountered, with_errored_jobs: errored_jobs, cbv_flow: cbv_flow) }
+      let(:payroll_account) { create(:payroll_account, :argyle_fully_synced, :argyle_system_error_encountered, with_errored_jobs: errored_jobs, flow: cbv_flow) }
 
       it "redirects to the synchronizations failures page" do
         patch :update, params: { user: { account_id: payroll_account.aggregator_account_id } }
@@ -121,7 +121,7 @@ RSpec.describe Cbv::SynchronizationsController do
 
     context "when the account belongs to a different cbv flow" do
       let(:another_cbv_flow) { create(:cbv_flow, :invited) }
-      let!(:another_flow_payroll_account) { create(:payroll_account, :pinwheel_fully_synced, cbv_flow: another_cbv_flow) }
+      let!(:another_flow_payroll_account) { create(:payroll_account, :pinwheel_fully_synced, flow: another_cbv_flow) }
 
       it "returns unauthorized and redirects to synchronization failures" do
         patch :update, params: { user: { account_id: another_flow_payroll_account.aggregator_account_id } }, as: :turbo_stream

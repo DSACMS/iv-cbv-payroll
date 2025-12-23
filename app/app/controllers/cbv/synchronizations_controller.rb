@@ -45,7 +45,7 @@ class Cbv::SynchronizationsController < Cbv::BaseController
 
     payroll_account_for_other_flow = PayrollAccount
       .where(aggregator_account_id: params[:user][:account_id])
-      .where.not(cbv_flow: @cbv_flow)
+      .where.not(flow: @cbv_flow)
     return unless payroll_account_for_other_flow.exists?
 
     render turbo_stream: turbo_stream.action(:redirect, cbv_flow_synchronization_failures_path)
