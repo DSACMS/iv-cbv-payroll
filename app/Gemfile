@@ -79,7 +79,7 @@ gem "stackprof"
 gem "rexml", "~> 3.4.2"
 gem "gpgme", "~> 2.0"
 gem "pdf-reader", "~> 2.15.0"
-gem "net-imap", "0.4.20"  # Fixing GHSA-j3g3-5qv5-52m
+gem "net-imap", "0.6.2"   # Fixing GHSA-j3g3-5qv5-52m
 gem "cgi", ">= 0.4.2"     # Fixing GHSA-mhwm-jh88-3gjf
 gem "thor", ">= 1.4.0"    # Fixing GHSA-mqcp-p2hv-vw6x
 
