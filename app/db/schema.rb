@@ -134,7 +134,6 @@ ActiveRecord::Schema[8.1].define(version: 2025_12_23_032643) do
   end
 
   create_table "payroll_accounts", force: :cascade do |t|
-    t.bigint "activity_flow_id"
     t.string "aggregator_account_id"
     t.datetime "created_at", null: false
     t.bigint "flow_id", null: false
@@ -145,7 +144,6 @@ ActiveRecord::Schema[8.1].define(version: 2025_12_23_032643) do
     t.string "synchronization_status", default: "unknown"
     t.string "type", default: "pinwheel", null: false
     t.datetime "updated_at", null: false
-    t.index ["activity_flow_id"], name: "index_payroll_accounts_on_activity_flow_id"
     t.index ["flow_id"], name: "index_payroll_accounts_on_flow_id"
     t.index ["flow_type", "flow_id"], name: "index_payroll_accounts_on_flow_type_and_flow_id"
   end
