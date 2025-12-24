@@ -6,7 +6,7 @@ class ActivityFlow < Flow
   has_many :volunteering_activities, dependent: :destroy
   has_many :job_training_activities, dependent: :destroy
   has_many :education_activities, -> { where(confirmed: true) }, dependent: :destroy
-  has_many :payroll_accounts, dependent: :destroy
+  has_many :payroll_accounts, as: :flow, dependent: :destroy
 
   def self.create_from_invitation(invitation, device_id)
     create(
