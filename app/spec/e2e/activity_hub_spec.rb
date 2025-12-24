@@ -3,6 +3,12 @@ require "rails_helper"
 RSpec.describe 'e2e Activity Hub flow test', type: :feature, js: true do
   include E2e::TestHelpers
   include_context "activity_hub"
+  around do |ex|
+    override_supported_providers([ :argyle ]) do
+      @e2e = E2e::MockingService.new(server_url: URI(page.server_url))
+      @e2e.use_recording("e2e_cbv_flow_english_argyle_only", &ex)
+    end
+  end
 
   it "completes the generic flow for all activities" do
     visit URI(root_url).request_uri
@@ -16,7 +22,24 @@ RSpec.describe 'e2e Activity Hub flow test', type: :feature, js: true do
 
     # Add an Income activity
     click_button I18n.t("activities.income.add")
-    verify_page(page, title: I18n.t("cbv.entries.show.header"))
+    verify_page(page, title: I18n.t("cbv.employer_searches.show.header"))
+    @e2e.replay_modal_callbacks(page.driver.browser) do
+      click_button "Paychex"
+    end
+    @e2e.record_modal_callbacks(page.driver.browser) do
+      argyle_container = find("div[id*=\"argyle-link-root\"]")
+      page.within(argyle_container) do
+        fill_in "username", with: "test_1", wait: 10
+        fill_in "password", with: "passgood"
+        click_button "Connect"
+        fill_in "legacy_mfa_token", with: "8081", wait: 30
+        click_button "Continue", wait: 30
+      end
+
+      # Wait for Argyle modal to disappear
+      find_all("div[id*=\"argyle-link-root\"]", maximum: 0, minimum: nil, wait: 30)
+    end
+    verify_page(page, title: I18n.t("cbv.synchronizations.show.header"), wait: 15)
 
     # Add a Volunteering activity
     click_button I18n.t("activities.volunteering.add")

@@ -28,7 +28,7 @@ class Cbv::SynchronizationsController < Cbv::BaseController
   def set_payroll_account
     account_id = params[:user][:account_id]
 
-    @payroll_account = @cbv_flow.payroll_accounts.find_by(aggregator_account_id: account_id)
+    @payroll_account = @flow.payroll_accounts.find_by(aggregator_account_id: account_id)
   end
 
   def redirect_if_sync_finished
@@ -45,7 +45,7 @@ class Cbv::SynchronizationsController < Cbv::BaseController
 
     payroll_account_for_other_flow = PayrollAccount
       .where(aggregator_account_id: params[:user][:account_id])
-      .where.not(flow: @cbv_flow)
+      .where.not(flow: @flow)
     return unless payroll_account_for_other_flow.exists?
 
     render turbo_stream: turbo_stream.action(:redirect, cbv_flow_synchronization_failures_path)

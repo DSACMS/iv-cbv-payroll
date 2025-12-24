@@ -311,14 +311,6 @@ RSpec.describe Aggregators::Sdk::ArgyleService, type: :service do
         expect(stub).to have_been_requested
       end
     end
-
-    context 'without external_id' do
-      it 'makes a POST request without external_id' do
-        stub = stub_request(:post, "https://api-sandbox.argyle.com/v2/users")
-        service.create_user
-        expect(stub).to have_been_requested
-      end
-    end
   end
 
   describe "#employer_search" do

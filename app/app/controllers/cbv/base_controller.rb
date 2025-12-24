@@ -158,10 +158,6 @@ class Cbv::BaseController < FlowController
     redirect_to cbv_flow_synchronization_failures_path
   end
 
-  def reset_cbv_session!
-    set_flow_session(nil, nil)
-  end
-
   def flow_param
     :cbv
   end
