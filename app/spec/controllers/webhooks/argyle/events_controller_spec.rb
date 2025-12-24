@@ -64,7 +64,7 @@ RSpec.describe Webhooks::Argyle::EventsController, type: :controller do
         create(
           :payroll_account,
           :argyle,
-          cbv_flow: cbv_flow,
+          flow: cbv_flow,
           aggregator_account_id: webhook_request.argyle_account_id,
         )
       end

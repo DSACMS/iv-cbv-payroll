@@ -104,7 +104,7 @@ end
 
       context "with both Argyle and Pinwheel data" do
         let!(:argyle_account) do
-          create(:payroll_account, :argyle_bob, cbv_flow: cbv_flow)
+          create(:payroll_account, :argyle_bob, flow: cbv_flow)
         end
 
         let(:pinwheel_identities_json) { pinwheel_load_relative_json_file('request_identity_response.json') }

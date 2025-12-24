@@ -64,9 +64,9 @@ module Aggregators::AggregatorReports
 
     def income_report
       {}.tap do |report|
-        report[:has_other_jobs] = payroll_accounts.first.cbv_flow.has_other_jobs
+        report[:has_other_jobs] = payroll_accounts.first.flow.has_other_jobs
         report[:employments] = summarize_by_employer.map do |_, summary|
-          cbv_flow = payroll_accounts.first.cbv_flow
+          cbv_flow = payroll_accounts.first.flow
           {
             applicant_full_name: summary[:identity]&.full_name,
             applicant_ssn: summary[:identity]&.ssn,
@@ -178,7 +178,7 @@ module Aggregators::AggregatorReports
       # reflects the actual time that the user was completing the flow (as
       # opposed to the invitation, which they could have been sitting on for
       # many days.)
-      @payroll_accounts.first.cbv_flow.created_at.to_date
+      @payroll_accounts.first.flow.created_at.to_date
     end
 
     def fetched_days_for_account(account_id)
