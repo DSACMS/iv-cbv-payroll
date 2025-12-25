@@ -96,6 +96,8 @@ en:
         other: "%{count} activities added"
       description: You can add as many activities as you need to report. Continue once you have added all your activities.
       title: Add activities to your Medicaid Community Engagement report
+    income:
+      add: Add Income
     job_training:
       add: Add Job Training Activity
       created: Job training activity was successfully created.

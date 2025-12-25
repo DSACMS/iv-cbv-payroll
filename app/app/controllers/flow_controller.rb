@@ -50,7 +50,7 @@ class FlowController < ApplicationController
         return redirect_to(cbv_flow_expired_invitation_path(client_agency_id: invitation.client_agency_id))
       end
 
-      @flow = flow_class.create_from_invitation(invitation, cookies.permanent.signed[:device_id])
+      @flow = flow_class(flow_param).create_from_invitation(invitation, cookies.permanent.signed[:device_id])
       @cbv_flow = @flow # Maintain for compatibility until all controllers are converted
       set_flow_session(@flow.id, flow_param)
       cookies.permanent.encrypted[:cbv_applicant_id] = @flow.cbv_applicant_id

@@ -5,14 +5,14 @@ class Api::UserEventsController < ApplicationController
     }
 
     if session[:flow_id].present?
-      @cbv_flow = CbvFlow.find(session[:flow_id])
+      @flow = flow_class.find(session[:flow_id])
 
       base_attributes.merge!({
-        cbv_flow_id: @cbv_flow.id,
-        cbv_applicant_id: @cbv_flow.cbv_applicant_id,
-        client_agency_id: @cbv_flow.cbv_applicant.client_agency_id,
-        device_id: @cbv_flow.device_id,
-        invitation_id: @cbv_flow.cbv_flow_invitation_id
+        cbv_flow_id: @flow.id,
+        cbv_applicant_id: @flow.cbv_applicant_id,
+        client_agency_id: @flow.cbv_applicant.client_agency_id,
+        device_id: @flow.device_id,
+        invitation_id: @flow.invitation_id
       })
     end
 

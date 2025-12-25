@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2025_12_23_032643) do
+ActiveRecord::Schema[8.1].define(version: 2025_12_24_195658) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
   enable_extension "pgcrypto"
@@ -28,10 +28,13 @@ ActiveRecord::Schema[8.1].define(version: 2025_12_23_032643) do
 
   create_table "activity_flows", force: :cascade do |t|
     t.bigint "activity_flow_invitation_id"
+    t.jsonb "additional_information", default: {}
+    t.string "argyle_user_id"
     t.bigint "cbv_applicant_id", null: false
     t.datetime "completed_at"
     t.datetime "created_at", null: false
     t.string "device_id"
+    t.uuid "end_user_id", default: -> { "gen_random_uuid()" }, null: false
     t.bigint "identity_id"
     t.datetime "updated_at", null: false
     t.index ["activity_flow_invitation_id"], name: "index_activity_flows_on_activity_flow_invitation_id"
@@ -316,7 +319,6 @@ ActiveRecord::Schema[8.1].define(version: 2025_12_23_032643) do
   add_foreign_key "cbv_flows", "cbv_flow_invitations"
   add_foreign_key "education_activities", "activity_flows"
   add_foreign_key "job_training_activities", "activity_flows"
-  add_foreign_key "payroll_accounts", "cbv_flows", column: "flow_id"
   add_foreign_key "solid_queue_blocked_executions", "solid_queue_jobs", column: "job_id", on_delete: :cascade
   add_foreign_key "solid_queue_claimed_executions", "solid_queue_jobs", column: "job_id", on_delete: :cascade
   add_foreign_key "solid_queue_failed_executions", "solid_queue_jobs", column: "job_id", on_delete: :cascade
