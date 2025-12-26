@@ -58,6 +58,6 @@ namespace :benchmark do
     total_duration = time_ended - time_started
     puts "Processed #{total_jobs} jobs in #{total_duration} seconds!"
     puts "  = #{(total_jobs / total_duration).round(2)} jobs/second"
-    puts "  = #{(total_jobs / total_duration / 60).round(2)} jobs/minute"
+    puts "  = #{(total_jobs / total_duration * 60).round(2)} jobs/minute"
   end
 end
