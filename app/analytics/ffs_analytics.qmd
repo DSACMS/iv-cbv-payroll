@@ -115,6 +115,7 @@ read_mp <- function(path){
 
 #read in the json data
 df_mp <- read_mp(paths[3]) 
+# df_mp <- read_json_arrow(paths[3])
 # df_mp <- paths |> map(read_mp) |> list_rbind()
 ```
 
@@ -373,7 +374,7 @@ df_duration_stats |>
     x = NULL, y = NULL,
     title = str_glue("USERS NOT COMPLETING THE APPLICATION END AFTER ABOUT {label_number(.1)(df_duration_stats[df_duration_stats$completed_type == 'incomplete',]$median)} MINUTES"),
     subtitle = 
-      "displaying the median session **minutes** against the range from the 25-75 percentile",
+      "displaying the median session **minutes** and IQR",
     caption = default_caption 
       ) +
   si_style() +
@@ -439,7 +440,7 @@ v_lng_run_shr <- df_sync |>
   pull()
 
 ```
-Overall, we are looking at a median sync time of `{r} median(df_sync$sync_time, na.rm = TRUE)` seconds, with 75% of users seeing it take under `{r} quantile(df_sync$sync_time, .75, na.rm = TRUE)` seconds. Of the `scales::label_comma()(nrow(df_sync))` successful data syncs, `{r} v_lng_run_shr` take longer than `{r} lng_run` seconds to sync. 
+Overall, we are looking at a median sync time of `{r} median(df_sync$sync_time, na.rm = TRUE)` seconds, with 75% of users seeing it take under `{r} quantile(df_sync$sync_time, .75, na.rm = TRUE)` seconds. Of the `{r} scales::label_comma()(nrow(df_sync))` successful data syncs, `{r} v_lng_run_shr` take longer than `{r} lng_run` seconds to sync. 
 
 We can see how this places our when comparing different payroll aggregators used, Argyle and Pinwheel. Each pilot we can see there is a signficant gap between the time range it takes to sync with Pinwheel versus Argyle. 
 
@@ -476,9 +477,9 @@ df_sync_viz |>
   scale_color_identity() +
   labs(
     x = NULL, y = NULL,
-    title = "Slightly shortern median sync for Pinwheel, but a much small sample size" |> toupper(),
+    title = "Slightly shorter Pinwheel median sync, but a smaller sample size" |> toupper(),
     subtitle = 
-      "displaying the median session **seconds** against the range from the 25-75 percentile",
+      "displaying the median session **seconds** against the IQR",
     caption = default_caption 
       ) +
   si_style_xgrid() +
@@ -498,30 +499,38 @@ df_outage_viz_rt <- df_sync_init |>
     !is.na(ApplicantAttemptedLogin),
     ) |> 
   mutate(
-    date = ApplicantAttemptedLogin |> as_date(),
+    date = as_date(ApplicantAttemptedLogin),
     succeeded = !is.na(ApplicantFinishedSync)
-  ) |>
+  ) |> 
+  group_by(date, provider, distinct_id, cbv_flow_id) |> 
+  summarize(succeeded = max(succeeded, na.rm = TRUE), .groups = "drop") |> 
   group_by(date, provider) |> 
   summarize(
-    attempted = distinct_n(distinct_id),
-    succeeded = sum(!is.na(ApplicantFinishedSync), na.rm = TRUE),
+    attempted = n_distinct(distinct_id, cbv_flow_id),
+    succeeded = sum(succeeded, na.rm = TRUE),
     .groups = "drop"
   ) |> 
   mutate(
     success_rate = succeeded/attempted,
     fillcolor = ifelse(provider == "Argyle", dsac_color['light_navy'], dsac_color['light_teal']),
     provider_x = ifelse(provider == "Argyle", -.08, -.05),
-    date_fmt = date |> format(date, format = "%b %d") |> str_remove(" UTC") |> fct_inorder()
-  )
+    date_fmt = case_when(
+      date %in% c('2025-11-17', '2025-12-01') ~ format(date, format = "%b %d"),
+      month(date) == 11 ~ format(date, format = "%d"),
+      month(date) == 12 ~ format(date, format = " %d"),
+      ) |> fct_inorder()
+    )
 
   df_outage_viz_rt |> 
     group_by(provider) |> 
-    summarize(success_rate = sum(succeeded)/sum(attempted))
+    summarize(
+      attempted = sum(attempted), 
+      success_rate = sum(succeeded)/sum(attempted))
 
 df_outage_viz_rt |> 
-  ggplot(aes(y = fct_rev(date_fmt), color = fillcolor, group = date_fmt)) +
-  geom_linerange(aes(xmin = 0, xmax = success_rate), color = '#909090') +
-  geom_point(aes(success_rate)) +
+  ggplot(aes(y = fct_rev(date_fmt), color = fillcolor, , fill = fillcolor, group = date_fmt)) +
+  geom_line(aes(success_rate), color = "#909090") + 
+  geom_point(aes(success_rate), size = 3, shape = 21, color = "white") +
   geom_point(aes(provider_x, size = attempted), shape = 15) +
   geom_text(
     aes(provider_x - .02, label = attempted),
@@ -538,21 +547,30 @@ df_outage_viz_rt |>
     xmin = -Inf, xmax = Inf,
     alpha = .3, fill = "#909090"
     ) +
-  scale_x_continuous(labels = label_percent(), position = "top") + 
-  scale_color_identity() +
+  scale_x_continuous(
+    labels = label_percent(), 
+    breaks = seq(0, 1, .2), 
+    minor_breaks = seq(0, 1, .1),
+    position = "top") + 
+  scale_color_identity(aesthetics = c('fill', 'color')) +
   scale_size(guide = "none") +
   labs(
     x = NULL, y = NULL,
-    subtitle = str_glue("daily <span style = color:{dsac_color['light_navy']};>**Argyle**</span> to <span style = color:{dsac_color['light_teal']};>**Pinwheel**</span> user attempts to login [left] and  successful rates [right]"),
-    caption = str_glue('{default_caption}')
+    title = "MOST DAYS APPLICANTS ACCESSING ARGYLE SAW A HIGHER SUCCESSFUL LOGIN RATE",
+    subtitle = str_glue("daily <span style = color:{dsac_color['light_navy']};>**Argyle**</span>/<span style = color:{dsac_color['light_teal']};>**Pinwheel**</span> user flow attempts to login [left] and  successful rates [right]"),
+    caption = str_glue('Note: Argyle outage Nov 19-20
+    {default_caption}')
   ) + 
   si_style_xgrid() +
   theme(plot.subtitle = element_markdown())
 
-si_save("success_rate.png")
+si_save(here("app/analytics/success_rate.png"), height = 7)
 
 df_outage_viz <- df_sync |> 
-  filter(pilot == "Nov 2025") |> 
+  filter(
+    pilot == "Nov 2025",
+    !is.na(ApplicantAttemptedLogin)
+    ) |> 
   mutate(date = ApplicantAttemptedLogin |> as_date()) |> 
   group_by(date, provider) |> 
   summarize(
@@ -565,8 +583,23 @@ df_outage_viz <- df_sync |>
   mutate(
     fillcolor = ifelse(provider == "Argyle", dsac_color['light_navy'], dsac_color['light_teal']),
     provider_x = ifelse(provider == "Argyle", -35, -20),
-    date_fmt = date |> format(date, format = "%b %d") |> str_remove(" UTC") |> fct_inorder()
+    date_fmt = case_when(
+      date %in% c('2025-11-17', '2025-12-01') ~ format(date, format = "%b %d"),
+      month(date) == 11 ~ format(date, format = "%d"),
+      month(date) == 12 ~ format(date, format = " %d"),
+      ) |> fct_inorder()
   )
+
+df_outage_provider_median <- df_sync |> 
+  filter(
+    pilot == "Nov 2025",
+    !is.na(ApplicantAttemptedLogin)
+    ) |> 
+  mutate(date = ApplicantAttemptedLogin |> as_date()) |> 
+  group_by(provider) |> 
+  summarize(median_provider = median(sync_time, na.rm = TRUE) |> as.numeric()) |> 
+  ungroup() |> 
+  pivot_wider(names_from = provider, values_from = median_provider)
 
 df_outage_viz |> 
   ggplot(aes(y = fct_rev(date_fmt), color = fillcolor, group = provider)) +
@@ -584,24 +617,24 @@ df_outage_viz |>
   annotate(
     geom = 'rect',
     ymin = 29.5, ymax = 31.5,
-    # ymin = '2025-11-19', ymax = '2025-11-19',
     xmin = -Inf, xmax = Inf,
     alpha = .3, fill = "#909090"
-    ) +
-  # scale_x_continuous() + 
+    ) + 
   scale_x_continuous(limit=c(-45,300),oob=scales::squish, position = "top") + 
   scale_color_identity() +
   scale_size(guide = "none") +
   labs(
     x = NULL, y = NULL,
-    subtitle = str_glue("daily <span style = color:{dsac_color['light_navy']};>**Argyle**</span> to <span style = color:{dsac_color['light_teal']};>**Pinwheel**</span> users [left] and their successful sync times, seconds [median and IQR]"),
-    caption = str_glue('Note: x axis truncated to 5 minutes 
+    title = str_glue("DESPITE SOME LARGE OUTLIERS AND LESS FLOWS, PINWHEEL'S MEDIAN SYNC TIME ({df_outage_provider_median$Pinwheel}s) IS ONLY A FEW SECONDS SLOWER THAN ARGYLE ({df_outage_provider_median$Argyle}s)") |> str_wrap(),
+    subtitle = str_glue("successful daily <span style = color:{dsac_color['light_navy']};>**Argyle**</span>/<span style = color:{dsac_color['light_teal']};>**Pinwheel**</span> user flow syncs [left] and their duration, **seconds** [median and IQR]"),
+    caption = str_glue('Note: x axis truncated to 5 minutes; Argyle outage Nov 19-20 
     {default_caption}')
   ) + 
   si_style_xgrid() +
   theme(plot.subtitle = element_markdown())
 
-si_save("sync_times.png")
+
+si_save(here("app/analytics/sync_times.png"), height = 7)
 ```
 
 ## Where are people dropping off?
