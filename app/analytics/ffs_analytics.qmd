@@ -283,6 +283,8 @@ df_mp |>
 ```
 
 
+### Is there a drop completion as the pilot period draws on?
+
 If we compare weeks with in each pilot, we are seeing a similar trend of most people starting in the first week or two and then tailing off after that. While the first two pilot periods saw the second week as having the highest compeltion rate, the current pilot saw an increase in weeks 2 and then week 3 for completion rates.
 
 ```{r}
@@ -359,11 +361,109 @@ v1 <- df_compl |>
 
     v1 / v2 + 
       plot_annotation(
-        title = "Large drop off in initiating application after the first week, but larger completion rate in following weeks" |> toupper(),
+        title = "LARGE DROP OFF IN INITIATING APPLICATION AFTER THE FIRST WEEK, BUT LARGER COMPLETION RATE IN FOLLOWING WEEKS" |> str_wrap(),
         caption = default_caption,
         theme = si_style()
       )
 ```
+
+### Is there a difference in completion based on their device or how they receive the pilot url?
+
+For the Louisana pilot, applicants were sent both text messages and emailed/mailed with a notice about the pilot. We can investigate whether there is any difference in completion rates based on how the applicants are accessing the app.
+
+```{r}
+#| label: device_origin_status
+
+df_device_origin_status <- df_mp |> 
+  filter(
+    pilot == "Nov 2025",
+    str_starts(distinct_id, "applicant"),
+    event %in% c("ApplicantViewedAgreement", "ApplicantAccessedSuccessPage")
+  ) |> 
+  mutate(
+    device_type = map_chr(
+      properties,
+      ~ pluck(.x, "device_type", .default = NA_character_)
+    ),
+     origin = map_chr(
+      properties,
+      ~ pluck(.x, "origin", .default = NA_character_)
+    ),
+    completed = event == "ApplicantAccessedSuccessPage"
+  ) |> 
+  mutate(
+    across(c(device_type, origin), ~ ifelse(is.na(.), "unknown", .)),
+    device_type = ifelse(device_type %in% c("desktop", 'smartphone', 'unknown'), device_type, "other")
+  ) |> 
+  group_by(pilot, distinct_id, cbv_flow_id) |> 
+  mutate(completed = max(completed) |> as.logical()) |> 
+  ungroup() |> 
+  distinct(pilot, distinct_id, cbv_flow_id, device_type, origin, completed) 
+
+```
+
+When comparing the device type, we can see there is a preference for applicants initiating the process on their phones. The success rate is much higher on the phones than desktop, but both success rates are rather low. The other types of devices include tablets, phablets, and portable media players.
+
+```{r}
+#| label: device_status_tbl
+#| output: true
+
+df_device_origin_status |>
+  count(pilot, device = device_type, completed) |> 
+  pivot_wider(
+    names_from = completed, 
+    values_from = n,
+    values_fill = 0) |> 
+  rowwise() |> 
+  mutate(,
+    `Viewed Agreement` = sum(`FALSE`, `TRUE`),
+    `Accessed Success Page` = `TRUE`,
+    `Completion Rate` = `Accessed Success Page` / `Viewed Agreement`
+  ) |> 
+  select(-c(`FALSE`, `TRUE`)) |> 
+  arrange(desc(`Viewed Agreement`)) |> 
+  gt(groupname_col = "pilot") |> 
+  format_numeric_columns() |> 
+  si_gt_base(header_fill = dsac_color['light_teal']) |> 
+  adjust_row_padding() |> 
+  add_labs(
+    title = "Most applicants start and have the highest success rate on smartphones" |> toupper(),
+    subtitle = "number of distinct flows by device type",
+    caption = default_caption
+  ) 
+```
+
+When looking the url origin, we see the large majority arise from SMS messages. However, the success rate is much lower than that of physical mailings.
+
+```{r}
+#| label: origin_status_tbl
+#| output: true
+
+df_device_origin_status |>
+  count(pilot, origin, completed) |> 
+  pivot_wider(
+    names_from = completed, 
+    values_from = n,
+    values_fill = 0) |> 
+  rowwise() |> 
+  mutate(,
+    `Viewed Agreement` = sum(`FALSE`, `TRUE`),
+    `Accessed Success Page` = `TRUE`,
+    `Completion Rate` = `Accessed Success Page` / `Viewed Agreement`
+  ) |> 
+  select(-c(`FALSE`, `TRUE`)) |> 
+  arrange(desc(`Viewed Agreement`)) |> 
+  gt(groupname_col = "pilot") |> 
+  format_numeric_columns() |> 
+  si_gt_base(header_fill = dsac_color['light_teal']) |> 
+  adjust_row_padding() |> 
+  add_labs(
+    title = "Mailed links had the highest flow completion rate" |> toupper(),
+    subtitle = "number of distinct flows by url link origin",
+    caption = default_caption
+  ) 
+```
+
 
 ## How long does it take to complete the application?
 
