@@ -56,7 +56,7 @@ RSpec.describe Webhooks::Pinwheel::EventsController do
 
         pinwheel_account = PayrollAccount.last
         expect(pinwheel_account).to have_attributes(
-          cbv_flow_id: cbv_flow.id,
+          flow_id: cbv_flow.id,
           supported_jobs: include(*supported_jobs),
           aggregator_account_id: account_id
         )
@@ -86,7 +86,7 @@ RSpec.describe Webhooks::Pinwheel::EventsController do
           "outcome" => "success"
         }
       end
-      let!(:payroll_account) { create(:payroll_account, cbv_flow: cbv_flow, supported_jobs: supported_jobs, aggregator_account_id: account_id) }
+      let!(:payroll_account) { create(:payroll_account, flow: cbv_flow, supported_jobs: supported_jobs, aggregator_account_id: account_id) }
 
       it "creates a WebhookEvent with outcome=success" do
         post :create, params: valid_params
@@ -101,7 +101,7 @@ RSpec.describe Webhooks::Pinwheel::EventsController do
           create(
             :payroll_account,
             :pinwheel_fully_synced,
-            cbv_flow: cbv_flow,
+            flow: cbv_flow,
             supported_jobs: supported_jobs,
             aggregator_account_id: account_id,
             created_at: 5.minutes.ago
@@ -256,7 +256,7 @@ RSpec.describe Webhooks::Pinwheel::EventsController do
           "outcome" => "pending"
         }
       end
-      let!(:payroll_account) { create(:payroll_account, cbv_flow: cbv_flow, supported_jobs: supported_jobs, aggregator_account_id: account_id) }
+      let!(:payroll_account) { create(:payroll_account, flow: cbv_flow, supported_jobs: supported_jobs, aggregator_account_id: account_id) }
 
       it "creates a WebhookEvent with 'pending' outcome" do
         post :create, params: valid_params

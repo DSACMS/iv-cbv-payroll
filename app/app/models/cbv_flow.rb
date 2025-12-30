@@ -1,5 +1,4 @@
-class CbvFlow < ApplicationRecord
-  has_many :payroll_accounts, dependent: :destroy
+class CbvFlow < Flow
   belongs_to :cbv_flow_invitation, optional: true
   belongs_to :cbv_applicant, optional: true
 

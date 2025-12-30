@@ -4,9 +4,8 @@ FactoryBot.define do
     first_name { "Jane" }
     middle_name { "Sue" }
     last_name { "Doe" }
-    date_of_birth {  "03/19/1992" }
-    created_at { Date.current.strftime("%m/%d/%Y") }
-    snap_application_date { Date.current.strftime("%m/%d/%Y") }
+    date_of_birth { "03/19/1992" }
+    snap_application_date { Date.current }
 
     # Instantiate the proper subclass:
     # @see https://stackoverflow.com/questions/57504422/how-to-make-factorybot-return-the-right-sti-sub-class

@@ -27,7 +27,7 @@ RSpec.describe Report::GigMonthlySummaryTableComponent, type: :component do
         :payroll_account,
         :pinwheel_fully_synced,
         with_errored_jobs: errored_jobs,
-        cbv_flow: cbv_flow,
+        flow: cbv_flow,
         aggregator_account_id: account_id,
         supported_jobs: supported_jobs,
         )
@@ -103,7 +103,7 @@ RSpec.describe Report::GigMonthlySummaryTableComponent, type: :component do
       create(
         :payroll_account,
         :argyle_fully_synced,
-        cbv_flow: cbv_flow,
+        flow: cbv_flow,
         aggregator_account_id: account_id
       )
     end
@@ -192,7 +192,7 @@ RSpec.describe Report::GigMonthlySummaryTableComponent, type: :component do
           invalid_payroll_account = create(
             :payroll_account,
             :argyle_fully_synced,
-            cbv_flow: cbv_flow,
+            flow: cbv_flow,
             aggregator_account_id: "wrong-id"
           )
           expect {

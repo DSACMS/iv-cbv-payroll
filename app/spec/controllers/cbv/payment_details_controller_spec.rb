@@ -28,7 +28,7 @@ RSpec.describe Cbv::PaymentDetailsController do
         :payroll_account,
         :pinwheel_fully_synced,
         with_errored_jobs: errored_jobs,
-        cbv_flow: cbv_flow,
+        flow: cbv_flow,
         aggregator_account_id: account_id,
         supported_jobs: supported_jobs,
       )
@@ -296,7 +296,7 @@ RSpec.describe Cbv::PaymentDetailsController do
             :payroll_account,
             :argyle_fully_synced,
             with_errored_jobs: errored_jobs,
-            cbv_flow: cbv_flow,
+            flow: cbv_flow,
             aggregator_account_id: account_id,
             supported_jobs: supported_jobs,
             )
@@ -361,7 +361,7 @@ RSpec.describe Cbv::PaymentDetailsController do
             :payroll_account,
             :argyle_fully_synced,
             with_errored_jobs: errored_jobs,
-            cbv_flow: cbv_flow,
+            flow: cbv_flow,
             aggregator_account_id: account_id,
             supported_jobs: supported_jobs,
             )

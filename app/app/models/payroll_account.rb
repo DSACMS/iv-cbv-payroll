@@ -9,14 +9,15 @@ class PayrollAccount < ApplicationRecord
     PayrollAccount.const_get(type_name.capitalize)
   end
 
-  belongs_to :cbv_flow
+  belongs_to :flow, polymorphic: true
+  validates :flow, presence: true
   has_many :webhook_events
 
   enum :synchronization_status, {
-    unknown: "unknown",              # defines the method: sync_unknown?
-    in_progress: "in_progress",      # defines the method: sync_in_progress?
-    succeeded: "succeeded",          # defines the method: sync_succeeded?
-    failed: "failed"                 # defines the method: sync_failed?
+    unknown: "unknown", # defines the method: sync_unknown?
+    in_progress: "in_progress", # defines the method: sync_in_progress?
+    succeeded: "succeeded", # defines the method: sync_succeeded?
+    failed: "failed" # defines the method: sync_failed?
   }, prefix: "sync"
 
   # Returns whether we have received all expected webhooks for the sync

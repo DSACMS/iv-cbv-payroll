@@ -15,7 +15,7 @@ class FlowController < ApplicationController
 
   def find_or_create_flow
     existing_applicant = find_existing_applicant_from_cookie
-    if existing_applicant
+    if existing_applicant && existing_applicant.client_agency_id == current_agency&.id
       create_flow_with_existing_applicant(existing_applicant)
     else
       create_flow_with_new_applicant
@@ -55,9 +55,9 @@ class FlowController < ApplicationController
       set_flow_session(@flow.id, flow_param)
       cookies.permanent.encrypted[:cbv_applicant_id] = @flow.cbv_applicant_id
       track_invitation_clicked_event(invitation, @flow)
-    elsif session[cbv_flow_symbol]
+    elsif session[:flow_id]
       begin
-        @flow = flow_class.find(session[cbv_flow_symbol])
+        @flow = flow_class.find(session[:flow_id])
         @cbv_flow = @flow # Maintain for compatibility until all controllers are converted
       rescue ActiveRecord::RecordNotFound
         reset_cbv_session!

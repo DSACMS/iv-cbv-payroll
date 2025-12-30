@@ -22,7 +22,7 @@ FactoryBot.define do
           create(:payroll_account,
             :pinwheel_fully_synced,
             with_errored_jobs: evaluator.with_errored_jobs,
-            cbv_flow: cbv_flow,
+            flow: cbv_flow,
             supported_jobs: evaluator.supported_jobs,
           )
         ]
@@ -42,7 +42,7 @@ FactoryBot.define do
           create(:payroll_account,
             sync_status,
             with_errored_jobs: evaluator.with_errored_jobs,
-            cbv_flow: cbv_flow,
+            flow: cbv_flow,
             supported_jobs: evaluator.supported_jobs,
           )
         ]

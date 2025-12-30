@@ -4,7 +4,7 @@
   <%= t("activities.submit.title") %>
 </h1>
 <p class="margin-bottom-3">
-  <%= t("activities.submit.description") %>
+  <%= t("activities.submit.description", agency_name: agency_translation("shared.agency_full_name")) %>
 </p>
 
 <%= form_with model: @flow, url: activities_flow_submit_path, method: :patch, builder: UswdsFormBuilder do |f| %>

@@ -122,6 +122,30 @@ RSpec.describe ApplicationHelper do
     end
   end
 
+  describe "#activity_type_enabled?" do
+    before do
+      without_partial_double_verification do
+        allow(helper).to receive(:current_agency).and_return(current_agency)
+      end
+    end
+
+    context "when agency has activity types configured" do
+      let(:current_agency) { Rails.application.config.client_agencies["sandbox"] }
+
+      it "returns true for enabled types" do
+        expect(helper.activity_type_enabled?(:education)).to be true
+      end
+    end
+
+    context "when agency has no activity types configured" do
+      let(:current_agency) { Rails.application.config.client_agencies["la_ldh"] }
+
+      it "returns nil" do
+        expect(helper.activity_type_enabled?(:education)).to be_nil
+      end
+    end
+  end
+
   describe "#coalesce_to_completed" do
     it "returns succeeded when the status is failed" do
       expect(helper.coalesce_to_completed(:failed)).to eq(:completed)
