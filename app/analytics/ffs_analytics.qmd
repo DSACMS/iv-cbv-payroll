@@ -571,6 +571,7 @@ df_sync_viz |>
 
 ```{r}
 #| label: sync_outage
+#| output: true
 
 df_outage_viz_rt <- df_sync_init |> 
   filter(
@@ -643,7 +644,7 @@ df_outage_viz_rt |>
   si_style_xgrid() +
   theme(plot.subtitle = element_markdown())
 
-si_save(here("app/analytics/success_rate.png"), height = 7)
+#si_save(here("app/analytics/success_rate.png"), height = 7)
 
 df_outage_viz <- df_sync |> 
   filter(
@@ -713,7 +714,7 @@ df_outage_viz |>
   theme(plot.subtitle = element_markdown())
 
 
-si_save(here("app/analytics/sync_times.png"), height = 7)
+#si_save(here("app/analytics/sync_times.png"), height = 7)
 ```
 
 ## Where are people dropping off?
