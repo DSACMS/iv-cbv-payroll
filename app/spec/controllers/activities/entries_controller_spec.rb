@@ -60,13 +60,16 @@ RSpec.describe Activities::EntriesController do
     end
   end
   describe "#create" do
+    before do
+      get :show, params: { client_agency_id: "sandbox" }
+    end
+
     context 'consent box not checked' do
-      it "redirects the user back with an error message" do
-        expect {
-          post :create, params: { agreement: "0" }
-        }.not_to change { session[:flow_id] }
-        expect(response).to redirect_to(activities_flow_entry_path)
-        expect(flash[:alert]).to eq I18n.t("cbv.entries.create.error")
+      it "re-renders the form with an error message" do
+        post :create, params: { agreement: "0" }
+
+        expect(response).to have_http_status(:unprocessable_content)
+        expect(flash[:alert]).to eq I18n.t("activities.entry.consent_required")
       end
     end
   end
