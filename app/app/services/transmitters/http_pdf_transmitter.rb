@@ -1,5 +1,11 @@
+require "retriable"
+
 class Transmitters::HttpPdfTransmitter < Transmitters::PdfTransmitter
   TRANSMISSION_METHOD = "http-pdf"
+  TEN_MINUTES = 10*60
+
+  class RetriableError < StandardError
+  end
 
   def destination_url!
     unless current_agency.transmission_method == TRANSMISSION_METHOD
@@ -23,8 +29,23 @@ class Transmitters::HttpPdfTransmitter < Transmitters::PdfTransmitter
     req["X-IVAAS-Signature"] = signature
     req["X-IVAAS-Confirmation-Code"] = confirmation_code
 
-    res = Net::HTTP.start(url.hostname, url.port, use_ssl: url.scheme == "https") do |http|
-      http.request(req)
+    Net::HTTP.start(url.hostname, url.port, use_ssl: url.scheme == "https") do |http|
+      Retriable.retriable(
+        on: [ RetriableError ],
+        tries: 5,
+        max_elapsed_time: TEN_MINUTES,
+      ) do
+        res = http.request(req)
+
+        case res
+        when Net::HTTPSuccess then
+          res
+        when Net::HTTPUnauthorized, Net::HTTPServerError then
+          raise RetriableError
+        else
+          raise "Request failed: #{res.code} #{res.message}"
+        end
+      end
     end
   end
 

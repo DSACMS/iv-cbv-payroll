@@ -458,6 +458,7 @@ GEM
     responders (3.1.1)
       actionpack (>= 5.2)
       railties (>= 5.2)
+    retriable (3.1.2)
     rexml (3.4.4)
     rspec-core (3.13.6)
       rspec-support (~> 3.13.0)
@@ -665,6 +666,7 @@ DEPENDENCIES
   rails-controller-testing
   rails-erd (~> 1.7)
   redis (~> 4.0)
+  retriable (~> 3.1)
   rexml (~> 3.4.2)
   rspec-rails (~> 8.0)
   rubocop
