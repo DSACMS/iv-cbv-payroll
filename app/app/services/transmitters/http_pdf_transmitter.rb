@@ -27,7 +27,7 @@ class Transmitters::HttpPdfTransmitter < Transmitters::PdfTransmitter
 
     req["X-IVAAS-Timestamp"] = Time.now.to_i
     req["X-IVAAS-Signature"] = signature
-    req["X-IVAAS-Confirmation-Code"] = confirmation_code
+    req["X-IVAAS-Confirmation-Code"] = cbv_flow.confirmation_code
 
     Net::HTTP.start(url.hostname, url.port, use_ssl: url.scheme == "https") do |http|
       Retriable.retriable(
@@ -47,10 +47,6 @@ class Transmitters::HttpPdfTransmitter < Transmitters::PdfTransmitter
         end
       end
     end
-  end
-
-  def confirmation_code
-    raise "not implemented"
   end
 
   def signature

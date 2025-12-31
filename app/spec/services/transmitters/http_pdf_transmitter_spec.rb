@@ -18,7 +18,7 @@ RSpec.describe Transmitters::HttpPdfTransmitter do
     c
   end
 
-  let(:cbv_flow) { create(:cbv_flow) }
+  let(:cbv_flow) { create(:cbv_flow, confirmation_code: "ABC123") }
   let(:aggregator_report) { build(:argyle_report, :with_argyle_account) }
 
   subject do
@@ -46,7 +46,6 @@ RSpec.describe Transmitters::HttpPdfTransmitter do
     before do
       allow(Time).to receive(:now).and_return(time_now)
       allow(subject).to receive(:signature).and_return(sig)
-      allow(subject).to receive(:confirmation_code).and_return(code)
 
       allow(Retriable).to receive(:retriable).and_yield
     end
@@ -62,7 +61,7 @@ RSpec.describe Transmitters::HttpPdfTransmitter do
             'Content-Length': pdf_output.file_size,
             'X-IVAAS-Timestamp': time_now.to_i,
             'X-IVAAS-Signature': sig,
-            'X-IVAAS-Confirmation-Code': code
+            'X-IVAAS-Confirmation-Code': cbv_flow.confirmation_code
           }
         )
 
