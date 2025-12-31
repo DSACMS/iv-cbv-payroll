@@ -35,6 +35,6 @@ class Activities::JobTrainingController < Activities::BaseController
   end
 
   def job_training_activity_params
-    params.require(:job_training_activity).permit(:program_name, :organization_address, :hours)
+    params.require(:job_training_activity).permit(:program_name, :organization_address, :hours, :date)
   end
 end
