@@ -4,16 +4,8 @@ RSpec.shared_examples "Transmitters::PdfTransmitter" do
   describe "#pdf_output" do
     let(:pdf_service) { instance_double(PdfService) }
 
-    let(:cbv_flow) { create(:cbv_flow) }
-    let(:client_agency) { instance_double(ClientAgencyConfig::ClientAgency) }
-    let(:aggregator_report) { build(:argyle_report, :with_argyle_account) }
-
     before do
       allow(PdfService).to receive(:new).and_return(pdf_service)
-    end
-
-    subject do
-      described_class.new(cbv_flow, client_agency, aggregator_report)
     end
 
     it "delegates to PdfService#generate" do
