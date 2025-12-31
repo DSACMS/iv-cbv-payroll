@@ -4,10 +4,12 @@ class Activities::EntriesController < Activities::BaseController
   def show
     if params[:token].present?
       set_flow
+    elsif params[:client_agency_id].present?
+      set_generic_flow
     elsif session[:flow_id]
       @flow = ActivityFlow.find(session[:flow_id])
     else
-      set_generic_flow
+      redirect_to root_url
     end
   end
 
