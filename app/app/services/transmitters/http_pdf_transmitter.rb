@@ -17,13 +17,17 @@ class Transmitters::HttpPdfTransmitter < Transmitters::PdfTransmitter
     URI(current_agency.transmission_method_configuration["url"])
   end
 
+  def payload
+    pdf_output.content
+  end
+
   def deliver
     url = destination_url!
 
     req = Net::HTTP::Post.new(url)
     req.content_type = "application/pdf"
     req.content_length = pdf_output.file_size
-    req.body = pdf_output.content
+    req.body = payload
 
     req["X-IVAAS-Timestamp"] = Time.now.to_i
     req["X-IVAAS-Signature"] = signature
@@ -47,9 +51,5 @@ class Transmitters::HttpPdfTransmitter < Transmitters::PdfTransmitter
         end
       end
     end
-  end
-
-  def signature
-    raise "not implemented"
   end
 end

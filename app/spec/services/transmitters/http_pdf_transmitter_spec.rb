@@ -9,6 +9,11 @@ RSpec.describe Transmitters::HttpPdfTransmitter do
 
   let(:client_agency) do
     c = instance_double(ClientAgencyConfig::ClientAgency)
+
+    allow(c)
+      .to receive(:id)
+            .and_return("sandbox")
+
     allow(c)
       .to receive(:transmission_method_configuration)
             .and_return(transmission_method_configuration)
@@ -26,6 +31,7 @@ RSpec.describe Transmitters::HttpPdfTransmitter do
   end
 
   include_examples "Transmitters::PdfTransmitter"
+  include_examples "Transmitter#signature"
 
   describe "#deliver" do
     include_context "with #pdf_output" do
@@ -44,7 +50,7 @@ RSpec.describe Transmitters::HttpPdfTransmitter do
     let(:time_now) { Time.now }
 
     before do
-      allow(Time).to receive(:now).and_return(time_now)
+      allow(subject).to receive(:timestamp).and_return(time_now.to_i)
       allow(subject).to receive(:signature).and_return(sig)
 
       allow(Retriable).to receive(:retriable).and_yield
