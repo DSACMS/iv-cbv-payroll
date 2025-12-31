@@ -14,7 +14,7 @@ RSpec.describe Transmitters::HttpPdfTransmitter do
             .and_return(transmission_method_configuration)
     allow(c)
       .to receive(:transmission_method)
-            .and_return("http-pdf")
+            .and_return(Transmitters::HttpPdfTransmitter::TRANSMISSION_METHOD)
     c
   end
 
