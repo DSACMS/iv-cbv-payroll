@@ -50,6 +50,7 @@ en:
   activities:
     education:
       add: Add Education Activities
+      created: Education activity was successfully created.
       enrollment_status:
         full_time: Full Time
         hours:
@@ -57,19 +58,34 @@ en:
           other: "%{count} credit hours"
           zero: not enrolled
         part_time: Part Time
+      error:
+        back_button: Back to Activities
+        error_description: There was an error retrieving your education information. Please try again later.
+        error_heading: Unable to retrieve education information.
+        header: Error
       error_no_data: No education information available
+      errors:
+        timeout: The request timed out. Please try again.
+        unexpected: An unexpected error occurred. Please try again.
       new:
         enrollment: Enrollment
         fetching_education_description: This may take a few minutes. Please keep this window open while we work on this.
         header: We're gathering your enrollment details from the <Our Data Source>
         hours: Hours
         school: School
+        student_info: Retrieving student information
       show:
         additional_information_header: Additional comments (Optional)
         additional_information_label: Share any comments or additional information about the income details above that you’d like %{agency_acronym} to know. For example, you can share if the information is inaccurate or if you’re no longer working at that job.
         continue: Save and continue
+        date_of_birth: Date of Birth
         description: Review the information below to make sure it's correct.
+        enrollment_information:
+          enrollment_status:
+            header: Enrollment Status
+        first_name: First Name
         header: Confirm your education enrollment
+        last_name: Last Name
         school_information:
           address: Address
           header: School Information

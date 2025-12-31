@@ -51,25 +51,65 @@ class Activities::EducationController < Activities::BaseController
 
     sse = SSE.new(response.stream, event: "message")
 
-    # This is just to show how we can send updates to change the indicators
-    call_count = 0
-    indicators = [ "school", "enrollment", "hours" ]
-    activity = EducationService.new(@flow).call do
-      indicator = indicators[call_count % indicators.count]
-      sse.write(
-        sync_indicator_update(indicator, :succeeded)
-      )
-      call_count += 1
-    end
+    begin
+      nsc_service = Aggregators::Sdk::NscService.new(nsc_environment)
 
-    sse.write(
-      turbo_stream.action(:redirect, activities_flow_education_path(params: { education_activity_id: activity.id }))
-    )
+      activity = nsc_service.call(@flow) do
+        sse.write(
+          sync_indicator_update("student_info", :in_progress)
+        )
+      end
+
+      sse.write(
+        sync_indicator_update("student_info", :succeeded)
+      )
+
+      sse.write(
+        turbo_stream.action(:redirect, activities_flow_education_path(params: { education_activity_id: activity.id }))
+      )
+
+    rescue Aggregators::Sdk::NscService::ApiError => e
+      sse.write(
+        sync_indicator_update("student_info", :failed)
+      )
+
+      sse.write(
+        turbo_stream.action(:redirect, activities_flow_education_error_path(params: { error_code: e.code, error_message: e.message }))
+      )
+
+    rescue Faraday::TimeoutError => e
+      sse.write(
+        sync_indicator_update("student_info", :failed)
+      )
+
+      sse.write(
+        turbo_stream.action(:redirect, activities_flow_education_error_path(params: { error_code: "TIMEOUT", error_message: t("activities.education.errors.timeout") }))
+      )
+    rescue StandardError => e
+      Rails.logger.error("Education API error: #{e.message}")
+
+      sse.write(
+        sync_indicator_update("student_info", :failed)
+      )
+
+      sse.write(
+        turbo_stream.action(:redirect, activities_flow_education_error_path(params: { error_code: "UNEXPECTED_ERROR", error_message: t("activities.education.errors.unexpected") }))
+      )
+    end
   ensure
     sse.close if sse
   end
 
+  def error
+    @error_code = params[:error_code]
+    @error_message = params[:error_message]
+  end
+
   private
+
+  def nsc_environment
+    ENV.fetch("NSC_ENVIRONMENT", "sandbox").to_sym
+  end
 
   def sync_indicator_update(name, status)
     turbo_stream.replace(
