@@ -1,10 +1,13 @@
 <% content_for :title, t("activities.hub.title") %>
 
 <h1>
-    <%= t("activities.hub.title") %>
+  <%= t("activities.hub.title") %>
 </h1>
+<p class="usa-intro">
+  <%= t("activities.hub.reporting_month", month: @flow.reporting_month_display) %>
+</p>
 <p>
-    <%= t("activities.hub.description") %>
+  <%= t("activities.hub.description") %>
 </p>
 
 <%= render(AccordionComponent.new(id: "activity-hub-identity-accordion", heading_level: 2)) do |a| %>
@@ -117,6 +120,9 @@
         <% end %>
         <%= r.with_data_cell do %>
           <%= activity.hours %>
+        <% end %>
+        <%= r.with_data_cell do %>
+          <%= activity.date %>
         <% end %>
         <%= r.with_data_cell do %>
           <%= link_to t("activities.hub.edit"), edit_activities_flow_job_training_path(id: activity.id), class: "usa-link" %>

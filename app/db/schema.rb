@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2025_12_23_032643) do
+ActiveRecord::Schema[8.1].define(version: 2025_12_30_213922) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
   enable_extension "pgcrypto"
@@ -21,6 +21,7 @@ ActiveRecord::Schema[8.1].define(version: 2025_12_23_032643) do
     t.string "client_agency_id"
     t.datetime "created_at", null: false
     t.string "reference_id"
+    t.date "reporting_month"
     t.datetime "updated_at", null: false
     t.index ["auth_token"], name: "index_activity_flow_invitations_on_auth_token", unique: true
     t.index ["cbv_applicant_id"], name: "index_activity_flow_invitations_on_cbv_applicant_id"
@@ -33,6 +34,7 @@ ActiveRecord::Schema[8.1].define(version: 2025_12_23_032643) do
     t.datetime "created_at", null: false
     t.string "device_id"
     t.bigint "identity_id"
+    t.date "reporting_month"
     t.datetime "updated_at", null: false
     t.index ["activity_flow_invitation_id"], name: "index_activity_flows_on_activity_flow_invitation_id"
     t.index ["cbv_applicant_id"], name: "index_activity_flows_on_cbv_applicant_id"
@@ -126,6 +128,7 @@ ActiveRecord::Schema[8.1].define(version: 2025_12_23_032643) do
   create_table "job_training_activities", force: :cascade do |t|
     t.bigint "activity_flow_id", null: false
     t.datetime "created_at", null: false
+    t.date "date"
     t.integer "hours"
     t.string "organization_address"
     t.string "program_name"
