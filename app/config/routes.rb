@@ -67,6 +67,7 @@ Rails.application.routes.draw do
       resource :education, only: %i[new create show destroy], controller: "education"
 
       get "/education/stream", to: "education#stream"
+      get "/education/error", to: "education#error", as: :education_error
 
       # Tokenized links
       get "start/:token", to: "entries#show", as: :start, token: /[^\/]+/
