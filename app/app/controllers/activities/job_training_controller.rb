@@ -10,7 +10,7 @@ class Activities::JobTrainingController < Activities::BaseController
     if @job_training_activity.save
       redirect_to activities_flow_root_path, notice: t("activities.job_training.created")
     else
-      render :new
+      render :new, status: :unprocessable_content
     end
   end
 
@@ -18,7 +18,7 @@ class Activities::JobTrainingController < Activities::BaseController
     if @job_training_activity.update(job_training_activity_params)
       redirect_to activities_flow_root_path, notice: t("activities.job_training.updated")
     else
-      render :edit
+      render :edit, status: :unprocessable_content
     end
   end
 
