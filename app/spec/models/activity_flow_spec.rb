@@ -46,9 +46,10 @@ RSpec.describe ActivityFlow, type: :model do
   end
 
   describe ".create_from_invitation" do
+    let(:device_id) { "device123" }
+
     it "creates a flow from an invitation" do
       invitation = create(:activity_flow_invitation)
-      device_id = "device123"
 
       flow = ActivityFlow.create_from_invitation(invitation, device_id)
 
@@ -62,9 +63,37 @@ RSpec.describe ActivityFlow, type: :model do
       cbv_applicant = create(:cbv_applicant)
       invitation = create(:activity_flow_invitation, cbv_applicant: cbv_applicant)
 
-      flow = ActivityFlow.create_from_invitation(invitation, "device123")
+      flow = ActivityFlow.create_from_invitation(invitation, device_id)
 
       expect(flow.cbv_applicant).to eq(cbv_applicant)
+    end
+
+    it "copies reporting_month from invitation" do
+      invitation = create(:activity_flow_invitation, reporting_month: Date.new(2025, 3, 1))
+
+      flow = ActivityFlow.create_from_invitation(invitation, device_id)
+
+      expect(flow.reporting_month).to eq(Date.new(2025, 3, 1))
+    end
+  end
+
+  describe "reporting_month" do
+    it "defaults to the current month on create" do
+      flow = create(:activity_flow, reporting_month: nil)
+
+      expect(flow.reporting_month).to eq(Date.current.beginning_of_month)
+    end
+
+    it "returns a range for the month" do
+      flow = build(:activity_flow, reporting_month: Date.new(2025, 2, 1))
+
+      expect(flow.reporting_month_range).to eq(Date.new(2025, 2, 1)..Date.new(2025, 2, 28))
+    end
+
+    it "returns a formatted display string" do
+      flow = build(:activity_flow, reporting_month: Date.new(2025, 2, 1))
+
+      expect(flow.reporting_month_display).to eq("February 2025")
     end
   end
 end
