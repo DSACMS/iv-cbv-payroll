@@ -1,11 +1,5 @@
-require "retriable"
-
 class Transmitters::HttpPdfTransmitter < Transmitters::PdfTransmitter
   TRANSMISSION_METHOD = "http-pdf"
-  TEN_MINUTES = 10*60
-
-  class RetriableError < StandardError
-  end
 
   def destination_url!
     unless current_agency.transmission_method == TRANSMISSION_METHOD
@@ -33,23 +27,13 @@ class Transmitters::HttpPdfTransmitter < Transmitters::PdfTransmitter
     req["X-IVAAS-Signature"] = signature
     req["X-IVAAS-Confirmation-Code"] = cbv_flow.confirmation_code
 
-    Net::HTTP.start(url.hostname, url.port, use_ssl: url.scheme == "https") do |http|
-      Retriable.retriable(
-        on: [ RetriableError ],
-        tries: 5,
-        max_elapsed_time: TEN_MINUTES,
-      ) do
-        res = http.request(req)
+    res = Net::HTTP.start(url.hostname, url.port, use_ssl: url.scheme == "https") do |http|
+      http.request(req)
+    end
 
-        case res
-        when Net::HTTPSuccess then
-          res
-        when Net::HTTPUnauthorized, Net::HTTPServerError then
-          raise RetriableError
-        else
-          raise "Request failed: #{res.code} #{res.message}"
-        end
-      end
+    unless res.is_a?(Net::HTTPSuccess)
+      raise "PDF delivery failed! "\
+            "Received response \"#{res.messageage}\", code #{res.status_code}"
     end
   end
 end

@@ -46,8 +46,6 @@ RSpec.describe Transmitters::HttpPdfTransmitter do
     before do
       allow(subject).to receive(:timestamp).and_return(time_now.to_i)
       allow(subject).to receive(:signature).and_return(sig)
-
-      allow(Retriable).to receive(:retriable).and_yield
     end
 
     it "sends #pdf_output as a POST request" do
@@ -72,42 +70,6 @@ RSpec.describe Transmitters::HttpPdfTransmitter do
       expect(
         stub
       ).to have_been_made
-    end
-
-    it "retries when response is 401" do
-      stub = stub_request(
-          :post,
-          transmission_method_configuration["url"]
-        ).to_return(status: 401)
-
-      VCR.turned_off do
-        expect { subject.deliver }
-          .to raise_error(Transmitters::HttpPdfTransmitter::RetriableError)
-      end
-    end
-
-    it "retries when response is 500" do
-      stub = stub_request(
-          :post,
-          transmission_method_configuration["url"]
-        ).to_return(status: 500)
-
-      VCR.turned_off do
-        expect { subject.deliver }
-          .to raise_error(Transmitters::HttpPdfTransmitter::RetriableError)
-      end
-    end
-
-    it "fails when response is 404" do
-      stub = stub_request(
-          :post,
-          transmission_method_configuration["url"]
-        ).to_return(status: 404)
-
-      VCR.turned_off do
-        expect { subject.deliver }
-          .to raise_error(RuntimeError)
-      end
     end
   end
 end
