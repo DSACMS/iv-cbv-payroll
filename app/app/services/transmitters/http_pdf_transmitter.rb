@@ -1,4 +1,4 @@
-class Transmitters::HttpPdfTransmitter < Transmitters::PdfTransmitter
+class Transmitters::HttpPdfTransmitter < Transmitters::BasePdfTransmitter
   TRANSMISSION_METHOD = "http-pdf"
 
   def destination_url!

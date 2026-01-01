@@ -24,7 +24,7 @@ RSpec.describe Transmitters::HttpPdfTransmitter do
     described_class.new(cbv_flow, client_agency, aggregator_report)
   end
 
-  include_examples "Transmitters::PdfTransmitter"
+  include_examples "Transmitters::BasePdfTransmitter"
   include_examples "Transmitter#signature"
 
   describe "#deliver" do

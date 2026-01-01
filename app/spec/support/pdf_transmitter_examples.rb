@@ -41,7 +41,7 @@ RSpec.shared_examples "Transmitter#signature" do
   end
 end
 
-RSpec.shared_examples "Transmitters::PdfTransmitter" do
+RSpec.shared_examples "Transmitters::BasePdfTransmitter" do
   describe "#pdf_output" do
     let(:pdf_service) { instance_double(PdfService) }
 

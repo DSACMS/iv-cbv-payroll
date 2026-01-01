@@ -12,5 +12,5 @@ RSpec.describe Transmitters::SftpTransmitter do
     described_class.new(cbv_flow, client_agency, aggregator_report)
   end
 
-  include_examples "Transmitters::PdfTransmitter"
+  include_examples "Transmitters::BasePdfTransmitter"
 end

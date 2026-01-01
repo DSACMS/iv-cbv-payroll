@@ -1,4 +1,4 @@
-class Transmitters::PdfTransmitter
+class Transmitters::BasePdfTransmitter
   include Transmitter
 
   def pdf_output
