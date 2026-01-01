@@ -7,20 +7,14 @@ RSpec.describe Transmitters::HttpPdfTransmitter do
     }
   end
 
-  let(:client_agency) do
-    c = instance_double(ClientAgencyConfig::ClientAgency)
-
-    allow(c)
-      .to receive(:id)
-            .and_return("sandbox")
-
-    allow(c)
-      .to receive(:transmission_method_configuration)
-            .and_return(transmission_method_configuration)
-    allow(c)
-      .to receive(:transmission_method)
-            .and_return(Transmitters::HttpPdfTransmitter::TRANSMISSION_METHOD)
-    c
+  let(:client_agency) { instance_double(ClientAgencyConfig::ClientAgency) }
+  
+  before do
+    allow(client_agency).to receive(:id).and_return("sandbox")
+    allow(client_agency).to receive(:transmission_method_configuration)
+      .and_return(transmission_method_configuration)
+    allow(client_agency).to receive(:transmission_method)
+      .and_return(Transmitters::HttpPdfTransmitter::TRANSMISSION_METHOD)
   end
 
   let(:cbv_flow) { create(:cbv_flow, confirmation_code: "ABC123") }
