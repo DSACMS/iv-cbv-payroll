@@ -8,7 +8,7 @@ RSpec.describe Transmitters::HttpPdfTransmitter do
   end
 
   let(:client_agency) { instance_double(ClientAgencyConfig::ClientAgency) }
-  
+
   before do
     allow(client_agency).to receive(:id).and_return("sandbox")
     allow(client_agency).to receive(:transmission_method_configuration)
