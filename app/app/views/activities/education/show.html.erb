@@ -6,9 +6,7 @@
     <p>
         <%= t(".description") %>
     </p>
-<% end %>
-
-<% if @education_activity.school_name.blank? %>
+<% else %>
     <div class="usa-alert usa-alert--warning">
         <div class="usa-alert__body">
             <h3 class="usa-alert__heading">
