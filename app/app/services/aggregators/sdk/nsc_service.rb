@@ -79,7 +79,7 @@ module Aggregators::Sdk
       }
 
       full_url = "#{@base_url}#{ENROLLMENT_ENDPOINT}"
-      Rails.logger.info("NSCService: POST to #{full_url} with body: #{request_body.to_json}")
+      Rails.logger.info("[NSCService] Fetch enrollment data:: POST to #{full_url} with body: #{request_body.to_json}")
 
       response = http_client.post(full_url) do |req|
         req.body = request_body
@@ -93,6 +93,7 @@ module Aggregators::Sdk
     def http_client
       @http_client ||= Faraday.new do |conn|
         conn.request :json
+        conn.response :logger, Rails.logger, bodies: true, headers: true, prefix: "[NscService][HTTP]"
         conn.response :json
         conn.options.timeout = MAX_TIMEOUT.to_i
         conn.options.open_timeout = MAX_TIMEOUT.to_i
@@ -120,13 +121,14 @@ module Aggregators::Sdk
 
       Rails.logger.info("[NscService] Fetching OAuth token from #{token_url}")
 
-      conn = Faraday.new do |f|
-        f.request :url_encoded
-        f.response :json
-        f.options.timeout = 10
+      token_conn = Faraday.new do |conn|
+        conn.request :url_encoded
+        conn.response :logger, Rails.logger, bodies: true, headers: true, prefix: "[NscService][HTTP]"
+        conn.response :json
+        conn.options.timeout = 10
       end
 
-      response = conn.post(token_url) do |req|
+      response = token_conn.post(token_url) do |req|
         req.body = {
           grant_type: "client_credentials",
           scope: @environment[:scope],
@@ -164,11 +166,13 @@ module Aggregators::Sdk
         response.body
       when 404
         error_body = response.body || {}
+        Rails.logger.error("[NscService] Student not found: #{error_body}")
         raise ApiError.new(
           code: error_body["code"] || "STUDENT_NOT_FOUND",
           message: error_body["message"] || "Student not found"
         )
       when 401
+        Rails.logger.error("[NscService] Unauthorized access - invalid or expired token. Clearing cached token.")
         # Clear cached token and retry once
         Rails.cache.delete("#{TOKEN_CACHE_KEY_PREFIX}_#{environment_name}")
         raise ApiError.new(
@@ -176,24 +180,37 @@ module Aggregators::Sdk
           message: "OAuth token expired or invalid"
         )
       else
+        Rails.logger.error("[NscService] Unexpected API response: #{response.status} - #{response.body}")
         raise ApiError.new(
           code: "UNEXPECTED_ERROR",
           message: "Unexpected error occurred from NSC API: #{response.status} - #{response.body}"
         )
-        Rails.logger.error("[NscService] API Error: #{response.status} - #{response.body}")
       end
     end
 
+    # NOTE:
+    # - Only handles the first enrollment school and the first enrollment detail (both are arrays in the response)
+    # - Enrollment status is simply Y/N (until more use cases are known)
     def create_education_activity(activity_flow, response_data)
+      enrollement = response_data["enrollmentDetails"]&.first
+      enrollement_data = enrollment&.dig("enrollmentData")&.first
+
       EducationActivity.create!(
         activity_flow: activity_flow,
-        school_name: response_data["enrollmentDetails"]["officialSchoolName"],
-        status: response_data["enrollmentDetails"]["enrollmentData"]["enrollmentStatus"],
+        school_name: enrollement&.dig("officialSchoolName") || "N/A",
+        status: map_enrollment_status(enrollement_data&.dig("enrollmentStatus"))
       )
     end
 
-    def map_enrollment_status(statusCode)
-      case status
+    # Maps NSC enrollment status codes to internal enum values
+    # Enum values: 0=unknown, 1=not_enrolled, 2=enrolled
+    # ESC `enrollmentDetail[0].enrollmentData[0].enrollmentStatus`
+    # values:
+    #  "Y" -> :enrolled (displayed as "Enrolled")
+    #  "N" -> :not_enrolled (displayed as "Not Enrolled")
+    #  other values -> :unknown (not displayed as "N/A")
+    def map_enrollment_status(status_code)
+      case status_code
       when "Y"
         :enrolled
       when "N"

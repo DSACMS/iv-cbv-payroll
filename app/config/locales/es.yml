@@ -1,5 +1,11 @@
 ---
 es:
+  activities:
+    education:
+      enrollment_status:
+        enrolled: Inscrito
+        not_enrolled: No inscrito
+        unknown: Desconocido
   activerecord:
     errors:
       models:

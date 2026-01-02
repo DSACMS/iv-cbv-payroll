@@ -61,12 +61,9 @@ en:
       created: Education activity was successfully added.
       deleted: Education activity was successfully deleted.
       enrollment_status:
-        full_time: Full Time
-        hours:
-          one: 1 credit hour
-          other: "%{count} credit hours"
-          zero: not enrolled
-        part_time: Part Time
+        enrolled: Enrolled
+        not_enrolled: Not Enrolled
+        unknown: N/A
       error:
         back_button: Back to Activities
         error_description: There was an error retrieving your education information. Please try again later.
