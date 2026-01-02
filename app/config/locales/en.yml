@@ -86,6 +86,10 @@ en:
         continue: Save and continue
         date_of_birth: Date of Birth
         description: Review the information below to make sure it's correct.
+        no_records_found:
+          heading: No enrollment record found
+          message: We couldn't find any enrollment records for the information you provided. You can go back and try again or add your education activity manually.
+        no_enrollment_record: No enrollment record found
         enrollment_information:
           enrollment_status:
             header: Enrollment Status

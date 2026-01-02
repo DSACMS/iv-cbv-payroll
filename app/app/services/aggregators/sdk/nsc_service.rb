@@ -71,11 +71,17 @@ module Aggregators::Sdk
     # @param last_name [String] Last name of the individual
     # @param date_of_birth [Date] Date of birth of the individual
     # @return [Hash] Parsed JSON response from NSC API
+    #
+    # TODO:
+    #   - Make the terms dynamic based on user consent
     def fetch_enrollment_data(first_name:, last_name:, date_of_birth:)
       request_body = {
         firstName: first_name,
         lastName: last_name,
-        dateOfBirth: date_of_birth
+        dateOfBirth: date_of_birth,
+        accountId: 10053523,
+        terms: "y",
+        endClient: "CMS"
       }
 
       full_url = "#{@base_url}#{ENROLLMENT_ENDPOINT}"
@@ -163,6 +169,7 @@ module Aggregators::Sdk
     def handle_response(response)
       case response.status
       when 200
+        Rails.logger.info("[NscService] Successfully fetched enrollment data from NSC API. Response Body: #{response.body}")
         response.body
       when 404
         error_body = response.body || {}
@@ -193,11 +200,17 @@ module Aggregators::Sdk
     # - Enrollment status is simply Y/N (until more use cases are known)
     def create_education_activity(activity_flow, response_data)
       enrollement = response_data["enrollmentDetails"]&.first
-      enrollement_data = enrollment&.dig("enrollmentData")&.first
+      enrollement_data = enrollement&.dig("enrollmentData")&.first
+
+      Rails.logger.info("[NscService] create_education_activity, response data: #{response_data}")
+
+      if enrollement.nil? || enrollement_data.nil?
+        Rails.logger.warn("[NscService] Incomplete enrollment data received from NSC API: #{response_data}")
+      end
 
       EducationActivity.create!(
         activity_flow: activity_flow,
-        school_name: enrollement&.dig("officialSchoolName") || "N/A",
+        school_name: enrollement&.dig("officialSchoolName"),
         status: map_enrollment_status(enrollement_data&.dig("enrollmentStatus"))
       )
     end
