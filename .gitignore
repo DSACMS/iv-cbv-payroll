@@ -71,6 +71,7 @@ translation_update.csv
 /app/analytics/.ipynb_checkpoints
 /app/analytics/__pycache__/
 /app/analytics/*.json
+/app/analytics/*.parquet
 
 #Quarto output
 /app/analytics/*_files/
