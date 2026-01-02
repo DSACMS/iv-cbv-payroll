@@ -76,7 +76,7 @@ en:
       new:
         enrollment: Enrollment
         fetching_education_description: This may take a few minutes. Please keep this window open while we work on this.
-        header: We're gathering your enrollment details from the <Our Data Source>
+        header: We're gathering your enrollment details from the National Student Clearinghouse
         hours: Hours
         school: School
         student_info: Retrieving student information

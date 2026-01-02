@@ -11,6 +11,8 @@ es:
         enrolled: Inscrito
         not_enrolled: No inscrito
         unknown: Desconocido
+      new:
+        header: Estamos recopilando sus detalles de inscripción desde la National Student Clearinghouse
   activerecord:
     errors:
       models:
