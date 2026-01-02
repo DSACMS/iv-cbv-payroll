@@ -2,9 +2,24 @@
     <%= t(".header") %>
 </h1>
 
-<p>
-    <%= t(".description") %>
-</p>
+<% if @education_activity.school_name.present? %>
+    <p>
+        <%= t(".description") %>
+    </p>
+<% end %>
+
+<% if @education_activity.school_name.blank? %>
+    <div class="usa-alert usa-alert--warning">
+        <div class="usa-alert__body">
+            <h3 class="usa-alert__heading">
+                <%= t(".no_records_found.heading") %>
+            </h3>
+            <p class="usa-alert__text">
+                <%= t(".no_records_found.message") %>
+            </p>    
+        </div>
+    </div>
+<% end %>
 
 <h2>
     <%= t(".student_information") %>
