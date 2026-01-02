@@ -10,6 +10,11 @@ format:
     toc: true
     number-sections: true
     css: dsac-theme.css
+  docx:
+    toc: true
+    number-sections: true
+    reference-doc: custom-reference-doc.docx
+    highlight-style: github
 ---
 
 # Purpose
@@ -47,7 +52,7 @@ Its easy to construct similar metrics in different ways and yield slightly diffe
 
 -   **Applicant**: uses the `distinct_id` associated with the event.
 -   **Session**: relies on the `properties$cbv_flow_id`. A user may have one or more sessions during a pilot period.
--   **Application submitted/successful**: the applicant finished the submission flow ending on the success page (`event == 'ApplicantAccessedSuccessPage'`). 
+-   **Application submitted/successful**: the applicant finished the submission flow ending on the success page (`event == 'ApplicantSharedIncomeSummary'`). 
 -   **Application start time**: uses the `timestamp` the applicant viewed the agreement page (`event == 'ApplicantViewedAgreement'`)
 -   **Application duration**: the duration is then calculated from the difference between the session start time and the `timestamp` the last event was viewed.
 -  **Provider sync time**: calculated using the `timestamp` between two events, `ApplicantSucceededWithLogin` and `ApplicantFinishedSync`
@@ -60,7 +65,9 @@ Its easy to construct similar metrics in different ways and yield slightly diffe
 #dependencies to load
 library(tidyverse)
 library(here)
+library(arrow, warn.conflicts = FALSE)
 library(jsonlite, warn.conflicts = FALSE)
+library(glue)
 library(patchwork)
 library(scales)
 library(gt)
@@ -72,119 +79,29 @@ library(gtayblr) ## remotes::install_github("USAID-OHA-SI/gtayblr")
 ```
 
 ```{r}
-#| label: dsac_colors
+#| label: global variables
 #| echo: false
 #| warning: false
 
+#identify paths for json data for each of the three periods
+mp_path <- list.files(here("app/analytics"), "mixpanel.*parquet", full.names = TRUE)
+
+#default viz/table caption
+default_caption <- "Source: Lousiana 2025 IVaaS Pilot Mixpanel Data [accessed 2025-12-15]"
+
 #set DSAC colors
-dsac_color <- c("#103D68", "#136A5D", "#6A1344", "#EFAC2F", "#63789D", "#C1C9D7", "#5A9088", "#842F66", "#123054")
-dsac_color_name <- c("navy", "teal", "cranberry", "gold", "light_navy", "pale_navy", "light_teal", "light_cranberry", "dark_navy")
+dsac_color <- c("#103D68", "#136A5D", "#6A1344", "#EFAC2F", "#63789D", "#C1C9D7", "#5A9088", "#D9E8E5", "#842F66", "#123054")
+dsac_color_name <- c("navy", "teal", "cranberry", "gold", "light_navy", "pale_navy", "light_teal", "pale_teal", "light_cranberry", "dark_navy")
 dsac_color <- setNames(dsac_color, dsac_color_name)
 rm(dsac_color_name)
 ```
 
 ```{r}
-#| label: default_caption
+#| label: import_data
 
-default_caption <- "Source: Lousiana 2025 IVaaS Pilot Mixpanel Data [accessed 2025-12-15]"
-```
-```{r}
-#| label: data_paths
-
-#identify paths for json data for each of the three periods
-paths <- list.files(here("app/analytics"), "mixpanel.*json", full.names = TRUE)
-
-# paths |> 
-#     basename() |> 
-#     str_extract('(?<=data_).*(?=\\.json)') |> 
-#     str_replace_all("_", " ")
-
+df_mp <- read_parquet(mp_path)
 ```
 
-```{r}
-#| label: fcn_import
-
-# function to read the JSON file & convert to tibble, keeping properties as a nest list
-read_mp <- function(path){
- 
- json <- readr::read_lines(path) |> purrr::map(jsonlite::fromJSON) 
-
- df <- 
-  tibble::tibble(
-    event = purrr::map_chr(json, ~ .x$event),
-    properties = purrr::map(json, ~ .x$properties),
-    timestamp = purrr::map_chr(json, ~ .x$timestamp)
-    )
-  
-  return(df)
-
-}
-```
-
-```{r}
-#| label: data_import
-
-#read in the json data
-df_mp <- paths |> 
-  str_subset("2025-11") |> 
-  read_mp() 
-# df_mp <- paths |> map(read_mp) |> list_rbind()
-```
-
-```{r}
-#| label: munging
-
-#convert time to a time variable and make a week variable
-df_mp <- df_mp |>
-  mutate(
-    timestamp = as_datetime(timestamp),
-    pilot = case_match(
-      month(timestamp),
-      c(5,6) ~ "May 2025",
-      c(8,9) ~ "Aug 2025",
-      c(11, 12) ~ "Nov 2025"
-      ),
-      pilot = factor(pilot, c("May 2025", "Aug 2025", "Nov 2025")),
-    week = timestamp |> floor_date("weeks") |> as_date()
-    )
-
-#drop page view events - no property data useful in analysis
-df_mp <- df_mp |> 
-  filter(event != "CbvPageView")
-
-# Extract distinct_id from the nested properties list
-df_mp <- df_mp %>%
-  mutate(
-    distinct_id = map_chr(
-      properties,
-      ~ pluck(.x, "distinct_id", .default = NA_character_)
-    ),
-    cbv_flow_id = map_int(
-      properties,
-      ~ pluck(.x, "cbv_flow_id", .default = NA_integer_)
-    )
-  )
-
-#reorder variables
-df_mp <- df_mp |>
-  relocate(distinct_id, cbv_flow_id, timestamp, week, .before = everything()) |>
-  relocate(properties, .after = last_col())
-
-#remove events without CBV flow id (case workers + timeouts)
-df_mp <- df_mp |> 
-  filter(!is.na(cbv_flow_id))
-
-#arrange time descending (most recent events on top by user)
-df_mp <- df_mp |>
-  arrange(distinct_id, desc(timestamp))
-
-#extract type from event to make events generic
-df_mp <- df_mp |> 
-  mutate(
-    provider = str_extract(event, "Pinwheel|Argyle"),
-    event = str_remove(event, "Pinwheel|Argyle")
-    ) 
-```
 
 ## How many users are starting but not completing the process?
 
@@ -214,7 +131,7 @@ Comparing how many people are completing each pilot period, in the first pilot m
 #| output: true
 
  df_compl_pilot <- df_mp |> 
-  filter(event %in% c("ApplicantViewedAgreement","ApplicantAccessedSuccessPage")) |> 
+  filter(event %in% c("ApplicantViewedAgreement","ApplicantSharedIncomeSummary")) |> 
   clean_events() |> 
   group_by(pilot, event_clean) |> 
   summarise(
@@ -225,7 +142,7 @@ Comparing how many people are completing each pilot period, in the first pilot m
     names_from = event_clean,
     values_from = n_distinct
     ) |> 
-  mutate(`Completion Rate` = `Accessed Success Page` / `Viewed Agreement`)
+  mutate(`Completion Rate` = `Shared Income Summary` / `Viewed Agreement`)
 
 
 df_compl_pilot |> 
@@ -247,7 +164,7 @@ df_compl_pilot |>
 
 df_success_diff <- df_mp |> 
   filter(
-    event %in% c("ApplicantAccessedSuccessPage"),
+    event %in% c("ApplicantSharedIncomeSummary"),
     pilot == "Nov 2025"
     ) |> 
   group_by(pilot) |>
@@ -266,18 +183,20 @@ The table below details how many submissions were associated with an applicant.^
 #| output: true
 
 df_mp |> 
-  filter(event %in% c("ApplicantAccessedSuccessPage")) |> 
+  filter(event %in% c("ApplicantSharedIncomeSummary")) |> 
   distinct(pilot, distinct_id, cbv_flow_id) |> 
   count(pilot, distinct_id, sort = TRUE) |> 
   count(pilot, n) |> 
+  arrange(n) |> 
   pivot_wider(names_from = n, values_from = nn) |> 
   gt() |>
   format_numeric_columns() |> 
+  sub_missing() |> 
   si_gt_base(header_fill = dsac_color['light_teal']) |> 
   adjust_row_padding() |> 
   add_labs(
-    title = "Some users has multiple successful submissions" |> toupper(),
-    subtitle = "the number of successful submissions an applicant had",
+    title = "Some users had multiple successful submissions" |> toupper(),
+    subtitle = "the number of successful submission sessions",
     caption = default_caption
   ) 
 ```
@@ -292,8 +211,9 @@ If we compare weeks with in each pilot, we are seeing a similar trend of most pe
 #| output: true
 
 df_compl <- df_mp |> 
-  filter(event %in% c("ApplicantViewedAgreement","ApplicantAccessedSuccessPage")) |> 
+  filter(event %in% c("ApplicantViewedAgreement","ApplicantSharedIncomeSummary")) |> 
   clean_events() |> 
+  mutate(week = timestamp |> floor_date("weeks") |> as_date()) |> 
   group_by(pilot, week, event_clean) |> 
   summarise(
     n_distinct = n_distinct(distinct_id),
@@ -303,9 +223,9 @@ df_compl <- df_mp |>
     names_from = event_clean,
     values_from = n_distinct
     ) |> 
-  mutate(completion_rate_wk = `Accessed Success Page` / `Viewed Agreement`) |> 
+  mutate(completion_rate_wk = `Shared Income Summary` / `Viewed Agreement`) |> 
   group_by(pilot) |> 
-  mutate(plt_wk = str_glue("wk{isoweek(week) - min(isoweek(week)) + 1}"), .after = pilot) |> 
+  mutate(plt_wk = glue("wk{isoweek(week) - min(isoweek(week)) + 1}"), .after = pilot) |> 
   ungroup()
 
 # add pilot average rate for viz
@@ -321,7 +241,7 @@ df_compl <- df_compl |>
 v1 <- df_compl |> 
   ggplot(aes(plt_wk, `Viewed Agreement`)) +
   geom_col(fill = dsac_color['light_navy']) +
-  facet_grid(. ~pilot, scales = "free_x", switch = "y") +
+  facet_grid(. ~pilot, scales = "free_x", space = "free_x", switch = "y") +
   scale_y_continuous(label = label_comma()) +
   si_style_ygrid() +
   labs(
@@ -336,8 +256,7 @@ v1 <- df_compl |>
   ggplot(aes(plt_wk, completion_rate_wk)) +
   geom_col(fill = dsac_color[['light_teal']]) +
   geom_hline(
-    # aes(yintercept = completion_rate_plt), 
-    yintercept = df_compl_pilot$`Completion Rate`, 
+    aes(yintercept = completion_rate_pilot), na.rm = TRUE,
     color = dsac_color[['cranberry']],
     linetype = "dashed"
     ) +
@@ -348,7 +267,7 @@ v1 <- df_compl |>
     na.rm = TRUE,
     family = "Source Sans 3", color = matterhorn, linewidth = 0,
     ) +
-  facet_grid(. ~pilot, scales = "free_x", switch = "y") +
+  facet_grid(. ~pilot, scales = "free_x", , space = "free_x", switch = "y") +
   scale_y_continuous(label = label_percent()) +
   labs(
     x = NULL, y = NULL,
@@ -374,35 +293,42 @@ For the Louisana pilot, applicants were sent both text messages and emailed/mail
 ```{r}
 #| label: device_origin_status
 
+#flag if the applicant started on a tokenized or generic link
 df_device_origin_status <- df_mp |> 
+  mutate(
+    initiation = case_when(event %in% c("ApplicantClickedCBVInvitationLink", "ApplicantClickedGenericLink") ~ str_extract(event, "CBVInvitation|ClickedGenericLink")),
+    initiation = initiation |> 
+      str_replace_all("(?<!^)([A-Z])", " \\1") |> 
+      str_replace('C B V', "CBV")
+  ) |> 
+  group_by(distinct_id, cbv_flow_id) |> 
+  fill(initiation, .direction = "updown") |> 
+  ungroup() 
+  
+df_device_origin_status <- df_device_origin_status |> 
   filter(
-    pilot == "Nov 2025",
     str_starts(distinct_id, "applicant"),
-    event %in% c("ApplicantViewedAgreement", "ApplicantAccessedSuccessPage")
-  ) |> 
+    event %in% c("ApplicantViewedAgreement", "ApplicantSharedIncomeSummary")
+  ) |>  
   mutate(
-    device_type = map_chr(
-      properties,
-      ~ pluck(.x, "device_type", .default = NA_character_)
-    ),
-     origin = map_chr(
-      properties,
-      ~ pluck(.x, "origin", .default = NA_character_)
-    ),
-    completed = event == "ApplicantAccessedSuccessPage"
-  ) |> 
-  mutate(
-    across(c(device_type, origin), ~ ifelse(is.na(.), "unknown", .)),
+    completed = event == "ApplicantSharedIncomeSummary",
+    across(c(device_type, origin, initiation), ~ ifelse(is.na(.), "unknown", .)),
     device_type = ifelse(device_type %in% c("desktop", 'smartphone', 'unknown'), device_type, "other")
   ) |> 
   group_by(pilot, distinct_id, cbv_flow_id) |> 
   mutate(completed = max(completed) |> as.logical()) |> 
   ungroup() |> 
-  distinct(pilot, distinct_id, cbv_flow_id, device_type, origin, completed) 
+  distinct(pilot, distinct_id, cbv_flow_id, device_type, origin, completed, initiation) 
+
+#other device types
+other_devices <- unique(df_mp$device_type) |> 
+  str_subset("desktop|smartphone", negate = TRUE) |> 
+  paste0('s') |> 
+  glue_collapse(sep = ', ', last = ", and ")
 
 ```
 
-When comparing the device type, we can see there is a preference for applicants initiating the process on their phones. The success rate is much higher on the phones than desktop, but both success rates are rather low. The other types of devices include tablets, phablets, and portable media players.
+When comparing the device type, we can see there is a preference for applicants initiating the process on their phones. The success rate is much higher on the phones than desktop, but both success rates are rather low. The other types of devices include `{r} other_devices`.
 
 ```{r}
 #| label: device_status_tbl
@@ -417,11 +343,11 @@ df_device_origin_status |>
   rowwise() |> 
   mutate(,
     `Viewed Agreement` = sum(`FALSE`, `TRUE`),
-    `Accessed Success Page` = `TRUE`,
-    `Completion Rate` = `Accessed Success Page` / `Viewed Agreement`
+    `Shared Income Summary` = `TRUE`,
+    `Completion Rate` = `Shared Income Summary` / `Viewed Agreement`
   ) |> 
   select(-c(`FALSE`, `TRUE`)) |> 
-  arrange(desc(`Viewed Agreement`)) |> 
+  arrange(pilot, desc(`Viewed Agreement`)) |> 
   gt(groupname_col = "pilot") |> 
   format_numeric_columns() |> 
   si_gt_base(header_fill = dsac_color['light_teal']) |> 
@@ -429,7 +355,7 @@ df_device_origin_status |>
   add_labs(
     title = "Most applicants start and have the highest success rate on smartphones" |> toupper(),
     subtitle = "number of distinct flows by device type",
-    caption = default_caption
+    caption = glue("Note: Other devices include {other_devices} | {default_caption}")
   ) 
 ```
 
@@ -448,11 +374,11 @@ df_device_origin_status |>
   rowwise() |> 
   mutate(,
     `Viewed Agreement` = sum(`FALSE`, `TRUE`),
-    `Accessed Success Page` = `TRUE`,
-    `Completion Rate` = `Accessed Success Page` / `Viewed Agreement`
+    `Shared Income Summary` = `TRUE`,
+    `Completion Rate` = `Shared Income Summary` / `Viewed Agreement`
   ) |> 
   select(-c(`FALSE`, `TRUE`)) |> 
-  arrange(desc(`Viewed Agreement`)) |> 
+  arrange(pilot, desc(`Viewed Agreement`)) |> 
   gt(groupname_col = "pilot") |> 
   format_numeric_columns() |> 
   si_gt_base(header_fill = dsac_color['light_teal']) |> 
@@ -464,6 +390,36 @@ df_device_origin_status |>
   ) 
 ```
 
+Lastly, we can take a look at how the applicant started their session. In the November pilot, most sessions were started via a tokenized, CBV invitation but these sessions were half as successful in completing the process. This is the opposite of what occured in the August pilot.
+
+```{r}
+#| label: tokenized_status
+#| output: true
+
+df_device_origin_status |>
+  count(pilot, initiation, completed) |> 
+  pivot_wider(
+    names_from = completed, 
+    values_from = n,
+    values_fill = 0) |> 
+  rowwise() |> 
+  mutate(,
+    `Viewed Agreement` = sum(`FALSE`, `TRUE`),
+    `Shared Income Summary` = `TRUE`,
+    `Completion Rate` = `Shared Income Summary` / `Viewed Agreement`
+  ) |> 
+  select(-c(`FALSE`, `TRUE`)) |> 
+  arrange(pilot, desc(`Viewed Agreement`)) |> 
+  gt(groupname_col = "pilot") |> 
+  format_numeric_columns() |> 
+  si_gt_base(header_fill = dsac_color['light_teal']) |> 
+  adjust_row_padding() |> 
+  add_labs(
+    title = "Generic links see larger success rate last two pilots" |> toupper(),
+    subtitle = "number of distinct flows by initiation type",
+    caption = default_caption
+  ) 
+```
 
 ## How long does it take to complete the application?
 
@@ -474,18 +430,18 @@ On the client side, the goal of the IVaaS app is to creating something easy to c
 
 df_time <- df_mp |> 
   filter(
-    pilot == "Nov 2025",
+    # pilot == "Nov 2025",
     str_starts(distinct_id, "applicant")
   ) |> 
   mutate(
-    completed = event == "ApplicantAccessedSuccessPage", 
+    completed = event == "ApplicantSharedIncomeSummary", 
     time_start = case_when(event == "ApplicantViewedAgreement" ~ timestamp)
     ) |> 
   group_by(pilot, distinct_id) |> 
   # group_by(pilot, distinct_id, cbv_flow_id) |> 
   mutate(
     completed = max(completed, na.rm = TRUE),
-    time_end = ifelse(event == "ApplicantAccessedSuccessPage", timestamp, max(timestamp)),
+    time_end = ifelse(event == "ApplicantSharedIncomeSummary", timestamp, max(timestamp)),
     time_end = as_datetime(time_end)
     ) |>
   ungroup()
@@ -507,7 +463,7 @@ df_duration <- df_time |>
 ```{r}
 #| label: duration_stats
 
-df_duration_stats <- df_duration |> 
+df_duration_viz <- df_duration |> 
   mutate(
     completed_type = case_when(
       completed == 1 ~ 'completed',
@@ -526,6 +482,9 @@ df_duration_stats <- df_duration |>
     q90 = quantile(minutes, .9, na.rm = TRUE),
     .groups = "drop"
     )
+
+  df_duration_stats <- df_duration_viz |> 
+    filter(pilot == 'Nov 2025')
 ```
 
 Of the `{r} scales::label_comma()(df_duration_stats[df_duration_stats$completed_type == 'completed',]$n)` applicants who completed the application, the median time was `{r} scales::label_number(.1)(df_duration_stats[df_duration_stats$completed_type == 'completed',]$median)` minutes, with 75% completing it within `{r} scales::label_number(.1)(df_duration_stats[df_duration_stats$completed_type == 'completed',]$q75)` minutes. The timing looks pretty good from that vantage point. However, most applicants are not completing the application, `{r} scales::label_comma()(df_duration_stats[df_duration_stats$completed_type != 'completed',]$n |> sum())` distinct ids.^[Its important to note the switch here from applicants to distinct ids. Since most many applicants are sent generic links, we cannot track multiple sessions over time. So a user may start the process multiple times and complete and each one of those sessions would have its own distinct id] Of those distinct ids, `{r} scales::label_percent()(df_duration_stats[df_duration_stats$completed_type == 'just clicked',]$n / df_duration_stats[df_duration_stats$completed_type != 'completed',]$n |> sum())` are clicking the link and not proceeding beyond viewing the initial agreement page. When looking at incomplete applications excluding those that only viewed the agreement page, the median applicant spends `{r} scales::label_number(.1)(df_duration_stats[df_duration_stats$completed_type == 'incomplete',]$median)` minutes on the applicantion before they stop, with 75% aborting after only `{r} scales::label_number(.1)(df_duration_stats[df_duration_stats$completed_type == 'incomplete',]$q75)` minutes. 
@@ -533,7 +492,7 @@ Of the `{r} scales::label_comma()(df_duration_stats[df_duration_stats$completed_
 ```{r}
 #| label: viz_duration
 #| output: true
-df_duration_stats |> 
+df_duration_viz |> 
   mutate(
     fill_color = 
     case_match(completed_type,
@@ -541,26 +500,30 @@ df_duration_stats |>
       'incomplete' ~ dsac_color['cranberry'],
       'just clicked' ~ dsac_color['cranberry']
       ),
-    completed_type = str_glue('{completed_type} (n = {label_comma()(n)})')) |> 
+    completed_type = glue('{completed_type} (n = {label_comma()(n)})')) |> 
   ggplot(aes(y = fct_rev(completed_type), group = completed_type, color = fill_color)) +
   geom_linerange(aes(xmin = q25, xmax = q75)) +
   geom_point(aes(median), size = 4) +
-  facet_grid(pilot ~. , switch = "y") +
-  scale_x_continuous(position = "top") +
+  geom_text(
+    aes(median, label = label_number(accuracy = .1, suffix = 'm')(median)), 
+    family = "Source Sans 3", vjust = -1) +
+  facet_grid(pilot ~. , switch = "y", scales = "free_y") +
+  scale_x_continuous(labels = label_number( suffix = 'm'), position = "top") +
   scale_color_identity() +
   labs(
     x = NULL, y = NULL,
-    title = str_glue("USERS NOT COMPLETING THE APPLICATION END AFTER ABOUT {label_number(.1)(df_duration_stats[df_duration_stats$completed_type == 'incomplete',]$median)} MINUTES"),
+    title = glue("{toupper(df_duration_stats$pilot[1])} USERS NOT COMPLETING THE APPLICATION END AFTER ABOUT {label_number(.1)(df_duration_stats[df_duration_stats$completed_type == 'incomplete',]$median)} MINUTES"),
     subtitle = 
       "displaying the median session **minutes** and IQR",
-    caption = str_glue("Note: Applicants falling into 'just clicked' count represent those who didn't have an event beyond viewing the agreement 
+    caption = glue("Note: Applicants falling into 'just clicked' count represent those who didn't have an event beyond viewing the agreement 
     default_caption") 
       ) +
   si_style() +
   theme(
     plot.subtitle = element_markdown(),
     strip.placement = "outside",
-    strip.text = element_text(hjust = .5)
+    strip.text = element_text(hjust = .5),
+    panel.spacing=unit(0.5, "lines")
     )
 
 ```
@@ -647,12 +610,15 @@ df_sync_viz |>
 df_sync_viz |> 
   mutate(
     fill_color = ifelse(provider == "Argyle", dsac_color['light_navy'], dsac_color['light_teal']),
-    provider = str_glue('{provider} (n = {label_comma()(n)})')) |> 
+    provider = glue('{provider} (n = {label_comma()(n)})')) |> 
   ggplot(aes(y = fct_rev(provider), group = provider, color = fill_color)) +
   geom_linerange(aes(xmin = q25, xmax = q75)) +
   geom_point(aes(median), size = 4) +
-  facet_grid(pilot ~. , switch = "y") +
-  scale_x_continuous(position = "top") +
+  geom_text(
+    aes(median, label = label_timespan(accuracy = 1)(median)), 
+    family = "Source Sans 3", vjust = -1) +
+  facet_grid(pilot ~. , switch = "y", scales = "free_y") +
+  scale_x_continuous(label = label_timespan(), position = "top") +
   scale_color_identity() +
   labs(
     x = NULL, y = NULL,
@@ -665,9 +631,98 @@ df_sync_viz |>
   theme(
     strip.placement = "outside",
     strip.text = element_text(hjust = .5),
-    plot.subtitle = element_markdown()
+    plot.subtitle = element_markdown(),
+    panel.spacing=unit(0.5, "lines")
     )
 ```
+
+Sticking with the provider comparision, we can look at the distribtion of sync times. By bucketing them, we can see that most sessions have a sync time between 30 seconds and a minute and about 95% are under the 3 minute mark. 
+
+```{r}
+#| label: data_sync_bucketed_viz
+#| output: true
+df_sync_bucketed <- df_sync |> 
+  mutate(
+    sync_bucket = 
+      case_when(
+        sync_time <= 30 ~ "<=30s",
+        sync_time <= 60 ~ ">30s - 1m",
+        sync_time <= 180 ~ ">1m - 3m",
+        sync_time <= 300 ~ ">3m - 5m",
+        sync_time <= 600 ~ ">5m - 10m",
+        TRUE ~ ">10m"
+        ),
+      sync_bucket = factor(sync_bucket, c("<=30s", ">30s - 1m", ">1m - 3m", ">3m - 5m", ">5m - 10m", ">10m"))
+  ) |> 
+  count(pilot, sync_bucket) |> 
+  arrange(pilot, sync_bucket) |> 
+  group_by(pilot) |> 
+  mutate(
+    share = n / sum(n),
+    cum_share = cumsum(n) / sum(n)
+    ) |> 
+  ungroup()
+
+  df_sync_bucketed |> 
+    ggplot(aes(n, fct_rev(sync_bucket), fill = sync_bucket)) +
+    geom_col() + 
+    geom_text(
+      aes(label = label_percent(1)(share)),
+      family = "Source Sans 3", hjust = -.1, color = matterhorn, 
+      ) + 
+    facet_wrap(~pilot) +
+    coord_cartesian(clip = "off") + 
+    scale_fill_manual(values = unname(c(dsac_color['teal'], dsac_color['dark_navy'], dsac_color['navy'], dsac_color['light_navy'], dsac_color['light_cranberry'], dsac_color['cranberry']))) +
+    labs(
+      x = NULL, y = NULL,
+      subtitle = "income sync time with provider by number of sessions",
+      caption = default_caption) +
+    si_style_xgrid() +
+    theme(legend.position = "none")    
+```
+
+The next visual look at the same data, but plots each of the sessions individually, allowing us to see some of the larger outliers and where the specific times fall compared within the broader buckets. The x-axis has been truncated to 20 minutes to see the distrbution, plotting the `r filter(df_sync, sync_time > 1200) |> nrow()` outliers on the 20 minute mark. Both providers saw three sessions with sync times over 20 minutes in the November pilot, but the median time went down from August.  
+
+```{r}
+#| label: data_sync_distro_viz
+#| output: true 
+ 
+ df_sync |>
+    mutate(
+      sync_bucket = 
+        case_when(
+          sync_time <= 30 ~ "<=30s",
+          sync_time <= 60 ~ ">30s - 1m",
+          sync_time <= 180 ~ ">1m - 3m",
+          sync_time <= 300 ~ ">3m - 5m",
+          sync_time <= 600 ~ ">5m - 10m",
+          TRUE ~ ">10m"
+          ),
+      sync_bucket = factor(sync_bucket, c("<=30s", ">30s - 1m", ">1m - 3m", ">3m - 5m", ">5m - 10m", ">10m"))) |> 
+    ggplot(aes(sync_time, fct_rev(pilot), color = sync_bucket)) +
+    geom_point(position = position_jitter(height = 0.3, seed = 42), alpha = 0.4) + 
+    stat_summary(fun = "median", color = dsac_color['gold'], shape = 23, linewidth = 1.1, na.rm = TRUE) + 
+    facet_grid(provider ~. , switch = "y", scales = "free_y") + 
+    scale_x_continuous(
+      label = label_number(.1, scale = 1/60, suffix = "m"), limits = c(0, 1200),
+      breaks = seq(0, 1200, 150),
+      oob=scales::squish, position = "top") +
+    scale_color_manual(values = unname(c(dsac_color['teal'], dsac_color['dark_navy'], dsac_color['navy'], dsac_color['light_navy'], dsac_color['light_cranberry'], dsac_color['cranberry']))) +
+    labs(
+      x = NULL, y = NULL, 
+      subtitle = "income sync time with provider | each point represents a session | gold diamonds represent the median",
+      caption = glue("Note: Sync time capped at 20 minutes
+      {default_caption}")) +
+    si_style_xgrid() +
+    theme(
+      strip.text = element_text(hjust = .5),
+      strip.placement = "outside",
+      legend.position = "none"
+      )
+```
+### When there was a provider outage, was there any change in processing times?
+
+During the November pilot, Argyle had an outage between November 19-20. Looking by day, we can see that Monday, November 20th had a dip in the number of Argyle users compared witht he prior day and Pinhweel saw an increase on both November 19th and 20th (though certainly not enough to offset the dip). During the first day of the outage, the success rate of logging for both providers dropped precipitously, but rebounded on November 20th.
 
 ```{r}
 #| label: sync_outage
@@ -701,12 +756,6 @@ df_outage_viz_rt <- df_sync_init |>
       ) |> fct_inorder()
     )
 
-  df_outage_viz_rt |> 
-    group_by(provider) |> 
-    summarize(
-      attempted = sum(attempted), 
-      success_rate = sum(succeeded)/sum(attempted))
-
 df_outage_viz_rt |> 
   ggplot(aes(y = fct_rev(date_fmt), color = fillcolor, , fill = fillcolor, group = date_fmt)) +
   geom_line(aes(success_rate), color = "#909090") + 
@@ -737,15 +786,21 @@ df_outage_viz_rt |>
   labs(
     x = NULL, y = NULL,
     title = "MOST DAYS APPLICANTS ACCESSING ARGYLE SAW A HIGHER SUCCESSFUL LOGIN RATE",
-    subtitle = str_glue("daily <span style = color:{dsac_color['light_navy']};>**Argyle**</span>/<span style = color:{dsac_color['light_teal']};>**Pinwheel**</span> user flow attempts to login [left] and  successful rates [right]"),
-    caption = str_glue('Note: Argyle outage Nov 19-20
+    subtitle = glue("daily <span style = color:{dsac_color['light_navy']};>**Argyle**</span>/<span style = color:{dsac_color['light_teal']};>**Pinwheel**</span> user flow attempts to login [left] and  successful rates [right]"),
+    caption = glue('Note: Argyle outage Nov 19-20
     {default_caption}')
   ) + 
   si_style_xgrid() +
   theme(plot.subtitle = element_markdown())
 
 #si_save(here("app/analytics/success_rate.png"), height = 7)
+```
 
+During those two Argyle outage days, Pinwheel had the two highest median data sync times for the fives weeks of the pilot. 
+
+```{r}
+#| label: sync_outage2
+#| output: true
 df_outage_viz <- df_sync |> 
   filter(
     pilot == "Nov 2025",
@@ -800,14 +855,19 @@ df_outage_viz |>
     xmin = -Inf, xmax = Inf,
     alpha = .3, fill = "#909090"
     ) + 
-  scale_x_continuous(limit=c(-45,300),oob=scales::squish, position = "top") + 
+  scale_x_continuous(
+    limit = c(-45,300), 
+    label = label_number(1, scale = 1/60, suffix = "m"),
+    breaks = seq(0, 300, 60),
+    oob = scales::squish, 
+    position = "top") + 
   scale_color_identity() +
   scale_size(guide = "none") +
   labs(
     x = NULL, y = NULL,
-    title = str_glue("DESPITE SOME LARGE OUTLIERS AND LESS FLOWS, PINWHEEL'S MEDIAN SYNC TIME ({df_outage_provider_median$Pinwheel}s) IS ONLY A FEW SECONDS SLOWER THAN ARGYLE ({df_outage_provider_median$Argyle}s)") |> str_wrap(),
-    subtitle = str_glue("successful daily <span style = color:{dsac_color['light_navy']};>**Argyle**</span>/<span style = color:{dsac_color['light_teal']};>**Pinwheel**</span> user flow syncs [left] and their duration, **seconds** [median and IQR]"),
-    caption = str_glue('Note: x axis truncated to 5 minutes; Argyle outage Nov 19-20 
+    title = glue("DESPITE SOME LARGE OUTLIERS AND LESS FLOWS, PINWHEEL'S MEDIAN SYNC TIME ({df_outage_provider_median$Pinwheel}s) IS ONLY A FEW SECONDS SLOWER THAN ARGYLE ({df_outage_provider_median$Argyle}s)") |> str_wrap(),
+    subtitle = glue("successful daily <span style = color:{dsac_color['light_navy']};>**Argyle**</span>/<span style = color:{dsac_color['light_teal']};>**Pinwheel**</span> user flow syncs [left] and their duration, **minutes** [median and IQR]"),
+    caption = glue('Note: x axis truncated to 5 minutes; Argyle outage Nov 19-20 
     {default_caption}')
   ) + 
   si_style_xgrid() +
@@ -831,7 +891,7 @@ v_steps <- c(
   "ApplicantAttemptedLogin",
   "ApplicantSucceededWithLogin",
   "ApplicantViewedPaymentDetails",
-  "ApplicantAccessedSuccessPage"
+  "ApplicantSharedIncomeSummary"
   )
 ```
 
@@ -860,7 +920,7 @@ df_ret |>
 
 ```
 
-Right off the bat, we can see that off the `{r} scales::label_comma()(df_ret[df_ret$event_clean == "Viewed Agreement",]$views)` distinct users who started the application, only `{r} scales::label_percent(1)(df_ret[df_ret$event_clean == "Agreed",]$share_cum)` agreed to terms to move on, and only `{r} scales::label_percent(1)(df_ret[df_ret$event_clean == "Accessed Success Page",]$share_cum)` actually made it to completion, submitting their pay information. 
+Right off the bat, we can see that off the `{r} scales::label_comma()(df_ret[df_ret$event_clean == "Viewed Agreement",]$views)` distinct users who started the application, only `{r} scales::label_percent(1)(df_ret[df_ret$event_clean == "Agreed",]$share_cum)` agreed to terms to move on, and only `{r} scales::label_percent(1)(df_ret[df_ret$event_clean == "Shared Income Summary",]$share_cum)` actually made it to completion, submitting their pay information. 
 
 ```{r}
 #| label: event_journey
@@ -1063,16 +1123,16 @@ df_search |>
 ## Are the popular app employers the right ones (i.e. do there appear to be employeers searched more frequently than any that appear in the popular links)
 
 ```{r}
-df_employers <- df_mp |> 
-  filter(event== "ApplicantFinishedSync") |> 
-  mutate(
-        employer = map_chr(
-          properties,
-          ~ pluck(.x, "employment_employer_name", .default = NA_character_)
-          )
-        )
+# df_employers <- df_mp |> 
+#   filter(event== "ApplicantFinishedSync") |> 
+#   mutate(
+#         employer = map_chr(
+#           properties,
+#           ~ pluck(.x, "employment_employer_name", .default = NA_character_)
+#           )
+#         )
 
-df_employers |> 
-  filter(!is.na(employer)) |> 
-  count(employer, sort = TRUE)
+# df_employers |> 
+#   filter(!is.na(employer)) |> 
+#   count(employer, sort = TRUE)
 ```
