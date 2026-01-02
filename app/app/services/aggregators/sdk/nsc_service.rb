@@ -28,7 +28,7 @@ module Aggregators::Sdk
     MAX_TIMEOUT = 10.seconds
 
     class ApiError < StandardError
-      attr_reader :Lcode, :message
+      attr_reader :code, :message
 
       def initialize(code:, message:)
         @code = code
@@ -165,12 +165,12 @@ module Aggregators::Sdk
       when 404
         error_body = response.body || {}
         raise ApiError.new(
-          code: error_body["code"] || "STUDENT_OT_FOUND",
+          code: error_body["code"] || "STUDENT_NOT_FOUND",
           message: error_body["message"] || "Student not found"
         )
       when 401
         # Clear cached token and retry once
-        Rail.cache.delete("#{TOKEN_CACHE_KEY_PREFIX}_#{environment_name}")
+        Rails.cache.delete("#{TOKEN_CACHE_KEY_PREFIX}_#{environment_name}")
         raise ApiError.new(
           code: "UNAUTHORIZED",
           message: "OAuth token expired or invalid"
