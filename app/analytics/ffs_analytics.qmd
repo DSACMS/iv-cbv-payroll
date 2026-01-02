@@ -44,7 +44,7 @@ Below are the areas the report seeks to explore to help improve the product desi
 
 ## Method
 
-This report was generated using a Quarto notebook and leverage R for all analysis and visualizations. The analysis focuses on the 2025 Lousiana pilot, which had three, 6-week session starting May, August, and November. The web analytics data come from Mixpanel, accessed using python for the API call with a [Jupyter Notebook](https://github.com/DSACMS/iv-cbv-payroll/blob/main/app/analytics/analytics.ipynb)). All of the underlying code can be found on [GitHub](https://github.com/DSACMS/iv-cbv-payroll/tree/main/app/analytics).
+This report was generated using a Quarto notebook and leverage R for all analysis and visualizations. The analysis focuses on the 2025 Lousiana pilot, which had three, 6-week session starting May, August, and November. The web analytics data come from Mixpanel, accessed using python for the API call with a [Jupyter Notebook](https://github.com/DSACMS/iv-cbv-payroll/blob/main/app/analytics/analytics.ipynb). All of the underlying code can be found on [GitHub](https://github.com/DSACMS/iv-cbv-payroll/tree/main/app/analytics).
 
 ## Defintions/Calculations
 
@@ -52,6 +52,7 @@ Its easy to construct similar metrics in different ways and yield slightly diffe
 
 -   **Applicant**: uses the `distinct_id` associated with the event.
 -   **Session**: relies on the `properties$cbv_flow_id`. A user may have one or more sessions during a pilot period.
+-   **Total Event**: When an applicant has multiple sessions, each of these unique applicant and sessions is called an total event in Mixpanel.
 -   **Application submitted/successful**: the applicant finished the submission flow ending on the success page (`event == 'ApplicantSharedIncomeSummary'`). 
 -   **Application start time**: uses the `timestamp` the applicant viewed the agreement page (`event == 'ApplicantViewedAgreement'`)
 -   **Application duration**: the duration is then calculated from the difference between the session start time and the `timestamp` the last event was viewed.
@@ -102,11 +103,6 @@ rm(dsac_color_name)
 df_mp <- read_parquet(mp_path)
 ```
 
-
-## How many users are starting but not completing the process?
-
-To start off with, we need to understand how many applicants are starting out this process. 
-
 ```{r}
 #| label: fcn_clean_events
 
@@ -123,6 +119,10 @@ clean_events <- function(df){
         )
 }
 ```
+
+## How many users are starting but not completing the process?
+
+To start off with, we need to understand how many applicants are starting out this process. 
 
 Comparing how many people are completing each pilot period, in the first pilot many more applicants started the processed (i.e. viewed the agreement), but a smaller share completed it (i.e. shared their income summary). However, we do see roughly the same volume of recipients completing the process end to end.
 
@@ -143,7 +143,6 @@ Comparing how many people are completing each pilot period, in the first pilot m
     values_from = n_distinct
     ) |> 
   mutate(`Completion Rate` = `Shared Income Summary` / `Viewed Agreement`)
-
 
 df_compl_pilot |> 
   gt() |> 
@@ -170,37 +169,94 @@ df_success_diff <- df_mp |>
   group_by(pilot) |>
   summarize(
     applicants = n_distinct(distinct_id),
-    flows = n_distinct(distinct_id, cbv_flow_id),
+    sessions = n_distinct(distinct_id, cbv_flow_id),
     .groups = 'drop'
   )
 ```
-Interestingly, there are a number of applicants who had multiple successful submissions (across multiple sessions, i.e. unique `cbv_flow_id`). In the November pilot, for example, there were `{r} scales::label_comma()(df_success_diff$applicants)` distinct applicants who submissed compared with `{r} scales::label_comma()(df_success_diff$flows)` distinct flows/sessions. 
+There are a number of applicants who had multiple successful submissions (across multiple sessions, which). In the November pilot, for example, there were `{r} scales::label_comma()(df_success_diff$applicants)` distinct applicants who submitted compared with `{r} scales::label_comma()(df_success_diff$sessions)` total events.  
 
-The table below details how many submissions were associated with an applicant.^[Since not all applicants are using tokenized link, there may in fact be more applicants successfully submitting multiple times]
+The table below details how many submissions were associated with an applicant.^[Since not all applicants are using tokenized link, there may in fact be more applicants successfully submitting multiple times] In the November case, there are 
 
 ```{r}
 #| label: multi_complete_tbl
 #| output: true
 
-df_mp |> 
+df_multi_tbl <- df_mp |> 
   filter(event %in% c("ApplicantSharedIncomeSummary")) |> 
   distinct(pilot, distinct_id, cbv_flow_id) |> 
   count(pilot, distinct_id, sort = TRUE) |> 
   count(pilot, n) |> 
   arrange(n) |> 
+  group_by(pilot) |> 
+  mutate(
+    `Total Applicants` = sum(nn),
+    `Total Events` = sum(n*nn)) |> 
+  ungroup() 
+  
+df_multi_tbl |> 
   pivot_wider(names_from = n, values_from = nn) |> 
   gt() |>
   format_numeric_columns() |> 
   sub_missing() |> 
   si_gt_base(header_fill = dsac_color['light_teal']) |> 
+  tab_spanner(
+    label = "submissions",
+    columns = -c(pilot, `Total Applicants`, `Total Events`)
+  ) |> 
   adjust_row_padding() |> 
   add_labs(
-    title = "Some users had multiple successful submissions" |> toupper(),
-    subtitle = "the number of successful submission sessions",
-    caption = default_caption
+    title = "Some users had multiple successful submissions events" |> toupper(),
+    subtitle = "the number of successful submission",
+    caption = glue("Note: total sessions is the number of unique applicants and  {default_caption}")
   ) 
 ```
 
+```{r}
+#| label: multi_compl_deep_dive
+
+#identify which users submitted multiple income summaries
+v_multi <- df_mp |> 
+  filter(pilot == "Nov 2025") |> 
+  filter(event %in% c("ApplicantSharedIncomeSummary")) |> 
+  distinct(pilot, distinct_id, cbv_flow_id) |> 
+  group_by(distinct_id) |> 
+  filter(n() > 1) |> 
+  ungroup() |> 
+  distinct(distinct_id) |> 
+  pull()
+
+#pull the employer information from their sync
+df_multi <- df_mp |> 
+  filter(
+    pilot == "Nov 2025",
+    event %in% c("ApplicantFinishedSync"),
+    distinct_id %in% v_multi
+  ) |> 
+  select(pilot, distinct_id, cbv_flow_id, employer_name)
+
+#review entries
+df_mult_types <- df_multi |> 
+  add_count(distinct_id, employer_name, name = "submission_count") |> 
+  group_by(distinct_id) |> 
+  summarise(
+    unique_sessions = n_distinct(distinct_id, cbv_flow_id),
+    unique_events = n(),
+    unique_employers = n_distinct(employer_name),
+    max_repeats = max(submission_count), 
+    .groups = "drop"
+  ) |> 
+  mutate(
+    behavior = case_when(
+      unique_employers == 1 ~ "Single item repeated",
+      unique_employers == unique_events ~ "All unique items",
+      max_repeats > 1 ~ "Multiple items with repeats",
+      TRUE ~ "Other"
+    )
+  ) |>
+  count(behavior)
+
+```
+We should take a closer look at the repeated submissions. Some of these could be resubmissions of the same information (i.e. the applicant didn't know if the submission went through or forgot they already submitted it) or could be going back to enter in a different employeer at a differnt time. If we look at the `r sum(df_mult_types$n)` applicants with repeated submissions in the November pilot, `r df_mult_types[df_mult_types$behavior == 'Single item repeated',]$n` submitted the same employeer, `r df_mult_types[df_mult_types$behavior == 'Multiple items with repeats',]$n` submitted multiple employers with repeats, and only `r df_mult_types[df_mult_types$behavior == 'All unique items',]$n` had all unique submissions. 
 
 ### Is there a drop completion as the pilot period draws on?
 
@@ -423,16 +479,13 @@ df_device_origin_status |>
 
 ## How long does it take to complete the application?
 
-On the client side, the goal of the IVaaS app is to creating something easy to complete. Ideally, applicants can complete the process in a matter of minutes. We can look at time it takes to submit to understand if it places an undue burden on applicants. 
+On the client side, the goal of the pilot application is to creating something easy to complete. Ideally, applicants can complete the process in a matter of minutes. We can look at time it takes to submit to understand if it places an undue burden on applicants. 
 
 ```{r}
 #| label: duration_calc
 
 df_time <- df_mp |> 
-  filter(
-    # pilot == "Nov 2025",
-    str_starts(distinct_id, "applicant")
-  ) |> 
+  filter(str_starts(distinct_id, "applicant")) |> 
   mutate(
     completed = event == "ApplicantSharedIncomeSummary", 
     time_start = case_when(event == "ApplicantViewedAgreement" ~ timestamp)
@@ -487,7 +540,7 @@ df_duration_viz <- df_duration |>
     filter(pilot == 'Nov 2025')
 ```
 
-Of the `{r} scales::label_comma()(df_duration_stats[df_duration_stats$completed_type == 'completed',]$n)` applicants who completed the application, the median time was `{r} scales::label_number(.1)(df_duration_stats[df_duration_stats$completed_type == 'completed',]$median)` minutes, with 75% completing it within `{r} scales::label_number(.1)(df_duration_stats[df_duration_stats$completed_type == 'completed',]$q75)` minutes. The timing looks pretty good from that vantage point. However, most applicants are not completing the application, `{r} scales::label_comma()(df_duration_stats[df_duration_stats$completed_type != 'completed',]$n |> sum())` distinct ids.^[Its important to note the switch here from applicants to distinct ids. Since most many applicants are sent generic links, we cannot track multiple sessions over time. So a user may start the process multiple times and complete and each one of those sessions would have its own distinct id] Of those distinct ids, `{r} scales::label_percent()(df_duration_stats[df_duration_stats$completed_type == 'just clicked',]$n / df_duration_stats[df_duration_stats$completed_type != 'completed',]$n |> sum())` are clicking the link and not proceeding beyond viewing the initial agreement page. When looking at incomplete applications excluding those that only viewed the agreement page, the median applicant spends `{r} scales::label_number(.1)(df_duration_stats[df_duration_stats$completed_type == 'incomplete',]$median)` minutes on the applicantion before they stop, with 75% aborting after only `{r} scales::label_number(.1)(df_duration_stats[df_duration_stats$completed_type == 'incomplete',]$q75)` minutes. 
+Looking specifically at the November pilot, of the `{r} scales::label_comma()(df_duration_stats[df_duration_stats$completed_type == 'completed',]$n)` applicants who completed the application, the median time was `{r} scales::label_number(.1)(df_duration_stats[df_duration_stats$completed_type == 'completed',]$median)` minutes, with 75% completing it within `{r} scales::label_number(.1)(df_duration_stats[df_duration_stats$completed_type == 'completed',]$q75)` minutes. The timing looks pretty good from that vantage point. However, most applicants (`{r} scales::label_comma()(df_duration_stats[df_duration_stats$completed_type != 'completed',]$n |> sum())`) are not completing the application. Of those applicants, `{r} scales::label_percent()(df_duration_stats[df_duration_stats$completed_type == 'just clicked',]$n / df_duration_stats[df_duration_stats$completed_type != 'completed',]$n |> sum())` are clicking the link and not proceeding beyond viewing the initial agreement page. When looking at incomplete applications excluding those that only viewed the agreement page, the median applicant spends `{r} scales::label_number(.1)(df_duration_stats[df_duration_stats$completed_type == 'incomplete',]$median)` minutes on the application before they stop, with 75% aborting after only `{r} scales::label_number(.1)(df_duration_stats[df_duration_stats$completed_type == 'incomplete',]$q75)` minutes. 
 
 ```{r}
 #| label: viz_duration
@@ -582,7 +635,7 @@ v_lng_run_shr <- df_sync |>
   pull()
 
 ```
-Overall, we are looking at a median sync time of `{r} median(df_sync$sync_time, na.rm = TRUE)` seconds, with 75% of users seeing it take under `{r} quantile(df_sync$sync_time, .75, na.rm = TRUE)` seconds. Of the `{r} scales::label_comma()(nrow(df_sync))` successful data syncs, `{r} v_lng_run_shr` take longer than `{r} lng_run` seconds to sync. 
+Overall, we are looking at a median sync time of `{r} median(df_sync$sync_time, na.rm = TRUE)` seconds, with 75% of events seeing it take under `{r} quantile(df_sync$sync_time, .75, na.rm = TRUE)` seconds. Of the `{r} scales::label_comma()(nrow(df_sync))` successful data syncs, `{r} v_lng_run_shr` take longer than `{r} lng_run` seconds to sync. 
 
 We can see how this places our when comparing different payroll aggregators used, Argyle and Pinwheel. Each pilot we can see there is a signficant gap between the time range it takes to sync with Pinwheel versus Argyle. 
 
@@ -636,7 +689,7 @@ df_sync_viz |>
     )
 ```
 
-Sticking with the provider comparision, we can look at the distribtion of sync times. By bucketing them, we can see that most sessions have a sync time between 30 seconds and a minute and about 95% are under the 3 minute mark. 
+Sticking with the provider comparision, we can look at the distribtion of sync times. By bucketing them, we can see that most events have a sync time between 30 seconds and a minute and about 95% are under the 3 minute mark. 
 
 ```{r}
 #| label: data_sync_bucketed_viz
@@ -681,7 +734,7 @@ df_sync_bucketed <- df_sync |>
     theme(legend.position = "none")    
 ```
 
-The next visual look at the same data, but plots each of the sessions individually, allowing us to see some of the larger outliers and where the specific times fall compared within the broader buckets. The x-axis has been truncated to 20 minutes to see the distrbution, plotting the `r filter(df_sync, sync_time > 1200) |> nrow()` outliers on the 20 minute mark. Both providers saw three sessions with sync times over 20 minutes in the November pilot, but the median time went down from August.  
+The next visual look at the same data, but plots each of the event individually, allowing us to see some of the larger outliers and where the specific times fall compared within the broader buckets. The x-axis has been truncated to 20 minutes to see the distrbution, plotting the `r dplyr::filter(df_sync, sync_time > 1200) |> nrow()` outliers on the 20 minute mark. Both providers saw three events with sync times over 20 minutes in the November pilot, but the median time went down from August.  
 
 ```{r}
 #| label: data_sync_distro_viz
@@ -722,7 +775,7 @@ The next visual look at the same data, but plots each of the sessions individual
 ```
 ### When there was a provider outage, was there any change in processing times?
 
-During the November pilot, Argyle had an outage between November 19-20. Looking by day, we can see that Monday, November 20th had a dip in the number of Argyle users compared witht he prior day and Pinhweel saw an increase on both November 19th and 20th (though certainly not enough to offset the dip). During the first day of the outage, the success rate of logging for both providers dropped precipitously, but rebounded on November 20th.
+During the November pilot, Argyle had an outage between November 19-20. Looking by day, we can see that Monday, November 20th had a dip in the number of Argyle events compared witht he prior day and Pinhweel saw an increase on both November 19th and 20th (though certainly not enough to offset the dip). During the first day of the outage, the success rate of logging for both providers dropped precipitously, but rebounded on November 20th.
 
 ```{r}
 #| label: sync_outage
@@ -902,17 +955,17 @@ v_steps <- c(
 df_ret <- df_mp |>
   filter(event %in% v_steps) |> 
   clean_events() |> 
-  select(distinct_id, event_clean) |> 
-  distinct(distinct_id, event_clean) |> 
-  count(event_clean, sort = TRUE, name = "views") |> 
+  select(pilot, distinct_id, event_clean) |> 
+  distinct(pilot, distinct_id, event_clean) |> 
+  count(pilot, event_clean, sort = TRUE, name = "views") |> 
   mutate(
     share_lag = views / lag(views),
-    share_cum = views / max(views),
-    share_cum = ifelse(event_clean == "Viewed Agreement", NA, share_cum)
+    share_cumlative = views / max(views),
+    share_cumlative = ifelse(event_clean == "Viewed Agreement", NA, share_cumlative)
       )
 
 df_ret |>
-  gt() |> 
+  gt(groupname_col = "pilot") |> 
   si_gt_base(header_fill = dsac_color['light_teal']) |> 
   adjust_row_padding() |> 
   format_numeric_columns() |> 
