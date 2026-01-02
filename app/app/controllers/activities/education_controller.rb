@@ -59,7 +59,7 @@ class Activities::EducationController < Activities::BaseController
     sse = SSE.new(response.stream, event: "message")
 
     begin
-      nsc_service = Aggregators::Sdk::NscService.new(nsc_environment)
+      nsc_service = Aggregators::Sdk::NscService.new(environment: nsc_environment)
 
       activity = nsc_service.call(@flow) do
         sse.write(
