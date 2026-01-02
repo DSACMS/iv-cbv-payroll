@@ -1,23 +1,17 @@
 class EducationActivity < ApplicationRecord
   belongs_to :activity_flow
 
-  enum :status, [ :full_time, :part_time, :quarter_time ], default: :quarter_time
+  # Enums values: 0=not_enrolled, 1=quarter_time, 2=half_time, 3=full_time
+  enum :status, [ :unknown, :not_enrolled, :enrolled ], default: :unknown
 
   def display_status
-    case
-    when self.full_time?
-      then I18n.t(
-        "activities.education.enrollment_status.full_time",
-      )
-    when self.part_time?
-      then I18n.t(
-        "activities.education.enrollment_status.part_time",
-      )
+    case status.to_sym
+    when :enrolled
+      I18n.t("activities.education.enrollment_status.enrolled")
+    when :not_enrolled
+      I18n.t("activities.education.enrollment_status.not_enrolled")
     else
-      I18n.t(
-        "activities.education.enrollment_status.hours",
-        count: credit_hours || 0
-      )
+      I18n.t("activities.education.enrollment_status.unknown")
     end
   end
 end
