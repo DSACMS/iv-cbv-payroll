@@ -175,32 +175,40 @@ df_success_diff <- df_mp |>
 ```
 There are a number of applicants who had multiple successful submissions (across multiple sessions, which). In the November pilot, for example, there were `{r} scales::label_comma()(df_success_diff$applicants)` distinct applicants who submitted compared with `{r} scales::label_comma()(df_success_diff$sessions)` total events.  
 
-The table below details how many submissions were associated with an applicant.^[Since not all applicants are using tokenized link, there may in fact be more applicants successfully submitting multiple times] In the November case, there are 
-
 ```{r}
-#| label: multi_complete_tbl
-#| output: true
+#| label: multi_complete_tbl_calc
 
 df_multi_tbl <- df_mp |> 
   filter(event %in% c("ApplicantSharedIncomeSummary")) |> 
   distinct(pilot, distinct_id, cbv_flow_id) |> 
-  count(pilot, distinct_id, sort = TRUE) |> 
-  count(pilot, n) |> 
-  arrange(n) |> 
+  count(pilot, distinct_id, sort = TRUE, name = "submissions") |> 
+  count(pilot, submissions, name = "applicants") |> 
+  arrange(submissions) |> 
   group_by(pilot) |> 
   mutate(
-    `Total Applicants` = sum(nn),
-    `Total Events` = sum(n*nn)) |> 
+    `Total Applicants` = sum(applicants),
+    `Total Events` = sum(submissions*applicants)) |> 
   ungroup() 
-  
+
+#November data for text
+df_multi_tbl_nov <- df_multi_tbl |> 
+  filter(pilot == "Nov 2025")
+```
+
+The table below details how many submissions were associated with an applicant.^[Since not all applicants are using tokenized link, there may in fact be more applicants successfully submitting multiple times] In the November case, there were `r sum(df_multi_tbl_nov[df_multi_tbl_nov$submissions > 1, ]$applicants)` applicants who submitted more than one time; most of those multi-submission applicants, `r sum(df_multi_tbl_nov[df_multi_tbl_nov$submissions == 2, ]$applicants)`, submitted their applicants twice.   
+
+```{r}
+#| label: multi_complete_tbl
+#| output: true
+#| 
 df_multi_tbl |> 
-  pivot_wider(names_from = n, values_from = nn) |> 
+  pivot_wider(names_from = submissions, values_from = applicants) |> 
   gt() |>
   format_numeric_columns() |> 
   sub_missing() |> 
   si_gt_base(header_fill = dsac_color['light_teal']) |> 
   tab_spanner(
-    label = "submissions",
+    label = "# of submissions",
     columns = -c(pilot, `Total Applicants`, `Total Events`)
   ) |> 
   adjust_row_padding() |> 
@@ -256,7 +264,7 @@ df_mult_types <- df_multi |>
   count(behavior)
 
 ```
-We should take a closer look at the repeated submissions. Some of these could be resubmissions of the same information (i.e. the applicant didn't know if the submission went through or forgot they already submitted it) or could be going back to enter in a different employeer at a differnt time. If we look at the `r sum(df_mult_types$n)` applicants with repeated submissions in the November pilot, `r df_mult_types[df_mult_types$behavior == 'Single item repeated',]$n` submitted the same employeer, `r df_mult_types[df_mult_types$behavior == 'Multiple items with repeats',]$n` submitted multiple employers with repeats, and only `r df_mult_types[df_mult_types$behavior == 'All unique items',]$n` had all unique submissions. 
+We should take a closer look at the repeated submissions. Some of these could be resubmissions of the same information (i.e. the applicant didn't know if the submission went through or forgot they already submitted it) or could be going back to enter in a different employeer at a differnt time. If we look at the `r sum(df_mult_types$n)` applicants with repeated submissions in the November pilot, `r df_mult_types[df_mult_types$behavior == 'Single item repeated',]$n` submitted for the same employer each time, `r df_mult_types[df_mult_types$behavior == 'Multiple items with repeats',]$n` submitted different employers (some with repeats), and only `r df_mult_types[df_mult_types$behavior == 'All unique items',]$n` had all unique employer submissions. 
 
 ### Is there a drop completion as the pilot period draws on?
 
