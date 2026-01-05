@@ -350,7 +350,7 @@ GEM
     parser (3.3.10.0)
       ast (~> 2.4.1)
       racc
-    pdf-reader (2.15.0)
+    pdf-reader (2.15.1)
       Ascii85 (>= 1.0, < 3.0, != 2.0.0)
       afm (>= 0.2.1, < 2)
       hashery (~> 2.0)
@@ -652,7 +652,7 @@ DEPENDENCIES
   net-ssh
   newrelic_rpm
   omniauth-entra-id
-  pdf-reader (~> 2.15.0)
+  pdf-reader (~> 2.15.1)
   pg (~> 1.6)
   pg-aws_rds_iam (~> 0.7.0)
   premailer-rails
