@@ -4,7 +4,7 @@ execute:
   echo: false
   output: false
   warning: false
-  cache: true
+  #cache: true
 format:
   html:
     toc: true
@@ -26,16 +26,16 @@ Over the past year, the Centers for Medicare and Medicaid Services (CMS) in conj
 Below are the areas the report seeks to explore to help improve the product design.
 
 1.  How many users are starting but not completing the process?
-2.  Where in the process are users dropping off?
+2.  Where in the process are applicants dropping off?
 3.  Does time appear to be a factor in dropping off?
     1.  How long does the data syncing with Argyle/Pinwheel take?
-4.  Are users accessing the documentation (help or FAQ) before dropping off?
-5.  How many users are not finding their employer in the search?
+4.  Are applicants accessing the documentation (help or FAQ) before dropping off?
+5.  How many applicants are not finding their employer in the search?
 6.  Are the popular app employers the right ones (i.e. do there appear to be employeers searched more frequently than any that appear in the popular links)
-7.  What share of users are return users? (tokenized users)
-    1.  How many sessions does it take a user to complete the process?
-    2.  How many users clicked on the link and then came back another time to complete the process?
-8.  Do we see a difference in completion rates if users are accessing from mobile vs desktop?
+7.  What share of applicants are return users? (tokenized users)
+    1.  How many sessions does it take an applicants to complete the process?
+    2.  How many applicants clicked on the link and then came back another time to complete the process?
+8.  Do we see a difference in completion rates if applicants are accessing from mobile vs desktop?
 9.  How many times does a user "browser back"?
 
 -   Possible Comparisions
@@ -344,7 +344,7 @@ v1 <- df_compl |>
 
     v1 / v2 + 
       plot_annotation(
-        title = "LARGE DROP OFF IN INITIATING APPLICATION AFTER THE FIRST WEEK, BUT LARGER COMPLETION RATE IN FOLLOWING WEEKS" |> str_wrap(),
+        title = "LARGE DROP OFF IN INITIATING APPLICATION AFTER THE FIRST WEEK, BUT LARGER COMPLETION RATE IN FOLLOWING WEEKS" |> str_wrap(70),
         caption = default_caption,
         theme = si_style()
       )
@@ -573,11 +573,11 @@ df_duration_viz |>
   scale_color_identity() +
   labs(
     x = NULL, y = NULL,
-    title = glue("{toupper(df_duration_stats$pilot[1])} USERS NOT COMPLETING THE APPLICATION END AFTER ABOUT {label_number(.1)(df_duration_stats[df_duration_stats$completed_type == 'incomplete',]$median)} MINUTES"),
+    title = glue("{toupper(df_duration_stats$pilot[1])} INCOMPLETE APPLICATIONS END AFTER ABOUT {label_number(.1)(df_duration_stats[df_duration_stats$completed_type == 'incomplete',]$median)} MINUTES"),
     subtitle = 
       "displaying the median session **minutes** and IQR",
     caption = glue("Note: Applicants falling into 'just clicked' count represent those who didn't have an event beyond viewing the agreement 
-    default_caption") 
+    {default_caption}") 
       ) +
   si_style() +
   theme(
@@ -697,7 +697,7 @@ df_sync_viz |>
     )
 ```
 
-Sticking with the provider comparision, we can look at the distribtion of sync times. By bucketing them, we can see that most events have a sync time between 30 seconds and a minute and about 95% are under the 3 minute mark. 
+Sticking with the provider comparision, we can look at the distribtion of sync times. By bucketing them, we can see that most events have a sync time between 30 seconds and a minute (first 2 rows, green and dark blue bars) and about 95% are under the 3 minute mark (first 3 rows - green, dark blue, and blue columns). 
 
 ```{r}
 #| label: data_sync_bucketed_viz
@@ -736,13 +736,14 @@ df_sync_bucketed <- df_sync |>
     scale_fill_manual(values = unname(c(dsac_color['teal'], dsac_color['dark_navy'], dsac_color['navy'], dsac_color['light_navy'], dsac_color['light_cranberry'], dsac_color['cranberry']))) +
     labs(
       x = NULL, y = NULL,
-      subtitle = "income sync time with provider by number of sessions",
+      title = "95% OF SYNC TIMES ARE UNDER THREE MINUTES",
+      subtitle = "number of sessions' income sync time",
       caption = default_caption) +
     si_style_xgrid() +
     theme(legend.position = "none")    
 ```
 
-The next visual look at the same data, but plots each of the event individually, allowing us to see some of the larger outliers and where the specific times fall compared within the broader buckets. The x-axis has been truncated to 20 minutes to see the distrbution, plotting the `r dplyr::filter(df_sync, sync_time > 1200) |> nrow()` outliers on the 20 minute mark. Both providers saw three events with sync times over 20 minutes in the November pilot, but the median time went down from August.  
+The next visual looks at the same data, but plots each of the event individually, allowing us to see some of the larger outliers and where the specific times fall compared within the broader buckets. The x-axis has been truncated to 20 minutes to see the distrbution, plotting the `r dplyr::filter(df_sync, sync_time > 1200) |> nrow()` outliers on the 20 minute mark. Both providers saw three events with sync times over 20 minutes in the November pilot, but the median time went down from August.  
 
 ```{r}
 #| label: data_sync_distro_viz
@@ -783,7 +784,7 @@ The next visual look at the same data, but plots each of the event individually,
 ```
 ### When there was a provider outage, was there any change in processing times?
 
-During the November pilot, Argyle had an outage between November 19-20. Looking by day, we can see that Monday, November 20th had a dip in the number of Argyle events compared witht he prior day and Pinhweel saw an increase on both November 19th and 20th (though certainly not enough to offset the dip). During the first day of the outage, the success rate of logging for both providers dropped precipitously, but rebounded on November 20th.
+During the November pilot, Argyle had an outage between November 19-20. Looking by day, we can see that Monday, November 20th had a dip in the number of Argyle events compared with the prior day and Pinhweel saw an increase on both November 19th and 20th (though certainly not enough to offset the dip). During the first day of the outage, the success rate of logging for both providers dropped precipitously, but rebounded on November 20th.
 
 ```{r}
 #| label: sync_outage
@@ -846,7 +847,7 @@ df_outage_viz_rt |>
   scale_size(guide = "none") +
   labs(
     x = NULL, y = NULL,
-    title = "MOST DAYS APPLICANTS ACCESSING ARGYLE SAW A HIGHER SUCCESSFUL LOGIN RATE",
+    title = "ARGYLE USERS TYPICALLY SAW A HIGHER SUCCESSFUL LOGIN RATE",
     subtitle = glue("daily <span style = color:{dsac_color['light_navy']};>**Argyle**</span>/<span style = color:{dsac_color['light_teal']};>**Pinwheel**</span> user flow attempts to login [left] and  successful rates [right]"),
     caption = glue('Note: Argyle outage Nov 19-20
     {default_caption}')
@@ -926,7 +927,7 @@ df_outage_viz |>
   scale_size(guide = "none") +
   labs(
     x = NULL, y = NULL,
-    title = glue("DESPITE SOME LARGE OUTLIERS AND LESS FLOWS, PINWHEEL'S MEDIAN SYNC TIME ({df_outage_provider_median$Pinwheel}s) IS ONLY A FEW SECONDS SLOWER THAN ARGYLE ({df_outage_provider_median$Argyle}s)") |> str_wrap(),
+    title = glue("DESPITE SOME LARGE OUTLIERS AND LESS FLOWS, PINWHEEL'S MEDIAN SYNC TIME ({df_outage_provider_median$Pinwheel}s) IS ONLY A FEW SECONDS SLOWER THAN ARGYLE ({df_outage_provider_median$Argyle}s)") |> str_wrap(70),
     subtitle = glue("successful daily <span style = color:{dsac_color['light_navy']};>**Argyle**</span>/<span style = color:{dsac_color['light_teal']};>**Pinwheel**</span> user flow syncs [left] and their duration, **minutes** [median and IQR]"),
     caption = glue('Note: x axis truncated to 5 minutes; Argyle outage Nov 19-20 
     {default_caption}')
@@ -938,9 +939,9 @@ df_outage_viz |>
 #si_save(here("app/analytics/sync_times.png"), height = 7)
 ```
 
-## Where are people dropping off?
+## Where are applicants dropping off?
 
-To get a sense of where applicants are dropping off, we can look at some key points/pages to see whether they reached that step. 
+To get a sense of where applicants are dropping off, we can look at some key points/pages to see whether they reached that step. The Sankey diagram below depicts these key points in the November 2025 pilot. 
 
 ```{r}
 #| label: event_steps
@@ -954,61 +955,58 @@ v_steps <- c(
   "ApplicantViewedPaymentDetails",
   "ApplicantSharedIncomeSummary"
   )
-```
 
-```{r}
-#| label: event_table
-#| output: true
-
-df_ret <- df_mp |>
-  filter(event %in% v_steps) |> 
+v_steps_clean <- 
+  tibble(event = v_steps) |> 
+  add_row(event = "dropped", .before = 1) |> 
   clean_events() |> 
-  select(pilot, distinct_id, event_clean) |> 
-  distinct(pilot, distinct_id, event_clean) |> 
-  count(pilot, event_clean, sort = TRUE, name = "views") |> 
-  mutate(
-    share_lag = views / lag(views),
-    share_cumlative = views / max(views),
-    share_cumlative = ifelse(event_clean == "Viewed Agreement", NA, share_cumlative)
-      )
-
-df_ret |>
-  gt(groupname_col = "pilot") |> 
-  si_gt_base(header_fill = dsac_color['light_teal']) |> 
-  adjust_row_padding() |> 
-  format_numeric_columns() |> 
-  sub_missing()
-
+  pull()
 ```
-
-Right off the bat, we can see that off the `{r} scales::label_comma()(df_ret[df_ret$event_clean == "Viewed Agreement",]$views)` distinct users who started the application, only `{r} scales::label_percent(1)(df_ret[df_ret$event_clean == "Agreed",]$share_cum)` agreed to terms to move on, and only `{r} scales::label_percent(1)(df_ret[df_ret$event_clean == "Shared Income Summary",]$share_cum)` actually made it to completion, submitting their pay information. 
 
 ```{r}
 #| label: event_journey
 #| output: true
 
+#setup full set of steps for each applicant to id drop off point
 df_journey <- df_mp |> 
-  filter(event %in% v_steps) |> 
-  select(distinct_id, event) |> 
-  distinct(distinct_id, event) |> 
-  mutate(status = "reached") |> 
-  complete(distinct_id, event) |> 
-  mutate(event = factor(event, v_steps)) |> 
+  filter(
+    pilot == "Nov 2025", 
+    event %in% v_steps) |> 
+  mutate(
+    event = factor(event, v_steps),
+    status = "reached"
+  ) |> 
+  select(pilot, distinct_id, event, status) |> 
+  distinct(pilot, distinct_id, event, status) |> 
+  complete(pilot, distinct_id, event) |> 
   arrange(distinct_id, event) |> 
-  group_by(distinct_id) |> 
+  clean_events()
+
+#apply step order # and label drop point
+df_journey <- df_journey |> 
+  group_by(pilot, distinct_id) |> 
   mutate(
     step_order = row_number(),
     step_event =  case_when(
-      status == "reached" ~ as.character(event), 
+      status == "reached" ~ as.character(event_clean), 
       is.na(status) & lag(status) == "reached" ~ "dropped"
-      # TRUE ~ "dropped"
     )) |>
   ungroup() %>%
-  select(-event, -status) |> 
   filter(!is.na(step_event)) |> 
-  mutate(step_event = factor(step_event, c("dropped", v_steps))) |> 
+  select(-c(event, event_clean, status)) |> 
+  mutate(step_event = factor(step_event, v_steps_clean))
+
+#value labels to merge on with long dataset
+df_journey_label <- df_journey |> 
+  count(step_order, step_event) |> 
+  mutate(step_order = glue("step_{step_order}") |> as.character()) |> 
+  group_by(step_order) |> 
+  mutate(share = n / sum(n)) |> 
+  ungroup()
+
+#spread to setup for sankey plot
+df_journey <- df_journey |> 
   pivot_wider(
-    id_cols = distinct_id,
     names_from = step_order,
     values_from = step_event,
     names_prefix = "step_"
@@ -1016,35 +1014,102 @@ df_journey <- df_mp |>
 
 
 # Convert to long format for ggsankey
-
-sankey_long <- df_journey %>%
+df_sankey <- df_journey %>%
   make_long(step_1, step_2, step_3, step_4, step_5, step_6, step_7) |> 
   filter(!is.na(node)) |> 
   mutate(
-    node = factor(node, c("dropped",v_steps)),
-    next_node = factor(next_node, c("dropped",v_steps)),
-    fill_color = ifelse(node == "dropped", dsac_color[['gold']], dsac_color[['teal']])
+    node = factor(node, v_steps_clean),
+    next_node = factor(next_node, v_steps_clean),
+    fill_color = ifelse(node == "dropped", dsac_color[['light_cranberry']], dsac_color[['light_navy']])
    )
 
-sankey_long |> 
+#apply value for labeling
+df_sankey <- df_sankey |> 
+  left_join(
+    df_journey_label,
+    by = join_by(x == step_order, node == step_event)
+  ) |> 
+  mutate(value_label = ifelse(x == "step_1", label_comma()(n), glue("{label_comma()(n)}\n{label_percent(1)(share)}")))
+
+#viz
+df_sankey |> 
   ggplot(
     aes(x = x, 
         next_x = next_x, 
         node = node, 
         next_node = next_node,
-        fill = fill_color)) +
-  geom_sankey(flow.alpha = 0.6, node.color = "gray30", width = 0.1, na.rm = TRUE) +
-  # geom_sankey_label(size = 3, color = "white", fill = NA) +
-  scale_x_discrete(labels = v_steps) +
+        fill = fill_color,
+        label = value_label
+      )) +
+  geom_sankey(flow.alpha = 0.2, flow.fill = matterhorn, node.color = "gray30", width = 0.1, na.rm = TRUE) +
+  geom_sankey_label(
+    size = 4, color = "white",  hjust = 1.4,
+    family = "Source Sans 3", na.rm = TRUE,
+  ) +
+  scale_x_discrete(labels = v_steps_clean[2:8], position = "top") +
   scale_fill_identity() + 
-  labs(x = NULL, y = NULL) +
+  coord_cartesian(clip = 'off') +
+  labs(
+    x = NULL, y = NULL,
+    title = "Significant drop off in applicants agreeing to the terms" |> toupper(),
+    subtitle = glue("Number/share of Nov 2025 applicants <span style = color:{dsac_color['light_cranberry']};>dropping off</span> at key points in the application process"),
+    caption = default_caption
+   ) +
   si_style_nolines() + 
-  theme(axis.text = element_blank()) 
+  theme(
+    axis.text.y = element_blank(),
+    plot.subtitle = element_markdown()
+  ) 
+
 ```
 
-## Are users accessing the documentation (help or FAQ) before dropping off?
+Right off the bat, we can see that off the `{r} scales::label_comma()(df_journey_label[df_journey_label$step_order == "step_1",]$n)` applicants who started the process, only `{r} scales::label_percent(1)(df_journey_label[df_journey_label$step_event == "Agreed",]$share)` agreed to terms to move on, and only `{r} cales::label_percent()(df_journey_label[df_journey_label$step_event == "Shared Income Summary",]$n/df_journey_label[df_journey_label$step_order == "step_1",]$n)` actually made it to completion, submitting their pay information. The diagram also show that about 1 in 3 applicants is dropping off when selecting their employeerer, logging in, and then succeeding with that log in. 
 
-The prior section gave use a sense of where users were dropping off. It may be useful to see if users are accessing the documentation before they abort the application. Looking at the data, we can see that on average, those who completed the application had slight more "help actions" than those who did not. This of course is affected by the fact that those who continued saw more pages than those who did not or that using the help more they were more likely to find what they needed to continue onward. 
+The table below so similar drop off rates at each step for each of the three pilots in Lousiana.
+
+```{r}
+#| label: event_table
+#| output: true
+
+df_ret <- df_mp |>
+  filter(event %in% v_steps) |> 
+  mutate(event = factor(event, v_steps)) |> 
+  arrange(pilot, event) |> 
+  clean_events() |> 
+  mutate(event_clean = fct_inorder(event_clean)) |> 
+  select(pilot, distinct_id, event_clean) |> 
+  distinct(pilot, distinct_id, event_clean) |> 
+  count(pilot, event_clean, sort = TRUE, name = "events") |> 
+  group_by(pilot) |> 
+  mutate(
+    share_lag = events / lag(events),
+    share_cumlative = events / max(events),
+    share_cumlative = ifelse(event_clean == "Viewed Agreement", NA, share_cumlative)
+      ) |> 
+  ungroup() |> 
+  arrange(pilot, event_clean) |> 
+  mutate(event_clean = as.character(event_clean))
+
+df_ret |>
+  gt(groupname_col = "pilot") |> 
+  cols_label(
+    event_clean = "", 
+    share_lag = "Share of Prior Event",
+    share_cumlative = "Share of Those Starting"
+  ) |> 
+  si_gt_base(header_fill = dsac_color['light_teal']) |> 
+  adjust_row_padding() |> 
+  format_numeric_columns() |> 
+  sub_missing()
+
+```
+
+
+
+
+## Are applicants accessing the documentation (help or FAQ) before dropping off?
+
+The prior section gave use a sense of where applicants were dropping off. It may be useful to see if applicants are accessing the documentation before they abort the application. Looking at the data, we can see that on average, those who completed the application had slight more "help actions" than those who did not. This of course is affected by the fact that those who continued saw more pages than those who did not or that using the help more they were more likely to find what they needed to continue onward. 
 
 ```{r}
 #| label: help_events
@@ -1060,17 +1125,21 @@ v_help_events <- c(
 #| output: true
 
 df_sessions <- df_time |> 
-  mutate(help = event %in% v_help_events) |> 
+  mutate(
+    help = event %in% v_help_events,
+    started = event == "ApplicantViewedAgreement"
+    ) |> 
   group_by(pilot, distinct_id) |>
   summarise(
     sessions = n_distinct(cbv_flow_id),
+    started = max(started, na.rm = TRUE),
     completed = max(completed, na.rm = TRUE),
     help_actions = sum(help, na.rm = TRUE),
     .groups = "drop"
     ) |> 
   group_by(pilot, completed) |> 
   summarise(
-    n_users = n_distinct(distinct_id),
+    n_users = sum(started, na.rm = TRUE),
     mean_sessions = mean(sessions, na.rm = TRUE),
     mean_help_actions = mean(help_actions, na.rm = TRUE),
     .groups = "drop"
