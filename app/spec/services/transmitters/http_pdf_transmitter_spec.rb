@@ -63,9 +63,8 @@ RSpec.describe Transmitters::HttpPdfTransmitter do
           }
         )
 
-      VCR.turned_off do
-        subject.deliver
-      end
+      subject.deliver
+
 
       expect(
         stub

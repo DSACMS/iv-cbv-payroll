@@ -2,13 +2,14 @@ class Transmitters::HttpPdfTransmitter < Transmitters::BasePdfTransmitter
   TRANSMISSION_METHOD = "http-pdf"
 
   def destination_url!
-    unless current_agency.transmission_method == TRANSMISSION_METHOD
-      raise "Invalid Transmission Method! "\
-            "Expected #{TRANSMISSION_METHOD}, "\
+    url = current_agency.transmission_method_configuration["url"]
+
+    unless url
+      raise "Invalid Transmission Configuration! "\
             "Got #{current_agency.transmission_method_configuration}"
     end
 
-    URI(current_agency.transmission_method_configuration["url"])
+    URI(url)
   end
 
   def payload
