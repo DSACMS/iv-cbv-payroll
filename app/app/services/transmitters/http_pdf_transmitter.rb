@@ -33,7 +33,8 @@ class Transmitters::HttpPdfTransmitter < Transmitters::BasePdfTransmitter
 
     unless res.is_a?(Net::HTTPSuccess)
       raise "PDF delivery failed! "\
-            "Received response \"#{res.messageage}\", code #{res.status_code}"
+            "Received unexpected response \"#{res.message}\", code #{res.status_code}"
+      Rails.logger.error "Unexpected response body: #{res.body}"
     end
   end
 end
