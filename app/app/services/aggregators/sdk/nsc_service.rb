@@ -199,34 +199,37 @@ module Aggregators::Sdk
     # - Only handles the first enrollment school and the first enrollment detail (both are arrays in the response)
     # - Enrollment status is simply Y/N (until more use cases are known)
     def create_education_activity(activity_flow, response_data)
-      enrollement = response_data["enrollmentDetails"]&.first
-      enrollement_data = enrollement&.dig("enrollmentData")&.first
+      currently_enrolled_schools = Array(response_data["enrollmentDetails"])
+          .select { |enrollment| map_enrollment_status(enrollment["currentEnrollmentStatus"]) == :enrolled }
+          .map { |enrollment| enrollment["officialSchoolName"] }
 
       Rails.logger.info("[NscService] create_education_activity, response data: #{response_data}")
 
-      if enrollement.nil? || enrollement_data.nil?
-        Rails.logger.warn("[NscService] Incomplete enrollment data received from NSC API: #{response_data}")
+      has_any_enrollment = currently_enrolled_schools.any?
+
+      if !has_any_enrollment
+        Rails.logger.info("[NscService] No current enrollments found for identity ID #{activity_flow.identity.id}")
+        return EducationActivity.create!(
+          activity_flow: activity_flow,
+          school_name: nil,
+          status: :not_enrolled
+        )
       end
 
       EducationActivity.create!(
         activity_flow: activity_flow,
-        school_name: enrollement&.dig("officialSchoolName"),
-        status: map_enrollment_status(enrollement_data&.dig("enrollmentStatus"))
+        school_name: currently_enrolled_schools.first,
+        status: :enrolled
       )
     end
 
-    # Maps NSC enrollment status codes to internal enum values
+    # Maps NSC enrollment status to internal enum values
     # Enum values: 0=unknown, 1=not_enrolled, 2=enrolled
-    # ESC `enrollmentDetail[0].enrollmentData[0].enrollmentStatus`
-    # values:
-    #  "Y" -> :enrolled (displayed as "Enrolled")
-    #  "N" -> :not_enrolled (displayed as "Not Enrolled")
-    #  other values -> :unknown (not displayed as "N/A")
     def map_enrollment_status(status_code)
       case status_code
-      when "Y"
+      when "CC"
         :enrolled
-      when "N"
+      when "CN"
         :not_enrolled
       else
         :unknown
