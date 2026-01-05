@@ -12,6 +12,16 @@ RSpec.describe Activities::EducationController, type: :controller do
     )
   }
 
+  describe "GET #show" do
+    let(:education_activity) { create(:education_activity, activity_flow: activity_flow, confirmed: true) }
+
+    it "renders the education review page" do
+      get :show, params: { education_activity_id: education_activity.id }, session: { flow_id: activity_flow.id }
+
+      expect(response).to have_http_status(:ok)
+    end
+  end
+
   describe "#create" do
     let(:initial_attrs) {
       attributes_for(
@@ -79,6 +89,19 @@ RSpec.describe Activities::EducationController, type: :controller do
     it "redirects to activity hub" do
       expect(response).to redirect_to(activities_flow_root_path)
       expect(flash[:notice]).to eq(I18n.t("activities.education.created"))
+    end
+  end
+
+  describe "DELETE #destroy" do
+    let!(:education_activity) { create(:education_activity, activity_flow: activity_flow, confirmed: true) }
+
+    it "deletes the activity and redirects to the hub" do
+      expect do
+        delete :destroy, params: { education_activity_id: education_activity.id }, session: { flow_id: activity_flow.id }
+      end.to change(activity_flow.education_activities, :count).by(-1)
+
+      expect(response).to redirect_to(activities_flow_root_path)
+      expect(flash[:notice]).to eq(I18n.t("activities.education.deleted"))
     end
   end
 end

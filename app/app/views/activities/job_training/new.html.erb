@@ -1,9 +1,4 @@
 <% content_for :title, t("activities.job_training.title") %>
 
 <h1><%= t("activities.job_training.title") %></h1>
-<%= uswds_form_with(model: @job_training_activity, url: activities_flow_job_training_path) do |f| %>
-  <%= f.text_field :program_name, label: t("activities.job_training.program_name") %>
-  <%= f.text_field :organization_address, label: t("activities.job_training.organization_address") %>
-  <%= f.text_field :hours, type: :number, label: t("activities.job_training.hours") %>
-  <%= f.submit t("activities.job_training.add") %>
-<% end %>
+<%= render "form", job_training_activity: @job_training_activity %>

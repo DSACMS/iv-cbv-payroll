@@ -4,8 +4,8 @@ class Api::UserEventsController < ApplicationController
       time: Time.now.to_i
     }
 
-    if session[cbv_flow_symbol].present?
-      @cbv_flow = CbvFlow.find(session[cbv_flow_symbol])
+    if session[:flow_id].present?
+      @cbv_flow = CbvFlow.find(session[:flow_id])
 
       base_attributes.merge!({
         cbv_flow_id: @cbv_flow.id,

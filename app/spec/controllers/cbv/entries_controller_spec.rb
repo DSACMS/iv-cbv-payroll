@@ -187,7 +187,7 @@ RSpec.describe Cbv::EntriesController do
           end
           let!(:connected_account) do
             create(:payroll_account,
-              cbv_flow: existing_cbv_flow,
+              flow: existing_cbv_flow,
               aggregator_account_id: SecureRandom.uuid,
               created_at: 4.minutes.ago
             )

@@ -78,8 +78,8 @@ gem "stackprof"
 # https://www.ruby-lang.org/en/news/2024/08/01/dos-rexml-cve-2024-41123/
 gem "rexml", "~> 3.4.2"
 gem "gpgme", "~> 2.0"
-gem "pdf-reader", "~> 2.15.0"
-gem "net-imap", "0.4.20"  # Fixing GHSA-j3g3-5qv5-52m
+gem "pdf-reader", "~> 2.15.1"
+gem "net-imap", "0.6.2"   # Fixing GHSA-j3g3-5qv5-52m
 gem "cgi", ">= 0.4.2"     # Fixing GHSA-mhwm-jh88-3gjf
 gem "thor", ">= 1.4.0"    # Fixing GHSA-mqcp-p2hv-vw6x
 
@@ -118,7 +118,7 @@ group :test do
   gem "axe-core-rspec", "~> 4.11"
   gem "climate_control", "~> 1.0"
   gem "webmock", ">= 3.24.0"
-  gem "factory_bot", "~> 6.4"
+  gem "factory_bot", "~> 6.5"
   gem "rails-controller-testing"
   gem "vcr"
 end

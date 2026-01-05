@@ -18,6 +18,7 @@ class Cbv::SynchronizationsController < Cbv::BaseController
         cbv_flow_payment_details_path(user: { account_id: @payroll_account.aggregator_account_id })
       )
     else
+      track_polling_wait
       render turbo_stream: turbo_stream.replace(:synchronization, partial: "status")
     end
   end
@@ -44,9 +45,23 @@ class Cbv::SynchronizationsController < Cbv::BaseController
 
     payroll_account_for_other_flow = PayrollAccount
       .where(aggregator_account_id: params[:user][:account_id])
-      .where.not(cbv_flow: @cbv_flow)
+      .where.not(flow: @cbv_flow)
     return unless payroll_account_for_other_flow.exists?
 
     render turbo_stream: turbo_stream.action(:redirect, cbv_flow_synchronization_failures_path)
+  end
+
+  # Track how long users wait on the synchronizations page.
+  # Fires every poll (every 2s) while sync is in progress.
+  def track_polling_wait
+    return unless @payroll_account.present?
+
+    wait_time_seconds = Time.now - @payroll_account.created_at
+    provider = @payroll_account.type.demodulize
+
+    NewRelic::Agent.record_custom_event("SyncWaitTime", {
+      provider: provider,
+      wait_time_seconds: wait_time_seconds
+    })
   end
 end

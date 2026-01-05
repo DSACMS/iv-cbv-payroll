@@ -45,6 +45,13 @@ class Activities::EducationController < Activities::BaseController
     end
   end
 
+  def destroy
+    activity = @flow.education_activities.find(params[:education_activity_id])
+    activity.destroy
+
+    redirect_to activities_flow_root_path, notice: t("activities.education.deleted")
+  end
+
   def stream
     response.headers["Content-Type"] = "text/event-stream"
     response.headers["Last-Modified"] = Time.now.httpdate

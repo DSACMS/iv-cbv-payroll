@@ -110,7 +110,7 @@ RSpec.describe Cbv::SubmitsController do
           let(:errored_jobs) { [ "employment" ] }
 
           it "renders a pdf" do
-            create(:payroll_account, :pinwheel_fully_synced, cbv_flow: cbv_flow, aggregator_account_id: "account1")
+            create(:payroll_account, :pinwheel_fully_synced, flow: cbv_flow, aggregator_account_id: "account1")
             expect(response).to be_successful
           end
         end
@@ -263,7 +263,7 @@ RSpec.describe Cbv::SubmitsController do
             :payroll_account,
             :argyle_fully_synced,
             with_errored_jobs: errored_jobs,
-            cbv_flow: cbv_flow,
+            flow: cbv_flow,
             aggregator_account_id: account_id,
             supported_jobs: supported_jobs,
             )
@@ -312,7 +312,7 @@ RSpec.describe Cbv::SubmitsController do
             :payroll_account,
             :argyle_fully_synced,
             with_errored_jobs: errored_jobs,
-            cbv_flow: cbv_flow,
+            flow: cbv_flow,
             aggregator_account_id: account_id,
             supported_jobs: supported_jobs,
             )
@@ -322,7 +322,7 @@ RSpec.describe Cbv::SubmitsController do
             :payroll_account,
             :argyle_fully_synced,
             with_errored_jobs: errored_jobs,
-            cbv_flow: cbv_flow,
+            flow: cbv_flow,
             aggregator_account_id: account_id_2,
             supported_jobs: supported_jobs,
             )
@@ -366,7 +366,7 @@ RSpec.describe Cbv::SubmitsController do
             :payroll_account,
             :argyle_fully_synced,
             with_errored_jobs: errored_jobs,
-            cbv_flow: cbv_flow,
+            flow: cbv_flow,
             aggregator_account_id: account_id,
             supported_jobs: supported_jobs,
             )
@@ -419,7 +419,7 @@ RSpec.describe Cbv::SubmitsController do
             :payroll_account,
             :argyle_fully_synced,
             with_errored_jobs: errored_jobs,
-            cbv_flow: cbv_flow,
+            flow: cbv_flow,
             aggregator_account_id: account_id,
             supported_jobs: supported_jobs,
             )
@@ -429,7 +429,7 @@ RSpec.describe Cbv::SubmitsController do
             :payroll_account,
             :argyle_fully_synced,
             with_errored_jobs: errored_jobs,
-            cbv_flow: cbv_flow,
+            flow: cbv_flow,
             aggregator_account_id: account_id_2,
             supported_jobs: supported_jobs,
             )

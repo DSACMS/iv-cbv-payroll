@@ -55,9 +55,9 @@ class FlowController < ApplicationController
       set_flow_session(@flow.id, flow_param)
       cookies.permanent.encrypted[:cbv_applicant_id] = @flow.cbv_applicant_id
       track_invitation_clicked_event(invitation, @flow)
-    elsif session[cbv_flow_symbol]
+    elsif session[:flow_id]
       begin
-        @flow = flow_class.find(session[cbv_flow_symbol])
+        @flow = flow_class.find(session[:flow_id])
         @cbv_flow = @flow # Maintain for compatibility until all controllers are converted
       rescue ActiveRecord::RecordNotFound
         reset_cbv_session!

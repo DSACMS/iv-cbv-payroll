@@ -51,7 +51,7 @@
         </section>
       </main>
       <%= render "application/footer" %>
-      <% if session[cbv_flow_symbol] %>
+      <% if session[:flow_id] %>
         <%= render partial: "cbv/sessions/timeout_modal", locals: {
           timeout: Rails.application.config.cbv_session_expires_after
         } %>
