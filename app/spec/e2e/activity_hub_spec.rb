@@ -18,7 +18,7 @@ RSpec.describe 'e2e Activity Hub flow test', type: :feature, js: true do
     verify_page(page, title: I18n.t("activities.volunteering.title"))
     fill_in I18n.t("activities.volunteering.organization_name"), with: "Helping Hands"
     fill_in I18n.t("activities.volunteering.hours"), with: "20"
-    fill_in I18n.t("activities.volunteering.date"), with: "10/10/1990"
+    fill_in I18n.t("activities.volunteering.date"), with: Date.current.strftime("%m/%d/%Y")
     click_button I18n.t("activities.volunteering.add")
     verify_page(page, title: I18n.t("activities.hub.title"))
     expect(page).to have_content I18n.t("activities.volunteering.add")
@@ -36,7 +36,7 @@ RSpec.describe 'e2e Activity Hub flow test', type: :feature, js: true do
     # Verify that the hub has the Volunteering activity
     expect(page).to have_content I18n.t("activities.hub.title")
     expect(page).to have_content "Helping Hands"
-    expect(page).to have_content "1990-10-10"
+    expect(page).to have_content Date.current
     expect(page).to have_content "20"
     # Verify that the hub has the Job Training activity
     expect(page).to have_content "Resume Workshop"

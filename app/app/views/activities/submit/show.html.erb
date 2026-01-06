@@ -3,6 +3,9 @@
 <h1>
   <%= t("activities.submit.title") %>
 </h1>
+<p class="usa-intro">
+  <%= t("activities.hub.reporting_month", month: @flow.reporting_month_display) %>
+</p>
 <p class="margin-bottom-3">
   <%= t("activities.submit.description", agency_name: agency_translation("shared.agency_full_name")) %>
 </p>
