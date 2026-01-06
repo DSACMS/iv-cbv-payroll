@@ -26,9 +26,9 @@ class Activities::BaseController < FlowController
   private
 
   def redirect_on_prod
-    if Rails.env.production?
-      redirect_to root_url
-    end
+    return if ENV["ENABLE_ACTIVITY_HUB"] == "true"
+
+    redirect_to root_url if Rails.env.production?
   end
 
   def next_path
