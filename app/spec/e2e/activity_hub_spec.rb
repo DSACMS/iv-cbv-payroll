@@ -56,8 +56,9 @@ RSpec.describe 'e2e Activity Hub flow test', type: :feature, js: true do
     expect(page).to have_content I18n.t("activities.success.completed_at")
   end
 
-  it "blocks activity hub access in production" do
-    allow(Rails).to receive(:env).and_return(ActiveSupport::StringInquirer.new("production"))
+  it "blocks activity hub access when not enabled" do
+    allow(ENV).to receive(:[]).with("ACTIVITY_HUB_ENABLED").and_return(false)
+
     visit activities_flow_root_path
     expect(page).to have_content(I18n.t("pages.home.header"))
     visit new_activities_flow_volunteering_path
