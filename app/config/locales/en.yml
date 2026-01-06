@@ -94,6 +94,7 @@ en:
       title: Education
     entry:
       consent: Check this box to agree to let us record your information and share it with %{agency_name}.
+      consent_required: Please check the consent box to continue.
       continue: Add Activities
       reporting_month: 'Reporting month: %{month}'
       title: Welcome to the Activity Hub!

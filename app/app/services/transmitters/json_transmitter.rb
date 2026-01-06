@@ -5,11 +5,10 @@ class Transmitters::JsonTransmitter
     api_url = URI(@current_agency.transmission_method_configuration["url"])
     req = Net::HTTP::Post.new(api_url)
     req.content_type = "application/json"
-    req.body = payload.to_json
+    req.body = payload
 
-    timestamp = Time.now.to_i.to_s
     req["X-IVAAS-Timestamp"] = timestamp
-    req["X-IVAAS-Signature"] = JsonApiSignature.generate(req.body, timestamp, api_key_for_agency)
+    req["X-IVAAS-Signature"] = signature
 
     custom_headers = @current_agency.transmission_method_configuration["custom_headers"]
     if custom_headers
@@ -39,6 +38,12 @@ class Transmitters::JsonTransmitter
   end
 
   def payload
+    @payload ||= _payload.to_json
+  end
+
+  private
+
+  def _payload
     agency_partner_metadata = CbvApplicant.build_agency_partner_metadata(@current_agency.id) do |attr|
       @cbv_flow.cbv_applicant.public_send(attr)
     end
@@ -54,16 +59,5 @@ class Transmitters::JsonTransmitter
         hash[:report_pdf] = Base64.strict_encode64(pdf_output&.content)
       end
     end
-  end
-
-  private
-
-  def api_key_for_agency
-    api_key = User.api_key_for_agency(@current_agency.id)
-    unless api_key
-      Rails.logger.error "No active API key found for agency #{@current_agency.id}"
-      raise "No active API key found for agency #{@current_agency.id}"
-    end
-    api_key
   end
 end
