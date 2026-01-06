@@ -85,9 +85,10 @@ RSpec.describe ActivityFlow, type: :model do
     end
 
     it "returns a range for the month" do
-      flow = build(:activity_flow, reporting_month: Date.new(2025, 2, 1))
+      reporting_month = Date.new(2025, 2, 1)
+      flow = build(:activity_flow, reporting_month: reporting month)
 
-      expect(flow.reporting_month_range).to eq(Date.new(2025, 2, 1)..Date.new(2025, 2, 28))
+      expect(flow.reporting_month_range).to eq(reporting_month.beginning_of_month..reporting_month.end_of_month)
     end
 
     it "returns a formatted display string" do
