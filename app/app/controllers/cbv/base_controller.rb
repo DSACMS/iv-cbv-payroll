@@ -1,6 +1,7 @@
 class Cbv::BaseController < FlowController
   before_action :set_cbv_origin, :set_flow, :ensure_cbv_flow_not_yet_complete, :prevent_back_after_complete, :capture_page_view
   before_action :check_if_pilot_ended
+  around_action :append_log_tags
   helper_method :agency_url, :next_path, :get_comment_by_account_id
 
   private
@@ -83,6 +84,22 @@ class Cbv::BaseController < FlowController
   def check_if_pilot_ended
     @pilot_ended = current_agency&.pilot_ended
     redirect_to root_path if @pilot_ended && !home_page?
+  end
+
+  def append_log_tags(&block)
+    tags = {}
+
+    if @flow.present?
+      tags.merge!(
+        cbv_flow_id: @flow.id,
+        invitation_id: @flow.cbv_flow_invitation_id,
+        cbv_applicant_id: @flow.cbv_applicant_id,
+        client_agency_id: @flow.cbv_applicant.client_agency_id,
+        device_id: @flow.device_id,
+      )
+    end
+
+    Rails.logger.tagged(tags, &block)
   end
 
   def capture_page_view
