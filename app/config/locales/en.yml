@@ -85,6 +85,7 @@ en:
       title: Education
     entry:
       consent: Check this box to agree to let us record your information and share it with %{agency_name}.
+      consent_required: Please check the consent box to continue.
       continue: Add Activities
       title: Welcome to the Activity Hub!
     error_no_identity: Please provide your name and date of birth
