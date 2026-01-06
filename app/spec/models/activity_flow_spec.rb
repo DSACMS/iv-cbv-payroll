@@ -73,7 +73,7 @@ RSpec.describe ActivityFlow, type: :model do
 
       flow = ActivityFlow.create_from_invitation(invitation, device_id)
 
-      expect(flow.reporting_month).to eq(Date.new(2025, 3, 1))
+      expect(flow.reporting_month).to eq(invitation.reporting_month)
     end
   end
 
