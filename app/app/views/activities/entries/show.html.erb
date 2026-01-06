@@ -1,9 +1,6 @@
 <% content_for :title, t("activities.entry.title") %>
 
 <h1><%= t("activities.entry.title") %></h1>
-<p class="usa-intro">
-  <%= t("activities.entry.reporting_month", month: @flow.reporting_month_display) %>
-</p>
 <%= form_with(url: activities_flow_entry_path, builder: UswdsFormBuilder) do |f| %>
   <%= f.check_box(:agreement, { label: t("activities.entry.consent", agency_name: agency_translation("shared.agency_full_name")) }) %>
   <%= f.submit t("activities.entry.continue"), class: "btn btn-primary usa-button margin-y-5" %>
