@@ -1,4 +1,5 @@
 class Transmitters::JsonTransmitter
+  TRANSMISSION_METHOD = "json"
   include Transmitter
 
   def deliver
