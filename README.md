@@ -6,11 +6,12 @@ Income Verification: Consent-Based Verification (Payroll)
 Consent-Based Verification (CBV) is a prototype that allows benefit applicants to verify their income directly using payroll providers. It is currently being piloted for testing and validation purposes.
 
  ## Project Vision 
-<!-- Provide the long-term goals and aspirations for this project. --> 
- 
- ## Project Mission 
-<!-- Provide the core mission and objectives driving this project. --> 
+Income Verification as a Service (IVaaS) is a project to allow applicants to verify their income and community engagement directly using payroll providers and educational records. IVaaS was developed and is supported by CMS in order to offer states a drop-in component for their application process to allow applicants to apply for state benefits more easily. This is part of a more comprehensive process to [improve data services for benefits delivery](https://assets.performance.gov/cx/files/OMB-CX-LifeExperience-FFS-ImprovingData.pdf).
 
+ ## Project Mission 
+IVaaS uses consent-based verification (CBV) with multiple data sources, making the process much faster and more efficient than a simple document-upload service. CBV enables additional cost avoidance by optimizing manual document review processes. Rather than having to process incorrect or blurry documents, consent-based verification produces an easily consumed report with essential information. Verification information is returned in a standardized format easy for other systems to process (JSON), allowing integration with existing state systems. 
+
+IVaaS is under active development by CMS, with new updates released on a weekly cadence.
 # Core Team
 A list of core team members responsible for the code and documentation in this repository can be found in [COMMUNITY.md](COMMUNITY.md) and [CODEOWNERS.md](./CODEOWNERS.md).
 
