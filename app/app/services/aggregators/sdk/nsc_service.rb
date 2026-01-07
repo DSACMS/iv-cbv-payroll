@@ -1,4 +1,4 @@
-# fronzen_string_literal: true
+# frozen_string_literal: true
 
 require "faraday"
 
@@ -22,7 +22,7 @@ module Aggregators::Sdk
     }.freeze
 
     ENROLLMENT_ENDPOINT = "/insights/v3/a2/submit-request"
-    TOKEN_CACHE_KEY_PREFIX = "nsc_service_token_".freeze
+    TOKEN_CACHE_KEY_PREFIX = "nsc_service_token_"
     TOKEN_EXPIRY_BUFFER = 5.minutes
     MIN_DISPLAY_TIME = 2.seconds
     MAX_TIMEOUT = 10.seconds
