@@ -3,6 +3,12 @@ require "rails_helper"
 RSpec.describe Activities::EntriesController do
   let(:flow) { create(:activity_flow) }
   render_views
+
+  before do
+    allow(ENV).to receive(:[]).and_call_original
+    allow(ENV).to receive(:[]).with("ACTIVITY_HUB_ENABLED").and_return("true")
+  end
+
   describe '#show' do
     context "with generic link" do
       it 'sets session flow type and id' do
@@ -75,6 +81,13 @@ RSpec.describe Activities::EntriesController do
   end
 
   describe "activity hub access control" do
+    it "allows access when ACTIVITY_HUB_ENABLED is true" do
+      get :show, params: { client_agency_id: "sandbox" }
+
+      expect(response).not_to redirect_to(root_url)
+      expect(response).to have_http_status(:ok)
+    end
+
     it "redirects to home when ACTIVITY_HUB_ENABLED is not set" do
       allow(ENV).to receive(:[]).with("ACTIVITY_HUB_ENABLED").and_return(nil)
 
@@ -89,15 +102,6 @@ RSpec.describe Activities::EntriesController do
       get :show, params: { client_agency_id: "sandbox" }
 
       expect(response).to redirect_to(root_url)
-    end
-
-    it "allows access when ACTIVITY_HUB_ENABLED is true" do
-      allow(ENV).to receive(:[]).with("ACTIVITY_HUB_ENABLED").and_return("true")
-
-      get :show, params: { client_agency_id: "sandbox" }
-
-      expect(response).not_to redirect_to(root_url)
-      expect(response).to have_http_status(:ok)
     end
   end
 end

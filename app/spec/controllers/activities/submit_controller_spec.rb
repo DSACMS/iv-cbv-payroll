@@ -11,6 +11,8 @@ RSpec.describe Activities::SubmitController, type: :controller do
   end
 
   before do
+    allow(ENV).to receive(:[]).and_call_original
+    allow(ENV).to receive(:[]).with("ACTIVITY_HUB_ENABLED").and_return("true")
     session[:flow_id] = activity_flow.id
   end
 
