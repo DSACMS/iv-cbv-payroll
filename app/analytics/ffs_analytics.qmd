@@ -443,7 +443,7 @@ df_device_status_viz <- df_device_origin_status |>
 df_device_status_viz |> 
   ggplot(aes(value, fct_reorder(device_type, value, sum), fill = fill_color)) +
   geom_col() +
-  geom_text(aes(label = value_label), family = "Source Sans 3", color = matterhorn, hjust = 0) +
+  geom_text(aes(label = value_label), family = "Source Sans 3", color = matterhorn, hjust = -.1) +
   facet_grid(pilot~fct_rev(type), scales = "free_x", space = "free_y", switch = "y") +
   coord_cartesian(clip = "off") +
   scale_fill_identity() +
@@ -493,7 +493,7 @@ df_origin_status_viz |>
   filter(pilot != "May 2025") |> 
   ggplot(aes(value, fct_reorder(origin, value, sum), fill = fill_color)) +
   geom_col() +
-  geom_text(aes(label = value_label), family = "Source Sans 3", color = matterhorn, hjust = 0) +
+  geom_text(aes(label = value_label), family = "Source Sans 3", color = matterhorn, hjust = -.1) +
   facet_grid(pilot~fct_rev(type), scales = "free", space = "free_y", switch = "y") +
   coord_cartesian(clip = "off") +
   scale_fill_identity() +
@@ -502,14 +502,15 @@ df_origin_status_viz |>
     x = NULL, y = NULL,
     title = "Mailed links had the highest flow completion rate" |> toupper(),
     subtitle = "number of distinct flows by url link origin",
-    caption = glue("Note: Excludes May pilot which did not capture device type
+    caption = glue("Note: Excludes May pilot which did not capture origin
     {default_caption}")
   ) +
   theme(
     legend.position = "none",
     axis.text.x = element_blank(),
     strip.placement = "outside",
-    panel.spacing = unit(0.5, "lines"),
+    panel.spacing.y = unit(0.5, "lines"),
+    panel.spacing.x = unit(1, "lines"),
     strip.text.y = element_text(hjust = .5)
   )
 ```
@@ -1364,33 +1365,55 @@ df_help_viz |>
 
 ## How many applicants are not finding their employer in the search?
 
-One reason for retention to drop off could be from applicant not able to find their employers or platforms in in the search.
--
 ```{r}
-#| label: search
-#| output: true
+#| label: search_results
 
 df_search <- df_mp |> 
   mutate(
     picked = event == "ApplicantClickedPopularAppEmployers",
     searches = event == "ApplicantSearchedForEmployer",
-    missingresults = event == "ApplicantAccessedMissingResultsPage"
+    missingresults = event == "ApplicantAccessedMissingResultsPage",
+    started = event == "ApplicantViewedAgreement", #needed for Aug pilot
+    distinct_id_started = case_when(started == TRUE ~ distinct_id),
+    cbv_flow_id_started = case_when(started == TRUE ~ cbv_flow_id),
     ) |> 
   group_by(pilot) |> 
   summarise(
-    n_users = n_distinct(distinct_id),
-    sessions = n_distinct(distinct_id, cbv_flow_id),
+    applicants = n_distinct(distinct_id_started),
+    sessions = n_distinct(cbv_flow_id_started),
     picked = sum(picked, na.rm = TRUE),
     searches = sum(searches, na.rm = TRUE),
     missingresults = sum(missingresults, na.rm = TRUE),
     .groups = "drop"
+    ) |> 
+  mutate(
+    share_missing = missingresults/searches,
+    applicants = ifelse(pilot == "May 2025", NA_integer_, applicants)
     )
+```
 
+One reason for retention to drop off could be from applicant not able to find their employers or platforms in in the search. Across all pilots, the average share of missing results is quite high at `r label_percent(1)(sum(df_search$missingresults) / sum(df_search$searches))`. This could be a major roadblock for users. In the November pilot, `r label_percent(1)(df_journey_label[df_journey_label$step_order == "step_3" & df_journey_label$step_event == "dropped",]$share)` of applicants fell off at this step. 
+
+```{r}
+#| label: search_results_tbl
+#| output: true
+ 
 df_search |> 
   gt() |> 
   adjust_row_padding() |> 
-  si_gt_base() |> 
-  format_numeric_columns()
+  si_gt_base(header_fill = dsac_color['light_teal']) |> 
+  format_numeric_columns() |> 
+  cols_label(
+    picked = md("Employer<br>Picked Popular"),
+    searches = md("Employer<br>Searches"),
+    missingresults = md("Employer Searches<br> Returned Missing"),
+    share_missing = md("Share<br>Missing")
+  ) |> 
+  fmt_missing() |> 
+  add_labs(
+    title = "ABOUT ONE IN FIVE SEARCH RESULTS ARE MISSING EACH PILOT PERIOD",
+    caption = default_caption
+  ) 
 ```
 
 ## Are the popular app employers the right ones (i.e. do there appear to be employeers searched more frequently than any that appear in the popular links)
