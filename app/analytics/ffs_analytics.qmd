@@ -1,5 +1,5 @@
 ---
-title: "FFS Analytic review"
+title: "EMMY Mixpanel Web Analytic Review"
 execute:
   echo: false
   output: false
@@ -10,16 +10,18 @@ format:
     toc: true
     number-sections: true
     css: dsac-theme.css
-  docx:
-    toc: true
-    number-sections: true
-    reference-doc: custom-reference-doc.docx
-    highlight-style: github
+    embed-resources: true
+  # docx:
+  #   toc: true
+  #   number-sections: true
+  #   reference-doc: custom-reference-doc.docx
+  #   highlight-style: github
+  #   dpi: 300
 ---
 
 # Purpose
 
-Over the past year, the Centers for Medicare and Medicaid Services (CMS) in conjunction with partner states have piloted an online income verification application. With each phase, analysts have explore the web analytics data, looking into applicant uptake and utilization of the tool. This specific report aims identify areas of the tool where retention drops in an effort to improve the product design, making it easier for applicants to complete the full form.
+Over the past year, the Centers for Medicare and Medicaid Services (CMS) in conjunction with partner states have piloted an online income verification application, Eligibility Made Easy (EMMY). With each phase, analysts have explore the web analytics data, looking into applicant uptake and utilization of the tool. This specific report aims identify areas of the tool where retention drops in an effort to improve the product design, making it easier for applicants to complete the full form.
 
 ## Key Questions
 
@@ -88,7 +90,7 @@ library(gtayblr) ## remotes::install_github("USAID-OHA-SI/gtayblr")
 mp_path <- list.files(here("app/analytics"), "mixpanel.*parquet", full.names = TRUE)
 
 #default viz/table caption
-default_caption <- "Source: Lousiana 2025 IVaaS Pilot Mixpanel Data [accessed 2025-12-15]"
+default_caption <- "Source: Lousiana 2025 EMMY Pilot Mixpanel Data [accessed 2025-12-15]"
 
 #set DSAC colors
 dsac_color <- c("#103D68", "#136A5D", "#6A1344", "#EFAC2F", "#63789D", "#C1C9D7", "#5A9088", "#D9E8E5", "#842F66", "#123054")
@@ -122,9 +124,7 @@ clean_events <- function(df){
 
 ## How many users are starting but not completing the process?
 
-To start off with, we need to understand how many applicants are starting out this process. 
-
-Comparing how many people are completing each pilot period, in the first pilot many more applicants started the processed (i.e. viewed the agreement), but a smaller share completed it (i.e. shared their income summary). However, we do see roughly the same volume of recipients completing the process end to end.
+To start off with, we need to understand how many applicants are starting out this process. The first pilot in May did not have the same means of determining unique applicants, so the table below only reports the total events for May. August saw the largest number of applicants start the process(i.e. viewed the agreement), but November had the highest completion rate. 
 
 ```{r}
 #| label: retention_tbl
@@ -135,26 +135,30 @@ Comparing how many people are completing each pilot period, in the first pilot m
   clean_events() |> 
   group_by(pilot, event_clean) |> 
   summarise(
-    n_distinct = n_distinct(distinct_id),
+    applicants = n_distinct(distinct_id),
+    events = n(),
     .groups = "drop"
-    ) |> 
+    ) |>
+  pivot_longer(c(applicants, events), names_to = "denom") |> 
   pivot_wider(
     names_from = event_clean,
-    values_from = n_distinct
+    values_from = value
     ) |> 
-  mutate(`Completion Rate` = `Shared Income Summary` / `Viewed Agreement`)
+  mutate(`Completion Rate` = `Shared Income Summary` / `Viewed Agreement`) |> 
+  mutate(across(where(is.numeric), ~ ifelse(pilot == "May 2025" & denom == "applicants", NA_integer_, .x)))
 
 df_compl_pilot |> 
-  gt() |> 
+  gt(groupname_col = "denom") |> 
   cols_move(`Viewed Agreement`, after = pilot) |> 
   format_numeric_columns() |> 
   si_gt_base(header_fill = dsac_color['light_teal']) |> 
   adjust_row_padding() |> 
   add_labs(
-    title = "Applicant Completion Rates by Pilot",
+    title = "STEADY COMPLETION RATE IN ALL PILOTS",
     subtitle = "The distinct number of applicants who started and completed the process",
     caption = default_caption
-  )
+  ) |> 
+    fmt_missing()
 
 ```
 
@@ -260,13 +264,19 @@ df_mult_types <- df_multi |>
       max_repeats > 1 ~ "Multiple items with repeats",
       TRUE ~ "Other"
     )
-  ) |>
-  count(behavior)
+  ) 
+  
+  df_multi |> 
+    left_join(df_mult_types |> select(distinct_id, behavior)) |> 
+    write_csv(here("app/analytics/multi_sub.csv"))
+
+  df_mult_types <- df_mult_types |> 
+    count(behavior)
 
 ```
 We should take a closer look at the repeated submissions. Some of these could be resubmissions of the same information (i.e. the applicant didn't know if the submission went through or forgot they already submitted it) or could be going back to enter in a different employeer at a differnt time. If we look at the `r sum(df_mult_types$n)` applicants with repeated submissions in the November pilot, `r df_mult_types[df_mult_types$behavior == 'Single item repeated',]$n` submitted for the same employer each time, `r df_mult_types[df_mult_types$behavior == 'Multiple items with repeats',]$n` submitted different employers (some with repeats), and only `r df_mult_types[df_mult_types$behavior == 'All unique items',]$n` had all unique employer submissions. 
 
-### Is there a drop completion as the pilot period draws on?
+### Is there a drop in completion as the pilot period draws on?
 
 If we compare weeks with in each pilot, we are seeing a similar trend of most people starting in the first week or two and then tailing off after that. While the first two pilot periods saw the second week as having the highest compeltion rate, the current pilot saw an increase in weeks 2 and then week 3 for completion rates.
 
@@ -274,51 +284,61 @@ If we compare weeks with in each pilot, we are seeing a similar trend of most pe
 #| label: retention_viz
 #| output: true
 
-df_compl <- df_mp |> 
+ df_compl_wkly <- df_mp |> 
   filter(event %in% c("ApplicantViewedAgreement","ApplicantSharedIncomeSummary")) |> 
   clean_events() |> 
   mutate(week = timestamp |> floor_date("weeks") |> as_date()) |> 
   group_by(pilot, week, event_clean) |> 
   summarise(
-    n_distinct = n_distinct(distinct_id),
+    applicants = n_distinct(distinct_id),
+    events = n(),
     .groups = "drop"
-    ) |> 
+    ) |>
+  pivot_longer(c(applicants, events), names_to = "denom") |> 
   pivot_wider(
     names_from = event_clean,
-    values_from = n_distinct
+    values_from = value
     ) |> 
-  mutate(completion_rate_wk = `Shared Income Summary` / `Viewed Agreement`) |> 
+  mutate(
+    completion_rate_wk = `Shared Income Summary` / `Viewed Agreement`,
+    across(where(is.numeric), ~ ifelse(pilot == "May 2025" & denom == "applicants", NA_integer_, .x))
+    ) |> 
   group_by(pilot) |> 
   mutate(plt_wk = glue("wk{isoweek(week) - min(isoweek(week)) + 1}"), .after = pilot) |> 
   ungroup()
 
-# add pilot average rate for viz
-df_compl <- df_compl |> 
+
+# merge on pilot average rate for viz
+df_compl_wkly <- df_compl_wkly |> 
   left_join(
     df_compl_pilot |> 
-      select(pilot, completion_rate_pilot = `Completion Rate`) |> 
+      select(pilot, denom, completion_rate_pilot = `Completion Rate`) |> 
       mutate(plt_wk = 'wk5'),
-    by = join_by(pilot, plt_wk)
+    by = join_by(pilot, plt_wk, denom)
     )
 
-
-v1 <- df_compl |> 
-  ggplot(aes(plt_wk, `Viewed Agreement`)) +
-  geom_col(fill = dsac_color['light_navy']) +
-  facet_grid(. ~pilot, scales = "free_x", space = "free_x", switch = "y") +
-  scale_y_continuous(label = label_comma()) +
+v1 <- df_compl_wkly |> 
+  arrange(plt_wk, desc(denom)) |> 
+  ggplot(aes(plt_wk, `Viewed Agreement`, fill = denom)) +
+  geom_col(position = position_dodge(-.5), na.rm = TRUE) + 
+  facet_grid(~pilot, scales = "free_x", space = "free_x", switch = "y") +
+  scale_y_continuous(label = label_comma(scale_cut = cut_short_scale()), breaks = seq(0, 14000, 2000)) +
+  scale_fill_manual(values = c(applicants = unname(dsac_color['light_navy']), events = unname(dsac_color['pale_navy']))) +
   si_style_ygrid() +
   labs(
     x = NULL, y = NULL,
-    subtitle = "Started Application") +
+    subtitle = glue("Started Application (<span style = color:{dsac_color['light_navy']};>**applicants**</span>/<span style = color:{dsac_color['pale_navy']};>**events**</span>)")) +
   theme(
     strip.text = element_text(hjust = .5),
-    strip.placement = "outside"
+    strip.placement = "outside",
+    panel.spacing = unit(0.5, "lines"),
+    legend.position = "none",
+    plot.subtitle = element_markdown(),
     )
 
-  v2 <- df_compl |> 
-  ggplot(aes(plt_wk, completion_rate_wk)) +
-  geom_col(fill = dsac_color[['light_teal']]) +
+  v2 <- df_compl_wkly |> 
+  ggplot(aes(plt_wk, completion_rate_wk, fill = denom)) +
+  geom_col(na.rm = TRUE) +
   geom_hline(
     aes(yintercept = completion_rate_pilot), na.rm = TRUE,
     color = dsac_color[['cranberry']],
@@ -326,20 +346,24 @@ v1 <- df_compl |>
     ) +
   geom_label(
     aes(
-      y = completion_rate_pilot, 
+      y = completion_rate_pilot,
       label = label_percent(1)(completion_rate_pilot)), 
-    na.rm = TRUE,
+    na.rm = TRUE, fill = "white",
     family = "Source Sans 3", color = matterhorn, linewidth = 0,
     ) +
-  facet_grid(. ~pilot, scales = "free_x", , space = "free_x", switch = "y") +
+  facet_grid(fct_rev(denom) ~pilot, scales = "free_x", , space = "free_x", switch = "y") +
   scale_y_continuous(label = label_percent()) +
+  scale_fill_manual(values = c("events" = "#97b2ae", 'applicants' = unname(dsac_color[['light_teal']]))) + 
   labs(
     x = NULL, y = NULL,
     subtitle = "Application Completion Rate") +
   si_style_ygrid() +
   theme(
-    strip.text = element_text(hjust = .5),
-    strip.placement = "outside"
+    strip.text.y = element_text(hjust = .5, face = "bold"),
+    strip.text.x = element_text(hjust = .5),
+    strip.placement = "outside",
+    panel.spacing = unit(0.5, "lines"),
+    legend.position = "none"
     )
 
     v1 / v2 + 
@@ -395,63 +419,99 @@ other_devices <- unique(df_mp$device_type) |>
 When comparing the device type, we can see there is a preference for applicants initiating the process on their phones. The success rate is much higher on the phones than desktop, but both success rates are rather low. The other types of devices include `{r} other_devices`.
 
 ```{r}
-#| label: device_status_tbl
+#| label: device_status_viz
 #| output: true
 
-df_device_origin_status |>
-  count(pilot, device = device_type, completed) |> 
-  pivot_wider(
-    names_from = completed, 
-    values_from = n,
-    values_fill = 0) |> 
-  rowwise() |> 
-  mutate(,
-    `Viewed Agreement` = sum(`FALSE`, `TRUE`),
-    `Shared Income Summary` = `TRUE`,
-    `Completion Rate` = `Shared Income Summary` / `Viewed Agreement`
+df_device_status_viz <- df_device_origin_status |>
+  group_by(pilot, device_type) |> 
+  summarise(
+    started = n(),
+    #completed = sum(completed, na.rm = TRUE),
+    completion_rate = sum(completed, na.rm = TRUE) / n(),
+    .groups = "drop"
   ) |> 
-  select(-c(`FALSE`, `TRUE`)) |> 
-  arrange(pilot, desc(`Viewed Agreement`)) |> 
-  gt(groupname_col = "pilot") |> 
-  format_numeric_columns() |> 
-  si_gt_base(header_fill = dsac_color['light_teal']) |> 
-  adjust_row_padding() |> 
-  add_labs(
-    title = "Most applicants start and have the highest success rate on smartphones" |> toupper(),
-    subtitle = "number of distinct flows by device type",
+    pivot_longer(
+      c(started, completion_rate),
+      names_to = "type"
+    ) |> 
+  mutate(
+    value_label = ifelse(type == "started", label_comma(1)(value), label_percent(1)(value)),
+    fill_color = ifelse(type == "started", dsac_color["light_navy"], dsac_color["light_teal"]),
+    type = ifelse(type == "started", "Started Application", "Completion Rate")
+    )
+
+df_device_status_viz |> 
+  ggplot(aes(value, fct_reorder(device_type, value, sum), fill = fill_color)) +
+  geom_col() +
+  geom_text(aes(label = value_label), family = "Source Sans 3", color = matterhorn, hjust = 0) +
+  facet_grid(pilot~fct_rev(type), scales = "free_x", space = "free_y", switch = "y") +
+  coord_cartesian(clip = "off") +
+  scale_fill_identity() +
+  si_style_xgrid() +
+  labs(
+    x = NULL, y = NULL,
+    title = "MOST APPLICANTS START AND HAVE A HIGHER COMPLETION RATE ON A SMARTPHONE THAN DESKTOP" |> str_wrap(70),
+    subtitle = "number of events by device type",
     caption = glue("Note: Other devices include {other_devices} | {default_caption}")
-  ) 
+  ) +
+  theme(
+    legend.position = "none",
+    axis.text.x = element_blank(),
+    strip.placement = "outside",
+    panel.spacing = unit(0.5, "lines"),
+    strip.text.y = element_text(hjust = .5)
+  )
+
 ```
 
 When looking the url origin, we see the large majority arise from SMS messages. However, the success rate is much lower than that of physical mailings.
 
 ```{r}
-#| label: origin_status_tbl
+#| label: origin_status_viz
 #| output: true
 
-df_device_origin_status |>
-  count(pilot, origin, completed) |> 
-  pivot_wider(
-    names_from = completed, 
-    values_from = n,
-    values_fill = 0) |> 
-  rowwise() |> 
-  mutate(,
-    `Viewed Agreement` = sum(`FALSE`, `TRUE`),
-    `Shared Income Summary` = `TRUE`,
-    `Completion Rate` = `Shared Income Summary` / `Viewed Agreement`
+df_origin_status_viz <- df_device_origin_status |>
+  group_by(pilot, origin) |> 
+  summarise(
+    started = n(),
+    #completed = sum(completed, na.rm = TRUE),
+    completion_rate = sum(completed, na.rm = TRUE) / n(),
+    .groups = "drop"
   ) |> 
-  select(-c(`FALSE`, `TRUE`)) |> 
-  arrange(pilot, desc(`Viewed Agreement`)) |> 
-  gt(groupname_col = "pilot") |> 
-  format_numeric_columns() |> 
-  si_gt_base(header_fill = dsac_color['light_teal']) |> 
-  adjust_row_padding() |> 
-  add_labs(
+    pivot_longer(
+      c(started, completion_rate),
+      names_to = "type"
+    ) |> 
+  mutate(
+    value_label = ifelse(type == "started", label_comma(1)(value), label_percent(1)(value)),
+    fill_color = ifelse(type == "started", dsac_color["light_navy"], dsac_color["light_teal"]),
+    type = ifelse(type == "started", "Started Application", "Completion Rate"),
+    origin = str_replace(origin, "mfb_", "MFB ")
+    )
+
+df_origin_status_viz |> 
+  filter(pilot != "May 2025") |> 
+  ggplot(aes(value, fct_reorder(origin, value, sum), fill = fill_color)) +
+  geom_col() +
+  geom_text(aes(label = value_label), family = "Source Sans 3", color = matterhorn, hjust = 0) +
+  facet_grid(pilot~fct_rev(type), scales = "free", space = "free_y", switch = "y") +
+  coord_cartesian(clip = "off") +
+  scale_fill_identity() +
+  si_style_xgrid() +
+  labs(
+    x = NULL, y = NULL,
     title = "Mailed links had the highest flow completion rate" |> toupper(),
     subtitle = "number of distinct flows by url link origin",
-    caption = default_caption
-  ) 
+    caption = glue("Note: Excludes May pilot which did not capture device type
+    {default_caption}")
+  ) +
+  theme(
+    legend.position = "none",
+    axis.text.x = element_blank(),
+    strip.placement = "outside",
+    panel.spacing = unit(0.5, "lines"),
+    strip.text.y = element_text(hjust = .5)
+  )
 ```
 
 Lastly, we can take a look at how the applicant started their session. In the November pilot, most sessions were started via a tokenized, CBV invitation but these sessions were half as successful in completing the process. This is the opposite of what occured in the August pilot.
@@ -460,29 +520,46 @@ Lastly, we can take a look at how the applicant started their session. In the No
 #| label: tokenized_status
 #| output: true
 
-df_device_origin_status |>
-  count(pilot, initiation, completed) |> 
-  pivot_wider(
-    names_from = completed, 
-    values_from = n,
-    values_fill = 0) |> 
-  rowwise() |> 
-  mutate(,
-    `Viewed Agreement` = sum(`FALSE`, `TRUE`),
-    `Shared Income Summary` = `TRUE`,
-    `Completion Rate` = `Shared Income Summary` / `Viewed Agreement`
+df_link_status_viz <- df_device_origin_status |>
+  group_by(pilot, initiation) |> 
+  summarise(
+    started = n(),
+    #completed = sum(completed, na.rm = TRUE),
+    completion_rate = sum(completed, na.rm = TRUE) / n(),
+    .groups = "drop"
   ) |> 
-  select(-c(`FALSE`, `TRUE`)) |> 
-  arrange(pilot, desc(`Viewed Agreement`)) |> 
-  gt(groupname_col = "pilot") |> 
-  format_numeric_columns() |> 
-  si_gt_base(header_fill = dsac_color['light_teal']) |> 
-  adjust_row_padding() |> 
-  add_labs(
-    title = "Generic links see larger success rate last two pilots" |> toupper(),
+    pivot_longer(
+      c(started, completion_rate),
+      names_to = "type"
+    ) |> 
+  mutate(
+    value_label = ifelse(type == "started", label_comma(1)(value), label_percent(1)(value)),
+    fill_color = ifelse(type == "started", dsac_color["light_navy"], dsac_color["light_teal"]),
+    type = ifelse(type == "started", "Started Application", "Completion Rate")
+    )
+
+df_link_status_viz |> 
+  ggplot(aes(value, fct_reorder(initiation, value, sum), fill = fill_color)) +
+  geom_col() +
+  geom_text(aes(label = value_label), family = "Source Sans 3", color = matterhorn, hjust = -.1) +
+  facet_grid(pilot~fct_rev(type), scales = "free", space = "free_y", switch = "y") +
+  coord_cartesian(clip = "off") +
+  scale_fill_identity() +
+  si_style_xgrid() +
+  labs(
+    x = NULL, y = NULL,
+   title = "GENERIC LINKS SAW A LARGER SUCCESS RATE LAST TWO PILOTS"|> str_wrap(70),
     subtitle = "number of distinct flows by initiation type",
     caption = default_caption
-  ) 
+  ) +
+  theme(
+    legend.position = "none",
+    axis.text.x = element_blank(),
+    strip.placement = "outside",
+    panel.spacing.x = unit(0.5, "lines"),
+    panel.spacing.y = unit(1, "lines"),
+    strip.text.y = element_text(hjust = .5)
+  )
 ```
 
 ## How long does it take to complete the application?
@@ -542,6 +619,15 @@ df_duration_viz <- df_duration |>
     q75 = quantile(minutes, 0.75, na.rm = TRUE),
     q90 = quantile(minutes, .9, na.rm = TRUE),
     .groups = "drop"
+    ) |> 
+    mutate(
+      fill_color = 
+        case_match(completed_type,
+        'completed' ~ dsac_color['light_navy'],
+        'incomplete' ~ dsac_color['light_cranberry'],
+        'just clicked' ~ dsac_color['light_cranberry']
+        ),
+      completed_type_lab = glue('{completed_type} (n = {label_comma()(n)})')
     )
 
   df_duration_stats <- df_duration_viz |> 
@@ -553,27 +639,21 @@ Looking specifically at the November pilot, of the `{r} scales::label_comma()(df
 ```{r}
 #| label: viz_duration
 #| output: true
-df_duration_viz |> 
-  mutate(
-    fill_color = 
-    case_match(completed_type,
-      'completed' ~ dsac_color['navy'],
-      'incomplete' ~ dsac_color['cranberry'],
-      'just clicked' ~ dsac_color['cranberry']
-      ),
-    completed_type = glue('{completed_type} (n = {label_comma()(n)})')) |> 
-  ggplot(aes(y = fct_rev(completed_type), group = completed_type, color = fill_color)) +
+df_duration_viz |>  
+  ggplot(aes(y = fct_rev(completed_type_lab), group = completed_type, color = fill_color)) +
   geom_linerange(aes(xmin = q25, xmax = q75)) +
   geom_point(aes(median), size = 4) +
   geom_text(
+  data  = df_duration_viz |> filter(median != 0),
     aes(median, label = label_number(accuracy = .1, suffix = 'm')(median)), 
     family = "Source Sans 3", vjust = -1) +
   facet_grid(pilot ~. , switch = "y", scales = "free_y") +
   scale_x_continuous(labels = label_number( suffix = 'm'), position = "top") +
   scale_color_identity() +
+  coord_cartesian(clip = "off") +
   labs(
     x = NULL, y = NULL,
-    title = glue("{toupper(df_duration_stats$pilot[1])} INCOMPLETE APPLICATIONS END AFTER ABOUT {label_number(.1)(df_duration_stats[df_duration_stats$completed_type == 'incomplete',]$median)} MINUTES"),
+    title = glue("{toupper(df_duration_stats$pilot[1])} INCOMPLETE APPLICATIONS END AFTER ABOUT {label_number(.1)(df_duration_stats[df_duration_stats$completed_type == 'incomplete',]$median)} MINUTES") |> str_wrap(70),
     subtitle = 
       "displaying the median session **minutes** and IQR",
     caption = glue("Note: Applicants falling into 'just clicked' count represent those who didn't have an event beyond viewing the agreement 
@@ -772,7 +852,8 @@ The next visual looks at the same data, but plots each of the event individually
     scale_color_manual(values = unname(c(dsac_color['teal'], dsac_color['dark_navy'], dsac_color['navy'], dsac_color['light_navy'], dsac_color['light_cranberry'], dsac_color['cranberry']))) +
     labs(
       x = NULL, y = NULL, 
-      subtitle = "income sync time with provider | each point represents a session | gold diamonds represent the median",
+      title = "MEDIAN SYNC TIME IMPROVED IN NOVEMBER PILOT",
+      subtitle = "income sync time with provider | each point represents a session | gold diamonds represent the median" |> str_wrap(),
       caption = glue("Note: Sync time capped at 20 minutes
       {default_caption}")) +
     si_style_xgrid() +
@@ -789,6 +870,7 @@ During the November pilot, Argyle had an outage between November 19-20. Looking 
 ```{r}
 #| label: sync_outage
 #| output: true
+#| fig-height: 7
 
 df_outage_viz_rt <- df_sync_init |> 
   filter(
@@ -863,6 +945,8 @@ During those two Argyle outage days, Pinwheel had the two highest median data sy
 ```{r}
 #| label: sync_outage2
 #| output: true
+#| fig-height: 7
+
 df_outage_viz <- df_sync |> 
   filter(
     pilot == "Nov 2025",
@@ -928,13 +1012,12 @@ df_outage_viz |>
   labs(
     x = NULL, y = NULL,
     title = glue("DESPITE SOME LARGE OUTLIERS AND LESS FLOWS, PINWHEEL'S MEDIAN SYNC TIME ({df_outage_provider_median$Pinwheel}s) IS ONLY A FEW SECONDS SLOWER THAN ARGYLE ({df_outage_provider_median$Argyle}s)") |> str_wrap(70),
-    subtitle = glue("successful daily <span style = color:{dsac_color['light_navy']};>**Argyle**</span>/<span style = color:{dsac_color['light_teal']};>**Pinwheel**</span> user flow syncs [left] and their duration, **minutes** [median and IQR]"),
+    subtitle = glue("successful daily <span style = color:{dsac_color['light_navy']};>**Argyle**</span>/<span style = color:{dsac_color['light_teal']};>**Pinwheel**</span> user flow syncs [left] and their duration, **minutes** [median + IQR]"),
     caption = glue('Note: x axis truncated to 5 minutes; Argyle outage Nov 19-20 
     {default_caption}')
   ) + 
   si_style_xgrid() +
   theme(plot.subtitle = element_markdown())
-
 
 #si_save(here("app/analytics/sync_times.png"), height = 7)
 ```
@@ -961,11 +1044,12 @@ v_steps_clean <-
   add_row(event = "dropped", .before = 1) |> 
   clean_events() |> 
   pull()
+
+v_steps_breaks <- str_replace_all(v_steps_clean, " ", "\n")
 ```
 
 ```{r}
 #| label: event_journey
-#| output: true
 
 #setup full set of steps for each applicant to id drop off point
 df_journey <- df_mp |> 
@@ -1031,6 +1115,12 @@ df_sankey <- df_sankey |>
   ) |> 
   mutate(value_label = ifelse(x == "step_1", label_comma()(n), glue("{label_comma()(n)}\n{label_percent(1)(share)}")))
 
+```
+
+```{r}
+#| label: event_journey_sankey
+#| output: true
+
 #viz
 df_sankey |> 
   ggplot(
@@ -1046,7 +1136,7 @@ df_sankey |>
     size = 4, color = "white",  hjust = 1.4,
     family = "Source Sans 3", na.rm = TRUE,
   ) +
-  scale_x_discrete(labels = v_steps_clean[2:8], position = "top") +
+  scale_x_discrete(labels = v_steps_breaks[2:8], position = "top") +
   scale_fill_identity() + 
   coord_cartesian(clip = 'off') +
   labs(
@@ -1058,12 +1148,11 @@ df_sankey |>
   si_style_nolines() + 
   theme(
     axis.text.y = element_blank(),
+    axis.text.x = element_markdown(),
     plot.subtitle = element_markdown()
   ) 
-
 ```
-
-Right off the bat, we can see that off the `{r} scales::label_comma()(df_journey_label[df_journey_label$step_order == "step_1",]$n)` applicants who started the process, only `{r} scales::label_percent(1)(df_journey_label[df_journey_label$step_event == "Agreed",]$share)` agreed to terms to move on, and only `{r} cales::label_percent()(df_journey_label[df_journey_label$step_event == "Shared Income Summary",]$n/df_journey_label[df_journey_label$step_order == "step_1",]$n)` actually made it to completion, submitting their pay information. The diagram also show that about 1 in 3 applicants is dropping off when selecting their employeerer, logging in, and then succeeding with that log in. 
+Right off the bat, we can see that off the `{r} scales::label_comma()(df_journey_label[df_journey_label$step_order == "step_1",]$n)` applicants who started the process, only `{r} scales::label_percent(1)(df_journey_label[df_journey_label$step_event == "Agreed",]$share)` agreed to terms to move on, and only `{r} scales::label_percent()(df_journey_label[df_journey_label$step_event == "Shared Income Summary",]$n/df_journey_label[df_journey_label$step_order == "step_1",]$n)` actually made it to completion, submitting their pay information. The diagram also show that about 1 in 3 applicants is dropping off when selecting their employeerer, logging in, and then succeeding with that log in. 
 
 The table below so similar drop off rates at each step for each of the three pilots in Lousiana.
 
@@ -1121,44 +1210,81 @@ v_help_events <- c(
 ```
 
 ```{r}
-#| label: help_summary
-#| output: true
+#| label: help_actions_summary
 
-df_sessions <- df_time |> 
+df_help_actions <- df_time |> 
   mutate(
+    completed = as.logical(completed),
     help = event %in% v_help_events,
-    started = event == "ApplicantViewedAgreement"
-    ) |> 
-  group_by(pilot, distinct_id) |>
-  summarise(
-    sessions = n_distinct(cbv_flow_id),
-    started = max(started, na.rm = TRUE),
-    completed = max(completed, na.rm = TRUE),
-    help_actions = sum(help, na.rm = TRUE),
-    .groups = "drop"
+    started = event == "ApplicantViewedAgreement", #needed for Aug pilot
+    distinct_id_started = case_when(started == TRUE ~ distinct_id),
+    cbv_flow_id_started = case_when(started == TRUE ~ cbv_flow_id),
+    distinct_id_help = case_when(event %in% v_help_events ~ distinct_id),
     ) |> 
   group_by(pilot, completed) |> 
-  summarise(
-    n_users = sum(started, na.rm = TRUE),
-    mean_sessions = mean(sessions, na.rm = TRUE),
-    mean_help_actions = mean(help_actions, na.rm = TRUE),
+  summarize(
+    applicants = n_distinct(distinct_id_started, na.rm = TRUE),
+    applicants_with_help_actions = n_distinct(distinct_id_help, na.rm = TRUE),
+    sessions = n_distinct(distinct_id_started, cbv_flow_id_started, na.rm = TRUE), 
+    help_actions = sum(help, na.rm = TRUE),
     .groups = "drop"
   ) |> 
-  mutate(completed = as.logical(completed))
-
-df_sessions |> 
-  gt() |> 
-  fmt_number(columns = n_users, decimals = 0) |> 
-  fmt_number(columns = starts_with('mean'), decimals = 1) |> 
-  si_gt_base(header_fill = dsac_color['light_teal']) |> 
-  adjust_row_padding() 
-  # add_labs(
-  #   title = "Completion Rates by Pilot"
-  # )
+  mutate(
+    help_rate_per_app = help_actions / applicants,
+    help_rate_per_sess = help_actions / sessions,
+    click_rate_probability = applicants_with_help_actions / applicants
+    )
 
 ```
 
-We can investigate this further, looking at the total help views by page, comparing whether the user continued on past that page or ended there. We can see that most of the agreement page are on the agreement. There is significantly more usage of the help^1[In this particular case, we are looking at the number of times the help or FAQ was access, so we can have multiple help access points by user on the same page] than those who used help on that page but continued on to the next page. 
+```{r}
+#| label: help_actions_viz
+#| output: true
+
+df_help_actions |> 
+  select(pilot, completed, help_rate_per_app, help_rate_per_sess, click_rate_probability) |> 
+  pivot_longer(-c(pilot, completed), names_to = "metric") |> 
+  mutate(
+    metric = 
+      case_match(
+        metric,
+        "click_rate_probability" ~ "**Help Button Click Probability (%)**<br>(help actions / applicants)",
+        "help_rate_per_app" ~ "**Help Button Clicks per 100 Applicants**<br>(help actions / applicants)",
+        "help_rate_per_sess" ~ "**Help Button Clicks per 100 Sessions**<br>(help actions / sessions)"
+        ),
+    mark_color = ifelse(completed == TRUE, dsac_color['light_navy'], dsac_color['light_cranberry']),
+    mark_fill = ifelse(completed == TRUE, dsac_color['light_navy'], "white") 
+  ) |> 
+  ggplot(aes(value, fct_rev(pilot), color = mark_color, fill = mark_fill, group = pilot)) +
+  geom_path(color = matterhorn) +
+  geom_point(size = 4, shape = 21, stroke = 1.1) +
+  geom_text(aes(label = label_number(1, scale = 1*100)(value)), family = "Source Sans 3", color = matterhorn, vjust = -1) +
+  facet_wrap(. ~ metric, ncol = 1, strip.position = "top") +
+  scale_fill_identity() +
+  scale_color_identity() +
+  scale_x_continuous(labels = label_number(scale = 1*100)) + 
+  si_style_xgrid() +
+  labs(
+    x = NULL, y = NULL,
+    title = "HELP USAGE INCREASED EACH PILOT",
+    subtitle = glue("Comparing usage across applicants/sessions that were <span style = color:{dsac_color['light_cranberry']};>**incomplete**</span> vs <span style = color:{dsac_color['light_navy']};>**completed**</span>"),
+    caption = glue("Note: A help action is when an applicant accesses the help, FAQ, or language change
+    {default_caption}")
+    ) +
+  theme(
+    panel.spacing = unit(.5, "lines"),
+    axis.text.x = element_blank(),
+    strip.text.y = element_text(hjust = .5),
+    strip.placement = "outside",
+    plot.title = element_markdown(),
+    plot.subtitle = element_markdown(),
+    strip.text = element_markdown(),
+    legend.position = "none"
+  )
+
+```
+
+We can investigate this further, looking at the total help actions by page, comparing whether the applicant continued on past that page or ended there. We can see that most of the agreement page are on the agreement. There is significantly more usage of the help^[In this particular case, we are looking at the number of times the help or FAQ was access, so we can have multiple help access points by applicant on the same page] than those who used help on that page but continued on to the next page. 
 
 ```{r}
 #| label: help_viz
@@ -1175,8 +1301,8 @@ df_help <- df_time |>
     clean_events() |> 
     rename(page = event_clean),
     by = "event"
-  )|>
-  group_by(distinct_id, cbv_flow_id) |> 
+  ) |>
+  group_by(pilot, distinct_id, cbv_flow_id) |> 
   fill(page, .direction = "up") |> 
   fill(event_order, .direction = "up") |> 
   mutate(
@@ -1189,37 +1315,54 @@ df_help <- df_time |>
     accessed_help = event %in% v_help_events
       ) |> 
   ungroup() |> 
-  group_by(distinct_id, cbv_flow_id, page, last_page) |> 
+  group_by(pilot, distinct_id, cbv_flow_id, page, last_page) |> 
   mutate(accessed_help = max(accessed_help, na.rm = TRUE)) |> 
   ungroup()
 
 
 df_help_viz <- df_help  |> 
-  group_by(page, last_page) |> 
+  mutate(
+    started = event == "ApplicantViewedAgreement", #needed for Aug pilot
+    distinct_id_started = case_when(started == TRUE ~ distinct_id),
+    cbv_flow_id_started = case_when(started == TRUE ~ cbv_flow_id),
+    distinct_id_help = case_when(event %in% v_help_events ~ distinct_id),
+  ) |> 
+  group_by(pilot, page, last_page) |> 
   summarise(
-    n_users = n_distinct(distinct_id),
-    sessions = n_distinct(distinct_id, cbv_flow_id),
+    n_users = n_distinct(distinct_id_started),
+    sessions = n_distinct(distinct_id_started, cbv_flow_id_started),
     accessed_help = sum(accessed_help, na.rm = TRUE),
     .groups = "drop"
   ) |> 
   mutate(
-    fill_color = ifelse(last_page == TRUE, dsac_color['teal'], dsac_color['light_navy']),
+    fill_color = ifelse(last_page == TRUE, dsac_color['light_cranberry'], dsac_color['light_navy']),
     last_page_lab = ifelse(last_page == TRUE, "Last Page", "Continued On")
     )
 
 df_help_viz |> 
-  ggplot(aes(accessed_help, fct_rev(page), fill = fill_color)) +
-  geom_col() +
-  facet_wrap(~fct_rev(last_page_lab)) +
-  labs(x = NULL, y = NULL) +
+  ggplot(aes(accessed_help, fct_rev(page), color = fill_color)) +
+  geom_linerange(
+    aes(xmin = 0, xmax = accessed_help),
+    position = position_dodge(.5,  orientation = "y")
+    ) + 
+  geom_point(position = position_dodge(.5,  orientation = "y")) +
+  facet_wrap(pilot~.) +
+  labs(
+    x = NULL, y = NULL, 
+    title = "Help actions higher for applicants continuing" |> toupper(),
+    subtitle = glue("Help button clicks comparing applicants who <span style = color:{dsac_color['light_cranberry']};>**ended on that page**</span> or <span style = color:{dsac_color['light_navy']};>**continued on**</span>"),
+    caption = default_caption
+    ) +
+  scale_color_identity() + 
   scale_fill_identity() + 
-  scale_x_continuous(label = comma_format()) +
-  si_style_xgrid()
+  scale_x_continuous(label = label_number(scale_cut = cut_short_scale())) +
+  si_style_xgrid() +
+  theme(plot.subtitle = element_markdown())
 
 ```
 
 
-## How many users are not finding their employer in the search?
+## How many applicants are not finding their employer in the search?
 
 One reason for retention to drop off could be from applicant not able to find their employers or platforms in in the search.
 -
