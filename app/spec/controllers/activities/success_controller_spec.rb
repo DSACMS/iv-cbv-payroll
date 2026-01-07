@@ -1,13 +1,13 @@
 require "rails_helper"
 
 RSpec.describe Activities::SuccessController, type: :controller do
+  include_context "activity_hub"
+
   render_views
 
   let(:activity_flow) { create(:activity_flow) }
 
   before do
-    allow(ENV).to receive(:[]).and_call_original
-    allow(ENV).to receive(:[]).with("ACTIVITY_HUB_ENABLED").and_return("true")
     session[:flow_id] = activity_flow.id
   end
 

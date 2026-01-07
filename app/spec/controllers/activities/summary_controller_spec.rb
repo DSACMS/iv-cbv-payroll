@@ -1,12 +1,9 @@
 require "rails_helper"
 
 RSpec.describe Activities::SummaryController, type: :controller do
-  render_views
+  include_context "activity_hub"
 
-  before do
-    allow(ENV).to receive(:[]).and_call_original
-    allow(ENV).to receive(:[]).with("ACTIVITY_HUB_ENABLED").and_return("true")
-  end
+  render_views
 
   let(:activity_flow) {
     create(

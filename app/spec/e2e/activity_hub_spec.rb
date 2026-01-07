@@ -2,11 +2,7 @@ require "rails_helper"
 
 RSpec.describe 'e2e Activity Hub flow test', type: :feature, js: true do
   include E2e::TestHelpers
-
-  before do
-    allow(ENV).to receive(:[]).and_call_original
-    allow(ENV).to receive(:[]).with("ACTIVITY_HUB_ENABLED").and_return("true")
-  end
+  include_context "activity_hub"
 
   it "completes the generic flow for all activities" do
     visit URI(root_url).request_uri
