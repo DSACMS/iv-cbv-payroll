@@ -1,6 +1,8 @@
 require "rails_helper"
 
 RSpec.describe Activities::SummaryController, type: :controller do
+  include_context "activity_hub"
+
   render_views
 
   let(:activity_flow) {
@@ -21,12 +23,12 @@ RSpec.describe Activities::SummaryController, type: :controller do
       visible_volunteering = activity_flow.volunteering_activities.create!(
         organization_name: "Scoped",
         hours: 1,
-        date: Date.new(2000, 1, 1)
+        date: Date.current
       )
       other_flow.volunteering_activities.create!(
         organization_name: "Ignored",
         hours: 2,
-        date: Date.new(2000, 2, 2)
+        date: Date.current
       )
       visible_job_training = activity_flow.job_training_activities.create!(
         program_name: "Resume Workshop",

@@ -4,8 +4,8 @@ RSpec.describe PayrollAccount::Argyle, type: :model do
   include ArgyleApiHelper
 
   let(:cbv_flow) { create(:cbv_flow) }
-  let(:payroll_account) { create(:payroll_account, :argyle, cbv_flow: cbv_flow) }
-  let(:synced_account) { create(:payroll_account, :argyle_fully_synced, cbv_flow: cbv_flow) }
+  let(:payroll_account) { create(:payroll_account, :argyle, flow: cbv_flow) }
+  let(:synced_account) { create(:payroll_account, :argyle_fully_synced, flow: cbv_flow) }
 
   it "has a synchronization_status of 'unknown' by default" do
     payroll_account = cbv_flow.payroll_accounts.create
@@ -30,7 +30,7 @@ RSpec.describe PayrollAccount::Argyle, type: :model do
   end
 
   describe "#necessary_jobs_succeeded?" do
-    let(:account) { create(:payroll_account, :argyle, cbv_flow: cbv_flow) }
+    let(:account) { create(:payroll_account, :argyle, flow: cbv_flow) }
 
     it "returns false when no webhooks have returned" do
       expect(payroll_account.necessary_jobs_succeeded?).to be false

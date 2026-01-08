@@ -47,10 +47,19 @@ en:
               invalid_format: Enter an email address in the correct format, like name@example.com
             language:
               invalid_format: Language must be either English (en) or Spanish (es).
+        job_training_activity:
+          attributes:
+            date:
+              outside_reporting_month: must be within %{month}
+        volunteering_activity:
+          attributes:
+            date:
+              outside_reporting_month: must be within %{month}
   activities:
     education:
       add: Add Education Activities
       created: Education activity was successfully created.
+      deleted: Education activity was successfully deleted.
       enrollment_status:
         enrolled: Enrolled
         not_enrolled: Not Enrolled
@@ -101,7 +110,9 @@ en:
       title: Education
     entry:
       consent: Check this box to agree to let us record your information and share it with %{agency_name}.
+      consent_required: Please check the consent box to continue.
       continue: Add Activities
+      reporting_month: 'Reporting month: %{month}'
       title: Welcome to the Activity Hub!
     error_no_identity: Please provide your name and date of birth
     errors:
@@ -111,15 +122,24 @@ en:
       count:
         one: "%{count} activity added"
         other: "%{count} activities added"
+      delete: Delete
+      delete_confirm: Are you sure you want to delete this activity?
       description: You can add as many activities as you need to report. Continue once you have added all your activities.
+      edit: Edit
+      reporting_month: 'Reporting month: %{month}'
+      save: Save changes
       title: Add activities to your Medicaid Community Engagement report
     job_training:
       add: Add Job Training Activity
       created: Job training activity was successfully created.
+      date: Date
+      deleted: Job training activity was successfully deleted.
+      edit_title: Edit Job Training Activity
       hours: Hours attended
       organization_address: Organization address
       program_name: Program name
       title: Job Training
+      updated: Job training activity was successfully updated.
     submit:
       confirm: Share my report
       consent_label_html: 'Check this box to confirm: <ul class="margin-y-2"><li>The information provided by you is true and complete to the best of your knowledge.</li><li>You agree to inform the agency of any income not reflected in this report or any discrepancies found in the information gathered with this tool.</li><li>You understand that providing accurate and complete information is your responsibility, and any false or omitted information may have legal consequences.</li></ul> By sending this report, you authorize its use for income verification by authorized agency personnel.'
@@ -140,6 +160,7 @@ en:
         organization_name: Organization
         program_name: Program name
         report_overview: Report overview
+        reporting_month: Reporting month
         submitted_at: Submitted on
         summary_heading: Activity summary
         title: Community Engagement activity report
@@ -160,9 +181,12 @@ en:
       add: Add Volunteering Activity
       created: Volunteering activity was successfully created.
       date: Date
+      deleted: Volunteering activity was successfully deleted.
+      edit_title: Edit Volunteering Activity
       hours: Hours
       organization_name: Organization name
       title: Volunteering
+      updated: Volunteering activity was successfully updated.
   aggregator_strings:
     deductions:
       401k: 401k

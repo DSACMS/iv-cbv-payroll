@@ -1,0 +1,9 @@
+<p class="usa-hint">
+  <%= t("activities.hub.reporting_month", month: @flow.reporting_month_display) %>
+</p>
+<%= uswds_form_with(model: volunteering_activity, url: volunteering_activity.persisted? ? activities_flow_volunteering_path(id: volunteering_activity.id) : activities_flow_volunteering_index_path) do |f| %>
+  <%= f.text_field :organization_name, label: t("activities.volunteering.organization_name") %>
+  <%= f.text_field :hours, type: :number, label: t("activities.volunteering.hours") %>
+  <%= f.date_picker :date, label: t("activities.volunteering.date") %>
+  <%= f.submit volunteering_activity.persisted? ? t("activities.hub.save") : t("activities.volunteering.add") %>
+<% end %>

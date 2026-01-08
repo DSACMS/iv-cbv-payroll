@@ -147,7 +147,7 @@ RSpec.describe Aggregators::AggregatorReports::AggregatorReport, type: :service 
     let(:report) { build(:pinwheel_report, :hydrated, :with_pinwheel_account) }
 
     before do
-      report.payroll_accounts.first.cbv_flow = cbv_flow
+      report.payroll_accounts.first.flow = cbv_flow
     end
 
     it 'income information' do

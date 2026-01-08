@@ -7,13 +7,16 @@
     <% end %>
   </div>
 
-  <h1 class="margin-top-0">
-    <%= t(".header") %>
-  </h1>
+  <h1 class="margin-top-0"><%= t(".header") %></h1>
 
   <p><%= t(".search_label") %></p>
 
-  <%= form_with url: cbv_flow_employer_search_path, method: :get, class: "usa-search usa-search--big margin-y-4", html: { role: "search" }, data: { turbo_frame: "employers", turbo_action: "advance" } do |f| %>
+  <%= form_with url: cbv_flow_employer_search_path,
+                method: :get,
+                class: "usa-search usa-search--big margin-y-4",
+                html: { role: "search" },
+                data: { turbo_frame: "employers", turbo_action: "advance" } do |f| %>
+
     <%= f.label :query, "Search for your employer", class: "usa-sr-only" %>
     <%= f.text_field :query, value: @query, class: "usa-input", type: "search" %>
     <button
@@ -24,17 +27,19 @@
         </span>
       <%= image_tag "@uswds/uswds/dist/img/usa-icons-bg/search--white.svg", class: "usa-search__submit-icon", alt: "Search" %>
     </button>
+
   <% end %>
 
   <%= render partial: "employer", locals: { employer: @employers } %>
 
-  <%= form_with url: next_path, method: :get, class: "display-none", data: { 'cbv-employer-search-target': "form" } do |f| %>
+  <%= form_with url: next_path,
+                method: :get,
+                class: "display-none",
+                data: { "cbv-employer-search-target": "form" } do |f| %>
     <input type="hidden" name="user[account_id]" data-cbv-employer-search-target="userAccountId">
   <% end %>
 
-  <h2><%= t(".popular_providers") %></h2>
-  <%= turbo_frame_tag "popular" do %>
-    <div class="grid-row maxw-mobile-lg margin-left-0 padding-left-0 margin-top-4">
+ <div class="grid-row maxw-mobile-lg margin-left-0 padding-left-0 margin-top-4">
       <%= link_to t(".payroll_providers"), cbv_flow_employer_search_path(type: :payroll),
         class: "grid-col usa-button margin-0 radius-right-0 #{@selected_tab != 'payroll' && 'usa-button--outline'}",
         data: { turbo_frame: "popular", turbo_action: "advance", turbo_prefetch: false } %>
@@ -42,6 +47,15 @@
         class: "grid-col usa-button margin-0 radius-left-0 #{@selected_tab != 'employer' && 'usa-button--outline'}",
         data: { turbo_frame: "popular", turbo_action: "advance", turbo_prefetch: false } %>
     </div>
+
+  <h2><%= t(".popular_providers") %></h2>
+
+  <div data-cbv-employer-search-target="tabAnnouncement"
+       aria-live="assertive"
+       role="status"
+       class="usa-sr-only"></div>
+
+  <%= turbo_frame_tag "popular" do %>
 
     <div class="grid-row grid-gap margin-top-2">
       <% (ProviderSearchService.new(@flow.cbv_applicant.client_agency_id).top_aggregator_options(@selected_tab)).each do |provider| %>
@@ -75,12 +89,20 @@
 
   <h2><%= t(".common_questions_header") %></h2>
 
-  <%= render AccordionComponent.new(id: "employer-search-lost-job", heading_level: 2, data_action: "click->common-questions#view", data_section_identifier: "what_if_i_lost_my_job", data_page: "employer_search") do |a| %>
+  <%= render AccordionComponent.new(id: "employer-search-lost-job",
+                                   heading_level: 2,
+                                   data_action: "click->common-questions#view",
+                                   data_section_identifier: "what_if_i_lost_my_job",
+                                   data_page: "employer_search") do |a| %>
     <% a.with_title { t(".lost_job_title") } %>
     <% a.with_accordion_item { t(".lost_job_body_html") } %>
   <% end %>
 
-  <%= render AccordionComponent.new(id: "employer-search-no-income", heading_level: 2, data_action: "click->common-questions#view", data_section_identifier: "what_if_i_have_no_income_to_report", data_page: "employer_search") do |a| %>
+  <%= render AccordionComponent.new(id: "employer-search-no-income",
+                                   heading_level: 2,
+                                   data_action: "click->common-questions#view",
+                                   data_section_identifier: "what_if_i_have_no_income_to_report",
+                                   data_page: "employer_search") do |a| %>
     <% a.with_title { t(".no_income_title") } %>
     <% a.with_accordion_item { t(".no_income_body", agency_acronym: agency_translation("shared.agency_acronym")) } %>
   <% end %>

@@ -1,10 +1,13 @@
 <% content_for :title, t("activities.hub.title") %>
 
 <h1>
-    <%= t("activities.hub.title") %>
+  <%= t("activities.hub.title") %>
 </h1>
+<p class="usa-intro">
+  <%= t("activities.hub.reporting_month", month: @flow.reporting_month_display) %>
+</p>
 <p>
-    <%= t("activities.hub.description") %>
+  <%= t("activities.hub.description") %>
 </p>
 
 <%= render(AccordionComponent.new(id: "activity-hub-identity-accordion", heading_level: 2)) do |a| %>
@@ -47,13 +50,17 @@
     </p>
 
     <%= render TableComponent.new do |t| %>
-        <%= @education_activities.each do |a| %>
+        <% @education_activities.each do |activity| %>
             <%= t.with_row do |r| %>
                 <%= r.with_data_cell do %>
-                    <%= a.school_name %>
+                    <%= activity.school_name %>
                 <% end %>
                 <%= r.with_data_cell do %>
-                    <%= a.display_status %>
+                    <%= activity.display_status %>
+                <% end %>
+                <%= r.with_data_cell do %>
+                    <%= link_to t("activities.hub.edit"), activities_flow_education_path(education_activity_id: activity.id), class: "usa-link" %>
+                    <%= button_to t("activities.hub.delete"), activities_flow_education_path(education_activity_id: activity.id), method: :delete, class: "usa-button usa-button--unstyled", form: { data: { turbo_confirm: t("activities.hub.delete_confirm") } } %>
                 <% end %>
             <% end %>
         <% end %>
@@ -73,7 +80,21 @@
   </p>
   <%= render TableComponent.new do |t| %>
     <% @volunteering_activities.each do |activity| %>
-      <%= t.with_row activity.organization_name, activity.hours, activity.date %>
+      <%= t.with_row do |r| %>
+        <%= r.with_data_cell do %>
+          <%= activity.organization_name %>
+        <% end %>
+        <%= r.with_data_cell do %>
+          <%= activity.hours %>
+        <% end %>
+        <%= r.with_data_cell do %>
+          <%= activity.date %>
+        <% end %>
+        <%= r.with_data_cell do %>
+          <%= link_to t("activities.hub.edit"), edit_activities_flow_volunteering_path(id: activity.id), class: "usa-link" %>
+          <%= button_to t("activities.hub.delete"), activities_flow_volunteering_path(id: activity.id), method: :delete, class: "usa-button usa-button--unstyled", form: { data: { turbo_confirm: t("activities.hub.delete_confirm") } } %>
+        <% end %>
+      <% end %>
     <% end %>
   <% end %>
   <%= button_to t("activities.volunteering.add"), new_activities_flow_volunteering_path, class: "btn btn-primary usa-button margin-y-5", method: :get %>
@@ -90,7 +111,24 @@
   </p>
   <%= render TableComponent.new do |t| %>
     <% @job_training_activities.each do |activity| %>
-      <%= t.with_row activity.program_name, activity.organization_address, activity.hours %>
+      <%= t.with_row do |r| %>
+        <%= r.with_data_cell do %>
+          <%= activity.program_name %>
+        <% end %>
+        <%= r.with_data_cell do %>
+          <%= activity.organization_address %>
+        <% end %>
+        <%= r.with_data_cell do %>
+          <%= activity.hours %>
+        <% end %>
+        <%= r.with_data_cell do %>
+          <%= activity.date %>
+        <% end %>
+        <%= r.with_data_cell do %>
+          <%= link_to t("activities.hub.edit"), edit_activities_flow_job_training_path(id: activity.id), class: "usa-link" %>
+          <%= button_to t("activities.hub.delete"), activities_flow_job_training_path(id: activity.id), method: :delete, class: "usa-button usa-button--unstyled", form: { data: { turbo_confirm: t("activities.hub.delete_confirm") } } %>
+        <% end %>
+      <% end %>
     <% end %>
   <% end %>
   <%= button_to t("activities.job_training.add"), new_activities_flow_job_training_path, class: "btn btn-primary usa-button margin-y-5", method: :get %>

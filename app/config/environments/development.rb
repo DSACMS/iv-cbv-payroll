@@ -20,6 +20,8 @@ Rails.application.configure do
   # Enable server timing
   config.server_timing = true
 
+  # Allow ngrok domains for development tunneling
+  config.hosts << ".ngrok-free.dev"
   config.hosts << ".ngrok-free.app"
   config.hosts << ".ngrok.app"
 
