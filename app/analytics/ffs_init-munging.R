@@ -91,11 +91,6 @@ df_import <- df_import |>
     employer_name = properties$employment_employer_name
   )
 
-#how many were invited?
-
-df_import |>
-  filter()
-
 # SUBSET ------------------------------------------------------------------
 
 #fill missing client_agency_ids and then filter out those that are not LA
