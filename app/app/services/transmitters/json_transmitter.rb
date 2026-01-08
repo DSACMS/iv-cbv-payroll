@@ -3,7 +3,7 @@ class Transmitters::JsonTransmitter
   include Transmitter
 
   def deliver
-    api_url = URI(@current_agency.transmission_method_configuration["url"])
+    api_url = URI(@current_agency.transmission_method_configuration["json_api_url"])
     req = Net::HTTP::Post.new(api_url)
     req.content_type = "application/json"
     req.body = payload

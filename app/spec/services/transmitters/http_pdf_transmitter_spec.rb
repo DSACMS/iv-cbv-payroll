@@ -51,7 +51,7 @@ RSpec.describe Transmitters::HttpPdfTransmitter do
     it "sends #pdf_output as a POST request" do
       stub = stub_request(
           :post,
-          transmission_method_configuration["url"]
+          transmission_method_configuration["json_api_url"]
         ).with(
           body: pdf_output.content,
           headers: {

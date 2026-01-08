@@ -46,7 +46,7 @@
     environment: <%= ENV["LA_LDH_ARGYLE_ENVIRONMENT"] %>
   transmission_method: json
   transmission_method_configuration:
-    url: <%= ENV["LA_LDH_INCOME_REPORT_URL"] %>
+    json_api_url: <%= ENV["LA_LDH_INCOME_REPORT_URL"] %>
     custom_headers:
       X-Gateway-APIKey: <%= ENV["LA_LDH_INCOME_REPORT_APIKEY"] %>
       AccountCode: <%= ENV["LA_LDH_INCOME_REPORT_ACCOUNTCODE"] %>

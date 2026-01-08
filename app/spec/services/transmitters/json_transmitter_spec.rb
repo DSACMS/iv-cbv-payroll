@@ -13,7 +13,7 @@ RSpec.describe Transmitters::JsonTransmitter do
     )
   end
   let(:transmission_method_configuration) { {
-    "url" => "http://fake-state.api.gov/api/v1/income-report" # Should be replaced with real agency sandbox url!
+    "json_api_url" => "http://fake-state.api.gov/api/v1/income-report" # Should be replaced with real agency sandbox url!
   } }
   let(:mock_client_agency) { instance_double(ClientAgencyConfig::ClientAgency) }
   let(:pinwheel_report) { build(:pinwheel_report, :with_pinwheel_account) }
@@ -95,7 +95,7 @@ RSpec.describe Transmitters::JsonTransmitter do
   context 'custom headers' do
     let(:transmission_method_configuration) do
       {
-        "url" => "http://fake-state.api.gov/api/v1/income-report",
+        "json_api_url" => "http://fake-state.api.gov/api/v1/income-report",
         "custom_headers" => {
           "X-Client-ID" => "test-client-id",
           "X-Request-ID" => "test-request-id"
