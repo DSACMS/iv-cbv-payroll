@@ -28,6 +28,8 @@ class CaseWorkerTransmitterJob < ApplicationJob
       Transmitters::JsonTransmitter
     when Transmitters::HttpPdfTransmitter::TRANSMISSION_METHOD
       Transmitters::HttpPdfTransmitter
+    when Transmitters::JsonAndPdfTransmitter::TRANSMISSION_METHOD
+      Transmitters::JsonAndPdfTransmitter
     else
       raise "Unsupported transmission method: #{@current_agency.transmission_method}"
     end

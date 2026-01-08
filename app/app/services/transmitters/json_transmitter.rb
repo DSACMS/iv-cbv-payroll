@@ -25,9 +25,8 @@ class Transmitters::JsonTransmitter
     when Net::HTTPSuccess, Net::HTTPRedirection
       "ok"
     else
-      Rails.logger.error "Unexpected response: #{res.code} #{res.message}"
-      Rails.logger.error "  Body: #{res.body}"
-      raise "Unexpected response from agency: #{res.code} #{res.message}"
+      Rails.logger.error "Unexpected response from agency: code=#{res.code} message=#{res.message} body=#{res.body}"
+      raise JsonTransmitterError.new("Unexpected response from agency: code=#{res.code} message=#{res.message} body=#{res.body}")
     end
   end
 
@@ -61,4 +60,6 @@ class Transmitters::JsonTransmitter
       end
     end
   end
+
+  class JsonTransmitterError < StandardError; end
 end

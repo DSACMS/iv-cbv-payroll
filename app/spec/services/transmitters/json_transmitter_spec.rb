@@ -46,10 +46,11 @@ RSpec.describe Transmitters::JsonTransmitter do
   context 'agency responds with 500' do
     it 'raises an HTTP error' do
       VCR.use_cassette("json_transmitter_500") do
-        expect { described_class.new(cbv_flow, mock_client_agency, aggregator_report).deliver }.to raise_error("Unexpected response from agency: 500 Internal Server Error")
+        expect { described_class.new(cbv_flow, mock_client_agency, aggregator_report).deliver }
+          .to raise_error(Transmitters::JsonTransmitter::JsonTransmitterError, /Unexpected response from agency/)
       end
 
-      expect(Rails.logger).to have_received(:error).with(/Unexpected response: 500/)
+      expect(Rails.logger).to have_received(:error).with(/Unexpected response from agency: code=500 message=Internal Server Error body=Internal Server Error/)
     end
   end
 
@@ -57,11 +58,10 @@ RSpec.describe Transmitters::JsonTransmitter do
     it 'raises an HTTP error' do
       VCR.use_cassette("json_transmitter_418") do
         expect { described_class.new(cbv_flow, mock_client_agency, aggregator_report).deliver }
-          .to raise_error("Unexpected response from agency: 418 I'm a teapot")
+          .to raise_error(Transmitters::JsonTransmitter::JsonTransmitterError, /Unexpected response from agency/)
       end
 
-      expect(Rails.logger).to have_received(:error).with(/Unexpected response: 418/)
-      expect(Rails.logger).to have_received(:error).with(/Here is my handle, here is my spout./)
+      expect(Rails.logger).to have_received(:error).with(/Unexpected response from agency: code=418 message=I'm a teapot body=Here is my handle, here is my spout./)
     end
   end
 

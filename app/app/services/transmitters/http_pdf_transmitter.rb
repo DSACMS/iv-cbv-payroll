@@ -1,12 +1,11 @@
 class Transmitters::HttpPdfTransmitter < Transmitters::BasePdfTransmitter
-  TRANSMISSION_METHOD = "http-pdf"
+  TRANSMISSION_METHOD = "http_pdf"
 
   def destination_url!
     url = current_agency.transmission_method_configuration["url"]
 
     unless url
-      raise "Invalid Transmission Configuration! "\
-            "Got #{current_agency.transmission_method_configuration}"
+      raise "Invalid Transmission Configuration! Got #{current_agency.transmission_method_configuration}"
     end
 
     URI(url)
@@ -33,9 +32,10 @@ class Transmitters::HttpPdfTransmitter < Transmitters::BasePdfTransmitter
     end
 
     unless res.is_a?(Net::HTTPSuccess)
-      raise "PDF delivery failed! "\
-            "Received unexpected response \"#{res.message}\", code #{res.status_code}"
-      Rails.logger.error "Unexpected response body: #{res.body}"
+      Rails.logger.error "Unexpected response from agency: code=#{res.code} message=#{res.message} body=#{res.body}"
+      raise HttpPdfTransmitterError.new("Unexpected response from agency: code=#{res.code} message=#{res.message} body=#{res.body}")
     end
   end
+
+  class HttpPdfTransmitterError < StandardError; end
 end
