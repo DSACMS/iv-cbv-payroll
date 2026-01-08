@@ -71,8 +71,10 @@ class Activities::EducationController < Activities::BaseController
         sync_indicator_update("student_info", :succeeded)
       )
 
+      # Sends success message to the loading page, with redirect
       sse.write(
-        turbo_stream.action(:redirect, activities_flow_education_path(params: { education_activity_id: activity.id }))
+        { status: "succeeded", message: activities_flow_education_path(params: { education_activity_id: activity.id }) },
+        event: "education_result"
       )
 
     rescue Aggregators::Sdk::NscService::ApiError => e

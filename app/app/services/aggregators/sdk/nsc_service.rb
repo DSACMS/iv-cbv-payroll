@@ -58,10 +58,6 @@ module Aggregators::Sdk
         date_of_birth: identity.date_of_birth
       )
 
-      # Enforce minimum display time for better UX
-      elapsed = Time.current - start_time
-      sleep(MIN_DISPLAY_TIME - elapsed) if elapsed < MIN_DISPLAY_TIME
-
       create_education_activity(activity_flow, response)
     end
 
