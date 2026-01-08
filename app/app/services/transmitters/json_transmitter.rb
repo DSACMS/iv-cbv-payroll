@@ -1,8 +1,9 @@
 class Transmitters::JsonTransmitter
+  TRANSMISSION_METHOD = "json"
   include Transmitter
 
   def deliver
-    api_url = URI(@current_agency.transmission_method_configuration["url"])
+    api_url = URI(@current_agency.transmission_method_configuration["json_api_url"])
     req = Net::HTTP::Post.new(api_url)
     req.content_type = "application/json"
     req.body = payload
@@ -24,9 +25,8 @@ class Transmitters::JsonTransmitter
     when Net::HTTPSuccess, Net::HTTPRedirection
       "ok"
     else
-      Rails.logger.error "Unexpected response: #{res.code} #{res.message}"
-      Rails.logger.error "  Body: #{res.body}"
-      raise "Unexpected response from agency: #{res.code} #{res.message}"
+      Rails.logger.error "Unexpected response from agency: code=#{res.code} message=#{res.message} body=#{res.body}"
+      raise JsonTransmitterError.new("Unexpected response from agency: code=#{res.code} message=#{res.message} body=#{res.body}")
     end
   end
 
@@ -60,4 +60,6 @@ class Transmitters::JsonTransmitter
       end
     end
   end
+
+  class JsonTransmitterError < StandardError; end
 end

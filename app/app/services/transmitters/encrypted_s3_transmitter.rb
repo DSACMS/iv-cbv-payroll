@@ -1,4 +1,5 @@
 class Transmitters::EncryptedS3Transmitter
+  TRANSMISSION_METHOD = "encrypted_s3"
   include Transmitter
   include GpgEncryptable
   include TarFileCreatable
