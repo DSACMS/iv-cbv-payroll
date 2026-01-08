@@ -10,7 +10,7 @@ format:
     toc: true
     number-sections: true
     css: dsac-theme.css
-    embed-resources: true
+    # embed-resources: true
   # docx:
   #   toc: true
   #   number-sections: true
@@ -124,7 +124,7 @@ clean_events <- function(df){
 
 ## How many users are starting but not completing the process?
 
-To start off with, we need to understand how many applicants are starting out this process. The first pilot in May did not have the same means of determining unique applicants, so the table below only reports the total events for May. August saw the largest number of applicants start the process(i.e. viewed the agreement), but November had the highest completion rate. 
+To start off with, we need to understand how many applicants are starting out this process. The table below looks at both applicants and events. The events are the total number of times a page was accessed and the applicants are the count of distinct applicant. The first pilot in May did not have the same means of determining unique applicants, so the table below only reports the total events for the May pilot. November saw an increase in the number of applicants start the process (i.e. viewed the agreement), but when comparing the completion rate by applicants and events, the rate has remained relatively constant throughout. 
 
 ```{r}
 #| label: retention_tbl
@@ -266,15 +266,43 @@ df_mult_types <- df_multi |>
     )
   ) 
   
-  df_multi |> 
-    left_join(df_mult_types |> select(distinct_id, behavior)) |> 
-    write_csv(here("app/analytics/multi_sub.csv"))
+  # df_multi |> 
+  #   left_join(df_mult_types |> select(distinct_id, behavior)) |> 
+  #   write_csv(here("app/analytics/multi_sub.csv"))
 
   df_mult_types <- df_mult_types |> 
     count(behavior)
 
 ```
-We should take a closer look at the repeated submissions. Some of these could be resubmissions of the same information (i.e. the applicant didn't know if the submission went through or forgot they already submitted it) or could be going back to enter in a different employeer at a differnt time. If we look at the `r sum(df_mult_types$n)` applicants with repeated submissions in the November pilot, `r df_mult_types[df_mult_types$behavior == 'Single item repeated',]$n` submitted for the same employer each time, `r df_mult_types[df_mult_types$behavior == 'Multiple items with repeats',]$n` submitted different employers (some with repeats), and only `r df_mult_types[df_mult_types$behavior == 'All unique items',]$n` had all unique employer submissions. 
+We should take a closer look at the repeated submissions. Some of these could be resubmissions of the same information (i.e. the applicant didn't know if the submission went through or forgot they already submitted it) or could be going back to enter in a different employeer at a differnt time. If we look at the `r sum(df_mult_types$n)` applicants with repeated submissions in the November pilot, `r df_mult_types[df_mult_types$behavior == 'Single item repeated',]$n` submitted for the same employer each time, `r df_mult_types[df_mult_types$behavior == 'Multiple items with repeats',]$n` submitted different employers (some with repeats), and only `r df_mult_types[df_mult_types$behavior == 'All unique items',]$n` had all unique employer submissions. The table below provides some examples of how the different behaviors might look like in the data. 
+
+```{r}
+#| label: multi_examples
+#| output: true
+
+tribble(
+  ~Applicant, ~Session,               ~Employer,                     ~Behavior,
+         "A",       "001",                "Z-Mart",        "Single item repeated",
+         "A",       "002",                "Z-Mart",        "Single item repeated",
+         "B",       "001",              "Acme Inc",        "Single item repeated",
+         "B",       "002",              "Acme Inc",        "Single item repeated",
+         "B",       "003",              "Acme Inc",        "Single item repeated",
+         "B",       "004",              "Acme Inc",        "Single item repeated",
+         "C",       "001",            "Work Depot", "Multiple items with repeats",
+         "C",       "002",       "Blue's Pharmacy", "Multiple items with repeats",
+         "C",       "003",            "Work Depot", "Multiple items with repeats",
+         "C",       "003",       "Blue's Pharmacy", "Multiple items with repeats",
+         "D",       "001",      "Total Hair Works", "Multiple items with repeats",
+         "D",       "002",        "Nails and More", "Multiple items with repeats",
+         "D",       "002",      "Total Hair Works", "Multiple items with repeats",
+         "E",       "001",           "Movie Store",            "All unique items",
+         "E",       "002", "Paint Supplies & More",            "All unique items"
+) |> 
+  gt(groupname_col = "Behavior") |> 
+  adjust_row_padding() |> 
+  si_gt_base(header_fill = dsac_color['light_teal'])
+
+```
 
 ### Is there a drop in completion as the pilot period draws on?
 
@@ -387,7 +415,7 @@ df_device_origin_status <- df_mp |>
     initiation = case_when(event %in% c("ApplicantClickedCBVInvitationLink", "ApplicantClickedGenericLink") ~ str_extract(event, "CBVInvitation|ClickedGenericLink")),
     initiation = initiation |> 
       str_replace_all("(?<!^)([A-Z])", " \\1") |> 
-      str_replace('C B V', "CBV")
+      str_remove('C B V ')
   ) |> 
   group_by(distinct_id, cbv_flow_id) |> 
   fill(initiation, .direction = "updown") |> 
@@ -515,13 +543,14 @@ df_origin_status_viz |>
   )
 ```
 
-Lastly, we can take a look at how the applicant started their session. In the November pilot, most sessions were started via a tokenized, CBV invitation but these sessions were half as successful in completing the process. This is the opposite of what occured in the August pilot.
+Lastly, we can take a look at how the applicant started their session. In the November pilot, tokenized invitations where shared for the first time (as opposed to only generic links). More applicants started the process with a invitation link, but the these sessions were less than half as successful in completing the process as the generic link. This is the opposite of what occured in the August pilot.
 
 ```{r}
 #| label: tokenized_status
 #| output: true
 
 df_link_status_viz <- df_device_origin_status |>
+  filter(pilot != c("May 2025". "Aug 2025")) |> 
   group_by(pilot, initiation) |> 
   summarise(
     started = n(),
@@ -549,7 +578,7 @@ df_link_status_viz |>
   si_style_xgrid() +
   labs(
     x = NULL, y = NULL,
-   title = "GENERIC LINKS SAW A LARGER SUCCESS RATE LAST TWO PILOTS"|> str_wrap(70),
+   title = "GENERIC LINK SESSIONS SAW A LARGER SUCCESS RATE IN NOV"|> str_wrap(70),
     subtitle = "number of distinct flows by initiation type",
     caption = default_caption
   ) +
@@ -1418,17 +1447,62 @@ df_search |>
 
 ## Are the popular app employers the right ones (i.e. do there appear to be employeers searched more frequently than any that appear in the popular links)
 
-```{r}
-# df_employers <- df_mp |> 
-#   filter(event== "ApplicantFinishedSync") |> 
-#   mutate(
-#         employer = map_chr(
-#           properties,
-#           ~ pluck(.x, "employment_employer_name", .default = NA_character_)
-#           )
-#         )
+From the table in the last section, we can see that the number of searches and popular employer picks remains relatively the same each pilot. Overall, for every 1 popular employer picked, there are `r label_number(.1)(sum(df_search$searches) / sum(df_search$picked))` searches. If we look at the top 10 employeers. Wal-Mart has been the top employer selected each pilot period and has been significantly larger than the next few employers combined. It is important to note that many employers are not being captured in this process and when aggregated, rank as the second most "chosen" employer. Amazon, Waffle House, and doordash have consistenly been ranked in the top 10 each pilot. Given the small numbers at this stage, it likely don't make sense to change the popular employer selector buttons. 
 
-# df_employers |> 
-#   filter(!is.na(employer)) |> 
-#   count(employer, sort = TRUE)
+
+```{r}
+#| label: pop_employers
+#| output: true
+
+df_top <- df_mp |> 
+  filter(event == "ApplicantFinishedSync") |>
+  mutate(employer_name = ifelse(is.na(employer_name), "[not captured]", employer_name)) |> 
+  count(pilot, employer_name, sort = TRUE) |> 
+  group_by(pilot) |> 
+  mutate(
+    share = n / sum(n),
+    rank = rank(-n, ties.method = "random")
+    ) |> 
+  slice_head(n = 50) |> 
+  ungroup() 
+
+df_top <- df_top |> 
+  left_join(
+    df_top |> 
+  filter(rank <= 10) |> 
+  select(pilot, employer_name) |> 
+  group_by(employer_name) |> 
+  mutate(empl_lab = case_when(row_number() == 1 ~ employer_name)) |> 
+  ungroup()
+  )
+
+
+df_top |>
+  ggplot(aes(pilot, rank, color = employer_name)) +
+  geom_point(size = 4.5)  +
+  geom_bump(size = 2, smooth = 8) +
+  geom_text(
+    aes(label = empl_lab), vjust = -1,
+    na.rm = TRUE, family = "Source Sans Pro", color = matterhorn, size = 9/.pt, 
+    ) +
+    geom_text(
+    aes(label = n), vjust = 2,
+    na.rm = TRUE, family = "Source Sans Pro", color = matterhorn, size = 9/.pt, 
+    ) +
+  scale_y_reverse(expand = c(.05, .05)) +
+  coord_cartesian(ylim=c(0, 10)) +
+  si_style_nolines() +
+  labs(
+    x = NULL, y = NULL,
+    title = "TOP EMPLOYERS SELECTED BOUNCE AROUND",
+    subtitle = "top 10 employers submitted each pay period (number of searches below)",
+    caption = default_caption
+    ) +
+  theme(
+    legend.position = "none",
+    axis.text.y = element_blank())
+
 ```
+
+## What share of applicants are return users? (tokenized users)
+
