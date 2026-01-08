@@ -47,9 +47,18 @@ en:
               invalid_format: Enter an email address in the correct format, like name@example.com
             language:
               invalid_format: Language must be either English (en) or Spanish (es).
+        job_training_activity:
+          attributes:
+            date:
+              outside_reporting_month: must be within %{month}
+        volunteering_activity:
+          attributes:
+            date:
+              outside_reporting_month: must be within %{month}
   activities:
     education:
       add: Add Education Activities
+      created: Education activity was successfully added.
       deleted: Education activity was successfully deleted.
       enrollment_status:
         full_time: Full Time
@@ -85,7 +94,9 @@ en:
       title: Education
     entry:
       consent: Check this box to agree to let us record your information and share it with %{agency_name}.
+      consent_required: Please check the consent box to continue.
       continue: Add Activities
+      reporting_month: 'Reporting month: %{month}'
       title: Welcome to the Activity Hub!
     error_no_identity: Please provide your name and date of birth
     errors:
@@ -99,11 +110,13 @@ en:
       delete_confirm: Are you sure you want to delete this activity?
       description: You can add as many activities as you need to report. Continue once you have added all your activities.
       edit: Edit
+      reporting_month: 'Reporting month: %{month}'
       save: Save changes
       title: Add activities to your Medicaid Community Engagement report
     job_training:
       add: Add Job Training Activity
       created: Job training activity was successfully created.
+      date: Date
       deleted: Job training activity was successfully deleted.
       edit_title: Edit Job Training Activity
       hours: Hours attended
@@ -131,6 +144,7 @@ en:
         organization_name: Organization
         program_name: Program name
         report_overview: Report overview
+        reporting_month: Reporting month
         submitted_at: Submitted on
         summary_heading: Activity summary
         title: Community Engagement activity report

@@ -1,6 +1,8 @@
 require "rails_helper"
 
 RSpec.describe Activities::VolunteeringController, type: :controller do
+  include_context "activity_hub"
+
   render_views
 
   let(:activity_flow) { create(:activity_flow) }
@@ -24,7 +26,7 @@ RSpec.describe Activities::VolunteeringController, type: :controller do
         volunteering_activity: {
           organization_name: "Local Food Bank",
           hours: 5,
-          date: "12/15/2024"
+          date: Date.current
         }
       }
     end

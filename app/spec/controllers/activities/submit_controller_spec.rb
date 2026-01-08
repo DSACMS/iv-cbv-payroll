@@ -1,6 +1,8 @@
 require "rails_helper"
 
 RSpec.describe Activities::SubmitController, type: :controller do
+  include_context "activity_hub"
+
   render_views
 
   let(:activity_flow) { create(:activity_flow) }
@@ -24,7 +26,7 @@ RSpec.describe Activities::SubmitController, type: :controller do
 
     it "renders a PDF report with activity details" do
       activity_flow.update!(completed_at: frozen_time)
-      activity_flow.volunteering_activities.create!(organization_name: "Food Pantry", hours: 5, date: Date.new(2025, 11, 30))
+      activity_flow.volunteering_activities.create!(organization_name: "Food Pantry", hours: 5, date: Date.new(2025, 12, 15))
       activity_flow.job_training_activities.create!(program_name: "Career Prep", organization_address: "123 Main St", hours: 8)
 
       get :show, format: :pdf

@@ -13,7 +13,8 @@ class Activities::EntriesController < Activities::BaseController
     if params["agreement"] == "1"
       redirect_to next_path
     else
-      redirect_to(entry_path, flash: { alert: t("cbv.entries.create.error") })
+      flash.now[:alert] = t("activities.entry.consent_required")
+      render :show, status: :unprocessable_content
     end
   end
 end
