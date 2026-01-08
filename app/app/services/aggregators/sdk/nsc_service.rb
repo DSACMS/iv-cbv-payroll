@@ -23,6 +23,7 @@ module Aggregators::Sdk
 
     ENROLLMENT_ENDPOINT = "/insights/v3/a2/submit-request"
     TOKEN_CACHE_KEY_PREFIX = "nsc_service_token_"
+    TOKEN_EXPIRY_INTERVAL = 1.hour
     TOKEN_EXPIRY_BUFFER = 5.minutes
     MIN_DISPLAY_TIME = 2.seconds
     MAX_TIMEOUT = 10.seconds
@@ -106,7 +107,7 @@ module Aggregators::Sdk
 
     def access_token
       cache_key = "#{TOKEN_CACHE_KEY_PREFIX}_#{environment_name}"
-      token_ttl = 1.hour - TOKEN_EXPIRY_BUFFER
+      token_ttl = TOKEN_EXPIRY_INTERVAL - TOKEN_EXPIRY_BUFFER
 
       Rails.cache.fetch(cache_key, expires_in: token_ttl) do
         fetch_oauth_token
