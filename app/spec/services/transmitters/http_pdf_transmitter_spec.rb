@@ -3,7 +3,7 @@ require 'rails_helper'
 RSpec.describe Transmitters::HttpPdfTransmitter do
   let(:transmission_method_configuration) do
     {
-      "url" => "http://fake-state.api.gov/api/v1/income-report-pdf"
+      "pdf_api_url" => "http://fake-state.api.gov/api/v1/income-report-pdf"
     }
   end
 
@@ -51,7 +51,7 @@ RSpec.describe Transmitters::HttpPdfTransmitter do
     it "sends #pdf_output as a POST request" do
       stub = stub_request(
           :post,
-          transmission_method_configuration["json_api_url"]
+          transmission_method_configuration["pdf_api_url"]
         ).with(
           body: pdf_output.content,
           headers: {
