@@ -1,7 +1,7 @@
 class Cbv::BaseController < FlowController
   before_action :set_cbv_origin, :set_flow, :ensure_cbv_flow_not_yet_complete, :prevent_back_after_complete, :capture_page_view
   before_action :check_if_pilot_ended
-  around_action :append_log_tags
+  around_action :append_log_tags, if: -> { ENV.fetch("STRUCTURED_LOGGING_ENABLED", "false") == "true" }
   helper_method :agency_url, :next_path, :get_comment_by_account_id
 
   private

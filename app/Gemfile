@@ -57,7 +57,7 @@ gem "device_detector"
 
 gem "mixpanel-ruby"
 gem "newrelic_rpm"
-gem "rails_semantic_logger"
+gem "rails_semantic_logger", require: false
 
 gem "solid_queue", ">= 0.3.0"
 # dashboard to manage solid queue

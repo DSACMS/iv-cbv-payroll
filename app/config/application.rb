@@ -71,6 +71,8 @@ module IvCbvPayroll
     # Add structured logging via 'rails_semantic_logger' gem
     if ENV["RAILS_LOG_TO_STDOUT"].present? && ENV.fetch("STRUCTURED_LOGGING_ENABLED", "false") == "true"
       # TODO[tom]: Move this to production.rb
+      require "rails_semantic_logger"
+
       $stdout.sync = true
       config.rails_semantic_logger.add_file_appender = false
       config.semantic_logger.add_appender(io: $stdout, formatter: :logfmt)

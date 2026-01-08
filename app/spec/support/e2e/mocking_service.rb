@@ -30,12 +30,11 @@ module E2e
     def initialize(server_url:, record_mode: ENV["E2E_RECORD_MODE"].present?)
       @server_url = server_url
       @record_mode = record_mode
-
-      if @record_mode
-        @logger = ActiveSupport::TaggedLogging.new(Logger.new(STDOUT)).tagged("E2E")
-      else
-        @logger = Rails.logger.tagged("E2E")
-      end
+      @logger = if ENV.fetch("STRUCTURED_LOGGING_ENABLED", "false") == "true"
+                  SemanticLogger["E2E"]
+                else
+                  Rails.logger.tagged("E2E")
+                end
     end
 
     def use_recording(cassette_name, &block)
@@ -149,13 +148,13 @@ module E2e
 
     def clean_up_recording_mode
       if @pinwheel_subscription_id
-        @logger.tagged("PINWHEEL").info "Deleting webhook subscription id: #{@pinwheel_subscription_id}"
+        @logger.tagged("PINWHEEL") { @logger.info "Deleting webhook subscription id: #{@pinwheel_subscription_id}" }
         Aggregators::Sdk::PinwheelService.new("sandbox").delete_webhook_subscription(@pinwheel_subscription_id)
       end
 
       if @argyle_subscriptions
         @argyle_subscriptions.each do |id|
-          @logger.tagged("ARGYLE").info "Deleting webhook subscription id: #{id}"
+          @logger.tagged("ARGYLE") { @logger.info "Deleting webhook subscription id: #{id}" }
           Aggregators::Sdk::ArgyleService.new("sandbox").delete_webhook_subscription(id)
         end
       end
