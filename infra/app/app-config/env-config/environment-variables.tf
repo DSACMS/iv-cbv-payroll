@@ -15,6 +15,7 @@ locals {
   }
 
   ssm_environment_variables = {
+    ACTIVITY_HUB_ENABLED = "/service/${var.app_name}-${var.environment}/activity-hub-enabled"
     LA_LDH_PILOT_ENABLED = "/service/${var.app_name}-${var.environment}/la-ldh-pilot-enabled"
     SITE_ALERT_ENABLED   = "/service/${var.app_name}-${var.environment}/site-alert-enabled"
     SITE_ALERT_TITLE_EN  = "/service/${var.app_name}-${var.environment}/site-alert-title-en"

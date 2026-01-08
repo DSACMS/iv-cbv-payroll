@@ -2,6 +2,7 @@ require "rails_helper"
 
 RSpec.describe 'e2e Activity Hub flow test', type: :feature, js: true do
   include E2e::TestHelpers
+  include_context "activity_hub"
 
   it "completes the generic flow for all activities" do
     visit URI(root_url).request_uri
@@ -56,11 +57,12 @@ RSpec.describe 'e2e Activity Hub flow test', type: :feature, js: true do
     expect(page).to have_content I18n.t("activities.success.completed_at")
   end
 
-  it "is redirects to the normal flow in non-development environments" do
-    allow(Rails).to receive(:env).and_return(ActiveSupport::StringInquirer.new("production"))
-    visit activities_flow_root_path
-    expect(page).to have_content(I18n.t("pages.home.header"))
-    visit new_activities_flow_volunteering_path
-    expect(page).to have_content(I18n.t("pages.home.header"))
+  it "blocks activity hub access when not enabled" do
+    stub_environment_variable("ACTIVITY_HUB_ENABLED", nil) do
+      visit activities_flow_root_path
+      expect(page).to have_content(I18n.t("pages.home.header"))
+      visit new_activities_flow_volunteering_path
+      expect(page).to have_content(I18n.t("pages.home.header"))
+    end
   end
 end

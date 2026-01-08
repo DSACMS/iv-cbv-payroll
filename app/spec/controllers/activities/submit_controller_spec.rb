@@ -1,6 +1,8 @@
 require "rails_helper"
 
 RSpec.describe Activities::SubmitController, type: :controller do
+  include_context "activity_hub"
+
   render_views
 
   let(:activity_flow) { create(:activity_flow) }
