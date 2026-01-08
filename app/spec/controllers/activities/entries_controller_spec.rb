@@ -86,17 +86,17 @@ RSpec.describe Activities::EntriesController do
     end
 
     it "redirects to home when ACTIVITY_HUB_ENABLED is not set" do
-      allow(ENV).to receive(:[]).with("ACTIVITY_HUB_ENABLED").and_return(nil)
-
-      get :show, params: { client_agency_id: "sandbox" }
+      stub_environment_variable("ACTIVITY_HUB_ENABLED", nil) do
+        get :show, params: { client_agency_id: "sandbox" }
+      end
 
       expect(response).to redirect_to(root_url)
     end
 
     it "redirects to home when ACTIVITY_HUB_ENABLED is false" do
-      allow(ENV).to receive(:[]).with("ACTIVITY_HUB_ENABLED").and_return("false")
-
-      get :show, params: { client_agency_id: "sandbox" }
+      stub_environment_variable("ACTIVITY_HUB_ENABLED", "false") do
+        get :show, params: { client_agency_id: "sandbox" }
+      end
 
       expect(response).to redirect_to(root_url)
     end

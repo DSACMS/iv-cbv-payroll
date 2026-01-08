@@ -58,11 +58,11 @@ RSpec.describe 'e2e Activity Hub flow test', type: :feature, js: true do
   end
 
   it "blocks activity hub access when not enabled" do
-    allow(ENV).to receive(:[]).with("ACTIVITY_HUB_ENABLED").and_return(nil)
-
-    visit activities_flow_root_path
-    expect(page).to have_content(I18n.t("pages.home.header"))
-    visit new_activities_flow_volunteering_path
-    expect(page).to have_content(I18n.t("pages.home.header"))
+    stub_environment_variable("ACTIVITY_HUB_ENABLED", nil) do
+      visit activities_flow_root_path
+      expect(page).to have_content(I18n.t("pages.home.header"))
+      visit new_activities_flow_volunteering_path
+      expect(page).to have_content(I18n.t("pages.home.header"))
+    end
   end
 end
