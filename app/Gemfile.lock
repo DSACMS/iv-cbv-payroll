@@ -436,6 +436,10 @@ GEM
     rails-i18n (8.1.0)
       i18n (>= 0.7, < 2)
       railties (>= 8.0.0, < 9)
+    rails_semantic_logger (4.19.0)
+      rack
+      railties (>= 5.1)
+      semantic_logger (~> 4.16)
     railties (8.1.1)
       actionpack (= 8.1.1)
       activesupport (= 8.1.1)
@@ -522,6 +526,8 @@ GEM
       rexml (~> 3.2, >= 3.2.5)
       rubyzip (>= 1.2.2, < 4.0)
       websocket (~> 1.0)
+    semantic_logger (4.17.0)
+      concurrent-ruby (~> 1.0)
     sinatra (4.2.1)
       logger (>= 1.6.0)
       mustermann (~> 3.0)
@@ -663,6 +669,7 @@ DEPENDENCIES
   rails (~> 8.1.1)
   rails-controller-testing
   rails-erd (~> 1.7)
+  rails_semantic_logger
   redis (~> 4.0)
   rexml (~> 3.4.2)
   rspec-rails (~> 8.0)

@@ -21,7 +21,8 @@ module E2e
     def initialize(logger: Rails.logger)
       @thread = nil
       @tunnel_url = nil
-      @logger = logger.tagged("NGROK")
+
+      logger.tagged("NGROK") { |l| @logger = l }
     end
 
     def start_tunnel(destination_port)

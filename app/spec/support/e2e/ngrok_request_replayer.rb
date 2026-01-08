@@ -17,7 +17,11 @@ module E2e
     def initialize(replacements: {}, ngrok_url: "http://localhost:4040", logger: Rails.logger)
       @replacements = replacements
       @url = URI(ngrok_url)
-      @logger = logger.tagged("WEBHOOKS")
+      @logger = if ENV.fetch("STRUCTURED_LOGGING_ENABLED", "false") == "true"
+                  SemanticLogger["WEBHOOKS"]
+                else
+                  Rails.logger.tagged("WEBHOOKS")
+                end
     end
 
     # Pull a list of webhooks from Ngrok's local API, and return an object
