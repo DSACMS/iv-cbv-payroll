@@ -1,7 +1,7 @@
 class Activities::ActivitiesController < Activities::BaseController
   def index
     unless @flow.identity
-      @flow.identity = IdentityService.new(request).get_identity
+      @flow.identity = IdentityService.new(request, @flow.cbv_applicant).get_identity
       @flow.save
     end
 

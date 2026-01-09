@@ -8,7 +8,7 @@ FactoryBot.define do
                                 education_activities_count: 0) }
 
     status do
-      [ :full_time, :part_time, :quarter_time ].sample.to_s
+      [ :unknown, :not_enrolled, :enrolled ].sample.to_s
     end
 
     school_name { Faker::University.name }

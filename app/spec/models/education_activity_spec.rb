@@ -2,38 +2,40 @@ require 'rails_helper'
 
 RSpec.describe EducationActivity, type: :model do
   describe "#display_status" do
-    it 'returns full time string' do
+    it 'returns "Enrolled" for enrolled status' do
        activity = EducationActivity.new(
-         status: :full_time
+         status: :enrolled
        )
 
        expect(activity.display_status).to eq(
                                             I18n.t(
-                                              'activities.education.enrollment_status.full_time',
+                                              'activities.education.enrollment_status.enrolled',
                                             )
                                           )
      end
-    it 'returns full time string' do
+
+    it 'returns "Not Enrolled" for not enrolled status' do
       activity = EducationActivity.new(
-        status: :part_time,
+        status: :not_enrolled
       )
 
       expect(activity.display_status).to eq(
                                            I18n.t(
-                                             'activities.education.enrollment_status.part_time',
-                                           ))
+                                             'activities.education.enrollment_status.not_enrolled',
+                                           )
+                                         )
     end
-    it 'returns credit hours when less than part time' do
+
+    it 'returns "N/A" for unknown status' do
       activity = EducationActivity.new(
-        status: :quarter_time,
-        credit_hours: 3
+        status: :unknown
       )
 
       expect(activity.display_status).to eq(
                                            I18n.t(
-                                             'activities.education.enrollment_status.hours',
-                                             count: 3
-                                           ))
+                                             'activities.education.enrollment_status.unknown',
+                                           )
+                                         )
     end
   end
 end
