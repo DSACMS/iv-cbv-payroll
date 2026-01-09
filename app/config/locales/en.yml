@@ -58,7 +58,7 @@ en:
   activities:
     education:
       add: Add Education Activities
-      created: Education activity was successfully added.
+      created: Education activity was successfully created.
       deleted: Education activity was successfully deleted.
       enrollment_status:
         enrolled: Enrolled
