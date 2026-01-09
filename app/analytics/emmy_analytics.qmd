@@ -1,5 +1,9 @@
 ---
 title: "EMMY Mixpanel Web Analytic Review"
+date: now
+date-format: "MMMM D, YYYY h:mm a"
+language:
+  title-block-published: "Last Updated"
 execute:
   echo: false
   output: false
@@ -10,7 +14,7 @@ format:
     toc: true
     number-sections: true
     css: dsac-theme.css
-    # embed-resources: true
+    embed-resources: true
   # docx:
   #   toc: true
   #   number-sections: true
@@ -27,22 +31,20 @@ Over the past year, the Centers for Medicare and Medicaid Services (CMS) in conj
 
 Below are the areas the report seeks to explore to help improve the product design.
 
-1.  How many users are starting but not completing the process?
-2.  Where in the process are applicants dropping off?
-3.  Does time appear to be a factor in dropping off?
-    1.  How long does the data syncing with Argyle/Pinwheel take?
-4.  Are applicants accessing the documentation (help or FAQ) before dropping off?
-5.  How many applicants are not finding their employer in the search?
-6.  Are the popular app employers the right ones (i.e. do there appear to be employeers searched more frequently than any that appear in the popular links)
-7.  What share of applicants are return users? (tokenized users)
+1.  How many applicants are starting but not completing the process?
+    1.  Is there a drop in completion as the pilot period draws on?
+    2.  Is there a difference in completion based on their device or how they receive the pilot link?
+2.  How long does it take to complete the application?
+    1.  How long does the syncing take?
+    2.  When there was a provider outage, was there any change in the processing times?
+3.  Where in the process are applicants dropping off?
+    1.  Are applicants accessing the documentation (help or FAQ) before dropping off?
+    2.  How many applicants are not finding their employer in the search?
+    3.  Are the popular app employers the right ones (i.e. do there appear to be employers searched more frequently than any that appear in the popular links)
+4.  What share of applicants are return applicants? (only tokenized link applicants)
     1.  How many sessions does it take an applicants to complete the process?
     2.  How many applicants clicked on the link and then came back another time to complete the process?
-8.  Do we see a difference in completion rates if applicants are accessing from mobile vs desktop?
-9.  How many times does a user "browser back"?
-
--   Possible Comparisions
-    -   device types
-    -   pilot periods/weeks
+5.  How many times does an applicant "browser back"?
 
 ## Method
 
@@ -53,12 +55,18 @@ This report was generated using a Quarto notebook and leverage R for all analysi
 Its easy to construct similar metrics in different ways and yield slightly different results. For tranparency, below are some definitions to key concepts or calculations
 
 -   **Applicant**: uses the `distinct_id` associated with the event.
--   **Session**: relies on the `properties$cbv_flow_id`. A user may have one or more sessions during a pilot period.
+-   **Session**: relies on the `properties$cbv_flow_id`. A applicant may have one or more sessions during a pilot period.
 -   **Total Event**: When an applicant has multiple sessions, each of these unique applicant and sessions is called an total event in Mixpanel.
--   **Application submitted/successful**: the applicant finished the submission flow ending on the success page (`event == 'ApplicantSharedIncomeSummary'`). 
+-   **Application submitted/successful**: the applicant finished the submission flow ending on the success page (`event == 'ApplicantSharedIncomeSummary'`).
 -   **Application start time**: uses the `timestamp` the applicant viewed the agreement page (`event == 'ApplicantViewedAgreement'`)
 -   **Application duration**: the duration is then calculated from the difference between the session start time and the `timestamp` the last event was viewed.
--  **Provider sync time**: calculated using the `timestamp` between two events, `ApplicantSucceededWithLogin` and `ApplicantFinishedSync`
+-   **Provider sync time**: calculated using the `timestamp` between two events, `ApplicantSucceededWithLogin` and `ApplicantFinishedSync`
+
+## Limitations/Notes
+
+-   Not all applicants are accessing from tokenized links (or each time) and therefore we can't track repeated users from generic links
+-   Demographic and other characteristics are only available from the event that syncs with Argyle/Pinwheel
+-   Multiple events can be triggered at the exact same time
 
 # Analysis
 
@@ -76,6 +84,7 @@ library(scales)
 library(gt)
 library(ggtext)
 library(ggsankey) ## remotes::install_github("davidsjoberg/ggsankey")
+library(ggbump) ## remotes::install_github("davidsjoberg/ggbump")
 library(glamr) ##install.packages('glamr', repos = c('https://usaid-oha-si.r-universe.dev', 'https://cloud.r-project.org'))
 library(glitr) #install.packages('glitr', repos = c('https://usaid-oha-si.r-universe.dev', 'https://cloud.r-project.org'))
 library(gtayblr) ## remotes::install_github("USAID-OHA-SI/gtayblr")
@@ -122,9 +131,9 @@ clean_events <- function(df){
 }
 ```
 
-## How many users are starting but not completing the process?
+## How many applicants are starting but not completing the process?
 
-To start off with, we need to understand how many applicants are starting out this process. The table below looks at both applicants and events. The events are the total number of times a page was accessed and the applicants are the count of distinct applicant. The first pilot in May did not have the same means of determining unique applicants, so the table below only reports the total events for the May pilot. November saw an increase in the number of applicants start the process (i.e. viewed the agreement), but when comparing the completion rate by applicants and events, the rate has remained relatively constant throughout. 
+To start off with, we need to understand how many applicants are starting out this process. The table below looks at both applicants and events. The events are the total number of times a page was accessed and the applicants are the count of distinct applicant. The first pilot in May did not have the same means of determining unique applicants, so the table below only reports the total events for the May pilot. November saw an increase in the number of applicants start the process (i.e. viewed the agreement), but when comparing the completion rate by applicants and events, the rate has remained relatively constant throughout.
 
 ```{r}
 #| label: retention_tbl
@@ -177,7 +186,8 @@ df_success_diff <- df_mp |>
     .groups = 'drop'
   )
 ```
-There are a number of applicants who had multiple successful submissions (across multiple sessions, which). In the November pilot, for example, there were `{r} scales::label_comma()(df_success_diff$applicants)` distinct applicants who submitted compared with `{r} scales::label_comma()(df_success_diff$sessions)` total events.  
+
+There are a number of applicants who had multiple successful submissions (across multiple sessions, which). In the November pilot, for example, there were `{r} scales::label_comma()(df_success_diff$applicants)` distinct applicants who submitted compared with `{r} scales::label_comma()(df_success_diff$sessions)` total events.
 
 ```{r}
 #| label: multi_complete_tbl_calc
@@ -199,7 +209,9 @@ df_multi_tbl_nov <- df_multi_tbl |>
   filter(pilot == "Nov 2025")
 ```
 
-The table below details how many submissions were associated with an applicant.^[Since not all applicants are using tokenized link, there may in fact be more applicants successfully submitting multiple times] In the November case, there were `r sum(df_multi_tbl_nov[df_multi_tbl_nov$submissions > 1, ]$applicants)` applicants who submitted more than one time; most of those multi-submission applicants, `r sum(df_multi_tbl_nov[df_multi_tbl_nov$submissions == 2, ]$applicants)`, submitted their applicants twice.   
+The table below details how many submissions were associated with an applicant.[^1] In the November case, there were `r sum(df_multi_tbl_nov[df_multi_tbl_nov$submissions > 1, ]$applicants)` applicants who submitted more than one time; most of those multi-submission applicants, `r sum(df_multi_tbl_nov[df_multi_tbl_nov$submissions == 2, ]$applicants)`, submitted their applicants twice.
+
+[^1]: Since not all applicants are using tokenized link, there may in fact be more applicants successfully submitting multiple times
 
 ```{r}
 #| label: multi_complete_tbl
@@ -217,7 +229,7 @@ df_multi_tbl |>
   ) |> 
   adjust_row_padding() |> 
   add_labs(
-    title = "Some users had multiple successful submissions events" |> toupper(),
+    title = "Some applicants had multiple successful submissions events" |> toupper(),
     subtitle = "the number of successful submission",
     caption = glue("Note: total sessions is the number of unique applicants and  {default_caption}")
   ) 
@@ -226,7 +238,7 @@ df_multi_tbl |>
 ```{r}
 #| label: multi_compl_deep_dive
 
-#identify which users submitted multiple income summaries
+#identify which applicants submitted multiple income summaries
 v_multi <- df_mp |> 
   filter(pilot == "Nov 2025") |> 
   filter(event %in% c("ApplicantSharedIncomeSummary")) |> 
@@ -274,7 +286,8 @@ df_mult_types <- df_multi |>
     count(behavior)
 
 ```
-We should take a closer look at the repeated submissions. Some of these could be resubmissions of the same information (i.e. the applicant didn't know if the submission went through or forgot they already submitted it) or could be going back to enter in a different employeer at a differnt time. If we look at the `r sum(df_mult_types$n)` applicants with repeated submissions in the November pilot, `r df_mult_types[df_mult_types$behavior == 'Single item repeated',]$n` submitted for the same employer each time, `r df_mult_types[df_mult_types$behavior == 'Multiple items with repeats',]$n` submitted different employers (some with repeats), and only `r df_mult_types[df_mult_types$behavior == 'All unique items',]$n` had all unique employer submissions. The table below provides some examples of how the different behaviors might look like in the data. 
+
+We should take a closer look at the repeated submissions. Some of these could be resubmissions of the same information (i.e. the applicant didn't know if the submission went through or forgot they already submitted it) or could be going back to enter in a different employer at a different time. If we look at the `r sum(df_mult_types$n)` applicants with repeated submissions in the November pilot, `r df_mult_types[df_mult_types$behavior == 'Single item repeated',]$n` submitted for the same employer each time, `r df_mult_types[df_mult_types$behavior == 'Multiple items with repeats',]$n` submitted different employers (some with repeats), and only `r df_mult_types[df_mult_types$behavior == 'All unique items',]$n` had all unique employer submissions. The table below provides some examples of how the different behaviors might look like in the data.
 
 ```{r}
 #| label: multi_examples
@@ -306,7 +319,7 @@ tribble(
 
 ### Is there a drop in completion as the pilot period draws on?
 
-If we compare weeks with in each pilot, we are seeing a similar trend of most people starting in the first week or two and then tailing off after that. While the first two pilot periods saw the second week as having the highest compeltion rate, the current pilot saw an increase in weeks 2 and then week 3 for completion rates.
+If we compare weeks with in each pilot, we are seeing a similar trend of most people starting in the first week or two and then tailing off after that. While the first two pilot periods saw the second week as having the highest completion rate, the current pilot saw an increase in weeks 2 and then week 3 for completion rates.
 
 ```{r}
 #| label: retention_viz
@@ -402,7 +415,7 @@ v1 <- df_compl_wkly |>
       )
 ```
 
-### Is there a difference in completion based on their device or how they receive the pilot url?
+### Is there a difference in completion based on their device or how they receive the pilot link?
 
 For the Louisana pilot, applicants were sent both text messages and emailed/mailed with a notice about the pilot. We can investigate whether there is any difference in completion rates based on how the applicants are accessing the app.
 
@@ -492,7 +505,7 @@ df_device_status_viz |>
 
 ```
 
-When looking the url origin, we see the large majority arise from SMS messages. However, the success rate is much lower than that of physical mailings.
+When looking the link/url origin, we see the large majority arise from SMS messages. However, the success rate is much lower than that of physical mailings.
 
 ```{r}
 #| label: origin_status_viz
@@ -543,14 +556,14 @@ df_origin_status_viz |>
   )
 ```
 
-Lastly, we can take a look at how the applicant started their session. In the November pilot, tokenized invitations where shared for the first time (as opposed to only generic links). More applicants started the process with a invitation link, but the these sessions were less than half as successful in completing the process as the generic link. This is the opposite of what occured in the August pilot.
+Lastly, we can take a look at how the applicant started their session. In the November pilot, tokenized invitations where shared for the first time (as opposed to only generic links). More applicants started the process with a invitation link, but the these sessions were less than half as successful in completing the process as the generic link. This is the opposite of what occurred in the August pilot.
 
 ```{r}
 #| label: tokenized_status
 #| output: true
 
 df_link_status_viz <- df_device_origin_status |>
-  filter(pilot != c("May 2025". "Aug 2025")) |> 
+  filter(pilot != c("May 2025", "Aug 2025")) |> 
   group_by(pilot, initiation) |> 
   summarise(
     started = n(),
@@ -594,7 +607,7 @@ df_link_status_viz |>
 
 ## How long does it take to complete the application?
 
-On the client side, the goal of the pilot application is to creating something easy to complete. Ideally, applicants can complete the process in a matter of minutes. We can look at time it takes to submit to understand if it places an undue burden on applicants. 
+On the client side, the goal of the pilot application is to creating something easy to complete. Ideally, applicants can complete the process in a matter of minutes. We can look at time it takes to submit to understand if it places an undue burden on applicants.
 
 ```{r}
 #| label: duration_calc
@@ -664,7 +677,7 @@ df_duration_viz <- df_duration |>
     filter(pilot == 'Nov 2025')
 ```
 
-Looking specifically at the November pilot, of the `{r} scales::label_comma()(df_duration_stats[df_duration_stats$completed_type == 'completed',]$n)` applicants who completed the application, the median time was `{r} scales::label_number(.1)(df_duration_stats[df_duration_stats$completed_type == 'completed',]$median)` minutes, with 75% completing it within `{r} scales::label_number(.1)(df_duration_stats[df_duration_stats$completed_type == 'completed',]$q75)` minutes. The timing looks pretty good from that vantage point. However, most applicants (`{r} scales::label_comma()(df_duration_stats[df_duration_stats$completed_type != 'completed',]$n |> sum())`) are not completing the application. Of those applicants, `{r} scales::label_percent()(df_duration_stats[df_duration_stats$completed_type == 'just clicked',]$n / df_duration_stats[df_duration_stats$completed_type != 'completed',]$n |> sum())` are clicking the link and not proceeding beyond viewing the initial agreement page. When looking at incomplete applications excluding those that only viewed the agreement page, the median applicant spends `{r} scales::label_number(.1)(df_duration_stats[df_duration_stats$completed_type == 'incomplete',]$median)` minutes on the application before they stop, with 75% aborting after only `{r} scales::label_number(.1)(df_duration_stats[df_duration_stats$completed_type == 'incomplete',]$q75)` minutes. 
+Looking specifically at the November pilot, of the `{r} scales::label_comma()(df_duration_stats[df_duration_stats$completed_type == 'completed',]$n)` applicants who completed the application, the median time was `{r} scales::label_number(.1)(df_duration_stats[df_duration_stats$completed_type == 'completed',]$median)` minutes, with 75% completing it within `{r} scales::label_number(.1)(df_duration_stats[df_duration_stats$completed_type == 'completed',]$q75)` minutes. The timing looks pretty good from that vantage point. However, most applicants (`{r} scales::label_comma()(df_duration_stats[df_duration_stats$completed_type != 'completed',]$n |> sum())`) are not completing the application. Of those applicants, `{r} scales::label_percent()(df_duration_stats[df_duration_stats$completed_type == 'just clicked',]$n / df_duration_stats[df_duration_stats$completed_type != 'completed',]$n |> sum())` are clicking the link and not proceeding beyond viewing the initial agreement page. When looking at incomplete applications excluding those that only viewed the agreement page, the median applicant spends `{r} scales::label_number(.1)(df_duration_stats[df_duration_stats$completed_type == 'incomplete',]$median)` minutes on the application before they stop, with 75% aborting after only `{r} scales::label_number(.1)(df_duration_stats[df_duration_stats$completed_type == 'incomplete',]$q75)` minutes.
 
 ```{r}
 #| label: viz_duration
@@ -701,7 +714,7 @@ df_duration_viz |>
 
 ### How long does the income data syncing take?
 
-Syncing the data once the employer is chosen can take a bit of time to occur. The longer it takes, we may be more likely to see applicants drop off.  
+Syncing the data once the employer is chosen can take a bit of time to occur. The longer it takes, we may be more likely to see applicants drop off.
 
 ```{r}
 #| label: data_sync
@@ -740,6 +753,7 @@ df_sync_viz <- df_sync |>
     ) 
 
 ```
+
 ```{r}
 #| label: long_sync
 
@@ -753,9 +767,10 @@ v_lng_run_shr <- df_sync |>
   pull()
 
 ```
-Overall, we are looking at a median sync time of `{r} median(df_sync$sync_time, na.rm = TRUE)` seconds, with 75% of events seeing it take under `{r} quantile(df_sync$sync_time, .75, na.rm = TRUE)` seconds. Of the `{r} scales::label_comma()(nrow(df_sync))` successful data syncs, `{r} v_lng_run_shr` take longer than `{r} lng_run` seconds to sync. 
 
-We can see how this places our when comparing different payroll aggregators used, Argyle and Pinwheel. Each pilot we can see there is a signficant gap between the time range it takes to sync with Pinwheel versus Argyle. 
+Overall, we are looking at a median sync time of `{r} median(df_sync$sync_time, na.rm = TRUE)` seconds, with 75% of events seeing it take under `{r} quantile(df_sync$sync_time, .75, na.rm = TRUE)` seconds. Of the `{r} scales::label_comma()(nrow(df_sync))` successful data syncs, `{r} v_lng_run_shr` take longer than `{r} lng_run` seconds to sync.
+
+We can see how this places our when comparing different payroll aggregators used, Argyle and Pinwheel. Each pilot we can see there is a significant gap between the time range it takes to sync with Pinwheel versus Argyle.
 
 ```{r}
 #| label: data_sync_tbl
@@ -807,7 +822,7 @@ df_sync_viz |>
     )
 ```
 
-Sticking with the provider comparision, we can look at the distribtion of sync times. By bucketing them, we can see that most events have a sync time between 30 seconds and a minute (first 2 rows, green and dark blue bars) and about 95% are under the 3 minute mark (first 3 rows - green, dark blue, and blue columns). 
+Sticking with the provider comparison, we can look at the distribution of sync times. By bucketing them, we can see that most events have a sync time between 30 seconds and a minute (first 2 rows, green and dark blue bars) and about 95% are under the 3 minute mark (first 3 rows - green, dark blue, and blue columns).
 
 ```{r}
 #| label: data_sync_bucketed_viz
@@ -853,7 +868,7 @@ df_sync_bucketed <- df_sync |>
     theme(legend.position = "none")    
 ```
 
-The next visual looks at the same data, but plots each of the event individually, allowing us to see some of the larger outliers and where the specific times fall compared within the broader buckets. The x-axis has been truncated to 20 minutes to see the distrbution, plotting the `r dplyr::filter(df_sync, sync_time > 1200) |> nrow()` outliers on the 20 minute mark. Both providers saw three events with sync times over 20 minutes in the November pilot, but the median time went down from August.  
+The next visual looks at the same data, but plots each of the event individually, allowing us to see some of the larger outliers and where the specific times fall compared within the broader buckets. The x-axis has been truncated to 20 minutes to see the distribution, plotting the `r dplyr::filter(df_sync, sync_time > 1200) |> nrow()` outliers on the 20 minute mark. Both providers saw three events with sync times over 20 minutes in the November pilot, but the median time went down from August.
 
 ```{r}
 #| label: data_sync_distro_viz
@@ -893,6 +908,7 @@ The next visual looks at the same data, but plots each of the event individually
       legend.position = "none"
       )
 ```
+
 ### When there was a provider outage, was there any change in processing times?
 
 During the November pilot, Argyle had an outage between November 19-20. Looking by day, we can see that Monday, November 20th had a dip in the number of Argyle events compared with the prior day and Pinhweel saw an increase on both November 19th and 20th (though certainly not enough to offset the dip). During the first day of the outage, the success rate of logging for both providers dropped precipitously, but rebounded on November 20th.
@@ -960,7 +976,7 @@ df_outage_viz_rt |>
   labs(
     x = NULL, y = NULL,
     title = "ARGYLE USERS TYPICALLY SAW A HIGHER SUCCESSFUL LOGIN RATE",
-    subtitle = glue("daily <span style = color:{dsac_color['light_navy']};>**Argyle**</span>/<span style = color:{dsac_color['light_teal']};>**Pinwheel**</span> user flow attempts to login [left] and  successful rates [right]"),
+    subtitle = glue("daily <span style = color:{dsac_color['light_navy']};>**Argyle**</span>/<span style = color:{dsac_color['light_teal']};>**Pinwheel**</span> applicant flow attempts to login [left] and  successful rates [right]"),
     caption = glue('Note: Argyle outage Nov 19-20
     {default_caption}')
   ) + 
@@ -970,7 +986,7 @@ df_outage_viz_rt |>
 #si_save(here("app/analytics/success_rate.png"), height = 7)
 ```
 
-During those two Argyle outage days, Pinwheel had the two highest median data sync times for the fives weeks of the pilot. 
+During those two Argyle outage days, Pinwheel had the two highest median data sync times for the fives weeks of the pilot.
 
 ```{r}
 #| label: sync_outage2
@@ -1042,7 +1058,7 @@ df_outage_viz |>
   labs(
     x = NULL, y = NULL,
     title = glue("DESPITE SOME LARGE OUTLIERS AND LESS FLOWS, PINWHEEL'S MEDIAN SYNC TIME ({df_outage_provider_median$Pinwheel}s) IS ONLY A FEW SECONDS SLOWER THAN ARGYLE ({df_outage_provider_median$Argyle}s)") |> str_wrap(70),
-    subtitle = glue("successful daily <span style = color:{dsac_color['light_navy']};>**Argyle**</span>/<span style = color:{dsac_color['light_teal']};>**Pinwheel**</span> user flow syncs [left] and their duration, **minutes** [median + IQR]"),
+    subtitle = glue("successful daily <span style = color:{dsac_color['light_navy']};>**Argyle**</span>/<span style = color:{dsac_color['light_teal']};>**Pinwheel**</span> applicant flow syncs [left] and their duration, **minutes** [median + IQR]"),
     caption = glue('Note: x axis truncated to 5 minutes; Argyle outage Nov 19-20 
     {default_caption}')
   ) + 
@@ -1052,9 +1068,9 @@ df_outage_viz |>
 #si_save(here("app/analytics/sync_times.png"), height = 7)
 ```
 
-## Where are applicants dropping off?
+## Where in the process are applicants dropping off?
 
-To get a sense of where applicants are dropping off, we can look at some key points/pages to see whether they reached that step. The Sankey diagram below depicts these key points in the November 2025 pilot. 
+To get a sense of where applicants are dropping off, we can look at some key points/pages to see whether they reached that step. The Sankey diagram below depicts these key points in the November 2025 pilot.
 
 ```{r}
 #| label: event_steps
@@ -1182,7 +1198,8 @@ df_sankey |>
     plot.subtitle = element_markdown()
   ) 
 ```
-Right off the bat, we can see that off the `{r} scales::label_comma()(df_journey_label[df_journey_label$step_order == "step_1",]$n)` applicants who started the process, only `{r} scales::label_percent(1)(df_journey_label[df_journey_label$step_event == "Agreed",]$share)` agreed to terms to move on, and only `{r} scales::label_percent()(df_journey_label[df_journey_label$step_event == "Shared Income Summary",]$n/df_journey_label[df_journey_label$step_order == "step_1",]$n)` actually made it to completion, submitting their pay information. The diagram also show that about 1 in 3 applicants is dropping off when selecting their employeerer, logging in, and then succeeding with that log in. 
+
+Right off the bat, we can see that off the `{r} scales::label_comma()(df_journey_label[df_journey_label$step_order == "step_1",]$n)` applicants who started the process, only `{r} scales::label_percent(1)(df_journey_label[df_journey_label$step_event == "Agreed",]$share)` agreed to terms to move on, and only `{r} scales::label_percent()(df_journey_label[df_journey_label$step_event == "Shared Income Summary",]$n/df_journey_label[df_journey_label$step_order == "step_1",]$n)` actually made it to completion, submitting their pay information. The diagram also show that about 1 in 3 applicants is dropping off when selecting their employer, logging in, and then succeeding with that log in.
 
 The table below so similar drop off rates at each step for each of the three pilots in Lousiana.
 
@@ -1223,12 +1240,9 @@ df_ret |>
 
 ```
 
+### Are applicants accessing the documentation (help or FAQ) before dropping off?
 
-
-
-## Are applicants accessing the documentation (help or FAQ) before dropping off?
-
-The prior section gave use a sense of where applicants were dropping off. It may be useful to see if applicants are accessing the documentation before they abort the application. Looking at the data, we can see that on average, those who completed the application had slight more "help actions" than those who did not. This of course is affected by the fact that those who continued saw more pages than those who did not or that using the help more they were more likely to find what they needed to continue onward. 
+The prior section gave use a sense of where applicants were dropping off. It may be useful to see if applicants are accessing the documentation before they abort the application. Looking at the data, we can see that on average, those who completed the application had slight more "help actions" than those who did not. This of course is affected by the fact that those who continued saw more pages than those who did not or that using the help more they were more likely to find what they needed to continue onward.
 
 ```{r}
 #| label: help_events
@@ -1314,7 +1328,9 @@ df_help_actions |>
 
 ```
 
-We can investigate this further, looking at the total help actions by page, comparing whether the applicant continued on past that page or ended there. We can see that most of the agreement page are on the agreement. There is significantly more usage of the help^[In this particular case, we are looking at the number of times the help or FAQ was access, so we can have multiple help access points by applicant on the same page] than those who used help on that page but continued on to the next page. 
+We can investigate this further, looking at the total help actions by page, comparing whether the applicant continued on past that page or ended there. We can see that most of the agreement page are on the agreement. There is significantly more usage of the help[^2] than those who used help on that page but continued on to the next page.
+
+[^2]: In this particular case, we are looking at the number of times the help or FAQ was access, so we can have multiple help access points by applicant on the same page
 
 ```{r}
 #| label: help_viz
@@ -1359,7 +1375,7 @@ df_help_viz <- df_help  |>
   ) |> 
   group_by(pilot, page, last_page) |> 
   summarise(
-    n_users = n_distinct(distinct_id_started),
+    n_applicants = n_distinct(distinct_id_started),
     sessions = n_distinct(distinct_id_started, cbv_flow_id_started),
     accessed_help = sum(accessed_help, na.rm = TRUE),
     .groups = "drop"
@@ -1391,8 +1407,7 @@ df_help_viz |>
 
 ```
 
-
-## How many applicants are not finding their employer in the search?
+### How many applicants are not finding their employer in the search?
 
 ```{r}
 #| label: search_results
@@ -1421,7 +1436,7 @@ df_search <- df_mp |>
     )
 ```
 
-One reason for retention to drop off could be from applicant not able to find their employers or platforms in in the search. Across all pilots, the average share of missing results is quite high at `r label_percent(1)(sum(df_search$missingresults) / sum(df_search$searches))`. This could be a major roadblock for users. In the November pilot, `r label_percent(1)(df_journey_label[df_journey_label$step_order == "step_3" & df_journey_label$step_event == "dropped",]$share)` of applicants fell off at this step. 
+One reason for retention to drop off could be from applicant not able to find their employers or platforms in in the search. Across all pilots, the average share of missing results is quite high at `r label_percent(1)(sum(df_search$missingresults) / sum(df_search$searches))`. This could be a major roadblock for applicants. In the November pilot, `r label_percent(1)(df_journey_label[df_journey_label$step_order == "step_3" & df_journey_label$step_event == "dropped",]$share)` of applicants fell off at this step.
 
 ```{r}
 #| label: search_results_tbl
@@ -1445,10 +1460,9 @@ df_search |>
   ) 
 ```
 
-## Are the popular app employers the right ones (i.e. do there appear to be employeers searched more frequently than any that appear in the popular links)
+### Are the popular app employers the right ones (i.e. do there appear to be employers searched more frequently than any that appear in the popular links)
 
-From the table in the last section, we can see that the number of searches and popular employer picks remains relatively the same each pilot. Overall, for every 1 popular employer picked, there are `r label_number(.1)(sum(df_search$searches) / sum(df_search$picked))` searches. If we look at the top 10 employeers. Wal-Mart has been the top employer selected each pilot period and has been significantly larger than the next few employers combined. It is important to note that many employers are not being captured in this process and when aggregated, rank as the second most "chosen" employer. Amazon, Waffle House, and doordash have consistenly been ranked in the top 10 each pilot. Given the small numbers at this stage, it likely don't make sense to change the popular employer selector buttons. 
-
+From the table in the last section, we can see that the number of searches and popular employer picks remains relatively the same each pilot. Overall, for every 1 popular employer picked, there are `r label_number(.1)(sum(df_search$searches) / sum(df_search$picked))` searches. If we look at the top 10 employers. Wal-Mart has been the top employer selected each pilot period and has been significantly larger than the next few employers combined. It is important to note that many employers are not being captured in this process and when aggregated, rank as the second most "chosen" employer. Amazon, Waffle House, and doordash have consistently been ranked in the top 10 each pilot. Given the small numbers at this stage, it likely don't make sense to change the popular employer selector buttons.
 
 ```{r}
 #| label: pop_employers
@@ -1480,7 +1494,7 @@ df_top <- df_top |>
 df_top |>
   ggplot(aes(pilot, rank, color = employer_name)) +
   geom_point(size = 4.5)  +
-  geom_bump(size = 2, smooth = 8) +
+  geom_bump(linewidth = 2, smooth = 8) +
   geom_text(
     aes(label = empl_lab), vjust = -1,
     na.rm = TRUE, family = "Source Sans Pro", color = matterhorn, size = 9/.pt, 
@@ -1504,5 +1518,9 @@ df_top |>
 
 ```
 
-## What share of applicants are return users? (tokenized users)
+## \[SECTIONS IN PROGRESS\]
 
+-   What share of applicants are return applicants? (tokenized applicants)
+    -   How many sessions does it take a applicant to complete the process?
+    -   How many applicants clicked on the link and then came back another time to complete the process?
+-   How many times does an applicant "browser back"?
