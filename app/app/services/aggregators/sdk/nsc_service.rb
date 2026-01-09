@@ -10,6 +10,7 @@ module Aggregators::Sdk
         token_url: ENV["NSC_TOKEN_URL_SANDBOX"],
         client_id: ENV["NSC_CLIENT_ID_SANDBOX"],
         client_secret: ENV["NSC_CLIENT_SECRET_SANDBOX"],
+        account_id: ENV["NSC_ACCOUNT_ID_SANDBOX"],
         scope: "vs.api.insights"
       },
       production: {
@@ -17,6 +18,7 @@ module Aggregators::Sdk
         token_url: ENV["NSC_TOKEN_URL"],
         client_id: ENV["NSC_CLIENT_ID"],
         client_secret: ENV["NSC_CLIENT_SECRET"],
+        account_id: ENV["NSC_ACCOUNT_ID"],
         scope: "vs.api.insights"
       }
     }.freeze
@@ -76,8 +78,8 @@ module Aggregators::Sdk
         firstName: first_name,
         lastName: last_name,
         dateOfBirth: date_of_birth,
-        accountId: 10053523,
-        terms: "y",
+        accountId: environment_name == :production ? ENV["NSC_ACCOUNT_ID"] : ENV["NSC_ACCOUNT_ID_SANDBOX"],
+        terms: "Y",
         endClient: "CMS"
       }
 
@@ -160,7 +162,7 @@ module Aggregators::Sdk
     end
 
     def environment_name
-      ENVIRONMENTS.key(@environment)&.to_s || "unknown"
+      ENVIRONMENTS.key(@environment) || :unknown
     end
 
     def handle_response(response)
