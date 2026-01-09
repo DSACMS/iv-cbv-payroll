@@ -1,18 +1,5 @@
 ---
 es:
-  activities:
-    education:
-      show:
-        no_records_found:
-          heading: No se encontró ningún registro de inscripción
-          message: No pudimos encontrar ningún registro de inscripción para la información que proporcionó. Puede volver atrás y volver a intentarlo o agregar manualmente su actividad educativa.
-        no_enrollment_record: No se encontró ningún registro de inscripción
-      enrollment_status:
-        enrolled: Inscrito
-        not_enrolled: No inscrito
-        unknown: Desconocido
-      new:
-        header: Estamos recopilando sus detalles de inscripción desde la National Student Clearinghouse
   activerecord:
     errors:
       models:
