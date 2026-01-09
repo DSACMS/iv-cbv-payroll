@@ -2,6 +2,10 @@
 
 root = true
 
+[*]
+insert_final_newline = true
+trim_trailing_whitespace = true
+
 [zap.conf]
 indent_size = 4
 indent_style = tab
