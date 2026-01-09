@@ -7,6 +7,7 @@ class Cbv::SubmitsController < Cbv::BaseController
   include GpgEncryptable
   include TarFileCreatable
   include CsvHelper
+  include ConfirmationCodeGeneratable
 
   before_action :set_aggregator_report, only: %i[show update]
   before_action :check_aggregator_report, only: %i[show update]
@@ -94,15 +95,6 @@ class Cbv::SubmitsController < Cbv::BaseController
       flow_started_seconds_ago: (Time.now - cbv_flow.created_at).to_i,
       locale: I18n.locale
     })
-  end
-
-  def generate_confirmation_code(cbv_flow)
-    prefix = cbv_flow.cbv_applicant.client_agency_id
-    [
-      prefix.gsub("_", ""),
-      (Time.now.to_i % 36 ** 3).to_s(36).tr("OISB", "0158").rjust(3, "0"),
-      cbv_flow.id.to_s.rjust(4, "0")
-    ].compact.join.upcase
   end
 
   def allow_caseworker_override_param?
