@@ -136,8 +136,10 @@ ignore_missing:
     - "cbv.submits.show.pdf.caseworker.*"
     # LA wind down content
     - "pages.home.pilot_ended.la_ldh.*"
-    # Activity Hub flow pages
+    # Activity Hub flow pages/models
     - "activities.*"
+    - "activerecord.errors.models.job_training_activity.*"
+    - "activerecord.errors.models.volunteering_activity.*"
 
     # Currently awaiting translation:
     # - "example.strings.*"   # Tag with ticket number that created or modified the string
@@ -156,6 +158,7 @@ ignore_unused:
     - "cbv.submits.show.pdf.client.agency_id_number" #dynamically looked up translations
     - "cbv.submits.show.pdf.shared.additional_jobs_to_report" #dynamically used when applicant does not supply additional jobs
     - "cbv.submits.show.pdf.shared.additional_jobs_to_report_html" #dynamically used when applicant supplies additional jobs
+    - "activities.entry.reporting_month"        # will be used later (once designs are finalized)
 
 csv:
   # see: https://github.com/glebm/i18n-tasks/wiki/Custom-CSV-import-and-export-tasks

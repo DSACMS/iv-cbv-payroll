@@ -1,4 +1,5 @@
 class Transmitters::SftpTransmitter < Transmitters::BasePdfTransmitter
+  TRANSMISSION_METHOD = "sftp"
   def deliver
     config = current_agency.transmission_method_configuration.with_indifferent_access
     sftp_gateway = SftpGateway.new(config)

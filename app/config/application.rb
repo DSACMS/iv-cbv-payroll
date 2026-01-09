@@ -80,6 +80,9 @@ module IvCbvPayroll
         request_id: :request_id,
         amzn_trace_id: ->(request) { request.headers["X-Amzn-Trace-ID"] }
       }
+
+      # Forward logs to NewRelic
+      SemanticLogger.add_appender(appender: :new_relic_logs)
     end
   end
 end
