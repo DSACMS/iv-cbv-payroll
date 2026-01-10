@@ -102,8 +102,8 @@ class ApplicationController < ActionController::Base
     session[:flow_type] = type
   end
 
-  def flow_class(symbol = nil)
-    (symbol || session[:flow_type]&.to_sym) == :activity ? ActivityFlow : CbvFlow
+  def flow_class(flow_type = session[:flow_type])
+    flow_type.to_sym == :activity ? ActivityFlow : CbvFlow
   end
 
   protected
