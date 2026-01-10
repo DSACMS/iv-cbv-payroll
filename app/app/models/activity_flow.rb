@@ -29,17 +29,17 @@ class ActivityFlow < Flow
     I18n.l(reporting_month, format: :month_year)
   end
 
-  private
-
-  def set_default_reporting_month
-    self.reporting_month ||= Date.current.beginning_of_month
-  end
-
   def complete?
     completed_at.present?
   end
 
   def invitation_id
     activity_flow_invitation_id
+  end
+
+  private
+
+  def set_default_reporting_month
+    self.reporting_month ||= Date.current.beginning_of_month
   end
 end

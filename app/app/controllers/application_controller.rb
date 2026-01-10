@@ -103,7 +103,7 @@ class ApplicationController < ActionController::Base
   end
 
   def flow_class(flow_type = session[:flow_type])
-    flow_type.to_sym == :activity ? ActivityFlow : CbvFlow
+    flow_type&.to_sym == :activity ? ActivityFlow : CbvFlow
   end
 
   protected
