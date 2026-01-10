@@ -113,6 +113,8 @@ en:
       reporting_month: 'Reporting month: %{month}'
       save: Save changes
       title: Add activities to your Medicaid Community Engagement report
+    income:
+      add: Add Income
     job_training:
       add: Add Job Training Activity
       created: Job training activity was successfully created.

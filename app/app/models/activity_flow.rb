@@ -6,6 +6,7 @@ class ActivityFlow < Flow
   has_many :volunteering_activities, dependent: :destroy
   has_many :job_training_activities, dependent: :destroy
   has_many :education_activities, -> { where(confirmed: true) }, dependent: :destroy
+  has_many :payroll_accounts, as: :flow, dependent: :destroy
 
   before_create :set_default_reporting_month
 
@@ -26,6 +27,14 @@ class ActivityFlow < Flow
     return nil unless reporting_month
 
     I18n.l(reporting_month, format: :month_year)
+  end
+
+  def complete?
+    completed_at.present?
+  end
+
+  def invitation_id
+    activity_flow_invitation_id
   end
 
   private

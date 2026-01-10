@@ -18,7 +18,7 @@ RSpec.describe Activities::EducationController, type: :controller do
     let(:education_activity) { create(:education_activity, activity_flow: activity_flow, confirmed: true) }
 
     it "renders the education review page" do
-      get :show, params: { education_activity_id: education_activity.id }, session: { flow_id: activity_flow.id }
+      get :show, params: { education_activity_id: education_activity.id }, session: { flow_id: activity_flow.id, flow_type: :activity }
 
       expect(response).to have_http_status(:ok)
     end
@@ -99,7 +99,7 @@ RSpec.describe Activities::EducationController, type: :controller do
 
     it "deletes the activity and redirects to the hub" do
       expect do
-        delete :destroy, params: { education_activity_id: education_activity.id }, session: { flow_id: activity_flow.id }
+        delete :destroy, params: { education_activity_id: education_activity.id }, session: { flow_id: activity_flow.id, flow_type: :activity }
       end.to change(activity_flow.education_activities, :count).by(-1)
 
       expect(response).to redirect_to(activities_flow_root_path)

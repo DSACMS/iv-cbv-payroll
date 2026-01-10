@@ -44,10 +44,6 @@ class Activities::BaseController < FlowController
     end
   end
 
-  def flow_class
-    ActivityFlow
-  end
-
   def flow_param
     :activity
   end

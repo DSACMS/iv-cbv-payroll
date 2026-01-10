@@ -106,7 +106,7 @@ class Cbv::BaseController < FlowController
     event_logger.track(TrackEvent::CbvPageView, request, {
       time: Time.now.to_i,
       cbv_flow_id: @flow.id,
-      invitation_id: @flow.cbv_flow_invitation_id,
+      invitation_id: @flow.invitation_id,
       cbv_applicant_id: @flow.cbv_applicant_id,
       client_agency_id: @flow.cbv_applicant.client_agency_id,
       device_id: @flow.device_id,
@@ -156,14 +156,6 @@ class Cbv::BaseController < FlowController
     return if @flow&.has_account_with_required_data?
 
     redirect_to cbv_flow_synchronization_failures_path
-  end
-
-  def reset_cbv_session!
-    set_flow_session(nil, nil)
-  end
-
-  def flow_class
-    CbvFlow
   end
 
   def flow_param
