@@ -28,6 +28,10 @@ class ActivityFlow < Flow
     I18n.l(reporting_month, format: :month_year)
   end
 
+  def complete?
+    confirmation_code.present?
+  end
+
   private
 
   def set_default_reporting_month

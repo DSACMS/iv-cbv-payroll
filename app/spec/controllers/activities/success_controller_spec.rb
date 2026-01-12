@@ -19,7 +19,7 @@ RSpec.describe Activities::SuccessController, type: :controller do
     end
 
     it "displays the completion timestamp" do
-      completed_time = Time.zone.local(2025, 12, 1, 12, 0, 0)
+      completed_time = Time.zone.now
       activity_flow.update!(completed_at: completed_time)
 
       get :show
@@ -28,6 +28,18 @@ RSpec.describe Activities::SuccessController, type: :controller do
       expect(response.body).to include(I18n.l(completed_time, format: :long))
       expect(response.body).to include(activities_flow_submit_path(format: :pdf))
       expect(response.body).to include(I18n.t("activities.success.download_pdf"))
+    end
+
+    it "displays the confirmation code" do
+      completed_time = Time.zone.now
+      confirmation_code = "SANDBOX123"
+      activity_flow.update!(completed_at: completed_time, confirmation_code: confirmation_code)
+
+      get :show
+
+      expect(response).to have_http_status(:ok)
+      expect(response.body).to include(confirmation_code)
+      expect(response.body).to include(I18n.t("activities.success.confirmation_code_html", confirmation_code: confirmation_code))
     end
   end
 end

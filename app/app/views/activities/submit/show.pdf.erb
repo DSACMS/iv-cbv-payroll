@@ -16,6 +16,7 @@
     </h2>
   <% end %>
   <%= table.with_row t("activities.submit.pdf.reporting_month"), @flow.reporting_month_display %>
+  <%= table.with_row t("activities.submit.pdf.confirmation_code"), @flow.confirmation_code %>
   <%= table.with_row t("activities.submit.pdf.submitted_at"), l(@submission_timestamp, format: :long) %>
 <% end %>
 
