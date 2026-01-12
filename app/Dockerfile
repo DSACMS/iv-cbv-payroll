@@ -39,6 +39,14 @@ RUN apt-get update -qq && \
       curl \
       # CVE-2025-9714 \
       libxml2 libxml2-dev \
+      # CVE-2025-68973 \
+      gnupg \
+      # CVE-2025-13601 \
+      libgio-2.0-dev \
+      # CVE-2025-13601 \
+      gir1.2-glib-2.0 \
+      # CVE-2025-68973 \
+      dirmngr \
       && \
     rm -rf /var/lib/apt/lists /var/cache/apt/archives
 
