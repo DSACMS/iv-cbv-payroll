@@ -3,7 +3,7 @@ require 'rails_helper'
 RSpec.describe Transmitters::HttpPdfTransmitter do
   let(:transmission_method_configuration) do
     {
-      "url" => "http://fake-state.api.gov/api/v1/income-report-pdf"
+      "pdf_api_url" => "http://fake-state.api.gov/api/v1/income-report-pdf"
     }
   end
 
@@ -51,7 +51,7 @@ RSpec.describe Transmitters::HttpPdfTransmitter do
     it "sends #pdf_output as a POST request" do
       stub = stub_request(
           :post,
-          transmission_method_configuration["url"]
+          transmission_method_configuration["pdf_api_url"]
         ).with(
           body: pdf_output.content,
           headers: {
@@ -69,6 +69,39 @@ RSpec.describe Transmitters::HttpPdfTransmitter do
       expect(
         stub
       ).to have_been_made
+    end
+
+    context "with custom headers defined" do
+      let(:transmission_method_configuration) do
+        super().merge(
+          "custom_headers" => {
+            "X-API-Key" => "Foo_Bar",
+            "X-Something-Else" => "Banana"
+          }
+        )
+      end
+
+      it "adds custom headers to the request" do
+        api_request = stub_request(
+          :post,
+          transmission_method_configuration["pdf_api_url"]
+        ).with(
+          body: pdf_output.content,
+          headers: {
+            'Content-Type': 'application/pdf',
+            'Content-Length': pdf_output.file_size,
+            'X-IVAAS-Timestamp': time_now.to_i,
+            'X-IVAAS-Signature': sig,
+            'X-IVAAS-Confirmation-Code': cbv_flow.confirmation_code,
+            'X-API-Key': "Foo_Bar",
+            'X-Something-Else': "Banana"
+          }
+        )
+
+        subject.deliver
+
+        expect(api_request).to have_been_made
+      end
     end
   end
 end

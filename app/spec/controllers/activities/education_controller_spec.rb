@@ -2,6 +2,8 @@ require "rails_helper"
 require "faker"
 
 RSpec.describe Activities::EducationController, type: :controller do
+  include_context "activity_hub"
+
   render_views
 
   let(:activity_flow) {
