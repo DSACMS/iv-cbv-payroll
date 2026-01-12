@@ -436,7 +436,7 @@ df_device_origin_status <- df_mp |>
   
 df_device_origin_status <- df_device_origin_status |> 
   filter(
-    str_starts(distinct_id, "applicant"),
+    # str_starts(distinct_id, "applicant"),
     event %in% c("ApplicantViewedAgreement", "ApplicantSharedIncomeSummary")
   ) |>  
   mutate(
@@ -467,7 +467,6 @@ df_device_status_viz <- df_device_origin_status |>
   group_by(pilot, device_type) |> 
   summarise(
     started = n(),
-    #completed = sum(completed, na.rm = TRUE),
     completion_rate = sum(completed, na.rm = TRUE) / n(),
     .groups = "drop"
   ) |> 
@@ -563,11 +562,10 @@ Lastly, we can take a look at how the applicant started their session. In the No
 #| output: true
 
 df_link_status_viz <- df_device_origin_status |>
-  filter(pilot != c("May 2025", "Aug 2025")) |> 
+  filter(!pilot %in% c("May 2025", "Aug 2025")) |> 
   group_by(pilot, initiation) |> 
   summarise(
     started = n(),
-    #completed = sum(completed, na.rm = TRUE),
     completion_rate = sum(completed, na.rm = TRUE) / n(),
     .groups = "drop"
   ) |> 
@@ -591,7 +589,7 @@ df_link_status_viz |>
   si_style_xgrid() +
   labs(
     x = NULL, y = NULL,
-   title = "GENERIC LINK SESSIONS SAW A LARGER SUCCESS RATE IN NOV"|> str_wrap(70),
+   title = "GENERIC LINK SESSIONS SAW A LARGER SUCCESS RATE IN NOVEMBER"|> str_wrap(70),
     subtitle = "number of distinct flows by initiation type",
     caption = default_caption
   ) +
@@ -1494,7 +1492,6 @@ df_top <- df_top |>
 df_top |>
   ggplot(aes(pilot, rank, color = employer_name)) +
   geom_point(size = 4.5)  +
-  geom_bump(linewidth = 2, smooth = 8) +
   geom_text(
     aes(label = empl_lab), vjust = -1,
     na.rm = TRUE, family = "Source Sans Pro", color = matterhorn, size = 9/.pt, 
@@ -1503,6 +1500,7 @@ df_top |>
     aes(label = n), vjust = 2,
     na.rm = TRUE, family = "Source Sans Pro", color = matterhorn, size = 9/.pt, 
     ) +
+  geom_bump(linewidth = 2, smooth = 8) +
   scale_y_reverse(expand = c(.05, .05)) +
   coord_cartesian(ylim=c(0, 10)) +
   si_style_nolines() +
@@ -1516,11 +1514,174 @@ df_top |>
     legend.position = "none",
     axis.text.y = element_blank())
 
+# si_save(here("app/analytics/employer_bumpchart.png"))
 ```
 
-## \[SECTIONS IN PROGRESS\]
+As mentioned above, we can see that many employers are not being captured in this process. If we break down where that is occuring, we can see it is almost exclusively coming from Pinwheel. 
 
--   What share of applicants are return applicants? (tokenized applicants)
+```{r}
+#| label: missing_empl_tbl
+#| output: true
+
+df_mp |> 
+  filter(event == "ApplicantFinishedSync") |> 
+  count(pilot, provider, is.na(employer_name)) |> 
+  pivot_wider(
+    names_from = `is.na(employer_name)`,
+    values_from = n
+  ) |> 
+   arrange(desc(provider), pilot) |> 
+   mutate(
+    total_events = `FALSE` + `TRUE`,
+    missing = `TRUE`,
+    share_missing = missing/(`FALSE` + `TRUE`)
+  ) |> 
+   select(-`FALSE`, -`TRUE`) |> 
+   gt(groupname_col = "provider") |> 
+    format_numeric_columns() |> 
+    tab_spanner(
+    label = "# of events",
+    columns = c(total_events, missing)
+  ) |> 
+    cols_label(
+  pilot= "",
+    total_events = "Total", 
+    missing = "Missing",
+    share_missing = md("Share<br>Missing<br>Employer")
+  ) |> 
+  si_gt_base(header_fill = dsac_color['light_teal']) |> 
+  adjust_row_padding() |> 
+    tab_style(
+    style = list(
+      cell_text(color = dsac_color['light_cranberry'], weight = "bold")
+      ),
+    locations = cells_body(
+      columns = share_missing,
+      rows = share_missing > .1
+    )
+  )
+```
+
+##  What share of applicants are return applicants? (tokenized applicants)
+
+After the May 2025 pilot, the team implemented changes to allow for better tracking of applicants, allowing us to see if the same users were returning to the application. Ideally, if this application were incredibly easy to complete, we would see most using completing in one session. In the histogram below, we can see that the November 2025 had far mor repeated users. 
+
+```{r}
+#| label: returning
+#| output: true
+
+
+max_scale <- 12
+
+df_sessions |> 
+  group_by(pilot) |> 
+  count(n > max_scale) |> 
+  mutate(share = n / sum(n))
+
+
+df_sessions |> 
+  group_by(pilot) |> 
+  count(n <= 3 ) |> 
+  mutate(share = n / sum(n)) |> 
+  View()
+
+v_many_sessions <- df_sessions |> 
+  count(n > max_scale) |> 
+  mutate(share = n / sum(n)) |> 
+  filter(`n > max_scale` == TRUE) |> 
+  pull()
+
+df_sessions <- df_device_origin_status |>
+  filter(!pilot %in% c("May 2025")) |> 
+  count(pilot, distinct_id, initiation, sort = TRUE) |> 
+  mutate(fill_color = ifelse(n <= max_scale, "#909090", dsac_color['light_cranberry']))
+
+
+df_sessions |>
+  filter(n <= max_scale) |> 
+  ggplot(aes(n, fill = initiation)) +
+  geom_histogram(fill = dsac_color['light_navy'],color = "white", bins = max_scale) +
+  scale_y_continuous(labels = label_number(scale_cut = cut_short_scale())) +
+  scale_x_continuous(
+    limits = c(0, max_scale +1),
+    breaks = seq(1, max_scale, 1),
+    oob=scales::squish
+  ) +
+  facet_wrap(pilot~.) + 
+  labs(
+    x = NULL, y = NULL,
+    title = "INCREASE IN NUMBER OF SESSIONS PER APPLICANT IN NOVEMBER",
+    subtitle = "the number of applicants by session",
+    caption = glue("Note: The number of sessions is capped at {max_scale}, less than {label_percent(.1)(v_many_sessions)} across pilots had more sessions 
+      {default_caption}")
+  ) +
+  si_style_ygrid() +
+  theme(panel.spacing = unit(.5, "lines"))
+```
+
+Not show in the histogram are applicants who are starting the process more than `r max_scale` times. These applicants represent a small number of the total applicants, but the behavior does not seem realistic. This issue would merit some investigation as to whether these are really the same applicants, with cases sessions ranging from `r max_scale + 1` to `r max(df_sessions$n)` sessions. 
+
+```{r}
+
+df_sessions |> 
+  ggplot(aes(n, fct_rev(pilot), color = fill_color)) +
+  geom_point(position = position_jitter(height = 0.3, seed = 42), alpha = 0.4) +
+  scale_x_continuous(
+    limits = c(0, 50),
+    oob=scales::squish
+  ) +
+    scale_color_identity() + 
+    labs(
+      x = NULL, y = NULL,
+      title = glue("ABOUT {label_percent(.1)(v_many_sessions)} OF APPLICANTS HAD <span style = color:{dsac_color['light_cranberry']};>MORE THAN {max_scale} SESSIONS</span>"),
+      subtitle = "Each point represents an applicant's number of sessions",
+       caption = glue("Note: The number of sessions is capped at 50 
+      {default_caption}")
+      ) +
+    si_style_xgrid() +
+    theme(plot.title = element_markdown())
+```
+
+```{r}
+#| label: user_multi_sessions_deep_dive
+
+  df_mp |> 
+    filter(distinct_id == "applicant-533661") |> 
+    mutate(completed = event == "ApplicantSharedIncomeSummary") |> 
+    group_by(#day = date(timestamp), 
+    cbv_flow_id) |> 
+    summarise(
+      start = min(timestamp),
+      end = max(timestamp),
+      completed = max(completed, na.rm = TRUE),
+      .groups = "drop"
+    ) |> 
+      mutate(
+        cbv_flow_id = as.character(cbv_flow_id),
+        day = date(start),
+        pm = ifelse(pm(start), "pm", "am"),
+        across(c(start, end), hms::as_hms),
+        completed = as.logical(completed)
+        ) |> 
+      ggplot(aes(y = fct_rev(cbv_flow_id), group = cbv_flow_id)) +
+      geom_linerange(aes(xmin = start, xmax = end, color = completed)) +
+      # geom_point(aes(start), shape = 21, fill = "blue", alpha = .5) + 
+      # geom_point(aes(end), shape = 21, fill = "red", alpha = .5) + 
+      geom_point(aes(start), shape = 21, size = 4, fill = "white") + 
+      geom_point(aes(end), shape = 4, size = 4, fill = "red", alpha = .5) + 
+      facet_grid(pm~fct_rev(as.character(day)), scales = "free", space = "free_y") + 
+      si_style_xgrid()
+```
+
+
+
+In the November pilot, there were `r  label_comma()(df_compl_pilot[df_compl_pilot$pilot == "Nov 2025" & df_compl_pilot$denom == "applicants", ]$"Shared Income Summary")` applicants who completed the process, submitting their income summary. Was this an easy process? For the applicants who used the tokenized link, we can track how many sessions it took them to complete the process, ideally one and done. So keeping with the November pilot, 
+
+### \[SUB SECTIONS IN PROGRESS\]
+
     -   How many sessions does it take a applicant to complete the process?
     -   How many applicants clicked on the link and then came back another time to complete the process?
+    -   How many applicants finished in one try? How long did it take compared with the overal rate?
 -   How many times does an applicant "browser back"?
+
+
