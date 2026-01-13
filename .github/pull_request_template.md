@@ -36,6 +36,7 @@ Resolves [FFS-XXXX](https://jiraent.cms.gov/browse/FFS-XXXX).
 
   - [ ] Plan reviewed
   - [ ] Applied in dev before merge
+  - [ ] Applied in demo after merge
   - [ ] Applied in prod after merge (note any exceptions or special coordination below)
 
 **Risk / Downtime:**
