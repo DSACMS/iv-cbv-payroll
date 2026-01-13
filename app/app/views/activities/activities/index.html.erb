@@ -136,7 +136,12 @@
 <% end %>
 
 <% if activity_type_enabled?(:income) %>
-  <section>
+  <section class="margin-bottom-5">
+    <h2><%= t("activities.income.title") %></h2>
+    <p>
+      <%= t("activities.hub.count", count: @flow.payroll_accounts.size) %>
+    </m>
+
     <%= button_to t("activities.income.add"), activities_flow_income_employer_search_path, class: "btn btn-primary usa-button margin-y-5", method: :get %>
   </section>
 <% end %>
