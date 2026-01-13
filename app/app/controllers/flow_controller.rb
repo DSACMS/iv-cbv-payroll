@@ -1,6 +1,8 @@
 class FlowController < ApplicationController
   ALPHANUMERIC_PREFIX_REGEXP = /^([a-zA-Z0-9]+)[^a-zA-Z0-9]*$/
 
+  helper_method :next_path
+
   def set_generic_flow
     @flow, is_new_session = find_or_create_flow
     @cbv_flow = @flow # Maintain for compatibility until all controllers are converted
@@ -9,6 +11,23 @@ class FlowController < ApplicationController
     cookies.permanent.encrypted[:cbv_applicant_id] = @flow.cbv_applicant_id
 
     track_generic_link_clicked_event(@flow, is_new_session)
+  end
+
+  def next_path
+    flow_navigator.next_path
+  end
+
+  def flow_navigator
+    locales = Regexp.union(I18n.available_locales.map(&:to_s))
+
+    case request.path
+    when %r{^(/#{locales})?/activities}
+      ActivityFlowNavigator.new(params)
+    when %r{^(/#{locales})?/cbv}
+      CbvFlowNavigator.new(params)
+    else
+      raise "flow_navigator called from unknown page #{request.path}!"
+    end
   end
 
   private

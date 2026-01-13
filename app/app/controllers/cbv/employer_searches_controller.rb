@@ -9,6 +9,12 @@ class Cbv::EmployerSearchesController < Cbv::BaseController
     @has_payroll_account = @flow.payroll_accounts.any?
     @selected_tab = search_params[:type] || "payroll"
 
+    # Since this controller is shared between CBV and Activity flows, make sure
+    # the links on the page keep the user within the same flow:
+    @search_path = flow_navigator.income_sync_path(:employer_search)
+    @payroll_path = flow_navigator.income_sync_path(:employer_search, type: :payroll)
+    @employer_path = flow_navigator.income_sync_path(:employer_search, type: :employer)
+
     case search_params[:type]
     when "payroll"
       track_clicked_popular_payroll_providers_event
