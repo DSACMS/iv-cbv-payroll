@@ -20,7 +20,7 @@ This project is being developed in the open by CMS and its contractors. We use i
 
 ### Workflow and Branching
 
-<!--- TODO: Workflow Example
+
 We follow the [GitHub Flow Workflow](https://guides.github.com/introduction/flow/)
 
 1.  Fork the project
@@ -28,10 +28,9 @@ We follow the [GitHub Flow Workflow](https://guides.github.com/introduction/flow
 3.  Create a feature branch
 4.  Write code and tests for your change
 5.  From your branch, make a pull request against `{{ cookiecutter.project_org }}/{{ cookiecutter.project_repo_name }}/main`
-6.  Work with repo maintainers to get your change reviewed
+6.  Work with [repo maintainers](.github/CODEOWNERS.md) to get your change reviewed
 7.  Wait for your change to be pulled into `{{ cookiecutter.project_org }}/{{ cookiecutter.project_repo_name }}/main`
 8.  Delete your feature branch
--->
 
 ### Testing Conventions
 

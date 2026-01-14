@@ -4,9 +4,6 @@ IV CBV Payroll is supported by a dedicated team of individuals fulfilling variou
 
 ## Project Members
 
-<!-- TODO: Who are the points of contact in your project who are responsible/accountable for the project? This can often be an engineering or design manager or leader, who may or may not be the primary maintainers of the project.
-
-Roles to include, but not limited to: Project Owner, Technical Lead, Developers/Contributors, Community Manager, Security Team, Policy Advisor, Contracting Officer's Representative, Compliance Officer, Procurement Officer -->
 
 | Role   | Name    | Affiliation    |
 | :----- | :------ | :------------- |
@@ -15,7 +12,7 @@ Roles to include, but not limited to: Project Owner, Technical Lead, Developers/
 | Designer | Seth Owings | CMS |
 | Software Engineer | Jake Shilling | CMS |
 | Software Engineer | Imhotep Benjamin | CMS |
-| Software Engineer | Jan Vorisek | CMS |
+| Software Engineer | Jan Voříšek | CMS |
 | Contracting Officer's Representative | Mark DeZalia | CMS |
 | Product Manager | Allyse Parekh | CMS |
 | Designer | Paul Gehrig | Nava |
@@ -23,7 +20,7 @@ Roles to include, but not limited to: Project Owner, Technical Lead, Developers/
 | Software Engineer | Daphne Gold | Nava |
 | Software Engineer | Tim Miller | Nava |
 | Software Engineer | Ben Calegari | Nava |
-| Open Source Lead | Nočnica (Nica) Mellifera | Nava |
+| Open Source Lead/Community Manager | Nočnica Mellifera | Nava |
 
 See [CODEOWNERS.md](.github/CODEOWNERS.md) for a list of those responsible for the code and documentation in this repository.
 
@@ -31,19 +28,16 @@ See [Community Guidelines](#iv-cbv-payroll-open-source-community-guidelines) on 
 
 ### Core Team
 
-<!-- TODO: List the individuals who are members of the core team. What groups/domains are they a part of? Does your project have domains/areas that are maintained by specific people? List @USERNAMES directly, or any @ALIASES for groups/teams. -->
-
 - @tdooner (Tom Dooner)
 - @daphnegold (Daphne Gold)
 - @millerti (Tim Miller)
 - @bencalegari (Ben Calegari)
 - @j-shilling (Jake Shilling)
 - @imhben (Imhotep Benjamin)
-- @dx-gov (Jan Vorisek)
+- @dx-gov (Jan Voříšek)
 
 ### Maintainers
 
-<!-- TODO: List the individuals who are the maintainers. What groups/domains are maintainers a part of? Does your project have domains/areas that are maintained by specific people? List @USERNAMES directly, or any @ALIASES for groups/teams. -->
 
 - @tdooner (Tom Dooner)
 - @daphnegold  (Daphne Gold)
@@ -51,7 +45,7 @@ See [Community Guidelines](#iv-cbv-payroll-open-source-community-guidelines) on 
 - @bencalegari (Ben Calegari)
 - @j-shilling (Jake Shilling)
 - @imhben (Imhotep Benjamin)
-- @dx-gov (Jan Vorisek)
+- @dx-gov (Jan Voříšek)
 
 ### Contributors
 
