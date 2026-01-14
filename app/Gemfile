@@ -140,7 +140,7 @@ gem "net-ssh"
 # Sinatra for JSON API reference implementation
 gem "sinatra", "~> 4.2"
 
-gem "pry", "~> 0.15.2", group: :development
+gem "pry", "~> 0.16.0", group: :development
 gem "pry-doc", "~> 1.6", group: :development
 
 gem "faker", "~> 3.5", group: :development
