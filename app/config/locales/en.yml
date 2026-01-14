@@ -135,6 +135,7 @@ en:
       consent_required: Please check the legal agreement box to share your report.
       description: Your report will be sent to %{agency_name}. You must check the legal agreement box to share your report.
       pdf:
+        confirmation_code: Confirmation code
         date: Date
         description: The following information was provided by the Medicaid client for verification of the Community Engagement Requirements.
         disclaimer: This report is based on the activities you entered. Contact your agency if you need to make a correction.
@@ -161,6 +162,7 @@ en:
       title: Submit your Medicaid Community Engagement report
     success:
       completed_at: Completed at
+      confirmation_code_html: "<strong>Your confirmation code</strong>: %{confirmation_code}"
       description: Thank you for submitting your report.
       download_pdf: Download PDF report
       title: Your Medicaid Community Engagement report was successfully sent to %{agency_name}
