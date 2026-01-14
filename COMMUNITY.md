@@ -128,7 +128,7 @@ A Maintainer must meet the responsibilities and requirements of a contributor, p
 - Reviewing at least 2 PRs per 3 months, especially PRs that involve specific parts of the project.
 - Mentoring new contributors.
 - Writing and refactoring submitted PRs.
-- Participating in IVaaS maintainer activities.
+- Participating in EMMY maintainer activities.
 - Proposing contributions to strategy and policy of the project.
 - Participating in, and leading, community discussions.
 - Mentoring other Maintainers.
@@ -146,7 +146,7 @@ A Maintainer must meet the responsibilities and requirements of a contributor, p
 #### Additional privileges:
 - Approve PRs to their specific domain of the project.
 - Represent the project in public as a Maintainer in line with the COMMUNICATIONS.md policy.
-- Communicate with the IVaaS team on behalf of the project.
+- Communicate with the EMMY team on behalf of the project.
 - Other privileges defined by the community in the future.
 
 #### Process of becoming a Maintainer

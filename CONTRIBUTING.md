@@ -1,9 +1,7 @@
 # How to Contribute
 
-This project is being developed in the open by CMS and its contractors. We use internal tools to track our work (bugs and feature enhancements), and, as such, this repo is not architected to receive public contributions.
+Eligibility Made Easy (EMMY) is being developed in the open by CMS and its contractors. We use internal tools to track our work (bugs and feature enhancements), and, as such, this repo is not architected to receive public contributions.
 
-<details>
-<summary>Sections we will fill out once we open to external contributions</summary>
 ## Getting Started
 
 ### Team Specific Guidelines
@@ -27,9 +25,9 @@ We follow the [GitHub Flow Workflow](https://guides.github.com/introduction/flow
 2.  Check out the `main` branch
 3.  Create a feature branch
 4.  Write code and tests for your change
-5.  From your branch, make a pull request against `{{ cookiecutter.project_org }}/{{ cookiecutter.project_repo_name }}/main`
+5.  From your branch, make a pull request against main
 6.  Work with [repo maintainers](.github/CODEOWNERS.md) to get your change reviewed
-7.  Wait for your change to be pulled into `{{ cookiecutter.project_org }}/{{ cookiecutter.project_repo_name }}/main`
+7.  Wait for your change to be pulled into main
 8.  Delete your feature branch
 
 ### Testing Conventions
@@ -72,7 +70,7 @@ When creating an issue please try to adhere to the following format:
 
 ### Writing Pull Requests
 
-<!-- TODO: Make a brief statement about where to file pull/merge requests, and conventions for doing so. Link to PULL_REQUEST_TEMPLATE.md file.
+
 
 Comments should be formatted to a width no greater than 80 columns.
 
@@ -82,22 +80,47 @@ We adhere to a specific format for commit messages. Please write your commit
 messages along these guidelines. Please keep the line width no greater than 80
 columns (You can use `fmt -n -p -w 80` to accomplish this).
 
-    module-name: One line description of your change (less than 72 characters)
+    Some examples of good, understandable PR titles:
 
-    Problem
+        FFS-1111: Fix missing translation on /entry page
+        FFS-2222: Implement invitation reminder emails
 
-    Explain the context and why you're making that change.  What is the problem
-    you're trying to solve? In some cases there is not a problem and this can be
-    thought of being the motivation for your change.
+    (The title of the pull request will be used in the eventual deploy log - so it's helpful to format the title to be understandable by other disciplines if possible.)
 
-    Solution
+    ## Ticket
 
-    Describe the modifications you've done.
+    either a JIRA ticket (internal to CMS) or GitHub issue
 
-    Result
+    ## Changes
+    <!-- What was added, updated, or removed in this PR. -->
 
-    What will change as a result of your pull request? Note that sometimes this
-    section is unnecessary because it is self-explanatory based on the solution.
+
+    ## Context for reviewers
+    <!-- Anything you'd like other engineers on the team to know. -->
+
+
+    ## Acceptance testing
+    <!-- Check one: -->
+
+    - [x] No acceptance testing needed
+    * This change will not affect the user experience (bugfix, dependency updates, etc.)
+    - [ ] Acceptance testing prior to merge
+    * This change can be verified visually via screenshots attached below or by sending a link to a local development environment to the acceptance tester
+    * Acceptance testing should be done by **design** for visual changes, **product** for behavior/logic changes, **or both** for changes that impact both.
+    - [ ] Acceptance testing after merge
+    * This change is hard to test locally, so we'll test it in the demo environment (deployed automatically after merge.)
+    * Make sure to notify the team once this PR is merged so we don't inadvertently deploy the unaccepted change to production. (e.g. `:alert: Deploy block! @ffs-eng I just merged PR [#123] and will be doing acceptance testing in demo - please don't deploy until I'm finished!`)
+
+    ## Infrastructure Changes
+    <!-- If this PR includes Terraform changes, please provide relevant info. -->
+
+    - [ ] Plan reviewed
+    - [ ] Applied in dev before merge
+    - [ ] Applied in demo after merge
+    - [ ] Applied in prod after merge (note any exceptions or special coordination below)
+
+    **Risk / Downtime:**
+    <!-- Note exceptions, potential downtime, or required coordination -->
 
 Some important notes regarding the summary line:
 
@@ -151,7 +174,7 @@ authorship metadata will be preserved.
 We also welcome improvements to the project documentation or to the existing
 docs. Please file an [issue](https://github.com/{{ cookiecutter.project_org }}/{{ cookiecutter.project_repo_name }}/issues).
 -->
-</details>
+
 
 ## Policies
 
