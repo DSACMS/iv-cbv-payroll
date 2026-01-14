@@ -71,9 +71,6 @@ module Aggregators
       # @param last_name [String] Last name of the individual
       # @param date_of_birth [Date] Date of birth of the individual
       # @return [Hash] Parsed JSON response from NSC API
-      #
-      # TODO:
-      #   - Make the terms dynamic based on user consent
       def fetch_enrollment_data(first_name:, last_name:, date_of_birth:)
         request_body = {
           firstName: first_name,
