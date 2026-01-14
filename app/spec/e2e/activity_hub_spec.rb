@@ -39,7 +39,13 @@ RSpec.describe 'e2e Activity Hub flow test', type: :feature, js: true do
       # Wait for Argyle modal to disappear
       find_all("div[id*=\"argyle-link-root\"]", maximum: 0, minimum: nil, wait: 30)
     end
+    # /activities/income/synchronizations
     verify_page(page, title: I18n.t("cbv.synchronizations.show.header"), wait: 15)
+    # /activities/income/payment_details
+    @e2e.replay_webhooks
+    verify_page(page, title: I18n.t("cbv.payment_details.show.header", employer_name: ""), wait: 60)
+    fill_in "activity_flow[additional_information]", with: "Some kind of additional information"
+    click_button I18n.t("cbv.payment_details.show.continue")
 
     # Add a Volunteering activity
     click_button I18n.t("activities.volunteering.add")
