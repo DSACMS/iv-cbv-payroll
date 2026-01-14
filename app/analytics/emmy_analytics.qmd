@@ -23,28 +23,35 @@ format:
   #   dpi: 300
 ---
 
-# Purpose
+# Overview
+
+## Purpose
 
 Over the past year, the Centers for Medicare and Medicaid Services (CMS) in conjunction with partner states have piloted an online income verification application, Eligibility Made Easy (EMMY). With each phase, analysts have explore the web analytics data, looking into applicant uptake and utilization of the tool. This specific report aims identify areas of the tool where retention drops in an effort to improve the product design, making it easier for applicants to complete the full form.
 
-## Key Questions
+## Key Takaways
 
-Below are the areas the report seeks to explore to help improve the product design.
-
-1.  How many applicants are starting but not completing the process?
-    1.  Is there a drop in completion as the pilot period draws on?
-    2.  Is there a difference in completion based on their device or how they receive the pilot link?
-2.  How long does it take to complete the application?
-    1.  How long does the syncing take?
-    2.  When there was a provider outage, was there any change in the processing times?
-3.  Where in the process are applicants dropping off?
-    1.  Are applicants accessing the documentation (help or FAQ) before dropping off?
-    2.  How many applicants are not finding their employer in the search?
-    3.  Are the popular app employers the right ones (i.e. do there appear to be employers searched more frequently than any that appear in the popular links)
-4.  What share of applicants are return applicants? (only tokenized link applicants)
-    1.  How many sessions does it take an applicants to complete the process?
-    2.  How many applicants clicked on the link and then came back another time to complete the process?
-5.  How many times does an applicant "browser back"?
+1.  Significant drop-off rate threatens progress success.
+    -   Issue - a substantial portion of applicants are starting but not completing the income verification process
+    -   Why it matters - this limits the program's ability to help eligible beneficiaries access Medicaid benefits
+2.  The employer search functionality is a critical bottleneck
+    -   Issue - about 19% of employer searches return "missing" results across all three
+        pilot periods (May, Aug, Nov 2025), with 34% of applicants dropping off
+        at this step in November
+    -   Why it matters - a major roadblock preventing eligible applicants from completing verification
+3.  Help documentation usage patterns suggest possible UX confusion
+    -   Issue - Applicants who completed the application had slightly more "help
+        actions" than those who didn't, with significantly higher help usage on
+        the agreement page among those who dropped off
+    -   Why it matters - The agreement page may be confusing or concerning to users, causing them to seek help and then possibly abandon the process
+4.  Seeing a higher completion rate for those starting from a mailed link
+    -   Issue - Completion rates are low and while we are seeing a rise in completion rates for those accessing via mailed link, completion from SMS messages remains static
+    -   Why it matters - The app is designed to be mobile-friendly, so understanding
+        device-based completion rates is critical for optimizing the user
+        experience
+5.  Multi-session users investigation
+    1.  Issue - More than half of users in November have two or more sessions (whether they are completing or not)
+    2.  Why it matters - Need to understand the factors leading to this in order to possibly improve information or UX as well as think about feature such as possibly ensuring state persistence across sessions
 
 ## Method
 
@@ -115,6 +122,13 @@ df_mp <- read_parquet(mp_path)
 ```
 
 ```{r}
+#| label: latest_pilot
+
+latest_pilot <- levels(df_mp$pilot) |> tail(n=1)
+
+```
+
+```{r}
 #| label: fcn_clean_events
 
 #clean event names for viz to add space and remove repetitive "applicant" text
@@ -125,7 +139,9 @@ clean_events <- function(df){
       event_clean = event |> 
         str_replace_all("(?<!^)([A-Z])", " \\1") |> 
         str_remove("Applicant ") |> 
-        str_remove(" Or Platform Item"),
+        str_remove(" Or Platform Item") |> 
+        str_replace("M F A", "MFA") |> 
+        str_replace("C B V", "CBV"),
         .after = event
         )
 }
@@ -165,9 +181,10 @@ df_compl_pilot |>
   add_labs(
     title = "STEADY COMPLETION RATE IN ALL PILOTS",
     subtitle = "The distinct number of applicants who started and completed the process",
-    caption = default_caption
+    caption = md(glue("Note: The May pilot did not capture unique applicants, so only total events is reported. <br>
+    {default_caption}"))
   ) |> 
-    fmt_missing()
+    sub_missing()
 
 ```
 
@@ -410,7 +427,8 @@ v1 <- df_compl_wkly |>
     v1 / v2 + 
       plot_annotation(
         title = "LARGE DROP OFF IN INITIATING APPLICATION AFTER THE FIRST WEEK, BUT LARGER COMPLETION RATE IN FOLLOWING WEEKS" |> str_wrap(70),
-        caption = default_caption,
+        caption = glue("Note: The May pilot did not capture unique applicants, so only total events is reported.
+    {default_caption}"),
         theme = si_style()
       )
 ```
@@ -429,25 +447,41 @@ df_device_origin_status <- df_mp |>
     initiation = initiation |> 
       str_replace_all("(?<!^)([A-Z])", " \\1") |> 
       str_remove('C B V ')
-  ) |> 
-  group_by(distinct_id, cbv_flow_id) |> 
-  fill(initiation, .direction = "updown") |> 
-  ungroup() 
-  
+  ) 
+
+#fill missing across flow - initiation, device, and origin
 df_device_origin_status <- df_device_origin_status |> 
-  filter(
-    # str_starts(distinct_id, "applicant"),
-    event %in% c("ApplicantViewedAgreement", "ApplicantSharedIncomeSummary")
-  ) |>  
+  group_by(distinct_id, cbv_flow_id) |> 
+  fill(device_type, origin, initiation, .direction = "updown") |> 
+  ungroup() 
+
+#create completion variable
+df_device_origin_status <- df_device_origin_status |> 
+  filter(event %in% c("ApplicantViewedAgreement", "ApplicantSharedIncomeSummary")) |> 
   mutate(
+    started = event == "ApplicantViewedAgreement",
     completed = event == "ApplicantSharedIncomeSummary",
+    ) 
+
+#clean up columns for viz
+df_device_origin_status <- df_device_origin_status |>
+  mutate(
     across(c(device_type, origin, initiation), ~ ifelse(is.na(.), "unknown", .)),
-    device_type = ifelse(device_type %in% c("desktop", 'smartphone', 'unknown'), device_type, "other")
-  ) |> 
-  group_by(pilot, distinct_id, cbv_flow_id) |> 
-  mutate(completed = max(completed) |> as.logical()) |> 
-  ungroup() |> 
-  distinct(pilot, distinct_id, cbv_flow_id, device_type, origin, completed, initiation) 
+    device_type = ifelse(device_type %in% c("desktop", 'smartphone', 'unknown'), device_type, "other"))
+
+#aggregate to flow level
+df_device_origin_status <-df_device_origin_status |> 
+  group_by(pilot, distinct_id, cbv_flow_id, device_type, origin, initiation) |> 
+  summarise(
+    across(c(started, completed), ~ sum(.x, na.rm = TRUE)), 
+    .groups = "drop"
+    )
+
+#address for device duplicate flows
+df_device_origin_status <-df_device_origin_status |> 
+  group_by(cbv_flow_id) |>
+  mutate(device_type = ifelse(n() > 1, "multiple", device_type)) |> 
+  ungroup()
 
 #other device types
 other_devices <- unique(df_mp$device_type) |> 
@@ -457,7 +491,7 @@ other_devices <- unique(df_mp$device_type) |>
 
 ```
 
-When comparing the device type, we can see there is a preference for applicants initiating the process on their phones. The success rate is much higher on the phones than desktop, but both success rates are rather low. The other types of devices include `{r} other_devices`.
+When comparing the device type, we can see there is a preference for applicants initiating the process on their phones. The success rate has been higher on the phones than desktop, but both success rates are rather low. Interestly there has been a drop each pilot in desktop completion rates and in November, there was actual a gain in smartphone completion rate, futhering the divide. The other types of devices include `{r} other_devices`. Each pilot also see a number of unknown devices. Looking at the sessions for these unknown devices, they almost exclusively are just clicking the link to start and viewing the agreement page and not going beyond that.
 
 ```{r}
 #| label: device_status_viz
@@ -466,7 +500,7 @@ When comparing the device type, we can see there is a preference for applicants 
 df_device_status_viz <- df_device_origin_status |>
   group_by(pilot, device_type) |> 
   summarise(
-    started = n(),
+    started = sum(started, na.rm = TRUE),
     completion_rate = sum(completed, na.rm = TRUE) / n(),
     .groups = "drop"
   ) |> 
@@ -484,7 +518,7 @@ df_device_status_viz |>
   ggplot(aes(value, fct_reorder(device_type, value, sum), fill = fill_color)) +
   geom_col() +
   geom_text(aes(label = value_label), family = "Source Sans 3", color = matterhorn, hjust = -.1) +
-  facet_grid(pilot~fct_rev(type), scales = "free_x", space = "free_y", switch = "y") +
+  facet_grid(pilot~fct_rev(type), scales = "free", space = "free_y", switch = "y") +
   coord_cartesian(clip = "off") +
   scale_fill_identity() +
   si_style_xgrid() +
@@ -492,19 +526,21 @@ df_device_status_viz |>
     x = NULL, y = NULL,
     title = "MOST APPLICANTS START AND HAVE A HIGHER COMPLETION RATE ON A SMARTPHONE THAN DESKTOP" |> str_wrap(70),
     subtitle = "number of events by device type",
-    caption = glue("Note: Other devices include {other_devices} | {default_caption}")
+    caption = glue("Note: Other devices include {other_devices}
+    {default_caption}")
   ) +
   theme(
     legend.position = "none",
     axis.text.x = element_blank(),
     strip.placement = "outside",
-    panel.spacing = unit(0.5, "lines"),
+    panel.spacing.x = unit(1.5, "lines"),
+    panel.spacing.y = unit(0.5, "lines"),
     strip.text.y = element_text(hjust = .5)
   )
 
 ```
 
-When looking the link/url origin, we see the large majority arise from SMS messages. However, the success rate is much lower than that of physical mailings.
+When looking the link/url origin, we see the large majority arise from SMS messages. However, the success rate is much lower than that of physical mailings. The November pilot introduced the ability to share the link with a household member on the final stage; `r nrow(df_device_origin_status[df_device_origin_status$origin == "shared",])` sessions were started with this shared link.
 
 ```{r}
 #| label: origin_status_viz
@@ -550,7 +586,7 @@ df_origin_status_viz |>
     axis.text.x = element_blank(),
     strip.placement = "outside",
     panel.spacing.y = unit(0.5, "lines"),
-    panel.spacing.x = unit(1, "lines"),
+    panel.spacing.x = unit(1.5, "lines"),
     strip.text.y = element_text(hjust = .5)
   )
 ```
@@ -597,8 +633,8 @@ df_link_status_viz |>
     legend.position = "none",
     axis.text.x = element_blank(),
     strip.placement = "outside",
-    panel.spacing.x = unit(0.5, "lines"),
-    panel.spacing.y = unit(1, "lines"),
+    panel.spacing.x = unit(1.5, "lines"),
+    panel.spacing.y = unit(0.5, "lines"),
     strip.text.y = element_text(hjust = .5)
   )
 ```
@@ -1451,7 +1487,7 @@ df_search |>
     missingresults = md("Employer Searches<br> Returned Missing"),
     share_missing = md("Share<br>Missing")
   ) |> 
-  fmt_missing() |> 
+  sub_missing() |> 
   add_labs(
     title = "ABOUT ONE IN FIVE SEARCH RESULTS ARE MISSING EACH PILOT PERIOD",
     caption = default_caption
@@ -1464,7 +1500,6 @@ From the table in the last section, we can see that the number of searches and p
 
 ```{r}
 #| label: pop_employers
-#| output: true
 
 df_top <- df_mp |> 
   filter(event == "ApplicantFinishedSync") |>
@@ -1486,7 +1521,20 @@ df_top <- df_top |>
   group_by(employer_name) |> 
   mutate(empl_lab = case_when(row_number() == 1 ~ employer_name)) |> 
   ungroup()
-  )
+  ) 
+  
+
+# df_top <- df_top |> 
+#   mutate(fill_color = case_when(
+#     pilot == latest_pilot & rank == 1 ~ dsac_color['light_navy'],
+#     pilot == latest_pilot & rank == 2 ~ dsac_color['light_cranberry'],
+#     pilot == latest_pilot & rank == 3 ~ dsac_color['light_teal']
+#     )) |>
+#   group_by(employer_name) |> 
+#   fill(fill_color, .direction = "updown") |> 
+#   ungroup() |> 
+#   mutate(fill_color = ifelse(is.na(fill_color), matterhorn, fill_color))
+  
 
 
 df_top |>
@@ -1496,12 +1544,20 @@ df_top |>
     aes(label = empl_lab), vjust = -1,
     na.rm = TRUE, family = "Source Sans Pro", color = matterhorn, size = 9/.pt, 
     ) +
-    geom_text(
+  geom_text(
     aes(label = n), vjust = 2,
     na.rm = TRUE, family = "Source Sans Pro", color = matterhorn, size = 9/.pt, 
     ) +
   geom_bump(linewidth = 2, smooth = 8) +
   scale_y_reverse(expand = c(.05, .05)) +
+  scale_color_manual(
+    values = c(
+      "Wal-Mart Associates, Inc." = unname(dsac_color['light_navy']),
+      "[not captured]" = unname(dsac_color['light_cranberry']),
+      "Amazon.com Services LLC" = unname(dsac_color['light_teal']),
+      rep("gray50", length(unique(df_top$employer_name)) - 3)
+      )) +
+  # scale_color_manual(values = rep("gray50", length(unique(df_top$employer_name)))) +
   coord_cartesian(ylim=c(0, 10)) +
   si_style_nolines() +
   labs(
@@ -1514,16 +1570,15 @@ df_top |>
     legend.position = "none",
     axis.text.y = element_blank())
 
-# si_save(here("app/analytics/employer_bumpchart.png"))
+si_save(here("app/analytics/employer_bumpchart.png"))
 ```
 
-As mentioned above, we can see that many employers are not being captured in this process. If we break down where that is occuring, we can see it is almost exclusively coming from Pinwheel. 
+![](employer_bumpchart.png)
 
 ```{r}
-#| label: missing_empl_tbl
-#| output: true
+#| label: missing_empl
 
-df_mp |> 
+df_missing_empl <- df_mp |> 
   filter(event == "ApplicantFinishedSync") |> 
   count(pilot, provider, is.na(employer_name)) |> 
   pivot_wider(
@@ -1536,7 +1591,17 @@ df_mp |>
     missing = `TRUE`,
     share_missing = missing/(`FALSE` + `TRUE`)
   ) |> 
-   select(-`FALSE`, -`TRUE`) |> 
+   select(-`FALSE`, -`TRUE`)
+
+```
+
+As mentioned above, we can see that many employers are not being captured in this process. If we break down where this is occuring, we can see it is almost exclusively coming from Pinwheel. In the most November pilot, `r label_percent()(df_missing_empl[df_missing_empl$provider == "Pinwheel" & df_missing_empl$pilot == "Nov 2025",]$share_missing)` of the synced data were missing an employer name.
+
+```{r}
+#| label: missing_empl_tbl
+#| output: true
+
+ df_missing_empl|> 
    gt(groupname_col = "provider") |> 
     format_numeric_columns() |> 
     tab_spanner(
@@ -1562,40 +1627,49 @@ df_mp |>
   )
 ```
 
-##  What share of applicants are return applicants? (tokenized applicants)
-
-After the May 2025 pilot, the team implemented changes to allow for better tracking of applicants, allowing us to see if the same users were returning to the application. Ideally, if this application were incredibly easy to complete, we would see most using completing in one session. In the histogram below, we can see that the November 2025 had far mor repeated users. 
+## How many sessions does it take a applicant to complete the process?
 
 ```{r}
 #| label: returning
-#| output: true
-
 
 max_scale <- 12
-
-df_sessions |> 
-  group_by(pilot) |> 
-  count(n > max_scale) |> 
-  mutate(share = n / sum(n))
-
-
-df_sessions |> 
-  group_by(pilot) |> 
-  count(n <= 3 ) |> 
-  mutate(share = n / sum(n)) |> 
-  View()
-
-v_many_sessions <- df_sessions |> 
-  count(n > max_scale) |> 
-  mutate(share = n / sum(n)) |> 
-  filter(`n > max_scale` == TRUE) |> 
-  pull()
 
 df_sessions <- df_device_origin_status |>
   filter(!pilot %in% c("May 2025")) |> 
   count(pilot, distinct_id, initiation, sort = TRUE) |> 
   mutate(fill_color = ifelse(n <= max_scale, "#909090", dsac_color['light_cranberry']))
 
+
+# df_sessions |> 
+#   group_by(pilot) |> 
+#   count(n > max_scale) |> 
+#   mutate(share = n / sum(n))
+
+
+df_sessions_multi <- df_sessions |>
+  mutate(type = ifelse(n == 1, "single", "multi")) |> 
+  count(pilot, type) |> 
+  group_by(pilot) |> 
+  mutate(share = n / sum(n)) |> 
+  ungroup() |> 
+  filter(type == "multi") 
+
+df_sessions |> 
+  count(pilot, n > 1) |> 
+  mutate(share = n / sum(n)) 
+
+v_many_sessions <- df_sessions |> 
+  count(n > max_scale) |> 
+  mutate(share = n / sum(n)) |> 
+  filter(`n > max_scale` == TRUE) |> 
+  pull()
+```
+
+After the May 2025 pilot, the team implemented changes to allow for better tracking of applicants, allowing us to see if the same users were returning to the application. Ideally, if this application were incredibly easy to complete, we would see most using completing in one session. In the histogram below, we can see that the November 2025 had far more repeated users. The number of users who had two or more sessions increased from `r scales::label_percent()(df_sessions_multi[df_sessions_multi$pilot == "Oct 2025",]$share)` in October up to `r scales::label_percent()(df_sessions_multi[df_sessions_multi$pilot == "Nov 2025",]$share)` in November, which is a pretty sizable increase.
+
+```{r}
+#| label: returning_viz
+#| output: true
 
 df_sessions |>
   filter(n <= max_scale) |> 
@@ -1619,10 +1693,11 @@ df_sessions |>
   theme(panel.spacing = unit(.5, "lines"))
 ```
 
-Not show in the histogram are applicants who are starting the process more than `r max_scale` times. These applicants represent a small number of the total applicants, but the behavior does not seem realistic. This issue would merit some investigation as to whether these are really the same applicants, with cases sessions ranging from `r max_scale + 1` to `r max(df_sessions$n)` sessions. 
+Not show in the histogram are applicants who are starting the process more than `r max_scale` times. These applicants represent a small number of the total applicants, but the behavior does not seem realistic. This issue would merit some investigation as to whether these are really the same applicants, with cases sessions ranging from `r max_scale + 1` to `r max(df_sessions$n)` sessions.
 
 ```{r}
-
+#| label: returning_viz_points
+#| output: true
 df_sessions |> 
   ggplot(aes(n, fct_rev(pilot), color = fill_color)) +
   geom_point(position = position_jitter(height = 0.3, seed = 42), alpha = 0.4) +
@@ -1673,15 +1748,17 @@ df_sessions |>
       si_style_xgrid()
 ```
 
+In the November pilot, there were `r  scales::label_comma()(df_compl_pilot[df_compl_pilot$pilot == "Nov 2025" & df_compl_pilot$denom == "applicants", ]$"Shared Income Summary")` applicants who completed the process, submitting their income summary. Was this an easy process? For the applicants who used the tokenized link, we can track how many sessions it took them to complete the process, ideally one and done. So keeping with the November pilot,
 
+### How many applicants clicked on the link and then came back another time to complete the process?
 
-In the November pilot, there were `r  label_comma()(df_compl_pilot[df_compl_pilot$pilot == "Nov 2025" & df_compl_pilot$denom == "applicants", ]$"Shared Income Summary")` applicants who completed the process, submitting their income summary. Was this an easy process? For the applicants who used the tokenized link, we can track how many sessions it took them to complete the process, ideally one and done. So keeping with the November pilot, 
+When getting a link, its assumed many people open that link to determine what they need to do and come back later to complete if it doesn't seem easy and/or quick to complete. We can look to see how many sessions were solely opening the link and not continuing on.
 
 ### \[SUB SECTIONS IN PROGRESS\]
 
-    -   How many sessions does it take a applicant to complete the process?
-    -   How many applicants clicked on the link and then came back another time to complete the process?
-    -   How many applicants finished in one try? How long did it take compared with the overal rate?
+```         
+-   How many applicants clicked on the link and then came back another time to complete the process?
+-   How many applicants finished in one try? How long did it take compared with the overal rate?
+```
+
 -   How many times does an applicant "browser back"?
-
-
