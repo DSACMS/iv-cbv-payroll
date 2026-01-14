@@ -140,7 +140,7 @@ module Aggregators
           conn.request :url_encoded
           conn.response :logger, Rails.logger, bodies: true, headers: true, prefix: "[NscService][HTTP]"
           conn.response :json
-          conn.options.timeout = 10
+          conn.options.timeout = MAX_TIMEOUT.to_i
         end
 
         response = token_conn.post(token_url) do |req|
