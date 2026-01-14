@@ -377,9 +377,10 @@ GEM
       premailer (~> 1.7, >= 1.7.9)
     prettyprint (0.2.0)
     prism (1.7.0)
-    pry (0.15.2)
+    pry (0.16.0)
       coderay (~> 1.1)
       method_source (~> 1.0)
+      reline (>= 0.6.0)
     pry-doc (1.6.0)
       pry (~> 0.11)
       yard (~> 0.9.11)
@@ -664,7 +665,7 @@ DEPENDENCIES
   pg (~> 1.6)
   pg-aws_rds_iam (~> 0.7.0)
   premailer-rails
-  pry (~> 0.15.2)
+  pry (~> 0.16.0)
   pry-doc (~> 1.6)
   puma (~> 6.6.0)
   rack-mini-profiler
