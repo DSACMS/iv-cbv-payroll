@@ -324,7 +324,11 @@ tribble(
 ) |> 
   gt(groupname_col = "Behavior") |> 
   adjust_row_padding() |> 
-  si_gt_base(header_fill = dsac_color['light_teal'])
+  si_gt_base(header_fill = dsac_color['light_teal']) |> 
+  add_labs(
+    title = "Example Applicant Behavior" |> toupper(),
+    caption = glue("Note: dummy data")
+  ) 
 
 ```
 
@@ -1264,7 +1268,11 @@ df_ret |>
   si_gt_base(header_fill = dsac_color['light_teal']) |> 
   adjust_row_padding() |> 
   format_numeric_columns() |> 
-  sub_missing()
+  sub_missing() |> 
+  add_labs(
+    title = "LARGE DROP IN GETTING TO SECOND PAGE" |> toupper(),
+    caption = default_caption
+  ) 
 
 ```
 
@@ -1618,7 +1626,11 @@ As mentioned above, we can see that many employers are not being captured in thi
       columns = share_missing,
       rows = share_missing > .1
     )
-  )
+  ) |> 
+  add_labs(
+    title = "Half of Pinwheel sync appear to not capture the employer" |> toupper(),
+    caption = default_caption
+  ) 
 ```
 
 ## How many sessions does it take a applicant to complete the process?
@@ -1826,7 +1838,7 @@ v_sess_complete <- df_started_w |>
 
 ```
 
-In looking at the most recent pilot data, we see that of the `r scales::label_comma()(nrow(df_started_w))` applicants who started the application, `scales::label_percent()(df_started_status[df_started_status$status == "Opened and closed",]$share)` opened the link and closed it without proceeding further in their first session. For the applicants who simply opened an closed,  `scales::label_percent()(v_end)` did not attempt to complete the application again. A small number of applications completed the process in their first session (`scales::label_percent()(df_started_status[df_started_status$status == "Opened and finished",]$share)`) and of those who didn't complete it the first time, the median applicant was completing the process in session `r v_sess_complete`.
+In looking at the most recent pilot data, we see that of the `r scales::label_comma()(nrow(df_started_w))` applicants who started the application, `r scales::label_percent()(df_started_status[df_started_status$status == "Opened and closed",]$share)` opened the link and closed it without proceeding further in their first session. For the applicants who simply opened an closed,  `r scales::label_percent()(v_end)` did not attempt to complete the application again. A small number of applications completed the process in their first session (`r scales::label_percent()(df_started_status[df_started_status$status == "Opened and finished",]$share)`) and of those who didn't complete it the first time, the median applicant was completing the process in session `r v_sess_complete`.
 
 ```{r}
 #| label: first_opened_viz
