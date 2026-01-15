@@ -128,6 +128,11 @@ en:
       reporting_month: 'Reporting month: %{month}'
       save: Save changes
       title: Add activities to your Medicaid Community Engagement report
+    income:
+      account_id: Account ID
+      add: Add Income
+      synchronization_status: Status
+      title: Employment
     job_training:
       add: Add Job Training Activity
       created: Job training activity was successfully created.
@@ -151,8 +156,10 @@ en:
         disclaimer: This report is based on the activities you entered. Contact your agency if you need to make a correction.
         heading: Your Medicaid Community Engagement Activity report
         hours: Hours
+        income_activities: Employment activities
         job_training_count: Job training activities
         job_training_section: Job training and education
+        no_income: No employment activities were reported.
         no_job_training: No job training activities were reported.
         no_volunteering: No volunteering activities were reported.
         not_provided: Not provided

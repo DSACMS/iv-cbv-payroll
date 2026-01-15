@@ -48,4 +48,21 @@
   <% end %>
 </section>
 
+<section class="margin-bottom-5">
+  <h2>
+    <%= t("activities.income.title") %>
+  </h2>
+  <p>
+    <%= t("activities.hub.count", count: @flow.payroll_accounts.size) %>
+  </p>
+  <%= render TableComponent.new do |t| %>
+    <%= t.with_subheader_row(
+      t("activities.income.account_id"),
+      t("activities.income.synchronization_status")
+    ) %>
+    <% @flow.payroll_accounts.each do |payroll_account| %>
+      <%= t.with_row payroll_account.aggregator_account_id, payroll_account.synchronization_status %>
+    <% end %>
+  <% end %>
+</section>
 <%= button_to t("activities.summary.submit"), next_path, class: "btn btn-primary usa-button", method: :get %>

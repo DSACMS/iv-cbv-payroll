@@ -16,6 +16,7 @@ RSpec.describe Activities::SummaryController, type: :controller do
 
   before do
     session[:flow_id] = activity_flow.id
+    session[:flow_type] = :activity
   end
 
   describe "GET #show" do

@@ -1,7 +1,7 @@
 Rails.application.routes.draw do
   devise_for :users,
     controllers: {
-      sessions:           "users/sessions",
+      sessions: "users/sessions",
       omniauth_callbacks: "users/omniauth_callbacks"
     }
 
@@ -9,7 +9,7 @@ Rails.application.routes.draw do
     delete "sign_out", to: "devise/sessions#destroy", as: :destroy_user_session
   end
 
-  scope "(:locale)", locale: /#{I18n.available_locales.join("|")}/, format: "html"  do
+  scope "(:locale)", locale: /#{I18n.available_locales.join("|")}/, format: "html" do
     # Your application routes go here
     root "pages#home"
 
@@ -64,6 +64,12 @@ Rails.application.routes.draw do
       resource :summary, only: %i[show], controller: "summary"
       resource :submit, only: %i[show update], controller: "submit", format: %i[html pdf]
       resource :success, only: %i[show], controller: "success"
+      scope "/income", as: :income do
+        resource :employer_search, only: %i[show], controller: "/cbv/employer_searches"
+        resource :synchronizations, only: %i[show update], controller: "/cbv/synchronizations"
+        resource :synchronization_failures, only: %i[show], controller: "/cbv/synchronization_failures"
+        resource :payment_details, only: %i[show update], controller: "/cbv/payment_details"
+      end
       resource :education, only: %i[new create show destroy], controller: "education"
 
       get "/education/stream", to: "education#stream"
@@ -74,8 +80,8 @@ Rails.application.routes.draw do
 
       # Generic links by agency
       scope "links/:client_agency_id", constraints: { client_agency_id: Regexp.union(Rails.application.config.client_agencies.client_agency_ids) } do
-          root to: "entries#show", as: :new
-        end
+        root to: "entries#show", as: :new
+      end
     end
 
     scope "/:client_agency_id", module: :caseworker, constraints: { client_agency_id: Regexp.union(Rails.application.config.client_agencies.client_agency_ids) } do

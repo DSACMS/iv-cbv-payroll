@@ -1,7 +1,7 @@
 class Activities::BaseController < FlowController
   before_action :redirect_on_prod, :set_flow
 
-  helper_method :next_path, :current_identity
+  helper_method :current_identity
 
   # Infer the `Identity` that is associated with the current request
   #
@@ -29,23 +29,6 @@ class Activities::BaseController < FlowController
     return if Rails.env.development? || ENV["ACTIVITY_HUB_ENABLED"] == "true"
 
     redirect_to root_url
-  end
-
-  def next_path
-    case params[:controller]
-    when "activities/entries"
-      activities_flow_root_path
-    when "activities/activities"
-      activities_flow_summary_path
-    when "activities/summary"
-      activities_flow_submit_path
-    when "activities/submit"
-      activities_flow_success_path
-    end
-  end
-
-  def flow_class
-    ActivityFlow
   end
 
   def flow_param
