@@ -22,7 +22,7 @@ class Activities::SubmitController < Activities::BaseController
   private
 
   def ensure_confirmation_code
-    return if @flow.complete?
+    return if @flow.complete? || @flow.confirmation_code.present?
 
     confirmation_code = generate_confirmation_code(@flow)
     @flow.update!(confirmation_code: confirmation_code)

@@ -11,7 +11,7 @@
 
   <p><%= t(".search_label") %></p>
 
-  <%= form_with url: cbv_flow_employer_search_path,
+  <%= form_with url: @search_path,
                 method: :get,
                 class: "usa-search usa-search--big margin-y-4",
                 html: { role: "search" },
@@ -40,10 +40,10 @@
   <% end %>
 
  <div class="grid-row maxw-mobile-lg margin-left-0 padding-left-0 margin-top-4">
-      <%= link_to t(".payroll_providers"), cbv_flow_employer_search_path(type: :payroll),
+      <%= link_to t(".payroll_providers"), @payroll_path,
         class: "grid-col usa-button margin-0 radius-right-0 #{@selected_tab != 'payroll' && 'usa-button--outline'}",
         data: { turbo_frame: "popular", turbo_action: "advance", turbo_prefetch: false } %>
-      <%= link_to t(".app_based_providers"), cbv_flow_employer_search_path(type: :employer),
+      <%= link_to t(".app_based_providers"), @employer_path,
         class: "grid-col usa-button margin-0 radius-left-0 #{@selected_tab != 'employer' && 'usa-button--outline'}",
         data: { turbo_frame: "popular", turbo_action: "advance", turbo_prefetch: false } %>
     </div>

@@ -423,6 +423,7 @@ RSpec.describe Cbv::PaymentDetailsController do
 
     before do
       session[:flow_id] = cbv_flow.id
+      session[:flow_type] = :cbv
       # update the cbv_flow to have an account comment
       additional_information = { account_id => { comment: "Old comment", updated_at: Time.current.iso8601 } }
       cbv_flow.update!(additional_information: additional_information)

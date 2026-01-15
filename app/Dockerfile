@@ -174,12 +174,7 @@ RUN apt-get update -qq && \
         python3-venv=3.13.5-1 \
         python3-pip=25.1.1+dfsg-1 \
         && \
-    rm -rf /var/lib/apt/lists /var/cache/apt/archives && \
-    python3 -m venv /opt/aws-cli-venv && \
-    /opt/aws-cli-venv/bin/pip install --no-cache-dir --upgrade pip && \
-    /opt/aws-cli-venv/bin/pip install --no-cache-dir "setuptools>=78.1.1" && \
-    /opt/aws-cli-venv/bin/pip install --no-cache-dir awscli && \
-    ln -s /opt/aws-cli-venv/bin/aws /usr/local/bin/aws
+    rm -rf /var/lib/apt/lists /var/cache/apt/archives
 
 # Remove base rexml for GHSA-4xqq-m2hx-25v8
 RUN gem uninstall -i /usr/local/lib/ruby/gems/3.3.0 debug && \

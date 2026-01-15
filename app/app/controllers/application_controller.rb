@@ -93,10 +93,17 @@ class ApplicationController < ActionController::Base
     @pilot_ended.nil? ? current_agency&.pilot_ended : @pilot_ended
   end
 
+  def reset_cbv_session!
+    set_flow_session(nil, nil)
+  end
+
   def set_flow_session(flow_id, type)
     session[:flow_id] = flow_id
-    session[:flow_id] = flow_id
     session[:flow_type] = type
+  end
+
+  def flow_class(flow_type = session[:flow_type])
+    flow_type&.to_sym == :activity ? ActivityFlow : CbvFlow
   end
 
   protected
