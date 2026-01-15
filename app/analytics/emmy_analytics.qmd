@@ -15,12 +15,12 @@ format:
     number-sections: true
     css: dsac-theme.css
     embed-resources: true
-  # docx:
-  #   toc: true
-  #   number-sections: true
-  #   reference-doc: custom-reference-doc.docx
-  #   highlight-style: github
-  #   dpi: 300
+  docx:
+    toc: true
+    number-sections: true
+    reference-doc: custom-reference-doc.docx
+    highlight-style: github
+    dpi: 300
 ---
 
 # Overview
@@ -35,21 +35,15 @@ Over the past year, the Centers for Medicare and Medicaid Services (CMS) in conj
     -   Issue - a substantial portion of applicants are starting but not completing the income verification process
     -   Why it matters - this limits the program's ability to help eligible beneficiaries access Medicaid benefits
 2.  The employer search functionality is a critical bottleneck
-    -   Issue - about 19% of employer searches return "missing" results across all three
-        pilot periods (May, Aug, Nov 2025), with 34% of applicants dropping off
-        at this step in November
+    -   Issue - about 19% of employer searches return "missing" results across all three pilot periods (May, Aug, Nov 2025), with 34% of applicants dropping off at this step in November
     -   Why it matters - a major roadblock preventing eligible applicants from completing verification
 3.  Help documentation usage patterns suggest possible UX confusion
-    -   Issue - Applicants who completed the application had slightly more "help
-        actions" than those who didn't, with significantly higher help usage on
-        the agreement page among those who dropped off
+    -   Issue - Applicants who completed the application had slightly more "help actions" than those who didn't, with significantly higher help usage on the agreement page among those who dropped off
     -   Why it matters - The agreement page may be confusing or concerning to users, causing them to seek help and then possibly abandon the process
 4.  Seeing a higher completion rate for those starting from a mailed link
     -   Issue - Completion rates are low and while we are seeing a rise in completion rates for those accessing via mailed link, completion from SMS messages remains static
-    -   Why it matters - The app is designed to be mobile-friendly, so understanding
-        device-based completion rates is critical for optimizing the user
-        experience
-5.  Multi-session users investigation
+    -   Why it matters - The app is designed to be mobile-friendly, so understanding device-based completion rates is critical for optimizing the user experience
+5.  Need for investigation of multi-session users
     1.  Issue - More than half of users in November have two or more sessions (whether they are completing or not)
     2.  Why it matters - Need to understand the factors leading to this in order to possibly improve information or UX as well as think about feature such as possibly ensuring state persistence across sessions
 
@@ -1752,13 +1746,118 @@ In the November pilot, there were `r  scales::label_comma()(df_compl_pilot[df_co
 
 ### How many applicants clicked on the link and then came back another time to complete the process?
 
-When getting a link, its assumed many people open that link to determine what they need to do and come back later to complete if it doesn't seem easy and/or quick to complete. We can look to see how many sessions were solely opening the link and not continuing on.
+In an ideal word, user would receive their link to complete the income verification and complete it shortly there after in one go. What we see from the data is that many people open the link to determine what they need to do and come back later to try and complete it.
 
-### \[SUB SECTIONS IN PROGRESS\]
+```{r}
+#| label: first_opened
 
-```         
--   How many applicants clicked on the link and then came back another time to complete the process?
--   How many applicants finished in one try? How long did it take compared with the overal rate?
+df_started <- df_mp |> 
+  filter(
+    pilot == latest_pilot,
+    event %in% c("ApplicantClickedCBVInvitationLink", "ApplicantViewedAgreement", "ApplicantAgreed", "ApplicantSharedIncomeSummary")
+    ) |>
+  mutate(
+    event = factor(event, c("ApplicantClickedCBVInvitationLink","ApplicantViewedAgreement", "ApplicantAgreed", "ApplicantSharedIncomeSummary")),
+    status = 1L
+  ) |> 
+  distinct(pilot, distinct_id, cbv_flow_id, event, status, seconds_since_invitation) 
+
+df_started_w <- df_started |>
+  group_by(cbv_flow_id) |> 
+  fill(seconds_since_invitation, .direction = "downup") |> 
+  ungroup() |> 
+  pivot_wider(
+    names_from = event,
+    values_from = status,
+    values_fill = 0L
+  ) |> 
+  relocate(ApplicantClickedCBVInvitationLink,ApplicantViewedAgreement, ApplicantAgreed, ApplicantSharedIncomeSummary, .after = seconds_since_invitation) |> 
+  group_by(distinct_id) |> 
+  mutate(
+    ever_finished = max(ApplicantSharedIncomeSummary, na.rm = TRUE),
+    session = row_number() 
+    ) |> 
+  ungroup() |> 
+  mutate(
+    first_session_complete = ifelse(ApplicantSharedIncomeSummary == 1, session, 99),
+    status = case_when(
+      ApplicantAgreed == 0 ~ "Opened and closed",
+      ApplicantSharedIncomeSummary == 1 ~ "Opened and finished",
+      ApplicantAgreed == 1 ~ "Opened and started, but didn't finish",
+  )) 
+
+df_started_w <- df_started_w |> 
+  group_by(distinct_id) |> 
+  mutate(
+    session = max(session),
+    first_session_complete = min(first_session_complete, na.rm = TRUE)
+    ) |> 
+  slice_min(order_by = cbv_flow_id, n = 1) |> 
+  ungroup() |> 
+  mutate(first_session_complete = ifelse(first_session_complete == 99, NA, first_session_complete))
+
+df_started_w |> 
+  count(ApplicantClickedCBVInvitationLink, status, ever_finished) |> 
+  pivot_wider(names_from = ever_finished, values_from = n)
+
+df_started_status <- df_started_w |> 
+  count(pilot, status) |> 
+  mutate(share = n / sum(n))
+
+ df_started_status_ever <- df_started_w |> 
+  count(pilot, status, ever_finished) |> 
+  pivot_wider(names_from = ever_finished, values_from = n) |> 
+  rowwise() |> 
+  mutate(share = `1` / sum(`0`, `1`))
+
+v_end <- df_started_w |> 
+  filter(status == "Opened and closed") |> 
+  count(pilot, status, session == 1) |> 
+  mutate(share = n / sum(n)) |> 
+  filter(`session == 1` == TRUE) |> 
+  pull()
+
+v_sess_complete <- df_started_w |> 
+  filter(
+    # status == "Opened and started, but didn't finish",
+    !first_session_complete %in% c(NA, 1)) |> 
+  pull(first_session_complete) |> 
+  median(na.rm = TRUE)
+
 ```
 
--   How many times does an applicant "browser back"?
+In looking at the most recent pilot data, we see that of the `r scales::label_comma()(nrow(df_started_w))` applicants who started the application, `scales::label_percent()(df_started_status[df_started_status$status == "Opened and closed",]$share)` opened the link and closed it without proceeding further in their first session. For the applicants who simply opened an closed,  `scales::label_percent()(v_end)` did not attempt to complete the application again. A small number of applications completed the process in their first session (`scales::label_percent()(df_started_status[df_started_status$status == "Opened and finished",]$share)`) and of those who didn't complete it the first time, the median applicant was completing the process in session `r v_sess_complete`.
+
+```{r}
+#| label: first_opened_viz
+#| output: true
+
+df_started_status |> 
+  ggplot(aes(share, pilot, fill = status)) +
+  geom_col() +
+  geom_text(aes(label = label_percent()(share)), family = "Source Sans 3 Semibold", color = matterhorn, hjust = -.3) +
+  facet_wrap(~fct_reorder(status, share, .desc = TRUE), ncol = 1) +
+  scale_x_continuous(limits = c(0, 1), breaks = seq(0, 1, .25)) +
+  scale_fill_manual(
+    values = 
+      c(
+        "Opened and closed" = unname(dsac_color['cranberry']), 
+        "Opened and started, but didn't finish" = unname(dsac_color['light_cranberry']), 
+        "Opened and finished" = unname(dsac_color['light_navy']))) +
+  si_style_xgrid() +
+  labs(
+    x = NULL, y = NULL,
+    title = "UPON RECEIVING THE INVITATIONS, APPLICANTS LARGELY CLICKED THE LINK AND DID NOT PROCEED" |> str_wrap(70),
+    subtitle = "Share of applicants responses for the first session after receiving the CBV invitation" |> str_wrap(70),
+    caption = glue("Note: Excluded generic link starts
+    {default_caption}"
+    )
+  ) +
+  theme(
+    axis.text = element_blank(),
+    panel.spacing = unit(0.5, "lines"),
+    legend.position = "none",
+    strip.text = element_text(face = "bold")
+  )
+
+```
