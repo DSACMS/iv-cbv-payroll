@@ -1,0 +1,63 @@
+{
+	"status": {
+		"code": "0",
+		"severity": "Info",
+		"message": "Successful"
+	},
+	"transactionDetails": {
+		"transactionId": "828375169",
+		"orderId": "114694949",
+		"transactionStatus": "CNF",
+		"transactionFee": "0.00",
+		"salesTax": "0.00",
+		"transactionTotal": "0.00",
+		"requestedBy": "CMS Contact",
+		"requestedDate": "2026-01-09 10:07:30.388",
+		"notifiedDate": "2026-01-09 10:07:30.388",
+		"nscHit": "Y"
+	},
+	"clientData": {
+		"accountId": "10053523"
+	},
+	"studentInfoProvided": {
+		"lastName": "Oyola",
+		"firstName": "Lynette",
+		"dateOfBirth": "1988-10-24"
+	},
+	"enrollmentDetails": [
+		{
+			"officialSchoolName": "Trident University International",
+			"schoolCode": "041279",
+			"branchCode": "00",
+			"nameOnSchoolRecord": {
+				"firstName": "Lynette",
+				"lastName": "Oyola",
+				"middleName": "Stephanie"
+			},
+			"currentEnrollmentStatus": "CC",
+			"enrollmentData": [
+				{
+					"enrollmentStatus": "Y",
+					"termBeginDate": "2024-05-31",
+					"termEndDate": "2024-11-19",
+					"schoolCertifiedOnDate": "2024-07-16",
+					"anticipatedGraduationDate": "2025-12-30",
+					"majorCoursesOfStudy": [
+						{
+							"course": "Business Adminsitration",
+							"ncesCIPCode": "450724"
+						}
+					]
+				}
+			],
+			"studentAddress": {
+				"address1": "2489 O Conner Street",
+				"city": "Pascagoula",
+				"state": "MS",
+				"zipCode": "39567",
+				"country": "US",
+				"empty": false
+			}
+		}
+	]
+}
