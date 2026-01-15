@@ -88,7 +88,8 @@ df_import <- df_import |>
   mutate(
     device_type = properties$device_type,
     origin = properties$origin,
-    employer_name = properties$employment_employer_name
+    employer_name = properties$employment_employer_name,
+    seconds_since_invitation = properties$seconds_since_invitation,
   )
 
 # SUBSET ------------------------------------------------------------------
