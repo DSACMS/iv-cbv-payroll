@@ -6,51 +6,54 @@
 
     <p><%= t("cbv.employer_searches.show.search_subheader") %></p>
   <% end %>
-  <div class="usa-card-group margin-top-4">
-    <% @employers.each do |employer| %>
-      <div class="usa-card usa-card--flag usa-card--media-right desktop:grid-col-6">
-        <div class="usa-card__container">
-          <div class="usa-card__header">
-            <h3 class="usa-card__heading"><%= employer.name %></h3>
-          </div>
-          <% if employer.logo_url.present? %>
-            <% logo_url = employer.logo_url.to_s.sub(/\Ahttp:\/\//, "https://") %>
 
+  <% if @employers.any? %>
+    <div class="usa-card-group margin-top-4">
+      <% @employers.each do |employer| %>
+        <div class="usa-card usa-card--flag usa-card--media-right desktop:grid-col-6">
+          <div class="usa-card__container">
+            <div class="usa-card__header">
+              <h3 class="usa-card__heading"><%= employer.name %></h3>
+            </div>
+            <% if employer.logo_url.present? %>
+              <% logo_url = employer.logo_url.to_s.sub(/\Ahttp:\/\//, "https://") %>
+
+              <div class="usa-card__media usa-card__media--inset display-flex flex-justify-center">
+                <div class="usa-card__img cbv-employer-card__img">
+                  <img
+                    src="<%= logo_url %>"
+                    alt="<%= employer.name %> logo"
+                  >
+                </div>
+              </div>
+            <% else %>
             <div class="usa-card__media usa-card__media--inset display-flex flex-justify-center">
-              <div class="usa-card__img cbv-employer-card__img">
-                <img
-                  src="<%= logo_url %>"
-                  alt="<%= employer.name %> logo"
-                >
+                <div class="usa-card__img cbv-employer-card__img">
+                </div>
               </div>
+            <% end %>
+            <div class="usa-card__footer">
+              <button
+                data-action="click->cbv-employer-search#select"
+                data-id="<%= employer.provider_options.provider_id %>"
+                data-response-type="<%= employer.provider_options.response_type %>"
+                data-is-default-option="false"
+                data-name="<%= employer.name %>"
+                data-cbv-employer-search-target="employerButton"
+                data-provider-name="<%= employer.provider_name %>"
+                class="usa-button usa-button--outline"
+                type="button"
+                tabindex="0"
+                aria-label="<%= employer.name %>"
+              >
+                <%= t("cbv.employer_searches.show.select") %>
+              </button>
             </div>
-          <% else %>
-          <div class="usa-card__media usa-card__media--inset display-flex flex-justify-center">
-              <div class="usa-card__img cbv-employer-card__img">
-              </div>
-            </div>
-          <% end %>
-          <div class="usa-card__footer">
-            <button
-              data-action="click->cbv-employer-search#select"
-              data-id="<%= employer.provider_options.provider_id %>"
-              data-response-type="<%= employer.provider_options.response_type %>"
-              data-is-default-option="false"
-              data-name="<%= employer.name %>"
-              data-cbv-employer-search-target="employerButton"
-              data-provider-name="<%= employer.provider_name %>"
-              class="usa-button usa-button--outline"
-              type="button"
-              tabindex="0"
-              aria-label="<%= employer.name %>"
-            >
-              <%= t("cbv.employer_searches.show.select") %>
-            </button>
           </div>
         </div>
-      </div>
-    <% end %>
-  </div>
+      <% end %>
+    </div>
+  <% end %>
 
   <% if @query.present? && @employers.count == 0 %>
     <h3 class="margin-bottom-5"><%= t("cbv.employer_searches.show.no_results_title") %></h3>

@@ -1,7 +1,13 @@
 <%= turbo_frame_tag "synchronization" do %>
   <h1>
-    <%= t(".header") %>
+    <% case @flow %>
+    <% when ActivityFlow %>
+      <%= t("cbv.synchronizations.show.activity_flow.header") %>
+    <% else %>
+      <%= t("cbv.synchronizations.show.header") %>
+    <% end %>
   </h1>
+
   <p>
     <%= t(".fetching_payroll_description") %>
   </p>

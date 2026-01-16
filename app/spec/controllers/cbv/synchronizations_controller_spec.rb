@@ -4,12 +4,15 @@ RSpec.describe Cbv::SynchronizationsController do
   render_views
 
   let(:cbv_flow) { create(:cbv_flow, :invited) }
+  let(:flow) { cbv_flow }
+  let(:flow_type) { :cbv }
   let(:errored_jobs) { [] }
-  let(:payroll_account) { create(:payroll_account, :pinwheel_fully_synced, with_errored_jobs: errored_jobs, flow: cbv_flow) }
+  let(:payroll_account) { create(:payroll_account, :pinwheel_fully_synced, with_errored_jobs: errored_jobs, flow: flow) }
   let(:nonexistent_id) { "nonexistent-id" }
 
   before do
-    session[:flow_id] = cbv_flow.id
+    session[:flow_id] = flow.id
+    session[:flow_type] = flow_type
   end
 
   describe "#show" do
@@ -65,6 +68,17 @@ RSpec.describe Cbv::SynchronizationsController do
         )
 
         patch :update, params: { user: { account_id: payroll_account.aggregator_account_id } }
+      end
+
+      context "for an ActivityFlow" do
+        let(:flow) { create(:activity_flow) }
+        let(:flow_type) { :activity }
+
+        it "renders the page" do
+          patch :update, params: { user: { account_id: payroll_account.aggregator_account_id } }
+
+          expect(response.body).to include("turbo-frame id=\"synchronization\"")
+        end
       end
     end
 
