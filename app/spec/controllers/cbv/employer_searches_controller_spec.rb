@@ -140,5 +140,21 @@ RSpec.describe Cbv::EmployerSearchesController do
         end
       end
     end
+
+    context "for an ActivityFlow" do
+      let(:activity_flow) { create(:activity_flow) }
+
+      render_views
+
+      before do
+        session[:flow_id] = activity_flow.id
+        session[:flow_type] = :activity
+      end
+
+      it "renders properly" do
+        get :show
+        expect(response).to be_successful
+      end
+    end
   end
 end

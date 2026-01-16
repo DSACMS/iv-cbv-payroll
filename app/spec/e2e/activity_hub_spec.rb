@@ -22,7 +22,7 @@ RSpec.describe 'e2e Activity Hub flow test', type: :feature, js: true do
 
     # Add an Income activity
     click_button I18n.t("activities.income.add")
-    verify_page(page, title: I18n.t("cbv.employer_searches.show.header"))
+    verify_page(page, title: I18n.t("cbv.employer_searches.show.activity_flow.header"))
     @e2e.replay_modal_callbacks(page.driver.browser) do
       click_button "Paychex"
     end
