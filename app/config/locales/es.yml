@@ -378,7 +378,6 @@ es:
         header: Estamos recopilando los detalles de pago de su empleador.
       status:
         fetching_payroll_description: Esto puede tardar algunos minutos. Mantenga abierta esta ventana mientras trabajamos en esto.
-        header: Estamos recopilando los detalles de pago de su empleador.
   components:
     report:
       employment_details_table:

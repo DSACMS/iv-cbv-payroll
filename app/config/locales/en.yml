@@ -639,10 +639,11 @@ en:
         income: Income
         paystubs: Paystubs
       show:
+        activity_flow:
+          header: We’re gathering details from your employer
         header: We’re gathering your payment details from your employer
       status:
         fetching_payroll_description: This may take a few minutes. Please keep this window open while we work on this.
-        header: We’re gathering your payment details from your employer
   components:
     report:
       employment_details_table:

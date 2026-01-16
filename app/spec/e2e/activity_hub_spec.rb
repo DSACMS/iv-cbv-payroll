@@ -40,7 +40,7 @@ RSpec.describe 'e2e Activity Hub flow test', type: :feature, js: true do
       find_all("div[id*=\"argyle-link-root\"]", maximum: 0, minimum: nil, wait: 30)
     end
     # /activities/income/synchronizations
-    verify_page(page, title: I18n.t("cbv.synchronizations.show.header"), wait: 15)
+    verify_page(page, title: I18n.t("cbv.synchronizations.show.activity_flow.header"), wait: 15)
     # /activities/income/payment_details
     @e2e.replay_webhooks
     verify_page(page, title: I18n.t("cbv.payment_details.show.header", employer_name: ""), wait: 60)
