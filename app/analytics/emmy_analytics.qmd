@@ -433,7 +433,21 @@ v1 <- df_compl_wkly |>
 
 ### Is there a difference in completion based on their device or how they receive the pilot link?
 
-For the Louisana pilot, applicants were sent both text messages and emailed/mailed with a notice about the pilot. We can investigate whether there is any difference in completion rates based on how the applicants are accessing the app.
+For the Louisana pilot, applicants were both mailed paper notices and sent an SMS with a notice about the pilot. We can investigate whether there is any difference in completion rates based on how the applicants are accessing the app.
+
+::: callout-note
+The origin, or invitation to start the application, comes through either a paper notice or SMS.
+
+Before the November 2025 Louisiana pilot, both notices provided applicants with a generic link with their origin type, "mail" or "sms.
+
+Currently, the origin is determined as follows:
+
+1.  if an applicant uses a custom link used on their notices, the `origin` is set to "mail";
+
+2.  if the link is shared from another applicant (or through the MFB in the 2025 Arizona pilot) a `?origin` parameter when the flow is started, the origin is determined to be "shared"; or
+
+3.  when no `origin` parameter is used, MixPanel interprets this as the "default origin", which is agency configured and set it to "sms" for the Lousiana pilot.
+:::
 
 ```{r}
 #| label: device_origin_status
@@ -1838,7 +1852,7 @@ v_sess_complete <- df_started_w |>
 
 ```
 
-In looking at the most recent pilot data, we see that of the `r scales::label_comma()(nrow(df_started_w))` applicants who started the application, `r scales::label_percent()(df_started_status[df_started_status$status == "Opened and closed",]$share)` opened the link and closed it without proceeding further in their first session. For the applicants who simply opened an closed,  `r scales::label_percent()(v_end)` did not attempt to complete the application again. A small number of applications completed the process in their first session (`r scales::label_percent()(df_started_status[df_started_status$status == "Opened and finished",]$share)`) and of those who didn't complete it the first time, the median applicant was completing the process in session `r v_sess_complete`.
+In looking at the most recent pilot data, we see that of the `r scales::label_comma()(nrow(df_started_w))` applicants who started the application, `r scales::label_percent()(df_started_status[df_started_status$status == "Opened and closed",]$share)` opened the link and closed it without proceeding further in their first session. For the applicants who simply opened an closed, `r scales::label_percent()(v_end)` did not attempt to complete the application again. A small number of applications completed the process in their first session (`r scales::label_percent()(df_started_status[df_started_status$status == "Opened and finished",]$share)`) and of those who didn't complete it the first time, the median applicant was completing the process in session `r v_sess_complete`.
 
 ```{r}
 #| label: first_opened_viz
