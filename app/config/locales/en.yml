@@ -496,6 +496,11 @@ en:
         radio_yes: Yes, I will report other income directly to %{agency_acronym}
     payment_details:
       show:
+        activity_flow:
+          additional_information_label: Share any comments or additional information about the details above that you'd like %{agency_acronym} to know. For example, you can share if the information is inaccurate or if you’re no longer working at that job.
+          header: Review your information from %{employer_name}
+          header_no_employer_name: Your information from your employer
+          subheader_html: We have gathered your records from %{start_date} to %{end_date}.<br>Please review your information. If something is missing or inaccurate, add a comment for %{agency_acronym}. This will be included in your community engagement report.
         additional_information_header: Additional comments (Optional)
         additional_information_label: Share any comments or additional information about the income details above that you’d like %{agency_acronym} to know. For example, you can share if the information is inaccurate or if you’re no longer working at that job.
         continue: Continue
