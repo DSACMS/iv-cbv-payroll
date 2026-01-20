@@ -168,6 +168,7 @@ RSpec.describe Cbv::SubmitsController do
           before do
             cbv_flow.cbv_applicant.update!(client_agency_id: "la_ldh")
           end
+
           context "when rendering for a caseworker" do
             it "shows the right client information fields" do
               get :show, format: :pdf, params: {
@@ -244,6 +245,7 @@ RSpec.describe Cbv::SubmitsController do
         end
       end
     end
+
     context "when using argyle" do
       context "for Bob (a gig worker)" do
         let(:cbv_applicant) { create(:cbv_applicant, created_at: current_time, case_number: "ABC1234") }
@@ -475,6 +477,7 @@ RSpec.describe Cbv::SubmitsController do
              cbv_applicant: cbv_applicant
       )
     end
+
     before do
       cbv_applicant.update(snap_application_date: current_time)
       cbv_flow.payroll_accounts.first.update(aggregator_account_id: "03e29160-f7e7-4a28-b2d8-813640e030d3")

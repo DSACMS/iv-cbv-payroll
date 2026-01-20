@@ -28,8 +28,7 @@ RSpec.describe Transmitters::JsonTransmitter do
   let!(:api_token) { create(:api_access_token, user: service_user) }
 
   before do
-    allow(mock_client_agency).to receive(:transmission_method_configuration).and_return(transmission_method_configuration)
-    allow(mock_client_agency).to receive(:id).and_return("sandbox")
+    allow(mock_client_agency).to receive_messages(transmission_method_configuration: transmission_method_configuration, id: "sandbox")
     allow(CbvApplicant).to receive(:valid_attributes_for_agency).with("sandbox").and_return([ "case_number" ])
     allow(Rails.logger).to receive(:error)
   end

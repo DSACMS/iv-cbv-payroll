@@ -4,6 +4,7 @@ require "rails_helper"
 
 RSpec.describe TableCellComponent, type: :component do
   subject(:result) { render_inline(described_class.new(**options)) { "Cell" } }
+
   let(:options) { {} }
 
   it "renders a default <td> with text" do

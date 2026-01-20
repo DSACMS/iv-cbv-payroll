@@ -2,6 +2,10 @@ require "rails_helper"
 
 RSpec.describe Api::InvitationsController do
   describe "#create" do
+    subject do
+      post :create, params: valid_params
+    end
+
     let(:client_agency_id) { "sandbox".to_sym }
     let(:api_access_token_instance) do
       user = create(:user, :with_access_token, email: "test@test.com", client_agency_id: client_agency_id, is_service_account: true)
@@ -21,9 +25,6 @@ RSpec.describe Api::InvitationsController do
       request.headers["Authorization"] = "Bearer #{api_access_token_instance.access_token}"
     end
 
-    subject do
-      post :create, params: valid_params
-    end
 
     it "creates an invitation with an associated cbv_applicant" do
       expect { subject }

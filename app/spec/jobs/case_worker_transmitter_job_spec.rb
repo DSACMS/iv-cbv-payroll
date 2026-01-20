@@ -7,6 +7,15 @@ RSpec.describe CaseWorkerTransmitterJob, type: :job do
   include ActiveSupport::Testing::TimeHelpers
 
   let(:mock_client_agency) { instance_double(ClientAgencyConfig::ClientAgency) }
+  let(:transmission_method) {
+    raise "define this transmission method in your spec"
+  }
+  let(:transmission_method_configuration) {
+    {}
+  }
+  let(:mocked_client_id) {
+    "sandbox"
+  }
   let(:cbv_applicant) { create(:cbv_applicant, created_at: current_time, case_number: "ABC1234") }
   let(:errored_jobs) { [] }
   let(:current_time) { DateTime.parse('2024-06-18 00:00:00') }
@@ -28,16 +37,7 @@ RSpec.describe CaseWorkerTransmitterJob, type: :job do
     Timecop.freeze(current_time, &ex)
   end
 
-  let(:transmission_method) {
-    raise "define this transmission method in your spec"
-  }
-  let(:transmission_method_configuration) {
-    {}
-  }
 
-  let(:mocked_client_id) {
-    "sandbox"
-  }
 
   before do
     pinwheel_stub_request_end_user_accounts_response
@@ -48,10 +48,7 @@ RSpec.describe CaseWorkerTransmitterJob, type: :job do
     allow(Aggregators::AggregatorReports::PinwheelReport).to receive(:new).and_return(pinwheel_report)
 
     allow_any_instance_of(described_class).to receive(:current_agency).and_return(mock_client_agency)
-    allow(mock_client_agency).to receive(:id).and_return(mocked_client_id)
-    allow(mock_client_agency).to receive(:logo_path).and_return(mocked_client_logo_path)
-    allow(mock_client_agency).to receive(:transmission_method).and_return(transmission_method)
-    allow(mock_client_agency).to receive(:transmission_method_configuration).and_return(transmission_method_configuration)
+    allow(mock_client_agency).to receive_messages(id: mocked_client_id, logo_path: mocked_client_logo_path, transmission_method: transmission_method, transmission_method_configuration: transmission_method_configuration)
 
     allow_any_instance_of(described_class)
       .to receive(:event_logger)
@@ -82,7 +79,7 @@ RSpec.describe CaseWorkerTransmitterJob, type: :job do
     end
   end
 
-  context "#perform" do
+  describe "#perform" do
     let(:argyle_report) { build(:argyle_report, :with_argyle_account) }
 
     before do
@@ -240,7 +237,7 @@ RSpec.describe CaseWorkerTransmitterJob, type: :job do
       end
 
       it "is handled by the job" do
-        expect { described_class.new.perform(cbv_flow.id) }.to_not raise_error
+        expect { described_class.new.perform(cbv_flow.id) }.not_to raise_error
       end
 
       it_behaves_like "tracks an ApplicantSharedIncomeSummary event"
@@ -260,7 +257,7 @@ RSpec.describe CaseWorkerTransmitterJob, type: :job do
       end
 
       it "is handled by the job" do
-        expect { described_class.new.perform(cbv_flow.id) }.to_not raise_error
+        expect { described_class.new.perform(cbv_flow.id) }.not_to raise_error
       end
 
       it_behaves_like "tracks an ApplicantSharedIncomeSummary event"
@@ -280,7 +277,7 @@ RSpec.describe CaseWorkerTransmitterJob, type: :job do
       end
 
       it "is handled by the job" do
-        expect { described_class.new.perform(cbv_flow.id) }.to_not raise_error
+        expect { described_class.new.perform(cbv_flow.id) }.not_to raise_error
       end
 
       it_behaves_like "tracks an ApplicantSharedIncomeSummary event"

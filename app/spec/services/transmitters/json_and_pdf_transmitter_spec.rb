@@ -1,7 +1,12 @@
 require 'rails_helper'
 
 RSpec.describe Transmitters::JsonAndPdfTransmitter do
+  subject do
+    described_class.new(cbv_flow, client_agency, aggregator_report)
+  end
+
   let(:cbv_flow) { create(:cbv_flow, :completed, confirmation_code: "ABC123") }
+  let(:client_agency) { instance_double(ClientAgencyConfig::ClientAgency) }
   let(:current_agency) { instance_double(ClientAgencyConfig::ClientAgency) }
   let(:aggregator_report) { Aggregators::AggregatorReports::CompositeReport.new(
     [ build(:pinwheel_report, :with_pinwheel_account), build(:argyle_report, :with_argyle_account) ],
@@ -13,18 +18,10 @@ RSpec.describe Transmitters::JsonAndPdfTransmitter do
     "pdf_api_url" => "http://fake-state.api.gov/api/v1/income-report-pdf"
   } }
 
-  subject do
-    described_class.new(cbv_flow, client_agency, aggregator_report)
-  end
 
-  let(:client_agency) { instance_double(ClientAgencyConfig::ClientAgency) }
 
   before do
-    allow(client_agency).to receive(:id).and_return("sandbox")
-    allow(client_agency).to receive(:transmission_method_configuration)
-      .and_return(transmission_method_configuration)
-    allow(client_agency).to receive(:transmission_method)
-      .and_return(Transmitters::HttpPdfTransmitter::TRANSMISSION_METHOD)
+    allow(client_agency).to receive_messages(id: "sandbox", transmission_method_configuration: transmission_method_configuration, transmission_method: Transmitters::HttpPdfTransmitter::TRANSMISSION_METHOD)
   end
 
   context 'success responses from agency' do
@@ -98,7 +95,7 @@ RSpec.describe Transmitters::JsonAndPdfTransmitter do
         expect { subject.deliver }.to raise_error(RuntimeError, /Failed to transmit JSON: Unexpected response from agency: code=500/)
 
         expect(failing_json_request).to have_been_made.once
-        expect(pdf_request).to_not have_been_made
+        expect(pdf_request).not_to have_been_made
       end
     end
 

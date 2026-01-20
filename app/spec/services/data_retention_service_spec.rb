@@ -5,7 +5,7 @@ RSpec.describe DataRetentionService do
     let!(:cbv_flow_invitation) do
       create(:cbv_flow_invitation, :sandbox)
     end
-    let(:service) { DataRetentionService.new }
+    let(:service) { described_class.new }
     let(:now) { Time.now }
 
     around do |ex|
@@ -58,7 +58,7 @@ RSpec.describe DataRetentionService do
       create(:cbv_flow_invitation)
     end
     let!(:cbv_flow) { CbvFlow.create_from_invitation(cbv_flow_invitation, "test_device_id") }
-    let(:service) { DataRetentionService.new }
+    let(:service) { described_class.new }
     let(:deletion_threshold) { cbv_flow_invitation.expires_at + DataRetentionService::REDACT_UNUSED_INVITATIONS_AFTER }
     let(:now) { Time.now }
 
@@ -208,7 +208,7 @@ RSpec.describe DataRetentionService do
           )
         end
     end
-    let(:service) { DataRetentionService.new }
+    let(:service) { described_class.new }
     let(:deletion_threshold) { cbv_flow.transmitted_at + DataRetentionService::REDACT_TRANSMITTED_CBV_FLOWS_AFTER }
     let(:now) { Time.now }
 
@@ -292,7 +292,7 @@ RSpec.describe DataRetentionService do
     let!(:payroll_account) { create(:payroll_account, flow: second_cbv_flow) }
 
     it "redacts the invitation and all flow objects" do
-      DataRetentionService.manually_redact_by_case_number!("DELETEME001")
+      described_class.manually_redact_by_case_number!("DELETEME001")
 
       expect(cbv_flow.reload).to have_attributes(
         redacted_at: within(1.second).of(Time.now)
@@ -321,7 +321,7 @@ RSpec.describe DataRetentionService do
     let!(:cbv_flow2) { CbvFlow.create_from_invitation(cbv_flow_invitation2, "test_device_id_2") }
 
     it "redacts all case numbers for a given agency" do
-      DataRetentionService.redact_case_numbers_by_agency(agency_to_redact)
+      described_class.redact_case_numbers_by_agency(agency_to_redact)
       expect(cbv_flow.cbv_applicant.reload).to have_attributes(
         case_number: "REDACTED",
         redacted_at: within(1.second).of(Time.now)

@@ -185,6 +185,7 @@ RSpec.describe Cbv::EntriesController do
           before do
             existing_cbv_flow.update(confirmation_code: "FOOBAR")
           end
+
           let!(:connected_account) do
             create(:payroll_account,
               flow: existing_cbv_flow,

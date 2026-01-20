@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe 'e2e Activity Hub flow test', type: :feature, js: true do
+RSpec.describe 'e2e Activity Hub flow test', :js, type: :feature do
   include E2e::TestHelpers
   include_context "activity_hub"
   around do |ex|

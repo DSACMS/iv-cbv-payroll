@@ -33,8 +33,7 @@ RSpec.describe ArgyleWebhooksManager, type: :service do
     stub_delete_webhook
 
     # Allow the ArgyleService instance to receive these methods
-    allow(argyle_service).to receive(:create_webhook_subscription).and_return(create_webhook_subscription_response)
-    allow(argyle_service).to receive(:get_webhook_subscriptions).and_return({ "results" => existing_subscriptions })
+    allow(argyle_service).to receive_messages(create_webhook_subscription: create_webhook_subscription_response, get_webhook_subscriptions: { "results" => existing_subscriptions })
     allow(argyle_service).to receive(:delete_webhook_subscription)
 
     # This ensures the puts message will have a consistent environment name

@@ -10,7 +10,7 @@ RSpec.describe AggregatorReportFetcher do
       _errored_account = create(:payroll_account, :pinwheel_fully_synced, flow: cbv_flow, aggregator_account_id: "account2", with_errored_jobs: %w[income paystubs identity])
       fully_synced_account = create(:payroll_account, :pinwheel_fully_synced, flow: cbv_flow, aggregator_account_id: "account1")
       expect(fetcher.report).to be_a(Aggregators::AggregatorReports::PinwheelReport)
-      expect(fetcher.report.payroll_accounts).to match_array([ fully_synced_account ])
+      expect(fetcher.report.payroll_accounts).to contain_exactly(fully_synced_account)
     end
   end
 end

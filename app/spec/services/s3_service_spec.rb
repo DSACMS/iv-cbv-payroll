@@ -11,7 +11,7 @@ RSpec.describe S3Service do
       "region" => "us-east-2"
     }
   end
-  let(:s3_service) { S3Service.new(config) }
+  let(:s3_service) { described_class.new(config) }
   let(:file_content) { "This is a test file content" }
   let(:file_name) { 'encrypted_test_file.gpg' }
   let(:file_path) { tmp_directory.join('test_file.txt').to_s }

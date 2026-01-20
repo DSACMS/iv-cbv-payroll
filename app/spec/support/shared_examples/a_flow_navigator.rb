@@ -1,6 +1,7 @@
 RSpec.shared_examples_for "a flow navigator" do
-  let(:params) { { controller: "test" } }
   subject(:navigator) { described_class.new(params) }
+
+  let(:params) { { controller: "test" } }
 
   it "has a next_path method" do
     navigator = described_class.new(params)

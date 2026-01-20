@@ -13,6 +13,7 @@ RSpec.describe Cbv::ApplicantInformationsController, type: :controller do
 
     context "when the user is uninvited" do
       let(:cbv_flow) { create(:cbv_flow) }
+
       render_views
 
       it "renders the sandbox fields" do
@@ -143,6 +144,7 @@ RSpec.describe Cbv::ApplicantInformationsController, type: :controller do
 
     context "when the user is invited" do
       let(:cbv_flow) { create(:cbv_flow, :invited) }
+
       render_views
 
       it "redirects to the summary" do
@@ -155,6 +157,7 @@ RSpec.describe Cbv::ApplicantInformationsController, type: :controller do
 
   describe "#update for LA LDH flow" do
     let(:cbv_flow) { create(:cbv_flow, cbv_applicant: create(:cbv_applicant, :la_ldh)) }
+
     render_views
 
     before do
