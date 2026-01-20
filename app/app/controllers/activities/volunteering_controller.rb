@@ -8,7 +8,7 @@ class Activities::VolunteeringController < Activities::BaseController
   def create
     @volunteering_activity = @flow.volunteering_activities.new(volunteering_activity_params)
     if @volunteering_activity.save
-      redirect_to activities_flow_root_path, notice: t("activities.volunteering.created")
+      redirect_to after_activity_path, notice: t("activities.volunteering.created")
     else
       render :new, status: :unprocessable_content
     end
@@ -16,7 +16,7 @@ class Activities::VolunteeringController < Activities::BaseController
 
   def update
     if @volunteering_activity.update(volunteering_activity_params)
-      redirect_to activities_flow_root_path, notice: t("activities.volunteering.updated")
+      redirect_to after_activity_path, notice: t("activities.volunteering.updated")
     else
       render :edit, status: :unprocessable_content
     end
