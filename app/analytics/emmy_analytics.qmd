@@ -1768,8 +1768,6 @@ df_sessions |>
       si_style_xgrid()
 ```
 
-In the November pilot, there were `r  scales::label_comma()(df_compl_pilot[df_compl_pilot$pilot == "Nov 2025" & df_compl_pilot$denom == "applicants", ]$"Shared Income Summary")` applicants who completed the process, submitting their income summary. Was this an easy process? For the applicants who used the tokenized link, we can track how many sessions it took them to complete the process, ideally one and done. So keeping with the November pilot,
-
 ### How many applicants clicked on the link and then came back another time to complete the process?
 
 In an ideal word, user would receive their link to complete the income verification and complete it shortly there after in one go. What we see from the data is that many people open the link to determine what they need to do and come back later to try and complete it.
