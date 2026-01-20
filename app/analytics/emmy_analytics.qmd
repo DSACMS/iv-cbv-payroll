@@ -1,5 +1,5 @@
 ---
-title: "EMMY Mixpanel Web Analytic Review"
+title: "EMMY Mixpanel Web Analytics Review"
 date: now
 date-format: "MMMM D, YYYY h:mm a"
 language:
@@ -15,12 +15,12 @@ format:
     number-sections: true
     css: dsac-theme.css
     embed-resources: true
-  docx:
-    toc: true
-    number-sections: true
-    reference-doc: custom-reference-doc.docx
-    highlight-style: github
-    dpi: 300
+  # docx:
+  #   toc: true
+  #   number-sections: true
+  #   reference-doc: custom-reference-doc.docx
+  #   highlight-style: github
+  #   dpi: 300
 ---
 
 # Overview
@@ -29,7 +29,7 @@ format:
 
 Over the past year, the Centers for Medicare and Medicaid Services (CMS) in conjunction with partner states have piloted an online income verification application, Eligibility Made Easy (EMMY). With each phase, analysts have explore the web analytics data, looking into applicant uptake and utilization of the tool. This specific report aims identify areas of the tool where retention drops in an effort to improve the product design, making it easier for applicants to complete the full form.
 
-## Key Takaways
+## Key Takeaways
 
 1.  Significant drop-off rate threatens progress success.
     -   Issue - a substantial portion of applicants are starting but not completing the income verification process
@@ -49,11 +49,11 @@ Over the past year, the Centers for Medicare and Medicaid Services (CMS) in conj
 
 ## Method
 
-This report was generated using a Quarto notebook and leverage R for all analysis and visualizations. The analysis focuses on the 2025 Lousiana pilot, which had three, 6-week session starting May, August, and November. The web analytics data come from Mixpanel, accessed using python for the API call with a [Jupyter Notebook](https://github.com/DSACMS/iv-cbv-payroll/blob/main/app/analytics/analytics.ipynb). All of the underlying code can be found on [GitHub](https://github.com/DSACMS/iv-cbv-payroll/tree/main/app/analytics).
+This report was generated using a Quarto notebook and leverage R for all analysis and visualizations. The analysis focuses on the 2025 Louisiana pilot, which had three, 6-week session starting May, August, and November. The web analytics data come from Mixpanel, accessed using python for the API call with a [Jupyter Notebook](https://github.com/DSACMS/iv-cbv-payroll/blob/main/app/analytics/analytics.ipynb). All of the underlying code can be found on [GitHub](https://github.com/DSACMS/iv-cbv-payroll/tree/main/app/analytics).
 
-## Defintions/Calculations
+## Definitions/Calculations
 
-Its easy to construct similar metrics in different ways and yield slightly different results. For tranparency, below are some definitions to key concepts or calculations
+Its easy to construct similar metrics in different ways and yield slightly different results. For transparency, below are some definitions to key concepts or calculations
 
 -   **Applicant**: uses the `distinct_id` associated with the event.
 -   **Session**: relies on the `properties$cbv_flow_id`. A applicant may have one or more sessions during a pilot period.
@@ -100,7 +100,7 @@ library(gtayblr) ## remotes::install_github("USAID-OHA-SI/gtayblr")
 mp_path <- list.files(here("app/analytics"), "mixpanel.*parquet", full.names = TRUE)
 
 #default viz/table caption
-default_caption <- "Source: Lousiana 2025 EMMY Pilot Mixpanel Data [accessed 2025-12-19]"
+default_caption <- "Source: Louisiana 2025 EMMY Pilot Mixpanel Data [accessed 2025-12-19]"
 
 #set DSAC colors
 dsac_color <- c("#103D68", "#136A5D", "#6A1344", "#EFAC2F", "#63789D", "#C1C9D7", "#5A9088", "#D9E8E5", "#842F66", "#123054")
@@ -298,7 +298,7 @@ df_mult_types <- df_multi |>
 
 ```
 
-We should take a closer look at the repeated submissions. Some of these could be resubmissions of the same information (i.e. the applicant didn't know if the submission went through or forgot they already submitted it) or could be going back to enter in a different employer at a different time. If we look at the `r sum(df_mult_types$n)` applicants with repeated submissions in the November pilot, `r df_mult_types[df_mult_types$behavior == 'Single item repeated',]$n` submitted for the same employer each time, `r df_mult_types[df_mult_types$behavior == 'Multiple items with repeats',]$n` submitted different employers (some with repeats), and only `r df_mult_types[df_mult_types$behavior == 'All unique items',]$n` had all unique employer submissions. The table below provides some examples of how the different behaviors might look like in the data.
+We should take a closer look at the repeated submissions. Some of these could be re-submissions of the same information (i.e. the applicant didn't know if the submission went through or forgot they already submitted it) or could be going back to enter in a different employer at a different time. If we look at the `r sum(df_mult_types$n)` applicants with repeated submissions in the November pilot, `r df_mult_types[df_mult_types$behavior == 'Single item repeated',]$n` submitted for the same employer each time, `r df_mult_types[df_mult_types$behavior == 'Multiple items with repeats',]$n` submitted different employers (some with repeats), and only `r df_mult_types[df_mult_types$behavior == 'All unique items',]$n` had all unique employer submissions. The table below provides some examples of how the different behaviors might look like in the data.
 
 ```{r}
 #| label: multi_examples
@@ -433,12 +433,12 @@ v1 <- df_compl_wkly |>
 
 ### Is there a difference in completion based on their device or how they receive the pilot link?
 
-For the Louisana pilot, applicants were both mailed paper notices and sent an SMS with a notice about the pilot. We can investigate whether there is any difference in completion rates based on how the applicants are accessing the app.
+For the Louisiana pilot, applicants were both mailed paper notices and sent an SMS with a notice about the pilot. We can investigate whether there is any difference in completion rates based on how the applicants are accessing the app.
 
 ::: callout-note
 The origin, or invitation to start the application, comes through either a paper notice or SMS.
 
-Before the November 2025 Louisiana pilot, both notices provided applicants with a generic link with their origin type, "mail" or "sms.
+Before the November 2025 Louisiana pilot, both notices provided applicants with a generic link with their origin type, "mail" or "sms".
 
 Currently, the origin is determined as follows:
 
@@ -446,7 +446,7 @@ Currently, the origin is determined as follows:
 
 2.  if the link is shared from another applicant (or through the MFB in the 2025 Arizona pilot) a `?origin` parameter when the flow is started, the origin is determined to be "shared"; or
 
-3.  when no `origin` parameter is used, MixPanel interprets this as the "default origin", which is agency configured and set it to "sms" for the Lousiana pilot.
+3.  when no `origin` parameter is used, Mixpanel interprets this as the "default origin", which is agency configured and set it to "sms" for the Louisiana pilot.
 :::
 
 ```{r}
@@ -503,7 +503,7 @@ other_devices <- unique(df_mp$device_type) |>
 
 ```
 
-When comparing the device type, we can see there is a preference for applicants initiating the process on their phones. The success rate has been higher on the phones than desktop, but both success rates are rather low. Interestly there has been a drop each pilot in desktop completion rates and in November, there was actual a gain in smartphone completion rate, futhering the divide. The other types of devices include `{r} other_devices`. Each pilot also see a number of unknown devices. Looking at the sessions for these unknown devices, they almost exclusively are just clicking the link to start and viewing the agreement page and not going beyond that.
+When comparing the device type, we can see there is a preference for applicants initiating the process on their phones. The success rate has been higher on the phones than desktop, but both success rates are rather low. Interestingly there has been a drop each pilot in desktop completion rates and in November, there was actual a gain in smartphone completion rate, furthering the divide. The other types of devices include `{r} other_devices`. Each pilot also see a number of unknown devices. Looking at the sessions for these unknown devices, they almost exclusively are just clicking the link to start and viewing the agreement page and not going beyond that.
 
 ```{r}
 #| label: device_status_viz
@@ -957,7 +957,7 @@ The next visual looks at the same data, but plots each of the event individually
 
 ### When there was a provider outage, was there any change in processing times?
 
-During the November pilot, Argyle had an outage between November 19-20. Looking by day, we can see that Monday, November 20th had a dip in the number of Argyle events compared with the prior day and Pinhweel saw an increase on both November 19th and 20th (though certainly not enough to offset the dip). During the first day of the outage, the success rate of logging for both providers dropped precipitously, but rebounded on November 20th.
+During the November pilot, Argyle had an outage between November 19-20. Looking by day, we can see that Monday, November 20th had a dip in the number of Argyle events compared with the prior day and Pinwheel saw an increase on both November 19th and 20th (though certainly not enough to offset the dip). During the first day of the outage, the success rate of logging for both providers dropped precipitously, but rebounded on November 20th.
 
 ```{r}
 #| label: sync_outage
@@ -1247,7 +1247,7 @@ df_sankey |>
 
 Right off the bat, we can see that off the `{r} scales::label_comma()(df_journey_label[df_journey_label$step_order == "step_1",]$n)` applicants who started the process, only `{r} scales::label_percent(1)(df_journey_label[df_journey_label$step_event == "Agreed",]$share)` agreed to terms to move on, and only `{r} scales::label_percent()(df_journey_label[df_journey_label$step_event == "Shared Income Summary",]$n/df_journey_label[df_journey_label$step_order == "step_1",]$n)` actually made it to completion, submitting their pay information. The diagram also show that about 1 in 3 applicants is dropping off when selecting their employer, logging in, and then succeeding with that log in.
 
-The table below so similar drop off rates at each step for each of the three pilots in Lousiana.
+The table below so similar drop off rates at each step for each of the three pilots in Louisiana.
 
 ```{r}
 #| label: event_table
@@ -1611,7 +1611,7 @@ df_missing_empl <- df_mp |>
 
 ```
 
-As mentioned above, we can see that many employers are not being captured in this process. If we break down where this is occuring, we can see it is almost exclusively coming from Pinwheel. In the most November pilot, `r label_percent()(df_missing_empl[df_missing_empl$provider == "Pinwheel" & df_missing_empl$pilot == "Nov 2025",]$share_missing)` of the synced data were missing an employer name.
+As mentioned above, we can see that many employers are not being captured in this process. If we break down where this is occurring, we can see it is almost exclusively coming from Pinwheel. In the most November pilot, `r label_percent()(df_missing_empl[df_missing_empl$provider == "Pinwheel" & df_missing_empl$pilot == "Nov 2025",]$share_missing)` of the synced data were missing an employer name.
 
 ```{r}
 #| label: missing_empl_tbl
