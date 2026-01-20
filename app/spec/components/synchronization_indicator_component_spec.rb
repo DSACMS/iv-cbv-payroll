@@ -61,7 +61,7 @@ RSpec.describe SynchronizationIndicatorComponent, type: :component do
   context "in progress" do
     subject { described_class.new status: :in_progress }
 
-    include_examples "common"
+    include_examples "common" # rubocop:disable RSpec/IncludeExamples
 
     it "renders the in progress icon" do
       icon = page.find(:css, ".synchronizations-indicator svg")
@@ -84,7 +84,7 @@ RSpec.describe SynchronizationIndicatorComponent, type: :component do
   context "succeeded" do
     subject { described_class.new status: :succeeded }
 
-    include_examples "common"
+    include_examples "common" # rubocop:disable RSpec/IncludeExamples
 
     it "renders the check icon" do
       icon = page.find(:css, ".synchronizations-indicator svg")
@@ -107,7 +107,7 @@ RSpec.describe SynchronizationIndicatorComponent, type: :component do
   context "failed" do
     subject { described_class.new status: :failed }
 
-    include_examples "common"
+    include_examples "common" # rubocop:disable RSpec/IncludeExamples
 
     it "renders the check icon" do
       icon = page.find(:css, ".synchronizations-indicator svg")

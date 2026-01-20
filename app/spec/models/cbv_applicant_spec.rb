@@ -4,7 +4,7 @@ RSpec.describe CbvApplicant, type: :model do
   describe "all valid types of agencies" do
     ClientAgencyConfig.client_agencies.client_agency_ids.each do |client_agency_id|
       it "has a list of VALID_ATTRIBUTES for #{client_agency_id}" do
-        expect(CbvApplicant.valid_attributes_for_agency(client_agency_id)).to be_present
+        expect(described_class.valid_attributes_for_agency(client_agency_id)).to be_present
       end
     end
   end
@@ -17,16 +17,17 @@ RSpec.describe CbvApplicant, type: :model do
     end
 
     let(:cbv_applicant) { create(:cbv_applicant, first_name: nil) }
+
     it "returns true if a field missing" do
       cbv_applicant.set_applicant_attributes
       expect(cbv_applicant.required_applicant_attributes).to be_present
-      expect(cbv_applicant.has_applicant_attribute_missing?).to eq(true)
+      expect(cbv_applicant.has_applicant_attribute_missing?).to be(true)
     end
 
     it "returns false if a field not missing" do
       cbv_applicant.set_applicant_attributes
       cbv_applicant.first_name = "Dean Venture"
-      expect(cbv_applicant.has_applicant_attribute_missing?).to eq(false)
+      expect(cbv_applicant.has_applicant_attribute_missing?).to be(false)
     end
   end
 
@@ -48,7 +49,7 @@ RSpec.describe CbvApplicant, type: :model do
       expect(cbv_applicant_without_dob.errors[:date_of_birth]).to include(I18n.t("cbv.applicant_informations.sandbox.fields.date_of_birth.blank"))
     end
 
-    it "it returns an empty array when validation constraints are met" do
+    it "returns an empty array when validation constraints are met" do
       valid_cbv_applicant = build(:cbv_applicant, :sandbox, date_of_birth: date_of_birth, case_number: '123')
       valid_cbv_applicant.set_applicant_attributes
       valid_cbv_applicant.validate_required_applicant_attributes
@@ -97,32 +98,32 @@ RSpec.describe CbvApplicant, type: :model do
 
     describe "snap_application_date" do
       it "does not require snap_application_date in the generic link workflow, sets default" do
-        applicant = CbvApplicant.new(valid_attributes)
+        applicant = described_class.new(valid_attributes)
         expect(applicant).to be_valid
         expect(applicant.snap_application_date).to eq(Date.current)
       end
 
       it "requires a snap_application_date in the caseworker workflow" do
-        applicant = CbvApplicant.new(valid_attributes)
+        applicant = described_class.new(valid_attributes)
         applicant.snap_application_date = nil
         expect(applicant).not_to be_valid
       end
 
       it "allows snap_application_date in the future for sandbox agency" do
-        applicant = CbvApplicant.new(valid_attributes)
+        applicant = described_class.new(valid_attributes)
         applicant.snap_application_date = Date.tomorrow
         expect(applicant).to be_valid
       end
 
       it "parses snap_application_date strings correctly" do
-        applicant = CbvApplicant.new(valid_attributes)
+        applicant = described_class.new(valid_attributes)
         applicant.snap_application_date = "08/15/2023"
         expect(applicant).to be_valid
         expect(applicant.snap_application_date).to eq(Date.new(2023, 8, 15))
       end
 
       it "adds an error when snap_application_date is not a valid date in a caseworker workflow" do
-        applicant = CbvApplicant.new(valid_attributes)
+        applicant = described_class.new(valid_attributes)
         applicant.snap_application_date = "invalid"
         expect(applicant).not_to be_valid
         expect(applicant.errors[:snap_application_date]).to include(

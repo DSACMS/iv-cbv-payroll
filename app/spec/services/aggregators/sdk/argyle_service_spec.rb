@@ -5,7 +5,7 @@ RSpec.describe Aggregators::Sdk::ArgyleService, type: :service do
 
   let(:api_key_secret) { 'api_key_secret' }
   let(:webhook_secret) { 'test_webhook_secret' }
-  let(:service) { Aggregators::Sdk::ArgyleService.new("sandbox", "FAKE_API_KEY", api_key_secret, webhook_secret) }
+  let(:service) { described_class.new("sandbox", "FAKE_API_KEY", api_key_secret, webhook_secret) }
   let(:account_id) { 'account123' }
   let(:user_id) { 'user123' }
 
@@ -20,7 +20,7 @@ RSpec.describe Aggregators::Sdk::ArgyleService, type: :service do
     end
 
     context 'when the environment is sandbox' do
-      let(:service) { Aggregators::Sdk::ArgyleService.new("sandbox") }
+      let(:service) { described_class.new("sandbox") }
 
       it 'initializes with the correct environment' do
         expect(service.instance_variable_get(:@api_key_secret)).to eq(api_key_secret)
@@ -28,7 +28,7 @@ RSpec.describe Aggregators::Sdk::ArgyleService, type: :service do
     end
 
     context 'when the environment is production' do
-      let(:service) { Aggregators::Sdk::ArgyleService.new("production") }
+      let(:service) { described_class.new("production") }
 
       it 'initializes with the correct environment' do
         expect(service.instance_variable_get(:@api_key_secret)).to eq("production-#{api_key_secret}")
@@ -38,6 +38,7 @@ RSpec.describe Aggregators::Sdk::ArgyleService, type: :service do
 
   describe '#fetch_identities_api' do
     let(:requests) { WebMock::RequestRegistry.instance.requested_signatures.hash.keys }
+
     before do
       argyle_stub_request_identities_response("bob")
     end
@@ -89,6 +90,7 @@ RSpec.describe Aggregators::Sdk::ArgyleService, type: :service do
 
   describe '#fetch_accounts_api' do
     let(:requests) { WebMock::RequestRegistry.instance.requested_signatures.hash.keys }
+
     before do
       argyle_stub_request_accounts_response("bob")
     end
@@ -145,6 +147,7 @@ RSpec.describe Aggregators::Sdk::ArgyleService, type: :service do
   describe '#fetch_account_api' do
     let(:requests) { WebMock::RequestRegistry.instance.requested_signatures.hash.keys }
     let(:account_id) { "019571bc-2f60-3955-d972-dbadfe0913a8" }
+
     before do
       argyle_stub_request_account_response("bob")
     end

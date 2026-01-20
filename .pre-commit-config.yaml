@@ -14,7 +14,7 @@ repos:
     name: rubocop
     entry: bin/run-linter --cd app -- bundle exec rubocop --autocorrect --force-exclusion
     language: ruby
-    files: '^app/.*\.rb$'
+    files: '^app/(.*\.rb|.rubocop.*\.yml)$'
 
   - id: erblint
     name: erblint

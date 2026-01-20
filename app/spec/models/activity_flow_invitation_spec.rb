@@ -6,7 +6,7 @@ RSpec.describe ActivityFlowInvitation, type: :model do
     flow1 = create(:activity_flow, activity_flow_invitation: invitation)
     flow2 = create(:activity_flow, activity_flow_invitation: invitation)
 
-    expect(invitation.activity_flows).to match_array([ flow1, flow2 ])
+    expect(invitation.activity_flows).to contain_exactly(flow1, flow2)
   end
 
   it "generates a secure token on create" do

@@ -8,7 +8,7 @@ RSpec.describe TranslationService do
   let(:existing_translations_path) { tmp_dir.join('en.yml') }
   let(:current_locale_translations_path) { tmp_dir.join('es.yml') }
   let(:csv_contents) { @csv_contents }
-  let(:logger_double) { instance_spy('Logger') }
+  let(:logger_double) { instance_spy(Logger) }
   let(:log_messages) { [] }
 
   before do
@@ -25,7 +25,7 @@ RSpec.describe TranslationService do
 
   describe '#generate' do
     context 'with default options' do
-      let(:service) { TranslationService.new }
+      let(:service) { described_class.new }
 
       it 'generates a YAML file with Spanish translations and logs combined collision details' do
         result = service.generate(csv_path.to_s, output_path.to_s)
@@ -56,7 +56,7 @@ RSpec.describe TranslationService do
     end
 
     context 'with overwrite option' do
-      let(:service) { TranslationService.new('es', true) }
+      let(:service) { described_class.new('es', true) }
 
       it 'overwrites existing translations and logs the overwrite' do
         service.generate(csv_path.to_s, output_path.to_s)

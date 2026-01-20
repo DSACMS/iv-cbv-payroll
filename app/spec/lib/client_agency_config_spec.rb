@@ -3,6 +3,7 @@ require "rails_helper"
 RSpec.describe ClientAgencyConfig do
   let(:sample_config_path) { "/fake/path.yml" }
   let(:sample_config) { raise "define in spec" }
+
   before do
     allow(File).to receive(:read)
       .with(sample_config_path)
@@ -30,21 +31,21 @@ RSpec.describe ClientAgencyConfig do
     describe "#initialize" do
       it "loads the client agency config" do
         expect do
-          ClientAgencyConfig.new(sample_config_path)
+          described_class.new(sample_config_path)
         end.not_to raise_error
       end
     end
 
     describe "#client_agency_ids" do
       it "returns the IDs" do
-        config = ClientAgencyConfig.new(sample_config_path)
-        expect(config.client_agency_ids).to match_array([ "foo", "bar" ])
+        config = described_class.new(sample_config_path)
+        expect(config.client_agency_ids).to contain_exactly("foo", "bar")
       end
     end
 
     describe "for a particular client agency" do
       it "returns a key for that agency" do
-        config = ClientAgencyConfig.new(sample_config_path)
+        config = described_class.new(sample_config_path)
         expect(config["foo"].agency_name).to eq("Foo Agency Name")
       end
     end
@@ -64,7 +65,7 @@ RSpec.describe ClientAgencyConfig do
 
         it "raises an error" do
           expect do
-            ClientAgencyConfig.new(sample_config_path)
+            described_class.new(sample_config_path)
           end.to raise_error(ArgumentError, "Client Agency missing id")
         end
       end
@@ -81,7 +82,7 @@ RSpec.describe ClientAgencyConfig do
 
         it "raises an error" do
           expect do
-            ClientAgencyConfig.new(sample_config_path)
+            described_class.new(sample_config_path)
           end.to raise_error(ArgumentError, "Client Agency foo missing required attribute `agency_name`")
         end
       end
@@ -101,7 +102,7 @@ RSpec.describe ClientAgencyConfig do
 
         it "raises an error" do
           expect do
-            ClientAgencyConfig.new(sample_config_path)
+            described_class.new(sample_config_path)
           end.to raise_error(ArgumentError, "Client Agency foo invalid value for pay_income_days.w2")
         end
       end
@@ -122,7 +123,7 @@ RSpec.describe ClientAgencyConfig do
 
         it "raises an error" do
           expect do
-            ClientAgencyConfig.new(sample_config_path)
+            described_class.new(sample_config_path)
           end.to raise_error(ArgumentError, "Client Agency foo invalid value for pay_income_days.gig")
         end
       end
@@ -140,7 +141,7 @@ RSpec.describe ClientAgencyConfig do
 
         it "raises an error" do
           expect do
-            ClientAgencyConfig.new(sample_config_path)
+            described_class.new(sample_config_path)
           end.to raise_error(ArgumentError, "Client Agency foo missing required attribute `transmission_method`")
         end
       end

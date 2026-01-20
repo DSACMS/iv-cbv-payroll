@@ -100,7 +100,7 @@ RSpec.configure do |config|
   Kernel.srand config.seed
 
   # Stub out MixpanelEventTracker so it doesn't make calls in test
-  config.before(:each) do
+  config.before do
     allow_any_instance_of(MixpanelEventTracker).to receive(:track)
   end
 

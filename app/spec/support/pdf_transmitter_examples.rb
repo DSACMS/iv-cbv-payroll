@@ -68,7 +68,7 @@ end
 RSpec.shared_context "with #pdf_output" do
   let (:pdf_output) { instance_double(PdfService::PdfGenerationResult) }
 
-  before(:each) do
+  before do
     allow(subject).to receive(:pdf_output).and_return(pdf_output)
   end
 end

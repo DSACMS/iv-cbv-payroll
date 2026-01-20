@@ -15,7 +15,7 @@ RSpec.describe GpgEncryptable do
   let(:untar_file_path) { File.join(tmp_directory, "#{SecureRandom.uuid}-untarred") }
   let(:encrypted_file_path) { "#{test_file_path}.gpg" }
 
-  after(:each) do
+  after do
     File.delete(test_file_path) if File.exist?(test_file_path)
     File.delete(encrypted_file_path) if File.exist?(encrypted_file_path)
     File.delete(tar_file_path) if File.exist?(tar_file_path)
@@ -26,6 +26,10 @@ RSpec.describe GpgEncryptable do
   describe '#gpg_encrypt_file' do
     before do
       File.write(test_file_path, test_file_content)
+    end
+
+    after do
+      File.delete(test_file_path) if File.exist?(test_file_path)
     end
 
     it 'encrypts the file' do
@@ -68,10 +72,6 @@ RSpec.describe GpgEncryptable do
       expect(File.exist?(untarred_file_path)).to be true
       untarred_content = File.read(untarred_file_path)
       expect(untarred_content).to eq(test_file_content)
-    end
-
-    after do
-      File.delete(test_file_path) if File.exist?(test_file_path)
     end
   end
 end

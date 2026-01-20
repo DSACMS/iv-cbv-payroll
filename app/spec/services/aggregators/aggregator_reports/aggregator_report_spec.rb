@@ -68,11 +68,7 @@ RSpec.describe Aggregators::AggregatorReports::AggregatorReport, type: :service 
     let(:account_json) { argyle_load_relative_json_file('busy_joe', 'request_accounts.json') }
 
     before do
-      allow(argyle_service).to receive(:fetch_identities_api).and_return(identities_json)
-      allow(argyle_service).to receive(:fetch_employments_api).and_return(employments_json)
-      allow(argyle_service).to receive(:fetch_paystubs_api).and_return(paystubs_json)
-      allow(argyle_service).to receive(:fetch_account_api).and_return(account_json)
-      allow(argyle_service).to receive(:fetch_gigs_api).and_return(nil)
+      allow(argyle_service).to receive_messages(fetch_identities_api: identities_json, fetch_employments_api: employments_json, fetch_paystubs_api: paystubs_json, fetch_account_api: account_json, fetch_gigs_api: nil)
     end
 
     around do |ex|
