@@ -5,5 +5,5 @@
 * @bencalegari (Ben Calegari)
 * @j-shilling (Jake Shilling)
 * @imhben (Imhotep Benjamin)
-* @dx-gov (Jan Voříšek)
+* @dx-gov (Jan)
 * @serverless-mom (Nočnica Mellifera)

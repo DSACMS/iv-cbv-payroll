@@ -12,7 +12,7 @@ IV CBV Payroll is supported by a dedicated team of individuals fulfilling variou
 | Designer | Seth Owings | CMS |
 | Software Engineer | Jake Shilling | CMS |
 | Software Engineer | Imhotep Benjamin | CMS |
-| Software Engineer | Jan Voříšek | CMS |
+| Software Engineer | Jan | CMS |
 | Contracting Officer's Representative | Mark DeZalia | CMS |
 | Product Manager | Allyse Parekh | CMS |
 | Designer | Paul Gehrig | Nava |
@@ -34,7 +34,7 @@ See [Community Guidelines](#iv-cbv-payroll-open-source-community-guidelines) on 
 - @bencalegari (Ben Calegari)
 - @j-shilling (Jake Shilling)
 - @imhben (Imhotep Benjamin)
-- @dx-gov (Jan Voříšek)
+- @dx-gov (Jan)
 
 ### Maintainers
 
@@ -45,7 +45,7 @@ See [Community Guidelines](#iv-cbv-payroll-open-source-community-guidelines) on 
 - @bencalegari (Ben Calegari)
 - @j-shilling (Jake Shilling)
 - @imhben (Imhotep Benjamin)
-- @dx-gov (Jan Voříšek)
+- @dx-gov (Jan)
 
 ### Contributors
 
