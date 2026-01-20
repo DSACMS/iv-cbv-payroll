@@ -16,7 +16,7 @@ RSpec.describe CbvFlowInvitation, type: :model do
       end
 
       it "sets expires_at based on created_at" do
-        invitation = CbvFlowInvitation.new(valid_attributes)
+        invitation = described_class.new(valid_attributes)
         invitation.save!
         expect(invitation.created_at).to eq(current_time)
         # Saved in the database as UTC, so this will show as 4 hours later than we expect
@@ -38,7 +38,7 @@ RSpec.describe CbvFlowInvitation, type: :model do
           valid_email_addresses = %w[johndoe@gmail.com johndoe@example.com.au johndoe@example.com,johndoe@example.com.au]
           valid_email_addresses.each do |email|
             it "#{email} is valid" do
-              invitation = CbvFlowInvitation.new(valid_attributes.merge(email_address: email))
+              invitation = described_class.new(valid_attributes.merge(email_address: email))
               expect(invitation).to be_valid
             end
           end
@@ -48,7 +48,7 @@ RSpec.describe CbvFlowInvitation, type: :model do
           invalid_email_addresses = %w[johndoe@gmail johndoe@gmail..com johndoe@gmail.com..com johndoe@gmail\ .\ com]
           invalid_email_addresses.each do |email|
             it "determines #{email} is invalid" do
-              invitation = CbvFlowInvitation.new(valid_attributes.merge(email_address: email))
+              invitation = described_class.new(valid_attributes.merge(email_address: email))
               expect(invitation).not_to be_valid
               expect(invitation.errors[:email_address]).to include(
                 I18n.t('activerecord.errors.models.cbv_flow_invitation.attributes.email_address.invalid_format')
@@ -59,7 +59,7 @@ RSpec.describe CbvFlowInvitation, type: :model do
       end
 
       it "requires email_address" do
-        invitation = CbvFlowInvitation.new(valid_attributes.merge(email_address: nil))
+        invitation = described_class.new(valid_attributes.merge(email_address: nil))
         expect(invitation).not_to be_valid
         expect(invitation.errors[:email_address]).to include(
           I18n.t('activerecord.errors.models.cbv_flow_invitation.attributes.email_address.invalid_format'),
@@ -67,7 +67,7 @@ RSpec.describe CbvFlowInvitation, type: :model do
       end
 
       it "validates email_address format" do
-        invitation = CbvFlowInvitation.new(valid_attributes.merge(email_address: "invalid_email"))
+        invitation = described_class.new(valid_attributes.merge(email_address: "invalid_email"))
         expect(invitation).not_to be_valid
         expect(invitation.errors[:email_address]).to include(
           I18n.t('activerecord.errors.models.cbv_flow_invitation.attributes.email_address.invalid_format')
@@ -77,6 +77,8 @@ RSpec.describe CbvFlowInvitation, type: :model do
   end
 
   describe "#expired?" do
+    subject { invitation.expired? }
+
     let(:client_agency_id) { "sandbox" }
     let(:invitation_valid_days) { 14 }
     let(:invitation) do
@@ -97,14 +99,13 @@ RSpec.describe CbvFlowInvitation, type: :model do
       Timecop.freeze(now, &ex)
     end
 
-    subject { invitation.expired? }
 
     context "within the validity window" do
       let(:invitation_sent_at)    { Time.new(2024, 8,  1, 12, 0, 0, "-04:00") }
       let(:snap_application_date) { Time.new(2024, 8,  1, 12, 0, 0, "-04:00") }
       let(:now)                   { Time.new(2024, 8, 14, 12, 0, 0, "-04:00") }
 
-      it { is_expected.to eq(false) }
+      it { is_expected.to be(false) }
 
       context "when the invitation was redacted" do
         # This should only happen when redaction is triggered manually, since
@@ -114,7 +115,7 @@ RSpec.describe CbvFlowInvitation, type: :model do
           invitation.redact!
         end
 
-        it { is_expected.to eq(true) }
+        it { is_expected.to be(true) }
       end
     end
 
@@ -122,14 +123,14 @@ RSpec.describe CbvFlowInvitation, type: :model do
       let(:invitation_sent_at) { Time.new(2024, 8,  1, 12, 0, 0, "-04:00") }
       let(:now)                { Time.new(2024, 8, 15, 23, 0, 0, "-04:00") }
 
-      it { is_expected.to eq(false) }
+      it { is_expected.to be(false) }
     end
 
     context "after 11:59pm ET on the day of the validity window" do
       let(:invitation_sent_at) { Time.new(2024, 8,  1, 12, 0, 0, "-04:00") }
       let(:now)                { Time.new(2024, 8, 16,  0, 1, 0, "-04:00") }
 
-      it { is_expected.to eq(true) }
+      it { is_expected.to be(true) }
     end
   end
 
@@ -196,7 +197,7 @@ RSpec.describe CbvFlowInvitation, type: :model do
       expect {
         invitation1
         invitation2
-      }.to change(CbvFlowInvitation, :count).by(2)
+      }.to change(described_class, :count).by(2)
     end
 
     it "does not raise a uniqueness error when both are redacted" do

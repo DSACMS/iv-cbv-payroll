@@ -76,7 +76,7 @@ RSpec.describe Cbv::EmployerSearchesController do
 
       context "when the user at least one payroll_account associated with their cbv_flow" do
         it "renders the view with a link to the /other_job page" do
-          create(:payroll_account, cbv_flow_id: cbv_flow.id)
+          create(:payroll_account, flow: cbv_flow)
           get :show, params: { query: "no_results" }
           expect(response).to be_successful
           expect(response.body).to include("If you have no other jobs to add here, continue")

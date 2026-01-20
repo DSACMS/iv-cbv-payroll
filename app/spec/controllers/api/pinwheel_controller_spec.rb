@@ -3,7 +3,7 @@ require "rails_helper"
 RSpec.describe Api::PinwheelController do
   include PinwheelApiHelper
 
-  context "#create_token" do
+  describe "#create_token" do
     let(:cbv_flow) { create(:cbv_flow, :invited) }
     let(:valid_params) do
       {

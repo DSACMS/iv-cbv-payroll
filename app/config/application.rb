@@ -67,5 +67,27 @@ module IvCbvPayroll
     config.active_record.encryption.primary_key = ENV["ACTIVE_RECORD_ENCRYPTION_PRIMARY_KEY"]
     config.active_record.encryption.deterministic_key = ENV["ACTIVE_RECORD_ENCRYPTION_DETERMINISTIC_KEY"]
     config.active_record.encryption.key_derivation_salt = ENV["ACTIVE_RECORD_ENCRYPTION_KEY_DERIVATION_SALT"]
+
+    # Add structured logging via 'rails_semantic_logger' gem
+    if ENV["RAILS_LOG_TO_STDOUT"].present? && ENV.fetch("STRUCTURED_LOGGING_ENABLED", "false") == "true"
+      # TODO[tom]: Move this to production.rb
+      require "rails_semantic_logger"
+
+      $stdout.sync = true
+      config.log_tags = {
+        request_id: :request_id,
+        amzn_trace_id: ->(request) { request.headers["X-Amzn-Trace-ID"] }
+      }
+
+      # Forward logs to NewRelic
+      SemanticLogger.add_appender(appender: :new_relic_logs)
+      config.semantic_logger.add_appender(io: $stdout, formatter: :logfmt)
+
+      config.rails_semantic_logger.add_file_appender = false
+      config.rails_semantic_logger.action_message_format = ->(message, payload) do
+        # "Completed Cbv::EntriesController#show"
+        "#{message} #{payload[:controller]}##{payload[:action]}"
+      end
+    end
   end
 end

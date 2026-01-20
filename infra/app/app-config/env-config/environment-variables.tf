@@ -15,7 +15,15 @@ locals {
   }
 
   ssm_environment_variables = {
-    LA_LDH_PILOT_ENABLED = "/service/${var.app_name}-${var.environment}/la-ldh-pilot-enabled"
+    ACTIVITY_HUB_ENABLED       = "/service/${var.app_name}-${var.environment}/activity-hub-enabled"
+    LA_LDH_PILOT_ENABLED       = "/service/${var.app_name}-${var.environment}/la-ldh-pilot-enabled"
+    SITE_ALERT_ENABLED         = "/service/${var.app_name}-${var.environment}/site-alert-enabled"
+    SITE_ALERT_TITLE_EN        = "/service/${var.app_name}-${var.environment}/site-alert-title-en"
+    SITE_ALERT_BODY_EN         = "/service/${var.app_name}-${var.environment}/site-alert-body-en"
+    SITE_ALERT_TITLE_ES        = "/service/${var.app_name}-${var.environment}/site-alert-title-es"
+    SITE_ALERT_BODY_ES         = "/service/${var.app_name}-${var.environment}/site-alert-body-es"
+    SITE_ALERT_TYPE            = "/service/${var.app_name}-${var.environment}/site-alert-type"
+    STRUCTURED_LOGGING_ENABLED = "/service/${var.app_name}-${var.environment}/structured-logging-enabled"
   }
 
   # Configuration for secrets
@@ -86,6 +94,10 @@ locals {
     LA_LDH_INCOME_REPORT_URL = {
       manage_method     = "manual"
       secret_store_name = "/service/${var.app_name}-${var.environment}/la-ldh-income-report-url"
+    },
+    LA_LDH_PDF_API_URL = {
+      manage_method     = "manual"
+      secret_store_name = "/service/${var.app_name}-${var.environment}/la-ldh-pdf-api-url"
     },
     LA_LDH_INCOME_REPORT_APIKEY = {
       manage_method     = "manual"

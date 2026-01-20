@@ -9,6 +9,12 @@ class Cbv::EmployerSearchesController < Cbv::BaseController
     @has_payroll_account = @flow.payroll_accounts.any?
     @selected_tab = search_params[:type] || "payroll"
 
+    # Since this controller is shared between CBV and Activity flows, make sure
+    # the links on the page keep the user within the same flow:
+    @search_path = flow_navigator.income_sync_path(:employer_search)
+    @payroll_path = flow_navigator.income_sync_path(:employer_search, type: :payroll)
+    @employer_path = flow_navigator.income_sync_path(:employer_search, type: :employer)
+
     case search_params[:type]
     when "payroll"
       track_clicked_popular_payroll_providers_event
@@ -42,7 +48,7 @@ class Cbv::EmployerSearchesController < Cbv::BaseController
       cbv_flow_id: @flow.id,
       device_id: @flow.device_id,
       client_agency_id: current_agency&.id,
-      invitation_id: @flow.cbv_flow_invitation_id
+      invitation_id: @flow.invitation_id
     })
   end
 
@@ -53,7 +59,7 @@ class Cbv::EmployerSearchesController < Cbv::BaseController
       cbv_flow_id: @flow.id,
       client_agency_id: current_agency&.id,
       device_id: @flow.device_id,
-      invitation_id: @flow.cbv_flow_invitation_id
+      invitation_id: @flow.invitation_id
     })
   end
 
@@ -66,7 +72,7 @@ class Cbv::EmployerSearchesController < Cbv::BaseController
       cbv_flow_id: @flow.id,
       client_agency_id: current_agency&.id,
       device_id: @flow.device_id,
-      invitation_id: @flow.cbv_flow_invitation_id
+      invitation_id: @flow.invitation_id
     })
   end
 
@@ -79,7 +85,7 @@ class Cbv::EmployerSearchesController < Cbv::BaseController
       cbv_flow_id: @flow.id,
       client_agency_id: current_agency&.id,
       device_id: @flow.device_id,
-      invitation_id: @flow.cbv_flow_invitation_id,
+      invitation_id: @flow.invitation_id,
       num_results: @employers.length,
       has_payroll_account: @has_payroll_account,
       pinwheel_result_count: @employers.count { |item| item.provider_name == :pinwheel },

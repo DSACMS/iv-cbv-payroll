@@ -56,7 +56,7 @@ RSpec.describe Cbv::BaseController, type: :controller do
       let(:domain) { "fake-domain-for-la-ldh.localhost" }
 
       before do
-        session[:cbv_flow_id] = cbv_flow.id
+        session[:flow_id] = cbv_flow.id
 
         request.host = domain
         allow(Rails.application.config.client_agencies["la_ldh"])

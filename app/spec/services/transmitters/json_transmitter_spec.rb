@@ -13,7 +13,7 @@ RSpec.describe Transmitters::JsonTransmitter do
     )
   end
   let(:transmission_method_configuration) { {
-    "url" => "http://fake-state.api.gov/api/v1/income-report" # Should be replaced with real agency sandbox url!
+    "json_api_url" => "http://fake-state.api.gov/api/v1/income-report" # Should be replaced with real agency sandbox url!
   } }
   let(:mock_client_agency) { instance_double(ClientAgencyConfig::ClientAgency) }
   let(:pinwheel_report) { build(:pinwheel_report, :with_pinwheel_account) }
@@ -28,8 +28,7 @@ RSpec.describe Transmitters::JsonTransmitter do
   let!(:api_token) { create(:api_access_token, user: service_user) }
 
   before do
-    allow(mock_client_agency).to receive(:transmission_method_configuration).and_return(transmission_method_configuration)
-    allow(mock_client_agency).to receive(:id).and_return("sandbox")
+    allow(mock_client_agency).to receive_messages(transmission_method_configuration: transmission_method_configuration, id: "sandbox")
     allow(CbvApplicant).to receive(:valid_attributes_for_agency).with("sandbox").and_return([ "case_number" ])
     allow(Rails.logger).to receive(:error)
   end
@@ -46,10 +45,11 @@ RSpec.describe Transmitters::JsonTransmitter do
   context 'agency responds with 500' do
     it 'raises an HTTP error' do
       VCR.use_cassette("json_transmitter_500") do
-        expect { described_class.new(cbv_flow, mock_client_agency, aggregator_report).deliver }.to raise_error("Unexpected response from agency: 500 Internal Server Error")
+        expect { described_class.new(cbv_flow, mock_client_agency, aggregator_report).deliver }
+          .to raise_error(Transmitters::JsonTransmitter::JsonTransmitterError, /Unexpected response from agency/)
       end
 
-      expect(Rails.logger).to have_received(:error).with(/Unexpected response: 500/)
+      expect(Rails.logger).to have_received(:error).with(/Unexpected response from agency: code=500 message=Internal Server Error body=Internal Server Error/)
     end
   end
 
@@ -57,11 +57,10 @@ RSpec.describe Transmitters::JsonTransmitter do
     it 'raises an HTTP error' do
       VCR.use_cassette("json_transmitter_418") do
         expect { described_class.new(cbv_flow, mock_client_agency, aggregator_report).deliver }
-          .to raise_error("Unexpected response from agency: 418 I'm a teapot")
+          .to raise_error(Transmitters::JsonTransmitter::JsonTransmitterError, /Unexpected response from agency/)
       end
 
-      expect(Rails.logger).to have_received(:error).with(/Unexpected response: 418/)
-      expect(Rails.logger).to have_received(:error).with(/Here is my handle, here is my spout./)
+      expect(Rails.logger).to have_received(:error).with(/Unexpected response from agency: code=418 message=I'm a teapot body=Here is my handle, here is my spout./)
     end
   end
 
@@ -95,7 +94,7 @@ RSpec.describe Transmitters::JsonTransmitter do
   context 'custom headers' do
     let(:transmission_method_configuration) do
       {
-        "url" => "http://fake-state.api.gov/api/v1/income-report",
+        "json_api_url" => "http://fake-state.api.gov/api/v1/income-report",
         "custom_headers" => {
           "X-Client-ID" => "test-client-id",
           "X-Request-ID" => "test-request-id"

@@ -18,14 +18,18 @@ class CaseWorkerTransmitterJob < ApplicationJob
 
   def transmitter_class
     case @current_agency.transmission_method
-    when "shared_email"
+    when Transmitters::SharedEmailTransmitter::TRANSMISSION_METHOD
       Transmitters::SharedEmailTransmitter
-    when "sftp"
+    when Transmitters::SftpTransmitter::TRANSMISSION_METHOD
       Transmitters::SftpTransmitter
-    when "encrypted_s3"
+    when Transmitters::EncryptedS3Transmitter::TRANSMISSION_METHOD
       Transmitters::EncryptedS3Transmitter
-    when "json"
+    when Transmitters::JsonTransmitter::TRANSMISSION_METHOD
       Transmitters::JsonTransmitter
+    when Transmitters::HttpPdfTransmitter::TRANSMISSION_METHOD
+      Transmitters::HttpPdfTransmitter
+    when Transmitters::JsonAndPdfTransmitter::TRANSMISSION_METHOD
+      Transmitters::JsonAndPdfTransmitter
     else
       raise "Unsupported transmission method: #{@current_agency.transmission_method}"
     end

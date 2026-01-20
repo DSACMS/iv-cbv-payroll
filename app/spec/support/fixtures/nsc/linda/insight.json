@@ -1,0 +1,27 @@
+{
+	"status": {
+		"code": "0",
+		"severity": "Info",
+		"message": "Successful"
+	},
+	"transactionDetails": {
+		"transactionId": "828374505",
+		"orderId": "114694306",
+		"transactionStatus": "UCF",
+		"transactionFee": "0.00",
+		"salesTax": "0.00",
+		"transactionTotal": "0.00",
+		"requestedBy": "CMS Contact",
+		"requestedDate": "2026-01-02 13:11:15.321",
+		"notifiedDate": "2026-01-02 13:11:15.321",
+		"nscHit": "N"
+	},
+	"clientData": {
+		"accountId": "10053523"
+	},
+	"studentInfoProvided": {
+		"lastName": "Cooper",
+		"firstName": "Linda",
+		"dateOfBirth": "1999-01-01"
+	}
+}

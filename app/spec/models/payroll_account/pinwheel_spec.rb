@@ -5,7 +5,7 @@ RSpec.describe PayrollAccount::Pinwheel, type: :model do
   let(:supported_jobs) { %w[income paystubs employment] }
   let!(:cbv_flow) { create(:cbv_flow, :invited, pinwheel_token_id: "abc-def-ghi") }
   let!(:payroll_account) do
-    create(:payroll_account, cbv_flow: cbv_flow, aggregator_account_id: account_id, supported_jobs: supported_jobs)
+    create(:payroll_account, flow: cbv_flow, aggregator_account_id: account_id, supported_jobs: supported_jobs)
   end
 
   def create_webhook_events(income_success: true, employment_success: true, paystubs_success: true, income_errored: false, shifts_success: false)
@@ -35,7 +35,7 @@ RSpec.describe PayrollAccount::Pinwheel, type: :model do
       end
 
       it "returns true" do
-        expect(payroll_account.has_fully_synced?).to be_truthy
+        expect(payroll_account).to have_fully_synced
       end
     end
 
@@ -45,7 +45,7 @@ RSpec.describe PayrollAccount::Pinwheel, type: :model do
       end
 
       it "returns false when income_synced_at is nil" do
-        expect(payroll_account.has_fully_synced?).to be_falsey
+        expect(payroll_account).not_to have_fully_synced
       end
     end
 
@@ -57,7 +57,7 @@ RSpec.describe PayrollAccount::Pinwheel, type: :model do
       end
 
       it "returns true when income_synced_at is nil" do
-        expect(payroll_account.has_fully_synced?).to be_truthy
+        expect(payroll_account).to have_fully_synced
       end
     end
 
@@ -65,7 +65,7 @@ RSpec.describe PayrollAccount::Pinwheel, type: :model do
       let(:supported_jobs) { super() + %w[shifts] }
 
       it "is false before shifts.added webhook has arrived" do
-        expect(payroll_account.has_fully_synced?).to eq(false)
+        expect(payroll_account.has_fully_synced?).to be(false)
       end
 
       context "after the shifts.added webhook arrives" do
@@ -74,7 +74,7 @@ RSpec.describe PayrollAccount::Pinwheel, type: :model do
         end
 
         it "is true" do
-          expect(payroll_account.has_fully_synced?).to eq(true)
+          expect(payroll_account.has_fully_synced?).to be(true)
         end
       end
     end
@@ -83,7 +83,7 @@ RSpec.describe PayrollAccount::Pinwheel, type: :model do
   describe "#job_succeeded?" do
     context "when job is supported" do
       it "returns false when income is supported but not yet synced" do
-        expect(payroll_account.job_succeeded?('income')).to be_falsey
+        expect(payroll_account).not_to be_job_succeeded('income')
       end
 
       context "after the job has succeeded" do
@@ -92,7 +92,7 @@ RSpec.describe PayrollAccount::Pinwheel, type: :model do
         end
 
         it "returns true when income is supported and it succeeded" do
-          expect(payroll_account.job_succeeded?('income')).to be_truthy
+          expect(payroll_account).to be_job_succeeded('income')
         end
       end
     end
@@ -103,7 +103,7 @@ RSpec.describe PayrollAccount::Pinwheel, type: :model do
       end
 
       it "returns false when income is supported but it errored out" do
-        expect(payroll_account.job_succeeded?('income')).to be_falsey
+        expect(payroll_account).not_to be_job_succeeded('income')
       end
     end
 
@@ -111,7 +111,7 @@ RSpec.describe PayrollAccount::Pinwheel, type: :model do
       let(:supported_jobs) { super() - [ "income" ] }
 
       it "returns false" do
-        expect(payroll_account.job_succeeded?('income')).to be_falsey
+        expect(payroll_account).not_to be_job_succeeded('income')
       end
     end
   end
@@ -156,8 +156,9 @@ RSpec.describe PayrollAccount::Pinwheel, type: :model do
     let!(:payroll_account) do
        create(:payroll_account, :pinwheel_fully_synced, with_errored_jobs: %w[income])
      end
+
     it "supports a case where they have no reported income so long as we can scan their identities for unemployment" do
-         expect(payroll_account.necessary_jobs_succeeded?).to eq(true)
+         expect(payroll_account.necessary_jobs_succeeded?).to be(true)
        end
   end
 

@@ -7,19 +7,18 @@ class Api::ArgyleController < ApplicationController
   #
   # @see https://docs.argyle.com/link/user-tokens
   def create
-    is_sandbox_environment = agency_config[@cbv_flow.cbv_applicant.client_agency_id].argyle_environment == "sandbox"
-    user_token = if @cbv_flow.argyle_user_id.blank?
-                   response = argyle.create_user(@cbv_flow.end_user_id)
-
+    is_sandbox_environment = agency_config[@flow.cbv_applicant.client_agency_id].argyle_environment == "sandbox"
+    user_token = if @flow.argyle_user_id.blank?
+                   response = argyle.create_user(@flow.end_user_id)
                    # Store the argyle_user_id to allow us to associate incoming webhooks with
                    # this CbvFlow.
-                   @cbv_flow.update(argyle_user_id: response["id"])
+                   @flow.update(argyle_user_id: response["id"])
 
                    response["user_token"]
                  else
                    # If the user has already been created in Argyle, let's just
                    # make them a new link token with the same user.
-                   response = argyle.create_user_token(@cbv_flow.argyle_user_id)
+                   response = argyle.create_user_token(@flow.argyle_user_id)
                    response["user_token"]
                  end
 
@@ -36,11 +35,11 @@ class Api::ArgyleController < ApplicationController
   private
 
   def set_cbv_flow
-    @cbv_flow = CbvFlow.find_by(id: session[cbv_flow_symbol])
-    redirect_to(root_url(cbv_flow_timeout: true)) unless @cbv_flow
+    @flow = flow_class.find_by(id: session[:flow_id])
+    redirect_to(root_url(cbv_flow_timeout: true)) unless @flow
   end
 
-  # Redirect if the user is attempting connect a previously connected account
+  # Redirect if the user is attempting to connect a previously connected account
   def resume_previous_argyle_account_connection
     item_id = params[:item_id]
     unless item_id.present?
@@ -48,15 +47,15 @@ class Api::ArgyleController < ApplicationController
     end
 
     # If the user ID is not yet set, there is no previous argyle session to resume
-    return unless @cbv_flow.argyle_user_id.present?
+    return unless @flow.argyle_user_id.present?
 
     # Find any previous Argyle connections to this item
-    connected_argyle_accounts = argyle.fetch_accounts_api(user: @cbv_flow.argyle_user_id, item: item_id)["results"]
+    connected_argyle_accounts = argyle.fetch_accounts_api(user: @flow.argyle_user_id, item: item_id)["results"]
     return unless connected_argyle_accounts.any?
 
     # Find the PayrollAccount object (if we have received an accounts.connected webhook)
     argyle_account = connected_argyle_accounts.first
-    payroll_account = @cbv_flow.payroll_accounts.find_by(aggregator_account_id: argyle_account["id"])
+    payroll_account = @flow.payroll_accounts.find_by(aggregator_account_id: argyle_account["id"])
     return unless payroll_account.present?
 
     # If we've made it here, there is a previous connection to that item.
@@ -71,21 +70,21 @@ class Api::ArgyleController < ApplicationController
   end
 
   def track_event
-    return unless @cbv_flow.present?
+    return unless @flow.present?
 
     event_logger.track(TrackEvent::ApplicantBeganLinkingEmployer, request, {
       time: Time.now.to_i,
-      cbv_flow_id: @cbv_flow.id,
-      cbv_applicant_id: @cbv_flow.cbv_applicant_id,
-      client_agency_id: @cbv_flow.cbv_applicant.client_agency_id,
-      device_id: @cbv_flow.device_id,
-      invitation_id: @cbv_flow.cbv_flow_invitation_id,
+      cbv_flow_id: @flow.id,
+      cbv_applicant_id: @flow.cbv_applicant_id,
+      client_agency_id: @flow.cbv_applicant.client_agency_id,
+      device_id: @flow.device_id,
+      invitation_id: @flow.invitation_id,
       item_id: params[:item_id],
       aggregator_name: "argyle"
     })
   end
 
   def argyle
-    argyle_for(@cbv_flow)
+    argyle_for(@flow)
   end
 end

@@ -15,11 +15,7 @@ RSpec.describe Aggregators::Validators::UsefulReportValidator do
     # WARNING!!! If you print the report in the debugger the underlying properties will be empty because
     # we're overwriting the response to each of the properties of the object via these calls.
     # TODO WE SHOULD CLEAN THIS UP.
-    allow(report).to receive(:identities).and_return(identities)
-    allow(report).to receive(:employments).and_return(employments)
-    allow(report).to receive(:paystubs).and_return(paystubs)
-    allow(report).to receive(:incomes).and_return(incomes)
-    allow(report).to receive(:gigs).and_return(gigs)
+    allow(report).to receive_messages(identities: identities, employments: employments, paystubs: paystubs, incomes: incomes, gigs: gigs)
   end
 
   describe '#validate' do

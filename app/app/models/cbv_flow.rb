@@ -1,5 +1,4 @@
-class CbvFlow < ApplicationRecord
-  has_many :payroll_accounts, dependent: :destroy
+class CbvFlow < Flow
   belongs_to :cbv_flow_invitation, optional: true
   belongs_to :cbv_applicant, optional: true
 
@@ -18,20 +17,16 @@ class CbvFlow < ApplicationRecord
     confirmation_code.present?
   end
 
+  def invitation_id
+    cbv_flow_invitation_id
+  end
+
   def self.create_from_invitation(cbv_flow_invitation, device_id)
     create(
       cbv_flow_invitation: cbv_flow_invitation,
       cbv_applicant: cbv_flow_invitation.cbv_applicant,
       device_id: device_id
     )
-  end
-
-  def has_account_with_required_data?
-    payroll_accounts.any?(&:sync_succeeded?)
-  end
-
-  def fully_synced_payroll_accounts
-    payroll_accounts.select { |account| account.has_fully_synced? }
   end
 
   def to_generic_url(origin: nil)

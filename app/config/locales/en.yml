@@ -47,29 +47,54 @@ en:
               invalid_format: Enter an email address in the correct format, like name@example.com
             language:
               invalid_format: Language must be either English (en) or Spanish (es).
+        job_training_activity:
+          attributes:
+            date:
+              outside_reporting_month: must be within %{month}
+        volunteering_activity:
+          attributes:
+            date:
+              outside_reporting_month: must be within %{month}
   activities:
     education:
       add: Add Education Activities
+      created: Education activity was successfully created.
+      deleted: Education activity was successfully deleted.
       enrollment_status:
-        full_time: Full Time
-        hours:
-          one: 1 credit hour
-          other: "%{count} credit hours"
-          zero: not enrolled
-        part_time: Part Time
+        enrolled: Enrolled
+        not_enrolled: Not Enrolled
+        unknown: N/A
+      error:
+        back_button: Back to Activities
+        error_description: There was an error retrieving your education information. Please try again later.
+        error_heading: Unable to retrieve education information.
+        header: Error
       error_no_data: No education information available
+      errors:
+        timeout: The request timed out. Please try again.
+        unexpected: An unexpected error occurred. Please try again.
       new:
         enrollment: Enrollment
         fetching_education_description: This may take a few minutes. Please keep this window open while we work on this.
-        header: We're gathering your enrollment details from the <Our Data Source>
+        header: We're gathering your enrollment details from the National Student Clearinghouse
         hours: Hours
         school: School
+        student_info: Retrieving student information
       show:
         additional_information_header: Additional comments (Optional)
         additional_information_label: Share any comments or additional information about the income details above that you’d like %{agency_acronym} to know. For example, you can share if the information is inaccurate or if you’re no longer working at that job.
         continue: Save and continue
+        date_of_birth: Date of Birth
         description: Review the information below to make sure it's correct.
+        enrollment_information:
+          enrollment_status:
+            header: Enrollment Status
+        first_name: First Name
         header: Confirm your education enrollment
+        last_name: Last Name
+        no_records_found:
+          heading: No enrollment record found
+          message: We couldn't find any enrollment records for the information you provided. You can go back and try again or add your education activity manually.
         school_information:
           address: Address
           header: School Information
@@ -83,8 +108,10 @@ en:
           label: Upload Documents
       title: Education
     entry:
-      consent: Check this box to agree to let us record your information and share it with your benefits agency.
+      consent: Check this box to agree to let us record your information and share it with %{agency_name}.
+      consent_required: Please check the consent box to continue.
       continue: Add Activities
+      reporting_month: 'Reporting month: %{month}'
       title: Welcome to the Activity Hub!
     error_no_identity: Please provide your name and date of birth
     errors:
@@ -94,28 +121,45 @@ en:
       count:
         one: "%{count} activity added"
         other: "%{count} activities added"
+      delete: Delete
+      delete_confirm: Are you sure you want to delete this activity?
       description: You can add as many activities as you need to report. Continue once you have added all your activities.
+      edit: Edit
+      reporting_month: 'Reporting month: %{month}'
+      save: Save changes
       title: Add activities to your Medicaid Community Engagement report
+    income:
+      account_id: Account ID
+      add: Add Income
+      synchronization_status: Status
+      title: Employment
     job_training:
       add: Add Job Training Activity
       created: Job training activity was successfully created.
+      date: Date
+      deleted: Job training activity was successfully deleted.
+      edit_title: Edit Job Training Activity
       hours: Hours attended
       organization_address: Organization address
       program_name: Program name
       title: Job Training
+      updated: Job training activity was successfully updated.
     submit:
       confirm: Share my report
       consent_label_html: 'Check this box to confirm: <ul class="margin-y-2"><li>The information provided by you is true and complete to the best of your knowledge.</li><li>You agree to inform the agency of any income not reflected in this report or any discrepancies found in the information gathered with this tool.</li><li>You understand that providing accurate and complete information is your responsibility, and any false or omitted information may have legal consequences.</li></ul> By sending this report, you authorize its use for income verification by authorized agency personnel.'
       consent_required: Please check the legal agreement box to share your report.
-      description: Your report will be sent to your benefits agency. You must check the legal agreement box to share your report.
+      description: Your report will be sent to %{agency_name}. You must check the legal agreement box to share your report.
       pdf:
+        confirmation_code: Confirmation code
         date: Date
         description: The following information was provided by the Medicaid client for verification of the Community Engagement Requirements.
         disclaimer: This report is based on the activities you entered. Contact your agency if you need to make a correction.
         heading: Your Medicaid Community Engagement Activity report
         hours: Hours
+        income_activities: Employment activities
         job_training_count: Job training activities
         job_training_section: Job training and education
+        no_income: No employment activities were reported.
         no_job_training: No job training activities were reported.
         no_volunteering: No volunteering activities were reported.
         not_provided: Not provided
@@ -123,6 +167,7 @@ en:
         organization_name: Organization
         program_name: Program name
         report_overview: Report overview
+        reporting_month: Reporting month
         submitted_at: Submitted on
         summary_heading: Activity summary
         title: Community Engagement activity report
@@ -132,20 +177,24 @@ en:
       title: Submit your Medicaid Community Engagement report
     success:
       completed_at: Completed at
+      confirmation_code_html: "<strong>Your confirmation code</strong>: %{confirmation_code}"
       description: Thank you for submitting your report.
       download_pdf: Download PDF report
-      title: Your Medicaid Community Engagement report was successfully sent to your benefits agency
+      title: Your Medicaid Community Engagement report was successfully sent to %{agency_name}
     summary:
-      description: The report below has your community engagement activities from your verification month. Please review it before sending to your benefits agency.
+      description: The report below has your community engagement activities from your verification month. Please review it before sending to %{agency_name}.
       submit: Continue
       title: Review your Medicaid Community Engagement report
     volunteering:
       add: Add Volunteering Activity
       created: Volunteering activity was successfully created.
       date: Date
+      deleted: Volunteering activity was successfully deleted.
+      edit_title: Edit Volunteering Activity
       hours: Hours
       organization_name: Organization name
       title: Volunteering
+      updated: Volunteering activity was successfully updated.
   aggregator_strings:
     deductions:
       401k: 401k

@@ -28,7 +28,7 @@ RSpec.describe Cbv::PaymentDetailsController do
         :payroll_account,
         :pinwheel_fully_synced,
         with_errored_jobs: errored_jobs,
-        cbv_flow: cbv_flow,
+        flow: cbv_flow,
         aggregator_account_id: account_id,
         supported_jobs: supported_jobs,
       )
@@ -68,7 +68,7 @@ RSpec.describe Cbv::PaymentDetailsController do
         get :show, params: { user: { account_id: account_id } }
       end
 
-      it "should properly display pay frequency and compensation amount" do
+      it "properly displays pay frequency and compensation amount" do
         get :show, params: { user: { account_id: account_id } }
         expect(response).to be_successful
 
@@ -279,6 +279,8 @@ RSpec.describe Cbv::PaymentDetailsController do
 
     context "when using argyle" do
       context "for Bob (a gig worker)" do
+        subject { response.body }
+
         let(:account_id) { "019571bc-2f60-3955-d972-dbadfe0913a8" }
         let(:cbv_applicant) { create(:cbv_applicant, created_at: Date.parse("2025-03-15"), snap_application_date: Date.parse("2025-03-15"), case_number: "ABC1234") }
         let(:cbv_flow) do
@@ -296,7 +298,7 @@ RSpec.describe Cbv::PaymentDetailsController do
             :payroll_account,
             :argyle_fully_synced,
             with_errored_jobs: errored_jobs,
-            cbv_flow: cbv_flow,
+            flow: cbv_flow,
             aggregator_account_id: account_id,
             supported_jobs: supported_jobs,
             )
@@ -311,7 +313,6 @@ RSpec.describe Cbv::PaymentDetailsController do
           get :show, params: { user: { account_id: account_id } }
         end
 
-        subject { response.body }
 
         it "renders properly" do
           expect(response).to be_successful
@@ -345,6 +346,8 @@ RSpec.describe Cbv::PaymentDetailsController do
       end
 
       context "for Sarah (a w2 worker)" do
+        subject { response.body }
+
         let(:account_id) { "01956d5f-cb8d-af2f-9232-38bce8531f58" }
         let(:cbv_flow) do
           create(:cbv_flow,
@@ -361,7 +364,7 @@ RSpec.describe Cbv::PaymentDetailsController do
             :payroll_account,
             :argyle_fully_synced,
             with_errored_jobs: errored_jobs,
-            cbv_flow: cbv_flow,
+            flow: cbv_flow,
             aggregator_account_id: account_id,
             supported_jobs: supported_jobs,
             )
@@ -376,7 +379,6 @@ RSpec.describe Cbv::PaymentDetailsController do
           get :show, params: { user: { account_id: account_id } }
         end
 
-        subject { response.body }
 
         it "renders properly" do
           expect(response).to be_successful
@@ -406,7 +408,7 @@ RSpec.describe Cbv::PaymentDetailsController do
           it { is_expected.to include("Total hours worked") }
         end
 
-        it "should properly display pay frequency and compensation amount" do
+        it "properly displays pay frequency and compensation amount" do
           doc = Nokogiri::HTML(response.body)
 
           expect(doc.xpath("//tr[contains(., 'Pay frequency')]").text).to include('Bi-weekly')
@@ -423,6 +425,7 @@ RSpec.describe Cbv::PaymentDetailsController do
 
     before do
       session[:flow_id] = cbv_flow.id
+      session[:flow_type] = :cbv
       # update the cbv_flow to have an account comment
       additional_information = { account_id => { comment: "Old comment", updated_at: Time.current.iso8601 } }
       cbv_flow.update!(additional_information: additional_information)

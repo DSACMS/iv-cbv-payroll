@@ -89,6 +89,7 @@ end
         before do
         pinwheel_stub_request_end_user_multiple_paystubs_response
       end
+
         it "renders properly with 2 paystubs" do
           get :show
           doc = Nokogiri::HTML(response.body)
@@ -104,7 +105,7 @@ end
 
       context "with both Argyle and Pinwheel data" do
         let!(:argyle_account) do
-          create(:payroll_account, :argyle_bob, cbv_flow: cbv_flow)
+          create(:payroll_account, :argyle_bob, flow: cbv_flow)
         end
 
         let(:pinwheel_identities_json) { pinwheel_load_relative_json_file('request_identity_response.json') }
@@ -139,7 +140,7 @@ end
     end
 
     context "with mismatched employment data" do
-      it "should handle when employment job succeeds but employment data is nil" do
+      it "handles when employment job succeeds but employment data is nil" do
         allow_any_instance_of(Aggregators::AggregatorReports::AggregatorReport).to receive(:summarize_by_employer) do
           { cbv_flow.payroll_accounts.first.aggregator_account_id =>
             { has_employment_data: true, employment: nil }

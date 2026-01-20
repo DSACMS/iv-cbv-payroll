@@ -57,7 +57,7 @@ RSpec.describe Api::ArgyleController do
 
         post :create, params: valid_params
 
-        expect(JSON.parse(response.body)["isSandbox"]).to eq(true)
+        expect(JSON.parse(response.body)["isSandbox"]).to be(true)
       end
     end
 
@@ -153,7 +153,7 @@ RSpec.describe Api::ArgyleController do
 
         before do
           # Create a second payroll account with a different account ID
-          create(:payroll_account, :argyle, cbv_flow: cbv_flow, aggregator_account_id: other_argyle_account_id)
+          create(:payroll_account, :argyle, flow: cbv_flow, aggregator_account_id: other_argyle_account_id)
 
           # Make sure the first account ID matches what's returned by the API
           cbv_flow.payroll_accounts.first.update(aggregator_account_id: argyle_account_id)

@@ -22,20 +22,12 @@ Rails.application.configure do
     policy.worker_src :self, "blob:"
     policy.frame_src :self, "https://cdn.getpinwheel.com"
 
-    # Allow <style> tags used by Aggregator SDKs by explicitly allowing their
-    # hashes.
-    #
-    # When upgrading Pinwheel or Argyle JS SDKs, update these hashes by
-    # attempting to open each modal. If the <style> tag has changed, and we
-    # need to update the hash, then the JS console will show you the new hashes
-    # when it blocks adding the <style> tag to the page.
-    #
-    # The error will say "Refused ... Either ... a hash ('sha256-[blahblah]') ...
-    # is required." Replace the hash value(s) here from that message.
-    policy.style_src :self,
-      "'sha256-WAyOw4V+FqDc35lQPyRADLBWbuNK8ahvYEaQIYF1+Ps='", # Pinwheel
-      "'sha256-8Fd8AAaNByYvS/HuItVFketOItMHf2YiH+wvh8OVQOA='", # Pinwheel
-      "'sha256-47DEQpj8HBSa+/TImW+5JCeuQeRkm5NMpJWZG3hSuFU='"  # Argyle
+    # Allow <style> tags used by Aggregator SDKs.
+    # Previously, we allowed 3 hashes that we expected from Pinwheel and Argyle
+    # Argyle introduced a change that appears to dynamically generate hashes,
+    # meaning we can no longer use that strategy.
+    # Until we can come up with a better strategy, switching to unsafe_inline.
+    policy.style_src :self, :unsafe_inline
   end
 
   #

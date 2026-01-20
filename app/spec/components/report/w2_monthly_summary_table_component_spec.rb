@@ -27,14 +27,17 @@ RSpec.describe Report::W2MonthlySummaryTableComponent, type: :component do
         :payroll_account,
         :pinwheel_fully_synced,
         with_errored_jobs: errored_jobs,
-        cbv_flow: cbv_flow,
+        flow: cbv_flow,
         aggregator_account_id: account_id,
         supported_jobs: supported_jobs,
         )
     end
 
     context "with a w2-worker" do
+      subject { render_inline(described_class.new(pinwheel_report, payroll_account)) }
+
       let(:pinwheel_report) { Aggregators::AggregatorReports::PinwheelReport.new(payroll_accounts: [ payroll_account ], pinwheel_service: pinwheel_service, days_to_fetch_for_w2: 90, days_to_fetch_for_gig: 182) }
+
       before do
         pinwheel_stub_request_identity_response
         pinwheel_stub_request_end_user_accounts_response
@@ -46,7 +49,6 @@ RSpec.describe Report::W2MonthlySummaryTableComponent, type: :component do
         pinwheel_report.fetch
       end
 
-      subject { render_inline(described_class.new(pinwheel_report, payroll_account)) }
 
       it "pinwheel_report is properly fetched" do
         expect(pinwheel_report.paystubs.length).to eq(1)
@@ -97,13 +99,16 @@ RSpec.describe Report::W2MonthlySummaryTableComponent, type: :component do
       create(
         :payroll_account,
         :argyle_fully_synced,
-        cbv_flow: cbv_flow,
+        flow: cbv_flow,
         aggregator_account_id: account_id
       )
     end
 
     context "with sarah, a w2-worker" do
+      subject { render_inline(described_class.new(argyle_report, payroll_account)) }
+
       let(:argyle_report) { Aggregators::AggregatorReports::ArgyleReport.new(payroll_accounts: [ payroll_account ], argyle_service: argyle_service, days_to_fetch_for_w2: 90, days_to_fetch_for_gig: 182) }
+
       before do
         argyle_stub_request_identities_response("sarah")
         argyle_stub_request_paystubs_response("sarah")
@@ -116,7 +121,6 @@ RSpec.describe Report::W2MonthlySummaryTableComponent, type: :component do
         Timecop.freeze(Time.local(2025, 04, 1, 0, 0), &ex)
       end
 
-      subject { render_inline(described_class.new(argyle_report, payroll_account)) }
 
       it "argyle_report is properly fetched" do
         expect(argyle_report.paystubs.length).to be(10)
@@ -168,7 +172,10 @@ RSpec.describe Report::W2MonthlySummaryTableComponent, type: :component do
     end
 
     context "with sarah, a w2-worker without paystubs" do
+      subject { render_inline(described_class.new(argyle_report, payroll_account)) }
+
       let(:argyle_report) { Aggregators::AggregatorReports::ArgyleReport.new(payroll_accounts: [ payroll_account ], argyle_service: argyle_service, days_to_fetch_for_w2: 90, days_to_fetch_for_gig: 182) }
+
       before do
         argyle_stub_request_identities_response("sarah")
         argyle_stub_request_paystubs_response("empty")
@@ -181,7 +188,6 @@ RSpec.describe Report::W2MonthlySummaryTableComponent, type: :component do
         Timecop.freeze(Time.local(2025, 04, 1, 0, 0), &ex)
       end
 
-      subject { render_inline(described_class.new(argyle_report, payroll_account)) }
 
       it "argyle_report is properly fetched" do
         expect(argyle_report.paystubs.length).to be(0)
