@@ -5,7 +5,7 @@ RSpec.describe Activities::VolunteeringController, type: :controller do
 
   render_views
 
-  let(:activity_flow) { create(:activity_flow) }
+  let(:activity_flow) { create(:activity_flow, education_activities_count: 0) }
 
   before do
     session[:flow_id] = activity_flow.id
@@ -22,7 +22,7 @@ RSpec.describe Activities::VolunteeringController, type: :controller do
   end
 
   describe "POST #create" do
-    let(:params) do
+    let(:volunteering_params) do
       {
         volunteering_activity: {
           organization_name: "Local Food Bank",
@@ -34,11 +34,43 @@ RSpec.describe Activities::VolunteeringController, type: :controller do
 
     it "creates a volunteering activity and redirects to the hub" do
       expect do
-        post :create, params: params
+        post :create, params: volunteering_params
       end.to change(activity_flow.volunteering_activities, :count).by(1)
 
       expect(response).to redirect_to(activities_flow_root_path)
       expect(flash[:notice]).to eq(I18n.t("activities.volunteering.created"))
+    end
+
+    it "redirects to activity hub when total hours are below the threshold" do
+      create(
+        :job_training_activity,
+        activity_flow: activity_flow,
+        program_name: "Resume Workshop",
+        organization_address: "123 Main St",
+        hours: 78
+      )
+
+      post :create, params: volunteering_params.deep_merge(
+        volunteering_activity: { hours: 1 }
+      )
+
+      expect(response).to redirect_to(activities_flow_root_path)
+    end
+
+    it "redirects to summary page when total hours meet the threshold" do
+      create(
+        :job_training_activity,
+        activity_flow: activity_flow,
+        program_name: "Resume Workshop",
+        organization_address: "123 Main St",
+        hours: 79
+      )
+
+      post :create, params: volunteering_params.deep_merge(
+        volunteering_activity: { hours: 1 }
+      )
+
+      expect(response).to redirect_to(activities_flow_summary_path)
     end
   end
 
