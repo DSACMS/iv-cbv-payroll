@@ -138,6 +138,7 @@ ignore_missing:
     - "pages.home.pilot_ended.la_ldh.*"
     # Activity Hub flow pages/models
     - "activities.*"
+    - "cbv.*.activity_flow.*" # ActivityFlow copy overrides in controllers/views from CBV flow
     - "activerecord.errors.models.job_training_activity.*"
     - "activerecord.errors.models.volunteering_activity.*"
 

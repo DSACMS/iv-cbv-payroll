@@ -1,5 +1,3 @@
-<% content_for :title, t(".header") %>
-
 <div data-controller="cbv-employer-search" data-cbv-employer-search-cbv-flow-id-value="<%= @flow.id %>">
   <div data-cbv-employer-search-target="helpAlert" class="display-none margin-bottom-4">
     <%= render Uswds::Alert.new(type: :warning, heading: t(".alert.heading")) do %>
@@ -7,9 +5,25 @@
     <% end %>
   </div>
 
-  <h1 class="margin-top-0"><%= t(".header") %></h1>
+  <h1 class="margin-top-0">
+    <% case @flow %>
+    <% when ActivityFlow %>
+      <% content_for :title, t(".activity_flow.header") %>
+      <%= t(".activity_flow.header") %>
+    <% else %>
+      <% content_for :title, t(".header") %>
+      <%= t(".header") %>
+    <% end %>
+  </h1>
 
-  <p><%= t(".search_label") %></p>
+  <p>
+    <% case @flow %>
+    <% when ActivityFlow %>
+      <%= t(".activity_flow.search_label") %>
+    <% else %>
+      <%= t(".search_label") %>
+    <% end %>
+  </p>
 
   <%= form_with url: @search_path,
                 method: :get,
@@ -39,15 +53,6 @@
     <input type="hidden" name="user[account_id]" data-cbv-employer-search-target="userAccountId">
   <% end %>
 
- <div class="grid-row maxw-mobile-lg margin-left-0 padding-left-0 margin-top-4">
-      <%= link_to t(".payroll_providers"), @payroll_path,
-        class: "grid-col usa-button margin-0 radius-right-0 #{@selected_tab != 'payroll' && 'usa-button--outline'}",
-        data: { turbo_frame: "popular", turbo_action: "advance", turbo_prefetch: false } %>
-      <%= link_to t(".app_based_providers"), @employer_path,
-        class: "grid-col usa-button margin-0 radius-left-0 #{@selected_tab != 'employer' && 'usa-button--outline'}",
-        data: { turbo_frame: "popular", turbo_action: "advance", turbo_prefetch: false } %>
-    </div>
-
   <h2><%= t(".popular_providers") %></h2>
 
   <div data-cbv-employer-search-target="tabAnnouncement"
@@ -56,6 +61,14 @@
        class="usa-sr-only"></div>
 
   <%= turbo_frame_tag "popular" do %>
+    <div class="grid-row maxw-mobile-lg margin-left-0 padding-left-0 margin-top-3">
+      <%= link_to t(".payroll_providers"), @payroll_path,
+        class: "grid-col usa-button margin-0 radius-right-0 #{@selected_tab != 'payroll' && 'usa-button--outline'}",
+        data: { turbo_frame: "popular", turbo_action: "advance", turbo_prefetch: false } %>
+      <%= link_to t(".app_based_providers"), @employer_path,
+        class: "grid-col usa-button margin-0 radius-left-0 #{@selected_tab != 'employer' && 'usa-button--outline'}",
+        data: { turbo_frame: "popular", turbo_action: "advance", turbo_prefetch: false } %>
+    </div>
 
     <div class="grid-row grid-gap margin-top-2">
       <% (ProviderSearchService.new(@flow.cbv_applicant.client_agency_id).top_aggregator_options(@selected_tab)).each do |provider| %>

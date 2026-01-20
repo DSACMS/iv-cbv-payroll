@@ -28,15 +28,19 @@ RSpec.describe Cbv::PaymentDetailsController do
         :payroll_account,
         :pinwheel_fully_synced,
         with_errored_jobs: errored_jobs,
-        flow: cbv_flow,
+        flow: flow,
         aggregator_account_id: account_id,
         supported_jobs: supported_jobs,
       )
     end
     let!(:paystubs_response) { pinwheel_stub_request_end_user_paystubs_response }
+    let(:flow) { cbv_flow }
+    let(:flow_type) { :cbv }
 
     before do
-      session[:flow_id] = cbv_flow.id
+      session[:flow_id] = flow.id
+      session[:flow_type] = flow_type
+
       pinwheel_stub_request_identity_response
       pinwheel_stub_request_end_user_accounts_response
       pinwheel_stub_request_end_user_account_response
@@ -132,6 +136,16 @@ RSpec.describe Cbv::PaymentDetailsController do
         it "does not include an account comment in the response" do
           get :show, params: { user: { account_id: account_id } }
           expect(response.body).not_to include(comment)
+        end
+      end
+
+      context "for an ActivityFlow" do
+        let(:flow) { create(:activity_flow) }
+        let(:flow_type) { :activity }
+
+        it "renders properly" do
+          get :show, params: { user: { account_id: account_id } }
+          expect(response).to be_successful
         end
       end
     end
@@ -421,25 +435,25 @@ RSpec.describe Cbv::PaymentDetailsController do
   describe "#update" do
     let!(:cbv_flow) { create(:cbv_flow, :invited) }
     let(:account_id) { SecureRandom.uuid }
+    let(:old_comment) { "Old comment" }
     let(:comment) { "This is a test comment" }
+    let(:flow) { cbv_flow }
+    let(:flow_type) { :cbv }
 
     before do
-      session[:flow_id] = cbv_flow.id
-      session[:flow_type] = :cbv
-      # update the cbv_flow to have an account comment
-      additional_information = { account_id => { comment: "Old comment", updated_at: Time.current.iso8601 } }
-      cbv_flow.update!(additional_information: additional_information)
+      session[:flow_id] = flow.id
+      session[:flow_type] = flow_type
+      # update the flow to have an account comment
+      additional_information = { account_id => { comment: old_comment, updated_at: Time.current.iso8601 } }
+      flow.update!(additional_information: additional_information)
     end
 
     it "updates the account comment through invoking the controller" do
-      additional_information = cbv_flow.additional_information
-      # a bit redundant, but prior to invoking the controller action- the comment should be different
-      expect(additional_information[account_id]["comment"]).not_to eq(comment)
-      # invoke the controller action
-      patch :update, params: { user: { account_id: account_id }, cbv_flow: { additional_information: comment } }
-      # verify that the comment was updated. the reload method does not deserialize the JSON field
-      additional_information = cbv_flow.reload.additional_information
-      expect(additional_information[account_id]["comment"]).to eq(comment)
+      expect do
+        patch :update, params: { user: { account_id: account_id }, cbv_flow: { additional_information: comment } }
+      end.to change { flow.reload.additional_information[account_id]["comment"] }
+        .from(old_comment)
+        .to(comment)
     end
 
     it "tracks events" do
@@ -452,6 +466,19 @@ RSpec.describe Cbv::PaymentDetailsController do
         ))
 
       patch :update, params: { user: { account_id: account_id }, cbv_flow: { additional_information: comment } }
+    end
+
+    context "for an ActivityFlow" do
+      let(:flow) { create(:activity_flow) }
+      let(:flow_type) { :activity }
+
+      it "updates the account comment" do
+        expect do
+          patch :update, params: { user: { account_id: account_id }, activity_flow: { additional_information: comment } }
+        end.to change { flow.reload.additional_information[account_id]["comment"] }
+          .from(old_comment)
+          .to(comment)
+      end
     end
   end
 end
