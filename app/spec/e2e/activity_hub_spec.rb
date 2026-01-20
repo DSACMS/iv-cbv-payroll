@@ -82,12 +82,15 @@ RSpec.describe 'e2e Activity Hub flow test', :js, type: :feature do
     expect(page).to have_content "Helping Hands"
     expect(page).to have_content "Resume Workshop"
 
+    # /activities/summary
     click_button I18n.t("activities.summary.submit")
     verify_page(page, title: I18n.t("activities.submit.title"))
     find("label[for='activity_flow_consent_to_submit']").click
     click_button I18n.t("activities.submit.confirm")
-    verify_page(page, title: I18n.t("activities.success.title", agency_name: I18n.t("shared.agency_full_name.sandbox")))
-    expect(page).to have_content I18n.t("activities.success.completed_at")
+
+    # /activities/success
+    verify_page(page, title: I18n.t("activities.success.show.title", agency_acronym: I18n.t("shared.agency_acronym.sandbox")))
+    expect(page).to have_content I18n.t("activities.success.show.download_pdf")
   end
 
   it "blocks activity hub access when not enabled" do
