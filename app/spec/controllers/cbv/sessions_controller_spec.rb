@@ -76,7 +76,7 @@ RSpec.describe Cbv::SessionsController, type: :controller do
 
     context 'with domain detection' do
       it 'uses the detected agency' do
-        allow(controller).to receive(:detect_client_agency_from_domain).and_return('sandbox')
+        allow(controller).to receive(:client_agency_from_domain).and_return('sandbox')
 
         get :timeout
         expect(response.body).to include('click here')

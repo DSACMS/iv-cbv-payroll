@@ -62,9 +62,12 @@ class ApplicationController < ActionController::Base
       return @current_agency
     end
 
-    client_agency_id_from_domain = detect_client_agency_from_domain
-    if client_agency_id_from_domain.present?
-      @current_agency = agency_config[client_agency_id_from_domain]
+    if client_agency_from_domain.present?
+      @current_agency = agency_config[client_agency_from_domain]
+    end
+
+    if @current_agency.nil? && (Rails.env.development? || Rails.env.test?)
+      @current_agency = agency_config["sandbox"]
     end
 
     @current_agency
@@ -80,7 +83,7 @@ class ApplicationController < ActionController::Base
     ENV["DOMAIN_NAME"] == "verify-demo.navapbc.cloud"
   end
 
-  def detect_client_agency_from_domain
+  def client_agency_from_domain
     return nil unless request.host.present?
 
     agency_config.client_agency_ids.find do |agency_id|

@@ -48,8 +48,9 @@ class FlowController < ApplicationController
   end
 
   def create_flow_with_new_applicant
+    applicant = CbvApplicant.create!(client_agency_id: current_agency.id)
     flow = flow_class(flow_param).create(
-      cbv_applicant: CbvApplicant.create(client_agency_id: current_agency&.id),
+      cbv_applicant: applicant,
       device_id: cookies.permanent.signed[:device_id]
     )
     [ flow, true ]
