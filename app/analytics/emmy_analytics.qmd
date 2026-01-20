@@ -100,7 +100,7 @@ library(gtayblr) ## remotes::install_github("USAID-OHA-SI/gtayblr")
 mp_path <- list.files(here("app/analytics"), "mixpanel.*parquet", full.names = TRUE)
 
 #default viz/table caption
-default_caption <- "Source: Lousiana 2025 EMMY Pilot Mixpanel Data [accessed 2025-12-15]"
+default_caption <- "Source: Lousiana 2025 EMMY Pilot Mixpanel Data [accessed 2025-12-19]"
 
 #set DSAC colors
 dsac_color <- c("#103D68", "#136A5D", "#6A1344", "#EFAC2F", "#63789D", "#C1C9D7", "#5A9088", "#D9E8E5", "#842F66", "#123054")
