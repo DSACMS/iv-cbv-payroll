@@ -273,7 +273,7 @@ es:
         pay_period_value: "%{start_date} al %{end_date}"
         payment_hours: "%{amount} horas"
         payments_and_deductions_table_header: Pagos y deducciones
-        subheader_html: Hemos recopilado sus registros de pago del último %{report_data_range}, desde el %{start_date} hasta el %{end_date}.<br>Por favor, revise su información. Si falta información o si es incorrecta, deja un comentario para %{agency_acronym}. Su comentario se incluirá en su reporte de ingresos.
+        subheader_html: "<p>Hemos recopilado sus registros de pago del último %{report_data_range}, desde el %{start_date} hasta el %{end_date}.</p><p>Por favor, revise su información. Si falta información o si es incorrecta, deja un comentario para %{agency_acronym}. Su comentario se incluirá en su reporte de ingresos.</p>"
         unknown: Desconocido
         your_details: Tus datos
     submits:
