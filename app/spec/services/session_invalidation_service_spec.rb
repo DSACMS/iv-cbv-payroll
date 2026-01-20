@@ -8,7 +8,7 @@ RSpec.describe SessionInvalidationService do
 
     context "for a new User" do
       it "is true" do
-        expect(service.valid?).to eq(true)
+        expect(service.valid?).to be(true)
       end
     end
 
@@ -16,7 +16,7 @@ RSpec.describe SessionInvalidationService do
       let(:user) { nil }
 
       it "is false" do
-        expect(service.valid?).to eq(false)
+        expect(service.valid?).to be(false)
       end
     end
 
@@ -25,13 +25,14 @@ RSpec.describe SessionInvalidationService do
       let(:invalidated_session_ids) { { "BBBBB" => Time.now } }
 
       it "is true when the current session is not invalidated" do
-        expect(service.valid?).to eq(true)
+        expect(service.valid?).to be(true)
       end
 
       context "when the current session is invalid" do
         let(:invalidated_session_ids) { { "AAAAA" => Time.now.to_i } }
+
         it "is false" do
-          expect(service.valid?).to eq(false)
+          expect(service.valid?).to be(false)
         end
       end
     end

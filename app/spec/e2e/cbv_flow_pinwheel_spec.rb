@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe "e2e CBV flow pinwheel test", type: :feature, js: true do
+RSpec.describe "e2e CBV flow pinwheel test", :js, type: :feature do
   include E2e::TestHelpers
 
   let(:cbv_flow_invitation) { create(:cbv_flow_invitation) }

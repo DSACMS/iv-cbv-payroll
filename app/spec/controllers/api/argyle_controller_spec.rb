@@ -57,7 +57,7 @@ RSpec.describe Api::ArgyleController do
 
         post :create, params: valid_params
 
-        expect(JSON.parse(response.body)["isSandbox"]).to eq(true)
+        expect(JSON.parse(response.body)["isSandbox"]).to be(true)
       end
     end
 

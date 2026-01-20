@@ -1,7 +1,7 @@
 require "rails_helper"
 
 RSpec.describe CbvInvitationService, type: :service do
-  let(:event_logger) { instance_double('GenericEventTracker') }
+  let(:event_logger) { instance_double(GenericEventTracker) }
   let(:service) { described_class.new(event_logger) }
   let(:cbv_flow_invitation_params) do
     attributes_for(:cbv_flow_invitation).merge(
@@ -88,8 +88,8 @@ RSpec.describe CbvInvitationService, type: :service do
             current_user,
             delivery_method: nil
           )
-        end.to change { ActionMailer::Base.deliveries.count }
-          .by(0)
+        end.not_to change { ActionMailer::Base.deliveries.count }
+
 
         expect(Rails.logger).to have_received(:info).with(/Generated invitation ID:/)
       end

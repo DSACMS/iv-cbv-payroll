@@ -44,8 +44,8 @@ RSpec.describe Activities::SummaryController, type: :controller do
 
       get :show
 
-      expect(assigns(:volunteering_activities)).to match_array([ visible_volunteering ])
-      expect(assigns(:job_training_activities)).to match_array([ visible_job_training ])
+      expect(assigns(:volunteering_activities)).to contain_exactly(visible_volunteering)
+      expect(assigns(:job_training_activities)).to contain_exactly(visible_job_training)
       expect(response.body).to include("Scoped")
       expect(response.body).to include("Resume Workshop")
     end

@@ -3,7 +3,7 @@ require 'rails_helper'
 RSpec.describe Webhooks::Argyle::EventsController, type: :controller do
   include ArgyleApiHelper
 
-  let(:argyle_webhook) { class_double('Aggregators::Webhooks::Argyle') }
+  let(:argyle_webhook) { class_double(Aggregators::Webhooks::Argyle) }
 
   # In a runtime scenario- the web client would send a POST request to /api/argyle/tokens
   # This does several things:
@@ -16,13 +16,8 @@ RSpec.describe Webhooks::Argyle::EventsController, type: :controller do
   # 4. Returns the "user_token" to the web client which can
   #    be used to create an Argyle "Link" or open the Argyle modal
   before do
-    allow(controller).to receive(:authorize_webhook).and_return(true)
-    allow(controller).to receive(:event_logger).and_return(double(track: true))
-    allow(argyle_webhook).to receive(:verify_signature).and_return(true)
-    allow(argyle_webhook).to receive(:get_webhook_event_jobs).and_return([])
-    allow(argyle_webhook).to receive(:get_webhook_event_outcome).and_return(:success)
-    allow(argyle_webhook).to receive(:get_supported_jobs).and_return(Aggregators::Webhooks::Argyle.get_supported_jobs)
-    allow(argyle_webhook).to receive(:get_webhook_events).and_return(Aggregators::Webhooks::Argyle.get_webhook_events)
+    allow(controller).to receive_messages(authorize_webhook: true, event_logger: double(track: true))
+    allow(argyle_webhook).to receive_messages(verify_signature: true, get_webhook_event_jobs: [], get_webhook_event_outcome: :success, get_supported_jobs: Aggregators::Webhooks::Argyle.get_supported_jobs, get_webhook_events: Aggregators::Webhooks::Argyle.get_webhook_events)
   end
 
   shared_examples_for "receiving a webhook" do |event_type|
@@ -134,7 +129,7 @@ RSpec.describe Webhooks::Argyle::EventsController, type: :controller do
       end.to change(PayrollAccount, :count).by(1)
 
       payroll_account = PayrollAccount.last
-      expect(payroll_account.sync_in_progress?).to eq(true)
+      expect(payroll_account.sync_in_progress?).to be(true)
 
       process_webhook("identities.added")
       expect(payroll_account.webhook_events.count).to eq(2)
@@ -149,8 +144,8 @@ RSpec.describe Webhooks::Argyle::EventsController, type: :controller do
       expect(payroll_account.webhook_events.count).to eq(5)
 
       # expect the PayrollAccount to be fully synced
-      expect(payroll_account.has_fully_synced?).to be_truthy
-      expect(payroll_account.reload.sync_succeeded?).to eq(true)
+      expect(payroll_account).to have_fully_synced
+      expect(payroll_account.reload.sync_succeeded?).to be(true)
     end
 
     it "is fully synced even without the *.partially_synced events" do
@@ -161,8 +156,8 @@ RSpec.describe Webhooks::Argyle::EventsController, type: :controller do
       process_webhook("users.fully_synced")
 
       payroll_account = PayrollAccount.last
-      expect(payroll_account.has_fully_synced?).to eq(true)
-      expect(payroll_account.reload.sync_succeeded?).to eq(true)
+      expect(payroll_account.has_fully_synced?).to be(true)
+      expect(payroll_account.reload.sync_succeeded?).to be(true)
     end
 
     it 'tracks an ApplicantFinishedArgyleSync event' do
@@ -283,7 +278,7 @@ RSpec.describe Webhooks::Argyle::EventsController, type: :controller do
           cbv_applicant_id: cbv_flow.cbv_applicant_id,
           invitation_id: cbv_flow.cbv_flow_invitation_id,
         )
-      ).exactly(1).times
+      ).once
 
       process_webhook("paystubs.partially_synced")
     end
@@ -391,7 +386,7 @@ RSpec.describe Webhooks::Argyle::EventsController, type: :controller do
           argyle_item_id: "item_000676767",
           argyle_source: "argyle_sandbox"
         ))
-        .exactly(1).times
+        .once
 
       process_webhook("accounts.updated", variant: :system_error)
       payroll_account.reload.webhook_events.reload
@@ -399,7 +394,7 @@ RSpec.describe Webhooks::Argyle::EventsController, type: :controller do
       expect(payroll_account.webhook_events.count).to eq(5)
       expect(payroll_account.job_status("accounts")).to eq(:failed)
       expect(payroll_account.sync_failed?).to equal(true)
-      expect(payroll_account.has_fully_synced?).to be_falsey
+      expect(payroll_account).not_to have_fully_synced
     end
   end
 end

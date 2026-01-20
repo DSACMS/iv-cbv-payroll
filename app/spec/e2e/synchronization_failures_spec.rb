@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe "Synchronization failures", type: :feature, js: true do
+RSpec.describe "Synchronization failures", :js, type: :feature do
   include E2e::TestHelpers
 
   let(:cbv_flow_invitation) { create(:cbv_flow_invitation, :sandbox) }

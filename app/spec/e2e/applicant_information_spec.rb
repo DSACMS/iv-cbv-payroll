@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe "Applicant information", type: :feature, js: true do
+RSpec.describe "Applicant information", :js, type: :feature do
   include E2e::TestHelpers
 
   it "allows a user to review their information" do

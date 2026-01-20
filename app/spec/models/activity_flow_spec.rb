@@ -5,9 +5,9 @@ RSpec.describe ActivityFlow, type: :model do
     flow = create(:activity_flow)
 
     expect { flow.destroy }
-      .to change { VolunteeringActivity.count }.by(-flow.volunteering_activities.count)
-      .and change { JobTrainingActivity.count }.by(-flow.job_training_activities.count)
-      .and change { EducationActivity.count }.by(-EducationActivity.where(activity_flow_id: flow.id).count)
+      .to change(VolunteeringActivity, :count).by(-flow.volunteering_activities.count)
+      .and change(JobTrainingActivity, :count).by(-flow.job_training_activities.count)
+      .and change(EducationActivity, :count).by(-EducationActivity.where(activity_flow_id: flow.id).count)
   end
 
   describe "Education Activities" do
@@ -51,7 +51,7 @@ RSpec.describe ActivityFlow, type: :model do
     it "creates a flow from an invitation" do
       invitation = create(:activity_flow_invitation)
 
-      flow = ActivityFlow.create_from_invitation(invitation, device_id)
+      flow = described_class.create_from_invitation(invitation, device_id)
 
       expect(flow).to be_persisted
       expect(flow.activity_flow_invitation).to eq(invitation)
@@ -63,7 +63,7 @@ RSpec.describe ActivityFlow, type: :model do
       cbv_applicant = create(:cbv_applicant)
       invitation = create(:activity_flow_invitation, cbv_applicant: cbv_applicant)
 
-      flow = ActivityFlow.create_from_invitation(invitation, device_id)
+      flow = described_class.create_from_invitation(invitation, device_id)
 
       expect(flow.cbv_applicant).to eq(cbv_applicant)
     end
@@ -71,7 +71,7 @@ RSpec.describe ActivityFlow, type: :model do
     it "copies reporting_month from invitation" do
       invitation = create(:activity_flow_invitation, reporting_month: Date.new(2025, 3, 1))
 
-      flow = ActivityFlow.create_from_invitation(invitation, device_id)
+      flow = described_class.create_from_invitation(invitation, device_id)
 
       expect(flow.reporting_month).to eq(invitation.reporting_month)
     end
@@ -100,9 +100,9 @@ RSpec.describe ActivityFlow, type: :model do
 
   it 'marked as complete when completed_at timestamp is set' do
     flow = create(:activity_flow, completed_at: nil)
-    expect(flow.complete?).to be_falsey
+    expect(flow).not_to be_complete
 
     flow.update(completed_at: Time.current)
-    expect(flow.complete?).to be_truthy
+    expect(flow).to be_complete
   end
 end

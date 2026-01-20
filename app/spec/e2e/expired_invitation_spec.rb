@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe "Expired invitation", type: :feature, js: true do
+RSpec.describe "Expired invitation", :js, type: :feature do
   include E2e::TestHelpers
 
   let(:cbv_flow_invitation) { create(:cbv_flow_invitation, :sandbox) }
