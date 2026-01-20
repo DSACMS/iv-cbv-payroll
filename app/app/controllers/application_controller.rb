@@ -66,10 +66,6 @@ class ApplicationController < ActionController::Base
       @current_agency = agency_config[client_agency_from_domain]
     end
 
-    if @current_agency.nil? && (Rails.env.development? || Rails.env.test?)
-      @current_agency = agency_config["sandbox"]
-    end
-
     @current_agency
   end
 

@@ -135,16 +135,5 @@ RSpec.describe ApplicationController, type: :controller do
         expect(controller.helpers.current_agency).to eq(sandbox_agency)
       end
     end
-
-    context "when no agency can be determined" do
-      before do
-        allow(controller).to receive(:params).and_return({})
-        allow(controller).to receive(:client_agency_from_domain).and_return(nil)
-      end
-
-      it "defaults to sandbox agency in development/test environments" do
-        expect(controller.helpers.current_agency).to eq(sandbox_agency)
-      end
-    end
   end
 end

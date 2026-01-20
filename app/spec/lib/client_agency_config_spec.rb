@@ -176,24 +176,13 @@ RSpec.describe ClientAgencyConfig do
       end
     end
 
-    it "has sandbox agency with expected configuration for development/test defaults" do
+    it "has sandbox agency with expected configuration" do
       sandbox = actual_config["sandbox"]
 
       expect(sandbox).to be_present
       expect(sandbox.id).to eq("sandbox")
       expect(sandbox.agency_name).to be_present
       expect(sandbox.transmission_method).to be_present
-    end
-
-    context "sandbox agency requirement" do
-      it "ensures sandbox exists for ApplicationController default agency fallback in dev/test" do
-        # This test protects the assumption made in ApplicationController#current_agency
-        # where we default to sandbox in development/test environments when no agency
-        # can be determined. If this test fails, the default fallback logic needs updating.
-
-        expect(actual_config["sandbox"]).to be_present,
-          "Sandbox agency is required for ApplicationController default agency fallback in development/test environments"
-      end
     end
   end
 end

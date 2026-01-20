@@ -4,6 +4,11 @@ class FlowController < ApplicationController
   helper_method :next_path
 
   def set_generic_flow
+    unless current_agency
+      redirect_to "/404"
+      return
+    end
+
     @flow, is_new_session = find_or_create_flow
     @cbv_flow = @flow # Maintain for compatibility until all controllers are converted
 
