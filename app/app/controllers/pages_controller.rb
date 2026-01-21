@@ -33,7 +33,7 @@ class PagesController < ApplicationController
     # Don't redirect if we just came from a CBV flow timeout
     return if params[:cbv_flow_timeout].present?
 
-    client_agency_id = detect_client_agency_from_domain
+    client_agency_id = client_agency_from_domain
     if client_agency_id.present?
       agency = agency_config[client_agency_id]
 

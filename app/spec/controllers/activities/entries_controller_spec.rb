@@ -36,11 +36,28 @@ RSpec.describe Activities::EntriesController do
         end
 
         it "creates a new activity flow and sets it in the session" do
+          request.host = ENV["SANDBOX_DOMAIN_NAME"]
+
           expect {
-            get :show, params: { client_agency_id: 'sandbox' }
-          }.to change(CbvApplicant, :count).by(1)
+            get :show
+          }.to change(ActivityFlow, :count).by(1)
+            .and change(CbvApplicant, :count).by(1)
 
           expect(session[:flow_id]).to be_present
+          flow = ActivityFlow.find(session[:flow_id])
+          expect(flow.cbv_applicant_id).to be_present
+          expect(flow.cbv_applicant).to be_persisted
+          expect(flow.cbv_applicant.client_agency_id).to eq("sandbox")
+        end
+
+        context "when accessing via incorrect subdomain" do
+          it "redirects to 404 page when domain doesn't match any agency" do
+            request.host = "sandbox.localhost"
+
+            get :show
+
+            expect(response).to redirect_to("/404")
+          end
         end
       end
     end

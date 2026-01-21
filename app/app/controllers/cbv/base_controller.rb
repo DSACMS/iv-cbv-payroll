@@ -15,7 +15,7 @@ class Cbv::BaseController < FlowController
     elsif origin_param.blank? and session[:cbv_origin].blank?
       # If we don't get a param, and if we don't already have an origin, regress to the default.
       # This preserves defaulting behavior.
-      agency = agency_config[detect_client_agency_from_domain]
+      agency = agency_config[client_agency_from_domain]
       origin = agency&.default_origin
     else
       # Otherwise, do not change the origin.

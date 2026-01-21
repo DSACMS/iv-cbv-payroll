@@ -84,7 +84,7 @@ RSpec.describe ApplicationController, type: :controller do
 
     it "returns nil when domain does not match a configured client agency" do
       request.host = "unknown.example.org"
-      result = controller.send(:detect_client_agency_from_domain)
+      result = controller.send(:client_agency_from_domain)
       expect(result).to be_nil
     end
   end
@@ -125,9 +125,9 @@ RSpec.describe ApplicationController, type: :controller do
       end
     end
 
-    context "when there is no other way to determine the current agency" do
+    context "when there is no other way to determine the current agency other than the domain" do
       before do
-        allow(controller).to receive(:detect_client_agency_from_domain)
+        allow(controller).to receive(:client_agency_from_domain)
           .and_return(sandbox_agency.id)
       end
 
