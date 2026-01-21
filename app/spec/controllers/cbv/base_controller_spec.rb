@@ -178,4 +178,60 @@ RSpec.describe Cbv::BaseController, type: :controller do
       end
     end
   end
+
+  describe "#append_log_tags" do
+    controller(described_class) do
+      def show
+        render json: Rails.logger.formatter.tag_stack.tags
+      end
+    end
+
+    around do |ex|
+      stub_environment_variable("STRUCTURED_LOGGING_ENABLED", "true", &ex)
+    end
+
+    context "with a CbvFlow" do
+      let(:flow) { create(:cbv_flow) }
+
+      before do
+        session[:flow_id] = flow.id
+        session[:flow_type] = :cbv
+      end
+
+      it "adds log tags" do
+        get :show, params: { id: "foo" }
+
+        expect(response).to have_http_status(:ok)
+        expect(JSON.parse(response.body).first.symbolize_keys).to match(
+          cbv_flow_id: flow.id,
+          invitation_id: flow.invitation_id,
+          cbv_applicant_id: flow.cbv_applicant_id,
+          client_agency_id: flow.cbv_applicant.client_agency_id,
+          device_id: be_a(String)
+        )
+      end
+    end
+
+    context "with an ActivityFlow" do
+      let(:flow) { create(:activity_flow) }
+
+      before do
+        session[:flow_id] = flow.id
+        session[:flow_type] = :activity
+      end
+
+      it "adds log tags" do
+        get :show, params: { id: "foo" }
+
+        expect(response).to have_http_status(:ok)
+        expect(JSON.parse(response.body).first.symbolize_keys).to match(
+          cbv_flow_id: flow.id,
+          invitation_id: flow.invitation_id,
+          cbv_applicant_id: flow.cbv_applicant_id,
+          client_agency_id: flow.cbv_applicant.client_agency_id,
+          device_id: be_a(String)
+        )
+      end
+    end
+  end
 end
