@@ -49,6 +49,7 @@ RSpec.describe Aggregators::ResponseObjects::Income do
         "pay_cycle" => "semimonthly"
       }
     end
+
     it 'creates an Income object from argyle response' do
       income = described_class.from_argyle(argyle_response)
 

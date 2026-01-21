@@ -1,4 +1,10 @@
-<% content_for :title, t(".header") %>
+<% case @flow %>
+<% when ActivityFlow %>
+  <% content_for :title, t(".activity_flow.header") %>
+<% else %>
+  <% content_for :title, t(".header") %>
+<% end %>
+
 <div data-controller="polling" data-polling-url-value="<%= @polling_url %>">
   <%= render "status" %>
 </div>

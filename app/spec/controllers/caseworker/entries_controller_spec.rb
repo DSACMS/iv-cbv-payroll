@@ -11,7 +11,7 @@ RSpec.describe Caseworker::EntriesController do
         stub_client_agency_config_value("sandbox", "staff_portal_enabled", true)
       end
 
-      it "should show sandbox specific copy with a link to /sso/sandbox" do
+      it "shows sandbox specific copy with a link to /sso/sandbox" do
         get :index, params: { client_agency_id: "sandbox" }
         expect(response).to be_successful
         unescaped_body = CGI.unescapeHTML(response.body)

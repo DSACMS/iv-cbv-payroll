@@ -3,7 +3,7 @@ require 'rails_helper'
 RSpec.describe Aggregators::Sdk::PinwheelService, type: :service do
   include PinwheelApiHelper
 
-  let(:service) { Aggregators::Sdk::PinwheelService.new("sandbox", "FAKE_API_KEY") }
+  let(:service) { described_class.new("sandbox", "FAKE_API_KEY") }
   let(:end_user_id) { 'abc123' }
 
   describe '#fetch_items' do
@@ -37,7 +37,7 @@ RSpec.describe Aggregators::Sdk::PinwheelService, type: :service do
 
   describe "#verify_webhook_signature" do
     # https://docs.pinwheelapi.com/public/docs/webhook-signature-verification
-    let(:service) { Aggregators::Sdk::PinwheelService.new("sandbox", "TEST_KEY") }
+    let(:service) { described_class.new("sandbox", "TEST_KEY") }
     let(:raw_request_body) {
       pinwheel_load_relative_file('test_data_1_base.json')
     }
@@ -56,7 +56,7 @@ RSpec.describe Aggregators::Sdk::PinwheelService, type: :service do
 
     it 'compares a valid signature' do
       digest = service.generate_signature_digest(timestamp, raw_request_body)
-      expect(service.verify_signature(signature_digest, digest)).to eq(true)
+      expect(service.verify_signature(signature_digest, digest)).to be(true)
     end
   end
 
@@ -123,7 +123,7 @@ RSpec.describe Aggregators::Sdk::PinwheelService, type: :service do
         end
 
         it "returns a 'nil' value for hours" do
-          expect(payments.first.hours).to eq(nil)
+          expect(payments.first.hours).to be_nil
         end
       end
 

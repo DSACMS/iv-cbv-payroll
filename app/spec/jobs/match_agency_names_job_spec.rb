@@ -3,6 +3,8 @@ require "rails_helper"
 RSpec.describe MatchAgencyNamesJob do
   include ArgyleApiHelper
 
+  subject { described_class.perform_now(cbv_flow.id) }
+
   let(:cbv_flow) { create(:cbv_flow, :with_argyle_account) }
 
   before do
@@ -15,7 +17,6 @@ RSpec.describe MatchAgencyNamesJob do
       .to receive(:track)
   end
 
-  subject { described_class.perform_now(cbv_flow.id) }
 
   context "when there are no agency expected names" do
     it "does not track any event" do

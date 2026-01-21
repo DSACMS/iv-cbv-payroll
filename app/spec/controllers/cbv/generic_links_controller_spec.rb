@@ -4,6 +4,7 @@ RSpec.describe Cbv::GenericLinksController do
   before do
     allow(EventTrackingJob).to receive(:perform_later)
   end
+
   describe '#show' do
     context 'when the hostname matches a client agency domain and the pilot is active' do
       before do
@@ -30,6 +31,7 @@ RSpec.describe Cbv::GenericLinksController do
 
       context 'when no existing CBV applicant cookie exists' do
         let(:headers) { {} }
+
         before do
           request.headers.merge!(headers)
           get :show, params: { client_agency_id: "sandbox" }

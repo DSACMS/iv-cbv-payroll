@@ -8,7 +8,7 @@ RSpec.describe CbvFlow, type: :model do
     let(:cbv_flow_invitation) { create(:cbv_flow_invitation, cbv_applicant_attributes: { case_number: "ABC1234" }) }
 
     it "copies over relevant fields" do
-      cbv_flow = CbvFlow.create_from_invitation(cbv_flow_invitation, "test_device_id")
+      cbv_flow = described_class.create_from_invitation(cbv_flow_invitation, "test_device_id")
       expect(cbv_flow).to have_attributes(cbv_applicant: cbv_flow_invitation.cbv_applicant)
     end
   end
@@ -79,6 +79,7 @@ RSpec.describe CbvFlow, type: :model do
         build(:payroll_account, :argyle_fully_synced)
       ]
     end
+
     it "returns only those payroll accounts that have fully synced" do
       allow(cbv_flow).to receive(:payroll_accounts).and_return(payroll_accounts)
 

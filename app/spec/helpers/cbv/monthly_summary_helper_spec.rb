@@ -2,6 +2,7 @@ require "rails_helper"
 
 RSpec.describe Cbv::MonthlySummaryHelper, type: :helper do
   subject {  helper }
+
   describe ".partial_month_details" do
     it "detects complete month when there are no activities" do
       current_month = Date.parse("2025-01-01")

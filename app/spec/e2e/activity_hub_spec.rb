@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe 'e2e Activity Hub flow test', type: :feature, js: true do
+RSpec.describe 'e2e Activity Hub flow test', :js, type: :feature do
   include E2e::TestHelpers
   include_context "activity_hub"
   around do |ex|
@@ -22,7 +22,7 @@ RSpec.describe 'e2e Activity Hub flow test', type: :feature, js: true do
 
     # Add an Income activity
     click_button I18n.t("activities.income.add")
-    verify_page(page, title: I18n.t("cbv.employer_searches.show.header"))
+    verify_page(page, title: I18n.t("cbv.employer_searches.show.activity_flow.header"))
     @e2e.replay_modal_callbacks(page.driver.browser) do
       click_button "Paychex"
     end
@@ -40,10 +40,10 @@ RSpec.describe 'e2e Activity Hub flow test', type: :feature, js: true do
       find_all("div[id*=\"argyle-link-root\"]", maximum: 0, minimum: nil, wait: 30)
     end
     # /activities/income/synchronizations
-    verify_page(page, title: I18n.t("cbv.synchronizations.show.header"), wait: 15)
+    verify_page(page, title: I18n.t("cbv.synchronizations.show.activity_flow.header"), wait: 15)
     # /activities/income/payment_details
     @e2e.replay_webhooks
-    verify_page(page, title: I18n.t("cbv.payment_details.show.header", employer_name: ""), wait: 60)
+    verify_page(page, title: I18n.t("cbv.payment_details.show.activity_flow.header", employer_name: ""), wait: 60)
     fill_in "activity_flow[additional_information]", with: "Some kind of additional information"
     click_button I18n.t("cbv.payment_details.show.continue")
 

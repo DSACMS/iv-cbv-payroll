@@ -4,6 +4,7 @@ RSpec.describe Activities::EntriesController do
   include_context "activity_hub"
 
   let(:flow) { create(:activity_flow) }
+
   render_views
 
   describe '#show' do
@@ -18,10 +19,11 @@ RSpec.describe Activities::EntriesController do
         before do
           cookies.permanent.encrypted[:cbv_applicant_id] = flow.cbv_applicant_id
         end
+
         it "sets the existing activity flow in the session" do
           expect {
             get :show, params: { client_agency_id: 'sandbox' }
-          }.to change(CbvApplicant, :count).by(0)
+          }.not_to change(CbvApplicant, :count)
 
           expect(session[:flow_type]).to eq(:activity)
           expect(session[:flow_id]).to be_truthy
@@ -62,6 +64,7 @@ RSpec.describe Activities::EntriesController do
       end
     end
   end
+
   describe "#create" do
     before do
       get :show, params: { client_agency_id: "sandbox" }

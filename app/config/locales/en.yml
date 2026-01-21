@@ -393,6 +393,9 @@ en:
         error_updating_applicant: An error occurred while updating the applicant information. Please try again.
     employer_searches:
       show:
+        activity_flow:
+          header: Search for your employer
+          search_label: Enter the name of your employer. If you work for yourself, enter the name of your business.
         alert:
           heading: Need help connecting to your payroll provider?
           help_options: Get help here.
@@ -493,6 +496,11 @@ en:
         radio_yes: Yes, I will report other income directly to %{agency_acronym}
     payment_details:
       show:
+        activity_flow:
+          additional_information_label: Share any comments or additional information about the details above that you'd like %{agency_acronym} to know. For example, you can share if the information is inaccurate or if you’re no longer working at that job.
+          header: Review your information from %{employer_name}
+          header_no_employer_name: Your information from your employer
+          subheader_html: "<p>We have gathered your records from %{start_date} to %{end_date}.</p><p>Please review your information. If something is missing or inaccurate, add a comment for %{agency_acronym}. This will be included in your community engagement report.</p>"
         additional_information_header: Additional comments (Optional)
         additional_information_label: Share any comments or additional information about the income details above that you’d like %{agency_acronym} to know. For example, you can share if the information is inaccurate or if you’re no longer working at that job.
         continue: Continue
@@ -522,7 +530,7 @@ en:
         pay_period_value: "%{start_date} to %{end_date}"
         payment_hours: "%{amount} hours"
         payments_and_deductions_table_header: Payments and deductions
-        subheader_html: We have gathered your payment records from the past %{report_data_range} from %{start_date} to %{end_date}.<br>Please review your information. If something is missing or inaccurate, add a comment for %{agency_acronym}. This will be included in your income report.
+        subheader_html: "<p>We have gathered your payment records from the past %{report_data_range} from %{start_date} to %{end_date}.</p><p>Please review your information. If something is missing or inaccurate, add a comment for %{agency_acronym}. This will be included in your income report.</p>"
         unknown: Unknown
         your_details: Your details
     submits:
@@ -636,10 +644,11 @@ en:
         income: Income
         paystubs: Paystubs
       show:
+        activity_flow:
+          header: We’re gathering details from your employer
         header: We’re gathering your payment details from your employer
       status:
         fetching_payroll_description: This may take a few minutes. Please keep this window open while we work on this.
-        header: We’re gathering your payment details from your employer
   components:
     report:
       employment_details_table:

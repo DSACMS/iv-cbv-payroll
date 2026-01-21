@@ -9,7 +9,7 @@ RSpec.describe MixpanelEventTracker do
 
     before do
       # Since we're stubbing this in spec_helper, make our tests in this file call original as well
-      allow_any_instance_of(MixpanelEventTracker).to receive(:track).and_call_original
+      allow_any_instance_of(described_class).to receive(:track).and_call_original
     end
 
     it 'calls Mixpanel::Tracker.track with correct parameters' do

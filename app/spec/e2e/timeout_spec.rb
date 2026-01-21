@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe "timeout test", type: :feature, js: true do
+RSpec.describe "timeout test", :js, type: :feature do
   include E2e::TestHelpers
   let(:cbv_flow_invitation) { create(:cbv_flow_invitation) }
 
@@ -23,6 +23,6 @@ RSpec.describe "timeout test", type: :feature, js: true do
 
     click_link "click here"
     expect(page).to have_content(I18n.t("cbv.entries.show.header"))
-    expect(page).to_not have_content(I18n.t("cbv.error_missing_token_html"))
+    expect(page).not_to have_content(I18n.t("cbv.error_missing_token_html"))
   end
 end

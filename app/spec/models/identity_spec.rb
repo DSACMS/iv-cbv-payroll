@@ -5,7 +5,7 @@ RSpec.describe Identity, type: :model do
 
   it "enforces unique name and DOB combination" do
     expect {
-      Identity.create!(
+      described_class.create!(
         first_name: identity.first_name,
         last_name: identity.last_name,
         date_of_birth: identity.date_of_birth
@@ -15,6 +15,6 @@ RSpec.describe Identity, type: :model do
 
   it "cleans up related models" do
     expect { identity.destroy }
-      .to change { ActivityFlow.count }.by(-(identity.activity_flows.count))
+      .to change(ActivityFlow, :count).by(-(identity.activity_flows.count))
   end
 end

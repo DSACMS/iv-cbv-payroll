@@ -86,9 +86,9 @@ RSpec.describe Aggregators::AggregatorReports::PinwheelReport, type: :service do
       it "returns a hash of monthly totals" do
         report.fetch
         monthly_summary_all_accounts = report.summarize_by_month(from_date: Date.parse("2020-12-05"))
-        expect(monthly_summary_all_accounts.keys).to match_array([ account ])
+        expect(monthly_summary_all_accounts.keys).to contain_exactly(account)
         monthly_summary = monthly_summary_all_accounts[account]
-        expect(monthly_summary.keys).to match_array([ "2020-12" ])
+        expect(monthly_summary.keys).to contain_exactly("2020-12")
 
         dec = monthly_summary["2020-12"]
         expect(dec[:gigs].length).to eq(3)
@@ -142,7 +142,7 @@ RSpec.describe Aggregators::AggregatorReports::PinwheelReport, type: :service do
     end
 
     describe "#summarize_by_employer" do
-      it "should return an array of employer objects" do
+      it "returns an array of employer objects" do
         report.fetch
         summary = report.summarize_by_employer
         expect(summary.keys.length).to eq(1)

@@ -2,9 +2,10 @@ require "rails_helper"
 
 RSpec.describe ActivityFlowProgressCalculator do
   describe ".progress" do
+    subject(:progress) { described_class.progress(flow) }
+
     let(:flow) { create(:activity_flow) }
 
-    subject(:progress) { described_class.progress(flow) }
 
     it "sums volunteering and job training hours" do
       flow.volunteering_activities.create!(organization_name: "Food Pantry", hours: 3, date: Date.current)

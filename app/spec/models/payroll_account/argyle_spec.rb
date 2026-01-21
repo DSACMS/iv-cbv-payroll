@@ -9,7 +9,7 @@ RSpec.describe PayrollAccount::Argyle, type: :model do
 
   it "has a synchronization_status of 'unknown' by default" do
     payroll_account = cbv_flow.payroll_accounts.create
-    expect(payroll_account.sync_unknown?).to eq(true)
+    expect(payroll_account.sync_unknown?).to be(true)
   end
 
   describe '#has_fully_synced?' do

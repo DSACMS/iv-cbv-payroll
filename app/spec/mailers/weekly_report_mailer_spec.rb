@@ -20,7 +20,7 @@ RSpec.describe WeeklyReportMailer, type: :mailer do
   end
   let(:mail) do
     cbv_flow
-    WeeklyReportMailer
+    described_class
       .with(report_date: now, client_agency_id: client_agency_id)
       .report_email
   end
@@ -119,7 +119,7 @@ RSpec.describe WeeklyReportMailer, type: :mailer do
           "report_variant" => "invitations"
         }
       )
-      allow_any_instance_of(WeeklyReportMailer).to receive(:client_agency_config).and_return({
+      allow_any_instance_of(described_class).to receive(:client_agency_config).and_return({
         "az_des" => az_config
       })
     end

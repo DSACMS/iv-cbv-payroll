@@ -93,7 +93,7 @@ RSpec.describe Webhooks::Pinwheel::EventsController do
 
         expect(payroll_account.webhook_events)
           .to include(have_attributes(event_name: "paystubs.fully_synced", event_outcome: "success"))
-        expect(payroll_account.job_succeeded?("paystubs")).to be_truthy
+        expect(payroll_account).to be_job_succeeded("paystubs")
       end
 
       context "when fully synced" do
@@ -263,7 +263,7 @@ RSpec.describe Webhooks::Pinwheel::EventsController do
 
         expect(payroll_account.webhook_events)
           .to include(have_attributes(event_name: "paystubs.fully_synced", event_outcome: "pending"))
-        expect(payroll_account.job_succeeded?("paystubs")).to be_falsey
+        expect(payroll_account).not_to be_job_succeeded("paystubs")
       end
     end
   end

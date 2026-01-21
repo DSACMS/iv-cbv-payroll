@@ -18,7 +18,7 @@ gem "csv"
 gem "pg", "~> 1.6"
 
 # Use the Puma web server [https://github.com/puma/puma]
-gem "puma", "~> 6.6.0"
+gem "puma", "~> 7.1.0"
 
 # Bundle and transpile JavaScript [https://github.com/rails/jsbundling-rails]
 gem "jsbundling-rails"
@@ -52,6 +52,10 @@ gem "tzinfo-data", platforms: %i[windows jruby]
 gem "bootsnap", require: false
 
 gem "device_detector"
+
+# Used to generate mock identity data in all environments
+gem "faker", "~> 3.5"
+
 # Use Sass to process CSS
 # gem "sassc-rails"
 
@@ -89,7 +93,7 @@ group :development, :test do
   gem "bundler-audit", "~> 0.9"
   gem "capybara"
   gem "debug", platforms: %i[mri windows]
-  gem "dotenv-rails", "~> 2.7"
+  gem "dotenv-rails", "~> 3.2"
   gem "erb_lint", require: false
   gem "i18n-tasks", "~> 1.1", require: false
   gem "rspec-rails", "~> 8.0"
@@ -102,7 +106,7 @@ group :development, :test do
 end
 
 group :development do
-  gem "debase-ruby_core_source", "~> 3.3", ">= 3.3.1"
+  gem "debase-ruby_core_source", "~> 4.0"
   gem "debase", "~> 0.2.9", require: false
   # Use console on exceptions pages [https://github.com/rails/web-console]
   gem "web-console"
@@ -142,5 +146,3 @@ gem "sinatra", "~> 4.2"
 
 gem "pry", "~> 0.16.0", group: :development
 gem "pry-doc", "~> 1.6", group: :development
-
-gem "faker", "~> 3.5", group: :development

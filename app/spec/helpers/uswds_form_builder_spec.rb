@@ -9,7 +9,7 @@ RSpec.describe UswdsFormBuilder do
 
   let(:template) { ActionView::Base.empty }
   let(:object) { TestModel.new }
-  let(:builder) { UswdsFormBuilder.new(:object, object, template, {}) }
+  let(:builder) { described_class.new(:object, object, template, {}) }
 
   describe '#text_field' do
     let(:result) { builder.text_field(:first_name, label: 'Name') }
