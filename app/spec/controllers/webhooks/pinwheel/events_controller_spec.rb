@@ -179,6 +179,7 @@ RSpec.describe Webhooks::Pinwheel::EventsController do
               paystubs_earnings_category_salary_count: 2,
               paystubs_earnings_category_bonus_count: 2,
               paystubs_earnings_category_overtime_count: 0,
+              paystubs_earnings_category_tips_count: 0,
               paystubs_gross_pay_amounts_average: 480720.0,
               paystubs_gross_pay_amounts_max: 480720,
               paystubs_gross_pay_amounts_median: 480720,

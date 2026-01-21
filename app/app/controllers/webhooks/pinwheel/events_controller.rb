@@ -137,6 +137,7 @@ class Webhooks::Pinwheel::EventsController < ApplicationController
         paystubs_earnings_category_salary_count: report.paystubs.sum { |p| p.earnings.count { |e| e.category == "salary" } },
         paystubs_earnings_category_bonus_count: report.paystubs.sum { |p| p.earnings.count { |e| e.category == "bonus" } },
         paystubs_earnings_category_overtime_count: report.paystubs.sum { |p| p.earnings.count { |e| e.category == "overtime" } },
+        paystubs_earnings_category_tips_count: report.paystubs.sum { |p| p.earnings.count { |e| e.category == "tips" } },
         paystubs_gross_pay_amounts_max: paystub_gross_pay_amounts.max,
         paystubs_gross_pay_amounts_median: paystub_gross_pay_amounts.sort[paystub_gross_pay_amounts.length / 2],
         paystubs_gross_pay_amounts_average: paystub_gross_pay_amounts.sum.to_f / paystub_gross_pay_amounts.length,

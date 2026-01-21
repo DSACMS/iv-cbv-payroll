@@ -160,7 +160,7 @@ RSpec.describe Webhooks::Argyle::EventsController, type: :controller do
       expect(payroll_account.reload.sync_succeeded?).to be(true)
     end
 
-    it 'tracks an ApplicantFinishedArgyleSync event' do
+    it 'tracks an ApplicantFinishedArgyleSync event' do # rubocop:disable RSpec/ExampleLength
       process_webhook("accounts.connected")
       process_webhook("identities.added")
       process_webhook("users.fully_synced")
@@ -216,6 +216,7 @@ RSpec.describe Webhooks::Argyle::EventsController, type: :controller do
           paystubs_earnings_type_bonus_count: 10,
           paystubs_earnings_type_overtime_count: 5,
           paystubs_earnings_type_commission_count: 8,
+          paystubs_earnings_type_tips_count: 0,
           paystubs_gross_pay_amounts_max: 192328,
           paystubs_gross_pay_amounts_min: 120139,
           paystubs_gross_pay_amounts_average: 152914.4,
