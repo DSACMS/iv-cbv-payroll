@@ -31,6 +31,11 @@ class Activities::BaseController < FlowController
     redirect_to root_url
   end
 
+  def after_activity_path
+    progress = ActivityFlowProgressCalculator.progress(@flow)
+    progress.meets_requirements ? activities_flow_summary_path : activities_flow_root_path
+  end
+
   def flow_param
     :activity
   end
