@@ -176,11 +176,17 @@ en:
         volunteering_section: Volunteering activities
       title: Submit your Medicaid Community Engagement report
     success:
-      completed_at: Completed at
-      confirmation_code_html: "<strong>Your confirmation code</strong>: %{confirmation_code}"
-      description: Thank you for submitting your report.
-      download_pdf: Download PDF report
-      title: Your Medicaid Community Engagement report was successfully sent to %{agency_name}
+      show:
+        confirmation_code_html: "<strong>Your confirmation code</strong>: %{confirmation_code}"
+        done_for_now: You're done for now. %{agency_full_name} will review your information and contact you if needed.
+        download_pdf: Download my report
+        survey: Take the 3 question survey
+        title: Your Community Engagement report was successfully sent to %{agency_acronym}
+        whats_next: What's next?
+        whats_next_1_li_1: We recommend saving your your report for your records.
+        whats_next_1_title: Download your report for your records.
+        whats_next_2_li_1: We’d like to hear more about your experience using this site.
+        whats_next_2_title: Help make this experience better.
     summary:
       description: The report below has your community engagement activities from your verification month. Please review it before sending to %{agency_name}.
       submit: Continue

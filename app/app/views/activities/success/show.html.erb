@@ -1,22 +1,61 @@
-<% content_for :title, t("activities.success.title", agency_name: agency_translation("shared.agency_full_name")) %>
+<% title = t(".title", agency_acronym: agency_translation("shared.agency_acronym")) %>
+<% content_for :title, title %>
 
-<h1>
-  <%= t("activities.success.title", agency_name: agency_translation("shared.agency_full_name")) %>
-</h1>
-<p>
-  <%= t("activities.success.description") %>
-</p>
-<p>
-  <%= t("activities.success.confirmation_code_html", confirmation_code: @flow.confirmation_code) %>
-</p>
-<p>
-  <strong>
-    <%= t("activities.success.completed_at") %>
-  </strong>
-  <%= l(@flow.completed_at, format: :long) %>
-</p>
+<div class="grid-col tablet:grid-col-8">
+  <h1>
+    <%= title %>
+  </h1>
 
-<%= link_to t("activities.success.download_pdf"),
-            activities_flow_submit_path(format: :pdf),
-            class: "usa-button usa-button--primary",
-            target: "_blank" %>
+  <p>
+    <%= t(".confirmation_code_html", confirmation_code: @flow.confirmation_code) %>
+  </p>
+
+  <h2>
+    <%= t(".whats_next") %>
+  </h2>
+  <p>
+    <%= t(".done_for_now", agency_full_name: agency_translation("shared.agency_full_name")) %>
+  </p>
+
+  <ul class="usa-icon-list margin-top-3">
+    <li class="usa-icon-list__item margin-bottom-3">
+      <div class="usa-icon-list__icon display-flex flex-justify-center flex-align-center width-6 minw-6 height-6 bg-primary-lighter radius-top-pill radius-bottom-pill margin-right-1">
+        <svg class="usa-icon" aria-hidden="true" role="img">
+          <use href="<%= asset_path("@uswds/uswds/dist/img/sprite.svg#file_download") %>"></use>
+        </svg>
+      </div>
+      <div class="usa-icon-list__content">
+        <h3><%= t(".whats_next_1_title") %></h3>
+        <p><%= t(".whats_next_1_li_1") %></p>
+
+        <%= render(LinkWithIconComponent.new(
+            t(".download_pdf"),
+            url: activities_flow_submit_path(format: :pdf),
+            icon: "file_download",
+            icon_position: :leading,
+            variant: :primary,
+            rel: "noopener noreferer",
+            class: "usa-button usa-button--primary margin-top-2",
+            target: "_blank"
+          )) %>
+      </div>
+    </li>
+  </ul>
+
+  <div class="divider margin-top-5"></div>
+
+  <div>
+    <h2 class="margin-top-5"><%= t(".whats_next_2_title") %></h2>
+    <p class="line-height-sans-4"><%= t(".whats_next_2_li_1") %></p>
+
+    <%= render(LinkWithIconComponent.new(
+      t(".survey"),
+      icon: "launch",
+      class: "usa-button usa-button--outline",
+      icon_position: :trailing,
+      url: feedbacks_path(form: "survey", referer: request.original_url),
+      target: "_blank",
+      rel: "noopener noreferrer"
+    )) %>
+  </div>
+</div>
