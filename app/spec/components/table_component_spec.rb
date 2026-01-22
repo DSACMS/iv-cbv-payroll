@@ -5,10 +5,6 @@ require "rails_helper"
 RSpec.describe TableComponent, type: :component do
   include ViewComponent::TestHelpers
 
-  let(:table_attributes) { {} }
-  let(:rows) { [] }
-  let(:base_class) { "usa-table usa-table--borderless width-full" }
-
   subject(:result) do
     table = described_class.new(attributes: table_attributes)
     rows.each do |row_data|
@@ -18,6 +14,11 @@ RSpec.describe TableComponent, type: :component do
     end
     render_inline(table)
   end
+
+  let(:table_attributes) { {} }
+  let(:rows) { [] }
+  let(:base_class) { "usa-table usa-table--borderless width-full" }
+
 
   context "when no rows are provided" do
     it "does not render the table" do

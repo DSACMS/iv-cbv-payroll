@@ -16,8 +16,9 @@ RSpec.describe PdfService, type: :service do
 
     context "english locale" do
       let(:locale) { :en }
+
       it 'generates a PDF file' do
-      pdf_service = PdfService.new(language: :en)
+      pdf_service = described_class.new(language: :en)
       @pdf_results = pdf_service.generate(cbv_flow, pinwheel_report, current_agency)
       expect(@pdf_results&.content).to include('%PDF-1.4')
       expect(@pdf_results&.html).to include('CBV Test Agency')
@@ -31,8 +32,9 @@ RSpec.describe PdfService, type: :service do
 
     context "spanish locale" do
       let(:locale) { :es }
+
       it 'generates a PDF file in english' do
-      pdf_service = PdfService.new(language: :en)
+      pdf_service = described_class.new(language: :en)
       @pdf_results = pdf_service.generate(cbv_flow, pinwheel_report, current_agency)
       expect(@pdf_results&.content).to include('%PDF-1.4')
       expect(@pdf_results&.html).to include('CBV Test Agency')

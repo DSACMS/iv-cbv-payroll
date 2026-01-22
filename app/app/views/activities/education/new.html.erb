@@ -12,21 +12,54 @@
     </turbo-stream-source>
 
     <div class="grid-row" dom_id="<%= dom_id current_identity %>">
-        <div class="desktop:grid-col-2 tablet:grid-col-fill">
+        <div class="desktop:grid-col-6 tablet:grid-col-fill">
             <%= render(SynchronizationIndicatorComponent.new(name: "school", status: :in_progress)) do %>
-                <%= t(".school") %>
-            <% end %>
-        </div>
-        <div class="desktop:grid-col-2 tablet:grid-col-fill">
-            <%= render(SynchronizationIndicatorComponent.new(name: "enrollment", status: :in_progress)) do %>
-                <%= t(".enrollment") %>
-            <% end %>
-        </div>
-        <div class="desktop:grid-col-2 tablet:grid-col-fill">
-            <%= render(SynchronizationIndicatorComponent.new(name: "hours", status: :in_progress)) do %>
-                <%= t(".hours") %>
+                <%= t(".student_info") %>
             <% end %>
         </div>
     </div>
 
 </div>
+<script>
+const MIN_DELAY_MS = 2000;
+
+function wait(ms) {
+  return new Promise(resolve => setTimeout(resolve, ms));
+}
+
+function waitForSSE() {
+  return new Promise((resolve, reject) => {
+    const source = new EventSource("/activities/education/stream");
+
+    source.addEventListener("education_result", (event) => {
+        const data = JSON.parse(event.data);
+        if (data.status === "succeeded") {
+            source.close();
+            resolve(data.message);
+        }
+    });
+
+    source.onerror = (err) => {
+      source.close();
+      console.log("Connection lost");
+      reject(err);
+    };
+  });
+}
+
+async function delayedResponse() {
+  try {
+    const [, url] = await Promise.all([
+      wait(MIN_DELAY_MS),
+      waitForSSE()
+    ]);
+
+    console.log(`Navigating to ${url}`);
+    window.location.href = url;
+  } catch (e) {
+    console.log("Error during SSE processing", e);
+  }
+}
+
+delayedResponse();
+</script>

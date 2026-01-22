@@ -19,7 +19,7 @@ class Webhooks::Argyle::EventsController < ApplicationController
       # All other webhooks have a params["data"]["account"], which we can use
       # to find the account.
       account_id = params.dig("data", "account")
-      payroll_account = @cbv_flow.payroll_accounts.find_or_create_by(type: :argyle, aggregator_account_id: account_id) do |new_payroll_account|
+      payroll_account = @flow.payroll_accounts.find_or_create_by(type: :argyle, aggregator_account_id: account_id) do |new_payroll_account|
         new_payroll_account.synchronization_status = :in_progress
         new_payroll_account.supported_jobs = Aggregators::Webhooks::Argyle.get_supported_jobs
       end
@@ -46,7 +46,7 @@ class Webhooks::Argyle::EventsController < ApplicationController
     # record duplicate webhook events
     syncing_payroll_accounts = PayrollAccount::Argyle
       .awaiting_fully_synced_webhook
-      .where(flow_type: @cbv_flow.class.name, flow_id: @cbv_flow.id)
+      .where(flow_type: @flow.class.name, flow_id: @flow.id)
 
     # Handle each connected account separately
     syncing_payroll_accounts.map do |payroll_account|
@@ -67,17 +67,26 @@ class Webhooks::Argyle::EventsController < ApplicationController
 
   def set_cbv_flow
     user_id = params.dig("data", "user")
-    @cbv_flow = CbvFlow.find_by(argyle_user_id: user_id)
+    @flow = find_flow(user_id)
 
-    unless @cbv_flow
+    unless @flow
       Rails.logger.info "Unable to find CbvFlow with argyle_user_id: #{user_id}"
       render json: { status: "ok" }
     end
   end
 
+  def find_flow(user_id) # TODO: Find a better way to determine flow type, maybe inherited controllers?
+    cbv_flow = CbvFlow.find_by(argyle_user_id: user_id)
+    if cbv_flow.present?
+      cbv_flow
+    else
+      ActivityFlow.find_by(argyle_user_id: user_id)
+    end
+  end
+
   # @see https://docs.argyle.com/api-guide/webhooks
   def authorize_webhook
-    argyle_service = @cbv_flow.present? ? argyle_for(@cbv_flow) : ArgyleService.new("sandbox")
+    argyle_service = @flow.present? ? argyle_for(@flow) : ArgyleService.new("sandbox")
 
     unless Aggregators::Webhooks::Argyle.get_webhook_events(type: :all).include?(params["event"])
       Rails.logger.info "Ignoring unhandled webhook: #{params["event"]}"
@@ -98,10 +107,10 @@ class Webhooks::Argyle::EventsController < ApplicationController
 
     event_logger.track(TrackEvent::ApplicantEncounteredArgyleAccountSystemError, request, {
       time: Time.now.to_i,
-      cbv_applicant_id: @cbv_flow.cbv_applicant_id,
-      cbv_flow_id: @cbv_flow.id,
-      device_id: @cbv_flow.device_id,
-      invitation_id: @cbv_flow.cbv_flow_invitation_id,
+      cbv_applicant_id: @flow.cbv_applicant_id,
+      cbv_flow_id: @flow.id,
+      device_id: @flow.device_id,
+      invitation_id: @flow.cbv_flow_invitation_id,
       connection_status: connection_status,
       argyle_error_code: error_code,
       argyle_error_message: params.dig("data", "resource", "connection", "error_message"),
@@ -120,7 +129,7 @@ class Webhooks::Argyle::EventsController < ApplicationController
     # fetched at least `pay_income_days` of data). If so, update the webhook to
     # have a "success" outcome.
     days_synced = params.dig("data", "days_synced")
-    if days_synced.to_i >= agency_config[@cbv_flow&.cbv_applicant&.client_agency_id].pay_income_days.values.max
+    if days_synced.to_i >= agency_config[@flow&.cbv_applicant&.client_agency_id].pay_income_days.values.max
       webhook_event.update(event_outcome: "success")
       webhook_event.reload # force its payroll_account to reload webhook events
     end
@@ -139,9 +148,9 @@ class Webhooks::Argyle::EventsController < ApplicationController
 
       report = Aggregators::AggregatorReports::ArgyleReport.new(
         payroll_accounts: [ payroll_account ],
-        argyle_service: argyle_for(@cbv_flow),
-        days_to_fetch_for_w2: agency_config[@cbv_flow.cbv_applicant.client_agency_id].pay_income_days[:w2],
-        days_to_fetch_for_gig: agency_config[@cbv_flow.cbv_applicant.client_agency_id].pay_income_days[:gig]
+        argyle_service: argyle_for(@flow),
+        days_to_fetch_for_w2: agency_config[@flow.cbv_applicant.client_agency_id].pay_income_days[:w2],
+        days_to_fetch_for_gig: agency_config[@flow.cbv_applicant.client_agency_id].pay_income_days[:gig]
       )
       report.fetch
 
@@ -168,10 +177,10 @@ class Webhooks::Argyle::EventsController < ApplicationController
 
       event_logger.track(TrackEvent::ApplicantReceivedArgyleData, request, {
         time: Time.now.to_i,
-        cbv_applicant_id: @cbv_flow.cbv_applicant_id,
-        cbv_flow_id: @cbv_flow.id,
-        device_id: @cbv_flow.device_id,
-        invitation_id: @cbv_flow.cbv_flow_invitation_id,
+        cbv_applicant_id: @flow.cbv_applicant_id,
+        cbv_flow_id: @flow.id,
+        device_id: @flow.device_id,
+        invitation_id: @flow.invitation_id,
         sync_data: sync_data.to_s,
         sync_duration_seconds: Time.now - payroll_account.sync_started_at,
         sync_event: params["event"]
@@ -179,10 +188,10 @@ class Webhooks::Argyle::EventsController < ApplicationController
     elsif params["event"] == "users.fully_synced"
       event_logger.track(TrackEvent::ApplicantReceivedArgyleData, request, {
         time: Time.now.to_i,
-        cbv_applicant_id: @cbv_flow.cbv_applicant_id,
-        cbv_flow_id: @cbv_flow.id,
-        device_id: @cbv_flow.device_id,
-        invitation_id: @cbv_flow.cbv_flow_invitation_id,
+        cbv_applicant_id: @flow.cbv_applicant_id,
+        cbv_flow_id: @flow.id,
+        device_id: @flow.device_id,
+        invitation_id: @flow.invitation_id,
         sync_data: "fully_synced",
         sync_duration_seconds: Time.now - payroll_account.sync_started_at,
         sync_event: params["event"]
@@ -194,15 +203,16 @@ class Webhooks::Argyle::EventsController < ApplicationController
     begin
       paystub_hours = report.paystubs.filter_map(&:hours).map(&:to_f)
       paystub_gross_pay_amounts = report.paystubs.filter_map(&:gross_pay_amount)
+      latest_paystub_with_gross_pay = report.paystubs.find { |p| p.gross_pay_amount.present? }
 
       event_logger.track(TrackEvent::ApplicantFinishedArgyleSync, request, {
         time: Time.now.to_i,
-        cbv_applicant_id: @cbv_flow&.cbv_applicant_id,
-        cbv_flow_id: @cbv_flow&.id,
-        client_agency_id: @cbv_flow&.cbv_applicant&.client_agency_id,
-        device_id: @cbv_flow&.device_id,
-        invitation_id: @cbv_flow&.cbv_flow_invitation_id,
-        argyle_environment: agency_config[@cbv_flow&.cbv_applicant&.client_agency_id].argyle_environment,
+        cbv_applicant_id: @flow&.cbv_applicant_id,
+        cbv_flow_id: @flow&.id,
+        client_agency_id: @flow&.cbv_applicant&.client_agency_id,
+        device_id: @flow&.device_id,
+        invitation_id: @flow&.invitation_id,
+        argyle_environment: agency_config[@flow&.cbv_applicant&.client_agency_id].argyle_environment,
         sync_duration_seconds: Time.now - payroll_account.sync_started_at,
 
         # #####################################################################
@@ -251,12 +261,15 @@ class Webhooks::Argyle::EventsController < ApplicationController
         paystubs_earnings_with_hours_count: report.paystubs.sum { |p| p.earnings.count { |e| e.hours.present? } },
         paystubs_earnings_type_base_count: report.paystubs.sum { |p| p.earnings.count { |e| e.category == "base" } },
         paystubs_earnings_type_bonus_count: report.paystubs.sum { |p| p.earnings.count { |e| e.category == "bonus" } },
-        paystubs_earnings_type_overtime_count: report.paystubs.sum { |p| p.earnings.count { |e| e.category == "overtime" } },
         paystubs_earnings_type_commission_count: report.paystubs.sum { |p| p.earnings.count { |e| e.category == "commission" } },
+        paystubs_earnings_type_overtime_count: report.paystubs.sum { |p| p.earnings.count { |e| e.category == "overtime" } },
+        paystubs_earnings_type_tips_count: report.paystubs.sum { |p| p.earnings.count { |e| e.category == "tips" } },
         paystubs_gross_pay_amounts_max: paystub_gross_pay_amounts.max,
         paystubs_gross_pay_amounts_median: paystub_gross_pay_amounts.sort[paystub_gross_pay_amounts.length / 2],
         paystubs_gross_pay_amounts_average: paystub_gross_pay_amounts.sum.to_f / paystub_gross_pay_amounts.length,
         paystubs_gross_pay_amounts_min: paystub_gross_pay_amounts.min,
+        paystubs_latest_earnings_amount_total: latest_paystub_with_gross_pay&.earnings&.filter_map(&:amount).sum,
+        paystubs_latest_gross_pay_amount: latest_paystub_with_gross_pay&.gross_pay_amount,
         paystubs_days_since_last_pay_date: report.paystubs.map { |p| Date.parse(p.pay_date) }.compact.max&.then { |last_pay_date| (Date.current - last_pay_date).to_i },
         paystubs_employment_id_unique_count: report.paystubs.map(&:employment_id).uniq.count,
 
@@ -308,18 +321,18 @@ class Webhooks::Argyle::EventsController < ApplicationController
     if report_is_valid
       event_logger.track(TrackEvent::ApplicantReportMetUsefulRequirements, request,
         time: Time.now.to_i,
-        cbv_applicant_id: @cbv_flow.cbv_applicant_id,
-        cbv_flow_id: @cbv_flow.id,
-        device_id: @cbv_flow.device_id,
-        invitation_id: @cbv_flow.cbv_flow_invitation_id
+        cbv_applicant_id: @flow.cbv_applicant_id,
+        cbv_flow_id: @flow.id,
+        device_id: @flow.device_id,
+        invitation_id: @flow.invitation_id
       )
     else
       event_logger.track(TrackEvent::ApplicantReportFailedUsefulRequirements, request, {
         time: Time.now.to_i,
-        cbv_applicant_id: @cbv_flow.cbv_applicant_id,
-        cbv_flow_id: @cbv_flow.id,
-        device_id: @cbv_flow.device_id,
-        invitation_id: @cbv_flow.cbv_flow_invitation_id,
+        cbv_applicant_id: @flow.cbv_applicant_id,
+        cbv_flow_id: @flow.id,
+        device_id: @flow.device_id,
+        invitation_id: @flow.invitation_id,
         errors: report.errors.full_messages.join(", ")
       })
     end

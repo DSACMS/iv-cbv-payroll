@@ -1,6 +1,8 @@
 require "rails_helper"
 
 RSpec.describe Activities::ActivitiesController, type: :controller do
+  include_context "activity_hub"
+
   let(:flow) { create(:activity_flow) }
 
   describe "#index" do

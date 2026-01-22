@@ -1,7 +1,14 @@
 class FlowController < ApplicationController
   ALPHANUMERIC_PREFIX_REGEXP = /^([a-zA-Z0-9]+)[^a-zA-Z0-9]*$/
 
+  helper_method :next_path
+
   def set_generic_flow
+    unless current_agency
+      redirect_to "/404"
+      return
+    end
+
     @flow, is_new_session = find_or_create_flow
     @cbv_flow = @flow # Maintain for compatibility until all controllers are converted
 
@@ -9,6 +16,23 @@ class FlowController < ApplicationController
     cookies.permanent.encrypted[:cbv_applicant_id] = @flow.cbv_applicant_id
 
     track_generic_link_clicked_event(@flow, is_new_session)
+  end
+
+  def next_path
+    flow_navigator.next_path
+  end
+
+  def flow_navigator
+    locales = Regexp.union(I18n.available_locales.map(&:to_s))
+
+    case request.path
+    when %r{^(/#{locales})?/activities}
+      ActivityFlowNavigator.new(params)
+    when %r{^(/#{locales})?/cbv}
+      CbvFlowNavigator.new(params)
+    else
+      raise "flow_navigator called from unknown page #{request.path}!"
+    end
   end
 
   private
@@ -24,13 +48,14 @@ class FlowController < ApplicationController
 
   def create_flow_with_existing_applicant(applicant)
     applicant.reset_applicant_attributes
-    flow = flow_class.create(cbv_applicant: applicant, device_id: cookies.permanent.signed[:device_id])
+    flow = flow_class(flow_param).create(cbv_applicant: applicant, device_id: cookies.permanent.signed[:device_id])
     [ flow, false ]
   end
 
   def create_flow_with_new_applicant
-    flow = flow_class.create(
-      cbv_applicant: CbvApplicant.create(client_agency_id: current_agency&.id),
+    applicant = CbvApplicant.create!(client_agency_id: current_agency.id)
+    flow = flow_class(flow_param).create(
+      cbv_applicant: applicant,
       device_id: cookies.permanent.signed[:device_id]
     )
     [ flow, true ]
@@ -50,7 +75,7 @@ class FlowController < ApplicationController
         return redirect_to(cbv_flow_expired_invitation_path(client_agency_id: invitation.client_agency_id))
       end
 
-      @flow = flow_class.create_from_invitation(invitation, cookies.permanent.signed[:device_id])
+      @flow = flow_class(flow_param).create_from_invitation(invitation, cookies.permanent.signed[:device_id])
       @cbv_flow = @flow # Maintain for compatibility until all controllers are converted
       set_flow_session(@flow.id, flow_param)
       cookies.permanent.encrypted[:cbv_applicant_id] = @flow.cbv_applicant_id

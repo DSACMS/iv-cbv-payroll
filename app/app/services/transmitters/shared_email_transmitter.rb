@@ -1,4 +1,5 @@
 class Transmitters::SharedEmailTransmitter
+  TRANSMISSION_METHOD = "shared_email"
   include Transmitter
 
   def deliver

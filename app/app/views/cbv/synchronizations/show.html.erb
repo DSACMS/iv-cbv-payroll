@@ -1,4 +1,10 @@
-<% content_for :title, t(".header") %>
-<div data-controller="polling" data-polling-url-value="<%= cbv_flow_synchronizations_path(params: { user: { account_id: params[:user][:account_id] } }) %>">
+<% case @flow %>
+<% when ActivityFlow %>
+  <% content_for :title, t(".activity_flow.header") %>
+<% else %>
+  <% content_for :title, t(".header") %>
+<% end %>
+
+<div data-controller="polling" data-polling-url-value="<%= @polling_url %>">
   <%= render "status" %>
 </div>

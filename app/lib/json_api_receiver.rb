@@ -30,6 +30,22 @@ class JsonApiSignature
 end
 
 class JsonApiReceiver < Sinatra::Base
+  post "/pdf" do
+    pdf_content = request.body.read
+
+    begin
+      file_path = File.expand_path("../app/tmp/transmitted_pdf.pdf")
+      File.open(file_path, "wb") do |file|
+        file.write(pdf_content)
+      end
+      puts "PDF written successfully to #{file_path}"
+      status 200
+    rescue => e
+      puts "Error writing PDF file: #{e.message}"
+      status 500
+    end
+  end
+
   post "/" do
     content_type :json
 

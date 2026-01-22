@@ -1,6 +1,8 @@
 require "rails_helper"
 
 RSpec.describe Activities::SummaryController, type: :controller do
+  include_context "activity_hub"
+
   render_views
 
   let(:activity_flow) {
@@ -14,6 +16,7 @@ RSpec.describe Activities::SummaryController, type: :controller do
 
   before do
     session[:flow_id] = activity_flow.id
+    session[:flow_type] = :activity
   end
 
   describe "GET #show" do
@@ -21,12 +24,12 @@ RSpec.describe Activities::SummaryController, type: :controller do
       visible_volunteering = activity_flow.volunteering_activities.create!(
         organization_name: "Scoped",
         hours: 1,
-        date: Date.new(2000, 1, 1)
+        date: Date.current
       )
       other_flow.volunteering_activities.create!(
         organization_name: "Ignored",
         hours: 2,
-        date: Date.new(2000, 2, 2)
+        date: Date.current
       )
       visible_job_training = activity_flow.job_training_activities.create!(
         program_name: "Resume Workshop",
@@ -41,8 +44,8 @@ RSpec.describe Activities::SummaryController, type: :controller do
 
       get :show
 
-      expect(assigns(:volunteering_activities)).to match_array([ visible_volunteering ])
-      expect(assigns(:job_training_activities)).to match_array([ visible_job_training ])
+      expect(assigns(:volunteering_activities)).to contain_exactly(visible_volunteering)
+      expect(assigns(:job_training_activities)).to contain_exactly(visible_job_training)
       expect(response.body).to include("Scoped")
       expect(response.body).to include("Resume Workshop")
     end

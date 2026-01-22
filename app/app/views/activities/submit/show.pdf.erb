@@ -15,6 +15,8 @@
       <%= t("activities.submit.pdf.report_overview") %>
     </h2>
   <% end %>
+  <%= table.with_row t("activities.submit.pdf.reporting_month"), @flow.reporting_month_display %>
+  <%= table.with_row t("activities.submit.pdf.confirmation_code"), @flow.confirmation_code %>
   <%= table.with_row t("activities.submit.pdf.submitted_at"), l(@submission_timestamp, format: :long) %>
 <% end %>
 
@@ -26,6 +28,7 @@
   <% end %>
   <%= table.with_row t("activities.submit.pdf.volunteering_count"), @volunteering_activities.size %>
   <%= table.with_row t("activities.submit.pdf.job_training_count"), @job_training_activities.size %>
+  <%= table.with_row t("activities.submit.pdf.income_activities"), @flow.payroll_accounts.size %>
   <%= table.with_row t("activities.submit.pdf.total_hours"), @total_hours %>
 <% end %>
 
@@ -75,6 +78,28 @@
 <% else %>
   <p>
     <%= t("activities.submit.pdf.no_job_training") %>
+  </p>
+<% end %>
+
+<h2>
+  <%= t("activities.submit.pdf.income_activities") %>
+</h2>
+<% if @flow.payroll_accounts.any? %>
+  <%= render TableComponent.new do |table| %>
+    <%= table.with_subheader_row(class_names: "subheader-row base-lightest") do |row| %>
+      <%= row.with_data_cell(is_header: true, class_names: "text-nowrap")
+             .with_content(t("activities.income.account_id")) %>
+      <%= row.with_data_cell(is_header: true, class_names: "text-nowrap")
+             .with_content(t("activities.income.synchronization_status")) %>
+    <% end %>
+    <% @flow.payroll_accounts.each do |payroll_account| %>
+      <%= table.with_row payroll_account.aggregator_account_id,
+                         payroll_account.synchronization_status %>
+    <% end %>
+  <% end %>
+<% else %>
+  <p>
+    <%= t("activities.submit.pdf.no_income") %>
   </p>
 <% end %>
 

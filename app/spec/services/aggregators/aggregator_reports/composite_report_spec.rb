@@ -6,7 +6,7 @@ RSpec.describe Aggregators::AggregatorReports::CompositeReport, type: :service d
 
   describe '#initialize' do
     subject do
-      Aggregators::AggregatorReports::CompositeReport.new(
+      described_class.new(
         [ pinwheel_report, argyle_report ],
         days_to_fetch_for_w2: 90,
         days_to_fetch_for_gig: 90

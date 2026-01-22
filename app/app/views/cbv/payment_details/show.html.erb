@@ -1,19 +1,30 @@
-<% header = employer_name ? t(".header", employer_name: employer_name) : t(".header_no_employer_name") %>
+<% case @flow %>
+<% when ActivityFlow %>
+  <% header = employer_name ? t(".activity_flow.header", employer_name: employer_name) : t(".activity_flow.header_no_employer_name") %>
+<% else %>
+  <% header = employer_name ? t(".header", employer_name: employer_name) : t(".header_no_employer_name") %>
+<% end %>
+
 <% content_for :title, header %>
 <h1>
   <%= header %>
 </h1>
 
-<p>
+<% case @flow %>
+<% when ActivityFlow %>
+  <%= t(".activity_flow.subheader_html",
+      start_date: format_date(@aggregator_report.from_date),
+      end_date: format_date(@aggregator_report.to_date),
+      agency_acronym: agency_translation("shared.agency_acronym"),
+    ) %>
+<% else %>
   <%= t(".subheader_html",
       start_date: format_date(@aggregator_report.from_date),
       end_date: format_date(@aggregator_report.to_date),
       agency_acronym: agency_translation("shared.agency_acronym"),
-      report_data_range: report_data_range(@aggregator_report, params[:user][:account_id]),
-      benefit: agency_translation("shared.benefit"),
-      reporting_purpose: agency_translation("shared.reporting_purpose")
+      report_data_range: report_data_range(@aggregator_report, params[:user][:account_id])
     ) %>
-</p>
+<% end %>
 
 <%= render(Report::EmploymentDetailsTableComponent.new(@aggregator_report, @payroll_account, show_income: @is_w2_worker)) %>
 
@@ -31,9 +42,17 @@
 <% end %>
 <div class="usa-form-group margin-top-5">
   <h2><%= t(".additional_information_header") %></h2>
-  <%= form_with(model: @cbv_flow, url: cbv_flow_payment_details_path, method: :patch, class: "usa-form usa-form--large") do |form| %>
+  <%= form_with(model: @cbv_flow, url: @payment_details_path, method: :patch, class: "usa-form usa-form--large") do |form| %>
     <%= hidden_field_tag "user[account_id]", params[:user][:account_id] %>
-    <%= form.label :additional_information, t(".additional_information_label", agency_acronym: agency_translation("shared.agency_acronym")), class: "usa-label" %>
+
+    <% case @flow %>
+    <% when ActivityFlow %>
+      <% additional_information_label = t(".activity_flow.additional_information_label", agency_acronym: agency_translation("shared.agency_acronym")) %>
+    <% else %>
+      <% additional_information_label = t(".additional_information_label", agency_acronym: agency_translation("shared.agency_acronym")) %>
+    <% end %>
+    <%= form.label :additional_information, additional_information_label, class: "usa-label" %>
+
     <%= form.text_area :additional_information, class: "usa-textarea", rows: 5, value: @account_comment %>
     <%= form.submit t(".continue"), class: "usa-button usa-button--primary" %>
   <% end %>

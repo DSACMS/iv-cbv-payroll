@@ -3,11 +3,12 @@ require 'csv'
 
 RSpec.describe ClientAgency::AzDes::ReportDelivererJob, type: :job do
   let(:sftp_gateway) { instance_double(SftpGateway) }
+
   before do
     allow(SftpGateway).to receive(:new).and_return(sftp_gateway)
   end
 
-  context "#perform" do
+  describe "#perform" do
     it "generates csv when there is a case that has been submitted during time period specified" do
       authorized_timestamp = Time.find_zone("UTC").local(2025, 1, 1, 10)
       transmitted_at = Time.find_zone("UTC").local(2025, 5, 1, 1)

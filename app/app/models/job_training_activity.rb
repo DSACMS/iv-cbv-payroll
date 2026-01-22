@@ -1,3 +1,2 @@
-class JobTrainingActivity < ApplicationRecord
-  belongs_to :activity_flow
+class JobTrainingActivity < Activity
 end

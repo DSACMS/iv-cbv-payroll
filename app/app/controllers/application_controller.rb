@@ -62,9 +62,8 @@ class ApplicationController < ActionController::Base
       return @current_agency
     end
 
-    client_agency_id_from_domain = detect_client_agency_from_domain
-    if client_agency_id_from_domain.present?
-      @current_agency = agency_config[client_agency_id_from_domain]
+    if client_agency_from_domain.present?
+      @current_agency = agency_config[client_agency_from_domain]
     end
 
     @current_agency
@@ -80,7 +79,7 @@ class ApplicationController < ActionController::Base
     ENV["DOMAIN_NAME"] == "verify-demo.navapbc.cloud"
   end
 
-  def detect_client_agency_from_domain
+  def client_agency_from_domain
     return nil unless request.host.present?
 
     agency_config.client_agency_ids.find do |agency_id|
@@ -93,10 +92,17 @@ class ApplicationController < ActionController::Base
     @pilot_ended.nil? ? current_agency&.pilot_ended : @pilot_ended
   end
 
+  def reset_cbv_session!
+    set_flow_session(nil, nil)
+  end
+
   def set_flow_session(flow_id, type)
     session[:flow_id] = flow_id
-    session[:flow_id] = flow_id
     session[:flow_type] = type
+  end
+
+  def flow_class(flow_type = session[:flow_type])
+    flow_type&.to_sym == :activity ? ActivityFlow : CbvFlow
   end
 
   protected

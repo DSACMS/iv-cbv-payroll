@@ -1,15 +1,15 @@
 class Transmitters::JsonTransmitter
+  TRANSMISSION_METHOD = "json"
   include Transmitter
 
   def deliver
-    api_url = URI(@current_agency.transmission_method_configuration["url"])
+    api_url = URI(@current_agency.transmission_method_configuration["json_api_url"])
     req = Net::HTTP::Post.new(api_url)
     req.content_type = "application/json"
-    req.body = payload.to_json
+    req.body = payload
 
-    timestamp = Time.now.to_i.to_s
     req["X-IVAAS-Timestamp"] = timestamp
-    req["X-IVAAS-Signature"] = JsonApiSignature.generate(req.body, timestamp, api_key_for_agency)
+    req["X-IVAAS-Signature"] = signature
 
     custom_headers = @current_agency.transmission_method_configuration["custom_headers"]
     if custom_headers
@@ -25,9 +25,8 @@ class Transmitters::JsonTransmitter
     when Net::HTTPSuccess, Net::HTTPRedirection
       "ok"
     else
-      Rails.logger.error "Unexpected response: #{res.code} #{res.message}"
-      Rails.logger.error "  Body: #{res.body}"
-      raise "Unexpected response from agency: #{res.code} #{res.message}"
+      Rails.logger.error "Unexpected response from agency: code=#{res.code} message=#{res.message} body=#{res.body}"
+      raise JsonTransmitterError.new("Unexpected response from agency: code=#{res.code} message=#{res.message} body=#{res.body}")
     end
   end
 
@@ -39,6 +38,12 @@ class Transmitters::JsonTransmitter
   end
 
   def payload
+    @payload ||= _payload.to_json
+  end
+
+  private
+
+  def _payload
     agency_partner_metadata = CbvApplicant.build_agency_partner_metadata(@current_agency.id) do |attr|
       @cbv_flow.cbv_applicant.public_send(attr)
     end
@@ -56,14 +61,5 @@ class Transmitters::JsonTransmitter
     end
   end
 
-  private
-
-  def api_key_for_agency
-    api_key = User.api_key_for_agency(@current_agency.id)
-    unless api_key
-      Rails.logger.error "No active API key found for agency #{@current_agency.id}"
-      raise "No active API key found for agency #{@current_agency.id}"
-    end
-    api_key
-  end
+  class JsonTransmitterError < StandardError; end
 end

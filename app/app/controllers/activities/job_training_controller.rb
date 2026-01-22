@@ -8,17 +8,17 @@ class Activities::JobTrainingController < Activities::BaseController
   def create
     @job_training_activity = @flow.job_training_activities.new(job_training_activity_params)
     if @job_training_activity.save
-      redirect_to activities_flow_root_path, notice: t("activities.job_training.created")
+      redirect_to after_activity_path, notice: t("activities.job_training.created")
     else
-      render :new
+      render :new, status: :unprocessable_content
     end
   end
 
   def update
     if @job_training_activity.update(job_training_activity_params)
-      redirect_to activities_flow_root_path, notice: t("activities.job_training.updated")
+      redirect_to after_activity_path, notice: t("activities.job_training.updated")
     else
-      render :edit
+      render :edit, status: :unprocessable_content
     end
   end
 
@@ -35,6 +35,6 @@ class Activities::JobTrainingController < Activities::BaseController
   end
 
   def job_training_activity_params
-    params.require(:job_training_activity).permit(:program_name, :organization_address, :hours)
+    params.require(:job_training_activity).permit(:program_name, :organization_address, :hours, :date)
   end
 end

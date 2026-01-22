@@ -5,6 +5,7 @@ FactoryBot.define do
     end
 
     cbv_applicant
+    device_id { SecureRandom.uuid }
 
     trait :completed do
       consented_to_authorized_use_at { 10.minutes.ago }

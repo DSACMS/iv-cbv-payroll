@@ -93,7 +93,7 @@ RSpec.describe Webhooks::Pinwheel::EventsController do
 
         expect(payroll_account.webhook_events)
           .to include(have_attributes(event_name: "paystubs.fully_synced", event_outcome: "success"))
-        expect(payroll_account.job_succeeded?("paystubs")).to be_truthy
+        expect(payroll_account).to be_job_succeeded("paystubs")
       end
 
       context "when fully synced" do
@@ -179,10 +179,13 @@ RSpec.describe Webhooks::Pinwheel::EventsController do
               paystubs_earnings_category_salary_count: 2,
               paystubs_earnings_category_bonus_count: 2,
               paystubs_earnings_category_overtime_count: 0,
+              paystubs_earnings_category_tips_count: 0,
               paystubs_gross_pay_amounts_average: 480720.0,
               paystubs_gross_pay_amounts_max: 480720,
               paystubs_gross_pay_amounts_median: 480720,
               paystubs_gross_pay_amounts_min: 480720,
+              paystubs_latest_gross_pay_amount: 480720,
+              paystubs_latest_earnings_amount_total: 480720,
               paystubs_days_since_last_pay_date: 1565,
 
               # Employment fields
@@ -263,7 +266,7 @@ RSpec.describe Webhooks::Pinwheel::EventsController do
 
         expect(payroll_account.webhook_events)
           .to include(have_attributes(event_name: "paystubs.fully_synced", event_outcome: "pending"))
-        expect(payroll_account.job_succeeded?("paystubs")).to be_falsey
+        expect(payroll_account).not_to be_job_succeeded("paystubs")
       end
     end
   end

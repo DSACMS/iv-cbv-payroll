@@ -20,10 +20,7 @@ RSpec.describe Aggregators::AggregatorReports::ArgyleReport, type: :service do
   let(:account_json) { argyle_load_relative_json_file('bob', 'request_account.json') }
 
   before do
-    allow(argyle_service).to receive(:fetch_identities_api).and_return(identities_json)
-    allow(argyle_service).to receive(:fetch_paystubs_api).and_return(paystubs_json)
-    allow(argyle_service).to receive(:fetch_gigs_api).and_return(gigs_json)
-    allow(argyle_service).to receive(:fetch_account_api).and_return(account_json)
+    allow(argyle_service).to receive_messages(fetch_identities_api: identities_json, fetch_paystubs_api: paystubs_json, fetch_gigs_api: gigs_json, fetch_account_api: account_json)
   end
 
   around do |ex|
@@ -32,7 +29,7 @@ RSpec.describe Aggregators::AggregatorReports::ArgyleReport, type: :service do
 
   describe '#fetch_report_data' do
     let(:argyle_report) do
-      Aggregators::AggregatorReports::ArgyleReport.new(
+      described_class.new(
         payroll_accounts: [ payroll_account ],
         argyle_service: argyle_service,
         days_to_fetch_for_w2: days_ago_to_fetch,
@@ -42,9 +39,7 @@ RSpec.describe Aggregators::AggregatorReports::ArgyleReport, type: :service do
 
     context "bob, a gig employee" do
       before do
-        allow(argyle_service).to receive(:fetch_account_api).and_return(argyle_load_relative_json_file("bob", "request_account.json"))
-        allow(argyle_service).to receive(:fetch_identities_api).and_return(argyle_load_relative_json_file("bob", "request_identity.json"))
-        allow(argyle_service).to receive(:fetch_paystubs_api).and_return(argyle_load_relative_json_file("bob", "request_paystubs.json"))
+        allow(argyle_service).to receive_messages(fetch_account_api: argyle_load_relative_json_file("bob", "request_account.json"), fetch_identities_api: argyle_load_relative_json_file("bob", "request_identity.json"), fetch_paystubs_api: argyle_load_relative_json_file("bob", "request_paystubs.json"))
         argyle_report.send(:fetch_report_data)
       end
 
@@ -60,7 +55,7 @@ RSpec.describe Aggregators::AggregatorReports::ArgyleReport, type: :service do
         expect(argyle_report.paystubs).to all(be_an(Aggregators::ResponseObjects::Paystub))
       end
 
-      it 'should not have an employer address' do
+      it 'does not have an employer address' do
         expect(argyle_report.employments.first.employer_address).to be_nil
       end
 
@@ -69,7 +64,7 @@ RSpec.describe Aggregators::AggregatorReports::ArgyleReport, type: :service do
       end
 
 
-      it 'should have an employment account_source' do
+      it 'has an employment account_source' do
         expect(argyle_report.employments.first.account_source).to match(/argyle_sandbox/)
       end
 
@@ -104,8 +99,7 @@ RSpec.describe Aggregators::AggregatorReports::ArgyleReport, type: :service do
 
     context "joe, a W-2 employee" do
       before do
-        allow(argyle_service).to receive(:fetch_identities_api).and_return(argyle_load_relative_json_file("joe", "request_identity.json"))
-        allow(argyle_service).to receive(:fetch_paystubs_api).and_return(argyle_load_relative_json_file("joe", "request_paystubs.json"))
+        allow(argyle_service).to receive_messages(fetch_identities_api: argyle_load_relative_json_file("joe", "request_identity.json"), fetch_paystubs_api: argyle_load_relative_json_file("joe", "request_paystubs.json"))
         argyle_report.send(:fetch_report_data)
       end
 
@@ -121,7 +115,7 @@ RSpec.describe Aggregators::AggregatorReports::ArgyleReport, type: :service do
         expect(argyle_report.paystubs).to all(be_an(Aggregators::ResponseObjects::Paystub))
       end
 
-      it 'should have an employer address' do
+      it 'has an employer address' do
         expect(argyle_report.employments.first.employer_address).to eq("202 Westlake Ave N, Seattle, WA 98109")
       end
 
@@ -161,9 +155,7 @@ RSpec.describe Aggregators::AggregatorReports::ArgyleReport, type: :service do
     describe '#fetch_gigs' do
       context "for Bob, a Uber driver" do
         before do
-          allow(argyle_service).to receive(:fetch_identities_api).and_return(argyle_load_relative_json_file("bob", "request_identity.json"))
-          allow(argyle_service).to receive(:fetch_paystubs_api).and_return(argyle_load_relative_json_file("bob", "request_paystubs.json"))
-          allow(argyle_service).to receive(:fetch_gigs_api).and_return(argyle_load_relative_json_file("bob", "request_gigs.json"))
+          allow(argyle_service).to receive_messages(fetch_identities_api: argyle_load_relative_json_file("bob", "request_identity.json"), fetch_paystubs_api: argyle_load_relative_json_file("bob", "request_paystubs.json"), fetch_gigs_api: argyle_load_relative_json_file("bob", "request_gigs.json"))
         end
 
         it 'returns an array of ResponseObjects::Gig' do
@@ -254,7 +246,7 @@ RSpec.describe Aggregators::AggregatorReports::ArgyleReport, type: :service do
   describe '#most_recent_paystub_with_address' do
     it('returns nil when no paystubs returned') do
       paystubs = { "results" => [] }
-      expect(Aggregators::AggregatorReports::ArgyleReport.most_recent_paystub_with_address(paystubs)).to be_nil
+      expect(described_class.most_recent_paystub_with_address(paystubs)).to be_nil
     end
 
     it 'returns nil when no employer_address is present' do
@@ -266,7 +258,7 @@ RSpec.describe Aggregators::AggregatorReports::ArgyleReport, type: :service do
           }
         ]
       }
-      expect(Aggregators::AggregatorReports::ArgyleReport.most_recent_paystub_with_address(paystubs)).to be_nil
+      expect(described_class.most_recent_paystub_with_address(paystubs)).to be_nil
     end
 
     it 'returns nil when employer_address.line1 is nil' do
@@ -278,7 +270,7 @@ RSpec.describe Aggregators::AggregatorReports::ArgyleReport, type: :service do
           }
         ]
       }
-      expect(Aggregators::AggregatorReports::ArgyleReport.most_recent_paystub_with_address(paystubs)).to be_nil
+      expect(described_class.most_recent_paystub_with_address(paystubs)).to be_nil
     end
 
     it 'returns the most recent paystub with a valid employer_address' do
@@ -294,14 +286,14 @@ RSpec.describe Aggregators::AggregatorReports::ArgyleReport, type: :service do
           }
         ]
       }
-      result = Aggregators::AggregatorReports::ArgyleReport.most_recent_paystub_with_address(paystubs)
+      result = described_class.most_recent_paystub_with_address(paystubs)
       expect(result["employer_address"]["line1"]).to eq("456 Elm St")
     end
   end
 
   describe '#summarize_by_month' do
     context "bob, a gig employee" do
-      let(:argyle_report) { Aggregators::AggregatorReports::ArgyleReport.new(
+      let(:argyle_report) { described_class.new(
         payroll_accounts: [ payroll_account ],
         argyle_service: argyle_service,
         days_to_fetch_for_w2: days_ago_to_fetch,
@@ -310,18 +302,16 @@ RSpec.describe Aggregators::AggregatorReports::ArgyleReport, type: :service do
       let(:account) { "019571bc-2f60-3955-d972-dbadfe0913a8" }
 
       before do
-        allow(argyle_service).to receive(:fetch_account_api).and_return(argyle_load_relative_json_file("bob", "request_account.json"))
-        allow(argyle_service).to receive(:fetch_identities_api).and_return(argyle_load_relative_json_file("bob", "request_identity.json"))
-        allow(argyle_service).to receive(:fetch_paystubs_api).and_return(argyle_load_relative_json_file("bob", "request_paystubs.json"))
+        allow(argyle_service).to receive_messages(fetch_account_api: argyle_load_relative_json_file("bob", "request_account.json"), fetch_identities_api: argyle_load_relative_json_file("bob", "request_identity.json"), fetch_paystubs_api: argyle_load_relative_json_file("bob", "request_paystubs.json"))
         argyle_report.send(:fetch_report_data)
       end
 
       it "returns a hash of monthly totals" do
         monthly_summary_all_accounts = argyle_report.summarize_by_month(from_date: Date.parse("2025-01-08"), to_date: Date.parse("2025-03-31"))
-        expect(monthly_summary_all_accounts.keys).to match_array([ account ])
+        expect(monthly_summary_all_accounts.keys).to contain_exactly(account)
 
         monthly_summary = monthly_summary_all_accounts[account]
-        expect(monthly_summary.keys).to match_array([ "2025-03", "2025-02", "2025-01" ])
+        expect(monthly_summary.keys).to contain_exactly("2025-03", "2025-02", "2025-01")
 
         march = monthly_summary["2025-03"]
         expect(march[:gigs].length).to eq(9)
@@ -370,7 +360,7 @@ RSpec.describe Aggregators::AggregatorReports::ArgyleReport, type: :service do
         create(:payroll_account, :argyle_fully_synced, aggregator_account_id: account)
       end
 
-      let(:argyle_report) { Aggregators::AggregatorReports::ArgyleReport.new(
+      let(:argyle_report) { described_class.new(
         payroll_accounts: [ payroll_account_2 ],
         argyle_service: argyle_service,
         days_to_fetch_for_w2: days_ago_to_fetch,
@@ -382,20 +372,16 @@ RSpec.describe Aggregators::AggregatorReports::ArgyleReport, type: :service do
       let(:account_json) { argyle_load_relative_json_file('busy_joe', 'request_accounts.json') }
 
       before do
-        allow(argyle_service).to receive(:fetch_identities_api).and_return(identities_json)
-        allow(argyle_service).to receive(:fetch_employments_api).and_return(employments_json)
-        allow(argyle_service).to receive(:fetch_paystubs_api).and_return(paystubs_json)
-        allow(argyle_service).to receive(:fetch_account_api).and_return(account_json)
-        allow(argyle_service).to receive(:fetch_gigs_api).and_return(nil)
+        allow(argyle_service).to receive_messages(fetch_identities_api: identities_json, fetch_employments_api: employments_json, fetch_paystubs_api: paystubs_json, fetch_account_api: account_json, fetch_gigs_api: nil)
         argyle_report.fetch
       end
 
       it "returns a hash of monthly totals" do
         monthly_summary_all_accounts = argyle_report.summarize_by_month(from_date: Date.parse("2010-01-08"), to_date: Date.parse("2026-03-31"))
 
-        expect(monthly_summary_all_accounts.keys).to match_array([ account ])
+        expect(monthly_summary_all_accounts.keys).to contain_exactly(account)
         monthly_summary = monthly_summary_all_accounts[account]
-        expect(monthly_summary.keys).to match_array([ "2025-03" ])
+        expect(monthly_summary.keys).to contain_exactly("2025-03")
         expect(monthly_summary["2025-03"][:paystubs].length).to eq(2)
       end
     end
