@@ -275,67 +275,6 @@ en:
         sandbox: CBV Test Agency has sent you an invitation to verify your income
       subject:
         default: Verify your income for your SNAP application or renewal
-  caseworker:
-    cbv_flow_invitations:
-      az_des:
-        invite:
-          case_number: Case number
-          email_address: Client's email address
-          language_label: In what language should we send the invitation?
-      create:
-        invite_failed: 'Error sending invitation to %{email_address}: %{error_message}.'
-        invite_success: Successfully delivered invitation to %{email_address}.
-      incorrect_client_agency_id: Unable to send invitation due to missing client agency configuration.
-      new:
-        description_html:
-          default: "<p>Provide some details about the client so we can send them a link to verify their pay information. We'll request the past %{pay_income_days} days of income, based on the client's application/recertification date.</p><p>If multiple members of the household earn income, send an invite link to each household member.</p>"
-        form:
-          submit: Send Invitation
-        header: Send an invite link
-      sandbox:
-        invite:
-          agency_id_number: Client's agency ID number
-          beacon_id: Your WELID
-          client_id_number: CIN
-          email_address: Client's email address
-          first_name: Client's first name
-          language_label: In what language should we send the invitation?
-          last_name: Client's last name
-          middle_name: Client's middle name
-          snap_application_date: SNAP application or recertification interview date
-    dashboards:
-      show:
-        create_invitation: Create a new invitation
-        expires_within:
-          one: "%{count} day"
-          other: "%{count} days"
-        header: Invite clients to the SNAP Income Pilot
-        helpful_reminders: Helpful reminders
-        invite_clients: You can invite clients to use this income verification tool by clicking the "Create a new invitation" button below.
-        reminder_1: If multiple household members earn income, send an invite link to each member individually.
-        reminder_2: If an invitation link has expired, you can generate a new one on this page. Links expire if not accessed within %{expires_days} or if they have already been used to share the PDF report.
-        reminder_3: For security reasons, you'll be logged out after 30 minutes of inactivity.
-        reminder_4: If you encounter any issues with the tool, please use the Report feedback or bugs link.
-    entries:
-      disabled: Staff portal disabled
-      index:
-        continue_to_login:
-          default: Continue to log in page
-          sandbox: Continue to CBV Test Agency log in page
-        description:
-          sandbox: This site allows staff at participating agencies to send clients a link to verify their income, so they can easily send pay information to the agency.
-        header:
-          sandbox: CBV Test Agency is piloting a new way to quickly verify clients' income
-        how_it_works: How it works
-        step_1_description: For security, you will be automatically logged out after 30 minutes of inactivity.
-        step_1_title:
-          default: Log in using your existing agency account.
-        step_2_description: Invitations are for individual clients. If you need to verify income for multiple people in a household, you will need to create a new invitation for each person.
-        step_2_title: Click the "Create a new invitation" button.
-        step_3_description: When you submit their name, ID number, email address, and application date, we'll email them an invitation link to verify their income.
-        step_3_title: Provide information about the client. We'll send them an invitation.
-        step_4_description: The information will be uploaded as a PDF to the case.
-        step_4_title: Once the client verifies their income, you'll receive their income information.
   caseworker_mailer:
     summary_email:
       greeting: Hello,
@@ -844,7 +783,6 @@ en:
       az_des: Nutrition Assistance
       la_ldh: Medicaid
       sandbox: SNAP
-    error_unauthorized: The URL you're accessing is forbidden for the current user. Please verify you are logged in as the correct user and try accessing the URL again.
     footer:
       feedback: Share feedback
     header:
@@ -888,6 +826,3 @@ en:
     date_picker_format: 'Format: mm/dd/yyyy'
     optional: Optional
     tax_id_format: 'Format: 123456789'
-  users:
-    omniauth_callbacks:
-      authentication_successful: You are signed in.

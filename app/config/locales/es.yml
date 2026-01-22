@@ -80,12 +80,6 @@ es:
         sandbox: La Agencia de pruebas CBV le ha enviado una invitación para verificar sus ingresos
       subject:
         default: Verifique sus ingresos para su solicitud o renovación de SNAP
-  caseworker:
-    cbv_flow_invitations:
-      create:
-        invite_failed: 'Error al enviar la invitació a %{email_address}: %{error_message}'
-        invite_success: La invitación ha sido enviada con éxito a %{email_address}.
-      incorrect_client_agency_id: No se ha podido enviar la invitación porque falta la configuración del sitio.
   cbv:
     add_jobs:
       show:
@@ -610,7 +604,6 @@ es:
       az_des: Asistencia Nutricional
       la_ldh: Medicaid
       sandbox: SNAP
-    error_unauthorized: La URL a la que estás accediendo está prohibida para el usuario actual. Verifique que está conectado como el usuario correcto e intente acceder de nuevo a la URL.
     footer:
       feedback: Compartir comentarios
     header:
@@ -655,6 +648,3 @@ es:
     date_picker_format: 'Formato: mm/dd/aaaa'
     optional: Opcional
     tax_id_format: 'Formato: 123456789'
-  users:
-    omniauth_callbacks:
-      authentication_successful: Ha iniciado sesión.
