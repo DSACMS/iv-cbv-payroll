@@ -252,5 +252,5 @@ v_test <- df_mp |>
   pull()
 
 df_mp |>
-  munge_journey("applicant-545499") |>
+  munge_journey(v_test[1]) |>
   plot_journey(export = FALSE)
