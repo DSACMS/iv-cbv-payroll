@@ -4,7 +4,7 @@
   <%= t("activities.summary.title") %>
 </h1>
 <p class="usa-intro">
-  <%= t("activities.hub.reporting_month", month: @flow.reporting_month_display) %>
+  <%= t("activities.hub.reporting_window", range: @flow.reporting_window_display) %>
 </p>
 <p class="margin-bottom-4">
   <%= t("activities.summary.description", agency_name: agency_translation("shared.agency_full_name")) %>
