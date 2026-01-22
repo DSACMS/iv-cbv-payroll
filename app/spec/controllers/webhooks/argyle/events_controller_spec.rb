@@ -221,6 +221,8 @@ RSpec.describe Webhooks::Argyle::EventsController, type: :controller do
           paystubs_gross_pay_amounts_min: 120139,
           paystubs_gross_pay_amounts_average: 152914.4,
           paystubs_gross_pay_amounts_median: 153103,
+          paystubs_latest_gross_pay_amount: 151897,
+          paystubs_latest_earnings_amount_total: 151897,
           paystubs_days_since_last_pay_date: 73,
           paystubs_employment_id_unique_count: 1,
 

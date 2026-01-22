@@ -184,6 +184,8 @@ RSpec.describe Webhooks::Pinwheel::EventsController do
               paystubs_gross_pay_amounts_max: 480720,
               paystubs_gross_pay_amounts_median: 480720,
               paystubs_gross_pay_amounts_min: 480720,
+              paystubs_latest_gross_pay_amount: 480720,
+              paystubs_latest_earnings_amount_total: 480720,
               paystubs_days_since_last_pay_date: 1565,
 
               # Employment fields
