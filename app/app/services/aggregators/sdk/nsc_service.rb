@@ -41,18 +41,17 @@ module Aggregators
         end
       end
 
-      def initialize(environment: :sandbox)
+      def initialize(environment: :sandbox, logger: Rails.logger.tagged("NscService"))
         @environment = ENVIRONMENTS.fetch(environment.to_sym) do |env|
           raise KeyError, "NscService unknown environment: #{env}"
         end
         @base_url = @environment[:base_url]
-        Rails.logger.info("[NscService] Initialized in #{environment} environment (with base URL: #{@base_url})")
+        @logger = logger
+        @logger.info("Initialized in #{environment} environment (with base URL: #{@base_url})")
       end
 
       # Main entry pont to submit an enrollment request to NSC
       def call(activity_flow, &block)
-        start_time = Time.current
-
         yield if block_given?
 
         identity = activity_flow.identity
@@ -82,7 +81,7 @@ module Aggregators
         }
 
         full_url = "#{@base_url}#{ENROLLMENT_ENDPOINT}"
-        Rails.logger.info("[NSCService] Fetch enrollment data:: POST to #{full_url} with body: #{request_body.to_json}")
+        @logger.info("Fetch enrollment data: POST to #{full_url}")
 
         retried = false
 
@@ -91,10 +90,13 @@ module Aggregators
             req.body = request_body
           end
 
-          Rails.logger.info("[NscService] Response Status: #{response.status}, Body: #{response.body}")
+          @logger.info("Response Status: #{response.status}")
 
           handle_response(response)
         rescue ApiError => e
+          @logger.warn("Got error #{e.class}: #{e.message}")
+          raise if Rails.env.development?
+
           # Try one more time if the issue was expired or invalid token
           raise unless e.code == "UNAUTHORIZED" && !retried
           retried = true
@@ -108,7 +110,7 @@ module Aggregators
       def http_client
         @http_client ||= Faraday.new do |conn|
           conn.request :json
-          conn.response :logger, Rails.logger, bodies: true, headers: true, prefix: "[NscService][HTTP]"
+          conn.response :logger, @logger, bodies: true, headers: true
           conn.response :json
           conn.options.timeout = MAX_TIMEOUT.to_i
           conn.options.open_timeout = MAX_TIMEOUT.to_i
@@ -130,15 +132,15 @@ module Aggregators
         token_url = @environment[:token_url]
 
         unless token_url.present?
-          Rails.logger.warn "[NscService] Token URL is not configured."
+          @logger.warn "Token URL is not configured."
           return nil
         end
 
-        Rails.logger.info("[NscService] Fetching OAuth token from #{token_url}")
+        @logger.info("Fetching OAuth token from #{token_url}")
 
         token_conn = Faraday.new do |conn|
           conn.request :url_encoded
-          conn.response :logger, Rails.logger, bodies: true, headers: true, prefix: "[NscService][HTTP]"
+          conn.response :logger, @logger, bodies: true, headers: true
           conn.response :json
           conn.options.timeout = MAX_TIMEOUT.to_i
         end
@@ -153,7 +155,7 @@ module Aggregators
         end
 
         unless response.success?
-          Rails.logger.error("[NscService] Failed to fetch OAuth token: #{response.status} - #{response.body}")
+          @logger.error("Failed to fetch OAuth token: #{response.status} - #{response.body}")
           raise ApiError.new(
             code: response.status,
             message: "Failed to fetch OAuth token"
@@ -166,7 +168,7 @@ module Aggregators
           message: "OAuth token not found in response"
         ) unless token.present?
 
-        Rails.logger.info("[NscService] Successfully fetched OAuth token (expires in #{response.body['expires_in']} seconds)")
+        @logger.info("Successfully fetched OAuth token (expires in #{response.body['expires_in']} seconds)")
 
         token
       end
@@ -178,23 +180,23 @@ module Aggregators
       def handle_response(response)
         case response.status
         when 200
-          Rails.logger.info("[NscService] Successfully fetched enrollment data from NSC API. Response Body: #{response.body}")
+          @logger.info("Successfully fetched enrollment data from NSC API. Response Body: #{response.body}")
           response.body
         when 404
           error_body = response.body || {}
-          Rails.logger.error("[NscService] Student not found: #{error_body}")
+          @logger.error("Student not found: #{error_body}")
           raise ApiError.new(
             code: error_body["code"] || "STUDENT_NOT_FOUND",
             message: error_body["message"] || "Student not found"
           )
         when 401
-          Rails.logger.error("[NscService] Unauthorized access - invalid or expired token.")
+          @logger.error("Unauthorized access - invalid or expired token.")
           raise ApiError.new(
             code: "UNAUTHORIZED",
             message: "OAuth token expired or invalid"
           )
         else
-          Rails.logger.error("[NscService] Unexpected API response: #{response.status} - #{response.body}")
+          @logger.error("Unexpected API response: #{response.status} - #{response.body}")
           raise ApiError.new(
             code: "UNEXPECTED_ERROR",
             message: "Unexpected error occurred from NSC API: #{response.status} - #{response.body}"
@@ -210,12 +212,12 @@ module Aggregators
             .select { |enrollment| map_enrollment_status(enrollment["currentEnrollmentStatus"]) == :enrolled }
             .map { |enrollment| enrollment["officialSchoolName"] }
 
-        Rails.logger.info("[NscService] create_education_activity, response data: #{response_data}")
+        @logger.info("create_education_activity, response data: #{response_data}")
 
         has_any_enrollment = currently_enrolled_schools.any?
 
         if !has_any_enrollment
-          Rails.logger.info("[NscService] No current enrollments found for identity ID #{activity_flow.identity.id}")
+          @logger.info("No current enrollments found for identity ID #{activity_flow.identity.id}")
           return EducationActivity.create!(
             activity_flow: activity_flow,
             school_name: nil,

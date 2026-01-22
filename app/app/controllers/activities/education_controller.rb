@@ -96,6 +96,8 @@ class Activities::EducationController < Activities::BaseController
       )
     rescue StandardError => e
       Rails.logger.error("Education API error: #{e.message}")
+      Rails.logger.error(e.backtrace)
+      raise if Rails.env.development?
 
       sse.write(
         sync_indicator_update("student_info", :failed)
