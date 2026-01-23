@@ -1,5 +1,3 @@
-require 'faker'
-
 FactoryBot.define do
   factory :job_training_activity do
     activity_flow { association(:activity_flow,
@@ -8,7 +6,7 @@ FactoryBot.define do
                                 education_activities_count: 0) }
 
     after(:build) do |activity|
-      activity.activity_flow.job_training_activities = [ activity ]
+      activity.date ||= activity.activity_flow.reporting_window_range.end
     end
   end
 end
