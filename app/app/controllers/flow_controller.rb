@@ -51,7 +51,7 @@ class FlowController < ApplicationController
     flow = flow_class(flow_param).create(
       cbv_applicant: applicant,
       device_id: cookies.permanent.signed[:device_id],
-      **activity_flow_attributes
+      **flow_attributes_from_params
     )
     [ flow, false ]
   end
@@ -61,7 +61,7 @@ class FlowController < ApplicationController
     flow = flow_class(flow_param).create(
       cbv_applicant: applicant,
       device_id: cookies.permanent.signed[:device_id],
-      **activity_flow_attributes
+      **flow_attributes_from_params
     )
     [ flow, true ]
   end
@@ -80,16 +80,11 @@ class FlowController < ApplicationController
         return redirect_to(cbv_flow_expired_invitation_path(client_agency_id: invitation.client_agency_id))
       end
 
-      @flow =
-        if flow_param == :activity
-          flow_class(flow_param).create_from_invitation(
-            invitation,
-            cookies.permanent.signed[:device_id],
-            reporting_window_type: reporting_window_type_param
-          )
-        else
-          flow_class(flow_param).create_from_invitation(invitation, cookies.permanent.signed[:device_id])
-        end
+      @flow = flow_class(flow_param).create_from_invitation(
+        invitation,
+        cookies.permanent.signed[:device_id],
+        params
+      )
       @cbv_flow = @flow # Maintain for compatibility until all controllers are converted
       set_flow_session(@flow.id, flow_param)
       cookies.permanent.encrypted[:cbv_applicant_id] = @flow.cbv_applicant_id
@@ -138,14 +133,8 @@ class FlowController < ApplicationController
     })
   end
 
-  def reporting_window_type_param
-    params[:reporting_window] == "renewal" ? "renewal" : "application"
-  end
-
-  def activity_flow_attributes
-    return {} unless flow_param == :activity
-
-    { reporting_window_type: reporting_window_type_param }
+  def flow_attributes_from_params
+    flow_class(flow_param).flow_attributes_from_params(params)
   end
 
   def normalize_token(token)

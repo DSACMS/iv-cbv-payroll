@@ -10,13 +10,18 @@ class ActivityFlow < Flow
 
   before_create :set_default_reporting_window
 
-  def self.create_from_invitation(invitation, device_id, reporting_window_type: "application")
+  def self.create_from_invitation(invitation, device_id, params = {})
     create(
       activity_flow_invitation: invitation,
       cbv_applicant: invitation.cbv_applicant || CbvApplicant.create(client_agency_id: invitation.client_agency_id),
       device_id: device_id,
-      reporting_window_type: reporting_window_type
+      **flow_attributes_from_params(params)
     )
+  end
+
+  def self.flow_attributes_from_params(params)
+    reporting_window_type = params[:reporting_window] == "renewal" ? "renewal" : "application"
+    { reporting_window_type: reporting_window_type }
   end
 
   def reporting_window_range

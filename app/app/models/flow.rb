@@ -3,6 +3,10 @@ class Flow < ApplicationRecord
 
   has_many :payroll_accounts, as: :flow, dependent: :destroy
 
+  def self.flow_attributes_from_params(params)
+    {}
+  end
+
   def has_account_with_required_data?
     payroll_accounts.any?(&:sync_succeeded?)
   end
