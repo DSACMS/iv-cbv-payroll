@@ -21,26 +21,10 @@ RSpec.describe Activities::SummaryController, type: :controller do
 
   describe "GET #show" do
     it "only shows activities belonging to the current activity flow" do
-      visible_volunteering = activity_flow.volunteering_activities.create!(
-        organization_name: "Scoped",
-        hours: 1,
-        date: Date.current
-      )
-      other_flow.volunteering_activities.create!(
-        organization_name: "Ignored",
-        hours: 2,
-        date: Date.current
-      )
-      visible_job_training = activity_flow.job_training_activities.create!(
-        program_name: "Resume Workshop",
-        organization_address: "123 Main St",
-        hours: 6
-      )
-      other_flow.job_training_activities.create!(
-        program_name: "Other Workshop",
-        organization_address: "456 Elm St",
-        hours: 8
-      )
+      visible_volunteering = create(:volunteering_activity, activity_flow: activity_flow, organization_name: "Scoped", hours: 1)
+      create(:volunteering_activity, activity_flow: other_flow, organization_name: "Ignored", hours: 2)
+      visible_job_training = create(:job_training_activity, activity_flow: activity_flow, program_name: "Resume Workshop", organization_address: "123 Main St", hours: 6)
+      create(:job_training_activity, activity_flow: other_flow, program_name: "Other Workshop", organization_address: "456 Elm St", hours: 8)
 
       get :show
 
