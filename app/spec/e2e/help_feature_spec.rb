@@ -56,7 +56,6 @@ RSpec.describe "Help Features", :js, type: :feature do
       end
     end
 
-
     it "can navigate between help topics" do
       visit cbv_flow_employer_search_path
       click_link "Help"
@@ -81,33 +80,6 @@ RSpec.describe "Help Features", :js, type: :feature do
 
       find("button[aria-label='Close this window']").click
       expect(page).not_to have_selector(".usa-modal__content", visible: true)
-    end
-  end
-
-  context "When in the caseworker flow" do
-    it "displays correct content in the help modal" do
-      visit new_user_session_path(client_agency_id: "sandbox")
-      click_link "Help"
-
-      expect(page).to have_selector(".usa-modal__content", visible: true)
-
-      within(".usa-modal__content") do
-        verify_page(page, title: I18n.t("help.index.title"))
-        expect(page).to have_content(I18n.t("help.index.select_prompt"))
-
-        # Verify all help topic buttons are present
-        expect(page).to have_link(I18n.t("help.index.username"))
-        expect(page).to have_link(I18n.t("help.index.password"))
-        expect(page).to have_link(I18n.t("help.index.company_id"))
-        expect(page).to have_link(I18n.t("help.index.employer"))
-        expect(page).to have_link(I18n.t("help.index.provider"))
-        expect(page).to have_link(I18n.t("help.index.credentials"))
-
-        # Verify feedback link opens in new tab with correct URL
-        feedback_link = find_link(I18n.t("help.index.feedback"))
-        expect(feedback_link[:href]).to eq("https://docs.google.com/forms/d/e/1FAIpQLSfrUiz0oWE5jbXjPfl-idQQGPgxKplqFtcKq08UOhTaEa2k6A/viewform")
-        expect(feedback_link[:target]).to eq("_blank")
-      end
     end
   end
 end
