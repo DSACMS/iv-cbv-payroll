@@ -24,12 +24,23 @@ module Aggregators
         }
       }.freeze
 
+      # See: https://docs.studentclearinghouse.org/vs/insights-json/verification-services-request#service-url-jwt-encryption-path
       ENROLLMENT_ENDPOINT = "/insights/v3/a2/submit-request"
       TOKEN_CACHE_KEY_PREFIX = "nsc_service_token_"
       TOKEN_EXPIRY_INTERVAL = 1.hour
       TOKEN_EXPIRY_BUFFER = 5.minutes
       MIN_DISPLAY_TIME = 2.seconds
       MAX_TIMEOUT = 10.seconds
+      ENROLLMENT_STATUSES = {
+        # Ordered in descending preference if there are multiple active enrollments.
+        # The key is the API response value
+        # The value is the enum value for EducationActivity.
+        "F" => :full_time,
+        "Q" => :three_quarter_time,
+        "H" => :half_time,
+        "L" => :less_than_half_time,
+        "Y" => :enrolled
+      }
 
       class ApiError < StandardError
         attr_reader :code, :message
@@ -65,7 +76,8 @@ module Aggregators
         response = fetch_enrollment_data(
           first_name: identity.first_name,
           last_name: identity.last_name,
-          date_of_birth: identity.date_of_birth
+          date_of_birth: identity.date_of_birth,
+          as_of_date: activity_flow.reporting_window_range.max
         )
 
         create_education_activity(activity_flow, response)
@@ -77,11 +89,12 @@ module Aggregators
       # @param last_name [String] Last name of the individual
       # @param date_of_birth [Date] Date of birth of the individual
       # @return [Hash] Parsed JSON response from NSC API
-      def fetch_enrollment_data(first_name:, last_name:, date_of_birth:)
+      def fetch_enrollment_data(first_name:, last_name:, date_of_birth:, as_of_date:)
         request_body = {
           firstName: first_name,
           lastName: last_name,
           dateOfBirth: date_of_birth,
+          asOfDate: as_of_date,
           accountId: environment_name == :production ? ENV["NSC_ACCOUNT_ID"] : ENV["NSC_ACCOUNT_ID_SANDBOX"],
           terms: "Y",
           endClient: "CMS"
@@ -211,51 +224,42 @@ module Aggregators
         end
       end
 
-      # NOTE:
-      # - Only handles the first enrollment school and the first enrollment detail (both are arrays in the response)
-      # - Enrollment status is simply Y/N (until more use cases are known)
       def create_education_activity(activity_flow, response_data)
-        currently_enrolled_schools = Array(response_data["enrollmentDetails"])
-            .select { |enrollment| map_enrollment_status(enrollment["currentEnrollmentStatus"]) == :enrolled }
-            .map { |enrollment| enrollment["officialSchoolName"] }
+        enrollments = Array(response_data["enrollmentDetails"])
+        current_enrollments = enrollments.find_all { |enrollment_detail| enrollment_detail["currentEnrollmentStatus"] == "CC" }
 
-        @logger.info("create_education_activity, response data: #{response_data}")
-
-        has_any_enrollment = currently_enrolled_schools.any?
-
-        if !has_any_enrollment
-          @logger.info("No current enrollments found for identity ID #{activity_flow.identity.id}")
+        if current_enrollments.any?
+          @logger.info "Found #{current_enrollments.length} current enrollments (total enrollments: #{enrollments.length})"
+        else
+          @logger.info("No enrollments found for identity ID #{activity_flow.identity.id}")
           return EducationActivity.create!(
             activity_flow: activity_flow,
-            school_name: nil,
-            status: :not_enrolled
+            status: :no_enrollments
           )
         end
 
+        # Of potentially multiple current enrollments, pick the one with:
+        # - The highest enrollment status (i.e. prefer "full time" to "half time")
+        # - The latest termEndDate
+        current_enrollment_terms = current_enrollments.each_with_object([]) do |enrollment_detail, array|
+          enrollment_detail["enrollmentData"].each do |enrollment_data|
+            array << {
+              school_name: enrollment_detail["officialSchoolName"],
+              enrollment_status: enrollment_data["enrollmentStatus"],
+              term_end_date: enrollment_data["termEndDate"]
+            }
+          end
+        end
+        latest_current_enrollment_term = current_enrollment_terms
+          .sort_by { |e| [ ENROLLMENT_STATUSES.values.index(e[:enrollment_status]), e[:term_end_date] ] }
+          .first
+
         EducationActivity.create!(
           activity_flow: activity_flow,
-          school_name: currently_enrolled_schools.first,
-          status: :enrolled
+          school_name: latest_current_enrollment_term[:school_name],
+          enrollment_status: ENROLLMENT_STATUSES.fetch(latest_current_enrollment_term[:enrollment_status], "unknown"),
+          status: :succeeded
         )
-      end
-
-      # Maps NSC enrollment status to internal enum values
-      # Enum values: 0=unknown, 1=not_enrolled, 2=enrolled
-      def map_enrollment_status(status_code)
-        case status_code
-        when "CC"
-          :enrolled
-        when "CN"
-          :not_enrolled
-        else
-          :unknown
-        end
-      end
-
-      def parse_date(date_str)
-        Date.parse(date_str) if date_str.present?
-      rescue ArgumentError
-        nil
       end
     end
   end

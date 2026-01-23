@@ -84,7 +84,7 @@
             <%= t(".enrollment_information.enrollment_status.header") %>
         <% end %>
         <%= row.with_data_cell do %>
-            <%= @education_activity.display_status %>
+            <%= enrollment_status_text(@education_activity.enrollment_status) %>
         <% end %>
     <% end %>
 <% end %>
