@@ -67,34 +67,25 @@ RSpec.describe ActivityFlow, type: :model do
 
       expect(flow.cbv_applicant).to eq(cbv_applicant)
     end
-
-    it "copies reporting_month from invitation" do
-      invitation = create(:activity_flow_invitation, reporting_month: Date.new(2025, 3, 1))
-
-      flow = described_class.create_from_invitation(invitation, device_id)
-
-      expect(flow.reporting_month).to eq(invitation.reporting_month)
-    end
   end
 
-  describe "reporting_month" do
-    it "defaults to the current month on create" do
-      flow = create(:activity_flow, reporting_month: nil)
+  describe "reporting_window" do
+    let(:flow) { create(:activity_flow, reporting_window_months: 2) }
 
-      expect(flow.reporting_month).to eq(Date.current.beginning_of_month)
+    around do |example|
+      Timecop.freeze(Time.zone.local(2025, 3, 15, 12, 0, 0)) { example.run }
     end
 
-    it "returns a range for the month" do
-      reporting_month = Date.new(2025, 2, 1)
-      flow = build(:activity_flow, reporting_month: reporting_month)
+    it "ends on the last day of the last completed month" do
+      expect(flow.reporting_window_range.end).to eq(Date.new(2025, 2, 28))
+    end
 
-      expect(flow.reporting_month_range).to eq(reporting_month.beginning_of_month..reporting_month.end_of_month)
+    it "returns a range spanning the configured months" do
+      expect(flow.reporting_window_range).to eq(Date.new(2025, 1, 1)..Date.new(2025, 2, 28))
     end
 
     it "returns a formatted display string" do
-      flow = build(:activity_flow, reporting_month: Date.new(2025, 2, 1))
-
-      expect(flow.reporting_month_display).to eq("February 2025")
+      expect(flow.reporting_window_display).to eq("January 2025 - February 2025")
     end
   end
 

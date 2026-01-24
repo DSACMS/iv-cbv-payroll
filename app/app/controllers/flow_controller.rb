@@ -48,7 +48,11 @@ class FlowController < ApplicationController
 
   def create_flow_with_existing_applicant(applicant)
     applicant.reset_applicant_attributes
-    flow = flow_class(flow_param).create(cbv_applicant: applicant, device_id: cookies.permanent.signed[:device_id])
+    flow = flow_class(flow_param).create(
+      cbv_applicant: applicant,
+      device_id: cookies.permanent.signed[:device_id],
+      **flow_attributes_from_params
+    )
     [ flow, false ]
   end
 
@@ -56,7 +60,8 @@ class FlowController < ApplicationController
     applicant = CbvApplicant.create!(client_agency_id: current_agency.id)
     flow = flow_class(flow_param).create(
       cbv_applicant: applicant,
-      device_id: cookies.permanent.signed[:device_id]
+      device_id: cookies.permanent.signed[:device_id],
+      **flow_attributes_from_params
     )
     [ flow, true ]
   end
@@ -75,7 +80,11 @@ class FlowController < ApplicationController
         return redirect_to(cbv_flow_expired_invitation_path(client_agency_id: invitation.client_agency_id))
       end
 
-      @flow = flow_class(flow_param).create_from_invitation(invitation, cookies.permanent.signed[:device_id])
+      @flow = flow_class(flow_param).create_from_invitation(
+        invitation,
+        cookies.permanent.signed[:device_id],
+        params
+      )
       @cbv_flow = @flow # Maintain for compatibility until all controllers are converted
       set_flow_session(@flow.id, flow_param)
       cookies.permanent.encrypted[:cbv_applicant_id] = @flow.cbv_applicant_id
@@ -122,6 +131,10 @@ class FlowController < ApplicationController
       time: Time.now.to_i,
       client_agency_id: current_agency&.id
     })
+  end
+
+  def flow_attributes_from_params
+    flow_class(flow_param).flow_attributes_from_params(params)
   end
 
   def normalize_token(token)

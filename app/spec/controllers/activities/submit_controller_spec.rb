@@ -28,8 +28,8 @@ RSpec.describe Activities::SubmitController, type: :controller do
 
     it "renders a PDF report with activity details" do
       activity_flow.update!(completed_at: frozen_time, confirmation_code: test_confirmation_code)
-      activity_flow.volunteering_activities.create!(organization_name: "Food Pantry", hours: 5, date: Date.new(2025, 12, 15))
-      activity_flow.job_training_activities.create!(program_name: "Career Prep", organization_address: "123 Main St", hours: 8)
+      create(:volunteering_activity, activity_flow: activity_flow, organization_name: "Food Pantry", hours: 5)
+      create(:job_training_activity, activity_flow: activity_flow, program_name: "Career Prep", organization_address: "123 Main St", hours: 8)
 
       get :show, format: :pdf
 

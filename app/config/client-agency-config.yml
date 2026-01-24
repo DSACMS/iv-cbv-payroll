@@ -96,6 +96,7 @@
   pay_income_days:
     w2: 90
     gig: 90
+  application_reporting_months: 2
   invitation_valid_days: 14
   weekly_report:
     recipient: ffs-eng@navapbc.com
