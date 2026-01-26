@@ -381,9 +381,9 @@ GEM
       coderay (~> 1.1)
       method_source (~> 1.0)
       reline (>= 0.6.0)
-    pry-doc (1.6.0)
+    pry-doc (1.7.0)
       pry (~> 0.11)
-      yard (~> 0.9.11)
+      yard (~> 0.9.21)
     psych (5.3.1)
       date
       stringio
@@ -610,7 +610,7 @@ GEM
     wkhtmltopdf-binary (0.12.6.10)
     xpath (3.2.0)
       nokogiri (~> 1.8)
-    yard (0.9.37)
+    yard (0.9.38)
     zeitwerk (2.7.4)
 
 PLATFORMS
@@ -664,7 +664,7 @@ DEPENDENCIES
   pg-aws_rds_iam (~> 0.7.0)
   premailer-rails
   pry (~> 0.16.0)
-  pry-doc (~> 1.6)
+  pry-doc (~> 1.7)
   puma (~> 7.1.0)
   rack-mini-profiler
   rails (~> 8.1.1)
