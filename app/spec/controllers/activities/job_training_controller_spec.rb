@@ -5,7 +5,7 @@ RSpec.describe Activities::JobTrainingController, type: :controller do
 
   render_views
 
-  let(:activity_flow) { create(:activity_flow, education_activities_count: 0) }
+  let(:activity_flow) { create(:activity_flow, education_activities_count: 0, reporting_window_months: 1) }
 
   before do
     session[:flow_id] = activity_flow.id
@@ -14,8 +14,6 @@ RSpec.describe Activities::JobTrainingController, type: :controller do
 
   describe "GET #new" do
     it "renders the form" do
-      session[:flow_id] = activity_flow.id
-      session[:flow_type] = :activity
       get :new
 
       expect(response).to have_http_status(:ok)
@@ -29,14 +27,15 @@ RSpec.describe Activities::JobTrainingController, type: :controller do
         job_training_activity: {
           program_name: "Resume Workshop",
           organization_address: "123 Main St, Baton Rouge, LA",
-          hours: 6
+          hours: 6,
+          date: activity_flow.reporting_window_range.end
         }
       }
     end
 
     it "creates a job training activity and returns to the hub" do
       expect do
-        post :create, params: job_training_params, session: { flow_id: activity_flow.id, flow_type: :activity }
+        post :create, params: job_training_params
       end.to change(activity_flow.job_training_activities, :count).by(1)
 
       expect(JobTrainingActivity.last.program_name).to eq("Resume Workshop")
@@ -46,33 +45,17 @@ RSpec.describe Activities::JobTrainingController, type: :controller do
     end
 
     it "redirects to activity hub when total hours are below the threshold" do
-      create(
-        :volunteering_activity,
-        activity_flow: activity_flow,
-        organization_name: "Local Food Bank",
-        hours: 78,
-        date: Date.current
-      )
+      create(:volunteering_activity, activity_flow: activity_flow, organization_name: "Local Food Bank", hours: 78)
 
-      post :create, params: job_training_params.deep_merge(
-        job_training_activity: { hours: 1 }
-      ), session: { flow_id: activity_flow.id, flow_type: :activity }
+      post :create, params: job_training_params.deep_merge(job_training_activity: { hours: 1 })
 
       expect(response).to redirect_to(activities_flow_root_path)
     end
 
     it "redirects to summary page when total hours meet the threshold" do
-      create(
-        :volunteering_activity,
-        activity_flow: activity_flow,
-        organization_name: "Local Food Bank",
-        hours: 79,
-        date: Date.current
-      )
+      create(:volunteering_activity, activity_flow: activity_flow, organization_name: "Local Food Bank", hours: 79)
 
-      post :create, params: job_training_params.deep_merge(
-        job_training_activity: { hours: 1 }
-      ), session: { flow_id: activity_flow.id, flow_type: :activity }
+      post :create, params: job_training_params.deep_merge(job_training_activity: { hours: 1 })
 
       expect(response).to redirect_to(activities_flow_summary_path)
     end

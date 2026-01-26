@@ -11,6 +11,7 @@ class ClientAgencyConfig
   # If you add a new entry to this list, also search for
   # 'ninety_days'/'six_months' to see other places you will need to customize.
   VALID_PAY_INCOME_DAYS = [ 90, 182 ]
+  VALID_APPLICATION_REPORTING_MONTHS = [ 1, 2, 3 ]
 
   def initialize(config_path)
     template = ERB.new File.read(config_path)
@@ -45,6 +46,7 @@ class ClientAgencyConfig
       logo_path
       logo_square_path
       pay_income_days
+      application_reporting_months
       pinwheel_api_token
       pinwheel_environment
       pilot_ended
@@ -71,6 +73,7 @@ class ClientAgencyConfig
       @logo_path = yaml["logo_path"]
       @logo_square_path = yaml["logo_square_path"]
       @pay_income_days = yaml.fetch("pay_income_days", { w2: 90, gig: 90 }).symbolize_keys
+      @application_reporting_months = yaml["application_reporting_months"] || 1
       @pinwheel_environment = yaml["pinwheel"]["environment"] || "sandbox"
       @pilot_ended = yaml["pilot_ended"] || false
       @argyle_environment = yaml["argyle"]["environment"] || "sandbox"
@@ -87,6 +90,7 @@ class ClientAgencyConfig
       raise ArgumentError.new("Client Agency #{@id} missing required attribute `agency_name`") if @agency_name.blank?
       raise ArgumentError.new("Client Agency #{@id} invalid value for pay_income_days.w2") unless VALID_PAY_INCOME_DAYS.include?(@pay_income_days[:w2])
       raise ArgumentError.new("Client Agency #{@id} invalid value for pay_income_days.gig") unless VALID_PAY_INCOME_DAYS.include?(@pay_income_days[:gig])
+      raise ArgumentError.new("Client Agency #{@id} invalid value for application_reporting_months") unless VALID_APPLICATION_REPORTING_MONTHS.include?(@application_reporting_months)
       raise ArgumentError.new("Client Agency #{@id} missing required attribute `transmission_method`") if @transmission_method.blank?
     end
   end

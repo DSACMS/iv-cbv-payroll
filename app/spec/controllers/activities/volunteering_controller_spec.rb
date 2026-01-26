@@ -5,7 +5,7 @@ RSpec.describe Activities::VolunteeringController, type: :controller do
 
   render_views
 
-  let(:activity_flow) { create(:activity_flow, education_activities_count: 0) }
+  let(:activity_flow) { create(:activity_flow, education_activities_count: 0, reporting_window_months: 1) }
 
   before do
     session[:flow_id] = activity_flow.id
@@ -27,7 +27,7 @@ RSpec.describe Activities::VolunteeringController, type: :controller do
         volunteering_activity: {
           organization_name: "Local Food Bank",
           hours: 5,
-          date: Date.current
+          date: activity_flow.reporting_window_range.end
         }
       }
     end
@@ -42,33 +42,17 @@ RSpec.describe Activities::VolunteeringController, type: :controller do
     end
 
     it "redirects to activity hub when total hours are below the threshold" do
-      create(
-        :job_training_activity,
-        activity_flow: activity_flow,
-        program_name: "Resume Workshop",
-        organization_address: "123 Main St",
-        hours: 78
-      )
+      create(:job_training_activity, activity_flow: activity_flow, program_name: "Resume Workshop", organization_address: "123 Main St", hours: 78)
 
-      post :create, params: volunteering_params.deep_merge(
-        volunteering_activity: { hours: 1 }
-      )
+      post :create, params: volunteering_params.deep_merge(volunteering_activity: { hours: 1 })
 
       expect(response).to redirect_to(activities_flow_root_path)
     end
 
     it "redirects to summary page when total hours meet the threshold" do
-      create(
-        :job_training_activity,
-        activity_flow: activity_flow,
-        program_name: "Resume Workshop",
-        organization_address: "123 Main St",
-        hours: 79
-      )
+      create(:job_training_activity, activity_flow: activity_flow, program_name: "Resume Workshop", organization_address: "123 Main St", hours: 79)
 
-      post :create, params: volunteering_params.deep_merge(
-        volunteering_activity: { hours: 1 }
-      )
+      post :create, params: volunteering_params.deep_merge(volunteering_activity: { hours: 1 })
 
       expect(response).to redirect_to(activities_flow_summary_path)
     end

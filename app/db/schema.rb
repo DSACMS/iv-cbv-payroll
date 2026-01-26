@@ -21,7 +21,6 @@ ActiveRecord::Schema[8.1].define(version: 2026_01_22_235102) do
     t.string "client_agency_id"
     t.datetime "created_at", null: false
     t.string "reference_id"
-    t.date "reporting_month"
     t.datetime "updated_at", null: false
     t.index ["auth_token"], name: "index_activity_flow_invitations_on_auth_token", unique: true
     t.index ["cbv_applicant_id"], name: "index_activity_flow_invitations_on_cbv_applicant_id"
@@ -38,7 +37,8 @@ ActiveRecord::Schema[8.1].define(version: 2026_01_22_235102) do
     t.string "device_id"
     t.uuid "end_user_id", default: -> { "gen_random_uuid()" }, null: false
     t.bigint "identity_id"
-    t.date "reporting_month"
+    t.integer "reporting_window_months"
+    t.string "reporting_window_type"
     t.datetime "updated_at", null: false
     t.index ["activity_flow_invitation_id"], name: "index_activity_flows_on_activity_flow_invitation_id"
     t.index ["cbv_applicant_id"], name: "index_activity_flows_on_cbv_applicant_id"

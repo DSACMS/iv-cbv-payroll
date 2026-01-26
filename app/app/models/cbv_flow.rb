@@ -21,7 +21,7 @@ class CbvFlow < Flow
     cbv_flow_invitation_id
   end
 
-  def self.create_from_invitation(cbv_flow_invitation, device_id)
+  def self.create_from_invitation(cbv_flow_invitation, device_id, _params = {})
     create(
       cbv_flow_invitation: cbv_flow_invitation,
       cbv_applicant: cbv_flow_invitation.cbv_applicant,

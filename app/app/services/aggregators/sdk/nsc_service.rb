@@ -41,12 +41,19 @@ module Aggregators
         end
       end
 
-      def initialize(environment: :sandbox, logger: Rails.logger.tagged("NscService"))
+      def initialize(environment: :sandbox, logger: nil)
         @environment = ENVIRONMENTS.fetch(environment.to_sym) do |env|
           raise KeyError, "NscService unknown environment: #{env}"
         end
         @base_url = @environment[:base_url]
-        @logger = logger
+        @logger = if logger
+                    logger
+                  elsif ENV.fetch("STRUCTURED_LOGGING_ENABLED", "false") == "true"
+                    SemanticLogger["NscService"]
+                  else
+                    Rails.logger.tagged("NscService")
+                  end
+
         @logger.info("Initialized in #{environment} environment (with base URL: #{@base_url})")
       end
 
