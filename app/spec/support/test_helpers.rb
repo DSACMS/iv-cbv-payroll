@@ -8,6 +8,20 @@ module TestHelpers
     ENV[variable] = previous_value
   end
 
+  def stub_environment_variables(variables, &block)
+    previous_values = {}
+    variables.each do |variable, value|
+      previous_values[variable] = ENV[variable]
+      ENV[variable] = value
+    end
+
+    block.call
+
+    variables.each do |variable, value|
+      ENV[variable] = previous_values[variable]
+    end
+  end
+
   def stub_payments(account_id = SecureRandom.uuid)
     5.times.map do |i|
       json = {

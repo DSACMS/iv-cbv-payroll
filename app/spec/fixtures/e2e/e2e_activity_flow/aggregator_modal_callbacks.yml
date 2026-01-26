@@ -1,0 +1,46 @@
+---
+- callbackName: onUIEvent
+  callbackArguments:
+  - name: login - opened
+    properties:
+      itemId: item_000029932
+      errorCode:
+      errorMessage:
+      userId: '019bfb74-9fc0-c23b-9ab8-0cde682601bc'
+      deepLink: true
+- callbackName: onUIEvent
+  callbackArguments:
+  - name: login - form submitted
+    properties:
+      itemId: item_000029932
+      userId: '019bfb74-9fc0-c23b-9ab8-0cde682601bc'
+      deepLink: true
+- callbackName: onAccountCreated
+  callbackArguments:
+  - accountId: '019bfb74-a974-e1fb-d876-0f4e094835f2'
+    userId: '019bfb74-9fc0-c23b-9ab8-0cde682601bc'
+    itemId: item_000029932
+- callbackName: onUIEvent
+  callbackArguments:
+  - name: mfa - opened
+    properties:
+      itemId: item_000029932
+      accountId: '019bfb74-a974-e1fb-d876-0f4e094835f2'
+      type: Login
+      mfaType: secret_question
+      userId: '019bfb74-9fc0-c23b-9ab8-0cde682601bc'
+      deepLink: true
+- callbackName: onAccountConnected
+  callbackArguments:
+  - accountId: '019bfb74-a974-e1fb-d876-0f4e094835f2'
+    userId: '019bfb74-9fc0-c23b-9ab8-0cde682601bc'
+    itemId: item_000029932
+- callbackName: onUIEvent
+  callbackArguments:
+  - name: link closed
+    properties:
+      itemId: item_000029932
+      accountId: '019bfb74-a974-e1fb-d876-0f4e094835f2'
+      closeMethod:
+      userId: '019bfb74-9fc0-c23b-9ab8-0cde682601bc'
+      deepLink: true

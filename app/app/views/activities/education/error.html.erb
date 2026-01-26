@@ -1,3 +1,5 @@
+<% content_for :title, t(".header") %>
+
 <div id="education-error-container">
     <h1>
         <%= t(".header") %>
@@ -5,7 +7,7 @@
 
     <div class="usa-alert usa-alert--error margin-y-3" role="alert">
         <div class="usa-alert__body">
-            <h4 class="usa-alert__heading"><%= t(".error_heading") %></h4>
+            <h2 class="usa-alert__heading"><%= t(".error_heading") %></h2>
             <p class="usa-alert__text">
             <%= t(".error_description") %>
             </p>

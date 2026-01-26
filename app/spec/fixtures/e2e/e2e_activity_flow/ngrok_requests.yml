@@ -1,0 +1,377 @@
+---
+- :uri: "/webhooks/argyle/events"
+  :method: POST
+  :headers:
+    Accept:
+    - "*/*"
+    Accept-Encoding:
+    - gzip
+    Content-Length:
+    - '552'
+    Content-Type:
+    - application/json
+    Host:
+    - 3a413207d161.ngrok-free.app
+    User-Agent:
+    - ReactorNetty/1.1.28
+    X-Argyle-Signature:
+    - 5be97ead7f4c4dbd087f30770c006b5077d076cca51646e069240ab54aed8c8b92b95c7e8e849057777067add1002f7c6835c0f9d1657314250878b8db41d0af
+    X-Forwarded-For:
+    - 34.122.50.253
+    X-Forwarded-Host:
+    - 3a413207d161.ngrok-free.app
+    X-Forwarded-Proto:
+    - https
+  :body: |-
+    {
+      "event": "users.fully_synced",
+      "name": "tdooner-e2e",
+      "data": {
+        "user": "019bfb73-c267-bc5e-85b4-cbc5370e9ff3",
+        "resource": {
+          "id": "019bfb73-c267-bc5e-85b4-cbc5370e9ff3",
+          "accounts_connected": [
+            "019bfb73-cbdc-da81-9a8e-2e3311675876"
+          ],
+          "items_connected": [
+            "item_000029932"
+          ],
+          "employers_connected": [
+            "Aramark"
+          ],
+          "external_metadata": {},
+          "external_id": "60587507-7f31-4848-9856-7b1a2a8153d3",
+          "created_at": "2026-01-26T17:57:06.279898Z"
+        }
+      }
+    }
+- :uri: "/webhooks/argyle/events"
+  :method: POST
+  :headers:
+    Accept:
+    - "*/*"
+    Accept-Encoding:
+    - gzip
+    Content-Length:
+    - '183'
+    Content-Type:
+    - application/json
+    Host:
+    - 3a413207d161.ngrok-free.app
+    User-Agent:
+    - ReactorNetty/1.1.28
+    X-Argyle-Signature:
+    - bd32f93850c9e230a7f253b2050b479a1f0e503457576aeb841276d077f5ee8f1ea4b1f216069ded7978c9b25ef3442072a5924ef166688dac6f093a26b636c1
+    X-Forwarded-For:
+    - 34.122.50.253
+    X-Forwarded-Host:
+    - 3a413207d161.ngrok-free.app
+    X-Forwarded-Proto:
+    - https
+  :body: |-
+    {
+      "event": "accounts.connected",
+      "name": "tdooner-e2e",
+      "data": {
+        "account": "019bfb74-a974-e1fb-d876-0f4e094835f2",
+        "user": "019bfb74-9fc0-c23b-9ab8-0cde682601bc"
+      }
+    }
+- :uri: "/webhooks/argyle/events"
+  :method: POST
+  :headers:
+    Accept:
+    - "*/*"
+    Accept-Encoding:
+    - gzip
+    Content-Length:
+    - '237'
+    Content-Type:
+    - application/json
+    Host:
+    - 3a413207d161.ngrok-free.app
+    User-Agent:
+    - ReactorNetty/1.1.28
+    X-Argyle-Signature:
+    - c7d51fed046f35e0c79b2a0a5662ca91229bf556ec9fc59a7cbf0682e5398889deb1158fda9e172c688b5a7a2bf41124a8bdf2e172236fff9b4cae2b7eb965b0
+    X-Forwarded-For:
+    - 34.122.50.253
+    X-Forwarded-Host:
+    - 3a413207d161.ngrok-free.app
+    X-Forwarded-Proto:
+    - https
+  :body: |-
+    {
+      "event": "identities.added",
+      "name": "tdooner-e2e",
+      "data": {
+        "account": "019bfb74-a974-e1fb-d876-0f4e094835f2",
+        "user": "019bfb74-9fc0-c23b-9ab8-0cde682601bc",
+        "identity": "6dc37274-8007-3b8f-868d-302ed50dcfba"
+      }
+    }
+- :uri: "/webhooks/argyle/events"
+  :method: POST
+  :headers:
+    Accept:
+    - "*/*"
+    Accept-Encoding:
+    - gzip
+    Content-Length:
+    - '2126'
+    Content-Type:
+    - application/json
+    Host:
+    - 3a413207d161.ngrok-free.app
+    User-Agent:
+    - ReactorNetty/1.1.28
+    X-Argyle-Signature:
+    - 14b9466a6b8277dabb95239eab79592610e478121bef5e254aa133e47609c8b6822384643c7418888978d89ed05630331182f6ae3fe2768db7672379b89d0bb1
+    X-Forwarded-For:
+    - 35.188.163.115
+    X-Forwarded-Host:
+    - 3a413207d161.ngrok-free.app
+    X-Forwarded-Proto:
+    - https
+  :body: |-
+    {
+      "event": "accounts.updated",
+      "name": "tdooner-e2e-include-resource",
+      "data": {
+        "account": "019bfb74-a974-e1fb-d876-0f4e094835f2",
+        "user": "019bfb74-9fc0-c23b-9ab8-0cde682601bc",
+        "resource": {
+          "id": "019bfb74-a974-e1fb-d876-0f4e094835f2",
+          "user": "019bfb74-9fc0-c23b-9ab8-0cde682601bc",
+          "employers": [
+            "Advance Auto Parts"
+          ],
+          "item": "item_000029932",
+          "source": "argyle_sandbox",
+          "created_at": "2026-01-26T17:58:05.460904Z",
+          "updated_at": "2026-01-26T17:58:13.320284Z",
+          "scanned_at": "2026-01-26T17:58:12.902138Z",
+          "connection": {
+            "status": "connected",
+            "error_code": null,
+            "error_message": null,
+            "updated_at": "2026-01-26T17:58:09.940063Z"
+          },
+          "direct_deposit_switch": {
+            "status": "idle",
+            "error_code": null,
+            "error_message": null,
+            "updated_at": "2026-01-26T17:58:05.732672Z"
+          },
+          "availability": {
+            "gigs": {
+              "status": "in_progress",
+              "updated_at": "2026-01-26T17:58:12.782295Z",
+              "available_count": 0,
+              "available_from": null,
+              "available_to": null
+            },
+            "paystubs": {
+              "status": "in_progress",
+              "updated_at": "2026-01-26T17:58:12.766129Z",
+              "available_count": 0,
+              "available_from": null,
+              "available_to": null
+            },
+            "payroll_documents": {
+              "status": "synced",
+              "updated_at": "2026-01-26T17:58:12.647964Z"
+            },
+            "identities": {
+              "status": "synced",
+              "updated_at": "2026-01-26T17:58:12.964997Z"
+            },
+            "ratings": {
+              "status": "synced",
+              "updated_at": "2026-01-26T17:58:12.902138Z"
+            },
+            "vehicles": {
+              "status": "synced",
+              "updated_at": "2026-01-26T17:58:12.660624Z"
+            },
+            "deposit_destinations": {
+              "status": "synced",
+              "updated_at": "2026-01-26T17:58:11.237376Z"
+            },
+            "user_forms": null
+          },
+          "ongoing_refresh": {
+            "status": "disabled"
+          }
+        }
+      }
+    }
+- :uri: "/webhooks/argyle/events"
+  :method: POST
+  :headers:
+    Accept:
+    - "*/*"
+    Accept-Encoding:
+    - gzip
+    Content-Length:
+    - '337'
+    Content-Type:
+    - application/json
+    Host:
+    - 3a413207d161.ngrok-free.app
+    User-Agent:
+    - ReactorNetty/1.1.28
+    X-Argyle-Signature:
+    - eab4df565cd1ab9221240d694ad3edefac922a4c1df717eed892df8d3b7a2f93d6e2840006976cb25b0565ed1f7b17d34e34e4e52237c1c05f4bd6888a5fc9d9
+    X-Forwarded-For:
+    - 34.122.50.253
+    X-Forwarded-Host:
+    - 3a413207d161.ngrok-free.app
+    X-Forwarded-Proto:
+    - https
+  :body: |-
+    {
+      "event": "paystubs.partially_synced",
+      "name": "tdooner-e2e-partial",
+      "data": {
+        "account": "019bfb74-a974-e1fb-d876-0f4e094835f2",
+        "user": "019bfb74-9fc0-c23b-9ab8-0cde682601bc",
+        "available_from": "2025-10-29T00:00:00Z",
+        "available_to": "2025-12-19T00:00:00Z",
+        "available_count": 9,
+        "days_synced": 94
+      }
+    }
+- :uri: "/webhooks/argyle/events"
+  :method: POST
+  :headers:
+    Accept:
+    - "*/*"
+    Accept-Encoding:
+    - gzip
+    Content-Length:
+    - '330'
+    Content-Type:
+    - application/json
+    Host:
+    - 3a413207d161.ngrok-free.app
+    User-Agent:
+    - ReactorNetty/1.1.28
+    X-Argyle-Signature:
+    - 0b60b1ac7bb54baefd3c655346dc316946e0f4ea96b098702a523d90c3c873f797da30202fb72e33a40cac7ba398dbf1c3b2ca5a728f890eaef3c57af529ee91
+    X-Forwarded-For:
+    - 34.122.50.253
+    X-Forwarded-Host:
+    - 3a413207d161.ngrok-free.app
+    X-Forwarded-Proto:
+    - https
+  :body: |-
+    {
+      "event": "gigs.partially_synced",
+      "name": "tdooner-e2e-partial",
+      "data": {
+        "account": "019bfb74-a974-e1fb-d876-0f4e094835f2",
+        "user": "019bfb74-9fc0-c23b-9ab8-0cde682601bc",
+        "item_id": "item_000029932",
+        "available_from": null,
+        "available_to": null,
+        "available_count": 0,
+        "days_synced": 94
+      }
+    }
+- :uri: "/webhooks/argyle/events"
+  :method: POST
+  :headers:
+    Accept:
+    - "*/*"
+    Accept-Encoding:
+    - gzip
+    Content-Length:
+    - '2162'
+    Content-Type:
+    - application/json
+    Host:
+    - 3a413207d161.ngrok-free.app
+    User-Agent:
+    - ReactorNetty/1.1.28
+    X-Argyle-Signature:
+    - d41ac3401a58c3ccfd2459a0eb44c105c0d92194a43f52cceb4e098a1c8acd25465457dd1b488df3a9aedf9f3abd24901cc519adc6ddbc173e3812da32af417d
+    X-Forwarded-For:
+    - 35.188.163.115
+    X-Forwarded-Host:
+    - 3a413207d161.ngrok-free.app
+    X-Forwarded-Proto:
+    - https
+  :body: |-
+    {
+      "event": "accounts.updated",
+      "name": "tdooner-e2e-include-resource",
+      "data": {
+        "account": "019bfb74-a974-e1fb-d876-0f4e094835f2",
+        "user": "019bfb74-9fc0-c23b-9ab8-0cde682601bc",
+        "resource": {
+          "id": "019bfb74-a974-e1fb-d876-0f4e094835f2",
+          "user": "019bfb74-9fc0-c23b-9ab8-0cde682601bc",
+          "employers": [
+            "Advance Auto Parts"
+          ],
+          "item": "item_000029932",
+          "source": "argyle_sandbox",
+          "created_at": "2026-01-26T17:58:05.460904Z",
+          "updated_at": "2026-01-26T17:58:19.767068Z",
+          "scanned_at": "2026-01-26T17:58:19.189388Z",
+          "connection": {
+            "status": "connected",
+            "error_code": null,
+            "error_message": null,
+            "updated_at": "2026-01-26T17:58:09.940063Z"
+          },
+          "direct_deposit_switch": {
+            "status": "idle",
+            "error_code": null,
+            "error_message": null,
+            "updated_at": "2026-01-26T17:58:05.732672Z"
+          },
+          "availability": {
+            "gigs": {
+              "status": "in_progress",
+              "updated_at": "2026-01-26T17:58:19.189388Z",
+              "available_count": 0,
+              "available_from": null,
+              "available_to": null
+            },
+            "paystubs": {
+              "status": "in_progress",
+              "updated_at": "2026-01-26T17:58:19.221126Z",
+              "available_count": 9,
+              "available_from": "2025-10-29T00:00:00Z",
+              "available_to": "2025-12-19T00:00:00Z"
+            },
+            "payroll_documents": {
+              "status": "synced",
+              "updated_at": "2026-01-26T17:58:12.647964Z"
+            },
+            "identities": {
+              "status": "synced",
+              "updated_at": "2026-01-26T17:58:19.403616Z"
+            },
+            "ratings": {
+              "status": "synced",
+              "updated_at": "2026-01-26T17:58:12.902138Z"
+            },
+            "vehicles": {
+              "status": "synced",
+              "updated_at": "2026-01-26T17:58:12.660624Z"
+            },
+            "deposit_destinations": {
+              "status": "synced",
+              "updated_at": "2026-01-26T17:58:11.237376Z"
+            },
+            "user_forms": null
+          },
+          "ongoing_refresh": {
+            "status": "disabled"
+          }
+        }
+      }
+    }

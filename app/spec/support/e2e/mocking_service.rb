@@ -22,6 +22,14 @@ module E2e
       # URLs to avoid Github vulnerability scan alerts.
       pinwheel_aws_credential: ->(vcr_interaction) do
         vcr_interaction.response.body.match(/X-Amz-Credential=([A-Za-z0-9\-\_\%]+)/) ? $LAST_MATCH_INFO[1] : "<PINWHEEL_AWS_KEY_ID_VALUE>"
+      end,
+
+      nsc_access_token: ->(vcr_interaction) do
+        if vcr_interaction.request.uri.ends_with?("/token")
+          JSON.parse(vcr_interaction.response.body)["access_token"]
+        elsif vcr_interaction.request.uri.match?(%r{^https://.*studentclearinghouse\.org/.*$})
+          vcr_interaction.request.headers["Authorization"].first.split(" ").last
+        end
       end
     }
 
@@ -51,6 +59,9 @@ module E2e
         c.filter_sensitive_data("<ARGYLE_BASIC_AUTH>", &PLACEHOLDER_VALUES[:argyle_auth_token])
         c.filter_sensitive_data("<PINWHEEL_API_TOKEN>") { ENV["PINWHEEL_API_TOKEN_SANDBOX"] }
         c.filter_sensitive_data("<PINWHEEL_AWS_KEY_ID>", &PLACEHOLDER_VALUES[:pinwheel_aws_credential])
+        c.filter_sensitive_data("<NSC_CLIENT_ID>") { ENV["NSC_CLIENT_ID_SANDBOX"] }
+        c.filter_sensitive_data("<NSC_CLIENT_SECRET>") { ENV["NSC_CLIENT_SECRET_SANDBOX"] }
+        c.filter_sensitive_data("<NSC_ACCESS_TOKEN>", &PLACEHOLDER_VALUES[:nsc_access_token])
         c.cassette_library_dir = fixture_directory
       end
 
