@@ -32,7 +32,8 @@ RSpec.describe Aggregators::Sdk::NscService, type: :service do
         {
           first_name: "Lynnette",
           last_name: "Oyola",
-          date_of_birth: "1988-10-24"
+          date_of_birth: "1988-10-24",
+          as_of_date: Date.today
         }
       end
 
@@ -77,7 +78,8 @@ RSpec.describe Aggregators::Sdk::NscService, type: :service do
         {
           first_name: "Linda",
           last_name: "Cooper",
-          date_of_birth: "1999-01-01"
+          date_of_birth: "1999-01-01",
+          as_of_date: Date.today
         }
       end
 
@@ -86,6 +88,73 @@ RSpec.describe Aggregators::Sdk::NscService, type: :service do
 
         expect(response).to have_key("studentInfoProvided")
         expect(response).not_to have_key("enrollmentDetails")
+      end
+    end
+  end
+
+  describe "#call" do
+    let(:activity_flow) { create(:activity_flow, identity: identity, education_activities_count: 0) }
+
+    before do
+      nsc_stub_token_request
+    end
+
+    context "when there are no enrollments (Linda)" do
+      let(:identity) { create(:identity, :nsc_linda) }
+
+      before do
+        nsc_stub_request_education_search_response("linda")
+      end
+
+      it "returns an EducationActivity with sync status = :no_enrollments" do
+        expect { service.call(activity_flow) }
+          .to change(EducationActivity, :count)
+          .by(1)
+
+        expect(EducationActivity.last).to have_attributes(
+          status: "no_enrollments",
+          enrollment_status: "unknown"
+        )
+      end
+    end
+
+    context "when there is one enrollment" do
+      let(:identity) { create(:identity, :nsc_lynette) }
+
+      before do
+        nsc_stub_request_education_search_response("lynette")
+      end
+
+      it "returns an EducationActivity with sync status = :succeeded" do
+        expect { service.call(activity_flow) }
+          .to change(EducationActivity, :count)
+          .by(1)
+
+        expect(EducationActivity.last).to have_attributes(
+          status: "succeeded",
+          enrollment_status: "enrolled",
+          school_name: "Trident University International"
+        )
+      end
+    end
+
+    context "when there are multiple enrollments" do
+      let(:identity) { create(:identity, :nsc_rick) }
+
+      before do
+        nsc_stub_request_education_search_response("rick_banas")
+      end
+
+      it "returns an EducationActivity with sync status = :succeeded" do
+        expect { service.call(activity_flow) }
+          .to change(EducationActivity, :count)
+          .by(1)
+
+        expect(EducationActivity.last).to have_attributes(
+          status: "succeeded",
+          enrollment_status: "half_time",
+          school_name: "FLORIDA A&M UNIVERSITY"
+        )
       end
     end
   end

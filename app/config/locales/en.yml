@@ -61,9 +61,11 @@ en:
       created: Education activity was successfully created.
       deleted: Education activity was successfully deleted.
       enrollment_status:
-        no_enrollments: No Enrollments
-        succeeded: Succeded
-        unknown: N/A
+        enrolled: Enrolled
+        full_time: Full-time
+        half_time: Half-time
+        less_than_half_time: Less than half-time
+        three_quarter_time: Three-quarter Time
       error:
         back_button: Back to Activities
         error_description: There was an error retrieving your education information. Please try again later.

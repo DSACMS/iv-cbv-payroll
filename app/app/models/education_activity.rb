@@ -9,14 +9,12 @@ class EducationActivity < ApplicationRecord
     failed: "failed"
   }, default: :unknown, prefix: :sync
 
-  def display_status
-    case status.to_sym
-    when :succeeded
-      I18n.t("activities.education.enrollment_status.succeeded")
-    when :no_enrollments
-      I18n.t("activities.education.enrollment_status.no_enrollments")
-    else
-      I18n.t("activities.education.enrollment_status.unknown")
-    end
-  end
+  enum :enrollment_status, {
+    full_time: "full_time",                     # F
+    three_quarter_time: "three_quarter_time",   # Q
+    half_time: "half_time",                     # H
+    less_than_half_time: "less_than_half_time", # L
+    enrolled: "enrolled",                       # Y
+    unknown: "unknown"
+  }, default: :unknown, prefix: :enrollment
 end

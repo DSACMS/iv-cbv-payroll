@@ -113,6 +113,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_01_22_235102) do
     t.boolean "confirmed", default: false
     t.datetime "created_at", null: false
     t.integer "credit_hours"
+    t.string "enrollment_status", default: "unknown"
     t.string "school_address"
     t.string "school_name"
     t.string "status", default: "unknown"
