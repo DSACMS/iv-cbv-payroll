@@ -14,96 +14,72 @@ RSpec.describe Activities::EducationController, type: :controller do
     )
   }
 
-  describe "GET #show" do
-    let(:education_activity) { create(:education_activity, activity_flow: activity_flow, confirmed: true) }
+  before do
+    session[:flow_id] = activity_flow.id
+    session[:flow_type] = :activity
+  end
 
-    it "renders the education review page" do
-      get :show, params: { education_activity_id: education_activity.id }, session: { flow_id: activity_flow.id, flow_type: :activity }
+  describe "GET #new" do
+    it "creates a new EducationActivity and redirects to #show" do
+      expect { get :new }
+        .to change(EducationActivity, :count)
+        .by(1)
 
-      expect(response).to have_http_status(:ok)
+      expect(response).to redirect_to(activities_flow_education_path(id: EducationActivity.last.id))
     end
   end
 
-  describe "#create" do
-    let(:initial_attrs) {
-      attributes_for(
-        :education_activity,
-        activity_flow_id: activity_flow.id,
-        confirmed: false,
-      )
-    }
+  describe "GET #show" do
+    let(:education_activity) { create(:education_activity, activity_flow: activity_flow) }
 
-    let (:new_attrs) {
-      attributes_for(
-        :education_activity,
-        activity_flow_id: activity_flow.id,
-        confirmed: false,
-      )
-    }
+    it "renders the synchronization page" do
+      get :show, params: { id: education_activity.id }
 
-    let (:education_activity) {
-      create(:education_activity, **initial_attrs)
-    }
-
-    let (:params) {
-      {
-          education_activity: {
-            id: education_activity.id,
-            credit_hours: new_attrs[:credit_hours],
-            additional_comments: new_attrs[:additional_comments]
-          }
-        }
-    }
-
-    before do
-      post(
-        :create,
-        params: params,
-        session: {
-          flow_id: activity_flow.id,
-          flow_type: :activity
-        }
-      )
-
-      education_activity.reload
+      expect(response).to have_http_status(:ok)
     end
 
-    it "updates mutable education activity attributes" do
-      expect(education_activity).to have_attributes(
-                                      **new_attrs.slice(
-                                        :credit_hours, :additional_comments
-                                      )
-                                    )
-    end
+    context "when the EducationActivity has already synced" do
+      before do
+        education_activity.update(status: :no_enrollments)
+      end
 
-    it "does not update immutable education activity attributes" do
-      expect(education_activity).to have_attributes(
-                                      **initial_attrs.slice(
-                                        :school_name, :school_address, :status
-                                      )
-                                    )
-    end
+      it "redirects to the edit page" do
+        get :show, params: { id: education_activity.id }
 
-    it "confirms the education activity" do
-      expect(education_activity.confirmed).to be_truthy
-    end
-
-    it "redirects to activity hub" do
-      expect(response).to redirect_to(activities_flow_root_path)
-      expect(flash[:notice]).to eq(I18n.t("activities.education.created"))
+        expect(response).to redirect_to(edit_activities_flow_education_path(id: education_activity.id))
+      end
     end
   end
 
   describe "DELETE #destroy" do
-    let!(:education_activity) { create(:education_activity, activity_flow: activity_flow, confirmed: true) }
+    let!(:education_activity) { create(:education_activity, activity_flow: activity_flow) }
 
     it "deletes the activity and redirects to the hub" do
       expect do
-        delete :destroy, params: { education_activity_id: education_activity.id }, session: { flow_id: activity_flow.id, flow_type: :activity }
+        delete :destroy, params: { id: education_activity.id }, session: { flow_id: activity_flow.id, flow_type: :activity }
       end.to change(activity_flow.education_activities, :count).by(-1)
 
       expect(response).to redirect_to(activities_flow_root_path)
       expect(flash[:notice]).to eq(I18n.t("activities.education.deleted"))
+    end
+  end
+
+  describe "PATCH #update" do
+    let(:education_activity) { create(:education_activity, activity_flow: activity_flow) }
+
+    it "updates the activity" do
+      patch :update, params: {
+        id: education_activity.id,
+        education_activity: {
+          credit_hours: 12,
+          additional_comments: "this is a test"
+        }
+      }
+      expect(education_activity.reload).to have_attributes(
+        credit_hours: 12,
+        additional_comments: "this is a test"
+      )
+      expect(response).to redirect_to(activities_flow_root_path)
     end
   end
 end

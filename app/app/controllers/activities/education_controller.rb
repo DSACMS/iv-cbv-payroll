@@ -1,16 +1,37 @@
 class Activities::EducationController < Activities::BaseController
-  include ActionController::Live
+  # Keep the user on the loading page (the #show action) at least this long.
+  ARTIFICIAL_DELAY = 2.seconds
 
   def new
+    @education_activity = @flow.education_activities.create
+
+    NscSynchronizationJob.perform_later(@education_activity.id)
+
+    redirect_to activities_flow_education_path(id: @education_activity.id)
   end
 
   def show
-    @education_activity = EducationActivity.find_by(
-      id: params[:education_activity_id],
-      activity_flow_id: @flow.id
-    )
+    @education_activity = @flow.education_activities.find(params[:id])
+    @polling_url = activities_flow_education_sync_path(education_id: @education_activity.id)
 
+    unless @education_activity.sync_unknown?
+      redirect_to edit_activities_flow_education_path(id: params[:id])
+    end
+  end
+
+  def update
+    @education_activity = @flow.education_activities.find(params[:id])
+    if @education_activity.update(education_params)
+      redirect_to after_activity_path
+    else
+      redirect_to :edit, flash: { alert: t("activities.education.errors.unexpected") }
+    end
+  end
+
+  def edit
+    @education_activity = @flow.education_activities.find(params[:id])
     @student_information = current_identity!
+
     unless @education_activity
       redirect_to(
         activities_flow_root_path,
@@ -19,117 +40,39 @@ class Activities::EducationController < Activities::BaseController
     end
   end
 
-  def create
-    education_params = params.require(
-      :education_activity
-    ).permit(:id, :additional_comments, :credit_hours)
-
-    id = education_params[:id]
-
-    activity = EducationActivity.find_by(
-      {
-        id: id,
-        activity_flow_id: @flow.id
-      }
-    )
-
-    if activity
-      activity.update(
-        education_params.merge({ confirmed: true })
-      )
-      activity.save
-
-      redirect_to activities_flow_root_path, notice: t("activities.education.created")
-    else
-      render :new, alert: t("activities.education.error_no_data")
-    end
-  end
-
   def destroy
-    activity = @flow.education_activities.find(params[:education_activity_id])
+    activity = @flow.education_activities.find(params[:id])
     activity.destroy
 
     redirect_to activities_flow_root_path, notice: t("activities.education.deleted")
   end
 
-  def stream
-    response.headers["Content-Type"] = "text/event-stream"
-    response.headers["Last-Modified"] = Time.now.httpdate
+  def sync
+    @education_activity = @flow.education_activities.find(params[:education_id])
 
-    sse = SSE.new(response.stream, event: "message")
-
-    begin
-      nsc_service = Aggregators::Sdk::NscService.new(environment: nsc_environment)
-
-      activity = nsc_service.call(@flow) do
-        sse.write(
-          sync_indicator_update("student_info", :in_progress)
-        )
-      end
-
-      sse.write(
-        sync_indicator_update("student_info", :succeeded)
-      )
-
-      # Sends success message to the loading page, with redirect
-      sse.write(
-        { status: "succeeded", message: activities_flow_education_path(params: { education_activity_id: activity.id }) },
-        event: "education_result"
-      )
-
-    rescue Aggregators::Sdk::NscService::ApiError => e
-      sse.write(
-        sync_indicator_update("student_info", :failed)
-      )
-
-      sse.write(
-        turbo_stream.action(:redirect, activities_flow_education_error_path(params: { error_code: e.code, error_message: e.message }))
-      )
-
-    rescue Faraday::TimeoutError => e
-      sse.write(
-        sync_indicator_update("student_info", :failed)
-      )
-
-      sse.write(
-        turbo_stream.action(:redirect, activities_flow_education_error_path(params: { error_code: "TIMEOUT", error_message: t("activities.education.errors.timeout") }))
-      )
-    rescue StandardError => e
-      Rails.logger.error("Education API error: #{e.message}")
-      Rails.logger.error(e.backtrace)
-      raise if Rails.env.development?
-
-      sse.write(
-        sync_indicator_update("student_info", :failed)
-      )
-
-      sse.write(
-        turbo_stream.action(:redirect, activities_flow_education_error_path(params: { error_code: "UNEXPECTED_ERROR", error_message: t("activities.education.errors.unexpected") }))
-      )
+    if @education_activity.sync_unknown?
+      render turbo_stream: turbo_stream.replace(:synchronization, partial: "status")
+    elsif @education_activity.sync_failed?
+      render turbo_stream: turbo_stream.action(:redirect, activities_flow_error_path)
+    elsif @education_activity.created_at > ARTIFICIAL_DELAY.ago
+      render turbo_stream: turbo_stream.replace(:synchronization, partial: "status")
+    else
+      render turbo_stream: turbo_stream.action(:redirect, edit_activities_flow_education_path(id: @education_activity))
     end
-  ensure
-    sse.close if sse
   end
 
   def error
-    @error_code = params[:error_code]
-    @error_message = params[:error_message]
   end
 
   private
 
-  def nsc_environment
-    ENV.fetch("NSC_ENVIRONMENT", "sandbox").to_sym
-  end
-
-  def sync_indicator_update(name, status)
-    turbo_stream.replace(
-        name,
-        html: view_context.render(
-          SynchronizationIndicatorComponent.new(name: name, status: status).with_content(
-            I18n.t("activities.education.new.#{name}")
-          )
-        )
+  def education_params
+    params
+      .require(:education_activity)
+      .permit(
+        :id,
+        :additional_comments,
+        :credit_hours
       )
   end
 end

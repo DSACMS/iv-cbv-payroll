@@ -1,0 +1,116 @@
+<% content_for :title, t(".header") %>
+
+<h1>
+  <%= t(".header") %>
+</h1>
+
+<p class="usa-hint">
+  <%= t("activities.hub.reporting_window", range: @flow.reporting_window_display) %>
+</p>
+
+<% if @education_activity.school_name.present? %>
+    <p>
+        <%= t(".description") %>
+    </p>
+<% else %>
+    <div class="usa-alert usa-alert--warning">
+        <div class="usa-alert__body">
+            <h2 class="usa-alert__heading">
+                <%= t(".no_records_found.heading") %>
+            </h2>
+            <p class="usa-alert__text">
+                <%= t(".no_records_found.message") %>
+            </p>
+        </div>
+    </div>
+<% end %>
+
+<h2>
+    <%= t(".student_information") %>
+</h2>
+
+<%= render(TableComponent.new(is_responsive: true)) do |table| %>
+    <%= table.with_row do |row| %>
+        <%= row.with_data_cell(is_header: true) do %>
+            <%= t(".first_name") %>
+        <% end %>
+        <%= row.with_data_cell do %>
+            <%= @student_information.first_name %>
+        <% end %>
+    <% end %>
+
+    <%= table.with_row do |row| %>
+        <%= row.with_data_cell(is_header: true) do %>
+            <%= t(".last_name") %>
+        <% end %>
+        <%= row.with_data_cell do %>
+            <%= @student_information.last_name %>
+        <% end %>
+    <% end %>
+
+    <%= table.with_row do |row| %>
+        <%= row.with_data_cell(is_header: true) do %>
+            <%= t(".date_of_birth") %>
+        <% end %>
+        <%= row.with_data_cell do %>
+            <%= @student_information.date_of_birth %>
+        <% end %>
+    <% end %>
+<% end %>
+
+<h2>
+    <%= t(".school_information.header") %>
+</h2>
+
+<%= render(TableComponent.new(is_responsive: true)) do |table| %>
+    <%= table.with_row do |row| %>
+        <%= row.with_data_cell(is_header: true) do %>
+            <%= t(".school_information.name") %>
+        <% end %>
+        <%= row.with_data_cell do %>
+            <%= @education_activity.school_name %>
+        <% end %>
+    <% end %>
+
+    <%= table.with_row do |row| %>
+        <%= row.with_data_cell(is_header: true) do %>
+            <%= t(".school_information.address") %>
+        <% end %>
+        <%= row.with_data_cell do %>
+            <%= @education_activity.school_address %>
+        <% end %>
+    <% end %>
+
+    <%= table.with_row do |row| %>
+        <%= row.with_data_cell(is_header: true) do %>
+            <%= t(".enrollment_information.enrollment_status.header") %>
+        <% end %>
+        <%= row.with_data_cell do %>
+            <%= enrollment_status_text(@education_activity.enrollment_status) %>
+        <% end %>
+    <% end %>
+<% end %>
+
+<div class="usa-form-group margin-top-5">
+    <%= form_with model: @education_activity, url: activities_flow_education_path(id: @education_activity.id) do |form| %>
+        <%= form.hidden_field :id %>
+
+        <% if @education_activity.sync_succeeded? %>
+            <h2><%= t(".semester_credit_hours.label") %></h2>
+
+            <%= form.label :credit_hours, t(".semester_credit_hours.description"), class: "usa-label" %>
+            <%= form.number_field :credit_hours, class: "usa-input" %>
+
+            <h2><%= t(".upload_documents.label") %></h2>
+
+            <%= form.label :documents, t(".upload_documents.description"), class: "usa-label" %>
+            <%= form.file_field :documents, class: "usa-file-input" %>
+        <% end %>
+
+        <h2><%= t(".additional_information_header") %></h2>
+        <%= form.label :additional_comments, t(".additional_information_label", agency_acronym: agency_translation("shared.agency_acronym")), class: "usa-label" %>
+        <%= form.text_area :additional_comments, class: "usa-textarea", rows: 5, value: @account_comment %>
+
+        <%= form.submit t(".continue"), class: "usa-button usa-button--primary" %>
+    <% end %>
+</div>

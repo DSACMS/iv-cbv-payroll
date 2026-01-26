@@ -58,31 +58,8 @@ en:
   activities:
     education:
       add: Add Education Activities
-      created: Education activity was successfully created.
       deleted: Education activity was successfully deleted.
-      enrollment_status:
-        enrolled: Enrolled
-        full_time: Full-time
-        half_time: Half-time
-        less_than_half_time: Less than half-time
-        three_quarter_time: Three-quarter Time
-      error:
-        back_button: Back to Activities
-        error_description: There was an error retrieving your education information. Please try again later.
-        error_heading: Unable to retrieve education information.
-        header: Error
-      error_no_data: No education information available
-      errors:
-        timeout: The request timed out. Please try again.
-        unexpected: An unexpected error occurred. Please try again.
-      new:
-        enrollment: Enrollment
-        fetching_education_description: This may take a few minutes. Please keep this window open while we work on this.
-        header: We're gathering your enrollment details from the National Student Clearinghouse
-        hours: Hours
-        school: School
-        student_info: Retrieving student information
-      show:
+      edit:
         additional_information_header: Additional comments (Optional)
         additional_information_label: Share any comments or additional information about the income details above that you’d like %{agency_acronym} to know. For example, you can share if the information is inaccurate or if you’re no longer working at that job.
         continue: Save and continue
@@ -108,6 +85,23 @@ en:
         upload_documents:
           description: Please include any transcripts or class schedule from this semester
           label: Upload Documents
+      enrollment_status:
+        enrolled: Enrolled
+        full_time: Full-time
+        half_time: Half-time
+        less_than_half_time: Less than half-time
+        three_quarter_time: Three-quarter Time
+      error:
+        back_button: Back to Activities
+        error_description: There was an error retrieving your education information. Please try again later.
+        error_heading: Unable to retrieve education information.
+        header: Error
+      error_no_data: No education information available
+      errors:
+        unexpected: An unexpected error occurred. Please try again.
+      show:
+        fetching_education_description: This may take a few minutes. Please keep this window open while we work on this.
+        header: We're gathering your enrollment details from the National Student Clearinghouse
       title: Education
     entry:
       consent: Check this box to agree to let us record your information and share it with %{agency_name}.

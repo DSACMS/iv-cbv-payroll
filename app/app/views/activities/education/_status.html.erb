@@ -1,0 +1,7 @@
+<div class="grid-row" dom_id="<%= dom_id current_identity %>">
+  <div class="desktop:grid-col-6 tablet:grid-col-fill">
+    <%= render(SynchronizationIndicatorComponent.new(name: "school", status: :in_progress)) do %>
+      <%= t(".student_info") %>
+    <% end %>
+  </div>
+</div>

@@ -59,8 +59,8 @@
             <%= enrollment_status_text(activity.enrollment_status) %>
           <% end %>
           <%= r.with_data_cell do %>
-            <%= link_to t("activities.hub.edit"), activities_flow_education_path(education_activity_id: activity.id), class: "usa-link" %>
-            <%= button_to t("activities.hub.delete"), activities_flow_education_path(education_activity_id: activity.id), method: :delete, class: "usa-button usa-button--unstyled", form: { data: { turbo_confirm: t("activities.hub.delete_confirm") } } %>
+            <%= link_to t("activities.hub.edit"), activities_flow_education_path(id: activity.id), class: "usa-link" %>
+            <%= button_to t("activities.hub.delete"), activities_flow_education_path(id: activity.id), method: :delete, class: "usa-button usa-button--unstyled", form: { data: { turbo_confirm: t("activities.hub.delete_confirm") } } %>
           <% end %>
         <% end %>
       <% end %>
