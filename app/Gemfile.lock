@@ -458,7 +458,10 @@ GEM
       erb
       psych (>= 4.0.0)
       tsort
-    redis (4.8.1)
+    redis (5.4.1)
+      redis-client (>= 0.22.0)
+    redis-client (0.26.4)
+      connection_pool
     regexp_parser (2.11.3)
     reline (0.6.3)
       io-console (~> 0.5)
@@ -671,7 +674,7 @@ DEPENDENCIES
   rails-controller-testing
   rails-erd (~> 1.7)
   rails_semantic_logger
-  redis (~> 4.0)
+  redis (~> 5.4)
   rexml (~> 3.4.2)
   rspec-rails (~> 8.0)
   rubocop
