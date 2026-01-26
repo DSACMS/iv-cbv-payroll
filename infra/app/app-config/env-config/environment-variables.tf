@@ -236,5 +236,49 @@ locals {
       manage_method     = "manual"
       secret_store_name = "/service/${var.app_name}-${var.environment}/sandbox-domain-name"
     }
+
+    # Education API Credentials
+    ## Sandbox
+    NSC_API_URL_SANDBOX = {
+      manage_method     = "manual"
+      secret_store_name = "/service/${var.app_name}-${var.environment}/nsc-api-url-sandbox"
+    }
+    NSC_TOKEN_URL_SANDBOX = {
+      manage_method     = "manual"
+      secret_store_name = "/service/${var.app_name}-${var.environment}/nsc-token-url-sandbox"
+    }
+    NSC_CLIENT_ID_SANDBOX = {
+      manage_method     = "manual"
+      secret_store_name = "/service/${var.app_name}-${var.environment}/nsc-client-id-sandbox"
+    }
+    NSC_CLIENT_SECRET_SANDBOX = {
+      manage_method     = "manual"
+      secret_store_name = "/service/${var.app_name}-${var.environment}/nsc-client-secret-sandbox"
+    }
+    NSC_ACCOUNT_ID_SANDBOX = {
+      manage_method     = "manual"
+      secret_store_name = "/service/${var.app_name}-${var.environment}/nsc-account-id-sandbox"
+    }
+    ## Production
+    NSC_API_URL = {
+      manage_method     = "manual"
+      secret_store_name = "/service/${var.app_name}-${var.environment}/nsc-api-url"
+    }
+    NSC_TOKEN_URL = {
+      manage_method     = "manual"
+      secret_store_name = "/service/${var.app_name}-${var.environment}/nsc-token-url"
+    }
+    NSC_CLIENT_ID = {
+      manage_method     = "manual"
+      secret_store_name = "/service/${var.app_name}-${var.environment}/nsc-client-id"
+    }
+    NSC_CLIENT_SECRET = {
+      manage_method     = "manual"
+      secret_store_name = "/service/${var.app_name}-${var.environment}/nsc-client-secret"
+    }
+    NSC_ACCOUNT_ID = {
+      manage_method     = "manual"
+      secret_store_name = "/service/${var.app_name}-${var.environment}/nsc-account-id"
+    }
   }
 }
