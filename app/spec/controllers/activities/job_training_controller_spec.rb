@@ -5,7 +5,7 @@ RSpec.describe Activities::JobTrainingController, type: :controller do
 
   render_views
 
-  let(:activity_flow) { create(:activity_flow, education_activities_count: 0, reporting_window_months: 1) }
+  let(:activity_flow) { create(:activity_flow, volunteering_activities_count: 0, job_training_activities_count: 0, education_activities_count: 0, reporting_window_months: 1) }
 
   before do
     session[:flow_id] = activity_flow.id
@@ -28,7 +28,7 @@ RSpec.describe Activities::JobTrainingController, type: :controller do
           program_name: "Resume Workshop",
           organization_address: "123 Main St, Baton Rouge, LA",
           hours: 6,
-          date: activity_flow.reporting_window_range.end
+          date: activity_flow.reporting_window_range.end.strftime("%m/%d/%Y")
         }
       }
     end
@@ -52,7 +52,7 @@ RSpec.describe Activities::JobTrainingController, type: :controller do
       expect(response).to redirect_to(activities_flow_root_path)
     end
 
-    it "redirects to summary page when total hours meet the threshold" do
+    it "redirects to summary page when month has at least 80 hours" do
       create(:volunteering_activity, activity_flow: activity_flow, organization_name: "Local Food Bank", hours: 79)
 
       post :create, params: job_training_params.deep_merge(job_training_activity: { hours: 1 })
