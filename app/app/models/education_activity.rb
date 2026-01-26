@@ -1,15 +1,20 @@
 class EducationActivity < ApplicationRecord
   belongs_to :activity_flow
 
-  # Status is stored as int in db: 0=unknown, 1=not_enrolled, 2=enrolled
-  enum :status, [ :unknown, :not_enrolled, :enrolled ], default: :unknown
+  # Status is the API request/verification status
+  enum :status, {
+    unknown: "unknown",
+    no_enrollments: "no_enrollments",
+    succeeded: "succeeded",
+    failed: "failed"
+  }, default: :unknown, prefix: :sync
 
   def display_status
     case status.to_sym
-    when :enrolled
-      I18n.t("activities.education.enrollment_status.enrolled")
-    when :not_enrolled
-      I18n.t("activities.education.enrollment_status.not_enrolled")
+    when :succeeded
+      I18n.t("activities.education.enrollment_status.succeeded")
+    when :no_enrollments
+      I18n.t("activities.education.enrollment_status.no_enrollments")
     else
       I18n.t("activities.education.enrollment_status.unknown")
     end
