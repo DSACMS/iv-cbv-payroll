@@ -238,6 +238,10 @@ locals {
     }
 
     # Education API Credentials
+    NSC_ENVIRONMENT = {
+      manage_method     = "manual"
+      secret_store_name = "/service/${var.app_name}-${var.environment}/nsc-environment"
+    }
     ## Sandbox
     NSC_API_URL_SANDBOX = {
       manage_method     = "manual"
