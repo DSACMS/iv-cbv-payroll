@@ -69,18 +69,18 @@ module Aggregators
       end
 
       # Main entry pont to submit an enrollment request to NSC
-      def call(activity_flow, &block)
+      def call(education_activity, &block)
         yield if block_given?
 
-        identity = activity_flow.identity
+        identity = education_activity.activity_flow.identity
         response = fetch_enrollment_data(
           first_name: identity.first_name,
           last_name: identity.last_name,
           date_of_birth: identity.date_of_birth,
-          as_of_date: activity_flow.reporting_window_range.max
+          as_of_date: education_activity.activity_flow.reporting_window_range.max
         )
 
-        create_education_activity(activity_flow, response)
+        update_education_activity(education_activity, response)
       end
 
       # Fetch enrollment data from NSC API
@@ -224,18 +224,15 @@ module Aggregators
         end
       end
 
-      def create_education_activity(activity_flow, response_data)
+      def update_education_activity(education_activity, response_data)
         enrollments = Array(response_data["enrollmentDetails"])
         current_enrollments = enrollments.find_all { |enrollment_detail| enrollment_detail["currentEnrollmentStatus"] == "CC" }
 
         if current_enrollments.any?
           @logger.info "Found #{current_enrollments.length} current enrollments (total enrollments: #{enrollments.length})"
         else
-          @logger.info("No enrollments found for identity ID #{activity_flow.identity.id}")
-          return EducationActivity.create!(
-            activity_flow: activity_flow,
-            status: :no_enrollments
-          )
+          @logger.info("No enrollments found for EducationActivity ID #{education_activity.id}")
+          return education_activity.update(status: :no_enrollments)
         end
 
         # Of potentially multiple current enrollments, pick the one with:
@@ -254,8 +251,7 @@ module Aggregators
           .sort_by { |e| [ ENROLLMENT_STATUSES.values.index(e[:enrollment_status]), e[:term_end_date] ] }
           .first
 
-        EducationActivity.create!(
-          activity_flow: activity_flow,
+        education_activity.update(
           school_name: latest_current_enrollment_term[:school_name],
           enrollment_status: ENROLLMENT_STATUSES.fetch(latest_current_enrollment_term[:enrollment_status], "unknown"),
           status: :succeeded

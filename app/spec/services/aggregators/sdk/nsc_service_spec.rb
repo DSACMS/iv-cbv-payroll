@@ -94,6 +94,7 @@ RSpec.describe Aggregators::Sdk::NscService, type: :service do
 
   describe "#call" do
     let(:activity_flow) { create(:activity_flow, identity: identity, education_activities_count: 0) }
+    let(:education_activity) { create(:education_activity, activity_flow: activity_flow) }
 
     before do
       nsc_stub_token_request
@@ -106,15 +107,11 @@ RSpec.describe Aggregators::Sdk::NscService, type: :service do
         nsc_stub_request_education_search_response("linda")
       end
 
-      it "returns an EducationActivity with sync status = :no_enrollments" do
-        expect { service.call(activity_flow) }
-          .to change(EducationActivity, :count)
-          .by(1)
+      it "updates the EducationActivity to have sync status = :no_enrollments" do
+        service.call(education_activity)
 
-        expect(EducationActivity.last).to have_attributes(
-          status: "no_enrollments",
-          enrollment_status: "unknown"
-        )
+        expect(education_activity)
+          .to(have_attributes(status: "no_enrollments", enrollment_status: "unknown"))
       end
     end
 
@@ -126,11 +123,9 @@ RSpec.describe Aggregators::Sdk::NscService, type: :service do
       end
 
       it "returns an EducationActivity with sync status = :succeeded" do
-        expect { service.call(activity_flow) }
-          .to change(EducationActivity, :count)
-          .by(1)
+        service.call(education_activity)
 
-        expect(EducationActivity.last).to have_attributes(
+        expect(education_activity.reload).to have_attributes(
           status: "succeeded",
           enrollment_status: "enrolled",
           school_name: "Trident University International"
@@ -146,11 +141,9 @@ RSpec.describe Aggregators::Sdk::NscService, type: :service do
       end
 
       it "returns an EducationActivity with sync status = :succeeded" do
-        expect { service.call(activity_flow) }
-          .to change(EducationActivity, :count)
-          .by(1)
+        service.call(education_activity)
 
-        expect(EducationActivity.last).to have_attributes(
+        expect(education_activity.reload).to have_attributes(
           status: "succeeded",
           enrollment_status: "half_time",
           school_name: "FLORIDA A&M UNIVERSITY"
