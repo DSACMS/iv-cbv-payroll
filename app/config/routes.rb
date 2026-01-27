@@ -63,7 +63,7 @@ Rails.application.routes.draw do
         resource :payment_details, only: %i[show update], controller: "/cbv/payment_details"
       end
 
-      resources :education, only: %i[new show update edit destroy], controller: "education" do
+      resources :education, only: %i[new create show update edit destroy], controller: "education" do
         patch "sync", to: "education#sync", as: :sync
       end
       get "/education/error", to: "education#error", as: :education_error

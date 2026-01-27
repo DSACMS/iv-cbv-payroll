@@ -20,8 +20,18 @@ RSpec.describe Activities::EducationController, type: :controller do
   end
 
   describe "GET #new" do
+    it "renders the user's details" do
+      get :new
+
+      expect(response.body).to have_content(activity_flow.identity.first_name)
+      expect(response.body).to have_content(activity_flow.identity.last_name)
+      expect(response.body).to have_content(activity_flow.identity.date_of_birth.strftime("%B %-d, %Y"))
+    end
+  end
+
+  describe "POST #create" do
     it "creates a new EducationActivity and redirects to #show" do
-      expect { get :new }
+      expect { post :create }
         .to change(EducationActivity, :count)
         .by(1)
 

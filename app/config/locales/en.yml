@@ -102,6 +102,13 @@ en:
       error_no_data: No education information available
       errors:
         unexpected: An unexpected error occurred. Please try again.
+      new:
+        continue: Verify enrollment
+        date_of_birth: Date of birth
+        description: We use National Student Clearinghouse to verify that you are a student. This is a trusted third-party data source.
+        first_name: First name
+        header: Let's verify your student enrollment
+        last_name: Last name
       show:
         fetching_education_description: This may take a few seconds. Please keep this window open while we work on this.
         header: We're gathering your details from National Student Clearinghouse
