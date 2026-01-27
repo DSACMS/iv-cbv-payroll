@@ -1,19 +1,16 @@
 <% content_for :title, t(".header") %>
 
-<div id="education-error-container">
-    <h1>
-        <%= t(".header") %>
-    </h1>
+<h1>
+  <%= t(".header") %>
+</h1>
 
-    <div class="usa-alert usa-alert--error margin-y-3" role="alert">
-        <div class="usa-alert__body">
-            <h2 class="usa-alert__heading"><%= t(".error_heading") %></h2>
-            <p class="usa-alert__text">
-            <%= t(".error_description") %>
-            </p>
-        </div>
-    </div>
-
-    <%= link_to t(".back_button"), activities_flow_root_path, class: "usa-button" %>
-
+<div class="usa-alert usa-alert--error margin-y-3" role="alert">
+  <div class="usa-alert__body">
+    <h2 class="usa-alert__heading"><%= t(".error_heading") %></h2>
+    <p class="usa-alert__text">
+    <%= t(".error_description") %>
+    </p>
+  </div>
 </div>
+
+<%= link_to t(".back_button"), activities_flow_root_path, class: "usa-button" %>
