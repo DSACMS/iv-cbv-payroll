@@ -4,7 +4,9 @@ class Transmitters::JsonAndPdfTransmitter < Transmitters::BasePdfTransmitter
 
   def deliver
     begin
-      Transmitters::JsonTransmitter.new(cbv_flow, current_agency, aggregator_report).deliver
+      unless cbv_flow.json_transmitted_at.present?
+        Transmitters::JsonTransmitter.new(cbv_flow, current_agency, aggregator_report).deliver
+      end
       Transmitters::HttpPdfTransmitter.new(cbv_flow, current_agency, aggregator_report).deliver
     rescue Transmitters::JsonTransmitter::JsonTransmitterError => e
       raise "Failed to transmit JSON: #{e.message}"
