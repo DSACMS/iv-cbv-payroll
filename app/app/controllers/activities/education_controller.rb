@@ -4,6 +4,10 @@ class Activities::EducationController < Activities::BaseController
   INDICATOR_COUNT = 3
 
   def new
+    @identity = current_identity!
+  end
+
+  def create
     @education_activity = @flow.education_activities.create
 
     NscSynchronizationJob.perform_later(@education_activity.id)

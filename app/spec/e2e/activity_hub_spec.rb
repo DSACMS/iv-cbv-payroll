@@ -22,8 +22,9 @@ RSpec.describe 'e2e Activity Hub flow test', :js, type: :feature do
     verify_page(page, title: I18n.t("activities.hub.title"))
 
     # Add an Education activity
+    click_button I18n.t("activities.education.add")
     performing_active_jobs do
-      click_button I18n.t("activities.education.add")
+      click_button I18n.t("activities.education.new.continue")
       verify_page(page, title: I18n.t("activities.education.show.header")) # /activities/education/123 (loading page)
     end
     verify_page(page, title: I18n.t("activities.education.edit.header"), wait: 10) # /activities/education/123/edit (show page)

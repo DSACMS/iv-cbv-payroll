@@ -340,3 +340,16 @@ input#invitation_link {
     max-height: 100px;
   }
 }
+
+/*
+ * Field value list
+ */
+.cbv-field-value-list {
+  margin-top: units(4);
+}
+.cbv-field-value-list__label {
+  @include u-font('heading', 'sm');
+}
+.cbv-field-value-list__value {
+  margin-top: units(0.5);
+}
