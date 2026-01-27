@@ -65,9 +65,11 @@ en:
         continue: Save and continue
         date_of_birth: Date of Birth
         description: Review the information below to make sure it's correct.
+        enrollment_dates: Enrollment dates
         enrollment_information:
           enrollment_status:
             header: Enrollment Status
+        enrollment_status: Enrollment status
         first_name: First Name
         header: Confirm your education enrollment
         last_name: Last Name
@@ -78,6 +80,7 @@ en:
           address: Address
           header: School Information
           name: Name
+        school_or_program: School or program
         semester_credit_hours:
           description: How many credit hours are you enrolled in this semester?
           label: Semester Credit Hours
@@ -100,8 +103,8 @@ en:
       errors:
         unexpected: An unexpected error occurred. Please try again.
       show:
-        fetching_education_description: This may take a few minutes. Please keep this window open while we work on this.
-        header: We're gathering your enrollment details from the National Student Clearinghouse
+        fetching_education_description: This may take a few seconds. Please keep this window open while we work on this.
+        header: We're gathering your details from National Student Clearinghouse
       title: Education
     entry:
       consent: Check this box to agree to let us record your information and share it with %{agency_name}.

@@ -135,4 +135,11 @@ module TestHelpers
     end
     pdf_text
   end
+
+  def performing_active_jobs(&block)
+    @old_value = ActiveJob::Base.queue_adapter.perform_enqueued_jobs
+    ActiveJob::Base.queue_adapter.perform_enqueued_jobs = true
+    block.call
+    ActiveJob::Base.queue_adapter.perform_enqueued_jobs = @old_value
+  end
 end

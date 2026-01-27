@@ -41,6 +41,8 @@ RSpec.describe Activities::EducationController, type: :controller do
     context "when the EducationActivity has already synced" do
       before do
         education_activity.update(status: :no_enrollments)
+        allow(controller).to receive(:testing_synchronization_page?)
+          .and_return(false)
       end
 
       it "redirects to the edit page" do
