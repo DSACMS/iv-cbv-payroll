@@ -230,7 +230,6 @@ GEM
       mini_portile2 (~> 2.7)
     hashdiff (1.2.1)
     hashery (2.1.2)
-    hashie (5.0.0)
     highline (3.1.2)
       reline
     htmlentities (4.3.4)
@@ -302,8 +301,6 @@ GEM
       json-logic-rb (~> 0.1.5)
       mutex_m
     msgpack (1.8.0)
-    multi_xml (0.7.2)
-      bigdecimal (~> 3.1)
     mustermann (3.0.4)
       ruby2_keywords (~> 0.0.1)
     mutex_m (0.3.0)
@@ -332,25 +329,6 @@ GEM
       racc (~> 1.4)
     nokogiri (1.19.0-x86_64-linux-gnu)
       racc (~> 1.4)
-    oauth2 (2.0.18)
-      faraday (>= 0.17.3, < 4.0)
-      jwt (>= 1.0, < 4.0)
-      logger (~> 1.2)
-      multi_xml (~> 0.5)
-      rack (>= 1.2, < 4)
-      snaky_hash (~> 2.0, >= 2.0.3)
-      version_gem (~> 1.1, >= 1.1.9)
-    omniauth (2.1.4)
-      hashie (>= 3.4.6)
-      logger
-      rack (>= 2.2.3)
-      rack-protection
-    omniauth-entra-id (3.1.1)
-      jwt (>= 2.9.2)
-      omniauth-oauth2 (~> 1.8)
-    omniauth-oauth2 (1.8.0)
-      oauth2 (>= 1.4, < 3)
-      omniauth (~> 2.0)
     orm_adapter (0.5.0)
     ostruct (0.6.3)
     parallel (1.27.0)
@@ -545,9 +523,6 @@ GEM
       rack-session (>= 2.0.0, < 3)
       tilt (~> 2.0)
     smart_properties (1.17.0)
-    snaky_hash (2.0.3)
-      hashie (>= 0.1.0, < 6)
-      version_gem (>= 1.1.8, < 3)
     solid_queue (1.2.4)
       activejob (>= 7.1)
       activerecord (>= 7.1)
@@ -587,7 +562,6 @@ GEM
     uri (1.1.1)
     useragent (0.16.11)
     vcr (6.4.0)
-    version_gem (1.1.9)
     view_component (4.1.1)
       actionview (>= 7.1.0, < 8.2)
       activesupport (>= 7.1.0, < 8.2)
@@ -666,7 +640,6 @@ DEPENDENCIES
   net-sftp
   net-ssh
   newrelic_rpm
-  omniauth-entra-id
   pdf-reader (~> 2.15.1)
   pg (~> 1.6)
   pg-aws_rds_iam (~> 0.7.0)

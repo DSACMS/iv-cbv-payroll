@@ -78,7 +78,6 @@ module TrackEvent
   ApplicantViewedPinwheelProviderConfirmation = "ApplicantViewedPinwheelProviderConfirmation"
   ApplicantWarnedAboutTimeout = "ApplicantWarnedAboutTimeout"
   CaseworkerInvitedApplicantToFlow = "CaseworkerInvitedApplicantToFlow"
-  CaseworkerLoggedIn = "CaseworkerLoggedIn"
   CbvPageView = "CbvPageView"
   EmailSent = "EmailSent"
   IncomeSummaryMatchedAgencyNames = "IncomeSummaryMatchedAgencyNames"

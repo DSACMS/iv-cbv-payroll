@@ -11,10 +11,6 @@ class ApplicationController < ActionController::Base
     redirect_to root_url, flash: { slim_alert: { type: "info", message_html: t("cbv.error_missing_token_html") } }
   end
 
-  def after_sign_in_path_for(user)
-    caseworker_dashboard_path(client_agency_id: user.client_agency_id)
-  end
-
   def after_sign_out_path_for(resource_or_scope)
     new_user_session_path(client_agency_id: params[:client_agency_id])
   end

@@ -1,13 +1,5 @@
 Rails.application.routes.draw do
-  devise_for :users,
-    controllers: {
-      sessions: "users/sessions",
-      omniauth_callbacks: "users/omniauth_callbacks"
-    }
-
-  devise_scope :user do
-    delete "sign_out", to: "devise/sessions#destroy", as: :destroy_user_session
-  end
+  devise_for :users
 
   scope "(:locale)", locale: /#{I18n.available_locales.join("|")}/, format: "html" do
     # Your application routes go here
@@ -82,14 +74,6 @@ Rails.application.routes.draw do
       scope "links/:client_agency_id", constraints: { client_agency_id: Regexp.union(Rails.application.config.client_agencies.client_agency_ids) } do
         root to: "entries#show", as: :new
       end
-    end
-
-    scope "/:client_agency_id", module: :caseworker, constraints: { client_agency_id: Regexp.union(Rails.application.config.client_agencies.client_agency_ids) } do
-      get "/sso", to: redirect("/%{client_agency_id}") # Temporary: Remove once people get used to going to /:client_agency_id as the login destination.
-      root to: "entries#index", as: :new_user_session
-
-      resource :dashboard, only: %i[show], as: :caseworker_dashboard
-      resources :cbv_flow_invitations, only: %i[new create], as: :invitations, path: :invitations
     end
   end
 

@@ -9,10 +9,7 @@
   <%= render "help/help_topic_link", topic: "provider", text: t("help.index.provider") %>
   <%= render "help/help_topic_link", topic: "credentials", text: t("help.index.credentials") %>
 
-  <%# Applicants should always see this button, but caseworkers only when the form is configured. %>
-  <% if params[:controller] !~ %r{^caseworker/} || (current_agency && current_agency.caseworker_feedback_form.present?) %>
-    <%= link_to feedback_form_url, class: "usa-button help-modal__button", target: "_blank" do %>
-      <%= t("help.index.feedback") %>
-    <% end %>
+  <%= link_to feedback_form_url, class: "usa-button help-modal__button", target: "_blank" do %>
+    <%= t("help.index.feedback") %>
   <% end %>
 <% end %>

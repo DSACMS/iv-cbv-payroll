@@ -124,10 +124,6 @@ ignore_missing:
     - "time.*"    # Defaults provided by rails-i18n
     - "payment_frequencies.*"   # Helper method uses English values directly
   es:
-    # Caseworker pages that are only supported in English:
-    - "caseworker.cbv_flow_invitations.*"
-    - "caseworker.dashboards.*"
-    - "caseworker.entries.*"
     # Caseworker emails that are only supported in English:
     - "activerecord.errors.models.cbv_flow_invitation.*"
     - "activerecord.errors.models.cbv_applicant*"
