@@ -1,0 +1,1054 @@
+---
+http_interactions:
+- request:
+    method: post
+    uri: https://id.demo.studentclearinghouse.org/oauth2/ausnsnbp1duL7tEPi0h7/v1/token
+    body:
+      encoding: UTF-8
+      string: client_id=<NSC_CLIENT_ID>&client_secret=<NSC_CLIENT_SECRET>&grant_type=client_credentials&scope=vs.api.insights
+    headers:
+      User-Agent:
+      - Faraday v2.14.0
+      Content-Type:
+      - application/x-www-form-urlencoded
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Accept:
+      - "*/*"
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Date:
+      - Mon, 26 Jan 2026 17:58:00 GMT
+      Server:
+      - nginx
+      Content-Type:
+      - application/json
+      X-Okta-Request-Id:
+      - aXerKIUWbWiLB9_n0wwKdQAACvg
+      Accept-Ch:
+      - Sec-CH-UA-Platform-Version
+      X-Xss-Protection:
+      - '0'
+      P3p:
+      - CP="HONK"
+      Content-Security-Policy-Report-Only:
+      - 'default-src ''self'' nsc-ciam-stg.oktapreview.com id.demo.studentclearinghouse.org
+        *.oktacdn.com; connect-src ''self'' nsc-ciam-stg.oktapreview.com nsc-ciam-stg-admin.oktapreview.com
+        id.demo.studentclearinghouse.org *.oktacdn.com *.mixpanel.com *.mapbox.com
+        nsc-ciam-stg.kerberos.oktapreview.com nsc-ciam-stg.mtls.oktapreview.com https://oinmanager.okta.com
+        data: *.ingest.sentry.io; script-src ''unsafe-inline'' ''self'' ''report-sample''
+        nsc-ciam-stg.oktapreview.com id.demo.studentclearinghouse.org *.oktacdn.com;
+        style-src ''unsafe-inline'' ''self'' ''report-sample'' nsc-ciam-stg.oktapreview.com
+        id.demo.studentclearinghouse.org *.oktacdn.com; frame-src ''self'' nsc-ciam-stg.oktapreview.com
+        nsc-ciam-stg-admin.oktapreview.com id.demo.studentclearinghouse.org login.okta.com
+        *.vidyard.com; img-src ''self'' nsc-ciam-stg.oktapreview.com id.demo.studentclearinghouse.org
+        *.oktacdn.com *.tiles.mapbox.com *.mapbox.com *.vidyard.com data: blob:; font-src
+        ''self'' nsc-ciam-stg.oktapreview.com id.demo.studentclearinghouse.org data:
+        *.oktacdn.com fonts.gstatic.com; frame-ancestors ''self''; report-uri https://oktacsp.report-uri.com/r/t/csp/reportOnly;
+        report-to csp'
+      X-Rate-Limit-Limit:
+      - '600'
+      X-Rate-Limit-Remaining:
+      - '597'
+      X-Rate-Limit-Reset:
+      - '1769450284'
+      Cache-Control:
+      - no-cache, no-store
+      Pragma:
+      - no-cache
+      Expires:
+      - '0'
+      Referrer-Policy:
+      - strict-origin-when-cross-origin
+      X-Content-Type-Options:
+      - nosniff
+      Strict-Transport-Security:
+      - max-age=315360000; includeSubDomains
+      X-Robots-Tag:
+      - noindex,nofollow
+      Set-Cookie:
+      - JSESSIONID=0B974670CB0FEB3B98609D46AD30FA7B; Path=/; Secure; HttpOnly
+      - activate_ca_modal_triggered=""; Expires=Thu, 01 Jan 1970 00:00:10 GMT; Path=/
+      - autolaunch_triggered=""; Expires=Thu, 01 Jan 1970 00:00:10 GMT; Path=/
+      - sid="";Version=1;Path=/;Max-Age=0
+      - xids="";Version=1;Path=/;Max-Age=0
+      Transfer-Encoding:
+      - chunked
+    body:
+      encoding: UTF-8
+      string: '{"token_type":"Bearer","expires_in":3600,"access_token":"<NSC_ACCESS_TOKEN>","scope":"vs.api.insights"}'
+  recorded_at: Mon, 26 Jan 2026 17:57:55 GMT
+- request:
+    method: post
+    uri: https://id.demo.studentclearinghouse.org/oauth2/ausnsnbp1duL7tEPi0h7/v1/token
+    body:
+      encoding: UTF-8
+      string: client_id=<NSC_CLIENT_ID>&client_secret=<NSC_CLIENT_SECRET>&grant_type=client_credentials&scope=vs.api.insights
+    headers:
+      User-Agent:
+      - Faraday v2.14.0
+      Content-Type:
+      - application/x-www-form-urlencoded
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Accept:
+      - "*/*"
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Date:
+      - Mon, 26 Jan 2026 17:58:00 GMT
+      Server:
+      - nginx
+      Content-Type:
+      - application/json
+      X-Okta-Request-Id:
+      - aXerKMcK0J0BUN34skSHUQAAC9k
+      Accept-Ch:
+      - Sec-CH-UA-Platform-Version
+      X-Xss-Protection:
+      - '0'
+      P3p:
+      - CP="HONK"
+      Content-Security-Policy-Report-Only:
+      - 'default-src ''self'' nsc-ciam-stg.oktapreview.com id.demo.studentclearinghouse.org
+        *.oktacdn.com; connect-src ''self'' nsc-ciam-stg.oktapreview.com nsc-ciam-stg-admin.oktapreview.com
+        id.demo.studentclearinghouse.org *.oktacdn.com *.mixpanel.com *.mapbox.com
+        nsc-ciam-stg.kerberos.oktapreview.com nsc-ciam-stg.mtls.oktapreview.com https://oinmanager.okta.com
+        data: *.ingest.sentry.io; script-src ''unsafe-inline'' ''self'' ''report-sample''
+        nsc-ciam-stg.oktapreview.com id.demo.studentclearinghouse.org *.oktacdn.com;
+        style-src ''unsafe-inline'' ''self'' ''report-sample'' nsc-ciam-stg.oktapreview.com
+        id.demo.studentclearinghouse.org *.oktacdn.com; frame-src ''self'' nsc-ciam-stg.oktapreview.com
+        nsc-ciam-stg-admin.oktapreview.com id.demo.studentclearinghouse.org login.okta.com
+        *.vidyard.com; img-src ''self'' nsc-ciam-stg.oktapreview.com id.demo.studentclearinghouse.org
+        *.oktacdn.com *.tiles.mapbox.com *.mapbox.com *.vidyard.com data: blob:; font-src
+        ''self'' nsc-ciam-stg.oktapreview.com id.demo.studentclearinghouse.org data:
+        *.oktacdn.com fonts.gstatic.com; frame-ancestors ''self'''
+      X-Rate-Limit-Limit:
+      - '600'
+      X-Rate-Limit-Remaining:
+      - '596'
+      X-Rate-Limit-Reset:
+      - '1769450284'
+      Cache-Control:
+      - no-cache, no-store
+      Pragma:
+      - no-cache
+      Expires:
+      - '0'
+      Referrer-Policy:
+      - strict-origin-when-cross-origin
+      X-Content-Type-Options:
+      - nosniff
+      Strict-Transport-Security:
+      - max-age=315360000; includeSubDomains
+      X-Robots-Tag:
+      - noindex,nofollow
+      Set-Cookie:
+      - JSESSIONID=FF28EE099099A2E61990F825752E45AA; Path=/; Secure; HttpOnly
+      - activate_ca_modal_triggered=""; Expires=Thu, 01 Jan 1970 00:00:10 GMT; Path=/
+      - autolaunch_triggered=""; Expires=Thu, 01 Jan 1970 00:00:10 GMT; Path=/
+      - sid="";Version=1;Path=/;Max-Age=0
+      - xids="";Version=1;Path=/;Max-Age=0
+      Transfer-Encoding:
+      - chunked
+    body:
+      encoding: UTF-8
+      string: '{"token_type":"Bearer","expires_in":3600,"access_token":"<NSC_ACCESS_TOKEN>","scope":"vs.api.insights"}'
+  recorded_at: Mon, 26 Jan 2026 17:57:55 GMT
+- request:
+    method: post
+    uri: https://verify.demo.studentclearinghouse.org/api/vs-ext-test/insights/v3/a2/submit-request
+    body:
+      encoding: UTF-8
+      string: '{"firstName":"Mikel","lastName":"Lockman","dateOfBirth":"1997-12-09","asOfDate":"2025-12-31","accountId":"10053523","terms":"Y","endClient":"CMS"}'
+    headers:
+      Authorization:
+      - Bearer <NSC_ACCESS_TOKEN>
+      Content-Type:
+      - application/json
+      User-Agent:
+      - Faraday v2.14.0
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Accept:
+      - "*/*"
+  response:
+    status:
+      code: 200
+      message: ''
+    headers:
+      Server:
+      - CloudFront
+      Content-Type:
+      - application/json;charset=UTF-8
+      Transfer-Encoding:
+      - chunked
+      Connection:
+      - keep-alive
+      Date:
+      - Mon, 26 Jan 2026 17:58:00 GMT
+      Strict-Transport-Security:
+      - max-age=63072000; includeSubDomain; preload
+      X-Frame-Options:
+      - SAMEORIGIN
+      Set-Cookie:
+      - AWSALBTG=RrD6Bd94I2yu2uSc8SnWnnMEoGUPQtTxxcoNbz5FFW//WvydEaAu7j9owksbWTFxpTCTE7W3RhvjRwb/Ny9OglhNSBZ8kyRxf/uw7XSip/fUbWsctioDFKnyhdcM3tfYhUnHh66/g1v4euyfQW5UO0ZZyeMhPLBX3+b+D7SuE1aG;
+        Expires=Mon, 02 Feb 2026 17:58:00 GMT; Path=/
+      - AWSALBTGCORS=RrD6Bd94I2yu2uSc8SnWnnMEoGUPQtTxxcoNbz5FFW//WvydEaAu7j9owksbWTFxpTCTE7W3RhvjRwb/Ny9OglhNSBZ8kyRxf/uw7XSip/fUbWsctioDFKnyhdcM3tfYhUnHh66/g1v4euyfQW5UO0ZZyeMhPLBX3+b+D7SuE1aG;
+        Expires=Mon, 02 Feb 2026 17:58:00 GMT; Path=/; SameSite=None; Secure
+      Vary:
+      - Access-Control-Request-Headers
+      - Access-Control-Request-Method
+      - Origin
+      X-Content-Type-Options:
+      - nosniff
+      X-Xss-Protection:
+      - 1; mode=block
+      Cache-Control:
+      - no-cache, no-store, max-age=0, must-revalidate
+      Pragma:
+      - no-cache
+      Expires:
+      - '0'
+      Via:
+      - 1.1 7ebf86def0385a427d4375fd043f4f94.cloudfront.net (CloudFront)
+      Content-Security-Policy:
+      - 'default-src ''self'' ; media-src  ''self''; img-src  * ''self'' data: https:;     script-src
+        ''self'' ''unsafe-inline'' https://docs.paymentjs.firstdata.com https://cert.api.firstdata.com
+        https://prod.api.firstdata.com https://fonts.googleapis.com https://www.googletagmanager.com
+        https://www.google-analytics.com https://app.demo.studentclearinghouse.org
+        https://www.google.com https://www.gstatic.com https://googleads.g.doubleclick.net;      font-src
+        ''self'' ''unsafe-inline''  https://fonts.gstatic.com; style-src ''self''
+        ''unsafe-inline'' https://docs.paymentjs.firstdata.com https://cert.api.firstdata.com
+        https://prod.api.firstdata.com https://fonts.googleapis.com https://www.google-analytics.com
+        ;      frame-src ''self'' ''unsafe-inline'' https://docs.paymentjs.firstdata.com
+        https://cert.api.firstdata.com https://prod.api.firstdata.com https://studentclearinghouse.org
+        https://www.studentclearinghouse.org https://www.google.com https://recaptcha.google.com
+        https://td.doubleclick.net/;     connect-src ''self'' https://app.demo.studentclearinghouse.org/sso/profile/me
+        https://www.google-analytics.com https://docs.paymentjs.firstdata.com https://cert.api.firstdata.com
+        https://prod.api.firstdata.com https://us-street.api.smartystreets.com https://id.demo.studentclearinghouse.org/oauth2/
+        https://id.demo.studentclearinghouse.org https://app.demo.studentclearinghouse.org
+        https://*.browser-intake-datadoghq.com https://international-street.api.smartystreets.com
+        https://vs-corp-consents-s3-bucket-ieahifd4kpu5.s3.amazonaws.com https://vsinternalui-s3-angular-bucket-otaxvdt3hzqc.s3.amazonaws.com
+        https://analytics.google.com https://www.googleadservices.com https://www.google.com;     worker-src
+        ''self'' blob:;'
+      Referrer-Policy:
+      - strict-origin-when-cross-origin
+      X-Cache:
+      - Miss from cloudfront
+      X-Amz-Cf-Pop:
+      - SFO53-P5
+      X-Amz-Cf-Id:
+      - GZRdne5jK9Yn5-Wa_ULIZHQM-YajRi7AB3DNo8YwejHJa4bU-jExLw==
+    body:
+      encoding: UTF-8
+      string: '{"status":{"code":"0","severity":"Info","message":"Successful"},"transactionDetails":{"transactionId":"828376750","orderId":"114696544","transactionStatus":"UCF","transactionFee":"0.00","salesTax":"0.00","transactionTotal":"0.00","requestedBy":"CMS
+        Contact","requestedDate":"2026-01-26 12:58:00.549","notifiedDate":"2026-01-26
+        12:58:00.549","nscHit":"N"},"clientData":{"accountId":"10053523"},"studentInfoProvided":{"lastName":"Lockman","firstName":"Mikel","dateOfBirth":"1997-12-09"}}'
+  recorded_at: Mon, 26 Jan 2026 17:57:55 GMT
+- request:
+    method: post
+    uri: https://verify.demo.studentclearinghouse.org/api/vs-ext-test/insights/v3/a2/submit-request
+    body:
+      encoding: UTF-8
+      string: '{"firstName":"Mikel","lastName":"Lockman","dateOfBirth":"1997-12-09","asOfDate":"2025-12-31","accountId":"10053523","terms":"Y","endClient":"CMS"}'
+    headers:
+      Authorization:
+      - Bearer <NSC_ACCESS_TOKEN>
+      Content-Type:
+      - application/json
+      User-Agent:
+      - Faraday v2.14.0
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Accept:
+      - "*/*"
+  response:
+    status:
+      code: 200
+      message: ''
+    headers:
+      Server:
+      - CloudFront
+      Content-Type:
+      - application/json;charset=UTF-8
+      Transfer-Encoding:
+      - chunked
+      Connection:
+      - keep-alive
+      Date:
+      - Mon, 26 Jan 2026 17:58:00 GMT
+      Strict-Transport-Security:
+      - max-age=63072000; includeSubDomain; preload
+      X-Frame-Options:
+      - SAMEORIGIN
+      Set-Cookie:
+      - AWSALBTG=NYCddCuvhpicWvHfJV8czS79kpd8JrJZ/fsu3e/1sC5wlWeXfPFBSJqx2IbE4MCUBvXFpkwldAZq52BII6hWv4FQv/zWapXGpDAxL+Kox4UeI3uG0RGJtbVFBc5xw9cw14dEagDr5klnte4wu8rRiiF3nsaW34W6ZKDOa+g44o8x;
+        Expires=Mon, 02 Feb 2026 17:58:00 GMT; Path=/
+      - AWSALBTGCORS=NYCddCuvhpicWvHfJV8czS79kpd8JrJZ/fsu3e/1sC5wlWeXfPFBSJqx2IbE4MCUBvXFpkwldAZq52BII6hWv4FQv/zWapXGpDAxL+Kox4UeI3uG0RGJtbVFBc5xw9cw14dEagDr5klnte4wu8rRiiF3nsaW34W6ZKDOa+g44o8x;
+        Expires=Mon, 02 Feb 2026 17:58:00 GMT; Path=/; SameSite=None; Secure
+      Vary:
+      - Access-Control-Request-Headers
+      - Access-Control-Request-Method
+      - Origin
+      X-Content-Type-Options:
+      - nosniff
+      X-Xss-Protection:
+      - 1; mode=block
+      Cache-Control:
+      - no-cache, no-store, max-age=0, must-revalidate
+      Pragma:
+      - no-cache
+      Expires:
+      - '0'
+      Via:
+      - 1.1 60e55687f4f0ad988a569a499b543a0e.cloudfront.net (CloudFront)
+      Content-Security-Policy:
+      - 'default-src ''self'' ; media-src  ''self''; img-src  * ''self'' data: https:;     script-src
+        ''self'' ''unsafe-inline'' https://docs.paymentjs.firstdata.com https://cert.api.firstdata.com
+        https://prod.api.firstdata.com https://fonts.googleapis.com https://www.googletagmanager.com
+        https://www.google-analytics.com https://app.demo.studentclearinghouse.org
+        https://www.google.com https://www.gstatic.com https://googleads.g.doubleclick.net;      font-src
+        ''self'' ''unsafe-inline''  https://fonts.gstatic.com; style-src ''self''
+        ''unsafe-inline'' https://docs.paymentjs.firstdata.com https://cert.api.firstdata.com
+        https://prod.api.firstdata.com https://fonts.googleapis.com https://www.google-analytics.com
+        ;      frame-src ''self'' ''unsafe-inline'' https://docs.paymentjs.firstdata.com
+        https://cert.api.firstdata.com https://prod.api.firstdata.com https://studentclearinghouse.org
+        https://www.studentclearinghouse.org https://www.google.com https://recaptcha.google.com
+        https://td.doubleclick.net/;     connect-src ''self'' https://app.demo.studentclearinghouse.org/sso/profile/me
+        https://www.google-analytics.com https://docs.paymentjs.firstdata.com https://cert.api.firstdata.com
+        https://prod.api.firstdata.com https://us-street.api.smartystreets.com https://id.demo.studentclearinghouse.org/oauth2/
+        https://id.demo.studentclearinghouse.org https://app.demo.studentclearinghouse.org
+        https://*.browser-intake-datadoghq.com https://international-street.api.smartystreets.com
+        https://vs-corp-consents-s3-bucket-ieahifd4kpu5.s3.amazonaws.com https://vsinternalui-s3-angular-bucket-otaxvdt3hzqc.s3.amazonaws.com
+        https://analytics.google.com https://www.googleadservices.com https://www.google.com;     worker-src
+        ''self'' blob:;'
+      Referrer-Policy:
+      - strict-origin-when-cross-origin
+      X-Cache:
+      - Miss from cloudfront
+      X-Amz-Cf-Pop:
+      - SFO53-P5
+      X-Amz-Cf-Id:
+      - G-TqihyDxBgy4iFqlIPG1ItVtEat1oDh7DIk3-qIPVlfPhusYiyJng==
+    body:
+      encoding: UTF-8
+      string: '{"status":{"code":"0","severity":"Info","message":"Successful"},"transactionDetails":{"transactionId":"828376751","orderId":"114696545","transactionStatus":"UCF","transactionFee":"0.00","salesTax":"0.00","transactionTotal":"0.00","requestedBy":"CMS
+        Contact","requestedDate":"2026-01-26 12:58:00.78","notifiedDate":"2026-01-26
+        12:58:00.78","nscHit":"N"},"clientData":{"accountId":"10053523"},"studentInfoProvided":{"lastName":"Lockman","firstName":"Mikel","dateOfBirth":"1997-12-09"}}'
+  recorded_at: Mon, 26 Jan 2026 17:57:55 GMT
+- request:
+    method: post
+    uri: https://api-sandbox.argyle.com/v2/users
+    body:
+      encoding: UTF-8
+      string: '{"external_id":"7115e14b-5ea2-44d1-b116-cf836ec5b68c"}'
+    headers:
+      Content-Type:
+      - application/json
+      Authorization:
+      - Basic <ARGYLE_BASIC_AUTH>
+      User-Agent:
+      - Faraday v2.14.0
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Accept:
+      - "*/*"
+  response:
+    status:
+      code: 201
+      message: Created
+    headers:
+      Date:
+      - Mon, 26 Jan 2026 17:58:03 GMT
+      Content-Type:
+      - application/json
+      Content-Length:
+      - '542'
+      Connection:
+      - keep-alive
+      Access-Control-Allow-Origin:
+      - "*"
+      Allow:
+      - GET, POST, HEAD, OPTIONS
+      Cache-Control:
+      - no-cache, no-store
+      Cross-Origin-Opener-Policy:
+      - same-origin
+      Referrer-Policy:
+      - same-origin
+      Server:
+      - cloudflare
+      Strict-Transport-Security:
+      - max-age=31536000; includeSubDomains
+      Vary:
+      - Accept-Encoding,Origin
+      X-Client-Id:
+      - '018f0834-d69a-879b-05cb-ddde033024f0'
+      X-Content-Type-Options:
+      - nosniff
+      X-Frame-Options:
+      - DENY
+      X-Trace-Id:
+      - fb4d92f1-f48d-42c9-8173-3f449580199d
+      Via:
+      - 1.1 google
+      Cf-Cache-Status:
+      - DYNAMIC
+      Set-Cookie:
+      - __cf_bm=xuUHA83h2OhQFyvkjaEo5Jwt_bU0iLaC4HxBvAB78Qg-1769450282.8532488-1.0.1.1-kqlpMhCvrR3tleFSy_mqA..N914YZsisjpceMwZaheP_K5u8bof5zf_pD451hmBGjUyVg5Fh32KaslZYj_zc_19XkFbVcLv.GYyU8cPjkHoFz9k9yoc4txjUwEbgoajN;
+        HttpOnly; Secure; Path=/; Domain=argyle.com; Expires=Mon, 26 Jan 2026 18:28:03
+        GMT
+      Cf-Ray:
+      - 9c41e56bdaeae865-SJC
+    body:
+      encoding: UTF-8
+      string: '{"user_token":"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJjbGllbnRfaWQiOiIwMThmMDgzNC1kNjlhLTg3OWItMDVjYi1kZGRlMDMzMDI0ZjAiLCJleHAiOjE3Njk0NTM4ODMsImZpZCI6ImQ2ZjZjYTBkLTQwOGEtNGVjMS1hNDQ1LWJkZGQzNWRmNTBkYSIsImlhdCI6MTc2OTQ1MDI4MywiaXNzIjoiYXJneWxlLWNvcmUtYXV0aC1wcm9kIiwianRpIjoiYjFkMWU2ZmEtMzUzZC00OTYxLWI0ZGQtYmIwNWI0NzUzYjJhIiwic3ViIjoiMDE5YmZiNzQtOWZjMC1jMjNiLTlhYjgtMGNkZTY4MjYwMWJjIiwidXNlcl9pZCI6IjAxOWJmYjc0LTlmYzAtYzIzYi05YWI4LTBjZGU2ODI2MDFiYyJ9.jJzvG1hYSPvywaod-_fZABuEWC7yVJ54_RJ62v2KVRQ","id":"019bfb74-9fc0-c23b-9ab8-0cde682601bc"}'
+  recorded_at: Mon, 26 Jan 2026 17:57:55 GMT
+- request:
+    method: get
+    uri: https://api-sandbox.argyle.com/v2/identities?account=019bfb74-a974-e1fb-d876-0f4e094835f2&limit=10
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Content-Type:
+      - application/json
+      Authorization:
+      - Basic <ARGYLE_BASIC_AUTH>
+      User-Agent:
+      - Faraday v2.14.0
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Accept:
+      - "*/*"
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Date:
+      - Mon, 26 Jan 2026 17:58:20 GMT
+      Content-Type:
+      - application/json
+      Transfer-Encoding:
+      - chunked
+      Connection:
+      - keep-alive
+      Access-Control-Allow-Origin:
+      - "*"
+      Cache-Control:
+      - no-cache, no-store, max-age=0, must-revalidate
+      Set-Cookie:
+      - __cf_bm=5gtvB4ICzR_zM751vPmHhOXPbS8gB8DFAAPm_5IBkaw-1769450300.0593889-1.0.1.1-FG6cI3KPMKUDe36cLzgTDCdDMxZl5IeWkZajObJbxVtXFqXhYKYpib_jNO.aid6BQep2RuOPAnnH7NtOV.cezcspHI7qQZelrATlFNAtdF3frqWMnj_JBPBkQmxi6p8d;
+        HttpOnly; Secure; Path=/; Domain=argyle.com; Expires=Mon, 26 Jan 2026 18:28:20
+        GMT
+      Expires:
+      - '0'
+      Pragma:
+      - no-cache
+      Strict-Transport-Security:
+      - max-age=31536000; includeSubDomains
+      Vary:
+      - Accept-Encoding,Origin
+      X-Client-Id:
+      - '018f0834-d69a-879b-05cb-ddde033024f0'
+      X-Content-Type-Options:
+      - nosniff
+      X-Frame-Options:
+      - DENY
+      X-Trace-Id:
+      - e3cbfea4-7961-4d40-a241-8408127b1272
+      X-Xss-Protection:
+      - '0'
+      Via:
+      - 1.1 google
+      Cf-Cache-Status:
+      - DYNAMIC
+      Server:
+      - cloudflare
+      Cf-Ray:
+      - 9c41e5d75e051d41-SJC
+    body:
+      encoding: ASCII-8BIT
+      string: '{"results":[{"id":"6dc37274-8007-3b8f-868d-302ed50dcfba","account":"019bfb74-a974-e1fb-d876-0f4e094835f2","address":{"city":"New
+        York","line1":"759 Victoria Plaza","line2":null,"state":"NY","country":"US","postal_code":"10014"},"first_name":"Bob","last_name":"Jones","full_name":"Bob
+        Jones","birth_date":"1980-10-10","email":"test1@argyle.com","phone_number":"+18009000010","picture_url":"https://api-sandbox.argyle.com/v2/payroll-documents/019bfb74-c4c4-8184-05a1-3cbccb96ceef/file","employment_status":"terminated","employment_type":"full-time","job_title":"1635
+        - Helpline Agent","ssn":"522-09-1191","marital_status":"Married filing jointly","gender":"Male","hire_date":"2023-07-26","original_hire_date":"2023-07-26","termination_date":"2025-12-19","termination_reason":"Poor
+        quality of work.","employer":"Advance Auto Parts","base_pay":{"amount":"281.62","period":"weekly","currency":"USD"},"pay_cycle":"weekly","platform_ids":{"employee_id":"ZW25Q9KGV","position_id":"DENCHF1C6","platform_user_id":"K9J3DTZBDB2IIRI9"},"created_at":"2026-01-26T17:58:12.231Z","updated_at":"2026-01-26T17:58:19.384Z","metadata":{},"employment":"a113391a-0366-3629-b2ed-22b255bb6e06"}],"next":null,"previous":null}'
+  recorded_at: Mon, 26 Jan 2026 17:57:55 GMT
+- request:
+    method: get
+    uri: https://api-sandbox.argyle.com/v2/accounts/019bfb74-a974-e1fb-d876-0f4e094835f2
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Content-Type:
+      - application/json
+      Authorization:
+      - Basic <ARGYLE_BASIC_AUTH>
+      User-Agent:
+      - Faraday v2.14.0
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Accept:
+      - "*/*"
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Date:
+      - Mon, 26 Jan 2026 17:58:20 GMT
+      Content-Type:
+      - application/json
+      Transfer-Encoding:
+      - chunked
+      Connection:
+      - keep-alive
+      Access-Control-Allow-Origin:
+      - "*"
+      Cache-Control:
+      - no-cache, no-store, max-age=0, must-revalidate
+      Set-Cookie:
+      - __cf_bm=1QYNFXyy6GA.p.ySIxMtK4CJIH4gfMoi00aAzaUTKN8-1769450300.254082-1.0.1.1-c3DMEjsE3ajGBHS23sq9HnhRkyaIqQET65grNajMYv8jxijCyw.4DQtJVssLDavzEALGIIryTjAXU9YleD1FqdC1XfMBKvK9J9S5n2DnUB6kxQ53ZKsTpqdqF8V2TbNc;
+        HttpOnly; Secure; Path=/; Domain=argyle.com; Expires=Mon, 26 Jan 2026 18:28:20
+        GMT
+      Expires:
+      - '0'
+      Pragma:
+      - no-cache
+      Strict-Transport-Security:
+      - max-age=31536000; includeSubDomains
+      Vary:
+      - Accept-Encoding,Origin
+      X-Client-Id:
+      - '018f0834-d69a-879b-05cb-ddde033024f0'
+      X-Content-Type-Options:
+      - nosniff
+      X-Frame-Options:
+      - DENY
+      X-Trace-Id:
+      - e2c2bd14-921f-49fe-9e24-8338f9c1e5e2
+      X-Xss-Protection:
+      - '0'
+      Via:
+      - 1.1 google
+      Cf-Cache-Status:
+      - DYNAMIC
+      Server:
+      - cloudflare
+      Cf-Ray:
+      - 9c41e5d899cedcfe-SJC
+    body:
+      encoding: ASCII-8BIT
+      string: '{"id":"019bfb74-a974-e1fb-d876-0f4e094835f2","user":"019bfb74-9fc0-c23b-9ab8-0cde682601bc","employers":["Advance
+        Auto Parts"],"item":"item_000029932","source":"argyle_sandbox","created_at":"2026-01-26T17:58:05.460Z","updated_at":"2026-01-26T17:58:19.767Z","scanned_at":"2026-01-26T17:58:19.189Z","connection":{"status":"connected","error_code":null,"error_message":null,"updated_at":"2026-01-26T17:58:09.940Z"},"direct_deposit_switch":{"status":"idle","error_code":null,"error_message":null,"updated_at":"2026-01-26T17:58:05.732Z"},"availability":{"gigs":{"status":"in_progress","updated_at":"2026-01-26T17:58:19.189Z","available_count":0,"available_from":null,"available_to":null},"shifts":{"status":"in_progress","updated_at":"2026-01-26T17:58:19.189Z","available_count":14,"available_from":"2025-10-26T00:00:00.000Z","available_to":"2025-12-18T00:00:00.000Z"},"paystubs":{"status":"in_progress","updated_at":"2026-01-26T17:58:19.221Z","available_count":9,"available_from":"2025-10-29T00:00:00.000Z","available_to":"2025-12-19T00:00:00.000Z"},"payroll_documents":{"status":"synced","updated_at":"2026-01-26T17:58:12.647Z"},"identities":{"status":"synced","updated_at":"2026-01-26T17:58:19.403Z"},"ratings":{"status":"synced","updated_at":"2026-01-26T17:58:12.902Z"},"vehicles":{"status":"synced","updated_at":"2026-01-26T17:58:12.660Z"},"deposit_destinations":{"status":"synced","updated_at":"2026-01-26T17:58:11.237Z"},"user_forms":null,"user_uploads":null},"ongoing_refresh":{"status":"disabled"}}'
+  recorded_at: Mon, 26 Jan 2026 17:57:55 GMT
+- request:
+    method: get
+    uri: https://api-sandbox.argyle.com/v2/paystubs?account=019bfb74-a974-e1fb-d876-0f4e094835f2&from_start_date=2025-10-28&limit=200&to_start_date=2026-01-26
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Content-Type:
+      - application/json
+      Authorization:
+      - Basic <ARGYLE_BASIC_AUTH>
+      User-Agent:
+      - Faraday v2.14.0
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Accept:
+      - "*/*"
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Date:
+      - Mon, 26 Jan 2026 17:58:20 GMT
+      Content-Type:
+      - application/json
+      Transfer-Encoding:
+      - chunked
+      Connection:
+      - keep-alive
+      Access-Control-Allow-Origin:
+      - "*"
+      Cache-Control:
+      - no-cache, no-store, max-age=0, must-revalidate
+      Set-Cookie:
+      - __cf_bm=R22TRffHOIZVVhrsJqxmXq6jmYojNRGHXkSxw_JQoEk-1769450300.452714-1.0.1.1-Vo_hvt3dVDj0LXzZwn24MV2wzAbkEWEa1rEek8eh4NVtZgiBaERd678fCstKsTkapSPOB120QUtGPLYnEquY7RDS1raFW9pXnFtNjtqO9HlwnoPWTmZBWwRACV_8JoGE;
+        HttpOnly; Secure; Path=/; Domain=argyle.com; Expires=Mon, 26 Jan 2026 18:28:20
+        GMT
+      Expires:
+      - '0'
+      Pragma:
+      - no-cache
+      Strict-Transport-Security:
+      - max-age=31536000; includeSubDomains
+      Vary:
+      - Accept-Encoding,Origin
+      X-Client-Id:
+      - '018f0834-d69a-879b-05cb-ddde033024f0'
+      X-Content-Type-Options:
+      - nosniff
+      X-Frame-Options:
+      - DENY
+      X-Trace-Id:
+      - 866fadeb-7876-4c93-845b-c8691b736dca
+      X-Xss-Protection:
+      - '0'
+      Via:
+      - 1.1 google
+      Cf-Cache-Status:
+      - DYNAMIC
+      Server:
+      - cloudflare
+      Cf-Ray:
+      - 9c41e5d9dc4d0065-SJC
+    body:
+      encoding: ASCII-8BIT
+      string: '{"results":[{"id":"9e0b10ab-dd43-3b0f-86f0-4c4b4cf1dbc1","account":"019bfb74-a974-e1fb-d876-0f4e094835f2","payroll_document":"019bfb74-ddc3-d18a-b01c-34860ad7c8ac","deduction_list":[{"amount":"2.82","name":"Dental","tax_classification":null,"amount_ytd":"166.16"},{"amount":"2.82","name":"Roth","tax_classification":"post_tax","amount_ytd":"149.26"}],"filing_status":[{"type":"federal","location":null,"status":"married
+        filing separately"},{"type":"state","location":"NY","status":"single"}],"tax_list":[{"amount":"22.53","name":"Federal
+        Withholding","type":"federal","amount_ytd":"447.77"},{"amount":"30.98","name":"OASDI","type":"fica","amount_ytd":"428.05"},{"amount":"25.35","name":"CA
+        State Income Tax","type":"state","amount_ytd":"644.89"}],"status":"completed","paystub_date":"2025-12-19T00:00:00Z","paystub_period":{"start_date":"2025-12-11T00:00:00Z","end_date":"2025-12-19T00:00:00Z"},"currency":"USD","gross_pay":"413.86","deductions":"5.64","taxes":"78.86","net_pay":"334.36","reimbursements":"5.00","hours":"15.41","fees":null,"net_pay_ytd":"16073.23","gross_pay_ytd":"19853.87","metadata":{},"employer":"Advance
+        Auto Parts","employer_address":{"city":"Seattle","state":"WA","country":"US","postal_code":"98109","line1":"202
+        Westlake Ave N","line2":null},"created_at":"2026-01-26T17:58:18.920Z","updated_at":"2026-01-26T17:58:18.920Z","destinations":[],"hours_ytd":"2030.54","deductions_ytd":"715.31","taxes_ytd":"3151.24","gross_pay_list":[{"name":"Regular","type":"base","start_date":"2025-12-11","end_date":"2025-12-19","rate":"22.8400","hours":"12.3301","amount":"281.62","hours_ytd":"1981.4400","amount_ytd":"14644.24"},{"name":"Overtime","type":"overtime","start_date":"2025-12-17","end_date":"2025-12-18","rate":"34.2600","hours":"3.0825","amount":"105.61","hours_ytd":"29.7200","amount_ytd":"639.21"},{"name":"Holiday
+        Overtime","type":"overtime","start_date":null,"end_date":null,"rate":null,"hours":null,"amount":null,"hours_ytd":"19.3800","amount_ytd":"288.11"},{"name":"Bonus","type":"bonus","start_date":"2025-12-18","end_date":"2025-12-18","rate":null,"hours":null,"amount":"26.63","hours_ytd":null,"amount_ytd":"2370.86"},{"name":"Incentive","type":"bonus","start_date":null,"end_date":null,"rate":null,"hours":null,"amount":null,"hours_ytd":null,"amount_ytd":"171.03"},{"name":"Commission","type":"commission","start_date":null,"end_date":null,"rate":null,"hours":null,"amount":null,"hours_ytd":null,"amount_ytd":"1740.42"}],"gross_pay_list_totals":{"base":{"amount":"281.62","amount_ytd":"14644.24","hours":"12.3301","hours_ytd":"1981.4400","rate_implied":"22.8400","rate_implied_ytd":"7.3900"},"overtime":{"amount":"105.61","amount_ytd":"927.32","hours":"3.0825","hours_ytd":"49.1000","rate_implied":"34.2600","rate_implied_ytd":"18.8900"},"commission":{"amount":null,"amount_ytd":"1740.42","hours":null,"hours_ytd":null,"rate_implied":null,"rate_implied_ytd":null},"bonus":{"amount":"26.63","amount_ytd":"2541.89","hours":null,"hours_ytd":null,"rate_implied":null,"rate_implied_ytd":null},"other":null},"employment":"a113391a-0366-3629-b2ed-22b255bb6e06"},{"id":"9aa4b12b-b751-3b43-97ce-9fb2941da267","account":"019bfb74-a974-e1fb-d876-0f4e094835f2","payroll_document":"019bfb74-dd98-3566-4d00-8eb010b659fa","deduction_list":[{"amount":"2.82","name":"401K","tax_classification":"pre_tax","amount_ytd":"107.02"},{"amount":"8.45","name":"Roth","tax_classification":"post_tax","amount_ytd":"146.44"}],"filing_status":[{"type":"federal","location":null,"status":"single"},{"type":"state","location":"NY","status":"married
+        filing separately"}],"tax_list":[{"amount":"28.16","name":"Federal Withholding","type":"federal","amount_ytd":"425.24"}],"status":"completed","paystub_date":"2025-12-17T00:00:00Z","paystub_period":{"start_date":"2025-12-04T00:00:00Z","end_date":"2025-12-11T00:00:00Z"},"currency":"USD","gross_pay":"455.84","deductions":"11.27","taxes":"28.16","net_pay":"416.41","reimbursements":"0.00","hours":"26.05","fees":null,"net_pay_ytd":"15738.87","gross_pay_ytd":"19440.01","metadata":{},"employer":"Advance
+        Auto Parts","employer_address":{"city":"Seattle","state":"WA","country":"US","postal_code":"98109","line1":"202
+        Westlake Ave N","line2":null},"created_at":"2026-01-26T17:58:18.996Z","updated_at":"2026-01-26T17:58:18.996Z","destinations":[],"hours_ytd":"2015.13","deductions_ytd":"709.67","taxes_ytd":"3072.38","gross_pay_list":[{"name":"Regular","type":"base","start_date":"2025-12-04","end_date":"2025-12-11","rate":"10.8089","hours":"26.0544","amount":"281.62","hours_ytd":"1969.1100","amount_ytd":"14362.62"},{"name":"Overtime","type":"overtime","start_date":null,"end_date":null,"rate":null,"hours":null,"amount":null,"hours_ytd":"26.6400","amount_ytd":"533.60"},{"name":"Holiday
+        Overtime","type":"overtime","start_date":null,"end_date":null,"rate":null,"hours":null,"amount":null,"hours_ytd":"19.3800","amount_ytd":"288.11"},{"name":"Bonus","type":"bonus","start_date":null,"end_date":null,"rate":null,"hours":null,"amount":null,"hours_ytd":null,"amount_ytd":"2344.23"},{"name":"Incentive","type":"bonus","start_date":null,"end_date":null,"rate":null,"hours":null,"amount":null,"hours_ytd":null,"amount_ytd":"171.03"},{"name":"Commission","type":"commission","start_date":"2025-12-05","end_date":"2025-12-10","rate":null,"hours":null,"amount":"174.22","hours_ytd":null,"amount_ytd":"1740.42"}],"gross_pay_list_totals":{"base":{"amount":"281.62","amount_ytd":"14362.62","hours":"26.0544","hours_ytd":"1969.1100","rate_implied":"10.8100","rate_implied_ytd":"7.2900"},"overtime":{"amount":null,"amount_ytd":"821.71","hours":null,"hours_ytd":"46.0200","rate_implied":null,"rate_implied_ytd":"17.8600"},"commission":{"amount":"174.22","amount_ytd":"1740.42","hours":null,"hours_ytd":null,"rate_implied":null,"rate_implied_ytd":null},"bonus":{"amount":null,"amount_ytd":"2515.26","hours":null,"hours_ytd":null,"rate_implied":null,"rate_implied_ytd":null},"other":null},"employment":"a113391a-0366-3629-b2ed-22b255bb6e06"},{"id":"c48490fe-3df6-3ea1-9855-89fcc00414e5","account":"019bfb74-a974-e1fb-d876-0f4e094835f2","payroll_document":"019bfb74-dd72-64ad-8baf-a8c01b6edf24","deduction_list":[{"amount":"11.26","name":"Roth","tax_classification":"post_tax","amount_ytd":"126.73"},{"amount":"11.26","name":"Roth","tax_classification":"post_tax","amount_ytd":"137.99"}],"filing_status":[{"type":"federal","location":null,"status":"married
+        filing separately"},{"type":"state","location":"NY","status":"single"}],"tax_list":[{"amount":"22.53","name":"Social
+        Security Tax","type":"fica","amount_ytd":"594.19"},{"amount":"19.71","name":"OASDI","type":"fica","amount_ytd":"397.07"},{"amount":"25.35","name":"Federal
+        Income Tax","type":"federal","amount_ytd":"481.57"}],"status":"completed","paystub_date":"2025-12-10T00:00:00Z","paystub_period":{"start_date":"2025-11-27T00:00:00Z","end_date":"2025-12-04T00:00:00Z"},"currency":"USD","gross_pay":"308.58","deductions":"22.52","taxes":"67.59","net_pay":"219.61","reimbursements":"1.14","hours":"29.05","fees":null,"net_pay_ytd":"15322.46","gross_pay_ytd":"18984.17","metadata":{},"employer":"Advance
+        Auto Parts","employer_address":{"city":"Seattle","state":"WA","country":"US","postal_code":"98109","line1":"202
+        Westlake Ave N","line2":null},"created_at":"2026-01-26T17:58:19.012Z","updated_at":"2026-01-26T17:58:19.012Z","destinations":[],"hours_ytd":"1989.07","deductions_ytd":"698.40","taxes_ytd":"3044.22","gross_pay_list":[{"name":"Regular","type":"base","start_date":"2025-11-27","end_date":"2025-12-04","rate":"10.3146","hours":"27.3031","amount":"281.62","hours_ytd":"1943.0500","amount_ytd":"14081.00"},{"name":"Overtime","type":"overtime","start_date":"2025-11-30","end_date":"2025-11-30","rate":"15.4719","hours":"1.7427","amount":"26.96","hours_ytd":"26.6400","amount_ytd":"533.60"},{"name":"Holiday
+        Overtime","type":"overtime","start_date":null,"end_date":null,"rate":null,"hours":null,"amount":null,"hours_ytd":"19.3800","amount_ytd":"288.11"},{"name":"Bonus","type":"bonus","start_date":null,"end_date":null,"rate":null,"hours":null,"amount":null,"hours_ytd":null,"amount_ytd":"2344.23"},{"name":"Incentive","type":"bonus","start_date":null,"end_date":null,"rate":null,"hours":null,"amount":null,"hours_ytd":null,"amount_ytd":"171.03"},{"name":"Commission","type":"commission","start_date":null,"end_date":null,"rate":null,"hours":null,"amount":null,"hours_ytd":null,"amount_ytd":"1566.20"}],"gross_pay_list_totals":{"base":{"amount":"281.62","amount_ytd":"14081.00","hours":"27.3031","hours_ytd":"1943.0500","rate_implied":"10.3100","rate_implied_ytd":"7.2500"},"overtime":{"amount":"26.96","amount_ytd":"821.71","hours":"1.7427","hours_ytd":"46.0200","rate_implied":"15.4700","rate_implied_ytd":"17.8600"},"commission":{"amount":null,"amount_ytd":"1566.20","hours":null,"hours_ytd":null,"rate_implied":null,"rate_implied_ytd":null},"bonus":{"amount":null,"amount_ytd":"2515.26","hours":null,"hours_ytd":null,"rate_implied":null,"rate_implied_ytd":null},"other":null},"employment":"a113391a-0366-3629-b2ed-22b255bb6e06"},{"id":"e820d076-434b-3bf7-8d55-b5f9951aa728","account":"019bfb74-a974-e1fb-d876-0f4e094835f2","payroll_document":"019bfb74-dd4d-fa83-48f2-03ca14f47cdf","deduction_list":[{"amount":"2.82","name":"Roth","tax_classification":"post_tax","amount_ytd":"115.47"},{"amount":"5.63","name":"401K","tax_classification":"pre_tax","amount_ytd":"104.20"}],"filing_status":[{"type":"federal","location":null,"status":"married
+        filing separately"}],"tax_list":[{"amount":"33.79","name":"Federal Withholding","type":"federal","amount_ytd":"397.08"}],"status":"completed","paystub_date":"2025-12-03T00:00:00Z","paystub_period":{"start_date":"2025-11-20T00:00:00Z","end_date":"2025-11-27T00:00:00Z"},"currency":"USD","gross_pay":"298.49","deductions":"8.45","taxes":"33.79","net_pay":"258.66","reimbursements":"2.41","hours":"47.91","fees":null,"net_pay_ytd":"15102.85","gross_pay_ytd":"18675.59","metadata":{},"employer":"Advance
+        Auto Parts","employer_address":{"city":"Seattle","state":"WA","country":"US","postal_code":"98109","line1":"202
+        Westlake Ave N","line2":null},"created_at":"2026-01-26T17:58:18.966Z","updated_at":"2026-01-26T17:58:18.966Z","destinations":[],"hours_ytd":"1960.03","deductions_ytd":"675.88","taxes_ytd":"2976.63","gross_pay_list":[{"name":"Regular","type":"base","start_date":"2025-11-20","end_date":"2025-11-27","rate":"5.8777","hours":"47.9137","amount":"281.62","hours_ytd":"1915.7500","amount_ytd":"13799.38"},{"name":"Overtime","type":"overtime","start_date":null,"end_date":null,"rate":null,"hours":null,"amount":null,"hours_ytd":"24.8900","amount_ytd":"506.64"},{"name":"Holiday
+        Overtime","type":"overtime","start_date":null,"end_date":null,"rate":null,"hours":null,"amount":null,"hours_ytd":"19.3800","amount_ytd":"288.11"},{"name":"Bonus","type":"bonus","start_date":null,"end_date":null,"rate":null,"hours":null,"amount":null,"hours_ytd":null,"amount_ytd":"2344.23"},{"name":"Incentive","type":"bonus","start_date":null,"end_date":null,"rate":null,"hours":null,"amount":null,"hours_ytd":null,"amount_ytd":"171.03"},{"name":"Commission","type":"commission","start_date":"2025-11-25","end_date":"2025-11-25","rate":null,"hours":null,"amount":"16.87","hours_ytd":null,"amount_ytd":"1566.20"}],"gross_pay_list_totals":{"base":{"amount":"281.62","amount_ytd":"13799.38","hours":"47.9137","hours_ytd":"1915.7500","rate_implied":"5.8800","rate_implied_ytd":"7.2000"},"overtime":{"amount":null,"amount_ytd":"794.75","hours":null,"hours_ytd":"44.2700","rate_implied":null,"rate_implied_ytd":"17.9500"},"commission":{"amount":"16.87","amount_ytd":"1566.20","hours":null,"hours_ytd":null,"rate_implied":null,"rate_implied_ytd":null},"bonus":{"amount":null,"amount_ytd":"2515.26","hours":null,"hours_ytd":null,"rate_implied":null,"rate_implied_ytd":null},"other":null},"employment":"a113391a-0366-3629-b2ed-22b255bb6e06"},{"id":"ac6adf2c-a596-35ba-8baf-894070824e06","account":"019bfb74-a974-e1fb-d876-0f4e094835f2","payroll_document":"019bfb74-dd2c-7aa0-7de6-ad90bfe76f66","deduction_list":[{"amount":"11.26","name":"Roth","tax_classification":"post_tax","amount_ytd":"112.65"},{"amount":"8.45","name":"Vision","tax_classification":"pre_tax","amount_ytd":"140.81"}],"filing_status":[{"type":"federal","location":null,"status":"single"}],"tax_list":[{"amount":"33.79","name":"CA
+        State Income Tax","type":"state","amount_ytd":"619.54"}],"status":"completed","paystub_date":"2025-11-26T00:00:00Z","paystub_period":{"start_date":"2025-11-13T00:00:00Z","end_date":"2025-11-20T00:00:00Z"},"currency":"USD","gross_pay":"281.62","deductions":"19.71","taxes":"33.79","net_pay":"228.12","reimbursements":"0.00","hours":"30.56","fees":null,"net_pay_ytd":"14844.19","gross_pay_ytd":"18377.10","metadata":{},"employer":"Advance
+        Auto Parts","employer_address":{"city":"Seattle","state":"WA","country":"US","postal_code":"98109","line1":"202
+        Westlake Ave N","line2":null},"created_at":"2026-01-26T17:58:18.937Z","updated_at":"2026-01-26T17:58:18.937Z","destinations":[],"hours_ytd":"1912.11","deductions_ytd":"667.43","taxes_ytd":"2942.84","gross_pay_list":[{"name":"Regular","type":"base","start_date":"2025-11-13","end_date":"2025-11-20","rate":"9.2165","hours":"30.5562","amount":"281.62","hours_ytd":"1867.8400","amount_ytd":"13517.76"},{"name":"Overtime","type":"overtime","start_date":null,"end_date":null,"rate":null,"hours":null,"amount":null,"hours_ytd":"24.8900","amount_ytd":"506.64"},{"name":"Holiday
+        Overtime","type":"overtime","start_date":null,"end_date":null,"rate":null,"hours":null,"amount":null,"hours_ytd":"19.3800","amount_ytd":"288.11"},{"name":"Bonus","type":"bonus","start_date":null,"end_date":null,"rate":null,"hours":null,"amount":null,"hours_ytd":null,"amount_ytd":"2344.23"},{"name":"Incentive","type":"bonus","start_date":null,"end_date":null,"rate":null,"hours":null,"amount":null,"hours_ytd":null,"amount_ytd":"171.03"},{"name":"Commission","type":"commission","start_date":null,"end_date":null,"rate":null,"hours":null,"amount":null,"hours_ytd":null,"amount_ytd":"1549.33"}],"gross_pay_list_totals":{"base":{"amount":"281.62","amount_ytd":"13517.76","hours":"30.5562","hours_ytd":"1867.8400","rate_implied":"9.2200","rate_implied_ytd":"7.2400"},"overtime":{"amount":null,"amount_ytd":"794.75","hours":null,"hours_ytd":"44.2700","rate_implied":null,"rate_implied_ytd":"17.9500"},"commission":{"amount":null,"amount_ytd":"1549.33","hours":null,"hours_ytd":null,"rate_implied":null,"rate_implied_ytd":null},"bonus":{"amount":null,"amount_ytd":"2515.26","hours":null,"hours_ytd":null,"rate_implied":null,"rate_implied_ytd":null},"other":null},"employment":"a113391a-0366-3629-b2ed-22b255bb6e06"},{"id":"85711b68-d308-305e-83ab-a1525daf108f","account":"019bfb74-a974-e1fb-d876-0f4e094835f2","payroll_document":"019bfb74-dd09-0d28-7a9a-946520d7e1af","deduction_list":[{"amount":"11.26","name":"Roth","tax_classification":"post_tax","amount_ytd":"101.39"}],"filing_status":[{"type":"federal","location":null,"status":"single"},{"type":"state","location":"NY","status":"married
+        filing separately"}],"tax_list":[{"amount":"28.16","name":"Social Security
+        Tax","type":"fica","amount_ytd":"571.66"}],"status":"completed","paystub_date":"2025-11-19T00:00:00Z","paystub_period":{"start_date":"2025-11-06T00:00:00Z","end_date":"2025-11-13T00:00:00Z"},"currency":"USD","gross_pay":"281.62","deductions":"11.26","taxes":"28.16","net_pay":"242.20","reimbursements":"0.00","hours":"42.05","fees":null,"net_pay_ytd":"14616.07","gross_pay_ytd":"18095.48","metadata":{},"employer":"Advance
+        Auto Parts","employer_address":{"city":"Seattle","state":"WA","country":"US","postal_code":"98109","line1":"202
+        Westlake Ave N","line2":null},"created_at":"2026-01-26T17:58:18.906Z","updated_at":"2026-01-26T17:58:18.906Z","destinations":[],"hours_ytd":"1881.56","deductions_ytd":"647.72","taxes_ytd":"2909.05","gross_pay_list":[{"name":"Regular","type":"base","start_date":"2025-11-06","end_date":"2025-11-13","rate":"6.6971","hours":"42.0509","amount":"281.62","hours_ytd":"1837.2800","amount_ytd":"13236.14"},{"name":"Overtime","type":"overtime","start_date":null,"end_date":null,"rate":null,"hours":null,"amount":null,"hours_ytd":"24.8900","amount_ytd":"506.64"},{"name":"Holiday
+        Overtime","type":"overtime","start_date":null,"end_date":null,"rate":null,"hours":null,"amount":null,"hours_ytd":"19.3800","amount_ytd":"288.11"},{"name":"Bonus","type":"bonus","start_date":null,"end_date":null,"rate":null,"hours":null,"amount":null,"hours_ytd":null,"amount_ytd":"2344.23"},{"name":"Incentive","type":"bonus","start_date":null,"end_date":null,"rate":null,"hours":null,"amount":null,"hours_ytd":null,"amount_ytd":"171.03"},{"name":"Commission","type":"commission","start_date":null,"end_date":null,"rate":null,"hours":null,"amount":null,"hours_ytd":null,"amount_ytd":"1549.33"}],"gross_pay_list_totals":{"base":{"amount":"281.62","amount_ytd":"13236.14","hours":"42.0509","hours_ytd":"1837.2800","rate_implied":"6.7000","rate_implied_ytd":"7.2000"},"overtime":{"amount":null,"amount_ytd":"794.75","hours":null,"hours_ytd":"44.2700","rate_implied":null,"rate_implied_ytd":"17.9500"},"commission":{"amount":null,"amount_ytd":"1549.33","hours":null,"hours_ytd":null,"rate_implied":null,"rate_implied_ytd":null},"bonus":{"amount":null,"amount_ytd":"2515.26","hours":null,"hours_ytd":null,"rate_implied":null,"rate_implied_ytd":null},"other":null},"employment":"a113391a-0366-3629-b2ed-22b255bb6e06"},{"id":"18bf0d2f-8ed6-3d46-8567-6309084ed880","account":"019bfb74-a974-e1fb-d876-0f4e094835f2","payroll_document":"019bfb74-dce5-c7fd-cf68-5f908e964935","deduction_list":[{"amount":"8.45","name":"Vision","tax_classification":"pre_tax","amount_ytd":"132.36"},{"amount":"11.26","name":"401K","tax_classification":"pre_tax","amount_ytd":"98.57"},{"amount":"2.82","name":"Dental","tax_classification":null,"amount_ytd":"163.34"}],"filing_status":[{"type":"federal","location":null,"status":"single"}],"tax_list":[{"amount":"33.79","name":"OASDI","type":"fica","amount_ytd":"377.36"},{"amount":"28.16","name":"Federal
+        Income Tax","type":"federal","amount_ytd":"456.22"},{"amount":"19.71","name":"Federal
+        Withholding","type":"federal","amount_ytd":"363.29"}],"status":"completed","paystub_date":"2025-11-12T00:00:00Z","paystub_period":{"start_date":"2025-10-30T00:00:00Z","end_date":"2025-11-06T00:00:00Z"},"currency":"USD","gross_pay":"281.62","deductions":"22.53","taxes":"81.66","net_pay":"177.43","reimbursements":"0.00","hours":"54.50","fees":null,"net_pay_ytd":"14373.87","gross_pay_ytd":"17813.86","metadata":{},"employer":"Advance
+        Auto Parts","employer_address":{"city":"Seattle","state":"WA","country":"US","postal_code":"98109","line1":"202
+        Westlake Ave N","line2":null},"created_at":"2026-01-26T17:58:18.980Z","updated_at":"2026-01-26T17:58:18.980Z","destinations":[],"hours_ytd":"1839.51","deductions_ytd":"636.46","taxes_ytd":"2880.89","gross_pay_list":[{"name":"Regular","type":"base","start_date":"2025-10-30","end_date":"2025-11-06","rate":"5.1677","hours":"54.4962","amount":"281.62","hours_ytd":"1795.2300","amount_ytd":"12954.52"},{"name":"Overtime","type":"overtime","start_date":null,"end_date":null,"rate":null,"hours":null,"amount":null,"hours_ytd":"24.8900","amount_ytd":"506.64"},{"name":"Holiday
+        Overtime","type":"overtime","start_date":null,"end_date":null,"rate":null,"hours":null,"amount":null,"hours_ytd":"19.3800","amount_ytd":"288.11"},{"name":"Bonus","type":"bonus","start_date":null,"end_date":null,"rate":null,"hours":null,"amount":null,"hours_ytd":null,"amount_ytd":"2344.23"},{"name":"Incentive","type":"bonus","start_date":null,"end_date":null,"rate":null,"hours":null,"amount":null,"hours_ytd":null,"amount_ytd":"171.03"},{"name":"Commission","type":"commission","start_date":null,"end_date":null,"rate":null,"hours":null,"amount":null,"hours_ytd":null,"amount_ytd":"1549.33"}],"gross_pay_list_totals":{"base":{"amount":"281.62","amount_ytd":"12954.52","hours":"54.4962","hours_ytd":"1795.2300","rate_implied":"5.1700","rate_implied_ytd":"7.2200"},"overtime":{"amount":null,"amount_ytd":"794.75","hours":null,"hours_ytd":"44.2700","rate_implied":null,"rate_implied_ytd":"17.9500"},"commission":{"amount":null,"amount_ytd":"1549.33","hours":null,"hours_ytd":null,"rate_implied":null,"rate_implied_ytd":null},"bonus":{"amount":null,"amount_ytd":"2515.26","hours":null,"hours_ytd":null,"rate_implied":null,"rate_implied_ytd":null},"other":null},"employment":"a113391a-0366-3629-b2ed-22b255bb6e06"},{"id":"1c16ae7f-4315-3ac3-b184-0ab997dbb74c","account":"019bfb74-a974-e1fb-d876-0f4e094835f2","payroll_document":"019bfb74-dcbf-5fbc-0abb-411531701c34","deduction_list":[{"amount":"2.82","name":"Vision","tax_classification":"pre_tax","amount_ytd":"123.91"}],"filing_status":[{"type":"federal","location":null,"status":"married
+        filing separately"}],"tax_list":[{"amount":"30.98","name":"Federal Withholding","type":"federal","amount_ytd":"343.58"},{"amount":"19.71","name":"OASDI","type":"fica","amount_ytd":"343.57"}],"status":"completed","paystub_date":"2025-11-05T00:00:00Z","paystub_period":{"start_date":"2025-10-23T00:00:00Z","end_date":"2025-10-30T00:00:00Z"},"currency":"USD","gross_pay":"281.62","deductions":"2.82","taxes":"50.69","net_pay":"228.11","reimbursements":"0.00","hours":"38.17","fees":null,"net_pay_ytd":"14196.44","gross_pay_ytd":"17532.24","metadata":{},"employer":"Advance
+        Auto Parts","employer_address":{"city":"Seattle","state":"WA","country":"US","postal_code":"98109","line1":"202
+        Westlake Ave N","line2":null},"created_at":"2026-01-26T17:58:18.951Z","updated_at":"2026-01-26T17:58:18.951Z","destinations":[],"hours_ytd":"1785.01","deductions_ytd":"613.93","taxes_ytd":"2799.23","gross_pay_list":[{"name":"Regular","type":"base","start_date":"2025-10-23","end_date":"2025-10-30","rate":"7.3785","hours":"38.1678","amount":"281.62","hours_ytd":"1740.7300","amount_ytd":"12672.90"},{"name":"Overtime","type":"overtime","start_date":null,"end_date":null,"rate":null,"hours":null,"amount":null,"hours_ytd":"24.8900","amount_ytd":"506.64"},{"name":"Holiday
+        Overtime","type":"overtime","start_date":null,"end_date":null,"rate":null,"hours":null,"amount":null,"hours_ytd":"19.3800","amount_ytd":"288.11"},{"name":"Bonus","type":"bonus","start_date":null,"end_date":null,"rate":null,"hours":null,"amount":null,"hours_ytd":null,"amount_ytd":"2344.23"},{"name":"Incentive","type":"bonus","start_date":null,"end_date":null,"rate":null,"hours":null,"amount":null,"hours_ytd":null,"amount_ytd":"171.03"},{"name":"Commission","type":"commission","start_date":null,"end_date":null,"rate":null,"hours":null,"amount":null,"hours_ytd":null,"amount_ytd":"1549.33"}],"gross_pay_list_totals":{"base":{"amount":"281.62","amount_ytd":"12672.90","hours":"38.1678","hours_ytd":"1740.7300","rate_implied":"7.3800","rate_implied_ytd":"7.2800"},"overtime":{"amount":null,"amount_ytd":"794.75","hours":null,"hours_ytd":"44.2700","rate_implied":null,"rate_implied_ytd":"17.9500"},"commission":{"amount":null,"amount_ytd":"1549.33","hours":null,"hours_ytd":null,"rate_implied":null,"rate_implied_ytd":null},"bonus":{"amount":null,"amount_ytd":"2515.26","hours":null,"hours_ytd":null,"rate_implied":null,"rate_implied_ytd":null},"other":null},"employment":"a113391a-0366-3629-b2ed-22b255bb6e06"},{"id":"37f0dcad-1415-3be4-88bc-08e0fdea7ecb","account":"019bfb74-a974-e1fb-d876-0f4e094835f2","payroll_document":"019bfb74-dc9b-6726-bc19-7f6bb5ed1f3c","deduction_list":[{"amount":"5.63","name":"Vision","tax_classification":"pre_tax","amount_ytd":"112.64"},{"amount":"8.45","name":"Vision","tax_classification":"pre_tax","amount_ytd":"121.09"}],"filing_status":[{"type":"federal","location":null,"status":"married
+        filing separately"},{"type":"local","location":"New York","status":"single"}],"tax_list":[{"amount":"19.71","name":"CA
+        State Income Tax","type":"state","amount_ytd":"585.75"},{"amount":"33.79","name":"OASDI","type":"fica","amount_ytd":"323.86"}],"status":"completed","paystub_date":"2025-10-29T00:00:00Z","paystub_period":{"start_date":"2025-10-16T00:00:00Z","end_date":"2025-10-23T00:00:00Z"},"currency":"USD","gross_pay":"1070.05","deductions":"14.08","taxes":"53.50","net_pay":"1003.73","reimbursements":"1.26","hours":"23.80","fees":null,"net_pay_ytd":"13968.33","gross_pay_ytd":"17250.62","metadata":{},"employer":"Advance
+        Auto Parts","employer_address":{"city":"Seattle","state":"WA","country":"US","postal_code":"98109","line1":"202
+        Westlake Ave N","line2":null},"created_at":"2026-01-26T17:58:18.892Z","updated_at":"2026-01-26T17:58:18.892Z","destinations":[],"hours_ytd":"1746.84","deductions_ytd":"611.11","taxes_ytd":"2748.54","gross_pay_list":[{"name":"Regular","type":"base","start_date":"2025-10-16","end_date":"2025-10-23","rate":"15.7767","hours":"17.8504","amount":"281.62","hours_ytd":"1702.5700","amount_ytd":"12391.28"},{"name":"Overtime","type":"overtime","start_date":"2025-10-17","end_date":"2025-10-19","rate":"23.6650","hours":"5.4741","amount":"129.54","hours_ytd":"24.8900","amount_ytd":"506.64"},{"name":"Holiday
+        Overtime","type":"overtime","start_date":"2025-10-18","end_date":"2025-10-21","rate":"31.5534","hours":"0.4760","amount":"15.02","hours_ytd":"19.3800","amount_ytd":"288.11"},{"name":"Bonus","type":"bonus","start_date":"2025-10-18","end_date":"2025-10-21","rate":null,"hours":null,"amount":"643.87","hours_ytd":null,"amount_ytd":"2344.23"},{"name":"Incentive","type":"bonus","start_date":null,"end_date":null,"rate":null,"hours":null,"amount":null,"hours_ytd":null,"amount_ytd":"171.03"},{"name":"Commission","type":"commission","start_date":null,"end_date":null,"rate":null,"hours":null,"amount":null,"hours_ytd":null,"amount_ytd":"1549.33"}],"gross_pay_list_totals":{"base":{"amount":"281.62","amount_ytd":"12391.28","hours":"17.8504","hours_ytd":"1702.5700","rate_implied":"15.7800","rate_implied_ytd":"7.2800"},"overtime":{"amount":"144.56","amount_ytd":"794.75","hours":"5.9501","hours_ytd":"44.2700","rate_implied":"24.3000","rate_implied_ytd":"17.9500"},"commission":{"amount":null,"amount_ytd":"1549.33","hours":null,"hours_ytd":null,"rate_implied":null,"rate_implied_ytd":null},"bonus":{"amount":"643.87","amount_ytd":"2515.26","hours":null,"hours_ytd":null,"rate_implied":null,"rate_implied_ytd":null},"other":null},"employment":"a113391a-0366-3629-b2ed-22b255bb6e06"}],"next":null,"previous":null}'
+  recorded_at: Mon, 26 Jan 2026 17:57:55 GMT
+- request:
+    method: get
+    uri: https://api-sandbox.argyle.com/v2/gigs?account=019bfb74-a974-e1fb-d876-0f4e094835f2&from_start_datetime=2025-10-28&limit=200&to_start_datetime=2026-01-26
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Content-Type:
+      - application/json
+      Authorization:
+      - Basic <ARGYLE_BASIC_AUTH>
+      User-Agent:
+      - Faraday v2.14.0
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Accept:
+      - "*/*"
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Date:
+      - Mon, 26 Jan 2026 17:58:20 GMT
+      Content-Type:
+      - application/json
+      Transfer-Encoding:
+      - chunked
+      Connection:
+      - keep-alive
+      Access-Control-Allow-Origin:
+      - "*"
+      Cache-Control:
+      - no-cache, no-store, max-age=0, must-revalidate
+      Expires:
+      - '0'
+      Pragma:
+      - no-cache
+      Strict-Transport-Security:
+      - max-age=31536000; includeSubDomains
+      Vary:
+      - Accept-Encoding,Origin
+      X-Client-Id:
+      - '018f0834-d69a-879b-05cb-ddde033024f0'
+      X-Content-Type-Options:
+      - nosniff
+      X-Frame-Options:
+      - DENY
+      X-Trace-Id:
+      - 07f959f8-8e35-49a8-8acc-deff11f86f83
+      X-Xss-Protection:
+      - '0'
+      Via:
+      - 1.1 google
+      Cf-Cache-Status:
+      - DYNAMIC
+      Set-Cookie:
+      - __cf_bm=rEF7_OFJ.hkCpYMFqUGxOGLyGlEvc7adzwArTtPyCu4-1769450300.6565976-1.0.1.1-HyB9GNjjAhsCfcSZi9xU2BUw9UGo.gIG2g63i4ZYsH8sVCPERKi.3IKmVmUYv3mvjhu9HN9FFqRBMGCAKoQQrxvjxsMQUX1.YBIOhwqky8RHJGVcpQGPaH0d.8.chYjk;
+        HttpOnly; Secure; Path=/; Domain=argyle.com; Expires=Mon, 26 Jan 2026 18:28:20
+        GMT
+      Server:
+      - cloudflare
+      Cf-Ray:
+      - 9c41e5db1a6e053a-SJC
+    body:
+      encoding: ASCII-8BIT
+      string: '{"results":[],"next":null,"previous":null}'
+  recorded_at: Mon, 26 Jan 2026 17:57:55 GMT
+- request:
+    method: get
+    uri: https://api-sandbox.argyle.com/v2/identities?account=019bfb74-a974-e1fb-d876-0f4e094835f2&limit=10
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Content-Type:
+      - application/json
+      Authorization:
+      - Basic <ARGYLE_BASIC_AUTH>
+      User-Agent:
+      - Faraday v2.14.0
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Accept:
+      - "*/*"
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Date:
+      - Mon, 26 Jan 2026 17:58:20 GMT
+      Content-Type:
+      - application/json
+      Transfer-Encoding:
+      - chunked
+      Connection:
+      - keep-alive
+      Access-Control-Allow-Origin:
+      - "*"
+      Cache-Control:
+      - no-cache, no-store, max-age=0, must-revalidate
+      Set-Cookie:
+      - __cf_bm=UoNhKIlOg1xLImM2neA3oEX97tIN5WDh49uLW_fKuX8-1769450300.8466556-1.0.1.1-Mb3Z84ZodGpcH1a5gltpuUPbio4FmwarAiHpwC1KNZDvke41Eh.4GUuy_KKqyvyMaE.WXj7DoGLp18ToBPN9pvKmerwhf4oq3lhegRuaRRb8UDPJppGK16W8TW7dflTG;
+        HttpOnly; Secure; Path=/; Domain=argyle.com; Expires=Mon, 26 Jan 2026 18:28:20
+        GMT
+      Expires:
+      - '0'
+      Pragma:
+      - no-cache
+      Strict-Transport-Security:
+      - max-age=31536000; includeSubDomains
+      Vary:
+      - Accept-Encoding,Origin
+      X-Client-Id:
+      - '018f0834-d69a-879b-05cb-ddde033024f0'
+      X-Content-Type-Options:
+      - nosniff
+      X-Frame-Options:
+      - DENY
+      X-Trace-Id:
+      - e6c9d95e-a733-474e-aea8-41986fb1984b
+      X-Xss-Protection:
+      - '0'
+      Via:
+      - 1.1 google
+      Cf-Cache-Status:
+      - DYNAMIC
+      Server:
+      - cloudflare
+      Cf-Ray:
+      - 9c41e5dc4e00238b-SJC
+    body:
+      encoding: ASCII-8BIT
+      string: '{"results":[{"id":"6dc37274-8007-3b8f-868d-302ed50dcfba","account":"019bfb74-a974-e1fb-d876-0f4e094835f2","address":{"city":"New
+        York","line1":"759 Victoria Plaza","line2":null,"state":"NY","country":"US","postal_code":"10014"},"first_name":"Bob","last_name":"Jones","full_name":"Bob
+        Jones","birth_date":"1980-10-10","email":"test1@argyle.com","phone_number":"+18009000010","picture_url":"https://api-sandbox.argyle.com/v2/payroll-documents/019bfb74-c4c4-8184-05a1-3cbccb96ceef/file","employment_status":"terminated","employment_type":"full-time","job_title":"1635
+        - Helpline Agent","ssn":"522-09-1191","marital_status":"Married filing jointly","gender":"Male","hire_date":"2023-07-26","original_hire_date":"2023-07-26","termination_date":"2025-12-19","termination_reason":"Poor
+        quality of work.","employer":"Advance Auto Parts","base_pay":{"amount":"281.62","period":"weekly","currency":"USD"},"pay_cycle":"weekly","platform_ids":{"employee_id":"ZW25Q9KGV","position_id":"DENCHF1C6","platform_user_id":"K9J3DTZBDB2IIRI9"},"created_at":"2026-01-26T17:58:12.231Z","updated_at":"2026-01-26T17:58:19.384Z","metadata":{},"employment":"a113391a-0366-3629-b2ed-22b255bb6e06"}],"next":null,"previous":null}'
+  recorded_at: Mon, 26 Jan 2026 17:57:55 GMT
+- request:
+    method: get
+    uri: https://api-sandbox.argyle.com/v2/accounts/019bfb74-a974-e1fb-d876-0f4e094835f2
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Content-Type:
+      - application/json
+      Authorization:
+      - Basic <ARGYLE_BASIC_AUTH>
+      User-Agent:
+      - Faraday v2.14.0
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Accept:
+      - "*/*"
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Date:
+      - Mon, 26 Jan 2026 17:58:21 GMT
+      Content-Type:
+      - application/json
+      Transfer-Encoding:
+      - chunked
+      Connection:
+      - keep-alive
+      Access-Control-Allow-Origin:
+      - "*"
+      Cache-Control:
+      - no-cache, no-store, max-age=0, must-revalidate
+      Set-Cookie:
+      - __cf_bm=7ge5ZL_olFO7PSxI5VdLI2XZEAC8qn3s2CAw9Tzk8Hs-1769450301.0327642-1.0.1.1-YgpXtcTjuodaRYmaOj4YLxGY5s1_vp946OU5YKMATlzVWxQExCMWaVPBEbj6T7jOevKezWx60W14D4wivx2uxfyK_8Wf07gL_yKbLN95z0esRLqdQXlF.4Fm_iAuycCg;
+        HttpOnly; Secure; Path=/; Domain=argyle.com; Expires=Mon, 26 Jan 2026 18:28:21
+        GMT
+      Expires:
+      - '0'
+      Pragma:
+      - no-cache
+      Strict-Transport-Security:
+      - max-age=31536000; includeSubDomains
+      Vary:
+      - Accept-Encoding,Origin
+      X-Client-Id:
+      - '018f0834-d69a-879b-05cb-ddde033024f0'
+      X-Content-Type-Options:
+      - nosniff
+      X-Frame-Options:
+      - DENY
+      X-Trace-Id:
+      - f2c74948-c5df-412e-bcb4-051dd1d1a00c
+      X-Xss-Protection:
+      - '0'
+      Via:
+      - 1.1 google
+      Cf-Cache-Status:
+      - DYNAMIC
+      Server:
+      - cloudflare
+      Cf-Ray:
+      - 9c41e5dd7d67e9e7-SJC
+    body:
+      encoding: ASCII-8BIT
+      string: '{"id":"019bfb74-a974-e1fb-d876-0f4e094835f2","user":"019bfb74-9fc0-c23b-9ab8-0cde682601bc","employers":["Advance
+        Auto Parts"],"item":"item_000029932","source":"argyle_sandbox","created_at":"2026-01-26T17:58:05.460Z","updated_at":"2026-01-26T17:58:19.767Z","scanned_at":"2026-01-26T17:58:19.189Z","connection":{"status":"connected","error_code":null,"error_message":null,"updated_at":"2026-01-26T17:58:09.940Z"},"direct_deposit_switch":{"status":"idle","error_code":null,"error_message":null,"updated_at":"2026-01-26T17:58:05.732Z"},"availability":{"gigs":{"status":"in_progress","updated_at":"2026-01-26T17:58:19.189Z","available_count":0,"available_from":null,"available_to":null},"shifts":{"status":"in_progress","updated_at":"2026-01-26T17:58:19.189Z","available_count":14,"available_from":"2025-10-26T00:00:00.000Z","available_to":"2025-12-18T00:00:00.000Z"},"paystubs":{"status":"in_progress","updated_at":"2026-01-26T17:58:19.221Z","available_count":9,"available_from":"2025-10-29T00:00:00.000Z","available_to":"2025-12-19T00:00:00.000Z"},"payroll_documents":{"status":"synced","updated_at":"2026-01-26T17:58:12.647Z"},"identities":{"status":"synced","updated_at":"2026-01-26T17:58:19.403Z"},"ratings":{"status":"synced","updated_at":"2026-01-26T17:58:12.902Z"},"vehicles":{"status":"synced","updated_at":"2026-01-26T17:58:12.660Z"},"deposit_destinations":{"status":"synced","updated_at":"2026-01-26T17:58:11.237Z"},"user_forms":null,"user_uploads":null},"ongoing_refresh":{"status":"disabled"}}'
+  recorded_at: Mon, 26 Jan 2026 17:57:55 GMT
+- request:
+    method: get
+    uri: https://api-sandbox.argyle.com/v2/paystubs?account=019bfb74-a974-e1fb-d876-0f4e094835f2&from_start_date=2025-10-28&limit=200&to_start_date=2026-01-26
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Content-Type:
+      - application/json
+      Authorization:
+      - Basic <ARGYLE_BASIC_AUTH>
+      User-Agent:
+      - Faraday v2.14.0
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Accept:
+      - "*/*"
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Date:
+      - Mon, 26 Jan 2026 17:58:21 GMT
+      Content-Type:
+      - application/json
+      Transfer-Encoding:
+      - chunked
+      Connection:
+      - keep-alive
+      Access-Control-Allow-Origin:
+      - "*"
+      Cache-Control:
+      - no-cache, no-store, max-age=0, must-revalidate
+      Set-Cookie:
+      - __cf_bm=.dzlbhtAK9nMUmLktSYcgxWnMWbT6tWLOqECTFrzejY-1769450301.2325609-1.0.1.1-M5HXptV52fu3yD_IbHjnQvnQRdDGurjqoYEP8wXYFb6smj54ITkwmUP.wWs0KtICs4VEJXtxHhHEh5RhOKT1WCM7hbj_8DzZVbrG69UC4zLLHOeHFJ7T2rA9AIp.YDQV;
+        HttpOnly; Secure; Path=/; Domain=argyle.com; Expires=Mon, 26 Jan 2026 18:28:21
+        GMT
+      Expires:
+      - '0'
+      Pragma:
+      - no-cache
+      Strict-Transport-Security:
+      - max-age=31536000; includeSubDomains
+      Vary:
+      - Accept-Encoding,Origin
+      X-Client-Id:
+      - '018f0834-d69a-879b-05cb-ddde033024f0'
+      X-Content-Type-Options:
+      - nosniff
+      X-Frame-Options:
+      - DENY
+      X-Trace-Id:
+      - 33456776-28fc-42ba-aba9-ac99f2d79518
+      X-Xss-Protection:
+      - '0'
+      Via:
+      - 1.1 google
+      Cf-Cache-Status:
+      - DYNAMIC
+      Server:
+      - cloudflare
+      Cf-Ray:
+      - 9c41e5debc647aee-SJC
+    body:
+      encoding: ASCII-8BIT
+      string: '{"results":[{"id":"9e0b10ab-dd43-3b0f-86f0-4c4b4cf1dbc1","account":"019bfb74-a974-e1fb-d876-0f4e094835f2","payroll_document":"019bfb74-ddc3-d18a-b01c-34860ad7c8ac","deduction_list":[{"amount":"2.82","name":"Dental","tax_classification":null,"amount_ytd":"166.16"},{"amount":"2.82","name":"Roth","tax_classification":"post_tax","amount_ytd":"149.26"}],"filing_status":[{"type":"federal","location":null,"status":"married
+        filing separately"},{"type":"state","location":"NY","status":"single"}],"tax_list":[{"amount":"22.53","name":"Federal
+        Withholding","type":"federal","amount_ytd":"447.77"},{"amount":"30.98","name":"OASDI","type":"fica","amount_ytd":"428.05"},{"amount":"25.35","name":"CA
+        State Income Tax","type":"state","amount_ytd":"644.89"}],"status":"completed","paystub_date":"2025-12-19T00:00:00Z","paystub_period":{"start_date":"2025-12-11T00:00:00Z","end_date":"2025-12-19T00:00:00Z"},"currency":"USD","gross_pay":"413.86","deductions":"5.64","taxes":"78.86","net_pay":"334.36","reimbursements":"5.00","hours":"15.41","fees":null,"net_pay_ytd":"16073.23","gross_pay_ytd":"19853.87","metadata":{},"employer":"Advance
+        Auto Parts","employer_address":{"city":"Seattle","state":"WA","country":"US","postal_code":"98109","line1":"202
+        Westlake Ave N","line2":null},"created_at":"2026-01-26T17:58:18.920Z","updated_at":"2026-01-26T17:58:18.920Z","destinations":[],"hours_ytd":"2030.54","deductions_ytd":"715.31","taxes_ytd":"3151.24","gross_pay_list":[{"name":"Regular","type":"base","start_date":"2025-12-11","end_date":"2025-12-19","rate":"22.8400","hours":"12.3301","amount":"281.62","hours_ytd":"1981.4400","amount_ytd":"14644.24"},{"name":"Overtime","type":"overtime","start_date":"2025-12-17","end_date":"2025-12-18","rate":"34.2600","hours":"3.0825","amount":"105.61","hours_ytd":"29.7200","amount_ytd":"639.21"},{"name":"Holiday
+        Overtime","type":"overtime","start_date":null,"end_date":null,"rate":null,"hours":null,"amount":null,"hours_ytd":"19.3800","amount_ytd":"288.11"},{"name":"Bonus","type":"bonus","start_date":"2025-12-18","end_date":"2025-12-18","rate":null,"hours":null,"amount":"26.63","hours_ytd":null,"amount_ytd":"2370.86"},{"name":"Incentive","type":"bonus","start_date":null,"end_date":null,"rate":null,"hours":null,"amount":null,"hours_ytd":null,"amount_ytd":"171.03"},{"name":"Commission","type":"commission","start_date":null,"end_date":null,"rate":null,"hours":null,"amount":null,"hours_ytd":null,"amount_ytd":"1740.42"}],"gross_pay_list_totals":{"base":{"amount":"281.62","amount_ytd":"14644.24","hours":"12.3301","hours_ytd":"1981.4400","rate_implied":"22.8400","rate_implied_ytd":"7.3900"},"overtime":{"amount":"105.61","amount_ytd":"927.32","hours":"3.0825","hours_ytd":"49.1000","rate_implied":"34.2600","rate_implied_ytd":"18.8900"},"commission":{"amount":null,"amount_ytd":"1740.42","hours":null,"hours_ytd":null,"rate_implied":null,"rate_implied_ytd":null},"bonus":{"amount":"26.63","amount_ytd":"2541.89","hours":null,"hours_ytd":null,"rate_implied":null,"rate_implied_ytd":null},"other":null},"employment":"a113391a-0366-3629-b2ed-22b255bb6e06"},{"id":"9aa4b12b-b751-3b43-97ce-9fb2941da267","account":"019bfb74-a974-e1fb-d876-0f4e094835f2","payroll_document":"019bfb74-dd98-3566-4d00-8eb010b659fa","deduction_list":[{"amount":"2.82","name":"401K","tax_classification":"pre_tax","amount_ytd":"107.02"},{"amount":"8.45","name":"Roth","tax_classification":"post_tax","amount_ytd":"146.44"}],"filing_status":[{"type":"federal","location":null,"status":"single"},{"type":"state","location":"NY","status":"married
+        filing separately"}],"tax_list":[{"amount":"28.16","name":"Federal Withholding","type":"federal","amount_ytd":"425.24"}],"status":"completed","paystub_date":"2025-12-17T00:00:00Z","paystub_period":{"start_date":"2025-12-04T00:00:00Z","end_date":"2025-12-11T00:00:00Z"},"currency":"USD","gross_pay":"455.84","deductions":"11.27","taxes":"28.16","net_pay":"416.41","reimbursements":"0.00","hours":"26.05","fees":null,"net_pay_ytd":"15738.87","gross_pay_ytd":"19440.01","metadata":{},"employer":"Advance
+        Auto Parts","employer_address":{"city":"Seattle","state":"WA","country":"US","postal_code":"98109","line1":"202
+        Westlake Ave N","line2":null},"created_at":"2026-01-26T17:58:18.996Z","updated_at":"2026-01-26T17:58:18.996Z","destinations":[],"hours_ytd":"2015.13","deductions_ytd":"709.67","taxes_ytd":"3072.38","gross_pay_list":[{"name":"Regular","type":"base","start_date":"2025-12-04","end_date":"2025-12-11","rate":"10.8089","hours":"26.0544","amount":"281.62","hours_ytd":"1969.1100","amount_ytd":"14362.62"},{"name":"Overtime","type":"overtime","start_date":null,"end_date":null,"rate":null,"hours":null,"amount":null,"hours_ytd":"26.6400","amount_ytd":"533.60"},{"name":"Holiday
+        Overtime","type":"overtime","start_date":null,"end_date":null,"rate":null,"hours":null,"amount":null,"hours_ytd":"19.3800","amount_ytd":"288.11"},{"name":"Bonus","type":"bonus","start_date":null,"end_date":null,"rate":null,"hours":null,"amount":null,"hours_ytd":null,"amount_ytd":"2344.23"},{"name":"Incentive","type":"bonus","start_date":null,"end_date":null,"rate":null,"hours":null,"amount":null,"hours_ytd":null,"amount_ytd":"171.03"},{"name":"Commission","type":"commission","start_date":"2025-12-05","end_date":"2025-12-10","rate":null,"hours":null,"amount":"174.22","hours_ytd":null,"amount_ytd":"1740.42"}],"gross_pay_list_totals":{"base":{"amount":"281.62","amount_ytd":"14362.62","hours":"26.0544","hours_ytd":"1969.1100","rate_implied":"10.8100","rate_implied_ytd":"7.2900"},"overtime":{"amount":null,"amount_ytd":"821.71","hours":null,"hours_ytd":"46.0200","rate_implied":null,"rate_implied_ytd":"17.8600"},"commission":{"amount":"174.22","amount_ytd":"1740.42","hours":null,"hours_ytd":null,"rate_implied":null,"rate_implied_ytd":null},"bonus":{"amount":null,"amount_ytd":"2515.26","hours":null,"hours_ytd":null,"rate_implied":null,"rate_implied_ytd":null},"other":null},"employment":"a113391a-0366-3629-b2ed-22b255bb6e06"},{"id":"c48490fe-3df6-3ea1-9855-89fcc00414e5","account":"019bfb74-a974-e1fb-d876-0f4e094835f2","payroll_document":"019bfb74-dd72-64ad-8baf-a8c01b6edf24","deduction_list":[{"amount":"11.26","name":"Roth","tax_classification":"post_tax","amount_ytd":"126.73"},{"amount":"11.26","name":"Roth","tax_classification":"post_tax","amount_ytd":"137.99"}],"filing_status":[{"type":"federal","location":null,"status":"married
+        filing separately"},{"type":"state","location":"NY","status":"single"}],"tax_list":[{"amount":"22.53","name":"Social
+        Security Tax","type":"fica","amount_ytd":"594.19"},{"amount":"19.71","name":"OASDI","type":"fica","amount_ytd":"397.07"},{"amount":"25.35","name":"Federal
+        Income Tax","type":"federal","amount_ytd":"481.57"}],"status":"completed","paystub_date":"2025-12-10T00:00:00Z","paystub_period":{"start_date":"2025-11-27T00:00:00Z","end_date":"2025-12-04T00:00:00Z"},"currency":"USD","gross_pay":"308.58","deductions":"22.52","taxes":"67.59","net_pay":"219.61","reimbursements":"1.14","hours":"29.05","fees":null,"net_pay_ytd":"15322.46","gross_pay_ytd":"18984.17","metadata":{},"employer":"Advance
+        Auto Parts","employer_address":{"city":"Seattle","state":"WA","country":"US","postal_code":"98109","line1":"202
+        Westlake Ave N","line2":null},"created_at":"2026-01-26T17:58:19.012Z","updated_at":"2026-01-26T17:58:19.012Z","destinations":[],"hours_ytd":"1989.07","deductions_ytd":"698.40","taxes_ytd":"3044.22","gross_pay_list":[{"name":"Regular","type":"base","start_date":"2025-11-27","end_date":"2025-12-04","rate":"10.3146","hours":"27.3031","amount":"281.62","hours_ytd":"1943.0500","amount_ytd":"14081.00"},{"name":"Overtime","type":"overtime","start_date":"2025-11-30","end_date":"2025-11-30","rate":"15.4719","hours":"1.7427","amount":"26.96","hours_ytd":"26.6400","amount_ytd":"533.60"},{"name":"Holiday
+        Overtime","type":"overtime","start_date":null,"end_date":null,"rate":null,"hours":null,"amount":null,"hours_ytd":"19.3800","amount_ytd":"288.11"},{"name":"Bonus","type":"bonus","start_date":null,"end_date":null,"rate":null,"hours":null,"amount":null,"hours_ytd":null,"amount_ytd":"2344.23"},{"name":"Incentive","type":"bonus","start_date":null,"end_date":null,"rate":null,"hours":null,"amount":null,"hours_ytd":null,"amount_ytd":"171.03"},{"name":"Commission","type":"commission","start_date":null,"end_date":null,"rate":null,"hours":null,"amount":null,"hours_ytd":null,"amount_ytd":"1566.20"}],"gross_pay_list_totals":{"base":{"amount":"281.62","amount_ytd":"14081.00","hours":"27.3031","hours_ytd":"1943.0500","rate_implied":"10.3100","rate_implied_ytd":"7.2500"},"overtime":{"amount":"26.96","amount_ytd":"821.71","hours":"1.7427","hours_ytd":"46.0200","rate_implied":"15.4700","rate_implied_ytd":"17.8600"},"commission":{"amount":null,"amount_ytd":"1566.20","hours":null,"hours_ytd":null,"rate_implied":null,"rate_implied_ytd":null},"bonus":{"amount":null,"amount_ytd":"2515.26","hours":null,"hours_ytd":null,"rate_implied":null,"rate_implied_ytd":null},"other":null},"employment":"a113391a-0366-3629-b2ed-22b255bb6e06"},{"id":"e820d076-434b-3bf7-8d55-b5f9951aa728","account":"019bfb74-a974-e1fb-d876-0f4e094835f2","payroll_document":"019bfb74-dd4d-fa83-48f2-03ca14f47cdf","deduction_list":[{"amount":"2.82","name":"Roth","tax_classification":"post_tax","amount_ytd":"115.47"},{"amount":"5.63","name":"401K","tax_classification":"pre_tax","amount_ytd":"104.20"}],"filing_status":[{"type":"federal","location":null,"status":"married
+        filing separately"}],"tax_list":[{"amount":"33.79","name":"Federal Withholding","type":"federal","amount_ytd":"397.08"}],"status":"completed","paystub_date":"2025-12-03T00:00:00Z","paystub_period":{"start_date":"2025-11-20T00:00:00Z","end_date":"2025-11-27T00:00:00Z"},"currency":"USD","gross_pay":"298.49","deductions":"8.45","taxes":"33.79","net_pay":"258.66","reimbursements":"2.41","hours":"47.91","fees":null,"net_pay_ytd":"15102.85","gross_pay_ytd":"18675.59","metadata":{},"employer":"Advance
+        Auto Parts","employer_address":{"city":"Seattle","state":"WA","country":"US","postal_code":"98109","line1":"202
+        Westlake Ave N","line2":null},"created_at":"2026-01-26T17:58:18.966Z","updated_at":"2026-01-26T17:58:18.966Z","destinations":[],"hours_ytd":"1960.03","deductions_ytd":"675.88","taxes_ytd":"2976.63","gross_pay_list":[{"name":"Regular","type":"base","start_date":"2025-11-20","end_date":"2025-11-27","rate":"5.8777","hours":"47.9137","amount":"281.62","hours_ytd":"1915.7500","amount_ytd":"13799.38"},{"name":"Overtime","type":"overtime","start_date":null,"end_date":null,"rate":null,"hours":null,"amount":null,"hours_ytd":"24.8900","amount_ytd":"506.64"},{"name":"Holiday
+        Overtime","type":"overtime","start_date":null,"end_date":null,"rate":null,"hours":null,"amount":null,"hours_ytd":"19.3800","amount_ytd":"288.11"},{"name":"Bonus","type":"bonus","start_date":null,"end_date":null,"rate":null,"hours":null,"amount":null,"hours_ytd":null,"amount_ytd":"2344.23"},{"name":"Incentive","type":"bonus","start_date":null,"end_date":null,"rate":null,"hours":null,"amount":null,"hours_ytd":null,"amount_ytd":"171.03"},{"name":"Commission","type":"commission","start_date":"2025-11-25","end_date":"2025-11-25","rate":null,"hours":null,"amount":"16.87","hours_ytd":null,"amount_ytd":"1566.20"}],"gross_pay_list_totals":{"base":{"amount":"281.62","amount_ytd":"13799.38","hours":"47.9137","hours_ytd":"1915.7500","rate_implied":"5.8800","rate_implied_ytd":"7.2000"},"overtime":{"amount":null,"amount_ytd":"794.75","hours":null,"hours_ytd":"44.2700","rate_implied":null,"rate_implied_ytd":"17.9500"},"commission":{"amount":"16.87","amount_ytd":"1566.20","hours":null,"hours_ytd":null,"rate_implied":null,"rate_implied_ytd":null},"bonus":{"amount":null,"amount_ytd":"2515.26","hours":null,"hours_ytd":null,"rate_implied":null,"rate_implied_ytd":null},"other":null},"employment":"a113391a-0366-3629-b2ed-22b255bb6e06"},{"id":"ac6adf2c-a596-35ba-8baf-894070824e06","account":"019bfb74-a974-e1fb-d876-0f4e094835f2","payroll_document":"019bfb74-dd2c-7aa0-7de6-ad90bfe76f66","deduction_list":[{"amount":"11.26","name":"Roth","tax_classification":"post_tax","amount_ytd":"112.65"},{"amount":"8.45","name":"Vision","tax_classification":"pre_tax","amount_ytd":"140.81"}],"filing_status":[{"type":"federal","location":null,"status":"single"}],"tax_list":[{"amount":"33.79","name":"CA
+        State Income Tax","type":"state","amount_ytd":"619.54"}],"status":"completed","paystub_date":"2025-11-26T00:00:00Z","paystub_period":{"start_date":"2025-11-13T00:00:00Z","end_date":"2025-11-20T00:00:00Z"},"currency":"USD","gross_pay":"281.62","deductions":"19.71","taxes":"33.79","net_pay":"228.12","reimbursements":"0.00","hours":"30.56","fees":null,"net_pay_ytd":"14844.19","gross_pay_ytd":"18377.10","metadata":{},"employer":"Advance
+        Auto Parts","employer_address":{"city":"Seattle","state":"WA","country":"US","postal_code":"98109","line1":"202
+        Westlake Ave N","line2":null},"created_at":"2026-01-26T17:58:18.937Z","updated_at":"2026-01-26T17:58:18.937Z","destinations":[],"hours_ytd":"1912.11","deductions_ytd":"667.43","taxes_ytd":"2942.84","gross_pay_list":[{"name":"Regular","type":"base","start_date":"2025-11-13","end_date":"2025-11-20","rate":"9.2165","hours":"30.5562","amount":"281.62","hours_ytd":"1867.8400","amount_ytd":"13517.76"},{"name":"Overtime","type":"overtime","start_date":null,"end_date":null,"rate":null,"hours":null,"amount":null,"hours_ytd":"24.8900","amount_ytd":"506.64"},{"name":"Holiday
+        Overtime","type":"overtime","start_date":null,"end_date":null,"rate":null,"hours":null,"amount":null,"hours_ytd":"19.3800","amount_ytd":"288.11"},{"name":"Bonus","type":"bonus","start_date":null,"end_date":null,"rate":null,"hours":null,"amount":null,"hours_ytd":null,"amount_ytd":"2344.23"},{"name":"Incentive","type":"bonus","start_date":null,"end_date":null,"rate":null,"hours":null,"amount":null,"hours_ytd":null,"amount_ytd":"171.03"},{"name":"Commission","type":"commission","start_date":null,"end_date":null,"rate":null,"hours":null,"amount":null,"hours_ytd":null,"amount_ytd":"1549.33"}],"gross_pay_list_totals":{"base":{"amount":"281.62","amount_ytd":"13517.76","hours":"30.5562","hours_ytd":"1867.8400","rate_implied":"9.2200","rate_implied_ytd":"7.2400"},"overtime":{"amount":null,"amount_ytd":"794.75","hours":null,"hours_ytd":"44.2700","rate_implied":null,"rate_implied_ytd":"17.9500"},"commission":{"amount":null,"amount_ytd":"1549.33","hours":null,"hours_ytd":null,"rate_implied":null,"rate_implied_ytd":null},"bonus":{"amount":null,"amount_ytd":"2515.26","hours":null,"hours_ytd":null,"rate_implied":null,"rate_implied_ytd":null},"other":null},"employment":"a113391a-0366-3629-b2ed-22b255bb6e06"},{"id":"85711b68-d308-305e-83ab-a1525daf108f","account":"019bfb74-a974-e1fb-d876-0f4e094835f2","payroll_document":"019bfb74-dd09-0d28-7a9a-946520d7e1af","deduction_list":[{"amount":"11.26","name":"Roth","tax_classification":"post_tax","amount_ytd":"101.39"}],"filing_status":[{"type":"federal","location":null,"status":"single"},{"type":"state","location":"NY","status":"married
+        filing separately"}],"tax_list":[{"amount":"28.16","name":"Social Security
+        Tax","type":"fica","amount_ytd":"571.66"}],"status":"completed","paystub_date":"2025-11-19T00:00:00Z","paystub_period":{"start_date":"2025-11-06T00:00:00Z","end_date":"2025-11-13T00:00:00Z"},"currency":"USD","gross_pay":"281.62","deductions":"11.26","taxes":"28.16","net_pay":"242.20","reimbursements":"0.00","hours":"42.05","fees":null,"net_pay_ytd":"14616.07","gross_pay_ytd":"18095.48","metadata":{},"employer":"Advance
+        Auto Parts","employer_address":{"city":"Seattle","state":"WA","country":"US","postal_code":"98109","line1":"202
+        Westlake Ave N","line2":null},"created_at":"2026-01-26T17:58:18.906Z","updated_at":"2026-01-26T17:58:18.906Z","destinations":[],"hours_ytd":"1881.56","deductions_ytd":"647.72","taxes_ytd":"2909.05","gross_pay_list":[{"name":"Regular","type":"base","start_date":"2025-11-06","end_date":"2025-11-13","rate":"6.6971","hours":"42.0509","amount":"281.62","hours_ytd":"1837.2800","amount_ytd":"13236.14"},{"name":"Overtime","type":"overtime","start_date":null,"end_date":null,"rate":null,"hours":null,"amount":null,"hours_ytd":"24.8900","amount_ytd":"506.64"},{"name":"Holiday
+        Overtime","type":"overtime","start_date":null,"end_date":null,"rate":null,"hours":null,"amount":null,"hours_ytd":"19.3800","amount_ytd":"288.11"},{"name":"Bonus","type":"bonus","start_date":null,"end_date":null,"rate":null,"hours":null,"amount":null,"hours_ytd":null,"amount_ytd":"2344.23"},{"name":"Incentive","type":"bonus","start_date":null,"end_date":null,"rate":null,"hours":null,"amount":null,"hours_ytd":null,"amount_ytd":"171.03"},{"name":"Commission","type":"commission","start_date":null,"end_date":null,"rate":null,"hours":null,"amount":null,"hours_ytd":null,"amount_ytd":"1549.33"}],"gross_pay_list_totals":{"base":{"amount":"281.62","amount_ytd":"13236.14","hours":"42.0509","hours_ytd":"1837.2800","rate_implied":"6.7000","rate_implied_ytd":"7.2000"},"overtime":{"amount":null,"amount_ytd":"794.75","hours":null,"hours_ytd":"44.2700","rate_implied":null,"rate_implied_ytd":"17.9500"},"commission":{"amount":null,"amount_ytd":"1549.33","hours":null,"hours_ytd":null,"rate_implied":null,"rate_implied_ytd":null},"bonus":{"amount":null,"amount_ytd":"2515.26","hours":null,"hours_ytd":null,"rate_implied":null,"rate_implied_ytd":null},"other":null},"employment":"a113391a-0366-3629-b2ed-22b255bb6e06"},{"id":"18bf0d2f-8ed6-3d46-8567-6309084ed880","account":"019bfb74-a974-e1fb-d876-0f4e094835f2","payroll_document":"019bfb74-dce5-c7fd-cf68-5f908e964935","deduction_list":[{"amount":"8.45","name":"Vision","tax_classification":"pre_tax","amount_ytd":"132.36"},{"amount":"11.26","name":"401K","tax_classification":"pre_tax","amount_ytd":"98.57"},{"amount":"2.82","name":"Dental","tax_classification":null,"amount_ytd":"163.34"}],"filing_status":[{"type":"federal","location":null,"status":"single"}],"tax_list":[{"amount":"33.79","name":"OASDI","type":"fica","amount_ytd":"377.36"},{"amount":"28.16","name":"Federal
+        Income Tax","type":"federal","amount_ytd":"456.22"},{"amount":"19.71","name":"Federal
+        Withholding","type":"federal","amount_ytd":"363.29"}],"status":"completed","paystub_date":"2025-11-12T00:00:00Z","paystub_period":{"start_date":"2025-10-30T00:00:00Z","end_date":"2025-11-06T00:00:00Z"},"currency":"USD","gross_pay":"281.62","deductions":"22.53","taxes":"81.66","net_pay":"177.43","reimbursements":"0.00","hours":"54.50","fees":null,"net_pay_ytd":"14373.87","gross_pay_ytd":"17813.86","metadata":{},"employer":"Advance
+        Auto Parts","employer_address":{"city":"Seattle","state":"WA","country":"US","postal_code":"98109","line1":"202
+        Westlake Ave N","line2":null},"created_at":"2026-01-26T17:58:18.980Z","updated_at":"2026-01-26T17:58:18.980Z","destinations":[],"hours_ytd":"1839.51","deductions_ytd":"636.46","taxes_ytd":"2880.89","gross_pay_list":[{"name":"Regular","type":"base","start_date":"2025-10-30","end_date":"2025-11-06","rate":"5.1677","hours":"54.4962","amount":"281.62","hours_ytd":"1795.2300","amount_ytd":"12954.52"},{"name":"Overtime","type":"overtime","start_date":null,"end_date":null,"rate":null,"hours":null,"amount":null,"hours_ytd":"24.8900","amount_ytd":"506.64"},{"name":"Holiday
+        Overtime","type":"overtime","start_date":null,"end_date":null,"rate":null,"hours":null,"amount":null,"hours_ytd":"19.3800","amount_ytd":"288.11"},{"name":"Bonus","type":"bonus","start_date":null,"end_date":null,"rate":null,"hours":null,"amount":null,"hours_ytd":null,"amount_ytd":"2344.23"},{"name":"Incentive","type":"bonus","start_date":null,"end_date":null,"rate":null,"hours":null,"amount":null,"hours_ytd":null,"amount_ytd":"171.03"},{"name":"Commission","type":"commission","start_date":null,"end_date":null,"rate":null,"hours":null,"amount":null,"hours_ytd":null,"amount_ytd":"1549.33"}],"gross_pay_list_totals":{"base":{"amount":"281.62","amount_ytd":"12954.52","hours":"54.4962","hours_ytd":"1795.2300","rate_implied":"5.1700","rate_implied_ytd":"7.2200"},"overtime":{"amount":null,"amount_ytd":"794.75","hours":null,"hours_ytd":"44.2700","rate_implied":null,"rate_implied_ytd":"17.9500"},"commission":{"amount":null,"amount_ytd":"1549.33","hours":null,"hours_ytd":null,"rate_implied":null,"rate_implied_ytd":null},"bonus":{"amount":null,"amount_ytd":"2515.26","hours":null,"hours_ytd":null,"rate_implied":null,"rate_implied_ytd":null},"other":null},"employment":"a113391a-0366-3629-b2ed-22b255bb6e06"},{"id":"1c16ae7f-4315-3ac3-b184-0ab997dbb74c","account":"019bfb74-a974-e1fb-d876-0f4e094835f2","payroll_document":"019bfb74-dcbf-5fbc-0abb-411531701c34","deduction_list":[{"amount":"2.82","name":"Vision","tax_classification":"pre_tax","amount_ytd":"123.91"}],"filing_status":[{"type":"federal","location":null,"status":"married
+        filing separately"}],"tax_list":[{"amount":"30.98","name":"Federal Withholding","type":"federal","amount_ytd":"343.58"},{"amount":"19.71","name":"OASDI","type":"fica","amount_ytd":"343.57"}],"status":"completed","paystub_date":"2025-11-05T00:00:00Z","paystub_period":{"start_date":"2025-10-23T00:00:00Z","end_date":"2025-10-30T00:00:00Z"},"currency":"USD","gross_pay":"281.62","deductions":"2.82","taxes":"50.69","net_pay":"228.11","reimbursements":"0.00","hours":"38.17","fees":null,"net_pay_ytd":"14196.44","gross_pay_ytd":"17532.24","metadata":{},"employer":"Advance
+        Auto Parts","employer_address":{"city":"Seattle","state":"WA","country":"US","postal_code":"98109","line1":"202
+        Westlake Ave N","line2":null},"created_at":"2026-01-26T17:58:18.951Z","updated_at":"2026-01-26T17:58:18.951Z","destinations":[],"hours_ytd":"1785.01","deductions_ytd":"613.93","taxes_ytd":"2799.23","gross_pay_list":[{"name":"Regular","type":"base","start_date":"2025-10-23","end_date":"2025-10-30","rate":"7.3785","hours":"38.1678","amount":"281.62","hours_ytd":"1740.7300","amount_ytd":"12672.90"},{"name":"Overtime","type":"overtime","start_date":null,"end_date":null,"rate":null,"hours":null,"amount":null,"hours_ytd":"24.8900","amount_ytd":"506.64"},{"name":"Holiday
+        Overtime","type":"overtime","start_date":null,"end_date":null,"rate":null,"hours":null,"amount":null,"hours_ytd":"19.3800","amount_ytd":"288.11"},{"name":"Bonus","type":"bonus","start_date":null,"end_date":null,"rate":null,"hours":null,"amount":null,"hours_ytd":null,"amount_ytd":"2344.23"},{"name":"Incentive","type":"bonus","start_date":null,"end_date":null,"rate":null,"hours":null,"amount":null,"hours_ytd":null,"amount_ytd":"171.03"},{"name":"Commission","type":"commission","start_date":null,"end_date":null,"rate":null,"hours":null,"amount":null,"hours_ytd":null,"amount_ytd":"1549.33"}],"gross_pay_list_totals":{"base":{"amount":"281.62","amount_ytd":"12672.90","hours":"38.1678","hours_ytd":"1740.7300","rate_implied":"7.3800","rate_implied_ytd":"7.2800"},"overtime":{"amount":null,"amount_ytd":"794.75","hours":null,"hours_ytd":"44.2700","rate_implied":null,"rate_implied_ytd":"17.9500"},"commission":{"amount":null,"amount_ytd":"1549.33","hours":null,"hours_ytd":null,"rate_implied":null,"rate_implied_ytd":null},"bonus":{"amount":null,"amount_ytd":"2515.26","hours":null,"hours_ytd":null,"rate_implied":null,"rate_implied_ytd":null},"other":null},"employment":"a113391a-0366-3629-b2ed-22b255bb6e06"},{"id":"37f0dcad-1415-3be4-88bc-08e0fdea7ecb","account":"019bfb74-a974-e1fb-d876-0f4e094835f2","payroll_document":"019bfb74-dc9b-6726-bc19-7f6bb5ed1f3c","deduction_list":[{"amount":"5.63","name":"Vision","tax_classification":"pre_tax","amount_ytd":"112.64"},{"amount":"8.45","name":"Vision","tax_classification":"pre_tax","amount_ytd":"121.09"}],"filing_status":[{"type":"federal","location":null,"status":"married
+        filing separately"},{"type":"local","location":"New York","status":"single"}],"tax_list":[{"amount":"19.71","name":"CA
+        State Income Tax","type":"state","amount_ytd":"585.75"},{"amount":"33.79","name":"OASDI","type":"fica","amount_ytd":"323.86"}],"status":"completed","paystub_date":"2025-10-29T00:00:00Z","paystub_period":{"start_date":"2025-10-16T00:00:00Z","end_date":"2025-10-23T00:00:00Z"},"currency":"USD","gross_pay":"1070.05","deductions":"14.08","taxes":"53.50","net_pay":"1003.73","reimbursements":"1.26","hours":"23.80","fees":null,"net_pay_ytd":"13968.33","gross_pay_ytd":"17250.62","metadata":{},"employer":"Advance
+        Auto Parts","employer_address":{"city":"Seattle","state":"WA","country":"US","postal_code":"98109","line1":"202
+        Westlake Ave N","line2":null},"created_at":"2026-01-26T17:58:18.892Z","updated_at":"2026-01-26T17:58:18.892Z","destinations":[],"hours_ytd":"1746.84","deductions_ytd":"611.11","taxes_ytd":"2748.54","gross_pay_list":[{"name":"Regular","type":"base","start_date":"2025-10-16","end_date":"2025-10-23","rate":"15.7767","hours":"17.8504","amount":"281.62","hours_ytd":"1702.5700","amount_ytd":"12391.28"},{"name":"Overtime","type":"overtime","start_date":"2025-10-17","end_date":"2025-10-19","rate":"23.6650","hours":"5.4741","amount":"129.54","hours_ytd":"24.8900","amount_ytd":"506.64"},{"name":"Holiday
+        Overtime","type":"overtime","start_date":"2025-10-18","end_date":"2025-10-21","rate":"31.5534","hours":"0.4760","amount":"15.02","hours_ytd":"19.3800","amount_ytd":"288.11"},{"name":"Bonus","type":"bonus","start_date":"2025-10-18","end_date":"2025-10-21","rate":null,"hours":null,"amount":"643.87","hours_ytd":null,"amount_ytd":"2344.23"},{"name":"Incentive","type":"bonus","start_date":null,"end_date":null,"rate":null,"hours":null,"amount":null,"hours_ytd":null,"amount_ytd":"171.03"},{"name":"Commission","type":"commission","start_date":null,"end_date":null,"rate":null,"hours":null,"amount":null,"hours_ytd":null,"amount_ytd":"1549.33"}],"gross_pay_list_totals":{"base":{"amount":"281.62","amount_ytd":"12391.28","hours":"17.8504","hours_ytd":"1702.5700","rate_implied":"15.7800","rate_implied_ytd":"7.2800"},"overtime":{"amount":"144.56","amount_ytd":"794.75","hours":"5.9501","hours_ytd":"44.2700","rate_implied":"24.3000","rate_implied_ytd":"17.9500"},"commission":{"amount":null,"amount_ytd":"1549.33","hours":null,"hours_ytd":null,"rate_implied":null,"rate_implied_ytd":null},"bonus":{"amount":"643.87","amount_ytd":"2515.26","hours":null,"hours_ytd":null,"rate_implied":null,"rate_implied_ytd":null},"other":null},"employment":"a113391a-0366-3629-b2ed-22b255bb6e06"}],"next":null,"previous":null}'
+  recorded_at: Mon, 26 Jan 2026 17:57:55 GMT
+- request:
+    method: get
+    uri: https://api-sandbox.argyle.com/v2/gigs?account=019bfb74-a974-e1fb-d876-0f4e094835f2&from_start_datetime=2025-10-28&limit=200&to_start_datetime=2026-01-26
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Content-Type:
+      - application/json
+      Authorization:
+      - Basic <ARGYLE_BASIC_AUTH>
+      User-Agent:
+      - Faraday v2.14.0
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Accept:
+      - "*/*"
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Date:
+      - Mon, 26 Jan 2026 17:58:21 GMT
+      Content-Type:
+      - application/json
+      Transfer-Encoding:
+      - chunked
+      Connection:
+      - keep-alive
+      Access-Control-Allow-Origin:
+      - "*"
+      Cache-Control:
+      - no-cache, no-store, max-age=0, must-revalidate
+      Expires:
+      - '0'
+      Pragma:
+      - no-cache
+      Strict-Transport-Security:
+      - max-age=31536000; includeSubDomains
+      Vary:
+      - Accept-Encoding,Origin
+      X-Client-Id:
+      - '018f0834-d69a-879b-05cb-ddde033024f0'
+      X-Content-Type-Options:
+      - nosniff
+      X-Frame-Options:
+      - DENY
+      X-Trace-Id:
+      - 9942cf85-17d9-43a6-86db-f733c5048796
+      X-Xss-Protection:
+      - '0'
+      Via:
+      - 1.1 google
+      Cf-Cache-Status:
+      - DYNAMIC
+      Set-Cookie:
+      - __cf_bm=VJFlQP.iMcs_syiP2Z6yImhihxRxFnXD.wKq6qaf.zI-1769450301.4382372-1.0.1.1-257pnpb7rbRueoTWjUykl2zMF3Oin2dzjK3rFdbMCQz41sZkzXuqluuRi1TUwdx9TJ4Sc.NE7xFmpBWBJzVwqmnm3s9hkiz9sflEJvk10nn6Djce_ggVHXWUFlz47cGJ;
+        HttpOnly; Secure; Path=/; Domain=argyle.com; Expires=Mon, 26 Jan 2026 18:28:21
+        GMT
+      Server:
+      - cloudflare
+      Cf-Ray:
+      - 9c41e5dff8aa71e7-SJC
+    body:
+      encoding: ASCII-8BIT
+      string: '{"results":[],"next":null,"previous":null}'
+  recorded_at: Mon, 26 Jan 2026 17:57:55 GMT
+recorded_with: VCR 6.4.0

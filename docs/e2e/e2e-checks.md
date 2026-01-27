@@ -59,6 +59,18 @@ To record the data for these methods, you must include the following method call
 * **`@e2e.record_modal_callbacks`**
 * **`@e2e.replay_webhooks`**
 
+In order to record E2E tests, you will need to set the following environment variables to sandbox values:
+
+```bash
+# Put these in .env.test.local, and comment it out when you're done recording
+PINWHEEL_API_TOKEN_SANDBOX=
+ARGYLE_API_TOKEN_SANDBOX_ID=
+ARGYLE_API_TOKEN_SANDBOX_SECRET=
+NSC_CLIENT_SECRET_TEST=
+NSC_CLIENT_ID_TEST=
+NSC_ACCOUNT_ID_TEST=
+```
+
 ## Developing on E2E classes
 The E2E test framework lives in `spec/support/e2e`. If you need to update a file in there, here are some tips:
 * To reproduce the CI environment, unset your PINWHEEL_API_TOKEN_SANDBOX, ARGYLE_API_TOKEN_SANDBOX_ID, and ARGYLE_API_TOKEN_SANDBOX_SECRET. Unset these, then run your test in "replay mode" to see how it will fare in CI.

@@ -3,10 +3,11 @@ require "rails_helper"
 RSpec.describe 'e2e Activity Hub flow test', :js, type: :feature do
   include E2e::TestHelpers
   include_context "activity_hub"
+
   around do |ex|
     override_supported_providers([ :argyle ]) do
       @e2e = E2e::MockingService.new(server_url: URI(page.server_url))
-      @e2e.use_recording("e2e_cbv_flow_english_argyle_only", &ex)
+      @e2e.use_recording("e2e_activity_flow", &ex)
     end
   end
 
@@ -20,6 +21,13 @@ RSpec.describe 'e2e Activity Hub flow test', :js, type: :feature do
 
     verify_page(page, title: I18n.t("activities.hub.title"))
 
+    # Add an Education activity
+    click_button I18n.t("activities.education.add")
+    verify_page(page, title: I18n.t("activities.education.new.header")) # /activities/education/new (loading page)
+    verify_page(page, title: I18n.t("activities.education.show.header"), wait: 10) # /activities/education (show page)
+    expect(page).to have_content I18n.t("activities.education.show.student_information")
+    click_button I18n.t("activities.education.show.continue")
+
     # Add an Income activity
     click_button I18n.t("activities.income.add")
     verify_page(page, title: I18n.t("cbv.employer_searches.show.activity_flow.header"))
@@ -27,17 +35,19 @@ RSpec.describe 'e2e Activity Hub flow test', :js, type: :feature do
       click_button "Paychex"
     end
     @e2e.record_modal_callbacks(page.driver.browser) do
-      argyle_container = find("div[id*=\"argyle-link-root\"]")
-      page.within(argyle_container) do
-        fill_in "username", with: "test_1", wait: 10
-        fill_in "password", with: "passgood"
-        click_button "Connect"
-        fill_in "legacy_mfa_token", with: "8081", wait: 30
-        click_button "Continue", wait: 30
+      argyle_container = find("div[id*=\"argyle-link-root\"]", visible: :all)
+      page.within(argyle_container.shadow_root) do
+        find('[name="username"]', wait: 10).fill_in(with: "test_1")
+        find('[name="password"]').fill_in(with: "passgood")
+        find('[data-hook="connect-button"]').click
+        wait_for_idle(page)
+        find('[name="legacy_mfa_token"]', wait: 30).fill_in(with: "8081")
+        wait_for_idle(page)
+        find('[data-hook="connect-button"]', wait: 30).click
       end
 
       # Wait for Argyle modal to disappear
-      find_all("div[id*=\"argyle-link-root\"]", maximum: 0, minimum: nil, wait: 30)
+      find_all("div[id*=\"argyle-link-root\"]", visible: :all, maximum: 0, minimum: nil, wait: 30)
     end
     # /activities/income/synchronizations
     verify_page(page, title: I18n.t("cbv.synchronizations.show.activity_flow.header"), wait: 15)
