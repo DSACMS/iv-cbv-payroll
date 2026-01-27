@@ -79,6 +79,7 @@ RSpec.describe Transmitters::JsonAndPdfTransmitter do
 
       expect(json_request).to have_been_made.once
       expect(pdf_request).to have_been_made.once
+      expect(cbv_flow.reload.json_transmitted_at).to be_present
     end
 
     context 'json delivers unsuccessfully' do
@@ -114,6 +115,47 @@ RSpec.describe Transmitters::JsonAndPdfTransmitter do
 
         expect(json_request).to have_been_made.once
         expect(failing_pdf_request).to have_been_made.once
+      end
+
+      it 'does not retry JSON transmission when job retries after PDF failure' do
+        json_request = stub_request(:post, transmission_method_configuration["json_api_url"])
+          .with(headers: { 'Content-Type' => 'application/json' })
+          .to_return(status: 200)
+
+        pdf_request = stub_request(:post, transmission_method_configuration["pdf_api_url"])
+          .with(headers: { 'Content-Type' => 'application/pdf' })
+          .with(body: pdf_output.content)
+          .to_return({ status: 500 }, { status: 200 })
+
+        expect { subject.deliver }.to raise_error(RuntimeError, /Failed to transmit PDF/)
+        expect(cbv_flow.reload.json_transmitted_at).to be_present
+
+        subject.deliver
+
+        expect(json_request).to have_been_made.once
+        expect(pdf_request).to have_been_made.twice
+      end
+    end
+
+    context 'when json_transmitted_at is already set' do
+      it 'skips JSON transmission and only delivers PDF' do
+        # Simulate a retry scenario where JSON already succeeded in a previous attempt
+        cbv_flow.update!(json_transmitted_at: Time.current)
+
+        json_request = stub_request(:post, transmission_method_configuration["json_api_url"])
+          .with(headers: { 'Content-Type' => 'application/json' })
+          .to_return(status: 200)
+
+        pdf_request = stub_request(:post, transmission_method_configuration["pdf_api_url"])
+          .with(headers: { 'Content-Type' => 'application/pdf' })
+          .with(body: pdf_output.content)
+          .to_return(status: 200)
+
+        # Single deliver call should skip JSON and only deliver PDF
+        subject.deliver
+
+        expect(json_request).not_to have_been_made
+        expect(pdf_request).to have_been_made.once
       end
     end
   end
