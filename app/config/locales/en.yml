@@ -58,8 +58,36 @@ en:
   activities:
     education:
       add: Add Education Activities
-      created: Education activity was successfully created.
       deleted: Education activity was successfully deleted.
+      edit:
+        additional_information_header: Additional comments (Optional)
+        additional_information_label: Share any comments or additional information about the income details above that you’d like %{agency_acronym} to know. For example, you can share if the information is inaccurate or if you’re no longer working at that job.
+        continue: Save and continue
+        date_of_birth: Date of Birth
+        description: Review the information below to make sure it's correct.
+        enrollment_dates: Enrollment dates
+        enrollment_information:
+          enrollment_status:
+            header: Enrollment Status
+        enrollment_status: Enrollment status
+        first_name: First Name
+        header: Confirm your education enrollment
+        last_name: Last Name
+        no_records_found:
+          heading: No enrollment record found
+          message: We couldn't find any enrollment records for the information you provided. You can go back and try again or add your education activity manually.
+        school_information:
+          address: Address
+          header: School Information
+          name: Name
+        school_or_program: School or program
+        semester_credit_hours:
+          description: How many credit hours are you enrolled in this semester?
+          label: Semester Credit Hours
+        student_information: Student Information
+        upload_documents:
+          description: Please include any transcripts or class schedule from this semester
+          label: Upload Documents
       enrollment_status:
         enrolled: Enrolled
         full_time: Full-time
@@ -73,41 +101,10 @@ en:
         header: Error
       error_no_data: No education information available
       errors:
-        timeout: The request timed out. Please try again.
         unexpected: An unexpected error occurred. Please try again.
-      new:
-        enrollment: Enrollment
-        fetching_education_description: This may take a few minutes. Please keep this window open while we work on this.
-        header: We're gathering your enrollment details from the National Student Clearinghouse
-        hours: Hours
-        school: School
-        student_info: Retrieving student information
       show:
-        additional_information_header: Additional comments (Optional)
-        additional_information_label: Share any comments or additional information about the income details above that you’d like %{agency_acronym} to know. For example, you can share if the information is inaccurate or if you’re no longer working at that job.
-        continue: Save and continue
-        date_of_birth: Date of Birth
-        description: Review the information below to make sure it's correct.
-        enrollment_information:
-          enrollment_status:
-            header: Enrollment Status
-        first_name: First Name
-        header: Confirm your education enrollment
-        last_name: Last Name
-        no_records_found:
-          heading: No enrollment record found
-          message: We couldn't find any enrollment records for the information you provided. You can go back and try again or add your education activity manually.
-        school_information:
-          address: Address
-          header: School Information
-          name: Name
-        semester_credit_hours:
-          description: How many credit hours are you enrolled in this semester?
-          label: Semester Credit Hours
-        student_information: Student Information
-        upload_documents:
-          description: Please include any transcripts or class schedule from this semester
-          label: Upload Documents
+        fetching_education_description: This may take a few seconds. Please keep this window open while we work on this.
+        header: We're gathering your details from National Student Clearinghouse
       title: Education
     entry:
       consent: Check this box to agree to let us record your information and share it with %{agency_name}.

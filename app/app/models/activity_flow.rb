@@ -5,7 +5,7 @@ class ActivityFlow < Flow
 
   has_many :volunteering_activities, dependent: :destroy
   has_many :job_training_activities, dependent: :destroy
-  has_many :education_activities, -> { where(confirmed: true) }, dependent: :destroy
+  has_many :education_activities, dependent: :destroy
   has_many :payroll_accounts, as: :flow, dependent: :destroy
 
   before_create :set_default_reporting_window

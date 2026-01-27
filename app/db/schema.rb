@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_01_22_235102) do
+ActiveRecord::Schema[8.1].define(version: 2026_01_26_232247) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
   enable_extension "pgcrypto"
@@ -110,7 +110,6 @@ ActiveRecord::Schema[8.1].define(version: 2026_01_22_235102) do
   create_table "education_activities", force: :cascade do |t|
     t.bigint "activity_flow_id", null: false
     t.text "additional_comments"
-    t.boolean "confirmed", default: false
     t.datetime "created_at", null: false
     t.integer "credit_hours"
     t.string "enrollment_status", default: "unknown"

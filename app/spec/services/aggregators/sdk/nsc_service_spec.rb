@@ -94,6 +94,7 @@ RSpec.describe Aggregators::Sdk::NscService, type: :service do
 
   describe "#call" do
     let(:activity_flow) { create(:activity_flow, identity: identity, education_activities_count: 0) }
+    let(:education_activity) { create(:education_activity, activity_flow: activity_flow) }
 
     before do
       nsc_stub_token_request
@@ -106,15 +107,11 @@ RSpec.describe Aggregators::Sdk::NscService, type: :service do
         nsc_stub_request_education_search_response("linda")
       end
 
-      it "returns an EducationActivity with sync status = :no_enrollments" do
-        expect { service.call(activity_flow) }
-          .to change(EducationActivity, :count)
-          .by(1)
-
-        expect(EducationActivity.last).to have_attributes(
-          status: "no_enrollments",
-          enrollment_status: "unknown"
-        )
+      it "updates the EducationActivity to have sync status = :no_enrollments" do
+        expect { service.call(education_activity) }
+          .to change { education_activity.reload.dup } # rubocop:disable RSpec/ExpectChange
+          .from(have_attributes(status: "unknown", enrollment_status: "unknown"))
+          .to(have_attributes(status: "no_enrollments", enrollment_status: "unknown"))
       end
     end
 
@@ -126,15 +123,14 @@ RSpec.describe Aggregators::Sdk::NscService, type: :service do
       end
 
       it "returns an EducationActivity with sync status = :succeeded" do
-        expect { service.call(activity_flow) }
-          .to change(EducationActivity, :count)
-          .by(1)
-
-        expect(EducationActivity.last).to have_attributes(
-          status: "succeeded",
-          enrollment_status: "enrolled",
-          school_name: "Trident University International"
-        )
+        expect { service.call(education_activity) }
+          .to change { education_activity.reload.dup } # rubocop:disable RSpec/ExpectChange
+          .from(have_attributes(status: "unknown", enrollment_status: "unknown"))
+          .to(have_attributes(
+            status: "succeeded",
+            enrollment_status: "enrolled",
+            school_name: "Trident University International"
+          ))
       end
     end
 
@@ -146,15 +142,14 @@ RSpec.describe Aggregators::Sdk::NscService, type: :service do
       end
 
       it "returns an EducationActivity with sync status = :succeeded" do
-        expect { service.call(activity_flow) }
-          .to change(EducationActivity, :count)
-          .by(1)
-
-        expect(EducationActivity.last).to have_attributes(
-          status: "succeeded",
-          enrollment_status: "half_time",
-          school_name: "FLORIDA A&M UNIVERSITY"
-        )
+        expect { service.call(education_activity) }
+          .to change { education_activity.reload.dup } # rubocop:disable RSpec/ExpectChange
+          .from(have_attributes(status: "unknown", enrollment_status: "unknown"))
+          .to(have_attributes(
+            status: "succeeded",
+            enrollment_status: "half_time",
+            school_name: "FLORIDA A&M UNIVERSITY"
+          ))
       end
     end
   end

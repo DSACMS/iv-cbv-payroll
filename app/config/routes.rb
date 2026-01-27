@@ -62,9 +62,10 @@ Rails.application.routes.draw do
         resource :synchronization_failures, only: %i[show], controller: "/cbv/synchronization_failures"
         resource :payment_details, only: %i[show update], controller: "/cbv/payment_details"
       end
-      resource :education, only: %i[new create show destroy], controller: "education"
 
-      get "/education/stream", to: "education#stream"
+      resources :education, only: %i[new show update edit destroy], controller: "education" do
+        patch "sync", to: "education#sync", as: :sync
+      end
       get "/education/error", to: "education#error", as: :education_error
 
       # Tokenized links
