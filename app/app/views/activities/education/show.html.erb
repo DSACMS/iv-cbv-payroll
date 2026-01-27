@@ -1,14 +1,12 @@
 <% content_for :title, t(".header") %>
 
-<div id="education-index-container">
-  <h1>
-    <%= t(".header") %>
-  </h1>
-  <p>
-    <%= t(".fetching_education_description") %>
-  </p>
+<h1>
+  <%= t(".header") %>
+</h1>
+<p>
+  <%= t(".fetching_education_description") %>
+</p>
 
-  <div data-controller="polling" data-polling-url-value="<%= @polling_url %>">
-    <%= render "status" %>
-  </div>
+<div data-controller="polling" data-polling-url-value="<%= @polling_url %>">
+  <%= render "status" %>
 </div>
