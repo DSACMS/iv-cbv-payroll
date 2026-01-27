@@ -108,9 +108,9 @@ RSpec.describe Aggregators::Sdk::NscService, type: :service do
       end
 
       it "updates the EducationActivity to have sync status = :no_enrollments" do
-        service.call(education_activity)
-
-        expect(education_activity)
+        expect { service.call(education_activity) }
+          .to change { education_activity.reload.dup } # rubocop:disable RSpec/ExpectChange
+          .from(have_attributes(status: "unknown", enrollment_status: "unknown"))
           .to(have_attributes(status: "no_enrollments", enrollment_status: "unknown"))
       end
     end
@@ -123,13 +123,14 @@ RSpec.describe Aggregators::Sdk::NscService, type: :service do
       end
 
       it "returns an EducationActivity with sync status = :succeeded" do
-        service.call(education_activity)
-
-        expect(education_activity.reload).to have_attributes(
-          status: "succeeded",
-          enrollment_status: "enrolled",
-          school_name: "Trident University International"
-        )
+        expect { service.call(education_activity) }
+          .to change { education_activity.reload.dup } # rubocop:disable RSpec/ExpectChange
+          .from(have_attributes(status: "unknown", enrollment_status: "unknown"))
+          .to(have_attributes(
+            status: "succeeded",
+            enrollment_status: "enrolled",
+            school_name: "Trident University International"
+          ))
       end
     end
 
@@ -141,13 +142,14 @@ RSpec.describe Aggregators::Sdk::NscService, type: :service do
       end
 
       it "returns an EducationActivity with sync status = :succeeded" do
-        service.call(education_activity)
-
-        expect(education_activity.reload).to have_attributes(
-          status: "succeeded",
-          enrollment_status: "half_time",
-          school_name: "FLORIDA A&M UNIVERSITY"
-        )
+        expect { service.call(education_activity) }
+          .to change { education_activity.reload.dup } # rubocop:disable RSpec/ExpectChange
+          .from(have_attributes(status: "unknown", enrollment_status: "unknown"))
+          .to(have_attributes(
+            status: "succeeded",
+            enrollment_status: "half_time",
+            school_name: "FLORIDA A&M UNIVERSITY"
+          ))
       end
     end
   end
