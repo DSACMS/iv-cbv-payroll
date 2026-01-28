@@ -96,6 +96,7 @@ es:
         fields:
           case_number:
             blank: Escriba su número de caso de Medicaid.
+            help_text: Puede encontrar su número de caso en las notificaciones que ha recibido del Departamento de Salud de Luisiana. El número puede tener hasta 13 dígitos.
             prompt: Número de caso de Medicaid (opcional)
             super_one_html: Número de caso de Medicaid<sup>1</sup>
           date_of_birth:
