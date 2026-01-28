@@ -8,7 +8,7 @@
       <%= t("activities.summary.education.school_or_program") %>
     <% end %>
     <%= row.with_data_cell do %>
-      <%= activity.school_name %>
+      <%= activity.school_name.presence || t("shared.not_applicable") %>
     <% end %>
   <% end %>
 

@@ -1,10 +1,8 @@
-
-  account_id = payroll_account.aggregator_account_id
-  summary = aggregator_report.summarize_by_employer[account_id]
-  monthly = aggregator_report.summarize_by_month[account_id] || {}
-  latest_month = monthly.keys.max
-  month_data = monthly[latest_month]
-%>
+<% account_id = payroll_account.aggregator_account_id %>
+<% summary = aggregator_report.summarize_by_employer[account_id] %>
+<% monthly = aggregator_report.summarize_by_month[account_id] || {} %>
+<% latest_month = monthly.keys.max %>
+<% month_data = monthly[latest_month] %>
 
 <%= render(TableComponent.new(is_responsive: true)) do |table| %>
   <%= table.with_subheader_row(class_names: "subheader-row base-lightest border-top-1px") do |row| %>
