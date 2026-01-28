@@ -61,33 +61,25 @@ en:
       deleted: Education activity was successfully deleted.
       edit:
         additional_information_header: Additional comments (Optional)
-        additional_information_label: Share any comments or additional information about the income details above that you’d like %{agency_acronym} to know. For example, you can share if the information is inaccurate or if you’re no longer working at that job.
+        additional_information_label: Share any comments or additional information that you’d like %{agency_acronym} to know. For example, the credit hours you are taking.
         continue: Save and continue
-        date_of_birth: Date of Birth
-        description: Review the information below to make sure it's correct.
+        description_html: "<p>We have gathered your student enrollment details from %{reporting_window}.</p><p>Please review your information. If something is missing or inaccurate, add a comment for %{agency_acronym}. This will be included in your community engagement report.</p>"
+        enrollment_current:
+          label: Currently enrolled
+          no_enrolled: 'No'
+          yes_enrolled: 'Yes'
         enrollment_dates: Enrollment dates
-        enrollment_information:
-          enrollment_status:
-            header: Enrollment Status
+        enrollment_information: Enrollment information
+        enrollment_information_multiple: 'Enrollment status: %{school_name}'
         enrollment_status: Enrollment status
-        first_name: First Name
-        header: Confirm your education enrollment
-        last_name: Last Name
+        enrollment_term: Enrollment term
+        header: Review your student enrollment details
         no_records_found:
           heading: No enrollment record found
           message: We couldn't find any enrollment records for the information you provided. You can go back and try again or add your education activity manually.
-        school_information:
-          address: Address
-          header: School Information
-          name: Name
+          return_button: Return
         school_or_program: School or program
-        semester_credit_hours:
-          description: How many credit hours are you enrolled in this semester?
-          label: Semester Credit Hours
-        student_information: Student Information
-        upload_documents:
-          description: Please include any transcripts or class schedule from this semester
-          label: Upload Documents
+        student_name_label: Name on school record
       enrollment_status:
         enrolled: Enrolled
         full_time: Full-time
