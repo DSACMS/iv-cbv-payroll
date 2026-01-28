@@ -2,19 +2,19 @@
   <div class="grid-row" dom_id="<%= dom_id current_identity %>">
     <div class="desktop:grid-col-2 tablet:grid-col-fill">
       <%= render(SynchronizationIndicatorComponent.new(name: "school", status: @completed_indicators[0] ? :completed : :in_progress)) do %>
-        <%= t("activities.education.edit.school_or_program") %>
+        <%= t("activities.education.show.school_or_program") %>
       <% end %>
     </div>
 
     <div class="desktop:grid-col-2 tablet:grid-col-fill">
       <%= render(SynchronizationIndicatorComponent.new(name: "enrollment_status", status: @completed_indicators[1] ? :completed : :in_progress)) do %>
-        <%= t("activities.education.edit.enrollment_status") %>
+        <%= t("activities.education.show.enrollment_status") %>
       <% end %>
     </div>
 
     <div class="desktop:grid-col-2 tablet:grid-col-fill">
       <%= render(SynchronizationIndicatorComponent.new(name: "enrollment_dates", status: @completed_indicators[2] ? :completed : :in_progress)) do %>
-        <%= t("activities.education.edit.enrollment_dates") %>
+        <%= t("activities.education.show.enrollment_dates") %>
       <% end %>
     </div>
   </div>

@@ -33,63 +33,14 @@
     </h2>
   <% end %>
 
-  <% @education_activity.nsc_enrollment_terms.each do |enrollment| %>
+  <% @education_activity.nsc_enrollment_terms.each do |enrollment_term| %>
     <% if has_multiple_enrollments %>
       <h2>
-        <%= t(".enrollment_information_multiple", school_name: enrollment.school_name.titlecase) %>
+        <%= t(".enrollment_information_multiple", school_name: enrollment_term.school_name.titlecase) %>
       </h2>
     <% end %>
 
-    <%= render(TableComponent.new(is_responsive: true)) do |table| %>
-      <%= table.with_row do |row| %>
-        <%= row.with_data_cell(is_header: true) do %>
-          <%= t(".student_name_label") %>
-        <% end %>
-        <%= row.with_data_cell do %>
-          <%= enrollment.first_name %>
-          <%= enrollment.middle_name %>
-          <%= enrollment.last_name %>
-        <% end %>
-      <% end %>
-
-      <%= table.with_row do |row| %>
-        <%= row.with_data_cell(is_header: true) do %>
-          <%= t(".school_or_program") %>
-        <% end %>
-        <%= row.with_data_cell do %>
-          <%= enrollment.school_name.titlecase %>
-        <% end %>
-      <% end %>
-
-      <%= table.with_row do |row| %>
-        <%= row.with_data_cell(is_header: true) do %>
-          <%= t(".enrollment_current.label") %>
-        <% end %>
-        <%= row.with_data_cell do %>
-          <%= enrollment_current_text(!enrollment.enrollment_unknown?) %>
-        <% end %>
-      <% end %>
-
-      <%= table.with_row do |row| %>
-        <%= row.with_data_cell(is_header: true) do %>
-          <%= t(".enrollment_term") %>
-        <% end %>
-        <%= row.with_data_cell do %>
-          <%= format_date(enrollment.term_begin) %>
-          &dash;
-          <%= format_date(enrollment.term_end) %>
-        <% end %>
-      <% end %>
-
-      <%= table.with_row do |row| %>
-        <%= row.with_data_cell(is_header: true) do %>
-          <%= t(".enrollment_status") %>
-        <% end %>
-        <%= row.with_data_cell do %>
-          <%= enrollment_status_text(enrollment.enrollment_status) %>
-        <% end %>
-      <% end %>
-    <% end %>
+    <%= render(EnrollmentTermTableComponent.new(nsc_enrollment_term: enrollment_term)) %>
   <% end %>
 
   <div class="usa-form-group margin-top-5">
