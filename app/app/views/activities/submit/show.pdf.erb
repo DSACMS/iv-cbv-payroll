@@ -28,8 +28,28 @@
   <% end %>
   <%= table.with_row t("activities.submit.pdf.volunteering_count"), @volunteering_activities.size %>
   <%= table.with_row t("activities.submit.pdf.job_training_count"), @job_training_activities.size %>
+  <%= table.with_row t("activities.submit.pdf.education_count"), @education_activities.size %>
   <%= table.with_row t("activities.submit.pdf.income_activities"), @flow.payroll_accounts.size %>
   <%= table.with_row t("activities.submit.pdf.total_hours"), @total_hours %>
+<% end %>
+
+<h2>
+<%= t("activities.education.title") %>
+</h2>
+
+<% if @education_activities.any? %>
+  <% @education_activities.each do |education_activity| %>
+    <% education_activity.nsc_enrollment_terms.each do |enrollment_term| %>
+      <%= render(EnrollmentTermTableComponent.new(nsc_enrollment_term: enrollment_term)) %>
+    <% end %>
+
+    <% if education_activity.additional_comments.present? %>
+      <h3><%= t("activities.summaries.show.additional_comments") %></h3>
+      <p><%= education_activity.additional_comments %></p>
+    <% end %>
+  <% end %>
+<% else %>
+  <%= t("activities.submit.pdf.no_education") %>
 <% end %>
 
 <h2>

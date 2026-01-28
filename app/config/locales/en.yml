@@ -139,11 +139,13 @@ en:
         date: Date
         description: The following information was provided by the Medicaid client for verification of the Community Engagement Requirements.
         disclaimer: This report is based on the activities you entered. Contact your agency if you need to make a correction.
+        education_count: Education activities
         heading: Your Medicaid Community Engagement Activity report
         hours: Hours
         income_activities: Employment activities
         job_training_count: Job training activities
         job_training_section: Job training and education
+        no_education: No education activities were reported.
         no_income: No employment activities were reported.
         no_job_training: No job training activities were reported.
         no_volunteering: No volunteering activities were reported.
