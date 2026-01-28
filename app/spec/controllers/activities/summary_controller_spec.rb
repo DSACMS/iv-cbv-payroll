@@ -38,7 +38,7 @@ RSpec.describe Activities::SummaryController, type: :controller do
     it "builds all_activities list with all activity types" do
       create(:volunteering_activity, activity_flow: activity_flow, organization_name: "Org A", hours: 1)
       create(:job_training_activity, activity_flow: activity_flow, program_name: "Program B", organization_address: "123 Main St", hours: 6)
-      create(:education_activity, activity_flow: activity_flow, school_name: "State University")
+      create(:education_activity, activity_flow: activity_flow)
 
       get :show
 
