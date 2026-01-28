@@ -1,0 +1,43 @@
+<%= render(TableComponent.new(is_responsive: true)) do |table| %>
+  <%= table.with_subheader_row(class_names: "subheader-row base-lightest border-top-1px") do |row| %>
+    <% row.with_data_cell(is_header: true).with_content(t("activities.summary.job_training.header")) %>
+    <% row.with_data_cell(is_header: true).with_content(t("activities.summary.your_details")) %>
+  <% end %>
+  <%= table.with_row do |row| %>
+    <%= row.with_data_cell(is_header: true) do %>
+      <%= t("activities.job_training.program_name") %>
+    <% end %>
+    <%= row.with_data_cell do %>
+      <%= activity.program_name %>
+    <% end %>
+  <% end %>
+
+  <% if activity.organization_address.present? %>
+    <%= table.with_row do |row| %>
+      <%= row.with_data_cell(is_header: true) do %>
+        <%= t("activities.job_training.organization_address") %>
+      <% end %>
+      <%= row.with_data_cell do %>
+        <%= activity.organization_address %>
+      <% end %>
+    <% end %>
+  <% end %>
+
+  <%= table.with_row do |row| %>
+    <%= row.with_data_cell(is_header: true) do %>
+      <%= t("activities.job_training.date") %>
+    <% end %>
+    <%= row.with_data_cell do %>
+      <%= I18n.l(activity.date, format: :month_year) %>
+    <% end %>
+  <% end %>
+
+  <%= table.with_row do |row| %>
+    <%= row.with_data_cell(is_header: true) do %>
+      <%= t("activities.job_training.hours") %>
+    <% end %>
+    <%= row.with_data_cell do %>
+      <%= activity.hours %>
+    <% end %>
+  <% end %>
+<% end %>

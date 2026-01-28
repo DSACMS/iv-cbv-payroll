@@ -1,0 +1,43 @@
+<%= render(TableComponent.new(is_responsive: true)) do |table| %>
+  <%= table.with_subheader_row(class_names: "subheader-row base-lightest border-top-1px") do |row| %>
+    <% row.with_data_cell(is_header: true).with_content(t("activities.summary.education.header")) %>
+    <% row.with_data_cell(is_header: true).with_content(t("activities.summary.your_details")) %>
+  <% end %>
+  <%= table.with_row do |row| %>
+    <%= row.with_data_cell(is_header: true) do %>
+      <%= t("activities.summary.education.school_or_program") %>
+    <% end %>
+    <%= row.with_data_cell do %>
+      <%= activity.school_name %>
+    <% end %>
+  <% end %>
+
+  <%= table.with_row do |row| %>
+    <%= row.with_data_cell(is_header: true) do %>
+      <%= t("activities.summary.education.currently_enrolled") %>
+    <% end %>
+    <%= row.with_data_cell do %>
+      <%= activity.enrollment_status.present? && activity.enrollment_status != "unknown" ? t("us_form_with.boolean_true") : t("us_form_with.boolean_false") %>
+    <% end %>
+  <% end %>
+
+  <%= table.with_row do |row| %>
+    <%= row.with_data_cell(is_header: true) do %>
+      <%= t("activities.summary.education.enrollment_status") %>
+    <% end %>
+    <%= row.with_data_cell do %>
+      <%= enrollment_status_text(activity.enrollment_status) %>
+    <% end %>
+  <% end %>
+
+  <% if activity.credit_hours.present? %>
+    <%= table.with_row do |row| %>
+      <%= row.with_data_cell(is_header: true) do %>
+        <%= t("activities.summary.education.credit_hours") %>
+      <% end %>
+      <%= row.with_data_cell do %>
+        <%= activity.credit_hours %>
+      <% end %>
+    <% end %>
+  <% end %>
+<% end %>

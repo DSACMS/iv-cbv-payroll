@@ -3,83 +3,82 @@
 <h1>
   <%= t("activities.summary.title") %>
 </h1>
-<p class="usa-intro">
-  <%= t("activities.hub.reporting_window", range: @flow.reporting_window_display) %>
+<p>
+  <% start_date = I18n.l(@flow.reporting_window_range.begin, format: :month_year) %>
+  <% end_date = I18n.l(@flow.reporting_window_range.end, format: :month_year) %>
+  <% if start_date == end_date %>
+    <%= t("activities.summary.description_single_month",
+          month: start_date,
+          agency_name: agency_translation("shared.agency_full_name")) %>
+  <% else %>
+    <%= t("activities.summary.description",
+          start_date: start_date,
+          end_date: end_date,
+          agency_name: agency_translation("shared.agency_full_name")) %>
+  <% end %>
 </p>
-<p class="margin-bottom-4">
-  <%= t("activities.summary.description", agency_name: agency_translation("shared.agency_full_name")) %>
-</p>
 
-<section class="margin-bottom-5">
-  <h2>
-    <%= t("activities.volunteering.title") %>
-  </h2>
-  <p>
-    <%= t("activities.hub.count", count: @volunteering_activities.size) %>
-  </p>
-  <%= render TableComponent.new do |t| %>
-    <%= t.with_subheader_row(
-      t("activities.volunteering.organization_name"),
-      t("activities.volunteering.hours"),
-      t("activities.volunteering.date")
-    ) %>
-    <% @volunteering_activities.each do |activity| %>
-      <%= t.with_row activity.organization_name, activity.hours, activity.date %>
+<% @all_activities.each_with_index do |activity_data, index| %>
+  <section>
+    <h2>
+      <% activity_type_label = t("activities.#{activity_data[:type]}.title") %>
+      <% if @all_activities.size > 1 %>
+        <%= t("activities.summary.activity_header_numbered",
+              number: index + 1,
+              type: activity_type_label) %>
+      <% else %>
+        <%= t("activities.summary.activity_header",
+              type: activity_type_label) %>
+      <% end %>
+    </h2>
+
+    <% case activity_data[:type] %>
+    <% when :education %>
+      <% activity_data[:activity].nsc_enrollment_terms.each do |enrollment_term| %>
+        <%= render(EnrollmentTermTableComponent.new(nsc_enrollment_term: enrollment_term)) %>
+      <% end %>
+    <% when :volunteering %>
+      <%= render partial: "activities/summary/volunteering_table", locals: { activity: activity_data[:activity] } %>
+    <% when :job_training %>
+      <%= render partial: "activities/summary/job_training_table", locals: { activity: activity_data[:activity] } %>
+    <% when :income %>
+      <%= render partial: "activities/summary/employment_table", locals: { payroll_account: activity_data[:payroll_account], aggregator_report: @aggregator_report } %>
     <% end %>
+
+    <% if activity_data[:type] == :income %>
+      <% account_id = activity_data[:payroll_account].aggregator_account_id %>
+      <% comment = @flow.additional_information.dig(account_id, "comment") %>
+      <% if comment.present? %>
+        <h3>
+          <%= t("activities.summary.additional_comments") %>
+        </h3>
+        <p>
+          <%= comment %>
+        </p>
+      <% end %>
+    <% elsif activity_data[:activity].respond_to?(:additional_comments) && activity_data[:activity].additional_comments.present? %>
+      <h3>
+        <%= t("activities.summary.additional_comments") %>
+      </h3>
+      <p>
+        <%= activity_data[:activity].additional_comments %>
+      </p>
+    <% end %>
+  </section>
+<% end %>
+
+<section class="margin-top-5">
+  <h2>
+    <%= t("activities.summary.legal_agreement") %>
+  </h2>
+
+  <%= form_with model: @flow, url: activities_flow_submit_path, method: :patch, builder: UswdsFormBuilder do |f| %>
+    <%= f.check_box :consent_to_submit, {
+      label: t("activities.summary.consent_label_html",
+               agency_name: agency_translation("shared.agency_full_name"),
+               agency_initials: agency_translation("shared.agency_acronym"))
+    } %>
+
+    <%= f.submit t("activities.summary.submit", agency_name: agency_translation("shared.agency_full_name")), class: "usa-button" %>
   <% end %>
 </section>
-
-<section class="margin-bottom-5">
-  <h2>
-    <%= t("activities.job_training.title") %>
-  </h2>
-  <p>
-    <%= t("activities.hub.count", count: @job_training_activities.size) %>
-  </p>
-  <%= render TableComponent.new do |t| %>
-    <%= t.with_subheader_row(
-      t("activities.job_training.program_name"),
-      t("activities.job_training.organization_address"),
-      t("activities.job_training.hours")
-    ) %>
-    <% @job_training_activities.each do |activity| %>
-      <%= t.with_row activity.program_name, activity.organization_address, activity.hours %>
-    <% end %>
-  <% end %>
-</section>
-
-<section class="margin-bottom-5">
-  <h2>
-    <%= t("activities.education.title") %>
-  </h2>
-
-  <% @education_activities.each do |education_activity| %>
-    <% education_activity.nsc_enrollment_terms.each do |enrollment_term| %>
-      <%= render(EnrollmentTermTableComponent.new(nsc_enrollment_term: enrollment_term)) %>
-    <% end %>
-
-    <% if education_activity.additional_comments.present? %>
-      <h3><%= t(".additional_comments") %></h3>
-      <p><%= education_activity.additional_comments %></p>
-    <% end %>
-  <% end %>
-</section>
-
-<section class="margin-bottom-5">
-  <h2>
-    <%= t("activities.income.title") %>
-  </h2>
-  <p>
-    <%= t("activities.hub.count", count: @flow.payroll_accounts.size) %>
-  </p>
-  <%= render TableComponent.new do |t| %>
-    <%= t.with_subheader_row(
-      t("activities.income.account_id"),
-      t("activities.income.synchronization_status")
-    ) %>
-    <% @flow.payroll_accounts.each do |payroll_account| %>
-      <%= t.with_row payroll_account.aggregator_account_id, payroll_account.synchronization_status %>
-    <% end %>
-  <% end %>
-</section>
-<%= button_to t("activities.summary.submit"), next_path, class: "btn btn-primary usa-button", method: :get %>
