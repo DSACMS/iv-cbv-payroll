@@ -283,7 +283,7 @@ en:
         fields:
           case_number:
             blank: Enter your Medicaid case number.
-            help_text: This 13-digit case number can be found on notices from Louisiana Department of Health
+            help_text: You can find your case number on notices from Louisiana Department of Health. It can be up to 13 digits long.
             prompt: Medicaid case number (optional)
             super_one_html: Medicaid case number<sup>1</sup>
           date_of_birth:
