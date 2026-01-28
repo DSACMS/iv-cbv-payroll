@@ -16,13 +16,7 @@ class NscSynchronizationJob < ApplicationJob
       Rails.logger.warn "Duplicate #{self.class.name} enqueued for already-fetched EducationActivity ID #{@education_activity.id}"
     end
 
-    nsc_service = Aggregators::Sdk::NscService.new(environment: nsc_environment)
-    nsc_service.call(@education_activity)
-  end
-
-  private
-
-  def nsc_environment
-    ENV.fetch("NSC_ENVIRONMENT", "sandbox")
+    nsc_service = NscDataFetcherService.new(education_activity: @education_activity)
+    nsc_service.fetch
   end
 end
