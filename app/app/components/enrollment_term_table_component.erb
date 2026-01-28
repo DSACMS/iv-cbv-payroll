@@ -21,15 +21,6 @@
 
   <%= table.with_row do |row| %>
     <%= row.with_data_cell(is_header: true) do %>
-      <%= t("components.enrollment_term_table_component.enrollment_current.label") %>
-    <% end %>
-    <%= row.with_data_cell do %>
-      <%= enrollment_current_text(!@nsc_enrollment_term.enrollment_unknown?) %>
-    <% end %>
-  <% end %>
-
-  <%= table.with_row do |row| %>
-    <%= row.with_data_cell(is_header: true) do %>
       <%= t("components.enrollment_term_table_component.enrollment_term") %>
     <% end %>
     <%= row.with_data_cell do %>

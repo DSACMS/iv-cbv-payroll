@@ -583,10 +583,6 @@ en:
         fetching_payroll_description: This may take a few minutes. Please keep this window open while we work on this.
   components:
     enrollment_term_table_component:
-      enrollment_current:
-        label: Currently enrolled
-        no_enrolled: 'No'
-        yes_enrolled: 'Yes'
       enrollment_status: Enrollment status
       enrollment_term: Enrollment term
       school_or_program: School or program

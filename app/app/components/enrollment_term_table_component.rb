@@ -3,14 +3,6 @@ class EnrollmentTermTableComponent < ViewComponent::Base
     @nsc_enrollment_term = nsc_enrollment_term
   end
 
-  def enrollment_current_text(is_enrolled)
-    if is_enrolled
-      I18n.t("components.enrollment_term_table_component.enrollment_current.yes_enrolled")
-    else
-      I18n.t("components.enrollment_term_table_component.enrollment_current.no_enrolled")
-    end
-  end
-
   def enrollment_status_text(enrollment_status)
     case enrollment_status.to_sym
     when :full_time
