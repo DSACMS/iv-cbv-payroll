@@ -1,0 +1,41 @@
+<%= render(TableComponent.new(is_responsive: true)) do |table| %>
+  <%= table.with_row do |row| %>
+    <%= row.with_data_cell(is_header: true) do %>
+      <%= t("components.enrollment_term_table_component.student_name_label") %>
+    <% end %>
+    <%= row.with_data_cell do %>
+      <%= @nsc_enrollment_term.first_name %>
+      <%= @nsc_enrollment_term.middle_name %>
+      <%= @nsc_enrollment_term.last_name %>
+    <% end %>
+  <% end %>
+
+  <%= table.with_row do |row| %>
+    <%= row.with_data_cell(is_header: true) do %>
+      <%= t("components.enrollment_term_table_component.school_or_program") %>
+    <% end %>
+    <%= row.with_data_cell do %>
+      <%= @nsc_enrollment_term.school_name.titlecase %>
+    <% end %>
+  <% end %>
+
+  <%= table.with_row do |row| %>
+    <%= row.with_data_cell(is_header: true) do %>
+      <%= t("components.enrollment_term_table_component.enrollment_term") %>
+    <% end %>
+    <%= row.with_data_cell do %>
+      <%= helpers.format_date(@nsc_enrollment_term.term_begin) %>
+      &dash;
+      <%= helpers.format_date(@nsc_enrollment_term.term_end) %>
+    <% end %>
+  <% end %>
+
+  <%= table.with_row do |row| %>
+    <%= row.with_data_cell(is_header: true) do %>
+      <%= t("components.enrollment_term_table_component.enrollment_status") %>
+    <% end %>
+    <%= row.with_data_cell do %>
+      <%= enrollment_status_text(@nsc_enrollment_term.enrollment_status) %>
+    <% end %>
+  <% end %>
+<% end %>

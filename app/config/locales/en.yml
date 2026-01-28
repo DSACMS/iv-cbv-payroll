@@ -64,28 +64,13 @@ en:
         additional_information_label: Share any comments or additional information that you’d like %{agency_acronym} to know. For example, the credit hours you are taking.
         continue: Save and continue
         description_html: "<p>We have gathered your student enrollment details from %{reporting_window}.</p><p>Please review your information. If something is missing or inaccurate, add a comment for %{agency_acronym}. This will be included in your community engagement report.</p>"
-        enrollment_current:
-          label: Currently enrolled
-          no_enrolled: 'No'
-          yes_enrolled: 'Yes'
-        enrollment_dates: Enrollment dates
         enrollment_information: Enrollment information
         enrollment_information_multiple: 'Enrollment status: %{school_name}'
-        enrollment_status: Enrollment status
-        enrollment_term: Enrollment term
         header: Review your student enrollment details
         no_records_found:
           heading: No enrollment record found
           message: We couldn't find any enrollment records for the information you provided. You can go back and try again or add your education activity manually.
           return_button: Return
-        school_or_program: School or program
-        student_name_label: Name on school record
-      enrollment_status:
-        enrolled: Enrolled
-        full_time: Full-time
-        half_time: Half-time
-        less_than_half_time: Less than half-time
-        three_quarter_time: Three-quarter Time
       error:
         back_button: Back to Activities
         error_description: There was an error retrieving your education information. Please try again later.
@@ -102,9 +87,12 @@ en:
         header: Let's verify your student enrollment
         last_name: Last name
       show:
+        enrollment_dates: Enrollment dates
+        enrollment_status: Enrollment status
         fetching_education_description: This may take a few seconds. Please keep this window open while we work on this.
         header: We're gathering your details from National Student Clearinghouse
-      title: Education
+        school_or_program: School or program
+      title: 'Activity: Education'
     entry:
       consent: Check this box to agree to let us record your information and share it with %{agency_name}.
       consent_required: Please check the consent box to continue.
@@ -151,11 +139,13 @@ en:
         date: Date
         description: The following information was provided by the Medicaid client for verification of the Community Engagement Requirements.
         disclaimer: This report is based on the activities you entered. Contact your agency if you need to make a correction.
+        education_count: Education activities
         heading: Your Medicaid Community Engagement Activity report
         hours: Hours
         income_activities: Employment activities
         job_training_count: Job training activities
         job_training_section: Job training and education
+        no_education: No education activities were reported.
         no_income: No employment activities were reported.
         no_job_training: No job training activities were reported.
         no_volunteering: No volunteering activities were reported.
@@ -180,7 +170,7 @@ en:
         survey: Take the 3 question survey
         title: Your Community Engagement report was successfully sent to %{agency_acronym}
         whats_next: What's next?
-        whats_next_1_li_1: We recommend saving your your report for your records.
+        whats_next_1_li_1: We recommend saving your report for your records.
         whats_next_1_title: Download your report for your records.
         whats_next_2_li_1: We’d like to hear more about your experience using this site.
         whats_next_2_title: Help make this experience better.
@@ -592,6 +582,17 @@ en:
       status:
         fetching_payroll_description: This may take a few minutes. Please keep this window open while we work on this.
   components:
+    enrollment_term_table_component:
+      enrollment_status: Enrollment status
+      enrollment_term: Enrollment term
+      school_or_program: School or program
+      status:
+        enrolled: Enrolled
+        full_time: Full-time
+        half_time: Half-time
+        less_than_half_time: Less than half-time
+        three_quarter_time: Three-quarter Time
+      student_name_label: Name on school record
     report:
       employment_details_table:
         header:
