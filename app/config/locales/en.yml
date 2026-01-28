@@ -175,9 +175,36 @@ en:
         whats_next_2_li_1: We’d like to hear more about your experience using this site.
         whats_next_2_title: Help make this experience better.
     summary:
-      description: The report below has your community engagement activities from your verification month. Please review it before sending to %{agency_name}.
-      submit: Continue
-      title: Review your Medicaid Community Engagement report
+      activity_header: 'Activity: %{type}'
+      activity_header_numbered: 'Activity %{number}: %{type}'
+      additional_comments: Additional comments
+      consent_label_html: 'Check this box to confirm: <ul class="margin-y-2"><li>The information provided by you is true and complete to the best of your knowledge.</li><li>You agree to inform %{agency_name} of any activities not reflected in this report or any discrepancies found in the information gathered with this tool.</li><li>You understand that providing accurate and complete information is your responsibility, and any false or omitted information may have legal consequences.</li></ul> By sending this report, you authorize its use for community engagement verification by authorized %{agency_initials} personnel.'
+      description: The report below has your community engagement information from %{start_date} to %{end_date}. Please review before sending to %{agency_name}.
+      description_single_month: The report below has your community engagement information from %{month}. Please review before sending to %{agency_name}.
+      education:
+        credit_hours: Credit hours
+        currently_enrolled: Currently enrolled
+        enrollment_status: Enrollment status
+        header: Education information
+        school_or_program: School or program
+      income:
+        employer: Employer
+        gross_income: Gross income
+        header: Employment information
+        hours_worked: Hours worked
+        month: Month
+      job_training:
+        header: Job Training information
+      legal_agreement: Legal agreement
+      submit: Submit to %{agency_name}
+      title: Review and submit your Community Engagement report
+      volunteering:
+        address: Address
+        header: Volunteering information
+        hours_volunteered: Hours volunteered
+        month: Month
+        organization: Organization
+      your_details: Your details
     volunteering:
       add: Add Volunteering Activity
       created: Volunteering activity was successfully created.

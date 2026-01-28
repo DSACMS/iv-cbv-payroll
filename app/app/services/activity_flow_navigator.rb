@@ -17,8 +17,6 @@ class ActivityFlowNavigator
       activities_flow_income_payment_details_path
     when "cbv/payment_details"
       activities_flow_root_path
-    when "activities/summary"
-      activities_flow_submit_path
     when "activities/submit"
       activities_flow_success_path
     end
