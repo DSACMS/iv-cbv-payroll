@@ -1,4 +1,5 @@
 class NscDataFetcherService
+  CURRENTLY_ENROLLED = "CC"
   ENROLLMENT_STATUSES = {
     # Ordered in descending preference if there are multiple active enrollments.
     # The key is the API response value
@@ -27,6 +28,10 @@ class NscDataFetcherService
     )
 
     update_education_activity(@education_activity, response)
+
+    if @education_activity.sync_succeeded?
+      save_enrollment_terms(response["enrollmentDetails"])
+    end
   end
 
   private
@@ -37,31 +42,39 @@ class NscDataFetcherService
 
     if current_enrollments.any?
       @logger.info "Found #{current_enrollments.length} current enrollments (total enrollments: #{enrollments.length})"
+      @education_activity.update(status: :succeeded)
     else
       @logger.info("No enrollments found for EducationActivity ID #{education_activity.id}")
-      return education_activity.update(status: :no_enrollments)
+      @education_activity.update(status: :no_enrollments)
     end
+  end
 
-    # Of potentially multiple current enrollments, pick the one with:
-    # - The highest enrollment status (i.e. prefer "full time" to "half time")
-    # - The latest termEndDate
-    current_enrollment_terms = current_enrollments.each_with_object([]) do |enrollment_detail, array|
+  def save_enrollment_terms(enrollment_details)
+    enrollment_details.each do |enrollment_detail|
+      next unless enrollment_detail["currentEnrollmentStatus"] == CURRENTLY_ENROLLED
+
       enrollment_detail["enrollmentData"].each do |enrollment_data|
-        array << {
+        @education_activity.nsc_enrollment_terms.create!(
           school_name: enrollment_detail["officialSchoolName"],
-          enrollment_status: enrollment_data["enrollmentStatus"],
-          term_end_date: enrollment_data["termEndDate"]
-        }
+          first_name: enrollment_detail["nameOnSchoolRecord"]["firstName"],
+          middle_name: enrollment_detail["nameOnSchoolRecord"]["middleName"],
+          last_name: enrollment_detail["nameOnSchoolRecord"]["lastName"],
+
+          enrollment_status: enrollment_status(enrollment_data),
+          term_begin: enrollment_data["termBeginDate"],
+          term_end: enrollment_data["termEndDate"],
+        )
       end
     end
-    latest_current_enrollment_term = current_enrollment_terms
-      .sort_by { |e| [ ENROLLMENT_STATUSES.values.index(e[:enrollment_status]), e[:term_end_date] ] }
-      .first
+  end
 
-    education_activity.update(
-      school_name: latest_current_enrollment_term[:school_name],
-      enrollment_status: ENROLLMENT_STATUSES.fetch(latest_current_enrollment_term[:enrollment_status], "unknown"),
-      status: :succeeded
-    )
+  private
+
+  def enrollment_status(enrollment_data)
+    ENROLLMENT_STATUSES.fetch(enrollment_data["enrollmentStatus"]) do
+      @logger.error "Unknown enrollmentStatus (add to ENROLLMENT_STATUSES): #{enrollment_data["enrollmentStatus"]}"
+
+      "unknown"
+    end
   end
 end

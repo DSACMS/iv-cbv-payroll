@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_01_26_232247) do
+ActiveRecord::Schema[8.1].define(version: 2026_01_28_020952) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
   enable_extension "pgcrypto"
@@ -112,9 +112,6 @@ ActiveRecord::Schema[8.1].define(version: 2026_01_26_232247) do
     t.text "additional_comments"
     t.datetime "created_at", null: false
     t.integer "credit_hours"
-    t.string "enrollment_status", default: "unknown"
-    t.string "school_address"
-    t.string "school_name"
     t.string "status", default: "unknown"
     t.datetime "updated_at", null: false
     t.index ["activity_flow_id"], name: "index_education_activities_on_activity_flow_id"
@@ -138,6 +135,20 @@ ActiveRecord::Schema[8.1].define(version: 2026_01_26_232247) do
     t.string "program_name"
     t.datetime "updated_at", null: false
     t.index ["activity_flow_id"], name: "index_job_training_activities_on_activity_flow_id"
+  end
+
+  create_table "nsc_enrollment_terms", force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.bigint "education_activity_id"
+    t.string "enrollment_status", null: false
+    t.string "first_name"
+    t.string "last_name"
+    t.string "middle_name"
+    t.string "school_name"
+    t.date "term_begin"
+    t.date "term_end"
+    t.datetime "updated_at", null: false
+    t.index ["education_activity_id"], name: "index_nsc_enrollment_terms_on_education_activity_id"
   end
 
   create_table "payroll_accounts", force: :cascade do |t|

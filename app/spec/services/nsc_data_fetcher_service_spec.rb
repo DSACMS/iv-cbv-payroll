@@ -37,8 +37,15 @@ RSpec.describe NscDataFetcherService do
       it "updates the EducationActivity to have sync status = :no_enrollments" do
         expect { service.fetch }
           .to change { education_activity.reload.dup } # rubocop:disable RSpec/ExpectChange
-          .from(have_attributes(status: "unknown", enrollment_status: "unknown"))
-          .to(have_attributes(status: "no_enrollments", enrollment_status: "unknown"))
+          .from(have_attributes(status: "unknown"))
+          .to(have_attributes(status: "no_enrollments"))
+      end
+
+      it "does not create any NscEnrollmentTerm's" do
+        service.fetch
+
+        expect(education_activity.nsc_enrollment_terms)
+          .to be_empty
       end
     end
 
@@ -52,12 +59,20 @@ RSpec.describe NscDataFetcherService do
       it "returns an EducationActivity with sync status = :succeeded" do
         expect { service.fetch }
           .to change { education_activity.reload.dup } # rubocop:disable RSpec/ExpectChange
-          .from(have_attributes(status: "unknown", enrollment_status: "unknown"))
-          .to(have_attributes(
-            status: "succeeded",
-            enrollment_status: "enrolled",
-            school_name: "Trident University International"
-          ))
+          .from(have_attributes(status: "unknown"))
+          .to(have_attributes(status: "succeeded"))
+      end
+
+      it "saves the enrollment details into an NscEnrollmentTerm" do
+        service.fetch
+
+        expect(education_activity.nsc_enrollment_terms.first)
+          .to have_attributes(
+            school_name: "Trident University International",
+            enrollment_status: "enrolled", # Y
+            term_begin: Date.parse("2024-05-31"),
+            term_end: Date.parse("2024-11-19"),
+          )
       end
     end
 
@@ -71,12 +86,27 @@ RSpec.describe NscDataFetcherService do
       it "returns an EducationActivity with sync status = :succeeded" do
         expect { service.fetch }
           .to change { education_activity.reload.dup } # rubocop:disable RSpec/ExpectChange
-          .from(have_attributes(status: "unknown", enrollment_status: "unknown"))
-          .to(have_attributes(
-            status: "succeeded",
+          .from(have_attributes(status: "unknown"))
+          .to(have_attributes(status: "succeeded"))
+      end
+
+      it "saves the enrollment details into multiple NscEnrollmentTerm's" do
+        service.fetch
+
+        expect(education_activity.nsc_enrollment_terms.first)
+          .to have_attributes(
+            school_name: "FLORIDA A&M UNIVERSITY",
             enrollment_status: "half_time",
-            school_name: "FLORIDA A&M UNIVERSITY"
-          ))
+            term_begin: Date.parse("2024-06-19"),
+            term_end: Date.parse("2024-11-29"),
+          )
+        expect(education_activity.nsc_enrollment_terms.second)
+          .to have_attributes(
+            school_name: "FLORIDA STATE UNIVERSITY",
+            enrollment_status: "half_time",
+            term_begin: Date.parse("2024-05-31"),
+            term_end: Date.parse("2024-11-29"),
+          )
       end
     end
   end
