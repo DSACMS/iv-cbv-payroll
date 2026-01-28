@@ -1,4 +1,12 @@
 module Activities::EducationHelper
+  def enrollment_current_text(is_enrolled)
+    if is_enrolled
+      I18n.t("activities.education.edit.enrollment_current.yes_enrolled")
+    else
+      I18n.t("activities.education.edit.enrollment_current.no_enrolled")
+    end
+  end
+
   def enrollment_status_text(enrollment_status)
     case enrollment_status.to_sym
     when :full_time

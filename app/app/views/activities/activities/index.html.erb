@@ -49,18 +49,20 @@
       <%= t("activities.hub.count", count: @education_activities.size) %>
     </p>
 
-    <%= render TableComponent.new do |t| %>
-      <% @education_activities.each do |activity| %>
-        <%= t.with_row do |r| %>
-          <%= r.with_data_cell do %>
-            <%= activity.school_name %>
-          <% end %>
-          <%= r.with_data_cell do %>
-            <%= enrollment_status_text(activity.enrollment_status) %>
-          <% end %>
-          <%= r.with_data_cell do %>
-            <%= link_to t("activities.hub.edit"), activities_flow_education_path(id: activity.id), class: "usa-link" %>
-            <%= button_to t("activities.hub.delete"), activities_flow_education_path(id: activity.id), method: :delete, class: "usa-button usa-button--unstyled", form: { data: { turbo_confirm: t("activities.hub.delete_confirm") } } %>
+    <% @education_activities.each do |activity| %>
+      <% activity.nsc_enrollment_terms.each do |enrollment_term| %>
+        <%= render TableComponent.new do |t| %>
+          <%= t.with_row do |r| %>
+            <%= r.with_data_cell do %>
+              <% enrollment_term.school_name.titlecase %>
+            <% end %>
+            <%= r.with_data_cell do %>
+              <% enrollment_status_text(enrollment_term.enrollment_status) %>
+            <% end %>
+            <%= r.with_data_cell do %>
+              <%= link_to t("activities.hub.edit"), activities_flow_education_path(id: activity.id), class: "usa-link" %>
+              <%= button_to t("activities.hub.delete"), activities_flow_education_path(id: activity.id), method: :delete, class: "usa-button usa-button--unstyled", form: { data: { turbo_confirm: t("activities.hub.delete_confirm") } } %>
+            <% end %>
           <% end %>
         <% end %>
       <% end %>

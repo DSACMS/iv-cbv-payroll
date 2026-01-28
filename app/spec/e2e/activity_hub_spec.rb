@@ -28,8 +28,7 @@ RSpec.describe 'e2e Activity Hub flow test', :js, type: :feature do
       verify_page(page, title: I18n.t("activities.education.show.header")) # /activities/education/123 (loading page)
     end
     verify_page(page, title: I18n.t("activities.education.edit.header"), wait: 10) # /activities/education/123/edit (show page)
-    expect(page).to have_content I18n.t("activities.education.edit.student_information")
-    click_button I18n.t("activities.education.edit.continue")
+    find("a", text: I18n.t("activities.education.edit.no_records_found.return_button")).click
 
     # Add an Income activity
     click_button I18n.t("activities.income.add")
