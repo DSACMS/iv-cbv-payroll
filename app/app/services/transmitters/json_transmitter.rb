@@ -23,6 +23,7 @@ class Transmitters::JsonTransmitter
 
     case res
     when Net::HTTPSuccess, Net::HTTPRedirection
+      @cbv_flow.touch(:json_transmitted_at)
       "ok"
     else
       Rails.logger.error "Unexpected response from agency: code=#{res.code} message=#{res.message} body=#{res.body}"

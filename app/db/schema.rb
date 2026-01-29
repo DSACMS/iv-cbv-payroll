@@ -98,6 +98,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_01_28_020952) do
     t.string "device_id"
     t.uuid "end_user_id", default: -> { "gen_random_uuid()" }, null: false
     t.boolean "has_other_jobs"
+    t.datetime "json_transmitted_at"
     t.date "payroll_data_available_from"
     t.string "pinwheel_token_id"
     t.datetime "redacted_at"

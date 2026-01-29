@@ -40,6 +40,16 @@ RSpec.describe Transmitters::JsonTransmitter do
         described_class.new(cbv_flow, mock_client_agency, aggregator_report).deliver
       end
     end
+
+    it 'sets json_transmitted_at on the cbv_flow upon successful transmission' do
+      expect(cbv_flow.json_transmitted_at).to be_nil
+
+      VCR.use_cassette("json_transmitter_200") do
+        described_class.new(cbv_flow, mock_client_agency, aggregator_report).deliver
+      end
+
+      expect(cbv_flow.reload.json_transmitted_at).to be_present
+    end
   end
 
   context 'agency responds with 500' do
@@ -50,6 +60,17 @@ RSpec.describe Transmitters::JsonTransmitter do
       end
 
       expect(Rails.logger).to have_received(:error).with(/Unexpected response from agency: code=500 message=Internal Server Error body=Internal Server Error/)
+    end
+
+    it 'does not set json_transmitted_at on the cbv_flow when transmission fails' do
+      expect(cbv_flow.json_transmitted_at).to be_nil
+
+      VCR.use_cassette("json_transmitter_500") do
+        expect { described_class.new(cbv_flow, mock_client_agency, aggregator_report).deliver }
+          .to raise_error(Transmitters::JsonTransmitter::JsonTransmitterError)
+      end
+
+      expect(cbv_flow.reload.json_transmitted_at).to be_nil
     end
   end
 
