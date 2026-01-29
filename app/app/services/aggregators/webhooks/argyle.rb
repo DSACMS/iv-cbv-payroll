@@ -83,7 +83,7 @@ module Aggregators::Webhooks
     # Verify the signature using the appropriate webhook secret
     # See: https://docs.argyle.com/api-guide/webhooks
     def self.verify_signature(signature, payload, webhook_secret)
-      expected = OpenSSL::HMAC.hexdigest(OpenSSL::Digest.new("sha512"), webhook_secret, payload)
+      expected = generate_signature_digest(payload, webhook_secret)
       ActiveSupport::SecurityUtils.secure_compare(signature, expected)
     end
 

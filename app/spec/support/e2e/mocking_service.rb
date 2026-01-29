@@ -11,6 +11,10 @@ module E2e
         Base64.strict_encode64("#{ENV["ARGYLE_API_TOKEN_SANDBOX_ID"]}:#{ENV["ARGYLE_API_TOKEN_SANDBOX_SECRET"]}")
       end,
 
+      argyle_webhook_signature: ->(request_hash) do
+        Aggregators::Webhooks::Argyle.generate_signature_digest(request_hash[:body], ENV["ARGYLE_SANDBOX_WEBHOOK_SECRET"])
+      end,
+
       # Replaces the webhook signature on incoming Pinwheel webhooks.
       pinwheel_webhook_signature: ->(request_hash) do
         pinwheel = Aggregators::Sdk::PinwheelService.new("sandbox")
@@ -49,7 +53,10 @@ module E2e
       @cassette_name = cassette_name
       @webhook_replayer = E2e::NgrokRequestReplayer.new(
         logger: @logger,
-        replacements: { "<PINWHEEL_WEBHOOK_SIGNATURE>" => PLACEHOLDER_VALUES[:pinwheel_webhook_signature] }
+        replacements: {
+          "<PINWHEEL_WEBHOOK_SIGNATURE>" => PLACEHOLDER_VALUES[:pinwheel_webhook_signature],
+          "<ARGYLE_WEBHOOK_SIGNATURE>" => PLACEHOLDER_VALUES[:argyle_webhook_signature]
+        }
       )
 
       set_up_recording_mode if @record_mode

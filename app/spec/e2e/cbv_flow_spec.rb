@@ -30,17 +30,19 @@ RSpec.describe "e2e CBV flow test", :js, type: :feature do
     end
 
     @e2e.record_modal_callbacks(page.driver.browser) do
-      argyle_container = find("div[id*=\"argyle-link-root\"]")
-      page.within(argyle_container) do
-        fill_in "username", with: "test_1", wait: 10
-        fill_in "password", with: "passgood"
-        click_button "Connect"
-        fill_in "legacy_mfa_token", with: "8081", wait: 30
-        click_button "Continue", wait: 30
+      argyle_container = find("div[id*=\"argyle-link-root\"]", visible: :all)
+      page.within(argyle_container.shadow_root) do
+        find('[name="username"]', wait: 10).fill_in(with: "test_1")
+        find('[name="password"]').fill_in(with: "passgood")
+        find('[data-hook="connect-button"]').click
+        wait_for_idle(page)
+        find('[name="legacy_mfa_token"]', wait: 30).fill_in(with: "8081")
+        wait_for_idle(page)
+        find('[data-hook="connect-button"]', wait: 30).click
       end
 
       # Wait for Argyle modal to disappear
-      find_all("div[id*=\"argyle-link-root\"]", maximum: 0, minimum: nil, wait: 30)
+      find_all("div[id*=\"argyle-link-root\"]", visible: :all, maximum: 0, minimum: nil, wait: 30)
     end
 
     # /cbv/synchronizations
