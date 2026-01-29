@@ -7,7 +7,15 @@
     <%= csp_meta_tag %>
     <%= stylesheet_link_tag "application", "data-turbo-track": "reload" %>
     <%= javascript_include_tag "application", "data-turbo-track": "reload", type: "module" %>
+
+    <style>
+      html {
+        /* Override the default blue background used in preheader/footer */
+        background-color: initial;
+      }
+    </style>
   </head>
+
   <body>
     <div class="padding-3">
       <%= yield %>

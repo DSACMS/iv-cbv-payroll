@@ -66,13 +66,9 @@ class ApplicationController < ActionController::Base
   end
 
   def enable_mini_profiler_in_demo
-    return unless demo_mode?
+    return unless Rails.application.config.demo_mode
 
     Rack::MiniProfiler.authorize_request
-  end
-
-  def demo_mode?
-    ENV["DOMAIN_NAME"] == "verify-demo.navapbc.cloud"
   end
 
   def client_agency_from_domain

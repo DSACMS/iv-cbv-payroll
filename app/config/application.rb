@@ -52,6 +52,9 @@ module IvCbvPayroll
     # Configure allowed hosts
     config.hosts << ENV["DOMAIN_NAME"]
 
+    # Enable various functionality when running in lower deployed environments (dev, demo)
+    config.demo_mode = ENV["DOMAIN_NAME"] == "verify-demo.navapbc.cloud"
+
     # Configure allowed hosts inferred from the client-agency-config.yml file
     config.client_agencies.client_agency_ids.each do |agency_id|
       agency = config.client_agencies[agency_id]
@@ -62,6 +65,10 @@ module IvCbvPayroll
     config.host_authorization = {
       exclude: ->(request) { %r{^/health}.match?(request.path) }
     }
+
+    # ViewComponent and Lookbook configuration
+    config.view_component.previews.paths << Rails.root.join("spec", "components", "previews")
+    config.view_component.previews.default_layout = "component_preview"
 
     # See: https://guides.rubyonrails.org/active_record_encryption.html#setup
     config.active_record.encryption.primary_key = ENV["ACTIVE_RECORD_ENCRYPTION_PRIMARY_KEY"]

@@ -110,4 +110,8 @@ Rails.application.routes.draw do
 
   match "/404", to: "pages#error_404", via: :all
   match "/500", to: "pages#error_500", via: :all
+
+  if Rails.env.development? || Rails.application.config.demo_mode
+    mount Lookbook::Engine, at: "/lookbook"
+  end
 end
