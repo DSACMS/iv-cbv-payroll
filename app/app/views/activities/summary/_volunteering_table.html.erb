@@ -12,17 +12,6 @@
     <% end %>
   <% end %>
 
-  <% if activity.respond_to?(:organization_address) && activity.organization_address.present? %>
-    <%= table.with_row do |row| %>
-      <%= row.with_data_cell(is_header: true) do %>
-        <%= t("activities.summary.volunteering.address") %>
-      <% end %>
-      <%= row.with_data_cell do %>
-        <%= activity.organization_address %>
-      <% end %>
-    <% end %>
-  <% end %>
-
   <%= table.with_row do |row| %>
     <%= row.with_data_cell(is_header: true) do %>
       <%= t("activities.summary.volunteering.month") %>
