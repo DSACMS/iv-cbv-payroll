@@ -49,7 +49,7 @@ RSpec.describe Aggregators::Sdk::NscService, type: :service do
           nsc_stub_request_education_search_token_expired_response("lynette")
         end
 
-        it "retries once after unauthorized and clears cached token" do
+        it "retries once after unauthorized" do
           result = service.fetch_enrollment_data(**user_lynette)
 
           expect(result).to include("transactionDetails")
