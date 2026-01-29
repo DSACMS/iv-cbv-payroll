@@ -50,6 +50,23 @@
 
 <section class="margin-bottom-5">
   <h2>
+    <%= t("activities.education.title") %>
+  </h2>
+
+  <% @education_activities.each do |education_activity| %>
+    <% education_activity.nsc_enrollment_terms.each do |enrollment_term| %>
+      <%= render(EnrollmentTermTableComponent.new(nsc_enrollment_term: enrollment_term)) %>
+    <% end %>
+
+    <% if education_activity.additional_comments.present? %>
+      <h3><%= t(".additional_comments") %></h3>
+      <p><%= education_activity.additional_comments %></p>
+    <% end %>
+  <% end %>
+</section>
+
+<section class="margin-bottom-5">
+  <h2>
     <%= t("activities.income.title") %>
   </h2>
   <p>

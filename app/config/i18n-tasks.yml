@@ -137,6 +137,7 @@ ignore_missing:
     - "cbv.*.activity_flow.*" # ActivityFlow copy overrides in controllers/views from CBV flow
     - "activerecord.errors.models.job_training_activity.*"
     - "activerecord.errors.models.volunteering_activity.*"
+    - "components.enrollment_term_table_component.*"
 
     # Currently awaiting translation:
     # - "example.strings.*"   # Tag with ticket number that created or modified the string
