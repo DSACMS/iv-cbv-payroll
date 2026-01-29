@@ -50,7 +50,7 @@ RSpec.describe Activities::SummaryController, type: :controller do
     context "with payroll accounts" do
       render_views false
 
-      it "includes synced payroll accounts (income activities) in all_activities list" do
+      it "includes synced payroll accounts in all_activities list" do
         payroll_account = create(:payroll_account, :pinwheel_fully_synced, flow: activity_flow)
 
         get :show
