@@ -135,6 +135,7 @@ end
 gem "devise", "~> 4.9"
 
 gem "view_component"
+gem "lookbook"
 gem "wkhtmltopdf-binary"
 
 gem "net-sftp"

@@ -98,6 +98,6 @@ class Cbv::SubmitsController < Cbv::BaseController
   end
 
   def allow_caseworker_override_param?
-    Rails.env.development? || Rails.env.test? || demo_mode?
+    Rails.env.development? || Rails.env.test? || Rails.application.config.demo_mode
   end
 end

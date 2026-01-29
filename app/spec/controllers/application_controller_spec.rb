@@ -42,15 +42,15 @@ RSpec.describe ApplicationController, type: :controller do
 
   describe '#enable_mini_profiler_in_demo' do
     before do
-      allow(ENV).to receive(:[]).and_call_original
-      allow(ENV).to receive(:[]).with("DOMAIN_NAME").and_return(domain_name)
       routes.draw do
         get 'test_action', to: 'anonymous#test_action'
       end
+
+      allow(Rails.application.config).to receive(:demo_mode).and_return(is_demo_mode)
     end
 
     context 'when in demo environment' do
-      let(:domain_name) { "verify-demo.navapbc.cloud" }
+      let(:is_demo_mode) { true }
 
       it 'authorizes mini profiler' do
         expect(Rack::MiniProfiler).to receive(:authorize_request)
@@ -59,7 +59,7 @@ RSpec.describe ApplicationController, type: :controller do
     end
 
     context 'when not in demo environment' do
-      let(:domain_name) { "snap-income-pilot.com" }
+      let(:is_demo_mode) { false }
 
       it 'does not authorize mini profiler' do
         expect(Rack::MiniProfiler).not_to receive(:authorize_request)

@@ -5,7 +5,7 @@ class MemorableDateComponentPreview < ApplicationPreview
     render(MemorableDateComponent.new(
       form: UswdsFormBuilder.new(:applicant,
         CbvApplicant::Sandbox.new(date_of_birth: nil),
-        view_context,
+        self,
         {}
       ),
       attribute: :date_of_birth,
@@ -18,7 +18,7 @@ class MemorableDateComponentPreview < ApplicationPreview
     render(MemorableDateComponent.new(
       form: UswdsFormBuilder.new(:applicant,
         CbvApplicant::Sandbox.new(date_of_birth: Date.new(1985, 3, 15)),
-        view_context,
+        self,
         {}
       ),
       attribute: :date_of_birth,
@@ -32,7 +32,7 @@ class MemorableDateComponentPreview < ApplicationPreview
     applicant.errors.add(:date_of_birth, I18n.t("cbv.applicant_informations.sandbox.fields.date_of_birth.blank"))
 
     render(MemorableDateComponent.new(
-      form: UswdsFormBuilder.new(:applicant, applicant, view_context, {}),
+      form: UswdsFormBuilder.new(:applicant, applicant, self, {}),
       attribute: :date_of_birth,
       legend: "Date of Birth",
       hint: "For example: January 19 2000"
@@ -43,7 +43,7 @@ class MemorableDateComponentPreview < ApplicationPreview
     render(MemorableDateComponent.new(
       form: UswdsFormBuilder.new(:applicant,
         CbvApplicant::Sandbox.new(date_of_birth: nil),
-        view_context,
+        self,
         {}
       ),
       attribute: :date_of_birth,
