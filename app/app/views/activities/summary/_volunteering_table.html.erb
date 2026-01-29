@@ -1,0 +1,32 @@
+<%= render(TableComponent.new(is_responsive: true)) do |table| %>
+  <%= table.with_subheader_row(class_names: "subheader-row base-lightest border-top-1px") do |row| %>
+    <% row.with_data_cell(is_header: true).with_content(t("activities.summary.volunteering.header")) %>
+    <% row.with_data_cell(is_header: true).with_content(t("activities.summary.your_details")) %>
+  <% end %>
+  <%= table.with_row do |row| %>
+    <%= row.with_data_cell(is_header: true) do %>
+      <%= t("activities.summary.volunteering.organization") %>
+    <% end %>
+    <%= row.with_data_cell do %>
+      <%= activity.organization_name %>
+    <% end %>
+  <% end %>
+
+  <%= table.with_row do |row| %>
+    <%= row.with_data_cell(is_header: true) do %>
+      <%= t("activities.summary.volunteering.month") %>
+    <% end %>
+    <%= row.with_data_cell do %>
+      <%= activity.date.present? ? I18n.l(activity.date, format: :month_year) : t("shared.not_applicable") %>
+    <% end %>
+  <% end %>
+
+  <%= table.with_row do |row| %>
+    <%= row.with_data_cell(is_header: true) do %>
+      <%= t("activities.summary.volunteering.hours_volunteered") %>
+    <% end %>
+    <%= row.with_data_cell do %>
+      <%= activity.hours %>
+    <% end %>
+  <% end %>
+<% end %>
