@@ -28,7 +28,7 @@
       <%= t("activities.job_training.date") %>
     <% end %>
     <%= row.with_data_cell do %>
-      <%= I18n.l(activity.date, format: :month_year) %>
+      <%= activity.date.present? ? I18n.l(activity.date, format: :month_year) : t("shared.not_applicable") %>
     <% end %>
   <% end %>
 
