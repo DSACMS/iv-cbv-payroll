@@ -43,6 +43,7 @@ module IvCbvPayroll
     config.autoload_paths += %W[#{config.root}/lib]
     config.autoload_paths += %W[#{config.root}/app/helpers]
     config.autoload_paths += %W[#{config.root}/app/controllers/concerns]
+    config.autoload_paths += %W[#{config.root}/spec/components/previews]
 
     # CBV configuration
     config.client_agencies = ClientAgencyConfig.new(Rails.root.join("config", "client-agency-config.yml"))
@@ -67,6 +68,7 @@ module IvCbvPayroll
     }
 
     # ViewComponent and Lookbook configuration
+    config.lookbook.project_name = "EMMY Component Gallery"
     config.view_component.previews.paths << Rails.root.join("spec", "components", "previews")
     config.view_component.previews.default_layout = "component_preview"
 
