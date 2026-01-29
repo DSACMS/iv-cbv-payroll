@@ -92,7 +92,7 @@ en:
         fetching_education_description: This may take a few seconds. Please keep this window open while we work on this.
         header: We're gathering your details from National Student Clearinghouse
         school_or_program: School or program
-      title: 'Activity: Education'
+      title: Education
     entry:
       consent: Check this box to agree to let us record your information and share it with %{agency_name}.
       consent_required: Please check the consent box to continue.
@@ -181,12 +181,6 @@ en:
       consent_label_html: 'Check this box to confirm: <ul class="margin-y-2"><li>The information provided by you is true and complete to the best of your knowledge.</li><li>You agree to inform %{agency_name} of any activities not reflected in this report or any discrepancies found in the information gathered with this tool.</li><li>You understand that providing accurate and complete information is your responsibility, and any false or omitted information may have legal consequences.</li></ul> By sending this report, you authorize its use for community engagement verification by authorized %{agency_initials} personnel.'
       description: The report below has your community engagement information from %{start_date} to %{end_date}. Please review before sending to %{agency_name}.
       description_single_month: The report below has your community engagement information from %{month}. Please review before sending to %{agency_name}.
-      education:
-        credit_hours: Credit hours
-        currently_enrolled: Currently enrolled
-        enrollment_status: Enrollment status
-        header: Education information
-        school_or_program: School or program
       income:
         employer: Employer
         gross_income: Gross income
@@ -199,7 +193,6 @@ en:
       submit: Submit to %{agency_name}
       title: Review and submit your Community Engagement report
       volunteering:
-        address: Address
         header: Volunteering information
         hours_volunteered: Hours volunteered
         month: Month
