@@ -23,7 +23,7 @@ class ActivityFlowProgressCalculator
   private
 
   def total_hours
-    @activities.sum { |activity| activity.hours.to_i }
+    @activities.sum { |activity| activity.hours.to_i } + total_employment_hours
   end
 
   def each_month_meets_threshold?
@@ -34,8 +34,57 @@ class ActivityFlowProgressCalculator
   end
 
   def hours_for_month(month_start)
-    @activities
+    activity_hours = @activities
       .select { |activity| activity.date&.between?(month_start, month_start.end_of_month) }
       .sum { |activity| activity.hours.to_i }
+
+    activity_hours += employment_hours_for_month(month_start)
+
+    Rails.logger.info("TIMOTEST activity_hours now #{activity_hours}")
+    activity_hours
+  end
+
+  # Kind of gross to re-fetch each time, but doing this for now until we do
+  # the ticket for making Employment more like a flow_activity
+
+  def employment_hours_for_month(month_start)
+    return 0 unless payroll_report&.has_fetched?
+
+    month_key = month_start.strftime("%Y-%m")
+
+    monthly_summaries.sum do |_account_id, months|
+      month_data = months[month_key]
+      next 0 unless month_data
+
+      month_data[:total_w2_hours].to_f + month_data[:total_gig_hours].to_f
+    end
+  end
+
+  def total_employment_hours
+    return 0 unless payroll_report&.has_fetched?
+
+    monthly_summaries.sum do |_account_id, months|
+      months.sum do |_month_key, month_data|
+        month_data[:total_w2_hours].to_f + month_data[:total_gig_hours].to_f
+      end
+    end
+  end
+
+  def monthly_summaries
+    @monthly_summaries ||= payroll_report.summarize_by_month(
+      from_date: @activity_flow.reporting_window_range.begin,
+      to_date: @activity_flow.reporting_window_range.end
+    )
+  end
+
+  def payroll_report
+    @payroll_report ||= fetch_payroll_report
+  end
+
+  def fetch_payroll_report
+    return nil if @activity_flow.payroll_accounts.empty?
+
+    fetcher = AggregatorReportFetcher.new(@activity_flow)
+    fetcher.report
   end
 end
