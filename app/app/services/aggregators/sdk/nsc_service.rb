@@ -26,9 +26,6 @@ module Aggregators
 
       # See: https://docs.studentclearinghouse.org/vs/insights-json/verification-services-request#service-url-jwt-encryption-path
       ENROLLMENT_ENDPOINT = "/insights/v3/a2/submit-request"
-      TOKEN_CACHE_KEY_PREFIX = "nsc_service_token_"
-      TOKEN_EXPIRY_INTERVAL = 1.hour
-      TOKEN_EXPIRY_BUFFER = 5.minutes
       MIN_DISPLAY_TIME = 2.seconds
       MAX_TIMEOUT = 10.seconds
 
@@ -95,8 +92,6 @@ module Aggregators
           # Try one more time if the issue was expired or invalid token
           raise unless e.code == "UNAUTHORIZED" && !retried
           retried = true
-          # Clear cached token
-          Rails.cache.delete("#{TOKEN_CACHE_KEY_PREFIX}_#{environment_name}")
           # Try to fetch again
           retry
         end
@@ -115,12 +110,7 @@ module Aggregators
       end
 
       def access_token
-        cache_key = "#{TOKEN_CACHE_KEY_PREFIX}_#{environment_name}"
-        token_ttl = TOKEN_EXPIRY_INTERVAL - TOKEN_EXPIRY_BUFFER
-
-        Rails.cache.fetch(cache_key, expires_in: token_ttl) do
-          fetch_oauth_token
-        end
+        fetch_oauth_token
       end
 
       def fetch_oauth_token
