@@ -12,7 +12,7 @@ This project seeks to provide agencies responsibility for benefit eligibility de
 ## Project Scope
 
 - The open source offering consists of all necessary assets to build a docker image along with the necessary documentation
-- Community scope will shift over time, and to begin, we will engage with the IVaaS community to define the initial scope, and an expanded short and medium term scope that we are working towards.
+- Community scope will shift over time, and to begin, we will engage with the EMMY community to define the initial scope, and an expanded short and medium term scope that we are working towards.
 
 ## Community Principles
 
@@ -43,7 +43,7 @@ Nava describes the existing process here.
 
 ### Release Format & Platform
 
-- Generally, IVaaS strives to adhere to the CMS Open Source Release Guidance outlined here: [https://dsacms.github.io/ospo-guide/outbound/release-guidelines/](https://dsacms.github.io/ospo-guide/outbound/release-guidelines/)
+- Generally, EMMY strives to adhere to the CMS Open Source Release Guidance outlined here: [https://dsacms.github.io/ospo-guide/outbound/release-guidelines/](https://dsacms.github.io/ospo-guide/outbound/release-guidelines/)
 - A git tag will be made for each release, the tag will be the version string prefixed with a ‘v’ (i.e. ‘vX.Y.Z’)
 - Each git tag will also correspond to a github “release”: [https://docs.github.com/en/repositories/releasing-projects-on-github/about-releases](https://docs.github.com/en/repositories/releasing-projects-on-github/about-releases)
 - Pre-built docker images will be pushed to DockerHub for each release, tagged with the version string. Additionally, the ‘latest’ tag will be updated with each release and each major / minor versions will have tags corresponding to the most recent sub-version
@@ -64,7 +64,7 @@ We ensure that this platform supports switching between different locales, but o
 
 ### Changes to project scope
 
-As with other Tier3 Open Source Community Projects at HHS/CMS, IVaaS is taking a 'co-planning' approach to do community-informed roadmapping.
+As with other Tier3 Open Source Community Projects at HHS/CMS, EMMY is taking a 'co-planning' approach to do community-informed roadmapping.
 
 The COMMUNITY.md file outlines how committer and maintainer privileges are distributed and managed.
 

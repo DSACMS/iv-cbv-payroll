@@ -61,7 +61,7 @@ This issue is used to request role changes within the iv-cbv-payroll repository 
 - [ ] Exercising judgment for the good of the project, independent of their employer, friends, or team, in line with project GOVERNANCE.
 - [ ] Taking responsibility for a key project management area as indicated in CODEOWNERS.md
 - [ ] Writing and refactoring submitted PRs
-- [ ] Participating in IVaaS maintainer activities
+- [ ] Participating in EMMY maintainer activities
 - [ ] Proposing contributions to strategy and policy of the project
 - [ ] Participating in, and leading, community discussions
 - [ ] Mentoring new contributors
