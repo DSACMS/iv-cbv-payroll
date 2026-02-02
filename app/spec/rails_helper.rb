@@ -125,7 +125,6 @@ RSpec.configure do |config|
   # ViewComponent helpers
   config.include ViewComponent::TestHelpers, type: :component
   config.include ViewComponent::SystemTestHelpers, type: :component
-  config.include ViewComponentOverrides, type: :component
 
   # Capybara
   config.include Capybara::RSpecMatchers, type: :component
