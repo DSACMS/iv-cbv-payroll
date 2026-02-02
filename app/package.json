@@ -29,7 +29,7 @@
     "format:precommit": "prettier --write"
   },
   "devDependencies": {
-    "happy-dom": ">=20.3.9",
+    "happy-dom": ">=20.4.0",
     "jsdom": "^28.0.0",
     "prettier": "^3.8.1",
     "vite": "^7.3.1",
