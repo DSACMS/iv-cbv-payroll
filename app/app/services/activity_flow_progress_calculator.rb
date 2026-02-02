@@ -2,6 +2,7 @@
 
 class ActivityFlowProgressCalculator
   PER_MONTH_HOURS_THRESHOLD = 80
+
   Result = Struct.new(:total_hours, :meets_requirements, keyword_init: true)
 
   def self.progress(activity_flow)

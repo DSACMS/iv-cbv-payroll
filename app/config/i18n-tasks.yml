@@ -58,19 +58,23 @@ search:
   #  - app/
 
   ## Root directories for relative keys resolution.
-  # relative_roots:
-  #   - app/controllers
-  #   - app/helpers
-  #   - app/mailers
-  #   - app/presenters
-  #   - app/views
+  relative_roots:
+  - app/controllers
+  - app/helpers
+  - app/mailers
+  - app/presenters
+  - app/views
+  # In order for relative paths to work in component sidecar directories, we
+  # need to add each sidecar directory here.
+  # <% Dir["app/components/*"].each do |component_directory| %>
+  - <%= component_directory %>
+  # <% end %>
 
   ## Directories where method names which should not be part of a relative key resolution.
   # By default, if a relative translation is used inside a method, the name of the method will be considered part of the resolved key.
   # Directories listed here will not consider the name of the method part of the resolved key
   #
   # relative_exclude_method_name_paths:
-  #  -
 
   ## Files or `File.fnmatch` patterns to exclude from search. Some files are always excluded regardless of this setting:
   ##   *.jpg *.jpeg *.png *.gif *.svg *.ico *.eot *.otf *.ttf *.woff *.woff2 *.pdf *.css *.sass *.scss *.less
@@ -138,6 +142,7 @@ ignore_missing:
     - "activerecord.errors.models.job_training_activity.*"
     - "activerecord.errors.models.volunteering_activity.*"
     - "components.enrollment_term_table_component.*"
+    - "activity_flow_progress_indicator.*"
 
     # Currently awaiting translation:
     # - "example.strings.*"   # Tag with ticket number that created or modified the string

@@ -10,6 +10,12 @@
   <%= t("activities.hub.description") %>
 </p>
 
+<% if display_progress_indicator?(progress_calculator) %>
+  <%= render(ActivityFlowProgressIndicator.from_calculator(progress_calculator)) %>
+
+  <hr class="border-gray-30 border-top-0">
+<% end %>
+
 <%= render(AccordionComponent.new(id: "activity-hub-identity-accordion", heading_level: 2)) do |a| %>
   <%= a.with_title { "Current Identity" } %>
   <%= a.with_accordion_item do %>

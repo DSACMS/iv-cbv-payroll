@@ -1,0 +1,36 @@
+@forward "uswds";
+@use "uswds" as *;
+
+.activity-flow-progress-indicator {
+  margin: units(2) 0 units(4);
+}
+
+.activity-flow-progress-indicator__progress-bar {
+  background-color: color("primary-lighter");
+  border-radius: 4px;
+  border: 1px solid color("primary-vivid");
+  display: block;
+  height: 1rem;
+  width: 100%;
+
+  @include at-media("tablet") {
+    width: measure($theme-text-measure);
+  }
+}
+
+.activity-flow-progress-indicator__progress-bar::before {
+  background-color: color("primary-vivid");
+  content: "";
+  display: block;
+  height: 100%;
+  width: attr(data-percent %);
+}
+
+.activity-flow-progress-indicator__progress-amount-container {
+  text-align: right;
+}
+
+.activity-flow-progress-indicator__progress-amount {
+  color: color("primary-vivid");
+  font-weight: bold;
+}
