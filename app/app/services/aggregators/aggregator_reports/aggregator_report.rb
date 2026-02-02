@@ -89,8 +89,7 @@ module Aggregators::AggregatorReports
                 pay_gross: paystub.gross_pay_amount || 0,
                 pay_gross_ytd: paystub.gross_pay_ytd,
                 pay_net: paystub.net_pay_amount,
-                hours_paid: paystub.hours,
-                deductions: paystub.deductions
+                hours_paid: paystub.hours
               }
             end
           }
