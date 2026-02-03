@@ -1,6 +1,8 @@
 @forward "uswds";
 @use "uswds" as *;
 
+$progress-bar-max-width: 30rem;
+
 .activity-flow-progress-indicator {
   margin: units(2) 0 units(4);
 }
@@ -14,7 +16,7 @@
   width: 100%;
 
   @include at-media("tablet") {
-    width: measure($theme-text-measure);
+    width: $progress-bar-max-width;
   }
 }
 
@@ -28,6 +30,10 @@
 
 .activity-flow-progress-indicator__progress-amount-container {
   text-align: right;
+
+  @include at-media("tablet") {
+    width: $progress-bar-max-width;
+  }
 }
 
 .activity-flow-progress-indicator__progress-amount {
