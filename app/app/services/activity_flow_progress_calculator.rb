@@ -30,6 +30,7 @@ class ActivityFlowProgressCalculator
   def each_month_meets_threshold?
     @activity_flow.reporting_window_months.times.all? do |i|
       month_start = @activity_flow.reporting_window_range.begin + i.months
+
       hours_for_month(month_start) >= PER_MONTH_HOURS_THRESHOLD ||
         earnings_for_month(month_start) >= PER_MONTH_EARNINGS_THRESHOLD
     end
@@ -79,10 +80,7 @@ class ActivityFlowProgressCalculator
       month_data = months[month_key]
       next 0 unless month_data
 
-      w2_earnings = month_data[:accrued_gross_earnings].to_i
-      gig_earnings = (month_data[:gigs] || []).sum { |gig| gig.compensation_amount.to_i }
-
-      w2_earnings + gig_earnings
+      month_data[:accrued_gross_earnings].to_i
     end
   end
 
