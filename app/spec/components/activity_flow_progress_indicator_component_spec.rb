@@ -101,15 +101,15 @@ RSpec.describe ActivityFlowProgressIndicator, type: :component do
       render_inline(described_class.new(monthly_calculation_results: monthly_calculation_results))
 
       expect(page).to have_css(
-        ".activity-flow-progress-indicator__progress-label",
+        ".activity-flow-progress-indicator__progress-amount-container",
         text: "December"
       )
       expect(page).to have_css(
-        ".activity-flow-progress-indicator__progress-label",
+        ".activity-flow-progress-indicator__progress-amount-container",
         text: "November"
       )
       expect(page).to have_css(
-        ".activity-flow-progress-indicator__progress-label",
+        ".activity-flow-progress-indicator__progress-amount-container",
         text: "October"
       )
     end

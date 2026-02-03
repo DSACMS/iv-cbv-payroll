@@ -14,7 +14,7 @@
     <div class="activity-flow-progress-indicator__progress-bar" data-percent="<%= percent_complete(monthly_result) %>"></div>
 
     <p class="activity-flow-progress-indicator__progress-amount-container">
-      <san class="activity-flow-progress-indicator__progress-label">
+      <span>
         <% if multi_month? %>
           <%= l(monthly_result.month, format: :month) %>
         <% end %>

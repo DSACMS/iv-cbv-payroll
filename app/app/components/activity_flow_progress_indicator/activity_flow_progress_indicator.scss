@@ -30,6 +30,7 @@ $progress-bar-max-width: 30rem;
 
 .activity-flow-progress-indicator__progress-amount-container {
   display: flex;
+  font-weight: bold;
   justify-content: space-between;
   margin-top: units(1);
 
@@ -38,11 +39,6 @@ $progress-bar-max-width: 30rem;
   }
 }
 
-.activity-flow-progress-indicator__progress-label {
-  font-weight: bold;
-}
-
 .activity-flow-progress-indicator__progress-amount {
   color: color("primary-vivid");
-  font-weight: bold;
 }
