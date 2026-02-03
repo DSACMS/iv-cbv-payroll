@@ -32,7 +32,7 @@ class Activities::BaseController < FlowController
   end
 
   def after_activity_path
-    progress_result = progress_calculator.result
+    progress_result = progress_calculator.overall_result
     progress_result.meets_requirements ? activities_flow_summary_path : activities_flow_root_path
   end
 

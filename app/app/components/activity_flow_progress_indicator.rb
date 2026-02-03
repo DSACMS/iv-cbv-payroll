@@ -3,14 +3,12 @@ class ActivityFlowProgressIndicator < ViewComponent::Base
 
   def self.from_calculator(progress_calculator)
     new(
-      reporting_month: progress_calculator.reporting_months.last,
-      hours: progress_calculator.result.total_hours
+      monthly_calculation_results: progress_calculator.monthly_results
     )
   end
 
-  def initialize(hours:, reporting_month:)
-    @reporting_month = reporting_month
-    @hours = hours
+  def initialize(monthly_calculation_results:)
+    @monthly_calculation_results = monthly_calculation_results
   end
 
   def percent_complete
