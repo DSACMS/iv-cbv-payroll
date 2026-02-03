@@ -136,7 +136,8 @@ clean_events <- function(df){
         str_remove("Applicant ") |> 
         str_remove(" Or Platform Item") |> 
         str_replace("M F A", "MFA") |> 
-        str_replace("C B V", "CBV"),
+        str_replace("C B V", "CBV") |> 
+        str_replace("P D F", "PDF"),
         .after = event
         )
 }
@@ -430,6 +431,86 @@ v1 <- df_compl_wkly |>
     {default_caption}"),
         theme = si_style()
       )
+```
+
+If we look at just event data, we can see that virtually all of the submissions are occuring within the first three weeks. 
+
+```{r}
+#| label: cumshare
+#| output: true
+
+df_compl_cumshare <- df_mp |> 
+  filter(event %in% c("ApplicantViewedAgreement","ApplicantSharedIncomeSummary")) |> 
+  clean_events() |> 
+  group_by(pilot) |> 
+  mutate(
+    plt_day = as_date(timestamp) - min(as_date(timestamp)),
+    plt_day = as.integer(plt_day)
+  ) |> 
+  group_by(pilot, plt_day, event_clean) |> 
+  summarise(
+    applicants = n_distinct(distinct_id),
+    events = n(),
+    .groups = "drop"
+    )
+
+df_compl_cumshare <- df_compl_cumshare |> 
+  group_by(pilot, event_clean) |> 
+  complete(
+    plt_day = seq(0, max(plt_day)), 
+    fill = list(applicants = 0, events = 0)) |> 
+  ungroup()
+
+df_compl_cumshare <- df_compl_cumshare |> 
+  pivot_longer(c(applicants, events), names_to = "denom") |> 
+  arrange(denom, event_clean, pilot, plt_day) |> 
+  group_by(pilot, denom, event_clean) |> 
+  mutate(
+    cumsum = cumsum(value),
+    cumshare = cumsum / sum(value, na.rm = TRUE)
+  ) |> 
+  mutate(
+    data_pt = case_when(plt_day %% 7 == 0 ~ plt_day),
+    data_lab = case_when(plt_day %% 7 == 0 ~ label_percent(1)(cumshare))) |> 
+  filter(denom == "events")
+ 
+df_compl_cumshare |> 
+  ggplot(aes(plt_day, cumshare, fill = event_clean)) +
+  geom_ribbon(aes(ymin = 0, ymax = cumshare), alpha = .4) +
+  geom_step(color = matterhorn) +
+  geom_vline(xintercept = 21, color = "white") +
+  geom_text(
+    aes(label = data_lab), na.rm = TRUE,
+    family = "Source Sans Pro",
+    color = matterhorn,
+    vjust = -1,
+    size = 7/.pt
+  ) +
+  coord_cartesian(clip = "off") +
+  facet_grid(fct_rev(event_clean)~pilot, switch = "y") +
+  scale_x_continuous(
+    breaks = seq(0, max(df_compl_cumshare$plt_day), by = 7),
+    labels = seq(0, max(df_compl_cumshare$plt_day), by = 7)/ 7
+  ) +
+  scale_fill_manual(values = c(unname(dsac_color['light_teal']), unname(dsac_color["light_navy"]))) +
+  scale_y_continuous(label = label_percent()) +
+  labs(
+    x = NULL, y = NULL,
+    title = glue("97% OF <span style = color:{dsac_color['light_teal']};>SHARED INCOME SUMMARY</span> EVENTS OCCUR WITHIN 3 WEEKS"),
+    subtitle = "Cumulative share of **events** by week | Louisiana Pilots",
+    caption = default_caption
+  ) +
+  si_style() +
+  theme( 
+    panel.spacing = unit(.5, "lines"),
+    strip.text.x = element_text(face = "bold"), 
+    strip.text.y = element_text(face = "bold", hjust = .5), 
+    strip.placement = "outside",
+    legend.position = "none",
+    axis.text.y = element_blank(),
+    plot.subtitle = element_markdown(),
+    plot.title = element_markdown()
+  )
 ```
 
 ### Is there a difference in completion based on their device or how they receive the pilot link?
