@@ -2,6 +2,7 @@ require "rails_helper"
 
 RSpec.describe Activities::ActivitiesController, type: :controller do
   include_context "activity_hub"
+  render_views
 
   let(:flow) { create(:activity_flow) }
 
@@ -11,6 +12,7 @@ RSpec.describe Activities::ActivitiesController, type: :controller do
     before do
       create(:activity_flow) # ensure there is a second flow that might get mixed up
       current_flow.reload
+      create(:volunteering_activity, activity_flow: current_flow, hours: 5)
 
       session[:flow_id] = current_flow.id
       session[:flow_type] = :activity
@@ -39,6 +41,10 @@ RSpec.describe Activities::ActivitiesController, type: :controller do
       ).to match_array(
              current_flow.education_activities
            )
+    end
+
+    it "renders the progress indicator when hours exist" do
+      expect(response.body).to include("activity-flow-progress-indicator")
     end
   end
 end
