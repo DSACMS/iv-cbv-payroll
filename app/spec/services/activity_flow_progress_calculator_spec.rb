@@ -1,8 +1,8 @@
 require "rails_helper"
 
 RSpec.describe ActivityFlowProgressCalculator do
-  describe ".progress" do
-    subject(:progress) { described_class.progress(flow) }
+  describe "#overall_result" do
+    subject(:result) { described_class.new(flow).overall_result }
 
     let(:flow) { create(:activity_flow, reporting_window_months: 1) }
 
@@ -11,24 +11,24 @@ RSpec.describe ActivityFlowProgressCalculator do
       create(:volunteering_activity, activity_flow: flow, organization_name: "Library", hours: 2)
       create(:job_training_activity, activity_flow: flow, program_name: "Career Prep", organization_address: "123 Main St", hours: 5)
 
-      expect(progress.total_hours).to eq(10)
+      expect(result.total_hours).to eq(10)
     end
 
     it "returns zero when no activities exist" do
-      expect(progress.total_hours).to eq(0)
+      expect(result.total_hours).to eq(0)
     end
 
     it "does not meet requirements when month is below 80 hours" do
       create(:volunteering_activity, activity_flow: flow, organization_name: "Food Pantry", hours: 79)
 
-      expect(progress.meets_requirements).to be(false)
+      expect(result.meets_requirements).to be(false)
     end
 
     it "meets requirements when month has at least 80 hours" do
       create(:volunteering_activity, activity_flow: flow, organization_name: "Food Pantry", hours: 40)
       create(:job_training_activity, activity_flow: flow, program_name: "Career Prep", organization_address: "123 Main St", hours: 40)
 
-      expect(progress.meets_requirements).to be(true)
+      expect(result.meets_requirements).to be(true)
     end
 
     context "with multi-month reporting window" do
@@ -40,7 +40,7 @@ RSpec.describe ActivityFlowProgressCalculator do
       it "does not meet requirements when any month has less than 80 hours" do
         create(:volunteering_activity, activity_flow: flow, hours: 240, date: first_month)
 
-        expect(progress.meets_requirements).to be(false)
+        expect(result.meets_requirements).to be(false)
       end
 
       it "meets requirements when each month has at least 80 hours" do
@@ -48,7 +48,38 @@ RSpec.describe ActivityFlowProgressCalculator do
         create(:volunteering_activity, activity_flow: flow, hours: 80, date: second_month)
         create(:volunteering_activity, activity_flow: flow, hours: 80, date: third_month)
 
-        expect(progress.meets_requirements).to be(true)
+        expect(result.meets_requirements).to be(true)
+      end
+    end
+  end
+
+  describe "#monthly_results" do
+    subject(:result) { described_class.new(flow).monthly_results }
+
+    let(:flow) { create(:activity_flow, reporting_window_months: 3) }
+    let(:reporting_range_months) { flow.reporting_window_range.uniq(&:beginning_of_month) }
+
+    it "returns empty results for all months when no activities exist" do
+      expect(result).to contain_exactly(
+        have_attributes(month: reporting_range_months.first, total_hours: 0, meets_requirements: false),
+        have_attributes(month: reporting_range_months.second, total_hours: 0, meets_requirements: false),
+        have_attributes(month: reporting_range_months.third, total_hours: 0, meets_requirements: false),
+      )
+    end
+
+    context "when there are activities within the reporting range" do
+      before do
+        create(:volunteering_activity, activity_flow: flow, hours: 40, date: reporting_range_months.first + 1.day)
+        create(:volunteering_activity, activity_flow: flow, hours: 40, date: reporting_range_months.first + 2.day)
+        create(:volunteering_activity, activity_flow: flow, hours: 40, date: reporting_range_months.second + 1.day)
+      end
+
+      it "returns monthly results for those months" do
+        expect(result).to contain_exactly(
+          have_attributes(month: reporting_range_months.first, total_hours: 80, meets_requirements: true),
+          have_attributes(month: reporting_range_months.second, total_hours: 40, meets_requirements: false),
+          have_attributes(month: reporting_range_months.third, total_hours: 0, meets_requirements: false),
+        )
       end
     end
   end

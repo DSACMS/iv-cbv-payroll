@@ -3,22 +3,31 @@
 class ActivityFlowProgressCalculator
   PER_MONTH_HOURS_THRESHOLD = 80
 
-  Result = Struct.new(:total_hours, :meets_requirements, keyword_init: true)
-
-  def self.progress(activity_flow)
-    new(activity_flow).result
-  end
+  OverallResult = Struct.new(:total_hours, :meets_requirements, keyword_init: true)
+  MonthlyResult = Struct.new(:month, :total_hours, :meets_requirements, keyword_init: true)
 
   def initialize(activity_flow)
     @activity_flow = activity_flow
     @activities = activity_flow.volunteering_activities + activity_flow.job_training_activities
   end
 
-  def result
-    Result.new(
+  def overall_result
+    OverallResult.new(
       total_hours: total_hours,
       meets_requirements: each_month_meets_threshold?
     )
+  end
+
+  def monthly_results
+    reporting_months.map do |month|
+      hours = hours_for_month(month)
+
+      MonthlyResult.new(
+        month: month,
+        total_hours: hours,
+        meets_requirements: hours >= PER_MONTH_HOURS_THRESHOLD
+      )
+    end
   end
 
   def reporting_months
