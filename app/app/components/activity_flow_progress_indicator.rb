@@ -3,7 +3,7 @@ class ActivityFlowProgressIndicator < ViewComponent::Base
 
   def self.from_calculator(progress_calculator)
     new(
-      reporting_month: Date.new(2026, 1, 1), # TODO: Use the actual reporting range
+      reporting_month: progress_calculator.reporting_months.last,
       hours: progress_calculator.result.total_hours
     )
   end

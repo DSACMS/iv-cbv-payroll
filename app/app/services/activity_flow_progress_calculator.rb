@@ -21,6 +21,12 @@ class ActivityFlowProgressCalculator
     )
   end
 
+  def reporting_months
+    @activity_flow.reporting_window_months.times.map do |i|
+      @activity_flow.reporting_window_range.begin + i.months
+    end
+  end
+
   private
 
   def total_hours
@@ -28,8 +34,7 @@ class ActivityFlowProgressCalculator
   end
 
   def each_month_meets_threshold?
-    @activity_flow.reporting_window_months.times.all? do |i|
-      month_start = @activity_flow.reporting_window_range.begin + i.months
+    reporting_months.all? do |month_start|
       hours_for_month(month_start) >= PER_MONTH_HOURS_THRESHOLD
     end
   end
