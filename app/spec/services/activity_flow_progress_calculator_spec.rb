@@ -193,7 +193,7 @@ RSpec.describe ActivityFlowProgressCalculator do
           it "meets requirements when W2 earnings reach threshold" do
             allow(mock_report).to receive_messages(has_fetched?: true, summarize_by_month: {
               account_id => {
-                month_key => { total_w2_hours: 0.0, total_gig_hours: 0.0, accrued_gross_earnings: 580.0, gigs: [] }
+                month_key => { total_w2_hours: 0.0, total_gig_hours: 0.0, accrued_gross_earnings: 580_00, gigs: [] }
               }
             })
 
@@ -201,10 +201,10 @@ RSpec.describe ActivityFlowProgressCalculator do
           end
 
           it "meets requirements when gig earnings reach threshold" do
-            gig = Aggregators::ResponseObjects::Gig.new(compensation_amount: 580.0)
+            gig = Aggregators::ResponseObjects::Gig.new(compensation_amount: 580_00)
             allow(mock_report).to receive_messages(has_fetched?: true, summarize_by_month: {
               account_id => {
-                month_key => { total_w2_hours: 0.0, total_gig_hours: 0.0, accrued_gross_earnings: 0.0, gigs: [ gig ] }
+                month_key => { total_w2_hours: 0.0, total_gig_hours: 0.0, accrued_gross_earnings: 0, gigs: [ gig ] }
               }
             })
 
@@ -212,10 +212,10 @@ RSpec.describe ActivityFlowProgressCalculator do
           end
 
           it "meets requirements when combined W2 and gig earnings reach threshold" do
-            gig = Aggregators::ResponseObjects::Gig.new(compensation_amount: 300.0)
+            gig = Aggregators::ResponseObjects::Gig.new(compensation_amount: 300_00)
             allow(mock_report).to receive_messages(has_fetched?: true, summarize_by_month: {
               account_id => {
-                month_key => { total_w2_hours: 0.0, total_gig_hours: 0.0, accrued_gross_earnings: 280.0, gigs: [ gig ] }
+                month_key => { total_w2_hours: 0.0, total_gig_hours: 0.0, accrued_gross_earnings: 280_00, gigs: [ gig ] }
               }
             })
 
@@ -225,7 +225,7 @@ RSpec.describe ActivityFlowProgressCalculator do
           it "does not meet requirements when earnings below threshold" do
             allow(mock_report).to receive_messages(has_fetched?: true, summarize_by_month: {
               account_id => {
-                month_key => { total_w2_hours: 0.0, total_gig_hours: 0.0, accrued_gross_earnings: 579.0, gigs: [] }
+                month_key => { total_w2_hours: 0.0, total_gig_hours: 0.0, accrued_gross_earnings: 579_00, gigs: [] }
               }
             })
 
@@ -235,7 +235,7 @@ RSpec.describe ActivityFlowProgressCalculator do
           it "meets requirements when hours below threshold but earnings above" do
             allow(mock_report).to receive_messages(has_fetched?: true, summarize_by_month: {
               account_id => {
-                month_key => { total_w2_hours: 50.0, total_gig_hours: 0.0, accrued_gross_earnings: 600.0, gigs: [] }
+                month_key => { total_w2_hours: 50.0, total_gig_hours: 0.0, accrued_gross_earnings: 600_00, gigs: [] }
               }
             })
 
@@ -293,9 +293,9 @@ RSpec.describe ActivityFlowProgressCalculator do
           it "meets requirements when each month has earnings above threshold" do
             allow(mock_report).to receive_messages(has_fetched?: true, summarize_by_month: {
               account_id => {
-                first_month_key => { total_w2_hours: 0.0, total_gig_hours: 0.0, accrued_gross_earnings: 600.0, gigs: [] },
-                second_month_key => { total_w2_hours: 0.0, total_gig_hours: 0.0, accrued_gross_earnings: 580.0, gigs: [] },
-                third_month_key => { total_w2_hours: 0.0, total_gig_hours: 0.0, accrued_gross_earnings: 700.0, gigs: [] }
+                first_month_key => { total_w2_hours: 0.0, total_gig_hours: 0.0, accrued_gross_earnings: 600_00, gigs: [] },
+                second_month_key => { total_w2_hours: 0.0, total_gig_hours: 0.0, accrued_gross_earnings: 580_00, gigs: [] },
+                third_month_key => { total_w2_hours: 0.0, total_gig_hours: 0.0, accrued_gross_earnings: 700_00, gigs: [] }
               }
             })
 
@@ -305,9 +305,9 @@ RSpec.describe ActivityFlowProgressCalculator do
           it "meets requirements with mix of hours and earnings across months" do
             allow(mock_report).to receive_messages(has_fetched?: true, summarize_by_month: {
               account_id => {
-                first_month_key => { total_w2_hours: 80.0, total_gig_hours: 0.0, accrued_gross_earnings: 0.0, gigs: [] },
-                second_month_key => { total_w2_hours: 0.0, total_gig_hours: 0.0, accrued_gross_earnings: 600.0, gigs: [] },
-                third_month_key => { total_w2_hours: 80.0, total_gig_hours: 0.0, accrued_gross_earnings: 0.0, gigs: [] }
+                first_month_key => { total_w2_hours: 80.0, total_gig_hours: 0.0, accrued_gross_earnings: 0, gigs: [] },
+                second_month_key => { total_w2_hours: 0.0, total_gig_hours: 0.0, accrued_gross_earnings: 600_00, gigs: [] },
+                third_month_key => { total_w2_hours: 80.0, total_gig_hours: 0.0, accrued_gross_earnings: 0, gigs: [] }
               }
             })
 
@@ -317,9 +317,9 @@ RSpec.describe ActivityFlowProgressCalculator do
           it "does not meet requirements when one month has neither hours nor earnings threshold" do
             allow(mock_report).to receive_messages(has_fetched?: true, summarize_by_month: {
               account_id => {
-                first_month_key => { total_w2_hours: 80.0, total_gig_hours: 0.0, accrued_gross_earnings: 0.0, gigs: [] },
-                second_month_key => { total_w2_hours: 50.0, total_gig_hours: 0.0, accrued_gross_earnings: 400.0, gigs: [] },
-                third_month_key => { total_w2_hours: 80.0, total_gig_hours: 0.0, accrued_gross_earnings: 0.0, gigs: [] }
+                first_month_key => { total_w2_hours: 80.0, total_gig_hours: 0.0, accrued_gross_earnings: 0, gigs: [] },
+                second_month_key => { total_w2_hours: 50.0, total_gig_hours: 0.0, accrued_gross_earnings: 400_00, gigs: [] },
+                third_month_key => { total_w2_hours: 80.0, total_gig_hours: 0.0, accrued_gross_earnings: 0, gigs: [] }
               }
             })
 

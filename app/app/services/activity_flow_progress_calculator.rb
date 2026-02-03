@@ -2,7 +2,7 @@
 
 class ActivityFlowProgressCalculator
   PER_MONTH_HOURS_THRESHOLD = 80
-  PER_MONTH_EARNINGS_THRESHOLD = 580
+  PER_MONTH_EARNINGS_THRESHOLD = 580_00 # in cents
   Result = Struct.new(:total_hours, :meets_requirements, keyword_init: true)
 
   def self.progress(activity_flow)
@@ -24,7 +24,6 @@ class ActivityFlowProgressCalculator
   private
 
   def total_hours
-    Rails.logger.info("TIMOTEST total_employment_hours = #{total_employment_hours}")
     @activities.sum { |activity| activity.hours.to_i } + total_employment_hours
   end
 
@@ -41,10 +40,7 @@ class ActivityFlowProgressCalculator
       .select { |activity| activity.date&.between?(month_start, month_start.end_of_month) }
       .sum { |activity| activity.hours.to_i }
 
-    activity_hours += employment_hours_for_month(month_start)
-
-    Rails.logger.info("TIMOTEST #{month_start} activity_hours = #{activity_hours}")
-    activity_hours
+    employment_hours_for_month(month_start) + activity_hours
   end
 
   # Employment calculations
@@ -83,8 +79,8 @@ class ActivityFlowProgressCalculator
       month_data = months[month_key]
       next 0 unless month_data
 
-      w2_earnings = month_data[:accrued_gross_earnings].to_f
-      gig_earnings = (month_data[:gigs] || []).sum { |gig| gig.compensation_amount.to_f }
+      w2_earnings = month_data[:accrued_gross_earnings].to_i
+      gig_earnings = (month_data[:gigs] || []).sum { |gig| gig.compensation_amount.to_i }
 
       w2_earnings + gig_earnings
     end
