@@ -14,7 +14,10 @@ class ActivityFlowProgressIndicator < ViewComponent::Base
   end
 
   def percent_complete
-    (100.0 * @hours) / completion_threshold
+    [
+      (100.0 * @hours) / completion_threshold,
+      100
+    ].min
   end
 
   def completion_threshold

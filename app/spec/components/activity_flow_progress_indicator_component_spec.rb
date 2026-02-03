@@ -34,6 +34,13 @@ RSpec.describe ActivityFlowProgressIndicator, type: :component do
     expect(progress["data-percent"]).to eq("50.0")
   end
 
+  it "caps the percentage complete at 100" do
+    render_inline(described_class.new(hours: 120, reporting_month: reporting_month))
+
+    progress = page.find(:css, ".activity-flow-progress-indicator__progress-bar")
+    expect(progress["data-percent"]).to eq("100")
+  end
+
   it "renders whole hours without decimals" do
     render_inline(described_class.new(hours: 40, reporting_month: reporting_month))
 
