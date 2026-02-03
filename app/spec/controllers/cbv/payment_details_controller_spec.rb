@@ -436,6 +436,10 @@ RSpec.describe Cbv::PaymentDetailsController do
           expect(doc.xpath("//tr[contains(., 'Pay frequency')]").text).to include('Bi-weekly')
           expect(doc.xpath("//tr[contains(., 'Compensation amount')]").text).to include('$23.16 Hourly')
         end
+
+        it "displays deductions with negative amounts" do
+          expect(response.body).to include("Insurance refund")
+        end
       end
     end
   end
