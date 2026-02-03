@@ -274,6 +274,14 @@ RSpec.describe Cbv::PaymentDetailsController do
       end
     end
 
+    context "when deductions include a negative amount" do
+      it "displays the deduction" do
+        get :show, params: { user: { account_id: account_id } }
+        expect(response).to be_successful
+        expect(response.body).to include("Benefits")
+      end
+    end
+
     context "when a user attempts to access pinwheel account information not in the current session" do
       it "redirects to the entry page when the resolved pinwheel_account is nil" do
         get :show, params: { user: { account_id: "1234" } }
