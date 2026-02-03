@@ -3,9 +3,9 @@ module Aggregators::AggregatorReports
   class AggregatorReport
     include Cbv::MonthlySummaryHelper
 
-    attr_accessor :payroll_accounts, :identities, :incomes, :employments, :gigs, :paystubs, :has_fetched, :fetched_days
+    attr_accessor :payroll_accounts, :identities, :incomes, :employments, :gigs, :paystubs, :has_fetched, :fetched_days, :reporting_date_range
 
-    def initialize(payroll_accounts: [], days_to_fetch_for_w2: nil, days_to_fetch_for_gig: nil)
+    def initialize(payroll_accounts: [], days_to_fetch_for_w2: nil, days_to_fetch_for_gig: nil, reporting_date_range: nil)
       @has_fetched = false
       @payroll_accounts = payroll_accounts
       @identities = []
@@ -16,6 +16,7 @@ module Aggregators::AggregatorReports
       @days_to_fetch_for_w2 = days_to_fetch_for_w2
       @days_to_fetch_for_gig = days_to_fetch_for_gig
       @fetched_days = days_to_fetch_for_w2
+      @reporting_date_range = reporting_date_range
     end
 
     def fetch
@@ -25,6 +26,10 @@ module Aggregators::AggregatorReports
 
     def has_fetched?
       @has_fetched
+    end
+
+    def flow
+      @payroll_accounts.first.flow
     end
 
     def is_ready_to_fetch?
@@ -64,9 +69,9 @@ module Aggregators::AggregatorReports
 
     def income_report
       {}.tap do |report|
-        report[:has_other_jobs] = payroll_accounts.first.flow.has_other_jobs
+        report[:has_other_jobs] = flow.has_other_jobs
         report[:employments] = summarize_by_employer.map do |_, summary|
-          cbv_flow = payroll_accounts.first.flow
+          cbv_flow = flow
           {
             applicant_full_name: summary[:identity]&.full_name,
             applicant_ssn: summary[:identity]&.ssn,
@@ -171,15 +176,20 @@ module Aggregators::AggregatorReports
     end
 
     def from_date
-      @fetched_days.days.ago.to_date
+      # For Activity flows, use the reporting_date_range start date directly
+      return @reporting_date_range.begin if @reporting_date_range.present?
+
+      # For CBV flows, use the flow creation date as the reference so the window is [created_at - N days, created_at].
+      flow.created_at.to_date - @fetched_days.to_i.days
     end
 
     def to_date
-      # Use the CBV flow as the basis for the end of the report range, as it
-      # reflects the actual time that the user was completing the flow (as
-      # opposed to the invitation, which they could have been sitting on for
-      # many days.)
-      @payroll_accounts.first.flow.created_at.to_date
+      # For Activity flows, use the reporting_date_range end date directly
+      return @reporting_date_range.end if @reporting_date_range.present?
+
+      # For CBV flows, use the flow creation date as the basis for the end of the report range,
+      # as it reflects the actual time that the user was completing the flow.
+      flow.created_at.to_date
     end
 
     def fetched_days_for_account(account_id)

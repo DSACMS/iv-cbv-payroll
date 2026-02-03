@@ -212,7 +212,7 @@ RSpec.describe Cbv::BaseController, type: :controller do
       end
     end
 
-    context "with an ActivityFlow" do
+    context "for an activity flow" do
       let(:flow) { create(:activity_flow) }
 
       before do

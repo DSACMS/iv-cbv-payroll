@@ -141,6 +141,24 @@ RSpec.describe Aggregators::AggregatorReports::PinwheelReport, type: :service do
       end
     end
 
+    context "when built with reporting_date_range for activity flows" do
+      let(:reporting_range) { Date.new(2025, 1, 1)..Date.new(2025, 1, 31) }
+      let(:report) do
+        described_class.new(
+          payroll_accounts: [ payroll_account ],
+          pinwheel_service: pinwheel_service,
+          days_to_fetch_for_w2: days_ago_to_fetch,
+          days_to_fetch_for_gig: days_ago_to_fetch_for_gig,
+          reporting_date_range: reporting_range
+        )
+      end
+
+      it "uses the range for from_date and to_date" do
+        expect(report.from_date).to eq(reporting_range.begin)
+        expect(report.to_date).to eq(reporting_range.end)
+      end
+    end
+
     describe "#summarize_by_employer" do
       it "returns an array of employer objects" do
         report.fetch

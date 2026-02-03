@@ -38,6 +38,10 @@ RSpec.describe Report::W2MonthlySummaryTableComponent, type: :component do
 
       let(:pinwheel_report) { Aggregators::AggregatorReports::PinwheelReport.new(payroll_accounts: [ payroll_account ], pinwheel_service: pinwheel_service, days_to_fetch_for_w2: 90, days_to_fetch_for_gig: 182) }
 
+      around do |ex|
+        Timecop.freeze(current_time, &ex)
+      end
+
       before do
         pinwheel_stub_request_identity_response
         pinwheel_stub_request_end_user_accounts_response
@@ -200,6 +204,22 @@ RSpec.describe Report::W2MonthlySummaryTableComponent, type: :component do
 
       it "renders the error message with no paystubs" do
         expect(subject.css("tbody").to_html).to include "We didn't find any payments from this employer"
+      end
+
+      context "for an activity flow" do
+        let(:activity_flow) { create(:activity_flow, reporting_window_months: 2, cbv_applicant: cbv_applicant, created_at: current_time) }
+        let(:payroll_account) do
+          create(
+            :payroll_account,
+            :argyle_fully_synced,
+            flow: activity_flow,
+            aggregator_account_id: account_id
+          )
+        end
+
+        it "uses reporting_window_display for the report range" do
+          expect(subject.to_html).to include(activity_flow.reporting_window_display)
+        end
       end
     end
   end

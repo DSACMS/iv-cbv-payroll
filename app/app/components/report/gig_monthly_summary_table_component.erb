@@ -1,10 +1,12 @@
 <% show_table = has_monthly_summary_results? || @is_pdf %>
 
 <% if show_table %>
-  <div class="margin-top-5">
-    <h2 class="margin-0">
-      <%= I18n.t("components.report.monthly_summary_table.monthly_summary") %>
-    </h2>
+  <div class="<%= @show_header ? "margin-top-5" : "" %>">
+    <% if @show_header %>
+      <h2 class="margin-0">
+        <%= I18n.t("components.report.monthly_summary_table.monthly_summary") %>
+      </h2>
+    <% end %>
     <%= render(TableComponent.new(is_responsive: @is_responsive)) do |table| %>
       <%= table.with_subheader_row(class_names: "subheader-row base-lightest") do |row| %>
         <%= row.with_data_cell(is_header: true, class_names: "text-nowrap")
