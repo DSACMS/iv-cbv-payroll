@@ -47,8 +47,6 @@ class ActivityFlowProgressCalculator
   # Employment calculations
 
   def employment_hours_for_month(month_start)
-    # Kind of gross to re-fetch each time, but doing this for now until we do
-    # the ticket for making Employment more like a flow_activity
     return 0 unless payroll_report&.has_fetched?
 
     month_key = month_start.strftime("%Y-%m")
