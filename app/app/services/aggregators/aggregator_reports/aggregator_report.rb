@@ -179,16 +179,17 @@ module Aggregators::AggregatorReports
       # For Activity flows, use the reporting_date_range start date directly
       return @reporting_date_range.begin if @reporting_date_range.present?
 
-      # For CBV flows, use the flow creation date as the reference so the window is [created_at - N days, created_at].
-      flow.created_at.to_date - @fetched_days.to_i.days
+      @fetched_days.days.ago.to_date
     end
 
     def to_date
       # For Activity flows, use the reporting_date_range end date directly
       return @reporting_date_range.end if @reporting_date_range.present?
 
-      # For CBV flows, use the flow creation date as the basis for the end of the report range,
-      # as it reflects the actual time that the user was completing the flow.
+      # Use the CBV flow as the basis for the end of the report range, as it
+      # reflects the actual time that the user was completing the flow (as
+      # opposed to the invitation, which they could have been sitting on for
+      # many days.)
       flow.created_at.to_date
     end
 
