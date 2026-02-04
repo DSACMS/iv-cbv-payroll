@@ -59,6 +59,19 @@ RSpec.describe ActivityFlow, type: :model do
     it "returns a formatted display string" do
       expect(flow.reporting_window_display).to eq("January 2025 - February 2025")
     end
+
+    describe "#within_reporting_window?" do
+      it "returns true when date range overlaps with reporting window" do
+        expect(flow.within_reporting_window?(Date.new(2024, 12, 1), Date.new(2025, 1, 15))).to be true
+        expect(flow.within_reporting_window?(Date.new(2025, 2, 15), Date.new(2025, 4, 1))).to be true
+        expect(flow.within_reporting_window?(Date.new(2024, 12, 1), Date.new(2025, 4, 1))).to be true
+      end
+
+      it "returns false when date range does not overlap with reporting window" do
+        expect(flow.within_reporting_window?(Date.new(2024, 10, 1), Date.new(2024, 12, 31))).to be false
+        expect(flow.within_reporting_window?(Date.new(2025, 3, 1), Date.new(2025, 5, 1))).to be false
+      end
+    end
   end
 
   it 'marked as complete when completed_at timestamp is set' do
