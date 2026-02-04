@@ -37,8 +37,7 @@ class Activities::SubmitController < Activities::BaseController
     @job_training_activities = @flow.job_training_activities.order(created_at: :desc)
     @education_activities = @flow.education_activities.order(created_at: :desc)
     @submission_timestamp = submission_timestamp
-    progress = ActivityFlowProgressCalculator.progress(@flow)
-    @total_hours = progress.total_hours
+    @total_hours = progress_calculator.result.total_hours
 
     render pdf: pdf_filename,
       layout: "pdf",

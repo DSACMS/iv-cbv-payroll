@@ -3,6 +3,7 @@
 class ActivityFlowProgressCalculator
   PER_MONTH_HOURS_THRESHOLD = 80
   PER_MONTH_EARNINGS_THRESHOLD = 580_00 # in cents
+  
   Result = Struct.new(:total_hours, :meets_requirements, keyword_init: true)
 
   def self.progress(activity_flow)
@@ -21,6 +22,12 @@ class ActivityFlowProgressCalculator
     )
   end
 
+  def reporting_months
+    @activity_flow.reporting_window_months.times.map do |i|
+      @activity_flow.reporting_window_range.begin + i.months
+    end
+  end
+
   private
 
   def total_hours
@@ -28,9 +35,8 @@ class ActivityFlowProgressCalculator
   end
 
   def each_month_meets_threshold?
-    @activity_flow.reporting_window_months.times.all? do |i|
-      month_start = @activity_flow.reporting_window_range.begin + i.months
 
+    reporting_months.all? do |month_start|
       hours_for_month(month_start) >= PER_MONTH_HOURS_THRESHOLD ||
         earnings_for_month(month_start) >= PER_MONTH_EARNINGS_THRESHOLD
     end

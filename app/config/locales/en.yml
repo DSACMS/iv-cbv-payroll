@@ -208,6 +208,10 @@ en:
       organization_name: Organization name
       title: Volunteering
       updated: Volunteering activity was successfully updated.
+  activity_flow_progress_indicator:
+    description: We calculate your community engagement from the activities you add to your report.
+    hours: hours
+    title: Your %{month} progress
   aggregator_strings:
     deductions:
       401k: 401k
@@ -647,6 +651,7 @@ en:
     formats:
       default: "%Y-%m-%d"
       long: "%B %-d, %Y"
+      month: "%B"
       month_year: "%B %Y"
       short: "%b %-d"
   help:

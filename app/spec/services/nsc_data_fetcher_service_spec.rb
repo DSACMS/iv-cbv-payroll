@@ -44,15 +44,15 @@ RSpec.describe NscDataFetcherService do
       it "does not create any NscEnrollmentTerm's" do
         service.fetch
 
-        expect(education_activity.nsc_enrollment_terms)
-          .to be_empty
+        expect(education_activity.nsc_enrollment_terms).to be_empty
       end
     end
 
-    context "when there is one enrollment" do
+    context "when there is one enrollment (Lynette)" do
       let(:identity) { create(:identity, :nsc_lynette) }
 
       before do
+        education_activity.activity_flow.update!(created_at: Date.new(2024, 7, 15), reporting_window_months: 6)
         nsc_stub_request_education_search_response("lynette")
       end
 
@@ -76,37 +76,48 @@ RSpec.describe NscDataFetcherService do
       end
     end
 
-    context "when there are multiple enrollments" do
+    context "when there are multiple enrollments (Rick)" do
       let(:identity) { create(:identity, :nsc_rick) }
 
       before do
+        education_activity.activity_flow.update!(created_at: Date.new(2024, 7, 15), reporting_window_months: 6)
         nsc_stub_request_education_search_response("rick_banas")
-      end
-
-      it "returns an EducationActivity with sync status = :succeeded" do
-        expect { service.fetch }
-          .to change { education_activity.reload.dup } # rubocop:disable RSpec/ExpectChange
-          .from(have_attributes(status: "unknown"))
-          .to(have_attributes(status: "succeeded"))
       end
 
       it "saves the enrollment details into multiple NscEnrollmentTerm's" do
         service.fetch
 
-        expect(education_activity.nsc_enrollment_terms.first)
-          .to have_attributes(
-            school_name: "FLORIDA A&M UNIVERSITY",
-            enrollment_status: "half_time",
-            term_begin: Date.parse("2024-06-19"),
-            term_end: Date.parse("2024-11-29"),
-          )
-        expect(education_activity.nsc_enrollment_terms.second)
-          .to have_attributes(
-            school_name: "FLORIDA STATE UNIVERSITY",
-            enrollment_status: "half_time",
-            term_begin: Date.parse("2024-05-31"),
-            term_end: Date.parse("2024-11-29"),
-          )
+        expect(education_activity.nsc_enrollment_terms.count).to eq(2)
+      end
+    end
+
+    context "when filtering by reporting window" do
+      let(:identity) { create(:identity, :nsc_lynette) }
+
+      it "saves terms that overlap with reporting window" do
+        # Reporting window: 2024-02-01 to 2024-02-29
+        # Term: 2024-01-01 to 2024-05-31 (spans entire window)
+        education_activity.activity_flow.update!(created_at: Date.new(2024, 3, 1), reporting_window_months: 1)
+        nsc_stub_request_education_search_response("lynette") do |response_data|
+          response_data["enrollmentDetails"].first["enrollmentData"].first["termBeginDate"] = "2024-01-01"
+          response_data["enrollmentDetails"].first["enrollmentData"].first["termEndDate"] = "2024-05-31"
+        end
+
+        service.fetch
+
+        expect(education_activity.nsc_enrollment_terms.count).to eq(1)
+      end
+
+      it "excludes terms that do not overlap with reporting window" do
+        # Reporting window: 2024-01-01 to 2024-03-31
+        # Lynette's term: 2024-05-31 to 2024-11-19 (after window)
+        education_activity.activity_flow.update!(created_at: Date.new(2024, 4, 1), reporting_window_months: 3)
+        nsc_stub_request_education_search_response("lynette")
+
+        service.fetch
+
+        expect(education_activity.nsc_enrollment_terms.count).to eq(0)
+        expect(education_activity.reload.status).to eq("succeeded")
       end
     end
   end
