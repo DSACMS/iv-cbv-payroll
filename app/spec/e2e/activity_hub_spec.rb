@@ -11,7 +11,7 @@ RSpec.describe 'e2e Activity Hub flow test', :js, type: :feature do
     end
   end
 
-  it "completes the generic flow for all activities" do
+  it "completes the generic flow for all self-attestation activities" do
     visit URI(root_url).request_uri
 
     visit activities_flow_entry_path(client_agency_id: "sandbox") # This would normally be inferred
@@ -21,14 +21,62 @@ RSpec.describe 'e2e Activity Hub flow test', :js, type: :feature do
 
     verify_page(page, title: I18n.t("activities.hub.title"))
 
-    # Add an Education activity
-    click_button I18n.t("activities.education.add")
-    performing_active_jobs do
-      click_button I18n.t("activities.education.new.continue")
-      verify_page(page, title: I18n.t("activities.education.show.header")) # /activities/education/123 (loading page)
-    end
-    verify_page(page, title: I18n.t("activities.education.edit.header"), wait: 10) # /activities/education/123/edit (show page)
-    find("a", text: I18n.t("activities.education.edit.no_records_found.return_button")).click
+    # Add a Volunteering activity
+    click_button I18n.t("activities.volunteering.add")
+    verify_page(page, title: I18n.t("activities.volunteering.title"))
+    fill_in I18n.t("activities.volunteering.organization_name"), with: "Helping Hands"
+    fill_in I18n.t("activities.volunteering.hours"), with: "20"
+    fill_in I18n.t("activities.volunteering.date"), with: (Date.current.beginning_of_month - 1.day).strftime("%m/%d/%Y")
+    click_button I18n.t("activities.volunteering.add")
+    verify_page(page, title: I18n.t("activities.hub.title"))
+    expect(page).to have_content I18n.t("activities.volunteering.add")
+
+    # Add a Job Training activity
+    click_button I18n.t("activities.job_training.add")
+    verify_page(page, title: I18n.t("activities.job_training.title"))
+    fill_in I18n.t("activities.job_training.program_name"), with: "Resume Workshop"
+    fill_in I18n.t("activities.job_training.organization_address"), with: "123 Main St, Baton Rouge, LA"
+    fill_in I18n.t("activities.job_training.hours"), with: "6"
+    click_button I18n.t("activities.job_training.add")
+    verify_page(page, title: I18n.t("activities.hub.title"))
+    expect(page).to have_content I18n.t("activities.job_training.add")
+
+    # Verify that the hub has the Volunteering activity
+    expect(page).to have_content I18n.t("activities.hub.title")
+    expect(page).to have_content "Helping Hands"
+    expect(page).to have_content(Date.current.beginning_of_month - 1.day)
+    expect(page).to have_content "20"
+
+    # Verify that the hub has the Job Training activity
+    expect(page).to have_content "Resume Workshop"
+    expect(page).to have_content "123 Main St, Baton Rouge, LA"
+    expect(page).to have_content "6"
+
+    click_button I18n.t("activities.hub.continue")
+    verify_page(page, title: I18n.t("activities.summary.title"))
+    expect(page).to have_content "Helping Hands"
+    expect(page).to have_content "Resume Workshop"
+
+    # /activities/summary
+    click_button I18n.t("activities.summary.submit", agency_name: I18n.t("shared.agency_full_name.sandbox"))
+    verify_page(page, title: I18n.t("activities.submit.title"))
+    find("label[for='activity_flow_consent_to_submit']").click
+    click_button I18n.t("activities.submit.confirm")
+
+    # /activities/success
+    verify_page(page, title: I18n.t("activities.success.show.title", agency_acronym: I18n.t("shared.agency_acronym.sandbox")))
+    expect(page).to have_content I18n.t("activities.success.show.download_pdf")
+  end
+
+  it "completes the generic flow for the income activity" do
+    visit URI(root_url).request_uri
+
+    visit activities_flow_entry_path(client_agency_id: "sandbox") # This would normally be inferred
+    verify_page(page, title: I18n.t("activities.entry.title"))
+    find("label", text: I18n.t("activities.entry.consent", agency_name: I18n.t("shared.agency_full_name.sandbox"))).click
+    click_button I18n.t("activities.entry.continue")
+
+    verify_page(page, title: I18n.t("activities.hub.title"))
 
     # Add an Income activity
     click_button I18n.t("activities.income.add")
@@ -59,40 +107,40 @@ RSpec.describe 'e2e Activity Hub flow test', :js, type: :feature do
     fill_in "activity_flow[additional_information]", with: "Some kind of additional information"
     click_button I18n.t("cbv.payment_details.show.continue")
 
-    # Add a Volunteering activity
-    click_button I18n.t("activities.volunteering.add")
-    verify_page(page, title: I18n.t("activities.volunteering.title"))
-    fill_in I18n.t("activities.volunteering.organization_name"), with: "Helping Hands"
-    fill_in I18n.t("activities.volunteering.hours"), with: "20"
-    fill_in I18n.t("activities.volunteering.date"), with: (Date.current.beginning_of_month - 1.day).strftime("%m/%d/%Y")
-    click_button I18n.t("activities.volunteering.add")
-    verify_page(page, title: I18n.t("activities.hub.title"))
-    expect(page).to have_content I18n.t("activities.volunteering.add")
+    verify_page(page, title: I18n.t("activities.summary.title"))
 
-    # Add a Job Training activity
-    click_button I18n.t("activities.job_training.add")
-    verify_page(page, title: I18n.t("activities.job_training.title"))
-    fill_in I18n.t("activities.job_training.program_name"), with: "Resume Workshop"
-    fill_in I18n.t("activities.job_training.organization_address"), with: "123 Main St, Baton Rouge, LA"
-    fill_in I18n.t("activities.job_training.hours"), with: "6"
-    click_button I18n.t("activities.job_training.add")
-    verify_page(page, title: I18n.t("activities.hub.title"))
-    expect(page).to have_content I18n.t("activities.job_training.add")
+    # /activities/summary
+    click_button I18n.t("activities.summary.submit", agency_name: I18n.t("shared.agency_full_name.sandbox"))
+    verify_page(page, title: I18n.t("activities.submit.title"))
+    find("label[for='activity_flow_consent_to_submit']").click
+    click_button I18n.t("activities.submit.confirm")
 
-    # Verify that the hub has the Volunteering activity
-    expect(page).to have_content I18n.t("activities.hub.title")
-    expect(page).to have_content "Helping Hands"
-    expect(page).to have_content(Date.current.beginning_of_month - 1.day)
-    expect(page).to have_content "20"
-    # Verify that the hub has the Job Training activity
-    expect(page).to have_content "Resume Workshop"
-    expect(page).to have_content "123 Main St, Baton Rouge, LA"
-    expect(page).to have_content "6"
+    # /activities/success
+    verify_page(page, title: I18n.t("activities.success.show.title", agency_acronym: I18n.t("shared.agency_acronym.sandbox")))
+    expect(page).to have_content I18n.t("activities.success.show.download_pdf")
+  end
+
+  it "completes the generic flow for the education activity" do
+    visit URI(root_url).request_uri
+
+    visit activities_flow_entry_path(client_agency_id: "sandbox") # This would normally be inferred
+    verify_page(page, title: I18n.t("activities.entry.title"))
+    find("label", text: I18n.t("activities.entry.consent", agency_name: I18n.t("shared.agency_full_name.sandbox"))).click
+    click_button I18n.t("activities.entry.continue")
+
+    verify_page(page, title: I18n.t("activities.hub.title"))
+
+    # Add an Education activity
+    click_button I18n.t("activities.education.add")
+    performing_active_jobs do
+      click_button I18n.t("activities.education.new.continue")
+      verify_page(page, title: I18n.t("activities.education.show.header")) # /activities/education/123 (loading page)
+    end
+    verify_page(page, title: I18n.t("activities.education.edit.header"), wait: 10) # /activities/education/123/edit (show page)
+    find("a", text: I18n.t("activities.education.edit.no_records_found.return_button")).click
 
     click_button I18n.t("activities.hub.continue")
     verify_page(page, title: I18n.t("activities.summary.title"))
-    expect(page).to have_content "Helping Hands"
-    expect(page).to have_content "Resume Workshop"
 
     # /activities/summary
     click_button I18n.t("activities.summary.submit", agency_name: I18n.t("shared.agency_full_name.sandbox"))
