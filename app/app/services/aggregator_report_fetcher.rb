@@ -79,16 +79,10 @@ class AggregatorReportFetcher
     end
   end
 
-  # Returns the lookback days for fetching data from aggregators.
-  # For Activity flows, uses a fixed 6-month lookback.
-  # For CBV flows, uses the agency configuration.
   def aggregator_lookback_days
     @cbv_flow.aggregator_lookback_days || @agency_config[@cbv_flow.cbv_applicant.client_agency_id].pay_income_days
   end
 
-  # Returns the date range for filtering displayed data.
-  # For Activity flows, uses the reporting_window_range (1-6 months based on type).
-  # For CBV flows, returns nil (no filtering - show all fetched data).
   def reporting_date_range
     @cbv_flow.respond_to?(:reporting_window_range) ? @cbv_flow.reporting_window_range : nil
   end

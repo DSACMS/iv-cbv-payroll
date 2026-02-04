@@ -554,7 +554,7 @@ http_interactions:
   recorded_at: Mon, 26 Jan 2026 17:57:55 GMT
 - request:
     method: get
-    uri: https://api-sandbox.argyle.com/v2/paystubs?account=019bfb74-a974-e1fb-d876-0f4e094835f2&from_start_date=2025-10-28&limit=200&to_start_date=2026-01-26
+    uri: https://api-sandbox.argyle.com/v2/paystubs?account=019bfb74-a974-e1fb-d876-0f4e094835f2&from_start_date=2025-11-01&limit=200&to_start_date=2025-12-31
     body:
       encoding: US-ASCII
       string: ''
@@ -665,7 +665,7 @@ http_interactions:
   recorded_at: Mon, 26 Jan 2026 17:57:55 GMT
 - request:
     method: get
-    uri: https://api-sandbox.argyle.com/v2/gigs?account=019bfb74-a974-e1fb-d876-0f4e094835f2&from_start_datetime=2025-10-28&limit=200&to_start_datetime=2026-01-26
+    uri: https://api-sandbox.argyle.com/v2/gigs?account=019bfb74-a974-e1fb-d876-0f4e094835f2&from_start_datetime=2025-11-01&limit=200&to_start_datetime=2025-12-31
     body:
       encoding: US-ASCII
       string: ''
@@ -874,7 +874,7 @@ http_interactions:
   recorded_at: Mon, 26 Jan 2026 17:57:55 GMT
 - request:
     method: get
-    uri: https://api-sandbox.argyle.com/v2/paystubs?account=019bfb74-a974-e1fb-d876-0f4e094835f2&from_start_date=2025-10-28&limit=200&to_start_date=2026-01-26
+    uri: https://api-sandbox.argyle.com/v2/paystubs?account=019bfb74-a974-e1fb-d876-0f4e094835f2&from_start_date=2025-11-01&limit=200&to_start_date=2025-12-31
     body:
       encoding: US-ASCII
       string: ''
@@ -985,7 +985,7 @@ http_interactions:
   recorded_at: Mon, 26 Jan 2026 17:57:55 GMT
 - request:
     method: get
-    uri: https://api-sandbox.argyle.com/v2/gigs?account=019bfb74-a974-e1fb-d876-0f4e094835f2&from_start_datetime=2025-10-28&limit=200&to_start_datetime=2026-01-26
+    uri: https://api-sandbox.argyle.com/v2/gigs?account=019bfb74-a974-e1fb-d876-0f4e094835f2&from_start_datetime=2025-11-01&limit=200&to_start_datetime=2025-12-31
     body:
       encoding: US-ASCII
       string: ''
