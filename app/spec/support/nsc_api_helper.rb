@@ -1,9 +1,12 @@
 module NscApiHelper
-  def nsc_stub_request_education_search_response(user_folder)
+  def nsc_stub_request_education_search_response(user_folder, &block)
+    response_data = nsc_load_relative_json_file(user_folder, 'insight.json')
+    block.call(response_data) if block_given?
+
     stub_request(:post, %r{#{Aggregators::Sdk::NscService::ENROLLMENT_ENDPOINT}})
       .to_return(
         status: 200,
-        body: nsc_load_relative_json_file(user_folder, 'insight.json').to_json,
+        body: response_data.to_json,
         headers: { 'Content-Type': 'application/json;charset=UTF-8' }
       )
   end

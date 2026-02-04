@@ -50,19 +50,24 @@ class NscDataFetcherService
   end
 
   def save_enrollment_terms(enrollment_details)
+    activity_flow = @education_activity.activity_flow
+
     enrollment_details.each do |enrollment_detail|
       next unless enrollment_detail["currentEnrollmentStatus"] == CURRENTLY_ENROLLED
 
       enrollment_detail["enrollmentData"].each do |enrollment_data|
+        term_begin = Date.parse(enrollment_data["termBeginDate"])
+        term_end = Date.parse(enrollment_data["termEndDate"])
+        next unless activity_flow.within_reporting_window?(term_begin, term_end)
+
         @education_activity.nsc_enrollment_terms.create!(
           school_name: enrollment_detail["officialSchoolName"],
           first_name: enrollment_detail["nameOnSchoolRecord"]["firstName"],
           middle_name: enrollment_detail["nameOnSchoolRecord"]["middleName"],
           last_name: enrollment_detail["nameOnSchoolRecord"]["lastName"],
-
           enrollment_status: enrollment_status(enrollment_data),
-          term_begin: enrollment_data["termBeginDate"],
-          term_end: enrollment_data["termEndDate"],
+          term_begin: term_begin,
+          term_end: term_end,
         )
       end
     end
