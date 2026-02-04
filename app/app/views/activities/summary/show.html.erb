@@ -18,6 +18,10 @@
   <% end %>
 </p>
 
+<%= render(ActivityFlowProgressIndicator.from_calculator(progress_calculator)) %>
+
+<hr class="border-gray-30 border-top-0 margin-bottom-4">
+
 <% @all_activities.each_with_index do |activity_data, index| %>
   <section>
     <h2>
