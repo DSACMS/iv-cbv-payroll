@@ -10,6 +10,20 @@
 
   <p><%= t(".description") %></p>
 
+  <% if multi_month? %>
+    <% complete_months = monthly_calculation_results.count(&:meets_requirements) %>
+    <% total_months = monthly_calculation_results.count %>
+
+    <p class="font-heading-md">
+      <% if complete_months == total_months %>
+        <svg class="usa-icon activity-flow-progress-indicator__success-icon text-success-darker" aria-hidden="true" focusable="false" role="img">
+          <use xlink:href="<%= asset_path("@uswds/uswds/dist/img/sprite.svg#check_circle") %>"></use>
+        </svg>
+      <% end %>
+      <%= t(".months_completed_html", complete: complete_months, total: total_months) %>
+    </p>
+  <% end %>
+
   <% monthly_calculation_results.each do |monthly_result| %>
     <div class="activity-flow-progress-indicator__progress-bar
                 <% if monthly_result.meets_requirements %>activity-flow-progress-indicator__progress-bar--complete<% end %>"

@@ -43,6 +43,12 @@ RSpec.describe ActivityFlowProgressIndicator, type: :component do
     expect(progress["data-percent"]).to eq("50.0")
   end
 
+  it "does not show the 'months completed' message" do
+    render_inline(described_class.new(monthly_calculation_results: monthly_calculation_results))
+
+    expect(page).not_to have_text("months completed")
+  end
+
   context "when hours exceed the threshold" do
     let(:hours) { 120 }
 
@@ -124,6 +130,12 @@ RSpec.describe ActivityFlowProgressIndicator, type: :component do
       render_inline(described_class.new(monthly_calculation_results: monthly_calculation_results))
 
       expect(page).to have_css(".activity-flow-progress-indicator__success-icon")
+    end
+
+    it "includes a 'months completed' message" do
+      render_inline(described_class.new(monthly_calculation_results: monthly_calculation_results))
+
+      expect(page).to have_css(".activity-flow-progress-indicator", text: "1 / 3 months completed")
     end
   end
 end

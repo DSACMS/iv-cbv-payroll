@@ -211,6 +211,7 @@ en:
   activity_flow_progress_indicator:
     description: We calculate your community engagement from the activities you add to your report.
     hours: hours
+    months_completed_html: "<strong>%{complete}</strong> / <strong>%{total}</strong> months completed"
     title: Your %{month} progress
     title_multi_month: Your progress
   aggregator_strings:
