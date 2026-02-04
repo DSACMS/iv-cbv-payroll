@@ -52,4 +52,21 @@ RSpec.describe ActivityFlowProgressCalculator do
       end
     end
   end
+
+  describe "#reporting_months" do
+    subject(:calculator) { described_class.new(flow) }
+
+    let(:flow) { create(:activity_flow, reporting_window_months: 2) }
+
+    around do |ex|
+      Timecop.freeze(Date.parse("2026-01-01"), &ex)
+    end
+
+    it "gives the start of months prior to the reporting window" do
+      expect(calculator.reporting_months).to contain_exactly(
+        Date.new(2025, 12, 1),
+        Date.new(2025, 11, 1)
+      )
+    end
+  end
 end

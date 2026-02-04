@@ -1,7 +1,7 @@
 class Activities::BaseController < FlowController
   before_action :redirect_on_prod, :set_flow
 
-  helper_method :current_identity
+  helper_method :current_identity, :progress_calculator
 
   # Infer the `Identity` that is associated with the current request
   #
@@ -32,8 +32,12 @@ class Activities::BaseController < FlowController
   end
 
   def after_activity_path
-    progress = ActivityFlowProgressCalculator.progress(@flow)
-    progress.meets_requirements ? activities_flow_summary_path : activities_flow_root_path
+    progress_result = progress_calculator.result
+    progress_result.meets_requirements ? activities_flow_summary_path : activities_flow_root_path
+  end
+
+  def progress_calculator
+    @_progress_calculator ||= ActivityFlowProgressCalculator.new(@flow)
   end
 
   def flow_param

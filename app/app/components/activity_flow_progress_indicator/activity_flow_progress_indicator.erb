@@ -1,0 +1,14 @@
+<div class="activity-flow-progress-indicator">
+  <h2><%= t(".title", month: l(reporting_month, format: :month)) %></h2>
+  <p><%= t(".description") %></p>
+
+  <div class="activity-flow-progress-indicator__progress-bar" data-percent="<%= percent_complete %>"></div>
+
+  <p class="activity-flow-progress-indicator__progress-amount-container">
+    <span class="activity-flow-progress-indicator__progress-amount">
+      <%= format_hours(hours) %>
+    </span>
+    /
+    <%= completion_threshold %> <%= t(".hours") %>
+  </p>
+</div>

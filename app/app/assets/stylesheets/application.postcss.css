@@ -3,3 +3,6 @@
 @forward "uswds";
 @forward "uswds-overrides.scss";
 @forward "cbv.scss";
+
+/* Import styling from ViewComponents */
+@forward "../../components/activity_flow_progress_indicator/activity_flow_progress_indicator.scss"
