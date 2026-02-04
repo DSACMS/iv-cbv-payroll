@@ -52,6 +52,12 @@ RSpec.describe ActivityFlowProgressIndicator, type: :component do
       progress = page.find(:css, ".activity-flow-progress-indicator__progress-bar")
       expect(progress["data-percent"]).to eq("100")
     end
+
+    it "displays a success icon" do
+      render_inline(described_class.new(monthly_calculation_results: monthly_calculation_results))
+
+      expect(page).to have_css(".activity-flow-progress-indicator__success-icon")
+    end
   end
 
   it "renders whole hours without decimals" do
@@ -112,6 +118,12 @@ RSpec.describe ActivityFlowProgressIndicator, type: :component do
         ".activity-flow-progress-indicator__progress-amount-container",
         text: "October"
       )
+    end
+
+    it "displays success icons" do
+      render_inline(described_class.new(monthly_calculation_results: monthly_calculation_results))
+
+      expect(page).to have_css(".activity-flow-progress-indicator__success-icon")
     end
   end
 end
