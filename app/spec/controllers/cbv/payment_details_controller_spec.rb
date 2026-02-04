@@ -153,6 +153,7 @@ RSpec.describe Cbv::PaymentDetailsController do
     context "when report paystubs aren't present" do
       it "tracks payments_length as 0" do
         WebMock.remove_request_stub(paystubs_response)
+        pinwheel_stub_request_end_user_no_paystubs_response
         allow(EventTrackingJob).to receive(:perform_later).with(TrackEvent::CbvPageView, anything, anything)
         expect(EventTrackingJob).to receive(:perform_later).with(TrackEvent::ApplicantViewedPaymentDetails, anything, hash_including(
           payments_length: 0,

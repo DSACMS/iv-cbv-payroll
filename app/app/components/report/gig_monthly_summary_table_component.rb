@@ -4,10 +4,11 @@ class Report::GigMonthlySummaryTableComponent < ViewComponent::Base
 
   attr_reader :employer_name
 
-  def initialize(report, payroll_account, is_responsive: true, is_caseworker: false, show_payments: true, show_footnote: true, is_pdf: false)
+  def initialize(report, payroll_account, is_responsive: true, is_caseworker: false, show_payments: true, show_footnote: true, show_header: true, is_pdf: false)
     @report = report
     @show_payments = show_payments
     @show_footnote = show_footnote
+    @show_header = show_header
     @is_pdf = is_pdf
 
     # Note: payroll_account may either be the ID or the payroll_account object
@@ -23,7 +24,7 @@ class Report::GigMonthlySummaryTableComponent < ViewComponent::Base
   def before_render
     # Note: since ViewComponents do not know about what view they are rendered in until render time,
     # the translation keys are not available until the before_render method.
-    @report_data_range = report_data_range(@report, @account_id)
+    @report_data_range = @report.flow.reporting_window_display || report_data_range(@report, @account_id)
   end
 
   private

@@ -89,4 +89,10 @@ RSpec.describe CbvFlow, type: :model do
       expect(result).not_to be_empty
     end
   end
+
+  describe "#aggregator_lookback_days" do
+    it "returns nil to use the agency configuration" do
+      expect(cbv_flow.aggregator_lookback_days).to be_nil
+    end
+  end
 end

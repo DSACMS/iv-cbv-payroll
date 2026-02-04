@@ -35,12 +35,16 @@ class Webhooks::Pinwheel::EventsController < ApplicationController
   end
 
   def set_cbv_flow
-    @cbv_flow = CbvFlow.find_by_end_user_id(params["payload"]["end_user_id"])
+    @cbv_flow = find_flow(params["payload"]["end_user_id"])
 
     unless @cbv_flow
-      Rails.logger.info "Unable to find CbvFlow for end_user_id: #{params["payload"]["end_user_id"]}"
+      Rails.logger.info "Unable to find flow for end_user_id: #{params["payload"]["end_user_id"]}"
       render json: { status: "ok" }
     end
+  end
+
+  def find_flow(end_user_id)
+    CbvFlow.find_by(end_user_id: end_user_id) || ActivityFlow.find_by(end_user_id: end_user_id)
   end
 
   def set_pinwheel
@@ -59,15 +63,15 @@ class Webhooks::Pinwheel::EventsController < ApplicationController
         cbv_flow_id: @cbv_flow.id,
         client_agency_id: @cbv_flow.cbv_applicant.client_agency_id,
         device_id: @cbv_flow.device_id,
-        invitation_id: @cbv_flow.cbv_flow_invitation_id,
+        invitation_id: @cbv_flow.invitation_id,
         platform_name: params["payload"]["platform_name"]
       })
     elsif @payroll_account.has_fully_synced?
       report = Aggregators::AggregatorReports::PinwheelReport.new(
         payroll_accounts: [ @payroll_account ],
         pinwheel_service: @pinwheel,
-        days_to_fetch_for_w2: agency_config[@cbv_flow.cbv_applicant.client_agency_id].pay_income_days[:w2],
-        days_to_fetch_for_gig: agency_config[@cbv_flow.cbv_applicant.client_agency_id].pay_income_days[:gig]
+        days_to_fetch_for_w2: aggregator_lookback_days[:w2],
+        days_to_fetch_for_gig: aggregator_lookback_days[:gig]
       )
       report.fetch
 
@@ -87,7 +91,7 @@ class Webhooks::Pinwheel::EventsController < ApplicationController
         cbv_flow_id: @cbv_flow.id,
         client_agency_id: @cbv_flow.cbv_applicant.client_agency_id,
         device_id: @cbv_flow.device_id,
-        invitation_id: @cbv_flow.cbv_flow_invitation_id,
+        invitation_id: @cbv_flow.invitation_id,
         pinwheel_environment: agency_config[@cbv_flow.cbv_applicant.client_agency_id].pinwheel_environment,
         sync_duration_seconds: Time.now - @payroll_account.created_at,
 
@@ -189,7 +193,7 @@ class Webhooks::Pinwheel::EventsController < ApplicationController
         cbv_applicant_id: @cbv_flow.cbv_applicant_id,
         cbv_flow_id: @cbv_flow.id,
         device_id: @cbv_flow.device_id,
-        invitation_id: @cbv_flow.cbv_flow_invitation_id
+        invitation_id: @cbv_flow.invitation_id
       )
     else
       event_logger.track(TrackEvent::ApplicantReportFailedUsefulRequirements, request,
@@ -197,10 +201,14 @@ class Webhooks::Pinwheel::EventsController < ApplicationController
         cbv_applicant_id: @cbv_flow.cbv_applicant_id,
         cbv_flow_id: @cbv_flow.id,
         device_id: @cbv_flow.device_id,
-        invitation_id: @cbv_flow.cbv_flow_invitation_id,
+        invitation_id: @cbv_flow.invitation_id,
         errors: report.errors.full_messages.join(", ")
       )
     end
     report_is_valid
+  end
+
+  def aggregator_lookback_days
+    @cbv_flow.aggregator_lookback_days || agency_config[@cbv_flow.cbv_applicant.client_agency_id].pay_income_days
   end
 end
