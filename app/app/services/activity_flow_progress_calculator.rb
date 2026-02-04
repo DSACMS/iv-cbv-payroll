@@ -12,6 +12,7 @@ class ActivityFlowProgressCalculator
   def initialize(activity_flow)
     @activity_flow = activity_flow
     @activities = activity_flow.volunteering_activities + activity_flow.job_training_activities
+    @education_activities = activity_flow.education_activities
   end
 
   def result
@@ -30,7 +31,15 @@ class ActivityFlowProgressCalculator
   private
 
   def total_hours
+    volunteering_and_training_hours + education_hours
+  end
+
+  def volunteering_and_training_hours
     @activities.sum { |activity| activity.hours.to_i }
+  end
+
+  def education_hours
+    reporting_months.sum { |month_start| education_hours_for_month(month_start) }
   end
 
   def each_month_meets_threshold?
@@ -40,8 +49,16 @@ class ActivityFlowProgressCalculator
   end
 
   def hours_for_month(month_start)
+    volunteering_and_training_hours_for_month(month_start) + education_hours_for_month(month_start)
+  end
+
+  def volunteering_and_training_hours_for_month(month_start)
     @activities
       .select { |activity| activity.date&.between?(month_start, month_start.end_of_month) }
       .sum { |activity| activity.hours.to_i }
+  end
+
+  def education_hours_for_month(month_start)
+    @education_activities.sum { |education| education.progress_hours_for_month(month_start) }
   end
 end
