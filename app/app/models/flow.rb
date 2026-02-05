@@ -14,4 +14,12 @@ class Flow < ApplicationRecord
   def fully_synced_payroll_accounts
     payroll_accounts.select { |account| account.has_fully_synced? }
   end
+
+  def aggregator_lookback_days
+    nil
+  end
+
+  def reporting_window_display
+    nil
+  end
 end

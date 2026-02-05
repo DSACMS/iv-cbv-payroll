@@ -9,8 +9,9 @@ class AggregatorReportFetcher
     if has_payroll_accounts("pinwheel") && has_payroll_accounts("argyle")
       Aggregators::AggregatorReports::CompositeReport.new(
         [ make_pinwheel_report, make_argyle_report ],
-        days_to_fetch_for_w2: @agency_config[@cbv_flow.cbv_applicant.client_agency_id].pay_income_days[:w2],
-        days_to_fetch_for_gig: @agency_config[@cbv_flow.cbv_applicant.client_agency_id].pay_income_days[:gig]
+        days_to_fetch_for_w2: aggregator_lookback_days[:w2],
+        days_to_fetch_for_gig: aggregator_lookback_days[:gig],
+        reporting_date_range: reporting_date_range
       )
     elsif has_payroll_accounts("pinwheel")
       make_pinwheel_report
@@ -42,8 +43,9 @@ class AggregatorReportFetcher
     report = Aggregators::AggregatorReports::PinwheelReport.new(
       payroll_accounts: if payroll_account.present? then [ payroll_account ] else filter_payroll_accounts("pinwheel") end,
       pinwheel_service: pinwheel,
-      days_to_fetch_for_w2: @agency_config[@cbv_flow.cbv_applicant.client_agency_id].pay_income_days[:w2],
-      days_to_fetch_for_gig: @agency_config[@cbv_flow.cbv_applicant.client_agency_id].pay_income_days[:gig]
+      days_to_fetch_for_w2: aggregator_lookback_days[:w2],
+      days_to_fetch_for_gig: aggregator_lookback_days[:gig],
+      reporting_date_range: reporting_date_range
     )
     report.fetch
     report
@@ -53,8 +55,9 @@ class AggregatorReportFetcher
     report = Aggregators::AggregatorReports::ArgyleReport.new(
       payroll_accounts: if payroll_account.present? then [ payroll_account ] else filter_payroll_accounts("argyle") end,
       argyle_service: argyle,
-      days_to_fetch_for_w2: @agency_config[@cbv_flow.cbv_applicant.client_agency_id].pay_income_days[:w2],
-      days_to_fetch_for_gig: @agency_config[@cbv_flow.cbv_applicant.client_agency_id].pay_income_days[:gig]
+      days_to_fetch_for_w2: aggregator_lookback_days[:w2],
+      days_to_fetch_for_gig: aggregator_lookback_days[:gig],
+      reporting_date_range: reporting_date_range
     )
     report.fetch
     report
@@ -74,5 +77,13 @@ class AggregatorReportFetcher
     @cbv_flow.payroll_accounts.filter do |payroll_account|
       payroll_account.type == aggregator && payroll_account.sync_succeeded?
     end
+  end
+
+  def aggregator_lookback_days
+    @cbv_flow.aggregator_lookback_days || @agency_config[@cbv_flow.cbv_applicant.client_agency_id].pay_income_days
+  end
+
+  def reporting_date_range
+    @cbv_flow.respond_to?(:reporting_window_range) ? @cbv_flow.reporting_window_range : nil
   end
 end

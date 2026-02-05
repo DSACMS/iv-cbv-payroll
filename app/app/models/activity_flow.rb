@@ -32,6 +32,10 @@ class ActivityFlow < Flow
     start_date..end_date
   end
 
+  def within_reporting_window?(start_date, end_date)
+    start_date <= reporting_window_range.max && end_date >= reporting_window_range.min
+  end
+
   def reporting_window_display
     range = reporting_window_range
     start_display = I18n.l(range.begin, format: :month_year)
@@ -48,6 +52,13 @@ class ActivityFlow < Flow
 
   def invitation_id
     activity_flow_invitation_id
+  end
+
+  # Used by webhooks to check sync completion
+  # API uses reporting_window_range for the actual dates
+  def aggregator_lookback_days
+    days = reporting_window_range.to_a.size
+    { w2: days, gig: days }
   end
 
   private

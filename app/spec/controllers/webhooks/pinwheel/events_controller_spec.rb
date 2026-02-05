@@ -46,7 +46,7 @@ RSpec.describe Webhooks::Pinwheel::EventsController do
       it "creates a PinwheelAccount object and logs events" do
         expect(EventTrackingJob).to receive(:perform_later).with("ApplicantCreatedPinwheelAccount", anything, hash_including(
             cbv_flow_id: cbv_flow.id,
-            invitation_id: cbv_flow.cbv_flow_invitation_id,
+            invitation_id: cbv_flow.invitation_id,
             platform_name: "acme"
           ))
 
@@ -60,6 +60,19 @@ RSpec.describe Webhooks::Pinwheel::EventsController do
           supported_jobs: include(*supported_jobs),
           aggregator_account_id: account_id
         )
+      end
+
+      context "for an activity flow" do
+        let(:cbv_flow) { create(:activity_flow) }
+
+        it "finds the flow and associates the payroll account" do
+          expect do
+            post :create, params: valid_params
+          end.to change(PayrollAccount, :count).by(1)
+
+          expect(PayrollAccount.last.flow).to eq(cbv_flow)
+          expect(PayrollAccount.last.flow).to be_a(ActivityFlow)
+        end
       end
 
       context "when the webhook signature is incorrect" do
@@ -136,7 +149,7 @@ RSpec.describe Webhooks::Pinwheel::EventsController do
             expect(attributes).to include(
               cbv_flow_id: cbv_flow.id,
               cbv_applicant_id: cbv_flow.cbv_applicant_id,
-              invitation_id: cbv_flow.cbv_flow_invitation_id,
+              invitation_id: cbv_flow.invitation_id,
               client_agency_id: "sandbox",
               pinwheel_environment: "sandbox",
               sync_duration_seconds: be_a(Numeric),
@@ -228,7 +241,7 @@ RSpec.describe Webhooks::Pinwheel::EventsController do
             include(
               cbv_flow_id: cbv_flow.id,
               cbv_applicant_id: cbv_flow.cbv_applicant_id,
-              invitation_id: cbv_flow.cbv_flow_invitation_id,
+              invitation_id: cbv_flow.invitation_id,
             )
           )
 
