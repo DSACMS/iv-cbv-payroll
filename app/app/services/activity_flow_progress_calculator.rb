@@ -3,7 +3,7 @@
 class ActivityFlowProgressCalculator
   PER_MONTH_HOURS_THRESHOLD = 80
   PER_MONTH_EARNINGS_THRESHOLD = 580_00 # in cents
-  
+
   OverallResult = Struct.new(:total_hours, :meets_requirements, keyword_init: true)
   MonthlyResult = Struct.new(:month, :total_hours, :meets_requirements, keyword_init: true)
 
@@ -44,7 +44,6 @@ class ActivityFlowProgressCalculator
   end
 
   def each_month_meets_threshold?
-
     reporting_months.all? do |month_start|
       hours_for_month(month_start) >= PER_MONTH_HOURS_THRESHOLD ||
         earnings_for_month(month_start) >= PER_MONTH_EARNINGS_THRESHOLD
@@ -62,7 +61,8 @@ class ActivityFlowProgressCalculator
   # Employment calculations
 
   def employment_hours_for_month(month_start)
-    return 0 unless payroll_report&.has_fetched?
+    return 0 unless payroll_report
+    raise "Payroll report not fetched" unless payroll_report.has_fetched?
 
     month_key = month_start.strftime("%Y-%m")
 
@@ -75,7 +75,8 @@ class ActivityFlowProgressCalculator
   end
 
   def total_employment_hours
-    return 0 unless payroll_report&.has_fetched?
+    return 0 unless payroll_report
+    raise "Payroll report not fetched" unless payroll_report.has_fetched?
 
     monthly_summaries.sum do |_account_id, months|
       months.sum do |_month_key, month_data|
@@ -85,7 +86,8 @@ class ActivityFlowProgressCalculator
   end
 
   def earnings_for_month(month_start)
-    return 0 unless payroll_report&.has_fetched?
+    return 0 unless payroll_report
+    raise "Payroll report not fetched" unless payroll_report.has_fetched?
 
     month_key = month_start.strftime("%Y-%m")
 

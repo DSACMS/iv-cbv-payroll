@@ -84,6 +84,8 @@ RSpec.describe ActivityFlowProgressCalculator do
     end
 
     context "with employment" do
+      let(:progress) { described_class.new(flow).overall_result }
+
       context "derived from payroll report" do
         include PinwheelApiHelper
 
@@ -144,6 +146,12 @@ RSpec.describe ActivityFlowProgressCalculator do
         before do
           create(:payroll_account, :pinwheel_fully_synced, flow: flow, aggregator_account_id: account_id)
           allow(AggregatorReportFetcher).to receive(:new).with(flow).and_return(mock_fetcher)
+        end
+
+        it "raises an error when payroll report has not been fetched" do
+          allow(mock_report).to receive(:has_fetched?).and_return(false)
+
+          expect { progress }.to raise_error("Payroll report not fetched")
         end
 
         it "includes W2 hours in total hours" do
