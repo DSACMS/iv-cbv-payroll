@@ -43,7 +43,7 @@
 
 <div class="usa-form-group margin-top-5">
   <h2><%= t(".additional_information_header") %></h2>
-  <%= form_with(model: @payroll_account, url: @payment_details_path, method: :patch, class: "usa-form usa-form--large") do |form| %>
+  <%= form_with(model: @payroll_account, scope: :payroll_account, url: @payment_details_path, method: :patch, class: "usa-form usa-form--large") do |form| %>
     <%= hidden_field_tag "user[account_id]", params[:user][:account_id] %>
 
     <% case @flow %>

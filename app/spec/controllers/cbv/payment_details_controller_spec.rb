@@ -458,8 +458,6 @@ RSpec.describe Cbv::PaymentDetailsController do
     end
 
     it "tracks events" do
-      payroll_account = flow.payroll_accounts.find_by(aggregator_account_id: account_id)
-
       allow(EventTrackingJob).to receive(:perform_later).with("CbvPageView", anything, anything)
 
       expect(EventTrackingJob).to receive(:perform_later).with("ApplicantSavedPaymentDetails", anything, hash_including(
