@@ -37,6 +37,8 @@ class Activities::BaseController < FlowController
   end
 
   def progress_calculator
+    return nil unless @flow
+
     @_progress_calculator ||= ActivityFlowProgressCalculator.new(@flow)
   end
 
