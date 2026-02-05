@@ -139,11 +139,12 @@ RSpec.describe Aggregators::AggregatorReports::AggregatorReport, type: :service 
 
   describe '#income_report' do
     let(:comment) { "cool stuff" }
-    let(:cbv_flow) { create(:cbv_flow, has_other_jobs: false, additional_information: { comment: comment }) }
+    let(:cbv_flow) { create(:cbv_flow, has_other_jobs: false) }
     let(:report) { build(:pinwheel_report, :hydrated, :with_pinwheel_account) }
 
     before do
       report.payroll_accounts.first.flow = cbv_flow
+      report.payroll_accounts.first.update!(additional_information: comment)
     end
 
     it 'income information' do

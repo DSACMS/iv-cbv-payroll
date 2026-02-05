@@ -2,7 +2,7 @@ class Cbv::BaseController < FlowController
   before_action :set_cbv_origin, :set_flow, :ensure_cbv_flow_not_yet_complete, :prevent_back_after_complete, :capture_page_view
   before_action :check_if_pilot_ended
   around_action :append_log_tags, if: -> { ENV.fetch("STRUCTURED_LOGGING_ENABLED", "false") == "true" }
-  helper_method :agency_url, :get_comment_by_account_id
+  helper_method :agency_url
 
   private
 
@@ -44,10 +44,6 @@ class Cbv::BaseController < FlowController
 
   def agency_url
     current_agency&.agency_contact_website
-  end
-
-  def get_comment_by_account_id(account_id)
-    @flow.additional_information[account_id] || { comment: nil, updated_at: nil }
   end
 
   def prevent_back_after_complete

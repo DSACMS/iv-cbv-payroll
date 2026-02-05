@@ -54,7 +54,8 @@ RSpec.describe "e2e CBV flow pinwheel test", :js, type: :feature do
 
     # /cbv/payment_details
     verify_page(page, title: I18n.t("cbv.payment_details.show.header", employer_name: ""), wait: 120)
-    fill_in "cbv_flow[additional_information]", with: "Some kind of additional information"
+    fill_in "payroll_account[additional_information]",
+      with: "Some kind of additional information"
     click_button I18n.t("cbv.payment_details.show.continue")
 
     # /cbv/add_job

@@ -46,8 +46,7 @@
     <% end %>
 
     <% if activity_data[:type] == :income %>
-      <% account_id = activity_data[:payroll_account].aggregator_account_id %>
-      <% comment = @flow.additional_information.dig(account_id, "comment") %>
+      <% comment = activity_data[:payroll_account].additional_information %>
       <% if comment.present? %>
         <h3>
           <%= t("activities.summary.additional_comments") %>
