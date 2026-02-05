@@ -81,4 +81,12 @@ RSpec.describe ActivityFlow, type: :model do
     flow.update(completed_at: Time.current)
     expect(flow).to be_complete
   end
+
+  describe "#aggregator_lookback_days" do
+    it "returns the number of days in the reporting window" do
+      flow = create(:activity_flow, reporting_window_months: 2)
+      expected_days = flow.reporting_window_range.to_a.size
+      expect(flow.aggregator_lookback_days).to eq({ w2: expected_days, gig: expected_days })
+    end
+  end
 end

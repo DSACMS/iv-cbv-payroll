@@ -159,6 +159,8 @@ RSpec.describe Report::PaymentsDeductionsMonthlySummaryComponent, type: :compone
       let(:argyle_report) { Aggregators::AggregatorReports::ArgyleReport.new(payroll_accounts: [ payroll_account ], argyle_service: argyle_service, days_to_fetch_for_w2: 90, days_to_fetch_for_gig: 182) }
 
       before do
+        stub_request(:get, %r{#{Aggregators::Sdk::ArgyleService::PAYSTUBS_ENDPOINT}})
+          .to_return(status: 500, body: "", headers: {})
         argyle_report.fetch
       end
 

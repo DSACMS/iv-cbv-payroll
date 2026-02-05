@@ -173,7 +173,7 @@ RSpec.describe Webhooks::Argyle::EventsController, type: :controller do
           cbv_flow_id: cbv_flow.id,
           cbv_applicant_id: cbv_flow.cbv_applicant_id,
           client_agency_id: cbv_flow.cbv_applicant.client_agency_id,
-          invitation_id: cbv_flow.cbv_flow_invitation_id,
+          invitation_id: cbv_flow.invitation_id,
           argyle_environment: "sandbox",
           sync_duration_seconds: be_a(Numeric),
 
@@ -279,7 +279,7 @@ RSpec.describe Webhooks::Argyle::EventsController, type: :controller do
         include(
           cbv_flow_id: cbv_flow.id,
           cbv_applicant_id: cbv_flow.cbv_applicant_id,
-          invitation_id: cbv_flow.cbv_flow_invitation_id,
+          invitation_id: cbv_flow.invitation_id,
         )
       ).once
 
@@ -309,7 +309,7 @@ RSpec.describe Webhooks::Argyle::EventsController, type: :controller do
           expect(attributes).to include(
             cbv_flow_id: cbv_flow.id,
             cbv_applicant_id: cbv_flow.cbv_applicant_id,
-            invitation_id: cbv_flow.cbv_flow_invitation_id,
+            invitation_id: cbv_flow.invitation_id,
             sync_duration_seconds: be_a(Numeric),
             sync_data: "ninety_days"
           )
@@ -321,7 +321,7 @@ RSpec.describe Webhooks::Argyle::EventsController, type: :controller do
           expect(attributes).to include(
             cbv_flow_id: cbv_flow.id,
             cbv_applicant_id: cbv_flow.cbv_applicant_id,
-            invitation_id: cbv_flow.cbv_flow_invitation_id,
+            invitation_id: cbv_flow.invitation_id,
             sync_data: "six_months",
             sync_duration_seconds: be_a(Numeric),
             sync_event: "paystubs.partially_synced"
@@ -334,7 +334,7 @@ RSpec.describe Webhooks::Argyle::EventsController, type: :controller do
           expect(attributes).to include(
             cbv_flow_id: cbv_flow.id,
             cbv_applicant_id: cbv_flow.cbv_applicant_id,
-            invitation_id: cbv_flow.cbv_flow_invitation_id,
+            invitation_id: cbv_flow.invitation_id,
             sync_data: "fully_synced",
             sync_duration_seconds: be_a(Numeric),
             sync_event: "users.fully_synced"
@@ -386,6 +386,7 @@ RSpec.describe Webhooks::Argyle::EventsController, type: :controller do
       expect(fake_event_logger)
         .to receive(:track)
         .with("ApplicantEncounteredArgyleAccountSystemError", anything, include(
+          invitation_id: cbv_flow.invitation_id,
           argyle_item_id: "item_000676767",
           argyle_source: "argyle_sandbox"
         ))
@@ -398,6 +399,18 @@ RSpec.describe Webhooks::Argyle::EventsController, type: :controller do
       expect(payroll_account.job_status("accounts")).to eq(:failed)
       expect(payroll_account.sync_failed?).to equal(true)
       expect(payroll_account).not_to have_fully_synced
+    end
+
+    context "for an activity flow" do
+      let(:cbv_flow) { create(:activity_flow, argyle_user_id: "abc-def-ghi", reporting_window_months: 2) }
+
+      it "finds the flow and associates the payroll account" do
+        process_webhook("accounts.connected")
+
+        payroll_account = PayrollAccount.last
+        expect(payroll_account.flow).to eq(cbv_flow)
+        expect(cbv_flow).to be_a(ActivityFlow)
+      end
     end
   end
 end

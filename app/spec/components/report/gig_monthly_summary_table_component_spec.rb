@@ -272,6 +272,22 @@ RSpec.describe Report::GigMonthlySummaryTableComponent, type: :component do
         expect(subject.to_html).not_to include('"Accrued gross earnings" sums the payments')
         expect(subject.to_html).not_to include '"Total hours worked" sums the time'
       end
+
+      context "for an activity flow" do
+        let(:activity_flow) { create(:activity_flow, reporting_window_months: 2, cbv_applicant: cbv_applicant, created_at: current_time) }
+        let(:payroll_account) do
+          create(
+            :payroll_account,
+            :argyle_fully_synced,
+            flow: activity_flow,
+            aggregator_account_id: account_id
+          )
+        end
+
+        it "uses reporting_window_display for the report range" do
+          expect(subject.to_html).to include(activity_flow.reporting_window_display)
+        end
+      end
     end
 
     context "with bob, a gig-worker without paystubs" do
