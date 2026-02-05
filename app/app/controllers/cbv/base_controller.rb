@@ -148,4 +148,10 @@ class Cbv::BaseController < FlowController
   def invalid_token_message
     t("cbv.error_invalid_token")
   end
+
+  def progress_calculator
+    return nil unless @flow.is_a?(ActivityFlow)
+
+    @_progress_calculator ||= ActivityFlowProgressCalculator.new(@flow)
+  end
 end

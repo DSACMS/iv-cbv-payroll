@@ -22,12 +22,17 @@ class FlowController < ApplicationController
     flow_navigator.next_path
   end
 
+  def progress_calculator
+    nil
+  end
+
   def flow_navigator
     locales = Regexp.union(I18n.available_locales.map(&:to_s))
 
     case request.path
     when %r{^(/#{locales})?/activities}
-      ActivityFlowNavigator.new(params)
+      progress = progress_calculator&.overall_result
+      ActivityFlowNavigator.new(params, progress: progress)
     when %r{^(/#{locales})?/cbv}
       CbvFlowNavigator.new(params)
     else

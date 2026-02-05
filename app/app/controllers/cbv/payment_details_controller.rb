@@ -45,7 +45,7 @@ class Cbv::PaymentDetailsController < Cbv::BaseController
     }
     @flow.update(additional_information: additional_information)
 
-    redirect_to after_employment_path
+    redirect_to next_path
   end
 
   def account_comment
@@ -54,13 +54,6 @@ class Cbv::PaymentDetailsController < Cbv::BaseController
   end
 
   private
-
-  def after_employment_path
-    return next_path unless @flow.is_a?(ActivityFlow)
-
-    progress = ActivityFlowProgressCalculator.progress(@flow)
-    progress.meets_requirements ? activities_flow_summary_path : activities_flow_root_path
-  end
 
   def has_income_data?
     @payroll_account.job_succeeded?("income")
