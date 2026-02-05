@@ -1,8 +1,9 @@
 class ActivityFlowNavigator
   include Rails.application.routes.url_helpers
 
-  def initialize(params)
+  def initialize(params, overall_progress_result: nil)
     @params = params
+    @overall_progress_result = overall_progress_result
   end
 
   def next_path
@@ -16,7 +17,7 @@ class ActivityFlowNavigator
     when "cbv/synchronizations"
       activities_flow_income_payment_details_path
     when "cbv/payment_details"
-      activities_flow_root_path
+      after_income_path
     when "activities/submit"
       activities_flow_success_path
     end
@@ -33,5 +34,13 @@ class ActivityFlowNavigator
     when :synchronization_failures
       activities_flow_income_synchronization_failures_path
     end
+  end
+
+  private
+
+  def after_income_path
+    return activities_flow_root_path unless @overall_progress_result
+
+    @overall_progress_result.meets_requirements ? activities_flow_summary_path : activities_flow_root_path
   end
 end

@@ -183,10 +183,6 @@ en:
       description_single_month: The report below has your community engagement information from %{month}. Please review before sending to %{agency_name}.
       income:
         employer: Employer
-        gross_income: Gross income
-        header: Employment information
-        hours_worked: Hours worked
-        month: Month
       job_training:
         header: Job Training information
       legal_agreement: Legal agreement
@@ -212,6 +208,7 @@ en:
     description: We calculate your community engagement from the activities you add to your report.
     hours: hours
     title: Your %{month} progress
+    title_multi_month: Your progress
   aggregator_strings:
     deductions:
       401k: 401k

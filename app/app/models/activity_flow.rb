@@ -54,6 +54,13 @@ class ActivityFlow < Flow
     activity_flow_invitation_id
   end
 
+  # Used by webhooks to check sync completion
+  # API uses reporting_window_range for the actual dates
+  def aggregator_lookback_days
+    days = reporting_window_range.to_a.size
+    { w2: days, gig: days }
+  end
+
   private
 
   def set_default_reporting_window

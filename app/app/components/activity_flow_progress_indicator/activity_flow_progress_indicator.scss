@@ -29,7 +29,10 @@ $progress-bar-max-width: 30rem;
 }
 
 .activity-flow-progress-indicator__progress-amount-container {
-  text-align: right;
+  display: flex;
+  font-weight: bold;
+  justify-content: space-between;
+  margin-top: units(1);
 
   @include at-media("tablet") {
     width: $progress-bar-max-width;
@@ -38,5 +41,4 @@ $progress-bar-max-width: 30rem;
 
 .activity-flow-progress-indicator__progress-amount {
   color: color("primary-vivid");
-  font-weight: bold;
 }

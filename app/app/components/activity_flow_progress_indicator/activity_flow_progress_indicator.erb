@@ -1,14 +1,32 @@
 <div class="activity-flow-progress-indicator">
-  <h2><%= t(".title", month: l(reporting_month, format: :month)) %></h2>
+  <h2>
+    <% if multi_month? %>
+      <%= t(".title_multi_month") %>
+    <% else %>
+      <% first_month = monthly_calculation_results.first.month %>
+      <%= t(".title", month: l(first_month, format: :month)) %>
+    <% end %>
+  </h2>
+
   <p><%= t(".description") %></p>
 
-  <div class="activity-flow-progress-indicator__progress-bar" data-percent="<%= percent_complete %>"></div>
+  <% monthly_calculation_results.each do |monthly_result| %>
+    <div class="activity-flow-progress-indicator__progress-bar" data-percent="<%= percent_complete(monthly_result) %>"></div>
 
-  <p class="activity-flow-progress-indicator__progress-amount-container">
-    <span class="activity-flow-progress-indicator__progress-amount">
-      <%= format_hours(hours) %>
-    </span>
-    /
-    <%= completion_threshold %> <%= t(".hours") %>
-  </p>
+    <p class="activity-flow-progress-indicator__progress-amount-container">
+      <span>
+        <% if multi_month? %>
+          <%= l(monthly_result.month, format: :month) %>
+        <% end %>
+      </span>
+
+      <span>
+        <span class="activity-flow-progress-indicator__progress-amount">
+          <%= format_hours(monthly_result.total_hours) %>
+        </span>
+        /
+        <%= completion_threshold %> <%= t(".hours") %>
+      </span>
+    </p>
+  <% end %>
 </div>

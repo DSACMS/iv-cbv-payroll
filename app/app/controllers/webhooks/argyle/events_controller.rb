@@ -75,13 +75,9 @@ class Webhooks::Argyle::EventsController < ApplicationController
     end
   end
 
-  def find_flow(user_id) # TODO: Find a better way to determine flow type, maybe inherited controllers?
-    cbv_flow = CbvFlow.find_by(argyle_user_id: user_id)
-    if cbv_flow.present?
-      cbv_flow
-    else
-      ActivityFlow.find_by(argyle_user_id: user_id)
-    end
+  # TODO: Find a better way to determine flow type, maybe inherited controllers?
+  def find_flow(user_id)
+    CbvFlow.find_by(argyle_user_id: user_id) || ActivityFlow.find_by(argyle_user_id: user_id)
   end
 
   # @see https://docs.argyle.com/api-guide/webhooks
@@ -110,7 +106,7 @@ class Webhooks::Argyle::EventsController < ApplicationController
       cbv_applicant_id: @flow.cbv_applicant_id,
       cbv_flow_id: @flow.id,
       device_id: @flow.device_id,
-      invitation_id: @flow.cbv_flow_invitation_id,
+      invitation_id: @flow.invitation_id,
       connection_status: connection_status,
       argyle_error_code: error_code,
       argyle_error_message: params.dig("data", "resource", "connection", "error_message"),
@@ -126,10 +122,10 @@ class Webhooks::Argyle::EventsController < ApplicationController
 
   def process_partially_synced_event(webhook_event)
     # Check if this webhook signifies a completed sync (i.e. that we have
-    # fetched at least `pay_income_days` of data). If so, update the webhook to
+    # fetched at least the required lookback days of data). If so, update the webhook to
     # have a "success" outcome.
     days_synced = params.dig("data", "days_synced")
-    if days_synced.to_i >= agency_config[@flow&.cbv_applicant&.client_agency_id].pay_income_days.values.max
+    if days_synced.to_i >= aggregator_lookback_days.values.max
       webhook_event.update(event_outcome: "success")
       webhook_event.reload # force its payroll_account to reload webhook events
     end
@@ -149,8 +145,8 @@ class Webhooks::Argyle::EventsController < ApplicationController
       report = Aggregators::AggregatorReports::ArgyleReport.new(
         payroll_accounts: [ payroll_account ],
         argyle_service: argyle_for(@flow),
-        days_to_fetch_for_w2: agency_config[@flow.cbv_applicant.client_agency_id].pay_income_days[:w2],
-        days_to_fetch_for_gig: agency_config[@flow.cbv_applicant.client_agency_id].pay_income_days[:gig]
+        days_to_fetch_for_w2: aggregator_lookback_days[:w2],
+        days_to_fetch_for_gig: aggregator_lookback_days[:gig]
       )
       report.fetch
 
@@ -341,5 +337,9 @@ class Webhooks::Argyle::EventsController < ApplicationController
 
   def update_synchronization_page(payroll_account)
     payroll_account.broadcast_replace(partial: "cbv/synchronizations/indicators", locals: { payroll_account: payroll_account })
+  end
+
+  def aggregator_lookback_days
+    @flow.aggregator_lookback_days || agency_config[@flow.cbv_applicant.client_agency_id].pay_income_days
   end
 end
