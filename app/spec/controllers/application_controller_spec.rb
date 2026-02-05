@@ -24,7 +24,7 @@ RSpec.describe ApplicationController, type: :controller do
       end
     end
 
-    it 'uses valid param locale, persists to session, and falls back to session or default' do
+    it 'sets the locale from the param to the session' do
       get :test_action, params: { locale: 'es' }
       expect(response.body).to eq('es')
       expect(session[:locale]).to eq('es')
