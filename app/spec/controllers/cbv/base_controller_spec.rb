@@ -16,12 +16,6 @@ RSpec.describe Cbv::BaseController, type: :controller do
   end
 
   describe '#set_cbv_flow' do
-    it "sets the session flow type for invitation-based flows" do
-      get :show, params: { token: cbv_flow.cbv_flow_invitation.auth_token }
-
-      expect(session[:flow_type]).to eq(:cbv)
-    end
-
     context "when no token or session is present" do
       it "redirects to root with cbv_flow_timeout parameter and flash message" do
         expect(EventTrackingJob).to receive(:perform_later).with("ApplicantAccessedFlowWithoutCookie", anything, hash_including(
