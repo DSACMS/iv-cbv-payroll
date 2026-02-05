@@ -22,19 +22,11 @@ RSpec.describe EducationActivity do
     end
 
     context "when enrollment terms exist for the month" do
-      it "returns 80 hours when all terms are full_time" do
-        create(:nsc_enrollment_term, education_activity: education_activity, enrollment_status: "full_time")
-        expect(education_activity.progress_hours_for_month(month_start)).to eq(80)
-      end
-
-      it "returns 80 hours when all terms are three_quarter_time" do
-        create(:nsc_enrollment_term, education_activity: education_activity, enrollment_status: "three_quarter_time")
-        expect(education_activity.progress_hours_for_month(month_start)).to eq(80)
-      end
-
-      it "returns 80 hours when all terms are half_time" do
-        create(:nsc_enrollment_term, education_activity: education_activity, enrollment_status: "half_time")
-        expect(education_activity.progress_hours_for_month(month_start)).to eq(80)
+      %w[full_time three_quarter_time half_time].each do |status|
+        it "returns 80 hours when all terms are #{status}" do
+          create(:nsc_enrollment_term, education_activity: education_activity, enrollment_status: status)
+          expect(education_activity.progress_hours_for_month(month_start)).to eq(80)
+        end
       end
 
       it "returns 0 hours when any term is less_than_half_time" do
