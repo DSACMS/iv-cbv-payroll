@@ -18,14 +18,23 @@ $progress-bar-max-width: 30rem;
   @include at-media("tablet") {
     width: $progress-bar-max-width;
   }
-}
 
-.activity-flow-progress-indicator__progress-bar::before {
-  background-color: color("primary-vivid");
-  content: "";
-  display: block;
-  height: 100%;
-  width: attr(data-percent %);
+  &::before {
+    background-color: color("primary-vivid");
+    content: "";
+    display: block;
+    height: 100%;
+    width: attr(data-percent %);
+  }
+
+  &--complete {
+    border-color: color("success-dark");
+    background-color: color("success-dark");
+
+    &::before {
+      background-color: color("success-dark");
+    }
+  }
 }
 
 .activity-flow-progress-indicator__progress-amount-container {
@@ -41,4 +50,15 @@ $progress-bar-max-width: 30rem;
 
 .activity-flow-progress-indicator__progress-amount {
   color: color("primary-vivid");
+
+  &--complete {
+    color: color("success-dark");
+  }
+}
+
+.activity-flow-progress-indicator__success-icon {
+  color: color("success-dark");
+  height: 20px;
+  vertical-align: text-bottom;
+  width: 20px;
 }
