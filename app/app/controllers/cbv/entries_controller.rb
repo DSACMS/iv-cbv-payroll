@@ -5,7 +5,6 @@ class Cbv::EntriesController < Cbv::BaseController
       client_agency_id: current_agency&.id,
       cbv_applicant_id: @flow.cbv_applicant_id,
       cbv_flow_id: @flow.id,
-      device_id: @flow.device_id,
       invitation_id: @flow.cbv_flow_invitation_id,
       origin: session[:cbv_origin]
     })
@@ -18,7 +17,6 @@ class Cbv::EntriesController < Cbv::BaseController
         client_agency_id: current_agency&.id,
         cbv_applicant_id: @flow.cbv_applicant_id,
         cbv_flow_id: @flow.id,
-        device_id: @flow.device_id,
         invitation_id: @flow.cbv_flow_invitation_id,
         origin: session[:cbv_origin]
       })

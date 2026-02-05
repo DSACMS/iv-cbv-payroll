@@ -128,7 +128,6 @@ class Cbv::PaymentDetailsController < Cbv::BaseController
       cbv_applicant_id: @flow.cbv_applicant_id,
       cbv_flow_id: @flow.id,
       client_agency_id: current_agency&.id,
-      device_id: @flow.device_id,
       invitation_id: @flow.invitation_id,
       aggregator_account_id: @payroll_account.id,
       payments_length: @payroll_account_report.paystubs&.length,
@@ -146,7 +145,6 @@ class Cbv::PaymentDetailsController < Cbv::BaseController
       cbv_applicant_id: @flow.cbv_applicant_id,
       cbv_flow_id: @flow.id,
       client_agency_id: current_agency&.id,
-      device_id: @flow.device_id,
       invitation_id: @flow.invitation_id,
       additional_information_length: comment_data ? comment_data["comment"].length : 0
     })

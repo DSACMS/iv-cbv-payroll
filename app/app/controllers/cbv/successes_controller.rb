@@ -26,7 +26,6 @@ class Cbv::SuccessesController < Cbv::BaseController
       cbv_applicant_id: @cbv_flow.cbv_applicant_id,
       cbv_flow_id: @cbv_flow.id,
       client_agency_id: current_agency&.id,
-      device_id: @cbv_flow.device_id,
       invitation_id: @cbv_flow.cbv_flow_invitation_id,
       origin: session[:cbv_origin]
     })

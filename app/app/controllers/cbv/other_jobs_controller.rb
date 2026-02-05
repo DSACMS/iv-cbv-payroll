@@ -17,7 +17,6 @@ class Cbv::OtherJobsController < Cbv::BaseController
       cbv_flow_id: @cbv_flow&.id,
       client_agency_id: @cbv_flow.cbv_applicant.client_agency_id,
       cbv_applicant_id: @cbv_flow.cbv_applicant_id,
-      device_id: @cbv_flow.device_id,
       has_other_jobs: @cbv_flow.has_other_jobs
     })
     redirect_to next_path
