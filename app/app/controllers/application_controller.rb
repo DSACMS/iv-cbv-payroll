@@ -11,13 +11,13 @@ class ApplicationController < ActionController::Base
     redirect_to root_url, flash: { slim_alert: { type: "info", message_html: t("cbv.error_missing_token_html") } }
   end
 
-  def after_sign_out_path_for(resource_or_scope)
+  def after_sign_out_path_for
     new_user_session_path(client_agency_id: params[:client_agency_id])
   end
 
   def switch_locale(&action)
-    requested_locale = params[:locale]
-    locale = CbvFlowInvitation::VALID_LOCALES.include?(requested_locale) ? requested_locale : I18n.default_locale
+    locale = determine_locale
+    session[:locale] = locale
     I18n.with_locale(locale, &action)
   end
 
@@ -148,6 +148,19 @@ class ApplicationController < ActionController::Base
       ENV["SITE_ALERT_BODY_EN"]
     when :es
       ENV["SITE_ALERT_BODY_ES"]
+    end
+  end
+
+  private
+
+  def determine_locale
+    requested_locale = params[:locale]
+    if CbvFlowInvitation::VALID_LOCALES.include?(requested_locale)
+      requested_locale
+    elsif CbvFlowInvitation::VALID_LOCALES.include?(session[:locale])
+      session[:locale]
+    else
+      I18n.default_locale
     end
   end
 end

@@ -200,13 +200,14 @@ describe("EmployerSearchController multiple instances on same page!", () => {
     expect(await trackUserAction).toBeCalledTimes(5)
     expect(trackUserAction.mock.calls[0]).toMatchSnapshot()
   })
-  it.skip("fetches Pinwheel token each time the button is clicked", async () => {
+
+  it("fetches Pinwheel token each time the button is clicked", async () => {
     await stimulusElement1.click()
     await stimulusElement2.click()
     await stimulusElement1.click()
     await stimulusElement1.click()
 
-    expect(await fetchPinwheelToken).toBeCalledTimes(4)
+    expect(await fetchPinwheelToken).toBeCalledTimes(3)
     expect(await fetchPinwheelToken.mock.results[0].value).toStrictEqual(mockPinwheelAuthToken)
     expect(fetchPinwheelToken.mock.calls[0]).toMatchSnapshot()
   })

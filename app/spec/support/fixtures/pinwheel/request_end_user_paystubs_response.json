@@ -29,6 +29,12 @@
           "category": "nil_amount_deduction",
           "name": "Nil Amount Deduction",
           "type": "post_tax"
+        },
+        {
+          "amount": -5000,
+          "category": "benefits",
+          "name": "Benefits Refund",
+          "type": "post_tax"
         }
       ],
       "document": {

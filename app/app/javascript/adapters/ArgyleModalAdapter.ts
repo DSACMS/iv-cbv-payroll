@@ -39,6 +39,7 @@ export default class ArgyleModalAdapter extends ModalAdapter {
           onClose: this.onClose.bind(this),
           onError: this.onError.bind(this),
           sandbox: isSandbox,
+          language: locale,
         })
         .open()
     } else {
