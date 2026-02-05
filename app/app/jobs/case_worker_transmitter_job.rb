@@ -47,6 +47,7 @@ class CaseWorkerTransmitterJob < ApplicationJob
       client_agency_id: cbv_flow.cbv_applicant.client_agency_id,
       cbv_applicant_id: cbv_flow.cbv_applicant_id,
       cbv_flow_id: cbv_flow.id,
+      device_id: cbv_flow.device_id,
       invitation_id: cbv_flow.cbv_flow_invitation_id,
       account_count: cbv_flow.fully_synced_payroll_accounts.count,
       paystub_count: payments.count,
