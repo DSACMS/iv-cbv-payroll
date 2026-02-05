@@ -24,18 +24,27 @@ RSpec.describe ApplicationController, type: :controller do
       end
     end
 
-    it 'uses the locale from params if it is valid' do
+    it 'sets the locale from the param to the session' do
       get :test_action, params: { locale: 'es' }
+      expect(response.body).to eq('es')
+      expect(session[:locale]).to eq('es')
+    end
+
+    it 'uses session locale when no param provided' do
+      get :test_action, params: { locale: 'es' }
+      get :test_action
       expect(response.body).to eq('es')
     end
 
-    it 'uses the default locale if the param locale is not valid' do
-      get :test_action, params: { locale: 'de' }
+    it 'prefers param over session' do
+      get :test_action, params: { locale: 'es' }
+      get :test_action, params: { locale: 'en' }
       expect(response.body).to eq('en')
+      expect(session[:locale]).to eq('en')
     end
 
-    it 'uses the default locale if no locale param is provided' do
-      get :test_action
+    it 'falls back to default for invalid locales' do
+      get :test_action, params: { locale: 'de' }
       expect(response.body).to eq('en')
     end
   end

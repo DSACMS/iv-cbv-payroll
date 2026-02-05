@@ -1,18 +1,12 @@
 // Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
-exports[`ArgyleModalAdapter > event:other > logs ApplicantAccessedArgyleModalMFAScreen Event 1`] = `
-{
-  "name": "mfa - opened",
-}
-`;
-
-exports[`ArgyleModalAdapter > event:other > logs ApplicantAttemptedArgyleLogin Event 1`] = `
+exports[`ArgyleModalAdapter > event:other > logs { name: 'login - form submitted' } UI event 1`] = `
 {
   "name": "login - form submitted",
 }
 `;
 
-exports[`ArgyleModalAdapter > event:other > logs ApplicantEncounteredArgyleAuthRequiredLoginError Event 1`] = `
+exports[`ArgyleModalAdapter > event:other > logs { name: 'login - opened', properties: { errorCode: 'auth_required' } } UI event 1`] = `
 {
   "name": "login - opened",
   "properties": {
@@ -21,7 +15,7 @@ exports[`ArgyleModalAdapter > event:other > logs ApplicantEncounteredArgyleAuthR
 }
 `;
 
-exports[`ArgyleModalAdapter > event:other > logs ApplicantEncounteredArgyleConnectionUnavailableLoginError Event 1`] = `
+exports[`ArgyleModalAdapter > event:other > logs { name: 'login - opened', properties: { errorCode: 'connection_unavailable' } } UI event 1`] = `
 {
   "name": "login - opened",
   "properties": {
@@ -30,7 +24,7 @@ exports[`ArgyleModalAdapter > event:other > logs ApplicantEncounteredArgyleConne
 }
 `;
 
-exports[`ArgyleModalAdapter > event:other > logs ApplicantEncounteredArgyleExpiredCredentialsLoginError Event 1`] = `
+exports[`ArgyleModalAdapter > event:other > logs { name: 'login - opened', properties: { errorCode: 'expired_credentials' } } UI event 1`] = `
 {
   "name": "login - opened",
   "properties": {
@@ -39,7 +33,7 @@ exports[`ArgyleModalAdapter > event:other > logs ApplicantEncounteredArgyleExpir
 }
 `;
 
-exports[`ArgyleModalAdapter > event:other > logs ApplicantEncounteredArgyleInvalidAuthLoginError Event 1`] = `
+exports[`ArgyleModalAdapter > event:other > logs { name: 'login - opened', properties: { errorCode: 'invalid_auth' } } UI event 1`] = `
 {
   "name": "login - opened",
   "properties": {
@@ -48,7 +42,7 @@ exports[`ArgyleModalAdapter > event:other > logs ApplicantEncounteredArgyleInval
 }
 `;
 
-exports[`ArgyleModalAdapter > event:other > logs ApplicantEncounteredArgyleInvalidCredentialsLoginError Event 1`] = `
+exports[`ArgyleModalAdapter > event:other > logs { name: 'login - opened', properties: { errorCode: 'invalid_credentials' } } UI event 1`] = `
 {
   "name": "login - opened",
   "properties": {
@@ -57,7 +51,7 @@ exports[`ArgyleModalAdapter > event:other > logs ApplicantEncounteredArgyleInval
 }
 `;
 
-exports[`ArgyleModalAdapter > event:other > logs ApplicantEncounteredArgyleMfaCanceledLoginError Event 1`] = `
+exports[`ArgyleModalAdapter > event:other > logs { name: 'login - opened', properties: { errorCode: 'mfa_cancelled_by_the_user' } } UI event 1`] = `
 {
   "name": "login - opened",
   "properties": {
@@ -66,7 +60,7 @@ exports[`ArgyleModalAdapter > event:other > logs ApplicantEncounteredArgyleMfaCa
 }
 `;
 
-exports[`ArgyleModalAdapter > event:other > logs ApplicantEncounteredArgyleUnknownLoginError Event 1`] = `
+exports[`ArgyleModalAdapter > event:other > logs { name: 'login - opened', properties: { errorCode: 'something_else' } } UI event 1`] = `
 {
   "name": "login - opened",
   "properties": {
@@ -75,7 +69,34 @@ exports[`ArgyleModalAdapter > event:other > logs ApplicantEncounteredArgyleUnkno
 }
 `;
 
-exports[`ArgyleModalAdapter > event:other > logs ApplicantUpdatedArgyleSearchTerm Event 1`] = `
+exports[`ArgyleModalAdapter > event:other > logs { name: 'login - opened', properties: { errorCode: null } } UI event 1`] = `
+{
+  "name": "login - opened",
+  "properties": {
+    "errorCode": null,
+  },
+}
+`;
+
+exports[`ArgyleModalAdapter > event:other > logs { name: 'mfa - opened' } UI event 1`] = `
+{
+  "name": "mfa - opened",
+}
+`;
+
+exports[`ArgyleModalAdapter > event:other > logs { name: 'search - link item selected' } UI event 1`] = `
+{
+  "name": "search - link item selected",
+}
+`;
+
+exports[`ArgyleModalAdapter > event:other > logs { name: 'search - opened' } UI event 1`] = `
+{
+  "name": "search - opened",
+}
+`;
+
+exports[`ArgyleModalAdapter > event:other > logs { name: 'search - term updated', term: 'search term', tab: 'tab', properties: { term: 'search term', tab: 'tab' } } UI event 1`] = `
 {
   "payload": {
     "name": "search - term updated",
@@ -91,49 +112,28 @@ exports[`ArgyleModalAdapter > event:other > logs ApplicantUpdatedArgyleSearchTer
 }
 `;
 
-exports[`ArgyleModalAdapter > event:other > logs ApplicantViewedArgyleDefaultProviderSearch Event 1`] = `
-{
-  "name": "search - opened",
-}
-`;
-
-exports[`ArgyleModalAdapter > event:other > logs ApplicantViewedArgyleLoginPage Event 1`] = `
-{
-  "name": "login - opened",
-  "properties": {
-    "errorCode": null,
-  },
-}
-`;
-
-exports[`ArgyleModalAdapter > event:other > logs ApplicantViewedArgyleProviderConfirmation Event 1`] = `
-{
-  "name": "search - link item selected",
-}
-`;
-
-exports[`ArgyleModalAdapter > event:other > logs onAccountCreated Event 1`] = `
+exports[`ArgyleModalAdapter > event:other > triggerAccountCreated logs ApplicantCreatedArgyleAccount event 1`] = `
 {
   "accountId": "account-id",
   "platformId": "platform-id",
 }
 `;
 
-exports[`ArgyleModalAdapter > event:other > logs onAccountError Event 1`] = `
+exports[`ArgyleModalAdapter > event:other > triggerAccountError logs ApplicantEncounteredArgyleAccountError event 1`] = `
 {
   "accountId": "account-id",
   "platformId": "platform-id",
 }
 `;
 
-exports[`ArgyleModalAdapter > event:other > logs onAccountRemoved Event 1`] = `
+exports[`ArgyleModalAdapter > event:other > triggerAccountRemoved logs ApplicantRemovedArgyleAccount event 1`] = `
 {
   "accountId": "account-id",
   "platformId": "platform-id",
 }
 `;
 
-exports[`ArgyleModalAdapter > open > calls track user action 1`] = `
+exports[`ArgyleModalAdapter > open > tracks user action and fetches token 1`] = `
 [
   "ApplicantSelectedEmployerOrPlatformItem",
   {
