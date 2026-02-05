@@ -365,7 +365,7 @@ RSpec.describe ActivityFlowProgressCalculator do
   end
 
   describe "education progress" do
-    subject(:progress) { described_class.progress(flow) }
+    subject(:progress) { described_class.new(flow).overall_result }
 
     let(:flow) { create(:activity_flow, reporting_window_months: 1, education_activities_count: 0) }
     let(:education_activity) { create(:education_activity, activity_flow: flow, status: "succeeded") }

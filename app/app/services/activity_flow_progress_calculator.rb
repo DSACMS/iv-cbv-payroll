@@ -60,16 +60,15 @@ class ActivityFlowProgressCalculator
   end
 
   def hours_for_month(month_start)
-    volunteering_and_training_hours_for_month(month_start) + education_hours_for_month(month_start)
+    volunteering_and_training_hours_for_month(month_start) +
+      employment_hours_for_month(month_start) +
+      education_hours_for_month(month_start)
   end
 
   def volunteering_and_training_hours_for_month(month_start)
     @activities
-    activity_hours = @activities
       .select { |activity| activity.date&.between?(month_start, month_start.end_of_month) }
       .sum { |activity| activity.hours.to_i }
-
-    employment_hours_for_month(month_start) + activity_hours
   end
 
   # Employment calculations
