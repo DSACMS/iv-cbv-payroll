@@ -11,7 +11,6 @@ class Api::UserEventsController < ApplicationController
         cbv_flow_id: @flow.id,
         cbv_applicant_id: @flow.cbv_applicant_id,
         client_agency_id: @flow.cbv_applicant.client_agency_id,
-
         invitation_id: @flow.invitation_id
       })
     end

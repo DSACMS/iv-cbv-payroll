@@ -7,7 +7,6 @@ class FeedbacksController < ApplicationController
     attributes = {
       referer: params[:referer],
       cbv_flow_id: cbv_flow&.id,
-
       cbv_applicant_id: cbv_flow&.cbv_applicant_id,
       client_agency_id: cbv_flow&.cbv_applicant&.client_agency_id
     }

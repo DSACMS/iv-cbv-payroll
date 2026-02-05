@@ -125,7 +125,6 @@ class FlowController < ApplicationController
       cbv_applicant_id: flow.cbv_applicant_id,
       cbv_flow_id: flow.id, # TODO: Genericize/migrate key, it could be activity or cbv
       client_agency_id: flow.cbv_applicant.client_agency_id,
-
       origin: params[:origin],
       is_new_session: is_new_session
     })

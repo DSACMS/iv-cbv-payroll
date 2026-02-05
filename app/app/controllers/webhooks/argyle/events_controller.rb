@@ -203,7 +203,6 @@ class Webhooks::Argyle::EventsController < ApplicationController
         cbv_applicant_id: @flow&.cbv_applicant_id,
         cbv_flow_id: @flow&.id,
         client_agency_id: @flow&.cbv_applicant&.client_agency_id,
-
         invitation_id: @flow&.invitation_id,
         argyle_environment: agency_config[@flow&.cbv_applicant&.client_agency_id].argyle_environment,
         sync_duration_seconds: Time.now - payroll_account.sync_started_at,

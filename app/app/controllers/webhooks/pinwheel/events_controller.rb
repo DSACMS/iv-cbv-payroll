@@ -62,7 +62,6 @@ class Webhooks::Pinwheel::EventsController < ApplicationController
         cbv_applicant_id: @cbv_flow.cbv_applicant_id,
         cbv_flow_id: @cbv_flow.id,
         client_agency_id: @cbv_flow.cbv_applicant.client_agency_id,
-
         invitation_id: @cbv_flow.invitation_id,
         platform_name: params["payload"]["platform_name"]
       })
