@@ -18,17 +18,48 @@ RSpec.describe ActivityFlowProgressCalculator do
       expect(result.total_hours).to eq(0)
     end
 
-    it "does not meet requirements when month is below 80 hours" do
-      create(:volunteering_activity, activity_flow: flow, organization_name: "Food Pantry", hours: 79)
+    context "meets_requirements" do
+      it "does not meet requirements when below 80 hours threshold" do
+        create(:volunteering_activity, activity_flow: flow, organization_name: "Food Pantry", hours: 79)
 
-      expect(result.meets_requirements).to be(false)
+        expect(result.meets_requirements).to be(false)
+      end
+
+      it "meets requirements when month has at least 80 hours" do
+        create(:volunteering_activity, activity_flow: flow, organization_name: "Food Pantry", hours: 40)
+        create(:job_training_activity, activity_flow: flow, program_name: "Career Prep", organization_address: "123 Main St", hours: 40)
+
+        expect(result.meets_requirements).to be(true)
+      end
     end
 
-    it "meets requirements when month has at least 80 hours" do
-      create(:volunteering_activity, activity_flow: flow, organization_name: "Food Pantry", hours: 40)
-      create(:job_training_activity, activity_flow: flow, program_name: "Career Prep", organization_address: "123 Main St", hours: 40)
+    context "meets_routing_requirements" do
+      it "does not meet routing requirements when below 80 hours threshold" do
+        create(:volunteering_activity, activity_flow: flow, organization_name: "Food Pantry", hours: 79)
 
-      expect(result.meets_requirements).to be(true)
+        expect(result.meets_routing_requirements).to be(false)
+      end
+
+      it "does not meet routing requirements when threshold met only via self-attested data" do
+        education_activity = create(:education_activity, activity_flow: flow, status: "succeeded")
+        create(:nsc_enrollment_term, education_activity: education_activity, enrollment_status: "less_than_half_time")
+        create(:job_training_activity, activity_flow: flow, program_name: "Career Prep", organization_address: "123 Main St", hours: 80)
+
+        expect(result.meets_routing_requirements).to be(false)
+      end
+
+      context "when threshold is met via validated data" do
+        let(:flow) { create(:activity_flow, reporting_window_months: 1, volunteering_activities_count: 0, job_training_activities_count: 0, education_activities_count: 0) }
+
+        before do
+          education_activity = create(:education_activity, activity_flow: flow, status: "succeeded")
+          create(:nsc_enrollment_term, education_activity: education_activity, enrollment_status: "half_time")
+        end
+
+        it "meets routing requirements" do
+          expect(result.meets_routing_requirements).to be(true)
+        end
+      end
     end
 
     context "with multi-month reporting window" do
@@ -49,37 +80,6 @@ RSpec.describe ActivityFlowProgressCalculator do
         create(:volunteering_activity, activity_flow: flow, hours: 80, date: third_month)
 
         expect(result.meets_requirements).to be(true)
-      end
-    end
-  end
-
-  describe "#monthly_results" do
-    subject(:result) { described_class.new(flow).monthly_results }
-
-    let(:flow) { create(:activity_flow, reporting_window_months: 3) }
-    let(:reporting_range_months) { flow.reporting_window_range.uniq(&:beginning_of_month) }
-
-    it "returns empty results for all months when no activities exist" do
-      expect(result).to contain_exactly(
-        have_attributes(month: reporting_range_months.first, total_hours: 0, meets_requirements: false),
-        have_attributes(month: reporting_range_months.second, total_hours: 0, meets_requirements: false),
-        have_attributes(month: reporting_range_months.third, total_hours: 0, meets_requirements: false),
-      )
-    end
-
-    context "when there are activities within the reporting range" do
-      before do
-        create(:volunteering_activity, activity_flow: flow, hours: 40, date: reporting_range_months.first + 1.day)
-        create(:volunteering_activity, activity_flow: flow, hours: 40, date: reporting_range_months.first + 2.day)
-        create(:volunteering_activity, activity_flow: flow, hours: 40, date: reporting_range_months.second + 1.day)
-      end
-
-      it "returns monthly results for those months" do
-        expect(result).to contain_exactly(
-          have_attributes(month: reporting_range_months.first, total_hours: 80, meets_requirements: true),
-          have_attributes(month: reporting_range_months.second, total_hours: 40, meets_requirements: false),
-          have_attributes(month: reporting_range_months.third, total_hours: 0, meets_requirements: false),
-        )
       end
     end
 
@@ -206,6 +206,16 @@ RSpec.describe ActivityFlowProgressCalculator do
           expect(progress.meets_requirements).to be(true)
         end
 
+        it "meets routing requirements when threshold met via validated employment data" do
+          allow(mock_report).to receive_messages(has_fetched?: true, summarize_by_month: {
+            account_id => {
+              month_key => { total_w2_hours: 80.0, total_gig_hours: 0.0, accrued_gross_earnings: 0.0 }
+            }
+          })
+
+          expect(progress.meets_routing_requirements).to be(true)
+        end
+
         it "meets requirements when combined activity and employment hours reach threshold" do
           create(:volunteering_activity, activity_flow: flow, hours: 40, date: first_month)
 
@@ -257,6 +267,16 @@ RSpec.describe ActivityFlowProgressCalculator do
             })
 
             expect(progress.meets_requirements).to be(true)
+          end
+
+          it "meets routing requirements when threshold met via validated earnings only" do
+            allow(mock_report).to receive_messages(has_fetched?: true, summarize_by_month: {
+              account_id => {
+                month_key => { total_w2_hours: 0.0, total_gig_hours: 0.0, accrued_gross_earnings: 580_00 }
+              }
+            })
+
+            expect(progress.meets_routing_requirements).to be(true)
           end
         end
 
@@ -343,6 +363,37 @@ RSpec.describe ActivityFlowProgressCalculator do
             expect(progress.meets_requirements).to be(false)
           end
         end
+      end
+    end
+  end
+
+  describe "#monthly_results" do
+    subject(:result) { described_class.new(flow).monthly_results }
+
+    let(:flow) { create(:activity_flow, reporting_window_months: 3) }
+    let(:reporting_range_months) { flow.reporting_window_range.uniq(&:beginning_of_month) }
+
+    it "returns empty results for all months when no activities exist" do
+      expect(result).to contain_exactly(
+        have_attributes(month: reporting_range_months.first, total_hours: 0, meets_requirements: false),
+        have_attributes(month: reporting_range_months.second, total_hours: 0, meets_requirements: false),
+        have_attributes(month: reporting_range_months.third, total_hours: 0, meets_requirements: false),
+      )
+    end
+
+    context "when there are activities within the reporting range" do
+      before do
+        create(:volunteering_activity, activity_flow: flow, hours: 40, date: reporting_range_months.first + 1.day)
+        create(:volunteering_activity, activity_flow: flow, hours: 40, date: reporting_range_months.first + 2.day)
+        create(:volunteering_activity, activity_flow: flow, hours: 40, date: reporting_range_months.second + 1.day)
+      end
+
+      it "returns monthly results for those months" do
+        expect(result).to contain_exactly(
+          have_attributes(month: reporting_range_months.first, total_hours: 80, meets_requirements: true),
+          have_attributes(month: reporting_range_months.second, total_hours: 40, meets_requirements: false),
+          have_attributes(month: reporting_range_months.third, total_hours: 0, meets_requirements: false),
+        )
       end
     end
   end

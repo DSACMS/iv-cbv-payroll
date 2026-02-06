@@ -3,6 +3,8 @@ class Activity < ApplicationRecord
 
   belongs_to :activity_flow
 
+  enum :data_source, { self_attested: "self_attested", validated: "validated" }, default: :self_attested
+
   validate :date_within_reporting_window
 
   def date=(value)

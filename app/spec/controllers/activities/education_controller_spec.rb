@@ -93,5 +93,53 @@ RSpec.describe Activities::EducationController, type: :controller do
       )
       expect(response).to redirect_to(activities_flow_root_path)
     end
+
+    it "redirects to activity hub when threshold is not met" do
+      result = ActivityFlowProgressCalculator::OverallResult.new(
+        total_hours: 40,
+        meets_requirements: false,
+        meets_routing_requirements: false
+      )
+      allow(controller).to receive(:progress_calculator).and_return(instance_double(ActivityFlowProgressCalculator, overall_result: result))
+
+      patch :update, params: {
+        id: education_activity.id,
+        education_activity: { credit_hours: 12 }
+      }
+
+      expect(response).to redirect_to(activities_flow_root_path)
+    end
+
+    it "redirects to activity hub when threshold met but only via self-attested data" do
+      result = ActivityFlowProgressCalculator::OverallResult.new(
+        total_hours: 80,
+        meets_requirements: true,
+        meets_routing_requirements: false
+      )
+      allow(controller).to receive(:progress_calculator).and_return(instance_double(ActivityFlowProgressCalculator, overall_result: result))
+
+      patch :update, params: {
+        id: education_activity.id,
+        education_activity: { credit_hours: 12 }
+      }
+
+      expect(response).to redirect_to(activities_flow_root_path)
+    end
+
+    it "redirects to summary when threshold is met via validated data" do
+      result = ActivityFlowProgressCalculator::OverallResult.new(
+        total_hours: 80,
+        meets_requirements: true,
+        meets_routing_requirements: true
+      )
+      allow(controller).to receive(:progress_calculator).and_return(instance_double(ActivityFlowProgressCalculator, overall_result: result))
+
+      patch :update, params: {
+        id: education_activity.id,
+        education_activity: { credit_hours: 12 }
+      }
+
+      expect(response).to redirect_to(activities_flow_summary_path)
+    end
   end
 end
