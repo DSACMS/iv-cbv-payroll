@@ -1,7 +1,7 @@
 class Activities::BaseController < FlowController
   before_action :redirect_on_prod, :set_flow
 
-  helper_method :current_identity, :progress_calculator
+  helper_method :current_identity, :progress_calculator, :pilot_name_key
 
   # Infer the `Identity` that is associated with the current request
   #
@@ -22,6 +22,11 @@ class Activities::BaseController < FlowController
       flash: { alert: t("activities.error_no_identity") }
     )
   end
+
+  def pilot_name_key
+    "shared.pilot_name_hr1"
+  end
+
 
   private
 
