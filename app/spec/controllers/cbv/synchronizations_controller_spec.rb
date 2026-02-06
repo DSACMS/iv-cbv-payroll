@@ -22,6 +22,12 @@ RSpec.describe Cbv::SynchronizationsController do
 
         expect(response).to redirect_to(cbv_flow_payment_details_path(user: { account_id: payroll_account.aggregator_account_id }))
       end
+
+      it "does not render the session timeout modal" do
+        get :show, params: { user: { account_id: payroll_account.aggregator_account_id } }
+
+        expect(response.body).not_to include('id="session-timeout-modal"')
+      end
     end
 
     context "when account doesn't exist" do

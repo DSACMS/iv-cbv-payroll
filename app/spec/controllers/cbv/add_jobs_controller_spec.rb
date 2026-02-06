@@ -15,6 +15,12 @@ RSpec.describe Cbv::AddJobsController do
       expect(response).to be_successful
     end
 
+    it "renders the session timeout modal" do
+      get :show
+
+      expect(response.body).to include('id="session-timeout-modal"')
+    end
+
     it "renders expected content and radio options" do
       get :show
       expect(response.body).to include(I18n.t("cbv.add_jobs.show.header"))
