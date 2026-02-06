@@ -55,9 +55,21 @@
       <%= t("activities.hub.count", count: @education_activities.size) %>
     </p>
 
-    <% @education_activities.each do |activity| %>
-      <% activity.nsc_enrollment_terms.each do |enrollment_term| %>
-        <%= render(EnrollmentTermTableComponent.new(nsc_enrollment_term: enrollment_term)) %>
+    <% education_cards(@education_activities, progress_calculator.reporting_months).each do |card_data| %>
+      <%= render(Uswds::Card.new(heading_text: card_data[:name], heading_level: 3, class: "activity-hub-card")) do |card| %>
+        <% card.with_body do %>
+          <% card_data[:months].each do |month_data| %>
+            <div class="margin-bottom-2">
+              <p class="margin-y-0"><strong><%= I18n.l(month_data[:month], format: :month_year) %></strong></p>
+              <p class="margin-y-0"><%= t("activities.hub.cards.enrollment_status", status: month_data[:enrollment_status]) %></p>
+              <p class="margin-y-0"><%= t("activities.hub.cards.credit_hours", amount: month_data[:credit_hours]) %></p>
+            </div>
+          <% end %>
+        <% end %>
+        <% card.with_footer do %>
+          <%= link_to t("activities.hub.edit"), edit_activities_flow_education_path(id: card_data[:activity].id), class: "usa-link" %>
+          <%= button_to t("activities.hub.delete"), activities_flow_education_path(id: card_data[:activity].id), method: :delete, class: "usa-button usa-button--unstyled", form: { data: { turbo_confirm: t("activities.hub.delete_confirm") } } %>
+        <% end %>
       <% end %>
     <% end %>
 
@@ -73,59 +85,58 @@
     <p>
       <%= t("activities.hub.count", count: @volunteering_activities.size) %>
     </p>
-    <%= render TableComponent.new do |t| %>
-      <% @volunteering_activities.each do |activity| %>
-        <%= t.with_row do |r| %>
-        <%= r.with_data_cell do %>
-          <%= activity.organization_name %>
+
+    <% self_attestation_cards(@volunteering_activities, name_field: :organization_name).each do |card_data| %>
+      <%= render(Uswds::Card.new(heading_text: card_data[:name], heading_level: 3, class: "activity-hub-card")) do |card| %>
+        <% card.with_body do %>
+          <% card_data[:months].each do |month_data| %>
+            <div class="margin-bottom-2">
+              <p class="margin-y-0"><strong><%= I18n.l(month_data[:month], format: :month_year) %></strong></p>
+              <p class="margin-y-0"><%= t("activities.hub.cards.hours", count: month_data[:hours]) %></p>
+            </div>
+          <% end %>
         <% end %>
-        <%= r.with_data_cell do %>
-          <%= activity.hours %>
+        <% card.with_footer do %>
+          <% card_data[:activities].each do |activity| %>
+            <%= link_to t("activities.hub.edit"), edit_activities_flow_volunteering_path(id: activity.id), class: "usa-link" %>
+            <%= button_to t("activities.hub.delete"), activities_flow_volunteering_path(id: activity.id), method: :delete, class: "usa-button usa-button--unstyled", form: { data: { turbo_confirm: t("activities.hub.delete_confirm") } } %>
+          <% end %>
         <% end %>
-        <%= r.with_data_cell do %>
-          <%= activity.date %>
-        <% end %>
-        <%= r.with_data_cell do %>
-          <%= link_to t("activities.hub.edit"), edit_activities_flow_volunteering_path(id: activity.id), class: "usa-link" %>
-          <%= button_to t("activities.hub.delete"), activities_flow_volunteering_path(id: activity.id), method: :delete, class: "usa-button usa-button--unstyled", form: { data: { turbo_confirm: t("activities.hub.delete_confirm") } } %>
-        <% end %>
-      <% end %>
       <% end %>
     <% end %>
+
     <%= button_to t("activities.volunteering.add"), new_activities_flow_volunteering_path, class: "btn btn-primary usa-button margin-y-5", method: :get %>
   </section>
 <% end %>
 
 <% if activity_type_enabled?(:job_training) %>
-  <section>
+  <section class="margin-bottom-5">
     <h2>
       <%= t("activities.job_training.title") %>
     </h2>
     <p>
       <%= t("activities.hub.count", count: @job_training_activities.size) %>
     </p>
-    <%= render TableComponent.new do |t| %>
-      <% @job_training_activities.each do |activity| %>
-        <%= t.with_row do |r| %>
-        <%= r.with_data_cell do %>
-          <%= activity.program_name %>
+
+    <% self_attestation_cards(@job_training_activities, name_field: :program_name).each do |card_data| %>
+      <%= render(Uswds::Card.new(heading_text: card_data[:name], heading_level: 3, class: "activity-hub-card")) do |card| %>
+        <% card.with_body do %>
+          <% card_data[:months].each do |month_data| %>
+            <div class="margin-bottom-2">
+              <p class="margin-y-0"><strong><%= I18n.l(month_data[:month], format: :month_year) %></strong></p>
+              <p class="margin-y-0"><%= t("activities.hub.cards.hours", count: month_data[:hours]) %></p>
+            </div>
+          <% end %>
         <% end %>
-        <%= r.with_data_cell do %>
-          <%= activity.organization_address %>
+        <% card.with_footer do %>
+          <% card_data[:activities].each do |activity| %>
+            <%= link_to t("activities.hub.edit"), edit_activities_flow_job_training_path(id: activity.id), class: "usa-link" %>
+            <%= button_to t("activities.hub.delete"), activities_flow_job_training_path(id: activity.id), method: :delete, class: "usa-button usa-button--unstyled", form: { data: { turbo_confirm: t("activities.hub.delete_confirm") } } %>
+          <% end %>
         <% end %>
-        <%= r.with_data_cell do %>
-          <%= activity.hours %>
-        <% end %>
-        <%= r.with_data_cell do %>
-          <%= activity.date %>
-        <% end %>
-        <%= r.with_data_cell do %>
-          <%= link_to t("activities.hub.edit"), edit_activities_flow_job_training_path(id: activity.id), class: "usa-link" %>
-          <%= button_to t("activities.hub.delete"), activities_flow_job_training_path(id: activity.id), method: :delete, class: "usa-button usa-button--unstyled", form: { data: { turbo_confirm: t("activities.hub.delete_confirm") } } %>
-        <% end %>
-      <% end %>
       <% end %>
     <% end %>
+
     <%= button_to t("activities.job_training.add"), new_activities_flow_job_training_path, class: "btn btn-primary usa-button margin-y-5", method: :get %>
   </section>
 <% end %>
@@ -135,7 +146,21 @@
     <h2><%= t("activities.income.title") %></h2>
     <p>
       <%= t("activities.hub.count", count: @flow.payroll_accounts.size) %>
-    </m>
+    </p>
+
+    <% employment_cards(@employment_activities || [], @aggregator_report, @flow.reporting_window_range).each do |card_data| %>
+      <%= render(Uswds::Card.new(heading_text: card_data[:name], heading_level: 3, class: "activity-hub-card")) do |card| %>
+        <% card.with_body do %>
+          <% card_data[:months].each do |month_data| %>
+            <div class="margin-bottom-2">
+              <p class="margin-y-0"><strong><%= I18n.l(month_data[:month], format: :month_year) %></strong></p>
+              <p class="margin-y-0"><%= t("activities.hub.cards.gross_income", amount: number_to_currency(month_data[:gross_earnings] / 100.0)) %></p>
+              <p class="margin-y-0"><%= t("activities.hub.cards.hours", count: month_data[:hours]) %></p>
+            </div>
+          <% end %>
+        <% end %>
+      <% end %>
+    <% end %>
 
     <%= button_to t("activities.income.add"), activities_flow_income_employer_search_path, class: "btn btn-primary usa-button margin-y-5", method: :get %>
   </section>
