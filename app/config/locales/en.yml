@@ -102,6 +102,12 @@ en:
     errors:
       invalid_token: The link you used is invalid.
     hub:
+      cards:
+        credit_hours: 'Credit hours: %{amount}'
+        enrollment_status: 'Enrollment status: %{status}'
+        gross_income: 'Gross income: %{amount}'
+        hours: 'Hours: %{count}'
+        not_enrolled: Not enrolled
       continue: Continue
       count:
         one: "%{count} activity added"

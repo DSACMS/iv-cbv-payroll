@@ -8,7 +8,7 @@ class Activities::SummaryController < Activities::BaseController
     @volunteering_activities = @flow.volunteering_activities.order(created_at: :asc)
     @job_training_activities = @flow.job_training_activities.order(created_at: :asc)
     @education_activities = @flow.education_activities.order(created_at: :asc)
-    @employment_payroll_accounts = synced_payroll_accounts
+    @employment_activities = synced_payroll_accounts
     @all_activities = build_activities_list
   end
 
@@ -37,7 +37,7 @@ class Activities::SummaryController < Activities::BaseController
       activities << { type: :job_training, activity: activity, created_at: activity.created_at }
     end
 
-    @employment_payroll_accounts.each do |payroll_account|
+    @employment_activities.each do |payroll_account|
       activities << { type: :income, payroll_account: payroll_account, created_at: payroll_account.created_at }
     end
 

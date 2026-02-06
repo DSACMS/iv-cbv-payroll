@@ -69,3 +69,18 @@ tr td:first-child {
     @include u-font-size("sans", 8);
   }
 }
+
+// Activity Hub card overrides
+.activity-hub-card {
+  padding-left: 0;
+  padding-right: 0;
+
+  @include at-media("tablet") {
+    max-width: 30rem;
+  }
+
+  .usa-card__container {
+    margin-left: 0;
+    margin-right: 0;
+  }
+}
