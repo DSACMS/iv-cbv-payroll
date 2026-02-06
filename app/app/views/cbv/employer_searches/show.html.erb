@@ -35,7 +35,9 @@
     <%= f.text_field :query, value: @query, class: "usa-input", type: "search" %>
     <button
       class="usa-button"
-      type="submit">
+      type="submit"
+      data-cbv-employer-search-target="searchButton"
+      >
         <span class="usa-search__submit-text">
           <%= t(".search") %>
         </span>
