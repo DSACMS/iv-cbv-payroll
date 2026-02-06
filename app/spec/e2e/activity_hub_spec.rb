@@ -104,7 +104,8 @@ RSpec.describe 'e2e Activity Hub flow test', :js, type: :feature do
     # /activities/income/payment_details
     @e2e.replay_webhooks
     verify_page(page, title: I18n.t("cbv.payment_details.show.activity_flow.header", employer_name: ""), wait: 60)
-    fill_in "activity_flow[additional_information]", with: "Some kind of additional information"
+    fill_in "payroll_account[additional_information]",
+      with: "Some kind of additional information"
     click_button I18n.t("cbv.payment_details.show.continue")
     verify_page(page, title: I18n.t("activities.hub.title"))
 

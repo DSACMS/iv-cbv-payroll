@@ -57,6 +57,10 @@ class PayrollAccount < ApplicationRecord
     raise NotImplementedError
   end
 
+  def additional_information=(value)
+    super(ActionController::Base.helpers.sanitize(value))
+  end
+
   private
 
   def find_webhook_event(event_name, event_outcome = nil)

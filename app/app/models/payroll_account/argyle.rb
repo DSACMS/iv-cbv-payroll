@@ -63,6 +63,7 @@ class PayrollAccount::Argyle < PayrollAccount
     argyle_environment = Rails.application.config.client_agencies[flow.cbv_applicant.client_agency_id].argyle_environment
     argyle = Aggregators::Sdk::ArgyleService.new(argyle_environment)
     argyle.delete_account_api(account: aggregator_account_id)
+    update_column(:additional_information, Redactable::REDACTION_REPLACEMENTS[:string])
     touch(:redacted_at)
   rescue => ex
     raise ex unless Rails.env.production?

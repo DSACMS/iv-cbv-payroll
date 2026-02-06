@@ -165,9 +165,10 @@
     <%= render(Report::GigMonthlySummaryTableComponent.new(@aggregator_report, account_id, is_caseworker: is_caseworker, is_responsive: false, is_pdf: true, show_footnote: is_first_gig_job)) %>
   <% end %>
 
-  <% if @cbv_flow.additional_information.dig(account_id, "comment").present? %>
+  <% payroll_account = @cbv_flow.payroll_accounts.find_by(aggregator_account_id: account_id) %>
+  <% if payroll_account&.additional_information.present? %>
     <h2><%= t(".additional_information_title") %></h2>
 
-    <p><%= @cbv_flow.additional_information.dig(account_id, "comment") %></p>
+    <p><%= payroll_account.additional_information %></p>
   <% end %>
 <% end %>

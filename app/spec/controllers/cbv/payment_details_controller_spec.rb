@@ -82,16 +82,8 @@ RSpec.describe Cbv::PaymentDetailsController do
       end
 
       context "when account comment exists" do
-        let(:updated_at) { Time.current.iso8601 }
-
         before do
-          additional_information = { account_id => { comment: comment, updated_at: updated_at } }
-          cbv_flow.update!(additional_information: additional_information)
-
-          # Verify that the comment was saved
-          loaded_info = cbv_flow.reload.additional_information
-          expect(loaded_info[account_id]["comment"]).to eq(comment)
-          expect(loaded_info[account_id]["updated_at"]).to eq(updated_at)
+          payroll_account.update!(additional_information: comment)
         end
 
         it "includes the account comment in the response" do
@@ -103,25 +95,20 @@ RSpec.describe Cbv::PaymentDetailsController do
       context "when multiple comments exist for different accounts" do
         let(:account_id_2) { SecureRandom.uuid }
         let(:comment_2) { "This is another test comment" }
-        let(:updated_at) { Time.current.iso8601 }
+        let!(:payroll_account_2) do
+          create(
+            :payroll_account,
+            :pinwheel_fully_synced,
+            with_errored_jobs: errored_jobs,
+            flow: flow,
+            aggregator_account_id: account_id_2,
+            supported_jobs: supported_jobs,
+          )
+        end
 
         before do
-          additional_information = {
-            account_id => { comment: comment, updated_at: updated_at },
-            account_id_2 => { comment: comment_2, updated_at: updated_at }
-          }
-
-          cbv_flow.update!(additional_information: additional_information)
-
-          # Verify that the comments were saved
-          loaded_info = cbv_flow.reload.additional_information
-          expect(loaded_info[account_id]["comment"]).to eq(comment)
-          expect(loaded_info[account_id]["updated_at"]).to eq(updated_at)
-          expect(loaded_info[account_id_2]["comment"]).to eq(comment_2)
-          expect(loaded_info[account_id_2]["updated_at"]).to eq(updated_at)
-
-          # Verify that there are two comments
-          expect(loaded_info.keys).to contain_exactly(account_id, account_id_2)
+          payroll_account.update!(additional_information: comment)
+          payroll_account_2.update!(additional_information: comment_2)
         end
 
         it "includes the account comments in the response" do
@@ -455,15 +442,16 @@ RSpec.describe Cbv::PaymentDetailsController do
     before do
       session[:flow_id] = flow.id
       session[:flow_type] = flow_type
-      # update the flow to have an account comment
-      additional_information = { account_id => { comment: old_comment, updated_at: Time.current.iso8601 } }
-      flow.update!(additional_information: additional_information)
+      create(:payroll_account, flow: flow, aggregator_account_id: account_id, additional_information: old_comment)
     end
 
     it "updates the account comment through invoking the controller" do
+      payroll_account = flow.payroll_accounts.find_by(aggregator_account_id: account_id)
+
       expect do
-        patch :update, params: { user: { account_id: account_id }, cbv_flow: { additional_information: comment } }
-      end.to change { flow.reload.additional_information[account_id]["comment"] }
+        patch :update, params: { user: { account_id: account_id },
+                                 payroll_account: { additional_information: comment } }
+      end.to change { payroll_account.reload.additional_information }
         .from(old_comment)
         .to(comment)
     end
@@ -477,7 +465,8 @@ RSpec.describe Cbv::PaymentDetailsController do
           additional_information_length: comment.length
         ))
 
-      patch :update, params: { user: { account_id: account_id }, cbv_flow: { additional_information: comment } }
+      patch :update, params: { user: { account_id: account_id },
+                               payroll_account: { additional_information: comment } }
     end
 
     context "for an ActivityFlow" do
@@ -485,9 +474,12 @@ RSpec.describe Cbv::PaymentDetailsController do
       let(:flow_type) { :activity }
 
       it "updates the account comment" do
+        payroll_account = flow.payroll_accounts.find_by(aggregator_account_id: account_id)
+
         expect do
-          patch :update, params: { user: { account_id: account_id }, activity_flow: { additional_information: comment } }
-        end.to change { flow.reload.additional_information[account_id]["comment"] }
+          patch :update, params: { user: { account_id: account_id },
+                                   payroll_account: { additional_information: comment } }
+        end.to change { payroll_account.reload.additional_information }
           .from(old_comment)
           .to(comment)
       end
