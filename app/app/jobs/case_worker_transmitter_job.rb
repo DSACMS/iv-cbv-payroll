@@ -52,7 +52,7 @@ class CaseWorkerTransmitterJob < ApplicationJob
       account_count: cbv_flow.fully_synced_payroll_accounts.count,
       paystub_count: payments.count,
       account_count_with_additional_information:
-        cbv_flow.additional_information.values.count { |info| info["comment"].present? },
+        cbv_flow.payroll_accounts.count { |payroll_account| payroll_account.additional_information.present? },
       flow_started_seconds_ago: (cbv_flow.consented_to_authorized_use_at - cbv_flow.created_at).to_i,
       locale: I18n.locale
     })

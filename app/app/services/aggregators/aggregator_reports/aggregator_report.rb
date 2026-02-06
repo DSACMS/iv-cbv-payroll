@@ -70,12 +70,15 @@ module Aggregators::AggregatorReports
     def income_report
       {}.tap do |report|
         report[:has_other_jobs] = flow.has_other_jobs
-        report[:employments] = summarize_by_employer.map do |_, summary|
+        report[:employments] = summarize_by_employer.map do |account_id, summary|
           cbv_flow = flow
+          payroll_account = cbv_flow.payroll_accounts.find do |account|
+            account.aggregator_account_id == account_id
+          end
           {
             applicant_full_name: summary[:identity]&.full_name,
             applicant_ssn: summary[:identity]&.ssn,
-            applicant_extra_comments: cbv_flow.additional_information["comment"],
+            applicant_extra_comments: payroll_account&.additional_information,
             employer_name: summary[:employment]&.employer_name,
             employer_phone: summary[:employment]&.employer_phone_number,
             employer_address: summary[:employment]&.employer_address,

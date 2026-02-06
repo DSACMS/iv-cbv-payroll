@@ -29,8 +29,10 @@
   <% else %>
     <%= render(Report::GigMonthlySummaryTableComponent.new(@aggregator_report, account_id, show_footnote: false, show_payments: false)) %>
   <% end %>
+  <% payroll_account = @cbv_flow.payroll_accounts.find_by(aggregator_account_id: account_id) %>
+  <% comment = payroll_account&.additional_information %>
   <h3><%= t(".additional_comments") %></h3>
-  <p><%= get_comment_by_account_id(account_id).dig("comment") != "" ? get_comment_by_account_id(account_id).dig("comment") : t("shared.not_applicable") %></p>
+  <p><%= comment.present? ? comment : t("shared.not_applicable") %></p>
 <% end %>
 
 <!-- Generic link flow, no invitation -->

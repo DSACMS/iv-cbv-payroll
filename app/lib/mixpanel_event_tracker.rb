@@ -17,16 +17,7 @@ class MixpanelEventTracker
       tracker_attrs.merge!({ "$ip": request_attributes.remote_ip })
     end
 
-    # For caseworker events, use the "user_id" attribute as the distinct_id
-    # For client events, use the "cbv_applicant_id" attribute as the distinct_id as it currently best
-    # represents the concept of a unique user.
-    user_id = attributes.fetch(:user_id, "")
-    applicant_id = attributes.fetch(:cbv_applicant_id, "")
-    if user_id.present?
-      distinct_id = "caseworker-#{user_id}"
-    elsif applicant_id.present?
-      distinct_id = "applicant-#{applicant_id}"
-    end
+    distinct_id = "device-#{attributes[:device_id]}" if attributes[:device_id].present?
 
     # This creates a profile for a distinct user
     @tracker.people.set(distinct_id, tracker_attrs) if distinct_id.present?

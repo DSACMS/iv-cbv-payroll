@@ -1,0 +1,34 @@
+<div class="<%= card_classes %>">
+  <div class="usa-card__container">
+    <% if header? || @heading_text %>
+      <div class="usa-card__header">
+        <% if @heading_text %>
+          <%= content_tag("h#{@heading_level}", @heading_text, class: "usa-card__heading") %>
+        <% end %>
+        <% if header? %>
+          <%= header %>
+        <% end %>
+      </div>
+    <% end %>
+
+    <% if media? %>
+      <div class="usa-card__media">
+        <div class="usa-card__img">
+          <%= media %>
+        </div>
+      </div>
+    <% end %>
+
+    <% if body? %>
+      <div class="usa-card__body">
+        <%= body %>
+      </div>
+    <% end %>
+
+    <% if footer? %>
+      <div class="usa-card__footer">
+        <%= footer %>
+      </div>
+    <% end %>
+  </div>
+</div>

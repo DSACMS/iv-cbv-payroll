@@ -13,7 +13,6 @@ class FlowController < ApplicationController
     @cbv_flow = @flow # Maintain for compatibility until all controllers are converted
 
     set_flow_session(@flow.id, flow_param)
-    cookies.permanent.encrypted[:cbv_applicant_id] = @flow.cbv_applicant_id
 
     track_generic_link_clicked_event(@flow, is_new_session)
   end
@@ -92,7 +91,6 @@ class FlowController < ApplicationController
       )
       @cbv_flow = @flow # Maintain for compatibility until all controllers are converted
       set_flow_session(@flow.id, flow_param)
-      cookies.permanent.encrypted[:cbv_applicant_id] = @flow.cbv_applicant_id
       track_invitation_clicked_event(invitation, @flow)
     elsif session[:flow_id]
       begin
@@ -109,10 +107,11 @@ class FlowController < ApplicationController
   end
 
   def find_existing_applicant_from_cookie
-    applicant_id = cookies.encrypted[:cbv_applicant_id]
-    return nil unless applicant_id.present?
+    device_id = cookies.permanent.signed[:device_id]
+    return nil unless device_id.present?
 
-    CbvApplicant.find_by(id: applicant_id)
+    recent_flow = flow_class(flow_param).where(device_id: device_id).order(created_at: :desc).first
+    recent_flow&.cbv_applicant
   end
 
   def track_generic_link_clicked_event(flow, is_new_session)
@@ -125,7 +124,6 @@ class FlowController < ApplicationController
       cbv_applicant_id: flow.cbv_applicant_id,
       cbv_flow_id: flow.id, # TODO: Genericize/migrate key, it could be activity or cbv
       client_agency_id: flow.cbv_applicant.client_agency_id,
-      device_id: flow.device_id,
       origin: params[:origin],
       is_new_session: is_new_session
     })

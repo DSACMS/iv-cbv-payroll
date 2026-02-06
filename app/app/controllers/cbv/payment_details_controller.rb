@@ -31,26 +31,21 @@ class Cbv::PaymentDetailsController < Cbv::BaseController
 
     @payroll_account_report = @aggregator_report.find_account_report(account_id)
     @is_w2_worker = @payroll_account_report.employment.employment_type == :w2
-    @account_comment = account_comment
+    @account_comment = @payroll_account.additional_information
     @payment_details_path = flow_navigator.income_sync_path(:payment_details)
   end
 
   def update
     account_id = params[:user][:account_id]
-    comment = params["#{session[:flow_type]}_flow".to_sym][:additional_information]
-    additional_information = @flow.additional_information
-    additional_information[account_id] = {
-      comment: sanitize_comment(comment),
-      updated_at: Time.current
-    }
-    @flow.update(additional_information: additional_information)
+    @payroll_account = @flow.payroll_accounts.find_by(aggregator_account_id: account_id)
+
+    if @payroll_account.nil?
+      return redirect_to(cbv_flow_entry_url, flash: { slim_alert: { message: t("cbv.error_no_access"), type: "error" } })
+    end
+
+    @payroll_account.update(payroll_account_params)
 
     redirect_to next_path
-  end
-
-  def account_comment
-    account_id = params[:user][:account_id]
-    get_comment_by_account_id(account_id)["comment"]
   end
 
   private
@@ -117,10 +112,6 @@ class Cbv::PaymentDetailsController < Cbv::BaseController
                            .reduce(:+)
   end
 
-  def sanitize_comment(comment)
-    ActionController::Base.helpers.sanitize(comment)
-  end
-
   def track_viewed_event
     return if @payroll_account.nil? || @payroll_account_report.nil?
     event_logger.track(TrackEvent::ApplicantViewedPaymentDetails, request, {
@@ -128,7 +119,6 @@ class Cbv::PaymentDetailsController < Cbv::BaseController
       cbv_applicant_id: @flow.cbv_applicant_id,
       cbv_flow_id: @flow.id,
       client_agency_id: current_agency&.id,
-      device_id: @flow.device_id,
       invitation_id: @flow.invitation_id,
       aggregator_account_id: @payroll_account.id,
       payments_length: @payroll_account_report.paystubs&.length,
@@ -139,16 +129,19 @@ class Cbv::PaymentDetailsController < Cbv::BaseController
   end
 
   def track_saved_event
-    comment_data = @flow.additional_information[params[:user][:account_id]]
+    comment_data = @payroll_account&.additional_information
 
     event_logger.track(TrackEvent::ApplicantSavedPaymentDetails, request, {
       time: Time.now.to_i,
       cbv_applicant_id: @flow.cbv_applicant_id,
       cbv_flow_id: @flow.id,
       client_agency_id: current_agency&.id,
-      device_id: @flow.device_id,
       invitation_id: @flow.invitation_id,
-      additional_information_length: comment_data ? comment_data["comment"].length : 0
+      additional_information_length: comment_data ? comment_data.length : 0
     })
+  end
+
+  def payroll_account_params
+    params.require(:payroll_account).permit(:additional_information)
   end
 end

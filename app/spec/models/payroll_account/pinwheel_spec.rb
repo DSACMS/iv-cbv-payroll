@@ -163,6 +163,14 @@ RSpec.describe PayrollAccount::Pinwheel, type: :model do
   end
 
   describe "#redact!" do
+    it "removes the additional_information comment" do
+      payroll_account.update(additional_information: "foo")
+
+      expect { payroll_account.redact! }
+        .to change { payroll_account.reload.additional_information }
+        .from("foo").to("REDACTED")
+    end
+
     it "updates the redacted_at timestamp" do
       expect { payroll_account.redact! }
         .to change { payroll_account.reload.redacted_at }

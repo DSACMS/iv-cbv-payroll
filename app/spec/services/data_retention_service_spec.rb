@@ -97,16 +97,14 @@ RSpec.describe DataRetentionService do
 
       before do
         cbv_flow.update(
-          end_user_id: "11111111-1111-1111-1111-111111111111",
-          additional_information: { "account-id" => "some string here" }
+          end_user_id: "11111111-1111-1111-1111-111111111111"
         )
       end
 
       it "redacts the incomplete CbvFlow" do
         service.redact_incomplete_cbv_flows
         expect(cbv_flow.reload).to have_attributes(
-          end_user_id: "00000000-0000-0000-0000-000000000000",
-          additional_information: {}
+          end_user_id: "00000000-0000-0000-0000-000000000000"
         )
       end
 
@@ -176,8 +174,7 @@ RSpec.describe DataRetentionService do
         it "redacts the incomplete CbvFlow" do
           service.redact_incomplete_cbv_flows
           expect(cbv_flow.reload).to have_attributes(
-            end_user_id: "00000000-0000-0000-0000-000000000000",
-            additional_information: {}
+            end_user_id: "00000000-0000-0000-0000-000000000000"
           )
         end
 
@@ -202,7 +199,6 @@ RSpec.describe DataRetentionService do
         .tap do |cbv_flow|
           cbv_flow.update(
             end_user_id: "11111111-1111-1111-1111-111111111111",
-            additional_information: { "account-id" => "some string here" },
             confirmation_code: "SANDBOX0002",
             transmitted_at: Time.new(2024, 8, 1, 12, 0, 0, "-04:00")
           )
@@ -248,8 +244,7 @@ RSpec.describe DataRetentionService do
       it "redacts the incomplete CbvFlow" do
         service.redact_complete_cbv_flows
         expect(cbv_flow.reload).to have_attributes(
-          end_user_id: "00000000-0000-0000-0000-000000000000",
-          additional_information: {}
+          end_user_id: "00000000-0000-0000-0000-000000000000"
         )
       end
 

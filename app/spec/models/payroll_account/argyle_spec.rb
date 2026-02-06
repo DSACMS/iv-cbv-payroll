@@ -109,6 +109,14 @@ RSpec.describe PayrollAccount::Argyle, type: :model do
         .from(nil).to(within(1.second).of(Time.now))
     end
 
+    it "removes the additional_information comment" do
+      payroll_account.update(additional_information: "foo")
+
+      expect { payroll_account.redact! }
+        .to change { payroll_account.reload.additional_information }
+        .from("foo").to("REDACTED")
+    end
+
     context "when something goes wrong with the redaction process in production" do
       before do
         allow(fake_argyle).to receive(:delete_account_api)

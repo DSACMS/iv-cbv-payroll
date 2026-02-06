@@ -40,9 +40,10 @@
 <% else %>
   <%= render(Report::GigMonthlySummaryTableComponent.new(@aggregator_report, @payroll_account)) %>
 <% end %>
+
 <div class="usa-form-group margin-top-5">
   <h2><%= t(".additional_information_header") %></h2>
-  <%= form_with(model: @cbv_flow, url: @payment_details_path, method: :patch, class: "usa-form usa-form--large") do |form| %>
+  <%= form_with(model: @payroll_account, scope: :payroll_account, url: @payment_details_path, method: :patch, class: "usa-form usa-form--large") do |form| %>
     <%= hidden_field_tag "user[account_id]", params[:user][:account_id] %>
 
     <% case @flow %>
@@ -52,8 +53,7 @@
       <% additional_information_label = t(".additional_information_label", agency_acronym: agency_translation("shared.agency_acronym")) %>
     <% end %>
     <%= form.label :additional_information, additional_information_label, class: "usa-label" %>
-
-    <%= form.text_area :additional_information, class: "usa-textarea", rows: 5, value: @account_comment %>
+    <%= form.text_area :additional_information, class: "usa-textarea", rows: 5 %>
     <%= form.submit t(".continue"), class: "usa-button usa-button--primary" %>
   <% end %>
 </div>
