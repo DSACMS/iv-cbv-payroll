@@ -31,11 +31,4 @@ class Cbv::GenericLinksController < Cbv::BaseController
       redirect_to root_url
     end
   end
-
-  def find_existing_applicant_from_cookie
-    applicant_id = cookies.encrypted[:cbv_applicant_id]
-    return nil unless applicant_id.present?
-
-    CbvApplicant.find_by(id: applicant_id)
-  end
 end

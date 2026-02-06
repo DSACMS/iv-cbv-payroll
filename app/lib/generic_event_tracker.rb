@@ -22,7 +22,7 @@ class GenericEventTracker
       url_params = request.params.slice("client_agency_id", "locale")
 
       defaults = defaults.merge({
-        # Not setting device_id because Mixpanel fixates on that as the distinct_id, which we do not want
+        device_id: request.cookie_jar.signed[:device_id],
         ip: request.remote_ip,
         cbv_flow_id: request.session[:flow_id],
         client_agency_id: url_params["client_agency_id"],

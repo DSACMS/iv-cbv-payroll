@@ -15,12 +15,13 @@ RSpec.describe Activities::EntriesController do
         expect(session[:flow_id]).to be_present
       end
 
-      context 'when applicant has been set' do
+      context 'when a previous flow exists for the same device' do
         before do
-          cookies.permanent.encrypted[:cbv_applicant_id] = flow.cbv_applicant_id
+          cookies.permanent.signed[:device_id] = "test-device-id"
+          create(:activity_flow, cbv_applicant: flow.cbv_applicant, device_id: "test-device-id")
         end
 
-        it "sets the existing activity flow in the session" do
+        it "reuses the existing applicant" do
           expect {
             get :show, params: { client_agency_id: 'sandbox' }
           }.not_to change(CbvApplicant, :count)
@@ -30,11 +31,7 @@ RSpec.describe Activities::EntriesController do
         end
       end
 
-      context "when no applicant is set" do
-        before do
-          cookies.permanent.encrypted[:cbv_applicant_id] = nil
-        end
-
+      context "when no previous flow exists for the device" do
         it "creates a new activity flow and sets it in the session" do
           request.host = ENV["SANDBOX_DOMAIN_NAME"]
 

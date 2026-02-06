@@ -19,12 +19,14 @@ RSpec.describe GenericEventTracker do
         client_agency_id: "client_agency_id",
         ip: "ip"
       ))
-      request_mock = instance_double(ActionDispatch::Request, params: { "client_agency_id" => "client_agency_id" }, session: { flow_id: "cbv_flow_id" }, remote_ip: "ip", headers: { "User-Agent" => "user_agent" })
+      cookie_jar = instance_double(ActionDispatch::Cookies::CookieJar, signed: { device_id: nil })
+      request_mock = instance_double(ActionDispatch::Request, params: { "client_agency_id" => "client_agency_id" }, session: { flow_id: "cbv_flow_id" }, remote_ip: "ip", headers: { "User-Agent" => "user_agent" }, cookie_jar: cookie_jar)
       described_class.new.track("myEvent", request_mock, {})
     end
 
     context 'raises an error' do
-      let(:request_mock) { instance_double(ActionDispatch::Request, params: { "client_agency_id" => "client_agency_id" }, session: { flow_id: "cbv_flow_id" }, remote_ip: "ip", headers: { "User-Agent" => "user_agent" }) }
+      let(:cookie_jar) { instance_double(ActionDispatch::Cookies::CookieJar, signed: { device_id: nil }) }
+      let(:request_mock) { instance_double(ActionDispatch::Request, params: { "client_agency_id" => "client_agency_id" }, session: { flow_id: "cbv_flow_id" }, remote_ip: "ip", headers: { "User-Agent" => "user_agent" }, cookie_jar: cookie_jar) }
       let(:event_type) { "myEvent" }
 
       before do
@@ -45,7 +47,7 @@ RSpec.describe GenericEventTracker do
       it 'logs an error but does not raise in prod' do
         allow(Rails.env).to receive(:production?).and_return(true)
 
-        request_mock = instance_double(ActionDispatch::Request, params: { "client_agency_id" => "client_agency_id" }, session: { cbv_flow_id: "cbv_flow_id" }, remote_ip: "ip", headers: { "User-Agent" => "user_agent" })
+        request_mock = instance_double(ActionDispatch::Request, params: { "client_agency_id" => "client_agency_id" }, session: { cbv_flow_id: "cbv_flow_id" }, remote_ip: "ip", headers: { "User-Agent" => "user_agent" }, cookie_jar: cookie_jar)
         expect { described_class.new.track(event_type, request_mock, {}) }
           .not_to raise_error
         expect(Rails.logger).to have_received(:error).with(/Unable to track event \(#{event_type}\): RuntimeError/)
