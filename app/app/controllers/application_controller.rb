@@ -1,6 +1,6 @@
 class ApplicationController < ActionController::Base
   helper :view
-  helper_method :current_agency, :show_menu?, :pilot_ended?, :get_site_alert_title, :get_site_alert_body
+  helper_method :current_agency, :show_menu?, :pilot_ended?, :get_site_alert_title, :get_site_alert_body, :pilot_name_key
   around_action :switch_locale
   before_action :add_newrelic_metadata
   before_action :redirect_if_maintenance_mode
@@ -95,6 +95,10 @@ class ApplicationController < ActionController::Base
 
   def flow_class(flow_type = session[:flow_type])
     flow_type&.to_sym == :activity ? ActivityFlow : CbvFlow
+  end
+
+  def pilot_name_key
+    session[:flow_type]&.to_sym == :activity ? "shared.pilot_name_hr1" : "shared.pilot_name"
   end
 
   protected
