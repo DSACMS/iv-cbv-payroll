@@ -110,7 +110,7 @@ class FlowController < ApplicationController
     device_id = cookies.permanent.signed[:device_id]
     return nil unless device_id.present?
 
-recent_flow = flow_class(flow_param).where(device_id: device_id).order(created_at: :desc).first
+    recent_flow = flow_class(flow_param).where(device_id: device_id).order(created_at: :desc).first
     recent_flow&.cbv_applicant
   end
 
