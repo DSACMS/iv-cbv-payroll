@@ -16,7 +16,7 @@ RSpec.describe Uswds::Card, type: :component do
 
   context "with heading" do
     it "renders a header with heading text" do
-      result = render_inline(described_class.new(heading: "Card Title")) do |card|
+      result = render_inline(described_class.new(heading_text: "Card Title")) do |card|
         card.with_body { "Body" }
       end
 
@@ -26,7 +26,7 @@ RSpec.describe Uswds::Card, type: :component do
     end
 
     it "supports custom heading levels" do
-      result = render_inline(described_class.new(heading: "Card Title", heading_level: 4)) do |card|
+      result = render_inline(described_class.new(heading_text: "Card Title", heading_level: 4)) do |card|
         card.with_body { "Body" }
       end
 

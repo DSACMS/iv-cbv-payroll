@@ -6,8 +6,8 @@ class Uswds::Card < ViewComponent::Base
   renders_one :body
   renders_one :footer
 
-  def initialize(heading: nil, heading_level: 2, flag: false, media_right: false, header_first: false, **options)
-    @heading = heading
+  def initialize(heading_text: nil, heading_level: 2, flag: false, media_right: false, header_first: false, **options)
+    @heading_text = heading_text
     @heading_level = heading_level.to_i.clamp(1, 6)
     @flag = flag
     @media_right = media_right

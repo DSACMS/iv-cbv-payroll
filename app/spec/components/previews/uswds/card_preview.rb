@@ -2,16 +2,16 @@
 
 module Uswds
   class CardPreview < ApplicationPreview
-    # @param heading text
+    # @param heading_text text
     # @param body text
-    def default(heading: "Card heading", body: "Lorem ipsum dolor sit amet consectetur adipisicing elit.")
-      render(Uswds::Card.new(heading: heading)) do |card|
+    def default(heading_text: "Card heading", body: "Lorem ipsum dolor sit amet consectetur adipisicing elit.")
+      render(Uswds::Card.new(heading_text: heading_text)) do |card|
         card.with_body { body }
       end
     end
 
     def community_service
-      render(Uswds::Card.new(heading: "Community Service")) do |card|
+      render(Uswds::Card.new(heading_text: "Community Service")) do |card|
         card.with_body do
           safe_join([
             hours_month_section("January 2026", "20"),
@@ -24,7 +24,7 @@ module Uswds
     end
 
     def work_program
-      render(Uswds::Card.new(heading: "Work Program")) do |card|
+      render(Uswds::Card.new(heading_text: "Work Program")) do |card|
         card.with_body do
           safe_join([
             hours_month_section("January 2026", "20"),
@@ -37,7 +37,7 @@ module Uswds
     end
 
     def employment
-      render(Uswds::Card.new(heading: "Employment")) do |card|
+      render(Uswds::Card.new(heading_text: "Employment")) do |card|
         card.with_body do
           safe_join([
             employment_month_section("January 2026", "$2,400", "160"),
@@ -50,7 +50,7 @@ module Uswds
     end
 
     def education
-      render(Uswds::Card.new(heading: "Education")) do |card|
+      render(Uswds::Card.new(heading_text: "Education")) do |card|
         card.with_body do
           safe_join([
             month_section("January 2026", "Enrolled", "12"),

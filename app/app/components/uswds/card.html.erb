@@ -1,9 +1,9 @@
 <div class="<%= card_classes %>">
   <div class="usa-card__container">
-    <% if header? || @heading %>
+    <% if header? || @heading_text %>
       <div class="usa-card__header">
-        <% if @heading %>
-          <%= content_tag("h#{@heading_level}", @heading, class: "usa-card__heading") %>
+        <% if @heading_text %>
+          <%= content_tag("h#{@heading_level}", @heading_text, class: "usa-card__heading") %>
         <% end %>
         <% if header? %>
           <%= header %>
