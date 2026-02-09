@@ -49,10 +49,23 @@ RSpec.describe Activities::VolunteeringController, type: :controller do
       expect(response).to redirect_to(activities_flow_root_path)
     end
 
-    it "redirects to summary page when month has at least 80 hours" do
+    it "redirects to activity hub when threshold met but only via self-attested data" do
       create(:job_training_activity, activity_flow: activity_flow, program_name: "Resume Workshop", organization_address: "123 Main St", hours: 79)
 
       post :create, params: volunteering_params.deep_merge(volunteering_activity: { hours: 1 })
+
+      expect(response).to redirect_to(activities_flow_root_path)
+    end
+
+    it "redirects to summary when threshold is met via validated data" do
+      result = ActivityFlowProgressCalculator::OverallResult.new(
+        total_hours: 80,
+        meets_requirements: true,
+        meets_routing_requirements: true
+      )
+      allow(controller).to receive(:progress_calculator).and_return(instance_double(ActivityFlowProgressCalculator, overall_result: result))
+
+      post :create, params: volunteering_params
 
       expect(response).to redirect_to(activities_flow_summary_path)
     end
