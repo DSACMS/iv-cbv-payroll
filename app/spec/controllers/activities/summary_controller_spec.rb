@@ -29,8 +29,8 @@ RSpec.describe Activities::SummaryController, type: :controller do
 
       get :show
 
-      expect(assigns(:volunteering_activities)).to contain_exactly(visible_volunteering)
-      expect(assigns(:job_training_activities)).to contain_exactly(visible_job_training)
+      expect(assigns(:community_service_activities)).to contain_exactly(visible_volunteering)
+      expect(assigns(:work_programs_activities)).to contain_exactly(visible_job_training)
       expect(response.body).to include("Scoped")
       expect(response.body).to include("Resume Workshop")
     end
@@ -44,7 +44,7 @@ RSpec.describe Activities::SummaryController, type: :controller do
 
       all_activities = assigns(:all_activities)
       expect(all_activities.length).to eq(3)
-      expect(all_activities.map { |a| a[:type] }).to contain_exactly(:volunteering, :job_training, :education)
+      expect(all_activities.map { |a| a[:type] }).to contain_exactly(:community_service, :work_programs, :education)
     end
 
     context "with payroll accounts" do
@@ -56,7 +56,7 @@ RSpec.describe Activities::SummaryController, type: :controller do
         get :show
 
         all_activities = assigns(:all_activities)
-        income_activity = all_activities.find { |a| a[:type] == :income }
+        income_activity = all_activities.find { |a| a[:type] == :employment }
         expect(income_activity).to be_present
         expect(income_activity[:payroll_account]).to eq(payroll_account)
       end
@@ -67,7 +67,7 @@ RSpec.describe Activities::SummaryController, type: :controller do
         get :show
 
         all_activities = assigns(:all_activities)
-        income_activity = all_activities.find { |a| a[:type] == :income }
+        income_activity = all_activities.find { |a| a[:type] == :employment }
         expect(income_activity).to be_nil
       end
     end

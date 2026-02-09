@@ -22,24 +22,24 @@ RSpec.describe 'e2e Activity Hub flow test', :js, type: :feature do
     verify_page(page, title: I18n.t("activities.hub.title"))
 
     # Add a Volunteering activity
-    click_button I18n.t("activities.volunteering.add")
-    verify_page(page, title: I18n.t("activities.volunteering.title"))
-    fill_in I18n.t("activities.volunteering.organization_name"), with: "Helping Hands"
-    fill_in I18n.t("activities.volunteering.hours"), with: "20"
-    fill_in I18n.t("activities.volunteering.date"), with: (Date.current.beginning_of_month - 1.day).strftime("%m/%d/%Y")
-    click_button I18n.t("activities.volunteering.add")
+    click_button I18n.t("activities.community_service.add")
+    verify_page(page, title: I18n.t("activities.community_service.title"))
+    fill_in I18n.t("activities.community_service.organization_name"), with: "Helping Hands"
+    fill_in I18n.t("activities.community_service.hours"), with: "20"
+    fill_in I18n.t("activities.community_service.date"), with: (Date.current.beginning_of_month - 1.day).strftime("%m/%d/%Y")
+    click_button I18n.t("activities.community_service.add")
     verify_page(page, title: I18n.t("activities.hub.title"))
-    expect(page).to have_content I18n.t("activities.volunteering.add")
+    expect(page).to have_content I18n.t("activities.community_service.add")
 
     # Add a Job Training activity
-    click_button I18n.t("activities.job_training.add")
-    verify_page(page, title: I18n.t("activities.job_training.title"))
-    fill_in I18n.t("activities.job_training.program_name"), with: "Resume Workshop"
-    fill_in I18n.t("activities.job_training.organization_address"), with: "123 Main St, Baton Rouge, LA"
-    fill_in I18n.t("activities.job_training.hours"), with: "6"
-    click_button I18n.t("activities.job_training.add")
+    click_button I18n.t("activities.work_programs.add")
+    verify_page(page, title: I18n.t("activities.work_programs.title"))
+    fill_in I18n.t("activities.work_programs.program_name"), with: "Resume Workshop"
+    fill_in I18n.t("activities.work_programs.organization_address"), with: "123 Main St, Baton Rouge, LA"
+    fill_in I18n.t("activities.work_programs.hours"), with: "6"
+    click_button I18n.t("activities.work_programs.add")
     verify_page(page, title: I18n.t("activities.hub.title"))
-    expect(page).to have_content I18n.t("activities.job_training.add")
+    expect(page).to have_content I18n.t("activities.work_programs.add")
 
     # Verify that the hub has the Volunteering activity
     expect(page).to have_content I18n.t("activities.hub.title")
@@ -79,7 +79,7 @@ RSpec.describe 'e2e Activity Hub flow test', :js, type: :feature do
     verify_page(page, title: I18n.t("activities.hub.title"))
 
     # Add an Income activity
-    click_button I18n.t("activities.income.add")
+    click_button I18n.t("activities.hub.add")
     verify_page(page, title: I18n.t("cbv.employer_searches.show.activity_flow.header"))
     @e2e.replay_modal_callbacks(page.driver.browser) do
       click_button "Paychex"

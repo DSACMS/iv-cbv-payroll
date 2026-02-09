@@ -1,11 +1,11 @@
 <%= render(TableComponent.new(is_responsive: true)) do |table| %>
   <%= table.with_subheader_row(class_names: "subheader-row base-lightest border-top-1px") do |row| %>
-    <% row.with_data_cell(is_header: true).with_content(t("activities.summary.job_training.header")) %>
+    <% row.with_data_cell(is_header: true).with_content(t("activities.summary.work_programs.header")) %>
     <% row.with_data_cell(is_header: true).with_content(t("activities.summary.your_details")) %>
   <% end %>
   <%= table.with_row do |row| %>
     <%= row.with_data_cell(is_header: true) do %>
-      <%= t("activities.job_training.program_name") %>
+      <%= t("activities.work_programs.program_name") %>
     <% end %>
     <%= row.with_data_cell do %>
       <%= activity.program_name %>
@@ -15,7 +15,7 @@
   <% if activity.organization_address.present? %>
     <%= table.with_row do |row| %>
       <%= row.with_data_cell(is_header: true) do %>
-        <%= t("activities.job_training.organization_address") %>
+        <%= t("activities.work_programs.organization_address") %>
       <% end %>
       <%= row.with_data_cell do %>
         <%= activity.organization_address %>
@@ -25,7 +25,7 @@
 
   <%= table.with_row do |row| %>
     <%= row.with_data_cell(is_header: true) do %>
-      <%= t("activities.job_training.date") %>
+      <%= t("activities.work_programs.date") %>
     <% end %>
     <%= row.with_data_cell do %>
       <%= activity.date.present? ? I18n.l(activity.date, format: :month_year) : t("shared.not_applicable") %>
@@ -34,7 +34,7 @@
 
   <%= table.with_row do |row| %>
     <%= row.with_data_cell(is_header: true) do %>
-      <%= t("activities.job_training.hours") %>
+      <%= t("activities.work_programs.hours") %>
     <% end %>
     <%= row.with_data_cell do %>
       <%= activity.hours %>

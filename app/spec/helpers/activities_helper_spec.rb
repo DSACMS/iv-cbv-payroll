@@ -5,7 +5,7 @@ RSpec.describe ActivitiesHelper do
     let(:flow) { create(:activity_flow, volunteering_activities_count: 0, job_training_activities_count: 0, education_activities_count: 0) }
     let(:first_month) { flow.reporting_window_range.begin }
 
-    context "with volunteering activities" do
+    context "with community service activities" do
       it "returns one card per activity" do
         create(:volunteering_activity, activity_flow: flow, organization_name: "Food Pantry", hours: 5, date: first_month)
         create(:volunteering_activity, activity_flow: flow, organization_name: "Food Pantry", hours: 10, date: first_month + 5.days)
@@ -51,7 +51,7 @@ RSpec.describe ActivitiesHelper do
       end
     end
 
-    context "with job training activities" do
+    context "with work programs activities" do
       it "uses program_name as card name" do
         create(:job_training_activity, activity_flow: flow, program_name: "Career Prep", organization_address: "123 Main", hours: 5, date: first_month)
 

@@ -72,8 +72,14 @@ tr td:first-child {
 
 // Activity Hub section header with inline Add button
 .activity-hub-section-header {
+  margin-bottom: units(2.5);
+
   @include at-media("tablet") {
     max-width: 30rem;
+  }
+
+  form {
+    margin: 0;
   }
 
   .usa-button {

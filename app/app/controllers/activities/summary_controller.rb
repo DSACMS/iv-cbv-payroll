@@ -5,8 +5,8 @@ class Activities::SummaryController < Activities::BaseController
   before_action :set_aggregator_report, if: -> { synced_payroll_accounts.any? }
 
   def show
-    @volunteering_activities = @flow.volunteering_activities.order(created_at: :asc)
-    @job_training_activities = @flow.job_training_activities.order(created_at: :asc)
+    @community_service_activities = @flow.volunteering_activities.order(created_at: :asc)
+    @work_programs_activities = @flow.job_training_activities.order(created_at: :asc)
     @education_activities = @flow.education_activities.order(created_at: :asc)
     @employment_activities = synced_payroll_accounts
     @all_activities = build_activities_list
@@ -29,16 +29,16 @@ class Activities::SummaryController < Activities::BaseController
       activities << { type: :education, activity: activity, created_at: activity.created_at }
     end
 
-    @volunteering_activities.each do |activity|
-      activities << { type: :volunteering, activity: activity, created_at: activity.created_at }
+    @community_service_activities.each do |activity|
+      activities << { type: :community_service, activity: activity, created_at: activity.created_at }
     end
 
-    @job_training_activities.each do |activity|
-      activities << { type: :job_training, activity: activity, created_at: activity.created_at }
+    @work_programs_activities.each do |activity|
+      activities << { type: :work_programs, activity: activity, created_at: activity.created_at }
     end
 
     @employment_activities.each do |payroll_account|
-      activities << { type: :income, payroll_account: payroll_account, created_at: payroll_account.created_at }
+      activities << { type: :employment, payroll_account: payroll_account, created_at: payroll_account.created_at }
     end
 
     activities.sort_by { |activity| activity[:created_at] }

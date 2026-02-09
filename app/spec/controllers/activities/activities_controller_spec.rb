@@ -19,17 +19,17 @@ RSpec.describe Activities::ActivitiesController, type: :controller do
       get :index
     end
 
-    it "shows current flow volunteering activities" do
+    it "shows current flow community service activities" do
       expect(
-        assigns(:volunteering_activities)
+        assigns(:community_service_activities)
       ).to match_array(
              current_flow.volunteering_activities
            )
     end
 
-    it "shows current flow job training activities" do
+    it "shows current flow work programs activities" do
       expect(
-        assigns(:job_training_activities)
+        assigns(:work_programs_activities)
       ).to match_array(
              current_flow.job_training_activities
            )

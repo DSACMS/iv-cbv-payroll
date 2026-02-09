@@ -26,8 +26,8 @@
       <%= t("activities.submit.pdf.summary_heading") %>
     </h2>
   <% end %>
-  <%= table.with_row t("activities.submit.pdf.volunteering_count"), @volunteering_activities.size %>
-  <%= table.with_row t("activities.submit.pdf.job_training_count"), @job_training_activities.size %>
+  <%= table.with_row t("activities.submit.pdf.community_service_count"), @community_service_activities.size %>
+  <%= table.with_row t("activities.submit.pdf.work_programs_count"), @work_programs_activities.size %>
   <%= table.with_row t("activities.submit.pdf.education_count"), @education_activities.size %>
   <%= table.with_row t("activities.submit.pdf.income_activities"), @flow.payroll_accounts.size %>
   <%= table.with_row t("activities.submit.pdf.total_hours"), @total_hours %>
@@ -53,9 +53,9 @@
 <% end %>
 
 <h2>
-  <%= t("activities.submit.pdf.volunteering_section") %>
+  <%= t("activities.submit.pdf.community_service_section") %>
 </h2>
-<% if @volunteering_activities.any? %>
+<% if @community_service_activities.any? %>
   <%= render TableComponent.new do |table| %>
     <%= table.with_subheader_row(class_names: "subheader-row base-lightest") do |row| %>
       <%= row.with_data_cell(is_header: true, class_names: "text-nowrap")
@@ -65,21 +65,21 @@
       <%= row.with_data_cell(is_header: true, class_names: "text-nowrap")
              .with_content(t("activities.submit.pdf.date")) %>
     <% end %>
-    <% @volunteering_activities.each do |activity| %>
+    <% @community_service_activities.each do |activity| %>
       <% date_value = activity.date ? l(activity.date) : not_provided %>
       <%= table.with_row activity.organization_name.presence || not_provided, activity.hours || 0, date_value %>
     <% end %>
   <% end %>
 <% else %>
   <p>
-    <%= t("activities.submit.pdf.no_volunteering") %>
+    <%= t("activities.submit.pdf.no_community_service") %>
   </p>
 <% end %>
 
 <h2>
-  <%= t("activities.submit.pdf.job_training_section") %>
+  <%= t("activities.submit.pdf.work_programs_section") %>
 </h2>
-<% if @job_training_activities.any? %>
+<% if @work_programs_activities.any? %>
   <%= render TableComponent.new do |table| %>
     <%= table.with_subheader_row(class_names: "subheader-row base-lightest") do |row| %>
       <%= row.with_data_cell(is_header: true, class_names: "text-nowrap")
@@ -89,7 +89,7 @@
       <%= row.with_data_cell(is_header: true, class_names: "text-nowrap")
              .with_content(t("activities.submit.pdf.hours")) %>
     <% end %>
-    <% @job_training_activities.each do |activity| %>
+    <% @work_programs_activities.each do |activity| %>
       <%= table.with_row activity.program_name.presence || not_provided,
                          activity.organization_address.presence || not_provided,
                          activity.hours || 0 %>
@@ -97,7 +97,7 @@
   <% end %>
 <% else %>
   <p>
-    <%= t("activities.submit.pdf.no_job_training") %>
+    <%= t("activities.submit.pdf.no_work_programs") %>
   </p>
 <% end %>
 
@@ -108,9 +108,9 @@
   <%= render TableComponent.new do |table| %>
     <%= table.with_subheader_row(class_names: "subheader-row base-lightest") do |row| %>
       <%= row.with_data_cell(is_header: true, class_names: "text-nowrap")
-             .with_content(t("activities.income.account_id")) %>
+             .with_content(t("activities.employment.account_id")) %>
       <%= row.with_data_cell(is_header: true, class_names: "text-nowrap")
-             .with_content(t("activities.income.synchronization_status")) %>
+             .with_content(t("activities.employment.synchronization_status")) %>
     <% end %>
     <% @flow.payroll_accounts.each do |payroll_account| %>
       <%= table.with_row payroll_account.aggregator_account_id,

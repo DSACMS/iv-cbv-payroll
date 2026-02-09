@@ -17,7 +17,7 @@ RSpec.describe Activities::JobTrainingController, type: :controller do
       get :new
 
       expect(response).to have_http_status(:ok)
-      expect(response.body).to include(I18n.t("activities.job_training.title"))
+      expect(response.body).to include(I18n.t("activities.work_programs.title"))
     end
   end
 
@@ -41,7 +41,7 @@ RSpec.describe Activities::JobTrainingController, type: :controller do
       expect(JobTrainingActivity.last.program_name).to eq("Resume Workshop")
       expect(JobTrainingActivity.last.activity_flow).to eq(activity_flow)
       expect(response).to redirect_to(activities_flow_root_path)
-      expect(flash[:notice]).to eq(I18n.t("activities.job_training.created"))
+      expect(flash[:notice]).to eq(I18n.t("activities.work_programs.created"))
     end
 
     it "redirects to activity hub when total hours are below the threshold" do
@@ -81,7 +81,7 @@ RSpec.describe Activities::JobTrainingController, type: :controller do
       get :edit, params: { id: job_training_activity.id }
 
       expect(response).to have_http_status(:ok)
-      expect(response.body).to include(I18n.t("activities.job_training.edit_title"))
+      expect(response.body).to include(I18n.t("activities.work_programs.edit_title"))
     end
   end
 
@@ -93,7 +93,7 @@ RSpec.describe Activities::JobTrainingController, type: :controller do
 
       expect(job_training_activity.reload.hours).to eq(10)
       expect(response).to redirect_to(activities_flow_root_path)
-      expect(flash[:notice]).to eq(I18n.t("activities.job_training.updated"))
+      expect(flash[:notice]).to eq(I18n.t("activities.work_programs.updated"))
     end
   end
 
@@ -106,7 +106,7 @@ RSpec.describe Activities::JobTrainingController, type: :controller do
       end.to change(activity_flow.job_training_activities, :count).by(-1)
 
       expect(response).to redirect_to(activities_flow_root_path)
-      expect(flash[:notice]).to eq(I18n.t("activities.job_training.deleted"))
+      expect(flash[:notice]).to eq(I18n.t("activities.work_programs.deleted"))
     end
   end
 end
