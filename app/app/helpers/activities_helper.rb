@@ -3,10 +3,32 @@ module ActivitiesHelper
     progress_calculator.overall_result.total_hours > 0
   end
 
-  def self_attestation_cards(activities, name_field:)
-    activities.map do |activity|
-      months = activity.date.present? ? [ { month: activity.date.beginning_of_month, hours: activity.hours.to_i } ] : []
-      { name: activity.send(name_field), months: months, activity: activity }
+  def employment_cards(payroll_accounts, aggregator_report, reporting_range)
+    return [] unless aggregator_report
+
+    monthly_summaries = aggregator_report.summarize_by_month(
+      from_date: reporting_range.begin,
+      to_date: reporting_range.end
+    )
+
+    payroll_accounts.map do |account|
+      account_report = aggregator_report.find_account_report(account.aggregator_account_id)
+      employer_name = account_report&.employment&.employer_name || t("activities.employment.title")
+
+      account_months = monthly_summaries[account.aggregator_account_id] || {}
+      months = account_months
+        .sort_by { |month_key, _| month_key }
+        .reverse
+        .map do |month_key, month_data|
+          month_date = Date.parse("#{month_key}-01")
+          {
+            month: month_date,
+            gross_earnings: month_data[:accrued_gross_earnings].to_i,
+            hours: (month_data[:total_w2_hours].to_f + month_data[:total_gig_hours].to_f).round
+          }
+        end
+
+      { name: employer_name, months: months, payroll_account: account }
     end
   end
 
@@ -25,32 +47,10 @@ module ActivitiesHelper
     end
   end
 
-  def employment_cards(payroll_accounts, aggregator_report, reporting_range)
-    return [] unless aggregator_report
-
-    monthly_summaries = aggregator_report.summarize_by_month(
-      from_date: reporting_range.begin,
-      to_date: reporting_range.end
-    )
-
-    payroll_accounts.map do |account|
-      account_report = aggregator_report.find_account_report(account.aggregator_account_id)
-      employer_name = account_report&.employment&.employer_name || t("shared.not_applicable")
-
-      account_months = monthly_summaries[account.aggregator_account_id] || {}
-      months = account_months
-        .sort_by { |month_key, _| month_key }
-        .reverse
-        .map do |month_key, month_data|
-          month_date = Date.parse("#{month_key}-01")
-          {
-            month: month_date,
-            gross_earnings: month_data[:accrued_gross_earnings].to_i,
-            hours: (month_data[:total_w2_hours].to_f + month_data[:total_gig_hours].to_f).round
-          }
-        end
-
-      { name: employer_name, months: months, payroll_account: account }
+  def self_attestation_cards(activities, name_field:)
+    activities.map do |activity|
+      months = activity.date.present? ? [ { month: activity.date.beginning_of_month, hours: activity.hours.to_i } ] : []
+      { name: activity.send(name_field), months: months, activity: activity }
     end
   end
 

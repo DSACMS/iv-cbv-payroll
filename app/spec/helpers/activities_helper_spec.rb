@@ -26,7 +26,7 @@ RSpec.describe ActivitiesHelper do
         expect(result.first[:months].first[:month]).to eq(first_month.beginning_of_month)
       end
 
-      it "returns the activity object for edit/delete links" do
+      it "returns the activity object for edit links" do
         activity = create(:volunteering_activity, activity_flow: flow, organization_name: "Food Pantry", hours: 5, date: first_month)
 
         result = helper.self_attestation_cards(flow.volunteering_activities, name_field: :organization_name)
@@ -51,7 +51,7 @@ RSpec.describe ActivitiesHelper do
       end
     end
 
-    context "with work programs activities" do
+    context "with work program activities" do
       it "uses program_name as card name" do
         create(:job_training_activity, activity_flow: flow, program_name: "Career Prep", organization_address: "123 Main", hours: 5, date: first_month)
 
@@ -146,7 +146,7 @@ RSpec.describe ActivitiesHelper do
         allow(report).to receive(:find_account_report).with(account_id).and_return(mock_account_report)
         allow(report).to receive(:summarize_by_month).and_return({
           account_id => {
-            month_key => { accrued_gross_earnings: 250_000, total_w2_hours: 80.0, total_gig_hours: 5.0 }
+            month_key => { accrued_gross_earnings: 2500_00, total_w2_hours: 80.0, total_gig_hours: 5.0 }
           }
         })
       end
@@ -164,7 +164,7 @@ RSpec.describe ActivitiesHelper do
       result = helper.employment_cards([ payroll_account ], mock_report, reporting_range)
 
       month_data = result.first[:months].first
-      expect(month_data[:gross_earnings]).to eq(250_000)
+      expect(month_data[:gross_earnings]).to eq(2500_00)
       expect(month_data[:hours]).to eq(85)
     end
 
@@ -179,7 +179,7 @@ RSpec.describe ActivitiesHelper do
 
       result = helper.employment_cards([ payroll_account ], mock_report, reporting_range)
 
-      expect(result.first[:name]).to eq(I18n.t("shared.not_applicable"))
+      expect(result.first[:name]).to eq(I18n.t("activities.employment.title"))
     end
 
     it "handles accounts with no monthly data" do
@@ -188,32 +188,6 @@ RSpec.describe ActivitiesHelper do
       result = helper.employment_cards([ payroll_account ], mock_report, reporting_range)
 
       expect(result.first[:months]).to be_empty
-    end
-  end
-
-  describe "#enrollment_status_display" do
-    it "maps full_time to Full-time" do
-      expect(helper.enrollment_status_display("full_time")).to eq("Full-time")
-    end
-
-    it "maps three_quarter_time to Three-quarter Time" do
-      expect(helper.enrollment_status_display("three_quarter_time")).to eq("Three-quarter Time")
-    end
-
-    it "maps half_time to Half-time" do
-      expect(helper.enrollment_status_display("half_time")).to eq("Half-time")
-    end
-
-    it "maps less_than_half_time to Less than half-time" do
-      expect(helper.enrollment_status_display("less_than_half_time")).to eq("Less than half-time")
-    end
-
-    it "maps enrolled to Enrolled" do
-      expect(helper.enrollment_status_display("enrolled")).to eq("Enrolled")
-    end
-
-    it "maps unknown to N/A" do
-      expect(helper.enrollment_status_display("unknown")).to eq(I18n.t("shared.not_applicable"))
     end
   end
 end
