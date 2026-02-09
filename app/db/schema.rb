@@ -113,6 +113,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_02_05_174325) do
     t.text "additional_comments"
     t.datetime "created_at", null: false
     t.integer "credit_hours"
+    t.string "data_source", default: "validated", null: false
     t.string "status", default: "unknown"
     t.datetime "updated_at", null: false
     t.index ["activity_flow_id"], name: "index_education_activities_on_activity_flow_id"
@@ -130,6 +131,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_02_05_174325) do
   create_table "job_training_activities", force: :cascade do |t|
     t.bigint "activity_flow_id", null: false
     t.datetime "created_at", null: false
+    t.string "data_source", default: "self_attested", null: false
     t.date "date"
     t.integer "hours"
     t.string "organization_address"
@@ -156,6 +158,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_02_05_174325) do
     t.string "additional_information"
     t.string "aggregator_account_id"
     t.datetime "created_at", null: false
+    t.string "data_source", default: "validated", null: false
     t.bigint "flow_id", null: false
     t.string "flow_type"
     t.datetime "income_synced_at", precision: nil
@@ -312,6 +315,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_02_05_174325) do
   create_table "volunteering_activities", force: :cascade do |t|
     t.bigint "activity_flow_id", null: false
     t.datetime "created_at", null: false
+    t.string "data_source", default: "self_attested", null: false
     t.date "date"
     t.integer "hours"
     t.string "organization_name"
