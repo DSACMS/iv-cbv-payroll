@@ -5,11 +5,7 @@ module ActivitiesHelper
 
   def self_attestation_cards(activities, name_field:)
     activities.map do |activity|
-      months = if activity.date.present?
-                 [ { month: activity.date.beginning_of_month, hours: activity.hours.to_i } ]
-               else
-                 []
-               end
+      months = activity.date.present? ? [ { month: activity.date.beginning_of_month, hours: activity.hours.to_i } ] : []
       { name: activity.send(name_field), months: months, activity: activity }
     end
   end

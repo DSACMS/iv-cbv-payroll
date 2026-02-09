@@ -108,10 +108,7 @@ en:
         gross_income: 'Gross income: %{amount}'
         hours: 'Hours: %{count}'
         not_enrolled: Not enrolled
-      count:
-        one: "%{count} activity added"
-        other: "%{count} activities added"
-      description: "%{agency_acronym} needs you to report your Community Engagement for %{reporting_window}."
+      description: "%{agency_name} needs you to report your Community Engagement for %{reporting_window}."
       edit: Edit
       reporting_window: 'Reporting window: %{range}'
       review_and_submit: Review and Submit

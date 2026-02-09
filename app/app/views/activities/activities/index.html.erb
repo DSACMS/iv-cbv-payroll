@@ -4,7 +4,7 @@
   <%= t("activities.hub.title") %>
 </h1>
 <p>
-  <%= t("activities.hub.description", agency_acronym: agency_translation("shared.agency_acronym"), reporting_window: @flow.reporting_window_display) %>
+  <%= t("activities.hub.description", agency_name: agency_translation("shared.agency_full_name"), reporting_window: @flow.reporting_window_display) %>
 </p>
 
 <% if display_progress_indicator?(progress_calculator) %>
@@ -24,9 +24,6 @@
         <%= t("activities.hub.add") %>
       <% end %>
     </div>
-    <p>
-      <%= t("activities.hub.count", count: @education_activities.size) %>
-    </p>
 
     <% education_cards(@education_activities, progress_calculator.reporting_months).each do |card_data| %>
       <%= render(Uswds::Card.new(heading_text: card_data[:name], heading_level: 3, class: "activity-hub-card")) do |card| %>
@@ -58,9 +55,6 @@
         <%= t("activities.hub.add") %>
       <% end %>
     </div>
-    <p>
-      <%= t("activities.hub.count", count: @volunteering_activities.size) %>
-    </p>
 
     <% self_attestation_cards(@volunteering_activities, name_field: :organization_name).each do |card_data| %>
       <%= render(Uswds::Card.new(heading_text: card_data[:name], heading_level: 3, class: "activity-hub-card")) do |card| %>
@@ -91,9 +85,6 @@
         <%= t("activities.hub.add") %>
       <% end %>
     </div>
-    <p>
-      <%= t("activities.hub.count", count: @job_training_activities.size) %>
-    </p>
 
     <% self_attestation_cards(@job_training_activities, name_field: :program_name).each do |card_data| %>
       <%= render(Uswds::Card.new(heading_text: card_data[:name], heading_level: 3, class: "activity-hub-card")) do |card| %>
@@ -124,9 +115,6 @@
         <%= t("activities.hub.add") %>
       <% end %>
     </div>
-    <p>
-      <%= t("activities.hub.count", count: @flow.payroll_accounts.size) %>
-    </p>
 
     <% employment_cards(@employment_activities || [], @aggregator_report, @flow.reporting_window_range).each do |card_data| %>
       <%= render(Uswds::Card.new(heading_text: card_data[:name], heading_level: 3, class: "activity-hub-card")) do |card| %>
