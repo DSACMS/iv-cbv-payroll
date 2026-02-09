@@ -1,0 +1,26 @@
+<section class="<%= "margin-top-4" unless local_assigns[:is_first_section] %>">
+  <div class="grid-row flex-align-center">
+    <div class="grid-col">
+      <h2 class="margin-0">
+        <%= section_title %>
+      </h2>
+    </div>
+    <div class="grid-col-auto">
+      <%= link_to add_path, class: "usa-button usa-button--outline display-flex flex-align-center padding-y-1", method: :get do %>
+        <svg class="usa-icon usa-icon--size-3 margin-right-1" aria-hidden="true" focusable="false" role="img">
+          <use href="<%= asset_path("@uswds/uswds/dist/img/sprite.svg#add_circle_outline") %>"></use>
+        </svg>
+        <span><%= add_button_text %></span>
+      <% end %>
+    </div>
+  </div>
+  <% if has_activities %>
+    <div class="margin-top-3">
+      <%= yield %>
+    </div>
+  <% else %>
+    <div class="bg-base-lightest padding-3 radius-md margin-top-2">
+      <p class="margin-0"><%= empty_message %></p>
+    </div>
+  <% end %>
+</section>

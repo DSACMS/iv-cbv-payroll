@@ -3,11 +3,8 @@
 <h1>
   <%= t("activities.hub.title") %>
 </h1>
-<p class="usa-intro">
-  <%= t("activities.hub.reporting_window", range: @flow.reporting_window_display) %>
-</p>
-<p>
-  <%= t("activities.hub.description") %>
+<p class="measure-none">
+  <%= t("activities.hub.intro", state: current_agency&.agency_name || "Your state", reporting_window: @flow.reporting_window_display) %>
 </p>
 
 <% if display_progress_indicator?(progress_calculator) %>
@@ -16,129 +13,105 @@
   <hr class="border-gray-30 border-top-0">
 <% end %>
 
-<%= render(AccordionComponent.new(id: "activity-hub-identity-accordion", heading_level: 2)) do |a| %>
-  <%= a.with_title { "Current Identity" } %>
-  <%= a.with_accordion_item do %>
-    <%= render(TableComponent.new) do |t| %>
-      <%= t.with_row do |r| %>
-        <%= r.with_data_cell(is_header: true) do %>
-          First Name
-        <% end %>
-        <%= r.with_data_cell do %>
-          <%= current_identity&.first_name %>
+<div>
+  <% first_section = true %>
+  <% if activity_type_enabled?(:income) %>
+    <%= render "activities/activities/activity_section",
+          section_title: t("activities.income.title"),
+          empty_message: t("activities.hub.empty.employment"),
+          add_path: activities_flow_income_employer_search_path,
+          add_button_text: t("activities.hub.add"),
+          has_activities: @flow.payroll_accounts.any?,
+          is_first_section: first_section do %>
+      <p>
+        <%= t("activities.hub.count", count: @flow.payroll_accounts.size) %>
+      </p>
+    <% end %>
+    <% first_section = false %>
+  <% end %>
+
+  <% if activity_type_enabled?(:education) %>
+    <%= render "activities/activities/activity_section",
+          section_title: t("activities.education.title"),
+          empty_message: t("activities.hub.empty.education"),
+          add_path: new_activities_flow_education_path,
+          add_button_text: t("activities.hub.add"),
+          has_activities: @education_activities.any?,
+          is_first_section: first_section do %>
+      <% @education_activities.each do |activity| %>
+        <% activity.nsc_enrollment_terms.each do |enrollment_term| %>
+          <%= render(EnrollmentTermTableComponent.new(nsc_enrollment_term: enrollment_term)) %>
         <% end %>
       <% end %>
-      <%= t.with_row do |r| %>
-        <%= r.with_data_cell(is_header: true) do %>
-          Last Name
-        <% end %>
-        <%= r.with_data_cell do %>
-          <%= current_identity&.last_name %>
+    <% end %>
+    <% first_section = false %>
+  <% end %>
+
+  <% if activity_type_enabled?(:volunteering) %>
+    <%= render "activities/activities/activity_section",
+          section_title: t("activities.hub.section_title.volunteering"),
+          empty_message: t("activities.hub.empty.community_service"),
+          add_path: new_activities_flow_volunteering_path,
+          add_button_text: t("activities.hub.add"),
+          has_activities: @volunteering_activities.any?,
+          is_first_section: first_section do %>
+      <%= render TableComponent.new do |t| %>
+        <% @volunteering_activities.each do |activity| %>
+          <%= t.with_row do |r| %>
+            <%= r.with_data_cell do %>
+              <%= activity.organization_name %>
+            <% end %>
+            <%= r.with_data_cell do %>
+              <%= activity.hours %>
+            <% end %>
+            <%= r.with_data_cell do %>
+              <%= activity.date %>
+            <% end %>
+            <%= r.with_data_cell do %>
+              <%= link_to t("activities.hub.edit"), edit_activities_flow_volunteering_path(id: activity.id), class: "usa-link" %>
+              <%= button_to t("activities.hub.delete"), activities_flow_volunteering_path(id: activity.id), method: :delete, class: "usa-button usa-button--unstyled", form: { data: { turbo_confirm: t("activities.hub.delete_confirm") } } %>
+            <% end %>
+          <% end %>
         <% end %>
       <% end %>
-      <%= t.with_row do |r| %>
-        <%= r.with_data_cell(is_header: true) do %>
-          Date of Birth
-        <% end %>
-        <%= r.with_data_cell do %>
-          <%= current_identity&.date_of_birth %>
+    <% end %>
+    <% first_section = false %>
+  <% end %>
+
+  <% if activity_type_enabled?(:job_training) %>
+    <%= render "activities/activities/activity_section",
+          section_title: t("activities.hub.section_title.job_training"),
+          empty_message: t("activities.hub.empty.work_programs"),
+          add_path: new_activities_flow_job_training_path,
+          add_button_text: t("activities.hub.add"),
+          has_activities: @job_training_activities.any?,
+          is_first_section: first_section do %>
+      <%= render TableComponent.new do |t| %>
+        <% @job_training_activities.each do |activity| %>
+          <%= t.with_row do |r| %>
+            <%= r.with_data_cell do %>
+              <%= activity.program_name %>
+            <% end %>
+            <%= r.with_data_cell do %>
+              <%= activity.organization_address %>
+            <% end %>
+            <%= r.with_data_cell do %>
+              <%= activity.hours %>
+            <% end %>
+            <%= r.with_data_cell do %>
+              <%= activity.date %>
+            <% end %>
+            <%= r.with_data_cell do %>
+              <%= link_to t("activities.hub.edit"), edit_activities_flow_job_training_path(id: activity.id), class: "usa-link" %>
+              <%= button_to t("activities.hub.delete"), activities_flow_job_training_path(id: activity.id), method: :delete, class: "usa-button usa-button--unstyled", form: { data: { turbo_confirm: t("activities.hub.delete_confirm") } } %>
+            <% end %>
+          <% end %>
         <% end %>
       <% end %>
     <% end %>
   <% end %>
+</div>
+
+<% if any_activities_added?(@flow) %>
+  <%= button_to t("activities.hub.continue"), next_path, class: "btn btn-primary usa-button margin-top-4", method: :get %>
 <% end %>
-
-<% if activity_type_enabled?(:education) %>
-  <section class="margin-bottom-5">
-    <h2><%= t("activities.education.title") %></h2>
-    <p>
-      <%= t("activities.hub.count", count: @education_activities.size) %>
-    </p>
-
-    <% @education_activities.each do |activity| %>
-      <% activity.nsc_enrollment_terms.each do |enrollment_term| %>
-        <%= render(EnrollmentTermTableComponent.new(nsc_enrollment_term: enrollment_term)) %>
-      <% end %>
-    <% end %>
-
-    <%= button_to t("activities.education.add"), new_activities_flow_education_path, class: "btn btn-primary usa-button margin-y-5", method: :get %>
-  </section>
-<% end %>
-
-<% if activity_type_enabled?(:volunteering) %>
-  <section class="margin-bottom-5">
-    <h2>
-      <%= t("activities.volunteering.title") %>
-    </h2>
-    <p>
-      <%= t("activities.hub.count", count: @volunteering_activities.size) %>
-    </p>
-    <%= render TableComponent.new do |t| %>
-      <% @volunteering_activities.each do |activity| %>
-        <%= t.with_row do |r| %>
-        <%= r.with_data_cell do %>
-          <%= activity.organization_name %>
-        <% end %>
-        <%= r.with_data_cell do %>
-          <%= activity.hours %>
-        <% end %>
-        <%= r.with_data_cell do %>
-          <%= activity.date %>
-        <% end %>
-        <%= r.with_data_cell do %>
-          <%= link_to t("activities.hub.edit"), edit_activities_flow_volunteering_path(id: activity.id), class: "usa-link" %>
-          <%= button_to t("activities.hub.delete"), activities_flow_volunteering_path(id: activity.id), method: :delete, class: "usa-button usa-button--unstyled", form: { data: { turbo_confirm: t("activities.hub.delete_confirm") } } %>
-        <% end %>
-      <% end %>
-      <% end %>
-    <% end %>
-    <%= button_to t("activities.volunteering.add"), new_activities_flow_volunteering_path, class: "btn btn-primary usa-button margin-y-5", method: :get %>
-  </section>
-<% end %>
-
-<% if activity_type_enabled?(:job_training) %>
-  <section>
-    <h2>
-      <%= t("activities.job_training.title") %>
-    </h2>
-    <p>
-      <%= t("activities.hub.count", count: @job_training_activities.size) %>
-    </p>
-    <%= render TableComponent.new do |t| %>
-      <% @job_training_activities.each do |activity| %>
-        <%= t.with_row do |r| %>
-        <%= r.with_data_cell do %>
-          <%= activity.program_name %>
-        <% end %>
-        <%= r.with_data_cell do %>
-          <%= activity.organization_address %>
-        <% end %>
-        <%= r.with_data_cell do %>
-          <%= activity.hours %>
-        <% end %>
-        <%= r.with_data_cell do %>
-          <%= activity.date %>
-        <% end %>
-        <%= r.with_data_cell do %>
-          <%= link_to t("activities.hub.edit"), edit_activities_flow_job_training_path(id: activity.id), class: "usa-link" %>
-          <%= button_to t("activities.hub.delete"), activities_flow_job_training_path(id: activity.id), method: :delete, class: "usa-button usa-button--unstyled", form: { data: { turbo_confirm: t("activities.hub.delete_confirm") } } %>
-        <% end %>
-      <% end %>
-      <% end %>
-    <% end %>
-    <%= button_to t("activities.job_training.add"), new_activities_flow_job_training_path, class: "btn btn-primary usa-button margin-y-5", method: :get %>
-  </section>
-<% end %>
-
-<% if activity_type_enabled?(:income) %>
-  <section class="margin-bottom-5">
-    <h2><%= t("activities.income.title") %></h2>
-    <p>
-      <%= t("activities.hub.count", count: @flow.payroll_accounts.size) %>
-    </m>
-
-    <%= button_to t("activities.income.add"), activities_flow_income_employer_search_path, class: "btn btn-primary usa-button margin-y-5", method: :get %>
-  </section>
-<% end %>
-
-<%= button_to t("activities.hub.continue"), next_path, class: "btn btn-primary usa-button margin-top-4", method: :get %>
