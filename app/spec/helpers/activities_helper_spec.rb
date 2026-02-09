@@ -15,8 +15,20 @@ RSpec.describe ActivitiesHelper do
       expect(helper.any_activities_added?(empty_flow)).to be false
     end
 
+    it "returns false when flow has an education activity without enrollment data" do
+      create(:education_activity, activity_flow: empty_flow)
+
+      expect(helper.any_activities_added?(empty_flow)).to be false
+    end
+
+    it "returns true when flow has an education activity with enrollment data" do
+      education_activity = create(:education_activity, activity_flow: empty_flow)
+      create(:nsc_enrollment_term, education_activity:)
+
+      expect(helper.any_activities_added?(empty_flow)).to be true
+    end
+
     [
-      [ :education_activity, :activity_flow ],
       [ :volunteering_activity, :activity_flow ],
       [ :job_training_activity, :activity_flow ],
       [ :payroll_account, :flow ]

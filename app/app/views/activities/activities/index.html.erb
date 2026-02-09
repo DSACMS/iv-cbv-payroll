@@ -37,10 +37,10 @@
           empty_message: t("activities.hub.empty.education"),
           add_path: new_activities_flow_education_path,
           add_button_text: t("activities.hub.add"),
-          has_activities: @education_activities.any?,
+          has_activities: @education_activities_with_terms.exists?,
           testid: "activity-section-education",
           is_first_section: first_section do %>
-      <% @education_activities.each do |activity| %>
+      <% @education_activities_with_terms.each do |activity| %>
         <% activity.nsc_enrollment_terms.each do |enrollment_term| %>
           <%= render(EnrollmentTermTableComponent.new(nsc_enrollment_term: enrollment_term)) %>
         <% end %>

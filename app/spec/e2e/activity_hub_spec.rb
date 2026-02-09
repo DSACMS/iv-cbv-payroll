@@ -129,7 +129,7 @@ RSpec.describe 'e2e Activity Hub flow test', :js, type: :feature do
     expect(page).to have_content I18n.t("activities.success.show.download_pdf")
   end
 
-  it "completes the generic flow for the education activity" do
+  it "returns to hub with empty state for education when no records are found" do
     visit URI(root_url).request_uri
 
     visit activities_flow_entry_path(client_agency_id: "sandbox") # This would normally be inferred
@@ -150,18 +150,9 @@ RSpec.describe 'e2e Activity Hub flow test', :js, type: :feature do
     verify_page(page, title: I18n.t("activities.education.edit.header"), wait: 10) # /activities/education/123/edit (show page)
     find("a", text: I18n.t("activities.education.edit.no_records_found.return_button")).click
 
-    click_button I18n.t("activities.hub.continue")
-    verify_page(page, title: I18n.t("activities.summary.title"))
-
-    # /activities/summary
-    click_button I18n.t("activities.summary.submit", agency_name: I18n.t("shared.agency_full_name.sandbox"))
-    verify_page(page, title: I18n.t("activities.submit.title"))
-    find("label[for='activity_flow_consent_to_submit']").click
-    click_button I18n.t("activities.submit.confirm")
-
-    # /activities/success
-    verify_page(page, title: I18n.t("activities.success.show.title", agency_acronym: I18n.t("shared.agency_acronym.sandbox")))
-    expect(page).to have_content I18n.t("activities.success.show.download_pdf")
+    verify_page(page, title: I18n.t("activities.hub.title"))
+    expect(page).to have_content I18n.t("activities.hub.empty.education")
+    expect(page).not_to have_button I18n.t("activities.hub.continue")
   end
 
   it "blocks activity hub access when not enabled" do

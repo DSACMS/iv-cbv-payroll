@@ -2,7 +2,7 @@ module ActivitiesHelper
   def any_activities_added?(flow)
     return false unless flow
 
-    flow.education_activities.exists? ||
+    flow.education_activities.joins(:nsc_enrollment_terms).exists? ||
       flow.volunteering_activities.exists? ||
       flow.job_training_activities.exists? ||
       flow.payroll_accounts.exists?
