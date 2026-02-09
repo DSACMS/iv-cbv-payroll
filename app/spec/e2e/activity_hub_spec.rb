@@ -155,6 +155,37 @@ RSpec.describe 'e2e Activity Hub flow test', :js, type: :feature do
     expect(page).not_to have_button I18n.t("activities.hub.continue")
   end
 
+  it "completes submission flow when education enrollment data exists" do
+    visit URI(root_url).request_uri
+
+    visit activities_flow_entry_path(client_agency_id: "sandbox") # This would normally be inferred
+    verify_page(page, title: I18n.t("activities.entry.title"))
+    find("label", text: I18n.t("activities.entry.consent", agency_name: I18n.t("shared.agency_full_name.sandbox"))).click
+    click_button I18n.t("activities.entry.continue")
+
+    verify_page(page, title: I18n.t("activities.hub.title"))
+
+    current_flow = ActivityFlow.order(created_at: :desc).first
+    education_activity = create(:education_activity, activity_flow: current_flow, status: :succeeded)
+    create(:nsc_enrollment_term, education_activity:, school_name: "Test University")
+
+    visit activities_flow_root_path
+    verify_page(page, title: I18n.t("activities.hub.title"))
+    expect(page).to have_content "Test University"
+
+    click_button I18n.t("activities.hub.continue")
+    verify_page(page, title: I18n.t("activities.summary.title"))
+    expect(page).to have_content "Test University"
+
+    click_button I18n.t("activities.summary.submit", agency_name: I18n.t("shared.agency_full_name.sandbox"))
+    verify_page(page, title: I18n.t("activities.submit.title"))
+    find("label[for='activity_flow_consent_to_submit']").click
+    click_button I18n.t("activities.submit.confirm")
+
+    verify_page(page, title: I18n.t("activities.success.show.title", agency_acronym: I18n.t("shared.agency_acronym.sandbox")))
+    expect(page).to have_content I18n.t("activities.success.show.download_pdf")
+  end
+
   it "blocks activity hub access when not enabled" do
     stub_environment_variable("ACTIVITY_HUB_ENABLED", nil) do
       visit activities_flow_root_path
