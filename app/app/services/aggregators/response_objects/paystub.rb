@@ -27,7 +27,13 @@ module Aggregators::ResponseObjects
         earnings: response_body["earnings"].map { |i| Earning.from_pinwheel(i) },
         hours: Aggregators::FormatMethods::Pinwheel.hours(response_body["earnings"]),
         hours_by_earning_category: Aggregators::FormatMethods::Pinwheel.hours_by_earning_category(response_body["earnings"]),
-        deductions: response_body["deductions"].map { |d| Deduction.from_pinwheel(d) },
+        deductions: response_body["deductions"].map do |deduction|
+          OpenStruct.new(
+            category: deduction["category"],
+            tax: deduction["type"] || "unknown",
+            amount: deduction["amount"],
+          )
+        end,
         employment_id: nil # Not provided
       )
     end
@@ -44,7 +50,13 @@ module Aggregators::ResponseObjects
         earnings: response_body["gross_pay_list"].map { |i| Earning.from_argyle(i) },
         hours: Aggregators::FormatMethods::Argyle.hours_computed(response_body["hours"], response_body["gross_pay_list"]),
         hours_by_earning_category: Aggregators::FormatMethods::Argyle.hours_by_earning_category(response_body["gross_pay_list"]),
-        deductions: response_body["deduction_list"].map { |d| Deduction.from_argyle(d) },
+        deductions: response_body["deduction_list"].map do |deduction|
+          OpenStruct.new(
+            category: deduction["name"],
+            tax: deduction["tax_classification"] || "unknown",
+            amount: Aggregators::FormatMethods::Argyle.format_currency(deduction["amount"]),
+          )
+        end,
         employment_id: response_body["employment"]
       )
     end
