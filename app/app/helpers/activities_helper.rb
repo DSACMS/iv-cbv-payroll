@@ -4,14 +4,13 @@ module ActivitiesHelper
   end
 
   def self_attestation_cards(activities, name_field:)
-    activities.group_by(&name_field).map do |name, grouped_activities|
-      months = grouped_activities
-        .select { |a| a.date.present? }
-        .group_by { |a| a.date.beginning_of_month }
-        .sort_by { |month, _| month }
-        .reverse
-        .map { |month, acts| { month: month, hours: acts.sum { |a| a.hours.to_i } } }
-      { name: name, months: months, activities: grouped_activities }
+    activities.map do |activity|
+      months = if activity.date.present?
+                 [ { month: activity.date.beginning_of_month, hours: activity.hours.to_i } ]
+               else
+                 []
+               end
+      { name: activity.send(name_field), months: months, activity: activity }
     end
   end
 

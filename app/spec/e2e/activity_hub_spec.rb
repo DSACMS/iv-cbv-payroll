@@ -52,7 +52,7 @@ RSpec.describe 'e2e Activity Hub flow test', :js, type: :feature do
     expect(page).to have_content "123 Main St, Baton Rouge, LA"
     expect(page).to have_content "6"
 
-    click_button I18n.t("activities.hub.continue")
+    click_button I18n.t("activities.hub.review_and_submit")
     verify_page(page, title: I18n.t("activities.summary.title"))
     expect(page).to have_content "Helping Hands"
     expect(page).to have_content "Resume Workshop"
@@ -109,7 +109,7 @@ RSpec.describe 'e2e Activity Hub flow test', :js, type: :feature do
     click_button I18n.t("cbv.payment_details.show.continue")
     verify_page(page, title: I18n.t("activities.hub.title"))
 
-    click_button I18n.t("activities.hub.continue")
+    click_button I18n.t("activities.hub.review_and_submit")
     verify_page(page, title: I18n.t("activities.summary.title"))
 
     # /activities/summary
@@ -140,9 +140,9 @@ RSpec.describe 'e2e Activity Hub flow test', :js, type: :feature do
       verify_page(page, title: I18n.t("activities.education.show.header")) # /activities/education/123 (loading page)
     end
     verify_page(page, title: I18n.t("activities.education.edit.header"), wait: 10) # /activities/education/123/edit (show page)
-    find("a", text: I18n.t("activities.education.edit.no_records_found.return_button")).click
+    find("a", text: I18n.t("activities.education.edit.no_records_found.return_button")).clickThe
 
-    click_button I18n.t("activities.hub.continue")
+    click_button I18n.t("activities.hub.review_and_submit")
     verify_page(page, title: I18n.t("activities.summary.title"))
 
     # /activities/summary

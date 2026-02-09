@@ -70,6 +70,21 @@ tr td:first-child {
   }
 }
 
+// Activity Hub section header with inline Add button
+.activity-hub-section-header {
+  @include at-media("tablet") {
+    max-width: 30rem;
+  }
+
+  .usa-button {
+    margin: 0;
+  }
+
+  .usa-icon {
+    fill: color("ink");
+  }
+}
+
 // Activity Hub card overrides
 .activity-hub-card {
   padding-left: 0;
