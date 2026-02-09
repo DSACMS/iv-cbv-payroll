@@ -22,6 +22,7 @@
           add_path: activities_flow_income_employer_search_path,
           add_button_text: t("activities.hub.add"),
           has_activities: @flow.payroll_accounts.any?,
+          testid: "activity-section-income",
           is_first_section: first_section do %>
       <p>
         <%= t("activities.hub.count", count: @flow.payroll_accounts.size) %>
@@ -37,6 +38,7 @@
           add_path: new_activities_flow_education_path,
           add_button_text: t("activities.hub.add"),
           has_activities: @education_activities.any?,
+          testid: "activity-section-education",
           is_first_section: first_section do %>
       <% @education_activities.each do |activity| %>
         <% activity.nsc_enrollment_terms.each do |enrollment_term| %>
@@ -54,6 +56,7 @@
           add_path: new_activities_flow_volunteering_path,
           add_button_text: t("activities.hub.add"),
           has_activities: @volunteering_activities.any?,
+          testid: "activity-section-volunteering",
           is_first_section: first_section do %>
       <%= render TableComponent.new do |t| %>
         <% @volunteering_activities.each do |activity| %>
@@ -85,6 +88,7 @@
           add_path: new_activities_flow_job_training_path,
           add_button_text: t("activities.hub.add"),
           has_activities: @job_training_activities.any?,
+          testid: "activity-section-job-training",
           is_first_section: first_section do %>
       <%= render TableComponent.new do |t| %>
         <% @job_training_activities.each do |activity| %>

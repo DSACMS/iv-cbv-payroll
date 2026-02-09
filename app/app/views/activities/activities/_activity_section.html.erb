@@ -1,4 +1,7 @@
-<section class="<%= "margin-top-4" unless local_assigns[:is_first_section] %>">
+<section
+  class="<%= "margin-top-4" unless local_assigns[:is_first_section] %>"
+  data-testid="<%= local_assigns.fetch(:testid) %>"
+>
   <div class="grid-row flex-align-center">
     <div class="grid-col">
       <h2 class="margin-0">
