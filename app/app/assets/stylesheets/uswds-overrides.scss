@@ -70,6 +70,15 @@ tr td:first-child {
   }
 }
 
+// Activity Hub progress/activities divider
+.activity-hub-divider {
+  margin-left: 0;
+
+  @include at-media("tablet") {
+    max-width: 30rem;
+  }
+}
+
 // Activity Hub section header with inline Add button
 .activity-hub-section-header {
   margin-bottom: units(2.5);

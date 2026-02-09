@@ -57,6 +57,7 @@ en:
               outside_reporting_window: must be within %{range}
   activities:
     community_service:
+      add: Add Community Service Activity
       created: Community service activity was successfully created.
       date: Date
       deleted: Community service activity was successfully deleted.
@@ -193,6 +194,7 @@ en:
         header: Work Program information
       your_details: Your details
     work_programs:
+      add: Add Work Program Activity
       created: Work program activity was successfully created.
       date: Date
       deleted: Work program activity was successfully deleted.

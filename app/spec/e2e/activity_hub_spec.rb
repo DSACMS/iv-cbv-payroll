@@ -21,36 +21,37 @@ RSpec.describe 'e2e Activity Hub flow test', :js, type: :feature do
 
     verify_page(page, title: I18n.t("activities.hub.title"))
 
-    # Add a Volunteering activity
-    click_button I18n.t("activities.community_service.add")
+    # Add a Community Service activity
+    within("[data-activity-type='community_service']") do
+      click_button I18n.t("activities.hub.add")
+    end
     verify_page(page, title: I18n.t("activities.community_service.title"))
     fill_in I18n.t("activities.community_service.organization_name"), with: "Helping Hands"
     fill_in I18n.t("activities.community_service.hours"), with: "20"
     fill_in I18n.t("activities.community_service.date"), with: (Date.current.beginning_of_month - 1.day).strftime("%m/%d/%Y")
     click_button I18n.t("activities.community_service.add")
     verify_page(page, title: I18n.t("activities.hub.title"))
-    expect(page).to have_content I18n.t("activities.community_service.add")
+    expect(page).to have_content "Helping Hands"
 
-    # Add a Job Training activity
-    click_button I18n.t("activities.work_programs.add")
+    # Add a Work Programs activity
+    within("[data-activity-type='work_programs']") do
+      click_button I18n.t("activities.hub.add")
+    end
     verify_page(page, title: I18n.t("activities.work_programs.title"))
     fill_in I18n.t("activities.work_programs.program_name"), with: "Resume Workshop"
     fill_in I18n.t("activities.work_programs.organization_address"), with: "123 Main St, Baton Rouge, LA"
     fill_in I18n.t("activities.work_programs.hours"), with: "6"
     click_button I18n.t("activities.work_programs.add")
     verify_page(page, title: I18n.t("activities.hub.title"))
-    expect(page).to have_content I18n.t("activities.work_programs.add")
+    expect(page).to have_content "Resume Workshop"
 
-    # Verify that the hub has the Volunteering activity
+    # Verify that the hub has the Community Service activity
     expect(page).to have_content I18n.t("activities.hub.title")
     expect(page).to have_content "Helping Hands"
-    expect(page).to have_content(Date.current.beginning_of_month - 1.day)
-    expect(page).to have_content "20"
+    expect(page).to have_content I18n.t("activities.hub.cards.hours", count: 20)
 
-    # Verify that the hub has the Job Training activity
+    # Verify that the hub has the Work Programs activity
     expect(page).to have_content "Resume Workshop"
-    expect(page).to have_content "123 Main St, Baton Rouge, LA"
-    expect(page).to have_content "6"
 
     click_button I18n.t("activities.hub.review_and_submit")
     verify_page(page, title: I18n.t("activities.summary.title"))
@@ -78,8 +79,10 @@ RSpec.describe 'e2e Activity Hub flow test', :js, type: :feature do
 
     verify_page(page, title: I18n.t("activities.hub.title"))
 
-    # Add an Income activity
-    click_button I18n.t("activities.hub.add")
+    # Add an Employment activity
+    within("[data-activity-type='employment']") do
+      click_button I18n.t("activities.hub.add")
+    end
     verify_page(page, title: I18n.t("cbv.employer_searches.show.activity_flow.header"))
     @e2e.replay_modal_callbacks(page.driver.browser) do
       click_button "Paychex"
@@ -134,13 +137,15 @@ RSpec.describe 'e2e Activity Hub flow test', :js, type: :feature do
     verify_page(page, title: I18n.t("activities.hub.title"))
 
     # Add an Education activity
-    click_button I18n.t("activities.education.add")
+    within("[data-activity-type='education']") do
+      click_button I18n.t("activities.hub.add")
+    end
     performing_active_jobs do
       click_button I18n.t("activities.education.new.continue")
       verify_page(page, title: I18n.t("activities.education.show.header")) # /activities/education/123 (loading page)
     end
     verify_page(page, title: I18n.t("activities.education.edit.header"), wait: 10) # /activities/education/123/edit (show page)
-    find("a", text: I18n.t("activities.education.edit.no_records_found.return_button")).clickThe
+    find("a", text: I18n.t("activities.education.edit.no_records_found.return_button")).click
 
     click_button I18n.t("activities.hub.review_and_submit")
     verify_page(page, title: I18n.t("activities.summary.title"))

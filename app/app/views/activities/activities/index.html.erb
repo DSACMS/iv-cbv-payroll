@@ -10,11 +10,11 @@
 <% if display_progress_indicator?(progress_calculator) %>
   <%= render(ActivityFlowProgressIndicator.from_calculator(progress_calculator)) %>
 
-  <hr class="border-gray-30 border-top-0">
+  <hr class="border-gray-30 border-top-0 activity-hub-divider">
 <% end %>
 
 <% if activity_type_enabled?(:employment) %>
-  <section class="margin-top-4 margin-bottom-5">
+  <section class="margin-top-4 margin-bottom-5" data-activity-type="employment">
     <div class="display-flex flex-align-center flex-justify activity-hub-section-header">
       <h2 class="margin-y-0"><%= t("activities.employment.title") %></h2>
       <%= button_to activities_flow_income_employer_search_path, class: "usa-button usa-button--outline", method: :get do %>
@@ -42,7 +42,7 @@
 <% end %>
 
 <% if activity_type_enabled?(:education) %>
-  <section class="margin-top-4 margin-bottom-5">
+  <section class="margin-top-4 margin-bottom-5" data-activity-type="education">
     <div class="display-flex flex-align-center flex-justify activity-hub-section-header">
       <h2 class="margin-y-0"><%= t("activities.education.title") %></h2>
       <%= button_to new_activities_flow_education_path, class: "usa-button usa-button--outline", method: :get do %>
@@ -73,7 +73,7 @@
 <% end %>
 
 <% if activity_type_enabled?(:community_service) %>
-  <section class="margin-top-4 margin-bottom-5">
+  <section class="margin-top-4 margin-bottom-5" data-activity-type="community_service">
     <div class="display-flex flex-align-center flex-justify activity-hub-section-header">
       <h2 class="margin-y-0"><%= t("activities.community_service.title") %></h2>
       <%= button_to new_activities_flow_volunteering_path, class: "usa-button usa-button--outline", method: :get do %>
@@ -103,7 +103,7 @@
 <% end %>
 
 <% if activity_type_enabled?(:work_programs) %>
-  <section class="margin-top-4 margin-bottom-5">
+  <section class="margin-top-4 margin-bottom-5" data-activity-type="work_programs">
     <div class="display-flex flex-align-center flex-justify activity-hub-section-header">
       <h2 class="margin-y-0"><%= t("activities.work_programs.title") %></h2>
       <%= button_to new_activities_flow_job_training_path, class: "usa-button usa-button--outline", method: :get do %>
