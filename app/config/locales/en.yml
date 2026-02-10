@@ -114,7 +114,7 @@ en:
         education: No education added
         employment: No employment added
         work_programs: No work programs added
-      intro: "%{state} needs you to report your Community Engagement for %{reporting_window}."
+      intro: "%{agency_full_name} needs you to report your Community Engagement for %{reporting_window}."
       reporting_window: 'Reporting window: %{range}'
       save: Save changes
       section_title:

@@ -4,7 +4,7 @@
   <%= t("activities.hub.title") %>
 </h1>
 <p class="measure-none">
-  <%= t("activities.hub.intro", state: current_agency&.agency_name || "Your state", reporting_window: @flow.reporting_window_display) %>
+  <%= t("activities.hub.intro", agency_full_name: agency_translation("shared.agency_full_name"), reporting_window: @flow.reporting_window_display) %>
 </p>
 
 <% if display_progress_indicator?(progress_calculator) %>
@@ -116,6 +116,6 @@
   <% end %>
 </div>
 
-<% if any_activities_added?(@flow) %>
+<% if @flow.any_activities_added? %>
   <%= button_to t("activities.hub.continue"), next_path, class: "btn btn-primary usa-button margin-top-4", method: :get %>
 <% end %>

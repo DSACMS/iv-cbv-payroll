@@ -89,4 +89,45 @@ RSpec.describe ActivityFlow, type: :model do
       expect(flow.aggregator_lookback_days).to eq({ w2: expected_days, gig: expected_days })
     end
   end
+
+  describe "#any_activities_added?" do
+    let(:flow) do
+      create(
+        :activity_flow,
+        volunteering_activities_count: 0,
+        job_training_activities_count: 0,
+        education_activities_count: 0
+      )
+    end
+
+    it "returns false when flow has no activities" do
+      expect(flow.any_activities_added?).to be false
+    end
+
+    it "returns false when flow has an education activity without enrollment data" do
+      create(:education_activity, activity_flow: flow)
+
+      expect(flow.any_activities_added?).to be false
+    end
+
+    it "returns true when flow has an education activity with enrollment data" do
+      education_activity = create(:education_activity, activity_flow: flow)
+      create(:nsc_enrollment_term, education_activity:)
+
+      expect(flow.any_activities_added?).to be true
+    end
+
+    [
+      [ :volunteering_activity, :activity_flow ],
+      [ :job_training_activity, :activity_flow ],
+      [ :payroll_account, :flow ]
+    ].each do |factory_name, flow_attribute|
+      activity_name = factory_name.to_s.humanize.downcase
+
+      it "returns true when flow includes #{activity_name}" do
+        create(factory_name, flow_attribute => flow)
+        expect(flow.any_activities_added?).to be true
+      end
+    end
+  end
 end

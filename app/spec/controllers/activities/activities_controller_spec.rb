@@ -37,7 +37,7 @@ RSpec.describe Activities::ActivitiesController, type: :controller do
       expect(
         assigns(:education_activities_with_terms)
       ).to match_array(
-             current_flow.education_activities.joins(:nsc_enrollment_terms).distinct
+             current_flow.education_activities.where.associated(:nsc_enrollment_terms).distinct
            )
     end
 
