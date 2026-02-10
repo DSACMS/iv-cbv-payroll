@@ -23,10 +23,10 @@ module E2e
 
       # Infer flow from URL
       current_path = URI.parse(page.current_url).path
-      if current_path&.include?("/cbv/") || current_path&.start_with?("/activities/income/")
-        pilot_name ||= I18n.t("shared.pilot_name")
-      elsif current_path&.start_with?("/activities")
+      if current_path&.start_with?("/activities")
         pilot_name ||= I18n.t("shared.pilot_name_hr1")
+      elsif current_path&.include?("/cbv/")
+        pilot_name ||= I18n.t("shared.pilot_name")
       else
         pilot_name ||= I18n.t("shared.pilot_name")
       end
