@@ -57,7 +57,6 @@ en:
               outside_reporting_window: must be within %{range}
   activities:
     education:
-      add: Add Education Activities
       deleted: Education activity was successfully deleted.
       edit:
         additional_information_header: Additional comments (Optional)
@@ -102,20 +101,28 @@ en:
     errors:
       invalid_token: The link you used is invalid.
     hub:
+      add: Add
       continue: Continue
       count:
         one: "%{count} activity added"
         other: "%{count} activities added"
       delete: Delete
       delete_confirm: Are you sure you want to delete this activity?
-      description: You can add as many activities as you need to report. Continue once you have added all your activities.
       edit: Edit
+      empty:
+        community_service: No community service added
+        education: No education added
+        employment: No employment added
+        work_programs: No work programs added
+      intro: "%{agency_full_name} needs you to report your Community Engagement for %{reporting_window}."
       reporting_window: 'Reporting window: %{range}'
       save: Save changes
-      title: Add activities to your Medicaid Community Engagement report
+      section_title:
+        job_training: Work programs
+        volunteering: Community service
+      title: Add activities to your Community Engagement report.
     income:
       account_id: Account ID
-      add: Add Income
       synchronization_status: Status
       title: Employment
     job_training:
