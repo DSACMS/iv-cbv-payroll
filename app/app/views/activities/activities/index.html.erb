@@ -14,18 +14,14 @@
 <% end %>
 
 <% if activity_type_enabled?(:employment) %>
-  <section class="margin-top-4 margin-bottom-5" data-activity-type="employment">
-    <div class="display-flex flex-align-center flex-justify activity-hub-section-header">
-      <h2 class="margin-y-0"><%= t("activities.employment.title") %></h2>
-      <%= button_to activities_flow_income_employer_search_path, class: "usa-button usa-button--outline", method: :get do %>
-        <svg class="usa-icon" aria-hidden="true" focusable="false" role="img">
-          <use xlink:href="<%= asset_path("@uswds/uswds/dist/img/sprite.svg#add_circle_outline") %>"></use>
-        </svg>
-        <%= t("activities.hub.add") %>
-      <% end %>
-    </div>
-
-    <% employment_cards(@employment_activities || [], @aggregator_report, @flow.reporting_window_range).each do |card_data| %>
+  <% employment_card_data = employment_cards(@employment_activities || [], @aggregator_report, @flow.reporting_window_range) %>
+  <%= render "activities/activities/activity_section",
+        activity_type: "employment",
+        section_title: t("activities.employment.title"),
+        add_path: activities_flow_income_employer_search_path,
+        empty_message: t("activities.hub.empty.employment"),
+        cards: employment_card_data do %>
+    <% employment_card_data.each do |card_data| %>
       <%= render(Uswds::Card.new(heading_text: card_data[:name], heading_level: 3, class: "activity-hub-card")) do |card| %>
         <% card.with_body do %>
           <% card_data[:months].each do |month_data| %>
@@ -38,22 +34,19 @@
         <% end %>
       <% end %>
     <% end %>
-  </section>
+  <% end %>
 <% end %>
 
 <% if activity_type_enabled?(:education) %>
-  <section class="margin-top-4 margin-bottom-5" data-activity-type="education">
-    <div class="display-flex flex-align-center flex-justify activity-hub-section-header">
-      <h2 class="margin-y-0"><%= t("activities.education.title") %></h2>
-      <%= button_to new_activities_flow_education_path, class: "usa-button usa-button--outline", method: :get do %>
-        <svg class="usa-icon" aria-hidden="true" focusable="false" role="img">
-          <use xlink:href="<%= asset_path("@uswds/uswds/dist/img/sprite.svg#add_circle_outline") %>"></use>
-        </svg>
-        <%= t("activities.hub.add") %>
-      <% end %>
-    </div>
-
-    <% education_cards(@education_activities, progress_calculator.reporting_months).each do |card_data| %>
+  <%# Selecting educations with nsc_enrollment_terms filters out NSC responses where no data was found. %>
+  <% education_card_data = education_cards(@education_activities.select { |a| a.nsc_enrollment_terms.any? }, progress_calculator.reporting_months) %>
+  <%= render "activities/activities/activity_section",
+        activity_type: "education",
+        section_title: t("activities.education.title"),
+        add_path: new_activities_flow_education_path,
+        empty_message: t("activities.hub.empty.education"),
+        cards: education_card_data do %>
+    <% education_card_data.each do |card_data| %>
       <%= render(Uswds::Card.new(heading_text: card_data[:name], heading_level: 3, class: "activity-hub-card")) do |card| %>
         <% card.with_body do %>
           <% card_data[:months].each do |month_data| %>
@@ -66,22 +59,18 @@
         <% end %>
       <% end %>
     <% end %>
-  </section>
+  <% end %>
 <% end %>
 
 <% if activity_type_enabled?(:community_service) %>
-  <section class="margin-top-4 margin-bottom-5" data-activity-type="community_service">
-    <div class="display-flex flex-align-center flex-justify activity-hub-section-header">
-      <h2 class="margin-y-0"><%= t("activities.community_service.title") %></h2>
-      <%= button_to new_activities_flow_volunteering_path, class: "usa-button usa-button--outline", method: :get do %>
-        <svg class="usa-icon" aria-hidden="true" focusable="false" role="img">
-          <use xlink:href="<%= asset_path("@uswds/uswds/dist/img/sprite.svg#add_circle_outline") %>"></use>
-        </svg>
-        <%= t("activities.hub.add") %>
-      <% end %>
-    </div>
-
-    <% self_attestation_cards(@community_service_activities, name_field: :organization_name).each do |card_data| %>
+  <% community_service_card_data = self_attestation_cards(@community_service_activities, name_field: :organization_name) %>
+  <%= render "activities/activities/activity_section",
+        activity_type: "community_service",
+        section_title: t("activities.community_service.title"),
+        add_path: new_activities_flow_volunteering_path,
+        empty_message: t("activities.hub.empty.community_service"),
+        cards: community_service_card_data do %>
+    <% community_service_card_data.each do |card_data| %>
       <%= render(Uswds::Card.new(heading_text: card_data[:name], heading_level: 3, class: "activity-hub-card")) do |card| %>
         <% card.with_body do %>
           <% card_data[:months].each do |month_data| %>
@@ -96,22 +85,18 @@
         <% end %>
       <% end %>
     <% end %>
-  </section>
+  <% end %>
 <% end %>
 
 <% if activity_type_enabled?(:work_programs) %>
-  <section class="margin-top-4 margin-bottom-5" data-activity-type="work_programs">
-    <div class="display-flex flex-align-center flex-justify activity-hub-section-header">
-      <h2 class="margin-y-0"><%= t("activities.work_programs.title") %></h2>
-      <%= button_to new_activities_flow_job_training_path, class: "usa-button usa-button--outline", method: :get do %>
-        <svg class="usa-icon" aria-hidden="true" focusable="false" role="img">
-          <use xlink:href="<%= asset_path("@uswds/uswds/dist/img/sprite.svg#add_circle_outline") %>"></use>
-        </svg>
-        <%= t("activities.hub.add") %>
-      <% end %>
-    </div>
-
-    <% self_attestation_cards(@work_programs_activities, name_field: :program_name).each do |card_data| %>
+  <% work_programs_card_data = self_attestation_cards(@work_programs_activities, name_field: :program_name) %>
+  <%= render "activities/activities/activity_section",
+        activity_type: "work_programs",
+        section_title: t("activities.work_programs.title"),
+        add_path: new_activities_flow_job_training_path,
+        empty_message: t("activities.hub.empty.work_programs"),
+        cards: work_programs_card_data do %>
+    <% work_programs_card_data.each do |card_data| %>
       <%= render(Uswds::Card.new(heading_text: card_data[:name], heading_level: 3, class: "activity-hub-card")) do |card| %>
         <% card.with_body do %>
           <% card_data[:months].each do |month_data| %>
@@ -126,7 +111,9 @@
         <% end %>
       <% end %>
     <% end %>
-  </section>
+  <% end %>
 <% end %>
 
-<%= button_to t("activities.hub.review_and_submit"), next_path, class: "btn btn-primary usa-button margin-top-4", method: :get %>
+<% if @flow.any_activities_added? %>
+  <%= button_to t("activities.hub.review_and_submit"), next_path, class: "btn btn-primary usa-button margin-top-4", method: :get %>
+<% end %>

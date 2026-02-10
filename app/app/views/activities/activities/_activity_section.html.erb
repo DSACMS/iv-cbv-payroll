@@ -1,0 +1,19 @@
+<section class="margin-top-4 margin-bottom-5" data-activity-type="<%= activity_type %>">
+  <div class="display-flex flex-align-center flex-justify activity-hub-section-header">
+    <h2 class="margin-y-0"><%= section_title %></h2>
+    <%= button_to add_path, class: "usa-button usa-button--outline", method: :get do %>
+      <svg class="usa-icon" aria-hidden="true" focusable="false" role="img">
+        <use xlink:href="<%= asset_path("@uswds/uswds/dist/img/sprite.svg#add_circle_outline") %>"></use>
+      </svg>
+      <%= t("activities.hub.add") %>
+    <% end %>
+  </div>
+
+  <% if cards.any? %>
+    <%= yield %>
+  <% else %>
+    <div class="bg-base-lightest padding-3 radius-md margin-top-2 activity-hub-empty-state">
+      <p class="margin-0"><%= empty_message %></p>
+    </div>
+  <% end %>
+</section>

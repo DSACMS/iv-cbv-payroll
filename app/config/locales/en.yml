@@ -124,6 +124,11 @@ en:
         not_enrolled: Not enrolled
       description: "%{agency_name} needs you to report your Community Engagement for %{reporting_window}."
       edit: Edit
+      empty:
+        community_service: No community service added
+        education: No education added
+        employment: No employment added
+        work_programs: No work programs added
       reporting_window: 'Reporting window: %{range}'
       review_and_submit: Review and Submit
       save: Save changes

@@ -52,6 +52,7 @@ RSpec.describe 'e2e Activity Hub flow test', :js, type: :feature do
 
     # Verify that the hub has the Work Programs activity
     expect(page).to have_content "Resume Workshop"
+    expect(page).to have_content I18n.t("activities.hub.cards.hours", count: 6)
 
     click_button I18n.t("activities.hub.review_and_submit")
     verify_page(page, title: I18n.t("activities.summary.title"))
@@ -126,7 +127,7 @@ RSpec.describe 'e2e Activity Hub flow test', :js, type: :feature do
     expect(page).to have_content I18n.t("activities.success.show.download_pdf")
   end
 
-  it "completes the generic flow for the education activity" do
+  it "returns to hub with empty state for education when no records are found" do
     visit URI(root_url).request_uri
 
     visit activities_flow_entry_path(client_agency_id: "sandbox") # This would normally be inferred
@@ -147,16 +148,37 @@ RSpec.describe 'e2e Activity Hub flow test', :js, type: :feature do
     verify_page(page, title: I18n.t("activities.education.edit.header"), wait: 10) # /activities/education/123/edit (show page)
     find("a", text: I18n.t("activities.education.edit.no_records_found.return_button")).click
 
+    verify_page(page, title: I18n.t("activities.hub.title"))
+    expect(page).to have_content I18n.t("activities.hub.empty.education")
+  end
+
+  it "completes submission flow when education enrollment data exists" do
+    visit URI(root_url).request_uri
+
+    visit activities_flow_entry_path(client_agency_id: "sandbox") # This would normally be inferred
+    verify_page(page, title: I18n.t("activities.entry.title"))
+    find("label", text: I18n.t("activities.entry.consent", agency_name: I18n.t("shared.agency_full_name.sandbox"))).click
+    click_button I18n.t("activities.entry.continue")
+
+    verify_page(page, title: I18n.t("activities.hub.title"))
+
+    current_flow = ActivityFlow.order(created_at: :desc).first
+    education_activity = create(:education_activity, activity_flow: current_flow, status: :succeeded)
+    create(:nsc_enrollment_term, education_activity:, school_name: "Test University")
+
+    visit activities_flow_root_path
+    verify_page(page, title: I18n.t("activities.hub.title"))
+    expect(page).to have_content "Test University"
+
     click_button I18n.t("activities.hub.review_and_submit")
     verify_page(page, title: I18n.t("activities.summary.title"))
+    expect(page).to have_content "Test University"
 
-    # /activities/summary
     click_button I18n.t("activities.summary.submit", agency_name: I18n.t("shared.agency_full_name.sandbox"))
     verify_page(page, title: I18n.t("activities.submit.title"))
     find("label[for='activity_flow_consent_to_submit']").click
     click_button I18n.t("activities.submit.confirm")
 
-    # /activities/success
     verify_page(page, title: I18n.t("activities.success.show.title", agency_acronym: I18n.t("shared.agency_acronym.sandbox")))
     expect(page).to have_content I18n.t("activities.success.show.download_pdf")
   end
