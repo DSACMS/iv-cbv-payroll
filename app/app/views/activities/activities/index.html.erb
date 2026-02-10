@@ -14,7 +14,7 @@
 <% end %>
 
 <% if activity_type_enabled?(:employment) %>
-  <% employment_card_data = employment_cards(@employment_activities || [], @aggregator_report, @flow.reporting_window_range) %>
+  <% employment_card_data = employment_cards(@employment_payroll_accounts || [], @aggregator_report, @flow.reporting_window_range) %>
   <%= render "activities/activities/activity_section",
         activity_type: "employment",
         section_title: t("activities.employment.title"),
@@ -39,7 +39,7 @@
 
 <% if activity_type_enabled?(:education) %>
   <%# Selecting educations with nsc_enrollment_terms filters out NSC responses where no data was found. %>
-  <% education_card_data = education_cards(@education_activities.select { |a| a.nsc_enrollment_terms.any? }, progress_calculator.reporting_months) %>
+  <% education_card_data = education_cards(@education_activities_with_terms || [], progress_calculator.reporting_months) %>
   <%= render "activities/activities/activity_section",
         activity_type: "education",
         section_title: t("activities.education.title"),

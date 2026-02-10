@@ -86,12 +86,12 @@ RSpec.describe ActivitiesHelper do
       expect(result.first[:name]).to eq("State University")
     end
 
-    it "falls back to Education title when no enrollment terms" do
+    it "returns empty array when activity has no enrollment terms" do
       activity = create(:education_activity, activity_flow: flow, credit_hours: 12)
 
       result = helper.education_cards([ activity ], reporting_months)
 
-      expect(result.first[:name]).to eq("Education")
+      expect(result).to eq([])
     end
 
     it "shows enrollment status for months with overlapping terms" do
@@ -124,8 +124,9 @@ RSpec.describe ActivitiesHelper do
 
     it "returns months in reverse chronological order" do
       activity = create(:education_activity, activity_flow: flow, credit_hours: 12)
+      create(:nsc_enrollment_term, education_activity: activity, school_name: "Test U", term_begin: first_month, term_end: second_month.end_of_month)
 
-      result = helper.education_cards([ activity ], reporting_months)
+      result = helper.education_cards([ activity.reload ], reporting_months)
 
       months = result.first[:months].map { |m| m[:month] }
       expect(months).to eq(months.sort.reverse)

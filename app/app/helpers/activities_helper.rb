@@ -33,17 +33,19 @@ module ActivitiesHelper
   end
 
   def education_cards(activities, reporting_months)
-    activities.map do |activity|
-      school_name = activity.nsc_enrollment_terms.first&.school_name&.titlecase || t("activities.education.title")
-      months = reporting_months.reverse.map do |month_start|
-        overlapping_term = activity.nsc_enrollment_terms.find { |term| term.overlaps_month?(month_start) }
-        {
-          month: month_start,
-          enrollment_status: overlapping_term ? enrollment_status_display(overlapping_term.enrollment_status) : t("activities.hub.cards.not_enrolled"),
-          credit_hours: overlapping_term ? activity.credit_hours.to_i : 0
-        }
+    activities.flat_map do |activity|
+      activity.nsc_enrollment_terms.map do |term|
+        school_name = term.school_name&.titlecase || t("activities.education.title")
+        months = reporting_months.reverse.map do |month_start|
+          overlapping = term.overlaps_month?(month_start)
+          {
+            month: month_start,
+            enrollment_status: overlapping ? enrollment_status_display(term.enrollment_status) : t("activities.hub.cards.not_enrolled"),
+            credit_hours: overlapping ? activity.credit_hours.to_i : 0
+          }
+        end
+        { name: school_name, months: months, activity: activity }
       end
-      { name: school_name, months: months, activity: activity }
     end
   end
 

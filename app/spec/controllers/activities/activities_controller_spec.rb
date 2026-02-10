@@ -33,11 +33,11 @@ RSpec.describe Activities::ActivitiesController, type: :controller do
            )
     end
 
-    it "shows current flow education activities" do
+    it "shows education activities that have enrollment terms" do
       expect(
-        assigns(:education_activities)
+        assigns(:education_activities_with_terms)
       ).to match_array(
-             current_flow.education_activities
+             current_flow.education_activities.where.associated(:nsc_enrollment_terms).distinct
            )
     end
 
