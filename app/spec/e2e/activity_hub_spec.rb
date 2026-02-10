@@ -33,7 +33,7 @@ RSpec.describe 'e2e Activity Hub flow test', :js, type: :feature do
     verify_page(page, title: I18n.t("activities.hub.title"))
     expect(page).to have_content "Helping Hands"
 
-    # Add a Work Programs activity
+    # Add a Work Program activity
     within("[data-activity-type='work_programs']") do
       click_button I18n.t("activities.hub.add")
     end
@@ -41,6 +41,7 @@ RSpec.describe 'e2e Activity Hub flow test', :js, type: :feature do
     fill_in I18n.t("activities.work_programs.program_name"), with: "Resume Workshop"
     fill_in I18n.t("activities.work_programs.organization_address"), with: "123 Main St, Baton Rouge, LA"
     fill_in I18n.t("activities.work_programs.hours"), with: "6"
+    fill_in I18n.t("activities.work_programs.date"), with: (Date.current.beginning_of_month - 1.day).strftime("%m/%d/%Y")
     click_button I18n.t("activities.work_programs.add")
     verify_page(page, title: I18n.t("activities.hub.title"))
     expect(page).to have_content "Resume Workshop"

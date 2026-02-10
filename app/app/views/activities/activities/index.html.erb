@@ -32,6 +32,9 @@
             </div>
           <% end %>
         <% end %>
+        <% card.with_footer do %>
+          <%= link_to t("activities.hub.edit"), activities_flow_income_payment_details_path(user: { account_id: card_data[:payroll_account].aggregator_account_id }), class: "usa-link" %>
+        <% end %>
       <% end %>
     <% end %>
   <% end %>
@@ -56,6 +59,9 @@
               <p class="margin-y-0"><%= t("activities.hub.cards.credit_hours", amount: month_data[:credit_hours]) %></p>
             </div>
           <% end %>
+        <% end %>
+        <% card.with_footer do %>
+          <%= link_to t("activities.hub.edit"), edit_activities_flow_education_path(id: card_data[:activity].id), class: "usa-link" %>
         <% end %>
       <% end %>
     <% end %>
