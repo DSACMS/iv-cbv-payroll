@@ -23,12 +23,11 @@ class Cbv::SummariesController < Cbv::BaseController
       client_agency_id: current_agency&.id,
       cbv_flow_id: cbv_flow.id,
       cbv_applicant_id: cbv_flow.cbv_applicant_id,
-      device_id: cbv_flow.device_id,
       invitation_id: cbv_flow.cbv_flow_invitation_id,
       account_count: cbv_flow.payroll_accounts.count,
       paystub_count: @aggregator_report.paystubs.count,
       account_count_with_additional_information:
-        cbv_flow.additional_information.values.count { |info| info["comment"].present? },
+        cbv_flow.payroll_accounts.count { |payroll_account| payroll_account.additional_information.present? },
       flow_started_seconds_ago: (Time.now - cbv_flow.created_at).to_i,
       language: I18n.locale
     })

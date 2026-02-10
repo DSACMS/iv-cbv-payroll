@@ -9,6 +9,11 @@ class PayrollAccount::Pinwheel < PayrollAccount
     "shifts" => "shifts.added"
   }
 
+  include Redactable
+  has_redactable_fields(
+    additional_information: :string
+  )
+
   def has_fully_synced?
     (supported_jobs.exclude?("paystubs") || find_webhook_event(JOBS_TO_WEBHOOK_EVENTS["paystubs"]).present?) &&
       (supported_jobs.exclude?("shifts") || find_webhook_event(JOBS_TO_WEBHOOK_EVENTS["shifts"]).present?) &&
@@ -35,10 +40,5 @@ class PayrollAccount::Pinwheel < PayrollAccount
 
   def necessary_jobs_succeeded?
     job_succeeded?("paystubs") || (job_succeeded?("employment") && job_succeeded?("identity"))
-  end
-
-  def redact!
-    # Do nothing, as Pinwheel does not support the deletion of data via API.
-    touch(:redacted_at)
   end
 end

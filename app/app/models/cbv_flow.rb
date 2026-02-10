@@ -2,15 +2,12 @@ class CbvFlow < Flow
   belongs_to :cbv_flow_invitation, optional: true
   belongs_to :cbv_applicant, optional: true
 
-  accepts_nested_attributes_for :cbv_applicant
-
   scope :incomplete, -> { where(confirmation_code: nil) }
   scope :completed, -> { where.not(confirmation_code: nil) }
 
   include Redactable
   has_redactable_fields(
-    end_user_id: :uuid,
-    additional_information: :object
+    end_user_id: :uuid
   )
 
   def complete?

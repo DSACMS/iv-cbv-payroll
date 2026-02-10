@@ -41,6 +41,6 @@ class ActivityFlowNavigator
   def after_income_path
     return activities_flow_root_path unless @overall_progress_result
 
-    @overall_progress_result.meets_requirements ? activities_flow_summary_path : activities_flow_root_path
+    @overall_progress_result.meets_routing_requirements ? activities_flow_summary_path : activities_flow_root_path
   end
 end

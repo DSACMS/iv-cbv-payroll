@@ -16,16 +16,6 @@ RSpec.describe Cbv::BaseController, type: :controller do
   end
 
   describe '#set_cbv_flow' do
-    it "sets an encrypted permanent cookie with cbv_applicant_id for invitation-based flows" do
-      get :show, params: { token: cbv_flow.cbv_flow_invitation.auth_token }
-
-      expect(cookies.encrypted[:cbv_applicant_id]).to eq(cbv_flow.cbv_applicant_id)
-
-      cookie_jar = response.cookies["cbv_applicant_id"]
-      expect(session[:flow_type]).to eq(:cbv)
-      expect(cookie_jar).to be_present
-    end
-
     context "when no token or session is present" do
       it "redirects to root with cbv_flow_timeout parameter and flash message" do
         expect(EventTrackingJob).to receive(:perform_later).with("ApplicantAccessedFlowWithoutCookie", anything, hash_including(

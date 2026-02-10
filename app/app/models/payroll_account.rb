@@ -13,6 +13,8 @@ class PayrollAccount < ApplicationRecord
   validates :flow, presence: true
   has_many :webhook_events
 
+  enum :data_source, { self_attested: "self_attested", validated: "validated" }, default: :validated
+
   enum :synchronization_status, {
     unknown: "unknown", # defines the method: sync_unknown?
     in_progress: "in_progress", # defines the method: sync_in_progress?
@@ -55,6 +57,10 @@ class PayrollAccount < ApplicationRecord
   # DataRetentionService.
   def redact!
     raise NotImplementedError
+  end
+
+  def additional_information=(value)
+    super(ActionController::Base.helpers.sanitize(value))
   end
 
   private

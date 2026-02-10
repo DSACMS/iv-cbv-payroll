@@ -1,42 +1,35 @@
 <!DOCTYPE html>
 <html lang="<%= I18n.locale %>">
   <head>
-    <title><%= content_for?(:title) ? yield(:title) : "" %> | Report My Income</title>
+    <title><%= content_for?(:title) ? yield(:title) : "" %> | <%= t(pilot_name_key) %></title>
     <meta name="viewport" content="width=device-width,initial-scale=1">
     <%= csrf_meta_tags %>
     <%= csp_meta_tag %>
-
     <%= yield :head %>
-
     <%= stylesheet_link_tag "application", "data-turbo-track": "reload" %>
     <%= javascript_include_tag "application", "data-turbo-track": "reload", type: "module" %>
   </head>
-
   <body>
     <div id="root">
       <a class="usa-skipnav" href="#main-content"><%= t("shared.skip_link") %></a>
       <%= render "application/header" %>
       <main id="main-content">
         <section class="grid-container usa-section">
-
           <% if ENV["SITE_ALERT_ENABLED"] == "true" %>
             <%= render Uswds::Alert.new(type: ENV["SITE_ALERT_TYPE"] || :info, heading: get_site_alert_title, class: "margin-bottom-4") do %>
               <%= get_site_alert_body %>
             <% end %>
           <% end %>
-
           <% if flash[:notice] %>
             <%= render Uswds::Alert.new(heading: "Information", class: "margin-bottom-4") do %>
               <%= flash[:notice].html_safe %>
             <% end %>
           <% end %>
-
           <% if flash[:alert] %>
             <%= render Uswds::Alert.new(type: :error, heading: flash[:alert_heading] || "Error", class: "margin-bottom-4") do %>
               <%= flash[:alert].html_safe %>
             <% end %>
           <% end %>
-
           <% if flash[:slim_alert] %>
             <%= render Uswds::Alert.new(type: flash[:slim_alert]["type"], slim: true, class: "margin-bottom-4") do %>
               <% if flash[:slim_alert]["message_html"] %>
@@ -46,7 +39,6 @@
               <% end %>
             <% end %>
           <% end %>
-
           <%= yield %>
         </section>
       </main>

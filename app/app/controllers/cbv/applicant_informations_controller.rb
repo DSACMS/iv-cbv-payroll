@@ -66,16 +66,14 @@ class Cbv::ApplicantInformationsController < Cbv::BaseController
         time: Time.now.to_i,
         cbv_applicant_id: @cbv_flow.cbv_applicant_id,
         client_agency_id: current_agency&.id,
-        cbv_flow_id: @cbv_flow.id,
-        device_id: @cbv_flow.device_id
+        cbv_flow_id: @cbv_flow.id
       })
     else
       event_logger.track(TrackEvent::ApplicantAccessedInformationPage, request, {
         time: Time.now.to_i,
         cbv_applicant_id: @cbv_flow.cbv_applicant_id,
         client_agency_id: current_agency&.id,
-        cbv_flow_id: @cbv_flow.id,
-        device_id: @cbv_flow.device_id
+        cbv_flow_id: @cbv_flow.id
       })
     end
   end
@@ -86,7 +84,6 @@ class Cbv::ApplicantInformationsController < Cbv::BaseController
       cbv_applicant_id: @cbv_flow.cbv_applicant_id,
       cbv_flow_id: @cbv_flow.id,
       client_agency_id: current_agency&.id,
-      device_id: @cbv_flow.device_id,
       error_string: error_string
     })
   end
@@ -97,7 +94,6 @@ class Cbv::ApplicantInformationsController < Cbv::BaseController
       cbv_applicant_id: @cbv_flow.cbv_applicant_id,
       cbv_flow_id: @cbv_flow.id,
       client_agency_id: current_agency&.id,
-      device_id: @cbv_flow.device_id,
       invitation_id: @cbv_flow.cbv_flow_invitation_id,
       identity_age_range_applicant: get_age_range(@cbv_applicant.date_of_birth)
     })

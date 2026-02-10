@@ -42,15 +42,6 @@ RSpec.describe Cbv::GenericLinksController do
           expect(assigns(:cbv_flow).cbv_applicant.client_agency_id).to eq("sandbox")
         end
 
-        it "sets an encrypted permanent cookie with cbv_applicant_id" do
-          cbv_flow = assigns(:cbv_flow)
-
-          expect(cookies.encrypted[:cbv_applicant_id]).to eq(cbv_flow.cbv_applicant_id)
-
-          cookie_jar = response.cookies["cbv_applicant_id"]
-          expect(cookie_jar).to be_present
-        end
-
         it "tracks ApplicantClickedGenericLink event with is_new_session: true" do
           expect(EventTrackingJob).to have_received(:perform_later).with(
             "ApplicantClickedGenericLink",
@@ -83,11 +74,12 @@ RSpec.describe Cbv::GenericLinksController do
         end
       end
 
-      context 'when existing CBV applicant cookie exists' do
+      context 'when a previous flow exists for the same device' do
         let!(:existing_applicant) { create(:cbv_applicant, :sandbox, case_number: "12345", first_name: "John") }
 
         before do
-          cookies.encrypted[:cbv_applicant_id] = existing_applicant.id
+          create(:cbv_flow, cbv_applicant: existing_applicant, device_id: "test-device-id")
+          cookies.permanent.signed[:device_id] = "test-device-id"
           get :show, params: { client_agency_id: "sandbox" }
         end
 
@@ -113,14 +105,13 @@ RSpec.describe Cbv::GenericLinksController do
         end
       end
 
-      context 'when existing CBV applicant cookie exists but applicant not found' do
+      context 'when device has no previous flow' do
         before do
-          cookies.encrypted[:cbv_applicant_id] = 99999
           get :show, params: { client_agency_id: "sandbox" }
         end
 
-        it "creates new applicant instead of reusing" do
-          expect(assigns(:cbv_flow).cbv_applicant_id).not_to eq(99999)
+        it "creates a new applicant" do
+          expect(assigns(:cbv_flow).cbv_applicant).to be_persisted
         end
 
         it "tracks event with is_new_session: true" do

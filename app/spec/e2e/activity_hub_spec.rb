@@ -22,24 +22,28 @@ RSpec.describe 'e2e Activity Hub flow test', :js, type: :feature do
     verify_page(page, title: I18n.t("activities.hub.title"))
 
     # Add a Volunteering activity
-    click_button I18n.t("activities.volunteering.add")
+    within("[data-testid='activity-section-volunteering']") do
+      click_link I18n.t("activities.hub.add")
+    end
     verify_page(page, title: I18n.t("activities.volunteering.title"))
     fill_in I18n.t("activities.volunteering.organization_name"), with: "Helping Hands"
     fill_in I18n.t("activities.volunteering.hours"), with: "20"
     fill_in I18n.t("activities.volunteering.date"), with: (Date.current.beginning_of_month - 1.day).strftime("%m/%d/%Y")
     click_button I18n.t("activities.volunteering.add")
     verify_page(page, title: I18n.t("activities.hub.title"))
-    expect(page).to have_content I18n.t("activities.volunteering.add")
+    expect(page).to have_content I18n.t("activities.hub.section_title.volunteering")
 
     # Add a Job Training activity
-    click_button I18n.t("activities.job_training.add")
+    within("[data-testid='activity-section-job-training']") do
+      click_link I18n.t("activities.hub.add")
+    end
     verify_page(page, title: I18n.t("activities.job_training.title"))
     fill_in I18n.t("activities.job_training.program_name"), with: "Resume Workshop"
     fill_in I18n.t("activities.job_training.organization_address"), with: "123 Main St, Baton Rouge, LA"
     fill_in I18n.t("activities.job_training.hours"), with: "6"
     click_button I18n.t("activities.job_training.add")
     verify_page(page, title: I18n.t("activities.hub.title"))
-    expect(page).to have_content I18n.t("activities.job_training.add")
+    expect(page).to have_content I18n.t("activities.hub.section_title.job_training")
 
     # Verify that the hub has the Volunteering activity
     expect(page).to have_content I18n.t("activities.hub.title")
@@ -79,7 +83,9 @@ RSpec.describe 'e2e Activity Hub flow test', :js, type: :feature do
     verify_page(page, title: I18n.t("activities.hub.title"))
 
     # Add an Income activity
-    click_button I18n.t("activities.income.add")
+    within("[data-testid='activity-section-income']") do
+      click_link I18n.t("activities.hub.add")
+    end
     verify_page(page, title: I18n.t("cbv.employer_searches.show.activity_flow.header"))
     @e2e.replay_modal_callbacks(page.driver.browser) do
       click_button "Paychex"
@@ -104,7 +110,8 @@ RSpec.describe 'e2e Activity Hub flow test', :js, type: :feature do
     # /activities/income/payment_details
     @e2e.replay_webhooks
     verify_page(page, title: I18n.t("cbv.payment_details.show.activity_flow.header", employer_name: ""), wait: 60)
-    fill_in "activity_flow[additional_information]", with: "Some kind of additional information"
+    fill_in "payroll_account[additional_information]",
+      with: "Some kind of additional information"
     click_button I18n.t("cbv.payment_details.show.continue")
     verify_page(page, title: I18n.t("activities.hub.title"))
 
@@ -122,7 +129,7 @@ RSpec.describe 'e2e Activity Hub flow test', :js, type: :feature do
     expect(page).to have_content I18n.t("activities.success.show.download_pdf")
   end
 
-  it "completes the generic flow for the education activity" do
+  it "returns to hub with empty state for education when no records are found" do
     visit URI(root_url).request_uri
 
     visit activities_flow_entry_path(client_agency_id: "sandbox") # This would normally be inferred
@@ -133,7 +140,9 @@ RSpec.describe 'e2e Activity Hub flow test', :js, type: :feature do
     verify_page(page, title: I18n.t("activities.hub.title"))
 
     # Add an Education activity
-    click_button I18n.t("activities.education.add")
+    within("[data-testid='activity-section-education']") do
+      click_link I18n.t("activities.hub.add")
+    end
     performing_active_jobs do
       click_button I18n.t("activities.education.new.continue")
       verify_page(page, title: I18n.t("activities.education.show.header")) # /activities/education/123 (loading page)
@@ -141,16 +150,38 @@ RSpec.describe 'e2e Activity Hub flow test', :js, type: :feature do
     verify_page(page, title: I18n.t("activities.education.edit.header"), wait: 10) # /activities/education/123/edit (show page)
     find("a", text: I18n.t("activities.education.edit.no_records_found.return_button")).click
 
+    verify_page(page, title: I18n.t("activities.hub.title"))
+    expect(page).to have_content I18n.t("activities.hub.empty.education")
+    expect(page).not_to have_button I18n.t("activities.hub.continue")
+  end
+
+  it "completes submission flow when education enrollment data exists" do
+    visit URI(root_url).request_uri
+
+    visit activities_flow_entry_path(client_agency_id: "sandbox") # This would normally be inferred
+    verify_page(page, title: I18n.t("activities.entry.title"))
+    find("label", text: I18n.t("activities.entry.consent", agency_name: I18n.t("shared.agency_full_name.sandbox"))).click
+    click_button I18n.t("activities.entry.continue")
+
+    verify_page(page, title: I18n.t("activities.hub.title"))
+
+    current_flow = ActivityFlow.order(created_at: :desc).first
+    education_activity = create(:education_activity, activity_flow: current_flow, status: :succeeded)
+    create(:nsc_enrollment_term, education_activity:, school_name: "Test University")
+
+    visit activities_flow_root_path
+    verify_page(page, title: I18n.t("activities.hub.title"))
+    expect(page).to have_content "Test University"
+
     click_button I18n.t("activities.hub.continue")
     verify_page(page, title: I18n.t("activities.summary.title"))
+    expect(page).to have_content "Test University"
 
-    # /activities/summary
     click_button I18n.t("activities.summary.submit", agency_name: I18n.t("shared.agency_full_name.sandbox"))
     verify_page(page, title: I18n.t("activities.submit.title"))
     find("label[for='activity_flow_consent_to_submit']").click
     click_button I18n.t("activities.submit.confirm")
 
-    # /activities/success
     verify_page(page, title: I18n.t("activities.success.show.title", agency_acronym: I18n.t("shared.agency_acronym.sandbox")))
     expect(page).to have_content I18n.t("activities.success.show.download_pdf")
   end

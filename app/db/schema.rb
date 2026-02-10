@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_01_28_020952) do
+ActiveRecord::Schema[8.1].define(version: 2026_02_05_174325) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
   enable_extension "pgcrypto"
@@ -113,6 +113,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_01_28_020952) do
     t.text "additional_comments"
     t.datetime "created_at", null: false
     t.integer "credit_hours"
+    t.string "data_source", default: "validated", null: false
     t.string "status", default: "unknown"
     t.datetime "updated_at", null: false
     t.index ["activity_flow_id"], name: "index_education_activities_on_activity_flow_id"
@@ -130,6 +131,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_01_28_020952) do
   create_table "job_training_activities", force: :cascade do |t|
     t.bigint "activity_flow_id", null: false
     t.datetime "created_at", null: false
+    t.string "data_source", default: "self_attested", null: false
     t.date "date"
     t.integer "hours"
     t.string "organization_address"
@@ -153,8 +155,10 @@ ActiveRecord::Schema[8.1].define(version: 2026_01_28_020952) do
   end
 
   create_table "payroll_accounts", force: :cascade do |t|
+    t.string "additional_information"
     t.string "aggregator_account_id"
     t.datetime "created_at", null: false
+    t.string "data_source", default: "validated", null: false
     t.bigint "flow_id", null: false
     t.string "flow_type"
     t.datetime "income_synced_at", precision: nil
@@ -311,6 +315,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_01_28_020952) do
   create_table "volunteering_activities", force: :cascade do |t|
     t.bigint "activity_flow_id", null: false
     t.datetime "created_at", null: false
+    t.string "data_source", default: "self_attested", null: false
     t.date "date"
     t.integer "hours"
     t.string "organization_name"

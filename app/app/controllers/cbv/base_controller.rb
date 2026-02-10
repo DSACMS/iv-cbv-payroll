@@ -2,7 +2,7 @@ class Cbv::BaseController < FlowController
   before_action :set_cbv_origin, :set_flow, :ensure_cbv_flow_not_yet_complete, :prevent_back_after_complete, :capture_page_view
   before_action :check_if_pilot_ended
   around_action :append_log_tags, if: -> { ENV.fetch("STRUCTURED_LOGGING_ENABLED", "false") == "true" }
-  helper_method :agency_url, :get_comment_by_account_id
+  helper_method :agency_url
 
   private
 
@@ -46,10 +46,6 @@ class Cbv::BaseController < FlowController
     current_agency&.agency_contact_website
   end
 
-  def get_comment_by_account_id(account_id)
-    @flow.additional_information[account_id] || { comment: nil, updated_at: nil }
-  end
-
   def prevent_back_after_complete
     response.headers["Cache-Control"] = "no-cache, no-store, max-age=0, must-revalidate"
     response.headers["Pragma"] = "no-cache"
@@ -84,7 +80,6 @@ class Cbv::BaseController < FlowController
       invitation_id: @flow.invitation_id,
       cbv_applicant_id: @flow.cbv_applicant_id,
       client_agency_id: @flow.cbv_applicant.client_agency_id,
-      device_id: @flow.device_id,
       path: request.path
     })
   end
@@ -112,7 +107,6 @@ class Cbv::BaseController < FlowController
       cbv_flow_id: cbv_flow.id,
       cbv_applicant_id: cbv_flow.cbv_applicant_id,
       client_agency_id: current_agency&.id,
-      device_id: cbv_flow.device_id,
       seconds_since_invitation: (Time.now - invitation.created_at).to_i,
       household_member_count: count_unique_members(invitation),
       completed_reports_count: invitation.cbv_flows.completed.count,
