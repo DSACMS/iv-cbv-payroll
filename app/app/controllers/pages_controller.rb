@@ -9,9 +9,8 @@ class PagesController < ApplicationController
     # When in development environment, you'll need to set
     #   config.consider_all_requests_local = false
     # in config/development.rb for these pages to actually show up.
-    @cbv_flow = if session[:flow_id]
-                  CbvFlow.find(session[:flow_id])
-                end
+    @flow = flow_class.find_by(id: session[:flow_id])
+    @invitation = @flow&.is_a?(ActivityFlow) ? @flow&.activity_flow_invitation : @flow&.cbv_flow_invitation
 
     render status: :not_found, formats: %i[html]
   end

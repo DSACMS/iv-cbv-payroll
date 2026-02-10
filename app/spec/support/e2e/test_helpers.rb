@@ -21,9 +21,19 @@ module E2e
         ERROR
       end
 
+      # Infer flow from URL
+      current_path = URI.parse(page.current_url).path
+      if current_path&.start_with?("/activities")
+        pilot_name ||= I18n.t("shared.pilot_name_hr1")
+      elsif current_path&.include?("/cbv/")
+        pilot_name ||= I18n.t("shared.pilot_name")
+      else
+        pilot_name ||= I18n.t("shared.pilot_name")
+      end
+
       # Verify page has a <title> tag that isn't just the default
-      expect(page.title).to end_with("| Report My Income")
-      expect(page.title).not_to eq("| Report My Income")
+      expect(page.title).to end_with("| #{pilot_name}")
+      expect(page.title).not_to eq("| #{pilot_name}")
 
       # Check accessibility of every page with Axe matchers.
       #

@@ -12,34 +12,29 @@
       <div class="usa-logo">
         <em class="usa-logo__text cbv-header">
           <div class="cbv-header__pilot-name">
-            <%= t("shared.pilot_name") %>
+            <%= t(pilot_name_key) %>
             <% if current_agency %>
               <span class="cbv-header__separator">|</span>
             <% end %>
           </div>
-
           <% has_logo = current_agency && current_agency.logo_path.present? %>
           <% has_square_logo = current_agency && current_agency.logo_square_path.present? %>
           <% logo_path = has_square_logo ? current_agency.logo_square_path : (has_logo ? current_agency.logo_path : nil) %>
           <% show_agency_text = has_square_logo || !has_logo %>
-
           <div class="<%= has_logo ?
             "display-none tablet:display-flex" : "display-flex" %> flex-align-center">
             <% if logo_path %>
               <%= image_tag logo_path, class: "cbv-header__agency-logo cbv-header__agency-logo--#{current_agency.id}" %>
             <% end %>
-
             <% if show_agency_text %>
               <%= agency_translation("shared.header.cbv_flow_title") %>
             <% end %>
           </div>
-
           <% if has_logo %>
             <%= image_tag current_agency.logo_path, class: "cbv-header__agency-logo cbv-header__agency-logo--#{current_agency.id} tablet:display-none" %>
           <% end %>
         </em>
       </div>
-
       <% if show_menu? %>
         <button class="usa-menu-btn"><%= t("shared.header.menu") %></button>
       <% end %>
@@ -49,23 +44,21 @@
         <%= image_tag "@uswds/uswds/dist/img/usa-icons/close.svg", role: "img", alt: t("shared.header.close") %>
       </button>
       <ul class="usa-nav__primary usa-accordion">
-          <% if user_signed_in? %>
-            <li class="usa-nav__primary-item">
-              <%= button_to t("shared.header.log_out"), destroy_user_session_url(client_agency_id: current_user.client_agency_id), method: :delete, class: "usa-nav__link" %>
-            </li>
-          <% end %>
-
+        <% if user_signed_in? %>
           <li class="usa-nav__primary-item">
-            <%= render partial: "help/help_link", locals: { class_name: "usa-nav__link", text: t("shared.header.help"), source: "nav" } %>
+            <%= button_to t("shared.header.log_out"), destroy_user_session_url(client_agency_id: current_user.client_agency_id), method: :delete, class: "usa-nav__link" %>
           </li>
-
-          <% I18n.available_locales.each do |locale| %>
-            <% next if locale == I18n.locale %>
-            <li class="usa-nav__primary-item">
-              <%= switch_locale_link(locale) %>
-            </li>
-          <% end %>
-        </ul>
+        <% end %>
+        <li class="usa-nav__primary-item">
+          <%= render partial: "help/help_link", locals: { class_name: "usa-nav__link", text: t("shared.header.help"), source: "nav" } %>
+        </li>
+        <% I18n.available_locales.each do |locale| %>
+          <% next if locale == I18n.locale %>
+          <li class="usa-nav__primary-item">
+            <%= switch_locale_link(locale) %>
+          </li>
+        <% end %>
+      </ul>
     </nav>
   </div>
 </header>
