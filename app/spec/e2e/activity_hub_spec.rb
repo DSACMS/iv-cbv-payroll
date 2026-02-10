@@ -21,42 +21,41 @@ RSpec.describe 'e2e Activity Hub flow test', :js, type: :feature do
 
     verify_page(page, title: I18n.t("activities.hub.title"))
 
-    # Add a Volunteering activity
-    within("[data-testid='activity-section-volunteering']") do
-      click_link I18n.t("activities.hub.add")
+    # Add a Community Service activity
+    within("[data-activity-type='community_service']") do
+      click_button I18n.t("activities.hub.add")
     end
-    verify_page(page, title: I18n.t("activities.volunteering.title"))
-    fill_in I18n.t("activities.volunteering.organization_name"), with: "Helping Hands"
-    fill_in I18n.t("activities.volunteering.hours"), with: "20"
-    fill_in I18n.t("activities.volunteering.date"), with: (Date.current.beginning_of_month - 1.day).strftime("%m/%d/%Y")
-    click_button I18n.t("activities.volunteering.add")
+    verify_page(page, title: I18n.t("activities.community_service.title"))
+    fill_in I18n.t("activities.community_service.organization_name"), with: "Helping Hands"
+    fill_in I18n.t("activities.community_service.hours"), with: "20"
+    fill_in I18n.t("activities.community_service.date"), with: (Date.current.beginning_of_month - 1.day).strftime("%m/%d/%Y")
+    click_button I18n.t("activities.community_service.add")
     verify_page(page, title: I18n.t("activities.hub.title"))
-    expect(page).to have_content I18n.t("activities.hub.section_title.volunteering")
+    expect(page).to have_content "Helping Hands"
 
-    # Add a Job Training activity
-    within("[data-testid='activity-section-job-training']") do
-      click_link I18n.t("activities.hub.add")
+    # Add a Work Program activity
+    within("[data-activity-type='work_programs']") do
+      click_button I18n.t("activities.hub.add")
     end
-    verify_page(page, title: I18n.t("activities.job_training.title"))
-    fill_in I18n.t("activities.job_training.program_name"), with: "Resume Workshop"
-    fill_in I18n.t("activities.job_training.organization_address"), with: "123 Main St, Baton Rouge, LA"
-    fill_in I18n.t("activities.job_training.hours"), with: "6"
-    click_button I18n.t("activities.job_training.add")
+    verify_page(page, title: I18n.t("activities.work_programs.title"))
+    fill_in I18n.t("activities.work_programs.program_name"), with: "Resume Workshop"
+    fill_in I18n.t("activities.work_programs.organization_address"), with: "123 Main St, Baton Rouge, LA"
+    fill_in I18n.t("activities.work_programs.hours"), with: "6"
+    fill_in I18n.t("activities.work_programs.date"), with: (Date.current.beginning_of_month - 1.day).strftime("%m/%d/%Y")
+    click_button I18n.t("activities.work_programs.add")
     verify_page(page, title: I18n.t("activities.hub.title"))
-    expect(page).to have_content I18n.t("activities.hub.section_title.job_training")
+    expect(page).to have_content "Resume Workshop"
 
-    # Verify that the hub has the Volunteering activity
+    # Verify that the hub has the Community Service activity
     expect(page).to have_content I18n.t("activities.hub.title")
     expect(page).to have_content "Helping Hands"
-    expect(page).to have_content(Date.current.beginning_of_month - 1.day)
-    expect(page).to have_content "20"
+    expect(page).to have_content I18n.t("activities.hub.cards.hours", count: 20)
 
-    # Verify that the hub has the Job Training activity
+    # Verify that the hub has the Work Programs activity
     expect(page).to have_content "Resume Workshop"
-    expect(page).to have_content "123 Main St, Baton Rouge, LA"
-    expect(page).to have_content "6"
+    expect(page).to have_content I18n.t("activities.hub.cards.hours", count: 6)
 
-    click_button I18n.t("activities.hub.continue")
+    click_button I18n.t("activities.hub.review_and_submit")
     verify_page(page, title: I18n.t("activities.summary.title"))
     expect(page).to have_content "Helping Hands"
     expect(page).to have_content "Resume Workshop"
@@ -82,9 +81,9 @@ RSpec.describe 'e2e Activity Hub flow test', :js, type: :feature do
 
     verify_page(page, title: I18n.t("activities.hub.title"))
 
-    # Add an Income activity
-    within("[data-testid='activity-section-income']") do
-      click_link I18n.t("activities.hub.add")
+    # Add an Employment activity
+    within("[data-activity-type='employment']") do
+      click_button I18n.t("activities.hub.add")
     end
     verify_page(page, title: I18n.t("cbv.employer_searches.show.activity_flow.header"))
     @e2e.replay_modal_callbacks(page.driver.browser) do
@@ -115,7 +114,7 @@ RSpec.describe 'e2e Activity Hub flow test', :js, type: :feature do
     click_button I18n.t("cbv.payment_details.show.continue")
     verify_page(page, title: I18n.t("activities.hub.title"))
 
-    click_button I18n.t("activities.hub.continue")
+    click_button I18n.t("activities.hub.review_and_submit")
     verify_page(page, title: I18n.t("activities.summary.title"))
 
     # /activities/summary
@@ -140,8 +139,8 @@ RSpec.describe 'e2e Activity Hub flow test', :js, type: :feature do
     verify_page(page, title: I18n.t("activities.hub.title"))
 
     # Add an Education activity
-    within("[data-testid='activity-section-education']") do
-      click_link I18n.t("activities.hub.add")
+    within("[data-activity-type='education']") do
+      click_button I18n.t("activities.hub.add")
     end
     performing_active_jobs do
       click_button I18n.t("activities.education.new.continue")
@@ -152,7 +151,6 @@ RSpec.describe 'e2e Activity Hub flow test', :js, type: :feature do
 
     verify_page(page, title: I18n.t("activities.hub.title"))
     expect(page).to have_content I18n.t("activities.hub.empty.education")
-    expect(page).not_to have_button I18n.t("activities.hub.continue")
   end
 
   it "completes submission flow when education enrollment data exists" do
@@ -173,7 +171,7 @@ RSpec.describe 'e2e Activity Hub flow test', :js, type: :feature do
     verify_page(page, title: I18n.t("activities.hub.title"))
     expect(page).to have_content "Test University"
 
-    click_button I18n.t("activities.hub.continue")
+    click_button I18n.t("activities.hub.review_and_submit")
     verify_page(page, title: I18n.t("activities.summary.title"))
     expect(page).to have_content "Test University"
 

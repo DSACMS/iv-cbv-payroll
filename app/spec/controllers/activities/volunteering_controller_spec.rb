@@ -17,7 +17,7 @@ RSpec.describe Activities::VolunteeringController, type: :controller do
       get :new
 
       expect(response).to have_http_status(:ok)
-      expect(response.body).to include(I18n.t("activities.volunteering.title"))
+      expect(response.body).to include(I18n.t("activities.community_service.title"))
     end
   end
 
@@ -38,7 +38,7 @@ RSpec.describe Activities::VolunteeringController, type: :controller do
       end.to change(activity_flow.volunteering_activities, :count).by(1)
 
       expect(response).to redirect_to(activities_flow_root_path)
-      expect(flash[:notice]).to eq(I18n.t("activities.volunteering.created"))
+      expect(flash[:notice]).to eq(I18n.t("activities.community_service.created"))
     end
 
     it "redirects to activity hub when total hours are below the threshold" do
@@ -78,7 +78,7 @@ RSpec.describe Activities::VolunteeringController, type: :controller do
       get :edit, params: { id: volunteering_activity.id }
 
       expect(response).to have_http_status(:ok)
-      expect(response.body).to include(I18n.t("activities.volunteering.edit_title"))
+      expect(response.body).to include(I18n.t("activities.community_service.edit_title"))
     end
   end
 
@@ -90,7 +90,7 @@ RSpec.describe Activities::VolunteeringController, type: :controller do
 
       expect(volunteering_activity.reload.hours).to eq(10)
       expect(response).to redirect_to(activities_flow_root_path)
-      expect(flash[:notice]).to eq(I18n.t("activities.volunteering.updated"))
+      expect(flash[:notice]).to eq(I18n.t("activities.community_service.updated"))
     end
   end
 
@@ -103,7 +103,7 @@ RSpec.describe Activities::VolunteeringController, type: :controller do
       end.to change(activity_flow.volunteering_activities, :count).by(-1)
 
       expect(response).to redirect_to(activities_flow_root_path)
-      expect(flash[:notice]).to eq(I18n.t("activities.volunteering.deleted"))
+      expect(flash[:notice]).to eq(I18n.t("activities.community_service.deleted"))
     end
   end
 end

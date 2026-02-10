@@ -41,15 +41,15 @@
       <% activity_data[:activity].nsc_enrollment_terms.each do |enrollment_term| %>
         <%= render(EnrollmentTermTableComponent.new(nsc_enrollment_term: enrollment_term)) %>
       <% end %>
-    <% when :volunteering %>
+    <% when :community_service %>
       <%= render partial: "activities/summary/volunteering_table", locals: { activity: activity_data[:activity] } %>
-    <% when :job_training %>
+    <% when :work_programs %>
       <%= render partial: "activities/summary/job_training_table", locals: { activity: activity_data[:activity] } %>
-    <% when :income %>
+    <% when :employment %>
       <%= render partial: "activities/summary/employment_table", locals: { payroll_account: activity_data[:payroll_account], aggregator_report: @aggregator_report } %>
     <% end %>
 
-    <% if activity_data[:type] == :income %>
+    <% if activity_data[:type] == :employment %>
       <% comment = activity_data[:payroll_account].additional_information %>
       <% if comment.present? %>
         <h3>

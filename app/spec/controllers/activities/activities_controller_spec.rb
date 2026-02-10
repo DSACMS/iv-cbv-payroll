@@ -17,17 +17,17 @@ RSpec.describe Activities::ActivitiesController, type: :controller do
       get :index
     end
 
-    it "shows current flow volunteering activities" do
+    it "shows current flow community service activities" do
       expect(
-        assigns(:volunteering_activities)
+        assigns(:community_service_activities)
       ).to match_array(
              current_flow.volunteering_activities
            )
     end
 
-    it "shows current flow job training activities" do
+    it "shows current flow work programs activities" do
       expect(
-        assigns(:job_training_activities)
+        assigns(:work_programs_activities)
       ).to match_array(
              current_flow.job_training_activities
            )
@@ -57,12 +57,12 @@ RSpec.describe Activities::ActivitiesController, type: :controller do
       get :index
     end
 
-    it "renders empty-state copy and hides continue" do
+    it "renders empty-state copy for all sections and hides review and submit" do
       expect(response.body).to include(I18n.t("activities.hub.empty.employment"))
       expect(response.body).to include(I18n.t("activities.hub.empty.education"))
       expect(response.body).to include(I18n.t("activities.hub.empty.community_service"))
       expect(response.body).to include(I18n.t("activities.hub.empty.work_programs"))
-      expect(response.body).not_to include(I18n.t("activities.hub.continue"))
+      expect(response.body).not_to include(I18n.t("activities.hub.review_and_submit"))
     end
   end
 
@@ -76,8 +76,9 @@ RSpec.describe Activities::ActivitiesController, type: :controller do
       get :index
     end
 
-    it "shows continue" do
-      expect(response.body).to include(I18n.t("activities.hub.continue"))
+    it "does not show empty state for community service and shows review and submit" do
+      expect(response.body).not_to include(I18n.t("activities.hub.empty.community_service"))
+      expect(response.body).to include(I18n.t("activities.hub.review_and_submit"))
     end
   end
 
@@ -91,9 +92,8 @@ RSpec.describe Activities::ActivitiesController, type: :controller do
       get :index
     end
 
-    it "shows education empty-state copy and hides continue" do
+    it "shows education empty-state copy" do
       expect(response.body).to include(I18n.t("activities.hub.empty.education"))
-      expect(response.body).not_to include(I18n.t("activities.hub.continue"))
     end
   end
 
@@ -108,9 +108,8 @@ RSpec.describe Activities::ActivitiesController, type: :controller do
       get :index
     end
 
-    it "shows enrollment data and continue, not the empty-state copy" do
+    it "shows enrollment data and not the empty-state copy" do
       expect(response.body).to include("Test University")
-      expect(response.body).to include(I18n.t("activities.hub.continue"))
       expect(response.body).not_to include(I18n.t("activities.hub.empty.education"))
     end
   end

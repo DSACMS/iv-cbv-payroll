@@ -2,9 +2,9 @@
   <%= t("activities.hub.reporting_window", range: @flow.reporting_window_display) %>
 </p>
 <%= uswds_form_with(model: job_training_activity, url: job_training_activity.persisted? ? activities_flow_job_training_path(id: job_training_activity.id) : activities_flow_job_training_index_path) do |f| %>
-  <%= f.text_field :program_name, label: t("activities.job_training.program_name") %>
-  <%= f.text_field :organization_address, label: t("activities.job_training.organization_address") %>
-  <%= f.text_field :hours, type: :number, label: t("activities.job_training.hours") %>
-  <%= f.date_picker :date, label: t("activities.job_training.date") %>
-  <%= f.submit job_training_activity.persisted? ? t("activities.hub.save") : t("activities.job_training.add") %>
+  <%= f.text_field :program_name, label: t("activities.work_programs.program_name") %>
+  <%= f.text_field :organization_address, label: t("activities.work_programs.organization_address") %>
+  <%= f.text_field :hours, type: :number, label: t("activities.work_programs.hours") %>
+  <%= f.date_picker :date, label: t("activities.work_programs.date") %>
+  <%= f.submit job_training_activity.persisted? ? t("activities.hub.save") : t("activities.work_programs.add") %>
 <% end %>

@@ -56,6 +56,16 @@ en:
             date:
               outside_reporting_window: must be within %{range}
   activities:
+    community_service:
+      add: Add Community Service Activity
+      created: Community service activity was successfully created.
+      date: Date
+      deleted: Community service activity was successfully deleted.
+      edit_title: Edit Community Service Activity
+      hours: Hours
+      organization_name: Organization name
+      title: Community service
+      updated: Community service activity was successfully updated.
     education:
       deleted: Education activity was successfully deleted.
       edit:
@@ -92,6 +102,10 @@ en:
         header: We're gathering your details from National Student Clearinghouse
         school_or_program: School or program
       title: Education
+    employment:
+      account_id: Account ID
+      synchronization_status: Status
+      title: Employment
     entry:
       consent: Check this box to agree to let us record your information and share it with %{agency_name}.
       consent_required: Please check the consent box to continue.
@@ -102,46 +116,31 @@ en:
       invalid_token: The link you used is invalid.
     hub:
       add: Add
-      continue: Continue
-      count:
-        one: "%{count} activity added"
-        other: "%{count} activities added"
-      delete: Delete
-      delete_confirm: Are you sure you want to delete this activity?
+      cards:
+        credit_hours: 'Credit hours: %{amount}'
+        enrollment_status: 'Enrollment status: %{status}'
+        gross_income: 'Gross income: %{amount}'
+        hours: 'Hours: %{count}'
+        not_enrolled: Not enrolled
+      description: "%{agency_name} needs you to report your Community Engagement for %{reporting_window}."
       edit: Edit
       empty:
         community_service: No community service added
         education: No education added
         employment: No employment added
         work_programs: No work programs added
-      intro: "%{agency_full_name} needs you to report your Community Engagement for %{reporting_window}."
       reporting_window: 'Reporting window: %{range}'
+      review_and_submit: Review and Submit
       save: Save changes
-      section_title:
-        job_training: Work programs
-        volunteering: Community service
-      title: Add activities to your Community Engagement report.
-    income:
-      account_id: Account ID
-      synchronization_status: Status
-      title: Employment
-    job_training:
-      add: Add Job Training Activity
-      created: Job training activity was successfully created.
-      date: Date
-      deleted: Job training activity was successfully deleted.
-      edit_title: Edit Job Training Activity
-      hours: Hours attended
-      organization_address: Organization address
-      program_name: Program name
-      title: Job Training
-      updated: Job training activity was successfully updated.
+      title: Add activities to your Community Engagement report
     submit:
       confirm: Share my report
       consent_label_html: 'Check this box to confirm: <ul class="margin-y-2"><li>The information provided by you is true and complete to the best of your knowledge.</li><li>You agree to inform the agency of any income not reflected in this report or any discrepancies found in the information gathered with this tool.</li><li>You understand that providing accurate and complete information is your responsibility, and any false or omitted information may have legal consequences.</li></ul> By sending this report, you authorize its use for income verification by authorized agency personnel.'
       consent_required: Please check the legal agreement box to share your report.
       description: Your report will be sent to %{agency_name}. You must check the legal agreement box to share your report.
       pdf:
+        community_service_count: Community service activities
+        community_service_section: Community service activities
         confirmation_code: Confirmation code
         date: Date
         description: The following information was provided by the Medicaid client for verification of the Community Engagement Requirements.
@@ -150,12 +149,10 @@ en:
         heading: Your Medicaid Community Engagement Activity report
         hours: Hours
         income_activities: Employment activities
-        job_training_count: Job training activities
-        job_training_section: Job training and education
+        no_community_service: No community service activities were reported.
         no_education: No education activities were reported.
         no_income: No employment activities were reported.
-        no_job_training: No job training activities were reported.
-        no_volunteering: No volunteering activities were reported.
+        no_work_programs: No work program activities were reported.
         not_provided: Not provided
         organization_address: Organization address
         organization_name: Organization
@@ -166,8 +163,8 @@ en:
         summary_heading: Activity summary
         title: Community Engagement activity report
         total_hours: Total hours reported
-        volunteering_count: Volunteering activities
-        volunteering_section: Volunteering activities
+        work_programs_count: Work program activities
+        work_programs_section: Work program and education
       title: Submit your Medicaid Community Engagement report
     success:
       show:
@@ -185,32 +182,33 @@ en:
       activity_header: 'Activity: %{type}'
       activity_header_numbered: 'Activity %{number}: %{type}'
       additional_comments: Additional comments
+      community_service:
+        header: Community service information
+        hours_served: Hours served
+        month: Month
+        organization: Organization
       consent_label_html: 'Check this box to confirm: <ul class="margin-y-2"><li>The information provided by you is true and complete to the best of your knowledge.</li><li>You agree to inform %{agency_name} of any activities not reflected in this report or any discrepancies found in the information gathered with this tool.</li><li>You understand that providing accurate and complete information is your responsibility, and any false or omitted information may have legal consequences.</li></ul> By sending this report, you authorize its use for community engagement verification by authorized %{agency_initials} personnel.'
       description: The report below has your community engagement information from %{start_date} to %{end_date}. Please review before sending to %{agency_name}.
       description_single_month: The report below has your community engagement information from %{month}. Please review before sending to %{agency_name}.
-      income:
+      employment:
         employer: Employer
-      job_training:
-        header: Job Training information
       legal_agreement: Legal agreement
       submit: Submit to %{agency_name}
       title: Review and submit your Community Engagement report
-      volunteering:
-        header: Volunteering information
-        hours_volunteered: Hours volunteered
-        month: Month
-        organization: Organization
+      work_programs:
+        header: Work Program information
       your_details: Your details
-    volunteering:
-      add: Add Volunteering Activity
-      created: Volunteering activity was successfully created.
+    work_programs:
+      add: Add Work Program Activity
+      created: Work program activity was successfully created.
       date: Date
-      deleted: Volunteering activity was successfully deleted.
-      edit_title: Edit Volunteering Activity
-      hours: Hours
-      organization_name: Organization name
-      title: Volunteering
-      updated: Volunteering activity was successfully updated.
+      deleted: Work program activity was successfully deleted.
+      edit_title: Edit Work Program Activity
+      hours: Hours attended
+      organization_address: Organization address
+      program_name: Program name
+      title: Work programs
+      updated: Work program activity was successfully updated.
   activity_flow_progress_indicator:
     description: We calculate your community engagement from the activities you add to your report.
     hours: hours

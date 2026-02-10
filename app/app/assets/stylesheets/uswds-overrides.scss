@@ -69,3 +69,51 @@ tr td:first-child {
     @include u-font-size("sans", 8);
   }
 }
+
+// Activity Hub progress/activities divider
+.activity-hub-divider {
+  margin-left: 0;
+
+  @include at-media("tablet") {
+    max-width: 30rem;
+  }
+}
+
+// Activity Hub section header with inline Add button
+.activity-hub-section-header {
+  margin-bottom: units(2.5);
+
+  @include at-media("tablet") {
+    max-width: 30rem;
+  }
+
+  form {
+    margin: 0;
+  }
+
+  .usa-button {
+    margin: 0;
+  }
+}
+
+// Activity Hub empty state
+.activity-hub-empty-state {
+  @include at-media("tablet") {
+    max-width: 30rem;
+  }
+}
+
+// Activity Hub card overrides
+.activity-hub-card {
+  padding-left: 0;
+  padding-right: 0;
+
+  @include at-media("tablet") {
+    max-width: 30rem;
+  }
+
+  .usa-card__container {
+    margin-left: 0;
+    margin-right: 0;
+  }
+}

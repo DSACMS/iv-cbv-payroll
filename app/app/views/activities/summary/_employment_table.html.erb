@@ -1,7 +1,7 @@
 <% account_report = aggregator_report.find_account_report(payroll_account.aggregator_account_id) %>
 <% is_w2_worker = account_report&.employment&.employment_type == :w2 %>
 <p>
-  <strong><%= t("activities.summary.income.employer") %>:</strong>
+  <strong><%= t("activities.summary.employment.employer") %>:</strong>
   <%= account_report&.employment&.employer_name || t("shared.not_applicable") %>
 </p>
 <% if is_w2_worker %>
