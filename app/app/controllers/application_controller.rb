@@ -1,6 +1,6 @@
 class ApplicationController < ActionController::Base
   helper :view
-  helper_method :current_agency, :show_menu?, :pilot_ended?, :get_site_alert_title, :get_site_alert_body, :pilot_name_key
+  helper_method :current_agency, :show_menu?, :pilot_ended?, :get_site_alert_title, :get_site_alert_body, :pilot_name_key, :session_timeout_enabled?
   around_action :switch_locale
   before_action :add_newrelic_metadata, :redirect_if_maintenance_mode, :enable_mini_profiler_in_demo, :set_device_id_cookie
 
@@ -60,6 +60,10 @@ class ApplicationController < ActionController::Base
     end
 
     @current_agency
+  end
+
+  def session_timeout_enabled?
+    session[:flow_id].present?
   end
 
   def enable_mini_profiler_in_demo

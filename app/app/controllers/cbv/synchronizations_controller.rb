@@ -26,6 +26,10 @@ class Cbv::SynchronizationsController < Cbv::BaseController
 
   private
 
+  def session_timeout_enabled?
+    false
+  end
+
   def set_payroll_account
     account_id = params[:user][:account_id]
 
