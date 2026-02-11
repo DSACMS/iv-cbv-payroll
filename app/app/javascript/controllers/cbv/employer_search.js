@@ -3,13 +3,24 @@ import { createModalAdapter } from "@js/utilities/createModalAdapter"
 import { loadProviderResources } from "@js/utilities/loadProviderResources.ts"
 
 export default class extends Controller {
-  static targets = ["form", "userAccountId", "employerButton", "helpAlert", "tabAnnouncement"]
+  static targets = [
+    "form",
+    "searchButton",
+    "userAccountId",
+    "employerButton",
+    "helpAlert",
+    "tabAnnouncement",
+  ]
 
   static values = {
     cbvFlowId: Number,
   }
 
   async initialize() {
+    if (this.hasSearchButtonTarget) {
+      this.searchButtonTarget.removeAttribute("disabled")
+    }
+
     await loadProviderResources()
   }
 
