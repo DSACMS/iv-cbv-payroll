@@ -7,13 +7,15 @@ class CaseWorkerTransmitterJob < ApplicationJob
     @cbv_flow = CbvFlow.find(cbv_flow_id)
     @current_agency = current_agency(@cbv_flow)
 
-    aggregator_report = AggregatorReportFetcher.new(@cbv_flow).report
+    with_flow_tags(@cbv_flow) do
+      aggregator_report = AggregatorReportFetcher.new(@cbv_flow).report
 
-    transmitter_class.new(@cbv_flow, @current_agency, aggregator_report).deliver
-    @cbv_flow.touch(:transmitted_at)
+      transmitter_class.new(@cbv_flow, @current_agency, aggregator_report).deliver
+      @cbv_flow.touch(:transmitted_at)
 
-    track_transmitted_event(CbvFlow.find(cbv_flow_id), aggregator_report.paystubs)
-    enqueue_agency_name_matching_job(CbvFlow.find(cbv_flow_id))
+      track_transmitted_event(CbvFlow.find(cbv_flow_id), aggregator_report.paystubs)
+      enqueue_agency_name_matching_job(CbvFlow.find(cbv_flow_id))
+    end
   end
 
   def transmitter_class

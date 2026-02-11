@@ -37,8 +37,6 @@ RSpec.describe CaseWorkerTransmitterJob, type: :job do
     Timecop.freeze(current_time, &ex)
   end
 
-
-
   before do
     pinwheel_stub_request_end_user_accounts_response
     pinwheel_stub_request_end_user_paystubs_response

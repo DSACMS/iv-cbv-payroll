@@ -193,7 +193,8 @@ RSpec.describe Cbv::BaseController, type: :controller do
 
         expect(response).to have_http_status(:ok)
         expect(JSON.parse(response.body).first.symbolize_keys).to match(
-          cbv_flow_id: flow.id,
+          flow_id: flow.id,
+          flow_type: "CbvFlow",
           invitation_id: flow.invitation_id,
           cbv_applicant_id: flow.cbv_applicant_id,
           client_agency_id: flow.cbv_applicant.client_agency_id,
@@ -215,7 +216,8 @@ RSpec.describe Cbv::BaseController, type: :controller do
 
         expect(response).to have_http_status(:ok)
         expect(JSON.parse(response.body).first.symbolize_keys).to match(
-          cbv_flow_id: flow.id,
+          flow_id: flow.id,
+          flow_type: "ActivityFlow",
           invitation_id: flow.invitation_id,
           cbv_applicant_id: flow.cbv_applicant_id,
           client_agency_id: flow.cbv_applicant.client_agency_id,
