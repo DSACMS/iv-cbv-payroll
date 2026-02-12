@@ -199,7 +199,7 @@ module Aggregators
 
         cc_enrollments.each do |enrollment_detail|
           (enrollment_detail["enrollmentData"] || []).each do |term|
-            %w[termBeginDate termEndDate schoolCertifiedOnDate].each do |date_field|
+            %w[termBeginDate termEndDate].each do |date_field|
               next unless term[date_field].present?
 
               original_date = Date.parse(term[date_field])
