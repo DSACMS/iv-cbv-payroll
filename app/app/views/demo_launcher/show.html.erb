@@ -41,18 +41,24 @@
     <div class="usa-form-group">
       <div class="usa-hint demo-launcher__usa-hint demo-launcher__separator">-- or --</div>
       <div class="usa-hint demo-launcher__usa-hint">Specify the reporting window manually.</div>
-      <input class="usa-input usa-input--sm" type="number" name="reporting_window_months"
-             id="reporting_window_months" min="1" max="99" autocomplete="off"
-             value="<%= params[:reporting_window_months] %>"
-             data-demo-launcher-target="monthsInput">
+      <div class="demo-launcher__inline-field">
+        <input class="usa-input usa-input--sm" type="number" name="reporting_window_months"
+               id="reporting_window_months" min="1" max="99" autocomplete="off"
+               value="<%= params[:reporting_window_months] %>"
+               data-demo-launcher-target="monthsInput">
+        <span>months</span>
+      </div>
     </div>
 
-    <h3>Session timeout (minutes)</h3>
+    <h3>Session timeout</h3>
     <div class="usa-hint demo-launcher__usa-hint">The warning modal appears 5 min before expiry, so use 6+ to avoid an immediate warning.</div>
     <div class="usa-form-group">
-      <input class="usa-input usa-input--sm" type="number" name="demo_timeout"
-             id="demo_timeout" min="1" max="999" autocomplete="off"
-             value="<%= params[:demo_timeout] || 30 %>">
+      <div class="demo-launcher__inline-field">
+        <input class="usa-input usa-input--sm" type="number" name="demo_timeout"
+               id="demo_timeout" min="1" max="999" autocomplete="off"
+               value="<%= params[:demo_timeout] || 30 %>">
+        <span>minutes</span>
+      </div>
     </div>
 
     <button type="submit" name="launch_type" value="tokenized" formtarget="_blank" class="usa-button">Launch tokenized flow</button>

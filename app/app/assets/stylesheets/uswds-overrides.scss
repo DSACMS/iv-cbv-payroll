@@ -146,4 +146,17 @@ tr td:first-child {
   .demo-launcher__separator {
     margin-bottom: 16px;
   }
+
+  .demo-launcher__inline-field {
+    display: flex !important;
+    align-items: baseline !important;
+    gap: units(1) !important;
+
+    > * {
+      display: inline-block !important;
+      width: auto !important;
+      max-width: none !important;
+      flex-shrink: 0 !important;
+    }
+  }
 }
