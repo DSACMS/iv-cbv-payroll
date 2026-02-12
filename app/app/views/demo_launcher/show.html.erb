@@ -1,7 +1,7 @@
 <% content_for :title, "Demo Launcher" %>
 <div class="grid-col tablet:grid-col-8 demo-launcher">
-  <h1>Demo Launcher</h1>
-  <div class="usa-hint demo-launcher__usa-hint">Configure settings and launch a flow in a new tab.</div>
+  <h1>Emmy Launcher</h1>
+  <div class="usa-hint demo-launcher__usa-hint">Configure settings and launch Emmy in a new tab.</div>
 
   <%= form_with(url: "/demo", method: :post, builder: UswdsFormBuilder, html: { class: "usa-form usa-form--large" }, data: { turbo: false, controller: "demo-launcher" }) do |f| %>
     <input type="hidden" name="flow_type" value="activity">
@@ -9,7 +9,7 @@
     <h2>Behavior</h2>
 
     <h3>Agency</h3>
-    <div class="usa-hint demo-launcher__usa-hint">Specify the agency the link will use.</div>
+    <div class="usa-hint demo-launcher__usa-hint">Specify the agency the flow will use.</div>
     <div class="usa-form-group">
       <select class="usa-select" name="client_agency_id" id="client_agency_id">
         <option value="sandbox" selected>sandbox</option>
@@ -17,7 +17,7 @@
     </div>
 
     <h3>Reporting window</h3>
-    <div class="usa-hint demo-launcher__usa-hint">Specify the type of link you want to create. This determines the number of months in the reporting window.</div>
+    <div class="usa-hint demo-launcher__usa-hint">Specify the type of flow you want to create. This determines the number of months in the reporting window.</div>
     <div class="usa-form-group">
       <div class="usa-radio">
         <input class="usa-radio__input usa-radio__input--tile" type="radio" name="reporting_window" id="reporting_window_application" value="application" <%= "checked" unless params[:reporting_window] == "renewal" %> data-action="demo-launcher#selectWindow">
@@ -51,7 +51,7 @@
              value="<%= params[:demo_timeout] || 30 %>">
     </div>
 
-    <button type="submit" name="launch_type" value="tokenized" formtarget="_blank" class="usa-button">Launch Tokenized</button>
-    <button type="submit" name="launch_type" value="generic" formtarget="_blank" class="usa-button usa-button--outline">Launch Generic</button>
+    <button type="submit" name="launch_type" value="tokenized" formtarget="_blank" class="usa-button">Launch tokenized flow</button>
+    <button type="submit" name="launch_type" value="generic" formtarget="_blank" class="usa-button usa-button--outline">Launch generic flow</button>
   <% end %>
 </div>
