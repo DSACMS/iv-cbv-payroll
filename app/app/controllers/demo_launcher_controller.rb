@@ -29,14 +29,10 @@ class DemoLauncherController < ApplicationController
   end
 
   def build_generic_url(client_agency_id, overrides)
-    agency = agency_config[client_agency_id]
-    host = agency&.agency_domain.presence || ENV.fetch("DOMAIN_NAME", "localhost")
-    protocol = (host == "localhost" || host&.start_with?("localhost:")) ? "http" : "https"
-
     base_url = Rails.application.routes.url_helpers.activities_flow_new_url(
       client_agency_id: client_agency_id,
-      host: host,
-      protocol: protocol
+      host: request.host_with_port,
+      protocol: request.protocol
     )
     append_params(base_url, overrides)
   end
@@ -46,7 +42,11 @@ class DemoLauncherController < ApplicationController
       client_agency_id: client_agency_id,
       reference_id: "demo-#{SecureRandom.hex(4)}"
     )
-    base_url = invitation.to_url(reporting_window: overrides[:reporting_window])
+    base_url = invitation.to_url(
+      host: request.host_with_port,
+      protocol: request.protocol,
+      reporting_window: overrides[:reporting_window]
+    )
     append_params(base_url, overrides.except(:reporting_window))
   end
 
