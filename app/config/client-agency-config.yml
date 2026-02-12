@@ -44,14 +44,13 @@
     environment: <%= ENV["LA_LDH_PINWHEEL_ENVIRONMENT"] %>
   argyle:
     environment: <%= ENV["LA_LDH_ARGYLE_ENVIRONMENT"] %>
-  transmission_method: json_and_pdf
+  transmission_method: json
   transmission_method_configuration:
     json_api_url: <%= ENV["LA_LDH_INCOME_REPORT_URL"] %>
-    pdf_api_url: <%= ENV["LA_LDH_PDF_API_URL"] %>
     custom_headers:
       X-Gateway-APIKey: <%= ENV["LA_LDH_INCOME_REPORT_APIKEY"] %>
       AccountCode: <%= ENV["LA_LDH_INCOME_REPORT_ACCOUNTCODE"] %>
-    include_report_pdf: false
+    include_report_pdf: true
   staff_portal_enabled: false
   pilot_ended: <%= ENV["LA_LDH_PILOT_ENABLED"] != "true" %>
   # sso:
