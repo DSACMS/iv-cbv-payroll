@@ -117,3 +117,33 @@ tr td:first-child {
     margin-right: 0;
   }
 }
+
+// Demo launcher page
+.demo-launcher {
+  h3 {
+    margin-bottom: 0;
+  }
+
+  .demo-launcher__usa-hint {
+    margin-top: units(0.5);
+  }
+
+  .demo-launcher__month-buttons {
+    margin-top: -32px;
+    margin-bottom: -32px;
+    display: flex;
+    gap: 4px;
+
+    &.demo-launcher__month-buttons--hidden {
+      display: none;
+    }
+
+    .usa-button {
+      flex: 1;
+    }
+  }
+
+  .demo-launcher__separator {
+    margin-bottom: 16px;
+  }
+}

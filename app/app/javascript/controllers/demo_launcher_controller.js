@@ -22,12 +22,12 @@ export default class extends Controller {
 
   applyWindow(value) {
     if (value === "renewal") {
-      this.monthButtonsTarget.hidden = true
+      this.monthButtonsTarget.classList.add("demo-launcher__month-buttons--hidden")
       this.monthsInputTarget.value = "6"
     } else {
-      this.monthButtonsTarget.hidden = false
-      this.monthsInputTarget.value = "3"
-      this.highlightButton("3")
+      this.monthButtonsTarget.classList.remove("demo-launcher__month-buttons--hidden")
+      this.monthsInputTarget.value = "2"
+      this.highlightButton("2")
     }
   }
 
