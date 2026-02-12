@@ -107,6 +107,14 @@ locals {
       manage_method     = "manual"
       secret_store_name = "/service/${var.app_name}-${var.environment}/la-ldh-income-report-accountcode"
     },
+    LA_LDH_TRANSMISSION_METHOD = {
+      manage_method     = "manual"
+      secret_store_name = "/service/${var.app_name}-${var.environment}/la-ldh-transmission-method"
+    },
+    LA_LDH_INCLUDE_REPORT_PDF = {
+      manage_method     = "manual"
+      secret_store_name = "/service/${var.app_name}-${var.environment}/la-ldh-include-report-pdf"
+    },
 
     # Feature Flags:
     SUPPORTED_PROVIDERS = {
