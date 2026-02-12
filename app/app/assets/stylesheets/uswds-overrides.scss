@@ -128,6 +128,22 @@ tr td:first-child {
     margin-top: units(0.5);
   }
 
+  .demo-launcher__setting {
+    margin-bottom: units(5);
+
+    > h3 {
+      margin-bottom: 0;
+    }
+
+    > .usa-hint {
+      margin-top: units(0.5);
+    }
+
+    > .usa-form-group {
+      margin-top: 2px;
+    }
+  }
+
   .demo-launcher__month-buttons {
     margin-top: -32px;
     margin-bottom: -32px;
@@ -144,6 +160,7 @@ tr td:first-child {
   }
 
   .demo-launcher__separator {
+    margin-top: units(3);
     margin-bottom: 16px;
   }
 
