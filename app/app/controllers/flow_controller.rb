@@ -148,7 +148,7 @@ class FlowController < ApplicationController
   end
 
   def apply_demo_overrides
-    return unless Rails.env.development? || Rails.env.test? || Rails.application.config.demo_mode
+    return unless internal_environment?
 
     if params[:reporting_window_months].present? && @flow.is_a?(ActivityFlow)
       @flow.update!(reporting_window_months: params[:reporting_window_months].to_i)

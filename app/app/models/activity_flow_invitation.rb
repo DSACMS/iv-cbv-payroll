@@ -5,8 +5,7 @@ class ActivityFlowInvitation < ApplicationRecord
   has_secure_token :auth_token, length: 10
 
   def to_url(host: ENV.fetch("DOMAIN_NAME", "localhost"), **url_params)
-    Rails.application.routes.url_helpers.activities_flow_start_url(**url_params)
-  end
+    Rails.application.routes.url_helpers.activities_flow_start_url(token: auth_token, host: host, **url_params)
   end
 
   def expired?
