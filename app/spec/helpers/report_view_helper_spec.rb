@@ -15,9 +15,20 @@ RSpec.describe ReportViewHelper, type: :helper do
 
   describe '#federal_cents_per_mile' do
     it "test different years" do
-      expect(helper.federal_cents_per_mile(2025)).to eq(70)
       expect(helper.federal_cents_per_mile(2024)).to eq(67)
-      expect(helper.federal_cents_per_mile(2027)).to eq(70)
+      expect(helper.federal_cents_per_mile(2025)).to eq(70)
+      expect(helper.federal_cents_per_mile(2026)).to eq(72.5)
+      expect(helper.federal_cents_per_mile(2027)).to eq(72.5)
+    end
+  end
+
+  describe '#format_money_with_subcents' do
+    it "formats full cent values with 2 decimal precision" do
+      expect(helper.format_money_with_subcents(70)).to eq("$0.70")
+    end
+
+    it "formats half-cent values with 3 decimal precision" do
+      expect(helper.format_money_with_subcents(72.5)).to eq("$0.725")
     end
   end
 
