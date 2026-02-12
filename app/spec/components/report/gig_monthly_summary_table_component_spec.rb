@@ -483,6 +483,10 @@ end
         expect(subject.css("tbody tr:nth-child(2) td:nth-child(3)").to_html).to include "$70.00"
         expect(subject.css("tbody tr:nth-child(2) td:nth-child(3)").to_html).to include "($0.70 x 100 miles)"
       end
+
+      it "renders mileage rate note in footnote" do
+        expect(subject.to_html).to include "Some reports may include income from multiple years"
+      end
     end
   end
 end

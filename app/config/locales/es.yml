@@ -384,6 +384,7 @@ es:
             definition_accrued_gross_earnings: Las ganancias brutas acumuladas se calculan sumando todos los pagos efectuados en ese mes.
             definition_total_hours_worked: El total de horas trabajadas se calculan sumando el tiempo que demoró en finalizar cada trabajo completado durante ese mes. Es posible que algunos trabajos realizados en un mes que se le hayan pagado en el mes siguiente.
             definition_verified_mileage_expenses: Los gastos de millaje verificados se calculan utilizando el millaje de la plataforma o aplicación. Multiplicamos el millaje total por la tarifa federal de millaje ($0.725 por milla en 2026), que cubre todos los costos relacionados con un automóvil. Estos pueden ser costos como gasolina, pagos de automóvil o tarifas de arrendamiento, seguro de automóvil, reparaciones y mantenimiento.
+            mileage_rate_note: Algunos informes pueden incluir ingresos de varios años. Aparecerá la tarifa de millaje que se aplica a cada año.
             what_does_this_mean: "¿Qué significa esta información?"
         dollars_times_miles: "(%{dollar_amount} x %{number_of_miles} millas)"
         month: Mes
