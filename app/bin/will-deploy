@@ -4,10 +4,7 @@
 #   bin/will-deploy
 #
 # The output will be automatically copied to your clipboard.
-# Then paste the message directly into Slack.
-#
-# Requires "Format messages with markup" enabled in Slack:
-#   Preferences > Advanced > Input Options > Format messages with markup
+# Then paste the message into Slack and apply formatting with Cmd+Shift+F.
 set -euo pipefail
 
 linkify_jira() {
@@ -105,28 +102,28 @@ output='🚀 Will deploy `'${current_sha:0:7}'` to production: 🚀 (cc @emmy-pl
 if [ ${#both_changes[@]} -gt 0 ]; then
   output+="👥 *User facing changes to CBV + HR1*"$'\n'
   for change in "${both_changes[@]}"; do
-    output+="$(echo "    * $change" | linkify_jira)"$'\n'
+    output+="$(echo "  • $change" | linkify_jira)"$'\n'
   done
 fi
 
 if [ ${#cbv_changes[@]} -gt 0 ]; then
   output+="📝 *CBV only user facing changes*"$'\n'
   for change in "${cbv_changes[@]}"; do
-    output+="$(echo "    * $change" | linkify_jira)"$'\n'
+    output+="$(echo "  • $change" | linkify_jira)"$'\n'
   done
 fi
 
 if [ ${#hr1_changes[@]} -gt 0 ]; then
   output+="🏆 *HR1 only user facing changes*"$'\n'
   for change in "${hr1_changes[@]}"; do
-    output+="$(echo "    * $change" | linkify_jira)"$'\n'
+    output+="$(echo "  • $change" | linkify_jira)"$'\n'
   done
 fi
 
 if [ ${#other_changes[@]} -gt 0 ]; then
   output+="⚙️ *Other/Maintenance (Not user facing)*"$'\n'
   for change in "${other_changes[@]}"; do
-    output+="$(echo "    * $change" | linkify_jira)"$'\n'
+    output+="$(echo "  • $change" | linkify_jira)"$'\n'
   done
 fi
 
