@@ -45,7 +45,7 @@
       <%= render "application/footer" %>
       <% if session_timeout_enabled? %>
         <%= render partial: "cbv/sessions/timeout_modal", locals: {
-          timeout: (session[:demo_timeout] if internal_environment?) || Rails.application.config.cbv_session_expires_after
+          timeout: session_timeout_duration
         } %>
       <% end %>
     </div>

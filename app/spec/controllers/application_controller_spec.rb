@@ -145,4 +145,35 @@ RSpec.describe ApplicationController, type: :controller do
       end
     end
   end
+
+  describe "#session_timeout_duration" do
+    let(:default_timeout) { Rails.application.config.cbv_session_expires_after }
+
+    context "when no demo_timeout is set in session" do
+      it "returns the default timeout" do
+        expect(controller.send(:session_timeout_duration)).to eq(default_timeout)
+      end
+    end
+
+    context "when demo_timeout is set in session" do
+      before do
+        session[:demo_timeout] = 10.minutes.to_i
+      end
+
+      it "returns the demo timeout" do
+        expect(controller.send(:session_timeout_duration)).to eq(10.minutes.to_i)
+      end
+    end
+
+    context "when not in an internal environment" do
+      before do
+        session[:demo_timeout] = 10.minutes.to_i
+        allow(controller).to receive(:internal_environment?).and_return(false)
+      end
+
+      it "ignores demo_timeout and returns the default" do
+        expect(controller.send(:session_timeout_duration)).to eq(default_timeout)
+      end
+    end
+  end
 end

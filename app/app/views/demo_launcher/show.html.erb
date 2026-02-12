@@ -3,32 +3,41 @@
   <h1>Demo Launcher</h1>
   <p>Configure settings and launch a flow in a new tab.</p>
 
-  <%= form_with(url: "/demo", method: :post, builder: UswdsFormBuilder, html: { class: "usa-form usa-form--large" }, data: { turbo: false }) do |f| %>
+  <%= form_with(url: "/demo", method: :post, builder: UswdsFormBuilder, html: { class: "usa-form usa-form--large" }, data: { turbo: false, controller: "demo-launcher" }) do |f| %>
     <input type="hidden" name="flow_type" value="activity">
     <input type="hidden" name="client_agency_id" value="sandbox">
 
+    <h2>Behavior</h2>
+
+    <h3>Reporting window type</h3>
     <div class="usa-form-group">
-      <label class="usa-label" for="reporting_window">Reporting window type</label>
-      <div class="usa-hint">Renewal = 6 months, Application = agency default (2 for sandbox)</div>
       <div class="usa-radio">
-        <input class="usa-radio__input usa-radio__input--tile" type="radio" name="reporting_window" id="reporting_window_application" value="application" <%= "checked" unless params[:reporting_window] == "renewal" %>>
+        <input class="usa-radio__input usa-radio__input--tile" type="radio" name="reporting_window" id="reporting_window_application" value="application" <%= "checked" unless params[:reporting_window] == "renewal" %> data-action="demo-launcher#selectWindow">
         <label class="usa-radio__label" for="reporting_window_application">Application</label>
       </div>
       <div class="usa-radio">
-        <input class="usa-radio__input usa-radio__input--tile" type="radio" name="reporting_window" id="reporting_window_renewal" value="renewal" <%= "checked" if params[:reporting_window] == "renewal" %>>
+        <input class="usa-radio__input usa-radio__input--tile" type="radio" name="reporting_window" id="reporting_window_renewal" value="renewal" <%= "checked" if params[:reporting_window] == "renewal" %> data-action="demo-launcher#selectWindow">
         <label class="usa-radio__label" for="reporting_window_renewal">Renewal</label>
       </div>
     </div>
 
-    <div class="usa-form-group">
-      <label class="usa-label" for="reporting_window_months">Reporting window months</label>
-      <input class="usa-input usa-input--sm" type="number" name="reporting_window_months"
-             id="reporting_window_months" min="1" max="99" autocomplete="off"
-             value="<%= params[:reporting_window_months] %>">
+    <div data-demo-launcher-target="monthButtons" style="margin-top: -16px; margin-bottom: -32px;">
+      <button type="button" class="usa-button" data-months="1" data-action="demo-launcher#selectMonths">1 month</button>
+      <button type="button" class="usa-button" data-months="2" data-action="demo-launcher#selectMonths">2 months</button>
+      <button type="button" class="usa-button" data-months="3" data-action="demo-launcher#selectMonths">3 months</button>
     </div>
 
+    <h3>Reporting window override</h3>
     <div class="usa-form-group">
-      <label class="usa-label" for="demo_timeout">Session timeout (minutes)</label>
+      <div class="usa-hint">Overrides the defaults from the above settings.</div>
+      <input class="usa-input usa-input--sm" type="number" name="reporting_window_months"
+             id="reporting_window_months" min="1" max="99" autocomplete="off"
+             value="<%= params[:reporting_window_months] %>"
+             data-demo-launcher-target="monthsInput">
+    </div>
+
+    <h3>Session timeout (minutes)</h3>
+    <div class="usa-form-group">
       <div class="usa-hint">Leave blank for default (30 min). Note: The warning modal appears 5 min before expiry, so use 6+ to avoid an immediate warning.</div>
       <input class="usa-input usa-input--sm" type="number" name="demo_timeout"
              id="demo_timeout" min="1" max="999" autocomplete="off"

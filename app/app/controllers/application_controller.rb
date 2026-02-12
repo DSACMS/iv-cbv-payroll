@@ -1,6 +1,6 @@
 class ApplicationController < ActionController::Base
   helper :view
-  helper_method :current_agency, :show_menu?, :pilot_ended?, :get_site_alert_title, :get_site_alert_body, :pilot_name_key, :session_timeout_enabled?, :internal_environment?
+  helper_method :current_agency, :show_menu?, :pilot_ended?, :get_site_alert_title, :get_site_alert_body, :pilot_name_key, :session_timeout_enabled?, :session_timeout_duration, :internal_environment?
   around_action :switch_locale
   before_action :add_newrelic_metadata, :redirect_if_maintenance_mode, :enable_mini_profiler_in_demo, :set_device_id_cookie
 
@@ -64,6 +64,10 @@ class ApplicationController < ActionController::Base
 
   def session_timeout_enabled?
     session[:flow_id].present?
+  end
+
+  def session_timeout_duration
+    (session[:demo_timeout] if internal_environment?) || Rails.application.config.cbv_session_expires_after
   end
 
   def internal_environment?
