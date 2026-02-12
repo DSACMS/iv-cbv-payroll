@@ -55,7 +55,10 @@
         <ul class="usa-list">
           <li><%= I18n.t("components.report.monthly_summary_table.compact.footnote.definition_accrued_gross_earnings") %></li>
           <% if has_mileage_data? %>
-            <li><%= I18n.t("components.report.monthly_summary_table.compact.footnote.definition_verified_mileage_expenses") %></li>
+            <li>
+              <%= I18n.t("components.report.monthly_summary_table.compact.footnote.definition_verified_mileage_expenses") %>
+              <p><em><%= I18n.t("components.report.monthly_summary_table.compact.footnote.mileage_rate_note") %></em></p>
+            </li>
           <% end %>
           <li><%= I18n.t("components.report.monthly_summary_table.compact.footnote.definition_total_hours_worked") %></li>
         </ul>

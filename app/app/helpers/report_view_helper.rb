@@ -8,8 +8,10 @@ module ReportViewHelper
     case year
     when 2024
       67
-    else
+    when 2025
       70
+    else
+      72.5
     end
   end
 
@@ -29,6 +31,14 @@ module ReportViewHelper
 
   def format_money(dollars_in_cents)
     number_to_currency(dollars_in_cents.to_f / 100)
+  end
+
+  # Formats cents to currency with 3 decimal precision when there are subcents (e.g., 72.5 cents -> "$0.725"),
+  # otherwise uses standard 2 decimal precision (e.g., 70 cents -> "$0.70").
+  # Use case: federal mileage rate is published in subcents
+  def format_money_with_subcents(dollars_in_cents)
+    precision = (dollars_in_cents % 1).zero? ? 2 : 3
+    number_to_currency(dollars_in_cents.to_f / 100, precision: precision)
   end
 
   def format_boolean(boolean_value)

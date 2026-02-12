@@ -431,5 +431,62 @@ RSpec.describe Report::GigMonthlySummaryTableComponent, type: :component do
     expect(subject.css('button.usa-accordion__button')).to be_empty
   end
 end
+
+    context "with gig-worker spanning 2025 and 2026 (different mileage rates)" do
+      subject { render_inline(described_class.new(argyle_report, payroll_account)) }
+
+      let(:account_id) { "019571bc-2f60-3955-d972-aaa000111222" }
+      let(:argyle_report) do
+        Aggregators::AggregatorReports::ArgyleReport.new(
+          payroll_accounts: [ payroll_account ],
+          argyle_service: argyle_service,
+          days_to_fetch_for_w2: 90,
+          days_to_fetch_for_gig: 182
+        )
+      end
+
+      before do
+        argyle_stub_request_identities_response("multi_year_mileage")
+        argyle_stub_request_paystubs_response("multi_year_mileage")
+        argyle_stub_request_gigs_response("multi_year_mileage")
+        argyle_stub_request_account_response("multi_year_mileage")
+        argyle_report.fetch
+      end
+
+      around do |ex|
+        Timecop.freeze(Time.local(2026, 1, 15, 0, 0), &ex)
+      end
+
+
+      it "argyle_report is properly fetched with data from both years" do
+        expect(argyle_report.gigs.length).to be(6)
+        expect(argyle_report.paystubs.length).to be(4)
+      end
+
+      it "includes table header with mileage column" do
+        expect(subject.css("h2").to_html).to include "Monthly summary"
+        expect(subject.css("thead tr.subheader-row th").length).to eq(4)
+        expect(subject.css("thead tr.subheader-row th:nth-child(3)").to_html).to include "Verified mileage expenses"
+      end
+
+      it "renders both January 2026 and December 2025 months" do
+        expect(subject.css("tbody tr:nth-child(1) th:nth-child(1)").to_html).to include "January 2026"
+        expect(subject.css("tbody tr:nth-child(2) th:nth-child(1)").to_html).to include "December 2025"
+      end
+
+      it "renders the 2026 mileage rate ($0.725/mile) for January 2026" do
+        expect(subject.css("tbody tr:nth-child(1) td:nth-child(3)").to_html).to include "$72.50"
+        expect(subject.css("tbody tr:nth-child(1) td:nth-child(3)").to_html).to include "($0.725 x 100 miles)"
+      end
+
+      it "renders the 2025 mileage rate ($0.70/mile) for December 2025" do
+        expect(subject.css("tbody tr:nth-child(2) td:nth-child(3)").to_html).to include "$70.00"
+        expect(subject.css("tbody tr:nth-child(2) td:nth-child(3)").to_html).to include "($0.70 x 100 miles)"
+      end
+
+      it "renders mileage rate note in footnote" do
+        expect(subject.to_html).to include "Some reports may include income from multiple years"
+      end
+    end
   end
 end
