@@ -1,4 +1,6 @@
 class DemoLauncherController < ApplicationController
+  helper_method :session_timeout_enabled?
+
   def show
   end
 
@@ -18,6 +20,10 @@ class DemoLauncherController < ApplicationController
   end
 
   private
+
+  def session_timeout_enabled?
+    false
+  end
 
   def build_generic_url(client_agency_id, overrides)
     Rails.application.routes.url_helpers.activities_flow_new_url(
