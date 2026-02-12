@@ -15,7 +15,7 @@ EMMY is under active development by CMS, with new updates released on a weekly c
 # Core Team
 A list of core team members responsible for the code and documentation in this repository can be found in [COMMUNITY.md](COMMUNITY.md) and [CODEOWNERS.md](./CODEOWNERS.md).
 
-# Development and Software Delivery Lifecycle
+# Try it for yourself
 
 If you're new to Rails, see the [Getting Started with Rails](https://guides.rubyonrails.org/getting_started.html)
 guide for an introduction to the framework.
@@ -49,7 +49,7 @@ Most developers on the team code using macOS, so we recommend that platform if p
    * `echo 'if which rbenv >/dev/null 2>/dev/null; then eval "$(rbenv init -)"; fi' >> ~/.zshrc`
    * Close & re-open your terminal
 
-**The following commands must be run in the app directory**
+**The following commands must be run in the `/app` directory**
 1. Install Ruby: `rbenv install`
 1. Install NodeJS `nodenv install`
 1. Install Ruby dependencies: `bundle install`
