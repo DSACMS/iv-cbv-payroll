@@ -9,7 +9,7 @@
 
     <div class="usa-form-group">
       <label class="usa-label" for="reporting_window">Reporting window type</label>
-      <div class="usa-hint">Renewal = 6 months, Application = agency default</div>
+      <div class="usa-hint">Renewal = 6 months, Application = agency default (2 for sandbox)</div>
       <div class="usa-radio">
         <input class="usa-radio__input usa-radio__input--tile" type="radio" name="reporting_window" id="reporting_window_application" value="application" <%= "checked" unless params[:reporting_window] == "renewal" %>>
         <label class="usa-radio__label" for="reporting_window_application">Application</label>
@@ -23,7 +23,7 @@
     <div class="usa-form-group">
       <label class="usa-label" for="reporting_window_months">Reporting window months</label>
       <input class="usa-input usa-input--sm" type="number" name="reporting_window_months"
-             id="reporting_window_months" min="1" max="12" autocomplete="off"
+             id="reporting_window_months" min="1" max="99" autocomplete="off"
              value="<%= params[:reporting_window_months] %>">
     </div>
 
