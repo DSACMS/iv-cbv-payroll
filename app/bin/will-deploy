@@ -1,10 +1,10 @@
 #!/usr/bin/env bash
 # Use this script when preparing for a deploy:
 #
-#   bin/will-deploy | pbcopy
+#   bin/will-deploy
 #
-# Then paste the message into Slack, applying formatting by pressing
-# Cmd+Shift+F.
+# The output will be automatically copied to your clipboard.
+# Then paste the message into Slack and apply formatting with Cmd+Shift+F.
 set -euo pipefail
 
 linkify_jira() {
@@ -24,19 +24,116 @@ if [ ${1:-""} = "--test" ]; then
   exit
 fi
 
-if [ -t 1 ]; then
-  echo "Copy-paste this output into Slack (on macOS, pipe this script to 'pbcopy'):" >&2
-  echo "=================================================================" >&2
-else
-  echo "Copying commit list... (use Cmd+Shift+F to apply formatting after pasting it into Slack)" >&2
-fi
-
 git fetch --quiet
 prod=$(curl --silent https://snap-income-pilot.com/health | jq -r .version)
 current_sha=$(git rev-parse origin/main)
-echo '🚀 Will deploy `'${current_sha:0:7}'` to production: 🚀 (cc @ivaas-platform)'
-git log --no-decorate --pretty="format:• *%s* - %an" ${prod}..${current_sha} | linkify_jira
 
-echo
-echo
-echo "See the [full diff on Github](https://github.com/DSACMS/iv-cbv-payroll/compare/${prod:0:7}..${current_sha:0:7})."
+# Arrays to store categorized changes (initialize as empty)
+both_changes=()
+cbv_changes=()
+hr1_changes=()
+other_changes=()
+
+echo "Categorizing changes for deployment..." >&2
+echo "======================================" >&2
+echo "" >&2
+
+# Read commits with commit hashes into an array
+mapfile -t commits < <(git log --no-decorate --pretty="format:%s - %an|%H" ${prod}..${current_sha})
+
+# Process each commit
+for commit_line in "${commits[@]}"; do
+  # Split commit message and hash
+  commit="${commit_line%|*}"
+  commit_hash="${commit_line#*|}"
+
+  # Extract PR number if present
+  pr_link=""
+  if [[ $commit =~ \(#([0-9]+)\) ]]; then
+    pr_num="${BASH_REMATCH[1]}"
+    pr_link="https://github.com/DSACMS/iv-cbv-payroll/pull/${pr_num}"
+    echo "Change: $commit" >&2
+    echo "PR: $pr_link" >&2
+  else
+    # No PR, show commit link instead
+    commit_link="https://github.com/DSACMS/iv-cbv-payroll/commit/${commit_hash}"
+    echo "Change: $commit" >&2
+    echo "Commit: $commit_link" >&2
+  fi
+
+  # Loop until valid category is provided
+  while true; do
+    echo "Is this user-facing? (b=Both CBV+HR1, c=CBV, h=HR1, o=Other/Maintenance, s=Skip): " >&2
+    read -r category
+
+    case "$category" in
+      b|B)
+        both_changes+=("$commit")
+        break
+        ;;
+      c|C)
+        cbv_changes+=("$commit")
+        break
+        ;;
+      h|H)
+        hr1_changes+=("$commit")
+        break
+        ;;
+      o|O)
+        other_changes+=("$commit")
+        break
+        ;;
+      s|S)
+        echo "Skipping..." >&2
+        break
+        ;;
+      *)
+        echo "Invalid option. Please enter b, c, h, o, or s." >&2
+        ;;
+    esac
+  done
+  echo "" >&2
+done
+
+# Generate output and capture it
+output='🚀 Will deploy `'${current_sha:0:7}'` to production: 🚀 (cc @emmy-platform)'$'\n\n'
+
+# Add categorized changes to output
+if [ ${#both_changes[@]} -gt 0 ]; then
+  output+="👥 *User facing changes to CBV + HR1*"$'\n'
+  for change in "${both_changes[@]}"; do
+    output+="$(echo "  • $change" | linkify_jira)"$'\n'
+  done
+fi
+
+if [ ${#cbv_changes[@]} -gt 0 ]; then
+  output+="📝 *CBV only user facing changes*"$'\n'
+  for change in "${cbv_changes[@]}"; do
+    output+="$(echo "  • $change" | linkify_jira)"$'\n'
+  done
+fi
+
+if [ ${#hr1_changes[@]} -gt 0 ]; then
+  output+="🏆 *HR1 only user facing changes*"$'\n'
+  for change in "${hr1_changes[@]}"; do
+    output+="$(echo "  • $change" | linkify_jira)"$'\n'
+  done
+fi
+
+if [ ${#other_changes[@]} -gt 0 ]; then
+  output+="⚙️ *Other/Maintenance (Not user facing)*"$'\n'
+  for change in "${other_changes[@]}"; do
+    output+="$(echo "  • $change" | linkify_jira)"$'\n'
+  done
+fi
+
+output+=$'\n'"👀 Check out the changes at [https://la-verify-demo.navapbc.cloud/](https://la-verify-demo.navapbc.cloud/)"$'\n'
+output+=$'\n'"See the [full diff on Github](https://github.com/DSACMS/iv-cbv-payroll/compare/${prod:0:7}..${current_sha:0:7})."$'\n'
+
+# Display output to user
+echo "$output"
+
+# Copy to clipboard
+echo "$output" | pbcopy
+echo "" >&2
+echo "✅ Deployment message copied to clipboard!" >&2
