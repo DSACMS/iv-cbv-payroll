@@ -6,10 +6,7 @@ class DemoLauncherController < ApplicationController
     client_agency_id = params[:client_agency_id]
     launch_type = params[:launch_type]
 
-    overrides = {}
-    overrides[:reporting_window] = params[:reporting_window] if params[:reporting_window].present?
-    overrides[:reporting_window_months] = params[:reporting_window_months] if params[:reporting_window_months].present?
-    overrides[:demo_timeout] = params[:demo_timeout] if params[:demo_timeout].present?
+    overrides = params.slice(:reporting_window, :reporting_window_months, :demo_timeout)
 
     url = if launch_type == "generic"
             build_generic_url(client_agency_id, overrides)
