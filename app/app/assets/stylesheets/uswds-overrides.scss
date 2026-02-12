@@ -146,8 +146,9 @@ tr td:first-child {
 
   .demo-launcher__month-buttons {
     margin-top: -32px;
-    margin-bottom: -32px;
+    margin-bottom: -8px;
     display: flex;
+    flex-wrap: wrap;
     gap: 4px;
 
     &.demo-launcher__month-buttons--hidden {
@@ -156,6 +157,13 @@ tr td:first-child {
 
     .usa-button {
       flex: 1;
+      margin-bottom: 0;
+    }
+
+    .demo-launcher__month-buttons-hint {
+      flex-basis: 100%;
+      margin-top: 0;
+      margin-bottom: units(1);
     }
   }
 

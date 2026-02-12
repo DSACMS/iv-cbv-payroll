@@ -27,6 +27,7 @@
         <button type="button" class="usa-button" data-months="1" data-action="demo-launcher#selectMonths">1 month</button>
         <button type="button" class="usa-button" data-months="2" data-action="demo-launcher#selectMonths">2 months</button>
         <button type="button" class="usa-button" data-months="3" data-action="demo-launcher#selectMonths">3 months</button>
+        <div class="usa-hint demo-launcher__month-buttons-hint">The application reporting window is configurable by the state.</div>
       </div>
       <div class="usa-radio">
         <input class="usa-radio__input usa-radio__input--tile" type="radio" name="reporting_window" id="reporting_window_renewal" value="renewal" <%= "checked" if params[:reporting_window] == "renewal" %> data-action="demo-launcher#selectWindow">
