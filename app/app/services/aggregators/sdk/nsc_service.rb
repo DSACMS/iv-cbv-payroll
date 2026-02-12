@@ -173,7 +173,7 @@ module Aggregators
       # Only date fields are modified; the number, type, and structure of
       # enrollment terms are preserved exactly.
       def shift_enrollment_dates_for_demo(response_body)
-        return response_body unless demo_mode?
+        return response_body unless Rails.application.config.is_internal_environment
 
         enrollment_details = response_body["enrollmentDetails"]
         return response_body if enrollment_details.blank?
@@ -209,10 +209,6 @@ module Aggregators
         end
 
         response_body
-      end
-
-      def demo_mode?
-        Rails.application.config.demo_mode || Rails.env.development?
       end
 
       def handle_response(response)
