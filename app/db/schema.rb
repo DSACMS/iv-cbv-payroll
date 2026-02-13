@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_02_05_174325) do
+ActiveRecord::Schema[8.1].define(version: 2026_02_10_120000) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
   enable_extension "pgcrypto"
@@ -24,6 +24,24 @@ ActiveRecord::Schema[8.1].define(version: 2026_02_05_174325) do
     t.datetime "updated_at", null: false
     t.index ["auth_token"], name: "index_activity_flow_invitations_on_auth_token", unique: true
     t.index ["cbv_applicant_id"], name: "index_activity_flow_invitations_on_cbv_applicant_id"
+  end
+
+  create_table "activity_flow_monthly_summaries", force: :cascade do |t|
+    t.integer "accrued_gross_earnings_cents", default: 0
+    t.bigint "activity_flow_id", null: false
+    t.datetime "created_at", null: false
+    t.string "employer_name"
+    t.date "month", null: false
+    t.bigint "payroll_account_id", null: false
+    t.datetime "redacted_at"
+    t.decimal "total_gig_hours", precision: 10, scale: 2, default: "0.0"
+    t.decimal "total_mileage", precision: 10, scale: 2, default: "0.0"
+    t.decimal "total_w2_hours", precision: 10, scale: 2, default: "0.0"
+    t.datetime "updated_at", null: false
+    t.index ["activity_flow_id", "month"], name: "idx_on_activity_flow_id_month_abd2e2f25a"
+    t.index ["activity_flow_id", "payroll_account_id", "month"], name: "index_activity_flow_monthly_summaries_on_flow_account_month", unique: true
+    t.index ["activity_flow_id"], name: "index_activity_flow_monthly_summaries_on_activity_flow_id"
+    t.index ["payroll_account_id"], name: "index_activity_flow_monthly_summaries_on_payroll_account_id"
   end
 
   create_table "activity_flows", force: :cascade do |t|
@@ -333,6 +351,8 @@ ActiveRecord::Schema[8.1].define(version: 2026_02_05_174325) do
   end
 
   add_foreign_key "activity_flow_invitations", "cbv_applicants"
+  add_foreign_key "activity_flow_monthly_summaries", "activity_flows"
+  add_foreign_key "activity_flow_monthly_summaries", "payroll_accounts"
   add_foreign_key "activity_flows", "activity_flow_invitations"
   add_foreign_key "activity_flows", "cbv_applicants"
   add_foreign_key "activity_flows", "identities"
