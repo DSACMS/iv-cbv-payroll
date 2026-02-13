@@ -100,7 +100,7 @@ if [ "$SHOW_BROWSER" = true ]; then
 fi
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-APP_DIR="$(cd "${SCRIPT_DIR}/../app" && pwd)"
+APP_DIR="$(cd "${SCRIPT_DIR}/.." && pwd)"
 
 rspec_exit=0
 (cd "$APP_DIR" && bundle exec rspec spec/smoke/ --format documentation --order defined) || rspec_exit=$?
