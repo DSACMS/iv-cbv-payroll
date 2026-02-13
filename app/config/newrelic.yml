@@ -20,11 +20,15 @@ common: &default_settings
   app_name: Iv Cbv Payroll
 
   # Forward these custom attributes to NewRelic for better filtering of transactions/events.
+  # These enable distributed tracing across the entire user journey (web requests + background jobs).
   attributes:
     include:
-      - cbv_flow_id
+      - flow_id
+      - flow_type
+      - device_id
       - user_id
       - session_id
+      - client_agency_id
 
   monitor_mode: true
 
@@ -42,12 +46,21 @@ common: &default_settings
   # 3) Comment out the line below
   agent_enabled: true
 
+  # Log forwarding must be enabled for the SemanticLogger :new_relic_logs appender
+  # to work (it uses NewRelic::Agent.agent.log_event_aggregator internally).
+  # Note: NewRelic's auto-forwarding is incompatible with SemanticLogger, but the
+  # SemanticLogger appender bypasses auto-forwarding by calling the aggregator directly.
+  application_logging:
+    enabled: true
+    forwarding:
+      enabled: true
+
   # Logging level for log/newrelic_agent.log
   log_level: info
 
   # Instrument CBV custom rake tasks:
   rake:
-    tasks: ["data_deletion:.+", "weekly_reports:.+"]
+    tasks: [ "data_deletion:.+", "weekly_reports:.+" ]
 
   error_collector:
     # Ignore errors that aren't likely related to user-facing issues (e.g.

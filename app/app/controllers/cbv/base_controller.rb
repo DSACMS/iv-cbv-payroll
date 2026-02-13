@@ -62,7 +62,8 @@ class Cbv::BaseController < FlowController
 
     if @flow.present?
       tags.merge!(
-        cbv_flow_id: @flow.id,
+        flow_id: @flow.id,
+        flow_type: @flow.class.name,
         invitation_id: @flow.invitation_id,
         cbv_applicant_id: @flow.cbv_applicant_id,
         client_agency_id: @flow.cbv_applicant.client_agency_id,
