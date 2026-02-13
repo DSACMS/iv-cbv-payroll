@@ -106,11 +106,16 @@ en:
       account_id: Account ID
       synchronization_status: Status
       title: Employment
-    entry:
-      consent: Check this box to agree to let us record your information and share it with %{agency_name}.
-      consent_required: Please check the consent box to continue.
-      continue: Add Activities
-      title: Welcome to the Activity Hub!
+    entries:
+      show:
+        card_heading: 'Enter information related to the following activities:'
+        card_item_1: Work or earned income
+        card_item_2: School enrollment
+        card_item_3: Community service or work program participation
+        continue: Report your activities
+        description: "%{agency_name} needs your information to determine your %{benefit} eligibility."
+        disclaimer: Your state will determine eligibility based on the information you submit.
+        title: Report your %{benefit} eligibility
     error_no_identity: Please provide your name and date of birth
     errors:
       invalid_token: The link you used is invalid.
@@ -808,7 +813,7 @@ en:
     benefit:
       az_des: Nutrition Assistance
       la_ldh: Medicaid
-      sandbox: SNAP
+      sandbox: Medicaid
     footer:
       feedback: Share feedback
     header:

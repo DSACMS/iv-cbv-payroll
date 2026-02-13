@@ -79,21 +79,6 @@ RSpec.describe Activities::EntriesController do
     end
   end
 
-  describe "#create" do
-    before do
-      get :show, params: { client_agency_id: "sandbox" }
-    end
-
-    context 'consent box not checked' do
-      it "re-renders the form with an error message" do
-        post :create, params: { agreement: "0" }
-
-        expect(response).to have_http_status(:unprocessable_content)
-        expect(flash[:alert]).to eq I18n.t("activities.entry.consent_required")
-      end
-    end
-  end
-
   describe "activity hub access control" do
     it "allows access when ACTIVITY_HUB_ENABLED is true" do
       get :show, params: { client_agency_id: "sandbox" }

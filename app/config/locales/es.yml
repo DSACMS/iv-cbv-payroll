@@ -605,7 +605,7 @@ es:
     benefit:
       az_des: Asistencia Nutricional
       la_ldh: Medicaid
-      sandbox: SNAP
+      sandbox: Medicaid
     footer:
       feedback: Compartir comentarios
     header:

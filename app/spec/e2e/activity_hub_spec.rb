@@ -15,9 +15,8 @@ RSpec.describe 'e2e Activity Hub flow test', :js, type: :feature do
     visit URI(root_url).request_uri
 
     visit activities_flow_entry_path(client_agency_id: "sandbox") # This would normally be inferred
-    verify_page(page, title: I18n.t("activities.entry.title"))
-    find("label", text: I18n.t("activities.entry.consent", agency_name: I18n.t("shared.agency_full_name.sandbox"))).click
-    click_button I18n.t("activities.entry.continue")
+    verify_page(page, title: I18n.t("activities.entries.show.title", benefit: "Medicaid"))
+    click_link I18n.t("activities.entries.show.continue")
 
     verify_page(page, title: I18n.t("activities.hub.title"))
 
@@ -75,9 +74,8 @@ RSpec.describe 'e2e Activity Hub flow test', :js, type: :feature do
     visit URI(root_url).request_uri
 
     visit activities_flow_entry_path(client_agency_id: "sandbox") # This would normally be inferred
-    verify_page(page, title: I18n.t("activities.entry.title"))
-    find("label", text: I18n.t("activities.entry.consent", agency_name: I18n.t("shared.agency_full_name.sandbox"))).click
-    click_button I18n.t("activities.entry.continue")
+    verify_page(page, title: I18n.t("activities.entries.show.title", benefit: "Medicaid"))
+    click_link I18n.t("activities.entries.show.continue")
 
     verify_page(page, title: I18n.t("activities.hub.title"))
 
@@ -132,9 +130,8 @@ RSpec.describe 'e2e Activity Hub flow test', :js, type: :feature do
     visit URI(root_url).request_uri
 
     visit activities_flow_entry_path(client_agency_id: "sandbox") # This would normally be inferred
-    verify_page(page, title: I18n.t("activities.entry.title"))
-    find("label", text: I18n.t("activities.entry.consent", agency_name: I18n.t("shared.agency_full_name.sandbox"))).click
-    click_button I18n.t("activities.entry.continue")
+    verify_page(page, title: I18n.t("activities.entries.show.title", benefit: "Medicaid"))
+    click_link I18n.t("activities.entries.show.continue")
 
     verify_page(page, title: I18n.t("activities.hub.title"))
 
@@ -157,9 +154,8 @@ RSpec.describe 'e2e Activity Hub flow test', :js, type: :feature do
     visit URI(root_url).request_uri
 
     visit activities_flow_entry_path(client_agency_id: "sandbox") # This would normally be inferred
-    verify_page(page, title: I18n.t("activities.entry.title"))
-    find("label", text: I18n.t("activities.entry.consent", agency_name: I18n.t("shared.agency_full_name.sandbox"))).click
-    click_button I18n.t("activities.entry.continue")
+    verify_page(page, title: I18n.t("activities.entries.show.title", benefit: "Medicaid"))
+    click_link I18n.t("activities.entries.show.continue")
 
     verify_page(page, title: I18n.t("activities.hub.title"))
 
