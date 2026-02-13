@@ -77,6 +77,7 @@ class Webhooks::Pinwheel::EventsController < ApplicationController
 
       if @payroll_account.necessary_jobs_succeeded? && validate_useful_report_requirements(report)
         @payroll_account.update(synchronization_status: :succeeded)
+        @cbv_flow.after_payroll_sync_succeeded(@payroll_account, report)
       else
         @payroll_account.update(synchronization_status: :failed)
       end
