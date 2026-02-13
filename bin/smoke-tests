@@ -1,0 +1,190 @@
+#!/usr/bin/env bash
+# Run smoke tests against the Dev environment after a deploy.
+#
+# Usage:
+#   bin/smoke-tests                          # Run against default Dev environment
+#   bin/smoke-tests --base-url https://...   # Run against a custom URL
+#   bin/smoke-tests --skip-manual            # Skip interactive manual check prompts
+#   bin/smoke-tests --show-browser           # Show the browser window (not headless)
+#
+set -euo pipefail
+
+# -- Colors --
+RED='\033[0;31m'
+GREEN='\033[0;32m'
+YELLOW='\033[1;33m'
+CYAN='\033[0;36m'
+BOLD='\033[1m'
+NC='\033[0m'
+
+# -- Defaults --
+BASE_URL="https://verify-demo.navapbc.cloud"
+SKIP_MANUAL=false
+SHOW_BROWSER=false
+
+# -- Argument parsing --
+while [[ $# -gt 0 ]]; do
+  case $1 in
+    --base-url)
+      BASE_URL="$2"
+      shift 2
+      ;;
+    --skip-manual)
+      SKIP_MANUAL=true
+      shift
+      ;;
+    --show-browser)
+      SHOW_BROWSER=true
+      shift
+      ;;
+    -h|--help)
+      echo "Usage: bin/smoke-tests [OPTIONS]"
+      echo ""
+      echo "Options:"
+      echo "  --base-url URL    Base URL of the environment to test (default: https://verify-demo.navapbc.cloud)"
+      echo "  --skip-manual     Skip interactive manual verification prompts"
+      echo "  --show-browser    Show the Chrome browser window (not headless)"
+      echo "  -h, --help        Show this help message"
+      exit 0
+      ;;
+    *)
+      echo -e "${RED}Unknown option: $1${NC}"
+      echo "Run bin/smoke-tests --help for usage."
+      exit 1
+      ;;
+  esac
+done
+
+echo -e "${BOLD}========================================${NC}"
+echo -e "${BOLD} Smoke Tests: ${CYAN}${BASE_URL}${NC}"
+echo -e "${BOLD}========================================${NC}"
+echo ""
+
+# -- Pre-flight: SHA check --
+echo -e "${CYAN}Pre-flight: Checking deployed version...${NC}"
+
+deployed_version=$(curl -sf "${BASE_URL}/health" | python3 -c "import sys, json; print(json.load(sys.stdin).get('version', 'UNKNOWN'))" 2>/dev/null || echo "UNREACHABLE")
+
+if [ "$deployed_version" = "UNREACHABLE" ]; then
+  echo -e "${RED}FAIL: Could not reach ${BASE_URL}/health${NC}"
+  echo -e "${RED}Is the environment up?${NC}"
+  exit 1
+fi
+
+echo -e "  Deployed SHA: ${BOLD}${deployed_version:0:7}${NC}"
+
+git fetch --quiet origin main 2>/dev/null || true
+main_sha=$(git rev-parse origin/main 2>/dev/null || echo "UNKNOWN")
+
+echo -e "  origin/main:  ${BOLD}${main_sha:0:7}${NC}"
+
+if [ "$deployed_version" = "$main_sha" ]; then
+  echo -e "  ${GREEN}SHA match confirmed.${NC}"
+elif [ "$main_sha" = "UNKNOWN" ]; then
+  echo -e "  ${YELLOW}WARNING: Could not determine origin/main SHA (not in a git repo?).${NC}"
+else
+  echo -e "  ${YELLOW}WARNING: Deployed SHA does not match origin/main.${NC}"
+  echo -e "  ${YELLOW}Deploy may be in progress or pending.${NC}"
+fi
+
+echo ""
+
+# -- Run automated RSpec specs --
+echo -e "${CYAN}Running automated smoke tests...${NC}"
+echo ""
+
+export SMOKE_TEST_BASE_URL="$BASE_URL"
+
+if [ "$SHOW_BROWSER" = true ]; then
+  export SMOKE_SHOW_BROWSER=1
+fi
+
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+APP_DIR="$(cd "${SCRIPT_DIR}/../app" && pwd)"
+
+rspec_exit=0
+(cd "$APP_DIR" && bundle exec rspec spec/smoke/ --format documentation --order defined) || rspec_exit=$?
+
+echo ""
+
+if [ $rspec_exit -ne 0 ]; then
+  echo -e "${RED}${BOLD}AUTOMATED TESTS FAILED${NC}"
+  echo -e "${RED}See output above for details. Screenshots saved to ${TMPDIR:-/tmp}/${NC}"
+  echo ""
+fi
+
+# -- Manual verification prompts --
+if [ "$SKIP_MANUAL" = false ]; then
+  echo -e "${BOLD}========================================${NC}"
+  echo -e "${BOLD} Manual Verification Checks${NC}"
+  echo -e "${BOLD}========================================${NC}"
+  echo ""
+
+  # Try to open the most recent smoke test PDF
+  latest_pdf=$(find "${TMPDIR:-/tmp}" -maxdepth 1 -name 'smoke_test_*_report_*.pdf' -print0 2>/dev/null | xargs -0 ls -t 2>/dev/null | head -1)
+  if [ -n "$latest_pdf" ]; then
+    echo -e "${CYAN}Opening downloaded PDF for visual inspection...${NC}"
+    open "$latest_pdf" 2>/dev/null || xdg-open "$latest_pdf" 2>/dev/null || echo "  (Could not open PDF automatically. Check: $latest_pdf)"
+    echo ""
+  fi
+
+  manual_pass=0
+  manual_fail=0
+  manual_skip=0
+
+  prompt_manual_check() {
+    local description="$1"
+    echo -e -n "${YELLOW}[MANUAL] ${description} ${NC}[${GREEN}p${NC}ass/${RED}f${NC}ail/${CYAN}s${NC}kip]: "
+    read -r answer
+    case "$answer" in
+      p|P|pass|PASS|y|Y|yes|YES)
+        ((manual_pass++)) || true
+        echo -e "  ${GREEN}PASS${NC}"
+        ;;
+      f|F|fail|FAIL|n|N|no|NO)
+        ((manual_fail++)) || true
+        echo -e "  ${RED}FAIL${NC}"
+        ;;
+      *)
+        ((manual_skip++)) || true
+        echo -e "  ${CYAN}SKIPPED${NC}"
+        ;;
+    esac
+    echo ""
+  }
+
+  if [ -n "$latest_pdf" ]; then
+    prompt_manual_check "Downloaded PDF renders correctly with no obvious styling issues?"
+  fi
+
+  prompt_manual_check "Check #ffs-cbv-email-inbox in Slack — PDF delivery email received?"
+  prompt_manual_check "PDF attachment in the email renders correctly with no styling issues?"
+  prompt_manual_check "Check #ffs-cbv-alerts in Slack — no 500 errors or new alerts?"
+  prompt_manual_check "Verify Mixpanel events at: https://mixpanel.com/project/3511740/view/4013544/app/events"
+
+  echo -e "${BOLD}Manual check results:${NC} ${GREEN}${manual_pass} passed${NC}, ${RED}${manual_fail} failed${NC}, ${CYAN}${manual_skip} skipped${NC}"
+  echo ""
+fi
+
+# -- Summary --
+echo -e "${BOLD}========================================${NC}"
+echo -e "${BOLD} Summary${NC}"
+echo -e "${BOLD}========================================${NC}"
+
+if [ $rspec_exit -eq 0 ]; then
+  echo -e "  Automated tests: ${GREEN}PASSED${NC}"
+else
+  echo -e "  Automated tests: ${RED}FAILED${NC}"
+fi
+
+if [ "$SKIP_MANUAL" = false ]; then
+  if [ "${manual_fail:-0}" -gt 0 ]; then
+    echo -e "  Manual checks:   ${RED}${manual_fail} FAILED${NC}"
+  else
+    echo -e "  Manual checks:   ${GREEN}ALL PASSED${NC}"
+  fi
+fi
+
+echo ""
+
+exit $rspec_exit
