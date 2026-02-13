@@ -184,4 +184,38 @@ tr td:first-child {
       flex-shrink: 0 !important;
     }
   }
+
+  .demo-launcher__scenarios {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: units(1.5);
+    margin-top: units(2);
+
+    @include at-media("tablet") {
+      grid-template-columns: 1fr 1fr;
+    }
+  }
+
+  .demo-launcher__scenario-button {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    text-align: left;
+    white-space: normal;
+    height: auto;
+    padding: units(2);
+    margin: 0;
+
+    strong {
+      display: block;
+      margin-bottom: units(0.5);
+    }
+  }
+
+  .demo-launcher__scenario-desc {
+    display: block;
+    font-size: size("body", "2xs");
+    font-weight: normal;
+    opacity: 0.9;
+  }
 }
