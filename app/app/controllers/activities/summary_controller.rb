@@ -1,22 +1,14 @@
 class Activities::SummaryController < Activities::BaseController
-  include Cbv::AggregatorDataHelper
-
-  before_action :set_flow_for_aggregator
-  before_action :set_aggregator_report, if: -> { synced_payroll_accounts.any? }
-
   def show
     @community_service_activities = @flow.volunteering_activities.order(created_at: :asc)
     @work_programs_activities = @flow.job_training_activities.order(created_at: :asc)
     @education_activities = @flow.education_activities.order(created_at: :asc)
     @employment_activities = synced_payroll_accounts
+    @monthly_summaries_by_account = @flow.monthly_summaries_by_account_with_fallback
     @all_activities = build_activities_list
   end
 
   private
-
-  def set_flow_for_aggregator
-    @cbv_flow = @flow
-  end
 
   def synced_payroll_accounts
     @synced_payroll_accounts ||= @flow.payroll_accounts.select(&:sync_succeeded?)
