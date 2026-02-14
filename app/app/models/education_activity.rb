@@ -1,4 +1,6 @@
 class EducationActivity < ApplicationRecord
+  include DocumentUploadable
+
   belongs_to :activity_flow
   has_many :nsc_enrollment_terms, dependent: :destroy
 
@@ -20,5 +22,10 @@ class EducationActivity < ApplicationRecord
     return 0 unless terms_for_month.all? { |term| term.half_time_or_above? }
 
     ActivityFlowProgressCalculator::PER_MONTH_HOURS_THRESHOLD
+  end
+
+  def document_upload_object_title
+    # TODO: Do this based off the self-attestation rather than the NSC enrollment term
+    nsc_enrollment_terms.first&.school_name&.titleize || "Unknown School"
   end
 end
