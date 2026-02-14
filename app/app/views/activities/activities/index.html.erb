@@ -88,6 +88,8 @@
         <% end %>
         <% card.with_footer do %>
           <%= link_to t("activities.hub.edit"), edit_activities_flow_volunteering_path(id: card_data[:activity].id), class: "usa-link" %>
+          <%# TODO: Remove this %>
+          <%= link_to "Upload Documents", new_activities_flow_document_upload_path(activity_type: :community_service, activity_id: card_data[:activity].id), class: "margin-left-2" %>
         <% end %>
       <% end %>
     <% end %>
@@ -114,6 +116,8 @@
         <% end %>
         <% card.with_footer do %>
           <%= link_to t("activities.hub.edit"), edit_activities_flow_job_training_path(id: card_data[:activity].id), class: "usa-link" %>
+          <%# TODO: Remove this %>
+          <%= link_to "Upload Documents", new_activities_flow_document_upload_path(activity_type: :community_service, activity_id: card_data[:activity].id), class: "margin-left-2" %>
         <% end %>
       <% end %>
     <% end %>

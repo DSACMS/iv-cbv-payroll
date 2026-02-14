@@ -94,6 +94,15 @@ en:
       title: Community service
       updated: Community service activity was successfully updated.
       zip_code: Zip code
+    document_uploads:
+      new:
+        continue: Continue to review
+        description: 'Upload documents that verify the information you entered for:'
+        input_hint: Select PDF, PNG, JPG, or HEIC files
+        input_label: Documents
+        suggestion_text_html: "<ul><li>Document Type 1</li><li>Documnet Type 2</li><li>Document Type 3</li></ul>"
+        suggestion_title: Suggested documents
+        title: Upload supporting documents for %{name}
     education:
       deleted: Education activity was successfully deleted.
       edit:

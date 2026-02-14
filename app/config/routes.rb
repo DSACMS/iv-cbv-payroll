@@ -61,6 +61,7 @@ Rails.application.routes.draw do
       resource :summary, only: %i[show], controller: "summary"
       resource :submit, only: %i[show update], controller: "submit", format: %i[html pdf]
       resource :success, only: %i[show], controller: "success"
+      resources :document_uploads, only: %i[new create]
       scope "/income", as: :income do
         resource :employer_search, only: %i[show], controller: "/cbv/employer_searches"
         resource :synchronizations, only: %i[show update], controller: "/cbv/synchronizations"

@@ -1,0 +1,49 @@
+<% title = t(".title", name: @activity.document_upload_object_title) %>
+<% content_for :title, title %>
+
+<h1><%= title %></h1>
+<p><%= t(".description") %></p>
+<ul>
+  <% @activity.document_upload_months_to_verify.each do |month| %>
+    <li>
+      <strong>
+        <%= l(month, format: :month) %>
+      </strong>
+      <% details = @activity.document_upload_details_for_month(month) %>
+      <% if details.present? %>
+        (<%= details %>)
+      <% end %>
+    </li>
+  <% end %>
+</ul>
+
+<%= form_with(builder: UswdsFormBuilder, scope: :activity, model: @activity, url: activities_flow_document_uploads_path, method: :post) do |f| %>
+  <%= hidden_field_tag "activity_id", params[:activity_id] %>
+  <%= hidden_field_tag "activity_type", params[:activity_type] %>
+  <%= f.file_field :document_uploads,
+      multiple: true,
+      label: t(".input_label"),
+      hint: t(".input_hint"),
+      accept: "image/*,.pdf" %>
+
+  <% if @activity.document_uploads.any? %>
+    <p>Uploaded Documents:</p>
+
+    <ul>
+      <% @activity.document_uploads.each do |attachment| %>
+        <%# Add hidden fields for the existing uploads so Rails won't delete them if the form is submitted a second time: %>
+        <%= f.hidden_field :document_uploads, multiple: true, value: attachment.signed_id %>
+
+        <li><%= attachment.filename %></li>
+      <% end %>
+    </ul>
+  <% end %>
+
+  <%= render(AccordionComponent.new(id: "document-upload-suggestions")) do |accordion| %>
+    <% accordion.with_title { t(".suggestion_title") } %>
+    <% accordion.with_accordion_item do %>
+      <%= @activity.document_upload_suggestion_text.html_safe %>
+    <% end %>
+  <% end %>
+  <%= f.submit t(".continue") %>
+<% end %>
