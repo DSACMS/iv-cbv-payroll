@@ -19,9 +19,9 @@
   pilot_ended: false
   generic_links_disabled: true
   sso:
-    client_id:     <%= ENV["AZURE_SANDBOX_CLIENT_ID"] %>
+    client_id: <%= ENV["AZURE_SANDBOX_CLIENT_ID"] %>
     client_secret: <%= ENV["AZURE_SANDBOX_CLIENT_SECRET"] %>
-    tenant_id:     <%= ENV["AZURE_SANDBOX_TENANT_ID"] %>
+    tenant_id: <%= ENV["AZURE_SANDBOX_TENANT_ID"] %>
     scope: "openid"
     name: "az_des"
   pay_income_days:
@@ -47,6 +47,7 @@
   transmission_method: <%= ENV.fetch("LA_LDH_TRANSMISSION_METHOD", "json") %>
   transmission_method_configuration:
     json_api_url: <%= ENV["LA_LDH_INCOME_REPORT_URL"] %>
+    pdf_api_url: <%= ENV["LA_LDH_PDF_API_URL"] %>
     custom_headers:
       X-Gateway-APIKey: <%= ENV["LA_LDH_INCOME_REPORT_APIKEY"] %>
       AccountCode: <%= ENV["LA_LDH_INCOME_REPORT_ACCOUNTCODE"] %>
@@ -87,9 +88,9 @@
   staff_portal_enabled: true
   pilot_ended: false
   sso:
-    client_id:     <%= ENV["AZURE_SANDBOX_CLIENT_ID"] %>
+    client_id: <%= ENV["AZURE_SANDBOX_CLIENT_ID"] %>
     client_secret: <%= ENV["AZURE_SANDBOX_CLIENT_SECRET"] %>
-    tenant_id:     <%= ENV["AZURE_SANDBOX_TENANT_ID"] %>
+    tenant_id: <%= ENV["AZURE_SANDBOX_TENANT_ID"] %>
     scope: "openid"
     name: "sandbox"
   pay_income_days:
