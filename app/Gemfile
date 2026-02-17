@@ -54,7 +54,7 @@ gem "bootsnap", require: false
 gem "device_detector"
 
 # Used to generate mock identity data in all environments
-gem "faker", "~> 3.5"
+gem "faker", "~> 3.6"
 
 # Use Sass to process CSS
 # gem "sassc-rails"
