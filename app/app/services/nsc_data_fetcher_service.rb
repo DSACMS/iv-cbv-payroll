@@ -26,6 +26,7 @@ class NscDataFetcherService
       date_of_birth: identity.date_of_birth,
       as_of_date: @education_activity.activity_flow.reporting_window_range.max
     )
+    response = shift_enrollment_dates_for_demo(response)
 
     update_education_activity(@education_activity, response)
 
@@ -81,5 +82,47 @@ class NscDataFetcherService
 
       "unknown"
     end
+  end
+
+  # In demo and development environments, shift enrollment term dates for
+  # currently-enrolled (CC) students so they overlap with a recent reporting
+  # window. This is necessary because NSC sandbox test data has dates from
+  # 1+ years ago, which would never overlap with a real reporting window.
+  #
+  # The shift targets the 15th of the previous month so the terms overlap
+  # with both 1-month (application) and 6-month (renewal) reporting windows.
+  def shift_enrollment_dates_for_demo(response_body)
+    return response_body unless Rails.application.config.is_internal_environment
+
+    enrollments = Array(response_body["enrollmentDetails"])
+    cc_enrollments = enrollments.select { |ed| ed["currentEnrollmentStatus"] == CURRENTLY_ENROLLED }
+    return response_body if cc_enrollments.empty?
+
+    max_term_end = cc_enrollments
+      .flat_map { |ed| ed["enrollmentData"] || [] }
+      .filter_map { |term| Date.parse(term["termEndDate"]) rescue nil }
+      .max
+
+    return response_body if max_term_end.nil?
+
+    target_date = Date.today.beginning_of_month - 15.days
+    offset_days = (target_date - max_term_end).to_i
+
+    return response_body if offset_days == 0
+
+    @logger.info("Demo mode: shifting CC enrollment dates by #{offset_days} days")
+
+    cc_enrollments.each do |enrollment_detail|
+      (enrollment_detail["enrollmentData"] || []).each do |term|
+        %w[termBeginDate termEndDate].each do |date_field|
+          next unless term[date_field].present?
+
+          original_date = Date.parse(term[date_field])
+          term[date_field] = (original_date + offset_days.days).iso8601
+        end
+      end
+    end
+
+    response_body
   end
 end
