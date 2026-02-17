@@ -14,7 +14,7 @@
 <% end %>
 
 <% if activity_type_enabled?(:employment) %>
-  <% employment_card_data = employment_cards(@employment_payroll_accounts || [], @aggregator_report, @flow.reporting_window_range) %>
+  <% employment_card_data = employment_cards(@employment_payroll_accounts || [], @persisted_report, @flow.reporting_window_range) %>
   <%= render "activities/activities/activity_section",
         activity_type: "employment",
         section_title: t("activities.employment.title"),

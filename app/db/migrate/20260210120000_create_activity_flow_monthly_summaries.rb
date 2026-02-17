@@ -10,7 +10,9 @@ class CreateActivityFlowMonthlySummaries < ActiveRecord::Migration[8.1]
       t.decimal :total_gig_hours, precision: 10, scale: 2, default: 0
       t.integer :accrued_gross_earnings_cents, default: 0
       t.decimal :total_mileage, precision: 10, scale: 2, default: 0
+      t.integer :paychecks_count, default: 0
       t.string :employer_name
+      t.string :employment_type
       t.datetime :redacted_at
 
       t.timestamps

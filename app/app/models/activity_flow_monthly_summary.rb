@@ -31,10 +31,12 @@ class ActivityFlowMonthlySummary < ApplicationRecord
         account_rows.index_by { |row| row.month.strftime("%Y-%m") }.transform_values do |row|
           {
             employer_name: row.employer_name,
+            employment_type: row.employment_type,
             total_w2_hours: row.total_w2_hours.to_f,
             total_gig_hours: row.total_gig_hours.to_f,
             accrued_gross_earnings: row.accrued_gross_earnings_cents.to_i,
-            total_mileage: row.total_mileage.to_f
+            total_mileage: row.total_mileage.to_f,
+            paychecks_count: row.paychecks_count.to_i
           }
         end
       end
@@ -60,7 +62,9 @@ class ActivityFlowMonthlySummary < ApplicationRecord
     range = activity_flow.reporting_window_range
     account_id = payroll_account.aggregator_account_id
     months_data = report.summarize_by_month(from_date: range.begin, to_date: range.end)[account_id] || {}
-    employer_name = report.find_account_report(account_id)&.employment&.employer_name if report.respond_to?(:find_account_report)
+    account_report = report.find_account_report(account_id) if report.respond_to?(:find_account_report)
+    employer_name = account_report&.employment&.employer_name
+    employment_type = account_report&.employment&.employment_type&.to_s
     reporting_months = activity_flow.reporting_months
 
     reporting_months.each do |month_date|
@@ -76,12 +80,14 @@ class ActivityFlowMonthlySummary < ApplicationRecord
           total_gig_hours: data[:total_gig_hours].to_f,
           accrued_gross_earnings_cents: (data[:accrued_gross_earnings] || 0).to_i,
           total_mileage: (data[:total_mileage] || 0).to_f,
-          employer_name: employer_name
+          paychecks_count: (data[:paystubs]&.size || 0).to_i,
+          employer_name: employer_name,
+          employment_type: employment_type
         },
         unique_by: %i[activity_flow_id payroll_account_id month],
         update_only: %i[
           total_w2_hours total_gig_hours accrued_gross_earnings_cents
-          total_mileage employer_name
+          total_mileage paychecks_count employer_name employment_type
         ]
       )
     end
@@ -95,6 +101,7 @@ class ActivityFlowMonthlySummary < ApplicationRecord
       total_gig_hours: 0,
       accrued_gross_earnings_cents: 0,
       total_mileage: 0,
+      paychecks_count: 0,
       redacted_at: Time.current
     )
     save(validate: false)

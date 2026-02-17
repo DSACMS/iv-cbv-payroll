@@ -31,7 +31,9 @@ ActiveRecord::Schema[8.1].define(version: 2026_02_10_120000) do
     t.bigint "activity_flow_id", null: false
     t.datetime "created_at", null: false
     t.string "employer_name"
+    t.string "employment_type"
     t.date "month", null: false
+    t.integer "paychecks_count", default: 0
     t.bigint "payroll_account_id", null: false
     t.datetime "redacted_at"
     t.decimal "total_gig_hours", precision: 10, scale: 2, default: "0.0"

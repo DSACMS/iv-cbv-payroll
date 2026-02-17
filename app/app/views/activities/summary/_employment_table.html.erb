@@ -1,44 +1,11 @@
-<% account_id = payroll_account.aggregator_account_id %>
-<% monthly = monthly_summaries_by_account[account_id] || {} %>
-<% latest_month = monthly.keys.max %>
-<% month_data = monthly[latest_month] %>
-<% employer_name = monthly.values.find { |data| data[:employer_name].present? }&.dig(:employer_name) %>
-
-<%= render(TableComponent.new(is_responsive: true)) do |table| %>
-  <%= table.with_subheader_row(class_names: "subheader-row base-lightest border-top-1px") do |row| %>
-    <% row.with_data_cell(is_header: true).with_content(t("activities.summary.income.header")) %>
-    <% row.with_data_cell(is_header: true).with_content(t("activities.summary.your_details")) %>
-  <% end %>
-  <%= table.with_row do |row| %>
-    <%= row.with_data_cell(is_header: true) do %>
-      <%= t("activities.summary.income.employer") %>
-    <% end %>
-    <%= row.with_data_cell do %>
-      <%= employer_name || t("shared.not_applicable") %>
-    <% end %>
-  <% end %>
-  <%= table.with_row do |row| %>
-    <%= row.with_data_cell(is_header: true) do %>
-      <%= t("activities.summary.income.month") %>
-    <% end %>
-    <%= row.with_data_cell do %>
-      <%= latest_month ? Date.strptime(latest_month, "%Y-%m").strftime("%B %Y") : t("shared.not_applicable") %>
-    <% end %>
-  <% end %>
-  <%= table.with_row do |row| %>
-    <%= row.with_data_cell(is_header: true) do %>
-      <%= t("activities.summary.income.gross_income") %>
-    <% end %>
-    <%= row.with_data_cell do %>
-      <%= month_data ? format_money(month_data[:accrued_gross_earnings]) : t("shared.not_applicable") %>
-    <% end %>
-  <% end %>
-  <%= table.with_row do |row| %>
-    <%= row.with_data_cell(is_header: true) do %>
-      <%= t("activities.summary.income.hours_worked") %>
-    <% end %>
-    <%= row.with_data_cell do %>
-      <%= month_data ? format_hours(month_data[:total_w2_hours].to_f + month_data[:total_gig_hours].to_f) : t("shared.not_applicable") %>
-    <% end %>
-  <% end %>
+<% account_report = persisted_report.find_account_report(payroll_account.aggregator_account_id) %>
+<% is_w2_worker = account_report&.employment&.employment_type == :w2 %>
+<p>
+  <strong><%= t("activities.summary.employment.employer") %>:</strong>
+  <%= account_report&.employment&.employer_name || t("shared.not_applicable") %>
+</p>
+<% if is_w2_worker %>
+  <%= render(Report::W2MonthlySummaryTableComponent.new(persisted_report, payroll_account, show_footnote: false, show_header: false)) %>
+<% else %>
+  <%= render(Report::GigMonthlySummaryTableComponent.new(persisted_report, payroll_account, show_footnote: false, show_header: false, show_payments: false)) %>
 <% end %>

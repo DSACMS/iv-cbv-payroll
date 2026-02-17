@@ -4,7 +4,7 @@ class Activities::SummaryController < Activities::BaseController
     @work_programs_activities = @flow.job_training_activities.order(created_at: :asc)
     @education_activities = @flow.education_activities.order(created_at: :asc)
     @employment_activities = synced_payroll_accounts
-    @monthly_summaries_by_account = @flow.monthly_summaries_by_account_with_fallback
+    @persisted_report = PersistedReportAdapter.new(@flow)
     @all_activities = build_activities_list
   end
 
