@@ -22,7 +22,7 @@ end
 
 namespace :npm do
   desc "Run npm audit"
-  task :audit do
+  task audit: :environment do
     require "open3"
     stdout, stderr, status = Open3.capture3("npm audit --json")
     unless status.success?

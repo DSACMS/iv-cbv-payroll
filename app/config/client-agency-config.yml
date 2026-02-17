@@ -47,6 +47,7 @@
   transmission_method: <%= ENV.fetch("LA_LDH_TRANSMISSION_METHOD", "json") %>
   transmission_method_configuration:
     json_api_url: <%= ENV["LA_LDH_INCOME_REPORT_URL"] %>
+    pdf_api_url: <%= ENV["LA_LDH_PDF_API_URL"] %>
     custom_headers:
       X-Gateway-APIKey: <%= ENV["LA_LDH_INCOME_REPORT_APIKEY"] %>
       AccountCode: <%= ENV["LA_LDH_INCOME_REPORT_ACCOUNTCODE"] %>
