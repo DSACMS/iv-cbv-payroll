@@ -33,7 +33,7 @@ class Cbv::SubmitsController < Cbv::BaseController
         render pdf: "#{@cbv_flow.id}",
           layout: "pdf",
           locals: {
-            is_caseworker: allow_caseworker_override_param? && params[:is_caseworker],
+            is_caseworker: internal_environment? && params[:is_caseworker],
             aggregator_report: @aggregator_report
           },
           footer: { right: t(".pdf.footer.page_footer"), font_size: 10 },
@@ -93,9 +93,5 @@ class Cbv::SubmitsController < Cbv::BaseController
       flow_started_seconds_ago: (Time.now - cbv_flow.created_at).to_i,
       locale: I18n.locale
     })
-  end
-
-  def allow_caseworker_override_param?
-    internal_environment?
   end
 end
