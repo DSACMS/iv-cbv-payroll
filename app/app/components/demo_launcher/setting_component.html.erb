@@ -1,9 +1,9 @@
 <div class="demo-launcher__setting">
-  <h3><%= @title %></h3>
+  <h3 class="demo-launcher__setting-title"><%= @title %></h3>
   <% if @hint %>
-    <div class="usa-hint"><%= @hint %></div>
+    <div class="usa-hint demo-launcher__setting-hint"><%= @hint %></div>
   <% end %>
-  <div class="usa-form-group">
+  <div class="usa-form-group demo-launcher__setting-body">
     <%= content %>
   </div>
 </div>
