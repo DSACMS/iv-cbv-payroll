@@ -54,12 +54,12 @@
     <% end %>
     <h2>Launch Options</h2>
     <h3>Standard Flows</h3>
-    <div class="demo-launcher__scenarios demo-launcher__setting">
-      <button type="submit" name="launch_type" value="tokenized" formtarget="_blank" class="usa-button usa-button--outline demo-launcher__scenario-button">
-        <strong>Tokenized flow</strong>
+    <div class="margin-top-1 margin-bottom-2">
+      <button type="submit" name="launch_type" value="tokenized" formtarget="_blank" class="usa-button usa-button--outline margin-y-0">
+        Tokenized flow
       </button>
-      <button type="submit" name="launch_type" value="generic" formtarget="_blank" class="usa-button usa-button--outline demo-launcher__scenario-button">
-        <strong>Generic flow</strong>
+      <button type="submit" name="launch_type" value="generic" formtarget="_blank" class="usa-button usa-button--outline margin-y-0">
+        Generic flow
       </button>
     </div>
     <%= render DemoLauncher::SettingComponent.new(title: "NSC Test Scenarios", hint: "Test the NSC education verification integration with pre-configured users. Each user demonstrates a different enrollment scenario.") do %>
