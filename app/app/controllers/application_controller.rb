@@ -71,11 +71,11 @@ class ApplicationController < ActionController::Base
   end
 
   def internal_environment?
-    Rails.env.development? || Rails.env.test? || Rails.application.config.demo_mode
+    Rails.application.config.is_internal_environment
   end
 
   def enable_mini_profiler_in_demo
-    return unless Rails.application.config.demo_mode
+    return unless Rails.application.config.is_internal_environment
 
     Rack::MiniProfiler.authorize_request
   end

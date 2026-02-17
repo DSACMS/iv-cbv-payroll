@@ -55,11 +55,11 @@ RSpec.describe ApplicationController, type: :controller do
         get 'test_action', to: 'anonymous#test_action'
       end
 
-      allow(Rails.application.config).to receive(:demo_mode).and_return(is_demo_mode)
+      allow(Rails.application.config).to receive(:is_internal_environment).and_return(is_internal_environment)
     end
 
     context 'when in demo environment' do
-      let(:is_demo_mode) { true }
+      let(:is_internal_environment) { true }
 
       it 'authorizes mini profiler' do
         expect(Rack::MiniProfiler).to receive(:authorize_request)
@@ -68,7 +68,7 @@ RSpec.describe ApplicationController, type: :controller do
     end
 
     context 'when not in demo environment' do
-      let(:is_demo_mode) { false }
+      let(:is_internal_environment) { false }
 
       it 'does not authorize mini profiler' do
         expect(Rack::MiniProfiler).not_to receive(:authorize_request)

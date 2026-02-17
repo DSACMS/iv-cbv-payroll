@@ -53,11 +53,11 @@ module IvCbvPayroll
     # Configure allowed hosts
     config.hosts << ENV["DOMAIN_NAME"] if ENV["DOMAIN_NAME"]
 
-    # Enable various functionality when running in lower deployed environments (dev, PR review apps)
-    config.demo_mode = if ENV["DOMAIN_NAME"].present?
-                         ENV["DOMAIN_NAME"] == "verify-demo.navapbc.cloud" ||
-                         ENV["DOMAIN_NAME"].match?(/^p-\d+-app-dev/)
-                       end
+    # Enable various functionality when running in internal (non-production) environments
+    config.is_internal_environment = Rails.env.development? || Rails.env.test? || if ENV["DOMAIN_NAME"].present?
+                                                                                    ENV["DOMAIN_NAME"] == "verify-demo.navapbc.cloud" ||
+                                                                                    ENV["DOMAIN_NAME"].match?(/^p-\d+-app-dev/)
+                                                                                  end
 
     # Configure allowed hosts inferred from the client-agency-config.yml file
     config.client_agencies.client_agency_ids.each do |agency_id|
