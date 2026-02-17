@@ -1,0 +1,431 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Agency Configuration — AZ DES</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/uswds/3.8.1/css/uswds.min.css">
+  <style>
+    /* Mirror demo-launcher styles */
+    .demo-launcher h3 {
+      margin-bottom: 0;
+    }
+    .demo-launcher__setting {
+      margin-bottom: 2.5rem;
+    }
+    .demo-launcher__setting > h3 {
+      margin-bottom: 0;
+    }
+    .demo-launcher__setting > .usa-hint {
+      margin-top: 0.25rem;
+    }
+    .demo-launcher__setting > .usa-form-group {
+      margin-top: 2px;
+    }
+
+    /* Full-width inputs */
+    .usa-form--large {
+      max-width: none;
+    }
+    .usa-form--large .usa-input,
+    .usa-form--large .usa-select {
+      max-width: none;
+    }
+
+    /* Inherited / override indicators */
+    .inherited {
+      color: #71767a;
+      font-style: italic;
+    }
+    .inherited::after {
+      content: " (inherited from bedrock)";
+      font-size: 0.85em;
+    }
+    .override-badge {
+      display: inline-block;
+      background: #d4e5ff;
+      color: #1a4480;
+      font-size: 0.75rem;
+      font-weight: 700;
+      padding: 2px 8px;
+      border-radius: 2px;
+      margin-left: 0.5rem;
+      vertical-align: middle;
+    }
+    .secret-field {
+      font-family: monospace;
+      letter-spacing: 0.15em;
+    }
+    .reset-link {
+      font-size: 0.85rem;
+      margin-top: 0.25rem;
+    }
+
+    /* Section dividers */
+    .config-section {
+      border: 1px solid #dfe1e2;
+      border-radius: 4px;
+      padding: 1.5rem;
+      margin-bottom: 2rem;
+    }
+    .config-section > h2 {
+      margin-top: 0;
+    }
+  </style>
+</head>
+<body>
+  <a class="usa-skipnav" href="#main-content">Skip to main content</a>
+
+  <header class="usa-header usa-header--basic">
+    <div class="usa-nav-container">
+      <div class="usa-navbar">
+        <div class="usa-logo">
+          <em class="usa-logo__text">
+            <a href="#" title="Agency Configuration">Agency Configuration</a>
+          </em>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main id="main-content">
+    <div class="grid-container">
+      <div class="grid-row margin-top-4 margin-bottom-2">
+        <div class="grid-col">
+          <nav class="usa-breadcrumb" aria-label="Breadcrumb">
+            <ol class="usa-breadcrumb__list">
+              <li class="usa-breadcrumb__list-item">
+                <a href="#" class="usa-breadcrumb__link">Agencies</a>
+              </li>
+              <li class="usa-breadcrumb__list-item usa-current" aria-current="page">
+                AZ DES
+              </li>
+            </ol>
+          </nav>
+        </div>
+      </div>
+
+      <div class="grid-col tablet:grid-col-8 demo-launcher">
+        <h1>AZ DES</h1>
+        <div class="usa-hint demo-launcher__usa-hint">Department of Economic Security / Family Assistance Administration</div>
+
+        <div class="usa-alert usa-alert--info usa-alert--slim margin-top-2 margin-bottom-3">
+          <div class="usa-alert__body">
+            <p class="usa-alert__text">
+              Settings shown in <span class="inherited" style="display:inline;">gray</span> are inherited from the bedrock defaults. Override them by entering a value.
+            </p>
+          </div>
+        </div>
+
+        <form class="usa-form usa-form--large">
+
+          <!-- Display / Identity -->
+          <div class="config-section">
+            <h2>Display &amp; Identity</h2>
+
+            <div class="demo-launcher__setting">
+              <h3>Agency name <span class="override-badge">Override</span></h3>
+              <div class="usa-form-group">
+                <input class="usa-input" id="agency-name" name="agency_name" type="text"
+                       value="Department of Economic Security/Family Assistance Administration">
+              </div>
+            </div>
+
+            <div class="demo-launcher__setting">
+              <h3>Agency contact website</h3>
+              <div class="usa-form-group">
+                <input class="usa-input" id="agency-website" name="agency_contact_website" type="url"
+                       value="https://myfamilybenefits.azdes.gov/">
+              </div>
+            </div>
+
+            <div class="demo-launcher__setting">
+              <h3>Agency domain</h3>
+              <div class="usa-form-group">
+                <input class="usa-input" id="agency-domain" name="agency_domain" type="text"
+                       value="verify.azdes.gov">
+              </div>
+            </div>
+
+            <div class="demo-launcher__setting">
+              <h3>Logo path</h3>
+              <div class="usa-form-group">
+                <input class="usa-input" id="logo-path" name="logo_path" type="text"
+                       value="des_logo.png">
+              </div>
+            </div>
+
+            <div class="demo-launcher__setting">
+              <h3>Caseworker feedback form URL</h3>
+              <div class="usa-hint">URL to the feedback form shown to caseworkers after submission.</div>
+              <div class="usa-form-group">
+                <input class="usa-input inherited" id="feedback-form" name="caseworker_feedback_form" type="url"
+                       placeholder="Not set" value="">
+              </div>
+            </div>
+          </div>
+
+          <!-- Feature Flags -->
+          <div class="config-section">
+            <h2>Feature Flags</h2>
+
+            <div class="demo-launcher__setting">
+              <h3>Staff portal enabled</h3>
+              <div class="usa-form-group">
+                <div class="usa-checkbox">
+                  <input class="usa-checkbox__input" id="staff-portal" type="checkbox" name="staff_portal_enabled">
+                  <label class="usa-checkbox__label inherited" for="staff-portal">Enabled</label>
+                </div>
+              </div>
+            </div>
+
+            <div class="demo-launcher__setting">
+              <h3>Pilot ended</h3>
+              <div class="usa-form-group">
+                <div class="usa-checkbox">
+                  <input class="usa-checkbox__input" id="pilot-ended" type="checkbox" name="pilot_ended">
+                  <label class="usa-checkbox__label inherited" for="pilot-ended">Ended</label>
+                </div>
+              </div>
+            </div>
+
+            <div class="demo-launcher__setting">
+              <h3>Generic links disabled <span class="override-badge">Override</span></h3>
+              <div class="usa-form-group">
+                <div class="usa-checkbox">
+                  <input class="usa-checkbox__input" id="generic-links-disabled" type="checkbox" name="generic_links_disabled" checked>
+                  <label class="usa-checkbox__label" for="generic-links-disabled">Disabled</label>
+                </div>
+                <p class="reset-link"><a href="#">Reset to bedrock default (not disabled)</a></p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Income Verification -->
+          <div class="config-section">
+            <h2>Income Verification</h2>
+
+            <div class="demo-launcher__setting">
+              <h3>Pay income days — W2</h3>
+              <div class="usa-hint">How many days of W2 income history to request from the aggregator.</div>
+              <div class="usa-form-group">
+                <select class="usa-select inherited" id="pay-w2" name="pay_income_days_w2">
+                  <option value="90" selected>90 days</option>
+                  <option value="182">182 days (6 months)</option>
+                </select>
+                <p class="reset-link"><a href="#">Using bedrock default</a></p>
+              </div>
+            </div>
+
+            <div class="demo-launcher__setting">
+              <h3>Pay income days — Gig <span class="override-badge">Override</span></h3>
+              <div class="usa-hint">How many days of gig income history to request from the aggregator.</div>
+              <div class="usa-form-group">
+                <select class="usa-select" id="pay-gig" name="pay_income_days_gig">
+                  <option value="90">90 days</option>
+                  <option value="182" selected>182 days (6 months)</option>
+                </select>
+                <p class="reset-link"><a href="#">Reset to bedrock default (90)</a></p>
+              </div>
+            </div>
+
+            <div class="demo-launcher__setting">
+              <h3>Application reporting months</h3>
+              <div class="usa-hint">Number of months of data included in the report.</div>
+              <div class="usa-form-group">
+                <select class="usa-select inherited" id="reporting-months" name="application_reporting_months">
+                  <option value="1" selected>1 month</option>
+                  <option value="2">2 months</option>
+                  <option value="3">3 months</option>
+                </select>
+                <p class="reset-link"><a href="#">Using bedrock default</a></p>
+              </div>
+            </div>
+
+            <div class="demo-launcher__setting">
+              <h3>Invitation valid days <span class="override-badge">Override</span></h3>
+              <div class="usa-hint">How many days an invitation token remains valid before expiring.</div>
+              <div class="usa-form-group">
+                <input class="usa-input" id="invitation-days" name="invitation_valid_days" type="number"
+                       value="10">
+                <p class="reset-link"><a href="#">Reset to bedrock default (14)</a></p>
+              </div>
+            </div>
+
+            <div class="demo-launcher__setting">
+              <h3>Pinwheel environment</h3>
+              <div class="usa-form-group">
+                <input class="usa-input inherited" id="pinwheel-env" name="pinwheel_environment" type="text"
+                       placeholder="sandbox" value="">
+                <p class="reset-link"><a href="#">Using bedrock default</a></p>
+              </div>
+            </div>
+
+            <div class="demo-launcher__setting">
+              <h3>Argyle environment</h3>
+              <div class="usa-form-group">
+                <input class="usa-input inherited" id="argyle-env" name="argyle_environment" type="text"
+                       placeholder="sandbox" value="">
+                <p class="reset-link"><a href="#">Using bedrock default</a></p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Transmission -->
+          <div class="config-section">
+            <h2>Data Transmission</h2>
+
+            <div class="demo-launcher__setting">
+              <h3>Transmission method <span class="override-badge">Override</span></h3>
+              <div class="usa-hint">How completed reports are delivered to the agency.</div>
+              <div class="usa-form-group">
+                <select class="usa-select" id="transmission-method" name="transmission_method">
+                  <option value="shared_email">Shared Email</option>
+                  <option value="sftp" selected>SFTP</option>
+                  <option value="json">JSON API</option>
+                  <option value="encrypted_s3">Encrypted S3</option>
+                  <option value="http_pdf">HTTP PDF</option>
+                  <option value="json_and_pdf">JSON + PDF</option>
+                </select>
+              </div>
+            </div>
+
+            <!-- SFTP-specific fields -->
+            <div class="usa-alert usa-alert--info usa-alert--slim margin-bottom-3">
+              <div class="usa-alert__body">
+                <p class="usa-alert__text">Showing fields for SFTP transmission method.</p>
+              </div>
+            </div>
+
+            <div class="demo-launcher__setting">
+              <h3>SFTP URL</h3>
+              <div class="usa-form-group">
+                <input class="usa-input" id="sftp-url" name="transmission_sftp_url" type="text"
+                       value="sftp.azdes.gov">
+              </div>
+            </div>
+
+            <div class="demo-launcher__setting">
+              <h3>SFTP directory</h3>
+              <div class="usa-form-group">
+                <input class="usa-input" id="sftp-directory" name="transmission_sftp_directory" type="text"
+                       value="/uploads/cbv">
+              </div>
+            </div>
+
+            <div class="demo-launcher__setting">
+              <h3>SFTP user</h3>
+              <div class="usa-form-group">
+                <input class="usa-input" id="sftp-user" name="transmission_sftp_user" type="text"
+                       value="cbv_upload">
+              </div>
+            </div>
+
+            <div class="demo-launcher__setting">
+              <h3>SFTP password</h3>
+              <div class="usa-hint">Encrypted at rest. Enter a new value to change.</div>
+              <div class="usa-form-group">
+                <input class="usa-input secret-field" id="sftp-password" name="transmission_sftp_password"
+                       type="password" value="••••••••••••">
+              </div>
+            </div>
+
+            <div class="demo-launcher__setting">
+              <h3>CSV summary reports enabled</h3>
+              <div class="usa-form-group">
+                <div class="usa-checkbox">
+                  <input class="usa-checkbox__input" id="csv-reports" type="checkbox" name="transmission_csv_summary_reports_enabled">
+                  <label class="usa-checkbox__label" for="csv-reports">Enabled</label>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- SSO -->
+          <div class="config-section">
+            <h2>Single Sign-On (Azure AD)</h2>
+
+            <div class="demo-launcher__setting">
+              <h3>SSO name</h3>
+              <div class="usa-form-group">
+                <input class="usa-input" id="sso-name" name="sso_name" type="text" value="az_des">
+              </div>
+            </div>
+
+            <div class="demo-launcher__setting">
+              <h3>Scope</h3>
+              <div class="usa-form-group">
+                <input class="usa-input" id="sso-scope" name="sso_scope" type="text" value="openid">
+              </div>
+            </div>
+
+            <div class="demo-launcher__setting">
+              <h3>Tenant ID</h3>
+              <div class="usa-form-group">
+                <input class="usa-input" id="sso-tenant" name="sso_tenant_id" type="text"
+                       value="a1b2c3d4-e5f6-7890-abcd-ef1234567890">
+              </div>
+            </div>
+
+            <div class="demo-launcher__setting">
+              <h3>Client ID</h3>
+              <div class="usa-form-group">
+                <input class="usa-input" id="sso-client-id" name="sso_client_id" type="text"
+                       value="abcd1234-5678-90ef-ghij-klmnopqrstuv">
+              </div>
+            </div>
+
+            <div class="demo-launcher__setting">
+              <h3>Client secret</h3>
+              <div class="usa-hint">Encrypted at rest. Enter a new value to change.</div>
+              <div class="usa-form-group">
+                <input class="usa-input secret-field" id="sso-client-secret" name="sso_client_secret"
+                       type="password" value="••••••••••••">
+              </div>
+            </div>
+          </div>
+
+          <!-- Weekly Reporting -->
+          <div class="config-section">
+            <h2>Weekly Reporting</h2>
+
+            <div class="demo-launcher__setting">
+              <h3>Recipient email(s)</h3>
+              <div class="usa-hint">Comma-separated email addresses for weekly report delivery.</div>
+              <div class="usa-form-group">
+                <input class="usa-input" id="report-recipient" name="weekly_report_recipient" type="text"
+                       value="reports@azdes.gov">
+              </div>
+            </div>
+
+            <div class="demo-launcher__setting">
+              <h3>Report variant</h3>
+              <div class="usa-form-group">
+                <select class="usa-select" id="report-variant" name="weekly_report_variant">
+                  <option value="invitations" selected>Invitations</option>
+                  <option value="flows">Flows</option>
+                </select>
+              </div>
+            </div>
+          </div>
+
+          <!-- Actions -->
+          <div class="margin-top-4 margin-bottom-6">
+            <button type="submit" class="usa-button">Save changes</button>
+            <button type="button" class="usa-button usa-button--unstyled margin-left-2">Cancel</button>
+          </div>
+
+        </form>
+      </div>
+    </div>
+  </main>
+
+  <footer class="usa-footer usa-footer--slim">
+    <div class="usa-footer__primary-section">
+      <div class="grid-container">
+        <p class="text-base font-body-2xs">This is a static mockup for the database-backed agency configuration proposal.</p>
+      </div>
+    </div>
+  </footer>
+</body>
+</html>

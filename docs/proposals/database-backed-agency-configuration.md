@@ -1,0 +1,435 @@
+# Proposal: Database-Backed Agency Configuration
+
+## Problem
+
+Agency configuration currently lives in `config/client-agency-config.yml`, a static YAML file. This approach has served us well but creates friction as we scale:
+
+- **Adding or changing agency settings requires a code deploy.** Even a simple change like toggling `staff_portal_enabled` means a PR, review, merge, and deploy cycle.
+- **Secrets are scattered across environment variables** with ad-hoc naming conventions (`AZ_DES_SFTP_USER`, `LA_LDH_INCOME_REPORT_APIKEY`, etc.). Each new agency multiplies the ENV surface area.
+- **No self-service for state admins.** Every configuration change requires engineering involvement.
+- **No standardized defaults mechanism.** If we want all agencies to share a common setting, we repeat it in each YAML block. Changing a default means editing every agency entry.
+- **Hard to test configuration changes** without deploying to a real environment.
+
+## Proposed Solution
+
+Replace the YAML-based configuration with a database-backed system using a single `agency_configurations` table and a **bedrock + override** inheritance model.
+
+### Core Concept
+
+1. A **bedrock record** defines sensible defaults for all settings.
+2. Each **agency record** stores only the settings that differ from bedrock.
+3. When reading a setting, the system checks the agency record first, then falls back to bedrock.
+
+This is conceptually similar to CSS specificity or prototype-based inheritance: the bedrock is the prototype, and agency records override specific properties.
+
+### What This Enables
+
+- **Phase 1 (this proposal):** Database table + model + migration of existing YAML settings. App reads from DB instead of YAML. No user-facing UI yet.
+- **Phase 2 (future):** Admin web UI for state admins to configure their own agencies without engineering support.
+- **Phase 3 (future):** Audit logging, versioned configuration history, environment-specific overrides, other ideas.
+
+---
+
+## Design
+
+### Table: `agency_configurations`
+
+```ruby
+create_table :agency_configurations do |t|
+  t.string  :agency_id, null: false, index: { unique: true }  # "bedrock", "az_des", "la_ldh", etc.
+  t.boolean :is_bedrock, null: false, default: false
+
+  # Display / Identity
+  t.string  :agency_name
+  t.string  :agency_contact_website
+  t.string  :agency_domain
+  t.string  :logo_path
+  t.string  :logo_square_path
+  t.string  :caseworker_feedback_form
+  t.string  :default_origin
+
+  # Feature Flags
+  t.boolean :staff_portal_enabled
+  t.boolean :pilot_ended
+  t.boolean :generic_links_disabled
+
+  # Income Verification
+  t.integer :pay_income_days_w2         # 90 or 182
+  t.integer :pay_income_days_gig        # 90 or 182
+  t.integer :application_reporting_months  # 1, 2, or 3
+  t.integer :invitation_valid_days
+
+  # Transmission — method determines which columns are relevant
+  t.string  :transmission_method         # sftp, json, shared_email, encrypted_s3, http_pdf, json_and_pdf
+  t.string  :transmission_sftp_user
+  t.string  :transmission_sftp_password
+  t.string  :transmission_sftp_url
+  t.string  :transmission_sftp_directory
+  t.boolean :transmission_csv_summary_reports_enabled
+  t.string  :transmission_json_api_url
+  t.boolean :transmission_include_report_pdf
+  t.string  :transmission_shared_email_address
+  t.string  :transmission_pdf_api_url
+  t.text    :transmission_s3_public_key  # GPG public key (PEM)
+  t.jsonb   :transmission_custom_headers, default: {}  # HTTP headers (key-value map by nature)
+
+  # SSO (Azure AD)
+  t.string  :sso_client_id
+  t.string  :sso_client_secret
+  t.string  :sso_tenant_id
+  t.string  :sso_scope
+  t.string  :sso_name
+
+  # Weekly Reporting
+  t.string  :weekly_report_recipient
+  t.string  :weekly_report_variant       # "invitations" or "flows"
+
+  # Applicant Schema
+  t.jsonb   :applicant_attributes, default: {}
+
+  # Activity Hub Activities
+  t.jsonb   :activity_types, default: {}
+
+  t.timestamps
+end
+```
+
+**Why individual columns for most settings + JSONB for two:**
+- Scalar columns are queryable, indexable, and have DB-level type safety. Most settings — including transmission, SSO, and reporting — are a known, fixed set of fields, so they get their own columns.
+- `applicant_attributes` stays JSONB because its keys are field names that vary per agency (e.g., `first_name`, `case_number`, `date_of_birth`) with `{ required: true/false }` values.
+- `activity_types` stays JSONB because it's a simple boolean map of activity type names.
+- `transmission_custom_headers` stays JSONB because HTTP headers are inherently a key-value map.
+- Transmission columns are prefixed with `transmission_` and only the subset relevant to the agency's `transmission_method` will be populated. Irrelevant columns stay null.
+
+### Model: `AgencyConfiguration`
+
+```ruby
+class AgencyConfiguration < ApplicationRecord
+  BEDROCK_ID = "bedrock"
+  CACHE_KEY_PREFIX = "agency_config"
+
+  validates :agency_id, presence: true, uniqueness: true
+  validates :pay_income_days_w2, inclusion: { in: [90, 182] }, allow_nil: true
+  validates :pay_income_days_gig, inclusion: { in: [90, 182] }, allow_nil: true
+  validates :application_reporting_months, inclusion: { in: [1, 2, 3] }, allow_nil: true
+
+  # Bedrock requires agency_name and transmission_method.
+  # Agency overrides allow nil (they inherit from bedrock).
+  validates :agency_name, presence: true, if: :is_bedrock?
+  validates :transmission_method, presence: true, if: :is_bedrock?
+
+  # When any record is saved, rebuild the cache for affected agencies.
+  after_save :rebuild_cache
+
+  scope :bedrock, -> { find_by(agency_id: BEDROCK_ID) }
+
+  def self.for_agency(agency_id)
+    find_by(agency_id: agency_id)
+  end
+
+  # Returns the effective value for an attribute, falling back to bedrock.
+  def effective(attr)
+    value = read_attribute(attr)
+    return value unless value.nil?
+    return nil if is_bedrock?
+
+    self.class.bedrock&.read_attribute(attr)
+  end
+
+  # Returns a hash of all effective settings (agency values merged over bedrock).
+  def effective_settings
+    return attributes if is_bedrock?
+
+    bedrock = self.class.bedrock
+    return attributes unless bedrock
+
+    bedrock.attributes.merge(attributes.compact)
+  end
+
+  # Build an AdapterAdapter from effective settings and write it to cache.
+  def cache_effective_adapter
+    adapter = AgencyConfigurationAdapter.new(self)
+    Rails.cache.write(self.class.cache_key_for(agency_id), adapter)
+    adapter
+  end
+
+  def self.cache_key_for(agency_id)
+    "#{CACHE_KEY_PREFIX}/#{agency_id}"
+  end
+
+  private
+
+  def rebuild_cache
+    if is_bedrock?
+      # Bedrock changed — rebuild cache for every agency
+      AgencyConfiguration.where.not(agency_id: BEDROCK_ID).find_each(&:cache_effective_adapter)
+    else
+      cache_effective_adapter
+    end
+  end
+end
+```
+
+### Adapter: `ClientAgency` Compatibility Layer
+
+To avoid a big-bang rewrite, we introduce an adapter that presents the same interface as the current `ClientAgencyConfig::ClientAgency` class but reads from the database:
+
+```ruby
+class AgencyConfigurationAdapter
+  # Quacks like ClientAgencyConfig::ClientAgency
+  delegate :agency_name, :agency_contact_website, :agency_domain,
+           :logo_path, :logo_square_path, :caseworker_feedback_form,
+           :default_origin, :pinwheel_environment, :argyle_environment,
+           :transmission_method, :invitation_valid_days,
+           :staff_portal_enabled, :pilot_ended, :generic_links_disabled,
+           :application_reporting_months,
+           to: :@config
+
+  def initialize(agency_configuration)
+    @config = agency_configuration
+  end
+
+  def id
+    @config.agency_id
+  end
+
+  def pay_income_days
+    {
+      w2: @config.effective(:pay_income_days_w2),
+      gig: @config.effective(:pay_income_days_gig)
+    }
+  end
+
+  # Reconstructs the hash interface that transmitters expect
+  def transmission_method_configuration
+    {
+      "user" => @config.effective(:transmission_sftp_user),
+      "password" => @config.effective(:transmission_sftp_password),
+      "url" => @config.effective(:transmission_sftp_url),
+      "sftp_directory" => @config.effective(:transmission_sftp_directory),
+      "csv_summary_reports_enabled" => @config.effective(:transmission_csv_summary_reports_enabled),
+      "json_api_url" => @config.effective(:transmission_json_api_url),
+      "include_report_pdf" => @config.effective(:transmission_include_report_pdf),
+      "email" => @config.effective(:transmission_shared_email_address),
+      "pdf_api_url" => @config.effective(:transmission_pdf_api_url),
+      "public_key" => @config.effective(:transmission_s3_public_key),
+      "custom_headers" => @config.effective(:transmission_custom_headers)
+    }.compact
+  end
+
+  def sso
+    values = {
+      "client_id" => @config.effective(:sso_client_id),
+      "client_secret" => @config.effective(:sso_client_secret),
+      "tenant_id" => @config.effective(:sso_tenant_id),
+      "scope" => @config.effective(:sso_scope),
+      "name" => @config.effective(:sso_name)
+    }.compact
+    values.presence
+  end
+
+  def weekly_report
+    values = {
+      "recipient" => @config.effective(:weekly_report_recipient),
+      "report_variant" => @config.effective(:weekly_report_variant)
+    }.compact
+    values.presence
+  end
+
+  def applicant_attributes
+    @config.effective(:applicant_attributes) || {}
+  end
+
+  def activity_types
+    (@config.effective(:activity_types) || {}).symbolize_keys
+  end
+end
+```
+
+### Updated `ClientAgencyConfig` (Drop-in Replacement)
+
+```ruby
+class ClientAgencyConfig
+  VALID_PAY_INCOME_DAYS = [90, 182]
+  VALID_APPLICATION_REPORTING_MONTHS = [1, 2, 3]
+
+  def client_agency_ids
+    # Also cached — invalidated when any agency record changes
+    Rails.cache.fetch("#{AgencyConfiguration::CACHE_KEY_PREFIX}/agency_ids") do
+      AgencyConfiguration.where.not(agency_id: AgencyConfiguration::BEDROCK_ID)
+                         .pluck(:agency_id)
+    end
+  end
+
+  def [](client_agency_id)
+    # Hot path: single cache read, zero DB queries
+    Rails.cache.fetch(AgencyConfiguration.cache_key_for(client_agency_id)) do
+      # Cache miss: load from DB and compute effective settings
+      config = AgencyConfiguration.for_agency(client_agency_id)
+      config&.cache_effective_adapter
+    end
+  end
+end
+```
+
+This means `Rails.application.config.client_agencies["az_des"]` continues to work. Controllers, models, helpers, routes — all unchanged. The hot path is a single `Rails.cache.fetch` with no DB queries.
+
+---
+
+## Migration Plan
+
+### Step 1: Create the Table and Model
+
+- Add migration for `agency_configurations` table.
+- Add `AgencyConfiguration` model with validations.
+- Add `AgencyConfigurationAdapter` class.
+- Write specs for the model, adapter, and inheritance behavior.
+
+### Step 2: Seed Bedrock + Agency Records
+
+Write a seed/migration that translates the current YAML into database records:
+
+```ruby
+# Bedrock defaults (sensible defaults that most agencies share)
+AgencyConfiguration.create!(
+  agency_id: "bedrock",
+  is_bedrock: true,
+  agency_name: "Default Agency",
+  pay_income_days_w2: 90,
+  pay_income_days_gig: 90,
+  application_reporting_months: 1,
+  invitation_valid_days: 14,
+  pinwheel_environment: "sandbox",
+  argyle_environment: "sandbox",
+  staff_portal_enabled: false,
+  pilot_ended: false,
+  generic_links_disabled: false,
+  transmission_method: "shared_email"
+)
+
+# AZ DES — only stores overrides
+AgencyConfiguration.create!(
+  agency_id: "az_des",
+  agency_name: "Department of Economic Security/Family Assistance Administration",
+  agency_contact_website: "https://myfamilybenefits.azdes.gov/",
+  agency_domain: ENV["AZ_DES_DOMAIN_NAME"],
+  logo_path: "des_logo.png",
+  pay_income_days_gig: 182,  # Differs from bedrock (90)
+  invitation_valid_days: 10,  # Differs from bedrock (14)
+  generic_links_disabled: true,
+  transmission_method: "sftp",
+  transmission_sftp_user: ENV["AZ_DES_SFTP_USER"],
+  transmission_sftp_password: ENV["AZ_DES_SFTP_PASSWORD"],
+  transmission_sftp_url: ENV["AZ_DES_SFTP_URL"],
+  transmission_sftp_directory: ENV["AZ_DES_SFTP_DIRECTORY"],
+  sso_client_id: ENV["AZURE_SANDBOX_CLIENT_ID"],
+  sso_client_secret: ENV["AZURE_SANDBOX_CLIENT_SECRET"],
+  sso_tenant_id: ENV["AZURE_SANDBOX_TENANT_ID"],
+  sso_scope: "openid",
+  sso_name: "az_des",
+  weekly_report_recipient: ENV["AZ_DES_WEEKLY_REPORT_RECIPIENTS"],
+  weekly_report_variant: "invitations"
+)
+# ... similar for la_ldh, sandbox
+```
+
+### Step 3: Wire Up the New Config Source
+
+- Replace `ClientAgencyConfig.new(yaml_path)` in `config/application.rb` with the new DB-backed `ClientAgencyConfig`.
+- Since the adapter matches the `ClientAgency` interface, no downstream code changes needed.
+- The YAML file stays in the repo (commented out or kept as reference) until we're confident in the migration.
+
+### Step 4: Handle Secrets
+
+Secrets currently embedded in the YAML via ENV interpolation (SFTP passwords, API keys, SSO secrets) now have their own discrete columns (`transmission_sftp_password`, `sso_client_secret`, etc.). We need to decide how to protect them:
+
+**Option A: Keep secrets in ENV, store references in DB.**
+Secret columns store ENV variable names (e.g., `"AZ_DES_SFTP_PASSWORD"`) and the adapter resolves via `ENV[]` at read time. Pros: secrets never touch the DB. Cons: still need ENV vars per agency.
+
+**Option B: Store encrypted secrets in the DB.**
+Use Rails encrypted attributes (`encrypts :transmission_sftp_password, :sso_client_secret`) on the sensitive columns. Pros: self-contained, no ENV proliferation. Cons: requires careful key management, DB backup considerations.
+
+**Option C (recommended): Hybrid.**
+Non-sensitive config lives directly in DB columns. Secret columns (SFTP password, SSO client secret, API keys) use Rails encrypted attributes. Other secrets that are truly infrastructure-level (DB encryption keys, Rails secret key base) stay in ENV where they belong.
+
+### Step 5: Update Route Constraints
+
+The route constraints currently evaluate at boot time:
+
+```ruby
+constraints: { client_agency_id: Regexp.union(
+  Rails.application.config.client_agencies.client_agency_ids
+)}
+```
+
+With DB-backed config, this needs to become a dynamic constraint so newly added agencies are recognized without restart:
+
+```ruby
+class AgencyRouteConstraint
+  def self.matches?(request)
+    AgencyConfiguration.exists?(agency_id: request.params[:client_agency_id])
+  end
+end
+```
+
+### Step 6: Remove YAML
+
+Once the DB-backed system is validated in production:
+- Remove `config/client-agency-config.yml`.
+- Remove old `ClientAgencyConfig` YAML-loading code.
+- Remove agency-specific ENV variables that have been migrated to the DB.
+
+---
+
+## What About the STI Subclasses?
+
+`CbvApplicant` currently uses STI with agency-specific subclasses (`CbvApplicant::AzDes`, `CbvApplicant::LaLdh`, `CbvApplicant::Sandbox`). Each subclass hardcodes `VALID_ATTRIBUTES` for that agency.
+
+This is a separate concern from the configuration table but is related. The `applicant_attributes` JSONB column in `agency_configurations` already captures which fields are required/optional per agency. Over time, the STI subclasses could be simplified to read their `VALID_ATTRIBUTES` from the configuration rather than hardcoding them. This is out of scope for this proposal but is a natural follow-on.
+
+---
+
+## JSONB Column Merging Strategy
+
+Only three JSONB columns remain: `applicant_attributes`, `activity_types`, and `transmission_custom_headers`. The inheritance behavior for these is **full replacement, not deep merge**:
+
+- If an agency record has a non-null value for `applicant_attributes`, that entire object is used (bedrock's value is ignored).
+- This avoids surprising behavior from partial merges of nested objects.
+- If deep merge is needed for a specific column in the future, it can be added explicitly.
+
+---
+
+## Risks and Mitigations
+
+| Risk | Mitigation |
+|------|------------|
+| DB unavailable at boot = app can't start | Add a rescue in initialization that falls back to cached config. Consider a health check endpoint that doesn't require config. |
+| Cold cache after deploy/restart | Warm the cache on boot: an initializer calls `AgencyConfiguration.find_each(&:cache_effective_adapter)`. First request is never slow. |
+| Cache store goes down (e.g., Redis) | `Rails.cache.fetch` returns `nil` on failure; the block falls through to a DB read. Graceful degradation, not an outage. |
+| Bedrock save is slow (rebuilds all agencies) | With ~3 agencies this is trivial. Even at 50 agencies it's 50 cache writes — sub-second. Only becomes a concern at hundreds of agencies, which is far off. |
+| Data migration error corrupts config | Run YAML and DB in parallel during a validation period. Log discrepancies. Only cut over when outputs match. |
+| Route constraints break for new agencies | Dynamic constraint class resolves this (Step 5). |
+| Encrypted secrets in DB get leaked via admin UI | Phase 2 admin UI should never display secret values, only allow setting them. Consider write-only fields. |
+
+---
+
+## Scope Summary
+
+| In Scope (Phase 1) | Out of Scope |
+|---------------------|--------------|
+| `agency_configurations` table + migration | Admin web UI |
+| `AgencyConfiguration` model | Audit logging / version history |
+| `AgencyConfigurationAdapter` | Migrating STI subclasses |
+| Updated `ClientAgencyConfig` | Per-environment config overrides |
+| Data migration from YAML to DB | Secrets manager integration |
+| Dynamic route constraints | |
+| Specs for all new code | |
+| Parallel run validation period | |
+
+---
+
+## Open Questions
+
+1. **Secrets strategy:** Which option (A/B/C) for handling secrets like SFTP passwords and API keys?
+2. **Bedrock editability:** Should the bedrock record be editable via the future admin UI, or locked down to engineering?
+3. **Multi-level inheritance:** Do we ever need more than two levels (bedrock -> agency)? For example, bedrock -> state -> county?
