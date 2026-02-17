@@ -48,10 +48,11 @@ RSpec.describe Activities::SummaryController, type: :controller do
     end
 
     context "with payroll accounts" do
-      render_views false
-
       it "includes synced payroll accounts in all_activities list" do
         payroll_account = create(:payroll_account, :pinwheel_fully_synced, flow: activity_flow)
+        activity_flow.reporting_months.each do |month|
+          create(:activity_flow_monthly_summary, activity_flow: activity_flow, payroll_account: payroll_account, month: month.beginning_of_month)
+        end
 
         get :show
 
@@ -69,6 +70,38 @@ RSpec.describe Activities::SummaryController, type: :controller do
         all_activities = assigns(:all_activities)
         income_activity = all_activities.find { |a| a[:type] == :employment }
         expect(income_activity).to be_nil
+      end
+
+      it "renders persisted income summaries in the response" do
+        payroll_account = create(:payroll_account, :pinwheel_fully_synced, flow: activity_flow, aggregator_account_id: "acct-123")
+        latest_month = activity_flow.reporting_months.max
+        activity_flow.reporting_months.each do |month|
+          create(
+            :activity_flow_monthly_summary,
+            activity_flow: activity_flow,
+            payroll_account: payroll_account,
+            month: month.beginning_of_month,
+            employer_name: "Acme Employer",
+            employment_type: "w2",
+            total_w2_hours: (month == latest_month ? 40.0 : 0.0),
+            accrued_gross_earnings_cents: (month == latest_month ? 123_45 : 0),
+            paychecks_count: (month == latest_month ? 2 : 0)
+          )
+        end
+
+        get :show
+
+        expect(response.body).to include("Acme Employer")
+        expect(response.body).to include("$123.45")
+      end
+
+      it "renders successfully when no summaries are persisted" do
+        create(:payroll_account, :pinwheel_fully_synced, flow: activity_flow, aggregator_account_id: "acct-123")
+        allow(AggregatorReportFetcher).to receive(:new).with(activity_flow).and_return(double(report: nil))
+
+        get :show
+
+        expect(response).to have_http_status(:ok)
       end
     end
 

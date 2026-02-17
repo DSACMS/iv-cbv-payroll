@@ -13,13 +13,13 @@ class PersistedReportAdapter
     account_data = @data[account_id]
     return nil unless account_data
 
-    representative = account_data.values.find { |summary| summary[:employer_name].present? } || account_data.values.first || {}
+    source = account_data.values.find { |summary| summary[:employer_name].present? } || account_data.values.first || {}
 
     AccountReport.new(
       paystubs: [],
       employment: Employment.new(
-        employer_name: representative[:employer_name],
-        employment_type: (representative[:employment_type] || "w2").to_sym
+        employer_name: source[:employer_name],
+        employment_type: (source[:employment_type] || "w2").to_sym
       )
     )
   end

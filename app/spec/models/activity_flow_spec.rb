@@ -90,6 +90,28 @@ RSpec.describe ActivityFlow, type: :model do
     end
   end
 
+  describe "#after_payroll_sync_succeeded" do
+    let(:flow) { create(:activity_flow, reporting_window_months: 1) }
+    let(:payroll_account) { create(:payroll_account, :pinwheel_fully_synced, flow: flow, aggregator_account_id: "acct-1") }
+    let(:report) { instance_double(Aggregators::AggregatorReports::AggregatorReport) }
+
+    before do
+      allow(report).to receive_messages(
+        has_fetched?: true,
+        summarize_by_month: { "acct-1" => {} }
+      )
+      allow(report).to receive(:find_account_report).with("acct-1").and_return(
+        double(employment: double(employer_name: "Test Employer", employment_type: :w2))
+      )
+    end
+
+    it "persists monthly summaries from the report" do
+      expect {
+        flow.after_payroll_sync_succeeded(payroll_account, report)
+      }.to change { flow.activity_flow_monthly_summaries.count }.by(flow.reporting_months.size)
+    end
+  end
+
   describe "#any_activities_added?" do
     let(:flow) do
       create(
