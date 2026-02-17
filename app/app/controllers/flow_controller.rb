@@ -13,6 +13,7 @@ class FlowController < ApplicationController
     @cbv_flow = @flow # Maintain for compatibility until all controllers are converted
 
     set_flow_session(@flow.id, flow_param)
+    apply_demo_overrides
 
     track_generic_link_clicked_event(@flow, is_new_session)
   end
@@ -91,6 +92,7 @@ class FlowController < ApplicationController
       )
       @cbv_flow = @flow # Maintain for compatibility until all controllers are converted
       set_flow_session(@flow.id, flow_param)
+      apply_demo_overrides
       track_invitation_clicked_event(invitation, @flow)
     elsif session[:flow_id]
       begin
@@ -143,5 +145,17 @@ class FlowController < ApplicationController
   def normalize_token(token)
     matches = ALPHANUMERIC_PREFIX_REGEXP.match(token)
     matches[1] if matches
+  end
+
+  def apply_demo_overrides
+    return unless internal_environment?
+
+    if params[:reporting_window_months].present? && @flow.is_a?(ActivityFlow)
+      @flow.update!(reporting_window_months: params[:reporting_window_months].to_i)
+    end
+
+    if params[:demo_timeout].present?
+      session[:demo_timeout] = params[:demo_timeout].to_i.minutes.to_i
+    end
   end
 end

@@ -55,11 +55,11 @@ RSpec.describe ApplicationController, type: :controller do
         get 'test_action', to: 'anonymous#test_action'
       end
 
-      allow(Rails.application.config).to receive(:demo_mode).and_return(is_demo_mode)
+      allow(Rails.application.config).to receive(:is_internal_environment).and_return(is_internal_environment)
     end
 
     context 'when in demo environment' do
-      let(:is_demo_mode) { true }
+      let(:is_internal_environment) { true }
 
       it 'authorizes mini profiler' do
         expect(Rack::MiniProfiler).to receive(:authorize_request)
@@ -68,7 +68,7 @@ RSpec.describe ApplicationController, type: :controller do
     end
 
     context 'when not in demo environment' do
-      let(:is_demo_mode) { false }
+      let(:is_internal_environment) { false }
 
       it 'does not authorize mini profiler' do
         expect(Rack::MiniProfiler).not_to receive(:authorize_request)
@@ -142,6 +142,37 @@ RSpec.describe ApplicationController, type: :controller do
 
       it "infers it based on the domain name" do
         expect(controller.helpers.current_agency).to eq(sandbox_agency)
+      end
+    end
+  end
+
+  describe "#session_timeout_duration" do
+    let(:default_timeout) { Rails.application.config.cbv_session_expires_after }
+
+    context "when no demo_timeout is set in session" do
+      it "returns the default timeout" do
+        expect(controller.send(:session_timeout_duration)).to eq(default_timeout)
+      end
+    end
+
+    context "when demo_timeout is set in session" do
+      before do
+        session[:demo_timeout] = 10.minutes.to_i
+      end
+
+      it "returns the demo timeout" do
+        expect(controller.send(:session_timeout_duration)).to eq(10.minutes.to_i)
+      end
+    end
+
+    context "when not in an internal environment" do
+      before do
+        session[:demo_timeout] = 10.minutes.to_i
+        allow(controller).to receive(:internal_environment?).and_return(false)
+      end
+
+      it "ignores demo_timeout and returns the default" do
+        expect(controller.send(:session_timeout_duration)).to eq(default_timeout)
       end
     end
   end

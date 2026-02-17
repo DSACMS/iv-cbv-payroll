@@ -9,6 +9,7 @@ import LanguageController from "./language_controller.js"
 import CopyLinkController from "./copy_link_controller.js"
 import CommonQuestionsController from "./common_questions_controller.js"
 import CbvEntryPageController from "./cbv/entry_page_controller.js"
+import DemoLauncherController from "./demo_launcher_controller.js"
 
 application.register("cbv-employer-search", CbvEmployerSearch)
 application.register("polling", PollingController)
@@ -19,6 +20,7 @@ application.register("copy-link", CopyLinkController)
 application.register("cbv-entry-page", CbvEntryPageController)
 application.register("common-questions", CommonQuestionsController)
 application.register("session-timeout", SessionTimeoutPageController)
+application.register("demo-launcher", DemoLauncherController)
 
 Turbo.StreamActions.redirect = function () {
   Turbo.visit(this.target)
