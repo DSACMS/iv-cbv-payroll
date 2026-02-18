@@ -13,24 +13,16 @@ RSpec.describe Activities::VolunteeringController, type: :controller do
   end
 
   describe "GET #new" do
-    it "renders the form" do
+    it "renders the form with the new title" do
       get :new
 
       expect(response).to have_http_status(:ok)
-      expect(response.body).to include(I18n.t("activities.community_service.title"))
+      expect(response.body).to include(I18n.t("activities.community_service.new_title"))
     end
   end
 
   describe "POST #create" do
-    let(:volunteering_params) do
-      {
-        volunteering_activity: {
-          organization_name: "Local Food Bank",
-          hours: 5,
-          date: activity_flow.reporting_window_range.end.strftime("%m/%d/%Y")
-        }
-      }
-    end
+    let(:volunteering_params) { { volunteering_activity: attributes_for(:volunteering_activity) } }
 
     it "creates a volunteering activity and redirects to the hub" do
       expect do
@@ -41,10 +33,34 @@ RSpec.describe Activities::VolunteeringController, type: :controller do
       expect(flash[:notice]).to eq(I18n.t("activities.community_service.created"))
     end
 
+    it "stores submitted fields on the activity" do
+      post :create, params: volunteering_params
+
+      activity = activity_flow.volunteering_activities.last
+      expected = volunteering_params[:volunteering_activity].slice(
+        :organization_name, :street_address, :city, :state, :zip_code,
+        :coordinator_name, :coordinator_email
+      )
+      expect(activity).to have_attributes(expected)
+    end
+
+    it "stores optional fields when provided" do
+      post :create, params: volunteering_params.deep_merge(
+        volunteering_activity: {
+          street_address_line_2: "Suite 200",
+          coordinator_phone_number: "555-1234"
+        }
+      )
+
+      activity = activity_flow.volunteering_activities.last
+      expect(activity.street_address_line_2).to eq("Suite 200")
+      expect(activity.coordinator_phone_number).to eq("555-1234")
+    end
+
     it "redirects to activity hub when total hours are below the threshold" do
       create(:job_training_activity, activity_flow: activity_flow, program_name: "Resume Workshop", organization_address: "123 Main St", hours: 78)
 
-      post :create, params: volunteering_params.deep_merge(volunteering_activity: { hours: 1 })
+      post :create, params: volunteering_params
 
       expect(response).to redirect_to(activities_flow_root_path)
     end
@@ -52,7 +68,7 @@ RSpec.describe Activities::VolunteeringController, type: :controller do
     it "redirects to activity hub when threshold met but only via self-attested data" do
       create(:job_training_activity, activity_flow: activity_flow, program_name: "Resume Workshop", organization_address: "123 Main St", hours: 79)
 
-      post :create, params: volunteering_params.deep_merge(volunteering_activity: { hours: 1 })
+      post :create, params: volunteering_params
 
       expect(response).to redirect_to(activities_flow_root_path)
     end
@@ -83,12 +99,12 @@ RSpec.describe Activities::VolunteeringController, type: :controller do
   end
 
   describe "PATCH #update" do
-    let(:volunteering_activity) { create(:volunteering_activity, activity_flow: activity_flow, hours: 2) }
+    let(:volunteering_activity) { create(:volunteering_activity, activity_flow: activity_flow) }
 
     it "updates the activity and redirects to the hub" do
-      patch :update, params: { id: volunteering_activity.id, volunteering_activity: { hours: 10 } }
+      patch :update, params: { id: volunteering_activity.id, volunteering_activity: { organization_name: "Updated Org" } }
 
-      expect(volunteering_activity.reload.hours).to eq(10)
+      expect(volunteering_activity.reload.organization_name).to eq("Updated Org")
       expect(response).to redirect_to(activities_flow_root_path)
       expect(flash[:notice]).to eq(I18n.t("activities.community_service.updated"))
     end
