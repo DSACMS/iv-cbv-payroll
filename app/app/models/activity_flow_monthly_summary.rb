@@ -23,7 +23,10 @@ class ActivityFlowMonthlySummary < ApplicationRecord
       .where(month: months)
       .where(payroll_account_id: synced_accounts.map(&:id))
       .includes(:payroll_account)
-    return nil if rows.size != expected_count
+    if rows.size != expected_count
+      Rails.logger.info "ActivityFlowMonthlySummary incomplete for flow #{activity_flow.id}: #{rows.size}/#{expected_count} rows, using fallback"
+      return nil
+    end
 
     rows
       .group_by { |row| row.payroll_account.aggregator_account_id }
