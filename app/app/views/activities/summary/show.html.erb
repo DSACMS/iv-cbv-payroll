@@ -46,7 +46,8 @@
     <% when :work_programs %>
       <%= render partial: "activities/summary/job_training_table", locals: { activity: activity_data[:activity] } %>
     <% when :employment %>
-      <%= render partial: "activities/summary/employment_table", locals: { payroll_account: activity_data[:payroll_account], aggregator_report: @aggregator_report } %>
+      <%= render partial: "activities/summary/employment_table",
+                 locals: { payroll_account: activity_data[:payroll_account], persisted_report: @persisted_report } %>
     <% end %>
 
     <% if activity_data[:type] == :employment %>

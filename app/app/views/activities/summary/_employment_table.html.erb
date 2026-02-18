@@ -1,11 +1,11 @@
-<% account_report = aggregator_report.find_account_report(payroll_account.aggregator_account_id) %>
+<% account_report = persisted_report.find_account_report(payroll_account.aggregator_account_id) %>
 <% is_w2_worker = account_report&.employment&.employment_type == :w2 %>
 <p>
   <strong><%= t("activities.summary.employment.employer") %>:</strong>
   <%= account_report&.employment&.employer_name || t("shared.not_applicable") %>
 </p>
 <% if is_w2_worker %>
-  <%= render(Report::W2MonthlySummaryTableComponent.new(aggregator_report, payroll_account, show_footnote: false, show_header: false)) %>
+  <%= render(Report::W2MonthlySummaryTableComponent.new(persisted_report, payroll_account, show_footnote: false, show_header: false)) %>
 <% else %>
-  <%= render(Report::GigMonthlySummaryTableComponent.new(aggregator_report, payroll_account, show_footnote: false, show_header: false, show_payments: false)) %>
+  <%= render(Report::GigMonthlySummaryTableComponent.new(persisted_report, payroll_account, show_footnote: false, show_header: false, show_payments: false)) %>
 <% end %>

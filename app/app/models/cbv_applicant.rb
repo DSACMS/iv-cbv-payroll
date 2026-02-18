@@ -37,6 +37,7 @@ class CbvApplicant < ApplicationRecord
 
   has_many :cbv_flows
   has_many :cbv_flow_invitations
+  has_many :activity_flows
 
   validates :client_agency_id, presence: true
 

@@ -7,6 +7,7 @@ class ActivityFlow < Flow
   has_many :job_training_activities, dependent: :destroy
   has_many :education_activities, dependent: :destroy
   has_many :payroll_accounts, as: :flow, dependent: :destroy
+  has_many :activity_flow_monthly_summaries, dependent: :destroy
 
   before_create :set_default_reporting_window
 
@@ -30,6 +31,10 @@ class ActivityFlow < Flow
     start_date = current_month_start - reporting_window_months.months
 
     start_date..end_date
+  end
+
+  def reporting_months
+    reporting_window_months.times.map { |i| reporting_window_range.begin + i.months }
   end
 
   def within_reporting_window?(start_date, end_date)
@@ -59,6 +64,15 @@ class ActivityFlow < Flow
 
   def invitation_id
     activity_flow_invitation_id
+  end
+
+  def after_payroll_sync_succeeded(payroll_account, report)
+    ActivityFlowMonthlySummary.upsert_from_report(activity_flow: self, payroll_account: payroll_account, report: report)
+    touch
+  end
+
+  def monthly_summaries_by_account_with_fallback
+    ActivityFlowMonthlySummary.by_account_with_fallback(activity_flow: self)
   end
 
   # Used by webhooks to check sync completion
