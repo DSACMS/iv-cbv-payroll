@@ -10,7 +10,8 @@ RSpec.describe Activities::ActivitiesController, type: :controller do
     before do
       create(:activity_flow) # ensure there is a second flow that might get mixed up
       current_flow.reload
-      create(:volunteering_activity, activity_flow: current_flow, hours: 5)
+      activity = create(:volunteering_activity, activity_flow: current_flow, organization_name: "Food Pantry")
+      create(:volunteering_activity_month, volunteering_activity: activity, month: current_flow.reporting_window_range.begin, hours: 5)
 
       session[:flow_id] = current_flow.id
       session[:flow_type] = :activity
