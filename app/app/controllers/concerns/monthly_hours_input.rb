@@ -17,6 +17,7 @@ module MonthlyHoursInput
 
     if !valid_hours_submission?
       @error = true
+      @activity_month.errors.add(:hours, I18n.t("#{hours_input_t_scope}.field_error"))
       render :hours_input, status: :unprocessable_content
       return
     end

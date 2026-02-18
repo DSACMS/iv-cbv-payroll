@@ -73,6 +73,7 @@ en:
         error_body: You need to add community service hours to continue.
         error_body_multi_month: You need to add community service hours for at least one month to continue.
         error_heading: No hours entered
+        field_error: Add hours for at least one month
         heading: Add your %{month} community service hours with %{organization}
         hours_label: "%{month} community service hours"
         month_indicator: Month %{current} / %{total}
