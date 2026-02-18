@@ -51,15 +51,9 @@ module ActivitiesHelper
 
   def community_service_cards(activities)
     activities.map do |activity|
-      months = if activity.volunteering_activity_months.any?
-                 activity.volunteering_activity_months.order(:month).map do |vam|
-                   { month: vam.month, hours: vam.hours }
-                 end
-               elsif activity.date.present?
-                 [ { month: activity.date.beginning_of_month, hours: activity.hours.to_i } ]
-               else
-                 []
-               end
+      months = activity.volunteering_activity_months.order(:month).map do |vam|
+        { month: vam.month, hours: vam.hours }
+      end
       { name: activity.organization_name, months: months, activity: activity }
     end
   end
