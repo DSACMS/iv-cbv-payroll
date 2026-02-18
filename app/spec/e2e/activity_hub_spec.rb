@@ -12,6 +12,8 @@ RSpec.describe 'e2e Activity Hub flow test', :js, type: :feature do
   end
 
   it "completes the generic flow for all self-attestation activities" do
+    upload_path = Rails.root.join("spec/fixtures/files/document_upload.pdf")
+
     visit URI(root_url).request_uri
 
     visit activities_flow_entry_path(client_agency_id: "sandbox") # This would normally be inferred
@@ -45,7 +47,13 @@ RSpec.describe 'e2e Activity Hub flow test', :js, type: :feature do
       organization: "Helping Hands"))
     fill_in I18n.t("activities.community_service.hours_input.hours_label", month: I18n.l(ActivityFlow.last.reporting_months.second, format: :month_year)), with: "10"
     click_button I18n.t("activities.community_service.hours_input.continue")
-
+    verify_page(
+      page,
+      title: I18n.t("activities.document_uploads.new.title", name: "Helping Hands"),
+      skip_axe_rules: %w[heading-order]
+    )
+    attach_file I18n.t("activities.document_uploads.new.input_label"), upload_path, make_visible: true
+    click_button I18n.t("activities.document_uploads.new.continue")
     verify_page(page, title: I18n.t("activities.hub.title"))
     expect(page).to have_content "Helping Hands"
 
@@ -59,6 +67,13 @@ RSpec.describe 'e2e Activity Hub flow test', :js, type: :feature do
     fill_in I18n.t("activities.work_programs.hours"), with: "6"
     fill_in I18n.t("activities.work_programs.date"), with: (Date.current.beginning_of_month - 1.day).strftime("%m/%d/%Y")
     click_button I18n.t("activities.work_programs.add")
+    verify_page(
+      page,
+      title: I18n.t("activities.document_uploads.new.title", name: "Resume Workshop"),
+      skip_axe_rules: %w[heading-order]
+    )
+    attach_file I18n.t("activities.document_uploads.new.input_label"), upload_path, make_visible: true
+    click_button I18n.t("activities.document_uploads.new.continue")
     verify_page(page, title: I18n.t("activities.hub.title"))
     expect(page).to have_content "Resume Workshop"
 

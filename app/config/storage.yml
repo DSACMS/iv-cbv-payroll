@@ -1,7 +1,11 @@
 local:
   service: Disk
-  root: <%= Rails.root.join("tmp") %>
+  root: <%= Rails.root.join("tmp/storage") %>
+
+test:
+  service: Disk
+  root: <%= Rails.root.join("tmp/storage") %>
 
 amazon:
   service: S3
-  bucket: emmy-uploads-<%= Rails.env %>
+  bucket: <%= ENV["BUCKET_NAME"] %>

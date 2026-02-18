@@ -12,6 +12,9 @@ TODO list
 -[x] Implement document_upload_* methods on self-attested activities
 -[x] Refactor routing so the document upload param passing doesn't use query params
 
+Infra:
+-[x] S3 bucket for file uploads
+
 TBD on design:
 -[ ] File input - "x" to remove files
 -[ ] File input - prepopulated with previously-uploaded files
