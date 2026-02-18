@@ -1,12 +1,12 @@
 <% content_for :title, t("activities.community_service.hours_input.title") %>
 
 <% if @months.length > 1 %>
-  <p class="usa-hint">
+  <p class="month-indicator">
     <%= t("activities.community_service.hours_input.month_indicator", current: @month_index + 1, total: @months.length) %>
   </p>
 <% end %>
 
-<h1>
+<h1 class="margin-top-0 padding-top-2 padding-bottom-3">
   <%= t("activities.community_service.hours_input.heading",
         month: l(@current_month, format: :month_year),
         organization: @volunteering_activity.organization_name) %>
@@ -27,14 +27,10 @@
       method: :patch) do |f| %>
 
   <div data-controller="hours-input">
-    <%= f.text_field :hours, type: :number,
-          label: t("activities.community_service.hours_input.hours_label", month: l(@current_month, format: :month_year)),
-          data: { hours_input_target: "hoursField" } %>
-
     <% if @months.length > 1 %>
       <div class="usa-checkbox">
         <%= check_box_tag :no_hours, "1", false,
-              class: "usa-checkbox__input",
+              class: "usa-checkbox__input usa-checkbox__input--tile",
               data: { hours_input_target: "checkbox", action: "hours-input#toggle" } %>
         <%= label_tag :no_hours,
               t("activities.community_service.hours_input.no_hours_checkbox",
@@ -43,6 +39,11 @@
               class: "usa-checkbox__label" %>
       </div>
     <% end %>
+
+    <%= f.text_field :hours, type: :number,
+          label: t("activities.community_service.hours_input.hours_label", month: l(@current_month, format: :month_year)),
+          label_class: "text-bold",
+          data: { hours_input_target: "hoursField" } %>
 
     <%= f.submit t("activities.community_service.hours_input.continue") %>
   </div>
