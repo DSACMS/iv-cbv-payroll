@@ -143,6 +143,8 @@ ignore_missing:
     - "activerecord.errors.models.volunteering_activity.*"
     - "components.enrollment_term_table_component.*"
     - "activity_flow_progress_indicator.*"
+    - "en.activerecord.errors.models.volunteering_activity_month.attributes.hours.greater_than_or_equal_to" # Self attestation hours entry error messages
+    - "en.activerecord.errors.models.volunteering_activity_month.attributes.hours.not_an_integer"
 
     # Currently awaiting translation:
     # - "example.strings.*"   # Tag with ticket number that created or modified the string
