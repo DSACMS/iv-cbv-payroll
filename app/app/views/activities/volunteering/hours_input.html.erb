@@ -1,0 +1,49 @@
+<% content_for :title, t("activities.community_service.hours_input.title") %>
+
+<% if @months.length > 1 %>
+  <p class="usa-hint">
+    <%= t("activities.community_service.hours_input.month_indicator", current: @month_index + 1, total: @months.length) %>
+  </p>
+<% end %>
+
+<h1>
+  <%= t("activities.community_service.hours_input.heading",
+        month: l(@current_month, format: :month_year),
+        organization: @volunteering_activity.organization_name) %>
+</h1>
+
+<% if @error %>
+  <%= render Uswds::Alert.new(type: :error, heading: t("activities.community_service.hours_input.error_heading"), class: "margin-bottom-4") do %>
+    <% if @months.length > 1 %>
+      <%= t("activities.community_service.hours_input.error_body_multi_month") %>
+    <% else %>
+      <%= t("activities.community_service.hours_input.error_body") %>
+    <% end %>
+  <% end %>
+<% end %>
+
+<%= uswds_form_with(model: @volunteering_activity_month,
+      url: save_hours_activities_flow_volunteering_path(id: @volunteering_activity, month_index: @month_index),
+      method: :patch) do |f| %>
+
+  <div data-controller="hours-input">
+    <%= f.text_field :hours, type: :number,
+          label: t("activities.community_service.hours_input.hours_label", month: l(@current_month, format: :month_year)),
+          data: { hours_input_target: "hoursField" } %>
+
+    <% if @months.length > 1 %>
+      <div class="usa-checkbox">
+        <%= check_box_tag :no_hours, "1", false,
+              class: "usa-checkbox__input",
+              data: { hours_input_target: "checkbox", action: "hours-input#toggle" } %>
+        <%= label_tag :no_hours,
+              t("activities.community_service.hours_input.no_hours_checkbox",
+                organization: @volunteering_activity.organization_name,
+                month: l(@current_month, format: :month_year)),
+              class: "usa-checkbox__label" %>
+      </div>
+    <% end %>
+
+    <%= f.submit t("activities.community_service.hours_input.continue") %>
+  </div>
+<% end %>

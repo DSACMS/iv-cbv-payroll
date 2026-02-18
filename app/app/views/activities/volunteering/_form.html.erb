@@ -6,4 +6,6 @@
   <%= f.text_field :hours, type: :number, label: t("activities.community_service.hours") %>
   <%= f.date_picker :date, label: t("activities.community_service.date") %>
   <%= f.submit volunteering_activity.persisted? ? t("activities.hub.save") : t("activities.community_service.add") %>
+  <%# TODO: Remove — temporary button for testing hours_input flow %>
+  <%= f.submit "Test monthly hours input flow", name: "redirect_to_hours_input", class: "usa-button usa-button--outline margin-top-2" %>
 <% end %>

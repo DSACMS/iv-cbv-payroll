@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_02_05_174325) do
+ActiveRecord::Schema[8.1].define(version: 2026_02_18_113931) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
   enable_extension "pgcrypto"
@@ -323,6 +323,15 @@ ActiveRecord::Schema[8.1].define(version: 2026_02_05_174325) do
     t.index ["activity_flow_id"], name: "index_volunteering_activities_on_activity_flow_id"
   end
 
+  create_table "volunteering_activity_months", force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.integer "hours", default: 0, null: false
+    t.date "month", null: false
+    t.datetime "updated_at", null: false
+    t.bigint "volunteering_activity_id", null: false
+    t.index ["volunteering_activity_id"], name: "index_volunteering_activity_months_on_volunteering_activity_id"
+  end
+
   create_table "webhook_events", force: :cascade do |t|
     t.datetime "created_at", null: false
     t.string "event_name"
@@ -347,5 +356,6 @@ ActiveRecord::Schema[8.1].define(version: 2026_02_05_174325) do
   add_foreign_key "solid_queue_recurring_executions", "solid_queue_jobs", column: "job_id", on_delete: :cascade
   add_foreign_key "solid_queue_scheduled_executions", "solid_queue_jobs", column: "job_id", on_delete: :cascade
   add_foreign_key "volunteering_activities", "activity_flows"
+  add_foreign_key "volunteering_activity_months", "volunteering_activities"
   add_foreign_key "webhook_events", "payroll_accounts"
 end
