@@ -5,10 +5,13 @@ export default class extends Controller {
 
   toggle() {
     if (this.checkboxTarget.checked) {
-      this.hoursFieldTarget.value = ""
-      this.hoursFieldTarget.disabled = true
-    } else {
-      this.hoursFieldTarget.disabled = false
+      this.hoursFieldTarget.value = "0"
+    }
+  }
+
+  input() {
+    if (this.hoursFieldTarget.value !== "0" && this.hoursFieldTarget.value !== "") {
+      this.checkboxTarget.checked = false
     }
   }
 }

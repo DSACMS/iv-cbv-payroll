@@ -43,7 +43,7 @@
     <%= f.text_field :hours, type: :number,
           label: t("activities.community_service.hours_input.hours_label", month: l(@current_month, format: :month_year)),
           label_class: "text-bold",
-          data: { hours_input_target: "hoursField" } %>
+          data: { hours_input_target: "hoursField", action: "input->hours-input#input" } %>
 
     <%= f.submit t("activities.community_service.hours_input.continue") %>
   </div>
