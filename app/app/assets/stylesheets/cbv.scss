@@ -458,4 +458,25 @@ input#invitation_link {
     font-weight: normal;
     opacity: 0.9;
   }
+
+/*
+ * Document upload page
+ */
+.document-uploads__preview {
+  display: flex;
+  align-items: center;
+}
+.document-uploads__preview-icon {
+  box-sizing: content-box;
+  color: color("gray-cool-40");
+
+  flex-shrink: 0;
+  height: units(4);
+  padding: units(1);
+  width: units(4);
+}
+.document-uploads__preview-filename {
+  @include u-font("sans", 2);
+  overflow: hidden;
+  word-break: break-word;
 }

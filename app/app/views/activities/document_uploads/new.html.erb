@@ -20,24 +20,36 @@
 <%= form_with(builder: UswdsFormBuilder, scope: :activity, model: @activity, url: activities_flow_document_uploads_path, method: :post) do |f| %>
   <%= hidden_field_tag "activity_id", params[:activity_id] %>
   <%= hidden_field_tag "activity_type", params[:activity_type] %>
+
+  <% if @activity.document_uploads.any? %>
+    <p>Uploaded Documents:</p>
+
+    <ul class="padding-0">
+      <% @activity.document_uploads.each do |attachment| %>
+        <%# Add hidden fields for the existing uploads so Rails won't delete them if the form is submitted a second time: %>
+        <%= f.hidden_field :document_uploads, multiple: true, value: attachment.signed_id %>
+
+        <li class="document-uploads__preview">
+          <% if attachment.previewable? %>
+            <%= attachment.preview(resize_to_limit: [ 40, 40 ]).processed.url %>
+          <% else %>
+            <svg class="usa-icon document-uploads__preview-icon" aria-hidden="true" focusable="false" role="img">
+              <use xlink:href="<%= asset_path("@uswds/uswds/dist/img/sprite.svg#file_present") %>"></use>
+            </svg>
+          <% end %>
+          <span class="document-uploads__preview-filename">
+            <%= attachment.filename %>
+          </span>
+        </li>
+      <% end %>
+    </ul>
+  <% end %>
+
   <%= f.file_field :document_uploads,
       multiple: true,
       label: t(".input_label"),
       hint: t(".input_hint"),
       accept: "image/*,.pdf" %>
-
-  <% if @activity.document_uploads.any? %>
-    <p>Uploaded Documents:</p>
-
-    <ul>
-      <% @activity.document_uploads.each do |attachment| %>
-        <%# Add hidden fields for the existing uploads so Rails won't delete them if the form is submitted a second time: %>
-        <%= f.hidden_field :document_uploads, multiple: true, value: attachment.signed_id %>
-
-        <li><%= attachment.filename %></li>
-      <% end %>
-    </ul>
-  <% end %>
 
   <%= render(AccordionComponent.new(id: "document-upload-suggestions")) do |accordion| %>
     <% accordion.with_title { t(".suggestion_title") } %>
