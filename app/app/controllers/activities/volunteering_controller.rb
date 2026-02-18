@@ -35,6 +35,10 @@ class Activities::VolunteeringController < Activities::BaseController
   end
 
   def volunteering_activity_params
-    params.require(:volunteering_activity).permit(:organization_name, :date, :hours)
+    params.require(:volunteering_activity).permit(
+      :organization_name, :street_address, :street_address_line_2,
+      :city, :state, :zip_code,
+      :coordinator_name, :coordinator_email, :coordinator_phone_number
+    )
   end
 end

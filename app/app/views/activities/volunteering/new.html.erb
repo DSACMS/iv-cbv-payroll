@@ -1,4 +1,9 @@
-<% content_for :title, t("activities.community_service.title") %>
+<% content_for :title, t("activities.community_service.new_title") %>
 
-<h1><%= t("activities.community_service.title") %></h1>
+<h1>
+  <%= t("activities.community_service.new_title") %>
+</h1>
+<p>
+  <%= t("activities.community_service.description", agency_acronym: agency_translation("shared.agency_acronym")) %>
+</p>
 <%= render "form", volunteering_activity: @volunteering_activity %>

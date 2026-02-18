@@ -1,9 +1,26 @@
-<p class="usa-hint">
-  <%= t("activities.hub.reporting_window", range: @flow.reporting_window_display) %>
-</p>
 <%= uswds_form_with(model: volunteering_activity, url: volunteering_activity.persisted? ? activities_flow_volunteering_path(id: volunteering_activity.id) : activities_flow_volunteering_index_path) do |f| %>
-  <%= f.text_field :organization_name, label: t("activities.community_service.organization_name") %>
-  <%= f.text_field :hours, type: :number, label: t("activities.community_service.hours") %>
-  <%= f.date_picker :date, label: t("activities.community_service.date") %>
-  <%= f.submit volunteering_activity.persisted? ? t("activities.hub.save") : t("activities.community_service.add") %>
+  <h2><%= t("activities.community_service.organization_section_title") %></h2>
+  <%= f.text_field :organization_name,
+        label: t("activities.community_service.organization_name"),
+        hint: t("activities.community_service.organization_name_hint") %>
+  <%= f.text_field :street_address, label: t("activities.community_service.street_address") %>
+  <%= f.text_field :street_address_line_2,
+        label: t("activities.community_service.street_address_line_2"),
+        optional: true %>
+  <%= f.text_field :city, label: t("activities.community_service.city") %>
+  <%= f.select :state,
+        us_state_options.map { |s| [ s, s ] },
+        { label: t("activities.community_service.state"), include_blank: true } %>
+  <%= f.text_field :zip_code, label: t("activities.community_service.zip_code"), width: "lg" %>
+
+  <h2><%= t("activities.community_service.coordinator_section_title") %></h2>
+  <%= f.text_field :coordinator_name,
+        label: t("activities.community_service.coordinator_name"),
+        hint: t("activities.community_service.coordinator_name_hint") %>
+  <%= f.email_field :coordinator_email, label: t("activities.community_service.coordinator_email") %>
+  <%= f.text_field :coordinator_phone_number,
+        label: t("activities.community_service.coordinator_phone_number"),
+        optional: true %>
+
+  <%= f.submit volunteering_activity.persisted? ? t("activities.hub.save") : t("activities.community_service.continue") %>
 <% end %>

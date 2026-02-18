@@ -57,15 +57,27 @@ en:
               outside_reporting_window: must be within %{range}
   activities:
     community_service:
-      add: Add Community Service Activity
+      city: City
+      continue: Continue
+      coordinator_email: Coordinator's email
+      coordinator_name: Coordinator's name
+      coordinator_name_hint: The person you worked most closely with or reported to
+      coordinator_phone_number: Coordinator's phone number
+      coordinator_section_title: Coordinator information
       created: Community service activity was successfully created.
-      date: Date
       deleted: Community service activity was successfully deleted.
+      description: Enter as much information as you can. This will help %{agency_acronym} get in touch with your community service organization, if needed.
       edit_title: Edit Community Service Activity
-      hours: Hours
+      new_title: Tell us about your community service organization
       organization_name: Organization name
+      organization_name_hint: Enter the full and official name
+      organization_section_title: Organization information
+      state: State
+      street_address: Street address
+      street_address_line_2: Street address line 2
       title: Community service
       updated: Community service activity was successfully updated.
+      zip_code: Zip code
     education:
       deleted: Education activity was successfully deleted.
       edit:
