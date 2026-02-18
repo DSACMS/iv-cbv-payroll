@@ -35,9 +35,7 @@ class ActivityFlowProgressCalculator
   end
 
   def reporting_months
-    @activity_flow.reporting_window_months.times.map do |i|
-      @activity_flow.reporting_window_range.begin + i.months
-    end
+    @activity_flow.reporting_months
   end
 
   private
@@ -91,9 +89,6 @@ class ActivityFlowProgressCalculator
   end
 
   def employment_hours_for_month(month_start)
-    return 0 unless payroll_report
-    raise "Payroll report not fetched" unless payroll_report.has_fetched?
-
     month_key = month_start.strftime("%Y-%m")
 
     monthly_summaries.sum do |_account_id, months|
@@ -105,9 +100,6 @@ class ActivityFlowProgressCalculator
   end
 
   def total_employment_hours
-    return 0 unless payroll_report
-    raise "Payroll report not fetched" unless payroll_report.has_fetched?
-
     monthly_summaries.sum do |_account_id, months|
       months.sum do |_month_key, month_data|
         month_data[:total_w2_hours].to_f + month_data[:total_gig_hours].to_f
@@ -116,9 +108,6 @@ class ActivityFlowProgressCalculator
   end
 
   def earnings_for_month(month_start)
-    return 0 unless payroll_report
-    raise "Payroll report not fetched" unless payroll_report.has_fetched?
-
     month_key = month_start.strftime("%Y-%m")
 
     monthly_summaries.sum do |_account_id, months|
@@ -137,9 +126,6 @@ class ActivityFlowProgressCalculator
   end
 
   def validated_earnings_for_month(month_start)
-    return 0 unless payroll_report
-    raise "Payroll report not fetched" unless payroll_report.has_fetched?
-
     month_key = month_start.strftime("%Y-%m")
 
     monthly_summaries.slice(*validated_account_ids).sum do |_account_id, months|
@@ -151,9 +137,6 @@ class ActivityFlowProgressCalculator
   end
 
   def validated_employment_hours_for_month(month_start)
-    return 0 unless payroll_report
-    raise "Payroll report not fetched" unless payroll_report.has_fetched?
-
     month_key = month_start.strftime("%Y-%m")
 
     monthly_summaries.slice(*validated_account_ids).sum do |_account_id, months|
@@ -190,21 +173,7 @@ class ActivityFlowProgressCalculator
   end
 
   def monthly_summaries
-    @monthly_summaries ||= payroll_report.summarize_by_month(
-      from_date: @activity_flow.reporting_window_range.begin,
-      to_date: @activity_flow.reporting_window_range.end
-    )
-  end
-
-  def payroll_report
-    @payroll_report ||= fetch_payroll_report
-  end
-
-  def fetch_payroll_report
-    return nil if @activity_flow.payroll_accounts.empty?
-
-    fetcher = AggregatorReportFetcher.new(@activity_flow)
-    fetcher.report
+    @monthly_summaries ||= @activity_flow.monthly_summaries_by_account_with_fallback
   end
 
   def education_hours_for_month(month_start)

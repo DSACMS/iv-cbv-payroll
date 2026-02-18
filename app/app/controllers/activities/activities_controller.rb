@@ -1,6 +1,4 @@
 class Activities::ActivitiesController < Activities::BaseController
-  include Cbv::AggregatorDataHelper
-
   def index
     unless @flow.identity
       @flow.identity = IdentityService.new(request, @flow.cbv_applicant).get_identity
@@ -15,9 +13,6 @@ class Activities::ActivitiesController < Activities::BaseController
       .order(created_at: :desc)
 
     @employment_payroll_accounts = @flow.payroll_accounts.order(created_at: :desc).select(&:sync_succeeded?)
-    if @employment_payroll_accounts.any? # Ensures employment cards show
-      @cbv_flow = @flow
-      set_aggregator_report
-    end
+    @persisted_report = PersistedReportAdapter.new(@flow) if @employment_payroll_accounts.any?
   end
 end
