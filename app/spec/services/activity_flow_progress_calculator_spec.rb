@@ -6,27 +6,32 @@ RSpec.describe ActivityFlowProgressCalculator do
 
     let(:flow) { create(:activity_flow, reporting_window_months: 1) }
 
-    it "sums volunteering and job training hours" do
-      create(:volunteering_activity, activity_flow: flow, organization_name: "Food Pantry", hours: 3)
-      create(:volunteering_activity, activity_flow: flow, organization_name: "Library", hours: 2)
-      create(:job_training_activity, activity_flow: flow, program_name: "Career Prep", organization_address: "123 Main St", hours: 5)
-
-      expect(result.total_hours).to eq(10)
-    end
+    let(:first_month) { flow.reporting_window_range.begin }
 
     it "returns zero when no activities exist" do
       expect(result.total_hours).to eq(0)
     end
 
+    it "sums volunteering hours and job training hours" do
+      activity = create(:volunteering_activity, activity_flow: flow, organization_name: "Food Pantry")
+      create(:volunteering_activity_month, volunteering_activity: activity, month: first_month, hours: 3)
+      activity2 = create(:volunteering_activity, activity_flow: flow, organization_name: "Library")
+      create(:volunteering_activity_month, volunteering_activity: activity2, month: first_month, hours: 2)
+      create(:job_training_activity, activity_flow: flow, program_name: "Career Prep", organization_address: "123 Main St", hours: 5)
+
+      expect(result.total_hours).to eq(10)
+    end
+
     context "meets_requirements" do
       it "does not meet requirements when below 80 hours threshold" do
-        create(:volunteering_activity, activity_flow: flow, organization_name: "Food Pantry", hours: 79)
+        create(:job_training_activity, activity_flow: flow, program_name: "Career Prep", organization_address: "123 Main St", hours: 79)
 
         expect(result.meets_requirements).to be(false)
       end
 
-      it "meets requirements when month has at least 80 hours" do
-        create(:volunteering_activity, activity_flow: flow, organization_name: "Food Pantry", hours: 40)
+      it "meets requirements when month has at least 80 hours from volunteering and job training" do
+        activity = create(:volunteering_activity, activity_flow: flow, organization_name: "Food Pantry")
+        create(:volunteering_activity_month, volunteering_activity: activity, month: first_month, hours: 40)
         create(:job_training_activity, activity_flow: flow, program_name: "Career Prep", organization_address: "123 Main St", hours: 40)
 
         expect(result.meets_requirements).to be(true)
@@ -35,7 +40,7 @@ RSpec.describe ActivityFlowProgressCalculator do
 
     context "meets_routing_requirements" do
       it "does not meet routing requirements when below 80 hours threshold" do
-        create(:volunteering_activity, activity_flow: flow, organization_name: "Food Pantry", hours: 79)
+        create(:job_training_activity, activity_flow: flow, program_name: "Career Prep", organization_address: "123 Main St", hours: 79)
 
         expect(result.meets_routing_requirements).to be(false)
       end
@@ -69,15 +74,26 @@ RSpec.describe ActivityFlowProgressCalculator do
       let(:third_month) { first_month + 2.months }
 
       it "does not meet requirements when any month has less than 80 hours" do
-        create(:volunteering_activity, activity_flow: flow, hours: 240, date: first_month)
+        create(:job_training_activity, activity_flow: flow, program_name: "Career Prep", organization_address: "123 Main St", hours: 240, date: first_month)
 
         expect(result.meets_requirements).to be(false)
       end
 
       it "meets requirements when each month has at least 80 hours" do
-        create(:volunteering_activity, activity_flow: flow, hours: 80, date: first_month)
-        create(:volunteering_activity, activity_flow: flow, hours: 80, date: second_month)
-        create(:volunteering_activity, activity_flow: flow, hours: 80, date: third_month)
+        create(:job_training_activity, activity_flow: flow, program_name: "Career Prep", organization_address: "123 Main St", hours: 80, date: first_month)
+        create(:job_training_activity, activity_flow: flow, program_name: "Career Prep", organization_address: "123 Main St", hours: 80, date: second_month)
+        create(:job_training_activity, activity_flow: flow, program_name: "Career Prep", organization_address: "123 Main St", hours: 80, date: third_month)
+
+        expect(result.meets_requirements).to be(true)
+      end
+
+      it "meets requirements when volunteering hours and job training combine to reach threshold each month" do
+        activity = create(:volunteering_activity, activity_flow: flow, organization_name: "Food Pantry")
+        create(:volunteering_activity_month, volunteering_activity: activity, month: first_month, hours: 40)
+        create(:volunteering_activity_month, volunteering_activity: activity, month: second_month, hours: 80)
+        create(:volunteering_activity_month, volunteering_activity: activity, month: third_month, hours: 40)
+        create(:job_training_activity, activity_flow: flow, program_name: "Career Prep", organization_address: "123 Main St", hours: 40, date: first_month)
+        create(:job_training_activity, activity_flow: flow, program_name: "Career Prep", organization_address: "123 Main St", hours: 40, date: third_month)
 
         expect(result.meets_requirements).to be(true)
       end
@@ -126,8 +142,16 @@ RSpec.describe ActivityFlowProgressCalculator do
           expect(progress.meets_requirements).to be(true)
         end
 
-        it "combines employment hours with activity hours" do
-          create(:volunteering_activity, activity_flow: flow, hours: 10, date: first_month)
+        it "combines employment hours with job training hours" do
+          create(:job_training_activity, activity_flow: flow, program_name: "Career Prep", organization_address: "123 Main St", hours: 10, date: first_month)
+
+          # 125 from fixture (80 W2 + 45 gig) + 10 from job training
+          expect(progress.total_hours).to eq(135)
+        end
+
+        it "combines employment hours with volunteering hours" do
+          activity = create(:volunteering_activity, activity_flow: flow, organization_name: "Food Pantry")
+          create(:volunteering_activity_month, volunteering_activity: activity, month: first_month, hours: 10)
 
           # 125 from fixture (80 W2 + 45 gig) + 10 from volunteering
           expect(progress.total_hours).to eq(135)
@@ -184,8 +208,21 @@ RSpec.describe ActivityFlowProgressCalculator do
           expect(progress.total_hours).to eq(50)
         end
 
-        it "combines employment hours with activity hours" do
-          create(:volunteering_activity, activity_flow: flow, hours: 10, date: first_month)
+        it "combines employment hours with job training hours" do
+          create(:job_training_activity, activity_flow: flow, program_name: "Career Prep", organization_address: "123 Main St", hours: 10, date: first_month)
+
+          allow(mock_report).to receive_messages(has_fetched?: true, summarize_by_month: {
+            account_id => {
+              month_key => { total_w2_hours: 40.0, total_gig_hours: 0.0, accrued_gross_earnings: 0.0 }
+            }
+          })
+
+          expect(progress.total_hours).to eq(50)
+        end
+
+        it "combines employment hours with volunteering hours" do
+          activity = create(:volunteering_activity, activity_flow: flow, organization_name: "Food Pantry")
+          create(:volunteering_activity_month, volunteering_activity: activity, month: first_month, hours: 10)
 
           allow(mock_report).to receive_messages(has_fetched?: true, summarize_by_month: {
             account_id => {
@@ -216,8 +253,21 @@ RSpec.describe ActivityFlowProgressCalculator do
           expect(progress.meets_routing_requirements).to be(true)
         end
 
-        it "meets requirements when combined activity and employment hours reach threshold" do
-          create(:volunteering_activity, activity_flow: flow, hours: 40, date: first_month)
+        it "meets requirements when combined job training and employment hours reach threshold" do
+          create(:job_training_activity, activity_flow: flow, program_name: "Career Prep", organization_address: "123 Main St", hours: 40, date: first_month)
+
+          allow(mock_report).to receive_messages(has_fetched?: true, summarize_by_month: {
+            account_id => {
+              month_key => { total_w2_hours: 40.0, total_gig_hours: 0.0, accrued_gross_earnings: 0.0 }
+            }
+          })
+
+          expect(progress.meets_requirements).to be(true)
+        end
+
+        it "meets requirements when combined volunteering hours and employment hours reach threshold" do
+          activity = create(:volunteering_activity, activity_flow: flow, organization_name: "Food Pantry")
+          create(:volunteering_activity_month, volunteering_activity: activity, month: first_month, hours: 40)
 
           allow(mock_report).to receive_messages(has_fetched?: true, summarize_by_month: {
             account_id => {
@@ -313,8 +363,23 @@ RSpec.describe ActivityFlowProgressCalculator do
             expect(progress.meets_requirements).to be(false)
           end
 
-          it "combines activities and employment per month" do
-            create(:volunteering_activity, activity_flow: flow, hours: 40, date: second_month)
+          it "combines job training and employment per month" do
+            create(:job_training_activity, activity_flow: flow, program_name: "Career Prep", organization_address: "123 Main St", hours: 40, date: second_month)
+
+            allow(mock_report).to receive_messages(has_fetched?: true, summarize_by_month: {
+              account_id => {
+                first_month_key => { total_w2_hours: 80.0, total_gig_hours: 0.0, accrued_gross_earnings: 0.0 },
+                second_month_key => { total_w2_hours: 40.0, total_gig_hours: 0.0, accrued_gross_earnings: 0.0 },
+                third_month_key => { total_w2_hours: 80.0, total_gig_hours: 0.0, accrued_gross_earnings: 0.0 }
+              }
+            })
+
+            expect(progress.meets_requirements).to be(true)
+          end
+
+          it "combines volunteering hours and employment per month" do
+            activity = create(:volunteering_activity, activity_flow: flow, organization_name: "Food Pantry")
+            create(:volunteering_activity_month, volunteering_activity: activity, month: second_month, hours: 40)
 
             allow(mock_report).to receive_messages(has_fetched?: true, summarize_by_month: {
               account_id => {
@@ -381,11 +446,11 @@ RSpec.describe ActivityFlowProgressCalculator do
       )
     end
 
-    context "when there are activities within the reporting range" do
+    context "when there are job training activities within the reporting range" do
       before do
-        create(:volunteering_activity, activity_flow: flow, hours: 40, date: reporting_range_months.first + 1.day)
-        create(:volunteering_activity, activity_flow: flow, hours: 40, date: reporting_range_months.first + 2.day)
-        create(:volunteering_activity, activity_flow: flow, hours: 40, date: reporting_range_months.second + 1.day)
+        create(:job_training_activity, activity_flow: flow, program_name: "Career Prep", organization_address: "123 Main St", hours: 40, date: reporting_range_months.first + 1.day)
+        create(:job_training_activity, activity_flow: flow, program_name: "Career Prep", organization_address: "123 Main St", hours: 40, date: reporting_range_months.first + 2.day)
+        create(:job_training_activity, activity_flow: flow, program_name: "Career Prep", organization_address: "123 Main St", hours: 40, date: reporting_range_months.second + 1.day)
       end
 
       it "returns monthly results for those months" do
@@ -394,6 +459,120 @@ RSpec.describe ActivityFlowProgressCalculator do
           have_attributes(month: reporting_range_months.second, total_hours: 40, meets_requirements: false),
           have_attributes(month: reporting_range_months.third, total_hours: 0, meets_requirements: false),
         )
+      end
+    end
+
+    context "when there are volunteering hours within the reporting range" do
+      before do
+        activity = create(:volunteering_activity, activity_flow: flow, organization_name: "Food Pantry")
+        create(:volunteering_activity_month, volunteering_activity: activity, month: reporting_range_months.first, hours: 80)
+        create(:volunteering_activity_month, volunteering_activity: activity, month: reporting_range_months.second, hours: 40)
+      end
+
+      it "returns monthly results for those months" do
+        expect(result).to contain_exactly(
+          have_attributes(month: reporting_range_months.first, total_hours: 80, meets_requirements: true),
+          have_attributes(month: reporting_range_months.second, total_hours: 40, meets_requirements: false),
+          have_attributes(month: reporting_range_months.third, total_hours: 0, meets_requirements: false),
+        )
+      end
+    end
+  end
+
+  describe "volunteering hours" do
+    subject(:result) { described_class.new(flow).overall_result }
+
+    context "with single-month reporting window" do
+      let(:flow) { create(:activity_flow, reporting_window_months: 1) }
+      let(:first_month) { flow.reporting_window_range.begin }
+
+      it "includes volunteering_activity_months hours in total" do
+        activity = create(:volunteering_activity, activity_flow: flow, organization_name: "Food Pantry")
+        create(:volunteering_activity_month, volunteering_activity: activity, month: first_month, hours: 40)
+
+        expect(result.total_hours).to eq(40)
+      end
+
+      it "sums hours across multiple volunteering activities" do
+        activity1 = create(:volunteering_activity, activity_flow: flow, organization_name: "Food Pantry")
+        activity2 = create(:volunteering_activity, activity_flow: flow, organization_name: "Library")
+        create(:volunteering_activity_month, volunteering_activity: activity1, month: first_month, hours: 30)
+        create(:volunteering_activity_month, volunteering_activity: activity2, month: first_month, hours: 20)
+
+        expect(result.total_hours).to eq(50)
+      end
+
+      it "meets requirements when monthly hours reach threshold" do
+        activity = create(:volunteering_activity, activity_flow: flow, organization_name: "Food Pantry")
+        create(:volunteering_activity_month, volunteering_activity: activity, month: first_month, hours: 80)
+
+        expect(result.meets_requirements).to be(true)
+      end
+
+      it "does not meet requirements when below threshold" do
+        activity = create(:volunteering_activity, activity_flow: flow, organization_name: "Food Pantry")
+        create(:volunteering_activity_month, volunteering_activity: activity, month: first_month, hours: 79)
+
+        expect(result.meets_requirements).to be(false)
+      end
+
+      it "combines volunteering hours with job training hours" do
+        activity = create(:volunteering_activity, activity_flow: flow, organization_name: "Food Pantry")
+        create(:volunteering_activity_month, volunteering_activity: activity, month: first_month, hours: 40)
+        create(:job_training_activity, activity_flow: flow, program_name: "Career Prep", organization_address: "123 Main St", hours: 40, date: first_month)
+
+        expect(result.total_hours).to eq(80)
+        expect(result.meets_requirements).to be(true)
+      end
+    end
+
+    context "with multi-month reporting window" do
+      let(:flow) { create(:activity_flow, reporting_window_months: 3) }
+      let(:first_month) { flow.reporting_window_range.begin }
+      let(:second_month) { first_month + 1.month }
+      let(:third_month) { first_month + 2.months }
+
+      it "meets requirements when each month has at least 80 hours" do
+        activity = create(:volunteering_activity, activity_flow: flow, organization_name: "Food Pantry")
+        create(:volunteering_activity_month, volunteering_activity: activity, month: first_month, hours: 80)
+        create(:volunteering_activity_month, volunteering_activity: activity, month: second_month, hours: 80)
+        create(:volunteering_activity_month, volunteering_activity: activity, month: third_month, hours: 80)
+
+        expect(result.meets_requirements).to be(true)
+      end
+
+      it "does not meet requirements when one month is below threshold" do
+        activity = create(:volunteering_activity, activity_flow: flow, organization_name: "Food Pantry")
+        create(:volunteering_activity_month, volunteering_activity: activity, month: first_month, hours: 80)
+        create(:volunteering_activity_month, volunteering_activity: activity, month: second_month, hours: 40)
+        create(:volunteering_activity_month, volunteering_activity: activity, month: third_month, hours: 80)
+
+        expect(result.meets_requirements).to be(false)
+      end
+
+      it "assigns hours to the correct month" do
+        activity = create(:volunteering_activity, activity_flow: flow, organization_name: "Food Pantry")
+        create(:volunteering_activity_month, volunteering_activity: activity, month: second_month, hours: 50)
+
+        flow.reload
+        monthly_results = described_class.new(flow).monthly_results
+        second_result = monthly_results.find { |r| r.month == second_month }
+        first_result = monthly_results.find { |r| r.month == first_month }
+
+        expect(second_result.total_hours).to eq(50)
+        expect(first_result.total_hours).to eq(0)
+      end
+
+      it "sums across multiple activities per month" do
+        activity1 = create(:volunteering_activity, activity_flow: flow, organization_name: "Food Pantry")
+        activity2 = create(:volunteering_activity, activity_flow: flow, organization_name: "Library")
+        create(:volunteering_activity_month, volunteering_activity: activity1, month: first_month, hours: 50)
+        create(:volunteering_activity_month, volunteering_activity: activity2, month: first_month, hours: 30)
+
+        monthly_results = described_class.new(flow).monthly_results
+        first_result = monthly_results.find { |r| r.month == first_month }
+
+        expect(first_result.total_hours).to eq(80)
       end
     end
   end
@@ -463,9 +642,9 @@ RSpec.describe ActivityFlowProgressCalculator do
       end
     end
 
-    context "when combining education with volunteering" do
+    context "when combining education with job training" do
       before do
-        create(:volunteering_activity, activity_flow: flow, hours: 20)
+        create(:job_training_activity, activity_flow: flow, program_name: "Career Prep", organization_address: "123 Main St", hours: 20)
         create(:nsc_enrollment_term, education_activity: education_activity, enrollment_status: "half_time")
       end
 
@@ -475,6 +654,43 @@ RSpec.describe ActivityFlowProgressCalculator do
 
       it "meets requirements" do
         expect(progress.meets_requirements).to be(true)
+      end
+    end
+
+    context "when combining education with volunteering hours" do
+      let(:first_month) { flow.reporting_window_range.begin }
+
+      before do
+        activity = create(:volunteering_activity, activity_flow: flow, organization_name: "Food Pantry")
+        create(:volunteering_activity_month, volunteering_activity: activity, month: first_month, hours: 20)
+        create(:nsc_enrollment_term, education_activity: education_activity, enrollment_status: "half_time")
+      end
+
+      it "sums both activity types" do
+        expect(progress.total_hours).to eq(100)
+      end
+
+      it "meets requirements" do
+        expect(progress.meets_requirements).to be(true)
+      end
+    end
+
+    context "when combining volunteering and job training when education should not count" do
+      let(:first_month) { flow.reporting_window_range.begin }
+
+      before do
+        activity = create(:volunteering_activity, activity_flow: flow, organization_name: "Food Pantry")
+        create(:volunteering_activity_month, volunteering_activity: activity, month: first_month, hours: 20)
+        create(:job_training_activity, activity_flow: flow, program_name: "Career Prep", organization_address: "123 Main St", hours: 20)
+        create(:nsc_enrollment_term, education_activity: education_activity, enrollment_status: "less_than_half_time")
+      end
+
+      it "sums volunteering hours and job training but education hours are not awarded" do
+        expect(progress.total_hours).to eq(40)
+      end
+
+      it "does not meet requirements when combined total is below threshold" do
+        expect(progress.meets_requirements).to be(false)
       end
     end
 
