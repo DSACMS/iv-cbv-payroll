@@ -9,7 +9,8 @@ class ActivityFlowProgressCalculator
 
   def initialize(activity_flow)
     @activity_flow = activity_flow
-    @activities = activity_flow.volunteering_activities + activity_flow.job_training_activities
+    @volunteering_activities = activity_flow.volunteering_activities
+    @job_training_activities = activity_flow.job_training_activities
     @education_activities = activity_flow.education_activities
   end
 
@@ -46,7 +47,8 @@ class ActivityFlowProgressCalculator
   end
 
   def volunteering_and_training_hours
-    @activities.sum { |activity| activity.hours.to_i }
+    reporting_months.sum { |m| volunteering_hours_for_month(m) } +
+      @job_training_activities.sum { |a| a.hours.to_i }
   end
 
   def education_hours
@@ -68,18 +70,25 @@ class ActivityFlowProgressCalculator
   end
 
   def hours_for_month(month_start)
-    volunteering_and_training_hours_for_month(month_start) +
-      employment_hours_for_month(month_start) +
-      education_hours_for_month(month_start)
+    employment_hours_for_month(month_start) +
+      education_hours_for_month(month_start) +
+      volunteering_hours_for_month(month_start) +
+      training_hours_for_month(month_start)
   end
 
-  def volunteering_and_training_hours_for_month(month_start)
-    @activities
+  def volunteering_hours_for_month(month_start)
+    @volunteering_activities.sum do |a|
+      a.volunteering_activity_months
+        .where(month: month_start.beginning_of_month)
+        .sum(:hours)
+    end
+  end
+
+  def training_hours_for_month(month_start)
+    @job_training_activities
       .select { |activity| activity.date&.between?(month_start, month_start.end_of_month) }
       .sum { |activity| activity.hours.to_i }
   end
-
-  # Employment calculations
 
   def employment_hours_for_month(month_start)
     return 0 unless payroll_report
@@ -123,7 +132,8 @@ class ActivityFlowProgressCalculator
   def validated_hours_for_month(month_start)
     validated_employment_hours_for_month(month_start) +
       validated_education_hours_for_month(month_start) +
-      validated_volunteering_and_training_hours_for_month(month_start)
+      validated_volunteering_hours_for_month(month_start) +
+      validated_training_hours_for_month(month_start)
   end
 
   def validated_earnings_for_month(month_start)
@@ -160,11 +170,19 @@ class ActivityFlowProgressCalculator
       .sum { |education| education.progress_hours_for_month(month_start) }
   end
 
-  def validated_volunteering_and_training_hours_for_month(month_start)
-    @activities
+  def validated_training_hours_for_month(month_start)
+    @job_training_activities
       .select(&:validated?)
       .select { |activity| activity.date&.between?(month_start, month_start.end_of_month) }
       .sum { |activity| activity.hours.to_i }
+  end
+
+  def validated_volunteering_hours_for_month(month_start)
+    @volunteering_activities.select(&:validated?).sum do |a|
+      a.volunteering_activity_months
+        .where(month: month_start.beginning_of_month)
+        .sum(:hours)
+    end
   end
 
   def validated_account_ids
