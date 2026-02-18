@@ -1,6 +1,7 @@
 class Activities::VolunteeringController < Activities::BaseController
   before_action :set_volunteering_activity, only: %i[edit update destroy hours_input save_hours]
-  before_action :set_hours_input_vars, only: %i[hours_input save_hours]
+
+  include MonthlyHoursInput
 
   def new
     @volunteering_activity = @flow.volunteering_activities.new
@@ -31,55 +32,32 @@ class Activities::VolunteeringController < Activities::BaseController
     redirect_to activities_flow_root_path, notice: t("activities.community_service.deleted")
   end
 
-  def save_hours
-    if params[:no_hours] == "1"
-      @volunteering_activity_month.hours = 0
-    else
-      @volunteering_activity_month.hours = params.dig(:volunteering_activity_month, :hours)
-    end
-
-    if !valid_hours_submission?
-      @error = true
-      render :hours_input, status: :unprocessable_content
-      return
-    end
-
-    @volunteering_activity_month.save!
-
-    next_index = @month_index + 1
-    if next_index < @months.length
-      redirect_to hours_input_activities_flow_volunteering_path(id: @volunteering_activity, month_index: next_index)
-    else
-      redirect_to after_activity_path
-    end
-  end
-
   private
 
   def set_volunteering_activity
     @volunteering_activity = @flow.volunteering_activities.find(params[:id])
   end
 
-  def set_hours_input_vars
-    @months = progress_calculator.reporting_months
-    @month_index = (params[:month_index] || 0).to_i
-    @current_month = @months[@month_index]
-    @volunteering_activity_month = @volunteering_activity.volunteering_activity_months
-      .find_or_initialize_by(month: @current_month.beginning_of_month)
+  # MonthlyHoursInput config methods
+
+  def hours_input_activity
+    @volunteering_activity
   end
 
-  def valid_hours_submission?
-    hours = @volunteering_activity_month.hours.to_i
+  def activity_month_param_key
+    :volunteering_activity_month
+  end
 
-    if @months.length == 1
-      hours > 0
-    elsif @month_index == @months.length - 1
-      # Last month of multi-month: at least one month must have hours > 0
-      @volunteering_activity.volunteering_activity_months.where.not(id: @volunteering_activity_month.id).sum(:hours) + hours > 0
-    else
-      # Not the last month — any value (including 0) is fine
-      true
-    end
+  def hours_input_path(month_index)
+    hours_input_activities_flow_volunteering_path(id: @volunteering_activity, month_index: month_index)
+  end
+
+  def activity_display_name
+    @volunteering_activity.organization_name
+  end
+
+  def hours_input_t_scope
+    "activities.community_service.hours_input"
   end
 
   # TODO: Remove — temporary redirect for testing hours_input flow
