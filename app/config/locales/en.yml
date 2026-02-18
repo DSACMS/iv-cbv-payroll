@@ -70,6 +70,8 @@ en:
       coordinator_phone_number: Coordinator's phone number
       coordinator_section_title: Coordinator information
       created: Community service activity was successfully created.
+      add: Add Community Service Activity
+      date: Date
       deleted: Community service activity was successfully deleted.
       description: Enter as much information as you can. This will help %{agency_acronym} get in touch with your community service organization, if needed.
       edit_title: Edit Community Service Activity
@@ -92,7 +94,6 @@ en:
       street_address: Street address
       street_address_line_2: Street address line 2
       title: Community service
-      updated: Community service activity was successfully updated.
       zip_code: Zip code
     document_uploads:
       new:
@@ -867,6 +868,9 @@ en:
         default: A website in partnership with CBV Test Agency.
         la_ldh: A website in partnership with the Louisiana Department of Health
       primary: Primary navigation
+    hours:
+      one: "%{count} hour"
+      other: "%{count} hours"
     languages:
       en: English
       es: Español

@@ -17,10 +17,7 @@
   <% end %>
 </ul>
 
-<%= form_with(builder: UswdsFormBuilder, scope: :activity, model: @activity, url: activities_flow_document_uploads_path, method: :post) do |f| %>
-  <%= hidden_field_tag "activity_id", params[:activity_id] %>
-  <%= hidden_field_tag "activity_type", params[:activity_type] %>
-
+<%= form_with(builder: UswdsFormBuilder, scope: :activity, model: @activity, url: upload_path, method: :post) do |f| %>
   <% if @activity.document_uploads.any? %>
     <p>Uploaded Documents:</p>
 

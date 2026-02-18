@@ -1,13 +1,16 @@
 TODO list
 
 -[ ] Tests
--[ ] Implement document_upload_* methods on all activities
 -[ ] Add filesize validation
 -[ ] Add data-errorMessage (for file format errors)
--[ ] Route user to doc upload after self-attested activities
+-[ ] Going "Forward" makes a copy of the input field
+-[x] Routing for Job Training activity
+-[x] Route user to doc upload after self-attested activities
 -[x] Add filetype validation
 -[x] Let it take an activity ID rather than using the last EducationActivity
 -[x] Make it so uploading another file doesn't clear the files
+-[x] Implement document_upload_* methods on self-attested activities
+-[x] Refactor routing so the document upload param passing doesn't use query params
 
 TBD on design:
 -[ ] File input - "x" to remove files

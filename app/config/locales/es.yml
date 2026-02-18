@@ -622,6 +622,9 @@ es:
         default: Un sitio web en colaboración con la Agencia de pruebas CBV.
         la_ldh: Un sitio web en colaboración con el Departamento de Salud de Luisiana
       primary: Menú principal
+    hours:
+      one: "%{count} hora"
+      other: "%{count} horas"
     languages:
       en: English
       es: Español
