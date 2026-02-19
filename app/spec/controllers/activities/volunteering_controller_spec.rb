@@ -71,29 +71,13 @@ RSpec.describe Activities::VolunteeringController, type: :controller do
       expect(flash[:notice]).to eq(I18n.t("activities.community_service.created"))
     end
 
-    it "redirects to activity hub when threshold met but only via self-attested data" do
+    it "redirects to document upload when threshold met but only via self-attested data" do
       create(:job_training_activity, activity_flow: activity_flow, program_name: "Resume Workshop", organization_address: "123 Main St", hours: 79)
 
       post :save_hours, params: { id: volunteering_activity.id, month_index: 0, volunteering_activity_month: { hours: 1 } }
 
-      expect(response).to redirect_to(activities_flow_root_path)
-    end
-
-    it "redirects to summary when threshold is met via validated data" do
-      result = ActivityFlowProgressCalculator::OverallResult.new(
-        total_hours: 80,
-        meets_requirements: true,
-        meets_routing_requirements: true
-      )
-      allow(controller).to receive(:progress_calculator).and_return(
-        instance_double(ActivityFlowProgressCalculator,
-          overall_result: result,
-          reporting_months: activity_flow.reporting_months)
-      )
-
-      post :save_hours, params: { id: volunteering_activity.id, month_index: 0, volunteering_activity_month: { hours: 10 } }
-
-      expect(response).to redirect_to(activities_flow_summary_path)
+      created_activity = activity_flow.volunteering_activities.order(:id).last
+      expect(response).to redirect_to(new_activities_flow_volunteering_document_upload_path(volunteering_id: created_activity.id))
     end
   end
 
@@ -115,7 +99,7 @@ RSpec.describe Activities::VolunteeringController, type: :controller do
       patch :update, params: { id: volunteering_activity.id, volunteering_activity: { organization_name: "Updated Org" } }
 
       expect(volunteering_activity.reload.organization_name).to eq("Updated Org")
-      expect(response).to redirect_to(activities_flow_root_path)
+      expect(response).to redirect_to(new_activities_flow_volunteering_document_upload_path(volunteering_id: volunteering_activity.id))
       expect(flash[:notice]).to eq(I18n.t("activities.community_service.updated"))
     end
   end
