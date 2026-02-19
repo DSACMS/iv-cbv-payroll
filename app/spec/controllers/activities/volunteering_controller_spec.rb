@@ -62,21 +62,13 @@ RSpec.describe Activities::VolunteeringController, type: :controller do
     let(:volunteering_activity) { create(:volunteering_activity, activity_flow: activity_flow) }
     let(:month) { activity_flow.reporting_months.first }
 
-    it "redirects to activity hub when total hours are below the threshold" do
-      create(:job_training_activity, activity_flow: activity_flow, program_name: "Resume Workshop", organization_address: "123 Main St", hours: 78)
-
-      post :save_hours, params: { id: volunteering_activity.id, month_index: 0, volunteering_activity_month: { hours: 1 } }
-
-      expect(response).to redirect_to(activities_flow_root_path)
-      expect(flash[:notice]).to eq(I18n.t("activities.community_service.created"))
-    end
-
-    it "redirects to activity hub when threshold met but only via self-attested data" do
+    it "redirects to document upload" do
       create(:job_training_activity, activity_flow: activity_flow, program_name: "Resume Workshop", organization_address: "123 Main St", hours: 79)
 
       post :save_hours, params: { id: volunteering_activity.id, month_index: 0, volunteering_activity_month: { hours: 1 } }
 
-      expect(response).to redirect_to(activities_flow_root_path)
+      created_activity = activity_flow.volunteering_activities.order(:id).last
+      expect(response).to redirect_to(new_activities_flow_volunteering_document_upload_path(volunteering_id: created_activity.id))
     end
 
     context "with multiple reporting months" do
@@ -89,7 +81,7 @@ RSpec.describe Activities::VolunteeringController, type: :controller do
       end
     end
 
-    it "redirects to summary when threshold is met via validated data" do
+    it "redirects to document upload when threshold is met via validated data" do
       result = ActivityFlowProgressCalculator::OverallResult.new(
         total_hours: 80,
         meets_requirements: true,
@@ -103,7 +95,8 @@ RSpec.describe Activities::VolunteeringController, type: :controller do
 
       post :save_hours, params: { id: volunteering_activity.id, month_index: 0, volunteering_activity_month: { hours: 10 } }
 
-      expect(response).to redirect_to(activities_flow_summary_path)
+      created_activity = activity_flow.volunteering_activities.order(:id).last
+      expect(response).to redirect_to(new_activities_flow_volunteering_document_upload_path(volunteering_id: created_activity.id))
     end
   end
 
@@ -125,8 +118,7 @@ RSpec.describe Activities::VolunteeringController, type: :controller do
       patch :update, params: { id: volunteering_activity.id, volunteering_activity: { organization_name: "Updated Org" } }
 
       expect(volunteering_activity.reload.organization_name).to eq("Updated Org")
-      expect(response).to redirect_to(activities_flow_root_path)
-      expect(flash[:notice]).to eq(I18n.t("activities.community_service.updated"))
+      expect(response).to redirect_to(new_activities_flow_volunteering_document_upload_path(volunteering_id: volunteering_activity.id))
     end
   end
 
