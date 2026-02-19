@@ -327,7 +327,7 @@ en:
       footer: This is an automatically generated message from your SNAP agency. Please don’t reply to this email.
       greeting: Hello,
       header:
-        sandbox: CBV Test Agency has sent you an invitation to verify your income
+        sandbox: Test Agency has sent you an invitation to verify your income
       subject:
         default: Verify your income for your SNAP application or renewal
   caseworker_mailer:
@@ -469,7 +469,7 @@ en:
         body_1: If you still need to verify your income, please submit your income information by visiting %{agency_acronym}'s website.
         cta_button_html:
           la_ldh: <a href="%{agency_url}" class="usa-button" target="_blank" rel="noopener noreferrer">Visit LDH's website</a>
-          sandbox: <a href="https://www.mass.gov/guides/how-to-contact-dta" class="usa-button" target="_blank" rel="noopener noreferrer">Learn more at CBV Test Agency</a>
+          sandbox: <a href="https://www.mass.gov/guides/how-to-contact-dta" class="usa-button" target="_blank" rel="noopener noreferrer">Learn more at Test Agency</a>
         title: Your invitation to verify income has expired
     missing_results:
       show:
@@ -549,7 +549,7 @@ en:
           agency_header_name:
             az_des: Department of Economic Security
             la_ldh: Department of Health
-            sandbox: CBV Test Agency
+            sandbox: Test Agency
           caseworker:
             agreement_consent_timestamp: Agreement Consent Timestamp
             case_number: Case number
@@ -836,14 +836,14 @@ en:
     agency_acronym:
       az_des: DES/FAA
       la_ldh: LDH
-      sandbox: CBV
+      sandbox: TA
     agency_full_name:
       az_des: Department of Economic Security/Family Assistance Administration
       la_ldh: Louisiana Department of Health
-      sandbox: CBV Test Agency
+      sandbox: Test Agency
     app_name:
       az_des: MyFamilyBenefits
-      sandbox: CBVApp
+      sandbox: TA App
     banner:
       lock: Lock
       locked_padlock: A locked padlock
@@ -858,13 +858,13 @@ en:
       cbv_flow_title:
         az_des: Department of Economic Security
         la_ldh: Department of Health
-        sandbox: CBV Test Agency
+        sandbox: Test Agency
       close: Close
       help: Help
       log_out: Log out
       preheader:
         az_des: A website in partnership with the Arizona Department of Economic Security.
-        default: A website in partnership with CBV Test Agency.
+        default: A website in partnership with Test Agency.
         la_ldh: A website in partnership with the Louisiana Department of Health
       primary: Primary navigation
     hours:

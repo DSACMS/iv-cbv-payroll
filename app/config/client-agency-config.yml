@@ -74,7 +74,7 @@
       required: true
 
 - id: sandbox
-  agency_name: CBV Test Agency
+  agency_name: Test Agency
   agency_contact_website: https://www.example.com/contact
   agency_domain: <%= ENV["SANDBOX_DOMAIN_NAME"] %>
   caseworker_feedback_form: https://docs.google.com/forms/d/e/1FAIpQLSfrUiz0oWE5jbXjPfl-idQQGPgxKplqFtcKq08UOhTaEa2k6A/viewform

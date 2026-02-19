@@ -77,7 +77,7 @@ es:
       footer: Este es un mensaje generado automáticamente desde su agencia de SNAP. Por favor no conteste a este correo electrónico.
       greeting: "¡Hola!"
       header:
-        sandbox: La Agencia de pruebas CBV le ha enviado una invitación para verificar sus ingresos
+        sandbox: La Agencia de pruebas le ha enviado una invitación para verificar sus ingresos
       subject:
         default: Verifique sus ingresos para su solicitud o renovación de SNAP
   cbv:
@@ -210,7 +210,7 @@ es:
         body_1: Si todavía no termina de verificar sus ingresos, envíe su información de ingresos desde el mismo sitio web de %{agency_acronym}.
         cta_button_html:
           la_ldh: <a href="%{agency_url}" class="usa-button" target="_blank" rel="noopener noreferrer">Visite el sitio web del LDH</a>
-          sandbox: <a href="https://www.mass.gov/guides/how-to-contact-dta" class="usa-button" target="_blank" rel="noopener noreferrer">Obtenga más información en la Agencia de pruebas CBV</a>
+          sandbox: <a href="https://www.mass.gov/guides/how-to-contact-dta" class="usa-button" target="_blank" rel="noopener noreferrer">Obtenga más información en la Agencia de pruebas</a>
         title: Su invitación para verificar ingresos ha expirado
     missing_results:
       show:
@@ -285,7 +285,7 @@ es:
           agency_header_name:
             az_des: Department of Economic Security
             la_ldh: Department of Health
-            sandbox: CBV Test Agency
+            sandbox: Test Agency
           caseworker:
             doc_id: Doc ID
             pay_period: Período de pago (%{pay_frequency})
@@ -591,14 +591,14 @@ es:
     agency_acronym:
       az_des: DES/FAA
       la_ldh: LDH
-      sandbox: CBV
+      sandbox: TA
     agency_full_name:
       az_des: Departamento de Seguridad Económica de Arizona/Administración de Asistencia Familiar
       la_ldh: Departamento de Salud de Luisiana
-      sandbox: Agencia de pruebas CBV
+      sandbox: Agencia de pruebas
     app_name:
       az_des: MyFamilyBenefits
-      sandbox: CBVApp
+      sandbox: TAApp
     banner:
       lock: Candado
       locked_padlock: Un candado cerrado
@@ -613,13 +613,13 @@ es:
       cbv_flow_title:
         az_des: Departamento de Seguridad Económica
         la_ldh: Departamento de Salud
-        sandbox: Agencia de pruebas CBV
+        sandbox: Agencia de pruebas
       close: Cerrar
       help: Ayuda
       log_out: Cerrar sesión
       preheader:
         az_des: Un sitio web en colaboración con el Departamento de Seguridad Económica de Arizona.
-        default: Un sitio web en colaboración con la Agencia de pruebas CBV.
+        default: Un sitio web en colaboración con la Agencia de pruebas.
         la_ldh: Un sitio web en colaboración con el Departamento de Salud de Luisiana
       primary: Menú principal
     hours:

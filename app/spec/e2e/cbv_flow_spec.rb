@@ -73,10 +73,10 @@ RSpec.describe "e2e CBV flow test", :js, type: :feature do
     # /cbv/submits
     verify_page(page, title: I18n.t("cbv.submits.show.page_header"), wait: 10)
     find(:css, "label[for=cbv_flow_consent_to_authorized_use]").click
-    click_on "Share my report with CBV"
+    click_on I18n.t("cbv.submits.show.share_report_button", agency_acronym: I18n.t("shared.agency_acronym.sandbox"))
 
     # /cbv/success
-    verify_page(page, title: I18n.t("cbv.successes.show.header", agency_acronym: "CBV"))
+    verify_page(page, title: I18n.t("cbv.successes.show.header", agency_acronym: I18n.t("shared.agency_acronym.sandbox")))
     # TODO: Test PDF rendering by writing it to a file
   end
 end
