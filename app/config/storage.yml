@@ -9,4 +9,3 @@ test:
 amazon:
   service: S3
   bucket: <%= ENV["BUCKET_NAME"] %>
-  region: us-east-1

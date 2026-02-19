@@ -5,6 +5,7 @@ Rails.application.configure do
   config.force_ssl = false
   config.hosts << "localhost"
   config.asset_host = "http://localhost"
+  config.active_storage.service = :test
 
   logger = ActiveSupport::Logger.new($stdout)
   logger.formatter = config.log_formatter

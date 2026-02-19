@@ -20,7 +20,6 @@ runs:
       run: bundle exec rails server &
       working-directory: app
 
-
     - name: "Wait for startup"
       shell: bash
       run: sleep 5
