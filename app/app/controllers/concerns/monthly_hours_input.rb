@@ -28,7 +28,7 @@ module MonthlyHoursInput
     if next_index < @months.length
       redirect_to hours_input_path(next_index)
     else
-      redirect_to after_activity_path
+      redirect_to after_activity_path, notice: hours_input_completed_notice
     end
   end
 
@@ -63,4 +63,5 @@ module MonthlyHoursInput
   # - hours_input_path(month_index) → route helper for hours_input GET
   # - activity_display_name     → name shown in heading (org name, program name, etc.)
   # - hours_input_t_scope       → translation scope string
+  # - hours_input_completed_notice → flash notice shown after all months are saved
 end

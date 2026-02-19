@@ -10,8 +10,7 @@ class Activities::VolunteeringController < Activities::BaseController
   def create
     @volunteering_activity = @flow.volunteering_activities.new(volunteering_activity_params)
     if @volunteering_activity.save
-      destination = redirect_after_save(@volunteering_activity)
-      redirect_to destination, notice: (destination == after_activity_path ? t("activities.community_service.created") : nil)
+      redirect_to hours_input_activities_flow_volunteering_path(id: @volunteering_activity, month_index: 0)
     else
       render :new, status: :unprocessable_content
     end
@@ -19,8 +18,7 @@ class Activities::VolunteeringController < Activities::BaseController
 
   def update
     if @volunteering_activity.update(volunteering_activity_params)
-      destination = redirect_after_save(@volunteering_activity)
-      redirect_to destination, notice: (destination == after_activity_path ? t("activities.community_service.updated") : nil)
+      redirect_to after_activity_path, notice: t("activities.community_service.updated")
     else
       render :edit, status: :unprocessable_content
     end
@@ -60,16 +58,15 @@ class Activities::VolunteeringController < Activities::BaseController
     "activities.community_service.hours_input"
   end
 
-  # TODO: Remove — temporary redirect for testing hours_input flow
-  def redirect_after_save(activity)
-    if params[:redirect_to_hours_input]
-      hours_input_activities_flow_volunteering_path(id: activity, month_index: 0)
-    else
-      after_activity_path
-    end
+  def hours_input_completed_notice
+    t("activities.community_service.created")
   end
 
   def volunteering_activity_params
-    params.require(:volunteering_activity).permit(:organization_name, :date, :hours)
+    params.require(:volunteering_activity).permit(
+      :organization_name, :street_address, :street_address_line_2,
+      :city, :state, :zip_code,
+      :coordinator_name, :coordinator_email, :coordinator_phone_number
+    )
   end
 end
