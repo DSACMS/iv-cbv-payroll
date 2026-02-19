@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="<%= I18n.locale %>">
   <head>
-    <title><%= content_for?(:title) ? yield(:title) : "" %> | <%= t(pilot_name_key) %></title>
+    <title><%= content_for?(:title) ? yield(:title) : "" %> | <%= t(activity_flow? ? "shared.pilot_name_hr1_full" : "shared.pilot_name") %></title>
     <meta name="viewport" content="width=device-width,initial-scale=1">
     <%= csrf_meta_tags %>
     <%= csp_meta_tag %>

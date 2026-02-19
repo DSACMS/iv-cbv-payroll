@@ -68,6 +68,37 @@ html {
   }
 }
 
+.cbv-header__title-group {
+  display: flex;
+  flex-direction: column;
+  gap: units(1);
+
+  .cbv-header__pilot-name {
+    @include u-font("heading", 10);
+    color: color("ink");
+    font-weight: bold;
+    line-height: 1.15;
+
+    @include at-media-max($theme-header-min-width) {
+      font-size: size("heading", 3);
+      line-height: 1;
+    }
+  }
+
+  .cbv-header__subtitle {
+    @include u-font("heading", 7);
+    color: color("ink");
+    font-weight: normal;
+    line-height: 1.15;
+
+    @include at-media-max($theme-header-min-width) {
+      font-size: size("heading", 1);
+      font-weight: 500;
+      line-height: 1;
+    }
+  }
+}
+
 .cbv-header__pilot-name {
   color: color("primary");
   flex-shrink: 0;
@@ -147,6 +178,21 @@ html {
 
 .cbv-footer__item {
   @include u-margin-y(2);
+}
+
+.cbv-footer__logo-text {
+  display: flex;
+  flex-direction: column;
+  gap: units(1);
+}
+
+.cbv-footer__logo-line1 {
+  @include u-font("heading", 8);
+}
+
+.cbv-footer__logo-line2 {
+  @include u-font("heading", 5);
+  font-weight: normal;
 }
 
 .cbv-row-highlight td,

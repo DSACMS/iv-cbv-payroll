@@ -1,6 +1,6 @@
 class ApplicationController < ActionController::Base
   helper :view
-  helper_method :current_agency, :show_menu?, :pilot_ended?, :get_site_alert_title, :get_site_alert_body, :pilot_name_key, :session_timeout_enabled?, :session_timeout_duration, :internal_environment?
+  helper_method :current_agency, :show_menu?, :pilot_ended?, :get_site_alert_title, :get_site_alert_body, :activity_flow?, :session_timeout_enabled?, :session_timeout_duration, :internal_environment?
   around_action :switch_locale
   before_action :add_newrelic_metadata, :redirect_if_maintenance_mode, :enable_mini_profiler_in_demo, :set_device_id_cookie
 
@@ -106,8 +106,8 @@ class ApplicationController < ActionController::Base
     flow_type&.to_sym == :activity ? ActivityFlow : CbvFlow
   end
 
-  def pilot_name_key
-    session[:flow_type]&.to_sym == :activity ? "shared.pilot_name_hr1" : "shared.pilot_name"
+  def activity_flow?
+    session[:flow_type]&.to_sym == :activity
   end
 
   protected
