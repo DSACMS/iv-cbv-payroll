@@ -18,7 +18,7 @@
         <div class="display-flex flex-justify">
           <span><%= I18n.l(activity_month.month, format: :month) %></span>
           <%= link_to t("activities.community_service.review.edit"),
-                hours_input_activities_flow_volunteering_path(id: @volunteering_activity, month_index: index),
+                hours_input_activities_flow_volunteering_path(id: @volunteering_activity, month_index: index, from_review: 1),
                 class: "usa-link" %>
         </div>
       <% end %>
@@ -43,5 +43,6 @@
         agency_name: agency_translation("shared.agency_full_name")) %></p>
   <%= form.text_area :additional_comments, class: "usa-textarea", rows: 5 %>
 
-  <%= form.submit t("activities.community_service.review.save"), class: "usa-button usa-button--primary" %>
+  <% submit_label = params[:from_edit].present? ? t("activities.hub.save") : t("activities.community_service.review.save") %>
+  <%= form.submit submit_label, class: "usa-button usa-button--primary" %>
 <% end %>

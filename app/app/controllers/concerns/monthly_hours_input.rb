@@ -24,11 +24,15 @@ module MonthlyHoursInput
 
     @activity_month.save!
 
-    next_index = @month_index + 1
-    if next_index < @months.length
-      redirect_to hours_input_path(next_index)
+    if params[:from_review].present?
+      redirect_to hours_input_completed_path
     else
-      redirect_to hours_input_completed_path, notice: hours_input_completed_notice
+      next_index = @month_index + 1
+      if next_index < @months.length
+        redirect_to hours_input_path(next_index, from_edit: params[:from_edit].presence)
+      else
+        redirect_to hours_input_completed_path, notice: hours_input_completed_notice
+      end
     end
   end
 
@@ -54,8 +58,8 @@ module MonthlyHoursInput
 
     if @months.length == 1
       hours > 0
-    elsif @month_index == @months.length - 1
-      # Last month of multi-month: at least one month must have hours > 0
+    elsif params[:from_review].present? || @month_index == @months.length - 1
+      # Editing from review or last month: at least one month must have hours > 0
       hours_input_activity.activity_months.where.not(id: @activity_month.id).sum(:hours) + hours > 0
     else
       # Not the last month — any value (including 0) is fine

@@ -18,7 +18,7 @@ class Activities::VolunteeringController < Activities::BaseController
 
   def update
     if @volunteering_activity.update(volunteering_activity_params)
-      redirect_to hours_input_activities_flow_volunteering_path(id: @volunteering_activity, month_index: 0)
+      redirect_to hours_input_activities_flow_volunteering_path(id: @volunteering_activity, month_index: 0, from_edit: 1)
     else
       render :edit, status: :unprocessable_content
     end
@@ -54,8 +54,8 @@ class Activities::VolunteeringController < Activities::BaseController
     :volunteering_activity_month
   end
 
-  def hours_input_path(month_index)
-    hours_input_activities_flow_volunteering_path(id: @volunteering_activity, month_index: month_index)
+  def hours_input_path(month_index, from_edit: nil)
+    hours_input_activities_flow_volunteering_path(id: @volunteering_activity, month_index: month_index, from_edit: from_edit.presence)
   end
 
   def activity_display_name
@@ -71,7 +71,7 @@ class Activities::VolunteeringController < Activities::BaseController
   end
 
   def hours_input_completed_path
-    review_activities_flow_volunteering_path(id: @volunteering_activity)
+    review_activities_flow_volunteering_path(id: @volunteering_activity, from_edit: params[:from_edit].presence)
   end
 
   def review_params

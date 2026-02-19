@@ -1,9 +1,12 @@
+<% from_review = params[:from_review].present? %>
+<% from_edit = params[:from_edit].present? %>
 <%= render "shared/hours_input",
     activity_month: @activity_month,
-    form_url: save_hours_activities_flow_volunteering_path(id: @volunteering_activity, month_index: @month_index),
+    form_url: save_hours_activities_flow_volunteering_path(id: @volunteering_activity, month_index: @month_index, from_review: from_review ? 1 : nil, from_edit: from_edit ? 1 : nil),
     activity_name: @volunteering_activity.organization_name,
     current_month: @current_month,
     months: @months,
     month_index: @month_index,
     error: @error,
-    t_scope: "activities.community_service.hours_input" %>
+    t_scope: "activities.community_service.hours_input",
+    submit_label: from_review ? t("activities.hub.save") : nil %>
