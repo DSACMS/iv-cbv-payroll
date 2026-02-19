@@ -29,6 +29,17 @@ class ActivityFlowProgressIndicatorPreview < ApplicationPreview
     )
   end
 
+  def completed
+    results = []
+    results << make_result(Date.new(2026, 1, 1), 82)
+    results << make_result(Date.new(2025, 12, 1), 91)
+
+    render ActivityFlowProgressIndicator.new(
+      agency_full_name: "Test Agency",
+      monthly_calculation_results: results
+    )
+  end
+
   private
 
   def make_result(month, hours)
