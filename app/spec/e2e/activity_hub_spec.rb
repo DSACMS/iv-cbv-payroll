@@ -19,6 +19,7 @@ RSpec.describe 'e2e Activity Hub flow test', :js, type: :feature do
     click_link I18n.t("activities.entries.show.continue")
 
     verify_page(page, title: I18n.t("activities.hub.title"))
+    flow = ActivityFlow.last
 
     # Add a Community Service activity
     within("[data-activity-type='community_service']") do
@@ -35,15 +36,15 @@ RSpec.describe 'e2e Activity Hub flow test', :js, type: :feature do
     click_button I18n.t("activities.community_service.continue")
 
     verify_page(page, title: I18n.t("activities.community_service.hours_input.heading",
-      month: I18n.l(ActivityFlow.last.reporting_months.first, format: :month_year),
+      month: I18n.l(flow.reporting_months.first, format: :month_year),
       organization: "Helping Hands"))
-    fill_in I18n.t("activities.community_service.hours_input.hours_label", month: I18n.l(ActivityFlow.last.reporting_months.first, format: :month_year)), with: "20"
+    fill_in I18n.t("activities.community_service.hours_input.hours_label", month: I18n.l(flow.reporting_months.first, format: :month_year)), with: "20"
     click_button I18n.t("activities.community_service.hours_input.continue")
 
     verify_page(page, title: I18n.t("activities.community_service.hours_input.heading",
-      month: I18n.l(ActivityFlow.last.reporting_months.second, format: :month_year),
+      month: I18n.l(flow.reporting_months.second, format: :month_year),
       organization: "Helping Hands"))
-    fill_in I18n.t("activities.community_service.hours_input.hours_label", month: I18n.l(ActivityFlow.last.reporting_months.second, format: :month_year)), with: "10"
+    fill_in I18n.t("activities.community_service.hours_input.hours_label", month: I18n.l(flow.reporting_months.second, format: :month_year)), with: "10"
     click_button I18n.t("activities.community_service.hours_input.continue")
 
     verify_page(page, title: I18n.t("activities.hub.title"))
@@ -73,9 +74,18 @@ RSpec.describe 'e2e Activity Hub flow test', :js, type: :feature do
     expect(page).to have_content I18n.t("activities.hub.cards.hours", count: 6)
 
     click_button I18n.t("activities.hub.review_and_submit")
-    verify_page(page, title: I18n.t("activities.summary.title"))
-    expect(page).to have_content "Helping Hands"
-    expect(page).to have_content "Resume Workshop"
+    verify_page(page, title: I18n.t("activities.summary.title", benefit: I18n.t("shared.benefit.sandbox")))
+
+    volunteering = flow.volunteering_activities.last
+    job_training = flow.job_training_activities.last
+
+    expect(page).to have_content volunteering.organization_name
+    expect(page).to have_content volunteering.formatted_address
+    expect(page).to have_content volunteering.coordinator_name
+    expect(page).to have_content volunteering.coordinator_email
+    expect(page).to have_content I18n.l(flow.reporting_months.first, format: :month)
+    expect(page).to have_content I18n.l(flow.reporting_months.second, format: :month)
+    expect(page).to have_content job_training.program_name
 
     # /activities/summary
     click_button I18n.t("activities.summary.submit", agency_name: I18n.t("shared.agency_full_name.sandbox"))
@@ -131,7 +141,7 @@ RSpec.describe 'e2e Activity Hub flow test', :js, type: :feature do
     verify_page(page, title: I18n.t("activities.hub.title"))
 
     click_button I18n.t("activities.hub.review_and_submit")
-    verify_page(page, title: I18n.t("activities.summary.title"))
+    verify_page(page, title: I18n.t("activities.summary.title", benefit: I18n.t("shared.benefit.sandbox")))
 
     # /activities/summary
     click_button I18n.t("activities.summary.submit", agency_name: I18n.t("shared.agency_full_name.sandbox"))
@@ -186,7 +196,7 @@ RSpec.describe 'e2e Activity Hub flow test', :js, type: :feature do
     expect(page).to have_content "Test University"
 
     click_button I18n.t("activities.hub.review_and_submit")
-    verify_page(page, title: I18n.t("activities.summary.title"))
+    verify_page(page, title: I18n.t("activities.summary.title", benefit: I18n.t("shared.benefit.sandbox")))
     expect(page).to have_content "Test University"
 
     click_button I18n.t("activities.summary.submit", agency_name: I18n.t("shared.agency_full_name.sandbox"))
