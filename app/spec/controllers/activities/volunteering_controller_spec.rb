@@ -70,6 +70,34 @@ RSpec.describe Activities::VolunteeringController, type: :controller do
       created_activity = activity_flow.volunteering_activities.order(:id).last
       expect(response).to redirect_to(new_activities_flow_volunteering_document_upload_path(volunteering_id: created_activity.id))
     end
+
+    context "with multiple reporting months" do
+      let(:activity_flow) { create(:activity_flow, volunteering_activities_count: 0, job_training_activities_count: 0, education_activities_count: 0, reporting_window_months: 3) }
+
+      it "advances to next month when hours are blank" do
+        post :save_hours, params: { id: volunteering_activity.id, month_index: 0, volunteering_activity_month: { hours: "" } }
+
+        expect(response).to redirect_to(hours_input_activities_flow_volunteering_path(id: volunteering_activity, month_index: 1))
+      end
+    end
+
+    it "redirects to document upload when threshold is met via validated data" do
+      result = ActivityFlowProgressCalculator::OverallResult.new(
+        total_hours: 80,
+        meets_requirements: true,
+        meets_routing_requirements: true
+      )
+      allow(controller).to receive(:progress_calculator).and_return(
+        instance_double(ActivityFlowProgressCalculator,
+          overall_result: result,
+          reporting_months: activity_flow.reporting_months)
+      )
+
+      post :save_hours, params: { id: volunteering_activity.id, month_index: 0, volunteering_activity_month: { hours: 10 } }
+
+      created_activity = activity_flow.volunteering_activities.order(:id).last
+      expect(response).to redirect_to(new_activities_flow_volunteering_document_upload_path(volunteering_id: created_activity.id))
+    end
   end
 
   describe "GET #edit" do
