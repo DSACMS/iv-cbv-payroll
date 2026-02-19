@@ -79,6 +79,16 @@ RSpec.describe Activities::VolunteeringController, type: :controller do
       expect(response).to redirect_to(activities_flow_root_path)
     end
 
+    context "with multiple reporting months" do
+      let(:activity_flow) { create(:activity_flow, volunteering_activities_count: 0, job_training_activities_count: 0, education_activities_count: 0, reporting_window_months: 3) }
+
+      it "advances to next month when hours are blank" do
+        post :save_hours, params: { id: volunteering_activity.id, month_index: 0, volunteering_activity_month: { hours: "" } }
+
+        expect(response).to redirect_to(hours_input_activities_flow_volunteering_path(id: volunteering_activity, month_index: 1))
+      end
+    end
+
     it "redirects to summary when threshold is met via validated data" do
       result = ActivityFlowProgressCalculator::OverallResult.new(
         total_hours: 80,
