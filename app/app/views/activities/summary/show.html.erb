@@ -1,7 +1,7 @@
-<% content_for :title, t("activities.summary.title") %>
+<% content_for :title, t("activities.summary.title", benefit: agency_translation("shared.benefit")) %>
 
 <h1>
-  <%= t("activities.summary.title") %>
+  <%= t("activities.summary.title", benefit: agency_translation("shared.benefit")) %>
 </h1>
 <p>
   <% start_date = I18n.l(@flow.reporting_window_range.begin, format: :month_year) %>
@@ -18,10 +18,7 @@
   <% end %>
 </p>
 
-<%= render(ActivityFlowProgressIndicator.from_calculator(progress_calculator)) %>
-
-<hr class="border-gray-30 border-top-0 margin-bottom-4">
-
+<div class="margin-top-4">
 <% @all_activities.each_with_index do |activity_data, index| %>
   <section>
     <h2>
@@ -70,6 +67,7 @@
     <% end %>
   </section>
 <% end %>
+</div>
 
 <section class="margin-top-5">
   <h2>
