@@ -108,6 +108,7 @@ en:
       street_address: Street address
       street_address_line_2: Street address line 2
       title: Community service
+      updated: Community service activity was successfully updated.
       zip_code: Zip code
     document_uploads:
       new:

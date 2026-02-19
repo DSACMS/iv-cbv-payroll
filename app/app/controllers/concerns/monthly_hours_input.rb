@@ -77,6 +77,5 @@ module MonthlyHoursInput
   # - hours_input_path(month_index) → route helper for hours_input GET
   # - activity_display_name     → name shown in heading (org name, program name, etc.)
   # - hours_input_t_scope       → translation scope string
-  # - hours_input_completed_notice → flash notice shown after all months are saved
   # - hours_input_completed_path (optional) → override to redirect somewhere other than after_activity_path
 end

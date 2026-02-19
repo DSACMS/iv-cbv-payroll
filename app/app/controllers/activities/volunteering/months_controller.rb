@@ -29,10 +29,6 @@ class Activities::Volunteering::MonthsController < Activities::BaseController
     "activities.community_service.hours_input"
   end
 
-  def hours_input_completed_notice
-    t("activities.community_service.created")
-  end
-
   def hours_input_completed_path
     if params[:from_review].present?
       review_activities_flow_volunteering_path(id: @volunteering_activity, from_edit: params[:from_edit].presence)
