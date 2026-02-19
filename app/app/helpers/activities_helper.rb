@@ -49,6 +49,15 @@ module ActivitiesHelper
     end
   end
 
+  def community_service_cards(activities)
+    activities.map do |activity|
+      months = activity.volunteering_activity_months.order(:month).map do |vam|
+        { month: vam.month, hours: vam.hours }
+      end
+      { name: activity.organization_name, months: months, activity: activity }
+    end
+  end
+
   def self_attestation_cards(activities, name_field:)
     activities.map do |activity|
       months = activity.date.present? ? [ { month: activity.date.beginning_of_month, hours: activity.hours.to_i } ] : []

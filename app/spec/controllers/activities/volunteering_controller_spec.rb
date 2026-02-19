@@ -24,13 +24,13 @@ RSpec.describe Activities::VolunteeringController, type: :controller do
   describe "POST #create" do
     let(:volunteering_params) { { volunteering_activity: attributes_for(:volunteering_activity) } }
 
-    it "creates a volunteering activity and redirects to the hub" do
+    it "creates a volunteering activity and redirects to hours input" do
       expect do
         post :create, params: volunteering_params
       end.to change(activity_flow.volunteering_activities, :count).by(1)
 
-      expect(response).to redirect_to(activities_flow_root_path)
-      expect(flash[:notice]).to eq(I18n.t("activities.community_service.created"))
+      activity = activity_flow.volunteering_activities.last
+      expect(response).to redirect_to(hours_input_activities_flow_volunteering_path(id: activity, month_index: 0))
     end
 
     it "stores submitted fields on the activity" do
@@ -56,19 +56,25 @@ RSpec.describe Activities::VolunteeringController, type: :controller do
       expect(activity.street_address_line_2).to eq("Suite 200")
       expect(activity.coordinator_phone_number).to eq("555-1234")
     end
+  end
+
+  describe "POST #save_hours" do
+    let(:volunteering_activity) { create(:volunteering_activity, activity_flow: activity_flow) }
+    let(:month) { activity_flow.reporting_months.first }
 
     it "redirects to activity hub when total hours are below the threshold" do
       create(:job_training_activity, activity_flow: activity_flow, program_name: "Resume Workshop", organization_address: "123 Main St", hours: 78)
 
-      post :create, params: volunteering_params
+      post :save_hours, params: { id: volunteering_activity.id, month_index: 0, volunteering_activity_month: { hours: 1 } }
 
       expect(response).to redirect_to(activities_flow_root_path)
+      expect(flash[:notice]).to eq(I18n.t("activities.community_service.created"))
     end
 
     it "redirects to activity hub when threshold met but only via self-attested data" do
       create(:job_training_activity, activity_flow: activity_flow, program_name: "Resume Workshop", organization_address: "123 Main St", hours: 79)
 
-      post :create, params: volunteering_params
+      post :save_hours, params: { id: volunteering_activity.id, month_index: 0, volunteering_activity_month: { hours: 1 } }
 
       expect(response).to redirect_to(activities_flow_root_path)
     end
@@ -79,9 +85,13 @@ RSpec.describe Activities::VolunteeringController, type: :controller do
         meets_requirements: true,
         meets_routing_requirements: true
       )
-      allow(controller).to receive(:progress_calculator).and_return(instance_double(ActivityFlowProgressCalculator, overall_result: result))
+      allow(controller).to receive(:progress_calculator).and_return(
+        instance_double(ActivityFlowProgressCalculator,
+          overall_result: result,
+          reporting_months: activity_flow.reporting_months)
+      )
 
-      post :create, params: volunteering_params
+      post :save_hours, params: { id: volunteering_activity.id, month_index: 0, volunteering_activity_month: { hours: 10 } }
 
       expect(response).to redirect_to(activities_flow_summary_path)
     end

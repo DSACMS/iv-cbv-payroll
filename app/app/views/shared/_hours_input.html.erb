@@ -1,0 +1,60 @@
+<%# i18n-tasks-use t('activities.community_service.hours_input.title') %>
+<%# i18n-tasks-use t('activities.community_service.hours_input.month_indicator') %>
+<%# i18n-tasks-use t('activities.community_service.hours_input.heading') %>
+<%# i18n-tasks-use t('activities.community_service.hours_input.error_heading') %>
+<%# i18n-tasks-use t('activities.community_service.hours_input.error_body') %>
+<%# i18n-tasks-use t('activities.community_service.hours_input.error_body_multi_month') %>
+<%# i18n-tasks-use t('activities.community_service.hours_input.field_error') %>
+<%# i18n-tasks-use t('activities.community_service.hours_input.no_hours_checkbox') %>
+<%# i18n-tasks-use t('activities.community_service.hours_input.hours_label') %>
+<%# i18n-tasks-use t('activities.community_service.hours_input.continue') %>
+<% content_for :title, t("#{t_scope}.title") %>
+
+<% if months.length > 1 %>
+  <p class="month-indicator">
+    <%= t("#{t_scope}.month_indicator", current: month_index + 1, total: months.length) %>
+  </p>
+<% end %>
+
+<h1 class="margin-top-0 padding-top-2 padding-bottom-3">
+  <%= t("#{t_scope}.heading",
+        month: l(current_month, format: :month_year),
+        organization: activity_name) %>
+</h1>
+
+<% if error %>
+  <%= render Uswds::Alert.new(type: :error, heading: t("#{t_scope}.error_heading"), class: "margin-bottom-4") do %>
+    <% if months.length > 1 %>
+      <%= t("#{t_scope}.error_body_multi_month") %>
+    <% else %>
+      <%= t("#{t_scope}.error_body") %>
+    <% end %>
+  <% end %>
+<% end %>
+
+<%= uswds_form_with(model: activity_month,
+      url: form_url,
+      method: :patch) do |f| %>
+
+  <div data-controller="hours-input">
+    <% if months.length > 1 %>
+      <div class="usa-checkbox">
+        <%= check_box_tag :no_hours, "1", false,
+              class: "usa-checkbox__input usa-checkbox__input--tile",
+              data: { hours_input_target: "checkbox", action: "hours-input#toggle" } %>
+        <%= label_tag :no_hours,
+              t("#{t_scope}.no_hours_checkbox",
+                organization: activity_name,
+                month: l(current_month, format: :month_year)),
+              class: "usa-checkbox__label" %>
+      </div>
+    <% end %>
+
+    <%= f.text_field :hours, type: :number,
+          label: t("#{t_scope}.hours_label", month: l(current_month, format: :month_year)),
+          label_class: "text-bold",
+          data: { hours_input_target: "hoursField", action: "input->hours-input#input" } %>
+
+    <%= f.submit t("#{t_scope}.continue") %>
+  </div>
+<% end %>

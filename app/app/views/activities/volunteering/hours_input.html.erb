@@ -1,0 +1,9 @@
+<%= render "shared/hours_input",
+    activity_month: @activity_month,
+    form_url: save_hours_activities_flow_volunteering_path(id: @volunteering_activity, month_index: @month_index),
+    activity_name: @volunteering_activity.organization_name,
+    current_month: @current_month,
+    months: @months,
+    month_index: @month_index,
+    error: @error,
+    t_scope: "activities.community_service.hours_input" %>
