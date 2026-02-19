@@ -37,6 +37,12 @@ module MonthlyHoursInput
   def set_hours_input_vars
     @months = progress_calculator.reporting_months
     @month_index = (params[:month_index] || 0).to_i
+
+    if @month_index < 0 || @month_index >= @months.length
+      redirect_to hours_input_path(0)
+      return
+    end
+
     @current_month = @months[@month_index]
     @activity_month = hours_input_activity.activity_months
       .find_or_initialize_by(month: @current_month.beginning_of_month)
