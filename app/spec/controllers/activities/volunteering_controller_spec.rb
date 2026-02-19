@@ -121,12 +121,11 @@ RSpec.describe Activities::VolunteeringController, type: :controller do
   describe "PATCH #update" do
     let(:volunteering_activity) { create(:volunteering_activity, activity_flow: activity_flow) }
 
-    it "updates the activity and redirects to the hub" do
+    it "updates the activity and redirects to hours input" do
       patch :update, params: { id: volunteering_activity.id, volunteering_activity: { organization_name: "Updated Org" } }
 
       expect(volunteering_activity.reload.organization_name).to eq("Updated Org")
-      expect(response).to redirect_to(activities_flow_root_path)
-      expect(flash[:notice]).to eq(I18n.t("activities.community_service.updated"))
+      expect(response).to redirect_to(hours_input_activities_flow_volunteering_path(id: volunteering_activity, month_index: 0))
     end
   end
 

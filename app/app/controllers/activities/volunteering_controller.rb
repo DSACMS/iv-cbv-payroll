@@ -18,7 +18,7 @@ class Activities::VolunteeringController < Activities::BaseController
 
   def update
     if @volunteering_activity.update(volunteering_activity_params)
-      redirect_to after_activity_path, notice: t("activities.community_service.updated")
+      redirect_to hours_input_activities_flow_volunteering_path(id: @volunteering_activity, month_index: 0)
     else
       render :edit, status: :unprocessable_content
     end
