@@ -128,6 +128,85 @@ RSpec.describe Activities::VolunteeringController, type: :controller do
     end
   end
 
+  describe "GET #review" do
+    let(:volunteering_activity) { create(:volunteering_activity, activity_flow: activity_flow) }
+
+    it "renders the review page" do
+      get :review, params: { id: volunteering_activity.id }
+
+      expect(response).to have_http_status(:ok)
+      expect(response.body).to include(volunteering_activity.organization_name)
+    end
+
+    it "displays volunteering activity months" do
+      create(:volunteering_activity_month, volunteering_activity: volunteering_activity, month: activity_flow.reporting_months.first, hours: 25)
+
+      get :review, params: { id: volunteering_activity.id }
+
+      expect(response.body).to include("25")
+    end
+  end
+
+  describe "PATCH #save_review" do
+    let(:volunteering_activity) { create(:volunteering_activity, activity_flow: activity_flow) }
+
+    it "saves additional comments and redirects to the hub" do
+      patch :save_review, params: { id: volunteering_activity.id, volunteering_activity: { additional_comments: "Some notes" } }
+
+      expect(volunteering_activity.reload.additional_comments).to eq("Some notes")
+      expect(response).to redirect_to(activities_flow_root_path)
+    end
+
+    it "redirects to activity hub since self-attested data does not meet routing requirements" do
+      create(:volunteering_activity_month, volunteering_activity: volunteering_activity, month: activity_flow.reporting_months.first, hours: 80)
+
+      patch :save_review, params: { id: volunteering_activity.id, volunteering_activity: { additional_comments: "" } }
+
+      expect(response).to redirect_to(activities_flow_root_path)
+    end
+
+    it "shows 'created' flash for new activities" do
+      patch :save_review, params: { id: volunteering_activity.id, volunteering_activity: { additional_comments: "" } }
+
+      expect(flash[:notice]).to eq(I18n.t("activities.community_service.created"))
+    end
+
+    it "shows 'updated' flash when editing from hub" do
+      patch :save_review, params: { id: volunteering_activity.id, from_edit: 1, volunteering_activity: { additional_comments: "" } }
+
+      expect(flash[:notice]).to eq(I18n.t("activities.community_service.updated"))
+    end
+  end
+
+  describe "POST #save_hours with from_review" do
+    let(:activity_flow) { create(:activity_flow, volunteering_activities_count: 0, job_training_activities_count: 0, education_activities_count: 0, reporting_window_months: 3) }
+    let(:volunteering_activity) { create(:volunteering_activity, activity_flow: activity_flow) }
+
+    it "redirects back to review instead of advancing to next month" do
+      post :save_hours, params: { id: volunteering_activity.id, month_index: 0, from_review: 1, volunteering_activity_month: { hours: 15 } }
+
+      expect(response).to redirect_to(review_activities_flow_volunteering_path(id: volunteering_activity))
+    end
+
+    it "validates at least one month has hours when editing from review" do
+      create(:volunteering_activity_month, volunteering_activity: volunteering_activity, month: activity_flow.reporting_months.first, hours: 10)
+      create(:volunteering_activity_month, volunteering_activity: volunteering_activity, month: activity_flow.reporting_months.second, hours: 0)
+
+      post :save_hours, params: { id: volunteering_activity.id, month_index: 0, from_review: 1, volunteering_activity_month: { hours: 0 } }
+
+      expect(response).to have_http_status(:unprocessable_content)
+    end
+
+    it "allows saving when another month still has hours" do
+      create(:volunteering_activity_month, volunteering_activity: volunteering_activity, month: activity_flow.reporting_months.first, hours: 10)
+      create(:volunteering_activity_month, volunteering_activity: volunteering_activity, month: activity_flow.reporting_months.second, hours: 5)
+
+      post :save_hours, params: { id: volunteering_activity.id, month_index: 0, from_review: 1, volunteering_activity_month: { hours: 0 } }
+
+      expect(response).to redirect_to(review_activities_flow_volunteering_path(id: volunteering_activity))
+    end
+  end
+
   describe "DELETE #destroy" do
     let!(:volunteering_activity) { create(:volunteering_activity, activity_flow: activity_flow) }
 
