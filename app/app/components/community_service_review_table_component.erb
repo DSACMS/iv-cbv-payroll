@@ -1,0 +1,48 @@
+<%= render(TableComponent.new(is_responsive: true)) do |table| %>
+  <%= table.with_row do |row| %>
+    <%= row.with_data_cell(is_header: true) do %>
+      <%= t("activities.community_service.review.name") %>
+    <% end %>
+    <%= row.with_data_cell do %>
+      <%= @activity.organization_name %>
+    <% end %>
+  <% end %>
+
+  <% if formatted_address.present? %>
+    <%= table.with_row do |row| %>
+      <%= row.with_data_cell(is_header: true) do %>
+        <%= t("activities.community_service.review.address") %>
+      <% end %>
+      <%= row.with_data_cell do %>
+        <%= formatted_address %>
+      <% end %>
+    <% end %>
+  <% end %>
+
+  <%= table.with_row do |row| %>
+    <%= row.with_data_cell(is_header: true) do %>
+      <%= t("activities.community_service.review.coordinator_name") %>
+    <% end %>
+    <%= row.with_data_cell do %>
+      <%= @activity.coordinator_name %>
+    <% end %>
+  <% end %>
+
+  <%= table.with_row do |row| %>
+    <%= row.with_data_cell(is_header: true) do %>
+      <%= t("activities.community_service.review.coordinator_email") %>
+    <% end %>
+    <%= row.with_data_cell do %>
+      <%= @activity.coordinator_email %>
+    <% end %>
+  <% end %>
+
+  <%= table.with_row do |row| %>
+    <%= row.with_data_cell(is_header: true) do %>
+      <%= t("activities.community_service.review.coordinator_phone") %>
+    <% end %>
+    <%= row.with_data_cell do %>
+      <%= phone_display %>
+    <% end %>
+  <% end %>
+<% end %>

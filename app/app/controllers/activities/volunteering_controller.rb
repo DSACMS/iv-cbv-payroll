@@ -1,5 +1,5 @@
 class Activities::VolunteeringController < Activities::BaseController
-  before_action :set_volunteering_activity, only: %i[edit update destroy hours_input save_hours]
+  before_action :set_volunteering_activity, only: %i[edit update destroy hours_input save_hours review save_review]
 
   include MonthlyHoursInput
 
@@ -22,6 +22,14 @@ class Activities::VolunteeringController < Activities::BaseController
     else
       render :edit, status: :unprocessable_content
     end
+  end
+
+  def review
+  end
+
+  def save_review
+    @volunteering_activity.update(review_params)
+    redirect_to after_activity_path, notice: t("activities.community_service.created")
   end
 
   def destroy
@@ -60,6 +68,14 @@ class Activities::VolunteeringController < Activities::BaseController
 
   def hours_input_completed_notice
     t("activities.community_service.created")
+  end
+
+  def hours_input_completed_path
+    review_activities_flow_volunteering_path(id: @volunteering_activity)
+  end
+
+  def review_params
+    params.require(:volunteering_activity).permit(:additional_comments)
   end
 
   def volunteering_activity_params

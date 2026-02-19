@@ -28,7 +28,7 @@ module MonthlyHoursInput
     if next_index < @months.length
       redirect_to hours_input_path(next_index)
     else
-      redirect_to after_activity_path, notice: hours_input_completed_notice
+      redirect_to hours_input_completed_path, notice: hours_input_completed_notice
     end
   end
 
@@ -63,6 +63,10 @@ module MonthlyHoursInput
     end
   end
 
+  def hours_input_completed_path
+    after_activity_path
+  end
+
   # Subclasses must implement:
   # - hours_input_activity      → the parent activity record
   # - activity_month_param_key  → e.g. :volunteering_activity_month
@@ -70,4 +74,5 @@ module MonthlyHoursInput
   # - activity_display_name     → name shown in heading (org name, program name, etc.)
   # - hours_input_t_scope       → translation scope string
   # - hours_input_completed_notice → flash notice shown after all months are saved
+  # - hours_input_completed_path (optional) → override to redirect somewhere other than after_activity_path
 end
