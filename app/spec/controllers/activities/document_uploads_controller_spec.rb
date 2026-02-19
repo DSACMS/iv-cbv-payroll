@@ -27,8 +27,8 @@ RSpec.describe Activities::DocumentUploadsController, type: :controller do
         :volunteering_activity,
         activity_flow: activity_flow,
         organization_name: "Local Food Bank",
-        hours: 6
       )
+      create(:volunteering_activity_month, volunteering_activity: volunteering_activity, hours: 6)
 
       get :new, params: { volunteering_id: volunteering_activity.id }
 

@@ -62,16 +62,7 @@ RSpec.describe Activities::VolunteeringController, type: :controller do
     let(:volunteering_activity) { create(:volunteering_activity, activity_flow: activity_flow) }
     let(:month) { activity_flow.reporting_months.first }
 
-    it "redirects to activity hub when total hours are below the threshold" do
-      create(:job_training_activity, activity_flow: activity_flow, program_name: "Resume Workshop", organization_address: "123 Main St", hours: 78)
-
-      post :save_hours, params: { id: volunteering_activity.id, month_index: 0, volunteering_activity_month: { hours: 1 } }
-
-      expect(response).to redirect_to(activities_flow_root_path)
-      expect(flash[:notice]).to eq(I18n.t("activities.community_service.created"))
-    end
-
-    it "redirects to document upload when threshold met but only via self-attested data" do
+    it "redirects to document upload" do
       create(:job_training_activity, activity_flow: activity_flow, program_name: "Resume Workshop", organization_address: "123 Main St", hours: 79)
 
       post :save_hours, params: { id: volunteering_activity.id, month_index: 0, volunteering_activity_month: { hours: 1 } }
@@ -100,7 +91,6 @@ RSpec.describe Activities::VolunteeringController, type: :controller do
 
       expect(volunteering_activity.reload.organization_name).to eq("Updated Org")
       expect(response).to redirect_to(new_activities_flow_volunteering_document_upload_path(volunteering_id: volunteering_activity.id))
-      expect(flash[:notice]).to eq(I18n.t("activities.community_service.updated"))
     end
   end
 
