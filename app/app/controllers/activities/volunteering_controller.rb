@@ -72,7 +72,11 @@ class Activities::VolunteeringController < Activities::BaseController
   end
 
   def hours_input_completed_path
-    review_activities_flow_volunteering_path(id: @volunteering_activity, from_edit: params[:from_edit].presence)
+    if params[:from_review].present?
+      review_activities_flow_volunteering_path(id: @volunteering_activity, from_edit: params[:from_edit].presence)
+    else
+      new_activities_flow_volunteering_document_upload_path(volunteering_id: @volunteering_activity.id, from_edit: params[:from_edit].presence)
+    end
   end
 
   def review_params

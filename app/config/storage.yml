@@ -1,0 +1,11 @@
+local:
+  service: Disk
+  root: <%= Rails.root.join("tmp/storage") %>
+
+test:
+  service: Disk
+  root: <%= Rails.root.join("tmp/storage") %>
+
+amazon:
+  service: S3
+  bucket: <%= ENV["BUCKET_NAME"] %>

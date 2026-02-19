@@ -12,6 +12,8 @@ RSpec.describe 'e2e Activity Hub flow test', :js, type: :feature do
   end
 
   it "completes the generic flow for all self-attestation activities" do
+    upload_path = Rails.root.join("spec/fixtures/files/document_upload.pdf")
+
     visit URI(root_url).request_uri
 
     visit activities_flow_entry_path(client_agency_id: "sandbox") # This would normally be inferred
@@ -19,6 +21,7 @@ RSpec.describe 'e2e Activity Hub flow test', :js, type: :feature do
     click_link I18n.t("activities.entries.show.continue")
 
     verify_page(page, title: I18n.t("activities.hub.title"))
+    flow = ActivityFlow.last
 
     # Add a Community Service activity
     within("[data-activity-type='community_service']") do
@@ -35,16 +38,25 @@ RSpec.describe 'e2e Activity Hub flow test', :js, type: :feature do
     click_button I18n.t("activities.community_service.continue")
 
     verify_page(page, title: I18n.t("activities.community_service.hours_input.heading",
-      month: I18n.l(ActivityFlow.last.reporting_months.first, format: :month_year),
+      month: I18n.l(flow.reporting_months.first, format: :month_year),
       organization: "Helping Hands"))
-    fill_in I18n.t("activities.community_service.hours_input.hours_label", month: I18n.l(ActivityFlow.last.reporting_months.first, format: :month_year)), with: "20"
+    fill_in I18n.t("activities.community_service.hours_input.hours_label", month: I18n.l(flow.reporting_months.first, format: :month_year)), with: "20"
     click_button I18n.t("activities.community_service.hours_input.continue")
 
     verify_page(page, title: I18n.t("activities.community_service.hours_input.heading",
-      month: I18n.l(ActivityFlow.last.reporting_months.second, format: :month_year),
+      month: I18n.l(flow.reporting_months.second, format: :month_year),
       organization: "Helping Hands"))
-    fill_in I18n.t("activities.community_service.hours_input.hours_label", month: I18n.l(ActivityFlow.last.reporting_months.second, format: :month_year)), with: "10"
+    fill_in I18n.t("activities.community_service.hours_input.hours_label", month: I18n.l(flow.reporting_months.second, format: :month_year)), with: "10"
     click_button I18n.t("activities.community_service.hours_input.continue")
+
+    # Document upload
+    verify_page(
+      page,
+      title: I18n.t("activities.document_uploads.new.title", name: "Helping Hands"),
+      skip_axe_rules: %w[heading-order]
+    )
+    attach_file I18n.t("activities.document_uploads.new.input_label"), upload_path, make_visible: true
+    click_button I18n.t("activities.document_uploads.new.continue")
 
     # Review page
     verify_page(page, title: I18n.t("activities.community_service.review.title", organization_name: "Helping Hands"))
@@ -67,6 +79,13 @@ RSpec.describe 'e2e Activity Hub flow test', :js, type: :feature do
     fill_in I18n.t("activities.work_programs.hours"), with: "6"
     fill_in I18n.t("activities.work_programs.date"), with: (Date.current.beginning_of_month - 1.day).strftime("%m/%d/%Y")
     click_button I18n.t("activities.work_programs.add")
+    verify_page(
+      page,
+      title: I18n.t("activities.document_uploads.new.title", name: "Resume Workshop"),
+      skip_axe_rules: %w[heading-order]
+    )
+    attach_file I18n.t("activities.document_uploads.new.input_label"), upload_path, make_visible: true
+    click_button I18n.t("activities.document_uploads.new.continue")
     verify_page(page, title: I18n.t("activities.hub.title"))
     expect(page).to have_content "Resume Workshop"
 
@@ -81,9 +100,18 @@ RSpec.describe 'e2e Activity Hub flow test', :js, type: :feature do
     expect(page).to have_content I18n.t("activities.hub.cards.hours", count: 6)
 
     click_button I18n.t("activities.hub.review_and_submit")
-    verify_page(page, title: I18n.t("activities.summary.title"))
-    expect(page).to have_content "Helping Hands"
-    expect(page).to have_content "Resume Workshop"
+    verify_page(page, title: I18n.t("activities.summary.title", benefit: I18n.t("shared.benefit.sandbox")))
+
+    volunteering = flow.volunteering_activities.last
+    job_training = flow.job_training_activities.last
+
+    expect(page).to have_content volunteering.organization_name
+    expect(page).to have_content volunteering.formatted_address
+    expect(page).to have_content volunteering.coordinator_name
+    expect(page).to have_content volunteering.coordinator_email
+    expect(page).to have_content I18n.l(flow.reporting_months.first, format: :month)
+    expect(page).to have_content I18n.l(flow.reporting_months.second, format: :month)
+    expect(page).to have_content job_training.program_name
 
     # /activities/summary
     click_button I18n.t("activities.summary.submit", agency_name: I18n.t("shared.agency_full_name.sandbox"))
@@ -139,7 +167,7 @@ RSpec.describe 'e2e Activity Hub flow test', :js, type: :feature do
     verify_page(page, title: I18n.t("activities.hub.title"))
 
     click_button I18n.t("activities.hub.review_and_submit")
-    verify_page(page, title: I18n.t("activities.summary.title"))
+    verify_page(page, title: I18n.t("activities.summary.title", benefit: I18n.t("shared.benefit.sandbox")))
 
     # /activities/summary
     click_button I18n.t("activities.summary.submit", agency_name: I18n.t("shared.agency_full_name.sandbox"))
@@ -194,7 +222,7 @@ RSpec.describe 'e2e Activity Hub flow test', :js, type: :feature do
     expect(page).to have_content "Test University"
 
     click_button I18n.t("activities.hub.review_and_submit")
-    verify_page(page, title: I18n.t("activities.summary.title"))
+    verify_page(page, title: I18n.t("activities.summary.title", benefit: I18n.t("shared.benefit.sandbox")))
     expect(page).to have_content "Test University"
 
     click_button I18n.t("activities.summary.submit", agency_name: I18n.t("shared.agency_full_name.sandbox"))
@@ -206,7 +234,9 @@ RSpec.describe 'e2e Activity Hub flow test', :js, type: :feature do
     expect(page).to have_content I18n.t("activities.success.show.download_pdf")
   end
 
-  it "supports editing a community service activity through the full flow" do
+  it "supports editing a community service activity through the full flow" do # rubocop:disable RSpec/ExampleLength
+    upload_path = Rails.root.join("spec/fixtures/files/document_upload.pdf")
+
     visit URI(root_url).request_uri
     visit activities_flow_entry_path(client_agency_id: "sandbox")
     click_link I18n.t("activities.entries.show.continue")
@@ -244,6 +274,15 @@ RSpec.describe 'e2e Activity Hub flow test', :js, type: :feature do
     fill_in I18n.t("activities.community_service.hours_input.hours_label", month: month2_label), with: "10"
     click_button I18n.t("activities.community_service.hours_input.continue")
 
+    # Document upload
+    verify_page(
+      page,
+      title: I18n.t("activities.document_uploads.new.title", name: "Helping Hands"),
+      skip_axe_rules: %w[heading-order]
+    )
+    attach_file I18n.t("activities.document_uploads.new.input_label"), upload_path, make_visible: true
+    click_button I18n.t("activities.document_uploads.new.continue")
+
     # Review page
     verify_page(page, title: I18n.t("activities.community_service.review.title", organization_name: "Helping Hands"))
     click_button I18n.t("activities.community_service.review.save")
@@ -272,6 +311,15 @@ RSpec.describe 'e2e Activity Hub flow test', :js, type: :feature do
       month: month2_label, organization: "Updated Org"))
     fill_in I18n.t("activities.community_service.hours_input.hours_label", month: month2_label), with: "15"
     click_button I18n.t("activities.community_service.hours_input.continue")
+
+    # Document upload (edit flow)
+    verify_page(
+      page,
+      title: I18n.t("activities.document_uploads.new.title", name: "Updated Org"),
+      skip_axe_rules: %w[heading-order]
+    )
+    attach_file I18n.t("activities.document_uploads.new.input_label"), upload_path, make_visible: true
+    click_button I18n.t("activities.document_uploads.new.continue")
 
     # Review page (edit flow - button should say "Save changes")
     verify_page(page, title: I18n.t("activities.community_service.review.title", organization_name: "Updated Org"))

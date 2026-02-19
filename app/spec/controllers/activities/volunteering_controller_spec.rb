@@ -62,20 +62,10 @@ RSpec.describe Activities::VolunteeringController, type: :controller do
     let(:volunteering_activity) { create(:volunteering_activity, activity_flow: activity_flow) }
     let(:month) { activity_flow.reporting_months.first }
 
-    it "redirects to review page when total hours are below the threshold" do
-      create(:job_training_activity, activity_flow: activity_flow, program_name: "Resume Workshop", organization_address: "123 Main St", hours: 78)
-
+    it "redirects to document upload" do
       post :save_hours, params: { id: volunteering_activity.id, month_index: 0, volunteering_activity_month: { hours: 1 } }
 
-      expect(response).to redirect_to(review_activities_flow_volunteering_path(id: volunteering_activity))
-    end
-
-    it "redirects to review page when threshold met but only via self-attested data" do
-      create(:job_training_activity, activity_flow: activity_flow, program_name: "Resume Workshop", organization_address: "123 Main St", hours: 79)
-
-      post :save_hours, params: { id: volunteering_activity.id, month_index: 0, volunteering_activity_month: { hours: 1 } }
-
-      expect(response).to redirect_to(review_activities_flow_volunteering_path(id: volunteering_activity))
+      expect(response).to redirect_to(new_activities_flow_volunteering_document_upload_path(volunteering_id: volunteering_activity.id))
     end
 
     context "with multiple reporting months" do
@@ -86,23 +76,6 @@ RSpec.describe Activities::VolunteeringController, type: :controller do
 
         expect(response).to redirect_to(hours_input_activities_flow_volunteering_path(id: volunteering_activity, month_index: 1))
       end
-    end
-
-    it "redirects to review page when threshold is met via validated data" do
-      result = ActivityFlowProgressCalculator::OverallResult.new(
-        total_hours: 80,
-        meets_requirements: true,
-        meets_routing_requirements: true
-      )
-      allow(controller).to receive(:progress_calculator).and_return(
-        instance_double(ActivityFlowProgressCalculator,
-          overall_result: result,
-          reporting_months: activity_flow.reporting_months)
-      )
-
-      post :save_hours, params: { id: volunteering_activity.id, month_index: 0, volunteering_activity_month: { hours: 10 } }
-
-      expect(response).to redirect_to(review_activities_flow_volunteering_path(id: volunteering_activity))
     end
   end
 
@@ -154,14 +127,6 @@ RSpec.describe Activities::VolunteeringController, type: :controller do
       patch :save_review, params: { id: volunteering_activity.id, volunteering_activity: { additional_comments: "Some notes" } }
 
       expect(volunteering_activity.reload.additional_comments).to eq("Some notes")
-      expect(response).to redirect_to(activities_flow_root_path)
-    end
-
-    it "redirects to activity hub since self-attested data does not meet routing requirements" do
-      create(:volunteering_activity_month, volunteering_activity: volunteering_activity, month: activity_flow.reporting_months.first, hours: 80)
-
-      patch :save_review, params: { id: volunteering_activity.id, volunteering_activity: { additional_comments: "" } }
-
       expect(response).to redirect_to(activities_flow_root_path)
     end
 

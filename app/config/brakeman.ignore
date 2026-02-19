@@ -1,6 +1,40 @@
 {
   "ignored_warnings": [
     {
+      "warning_type": "Cross-Site Scripting",
+      "warning_code": 2,
+      "fingerprint": "780d2436d13a95f13f64500cbdc4f7fdf3b8cc90e9e6d93b4c8aa7733a9ebc94",
+      "check_name": "CrossSiteScripting",
+      "message": "Unescaped parameter value",
+      "file": "app/views/activities/document_uploads/new.html.erb",
+      "line": 54,
+      "link": "https://brakemanscanner.org/docs/warning_types/cross_site_scripting",
+      "code": "((flow_class(flow_param).create_from_invitation(invitation_class.find_by(:auth_token => normalize_token(params[:token])), (cookies.permanent.signed[:device_id] or { :value => SecureRandom.uuid, :httponly => true }), params) or flow_class.find(session[:flow_id])).volunteering_activities.find(params[:volunteering_id]) or if params[:job_training_id] then\n  (flow_class(flow_param).create_from_invitation(invitation_class.find_by(:auth_token => normalize_token(params[:token])), (cookies.permanent.signed[:device_id] or { :value => SecureRandom.uuid, :httponly => true }), params) or flow_class.find(session[:flow_id])).job_training_activities.find(params[:job_training_id])\nelse\n  raise(\"No activity param matched in DocumentUploadsController#set_activity.\\nMake sure to add it there if you're adding DocumentUploadable to a\\nnew activity type.\\n\")\nend).document_upload_suggestion_text",
+      "render_path": [
+        {
+          "type": "controller",
+          "class": "Activities::DocumentUploadsController",
+          "method": "new",
+          "line": 7,
+          "file": "app/controllers/activities/document_uploads_controller.rb",
+          "rendered": {
+            "name": "activities/document_uploads/new",
+            "file": "app/views/activities/document_uploads/new.html.erb"
+          }
+        }
+      ],
+      "location": {
+        "type": "template",
+        "template": "activities/document_uploads/new"
+      },
+      "user_input": "params",
+      "confidence": "Weak",
+      "cwe_id": [
+        79
+      ],
+      "note": ""
+    },
+    {
       "warning_type": "Command Injection",
       "warning_code": 14,
       "fingerprint": "a114e4102237985d8d3c47b932561e60dd9e8a46464aa2f8e28d2a83afd31c8e",
@@ -47,5 +81,5 @@
       "note": ""
     }
   ],
-  "brakeman_version": "7.0.2"
+  "brakeman_version": "8.0.2"
 }

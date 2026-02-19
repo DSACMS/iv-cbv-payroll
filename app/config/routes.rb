@@ -52,6 +52,8 @@ Rails.application.routes.draw do
       root to: "activities#index"
       resource :entry, only: %i[show], controller: "entries"
       resources :volunteering, only: %i[new create edit update destroy], controller: "volunteering" do
+        resources :document_uploads, only: %i[new create], controller: "/activities/document_uploads"
+
         member do
           get :hours_input
           patch :save_hours
@@ -59,7 +61,9 @@ Rails.application.routes.draw do
           patch :save_review
         end
       end
-      resources :job_training, only: %i[new create edit update destroy], controller: "job_training"
+      resources :job_training, only: %i[new create edit update destroy], controller: "job_training" do
+        resources :document_uploads, only: %i[new create], controller: "/activities/document_uploads"
+      end
       resource :summary, only: %i[show], controller: "summary"
       resource :submit, only: %i[show update], controller: "submit", format: %i[html pdf]
       resource :success, only: %i[show], controller: "success"
