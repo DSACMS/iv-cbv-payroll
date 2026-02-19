@@ -45,7 +45,7 @@ RSpec.describe CaseworkerMailer, type: :mailer do
         end
 
         it 'uses the custom format with confirmation code' do
-          expect(mail.subject).to eq("CBV Report #{cbv_flow.confirmation_code}")
+          expect(mail.subject).to eq("Report #{cbv_flow.confirmation_code}")
         end
       end
     end
@@ -62,7 +62,7 @@ RSpec.describe CaseworkerMailer, type: :mailer do
       email_body = strip_tags(email_html).gsub(/\s+/, ' ').strip
       expected_date = format_parsed_date(Time.zone.today)
       request_date = format_parsed_date(cbv_flow.created_at)
-      expect(email_body).to include("Attached is a Report My Income CBV Report PDF with confirmation number #{cbv_flow.confirmation_code}")
+      expect(email_body).to include("Attached is a Report My Income PDF Report with confirmation number #{cbv_flow.confirmation_code}")
     end
 
     it 'attaches a PDF which has a file name prefix of {case_number}_timestamp_' do

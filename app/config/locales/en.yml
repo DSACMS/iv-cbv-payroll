@@ -335,7 +335,7 @@ en:
       greeting: Hello,
       subject:
         default: Income Verification Report %{case_number} has been received
-        la_ldh: CBV Report %{confirmation_code}
+        la_ldh: Report %{confirmation_code}
   cbv:
     add_jobs:
       show:
@@ -460,7 +460,7 @@ en:
         what_is_this_title: What is “Report My Income”?
         who_is_this_for_body_html: 'You can use this tool if you have earned income in the last 90 days and you: <ul><li>Can access your paystubs online or,</li><li>Work for an app-based company like Uber or Lyft</li></ul>If you lost your job in the last 90 days, you can also use this tool to report your job loss. You must be able to log in to your previous employer or payroll provider account.'
         who_is_this_for_title: Can I use this tool?
-    error_invalid_link: Invalid link used to begin CBV. Try clicking the link again or contact your caseworker for help.
+    error_invalid_link: Invalid link used to begin. Try clicking the link again or contact your caseworker for help.
     error_invalid_token: The invitation link used is not valid. Double check the link and try again. If you continue experiencing issues, contact your caseworker.
     error_missing_token_html: "<strong>Your session has timed out due to inactivity.</strong> Please reuse the same link you used to begin your session. If you encounter any issues, contact your benefits agency for assistance."
     error_no_access: We weren't able to load payroll data for this account. Please click the link you received from your SNAP agency to try again.
@@ -843,7 +843,7 @@ en:
       sandbox: Test Agency
     app_name:
       az_des: MyFamilyBenefits
-      sandbox: TA App
+      sandbox: TAApp
     banner:
       lock: Lock
       locked_padlock: A locked padlock
