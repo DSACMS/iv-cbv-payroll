@@ -68,7 +68,6 @@ RSpec.describe Activities::VolunteeringController, type: :controller do
       post :save_hours, params: { id: volunteering_activity.id, month_index: 0, volunteering_activity_month: { hours: 1 } }
 
       expect(response).to redirect_to(review_activities_flow_volunteering_path(id: volunteering_activity))
-      expect(flash[:notice]).to eq(I18n.t("activities.community_service.created"))
     end
 
     it "redirects to review page when threshold met but only via self-attested data" do

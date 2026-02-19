@@ -35,7 +35,7 @@
 <% end %>
 
 <%= form_with model: @volunteering_activity,
-      url: save_review_activities_flow_volunteering_path(id: @volunteering_activity),
+      url: save_review_activities_flow_volunteering_path(id: @volunteering_activity, from_edit: params[:from_edit].presence),
       method: :patch,
       class: "usa-form usa-form--large" do |form| %>
   <h2><%= t("activities.community_service.review.additional_comments_title") %></h2>

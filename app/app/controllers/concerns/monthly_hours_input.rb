@@ -31,7 +31,7 @@ module MonthlyHoursInput
       if next_index < @months.length
         redirect_to hours_input_path(next_index, from_edit: params[:from_edit].presence)
       else
-        redirect_to hours_input_completed_path, notice: hours_input_completed_notice
+        redirect_to hours_input_completed_path
       end
     end
   end
