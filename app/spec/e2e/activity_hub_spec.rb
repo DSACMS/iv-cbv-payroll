@@ -67,7 +67,6 @@ RSpec.describe 'e2e Activity Hub flow test', :js, type: :feature do
 
     verify_page(page, title: I18n.t("activities.hub.title"))
     expect(page).to have_content "Helping Hands"
-    expect(page).to have_content I18n.t("activities.community_service.created")
 
     # Add a Work Program activity
     within("[data-activity-type='work_programs']") do
@@ -287,10 +286,8 @@ RSpec.describe 'e2e Activity Hub flow test', :js, type: :feature do
     verify_page(page, title: I18n.t("activities.community_service.review.title", organization_name: "Helping Hands"))
     click_button I18n.t("activities.community_service.review.save")
 
-    # Back on hub — should show "created" flash
     verify_page(page, title: I18n.t("activities.hub.title"))
     expect(page).to have_content "Helping Hands"
-    expect(page).to have_content I18n.t("activities.community_service.created")
 
     # --- Step 2: Edit the activity from the hub ---
     click_link I18n.t("activities.hub.edit")
@@ -372,10 +369,8 @@ RSpec.describe 'e2e Activity Hub flow test', :js, type: :feature do
     verify_page(page, title: I18n.t("activities.community_service.review.title", organization_name: "Updated Org"))
     click_button I18n.t("activities.hub.save")
 
-    # Back on hub — should show "updated" flash
     verify_page(page, title: I18n.t("activities.hub.title"))
     expect(page).to have_content "Updated Org"
-    expect(page).to have_content I18n.t("activities.community_service.updated")
   end
 
   it "blocks activity hub access when not enabled" do

@@ -27,8 +27,7 @@ class Activities::VolunteeringController < Activities::BaseController
 
   def save_review
     @volunteering_activity.update(review_params)
-    notice = params[:from_edit].present? ? t("activities.community_service.updated") : t("activities.community_service.created")
-    redirect_to after_activity_path, notice: notice
+    redirect_to after_activity_path
   end
 
   def destroy

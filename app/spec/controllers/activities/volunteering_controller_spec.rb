@@ -108,18 +108,6 @@ RSpec.describe Activities::VolunteeringController, type: :controller do
       expect(volunteering_activity.reload.additional_comments).to eq("Some notes")
       expect(response).to redirect_to(activities_flow_root_path)
     end
-
-    it "shows 'created' flash for new activities" do
-      patch :save_review, params: { id: volunteering_activity.id, volunteering_activity: { additional_comments: "" } }
-
-      expect(flash[:notice]).to eq(I18n.t("activities.community_service.created"))
-    end
-
-    it "shows 'updated' flash when editing from hub" do
-      patch :save_review, params: { id: volunteering_activity.id, from_edit: 1, volunteering_activity: { additional_comments: "" } }
-
-      expect(flash[:notice]).to eq(I18n.t("activities.community_service.updated"))
-    end
   end
 
   describe "DELETE #destroy" do
