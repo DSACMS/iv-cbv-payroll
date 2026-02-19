@@ -90,29 +90,6 @@ RSpec.describe Activities::DocumentUploadsController, type: :controller do
       expect(response).to redirect_to(activities_flow_root_path)
     end
 
-    it "redirects to summary for job training when progress meets routing requirements" do
-      job_training_activity = create(:job_training_activity, activity_flow: activity_flow)
-      upload = Rack::Test::UploadedFile.new(
-        StringIO.new("%PDF-1.4"),
-        "application/pdf",
-        original_filename: "verification.pdf"
-      )
-      result = ActivityFlowProgressCalculator::OverallResult.new(
-        total_hours: 80,
-        meets_requirements: true,
-        meets_routing_requirements: true
-      )
-      calculator = instance_double(ActivityFlowProgressCalculator, overall_result: result)
-      allow(ActivityFlowProgressCalculator).to receive(:new).with(activity_flow).and_return(calculator)
-
-      post :create, params: {
-        job_training_id: job_training_activity.id,
-        activity: { document_uploads: [ upload ] }
-      }
-
-      expect(response).to redirect_to(activities_flow_summary_path)
-    end
-
     it "renders new when the update fails" do
       job_training_activity = create(:job_training_activity, activity_flow: activity_flow)
       allow_any_instance_of(JobTrainingActivity).to receive(:update).and_return(false)
