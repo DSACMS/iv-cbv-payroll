@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_02_10_120000) do
+ActiveRecord::Schema[8.1].define(version: 2026_02_18_190913) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
   enable_extension "pgcrypto"
@@ -334,12 +334,20 @@ ActiveRecord::Schema[8.1].define(version: 2026_02_10_120000) do
 
   create_table "volunteering_activities", force: :cascade do |t|
     t.bigint "activity_flow_id", null: false
+    t.string "city"
+    t.string "coordinator_email"
+    t.string "coordinator_name"
+    t.string "coordinator_phone_number"
     t.datetime "created_at", null: false
     t.string "data_source", default: "self_attested", null: false
     t.date "date"
     t.integer "hours"
     t.string "organization_name"
+    t.string "state"
+    t.string "street_address"
+    t.string "street_address_line_2"
     t.datetime "updated_at", null: false
+    t.string "zip_code"
     t.index ["activity_flow_id"], name: "index_volunteering_activities_on_activity_flow_id"
   end
 

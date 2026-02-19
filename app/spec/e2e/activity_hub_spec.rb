@@ -24,11 +24,15 @@ RSpec.describe 'e2e Activity Hub flow test', :js, type: :feature do
     within("[data-activity-type='community_service']") do
       click_button I18n.t("activities.hub.add")
     end
-    verify_page(page, title: I18n.t("activities.community_service.title"))
+    verify_page(page, title: I18n.t("activities.community_service.new_title"))
     fill_in I18n.t("activities.community_service.organization_name"), with: "Helping Hands"
-    fill_in I18n.t("activities.community_service.hours"), with: "20"
-    fill_in I18n.t("activities.community_service.date"), with: (Date.current.beginning_of_month - 1.day).strftime("%m/%d/%Y")
-    click_button I18n.t("activities.community_service.add")
+    fill_in I18n.t("activities.community_service.street_address"), with: "123 Main St"
+    fill_in I18n.t("activities.community_service.city"), with: "Springfield"
+    select "Illinois", from: I18n.t("activities.community_service.state")
+    fill_in I18n.t("activities.community_service.zip_code"), with: "62701"
+    fill_in I18n.t("activities.community_service.coordinator_name"), with: "Jane Doe"
+    fill_in I18n.t("activities.community_service.coordinator_email"), with: "jane@example.com"
+    click_button I18n.t("activities.community_service.continue")
     verify_page(page, title: I18n.t("activities.hub.title"))
     expect(page).to have_content "Helping Hands"
 
@@ -48,7 +52,6 @@ RSpec.describe 'e2e Activity Hub flow test', :js, type: :feature do
     # Verify that the hub has the Community Service activity
     expect(page).to have_content I18n.t("activities.hub.title")
     expect(page).to have_content "Helping Hands"
-    expect(page).to have_content I18n.t("activities.hub.cards.hours", count: 20)
 
     # Verify that the hub has the Work Programs activity
     expect(page).to have_content "Resume Workshop"
