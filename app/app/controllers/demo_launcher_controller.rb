@@ -2,6 +2,7 @@ class DemoLauncherController < ApplicationController
   helper_method :session_timeout_enabled?
 
   def show
+    set_flow_session(nil, :activity)
   end
 
   def create

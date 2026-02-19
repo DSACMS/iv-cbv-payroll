@@ -9,6 +9,11 @@ RSpec.describe DemoLauncherController, type: :controller do
       expect(response).to have_http_status(:success)
     end
 
+    it "sets the session to the activity flow so the header renders Emmy branding" do
+      get :show
+      expect(session[:flow_type]).to eq(:activity)
+    end
+
     it "displays NSC test scenario options", :aggregate_failures do
       get :show
       rendered = response.body

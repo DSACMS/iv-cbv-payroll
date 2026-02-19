@@ -1,9 +1,16 @@
 <footer class="cbv-footer">
   <div class="cbv-footer__content grid-row desktop:display-flex desktop:flex-justify">
     <div class="cbv-footer__item grid-col-12 tablet:grid-col-8">
-      <div class="display-table-cell text-middle height-5">
-        <strong><%= t(pilot_name_key) %></strong>
-      </div>
+      <% if activity_flow? %>
+        <div class="cbv-footer__logo-text">
+          <strong class="cbv-footer__logo-line1"><%= t("shared.pilot_name_hr1_footer_line1") %></strong>
+          <span class="cbv-footer__logo-line2"><%= t("shared.pilot_name_hr1") %></span>
+        </div>
+      <% else %>
+        <div class="display-table-cell text-middle height-5">
+          <strong><%= t("shared.pilot_name") %></strong>
+        </div>
+      <% end %>
     </div>
     <div class="cbv-footer__item grid-col-12 tablet:grid-col-4 desktop:display-flex desktop:flex-justify-end">
       <%= render LinkWithIconComponent.new(

@@ -24,7 +24,7 @@ module E2e
       # Infer flow from URL
       current_path = URI.parse(page.current_url).path
       if current_path&.start_with?("/activities")
-        pilot_name ||= I18n.t("shared.pilot_name_hr1")
+        pilot_name ||= I18n.t("shared.pilot_name_hr1_full")
       elsif current_path&.include?("/cbv/")
         pilot_name ||= I18n.t("shared.pilot_name")
       else

@@ -162,7 +162,6 @@ ignore_unused:
     - "cbv.submits.show.pdf.client.agency_id_number" #dynamically looked up translations
     - "cbv.submits.show.pdf.shared.additional_jobs_to_report" #dynamically used when applicant does not supply additional jobs
     - "cbv.submits.show.pdf.shared.additional_jobs_to_report_html" #dynamically used when applicant supplies additional jobs
-    - "shared.pilot_name_hr1"                   # dynamically looked up via pilot_name_key helper
 
 csv:
   # see: https://github.com/glebm/i18n-tasks/wiki/Custom-CSV-import-and-export-tasks
