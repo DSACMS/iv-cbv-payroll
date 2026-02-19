@@ -1,0 +1,30 @@
+TODO list
+
+-[ ] Tests
+-[ ] Add filesize validation
+-[ ] Add data-errorMessage (for file format errors)
+-[ ] Going "Forward" makes a copy of the input field
+-[x] Routing for Job Training activity
+-[x] Route user to doc upload after self-attested activities
+-[x] Add filetype validation
+-[x] Let it take an activity ID rather than using the last EducationActivity
+-[x] Make it so uploading another file doesn't clear the files
+-[x] Implement document_upload_* methods on self-attested activities
+-[x] Refactor routing so the document upload param passing doesn't use query params
+
+Infra:
+-[x] S3 bucket for file uploads
+
+TBD on design:
+-[ ] File input - "x" to remove files
+-[ ] File input - prepopulated with previously-uploaded files
+
+Design notes/ideas:
+- Can we break out the list of already-uploaded files out of the uploader
+  widget? That will make it much cleaner to manage the uploaded files.
+
+- What is the behavior supposed to be regarding the monthly breakdown at the
+  top? If the user volunteers for "Food Bank A" in Month 1 and "United Way B"
+  in Month 2, how should the monthly breakdown look?
+
+- "Suggested Documents" list for each activity type? Is that copy somewhere?

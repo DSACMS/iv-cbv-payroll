@@ -33,34 +33,36 @@ RSpec.describe Activities::JobTrainingController, type: :controller do
       }
     end
 
-    it "creates a job training activity and returns to the hub" do
+    it "creates a job training activity and redirects to document upload" do
       expect do
         post :create, params: job_training_params
       end.to change(activity_flow.job_training_activities, :count).by(1)
 
       expect(JobTrainingActivity.last.program_name).to eq("Resume Workshop")
       expect(JobTrainingActivity.last.activity_flow).to eq(activity_flow)
-      expect(response).to redirect_to(activities_flow_root_path)
-      expect(flash[:notice]).to eq(I18n.t("activities.work_programs.created"))
+      created_activity = activity_flow.job_training_activities.order(:id).last
+      expect(response).to redirect_to(new_activities_flow_job_training_document_upload_path(job_training_id: created_activity.id))
     end
 
-    it "redirects to activity hub when total hours are below the threshold" do
+    it "redirects to document upload when total hours are below the threshold" do
       create(:volunteering_activity, activity_flow: activity_flow, organization_name: "Local Food Bank", hours: 78)
 
       post :create, params: job_training_params.deep_merge(job_training_activity: { hours: 1 })
 
-      expect(response).to redirect_to(activities_flow_root_path)
+      created_activity = activity_flow.job_training_activities.order(:id).last
+      expect(response).to redirect_to(new_activities_flow_job_training_document_upload_path(job_training_id: created_activity.id))
     end
 
-    it "redirects to activity hub when threshold met but only via self-attested data" do
+    it "redirects to document upload when threshold met but only via self-attested data" do
       create(:volunteering_activity, activity_flow: activity_flow, organization_name: "Local Food Bank", hours: 79)
 
       post :create, params: job_training_params.deep_merge(job_training_activity: { hours: 1 })
 
-      expect(response).to redirect_to(activities_flow_root_path)
+      created_activity = activity_flow.job_training_activities.order(:id).last
+      expect(response).to redirect_to(new_activities_flow_job_training_document_upload_path(job_training_id: created_activity.id))
     end
 
-    it "redirects to summary when threshold is met via validated data" do
+    it "redirects to document upload when threshold is met via validated data" do
       result = ActivityFlowProgressCalculator::OverallResult.new(
         total_hours: 80,
         meets_requirements: true,
@@ -70,7 +72,8 @@ RSpec.describe Activities::JobTrainingController, type: :controller do
 
       post :create, params: job_training_params
 
-      expect(response).to redirect_to(activities_flow_summary_path)
+      created_activity = activity_flow.job_training_activities.order(:id).last
+      expect(response).to redirect_to(new_activities_flow_job_training_document_upload_path(job_training_id: created_activity.id))
     end
   end
 
@@ -88,11 +91,11 @@ RSpec.describe Activities::JobTrainingController, type: :controller do
   describe "PATCH #update" do
     let(:job_training_activity) { create(:job_training_activity, activity_flow: activity_flow, hours: 2) }
 
-    it "updates the activity and redirects to the hub" do
+    it "updates the activity and redirects to document upload" do
       patch :update, params: { id: job_training_activity.id, job_training_activity: { hours: 10 } }
 
       expect(job_training_activity.reload.hours).to eq(10)
-      expect(response).to redirect_to(activities_flow_root_path)
+      expect(response).to redirect_to(new_activities_flow_job_training_document_upload_path(job_training_id: job_training_activity.id))
       expect(flash[:notice]).to eq(I18n.t("activities.work_programs.updated"))
     end
   end

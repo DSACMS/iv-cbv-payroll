@@ -8,7 +8,7 @@ class Activities::JobTrainingController < Activities::BaseController
   def create
     @job_training_activity = @flow.job_training_activities.new(job_training_activity_params)
     if @job_training_activity.save
-      redirect_to after_activity_path, notice: t("activities.work_programs.created")
+      redirect_to after_activity_path
     else
       render :new, status: :unprocessable_content
     end
@@ -29,6 +29,10 @@ class Activities::JobTrainingController < Activities::BaseController
   end
 
   private
+
+  def after_activity_path
+    new_activities_flow_job_training_document_upload_path(job_training_id: @job_training_activity.id)
+  end
 
   def set_job_training_activity
     @job_training_activity = @flow.job_training_activities.find(params[:id])
