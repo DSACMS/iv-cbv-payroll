@@ -11,16 +11,16 @@
 <%= render(CommunityServiceReviewTableComponent.new(volunteering_activity: @volunteering_activity)) %>
 
 <h2><%= t("activities.community_service.review.hours_section") %></h2>
-<% @volunteering_activity.volunteering_activity_months.order(:month).each_with_index do |activity_month, index| %>
-  <%= render(TableComponent.new(is_responsive: true)) do |table| %>
-    <%= table.with_row do |row| %>
-      <%= row.with_data_cell(is_header: true) do %>
-        <%= I18n.l(activity_month.month, format: :month) %>
-      <% end %>
-      <%= row.with_data_cell do %>
-        <%= link_to t("activities.community_service.review.edit"),
-              hours_input_activities_flow_volunteering_path(id: @volunteering_activity, month_index: index),
-              class: "usa-link" %>
+<%= render(TableComponent.new(is_responsive: true, class_names: "cs-review-hours-table")) do |table| %>
+  <% @volunteering_activity.volunteering_activity_months.order(:month).each_with_index do |activity_month, index| %>
+    <%= table.with_row(class_names: "subheader-row") do |row| %>
+      <%= row.with_data_cell(is_header: true, colspan: 2) do %>
+        <div class="display-flex flex-justify">
+          <span><%= I18n.l(activity_month.month, format: :month) %></span>
+          <%= link_to t("activities.community_service.review.edit"),
+                hours_input_activities_flow_volunteering_path(id: @volunteering_activity, month_index: index),
+                class: "usa-link" %>
+        </div>
       <% end %>
     <% end %>
     <%= table.with_row do |row| %>

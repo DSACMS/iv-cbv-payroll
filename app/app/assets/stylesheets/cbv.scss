@@ -303,6 +303,11 @@ input#invitation_link {
   background-color: color("gray-cool-10");
 }
 
+.cs-review-hours-table.usa-table--stacked .subheader-row th,
+.cs-review-hours-table.usa-table--stacked tr.subheader-row:nth-child(odd) th {
+  background-color: color("gray-cool-10");
+}
+
 /*
 * Payment details table column adjustments for consistent display with different content
 */
