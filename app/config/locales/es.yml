@@ -77,7 +77,7 @@ es:
       footer: Este es un mensaje generado automáticamente desde su agencia de SNAP. Por favor no conteste a este correo electrónico.
       greeting: "¡Hola!"
       header:
-        sandbox: La Agencia de pruebas CBV le ha enviado una invitación para verificar sus ingresos
+        sandbox: La Agencia de pruebas le ha enviado una invitación para verificar sus ingresos
       subject:
         default: Verifique sus ingresos para su solicitud o renovación de SNAP
   cbv:
@@ -201,7 +201,7 @@ es:
         what_is_this_title: ¿Qué es la herramienta "Reportar mi ingreso"?
         who_is_this_for_body_html: 'Usted puede usar esta herramienta si generó ingresos en los últimos 90 días y usted: <ul><li>puede acceder a sus talones de pago en línea, o</li><li>trabaja para una compañía que opera a través de una aplicación tales como Uber o Lyft </li></ul>Si usted perdió su trabajo en los últimos 90 días, usted también puede usar esta herramienta para reportar que lo perdió. Usted deberá poder acceder a la cuenta de su empleador o proveedor de nómina anterior.'
         who_is_this_for_title: "¿Puedo usar esta herramienta?"
-    error_invalid_link: Se utilizó un enlace no válido para iniciar CBV. Vuelva a hacer clic en el enlace, o bien directamente póngase en contacto con su asistente de caso para obtener ayuda.
+    error_invalid_link: Se utilizó un enlace no válido para iniciar. Vuelva a hacer clic en el enlace, o bien directamente póngase en contacto con su asistente de caso para obtener ayuda.
     error_invalid_token: El enlace de invitación no es válido. Vuelva a comprobar el enlace e inténtelo de nuevo. Si sigue teniendo problemas, póngase en contacto con su trabajador social.
     error_missing_token_html: "<strong>Su sesión a finalizado debido a inactividad.</strong> Para continuar donde la dejó, haga clic en el enlace que recibió de su agencia del SNAP por correo electrónico. Si encuentra algún problema, póngase en contacto con su agencia del SNAP para pedir ayuda."
     error_no_access: No logramos cargar los datos de nómina para esta cuenta. Haga clic en el enlace que recibió de su agencia del SNAP para intentarlo de nuevo.
@@ -210,7 +210,7 @@ es:
         body_1: Si todavía no termina de verificar sus ingresos, envíe su información de ingresos desde el mismo sitio web de %{agency_acronym}.
         cta_button_html:
           la_ldh: <a href="%{agency_url}" class="usa-button" target="_blank" rel="noopener noreferrer">Visite el sitio web del LDH</a>
-          sandbox: <a href="https://www.mass.gov/guides/how-to-contact-dta" class="usa-button" target="_blank" rel="noopener noreferrer">Obtenga más información en la Agencia de pruebas CBV</a>
+          sandbox: <a href="https://www.mass.gov/guides/how-to-contact-dta" class="usa-button" target="_blank" rel="noopener noreferrer">Obtenga más información en la Agencia de pruebas</a>
         title: Su invitación para verificar ingresos ha expirado
     missing_results:
       show:
@@ -285,7 +285,7 @@ es:
           agency_header_name:
             az_des: Department of Economic Security
             la_ldh: Department of Health
-            sandbox: CBV Test Agency
+            sandbox: Test Agency
           caseworker:
             doc_id: Doc ID
             pay_period: Período de pago (%{pay_frequency})
@@ -591,14 +591,14 @@ es:
     agency_acronym:
       az_des: DES/FAA
       la_ldh: LDH
-      sandbox: CBV
+      sandbox: TA
     agency_full_name:
       az_des: Departamento de Seguridad Económica de Arizona/Administración de Asistencia Familiar
       la_ldh: Departamento de Salud de Luisiana
-      sandbox: Agencia de pruebas CBV
+      sandbox: Agencia de pruebas
     app_name:
       az_des: MyFamilyBenefits
-      sandbox: CBVApp
+      sandbox: TAApp
     banner:
       lock: Candado
       locked_padlock: Un candado cerrado
@@ -613,13 +613,13 @@ es:
       cbv_flow_title:
         az_des: Departamento de Seguridad Económica
         la_ldh: Departamento de Salud
-        sandbox: Agencia de pruebas CBV
+        sandbox: Agencia de pruebas
       close: Cerrar
       help: Ayuda
       log_out: Cerrar sesión
       preheader:
         az_des: Un sitio web en colaboración con el Departamento de Seguridad Económica de Arizona.
-        default: Un sitio web en colaboración con la Agencia de pruebas CBV.
+        default: Un sitio web en colaboración con la Agencia de pruebas.
         la_ldh: Un sitio web en colaboración con el Departamento de Salud de Luisiana
       primary: Menú principal
     hours:

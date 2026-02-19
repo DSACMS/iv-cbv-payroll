@@ -32,7 +32,7 @@ RSpec.describe ApplicantMailer, type: :mailer do
     end
 
     it "renders the body" do
-      expect(mail.body.encoded).to match(I18n.t("applicant_mailer.invitation_email.body_1.default", agency_acronym: "CBV"))
+      expect(mail.body.encoded).to match(I18n.t("applicant_mailer.invitation_email.body_1.default", agency_acronym: I18n.t("shared.agency_acronym.sandbox")))
       expect(mail.body.encoded).to match(I18n.t("applicant_mailer.invitation_email.body_2_html.default", deadline: "July 21, 2024"))
     end
 
@@ -41,7 +41,7 @@ RSpec.describe ApplicantMailer, type: :mailer do
 
       it "renders the subject and body in Spanish" do
         expect(mail.subject).to eq(I18n.t('applicant_mailer.invitation_email.subject.default', locale: :es))
-        expect(mail.body.encoded).to include(I18n.t("applicant_mailer.invitation_email.body_1.default", locale: :es, agency_acronym: "CBV"))
+        expect(mail.body.encoded).to include(I18n.t("applicant_mailer.invitation_email.body_1.default", locale: :es, agency_acronym: I18n.t("shared.agency_acronym.sandbox")))
       end
     end
   end
