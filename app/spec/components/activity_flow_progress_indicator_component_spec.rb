@@ -3,6 +3,13 @@
 require "rails_helper"
 
 RSpec.describe ActivityFlowProgressIndicator, type: :component do
+  subject(:component) do
+    described_class.new(
+      monthly_calculation_results: monthly_calculation_results,
+      agency_full_name: "Test Agency",
+    )
+  end
+
   let(:reporting_month) { Date.new(2026, 1, 1) }
   let(:monthly_result) do
     ActivityFlowProgressCalculator::MonthlyResult.new(
@@ -21,14 +28,14 @@ RSpec.describe ActivityFlowProgressIndicator, type: :component do
   end
 
   it "renders the title and description" do
-    render_inline(described_class.new(monthly_calculation_results: monthly_calculation_results))
+    render_inline(component)
 
     expect(page).to have_css("h2", text: expected_title)
     expect(page).to have_content(I18n.t("activity_flow_progress_indicator.description"))
   end
 
   it "renders the completion threshold and hours label" do
-    render_inline(described_class.new(monthly_calculation_results: monthly_calculation_results))
+    render_inline(component)
 
     expect(page).to have_content(
       "#{ActivityFlowProgressCalculator::PER_MONTH_HOURS_THRESHOLD} " \
@@ -37,14 +44,14 @@ RSpec.describe ActivityFlowProgressIndicator, type: :component do
   end
 
   it "adds the percent complete as a data attribute" do
-    render_inline(described_class.new(monthly_calculation_results: monthly_calculation_results))
+    render_inline(component)
 
     progress = page.find(:css, ".activity-flow-progress-indicator__progress-bar")
     expect(progress["data-percent"]).to eq("50.0")
   end
 
   it "does not show the 'months completed' message" do
-    render_inline(described_class.new(monthly_calculation_results: monthly_calculation_results))
+    render_inline(component)
 
     expect(page).not_to have_text("months completed")
   end
@@ -53,21 +60,28 @@ RSpec.describe ActivityFlowProgressIndicator, type: :component do
     let(:hours) { 120 }
 
     it "caps the percentage complete at 100" do
-      render_inline(described_class.new(monthly_calculation_results: monthly_calculation_results))
+      render_inline(component)
 
       progress = page.find(:css, ".activity-flow-progress-indicator__progress-bar")
       expect(progress["data-percent"]).to eq("100")
     end
 
     it "displays a success icon" do
-      render_inline(described_class.new(monthly_calculation_results: monthly_calculation_results))
+      render_inline(component)
 
       expect(page).to have_css(".activity-flow-progress-indicator__success-icon")
+    end
+
+    it "renders the 'completed' copy variants for header and description" do
+      render_inline(component)
+
+      expect(page).to have_text(I18n.t("activity_flow_progress_indicator.title_complete"))
+      expect(page).to have_text(I18n.t("activity_flow_progress_indicator.description_complete", agency_full_name: "Test Agency"))
     end
   end
 
   it "renders whole hours without decimals" do
-    render_inline(described_class.new(monthly_calculation_results: monthly_calculation_results))
+    render_inline(component)
 
     expect(page).to have_css(
       ".activity-flow-progress-indicator__progress-amount",
@@ -79,7 +93,7 @@ RSpec.describe ActivityFlowProgressIndicator, type: :component do
     let(:hours) { 10.55 }
 
     it "rounds fractional hours to one decimal" do
-      render_inline(described_class.new(monthly_calculation_results: monthly_calculation_results))
+      render_inline(component)
 
       expect(page).to have_css(
         ".activity-flow-progress-indicator__progress-amount",
@@ -110,7 +124,7 @@ RSpec.describe ActivityFlowProgressIndicator, type: :component do
     end
 
     it "renders the month names" do
-      render_inline(described_class.new(monthly_calculation_results: monthly_calculation_results))
+      render_inline(component)
 
       expect(page).to have_css(
         ".activity-flow-progress-indicator__progress-amount-container",
@@ -127,13 +141,13 @@ RSpec.describe ActivityFlowProgressIndicator, type: :component do
     end
 
     it "displays success icons" do
-      render_inline(described_class.new(monthly_calculation_results: monthly_calculation_results))
+      render_inline(component)
 
       expect(page).to have_css(".activity-flow-progress-indicator__success-icon")
     end
 
     it "includes a 'months completed' message" do
-      render_inline(described_class.new(monthly_calculation_results: monthly_calculation_results))
+      render_inline(component)
 
       expect(page).to have_css(".activity-flow-progress-indicator", text: "1 / 3 months completed")
     end

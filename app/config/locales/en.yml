@@ -244,9 +244,11 @@ en:
       updated: Work program activity was successfully updated.
   activity_flow_progress_indicator:
     description: We calculate your community engagement from the activities you add to your report.
+    description_complete: "%{agency_full_name} will determine your final eligibility based on the activities you’ve added to your report."
     hours: hours
     months_completed_html: "<strong>%{complete}</strong> / <strong>%{total}</strong> months completed"
     title: Your %{month} progress
+    title_complete: You're ready to review and submit your report
     title_multi_month: Your progress
   aggregator_strings:
     deductions:
