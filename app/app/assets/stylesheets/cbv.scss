@@ -77,11 +77,9 @@ html {
     @include u-font("heading", 10);
     color: color("ink");
     font-weight: bold;
-    line-height: 1.15;
 
     @include at-media-max($theme-header-min-width) {
       font-size: size("heading", 3);
-      line-height: 1;
     }
   }
 
@@ -89,12 +87,10 @@ html {
     @include u-font("heading", 7);
     color: color("ink");
     font-weight: normal;
-    line-height: 1.15;
 
     @include at-media-max($theme-header-min-width) {
       font-size: size("heading", 1);
       font-weight: 500;
-      line-height: 1;
     }
   }
 }
