@@ -18,7 +18,7 @@
         <div class="display-flex flex-justify">
           <span><%= I18n.l(activity_month.month, format: :month) %></span>
           <%= link_to t("activities.community_service.review.edit"),
-                hours_input_activities_flow_volunteering_path(id: @volunteering_activity, month_index: index, from_review: 1),
+                hours_input_activities_flow_volunteering_path(id: @volunteering_activity, month_index: index, from_review: 1, from_edit: params[:from_edit].presence),
                 class: "usa-link" %>
         </div>
       <% end %>
@@ -39,8 +39,10 @@
       method: :patch,
       class: "usa-form usa-form--large" do |form| %>
   <h2><%= t("activities.community_service.review.additional_comments_title") %></h2>
-  <p><%= t("activities.community_service.review.additional_comments_description",
-        agency_name: agency_translation("shared.agency_full_name")) %></p>
+  <%= form.label :additional_comments,
+        t("activities.community_service.review.additional_comments_description",
+          agency_name: agency_translation("shared.agency_full_name")),
+        class: "usa-label" %>
   <%= form.text_area :additional_comments, class: "usa-textarea", rows: 5 %>
 
   <% submit_label = params[:from_edit].present? ? t("activities.hub.save") : t("activities.community_service.review.save") %>

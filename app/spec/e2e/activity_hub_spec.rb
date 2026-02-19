@@ -46,8 +46,16 @@ RSpec.describe 'e2e Activity Hub flow test', :js, type: :feature do
     fill_in I18n.t("activities.community_service.hours_input.hours_label", month: I18n.l(ActivityFlow.last.reporting_months.second, format: :month_year)), with: "10"
     click_button I18n.t("activities.community_service.hours_input.continue")
 
+    # Review page
+    verify_page(page, title: I18n.t("activities.community_service.review.title", organization_name: "Helping Hands"))
+    expect(page).to have_content "123 Main St, Springfield, Illinois"
+    expect(page).to have_content "Jane Doe"
+    expect(page).to have_content "jane@example.com"
+    click_button I18n.t("activities.community_service.review.save")
+
     verify_page(page, title: I18n.t("activities.hub.title"))
     expect(page).to have_content "Helping Hands"
+    expect(page).to have_content I18n.t("activities.community_service.created")
 
     # Add a Work Program activity
     within("[data-activity-type='work_programs']") do
@@ -196,6 +204,130 @@ RSpec.describe 'e2e Activity Hub flow test', :js, type: :feature do
 
     verify_page(page, title: I18n.t("activities.success.show.title", agency_acronym: I18n.t("shared.agency_acronym.sandbox")))
     expect(page).to have_content I18n.t("activities.success.show.download_pdf")
+  end
+
+  it "supports editing a community service activity through the full flow" do
+    visit URI(root_url).request_uri
+    visit activities_flow_entry_path(client_agency_id: "sandbox")
+    click_link I18n.t("activities.entries.show.continue")
+    verify_page(page, title: I18n.t("activities.hub.title"))
+
+    flow = ActivityFlow.last
+    month1 = flow.reporting_months.first
+    month2 = flow.reporting_months.second
+    month1_label = I18n.l(month1, format: :month_year)
+    month2_label = I18n.l(month2, format: :month_year)
+
+    # --- Step 1: Create a new CS activity ---
+    within("[data-activity-type='community_service']") do
+      click_button I18n.t("activities.hub.add")
+    end
+    verify_page(page, title: I18n.t("activities.community_service.new_title"))
+    fill_in I18n.t("activities.community_service.organization_name"), with: "Helping Hands"
+    fill_in I18n.t("activities.community_service.street_address"), with: "123 Main St"
+    fill_in I18n.t("activities.community_service.city"), with: "Springfield"
+    select "Illinois", from: I18n.t("activities.community_service.state")
+    fill_in I18n.t("activities.community_service.zip_code"), with: "62701"
+    fill_in I18n.t("activities.community_service.coordinator_name"), with: "Jane Doe"
+    fill_in I18n.t("activities.community_service.coordinator_email"), with: "jane@example.com"
+    click_button I18n.t("activities.community_service.continue")
+
+    # Hours input month 1
+    verify_page(page, title: I18n.t("activities.community_service.hours_input.heading",
+      month: month1_label, organization: "Helping Hands"))
+    fill_in I18n.t("activities.community_service.hours_input.hours_label", month: month1_label), with: "20"
+    click_button I18n.t("activities.community_service.hours_input.continue")
+
+    # Hours input month 2
+    verify_page(page, title: I18n.t("activities.community_service.hours_input.heading",
+      month: month2_label, organization: "Helping Hands"))
+    fill_in I18n.t("activities.community_service.hours_input.hours_label", month: month2_label), with: "10"
+    click_button I18n.t("activities.community_service.hours_input.continue")
+
+    # Review page
+    verify_page(page, title: I18n.t("activities.community_service.review.title", organization_name: "Helping Hands"))
+    click_button I18n.t("activities.community_service.review.save")
+
+    # Back on hub — should show "created" flash
+    verify_page(page, title: I18n.t("activities.hub.title"))
+    expect(page).to have_content "Helping Hands"
+    expect(page).to have_content I18n.t("activities.community_service.created")
+
+    # --- Step 2: Edit the activity from the hub ---
+    click_link I18n.t("activities.hub.edit")
+
+    # Edit org info page
+    verify_page(page, title: I18n.t("activities.community_service.edit_title"))
+    fill_in I18n.t("activities.community_service.organization_name"), with: "Updated Org"
+    click_button I18n.t("activities.community_service.continue")
+
+    # Hours input month 1 (edit flow)
+    verify_page(page, title: I18n.t("activities.community_service.hours_input.heading",
+      month: month1_label, organization: "Updated Org"))
+    fill_in I18n.t("activities.community_service.hours_input.hours_label", month: month1_label), with: "25"
+    click_button I18n.t("activities.community_service.hours_input.continue")
+
+    # Hours input month 2 (edit flow)
+    verify_page(page, title: I18n.t("activities.community_service.hours_input.heading",
+      month: month2_label, organization: "Updated Org"))
+    fill_in I18n.t("activities.community_service.hours_input.hours_label", month: month2_label), with: "15"
+    click_button I18n.t("activities.community_service.hours_input.continue")
+
+    # Review page (edit flow - button should say "Save changes")
+    verify_page(page, title: I18n.t("activities.community_service.review.title", organization_name: "Updated Org"))
+    expect(page).to have_button I18n.t("activities.hub.save")
+
+    # --- Step 3: Edit a single month from the review page ---
+    # Click Edit on month 1 — should go to hours input and return directly to review
+    edit_links = all("a", text: I18n.t("activities.community_service.review.edit"))
+    edit_links.first.click
+
+    verify_page(page, title: I18n.t("activities.community_service.hours_input.heading",
+      month: month1_label, organization: "Updated Org"))
+    fill_in I18n.t("activities.community_service.hours_input.hours_label", month: month1_label), with: "30"
+    click_button I18n.t("activities.hub.save")
+
+    # Should go directly back to review, NOT to month 2
+    verify_page(page, title: I18n.t("activities.community_service.review.title", organization_name: "Updated Org"))
+    expect(page).to have_content "30"
+
+    # --- Step 4: Validation guard — cannot set all months to 0 from review ---
+    # First, set month 2 to 0 via edit from review
+    edit_links = all("a", text: I18n.t("activities.community_service.review.edit"))
+    edit_links.last.click
+
+    verify_page(page, title: I18n.t("activities.community_service.hours_input.heading",
+      month: month2_label, organization: "Updated Org"))
+    fill_in I18n.t("activities.community_service.hours_input.hours_label", month: month2_label), with: "0"
+    click_button I18n.t("activities.hub.save")
+
+    # Should succeed — month 1 still has 30 hours
+    verify_page(page, title: I18n.t("activities.community_service.review.title", organization_name: "Updated Org"))
+
+    # Now try to set month 1 to 0 — should fail validation
+    edit_links = all("a", text: I18n.t("activities.community_service.review.edit"))
+    edit_links.first.click
+
+    verify_page(page, title: I18n.t("activities.community_service.hours_input.heading",
+      month: month1_label, organization: "Updated Org"))
+    fill_in I18n.t("activities.community_service.hours_input.hours_label", month: month1_label), with: "0"
+    click_button I18n.t("activities.hub.save")
+
+    # Should stay on hours input with an error
+    expect(page).to have_content I18n.t("activities.community_service.hours_input.error_heading")
+
+    # Fix it — set to a valid value and save
+    fill_in I18n.t("activities.community_service.hours_input.hours_label", month: month1_label), with: "5"
+    click_button I18n.t("activities.hub.save")
+
+    # Back to review, then save to hub
+    verify_page(page, title: I18n.t("activities.community_service.review.title", organization_name: "Updated Org"))
+    click_button I18n.t("activities.hub.save")
+
+    # Back on hub — should show "updated" flash
+    verify_page(page, title: I18n.t("activities.hub.title"))
+    expect(page).to have_content "Updated Org"
+    expect(page).to have_content I18n.t("activities.community_service.updated")
   end
 
   it "blocks activity hub access when not enabled" do
