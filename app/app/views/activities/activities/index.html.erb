@@ -69,7 +69,7 @@
 <% end %>
 
 <% if activity_type_enabled?(:community_service) %>
-  <% community_service_card_data = self_attestation_cards(@community_service_activities, name_field: :organization_name) %>
+  <% community_service_card_data = community_service_cards(@community_service_activities) %>
   <%= render "activities/activities/activity_section",
         activity_type: "community_service",
         section_title: t("activities.community_service.title"),

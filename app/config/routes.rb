@@ -51,7 +51,12 @@ Rails.application.routes.draw do
     scope "/activities", as: :activities_flow, module: :activities do
       root to: "activities#index"
       resource :entry, only: %i[show], controller: "entries"
-      resources :volunteering, only: %i[new create edit update destroy], controller: "volunteering"
+      resources :volunteering, only: %i[new create edit update destroy], controller: "volunteering" do
+        member do
+          get :hours_input
+          patch :save_hours
+        end
+      end
       resources :job_training, only: %i[new create edit update destroy], controller: "job_training"
       resource :summary, only: %i[show], controller: "summary"
       resource :submit, only: %i[show update], controller: "submit", format: %i[html pdf]

@@ -354,6 +354,15 @@ input#invitation_link {
   margin-top: units(0.5);
 }
 
+/*
+ * Month indicator (volunteering hours input flow)
+ */
+.month-indicator {
+  font-size: 1.125rem;
+  font-weight: bold;
+  color: #005EA2;
+}
+
 // Demo launcher page
 .demo-launcher {
   .demo-launcher__usa-hint {
