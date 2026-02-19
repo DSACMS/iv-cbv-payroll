@@ -843,7 +843,7 @@ en:
       sandbox: Test Agency
     app_name:
       az_des: MyFamilyBenefits
-      sandbox: TA App
+      sandbox: TAApp
     banner:
       lock: Lock
       locked_padlock: A locked padlock
