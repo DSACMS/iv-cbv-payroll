@@ -308,6 +308,13 @@ input#invitation_link {
   background-color: color("gray-cool-10");
 }
 
+// Make sure second col is aligned between both tables on desktop
+.cs-review-org-table th,
+.cs-review-hours-table th:not([colspan]),
+.cs-review-hours-table td:first-child {
+  width: 60%;
+}
+
 .cs-review-org-table {
   thead {
     border-top: units(0.5) solid color("ink");
