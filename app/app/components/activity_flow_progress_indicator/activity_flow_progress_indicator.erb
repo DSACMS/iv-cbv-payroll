@@ -1,6 +1,12 @@
+<% complete_months = monthly_calculation_results.count(&:meets_requirements) %>
+<% total_months = monthly_calculation_results.count %>
+<% is_complete = complete_months == total_months %>
+
 <div class="activity-flow-progress-indicator">
   <h2>
-    <% if multi_month? %>
+    <% if is_complete %>
+      <%= t(".title_complete") %>
+    <% elsif multi_month? %>
       <%= t(".title_multi_month") %>
     <% else %>
       <% first_month = monthly_calculation_results.first.month %>
@@ -8,14 +14,17 @@
     <% end %>
   </h2>
 
-  <p><%= t(".description") %></p>
+  <p>
+    <% if is_complete %>
+      <%= t(".description_complete", agency_full_name: agency_full_name) %>
+    <% else %>
+      <%= t(".description") %>
+    <% end %>
+  </p>
 
   <% if multi_month? %>
-    <% complete_months = monthly_calculation_results.count(&:meets_requirements) %>
-    <% total_months = monthly_calculation_results.count %>
-
     <p class="font-heading-md">
-      <% if complete_months == total_months %>
+      <% if is_complete %>
         <svg class="usa-icon activity-flow-progress-indicator__success-icon" aria-hidden="true" focusable="false" role="img">
           <use xlink:href="<%= asset_path("@uswds/uswds/dist/img/sprite.svg#check_circle") %>"></use>
         </svg>

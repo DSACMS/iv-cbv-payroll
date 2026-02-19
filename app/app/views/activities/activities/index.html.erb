@@ -8,7 +8,7 @@
 </p>
 
 <% if display_progress_indicator?(progress_calculator) %>
-  <%= render(ActivityFlowProgressIndicator.from_calculator(progress_calculator)) %>
+  <%= render(ActivityFlowProgressIndicator.from_calculator(progress_calculator, agency_translation("shared.agency_full_name"))) %>
 
   <hr class="border-gray-30 border-top-0 activity-hub-divider">
 <% end %>
