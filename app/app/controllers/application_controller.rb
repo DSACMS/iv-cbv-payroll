@@ -107,7 +107,7 @@ class ApplicationController < ActionController::Base
   end
 
   def activity_flow?
-    session[:flow_type]&.to_sym == :activity
+    flow_class == ActivityFlow
   end
 
   protected
