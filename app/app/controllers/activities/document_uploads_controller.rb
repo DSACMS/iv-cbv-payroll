@@ -8,8 +8,11 @@ class Activities::DocumentUploadsController < Activities::BaseController
 
   def create
     if params.exclude?(:activity)
-      redirect_to after_activity_path
-    elsif @activity.update(document_upload_params)
+      # User clicked the submit button without adding any files
+      return redirect_to after_activity_path
+    end
+
+    if @activity.update(document_upload_params)
       redirect_to after_activity_path
     else
       render :new
