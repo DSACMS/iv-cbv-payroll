@@ -96,7 +96,6 @@ RSpec.describe Activities::JobTrainingController, type: :controller do
 
       expect(job_training_activity.reload.hours).to eq(10)
       expect(response).to redirect_to(new_activities_flow_job_training_document_upload_path(job_training_id: job_training_activity.id))
-      expect(flash[:notice]).to eq(I18n.t("activities.work_programs.updated"))
     end
   end
 
@@ -109,7 +108,6 @@ RSpec.describe Activities::JobTrainingController, type: :controller do
       end.to change(activity_flow.job_training_activities, :count).by(-1)
 
       expect(response).to redirect_to(activities_flow_root_path)
-      expect(flash[:notice]).to eq(I18n.t("activities.work_programs.deleted"))
     end
   end
 end

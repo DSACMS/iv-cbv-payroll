@@ -16,7 +16,7 @@ class Activities::JobTrainingController < Activities::BaseController
 
   def update
     if @job_training_activity.update(job_training_activity_params)
-      redirect_to after_activity_path, notice: t("activities.work_programs.updated")
+      redirect_to after_activity_path
     else
       render :edit, status: :unprocessable_content
     end
@@ -25,7 +25,7 @@ class Activities::JobTrainingController < Activities::BaseController
   def destroy
     @job_training_activity.destroy
 
-    redirect_to activities_flow_root_path, notice: t("activities.work_programs.deleted")
+    redirect_to activities_flow_root_path
   end
 
   private

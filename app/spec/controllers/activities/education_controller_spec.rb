@@ -72,7 +72,6 @@ RSpec.describe Activities::EducationController, type: :controller do
       end.to change(activity_flow.education_activities, :count).by(-1)
 
       expect(response).to redirect_to(activities_flow_root_path)
-      expect(flash[:notice]).to eq(I18n.t("activities.education.deleted"))
     end
   end
 
