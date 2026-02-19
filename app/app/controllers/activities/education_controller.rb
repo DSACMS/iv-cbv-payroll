@@ -51,7 +51,7 @@ class Activities::EducationController < Activities::BaseController
     activity = @flow.education_activities.find(params[:id])
     activity.destroy
 
-    redirect_to activities_flow_root_path, notice: t("activities.education.deleted")
+    redirect_to activities_flow_root_path
   end
 
   def sync

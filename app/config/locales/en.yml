@@ -70,7 +70,6 @@ en:
       coordinator_phone_number: Coordinator's phone number
       coordinator_section_title: Coordinator information
       created: Community service activity was successfully created.
-      deleted: Community service activity was successfully deleted.
       description: Enter as much information as you can. This will help %{agency_acronym} get in touch with your community service organization, if needed.
       document_upload_suggestion_text_html: "<ul><li>Signed statement on organization letterhead from coordinator verifying hours</li><li>Signed monthly log of hours</li></ul>"
       edit_title: Edit Community Service Activity
@@ -104,7 +103,6 @@ en:
         suggestion_title: Suggested documents
         title: Upload supporting documents for %{name}
     education:
-      deleted: Education activity was successfully deleted.
       edit:
         additional_information_header: Additional comments (Optional)
         additional_information_label: Share any comments or additional information that you’d like %{agency_acronym} to know. For example, the credit hours you are taking.
@@ -243,13 +241,11 @@ en:
     work_programs:
       add: Add Work Program Activity
       date: Date
-      deleted: Work program activity was successfully deleted.
       edit_title: Edit Work Program Activity
       hours: Hours attended
       organization_address: Organization address
       program_name: Program name
       title: Work programs
-      updated: Work program activity was successfully updated.
   activity_flow_progress_indicator:
     description: We calculate your community engagement from the activities you add to your report.
     hours: hours

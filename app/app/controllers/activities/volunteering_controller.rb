@@ -27,7 +27,7 @@ class Activities::VolunteeringController < Activities::BaseController
   def destroy
     @volunteering_activity.destroy
 
-    redirect_to activities_flow_root_path, notice: t("activities.community_service.deleted")
+    redirect_to activities_flow_root_path
   end
 
   private

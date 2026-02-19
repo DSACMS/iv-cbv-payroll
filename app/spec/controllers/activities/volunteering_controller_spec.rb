@@ -131,7 +131,6 @@ RSpec.describe Activities::VolunteeringController, type: :controller do
       end.to change(activity_flow.volunteering_activities, :count).by(-1)
 
       expect(response).to redirect_to(activities_flow_root_path)
-      expect(flash[:notice]).to eq(I18n.t("activities.community_service.deleted"))
     end
   end
 end
