@@ -2,13 +2,13 @@ module MonthlyHoursInput
   extend ActiveSupport::Concern
 
   included do
-    before_action :set_hours_input_vars, only: %i[hours_input save_hours]
+    before_action :set_hours_input_vars, only: %i[edit update]
   end
 
-  def hours_input
+  def edit
   end
 
-  def save_hours
+  def update
     if params[:no_hours] == "1"
       @activity_month.hours = 0
     else
@@ -18,7 +18,7 @@ module MonthlyHoursInput
     if !valid_hours_submission?
       @error = true
       @activity_month.errors.add(:hours, I18n.t("#{hours_input_t_scope}.field_error"))
-      render :hours_input, status: :unprocessable_content
+      render :edit, status: :unprocessable_content
       return
     end
 
@@ -40,7 +40,7 @@ module MonthlyHoursInput
 
   def set_hours_input_vars
     @months = progress_calculator.reporting_months
-    @month_index = (params[:month_index] || 0).to_i
+    @month_index = (params[:id] || 0).to_i
 
     if @month_index < 0 || @month_index >= @months.length
       redirect_to hours_input_path(0)

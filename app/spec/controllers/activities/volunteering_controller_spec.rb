@@ -30,7 +30,7 @@ RSpec.describe Activities::VolunteeringController, type: :controller do
       end.to change(activity_flow.volunteering_activities, :count).by(1)
 
       activity = activity_flow.volunteering_activities.last
-      expect(response).to redirect_to(hours_input_activities_flow_volunteering_path(id: activity, month_index: 0))
+      expect(response).to redirect_to(edit_activities_flow_volunteering_month_path(volunteering_id: activity, id: 0))
     end
 
     it "stores submitted fields on the activity" do
@@ -58,27 +58,6 @@ RSpec.describe Activities::VolunteeringController, type: :controller do
     end
   end
 
-  describe "POST #save_hours" do
-    let(:volunteering_activity) { create(:volunteering_activity, activity_flow: activity_flow) }
-    let(:month) { activity_flow.reporting_months.first }
-
-    it "redirects to document upload" do
-      post :save_hours, params: { id: volunteering_activity.id, month_index: 0, volunteering_activity_month: { hours: 1 } }
-
-      expect(response).to redirect_to(new_activities_flow_volunteering_document_upload_path(volunteering_id: volunteering_activity.id))
-    end
-
-    context "with multiple reporting months" do
-      let(:activity_flow) { create(:activity_flow, volunteering_activities_count: 0, job_training_activities_count: 0, education_activities_count: 0, reporting_window_months: 3) }
-
-      it "advances to next month when hours are blank" do
-        post :save_hours, params: { id: volunteering_activity.id, month_index: 0, volunteering_activity_month: { hours: "" } }
-
-        expect(response).to redirect_to(hours_input_activities_flow_volunteering_path(id: volunteering_activity, month_index: 1))
-      end
-    end
-  end
-
   describe "GET #edit" do
     let(:volunteering_activity) { create(:volunteering_activity, activity_flow: activity_flow) }
 
@@ -97,7 +76,7 @@ RSpec.describe Activities::VolunteeringController, type: :controller do
       patch :update, params: { id: volunteering_activity.id, volunteering_activity: { organization_name: "Updated Org" } }
 
       expect(volunteering_activity.reload.organization_name).to eq("Updated Org")
-      expect(response).to redirect_to(hours_input_activities_flow_volunteering_path(id: volunteering_activity, month_index: 0, from_edit: 1))
+      expect(response).to redirect_to(edit_activities_flow_volunteering_month_path(volunteering_id: volunteering_activity, id: 0, from_edit: 1))
     end
   end
 
@@ -140,35 +119,6 @@ RSpec.describe Activities::VolunteeringController, type: :controller do
       patch :save_review, params: { id: volunteering_activity.id, from_edit: 1, volunteering_activity: { additional_comments: "" } }
 
       expect(flash[:notice]).to eq(I18n.t("activities.community_service.updated"))
-    end
-  end
-
-  describe "POST #save_hours with from_review" do
-    let(:activity_flow) { create(:activity_flow, volunteering_activities_count: 0, job_training_activities_count: 0, education_activities_count: 0, reporting_window_months: 3) }
-    let(:volunteering_activity) { create(:volunteering_activity, activity_flow: activity_flow) }
-
-    it "redirects back to review instead of advancing to next month" do
-      post :save_hours, params: { id: volunteering_activity.id, month_index: 0, from_review: 1, volunteering_activity_month: { hours: 15 } }
-
-      expect(response).to redirect_to(review_activities_flow_volunteering_path(id: volunteering_activity))
-    end
-
-    it "validates at least one month has hours when editing from review" do
-      create(:volunteering_activity_month, volunteering_activity: volunteering_activity, month: activity_flow.reporting_months.first, hours: 10)
-      create(:volunteering_activity_month, volunteering_activity: volunteering_activity, month: activity_flow.reporting_months.second, hours: 0)
-
-      post :save_hours, params: { id: volunteering_activity.id, month_index: 0, from_review: 1, volunteering_activity_month: { hours: 0 } }
-
-      expect(response).to have_http_status(:unprocessable_content)
-    end
-
-    it "allows saving when another month still has hours" do
-      create(:volunteering_activity_month, volunteering_activity: volunteering_activity, month: activity_flow.reporting_months.first, hours: 10)
-      create(:volunteering_activity_month, volunteering_activity: volunteering_activity, month: activity_flow.reporting_months.second, hours: 5)
-
-      post :save_hours, params: { id: volunteering_activity.id, month_index: 0, from_review: 1, volunteering_activity_month: { hours: 0 } }
-
-      expect(response).to redirect_to(review_activities_flow_volunteering_path(id: volunteering_activity))
     end
   end
 

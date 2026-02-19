@@ -18,7 +18,7 @@
         <div class="display-flex flex-justify">
           <span><%= I18n.l(activity_month.month, format: :month) %></span>
           <%= link_to t("activities.community_service.review.edit"),
-                hours_input_activities_flow_volunteering_path(id: @volunteering_activity, month_index: index, from_review: 1, from_edit: params[:from_edit].presence),
+                edit_activities_flow_volunteering_month_path(volunteering_id: @volunteering_activity, id: index, from_review: 1, from_edit: params[:from_edit].presence),
                 class: "usa-link" %>
         </div>
       <% end %>

@@ -1,7 +1,5 @@
 class Activities::VolunteeringController < Activities::BaseController
-  before_action :set_volunteering_activity, only: %i[edit update destroy hours_input save_hours review save_review]
-
-  include MonthlyHoursInput
+  before_action :set_volunteering_activity, only: %i[edit update destroy review save_review]
 
   def new
     @volunteering_activity = @flow.volunteering_activities.new
@@ -10,7 +8,7 @@ class Activities::VolunteeringController < Activities::BaseController
   def create
     @volunteering_activity = @flow.volunteering_activities.new(volunteering_activity_params)
     if @volunteering_activity.save
-      redirect_to hours_input_activities_flow_volunteering_path(id: @volunteering_activity, month_index: 0)
+      redirect_to edit_activities_flow_volunteering_month_path(volunteering_id: @volunteering_activity, id: 0)
     else
       render :new, status: :unprocessable_content
     end
@@ -18,7 +16,7 @@ class Activities::VolunteeringController < Activities::BaseController
 
   def update
     if @volunteering_activity.update(volunteering_activity_params)
-      redirect_to hours_input_activities_flow_volunteering_path(id: @volunteering_activity, month_index: 0, from_edit: 1)
+      redirect_to edit_activities_flow_volunteering_month_path(volunteering_id: @volunteering_activity, id: 0, from_edit: 1)
     else
       render :edit, status: :unprocessable_content
     end
@@ -43,40 +41,6 @@ class Activities::VolunteeringController < Activities::BaseController
 
   def set_volunteering_activity
     @volunteering_activity = @flow.volunteering_activities.find(params[:id])
-  end
-
-  # MonthlyHoursInput config methods
-
-  def hours_input_activity
-    @volunteering_activity
-  end
-
-  def activity_month_param_key
-    :volunteering_activity_month
-  end
-
-  def hours_input_path(month_index, from_edit: nil)
-    hours_input_activities_flow_volunteering_path(id: @volunteering_activity, month_index: month_index, from_edit: from_edit.presence)
-  end
-
-  def activity_display_name
-    @volunteering_activity.organization_name
-  end
-
-  def hours_input_t_scope
-    "activities.community_service.hours_input"
-  end
-
-  def hours_input_completed_notice
-    t("activities.community_service.created")
-  end
-
-  def hours_input_completed_path
-    if params[:from_review].present?
-      review_activities_flow_volunteering_path(id: @volunteering_activity, from_edit: params[:from_edit].presence)
-    else
-      new_activities_flow_volunteering_document_upload_path(volunteering_id: @volunteering_activity.id, from_edit: params[:from_edit].presence)
-    end
   end
 
   def review_params
