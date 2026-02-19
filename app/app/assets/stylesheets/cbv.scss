@@ -358,7 +358,7 @@ input#invitation_link {
  * Month indicator (volunteering hours input flow)
  */
 .month-indicator {
-  @include u-font('heading', 'sm');
+  @include u-font('heading', 'md');
   font-weight: bold;
   color: #005EA2;
 }

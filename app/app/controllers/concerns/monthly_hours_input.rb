@@ -40,6 +40,7 @@ module MonthlyHoursInput
     @current_month = @months[@month_index]
     @activity_month = hours_input_activity.activity_months
       .find_or_initialize_by(month: @current_month.beginning_of_month)
+    @activity_month.hours = nil if @activity_month.new_record?
   end
 
   def valid_hours_submission?

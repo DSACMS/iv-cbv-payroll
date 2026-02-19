@@ -6,6 +6,8 @@ export default class extends Controller {
   toggle() {
     if (this.checkboxTarget.checked) {
       this.hoursFieldTarget.value = "0"
+    } else {
+      this.hoursFieldTarget.value = ""
     }
   }
 
