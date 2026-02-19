@@ -55,6 +55,6 @@
           label_class: "text-bold",
           data: { hours_input_target: "hoursField", action: "input->hours-input#input" } %>
 
-    <%= f.submit t("#{t_scope}.continue") %>
+    <%= f.submit(local_assigns[:submit_label] || t("#{t_scope}.continue")) %>
   </div>
 <% end %>

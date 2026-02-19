@@ -346,6 +346,44 @@ input#invitation_link {
   background-color: color("gray-cool-10");
 }
 
+.cs-review-hours-table.usa-table--stacked .subheader-row th,
+.cs-review-hours-table.usa-table--stacked tr.subheader-row:nth-child(odd) th {
+  background-color: color("gray-cool-10");
+}
+
+// Make sure second col is aligned between both tables on desktop
+.cs-review-org-table th,
+.cs-review-hours-table th:not([colspan]),
+.cs-review-hours-table td:first-child {
+  width: 60%;
+}
+
+.cs-review-org-table {
+  thead {
+    border-top: units(0.5) solid color("ink");
+  }
+
+  th {
+    border-top: units(1px) solid color("base-light");
+  }
+
+  td {
+    border-top: 0;
+  }
+
+  tr:first-child th:first-child {
+    border-top: 0;
+  }
+}
+
+.cs-review-org-table.usa-table--stacked tr {
+  border-bottom: units(1px) solid color("base-light");
+}
+
+.cs-review-org-table.usa-table--stacked tr:first-child {
+  border-top: units(0.5) solid color("ink");
+}
+
 /*
 * Payment details table column adjustments for consistent display with different content
 */

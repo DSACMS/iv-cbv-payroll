@@ -53,10 +53,11 @@ Rails.application.routes.draw do
       resource :entry, only: %i[show], controller: "entries"
       resources :volunteering, only: %i[new create edit update destroy], controller: "volunteering" do
         resources :document_uploads, only: %i[new create], controller: "/activities/document_uploads"
+        resources :months, only: %i[edit update], controller: "volunteering/months"
 
         member do
-          get :hours_input
-          patch :save_hours
+          get :review
+          patch :save_review
         end
       end
       resources :job_training, only: %i[new create edit update destroy], controller: "job_training" do

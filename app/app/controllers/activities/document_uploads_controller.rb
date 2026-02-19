@@ -43,9 +43,17 @@ class Activities::DocumentUploadsController < Activities::BaseController
     end
   end
 
+  def after_activity_path
+    if params[:volunteering_id]
+      review_activities_flow_volunteering_path(id: @activity, from_edit: params[:from_edit].presence)
+    else
+      super
+    end
+  end
+
   def upload_path
     if params[:volunteering_id]
-      activities_flow_volunteering_document_uploads_path
+      activities_flow_volunteering_document_uploads_path(from_edit: params[:from_edit].presence)
     elsif params[:job_training_id]
       activities_flow_job_training_document_uploads_path
     else

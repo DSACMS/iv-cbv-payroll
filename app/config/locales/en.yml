@@ -88,10 +88,26 @@ en:
       organization_name: Organization name
       organization_name_hint: Enter the full and official name
       organization_section_title: Organization information
+      review:
+        additional_comments_description: Share any comments or additional information that you'd like %{agency_name} to know.
+        additional_comments_title: Additional comments (optional)
+        address: Address
+        community_service_hours: Community service hours
+        coordinator_email: Coordinator's email
+        coordinator_name: Coordinator's name
+        coordinator_phone: Coordinator's phone number
+        description: Review all the information you've added for %{organization_name} before adding it to your Community Engagement Report.
+        edit: Edit
+        hours_section: Community service hours
+        name: Name
+        organization_info: Organization information
+        save: Save and add to my report
+        title: Review your community service information for %{organization_name}
       state: State
       street_address: Street address
       street_address_line_2: Street address line 2
       title: Community service
+      updated: Community service activity was successfully updated.
       zip_code: Zip code
     document_uploads:
       new:

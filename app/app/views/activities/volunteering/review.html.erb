@@ -1,0 +1,50 @@
+<% content_for :title, t("activities.community_service.review.title", organization_name: @volunteering_activity.organization_name) %>
+
+<h1>
+  <%= t("activities.community_service.review.title", organization_name: @volunteering_activity.organization_name) %>
+</h1>
+<p>
+  <%= t("activities.community_service.review.description", organization_name: @volunteering_activity.organization_name) %>
+</p>
+
+<h2><%= t("activities.community_service.review.organization_info") %></h2>
+<%= render(CommunityServiceReviewTableComponent.new(volunteering_activity: @volunteering_activity)) %>
+
+<h2><%= t("activities.community_service.review.hours_section") %></h2>
+<%= render(TableComponent.new(is_responsive: true, class_names: "cs-review-hours-table")) do |table| %>
+  <% @volunteering_activity.volunteering_activity_months.order(:month).each_with_index do |activity_month, index| %>
+    <%= table.with_row(class_names: "subheader-row") do |row| %>
+      <%= row.with_data_cell(is_header: true, colspan: 2) do %>
+        <div class="display-flex flex-justify">
+          <span><%= I18n.l(activity_month.month, format: :month) %></span>
+          <%= link_to t("activities.community_service.review.edit"),
+                edit_activities_flow_volunteering_month_path(volunteering_id: @volunteering_activity, id: index, from_review: 1, from_edit: params[:from_edit].presence),
+                class: "usa-link" %>
+        </div>
+      <% end %>
+    <% end %>
+    <%= table.with_row do |row| %>
+      <%= row.with_data_cell(is_header: true) do %>
+        <%= t("activities.community_service.review.community_service_hours") %>
+      <% end %>
+      <%= row.with_data_cell do %>
+        <%= activity_month.hours %>
+      <% end %>
+    <% end %>
+  <% end %>
+<% end %>
+
+<%= form_with model: @volunteering_activity,
+      url: save_review_activities_flow_volunteering_path(id: @volunteering_activity, from_edit: params[:from_edit].presence),
+      method: :patch,
+      class: "usa-form usa-form--large" do |form| %>
+  <h2><%= t("activities.community_service.review.additional_comments_title") %></h2>
+  <%= form.label :additional_comments,
+        t("activities.community_service.review.additional_comments_description",
+          agency_name: agency_translation("shared.agency_full_name")),
+        class: "usa-label" %>
+  <%= form.text_area :additional_comments, class: "usa-textarea", rows: 5 %>
+
+  <% submit_label = params[:from_edit].present? ? t("activities.hub.save") : t("activities.community_service.review.save") %>
+  <%= form.submit submit_label, class: "usa-button usa-button--primary" %>
+<% end %>
