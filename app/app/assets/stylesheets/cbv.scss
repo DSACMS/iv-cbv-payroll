@@ -80,6 +80,7 @@ html {
 
     @include at-media-max($theme-header-min-width) {
       font-size: size("heading", 3);
+      margin: 0;
     }
   }
 
