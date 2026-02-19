@@ -1,8 +1,4 @@
 <%= render(TableComponent.new(is_responsive: true)) do |table| %>
-  <%= table.with_subheader_row(class_names: "subheader-row base-lightest border-top-1px") do |row| %>
-    <% row.with_data_cell(is_header: true).with_content(t("activities.summary.community_service.header")) %>
-    <% row.with_data_cell(is_header: true).with_content(t("activities.summary.your_details")) %>
-  <% end %>
   <%= table.with_row do |row| %>
     <%= row.with_data_cell(is_header: true) do %>
       <%= t("activities.summary.community_service.organization") %>
@@ -14,19 +10,57 @@
 
   <%= table.with_row do |row| %>
     <%= row.with_data_cell(is_header: true) do %>
-      <%= t("activities.summary.community_service.month") %>
+      <%= t("activities.summary.community_service.address") %>
     <% end %>
     <%= row.with_data_cell do %>
-      <%= activity.date.present? ? I18n.l(activity.date, format: :month_year) : t("shared.not_applicable") %>
+      <%= activity.formatted_address.presence || t("shared.not_applicable") %>
     <% end %>
   <% end %>
 
   <%= table.with_row do |row| %>
     <%= row.with_data_cell(is_header: true) do %>
-      <%= t("activities.summary.community_service.hours_served") %>
+      <%= t("activities.summary.community_service.coordinator_name") %>
     <% end %>
     <%= row.with_data_cell do %>
-      <%= activity.hours %>
+      <%= activity.coordinator_name.presence || t("shared.not_applicable") %>
+    <% end %>
+  <% end %>
+
+  <%= table.with_row do |row| %>
+    <%= row.with_data_cell(is_header: true) do %>
+      <%= t("activities.summary.community_service.coordinator_email") %>
+    <% end %>
+    <%= row.with_data_cell do %>
+      <%= activity.coordinator_email.presence || t("shared.not_applicable") %>
+    <% end %>
+  <% end %>
+
+  <%= table.with_row do |row| %>
+    <%= row.with_data_cell(is_header: true) do %>
+      <%= t("activities.summary.community_service.coordinator_phone") %>
+    <% end %>
+    <%= row.with_data_cell do %>
+      <%= activity.coordinator_phone_number.presence || t("shared.not_applicable") %>
+    <% end %>
+  <% end %>
+
+  <% activity.activity_months.order(month: :asc).each do |activity_month| %>
+    <%= table.with_row do |row| %>
+      <%= row.with_data_cell(is_header: true) do %>
+        <%= t("activities.summary.community_service.month") %>
+      <% end %>
+      <%= row.with_data_cell do %>
+        <%= I18n.l(activity_month.month, format: :month) %>
+      <% end %>
+    <% end %>
+
+    <%= table.with_row do |row| %>
+      <%= row.with_data_cell(is_header: true) do %>
+        <%= t("activities.summary.community_service.hours_served") %>
+      <% end %>
+      <%= row.with_data_cell do %>
+        <%= activity_month.hours %>
+      <% end %>
     <% end %>
   <% end %>
 <% end %>

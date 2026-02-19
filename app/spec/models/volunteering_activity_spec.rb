@@ -25,4 +25,22 @@ RSpec.describe VolunteeringActivity, type: :model do
       expect(activity.errors[:date]).to be_present
     end
   end
+
+  describe "#formatted_address" do
+    let(:base_address_attrs) do
+      { street_address: "123 Main St", city: "Springfield", state: "Illinois", zip_code: "62701" }
+    end
+
+    it "joins street, city, state, and zip into a single line" do
+      activity = create(:volunteering_activity, base_address_attrs)
+
+      expect(activity.formatted_address).to eq("123 Main St, Springfield, Illinois 62701")
+    end
+
+    it "includes street_address_line_2 when present" do
+      activity = create(:volunteering_activity, base_address_attrs.merge(street_address_line_2: "Suite 200"))
+
+      expect(activity.formatted_address).to eq("123 Main St, Suite 200, Springfield, Illinois 62701")
+    end
+  end
 end

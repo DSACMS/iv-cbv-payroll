@@ -225,10 +225,13 @@ en:
       activity_header_numbered: 'Activity %{number}: %{type}'
       additional_comments: Additional comments
       community_service:
-        header: Community service information
-        hours_served: Hours served
+        address: Address
+        coordinator_email: Coordinator's email
+        coordinator_name: Coordinator's name
+        coordinator_phone: Coordinator's phone
+        hours_served: Community service hours
         month: Month
-        organization: Organization
+        organization: Organization name
       consent_label_html: 'Check this box to confirm: <ul class="margin-y-2"><li>The information provided by you is true and complete to the best of your knowledge.</li><li>You agree to inform %{agency_name} of any activities not reflected in this report or any discrepancies found in the information gathered with this tool.</li><li>You understand that providing accurate and complete information is your responsibility, and any false or omitted information may have legal consequences.</li></ul> By sending this report, you authorize its use for community engagement verification by authorized %{agency_initials} personnel.'
       description: The report below has your community engagement information from %{start_date} to %{end_date}. Please review before sending to %{agency_name}.
       description_single_month: The report below has your community engagement information from %{month}. Please review before sending to %{agency_name}.
@@ -236,7 +239,7 @@ en:
         employer: Employer
       legal_agreement: Legal agreement
       submit: Submit to %{agency_name}
-      title: Review and submit your Community Engagement report
+      title: Review and submit your %{benefit} Community Engagement report
       work_programs:
         header: Work Program information
       your_details: Your details
