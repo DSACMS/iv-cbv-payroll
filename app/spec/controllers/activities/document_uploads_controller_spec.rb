@@ -56,12 +56,12 @@ RSpec.describe Activities::DocumentUploadsController, type: :controller do
   end
 
   describe "POST #create" do
-    it "redirects when no upload params are provided" do
+    it "redirects to review for volunteering when no upload params are provided" do
       volunteering_activity = create(:volunteering_activity, activity_flow: activity_flow)
 
       post :create, params: { volunteering_id: volunteering_activity.id }
 
-      expect(response).to redirect_to(activities_flow_root_path)
+      expect(response).to redirect_to(review_activities_flow_volunteering_path(id: volunteering_activity))
     end
 
     it "attaches uploaded documents to the activity" do
@@ -79,11 +79,19 @@ RSpec.describe Activities::DocumentUploadsController, type: :controller do
         }
       end.to change { volunteering_activity.reload.document_uploads.count }.by(1)
 
+      expect(response).to redirect_to(review_activities_flow_volunteering_path(id: volunteering_activity))
+    end
+
+    it "redirects to hub for job training" do
+      job_training_activity = create(:job_training_activity, activity_flow: activity_flow)
+
+      post :create, params: { job_training_id: job_training_activity.id }
+
       expect(response).to redirect_to(activities_flow_root_path)
     end
 
-    it "redirects to review when progress meets routing requirements" do
-      volunteering_activity = create(:volunteering_activity, activity_flow: activity_flow)
+    it "redirects to summary for job training when progress meets routing requirements" do
+      job_training_activity = create(:job_training_activity, activity_flow: activity_flow)
       upload = Rack::Test::UploadedFile.new(
         StringIO.new("%PDF-1.4"),
         "application/pdf",
@@ -98,7 +106,7 @@ RSpec.describe Activities::DocumentUploadsController, type: :controller do
       allow(ActivityFlowProgressCalculator).to receive(:new).with(activity_flow).and_return(calculator)
 
       post :create, params: {
-        volunteering_id: volunteering_activity.id,
+        job_training_id: job_training_activity.id,
         activity: { document_uploads: [ upload ] }
       }
 
