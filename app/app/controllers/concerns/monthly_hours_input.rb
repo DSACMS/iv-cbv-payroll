@@ -12,7 +12,7 @@ module MonthlyHoursInput
     if params[:no_hours] == "1"
       @activity_month.hours = 0
     else
-      @activity_month.hours = params.dig(activity_month_param_key, :hours)
+      @activity_month.hours = params.require(activity_month_param_key).permit(:hours)[:hours]
     end
 
     if !valid_hours_submission?
