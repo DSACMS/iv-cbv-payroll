@@ -70,8 +70,6 @@ en:
       coordinator_phone_number: Coordinator's phone number
       coordinator_section_title: Coordinator information
       created: Community service activity was successfully created.
-      add: Add Community Service Activity
-      date: Date
       deleted: Community service activity was successfully deleted.
       description: Enter as much information as you can. This will help %{agency_acronym} get in touch with your community service organization, if needed.
       document_upload_suggestion_text_html: "<ul><li>Signed statement on organization letterhead from coordinator verifying hours</li><li>Signed monthly log of hours</li></ul>"
