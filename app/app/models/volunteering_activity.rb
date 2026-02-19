@@ -10,15 +10,14 @@ class VolunteeringActivity < Activity
   end
 
   def document_upload_months_to_verify
-    # TODO: Use the proper months when we allow looping through volunteer hours
-    # input pages.
-    Array(date.beginning_of_month)
+    volunteering_activity_months.map(&:month)
   end
 
   def document_upload_details_for_month(month)
-    # TODO: Use the proper hours for each month when we allow looping through
-    # volunteer hours input pages.
-    I18n.t("shared.hours", count: hours) if month.all_month.include?(date)
+    activity_month = volunteering_activity_months
+      .find { |activity_month| activity_month.month == month }
+
+    I18n.t("shared.hours", count: activity_month.hours) if activity_month
   end
 
   def document_upload_suggestion_text
