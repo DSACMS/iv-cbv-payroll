@@ -1,7 +1,14 @@
 <div data-controller="cbv-employer-search" data-cbv-employer-search-cbv-flow-id-value="<%= @flow.id %>">
   <div data-cbv-employer-search-target="helpAlert" class="display-none margin-bottom-4">
-    <%= render Uswds::Alert.new(type: :warning, heading: t(".alert.heading")) do %>
-      <%= render("help/help_link", text: t(".alert.help_options"), source: "banner") %>
+    <% case @flow %>
+    <% when ActivityFlow %>
+      <%= render Uswds::Alert.new(type: :info, heading: t(".activity_flow.alert.heading")) do %>
+        <%= link_to t(".activity_flow.add_employment_manually"), "#", class: "usa-link" %>
+      <% end %>
+    <% else %>
+      <%= render Uswds::Alert.new(type: :warning, heading: t(".alert.heading")) do %>
+        <%= render("help/help_link", text: t(".alert.help_options"), source: "banner") %>
+      <% end %>
     <% end %>
   </div>
 
