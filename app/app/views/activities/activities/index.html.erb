@@ -73,7 +73,7 @@
   <%= render "activities/activities/activity_section",
         activity_type: "community_service",
         section_title: t("activities.community_service.title"),
-        add_path: new_activities_flow_volunteering_path,
+        add_path: new_activities_flow_community_service_path,
         empty_message: t("activities.hub.empty.community_service"),
         cards: community_service_card_data do %>
     <% community_service_card_data.each do |card_data| %>
@@ -87,7 +87,7 @@
           <% end %>
         <% end %>
         <% card.with_footer do %>
-          <%= link_to t("activities.hub.edit"), edit_activities_flow_volunteering_path(id: card_data[:activity].id), class: "usa-link" %>
+          <%= link_to t("activities.hub.edit"), edit_activities_flow_community_service_path(id: card_data[:activity].id), class: "usa-link" %>
         <% end %>
       <% end %>
     <% end %>

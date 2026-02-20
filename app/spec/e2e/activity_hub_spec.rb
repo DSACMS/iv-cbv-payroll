@@ -377,7 +377,7 @@ RSpec.describe 'e2e Activity Hub flow test', :js, type: :feature do
     stub_environment_variable("ACTIVITY_HUB_ENABLED", nil) do
       visit activities_flow_root_path
       expect(page).to have_content(I18n.t("pages.home.header"))
-      visit new_activities_flow_volunteering_path
+      visit new_activities_flow_community_service_path
       expect(page).to have_content(I18n.t("pages.home.header"))
     end
   end

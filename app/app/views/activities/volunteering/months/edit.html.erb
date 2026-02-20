@@ -2,7 +2,7 @@
 <% from_edit = params[:from_edit].present? %>
 <%= render "shared/hours_input",
     activity_month: @activity_month,
-    form_url: activities_flow_volunteering_month_path(volunteering_id: @volunteering_activity, id: @month_index, from_review: from_review ? 1 : nil, from_edit: from_edit ? 1 : nil),
+    form_url: activities_flow_community_service_month_path(community_service_id: @volunteering_activity, id: @month_index, from_review: from_review ? 1 : nil, from_edit: from_edit ? 1 : nil),
     activity_name: @volunteering_activity.organization_name,
     current_month: @current_month,
     months: @months,
