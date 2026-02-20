@@ -3,9 +3,19 @@ Income Verification: Consent-Based Verification (Payroll)
 
 # About the Project
 
-Consent-Based Verification (CBV) is a prototype that allows benefit applicants to verify their income directly using payroll providers. It is currently being piloted for testing and validation purposes.
+Eligibility Made Easy (EMMY) using Consent-Based Verification (CBV) is a prototype that allows benefit applicants to verify their income directly using payroll providers. It is currently being piloted for testing and validation purposes.
 
-# Development and Software Delivery Lifecycle
+ ## Project Vision 
+Eligibility Made Easy (EMMY) is a project to allow applicants to verify their income and community engagement directly using payroll providers and educational records. EMMY was developed and is supported by CMS in order to offer states a drop-in component for their application process to allow applicants to apply for state benefits more easily. This is part of a more comprehensive process to [improve data services for benefits delivery](https://assets.performance.gov/cx/files/OMB-CX-LifeExperience-FFS-ImprovingData.pdf).
+
+ ## Project Mission 
+EMMY uses consent-based verification (CBV) with multiple data sources, making the process much faster and more efficient than a simple document-upload service. CBV enables additional cost avoidance by optimizing manual document review processes. Rather than having to process incorrect or blurry documents, consent-based verification produces an easily consumed report with essential information. Verification information is returned in a standardized format easy for other systems to process (JSON), allowing integration with existing state systems. 
+
+EMMY is under active development by CMS, with new updates released on a weekly cadence.
+# Core Team
+A list of core team members responsible for the code and documentation in this repository can be found in [COMMUNITY.md](COMMUNITY.md) and [CODEOWNERS.md](./CODEOWNERS.md).
+
+# Try it for yourself
 
 If you're new to Rails, see the [Getting Started with Rails](https://guides.rubyonrails.org/getting_started.html)
 guide for an introduction to the framework.
@@ -39,7 +49,7 @@ Most developers on the team code using macOS, so we recommend that platform if p
    * `echo 'if which rbenv >/dev/null 2>/dev/null; then eval "$(rbenv init -)"; fi' >> ~/.zshrc`
    * Close & re-open your terminal
 
-**The following commands must be run in the app directory**
+**The following commands must be run in the `/app` directory**
 1. Install Ruby: `rbenv install`
 1. Install NodeJS `nodenv install`
 1. Install Ruby dependencies: `bundle install`
@@ -444,6 +454,9 @@ See [GOVERNANCE.md](./GOVERNANCE.md)
 
 If you have ideas for how we can improve or add to our capacity building efforts and methods for welcoming people into our community, please let us know by sending an email to: ffs at nava pbc dot com. If you would like to comment on the tool itself, please let us know by filing an **issue on our GitHub repository.**
 
+## Glossary
+Information about terminology and acronyms used in this documentation may be found in [GLOSSARY.md](GLOSSARY.md).
+
 ## Policies
 
 ### Open Source Policy
@@ -464,12 +477,16 @@ the American public, but you are also welcome to submit anonymously.
 
 For more information about our Security, Vulnerability, and Responsible Disclosure Policies, see [SECURITY.md](SECURITY.md).
 
+### Software Bill of Materials (SBOM)
+
+A Software Bill of Materials (SBOM) is a formal record containing the details and supply chain relationships of various components used in building software.
+
+In the spirit of [Executive Order 14028 - Improving the Nation’s Cyber Security](https://www.gsa.gov/technology/it-contract-vehicles-and-purchasing-programs/information-technology-category/it-security/executive-order-14028), a SBOM for this repository is provided here: https://github.com/DSACMS/iv-cbv-payroll/network/dependencies.
+
+For more information and resources about SBOMs, visit: https://www.cisa.gov/sbom.
+
 ### Public domain
 
 This project is in the public domain within the United States, and copyright and related rights in the work worldwide are waived through the [CC0 1.0 Universal public domain dedication](https://creativecommons.org/publicdomain/zero/1.0/) as indicated in [LICENSE](LICENSE).
 
 All contributions to this project will be released under the CC0 dedication. By submitting a pull request or issue, you are agreeing to comply with this waiver of copyright interest.
-
-# Core Team
-
-See [CODEOWNERS.md](./CODEOWNERS.md)
