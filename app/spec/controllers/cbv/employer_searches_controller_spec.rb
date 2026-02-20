@@ -155,6 +155,77 @@ RSpec.describe Cbv::EmployerSearchesController do
         get :show
         expect(response).to be_successful
       end
+
+      context "when there are search results" do
+        before do
+          pinwheel_stub_request_items_response
+          argyle_stub_request_employer_search_response("bob")
+        end
+
+        it "shows the add employment manually button instead of the employer not listed link" do
+          get :show, params: { query: "results" }
+          expect(response.body).to include(I18n.t("cbv.employer_searches.show.activity_flow.add_employment_manually"))
+          expect(response.body).not_to include(I18n.t("cbv.employer_searches.show.employer_not_listed"))
+        end
+      end
+
+      context "when there are no search results" do
+        before do
+          pinwheel_stub_request_items_no_items_response
+          argyle_stub_request_employer_search_response("empty")
+        end
+
+        it "shows the activity flow no results content with add employment manually button" do
+          get :show, params: { query: "no_results" }
+          # Need to escape HTML because rails html-escapes the translation output and otherwise wouldn't match
+          expect(response.body).to include(CGI.escapeHTML(I18n.t("cbv.employer_searches.show.activity_flow.no_results_title")))
+          expect(response.body).to include(I18n.t("cbv.employer_searches.show.activity_flow.no_results_body"))
+          expect(response.body).to include(I18n.t("cbv.employer_searches.show.activity_flow.add_employment_manually"))
+        end
+
+        it "does not show the CbvFlow troubleshooting steps or zero results heading" do
+          get :show, params: { query: "no_results" }
+          expect(response.body).not_to include(I18n.t("cbv.employer_searches.show.no_results_steps_title"))
+          expect(response.body).not_to include(I18n.t("cbv.employer_searches.show.results", count: 0))
+        end
+      end
+
+      it "renders the activity flow help alert" do
+        get :show
+        # Need to escape HTML because rails html-escapes the translation output and otherwise wouldn't match
+        expect(response.body).to include(CGI.escapeHTML(I18n.t("cbv.employer_searches.show.activity_flow.alert.heading")))
+        expect(response.body).to include(I18n.t("cbv.employer_searches.show.activity_flow.add_employment_manually"))
+      end
+    end
+
+    context "for a CbvFlow" do
+      render_views
+
+      context "when there are search results" do
+        before do
+          pinwheel_stub_request_items_response
+          argyle_stub_request_employer_search_response("bob")
+        end
+
+        it "does not show the add employment manually button" do
+          get :show, params: { query: "results" }
+          expect(response.body).not_to include(I18n.t("cbv.employer_searches.show.activity_flow.add_employment_manually"))
+          expect(response.body).to include(I18n.t("cbv.employer_searches.show.employer_not_listed"))
+        end
+      end
+
+      context "when there are no search results" do
+        before do
+          pinwheel_stub_request_items_no_items_response
+          argyle_stub_request_employer_search_response("empty")
+        end
+
+        it "does not show the activity flow no results content" do
+          get :show, params: { query: "no_results" }
+          expect(response.body).not_to include(I18n.t("cbv.employer_searches.show.activity_flow.no_results_title"))
+          expect(response.body).to include(I18n.t("cbv.employer_searches.show.no_results_steps_title"))
+        end
+      end
     end
   end
 end

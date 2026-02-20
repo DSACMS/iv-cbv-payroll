@@ -409,7 +409,13 @@ en:
     employer_searches:
       show:
         activity_flow:
+          add_employment_manually: Add employment manually
+          alert:
+            heading: Can't connect to your payroll provider?
+          cant_find_employer: Can't find your employer or business?
           header: Search for your employer
+          no_results_body: You will need to enter information about your employment manually. You will also need to upload documents like pay stubs.
+          no_results_title: We couldn't find your employer or business.
           search_label: Enter the name of your employer. If you work for yourself, enter the name of your business.
         alert:
           heading: Need help connecting to your payroll provider?
