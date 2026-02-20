@@ -1,5 +1,5 @@
 <%= turbo_frame_tag "employers" do %>
-  <% if @query.present? && !(@flow.is_a?(ActivityFlow) && @employers.count == 0) %>
+  <% if @query.present? && !(activity_flow? && @employers.count == 0) %>
     <h2 class="site-preview-heading margin-bottom-2">
       <%= t("cbv.employer_searches.show.results", count: @employers.count) %>
     </h2>
