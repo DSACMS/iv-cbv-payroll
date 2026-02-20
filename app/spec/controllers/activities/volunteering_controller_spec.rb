@@ -30,7 +30,7 @@ RSpec.describe Activities::VolunteeringController, type: :controller do
       end.to change(activity_flow.volunteering_activities, :count).by(1)
 
       activity = activity_flow.volunteering_activities.last
-      expect(response).to redirect_to(edit_activities_flow_volunteering_month_path(volunteering_id: activity, id: 0))
+      expect(response).to redirect_to(edit_activities_flow_community_service_month_path(community_service_id: activity, id: 0))
     end
 
     it "stores submitted fields on the activity" do
@@ -76,7 +76,7 @@ RSpec.describe Activities::VolunteeringController, type: :controller do
       patch :update, params: { id: volunteering_activity.id, volunteering_activity: { organization_name: "Updated Org" } }
 
       expect(volunteering_activity.reload.organization_name).to eq("Updated Org")
-      expect(response).to redirect_to(edit_activities_flow_volunteering_month_path(volunteering_id: volunteering_activity, id: 0, from_edit: 1))
+      expect(response).to redirect_to(edit_activities_flow_community_service_month_path(community_service_id: volunteering_activity, id: 0, from_edit: 1))
     end
   end
 

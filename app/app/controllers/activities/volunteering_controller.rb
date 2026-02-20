@@ -8,7 +8,7 @@ class Activities::VolunteeringController < Activities::BaseController
   def create
     @volunteering_activity = @flow.volunteering_activities.new(volunteering_activity_params)
     if @volunteering_activity.save
-      redirect_to edit_activities_flow_volunteering_month_path(volunteering_id: @volunteering_activity, id: 0)
+      redirect_to edit_activities_flow_community_service_month_path(community_service_id: @volunteering_activity, id: 0)
     else
       render :new, status: :unprocessable_content
     end
@@ -16,7 +16,7 @@ class Activities::VolunteeringController < Activities::BaseController
 
   def update
     if @volunteering_activity.update(volunteering_activity_params)
-      redirect_to edit_activities_flow_volunteering_month_path(volunteering_id: @volunteering_activity, id: 0, from_edit: 1)
+      redirect_to edit_activities_flow_community_service_month_path(community_service_id: @volunteering_activity, id: 0, from_edit: 1)
     else
       render :edit, status: :unprocessable_content
     end

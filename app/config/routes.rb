@@ -51,7 +51,7 @@ Rails.application.routes.draw do
     scope "/activities", as: :activities_flow, module: :activities do
       root to: "activities#index"
       resource :entry, only: %i[show], controller: "entries"
-      resources :volunteering, only: %i[new create edit update destroy], controller: "volunteering" do
+      resources :community_service, only: %i[new create edit update destroy], controller: "volunteering" do
         resources :document_uploads, only: %i[new create], controller: "/activities/document_uploads"
         resources :months, only: %i[edit update], controller: "volunteering/months"
 

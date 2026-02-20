@@ -30,12 +30,12 @@ RSpec.describe Activities::DocumentUploadsController, type: :controller do
       )
       create(:volunteering_activity_month, volunteering_activity: volunteering_activity, hours: 6)
 
-      get :new, params: { volunteering_id: volunteering_activity.id }
+      get :new, params: { community_service_id: volunteering_activity.id }
 
       expect(response).to have_http_status(:ok)
       expect(response.body).to include(I18n.t("activities.document_uploads.new.title", name: "Local Food Bank"))
       expect(response.body).to include(I18n.t("shared.hours", count: 6))
-      expect(response.body).to include(activities_flow_volunteering_document_uploads_path)
+      expect(response.body).to include(activities_flow_community_service_document_uploads_path)
     end
 
     it "renders the upload form for a job training activity" do
@@ -59,9 +59,9 @@ RSpec.describe Activities::DocumentUploadsController, type: :controller do
     it "redirects to review for volunteering when no upload params are provided" do
       volunteering_activity = create(:volunteering_activity, activity_flow: activity_flow)
 
-      post :create, params: { volunteering_id: volunteering_activity.id }
+      post :create, params: { community_service_id: volunteering_activity.id }
 
-      expect(response).to redirect_to(review_activities_flow_volunteering_path(id: volunteering_activity))
+      expect(response).to redirect_to(review_activities_flow_community_service_path(id: volunteering_activity))
     end
 
     it "attaches uploaded documents to the activity" do
@@ -74,12 +74,12 @@ RSpec.describe Activities::DocumentUploadsController, type: :controller do
 
       expect do
         post :create, params: {
-          volunteering_id: volunteering_activity.id,
+          community_service_id: volunteering_activity.id,
           activity: { document_uploads: [ upload ] }
         }
       end.to change { volunteering_activity.reload.document_uploads.count }.by(1)
 
-      expect(response).to redirect_to(review_activities_flow_volunteering_path(id: volunteering_activity))
+      expect(response).to redirect_to(review_activities_flow_community_service_path(id: volunteering_activity))
     end
 
     it "redirects to hub for job training" do

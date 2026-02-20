@@ -26,8 +26,8 @@ class Activities::DocumentUploadsController < Activities::BaseController
   end
 
   def set_activity
-    @activity = if params[:volunteering_id]
-                  @flow.volunteering_activities.find(params[:volunteering_id])
+    @activity = if params[:community_service_id]
+                  @flow.volunteering_activities.find(params[:community_service_id])
                 elsif params[:job_training_id]
                   @flow.job_training_activities.find(params[:job_training_id])
                 else
@@ -44,16 +44,16 @@ class Activities::DocumentUploadsController < Activities::BaseController
   end
 
   def after_activity_path
-    if params[:volunteering_id]
-      review_activities_flow_volunteering_path(id: @activity, from_edit: params[:from_edit].presence)
+    if params[:community_service_id]
+      review_activities_flow_community_service_path(id: @activity, from_edit: params[:from_edit].presence)
     else
       super
     end
   end
 
   def upload_path
-    if params[:volunteering_id]
-      activities_flow_volunteering_document_uploads_path(from_edit: params[:from_edit].presence)
+    if params[:community_service_id]
+      activities_flow_community_service_document_uploads_path(from_edit: params[:from_edit].presence)
     elsif params[:job_training_id]
       activities_flow_job_training_document_uploads_path
     else
