@@ -1,6 +1,6 @@
 # How to Contribute
 
-Eligibility Made Easy (EMMY) is being developed in the open by CMS and its contractors. We use internal tools to track our work (bugs and feature enhancements), and, as such, this repo is not architected to receive public contributions.
+Eligibility Made Easy (Emmy) is being developed in the open by CMS and its contractors. We use internal tools to track our work (bugs and feature enhancements), and, as such, this repo is not architected to receive public contributions.
 
 ## Getting Started
 
