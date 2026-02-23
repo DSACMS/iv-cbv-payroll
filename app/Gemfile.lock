@@ -330,7 +330,7 @@ GEM
     net-smtp (0.5.1)
       net-protocol
     net-ssh (7.3.0)
-    newrelic_rpm (10.0.0)
+    newrelic_rpm (10.2.0)
       logger
     nio4r (2.7.5)
     nokogiri (1.19.1-aarch64-linux-gnu)
