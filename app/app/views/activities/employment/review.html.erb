@@ -8,7 +8,13 @@
 </p>
 
 <h2><%= t("activities.employment.review.employer_info") %></h2>
-<%= render(EmploymentReviewTableComponent.new(employment_activity: @employment_activity)) %>
+<%= render(ContactInfoReviewTableComponent.new(rows: [
+  { label: t("activities.employment.review.name"), value: @employment_activity.employer_name },
+  { label: t("activities.employment.review.address"), value: @employment_activity.formatted_address },
+  { label: t("activities.employment.review.contact_name"), value: @employment_activity.contact_name },
+  { label: t("activities.employment.review.contact_email"), value: @employment_activity.contact_email },
+  { label: t("activities.employment.review.contact_phone"), value: @employment_activity.contact_phone_number }
+])) %>
 
 <%= form_with url: save_review_activities_flow_income_employment_path(id: @employment_activity, from_edit: params[:from_edit].presence),
       method: :patch,
