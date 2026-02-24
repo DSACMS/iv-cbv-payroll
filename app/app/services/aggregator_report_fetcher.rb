@@ -84,6 +84,6 @@ class AggregatorReportFetcher
   end
 
   def reporting_date_range
-    @cbv_flow.respond_to?(:reporting_window_range) ? @cbv_flow.reporting_window_range : nil
+    @cbv_flow.reporting_window_range
   end
 end

@@ -150,6 +150,37 @@ RSpec.describe ActivityFlowMonthlySummary, type: :model do
       end
     end
 
+    context "when there are multiple synced payroll accounts" do
+      let(:flow) { create(:activity_flow, reporting_window_months: 2) }
+      let(:month_keys) { flow.reporting_months.map { |m| m.strftime("%Y-%m") } }
+      let(:mock_report) { instance_double(Aggregators::AggregatorReports::AggregatorReport) }
+
+      before do
+        create(:payroll_account, :pinwheel_fully_synced, flow: flow, aggregator_account_id: "acct-1")
+        create(:payroll_account, :pinwheel_fully_synced, flow: flow, aggregator_account_id: "acct-2")
+        month_data = month_keys.index_with { { accrued_gross_earnings: 100_00 } }
+        allow(mock_report).to receive_messages(
+          has_fetched?: true,
+          summarize_by_month: { "acct-1" => month_data, "acct-2" => month_data }
+        )
+        allow(mock_report).to receive(:find_account_report) do
+          double(employment: double(employer_name: "Employer", employment_type: :w2))
+        end
+        allow(AggregatorReportFetcher).to receive(:new).with(flow).and_return(double(report: mock_report))
+      end
+
+      it "persists complete cached rows for both the first and second job" do
+        result = described_class.by_account_with_fallback(activity_flow: flow)
+
+        [ "acct-1", "acct-2" ].each do |account_id|
+          expect(result[account_id].keys).to match_array(month_keys)
+          month_keys.each do |month_key|
+            expect(result[account_id][month_key][:accrued_gross_earnings]).to be > 0
+          end
+        end
+      end
+    end
+
     context "when there is no report available" do
       before do
         allow(AggregatorReportFetcher).to receive(:new).with(flow).and_return(double(report: nil))

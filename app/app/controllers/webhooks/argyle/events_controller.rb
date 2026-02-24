@@ -146,7 +146,8 @@ class Webhooks::Argyle::EventsController < ApplicationController
         payroll_accounts: [ payroll_account ],
         argyle_service: argyle_for(@flow),
         days_to_fetch_for_w2: aggregator_lookback_days[:w2],
-        days_to_fetch_for_gig: aggregator_lookback_days[:gig]
+        days_to_fetch_for_gig: aggregator_lookback_days[:gig],
+        reporting_date_range: @flow.reporting_window_range
       )
       report.fetch
 
