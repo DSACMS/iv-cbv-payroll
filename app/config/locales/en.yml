@@ -26,6 +26,20 @@ en:
             date_of_birth:
               future_date: Date of birth must be today or in the past
               invalid_date: Enter a valid date of birth
+        cbv_applicant/nh_dhhs:
+          attributes:
+            agency_id_number:
+              blank: Enter a valid agency ID number.
+              invalid_format: Agency ID number must be 7 digits.
+            beacon_id:
+              invalid_format: Your WELID must be 6 characters. It can only include letters and numbers.
+            case_number:
+              invalid_format: Enter the case number in the ANGIE/sPOS format, i.e. 00012345678A.
+            client_id_number:
+              invalid_format: Enter the client's CIN in the correct format, XX00000X.
+            date_of_birth:
+              future_date: Date of birth must be today or in the past
+              invalid_date: Enter a valid date of birth
         cbv_applicant/sandbox:
           attributes:
             agency_id_number:
@@ -341,6 +355,7 @@ en:
       footer: This is an automatically generated message from your SNAP agency. Please don’t reply to this email.
       greeting: Hello,
       header:
+        nh_dhhs: Test Agency has sent you an invitation to verify your income
         sandbox: Test Agency has sent you an invitation to verify your income
       subject:
         default: Verify your income for your SNAP application or renewal
@@ -374,6 +389,29 @@ en:
             help_text: 'For example: January 19 2000'
             prompt: Your date of birth
             super_one_html: Date of birth<sup>1</sup>
+      nh_dhhs:
+        fields:
+          case_number:
+            blank: Enter your case number.
+            prompt: Case number
+            super_one_html: Case number<sup>1</sup>
+          date_of_birth:
+            blank: Enter your date of birth.
+            help_text: 'For example: January 19 2000'
+            prompt: Date of birth
+            super_one_html: Date of birth<sup>1</sup>
+          first_name:
+            blank: Enter your first name.
+            prompt: First name
+            super_one_html: First name<sup>1</sup>
+          last_name:
+            blank: Enter your last name.
+            prompt: Last name
+            super_one_html: Last name<sup>1</sup>
+          middle_name:
+            blank: Enter your middle name.
+            prompt: Middle name
+            super_one_html: Middle name<sup>1</sup>
       sandbox:
         fields:
           case_number:
@@ -489,6 +527,7 @@ en:
         body_1: If you still need to verify your income, please submit your income information by visiting %{agency_acronym}'s website.
         cta_button_html:
           la_ldh: <a href="%{agency_url}" class="usa-button" target="_blank" rel="noopener noreferrer">Visit LDH's website</a>
+          nh_dhhs: <a href="https://www.mass.gov/guides/how-to-contact-dta" class="usa-button" target="_blank" rel="noopener noreferrer">Learn more at Test Agency</a>
           sandbox: <a href="https://www.mass.gov/guides/how-to-contact-dta" class="usa-button" target="_blank" rel="noopener noreferrer">Learn more at Test Agency</a>
         title: Your invitation to verify income has expired
     missing_results:
@@ -569,6 +608,7 @@ en:
           agency_header_name:
             az_des: Department of Economic Security
             la_ldh: Department of Health
+            nh_dhhs: Test Agency
             sandbox: Test Agency
           caseworker:
             agreement_consent_timestamp: Agreement Consent Timestamp
@@ -856,13 +896,16 @@ en:
     agency_acronym:
       az_des: DES/FAA
       la_ldh: LDH
+      nh_dhhs: TA
       sandbox: TA
     agency_full_name:
       az_des: Department of Economic Security/Family Assistance Administration
       la_ldh: Louisiana Department of Health
+      nh_dhhs: Test Agency
       sandbox: Test Agency
     app_name:
       az_des: MyFamilyBenefits
+      nh_dhhs: TAApp
       sandbox: TAApp
     banner:
       lock: Lock
@@ -870,6 +913,7 @@ en:
     benefit:
       az_des: Nutrition Assistance
       la_ldh: Medicaid
+      nh_dhhs: Medicaid
       sandbox: Medicaid
     footer:
       feedback: Share feedback
@@ -878,6 +922,7 @@ en:
       cbv_flow_title:
         az_des: Department of Economic Security
         la_ldh: Department of Health
+        nh_dhhs: Test Agency
         sandbox: Test Agency
       close: Close
       help: Help
@@ -908,6 +953,7 @@ en:
     reporting_purpose:
       az_des: Mid Approval Contact form
       la_ldh: benefits
+      nh_dhhs: benefits
       sandbox: benefits
     select_placeholder: "- Select -"
     skip_link: Skip to main content
