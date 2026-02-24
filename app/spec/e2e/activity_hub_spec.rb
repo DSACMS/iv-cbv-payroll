@@ -163,9 +163,6 @@ RSpec.describe 'e2e Activity Hub flow test', :js, type: :feature do
     fill_in "payroll_account[additional_information]",
       with: "Some kind of additional information"
     click_button I18n.t("cbv.payment_details.show.continue")
-    verify_page(page, title: I18n.t("activities.hub.title"))
-
-    click_button I18n.t("activities.hub.review_and_submit")
     verify_page(page, title: I18n.t("activities.summary.title", benefit: I18n.t("shared.benefit.sandbox")))
 
     # /activities/summary
