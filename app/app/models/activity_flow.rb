@@ -6,6 +6,7 @@ class ActivityFlow < Flow
   has_many :volunteering_activities, dependent: :destroy
   has_many :job_training_activities, dependent: :destroy
   has_many :education_activities, dependent: :destroy
+  has_many :employment_activities, dependent: :destroy
   has_many :payroll_accounts, as: :flow, dependent: :destroy
   has_many :activity_flow_monthly_summaries, dependent: :destroy
 
@@ -59,6 +60,7 @@ class ActivityFlow < Flow
     education_activities.where.associated(:nsc_enrollment_terms).exists? ||
       volunteering_activities.exists? ||
       job_training_activities.exists? ||
+      employment_activities.exists? ||
       payroll_accounts.exists?
   end
 

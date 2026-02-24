@@ -79,6 +79,39 @@ class UswdsFormBuilder < ActionView::Helpers::FormBuilder
     end
   end
 
+  def phone_field(attribute, options = {})
+    label_text = options.delete(:label)
+    data = options.delete(:data) || {}
+    input_class = has_error?(attribute) ? "usa-input usa-input--error" : "usa-input"
+
+    form_group(attribute) do
+      us_text_field_label(attribute, label_text, options) +
+        @template.render(Uswds::PhoneInput.new(
+          name: field_name(attribute),
+          id: field_id(attribute),
+          value: object&.send(attribute),
+          input_class: input_class,
+          data: data
+        ))
+    end
+  end
+
+  def combo_box(attribute, choices, options = {})
+    label_text = options.delete(:label)
+    include_blank = options.delete(:include_blank)
+
+    form_group(attribute) do
+      us_text_field_label(attribute, label_text, options) +
+        @template.render(Uswds::ComboBox.new(
+          name: field_name(attribute),
+          id: field_id(attribute),
+          options: choices,
+          selected: object&.send(attribute),
+          include_blank: include_blank != false
+        ))
+    end
+  end
+
   def submit(value = nil, options = {})
     append_to_option(options, :class, " usa-button")
 

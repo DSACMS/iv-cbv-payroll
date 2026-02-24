@@ -1,0 +1,13 @@
+<% if @label %>
+  <label class="usa-label" for="<%= @id %>">
+    <%= @label %>
+  </label>
+<% end %>
+<div class="usa-input-group">
+  <div class="usa-input-prefix" aria-hidden="true">
+    <svg class="usa-icon" focusable="false" role="img">
+      <use href="<%= icon_href %>"></use>
+    </svg>
+  </div>
+  <%= tag.input(**@input_attrs) %>
+</div>

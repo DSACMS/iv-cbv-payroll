@@ -3,7 +3,7 @@
     <% case @flow %>
     <% when ActivityFlow %>
       <%= render Uswds::Alert.new(type: :info, heading: t(".activity_flow.alert.heading")) do %>
-        <%= link_to t(".activity_flow.add_employment_manually"), "#", class: "usa-link" %>
+        <%= link_to t(".activity_flow.add_employment_manually"), new_activities_flow_income_employment_path, class: "usa-link", data: { turbo_frame: "_top" } %>
       <% end %>
     <% else %>
       <%= render Uswds::Alert.new(type: :warning, heading: t(".alert.heading")) do %>
