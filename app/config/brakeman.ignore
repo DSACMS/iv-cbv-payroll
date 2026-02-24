@@ -3,13 +3,13 @@
     {
       "warning_type": "Cross-Site Scripting",
       "warning_code": 2,
-      "fingerprint": "780d2436d13a95f13f64500cbdc4f7fdf3b8cc90e9e6d93b4c8aa7733a9ebc94",
+      "fingerprint": "3998d99d07eb5546939370b57d21f302c39810f29334089a430cb7b9aae58665",
       "check_name": "CrossSiteScripting",
       "message": "Unescaped parameter value",
       "file": "app/views/activities/document_uploads/new.html.erb",
       "line": 54,
       "link": "https://brakemanscanner.org/docs/warning_types/cross_site_scripting",
-      "code": "((flow_class(flow_param).create_from_invitation(invitation_class.find_by(:auth_token => normalize_token(params[:token])), (cookies.permanent.signed[:device_id] or { :value => SecureRandom.uuid, :httponly => true }), params) or flow_class.find(session[:flow_id])).volunteering_activities.find(params[:volunteering_id]) or if params[:job_training_id] then\n  (flow_class(flow_param).create_from_invitation(invitation_class.find_by(:auth_token => normalize_token(params[:token])), (cookies.permanent.signed[:device_id] or { :value => SecureRandom.uuid, :httponly => true }), params) or flow_class.find(session[:flow_id])).job_training_activities.find(params[:job_training_id])\nelse\n  raise(\"No activity param matched in DocumentUploadsController#set_activity.\\nMake sure to add it there if you're adding DocumentUploadable to a\\nnew activity type.\\n\")\nend).document_upload_suggestion_text",
+      "code": "((flow_class(flow_param).create_from_invitation(invitation_class.find_by(:auth_token => normalize_token(params[:token])), (cookies.permanent.signed[:device_id] or { :value => SecureRandom.uuid, :httponly => true }), params) or flow_class.find(session[:flow_id])).volunteering_activities.find(params[:community_service_id]) or if params[:job_training_id] then\n  (flow_class(flow_param).create_from_invitation(invitation_class.find_by(:auth_token => normalize_token(params[:token])), (cookies.permanent.signed[:device_id] or { :value => SecureRandom.uuid, :httponly => true }), params) or flow_class.find(session[:flow_id])).job_training_activities.find(params[:job_training_id])\nelse\n  raise(\"No activity param matched in DocumentUploadsController#set_activity.\\nMake sure to add it there if you're adding DocumentUploadable to a\\nnew activity type.\\n\")\nend).document_upload_suggestion_text",
       "render_path": [
         {
           "type": "controller",
