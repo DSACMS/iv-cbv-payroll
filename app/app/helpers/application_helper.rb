@@ -26,7 +26,6 @@ module ApplicationHelper
   # client agency-specific translations as:
   #
   # foo:
-  #   az_des: Some String
   #   la_ldh: Other String
   #   default: Default String
   #

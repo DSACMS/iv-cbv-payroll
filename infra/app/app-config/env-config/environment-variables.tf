@@ -140,10 +140,6 @@ locals {
       manage_method     = "manual"
       secret_store_name = "/service/${var.app_name}-${var.environment}/pinwheel-api-token-sandbox"
     },
-    AZ_DES_PINWHEEL_ENVIRONMENT = {
-      manage_method     = "manual"
-      secret_store_name = "/service/${var.app_name}-${var.environment}/az-des-pinwheel-environment"
-    },
     LA_LDH_PINWHEEL_ENVIRONMENT = {
       manage_method     = "manual"
       secret_store_name = "/service/${var.app_name}-${var.environment}/la-ldh-pinwheel-environment"
@@ -155,10 +151,6 @@ locals {
 
 
     # Argyle Configuration:
-    AZ_DES_ARGYLE_ENVIRONMENT = {
-      manage_method     = "manual"
-      secret_store_name = "/service/${var.app_name}-${var.environment}/az-des-argyle-environment"
-    },
     LA_LDH_ARGYLE_ENVIRONMENT = {
       manage_method     = "manual"
       secret_store_name = "/service/${var.app_name}-${var.environment}/la-ldh-argyle-environment"
@@ -205,36 +197,11 @@ locals {
       manage_method     = "manual"
       secret_store_name = "/service/${var.app_name}-${var.environment}/azure-sandbox-tenant-id"
     },
-    AZ_DES_SFTP_USER = {
-      manage_method     = "manual"
-      secret_store_name = "/service/${var.app_name}-${var.environment}/az-des-sftp-user"
-    },
-    AZ_DES_SFTP_PASSWORD = {
-      manage_method     = "manual"
-      secret_store_name = "/service/${var.app_name}-${var.environment}/az-des-sftp-password"
-    },
-    AZ_DES_SFTP_URL = {
-      manage_method     = "manual"
-      secret_store_name = "/service/${var.app_name}-${var.environment}/az-des-sftp-url"
-    },
-    AZ_DES_SFTP_DIRECTORY = {
-      manage_method     = "manual"
-      secret_store_name = "/service/${var.app_name}-${var.environment}/az-des-sftp-directory"
-    },
 
     # Other site-specific Configuration:
     LA_LDH_WEEKLY_REPORT_RECIPIENTS = {
       manage_method     = "manual"
       secret_store_name = "/service/${var.app_name}-${var.environment}/la-ldh-weekly-report-recipients"
-    },
-    AZ_DES_WEEKLY_REPORT_RECIPIENTS = {
-      manage_method     = "manual"
-      secret_store_name = "/service/${var.app_name}-${var.environment}/az-des-weekly-report-recipients"
-    }
-    # Domain names
-    AZ_DES_DOMAIN_NAME = {
-      manage_method     = "manual"
-      secret_store_name = "/service/${var.app_name}-${var.environment}/az-des-domain-name"
     },
     LA_LDH_DOMAIN_NAME = {
       manage_method     = "manual"
