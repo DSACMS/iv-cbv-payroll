@@ -148,7 +148,7 @@ class Webhooks::Pinwheel::EventsController < ApplicationController
         paystubs_gross_pay_amounts_median: paystub_gross_pay_amounts.sort[paystub_gross_pay_amounts.length / 2],
         paystubs_gross_pay_amounts_average: paystub_gross_pay_amounts.sum.to_f / paystub_gross_pay_amounts.length,
         paystubs_gross_pay_amounts_min: paystub_gross_pay_amounts.min,
-        paystubs_latest_earnings_amount_total: latest_paystub_with_gross_pay&.earnings&.filter_map(&:amount).sum,
+        paystubs_latest_earnings_amount_total: latest_paystub_with_gross_pay&.earnings&.filter_map(&:amount)&.sum,
         paystubs_latest_gross_pay_amount: latest_paystub_with_gross_pay&.gross_pay_amount,
         paystubs_days_since_last_pay_date: report.days_since_last_paydate,
 
