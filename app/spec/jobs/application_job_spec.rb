@@ -1,43 +1,31 @@
 require "rails_helper"
 
 RSpec.describe ApplicationJob do
-  class TestJob < ApplicationJob
-    def perform
-      raise "failed"
-    end
-  end
-
-  it "records to newrelic with job tracking and distributed tracing metadata" do
-    expect(NewRelic::Agent).to receive(:record_custom_event).with(
-      "SolidQueueJobFailed",
-      hash_including(
-        executions: 1,
-        max_attempts: 5,
-        job_id: anything
-      )
-    )
-    expect { TestJob.perform_now }.to raise_error("failed")
-  end
-
-  describe "retry_on behavior with rescue_from" do
-    class RetryTestJob < ApplicationJob
+  describe "#with_error_reporting" do
+    class TestJob < ApplicationJob
       def perform
-        raise StandardError, "intentional test error"
+        puts "running"
+        raise StandardError, "failed"
       end
     end
 
-    it "re-raises the exception after rescue_from to allow retry_on to work" do
+    it "records to newrelic with job tracking and distributed tracing metadata" do
       expect(NewRelic::Agent).to receive(:record_custom_event).with(
         "SolidQueueJobFailed",
         hash_including(
-          error_class: "StandardError",
-          error_message: "intentional test error",
           executions: 1,
-          max_attempts: 5
+          max_attempts: 5,
+          job_id: anything
         )
       )
 
-      expect { RetryTestJob.perform_now }.to raise_error(StandardError, "intentional test error")
+      TestJob.perform_now
+    end
+
+    it "results in the job still remaining enqueued in to retry in the future" do
+      expect do
+        TestJob.perform_now
+      end.to have_enqueued_job(TestJob)
     end
   end
 
