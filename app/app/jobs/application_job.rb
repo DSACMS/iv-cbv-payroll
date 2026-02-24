@@ -44,6 +44,6 @@ class ApplicationJob < ActiveJob::Base
       executions: self.executions,
       max_attempts: 5
     }.merge(trace_metadata))
-    raise
+    raise error
   end
 end
