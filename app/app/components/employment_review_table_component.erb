@@ -1,0 +1,46 @@
+<%= render(TableComponent.new(is_responsive: true, class_names: "activity-review-org-table")) do |table| %>
+  <%= table.with_row do |row| %>
+    <%= row.with_data_cell(is_header: true) do %>
+      <%= t("activities.employment.review.name") %>
+    <% end %>
+    <%= row.with_data_cell do %>
+      <%= display_value(@activity.employer_name) %>
+    <% end %>
+  <% end %>
+
+  <%= table.with_row do |row| %>
+    <%= row.with_data_cell(is_header: true) do %>
+      <%= t("activities.employment.review.address") %>
+    <% end %>
+    <%= row.with_data_cell do %>
+      <%= display_value(formatted_address) %>
+    <% end %>
+  <% end %>
+
+  <%= table.with_row do |row| %>
+    <%= row.with_data_cell(is_header: true) do %>
+      <%= t("activities.employment.review.contact_name") %>
+    <% end %>
+    <%= row.with_data_cell do %>
+      <%= display_value(@activity.contact_name) %>
+    <% end %>
+  <% end %>
+
+  <%= table.with_row do |row| %>
+    <%= row.with_data_cell(is_header: true) do %>
+      <%= t("activities.employment.review.contact_email") %>
+    <% end %>
+    <%= row.with_data_cell do %>
+      <%= display_value(@activity.contact_email) %>
+    <% end %>
+  <% end %>
+
+  <%= table.with_row do |row| %>
+    <%= row.with_data_cell(is_header: true) do %>
+      <%= t("activities.employment.review.contact_phone") %>
+    <% end %>
+    <%= row.with_data_cell do %>
+      <%= display_value(@activity.contact_phone_number) %>
+    <% end %>
+  <% end %>
+<% end %>

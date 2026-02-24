@@ -7,7 +7,12 @@
   <%= t("activities.employment.review.description", employer_name: @employment_activity.employer_name) %>
 </p>
 
-<h2><%= t("activities.employment.review.employer_info") %></h2>
+<div class="display-flex flex-justify flex-align-center">
+  <h2 class="margin-y-0"><%= t("activities.employment.review.employer_info") %></h2>
+  <%= link_to t("activities.hub.edit"),
+        edit_activities_flow_income_employment_path(id: @employment_activity, from_review: 1, from_edit: params[:from_edit].presence),
+        class: "usa-link" %>
+</div>
 <%= render(ContactInfoReviewTableComponent.new(rows: [
   { label: t("activities.employment.review.name"), value: @employment_activity.employer_name },
   { label: t("activities.employment.review.address"), value: @employment_activity.formatted_address },
