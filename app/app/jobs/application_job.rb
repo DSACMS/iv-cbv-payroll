@@ -1,4 +1,6 @@
 class ApplicationJob < ActiveJob::Base
+  around_perform :with_error_reporting
+
   retry_on Exception, wait: :polynomially_longer, attempts: 5
 
   def event_logger
@@ -20,7 +22,9 @@ class ApplicationJob < ActiveJob::Base
     Rails.logger.tagged(tags, &block)
   end
 
-  rescue_from(Exception) do |error|
+  def with_error_reporting
+    yield
+  rescue Exception => error
     trace_metadata = {}
     if NewRelic::Agent::Tracer.current_transaction
       trace_metadata = {
