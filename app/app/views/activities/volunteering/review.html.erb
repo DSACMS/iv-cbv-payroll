@@ -10,9 +10,7 @@
 <h2><%= t("activities.community_service.review.organization_info") %></h2>
 <%= render(ContactInfoReviewTableComponent.new(rows: [
   { label: t("activities.community_service.review.name"), value: @volunteering_activity.organization_name },
-  { label: t("activities.community_service.review.address"), value: [
-    @volunteering_activity.street_address, @volunteering_activity.city, @volunteering_activity.state
-  ].select(&:present?).join(", ").presence },
+  { label: t("activities.community_service.review.address"), value: ContactInfoReviewTableComponent.formatted_address(@volunteering_activity) },
   { label: t("activities.community_service.review.coordinator_name"), value: @volunteering_activity.coordinator_name },
   { label: t("activities.community_service.review.coordinator_email"), value: @volunteering_activity.coordinator_email },
   { label: t("activities.community_service.review.coordinator_phone"), value: @volunteering_activity.coordinator_phone_number }
