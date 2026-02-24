@@ -309,6 +309,7 @@ class Webhooks::Argyle::EventsController < ApplicationController
     rescue => ex
       raise ex unless Rails.env.production?
 
+      NewRelic::Agent.notice_error(ex)
       Rails.logger.error "Unable to process webhook event (in #{self.class.name}): #{ex}"
     end
   end

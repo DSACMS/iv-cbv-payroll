@@ -68,6 +68,7 @@ class PayrollAccount::Argyle < PayrollAccount
   rescue => ex
     raise ex unless Rails.env.production?
 
+    NewRelic::Agent.notice_error(ex)
     Rails.logger.error "Unable to redact PayrollAccount::Argyle Account ID #{aggregator_account_id} - #{ex.message}"
     GenericEventTracker.new.track("DataRedactionFailure", nil, { account_id: aggregator_account_id })
   end
