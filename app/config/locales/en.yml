@@ -168,7 +168,7 @@ en:
       self_employed: I'm self-employed
       state: State
       street_address: Street address
-      street_address_hint: If you're self employed, enter your address
+      street_address_hint: If you're self-employed, enter your address
       street_address_line_2: Suite, floor, apt number
       title: Tell us about your employer or business
       zip_code: Zip code
