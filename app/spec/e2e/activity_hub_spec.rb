@@ -24,43 +24,35 @@ RSpec.describe 'e2e Activity Hub flow test', :js, type: :feature do
     flow = ActivityFlow.last
 
     # Add a Community Service activity
-    within("[data-activity-type='community_service']") do
-      click_button I18n.t("activities.hub.add")
-    end
+    within("[data-activity-type='community_service']") { click_button I18n.t("activities.hub.add") }
     verify_page(page, title: I18n.t("activities.community_service.new_title"))
     fill_in I18n.t("activities.community_service.organization_name"), with: "Helping Hands"
     fill_in I18n.t("activities.community_service.street_address"), with: "123 Main St"
     fill_in I18n.t("activities.community_service.city"), with: "Springfield"
-    select "Illinois", from: I18n.t("activities.community_service.state")
+    fill_in I18n.t("activities.community_service.state"), with: "Illinois"
+    find(".usa-combo-box__list-option", text: "Illinois (IL)").click
     fill_in I18n.t("activities.community_service.zip_code"), with: "62701"
     fill_in I18n.t("activities.community_service.coordinator_name"), with: "Jane Doe"
     fill_in I18n.t("activities.community_service.coordinator_email"), with: "jane@example.com"
     click_button I18n.t("activities.community_service.continue")
 
     verify_page(page, title: I18n.t("activities.community_service.hours_input.heading",
-      month: I18n.l(flow.reporting_months.first, format: :month_year),
-      organization: "Helping Hands"))
+      month: I18n.l(flow.reporting_months.first, format: :month_year), organization: "Helping Hands"))
     fill_in I18n.t("activities.community_service.hours_input.hours_label", month: I18n.l(flow.reporting_months.first, format: :month_year)), with: "20"
     click_button I18n.t("activities.community_service.hours_input.continue")
 
     verify_page(page, title: I18n.t("activities.community_service.hours_input.heading",
-      month: I18n.l(flow.reporting_months.second, format: :month_year),
-      organization: "Helping Hands"))
+      month: I18n.l(flow.reporting_months.second, format: :month_year), organization: "Helping Hands"))
     fill_in I18n.t("activities.community_service.hours_input.hours_label", month: I18n.l(flow.reporting_months.second, format: :month_year)), with: "10"
     click_button I18n.t("activities.community_service.hours_input.continue")
 
-    # Document upload
-    verify_page(
-      page,
-      title: I18n.t("activities.document_uploads.new.title", name: "Helping Hands"),
-      skip_axe_rules: %w[heading-order]
-    )
+    verify_page(page, title: I18n.t("activities.document_uploads.new.title", name: "Helping Hands"), skip_axe_rules: %w[heading-order])
     attach_file I18n.t("activities.document_uploads.new.input_label"), upload_path, make_visible: true
     click_button I18n.t("activities.document_uploads.new.continue")
 
     # Review page
     verify_page(page, title: I18n.t("activities.community_service.review.title", organization_name: "Helping Hands"))
-    expect(page).to have_content "123 Main St, Springfield, Illinois"
+    expect(page).to have_content "123 Main St, Springfield, IL"
     expect(page).to have_content "Jane Doe"
     expect(page).to have_content "jane@example.com"
     click_button I18n.t("activities.community_service.review.save")
@@ -69,24 +61,20 @@ RSpec.describe 'e2e Activity Hub flow test', :js, type: :feature do
     expect(page).to have_content "Helping Hands"
 
     # Add a Work Program activity
-    within("[data-activity-type='work_programs']") do
-      click_button I18n.t("activities.hub.add")
-    end
+    within("[data-activity-type='work_programs']") { click_button I18n.t("activities.hub.add") }
     verify_page(page, title: I18n.t("activities.work_programs.title"))
     fill_in I18n.t("activities.work_programs.program_name"), with: "Resume Workshop"
     fill_in I18n.t("activities.work_programs.organization_address"), with: "123 Main St, Baton Rouge, LA"
     fill_in I18n.t("activities.work_programs.hours"), with: "6"
     fill_in I18n.t("activities.work_programs.date"), with: (Date.current.beginning_of_month - 1.day).strftime("%m/%d/%Y")
     click_button I18n.t("activities.work_programs.add")
-    verify_page(
-      page,
-      title: I18n.t("activities.document_uploads.new.title", name: "Resume Workshop"),
-      skip_axe_rules: %w[heading-order]
-    )
+    verify_page(page, title: I18n.t("activities.document_uploads.new.title", name: "Resume Workshop"), skip_axe_rules: %w[heading-order])
     attach_file I18n.t("activities.document_uploads.new.input_label"), upload_path, make_visible: true
     click_button I18n.t("activities.document_uploads.new.continue")
     verify_page(page, title: I18n.t("activities.hub.title"))
     expect(page).to have_content "Resume Workshop"
+
+    add_self_attested_employment_activity
 
     # Verify that the hub has the Community Service activity
     expect(page).to have_content I18n.t("activities.hub.title")
@@ -121,6 +109,24 @@ RSpec.describe 'e2e Activity Hub flow test', :js, type: :feature do
     # /activities/success
     verify_page(page, title: I18n.t("activities.success.show.title", agency_acronym: I18n.t("shared.agency_acronym.sandbox")))
     expect(page).to have_content I18n.t("activities.success.show.download_pdf")
+  end
+
+  def add_self_attested_employment_activity
+    within("[data-activity-type='employment']") { click_button I18n.t("activities.hub.add") }
+    verify_page(page, title: I18n.t("cbv.employer_searches.show.activity_flow.header"))
+    visit new_activities_flow_income_employment_path
+    verify_page(page, title: I18n.t("activities.employment_info.title"))
+    fill_in I18n.t("activities.employment_info.employer_name"), with: "Gainesville Wrecking"
+    fill_in I18n.t("activities.employment_info.street_address"), with: "942 W Harlan Ave"
+    fill_in I18n.t("activities.employment_info.city"), with: "Gainesville"
+    fill_in I18n.t("activities.employment_info.state"), with: "Florida"
+    find(".usa-combo-box__list-option", text: "Florida (FL)").click
+    fill_in I18n.t("activities.employment_info.zip_code"), with: "32611"
+    fill_in I18n.t("activities.employment_info.contact_name"), with: "Donny Spears"
+    fill_in I18n.t("activities.employment_info.contact_email"), with: "donny@gainesvillewrecking.com"
+    fill_in I18n.t("activities.employment_info.contact_phone_number"), with: "(415) 344-8009"
+    click_button I18n.t("activities.employment_info.continue")
+    verify_page(page, title: I18n.t("activities.hub.title"))
   end
 
   it "completes the generic flow for the income activity" do
@@ -255,7 +261,8 @@ RSpec.describe 'e2e Activity Hub flow test', :js, type: :feature do
     fill_in I18n.t("activities.community_service.organization_name"), with: "Helping Hands"
     fill_in I18n.t("activities.community_service.street_address"), with: "123 Main St"
     fill_in I18n.t("activities.community_service.city"), with: "Springfield"
-    select "Illinois", from: I18n.t("activities.community_service.state")
+    fill_in I18n.t("activities.community_service.state"), with: "Illinois"
+    find(".usa-combo-box__list-option", text: "Illinois (IL)").click
     fill_in I18n.t("activities.community_service.zip_code"), with: "62701"
     fill_in I18n.t("activities.community_service.coordinator_name"), with: "Jane Doe"
     fill_in I18n.t("activities.community_service.coordinator_email"), with: "jane@example.com"
