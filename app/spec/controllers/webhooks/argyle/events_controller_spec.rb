@@ -286,6 +286,24 @@ RSpec.describe Webhooks::Argyle::EventsController, type: :controller do
       process_webhook("paystubs.partially_synced")
     end
 
+    context "when no paystubs are in the time interval" do
+      before do
+        allow_any_instance_of(Aggregators::Sdk::ArgyleService)
+          .to receive(:fetch_paystubs_api)
+          .and_return([])
+      end
+
+      it "still tracks an ApplicantFinishedArgyleSync event" do
+        process_webhook("accounts.connected")
+        process_webhook("identities.added")
+        process_webhook("users.fully_synced")
+        process_webhook("gigs.partially_synced")
+
+        expect(fake_event_logger).to receive(:track).with("ApplicantFinishedArgyleSync", anything, anything)
+        process_webhook("paystubs.partially_synced")
+      end
+    end
+
     context "with multiple partially_synced events" do
       it "tracks only a single ApplicantFinishedArgyleSync event" do
         expect(fake_event_logger).to receive(:track).with("ApplicantFinishedArgyleSync", anything, anything).once
