@@ -71,7 +71,8 @@ class Webhooks::Pinwheel::EventsController < ApplicationController
         payroll_accounts: [ @payroll_account ],
         pinwheel_service: @pinwheel,
         days_to_fetch_for_w2: aggregator_lookback_days[:w2],
-        days_to_fetch_for_gig: aggregator_lookback_days[:gig]
+        days_to_fetch_for_gig: aggregator_lookback_days[:gig],
+        reporting_date_range: @cbv_flow.reporting_window_range
       )
       report.fetch
 

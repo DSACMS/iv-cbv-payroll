@@ -23,6 +23,10 @@ class Flow < ApplicationRecord
     nil
   end
 
+  def reporting_window_range
+    nil
+  end
+
   def after_payroll_sync_succeeded(_payroll_account, _report)
     nil
   end
