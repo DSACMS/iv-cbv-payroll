@@ -66,6 +66,9 @@ class Cbv::SynchronizationsController < Cbv::BaseController
 
     NewRelic::Agent.record_custom_event("SyncWaitTime", {
       provider: provider,
+      flow_id: @payroll_account.flow_id,
+      flow_type: @payroll_account.flow_type,
+      aggregator_account_id: @payroll_account.aggregator_account_id,
       wait_time_seconds: wait_time_seconds
     })
   end
