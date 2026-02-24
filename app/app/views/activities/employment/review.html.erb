@@ -1,0 +1,18 @@
+<% content_for :title, t("activities.employment.review.title", employer_name: @employment_activity.employer_name) %>
+
+<h1>
+  <%= t("activities.employment.review.title", employer_name: @employment_activity.employer_name) %>
+</h1>
+<p>
+  <%= t("activities.employment.review.description", employer_name: @employment_activity.employer_name) %>
+</p>
+
+<h2><%= t("activities.employment.review.employer_info") %></h2>
+<%= render(EmploymentReviewTableComponent.new(employment_activity: @employment_activity)) %>
+
+<%= form_with url: save_review_activities_flow_income_employment_path(id: @employment_activity, from_edit: params[:from_edit].presence),
+      method: :patch,
+      class: "usa-form usa-form--large" do |form| %>
+  <% submit_label = params[:from_edit].present? ? t("activities.hub.save") : t("activities.employment.review.save") %>
+  <%= form.submit submit_label, class: "usa-button usa-button--primary" %>
+<% end %>

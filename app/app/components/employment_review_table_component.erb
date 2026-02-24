@@ -1,46 +1,46 @@
 <%= render(TableComponent.new(is_responsive: true, class_names: "activity-review-org-table")) do |table| %>
   <%= table.with_row do |row| %>
     <%= row.with_data_cell(is_header: true) do %>
-      <%= t("activities.community_service.review.name") %>
+      <%= t("activities.employment.review.name") %>
     <% end %>
     <%= row.with_data_cell do %>
-      <%= display_value(@activity.organization_name) %>
+      <%= display_value(@activity.employer_name) %>
     <% end %>
   <% end %>
 
   <%= table.with_row do |row| %>
     <%= row.with_data_cell(is_header: true) do %>
-      <%= t("activities.community_service.review.address") %>
+      <%= t("activities.employment.review.address") %>
     <% end %>
     <%= row.with_data_cell do %>
-      <%= display_value(formatted_address) %>
+      <%= display_value(@activity.formatted_address) %>
     <% end %>
   <% end %>
 
   <%= table.with_row do |row| %>
     <%= row.with_data_cell(is_header: true) do %>
-      <%= t("activities.community_service.review.coordinator_name") %>
+      <%= t("activities.employment.review.contact_name") %>
     <% end %>
     <%= row.with_data_cell do %>
-      <%= display_value(@activity.coordinator_name) %>
+      <%= display_value(@activity.contact_name) %>
     <% end %>
   <% end %>
 
   <%= table.with_row do |row| %>
     <%= row.with_data_cell(is_header: true) do %>
-      <%= t("activities.community_service.review.coordinator_email") %>
+      <%= t("activities.employment.review.contact_email") %>
     <% end %>
     <%= row.with_data_cell do %>
-      <%= display_value(@activity.coordinator_email) %>
+      <%= display_value(@activity.contact_email) %>
     <% end %>
   <% end %>
 
   <%= table.with_row do |row| %>
     <%= row.with_data_cell(is_header: true) do %>
-      <%= t("activities.community_service.review.coordinator_phone") %>
+      <%= t("activities.employment.review.contact_phone") %>
     <% end %>
     <%= row.with_data_cell do %>
-      <%= display_value(@activity.coordinator_phone_number) %>
+      <%= display_value(@activity.contact_phone_number) %>
     <% end %>
   <% end %>
 <% end %>

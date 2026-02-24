@@ -71,7 +71,12 @@ Rails.application.routes.draw do
         resource :synchronizations, only: %i[show update], controller: "/cbv/synchronizations"
         resource :synchronization_failures, only: %i[show], controller: "/cbv/synchronization_failures"
         resource :payment_details, only: %i[show update], controller: "/cbv/payment_details"
-        resources :employment, only: %i[new create], controller: "/activities/employment"
+        resources :employment, only: %i[new create edit update destroy], controller: "/activities/employment" do
+          member do
+            get :review
+            patch :save_review
+          end
+        end
       end
 
       resources :education, only: %i[new create show update edit destroy], controller: "education" do

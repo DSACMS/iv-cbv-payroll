@@ -171,6 +171,16 @@ en:
       title: Education
     employment:
       account_id: Account ID
+      review:
+        address: Address
+        contact_email: Employer contact email
+        contact_name: Employer contact name
+        contact_phone: Employer contact phone number
+        description: Review all the information you've added for %{employer_name} before adding it to your Community Engagement Report.
+        employer_info: Employer information
+        name: Name
+        save: Save and add to my report
+        title: Review your employment information for %{employer_name}
       synchronization_status: Status
       title: Employment
     employment_info:
