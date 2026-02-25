@@ -1,6 +1,8 @@
 class JobTrainingActivity < Activity
   include DocumentUploadable
 
+  validates :organization_name, :program_name, presence: true
+
   def document_upload_object_title
     program_name
   end
@@ -8,7 +10,7 @@ class JobTrainingActivity < Activity
   def document_upload_months_to_verify
     # TODO: Use the proper months when we allow looping through job training month
     # input pages.
-    Array(date.beginning_of_month)
+    Array(date&.beginning_of_month)
   end
 
   def document_upload_details_for_month(month)
