@@ -58,10 +58,12 @@ module ActivitiesHelper
     end
   end
 
-  def self_attestation_cards(activities, name_field:)
+  def work_program_cards(activities)
     activities.map do |activity|
-      months = activity.date.present? ? [ { month: activity.date.beginning_of_month, hours: activity.hours.to_i } ] : []
-      { name: activity.send(name_field), months: months, activity: activity }
+      months = activity.job_training_activity_months.order(:month).map do |activity_month|
+        { month: activity_month.month, hours: activity_month.hours }
+      end
+      { name: activity.program_name, months: months, activity: activity }
     end
   end
 

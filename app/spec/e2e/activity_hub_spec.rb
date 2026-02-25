@@ -11,7 +11,7 @@ RSpec.describe 'e2e Activity Hub flow test', :js, type: :feature do
     end
   end
 
-  it "completes the generic flow for all self-attestation activities" do
+  it "completes the generic flow for all self-attestation activities" do # rubocop:disable RSpec/ExampleLength
     upload_path = Rails.root.join("spec/fixtures/files/document_upload.pdf")
 
     visit URI(root_url).request_uri
@@ -61,13 +61,37 @@ RSpec.describe 'e2e Activity Hub flow test', :js, type: :feature do
     expect(page).to have_content "Helping Hands"
 
     # Add a Work Program activity
-    within("[data-activity-type='work_programs']") { click_button I18n.t("activities.hub.add") }
+    within("[data-activity-type='work_programs']") do
+      click_button I18n.t("activities.hub.add")
+    end
     verify_page(page, title: I18n.t("activities.job_training.new.title"))
-    fill_in I18n.t("activities.job_training.form.organization_name"), with: "Testing JobCorps"
+    fill_in I18n.t("activities.job_training.form.organization_name"), with: "Career Center"
     fill_in I18n.t("activities.job_training.form.program_name"), with: "Resume Workshop"
     fill_in I18n.t("activities.job_training.form.street_address"), with: "123 Main St"
+    fill_in I18n.t("activities.job_training.form.city"), with: "Baton Rouge"
+    fill_in I18n.t("activities.job_training.form.state"), with: "Louisiana"
+    fill_in I18n.t("activities.job_training.form.zip_code"), with: "70801"
+    fill_in I18n.t("activities.job_training.form.contact_name"), with: "Jane Trainer"
+    fill_in I18n.t("activities.job_training.form.contact_email"), with: "jane@example.com"
     click_button I18n.t("activities.job_training.form.continue")
-    verify_page(page, title: I18n.t("activities.document_uploads.new.title", name: "Resume Workshop"), skip_axe_rules: %w[heading-order])
+
+    verify_page(page, title: I18n.t("activities.work_programs.hours_input.heading",
+      month: I18n.l(flow.reporting_months.first, format: :month_year),
+      organization: "Resume Workshop"))
+    fill_in I18n.t("activities.work_programs.hours_input.hours_label", month: I18n.l(flow.reporting_months.first, format: :month_year)), with: "6"
+    click_button I18n.t("activities.work_programs.hours_input.continue")
+
+    verify_page(page, title: I18n.t("activities.work_programs.hours_input.heading",
+      month: I18n.l(flow.reporting_months.second, format: :month_year),
+      organization: "Resume Workshop"))
+    fill_in I18n.t("activities.work_programs.hours_input.hours_label", month: I18n.l(flow.reporting_months.second, format: :month_year)), with: "4"
+    click_button I18n.t("activities.work_programs.hours_input.continue")
+
+    verify_page(
+      page,
+      title: I18n.t("activities.document_uploads.new.title", name: "Resume Workshop"),
+      skip_axe_rules: %w[heading-order]
+    )
     attach_file I18n.t("activities.document_uploads.new.input_label"), upload_path, make_visible: true
     click_button I18n.t("activities.document_uploads.new.continue")
     verify_page(page, title: I18n.t("activities.hub.title"))
@@ -83,6 +107,8 @@ RSpec.describe 'e2e Activity Hub flow test', :js, type: :feature do
 
     # Verify that the hub has the Work Programs activity
     expect(page).to have_content "Resume Workshop"
+    expect(page).to have_content I18n.t("activities.hub.cards.hours", count: 6)
+    expect(page).to have_content I18n.t("activities.hub.cards.hours", count: 4)
 
     click_button I18n.t("activities.hub.review_and_submit")
     verify_page(page, title: I18n.t("activities.summary.title", benefit: I18n.t("shared.benefit.sandbox")))
