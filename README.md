@@ -1,4 +1,4 @@
-Income Verification: Consent-Based Verification (Payroll)
+Eligibility made easy
 ========================
 
 # About the Project
