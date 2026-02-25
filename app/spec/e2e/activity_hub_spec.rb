@@ -62,12 +62,11 @@ RSpec.describe 'e2e Activity Hub flow test', :js, type: :feature do
 
     # Add a Work Program activity
     within("[data-activity-type='work_programs']") { click_button I18n.t("activities.hub.add") }
-    verify_page(page, title: I18n.t("activities.work_programs.title"))
-    fill_in I18n.t("activities.work_programs.program_name"), with: "Resume Workshop"
-    fill_in I18n.t("activities.work_programs.organization_address"), with: "123 Main St, Baton Rouge, LA"
-    fill_in I18n.t("activities.work_programs.hours"), with: "6"
-    fill_in I18n.t("activities.work_programs.date"), with: (Date.current.beginning_of_month - 1.day).strftime("%m/%d/%Y")
-    click_button I18n.t("activities.work_programs.add")
+    verify_page(page, title: I18n.t("activities.job_training.new.title"))
+    fill_in I18n.t("activities.job_training.form.organization_name"), with: "Testing JobCorps"
+    fill_in I18n.t("activities.job_training.form.program_name"), with: "Resume Workshop"
+    fill_in I18n.t("activities.job_training.form.street_address"), with: "123 Main St"
+    click_button I18n.t("activities.job_training.form.continue")
     verify_page(page, title: I18n.t("activities.document_uploads.new.title", name: "Resume Workshop"), skip_axe_rules: %w[heading-order])
     attach_file I18n.t("activities.document_uploads.new.input_label"), upload_path, make_visible: true
     click_button I18n.t("activities.document_uploads.new.continue")
@@ -84,7 +83,6 @@ RSpec.describe 'e2e Activity Hub flow test', :js, type: :feature do
 
     # Verify that the hub has the Work Programs activity
     expect(page).to have_content "Resume Workshop"
-    expect(page).to have_content I18n.t("activities.hub.cards.hours", count: 6)
 
     click_button I18n.t("activities.hub.review_and_submit")
     verify_page(page, title: I18n.t("activities.summary.title", benefit: I18n.t("shared.benefit.sandbox")))

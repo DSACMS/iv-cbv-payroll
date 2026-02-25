@@ -65,6 +65,10 @@ en:
           attributes:
             date:
               outside_reporting_window: must be within %{range}
+            organization_name:
+              blank: Enter the organization or provider name.
+            program_name:
+              blank: Enter the program name.
         volunteering_activity:
           attributes:
             date:
@@ -218,6 +222,27 @@ en:
       review_and_submit: Review and Submit
       save: Save changes
       title: Add activities to your Community Engagement report
+    job_training:
+      form:
+        city: City
+        contact_email: Contact email
+        contact_name: Contact name
+        contact_phone_number: Contact phone number
+        contact_section_title: Work program contact information
+        continue: Continue
+        organization_name: Organization or provider name
+        organization_name_hint: Enter the name of the organization that runs the work or training program
+        organization_section_title: Work program information
+        program_name: Program name
+        program_name_hint: Enter the full name of the work or training program you participated in
+        reporting_window: 'Reporting window: %{range}'
+        state: State
+        street_address: Street address
+        street_address_line_2: Street address line 2
+        zip_code: Zip code
+      new:
+        description: Enter as much information as you can. This will help %{agency_acronym} get in touch with your work program, if needed.
+        title: Tell us about your work or training program
     submit:
       confirm: Share my report
       consent_label_html: 'Check this box to confirm: <ul class="margin-y-2"><li>The information provided by you is true and complete to the best of your knowledge.</li><li>You agree to inform the agency of any income not reflected in this report or any discrepancies found in the information gathered with this tool.</li><li>You understand that providing accurate and complete information is your responsibility, and any false or omitted information may have legal consequences.</li></ul> By sending this report, you authorize its use for income verification by authorized agency personnel.'
@@ -287,9 +312,7 @@ en:
         header: Work Program information
       your_details: Your details
     work_programs:
-      add: Add Work Program Activity
       date: Date
-      edit_title: Edit Work Program Activity
       hours: Hours attended
       organization_address: Organization address
       program_name: Program name

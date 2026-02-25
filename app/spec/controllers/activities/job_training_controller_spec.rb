@@ -17,7 +17,7 @@ RSpec.describe Activities::JobTrainingController, type: :controller do
       get :new
 
       expect(response).to have_http_status(:ok)
-      expect(response.body).to include(I18n.t("activities.work_programs.title"))
+      expect(response.body).to include(I18n.t("activities.job_training.new.title"))
     end
   end
 
@@ -25,10 +25,16 @@ RSpec.describe Activities::JobTrainingController, type: :controller do
     let(:job_training_params) do
       {
         job_training_activity: {
+          organization_name: "Goodwill",
           program_name: "Resume Workshop",
-          organization_address: "123 Main St, Baton Rouge, LA",
-          hours: 6,
-          date: activity_flow.reporting_window_range.end.strftime("%m/%d/%Y")
+          street_address: "123 Main St",
+          street_address_line_2: "Suite 5",
+          city: "Baton Rouge",
+          state: "LA",
+          zip_code: "70802",
+          contact_name: "Casey Doe",
+          contact_email: "casey@example.com",
+          contact_phone_number: "555-555-1234"
         }
       }
     end
@@ -38,6 +44,7 @@ RSpec.describe Activities::JobTrainingController, type: :controller do
         post :create, params: job_training_params
       end.to change(activity_flow.job_training_activities, :count).by(1)
 
+      expect(JobTrainingActivity.last.organization_name).to eq("Goodwill")
       expect(JobTrainingActivity.last.program_name).to eq("Resume Workshop")
       expect(JobTrainingActivity.last.activity_flow).to eq(activity_flow)
       created_activity = activity_flow.job_training_activities.order(:id).last
@@ -47,7 +54,7 @@ RSpec.describe Activities::JobTrainingController, type: :controller do
     it "redirects to document upload when total hours are below the threshold" do
       create(:volunteering_activity, activity_flow: activity_flow, organization_name: "Local Food Bank", hours: 78)
 
-      post :create, params: job_training_params.deep_merge(job_training_activity: { hours: 1 })
+      post :create, params: job_training_params
 
       created_activity = activity_flow.job_training_activities.order(:id).last
       expect(response).to redirect_to(new_activities_flow_job_training_document_upload_path(job_training_id: created_activity.id))
@@ -56,7 +63,7 @@ RSpec.describe Activities::JobTrainingController, type: :controller do
     it "redirects to document upload when threshold met but only via self-attested data" do
       create(:volunteering_activity, activity_flow: activity_flow, organization_name: "Local Food Bank", hours: 79)
 
-      post :create, params: job_training_params.deep_merge(job_training_activity: { hours: 1 })
+      post :create, params: job_training_params
 
       created_activity = activity_flow.job_training_activities.order(:id).last
       expect(response).to redirect_to(new_activities_flow_job_training_document_upload_path(job_training_id: created_activity.id))
@@ -84,17 +91,17 @@ RSpec.describe Activities::JobTrainingController, type: :controller do
       get :edit, params: { id: job_training_activity.id }
 
       expect(response).to have_http_status(:ok)
-      expect(response.body).to include(I18n.t("activities.work_programs.edit_title"))
+      expect(response.body).to include(I18n.t("activities.job_training.new.title"))
     end
   end
 
   describe "PATCH #update" do
-    let(:job_training_activity) { create(:job_training_activity, activity_flow: activity_flow, hours: 2) }
+    let(:job_training_activity) { create(:job_training_activity, activity_flow: activity_flow) }
 
     it "updates the activity and redirects to document upload" do
-      patch :update, params: { id: job_training_activity.id, job_training_activity: { hours: 10 } }
+      patch :update, params: { id: job_training_activity.id, job_training_activity: { contact_name: "Taylor Smith" } }
 
-      expect(job_training_activity.reload.hours).to eq(10)
+      expect(job_training_activity.reload.contact_name).to eq("Taylor Smith")
       expect(response).to redirect_to(new_activities_flow_job_training_document_upload_path(job_training_id: job_training_activity.id))
     end
   end

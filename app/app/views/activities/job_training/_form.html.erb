@@ -1,10 +1,34 @@
 <p class="usa-hint">
-  <%= t("activities.hub.reporting_window", range: @flow.reporting_window_display) %>
+  <%= t(".reporting_window", range: @flow.reporting_window_display) %>
 </p>
 <%= uswds_form_with(model: job_training_activity, url: job_training_activity.persisted? ? activities_flow_job_training_path(id: job_training_activity.id) : activities_flow_job_training_index_path) do |f| %>
-  <%= f.text_field :program_name, label: t("activities.work_programs.program_name") %>
-  <%= f.text_field :organization_address, label: t("activities.work_programs.organization_address") %>
-  <%= f.text_field :hours, type: :number, label: t("activities.work_programs.hours") %>
-  <%= f.date_picker :date, label: t("activities.work_programs.date") %>
-  <%= f.submit job_training_activity.persisted? ? t("activities.hub.save") : t("activities.work_programs.add") %>
+  <h2>
+    <%= t(".organization_section_title") %>
+  </h2>
+  <%= f.text_field :organization_name,
+        label: t(".organization_name"),
+        hint: t(".organization_name_hint") %>
+  <%= f.text_field :program_name,
+        label: t(".program_name"),
+        hint: t(".program_name_hint") %>
+  <%= f.text_field :street_address, label: t(".street_address") %>
+  <%= f.text_field :street_address_line_2,
+        label: t(".street_address_line_2"),
+        optional: true %>
+  <%= f.text_field :city, label: t(".city") %>
+  <%= f.combo_box :state,
+        us_state_and_territory_options,
+        { label: t(".state") } %>
+  <%= f.text_field :zip_code, label: t(".zip_code"), width: "lg" %>
+
+  <h2>
+    <%= t(".contact_section_title") %>
+  </h2>
+  <%= f.text_field :contact_name, label: t(".contact_name") %>
+  <%= f.email_field :contact_email, label: t(".contact_email") %>
+  <%= f.phone_field :contact_phone_number,
+        label: t(".contact_phone_number"),
+        optional: true %>
+
+  <%= f.submit t(".continue") %>
 <% end %>
