@@ -1,6 +1,15 @@
 # How to Contribute
 
-Eligibility Made Easy (Emmy) is being developed in the open by CMS and its contractors. We use internal tools to track our work (bugs and feature enhancements), and, as such, this repo is not architected to receive public contributions.
+Eligibility Made Easy (Emmy) is being developed in the open by CMS and its contractors. We use internal tools to track our work (bugs and feature enhancements).
+
+# Contribution Guidelines
+While every raised pull request will be reviewed by the Emmy team, in general we don’t accept PRs that
+* Don’t directly address an existing issue
+* Touch more than 10 files at a time
+* contain more than 10 commits
+* Change core system files such as `Gemfile`, `.ruby-version` and `.nvmrc`
+* Are untested / don’t pass our test suite / don’t pass our linters / don’t follow established style
+* Are entirely AI generated
 
 ## Getting Started
 
