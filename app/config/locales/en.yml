@@ -169,6 +169,23 @@ en:
       account_id: Account ID
       synchronization_status: Status
       title: Employment
+    employment_info:
+      city: City
+      contact_email: Employer contact email
+      contact_name: Employer contact name
+      contact_phone_number: Employer contact phone number
+      contact_section_title: Employer contact information
+      continue: Continue
+      employer_name: Employer or business name
+      employer_name_hint: If you work for yourself, enter "Self-employed"
+      employer_section_title: Employer or business information
+      self_employed: I'm self-employed
+      state: State
+      street_address: Street address
+      street_address_hint: If you're self-employed, enter your address
+      street_address_line_2: Suite, floor, apt number
+      title: Tell us about your employer or business
+      zip_code: Zip code
     entries:
       show:
         card_heading: 'Enter information related to the following activities:'

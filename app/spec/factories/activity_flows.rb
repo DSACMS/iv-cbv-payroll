@@ -9,6 +9,7 @@ FactoryBot.define do
       volunteering_activities_count { Faker::Number.within(range: 0..2).to_i }
       job_training_activities_count { Faker::Number.within(range: 0..2).to_i }
       education_activities_count { Faker::Number.within(range: 0..2).to_i }
+      employment_activities_count { 0 }
       with_identity { Faker::Boolean.boolean }
     end
 
@@ -32,6 +33,11 @@ FactoryBot.define do
       create_list(
         :education_activity,
         context.education_activities_count,
+        activity_flow: flow
+      )
+      create_list(
+        :employment_activity,
+        context.employment_activities_count,
         activity_flow: flow
       )
     end

@@ -7,7 +7,7 @@ FactoryBot.define do
     organization_name { "Local Food Bank" }
     street_address { "123 Main St" }
     city { "Springfield" }
-    state { "Illinois" }
+    state { "IL" }
     zip_code { "62701" }
     coordinator_name { "Jane Smith" }
     coordinator_email { "jane@example.com" }

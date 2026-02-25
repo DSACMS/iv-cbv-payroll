@@ -1,0 +1,37 @@
+<%= uswds_form_with(model: employment_activity, url: activities_flow_income_employment_index_path) do |f| %>
+  <h2><%= t("activities.employment_info.employer_section_title") %></h2>
+  <%= f.text_field :employer_name,
+        label: t("activities.employment_info.employer_name"),
+        hint: t("activities.employment_info.employer_name_hint") %>
+  <%= f.text_field :street_address,
+        label: t("activities.employment_info.street_address"),
+        hint: t("activities.employment_info.street_address_hint") %>
+  <%= f.text_field :street_address_line_2,
+        label: t("activities.employment_info.street_address_line_2"),
+        optional: true %>
+  <%= f.text_field :city, label: t("activities.employment_info.city") %>
+  <%= f.combo_box :state,
+        us_state_and_territory_options,
+        { label: t("activities.employment_info.state") } %>
+  <%= f.text_field :zip_code, label: t("activities.employment_info.zip_code"), width: "lg" %>
+
+  <hr class="margin-y-5 border-base-light border-top-0">
+
+  <div data-controller="self-employed">
+    <h2><%= t("activities.employment_info.contact_section_title") %></h2>
+    <%= f.check_box :is_self_employed,
+          label: t("activities.employment_info.self_employed"),
+          data: { "self-employed-target": "checkbox", action: "self-employed#toggle" } %>
+    <%= f.text_field :contact_name,
+          label: t("activities.employment_info.contact_name"),
+          data: { "self-employed-target": "contactName" } %>
+    <%= f.email_field :contact_email,
+          label: t("activities.employment_info.contact_email"),
+          data: { "self-employed-target": "contactEmail" } %>
+    <%= f.phone_field :contact_phone_number,
+          label: t("activities.employment_info.contact_phone_number"),
+          data: { "self-employed-target": "contactPhone" } %>
+  </div>
+
+  <%= f.submit t("activities.employment_info.continue") %>
+<% end %>
