@@ -4,7 +4,7 @@
   </label>
 <% end %>
 <%= content_tag(:div, class: "usa-combo-box", data: { default_value: @selected }) do %>
-  <%= content_tag(:select, **@select_attrs) do %>
+  <%= content_tag(:select, name: @name, id: @id, class: @select_class, **@html_options) do %>
     <% if @include_blank %>
       <option value="">- Select -</option>
     <% end %>

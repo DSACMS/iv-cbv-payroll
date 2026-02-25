@@ -1,12 +1,13 @@
 # frozen_string_literal: true
 
 class Uswds::PhoneInput < ViewComponent::Base
-  def initialize(name:, value: nil, label: nil, **options)
+  def initialize(name:, value: nil, label: nil, id: nil, input_class: "usa-input", **html_options)
     @name = name
     @value = value
     @label = label
-    @id = options.delete(:id) { name.to_s.parameterize(separator: "_") }
-    @input_attrs = { type: "tel", name: @name, value: @value, id: @id, class: options.delete(:class) { "usa-input" } }.merge(options)
+    @id = id || name.to_s.parameterize(separator: "_")
+    @input_class = input_class
+    @html_options = html_options
   end
 
   private

@@ -9,5 +9,5 @@
       <use href="<%= icon_href %>"></use>
     </svg>
   </div>
-  <%= tag.input(**@input_attrs) %>
+  <%= tag.input(type: "tel", name: @name, value: @value, id: @id, class: @input_class, **@html_options) %>
 </div>
