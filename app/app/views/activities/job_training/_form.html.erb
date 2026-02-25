@@ -1,6 +1,3 @@
-<p class="usa-hint">
-  <%= t(".reporting_window", range: @flow.reporting_window_display) %>
-</p>
 <%= uswds_form_with(model: job_training_activity, url: job_training_activity.persisted? ? activities_flow_job_training_path(id: job_training_activity.id) : activities_flow_job_training_index_path) do |f| %>
   <h2>
     <%= t(".organization_section_title") %>

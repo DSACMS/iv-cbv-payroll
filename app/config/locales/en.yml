@@ -235,7 +235,6 @@ en:
         organization_section_title: Work program information
         program_name: Program name
         program_name_hint: Enter the full name of the work or training program you participated in
-        reporting_window: 'Reporting window: %{range}'
         state: State
         street_address: Street address
         street_address_line_2: Street address line 2
