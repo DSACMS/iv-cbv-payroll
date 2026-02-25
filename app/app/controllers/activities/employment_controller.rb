@@ -26,6 +26,7 @@ class Activities::EmploymentController < Activities::BaseController
   end
 
   def save_review
+    @employment_activity.update(review_params)
     redirect_to after_activity_path
   end
 
@@ -39,6 +40,10 @@ class Activities::EmploymentController < Activities::BaseController
 
   def set_employment_activity
     @employment_activity = @flow.employment_activities.find(params[:id])
+  end
+
+  def review_params
+    params.require(:employment_activity).permit(:additional_comments)
   end
 
   def employment_activity_params

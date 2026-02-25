@@ -16,9 +16,17 @@
   { label: t("activities.employment.review.contact_phone"), value: @employment_activity.contact_phone_number }
 ])) %>
 
-<%= form_with url: save_review_activities_flow_income_employment_path(id: @employment_activity, from_edit: params[:from_edit].presence),
+<%= form_with model: @employment_activity,
+      url: save_review_activities_flow_income_employment_path(id: @employment_activity, from_edit: params[:from_edit].presence),
       method: :patch,
       class: "usa-form usa-form--large" do |form| %>
+  <h2><%= t("activities.employment.review.additional_comments_title") %></h2>
+  <%= form.label :additional_comments,
+        t("activities.employment.review.additional_comments_description",
+          agency_name: agency_translation("shared.agency_full_name")),
+        class: "usa-label" %>
+  <%= form.text_area :additional_comments, class: "usa-textarea", rows: 5 %>
+
   <% submit_label = params[:from_edit].present? ? t("activities.hub.save") : t("activities.employment.review.save") %>
   <%= form.submit submit_label, class: "usa-button usa-button--primary" %>
 <% end %>

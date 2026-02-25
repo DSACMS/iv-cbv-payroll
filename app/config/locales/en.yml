@@ -172,6 +172,8 @@ en:
     employment:
       account_id: Account ID
       review:
+        additional_comments_description: Share any comments or additional information that you'd like %{agency_name} to know.
+        additional_comments_title: Additional comments (optional)
         address: Address
         contact_email: Employer contact email
         contact_name: Employer contact name

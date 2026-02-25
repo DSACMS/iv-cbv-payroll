@@ -43,12 +43,13 @@ RSpec.describe Activities::EmploymentController, type: :controller do
     let(:employment_attributes) { attributes_for(:employment_activity).except(:activity_flow) }
     let(:employment_params) { { employment_activity: employment_attributes } }
 
-    it "creates an employment activity and redirects to the hub" do
+    it "creates an employment activity and redirects to review" do
       expect do
         post :create, params: employment_params
       end.to change(activity_flow.employment_activities, :count).by(1)
 
-      expect(response).to redirect_to(activities_flow_root_path)
+      activity = activity_flow.employment_activities.last
+      expect(response).to redirect_to(review_activities_flow_income_employment_path(id: activity))
     end
 
     it "stores submitted fields on the activity" do
