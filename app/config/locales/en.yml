@@ -185,6 +185,8 @@ en:
         title: Review your employment information for %{employer_name}
       synchronization_status: Status
       title: Employment
+    employment_edit:
+      title: Edit Employment Activity
     employment_info:
       city: City
       contact_email: Employer contact email

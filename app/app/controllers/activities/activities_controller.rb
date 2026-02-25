@@ -14,5 +14,6 @@ class Activities::ActivitiesController < Activities::BaseController
 
     @employment_payroll_accounts = @flow.payroll_accounts.order(created_at: :desc).select(&:sync_succeeded?)
     @persisted_report = PersistedReportAdapter.new(@flow) if @employment_payroll_accounts.any?
+    @self_attested_employment_activities = @flow.employment_activities.order(created_at: :desc)
   end
 end
