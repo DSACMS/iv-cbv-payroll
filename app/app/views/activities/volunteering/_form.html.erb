@@ -10,7 +10,7 @@
   <%= f.text_field :city, label: t("activities.community_service.city") %>
   <%= f.combo_box :state,
         us_state_and_territory_options,
-        { label: t("activities.community_service.state"), include_blank: true } %>
+        { label: t("activities.community_service.state") } %>
   <%= f.text_field :zip_code, label: t("activities.community_service.zip_code"), width: "lg" %>
 
   <h2><%= t("activities.community_service.coordinator_section_title") %></h2>

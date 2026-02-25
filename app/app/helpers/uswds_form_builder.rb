@@ -98,7 +98,6 @@ class UswdsFormBuilder < ActionView::Helpers::FormBuilder
 
   def combo_box(attribute, choices, options = {})
     label_text = options.delete(:label)
-    include_blank = options.delete(:include_blank)
 
     form_group(attribute) do
       us_text_field_label(attribute, label_text, options) +
@@ -106,8 +105,7 @@ class UswdsFormBuilder < ActionView::Helpers::FormBuilder
           name: field_name(attribute),
           id: field_id(attribute),
           options: choices,
-          selected: object&.send(attribute),
-          include_blank: include_blank != false
+          selected: object&.send(attribute)
         ))
     end
   end

@@ -3,11 +3,9 @@
     <%= @label %>
   </label>
 <% end %>
-<%= content_tag(:div, class: "usa-combo-box", data: { default_value: @selected }) do %>
+<%= content_tag(:div, class: "usa-combo-box", data: { default_value: @selected, placeholder: I18n.t("shared.select_placeholder") }) do %>
   <%= content_tag(:select, name: @name, id: @id, class: @select_class, **@html_options) do %>
-    <% if @include_blank %>
-      <option value="">- Select -</option>
-    <% end %>
+    <option value=""><%= I18n.t("shared.select_placeholder") %></option>
     <% @select_options.each do |display, value| %>
       <option value="<%= value %>"<%= " selected" if @selected == value %>><%= display %></option>
     <% end %>
