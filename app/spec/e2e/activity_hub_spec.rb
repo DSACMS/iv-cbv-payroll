@@ -76,6 +76,9 @@ RSpec.describe 'e2e Activity Hub flow test', :js, type: :feature do
 
     add_self_attested_employment_activity
 
+    # Verify that the hub has the Employment activity
+    expect(page).to have_content I18n.t("activities.hub.cards.hours", count: 40)
+
     # Verify that the hub has the Community Service activity
     expect(page).to have_content I18n.t("activities.hub.title")
     expect(page).to have_content "Helping Hands"
@@ -126,7 +129,20 @@ RSpec.describe 'e2e Activity Hub flow test', :js, type: :feature do
     fill_in I18n.t("activities.employment_info.contact_email"), with: "donny@gainesvillewrecking.com"
     fill_in I18n.t("activities.employment_info.contact_phone_number"), with: "(415) 344-8009"
     click_button I18n.t("activities.employment_info.continue")
+
+    flow = ActivityFlow.last
+    employer_name = "Gainesville Wrecking"
+    flow.reporting_months.each do |month|
+      verify_page(page, title: I18n.t("activities.employment.hours_input.heading",
+        month: I18n.l(month, format: :month_year),
+        organization: employer_name))
+      fill_in I18n.t("activities.employment.hours_input.gross_income_label", month: I18n.l(month, format: :month_year)), with: "500"
+      fill_in I18n.t("activities.employment.hours_input.hours_label", month: I18n.l(month, format: :month_year)), with: "40"
+      click_button I18n.t("activities.employment.hours_input.continue")
+    end
+
     verify_page(page, title: I18n.t("activities.hub.title"))
+    expect(page).to have_content employer_name
   end
 
   it "completes the generic flow for the income activity" do
