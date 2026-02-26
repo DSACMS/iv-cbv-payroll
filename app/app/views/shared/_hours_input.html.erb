@@ -8,7 +8,11 @@
 <%# i18n-tasks-use t('activities.community_service.hours_input.no_hours_checkbox') %>
 <%# i18n-tasks-use t('activities.community_service.hours_input.hours_label') %>
 <%# i18n-tasks-use t('activities.community_service.hours_input.continue') %>
-<% content_for :title, t("#{t_scope}.title") %>
+<%# i18n-tasks-use t('activities.employment.hours_input.field_error_income') %>
+<%# i18n-tasks-use t('activities.employment.hours_input.field_error_hours') %>
+<%# i18n-tasks-use t('activities.employment.hours_input.gross_income_label') %>
+<%# i18n-tasks-use t('activities.employment.hours_input.gross_income_hint') %>
+<% content_for :title, local_assigns[:title] || t("#{t_scope}.title") %>
 
 <% if months.length > 1 %>
   <p class="month-indicator">
@@ -48,6 +52,14 @@
                 month: l(current_month, format: :month_year)),
               class: "usa-checkbox__label" %>
       </div>
+    <% end %>
+
+    <% if local_assigns[:show_gross_income] %>
+      <%= f.currency_field :gross_income,
+            label: t("#{t_scope}.gross_income_label", month: l(current_month, format: :month_year)),
+            label_class: "text-bold",
+            hint: t("#{t_scope}.gross_income_hint"),
+            data: { hours_input_target: "grossIncomeField", action: "input->hours-input#input" } %>
     <% end %>
 
     <%= f.text_field :hours, type: :number,
