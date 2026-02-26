@@ -96,6 +96,26 @@ class UswdsFormBuilder < ActionView::Helpers::FormBuilder
     end
   end
 
+  def currency_field(attribute, options = {})
+    label_text = options.delete(:label)
+    label_class = options.delete(:label_class) || ""
+    data = options.delete(:data) || {}
+    input_class = has_error?(attribute) ? "usa-input usa-input--error" : "usa-input"
+
+    label_options = { class: label_class }
+
+    form_group(attribute) do
+      us_text_field_label(attribute, label_text, options.merge(label_options)) +
+        @template.render(Uswds::CurrencyInput.new(
+          name: field_name(attribute),
+          id: field_id(attribute),
+          value: object&.send(attribute),
+          input_class: input_class,
+          data: data
+        ))
+    end
+  end
+
   def combo_box(attribute, choices, options = {})
     label_text = options.delete(:label)
 
