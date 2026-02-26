@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_02_20_220358) do
+ActiveRecord::Schema[8.1].define(version: 2026_02_25_221414) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
   enable_extension "pgcrypto"
@@ -185,6 +185,16 @@ ActiveRecord::Schema[8.1].define(version: 2026_02_20_220358) do
     t.index ["activity_flow_id"], name: "index_employment_activities_on_activity_flow_id"
   end
 
+  create_table "employment_activity_months", force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.bigint "employment_activity_id", null: false
+    t.integer "gross_income", default: 0, null: false
+    t.integer "hours", default: 0, null: false
+    t.date "month", null: false
+    t.datetime "updated_at", null: false
+    t.index ["employment_activity_id"], name: "index_employment_activity_months_on_employment_activity_id"
+  end
+
   create_table "identities", force: :cascade do |t|
     t.datetime "created_at", null: false
     t.date "date_of_birth", null: false
@@ -196,13 +206,22 @@ ActiveRecord::Schema[8.1].define(version: 2026_02_20_220358) do
 
   create_table "job_training_activities", force: :cascade do |t|
     t.bigint "activity_flow_id", null: false
+    t.string "city"
+    t.string "contact_email"
+    t.string "contact_name"
+    t.string "contact_phone_number"
     t.datetime "created_at", null: false
     t.string "data_source", default: "self_attested", null: false
     t.date "date"
     t.integer "hours"
     t.string "organization_address"
+    t.string "organization_name"
     t.string "program_name"
+    t.string "state"
+    t.string "street_address"
+    t.string "street_address_line_2"
     t.datetime "updated_at", null: false
+    t.string "zip_code"
     t.index ["activity_flow_id"], name: "index_job_training_activities_on_activity_flow_id"
   end
 
@@ -428,6 +447,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_02_20_220358) do
   add_foreign_key "cbv_flows", "cbv_flow_invitations"
   add_foreign_key "education_activities", "activity_flows"
   add_foreign_key "employment_activities", "activity_flows"
+  add_foreign_key "employment_activity_months", "employment_activities"
   add_foreign_key "job_training_activities", "activity_flows"
   add_foreign_key "solid_queue_blocked_executions", "solid_queue_jobs", column: "job_id", on_delete: :cascade
   add_foreign_key "solid_queue_claimed_executions", "solid_queue_jobs", column: "job_id", on_delete: :cascade
